@@ -91,7 +91,7 @@ gift-gnutella-source: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGNUTELLA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGNUTELLA_PATCHES)
-#	$(MAKE) gift-stage
+	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) $(GIFTGNUTELLA_BUILD_DIR)
 	$(GIFTGNUTELLA_UNZIP) $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTGNUTELLA_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTGNUTELLA_DIR) -p1
