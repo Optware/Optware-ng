@@ -106,7 +106,7 @@ cron-unpack: $(CRON_BUILD_DIR)/.configured
 #
 $(CRON_BUILD_DIR)/.built: $(CRON_BUILD_DIR)/.configured
 	rm -f $(CRON_BUILD_DIR)/.built
-	$(MAKE) CRONDIR=/opt/var/cron TARGET_CC=$(TARGET_CC) -C $(CRON_BUILD_DIR)
+	$(MAKE) -C $(CRON_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
 	touch $(CRON_BUILD_DIR)/.built
 
 #
