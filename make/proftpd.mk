@@ -29,7 +29,7 @@ PROFTPD_UNZIP=zcat
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=3
+PROFTPD_IPK_VERSION=4
 
 #
 # Control file info
@@ -205,6 +205,8 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftptop.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
 	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpwho.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
 	install -m 0644 $(PROFTPD_BUILD_DIR)/src/xferlog.5   $(PROFTPD_IPK_DIR)/opt/man/man5
+	# Install folder for storing socket file and scoreboard
+	install -d $(PROFTPD_IPK_DIR)/opt/var/proftpd
 	# Install empty file
 	install -d $(PROFTPD_IPK_DIR)/usr/share/empty
 	# Install conf files
