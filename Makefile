@@ -25,12 +25,12 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   sudo rsync rdate grep jove lsof \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
-	   ncurses ircd-hybrid procps \
+	   ncurses ircd-hybrid procps ntp \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap freeradius puppy screen bind svn \
-	   m4 make patch vsftpd distcc libjpeg imagemagick \
+	   m4 make patch vsftpd distcc libjpeg \
 	   tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff less nfs-utils
 
@@ -39,7 +39,7 @@ PACKAGES_TO_BE_TESTED:= crosstool-native
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED:= perl ntp
+PACKAGES_THAT_NEED_TO_BE_FIXED:= perl imagemagick 
 
 WGET=wget --passive-ftp
 CVS=cvs
@@ -124,7 +124,7 @@ $(PACKAGES_STAGE) : directories crosstool
 $(PACKAGES_IPKG) : directories crosstool ipkg-utils
 
 $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
-	rm -rf $(PACKAGE_DIR)
+	rm -f $(PACKAGE_DIR)/*
 	mkdir -p $(PACKAGE_DIR)
 	{ \
 		cd $(PACKAGE_DIR); \
