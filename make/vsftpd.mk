@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=6
+VSFTPD_IPK_VERSION=7
 
 #
 # VSFTPD_PATCHES should list any patches, in the the order in
