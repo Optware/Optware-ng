@@ -77,7 +77,9 @@ NATIVE_ONLY_PACKAGES = \
 # Add new native-only packages here.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	clamav \
-	wakelan
+	wakelan \
+	samba \
+	which 
 
 UNSORTED_PACKAGES = \
 	freeradius \
@@ -88,8 +90,7 @@ UNSORTED_PACKAGES = \
 	nfs-server nfs-utils \
 	pcre popt proftpd \
 	rdate \
-	svn \
-	which 
+	svn 
 
 DEVELOPER_PACKAGES = crosstool-native
 

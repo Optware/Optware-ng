@@ -5,6 +5,17 @@ if [ -n "`pidof squid`" ]; then
     /bin/killall squid 
 fi
 
+# Normally, the cache dir is on the data partition.
+# The data partition is not writable when it boot up.
+# If you start the squid right away, it will 
+# quit and report 'no premission' to write cache.
+# The dely-start script is used to start squid with delay.
+# If you do not have that problem, you can just start 
+# squid right here.
+
+#echo "Starting squid-cache server:"
+#/opt/sbin/squid -f /opt/etc/squid/squid.conf -S -F
+
 echo "Starting squid-cache server in 5min:"
 /opt/etc/squid/squid.delay-start.sh&
 
