@@ -28,7 +28,7 @@ FREERADIUS_UNZIP=zcat
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=1
+FREERADIUS_IPK_VERSION=2
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
