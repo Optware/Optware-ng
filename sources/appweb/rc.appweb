@@ -1,5 +1,4 @@
 #!/bin/sh
-export LD_LIBRARY_PATH=/opt/lib:/lib
 
 if [ -n "`pidof appWeb`" ]; then 
     /bin/killall appWeb 2>/dev/null
