@@ -90,10 +90,12 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
 
-all: directories toolchain packages
-
+ifeq ($(HOST_MACHINE),armv5b)
 native:
 	$(MAKE) PACKAGES="$(NATIVE_PACKAGES)" all
+endif
+
+all: directories toolchain packages
 
 native-upload:
 	mkdir -p native
