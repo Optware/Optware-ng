@@ -152,6 +152,7 @@ source: $(TARGETS_SOURCE) $(PACKAGES_SOURCE)
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	cd firmware ; $(MAKE) umount clean
 	find . -name '*~' -print | xargs /bin/rm -f
+	find . -name '.*~' -print | xargs /bin/rm -f
 	find . -name '.#*' -print | xargs /bin/rm -f
 
 distclean: clean
