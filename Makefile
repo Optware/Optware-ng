@@ -25,7 +25,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	bash bison bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
-	file findutils \
+	file findutils flex \
 	gawk gdbm grep \
 	inetutils iptables \
 	jove \
@@ -44,7 +44,7 @@ CROSS_ONLY_PACKAGES = \
 	appweb \
 	bind busybox \
 	dhcp \
-	flex freeradius \
+	freeradius \
 	imagemagick ircd-hybrid \
 	libbt libcurl libpcap libtiff logrotate \
 	mc mdadm mt-daapd \
