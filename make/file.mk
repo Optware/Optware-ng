@@ -113,7 +113,8 @@ file-unpack: $(FILE_BUILD_DIR)/.configured
 #
 $(FILE_BUILD_DIR)/.built: $(FILE_BUILD_DIR)/.configured
 	rm -f $(FILE_BUILD_DIR)/.built
-	$(MAKE) -C $(FILE_BUILD_DIR)
+	$(MAKE) -C $(FILE_BUILD_DIR) SUBDIRS=src
+	$(MAKE) -C $(FILE_BUILD_DIR)/magic pkgdata_DATA="magic magic.mime"
 	touch $(FILE_BUILD_DIR)/.built
 
 #
@@ -121,20 +122,6 @@ $(FILE_BUILD_DIR)/.built: $(FILE_BUILD_DIR)/.configured
 # which is built.
 #
 file: $(FILE_BUILD_DIR)/.built
-
-#
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libfile.so.$(FILE_VERSION): $(FILE_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(FILE_BUILD_DIR)/file.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(FILE_BUILD_DIR)/libfile.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(FILE_BUILD_DIR)/libfile.so.$(FILE_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libfile.so.$(FILE_VERSION) libfile.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libfile.so.$(FILE_VERSION) libfile.so
-
-file-stage: $(STAGING_DIR)/opt/lib/libfile.so.$(FILE_VERSION)
 
 #
 # This builds the IPK file.
@@ -151,9 +138,8 @@ file-stage: $(STAGING_DIR)/opt/lib/libfile.so.$(FILE_VERSION)
 $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_armeb.ipk
 	install -d $(FILE_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(FILE_BUILD_DIR)/file -o $(FILE_IPK_DIR)/opt/bin/file
-	install -d $(FILE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(FILE_SOURCE_DIR)/rc.file $(FILE_IPK_DIR)/opt/etc/init.d/SXXfile
+	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install
+	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install
 	install -d $(FILE_IPK_DIR)/CONTROL
 	install -m 644 $(FILE_SOURCE_DIR)/control $(FILE_IPK_DIR)/CONTROL/control
 	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
