@@ -140,16 +140,10 @@ libdb: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libdb.so.$(LIBDB_VERSION): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBDB_BUILD_DIR)/libdb.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBDB_BUILD_DIR)/libdb.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBDB_BUILD_DIR)/libdb.so.$(LIBDB_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libdb.so.$(LIBDB_VERSION) libdb.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libdb.so.$(LIBDB_VERSION) libdb.so
+$(STAGING_DIR)/opt/lib/libdb.a: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
+	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(STAGING_DIR) install_setup install_include install_lib
 
-libdb-stage: $(STAGING_DIR)/opt/lib/libdb.so.$(LIBDB_VERSION)
+libdb-stage: $(STAGING_DIR)/opt/lib/libdb.a
 
 #
 # This builds the IPK file.
