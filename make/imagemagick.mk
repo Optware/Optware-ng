@@ -30,7 +30,7 @@ IMAGEMAGICK_UNZIP=zcat
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=2
+IMAGEMAGICK_IPK_VERSION=3
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
