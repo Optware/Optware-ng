@@ -55,6 +55,10 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 
+# gtk fails in demos: /bin/sh: line 1: no: command not found
+CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	gtk
+
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
@@ -85,8 +89,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # cyrus-imapd fails when compiling the perl stuff
 # postfix fails when packaging
-# gtk+ needs to be renamed
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	postfix cyrus-imapd gtk+
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	postfix cyrus-imapd
 
 
 HOST_MACHINE:=$(shell uname -m | sed \
