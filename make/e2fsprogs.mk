@@ -37,7 +37,7 @@ $(E2FSPROGS_DIR)/.configured: $(E2FSPROGS_DIR)/.source
 $(E2FSPROGS_IPK_DIR): $(E2FSPROGS_DIR)/.configured
 	$(MAKE) \
 	  -C $(E2FSPROGS_DIR) \
-	  CC_FOR_BUILD=$(CC) \
+	  CC_FOR_BUILD=$(HOSTCC) \
 	  CC=$(TARGET_CC) \
 	  RANLIB=$(TARGET_RANLIB) \
 	  AR=$(TARGET_AR) \
