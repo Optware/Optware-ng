@@ -3,5 +3,5 @@
 mkdir -p /opt/tftpboot
 
 if [ -n "`pidof xinetd`" ]; then
-    /bin/killall -HUP xinetd 2>/dev/null
+    killall -HUP xinetd 2>/dev/null
 fi
