@@ -1,4 +1,5 @@
 echo "To activate xinetd, copy /opt/doc/xinetd/rc.xinetd to /share/hdd/conf/unslung"
+echo "(or /share/{hdd,flash}/{conf,data}/unslung as appropriate for your situation)"
 echo "To start xinetd, either restart your system or kill inetd before running"
 echo "/opt/etc/init.d/S10xinetd"
 echo
