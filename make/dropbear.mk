@@ -27,28 +27,26 @@ $(DROPBEAR_DIR)/config.h: $(DL_DIR)/$(DROPBEAR).tar.bz2 $(SOURCE_DIR)/dropbear.p
 $(DROPBEAR_DIR)/dropbearmulti: $(DROPBEAR_DIR)/config.h
 	make -C $(DROPBEAR_DIR) dropbearmulti scp
 
+dropbear: $(DROPBEAR_DIR)/dropbearmulti
+
 dropbear-diff: #$(DROPBEAR_DIR)/config.h
 	@rm -rf $(BUILD_DIR)/$(DROPBEAR)
 	tar xjf $(DL_DIR)/$(DROPBEAR).tar.bz2 -C $(BUILD_DIR)
 	-make -C $(DROPBEAR_DIR) distclean
 	-cd $(BUILD_DIR) && diff -BurN $(DROPBEAR) dropbear | grep -v ^Only > $(SOURCE_DIR)/dropbear.patch
 
-$(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear: $(DROPBEAR_DIR)/dropbearmulti
+$(PACKAGE_DIR)/dropbear_0.43_armeb.ipk: dropbear
 	install -d $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin
 	$(STRIP) $(DROPBEAR_DIR)/dropbearmulti -o $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
 	cd $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin && ln -sf dropbear dropbearkey
 	cd $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin && ln -sf dropbear dropbearconvert
 	$(STRIP) $(DROPBEAR_DIR)/scp -o $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/scp
 	install -m 755 $(SOURCE_DIR)/dropbear.rc $(PACKAGE_DIR)/dropbear/opt/dropbear/rc.dropbear
-
-$(PACKAGE_DIR)/dropbear_0.43_armeb.ipk: $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
 	install -d $(PACKAGE_DIR)/dropbear/CONTROL
 	install -m 644 $(SOURCE_DIR)/dropbear.control $(PACKAGE_DIR)/dropbear/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/dropbear.postinst $(PACKAGE_DIR)/dropbear/CONTROL/postinst
 	install -m 644 $(SOURCE_DIR)/dropbear.prerm $(PACKAGE_DIR)/dropbear/CONTROL/prerm
 	./ipkg-build -c -o root -g root $(PACKAGE_DIR)/dropbear $(PACKAGE_DIR)
-
-dropbear: $(DROPBEAR_DIR)/dropbearmulti
 
 dropbear-ipk: $(PACKAGE_DIR)/dropbear_0.43_armeb.ipk
 
