@@ -143,7 +143,7 @@ $(MAN_IPK): $(MAN_BUILD_DIR)/.built
 	rm -rf $(MAN_IPK_DIR) $(BUILD_DIR)/man_*_armeb.ipk
 	$(MAKE) -C $(MAN_BUILD_DIR) DESTDIR=$(MAN_IPK_DIR) install
 	install -d $(MAN_IPK_DIR)/opt/etc/
-	install -m 755 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf
+	install -m 644 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf
 #	install -d $(MAN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAN_SOURCE_DIR)/rc.man $(MAN_IPK_DIR)/opt/etc/init.d/SXXman
 	install -d $(MAN_IPK_DIR)/CONTROL
