@@ -45,6 +45,7 @@ CROSS_PACKAGES = \
 	openssh openssl openvpn \
 	pango parted patch pcre php pkgconfig popt portmap postgresql \
 	procps proftpd puppy python \
+	py-sqlite py-bittorrent \
 	rdate readline recordext renderext rsync \
 	screen sed ser sm snownews sqlite strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
@@ -101,12 +102,8 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# py-sqlite cannot be downloaded - 404: Not Found.
-# py-bittorrent appears to require python 2.4 on the build host. we currently have 2.3.4, please email the list if you feel that we should upgrade
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	py-sqlite \
-	py-bittorrent \
 	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
