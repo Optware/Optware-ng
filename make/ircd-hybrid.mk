@@ -49,12 +49,14 @@ $(IRCD_HYBRID_DIR)/.source: $(DL_DIR)/$(IRCD_HYBRID_SOURCE_ARCHIVE)
 $(IRCD_HYBRID_DIR)/.configured: $(IRCD_HYBRID_DIR)/.source
 	$(MAKE) flex-stage
 	(cd $(IRCD_HYBRID_DIR); \
-	export CPPFLAGS="$(STAGING_CPPFLAGS)"; \
-	export LDFLAGS="$(STAGING_LDFLAGS)"; \
-	./configure \
-		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME) \
-		--prefix=/opt	\
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		./configure \
+			--build=$(GNU_HOST_NAME) \
+			--host=$(GNU_TARGET_NAME) \
+			--target=$(GNU_TARGET_NAME) \
+			--prefix=/opt	\
 	);
 	touch $(IRCD_HYBRID_DIR)/.configured
 
