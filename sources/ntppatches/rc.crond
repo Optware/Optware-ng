@@ -1,0 +1,4 @@
+#! /bin/sh
+if [ ! -e /etc/crontab.orig ]; then cp -p /etc/crontab /etc/crontab.orig; fi
+sed -i -e 's/1 \* \* \* \* root \/usr\/sbin\/hwclock -s \&>\/dev\/null/1 \* \* \* \* root \/usr\/sbin\/hwclock --adjust --utc \&>\/dev\/null/' /etc/crontab
+return 1
