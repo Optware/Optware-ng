@@ -65,7 +65,7 @@ INSTALLATION DETAILS
 4) Run /sbin/unsling and watch the ramdisk files be copied to your disk.
 5) Reboot.
 
-Congratulations, youre now UNSLUNG!  You should have an extra 10M of free
+Congratulations, you're now UNSLUNG!  You should have an extra 10M of free
 memory to use for other things.
 
 Make sure you add an entry to the "The Unslung" table in the Yahoo
