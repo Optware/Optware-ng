@@ -34,7 +34,7 @@ COREUTILS_IPK_VERSION=1
 # COREUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/configure.patch
+COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -90,7 +90,7 @@ $(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PA
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(COREUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
+	cat $(COREUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	(cd $(COREUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -161,7 +161,7 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 #	install -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/SXXcoreutils
 	install -d $(COREUTILS_IPK_DIR)/CONTROL
 	install -m 644 $(COREUTILS_SOURCE_DIR)/control $(COREUTILS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(COREUTILS_SOURCE_DIR)/prerm $(COREUTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 
