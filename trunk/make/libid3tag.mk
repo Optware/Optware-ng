@@ -48,8 +48,8 @@ $(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 	cp $(SOURCE_DIR)/libid3tag.control $(LIBID3TAG_IPK_DIR)/CONTROL/control
 	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/lib
 	cp -dpf $(STAGING_DIR)/lib/libid3tag.so* $(LIBID3TAG_IPK_DIR)/opt/lib;
-	-$(STRIP) --strip-unneeded $(LIBID3TAG_IPK_DIR)/opt/lib/liblibid3tag.so*
-	touch -c $(LIBID3TAG_IPK_DIR)/opt/lib/liblibid3tag.so.$(LIBID3TAG_VERSION)
+	-$(STRIP) --strip-unneeded $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so*
+	touch -c $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBID3TAG_IPK_DIR)
 
 libid3tag-ipk: $(LIBID3TAG_IPK)
