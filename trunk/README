@@ -96,7 +96,7 @@ into /unslung and it will be run.
 For example, I have a script /unslung/rc.local:
 
 #! /bin/sh
-/unslung/startnfs
+/unslung/do_foo
 return 1
 
 That will run at the beginning of the normal /etc/rc.d/rc.local, and then 
@@ -104,7 +104,7 @@ the rest of the factory rc.local will be executed.  If I do NOT want to run
 the factory rc.local, my script would be
 
 #!/bin/sh
-/unslung/startnfs
+/unslung/do_foo
 return 0
 
 That is, if the diversion script returns with something other than 0, it will
