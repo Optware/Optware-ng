@@ -28,7 +28,7 @@ PROFTPD_UNZIP=zcat
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=1
+PROFTPD_IPK_VERSION=2
 
 #
 # PROFTPD_CONFFILES should be a list of user-editable files
@@ -161,10 +161,12 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	# Install bin files
 	install -d $(PROFTPD_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpdctl -o $(PROFTPD_IPK_DIR)/opt/bin/ftpdctl
-	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpdtop -o $(PROFTPD_IPK_DIR)/opt/bin/ftpdtop
-	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpdwho -o $(PROFTPD_IPK_DIR)/opt/bin/ftpdwho
+	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftptop -o $(PROFTPD_IPK_DIR)/opt/bin/ftptop
+	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpcount -o $(PROFTPD_IPK_DIR)/opt/bin/ftpcount
+	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpwho -o $(PROFTPD_IPK_DIR)/opt/bin/ftpwho
+	# Install man files
+	$(MAKE) -C $(PROFTPD_BUILD_DIR) DESTDIR=$(PROFTPD_IPK_DIR) install-man
 	# Install empty file
-	#
 	install -d $(PROFTPD_IPK_DIR)/usr/share/empty
 	# Install conf files
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
@@ -183,21 +185,11 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	# Make directory in which to store keys
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/ftpd
-	# Install man pages
-	install -d $(PROFTPD_IPK_DIR)/opt/man/man1 
-	install -d $(PROFTPD_IPK_DIR)/opt/man/man5
-	install -d $(PROFTPD_IPK_DIR)/opt/man/man8
-	install -m 644 $(PROFTPD_BUILD_DIR)/src/ftpdctl.8    $(PROFTPD_IPK_DIR)/opt/man/man8/ftpdctl.8
-	install -m 644 $(PROFTPD_BUILD_DIR)/src/proftpd.8    $(PROFTPD_IPK_DIR)/opt/man/man8/proftpd.8
-	install -m 644 $(PROFTPD_BUILD_DIR)/utils/ftpshut.8    $(PROFTPD_IPK_DIR)/opt/man/man8/ftpshut.8
-	install -m 644 $(PROFTPD_BUILD_DIR)/utils/ftpcount.1    $(PROFTPD_IPK_DIR)/opt/man/man1/ftpcount.1
-	install -m 644 $(PROFTPD_BUILD_DIR)/utils/ftptop.1    $(PROFTPD_IPK_DIR)/opt/man/man1/ftptop.1
-	install -m 644 $(PROFTPD_BUILD_DIR)/utils/ftpwho.1    $(PROFTPD_IPK_DIR)/opt/man/man1/ftpwho.1
-	install -m 644 $(PROFTPD_BUILD_DIR)/src/xferlog.5    $(PROFTPD_IPK_DIR)/opt/man/man5/xferlog.5
 	# Install control files
 	install -d $(PROFTPD_IPK_DIR)/CONTROL
 	install -m 644 $(PROFTPD_SOURCE_DIR)/control $(PROFTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(PROFTPD_SOURCE_DIR)/postinst $(PROFTPD_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROFTPD_IPK_DIR)
 
 #
