@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-TARGET=wl500g
+TARGET=nslu2
 
 CROSS_PACKAGES = \
 	abook adns atftp appweb apache apr apr-util atk automake \
@@ -61,8 +61,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = audiofile esound vorbis-tools\
-	hnb libgc w3m streamripper \
-	thttpd
+	hnb libgc w3m streamripper
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -135,6 +134,9 @@ WL500G_PACKAGES = \
 	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xproto xtrans \
 	zlib
+
+WL500G_PACKAGES_READY_FOR_TESTING =  \
+	thttpd
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	appweb busybox bzip2 ccxstream \
