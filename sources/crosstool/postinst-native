@@ -1,6 +1,6 @@
 #!/bin/ash
 
-ln -sf /opt/gcc-3.3.4-glibc-2.2.5 /opt/gcc
+ln -sf /opt/gcc-3.3.5-glibc-2.2.5 /opt/gcc
 
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-addr2line /opt/bin/addr2line
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-ar /opt/bin/ar
@@ -10,7 +10,7 @@ ln -sf /opt/gcc/bin/armv5b-softfloat-linux-c++filt /opt/bin/c++filt
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-cpp /opt/bin/cpp
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-g++ /opt/bin/g++
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-gcc /opt/bin/gcc
-ln -sf /opt/gcc/bin/armv5b-softfloat-linux-gcc-3.3.4 /opt/bin/gcc-3.3.4
+ln -sf /opt/gcc/bin/armv5b-softfloat-linux-gcc-3.3.5 /opt/bin/gcc-3.3.5
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-gccbug /opt/bin/gccbug
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-gcov /opt/bin/gcov
 ln -sf /opt/gcc/bin/armv5b-softfloat-linux-gprof /opt/bin/gprof
