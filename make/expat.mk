@@ -5,7 +5,7 @@
 ###########################################################
 
 #
-# EXPAT_VERSION, EXPAT_REPOSITORY and EXPAT_SOURCE define
+# EXPAT_VERSION, EXPAT_SITE and EXPAT_SOURCE define
 # the upstream location of the source code for the package.
 # EXPAT_DIR is the directory which is created when the source
 # archive is unpacked.
@@ -14,11 +14,9 @@
 #
 # You should change all these variables to suit your package.
 #
-EXPAT_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/expat
+EXPAT_SITE=http://internap.dl.sourceforge.net/sourceforge/expat
 EXPAT_VERSION=1.95.8
 EXPAT_SOURCE=expat-$(EXPAT_VERSION).tar.gz
-EXPAT_TAG=-r R_1_95_8
-EXPAT_MODULE=expat
 EXPAT_DIR=expat-$(EXPAT_VERSION)
 EXPAT_UNZIP=zcat
 
@@ -28,10 +26,14 @@ EXPAT_UNZIP=zcat
 EXPAT_IPK_VERSION=1
 
 #
+# EXPAT_CONFFILES should be a list of user-editable files
+EXPAT_CONFFILES=
+
+#
 # EXPAT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#EXPAT_PATCHES=$(EXPAT_SOURCE_DIR)/configure.patch
+EXPAT_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -56,15 +58,10 @@ EXPAT_IPK=$(BUILD_DIR)/expat_$(EXPAT_VERSION)-$(EXPAT_IPK_VERSION)_armeb.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from cvs.
+# then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EXPAT_SOURCE):
-	cd $(DL_DIR) ; $(CVS) -d $(EXPAT_REPOSITORY) co $(EXPAT_TAG) $(EXPAT_MODULE)
-	mv $(DL_DIR)/$(EXPAT_MODULE) $(DL_DIR)/$(EXPAT_DIR)
-	cd $(DL_DIR) ; tar zcvf $(EXPAT_SOURCE) $(EXPAT_DIR)
-	rm -rf $(DL_DIR)/$(EXPAT_DIR)
-
-
+	$(WGET) -P $(DL_DIR) $(EXPAT_SITE)/$(EXPAT_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -89,12 +86,12 @@ expat-source: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(EXPAT_DIR) $(EXPAT_BUILD_DIR)
 	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(EXPAT_PATCHES) | patch -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
 	mv $(BUILD_DIR)/$(EXPAT_DIR) $(EXPAT_BUILD_DIR)
 	(cd $(EXPAT_BUILD_DIR); \
-		./buildconf.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EXPAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(EXPAT_LDFLAGS)" \
@@ -103,16 +100,14 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-static \
-		--enable-shared \
+		--disable-nls \
 	)
 	touch $(EXPAT_BUILD_DIR)/.configured
 
 expat-unpack: $(EXPAT_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
 $(EXPAT_BUILD_DIR)/.built: $(EXPAT_BUILD_DIR)/.configured
 	rm -f $(EXPAT_BUILD_DIR)/.built
@@ -120,24 +115,25 @@ $(EXPAT_BUILD_DIR)/.built: $(EXPAT_BUILD_DIR)/.configured
 	touch $(EXPAT_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
 expat: $(EXPAT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libexpat.so.$(EXPAT_VERSION): $(EXPAT_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(EXPAT_BUILD_DIR)/expat.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(EXPAT_BUILD_DIR)/libexpat.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(EXPAT_BUILD_DIR)/libexpat.so.$(EXPAT_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libexpat.so.$(EXPAT_VERSION) libexpat.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libexpat.so.$(EXPAT_VERSION) libexpat.so
+$(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
+	rm -f $(EXPAT_BUILD_DIR)/.staged
+	mkdir -p $(STAGING_DIR)/lib $(STAGING_DIR)/include
+	(cd $(EXPAT_BUILD_DIR); \
+		./libtool --mode=install /opt/bin/install -c libexpat.la $(STAGING_DIR)/lib/libexpat.la ; \
+		/opt/bin/install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_DIR)/include ; \
+	)
+	# avoid problems with libtool later
+	rm $(STAGING_DIR)/lib/libexpat.la
+	touch $(EXPAT_BUILD_DIR)/.staged
 
-expat-stage: $(STAGING_DIR)/opt/lib/libexpat.so.$(EXPAT_VERSION)
+expat-stage: $(EXPAT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -153,14 +149,15 @@ expat-stage: $(STAGING_DIR)/opt/lib/libexpat.so.$(EXPAT_VERSION)
 #
 $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_armeb.ipk
-	install -d $(EXPAT_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(EXPAT_BUILD_DIR)/expat -o $(EXPAT_IPK_DIR)/opt/bin/expat
-	install -d $(EXPAT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(EXPAT_SOURCE_DIR)/rc.expat $(EXPAT_IPK_DIR)/opt/etc/init.d/SXXexpat
+	install -d $(EXPAT_IPK_DIR)/opt/lib $(EXPAT_IPK_DIR)/opt/include
+	(cd $(EXPAT_BUILD_DIR); \
+		./libtool --mode=install /opt/bin/install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
+		/opt/bin/install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
+	)
+	# avoid problems with libtool later
+	rm $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
 	install -d $(EXPAT_IPK_DIR)/CONTROL
 	install -m 644 $(EXPAT_SOURCE_DIR)/control $(EXPAT_IPK_DIR)/CONTROL/control
-	install -m 644 $(EXPAT_SOURCE_DIR)/postinst $(EXPAT_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(EXPAT_SOURCE_DIR)/prerm $(EXPAT_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EXPAT_IPK_DIR)
 
 #
