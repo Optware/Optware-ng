@@ -42,13 +42,11 @@ $(BUSYBOX_DIR)/busybox: $(BUSYBOX_DIR)/.configured
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/busybox" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" -C $(BUSYBOX_DIR)
 
-$(TARGET_DIR)/busybox/bin/busybox: $(BUSYBOX_DIR)/busybox
-	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/busybox" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_DIR) install
-
 busybox: $(BUSYBOX_DIR)/busybox
 
 $(PACKAGE_DIR)/busybox_1.0.0-rc3_armeb.ipk: busybox
+	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/busybox" \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_DIR) install
 	install -d  $(PACKAGE_DIR)/busybox/opt
 	cp -rp $(TARGET_DIR)/busybox/* $(PACKAGE_DIR)/busybox/opt
 	install -d $(PACKAGE_DIR)/busybox/CONTROL
