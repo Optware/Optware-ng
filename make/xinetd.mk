@@ -28,13 +28,13 @@ XINETD_UNZIP=zcat
 XINETD_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 XINETD_DESCRIPTION=Highly configurable, modular and secure inetd
 XINETD_SECTION=net
-XINETD_PRIORITY=optional
+XINETD_PRIORITY=required
 XINETD_DEPENDS=
 
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=3
+XINETD_IPK_VERSION=4
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
@@ -193,10 +193,7 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	install -m 644 $(XINETD_BUILD_DIR)/contrib/xinetd.d/ftp-sensor $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 	# Install daemon startup file
 	install -d $(XINETD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(XINETD_SOURCE_DIR)/S10xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
-	# Install diversion script
-	install -d $(XINETD_IPK_DIR)/opt/doc/xinetd
-	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/doc/xinetd
+	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
 	$(MAKE) $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 755 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/
 	install -m 755 $(XINETD_SOURCE_DIR)/prerm $(XINETD_IPK_DIR)/CONTROL/
