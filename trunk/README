@@ -148,7 +148,7 @@ ADDITIONAL INFORMATION:
     same network footprint as the standard firmware.
 
 9a) This telnet mod is a temporary stopgap measure that will allow you to
-    have telnet access and will be depreciated when a diversion script gets
+    have telnet access and will be deprecated when a diversion script gets
     written and tested.
 
     Add these lines to the end of your /etc/rc.d/rc.local, 
