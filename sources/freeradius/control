@@ -1,0 +1,9 @@
+Package: freeradius
+Version: 1.0.1-1
+Architecture: armeb
+Maintainer: Christopher <edmondsc@onid.orst.edu>
+Source: ftp://www.freeradius.org/pub/radius/freeradius-1.0.1.tar.gz
+Section: Networking
+Priority: optional
+Depends:
+Description: An open source RADIUS server.

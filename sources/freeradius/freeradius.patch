@@ -1,0 +1,169 @@
+diff -Nur freeradius-1.0.1/src/modules/rlm_eap/Makefile.in freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in
+--- freeradius-1.0.1/src/modules/rlm_eap/Makefile.in	2004-01-28 07:38:40.000000000 -0800
++++ freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in	2004-11-30 17:38:35.128546096 -0800
+@@ -1,5 +1,5 @@
+ TARGET      = @targetname@
+-SRCS        = rlm_eap.c eap.c mem.c state.c
++SRCS        = rlm_eap.c eap.c mem.c state.c libeap/eapcommon.c
+ HEADERS     = eap.h rlm_eap.h
+ RLM_CFLAGS  = $(INCLTDL) -I@srcdir@/libeap
+ CLIENTLIBS  = -Llibeap -leap -L../../lib -lradius
+diff -Nur freeradius-1.0.1/src/modules/rlm_eap/Makefile.in~ freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in~
+--- freeradius-1.0.1/src/modules/rlm_eap/Makefile.in~	1969-12-31 16:00:00.000000000 -0800
++++ freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in~	2004-01-28 07:38:40.000000000 -0800
+@@ -0,0 +1,47 @@
++TARGET      = @targetname@
++SRCS        = rlm_eap.c eap.c mem.c state.c
++HEADERS     = eap.h rlm_eap.h
++RLM_CFLAGS  = $(INCLTDL) -I@srcdir@/libeap
++CLIENTLIBS  = -Llibeap -leap -L../../lib -lradius
++RLM_LIBS    = -Llibeap -leap
++#RLM_LIBS    = $(shell for x in types/rlm_eap*/rlm_eap*.la;do echo -dlpreopen $$x;done)
++RLM_INSTALL = install-types
++RLM_SUBDIRS = libeap @eaptypes@ 
++RLM_UTILS   = radeapclient
++
++.PHONY: all install-types common
++
++$(STATIC_OBJS): $(HEADERS)
++
++#
++#  Statically link a few modules.
++# 
++STATIC_OBJS	+= $(shell ls -1 types/rlm_eap_md5/rlm_eap_md5.a types/rlm_eap_leap/rlm_eap_leap.a types/rlm_eap_tls/rlm_eap_tls.a types/rlm_eap_ttls/rlm_eap_ttls.a types/rlm_eap_sim/rlm_eap_sim.a 2>/dev/null)
++
++$(DYNAMIC_OBJS): $(HEADERS)
++
++all: 
++	@$(MAKE) $(MFLAGS) static dynamic
++	@$(MAKE) $(MFLAGS) WHAT_TO_MAKE=$@ common
++	@$(MAKE) $(MFLAGS) radeapclient
++
++radeapclient: radeapclient.o ../../lib/libradius.a
++	(cd libeap && $(MAKE) $(MFLAGS) $(WHAT_TO_MAKE)) || exit 1
++	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) ${RLM_CFLAGS} $(LDFLAGS) -o radeapclient radeapclient.o $(CLIENTLIBS) $(LIBS) $(LCRYPT)
++
++radeapclient.o: radeapclient.c $(INCLUDES)
++	$(CC) $(CFLAGS) ${RLM_CFLAGS} -c radeapclient.c
++
++install-types: 
++	@$(MAKE) $(MFLAGS) WHAT_TO_MAKE=install common
++	$(INSTALL) -m 755 radeapclient	$(R)$(bindir)
++
++common:
++	@for dir in $(RLM_SUBDIRS); do  \
++		echo "Making $(WHAT_TO_MAKE) in $$dir..."; \
++		(cd $$dir && $(MAKE) $(MFLAGS) $(WHAT_TO_MAKE)) || exit 1;\
++	done
++
++## this uses the RLM_CFLAGS and RLM_LIBS and SRCS defs to make TARGET.
++include ../rules.mak
++
+diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_log.c
+--- freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c	2002-07-11 23:45:53.000000000 -0700
++++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_log.c	2004-11-29 21:53:49.000000000 -0800
+@@ -41,12 +41,12 @@
+     char *fmt;
+ 
+     va_start(ap, format);
+-    fmt = malloc(strlen(X99_MODULE_NAME) + strlen(format) + 3);
++    fmt = malloc(strlen("rlm_x99_token\0") + strlen(format) + 3);
+     if (!fmt) {
+ 	va_end(ap);
+ 	return;
+     }
+-    (void) sprintf(fmt, "%s: %s", X99_MODULE_NAME, format);
++    (void) sprintf(fmt, "%s: %s", "rlm_x99_token\0", format);
+ 
+ #ifdef FREERADIUS
+     (void) vradlog(level, fmt, ap);
+diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c
+--- freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c	2004-02-26 11:04:37.000000000 -0800
++++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c	2004-11-29 19:27:42.000000000 -0800
+@@ -53,12 +53,45 @@
+ #endif
+ #include "x99.h"
+ 
++
++static int x99_token_init(void);
++static int x99_token_instantiate(CONF_SECTION *conf, void **instance);
++static int x99_token_authorize(void *instance, REQUEST *request);
++static int x99_token_authenticate(void *instance, REQUEST *request);
++static int x99_token_detach(void *instance);
++static int x99_token_destroy(void);
++/*
++ *	If the module needs to temporarily modify it's instantiation
++ *	data, the type should be changed to RLM_TYPE_THREAD_UNSAFE.
++ *	The server will then take care of ensuring that the module
++ *	is single-threaded.
++ */
++module_t rlm_x99_token = {
++	"x99_token",
++	RLM_TYPE_THREAD_SAFE,		/* type */
++	x99_token_init,			/* initialization */
++	x99_token_instantiate,		/* instantiation */
++	{
++		x99_token_authenticate,	/* authentication */
++		x99_token_authorize,	/* authorization */
++		NULL,			/* preaccounting */
++		NULL,			/* accounting */
++		NULL,			/* checksimul */
++		NULL,			/* pre-proxy */
++		NULL,			/* post-proxy */
++		NULL			/* post-auth */
++	},
++	x99_token_detach,		/* detach */
++	x99_token_destroy,		/* destroy */
++};
++
++
+ static const char rcsid[] = "$Id$";
+ 
+ /* Global data */
+ static int rnd_fd;			/* fd for random device           */
+ static unsigned char hmac_key[16];	/* to protect State attribute     */
+-
++module_t rlm_x99_token;
+ /* A mapping of configuration file names to internal variables. */
+ static CONF_PARSER module_config[] = {
+     { "pwdfile", PW_TYPE_STRING_PTR, offsetof(x99_token_t, pwdfile),
+@@ -484,9 +517,9 @@
+ 
+     /* Add a message to the auth log. */
+     pairadd(&request->packet->vps, pairmake("Module-Failure-Message",
+-					    X99_MODULE_NAME, T_OP_EQ));
++					    "rlm_x99_token\0", T_OP_EQ));
+     pairadd(&request->packet->vps, pairmake("Module-Success-Message",
+-					    X99_MODULE_NAME, T_OP_EQ));
++					    "rlm_x99_token\0", T_OP_EQ));
+ 
+     /* Look up the user's info. */
+     if (x99_get_user_info(inst->pwdfile, username, &user_info) != 0) {
+@@ -844,27 +877,3 @@
+     return 0;
+ }
+ 
+-/*
+- *	If the module needs to temporarily modify it's instantiation
+- *	data, the type should be changed to RLM_TYPE_THREAD_UNSAFE.
+- *	The server will then take care of ensuring that the module
+- *	is single-threaded.
+- */
+-module_t rlm_x99_token = {
+-	"x99_token",
+-	RLM_TYPE_THREAD_SAFE,		/* type */
+-	x99_token_init,			/* initialization */
+-	x99_token_instantiate,		/* instantiation */
+-	{
+-		x99_token_authenticate,	/* authentication */
+-		x99_token_authorize,	/* authorization */
+-		NULL,			/* preaccounting */
+-		NULL,			/* accounting */
+-		NULL,			/* checksimul */
+-		NULL,			/* pre-proxy */
+-		NULL,			/* post-proxy */
+-		NULL			/* post-auth */
+-	},
+-	x99_token_detach,		/* detach */
+-	x99_token_destroy,		/* destroy */
+-};
