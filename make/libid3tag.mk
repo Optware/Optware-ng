@@ -34,10 +34,10 @@ $(LIBID3TAG_DIR)/.configured: $(LIBID3TAG_DIR)/.source
 		--host=arm-linux \
 		--prefix=$(STAGING_DIR) \
 	);
-	touch $(LIBID3TAG_DIR)/.configured;
+	touch $(LIBID3TAG_DIR)/.configured
 
 $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION): $(LIBID3TAG_DIR)/.configured
-	$(MAKE) CFLAGS="$(LIBID3TAG_CFLAGS)" CC=$(TARGET_CC) -C $(LIBID3TAG_DIR) install;
+	$(MAKE) CFLAGS="$(LIBID3TAG_CFLAGS)" CC=$(TARGET_CC) -C $(LIBID3TAG_DIR) install
 
 libid3tag-headers: $(STAGING_DIR)/lib/libid3tag.a
 
@@ -46,8 +46,10 @@ libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 $(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 	mkdir -p $(LIBID3TAG_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libid3tag.control $(LIBID3TAG_IPK_DIR)/CONTROL/control
+	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/include
+	cp -dpf $(STAGING_DIR)/include/id3tag.h $(LIBID3TAG_IPK_DIR)/opt/include
 	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/lib/libid3tag.so* $(LIBID3TAG_IPK_DIR)/opt/lib;
+	cp -dpf $(STAGING_DIR)/lib/libid3tag.so* $(LIBID3TAG_IPK_DIR)/opt/lib
 	-$(STRIP) --strip-unneeded $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so*
 	touch -c $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBID3TAG_IPK_DIR)
