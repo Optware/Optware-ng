@@ -28,16 +28,17 @@ $(NTPCLIENT_DIR)/.configured: $(DL_DIR)/$(NTPCLIENT_SOURCE)
 ntpclient-unpack: $(NTPCLIENT_DIR)/.configured
 
 $(NTPCLIENT_DIR)/ntpclient: $(NTPCLIENT_DIR)/.configured
-	$(MAKE) -C $(NTPCLIENT_DIR) CC=$(TARGET_CC) \
+	$(MAKE) -C $(NTPCLIENT_DIR) ntpclient adjtimex CC=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
 
 ntpclient: $(NTPCLIENT_DIR)/ntpclient
 
 $(NTPCLIENT_IPK): $(NTPCLIENT_DIR)/ntpclient
 	mkdir -p $(NTPCLIENT_IPK_DIR)/CONTROL
-	install -d $(NTPCLIENT_IPK_DIR)/opt/bin
+	install -d $(NTPCLIENT_IPK_DIR)/opt/bin $(NTPCLIENT_IPK_DIR)/opt/sbin
 	cp $(NTPCLIENT_SOURCE_DIR)/control $(NTPCLIENT_IPK_DIR)/CONTROL/control
 	$(STRIP) $(NTPCLIENT_DIR)/ntpclient -o $(NTPCLIENT_IPK_DIR)/opt/bin/ntpclient
+	$(STRIP) $(NTPCLIENT_DIR)/adjtimex -o $(NTPCLIENT_IPK_DIR)/opt/sbin/adjtimex
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTPCLIENT_IPK_DIR)
 
 ntpclient-ipk: $(NTPCLIENT_IPK)
