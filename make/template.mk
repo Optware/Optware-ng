@@ -84,7 +84,7 @@ $(DL_DIR)/$(<FOO>_SOURCE):
 #
 $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) $(<FOO>_PATCHES)
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
-	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) | tar -C $(BUILD_DIR) -xvf -
+	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(<FOO>_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
 	mv $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
 	(cd $(<FOO>_BUILD_DIR); \
@@ -96,7 +96,7 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) $(<FOO>_PATCHE
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-	);
+	)
 	touch $(<FOO>_BUILD_DIR)/.configured
 
 <foo>-unpack: $(<FOO>_BUILD_DIR)/.configured
@@ -113,6 +113,20 @@ $(<FOO>_BUILD_DIR)/<foo>: $(<FOO>_BUILD_DIR)/.configured
 # the final dependency to refer directly to the main binary which is built.
 #
 <foo>: ncurses $(<FOO>_BUILD_DIR)/<foo>
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(STAGING_DIR)/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION)
+	install -d $(STAGING_DIR)/include
+	install -m 644 $(<FOO>_BUILD_DIR)/<foo>.h $(STAGING_DIR)/include
+	install -d $(STAGING_DIR)/lib
+	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.a $(STAGING_DIR)/lib
+	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION) $(STAGING_DIR)/lib
+	cd $(STAGING_DIR)/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so.1
+	cd $(STAGING_DIR)/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so
+
+<foo>-stage: $(STAGING_DIR)/lib/lib<foo>.so.$(<FOO>_VERSION)
 
 #
 # This builds the IPK file.
@@ -143,5 +157,5 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-<foo>-dirclean:
+<foo>-dirclean: <foo>-clean
 	rm -rf $(<FOO>_BUILD_DIR) $(<FOO>_IPK_DIR) $(<FOO>_IPK)

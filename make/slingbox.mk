@@ -58,5 +58,5 @@ slingbox-install: $(FIRMWARE_DIR)/slingbox
 slingbox-clean:
 	-$(MAKE) -C $(SLINGBOX_BUILD_DIR) clean
 
-slingbox-dirclean:
+slingbox-dirclean: slingbox-clean
 	rm -rf $(SLINGBOX_BUILD_DIR)
