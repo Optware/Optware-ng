@@ -25,6 +25,7 @@ $(DL_DIR)/$(BIND_SOURCE):
 bind-source: $(DL_DIR)/$(BIND_SOURCE) $(BIND_PATCHES)
 
 $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE)
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
 	$(BIND_UNZIP) $(DL_DIR)/$(BIND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(BIND_PATCHES) | patch -d $(BUILD_DIR)/$(BIND_DIR) -p1
