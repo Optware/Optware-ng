@@ -187,4 +187,10 @@ ADDITIONAL INFORMATION:
     telnet  stream  tcp     nowait  root    /usr/sbin/telnetd
     ---
 
+10) Note that the PATH is set so that downloadable packages do not
+    override the factory executables.  This is so that a package
+    can't break the standard functionality.  You can use a diversion
+    script or a .profile in the /root directory to change the PATH
+    if you would prefer to take the chance and get a different
+    behaviour.
 
