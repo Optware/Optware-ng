@@ -1,0 +1,173 @@
+#!/opt/bin/bash
+
+#################################################
+## Configuration
+
+source /opt/etc/torrent.conf
+
+#################################################
+## Debug
+
+function debug ()
+{
+    if [[ $DEBUG && $DEBUG -gt 0 ]]; then
+        echo $*
+    fi
+}
+
+#################################################
+## The functions
+
+function _suspend ()
+{
+    if [ -f $WORK/*/*.torrent ]
+    then
+        EXT="suspended"
+    else
+        echo "No active torrents to suspend."
+        return
+    fi 
+    TORRENT=`ls -1 $WORK/*/*.torrent | tail -1`
+    debug "Suspend: $TORRENT"
+    mv "$TORRENT" "$TORRENT.suspended"
+
+    kill -TERM `pidof btget`
+    while [ "`pidof btget`" != "" ]
+    do
+        # wait for btget to terminate nicely
+	debug -n "."
+	sleep 1
+    done
+    debug " done."
+}
+
+function _resume ()
+{
+    if [ -f $WORK/*/*.torrent ]
+    then
+    	echo "Already an active torrent!"
+    	return
+    fi
+    
+    if [ -f $WORK/*/*.torrent.paused ]
+    then
+        EXT="paused"
+    elif  [ -f $WORK/*/*.torrent.suspended ]
+    then
+        EXT="suspended"
+    else
+        echo "No torrents to resume."
+        return
+    fi 
+    TORRENT=`ls -1 $WORK/*/*.$EXT | tail -1`
+    TD=${TORRENT%.$EXT}
+    echo "Resuming $EXT: $TD"
+    echo "NOTE: torrent_daemon or manual torrent_get will start the download"
+    mv "$TORRENT" "$TD"
+}
+
+function _pause ()
+{
+    if [ -f $WORK/*/*.torrent ]
+    then
+        EXT="paused"
+    else
+        echo "No active torrents to pause."
+        return
+    fi 
+    TORRENT=`ls -1 $WORK/*/*.torrent | tail -1`
+    debug "Pause: $TORRENT"
+    mv "$TORRENT" "$TORRENT.paused"
+
+    kill -TERM `pidof btget`
+    while [ "`pidof btget`" != "" ]
+    do
+        # wait for btget to terminate nicely
+	debug -n "."
+	sleep 1
+    done
+    debug " done."
+}
+
+function __list ()
+{
+    FILEPAT=$1
+    DESC=$2
+
+    if [ ! -z "`ls $FILEPAT 2>/dev/null | head -1`" ]
+    then
+        echo "$DESC torrents:"
+        idx=1
+        for i in $FILEPAT
+        do
+            DUMMY=${i%%.torrent*}
+            P=`dirname $i`
+#            echo "Path: $P"
+            DUMMY=${DUMMY##*/}
+            echo "$idx) $DUMMY"
+            [ -f $P/.info ] && source $P/.info && echo "    Progress: $PROGRESS PID: $PID Start: $STARTTIME"
+            idx=`expr $idx + 1`
+        done
+    echo
+    fi
+}
+
+function _list ()
+{
+    echo "${GREEN}List${NC}"
+    __list "$SOURCE/*.torrent" "Queued"
+    __list "$WORK/*/*.torrent" "Active"
+    __list "$WORK/*/*.torrent.paused" "Paused" 
+    __list "$WORK/*/*.torrent.suspended" "Suspended" 
+    __list "$TARGET/*/*.torrent" "Done" 
+    
+}
+
+function _help ()
+{
+    B=`basename $0`
+    echo "
+Usage: 
+    $B [option]
+
+    -l  - List torrents
+    
+    -s  - Suspend current active torrent
+             and start with next
+    
+    -p  - Pauses current torrent. 
+             No other queued torrents will be
+             processed.
+    
+    -r  - Resume paused/suspended torrents 
+             (1st paused, than suspended )
+    
+    -h  - This text
+    
+"
+}
+
+#################################################
+## The MAIN process
+
+function _root_check () {
+	if  [ "`whoami`" != "root" ]; then
+	    echo "You must be root! Because of killing stuff"
+	    return 1
+	fi
+	return 0
+}
+
+getopts "lsrp" Option
+
+case $Option in
+    p     ) _pause;;
+    r     ) _resume ;;
+    s     ) _suspend ;;
+
+    l     ) _list  ;;
+    h     ) _help ;;
+    *     ) echo "Unimplemented option chosen."; _help ;;   # DEFAULT
+esac
+
+exit 0
