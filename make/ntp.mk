@@ -109,28 +109,14 @@ ntp-unpack: $(NTP_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(NTP_BUILD_DIR)/ntp: $(NTP_BUILD_DIR)/.configured
+$(NTP_BUILD_DIR)/ntpd/ntpd: $(NTP_BUILD_DIR)/.configured
 	$(MAKE) -C $(NTP_BUILD_DIR)
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-ntp: $(NTP_BUILD_DIR)/ntp
-
-#
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libntp.so.$(NTP_VERSION): $(NTP_BUILD_DIR)/libntp.so.$(NTP_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(NTP_BUILD_DIR)/ntp.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(NTP_BUILD_DIR)/libntp.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(NTP_BUILD_DIR)/libntp.so.$(NTP_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libntp.so.$(NTP_VERSION) libntp.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libntp.so.$(NTP_VERSION) libntp.so
-
-ntp-stage: $(STAGING_DIR)/opt/lib/libntp.so.$(NTP_VERSION)
+ntp: $(NTP_BUILD_DIR)/ntpd/ntpd
 
 #
 # This builds the IPK file.
@@ -144,7 +130,7 @@ ntp-stage: $(STAGING_DIR)/opt/lib/libntp.so.$(NTP_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(NTP_IPK): $(NTP_BUILD_DIR)/ntp
+$(NTP_IPK): $(NTP_BUILD_DIR)/ntpd/ntpd
 	rm -rf $(NTP_IPK_DIR) $(NTP_IPK)
 	install -d $(NTP_IPK_DIR)/opt/bin
 	install -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
