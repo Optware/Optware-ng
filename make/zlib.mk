@@ -62,9 +62,9 @@ $(TARGET_DIR)/usr/lib/libz.a: $(STAGING_DIR)/lib/libz.so.1.1.4
 
 zlib-headers: $(TARGET_DIR)/usr/lib/libz.a
 
-zlib: uclibc $(TARGET_DIR)/lib/libz.so.1.1.4
+zlib: $(TARGET_DIR)/lib/libz.so.1.1.4
 
-$(ZLIB_IPK): uclibc $(STAGING_DIR)/lib/libz.so.1.1.4
+$(ZLIB_IPK): $(STAGING_DIR)/lib/libz.so.1.1.4
 	mkdir -p $(ZLIB_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/openwrt/ipkg/zlib/control $(ZLIB_IPK_DIR)/CONTROL/control
 	mkdir -p $(ZLIB_IPK_DIR)/lib
