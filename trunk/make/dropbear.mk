@@ -33,19 +33,27 @@ dropbear-diff: #$(DROPBEAR_DIR)/config.h
 	-make -C $(DROPBEAR_DIR) distclean
 	-cd $(BUILD_DIR) && diff -BurN $(DROPBEAR) dropbear | grep -v ^Only > $(SOURCE_DIR)/dropbear.patch
 
-$(TARGET_DIR)/dropbear/sbin/dropbear: $(DROPBEAR_DIR)/dropbearmulti
-	install -d $(TARGET_DIR)/dropbear/sbin
-	$(STRIP) $(DROPBEAR_DIR)/dropbearmulti -o $(TARGET_DIR)/dropbear/sbin/dropbear
-	cd $(TARGET_DIR)/dropbear/sbin && ln -sf dropbear dropbearkey
-	cd $(TARGET_DIR)/dropbear/sbin && ln -sf dropbear dropbearconvert
-	$(STRIP) $(DROPBEAR_DIR)/scp -o $(TARGET_DIR)/dropbear/sbin/scp
-	install -m 755 $(SOURCE_DIR)/dropbear.install $(TARGET_DIR)/dropbear/install
-	install -m 755 $(SOURCE_DIR)/dropbear.rc $(TARGET_DIR)/dropbear/rc.dropbear
+$(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear: $(DROPBEAR_DIR)/dropbearmulti
+	install -d $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin
+	$(STRIP) $(DROPBEAR_DIR)/dropbearmulti -o $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
+	cd $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin && ln -sf dropbear dropbearkey
+	cd $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin && ln -sf dropbear dropbearconvert
+	$(STRIP) $(DROPBEAR_DIR)/scp -o $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/scp
+	install -m 755 $(SOURCE_DIR)/dropbear.install $(PACKAGE_DIR)/dropbear/opt/dropbear/install
+	install -m 755 $(SOURCE_DIR)/dropbear.rc $(PACKAGE_DIR)/dropbear/opt/dropbear/rc.dropbear
 
-$(PACKAGE_DIR)/$(DROPBEAR).upkg: $(TARGET_DIR)/dropbear/sbin/dropbear
-	tar cvf $(PACKAGE_DIR)/$(DROPBEAR).upkg --group root -C $(TARGET_DIR) dropbear
+$(PACKAGE_DIR)/dropbear_0.43_armeb.ipk: $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
+	install -d $(PACKAGE_DIR)/dropbear/CONTROL
+	install -m 644 $(SOURCE_DIR)/dropbear.control $(PACKAGE_DIR)/dropbear/CONTROL/control
+	install -m 644 $(SOURCE_DIR)/dropbear.postinst $(PACKAGE_DIR)/dropbear/CONTROL/postinst
+	./ipkg-build -c -o root -g root $(PACKAGE_DIR)/dropbear $(PACKAGE_DIR)
+
+$(PACKAGE_DIR)/$(DROPBEAR).upkg: $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
+	tar cvf $(PACKAGE_DIR)/$(DROPBEAR).upkg --group root -C $(PACKAGE_DIR)/dropbear/opt dropbear
 
 dropbear: $(DROPBEAR_DIR)/dropbearmulti
+
+dropbear-ipk: $(PACKAGE_DIR)/dropbear_0.43_armeb.ipk
 
 dropbear-upkg: $(PACKAGE_DIR)/$(DROPBEAR).upkg
 
