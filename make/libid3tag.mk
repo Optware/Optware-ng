@@ -63,5 +63,5 @@ libid3tag-clean:
 	-$(MAKE) -C $(LIBID3TAG_DIR) clean
 
 libid3tag-dirclean: libid3tag-clean
-	rm -rf $(LIBID3TAG_DIR)
+	rm -rf $(LIBID3TAG_DIR) $(LIBID3TAG_IPK_DIR) $(LIBID3TAG_IPK)
 

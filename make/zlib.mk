@@ -80,4 +80,4 @@ zlib-clean:
 	-$(MAKE) -C $(ZLIB_DIR) clean
 
 zlib-dirclean:
-	rm -rf $(ZLIB_DIR) $(ZLIB_IPK_DIR)
+	rm -rf $(ZLIB_DIR) $(ZLIB_IPK_DIR) $(ZLIB_IPK)

@@ -61,4 +61,4 @@ lsof-clean:
 	-make -C $(LSOF_DIR) clean
 
 lsof-dirclean:
-	rm -rf $(LSOF_DIR) $(LSOF_IPK_DIR)
+	rm -rf $(LSOF_DIR) $(LSOF_IPK_DIR) $(LSOF_IPK)

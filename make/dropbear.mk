@@ -71,4 +71,4 @@ dropbear-clean:
 	-make -C $(DROPBEAR_DIR) clean
 
 dropbear-dirclean:
-	rm -rf $(DROPBEAR_DIR) $(DROPBEAR_IPK_DIR)
+	rm -rf $(DROPBEAR_DIR) $(DROPBEAR_IPK_DIR) $(DROPBEAR_IPK)

@@ -55,4 +55,4 @@ portmap-clean:
 	-make -C $(PORTMAP_DIR) clean
 
 portmap-dirclean:
-	rm -rf $(PORTMAP_DIR) $(PORTMAP_IPK_DIR)
+	rm -rf $(PORTMAP_DIR) $(PORTMAP_IPK_DIR) $(PORTMAP_IPK)
