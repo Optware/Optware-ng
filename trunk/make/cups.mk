@@ -28,7 +28,7 @@ CUPS_UNZIP=zcat
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=3
+CUPS_IPK_VERSION=4
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
@@ -186,13 +186,19 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)/opt/etc/cups
         # Copy the init.d startup file
 	cp $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)/opt/doc/cups
+	# Copy lpd startup files
+	cp $(CUPS_SOURCE_DIR)/S89cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
+	cp $(CUPS_SOURCE_DIR)/rc.xinetd.linksys $(CUPS_IPK_DIR)/opt/doc/cups
+	cp $(CUPS_SOURCE_DIR)/cups-install.doc $(CUPS_IPK_DIR)/opt/doc/cups
+	cp $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
+	cp $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
 	# Install printer module
 	cp $(CUPS_SOURCE_DIR)/printer.o $(CUPS_IPK_DIR)/opt/lib/modules
 	install -d $(CUPS_IPK_DIR)/CONTROL
 	install -m 644 $(CUPS_SOURCE_DIR)/control $(CUPS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
-#	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
+	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)
 	# German
 	install -d $(CUPS_IPK_DIR)-doc-de
