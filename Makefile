@@ -45,7 +45,7 @@ CROSS_PACKAGES = \
 	openssh openssl openvpn \
 	pango parted patch pcre php pkgconfig popt portmap postgresql \
 	procps proftpd puppy python \
-	rdate recordext renderext rsync \
+	rdate readline recordext renderext rsync \
 	screen sed ser sm snownews sqlite strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
