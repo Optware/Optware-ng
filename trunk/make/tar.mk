@@ -24,11 +24,17 @@ TAR_VERSION=1.14
 TAR_SOURCE=tar-$(TAR_VERSION).tar.gz
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=zcat
+TAR_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
+TAR_SECTION=util
+TAR_PRIORITY=optional
+TAR_DEPENDS=bzip2
+TAR_CONFLICTS=busybox
 
 #
 # TAR_IPK_VERSION should be incremented when the ipk changes.
 #
-TAR_IPK_VERSION=2
+TAR_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional
@@ -115,6 +121,24 @@ $(TAR_BUILD_DIR)/.built: $(TAR_BUILD_DIR)/.configured
 tar: $(TAR_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/tar
+#
+$(TAR_IPK_DIR)/CONTROL/control:
+	@install -d $(TAR_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: tar" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TAR_PRIORITY)" >>$@
+	@echo "Section: $(TAR_SECTION)" >>$@
+	@echo "Version: $(TAR_VERSION)-$(TAR_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TAR_MAINTAINER)" >>$@
+	@echo "Source: $(TAR_SITE)/$(TAR_SOURCE)" >>$@
+	@echo "Description: $(TAR_DESCRIPTION)" >>$@
+	@echo "Depends: $(TAR_DEPENDS)" >>$@
+	@echo "Conflicts: $(TAR_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(TAR_IPK_DIR)/opt/sbin or $(TAR_IPK_DIR)/opt/bin
@@ -132,8 +156,7 @@ $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
 	install -d $(TAR_IPK_DIR)/opt/libexec
 	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
-	install -d $(TAR_IPK_DIR)/CONTROL
-	install -m 644 $(TAR_SOURCE_DIR)/control $(TAR_IPK_DIR)/CONTROL/control
+	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAR_IPK_DIR)
 
 #

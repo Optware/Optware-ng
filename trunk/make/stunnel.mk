@@ -24,11 +24,17 @@ STUNNEL_VERSION=4.07
 STUNNEL_SOURCE=stunnel-$(STUNNEL_VERSION).tar.gz
 STUNNEL_DIR=stunnel-$(STUNNEL_VERSION)
 STUNNEL_UNZIP=zcat
+STUNNEL_MAINTAINER=Sven Henkel <sidddy@gmail.com>
+STUNNEL_DESCRIPTION=SSL encryption wrapper for all kinds of servers
+STUNNEL_SECTION=net
+STUNNEL_PRIORITY=optional
+STUNNEL_DEPENDS=openssl
+STUNNEL_CONFLICTS=
 
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=6
+STUNNEL_IPK_VERSION=7
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
@@ -145,6 +151,24 @@ $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION): $(STUNNEL_BUILD_DIR)/.b
 stunnel-stage: $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/stunnel
+#
+$(STUNNEL_IPK_DIR)/CONTROL/control:
+	@install -d $(STUNNEL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: stunnel" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(STUNNEL_PRIORITY)" >>$@
+	@echo "Section: $(STUNNEL_SECTION)" >>$@
+	@echo "Version: $(STUNNEL_VERSION)-$(STUNNEL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(STUNNEL_MAINTAINER)" >>$@
+	@echo "Source: $(STUNNEL_SITE)/$(STUNNEL_SOURCE)" >>$@
+	@echo "Description: $(STUNNEL_DESCRIPTION)" >>$@
+	@echo "Depends: $(STUNNEL_DEPENDS)" >>$@
+	@echo "Conflicts: $(STUNNEL_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(STUNNEL_IPK_DIR)/opt/sbin or $(STUNNEL_IPK_DIR)/opt/bin
@@ -168,8 +192,7 @@ $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
 	install -m 644 $(STUNNEL_SOURCE_DIR)/stunnel.conf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel.conf
 	install -d $(STUNNEL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(STUNNEL_SOURCE_DIR)/rc.stunnel $(STUNNEL_IPK_DIR)/opt/etc/init.d/S68stunnel
-	install -d $(STUNNEL_IPK_DIR)/CONTROL
-	install -m 644 $(STUNNEL_SOURCE_DIR)/control $(STUNNEL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(STUNNEL_IPK_DIR)/CONTROL/control
 	install -m 644 $(STUNNEL_SOURCE_DIR)/postinst $(STUNNEL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(STUNNEL_SOURCE_DIR)/prerm $(STUNNEL_IPK_DIR)/CONTROL/prerm
 	echo $(STUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(STUNNEL_IPK_DIR)/CONTROL/conffiles

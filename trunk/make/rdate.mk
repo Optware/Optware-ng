@@ -12,8 +12,14 @@ RDATE=rdate-$(RDATE_VERSION)
 RDATE_SITE=http://freshmeat.net/redir/rdate/8862/url_tgz/
 RDATE_SOURCE=$(RDATE).tar.gz
 RDATE_UNZIP=zcat
+RDATE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+RDATE_DESCRIPTION=Using RFC868, retrieves a remote date and time and sets the local time
+RDATE_SECTION=network
+RDATE_PRIORITY=optional
+RDATE_DEPENDS=
+RDATE_CONFLICTS=
 
-RDATE_IPK_VERSION=1
+RDATE_IPK_VERSION=2
 
 RDATE_IPK=$(BUILD_DIR)/rdate_$(RDATE_VERSION)-$(RDATE_IPK_VERSION)_$(TARGET_ARCH).ipk
 RDATE_IPK_DIR=$(BUILD_DIR)/rdate-$(RDATE_VERSION)-ipk
@@ -36,11 +42,24 @@ $(RDATE_DIR)/rdate: $(RDATE_DIR)/.configured
 
 rdate: $(RDATE_DIR)/rdate
 
+$(RDATE_IPK_DIR)/CONTROL/control:
+	@install -d $(RDATE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: rdate" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(RDATE_PRIORITY)" >>$@
+	@echo "Section: $(RDATE_SECTION)" >>$@
+	@echo "Version: $(RDATE_VERSION)-$(RDATE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(RDATE_MAINTAINER)" >>$@
+	@echo "Source: $(RDATE_SITE)/$(RDATE_SOURCE)" >>$@
+	@echo "Description: $(RDATE_DESCRIPTION)" >>$@
+	@echo "Depends: $(RDATE_DEPENDS)" >>$@
+	@echo "Conflicts: $(RDATE_CONFLICTS)" >>$@
+
 $(RDATE_IPK): $(RDATE_DIR)/rdate
-	mkdir -p $(RDATE_IPK_DIR)/CONTROL
 	install -d $(RDATE_IPK_DIR)/opt/bin
-	cp $(RDATE_SOURCE_DIR)/control $(RDATE_IPK_DIR)/CONTROL/control
 	$(STRIP_COMMAND) $(RDATE_DIR)/rdate -o $(RDATE_IPK_DIR)/opt/bin/rdate
+	$(MAKE) $(RDATE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RDATE_IPK_DIR)
 
 rdate-ipk: $(RDATE_IPK)

@@ -24,11 +24,17 @@ WAKELAN_VERSION=1.1
 WAKELAN_SOURCE=wakelan-$(WAKELAN_VERSION).tar.gz
 WAKELAN_DIR=wakelan-$(WAKELAN_VERSION)
 WAKELAN_UNZIP=zcat
+WAKELAN_MAINTAINER=Joerg Berg <caplink@gmx.net>
+WAKELAN_DESCRIPTION=send the magic wakeup package over the LAN
+WAKELAN_SECTION=util
+WAKELAN_PRIORITY=optional
+WAKELAN_DEPENDS=
+WAKELAN_CONFLICTS=
 
 #
 # WAKELAN_IPK_VERSION should be incremented when the ipk changes.
 #
-WAKELAN_IPK_VERSION=1
+WAKELAN_IPK_VERSION=2
 
 #
 # WAKELAN_CONFFILES should be a list of user-editable files
@@ -124,6 +130,24 @@ $(WAKELAN_BUILD_DIR)/.built: $(WAKELAN_BUILD_DIR)/.configured
 wakelan: $(WAKELAN_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/wakelan
+#
+$(WAKELAN_IPK_DIR)/CONTROL/control:
+	@install -d $(WAKELAN_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: wakelan" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(WAKELAN_PRIORITY)" >>$@
+	@echo "Section: $(WAKELAN_SECTION)" >>$@
+	@echo "Version: $(WAKELAN_VERSION)-$(WAKELAN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(WAKELAN_MAINTAINER)" >>$@
+	@echo "Source: $(WAKELAN_SITE)/$(WAKELAN_SOURCE)" >>$@
+	@echo "Description: $(WAKELAN_DESCRIPTION)" >>$@
+	@echo "Depends: $(WAKELAN_DEPENDS)" >>$@
+	@echo "Conflicts: $(WAKELAN_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(WAKELAN_IPK_DIR)/opt/sbin or $(WAKELAN_IPK_DIR)/opt/bin
@@ -140,8 +164,7 @@ $(WAKELAN_IPK): $(WAKELAN_BUILD_DIR)/.built
 	install -d $(WAKELAN_IPK_DIR)/opt/bin
 	install -d $(WAKELAN_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)/opt install
-	install -d $(WAKELAN_IPK_DIR)/CONTROL
-	install -m 644 $(WAKELAN_SOURCE_DIR)/control $(WAKELAN_IPK_DIR)/CONTROL/control
+	$(MAKE) $(WAKELAN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WAKELAN_IPK_DIR)
 
 #

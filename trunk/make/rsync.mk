@@ -9,8 +9,14 @@ RSYNC_VERSION=2.6.3
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
+RSYNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+RSYNC_DESCRIPTION=fast remote file copy program (like rcp)
+RSYNC_SECTION=net
+RSYNC_PRIORITY=optional
+RSYNC_DEPENDS=
+RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=6
+RSYNC_IPK_VERSION=7
 
 RSYNC_CONFFILES=/opt/etc/rsyncd.conf /opt/etc/init.d/S57rsyncd
 
@@ -67,6 +73,20 @@ $(RSYNC_BUILD_DIR)/.staged: $(RSYNC_BUILD_DIR)/.built
 
 rsync-stage: $(RSYNC_BUILD_DIR)/.staged
 
+$(RSYNC_IPK_DIR)/CONTROL/control:
+	@install -d $(RSYNC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: rsync" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(RSYNC_PRIORITY)" >>$@
+	@echo "Section: $(RSYNC_SECTION)" >>$@
+	@echo "Version: $(RSYNC_VERSION)-$(RSYNC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(RSYNC_MAINTAINER)" >>$@
+	@echo "Source: $(RSYNC_SITE)/$(RSYNC_SOURCE)" >>$@
+	@echo "Description: $(RSYNC_DESCRIPTION)" >>$@
+	@echo "Depends: $(RSYNC_DEPENDS)" >>$@
+	@echo "Conflicts: $(RSYNC_CONFLICTS)" >>$@
+
 $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
 	rm -rf $(RSYNC_IPK_DIR) $(BUILD_DIR)/rsync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RSYNC_BUILD_DIR) DESTDIR=$(RSYNC_IPK_DIR) install
@@ -78,8 +98,7 @@ $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
 	chmod 600 $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	install -d $(RSYNC_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(RSYNC_SOURCE_DIR)/rc.rsyncd $(RSYNC_IPK_DIR)/opt/etc/init.d/S57rsyncd
-	install -d $(RSYNC_IPK_DIR)/CONTROL
-	install -m 644 $(RSYNC_SOURCE_DIR)/control $(RSYNC_IPK_DIR)/CONTROL/control
+	$(MAKE) $(RSYNC_IPK_DIR)/CONTROL/control
 	install -m 755 $(RSYNC_SOURCE_DIR)/postinst $(RSYNC_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
 	echo $(RSYNC_CONFFILES) | sed -e 's/ /\n/g' > $(RSYNC_IPK_DIR)/CONTROL/conffiles
