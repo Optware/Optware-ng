@@ -59,7 +59,8 @@ CROSS_ONLY_PACKAGES = \
 	rdate \
 	stunnel svn \
 	unfs3 \
-	xinetd
+	xinetd \
+	mtr adns fetchmail
 
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
