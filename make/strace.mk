@@ -136,7 +136,7 @@ strace: $(STRACE_BUILD_DIR)/strace
 $(STRACE_IPK): $(STRACE_BUILD_DIR)/strace
 	rm -rf $(STRACE_IPK_DIR) $(STRACE_IPK)
 	install -d $(STRACE_IPK_DIR)/opt/bin
-	$(STRIP) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
+	$(TARGET_STRIP) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
 	install -d $(STRACE_IPK_DIR)/CONTROL
 	install -m 644 $(STRACE_SOURCE_DIR)/control $(STRACE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STRACE_IPK_DIR)

@@ -56,7 +56,7 @@ mysql: $(MYSQL_DIR)/mysql
 $(MYSQL_IPK): $(MYSQL_DIR)/dhcpd
 	install -d $(MYSQL_IPK_DIR)/CONTROL
 	install -d $(MYSQL_IPK_DIR)/opt/sbin $(MYSQL_IPK_DIR)/opt/etc/init.d
-	$(STRIP) $(MYSQL_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(MYSQL_IPK_DIR)/opt/sbin/dhcpd
+	$(TARGET_STRIP) $(MYSQL_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(MYSQL_IPK_DIR)/opt/sbin/dhcpd
 	install -m 755 $(SOURCE_DIR)/dhcp.rc $(MYSQL_IPK_DIR)/opt/etc/init.d/S56dhcp
 	install -m 644 $(SOURCE_DIR)/dhcp.control  $(MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MYSQL_IPK_DIR)

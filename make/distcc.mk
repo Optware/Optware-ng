@@ -134,9 +134,9 @@ distcc: $(DISTCC_BUILD_DIR)/distcc
 $(DISTCC_IPK): $(DISTCC_BUILD_DIR)/distcc
 	rm -rf $(DISTCC_IPK_DIR) $(DISTCC_IPK)
 	install -d $(DISTCC_IPK_DIR)/opt/bin
-	$(STRIP) $(DISTCC_BUILD_DIR)/distcc -o $(DISTCC_IPK_DIR)/opt/bin/distcc
-	$(STRIP) $(DISTCC_BUILD_DIR)/distccd -o $(DISTCC_IPK_DIR)/opt/bin/distccd
-	$(STRIP) $(DISTCC_BUILD_DIR)/distccmon-text -o $(DISTCC_IPK_DIR)/opt/bin/distccmon-text
+	$(TARGET_STRIP) $(DISTCC_BUILD_DIR)/distcc -o $(DISTCC_IPK_DIR)/opt/bin/distcc
+	$(TARGET_STRIP) $(DISTCC_BUILD_DIR)/distccd -o $(DISTCC_IPK_DIR)/opt/bin/distccd
+	$(TARGET_STRIP) $(DISTCC_BUILD_DIR)/distccmon-text -o $(DISTCC_IPK_DIR)/opt/bin/distccmon-text
 #	install -d $(DISTCC_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(DISTCC_SOURCE_DIR)/rc.distcc $(DISTCC_IPK_DIR)/opt/etc/init.d/SXXdistcc
 	install -d $(DISTCC_IPK_DIR)/CONTROL

@@ -129,9 +129,9 @@ tar: $(TAR_BUILD_DIR)/.built
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(TAR_IPK)
 	install -d $(TAR_IPK_DIR)/opt/bin
-	$(STRIP) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
+	$(TARGET_STRIP) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
 	install -d $(TAR_IPK_DIR)/opt/libexec
-	$(STRIP) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
+	$(TARGET_STRIP) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
 	install -d $(TAR_IPK_DIR)/CONTROL
 	install -m 644 $(TAR_SOURCE_DIR)/control $(TAR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAR_IPK_DIR)

@@ -63,13 +63,13 @@ $(DUMP_IPK): $(DUMP_DIR)/dump/dump
 	cp $(SOURCE_DIR)/dump/control $(DUMP_IPK_DIR)/CONTROL/control
 	mkdir -p $(DUMP_IPK_DIR)/opt/sbin
 
-	$(STRIP) $(DUMP_DIR)/dump/dump
+	$(TARGET_STRIP) $(DUMP_DIR)/dump/dump
 	cp $(DUMP_DIR)/dump/dump $(DUMP_IPK_DIR)/opt/sbin
 
-	$(STRIP) $(DUMP_DIR)/restore/restore
+	$(TARGET_STRIP) $(DUMP_DIR)/restore/restore
 	cp $(DUMP_DIR)/restore/restore $(DUMP_IPK_DIR)/opt/sbin
 
-	$(STRIP) $(DUMP_DIR)/rmt/rmt
+	$(TARGET_STRIP) $(DUMP_DIR)/rmt/rmt
 	cp $(DUMP_DIR)/rmt/rmt $(DUMP_IPK_DIR)/opt/sbin
 
 	rm -rf $(STAGING_DIR)/CONTROL

@@ -57,17 +57,17 @@ openssh-unpack: $(OPENSSH_BUILD_DIR)/.configured
 
 $(OPENSSH_BUILD_DIR)/ssh: $(OPENSSH_BUILD_DIR)/.configured
 	$(MAKE) -C $(OPENSSH_BUILD_DIR)
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/scp
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/sftp
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/sftp-server
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh-add
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh-agent
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh-keygen
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh-keyscan
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh-keysign
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/ssh-rand-helper
-	-$(STRIP)  $(OPENSSH_BUILD_DIR)/sshd
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/scp
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/sftp
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/sftp-server
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh-add
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh-agent
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh-keygen
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh-keyscan
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh-keysign
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/ssh-rand-helper
+	-$(TARGET_STRIP)  $(OPENSSH_BUILD_DIR)/sshd
 
 openssh: openssl-stage $(OPENSSH_BUILD_DIR)/ssh
 

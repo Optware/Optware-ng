@@ -133,8 +133,8 @@ scponly: $(SCPONLY_BUILD_DIR)/scponly
 $(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/scponly
 	rm -rf $(SCPONLY_IPK_DIR) $(SCPONLY_IPK)
 	install -d $(SCPONLY_IPK_DIR)/opt/bin
-	$(STRIP) $(SCPONLY_BUILD_DIR)/scponly -o $(SCPONLY_IPK_DIR)/opt/bin/scponly
-	$(STRIP) $(SCPONLY_BUILD_DIR)/groups -o $(SCPONLY_IPK_DIR)/opt/bin/groups
+	$(TARGET_STRIP) $(SCPONLY_BUILD_DIR)/scponly -o $(SCPONLY_IPK_DIR)/opt/bin/scponly
+	$(TARGET_STRIP) $(SCPONLY_BUILD_DIR)/groups -o $(SCPONLY_IPK_DIR)/opt/bin/groups
 	install -d $(SCPONLY_IPK_DIR)/CONTROL
 	install -m 644 $(SCPONLY_SOURCE_DIR)/control $(SCPONLY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCPONLY_IPK_DIR)

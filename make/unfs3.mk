@@ -44,7 +44,7 @@ unfs3: $(UNFS3_DIR)/unfsd
 $(UNFS3_IPK): $(UNFS3_DIR)/unfsd
 	install -d $(UNFS3_IPK_DIR)/CONTROL
 	install -d $(UNFS3_IPK_DIR)/opt/sbin $(UNFS3_IPK_DIR)/opt/etc/init.d
-	$(STRIP) $(UNFS3_DIR)/unfsd -o $(UNFS3_IPK_DIR)/opt/sbin/unfsd
+	$(TARGET_STRIP) $(UNFS3_DIR)/unfsd -o $(UNFS3_IPK_DIR)/opt/sbin/unfsd
 	install -m 755 $(SOURCE_DIR)/unfs3.rc $(UNFS3_IPK_DIR)/opt/etc/init.d/S56unfsd
 	install -m 644 $(SOURCE_DIR)/unfs3.control  $(UNFS3_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNFS3_IPK_DIR)

@@ -150,7 +150,7 @@ tcpdump-stage: $(STAGING_DIR)/opt/lib/libtcpdump.so.$(TCPDUMP_VERSION)
 $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/tcpdump
 	rm -rf $(TCPDUMP_IPK_DIR) $(TCPDUMP_IPK)
 	install -d $(TCPDUMP_IPK_DIR)/opt/bin
-	$(STRIP) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
+	$(TARGET_STRIP) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
 	install -d $(TCPDUMP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
 	install -d $(TCPDUMP_IPK_DIR)/CONTROL

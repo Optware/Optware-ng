@@ -148,7 +148,7 @@ vsftpd-stage: $(STAGING_DIR)/opt/lib/libvsftpd.so.$(VSFTPD_VERSION)
 $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/vsftpd
 	rm -rf $(VSFTPD_IPK_DIR) $(VSFTPD_IPK)
 	install -d $(VSFTPD_IPK_DIR)/opt/bin
-#	$(STRIP) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/bin/vsftpd
+#	$(TARGET_STRIP) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/bin/vsftpd
 	cp $(VSFTPD_BUILD_DIR)/vsftpd $(VSFTPD_IPK_DIR)/opt/bin/vsftpd
 #	install -d $(VSFTPD_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(VSFTPD_SOURCE_DIR)/rc.vsftpd $(VSFTPD_IPK_DIR)/opt/etc/init.d/SXXvsftpd

@@ -139,8 +139,8 @@ nfs-server: $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 $(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 	rm -rf $(NFS_SERVER_IPK_DIR) $(NFS_SERVER_IPK)
 	install -d $(NFS_SERVER_IPK_DIR)/opt/sbin
-	$(STRIP) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.nfsd
-	$(STRIP) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.mountd
+	$(TARGET_STRIP) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.nfsd
+	$(TARGET_STRIP) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.mountd
 	install -d $(NFS_SERVER_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NFS_SERVER_SOURCE_DIR)/rc.nfs-server $(NFS_SERVER_IPK_DIR)/opt/etc/init.d/S56nfsd
 	install -d $(NFS_SERVER_IPK_DIR)/CONTROL

@@ -150,7 +150,7 @@ $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/.built
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	rm -rf $(<FOO>_IPK_DIR) $(<FOO>_IPK)
 	install -d $(<FOO>_IPK_DIR)/opt/bin
-	$(STRIP) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
+	$(TARGET_STRIP) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(<FOO>_SOURCE_DIR)/rc.<foo> $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
 	install -d $(<FOO>_IPK_DIR)/CONTROL

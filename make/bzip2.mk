@@ -48,8 +48,8 @@ bzip2-stage: $(STAGING_LIB_DIR)/libbz2.a
 
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	install -d $(BZIP2_IPK_DIR)/opt/bin
-	$(STRIP) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2
-	$(STRIP) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover
+	$(TARGET_STRIP) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2
+	$(TARGET_STRIP) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover
 	install -d $(BZIP2_IPK_DIR)/opt/lib
 	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(BZIP2_IPK_DIR)/opt/lib
 	install -d $(BZIP2_IPK_DIR)/opt/doc/bzip2

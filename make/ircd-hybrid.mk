@@ -79,7 +79,7 @@ ircd-hybrid: zlib flex $(IRCD_HYBRID_DIR)/src/ircd
 #
 $(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/bin
-	$(STRIP) $(IRCD_HYBRID_DIR)/src/ircd -o $(IRCD_HYBRID_IPK_DIR)/opt/bin/ircd
+	$(TARGET_STRIP) $(IRCD_HYBRID_DIR)/src/ircd -o $(IRCD_HYBRID_IPK_DIR)/opt/bin/ircd
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
 	install -m 644 $(IRCD_HYBRID_DIR)/doc/simple.conf $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
 	install -d $(IRCD_HYBRID_IPK_DIR)/CONTROL
