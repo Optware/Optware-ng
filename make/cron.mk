@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "cron" and "CRON" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # CRON_VERSION, CRON_SITE and CRON_SOURCE define
 # the upstream location of the source code for the package.
@@ -24,11 +19,16 @@ CRON_VERSION=4.1
 CRON_SOURCE=cron_$(CRON_VERSION).shar
 CRON_DIR=cron-$(CRON_VERSION)
 CRON_UNZIP=cat
+CRON_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+CRON_DESCRIPTION=Standard vixie cron, with cron.d addition
+CRON_SECTION=sys
+CRON_PRIORITY=optional
+CRON_DEPENDS=
 
 #
 # CRON_IPK_VERSION should be incremented when the ipk changes.
 #
-CRON_IPK_VERSION=2
+CRON_IPK_VERSION=3
 
 #
 # CRON_CONFFILES should be a list of user-editable files
@@ -38,7 +38,7 @@ CRON_CONFFILES=/opt/etc/cron.conf /opt/etc/init.d/SXXcron
 # CRON_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CRON_PATCHES=$(CRON_SOURCE_DIR)/Makefile.patch $(CRON_SOURCE_DIR)/pathnames.h.patch
+CRON_PATCHES=$(CRON_SOURCE_DIR)/Makefile.patch $(CRON_SOURCE_DIR)/pathnames.h.patch $(CRON_SOURCE_DIR)/crond.patch
 
 #
 # If the compilation of the package requires additional
@@ -125,6 +125,23 @@ $(CRON_BUILD_DIR)/.staged: $(CRON_BUILD_DIR)/.built
 cron-stage: $(CRON_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/cron
+#
+$(CRON_IPK_DIR)/CONTROL/control:
+	@install -d $(CRON_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: cron" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CRON_PRIORITY)" >>$@
+	@echo "Section: $(CRON_SECTION)" >>$@
+	@echo "Version: $(CRON_VERSION)-$(CRON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CRON_MAINTAINER)" >>$@
+	@echo "Source: $(CRON_SITE)/$(CRON_SOURCE)" >>$@
+	@echo "Description: $(CRON_DESCRIPTION)" >>$@
+	@echo "Depends: $(CRON_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(CRON_IPK_DIR)/opt/sbin or $(CRON_IPK_DIR)/opt/bin
@@ -152,8 +169,7 @@ $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	install -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)/opt/man/man1
 	install -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)/opt/man/man5
 	install -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
-	install -d $(CRON_IPK_DIR)/CONTROL
-	install -m 644 $(CRON_SOURCE_DIR)/control $(CRON_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CRON_IPK_DIR)/CONTROL/control
 	install -m 755 $(CRON_SOURCE_DIR)/postinst $(CRON_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/
 #	echo $(CRON_CONFFILES) | sed -e 's/ /\n/g' > $(CRON_IPK_DIR)/CONTROL/conffiles
