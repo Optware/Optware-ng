@@ -28,7 +28,7 @@ TAR_UNZIP=zcat
 #
 # TAR_IPK_VERSION should be incremented when the ipk changes.
 #
-TAR_IPK_VERSION=1
+TAR_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -127,7 +127,7 @@ tar: $(TAR_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
-	rm -rf $(TAR_IPK_DIR) $(TAR_IPK)
+	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_armeb.ipk
 	install -d $(TAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
 	install -d $(TAR_IPK_DIR)/opt/libexec
