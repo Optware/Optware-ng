@@ -57,7 +57,7 @@ dump: $(DUMP_IPK_DIR)
 
 $(DUMP_IPK): $(DUMP_IPK_DIR)
 	mkdir -p $(DUMP_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/dump.control $(DUMP_IPK_DIR)/CONTROL/control
+	cp $(SOURCE_DIR)/dump/control $(DUMP_IPK_DIR)/CONTROL/control
 	mkdir -p $(DUMP_IPK_DIR)/opt/sbin
 
 	$(STRIP) $(DUMP_DIR)/dump/dump
