@@ -1,0 +1,11 @@
+--- usbutils-0.11/ltconfig.orig	2005-02-19 19:26:25.000000000 -0800
++++ usbutils-0.11/ltconfig	2005-02-19 19:27:16.000000000 -0800
+@@ -1925,7 +1925,7 @@
+   shlibpath_var=LD_LIBRARY_PATH
+   shlibpath_overrides_runpath=no
+   deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )'
+-  file_magic_cmd=/usr/bin/file
++  file_magic_cmd=/opt/bin/file
+   file_magic_test_file=`echo /lib/libc.so* /lib/libc-*.so`
+ 
+   if test -f /lib/ld.so.1; then
