@@ -23,6 +23,11 @@ GIFTOPENFT_VERSION=0.2.1.5
 GIFTOPENFT_SOURCE=gift-openft-$(GIFTOPENFT_VERSION).tar.bz2
 GIFTOPENFT_DIR=gift-openft-$(GIFTOPENFT_VERSION)
 GIFTOPENFT_UNZIP=bzcat
+GIFTOPENFT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIFTOPENFT_SECTION=net
+GIFTOPENFT_PRIORITY=optional
+GIFTOPENFT_DEPENDS=gift, zlib
+GIFTOPENFT_DESCRIPTION=gIFt openft plugin
 
 #
 # GIFTOPENFT_IPK_VERSION should be incremented when the ipk changes.
@@ -143,6 +148,24 @@ $(STAGING_DIR)/opt/lib/libgift-openft.so.$(GIFTOPENFT_VERSION): $(GIFTOPENFT_BUI
 gift-openft-stage: $(STAGING_DIR)/opt/lib/libgift-openft.so.$(GIFTOPENFT_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gift-openft
+#
+$(GIFTOPENFT_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFTOPENFT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gift-openft" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFTOPENFT_PRIORITY)" >>$@
+	@echo "Section: $(GIFTOPENFT_SECTION)" >>$@
+	@echo "Version: $(GIFTOPENFT_VERSION)-$(GIFTOPENFT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFTOPENFT_MAINTAINER)" >>$@
+	@echo "Source: $(GIFTOPENFT_SITE)/$(GIFTOPENFT_SOURCE)" >>$@
+	@echo "Description: $(GIFTOPENFT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFTOPENFT_DEPENDS)" >>$@
+	@echo "Conflicts: $(GIFTOPENFT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFTOPENFT_IPK_DIR)/opt/sbin or $(GIFTOPENFT_IPK_DIR)/opt/bin
@@ -163,7 +186,7 @@ $(GIFTOPENFT_IPK): $(GIFTOPENFT_BUILD_DIR)/.built
 	install -m 644 $(GIFTOPENFT_BUILD_DIR)/etc/OpenFT.conf.template $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/OpenFT.conf.template
 	install -m 644 $(GIFTOPENFT_BUILD_DIR)/data/nodes $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/nodes
 	install -d $(GIFTOPENFT_IPK_DIR)/CONTROL
-	install -m 644 $(GIFTOPENFT_SOURCE_DIR)/control $(GIFTOPENFT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFTOPENFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTOPENFT_IPK_DIR)
 
 #

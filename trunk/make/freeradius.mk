@@ -123,7 +123,7 @@ $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd: $(FREERADIUS_BUILD_DIR)/.confi
 	 SNMP_INCLUDE="-I${FREERADIUS_BUILD_DIR}/src/include ${STAGING_CPPFLAGS}" LIBLTDL=${STAGING_DIR}/opt/lib/libltdl.so
 	$(MAKE) install -C $(FREERADIUS_BUILD_DIR) RLM_LIBS="$(STAGING_LDFLAGS)" RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
 	 LIBLTDL=${STAGING_DIR}/opt/lib/libltdl.so R=$(FREERADIUS_BUILD_DIR)/install CFLAGS="${STAGING_CPPFLAGS}" \
-	 R=$(FREERADIUS_BUILD_DIR)/install/
+	 R=$(FREERADIUS_BUILD_DIR)/install/ STRIPPROG=$(TARGET_STRIP)
 
 #
 # You should change the dependency to refer directly to the main binary

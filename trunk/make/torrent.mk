@@ -19,6 +19,11 @@ TORRENT_VERSION=1.0
 TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
+TORRENT_PRIORITY=optional
+TORRENT_DEPENDS=libbt, bash
+TORRENT_MAINTAINER=perlguru <perlguru@mauricekoster.com>
+TORRENT_SECTION=net
+TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
 
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
@@ -80,6 +85,24 @@ torrent-unpack: $(TORRENT_BUILD_DIR)/.configured
 torrent: $(TORRENT_BUILD_DIR)/.configured
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/torrent
+#
+$(TORRENT_IPK_DIR)/CONTROL/control:
+	@install -d $(TORRENT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: torrent" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TORRENT_PRIORITY)" >>$@
+	@echo "Section: $(TORRENT_SECTION)" >>$@
+	@echo "Version: $(TORRENT_VERSION)-$(TORRENT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TORRENT_MAINTAINER)" >>$@
+	@echo "Source: $(TORRENT_SITE)/$(TORRENT_SOURCE)" >>$@
+	@echo "Description: $(TORRENT_DESCRIPTION)" >>$@
+	@echo "Depends: $(TORRENT_DEPENDS)" >>$@
+	@echo "Conflicts: $(TORRENT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(TORRENT_IPK_DIR)/opt/sbin or $(TORRENT_IPK_DIR)/opt/bin
@@ -93,7 +116,7 @@ torrent: $(TORRENT_BUILD_DIR)/.configured
 #
 $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	mkdir -p $(TORRENT_IPK_DIR)/CONTROL
-	install -m 644 $(SOURCE_DIR)/torrent/control $(TORRENT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(TORRENT_IPK_DIR)/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
 	install -d $(TORRENT_IPK_DIR)/opt/sbin
 	install -d $(TORRENT_IPK_DIR)/opt/etc

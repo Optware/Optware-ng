@@ -19,6 +19,11 @@ ADNS_VERSION=1.1
 ADNS_SOURCE=adns-$(ADNS_VERSION).tar.gz
 ADNS_DIR=adns-$(ADNS_VERSION)
 ADNS_UNZIP=zcat
+ADNS_PRIORITY=optional
+ADNS_MAINTAINER= NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ADNS_SECTION=libraries
+ADNS_DEPENDS=
+ADNS_DESCRIPTION=Asynchronous resolver library and DNS resolver utilities.
 
 #
 # ADNS_IPK_VERSION should be incremented when the ipk changes.
@@ -135,6 +140,24 @@ $(ADNS_BUILD_DIR)/.staged: $(ADNS_BUILD_DIR)/.built
 adns-stage: $(ADNS_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(ADNS_IPK_DIR)/CONTROL/control:
+	@install -d $(ADNS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: adns" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ADNS_PRIORITY)" >>$@
+	@echo "Section: $(ADNS_SECTION)" >>$@
+	@echo "Version: $(ADNS_VERSION)-$(ADNS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ADNS_MAINTAINER)" >>$@
+	@echo "Source: $(ADNS_SITE)/$(ADNS_SOURCE)" >>$@
+	@echo "Description: $(ADNS_DESCRIPTION)" >>$@
+	@echo "Depends: $(ADNS_DEPENDS)" >>$@
+	@echo "Conflicts: $(ADNS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(ADNS_IPK_DIR)/opt/sbin or $(ADNS_IPK_DIR)/opt/bin
@@ -160,7 +183,7 @@ $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
 	install -m 755 $(ADNS_BUILD_DIR)/client/adnshost      $(ADNS_IPK_DIR)/opt/bin/adnshost
 	install -m 755 $(ADNS_BUILD_DIR)/client/adnsresfilter $(ADNS_IPK_DIR)/opt/bin/adnsresfilter
 	install -d $(ADNS_IPK_DIR)/CONTROL
-	install -m 644 $(ADNS_SOURCE_DIR)/control $(ADNS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(ADNS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADNS_IPK_DIR)
 
 #

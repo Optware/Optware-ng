@@ -11,6 +11,10 @@ TCPWRAPPERS=tcp_wrappers_$(TCPWRAPPERS_VERSION)
 TCPWRAPPERS_SITE=ftp://ftp.porcupine.org/pub/security/
 TCPWRAPPERS_SOURCE:=$(TCPWRAPPERS).tar.gz
 TCPWRAPPERS_UNZIP=zcat
+TCPWRAPPERS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+TCPWRAPPERS_SECTION=net
+TCPWRAPPERS_PRIORITY=optional
+TCPWRAPPERS_DESCRIPTION=A library that allows IP level control over ports
 
 TCPWRAPPERS_IPK_VERSION=2
 
@@ -40,6 +44,24 @@ $(TCPWRAPPERS_DIR)/tcpd: $(TCPWRAPPERS_DIR)/.configured
 
 tcpwrappers: $(TCPWRAPPERS_DIR)/tcpd
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/tcpwrappers
+#
+$(TCPWRAPPERS_IPK_DIR)/CONTROL/control:
+	@install -d $(TCPWRAPPERS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: tcpwrappers" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TCPWRAPPERS_PRIORITY)" >>$@
+	@echo "Section: $(TCPWRAPPERS_SECTION)" >>$@
+	@echo "Version: $(TCPWRAPPERS_VERSION)-$(TCPWRAPPERS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TCPWRAPPERS_MAINTAINER)" >>$@
+	@echo "Source: $(TCPWRAPPERS_SITE)/$(TCPWRAPPERS_SOURCE)" >>$@
+	@echo "Description: $(TCPWRAPPERS_DESCRIPTION)" >>$@
+	@echo "Depends: $(TCPWRAPPERS_DEPENDS)" >>$@
+	@echo "Conflicts: $(TCPWRAPPERS_CONFLICTS)" >>$@
+
 $(TCPWRAPPERS_IPK): $(TCPWRAPPERS_DIR)/tcpd
 	install -d $(TCPWRAPPERS_IPK_DIR)/CONTROL
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/lib
@@ -48,7 +70,7 @@ $(TCPWRAPPERS_IPK): $(TCPWRAPPERS_DIR)/tcpd
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/libexec
-	install -m 755 $(SOURCE_DIR)/tcpwrappers.control $(TCPWRAPPERS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(TCPWRAPPERS_IPK_DIR)/CONTROL/control
 	install -m 755 $(TCPWRAPPERS_DIR)/tcpd  $(TCPWRAPPERS_IPK_DIR)/opt/libexec
 	install -m 755 $(TCPWRAPPERS_DIR)/tcpdchk $(TCPWRAPPERS_IPK_DIR)/opt/sbin
 	install -m 755 $(TCPWRAPPERS_DIR)/tcpdmatch $(TCPWRAPPERS_IPK_DIR)/opt/sbin

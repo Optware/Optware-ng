@@ -27,6 +27,11 @@ GIFTARES_TAG=-D 2005-02-12
 GIFTARES_MODULE=gift-ares
 GIFTARES_DIR=gift-ares-${GIFTARES_VERSION}
 GIFTARES_UNZIP=zcat
+GIFTARES_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIFTARES_SECTION=net
+GIFTARES_PRIORITY=optional
+GIFTARES_DEPENDS=gift
+GIFTARES_DESCRIPTION=giFT ares plugin
 
 #
 # GIFTARES_IPK_VERSION should be incremented when the ipk changes.
@@ -155,6 +160,24 @@ $(STAGING_DIR)/opt/lib/libgift-ares.so.$(GIFTARES_VERSION): $(GIFTARES_BUILD_DIR
 gift-ares-stage: $(STAGING_DIR)/opt/lib/libgift-ares.so.$(GIFTARES_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gift-ares
+#
+$(GIFTARES_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFTARES_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gift-ares" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFTARES_PRIORITY)" >>$@
+	@echo "Section: $(GIFTARES_SECTION)" >>$@
+	@echo "Version: $(GIFTARES_VERSION)-$(GIFTARES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFTARES_MAINTAINER)" >>$@
+	@echo "Source: $(GIFTARES_SITE)/$(GIFTARES_SOURCE)" >>$@
+	@echo "Description: $(GIFTARES_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFTARES_DEPENDS)" >>$@
+	@echo "Conflicts: $(GIFTARES_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFTARES_IPK_DIR)/opt/sbin or $(GIFTARES_IPK_DIR)/opt/bin
@@ -175,7 +198,7 @@ $(GIFTARES_IPK): $(GIFTARES_BUILD_DIR)/.built
 	install -m 644 $(GIFTARES_BUILD_DIR)/data/Ares.conf.template $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/Ares.conf.template
 	install -m 644 $(GIFTARES_BUILD_DIR)/data/nodes $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/nodes
 	install -d $(GIFTARES_IPK_DIR)/CONTROL
-	install -m 644 $(GIFTARES_SOURCE_DIR)/control $(GIFTARES_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFTARES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTARES_IPK_DIR)
 
 #

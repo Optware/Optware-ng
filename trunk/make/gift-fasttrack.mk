@@ -25,6 +25,11 @@ GIFTFASTTRACK_SOURCE=giFT-FastTrack-$(GIFTFASTTRACK_VERSION).tar.gz
 GIFTFASTTRACK_DIR_REMOTE=giFT-FastTrack-$(GIFTFASTTRACK_VERSION)
 GIFTFASTTRACK_DIR=gift-fasttrack-$(GIFTFASTTRACK_VERSION)
 GIFTFASTTRACK_UNZIP=zcat
+GIFTFASTTRACK_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIFTFASTTRACK_SECTION=net
+GIFTFASTTRACK_PRIORITY=optional
+GIFTFASTTRACK_DEPENDS=gift
+GIFTFASTTRACK_DESCRIPTION=gIFt fasttrack plugin
 
 #
 # GIFTFASTTRACK_IPK_VERSION should be incremented when the ipk changes.
@@ -138,6 +143,24 @@ $(STAGING_DIR)/opt/lib/libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION): $(GIFTFAST
 giFT-FastTrack-stage: $(STAGING_DIR)/opt/lib/libgiFT-FastTrack.so.$(GIFTFASTTRACK_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gift-fasttrack
+#
+$(GIFTFASTTRACK_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gift-fasttrack" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFTFASTTRACK_PRIORITY)" >>$@
+	@echo "Section: $(GIFTFASTTRACK_SECTION)" >>$@
+	@echo "Version: $(GIFTFASTTRACK_VERSION)-$(GIFTFASTTRACK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFTFASTTRACK_MAINTAINER)" >>$@
+	@echo "Source: $(GIFTFASTTRACK_SITE)/$(GIFTFASTTRACK_SOURCE)" >>$@
+	@echo "Description: $(GIFTFASTTRACK_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFTFASTTRACK_DEPENDS)" >>$@
+	@echo "Conflicts: $(GIFTFASTTRACK_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFTFASTTRACK_IPK_DIR)/opt/sbin or $(GIFTFASTTRACK_IPK_DIR)/opt/bin
@@ -159,7 +182,7 @@ $(GIFTFASTTRACK_IPK): $(GIFTFASTTRACK_BUILD_DIR)/.built
 	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/banlist $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/banlist
 	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/nodes $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/nodes
 	install -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
-	install -m 644 $(GIFTFASTTRACK_SOURCE_DIR)/control $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTFASTTRACK_IPK_DIR)
 
 #

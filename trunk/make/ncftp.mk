@@ -24,6 +24,11 @@ NCFTP_VERSION=3.1.8
 NCFTP_SOURCE=ncftp-$(NCFTP_VERSION)-src.tar.gz
 NCFTP_DIR=ncftp-$(NCFTP_VERSION)
 NCFTP_UNZIP=zcat
+NCFTP_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+NCFTP_SECTION=net
+NCFTP_PRIORITY=optional
+NCFTP_DEPENDS=ncurses
+NCFTP_DESCRIPTION=Nice command line FTP client
 
 #
 # NCFTP_IPK_VERSION should be incremented when the ipk changes.
@@ -146,6 +151,24 @@ $(STAGING_DIR)/opt/lib/libncftp.so.$(NCFTP_VERSION): $(NCFTP_BUILD_DIR)/.built
 ncftp-stage: $(STAGING_DIR)/opt/lib/libncftp.so.$(NCFTP_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ncftp
+#
+$(NCFTP_IPK_DIR)/CONTROL/control:
+	@install -d $(NCFTP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ncftp" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NCFTP_PRIORITY)" >>$@
+	@echo "Section: $(NCFTP_SECTION)" >>$@
+	@echo "Version: $(NCFTP_VERSION)-$(NCFTP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NCFTP_MAINTAINER)" >>$@
+	@echo "Source: $(NCFTP_SITE)/$(NCFTP_SOURCE)" >>$@
+	@echo "Description: $(NCFTP_DESCRIPTION)" >>$@
+	@echo "Depends: $(NCFTP_DEPENDS)" >>$@
+	@echo "Conflicts: $(NCFTP_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NCFTP_IPK_DIR)/opt/sbin or $(NCFTP_IPK_DIR)/opt/bin
@@ -165,7 +188,7 @@ $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
 		 prefix=$(NCFTP_IPK_DIR) install
 	install -d $(NCFTP_IPK_DIR)/opt/etc/init.d
 	install -d $(NCFTP_IPK_DIR)/CONTROL
-	install -m 644 $(NCFTP_SOURCE_DIR)/control $(NCFTP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NCFTP_IPK_DIR)/CONTROL/control
 #	install -m 644 $(NCFTP_SOURCE_DIR)/postinst $(NCFTP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCFTP_IPK_DIR)
 

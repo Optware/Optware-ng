@@ -108,43 +108,41 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
-	atftp \
+	adns atftp \
 	bash bc bind bitchx \
 	cpio cron ctags \
 	diffutils \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
-	fontconfig freetype \
-	gdb gdbm gift gzip \
+	fontconfig freeradius freetype \
+	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap gzip \
 	hdparm \
 	inetutils \
-	less libgd libid3tag libevent libjpeg libol libogg libtool libvorbis \
+	less libgd libid3tag libevent libjpeg libmad libol libogg libtool libvorbis \
 	logrotate lua lzo \
-	miau \
-	ncurses ntpclient nylon \
+	madplay miau microperl \
+	nano ncftp ncurses ntpclient nylon \
 	openssl \
 	pkgconfig popt postgresql procps proftpd puppy python \
 	rdate readline recordext rsync \
 	sqlite strace stunnel syslog-ng \
-	tar tcpdump termcap ttf-bitstream-vera \
+	tar tcpdump tcpwrappers termcap torrent ttf-bitstream-vera \
+	unfs3 vsftpd \
 	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xproto xtrans \
 	zlib
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	adns appweb automake busybox bzip2 ccxstream \
+	appweb automake busybox bzip2 ccxstream \
 	classpath coreutils cyrus-sasl \
 	dhcp distcc dnsmasq dropbear \
 	ed ffmpeg flac \
-	ghostscript gift-fasttrack gift-gnutella gift-openft groff \
+	ghostscript groff \
 	iptables ircd-hybrid \
 	joe jove \
 	lame libcurl libdvdread libpng lynx \
 	m4 make man-pages man mc mt-daapd \
-	nano ncftp \
 	patch portmap \
-	tcpwrappers torrent \
-	unfs3 \
 	vdr-mediamvp
 
 HOST_MACHINE:=$(shell uname -m | sed \
