@@ -19,11 +19,17 @@ WGET-SSL_VERSION=1.9.1
 WGET-SSL_SOURCE=wget-$(WGET-SSL_VERSION).tar.gz
 WGET-SSL_DIR=wget-$(WGET-SSL_VERSION)
 WGET-SSL_UNZIP=zcat
+WGET-SSL_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
+WGET-SSL_DESCRIPTION=A network utility to retrieve files from the Web
+WGET-SSL_SECTION=net
+WGET-SSL_PRIORITY=optional
+WGET-SSL_DEPENDS=openssl
+WGET-SSL_CONFLICTS=
 
 #
 # WGET-SSL_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET-SSL_IPK_VERSION=1
+WGET-SSL_IPK_VERSION=2
 
 #
 # WGET-SSL_CONFFILES should be a list of user-editable files
@@ -121,6 +127,24 @@ $(WGET-SSL_BUILD_DIR)/.built: $(WGET-SSL_BUILD_DIR)/.configured
 wget-ssl: $(WGET-SSL_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/wget-ssl
+#
+$(WGET-SSL_IPK_DIR)/CONTROL/control:
+	@install -d $(WGET-SSL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: wget-ssl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(WGET-SSL_PRIORITY)" >>$@
+	@echo "Section: $(WGET-SSL_SECTION)" >>$@
+	@echo "Version: $(WGET-SSL_VERSION)-$(WGET-SSL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(WGET-SSL_MAINTAINER)" >>$@
+	@echo "Source: $(WGET-SSL_SITE)/$(WGET-SSL_SOURCE)" >>$@
+	@echo "Description: $(WGET-SSL_DESCRIPTION)" >>$@
+	@echo "Depends: $(WGET-SSL_DEPENDS)" >>$@
+	@echo "Conflicts: $(WGET-SSL_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(WGET-SSL_IPK_DIR)/opt/sbin or $(WGET-SSL_IPK_DIR)/opt/bin
@@ -138,8 +162,7 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(WGET-SSL_BUILD_DIR)/src/wget -o $(WGET-SSL_IPK_DIR)/opt/bin/wget
 	install -d $(WGET-SSL_IPK_DIR)/opt/etc/
 	install -m 755 $(WGET-SSL_BUILD_DIR)/doc/sample.wgetrc $(WGET-SSL_IPK_DIR)/opt/etc/wgetrc
-	install -d $(WGET-SSL_IPK_DIR)/CONTROL
-	install -m 644 $(WGET-SSL_SOURCE_DIR)/control $(WGET-SSL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(WGET-SSL_IPK_DIR)/CONTROL/control
 #	install -m 644 $(WGET-SSL_SOURCE_DIR)/postinst $(WGET-SSL_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(WGET-SSL_SOURCE_DIR)/prerm $(WGET-SSL_IPK_DIR)/CONTROL/prerm
 	echo $(WGET-SSL_CONFFILES) | sed -e 's/ /\n/g' > $(WGET-SSL_IPK_DIR)/CONTROL/conffiles

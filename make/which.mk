@@ -24,11 +24,17 @@ WHICH_VERSION=2.16
 WHICH_SOURCE=which-2.16.tar.gz
 WHICH_DIR=which-2.16
 WHICH_UNZIP=zcat
+WHICH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+WHICH_DESCRIPTION=which prints out the full path of the executablesthat bash(1) would execute when the passed program names would have been entered on the shell prompt. It uses the exact same algorithm as bash. Tildes and a dot in the PATH are now expanded to the full path by default. Options allow users to print "~/*" or "./*" and/or to  print all executables that match any directory in the PATH
+WHICH_SECTION=util
+WHICH_PRIORITY=optional
+WHICH_DEPENDS=
+WHICH_CONFLICTS=
 
 #
 # WHICH_IPK_VERSION should be incremented when the ipk changes.
 #
-WHICH_IPK_VERSION=1
+WHICH_IPK_VERSION=2
 
 #
 # WHICH_PATCHES should list any patches, in the the order in
@@ -155,6 +161,24 @@ $(WHICH_BUILD_DIR)/.staged: $(WHICH_BUILD_DIR)/.built
 which-stage: $(WHICH_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/which
+#
+$(WHICH_IPK_DIR)/CONTROL/control:
+	@install -d $(WHICH_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: which" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(WHICH_PRIORITY)" >>$@
+	@echo "Section: $(WHICH_SECTION)" >>$@
+	@echo "Version: $(WHICH_VERSION)-$(WHICH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(WHICH_MAINTAINER)" >>$@
+	@echo "Source: $(WHICH_SITE)/$(WHICH_SOURCE)" >>$@
+	@echo "Description: $(WHICH_DESCRIPTION)" >>$@
+	@echo "Depends: $(WHICH_DEPENDS)" >>$@
+	@echo "Conflicts: $(WHICH_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(WHICH_IPK_DIR)/opt/sbin or $(WHICH_IPK_DIR)/opt/bin
@@ -169,8 +193,7 @@ which-stage: $(WHICH_BUILD_DIR)/.staged
 $(WHICH_IPK): $(WHICH_BUILD_DIR)/.built
 	rm -rf $(WHICH_IPK_DIR) $(BUILD_DIR)/which_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WHICH_BUILD_DIR) DESTDIR=$(WHICH_IPK_DIR) install
-	install -d $(WHICH_IPK_DIR)/CONTROL
-	install -m 644 $(WHICH_SOURCE_DIR)/control $(WHICH_IPK_DIR)/CONTROL/control
+	$(MAKE) $(WHICH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHICH_IPK_DIR)
 
 #

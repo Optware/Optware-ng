@@ -24,11 +24,17 @@ SYSLOG-NG_VERSION=1.6.6
 SYSLOG-NG_SOURCE=syslog-ng-$(SYSLOG-NG_VERSION).tar.gz
 SYSLOG-NG_DIR=syslog-ng-$(SYSLOG-NG_VERSION)
 SYSLOG-NG_UNZIP=zcat
+SYSLOG-NG_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+SYSLOG-NG_DESCRIPTION=Syslog replacement logging on behalf of remote hosts
+SYSLOG-NG_SECTION=sys
+SYSLOG-NG_PRIORITY=optional
+SYSLOG-NG_DEPENDS=libol, flex
+SYSLOG-NG_CONFLICTS=
 
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=1
+SYSLOG-NG_IPK_VERSION=2
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
@@ -137,6 +143,24 @@ $(SYSLOG-NG_BUILD_DIR)/.staged: $(SYSLOG-NG_BUILD_DIR)/.built
 syslog-ng-stage: $(SYSLOG-NG_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/syslog-ng
+#
+$(SYSLOG-NG_IPK_DIR)/CONTROL/control:
+	@install -d $(SYSLOG-NG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: syslog-ng" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SYSLOG-NG_PRIORITY)" >>$@
+	@echo "Section: $(SYSLOG-NG_SECTION)" >>$@
+	@echo "Version: $(SYSLOG-NG_VERSION)-$(SYSLOG-NG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SYSLOG-NG_MAINTAINER)" >>$@
+	@echo "Source: $(SYSLOG-NG_SITE)/$(SYSLOG-NG_SOURCE)" >>$@
+	@echo "Description: $(SYSLOG-NG_DESCRIPTION)" >>$@
+	@echo "Depends: $(SYSLOG-NG_DEPENDS)" >>$@
+	@echo "Conflicts: $(SYSLOG-NG_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(SYSLOG-NG_IPK_DIR)/opt/sbin or $(SYSLOG-NG_IPK_DIR)/opt/bin
@@ -155,8 +179,7 @@ $(SYSLOG-NG_IPK): $(SYSLOG-NG_BUILD_DIR)/.built
 	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/syslog-ng.conf $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
 	install -d $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
 	install -m 755 $(SYSLOG-NG_SOURCE_DIR)/rc.rstimezone $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
-	install -d $(SYSLOG-NG_IPK_DIR)/CONTROL
-	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/control $(SYSLOG-NG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(SYSLOG-NG_IPK_DIR)/CONTROL/control
 	install -m 755 $(SYSLOG-NG_SOURCE_DIR)/postinst $(SYSLOG-NG_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/prerm $(SYSLOG-NG_IPK_DIR)/CONTROL/prerm
 	echo $(SYSLOG-NG_CONFFILES) | sed -e 's/ /\n/g' > $(SYSLOG-NG_IPK_DIR)/CONTROL/conffiles

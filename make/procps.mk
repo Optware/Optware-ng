@@ -10,8 +10,14 @@ PROCPS=procps-$(PROCPS_VERSION)
 PROCPS_SITE=http://procps.sourceforge.net
 PROCPS_SOURCE_ARCHIVE=$(PROCPS).tar.gz
 PROCPS_UNZIP=zcat
+PROCPS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PROCPS_DESCRIPTION=PROCPS System Utilities
+PROCPS_SECTION=devel
+PROCPS_PRIORITY=optional
+PROCPS_DEPENDS=ncurses
+PROCPS_CONFLICTS=busybox
 
-PROCPS_IPK_VERSION=3
+PROCPS_IPK_VERSION=4
 
 PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-$(PROCPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 PROCPS_IPK_DIR=$(BUILD_DIR)/procps-$(PROCPS_VERSION)-ipk
@@ -69,11 +75,28 @@ $(PROCPS_DIR)/watch: $(PROCPS_DIR)/.configured
 procps: ncurses $(PROCPS_DIR)/watch
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/procps
+#
+$(PROCPS_IPK_DIR)/CONTROL/control:
+	@install -d $(PROCPS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: procps" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PROCPS_PRIORITY)" >>$@
+	@echo "Section: $(PROCPS_SECTION)" >>$@
+	@echo "Version: $(PROCPS_VERSION)-$(PROCPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PROCPS_MAINTAINER)" >>$@
+	@echo "Source: $(PROCPS_SITE)/$(PROCPS_SOURCE)" >>$@
+	@echo "Description: $(PROCPS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PROCPS_DEPENDS)" >>$@
+	@echo "Conflicts: $(PROCPS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 $(PROCPS_IPK): $(PROCPS_DIR)/watch
 	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_$(TARGET_ARCH).ipk
-	mkdir -p $(PROCPS_IPK_DIR)/CONTROL
 	mkdir -p $(PROCPS_IPK_DIR)/opt
 	mkdir -p $(PROCPS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PROCPS_DIR)/free -o $(PROCPS_IPK_DIR)/opt/bin/free
@@ -94,7 +117,7 @@ $(PROCPS_IPK): $(PROCPS_DIR)/watch
 	$(STRIP_COMMAND) $(PROCPS_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/watch
 	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
 	cp $(PROCPS_DIR)/proc/libproc-3.2.3.so $(PROCPS_IPK_DIR)/opt/lib
-	cp $(SOURCE_DIR)/procps.control $(PROCPS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PROCPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROCPS_IPK_DIR)
 
 #
