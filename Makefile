@@ -53,7 +53,10 @@ CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox
 
-CROSS_ONLY_PACKAGES_READY_FOR_TESTING =
+CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
+	jamvm \
+	classpath \
+	libiconv \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
