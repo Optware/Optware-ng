@@ -96,7 +96,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 		STRIP="$(TARGET_STRIP)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NTP_LDFLAGS)" \
-		./configure \
+		./configure --without-crypto \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
