@@ -39,8 +39,7 @@ $(E2FSPROGS_IPK_DIR): $(E2FSPROGS_DIR)/.configured
 	  CC=$(TARGET_CC) \
 	  RANLIB=$(TARGET_RANLIB) \
 	  AR=$(TARGET_AR) \
-	  LD=$(TARGET_LD) \
-	libs
+	  LD=$(TARGET_CC)
 
 e2fsprogs-headers: $(E2FSPROGS_IPK_DIR)
 
@@ -49,8 +48,21 @@ e2fsprogs: $(E2FSPROGS_IPK_DIR)
 $(E2FSPROGS_IPK): $(E2FSPROGS_IPK_DIR)
 	mkdir -p $(E2FSPROGS_IPK_DIR)/CONTROL
 	mkdir -p $(E2FSPROGS_IPK_DIR)/opt/lib
+	mkdir -p $(E2FSPROGS_IPK_DIR)/opt/sbin
 	cp $(SOURCE_DIR)/e2fsprogs.control $(E2FSPROGS_IPK_DIR)/CONTROL/control
 	cp $(E2FSPROGS_DIR)/lib/*.a $(E2FSPROGS_IPK_DIR)/opt/lib
+
+	$(STRIP) $(E2FSPROGS_DIR)/debugfs/debugfs
+	cp $(E2FSPROGS_DIR)/debugfs/debugfs $(E2FSPROGS_IPK_DIR)/opt/sbin
+
+	$(STRIP) $(E2FSPROGS_DIR)/e2fsck/e2fsck
+	cp $(E2FSPROGS_DIR)/e2fsck/e2fsck.static $(E2FSPROGS_IPK_DIR)/opt/sbin
+	cp $(E2FSPROGS_DIR)/e2fsck/e2fsck.shared $(E2FSPROGS_IPK_DIR)/opt/sbin
+	cp $(E2FSPROGS_DIR)/e2fsck/e2fsck $(E2FSPROGS_IPK_DIR)/opt/sbin
+
+	$(STRIP) $(E2FSPROGS_DIR)/resize/resize2fs
+	cp $(E2FSPROGS_DIR)/resize/resize2fs $(E2FSPROGS_IPK_DIR)/opt/sbin
+
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSPROGS_IPK_DIR)
 
