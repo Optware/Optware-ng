@@ -17,10 +17,11 @@ BUSYBOX:=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_SITE:=http://www.busybox.net/downloads
 endif
 BUSYBOX_SOURCE:=$(BUSYBOX).tar.bz2
-BUSYBOX_UNZIP=bzcat
+BUSYBOX_UNZIP:=bzcat
+
 BUSYBOX_CONFIG:=$(SOURCE_DIR)/busybox.config
 
-BUSYBOX_IPK=$(BUILD_DIR)/busybox_$(BUSYBOX_VERSION)-1_armeb.ipk
+BUSYBOX_IPK:=$(BUILD_DIR)/busybox_$(BUSYBOX_VERSION)_armeb.ipk
 BUSYBOX_IPK_DIR:=$(BUILD_DIR)/busybox-$(BUSYBOX_VERSION)-ipk
 
 $(DL_DIR)/$(BUSYBOX_SOURCE):
@@ -29,7 +30,7 @@ $(DL_DIR)/$(BUSYBOX_SOURCE):
 busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_CONFIG)
 
 $(BUSYBOX_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_CONFIG)
-	@rm -rf $(BUILD_DIR)/$(BUSYBOX) $(BUILD_DIR)/busybox
+	@rm -rf $(BUILD_DIR)/$(BUSYBOX) $(BUSYBOX_DIR)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(BUSYBOX) $(BUSYBOX_DIR)
 	cp $(BUSYBOX_CONFIG) $(BUSYBOX_DIR)/.config

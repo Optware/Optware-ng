@@ -1,4 +1,5 @@
 builds
 downloads
-ipkg.pyc
 packages
+staging
+toolchain
