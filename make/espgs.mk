@@ -33,6 +33,7 @@ ESPGS_IPK_VERSION=1
 #
 # ESPGS_CONFFILES should be a list of user-editable files
 ESPGS_CONFFILES=/opt/etc/espgs.conf /opt/etc/init.d/SXXespgs
+PATH=$(TARGET_PATH)
 
 #
 ## ESPGS_PATCHES should list any patches, in the the order in
@@ -119,7 +120,10 @@ espgs-unpack: $(ESPGS_BUILD_DIR)/.configured
 #
 $(ESPGS_BUILD_DIR)/.built: $(ESPGS_BUILD_DIR)/.configured
 	rm -f $(ESPGS_BUILD_DIR)/.built
-	$(MAKE) prefix=/opt CC=$(TARGET_CC) LD=$(TARGET_LD) -C $(ESPGS_BUILD_DIR)
+	$(TARGET_CONFIGURE_OPTS) \
+        CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
+        LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)" \
+	$(MAKE) prefix=/opt CC=$(TARGET_CC) CCFLAGS=-I$(STAGING_INCLUDE_DIR) LD=$(TARGET_LD) -C $(ESPGS_BUILD_DIR)
 	touch $(ESPGS_BUILD_DIR)/.built
 
 #
@@ -151,7 +155,9 @@ espgs-stage: $(ESPGS_BUILD_DIR)/.staged
 #
 $(ESPGS_IPK): $(ESPGS_BUILD_DIR)/.built
 	rm -rf $(ESPGS_IPK_DIR) $(BUILD_DIR)/espgs_*_armeb.ipk
-	$(MAKE) -C $(ESPGS_BUILD_DIR) prefix=$(ESPGS_IPK_DIR)/opt DESTDIR=$(ESPGS_IPK_DIR) install
+	cat $(ESPGS_BUILD_DIR)/pstoraster/pstopxl.in | sed 's/@bindir@/\/opt\/bin/g' | sed 's/@prefix@/\/opt/g'| sed 's/@exec_prefix@/\/opt/g' |sed 's/@GS_VERSION_MAJOR@/8/g'|  sed 's/@GS_VERSION_MINOR@/15/g' |  sed 's/@GS_VERSION_PATCH@//g' |  sed 's/@GS@/gs/g' > $(ESPGS_BUILD_DIR)/pstoraster/pstopxl
+	cat $(ESPGS_BUILD_DIR)/pstoraster/pstoraster.in | sed 's/@bindir@/\/opt\/bin/g' | sed 's/@prefix@/\/opt/g'| sed 's/@exec_prefix@/\/opt/g' |sed 's/@GS_VERSION_MAJOR@/8/g'|  sed 's/@GS_VERSION_MINOR@/15/g' |  sed 's/@GS_VERSION_PATCH@//g' |  sed 's/@GS@/gs/g' > $(ESPGS_BUILD_DIR)/pstoraster/pstoraster
+	$(MAKE) -C $(ESPGS_BUILD_DIR) install_prefix=$(ESPGS_IPK_DIR) prefix=$(ESPGS_IPK_DIR)/opt DESTDIR=$(ESPGS_IPK_DIR) install
 	install -d $(ESPGS_IPK_DIR)/CONTROL
 	install -m 644 $(ESPGS_SOURCE_DIR)/control $(ESPGS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESPGS_IPK_DIR)
