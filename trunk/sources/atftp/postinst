@@ -10,4 +10,6 @@ if [ "`cat /etc/inetd.conf|grep 'tftp'`" = "" ]; then
     echo 'tftp  dgram   udp     wait    root    /opt/sbin/atftpd /tftpboot' >> /etc/inetd.conf
 fi
 
+/etc/rc.d/rc.xinetd
+
 /opt/etc/init.d/S60atftpd
