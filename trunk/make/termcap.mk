@@ -45,7 +45,10 @@ $(TERMCAP_IPK): $(TERMCAP_DIR)/termcap
 	install -m 644 $(SOURCE_DIR)/termcap.control  $(TERMCAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TERMCAP_IPK_DIR)
 
-termcap-ipk: $(TERMCAP_IPK)
+$(STAGING_DIR)/lib/libtermcap.a: $(TERMCAP_DIR)/termcap
+	cp -dfp $(TERMCAP_DIR)/libtermcap.a $(STAGING_DIR)/lib
+
+termcap-ipk: $(TERMCAP_IPK) $(STAGING_DIR)/lib/libtermcap.a
 
 termcap-clean:
 	-make -C $(TERMCAP_DIR) clean
