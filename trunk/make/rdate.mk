@@ -5,6 +5,7 @@
 ###########################################################
 
 RDATE_DIR=$(BUILD_DIR)/rdate
+RDATE_SOURCE_DIR=$(SOURCE_DIR)/rdate
 
 RDATE_VERSION=1.4
 RDATE=rdate-$(RDATE_VERSION)
@@ -20,39 +21,34 @@ $(DL_DIR)/$(RDATE_SOURCE):
 
 rdate-source: $(DL_DIR)/$(RDATE_SOURCE)
 
-$(RDATE_DIR)/.source: $(DL_DIR)/$(RDATE_SOURCE)
+$(RDATE_DIR)/.configured: $(DL_DIR)/$(RDATE_SOURCE)
 	$(RDATE_UNZIP) $(DL_DIR)/$(RDATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/rdate-$(RDATE_VERSION) $(RDATE_DIR)
-	touch $(RDATE_DIR)/.source
-
-$(RDATE_DIR)/.configured: $(RDATE_DIR)/.source
 	touch $(RDATE_DIR)/.configured
 
-$(RDATE_IPK_DIR): $(RDATE_DIR)/.configured
+rdate-unpack: $(RDATE_DIR)/.configured
+
+$(RDATE_DIR)/rdate: $(RDATE_DIR)/.configured
 	$(MAKE) -C $(RDATE_DIR) CC=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
 
-rdate-headers: $(RDATE_IPK_DIR)
+rdate: $(RDATE_DIR)/rdate
 
-rdate: $(RDATE_IPK_DIR)
-
-$(RDATE_IPK): $(RDATE_IPK_DIR)
+$(RDATE_IPK): $(RDATE_DIR)/rdate
 	mkdir -p $(RDATE_IPK_DIR)/CONTROL
 	install -d $(RDATE_IPK_DIR)/opt/bin
-	cp $(SOURCE_DIR)/rdate.control $(RDATE_IPK_DIR)/CONTROL/control
+	cp $(RDATE_SOURCE_DIR)/control $(RDATE_IPK_DIR)/CONTROL/control
 	$(STRIP) $(RDATE_DIR)/rdate -o $(RDATE_IPK_DIR)/opt/bin/rdate
-	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RDATE_IPK_DIR)
 
 rdate-ipk: $(RDATE_IPK)
 
-rdate-source: $(DL_DIR)/$(RDATE_SOURCE)
-
 rdate-clean:
-	-$(MAKE) -C $(RDATE_DIR) uninstall
 	-$(MAKE) -C $(RDATE_DIR) clean
 
 rdate-distclean:
 	-rm $(RDATE_DIR)/.configured
-	-$(MAKE) -C $(RDATE_DIR) distclean
+	-$(MAKE) -C $(RDATE_DIR) clean
 
+rdate-dirclean:
+	rm -rf $(RDATE_DIR) $(RDATE_IPK_DIR) $(RDATE_IPK)
