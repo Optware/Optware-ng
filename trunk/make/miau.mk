@@ -82,14 +82,12 @@ miau: zlib flex $(MIAU_DIR)/src/miau
 # This builds the IPK file.
 #
 $(MIAU_IPK): $(MIAU_DIR)/src/miau
-	mkdir -p $(MIAU_IPK_DIR)/CONTROL
-	mkdir -p $(MIAU_IPK_DIR)/opt
-	mkdir -p $(MIAU_IPK_DIR)/opt/bin
+	install -d $(MIAU_IPK_DIR)/CONTROL
+	install -d $(MIAU_IPK_DIR)/opt/bin $(MIAU_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(MIAU_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
+	cp $(MIAU_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/etc/miaurc
 	cp $(SOURCE_DIR)/miau.rc $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
 	cp $(SOURCE_DIR)/miau.control $(MIAU_IPK_DIR)/CONTROL/control
-	mkdir -p $(MIAU_IPK_DIR)/opt/etc
-	cp $(MIAU_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/etc/miaurc
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MIAU_IPK_DIR)
 
 #
