@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LIBBT_SITE=http://aleron.dl.sourceforge.net/sourceforge/libbt
-LIBBT_VERSION=1.01
+LIBBT_VERSION=1.03
 LIBBT_SOURCE=libbt-$(LIBBT_VERSION).tar.gz
 LIBBT_DIR=libbt-$(LIBBT_VERSION)
 LIBBT_UNZIP=zcat
@@ -23,13 +23,15 @@ LIBBT_UNZIP=zcat
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=1
+LIBBT_IPK_VERSION=2
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch
+LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
+	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \
+	$(LIBBT_SOURCE_DIR)/benc.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -64,8 +66,7 @@ $(DL_DIR)/$(LIBBT_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-libbt-source: $(DL_DIR)/$(LIBBT_SOURCE)  
-#$(LIBBT_PATCHES)
+libbt-source: $(DL_DIR)/$(LIBBT_SOURCE) $(LIBBT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -83,13 +84,14 @@ libbt-source: $(DL_DIR)/$(LIBBT_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBBT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBBT_SOURCE) $(LIBBT_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage libcurl-stage
 	rm -rf $(BUILD_DIR)/$(LIBBT_DIR) $(LIBBT_BUILD_DIR)
 	$(LIBBT_UNZIP) $(DL_DIR)/$(LIBBT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBBT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBBT_DIR) -p1
+	cat $(LIBBT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBBT_DIR) -p0
 	mv $(BUILD_DIR)/$(LIBBT_DIR) $(LIBBT_BUILD_DIR)
 	(cd $(LIBBT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
+		CFLAGS="$(STAGING_CFLAGS) $(LIBBT_CFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBBT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBBT_LDFLAGS)" \
 		./configure \
@@ -106,7 +108,7 @@ libbt-unpack: $(LIBBT_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBBT_BUILD_DIR)/libbt: $(LIBBT_BUILD_DIR)/.configured
+$(LIBBT_BUILD_DIR)/src/libbt.a: $(LIBBT_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBBT_BUILD_DIR) compile PATH=$(STAGING_DIR)/bin:$(PATH) 
 
 #
@@ -145,6 +147,8 @@ libbt-ipk: $(LIBBT_IPK)
 libbt-clean:
 	-$(MAKE) -C $(LIBBT_BUILD_DIR) clean
 
+libbt-distclean:
+	-$(MAKE) -C $(LIBBT_BUILD_DIR) distclean
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
