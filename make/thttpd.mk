@@ -183,7 +183,7 @@ $(THTTPD_IPK): $(THTTPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/thttpd
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/makeweb
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/htpasswd
-	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/www/cgi-bin/*
+	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/share/www/cgi-bin/*
 	install -d $(THTTPD_IPK_DIR)/opt/etc/
 	install -m 644 $(THTTPD_SOURCE_DIR)/thttpd.conf $(THTTPD_IPK_DIR)/opt/etc/thttpd.conf
 	install -d $(THTTPD_IPK_DIR)/opt/etc/init.d
