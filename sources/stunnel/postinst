@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if [ ! -d /opt/etc/stunnel ] ;  then
+echo
+echo "No configuration found. Creating sample-configuration..."
+mkdir /opt/etc/stunnel
+cp /opt/doc/stunnel/stunnel.cnf /opt/etc/stunnel
+cp /opt/doc/stunnel/stunnel.conf-sample /opt/etc/stunnel
+echo "Creating server-certificate..."
+dd if="/dev/urandom" of=/opt/etc/stunnel/stunnel.rnd bs=256 count=1
+/opt/bin/openssl req -new -x509 -days 365 -nodes -rand stunnel.rnd -config /opt/etc/stunnel/stunnel.cnf -out /opt/etc/stunnel/stunnel.pem -keyout /opt/etc/stunnel/stunnel.pem 
+/opt/bin/openssl x509 -subject -dates -fingerprint -noout -in /opt/etc/stunnel/stunnel.pem
+rm /opt/etc/stunnel/stunnel.rnd
+echo "Sample-configuration installed. You'll have to edit it at /opt/etc/stunnel before running stunnel."
+else
+/opt/etc/init.d/S68stunnel
+fi
