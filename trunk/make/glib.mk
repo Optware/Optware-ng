@@ -151,6 +151,8 @@ glib-stage: $(STAGING_DIR)/opt/lib/libglib-2.0.so
 $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	rm -rf $(GLIB_IPK_DIR) $(BUILD_DIR)/glib_*_armeb.ipk
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)/opt
+	install -d 644 $(STAGING_DIR)/opt/lib/glib-2.0/include
+	install -m 644 $(GLIB_BUILD_DIR)/glibconfig.h $(STAGING_DIR)/opt/lib/glib-2.0/include/glibconfig.h
 	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)/opt/man
 	install -d $(GLIB_IPK_DIR)/CONTROL
