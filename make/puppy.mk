@@ -4,10 +4,11 @@
 #
 ###########################################################
 
+# PUPPY_REPOSITORY=:ext:$(LOGNAME)@cvs.sf.net:/cvsroot/puppy
 PUPPY_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
 PUPPY_VERSION=1.0
 PUPPY_SOURCE=puppy-$(PUPPY_VERSION).tar.gz
-PUPPY_TAG=PUPPY_1_0
+# PUPPY_TAG=-r PUPPY_1_0
 PUPPY_MODULE=puppy
 PUPPY_DIR=puppy-$(PUPPY_VERSION)
 PUPPY_UNZIP=zcat
@@ -36,7 +37,7 @@ PUPPY_IPK=$(BUILD_DIR)/puppy_$(PUPPY_VERSION)-$(PUPPY_IPK_VERSION)_armeb.ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PUPPY_SOURCE):
-	cd $(DL_DIR) ; $(CVS) -d $(PUPPY_REPOSITORY) co -r $(PUPPY_TAG) $(PUPPY_MODULE)
+	cd $(DL_DIR) ; $(CVS) -d $(PUPPY_REPOSITORY) co $(PUPPY_TAG) $(PUPPY_MODULE)
 	mv $(DL_DIR)/$(PUPPY_MODULE) $(DL_DIR)/$(PUPPY_DIR)
 	cd $(DL_DIR) ; tar zcvf $(PUPPY_SOURCE) $(PUPPY_DIR)
 	rm -rf $(DL_DIR)/$(PUPPY_DIR)
