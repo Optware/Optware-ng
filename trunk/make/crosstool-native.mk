@@ -152,7 +152,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-cpp $(CROSSTOOL-NATIVE_IPK_DIR)/lib/cpp
 # Install symlinks for common toolchain programs
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
-	for f in ar as c++ cpp g++ gcc ld nm ranlib strip ; do \
+	for f in ar as c++ cpp g++ gcc ld nm ranlib size strip ; do \
 	  rm -f $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
 	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/$$f \
 		$(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
