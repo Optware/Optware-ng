@@ -37,8 +37,10 @@ $(ZLIB_DIR)/.configured: $(ZLIB_DIR)/.source
 	touch $(ZLIB_DIR)/.configured;
 
 $(ZLIB_DIR)/libz.so.$(ZLIB_VERSION): $(ZLIB_DIR)/.configured
-	$(MAKE) LDSHARED="$(TARGET_CROSS)ld -shared -soname,libz.so.1" \
-		CFLAGS="$(ZLIB_CFLAGS)" CC=$(TARGET_CC) -C $(ZLIB_DIR) all libz.a;
+	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" SHAREDLIB="libz.so" \
+		SHAREDLIBV="libz.so.$(ZLIB_VERSION)" SHAREDLIBM="libz.so.1" \
+		LDSHARED="$(TARGET_CROSS)ld -shared -soname,libz.so.1" \
+		CFLAGS="$(ZLIB_CFLAGS)" CC=$(TARGET_CC) -C $(ZLIB_DIR) all libz.so.$(ZLIB_VERSION) libz.a;
 	touch -c $(ZLIB_DIR)/libz.so.$(ZLIB_VERSION)
 
 $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION): $(ZLIB_DIR)/libz.so.$(ZLIB_VERSION)
