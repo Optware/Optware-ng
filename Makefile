@@ -22,7 +22,8 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox zlib portmap nfs-server inetutils gdbm libid3tag
+PACKAGES:= dropbear busybox zlib portmap nfs-server inetutils \
+	   gdbm libid3tag mt-daapd
 
 WGET=wget --passive-ftp
 
