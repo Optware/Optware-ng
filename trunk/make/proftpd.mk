@@ -165,6 +165,8 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpcount -o $(PROFTPD_IPK_DIR)/opt/bin/ftpcount
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/ftpwho -o $(PROFTPD_IPK_DIR)/opt/bin/ftpwho
 	# Install man files
+	install -d $(PROFTPD_IPK_DIR)/opt/man/man1
+	install -d $(PROFTPD_IPK_DIR)/opt/man/man8	
 	$(MAKE) -C $(PROFTPD_BUILD_DIR) DESTDIR=$(PROFTPD_IPK_DIR) install-man
 	# Install empty file
 	install -d $(PROFTPD_IPK_DIR)/usr/share/empty
