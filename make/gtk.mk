@@ -151,6 +151,7 @@ gtk-unpack: $(GTK_BUILD_DIR)/.configured
 #
 $(GTK_BUILD_DIR)/.built: $(GTK_BUILD_DIR)/.configured
 	rm -f $(GTK_BUILD_DIR)/.built
+	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(GTK_BUILD_DIR)/demos
 	$(MAKE) -C $(GTK_BUILD_DIR)
 	touch $(GTK_BUILD_DIR)/.built
 
