@@ -10,7 +10,7 @@ DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
 
-DNSMASQ_IPK_VERSION=3
+DNSMASQ_IPK_VERSION=4
 
 DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch
 
@@ -50,6 +50,10 @@ $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/src/dnsmasq
 	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.8  $(DNSMASQ_IPK_DIR)/opt/man/man8/dnsmasq.8
 	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example \
 		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/dnsmasq.conf.example
+	install -m 644 $(DNSMASQ_BUILD_DIR)/doc.html \
+		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/doc.html
+	install -m 644 $(DNSMASQ_BUILD_DIR)/setup.html \
+		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/setup.html
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DNSMASQ_IPK_DIR)
 
 dnsmasq-ipk: $(DNSMASQ_IPK)
