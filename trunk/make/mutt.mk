@@ -149,7 +149,9 @@ mutt-stage: $(MUTT_BUILD_DIR)/.staged
 #
 $(MUTT_IPK): $(MUTT_BUILD_DIR)/.built
 	rm -rf $(MUTT_IPK_DIR) $(BUILD_DIR)/mutt_*_armeb.ipk
-	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(MUTT_IPK_DIR) install-strip
+	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(MUTT_IPK_DIR) install
+	# install-strip doesn't work for some reason
+	$(STRIP_COMMAND) $(MUTT_IPK_DIR)/opt/bin/mutt $(MUTT_IPK_DIR)/opt/bin/pgpewrap $(MUTT_IPK_DIR)/opt/bin/pgpring
 #	install -d $(MUTT_IPK_DIR)/opt/etc/
 #	install -m 755 $(MUTT_SOURCE_DIR)/mutt.conf $(MUTT_IPK_DIR)/opt/etc/mutt.conf
 #	install -d $(MUTT_IPK_DIR)/opt/etc/init.d
