@@ -3,8 +3,8 @@
 if [ -n "`pidof squid`" ]; then 
     echo "Stopping squid-cache server: "
     /bin/killall squid 
-else
-    echo "Starting squid-cache server in 60s: "
-    /opt/etc/squid/squid.delay-start.sh&
 fi
+
+echo "Starting squid-cache server in 5min:"
+/opt/etc/squid/squid.delay-start.sh&
 
