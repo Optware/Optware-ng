@@ -4,8 +4,8 @@ if [ -n "`pidof radiusd`" ]; then
     /bin/killall radiusd 2>/dev/null
 fi
 
-if [ ! -d /var/log/radius ] ;  then
-    mkdir -p /var/log/radius
+if [ ! -d /var/spool/log/radius ] ;  then
+    mkdir -p /var/spool/log/radius
 fi
 
 /opt/sbin/radiusd
