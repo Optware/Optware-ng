@@ -51,7 +51,7 @@ $(IRCD_HYBRID_DIR)/.configured: $(IRCD_HYBRID_DIR)/.source
 	(cd $(IRCD_HYBRID_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDFLAGS="-L $(IRCD_HYBRID_DIR)/adns $(STAGING_LDFLAGS)" \
 		./configure \
 			--build=$(GNU_HOST_NAME) \
 			--host=$(GNU_TARGET_NAME) \
