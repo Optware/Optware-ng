@@ -114,11 +114,10 @@ $(<FOO>_BUILD_DIR)/<foo>: $(<FOO>_BUILD_DIR)/.configured
 	$(MAKE) -C $(<FOO>_BUILD_DIR)
 
 #
-# These are the dependencies for the package (remove <foo>-dependencies if
-# there are no build dependencies for this package.  Again, you should change
-# the final dependency to refer directly to the main binary which is built.
+# You should change the dependency to refer directly to the main binary
+# which is built.
 #
-<foo>: <foo>-dependencies $(<FOO>_BUILD_DIR)/<foo>
+<foo>: $(<FOO>_BUILD_DIR)/<foo>
 
 #
 # If you are building a library, then you need to stage it too.
