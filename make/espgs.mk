@@ -33,7 +33,7 @@ ESPGS_IPK_VERSION=1
 #
 # ESPGS_CONFFILES should be a list of user-editable files
 ESPGS_CONFFILES=/opt/etc/espgs.conf /opt/etc/init.d/SXXespgs
-PATH=$(TARGET_PATH)
+### PATH=$(TARGET_PATH) <--- this would break other packages; if you don't see why, contact jp30@sf.net
 
 #
 ## ESPGS_PATCHES should list any patches, in the the order in
