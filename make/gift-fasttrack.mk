@@ -114,19 +114,14 @@ $(GIFTFASTTRACK_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFT
 gift-fasttrack-unpack: $(GIFTFASTTRACK_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so: $(GIFTFASTTRACK_BUILD_DIR)/.configured
+$(GIFTFASTTRACK_BUILD_DIR)/.built: $(GIFTFASTTRACK_BUILD_DIR)/.configured
 	rm -f $(GIFTFASTTRACK_BUILD_DIR)/.built
 	$(MAKE) -C $(GIFTFASTTRACK_BUILD_DIR)
 	touch $(GIFTFASTTRACK_BUILD_DIR)/.built
 
-#
-# You should change the dependency to refer directly to the main binary
-# which is built.
-#
-gift-fasttrack: $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so
+gift-fasttrack: $(GIFTFASTTRACK_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
