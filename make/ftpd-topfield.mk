@@ -42,7 +42,7 @@ FTPD-TOPFIELD_DEPENDS=
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=2
+FTPD-TOPFIELD_IPK_VERSION=3
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
