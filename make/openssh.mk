@@ -35,7 +35,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CROSS)gcc \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) -Wl,-rpath,/opt/lib" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
