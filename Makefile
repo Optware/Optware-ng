@@ -50,6 +50,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
 	cups \
 	pkgconfig \
+	gettext \
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
