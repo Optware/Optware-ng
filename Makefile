@@ -28,11 +28,11 @@ NATIVE_AND_CROSS_PACKAGES = \
 	ed elinks expat \
 	fetchmail file findutils flex \
 	gawk gdbm grep groff gzip \
-	imagemagick inetutils iptables \
+	imagemagick inetutils iptables ircd-hybrid \
 	jove \
 	less libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
-	m4 make mc miau mtr \
+	m4 make mc mdadm miau mtr \
 	nano ncurses ntp ntpclient \
 	openssl openssh \
 	patch portmap procps puppy \
@@ -51,9 +51,8 @@ CROSS_ONLY_PACKAGES = \
 	freeradius \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft \
 	glib \
-	ircd-hybrid \
 	libbt libogg libvorbis libpcap logrotate \
-	mdadm mt-daapd \
+	mt-daapd \
 	nail nfs-server nfs-utils \
 	popt proftpd \
 	rdate \
