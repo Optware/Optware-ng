@@ -63,6 +63,9 @@ NATIVE_ONLY_PACKAGES = \
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
+NATIVE_PACKAGES = \
+	$(NATIVE_AND_CROSS_PACKAGES) $(NATIVE_ONLY_PACKAGES)
+
 PACKAGES_TO_BE_TESTED = 
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
@@ -74,6 +77,9 @@ PACKAGES_FOR_DEVELOPERS = crosstool-native
 
 
 all: directories toolchain packages
+
+native:
+	$(MAKE) PACKAGES="$(NATIVE_PACKAGES)" all
 
 # Common tools which may need overriding
 CVS=cvs
