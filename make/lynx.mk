@@ -53,7 +53,7 @@ lynx-unpack: $(LYNX_BUILD_DIR)/.configured
 
 $(LYNX_BUILD_DIR)/.built: $(LYNX_BUILD_DIR)/.configured
 	rm -f $(LYNX_BUILD_DIR)/.built
-	$(MAKE) -C $(LYNX_BUILD_DIR)/src/chrtrans makeuctb CC=$(HOSTCC)
+	$(MAKE) -C $(LYNX_BUILD_DIR)/src/chrtrans makeuctb CC=$(HOSTCC) LIBS=""
 	$(MAKE) -C $(LYNX_BUILD_DIR)
 	touch $(LYNX_BUILD_DIR)/.built
 
