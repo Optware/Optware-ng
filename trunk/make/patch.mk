@@ -120,20 +120,6 @@ $(PATCH_BUILD_DIR)/patch: $(PATCH_BUILD_DIR)/.configured
 patch: $(PATCH_BUILD_DIR)/patch
 
 #
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libpatch.so.$(PATCH_VERSION): $(PATCH_BUILD_DIR)/libpatch.so.$(PATCH_VERSION)
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(PATCH_BUILD_DIR)/patch.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(PATCH_BUILD_DIR)/libpatch.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(PATCH_BUILD_DIR)/libpatch.so.$(PATCH_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libpatch.so.$(PATCH_VERSION) libpatch.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs libpatch.so.$(PATCH_VERSION) libpatch.so
-
-patch-stage: $(STAGING_DIR)/opt/lib/libpatch.so.$(PATCH_VERSION)
-
-#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(PATCH_IPK_DIR)/opt/sbin or $(PATCH_IPK_DIR)/opt/bin
