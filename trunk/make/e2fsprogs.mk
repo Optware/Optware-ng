@@ -28,7 +28,9 @@ $(E2FSPROGS_DIR)/.source: $(DL_DIR)/$(E2FSPROGS_SOURCE)
 $(E2FSPROGS_DIR)/.configured: $(E2FSPROGS_DIR)/.source
 	(cd $(E2FSPROGS_DIR); \
 		./configure \
-		--prefix=$(E2FSPROGS_IPK_DIR)/opt \
+		--host=$(GNU_TARGET_NAME) \
+		--build=$(GNU_HOST_NAME) \
+		--prefix=/opt \
 	);
 	touch $(E2FSPROGS_DIR)/.configured
 
@@ -49,7 +51,7 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_IPK_DIR)
 	mkdir -p $(E2FSPROGS_IPK_DIR)/CONTROL
 	mkdir -p $(E2FSPROGS_IPK_DIR)/opt/lib
 	mkdir -p $(E2FSPROGS_IPK_DIR)/opt/sbin
-	cp $(SOURCE_DIR)/e2fsprogs.control $(E2FSPROGS_IPK_DIR)/CONTROL/control
+	cp $(SOURCE_DIR)/e2fsprogs/control $(E2FSPROGS_IPK_DIR)/CONTROL/control
 	cp $(E2FSPROGS_DIR)/lib/*.a $(E2FSPROGS_IPK_DIR)/opt/lib
 
 	$(STRIP) $(E2FSPROGS_DIR)/debugfs/debugfs
@@ -67,16 +69,16 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSPROGS_IPK_DIR)
 
 $(E2FSPROGS_IPK)/staging:
-	rm -rf $(STAGING_DIR)/include/blkid
-	rm -rf $(STAGING_DIR)/include/ext2fs
-	rm -rf $(STAGING_DIR)/include/et
-	mkdir -p $(STAGING_DIR)/include/blkid
-	mkdir -p $(STAGING_DIR)/include/ext2fs
-	mkdir -p $(STAGING_DIR)/include/et
-	cp $(E2FSPROGS_DIR)/lib/*.a $(STAGING_DIR)/lib
-	cp $(E2FSPROGS_DIR)/lib/blkid/*.h $(STAGING_DIR)/include/blkid
-	cp $(E2FSPROGS_DIR)/lib/ext2fs/*.h $(STAGING_DIR)/include/ext2fs
-	cp $(E2FSPROGS_DIR)/lib/et/*.h $(STAGING_DIR)/include/et
+	rm -rf $(STAGING_INCLUDE_DIR)/blkid
+	rm -rf $(STAGING_INCLUDE_DIR)/ext2fs
+	rm -rf $(STAGING_INCLUDE_DIR)/et
+	mkdir -p $(STAGING_INCLUDE_DIR)/blkid
+	mkdir -p $(STAGING_INCLUDE_DIR)/ext2fs
+	mkdir -p $(STAGING_INCLUDE_DIR)/et
+	cp $(E2FSPROGS_DIR)/lib/*.a $(STAGING_LIB_DIR)
+	cp $(E2FSPROGS_DIR)/lib/blkid/*.h $(STAGING_INCLUDE_DIR)/blkid
+	cp $(E2FSPROGS_DIR)/lib/ext2fs/*.h $(STAGING_INCLUDE_DIR)/ext2fs
+	cp $(E2FSPROGS_DIR)/lib/et/*.h $(STAGING_INCLUDE_DIR)/et
 
 e2fsprogs-ipk: $(E2FSPROGS_IPK)/staging $(E2FSPROGS_IPK)
 
