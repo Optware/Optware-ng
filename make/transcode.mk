@@ -190,6 +190,42 @@ transcode-stage: $(TRANSCODE_BUILD_DIR)/.staged
 $(TRANSCODE_IPK): $(TRANSCODE_BUILD_DIR)/.built
 	rm -rf $(TRANSCODE_IPK_DIR) $(BUILD_DIR)/transcode_*_armeb.ipk
 	$(MAKE) -C $(TRANSCODE_BUILD_DIR) DESTDIR=$(TRANSCODE_IPK_DIR) install-strip
+	cd $(TRANSCODE_IPK_DIR)/opt/bin; \
+	mv $(GNU_TARGET_NAME)-avifix avifix; \
+	mv $(GNU_TARGET_NAME)-aviindex aviindex; \
+	mv $(GNU_TARGET_NAME)-avimerge avimerge; \
+	mv $(GNU_TARGET_NAME)-avisplit avisplit; \
+	mv $(GNU_TARGET_NAME)-avisync avisync; \
+	mv $(GNU_TARGET_NAME)-tccat tccat; \
+	mv $(GNU_TARGET_NAME)-tcdecode tcdecode; \
+	mv $(GNU_TARGET_NAME)-tcdemux tcdemux; \
+	mv $(GNU_TARGET_NAME)-tcextract tcextract; \
+	mv $(GNU_TARGET_NAME)-tcmodinfo tcmodinfo; \
+	mv $(GNU_TARGET_NAME)-tcmp3cut tcmp3cut; \
+	mv $(GNU_TARGET_NAME)-tcprobe tcprobe; \
+	mv $(GNU_TARGET_NAME)-tcrequant tcrequant; \
+	mv $(GNU_TARGET_NAME)-tcscan tcscan; \
+	mv $(GNU_TARGET_NAME)-tcxmlcheck tcxmlcheck; \
+	mv $(GNU_TARGET_NAME)-tcxpm2rgb tcxpm2rpg; \
+	mv $(GNU_TARGET_NAME)-transcode transcode; 
+	cd $(TRANSCODE_IPK_DIR)/opt/man/man1; \
+	mv $(GNU_TARGET_NAME)-avifix.1 avifix.1; \
+	mv $(GNU_TARGET_NAME)-aviindex.1 aviindex.1; \
+	mv $(GNU_TARGET_NAME)-avimerge.1 avimerge.1; \
+	mv $(GNU_TARGET_NAME)-avisplit.1 avisplit.1; \
+	mv $(GNU_TARGET_NAME)-avisync.1 avisync.1; \
+	mv $(GNU_TARGET_NAME)-tccat.1 tccat.1; \
+	mv $(GNU_TARGET_NAME)-tcdecode.1 tcdecode.1; \
+	mv $(GNU_TARGET_NAME)-tcdemux.1 tcdemux.1; \
+	mv $(GNU_TARGET_NAME)-tcextract.1 tcextract; \
+	mv $(GNU_TARGET_NAME)-tcmodinfo.1 tcmodinfo.1; \
+	mv $(GNU_TARGET_NAME)-tcprobe.1 tcprobe.1; \
+	mv $(GNU_TARGET_NAME)-tcscan.1 tcscan.1; \
+	mv $(GNU_TARGET_NAME)-tcxmlcheck.1 tcxmlcheck.1; \
+	mv $(GNU_TARGET_NAME)-transcode.1 transcode.1; 
+	cd $(TRANSCODE_IPK_DIR)/opt/lib/transcode; \
+	mv $(GNU_TARGET_NAME)-filter_list.awk filter_list.awk; \
+	mv $(GNU_TARGET_NAME)-parse_csv.awk parse_csv.awk; 
 	install -d $(TRANSCODE_IPK_DIR)/CONTROL
 	install -m 644 $(TRANSCODE_SOURCE_DIR)/control $(TRANSCODE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSCODE_IPK_DIR)
