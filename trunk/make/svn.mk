@@ -87,6 +87,7 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
+		KRB5_CONFIG=none \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
