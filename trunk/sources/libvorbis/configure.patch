@@ -1,0 +1,32 @@
+*** libvorbis/configure.orig	Fri Mar 18 12:35:52 2005
+--- libvorbis/configure	Fri Mar 18 12:37:02 2005
+***************
+*** 3833,3838 ****
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec="/lib /usr/lib"
+! sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  
+  case $host_os in
+--- 3833,3838 ----
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec=""
+! sys_lib_search_path_spec=""
+  
+  case $host_os in
+***************
+*** 4040,4045 ****
+    shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
+    shlibpath_overrides_runpath=no
+!   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
+!   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
+    ;;
+  
+--- 4040,4045 ----
+    shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
+    shlibpath_overrides_runpath=no
+!   sys_lib_search_path_spec=""
+!   sys_lib_dlsearch_path_spec=""
+    ;;
+  
