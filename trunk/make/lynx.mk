@@ -9,8 +9,14 @@ LYNX_VERSION=2.8.5
 LYNX_SOURCE=lynx$(LYNX_VERSION).tar.bz2
 LYNX_DIR=lynx2-8-5
 LYNX_UNZIP=bzcat
+LYNX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LYNX_DESCRIPTION=A text browser for the World Wide Web
+LYNX_SECTION=util
+LYNX_PRIORITY=optional
+LYNX_DEPENDS=bzip2, openssl, ncurses, zlib
+LYNX_CONFLICTS=
 
-LYNX_IPK_VERSION=2
+LYNX_IPK_VERSION=3
 
 LYNX_CONFFILES=/opt/etc/lynx.cfg
 
@@ -59,12 +65,25 @@ $(LYNX_BUILD_DIR)/.built: $(LYNX_BUILD_DIR)/.configured
 
 lynx: $(LYNX_BUILD_DIR)/.built
 
+$(LYNX_IPK_DIR)/CONTROL/control:
+	@install -d $(LYNX_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: lynx" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LYNX_PRIORITY)" >>$@
+	@echo "Section: $(LYNX_SECTION)" >>$@
+	@echo "Version: $(LYNX_VERSION)-$(LYNX_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LYNX_MAINTAINER)" >>$@
+	@echo "Source: $(LYNX_SITE)/$(LYNX_SOURCE)" >>$@
+	@echo "Description: $(LYNX_DESCRIPTION)" >>$@
+	@echo "Depends: $(LYNX_DEPENDS)" >>$@
+	@echo "Conflicts: $(LYNX_CONFLICTS)" >>$@
+
 $(LYNX_IPK): $(LYNX_BUILD_DIR)/.built
 	rm -rf $(LYNX_IPK_DIR) $(BUILD_DIR)/lynx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -j1 -C $(LYNX_BUILD_DIR) DESTDIR=$(LYNX_IPK_DIR) install
 	$(STRIP_COMMAND) $(LYNX_IPK_DIR)/opt/bin/*
-	install -d $(LYNX_IPK_DIR)/CONTROL
-	install -m 644 $(LYNX_SOURCE_DIR)/control $(LYNX_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LYNX_IPK_DIR)/CONTROL/control
 	echo $(LYNX_CONFFILES) | sed -e 's/ /\n/g' > $(LYNX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LYNX_IPK_DIR)
 
