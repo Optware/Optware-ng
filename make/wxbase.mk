@@ -25,11 +25,17 @@ WXBASE_VERSION=2.5.3
 WXBASE_SOURCE=wxBase-$(WXBASE_VERSION).tar.bz2
 WXBASE_DIR=wxBase-$(WXBASE_VERSION)
 WXBASE_UNZIP=bzcat
+WXBASE_MAINTAINER=Michal Gorski <michal-gorski@o2.pl>
+WXBASE_DESCRIPTION=wxbase is a basic (non-windows) part of wxWidget toolkit
+WXBASE_SECTION=libs
+WXBASE_PRIORITY=optional
+WXBASE_DEPENDS=libstdc++, zlib
+WXBASE_CONFLICTS=
 
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=2
+WXBASE_IPK_VERSION=3
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -149,6 +155,24 @@ $(STAGING_DIR)/opt/lib/libwx_base-2.5.so.3.0.0: $(WXBASE_BUILD_DIR)/.built
 wxbase-stage: $(STAGING_DIR)/opt/lib/libwx_base-2.5.so.3.0.0
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/wxbase
+#
+$(WXBASE_IPK_DIR)/CONTROL/control:
+	@install -d $(WXBASE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: wxbase" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(WXBASE_PRIORITY)" >>$@
+	@echo "Section: $(WXBASE_SECTION)" >>$@
+	@echo "Version: $(WXBASE_VERSION)-$(WXBASE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(WXBASE_MAINTAINER)" >>$@
+	@echo "Source: $(WXBASE_SITE)/$(WXBASE_SOURCE)" >>$@
+	@echo "Description: $(WXBASE_DESCRIPTION)" >>$@
+	@echo "Depends: $(WXBASE_DEPENDS)" >>$@
+	@echo "Conflicts: $(WXBASE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(WXBASE_IPK_DIR)/opt/sbin or $(WXBASE_IPK_DIR)/opt/bin
@@ -175,8 +199,7 @@ $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_net-2.5.so.3.0.0 libwx_base_net-2.5.so
 	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_xml-2.5.so.3.0.0 libwx_base_xml-2.5.so.3
 	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_xml-2.5.so.3.0.0 libwx_base_xml-2.5.so.3
-	install -d $(WXBASE_IPK_DIR)/CONTROL
-	install -m 644 $(WXBASE_SOURCE_DIR)/control $(WXBASE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(WXBASE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WXBASE_IPK_DIR)
 
 #
