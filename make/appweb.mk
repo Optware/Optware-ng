@@ -29,7 +29,7 @@ APPWEB_UNZIP=zcat
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=1
+APPWEB_IPK_VERSION=2
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
@@ -88,7 +88,7 @@ appweb-source: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	$(APPWEB_UNZIP) $(DL_DIR)/$(APPWEB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(APPWEB_PATCHES) | patch -d $(BUILD_DIR)/$(APPWEB_DIR) -p0
@@ -100,7 +100,11 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
+		--disable-static \
 		--prefix=/opt \
+		--docDir=/opt/doc/appweb \
+		--with-ssl=loadable --with-openssl=loadable \
+		--with-openssl-dir=../../staging/opt \
 	)
 	touch $(APPWEB_BUILD_DIR)/.configured
 
@@ -132,6 +136,7 @@ appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
 # You may need to patch your application to make it use these locations.
 #
 $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
+	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_armeb.ipk
 #	$(MAKE) DESTDIR=$(APPWEB_IPK_DIR) SKIP_PERMS=1 -C $(APPWEB_BUILD_DIR) install
 	# Copy file package ./http/package/LINUX/http.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
@@ -148,6 +153,8 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libegiModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libejsModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libespModule.so $(APPWEB_IPK_DIR)/opt/lib
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libopenSslModule.so $(APPWEB_IPK_DIR)/opt/lib
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libsslModule.so $(APPWEB_IPK_DIR)/opt/lib
 	# Copy file package ./appWeb/package/LINUX/appWeb.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/appWeb -o $(APPWEB_IPK_DIR)/opt/sbin/appWeb
@@ -158,6 +165,8 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/index.html $(APPWEB_IPK_DIR)/opt/var/appWeb/web
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/test* $(APPWEB_IPK_DIR)/opt/var/appWeb/web
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/mime.types $(APPWEB_IPK_DIR)/opt/var/appWeb
+	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.crt $(APPWEB_IPK_DIR)/opt/var/appWeb
+	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.key.pem $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
 	install -d $(APPWEB_IPK_DIR)/CONTROL
 	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
