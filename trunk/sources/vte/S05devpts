@@ -1,0 +1,41 @@
+#!/bin/sh
+
+###
+### this init script ensures that the /dev/pts filesystem is working
+### it should do nothing if it already is.
+###
+
+upgrade_dev() {
+    DEV=$1
+    if [ ! -e $DEV/ptmx ]; then
+	mknod $DEV/ptmx c 5 2
+	chown root:root $DEV/ptmx
+	chmod 0666 $DEV/ptmx
+    fi
+    if [ ! -e $DEV/pts ]; then
+	mkdir $DEV/pts
+	chown root:root $DEV/pts
+	chmod 0755 $DEV/pts
+    fi    
+}
+
+fixperms() {
+    if [ -c $DEV/ptmx ]; then
+	chmod 0666 $DEV/ptmx
+    fi
+    if [ -d $DEV/pts ]; then
+	chmod 0755 $DEV/pts
+    fi
+}
+
+mount_devpts() {
+    DEV=$1
+    upgrade_dev $DEV
+    fixperms $DEV
+    if ! mount |grep -q "^none on $DEV/pts"; then
+	mount -t devpts -o rw,gid=5,mode=620 none $DEV/pts
+    fi
+}
+
+upgrade_dev /dev.state
+mount_devpts /dev
