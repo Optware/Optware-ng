@@ -98,7 +98,7 @@ puppy: $(PUPPY_BUILD_DIR)/puppy
 # You may need to patch your application to make it use these locations.
 #
 $(PUPPY_IPK): $(PUPPY_BUILD_DIR)/puppy
-	rm -rf $(PUPPY_IPK_DIR) $(PUPPY_IPK)
+	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_armeb.ipk
 	install -d $(PUPPY_IPK_DIR)/opt/bin
 	$(TARGET_STRIP) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
 	install -d $(PUPPY_IPK_DIR)/CONTROL
