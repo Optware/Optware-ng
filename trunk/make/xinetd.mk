@@ -159,8 +159,8 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	install -d $(XINETD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(XINETD_SOURCE_DIR)/S10xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
 	# Install diversion script
-	install -d $(XINETD_IPK_DIR)/unslung
-	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/unslung/rc.xinetd.xinetd
+	install -d $(XINETD_IPK_DIR)/opt/doc/xinetd
+	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/doc/xinetd/rc.xinetd
 	install -d $(XINETD_IPK_DIR)/CONTROL
 	install -m 644 $(XINETD_SOURCE_DIR)/control $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 644 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/postinst
