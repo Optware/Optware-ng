@@ -28,7 +28,7 @@ CYRUS-SASL_UNZIP=zcat
 #
 # CYRUS-SASL_IPK_VERSION should be incremented when the ipk changes.
 #
-CYRUS-SASL_IPK_VERSION=1
+CYRUS-SASL_IPK_VERSION=2
 
 #
 # CYRUS-SASL_CONFFILES should be a list of user-editable files
@@ -127,7 +127,7 @@ cyrus-sasl-unpack: $(CYRUS-SASL_BUILD_DIR)/.configured
 #
 $(CYRUS-SASL_BUILD_DIR)/.built: $(CYRUS-SASL_BUILD_DIR)/.configured
 	rm -f $(CYRUS-SASL_BUILD_DIR)/.built
-	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR)
+	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) HOSTCC=$(HOSTCC)
 	touch $(CYRUS-SASL_BUILD_DIR)/.built
 
 #
@@ -161,6 +161,7 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -rf $(CYRUS-SASL_IPK_DIR) $(BUILD_DIR)/cyrus-sasl_*_armeb.ipk
 	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install
 	find $(CYRUS-SASL_IPK_DIR) -type d -exec chmod go+rx {} \;
+	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/sbin/*
 	install -d $(CYRUS-SASL_IPK_DIR)/var/state/saslauthd
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/sasl2
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d

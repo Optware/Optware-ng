@@ -48,6 +48,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested both native compilation and cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
+	cyrus-sasl
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native

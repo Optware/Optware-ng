@@ -1,4 +1,4 @@
---- ./man/Makefile.in	2005-01-28 23:09:42.000000000 +0100
+--- ./man/Makefile.in~	2005-01-28 23:09:42.000000000 +0100
 +++ ./man/Makefile.in	2005-01-28 23:11:44.000000000 +0100
 @@ -291,7 +291,7 @@
  	  esac; \
@@ -18,3 +18,20 @@
  	  echo " rm -f $(DESTDIR)$(man3dir)/$$inst"; \
  	  rm -f $(DESTDIR)$(man3dir)/$$inst; \
  	done
+--- ./include/Makefile.in~	2005-02-01 22:09:37.000000000 +0100
++++ ./include/Makefile.in	2005-02-01 22:17:55.000000000 +0100
+@@ -258,11 +258,11 @@
+ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
+ am__depfiles_maybe = depfiles
+ @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/makemd5.Po
+-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
++COMPILE = $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+ 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
++LTCOMPILE = $(LIBTOOL) --mode=compile $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) \
+ 	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+-CCLD = $(CC)
++CCLD = $(HOSTCC)
+ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+ DIST_SOURCES = $(makemd5_SOURCES)
