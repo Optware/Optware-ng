@@ -2,6 +2,8 @@
 #
 # Copyright (C) 2004 by Rod Whitby
 # Copyright (C) 2004 by Oleg I. Vdovikin <oleg@cs.msu.su>
+# Copyright (C) 2001-2004 Erik Andersen <andersen@codepoet.org>
+# Copyright (C) 2002 by Tim Riker <Tim@Rikers.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
