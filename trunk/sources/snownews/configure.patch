@@ -1,0 +1,32 @@
+--- builds/snownews-1.5.6.1/Makefile	2004-12-09 03:29:08.000000000 -0800
++++ builds/snownews/Makefile	2005-03-21 19:38:56.000000000 -0800
+@@ -60,7 +60,8 @@
+ 	if [ ! -d "$(DESTDIR)$(PREFIX)/bin" ]; then \
+ 		mkdir -p $(DESTDIR)$(PREFIX)/bin; \
+ 	fi
+-	$(INSTALL) -s snownews $(DESTDIR)$(PREFIX)/bin
++	$(STRIP) snownews
++	$(INSTALL) snownews $(DESTDIR)$(PREFIX)/bin
+ 	$(INSTALL) opml2snow $(DESTDIR)$(PREFIX)/bin
+ 	$(INSTALL) snowsync $(DESTDIR)$(PREFIX)/bin
+ 
+@@ -83,7 +84,7 @@
+ 		if [ ! -d "$(DESTDIR)$(PREFIX)/man/$$L/man1" ]; then \
+ 			mkdir -p $(DESTDIR)$(PREFIX)/man/$$L/man1; \
+ 		fi; \
+-		$(INSTALL) -m 0644 $(DESTDIR)$(MAN)/$$L/snownews.1 $(PREFIX)/man/$$L/man1; \
++		$(INSTALL) -m 0644 $(MAN)/$$L/snownews.1 $(DESTDIR)$(PREFIX)/man/$$L/man1; \
+ 	done
+ 
+ ### Cleanup ###
+--- builds/snownews-1.5.6.1/platform_settings	2004-12-09 03:29:08.000000000 -0800
++++ builds/snownews/platform_settings	2005-03-21 22:12:11.000000000 -0800
+@@ -1,3 +1,5 @@
+-PREFIX=  /usr/local
+-CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" `xml2-config --cflags` $(EXTRA_CFLAGS)  -DSTATIC_CONST_ICONV -I/usr/local/include
+-LDFLAGS= -lncurses `xml2-config --libs` $(EXTRA_LDFLAGS)  -lintl -liconv
++PREFIX=/opt
++CC=@CC@
++CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" -pipe @CPPFLAGS@ $(EXTRA_CFLAGS) -DSTATIC_CONST_ICONV
++LDFLAGS= @LDFLAGS@ $(EXTRA_LDFLAGS)
++STRIP=@STRIP@
