@@ -116,11 +116,11 @@ WL500G_PACKAGES = \
 	diffutils \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
-	fontconfig freeradius freetype \
+	fontconfig freeradius freetype ftpd-topfield \
 	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap gzip \
 	hdparm \
 	inetutils \
-	less libgd libid3tag libevent libjpeg libmad libol libogg libtool libvorbis \
+	less libgd libid3tag libevent libjpeg libmad libol libogg libtool libtopfield libusb libvorbis \
 	logrotate lua lzo \
 	madplay miau microperl \
 	nano ncftp ncurses ntpclient nylon \
