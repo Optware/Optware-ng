@@ -48,6 +48,12 @@ SER_PATCHES=$(SER_SOURCE_DIR)/Makefile.defs.patch \
 SER_CPPFLAGS=-fsigned-char
 SER_LDFLAGS=
 
+ifeq ($(TARGET_ARCH),mipsel)
+SER_MAKEFLAGS=ARCH=mips OS=linux OSREL=2.4.20
+else
+SER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
+endif
+
 #
 # SER_BUILD_DIR is the directory in which the build is done.
 # SER_SOURCE_DIR is the directory which holds all the
@@ -121,7 +127,7 @@ $(SER_BUILD_DIR)/.built: $(SER_BUILD_DIR)/.configured
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
 	CC="$(TARGET_CC)" \
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
-	ARCH=arm OS=linux OSREL=2.4.22 all
+		$(SER_MAKEFLAGS) all
 	touch $(SER_BUILD_DIR)/.built
 
 #
@@ -139,7 +145,7 @@ $(SER_BUILD_DIR)/.staged: $(SER_BUILD_DIR)/.built
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
 	BASEDIR=$(STAGING_DIR) \
 	LOCALBASE=$(STAGING_DIR) \
-	ARCH=arm OS=linux OSREL=2.4.22 install
+		$(SER_MAKEFLAGS) install
 	touch $(SER_BUILD_DIR)/.staged
 
 ser-stage: $(SER_BUILD_DIR)/.staged
@@ -161,9 +167,8 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
 	CC="$(TARGET_CC)" \
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
-	BASEDIR=$(SER_IPK_DIR) \
-	LOCALBASE=$(SER_IPK_DIR) \
-	ARCH=arm OS=linux OSREL=2.4.22 install
+		BASEDIR=$(SER_IPK_DIR) LOCALBASE=$(SER_IPK_DIR) \
+		$(SER_MAKEFLAGS) install
 #	install -d $(SER_IPK_DIR)/opt/etc/
 #	install -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
 #	install -d $(SER_IPK_DIR)/opt/etc/init.d
