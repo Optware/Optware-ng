@@ -47,10 +47,18 @@ bison: $(BISON_DIR)/src/bison
 $(BISON_IPK): $(BISON_DIR)/src/bison
 	mkdir -p $(BISON_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/bison.control $(BISON_IPK_DIR)/CONTROL/control
-	# for now ignore the locale files and the contents of share
+	# for now ignore the locale files
 	install -d $(BISON_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BISON_DIR)/src/bison -o $(BISON_IPK_DIR)/opt/bin/bison
 	cp $(BISON_DIR)/src/yacc $(BISON_IPK_DIR)/opt/bin/yacc
+	install -d $(BISON_IPK_DIR)/opt/share/bison
+	cp $(BISON_DIR)/data/README   $(BISON_IPK_DIR)/opt/share/bison
+	cp $(BISON_DIR)/data/c.m4     $(BISON_IPK_DIR)/opt/share/bison
+	cp $(BISON_DIR)/data/glr.c    $(BISON_IPK_DIR)/opt/share/bison
+	cp $(BISON_DIR)/data/lalr1.cc $(BISON_IPK_DIR)/opt/share/bison
+	cp $(BISON_DIR)/data/yacc.c   $(BISON_IPK_DIR)/opt/share/bison
+	install -d $(BISON_IPK_DIR)/opt/share/bison/m4sugar
+	cp $(BISON_DIR)/data/m4sugar/m4sugar.m4 $(BISON_IPK_DIR)/opt/share/bison/m4sugar
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BISON_IPK_DIR)
 
 bison-ipk: $(BISON_IPK)
