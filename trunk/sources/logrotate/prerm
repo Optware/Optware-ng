@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# TODO: check if the /opt/etc/logrotate.conf file is unmodified, and delete it if that is the case.
+
+echo "ipkg_remove: Warning: Not removing /opt/etc/logrotate.conf"
