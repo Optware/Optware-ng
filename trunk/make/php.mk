@@ -67,7 +67,7 @@ PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PHP_CPPFLAGS=
+PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
 PHP_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
@@ -142,6 +142,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
+		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
