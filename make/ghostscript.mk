@@ -118,7 +118,7 @@ ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.built: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 	rm -f $(GHOSTSCRIPT_BUILD_DIR)/.built
-	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR)
+	$(MAKE) CC=$(TARGET_CC) LD=$(TARGET_LD) -C $(GHOSTSCRIPT_BUILD_DIR)
 	touch $(GHOSTSCRIPT_BUILD_DIR)/.built
 
 #
