@@ -1,5 +1,5 @@
 Package: scponly
-Version: 3.11
+Version: 3.11-1
 Architecture: armeb
 Maintainer: Christopher <edmondsc@onid.orst.edu>
 Source: http://www.sublimation.org/scponly/scponly-3.11.tgz
