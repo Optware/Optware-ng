@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# Startup script for openvpn as standalone server
+#
+
+# Make sure IP forwarding is enabled
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+# Make device if not present (not devfs)
+if ( [ ! -c /dev/net/tun ] ) then
+  # Make /dev/net directory if needed
+  if ( [ ! -d /dev/net ] ) then
+	mkdir -m 755 /dev/net
+  fi
+  mknod /dev/net/tun c 10 200
+fi
+
+# Make sure the tunnel driver is loaded
+if ( !(grep -q "^tun" `lsmod`) ); then
+	insmod /opt/lib/modules/tun.o
+fi
+
+# I you want a standalone server (not xinetd), comment out the return statement below
+return 0
+
+
+## This is for standalone servers only!!!!
+# Kill old server if still there
+if [ -n "`pidof openvpn`" ]; then
+    /bin/killall openvpn 2>/dev/null
+fi
+
+# Start afresh - add as many daemons as you want
+/opt/sbin/openvpn --daemon --cd /opt/etc/openvpn --config openvpn.conf 
+
+# [EOF]
+
+
+
