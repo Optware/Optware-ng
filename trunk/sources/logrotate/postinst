@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if [ ! -d /opt/etc ] ;  then
+    mkdir /opt/etc
+fi
+
+if [ ! -d /opt/etc/logrotate.d ] ;  then
+    mkdir /opt/etc/logrotate.d
+fi
+
+if [ ! -f /opt/etc/logrotate.conf ] ;  then
+    cp /opt/doc/logrotate/logrotate.conf /opt/etc/logrotate.conf
+fi
+
+echo ; echo
+echo "To complete the installation, you may edit /opt/etc/logrotate.conf,"
+echo "and then add a regular call to /opt/sbin/logrotate to your crontab."
+echo
