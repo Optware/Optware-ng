@@ -100,7 +100,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 	$(MAKE) ffmpeg-stage lame-stage freetype-stage libdvdread-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cd $(BUILD_DIR)/$(TRANSCODE_DIR); autoreconf -i -f
+	cd $(BUILD_DIR)/$(TRANSCODE_DIR); AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f
 	cat $(TRANSCODE_PATCHES) | patch -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	(cd $(TRANSCODE_BUILD_DIR); \
@@ -109,7 +109,6 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./configure -C \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
