@@ -1,0 +1,11 @@
+diff -uB nfs-server.orig/nfsd.h nfs-server/nfsd.h
+--- nfs-server.orig/nfsd.h	1998-10-30 12:23:22.000000000 -0500
++++ nfs-server/nfsd.h	2004-09-10 02:45:54.000000000 -0400
+@@ -11,6 +11,7 @@
+  *		as is, with no warranty expressed or implied.
+  */
+ 
++#include <time.h>
+ #include "system.h"
+ 
+ #include "mount.h"
