@@ -9,11 +9,16 @@ CPIO_VERSION=2.5
 CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.gz
 CPIO_DIR=cpio-$(CPIO_VERSION)
 CPIO_UNZIP=zcat
+CPIO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+CPIO_DESCRIPTION=file archive utility
+CPIO_SECTION=utilities
+CPIO_PRIORITY=optional
+CPIO_DEPENDS=
 
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=1
+CPIO_IPK_VERSION=2
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
@@ -111,6 +116,23 @@ cpio: $(CPIO_BUILD_DIR)/cpio
 cpio-stage: $(STAGING_DIR)/opt/lib/libcpio.so.$(CPIO_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/cpio
+#
+$(CPIO_IPK_DIR)/CONTROL/control:
+	@install -d $(CPIO_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: cpio" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CPIO_PRIORITY)" >>$@
+	@echo "Section: $(CPIO_SECTION)" >>$@
+	@echo "Version: $(CPIO_VERSION)-$(CPIO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CPIO_MAINTAINER)" >>$@
+	@echo "Source: $(CPIO_SITE)/$(CPIO_SOURCE)" >>$@
+	@echo "Description: $(CPIO_DESCRIPTION)" >>$@
+	@echo "Depends: $(CPIO_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(CPIO_IPK_DIR)/opt/sbin or $(CPIO_IPK_DIR)/opt/bin
@@ -126,8 +148,7 @@ $(CPIO_IPK): $(CPIO_BUILD_DIR)/cpio
 	rm -rf $(CPIO_IPK_DIR) $(CPIO_IPK)
 	install -d $(CPIO_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CPIO_BUILD_DIR)/cpio -o $(CPIO_IPK_DIR)/opt/bin/cpio
-	install -d $(CPIO_IPK_DIR)/CONTROL
-	install -m 644 $(CPIO_SOURCE_DIR)/control $(CPIO_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CPIO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)
 
 #
