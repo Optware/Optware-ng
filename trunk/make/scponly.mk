@@ -109,7 +109,7 @@ scponly-unpack: $(SCPONLY_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(SCPONLY_BUILD_DIR)/scponly: $(SCPONLY_BUILD_DIR)/.configured
-	$(MAKE) -C $(SCPONLY_BUILD_DIR)
+	$(MAKE) -C $(SCPONLY_BUILD_DIR) PROG_SCP="/opt/bin/scp"
 
 #
 # You should change the dependency to refer directly to the main binary
