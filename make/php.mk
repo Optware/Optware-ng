@@ -21,12 +21,27 @@ PHP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-PHP_DEPENDS=apache
+PHP_DEPENDS=apache, bzip2, openssl, zlib $(PHP_NATIVE_DEPENDS)
+
+ifeq ($(HOST_MACHINE),armv5b)
+PHP_NATIVE_STAGE=libxml2-stage cyrus-imapd-stage
+PHP_NATIVE_DEPENDS=,libxml2, cyrus-imapd
+PHP_NATIVE_CONFIG_PARAMS= \
+	--with-dom=$(STAGING_DIR)/opt \
+	--with-cyrus=$(STAGING_DIR)/opt \
+	--with-iconv \
+	--with-pear
+else
+PHP_NATIVE_STAGE=
+PHP_NATIVE_DEPENDS=
+PHP_NATIVE_CONFIG_PARAMS= \
+	--without-pear
+endif
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -116,7 +131,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) apache-stage
+	$(MAKE) apache-stage bzip2-stage $(PHP_NATIVE_STAGE)
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -133,8 +148,26 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--prefix=/opt \
 		--with-layout=GNU \
 		--disable-static \
-		--without-pear \
+		--enable-bcmath \
+		--enable-calendar \
+		--enable-dba \
+		--with-inifile \
+		--with-flatfile \
+		--enable-dbx \
+		--enable-shmop \
+		--enable-sockets \
+		--enable-sysvmsg \
+		--enable-sysvshm \
+		--enable-sysvsem \
 		--with-apxs2=$(STAGING_DIR)/opt/sbin/apxs \
+		--with-bz2=$(STAGING_DIR)/opt \
+		--with-db4=$(STAGING_DIR)/opt \
+		--with-gdbm=$(STAGING_DIR)/opt \
+		--with-ldap=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_DIR)/opt \
+		--with-zlib-dir=$(STAGING_DIR)/opt \
+		$(PHP_NATIVE_CONFIG_PARAMS) \
 	)
 	touch $(PHP_BUILD_DIR)/.configured
 
@@ -158,11 +191,10 @@ php: $(PHP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libphp-1.0.so: $(PHP_BUILD_DIR)/.built
+$(STAGING_DIR)/opt/bin/php: $(PHP_BUILD_DIR)/.built
 	$(MAKE) -C $(PHP_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	rm -rf $(STAGING_DIR)/opt/lib/libphp-1.0.la
 
-php-stage: $(STAGING_DIR)/opt/lib/libphp-1.0.so
+php-stage: $(STAGING_DIR)/opt/bin/php
 
 #
 # This builds the IPK file.
@@ -179,6 +211,8 @@ php-stage: $(STAGING_DIR)/opt/lib/libphp-1.0.so
 $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_armeb.ipk
 	install -d $(PHP_IPK_DIR)/opt/etc/apache2/conf.d
+	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
+	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
 	install -m 644 $(PHP_SOURCE_DIR)/php.conf $(PHP_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
 	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
