@@ -118,16 +118,16 @@ $(<FOO>_BUILD_DIR)/<foo>: $(<FOO>_BUILD_DIR)/.configured
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION)
-	install -d $(STAGING_DIR)/include
-	install -m 644 $(<FOO>_BUILD_DIR)/<foo>.h $(STAGING_DIR)/include
-	install -d $(STAGING_DIR)/lib
-	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.a $(STAGING_DIR)/lib
-	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION) $(STAGING_DIR)/lib
-	cd $(STAGING_DIR)/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so.1
-	cd $(STAGING_DIR)/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so
+$(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION)
+	install -d $(STAGING_DIR)/opt/include
+	install -m 644 $(<FOO>_BUILD_DIR)/<foo>.h $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/lib
+	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION) $(STAGING_DIR)/opt/lib
+	cd $(STAGING_DIR)/opt/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so.1
+	cd $(STAGING_DIR)/opt/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so
 
-<foo>-stage: $(STAGING_DIR)/lib/lib<foo>.so.$(<FOO>_VERSION)
+<foo>-stage: $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION)
 
 #
 # This builds the IPK file.
