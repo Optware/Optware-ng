@@ -1,11 +1,15 @@
+DROPBEAR_DIR:=$(BUILD_DIR)/dropbear
+
 DROPBEAR=dropbear-0.43
 DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
 
 $(DL_DIR)/$(DROPBEAR).tar.bz2:
 	cd $(DL_DIR) && $(WGET) $(DROPBEAR_SITE)/$(DROPBEAR).tar.bz2
 
-$(BUILD_DIR)/dropbear/config.h: $(DL_DIR)/$(DROPBEAR).tar.bz2 $(SOURCE_DIR)/dropbear.patch
-	@rm -rf $(BUILD_DIR)/$(DROPBEAR) $(BUILD_DIR)/dropbear
+dropbear-source: $(DL_DIR)/$(DROPBEAR).tar.bz2 $(SOURCE_DIR)/dropbear.patch
+
+$(DROPBEAR_DIR)/config.h: $(DL_DIR)/$(DROPBEAR).tar.bz2 $(SOURCE_DIR)/dropbear.patch
+	@rm -rf $(BUILD_DIR)/$(DROPBEAR) $(DROPBEAR_DIR)
 	tar xjf $(DL_DIR)/$(DROPBEAR).tar.bz2 -C $(BUILD_DIR)
 	patch -d $(BUILD_DIR)/$(DROPBEAR) -p1 < $(SOURCE_DIR)/dropbear.patch
 	cd $(BUILD_DIR)/$(DROPBEAR) && \
@@ -18,26 +22,32 @@ $(BUILD_DIR)/dropbear/config.h: $(DL_DIR)/$(DROPBEAR).tar.bz2 $(SOURCE_DIR)/drop
 		--disable-zlib --disable-shadow \
 		--disable-lastlog --disable-utmp --disable-utmpx --disable-wtmp \
 		--disable-wtmpx --disable-libutil #--disable-openpty --enable-devptmx
-	mv $(BUILD_DIR)/$(DROPBEAR) $(BUILD_DIR)/dropbear
+	mv $(BUILD_DIR)/$(DROPBEAR) $(DROPBEAR_DIR)
 
-dropbear: $(BUILD_DIR)/dropbear/config.h
-	make -C $(BUILD_DIR)/dropbear dropbearmulti scp
+$(DROPBEAR_DIR)/dropbearmulti: $(DROPBEAR_DIR)/config.h
+	make -C $(DROPBEAR_DIR) dropbearmulti scp
 
-dropbear-diff: #$(BUILD_DIR)/dropbear/config.h
+dropbear-diff: #$(DROPBEAR_DIR)/config.h
 	@rm -rf $(BUILD_DIR)/$(DROPBEAR)
 	tar xjf $(DL_DIR)/$(DROPBEAR).tar.bz2 -C $(BUILD_DIR)
-	-make -C $(BUILD_DIR)/dropbear distclean
+	-make -C $(DROPBEAR_DIR) distclean
 	-cd $(BUILD_DIR) && diff -BurN $(DROPBEAR) dropbear | grep -v ^Only > $(SOURCE_DIR)/dropbear.patch
 
-dropbear-upkg: dropbear
+$(TARGET_DIR)/dropbear/sbin/dropbear: $(DROPBEAR_DIR)/dropbearmulti
 	install -d $(TARGET_DIR)/dropbear/sbin
-	$(STRIP) $(BUILD_DIR)/dropbear/dropbearmulti -o $(TARGET_DIR)/dropbear/sbin/dropbear
+	$(STRIP) $(DROPBEAR_DIR)/dropbearmulti -o $(TARGET_DIR)/dropbear/sbin/dropbear
 	cd $(TARGET_DIR)/dropbear/sbin && ln -sf dropbear dropbearkey
 	cd $(TARGET_DIR)/dropbear/sbin && ln -sf dropbear dropbearconvert
-	$(STRIP) $(BUILD_DIR)/dropbear/scp -o $(TARGET_DIR)/dropbear/sbin/scp
+	$(STRIP) $(DROPBEAR_DIR)/scp -o $(TARGET_DIR)/dropbear/sbin/scp
 	install -m 755 $(SOURCE_DIR)/dropbear.install $(TARGET_DIR)/dropbear/install
 	install -m 755 $(SOURCE_DIR)/dropbear.rc $(TARGET_DIR)/dropbear/rc.dropbear
+
+$(PACKAGE_DIR)/$(DROPBEAR).upkg: $(TARGET_DIR)/dropbear/sbin/dropbear
 	tar cvf $(PACKAGE_DIR)/$(DROPBEAR).upkg --group root -C $(TARGET_DIR) dropbear
 
+dropbear: $(DROPBEAR_DIR)/dropbearmulti
+
+dropbear-upkg: $(PACKAGE_DIR)/$(DROPBEAR).upkg
+
 dropbear-clean:
-	-make -C $(BUILD_DIR)/dropbear clean
+	-make -C $(DROPBEAR_DIR) clean
