@@ -14,8 +14,8 @@ PROCPS_UNZIP=zcat
 PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-3_armeb.ipk
 PROCPS_IPK_DIR=$(BUILD_DIR)/procps-$(PROCPS_VERSION)-ipk
 
-MY_STAGING_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/opt/include/ncurses"
-MY_STAGING_LDFLAGS="$(STAGING_LDFLAGS)"
+PROCPS_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/opt/include/ncurses"
+PROCPS_LDFLAGS="$(STAGING_LDFLAGS)"
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -57,8 +57,8 @@ $(PROCPS_DIR)/.configured: $(PROCPS_DIR)/.source
 $(PROCPS_DIR)/watch: $(PROCPS_DIR)/.configured
 	$(MAKE) -C $(PROCPS_DIR)	\
 	CC=$(TARGET_CC)			\
-	CPPFLAGS=$(MY_STAGING_CPPFLAGS)	\
-	LDFLAGS=$(MY_STAGING_LDFLAGS)	\
+	CPPFLAGS=$(PROCPS_CPPFLAGS)	\
+	LDFLAGS=$(PROCPS_LDFLAGS)	\
 	RANLIB=$(TARGET_RANLIB)
 
 #
