@@ -1,0 +1,168 @@
+UNSLUNG-1.x family release README
+
+WHAT IS UNSLUNG?
+As defined in discussions by the nslu2-linux development team, UNSLUNG is 
+a one of three possible firmware paths to improve the NSLU2 requiring minimal 
+changes to standard firmware, and features downloadable packages 
+
+This is intended to be a way of distributing and loading new packages 
+for the NSLU2, with minimal changes to the standard user interface 
+and firmware (apart from what is absolutely required - e.g. kernel 
+modules).
+
+The summary changes in UNSLUNG v1.x from the standard Linksys R25 are 
+as follows:
+
+KERNEL CHANGES:
+1) Changed /dev/ram0 to /dev/slug in kernel.
+2) Changed size constant in kernel such that "Flash Detection" threshold 
+   is 1G instead of 10G.  This was done to enable the use of Cornice 
+   devices as hard drives instead of flash.
+
+RAMDISK CHANGES:
+1) Change root password to uNLSUng.
+2) Add /linuxrc, containing sanity checks to activate a hard disk as / only
+   if many conditions are met.  If conditions are not met, the NSLU2 will
+   boot from ramdisk.
+3) Add .unslung, version information to support a check in (2).
+4) Add /sbin/unsling, a script to copy the important directories from
+   the ramdisk to the new location of / (/share/hdd/conf or /share/flash/conf).
+5) Modify lines in the rc scripts to check for the presence of a diversion 
+   script in /unslung.
+6) Add /etc/rc.d/rc.unslung to run init files in the /opt/init.d directory.
+7) Add /bin/ipkg and /etc/ipkg.conf to support the download of packages.
+
+WHERE TO GET IT:
+Binaries: TBA
+CVS: cvs -d :pserver:anonymount@cvs.sf.net:/cvsroot/nslu co unslung
+
+FIRMWARE/PACKAGE BUILD DETAILS:
+1)  To do a complete build with packages, you will need to get the
+    crosstool-0.28-rc32 toolchain working with the Big-Endian patch from
+    http://kegel.com/crosstool/crosstool-0.28-rc32.tar.gz
+    http://www.knowledgemessaging.com/nslu2/gcc-3.3.2-arm-softfloat.patch
+2)  get the project from CVS
+3)  make
+4)  make unslung
+5)  Your firmware image is now in the firmware directory, 
+    UNSLUNG-1.xV23R25.bin
+
+PRE-INSTALLATION CONSIDERATIONS
+1)  It is strongly recommended that you test telnet Redboot access first.
+2)  It is strongly recommended you select a 'virgin' disk for unslinging;
+    that is a disk that empty; or that can be reformatted.
+ 
+INSTALLATION DETAILS
+1) Make sure your NSLU2 is working properly.
+2) Flash UNSLUNG-1.x-V23R25.bin as you normally would flash new firmware.
+3) Verify your NSLU2 is working normally at this point.
+
+'UNSLINGING' DETAILS
+1) Identify which drive you wish you change to UNSLUNG capable, plug in.
+2) Enable telnet by going to http://192.168.1.77/Management/telnet.cgi, 
+   and press the enable button.
+3) Telnet into the NSLU2 using the username root and password uNSLUng.
+4) Run /sbin/unsling and watch the ramdisk files be copied to your disk.
+5) Reboot.
+
+Congratulations, youre now UNSLUNG!  You should have an extra 10M of free
+memory to use for other things.
+
+Make sure you add an entry to the "The Unslung" table in the Yahoo
+group.  Just use the next free integer for your Unslung number.
+
+If you make no further changes, your NSLU2 will continue to operate 
+normally.  But to customize things, you'll add stuff to the /unslung 
+directory on the new hard drive root using diversion scripts.
+
+POST-INSTALLATION DETAILS
+
+Diversion scripts go into /unslung.  You can divert as many or as few 
+scripts as you like.  Simply add the name of the standard rc script 
+into /unslung and it will be run.
+
+For example, I have a script /unslung/rc.local:
+
+#! /bin/sh
+/unslung/startnfs
+return 1
+
+That will run at the beginning of the normal /etc/rc.d/rc.local, and then 
+the rest of the factory rc.local will be executed.  If I do NOT want to run
+the factory rc.local, my script would be
+
+#!/bin/sh
+/unslung/startnfs
+return 0
+
+That is, if the diversion script returns with something other than 0, it will
+run the rest of the factory script.  
+
+PACKAGE INSTALLATION 
+1)  Run "ipkg update" on the NSLU2.
+2)  Run "ipkg list" to see the available packages.
+3)  Run "ipkg install <package-name>" to install them.
+
+ADDITIONAL INFORMATION:
+
+1)  If you wish to see the contents of the ramdisk, temporarily make a 
+    directory called /initrd in your new hard drive /, then the ramdisk 
+    will not be dismounted.  You will not see a RAM benefit if you do this,
+    so use with caution.  After youre done looking at the contents of the
+    ramdisk, unmount it and remove the initrd directory for ram savings on 
+    the next reboot.
+
+2)  The linuxrc is written in such a way that if a known good unslung disk
+    is NOT attached, it will revert to failsafe booting from ramdisk.
+
+3)  There is a version check mechanism which tags your unslung hard disk
+    at a certain firmware version (including the unslung version) and
+    will not boot from it if the versions do not match.  When you flash a
+    new version of unslung, then you must re-run unsling to update the
+    root disk (and that's when you check your diversion scripts to make
+    sure they are still compatible with the new firmware version).
+
+4)  The unsling script will never touch any files under /unslung or /opt,
+    so please store all your additional files there.
+
+5)  The diversion of startup scripts is done at the lowest granularity,
+    so you can, for instance, just divert the rc.xinetd script if you
+    want, and leave all the others unchanged.
+
+6)  The diversion mechanism allows you to add to, or replace, the Linksys
+    script functionality.
+
+7)  The /sbin/unsling script can take a new version of the Linksys
+    ramdisk, and update your unslung hard disk root filesystem from
+    that.  This makes sure that unslung can take advantage of any new
+    Linksys features.
+
+8)  When Linksys release a new version of the firmware, it is a simple
+    job for us to release a new corresponding unslung firmware.  And
+    the process for doing this is available in the CVS repository, so
+    anyone can do it for themselves if we don't get around to it.
+ 
+9)  Note that telnet is not enabled by default - there is a dropbear
+    package available to replace telnet access with secure shell
+    access.  The rationale behind not enabling it by default is to
+    ensure that an unslung NSLU2 without a hard disk attached has the
+    same network footprint as the standard firmware.
+
+9a) This telnet mod is a temporary stopgap measure that will allow you to
+    have telnet access and will be depreciated when a diversion script gets
+    written and tested.
+
+    Add these lines to the end of your /etc/rc.d/rc.local, 
+    after the quota line.
+    ---
+    if [ -e /etc/inetd.conf ] && rm /etc/inetd.conf
+       cp /etc/inetd_tel.conf /etc/inetd.conf
+       /etc/rc.d/rc.xinetd
+    fi
+    ---
+    Then edit /etc/inetd_tel.conf to contain
+    ---
+    telnet  stream  tcp     nowait  root    /usr/sbin/telnetd
+    ---
+
+
