@@ -11,7 +11,9 @@ IRCD_HYBRID_SITE=http://aleron.dl.sourceforge.net/sourceforge/ircd-hybrid
 IRCD_HYBRID_SOURCE_ARCHIVE=$(IRCD_HYBRID).tgz
 IRCD_HYBRID_UNZIP=zcat
 
-IRCD_HYBRID_IPK=$(BUILD_DIR)/ircd-hybrid_$(IRCD_HYBRID_VERSION)-1_armeb.ipk
+IRCD_HYBRID_IPK_VERSION=2
+
+IRCD_HYBRID_IPK=$(BUILD_DIR)/ircd-hybrid_$(IRCD_HYBRID_VERSION)-$(IRCD_HYBRID_IPK_VERSION)_armeb.ipk
 IRCD_HYBRID_IPK_DIR=$(BUILD_DIR)/ircd-hybrid-$(IRCD_HYBRID_VERSION)-ipk
 
 #
@@ -80,13 +82,12 @@ ircd-hybrid: zlib flex $(IRCD_HYBRID_DIR)/src/ircd
 # This builds the IPK file.
 #
 $(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
-	mkdir -p $(IRCD_HYBRID_IPK_DIR)/CONTROL
-	mkdir -p $(IRCD_HYBRID_IPK_DIR)/opt
-	mkdir -p $(IRCD_HYBRID_IPK_DIR)/opt/bin
+	install -d $(IRCD_HYBRID_IPK_DIR)/opt/bin
 	$(STRIP) $(IRCD_HYBRID_DIR)/src/ircd -o $(IRCD_HYBRID_IPK_DIR)/opt/bin/ircd
-	cp $(SOURCE_DIR)/ircd-hybrid.control $(IRCD_HYBRID_IPK_DIR)/CONTROL/control
-	mkdir -p $(IRCD_HYBRID_IPK_DIR)/opt/etc
-	cp $(IRCD_HYBRID_DIR)/doc/simple.conf $(IRCD_HYBRID_IPK_DIR)/opt/etc/ircd-hybrid-simple.conf
+	install -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
+	install -m 644 $(IRCD_HYBRID_DIR)/doc/simple.conf $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
+	install -d $(IRCD_HYBRID_IPK_DIR)/CONTROL
+	install -m 644 $(SOURCE_DIR)/ircd-hybrid.control $(IRCD_HYBRID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRCD_HYBRID_IPK_DIR)
 
 #
