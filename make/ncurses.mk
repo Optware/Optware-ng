@@ -13,7 +13,7 @@ NCURSES_SITE=ftp://invisible-island.net/ncurses
 NCURSES_SOURCE=$(NCURSES).tar.gz
 NCURSES_UNZIP=zcat
 
-NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-1_armeb.ipk
+NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-2_armeb.ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
 
 $(DL_DIR)/$(NCURSES_SOURCE):
@@ -37,7 +37,6 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/opt	\
 		--with-shared		\
-		--without-progs		\
 		--disable-big-core	\
 		--with-build-cc=gcc	\
 		--without-cxx-binding	\
@@ -58,11 +57,12 @@ $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib
 ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
 $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+	rm -rf $(NCURSES_IPK_DIR) $(BUILD_DIR)/ncurses_*_armeb.ipk
 	mkdir -p $(NCURSES_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/ncurses.control $(NCURSES_IPK_DIR)/CONTROL/control
-	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) install.libs install.data install.panel install.menu install.form
+	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
+		install.libs install.progs install.data install.panel install.menu install.form
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
-	#rm -rf $(NCURSES_IPK_DIR)/opt/lib/lib*.a
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
 ncurses-ipk: $(NCURSES_IPK)
