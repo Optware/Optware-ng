@@ -4,11 +4,11 @@ PROFTPD on NSLU2 readme
 Manual install instructions:
 ----------------------------
 1: Proftpd can run either as standalone server or under some inetd
- (a) To run as standalone server, rename /opt/etc/init.d/.S68proftpd to /opt/etc/init.d/S68proftpd
- (b) To run under Linksys inetd, rename /unslung/rc.xinetd.proftpd.linksys to /unslung/rc.xinetd if there is no pre-existing /unslung/rc.xinetd, else edit it manually into the existing file.
+ (a) To run as standalone server, copy /opt/doc/proftpd/S68proftpd to /opt/etc/init.d/S68proftpd . Also edit proftpd.conf so that "ServerType" is "standalone" (by default it is "inetd")
+ (b) To run under Linksys inetd, copy /opt/doc/rc.xinetd.proftpd to /unslung/rc.xinetd if there is no pre-existing /unslung/rc.xinetd, else edit it manually into the existing file.
  (c) To run under inetutils inetd, execute "cat /opt/doc/proftpd/inetd.conf.proftpd >> /opt/etc/inetd.conf"
  (d) To run under xinetd, copy /opt/doc/proftpd/proftpd.xinetd to /opt/etc/xinetd.d/proftpd"
-2: A default configuration is stored in /etc/proftpd.conf - Please edit it to suit your needs and refer to the documentation and the tempates stored in /opt/doc/proftpd.
+2: A default configuration is stored in /opt/etc/proftpd.conf - Please edit it to suit your needs and refer to the documentation and the tempates stored in /opt/doc/proftpd.
 3: Any FTP server already active on the system must be disabled.
 4: Starting proftd either by restarting your system or...
  (a) To run as standalone server, run ". /opt/etc/init.d/S68proftpd"
@@ -20,7 +20,8 @@ A simple way of generating a 1024bits RSA key pair valid for about 3 years is:
 
 openssl req -new -x509 -days 1200 -nodes -out /opt/etc/ftpd/server.cert.pem -keyout /opt/etc/ftpd/server.key.pem
 
-You must have installed OpenSSL for SSL/TLS authenication and encryption to work.
+You must have installed OpenSSL for SSL/TLS authenication and encryption to work. 
+NOTE: Remember to make the secret key unreadable for non-root users.
 
 On root login:
 --------------
