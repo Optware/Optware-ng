@@ -1,6 +1,8 @@
 #!/bin/sh
 
-ln -s /opt/lib/sasl2 /usr/lib/sasl2 > /dev/null 2>&1
+if [ -f /usr/lib/sasl2 ] ; then
+    ln -s /opt/lib/sasl2 /usr/lib/sasl2 > /dev/null 2>&1
+fi
 
 echo
 echo Please read the man page of saslauthd and
