@@ -1,7 +1,7 @@
 #
 # telnetd
 #
-service telnetd
+service telnet
 {
        flags            = REUSE
        socket_type      = stream
