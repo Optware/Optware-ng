@@ -23,7 +23,7 @@ LIBBT_UNZIP=zcat
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=3
+LIBBT_IPK_VERSION=4
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
@@ -133,7 +133,9 @@ $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/src/libbt.a
 	mkdir -p $(LIBBT_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libbt/control $(LIBBT_IPK_DIR)/CONTROL/control
 	install -d $(LIBBT_IPK_DIR)/opt/bin
-	install -m 755 $(LIBBT_BUILD_DIR)/src/bt* $(LIBBT_IPK_DIR)/opt/bin
+	install -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)/opt/bin
+	install -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)/opt/bin
+	install -m 755 $(LIBBT_BUILD_DIR)/src/btlist $(LIBBT_IPK_DIR)/opt/bin
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBBT_IPK_DIR)
 
 #
