@@ -176,7 +176,7 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
 	# Install doc file
 	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/doc
+	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
