@@ -1,0 +1,11 @@
+--- asterisk-1.0.6/editline/makelist~	2005-03-07 23:43:56.000000000 -0800
++++ asterisk-1.0.6/editline/makelist	2005-03-07 23:44:23.000000000 -0800
+@@ -39,7 +39,7 @@
+ 
+ # makelist.sh: Automatically generate header files...
+ 
+-AWK=/usr/bin/awk
++AWK=/opt/bin/awk
+ USAGE="Usage: $0 -h|-e|-fc|-fh|-bc|-bh|-m <filenames>"
+ 
+ if [ "x$1" = "x" ]

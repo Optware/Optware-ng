@@ -1,0 +1,38 @@
+--- asterisk-1.0.6/codecs/gsm/Makefile~	2005-03-12 15:38:21.000000000 -0800
++++ asterisk-1.0.6/codecs/gsm/Makefile	2005-03-12 15:37:33.000000000 -0800
+@@ -43,7 +43,7 @@
+ ifneq ($(shell uname -m),ppc)
+ ifneq ($(shell uname -m),alpha)
+ ifneq (${PROC},sparc64)
+-OPTIMIZE+=-march=$(PROC)
++#OPTIMIZE+=-march=$(PROC)
+ endif
+ endif
+ endif
+@@ -78,7 +78,7 @@
+ # CCFLAGS 	= -c -O
+ 
+ CC		?= gcc
+-CCFLAGS 	+= -c -DNeedFunctionPrototypes=1 -funroll-loops -fPIC $(OPTIMIZE) -fomit-frame-pointer
++CCFLAGS 	+= -c -DNeedFunctionPrototypes=1 -fPIC $(OPTIMIZE) -fomit-frame-pointer
+ 
+ LD 		= $(CC)
+ 
+@@ -217,7 +217,7 @@
+ ifneq ($(shell uname -m),ppc)
+ ifneq ($(shell uname -m),alpha)
+ ifneq ($(shell uname -m),sparc64)
+-GSM_SOURCES+= $(SRC)/k6opt.s
++#GSM_SOURCES+= $(SRC)/k6opt.s
+ endif
+ endif
+ endif
+@@ -273,7 +273,7 @@
+ ifneq ($(shell uname -m), ppc)
+ ifneq ($(shell uname -m), alpha)
+ ifneq ($(shell uname -m), sparc64)
+-GSM_OBJECTS+= $(SRC)/k6opt.o
++#GSM_OBJECTS+= $(SRC)/k6opt.o
+ endif
+ endif
+ endif

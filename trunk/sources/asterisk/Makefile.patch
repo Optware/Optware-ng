@@ -1,0 +1,43 @@
+--- asterisk-1.0.6/Makefile~	2005-03-10 07:56:20.000000000 -0800
++++ asterisk-1.0.6/Makefile	2005-03-10 07:55:42.000000000 -0800
+@@ -63,10 +63,10 @@
+ #K6OPT  = -DK6OPT
+ 
+ #Tell gcc to optimize the asterisk's code
+-OPTIMIZE+=-O6
++OPTIMIZE+=-Os -mcpu=xscale
+ 
+ #Include debug symbols in the executables (-g) and profiling info (-pg)
+-DEBUG=-g #-pg
++DEBUG=#-g #-pg
+ 
+ # If you are running a radio application, define RADIO_RELAX so that the DTMF
+ # will be received more reliably
+@@ -74,7 +74,7 @@
+ 
+ # If you don't have a lot of memory (e.g. embedded Asterisk), uncomment the
+ # following to reduce the size of certain static buffers
+-#OPTIONS += -DLOW_MEMORY
++OPTIONS += -DLOW_MEMORY
+ 
+ # Optional debugging parameters
+ DEBUG_THREADS = #-DDEBUG_THREADS #-DDO_CRASH 
+@@ -128,6 +128,7 @@
+ 
+ INCLUDE=-Iinclude -I../include
+ CFLAGS=-pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations $(DEBUG) $(INCLUDE) -D_REENTRANT -D_GNU_SOURCE #-DMAKE_VALGRIND_HAPPY
++CFLAGS+=$(CPPFLAGS)
+ CFLAGS+=$(OPTIMIZE)
+ 
+ ifneq ($(PROC),ultrasparc)
+@@ -218,8 +219,8 @@
+ ASTLINK=-Wl,-dynamic
+ SOLINK=-dynamic -bundle -undefined suppress -force_flat_namespace
+ else
+-ASTLINK=-Wl,-E 
+-SOLINK=-shared -Xlinker -x
++ASTLINK= $(LDFLAGS) -Wl,-E 
++SOLINK= $(LDFLAGS) -shared -Xlinker -x
+ endif
+ 
+ CC=gcc
