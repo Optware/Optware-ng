@@ -163,7 +163,8 @@ atk-stage: $(STAGING_DIR)/opt/lib/libatk-1.0.so
 $(ATK_IPK): $(ATK_BUILD_DIR)/.built
 	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_armeb.ipk
 	$(MAKE) -C $(ATK_BUILD_DIR) DESTDIR=$(ATK_IPK_DIR) install-strip
-	rm -rf $(ATK_IPK_DIR)/opt/lib/*.la
+	rm -f $(ATK_IPK_DIR)/opt/lib/*.la
+	rm -rf $(ATK_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(ATK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATK_IPK_DIR)
 
