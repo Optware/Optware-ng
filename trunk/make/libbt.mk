@@ -130,6 +130,7 @@ libbt: $(LIBBT_BUILD_DIR)/src/libbt.a
 # You may need to patch your application to make it use these locations.
 #
 $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/src/libbt.a
+	rm -rf $(LIBBT_IPK_DIR) $(BUILD_DIR)/libbt_*_armeb.ipk
 	mkdir -p $(LIBBT_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libbt/control $(LIBBT_IPK_DIR)/CONTROL/control
 	install -d $(LIBBT_IPK_DIR)/opt/bin
