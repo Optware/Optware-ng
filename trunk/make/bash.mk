@@ -4,70 +4,66 @@
 #
 ###########################################################
 
-BASH_DIR=$(BUILD_DIR)/bash
-
-BASH_VERSION=2.05b
-BASH=bash-$(BASH_VERSION)
 BASH_SITE=http://ftp.gnu.org/gnu/bash/
-BASH_SOURCE=$(BASH).tar.gz
+BASH_VERSION=2.05b
+BASH_SOURCE=bash-$(BASH_VERSION).tar.gz
+BASH_DIR=bash-$(BASH_VERSION)
 BASH_UNZIP=zcat
 
-BASH_IPK=$(BUILD_DIR)/bash_$(BASH_VERSION)-1_armeb.ipk
-BASH_IPK_DIR=$(BUILD_DIR)/bash-$(BASH_VERSION)-ipk
+BASH_IPK_VERSION=1
 
-CFLAGS="-I $(STAGING_DIR)/include/ncurses -I $(STAGING_DIR)/include/"
-LDFLAGS="-L $(STAGING_DIR)/lib"
+BASH_CPPFLAGS=
+BASH_LDFLAGS=
+
+BASH_BUILD_DIR=$(BUILD_DIR)/bash
+BASH_SOURCE_DIR=$(SOURCE_DIR)/bash
+BASH_IPK_DIR=$(BUILD_DIR)/bash-$(BASH_VERSION)-ipk
+BASH_IPK=$(BUILD_DIR)/bash_$(BASH_VERSION)-$(BASH_IPK_VERSION)_armeb.ipk
 
 $(DL_DIR)/$(BASH_SOURCE):
 	$(WGET) -P $(DL_DIR) $(BASH_SITE)/$(BASH_SOURCE)
 
 bash-source: $(DL_DIR)/$(BASH_SOURCE)
 
-$(BASH_DIR)/.source: $(DL_DIR)/$(BASH_SOURCE)
+$(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE)
+	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR)
 	$(BASH_UNZIP) $(DL_DIR)/$(BASH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/bash-$(BASH_VERSION) $(BASH_DIR)
-	touch $(BASH_DIR)/.source
-
-$(BASH_DIR)/.configured: $(BASH_DIR)/.source
-	(cd $(BASH_DIR); \
+	mv $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR)
+	(cd $(BASH_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(BASH_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BASH_LDFLAGS)" \
+		CC_FOR_BUILD=$(HOSTCC) \
+		ac_cv_func_setvbuf_reversed=no \
+		bash_cv_have_mbstate_t=yes \
 		./configure \
-		--prefix=$(BASH_IPK_DIR)/opt \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
 	);
-	touch $(BASH_DIR)/.configured
+	touch $(BASH_BUILD_DIR)/.configured
 
-$(BASH_IPK_DIR): $(BASH_DIR)/.configured
-	$(MAKE) \
-	  -C $(BASH_DIR) \
-	  CC_FOR_BUILD=$(CC) \
-	  CC=$(TARGET_CC) \
-	  CFLAGS=$(CFLAGS) \
-	  LDFLAGS=$(LDFLAGS) \
-	  RANLIB=$(TARGET_RANLIB) \
-	  AR=$(TARGET_AR) \
-	  LD=$(TARGET_LD)
+bash-unpack: $(BASH_BUILD_DIR)/.configured
 
-bash-headers: $(BASH_IPK_DIR)
+$(BASH_BUILD_DIR)/bash: $(BASH_BUILD_DIR)/.configured
+	$(MAKE) -C $(BASH_BUILD_DIR)
 
-bash: $(BASH_IPK_DIR)
+bash: termcap-stage $(BASH_BUILD_DIR)/bash
 
-$(BASH_IPK): $(BASH_IPK_DIR)
-	mkdir -p $(BASH_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/bash.control $(BASH_IPK_DIR)/CONTROL/control
-	install -d $(BASH_IPK_DIR)/opt/bin $(BASH_IPK_DIR)/opt/etc 
-	$(STRIP) $(BASH_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
-	cp $(SOURCE_DIR)/bash.profile $(BASH_IPK_DIR)/opt/etc/profile
-	rm -rf $(STAGING_DIR)/CONTROL
+$(BASH_IPK): $(BASH_BUILD_DIR)/bash
+	install -d $(BASH_IPK_DIR)/opt/bin
+	$(STRIP) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
+	install -d $(BASH_IPK_DIR)/opt/etc 
+	install -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
+	install -d $(BASH_IPK_DIR)/CONTROL
+	install -m 644 $(BASH_SOURCE_DIR)/control $(BASH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BASH_IPK_DIR)
 
 bash-ipk: $(BASH_IPK)
 
-bash-source: $(DL_DIR)/$(BASH_SOURCE)
-
 bash-clean:
-	-$(MAKE) -C $(BASH_DIR) uninstall
-	-$(MAKE) -C $(BASH_DIR) clean
+	-$(MAKE) -C $(BASH_BUILD_DIR) clean
 
-bash-distclean:
-	-rm $(BASH_DIR)/.configured
-	-$(MAKE) -C $(BASH_DIR) distclean
-
+bash-dirclean: bash-clean
+	rm -rf $(BASH_BUILD_DIR) $(BASH_IPK_DIR) $(BASH_IPK)
