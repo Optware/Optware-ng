@@ -85,12 +85,11 @@ NATIVE_PACKAGES = \
 # perl-modules are dependent of perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-db-file \
-	perl-dbi \
 	postfix \
 
 # cyrus-imapd fails when compiling the perl stuff
-# postfix fails when packaging - added LD_LIBRARY_PATH to the 'make install' line
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	cyrus-imapd
+# perl-dbi's sources cannot be be downloaded (404 not found)
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	cyrus-imapd perl-dbi
 
 
 HOST_MACHINE:=$(shell uname -m | sed \
