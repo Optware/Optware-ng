@@ -110,14 +110,14 @@ libcurl-unpack: $(LIBCURL_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBCURL_BUILD_DIR)/libcurl: $(LIBCURL_BUILD_DIR)/.configured
+$(LIBCURL_BUILD_DIR)/lib/.libs/libcurl.la: $(LIBCURL_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBCURL_BUILD_DIR)
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libcurl: $(LIBCURL_BUILD_DIR)/libcurl
+libcurl: $(LIBCURL_BUILD_DIR)/lib/.libs/libcurl.la
 
 #
 # If you are building a library, then you need to stage it too.
@@ -148,12 +148,12 @@ libcurl-stage: $(STAGING_DIR)/opt/lib/libcurl.so.$(LIBCURL_SO_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBCURL_IPK): $(LIBCURL_BUILD_DIR)/libcurl
-	mkdir -p $(LIBCURL_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/libcurl/control $(LIBCURL_IPK_DIR)/CONTROL/control
-
+$(LIBCURL_IPK): $(LIBCURL_BUILD_DIR)/lib/.libs/libcurl.la
+	rm -rf $(LIBCURL_IPK_DIR) $(LIBCURL_IPK)
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install
 	rm -rf $(LIBCURL_IPK_DIR)/opt/lib/lib*.a
+	mkdir -p $(LIBCURL_IPK_DIR)/CONTROL
+	cp $(SOURCE_DIR)/libcurl/control $(LIBCURL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL_IPK_DIR)
 
 #
