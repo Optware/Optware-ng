@@ -13,6 +13,8 @@ DROPBEAR_SOURCE:=$(DROPBEAR).tar.bz2
 DROPBEAR_UNZIP:=bzcat
 
 DROPBEAR_PATCHES:=$(DROPBEAR_SOURCE_DIR)/configure.patch \
+		  $(DROPBEAR_SOURCE_DIR)/key-path.patch \
+		  $(DROPBEAR_SOURCE_DIR)/ssh-path.patch \
 		  $(DROPBEAR_SOURCE_DIR)/shell-path.patch
 
 DROPBEAR_IPK:=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-1_armeb.ipk
