@@ -3,13 +3,14 @@
 #
 
 SUDO_DIR:=$(BUILD_DIR)/sudo
+SUDO_SOURCE_DIR:=$(SOURCE_DIR)/sudo
 SUDO_VERSION:=1.6.8p1
 SUDO:=sudo-$(SUDO_VERSION)
 SUDO_SITE=http://probsd.org/sudoftp
 SUDO_SOURCE:=$(SUDO).tar.gz
-SUDO_IPK:=$(BUILD_DIR)/sudo_$(SUDO_VERSION)-1_armeb.ipk
+SUDO_IPK:=$(BUILD_DIR)/sudo_$(SUDO_VERSION)-2_armeb.ipk
 SUDO_IPK_DIR:=$(BUILD_DIR)/sudo-$(SUDO_VERSION)-ipk
-SUDO_PATCH:=$(SOURCE_DIR)/$(SUDO).patch
+SUDO_PATCH:=$(SUDO_SOURCE_DIR)/configure.patch
 
 
 $(DL_DIR)/$(SUDO_SOURCE):
@@ -44,16 +45,16 @@ sudo: $(SUDO_DIR)/sudo
 
 $(SUDO_IPK): $(SUDO_DIR)/sudo
 	install -d $(SUDO_IPK_DIR)/CONTROL
-	install -d $(SUDO_IPK_DIR)/opt/sbin
-	install -d $(SUDO_IPK_DIR)/opt/sudo/sbin
+	install -d $(SUDO_IPK_DIR)/opt/bin
 	install -d $(SUDO_IPK_DIR)/opt/etc
-	$(STRIP) $(SUDO_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/sudo/sbin/sudo
-	$(STRIP) $(SUDO_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/sudo/sbin/visudo
-#	sudo chown 0:0 $(SUDO_IPK_DIR)/opt/sudo/sbin/sudo
-#	sudo chown 0:0 $(SUDO_IPK_DIR)/opt/sudo/sbin/visudo
-#	sudo chmod 4555  $(SUDO_IPK_DIR)/opt/sudo/sbin/sudo
-#	sudo chmod 4555  $(SUDO_IPK_DIR)/opt/sudo/sbin/visudo
-	install -m 644 $(SOURCE_DIR)/sudo.control $(SUDO_IPK_DIR)/CONTROL/control
+	$(STRIP) $(SUDO_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
+	$(STRIP) $(SUDO_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
+#	sudo chown 0:0 $(SUDO_IPK_DIR)/opt/bin/sudo
+#	sudo chown 0:0 $(SUDO_IPK_DIR)/opt/bin/visudo
+#	sudo chmod 4555  $(SUDO_IPK_DIR)/opt/bin/sudo
+#	sudo chmod 4555  $(SUDO_IPK_DIR)/opt/bin/visudo
+	install -m 644 $(SUDO_SOURCE_DIR)/control $(SUDO_IPK_DIR)/CONTROL/control
+	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
 	install -m 600 $(SUDO_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
 	install -m 600 $(SUDO_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/etc/sample.sudoers
 	cd $(BUILD_DIR) && $(IPKG_BUILD) $(SUDO_IPK_DIR)
