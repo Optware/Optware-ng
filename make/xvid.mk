@@ -180,7 +180,8 @@ $(XVID_IPK_DIR)/CONTROL/control:
 $(XVID_IPK): $(XVID_BUILD_DIR)/.built
 	rm -rf $(XVID_IPK_DIR) $(BUILD_DIR)/xvid_*_$(TARGET_ARCH).ipk
 	$(MAKE) DESTDIR=$(XVID_IPK_DIR) -C $(XVID_BUILD_DIR)/build/generic install
-	$(STRIP_COMMAND) $(XVID_IPK_DIR)/opt/lib/libxvidcore.a $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1
+	rm -f $(XVID_IPK_DIR)/opt/lib/libxvidcore.a
+	$(STRIP_COMMAND) $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1
 	ln -s $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1 $(XVID_IPK_DIR)/opt/lib/libxvidcore.so
 	$(MAKE) $(XVID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XVID_IPK_DIR)
