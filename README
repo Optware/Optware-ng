@@ -39,7 +39,7 @@ CVS: cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co unslung
 FIRMWARE/PACKAGE BUILD DETAILS:
 1)  To do a complete build with packages, you will need to get the
     crosstool-0.28-rc32 toolchain working.  See the wiki for details:
-	http://www.nslu2-linux.org/Wiki/HowTo/CompileCrossTool
+	http://www.nslu2-linux.org/wiki/HowTo/CompileCrossTool
 2)  get the project from CVS
 3)  make
 4)  make unslung
