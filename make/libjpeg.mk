@@ -87,7 +87,7 @@ libjpeg-source: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
-	$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBJPEG_DIR) $(LIBJPEG_BUILD_DIR)
 	$(LIBJPEG_UNZIP) $(DL_DIR)/$(LIBJPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBJPEG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBJPEG_DIR) -p1
