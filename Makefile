@@ -22,8 +22,8 @@
 
 CROSS_PACKAGES = \
 	adns atftp appweb apache apr apr-util atk automake \
-	bash bind busybox bzflag bzip2 \
-	ccxstream classpath coreutils cpio ctorrent cups cvs cyrus-sasl \
+	bash bind bitchx busybox bzflag bzip2 \
+	ccxstream classpath coreutils cpio ctorrent cups ctags cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
 	e2fsprogs ed elinks expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
@@ -36,12 +36,12 @@ CROSS_PACKAGES = \
 	lame less libbt libcurl libdb libdvdread libevent libgd libid3tag \
 	libjpeg libnsl libogg libol libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libxml2 libxslt logrotate lsof lua lynx \
-	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
+	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt muxsshssl \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl \
 	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
 	rdate recordext renderext rsync \
-	screen sed sm strace stunnel sudo svn syslog-ng \
+	screen sed sm snownews strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte \
@@ -55,9 +55,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	bitchx ctags snownews muxsshssl
-
-CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
