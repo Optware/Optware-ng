@@ -22,7 +22,7 @@
 
 NATIVE_AND_CROSS_PACKAGES = \
 	adns atftp automake \
-	bash bind bzflag bzip2 \
+	bash bind bzip2 \
 	ccxstream coreutils cpio cvs \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
@@ -32,7 +32,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	jove \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool libxml2 lsof \
-	m4 make mc mdadm miau mtr \
+	m4 make man man-pages mc mdadm miau mtr \
 	nail nano ncurses nload nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
@@ -51,9 +51,11 @@ NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING =
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
+# bzflag actually builds native, but it takes 11 hours
 CROSS_ONLY_PACKAGES = \
 	appweb \
-	busybox
+	busybox \
+	bzflag
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
@@ -66,19 +68,20 @@ CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # perl's Configure is not cross-compile "friendly"
 # squid probably will build cross - may just need some configure work
+# clamav probably will build cross - may just need some configure work
+# samba probably will build cross - may just need some configure work
 NATIVE_ONLY_PACKAGES = \
 	autoconf \
 	bison \
 	emacs \
 	xemacs \
 	perl \
-	squid
+	squid \
+	clamav \
+	samba
 
 # Add new native-only packages here, and state why they don't cross compile.
-NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
-	clamav \
-	wakelan \
-	samba 
+NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = 
 
 UNSORTED_PACKAGES = \
 	freeradius \
