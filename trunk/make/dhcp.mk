@@ -33,12 +33,13 @@ $(DHCP_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE)
 
 dhcp-unpack: $(DHCP_DIR)/.configured
 
-$(DHCP_DIR)/dhcpd: $(DHCP_DIR)/.configured
-	make -C $(DHCP_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) 
+$(DHCP_DIR)/.built: $(DHCP_DIR)/.configured
+	make -C $(DHCP_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
+	touch $(DHCP_DIR)/.built
 
-dhcp: $(DHCP_DIR)/dhcpd
+dhcp: $(DHCP_DIR)/.built
 
-$(DHCP_IPK): $(DHCP_DIR)/dhcpd
+$(DHCP_IPK): $(DHCP_DIR)/.built
 	install -d $(DHCP_IPK_DIR)/CONTROL
 	install -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(DHCP_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
