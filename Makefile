@@ -57,7 +57,7 @@ FIRMWARE_DIR=$(BASE_DIR)/firmware
 BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
-TARGET_PATH=$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
+TARGET_PATH=$(STAGING_DIR)/opt/bin:$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
 PACKAGE_DIR=$(BASE_DIR)/packages
 
 #GNU_TARGET_NAME=arm-linux
