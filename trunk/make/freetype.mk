@@ -69,9 +69,9 @@ FREETYPE_IPK=$(BUILD_DIR)/freetype_$(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)_a
 #
 # Automatically create a ipkg control file
 #
-$(FREETYPE_SOURCE_DIR)/control:
+$(FREETYPE_IPK_DIR)/CONTROL/control:
+	@install -d $(FREETYPE_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(FREETYPE_SOURCE_DIR) || true
 	@echo "Package: freetype" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(FREETYPE_PRIORITY)" >>$@
@@ -112,7 +112,7 @@ freetype-source: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
-	make zlib-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR)
 	$(FREETYPE_UNZIP) $(DL_DIR)/$(FREETYPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR)
@@ -120,13 +120,14 @@ $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREETYPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FREETYPE_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-static \
-		--disable-nls \
 	)
 	touch $(FREETYPE_BUILD_DIR)/.configured
 
@@ -167,12 +168,11 @@ freetype-stage: $(FREETYPE_BUILD_DIR)/.staged
 #
 # You may need to patch your application to make it use these locations.
 #
-$(FREETYPE_IPK): $(FREETYPE_BUILD_DIR)/.built $(FREETYPE_SOURCE_DIR)/control
+$(FREETYPE_IPK): $(FREETYPE_BUILD_DIR)/.built
 	rm -rf $(FREETYPE_IPK_DIR) $(BUILD_DIR)/freetype_*_armeb.ipk
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(FREETYPE_IPK_DIR) install
 	rm -f $(FREETYPE_IPK_DIR)/opt/lib/*.la
-	install -d $(FREETYPE_IPK_DIR)/CONTROL
-	install -m 644 $(FREETYPE_SOURCE_DIR)/control $(FREETYPE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FREETYPE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREETYPE_IPK_DIR)
 
 #
@@ -191,4 +191,4 @@ freetype-clean:
 # directories.
 #
 freetype-dirclean:
-	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR) $(FREETYPE_IPK_DIR) $(FREETYPE_IPK) $(FREETYPE_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR) $(FREETYPE_IPK_DIR) $(FREETYPE_IPK)

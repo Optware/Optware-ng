@@ -61,9 +61,9 @@ XFT_IPK=$(BUILD_DIR)/xft_$(XFT_VERSION)-$(XFT_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XFT_SOURCE_DIR)/control:
+$(XFT_IPK_DIR)/CONTROL/control:
+	@install -d $(XFT_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XFT_SOURCE_DIR) || true
 	@echo "Package: xft" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XFT_PRIORITY)" >>$@
@@ -111,7 +111,6 @@ $(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched $(XFT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XFT_BUILD_DIR)/.configured
@@ -155,12 +154,10 @@ xft-stage: $(XFT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XFT_IPK): $(XFT_BUILD_DIR)/.built
-	rm -rf $(XFT_IPK_DIR) $(BUILD_DIR)/xft_*_armeb.ipk $(XFT_SOURCE_DIR)/control
-	$(MAKE) $(XFT_SOURCE_DIR)/control
+	rm -rf $(XFT_IPK_DIR) $(BUILD_DIR)/xft_*_armeb.ipk
 	$(MAKE) -C $(XFT_BUILD_DIR) DESTDIR=$(XFT_IPK_DIR) install-strip
+	$(MAKE) $(XFT_IPK_DIR)/CONTROL/control
 	rm -f $(XFT_IPK_DIR)/opt/lib/*.la
-	install -d $(XFT_IPK_DIR)/CONTROL
-	install -m 644 $(XFT_SOURCE_DIR)/control $(XFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XFT_IPK_DIR)
 
 #
@@ -179,4 +176,4 @@ xft-clean:
 # directories.
 #
 xft-dirclean:
-	rm -rf $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR) $(XFT_IPK_DIR) $(XFT_IPK) $(XFT_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR) $(XFT_IPK_DIR) $(XFT_IPK)

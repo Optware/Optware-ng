@@ -61,9 +61,9 @@ XDPYINFO_IPK=$(BUILD_DIR)/xdpyinfo_$(XDPYINFO_VERSION)-$(XDPYINFO_IPK_VERSION)_a
 #
 # Automatically create a ipkg control file
 #
-$(XDPYINFO_SOURCE_DIR)/control:
+$(XDPYINFO_IPK_DIR)/CONTROL/control:
+	@install -d $(XDPYINFO_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XDPYINFO_SOURCE_DIR) || true
 	@echo "Package: xdpyinfo" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XDPYINFO_PRIORITY)" >>$@
@@ -111,7 +111,6 @@ $(XDPYINFO_BUILD_DIR)/.configured: $(XDPYINFO_BUILD_DIR)/.fetched $(XDPYINFO_PAT
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XDPYINFO_BUILD_DIR)/.configured
@@ -154,11 +153,9 @@ xdpyinfo-stage: $(XDPYINFO_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XDPYINFO_IPK): $(XDPYINFO_BUILD_DIR)/.built
-	rm -rf $(XDPYINFO_IPK_DIR) $(BUILD_DIR)/xdpyinfo_*_armeb.ipk $(XDPYINFO_SOURCE_DIR)/control
-	$(MAKE) $(XDPYINFO_SOURCE_DIR)/control
+	rm -rf $(XDPYINFO_IPK_DIR) $(BUILD_DIR)/xdpyinfo_*_armeb.ipk
 	$(MAKE) -C $(XDPYINFO_BUILD_DIR) DESTDIR=$(XDPYINFO_IPK_DIR) install-strip
-	install -d $(XDPYINFO_IPK_DIR)/CONTROL
-	install -m 644 $(XDPYINFO_SOURCE_DIR)/control $(XDPYINFO_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XDPYINFO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XDPYINFO_IPK_DIR)
 
 #
@@ -177,4 +174,4 @@ xdpyinfo-clean:
 # directories.
 #
 xdpyinfo-dirclean:
-	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) $(XDPYINFO_IPK_DIR) $(XDPYINFO_IPK) $(XDPYINFO_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) $(XDPYINFO_IPK_DIR) $(XDPYINFO_IPK)

@@ -60,9 +60,9 @@ XTST_IPK=$(BUILD_DIR)/xtst_$(XTST_VERSION)-$(XTST_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XTST_SOURCE_DIR)/control:
+$(XTST_IPK_DIR)/CONTROL/control:
+	@install -d $(XTST_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XTST_SOURCE_DIR) || true
 	@echo "Package: xtst" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XTST_PRIORITY)" >>$@
@@ -110,7 +110,6 @@ $(XTST_BUILD_DIR)/.configured: $(XTST_BUILD_DIR)/.fetched $(XTST_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XTST_BUILD_DIR)/.configured
@@ -154,12 +153,10 @@ xtst-stage: $(XTST_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XTST_IPK): $(XTST_BUILD_DIR)/.built
-	rm -rf $(XTST_IPK_DIR) $(BUILD_DIR)/xtst_*_armeb.ipk $(XTST_SOURCE_DIR)/control
-	$(MAKE) $(XTST_SOURCE_DIR)/control
+	rm -rf $(XTST_IPK_DIR) $(BUILD_DIR)/xtst_*_armeb.ipk
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(XTST_IPK_DIR) install-strip
 	rm -f $(XTST_IPK_DIR)/opt/lib/*.la
-	install -d $(XTST_IPK_DIR)/CONTROL
-	install -m 644 $(XTST_SOURCE_DIR)/control $(XTST_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XTST_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTST_IPK_DIR)
 
 #
@@ -178,4 +175,4 @@ xtst-clean:
 # directories.
 #
 xtst-dirclean:
-	rm -rf $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR) $(XTST_IPK_DIR) $(XTST_IPK) $(XTST_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR) $(XTST_IPK_DIR) $(XTST_IPK)

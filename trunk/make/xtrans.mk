@@ -60,17 +60,17 @@ XTRANS_IPK=$(BUILD_DIR)/xtrans_$(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XTRANS_SOURCE_DIR)/control:
-	rm -f $@
-	mkdir -p $(XTRANS_SOURCE_DIR) || true
-	echo "Package: xtrans" >>$@
-	echo "Architecture: armeb" >>$@
-	echo "Priority: $(XTRANS_PRIORITY)" >>$@
-	echo "Section: $(XTRANS_SECTION)" >>$@
-	echo "Version: $(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)" >>$@
-	echo "Maintainer: $(XTRANS_MAINTAINER)" >>$@
-	echo "Source: $(XTRANS_SITE)/$(XTRANS_SOURCE)" >>$@
-	echo "Description: $(XTRANS_DESCRIPTION)" >>$@
+$(XTRANS_IPK_DIR)/CONTROL/control:
+	@install -d $(XTRANS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xtrans" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(XTRANS_PRIORITY)" >>$@
+	@echo "Section: $(XTRANS_SECTION)" >>$@
+	@echo "Version: $(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XTRANS_MAINTAINER)" >>$@
+	@echo "Source: $(XTRANS_SITE)/$(XTRANS_SOURCE)" >>$@
+	@echo "Description: $(XTRANS_DESCRIPTION)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -100,12 +100,13 @@ $(XTRANS_BUILD_DIR)/.configured: $(XTRANS_BUILD_DIR)/.fetched $(XTRANS_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTRANS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTRANS_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XTRANS_BUILD_DIR)/.configured
@@ -149,11 +150,9 @@ xtrans-stage: $(XTRANS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XTRANS_IPK): $(XTRANS_BUILD_DIR)/.built
-	rm -rf $(XTRANS_IPK_DIR) $(BUILD_DIR)/xtrans_*_armeb.ipk $(XTRANS_SOURCE_DIR)/control
-	$(MAKE) $(XTRANS_SOURCE_DIR)/control
+	rm -rf $(XTRANS_IPK_DIR) $(BUILD_DIR)/xtrans_*_armeb.ipk
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(XTRANS_IPK_DIR) install
-	install -d $(XTRANS_IPK_DIR)/CONTROL
-	install -m 644 $(XTRANS_SOURCE_DIR)/control $(XTRANS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XTRANS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTRANS_IPK_DIR)
 
 #
@@ -172,4 +171,4 @@ xtrans-clean:
 # directories.
 #
 xtrans-dirclean:
-	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR) $(XTRANS_IPK_DIR) $(XTRANS_IPK) $(XTRANS_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR) $(XTRANS_IPK_DIR) $(XTRANS_IPK)

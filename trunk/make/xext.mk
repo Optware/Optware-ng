@@ -61,9 +61,9 @@ XEXT_IPK=$(BUILD_DIR)/xext_$(XEXT_VERSION)-$(XEXT_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XEXT_SOURCE_DIR)/control:
+$(XEXT_IPK_DIR)/CONTROL/control:
+	@install -d $(XEXT_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XEXT_SOURCE_DIR) || true
 	@echo "Package: xext" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XEXT_PRIORITY)" >>$@
@@ -111,7 +111,6 @@ $(XEXT_BUILD_DIR)/.configured: $(XEXT_BUILD_DIR)/.fetched $(XEXT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XEXT_BUILD_DIR)/.configured
@@ -155,12 +154,10 @@ xext-stage: $(XEXT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XEXT_IPK): $(XEXT_BUILD_DIR)/.built
-	rm -rf $(XEXT_IPK_DIR) $(BUILD_DIR)/xext_*_armeb.ipk $(XEXT_SOURCE_DIR)/control
-	$(MAKE) $(XEXT_SOURCE_DIR)/control
+	rm -rf $(XEXT_IPK_DIR) $(BUILD_DIR)/xext_*_armeb.ipk
 	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(XEXT_IPK_DIR) install-strip
+	$(MAKE) $(XEXT_IPK_DIR)/CONTROL/control
 	rm -f $(XEXT_IPK_DIR)/opt/lib/*.la
-	install -d $(XEXT_IPK_DIR)/CONTROL
-	install -m 644 $(XEXT_SOURCE_DIR)/control $(XEXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEXT_IPK_DIR)
 
 #
@@ -179,4 +176,4 @@ xext-clean:
 # directories.
 #
 xext-dirclean:
-	rm -rf $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR) $(XEXT_IPK_DIR) $(XEXT_IPK) $(XEXT_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR) $(XEXT_IPK_DIR) $(XEXT_IPK)

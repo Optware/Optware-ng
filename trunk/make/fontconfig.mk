@@ -61,9 +61,9 @@ FONTCONFIG_IPK=$(BUILD_DIR)/fontconfig_$(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VE
 #
 # Automatically create a ipkg control file
 #
-$(FONTCONFIG_SOURCE_DIR)/control:
+$(FONTCONFIG_IPK_DIR)/CONTROL/control:
+	@install -d $(FONTCONFIG_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(FONTCONFIG_SOURCE_DIR) || true
 	@echo "Package: fontconfig" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(FONTCONFIG_PRIORITY)" >>$@
@@ -98,7 +98,8 @@ fontconfig-source: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
-	$(MAKE) expat-stage freetype-stage
+	$(MAKE) expat-stage 
+	$(MAKE) freetype-stage
 	(cd $(FONTCONFIG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \
@@ -112,7 +113,6 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONF
 		--prefix=/opt \
 		--with-default-fonts=/opt/share/fonts \
 		--without-add-fonts \
-		--disable-nls \
 		--disable-docs \
 		--disable-static \
 	)
@@ -157,12 +157,10 @@ fontconfig-stage: $(FONTCONFIG_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(FONTCONFIG_IPK): $(FONTCONFIG_BUILD_DIR)/.built
-	rm -rf $(FONTCONFIG_IPK_DIR) $(BUILD_DIR)/fontconfig_*_armeb.ipk $(FONTCONFIG_SOURCE_DIR)/control
-	$(MAKE) $(FONTCONFIG_SOURCE_DIR)/control
+	rm -rf $(FONTCONFIG_IPK_DIR) $(BUILD_DIR)/fontconfig_*_armeb.ipk
 	$(MAKE) -C $(FONTCONFIG_BUILD_DIR) DESTDIR=$(FONTCONFIG_IPK_DIR) install-strip
 	rm -f $(FONTCONFIG_IPK_DIR)/opt/lib/*.la
-	install -d $(FONTCONFIG_IPK_DIR)/CONTROL
-	install -m 644 $(FONTCONFIG_SOURCE_DIR)/control $(FONTCONFIG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FONTCONFIG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FONTCONFIG_IPK_DIR)
 
 #
@@ -181,4 +179,4 @@ fontconfig-clean:
 # directories.
 #
 fontconfig-dirclean:
-	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) $(FONTCONFIG_IPK_DIR) $(FONTCONFIG_IPK) $(FONTCONFIG_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) $(FONTCONFIG_IPK_DIR) $(FONTCONFIG_IPK)

@@ -20,6 +20,7 @@ X11_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 X11_DESCRIPTION=X protocol library
 X11_SECTION=lib
 X11_PRIORITY=optional
+X11_DEPENDS=xau
 
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
@@ -60,9 +61,9 @@ X11_IPK=$(BUILD_DIR)/x11_$(X11_VERSION)-$(X11_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(X11_SOURCE_DIR)/control:
+$(X11_IPK_DIR)/CONTROL/control:
+	@install -d $(X11_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(X11_SOURCE_DIR) || true
 	@echo "Package: x11" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(X11_PRIORITY)" >>$@
@@ -71,6 +72,7 @@ $(X11_SOURCE_DIR)/control:
 	@echo "Maintainer: $(X11_MAINTAINER)" >>$@
 	@echo "Source: $(X11_SITE)/$(X11_SOURCE)" >>$@
 	@echo "Description: $(X11_DESCRIPTION)" >>$@
+	@echo "Depends: $(X11_DEPENDS)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -153,11 +155,9 @@ x11-stage: $(X11_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(X11_IPK): $(X11_BUILD_DIR)/.built
-	rm -rf $(X11_IPK_DIR) $(BUILD_DIR)/x11_*_armeb.ipk $(X11_SOURCE_DIR)/control
-	$(MAKE) $(X11_SOURCE_DIR)/control
+	rm -rf $(X11_IPK_DIR) $(BUILD_DIR)/x11_*_armeb.ipk
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(X11_IPK_DIR) install-strip
-	install -d $(X11_IPK_DIR)/CONTROL
-	install -m 644 $(X11_SOURCE_DIR)/control $(X11_IPK_DIR)/CONTROL/control
+	$(MAKE) $(X11_IPK_DIR)/CONTROL/control
 	rm -f $(X11_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X11_IPK_DIR)
 
@@ -177,4 +177,4 @@ x11-clean:
 # directories.
 #
 x11-dirclean:
-	rm -rf $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR) $(X11_IPK_DIR) $(X11_IPK) $(X11_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR) $(X11_IPK_DIR) $(X11_IPK)

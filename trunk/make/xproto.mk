@@ -64,17 +64,17 @@ XPROTO_IPK=$(BUILD_DIR)/xproto_$(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XPROTO_SOURCE_DIR)/control:
-	rm -f $@
-	mkdir -p $(XPROTO_SOURCE_DIR) || true
-	echo "Package: extensions" >>$@
-	echo "Architecture: armeb" >>$@
-	echo "Priority: $(XPROTO_PRIORITY)" >>$@
-	echo "Section: $(XPROTO_SECTION)" >>$@
-	echo "Version: $(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)" >>$@
-	echo "Maintainer: $(XPROTO_MAINTAINER)" >>$@
-	echo "Source: $(XPROTO_SITE)/$(XPROTO_SOURCE)" >>$@
-	echo "Description: $(XPROTO_DESCRIPTION)" >>$@
+$(XPROTO_IPK_DIR)/CONTROL/control:
+	@install -d $(XPROTO_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xproto" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(XPROTO_PRIORITY)" >>$@
+	@echo "Section: $(XPROTO_SECTION)" >>$@
+	@echo "Version: $(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XPROTO_MAINTAINER)" >>$@
+	@echo "Source: $(XPROTO_SITE)/$(XPROTO_SOURCE)" >>$@
+	@echo "Description: $(XPROTO_DESCRIPTION)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -105,12 +105,13 @@ $(XPROTO_BUILD_DIR)/.configured: $(XPROTO_BUILD_DIR)/.fetched $(XPROTO_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPROTO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPROTO_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XPROTO_BUILD_DIR)/.configured
@@ -153,11 +154,9 @@ xproto-stage: $(XPROTO_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XPROTO_IPK): $(XPROTO_BUILD_DIR)/.built
-	rm -rf $(XPROTO_IPK_DIR) $(BUILD_DIR)/xproto_*_armeb.ipk $(XPROTO_SOURCE_DIR)/control
-	$(MAKE) $(XPROTO_SOURCE_DIR)/control
+	rm -rf $(XPROTO_IPK_DIR) $(BUILD_DIR)/xproto_*_armeb.ipk
 	$(MAKE) -C $(XPROTO_BUILD_DIR) DESTDIR=$(XPROTO_IPK_DIR) install
-	install -d $(XPROTO_IPK_DIR)/CONTROL
-	install -m 644 $(XPROTO_SOURCE_DIR)/control $(XPROTO_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XPROTO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XPROTO_IPK_DIR)
 
 #
@@ -176,4 +175,4 @@ xproto-clean:
 # directories.
 #
 xproto-dirclean:
-	rm -rf $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR) $(XPROTO_IPK_DIR) $(XPROTO_IPK) $(XPROTO_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR) $(XPROTO_IPK_DIR) $(XPROTO_IPK)

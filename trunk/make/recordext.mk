@@ -60,17 +60,17 @@ RECORDEXT_IPK=$(BUILD_DIR)/recordext_$(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSIO
 #
 # Automatically create a ipkg control file
 #
-$(RECORDEXT_SOURCE_DIR)/control:
-	rm -f $@
-	mkdir -p $(RECORDEXT_SOURCE_DIR) || true
-	echo "Package: extensions" >>$@
-	echo "Architecture: armeb" >>$@
-	echo "Priority: $(RECORDEXT_PRIORITY)" >>$@
-	echo "Section: $(RECORDEXT_SECTION)" >>$@
-	echo "Version: $(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSION)" >>$@
-	echo "Maintainer: $(RECORDEXT_MAINTAINER)" >>$@
-	echo "Source: $(RECORDEXT_SITE)/$(RECORDEXT_SOURCE)" >>$@
-	echo "Description: $(RECORDEXT_DESCRIPTION)" >>$@
+$(RECORDEXT_IPK_DIR)/CONTROL/control:
+	@install -d $(RECORDEXT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: recordext" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(RECORDEXT_PRIORITY)" >>$@
+	@echo "Section: $(RECORDEXT_SECTION)" >>$@
+	@echo "Version: $(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(RECORDEXT_MAINTAINER)" >>$@
+	@echo "Source: $(RECORDEXT_SITE)/$(RECORDEXT_SOURCE)" >>$@
+	@echo "Description: $(RECORDEXT_DESCRIPTION)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -101,12 +101,13 @@ $(RECORDEXT_BUILD_DIR)/.configured: $(RECORDEXT_BUILD_DIR)/.fetched $(RECORDEXT_
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECORDEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RECORDEXT_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(RECORDEXT_BUILD_DIR)/.configured
@@ -150,11 +151,9 @@ recordext-stage: $(RECORDEXT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(RECORDEXT_IPK): $(RECORDEXT_BUILD_DIR)/.built
-	rm -rf $(RECORDEXT_IPK_DIR) $(BUILD_DIR)/recordext_*_armeb.ipk $(RECORDEXT_SOURCE_DIR)/control
-	$(MAKE) $(RECORDEXT_SOURCE_DIR)/control
+	rm -rf $(RECORDEXT_IPK_DIR) $(BUILD_DIR)/recordext_*_armeb.ipk
 	$(MAKE) -C $(RECORDEXT_BUILD_DIR) DESTDIR=$(RECORDEXT_IPK_DIR) install
-	install -d $(RECORDEXT_IPK_DIR)/CONTROL
-	install -m 644 $(RECORDEXT_SOURCE_DIR)/control $(RECORDEXT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(RECORDEXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RECORDEXT_IPK_DIR)
 
 #
@@ -173,4 +172,4 @@ recordext-clean:
 # directories.
 #
 recordext-dirclean:
-	rm -rf $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR) $(RECORDEXT_IPK_DIR) $(RECORDEXT_IPK) $(RECORDEXT_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR) $(RECORDEXT_IPK_DIR) $(RECORDEXT_IPK)
