@@ -24,19 +24,20 @@
 TARGET=nslu2
 
 CROSS_PACKAGES = \
-	abook adns atftp appweb apache apr apr-util atk automake \
+	abook adns atftp appweb apache apr apr-util atk audiofile automake \
 	bash bc bind bitchx busybox bzflag bzip2 \
 	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dnsmasq dropbear \
-	e2fsprogs ed elinks expat \
+	e2fsprogs ed elinks esound expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
-	hdparm \
+	hdparm hnb \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
-	lame less libbt libcurl libdb libdvdread libevent libgd libid3tag \
+	lame less \
+	libao libbt libcurl libdb libdvdread libevent libgc libgd libid3tag \
 	libjpeg libnsl libogg libol libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libxml2 libxslt logrotate lsof lua lynx lzo \
 	m4 make man man-pages mc mdadm metalog miau minicom mt-daapd mtr mutt \
@@ -47,10 +48,11 @@ CROSS_PACKAGES = \
 	procps proftpd puppy python \
 	py-sqlite py-bittorrent \
 	rdate readline recordext renderext rsync \
-	screen sed ser sm snownews sqlite strace stunnel sudo svn syslog-ng \
+	screen sed ser sm snownews sqlite strace stunnel streamripper \
+	sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
-	vdr-mediamvp vsftpd vte \
+	vdr-mediamvp vsftpd vte vorbis-tools \
 	w3cam wakelan wget-ssl which \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xterm xtrans xtst xvid \
@@ -60,8 +62,7 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 
-CROSS_PACKAGES_READY_FOR_TESTING = audiofile esound libao vorbis-tools\
-	hnb libgc w3m streamripper
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -103,8 +104,10 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# w3m - needs to be configured to look for gc.h in staging
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	w3m \
 	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
