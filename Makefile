@@ -23,7 +23,7 @@
 TARGETS:= slugtool slingbox
 
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
-	   tinyproxy dnsmasq openssl openssh ntpclient \
+	   tinyproxy dnsmasq openssl openssh ntpclient libusb \
 	   \
 	   sudo rsync rdate \
 	   portmap nfs-server flex inetutils \
@@ -34,7 +34,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
 
 PACKAGES_TO_BE_TESTED:= \
 	   dump e2fsprogs gkrellm glib \
-	   grep lsof openssl libusb
+	   grep lsof
 
 WGET=wget --passive-ftp
 
