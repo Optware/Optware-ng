@@ -154,7 +154,7 @@ ADDITIONAL INFORMATION:
     Add these lines to the end of your /etc/rc.d/rc.local, 
     after the quota line.
     ---
-    if [ -e /etc/inetd.conf ] && rm /etc/inetd.conf
+    if [ -e /etc/inetd.conf ] && rm /etc/inetd.conf ; then
        cp /etc/inetd_tel.conf /etc/inetd.conf
        /etc/rc.d/rc.xinetd
     fi
