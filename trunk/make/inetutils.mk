@@ -43,8 +43,8 @@ $(INETUTILS_IPK): $(INETUTILS_DIR)/inetd/inetd
 	# Setuid stuff doesn't work as non-root, but we fix in in the postinst script.
 	make -C $(INETUTILS_DIR) DESTDIR=$(INETUTILS_IPK_DIR) install
 	install -d $(INETUTILS_IPK_DIR)/CONTROL $(INETUTILS_IPK_DIR)/opt/etc/init.d
-	install -m 644 $(SOURCE_DIR)/inetutils-1.2.4.control  $(INETUTILS_IPK_DIR)/CONTROL/control
-	install -m 644 $(SOURCE_DIR)/inetutils-1.2.4.postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
+	install -m 644 $(SOURCE_DIR)/inetutils.control  $(INETUTILS_IPK_DIR)/CONTROL/control
+	install -m 644 $(SOURCE_DIR)/inetutils.postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
 	install -m 755 $(SOURCE_DIR)/inetutils.rc $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INETUTILS_IPK_DIR)
 
