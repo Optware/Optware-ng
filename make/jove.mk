@@ -72,6 +72,7 @@ jove-source: $(DL_DIR)/$(JOVE_SOURCE) $(JOVE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(JOVE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOVE_SOURCE) $(JOVE_PATCHES)
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(JOVE_DIR) $(JOVE_BUILD_DIR)
 	$(JOVE_UNZIP) $(DL_DIR)/$(JOVE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(JOVE_PATCHES) | patch -d $(BUILD_DIR)/$(JOVE_DIR) -p1
