@@ -11,6 +11,7 @@ IPKG_UTILS_DIR:=$(TOOL_BUILD_DIR)/ipkg-utils-$(IPKG_UTILS_VERSION)
 
 IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_buildpackage.patch
 IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_build_clean.patch
+IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_tar_argument_order.patch
 
 $(DL_DIR)/$(IPKG_UTILS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(IPKG_UTILS_SITE)/$(IPKG_UTILS_SOURCE)
