@@ -38,22 +38,16 @@ $(SLINGBOX_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 
 slingbox-unpack: $(SLINGBOX_DIR)/.configured
 
-$(SLINGBOX_DIR)/slingbox: $(SLINGBOX_DIR)/.configured
+$(SLINGBOX_DIR)/busybox: $(SLINGBOX_DIR)/.configured
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/slingbox" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" -C $(SLINGBOX_DIR)
-	cp $(SLINGBOX_DIR)/busybox $(SLINGBOX_DIR)/slingbox
 
-$(TARGET_DIR)/slingbox/bin/slingbox: $(SLINGBOX_DIR)/slingbox
-	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/slingbox" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(SLINGBOX_DIR) install
+$(FIRMWARE_DIR)/slingbox: $(SLINGBOX_DIR)/busybox
+	install -m 755 $(SLINGBOX_DIR)/busybox $(FIRMWARE_DIR)/slingbox
 
-slingbox: $(SLINGBOX_DIR)/slingbox
+slingbox: $(SLINGBOX_DIR)/busybox
 
-slingbox-install: $(TARGET_DIR)/slingbox/bin/slingbox
+slingbox-install: $(FIRMWARE_DIR)/slingbox
 
 slingbox-clean:
 	-$(MAKE) -C $(SLINGBOX_DIR) clean
-
-install: slingbox-install
-
-clean: slingbox-clean
