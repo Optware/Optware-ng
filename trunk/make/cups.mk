@@ -28,11 +28,11 @@ CUPS_UNZIP=zcat
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=3
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
-CUPS_CONFFILES=/opt/etc/cups.conf
+CUPS_CONFFILES=/opt/etc/cups.conf /opt/etc/printers.conf
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
@@ -163,7 +163,8 @@ cups-stage: $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION)
 $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	rm -rf $(CUPS_IPK_DIR) $(BUILD_DIR)/cups_*_armeb.ipk
 	install -d $(CUPS_IPK_DIR)
-#	install -m 755 $(CUPS_SOURCE_DIR)/rc.cups $(CUPS_IPK_DIR)/opt/etc/init.d/SXXcups
+	# Make sure /opt/var/spool has correct permissions
+	install -m 0755 -d $(CUPS_IPK_DIR)/opt/var/spool
 	cp -rf $(CUPS_BUILD_DIR)/install/* $(CUPS_IPK_DIR)
 	rm -f $(CUPS_IPK_DIR)/opt/lib/*.a
 	rm -rf $(CUPS_IPK_DIR)/etc
@@ -180,6 +181,7 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
 	# Copy the configuration file
 	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)/opt/etc/cups
+	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)/opt/etc/cups
         # Copy the init.d startup file
