@@ -46,12 +46,16 @@ $(TARGET_DIR)/busybox/bin/busybox: $(BUSYBOX_DIR)/busybox
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/busybox" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_DIR) install
 
-$(PACKAGE_DIR)/$(BUSYBOX).upkg: $(TARGET_DIR)/busybox/bin/busybox
-	tar cvf $(PACKAGE_DIR)/$(BUSYBOX).upkg --group root -C $(TARGET_DIR) busybox
-
 busybox: $(BUSYBOX_DIR)/busybox
 
-busybox-upkg: $(PACKAGE_DIR)/$(BUSYBOX).upkg
+$(PACKAGE_DIR)/busybox_1.0.0-rc3_armeb.ipk: busybox
+	install -d  $(PACKAGE_DIR)/busybox/opt
+	cp -rp $(TARGET_DIR)/busybox/* $(PACKAGE_DIR)/busybox/opt
+	install -d $(PACKAGE_DIR)/busybox/CONTROL
+	install -m 644 $(SOURCE_DIR)/busybox.control $(PACKAGE_DIR)/busybox/CONTROL/control
+	./ipkg-build -c -o root -g root $(PACKAGE_DIR)/busybox $(PACKAGE_DIR)
+
+busybox-ipk: $(PACKAGE_DIR)/busybox_1.0.0-rc3_armeb.ipk
 
 busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
