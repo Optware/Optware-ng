@@ -19,11 +19,16 @@ LIBXSLT_VERSION=1.1.12
 LIBXSLT_SOURCE=libxslt-$(LIBXSLT_VERSION).tar.gz
 LIBXSLT_DIR=libxslt-$(LIBXSLT_VERSION)
 LIBXSLT_UNZIP=zcat
+LIBXSLT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBXSLT_DESCRIPTION=An XML Stylesheet processor based on libxml2
+LIBXSLT_SECTION=libs
+LIBXSLT_PRIORITY=optional
+LIBXSLT_DEPENDS=libxml2
 
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=1
+LIBXSLT_IPK_VERSION=2
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -140,6 +145,23 @@ $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
 libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libxslt
+#
+$(LIBXSLT_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBXSLT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libxslt" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBXSLT_PRIORITY)" >>$@
+	@echo "Section: $(LIBXSLT_SECTION)" >>$@
+	@echo "Version: $(LIBXSLT_VERSION)-$(LIBXSLT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBXSLT_MAINTAINER)" >>$@
+	@echo "Source: $(LIBXSLT_SITE)/$(LIBXSLT_SOURCE)" >>$@
+	@echo "Description: $(LIBXSLT_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBXSLT_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBXSLT_IPK_DIR)/opt/sbin or $(LIBXSLT_IPK_DIR)/opt/bin
@@ -160,8 +182,7 @@ $(LIBXSLT_IPK): $(LIBXSLT_BUILD_DIR)/.built
 #	install -m 755 $(LIBXSLT_SOURCE_DIR)/libxslt.conf $(LIBXSLT_IPK_DIR)/opt/etc/libxslt.conf
 #	install -d $(LIBXSLT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBXSLT_SOURCE_DIR)/rc.libxslt $(LIBXSLT_IPK_DIR)/opt/etc/init.d/SXXlibxslt
-	install -d $(LIBXSLT_IPK_DIR)/CONTROL
-	install -m 644 $(LIBXSLT_SOURCE_DIR)/control $(LIBXSLT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBXSLT_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBXSLT_SOURCE_DIR)/postinst $(LIBXSLT_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBXSLT_SOURCE_DIR)/prerm $(LIBXSLT_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBXSLT_CONFFILES) | sed -e 's/ /\n/g' > $(LIBXSLT_IPK_DIR)/CONTROL/conffiles
