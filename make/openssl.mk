@@ -8,16 +8,14 @@ OPENSSL_LIB_VERSION=0.9.7
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_DIR=openssl-$(OPENSSL_VERSION)
 OPENSSL_UNZIP=zcat
-OPENSSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-OPENSSH_DESCRIPTION=The OpenSSH distribution.
-OPENSSH_SECTION=net
-OPENSSH_PRIORITY=optional
-OPENSSH_DEPENDS=openssl, zlib
-OPENSSH_CONFLICTS=dropbear
+OPENSSL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+OPENSSL_DESCRIPTION=Openssl provides the ssl implementation in libraries libcrypto and libssl, and is needed by many other applications and libraries.
+OPENSSL_SECTION=libs
+OPENSSL_PRIORITY=recommended
+OPENSSL_DEPENDS=
+OPENSSL_CONFLICTS=
 
 OPENSSL_IPK_VERSION=3
-
-OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config /opt/etc/openssh/ssh_host_dsa_key /opt/etc/openssh/ssh_host_dsa_key.pub /opt/etc/openssh/ssh_host_key /opt/etc/openssh/ssh_host_key.pub /opt/etc/openssh/ssh_host_rsa_key /opt/etc/openssh/ssh_host_rsa_key.pub /opt/etc/openssh/moduli
 
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
@@ -82,19 +80,19 @@ $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/li
 
 openssl-stage: $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION)
 
-$(OPENSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENSSH_IPK_DIR)/CONTROL
+$(OPENSSL_IPK_DIR)/CONTROL/control:
+	@install -d $(OPENSSL_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: openssh" >>$@
+	@echo "Package: openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(OPENSSH_PRIORITY)" >>$@
-	@echo "Section: $(OPENSSH_SECTION)" >>$@
-	@echo "Version: $(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(OPENSSH_MAINTAINER)" >>$@
-	@echo "Source: $(OPENSSH_SITE)/$(OPENSSH_SOURCE)" >>$@
-	@echo "Description: $(OPENSSH_DESCRIPTION)" >>$@
-	@echo "Depends: $(OPENSSH_DEPENDS)" >>$@
-	@echo "Conflicts: $(OPENSSH_CONFLICTS)" >>$@
+	@echo "Priority: $(OPENSSL_PRIORITY)" >>$@
+	@echo "Section: $(OPENSSL_SECTION)" >>$@
+	@echo "Version: $(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(OPENSSL_MAINTAINER)" >>$@
+	@echo "Source: $(OPENSSL_SITE)/$(OPENSSL_SOURCE)" >>$@
+	@echo "Description: $(OPENSSL_DESCRIPTION)" >>$@
+	@echo "Depends: $(OPENSSL_DEPENDS)" >>$@
+	@echo "Conflicts: $(OPENSSL_CONFLICTS)" >>$@
 
 $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk
@@ -114,8 +112,8 @@ $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
-	$(MAKE) $(OPENSSH_IPK_DIR)/CONTROL/control
-	echo $(OPENSSH_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSH_IPK_DIR)/CONTROL/conffiles
+	$(MAKE) $(OPENSSL_IPK_DIR)/CONTROL/control
+	echo $(OPENSSL_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
 
 openssl-ipk: $(OPENSSL_IPK)
