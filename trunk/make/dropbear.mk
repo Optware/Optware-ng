@@ -58,12 +58,6 @@ $(DROPBEAR_BUILD_DIR)/dropbearmulti: $(DROPBEAR_BUILD_DIR)/.configured
 
 dropbear: $(DROPBEAR_BUILD_DIR)/dropbearmulti
 
-dropbear-diff: #$(DROPBEAR_BUILD_DIR)/.configured
-	rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR)
-	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	-make -C $(DROPBEAR_BUILD_DIR) distclean
-	-cd $(BUILD_DIR) && diff -BurN $(DROPBEAR_DIR) dropbear | grep -v ^Only > $(DROPBEAR_PATCH)
-
 $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/dropbearmulti
 	install -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
 	$(STRIP) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbearmulti
