@@ -47,6 +47,10 @@ bison: $(BISON_DIR)/src/bison
 $(BISON_IPK): $(BISON_DIR)/src/bison
 	mkdir -p $(BISON_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/bison.control $(BISON_IPK_DIR)/CONTROL/control
+	# for now ignore the locale files and the contents of share
+	install -d $(BISON_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(BISON_DIR)/src/bison -o $(BISON_IPK_DIR)/opt/bin/bison
+	cp $(BISON_DIR)/src/yacc $(BISON_IPK_DIR)/opt/bin/yacc
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BISON_IPK_DIR)
 
 bison-ipk: $(BISON_IPK)
