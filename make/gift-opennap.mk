@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 GIFT_OPENNAP_REPOSITORY=:pserver:anonymous@cvs.gift-opennap.berlios.de:/cvsroot/gift-opennap
-GIFT_OPENNAP_VERSION=1.0
+GIFT_OPENNAP_VERSION=20050212
 GIFT_OPENNAP_SOURCE=gift-opennap-$(GIFT_OPENNAP_VERSION).tar.gz
 GIFT_OPENNAP_TAG=-D 2005-02-12
 GIFT_OPENNAP_MODULE=giFT-OpenNap 
