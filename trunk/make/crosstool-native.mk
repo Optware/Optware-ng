@@ -25,7 +25,7 @@ CROSSTOOL-NATIVE_DAT=gcc-3.3.5-glibc-2.2.5.dat
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=4
+CROSSTOOL-NATIVE_IPK_VERSION=5
 
 #
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
@@ -151,9 +151,8 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )
-# For some reason, syslimits.h is missing
-	touch $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h
-	chmod 644 $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h
+# For some reason, syslimits.h is missing; copy it from the toolchain
+	install -m 644 $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib\/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h
 # Install symlinks for common toolchain programs
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
 	for f in ar as c++ g++ gcc ld nm ranlib strip ; do \
