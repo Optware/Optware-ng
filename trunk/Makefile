@@ -35,7 +35,7 @@ CROSS_PACKAGES = \
 	jamvm jikes joe jove \
 	lame less libbt libcurl libdb libdvdread libevent libgd libid3tag \
 	libjpeg libnsl libogg libol libpcap libpng libstdc++ libtiff libtool \
-	libvorbis libxml2 libxslt logrotate lsof lynx \
+	libvorbis libxml2 libxslt logrotate lsof lua lynx \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl \
@@ -45,7 +45,7 @@ CROSS_PACKAGES = \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd vte \
-	wakelan wget-ssl which \
+	w3cam wakelan wget-ssl which \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xtrans xtst xvid \
 	zlib \
@@ -54,7 +54,7 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 
-CROSS_PACKAGES_READY_FOR_TESTING = lua w3cam units \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
@@ -92,8 +92,10 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# units is missing units.mk!
 # asterisk can't be downloaded, its source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	units \
 	asterisk \
 	nethack scponly dump gkrellm clamav freeradius
 
