@@ -19,17 +19,26 @@ LOGROTATE_VERSION=3.7
 LOGROTATE_SOURCE=logrotate_$(LOGROTATE_VERSION).orig.tar.gz
 LOGROTATE_DIR=logrotate-$(LOGROTATE_VERSION)
 LOGROTATE_UNZIP=zcat
+LOGROTATE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LOGROTATE_DESCRIPTION=Rotates, compresses, removes and mails system log files.
+LOGROTATE_SECTION=base
+LOGROTATE_PRIORITY=optional
+LOGROTATE_DEPENDS=popt
 
 #
 # LOGROTATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LOGROTATE_IPK_VERSION=1
+LOGROTATE_IPK_VERSION=2
+
+#
+# LOGROTATE_CONFFILES should be a list of user-editable files
+LOGROTATE_CONFFILES=/opt/etc/logrotate.conf
 
 #
 # LOGROTATE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# LOGROTATE_PATCHES=$(LOGROTATE_SOURCE_DIR)/configure.patch
+LOGROTATE_PATCHES=$(LOGROTATE_SOURCE_DIR)/config.patch
 
 #
 # If the compilation of the package requires additional
@@ -85,6 +94,7 @@ $(LOGROTATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PA
 	$(MAKE) popt-stage
 	rm -rf $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	$(LOGROTATE_UNZIP) $(DL_DIR)/$(LOGROTATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(LOGROTATE_PATCHES) | patch -d $(BUILD_DIR)/$(LOGROTATE_DIR) -p1
 	mv $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	touch $(LOGROTATE_BUILD_DIR)/.configured
 
@@ -109,6 +119,23 @@ $(LOGROTATE_BUILD_DIR)/.built: $(LOGROTATE_BUILD_DIR)/.configured
 logrotate: $(LOGROTATE_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/logrotate
+#
+$(LOGROTATE_IPK_DIR)/CONTROL/control:
+	@install -d $(LOGROTATE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: logrotate" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LOGROTATE_PRIORITY)" >>$@
+	@echo "Section: $(LOGROTATE_SECTION)" >>$@
+	@echo "Version: $(LOGROTATE_VERSION)-$(LOGROTATE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LOGROTATE_MAINTAINER)" >>$@
+	@echo "Source: $(LOGROTATE_SITE)/$(LOGROTATE_SOURCE)" >>$@
+	@echo "Description: $(LOGROTATE_DESCRIPTION)" >>$@
+	@echo "Depends: $(LOGROTATE_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LOGROTATE_IPK_DIR)/opt/sbin or $(LOGROTATE_IPK_DIR)/opt/bin
@@ -124,12 +151,12 @@ $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
 	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_$(TARGET_ARCH).ipk
 	install -d $(LOGROTATE_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
-	install -d $(LOGROTATE_IPK_DIR)/opt/doc/logrotate
-	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/doc/logrotate/logrotate.conf
-	install -d $(LOGROTATE_IPK_DIR)/CONTROL
-	install -m 644 $(LOGROTATE_SOURCE_DIR)/control $(LOGROTATE_IPK_DIR)/CONTROL/control
+	install -d $(LOGROTATE_IPK_DIR)/opt/etc
+	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.conf
+	$(MAKE) $(LOGROTATE_IPK_DIR)/CONTROL/control
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm
+	echo $(LOGROTATE_CONFFILES) | sed -e 's/ /\n/g' > $(LOGROTATE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LOGROTATE_IPK_DIR)
 
 #
