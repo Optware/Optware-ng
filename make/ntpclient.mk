@@ -9,7 +9,8 @@ NTPCLIENT_SOURCE_DIR=$(SOURCE_DIR)/ntpclient
 
 NTPCLIENT_VERSION=2003_194
 NTPCLIENT=ntpclient_$(NTPCLIENT_VERSION)
-NTPCLIENT_SITE=http://doolittle.faludi.com/ntpclient/
+#NTPCLIENT_SITE=http://doolittle.faludi.com/ntpclient/
+NTPCLIENT_SITE=ipkg.nslu2-linux.org/downloads
 NTPCLIENT_SOURCE=$(NTPCLIENT).tar.gz
 NTPCLIENT_UNZIP=zcat
 
