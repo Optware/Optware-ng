@@ -19,9 +19,11 @@
 #
 # You should change all these variables to suit your package.
 #
-TRANSCODE_SITE=http://www.jakemsr.com/transcode
-TRANSCODE_VERSION=1.0.0beta2
+TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
+TRANSCODE_VERSION=20050223
 TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.gz
+TRANSCODE_TAG=-D 2005-02-13
+TRANSCODE_MODULE=transcode
 TRANSCODE_DIR=transcode-$(TRANSCODE_VERSION)
 TRANSCODE_UNZIP=zcat
 
@@ -66,7 +68,11 @@ TRANSCODE_IPK=$(BUILD_DIR)/transcode_$(TRANSCODE_VERSION)-$(TRANSCODE_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TRANSCODE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TRANSCODE_SITE)/$(TRANSCODE_SOURCE)
+	cd $(DL_DIR) ; $(CVS) -z3 -d $(TRANSCODE_REPOSITORY) co $(TRANSCODE_TAG) $(TRANSCODE_MODULE)
+	mv $(DL_DIR)/$(TRANSCODE_MODULE) $(DL_DIR)/$(TRANSCODE_DIR)
+	cd $(DL_DIR) ; tar zcvf $(TRANSCODE_SOURCE) $(TRANSCODE_DIR)
+	rm -rf $(DL_DIR)/$(TRANSCODE_DIR)
+
 
 #
 # The source code depends on it existing within the download directory.
@@ -94,6 +100,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 	$(MAKE) ffmpeg-stage lame-stage freetype-stage libdvdread-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cd $(BUILD_DIR)/$(TRANSCODE_DIR); autoreconf -i -f
 	cat $(TRANSCODE_PATCHES) | patch -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	(cd $(TRANSCODE_BUILD_DIR); \
