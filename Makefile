@@ -20,7 +20,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
+# Packages before the blank line build natively from the Unslung CVS.
+# Packages after the second blank line do not build natively from CVS.
+# The ones in the middle haven't been tested yet ...
+
+PACKAGES:= zlib dropbear miau \
+	   \
+	   termcap bash iptables atftp \
 	   dnsmasq openssl openssh ntpclient \
 	   sudo rsync rdate grep jove lsof \
 	   portmap nfs-server flex inetutils \
@@ -34,7 +40,9 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff less nfs-utils \
 	   logrotate appweb imagemagick \
-	   nail stunnel patch
+	   nail stunnel patch \
+	   \
+	   busybox
 
 PACKAGES_TO_BE_TESTED:= crosstool-native
 
