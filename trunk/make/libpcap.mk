@@ -119,7 +119,7 @@ $(LIBPCAP_BUILD_DIR)/libpcap: $(LIBPCAP_BUILD_DIR)/.configured
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libpcap: $(LIBPCAP_BUILD_DIR)/libpcap
+libpcap: $(LIBPCAP_BUILD_DIR)/libpcap.a
 
 #
 # If you are building a library, then you need to stage it too.
@@ -141,7 +141,7 @@ libpcap-stage: $(STAGING_DIR)/opt/lib/libpcap.a
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBPCAP_IPK): $(LIBPCAP_BUILD_DIR)/libpcap
+$(LIBPCAP_IPK): $(LIBPCAP_BUILD_DIR)/libpcap.a
 	@echo "warning: this package is only for staging"
 
 #
