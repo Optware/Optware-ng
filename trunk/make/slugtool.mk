@@ -1,24 +1,47 @@
-SLUGTOOL=slugtool
-SLUGTOOL_SITE=http://www.lantz.com/filemgmt_data/files/
+#############################################################
+#
+# slugtool
+#
+#############################################################
 
-$(DL_DIR)/$(SLUGTOOL).tar.gz:
-	cd $(DL_DIR) && $(WGET) $(SLUGTOOL_SITE)/$(SLUGTOOL).tar.gz
+SLUGTOOL_DIR:=$(BUILD_DIR)/slugtool
 
-$(BUILD_DIR)/slugtool/slugtool.c: $(DL_DIR)/$(SLUGTOOL).tar.gz $(SOURCE_DIR)/slugtool.patch
-	@rm -rf $(BUILD_DIR)/$(SLUGTOOL)
-	mkdir $(BUILD_DIR)/$(SLUGTOOL)
-	tar zxf $(DL_DIR)/$(SLUGTOOL).tar.gz -C $(BUILD_DIR)/slugtool
-	patch -d $(BUILD_DIR)/$(SLUGTOOL) -p1 < $(SOURCE_DIR)/slugtool.patch
+SLUGTOOL_SITE:=http://www.lantz.com/filemgmt_data/files/
+SLUGTOOL_SOURCE:=slugtool.tar.gz
+SLUGTOOL_UNZIP:=zcat
 
-$(BUILD_DIR)/slugtool/slugtool: $(BUILD_DIR)/slugtool/slugtool.c
-	make -C $(BUILD_DIR)/slugtool slugtool CC=$(HOSTCC)
+SLUGTOOL_PATCH:=$(SOURCE_DIR)/slugtool.patch
 
-$(FIRMWARE_DIR)/slugtool: $(BUILD_DIR)/slugtool/slugtool
-	install -m 755 $(BUILD_DIR)/slugtool/slugtool $(FIRMWARE_DIR)/slugtool
+$(DL_DIR)/$(SLUGTOOL_SOURCE):
+	$(WGET) -P $(DL_DIR) $(SLUGTOOL_SITE)/$(SLUGTOOL_SOURCE)
 
-slugtool: $(FIRMWARE_DIR)/slugtool
+slugtool-source: $(DL_DIR)/$(SLUGTOOL_SOURCE) $(SLUGTOOL_PATCH)
+
+$(SLUGTOOL_DIR)/.configured: $(DL_DIR)/$(SLUGTOOL_SOURCE) $(SLUGTOOL_PATCH)
+	@rm -rf $(SLUGTOOL_DIR)
+	mkdir -p $(SLUGTOOL_DIR)
+	$(SLUGTOOL_UNZIP) $(DL_DIR)/$(SLUGTOOL_SOURCE) | tar -C $(SLUGTOOL_DIR) -xvf -
+	cat $(SLUGTOOL_PATCH) | patch -d $(SLUGTOOL_DIR) -p1
+	touch $(SLUGTOOL_DIR)/.configured
+
+slugtool-unpack: $(SLUGTOOL_DIR)/.configured
+
+$(SLUGTOOL_DIR)/slugtool: $(SLUGTOOL_DIR)/.configured
+	make -C $(SLUGTOOL_DIR) slugtool
+
+$(STAGING_DIR)/bin/slugtool: $(SLUGTOOL_DIR)/slugtool
+	mkdir -p $(STAGING_DIR)/bin
+	install -m 755 $(SLUGTOOL_DIR)/slugtool $(STAGING_DIR)/bin/slugtool
+
+slugtool: $(STAGING_DIR)/bin/slugtool
 
 slugtool-install: slugtool
 
 slugtool-clean:
 	-make -C $(BUILD_DIR)/slugtool clean
+	rm -f $(STAGING_DIR)/bin/slugtool
+
+slugtool-dirclean:
+	rm -rf $(SLUGTOOL_DIR)
+
+SLUGTOOL := PATH=$(TARGET_PATH) slugtool
