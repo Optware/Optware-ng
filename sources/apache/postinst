@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/opt/sbin/httpd -k stop
+/opt/sbin/httpd -k start
