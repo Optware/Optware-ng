@@ -45,8 +45,9 @@ CROSS_ONLY_PACKAGES = \
 	bind busybox \
 	dhcp \
 	freeradius \
+	gift \
 	ircd-hybrid \
-	libbt libcurl libpcap logrotate \
+	libbt libcurl libogg libvorbis libpcap logrotate \
 	mdadm mt-daapd \
 	nail nfs-server nfs-utils \
 	openssl openssh \
@@ -70,7 +71,7 @@ PACKAGES = \
 NATIVE_PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(NATIVE_ONLY_PACKAGES)
 
-PACKAGES_TO_BE_TESTED = 
+PACKAGES_TO_BE_TESTED = gift-fasttrack
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump gkrellm
