@@ -12,8 +12,11 @@ POSTFIX_UNZIP=zcat
 
 POSTFIX_IPK_VERSION=1
 
-#POSTFIX_CONFFILES=/opt/etc/postfix.conf /opt/etc/init.d/SXXpostfix
-POSTFIX_CONFFILES=
+POSTFIX_CONFFILES=/opt/etc/aliases \
+		  /opt/etc/postfix/main.cf \
+		  /opt/etc/postfix/master.cf \
+		  /opt/lib/sasl2/smtpd.conf \
+		  /opt/etc/init.d/S69postfix
 
 POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch
 
