@@ -1,12 +1,7 @@
-#! /bin/ash
+#!/bin/sh
 #
-mkdir -p /opt/var/named
-mkdir -p /opt/var/run
+echo "Running bind pre-remove"
+#
 if [ -n "`pidof named`" ]; then
     /bin/killall named 2>/dev/null
 fi
-
-if [ ! -e /opt/lib/libcrypto.so ]; then
-echo "?? openssl must be installed"
-exit 1
-endif
