@@ -92,7 +92,7 @@ gift-fasttrack-source: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFTFASTTRACK_PATCHES
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFTFASTTRACK_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFTFASTTRACK_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFTFASTTRACK_DIR) $(GIFTFASTTRACK_BUILD_DIR)
 	$(GIFTFASTTRACK_UNZIP) $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTFASTTRACK_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTFASTTRACK_DIR) -p1
