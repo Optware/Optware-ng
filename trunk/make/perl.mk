@@ -93,7 +93,7 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
 	cat $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL | \
-	sed -e 's:/usr/include/errno.h:/opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/include/errno.h:g'\
+	sed -e 's:/usr/include/errno.h:/opt/armeb/$(GNU_TARGET_NAME)/include/errno.h:g'\
 	> $(PERL_BUILD_DIR)/ext/Errno/tmp
 	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
 	(cd $(PERL_BUILD_DIR); \
