@@ -1,0 +1,16 @@
+--- a/src/ServerSocket.cpp	2005-01-07 20:42:16.000000000 +0100
++++ amuled/src/ServerSocket.cpp	2005-01-07 20:51:23.000000000 +0100
+@@ -437,10 +437,12 @@
+ 					count = 0;
+ 				}
+ 				int addcount = 0;
++				uint32 ipaddr = 0;
+ 				while(count) {
++					ipaddr =  servers->ReadUInt32() ;
+ 					CServer* srv = new CServer(
+ 								servers->ReadUInt16() ,				// Port
+-								Uint32toStringIP(servers->ReadUInt32())); 	// Ip
++								Uint32toStringIP(ipaddr)); 			// Ip
+ 					srv->SetListName(srv->GetFullIP());
+ 					if (!theApp.AddServer(srv)) {
+ 						delete srv;
