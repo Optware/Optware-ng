@@ -61,4 +61,4 @@ wu-ftpd-clean:
 	-make -C $(WU_FTPD_DIR) clean
 
 wu-ftpd-dirclean:
-	rm -rf $(WU_FTPD_DIR) $(WU_FTPD_IPK_DIR)
+	rm -rf $(WU_FTPD_DIR) $(WU_FTPD_IPK_DIR) $(WU_FTPD_IPK)

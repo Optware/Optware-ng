@@ -70,4 +70,4 @@ nfs-server-clean:
 	-make -C $(NFS_SERVER_DIR) clean
 
 nfs-server-dirclean:
-	rm -rf $(NFS_SERVER_DIR) $(NFS_SERVER_IPK_DIR)
+	rm -rf $(NFS_SERVER_DIR) $(NFS_SERVER_IPK_DIR) $(NFS_SERVER_IPK)

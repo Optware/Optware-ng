@@ -54,4 +54,4 @@ inetutils-clean:
 	-make -C $(INETUTILS_DIR) clean
 
 inetutils-dirclean:
-	rm -rf $(INETUTILS_DIR) $(INETUTILS_IPK_DIR)
+	rm -rf $(INETUTILS_DIR) $(INETUTILS_IPK_DIR) $(INETUTILS_IPK)

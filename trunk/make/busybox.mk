@@ -63,4 +63,4 @@ busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
 
 busybox-dirclean:
-	rm -rf $(BUSYBOX_DIR) $(BUSYBOX_IPK_DIR)
+	rm -rf $(BUSYBOX_DIR) $(BUSYBOX_IPK_DIR) $(BUSYBOX_IPK)
