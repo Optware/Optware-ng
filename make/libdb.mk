@@ -38,6 +38,7 @@
 #
 LIBDB_SITE=ftp://sleepycat1.inetu.net/releases
 LIBDB_VERSION=4.2.52
+LIBDB_LIB_VERSION=4.2
 LIBDB_SOURCE=db-$(LIBDB_VERSION).tar.gz
 LIBDB_DIR=db-$(LIBDB_VERSION)
 LIBDB_UNZIP=zcat
@@ -126,7 +127,7 @@ libdb-unpack: $(LIBDB_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBDB_BUILD_DIR)/libdb.so.$(LIBDB_VERSION): $(LIBDB_BUILD_DIR)/.configured
+$(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a: $(LIBDB_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix
 
 #
@@ -134,12 +135,12 @@ $(LIBDB_BUILD_DIR)/libdb.so.$(LIBDB_VERSION): $(LIBDB_BUILD_DIR)/.configured
 # which is built.
 #
 # Note: this should be path where libdb really appears, might need to fix
-libdb: $(LIBDB_BUILD_DIR)/libdb.so.$(LIBDB_VERSION)
+libdb: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libdb.so.$(LIBDB_VERSION): $(LIBDB_BUILD_DIR)/libdb.so.$(LIBDB_VERSION)
+$(STAGING_DIR)/opt/lib/libdb.so.$(LIBDB_VERSION): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBDB_BUILD_DIR)/libdb.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
