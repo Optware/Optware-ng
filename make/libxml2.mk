@@ -19,11 +19,16 @@ LIBXML2_VERSION=2.6.17
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
+LIBXML2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBXML2_DESCRIPTION=Libxml2 is the XML C parser and toolkit developed for the Gnome project.
+LIBXML2_SECTION=libs
+LIBXML2_PRIORITY=optional
+LIBXML2_DEPENDS=zlib
 
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=1
+LIBXML2_IPK_VERSION=2
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files
@@ -135,6 +140,23 @@ $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
 libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(LIBXML2_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBXML2_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libxml2" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBXML2_PRIORITY)" >>$@
+	@echo "Section: $(LIBXML2_SECTION)" >>$@
+	@echo "Version: $(LIBXML2_VERSION)-$(LIBXML2_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBXML2_MAINTAINER)" >>$@
+	@echo "Source: $(LIBXML2_SITE)/$(LIBXML2_SOURCE)" >>$@
+	@echo "Description: $(LIBXML2_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBXML2_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBXML2_IPK_DIR)/opt/sbin or $(LIBXML2_IPK_DIR)/opt/bin
@@ -155,8 +177,7 @@ $(LIBXML2_IPK): $(LIBXML2_BUILD_DIR)/.built
 #	install -m 755 $(LIBXML2_SOURCE_DIR)/libxml2.conf $(LIBXML2_IPK_DIR)/opt/etc/libxml2.conf
 #	install -d $(LIBXML2_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBXML2_SOURCE_DIR)/rc.libxml2 $(LIBXML2_IPK_DIR)/opt/etc/init.d/SXXlibxml2
-	install -d $(LIBXML2_IPK_DIR)/CONTROL
-	install -m 644 $(LIBXML2_SOURCE_DIR)/control $(LIBXML2_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBXML2_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBXML2_SOURCE_DIR)/postinst $(LIBXML2_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBXML2_SOURCE_DIR)/prerm $(LIBXML2_IPK_DIR)/CONTROL/prerm
 #	echo $(LIBXML2_CONFFILES) | sed -e 's/ /\n/g' > $(LIBXML2_IPK_DIR)/CONTROL/conffiles
