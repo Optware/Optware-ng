@@ -6,11 +6,13 @@ GCC_LANGUAGES="c,c++"
 export GCC_LANGUAGES
 #CANADIAN_CROSS="YES"
 
+HOST=$GCC_HOST
+
 # Really, you should do the mkdir before running this,
 # and chown /opt/crosstool to yourself so you don't need to run as root.
 mkdir -p $RESULT_TOP
 
-export GCC_HOST AR AS LD NM CC GCC CXX RANLIB PATH GPROF
+export GCC_HOST AR AS LD NM CC GCC CXX RANLIB PATH GPROF HOST
 
 # Build the toolchain. Takes a couple hours and a couple gigabytes.
 
