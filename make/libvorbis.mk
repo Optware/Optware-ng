@@ -117,7 +117,7 @@ libvorbis-unpack: $(LIBVORBIS_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbis.so.$(LIBVORBIS_VERSION_LIB): $(LIBVORBIS_BUILD_DIR)/.configured
+$(LIBVORBIS_BUILD_DIR)/.built: $(LIBVORBIS_BUILD_DIR)/.configured
 	rm -f $(LIBVORBIS_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR)
 	touch $(LIBVORBIS_BUILD_DIR)/.built
@@ -126,7 +126,7 @@ $(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbis.so.$(LIBVORBIS_VERSION_LIB): $(LIBVOR
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libvorbis: $(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbis.so.$(LIBVORBIS_VERSION_LIB)
+libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -159,7 +159,7 @@ libvorbis-stage: $(STAGING_DIR)/opt/lib/libvorbisfile.so.$(LIBVORBIS_VERSION_LIB
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbis.so.$(LIBVORBIS_VERSION_LIB)
+$(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/.built
 	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_armeb.ipk
 	install -d $(LIBVORBIS_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbis.a -o $(LIBVORBIS_IPK_DIR)/opt/lib/libvorbis.a

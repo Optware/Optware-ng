@@ -113,19 +113,16 @@ $(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
 gift-unpack: $(GIFT_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 
-$(GIFT_BUILD_DIR)/src/.libs/giftd: $(GIFT_BUILD_DIR)/.configured
+$(GIFT_BUILD_DIR)/.built: $(GIFT_BUILD_DIR)/.configured
 	rm -f $(GIFT_BUILD_DIR)/.built
 	$(MAKE) -C $(GIFT_BUILD_DIR)
 	touch $(GIFT_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
 #
-gift: $(GIFT_BUILD_DIR)/src/.libs/giftd
+gift: $(GIFT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
