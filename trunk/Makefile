@@ -111,8 +111,8 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
-	adns atftp autoconf automake \
-	bash bc bind bitchx \
+	adns atftp autoconf audiofile automake \
+	bash bc bind bitchx bzip2 \
 	cpio cron ctags \
 	diffutils \
 	e2fsprogs expat \
@@ -122,31 +122,31 @@ WL500G_PACKAGES = \
 	hdparm \
 	inetutils \
 	less libgd libid3tag libevent libjpeg libmad libol libogg libpng libtool libtopfield libusb libvorbis \
-	logrotate lua lzo \
+	logrotate lua lynx lzo \
 	madplay miau microperl \
 	nano ncftp ncurses ntpclient nylon \
 	openssl \
 	pkgconfig popt postgresql procps proftpd puppy python \
 	rdate readline recordext rsync \
 	sqlite strace stunnel syslog-ng \
-	tar tcpdump tcpwrappers termcap torrent ttf-bitstream-vera \
+	tar tcpdump tcpwrappers termcap thttpd torrent ttf-bitstream-vera \
 	unfs3 vsftpd \
 	w3cam wakelan wget-ssl which \
-	xau xdmcp xextensions xinetd xproto xtrans \
+	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	thttpd
+
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	appweb busybox bzip2 ccxstream \
+	appweb busybox ccxstream \
 	classpath coreutils cyrus-sasl \
 	dhcp distcc dnsmasq dropbear \
 	ed ffmpeg flac \
 	ghostscript groff \
 	iptables ircd-hybrid \
 	joe jove \
-	lame libcurl libdvdread lynx \
+	lame libcurl libdvdread \
 	m4 make man-pages man mc mt-daapd \
 	patch portmap \
 	vdr-mediamvp
