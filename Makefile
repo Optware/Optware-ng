@@ -20,14 +20,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Packages before the blank line build natively from the Unslung CVS.
-# Packages after the second blank line do not build natively from CVS.
-# The ones in the middle haven't been tested yet ...
-
 NATIVE_AND_CROSS_PACKAGES = \
 	bash \
 	bzip2 \
-	ccxstream \
+	ccxstream cpio \
 	distcc dnsmasq dropbear \
 	gdbm \
 	inetutils iptables \
@@ -45,14 +41,14 @@ NATIVE_AND_CROSS_PACKAGES = \
 CROSS_ONLY_PACKAGES = \
 	atftp \
 	bind busybox \
-	cvs \
+	coreutils cvs \
 	dhcp \
-	flex freeradius \
-	grep \
+	findutils flex freeradius \
+	gawk grep \
 	ircd-hybrid \
 	jove \
-	libbt libcurl libdb libevent libjpeg libpcap \
-	m4 mdadm mt-daapd \
+	libbt libcurl libdb libevent libjpeg libpcap libpng \
+	m4 mc mdadm mt-daapd \
 	nano ncurses nfs-server ntp \
 	openssl openssh \
 	popt procps \
@@ -61,11 +57,10 @@ CROSS_ONLY_PACKAGES = \
 	tar \
 	unfs3 \
 	vdr-mediamvp \
-	wget
+	wget \
 
 UNCATEGORISED_PACKAGES = \
-	coreutils gawk cpio findutils mc \
-	libpng diffutils libtiff less nfs-utils \
+	diffutils libtiff less nfs-utils \
 	logrotate appweb imagemagick \
 	nail stunnel patch \
 
@@ -83,23 +78,12 @@ PACKAGES_FOR_DEVELOPERS = crosstool-native
 
 NATIVE_ONLY_PACKAGES =
 
-WGET=wget --passive-ftp
+# Common tools which may need overriding
 CVS=cvs
 SUDO=sudo
+WGET=wget --passive-ftp
 
-# You must install the crosstool Linux Tool Chain.  See:
-# http://www.nslu2-linux.org/wiki/HowTo/CompileCrossTool
-
-TARGET_OPTIMIZATION= #-Os
-TARGET_DEBUGGING= #-g
-TARGET_CUSTOM_FLAGS= -pipe 
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-
-CC=
-LD=
-AR=
-RANLIB=
-HOSTCC:=gcc
+# Directory location definitions
 BASE_DIR=$(shell pwd)
 SOURCE_DIR=$(BASE_DIR)/sources
 DL_DIR=$(BASE_DIR)/downloads
@@ -107,31 +91,14 @@ BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
 STAGING_PREFIX=$(STAGING_DIR)/opt
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
-TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 PACKAGE_DIR=$(BASE_DIR)/packages
 
-CROSS_CONFIGURATION=gcc-3.3.4-glibc-2.2.5
+TARGET_OPTIMIZATION= #-Os
+TARGET_DEBUGGING= #-g
+TARGET_CUSTOM_FLAGS= -pipe 
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-#GNU_TARGET_NAME=arm-linux
-GNU_TARGET_NAME=armv5b-softfloat-linux
-GNU_SHORT_TARGET_NAME=arm-linux
-TARGET_CROSS=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_CXX=$(TARGET_CROSS)g++
-TARGET_CC=$(TARGET_CROSS)gcc
-TARGET_LD=$(TARGET_CROSS)ld
-TARGET_AR=$(TARGET_CROSS)ar
-TARGET_AS=$(TARGET_CROSS)as
-TARGET_NM=$(TARGET_CROSS)nm
-TARGET_RANLIB=$(TARGET_CROSS)ranlib
-TARGET_STRIP=$(TARGET_CROSS)strip
-
-STRIP_COMMAND=$(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded
-
-STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
-STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
-
-STAGING_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
-STAGING_LDFLAGS=-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib
+HOSTCC:=gcc
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/sparc.*/sparc/' \
@@ -146,16 +113,50 @@ HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/i[3-9]86/i386/' \
 	)
 GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
+GNU_TARGET_NAME=armv5b-softfloat-linux
+GNU_SHORT_TARGET_NAME=arm-linux
+
+CROSS_CONFIGURATION=gcc-3.3.4-glibc-2.2.5
+
+TARGET_CROSS=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_CXX=$(TARGET_CROSS)g++
+TARGET_CC=$(TARGET_CROSS)gcc
+TARGET_LD=$(TARGET_CROSS)ld
+TARGET_AR=$(TARGET_CROSS)ar
+TARGET_AS=$(TARGET_CROSS)as
+TARGET_NM=$(TARGET_CROSS)nm
+TARGET_RANLIB=$(TARGET_CROSS)ranlib
+TARGET_STRIP=$(TARGET_CROSS)strip
 TARGET_CONFIGURE_OPTS= \
-		AR=$(TARGET_AR) \
-		AS=$(TARGET_AS) \
-		LD=$(TARGET_LD) \
-		NM=$(TARGET_NM) \
-		CC=$(TARGET_CC) \
-		GCC=$(TARGET_CC) \
-		CXX=$(TARGET_CXX) \
-		RANLIB=$(TARGET_RANLIB) \
-		STRIP=$(TARGET_STRIP)
+	AR=$(TARGET_AR) \
+	AS=$(TARGET_AS) \
+	LD=$(TARGET_LD) \
+	NM=$(TARGET_NM) \
+	CC=$(TARGET_CC) \
+	GCC=$(TARGET_CC) \
+	CXX=$(TARGET_CXX) \
+	RANLIB=$(TARGET_RANLIB) \
+	STRIP=$(TARGET_STRIP)
+TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin
+
+STRIP_COMMAND=$(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded
+
+STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
+STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
+
+STAGING_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
+STAGING_LDFLAGS=-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib
+
+# Clear these variables to remove assumptions
+AR=
+AS=
+LD=
+NM=
+CC=
+GCC=
+CXX=
+RANLIB=
+STRIP=
 
 all: directories crosstool packages
 
