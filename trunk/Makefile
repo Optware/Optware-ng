@@ -30,7 +30,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
 	   ncurses ircd-hybrid procps \
 	   tcpwrappers libevent vdr-mediamvp \
-	   wget bzip2 dhcp
+	   wget bzip2 dhcp nano
 
 PACKAGES_TO_BE_TESTED:= \
 	   dump e2fsprogs gkrellm glib \
