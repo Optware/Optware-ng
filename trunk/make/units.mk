@@ -35,12 +35,12 @@ UNITS_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 UNITS_DESCRIPTION=GNU units converts between different systems of units.
 UNITS_SECTION=misc
 UNITS_PRIORITY=optional
-UNITS_DEPENDS=
+UNITS_DEPENDS=readline
 
 #
 # UNITS_IPK_VERSION should be incremented when the ipk changes.
 #
-UNITS_IPK_VERSION=1
+UNITS_IPK_VERSION=2
 
 #
 # UNITS_CONFFILES should be a list of user-editable files
@@ -103,14 +103,14 @@ units-source: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
-	# $(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) readline-stage
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p2
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
 	(cd $(UNITS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(UNITS_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(UNITS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UNITS_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
