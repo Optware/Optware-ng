@@ -25,6 +25,7 @@ unfs3-source: $(DL_DIR)/$(UNFS3_SOURCE) $(UNFS3_PATCH)
 # set --libwrap-directory=pathname 
 
 $(UNFS3_DIR)/.configured: $(DL_DIR)/$(UNFS3_SOURCE)
+	$(MAKE) flex-stage
 	@rm -rf $(BUILD_DIR)/$(UNFS3) $(UNFS3_DIR)
 	$(UNFS3_UNZIP) $(DL_DIR)/$(UNFS3_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	(cd $(BUILD_DIR)/$(UNFS3) && \
@@ -36,7 +37,7 @@ $(UNFS3_DIR)/.configured: $(DL_DIR)/$(UNFS3_SOURCE)
 unfs3-unpack: $(UNFS3_DIR)/.configured
 
 $(UNFS3_DIR)/unfsd: $(UNFS3_DIR)/.configured
-	make -C $(UNFS3_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LDFLAGS="-L$(STAGING_DIR)/lib/lib -lfl"
+	make -C $(UNFS3_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LDFLAGS="-L$(STAGING_DIR)/opt/lib -lfl"
 
 unfs3: $(UNFS3_DIR)/unfsd
 
