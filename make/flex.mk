@@ -4,62 +4,65 @@
 #
 ###########################################################
 
-FLEX_DIR=$(BUILD_DIR)/flex
-
-FLEX_VERSION=2.5.4a
-FLEX_LIBVERSION=2.5.4
-FLEX=flex-$(FLEX_VERSION)
 FLEX_SITE=ftp://ftp.gnu.org/gnu/non-gnu/flex
-FLEX_SOURCE=$(FLEX).tar.gz
+FLEX_VERSION=2.5.4a
+FLEX_LIB_VERSION=2.5.4
+FLEX_SOURCE=flex-$(FLEX_VERSION).tar.gz
+FLEX_DIR=flex-2.5.4
 FLEX_UNZIP=zcat
 
-FLEX_IPK=$(BUILD_DIR)/flex_$(FLEX_VERSION)-1_armeb.ipk
+FLEX_IPK_VERSION=1
+
+FLEX_BUILD_DIR=$(BUILD_DIR)/flex
+FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
 FLEX_IPK_DIR=$(BUILD_DIR)/flex-$(FLEX_VERSION)-ipk
+FLEX_IPK=$(BUILD_DIR)/flex_$(FLEX_VERSION)-$(FLEX_IPK_VERSION)_armeb.ipk
 
 $(DL_DIR)/$(FLEX_SOURCE):
 	$(WGET) -P $(DL_DIR) $(FLEX_SITE)/$(FLEX_SOURCE)
 
 flex-source: $(DL_DIR)/$(FLEX_SOURCE)
 
-$(FLEX_DIR)/.source: $(DL_DIR)/$(FLEX_SOURCE)
+$(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE)
+	rm -rf $(BUILD_DIR)/$(FLEX_DIR) $(FLEX_BUILD_DIR)
 	$(FLEX_UNZIP) $(DL_DIR)/$(FLEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/flex-$(FLEX_LIBVERSION) $(FLEX_DIR)
-	touch $(FLEX_DIR)/.source
-
-$(FLEX_DIR)/.configured: $(FLEX_DIR)/.source
-	(cd $(FLEX_DIR); \
+	mv $(BUILD_DIR)/$(FLEX_DIR) $(FLEX_BUILD_DIR)
+	(cd $(FLEX_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
 		./configure \
-		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--prefix=$(FLEX_IPK_DIR)/opt \
-	);
-	touch $(FLEX_DIR)/.configured
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+	)
+	touch $(FLEX_BUILD_DIR)/.configured
 
-$(FLEX_IPK_DIR)/opt/lib/libfl.a: $(FLEX_DIR)/.configured
-	$(MAKE) -C $(FLEX_DIR) CC=$(TARGET_CC) \
-	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) install
+flex-unpack: $(FLEX_BUILD_DIR)/.configured
 
-flex-headers: $(FLEX_IPK_DIR)/opt/lib/libfl.a
+$(FLEX_BUILD_DIR)/libfl.a: $(FLEX_BUILD_DIR)/.configured
+	$(MAKE) -C $(FLEX_BUILD_DIR)
 
-flex: $(FLEX_IPK_DIR)/opt/lib/libfl.a
+flex: $(FLEX_BUILD_DIR)/libfl.a
 
-$(FLEX_IPK): $(FLEX_IPK_DIR)/opt/lib/libfl.a
-	mkdir -p $(FLEX_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/flex.control $(FLEX_IPK_DIR)/CONTROL/control
-	cp -r $(FLEX_IPK_DIR)/opt/include/ $(STAGING_DIR)/include
-	cp -r $(FLEX_IPK_DIR)/opt/lib $(STAGING_DIR)/lib
-	rm -rf $(STAGING_DIR)/CONTROL
+$(STAGING_DIR)/opt/lib/libfl.a: $(FLEX_BUILD_DIR)/libfl.a
+	$(MAKE) -C $(FLEX_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
+	rm -rf $(STAGING_DIR)/opt/bin/flex*
+	rm -rf $(STAGING_DIR)/opt/man
+
+flex-stage: $(STAGING_DIR)/opt/lib/libfl.a
+
+$(FLEX_IPK): $(FLEX_BUILD_DIR)/libfl.a
+	$(MAKE) -C $(FLEX_BUILD_DIR) prefix=$(FLEX_IPK_DIR)/opt install
+	rm -rf $(FLEX_IPK_DIR)/opt/man
+	install -d $(FLEX_IPK_DIR)/CONTROL
+	install -m 644 $(FLEX_SOURCE_DIR)/control $(FLEX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FLEX_IPK_DIR)
 
 flex-ipk: $(FLEX_IPK)
 
-flex-source: $(DL_DIR)/$(FLEX_SOURCE)
-
 flex-clean:
-	-$(MAKE) -C $(FLEX_DIR) uninstall
-	-$(MAKE) -C $(FLEX_DIR) clean
+	-$(MAKE) -C $(FLEX_BUILD_DIR) clean
 
-flex-distclean:
-	-rm $(FLEX_DIR)/.configured
-	-$(MAKE) -C $(FLEX_DIR) distclean
+flex-dirclean:
+	rm -rf $(BUILD_DIR)/$(FLEX_DIR) $(FLEX_BUILD_DIR) $(FLEX_IPK_DIR) $(FLEX_IPK)
 
