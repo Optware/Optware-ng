@@ -25,9 +25,9 @@ TARGET=nslu2
 
 CROSS_PACKAGES = \
 	adns atftp appweb apache apr apr-util atk automake \
-	bash bind bitchx busybox bzflag bzip2 \
-	ccxstream classpath coreutils cpio ctorrent cups ctags cvs cyrus-sasl \
-	dhcp diffutils distcc dnsmasq dropbear \
+	bash bc bind bitchx busybox bzflag bzip2 \
+	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
+	dhcp dict diffutils distcc dnsmasq dropbear \
 	e2fsprogs ed elinks expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules gdb gdbm gettext ghostscript \
@@ -38,11 +38,11 @@ CROSS_PACKAGES = \
 	jamvm jikes joe jove \
 	lame less libbt libcurl libdb libdvdread libevent libgd libid3tag \
 	libjpeg libnsl libogg libol libpcap libpng libstdc++ libtiff libtool \
-	libvorbis libxml2 libxslt logrotate lsof lua lynx \
+	libvorbis libxml2 libxslt logrotate lsof lua lynx lzo \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt muxsshssl \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
-	openssh openssl \
-	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
+	openssh openssl openvpn \
+	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy python \
 	rdate recordext renderext rsync \
 	screen sed sm snownews strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
@@ -50,15 +50,16 @@ CROSS_PACKAGES = \
 	vdr-mediamvp vsftpd vte \
 	w3cam wakelan wget-ssl which \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
-	xpm xproto xrender xt xtrans xtst xvid \
+	xpm xproto xrender xt xterm xtrans xtst xvid \
 	zlib \
 	crosstool-native
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 
-CROSS_PACKAGES_READY_FOR_TESTING = bc cron dict lzo openvpn python xterm byRequest \
+CROSS_PACKAGES_READY_FOR_TESTING =
 
+# asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # bogofilter's configure wants to run some small executables
@@ -72,6 +73,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = bc cron dict lzo openvpn python xterm byReque
 # samba probably will build cross - may just need some configure work
 # vim probably just needs configure work
 NATIVE_PACKAGES = \
+	asterisk \
 	autoconf \
 	bison \
 	bogofilter \
@@ -92,9 +94,11 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	ruby tin asterisk
+	ruby tin
 
+# byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
