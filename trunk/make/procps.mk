@@ -93,6 +93,8 @@ $(PROCPS_IPK): $(PROCPS_DIR)/watch
 	$(STRIP) $(PROCPS_DIR)/vmstat -o $(PROCPS_IPK_DIR)/opt/bin/vmstat
 	$(STRIP) $(PROCPS_DIR)/w -o $(PROCPS_IPK_DIR)/opt/bin/w
 	$(STRIP) $(PROCPS_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/watch
+	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
+	cp $(PROCPS_DIR)/proc/libproc-3.2.3.so $(PROCPS_IPK_DIR)/opt/lib
 	cp $(SOURCE_DIR)/procps.control $(PROCPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROCPS_IPK_DIR)
 
