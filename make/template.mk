@@ -18,12 +18,24 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
 <FOO>_SITE=http://www.<foo>.org/downloads
 <FOO>_VERSION=3.2.3
 <FOO>_SOURCE=<foo>-$(<FOO>_VERSION).tar.gz
 <FOO>_DIR=<foo>-$(<FOO>_VERSION)
 <FOO>_UNZIP=zcat
+<FOO>_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+<FOO>_DESCRIPTION=Describe <foo> here.
+<FOO>_SECTION=
+<FOO>_PRIORITY=optional
+<FOO>_DEPENDS=
 
 #
 # <FOO>_IPK_VERSION should be incremented when the ipk changes.
@@ -135,6 +147,23 @@ $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
 <foo>-stage: $(<FOO>_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(<FOO>_IPK_DIR)/CONTROL/control:
+	@install -d $(<FOO>_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: foo" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(<FOO>_PRIORITY)" >>$@
+	@echo "Section: $(<FOO>_SECTION)" >>$@
+	@echo "Version: $(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(<FOO>_MAINTAINER)" >>$@
+	@echo "Source: $(<FOO>_SITE)/$(<FOO>_SOURCE)" >>$@
+	@echo "Description: $(<FOO>_DESCRIPTION)" >>$@
+	@echo "Depends: $(<FOO>_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(<FOO>_IPK_DIR)/opt/sbin or $(<FOO>_IPK_DIR)/opt/bin
@@ -153,8 +182,7 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	install -m 644 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(<FOO>_SOURCE_DIR)/rc.<foo> $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
-	install -d $(<FOO>_IPK_DIR)/CONTROL
-	install -m 644 $(<FOO>_SOURCE_DIR)/control $(<FOO>_IPK_DIR)/CONTROL/control
+	$(MAKE) $(<FOO>_IPK_DIR)/CONTROL/control
 	install -m 755 $(<FOO>_SOURCE_DIR)/postinst $(<FOO>_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
 	echo $(<FOO>_CONFFILES) | sed -e 's/ /\n/g' > $(<FOO>_IPK_DIR)/CONTROL/conffiles
