@@ -31,6 +31,7 @@ RAMDISK CHANGES:
    script in /unslung.
 6) Add /etc/rc.d/rc.unslung to run init files in the /opt/init.d directory.
 7) Add /bin/ipkg and /etc/ipkg.conf to support the download of packages.
+8) Add /sbin/flashfs to support copying files to/from a flash key on Disk 2.
 
 WHERE TO GET IT:
 Binaries: http://sourceforge.net/project/showfiles.php?group_id=116564
@@ -196,3 +197,20 @@ ADDITIONAL INFORMATION:
 11) The Unslung firmware will automatically execute any scripts
     which are in /opt/etc/init.d - and this is where any packages
     will put their startup scripts so that they execute on each boot.
+
+CHANGELOG:
+
+1.11:
+
+First public release
+
+1.12:
+
+Added a symlink to
+slingbox for gzip.  Added flashfs (as simple utility for preserving
+user files across hard disk formats during beta testing).
+
+1.13:
+
+Added LD_LIBRARY_PATH to /etc/profile (only works for telnet and ssh
+access, not for serial or diversion scripts).
