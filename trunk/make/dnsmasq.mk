@@ -31,7 +31,7 @@ $(DNSMASQ_DIR)/.configured: $(DL_DIR)/$(DNSMASQ_SOURCE)
 
 dnsmasq-unpack: $(DNSMASQ_DIR)/.configured
 
-$(DNSMASQ_DIR)/dnsmasq: $(DNSMASQ_DIR)/.configured
+$(DNSMASQ_DIR)/src/dnsmasq: $(DNSMASQ_DIR)/.configured
 	make -C $(DNSMASQ_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) 
 
 #dhcp: $(DHCP_DIR)/dhcpd
