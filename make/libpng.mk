@@ -125,7 +125,7 @@ libpng: $(LIBPNG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/liblibpng.so.$(LIBPNG_VERSION): $(LIBPNG_BUILD_DIR)/.built
+$(STAGING_DIR)/opt/lib/libpng.so: $(LIBPNG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-exec-am
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-includeHEADERS
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
@@ -140,7 +140,7 @@ $(STAGING_DIR)/opt/lib/liblibpng.so.$(LIBPNG_VERSION): $(LIBPNG_BUILD_DIR)/.buil
 #	cd $(STAGING_DIR)/opt/lib && ln -fs liblibpng.so.$(LIBPNG_VERSION) liblibpng.so.1
 #	cd $(STAGING_DIR)/opt/lib && ln -fs liblibpng.so.$(LIBPNG_VERSION) liblibpng.so
 
-libpng-stage: $(STAGING_DIR)/opt/lib/liblibpng.so.$(LIBPNG_VERSION)
+libpng-stage: $(STAGING_DIR)/opt/lib/libpng.so
 
 #
 # This builds the IPK file.
