@@ -178,6 +178,8 @@ ADDITIONAL INFORMATION:
     
     #! /bin/sh
     echo "telnet  stream  tcp     nowait  root    /usr/sbin/telnetd" > /etc/inetd.conf
+    # Additional lines must append (using >>), ie:
+    # echo "ftp   stream  tcp     nowait  root    /usr/sbin/ftpd -a=passwd" >> /etc/inetd.conf
     return 1
 
 10) Note that the PATH is set so that downloadable packages do not
