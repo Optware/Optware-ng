@@ -91,7 +91,7 @@ $(DL_DIR)/$(LAME_SOURCE):
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(LAME_DIR) $(LAME_BUILD_DIR)
 	$(LAME_UNZIP) $(DL_DIR)/$(LAME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LAME_PATCHES) | patch -d $(BUILD_DIR)/$(LAME_DIR) -p1
