@@ -78,6 +78,7 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 #
 #
 $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
+	$(MAKE) libdb-stage 
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	zcat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p2
@@ -92,7 +93,7 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(SVN_BUILD_DIR)/opt \
 		--with-libs=$(STAGING_DIR)/opt \
-   		--with-berkeley-db=$(STAGING_DIR)/opt \
+		--with-berkeley-db=$(STAGING_DIR)/opt \
                 --with-expat=$(SVN_BUILD_DIR)/apr-util/xml/expat \
 		--with-apache=no \
 		--with-apxs=no \
@@ -113,7 +114,7 @@ $(SVN_BUILD_DIR)/opt/bin/svn: $(SVN_BUILD_DIR)/.configured
 # there are no build dependencies for this package.  Again, you should change
 # the final dependency to refer directly to the main binary which is built.
 #
-svn: libdb-stage $(SVN_BUILD_DIR)/opt/bin/svn
+svn: $(SVN_BUILD_DIR)/opt/bin/svn
 
 #
 # If you are building a library, then you need to stage it too.
@@ -171,7 +172,7 @@ $(SVN_IPK): svn
 #
 # This is called from the top level makefile to create the IPK file.
 #
-svn-ipk: libdb-stage $(SVN_IPK)
+svn-ipk: $(SVN_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
