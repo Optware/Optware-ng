@@ -22,7 +22,7 @@
 
 NATIVE_AND_CROSS_PACKAGES = \
 	atftp \
-	bash bison bzip2 \
+	bash bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
 	file findutils flex \
@@ -58,6 +58,7 @@ CROSS_ONLY_PACKAGES = \
 	glib xinetd proftpd
 
 NATIVE_ONLY_PACKAGES = \
+	bison \
 	emacs
 
 PACKAGES = \
