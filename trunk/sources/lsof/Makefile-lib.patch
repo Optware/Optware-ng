@@ -1,0 +1,25 @@
+--- lsof/lib/Makefile~	2004-11-27 08:20:09.000000000 +1030
++++ lsof/lib/Makefile	2004-11-27 08:24:13.000000000 +1030
+@@ -12,9 +12,9 @@
+ 
+ DEBUG=	-O
+ 
+-AR=	ar cr ${LIB} ${OBJ}
++AR=	ar
+ 
+-RANLIB=	ranlib ${LIB}
++RANLIB=	ranlib
+ 
+ CFLAGS=	${CDEFS} ${INCL} ${DEBUG}
+ 
+@@ -41,8 +41,8 @@
+ all:	${LIB}
+ 
+ ${LIB}:	${OBJ}
+-	${AR}
+-	${RANLIB}
++	${AR} cr ${LIB} ${OBJ}
++	${RANLIB} ${LIB}
+ 
+ clean:	FRC
+ 	rm -f ${LIB} ${OBJ} errs Makefile.bak a.out core

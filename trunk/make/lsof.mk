@@ -5,6 +5,7 @@
 #############################################################
 
 LSOF_DIR:=$(BUILD_DIR)/lsof
+LSOF_SOURCE_DIR:=$(SOURCE_DIR)/lsof
 LSOF_VERSION:=4.72
 LSOF:=lsof-$(LSOF_VERSION)
 LSOF_FILE:=lsof_$(LSOF_VERSION).orig
@@ -13,7 +14,7 @@ LSOF_SITE=http://http.us.debian.org/debian/pool/main/l/lsof
 LSOF_SOURCE:=$(LSOF_FILE).tar.gz
 LSOF_IPK:=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-1_armeb.ipk
 LSOF_IPK_DIR:=$(BUILD_DIR)/lsof-$(LSOF_VERSION)-ipk
-LSOF_PATCH:=$(SOURCE_DIR)/$(LSOF).patch-1 $(SOURCE_DIR)/$(LSOF).patch-2
+LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch
 LSOF_UNZIP:=gunzip
 
 $(DL_DIR)/$(LSOF_SOURCE):
@@ -43,7 +44,7 @@ $(LSOF_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(DL_DIR)/$(LSOF_DSC) $(LSOF_P
 lsof-unpack: $(LSOF_DIR)/.configured
 
 $(LSOF_DIR)/lsof: $(LSOF_DIR)/.configured
-	$(TARGET_CONFIGURE_OPTS) CFLAGS="$(TARGET_CFLAGS)" make -C $(LSOF_DIR)
+	make -C $(LSOF_DIR) $(TARGET_CONFIGURE_OPTS) CFLAGS="$(TARGET_CFLAGS)"
 
 lsof: $(LSOF_DIR)/lsof
 
@@ -51,7 +52,7 @@ $(LSOF_IPK): $(LSOF_DIR)/lsof
 	install -d $(LSOF_IPK_DIR)/CONTROL
 	install -d $(LSOF_IPK_DIR)/opt/sbin
 	strip $(LSOF_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
-	install -m 644 $(SOURCE_DIR)/lsof.control  $(LSOF_IPK_DIR)/CONTROL/control
+	install -m 644 $(LSOF_SOURCE_DIR)/control  $(LSOF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LSOF_IPK_DIR)
 
 lsof-ipk: $(LSOF_IPK)
