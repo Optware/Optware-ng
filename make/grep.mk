@@ -34,7 +34,7 @@ $(GREP_DIR)/.configured: $(GREP_DIR)/.source
 	);
 	touch $(GREP_DIR)/.configured
 
-$(GREP_IPK_DIR): $(GREP_DIR)/.configured
+$(GREP_DIR)/src/grep: $(GREP_DIR)/.configured
 	$(MAKE) -C $(GREP_DIR) CC=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) install
 
@@ -42,7 +42,7 @@ grep-headers: $(GREP_IPK_DIR)
 
 grep: $(GREP_IPK_DIR)
 
-$(GREP_IPK): $(GREP_IPK_DIR)
+$(GREP_IPK): $(GREP_DIR)/src/grep
 	mkdir -p $(GREP_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/grep/control $(GREP_IPK_DIR)/CONTROL/control
 	$(STRIP) $(GREP_DIR)/src/grep
@@ -50,6 +50,8 @@ $(GREP_IPK): $(GREP_IPK_DIR)
 	$(STRIP) $(GREP_DIR)/src/fgrep
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
+
+grep-stage: $(GREP_IPK)
 
 grep-ipk: $(GREP_IPK)
 
