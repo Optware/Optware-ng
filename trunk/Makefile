@@ -105,6 +105,7 @@ GNU_HOST_NAME = armv5b-softfloat-linux
 GNU_TARGET_NAME = armv5b-softfloat-linux
 CROSS_CONFIGURATION = gcc-3.3.4-glibc-2.2.5
 TARGET_CROSS = /opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LDFLAGS = -L/opt/lib
 toolchain:
 else
 HOSTCC = gcc
@@ -112,6 +113,7 @@ GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = armv5b-softfloat-linux
 CROSS_CONFIGURATION = gcc-3.3.4-glibc-2.2.5
 TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LDFLAGS = 
 toolchain: crosstool
 endif
 
@@ -141,7 +143,7 @@ STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
 STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
 
 STAGING_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
-STAGING_LDFLAGS=-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib
+STAGING_LDFLAGS=$(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib
 
 # Clear these variables to remove assumptions
 AR=
