@@ -52,7 +52,7 @@ CROSS_PACKAGES = \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
 	nfs-server nfs-utils \
-	popt proftpd \
+	pcre popt proftpd \
 	rdate \
 	svn
 
