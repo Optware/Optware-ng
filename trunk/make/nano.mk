@@ -164,5 +164,5 @@ nano-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-nano-dirclean: nano-clean
-	rm -rf $(NANO_BUILD_DIR) $(NANO_IPK_DIR) $(NANO_IPK)
+nano-dirclean:
+	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR) $(NANO_IPK_DIR) $(NANO_IPK)

@@ -78,5 +78,5 @@ bzip2-ipk: bzip2-stage $(BZIP2_IPK)
 bzip2-clean:
 	-$(MAKE) -C $(BZIP2_BUILD_DIR) clean
 
-bzip2-dirclean: bzip2-clean
-	rm -rf $(BZIP2_BUILD_DIR) $(BZIP2_IPK_DIR) $(BZIP2_IPK)
+bzip2-dirclean:
+	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR) $(BZIP2_IPK_DIR) $(BZIP2_IPK)

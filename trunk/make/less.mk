@@ -140,4 +140,4 @@ less-clean:
 # directories.
 #
 less-dirclean:
-	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR) $(LESS_IPK_DIR) $(LES S_IPK)
+	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR) $(LESS_IPK_DIR) $(LESS_IPK)

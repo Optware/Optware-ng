@@ -48,6 +48,6 @@ iptables-ipk: $(IPTABLES_IPK)
 iptables-clean:
 	-$(MAKE) -C $(IPTABLES_BUILD_DIR) clean
 
-iptables-dirclean: iptables-clean
-	rm -rf $(IPTABLES_BUILD_DIR) $(IPTABLES_IPK_DIR) $(IPTABLES_IPK)
+iptables-dirclean:
+	rm -rf $(BUILD_DIR)/$(IPTABLES_DIR) $(IPTABLES_BUILD_DIR) $(IPTABLES_IPK_DIR) $(IPTABLES_IPK)
 

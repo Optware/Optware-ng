@@ -74,5 +74,5 @@ termcap-ipk: $(TERMCAP_IPK)
 termcap-clean:
 	-make -C $(TERMCAP_BUILD_DIR) clean
 
-termcap-dirclean: termcap-clean
-	rm -rf $(TERMCAP_BUILD_DIR) $(TERMCAP_IPK_DIR) $(TERMCAP_IPK)
+termcap-dirclean:
+	rm -rf $(BUILD_DIR)/$(TERMCAP_DIR) $(TERMCAP_BUILD_DIR) $(TERMCAP_IPK_DIR) $(TERMCAP_IPK)

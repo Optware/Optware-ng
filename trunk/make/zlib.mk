@@ -79,5 +79,5 @@ zlib-ipk: $(ZLIB_IPK)
 zlib-clean:
 	-$(MAKE) -C $(ZLIB_BUILD_DIR) clean
 
-zlib-dirclean: zlib-clean
-	rm -rf $(ZLIB_BUILD_DIR) $(ZLIB_IPK_DIR) $(ZLIB_IPK)
+zlib-dirclean:
+	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR) $(ZLIB_IPK_DIR) $(ZLIB_IPK)
