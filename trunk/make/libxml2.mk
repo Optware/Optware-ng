@@ -33,7 +33,7 @@ LIBXML2_IPK_VERSION=1
 # LIBXML2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBXML2_PATCHES=$(LIBXML2_SOURCE_DIR)/libxml2-testModule.c.patch
+LIBXML2_PATCHES=$(LIBXML2_SOURCE_DIR)/libxml2-testModule.c.patch $(LIBXML2_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
