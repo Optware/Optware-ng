@@ -33,7 +33,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc mdadm miau mtr \
-	nail nano ncurses nmap ntp ntpclient \
+	nail nano ncurses ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
@@ -60,8 +60,10 @@ CROSS_PACKAGES = \
 	svn
 
 # bzflag native compile requires too much memory.
+# nmap requires a real sed.
 CROSS_ONLY_PACKAGES = \
-	bzflag
+	bzflag \
+	nmap
 
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
