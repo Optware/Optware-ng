@@ -30,7 +30,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	libid3tag libtool lsof \
 	make miau \
 	ntpclient \
-	portmap puppy \
+	patch portmap puppy \
 	rsync \
 	strace sudo \
 	tcpwrappers \
@@ -39,33 +39,28 @@ NATIVE_AND_CROSS_PACKAGES = \
 	zlib \
 
 CROSS_ONLY_PACKAGES = \
-	atftp \
+	appweb atftp \
 	bind busybox \
 	coreutils cvs \
 	dhcp diffutils \
 	findutils flex freeradius \
 	gawk grep \
-	ircd-hybrid \
+	imagemagick ircd-hybrid \
 	jove \
-	libbt libcurl libdb libevent libjpeg libpcap libpng \
+	less libbt libcurl libdb libevent libjpeg libpcap libpng libtiff logrotate \
 	m4 mc mdadm mt-daapd \
-	nano ncurses nfs-server ntp \
+	nail nano ncurses nfs-server nfs-utils ntp \
 	openssl openssh \
 	popt procps \
 	rdate \
-	screen svn \
+	screen stunnel svn \
 	tar \
 	unfs3 \
 	vdr-mediamvp \
-	wget \
-
-UNCATEGORISED_PACKAGES = \
-	libtiff less nfs-utils \
-	logrotate appweb imagemagick \
-	nail stunnel patch \
+	wget
 
 PACKAGES = \
-	$(CROSS_ONLY_PACKAGES) $(NATIVE_AND_CROSS_PACKAGES) $(UNCATEGORISED_PACKAGES)
+	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
 PACKAGES_TO_BE_TESTED =
 
