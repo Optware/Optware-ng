@@ -132,7 +132,7 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
-	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(FINDUTILS_DOC_IPK)
+	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(BUILD_DIR)/findutils-doc_*_armeb.ipk
 	install -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	install -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	install -d $(FINDUTILS_DOC_IPK_DIR)/CONTROL
