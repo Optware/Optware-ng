@@ -93,7 +93,7 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 
 
 UNSORTED_PACKAGES = \
-	freeradius \
+	ctorrent freeradius \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
