@@ -72,8 +72,9 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
 # rsnapshot depends on perl
-# squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
+# squid probably will build cross - may just need some configure work
+# stow depends on perl
 # vim probably just needs configure work
 NATIVE_PACKAGES = \
 	asterisk \
@@ -93,14 +94,13 @@ NATIVE_PACKAGES = \
 	rsnapshot ruby \
 	squid \
 	samba \
+	stow \
 	tin \
 	vim \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
-# stow depends on perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	stow \
 
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
