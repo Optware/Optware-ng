@@ -126,8 +126,8 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 	rm -f $(EXPAT_BUILD_DIR)/.staged
 	mkdir -p $(STAGING_DIR)/lib $(STAGING_DIR)/include
 	(cd $(EXPAT_BUILD_DIR); \
-		./libtool --mode=install /opt/bin/install -c libexpat.la $(STAGING_DIR)/lib/libexpat.la ; \
-		/opt/bin/install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_DIR)/include ; \
+		./libtool --mode=install install -c libexpat.la $(STAGING_DIR)/lib/libexpat.la ; \
+		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_DIR)/include ; \
 	)
 	# avoid problems with libtool later
 	rm $(STAGING_DIR)/lib/libexpat.la
@@ -151,8 +151,8 @@ $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_armeb.ipk
 	install -d $(EXPAT_IPK_DIR)/opt/lib $(EXPAT_IPK_DIR)/opt/include
 	(cd $(EXPAT_BUILD_DIR); \
-		./libtool --mode=install /opt/bin/install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
-		/opt/bin/install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
+		./libtool --mode=install install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
+		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
 	)
 	# avoid problems with libtool later
 	rm $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
