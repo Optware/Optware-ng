@@ -106,22 +106,43 @@ PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
 	atftp \
-	cpio cron \
+	bc bind bitchx \
+	cpio cron ctags \
 	diffutils \
 	e2fsprogs \
-	fetchmail file findutils flex \
-	gdb gdbm gzip \
+	fetchmail file findutils fixesext flex \
+	fontconfig freetype \
+	gdb gdbm gift gzip \
 	hdparm \
-	less libol logrotate \
+	inetutils \
+	less libgd libid3tag libol libogg libtool libvorbis \
+	logrotate lua lzo \
 	miau muxsshssl \
 	ncurses ntpclient \
 	openssl \
-	popt procps puppy \
-	rdate rsync \
+	pkgconfig popt postgresql procps proftpd puppy python \
+	rdate recordext rsync \
 	strace stunnel syslog-ng \
-	tar tcpdump termcap \
-	wakelan wget-ssl which \
-	xinetd zlib
+	tar tcpdump termcap ttf-bitstream-vera \
+	w3cam wakelan wget-ssl which \
+	xau xdmcp xextensions xinetd xproto xtrans \
+	zlib
+
+WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
+	adns appweb automake bash busybox bzip2 ccxstream \
+	classpath coreutils cyrus-sasl \
+	dhcp distcc dnsmasq dropbear \
+	ed expat ffmpeg flac \
+	ghostscript gift-fasttrack gift-gnutella gift-openft groff \
+	iptables ircd-hybrid \
+	joe jove \
+	lame libcurl libdvdread libevent libjpeg libpng lynx \
+	m4 make man-pages man mc mt-daapd \
+	nano ncftp \
+	patch portmap \
+	tcpwrappers torrent \
+	unfs3 \
+	vdr-mediamvp
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
@@ -138,7 +159,7 @@ TARGET_OS=linux
 endif
 
 ifeq ($(TARGET),wl500g)
-PACKAGES = $(WL500G_PACKAGES)
+PACKAGES = $(WL500G_PACKAGES) $(WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 endif
