@@ -133,7 +133,7 @@ ed: $(ED_BUILD_DIR)/.built
 #
 $(ED_IPK): $(ED_BUILD_DIR)/.built
 	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_armeb.ipk
-	$(MAKE) -C $(ED_BUILD_DIR) DESTDIR=$(ED_IPK_DIR) install
+	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install
 	install -d $(ED_IPK_DIR)/CONTROL
 	install -m 644 $(ED_SOURCE_DIR)/control $(ED_IPK_DIR)/CONTROL/control
 #	echo $(ED_CONFFILES) | sed -e 's/ /\n/g' > $(ED_IPK_DIR)/CONTROL/conffiles
