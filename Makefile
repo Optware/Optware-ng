@@ -66,7 +66,6 @@ CROSS_ONLY_PACKAGES = \
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
-	gift-opennap \
 
 # I don't have env to test native compiles for : gift-opennap
 
@@ -103,7 +102,7 @@ UNSORTED_PACKAGES = \
 
 DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = proftpd nethack scponly tcpdump e2fsprogs dump gkrellm	clamav pkgconfig
+PACKAGES_THAT_NEED_TO_BE_FIXED = proftpd nethack scponly tcpdump e2fsprogs dump gkrellm	clamav pkgconfig gift-opennap
 
 CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES) $(DEVELOPER_PACKAGES)
 
