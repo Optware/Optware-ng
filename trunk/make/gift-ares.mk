@@ -102,7 +102,7 @@ $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTARES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTARES_LDFLAGS)" \
 		./configure \
-		--with-zlib=/home/slug/unslung/staging/opt \
+		--with-zlib=$(STAGING_DIR)/opt \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
