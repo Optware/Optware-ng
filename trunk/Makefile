@@ -27,7 +27,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
-	gawk gdbm grep groff gzip \
+	gawk gdbm gettext grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	less libbt libcurl libdb libevent libiconv libid3tag \
@@ -35,7 +35,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm miau mtr mutt \
 	nail nano ncftp ncurses nload nmap ntp ntpclient \
 	openssh openssl \
-	patch portmap procps puppy \
+	patch pkgconfig portmap procps puppy \
 	rsync \
 	screen sed strace stunnel sudo \
 	tar tcpwrappers termcap torrent \
@@ -49,8 +49,6 @@ NATIVE_AND_CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
 	cups \
-	pkgconfig \
-	gettext \
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
