@@ -1,0 +1,149 @@
+###########################################################
+#
+# cpio
+#
+###########################################################
+
+CPIO_SITE=http://ftp.gnu.org/gnu/cpio
+CPIO_VERSION=2.5
+CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.gz
+CPIO_DIR=cpio-$(CPIO_VERSION)
+CPIO_UNZIP=zcat
+
+#
+# CPIO_IPK_VERSION should be incremented when the ipk changes.
+#
+CPIO_IPK_VERSION=1
+
+#
+# CPIO_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+CPIO_CPPFLAGS=
+CPIO_LDFLAGS=
+
+#
+# CPIO_BUILD_DIR is the directory in which the build is done.
+# CPIO_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# CPIO_IPK_DIR is the directory in which the ipk is built.
+# CPIO_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+CPIO_BUILD_DIR=$(BUILD_DIR)/cpio
+CPIO_SOURCE_DIR=$(SOURCE_DIR)/cpio
+CPIO_IPK_DIR=$(BUILD_DIR)/cpio-$(CPIO_VERSION)-ipk
+CPIO_IPK=$(BUILD_DIR)/cpio_$(CPIO_VERSION)-$(CPIO_IPK_VERSION)_armeb.ipk
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(CPIO_SOURCE):
+	$(WGET) -P $(DL_DIR) $(CPIO_SITE)/$(CPIO_SOURCE)
+
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+cpio-source: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
+
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+$(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
+	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
+	$(CPIO_UNZIP) $(DL_DIR)/$(CPIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
+	(cd $(CPIO_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CPIO_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(CPIO_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+	)
+	touch $(CPIO_BUILD_DIR)/.configured
+
+cpio-unpack: $(CPIO_BUILD_DIR)/.configured
+
+#
+# This builds the actual binary.  You should change the target to refer
+# directly to the main binary which is built.
+#
+#$(CPIO_BUILD_DIR)/.built: $(CPIO_BUILD_DIR)/.configured
+$(CPIO_BUILD_DIR)/cpio: $(CPIO_BUILD_DIR)/.configured
+	rm -f $(CPIO_BUILD_DIR)/cpio
+	$(MAKE) -C $(CPIO_BUILD_DIR)
+
+#
+# You should change the dependency to refer directly to the main binary
+# which is built.
+#
+cpio: $(CPIO_BUILD_DIR)/cpio
+
+#
+# If you are building a library, then you need to stage it too.
+#
+
+cpio-stage: $(STAGING_DIR)/opt/lib/libcpio.so.$(CPIO_VERSION)
+
+#
+# This builds the IPK file.
+#
+# Binaries should be installed into $(CPIO_IPK_DIR)/opt/sbin or $(CPIO_IPK_DIR)/opt/bin
+# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Libraries and include files should be installed into $(CPIO_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(CPIO_IPK_DIR)/opt/etc/cpio/...
+# Documentation files should be installed in $(CPIO_IPK_DIR)/opt/doc/cpio/...
+# Daemon startup scripts should be installed in $(CPIO_IPK_DIR)/opt/etc/init.d/S??cpio
+#
+# You may need to patch your application to make it use these locations.
+#
+$(CPIO_IPK): $(CPIO_BUILD_DIR)/cpio
+	rm -rf $(CPIO_IPK_DIR) $(CPIO_IPK)
+	install -d $(CPIO_IPK_DIR)/opt/bin
+	$(TARGET_STRIP) $(CPIO_BUILD_DIR)/cpio -o $(CPIO_IPK_DIR)/opt/bin/cpio
+	install -d $(CPIO_IPK_DIR)/CONTROL
+	install -m 644 $(CPIO_SOURCE_DIR)/control $(CPIO_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)
+
+#
+# This is called from the top level makefile to create the IPK file.
+#
+cpio-ipk: $(CPIO_IPK)
+
+#
+# This is called from the top level makefile to clean all of the built files.
+#
+cpio-clean:
+	-$(MAKE) -C $(CPIO_BUILD_DIR) clean
+
+#
+# This is called from the top level makefile to clean all dynamically created
+# directories.
+#
+cpio-dirclean:
+	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR) $(CPIO_IPK_DIR) $(CPIO_IPK)
