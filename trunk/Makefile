@@ -77,7 +77,10 @@ TARGET_CONFIGURE_OPTS= \
 		CXX="$(TARGET_CROSS)g++" \
 		RANLIB=$(TARGET_CROSS)ranlib
 
-all: world packages unslung
+all: world packages
+
+unslung: $(TARGETS)
+	cd firmware ; $(MAKE) umount clean unslung
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
 TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
@@ -96,9 +99,6 @@ PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 $(PACKAGES) : directories
 
 $(PACKAGES_IPK) : directories ipkg-utils
-
-unslung: $(TARGETS)
-	cd firmware ; $(MAKE) umount clean unslung
 
 $(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
 	-@mkdir -p $(PACKAGE_DIR)
