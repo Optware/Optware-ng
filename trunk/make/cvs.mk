@@ -31,7 +31,7 @@ $(CVS_DIR)/.configured: $(CVS_DIR)/.source
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--without-gssapi \
-		--prefix=/opt/bin \
+		--prefix=/opt \
 		cvs_cv_func_printf=yes \
 		cvs_cv_func_printf_ptr=yes \
 	);
