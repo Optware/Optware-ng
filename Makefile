@@ -33,10 +33,12 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap ntp freeradius puppy screen bind svn
 
-PACKAGES_TO_BE_TESTED:= 
+PACKAGES_TO_BE_TESTED:= imagemagick
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm m4 make patch
+
+PACKAGES_THAT_NEED_TO_BE_FIXED:= perl
 
 WGET=wget --passive-ftp
 CVS=cvs
