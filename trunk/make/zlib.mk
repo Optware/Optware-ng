@@ -87,6 +87,7 @@ $(ZLIB_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(ZLIB_CONFLICTS)" >>$@
 
 $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
+	rm -rf $(ZLIB_IPK_DIR) $(BUILD_DIR)/zlib_*_$(TARGET_ARCH).ipk
 	install -d $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)/opt/include
