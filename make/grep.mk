@@ -20,12 +20,9 @@ $(DL_DIR)/$(GREP_SOURCE):
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
-$(GREP_DIR)/.source: $(DL_DIR)/$(GREP_SOURCE)
+$(GREP_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE)
 	$(GREP_UNZIP) $(DL_DIR)/$(GREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(GREP_DIR)
-	touch $(GREP_DIR)/.source
-
-$(GREP_DIR)/.configured: $(GREP_DIR)/.source
 	(cd $(GREP_DIR); \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
@@ -34,13 +31,13 @@ $(GREP_DIR)/.configured: $(GREP_DIR)/.source
 	);
 	touch $(GREP_DIR)/.configured
 
+grep-unpack: $(GREP_DIR)/.configured
+
 $(GREP_DIR)/src/grep: $(GREP_DIR)/.configured
 	$(MAKE) -C $(GREP_DIR) CC=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) install
 
-grep-headers: $(GREP_IPK_DIR)
-
-grep: $(GREP_IPK_DIR)
+grep: $(GREP_DIR)/src/grep
 
 $(GREP_IPK): $(GREP_DIR)/src/grep
 	mkdir -p $(GREP_IPK_DIR)/CONTROL
@@ -51,17 +48,10 @@ $(GREP_IPK): $(GREP_DIR)/src/grep
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
 
-grep-stage: $(GREP_IPK)
-
 grep-ipk: $(GREP_IPK)
 
-grep-source: $(DL_DIR)/$(GREP_SOURCE)
-
 grep-clean:
-	-$(MAKE) -C $(GREP_DIR) uninstall
 	-$(MAKE) -C $(GREP_DIR) clean
 
-grep-distclean:
-	-rm $(GREP_DIR)/.configured
-	-$(MAKE) -C $(GREP_DIR) distclean
-
+grep-dirclean:
+	rm -rf $(BUILD_DIR)/$(GREP_DIR) $(GREP_BUILD_DIR) $(GREP_IPK_DIR) $(GREP_IPK)
