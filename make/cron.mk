@@ -32,7 +32,7 @@ CRON_IPK_VERSION=3
 
 #
 # CRON_CONFFILES should be a list of user-editable files
-CRON_CONFFILES=/opt/etc/cron.conf /opt/etc/init.d/SXXcron
+CRON_CONFFILES=/opt/etc/crontab /opt/etc/cron.conf /opt/etc/init.d/S10cron
 
 #
 # CRON_PATCHES should list any patches, in the the order in
@@ -156,12 +156,12 @@ $(CRON_IPK_DIR)/CONTROL/control:
 $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	rm -rf $(CRON_IPK_DIR) $(BUILD_DIR)/cron_*_$(TARGET_ARCH).ipk
 	# Install and strip the two executables
-	install -d $(CRON_IPK_DIR)/opt/sbin
 	install -d $(CRON_IPK_DIR)/opt/bin
-	install -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)/opt/sbin
 	install -m  755 $(CRON_BUILD_DIR)/crontab $(CRON_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/sbin/cron
 	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/bin/crontab
+	install -d $(CRON_IPK_DIR)/opt/sbin
+	install -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)/opt/sbin
+	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/sbin/cron
 	# Install manuals
 	install -d $(CRON_IPK_DIR)/opt/man/man1
 	install -d $(CRON_IPK_DIR)/opt/man/man5
@@ -169,10 +169,16 @@ $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	install -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)/opt/man/man1
 	install -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)/opt/man/man5
 	install -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
+	# Install default crontab
+	install -d $(CRON_IPK_DIR)/opt/etc
+	install -m 644 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
+	# Install daemon startup file
+	install -d $(CRON_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)/opt/etc/init.d/S10cron
 	$(MAKE) $(CRON_IPK_DIR)/CONTROL/control
 	install -m 755 $(CRON_SOURCE_DIR)/postinst $(CRON_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/
-#	echo $(CRON_CONFFILES) | sed -e 's/ /\n/g' > $(CRON_IPK_DIR)/CONTROL/conffiles
+	echo $(CRON_CONFFILES) | sed -e 's/ /\n/g' > $(CRON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CRON_IPK_DIR)
 
 #
