@@ -4,6 +4,13 @@
 #
 # Start the named (DNS) server daemon
 #  
+####
+# Work-around for startup environment
+if [ -z "$LD_LIBRARY_PATH" ]; then
+ export LD_LIBRARY_PATH=/opt/lib
+fi
+####
+
 start() {
     echo -n "Starting DNS Services: "
     if [ -n "`pidof named`" ]; then
