@@ -35,7 +35,7 @@ CROSS_PACKAGES = \
 	jamvm jikes joe jove \
 	lame less libbt libcurl libdb libdvdread libevent libgd libiconv libid3tag \
 	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 libxslt \
-	logrotate lsof \
+	logrotate lsof lynx \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl \
@@ -62,7 +62,6 @@ CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 # bogofilter's configure wants to run some small executables
 # cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
-# lynx's makefile runs executables it has built.
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
@@ -76,7 +75,6 @@ NATIVE_PACKAGES = \
 	cyrus-imapd \
 	emacs \
 	xemacs \
-	lynx \
 	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident perl-storable perl-time-hires \
