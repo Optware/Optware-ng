@@ -134,6 +134,7 @@ $(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
 		cd $(PACKAGE_DIR); \
 		cp $(BUILD_DIR)/*.ipk .; \
 		$(IPKG_MAKE_INDEX) . > Packages; \
+		gzip -c Packages > Packages.gz; \
 	}
 	@echo "ALL DONE."
 
