@@ -57,8 +57,10 @@ $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/li
 	install -d $(STAGING_DIR)/opt/include/openssl
 	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(STAGING_DIR)/opt/include/openssl
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/lib{crypto,ssl}.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/lib{crypto,ssl}.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
+	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
+	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
@@ -76,8 +78,10 @@ $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 	install -d $(OPENSSL_IPK_DIR)/opt/include/openssl
 	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_IPK_DIR)/opt/include/openssl
 	install -d $(OPENSSL_IPK_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/lib{crypto,ssl}.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/lib/lib{ssl,crypto}.so*
+	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
+	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/lib/libcrypto.so*
+	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/lib/libssl.so*
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
