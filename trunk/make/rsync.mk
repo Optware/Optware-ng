@@ -66,3 +66,5 @@ rsync-distclean:
 	-rm $(RSYNC_DIR)/.configured
 	-$(MAKE) -C $(RSYNC_DIR) distclean
 
+rsync-dirclean:
+	rm -rf $(RSYNC_DIR) $(RSYNC_IPK_DIR) $(RSYNC_IPK)
