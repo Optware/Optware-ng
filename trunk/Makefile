@@ -29,8 +29,7 @@ PACKAGES:= dropbear busybox zlib portmap nfs-server flex inetutils \
 WGET=wget --passive-ftp
 
 # You must install the crosstool Linux Tool Chain.  See:
-# http://groups.yahoo.com/group/nslu2-linux/message/422
-# and do exactly what it says there (i.e. do not use rc34).
+# http://www.nslu2-linux.org/wiki/HowTo/CompileCrossTool
 
 TARGET_OPTIMIZATION= #-Os
 TARGET_DEBUGGING= #-g
