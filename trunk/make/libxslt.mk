@@ -134,6 +134,7 @@ $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
 	cp $(STAGING_DIR)/opt/bin/xslt-config $(STAGING_DIR)/bin
 	# remove .la to avoid libtool problems
 	rm $(STAGING_LIB_DIR)/libxslt.la
+	rm $(STAGING_LIB_DIR)/libexslt.la
 	touch $(LIBXSLT_BUILD_DIR)/.staged
 
 libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
@@ -153,8 +154,8 @@ libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
 $(LIBXSLT_IPK): $(LIBXSLT_BUILD_DIR)/.built
 	rm -rf $(LIBXSLT_IPK_DIR) $(BUILD_DIR)/libxslt_*_armeb.ipk
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(LIBXSLT_IPK_DIR) install
-	# remove .la to avoid libtool problems
 	rm $(LIBXSLT_IPK_DIR)/opt/lib/libxslt.la
+	rm $(LIBXSLT_IPK_DIR)/opt/lib/libexslt.la
 #	install -d $(LIBXSLT_IPK_DIR)/opt/etc/
 #	install -m 755 $(LIBXSLT_SOURCE_DIR)/libxslt.conf $(LIBXSLT_IPK_DIR)/opt/etc/libxslt.conf
 #	install -d $(LIBXSLT_IPK_DIR)/opt/etc/init.d
