@@ -1,0 +1,200 @@
+###########################################################
+#
+# clamav
+#
+###########################################################
+
+# You must replace "clamav" and "CLAMAV" with the lower case name and
+# upper case name of your new package.  Some places below will say
+# "Do not change this" - that does not include this global change,
+# which must always be done to ensure we have unique names.
+
+#
+# CLAMAV_VERSION, CLAMAV_SITE and CLAMAV_SOURCE define
+# the upstream location of the source code for the package.
+# CLAMAV_DIR is the directory which is created when the source
+# archive is unpacked.
+# CLAMAV_UNZIP is the command used to unzip the source.
+# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
+#
+# You should change all these variables to suit your package.
+#
+CLAMAV_SITE=http://puzzle.dl.sourceforge.net/clamav/
+CLAMAV_VERSION=0.81
+CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
+CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
+CLAMAV_UNZIP=zcat
+
+#
+# CLAMAV_IPK_VERSION should be incremented when the ipk changes.
+#
+CLAMAV_IPK_VERSION=1
+
+#
+# CLAMAV_CONFFILES should be a list of user-editable files
+CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf
+
+#
+# CLAMAV_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+#CLAMAV_PATCHES=$(CLAMAV_SOURCE_DIR)/configure.patch
+
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+CLAMAV_CPPFLAGS=
+CLAMAV_LDFLAGS=
+
+#
+# CLAMAV_BUILD_DIR is the directory in which the build is done.
+# CLAMAV_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# CLAMAV_IPK_DIR is the directory in which the ipk is built.
+# CLAMAV_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+CLAMAV_BUILD_DIR=$(BUILD_DIR)/clamav
+CLAMAV_SOURCE_DIR=$(SOURCE_DIR)/clamav
+CLAMAV_IPK_DIR=$(BUILD_DIR)/clamav-$(CLAMAV_VERSION)-ipk
+CLAMAV_IPK=$(BUILD_DIR)/clamav_$(CLAMAV_VERSION)-$(CLAMAV_IPK_VERSION)_armeb.ipk
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(CLAMAV_SOURCE):
+	$(WGET) -P $(DL_DIR) $(CLAMAV_SITE)/$(CLAMAV_SOURCE)
+
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
+
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
+#	$(MAKE) <bar>-stage <baz>-stage
+	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
+	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(CLAMAV_PATCHES) | patch -d $(BUILD_DIR)/$(CLAMAV_DIR) -p1
+	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
+	(cd $(CLAMAV_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(CLAMAV_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--with-zlib=/opt \
+		--sysconfdir=/opt/etc \
+	)
+	touch $(CLAMAV_BUILD_DIR)/.configured
+
+clamav-unpack: $(CLAMAV_BUILD_DIR)/.configured
+
+#
+# This builds the actual binary.
+#
+$(CLAMAV_BUILD_DIR)/.built: $(CLAMAV_BUILD_DIR)/.configured
+	rm -f $(CLAMAV_BUILD_DIR)/.built
+	$(MAKE) -C $(CLAMAV_BUILD_DIR)
+	touch $(CLAMAV_BUILD_DIR)/.built
+
+#
+# This is the build convenience target.
+#
+clamav: $(CLAMAV_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(CLAMAV_BUILD_DIR)/.staged: $(CLAMAV_BUILD_DIR)/.built
+	rm -f $(CLAMAV_BUILD_DIR)/.staged
+	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(CLAMAV_BUILD_DIR)/.staged
+
+clamav-stage: $(CLAMAV_BUILD_DIR)/.staged
+
+#
+# This builds the IPK file.
+#
+# Binaries should be installed into $(CLAMAV_IPK_DIR)/opt/sbin or $(CLAMAV_IPK_DIR)/opt/bin
+# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Libraries and include files should be installed into $(CLAMAV_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(CLAMAV_IPK_DIR)/opt/etc/clamav/...
+# Documentation files should be installed in $(CLAMAV_IPK_DIR)/opt/doc/clamav/...
+# Daemon startup scripts should be installed in $(CLAMAV_IPK_DIR)/opt/etc/init.d/S??clamav
+#
+# You may need to patch your application to make it use these locations.
+#
+$(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
+	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_armeb.ipk
+	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(CLAMAV_IPK_DIR) install
+	install -d $(CLAMAV_IPK_DIR)/opt/etc/
+	install -m 755 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
+	install -m 755 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
+#	install -d $(CLAMAV_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)/opt/etc/init.d/S91clamav
+	install -d $(CLAMAV_IPK_DIR)/CONTROL
+	install -m 644 $(CLAMAV_SOURCE_DIR)/control $(CLAMAV_IPK_DIR)/CONTROL/control
+	install -m 644 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
+	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
+	cd $(CLAMAV_IPK_DIR)/opt/bin
+	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamav-config $(CLAMAV_IPK_DIR)/opt/bin/clamav-config
+	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamdscan $(CLAMAV_IPK_DIR)/opt/bin/clamdscan
+	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamscan $(CLAMAV_IPK_DIR)/opt/bin/clamscan
+	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-freshclam $(CLAMAV_IPK_DIR)/opt/bin/freshclam
+	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-sigtool $(CLAMAV_IPK_DIR)/opt/bin/sigtool
+	cd $(CLAMAV_IPK_DIR)/opt/sbin
+	mv $(CLAMAV_IPK_DIR)/opt/sbin/armv5b-softfloat-linux-clamd $(CLAMAV_IPK_DIR)/opt/sbin/clamd
+	cd $(CLAMAV_IPK_DIR)/opt/man/man1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-clamdscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamdscan.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-clamscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamscan.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-freshclam.1 $(CLAMAV_IPK_DIR)/opt/man/man1/freshclam.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-sigtool.1 $(CLAMAV_IPK_DIR)/opt/man/man1/sigtool.1
+	cd $(CLAMAV_IPK_DIR)/opt/man/man5
+	mv $(CLAMAV_IPK_DIR)/opt/man/man5/armv5b-softfloat-linux-clamd.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/clamd.conf.5
+	mv $(CLAMAV_IPK_DIR)/opt/man/man5/armv5b-softfloat-linux-freshclam.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/freshclam.conf.5
+	cd $(CLAMAV_IPK_DIR)/opt/man/man8
+	rm $(CLAMAV_IPK_DIR)/opt/man/man8/armv5b-softfloat-linux-clamav-milter.8
+	mv $(CLAMAV_IPK_DIR)/opt/man/man8/armv5b-softfloat-linux-clamd.8 $(CLAMAV_IPK_DIR)/opt/man/man8/clamd.8
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLAMAV_IPK_DIR)
+
+#
+# This is called from the top level makefile to create the IPK file.
+#
+clamav-ipk: $(CLAMAV_IPK)
+
+#
+# This is called from the top level makefile to clean all of the built files.
+#
+clamav-clean:
+	-$(MAKE) -C $(CLAMAV_BUILD_DIR) clean
+
+#
+# This is called from the top level makefile to clean all dynamically created
+# directories.
+#
+clamav-dirclean:
+	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR) $(CLAMAV_IPK_DIR) $(CLAMAV_IPK)
