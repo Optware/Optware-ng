@@ -4,14 +4,13 @@
 #
 #############################################################
 
-INETUTILS_DIR=$(BUILD_DIR)/inetutils
+INETUTILS_DIR:=$(BUILD_DIR)/inetutils
 
 INETUTILS_VERSION:=1.4.2
 INETUTILS:=inetutils-$(INETUTILS_VERSION)
 INETUTILS_SITE:=ftp://ftp.gnu.org/pub/gnu/inetutils
 INETUTILS_SOURCE:=$(INETUTILS).tar.gz
 INETUTILS_UNZIP:=zcat
-
 INETUTILS_IPK:=$(BUILD_DIR)/inetutils_$(INETUTILS_VERSION)-1_armeb.ipk
 INETUTILS_IPK_DIR:=$(BUILD_DIR)/inetutils-$(INETUTILS_VERSION)-ipk
 
