@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -n "`pidof unfsd`" ] ; then
+    killall unfsd 2>/dev/null
+fi
+if [ -n "`pidof rpc.mountd`" ] ; then
+    killall  rpc.mountd 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/unfsd
+/opt/sbin/rpc.mountd
