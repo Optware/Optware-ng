@@ -175,7 +175,8 @@ ADDITIONAL INFORMATION:
     same network footprint as the standard firmware.
 
 9a) This simple diversion script will enable telnet on boot
-    
+   
+    # /unslung/rc.xinetd 
     #! /bin/sh
     echo "telnet  stream  tcp     nowait  root    /usr/sbin/telnetd" > /etc/inetd.conf
     # Additional lines must append (using >>), ie:
