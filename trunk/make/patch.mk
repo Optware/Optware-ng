@@ -28,7 +28,7 @@ PATCH_UNZIP=zcat
 #
 # PATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-PATCH_IPK_VERSION=1
+PATCH_IPK_VERSION=2
 
 #
 # PATCH_PATCHES should list any patches, in the the order in
@@ -96,6 +96,7 @@ $(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PATCH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PATCH_LDFLAGS)" \
+		ac_cv_func_fseeko=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
