@@ -1,9 +1,9 @@
 Package: vsftpd
-Version: 2.0.1-3
+Version: 2.0.1-4
 Architecture: armeb
 Maintainer: Jeremy Eglen <jieglen@sbcglobal.net>
 Source: ftp://vsftpd.beasts.org/users/cevans/vsftpd-2.0.1.tar.gz
 Section: net
 Priority: optional
-Depends: openssl
+Depends: 
 Description: ftp daemon with an emphasis on speed and security
