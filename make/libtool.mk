@@ -144,7 +144,7 @@ libtool-stage: $(STAGING_DIR)/opt/lib/libltdl.so.3.1.0
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
-	rm -rf $(LIBTOOL_IPK_DIR) $(LIBTOOL_IPK)
+	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_armeb.ipk
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
 	rm -f $(LIBTOOL_IPK_DIR)/opt/info/dir
 	install -d $(LIBTOOL_IPK_DIR)/CONTROL
