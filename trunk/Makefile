@@ -46,7 +46,7 @@ CROSS_PACKAGES = \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd vte \
 	wakelan wget-ssl which \
-	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
+	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xtrans xtst xvid \
 	zlib \
 	crosstool-native
