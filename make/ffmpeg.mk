@@ -132,7 +132,7 @@ ffmpeg: $(FFMPEG_BUILD_DIR)/.built
 #
 $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 	rm -f $(FFMPEG_BUILD_DIR)/.staged
-	$(MAKE) -C $(FFMPEG_BUILD_DIR) bindir=$(STAGING_DIR)/opt/bin prefix=$(STAGING_DIR)/opt DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(STAGING_DIR)/opt/man bindir=$(STAGING_DIR)/opt/bin prefix=$(STAGING_DIR)/opt DESTDIR=$(STAGING_DIR) install
 	touch $(FFMPEG_BUILD_DIR)/.staged
 
 ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
@@ -151,7 +151,7 @@ ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 #
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_armeb.ipk
-	$(MAKE) -C $(FFMPEG_BUILD_DIR) bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) install
+	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) install
 	install -d $(FFMPEG_IPK_DIR)/CONTROL
 	install -m 644 $(FFMPEG_SOURCE_DIR)/control $(FFMPEG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FFMPEG_IPK_DIR)
