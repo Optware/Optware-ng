@@ -17,8 +17,8 @@ POSTFIX_CONFFILES=
 
 POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch
 
-POSTFIX_CPPFLAGS=
-POSTFIX_LDFLAGS=
+POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
+POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2
 
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix
@@ -38,8 +38,6 @@ $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR)
 	(cd $(POSTFIX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(POSTFIX_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(POSTFIX_LDFLAGS)" \
 		$(MAKE) makefiles \
 		CCARGS=' \
 			-DDEF_COMMAND_DIR=\"/opt/sbin\" \
@@ -52,11 +50,11 @@ $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 			-DDEF_QUEUE_DIR=\"/opt/var/spool/postfix\" \
 			-DDEF_README_DIR=\"/opt/share/doc/postfix/readme\" \
 			-DDEF_SENDMAIL_PATH=\"/opt/sbin/sendmail\" \
+			-DHAS_PCRE \
 			-DUSE_SASL_AUTH \
-			-I$(STAGING_INCLUDE_DIR) \
-			-I$(STAGING_INCLUDE_DIR)/sasl \
+			$(STAGING_CPPFLAGS) $(POSTFIX_CPPFLAGS) \
 			' \
-		AUXLIBS="-L$(STAGING_LIB_DIR) -lnsl -lsasl2" \
+		AUXLIBS="$(STAGING_LDFLAGS) $(POSTFIX_LDFLAGS)" \
 	)
 	touch $(POSTFIX_BUILD_DIR)/.configured
 
@@ -95,13 +93,13 @@ $(POSTFIX_BUILD_DIR)/.staged: $(POSTFIX_BUILD_DIR)/.built
 postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
 $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
-	echo "The makefile target 'postfix-ipk' is still empty."
 	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_armeb.ipk
 	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) upgrade
+	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
 #	install -d $(POSTFIX_IPK_DIR)/opt/etc/
 #	install -m 755 $(POSTFIX_SOURCE_DIR)/postfix.conf $(POSTFIX_IPK_DIR)/opt/etc/postfix.conf
 #	install -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/SXXpostfix
+#	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
 	install -d $(POSTFIX_IPK_DIR)/CONTROL
 	install -m 644 $(POSTFIX_SOURCE_DIR)/control $(POSTFIX_IPK_DIR)/CONTROL/control
 #	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
