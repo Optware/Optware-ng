@@ -108,7 +108,7 @@ libtool-unpack: $(LIBTOOL_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBTOOL_BUILD_DIR)/libtool: $(LIBTOOL_BUILD_DIR)/.configured
+$(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0: $(LIBTOOL_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR)
 
 #
