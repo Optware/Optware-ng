@@ -89,7 +89,7 @@ PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 unslung: directories $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
 
-$(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
+$(PACKAGE_DIR)/Packages: directories ipkg-utils $(PACKAGES_IPKG)
 	-@mkdir -p $(PACKAGE_DIR)
 	{ \
 		cd $(PACKAGE_DIR); \
@@ -103,7 +103,8 @@ packages: $(PACKAGE_DIR)/Packages
 upload:
 	scp packages/* nslu.sf.net:/home/groups/n/ns/nslu/htdocs/ipkg
 
-world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) $(TARGETS_INSTALL)
+world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(STAGING_DIR) \
+	$(TOOL_INSTALL_DIR) $(PACKAGE_DIR) $(TARGETS_INSTALL)
 	@echo "ALL DONE."
 
 .PHONY: all world clean dirclean distclean directories source unslung packages \
