@@ -36,6 +36,7 @@
 <FOO>_SECTION=
 <FOO>_PRIORITY=optional
 <FOO>_DEPENDS=
+<FOO>_CONFLICTS=
 
 #
 # <FOO>_IPK_VERSION should be incremented when the ipk changes.
@@ -162,6 +163,7 @@ $(<FOO>_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(<FOO>_SITE)/$(<FOO>_SOURCE)" >>$@
 	@echo "Description: $(<FOO>_DESCRIPTION)" >>$@
 	@echo "Depends: $(<FOO>_DEPENDS)" >>$@
+	@echo "Conflicts: $(<FOO>_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
