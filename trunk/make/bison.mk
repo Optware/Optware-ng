@@ -27,10 +27,15 @@ $(BISON_DIR)/.source: $(DL_DIR)/$(BISON_SOURCE)
 
 $(BISON_DIR)/.configured: $(BISON_DIR)/.source
 	(cd $(BISON_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(BISON_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(BISON_LDFLAGS)" \
 		./configure \
-		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
 	);
 	touch $(BISON_DIR)/.configured
 
