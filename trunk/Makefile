@@ -22,7 +22,7 @@
 
 NATIVE_AND_CROSS_PACKAGES = \
 	atftp \
-	bash bzip2 \
+	bash bison bzip2 \
 	ccxstream coreutils cpio \
 	diffutils distcc dnsmasq dropbear \
 	file findutils \
@@ -31,7 +31,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	jove \
 	less libdb libevent libid3tag libjpeg libpng libtool lsof \
 	m4 make miau \
-	nano ntp ntpclient \
+	nano ncurses ntp ntpclient \
 	patch portmap procps puppy \
 	rsync \
 	screen strace sudo \
@@ -50,7 +50,7 @@ CROSS_ONLY_PACKAGES = \
 	imagemagick ircd-hybrid \
 	libbt libcurl libpcap libtiff logrotate \
 	mc mdadm mt-daapd \
-	nail ncurses nfs-server nfs-utils \
+	nail nfs-server nfs-utils \
 	openssl openssh \
 	popt \
 	rdate \
@@ -67,7 +67,7 @@ PACKAGES_TO_BE_TESTED =
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = perl nethack scponly tcpdump nload nmap bison
+PACKAGES_THAT_NEED_TO_BE_FIXED = perl nethack scponly tcpdump nload nmap
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
