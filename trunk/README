@@ -45,7 +45,7 @@ FIRMWARE/PACKAGE BUILD DETAILS:
 3)  make
 4)  make unslung
 5)  Your firmware image is now in the firmware directory, 
-    UNSLUNG-1.xV23R25.bin
+    UNSLUNG-1.x-V23R25.bin
 
 PRE-INSTALLATION CONSIDERATIONS
 1)  It is strongly recommended that you test telnet Redboot access first.
