@@ -101,6 +101,7 @@ $(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
 	)
 	touch $(GAWK_BUILD_DIR)/.configured
 
