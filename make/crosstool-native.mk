@@ -25,7 +25,7 @@ CROSSTOOL-NATIVE_DAT=gcc-3.3.5-glibc-2.2.5.dat
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=3
+CROSSTOOL-NATIVE_IPK_VERSION=4
 
 #
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
@@ -147,7 +147,7 @@ crosstool-native: $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
-	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)* $(BUILD_DIR)/crosstool-native_*_armeb.ipk
+	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)* $(BUILD_DIR)/crosstool-native*_armeb.ipk
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )
@@ -166,6 +166,8 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 		$(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/cpp
 	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-size \
 		$(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/size
+	rm -f $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/g++
+	ln -s ./c++ $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/g++
 # Package into bite-sized chunks
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)-bin
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)-bin$(CROSSTOOL-NATIVE_PREFIX)
