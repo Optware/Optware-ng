@@ -42,7 +42,7 @@ XDPYINFO_PATCHES=
 # compilation or linking flags, then list them here.
 #
 XDPYINFO_CPPFLAGS=
-XDPYINFO_LDFLAGS=-Wl,-rpath $(STAGING_LIB_DIR)
+XDPYINFO_LDFLAGS=-Wl,-rpath-link $(STAGING_LIB_DIR)
 
 #
 # XDPYINFO_BUILD_DIR is the directory in which the build is done.
