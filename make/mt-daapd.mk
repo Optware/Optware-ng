@@ -5,7 +5,7 @@
 ###########################################################
 
 MT_DAAPD_SITE=http://unc.dl.sourceforge.net/sourceforge/mt-daapd
-MT_DAAPD_VERSION=0.2.1-pre4
+MT_DAAPD_VERSION=0.2.1.1
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
@@ -37,6 +37,8 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MT_DAAPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MT_DAAPD_LDFLAGS)" \
+		LIBS="-lgdbm -lid3tag -lz" \
+		ac_cv_func_setpgrp_void=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -45,8 +47,6 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 	        --with-static-libs=$(STAGING_DIR)/opt/lib \
 		--with-gdbm-include=$(STAGING_DIR)/opt/include \
 		--enable-nslu2 \
-		LIBS="-lgdbm -lid3tag -lz" \
-		ac_cv_func_setpgrp_void=yes \
 	)
 	touch $(MT_DAAPD_BUILD_DIR)/.configured
 
