@@ -20,7 +20,7 @@ XDPYINFO_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 XDPYINFO_DESCRIPTION=X display information utility
 XDPYINFO_SECTION=utility
 XDPYINFO_PRIORITY=optional
-XDPYINFO_DEPENDS=x11 xext xtst
+XDPYINFO_DEPENDS=x11, xext, xtst
 
 #
 # XDPYINFO_IPK_VERSION should be incremented when the ipk changes.
@@ -104,6 +104,7 @@ $(XDPYINFO_BUILD_DIR)/.configured: $(XDPYINFO_BUILD_DIR)/.fetched $(XDPYINFO_PAT
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDPYINFO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XDPYINFO_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
