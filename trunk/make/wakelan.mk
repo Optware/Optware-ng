@@ -124,16 +124,6 @@ $(WAKELAN_BUILD_DIR)/.built: $(WAKELAN_BUILD_DIR)/.configured
 wakelan: $(WAKELAN_BUILD_DIR)/.built
 
 #
-# If you are building a library, then you need to stage it too.
-#
-$(WAKELAN_BUILD_DIR)/.staged: $(WAKELAN_BUILD_DIR)/.built
-	rm -f $(WAKELAN_BUILD_DIR)/.staged
-	$(MAKE) -C $(WAKELAN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(WAKELAN_BUILD_DIR)/.staged
-
-wakelan-stage: $(WAKELAN_BUILD_DIR)/.staged
-
-#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(WAKELAN_IPK_DIR)/opt/sbin or $(WAKELAN_IPK_DIR)/opt/bin
@@ -147,16 +137,9 @@ wakelan-stage: $(WAKELAN_BUILD_DIR)/.staged
 #
 $(WAKELAN_IPK): $(WAKELAN_BUILD_DIR)/.built
 	rm -rf $(WAKELAN_IPK_DIR) $(BUILD_DIR)/wakelan_*_armeb.ipk
-	$(MAKE) -C $(WAKELAN_BUILD_DIR) DESTDIR=$(WAKELAN_IPK_DIR) install
-	install -d $(WAKELAN_IPK_DIR)/opt/bin/
-	install -c $(WAKELAN_BUILD_DIR)/wakelan $(WAKELAN_IPK_DIR)/opt/bin/wakelan
-	install -d $(WAKELAN_IPK_DIR)/opt/man/man1
-	install -c $(WAKELAN_BUILD_DIR)/wakelan.1 $(WAKELAN_IPK_DIR)/opt/man/man1/wakelan.1
+	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)/opt install
 	install -d $(WAKELAN_IPK_DIR)/CONTROL
 	install -m 644 $(WAKELAN_SOURCE_DIR)/control $(WAKELAN_IPK_DIR)/CONTROL/control
-#	install -m 644 $(WAKELAN_SOURCE_DIR)/postinst $(WAKELAN_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(WAKELAN_SOURCE_DIR)/prerm $(WAKELAN_IPK_DIR)/CONTROL/prerm
-#	echo $(WAKELAN_CONFFILES) | sed -e 's/ /\n/g' > $(WAKELAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WAKELAN_IPK_DIR)
 
 #
