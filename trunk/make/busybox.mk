@@ -41,7 +41,7 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_CONFIG)
 #else
 #	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(BUSYBOX_BUILD_DIR)/.config
 #endif
-	$(MAKE) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" -C $(BUSYBOX_BUILD_DIR) oldconfig
+	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" -C $(BUSYBOX_BUILD_DIR) oldconfig
 	touch $(BUSYBOX_BUILD_DIR)/.configured
 
 busybox-unpack: $(BUSYBOX_BUILD_DIR)/.configured
