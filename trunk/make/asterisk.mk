@@ -7,22 +7,22 @@
 # You must replace "asterisk" and "ASTERISK" with the lower case name and
 # upper case name of your new package.  Some places below will say
 # "Do not change this" - that does not include this global change,
-# asterisk must always be done to ensure we have unique names.
+# which must always be done to ensure we have unique names.
 
 #
 # ASTERISK_VERSION, ASTERISK_SITE and ASTERISK_SOURCE define
 # the upstream location of the source code for the package.
-# ASTERISK_DIR is the directory asterisk is created when the source
+# ASTERISK_DIR is the directory which is created when the source
 # archive is unpacked.
 # ASTERISK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
 #
-ASTERISK_SITE=ftp://ftp.asterisk.org/pub/asterisk
-ASTERISK_VERSION=1.0.5
-ASTERISK_SOURCE=asterisk-1.0.5.tar.gz
-ASTERISK_DIR=asterisk-1.0.5
+ASTERISK_SITE=http://www.asterisk.org/html/downloads
+ASTERISK_VERSION=1.0.6
+ASTERISK_SOURCE=asterisk-$(ASTERISK_VERSION).tar.gz
+ASTERISK_DIR=asterisk-$(ASTERISK_VERSION)
 ASTERISK_UNZIP=zcat
 
 #
@@ -32,22 +32,27 @@ ASTERISK_IPK_VERSION=1
 
 #
 # ASTERISK_PATCHES should list any patches, in the the order in
-# asterisk they should be applied to the source code.
+# which they should be applied to the source code.
 #
-ASTERISK_PATCHES=$(ASTERISK_SOURCE_DIR)/asterisk.patch
+ASTERISK_PATCHES=$(ASTERISK_SOURCE_DIR)/Makefile.patch \
+		 $(ASTERISK_SOURCE_DIR)/editline.makelist.patch \
+		 $(ASTERISK_SOURCE_DIR)/codecs.gsm.Makefile.patch \
+		 $(ASTERISK_SOURCE_DIR)/codecs.ilbc.Makefile.patch \
+		 $(ASTERISK_SOURCE_DIR)/codecs.lpc10.Makefile.patch \
+		 $(ASTERISK_SOURCE_DIR)/db1-ast.Makefile.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ASTERISK_CPPFLAGS=-lcrypto -L/opt/lib -I/opt/include
-ASTERISK_LDFLAGS=-lcrypto -L/opt/lib -I/opt/include
+ASTERISK_CPPFLAGS=-fsigned-char
+ASTERISK_LDFLAGS=
 
 #
-# ASTERISK_BUILD_DIR is the directory in asterisk the build is done.
-# ASTERISK_SOURCE_DIR is the directory asterisk holds all the
+# ASTERISK_BUILD_DIR is the directory in which the build is done.
+# ASTERISK_SOURCE_DIR is the directory which holds all the
 # patches and ipkg control files.
-# ASTERISK_IPK_DIR is the directory in asterisk the ipk is built.
+# ASTERISK_IPK_DIR is the directory in which the ipk is built.
 # ASTERISK_IPK is the name of the resulting ipk files.
 #
 # You should not change any of these variables.
@@ -102,6 +107,7 @@ asterisk-source: $(DL_DIR)/$(ASTERISK_SOURCE) $(ASTERISK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ASTERISK_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK_SOURCE) $(ASTERISK_PATCHES)
+	$(MAKE) ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK_DIR) $(ASTERISK_BUILD_DIR)
 	$(ASTERISK_UNZIP) $(DL_DIR)/$(ASTERISK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ASTERISK_PATCHES) | patch -d $(BUILD_DIR)/$(ASTERISK_DIR) -p1
@@ -115,7 +121,10 @@ asterisk-unpack: $(ASTERISK_BUILD_DIR)/.configured
 #
 $(ASTERISK_BUILD_DIR)/.built: $(ASTERISK_BUILD_DIR)/.configured
 	rm -f $(ASTERISK_BUILD_DIR)/.built
-	$(MAKE) -C $(ASTERISK_BUILD_DIR) INSTALL_PREFIX=$(ASTERISK_INST_DIR)
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK_LDFLAGS)" \
+	$(MAKE) -C $(ASTERISK_BUILD_DIR) INSTALL_PREFIX=$(ASTERISK_INST_DIR) \
+	$(TARGET_CONFIGURE_OPTS)
 	touch $(ASTERISK_BUILD_DIR)/.built
 
 #
