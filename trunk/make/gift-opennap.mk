@@ -89,13 +89,14 @@ gift-opennap-source: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
+	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
 	$(GIFT_OPENNAP_UNZIP) $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GIFT_OPENNAP_PATCHES) | patch -d $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
 	(cd $(GIFT_OPENNAP_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
-		./autogen.sh; \
+		ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -i -v; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFT_OPENNAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFT_OPENNAP_LDFLAGS)" \
