@@ -5,8 +5,6 @@
 #############################################################
 
 ## So far, untested, unproven.
-## Add the --with-libtool to the configure call to 
-## provoke the build error.
 
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/9.3.0/
 BIND_VERSION=9.3.0
@@ -27,12 +25,6 @@ $(DL_DIR)/$(BIND_SOURCE):
 	$(WGET) -P $(DL_DIR) $(BIND_SITE)/$(BIND_SOURCE)
 
 bind-source: $(DL_DIR)/$(BIND_SOURCE) $(BIND_PATCHES)
-
-# make changes to the BUILD options below.  
-# We really want shared libraries, but the package environment isn't
-# setup right for libtool. Shame on a small memory system...
-# Another day.  
-#--with-libtool 
 
 $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE)
 	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
