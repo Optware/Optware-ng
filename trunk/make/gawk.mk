@@ -103,6 +103,9 @@ $(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+ifeq ($(HOST_MACHINE),armv5b)
+	echo "#define NGROUPS_MAX 32" >> $(GAWK_BUILD_DIR)/config.h
+endif
 	touch $(GAWK_BUILD_DIR)/.configured
 
 gawk-unpack: $(GAWK_BUILD_DIR)/.configured
