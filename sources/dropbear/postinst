@@ -1,8 +1,14 @@
 #!/bin/sh
 
 mkdir -p /opt/etc/dropbear
-/opt/sbin/dropbearkey -t rsa -f /opt/etc/dropbear/dropbear_rsa_host_key
-/opt/sbin/dropbearkey -t dss -f /opt/etc/dropbear/dropbear_dss_host_key
+
+if [ ! -f /opt/etc/dropbear/dropbear_rsa_host_key ]; then
+    /opt/sbin/dropbearkey -t rsa -f /opt/etc/dropbear/dropbear_rsa_host_key
+fi
+
+if [ ! -f /opt/etc/dropbear/dropbear_dss_host_key ]; then
+    /opt/sbin/dropbearkey -t dss -f /opt/etc/dropbear/dropbear_dss_host_key
+fi
 
 if [ ! -d /root ] ;  then
 	mkdir /root
