@@ -57,6 +57,8 @@ CROSS_ONLY_PACKAGES = \
 	\
 	glib xinetd proftpd
 
+# bison cross-compiles, but can't build flex.  native-compiled bison is fine.
+# emacs needs to run itself to dump an image, so it probably will never cross-compile.
 NATIVE_ONLY_PACKAGES = \
 	bison \
 	emacs
