@@ -137,6 +137,8 @@ wakelan: $(WAKELAN_BUILD_DIR)/.built
 #
 $(WAKELAN_IPK): $(WAKELAN_BUILD_DIR)/.built
 	rm -rf $(WAKELAN_IPK_DIR) $(BUILD_DIR)/wakelan_*_armeb.ipk
+	install -d $(WAKELAN_IPK_DIR)/opt/bin
+	install -d $(WAKELAN_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)/opt install
 	install -d $(WAKELAN_IPK_DIR)/CONTROL
 	install -m 644 $(WAKELAN_SOURCE_DIR)/control $(WAKELAN_IPK_DIR)/CONTROL/control
