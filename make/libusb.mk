@@ -146,5 +146,5 @@ libusb-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-libusb-dirclean: libusb-clean
+libusb-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR) $(LIBUSB_IPK_DIR) $(LIBUSB_IPK)
