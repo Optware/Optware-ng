@@ -40,41 +40,31 @@ $(ZLIB_DIR)/libz.so.$(ZLIB_VERSION): $(ZLIB_DIR)/.configured
 	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" SHAREDLIB="libz.so" \
 		SHAREDLIBV="libz.so.$(ZLIB_VERSION)" SHAREDLIBM="libz.so.1" \
 		LDSHARED="$(TARGET_CROSS)ld -shared -soname,libz.so.1" \
-		CFLAGS="$(ZLIB_CFLAGS)" CC=$(TARGET_CC) -C $(ZLIB_DIR) all libz.so.$(ZLIB_VERSION) libz.a;
+		CFLAGS="$(ZLIB_CFLAGS)" CC=$(TARGET_CC) -C $(ZLIB_DIR) all libz.so.$(ZLIB_VERSION) libz.a
 	touch -c $(ZLIB_DIR)/libz.so.$(ZLIB_VERSION)
 
 $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION): $(ZLIB_DIR)/libz.so.$(ZLIB_VERSION)
-	cp -dpf $(ZLIB_DIR)/libz.a $(STAGING_DIR)/lib;
-	cp -dpf $(ZLIB_DIR)/zlib.h $(STAGING_DIR)/include;
-	cp -dpf $(ZLIB_DIR)/zconf.h $(STAGING_DIR)/include;
-	cp -dpf $(ZLIB_DIR)/libz.so* $(STAGING_DIR)/lib;
-	(cd $(STAGING_DIR)/lib; ln -fs libz.so.$(ZLIB_VERSION) libz.so.1);
+	cp -dpf $(ZLIB_DIR)/libz.a $(STAGING_DIR)/lib
+	cp -dpf $(ZLIB_DIR)/zlib.h $(STAGING_DIR)/include
+	cp -dpf $(ZLIB_DIR)/zconf.h $(STAGING_DIR)/include
+	cp -dpf $(ZLIB_DIR)/libz.so* $(STAGING_DIR)/lib
+	(cd $(STAGING_DIR)/lib; ln -fs libz.so.$(ZLIB_VERSION) libz.so.1)
 	chmod a-x $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 	touch -c $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 
-$(TARGET_DIR)/lib/libz.so.$(ZLIB_VERSION): $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
-	cp -dpf $(STAGING_DIR)/lib/libz.so* $(TARGET_DIR)/lib;
-	-$(STRIP) --strip-unneeded $(TARGET_DIR)/lib/libz.so*
-	touch -c $(TARGET_DIR)/lib/libz.so.$(ZLIB_VERSION)
+zlib-headers: $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 
-$(TARGET_DIR)/usr/lib/libz.a: $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
-	mkdir -p $(TARGET_DIR)/usr/include
-	cp -dpf $(STAGING_DIR)/include/zlib.h $(TARGET_DIR)/usr/include/
-	cp -dpf $(STAGING_DIR)/include/zconf.h $(TARGET_DIR)/usr/include/
-	cp -dpf $(STAGING_DIR)/lib/libz.a $(TARGET_DIR)/usr/lib/
-	rm -f $(TARGET_DIR)/lib/libz.so
-	(cd $(TARGET_DIR)/usr/lib; ln -fs /lib/libz.so.$(ZLIB_VERSION) libz.so)
-	touch -c $(TARGET_DIR)/usr/lib/libz.a
-
-zlib-headers: $(TARGET_DIR)/usr/lib/libz.a
-
-zlib: $(TARGET_DIR)/lib/libz.so.$(ZLIB_VERSION)
+zlib: $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 
 $(ZLIB_IPK): $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 	mkdir -p $(ZLIB_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/zlib.control $(ZLIB_IPK_DIR)/CONTROL/control
+	mkdir -p $(ZLIB_IPK_DIR)/opt/include
+	cp -dpf $(STAGING_DIR)/include/zlib.h $(ZLIB_IPK_DIR)/opt/include
+	cp -dpf $(STAGING_DIR)/include/zconf.h $(ZLIB_IPK_DIR)/opt/include
 	mkdir -p $(ZLIB_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/lib/libz.so* $(ZLIB_IPK_DIR)/opt/lib;
+	cp -dpf $(STAGING_DIR)/lib/libz.a $(ZLIB_IPK_DIR)/opt/lib
+	cp -dpf $(STAGING_DIR)/lib/libz.so* $(ZLIB_IPK_DIR)/opt/lib
 	-$(STRIP) --strip-unneeded $(ZLIB_IPK_DIR)/opt/lib/libz.so*
 	touch -c $(ZLIB_IPK_DIR)/opt/lib/libz.so.$(ZLIB_VERSION)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
@@ -84,9 +74,10 @@ zlib-ipk: $(ZLIB_IPK)
 zlib-source: $(DL_DIR)/$(ZLIB_SOURCE)
 
 zlib-clean:
-	rm -f $(TARGET_DIR)/lib/libz.so*
+	rm -f $(STAGING_DIR)/lib/libz.*
+	rm -f $(STAGING_DIR)/include/zlib.h
+	rm -f $(STAGING_DIR)/include/zconf.h
 	-$(MAKE) -C $(ZLIB_DIR) clean
 
 zlib-dirclean:
-	rm -rf $(ZLIB_DIR)
-
+	rm -rf $(ZLIB_DIR) $(ZLIB_IPK_DIR)

@@ -40,7 +40,6 @@ SOURCE_DIR=$(BASE_DIR)/sources
 DL_DIR=$(BASE_DIR)/downloads
 FIRMWARE_DIR=$(BASE_DIR)/firmware
 BUILD_DIR=$(BASE_DIR)/builds
-TARGET_DIR=$(BUILD_DIR)/root
 STAGING_DIR=$(BASE_DIR)/staging
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 TARGET_PATH=$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
@@ -116,7 +115,7 @@ packages: $(PACKAGE_DIR)/Packages
 upload:
 	scp packages/* nslu.sf.net:/home/groups/n/ns/nslu/htdocs/ipkg
 
-world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(STAGING_DIR) \
+world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \
 	$(TOOL_INSTALL_DIR) $(PACKAGE_DIR) $(TARGETS_INSTALL)
 	@echo "ALL DONE."
 
@@ -127,7 +126,7 @@ world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(STAGING_DIR) \
 
 include make/*.mk
 
-directories: $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(STAGING_DIR) \
+directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \
 		$(TOOL_BUILD_DIR) $(PACKAGE_DIR)
 
 $(DL_DIR):
@@ -135,11 +134,6 @@ $(DL_DIR):
 
 $(BUILD_DIR):
 	mkdir $(BUILD_DIR)
-
-$(TARGET_DIR):
-	mkdir $(TARGET_DIR)
-	mkdir $(TARGET_DIR)/lib
-	mkdir $(TARGET_DIR)/include
 
 $(STAGING_DIR):
 	mkdir $(STAGING_DIR)
@@ -161,4 +155,4 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '.#*' -print | xargs /bin/rm -f
 
 distclean: clean
-	rm -rf $(BUILD_DIR) $(TARGET_DIR) $(STAGING_DIR) $(TOOL_BUILD_DIR) $(PACKAGE_DIR)
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(TOOL_BUILD_DIR) $(PACKAGE_DIR)
