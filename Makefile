@@ -22,7 +22,7 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox miau zlib termcap bash \
+PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
 	   \
 	   sudo rsync rdate ntpclient \
 	   portmap nfs-server flex inetutils \
@@ -33,7 +33,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash \
 
 PACKAGES_TO_BE_TESTED:= \
 	   dump e2fsprogs gkrellm glib \
-	   grep iptables lsof openssl
+	   grep lsof openssl
 
 WGET=wget --passive-ftp
 
@@ -131,6 +131,7 @@ $(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
 packages: $(PACKAGE_DIR)/Packages
 
 upload:
+	rsync -avr packages/*.ipk ipkg.websb.net:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 	rsync -avr packages/ ipkg.websb.net:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 
 world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \

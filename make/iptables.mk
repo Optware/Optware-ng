@@ -4,58 +4,49 @@
 #
 ###########################################################
 
-IPTABLES_DIR=$(BUILD_DIR)/iptables
-
-IPTABLES_VERSION=1.2.11
-IPTABLES=iptables-$(IPTABLES_VERSION)
 IPTABLES_SITE=http://www.netfilter.org/files/
-IPTABLES_SOURCE=$(IPTABLES).tar.bz2
+IPTABLES_VERSION=1.2.11
+IPTABLES_SOURCE=iptables-$(IPTABLES_VERSION).tar.bz2
+IPTABLES_DIR=iptables-$(IPTABLES_VERSION)
 IPTABLES_UNZIP=bzcat
 
-IPTABLES_IPK=$(BUILD_DIR)/iptables_$(IPTABLES_VERSION)-1_armeb.ipk
-IPTABLES_IPK_DIR=$(BUILD_DIR)/iptables-$(IPTABLES_VERSION)-ipk
+IPTABLES_IPK_VERSION=1
 
-# FIXME:  This should point to where the slug's kernel source is downloaded
-KERNEL_DIR=/Area51/Linksys/gpl_code_2.03/os/linux-2.4/
+IPTABLES_BUILD_DIR=$(BUILD_DIR)/iptables
+IPTABLES_SOURCE_DIR=$(SOURCE_DIR)/iptables
+IPTABLES_IPK_DIR=$(BUILD_DIR)/iptables-$(IPTABLES_VERSION)-ipk
+IPTABLES_IPK=$(BUILD_DIR)/iptables_$(IPTABLES_VERSION)-$(IPTABLES_IPK_VERSION)_armeb.ipk
 
 $(DL_DIR)/$(IPTABLES_SOURCE):
 	$(WGET) -P $(DL_DIR) $(IPTABLES_SITE)/$(IPTABLES_SOURCE)
 
 iptables-source: $(DL_DIR)/$(IPTABLES_SOURCE)
 
-$(IPTABLES_DIR)/.source: $(DL_DIR)/$(IPTABLES_SOURCE)
+$(IPTABLES_BUILD_DIR)/.configured: $(DL_DIR)/$(IPTABLES_SOURCE)
+	rm -rf $(BUILD_DIR)/$(IPTABLES_DIR) $(IPTABLES_BUILD_DIR)
 	$(IPTABLES_UNZIP) $(DL_DIR)/$(IPTABLES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/iptables-$(IPTABLES_VERSION) $(IPTABLES_DIR)
-	touch $(IPTABLES_DIR)/.source
+	mv $(BUILD_DIR)/$(IPTABLES_DIR) $(IPTABLES_BUILD_DIR)
+	touch $(IPTABLES_BUILD_DIR)/.configured
 
-$(IPTABLES_DIR)/.configured: $(IPTABLES_DIR)/.source
+iptables-unpack: $(IPTABLES_BUILD_DIR)/.configured
 
-$(IPTABLES_IPK_DIR): $(IPTABLES_DIR)/.configured
-	$(MAKE) -C $(IPTABLES_DIR) CC=$(TARGET_CC) \
-	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) KERNEL_DIR=$(KERNEL_DIR)
+$(IPTABLES_BUILD_DIR)/iptables: $(IPTABLES_BUILD_DIR)/.configured
+	$(MAKE) -C $(IPTABLES_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
 
-iptables-headers: $(IPTABLES_IPK_DIR)
+iptables: $(IPTABLES_BUILD_DIR)/iptables
 
-iptables: $(IPTABLES_IPK_DIR)
-
-$(IPTABLES_IPK): $(IPTABLES_IPK_DIR)
-	mkdir -p $(IPTABLES_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/iptables.control $(IPTABLES_IPK_DIR)/CONTROL/control
-	$(STRIP) $(IPTABLES_DIR)/src/iptables
-	$(STRIP) $(IPTABLES_DIR)/src/eiptables
-	$(STRIP) $(IPTABLES_DIR)/src/fiptables
-	rm -rf $(STAGING_DIR)/CONTROL
+$(IPTABLES_IPK): $(IPTABLES_BUILD_DIR)/iptables
+	install -d $(IPTABLES_IPK_DIR)/opt/sbin
+	$(STRIP) $(IPTABLES_BUILD_DIR)/iptables -o $(IPTABLES_IPK_DIR)/opt/sbin/iptables
+	install -d $(IPTABLES_IPK_DIR)/CONTROL
+	install -m 644 $(IPTABLES_SOURCE_DIR)/control $(IPTABLES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPTABLES_IPK_DIR)
 
 iptables-ipk: $(IPTABLES_IPK)
 
-iptables-source: $(DL_DIR)/$(IPTABLES_SOURCE)
-
 iptables-clean:
-	-$(MAKE) -C $(IPTABLES_DIR) uninstall
-	-$(MAKE) -C $(IPTABLES_DIR) clean
+	-$(MAKE) -C $(IPTABLES_BUILD_DIR) clean
 
-iptables-distclean:
-	-rm $(IPTABLES_DIR)/.configured
-	-$(MAKE) -C $(IPTABLES_DIR) distclean
+iptables-dirclean: iptables-clean
+	rm -rf $(IPTABLES_BUILD_DIR) $(IPTABLES_IPK_DIR) $(IPTABLES_IPK)
 
