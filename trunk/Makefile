@@ -29,7 +29,7 @@ CROSS_PACKAGES = \
 	fetchmail ffmpeg file findutils fixesext fontconfig flex freetype \
 	gawk gconv-modules gdb gdbm gettext \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	glib grep groff gzip \
+	glib grep groff gtk gzip \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	lame less libbt libcurl libdb libdvdread libevent libiconv libid3tag \
@@ -43,7 +43,7 @@ CROSS_PACKAGES = \
 	screen sed sm strace stunnel sudo svn \
 	tar tcpwrappers termcap torrent ttf-bitstream-vera \
 	unfs3 unslung-feeds \
-	vdr-mediamvp vsftpd \
+	vdr-mediamvp vsftpd vte \
 	wakelan wget-ssl which \
 	x11 xau xauth xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xproto xrender xt xtrans xtst xvid \
