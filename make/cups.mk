@@ -139,12 +139,12 @@ cups: $(CUPS_BUILD_DIR)/.built
 #
 $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION): $(CUPS_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(CUPS_BUILD_DIR)/cups.h $(STAGING_DIR)/opt/include
+	install -m 644 $(CUPS_BUILD_DIR)/cups/cups.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(CUPS_BUILD_DIR)/libcups.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(CUPS_BUILD_DIR)/libcups.so.$(CUPS_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.$(CUPS_VERSION) libcups.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.$(CUPS_VERSION) libcups.so
+	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.so.2 $(STAGING_DIR)/opt/lib
+	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so.1
+	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so
 
 cups-stage: $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION)
 
