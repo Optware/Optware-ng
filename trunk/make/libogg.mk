@@ -161,6 +161,7 @@ $(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB)
 	$(STRIP_COMMAND) $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB) -o $(LIBOGG_IPK_DIR)/opt/lib/libogg.so.$(LIBOGG_VERSION_LIB)
 	install -d $(LIBOGG_IPK_DIR)/CONTROL
 	install -m 644 $(LIBOGG_SOURCE_DIR)/control $(LIBOGG_IPK_DIR)/CONTROL/control
+	cd $(LIBOGG_IPK_DIR)/opt/lib && ln -fs libogg.so.$(LIBOGG_VERSION_LIB) libogg.so.0
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOGG_IPK_DIR)
 
 #
