@@ -133,7 +133,11 @@ TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 PACKAGE_DIR=$(BASE_DIR)/packages
 export TMPDIR=$(BASE_DIR)/tmp
 
+# Options are "armeb", and "mipsel"
 TARGET_ARCH=armeb
+# Options are "linux" (glibc) and "linux-uclibc"
+TARGET_OS=linux
+
 TARGET_OPTIMIZATION= #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
