@@ -18,12 +18,25 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON_SITE=http://www.python.org/ftp/python/2.4/
 PYTHON_VERSION=2.4
+PYTHON_SITE=http://www.python.org/ftp/python/$(PYTHON_VERSION)
 PYTHON_SOURCE=Python-$(PYTHON_VERSION).tgz
 PYTHON_DIR=Python-$(PYTHON_VERSION)
 PYTHON_UNZIP=zcat
+
+PYTHON_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+PYTHON_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
+PYTHON_SECTION=misc
+PYTHON_PRIORITY=optional
+PYTHON_DEPENDS=
 
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
@@ -31,10 +44,15 @@ PYTHON_UNZIP=zcat
 PYTHON_IPK_VERSION=1
 
 #
+# PYTHON_CONFFILES should be a list of user-editable files
+#PYTHON_CONFFILES=/opt/etc/python.conf /opt/etc/init.d/SXXpython
+
+#
 # PYTHON_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PYTHON_PATCHES=$(PYTHON_SOURCE_DIR)/python-cross-compile.patch
+# http://mail.python.org/pipermail/patches/2004-October/016312.html
+PYTHON_PATCHES=$(PYTHON_SOURCE_DIR)/python-cross-compile1006238.patch
 
 #
 # If the compilation of the package requires additional
@@ -89,49 +107,65 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
 	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(PYTHON_DIR) -p1
-	mv $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
-	mkdir $(PYTHON_BUILD_DIR)/cross_dir
+	cd $(BUILD_DIR)/$(PYTHON_DIR); \
+	    cat $(PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(PYTHON_DIR) -p3; \
+	    autoconf configure.in > configure
+	mkdir $(PYTHON_BUILD_DIR)
 	(cd $(PYTHON_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
+		PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON_LDFLAGS)" \
-		./configure \
+		../$(PYTHON_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
 	)
 	touch $(PYTHON_BUILD_DIR)/.configured
 
 python-unpack: $(PYTHON_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(PYTHON_BUILD_DIR)/python: $(PYTHON_BUILD_DIR)/.configured
-	$(MAKE) -C $(PYTHON_BUILD_DIR)
+$(PYTHON_BUILD_DIR)/.built: $(PYTHON_BUILD_DIR)/.configured
+	rm -f $(PYTHON_BUILD_DIR)/.built
+	PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		$(MAKE) -C $(PYTHON_BUILD_DIR)
+	touch $(PYTHON_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
-python: $(PYTHON_BUILD_DIR)/python
+python: $(PYTHON_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libpython.so.$(PYTHON_VERSION): $(PYTHON_BUILD_DIR)/libpython.so.$(PYTHON_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(PYTHON_BUILD_DIR)/python.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(PYTHON_BUILD_DIR)/libpython.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(PYTHON_BUILD_DIR)/libpython.so.$(PYTHON_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libpython.so.$(PYTHON_VERSION) libpython.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libpython.so.$(PYTHON_VERSION) libpython.so
+$(PYTHON_BUILD_DIR)/.staged: $(PYTHON_BUILD_DIR)/.built
+	rm -f $(PYTHON_BUILD_DIR)/.staged
+	$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(PYTHON_BUILD_DIR)/.staged
 
-python-stage: $(STAGING_DIR)/opt/lib/libpython.so.$(PYTHON_VERSION)
+python-stage: $(PYTHON_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/python
+#
+$(PYTHON_IPK_DIR)/CONTROL/control:
+	@install -d $(PYTHON_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: python" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PYTHON_PRIORITY)" >>$@
+	@echo "Section: $(PYTHON_SECTION)" >>$@
+	@echo "Version: $(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PYTHON_MAINTAINER)" >>$@
+	@echo "Source: $(PYTHON_SITE)/$(PYTHON_SOURCE)" >>$@
+	@echo "Description: $(PYTHON_DESCRIPTION)" >>$@
+	@echo "Depends: $(PYTHON_DEPENDS)" >>$@
 
 #
 # This builds the IPK file.
@@ -145,16 +179,14 @@ python-stage: $(STAGING_DIR)/opt/lib/libpython.so.$(PYTHON_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PYTHON_IPK): $(PYTHON_BUILD_DIR)/python
-	rm -rf $(PYTHON_IPK_DIR) $(PYTHON_IPK)
-	install -d $(PYTHON_IPK_DIR)/opt/bin
-	$(STRIP) $(PYTHON_BUILD_DIR)/python -o $(PYTHON_IPK_DIR)/opt/bin/python
-	install -d $(PYTHON_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(PYTHON_SOURCE_DIR)/rc.python $(PYTHON_IPK_DIR)/opt/etc/init.d/SXXpython
-	install -d $(PYTHON_IPK_DIR)/CONTROL
-	install -m 644 $(PYTHON_SOURCE_DIR)/control $(PYTHON_IPK_DIR)/CONTROL/control
-	install -m 644 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
+$(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
+	rm -rf $(PYTHON_IPK_DIR) $(BUILD_DIR)/python_*_$(TARGET_ARCH).ipk
+	PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(PYTHON_IPK_DIR) install
+	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/bin/python
+	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
+	#install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
+	#install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON_IPK_DIR)
 
 #
