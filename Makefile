@@ -177,4 +177,7 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '.#*' -print | xargs /bin/rm -f
 
 distclean:
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(TOOL_BUILD_DIR) $(PACKAGE_DIR)
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR)
+
+toolclean:
+	rm -rf $(TOOL_BUILD_DIR)
