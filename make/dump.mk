@@ -30,6 +30,7 @@ $(DUMP_DIR)/.source: $(DL_DIR)/$(DUMP_SOURCE)
 	touch $(DUMP_DIR)/.source
 
 $(DUMP_DIR)/.configured: $(DUMP_DIR)/.source
+	$(MAKE) e2fsprogs-stage
 	(cd $(DUMP_DIR); \
 		./configure \
 		--disable-readline \
@@ -39,7 +40,7 @@ $(DUMP_DIR)/.configured: $(DUMP_DIR)/.source
 	);
 	touch $(DUMP_DIR)/.configured
 
-$(DUMP_IPK_DIR): $(DUMP_DIR)/.configured
+$(DUMP_DIR)/dump/dump: $(DUMP_DIR)/.configured
 	$(MAKE) \
 	  -C $(DUMP_DIR) \
 	  CC_FOR_BUILD=$(CC) \
@@ -51,11 +52,13 @@ $(DUMP_IPK_DIR): $(DUMP_DIR)/.configured
 	  LD=$(TARGET_CC)
 
 
-dump-headers: $(DUMP_IPK_DIR)
+dump-stage: $(DUMP_IPK)
 
-dump: $(DUMP_IPK_DIR)
+dump-headers: $(DUMP_IPK)
 
-$(DUMP_IPK): $(DUMP_IPK_DIR)
+dump: $(DUMP_IPK)
+
+$(DUMP_IPK): $(DUMP_DIR)/dump/dump
 	mkdir -p $(DUMP_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/dump/control $(DUMP_IPK_DIR)/CONTROL/control
 	mkdir -p $(DUMP_IPK_DIR)/opt/sbin
@@ -75,7 +78,7 @@ $(DUMP_IPK): $(DUMP_IPK_DIR)
 $(DUMP_IPK)/staging: $(DUMP_IPK)
 
 
-dump-ipk: $(DUMP_IPK)/staging $(DUMP_IPK)
+dump-ipk: $(DUMP_IPK)
 
 dump-source: $(DL_DIR)/$(DUMP_SOURCE)
 
