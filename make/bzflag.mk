@@ -86,11 +86,14 @@ bzflag-source: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(BZFLAG_BUILD_DIR)/.configured: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
-	$(MAKE) zlib-stage libcurl-stage adns-stage ncurses-stage
+	$(MAKE) zlib-stage libcurl-stage adns-stage ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(BZFLAG_DIR) $(BZFLAG_BUILD_DIR)
 	$(BZFLAG_UNZIP) $(DL_DIR)/$(BZFLAG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(BZFLAG_PATCHES) | patch -d $(BUILD_DIR)/$(BZFLAG_DIR) -p1
 	mv $(BUILD_DIR)/$(BZFLAG_DIR) $(BZFLAG_BUILD_DIR)
+	# install gl headers needed by bzadmin
+	install -d $(BZFLAG_BUILD_DIR)/include/GL
+	install -m 644 $(BZFLAG_SOURCE_DIR)/*.h $(BZFLAG_BUILD_DIR)/include/GL
 	(cd $(BZFLAG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZFLAG_CPPFLAGS)" \
@@ -146,6 +149,10 @@ bzflag-stage: $(BZFLAG_BUILD_DIR)/.staged
 $(BZFLAG_IPK): $(BZFLAG_BUILD_DIR)/.built
 	rm -rf $(BZFLAG_IPK_DIR) $(BUILD_DIR)/bzflag_*_armeb.ipk
 	$(MAKE) -C $(BZFLAG_BUILD_DIR) DESTDIR=$(BZFLAG_IPK_DIR) install
+	# contents of /share are not needed by a dedicated server
+	rm -rf $(BZFLAG_IPK_DIR)/opt/share
+	# strip binaries
+	$(STRIP_COMMAND) $(BZFLAG_IPK_DIR)/opt/bin/bzfs $(BZFLAG_IPK_DIR)/opt/bin/bzadmin
 #	install -d $(BZFLAG_IPK_DIR)/opt/etc/
 #	install -m 755 $(BZFLAG_SOURCE_DIR)/bzflag.conf $(BZFLAG_IPK_DIR)/opt/etc/bzflag.conf
 #	install -d $(BZFLAG_IPK_DIR)/opt/etc/init.d
