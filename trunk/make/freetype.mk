@@ -50,7 +50,7 @@ FREETYPE_PATCHES=#$(FREETYPE_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 FREETYPE_CPPFLAGS=
-FREETYPE_LDFLAGS=
+FREETYPE_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # FREETYPE_BUILD_DIR is the directory in which the build is done.
