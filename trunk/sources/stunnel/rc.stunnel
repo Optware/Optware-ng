@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "`pidof stunnel`" ] ;then
+	/bin/killall stunnel 2>/dev/null
+fi
+sleep 2
+LD_LIBRARY_PATH=/opt/lib /opt/bin/stunnel
