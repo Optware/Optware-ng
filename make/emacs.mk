@@ -40,7 +40,7 @@ EMACS_PATCHES=$(EMACS_SOURCE_DIR)/src-Makefile.patch
 # compilation or linking flags, then list them here.
 #
 EMACS_CPPFLAGS=
-EMACS_LDFLAGS=
+EMACS_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # EMACS_BUILD_DIR is the directory in which the build is done.
