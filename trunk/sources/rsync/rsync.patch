@@ -1,0 +1,18 @@
+diff -urN rsync-2.6.3/lib/dummy rsync/lib/dummy
+--- rsync-2.6.3/lib/dummy	1970-01-01 01:00:00.000000000 +0100
++++ rsync/lib/dummy	2004-10-01 08:07:01.000000000 +0200
+@@ -0,0 +1,2 @@
++This is a dummy file to ensure that the lib directory gets created
++by configure when a VPATH is used.
+diff -urN rsync-2.6.3/rsync.h rsync/rsync.h
+--- rsync-2.6.3/rsync.h	2004-09-22 06:10:10.000000000 +0200
++++ rsync/rsync.h	2004-10-01 08:09:28.000000000 +0200
+@@ -327,7 +327,7 @@
+ #define uint64 unsigned long long
+ #else
+ /* As long as it gets... */
+-#define uint64 unsigned off_t
++#define uint64 off_t
+ #endif
+ 
+ /* Starting from protocol version 26, we always use 64-bit
