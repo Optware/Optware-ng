@@ -1,0 +1,50 @@
+diff -urN w3cam-0.7.2.orig/configure w3cam-0.7.2/configure
+--- w3cam-0.7.2.orig/configure	2001-10-26 07:10:41.000000000 -1000
++++ w3cam-0.7.2/configure	2005-03-20 03:12:24.592016401 -1000
+@@ -771,8 +771,8 @@
+ fi
+ 
+ 
+-LDFLAGS="$LDFLAGS -L/usr/local/lib -L/usr/local/X11/lib"
+-CFLAGS="$CFLAGS -I/usr/local/include"
++LDFLAGS="$LDFLAGS"
++CFLAGS="$CFLAGS"
+ 
+ echo $ac_n "checking for pow in -lm""... $ac_c" 1>&6
+ echo "configure:779: checking for pow in -lm" >&5
+diff -urN w3cam-0.7.2.orig/configure.in w3cam-0.7.2/configure.in
+--- w3cam-0.7.2.orig/configure.in	2001-10-26 07:10:40.000000000 -1000
++++ w3cam-0.7.2/configure.in	2005-03-20 03:12:08.447121775 -1000
+@@ -1,8 +1,8 @@
+ AC_INIT()
+ AC_ISC_POSIX
+ 
+-LDFLAGS="$LDFLAGS -L/usr/local/lib -L/usr/local/X11/lib"
+-CFLAGS="$CFLAGS -I/usr/local/include"
++LDFLAGS="$LDFLAGS"
++CFLAGS="$CFLAGS"
+ 
+ AC_CHECK_LIB(m, pow)
+ AC_CHECK_LIB(z, gzopen)
+diff -urN w3cam-0.7.2.orig/w3camd/Makefile.in w3cam-0.7.2/w3camd/Makefile.in
+--- w3cam-0.7.2.orig/w3camd/Makefile.in	2000-05-01 04:59:20.000000000 -1000
++++ w3cam-0.7.2/w3camd/Makefile.in	2005-03-20 02:44:40.623003906 -1000
+@@ -4,7 +4,8 @@
+ prefix=@prefix@
+ sbindir=@prefix@/sbin
+ 
+-CFLAGS = @CFLAGS@ -I.. -I. -I@prefix@/include -g -DDEBUG -DCAM_PORT=8999 -D_REENTRANT
++CFLAGS = @CFLAGS@ -g -DDEBUG -DCAM_PORT=8999 -D_REENTRANT
++LDFLAGS = @LDFLAGS@
+ CC = @CC@
+ 
+ default: w3camd
+@@ -15,7 +16,7 @@
+ 	$(CC) $(CFLAGS) -c $<
+ 
+ w3camd: $(OBJ)
+-	$(CC) -o $@ $(OBJ) -lpthread -ljpeg
++	$(CC) -o $@ $(OBJ) $(LDFLAGS) -lpthread -ljpeg
+ 
+ install:
+ 	install w3camd $(sbindir)/
