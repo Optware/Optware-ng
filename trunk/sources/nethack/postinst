@@ -1,0 +1,34 @@
+#!/bin/sh 
+
+cd /opt/share/nethackdir/dat
+../util/dgn_comp dungeon.pdf
+../util/lev_comp bigroom.des
+../util/lev_comp castle.des
+../util/lev_comp endgame.des
+../util/lev_comp gehennom.des
+../util/lev_comp knox.des
+../util/lev_comp medusa.des
+../util/lev_comp mines.des
+../util/lev_comp oracle.des
+../util/lev_comp sokoban.des
+../util/lev_comp tower.des
+../util/lev_comp yendor.des
+../util/lev_comp Arch.des
+../util/lev_comp Barb.des
+../util/lev_comp Caveman.des
+../util/lev_comp Healer.des
+../util/lev_comp Knight.des
+../util/lev_comp Monk.des
+../util/lev_comp Priest.des
+../util/lev_comp Ranger.des
+../util/lev_comp Rogue.des
+../util/lev_comp Samurai.des
+../util/lev_comp Tourist.des
+../util/lev_comp Valkyrie.des
+../util/lev_comp Wizard.des
+cp *.lev /opt/share/nethackdir/
+cp dungeon /opt/share/nethackdir/dungeon
+cd /opt/share/nethackdir/util
+./makedefs -q
+cp /opt/share/nethackdir/dat/quest.dat /opt/share/nethackdir/quest.dat
+
