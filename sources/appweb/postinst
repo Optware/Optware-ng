@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ ! -f /opt/lib/libappWeb.so.1 ]; then
+	cd /opt/lib
+	ln -s libappWeb.so.1.0.0 libappWeb.so.1
+	ln -s libappWeb.so.1 libappWeb.so
+fi
