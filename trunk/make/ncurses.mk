@@ -4,10 +4,6 @@
 #
 ###########################################################
 
-#
-# TODO: Prevent generation and installation of man pages
-#
-
 NCURSES_DIR=$(BUILD_DIR)/ncurses
 
 NCURSES_VERSION=5.4
@@ -57,51 +53,16 @@ $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.config
 ncurses: $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
 $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
-	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
 
 ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
 $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	mkdir -p $(NCURSES_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/ncurses.control $(NCURSES_IPK_DIR)/CONTROL/control
-	mkdir -p $(NCURSES_IPK_DIR)/opt/include
-	mkdir -p $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/curses.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/eti.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/form.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/menu.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/ncurses_dll.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/ncurses.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/panel.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/termcap.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/term.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	cp -dpf $(STAGING_DIR)/opt/include/ncurses/unctrl.h $(NCURSES_IPK_DIR)/opt/include/ncurses
-	mkdir -p $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libform.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libform_g.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libform.so* $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libmenu.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libmenu_g.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libmenu.so* $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libncurses.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libncurses_g.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libncurses.so* $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libpanel.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libpanel_g.a $(NCURSES_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/opt/lib/libpanel.so* $(NCURSES_IPK_DIR)/opt/lib
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libform.so*
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libmenu.so*
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libncurses.so*
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libpanel.so*
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/libform.so.$(NCURSES_SHLIBVERSION)
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/libmenu.so.$(NCURSES_SHLIBVERSION)
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/libpanel.so.$(NCURSES_SHLIBVERSION)
-	mkdir -p $(NCURSES_IPK_DIR)/opt/share
-	mkdir -p $(NCURSES_IPK_DIR)/opt/share/tabset
-	mkdir -p $(NCURSES_IPK_DIR)/opt/share/terminfo
-	cp -dpf $(STAGING_DIR)/opt/share/tabset/* $(NCURSES_IPK_DIR)/opt/share/tabset
-	cp -dpfr $(STAGING_DIR)/opt/share/terminfo/* $(NCURSES_IPK_DIR)/opt/share/terminfo
+	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) install.libs install.data install.panel install.menu install.form
+	rm -rf $(NCURSES_IPK_DIR)/opt/include
+	rm -rf $(NCURSES_IPK_DIR)/opt/lib/lib*.a
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
 ncurses-ipk: $(NCURSES_IPK)
