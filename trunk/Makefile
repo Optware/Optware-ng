@@ -85,7 +85,9 @@ TARGET_AR=$(TARGET_CROSS)ar
 TARGET_AS=$(TARGET_CROSS)as
 TARGET_NM=$(TARGET_CROSS)nm
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
-TARGET_STRIP=$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
+TARGET_STRIP=$(TARGET_CROSS)strip
+
+STRIP_COMMAND=$(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded
 
 STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
 STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
@@ -114,7 +116,8 @@ TARGET_CONFIGURE_OPTS= \
 		CC=$(TARGET_CC) \
 		GCC=$(TARGET_CC) \
 		CXX=$(TARGET_CXX) \
-		RANLIB=$(TARGET_RANLIB)
+		RANLIB=$(TARGET_RANLIB) \
+		STRIP=$(TARGET_STRIP)
 
 all: directories crosstool packages
 

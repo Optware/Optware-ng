@@ -62,9 +62,9 @@ bind: $(BIND_BUILD_DIR)/.built
 $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	rm -rf $(BIND_IPK_DIR) $(BIND_IPK)
 	$(MAKE) -C $(BIND_BUILD_DIR) DESTDIR=$(BIND_IPK_DIR) install
-	$(TARGET_STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/lib/*.so.*
-	$(TARGET_STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/bin/{dig,host,nslookup,nsupdate}
-	$(TARGET_STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/sbin/*
+	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/lib/*.so.*
+	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/bin/{dig,host,nslookup,nsupdate}
+	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/sbin/*
 	cp -p $(BIND_IPK_DIR)/opt/sbin/named $(BIND_IPK_DIR)/opt/sbin/named.exe
 	rm -rf $(BIND_IPK_DIR)/opt/{man,include}
 	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}

@@ -149,7 +149,7 @@ $(NAIL_IPK): $(NAIL_BUILD_DIR)/.built
 	rm -rf $(NAIL_IPK_DIR) $(BUILD_DIR)/nail_*_armeb.ipk
 	install -d $(NAIL_IPK_DIR)/opt/bin
 	install -d $(NAIL_IPK_DIR)/opt/doc/nail
-	$(TARGET_STRIP) $(NAIL_BUILD_DIR)/nail -o $(NAIL_IPK_DIR)/opt/bin/nail
+	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/nail -o $(NAIL_IPK_DIR)/opt/bin/nail
 	install -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/doc/nail/nail.rc
 #	install -d $(NAIL_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)/opt/etc/init.d/SXXnail

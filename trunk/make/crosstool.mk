@@ -123,7 +123,7 @@ crosstool: $(CROSSTOOL_BUILD_DIR)/.built
 $(CROSSTOOL_IPK): $(CROSSTOOL_BUILD_DIR)/.built
 	rm -rf $(CROSSTOOL_IPK_DIR) $(CROSSTOOL_IPK)
 	install -d $(CROSSTOOL_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(CROSSTOOL_BUILD_DIR)/crosstool -o $(CROSSTOOL_IPK_DIR)/opt/bin/crosstool
+	$(STRIP_COMMAND) $(CROSSTOOL_BUILD_DIR)/crosstool -o $(CROSSTOOL_IPK_DIR)/opt/bin/crosstool
 	install -d $(CROSSTOOL_IPK_DIR)/CONTROL
 	install -m 644 $(CROSSTOOL_SOURCE_DIR)/control $(CROSSTOOL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL_IPK_DIR)

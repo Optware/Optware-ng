@@ -70,7 +70,7 @@ miau: $(MIAU_BUILD_DIR)/src/miau
 $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	rm -rf $(MIAU_IPK_DIR) $(BUILD_DIR)/miau_*_armeb.ipk
 	install -d $(MIAU_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
+	$(STRIP_COMMAND) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
 	install -d $(MIAU_IPK_DIR)/opt/etc
 	install -m 644 $(MIAU_SOURCE_DIR)/miau.conf $(MIAU_IPK_DIR)/opt/etc/miau.conf
 	install -d $(MIAU_IPK_DIR)/opt/etc/init.d

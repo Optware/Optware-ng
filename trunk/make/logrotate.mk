@@ -123,7 +123,7 @@ logrotate: $(LOGROTATE_BUILD_DIR)/.built
 $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
 	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_armeb.ipk
 	install -d $(LOGROTATE_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
+	$(STRIP_COMMAND) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
 	install -d $(LOGROTATE_IPK_DIR)/opt/doc/logrotate
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/doc/logrotate/logrotate.conf
 	install -d $(LOGROTATE_IPK_DIR)/CONTROL

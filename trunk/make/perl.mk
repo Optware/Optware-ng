@@ -153,7 +153,7 @@ perl-stage: $(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION)
 $(PERL_IPK): $(PERL_BUILD_DIR)/perl
 	rm -rf $(PERL_IPK_DIR) $(PERL_IPK)
 	install -d $(PERL_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(PERL_BUILD_DIR)/perl -o $(PERL_IPK_DIR)/opt/bin/perl
+	$(STRIP_COMMAND) $(PERL_BUILD_DIR)/perl -o $(PERL_IPK_DIR)/opt/bin/perl
 	install -d $(PERL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(PERL_SOURCE_DIR)/rc.perl $(PERL_IPK_DIR)/opt/etc/init.d/SXXperl
 	install -d $(PERL_IPK_DIR)/CONTROL

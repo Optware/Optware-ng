@@ -151,7 +151,7 @@ tcpdump-stage: $(STAGING_DIR)/opt/lib/libtcpdump.so.$(TCPDUMP_VERSION)
 $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/tcpdump
 	rm -rf $(TCPDUMP_IPK_DIR) $(TCPDUMP_IPK)
 	install -d $(TCPDUMP_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
+	$(STRIP_COMMAND) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
 	install -d $(TCPDUMP_IPK_DIR)/CONTROL
 	install -m 644 $(TCPDUMP_SOURCE_DIR)/control $(TCPDUMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCPDUMP_IPK_DIR)

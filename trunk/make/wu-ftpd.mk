@@ -48,7 +48,7 @@ wu-ftpd: $(WU_FTPD_DIR)/wu-ftpd
 $(WU_FTPD_IPK): $(WU_FTPD_DIR)/wu-ftpd
 	install -d $(WU_FTPD_IPK_DIR)/CONTROL
 	install -d $(WU_FTPD_IPK_DIR)/opt/sbin $(WU_FTPD_IPK_DIR)/opt/etc/init.d
-	$(TARGET_STRIP) $(WU_FTPD_DIR)/wu-ftpd -o $(WU_FTPD_IPK_DIR)/opt/sbin/wu-ftpd
+	$(STRIP_COMMAND) $(WU_FTPD_DIR)/wu-ftpd -o $(WU_FTPD_IPK_DIR)/opt/sbin/wu-ftpd
 	install -m 755 $(SOURCE_DIR)/wu-ftpd.rc $(WU_FTPD_IPK_DIR)/opt/etc/init.d/S51wu-ftpd
 	install -m 644 $(SOURCE_DIR)/wu-ftpd.control  $(WU_FTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/wu-ftpd.postinst $(WU_FTPD_IPK_DIR)/CONTROL/postinst

@@ -93,7 +93,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 	mv $(BUILD_DIR)/$(NTP_DIR) $(NTP_BUILD_DIR)
 	(cd $(NTP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		STRIP="$(TARGET_STRIP)" \
+		STRIP="$(STRIP_COMMAND)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NTP_LDFLAGS)" \
 		./configure --without-crypto \
@@ -136,12 +136,12 @@ $(NTP_IPK): $(NTP_BUILD_DIR)/ntpd/ntpd
 	install -d $(NTP_IPK_DIR)/opt/bin
 	install -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
 	install -d $(NTP_IPK_DIR)/var/spool/ntp
-	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)/opt/bin/ntpd
-	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)/opt/bin/ntpq
-	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)/opt/bin/ntpdc
-	$(TARGET_STRIP) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)/opt/bin/ntptime
-	$(TARGET_STRIP) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)/opt/bin/tickadj
-	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)/opt/bin/ntpdate
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)/opt/bin/ntpd
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)/opt/bin/ntpq
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)/opt/bin/ntpdc
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)/opt/bin/ntptime
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)/opt/bin/tickadj
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)/opt/bin/ntpdate
 	install -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)/opt/etc/ntp/ntp.conf
 	install -d $(NTP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp

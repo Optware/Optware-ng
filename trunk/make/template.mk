@@ -155,7 +155,7 @@ $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/.built
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_armeb.ipk
 	install -d $(<FOO>_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
+	$(STRIP_COMMAND) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
 	install -d $(<FOO>_IPK_DIR)/opt/etc/
 	install -m 755 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d

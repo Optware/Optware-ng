@@ -39,7 +39,7 @@ $(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/console/mediamvp
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/init.d
 	install -d $(VDR_MEDIAMVP_IPK_DIR)/CONTROL
-	$(TARGET_STRIP) --strip-unneeded $(VDR_MEDIAMVP_DIR)/console/mediamvp -o $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin/mediamvp
+	$(STRIP_COMMAND) $(VDR_MEDIAMVP_DIR)/console/mediamvp -o $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin/mediamvp
 	install -m 644 $(SOURCE_DIR)/vdr-mediamvp.conf $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp/mediamvp.conf
 	install -m 644 $(SOURCE_DIR)/vdr-mediamvp.radio $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp/mediamvp.radio
 	install -m 755 $(SOURCE_DIR)/vdr-mediamvp.rc $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/init.d/S60mediamvp

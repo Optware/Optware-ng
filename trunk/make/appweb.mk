@@ -147,8 +147,8 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_armeb.ipk
 	# Copy file package ./http/package/LINUX/http.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient
-	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/httpPassword -o $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
+	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient
+	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpPassword -o $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
 	install -d $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libappWeb.so.1.0.0 $(APPWEB_IPK_DIR)/opt/lib
 	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1.0.0 libappWeb.so.1 )
@@ -166,7 +166,7 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libsslModule.so $(APPWEB_IPK_DIR)/opt/lib
 	# Copy file package ./appWeb/package/LINUX/appWeb.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/appWeb -o $(APPWEB_IPK_DIR)/opt/sbin/appWeb
+	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/appWeb -o $(APPWEB_IPK_DIR)/opt/sbin/appWeb
 	install -d $(APPWEB_IPK_DIR)/opt/var/appWeb/logs
 	install -d $(APPWEB_IPK_DIR)/opt/var/appWeb/web
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/index.html $(APPWEB_IPK_DIR)/opt/var/appWeb/web

@@ -41,9 +41,9 @@ ntpclient: $(NTPCLIENT_BUILD_DIR)/ntpclient
 
 $(NTPCLIENT_IPK): $(NTPCLIENT_BUILD_DIR)/ntpclient
 	install -d $(NTPCLIENT_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(NTPCLIENT_BUILD_DIR)/ntpclient -o $(NTPCLIENT_IPK_DIR)/opt/bin/ntpclient
+	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/ntpclient -o $(NTPCLIENT_IPK_DIR)/opt/bin/ntpclient
 	install -d $(NTPCLIENT_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(NTPCLIENT_BUILD_DIR)/adjtimex -o $(NTPCLIENT_IPK_DIR)/opt/sbin/adjtimex
+	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/adjtimex -o $(NTPCLIENT_IPK_DIR)/opt/sbin/adjtimex
 	install -d $(NTPCLIENT_IPK_DIR)/CONTROL
 	install -m 644 $(NTPCLIENT_SOURCE_DIR)/control $(NTPCLIENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTPCLIENT_IPK_DIR)

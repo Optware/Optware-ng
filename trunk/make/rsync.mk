@@ -53,7 +53,7 @@ $(RSYNC_IPK): $(RSYNC_DIR)/rsync
 	cp $(RSYNC_SOURCE_DIR)/control $(RSYNC_IPK_DIR)/CONTROL/control
 	cp $(RSYNC_SOURCE_DIR)/postinst $(RSYNC_IPK_DIR)/CONTROL/postinst
 	cp $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
-	$(TARGET_STRIP) $(RSYNC_DIR)/rsync -o $(RSYNC_IPK_DIR)/opt/bin/rsync
+	$(STRIP_COMMAND) $(RSYNC_DIR)/rsync -o $(RSYNC_IPK_DIR)/opt/bin/rsync
 #	install -m 755 -D $(RSYNC_DIR)/rsync $(RSYNC_IPK_DIR)/opt/bin/rsync
 	touch $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	chmod 600 $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets

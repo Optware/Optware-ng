@@ -124,7 +124,7 @@ $(MC_IPK): $(MC_BUILD_DIR)/src/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.hint $(MC_IPK_DIR)/opt/lib/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.lib  $(MC_IPK_DIR)/opt/lib/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.menu $(MC_IPK_DIR)/opt/lib/mc
-	$(TARGET_STRIP) $(MC_BUILD_DIR)/src/mc -o $(MC_IPK_DIR)/opt/bin/mc
+	$(STRIP_COMMAND) $(MC_BUILD_DIR)/src/mc -o $(MC_IPK_DIR)/opt/bin/mc
 	install -d $(MC_IPK_DIR)/CONTROL
 	install -m 644 $(MC_SOURCE_DIR)/control $(MC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MC_IPK_DIR)

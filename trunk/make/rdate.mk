@@ -38,7 +38,7 @@ $(RDATE_IPK): $(RDATE_DIR)/rdate
 	mkdir -p $(RDATE_IPK_DIR)/CONTROL
 	install -d $(RDATE_IPK_DIR)/opt/bin
 	cp $(RDATE_SOURCE_DIR)/control $(RDATE_IPK_DIR)/CONTROL/control
-	$(TARGET_STRIP) $(RDATE_DIR)/rdate -o $(RDATE_IPK_DIR)/opt/bin/rdate
+	$(STRIP_COMMAND) $(RDATE_DIR)/rdate -o $(RDATE_IPK_DIR)/opt/bin/rdate
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RDATE_IPK_DIR)
 
 rdate-ipk: $(RDATE_IPK)

@@ -144,7 +144,7 @@ nano-stage: $(STAGING_DIR)/lib/libnano.so.$(NANO_VERSION)
 #
 $(NANO_IPK): $(NANO_BUILD_DIR)/nano
 	install -d $(NANO_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(NANO_BUILD_DIR)/nano -o $(NANO_IPK_DIR)/opt/bin/nano
+	$(STRIP_COMMAND) $(NANO_BUILD_DIR)/nano -o $(NANO_IPK_DIR)/opt/bin/nano
 	install -d $(NANO_IPK_DIR)/CONTROL
 	install -m 644 $(NANO_SOURCE_DIR)/control $(NANO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)

@@ -131,7 +131,7 @@ $(MDADM_IPK): $(MDADM_BUILD_DIR)/mdadm
 	install -d $(MDADM_IPK_DIR)/opt/man/man8
 	install -d $(MDADM_IPK_DIR)/opt/man/man4
 	install -d $(MDADM_IPK_DIR)/opt/man/man5
-	$(TARGET_STRIP) $(MDADM_BUILD_DIR)/mdadm -o $(MDADM_IPK_DIR)/opt/sbin/mdadm
+	$(STRIP_COMMAND) $(MDADM_BUILD_DIR)/mdadm -o $(MDADM_IPK_DIR)/opt/sbin/mdadm
 	install -d $(MDADM_IPK_DIR)/CONTROL
 	install -m 644 $(MDADM_SOURCE_DIR)/control $(MDADM_IPK_DIR)/CONTROL/control
 	install -m 644 $(MDADM_BUILD_DIR)/mdadm.8 $(MDADM_IPK_DIR)/opt/man/man8
