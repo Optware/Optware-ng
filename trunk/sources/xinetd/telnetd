@@ -1,0 +1,15 @@
+#
+# telnetd
+#
+service telnetd
+{
+       flags            = REUSE
+       socket_type      = stream
+       instances        = 30
+       wait             = no
+       user             = root
+       server           = /usr/sbin/telnetd
+       log_on_success   = HOST PID
+       log_on_failure   = HOST
+       disable          = no
+}
