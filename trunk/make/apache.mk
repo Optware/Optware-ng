@@ -21,12 +21,12 @@ APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APACHE_DESCRIPTION=The internet\'s most popular web server
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
-APACHE_DEPENDS=apr, apr-util, openssl, expat, zlib
+APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap
 
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=3
+APACHE_IPK_VERSION=4
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
