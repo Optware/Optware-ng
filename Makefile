@@ -30,9 +30,10 @@ CROSS_PACKAGES = \
 	gawk gconv-modules gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
+	hdparm \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
-	lame less libbt libcurl libdb libdvdread libevent libiconv libid3tag \
+	lame less libbt libcurl libdb libdvdread libevent libgd libiconv libid3tag \
 	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 \
 	logrotate lsof \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
@@ -45,8 +46,8 @@ CROSS_PACKAGES = \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd vte \
 	wakelan wget-ssl which \
-	x11 xau xauth xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
-	xproto xrender xt xtrans xtst xvid \
+	x11 xau xauth xaw xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
+	xpm xproto xrender xt xtrans xtst xvid \
 	zlib \
 	crosstool-native
 
