@@ -11,6 +11,7 @@ else
     cat >>/etc/group <<EOF
 postgres::31:
 EOF
+    cp /etc/group /share/hdd/conf/
     echo ok
 fi
 
@@ -21,6 +22,7 @@ else
     cat >>/etc/passwd <<EOF
 postgres:x:31:31:PostgreSQL:$pghome:/bin/sh
 EOF
+    cp /etc/passwd /share/hdd/conf/
     echo ok
 fi
 
@@ -29,12 +31,14 @@ dbinited=0
 if [ -d $pgdata ]; then
     echo The $pgdata directory already exists
 else
-    echo "No $pgdata directory found, initialize database ... "
-    #mkdir -p $pgdata
-    chown -R postgres:postgres $pghome
-    #chmod 700 $pgdata
+    if [ ! -d $pghome ]; then
+        echo "No $pghome directory found, mkdir $pghome"
+        mkdir -p $pghome
+        chown postgres:postgres $pghome
+    fi
+    echo "Initialize database ... "
     su - postgres -c "/opt/bin/initdb -D $pgdata"
-    echo "... database initialization done"
+    [ -f $pgdata/PG_VERSION ] && echo "... database initialization done"
     dbinited=1
 fi
 
