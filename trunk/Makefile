@@ -214,11 +214,9 @@ $(PACKAGES_STAGE) : directories toolchain
 $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 
 $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
-	rm -f $(PACKAGE_DIR)/*
-	mkdir -p $(PACKAGE_DIR)
+	rsync -avr --delete $(BUILD_DIR)/*.ipk $(PACKAGE_DIR)/
 	{ \
 		cd $(PACKAGE_DIR); \
-		cp $(BUILD_DIR)/*.ipk .; \
 		$(IPKG_MAKE_INDEX) . > Packages; \
 		gzip -c Packages > Packages.gz; \
 	}
