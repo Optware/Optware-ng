@@ -59,7 +59,7 @@
 <FOO>_BUILD_DIR=$(BUILD_DIR)/<foo>
 <FOO>_SOURCE_DIR=$(SOURCE_DIR)/<foo>
 <FOO>_IPK_DIR=$(BUILD_DIR)/<foo>-$(<FOO>_VERSION)-ipk
-<FOO>_IPK=$(BUILD_DIR)/<foo>_$(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)_armeb.ipk
+<FOO>_IPK=$(BUILD_DIR)/<foo>_$(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
-	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_armeb.ipk
+	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(<FOO>_IPK_DIR) install
 	install -d $(<FOO>_IPK_DIR)/opt/etc/
 	install -m 644 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
