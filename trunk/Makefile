@@ -81,6 +81,7 @@ NATIVE_PACKAGES = \
 	cyrus-imapd \
 	emacs \
 	xemacs \
+	hugs \
 	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
 	perl-html-parser perl-html-tagset \
@@ -96,7 +97,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	hugs \
 
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
