@@ -37,16 +37,16 @@ $(GLIB_DIR)/.configured: $(GLIB_DIR)/.source
 	);
 	touch $(GLIB_DIR)/.configured
 
-$(GLIB_IPK_DIR): $(GLIB_DIR)/.configured
+$(GLIB_DIR)/glib/libglib-2.0.la: $(GLIB_DIR)/.configured
 	$(MAKE) -C $(GLIB_DIR) CC=$(TARGET_CC) CCLD=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
 
 
-glib-headers: $(GLIB_IPK_DIR)
+glib-headers: glib-ipk
 
-glib: $(GLIB_IPK_DIR)
+glib: glib-ipk
 
-$(GLIB_IPK): $(GLIB_IPK_DIR)
+$(GLIB_IPK): $(GLIB_DIR)/glib/libglib-2.0.la
 	mkdir -p $(GLIB_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/glib/control $(GLIB_IPK_DIR)/CONTROL/control
 	mkdir -p $(GLIB_IPK_DIR)/opt/lib
@@ -56,7 +56,7 @@ $(GLIB_IPK): $(GLIB_IPK_DIR)
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)
 
-$(GLIB_IPK_DIR)/staging:  $(GLIB_IPK)
+glib-stage:  $(GLIB_IPK)
 	cp $(GLIB_DIR)/gmodule/.libs/* $(STAGING_LIB_DIR)
 	cp $(GLIB_DIR)/gthread/.libs/* $(STAGING_LIB_DIR)
 	cp $(GLIB_DIR)/glib/.libs/* $(STAGING_LIB_DIR)
@@ -78,7 +78,7 @@ $(GLIB_IPK_DIR)/staging:  $(GLIB_IPK)
 
 
 
-glib-ipk: $(GLIB_IPK) $(GLIB_IPK_DIR)/staging
+glib-ipk: $(GLIB_IPK)
 
 glib-source: $(DL_DIR)/$(GLIB_SOURCE)
 
