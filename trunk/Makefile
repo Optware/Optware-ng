@@ -108,8 +108,7 @@ TARGET_CONFIGURE_OPTS= \
 		CC=$(TARGET_CC) \
 		GCC=$(TARGET_CC) \
 		CXX=$(TARGET_CXX) \
-		RANLIB=$(TARGET_RANLIB) \
-		STRIP="$(TARGET_STRIP)"
+		RANLIB=$(TARGET_RANLIB)
 
 all: directories crosstool packages
 
