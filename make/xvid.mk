@@ -21,11 +21,17 @@ XVID_TAG=-D 2005-02-14
 XVID_MODULE=xvidcore
 XVID_DIR=xvid-$(XVID_VERSION)
 XVID_UNZIP=zcat
+XVID_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+XVID_DESCRIPTION=Xvid is MPEG4 codec
+XVID_SECTION=tool
+XVID_PRIORITY=optional
+XVID_DEPENDS=
+XVID_CONFLICTS=
 
 #
 # XVID_IPK_VERSION should be incremented when the ipk changes.
 #
-XVID_IPK_VERSION=1
+XVID_IPK_VERSION=2
 
 #
 # XVID_PATCHES should list any patches, in the the order in
@@ -142,6 +148,24 @@ $(STAGING_DIR)/opt/lib/libxvid.so.$(XVID_VERSION): $(XVID_BUILD_DIR)/.built
 xvid-stage: $(STAGING_DIR)/opt/lib/libxvid.so.$(XVID_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/xvid
+# 
+$(XVID_IPK_DIR)/CONTROL/control:
+	@install -d $(XVID_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xvid" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(XVID_PRIORITY)" >>$@
+	@echo "Section: $(XVID_SECTION)" >>$@
+	@echo "Version: $(XVID_VERSION)-$(XVID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XVID_MAINTAINER)" >>$@
+	@echo "Source: $(XVID_REPOSITORY)" >>$@
+	@echo "Description: $(XVID_DESCRIPTION)" >>$@
+	@echo "Depends: $(XVID_DEPENDS)" >>$@
+	@echo "Conflicts: $(XVID_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(XVID_IPK_DIR)/opt/sbin or $(XVID_IPK_DIR)/opt/bin
@@ -158,8 +182,7 @@ $(XVID_IPK): $(XVID_BUILD_DIR)/.built
 	$(MAKE) DESTDIR=$(XVID_IPK_DIR) -C $(XVID_BUILD_DIR)/build/generic install
 	$(STRIP_COMMAND) $(XVID_IPK_DIR)/opt/lib/libxvidcore.a libxvidcore.so.4.1
 	ln -s $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1 $(XVID_IPK_DIR)/opt/lib/libxvidcore.so
-	install -d $(XVID_IPK_DIR)/CONTROL
-	install -m 644 $(XVID_SOURCE_DIR)/control $(XVID_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XVID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XVID_IPK_DIR)
 
 #
