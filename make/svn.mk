@@ -91,10 +91,9 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(SVN_BUILD_DIR)/opt \
-                --with-ssl \
-		--enable-ssl \
 		--with-libs=$(STAGING_DIR)/opt \
    		--with-berkeley-db=$(STAGING_DIR)/opt \
+                --with-expat=$(SVN_BUILD_DIR)/apr-util/xml/expat \
 		--with-apache=no \
 		--with-apxs=no \
 	)
