@@ -4,7 +4,7 @@
 #
 #############################################################
 
-DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
+DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/testing
 DROPBEAR_VERSION=0.44test4
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
