@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
-XVID_VERSION=1.0
+XVID_VERSION=20050214
 XVID_SOURCE=xvid-$(XVID_VERSION).tar.gz
 XVID_TAG=-D 2005-02-14
 XVID_MODULE=xvidcore
