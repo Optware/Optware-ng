@@ -1,0 +1,10 @@
+#!/bin/sh
+
+mkdir -p /opt/var/mpd
+chown admin /opt/var/mpd
+
+mkdir -p /opt/var/mpd/playlists
+chown admin /opt/var/mpd/playlists
+
+echo Starting Music Playing Daemon...
+/opt/etc/init.d/S61mpd

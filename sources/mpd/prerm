@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo Stopping Music Playing daemon...
+/bin/killall mpd
+
+rm -rf /opt/var/mpd
+
