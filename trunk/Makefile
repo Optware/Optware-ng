@@ -89,6 +89,9 @@ unslung: $(TARGETS)
 $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 	cd $(PACKAGE_DIR) ; ../ipkg-make-index . > Packages
 
+upload:
+	scp packages/*.ipk packages/Packages nslu.sf.net:/home/groups/n/ns/nslu/htdocs/ipkg
+
 world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) \
 	$(TARGETS_INSTALL) $(PACKAGES_UPKG) $(PACKAGES_IPKG) \
 	$(PACKAGE_DIR)/Packages
