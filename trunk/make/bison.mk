@@ -45,6 +45,7 @@ $(BISON_DIR)/src/bison: $(BISON_DIR)/.configured
 bison: $(BISON_DIR)/src/bison
 
 $(BISON_IPK): $(BISON_DIR)/src/bison
+	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_armeb.ipk
 	mkdir -p $(BISON_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/bison.control $(BISON_IPK_DIR)/CONTROL/control
 	# for now ignore the locale files
