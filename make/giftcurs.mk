@@ -44,8 +44,8 @@ GIFTCURS_PATCHES=$(GIFTCURS_SOURCE_DIR)/patch.noglibtest
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GIFTCURS_CPPFLAGS=
-GIFTCURS_LDFLAGS=${STAGING_DIR}/opt/lib/libglib-2.0.so
+GIFTCURS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0
+GIFTCURS_LDFLAGS=$(STAGING_LIB_DIR)/libglib-2.0.so
 
 #
 # GIFTCURS_BUILD_DIR is the directory in which the build is done.
