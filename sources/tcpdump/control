@@ -1,0 +1,9 @@
+Package: tcpdump
+Version: 3.8.3-1
+Architecture: armeb
+Maintainer: Sven Henkel <sidddy@gmail.com>
+Source: http://www.tcpdump.org/release/tcpdump-3.8.3.tar.gz
+Section: net
+Priority: optional
+Depends: 
+Description: tcpdump dumps the traffic on a network
