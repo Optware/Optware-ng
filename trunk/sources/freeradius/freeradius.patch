@@ -8,57 +8,7 @@ diff -Nur freeradius-1.0.1/src/modules/rlm_eap/Makefile.in freeradius-1.0.1-new/
  HEADERS     = eap.h rlm_eap.h
  RLM_CFLAGS  = $(INCLTDL) -I@srcdir@/libeap
  CLIENTLIBS  = -Llibeap -leap -L../../lib -lradius
-diff -Nur freeradius-1.0.1/src/modules/rlm_eap/Makefile.in~ freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in~
---- freeradius-1.0.1/src/modules/rlm_eap/Makefile.in~	1969-12-31 16:00:00.000000000 -0800
-+++ freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in~	2004-01-28 07:38:40.000000000 -0800
-@@ -0,0 +1,47 @@
-+TARGET      = @targetname@
-+SRCS        = rlm_eap.c eap.c mem.c state.c
-+HEADERS     = eap.h rlm_eap.h
-+RLM_CFLAGS  = $(INCLTDL) -I@srcdir@/libeap
-+CLIENTLIBS  = -Llibeap -leap -L../../lib -lradius
-+RLM_LIBS    = -Llibeap -leap
-+#RLM_LIBS    = $(shell for x in types/rlm_eap*/rlm_eap*.la;do echo -dlpreopen $$x;done)
-+RLM_INSTALL = install-types
-+RLM_SUBDIRS = libeap @eaptypes@ 
-+RLM_UTILS   = radeapclient
-+
-+.PHONY: all install-types common
-+
-+$(STATIC_OBJS): $(HEADERS)
-+
-+#
-+#  Statically link a few modules.
-+# 
-+STATIC_OBJS	+= $(shell ls -1 types/rlm_eap_md5/rlm_eap_md5.a types/rlm_eap_leap/rlm_eap_leap.a types/rlm_eap_tls/rlm_eap_tls.a types/rlm_eap_ttls/rlm_eap_ttls.a types/rlm_eap_sim/rlm_eap_sim.a 2>/dev/null)
-+
-+$(DYNAMIC_OBJS): $(HEADERS)
-+
-+all: 
-+	@$(MAKE) $(MFLAGS) static dynamic
-+	@$(MAKE) $(MFLAGS) WHAT_TO_MAKE=$@ common
-+	@$(MAKE) $(MFLAGS) radeapclient
-+
-+radeapclient: radeapclient.o ../../lib/libradius.a
-+	(cd libeap && $(MAKE) $(MFLAGS) $(WHAT_TO_MAKE)) || exit 1
-+	$(LIBTOOL) --mode=link $(CC) $(CFLAGS) ${RLM_CFLAGS} $(LDFLAGS) -o radeapclient radeapclient.o $(CLIENTLIBS) $(LIBS) $(LCRYPT)
-+
-+radeapclient.o: radeapclient.c $(INCLUDES)
-+	$(CC) $(CFLAGS) ${RLM_CFLAGS} -c radeapclient.c
-+
-+install-types: 
-+	@$(MAKE) $(MFLAGS) WHAT_TO_MAKE=install common
-+	$(INSTALL) -m 755 radeapclient	$(R)$(bindir)
-+
-+common:
-+	@for dir in $(RLM_SUBDIRS); do  \
-+		echo "Making $(WHAT_TO_MAKE) in $$dir..."; \
-+		(cd $$dir && $(MAKE) $(MFLAGS) $(WHAT_TO_MAKE)) || exit 1;\
-+	done
-+
-+## this uses the RLM_CFLAGS and RLM_LIBS and SRCS defs to make TARGET.
-+include ../rules.mak
-+
+
 diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_log.c
 --- freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c	2002-07-11 23:45:53.000000000 -0700
 +++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_log.c	2004-11-29 21:53:49.000000000 -0800
