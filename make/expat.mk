@@ -19,6 +19,12 @@ EXPAT_VERSION=1.95.8
 EXPAT_SOURCE=expat-$(EXPAT_VERSION).tar.gz
 EXPAT_DIR=expat-$(EXPAT_VERSION)
 EXPAT_UNZIP=zcat
+EXPAT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+EXPAT_DESCRIPTION=XML Parser library
+EXPAT_SECTION=libraries
+EXPAT_PRIORITY=optional
+EXPAT_DEPENDS=
+EXPAT_CONFLICTS=
 
 #
 # EXPAT_IPK_VERSION should be incremented when the ipk changes.
@@ -136,6 +142,24 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 expat-stage: $(EXPAT_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/expat
+#
+$(EXPAT_IPK_DIR)/CONTROL/control:
+	@install -d $(EXPAT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: expat" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(EXPAT_PRIORITY)" >>$@
+	@echo "Section: $(EXPAT_SECTION)" >>$@
+	@echo "Version: $(EXPAT_VERSION)-$(EXPAT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(EXPAT_MAINTAINER)" >>$@
+	@echo "Source: $(EXPAT_SITE)/$(EXPAT_SOURCE)" >>$@
+	@echo "Description: $(EXPAT_DESCRIPTION)" >>$@
+	@echo "Depends: $(EXPAT_DEPENDS)" >>$@
+	@echo "Conflicts: $(EXPAT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(EXPAT_IPK_DIR)/opt/sbin or $(EXPAT_IPK_DIR)/opt/bin
@@ -156,8 +180,7 @@ $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	)
 	# avoid problems with libtool later
 	rm $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
-	install -d $(EXPAT_IPK_DIR)/CONTROL
-	install -m 644 $(EXPAT_SOURCE_DIR)/control $(EXPAT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(EXPAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EXPAT_IPK_DIR)
 
 #

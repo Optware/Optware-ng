@@ -24,6 +24,12 @@ LIBJPEG_VERSION=6b
 LIBJPEG_SOURCE=jpegsrc.v$(LIBJPEG_VERSION).tar.gz
 LIBJPEG_DIR=jpeg-$(LIBJPEG_VERSION)
 LIBJPEG_UNZIP=zcat
+LIBJPEG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBJPEG_DESCRIPTION=collection of jpeg tools
+LIBJPEG_SECTION=net
+LIBJPEG_PRIORITY=optional
+LIBJPEG_DEPENDS=
+LIBJPEG_CONFLICTS=
 
 #
 # LIBJPEG_IPK_VERSION should be incremented when the ipk changes.
@@ -138,6 +144,24 @@ $(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.built
 libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.so
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libjpeg
+#
+$(LIBJPEG_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBJPEG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libjpeg" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBJPEG_PRIORITY)" >>$@
+	@echo "Section: $(LIBJPEG_SECTION)" >>$@
+	@echo "Version: $(LIBJPEG_VERSION)-$(LIBJPEG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBJPEG_MAINTAINER)" >>$@
+	@echo "Source: $(LIBJPEG_SITE)/$(LIBJPEG_SOURCE)" >>$@
+	@echo "Description: $(LIBJPEG_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBJPEG_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBJPEG_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBJPEG_IPK_DIR)/opt/sbin or $(LIBJPEG_IPK_DIR)/opt/bin
@@ -161,8 +185,7 @@ $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/lib/*.so
 #	install -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
-	install -d $(LIBJPEG_IPK_DIR)/CONTROL
-	install -m 644 $(LIBJPEG_SOURCE_DIR)/control $(LIBJPEG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBJPEG_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBJPEG_SOURCE_DIR)/postinst $(LIBJPEG_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBJPEG_SOURCE_DIR)/prerm $(LIBJPEG_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBJPEG_IPK_DIR)
