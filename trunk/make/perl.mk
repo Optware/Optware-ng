@@ -125,20 +125,6 @@ $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
 perl: $(PERL_BUILD_DIR)/.built
 
 #
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION): $(PERL_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(PERL_BUILD_DIR)/perl.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(PERL_BUILD_DIR)/libperl.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(PERL_BUILD_DIR)/libperl.so.$(PERL_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libperl.so.$(PERL_VERSION) libperl.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libperl.so.$(PERL_VERSION) libperl.so
-
-perl-stage: $(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION)
-
-#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(PERL_IPK_DIR)/opt/sbin or $(PERL_IPK_DIR)/opt/bin
@@ -152,16 +138,11 @@ perl-stage: $(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION)
 #
 $(PERL_IPK): $(PERL_BUILD_DIR)/.built
 	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_armeb.ipk
-	install -d $(PERL_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PERL_BUILD_DIR)/perl -o $(PERL_IPK_DIR)/opt/bin/perl
-	install -d $(PERL_IPK_DIR)/opt/etc/
-	install -m 755 $(PERL_SOURCE_DIR)/perl.conf $(PERL_IPK_DIR)/opt/etc/perl.conf
-	install -d $(PERL_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(PERL_SOURCE_DIR)/rc.perl $(PERL_IPK_DIR)/opt/etc/init.d/SXXperl
+	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
+	rm -f $(PERL_IPK_DIR)/opt/bin/perl
+	ln -s /opt/bin/perl$(PERL_VERSION) $(PERL_IPK_DIR)/opt/bin/perl
 	install -d $(PERL_IPK_DIR)/CONTROL
 	install -m 644 $(PERL_SOURCE_DIR)/control $(PERL_IPK_DIR)/CONTROL/control
-	install -m 644 $(PERL_SOURCE_DIR)/postinst $(PERL_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(PERL_SOURCE_DIR)/prerm $(PERL_IPK_DIR)/CONTROL/prerm
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
 
