@@ -10,7 +10,7 @@ BASH_SOURCE=bash-$(BASH_VERSION).tar.gz
 BASH_DIR=bash-$(BASH_VERSION)
 BASH_UNZIP=zcat
 
-BASH_IPK_VERSION=2
+BASH_IPK_VERSION=3
 
 BASH_CPPFLAGS=
 BASH_LDFLAGS=
@@ -63,6 +63,9 @@ $(BASH_IPK): $(BASH_BUILD_DIR)/bash
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
 	install -d $(BASH_IPK_DIR)/opt/etc 
 	install -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
+	install -d $(BASH_IPK_DIR)/bin
+	ln -s /opt/bin/bash \
+		$(BASH_IPK_DIR)/bin/bash
 	install -d $(BASH_IPK_DIR)/CONTROL
 	install -m 644 $(BASH_SOURCE_DIR)/control $(BASH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BASH_IPK_DIR)
