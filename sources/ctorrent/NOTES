@@ -1,0 +1,12 @@
+Several patches are needed to ctorrent they largely correspond to patches
+submitted to the ctorrent project at http://sourceforge.net/projects/ctorrent/
+
+align.patch: ctorrent patch #1109266
+configure.patch: search for SHA1 in OpenSSL libcrypto not libcrypt.
+crash.patch: ctorrent patch #1118597
+fmt.patch: ctorrent patch #1114197
+getcwd.patch: ctorrent patch #1042808
+stall.patch: ctorrent patch #1119467
+tracker.patch: ctorrent patch #1109287
+
+Steve (snhenson@gmail.com).
