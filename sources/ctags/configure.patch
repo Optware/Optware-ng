@@ -1,0 +1,23 @@
+--- builds/ctags/Makefile.in-org	2005-03-21 13:25:51.000000000 -0800
++++ builds/ctags/Makefile.in	2005-03-21 13:26:53.000000000 -0800
+@@ -59,9 +59,10 @@
+ 
+ VPATH	= $(srcdir)
+ 
+-INSTALL		= cp
++INSTALL		= install
+ INSTALL_PROG	= $(INSTALL)
+ INSTALL_DATA	= $(INSTALL)
++INSTALL_MKDIR	= install -d
+ 
+ READ_LIB = readtags.$(OBJEXT)
+ READ_INC = readtags.h
+@@ -125,7 +126,7 @@
+ install-etags: install-ebin install-eman
+ 
+ $(bindir) $(man1dir) $(libdir) $(incdir):
+-	$(srcdir)/mkinstalldirs $@
++	$(INSTALL_MKDIR) $@
+ 
+ FORCE:
+ 
