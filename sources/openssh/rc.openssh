@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -n "`pidof sshd`" ]; then 
+    /bin/killall sshd 2>/dev/null
+fi
+
+umask 077
+
+/opt/sbin/sshd
