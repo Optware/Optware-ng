@@ -10,7 +10,7 @@ CYRUS-IMAPD_SOURCE=cyrus-imapd-$(CYRUS-IMAPD_VERSION).tar.gz
 CYRUS-IMAPD_DIR=cyrus-imapd-$(CYRUS-IMAPD_VERSION)
 CYRUS-IMAPD_UNZIP=zcat
 
-CYRUS-IMAPD_IPK_VERSION=1
+CYRUS-IMAPD_IPK_VERSION=2
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
