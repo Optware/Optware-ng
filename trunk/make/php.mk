@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=4.3.10
+PHP_VERSION=5.0.3
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -21,13 +21,12 @@ PHP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-PHP_DEPENDS=apache, bzip2, openssl, zlib $(PHP_NATIVE_DEPENDS)
+PHP_DEPENDS=apache, bzip2, openssl, zlib, libxml2, libxslt, libgd $(PHP_NATIVE_DEPENDS)
 
 ifeq ($(HOST_MACHINE),armv5b)
-PHP_NATIVE_STAGE=libxml2-stage cyrus-imapd-stage
-PHP_NATIVE_DEPENDS=,libxml2, cyrus-imapd
+PHP_NATIVE_STAGE=cyrus-imapd-stage
+PHP_NATIVE_DEPENDS=, cyrus-imapd
 PHP_NATIVE_CONFIG_PARAMS= \
-	--with-dom=$(STAGING_DIR)/opt \
 	--with-cyrus=$(STAGING_DIR)/opt \
 	--with-iconv \
 	--with-pear
@@ -35,13 +34,14 @@ else
 PHP_NATIVE_STAGE=
 PHP_NATIVE_DEPENDS=
 PHP_NATIVE_CONFIG_PARAMS= \
-	--without-pear
+	--without-pear \
+	--without-iconv
 endif
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=3
+PHP_IPK_VERSION=1
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -61,14 +61,14 @@ PHP_LOCALES=
 # PHP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch
+PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $(PHP_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=
-PHP_LDFLAGS=
+PHP_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
@@ -131,7 +131,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) apache-stage bzip2-stage $(PHP_NATIVE_STAGE)
+	$(MAKE) apache-stage bzip2-stage libgd-stage libxml2-stage libxslt-stage $(PHP_NATIVE_STAGE)
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -141,6 +141,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
+		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -154,6 +155,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-inifile \
 		--with-flatfile \
 		--enable-dbx \
+		--enable-ftp \
 		--enable-shmop \
 		--enable-sockets \
 		--enable-sysvmsg \
@@ -162,10 +164,18 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-apxs2=$(STAGING_DIR)/opt/sbin/apxs \
 		--with-bz2=$(STAGING_DIR)/opt \
 		--with-db4=$(STAGING_DIR)/opt \
+		--with-dom=$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
+		--with-gd=$(STAGING_DIR)/opt \
 		--with-ldap=$(STAGING_DIR)/opt \
+		--with-ldap-sasl=$(STAGING_DIR)/opt \
 		--with-openssl=$(STAGING_DIR)/opt \
+		--with-xsl=$(STAGING_DIR)/opt \
 		--with-zlib=$(STAGING_DIR)/opt \
+		--with-libxml-dir=$(STAGING_DIR)/opt \
+		--with-jpeg-dir=$(STAGING_DIR)/opt \
+		--with-png-dir=$(STAGING_DIR)/opt \
+		--with-freetype-dir=$(STAGING_DIR)/opt \
 		--with-zlib-dir=$(STAGING_DIR)/opt \
 		$(PHP_NATIVE_CONFIG_PARAMS) \
 	)
