@@ -26,7 +26,7 @@ PANGO_DEPENDS=glib, xft, freetype, fontconfig
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PANGO_IPK_VERSION=1
+PANGO_IPK_VERSION=2
 
 #
 # PANGO_LOCALES defines which locales get installed
@@ -175,6 +175,7 @@ $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
 	$(MAKE) -C $(PANGO_BUILD_DIR) DESTDIR=$(PANGO_IPK_DIR) install-strip
 	rm -rf $(PANGO_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(PANGO_IPK_DIR)/CONTROL/control
+	install -m 644 $(PANGO_SOURCE_DIR)/postinst $(PANGO_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PANGO_IPK_DIR)
 
 #
