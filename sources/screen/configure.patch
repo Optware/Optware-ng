@@ -1,0 +1,177 @@
+--- configure.orig	2004-12-11 11:20:02.351810280 -1000
++++ configure	2004-12-11 13:51:24.941122271 -1000
+@@ -2700,11 +2700,12 @@
+ 
+ 
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -2753,7 +2754,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -2800,7 +2802,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -4163,7 +4166,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -4272,7 +4276,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -4365,7 +4370,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -4460,7 +4466,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -4562,7 +4569,8 @@
+ else
+   { { echo "$as_me:$LINENO: error: you have neither usable sockets nor usable pipes -> no screen" >&5
+ echo "$as_me: error: you have neither usable sockets nor usable pipes -> no screen" >&2;}
+-   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
++#   { (exit 1); exit 1; }; }
+ fi
+ 
+ 
+@@ -4573,7 +4581,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -4915,7 +4924,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -5359,7 +5369,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -6206,7 +6217,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -6482,7 +6494,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -7004,7 +7017,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -7056,7 +7070,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -7110,7 +7125,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -7951,7 +7967,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
