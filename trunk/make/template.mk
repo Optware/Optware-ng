@@ -110,19 +110,21 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(<FOO>_BUILD_DIR)/<foo>: $(<FOO>_BUILD_DIR)/.configured
+$(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
+	rm -f $(<FOO>_BUILD_DIR)/.built
 	$(MAKE) -C $(<FOO>_BUILD_DIR)
+	touch $(<FOO>_BUILD_DIR)/.built
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-<foo>: $(<FOO>_BUILD_DIR)/<foo>
+<foo>: $(<FOO>_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION)
+$(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(<FOO>_BUILD_DIR)/<foo>.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
@@ -145,7 +147,7 @@ $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>
 #
 # You may need to patch your application to make it use these locations.
 #
-$(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
+$(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	rm -rf $(<FOO>_IPK_DIR) $(<FOO>_IPK)
 	install -d $(<FOO>_IPK_DIR)/opt/bin
 	$(STRIP) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
