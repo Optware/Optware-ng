@@ -68,8 +68,10 @@ NATIVE_ONLY_PACKAGES = \
 	perl \
 	squid
 
-NATIVE_ONLY_PACKAGES_READY_FOR_TESTING =
-
+NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
+	clamav \
+	wakelan
+	
 UNSORTED_PACKAGES = \
 	freeradius \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft glib \
@@ -80,8 +82,8 @@ UNSORTED_PACKAGES = \
 	pcre popt proftpd \
 	rdate \
 	svn \
-	which
-
+	which 
+	
 DEVELOPER_PACKAGES = crosstool-native
 
 PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump e2fsprogs dump gkrellm
