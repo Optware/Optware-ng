@@ -110,17 +110,14 @@ appweb-unpack: $(APPWEB_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(APPWEB_BUILD_DIR)/appweb: $(APPWEB_BUILD_DIR)/.configured
+$(APPWEB_BUILD_DIR)/bin/appWeb: $(APPWEB_BUILD_DIR)/.configured
 	$(MAKE) -C $(APPWEB_BUILD_DIR)
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-appweb: $(APPWEB_BUILD_DIR)/appweb
-
-appweb-stage:
-	@echo "Nothing to stage"
+appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
 
 #
 # This builds the IPK file.
@@ -134,7 +131,7 @@ appweb-stage:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(APPWEB_IPK): $(APPWEB_BUILD_DIR)/appweb
+$(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 #	$(MAKE) DESTDIR=$(APPWEB_IPK_DIR) SKIP_PERMS=1 -C $(APPWEB_BUILD_DIR) install
 	install -d $(APPWEB_IPK_DIR)/CONTROL
 	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
