@@ -1,0 +1,17 @@
+A vulnerability has been found in the current versions of wu-ftpd, follow
+the links from http://www.wu-ftpd.org/ for details.
+
+Included below is a patch for CAN-2003-0466 to be applied to wu-ftpd 2.6.2.
+
+--- src/realpath.c.orig	Mon Aug  4 11:20:19 2003
++++ src/realpath.c	Mon Aug  4 11:23:22 2003
+@@ -299,7 +299,7 @@
+ 	rootd = 0;
+ 
+     if (*wbuf) {
+-	if (strlen(resolved) + strlen(wbuf) + rootd + 1 > MAXPATHLEN) {
++	if (strlen(resolved) + strlen(wbuf) + !rootd + 1 > MAXPATHLEN) {
+ 	    errno = ENAMETOOLONG;
+ 	    goto err1;
+ 	}
+
