@@ -22,7 +22,8 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox miau zlib sudo rsync rdate ntpclient \
+PACKAGES:= dropbear busybox miau zlib \
+	   sudo rsync rdate ntpclient \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
 	   ncurses ircd-hybrid procps dnsmasq \
