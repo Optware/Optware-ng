@@ -1,6 +1,6 @@
 Package: emacs
 Priority: optional
-Version: 21.3-2
+Version: 21.3-3
 Architecture: armeb
 Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: editors
