@@ -28,7 +28,7 @@ NLOAD_UNZIP=zcat
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=1
+NLOAD_IPK_VERSION=2
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
