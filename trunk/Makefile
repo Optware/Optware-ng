@@ -22,8 +22,8 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox zlib portmap nfs-server unfs3 inetutils \
-	   gdbm libid3tag mt-daapd tcpwrappers flex bison cvs \
+PACKAGES:= dropbear busybox zlib portmap nfs-server flex inetutils \
+	   gdbm libid3tag mt-daapd tcpwrappers unfs3 bison cvs \
 	   rsync sudo
 
 WGET=wget --passive-ftp
