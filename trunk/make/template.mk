@@ -1,6 +1,6 @@
 ###########################################################
 #
-# <Foo> package
+# <foo>
 #
 ###########################################################
 
@@ -72,27 +72,21 @@ $(DL_DIR)/$(<FOO>_SOURCE):
 <foo>-source: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 
 #
-# This target unpacks the source code into the build directory.
+# This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
-#
-$(<FOO>_BUILD_DIR)/.source: $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) $(<FOO>_PATCHES)
-	@rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
-	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(<FOO>_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
-	mv $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
-	touch $(<FOO>_BUILD_DIR)/.source
-
-#
-# This target configures the build within the build directory.
-# This is a fairly important note (cuz I wasted about 5 hours on it).
-# Flags usch as LDFLAGS and CPPFLAGS should be passed into configure
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
 # and NOT $(MAKE) below.  Passing it to configure causes configure to
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
-$(<FOO>_BUILD_DIR)/.configured: $(<FOO>_BUILD_DIR)/.source
+$(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) $(<FOO>_PATCHES)
+	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
+	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(<FOO>_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
+	mv $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
 	(cd $(<FOO>_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(<FOO>_CPPFLAGS)" \
@@ -144,14 +138,6 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
 #
 <foo>-clean:
 	-$(MAKE) -C $(<FOO>_BUILD_DIR) clean
-
-#
-# This is called from the top level makefile to clean ALL files, including
-# downloaded source.
-#
-<foo>-distclean:
-	-rm $(<FOO>_BUILD_DIR)/.configured
-	-$(MAKE) -C $(<FOO>_BUILD_DIR) distclean
 
 #
 # This is called from the top level makefile to clean all dynamically created
