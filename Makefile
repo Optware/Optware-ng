@@ -32,9 +32,9 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap ntp freeradius puppy screen bind svn \
-	   m4 make patch vsftpd distcc
+	   m4 make patch vsftpd distcc libjpeg imagemagick
 
-PACKAGES_TO_BE_TESTED:= imagemagick
+PACKAGES_TO_BE_TESTED:= 
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
