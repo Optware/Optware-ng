@@ -91,6 +91,7 @@ libiconv-source: $(DL_DIR)/$(LIBICONV_SOURCE) $(LIBICONV_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBICONV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBICONV_SOURCE) $(LIBICONV_PATCHES)
+	@echo "Use of libiconv is deprecated. Use gconv-modules instead" ; false
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBICONV_DIR) $(LIBICONV_BUILD_DIR)
 	$(LIBICONV_UNZIP) $(DL_DIR)/$(LIBICONV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
