@@ -1,0 +1,18 @@
+#!/bin/sh
+
+echo "(re)starting service postfix"
+
+if [ -n "`pidof master`" ]; then
+    /opt/sbin/postfix -c /opt/etc/postfix stop
+fi
+
+/opt/sbin/postfix -c /opt/etc/postfix start
+
+# waiting for qmgr
+( i=60
+  while [ -z "$(pidof qmgr)" -a $i -gt 0 ]; do
+	i=$(( $i - 1 ))
+	sleep 1
+  done
+  echo /opt/sbin/postfix flush
+) > /dev/null 2>&1 &
