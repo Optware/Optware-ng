@@ -55,15 +55,17 @@ CROSS_ONLY_PACKAGES = \
 	popt \
 	rdate \
 	stunnel svn \
-	unfs3
+	unfs3 \
+	\
+	glib
 
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
-PACKAGES_TO_BE_TESTED =
+PACKAGES_TO_BE_TESTED = 
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
-	   e2fsprogs dump glib gkrellm
+	   e2fsprogs dump gkrellm
 
 PACKAGES_THAT_NEED_TO_BE_FIXED = perl nethack scponly tcpdump nload nmap bison
 
