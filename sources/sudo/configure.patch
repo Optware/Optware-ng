@@ -1,0 +1,22 @@
+--- sudo-1.6.8-orig/configure	Thu Jun  3 12:34:54 2004
++++ sudo-1.6.8/configure	Mon Sep  6 16:42:14 2004
+@@ -24383,7 +24383,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test programn while crosscompiling" ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
+@@ -24485,7 +24486,8 @@
+ See \`config.log' for more details." >&5
+ echo "$as_me: error: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#   { (exit 1); exit 1; }; }
++{ echo "skipping running test program while cross compiling." ; } ; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #line $LINENO "configure"
