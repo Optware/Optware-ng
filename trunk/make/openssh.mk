@@ -26,6 +26,7 @@ $(DL_DIR)/$(OPENSSH_SOURCE):
 openssh-source: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 
 $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
+	$(MAKE) zlib-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR)
 	$(OPENSSH_UNZIP) $(DL_DIR)/$(OPENSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(OPENSSH_PATCHES) | patch -d $(BUILD_DIR)/$(OPENSSH_DIR) -p1
@@ -41,8 +42,8 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/openssh \
-		--with-zlib=$(STAGING_DIR) \
-		--with-ssl-dir=$(STAGING_DIR) \
+		--with-zlib=$(STAGING_DIR)/opt \
+		--with-ssl-dir=$(STAGING_DIR)/opt \
 		--with-md5-passwords=yes \
 		--with-default-path="/opt/sbin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
 		--with-privsep-user=nobody \
@@ -88,4 +89,3 @@ openssh-clean:
 
 openssh-dirclean: openssh-clean
 	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) $(OPENSSH_IPK_DIR) $(OPENSSH_IPK)
-
