@@ -1,6 +1,6 @@
 Package: bison
 Priority: optional
-Version: 1.875-1
+Version: 1.875-2
 Architecture: armeb
 Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: devel
