@@ -91,7 +91,7 @@ snort-source: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES)
-	$(MAKE) libpcap-stage
+	$(MAKE) libpcap-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(SNORT_DIR) $(SNORT_BUILD_DIR)
 	$(SNORT_UNZIP) $(DL_DIR)/$(SNORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SNORT_PATCHES) | patch -d $(BUILD_DIR)/$(SNORT_DIR) -p1
