@@ -5,7 +5,7 @@
 ###########################################################
 
 # Copyright (C) 2004 by Tom King <ka6sox@gmail.com>
-# Copyright (C) 2004 by Rod Whitby <unslung@gmail.com>
+# Copyright (C) 2004 by Rod Whitby
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
