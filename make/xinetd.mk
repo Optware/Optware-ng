@@ -24,11 +24,16 @@ XINETD_VERSION=2.3.13
 XINETD_SOURCE=xinetd-$(XINETD_VERSION).tar.gz
 XINETD_DIR=xinetd-$(XINETD_VERSION)
 XINETD_UNZIP=zcat
+XINETD_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+XINETD_DESCRIPTION=Highly configurable, modular and secure inetd
+XINETD_SECTION=net
+XINETD_PRIORITY=optional
+XINETD_DEPENDS=
 
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=1
+XINETD_IPK_VERSION=2
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
@@ -38,7 +43,7 @@ XINETD_CONFFILES=/opt/etc/xinetd.conf
 # XINETD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# XINETD_PATCHES=$(XINETD_SOURCE_DIR)/configure.patch
+XINETD_PATCHES=$(XINETD_SOURCE_DIR)/xconfig.patch
 
 #
 # If the compilation of the package requires additional
@@ -94,7 +99,7 @@ $(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR)
 	$(XINETD_UNZIP) $(DL_DIR)/$(XINETD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(XINETD_PATCHES) | patch -d $(BUILD_DIR)/$(XINETD_DIR) -p1
+	cat $(XINETD_PATCHES) | patch -d $(BUILD_DIR)/$(XINETD_DIR) -p1
 	mv $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR)
 	(cd $(XINETD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -135,6 +140,23 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 # xinetd-stage: $(STAGING_DIR)/opt/lib/libxinetd.so.$(XINETD_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/xinetd
+#
+$(XINETD_IPK_DIR)/CONTROL/control:
+	@install -d $(XINETD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xinetd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(XINETD_PRIORITY)" >>$@
+	@echo "Section: $(XINETD_SECTION)" >>$@
+	@echo "Version: $(XINETD_VERSION)-$(XINETD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XINETD_MAINTAINER)" >>$@
+	@echo "Source: $(XINETD_SITE)/$(XINETD_SOURCE)" >>$@
+	@echo "Description: $(XINETD_DESCRIPTION)" >>$@
+	@echo "Depends: $(XINETD_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(XINETD_IPK_DIR)/opt/sbin or $(XINETD_IPK_DIR)/opt/bin
@@ -162,9 +184,7 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	# Install diversion script
 	install -d $(XINETD_IPK_DIR)/opt/doc/xinetd
 	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/doc/xinetd/rc.xinetd
-	install -d $(XINETD_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(XINETD_VERSION)/" \
-		-e "s/@RELEASE@/$(XINETD_IPK_VERSION)/" $(XINETD_SOURCE_DIR)/control > $(XINETD_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 644 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/postinst
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)
