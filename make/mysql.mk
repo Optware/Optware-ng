@@ -15,8 +15,8 @@ MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-1_armeb.ipk
 MYSQL_IPK_DIR:=$(BUILD_DIR)/mysql-$(MYSQL_VERSION)-ipk
 MYSQL_PATCH=$(SOURCE_DIR)/mysql.patch
 
-MY_CFLAGS="-I$(STAGING_DIR)/include/ncurses -I$(STAGING_DIR)/include"
-LDFLAGS:="-L$(STAGING_DIR)/lib"
+MY_CFLAGS="-I$(STAGING_DIR)/opt/include/ncurses -I$(STAGING_DIR)/opt/include"
+LDFLAGS:="-L$(STAGING_DIR)/opt/lib"
 TARGET_CXX="armv5b-softfloat-linux-g++"
 TARGET_CC="armv5b-softfloat-linux-gcc"
 
