@@ -138,7 +138,7 @@ WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	ghostscript gift-fasttrack gift-gnutella gift-openft groff \
 	iptables ircd-hybrid \
 	joe jove \
-	lame libcurl libdvdread libevent libjpeg libpng lynx \
+	lame libcurl libdvdread libjpeg libpng lynx \
 	m4 make man-pages man mc mt-daapd \
 	nano ncftp \
 	patch portmap \
