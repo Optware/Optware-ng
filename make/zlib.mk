@@ -5,8 +5,8 @@
 #############################################################
 
 ZLIB_SITE=http://aleron.dl.sourceforge.net/sourceforge/libpng
-ZLIB_VERSION:=1.2.1
-ZLIB_LIB_VERSION:=1.2.1
+ZLIB_VERSION:=1.2.2
+ZLIB_LIB_VERSION:=1.2.2
 ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
 ZLIB_UNZIP=bzcat
