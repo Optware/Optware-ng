@@ -161,13 +161,30 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	install -d $(CUPS_IPK_DIR)
 #	install -m 755 $(CUPS_SOURCE_DIR)/rc.cups $(CUPS_IPK_DIR)/opt/etc/init.d/SXXcups
 	cp -rf $(CUPS_BUILD_DIR)/install/* $(CUPS_IPK_DIR)
-	rm -r $(CUPS_IPK_DIR)/etc
+	rm -f $(CUPS_IPK_DIR)/opt/lib/*.a
+	rm -rf $(CUPS_IPK_DIR)/etc
+	rm -rf $(CUPS_IPK_DIR)/opt/share/doc
+	rm -rf $(CUPS_IPK_DIR)/opt/man
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/sbin/*
+	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
+	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
 	install -d $(CUPS_IPK_DIR)/CONTROL
 	install -m 644 $(CUPS_SOURCE_DIR)/control $(CUPS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
 #	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)
+	
+	install -d $(CUPS_IPK_DIR)-doc
+	install -d $(CUPS_IPK_DIR)-doc/opt/share/doc
+	install -d $(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/* $(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/* $(CUPS_IPK_DIR)-doc/opt/share/doc/*
+	install -d $(CUPS_IPK_DIR)-doc/CONTROL
+	install -m 644 $(CUPS_SOURCE_DIR)/control.doc $(CUPS_IPK_DIR)-doc/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc
+
 
 #
 # This is called from the top level makefile to create the IPK file.
