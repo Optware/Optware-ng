@@ -23,7 +23,7 @@
 TARGETS:= slugtool slingbox
 
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
-	   tinyproxy dnsmasq \
+	   tinyproxy dnsmasq openssl openssh \
 	   \
 	   sudo rsync rdate ntpclient \
 	   portmap nfs-server flex inetutils \
@@ -90,11 +90,11 @@ GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
 TARGET_CONFIGURE_OPTS= \
 		AR=$(TARGET_CROSS)ar \
 		AS=$(TARGET_CROSS)as \
-		LD="$(TARGET_CROSS)ld" \
+		LD=$(TARGET_CROSS)ld \
 		NM=$(TARGET_CROSS)nm \
-		CC="$(TARGET_CROSS)gcc" \
-		GCC="$(TARGET_CROSS)gcc" \
-		CXX="$(TARGET_CROSS)g++" \
+		CC=$(TARGET_CROSS)gcc \
+		GCC=$(TARGET_CROSS)gcc \
+		CXX=$(TARGET_CROSS)g++ \
 		RANLIB=$(TARGET_CROSS)ranlib
 
 all: world packages
