@@ -37,12 +37,12 @@ PYTHON_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON_SECTION=misc
 PYTHON_PRIORITY=optional
-PYTHON_DEPENDS=readline, ncurses, openssl
+PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl
 
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=3
+PYTHON_IPK_VERSION=4
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
