@@ -107,7 +107,7 @@ PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
 	atftp \
-	bc bind bitchx \
+	bash bc bind bitchx \
 	cpio cron ctags \
 	diffutils \
 	e2fsprogs \
@@ -130,7 +130,7 @@ WL500G_PACKAGES = \
 	zlib
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	adns appweb automake bash busybox bzip2 ccxstream \
+	adns appweb automake busybox bzip2 ccxstream \
 	classpath coreutils cyrus-sasl \
 	dhcp distcc dnsmasq dropbear \
 	ed expat ffmpeg flac \
@@ -160,7 +160,7 @@ TARGET_OS=linux
 endif
 
 ifeq ($(TARGET),wl500g)
-PACKAGES = $(WL500G_PACKAGES) $(WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION)
+PACKAGES = $(WL500G_PACKAGES)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 endif
@@ -293,6 +293,7 @@ $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 packages: $(PACKAGE_DIR)/Packages
 
 upload:
+ifeq ($(TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 	ssh nudi.nslu2-linux.org mkdir -p /home/unslung/packages/native/
 	rsync -avr --delete packages/ nudi.nslu2-linux.org:/home/unslung/packages/native/
@@ -302,6 +303,10 @@ ifeq ($(HOST_MACHINE),armv5b)
 else
 	rsync -vrlt packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
 	rsync -vrlt packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
+endif
+else
+	rsync -vrlt packages/*.ipk root@wl500g:/tmp/harddisk/ipkg/
+	rsync -vrlt packages/      root@wl500g:/tmp/harddisk/ipkg/
 endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
