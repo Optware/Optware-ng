@@ -50,7 +50,7 @@ $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 		--enable-enduserdebug \
 		--enable-pingstat \
 		--enable-dumpstatus \
-	);
+	)
 	touch $(MIAU_BUILD_DIR)/.configured
 
 miau-unpack: $(MIAU_BUILD_DIR)/.configured
@@ -76,5 +76,5 @@ miau-ipk: $(MIAU_IPK)
 miau-clean:
 	-$(MAKE) -C $(MIAU_BUILD_DIR) clean
 
-miau-dirclean:
+miau-dirclean: miau-clean
 	rm -rf $(MIAU_BUILD_DIR) $(MIAU_IPK_DIR) $(MIAU_IPK)
