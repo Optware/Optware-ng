@@ -34,7 +34,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
 
 PACKAGES_TO_BE_TESTED:= \
 	   dump e2fsprogs gkrellm glib \
-	   grep lsof
+	   grep lsof jove
 
 WGET=wget --passive-ftp
 
