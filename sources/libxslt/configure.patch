@@ -1,0 +1,166 @@
+*** libxslt/configure.orig	Sun Mar 13 17:29:54 2005
+--- libxslt/configure	Sun Mar 13 17:33:33 2005
+***************
+*** 8811,8815 ****
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec="/lib /usr/lib"
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+--- 8811,8815 ----
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec=""
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+***************
+*** 8824,8828 ****
+    fi
+  else
+!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  fi
+  need_lib_prefix=unknown
+--- 8824,8828 ----
+    fi
+  else
+!   sys_lib_search_path_spec=""
+  fi
+  need_lib_prefix=unknown
+***************
+*** 9176,9181 ****
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff}"
+!   sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
+    ;;
+  
+--- 9176,9181 ----
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec=""
+!   sys_lib_search_path_spec=""
+    ;;
+  
+***************
+*** 12481,12485 ****
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec="/lib /usr/lib"
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+--- 12481,12485 ----
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec=""
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+***************
+*** 12494,12498 ****
+    fi
+  else
+!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  fi
+  need_lib_prefix=unknown
+--- 12494,12498 ----
+    fi
+  else
+!   sys_lib_search_path_spec=""
+  fi
+  need_lib_prefix=unknown
+***************
+*** 12846,12851 ****
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff}"
+!   sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
+    ;;
+  
+--- 12846,12851 ----
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec=""
+!   sys_lib_search_path_spec=""
+    ;;
+  
+***************
+*** 15615,15619 ****
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec="/lib /usr/lib"
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+--- 15615,15619 ----
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec=""
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+***************
+*** 15628,15632 ****
+    fi
+  else
+!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  fi
+  need_lib_prefix=unknown
+--- 15628,15632 ----
+    fi
+  else
+!   sys_lib_search_path_spec=""
+  fi
+  need_lib_prefix=unknown
+***************
+*** 15980,15985 ****
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff}"
+!   sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
+    ;;
+  
+--- 15980,15985 ----
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec=""
+!   sys_lib_search_path_spec=""
+    ;;
+  
+***************
+*** 17945,17949 ****
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec="/lib /usr/lib"
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+--- 17945,17949 ----
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec=""
+  if test "$GCC" = yes; then
+    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+***************
+*** 17958,17962 ****
+    fi
+  else
+!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  fi
+  need_lib_prefix=unknown
+--- 17958,17962 ----
+    fi
+  else
+!   sys_lib_search_path_spec=""
+  fi
+  need_lib_prefix=unknown
+***************
+*** 18310,18315 ****
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff}"
+!   sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
+    ;;
+  
+--- 18310,18315 ----
+      ;;
+    esac
+!   sys_lib_dlsearch_path_spec=""
+!   sys_lib_search_path_spec=""
+    ;;
+  
