@@ -29,11 +29,12 @@ $(LIBEVENT_DIR)/.configured: $(LIBEVENT_DIR)/.source
 		--exec-prefix=$(STAGING_DIR)/usr/bin \
 		--libdir=$(STAGING_DIR)/lib \
 		--includedir=$(STAGING_DIR)/include \
+		--host=$(GNU_TARGET_NAME) \
 	);
 	touch $(LIBEVENT_DIR)/.configured;
 
 $(LIBEVENT_DIR)/libevent.a: $(LIBEVENT_DIR)/.configured
-	$(MAKE) -C $(LIBEVENT_DIR) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR)" CC="$(TARGET_CC)"  
+	$(MAKE) -C $(LIBEVENT_DIR) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR)"
 
 $(STAGING_DIR)/lib/libevent.a: $(LIBEVENT_DIR)/libevent.a
 	cp -dpf $(LIBEVENT_DIR)/libevent.a $(STAGING_DIR)/lib/libevent.a
