@@ -17,7 +17,7 @@ endif
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_UNZIP=bzcat
 
-BUSYBOX_IPK_VERSION=5
+BUSYBOX_IPK_VERSION=6
 
 BUSYBOX_CONFIG=$(BUSYBOX_SOURCE_DIR)/defconfig
 
@@ -57,8 +57,9 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/busybox
 	install -d $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(BUSYBOX_IPK_DIR)/opt" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_BUILD_DIR) install
-	# Add potential "stock functionality" breaking links here.
+	# Remove the symlinks for potential "stock functionality" applets.
 	rm $(BUSYBOX_IPK_DIR)/opt/sbin/fdisk
+	rm $(BUSYBOX_IPK_DIR)/opt/sbin/insmod
 	install -d $(BUSYBOX_IPK_DIR)/CONTROL
 	install -m 644 $(BUSYBOX_SOURCE_DIR)/control $(BUSYBOX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)
