@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "perl" and "PERL" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # PERL_VERSION, PERL_SITE and PERL_SOURCE define
 # the upstream location of the source code for the package.
@@ -20,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
-PERL_VERSION=5.8.3
+PERL_VERSION=5.8.6
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
@@ -31,10 +26,14 @@ PERL_UNZIP=zcat
 PERL_IPK_VERSION=1
 
 #
+# PERL_CONFFILES should be a list of user-editable files
+#PERL_CONFFILES=/opt/etc/perl.conf /opt/etc/init.d/SXXperl
+
+#
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PERL_PATCHES=$(PERL_SOURCE_DIR)/configure.patch
+PERL_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 
 #
 # If the compilation of the package requires additional
@@ -87,47 +86,47 @@ perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage # maybe add bdb here at some point
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p1
-# Add that weird config stuff here
-#
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
-	cp -f $(PERL_SOURCE_DIR)/config $(PERL_BUILD_DIR)/Cross
-	cp -f $(PERL_SOURCE_DIR)/config.sh-$(GNU_TARGET_NAME) $(PERL_BUILD_DIR)/Cross
-	$(MAKE) -C $(PERL_BUILD_DIR)/Cross patch
-#	(cd $(PERL_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#	)
+	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
+	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
+	cat $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL | \
+	sed -e 's:/usr/include/errno.h:/opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/include/errno.h:g'\
+	> $(PERL_BUILD_DIR)/ext/Errno/tmp
+	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
+	(cd $(PERL_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
+		./Configure \
+		-Dcc=gcc \
+		-Dprefix=/opt \
+		-de \
+	)
+	cat $(PERL_PATCHES) | patch -d $(PERL_BUILD_DIR) -p0
 	touch $(PERL_BUILD_DIR)/.configured
 
 perl-unpack: $(PERL_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(PERL_BUILD_DIR)/perl: $(PERL_BUILD_DIR)/.configured
-	$(MAKE) -C $(PERL_BUILD_DIR)/Cross perl
+$(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
+	rm -f $(PERL_BUILD_DIR)/.built
+	$(MAKE) -C $(PERL_BUILD_DIR)
+	touch $(PERL_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
-perl: $(PERL_BUILD_DIR)/perl
+perl: $(PERL_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION): $(PERL_BUILD_DIR)/libperl.so.$(PERL_VERSION)
+$(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION): $(PERL_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(PERL_BUILD_DIR)/perl.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
@@ -150,16 +149,19 @@ perl-stage: $(STAGING_DIR)/opt/lib/libperl.so.$(PERL_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PERL_IPK): $(PERL_BUILD_DIR)/perl
-	rm -rf $(PERL_IPK_DIR) $(PERL_IPK)
+$(PERL_IPK): $(PERL_BUILD_DIR)/.built
+	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_armeb.ipk
 	install -d $(PERL_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PERL_BUILD_DIR)/perl -o $(PERL_IPK_DIR)/opt/bin/perl
+	install -d $(PERL_IPK_DIR)/opt/etc/
+	install -m 755 $(PERL_SOURCE_DIR)/perl.conf $(PERL_IPK_DIR)/opt/etc/perl.conf
 	install -d $(PERL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(PERL_SOURCE_DIR)/rc.perl $(PERL_IPK_DIR)/opt/etc/init.d/SXXperl
 	install -d $(PERL_IPK_DIR)/CONTROL
 	install -m 644 $(PERL_SOURCE_DIR)/control $(PERL_IPK_DIR)/CONTROL/control
 	install -m 644 $(PERL_SOURCE_DIR)/postinst $(PERL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(PERL_SOURCE_DIR)/prerm $(PERL_IPK_DIR)/CONTROL/prerm
+	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
 
 #
