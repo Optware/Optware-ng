@@ -112,7 +112,7 @@ libpcap-unpack: $(LIBPCAP_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBPCAP_BUILD_DIR)/libpcap: $(LIBPCAP_BUILD_DIR)/.configured
+$(LIBPCAP_BUILD_DIR)/libpcap.a: $(LIBPCAP_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBPCAP_BUILD_DIR)
 
 #
@@ -142,7 +142,6 @@ libpcap-stage: $(STAGING_DIR)/opt/lib/libpcap.a
 # You may need to patch your application to make it use these locations.
 #
 $(LIBPCAP_IPK): $(LIBPCAP_BUILD_DIR)/libpcap.a
-	@echo "warning: this package is only for staging"
 
 #
 # This is called from the top level makefile to create the IPK file.
