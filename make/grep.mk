@@ -54,4 +54,4 @@ grep-clean:
 	-$(MAKE) -C $(GREP_DIR) clean
 
 grep-dirclean:
-	rm -rf $(BUILD_DIR)/$(GREP_DIR) $(GREP_BUILD_DIR) $(GREP_IPK_DIR) $(GREP_IPK)
+	rm -rf $(GREP_DIR) $(GREP_IPK_DIR) $(GREP_IPK)
