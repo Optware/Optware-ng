@@ -10,7 +10,8 @@
 #   WARNING  WARNING  WARNING  WARNING  WARNING
 #
 #   This version of libusb suffers from some serious
-#   portability issues and does not work. It may appear
+#   portability issues and does not work on big-endian
+#   systems (like the NSLU2). It may appear
 #   to work, but there are issues with structure alignment
 #   and byte ordering. These issues require a non-trivial
 #   amount of effort to fix correctly. Contributions are
@@ -26,11 +27,17 @@ LIBUSB_VERSION:=0.1.8
 LIBUSB_SOURCE=libusb-$(LIBUSB_VERSION).tar.gz
 LIBUSB_DIR=libusb-$(LIBUSB_VERSION)
 LIBUSB_UNZIP=zcat
+LIBUSB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBUSB_DESCRIPTION=Library for interfacing to the USB subsystem.
+LIBUSB_SECTION=libs
+LIBUSB_PRIORITY=optional
+LIBUSB_DEPENDS=
+LIBUSB_CONFLICTS=
 
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUSB_IPK_VERSION=1
+LIBUSB_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -120,6 +127,24 @@ $(STAGING_LIB_DIR)/libusb.la: $(LIBUSB_BUILD_DIR)/libusb.la
 libusb-stage: $(STAGING_LIB_DIR)/libusb.la
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libusb
+#
+$(LIBUSB_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBUSB_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libusb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBUSB_PRIORITY)" >>$@
+	@echo "Section: $(LIBUSB_SECTION)" >>$@
+	@echo "Version: $(LIBUSB_VERSION)-$(LIBUSB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBUSB_MAINTAINER)" >>$@
+	@echo "Source: $(LIBUSB_SITE)/$(LIBUSB_SOURCE)" >>$@
+	@echo "Description: $(LIBUSB_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBUSB_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBUSB_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBUSB_IPK_DIR)/opt/sbin or $(LIBUSB_IPK_DIR)/opt/bin
@@ -141,8 +166,7 @@ $(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la $(STAGING_LIB_DIR)/libusb.la
 	rm -rf $(LIBUSB_IPK_DIR)/opt/include
 	rm -rf $(LIBUSB_IPK_DIR)/opt/bin/libusb-config
 	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusb.{a,la}
-	install -d $(LIBUSB_IPK_DIR)/CONTROL
-	install -m 644 $(LIBUSB_SOURCE_DIR)/control $(LIBUSB_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBUSB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUSB_IPK_DIR)
 
 #
