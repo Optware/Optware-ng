@@ -8,7 +8,8 @@ DHCP_DIR:=$(BUILD_DIR)/dhcp
 
 DHCP_VERSION=3.0.1
 DHCP=dhcp-$(DHCP_VERSION)
-DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
+#DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
+DHCP_SITE=ipkg.nslu2-linux.org/downloads
 DHCP_SOURCE:=$(DHCP).tar.gz
 DHCP_UNZIP=zcat
 DHCP_IPK=$(BUILD_DIR)/dhcp_$(DHCP_VERSION)-1_armeb.ipk
