@@ -158,6 +158,12 @@ $(GIFTFASTTRACK_IPK): $(GIFTFASTTRACK_BUILD_DIR)/.built
 	rm -rf $(GIFTFASTTRACK_IPK_DIR) $(BUILD_DIR)/gift-fasttrack_*_armeb.ipk
 	install -d $(GIFTFASTTRACK_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so -o $(GIFTFASTTRACK_IPK_DIR)/opt/lib/libFastTrack.so
+	install -d $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT
+	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.la $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.la
+	install -d $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack
+	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/FastTrack.conf.template $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/FastTrack.conf.template
+	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/banlist $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/banlist
+	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/nodes $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/nodes
 	install -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
 	install -m 644 $(GIFTFASTTRACK_SOURCE_DIR)/control $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTFASTTRACK_IPK_DIR)
