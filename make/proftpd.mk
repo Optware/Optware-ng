@@ -43,7 +43,7 @@ PROFTPD_DEPENDS=openssl
 
 #
 # PROFTPD_CONFFILES should be a list of user-editable files
-PROFTPD_CONFFILES=/opt/etc/proftpd.conf 
+PROFTPD_CONFFILES=/opt/etc/proftpd.conf /opt/etc/xinetd.d/proftpd
 
 #
 # PROFTPD_PATCHES should list any patches, in the the order in
@@ -212,13 +212,13 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	# Install conf files
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
-	# Install doc file
+	# Install xinetd support
+	install -d $(PROFTPD_IPK_DIR)/opt/etc/xinetd.d
+	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd $(PROFTPD_IPK_DIR)/opt/etc/xinetd.d
+	# Install doc files
 	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 644 $(PROFTPD_SOURCE_DIR)/inetd.conf.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/basic.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/complex-virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
