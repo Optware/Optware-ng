@@ -114,19 +114,16 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 emacs-unpack: $(EMACS_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(EMACS_BUILD_DIR)/src/emacs: $(EMACS_BUILD_DIR)/.configured
+$(EMACS_BUILD_DIR)/.built: $(EMACS_BUILD_DIR)/.configured
 	rm -f $(EMACS_BUILD_DIR)/.built
 	$(MAKE) -C $(EMACS_BUILD_DIR)
 	touch $(EMACS_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
 #
-emacs: $(EMACS_BUILD_DIR)/src/emacs
+emacs: $(EMACS_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
