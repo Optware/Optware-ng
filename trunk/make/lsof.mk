@@ -12,7 +12,7 @@ LSOF_FILE:=lsof_$(LSOF_VERSION).orig
 LSOF_DSC=lsof_$(LSOF_VERSION)-1.dsc
 LSOF_SITE=http://http.us.debian.org/debian/pool/main/l/lsof
 LSOF_SOURCE:=$(LSOF_FILE).tar.gz
-LSOF_IPK:=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-2_armeb.ipk
+LSOF_IPK:=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-3_armeb.ipk
 LSOF_IPK_DIR:=$(BUILD_DIR)/lsof-$(LSOF_VERSION)-ipk
 LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch
 LSOF_UNZIP:=gunzip
@@ -49,6 +49,7 @@ $(LSOF_DIR)/lsof: $(LSOF_DIR)/.configured
 lsof: $(LSOF_DIR)/lsof
 
 $(LSOF_IPK): $(LSOF_DIR)/lsof
+	rm -rf $(LSOF_IPK_DIR) $(BUILD_DIR)/lsof_*_armeb.ipk
 	install -d $(LSOF_IPK_DIR)/CONTROL
 	install -d $(LSOF_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(LSOF_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
