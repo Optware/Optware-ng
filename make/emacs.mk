@@ -23,7 +23,7 @@ EMACS_UNZIP=zcat
 #
 # EMACS_IPK_VERSION should be incremented when the ipk changes.
 #
-EMACS_IPK_VERSION=1
+EMACS_IPK_VERSION=2
 
 #
 # EMACS_CONFFILES should be a list of user-editable files
@@ -86,7 +86,7 @@ emacs-source: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage xaw-stage xmu-stage libjpeg-stage libpng-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
 	$(EMACS_UNZIP) $(DL_DIR)/$(EMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
@@ -99,9 +99,14 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
+		--x-includes=$(STAGING_INCLUDE_DIR) \
+		--x-libraries=$(STAGING_LIB_DIR) \
+		--with-x \
+		--with-x-toolkit=lucid \
 	)
-	cat $(EMACS_PATCHES) | patch -d $(EMACS_BUILD_DIR) -p1
+	#cat $(EMACS_PATCHES) | patch -d $(EMACS_BUILD_DIR) -p1
+	sed -i -e 's%/usr/lib/crt%$(TARGET_LIBDIR)/crt%g' $(EMACS_BUILD_DIR)/src/Makefile
+	sed -i -e 's%`./prefix-args.*`%-Xlinker -z -Xlinker nocombreloc $(LDFLAGS)%' $(EMACS_BUILD_DIR)/src/Makefile
 	touch $(EMACS_BUILD_DIR)/.configured
 
 emacs-unpack: $(EMACS_BUILD_DIR)/.configured
