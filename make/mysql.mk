@@ -15,10 +15,8 @@ MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-1_armeb.ipk
 MYSQL_IPK_DIR:=$(BUILD_DIR)/mysql-$(MYSQL_VERSION)-ipk
 MYSQL_PATCH=$(SOURCE_DIR)/mysql.patch
 
-MY_CFLAGS="-I$(STAGING_DIR)/opt/include/ncurses -I$(STAGING_DIR)/opt/include"
-LDFLAGS:="-L$(STAGING_DIR)/opt/lib"
-TARGET_CXX="armv5b-softfloat-linux-g++"
-TARGET_CC="armv5b-softfloat-linux-gcc"
+MYSQL_CFLAGS="-I$(STAGING_DIR)/opt/include/ncurses -I$(STAGING_DIR)/opt/include"
+MYSQL_LDFLAGS:="-L$(STAGING_DIR)/opt/lib"
 
 $(DL_DIR)/$(MYSQL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MYSQL_SITE)/$(MYSQL_SOURCE)
@@ -51,7 +49,7 @@ $(MYSQL_DIR)/.configured: $(DL_DIR)/$(MYSQL_SOURCE)
 mysql-unpack: $(MYSQL_DIR)/.configured
 
 $(MYSQL_DIR)/mysql: $(MYSQL_DIR)/.configured
-	make -C $(MYSQL_DIR) CXX=$(TARGET_CXX) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) AUTOMAKE="$(SHELL) $(MYSQL_DIR)/missing --run automake" CFLAGS=$(MY_CFLAGS) CPPFLAGS=$(MY_CFLAGS) LDFLAGS=$(LDFLAGS) CXXLDFLAGS=$(LDFLAGS) 
+	make -C $(MYSQL_DIR) CXX=$(TARGET_CXX) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) AUTOMAKE="$(SHELL) $(MYSQL_DIR)/missing --run automake" CFLAGS=$(MYSQL_CFLAGS) CPPFLAGS=$(MYSQL_CFLAGS) LDFLAGS=$(MYSQSL_LDFLAGS) CXXLDFLAGS=$(MYSQL_LDFLAGS) 
 
 mysql: $(MYSQL_DIR)/mysql
 
