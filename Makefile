@@ -34,6 +34,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc miau mtr \
 	nano ncurses ntp ntpclient \
+	openssl openssh \
 	patch portmap procps puppy \
 	rsync \
 	screen strace sudo \
@@ -54,7 +55,6 @@ CROSS_ONLY_PACKAGES = \
 	libbt libogg libvorbis libpcap logrotate \
 	mdadm mt-daapd \
 	nail nfs-server nfs-utils \
-	openssl openssh \
 	popt proftpd \
 	rdate \
 	stunnel svn \
