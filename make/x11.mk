@@ -20,7 +20,7 @@ X11_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 X11_DESCRIPTION=X protocol library
 X11_SECTION=lib
 X11_PRIORITY=optional
-X11_DEPENDS=xau
+X11_DEPENDS=xau, xdmcp
 
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
@@ -35,7 +35,7 @@ X11_CONFFILES=
 # X11_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-X11_PATCHES=$(X11_SOURCE_DIR)/localedir.patch
+X11_PATCHES=$(X11_SOURCE_DIR)/localedir.patch $(X11_SOURCE_DIR)/find-keysymdef.patch
 
 #
 # If the compilation of the package requires additional
