@@ -82,7 +82,7 @@ $(DL_DIR)/$(<FOO>_SOURCE):
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
-$(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE_ARCHIVE) $(<FOO>_PATCHES)
+$(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
 	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(<FOO>_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
