@@ -28,11 +28,11 @@ CUPS_UNZIP=zcat
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
-CUPS_CONFFILES=/opt/etc/cups.conf /opt/etc/init.d/SXXcups
+CUPS_CONFFILES=/opt/etc/cups.conf
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
@@ -122,6 +122,10 @@ $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $(CUPS_BUILD_DIR)/.built
 	$(MAKE) -C $(CUPS_BUILD_DIR) LDFLAGS="$(STAGING_LDFLAGS) -L../cups -L../filter $(RC_CFLAGS) -L/home/edmondsc/unslung/staging/opt/lib -Wl,-rpath,$(STAGING_DIR)/opt/lib -Wl,-rpath,/opt/lib $(OPTIM)"
 	$(MAKE) install -C $(CUPS_BUILD_DIR) BUILDROOT=$(CUPS_BUILD_DIR)/install/ INSTALL_BIN="install -m 755"
+	# Remove cat files from man page areas
+	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/cat?
+	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/es/cat?
+	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/fr/cat?
 	touch $(CUPS_BUILD_DIR)/.built
 
 #
@@ -163,23 +167,75 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	cp -rf $(CUPS_BUILD_DIR)/install/* $(CUPS_IPK_DIR)
 	rm -f $(CUPS_IPK_DIR)/opt/lib/*.a
 	rm -rf $(CUPS_IPK_DIR)/etc
-	rm -rf $(CUPS_IPK_DIR)/opt/share/doc
+	rm -rf $(CUPS_IPK_DIR)/opt/share/doc/cups
 	rm -rf $(CUPS_IPK_DIR)/opt/man
+	# Create binary directories
+	install -d $(CUPS_IPK_DIR)/opt/sbin
+	install -d $(CUPS_IPK_DIR)/opt/bin
+	install -d $(CUPS_IPK_DIR)/opt/doc/cups
+	install -d $(CUPS_IPK_DIR)/opt/lib/modules
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/sbin/*
 	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
 	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
+	# Copy the configuration file
+	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)/opt/etc/cups
+	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)/opt/etc/cups
+	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)/opt/etc/cups
+        # Copy the init.d startup file
+	cp $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)/opt/doc/cups
+	# Install printer module
+	cp $(CUPS_SOURCE_DIR)/printer.o $(CUPS_IPK_DIR)/opt/lib/modules
 	install -d $(CUPS_IPK_DIR)/CONTROL
 	install -m 644 $(CUPS_SOURCE_DIR)/control $(CUPS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
+	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
 #	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)
+	# German
+	install -d $(CUPS_IPK_DIR)-doc-de
+	install -d $(CUPS_IPK_DIR)-doc-de/opt/share/doc/cups/de
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/de $(CUPS_IPK_DIR)-doc-de/opt/share/doc/cups
+	install -d $(CUPS_IPK_DIR)-doc-de/CONTROL
+	install -m 644 $(CUPS_SOURCE_DIR)/control.doc-de $(CUPS_IPK_DIR)-doc-de/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-de
+	# Belarusian
+	install -d $(CUPS_IPK_DIR)-doc-be
+	install -d $(CUPS_IPK_DIR)-doc-be/opt/share/doc/cups/be
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/be $(CUPS_IPK_DIR)-doc-be/opt/share/doc/cups
+	install -d $(CUPS_IPK_DIR)-doc-be/CONTROL
+	install -m 644 $(CUPS_SOURCE_DIR)/control.doc-be $(CUPS_IPK_DIR)-doc-be/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-be
+	# French
+	install -d $(CUPS_IPK_DIR)-doc-fr
+	install -d $(CUPS_IPK_DIR)-doc-fr/opt/share/doc/cups/fr
+	install -d $(CUPS_IPK_DIR)-doc-fr/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/fr $(CUPS_IPK_DIR)-doc-fr/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/fr $(CUPS_IPK_DIR)-doc-fr/opt/share/doc/cups
+	install -d $(CUPS_IPK_DIR)-doc-fr/CONTROL
+	install -m 644 $(CUPS_SOURCE_DIR)/control.doc-fr $(CUPS_IPK_DIR)-doc-fr/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-fr
+	# Spanish
+	install -d $(CUPS_IPK_DIR)-doc-es
+	install -d $(CUPS_IPK_DIR)-doc-es/opt/share/doc/cups/es
+	install -d $(CUPS_IPK_DIR)-doc-es/opt/man/es
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/es $(CUPS_IPK_DIR)-doc-es/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/es $(CUPS_IPK_DIR)-doc-es/opt/share/doc/cups
+	install -d $(CUPS_IPK_DIR)-doc-es/CONTROL
+	install -m 644 $(CUPS_SOURCE_DIR)/control.doc-es $(CUPS_IPK_DIR)-doc-es/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-es
+	# English
 	install -d $(CUPS_IPK_DIR)-doc
-	install -d $(CUPS_IPK_DIR)-doc/opt/share/doc
+	install -d $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
 	install -d $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/* $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/* $(CUPS_IPK_DIR)-doc/opt/share/doc/*
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man1 $(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man5 $(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man8 $(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.css $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.html $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.pdf $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.txt $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/images $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
 	install -d $(CUPS_IPK_DIR)-doc/CONTROL
 	install -m 644 $(CUPS_SOURCE_DIR)/control.doc $(CUPS_IPK_DIR)-doc/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc
