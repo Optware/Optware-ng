@@ -28,7 +28,7 @@ LIBTOOL_UNZIP=zcat
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=1
+LIBTOOL_IPK_VERSION=2
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
