@@ -25,6 +25,12 @@ PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
 
+ifeq ($(HOST_MACHINE),armv5b)
+	PCRE_LIBTOOL_TAG=""
+else
+	PCRE_LIBTOOL_TAG="--tag=CXX"
+endif
+
 #
 # PCRE_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -118,7 +124,7 @@ pcre-unpack: $(PCRE_BUILD_DIR)/.configured
 #
 $(PCRE_BUILD_DIR)/.built: $(PCRE_BUILD_DIR)/.configured
 	rm -f $(PCRE_BUILD_DIR)/.built
-	$(MAKE) -C $(PCRE_BUILD_DIR) LIBTOOL_TAG="--tag=CXX"
+	$(MAKE) -C $(PCRE_BUILD_DIR) LIBTOOL_TAG=$(PCRE_LIBTOOL_TAG)
 	touch $(PCRE_BUILD_DIR)/.built
 
 #
