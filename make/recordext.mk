@@ -12,7 +12,7 @@
 #
 RECORDEXT_SITE=http://freedesktop.org/
 RECORDEXT_SOURCE=# none - available from CVS only
-RECORDEXT_VERSION=0.0cvs20050130
+RECORDEXT_VERSION=1.13+cvs20050130
 RECORDEXT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 RECORDEXT_DIR=RecordExt
 RECORDEXT_CVS_OPTS=-D20050130
