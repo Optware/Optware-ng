@@ -148,7 +148,7 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
-	rm -rf $(COREUTILS_IPK_DIR) $(COREUTILS_IPK)
+	rm -rf $(COREUTILS_IPK_DIR) $(BUILD_DIR)/coreutils_*_armeb.ipk
 	install -d $(COREUTILS_IPK_DIR)/opt/bin
 
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec
