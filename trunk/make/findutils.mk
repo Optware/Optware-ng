@@ -4,16 +4,36 @@
 #
 ###########################################################
 
+FINDUTILS_NAME=findutils
+FINDUTILS_DOC_NAME=findutils-doc
 FINDUTILS_SITE=http://ftp.gnu.org/pub/gnu/findutils
 FINDUTILS_VERSION=4.1.20
-FINDUTILS_SOURCE=findutils-$(FINDUTILS_VERSION).tar.gz
-FINDUTILS_DIR=findutils-$(FINDUTILS_VERSION)
+FINDUTILS_SOURCE=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION).tar.gz
+FINDUTILS_DIR=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION)
 FINDUTILS_UNZIP=zcat
 
 #
 # FINDUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-FINDUTILS_IPK_VERSION=2
+FINDUTILS_IPK_VERSION=3
+
+#
+# Control file info
+#
+FINDUTILS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+FINDUTILS_DESCRIPTION=File finding utilities
+FINDUTILS_SECTION=utilities
+FINDUTILS_PRIORITY=optional
+FINDUTILS_CONFLICTS=busybox
+FINDUTILS_DEPENDS=
+
+FINDUTILS_DOC_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+FINDUTILS_DOC_DESCRIPTION=Documentation for file finding utilities
+FINDUTILS_DOC_SECTION=documentation
+FINDUTILS_DOC_PRIORITY=optional
+FINDUTILS_DOC_CONFLICTS=
+FINDUTILS_DOC_DEPENDS=
+
 
 #
 # FINDUTILS_PATCHES should list any patches, in the the order in
@@ -42,6 +62,41 @@ FINDUTILS_IPK_DIR=$(BUILD_DIR)/findutils-$(FINDUTILS_VERSION)-ipk
 FINDUTILS_IPK=$(BUILD_DIR)/findutils_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 FINDUTILS_DOC_IPK_DIR=$(BUILD_DIR)/findutils-doc-$(FINDUTILS_VERSION)-ipk
 FINDUTILS_DOC_IPK=$(BUILD_DIR)/findutils-doc_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+
+#
+# Automatically create a ipkg control file
+#
+$(FINDUTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(FINDUTILS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: $(FINDUTILS_NAME)" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FINDUTILS_PRIORITY)" >>$@
+	@echo "Section: $(FINDUTILS_SECTION)" >>$@
+	@echo "Version: $(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FINDUTILS_MAINTAINER)" >>$@
+	@echo "Source: $(FINDUTILS_SITE)/$(FINDUTILS_SOURCE)" >>$@
+	@echo "Description: $(FINDUTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(FINDUTILS_DEPENDS)" >>$@
+	@echo "Conflicts: $(FINDUTILS_CONFLICTS)" >>$@
+
+#
+# Automatically create a ipkg control file
+#
+$(FINDUTILS_DOC_IPK_DIR)/CONTROL/control:
+	@install -d $(FINDUTILS_DOC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: $(FINDUTILS_DOC_NAME)" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FINDUTILS_DOC_PRIORITY)" >>$@
+	@echo "Section: $(FINDUTILS_DOC_SECTION)" >>$@
+	@echo "Version: $(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FINDUTILS_DOC_MAINTAINER)" >>$@
+	@echo "Source: $(FINDUTILS_SITE)/$(FINDUTILS_SOURCE)" >>$@
+	@echo "Description: $(FINDUTILS_DOC_DESCRIPTION)" >>$@
+	@echo "Depends: $(FINDUTILS_DOC_DEPENDS)" >>$@
+	@echo "Conflicts: $(FINDUTILS_DOC_CONFLICTS)" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -127,16 +182,17 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	install -d $(FINDUTILS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/find
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/xargs
-	install -d $(FINDUTILS_IPK_DIR)/CONTROL
-	install -m 644 $(FINDUTILS_SOURCE_DIR)/control $(FINDUTILS_IPK_DIR)/CONTROL/control
+	install -d $(FINDUTILS_IPK_DIR)/opt/man/man1
+	install -m 644 $(FINDUTILS_BUILD_DIR)/find/find.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
+	install -m 644 $(FINDUTILS_BUILD_DIR)/xargs/xargs.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
+	make  $(FINDUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(BUILD_DIR)/findutils-doc_*_$(TARGET_ARCH).ipk
 	install -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	install -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
-	install -d $(FINDUTILS_DOC_IPK_DIR)/CONTROL
-	install -m 644 $(FINDUTILS_SOURCE_DIR)/control-doc $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control
+	make  $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_DOC_IPK_DIR)
 
 #
