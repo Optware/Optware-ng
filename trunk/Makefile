@@ -83,7 +83,7 @@ PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
-unslung: $(TARGETS)
+unslung: directories $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
 
 $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
