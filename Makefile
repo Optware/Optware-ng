@@ -42,9 +42,10 @@ CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt muxsshssl \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl openvpn \
-	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy python \
+	pango parted patch pcre php pkgconfig popt portmap postgresql \
+	procps proftpd puppy python \
 	rdate recordext renderext rsync \
-	screen sed sm snownews strace stunnel sudo svn syslog-ng \
+	screen sed ser sm snownews strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte \
@@ -58,7 +59,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	ser postgresql
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
