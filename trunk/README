@@ -211,8 +211,7 @@ First public release
 
 1.12:
 
-Added a symlink to
-slingbox for gzip.  Added flashfs (as simple utility for preserving
+Added a symlink to slingbox for gzip.  Added flashfs (as simple utility for preserving
 user files across hard disk formats during beta testing).
 
 1.13:
