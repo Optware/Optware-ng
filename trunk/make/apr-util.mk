@@ -21,7 +21,7 @@ APR_UTIL_MAINTAINER=nslu2-linux@yahoogroups.com
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat
+APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
@@ -41,7 +41,7 @@ APR_UTIL_LOCALES=
 # APR_UTIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APR_UTIL_PATCHES=$(APR_UTIL_SOURCE_DIR)/hostcc.patch
+APR_UTIL_PATCHES=$(APR_UTIL_SOURCE_DIR)/hostcc.patch $(APR_UTIL_SOURCE_DIR)/dbm-detect.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,12 +113,14 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
 		$(STAGING_DIR)/opt/bin/apr-config \
 		$(APR_UTIL_PATCHES)
 	$(MAKE) gdbm-stage
+	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
 	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
 	cat $(APR_UTIL_PATCHES) |patch -p0 -d$(APR_UTIL_BUILD_DIR)
 	(cd $(APR_UTIL_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_UTIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APR_UTIL_LDFLAGS)" \
