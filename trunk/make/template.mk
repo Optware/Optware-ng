@@ -155,8 +155,8 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	install -m 755 $(<FOO>_SOURCE_DIR)/rc.<foo> $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
 	install -d $(<FOO>_IPK_DIR)/CONTROL
 	install -m 644 $(<FOO>_SOURCE_DIR)/control $(<FOO>_IPK_DIR)/CONTROL/control
-	install -m 644 $(<FOO>_SOURCE_DIR)/postinst $(<FOO>_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(<FOO>_SOURCE_DIR)/postinst $(<FOO>_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
 	echo $(<FOO>_CONFFILES) | sed -e 's/ /\n/g' > $(<FOO>_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(<FOO>_IPK_DIR)
 
