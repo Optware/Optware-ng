@@ -65,7 +65,10 @@ INSTALLATION DETAILS
 4) Run /sbin/unsling and watch the ramdisk files be copied to your disk.
    The files from the ramdisk will be copied to the "conf" partition,
    not the "data" partition.
-5) Reboot.
+5) Note that unsling will not change the password on your disk, so if
+   you had previously changed the password on a disk, then your password
+   will not be changed.
+6) Reboot.
 
 Congratulations, you're now UNSLUNG!  You should have an extra 10M of free
 memory to use for other things.
