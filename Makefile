@@ -30,7 +30,8 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
 	   ncurses ircd-hybrid procps \
 	   tcpwrappers libevent vdr-mediamvp \
-	   wget bzip2 dhcp nano nethack ccxstream
+	   wget bzip2 dhcp nano nethack ccxstream \
+	   mdadm
 
 PACKAGES_TO_BE_TESTED:=
 
