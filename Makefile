@@ -48,22 +48,22 @@ CROSS_PACKAGES = \
 	x11 xau xauth xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xproto xrender xt xtrans xtst xvid \
 	zlib \
-	\
 	crosstool-native
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = ghostscript \
 
-# transcode: zcat: .../unslung/downloads/transcode-1.0.0beta2.tar.gz: not in gzip format
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
+# cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # lynx's makefile runs executables it has built.
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
+# perl modules depend on perl
 # squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
 NATIVE_PACKAGES = \
@@ -83,8 +83,6 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# cyrus-imapd fails when compiling the perl stuff - fixed
-# perl-dbi's sources cannot be be downloaded (404 not found) -fixed
 PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius
 
 
