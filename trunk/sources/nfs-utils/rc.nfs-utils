@@ -19,6 +19,9 @@ fi
 /bin/rm -f /etc/exports
 /bin/ln -s /opt/etc/exports /etc/exports
 
+touch /var/lib/nfs/etab
+touch /var/lib/nfs/rmtab
+
 /opt/sbin/statd
 /opt/sbin/exportfs -a
 /opt/sbin/nfsd
