@@ -92,7 +92,7 @@ ser-source: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SER_BUILD_DIR)/.configured: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) flex-stage
 	rm -rf $(BUILD_DIR)/$(SER_DIR) $(SER_BUILD_DIR)
 	$(SER_UNZIP) $(DL_DIR)/$(SER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SER_PATCHES) | patch -d $(BUILD_DIR)/$(SER_DIR) -p1
