@@ -26,7 +26,7 @@ CROSS_PACKAGES = \
 	ccxstream classpath coreutils cpio ctorrent cups cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
 	e2fsprogs ed elinks expat \
-	fetchmail ffmpeg file findutils fixesext fontconfig flex freetype \
+	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules gdb gdbm gettext \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
@@ -41,7 +41,7 @@ CROSS_PACKAGES = \
 	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
 	rdate recordext renderext rsync \
 	screen sed sm strace stunnel sudo svn \
-	tar tcpwrappers termcap torrent ttf-bitstream-vera \
+	tar tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd vte \
 	wakelan wget-ssl which \
