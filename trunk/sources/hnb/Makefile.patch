@@ -1,0 +1,28 @@
+--- hnb-1.9.17-orig/Makefile	2003-03-09 18:22:23.000000000 -0800
++++ hnb/Makefile	2005-04-05 16:06:12.000000000 -0700
+@@ -1,9 +1,10 @@
++DESTDIR=/usr/local
+ 
+ src/hnb: src/*.c src/*.h src/*.inc src/hnbrc.inc
+ 	(cd src;make)
+ install: src/hnb
+-	install -D src/hnb /usr/local/bin/hnb
+-	install -D -m444 doc/hnb.1 /usr/local/man/man1/hnb.1
++	install -D src/hnb $(DESTDIR)/bin/hnb
++	install -D -m444 doc/hnb.1 $(DESTDIR)/man/man1/hnb.1
+ clean:
+ 	(cd src;make clean)
+ 	(cd util;make clean)
+--- hnb-1.9.17-orig/src/Makefile	2003-03-12 17:09:46.000000000 -0800
++++ hnb/src/Makefile	2005-04-05 16:12:24.000000000 -0700
+@@ -8,8 +8,8 @@
+ 	$(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $<
+ 
+ hnb: libcli/libcli.a Makefile $(OBJS) init_subsystems.c *.h *.inc
+-	$(CC) -o hnb $(OBJS) $(LIBS) $(CFLAGS)
+-#	strip hnb
++	$(CC) -o hnb $(OBJS) $(LDFLAGS) $(LIBS) $(CFLAGS)
++	$(STRIP) hnb
+ libcli/libcli.a: libcli/*.c
+ 	(cd libcli;make libcli.a)
+ libcli/libcli_p.a: libcli/*.c
