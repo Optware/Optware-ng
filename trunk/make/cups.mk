@@ -138,13 +138,20 @@ cups: $(CUPS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION): $(CUPS_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(CUPS_BUILD_DIR)/cups/cups.h $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/include/cups
+	install -d $(STAGING_DIR)/opt/include/filter
+	install -m 644 $(CUPS_BUILD_DIR)/cups/*.h $(STAGING_DIR)/opt/include/cups
+	install -m 644 $(CUPS_BUILD_DIR)/filter/*.h $(STAGING_DIR)/opt/include/cups
 	install -d $(STAGING_DIR)/opt/lib
+	install -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config $(STAGING_DIR)/opt/bin
+	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a $(STAGING_DIR)/opt/lib
 	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_DIR)/opt/lib
+	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.so.2 $(STAGING_DIR)/opt/lib
 	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.so.2 $(STAGING_DIR)/opt/lib
+	cd $(STAGING_DIR)/opt/lib && ln -fs libcupsimage.so.2 libcupsimage.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so
+	cd $(STAGING_DIR)/opt/lib && ln -fs libcupsimage.so.2 libcupsimage.so
 
 cups-stage: $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION)
 
