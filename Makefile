@@ -65,7 +65,8 @@ CROSS_ONLY_PACKAGES = \
 	pkgconfig \
 
 # Add new cross-only packages here, and state why they don't compile native.
-CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
+# proftpd e2fsprogs parted: May compile native - have no environment for it yet
+CROSS_ONLY_PACKAGES_READY_FOR_TESTING = proftpd e2fsprogs parted \
 
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -105,7 +106,7 @@ UNSORTED_PACKAGES = \
 
 DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = proftpd nethack scponly tcpdump e2fsprogs dump gkrellm	clamav 
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm	clamav 
 
 CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES) $(DEVELOPER_PACKAGES)
 
