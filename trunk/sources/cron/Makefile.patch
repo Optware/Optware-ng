@@ -1,5 +1,5 @@
-*** cron/Makefile.orig	Sat Feb 12 15:51:14 2005
---- cron/Makefile	Sat Feb 12 15:57:06 2005
+*** cron/Makefile.orig	Sun Feb 13 17:52:16 2005
+--- cron/Makefile	Sun Feb 13 17:52:33 2005
 ***************
 *** 52,59 ****
   #################################### begin configurable stuff
@@ -20,15 +20,19 @@
   #<<need bitstring.h>>
   INCLUDE		=	-I.
 ***************
-*** 67,71 ****
+*** 67,73 ****
   LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
   #<<want to use a nonstandard CC?>>
 ! CC		=	gcc -Wall -Wno-unused -Wno-comment
   #<<manifest defines>>
-  DEFS		=
---- 67,71 ----
+! DEFS		=
+  #(SGI IRIX systems need this)
+  #DEFS		=	-D_BSD_SIGNALS -Dconst=
+--- 67,73 ----
   LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
   #<<want to use a nonstandard CC?>>
 ! CC		=	$(TARGET_CC) -Wall -Wno-unused -Wno-comment
   #<<manifest defines>>
-  DEFS		=
+! DEFS		= -D_PATH_VARRUN=\"/var/run\" -D_PATH_VI=\"/bin/vi\" -DCRONDIR=\"/opt/var/cron\"
+  #(SGI IRIX systems need this)
+  #DEFS		=	-D_BSD_SIGNALS -Dconst=
