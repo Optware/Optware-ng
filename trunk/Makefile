@@ -29,8 +29,8 @@ NATIVE_AND_CROSS_PACKAGES = \
 	gdbm grep \
 	inetutils iptables \
 	jove \
-	libdb libevent libid3tag libjpeg libpng libtool lsof \
-	m4 make miau \
+	less libdb libevent libid3tag libjpeg libpng libtool lsof \
+	m4 make miau mdadm \
 	nano ntp ntpclient \
 	patch portmap procps puppy \
 	rsync \
@@ -48,8 +48,8 @@ CROSS_ONLY_PACKAGES = \
 	flex freeradius \
 	gawk \
 	imagemagick ircd-hybrid \
-	less libbt libcurl libpcap libtiff logrotate \
-	mc mdadm mt-daapd \
+	libbt libcurl libpcap libtiff logrotate \
+	mc mt-daapd \
 	nail ncurses nfs-server nfs-utils \
 	openssl openssh \
 	popt \
@@ -60,12 +60,12 @@ CROSS_ONLY_PACKAGES = \
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
-PACKAGES_TO_BE_TESTED =
+PACKAGES_TO_BE_TESTED = file
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = perl file nethack scponly tcpdump nload nmap bison
+PACKAGES_THAT_NEED_TO_BE_FIXED = perl nethack scponly tcpdump nload nmap bison
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
