@@ -100,9 +100,17 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
-		--disable-static \
 		--prefix=/opt \
-		--docDir=/opt/doc/appweb \
+		--docDir=/opt/var/appWeb/doc \
+		--incDir=/opt/include \
+		--libDir=/opt/lib \
+		--sbinDir=/opt/sbin \
+		--srcDir=/opt/src \
+		--webDir=/opt/var/appWeb/web \
+		--buildNumber=$(APPWEB_IPK_VERSION) \
+		--port=7777 --sslPort=4443 \
+		--disable-static \
+		--with-admin=loadable \
 		--with-ssl=loadable --with-openssl=loadable \
 		--with-openssl-dir=../../staging/opt \
 	)
@@ -137,13 +145,14 @@ appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
 #
 $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_armeb.ipk
-#	$(MAKE) DESTDIR=$(APPWEB_IPK_DIR) SKIP_PERMS=1 -C $(APPWEB_BUILD_DIR) install
 	# Copy file package ./http/package/LINUX/http.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient
 	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/httpPassword -o $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
 	install -d $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libappWeb.so.1.0.0 $(APPWEB_IPK_DIR)/opt/lib
+	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1.0.0 libappWeb.so.1 )
+	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1 libappWeb.so )
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libminiStdc++.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libadminModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libauthModule.so $(APPWEB_IPK_DIR)/opt/lib
@@ -167,10 +176,12 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/mime.types $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.crt $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.key.pem $(APPWEB_IPK_DIR)/opt/var/appWeb
-	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
+	install -d $(APPWEB_IPK_DIR)/opt/doc/appweb
+	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/doc/appweb/appWeb.conf
 	install -d $(APPWEB_IPK_DIR)/CONTROL
 	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
 	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(APPWEB_SOURCE_DIR)/prerm $(APPWEB_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APPWEB_IPK_DIR)
 
 #
