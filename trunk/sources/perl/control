@@ -1,6 +1,6 @@
 Package: perl
 Priority: optional
-Version: 5.8.6-1
+Version: 5.8.6-2
 Architecture: armeb
 Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: interpreters

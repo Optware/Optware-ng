@@ -23,7 +23,7 @@ PERL_UNZIP=zcat
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=1
+PERL_IPK_VERSION=2
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -141,6 +141,8 @@ $(PERL_IPK): $(PERL_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
 	rm -f $(PERL_IPK_DIR)/opt/bin/perl
 	ln -s /opt/bin/perl$(PERL_VERSION) $(PERL_IPK_DIR)/opt/bin/perl
+	install -d $(PERL_IPK_DIR)/usr/bin
+	ln -s /opt/bin/perl $(PERL_IPK_DIR)/usr/bin/perl
 	install -d $(PERL_IPK_DIR)/CONTROL
 	install -m 644 $(PERL_SOURCE_DIR)/control $(PERL_IPK_DIR)/CONTROL/control
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
