@@ -52,7 +52,8 @@ FTPD-TOPFIELD_IPK_VERSION=2
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/Makefile.patch
+FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/Makefile.patch \
+	$(FTPD-TOPFIELD_SOURCE_DIR)/turbo.patch $(FTPD-TOPFIELD_SOURCE_DIR)/listing.patch
 
 #
 # If the compilation of the package requires additional
