@@ -15,9 +15,9 @@ GKRELLM_UNZIP=zcat
 GKRELLM_IPK=$(BUILD_DIR)/gkrellm_$(GKRELLM_VERSION)-1_armeb.ipk
 GKRELLM_IPK_DIR=$(BUILD_DIR)/gkrellm-$(GKRELLM_VERSION)-ipk
 
-SYSLIBS="-I $(STAGING_DIR)/include/glib-2.0 \
-	-I $(STAGING_DIR)/include/gmodule-2.0 \
-	-L $(STAGING_DIR)/lib/ \
+SYSLIBS="-I $(STAGING_INCLUDE_DIR)/glib-2.0 \
+	-I $(STAGING_INCLUDE_DIR)/gmodule-2.0 \
+	-L $(STAGING_LIB_DIR) \
 	-lz \
 	-lgmodule-2.0 \
 	-lglib-2.0 \
@@ -37,6 +37,7 @@ $(GKRELLM_DIR)/.source: $(DL_DIR)/$(GKRELLM_SOURCE)
 	touch $(GKRELLM_DIR)/.source
 
 $(GKRELLM_DIR)/.configured: $(GKRELLM_DIR)/.source
+	$(MAKE) glib-stage
 	touch $(GKRELLM_DIR)/.configured
 
 $(GKRELLM_IPK_DIR): $(GKRELLM_DIR)/.configured
@@ -68,3 +69,5 @@ gkrellm-distclean:
 	-rm $(GKRELLM_DIR)/.configured
 	-$(MAKE) -C $(GKRELLM_DIR) distclean
 
+gkrellm-dirclean:
+	rm -rf $(GKRELLM_DIR) $(GKRELLM_IPK_DIR) $(GKRELLM_IPK)
