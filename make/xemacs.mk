@@ -19,11 +19,16 @@ XEMACS_VERSION=21.4.17
 XEMACS_SOURCE=xemacs-$(XEMACS_VERSION).tar.bz2
 XEMACS_DIR=xemacs-$(XEMACS_VERSION)
 XEMACS_UNZIP=bzcat
-
+XEMACS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+XEMACS_DESCRIPTION=XEmacs text editor
+XEMACS_SECTION=editors
+XEMACS_PRIORITY=optional
+XEMACS_DEPENDS=
+XEMACS_CONFLICTS=
 #
 # XEMACS_IPK_VERSION should be incremented when the ipk changes.
 #
-XEMACS_IPK_VERSION=1
+XEMACS_IPK_VERSION=2
 
 #
 # XEMACS_CONFFILES should be a list of user-editable files
@@ -116,6 +121,25 @@ $(XEMACS_BUILD_DIR)/.built: $(XEMACS_BUILD_DIR)/.configured
 xemacs: $(XEMACS_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/xemacs
+# 
+$(XEMACS_IPK_DIR)/CONTROL/control:
+	@install -d $(XEMACS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xemacs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(XEMACS_PRIORITY)" >>$@
+	@echo "Section: $(XEMACS_SECTION)" >>$@
+	@echo "Version: $(XEMACS_VERSION)-$(XEMACS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XEMACS_MAINTAINER)" >>$@
+	@echo "Source: $(XEMACS_SITE)/$(XEMACS_SOURCE)" >>$@
+	@echo "Description: $(XEMACS_DESCRIPTION)" >>$@
+	@echo "Depends: $(XEMACS_DEPENDS)" >>$@
+	@echo "Conflicts: $(XEMACS_CONFLICTS)" >>$@
+
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(XEMACS_IPK_DIR)/opt/sbin or $(XEMACS_IPK_DIR)/opt/bin
@@ -133,7 +157,7 @@ $(XEMACS_IPK): $(XEMACS_BUILD_DIR)/.built
 	$(MAKE) -C $(XEMACS_BUILD_DIR) prefix=$(XEMACS_IPK_DIR)/opt install
 	rm -f $(XEMACS_IPK_DIR)/opt/bin/xemacs
 	ln -s /opt/bin/xemacs-$(XEMACS_VERSION) $(XEMACS_IPK_DIR)/opt/bin/xemacs
-	install -d $(XEMACS_IPK_DIR)/CONTROL
+	$(MAKE) $(XEMACS_IPK_DIR)/CONTROL/control
 	install -m 644 $(XEMACS_SOURCE_DIR)/control $(XEMACS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(XEMACS_SOURCE_DIR)/postinst $(XEMACS_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(XEMACS_SOURCE_DIR)/prerm $(XEMACS_IPK_DIR)/CONTROL/prerm
