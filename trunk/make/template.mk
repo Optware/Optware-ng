@@ -130,12 +130,15 @@ $(STAGING_DIR)/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>.so.
 
 #
 # This builds the IPK file.
+#
 # Binaries should be installed into $(<FOO>_IPK_DIR)/opt/sbin or $(<FOO>_IPK_DIR)/opt/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
 # Libraries and include files should be installed into $(<FOO>_IPK_DIR)/opt/{lib,include}
 # Configuration files should be installed in $(<FOO>_IPK_DIR)/opt/etc/<foo>/...
 # Documentation files should be installed in $(<FOO>_IPK_DIR)/opt/doc/<foo>/...
 # Daemon startup scripts should be installed in $(<FOO>_IPK_DIR)/opt/etc/init.d/S??<foo>
+#
+# You may need to patch your application to make it use these locations.
 #
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
 	install -d $(<FOO>_IPK_DIR)/opt/bin
