@@ -1,0 +1,13 @@
+* To use CUPS with Linksys Samba (version 2.x), copy /opt/doc/cups/rc.samba
+  to /unslung.
+* To enable lpd support, for printing from non-samba clients:
+  - If using xinetd, copy /opt/doc/cups/cups-lpd to /opt/etc/xinetd.d
+  - If using standard Linksys inetd, copy /opt/doc/cups/rc.xinetd.linksys
+    to /unslung/rc.xinetd or merge with existing file.
+  - If using inetutils inetd, do:
+    echo "printer stream tcp nowait lp /opt/lib/cups/daemon/cups-lpd cups-lpd" >> /opt/etc/inetd.conf"
+  - If wanting to run lpd as standalone server (not recommended), copy
+    /opt/doc/cups/S79lpd to /opt/etc/init.d
+(This text can be found in /opt/doc/cups/cups-install.doc)
+[EOF]
+
