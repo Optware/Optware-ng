@@ -108,6 +108,7 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 		--with-logdir=/var/spool/radius/log \
 		--with-radacctdir=/var/spool/radius/radacct \
 		--with-raddbdir=/opt/etc/raddb \
+		--without-rlm-ippool \
 	)
 	touch $(FREERADIUS_BUILD_DIR)/.configured
 
