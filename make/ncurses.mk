@@ -79,14 +79,14 @@ $(NCURSES_IPK): $(STAGING_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	cp -dpf $(STAGING_DIR)/lib/libpanel.a $(NCURSES_IPK_DIR)/opt/lib
 	cp -dpf $(STAGING_DIR)/lib/libpanel_g.a $(NCURSES_IPK_DIR)/opt/lib
 	cp -dpf $(STAGING_DIR)/lib/libpanel.so* $(NCURSES_IPK_DIR)/opt/lib
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/form.so*
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/menu.so*
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/ncurses.so*
-	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/panel.so*
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/form.so.$(NCURSES_SHLIBVERSION)
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/menu.so.$(NCURSES_SHLIBVERSION)
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/ncurses.so.$(NCURSES_SHLIBVERSION)
-	touch -c $(NCURSES_IPK_DIR)/opt/lib/panel.so.$(NCURSES_SHLIBVERSION)
+	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libform.so*
+	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libmenu.so*
+	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libncurses.so*
+	-$(STRIP) --strip-unneeded $(NCURSES_IPK_DIR)/opt/lib/libpanel.so*
+	touch -c $(NCURSES_IPK_DIR)/opt/lib/libform.so.$(NCURSES_SHLIBVERSION)
+	touch -c $(NCURSES_IPK_DIR)/opt/lib/libmenu.so.$(NCURSES_SHLIBVERSION)
+	touch -c $(NCURSES_IPK_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+	touch -c $(NCURSES_IPK_DIR)/opt/lib/libpanel.so.$(NCURSES_SHLIBVERSION)
 	mkdir -p $(NCURSES_IPK_DIR)/opt/share
 	mkdir -p $(NCURSES_IPK_DIR)/opt/share/tabset
 	mkdir -p $(NCURSES_IPK_DIR)/opt/share/terminfo
