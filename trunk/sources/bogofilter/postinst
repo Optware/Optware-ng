@@ -1,0 +1,19 @@
+#!/bin/sh
+
+/bin/echo
+/bin/echo Please read the man-pages carefully:
+/bin/echo -e "\t\$ man bogofilter"
+/bin/echo
+/bin/echo You may want to create a new user and group,
+/bin/echo -e "\t\$ vi /etc/passwd"
+/bin/echo -e "\t+bogo:x:41:41:bogo:/opt/var/lib/bogofilter:"
+/bin/echo -e "\t\$ vi /etc/group"
+/bin/echo -e "\t+filter:x:41:filter"
+/bin/echo -e "\t\$ mkdir -p /opt/var/lib/bogofilter"
+/bin/echo -e "\t\$ chown -R bogo. /opt/var/lib/bogofilter"
+/bin/echo
+/bin/echo and integrate bogofilter into your mail server.
+/bin/echo Postfix users can find a patch for master.cf in
+/bin/echo "/opt/etc/doc/bogofilter"
+/bin/echo
+
