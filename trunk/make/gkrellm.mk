@@ -54,7 +54,7 @@ $(GKRELLM_IPK): $(GKRELLM_IPK_DIR)
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GKRELLM_IPK_DIR)
 
-gkrellm-ipk: $(GKRELLM_IPK) $(GKRELLM_IPK)/staging
+gkrellm-ipk: $(GKRELLM_IPK) 
 
 gkrellm-source: $(DL_DIR)/$(GKRELLM_SOURCE)
 
