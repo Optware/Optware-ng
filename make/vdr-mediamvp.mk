@@ -24,7 +24,7 @@ $(VDR_MEDIAMVP_DIR)/.source: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE)
 	mv $(BUILD_DIR)/$(VDR_MEDIAMVP) $(VDR_MEDIAMVP_DIR)
 	touch $(VDR_MEDIAMVP_DIR)/.source
 
-$(VDR_MEDIAMVP_DIR)/src/vdr-mediamvp: $(VDR_MEDIAMVP_DIR)/.source
+$(VDR_MEDIAMVP_DIR)/console/mediamvp: $(VDR_MEDIAMVP_DIR)/.source
 	echo "EXTRA_INCLUDES=-I$(STAGING_DIR)/include" > $(VDR_MEDIAMVP_DIR)/config.mak
 	echo "EXTRA_LIBS=-L$(STAGING_DIR)/lib " >> $(VDR_MEDIAMVP_DIR)/config.mak
 	echo "HAVE_LIBID3TAG=1" >> $(VDR_MEDIAMVP_DIR)/config.mak
@@ -32,7 +32,7 @@ $(VDR_MEDIAMVP_DIR)/src/vdr-mediamvp: $(VDR_MEDIAMVP_DIR)/.source
 
 vdr-mediamvp: zlib libevent libid3tag $(VDR_MEDIAMVP_DIR)/src/vdr-mediamvp
 
-$(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/src/vdr-mediamvp
+$(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/console/mediamvp
 	-mkdir -p $(VDR_MEDIAMVP_IPK_DIR)	
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp
