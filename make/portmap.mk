@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-PORTMAP_SITE=http://www.portmap.org/downloads
+PORTMAP_SITE=http://ftp.surfnet.nl/security/tcpwrappers
 PORTMAP_VERSION=4
 PORTMAP_SOURCE=portmap_$(PORTMAP_VERSION).tar.gz
 PORTMAP_DIR=portmap_$(PORTMAP_VERSION)
