@@ -34,7 +34,7 @@ endif
 #
 # PCRE_IPK_VERSION should be incremented when the ipk changes.
 #
-PCRE_IPK_VERSION=1
+PCRE_IPK_VERSION=2
 
 #
 # PCRE_CONFFILES should be a list of user-editable files
@@ -157,10 +157,7 @@ pcre-stage: $(PCRE_BUILD_DIR)/.staged
 $(PCRE_IPK): $(PCRE_BUILD_DIR)/.built
 	rm -rf $(PCRE_IPK_DIR) $(BUILD_DIR)/pcre_*_armeb.ipk
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(PCRE_IPK_DIR) install
-#	install -d $(PCRE_IPK_DIR)/opt/etc/
-#	install -m 755 $(PCRE_SOURCE_DIR)/pcre.conf $(PCRE_IPK_DIR)/opt/etc/pcre.conf
-#	install -d $(PCRE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PCRE_SOURCE_DIR)/rc.pcre $(PCRE_IPK_DIR)/opt/etc/init.d/SXXpcre
+	find $(PCRE_IPK_DIR) -type d -exec chmod go+rx {} \;
 	install -d $(PCRE_IPK_DIR)/CONTROL
 	install -m 644 $(PCRE_SOURCE_DIR)/control $(PCRE_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PCRE_SOURCE_DIR)/postinst $(PCRE_IPK_DIR)/CONTROL/postinst
