@@ -88,7 +88,7 @@ NATIVE_ONLY_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	openldap \
-	
+
 
 UNSORTED_PACKAGES = \
 	freeradius \
@@ -234,11 +234,11 @@ ifeq ($(HOST_MACHINE),armv5b)
 	ssh builds.nslu2-linux.org mkdir -p /home/unslung/packages/native/
 	rsync -avr --delete packages/ builds.nslu2-linux.org:/home/unslung/packages/native/
 	ssh builds.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
-	ssh builds.nslu2-linux.org rsync -avr /home/unslung/packages/native/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
-	ssh builds.nslu2-linux.org rsync -avr /home/unslung/packages/native/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+	ssh builds.nslu2-linux.org rsync -avr /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
+	ssh builds.nslu2-linux.org rsync -avr /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
 else
-	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/cross/
-	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/cross/
+	rsync -avr packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
+	rsync -avr packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
 endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
