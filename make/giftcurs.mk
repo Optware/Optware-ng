@@ -44,7 +44,7 @@ GIFTCURS_PATCHES=$(GIFTCURS_SOURCE_DIR)/patch.noglibtest
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GIFTCURS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include/glibconfig.h
+GIFTCURS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
 GIFTCURS_LDFLAGS=$(STAGING_LIB_DIR)/libglib-2.0.so
 
 #
