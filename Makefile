@@ -174,5 +174,5 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '.*~' -print | xargs /bin/rm -f
 	find . -name '.#*' -print | xargs /bin/rm -f
 
-distclean: clean
+distclean:
 	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(TOOL_BUILD_DIR) $(PACKAGE_DIR)
