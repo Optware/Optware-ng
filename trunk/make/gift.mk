@@ -120,58 +120,17 @@ $(GIFT_BUILD_DIR)/.built: $(GIFT_BUILD_DIR)/.configured
 	$(MAKE) -C $(GIFT_BUILD_DIR)
 	touch $(GIFT_BUILD_DIR)/.built
 
-#
-#
 gift: $(GIFT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION): $(GIFT_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include/libgift/proto
-	install -m 644 $(GIFT_BUILD_DIR)/lib/list.h $(STAGING_DIR)/opt/include
-#	install -m 644 $(GIFT_BUILD_DIR)/lib/memory.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/list_lock.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/tree.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/array.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/tcpc.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/fdbuf.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/interface.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/conf.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/log.h $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/tcpc.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/libgift.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/stopwatch.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/mime.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/giftconfig.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/platform.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/strobj.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/parse.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/event.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/file.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/list.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/dataset.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/network.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/fdbuf.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/lib/fdbuf.h $(STAGING_DIR)/opt/include/libgift
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/transfer_api.h $(STAGING_DIR)/opt/include/libgift/proto
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/share_hash.h $(STAGING_DIR)/opt/include/libgift/proto
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/share.h $(STAGING_DIR)/opt/include/libgift/proto
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/protocol.h $(STAGING_DIR)/opt/include/libgift/proto
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/protocol_ver.h $(STAGING_DIR)/opt/include/libgift/proto
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/if_event_api.h $(STAGING_DIR)/opt/include/libgift/proto
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFT_BUILD_DIR)/lib/libgift.pc $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFT_BUILD_DIR)/lib/.libs/libgift.so.$(GIFT_VERSION_LIB) $(STAGING_DIR)/opt/lib
-	install -m 644 $(GIFT_BUILD_DIR)/plugin/.libs/libgiftproto.so.$(GIFT_VERSION_LIB) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so
+$(GIFT_BUILD_DIR)/.staged: $(GIFT_BUILD_DIR)/.built
+	rm -f $(GIFT_BUILD_DIR)/.staged
+	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(GIFT_BUILD_DIR)/.staged
 
-gift-stage: $(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION)
+gift-stage: $(GIFT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -187,19 +146,9 @@ gift-stage: $(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION)
 #
 $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
 	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_armeb.ipk
-	install -d $(GIFT_IPK_DIR)/opt/share/giFT
-	install -m 644 $(GIFT_BUILD_DIR)/etc/giftd.conf.template $(GIFT_IPK_DIR)/opt/share/giFT/giftd.conf.template
-	install -m 644 $(GIFT_BUILD_DIR)/data/mime.types $(GIFT_IPK_DIR)/opt/share/giFT/mime.types
-	install -d $(GIFT_IPK_DIR)/opt/bin
-	install -m 644 $(GIFT_BUILD_DIR)/gift-setup $(GIFT_IPK_DIR)/opt/bin/gift-setup
-	$(STRIP_COMMAND) $(GIFT_BUILD_DIR)/src/.libs/giftd -o $(GIFT_IPK_DIR)/opt/bin/giftd
-	install -d $(GIFT_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(GIFT_BUILD_DIR)/lib/.libs/libgift.so.$(GIFT_VERSION_LIB) -o $(GIFT_IPK_DIR)/opt/lib/libgift.so.$(GIFT_VERSION_LIB)
-	$(STRIP_COMMAND) $(GIFT_BUILD_DIR)/plugin/.libs/libgiftproto.so.$(GIFT_VERSION_LIB) -o $(GIFT_IPK_DIR)/opt/lib/libgiftproto.so.$(GIFT_VERSION_LIB)
+	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install
 	install -d $(GIFT_IPK_DIR)/CONTROL
 	install -m 644 $(GIFT_SOURCE_DIR)/control $(GIFT_IPK_DIR)/CONTROL/control
-	cd $(GIFT_IPK_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so.0
-	cd $(GIFT_IPK_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so.0
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
 
 #
