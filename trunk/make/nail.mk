@@ -87,7 +87,7 @@ nail-source: $(DL_DIR)/$(NAIL_SOURCE) $(NAIL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(NAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(NAIL_SOURCE) $(NAIL_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NAIL_DIR) $(NAIL_BUILD_DIR)
 	$(NAIL_UNZIP) $(DL_DIR)/$(NAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NAIL_PATCHES) | patch -d $(BUILD_DIR)/$(NAIL_DIR) -p1
