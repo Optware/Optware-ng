@@ -131,6 +131,7 @@ STAGING_DIR=$(BASE_DIR)/staging
 STAGING_PREFIX=$(STAGING_DIR)/opt
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 PACKAGE_DIR=$(BASE_DIR)/packages
+export TMPDIR=$(BASE_DIR)/tmp
 
 TARGET_ARCH=armeb
 TARGET_OPTIMIZATION= #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
@@ -239,7 +240,8 @@ endif
 include make/*.mk
 
 directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
-		$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_BUILD_DIR) $(PACKAGE_DIR)
+	$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_BUILD_DIR) \
+	$(PACKAGE_DIR) $(TMPDIR)
 
 $(DL_DIR):
 	mkdir $(DL_DIR)
@@ -264,6 +266,9 @@ $(TOOL_BUILD_DIR):
 
 $(PACKAGE_DIR):
 	mkdir $(PACKAGE_DIR)
+
+$(TMPDIR):
+	mkdir $(TMPDIR)
 
 source: $(PACKAGES_SOURCE)
 
