@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# make sure our shared libraries are in the path.
+# if we get /etc/ld.so.conf working, this export
+# can be removed
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/lib
+
+if [ -n "`pidof mt-daapd`" ] ; then
+    killall mt-daapd 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/mt-daapd -c /opt/etc/mt-daapd/mt-daapd.conf
+
