@@ -50,13 +50,13 @@ $(TERMCAP_BUILD_DIR)/libtermcap.a: $(TERMCAP_BUILD_DIR)/.configured
 
 termcap: $(TERMCAP_BUILD_DIR)/libtermcap.a
 
-$(STAGING_DIR)/lib/libtermcap.a: $(TERMCAP_BUILD_DIR)/libtermcap.a
-	install -d $(STAGING_DIR)/include
-	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(STAGING_DIR)/include
-	install -d $(STAGING_DIR)/lib
-	install -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(STAGING_DIR)/lib
+$(STAGING_DIR)/opt/lib/libtermcap.a: $(TERMCAP_BUILD_DIR)/libtermcap.a
+	install -d $(STAGING_DIR)/opt/include
+	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/lib
+	install -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(STAGING_DIR)/opt/lib
 
-termcap-stage: $(STAGING_DIR)/lib/libtermcap.a
+termcap-stage: $(STAGING_DIR)/opt/lib/libtermcap.a
 
 $(TERMCAP_IPK): $(TERMCAP_BUILD_DIR)/libtermcap.a
 	install -d $(TERMCAP_IPK_DIR)/opt/include
