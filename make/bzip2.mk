@@ -29,7 +29,7 @@ $(BZIP2_DIR)/.source: $(DL_DIR)/$(BZIP2_SOURCE)
 $(BZIP2_DIR)/.configured: $(BZIP2_DIR)/.source
 	touch $(BZIP2_DIR)/.configured
 
-$(BZIP2_IPK_DIR): $(BZIP2_DIR)/.configured
+$(BZIP2_DIR)/bzip2: $(BZIP2_DIR)/.configured
 	$(MAKE) \
 	  -C $(BZIP2_DIR) \
 	  CC_FOR_BUILD=$(CC) \
@@ -39,11 +39,15 @@ $(BZIP2_IPK_DIR): $(BZIP2_DIR)/.configured
 	  LD=$(TARGET_LD) \
 	bzip2
 
-bzip2-headers: $(BZIP2_IPK_DIR)
+bzip2: $(BZIP2_DIR)/bzip2
 
-bzip2: $(BZIP2_IPK_DIR)
+$(STAGING_DIR)/lib/libbz2.a: $(BZIP2_DIR)/bzip2
+	cp $(BZIP2_DIR)/bzlib.h $(STAGING_DIR)/include
+	cp $(BZIP2_DIR)/*.a $(STAGING_DIR)/lib
 
-$(BZIP2_IPK): $(BZIP2_IPK_DIR)
+bzip2-stage: $(STAGING_DIR)/lib/libbz2.a
+
+$(BZIP2_IPK): $(BZIP2_DIR)/bzip2
 	mkdir -p $(BZIP2_IPK_DIR)/CONTROL
 	install -d $(BZIP2_IPK_DIR)/opt/bin $(BZIP2_IPK_DIR)/opt/lib
 	cp $(SOURCE_DIR)/bzip2.control $(BZIP2_IPK_DIR)/CONTROL/control
@@ -53,18 +57,10 @@ $(BZIP2_IPK): $(BZIP2_IPK_DIR)
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BZIP2_IPK_DIR)
 
-$(BZIP2_IPK)/staging: $(BZIP2_IPK_DIR)
-	cp $(BZIP2_DIR)/bzlib.h $(STAGING_DIR)/include
-	cp $(BZIP2_DIR)/*.a $(STAGING_DIR)/lib
-
-bzip2-ipk: $(BZIP2_IPK)/staging $(BZIP2_IPK)
-
-bzip2-source: $(DL_DIR)/$(BZIP2_SOURCE)
+bzip2-ipk: bzip2-stage $(BZIP2_IPK)
 
 bzip2-clean:
-	-$(MAKE) -C $(BZIP2_DIR) uninstall
 	-$(MAKE) -C $(BZIP2_DIR) clean
 
-bzip2-distclean:
-	-rm $(BZIP2_DIR)/.configured
-	-$(MAKE) -C $(BZIP2_DIR) distclean
+bzip2-dirclean: bzip2-clean
+	rm -rf $(BZIP2_DIR) $(BZIP2_IPK_DIR) $(BZIP2_IPK)
