@@ -66,11 +66,10 @@ $(ZLIB_IPK): $(STAGING_DIR)/lib/libz.so.$(ZLIB_LIB_VERSION)
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)/opt/include
 	install -d $(ZLIB_IPK_DIR)/opt/lib
-	install -m 644 $(ZLIB_BUILD_DIR)/libz.a $(ZLIB_IPK_DIR)/opt/lib
 	install -m 644 $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION) $(ZLIB_IPK_DIR)/opt/lib
+	$(STRIP) --strip-unneeded $(ZLIB_IPK_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so.1
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so
-	$(STRIP) --strip-unneeded $(ZLIB_IPK_DIR)/opt/lib/libz.so*
 	install -d $(ZLIB_IPK_DIR)/CONTROL
 	install -m 644 $(ZLIB_SOURCE_DIR)/control $(ZLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
