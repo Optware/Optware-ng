@@ -13,7 +13,7 @@ FINDUTILS_UNZIP=zcat
 #
 # FINDUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-FINDUTILS_IPK_VERSION=1
+FINDUTILS_IPK_VERSION=2
 
 #
 # FINDUTILS_PATCHES should list any patches, in the the order in
@@ -123,7 +123,7 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
-	rm -rf $(FINDUTILS_IPK_DIR) $(FINDUTILS_IPK)
+	rm -rf $(FINDUTILS_IPK_DIR) $(BUILD_DIR)/findutils_*_armeb.ipk
 	install -d $(FINDUTILS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/find
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/xargs

@@ -12,7 +12,7 @@ GREP_SITE=ftp://ftp.gnu.org/pub/gnu/grep
 GREP_SOURCE=$(GREP).tar.gz
 GREP_UNZIP=zcat
 
-GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-1_armeb.ipk
+GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-2_armeb.ipk
 GREP_IPK_DIR=$(BUILD_DIR)/grep-$(GREP_VERSION)-ipk
 
 $(DL_DIR)/$(GREP_SOURCE):
@@ -40,6 +40,7 @@ $(GREP_DIR)/src/grep: $(GREP_DIR)/.configured
 grep: $(GREP_DIR)/src/grep
 
 $(GREP_IPK): $(GREP_DIR)/src/grep
+	rm -rf $(GREP_IPK_DIR) $(BUILD_DIR)/grep_*_armeb.ipk
 	mkdir -p $(GREP_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/grep/control $(GREP_IPK_DIR)/CONTROL/control
 	$(STRIP_COMMAND) $(GREP_DIR)/src/grep
