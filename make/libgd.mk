@@ -150,11 +150,11 @@ libgd: $(LIBGD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/liblibgd.so: $(LIBGD_BUILD_DIR)/.built
+$(STAGING_DIR)/opt/lib/libgd.so: $(LIBGD_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBGD_BUILD_DIR) install-strip DESTDIR=$(STAGING_DIR)
-	rm -rf $(STAGING_DIR)/opt/lib/liblibgd.la
+	rm -rf $(STAGING_DIR)/opt/lib/libgd.la
 
-libgd-stage: $(STAGING_DIR)/opt/lib/liblibgd.so
+libgd-stage: $(STAGING_DIR)/opt/lib/libgd.so
 
 #
 # This builds the IPK file.
