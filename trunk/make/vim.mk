@@ -24,6 +24,11 @@ VIM_VERSION=6.3
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
 VIM_DIR=vim-$(VIM_VERSION)
 VIM_UNZIP=bzcat
+VIM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+VIM_DESCRIPTION=Yet another version of the vi editor.
+VIM_SECTION=util
+VIM_PRIORITY=optional
+VIM_DEPENDS=ncurses
 
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
@@ -92,7 +97,7 @@ vim-source: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
-	# $(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	# Rename the directory since they seem to include version numbers
@@ -141,6 +146,23 @@ $(VIM_BUILD_DIR)/.staged: $(VIM_BUILD_DIR)/.built
 vim-stage: $(VIM_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/vim
+#
+$(VIM_IPK_DIR)/CONTROL/control:
+	@install -d $(VIM_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: foo" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(VIM_PRIORITY)" >>$@
+	@echo "Section: $(VIM_SECTION)" >>$@
+	@echo "Version: $(VIM_VERSION)-$(VIM_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(VIM_MAINTAINER)" >>$@
+	@echo "Source: $(VIM_SITE)/$(VIM_SOURCE)" >>$@
+	@echo "Description: $(VIM_DESCRIPTION)" >>$@
+	@echo "Depends: $(VIM_DEPENDS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(VIM_IPK_DIR)/opt/sbin or $(VIM_IPK_DIR)/opt/bin
@@ -160,8 +182,7 @@ $(VIM_IPK): $(VIM_BUILD_DIR)/.built
 	mv $(VIM_IPK_DIR)/opt/share/vim $(VIM_IPK_DIR)/opt/share/vim-temp
 	mv $(VIM_IPK_DIR)/opt/share/vim-temp/vim* $(VIM_IPK_DIR)/opt/share/vim
 	rm -rf $(VIM_IPK_DIR)/opt/share/vim-temp
-	install -d $(VIM_IPK_DIR)/CONTROL
-	install -m 644 $(VIM_SOURCE_DIR)/control $(VIM_IPK_DIR)/CONTROL/control
+	$(MAKE) $(VIM_IPK_DIR)/CONTROL/control
 	#install -m 644 $(VIM_SOURCE_DIR)/prerm $(VIM_IPK_DIR)/CONTROL/prerm
 	#install -m 644 $(VIM_SOURCE_DIR)/postinst $(VIM_IPK_DIR)/CONTROL/postinst
 	echo $(VIM_CONFFILES) | sed -e 's/ /\n/g' > $(VIM_IPK_DIR)/CONTROL/conffiles
