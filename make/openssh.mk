@@ -10,7 +10,7 @@ OPENSSH_SOURCE=openssh-3.8p1.tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
 
-OPENSSH_IPK_VERSION=2
+OPENSSH_IPK_VERSION=3
 
 OPENSSH_PATCHES=$(OPENSSH_SOURCE_DIR)/Makefile.patch \
 		$(OPENSSH_SOURCE_DIR)/configure.patch
@@ -50,6 +50,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--disable-lastlog --disable-utmp \
 		--disable-utmpx --disable-wtmp --disable-wtmpx \
 		--without-x \
+		--with-xauth=/opt/bin/xauth \
 	);
 	touch  $(OPENSSH_BUILD_DIR)/.configured
 
