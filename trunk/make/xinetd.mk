@@ -148,10 +148,11 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 #
 $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	rm -rf $(XINETD_IPK_DIR) $(BUILD_DIR)/xinetd_*_armeb.ipk
-	# Install binary file in sbin
-	install -d $(XINETD_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(XINETD_BUILD_DIR)/xinetd/xinetd -o $(XINETD_IPK_DIR)/opt/sbin/xinetd
-	install -m 755 $(XINETD_BUILD_DIR)/xinetd/xconv.pl $(XINETD_IPK_DIR)/opt/sbin/xconv.pl
+	# Install daemon, utils and man pages
+	$(MAKE) -C $(XINETD_BUILD_DIR) DAEMONDIR=$(XINETD_IPK_DIR)/opt/sbin \
+		MANDIR=$(XINETD_IPK_DIR)/opt/man install
+	# Strip executables
+	$(STRIP_COMMAND) $(XINETD_IPK_DIR)/opt/sbin/xinetd $(XINETD_IPK_DIR)/itox
 	# Install config file and create xinetd.d catalog
 	install -d $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 	install -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc/xinetd.conf
@@ -164,14 +165,6 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	install -d $(XINETD_IPK_DIR)/CONTROL
 	install -m 644 $(XINETD_SOURCE_DIR)/control $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 644 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/postinst
-	# Install man pages
-	install -d $(XINETD_IPK_DIR)/opt/man/man5
-	install -d $(XINETD_IPK_DIR)/opt/man/man8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.conf.man	$(XINETD_IPK_DIR)/opt/man/man5/xinetd.conf.5
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.log.man	$(XINETD_IPK_DIR)/opt/man/man8/xinetd.log.8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.man		$(XINETD_IPK_DIR)/opt/man/man8/xinetd.8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/itox.8		$(XINETD_IPK_DIR)/opt/man/man8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xconv.pl.8		$(XINETD_IPK_DIR)/opt/man/man8
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)
 
