@@ -24,7 +24,7 @@ $(LIBID3TAG_DIR)/.source: $(DL_DIR)/$(LIBID3TAG_SOURCE)
 	mv $(BUILD_DIR)/$(LIBID3TAG) $(LIBID3TAG_DIR)
 	touch $(LIBID3TAG_DIR)/.source
 
-$(LIBID3TAG_DIR)/.configured: $(LIBID3TAG_DIR)/.source
+$(LIBID3TAG_DIR)/.configured: $(LIBID3TAG_DIR)/.source libid3tag-dep
 	(cd $(LIBID3TAG_DIR); \
         export CC=$(TARGET_CC) ;\
         export CPPFLAGS="$(STAGING_CPPFLAGS)" ;\
@@ -41,8 +41,9 @@ $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION): $(LIBID3TAG_DIR)/.con
 
 libid3tag-headers: $(STAGING_DIR)/lib/libid3tag.a
 
-libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
+libid3tag: $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 
+libid3tag-dep: zlib
 $(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 	mkdir -p $(LIBID3TAG_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libid3tag.control $(LIBID3TAG_IPK_DIR)/CONTROL/control
