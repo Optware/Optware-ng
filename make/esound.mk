@@ -120,6 +120,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-alsa \
 	)
 	touch $(ESOUND_BUILD_DIR)/.configured
 
