@@ -60,9 +60,9 @@ TTF_BITSTREAM_VERA_IPK=$(BUILD_DIR)/ttf-bitstream-vera_$(TTF_BITSTREAM_VERA_VERS
 #
 # Automatically create a ipkg control file
 #
-$(TTF_BITSTREAM_VERA_SOURCE_DIR)/control:
+$(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control:
+	@install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(TTF_BITSTREAM_VERA_SOURCE_DIR) || true
 	@echo "Package: ttf-bitstream-vera" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(TTF_BITSTREAM_VERA_PRIORITY)" >>$@
@@ -103,7 +103,6 @@ ttf-bitstream-vera-source: $(DL_DIR)/$(TTF_BITSTREAM_VERA_SOURCE) $(TTF_BITSTREA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured: $(DL_DIR)/$(TTF_BITSTREAM_VERA_SOURCE) $(TTF_BITSTREAM_VERA_PATCHES)
-	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(TTF_BITSTREAM_VERA_DIR) $(TTF_BITSTREAM_VERA_BUILD_DIR)
 	$(TTF_BITSTREAM_VERA_UNZIP) $(DL_DIR)/$(TTF_BITSTREAM_VERA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(TTF_BITSTREAM_VERA_DIR) $(TTF_BITSTREAM_VERA_BUILD_DIR)
@@ -130,14 +129,10 @@ ttf-bitstream-vera: $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
 # You may need to patch your application to make it use these locations.
 #
 $(TTF_BITSTREAM_VERA_IPK): $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
-	rm -f $(TTF_BITSTREAM_VERA_SOURCE_DIR)/control
-	$(MAKE) $(TTF_BITSTREAM_VERA_SOURCE_DIR)/control
 	rm -rf $(TTF_BITSTREAM_VERA_IPK_DIR) $(BUILD_DIR)/ttf-bitstream-vera_*_armeb.ipk
 	install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
-	cp $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
-
-	install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL
-	install -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/control $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control
+	install -m 644 $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
+	$(MAKE) $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control
 	install -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postinst $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postrm $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postrm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TTF_BITSTREAM_VERA_IPK_DIR)
@@ -158,4 +153,4 @@ ttf-bitstream-vera-clean:
 # directories.
 #
 ttf-bitstream-vera-dirclean:
-	rm -rf $(BUILD_DIR)/$(TTF_BITSTREAM_VERA_DIR) $(TTF_BITSTREAM_VERA_BUILD_DIR) $(TTF_BITSTREAM_VERA_IPK_DIR) $(TTF_BITSTREAM_VERA_IPK) $(TTF_BITSTREAM_VERA_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(TTF_BITSTREAM_VERA_DIR) $(TTF_BITSTREAM_VERA_BUILD_DIR) $(TTF_BITSTREAM_VERA_IPK_DIR) $(TTF_BITSTREAM_VERA_IPK)
