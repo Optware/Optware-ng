@@ -57,7 +57,7 @@ CROSS_ONLY_PACKAGES = \
 	\
 	glib xinetd proftpd
 
-NATIVE_ONLY_PACKAGES =
+NATIVE_ONLY_PACKAGES = \
 	emacs
 
 PACKAGES = \
