@@ -58,7 +58,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # lynx's makefile runs executables it has built.
-# openldap probably will build cross - may just need some configure work
+# openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
