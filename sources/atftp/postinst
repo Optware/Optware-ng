@@ -6,6 +6,4 @@ if [ ! -d /tftpboot ] ;  then
 	mkdir /tftpboot
 fi
 
-chown -R nobody.nobody /tftpboot
-
 /opt/etc/init.d/S60atftpd
