@@ -123,7 +123,7 @@ $(NETHACK_IPK): $(NETHACK_BUILD_DIR)/src/nethack
 	install -d $(NETHACK_IPK_DIR)/opt/bin
 	install -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
 	install -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
-	install -m 644 $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
+	cp -r $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
 	install -d $(NETHACK_IPK_DIR)/CONTROL
 	install -m 755 $(NETHACK_SOURCE_DIR)/control $(NETHACK_IPK_DIR)/CONTROL/control
 	install -m 755 $(NETHACK_SOURCE_DIR)/postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
