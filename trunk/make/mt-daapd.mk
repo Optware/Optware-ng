@@ -6,23 +6,21 @@
 
 MT_DAAPD_DIR=$(BUILD_DIR)/mt-daapd
 
-MT_DAAPD_VERSION=0.2.0
+MT_DAAPD_VERSION=0.2.1-pre1
 MT_DAAPD=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_SITE=http://belnet.dl.sourceforge.net/sourceforge/mt-daapd
 MT_DAAPD_SOURCE=$(MT_DAAPD).tar.gz
 MT_DAAPD_UNZIP=zcat
-MT_DAAPD_PATCH:=$(SOURCE_DIR)/mt-daapd.patch
 MT_DAAPD_IPK=$(BUILD_DIR)/mt-daapd_$(MT_DAAPD_VERSION)-1_armeb.ipk
 MT_DAAPD_IPK_DIR=$(BUILD_DIR)/mt-daapd-$(MT_DAAPD_VERSION)-ipk
 
 $(DL_DIR)/$(MT_DAAPD_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MT_DAAPD_SITE)/$(MT_DAAPD_SOURCE)
 
-mt-daapd-source: $(DL_DIR)/$(MT_DAAPD_SOURCE) $(MT_DAAPD_PATCH)
+mt-daapd-source: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 
 $(MT_DAAPD_DIR)/.source: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 	$(MT_DAAPD_UNZIP) $(DL_DIR)/$(MT_DAAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MT_DAAPD_PATCH) | patch -d $(BUILD_DIR)/$(MT_DAAPD) -p1
 	mv $(BUILD_DIR)/$(MT_DAAPD) $(MT_DAAPD_DIR)
 	touch $(MT_DAAPD_DIR)/.source
 
