@@ -21,7 +21,7 @@ PANGO_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PANGO_DESCRIPTION=GNOME font abstraction library
 PANGO_SECTION=lib
 PANGO_PRIORITY=optional
-PANGO_DEPENDS=glib, xft, freetype, fontconfig
+PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice
 
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
@@ -112,6 +112,7 @@ pango-source: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) \
 		$(STAGING_LIB_DIR)/libglib-2.0.so \
 		$(STAGING_LIB_DIR)/libXft.so \
+		$(STAGING_LIB_DIR)/libICE.so \
 		$(PANGO_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
