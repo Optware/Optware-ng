@@ -1,11 +1,11 @@
 #!/bin/sh
 
-if [ ! -d /var/spool ] ;  then
-    mkdir /var/spool
+if [ ! -d /opt/var/spool ] ;  then
+    mkdir /opt/var/spool
 fi
 
-if [ ! -d /var/spool/miau ] ;  then
-    mkdir /var/spool/miau
+if [ ! -d /opt/var/spool/miau ] ;  then
+    mkdir /opt/var/spool/miau
 fi
 
 /opt/etc/init.d/S52miau

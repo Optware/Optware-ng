@@ -1,4 +1,4 @@
-/var/spool/miau/logs/*.txt {
+/opt/var/spool/miau/logs/*.txt {
 	rotate 7
 	daily
 	mailfirst

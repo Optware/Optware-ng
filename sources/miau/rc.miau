@@ -4,8 +4,8 @@ if [ -n "`pidof miau`" ]; then
     /bin/killall miau 2>/dev/null
 fi
 
-if [ ! -d /var/spool/miau ] ;  then
-    mkdir -p /var/spool/miau
+if [ ! -d /opt/var/spool/miau ] ;  then
+    mkdir -p /opt/var/spool/miau
 fi
 
 /opt/bin/miau
