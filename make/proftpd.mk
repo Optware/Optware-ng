@@ -91,7 +91,9 @@ proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
+ifneq ($(HOST_MACHINE),armv5b)
 	$(MAKE) openssl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PROFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1
@@ -168,11 +170,10 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
 	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/etc/init.d/.S58proftpd
-	install -d $(PROFTPD_IPK_DIR)/unslung
-	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/unslung/rc.xinetd.proftpd
 	# Install doc file
 	install -d $(PROFTPD_IPK_DIR)/opt/doc
 	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/rc.xinetd
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd-install.doc
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd.xinetd
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/anonymous.conf
