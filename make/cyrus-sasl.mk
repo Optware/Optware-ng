@@ -97,10 +97,11 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 	$(CYRUS-SASL_UNZIP) $(DL_DIR)/$(CYRUS-SASL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CYRUS-SASL_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-SASL_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(CYRUS-SASL_BUILD_DIR)
+# We have to remove double blanks. Otherwise configure of saslauthd fails.
 	(cd $(CYRUS-SASL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS=`sed 's/  / /g' "$(STAGING_CPPFLAGS) $(CYRUS-SASL_CPPFLAGS)"` \
-		CFLAGS=`sed 's/  / /g' "$(STAGING_CPPFLAGS) $(CYRUS-SASL_CPPFLAGS)"` \
+		CPPFLAGS=`echo "$(STAGING_CPPFLAGS) $(CYRUS-SASL_CPPFLAGS)" | sed 's/  / /g'` \
+		CFLAGS=`echo "$(STAGING_CPPFLAGS) $(CYRUS-SASL_CPPFLAGS)" | sed 's/  / /g'` \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CYRUS-SASL_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
