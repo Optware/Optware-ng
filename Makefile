@@ -86,15 +86,15 @@ NATIVE_PACKAGES = \
 	perl-mime-base64 perl-net-dns perl-net-ident \
 	perl-spamassassin perl-storable perl-time-hires \
 	postfix \
-	rsnapshot \
+	rsnapshot ruby \
 	squid \
 	samba \
+	tin \
 	vim \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	ruby tin
 
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
