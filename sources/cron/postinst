@@ -1,2 +1,10 @@
-echo "Remember that the system crontab file is /opt/etc/crontab."
-return 0
+#!/bin/sh
+
+mkdir -p /opt/etc/cron.d
+mkdir -p /opt/var/cron/crontabs
+mkdir -p /opt/var/run
+
+echo "Remember that the system crontab file is \"/opt/etc/crontab\"."
+
+/opt/etc/init.d/S10cron
+
