@@ -22,7 +22,7 @@ CROSSTOOL-NATIVE_UNZIP=zcat
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=2
+CROSSTOOL-NATIVE_IPK_VERSION=3
 
 #
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
