@@ -111,13 +111,13 @@ WL500G_PACKAGES = \
 	bash bc bind bitchx \
 	cpio cron ctags \
 	diffutils \
-	e2fsprogs \
+	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
 	fontconfig freetype \
 	gdb gdbm gift gzip \
 	hdparm \
 	inetutils \
-	less libgd libid3tag libevent libol libogg libtool libvorbis \
+	less libgd libid3tag libevent libjpeg libol libogg libtool libvorbis \
 	logrotate lua lzo \
 	miau \
 	ncurses ntpclient nylon \
@@ -134,11 +134,11 @@ WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	adns appweb automake busybox bzip2 ccxstream \
 	classpath coreutils cyrus-sasl \
 	dhcp distcc dnsmasq dropbear \
-	ed expat ffmpeg flac \
+	ed ffmpeg flac \
 	ghostscript gift-fasttrack gift-gnutella gift-openft groff \
 	iptables ircd-hybrid \
 	joe jove \
-	lame libcurl libdvdread libjpeg libpng lynx \
+	lame libcurl libdvdread libpng lynx \
 	m4 make man-pages man mc mt-daapd \
 	nano ncftp \
 	patch portmap \
