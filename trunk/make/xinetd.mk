@@ -19,6 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
+XINETD_NAME=xinetd
 XINETD_SITE=http://www.xinetd.org/
 XINETD_VERSION=2.3.13
 XINETD_SOURCE=xinetd-$(XINETD_VERSION).tar.gz
@@ -33,11 +34,16 @@ XINETD_DEPENDS=
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=2
+XINETD_IPK_VERSION=3
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
-XINETD_CONFFILES=/opt/etc/xinetd.conf
+# NOTE: telnetd and other xinetd conf files are defined as conf files
+#        in order not to overwrite possible changes, like 'disable=yes' 
+#        when upgrading.
+XINETD_CONFFILES=/opt/etc/xinetd.conf \
+	/opt/etc/xinetd.d/telnetd \
+	/opt/etc/xinetd.d/ftp-sensor
 
 #
 # XINETD_PATCHES should list any patches, in the the order in
@@ -65,6 +71,8 @@ XINETD_BUILD_DIR=$(BUILD_DIR)/xinetd
 XINETD_SOURCE_DIR=$(SOURCE_DIR)/xinetd
 XINETD_IPK_DIR=$(BUILD_DIR)/xinetd-$(XINETD_VERSION)-ipk
 XINETD_IPK=$(BUILD_DIR)/xinetd_$(XINETD_VERSION)-$(XINETD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +154,7 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 $(XINETD_IPK_DIR)/CONTROL/control:
 	@install -d $(XINETD_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: xinetd" >>$@
+	@echo "Package: $(XINETD_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XINETD_PRIORITY)" >>$@
 	@echo "Section: $(XINETD_SECTION)" >>$@
@@ -175,17 +183,23 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 		MANDIR=$(XINETD_IPK_DIR)/opt/man install
 	# Strip executables
 	$(STRIP_COMMAND) $(XINETD_IPK_DIR)/opt/sbin/xinetd $(XINETD_IPK_DIR)/opt/sbin/itox
-	# Install config file and create xinetd.d catalog
+	# Install reload utility
+	install -m 700 $(XINETD_SOURCE_DIR)/xinetd.reload  $(XINETD_IPK_DIR)/opt/sbin
+	# Install config file, create xinetd.d catalog, drop in the 
+	# telnet and sensor config
 	install -d $(XINETD_IPK_DIR)/opt/etc/xinetd.d
-	install -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc/xinetd.conf
+	install -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc
+	install -m 644 $(XINETD_SOURCE_DIR)/telnetd $(XINETD_IPK_DIR)/opt/etc/xinetd.d
+	install -m 644 $(XINETD_BUILD_DIR)/contrib/xinetd.d/ftp-sensor $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 	# Install daemon startup file
 	install -d $(XINETD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(XINETD_SOURCE_DIR)/S10xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
 	# Install diversion script
 	install -d $(XINETD_IPK_DIR)/opt/doc/xinetd
-	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/doc/xinetd/rc.xinetd
+	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/doc/xinetd
 	$(MAKE) $(XINETD_IPK_DIR)/CONTROL/control
-	install -m 644 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/
+	install -m 755 $(XINETD_SOURCE_DIR)/prerm $(XINETD_IPK_DIR)/CONTROL/
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)
 
