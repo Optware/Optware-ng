@@ -136,8 +136,7 @@ nfs-server: $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 #
 # You may need to patch your application to make it use these locations.
 #
-#$(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/nfs-server
-$(NFS_SERVER_IPK): nfs-server
+$(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 	rm -rf $(NFS_SERVER_IPK_DIR) $(NFS_SERVER_IPK)
 	install -d $(NFS_SERVER_IPK_DIR)/opt/sbin
 	$(STRIP) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.nfsd
