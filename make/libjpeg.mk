@@ -92,6 +92,7 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 	$(LIBJPEG_UNZIP) $(DL_DIR)/$(LIBJPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBJPEG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBJPEG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBJPEG_DIR) $(LIBJPEG_BUILD_DIR)
+	cp $(LIBJPEG_SOURCE_DIR)/config.* $(LIBJPEG_BUILD_DIR)
 	(cd $(LIBJPEG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBJPEG_CPPFLAGS)" \
@@ -100,6 +101,8 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--enable-shared \
+		--disable-static \
 		--prefix=/opt \
 	)
 	touch $(LIBJPEG_BUILD_DIR)/.configured
@@ -110,28 +113,23 @@ libjpeg-unpack: $(LIBJPEG_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBJPEG_BUILD_DIR)/libjpeg.a: $(LIBJPEG_BUILD_DIR)/.configured
+$(LIBJPEG_BUILD_DIR)/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR)
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libjpeg: $(LIBJPEG_BUILD_DIR)/libjpeg.a
+libjpeg: $(LIBJPEG_BUILD_DIR)/libjpeg.so
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libjpeg.a: $(LIBJPEG_BUILD_DIR)/libjpeg.a
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBJPEG_BUILD_DIR)/libjpeg.a $(STAGING_DIR)/opt/lib
+$(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/libjpeg.so
+	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
+	rm -f $(STAGING_DIR)/opt/lib/libjpeg.la
 
-	cp $(LIBJPEG_BUILD_DIR)/jpeglib.h $(STAGING_DIR)/opt/include	
-	cp $(LIBJPEG_BUILD_DIR)/jmorecfg.h $(STAGING_DIR)/opt/include	
-	cp $(LIBJPEG_BUILD_DIR)/jerror.h $(STAGING_DIR)/opt/include	
-	cp $(LIBJPEG_BUILD_DIR)/jconfig.h $(STAGING_DIR)/opt/include	
-
-libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.a
+libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.so
 
 #
 # This builds the IPK file.
@@ -145,17 +143,16 @@ libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.a
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg.a
+$(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg.so
 	rm -rf $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
-	install -d $(LIBJPEG_IPK_DIR)/opt/bin
+	install -d $(LIBJPEG_IPK_DIR)/opt/include
 	install -d $(LIBJPEG_IPK_DIR)/opt/lib
-
-	$(STRIP_COMMAND) $(LIBJPEG_BUILD_DIR)/cjpeg -o $(LIBJPEG_IPK_DIR)/opt/bin/cjpeg
-	$(STRIP_COMMAND) $(LIBJPEG_BUILD_DIR)/djpeg -o $(LIBJPEG_IPK_DIR)/opt/bin/djpeg
-	$(STRIP_COMMAND) $(LIBJPEG_BUILD_DIR)/jpegtran -o $(LIBJPEG_IPK_DIR)/opt/bin/jpegtran
-	$(STRIP_COMMAND) $(LIBJPEG_BUILD_DIR)/rdjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/rdjpgcom
-	$(STRIP_COMMAND) $(LIBJPEG_BUILD_DIR)/wrjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/wrjpgcom
-	$(STRIP_COMMAND) $(LIBJPEG_BUILD_DIR)/libjpeg.a -o $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.a
+	install -d $(LIBJPEG_IPK_DIR)/opt/bin
+	install -d $(LIBJPEG_IPK_DIR)/opt/share/man/man1
+	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)/opt mandir=$(LIBJPEG_IPK_DIR)/opt/share/man/man1 install
+	rm -f $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.la
+	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/bin/*
+	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/lib/*.so
 #	install -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
 	install -d $(LIBJPEG_IPK_DIR)/CONTROL
