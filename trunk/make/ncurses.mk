@@ -31,6 +31,7 @@ $(NCURSES_DIR)/.source: $(DL_DIR)/$(NCURSES_SOURCE)
 	touch $(NCURSES_DIR)/.source
 
 $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
+	$(MAKE) zlib-stage
 	(cd $(NCURSES_DIR); \
 	export CC=$(TARGET_CC) ; \
 	export CPPFLAGS="$(STAGING_CPPFLAGS)"; \
@@ -48,14 +49,17 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 	);
 	touch $(NCURSES_DIR)/.configured
 
-$(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.configured
+ncurses-unpack: $(NCURSES_DIR)/.configured
+
+$(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.configured
+	$(MAKE) -C $(NCURSES_DIR)
+
+ncurses: $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+
+$(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install
 
 ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
-
-ncurses-headers: $(STAGING_DIR)/opt/lib/libncurses.a
-
-ncurses: zlib $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
 $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	mkdir -p $(NCURSES_IPK_DIR)/CONTROL
@@ -103,12 +107,7 @@ $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 ncurses-ipk: $(NCURSES_IPK)
 
 ncurses-clean:
-	-$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) uninstall
-	-$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) clean
+	-$(MAKE) -C $(NCURSES_DIR) clean
 
-ncurses-dirclean: ncurses-clean
+ncurses-dirclean:
 	rm -rf $(NCURSES_DIR) $(NCURSES_IPK_DIR) $(NCURSES_IPK)
-
-ncurses-distclean:
-	-rm $(NCURSES_DIR)/.configured
-	-$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) distclean
