@@ -1,0 +1,34 @@
+*** cron/Makefile.orig	Sat Feb 12 15:51:14 2005
+--- cron/Makefile	Sat Feb 12 15:57:06 2005
+***************
+*** 52,59 ****
+  #################################### begin configurable stuff
+  #<<DESTROOT is assumed to have ./etc, ./bin, and ./man subdirectories>>
+! DESTROOT	=	$(DESTDIR)/usr
+  DESTSBIN	=	$(DESTROOT)/sbin
+  DESTBIN		=	$(DESTROOT)/bin
+! DESTMAN		=	$(DESTROOT)/share/man
+  #<<need bitstring.h>>
+  INCLUDE		=	-I.
+--- 52,59 ----
+  #################################### begin configurable stuff
+  #<<DESTROOT is assumed to have ./etc, ./bin, and ./man subdirectories>>
+! DESTROOT	=	$(DESTDIR)
+  DESTSBIN	=	$(DESTROOT)/sbin
+  DESTBIN		=	$(DESTROOT)/bin
+! DESTMAN		=	$(DESTROOT)/man
+  #<<need bitstring.h>>
+  INCLUDE		=	-I.
+***************
+*** 67,71 ****
+  LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
+  #<<want to use a nonstandard CC?>>
+! CC		=	gcc -Wall -Wno-unused -Wno-comment
+  #<<manifest defines>>
+  DEFS		=
+--- 67,71 ----
+  LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
+  #<<want to use a nonstandard CC?>>
+! CC		=	$(TARGET_CC) -Wall -Wno-unused -Wno-comment
+  #<<manifest defines>>
+  DEFS		=
