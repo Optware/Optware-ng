@@ -18,12 +18,25 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBAO_SITE=http://downloads.xiph.org/releases/ao
 LIBAO_VERSION=0.8.6
 LIBAO_SOURCE=libao-$(LIBAO_VERSION).tar.gz
 LIBAO_DIR=libao-$(LIBAO_VERSION)
 LIBAO_UNZIP=zcat
+LIBAO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBAO_DESCRIPTION=Cross Platform Audio Library.
+LIBAO_SECTION=lib
+LIBAO_PRIORITY=optional
+LIBAO_DEPENDS=
+LIBAO_CONFLICTS=
 
 #
 # LIBAO_IPK_VERSION should be incremented when the ipk changes.
@@ -32,13 +45,13 @@ LIBAO_IPK_VERSION=1
 
 #
 # LIBAO_CONFFILES should be a list of user-editable files
-LIBAO_CONFFILES=
+LIBAO_CONFFILES=#/opt/etc/libao.conf /opt/etc/init.d/SXXlibao
 
 #
 # LIBAO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBAO_PATCHES=/dev/null
+LIBAO_PATCHES=#$(LIBAO_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -91,9 +104,10 @@ libao-source: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBAO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES)
+	$(MAKE) audiofile-stage esound-stage
 	rm -rf $(BUILD_DIR)/$(LIBAO_DIR) $(LIBAO_BUILD_DIR)
 	$(LIBAO_UNZIP) $(DL_DIR)/$(LIBAO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBAO_PATCHES) | patch -d $(BUILD_DIR)/$(LIBAO_DIR) -p1
+#	cat $(LIBAO_PATCHES) | patch -d $(BUILD_DIR)/$(LIBAO_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBAO_DIR) $(LIBAO_BUILD_DIR)
 	(cd $(LIBAO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -105,6 +119,12 @@ $(LIBAO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-esd \
+		--disable-esdtest \
+	        --disable-alsa \
+		--disable-alsa09 \
+	 	--disable-arts \
+		--disable-nas \
 	)
 	touch $(LIBAO_BUILD_DIR)/.configured
 
@@ -134,6 +154,24 @@ $(LIBAO_BUILD_DIR)/.staged: $(LIBAO_BUILD_DIR)/.built
 libao-stage: $(LIBAO_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libao
+#
+$(LIBAO_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBAO_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libao" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBAO_PRIORITY)" >>$@
+	@echo "Section: $(LIBAO_SECTION)" >>$@
+	@echo "Version: $(LIBAO_VERSION)-$(LIBAO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBAO_MAINTAINER)" >>$@
+	@echo "Source: $(LIBAO_SITE)/$(LIBAO_SOURCE)" >>$@
+	@echo "Description: $(LIBAO_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBAO_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBAO_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBAO_IPK_DIR)/opt/sbin or $(LIBAO_IPK_DIR)/opt/bin
@@ -148,8 +186,13 @@ libao-stage: $(LIBAO_BUILD_DIR)/.staged
 $(LIBAO_IPK): $(LIBAO_BUILD_DIR)/.built
 	rm -rf $(LIBAO_IPK_DIR) $(BUILD_DIR)/libao_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBAO_BUILD_DIR) DESTDIR=$(LIBAO_IPK_DIR) install
-	install -d $(LIBAO_IPK_DIR)/CONTROL
-	install -m 644 $(LIBAO_SOURCE_DIR)/control $(LIBAO_IPK_DIR)/CONTROL/control
+	#install -d $(LIBAO_IPK_DIR)/opt/etc/
+	#install -m 644 $(LIBAO_SOURCE_DIR)/libao.conf $(LIBAO_IPK_DIR)/opt/etc/libao.conf
+	#install -d $(LIBAO_IPK_DIR)/opt/etc/init.d
+	#install -m 755 $(LIBAO_SOURCE_DIR)/rc.libao $(LIBAO_IPK_DIR)/opt/etc/init.d/SXXlibao
+	$(MAKE) $(LIBAO_IPK_DIR)/CONTROL/control
+	#install -m 755 $(LIBAO_SOURCE_DIR)/postinst $(LIBAO_IPK_DIR)/CONTROL/postinst
+	#install -m 755 $(LIBAO_SOURCE_DIR)/prerm $(LIBAO_IPK_DIR)/CONTROL/prerm
 	echo $(LIBAO_CONFFILES) | sed -e 's/ /\n/g' > $(LIBAO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBAO_IPK_DIR)
 
