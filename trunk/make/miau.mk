@@ -10,7 +10,11 @@ MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
 MIAU_UNZIP=zcat
 
-MIAU_IPK_VERSION=6
+MIAU_IPK_VERSION=7
+
+MIAU_CONFFILES= /opt/etc/miau.conf \
+		/opt/etc/init.d/S52miau \
+		/opt/etc/logrotate.d/miau
 
 MIAU_PATCHES=$(MIAU_SOURCE_DIR)/paths.patch
 
@@ -67,8 +71,8 @@ $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	rm -rf $(MIAU_IPK_DIR) $(BUILD_DIR)/miau_*_armeb.ipk
 	install -d $(MIAU_IPK_DIR)/opt/bin
 	$(TARGET_STRIP) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
-	install -d $(MIAU_IPK_DIR)/opt/doc/miau
-	install -m 644 $(MIAU_BUILD_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/doc/miau/miaurc
+	install -d $(MIAU_IPK_DIR)/opt/etc
+	install -m 644 $(MIAU_SOURCE_DIR)/miau.conf $(MIAU_IPK_DIR)/opt/etc/miau.conf
 	install -d $(MIAU_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
 	install -d $(MIAU_IPK_DIR)/opt/etc/logrotate.d
@@ -77,6 +81,7 @@ $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	install -m 644 $(MIAU_SOURCE_DIR)/control $(MIAU_IPK_DIR)/CONTROL/control
 	install -m 644 $(MIAU_SOURCE_DIR)/postinst $(MIAU_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(MIAU_SOURCE_DIR)/prerm $(MIAU_IPK_DIR)/CONTROL/prerm
+	echo $(MIAU_CONFFILES) | sed -e 's/ /\n/g' > $(MIAU_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MIAU_IPK_DIR)
 
 miau-ipk: $(MIAU_IPK)
@@ -84,5 +89,5 @@ miau-ipk: $(MIAU_IPK)
 miau-clean:
 	-$(MAKE) -C $(MIAU_BUILD_DIR) clean
 
-miau-dirclean: miau-clean
-	rm -rf $(MIAU_BUILD_DIR) $(MIAU_IPK_DIR) $(MIAU_IPK)
+miau-dirclean:
+	rm -rf $(BUILD_DIR)/$(MIAU_DIR) $(MIAU_BUILD_DIR) $(MIAU_IPK_DIR) $(MIAU_IPK)
