@@ -38,7 +38,8 @@ SER_IPK_VERSION=1
 # SER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SER_PATCHES=$(SER_SOURCE_DIR)/Makefile.defs.patch
+SER_PATCHES=$(SER_SOURCE_DIR)/Makefile.defs.patch \
+	    $(SER_SOURCE_DIR)/utils.gen_ha1.Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -118,7 +119,9 @@ $(SER_BUILD_DIR)/.built: $(SER_BUILD_DIR)/.configured
 	rm -f $(SER_BUILD_DIR)/.built
 	CC_EXTRA_OPTS="$(STAGING_CPPFLAGS) $(SER_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
-	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt all
+	CC="$(TARGET_CC)" \
+	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
+	ARCH=arm OS=linux OSREL=2.4.22 all
 	touch $(SER_BUILD_DIR)/.built
 
 #
@@ -132,9 +135,11 @@ ser: $(SER_BUILD_DIR)/.built
 $(SER_BUILD_DIR)/.staged: $(SER_BUILD_DIR)/.built
 	rm -f $(SER_BUILD_DIR)/.staged
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
+	CC="$(TARGET_CC)" \
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
 	BASEDIR=$(STAGING_DIR) \
-	LOCALBASE=$(STAGING_DIR) install
+	LOCALBASE=$(STAGING_DIR) \
+	ARCH=arm OS=linux OSREL=2.4.22 install
 	touch $(SER_BUILD_DIR)/.staged
 
 ser-stage: $(SER_BUILD_DIR)/.staged
@@ -154,9 +159,11 @@ ser-stage: $(SER_BUILD_DIR)/.staged
 $(SER_IPK): $(SER_BUILD_DIR)/.built
 	rm -rf $(SER_IPK_DIR) $(BUILD_DIR)/ser_*_armeb.ipk
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
+	CC="$(TARGET_CC)" \
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
 	BASEDIR=$(SER_IPK_DIR) \
-	LOCALBASE=$(SER_IPK_DIR) install
+	LOCALBASE=$(SER_IPK_DIR) \
+	ARCH=arm OS=linux OSREL=2.4.22 install
 #	install -d $(SER_IPK_DIR)/opt/etc/
 #	install -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
 #	install -d $(SER_IPK_DIR)/opt/etc/init.d
