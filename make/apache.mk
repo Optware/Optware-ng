@@ -26,7 +26,7 @@ APACHE_DEPENDS=apr, apr-util, openssl
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=1
+APACHE_IPK_VERSION=2
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -125,6 +125,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
 	cat $(APACHE_PATCHES) |patch -p0 -d $(APACHE_BUILD_DIR)
 	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_DIR)/opt/share/apache2/build%" $(APACHE_BUILD_DIR)/config.layout
+	cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
 	(cd $(APACHE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APACHE_CPPFLAGS)" \
@@ -135,7 +136,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-layout=GNU \
-		--enable-mods-shared=most \
+		--enable-mods-shared=all \
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-apr-util=$(STAGING_DIR)/opt \
 		--with-expat=/opt \
@@ -190,6 +191,7 @@ apache-stage: $(STAGING_DIR)/opt/sbin/apxs
 $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
 	rm -rf $(APACHE_IPK_DIR) $(BUILD_DIR)/apache_*_armeb.ipk
 	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=/opt/share/apache2/build install
+	rm -rf $(APACHE_IPK_DIR)/opt/share/apache2/manual
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/libexec/*.so
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/ab
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/checkgid
@@ -203,7 +205,6 @@ $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
 	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/dbmmanage
 	install -d $(APACHE_IPK_DIR)/opt/etc/apache2/conf.d
-	install -m 644 $(APACHE_SOURCE_DIR)/httpd.conf $(APACHE_IPK_DIR)/opt/etc/apache2/httpd.conf
 	install -d $(APACHE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)/opt/etc/init.d/S80apache
 	$(MAKE) $(APACHE_IPK_DIR)/CONTROL/control
