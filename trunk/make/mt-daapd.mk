@@ -28,11 +28,11 @@ $(DL_DIR)/$(MT_DAAPD_SOURCE):
 mt-daapd-source: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 
 $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
+	$(MAKE) zlib-stage gdbm-stage libid3tag-stage
 	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR)
 	$(MT_DAAPD_UNZIP) $(DL_DIR)/$(MT_DAAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MT_DAAPD_PATCHES) | patch -d $(BUILD_DIR)/$(MT_DAAPD_DIR) -p1
 	mv $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR)
-
 	(cd $(MT_DAAPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MT_DAAPD_CPPFLAGS)" \
@@ -42,8 +42,8 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-	        --with-static-libs=$(STAGING_DIR)/lib \
-		--with-gdbm-include=$(STAGING_DIR)/include \
+	        --with-static-libs=$(STAGING_DIR)/opt/lib \
+		--with-gdbm-include=$(STAGING_DIR)/opt/include \
 		LIBS="-lgdbm -lid3tag -lz" \
 		ac_cv_func_setpgrp_void=yes \
 	)
