@@ -31,9 +31,9 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap ntp freeradius puppy screen bind svn \
 	   m4 make patch vsftpd distcc libjpeg imagemagick \
-	   nfs-utils tar
+	   nfs-utils tar coreutils
 
-PACKAGES_TO_BE_TESTED:= coreutils
+PACKAGES_TO_BE_TESTED:=
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
@@ -63,7 +63,7 @@ BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
 STAGING_PREFIX=$(STAGING_DIR)/opt
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
-TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
+TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 PACKAGE_DIR=$(BASE_DIR)/packages
 
 CROSS_CONFIGURATION=gcc-3.3.4-glibc-2.2.5
