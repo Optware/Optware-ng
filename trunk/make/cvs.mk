@@ -62,3 +62,5 @@ cvs-distclean:
 	-rm $(CVS_DIR)/.configured
 	-$(MAKE) -C $(CVS_DIR) distclean
 
+cvs-dirclean:
+	rm -rf $(CVS_DIR) $(CVS_IPK_DIR) $(CVS_IPK)
