@@ -74,7 +74,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 
 PACKAGES_THAT_NEED_TO_BE_FIXED = perl file nethack scponly tcpdump nload nmap bison
 
-PACKAGES_FOR_DEVELOPERS = toolchain-native
+PACKAGES_FOR_DEVELOPERS = crosstool-native
 
 NATIVE_ONLY_PACKAGES =
 
