@@ -38,7 +38,7 @@ GHOSTSCRIPT_CONFFILES=/opt/etc/ghostscript.conf /opt/etc/init.d/SXXghostscript
 ## GHOSTSCRIPT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GHOSTSCRIPT_PATCHES=$(GHOSTSCRIPT_SOURCE_DIR)/configure.patch
+GHOSTSCRIPT_PATCHES=$(GHOSTSCRIPT_SOURCE_DIR)/patch
 
 #
 # If the compilation of the package requires additional
@@ -91,10 +91,10 @@ $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) $(GHOSTSCRIPT_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libjpeg-stage zlib-stage libpng-stage
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1
+	cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
 	(cd $(GHOSTSCRIPT_BUILD_DIR); \
 		ln -s src/unix-gcc.mak Makefile ; \
@@ -102,7 +102,12 @@ $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) $(GHOSTSCR
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GHOSTSCRIPT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GHOSTSCRIPT_LDFLAGS)" \
-		$(MAKE) obj/arch.h obj/genconf obj/echogs \
+		$(MAKE) obj/arch.h ; \
+		cp $(GHOSTSCRIPT_SOURCE_DIR)/arch.h obj/arch.h; \
+		$(MAKE) obj/genconf obj/echogs; \
+		ln -s ../../builds/libjpeg jpeg; \
+		ln -s ../../builds/zlib zlib; \
+		ln -s ../../builds/libpng libpng; \
 	)
 	touch $(GHOSTSCRIPT_BUILD_DIR)/.configured
 
@@ -145,16 +150,9 @@ ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 #
 $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_armeb.ipk
-	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) DESTDIR=$(GHOSTSCRIPT_IPK_DIR) install
-	install -d $(GHOSTSCRIPT_IPK_DIR)/opt/etc/
-	install -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/ghostscript.conf $(GHOSTSCRIPT_IPK_DIR)/opt/etc/ghostscript.conf
-	install -d $(GHOSTSCRIPT_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(GHOSTSCRIPT_SOURCE_DIR)/rc.ghostscript $(GHOSTSCRIPT_IPK_DIR)/opt/etc/init.d/SXXghostscript
+	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) prefix=$(GHOSTSCRIPT_IPK_DIR)/opt DESTDIR=$(GHOSTSCRIPT_IPK_DIR) install
 	install -d $(GHOSTSCRIPT_IPK_DIR)/CONTROL
 	install -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/control $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
-	install -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/postinst $(GHOSTSCRIPT_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/prerm $(GHOSTSCRIPT_IPK_DIR)/CONTROL/prerm
-	echo $(GHOSTSCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(GHOSTSCRIPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GHOSTSCRIPT_IPK_DIR)
 
 #
