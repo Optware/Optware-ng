@@ -11,7 +11,7 @@ if ( [ ! -c /dev/lp0 ] ) then
 fi
 
 # Make sure the printer driver is running
-if ( !(grep "^printer" `lsmod` -q) ); then
+if ( !(lsmod | grep "^printer" -q) ); then
         insmod /opt/lib/modules/printer.o
 fi
 
