@@ -46,7 +46,7 @@ $(TERMCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(TERMCAP_SOURCE)
 termcap-unpack: $(TERMCAP_BUILD_DIR)/.configured
 
 $(TERMCAP_BUILD_DIR)/libtermcap.a: $(TERMCAP_BUILD_DIR)/.configured
-	make -C $(TERMCAP_BUILD_DIR) AR=$(TARGET_CROSS)ar
+	make -C $(TERMCAP_BUILD_DIR) AR=$(TARGET_AR)
 
 termcap: $(TERMCAP_BUILD_DIR)/libtermcap.a
 
