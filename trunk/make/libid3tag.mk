@@ -41,7 +41,7 @@ $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION): $(LIBID3TAG_DIR)/.configur
 
 libid3tag-headers: $(STAGING_DIR)/lib/libid3tag.a
 
-libid3tag: $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
+libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 
 $(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 	mkdir -p $(LIBID3TAG_IPK_DIR)/CONTROL
