@@ -31,7 +31,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	imagemagick inetutils iptables ircd-hybrid \
 	jove \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
-	libpng libstdc++ libtiff libtool lsof \
+	libpng libstdc++ libtiff libtool libxml2 lsof \
 	m4 make mc mdadm miau mtr \
 	nail nano ncurses nload nmap ntp ntpclient \
 	openssh openssl \
@@ -45,22 +45,15 @@ NATIVE_AND_CROSS_PACKAGES = \
 	xinetd \
 	zlib \
 
-CROSS_PACKAGES = \
-	freeradius \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft \
-	glib \
-	libogg libvorbis libpcap logrotate \
-	mt-daapd \
-	nfs-server nfs-utils \
-	pcre popt proftpd \
-	rdate \
-	svn
+NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING =
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
 CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox
+
+CROSS_ONLY_PACKAGES_READY_FOR_TESTING =
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
@@ -75,28 +68,36 @@ NATIVE_ONLY_PACKAGES = \
 	perl \
 	squid
 
-PACKAGES = \
-	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
+NATIVE_ONLY_PACKAGES_READY_FOR_TESTING =
 
-NATIVE_PACKAGES = \
-	$(NATIVE_AND_CROSS_PACKAGES) $(NATIVE_ONLY_PACKAGES)
+UNSORTED_PACKAGES = \
+	freeradius \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft glib \
+	jikes \
+	libogg libvorbis libpcap logrotate \
+	mt-daapd \
+	nfs-server nfs-utils \
+	pcre popt proftpd \
+	rdate \
+	svn \
+	which
 
-PACKAGES_TO_BE_TESTED = 
+DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
-	   e2fsprogs dump gkrellm
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump e2fsprogs dump gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump
+CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES)
 
-PACKAGES_FOR_DEVELOPERS = crosstool-native
+NATIVE_PACKAGES = $(NATIVE_AND_CROSS_PACKAGES) $(NATIVE_ONLY_PACKAGES)
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
 	)
 
 ifeq ($(HOST_MACHINE),armv5b)
-native:
-	$(MAKE) PACKAGES="$(NATIVE_PACKAGES)" all
+PACKAGES = $(NATIVE_PACKAGES)
+else
+PACKAGES = $(CROSS_PACKAGES)
 endif
 
 all: directories toolchain packages
