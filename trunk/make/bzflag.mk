@@ -105,6 +105,7 @@ $(BZFLAG_BUILD_DIR)/.configured: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-client \
+		--enable-curl=no \
 		--without-SDL \
 	)
 	touch $(BZFLAG_BUILD_DIR)/.configured
