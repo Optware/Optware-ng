@@ -26,7 +26,7 @@ $(MT_DAAPD_DIR)/.source: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 	mv $(BUILD_DIR)/$(MT_DAAPD) $(MT_DAAPD_DIR)
 	touch $(MT_DAAPD_DIR)/.source
 
-$(MT_DAAPD_DIR)/.configured: $(MT_DAAPD_DIR)/.source
+$(MT_DAAPD_DIR)/.configured: $(MT_DAAPD_DIR)/.source mt-daapd-deps
 	export LDFLAGS=$(STAGING_LDFLAGS) CPPFLAGS=$(STAGING_CPPFLAGS); \
 	(cd $(MT_DAAPD_DIR); \
 	./configure \
@@ -46,8 +46,9 @@ $(MT_DAAPD_DIR)/src/mt-daapd: $(MT_DAAPD_DIR)/.configured
 
 #mt-daapd-headers: $(STAGING_DIR)/sbin/mt-daapd
 
-mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_DIR)/src/mt-daapd
+mt-daapd: $(MT_DAAPD_DIR)/src/mt-daapd
 
+mt-daapd-deps: zlib gdbm libid3tag
 $(MT_DAAPD_IPK): $(MT_DAAPD_DIR)/src/mt-daapd
 	-mkdir -p $(MT_DAAPD_IPK_DIR)	
 	$(MAKE) -C $(MT_DAAPD_DIR) DESTDIR=$(MT_DAAPD_IPK_DIR) install
