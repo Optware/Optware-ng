@@ -28,12 +28,11 @@ FETCHMAIL_UNZIP=zcat
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=1
+FETCHMAIL_IPK_VERSION=2
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
-#FETCHMAIL_CONFFILES=/opt/etc/fetchmail.conf /opt/etc/init.d/SXXfetchmail
-FETCHMAIL_CONFFILES=
+FETCHMAIL_CONFFILES=/opt/etc/fetchmailrc /opt/etc/init.d/S52fetchmail
 
 #
 # FETCHMAIL_PATCHES should list any patches, in the the order in

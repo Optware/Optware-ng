@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo -n "(re)starting service fetchmail"
+
 if [ -n "`pidof fetchmail`" ]; then 
     /bin/killall fetchmail 2>/dev/null
 fi
