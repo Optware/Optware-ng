@@ -28,7 +28,7 @@ STUNNEL_UNZIP=zcat
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=5
+STUNNEL_IPK_VERSION=6
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
@@ -158,8 +158,8 @@ stunnel-stage: $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION)
 #
 $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
 	rm -rf $(STUNNEL_IPK_DIR) $(BUILD_DIR)/stunnel_*_armeb.ipk
-	install -d $(STUNNEL_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/bin/stunnel
+	install -d $(STUNNEL_IPK_DIR)/opt/sbin
+	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/sbin/stunnel
 	install -d $(STUNNEL_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/.libs/libstunnel.so -o $(STUNNEL_IPK_DIR)/opt/lib/libstunnel.so
 	install -d $(STUNNEL_IPK_DIR)/opt/var/stunnel

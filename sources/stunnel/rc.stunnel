@@ -4,4 +4,4 @@ if [ -n "`pidof stunnel`" ] ;then
 	/bin/killall stunnel 2>/dev/null
 fi
 
-/opt/bin/stunnel
+/opt/sbin/stunnel
