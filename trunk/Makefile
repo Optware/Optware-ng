@@ -25,7 +25,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   sudo rsync rdate grep jove lsof \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
-	   ncurses ircd-hybrid procps ntp \
+	   ncurses ircd-hybrid procps ntp popt \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
@@ -34,10 +34,10 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff less nfs-utils
 
-PACKAGES_TO_BE_TESTED:= crosstool-native appweb popt
+PACKAGES_TO_BE_TESTED:= crosstool-native
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
-	   e2fsprogs dump glib gkrellm
+	   e2fsprogs dump glib gkrellm appweb
 
 PACKAGES_THAT_NEED_TO_BE_FIXED:= perl imagemagick 
 
