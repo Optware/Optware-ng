@@ -143,7 +143,7 @@ libtool-stage: $(STAGING_DIR)/opt/lib/libltdl.so.3.1.0
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/libtool
+$(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
 	rm -rf $(LIBTOOL_IPK_DIR) $(LIBTOOL_IPK)
 	install -d $(LIBTOOL_IPK_DIR)/opt/include
 	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/ltdl.h $(LIBTOOL_IPK_DIR)/opt/include
