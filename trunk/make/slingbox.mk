@@ -26,6 +26,7 @@ slingbox-source: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 $(SLINGBOX_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 	$(SLINGBOX_UNZIP) $(DL_DIR)/$(SLINGBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	patch -d $(BUILD_DIR)/$(SLINGBOX) -p1 < $(SOURCE_DIR)/slingbox.patch
+	[ -d $(BUILD_DIR)/slingbox ] && rm -rf $(BUILD_DIR)/slingbox
 	mv $(BUILD_DIR)/$(SLINGBOX) $(BUILD_DIR)/slingbox
 	cp $(SLINGBOX_CONFIG) $(SLINGBOX_DIR)/.config
 #ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
