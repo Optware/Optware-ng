@@ -14,8 +14,8 @@ CYRUS-IMAPD_IPK_VERSION=1
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
-#CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/configure.patch $(CYRUS-IMAPD_SOURCE_DIR)/lib.Makefile.in.patch
-CYRUS-IMAPD_PATCHES=
+CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.in.patch $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.PL.patch
+#CYRUS-IMAPD_PATCHES=
 
 CYRUS-IMAPD_CPPFLAGS=
 CYRUS-IMAPD_LDFLAGS=
@@ -35,7 +35,7 @@ $(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IM
 	$(MAKE) cyrus-sasl-stage
 	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
 	$(CYRUS-IMAPD_UNZIP) $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CYRUS-IMAPD_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
+	cat $(CYRUS-IMAPD_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
 	(cd $(CYRUS-IMAPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -73,7 +73,8 @@ cyrus-imapd: $(CYRUS-IMAPD_BUILD_DIR)/.built
 
 $(CYRUS-IMAPD_BUILD_DIR)/.staged: $(CYRUS-IMAPD_BUILD_DIR)/.built
 	rm -f $(CYRUS-IMAPD_BUILD_DIR)/.staged
-	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	echo "Warning: the makefile target 'cyrus-imapd-stage' is not available."
 	touch $(CYRUS-IMAPD_BUILD_DIR)/.staged
 
 cyrus-imapd-stage: $(CYRUS-IMAPD_BUILD_DIR)/.staged
@@ -130,6 +131,9 @@ $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/man -type d -exec chmod go+rx {} \;
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CYRUS-IMAPD_SOURCE_DIR)/rc.cyrus-imapd $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d/S59cyrus-imapd
+	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d; \
+		ln -s S59cyrus-imapd K41cyrus-imapd \
+	)
 
 # Split into the different packages
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)-doc

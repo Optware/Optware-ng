@@ -82,10 +82,11 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	cyrus-imapd \
 
-# cyrus-imapd fails when compiling the perl stuff
+# cyrus-imapd fails when compiling the perl stuff - fixed
 # perl-dbi's sources cannot be be downloaded (404 not found)
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	cyrus-imapd perl-dbi
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	perl-dbi
 
 
 HOST_MACHINE:=$(shell uname -m | sed \
