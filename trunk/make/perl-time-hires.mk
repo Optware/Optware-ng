@@ -10,7 +10,7 @@ PERL-TIME-HIRES_SOURCE=Time-HiRes-$(PERL-TIME-HIRES_VERSION).tar.gz
 PERL-TIME-HIRES_DIR=Time-HiRes-$(PERL-TIME-HIRES_VERSION)
 PERL-TIME-HIRES_UNZIP=zcat
 
-PERL-TIME-HIRES_IPK_VERSION=1
+PERL-TIME-HIRES_IPK_VERSION=2
 
 PERL-TIME-HIRES_CONFFILES=
 
@@ -32,6 +32,7 @@ $(PERL-TIME-HIRES_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TIME-HIRES_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -41,7 +42,8 @@ perl-time-hires-unpack: $(PERL-TIME-HIRES_BUILD_DIR)/.configured
 
 $(PERL-TIME-HIRES_BUILD_DIR)/.built: $(PERL-TIME-HIRES_BUILD_DIR)/.configured
 	rm -f $(PERL-TIME-HIRES_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-TIME-HIRES_BUILD_DIR)
+	$(MAKE) -C $(PERL-TIME-HIRES_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-TIME-HIRES_BUILD_DIR)/.built
 
 perl-time-hires: $(PERL-TIME-HIRES_BUILD_DIR)/.built
@@ -56,12 +58,13 @@ perl-time-hires-stage: $(PERL-TIME-HIRES_BUILD_DIR)/.staged
 $(PERL-TIME-HIRES_IPK): $(PERL-TIME-HIRES_BUILD_DIR)/.built
 	rm -rf $(PERL-TIME-HIRES_IPK_DIR) $(BUILD_DIR)/perl-time-hires_*_armeb.ipk
 	$(MAKE) -C $(PERL-TIME-HIRES_BUILD_DIR) DESTDIR=$(PERL-TIME-HIRES_IPK_DIR) install
-	find $(PERL-TIME-HIRES_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-TIME-HIRES_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-TIME-HIRES_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-TIME-HIRES_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-TIME-HIRES_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-TIME-HIRES_SOURCE_DIR)/control $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-TIME-HIRES_SOURCE_DIR)/postinst $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/postinst
