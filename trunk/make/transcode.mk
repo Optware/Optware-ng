@@ -30,7 +30,7 @@ TRANSCODE_UNZIP=zcat
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=1
+TRANSCODE_IPK_VERSION=2
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files
@@ -97,7 +97,7 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
-	$(MAKE) ffmpeg-stage lame-stage freetype-stage libdvdread-stage
+	$(MAKE) ffmpeg-stage lame-stage freetype-stage libdvdread-stage libogg-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cd $(BUILD_DIR)/$(TRANSCODE_DIR); AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f
@@ -129,7 +129,6 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 		--with-mjpegtools-includes=$(STAGING_DIR)/opt \
 		--with-gtk-includes=$(STAGING_DIR)/opt \
 		--with-imagemagick-includes=$(STAGING_DIR)/opt \
-		--with-libiconv-includes=$(STAGING_DIR)/opt \
 		--with-ffmpeg_libs-libs=$(STAGING_DIR)/opt \
 		--with-avifile-libs=$(STAGING_DIR)/opt \
 		--with-lame-libs=$(STAGING_DIR)/opt \
@@ -146,7 +145,6 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 		--with-mjpegtools-libs=$(STAGING_DIR)/opt \
 		--with-gtk-libs=$(STAGING_DIR)/opt \
 		--with-imagemagick-libs=$(STAGING_DIR)/opt \
-		--with-libiconv-libs=$(STAGING_DIR)/opt \
 		--with-ft-exec-prefix=$(STAGING_DIR)/opt \
 		--with-ft-prefix=$(STAGING_DIR)/opt \
 		--disable-freetypetest \

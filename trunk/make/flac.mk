@@ -28,7 +28,7 @@ FLAC_UNZIP=zcat
 #
 # FLAC_IPK_VERSION should be incremented when the ipk changes.
 #
-FLAC_IPK_VERSION=1
+FLAC_IPK_VERSION=2
 
 #
 # FLAC_CONFFILES should be a list of user-editable files
@@ -92,8 +92,7 @@ flac-source: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
 #
 $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
 	#[JEC] we need libogg-1.1.2 but right now there's only libogg-1.0
-	#$(MAKE) libiconv-stage libogg-stage
-	$(MAKE) libiconv-stage
+	#$(MAKE) libogg-stage
 	rm -rf $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR)
 	$(FLAC_UNZIP) $(DL_DIR)/$(FLAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0
