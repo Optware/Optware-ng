@@ -5,13 +5,14 @@
 ###########################################################
 
 MIAU_DIR=$(BUILD_DIR)/miau
+MIAU_SOURCE_DIR=$(SOURCE_DIR)/miau
 MIAU_VERSION=0.5.3
 MIAU=miau-$(MIAU_VERSION)
 MIAU_SITE=http://aleron.dl.sourceforge.net/sourceforge/miau
 MIAU_SOURCE_ARCHIVE=$(MIAU).tar.gz
 MIAU_UNZIP=zcat
 
-MIAU_IPK=$(BUILD_DIR)/miau_$(MIAU_VERSION)-1_armeb.ipk
+MIAU_IPK=$(BUILD_DIR)/miau_$(MIAU_VERSION)-2_armeb.ipk
 MIAU_IPK_DIR=$(BUILD_DIR)/miau-$(MIAU_VERSION)-ipk
 
 #
@@ -59,8 +60,19 @@ $(MIAU_DIR)/.configured: $(MIAU_DIR)/.source
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/opt	\
+		--enable-dccbounce \
+		--enable-automode \
+		--enable-releasenick \
+		--enable-ctcp-replies \
+		--enable-mkpasswd \
+		--enable-uptime \
 		--enable-chanlog \
+		--enable-privlog \
 		--enable-onconnect \
+		--enable-empty-awaymsg \
+		--enable-enduserdebug \
+		--enable-pingstat \
+		--enable-dumpstatus \
 	);
 	touch $(MIAU_DIR)/.configured
 
@@ -86,8 +98,10 @@ $(MIAU_IPK): $(MIAU_DIR)/src/miau
 	install -d $(MIAU_IPK_DIR)/opt/bin $(MIAU_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(MIAU_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
 	cp $(MIAU_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/etc/miaurc
-	cp $(SOURCE_DIR)/miau.rc $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
-	cp $(SOURCE_DIR)/miau.control $(MIAU_IPK_DIR)/CONTROL/control
+	cp $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
+	cp $(MIAU_SOURCE_DIR)/control $(MIAU_IPK_DIR)/CONTROL/control
+	cp $(MIAU_SOURCE_DIR)/postinst $(MIAU_IPK_DIR)/CONTROL/postinst
+	cp $(MIAU_SOURCE_DIR)/prerm $(MIAU_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MIAU_IPK_DIR)
 
 #

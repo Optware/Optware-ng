@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ ! -d /root ] ;  then
+	mkdir /root
+fi
+
+if [ ! -d /root/.miau ] ;  then
+	mkdir /root/.miau
+fi
+
+if [ ! -f /root/.miau/miaurc ] ;  then
+	cp /opt/etc/miaurc /root/.miau/miaurc
+	echo ; echo
+	echo "To complete the installation, you must edit /root/.miau/miaurc,"
+	echo "and then run /opt/etc/init.d/S52miau to start miau."
+	echo
+else
+	/opt/etc/init.d/S52miau
+fi
