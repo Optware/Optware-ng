@@ -72,6 +72,7 @@ $(OPENSSH_BUILD_DIR)/ssh: $(OPENSSH_BUILD_DIR)/.configured
 openssh: openssl-stage $(OPENSSH_BUILD_DIR)/ssh
 
 $(OPENSSH_IPK): $(OPENSSH_BUILD_DIR)/ssh
+	rm -rf $(OPENSSH_IPK_DIR) $(BUILD_DIR)/openssh_*_armeb.ipk
 	$(MAKE) DESTDIR=$(OPENSSH_IPK_DIR) -C $(OPENSSH_BUILD_DIR) install-files
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
 	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
