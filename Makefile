@@ -41,7 +41,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	tar tcpwrappers termcap \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
-	wget-ssl \
+	wget-ssl which\
 	xinetd \
 	zlib \
 
@@ -78,8 +78,7 @@ NATIVE_ONLY_PACKAGES = \
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	clamav \
 	wakelan \
-	samba \
-	which 
+	samba 
 
 UNSORTED_PACKAGES = \
 	freeradius \
@@ -112,11 +111,10 @@ endif
 
 all: directories toolchain packages
 
-ifeq ($(HOST_MACHINE),armv5b)
 testing:
+ifeq ($(HOST_MACHINE),armv5b)
 	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(NATIVE_ONLY_PACKAGES_READY_FOR_TESTING)" all
 else
-testing:
 	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(CROSS_ONLY_PACKAGES_READY_FOR_TESTING)" all
 endif
 
