@@ -70,6 +70,7 @@ procps: ncurses $(PROCPS_DIR)/watch
 # This builds the IPK file.
 #
 $(PROCPS_IPK): $(PROCPS_DIR)/watch
+	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_armeb.ipk
 	mkdir -p $(PROCPS_IPK_DIR)/CONTROL
 	mkdir -p $(PROCPS_IPK_DIR)/opt
 	mkdir -p $(PROCPS_IPK_DIR)/opt/bin
