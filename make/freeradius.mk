@@ -178,7 +178,7 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	install -m 644 $(FREERADIUS_SOURCE_DIR)/postinst $(FREERADIUS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FREERADIUS_SOURCE_DIR)/prerm $(FREERADIUS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_IPK_DIR)
-	
+
 $(FREERADIUS_DOC_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	rm -rf $(FREERADIUS_DOC_IPK_DIR) $(FREERADIUS_DOC_IPK)
 	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/doc
@@ -206,3 +206,4 @@ freeradius-clean:
 #
 freeradius-dirclean:
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(FREERADIUS_BUILD_DIR) $(FREERADIUS_IPK_DIR) $(FREERADIUS_IPK)
+	rm -rf $(FREERADIUS_DOC_IPK_DIR) $(FREERADIUS_DOC_IPK)
