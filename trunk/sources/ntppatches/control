@@ -1,0 +1,8 @@
+Package: ntppatches 
+Priority: optional
+Version: 0.0.0-1
+Architecture: armeb
+Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
+Section: net
+Source: ntppatches.tar.gz
+Description: Supplies patches to activate ntpclient in the NSLU2 environment.  Install after ntpclient. 

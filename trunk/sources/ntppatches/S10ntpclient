@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+. /etc/rc.d/rc.functions
+#
+# Start the NTP Client
+#  
+start() {
+    echo -n "Starting NTP Client Service: "
+    if [ -n "`pidof ntpclient`" ]; then
+	echo -n "?already running"
+	false; check_status;
+	return
+    fi
+#   Not required:
+#   /opt/sbin/adjtimex -t 10000
+#
+#    Simple set first.  This will abruptly ensure that we are in sync with the server
+#    if the server responds, we'll set the hwclock to match the response
+#
+    /opt/bin/ntpclient -s -l -h 0.pool.ntp.org > /var/log/ntp.log && hwclock --systohc --utc
+#
+#   Now start daemon to keep us in sync
+#
+    /opt/bin/ntpclient -i 600 -l -h 0.pool.ntp.org >> /var/log/ntp.log & 
+    check_status;
+    return
+}
+stop() {
+    echo "Shutting down NTP Client Service: "
+    if [ -n "`pidof ntpclient`" ]; then
+        /bin/killall ntpclient 2>/dev/null
+    fi
+    return
+}
+ntpstatus() {
+    echo "Not implemented"
+    return
+}
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+	ntpstatus
+	;;
+  restart|reload)
+	restart
+	;;
+  condrestart)
+	[ -n "`pidof ntpclient`" ] && restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|status|restart|condrestart}"
+	exit 1
+esac
+exit $?
