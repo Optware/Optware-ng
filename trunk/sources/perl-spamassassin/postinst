@@ -1,0 +1,24 @@
+#!/bin/sh
+
+/bin/echo
+/bin/echo Please read the man-pages and perldocs carefully:
+/bin/echo -e "\t\$ export PERLDOC_PAGER=\"less -+C -E -R\""
+/bin/echo -e "\t\$ perldoc Mail::SpamAssassin::Conf"
+/bin/echo -e "\t\$ man spamassassin"
+/bin/echo
+/bin/echo You may want to create a new user and group,
+/bin/echo -e "\t\$ vi /etc/passwd"
+/bin/echo -e "\t+spamd:x:40:40:spamd:/opt/var/spool/spamd:"
+/bin/echo -e "\t\$ vi /etc/group"
+/bin/echo -e "\t+spamd:x:40:spamd"
+/bin/echo -e "\t\$ mkdir -p /opt/var/spool/spamd/.spamassassin"
+/bin/echo -e "\t\$ chown -R spamd:spamd /opt/var/spool/spamd/.spamassassin"
+/bin/echo
+/bin/echo and integrate perl-spamassassin into your mail server.
+/bin/echo Postfix users can find a patch for master.cf in
+/bin/echo "/opt/etc/doc/perl-spamassassin"
+/bin/echo
+/bin/echo Finally you can start the spamd-server:
+/bin/echo -e "\t\$ /opt/etc/init.d/S62spamd"
+/bin/echo
+
