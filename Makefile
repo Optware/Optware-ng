@@ -83,8 +83,10 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# bogofilter's configure want's to run some small executables
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	asterisk
+	asterisk \
+	bogofilter \
 
 # vim won't compile: "vim.h:40: error: parse error before ':' token"
 # perl-spamassassin can't be downloaded: 404 not found
