@@ -1,6 +1,6 @@
 Package: libcurl
 Priority: optional
-Version: 7.12.2
+Version: 7.12.2-1
 Architecture: armeb
 Depends: 
 Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
