@@ -1,0 +1,11 @@
+diff -Naur a/src/Makefile.am b/src/Makefile.am
+--- a/src/Makefile.am	2005-02-06 01:30:07.000000000 +0000
++++ b/src/Makefile.am	2005-02-06 01:30:31.000000000 +0000
+@@ -19,6 +19,6 @@
+ 	opn_hash.c opn_hash.h \
+ 	opn_utils.c opn_utils.h
+ 
+-libOpenNap_la_LIBADD = $(GIFT_OPENNAP_LIBS)
++libOpenNap_la_LIBADD = -lgift
+ libOpenNap_la_LDFLAGS = -module -avoid-version
+ 
