@@ -111,7 +111,7 @@ vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(VSFTPD_BUILD_DIR)/vsftpd: $(VSFTPD_BUILD_DIR)/.configured
-	$(MAKE) -C $(VSFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) 
+	$(MAKE) -C $(VSFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) LIBS="$(STAGING_LDFLAGS) -lcrypt"
 
 #
 # You should change the dependency to refer directly to the main binary
