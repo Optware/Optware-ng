@@ -121,7 +121,7 @@ $(IMAGEMAGICK_BUILD_DIR)/imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.configured
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-imagemagick: $(IMAGEMAGICK_BUILD_DIR)/imagemagick
+imagemagick: $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert
 
 #
 # If you are building a library, then you need to stage it too.
@@ -151,14 +151,28 @@ imagemagick-stage: $(STAGING_DIR)/opt/lib/libimagemagick.so.$(IMAGEMAGICK_VERSIO
 #
 $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/imagemagick
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(IMAGEMAGICK_IPK)
-	install -d $(IMAGEMAGICK_IPK_DIR)/opt/bin
-	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/imagemagick -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/imagemagick
-	install -d $(IMAGEMAGICK_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(IMAGEMAGICK_SOURCE_DIR)/rc.imagemagick $(IMAGEMAGICK_IPK_DIR)/opt/etc/init.d/SXXimagemagick
+#	install -d $(IMAGEMAGICK_IPK_DIR)/opt/bin
+
+	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install_sh_PROGRAM="/bin/sh $(IMAGEMAGICK_BUILD_DIR)/install-sh -c -s" INSTALL_STRIP_FLAG=-s INSTALL_PROGRAM="/bin/sh $(IMAGEMAGICK_BUILD_DIR)/install-sh -c -s" install-exec-am
+
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/animate -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/animate
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/compare -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/compare
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/composite -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/composite
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/conjure -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/conjure
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/convert
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/display -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/display
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/identify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/identify
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/import -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/import
+##whats this for?
+##	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/lt-convert -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/lt-convert
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/mogrify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/mogrify
+#	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/montage -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/montage
+#	install -d $(IMAGEMAGICK_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(IMAGEMAGICK_SOURCE_DIR)/rc.imagemagick $(IMAGEMAGICK_IPK_DIR)/opt/etc/init.d/SXXimagemagick
 	install -d $(IMAGEMAGICK_IPK_DIR)/CONTROL
 	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/control $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
-	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/postinst $(IMAGEMAGICK_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/prerm $(IMAGEMAGICK_IPK_DIR)/CONTROL/prerm
+#	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/postinst $(IMAGEMAGICK_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/prerm $(IMAGEMAGICK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAGEMAGICK_IPK_DIR)
 
 #
