@@ -27,10 +27,10 @@ NATIVE_AND_CROSS_PACKAGES = \
 	diffutils distcc dnsmasq dropbear \
 	file findutils flex \
 	gawk gdbm grep \
-	inetutils iptables \
+	imagemagick inetutils iptables \
 	jove \
-	less libdb libevent libid3tag libjpeg libpng libtool lsof \
-	m4 make miau \
+	less libdb libevent libid3tag libjpeg libpng libtiff libtool lsof \
+	m4 make mc miau \
 	nano ncurses ntp ntpclient \
 	patch portmap procps puppy \
 	rsync \
@@ -45,9 +45,9 @@ CROSS_ONLY_PACKAGES = \
 	bind busybox \
 	dhcp \
 	freeradius \
-	imagemagick ircd-hybrid \
-	libbt libcurl libpcap libtiff logrotate \
-	mc mdadm mt-daapd \
+	ircd-hybrid \
+	libbt libcurl libpcap logrotate \
+	mdadm mt-daapd \
 	nail nfs-server nfs-utils \
 	openssl openssh \
 	popt \
