@@ -5,12 +5,13 @@
 #############################################################
 
 SLUGTOOL_DIR:=$(TOOL_BUILD_DIR)/slugtool
+SLUGTOOL_SOURCE_DIR:=$(SOURCE_DIR)/slugtool
 
 SLUGTOOL_SITE:=http://www.lantz.com/filemgmt_data/files/
 SLUGTOOL_SOURCE:=slugtool.tar.gz
 SLUGTOOL_UNZIP:=zcat
 
-SLUGTOOL_PATCH:=$(SOURCE_DIR)/slugtool.patch
+SLUGTOOL_PATCH:=$(SLUGTOOL_SOURCE_DIR)/redboot_typo.patch
 
 $(DL_DIR)/$(SLUGTOOL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(SLUGTOOL_SITE)/$(SLUGTOOL_SOURCE)

@@ -1,0 +1,57 @@
+Index: slugtool/slugtool.c
+===================================================================
+RCS file: /cvsroot/nslu/unslung/slugtool/slugtool.c,v
+retrieving revision 1.1
+diff -c -u -r1.1 slugtool.c
+--- slugtool/slugtool.c	31 Aug 2004 10:46:58 -0000	1.1
++++ slugtool/slugtool.c	31 Aug 2004 11:01:05 -0000
+@@ -2,11 +2,11 @@
+ 
+ #define NULLFILE ((FILE *)NULL)
+ 
+-#define REDBOOK_START		0
+-#define REDBOOK_LENGTH		0x40000
++#define REDBOOT_START		0
++#define REDBOOT_LENGTH		0x40000
+ 
+ #define CONF_SECTION_LENGTH	0x20000
+-#define CONF_HEADER		(REDBOOK_START + REDBOOK_LENGTH)
++#define CONF_HEADER		(REDBOOT_START + REDBOOT_LENGTH)
+ #define CONF_HEADER_LENGTH	0x10
+ #define CONF_START		(CONF_HEADER + CONF_HEADER_LENGTH)
+ #define CONF_LENGTH		(CONF_SECTION_LENGTH - CONF_HEADER_LENGTH)
+@@ -96,10 +96,10 @@
+ 	printf ("Unpacking '%s'....\n", filename);
+ 	fpin = fopen (filename, "r");
+ 
+-	fseek (fpin, REDBOOK_START, SEEK_SET);
+-	printf ("\tRedbook....\n");
+-	fpout = fopen ("Redbook", "w");
+-	writefile (REDBOOK_LENGTH, fpin, fpout);
++	fseek (fpin, REDBOOT_START, SEEK_SET);
++	printf ("\tRedboot....\n");
++	fpout = fopen ("Redboot", "w");
++	writefile (REDBOOT_LENGTH, fpin, fpout);
+ 	fclose (fpout);
+ 
+ 	printf ("\tReading SysConf Header....\n");
+@@ -169,14 +169,14 @@
+ 
+ 	fpout = fopen (filename, "r+");
+ 
+-	printf ("\tRedbook....\n");
+-	fpin = fopen ("Redbook", "r");
++	printf ("\tRedboot....\n");
++	fpin = fopen ("Redboot", "r");
+ 	if (fpin == NULLFILE) {
+-		printf ("File 'Redbook' not found!\n");
++		printf ("File 'Redboot' not found!\n");
+ 		usage ();
+ 	}
+-	fseek (fpout, REDBOOK_START, SEEK_SET);
+-	writefile (REDBOOK_LENGTH, fpin, fpout);
++	fseek (fpout, REDBOOT_START, SEEK_SET);
++	writefile (REDBOOT_LENGTH, fpin, fpout);
+ 	fclose (fpin);
+ 
+ 	printf ("\tSysConf....\n");
