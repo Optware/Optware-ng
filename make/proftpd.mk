@@ -110,6 +110,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-modules=mod_tls \
+		--enable-ctrls \
 		--cache-file=config.cache \
 	)
 	touch $(PROFTPD_BUILD_DIR)/.configured
@@ -168,17 +169,20 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	# Install conf files
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
-	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/etc/init.d/.S58proftpd
 	# Install doc file
 	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/rc.xinetd.proftpd
-	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd-install.doc
-	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd.xinetd
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/anonymous.conf
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/basic.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/basic.conf
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/complex-virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/complex-virtual.conf
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/mod_sql.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/mod_sql.conf
-	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/virtual.conf
+	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/doc
+	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_SOURCE_DIR)/inetd.conf.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/basic.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/complex-virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/mod_sql.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
+	# Make directory in which to store keys
+	install -d $(PROFTPD_IPK_DIR)/opt/etc/ftpd
 	# Install man pages
 	install -d $(PROFTPD_IPK_DIR)/opt/man/man1 
 	install -d $(PROFTPD_IPK_DIR)/opt/man/man5
