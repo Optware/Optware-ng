@@ -140,7 +140,7 @@ joe-stage: $(JOE_BUILD_DIR)/.staged
 #
 $(JOE_IPK): $(JOE_BUILD_DIR)/.built
 	rm -rf $(JOE_IPK_DIR) $(BUILD_DIR)/joe_*_armeb.ipk
-	$(MAKE) -C $(JOE_BUILD_DIR) DESTDIR=$(JOE_IPK_DIR) install
+	$(MAKE) -C $(JOE_BUILD_DIR) DESTDIR=$(JOE_IPK_DIR) install-strip
 	install -d $(JOE_IPK_DIR)/opt/etc/
 	install -d $(JOE_IPK_DIR)/CONTROL
 	install -m 644 $(JOE_SOURCE_DIR)/control $(JOE_IPK_DIR)/CONTROL/control
