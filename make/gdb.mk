@@ -92,6 +92,13 @@ gdb-source: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+
+#
+# Note: there is a problem with TUI in that some parts of the configuration
+# can correctly detect the presence of ncurses while the actual compilation
+# doesn't find the ncurses.h header file. Workaround is to disable TUI.
+# 
+
 $(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
@@ -108,6 +115,7 @@ $(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-tui \
 	)
 	touch $(GDB_BUILD_DIR)/.configured
 
