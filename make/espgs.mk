@@ -92,7 +92,7 @@ $(DL_DIR)/$(ESPGS_SOURCE):
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
-	$(MAKE) libjpeg-stage zlib-stage libpng-stage
+	$(MAKE) libjpeg-stage zlib-stage libpng-stage libtiff-stage cups-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
 	$(ESPGS_UNZIP) $(DL_DIR)/$(ESPGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ESPGS_PATCHES) | patch -d $(BUILD_DIR)/$(ESPGS_DIR) -p1
