@@ -13,7 +13,7 @@ BUSYBOX_VERSION:=$(strip $(USE_BUSYBOX_SNAPSHOT))
 BUSYBOX:=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_SITE:=http://www.busybox.net/downloads/snapshots
 else
-BUSYBOX_VERSION:=1.00-rc3
+BUSYBOX_VERSION:=1.00
 BUSYBOX:=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_SITE:=http://www.busybox.net/downloads
 endif

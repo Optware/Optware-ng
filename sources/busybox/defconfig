@@ -30,7 +30,7 @@ EXTRA_CFLAGS_OPTIONS=""
 #
 # Installation Options
 #
-# CONFIG_INSTALL_NO_USR is not set
+CONFIG_INSTALL_NO_USR=y
 PREFIX="/opt"
 
 #
