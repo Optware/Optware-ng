@@ -11,5 +11,3 @@ if [ "`cat /etc/inetd.conf|grep 'tftp'`" = "" ]; then
 fi
 
 /etc/rc.d/rc.xinetd
-
-/opt/etc/init.d/S60atftpd
