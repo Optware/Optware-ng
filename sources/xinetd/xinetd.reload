@@ -1,0 +1,11 @@
+#!/bin/sh
+
+PID_FILE=/var/run/xinetd.pid
+
+if [ -s $PID_FILE ]; then
+   kill -s HUP `cat $PID_FILE`
+   exit #?
+else
+   echo "Error: xinetd not running"
+   exit 1
+fi
