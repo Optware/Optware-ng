@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Diversion script for xinetd - nothing goes here except for return 0
+#   xinetd is started from /opt/etc/init.d later
+#
+
+return 0
