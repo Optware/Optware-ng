@@ -24,11 +24,17 @@ LIBPNG_VERSION=1.2.8
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION)-config.tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
+LIBPNG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBPNG_DESCRIPTION=Portable Network Graphics Libraries
+LIBPNG_SECTION=lib
+LIBPNG_PRIORITY=optional
+LIBPNG_DEPENDS=zlib
+LIBPNG_CONFLICTS=
 
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=2
+LIBPNG_IPK_VERSION=3
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
@@ -143,6 +149,24 @@ $(STAGING_DIR)/opt/lib/libpng.so: $(LIBPNG_BUILD_DIR)/.built
 libpng-stage: $(STAGING_DIR)/opt/lib/libpng.so
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libpng
+#
+$(LIBPNG_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBPNG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libpng" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBPNG_PRIORITY)" >>$@
+	@echo "Section: $(LIBPNG_SECTION)" >>$@
+	@echo "Version: $(LIBPNG_VERSION)-$(LIBPNG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBPNG_MAINTAINER)" >>$@
+	@echo "Source: $(LIBPNG_SITE)/$(LIBPNG_SOURCE)" >>$@
+	@echo "Description: $(LIBPNG_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBPNG_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBPNG_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBPNG_IPK_DIR)/opt/sbin or $(LIBPNG_IPK_DIR)/opt/bin
@@ -167,8 +191,7 @@ $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 #	$(STRIP_COMMAND) $(LIBPNG_BUILD_DIR)/libpng -o $(LIBPNG_IPK_DIR)/opt/bin/libpng
 #	install -d $(LIBPNG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBPNG_SOURCE_DIR)/rc.libpng $(LIBPNG_IPK_DIR)/opt/etc/init.d/SXXlibpng
-	install -d $(LIBPNG_IPK_DIR)/CONTROL
-	install -m 644 $(LIBPNG_SOURCE_DIR)/control $(LIBPNG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBPNG_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBPNG_SOURCE_DIR)/postinst $(LIBPNG_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBPNG_SOURCE_DIR)/prerm $(LIBPNG_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPNG_IPK_DIR)
