@@ -8,12 +8,4 @@ if [ ! -d /var/spool/miau ] ;  then
     mkdir /var/spool/miau
 fi
 
-if [ ! -f /opt/etc/miau.conf ] ;  then
-    cp /opt/doc/miau/miaurc /opt/etc/miau.conf
-    echo ; echo
-    echo "To complete the installation, you must edit /opt/etc/miau.conf,"
-    echo "and then run /opt/etc/init.d/S52miau to start miau."
-    echo
-else
-    /opt/etc/init.d/S52miau
-fi
+/opt/etc/init.d/S52miau
