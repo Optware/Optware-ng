@@ -11,7 +11,10 @@ TCPWRAPPERS=tcp_wrappers_$(TCPWRAPPERS_VERSION)
 TCPWRAPPERS_SITE=ftp://ftp.porcupine.org/pub/security/
 TCPWRAPPERS_SOURCE:=$(TCPWRAPPERS).tar.gz
 TCPWRAPPERS_UNZIP=zcat
-TCPWRAPPERS_IPK=$(BUILD_DIR)/tcpwrappers_$(TCPWRAPPERS_VERSION)-1_armeb.ipk
+
+TCPWRAPPERS_IPK_VERSION=2
+
+TCPWRAPPERS_IPK=$(BUILD_DIR)/tcpwrappers_$(TCPWRAPPERS_VERSION)-$(TCPWRAPPERS_IPK_VERSION)_armeb.ipk
 TCPWRAPPERS_IPK_DIR:=$(BUILD_DIR)/tcpwrappers-$(TCPWRAPPERS_VERSION)-ipk
 TCPWRAPPERS_PATCH=$(SOURCE_DIR)/tcpwrappers.patch
 
@@ -41,17 +44,17 @@ $(TCPWRAPPERS_IPK): $(TCPWRAPPERS_DIR)/tcpd
 	install -d $(TCPWRAPPERS_IPK_DIR)/CONTROL
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/lib
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/sbin
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/share/man/man3
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/share/man/man5
-	install -d $(TCPWRAPPERS_IPK_DIR)/opt/share/man/man8
+	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
+	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
+	install -d $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/libexec
 	install -m 755 $(SOURCE_DIR)/tcpwrappers.control $(TCPWRAPPERS_IPK_DIR)/CONTROL/control
 	install -m 755 $(TCPWRAPPERS_DIR)/tcpd  $(TCPWRAPPERS_IPK_DIR)/opt/libexec
 	install -m 755 $(TCPWRAPPERS_DIR)/tcpdchk $(TCPWRAPPERS_IPK_DIR)/opt/sbin
 	install -m 755 $(TCPWRAPPERS_DIR)/tcpdmatch $(TCPWRAPPERS_IPK_DIR)/opt/sbin
-	install -m 755 $(TCPWRAPPERS_DIR)/tcpd*.8 $(TCPWRAPPERS_IPK_DIR)/opt/share/man/man8
-	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.3 $(TCPWRAPPERS_IPK_DIR)/opt/share/man/man3
-	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.5 $(TCPWRAPPERS_IPK_DIR)/opt/share/man/man5
+	install -m 755 $(TCPWRAPPERS_DIR)/tcpd*.8 $(TCPWRAPPERS_IPK_DIR)/opt/man/man8
+	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.3 $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
+	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.5 $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
 	install -m 755 $(TCPWRAPPERS_DIR)/libwrap.a $(TCPWRAPPERS_IPK_DIR)/opt/lib
 	install -m 755 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_DIR)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCPWRAPPERS_IPK_DIR)
