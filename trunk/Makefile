@@ -27,7 +27,11 @@ PACKAGES:= dropbear busybox miau zlib \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
 	   ncurses ircd-hybrid procps dnsmasq \
-	   tcpwrappers libevent vdr-mediamvp
+	   tcpwrappers libevent vdr-mediamvp \
+	   termcap wget bzip2 dhcp
+
+PACKAGES_TO_BE_TESTED:= \
+	   dump e2fsprogs gkrellm glib
 
 WGET=wget --passive-ftp
 
