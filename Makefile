@@ -32,9 +32,9 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
-	   freeradius libpcap
+	   libpcap
 
-PACKAGES_TO_BE_TESTED:= 
+PACKAGES_TO_BE_TESTED:= freeradius 
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
