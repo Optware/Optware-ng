@@ -40,8 +40,8 @@
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-<FOO>_CPPFLAGS=""
-<FOO>_LDFLAGS=""
+<FOO>_CPPFLAGS=
+<FOO>_LDFLAGS=
 
 #
 # <FOO>_BUILD_DIR is the directory in which the build is done.
