@@ -14,9 +14,6 @@ LIBUSB_SOURCE=libusb-$(LIBUSB_VERSION).tar.gz
 LIBUSB_DIR=libusb-$(LIBUSB_VERSION)
 LIBUSB_UNZIP=zcat
 
-LIBUSB_SO_NAME=libusb-0.1.so
-LIBUSB_SO_VERSION=4.4.0
-
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -104,10 +101,10 @@ libusb: $(LIBUSB_BUILD_DIR)/libusb.la
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libusb.la: $(LIBUSB_BUILD_DIR)/libusb.la
+$(STAGING_LIB_DIR)/libusb.la: $(LIBUSB_BUILD_DIR)/libusb.la
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 
-libusb-stage: $(STAGING_DIR)/opt/lib/libusb.la
+libusb-stage: $(STAGING_LIB_DIR)/libusb.la
 
 #
 # This builds the IPK file.
