@@ -29,7 +29,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
-	   libpcap ntp freeradius puppy screen bind svn \
+	   libpcap freeradius puppy screen bind svn \
 	   m4 make patch vsftpd distcc libjpeg imagemagick \
 	   nfs-utils tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff
@@ -39,7 +39,7 @@ PACKAGES_TO_BE_TESTED:= crosstool-native
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED:= perl
+PACKAGES_THAT_NEED_TO_BE_FIXED:= perl ntp 
 
 WGET=wget --passive-ftp
 CVS=cvs
