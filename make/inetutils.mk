@@ -32,7 +32,6 @@ $(INETUTILS_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE)
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--infodir=/opt/doc/inetutils \
 	)
