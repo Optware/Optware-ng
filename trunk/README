@@ -57,11 +57,14 @@ INSTALLATION DETAILS
 3) Verify your NSLU2 is working normally at this point.
 
 'UNSLINGING' DETAILS
-1) Identify which drive you wish you change to UNSLUNG capable, plug in.
-2) Enable telnet by going to http://192.168.1.77/Management/telnet.cgi, 
+0) Note that this only has to be done when you update the firmware.
+1) Enable telnet by going to http://192.168.1.77/Management/telnet.cgi, 
    and press the enable button.
-3) Telnet into the NSLU2 using the username root and password uNSLUng.
+2) Telnet into the NSLU2 using the username root and password uNSLUng.
+3) Identify which drive you wish you change to UNSLUNG capable, plug in.
 4) Run /sbin/unsling and watch the ramdisk files be copied to your disk.
+   The files from the ramdisk will be copied to the "conf" partition,
+   not the "data" partition.
 5) Reboot.
 
 Congratulations, you're now UNSLUNG!  You should have an extra 10M of free
@@ -97,8 +100,15 @@ return 0
 That is, if the diversion script returns with something other than 0, it will
 run the rest of the factory script.  
 
+Note that any variable definitions or function declarations are allowed to
+happen before the diversion script is called.  This allows you to use the
+variables and functions defined by the factory script.
+
 PACKAGE INSTALLATION 
 1)  Run "ipkg update" on the NSLU2.
+    Note that the package repository is on SourceForge.net, and their
+    mirrors sometimes need a kick to operate.  If you get a file not found
+    then just run it again and it should work on the second try.
 2)  Run "ipkg list" to see the available packages.
 3)  Run "ipkg install <package-name>" to install them.
 
@@ -122,7 +132,12 @@ ADDITIONAL INFORMATION:
     sure they are still compatible with the new firmware version).
 
 4)  The unsling script will never touch any files under /unslung or /opt,
-    so please store all your additional files there.
+    so please store all your additional files there.  However, any existing
+    files that you modify in any other of the standard directories will
+    be overwritten when you next update the firmware and unsling the disk.
+    If you need to modify a file in /etc for example, then write a
+    diversion script which does it on each boot (perhaps by symlinking
+    it to a file in /opt/etc which will not be touched by unsling).
 
 5)  The diversion of startup scripts is done at the lowest granularity,
     so you can, for instance, just divert the rc.xinetd script if you
@@ -134,11 +149,13 @@ ADDITIONAL INFORMATION:
 7)  The /sbin/unsling script can take a new version of the Linksys
     ramdisk, and update your unslung hard disk root filesystem from
     that.  This makes sure that unslung can take advantage of any new
-    Linksys features.
+    Linksys features.  As noted in item #4, if you have modified any
+    of the files from the Linksys ramdisk, then they will be overwritten.
+    Keep your modifications in /unslung and /opt and they will be safe.
 
 8)  When Linksys release a new version of the firmware, it is a simple
     job for us to release a new corresponding unslung firmware.  And
-    the process for doing this is available in the CVS repository, so
+    the Makefile for doing this is available in the CVS repository, so
     anyone can do it for themselves if we don't get around to it.
  
 9)  Note that telnet is not enabled by default - there is a dropbear
