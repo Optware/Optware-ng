@@ -1,0 +1,12 @@
+Modifications:
+- configure.ac: duplicate AC_TRY_RUN, last line as separate argument for REGEX.
+
+- autoconf
+
+- configure
+
+Problems:
+- configure does not find ncurses, even if explicitly set
+- make seems to want aclocal 1.7 and automake 1.7. We have 1.6 installed. We should
+  disable the re-running of aclocal and automake etc...
+
