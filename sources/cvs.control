@@ -1,0 +1,9 @@
+Package: cvs
+Priority: optional
+Version: 1.12.9-1
+Architecture: armeb
+Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
+Section: devel
+Source: https://ccvs.cvshome.org/files/documents/19/201/cvs-1.12.9.tar.gz
+Description: CVS
+
