@@ -102,6 +102,7 @@ $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGN
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTGNUTELLA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTGNUTELLA_LDFLAGS)" \
 		./configure \
+		--with-zlib=/home/slug/unslung/staging/opt \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -155,22 +156,19 @@ gift-gnutella-stage: $(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_V
 #
 $(GIFTGNUTELLA_IPK): $(GIFTGNUTELLA_BUILD_DIR)/.built
 	rm -rf $(GIFTGNUTELLA_IPK_DIR) $(BUILD_DIR)/gift-gnutella_*_armeb.ipk
-	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(GIFTGNUTELLA_BUILD_DIR)/gift-gnutella -o $(GIFTGNUTELLA_IPK_DIR)/opt/bin/gift-gnutella
-	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/etc/
-	install -m 755 $(GIFTGNUTELLA_SOURCE_DIR)/gift-gnutella.conf $(GIFTGNUTELLA_IPK_DIR)/opt/etc/gift-gnutella.conf
-	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(GIFTGNUTELLA_SOURCE_DIR)/rc.gift-gnutella $(GIFTGNUTELLA_IPK_DIR)/opt/etc/init.d/SXXgift-gnutella
+	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT
+	$(STRIP_COMMAND) $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.so -o $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.so
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.la $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.la
+	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/Gnutella.conf.template $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/Gnutella.conf.template
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/hostiles.txt $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/hostiles.txt
+	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/gwebcaches $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/gwebcaches
 	install -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
 	install -m 644 $(GIFTGNUTELLA_SOURCE_DIR)/control $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control
-	install -m 644 $(GIFTGNUTELLA_SOURCE_DIR)/postinst $(GIFTGNUTELLA_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(GIFTGNUTELLA_SOURCE_DIR)/prerm $(GIFTGNUTELLA_IPK_DIR)/CONTROL/prerm
-	echo $(GIFTGNUTELLA_CONFFILES) | sed -e 's/ /\n/g' > $(GIFTGNUTELLA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTGNUTELLA_IPK_DIR)
-
-#
 # This is called from the top level makefile to create the IPK file.
 #
+
 gift-gnutella-ipk: $(GIFTGNUTELLA_IPK)
 
 #

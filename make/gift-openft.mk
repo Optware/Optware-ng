@@ -43,7 +43,7 @@ GIFTOPENFT_CONFFILES=/opt/etc/gift-openft.conf /opt/etc/init.d/SXXgift-openft
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GIFTOPENFT_CPPFLAGS=-S
+GIFTOPENFT_CPPFLAGS=
 GIFTOPENFT_LDFLAGS=
 
 #
@@ -95,12 +95,13 @@ $(GIFTOPENFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTOPENFT_SOURCE) $(GIFTOPENFT
 	$(GIFTOPENFT_UNZIP) $(DL_DIR)/$(GIFTOPENFT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTOPENFT_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTOPENFT_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFTOPENFT_DIR) $(GIFTOPENFT_BUILD_DIR)
-	(cd $(GIFTOPENFT_BUILD_DIR); rm -rf config.cache; autoconf; \
+	(cd $(GIFTOPENFT_BUILD_DIR);  \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)";export PKG_CONFIG_PATH; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTOPENFT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTOPENFT_LDFLAGS)" \
 		./configure \
+		--with-zlib=/home/slug/unslung/staging/opt \
 		--disable-libdb \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
