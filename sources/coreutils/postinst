@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/bin/chown 0:0 /opt/bin/su
+/bin/chmod 4755 /opt/bin/su
