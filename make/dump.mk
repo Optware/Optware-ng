@@ -75,8 +75,6 @@ $(DUMP_IPK): $(DUMP_DIR)/dump/dump
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DUMP_IPK_DIR)
 
-$(DUMP_IPK)/staging: $(DUMP_IPK)
-
 
 dump-ipk: $(DUMP_IPK)
 
