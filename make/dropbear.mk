@@ -41,7 +41,3 @@ dropbear-upkg: dropbear
 
 dropbear-clean:
 	-make -C $(BUILD_DIR)/dropbear clean
-
-install: dropbear-install
-
-clean: dropbear-clean
