@@ -73,7 +73,7 @@ TARGET_CONFIGURE_OPTS= \
 		CXX="$(TARGET_CROSS)g++" \
 		RANLIB=$(TARGET_CROSS)ranlib
 
-all: world unslung packages
+all: world packages unslung
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
 TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
