@@ -8,7 +8,10 @@ SUDO_VERSION:=1.6.8p1
 SUDO:=sudo-$(SUDO_VERSION)
 SUDO_SITE=http://probsd.org/sudoftp
 SUDO_SOURCE:=$(SUDO).tar.gz
-SUDO_IPK:=$(BUILD_DIR)/sudo_$(SUDO_VERSION)-2_armeb.ipk
+
+SUDO_IPK_VERSION:=3
+
+SUDO_IPK:=$(BUILD_DIR)/sudo_$(SUDO_VERSION)-$(SUDO_IPK_VERSION)_armeb.ipk
 SUDO_IPK_DIR:=$(BUILD_DIR)/sudo-$(SUDO_VERSION)-ipk
 SUDO_PATCH:=$(SUDO_SOURCE_DIR)/configure.patch
 
