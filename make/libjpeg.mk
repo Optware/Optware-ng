@@ -131,7 +131,7 @@ $(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/bin
-	install -d $(STAGING_DIR)/opt/share/man/man1
+	install -d $(STAGING_DIR)/opt/man/man1
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
 	rm -f $(STAGING_DIR)/opt/lib/libjpeg.la
 
