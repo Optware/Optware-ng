@@ -7,9 +7,4 @@ if [ -n "`pidof cron`" ]; then
     /bin/killall cron 2>/dev/null
 fi
 
-# Stop the stock crond if running
-if [ -n "`pidof crond`" ]; then
-    /bin/killall crond 2>/dev/null
-fi
-
 /opt/sbin/cron
