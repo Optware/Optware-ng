@@ -25,6 +25,7 @@ $(VDR_MEDIAMVP_DIR)/.source: $(DL_DIR)/$(VDR_MEDIAMVP_SOURCE)
 	touch $(VDR_MEDIAMVP_DIR)/.source
 
 $(VDR_MEDIAMVP_DIR)/console/mediamvp: $(VDR_MEDIAMVP_DIR)/.source
+	$(MAKE) libid3tag-stage libevent-stage
 	echo "EXTRA_INCLUDES=-I$(STAGING_DIR)/opt/include" > $(VDR_MEDIAMVP_DIR)/config.mak
 	echo "EXTRA_LIBS=-L$(STAGING_DIR)/opt/lib " >> $(VDR_MEDIAMVP_DIR)/config.mak
 	echo "HAVE_LIBID3TAG=1" >> $(VDR_MEDIAMVP_DIR)/config.mak

@@ -17,13 +17,6 @@ IRCD_HYBRID_IPK=$(BUILD_DIR)/ircd-hybrid_$(IRCD_HYBRID_VERSION)-$(IRCD_HYBRID_IP
 IRCD_HYBRID_IPK_DIR=$(BUILD_DIR)/ircd-hybrid-$(IRCD_HYBRID_VERSION)-ipk
 
 #
-# Setting these up because Flex includes and libraries get put in these
-# locations and IRCD Hybrid needs them.
-#
-MY_STAGING_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/include/include"
-MY_STAGING_LDFLAGS="$(STAGING_LDFLAGS) -L$(STAGING_DIR)/lib/lib"
-
-#
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
@@ -54,9 +47,10 @@ $(IRCD_HYBRID_DIR)/.source: $(DL_DIR)/$(IRCD_HYBRID_SOURCE_ARCHIVE)
 # to Make causes it to override the default search paths of the compiler.
 #
 $(IRCD_HYBRID_DIR)/.configured: $(IRCD_HYBRID_DIR)/.source
+	$(MAKE) flex-stage
 	(cd $(IRCD_HYBRID_DIR); \
-	export LDFLAGS=$(MY_STAGING_LDFLAGS); \
-	export CPPFLAGS=$(MY_STAGING_CPPFLAGS); \
+	export CPPFLAGS="$(STAGING_CPPFLAGS)"; \
+	export LDFLAGS="$(STAGING_LDFLAGS)"; \
 	./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
