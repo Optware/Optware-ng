@@ -133,7 +133,7 @@ emacs: $(EMACS_BUILD_DIR)/.built
 $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 	rm -rf $(EMACS_IPK_DIR) $(BUILD_DIR)/emacs_*_armeb.ipk
 	install -d $(EMACS_IPK_DIR)/opt
-	$(MAKE) -C $(EMACS_BUILD_DIR) prefix=$(EMACS_IPK_DIR)/opt install
+	$(MAKE) -C $(EMACS_BUILD_DIR) prefix=$(EMACS_IPK_DIR)/opt install TARGET_LIBDIR=$(TARGET_LIBDIR)
 	rm -f $(EMACS_IPK_DIR)/opt/bin/emacs
 	ln -s /opt/bin/emacs-$(EMACS_VERSION) $(EMACS_IPK_DIR)/opt/bin/emacs
 	install -d $(EMACS_IPK_DIR)/CONTROL
