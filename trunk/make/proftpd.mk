@@ -173,7 +173,7 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	# Install doc file
 	install -d $(PROFTPD_IPK_DIR)/opt/doc
 	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
-	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/rc.xinetd
+	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/rc.xinetd.proftpd
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd-install.doc
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.xinetd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd.xinetd
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/anonymous.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd/anonymous.conf
