@@ -26,7 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON_VERSION=2.4
+PYTHON_VERSION=2.4.1
+PYTHON_VERSION_MAJOR=2.4
 PYTHON_SITE=http://www.python.org/ftp/python/$(PYTHON_VERSION)
 PYTHON_SOURCE=Python-$(PYTHON_VERSION).tgz
 PYTHON_DIR=Python-$(PYTHON_VERSION)
@@ -183,7 +184,9 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 	rm -rf $(PYTHON_IPK_DIR) $(BUILD_DIR)/python_*_$(TARGET_ARCH).ipk
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(PYTHON_IPK_DIR) install
-	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/bin/python
+	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/bin/python$(PYTHON_VERSION_MAJOR)
+	rm $(PYTHON_IPK_DIR)/opt/bin/python
+	cd $(PYTHON_IPK_DIR)/opt/bin; ln -s python$(PYTHON_VERSION_MAJOR) python
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
 	#install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
