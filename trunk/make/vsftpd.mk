@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=1
+VSFTPD_IPK_VERSION=2
 
 #
 # VSFTPD_PATCHES should list any patches, in the the order in
@@ -150,12 +150,13 @@ $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/vsftpd
 	install -d $(VSFTPD_IPK_DIR)/opt/bin
 #	$(TARGET_STRIP) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/bin/vsftpd
 	cp $(VSFTPD_BUILD_DIR)/vsftpd $(VSFTPD_IPK_DIR)/opt/bin/vsftpd
+	install -d $(VSFTPD_IPK_DIR)/opt/etc
+	install -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/opt/etc/vsftpd.conf
 #	install -d $(VSFTPD_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(VSFTPD_SOURCE_DIR)/rc.vsftpd $(VSFTPD_IPK_DIR)/opt/etc/init.d/SXXvsftpd
 	install -d $(VSFTPD_IPK_DIR)/CONTROL
 	install -m 644 $(VSFTPD_SOURCE_DIR)/control $(VSFTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/CONTROL/vsftpd.conf
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VSFTPD_IPK_DIR)
 
 #
