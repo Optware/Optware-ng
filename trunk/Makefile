@@ -56,8 +56,9 @@ DL_DIR=$(BASE_DIR)/downloads
 FIRMWARE_DIR=$(BASE_DIR)/firmware
 BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
+STAGING_PREFIX=$(STAGING_DIR)/opt
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
-TARGET_PATH=$(STAGING_DIR)/opt/bin:$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
+TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
 PACKAGE_DIR=$(BASE_DIR)/packages
 
 #GNU_TARGET_NAME=arm-linux
@@ -69,8 +70,11 @@ TARGET_LD=$(TARGET_CROSS)ld
 TARGET_AR=$(TARGET_CROSS)ar
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
 
-STAGING_CPPFLAGS=-I$(STAGING_DIR)/opt/include
-STAGING_LDFLAGS=-L$(STAGING_DIR)/opt/lib
+STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
+STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
+
+STAGING_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
+STAGING_LDFLAGS=-L$(STAGING_LIB_DIR)
 
 STRIP=$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
 
@@ -135,8 +139,9 @@ upload:
 	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 
-world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \
-	$(TOOL_INSTALL_DIR) $(PACKAGE_DIR) $(TARGETS_INSTALL)
+world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
+	$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_INSTALL_DIR) \
+	$(PACKAGE_DIR) $(TARGETS_INSTALL)
 	@echo "ALL DONE."
 
 .PHONY: all world clean dirclean distclean directories source unslung packages \
@@ -146,8 +151,8 @@ world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \
 
 include make/*.mk
 
-directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \
-		$(TOOL_BUILD_DIR) $(PACKAGE_DIR)
+directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
+		$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_BUILD_DIR) $(PACKAGE_DIR)
 
 $(DL_DIR):
 	mkdir $(DL_DIR)
@@ -157,6 +162,15 @@ $(BUILD_DIR):
 
 $(STAGING_DIR):
 	mkdir $(STAGING_DIR)
+
+$(STAGING_PREFIX):
+	mkdir $(STAGING_PREFIX)
+
+$(STAGING_LIB_DIR):
+	mkdir $(STAGING_LIB_DIR)
+
+$(STAGING_INCLUDE_DIR):
+	mkdir $(STAGING_INCLUDE_DIR)
 
 $(TOOL_BUILD_DIR):
 	mkdir $(TOOL_BUILD_DIR)
