@@ -13,6 +13,7 @@ INETUTILS_SOURCE:=$(INETUTILS).tar.gz
 INETUTILS_UNZIP:=zcat
 
 INETUTILS_IPK_VERSION=3
+INETUTILS_SOURCE_DIR=$(SOURCE_DIR)/inetutils
 
 INETUTILS_IPK:=$(BUILD_DIR)/inetutils_$(INETUTILS_VERSION)-$(INETUTILS_IPK_VERSION)_armeb.ipk
 INETUTILS_IPK_DIR:=$(BUILD_DIR)/inetutils-$(INETUTILS_VERSION)-ipk
@@ -48,9 +49,9 @@ $(INETUTILS_IPK): $(INETUTILS_DIR)/inetd/inetd
 	# Setuid stuff doesn't work as non-root, but we fix in in the postinst script.
 	make -C $(INETUTILS_DIR) DESTDIR=$(INETUTILS_IPK_DIR) install
 	install -d $(INETUTILS_IPK_DIR)/CONTROL $(INETUTILS_IPK_DIR)/opt/etc/init.d
-	install -m 644 $(SOURCE_DIR)/inetutils.control  $(INETUTILS_IPK_DIR)/CONTROL/control
-	install -m 644 $(SOURCE_DIR)/inetutils.postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
-	install -m 755 $(SOURCE_DIR)/inetutils.rc $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
+	install -m 644 $(INETUTILS_SOURCE_DIR)/control  $(INETUTILS_IPK_DIR)/CONTROL/control
+	install -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
+	install -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INETUTILS_IPK_DIR)
 
 inetutils-ipk: $(INETUTILS_IPK)
