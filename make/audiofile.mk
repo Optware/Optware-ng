@@ -144,6 +144,7 @@ audiofile: $(AUDIOFILE_BUILD_DIR)/.built
 $(AUDIOFILE_BUILD_DIR)/.staged: $(AUDIOFILE_BUILD_DIR)/.built
 	rm -f $(AUDIOFILE_BUILD_DIR)/.staged
 	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	cp $(STAGING_DIR)/opt/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
 	touch $(AUDIOFILE_BUILD_DIR)/.staged
 
 audiofile-stage: $(AUDIOFILE_BUILD_DIR)/.staged
