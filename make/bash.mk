@@ -53,7 +53,9 @@ bash: $(BASH_IPK_DIR)
 $(BASH_IPK): $(BASH_IPK_DIR)
 	mkdir -p $(BASH_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/bash.control $(BASH_IPK_DIR)/CONTROL/control
-	$(STRIP) $(BASH_DIR)/src/bash
+	install -d $(BASH_IPK_DIR)/opt/bin $(BASH_IPK_DIR)/opt/etc 
+	$(STRIP) $(BASH_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
+	cp $(SOURCE_DIR)/bash.profile $(BASH_IPK_DIR)/opt/etc/profile
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BASH_IPK_DIR)
 
