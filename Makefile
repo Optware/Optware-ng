@@ -69,7 +69,6 @@ CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # perl's Configure is not cross-compile "friendly"
 # squid probably will build cross - may just need some configure work
-# clamav probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
 NATIVE_ONLY_PACKAGES = \
 	autoconf \
@@ -82,7 +81,6 @@ NATIVE_ONLY_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
-	clamav # needs to be fixed - requires zlib 1.2.2 or later
 
 UNSORTED_PACKAGES = \
 	freeradius \
@@ -97,7 +95,7 @@ UNSORTED_PACKAGES = \
 
 DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump e2fsprogs dump gkrellm
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump e2fsprogs dump gkrellm	clamav
 
 CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES)
 
