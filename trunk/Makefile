@@ -27,7 +27,7 @@ CROSS_PACKAGES = \
 	dhcp diffutils distcc dnsmasq dropbear \
 	e2fsprogs ed elinks expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
-	gawk gconv-modules gdb gdbm gettext \
+	gawk gconv-modules gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
 	ice imagemagick inetutils iptables ircd-hybrid \
@@ -41,7 +41,7 @@ CROSS_PACKAGES = \
 	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
 	rdate recordext renderext rsync \
 	screen sed sm strace stunnel sudo svn \
-	tar tcpwrappers termcap torrent transcode ttf-bitstream-vera \
+	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd vte \
 	wakelan wget-ssl which \
@@ -52,7 +52,7 @@ CROSS_PACKAGES = \
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
-CROSS_PACKAGES_READY_FOR_TESTING = ghostscript \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
@@ -82,9 +82,11 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-spamassassin \
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius
+# perl-spamassassin can't be downloaded: 404 not found
+PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	perl-spamassassin \
+	nethack scponly dump gkrellm clamav freeradius
 
 
 HOST_MACHINE:=$(shell uname -m | sed \
