@@ -71,7 +71,7 @@ NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
 # metalog may compile native - don't have working native build support (bob_tm)
 # pkgconfig fails native during configure
 CROSS_ONLY_PACKAGES = \
-	appweb \
+	appweb apr \
 	busybox \
 	bzflag \
 	classpath \
@@ -121,7 +121,7 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	perl-time-hires \
 
 UNSORTED_PACKAGES = \
-	apache apr apr-util \
+	apache apr-util \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
