@@ -6,7 +6,7 @@
 
 RSYNC_DIR=$(BUILD_DIR)/rsync
 
-RSYNC_VERSION=2.6.2
+RSYNC_VERSION=2.6.3
 RSYNC=rsync-$(RSYNC_VERSION)
 RSYNC_SITE=http://rsync.samba.org/ftp/rsync/
 RSYNC_SOURCE=$(RSYNC).tar.gz
