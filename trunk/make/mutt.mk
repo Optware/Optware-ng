@@ -86,7 +86,7 @@ mutt-source: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage openssl-stage cyrus-sasl-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR)
 	$(MUTT_UNZIP) $(DL_DIR)/$(MUTT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MUTT_PATCHES) | patch -d $(BUILD_DIR)/$(MUTT_DIR) -p1
@@ -107,6 +107,10 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--with-mailpath=/opt/var/spool/mail \
+		--enable-imap \
+		--with-ssl \
+		--with-sasl2 \
+		--with-bdb \
 	)
 	touch $(MUTT_BUILD_DIR)/.configured
 
