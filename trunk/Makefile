@@ -45,6 +45,8 @@ NATIVE_AND_CROSS_PACKAGES = \
 	xinetd \
 	zlib \
 
+# busybox has PATH_MAX define issue on native
+# dhcp builds native if nroff is installed
 CROSS_PACKAGES = \
 	bind busybox \
 	dhcp \
