@@ -60,6 +60,7 @@ $(MT_DAAPD_BUILD_DIR)/src/mt-daapd: $(MT_DAAPD_BUILD_DIR)/.configured
 mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 
 $(MT_DAAPD_IPK): $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
+	rm -rf $(MT_DAAPD_IPK_DIR) $(BUILD_DIR)/mt-daapd_*_armeb.ipk
 	install -d $(MT_DAAPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
 	install -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d
