@@ -32,7 +32,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   libpcap ntp freeradius puppy screen bind svn \
 	   m4 make patch vsftpd distcc libjpeg imagemagick \
 	   nfs-utils tar coreutils gawk cpio findutils mc \
-	   libpng
+	   libpng diffutils
 
 PACKAGES_TO_BE_TESTED:= crosstool-native libtiff
 
