@@ -39,7 +39,7 @@ $(PORTMAP_IPK): $(PORTMAP_DIR)
 	install -d $(PORTMAP_IPK_DIR)/CONTROL
 	install -d $(PORTMAP_IPK_DIR)/opt/sbin $(PORTMAP_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(PORTMAP_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
-	install -m 755 $(SOURCE_DIR)/portmap.rc $(PORTMAP_IPK_DIR)/opt/etc/init.d/S50portmap
+	install -m 755 $(SOURCE_DIR)/portmap.rc $(PORTMAP_IPK_DIR)/opt/etc/init.d/S55portmap
 	install -m 644 $(SOURCE_DIR)/portmap.control  $(PORTMAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PORTMAP_IPK_DIR)
 

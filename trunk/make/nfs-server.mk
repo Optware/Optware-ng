@@ -54,7 +54,7 @@ $(NFS-SERVER_IPK): $(NFS-SERVER_DIR)
 	install -d $(NFS-SERVER_IPK_DIR)/opt/sbin $(NFS-SERVER_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(NFS-SERVER_DIR)/rpc.nfsd -o $(NFS-SERVER_IPK_DIR)/opt/sbin/rpc.nfsd
 	$(STRIP) $(NFS-SERVER_DIR)/rpc.mountd -o $(NFS-SERVER_IPK_DIR)/opt/sbin/rpc.mountd
-	install -m 755 $(SOURCE_DIR)/nfs-server.rc $(NFS-SERVER_IPK_DIR)/opt/etc/init.d/S5nfsd
+	install -m 755 $(SOURCE_DIR)/nfs-server.rc $(NFS-SERVER_IPK_DIR)/opt/etc/init.d/S55nfsd
 	install -m 644 $(SOURCE_DIR)/nfs-server.control  $(NFS-SERVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NFS-SERVER_IPK_DIR)
 
