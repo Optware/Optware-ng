@@ -14,15 +14,18 @@
 # You should change all these variables to suit your package.
 #
 CROSSTOOL-NATIVE_SITE=http://kegel.com/crosstool
-CROSSTOOL-NATIVE_VERSION=0.28-rc35
+CROSSTOOL-NATIVE_VERSION=0.28-rc37
 CROSSTOOL-NATIVE_SOURCE=crosstool-$(CROSSTOOL-NATIVE_VERSION).tar.gz
 CROSSTOOL-NATIVE_DIR=crosstool-$(CROSSTOOL-NATIVE_VERSION)
 CROSSTOOL-NATIVE_UNZIP=zcat
 
+CROSSTOOL-NATIVE_SCRIPT=nslu2-native335.sh
+CROSSTOOL-NATIVE_DAT=gcc-3.3.5-glibc-2.2.5.dat
+
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=4
+CROSSTOOL-NATIVE_IPK_VERSION=1
 
 #
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
@@ -87,7 +90,10 @@ $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE) 
 	$(CROSSTOOL-NATIVE_UNZIP) $(DL_DIR)/$(CROSSTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CROSSTOOL-NATIVE_PATCHES) | patch -d $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) -p1
 	mv $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) $(CROSSTOOL-NATIVE_BUILD_DIR)
-	cp $(CROSSTOOL-NATIVE_SOURCE_DIR)/demo-nslu2.sh $(CROSSTOOL-NATIVE_BUILD_DIR)/demo-nslu2.sh
+	cp $(CROSSTOOL-NATIVE_SOURCE_DIR)/$(CROSSTOOL-NATIVE_SCRIPT) $(CROSSTOOL-NATIVE_BUILD_DIR)/$(CROSSTOOL-NATIVE_SCRIPT)
+	cp $(CROSSTOOL-NATIVE_SOURCE_DIR)/$(CROSSTOOL-NATIVE_DAT)    $(CROSSTOOL-NATIVE_BUILD_DIR)/$(CROSSTOOL-NATIVE_DAT)
+	mkdir $(CROSSTOOL-NATIVE_BUILD_DIR)/patches/gcc-3.3.5
+	cp $(CROSSTOOL-NATIVE_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL-NATIVE_BUILD_DIR)/patches/gcc-3.3.5
 	touch $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 
 crosstool-native-unpack: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
@@ -117,7 +123,7 @@ $(CROSSTOOL-NATIVE_BUILD_DIR)/.built: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 		export CXX=$(TARGET_CROSS)g++ ; \
 		export GPROF=$(TARGET_CROSS)gprof ; \
 		export RANLIB=$(TARGET_CROSS)ranlib ; \
-		sh demo-nslu2.sh \
+		sh $(CROSSTOOL-NATIVE_SCRIPT) \
 	)
 	touch $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 
@@ -145,16 +151,20 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )
 # For some reason, syslimits.h is missing
-	touch $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
-	chmod 644 $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
+	touch $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h
+	chmod 644 $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h
 # Install symlinks for common toolchain programs
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
-	for f in ar as c++ cpp g++ gcc ld nm ranlib size strip ; do \
+	for f in ar as c++ g++ gcc ld nm ranlib strip ; do \
 	  rm -f $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
 	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/$$f \
 		$(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
 	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/$$f ; \
 	done
+	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-cpp  \
+		$(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/cpp
+	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-size \
+		$(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/size
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/CONTROL
 	install -m 644 $(CROSSTOOL-NATIVE_SOURCE_DIR)/control $(CROSSTOOL-NATIVE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)
