@@ -1,6 +1,6 @@
 Package: squid
 Priority: optional
-Version: 2.5.STABLE7
+Version: 2.5.STABLE7-1
 Architecture: armeb
 Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: util
