@@ -19,11 +19,14 @@
 #
 # You should change all these variables to suit your package.
 #
-GIFTARES_SITE=http://download.berlios.de/gift-ares
-GIFTARES_VERSION=0.2.1
-GIFTARES_SOURCE=gift-ares-$(GIFTARES_VERSION).tar.bz2
+GIFTARES_REPOSITORY=:pserver:anonymous@cvs.gift-ares.berlios.de:/cvsroot/gift-ares
+GIFTARES_VERSION=20050212
+GIFTARES_SOURCE=gift-ares-$(GIFTARES_VERSION).tar.gz
 GIFTARES_DIR=gift-ares-$(GIFTARES_VERSION)
-GIFTARES_UNZIP=bzcat
+GIFTARES_TAG=-D 2005-02-12
+GIFTARES_MODULE=gift-ares
+GIFTARES_DIR=gift-ares-${GIFTARES_VERSION}
+GIFTARES_UNZIP=zcat
 
 #
 # GIFTARES_IPK_VERSION should be incremented when the ipk changes.
@@ -63,10 +66,20 @@ GIFTARES_IPK=$(BUILD_DIR)/gift-ares_$(GIFTARES_VERSION)-$(GIFTARES_IPK_VERSION)_
 
 #
 # This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
+# then it will be fetched from cvs.
 #
 $(DL_DIR)/$(GIFTARES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GIFTARES_SITE)/$(GIFTARES_SOURCE)
+	cd $(DL_DIR) ; $(CVS) -z3 -d $(GIFTARES_REPOSITORY) co $(GIFTARES_TAG) $(GIFTARES_MODULE)
+	mv $(DL_DIR)/$(GIFTARES_MODULE) $(DL_DIR)/$(GIFTARES_DIR)
+	cd $(DL_DIR) ; tar zcvf $(GIFTARES_SOURCE) $(GIFTARES_DIR)
+	rm -rf $(DL_DIR)/$(GIFTARES_DIR)
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+#$(DL_DIR)/$(GIFTARES_SOURCE):
+#	$(WGET) -P $(DL_DIR) $(GIFTARES_SITE)/$(GIFTARES_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,6 +111,7 @@ $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCH
 	mv $(BUILD_DIR)/$(GIFTARES_DIR) $(GIFTARES_BUILD_DIR)
 	(cd $(GIFTARES_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
+		./autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTARES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTARES_LDFLAGS)" \
