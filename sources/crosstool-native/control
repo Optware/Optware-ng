@@ -1,6 +1,6 @@
 Package: crosstool-native
 Priority: optional
-Version: 0.28-rc35-3
+Version: 0.28-rc35-4
 Architecture: armeb
 Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: base

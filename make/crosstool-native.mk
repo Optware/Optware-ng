@@ -22,7 +22,7 @@ CROSSTOOL-NATIVE_UNZIP=zcat
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=3
+CROSSTOOL-NATIVE_IPK_VERSION=4
 
 #
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
@@ -147,9 +147,6 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 # For some reason, syslimits.h is missing
 	touch $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
 	chmod 644 $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
-# /lib/cpp is usually required
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/lib
-	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-cpp $(CROSSTOOL-NATIVE_IPK_DIR)/lib/cpp
 # Install symlinks for common toolchain programs
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
 	for f in ar as c++ cpp g++ gcc ld nm ranlib size strip ; do \
