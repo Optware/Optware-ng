@@ -42,7 +42,7 @@ PYTHON_DEPENDS=readline, ncurses, openssl
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=2
+PYTHON_IPK_VERSION=3
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -126,7 +126,7 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
+		--enable-unicode=ucs4 \
 	)
 	touch $(PYTHON_BUILD_DIR)/.configured
 
