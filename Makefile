@@ -121,7 +121,7 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	perl-time-hires \
 
 UNSORTED_PACKAGES = \
-	apache \
+	apache apr apr-util \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
