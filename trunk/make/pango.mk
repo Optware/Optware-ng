@@ -47,7 +47,7 @@ PANGO_LOCALES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PANGO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
+PANGO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -I$(STAGING_INCLUDE_DIR)/freetype2
 PANGO_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
