@@ -76,15 +76,16 @@ TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
 TARGET_LD=$(TARGET_CROSS)ld
 TARGET_AR=$(TARGET_CROSS)ar
+TARGET_AS=$(TARGET_CROSS)as
+TARGET_NM=$(TARGET_CROSS)nm
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
+TARGET_STRIP="$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note"
 
 STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
 STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
 
 STAGING_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
 STAGING_LDFLAGS=-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib
-
-STRIP=$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	-e 's/sparc.*/sparc/' \
@@ -100,14 +101,15 @@ HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
 	)
 GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
 TARGET_CONFIGURE_OPTS= \
-		AR=$(TARGET_CROSS)ar \
-		AS=$(TARGET_CROSS)as \
-		LD=$(TARGET_CROSS)ld \
-		NM=$(TARGET_CROSS)nm \
-		CC=$(TARGET_CROSS)gcc \
-		GCC=$(TARGET_CROSS)gcc \
-		CXX=$(TARGET_CROSS)g++ \
-		RANLIB=$(TARGET_CROSS)ranlib
+		AR=$(TARGET_AR) \
+		AS=$(TARGET_AS) \
+		LD=$(TARGET_LD) \
+		NM=$(TARGET_NM) \
+		CC=$(TARGET_CC) \
+		GCC=$(TARGET_CC) \
+		CXX=$(TARGET_CXX) \
+		RANLIB=$(TARGET_RANLIB) \
+		STRIP=$(TARGET_STRIP)
 
 all: directories crosstool packages
 
