@@ -20,7 +20,7 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox
+PACKAGES:= dropbear busybox #lsof
 
 WGET=wget --passive-ftp
 
@@ -93,7 +93,7 @@ $(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
 	-@mkdir -p $(PACKAGE_DIR)
 	{ \
 		cd $(PACKAGE_DIR); \
-		mv $(BUILD_DIR)/*.ipk .; \
+		cp $(BUILD_DIR)/*.ipk .; \
 		$(IPKG_MAKE_INDEX) . > Packages; \
 	}
 	@echo "ALL DONE."
@@ -107,8 +107,9 @@ world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) $(TARGETS_INSTALL)
 	@echo "ALL DONE."
 
 .PHONY: all world clean dirclean distclean directories source unslung packages \
-	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) \
-	$(PACKAGES_UPKG) $(PACKAGES_IPKG)
+	$(TARGETS) $(TARGETS_SOURCE) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) \
+	$(PACKAGES) $(PACKAGES_SOURCE) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) \
+	$(PACKAGES_IPKG)
 
 include make/*.mk
 

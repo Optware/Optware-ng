@@ -6,13 +6,15 @@
 
 DROPBEAR_DIR:=$(BUILD_DIR)/dropbear
 
-DROPBEAR_VERSION=0.43
-DROPBEAR=dropbear-$(DROPBEAR_VERSION)
-DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
+DROPBEAR_VERSION:=0.43
+DROPBEAR:=dropbear-$(DROPBEAR_VERSION)
+DROPBEAR_SITE:=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_SOURCE:=$(DROPBEAR).tar.bz2
-DROPBEAR_UNZIP=bzcat
+DROPBEAR_UNZIP:=bzcat
+
 DROPBEAR_PATCH:=$(SOURCE_DIR)/dropbear.patch
-DROPBEAR_IPK=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-1_armeb.ipk
+
+DROPBEAR_IPK:=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)_armeb.ipk
 DROPBEAR_IPK_DIR:=$(BUILD_DIR)/dropbear-$(DROPBEAR_VERSION)-ipk
 
 $(DL_DIR)/$(DROPBEAR_SOURCE):
@@ -20,11 +22,12 @@ $(DL_DIR)/$(DROPBEAR_SOURCE):
 
 dropbear-source: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH)
 
-$(DROPBEAR_DIR)/config.h: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH)
+$(DROPBEAR_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH)
 	@rm -rf $(BUILD_DIR)/$(DROPBEAR) $(DROPBEAR_DIR)
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	patch -d $(BUILD_DIR)/$(DROPBEAR) -p1 < $(DROPBEAR_PATCH)
-	cd $(BUILD_DIR)/$(DROPBEAR) && \
+	cat $(DROPBEAR_PATCH) | patch -d $(BUILD_DIR)/$(DROPBEAR) -p1
+	mv $(BUILD_DIR)/$(DROPBEAR) $(DROPBEAR_DIR)
+	cd $(DROPBEAR_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		./configure \
@@ -34,14 +37,16 @@ $(DROPBEAR_DIR)/config.h: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH)
 		--disable-zlib --disable-shadow \
 		--disable-lastlog --disable-utmp --disable-utmpx --disable-wtmp \
 		--disable-wtmpx --disable-libutil #--disable-openpty --enable-devptmx
-	mv $(BUILD_DIR)/$(DROPBEAR) $(DROPBEAR_DIR)
+	touch $(DROPBEAR_DIR)/.configured
 
-$(DROPBEAR_DIR)/dropbearmulti: $(DROPBEAR_DIR)/config.h
+dropbear-unpack: $(DROPBEAR_DIR)/.configured
+
+$(DROPBEAR_DIR)/dropbearmulti: $(DROPBEAR_DIR)/.configured
 	make -C $(DROPBEAR_DIR) dropbearmulti scp
 
 dropbear: $(DROPBEAR_DIR)/dropbearmulti
 
-dropbear-diff: #$(DROPBEAR_DIR)/config.h
+dropbear-diff: #$(DROPBEAR_DIR)/.configured
 	@rm -rf $(BUILD_DIR)/$(DROPBEAR)
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	-make -C $(DROPBEAR_DIR) distclean
