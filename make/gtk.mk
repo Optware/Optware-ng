@@ -26,7 +26,7 @@ GTK_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, x
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=1
+GTK_IPK_VERSION=2
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -185,6 +185,7 @@ gtk-stage: $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.so
 $(GTK_IPK): $(GTK_BUILD_DIR)/.built
 	rm -rf $(GTK_IPK_DIR) $(BUILD_DIR)/gtk_*_armeb.ipk
 	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
+	install -d $(GTK_IPK_DIR)/opt/etc/gtk-2.0
 	rm -f $(GTK_IPK_DIR)/opt/lib/*.la
 	rm -rf $(GTK_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(GTK_IPK_DIR)/CONTROL/control

@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mkdir -p /opt/etc/gtk-2.0
+
 ### configure gdk-pixbuf
 rm -f /opt/etc/gtk-2.0/gdk-pixbuf.loaders
 /opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-2.0/gdk-pixbuf.loaders
