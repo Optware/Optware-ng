@@ -70,11 +70,12 @@ CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 NATIVE_PACKAGES = \
 	autoconf \
 	bison \
+	cyrus-imapd \
 	emacs \
 	xemacs \
 	lynx \
 	openldap \
-	perl perl-db-file perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
+	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident perl-storable perl-time-hires \
 	postfix \
 	squid \
@@ -82,8 +83,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	cyrus-imapd \
-	perl-dbi \
 
 # cyrus-imapd fails when compiling the perl stuff - fixed
 # perl-dbi's sources cannot be be downloaded (404 not found) -fixed
