@@ -59,9 +59,12 @@ INSTALLATION DETAILS
    ext3 partitions, not Windows (vfat) partitions.
    The non-ext3flash firmare will mount flash disks like the stock firmware.
 3) Verify your NSLU2 is working normally at this point.
+4) Make sure that you do *not* have a disk plugged in when you reboot to
+   perform the next part of the installation.
 
 'UNSLINGING' DETAILS
 0) Note that this only has to be done when you update the firmware.
+   Also note that you should not have a disk plugged in at this stage.
 1) Enable telnet by going to http://192.168.1.77/Management/telnet.cgi, 
    and press the enable button.
 2) Telnet into the NSLU2 using the username root and password uNSLUng.
