@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "(re)starting service cyrus-imapd"
+
+if [ -f "/opt/var/run/cyrus.pid" ]; then 
+    /bin/kill -TERM `cat /opt/var/run/cyrus.pid` 2>/dev/null
+fi
+
+/opt/libexec/cyrus/bin/master -p /opt/var/run/cyrus.pid -d > /dev/null 2>&1
