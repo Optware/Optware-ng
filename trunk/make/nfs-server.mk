@@ -39,6 +39,11 @@ $(NFS_SERVER_DIR)/.configured: $(DL_DIR)/$(NFS_SERVER_SOURCE) $(NFS_SERVER_PATCH
 		--log-mounts=yes)
 	patch -d $(BUILD_DIR)/$(NFS_SERVER) -p1 < $(NFS_SERVER_PATCH)
 	mv $(BUILD_DIR)/$(NFS_SERVER) $(NFS_SERVER_DIR)
+	@if [ -a /usr/bin/hdiutil ]; \
+	then \
+	rm $(NFS_SERVER_DIR)/config.h; \
+	cp $(SOURCE_DIR)/nfs-server-darwin.config $(NFS_SERVER_DIR)/config.h; \
+	fi;
 	touch $(NFS_SERVER_DIR)/.configured
 
 nfs-server-unpack: $(NFS_SERVER_DIR)/.configured
