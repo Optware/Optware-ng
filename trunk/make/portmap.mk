@@ -20,14 +20,20 @@ $(DL_DIR)/$(PORTMAP_SOURCE):
 
 portmap-source: $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCH)
 
-$(PORTMAP_DIR): $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCH)
+$(PORTMAP_DIR)/.configured: $(DL_DIR)/$(PORTMAP_SOURCE) $(PORTMAP_PATCH)
 	@rm -rf $(BUILD_DIR)/$(PORTMAP) $(PORTMAP_DIR)
 	$(PORTMAP_UNZIP) $(DL_DIR)/$(PORTMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	patch -d $(BUILD_DIR)/$(PORTMAP) -p1 < $(PORTMAP_PATCH)
 	mv $(BUILD_DIR)/$(PORTMAP) $(PORTMAP_DIR)
-	make -C $(PORTMAP_DIR) 
+	touch $(PORTMAP_DIR)/.configured
 
-portmap: $(PORTMAP_DIR)
+portmap-unpack: $(PORTMAP_DIR)/.configured
+
+$(PORTMAP_DIR)/portmap: $(PORTMAP_DIR)/.configured
+	make -C $(PORTMAP_DIR) \
+		CC=$(TARGET_CC) LD=$(TARGET_LD) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
+
+portmap: $(PORTMAP_DIR)/portmap
 
 portmap-diff: #$(PORTMAP_DIR)/config.h
 	@rm -rf $(BUILD_DIR)/$(PORTMAP)
@@ -35,7 +41,7 @@ portmap-diff: #$(PORTMAP_DIR)/config.h
 	-make -C $(PORTMAP_DIR) distclean
 	-cd $(BUILD_DIR) && diff -BurN $(PORTMAP) portmap | grep -v ^Only > $(PORTMAP_PATCH)
 
-$(PORTMAP_IPK): $(PORTMAP_DIR)
+$(PORTMAP_IPK): $(PORTMAP_DIR)/portmap
 	install -d $(PORTMAP_IPK_DIR)/CONTROL
 	install -d $(PORTMAP_IPK_DIR)/opt/sbin $(PORTMAP_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(PORTMAP_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap

@@ -49,6 +49,9 @@ GNU_TARGET_NAME=armv5b-softfloat-linux
 GNU_SHORT_TARGET_NAME=arm-linux
 TARGET_CROSS=$(GNU_TARGET_NAME)-
 TARGET_CC=$(TARGET_CROSS)gcc
+TARGET_LD=$(TARGET_CROSS)ld
+TARGET_AR=$(TARGET_CROSS)ar
+TARGET_RANLIB=$(TARGET_CROSS)ranlib
 STRIP=$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
