@@ -82,7 +82,8 @@ nethack-source: $(DL_DIR)/$(NETHACK_SOURCE) $(NETHACK_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 #
 $(NETHACK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETHACK_SOURCE) $(NETHACK_PATCHES)
-	@rm -rf $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
+	$(MAKE) ncurses
+	rm -rf $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
 	$(NETHACK_UNZIP) $(DL_DIR)/$(NETHACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
 	patch -f -d $(NETHACK_BUILD_DIR)/sys/unix/ -p1 < $(NETHACK_SOURCE_DIR)/nethack_setup.patch
@@ -101,16 +102,10 @@ $(NETHACK_BUILD_DIR)/src/nethack: $(NETHACK_BUILD_DIR)/.configured
 	make install -C $(NETHACK_BUILD_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LFLAGS=$(NETHACK_LDFLAGS) CFLAGS=$(NETHACK_CPPFLAGS) PREFIX=$(NETHACK_BUILD_DIR)/install 
 
 #
-# These are the dependencies for the package (remove nethack-dependencies if
-# there are no build dependencies for this package.  Again, you should change
-# the final dependency to refer directly to the main binary which is built.
+# You should change the dependency to refer directly to the main
+# binary which is built.
 #
-nethack: ncurses $(NETHACK_BUILD_DIR)/src/nethack
-	
-#
-# If you are building a library, then you need to stage it too.
-#
-
+nethack: $(NETHACK_BUILD_DIR)/src/nethack
 
 #
 # This builds the IPK file.
@@ -125,12 +120,13 @@ nethack: ncurses $(NETHACK_BUILD_DIR)/src/nethack
 # You may need to patch your application to make it use these locations.
 #
 $(NETHACK_IPK): $(NETHACK_BUILD_DIR)/src/nethack
-	install -d $(NETHACK_IPK_DIR)/CONTROL $(NETHACK_IPK_DIR)/opt/bin
-	install -d $(NETHACK_IPK_DIR)/opt/share $(NETHACK_IPK_DIR)/opt/share/nethackdir/
+	install -d $(NETHACK_IPK_DIR)/opt/bin
 	install -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
-	cp -r -f $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
-	install -m 755 $(NETHACK_SOURCE_DIR)/nethack.control $(NETHACK_IPK_DIR)/CONTROL/control
-	install -m 755 $(NETHACK_SOURCE_DIR)/nethack.postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
+	install -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
+	install -m 644 $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
+	install -d $(NETHACK_IPK_DIR)/CONTROL
+	install -m 755 $(NETHACK_SOURCE_DIR)/control $(NETHACK_IPK_DIR)/CONTROL/control
+	install -m 755 $(NETHACK_SOURCE_DIR)/postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETHACK_IPK_DIR)
 
 #
@@ -148,5 +144,5 @@ nethack-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-nethack-dirclean: nethack-clean
+nethack-dirclean:
 	rm -rf $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR) $(NETHACK_IPK_DIR) $(NETHACK_IPK)
