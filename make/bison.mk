@@ -73,3 +73,5 @@ bison-distclean:
 	-rm $(BISON_DIR)/.configured
 	-$(MAKE) -C $(BISON_DIR) distclean
 
+bison-dirclean:
+	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR) $(BISON_IPK_DIR) $(BISON_IPK)
