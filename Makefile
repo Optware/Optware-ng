@@ -67,8 +67,6 @@ CROSS_ONLY_PACKAGES = \
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 
-# I don't have env to test native compiles for : gift-opennap
-
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
@@ -92,7 +90,7 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 
 UNSORTED_PACKAGES = \
 	freeradius \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft glib \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
 	nfs-server nfs-utils \
@@ -102,7 +100,7 @@ UNSORTED_PACKAGES = \
 
 DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = proftpd nethack scponly tcpdump e2fsprogs dump gkrellm	clamav pkgconfig gift-opennap
+PACKAGES_THAT_NEED_TO_BE_FIXED = proftpd nethack scponly tcpdump e2fsprogs dump gkrellm	clamav pkgconfig
 
 CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES) $(DEVELOPER_PACKAGES)
 
