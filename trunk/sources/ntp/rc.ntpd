@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -n "`pidof ntpd`" ]; then 
+    /bin/killall ntpd 2>/dev/null
+fi
+
+if [ ! -d /var/spool/ntp ] ;  then
+    mkdir -p /var/spool/ntp
+fi
+
+/opt/bin/ntpd -c /opt/etc/ntp/ntp.conf -f /var/spool/ntp/ntp.drift -s /var/spool/ntp -k /opt/etc/ntp -l /var/spool/ntp/ntp.log
