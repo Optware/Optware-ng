@@ -1,0 +1,7 @@
+/var/spool/miau/logs/*.txt {
+	rotate 7
+	daily
+	mailfirst
+	copytruncate
+	create 644 root root
+}
