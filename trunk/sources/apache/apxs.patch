@@ -1,0 +1,34 @@
+--- support/apxs.in~	2005-02-04 12:21:18.000000000 -0800
++++ support/apxs.in	2005-02-19 21:01:27.055269938 -0800
+@@ -199,18 +199,19 @@
+     ($httpd = $0) =~ s:support/apxs$::;
+ }
+ 
+-unless (-x "$httpd") {
+-	error("$httpd not found or not executable");
+-	exit 1;
+-}
+-
+-unless (grep /mod_so/, `. $envvars && $httpd -l`) {
+-    error("Sorry, no shared object support for Apache");
+-    error("available under your platform. Make sure");
+-    error("the Apache module mod_so is compiled into");
+-    error("your server binary `$httpd'.");
+-    exit 1;
+-}
++### these checks will not work when cross-compiling into a staging area!
++#unless (-x "$httpd") {
++#	error("$httpd not found or not executable");
++#	exit 1;
++#}
++#
++#unless (grep /mod_so/, `. $envvars && $httpd -l`) {
++#    error("Sorry, no shared object support for Apache");
++#    error("available under your platform. Make sure");
++#    error("the Apache module mod_so is compiled into");
++#    error("your server binary `$httpd'.");
++#    exit 1;
++#}
+ 
+ sub get_config_vars{
+     my ($file, $rh_config) = @_;

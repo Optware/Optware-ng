@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/opt/sbin/httpd -k restart
