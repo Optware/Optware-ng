@@ -33,12 +33,12 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   m4 make patch vsftpd distcc libjpeg \
 	   tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff less nfs-utils \
-	   logrotate
+	   logrotate appweb
 
 PACKAGES_TO_BE_TESTED:= crosstool-native
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
-	   e2fsprogs dump glib gkrellm appweb
+	   e2fsprogs dump glib gkrellm
 
 PACKAGES_THAT_NEED_TO_BE_FIXED:= perl imagemagick 
 
