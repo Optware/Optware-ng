@@ -24,11 +24,17 @@ LIBOL_VERSION=0.3.15
 LIBOL_SOURCE=libol-$(LIBOL_VERSION).tar.gz
 LIBOL_DIR=libol-$(LIBOL_VERSION)
 LIBOL_UNZIP=zcat
+LIBOL_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+LIBOL_DESCRIPTION=Support library for syslog-ng 
+LIBOL_SECTION=lib
+LIBOL_PRIORITY=optional
+LIBOL_DEPENDS=
+LIBOL_CONFLICTS=
 
 #
 # LIBOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOL_IPK_VERSION=1
+LIBOL_IPK_VERSION=2
 
 #
 # LIBOL_CONFFILES should be a list of user-editable files
@@ -136,6 +142,24 @@ $(LIBOL_BUILD_DIR)/.staged: $(LIBOL_BUILD_DIR)/.built
 libol-stage: $(LIBOL_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libol
+#
+$(LIBOL_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBOL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libol" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBOL_PRIORITY)" >>$@
+	@echo "Section: $(LIBOL_SECTION)" >>$@
+	@echo "Version: $(LIBOL_VERSION)-$(LIBOL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBOL_MAINTAINER)" >>$@
+	@echo "Source: $(LIBOL_SITE)/$(LIBOL_SOURCE)" >>$@
+	@echo "Description: $(LIBOL_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBOL_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBOL_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBOL_IPK_DIR)/opt/sbin or $(LIBOL_IPK_DIR)/opt/bin
@@ -150,8 +174,7 @@ libol-stage: $(LIBOL_BUILD_DIR)/.staged
 $(LIBOL_IPK): $(LIBOL_BUILD_DIR)/.built
 	rm -rf $(LIBOL_IPK_DIR) $(BUILD_DIR)/libol_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOL_BUILD_DIR) DESTDIR=$(LIBOL_IPK_DIR) install
-	install -d $(LIBOL_IPK_DIR)/CONTROL
-	install -m 644 $(LIBOL_SOURCE_DIR)/control $(LIBOL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBOL_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LIBOL_SOURCE_DIR)/postinst $(LIBOL_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(LIBOL_SOURCE_DIR)/prerm $(LIBOL_IPK_DIR)/CONTROL/prerm
 	echo $(LIBOL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOL_IPK_DIR)/CONTROL/conffiles

@@ -12,8 +12,14 @@ NCURSES=ncurses-$(NCURSES_VERSION)
 NCURSES_SITE=ftp://invisible-island.net/ncurses
 NCURSES_SOURCE=$(NCURSES).tar.gz
 NCURSES_UNZIP=zcat
+NCURSES_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
+NCURSES_DESCRIPTION=NCurses libraries
+NCURSES_SECTION=net
+NCURSES_PRIORITY=optional
+NCURSES_DEPENDS=
+NCURSES_CONFLICTS=
 
-NCURSES_IPK_VERSION=2
+NCURSES_IPK_VERSION=3
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
@@ -59,13 +65,26 @@ $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib
 
 ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
+$(NCURSES_IPK_DIR)/CONTROL/control:
+	@install -d $(NCURSES_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ncurses" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NCURSES_PRIORITY)" >>$@
+	@echo "Section: $(NCURSES_SECTION)" >>$@
+	@echo "Version: $(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NCURSES_MAINTAINER)" >>$@
+	@echo "Source: $(NCURSES_SITE)/$(NCURSES_SOURCE)" >>$@
+	@echo "Description: $(NCURSES_DESCRIPTION)" >>$@
+	@echo "Depends: $(NCURSES_DEPENDS)" >>$@
+	@echo "Conflicts: $(NCURSES_CONFLICTS)" >>$@
+
 $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	rm -rf $(NCURSES_IPK_DIR) $(BUILD_DIR)/ncurses_*_$(TARGET_ARCH).ipk
-	mkdir -p $(NCURSES_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/ncurses.control $(NCURSES_IPK_DIR)/CONTROL/control
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
 		install.libs install.progs install.data install.panel install.menu install.form
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
+	$(MAKE) $(NCURSES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
 ncurses-ipk: $(NCURSES_IPK)

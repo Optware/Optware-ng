@@ -9,8 +9,14 @@ TERMCAP_VERSION=1.3.1
 TERMCAP_SOURCE:=termcap-$(TERMCAP_VERSION).tar.gz
 TERMCAP_DIR=termcap-$(TERMCAP_VERSION)
 TERMCAP_UNZIP=zcat
+TERMCAP_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
+TERMCAP_DESCRIPTION=Terminal emulation library
+TERMCAP_SECTION=libs
+TERMCAP_PRIORITY=optional
+TERMCAP_DEPENDS=
+TERMCAP_CONFLICTS=
 
-TERMCAP_IPK_VERSION=1
+TERMCAP_IPK_VERSION=2
 
 TERMCAP_CPPFLAGS=
 TERMCAP_LDFLAGS=
@@ -58,6 +64,20 @@ $(STAGING_DIR)/opt/lib/libtermcap.a: $(TERMCAP_BUILD_DIR)/libtermcap.a
 
 termcap-stage: $(STAGING_DIR)/opt/lib/libtermcap.a
 
+$(TERMCAP_IPK_DIR)/CONTROL/control:
+	@install -d $(TERMCAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: termcap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TERMCAP_PRIORITY)" >>$@
+	@echo "Section: $(TERMCAP_SECTION)" >>$@
+	@echo "Version: $(TERMCAP_VERSION)-$(TERMCAP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TERMCAP_MAINTAINER)" >>$@
+	@echo "Source: $(TERMCAP_SITE)/$(TERMCAP_SOURCE)" >>$@
+	@echo "Description: $(TERMCAP_DESCRIPTION)" >>$@
+	@echo "Depends: $(TERMCAP_DEPENDS)" >>$@
+	@echo "Conflicts: $(TERMCAP_CONFLICTS)" >>$@
+
 $(TERMCAP_IPK): $(TERMCAP_BUILD_DIR)/libtermcap.a
 	install -d $(TERMCAP_IPK_DIR)/opt/include
 	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(TERMCAP_IPK_DIR)/opt/include/termcap.h
@@ -65,8 +85,7 @@ $(TERMCAP_IPK): $(TERMCAP_BUILD_DIR)/libtermcap.a
 	install -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(TERMCAP_IPK_DIR)/opt/lib/libtermcap.a
 	install -d $(TERMCAP_IPK_DIR)/opt/etc
 	install -m 644 $(TERMCAP_BUILD_DIR)/termcap.src $(TERMCAP_IPK_DIR)/opt/etc/termcap
-	install -d $(TERMCAP_IPK_DIR)/CONTROL
-	install -m 644 $(TERMCAP_SOURCE_DIR)/control  $(TERMCAP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(TERMCAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TERMCAP_IPK_DIR)
 
 termcap-ipk: $(TERMCAP_IPK)
