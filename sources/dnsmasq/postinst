@@ -1,3 +1,13 @@
 #!/bin/sh
-[ -f /opt/etc/dnsmasq.conf ] || cp /opt/etc/dnsmasq.conf.sample /opt/etc/dnsmasq.conf
-ln -sf /opt/etc/dnsmasq.conf /etc/dnsmasq.conf
+
+if [ ! -f /opt/etc/dnsmasq.conf ] ;  then
+    cp /opt/etc/dnsmasq.conf.sample /opt/etc/dnsmasq.conf
+    # We should change the exe to read /opt/etc/dnsmasq.conf
+    ln -sf /opt/etc/dnsmasq.conf /etc/dnsmasq.conf
+    echo ; echo
+    echo "To complete the installation, you should check /opt/etc/dnsmasq.conf,"
+    echo "and then run /opt/etc/init.d/S56dnsmasq to start dnsmasq."
+    echo
+else
+    /opt/etc/init.d/S56dnsmasq
+fi
