@@ -23,6 +23,7 @@ $(DL_DIR)/$(ATFTP_SOURCE):
 atftp-source: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
 
 $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
 	$(ATFTP_UNZIP) $(DL_DIR)/$(ATFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
@@ -48,9 +49,11 @@ atftp: $(ATFTP_BUILD_DIR)/atftp
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
 	rm -rf $(ATFTP_IPK_DIR) $(ATFTP_IPK)
 	install -d $(ATFTP_IPK_DIR)/opt/bin
-	$(STRIP) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/sbin/atftp
+	$(STRIP) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
+	install -d $(ATFTP_IPK_DIR)/opt/sbin
+	$(STRIP) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
 	install -d $(ATFTP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(ATFTP_SOURCE_DIR)/rc.atftp $(ATFTP_IPK_DIR)/opt/etc/init.d/S60atftp
+	install -m 755 $(ATFTP_SOURCE_DIR)/rc.atftpd $(ATFTP_IPK_DIR)/opt/etc/init.d/S60atftpd
 	install -d $(ATFTP_IPK_DIR)/CONTROL
 	install -m 644 $(ATFTP_SOURCE_DIR)/control $(ATFTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
