@@ -124,9 +124,13 @@ $(BUILD_DIR):
 
 $(TARGET_DIR):
 	mkdir $(TARGET_DIR)
+	mkdir $(TARGET_DIR)/lib
+	mkdir $(TARGET_DIR)/include
 
 $(STAGING_DIR):
 	mkdir $(STAGING_DIR)
+	mkdir $(STAGING_DIR)/lib
+	mkdir $(STAGING_DIR)/include
 
 $(TOOL_BUILD_DIR):
 	mkdir $(TOOL_BUILD_DIR)
