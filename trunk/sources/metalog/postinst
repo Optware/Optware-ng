@@ -1,0 +1,5 @@
+#!/bin/sh
+echo "To activate metalog, copy /opt/doc/metalog/S01metalog to /opt/init.d"
+echo "To start metalog afterwards, reboot or run /opt/init.d/S01metalog"
+
+return 0
