@@ -5,15 +5,16 @@
 ###########################################################
 
 RSYNC_DIR=$(BUILD_DIR)/rsync
+RSYNC_SOURCE_DIR=$(SOURCE_DIR)/rsync
 
 RSYNC_VERSION=2.6.3
 RSYNC=rsync-$(RSYNC_VERSION)
 RSYNC_SITE=http://rsync.samba.org/ftp/rsync/
 RSYNC_SOURCE=$(RSYNC).tar.gz
-RSYNC_PATCH:=$(SOURCE_DIR)/rsync-$(RSYNC_VERSION).patch
+RSYNC_PATCH:=$(RSYNC_SOURCE_DIR)/rsync.patch
 RSYNC_UNZIP=zcat
 
-RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-1_armeb.ipk
+RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-2_armeb.ipk
 RSYNC_IPK_DIR=$(BUILD_DIR)/rsync-$(RSYNC_VERSION)-ipk
 
 $(DL_DIR)/$(RSYNC_SOURCE):
@@ -46,12 +47,14 @@ rsync: $(RSYNC_DIR)/rsync
 $(RSYNC_IPK): $(RSYNC_DIR)/rsync
 	mkdir -p $(RSYNC_IPK_DIR)/CONTROL
 	mkdir -p $(RSYNC_IPK_DIR)/opt/etc/init.d
-	cp $(SOURCE_DIR)/rsync.control $(RSYNC_IPK_DIR)/CONTROL/control
+	cp $(RSYNC_SOURCE_DIR)/control $(RSYNC_IPK_DIR)/CONTROL/control
+	cp $(RSYNC_SOURCE_DIR)/postinst $(RSYNC_IPK_DIR)/CONTROL/postinst
+	cp $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
 	install -m 755 -D $(RSYNC_DIR)/rsync $(RSYNC_IPK_DIR)/opt/bin/rsync
 	touch $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	chmod 600 $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
-	install -m 644 -D $(SOURCE_DIR)/rsync.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
-	install -m 755 -D $(SOURCE_DIR)/rsync.rc $(RSYNC_IPK_DIR)/opt/etc/init.d/S57rsyncd
+	install -m 644 -D $(RSYNC_SOURCE_DIR)/rsyncd.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
+	install -m 755 -D $(RSYNC_SOURCE_DIR)/rc.rsyncd $(RSYNC_IPK_DIR)/opt/etc/init.d/S57rsyncd
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSYNC_IPK_DIR)
 
 rsync-ipk: $(RSYNC_IPK)
