@@ -41,7 +41,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	tar tcpwrappers termcap \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
-	wget-ssl which\
+	wakelan wget-ssl which \
 	xinetd \
 	zlib \
 
@@ -55,7 +55,7 @@ CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox
 
-# Add new cross-only packages here.
+# Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 	jamvm \
 	classpath \
@@ -74,7 +74,7 @@ NATIVE_ONLY_PACKAGES = \
 	perl \
 	squid
 
-# Add new native-only packages here.
+# Add new native-only packages here, and state why they don't cross compile.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	clamav \
 	wakelan \
