@@ -59,6 +59,8 @@ $(MIAU_DIR)/.configured: $(MIAU_DIR)/.source
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--prefix=/opt	\
+		--enable-chanlog \
+		--enable-onconnect \
 	);
 	touch $(MIAU_DIR)/.configured
 
@@ -84,6 +86,7 @@ $(MIAU_IPK): $(MIAU_DIR)/src/miau
 	mkdir -p $(MIAU_IPK_DIR)/opt
 	mkdir -p $(MIAU_IPK_DIR)/opt/bin
 	$(STRIP) $(MIAU_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
+	cp $(SOURCE_DIR)/miau.rc $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
 	cp $(SOURCE_DIR)/miau.control $(MIAU_IPK_DIR)/CONTROL/control
 	mkdir -p $(MIAU_IPK_DIR)/opt/etc
 	cp $(MIAU_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/etc/miaurc
