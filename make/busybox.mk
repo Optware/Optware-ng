@@ -56,6 +56,7 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/busybox
 	install -d $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(BUSYBOX_IPK_DIR)/opt" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_BUILD_DIR) install
+	# Add potential "stock functionality" breaking links here.
 	rm $(BUSYBOX_IPK_DIR)/opt/sbin/fdisk
 	install -d $(BUSYBOX_IPK_DIR)/CONTROL
 	install -m 644 $(BUSYBOX_SOURCE_DIR)/control $(BUSYBOX_IPK_DIR)/CONTROL/control
