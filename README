@@ -222,3 +222,8 @@ access, not for serial or diversion scripts).
 1.14:
 
 Added Unslung Doc link to the User Guide page.
+
+2.x:
+
+Firmware development has now moved to nslu2-linux.bkbits.net -
+packages are still developed in the CVS repository.
