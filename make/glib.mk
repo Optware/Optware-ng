@@ -57,24 +57,24 @@ $(GLIB_IPK): $(GLIB_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)
 
 $(GLIB_IPK_DIR)/staging:  $(GLIB_IPK)
-	cp $(GLIB_DIR)/gmodule/.libs/* $(STAGING_DIR)/lib
-	cp $(GLIB_DIR)/gthread/.libs/* $(STAGING_DIR)/lib
-	cp $(GLIB_DIR)/glib/.libs/* $(STAGING_DIR)/lib
+	cp $(GLIB_DIR)/gmodule/.libs/* $(STAGING_LIB_DIR)
+	cp $(GLIB_DIR)/gthread/.libs/* $(STAGING_LIB_DIR)
+	cp $(GLIB_DIR)/glib/.libs/* $(STAGING_LIB_DIR)
 
-	cd $(STAGING_DIR)/lib
-	rm -f $(STAGING_DIR)/lib/libglib-2.0.a
-	ln -s $(STAGING_DIR)/lib/libglib-2.0.so $(STAGING_DIR)/lib/libglib-2.0.a
-	rm -f $(STAGING_DIR)/lib/libgthread-2.0.a
-	ln -s $(STAGING_DIR)/lib/libgthread-2.0.so $(STAGING_DIR)/lib/libgthread-2.0.a
-	ls -l $(STAGING_DIR)/lib/libgthread-2.0*
-	rm -f $(STAGING_DIR)/lib/libgmodule-2.0.a
-	ln -s $(STAGING_DIR)/lib/libgmodule-2.0.so $(STAGING_DIR)/lib/libgmodule-2.0.a
+	cd $(STAGING_LIB_DIR)
+	rm -f $(STAGING_LIB_DIR)/libglib-2.0.a
+	ln -s $(STAGING_LIB_DIR)/libglib-2.0.so $(STAGING_LIB_DIR)/libglib-2.0.a
+	rm -f $(STAGING_LIB_DIR)/libgthread-2.0.a
+	ln -s $(STAGING_LIB_DIR)/libgthread-2.0.so $(STAGING_LIB_DIR)/libgthread-2.0.a
+	ls -l $(STAGING_LIB_DIR)/libgthread-2.0*
+	rm -f $(STAGING_LIB_DIR)/libgmodule-2.0.a
+	ln -s $(STAGING_LIB_DIR)/libgmodule-2.0.so $(STAGING_LIB_DIR)/libgmodule-2.0.a
 
-	mkdir -p $(STAGING_DIR)/include/gmodule-2.0
-	cp $(GLIB_DIR)/gmodule/*.h $(STAGING_DIR)/include/gmodule-2.0
+	mkdir -p $(STAGING_INCLUDE_DIR)/gmodule-2.0
+	cp $(GLIB_DIR)/gmodule/*.h $(STAGING_INCLUDE_DIR)/gmodule-2.0
 
-	mkdir -p $(STAGING_DIR)/include/glib-2.0
-	cp $(GLIB_DIR)/glib/*.h $(STAGING_DIR)/include/glib-2.0
+	mkdir -p $(STAGING_INCLUDE_DIR)/glib-2.0
+	cp $(GLIB_DIR)/glib/*.h $(STAGING_INCLUDE_DIR)/glib-2.0
 
 
 

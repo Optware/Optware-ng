@@ -49,13 +49,13 @@ $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/.configured
 
 zlib: $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 
-$(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(STAGING_DIR)/opt/include
-	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(ZLIB_BUILD_DIR)/libz.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION) $(STAGING_DIR)/opt/lib
+$(STAGING_LIB_DIR)/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(STAGING_INCLUDE_DIR)
+	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(ZLIB_BUILD_DIR)/libz.a $(STAGING_LIB_DIR)
+	install -m 644 $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION) $(STAGING_LIB_DIR)
 	cd $(STAGING_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so
 
