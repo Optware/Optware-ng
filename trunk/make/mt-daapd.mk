@@ -36,17 +36,17 @@ $(MT_DAAPD_DIR)/.configured: $(MT_DAAPD_DIR)/.source
 	--target=$(GNU_TARGET_NAME) \
         --with-static-libs=$(STAGING_DIR)/lib \
 	--with-gdbm-include=$(STAGING_DIR)/include \
- 	LIBS="-lgdbm -lid3tag -lz" \
+	LIBS="-lgdbm -lid3tag -lz" \
 	ac_cv_func_setpgrp_void=yes \
 	); \
 	touch $(MT_DAAPD_DIR)/.configured
 
-$(MT_DAAP_DIR)/src/mt-daapd: $(MT_DAAPD_DIR)/.configured
+$(MT_DAAPD_DIR)/src/mt-daapd: $(MT_DAAPD_DIR)/.configured
 	$(MAKE) -C $(MT_DAAPD_DIR) CFLAGS="-DSTRSEP"
 
 #mt-daapd-headers: $(STAGING_DIR)/sbin/mt-daapd
 
-mt-daapd: zlib gdbm libid3tag $(MT_DAAP_DIR)/src/mt-daapd
+mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_DIR)/src/mt-daapd
 
 $(MT_DAAPD_IPK): mt-daapd
 	-mkdir -p $(MT_DAAPD_IPK_DIR)	
@@ -64,8 +64,6 @@ $(MT_DAAPD_IPK): mt-daapd
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MT_DAAPD_IPK_DIR)
 
 mt-daapd-ipk: $(MT_DAAPD_IPK)
-
-mt-daapd-source: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 
 mt-daapd-clean:
 	-$(MAKE) -C $(MT_DAAPD_DIR) uninstall
