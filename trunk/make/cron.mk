@@ -171,7 +171,7 @@ $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	install -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
 	# Install default crontab
 	install -d $(CRON_IPK_DIR)/opt/etc
-	install -m 644 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
+	install -m 600 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
 	# Install daemon startup file
 	install -d $(CRON_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)/opt/etc/init.d/S10cron
