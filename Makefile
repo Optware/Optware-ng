@@ -30,7 +30,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	inetutils iptables \
 	jove \
 	less libdb libevent libid3tag libjpeg libpng libtool lsof \
-	m4 make miau mdadm \
+	m4 make miau \
 	nano ntp ntpclient \
 	patch portmap procps puppy \
 	rsync \
@@ -49,7 +49,7 @@ CROSS_ONLY_PACKAGES = \
 	gawk \
 	imagemagick ircd-hybrid \
 	libbt libcurl libpcap libtiff logrotate \
-	mc mt-daapd \
+	mc mdadm mt-daapd \
 	nail ncurses nfs-server nfs-utils \
 	openssl openssh \
 	popt \
