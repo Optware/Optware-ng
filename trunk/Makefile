@@ -45,6 +45,8 @@ NATIVE_AND_CROSS_PACKAGES = \
 	xinetd \
 	zlib \
 
+# Add new packages here - make sure you have tested both native compilation and cross compilation.
+# When they have been tested, they will be promoted and uploaded.
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING =
 
 # appweb ships with x86 binaries which it requires during configure phase
@@ -53,6 +55,7 @@ CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox
 
+# Add new cross-only packages here.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 	jamvm \
 	classpath \
@@ -71,6 +74,7 @@ NATIVE_ONLY_PACKAGES = \
 	perl \
 	squid
 
+# Add new native-only packages here.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	clamav \
 	wakelan
