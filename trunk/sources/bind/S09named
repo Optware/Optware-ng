@@ -1,10 +1,58 @@
-#!/bin/ash
+#!/bin/sh
 #
-if [ -n "`pidof named`" ]; then
-    /bin/killall named 2>/dev/null
-fi
+. /etc/rc.d/rc.functions
 #
 # Start the named (DNS) server daemon
-#
-cd /opt/etc/named
-/opt/sbin/named -c /opt/etc/named/named.conf &
+#  
+start() {
+    echo -n "Starting DNS Services: "
+    if [ -n "`pidof named`" ]; then
+	echo -n "?already running"
+	false; check_status;
+	return
+    fi
+    cd /opt/etc/named
+    /opt/sbin/named -c /opt/etc/named/named.conf 
+    check_status;
+    return
+}
+stop() {
+    echo "Shutting down DNS Services: "
+    /opt/sbin/rndc -s 127.0.0.1 stop
+    sleep 5
+    if [ -n "`pidof named`" ]; then
+        echo -n "Failed, killing process"
+	/bin/killall named 2>/dev/null
+    fi
+    return
+}
+bindstatus() {
+    /opt/sbin/rndc -s 127.0.0.1 status
+    return
+}
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+	bindstatus
+	;;
+  restart|reload)
+	restart
+	;;
+  condrestart)
+	[ -n "`pidof named`" ] && restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|status|restart|condrestart}"
+	exit 1
+esac
+exit $?
