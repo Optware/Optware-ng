@@ -21,12 +21,12 @@
 #
 
 CROSS_PACKAGES = \
-	adns atftp appweb apache apr apr-util automake \
+	adns atftp appweb apache apr apr-util atk automake \
 	bash bind busybox bzflag bzip2 \
 	ccxstream classpath coreutils cpio ctorrent cups cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
 	e2fsprogs ed elinks expat \
-	fetchmail file findutils flex \
+	fetchmail file findutils fixesext fontconfig flex freetype \
 	gawk gconv-modules gdb gdbm gettext \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gzip \
@@ -38,14 +38,15 @@ CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl \
-	parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
-	rdate recordext rsync \
+	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
+	rdate recordext renderext rsync \
 	screen sed sm strace stunnel sudo svn \
-	tar tcpwrappers termcap torrent \
+	tar tcpwrappers termcap torrent ttf-bitstream-vera \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
 	wakelan wget-ssl which \
-	x11 xau xauth xdmcp xdpyinfo xext xextensions xinetd xmu xproto xt xtrans xtst \
+	x11 xau xauth xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
+	xproto xrender xt xtrans xtst \
 	zlib \
 	\
 	crosstool-native
@@ -53,18 +54,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	atk			\
-	fixesext		\
-	fontconfig		\
-	freetype		\
-	gtk+			\
-	pango			\
-	renderext		\
-	ttf-bitstream-vera	\
-	xcursor			\
-	xfixes			\
-	xft			\
-	xrender			\
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
@@ -94,7 +83,8 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # cyrus-imapd fails when compiling the perl stuff
 # postfix fails when packaging
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	postfix cyrus-imapd
+# gtk+ needs to be renamed
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	postfix cyrus-imapd gtk+
 
 
 HOST_MACHINE:=$(shell uname -m | sed \
