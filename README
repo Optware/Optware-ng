@@ -174,22 +174,11 @@ ADDITIONAL INFORMATION:
     ensure that an unslung NSLU2 without a hard disk attached has the
     same network footprint as the standard firmware.
 
-9a) This telnet mod is a temporary stopgap measure that will allow you to
-    have telnet access and will be deprecated when a diversion script gets
-    written and tested.
-
-    Add these lines to the end of your /etc/rc.d/rc.local, 
-    after the quota line.
-    ---
-    if [ -e /etc/inetd.conf ] && rm /etc/inetd.conf ; then
-       cp /etc/inetd_tel.conf /etc/inetd.conf
-       /etc/rc.d/rc.xinetd
-    fi
-    ---
-    Then edit /etc/inetd_tel.conf to contain
-    ---
-    telnet  stream  tcp     nowait  root    /usr/sbin/telnetd
-    ---
+9a) This simple diversion script will enable telnet on boot
+    
+    #! /bin/sh
+    echo "telnet  stream  tcp     nowait  root    /usr/sbin/telnetd" > /etc/inetd.conf
+    return 1
 
 10) Note that the PATH is set so that downloadable packages do not
     override the factory executables.  This is so that a package
