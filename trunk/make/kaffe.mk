@@ -85,15 +85,13 @@ kaffe-source: $(DL_DIR)/$(KAFFE_SOURCE) $(KAFFE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+# *** NOTE *** before configuring kaffe rt.jar must be in $(KAFFE_SOURCE_DIR) and jikes must be installed *** NOTE ***
 $(KAFFE_BUILD_DIR)/.configured: $(DL_DIR)/$(KAFFE_SOURCE) $(KAFFE_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR)
 	$(KAFFE_UNZIP) $(DL_DIR)/$(KAFFE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(KAFFE_PATCHES) | patch -d $(BUILD_DIR)/$(KAFFE_DIR) -p1
 	mv $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR)
-#./configure --without-classpath-gtk-awt --enable-pure-java-math
-# --disable-alsatest --disable-esdtest --disable-sound --without-x
-# --enable-xscale --with-engine=intrp --with-rt-jar=$(KAFFE_SOURCE_DIR)
 	(cd $(KAFFE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KAFFE_CPPFLAGS)" \
@@ -112,7 +110,7 @@ $(KAFFE_BUILD_DIR)/.configured: $(DL_DIR)/$(KAFFE_SOURCE) $(KAFFE_PATCHES)
 		--without-x \
 		--enable-xscale \
 		--with-engine=intrp \
-		--with-rt-jar=$(KAFFE_SOURCE_DIR) \
+		--with-rt-jar=$(KAFFE_SOURCE_DIR)/rt.jar \
 	)
 	touch $(KAFFE_BUILD_DIR)/.configured
 
@@ -156,15 +154,15 @@ kaffe-stage: $(KAFFE_BUILD_DIR)/.staged
 $(KAFFE_IPK): $(KAFFE_BUILD_DIR)/.built
 	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_armeb.ipk
 	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install
-	install -d $(KAFFE_IPK_DIR)/opt/etc/
-	install -m 755 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
-	install -d $(KAFFE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)/opt/etc/init.d/SXXkaffe
+#	install -d $(KAFFE_IPK_DIR)/opt/etc/
+#	install -m 755 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
+#	install -d $(KAFFE_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)/opt/etc/init.d/SXXkaffe
 	install -d $(KAFFE_IPK_DIR)/CONTROL
 	install -m 644 $(KAFFE_SOURCE_DIR)/control $(KAFFE_IPK_DIR)/CONTROL/control
-	install -m 644 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm
-	echo $(KAFFE_CONFFILES) | sed -e 's/ /\n/g' > $(KAFFE_IPK_DIR)/CONTROL/conffiles
+#	install -m 644 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm
+#	echo $(KAFFE_CONFFILES) | sed -e 's/ /\n/g' > $(KAFFE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KAFFE_IPK_DIR)
 
 #
