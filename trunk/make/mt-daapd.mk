@@ -48,7 +48,7 @@ $(MT_DAAPD_DIR)/src/mt-daapd: $(MT_DAAPD_DIR)/.configured
 
 mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_DIR)/src/mt-daapd
 
-$(MT_DAAPD_IPK): mt-daapd
+$(MT_DAAPD_IPK): $(MT_DAAPD_DIR)/src/mt-daapd
 	-mkdir -p $(MT_DAAPD_IPK_DIR)	
 	$(MAKE) -C $(MT_DAAPD_DIR) DESTDIR=$(MT_DAAPD_IPK_DIR) install
 	install -d $(MT_DAAPD_IPK_DIR)/CONTROL
