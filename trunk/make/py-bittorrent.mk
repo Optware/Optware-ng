@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BITTORRENT_SITE=http://www.py-bittorrent.com/dl
+PY-BITTORRENT_SITE=http://www.bittorrent.com/dl
 PY-BITTORRENT_VERSION=4.0.1
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
