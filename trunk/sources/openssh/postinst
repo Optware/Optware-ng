@@ -26,4 +26,7 @@ if [ ! -d /root ];  then
     mkdir /root
 fi
 
+echo Fixing permissions on the /tmp directory...
+chmod 1777 /tmp
+
 /opt/etc/init.d/S40sshd
