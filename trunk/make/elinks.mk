@@ -147,15 +147,8 @@ elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 $(ELINKS_IPK): $(ELINKS_BUILD_DIR)/.built
 	rm -rf $(ELINKS_IPK_DIR) $(BUILD_DIR)/elinks_*_armeb.ipk
 	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(ELINKS_IPK_DIR) install
-	install -d $(ELINKS_IPK_DIR)/opt/etc/
-	install -m 755 $(ELINKS_SOURCE_DIR)/elinks.conf $(ELINKS_IPK_DIR)/opt/etc/elinks.conf
-	install -d $(ELINKS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(ELINKS_SOURCE_DIR)/rc.elinks $(ELINKS_IPK_DIR)/opt/etc/init.d/SXXelinks
 	install -d $(ELINKS_IPK_DIR)/CONTROL
 	install -m 644 $(ELINKS_SOURCE_DIR)/control $(ELINKS_IPK_DIR)/CONTROL/control
-	install -m 644 $(ELINKS_SOURCE_DIR)/postinst $(ELINKS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(ELINKS_SOURCE_DIR)/prerm $(ELINKS_IPK_DIR)/CONTROL/prerm
-	echo $(ELINKS_CONFFILES) | sed -e 's/ /\n/g' > $(ELINKS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ELINKS_IPK_DIR)
 
 #
