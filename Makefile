@@ -22,7 +22,7 @@
 
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   dnsmasq openssl openssh ntpclient \
-	   sudo rsync rdate grep jove \
+	   sudo rsync rdate grep jove lsof \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
 	   ncurses ircd-hybrid procps \
