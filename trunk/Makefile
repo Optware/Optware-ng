@@ -43,7 +43,7 @@ CROSS_PACKAGES = \
 	rdate recordext renderext rsync \
 	screen sed sm strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
-	unfs3 unslung-feeds \
+	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte \
 	w3cam wakelan wget-ssl which \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
@@ -92,10 +92,8 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# units is missing units.mk!
 # asterisk can't be downloaded, its source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	units \
 	asterisk \
 	nethack scponly dump gkrellm clamav freeradius
 
