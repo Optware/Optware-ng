@@ -34,7 +34,7 @@
 # <FOO>_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-<FOO>_PATCHES="$(<FOO>_SOURCE_DIR)/configure.patch"
+<FOO>_PATCHES=$(<FOO>_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,10 +109,11 @@ $(<FOO>_BUILD_DIR)/<foo>: $(<FOO>_BUILD_DIR)/.configured
 	$(MAKE) -C $(<FOO>_BUILD_DIR)
 
 #
-# These are the dependencies for the package.  Again, you should change
+# These are the dependencies for the package (remove <foo>-dependencies if
+# there are no build dependencies for this package.  Again, you should change
 # the final dependency to refer directly to the main binary which is built.
 #
-<foo>: ncurses $(<FOO>_BUILD_DIR)/<foo>
+<foo>: <foo>-dependencies $(<FOO>_BUILD_DIR)/<foo>
 
 #
 # If you are building a library, then you need to stage it too.
@@ -141,6 +142,7 @@ $(STAGING_DIR)/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/lib<foo>.so.
 # You may need to patch your application to make it use these locations.
 #
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
+	rm -rf $(<FOO>_IPK_DIR) $(<FOO>_IPK)
 	install -d $(<FOO>_IPK_DIR)/opt/bin
 	$(STRIP) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
@@ -167,4 +169,4 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
 # directories.
 #
 <foo>-dirclean: <foo>-clean
-	rm -rf $(<FOO>_BUILD_DIR) $(<FOO>_IPK_DIR) $(<FOO>_IPK)
+	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR) $(<FOO>_IPK_DIR) $(<FOO>_IPK)
