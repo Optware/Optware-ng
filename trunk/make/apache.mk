@@ -67,9 +67,9 @@ APACHE_LDFLAGS=
 APACHE_BUILD_DIR=$(BUILD_DIR)/apache
 APACHE_SOURCE_DIR=$(SOURCE_DIR)/apache
 APACHE_IPK_DIR=$(BUILD_DIR)/apache-$(APACHE_VERSION)-ipk
-APACHE_IPK=$(BUILD_DIR)/apache_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_armeb.ipk
+APACHE_IPK=$(BUILD_DIR)/apache_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
 APACHE_MANUAL_IPK_DIR=$(BUILD_DIR)/apache-manual-$(APACHE_VERSION)-ipk
-APACHE_MANUAL_IPK=$(BUILD_DIR)/apache-manual_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_armeb.ipk
+APACHE_MANUAL_IPK=$(BUILD_DIR)/apache-manual_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -78,7 +78,7 @@ $(APACHE_IPK_DIR)/CONTROL/control:
 	@install -d $(APACHE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apache" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(APACHE_PRIORITY)" >>$@
 	@echo "Section: $(APACHE_SECTION)" >>$@
 	@echo "Version: $(APACHE_VERSION)-$(APACHE_IPK_VERSION)" >>$@
@@ -91,7 +91,7 @@ $(APACHE_MANUAL_IPK_DIR)/CONTROL/control:
 	@install -d $(APACHE_MANUAL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apache-manual" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(APACHE_PRIORITY)" >>$@
 	@echo "Section: $(APACHE_SECTION)" >>$@
 	@echo "Version: $(APACHE_VERSION)-$(APACHE_IPK_VERSION)" >>$@
@@ -217,7 +217,7 @@ apache-stage: $(STAGING_DIR)/opt/sbin/apxs
 # You may need to patch your application to make it use these locations.
 #
 $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
-	rm -rf $(APACHE_IPK_DIR) $(BUILD_DIR)/apache_*_armeb.ipk
+	rm -rf $(APACHE_IPK_DIR) $(BUILD_DIR)/apache_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=/opt/share/apache2/build install
 	rm -rf $(APACHE_IPK_DIR)/opt/share/apache2/manual
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/libexec/*.so

@@ -49,7 +49,7 @@ DIFFUTILS_LDFLAGS=
 DIFFUTILS_BUILD_DIR=$(BUILD_DIR)/diffutils
 DIFFUTILS_SOURCE_DIR=$(SOURCE_DIR)/diffutils
 DIFFUTILS_IPK_DIR=$(BUILD_DIR)/diffutils-$(DIFFUTILS_VERSION)-ipk
-DIFFUTILS_IPK=$(BUILD_DIR)/diffutils_$(DIFFUTILS_VERSION)-$(DIFFUTILS_IPK_VERSION)_armeb.ipk
+DIFFUTILS_IPK=$(BUILD_DIR)/diffutils_$(DIFFUTILS_VERSION)-$(DIFFUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -141,7 +141,7 @@ diffutils-stage: $(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
-	rm -rf $(DIFFUTILS_IPK_DIR) $(BUILD_DIR)/diffutils_*_armeb.ipk
+	rm -rf $(DIFFUTILS_IPK_DIR) $(BUILD_DIR)/diffutils_*_$(TARGET_ARCH).ipk
 	install -d $(DIFFUTILS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/cmp
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff

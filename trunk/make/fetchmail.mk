@@ -60,7 +60,7 @@ FETCHMAIL_LDFLAGS=
 FETCHMAIL_BUILD_DIR=$(BUILD_DIR)/fetchmail
 FETCHMAIL_SOURCE_DIR=$(SOURCE_DIR)/fetchmail
 FETCHMAIL_IPK_DIR=$(BUILD_DIR)/fetchmail-$(FETCHMAIL_VERSION)-ipk
-FETCHMAIL_IPK=$(BUILD_DIR)/fetchmail_$(FETCHMAIL_VERSION)-$(FETCHMAIL_IPK_VERSION)_armeb.ipk
+FETCHMAIL_IPK=$(BUILD_DIR)/fetchmail_$(FETCHMAIL_VERSION)-$(FETCHMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -154,7 +154,7 @@ fetchmail-stage: $(FETCHMAIL_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
-	rm -rf $(FETCHMAIL_IPK_DIR) $(BUILD_DIR)/fetchmail_*_armeb.ipk
+	rm -rf $(FETCHMAIL_IPK_DIR) $(BUILD_DIR)/fetchmail_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FETCHMAIL_BUILD_DIR) DESTDIR=$(FETCHMAIL_IPK_DIR) install
 	find $(FETCHMAIL_IPK_DIR) -type d -exec chmod go+rx {} \;
 	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/

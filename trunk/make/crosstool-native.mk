@@ -40,7 +40,7 @@ CROSSTOOL-NATIVE_PATCHES=$(CROSSTOOL-NATIVE_SOURCE_DIR)/all.sh.patch
 CROSSTOOL-NATIVE_CPPFLAGS=
 CROSSTOOL-NATIVE_LDFLAGS=
 
-CROSSTOOL-NATIVE_PREFIX=/opt/armeb
+CROSSTOOL-NATIVE_PREFIX=/opt/$(TARGET_ARCH)
 
 #
 # CROSSTOOL-NATIVE_BUILD_DIR is the directory in which the build is done.
@@ -54,7 +54,7 @@ CROSSTOOL-NATIVE_PREFIX=/opt/armeb
 CROSSTOOL-NATIVE_BUILD_DIR=$(BUILD_DIR)/crosstool-native
 CROSSTOOL-NATIVE_SOURCE_DIR=$(SOURCE_DIR)/crosstool-native
 CROSSTOOL-NATIVE_IPK_DIR=$(BUILD_DIR)/crosstool-native-$(CROSSTOOL-NATIVE_VERSION)-ipk
-CROSSTOOL-NATIVE_IPK=$(BUILD_DIR)/crosstool-native_$(CROSSTOOL-NATIVE_VERSION)-$(CROSSTOOL-NATIVE_IPK_VERSION)_armeb.ipk
+CROSSTOOL-NATIVE_IPK=$(BUILD_DIR)/crosstool-native_$(CROSSTOOL-NATIVE_VERSION)-$(CROSSTOOL-NATIVE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ crosstool-native: $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
-	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)* $(BUILD_DIR)/crosstool-native*_armeb.ipk
+	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR)* $(BUILD_DIR)/crosstool-native*_$(TARGET_ARCH).ipk
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )

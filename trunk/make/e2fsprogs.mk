@@ -59,7 +59,7 @@ E2FSPROGS_LDFLAGS=
 E2FSPROGS_BUILD_DIR=$(BUILD_DIR)/e2fsprogs
 E2FSPROGS_SOURCE_DIR=$(SOURCE_DIR)/e2fsprogs
 E2FSPROGS_IPK_DIR=$(BUILD_DIR)/e2fsprogs-$(E2FSPROGS_VERSION)-ipk
-E2FSPROGS_IPK=$(BUILD_DIR)/e2fsprogs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)_armeb.ipk
+E2FSPROGS_IPK=$(BUILD_DIR)/e2fsprogs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -157,7 +157,7 @@ e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
-	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_armeb.ipk
+	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) DESTDIR=$(E2FSPROGS_IPK_DIR) install
 	# We place files in /opt/lib and /opt/sbin only
 	install -d $(E2FSPROGS_IPK_DIR)/opt/lib

@@ -23,7 +23,7 @@ CYRUS-IMAPD_LDFLAGS=
 CYRUS-IMAPD_BUILD_DIR=$(BUILD_DIR)/cyrus-imapd
 CYRUS-IMAPD_SOURCE_DIR=$(SOURCE_DIR)/cyrus-imapd
 CYRUS-IMAPD_IPK_DIR=$(BUILD_DIR)/cyrus-imapd-$(CYRUS-IMAPD_VERSION)-ipk
-CYRUS-IMAPD_IPK=$(BUILD_DIR)/cyrus-imapd_$(CYRUS-IMAPD_VERSION)-$(CYRUS-IMAPD_IPK_VERSION)_armeb.ipk
+CYRUS-IMAPD_IPK=$(BUILD_DIR)/cyrus-imapd_$(CYRUS-IMAPD_VERSION)-$(CYRUS-IMAPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(CYRUS-IMAPD_SOURCE):
 	$(WGET) -P $(DL_DIR) $(CYRUS-IMAPD_SITE)/$(CYRUS-IMAPD_SOURCE)
@@ -80,7 +80,7 @@ $(CYRUS-IMAPD_BUILD_DIR)/.staged: $(CYRUS-IMAPD_BUILD_DIR)/.built
 cyrus-imapd-stage: $(CYRUS-IMAPD_BUILD_DIR)/.staged
 
 $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
-	rm -rf $(CYRUS-IMAPD_IPK_DIR)* $(BUILD_DIR)/cyrus-imapd_*_armeb.ipk
+	rm -rf $(CYRUS-IMAPD_IPK_DIR)* $(BUILD_DIR)/cyrus-imapd_*_$(TARGET_ARCH).ipk
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/bin
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc
 	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/imapd.conf $(CYRUS-IMAPD_IPK_DIR)/opt/etc/imapd.conf

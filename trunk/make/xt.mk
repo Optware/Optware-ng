@@ -56,7 +56,7 @@ XT_LDFLAGS=
 XT_BUILD_DIR=$(BUILD_DIR)/xt
 XT_SOURCE_DIR=$(SOURCE_DIR)/xt
 XT_IPK_DIR=$(BUILD_DIR)/xt-$(XT_VERSION)-ipk
-XT_IPK=$(BUILD_DIR)/xt_$(XT_VERSION)-$(XT_IPK_VERSION)_armeb.ipk
+XT_IPK=$(BUILD_DIR)/xt_$(XT_VERSION)-$(XT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XT_IPK_DIR)/CONTROL/control:
 	@install -d $(XT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xt" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XT_PRIORITY)" >>$@
 	@echo "Section: $(XT_SECTION)" >>$@
 	@echo "Version: $(XT_VERSION)-$(XT_IPK_VERSION)" >>$@
@@ -158,7 +158,7 @@ xt-stage: $(STAGING_LIB_DIR)/libXt.so
 # You may need to patch your application to make it use these locations.
 #
 $(XT_IPK): $(XT_BUILD_DIR)/.built
-	rm -rf $(XT_IPK_DIR) $(BUILD_DIR)/xt_*_armeb.ipk
+	rm -rf $(XT_IPK_DIR) $(BUILD_DIR)/xt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XT_BUILD_DIR) DESTDIR=$(XT_IPK_DIR) install-strip
 	$(MAKE) $(XT_IPK_DIR)/CONTROL/control
 	rm -f $(XT_IPK_DIR)/opt/lib/*.la

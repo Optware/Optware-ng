@@ -37,7 +37,7 @@ TORRENT_IPK_VERSION=1
 TORRENT_BUILD_DIR=$(BUILD_DIR)/torrent
 TORRENT_SOURCE_DIR=$(SOURCE_DIR)/torrent
 TORRENT_IPK_DIR=$(BUILD_DIR)/torrent-$(TORRENT_VERSION)-ipk
-TORRENT_IPK=$(BUILD_DIR)/torrent_$(TORRENT_VERSION)-$(TORRENT_IPK_VERSION)_armeb.ipk
+TORRENT_IPK=$(BUILD_DIR)/torrent_$(TORRENT_VERSION)-$(TORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # The source code depends on it existing within the download directory.

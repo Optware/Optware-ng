@@ -40,7 +40,7 @@ JOVE_LDFLAGS=
 JOVE_BUILD_DIR=$(BUILD_DIR)/jove
 JOVE_SOURCE_DIR=$(SOURCE_DIR)/jove
 JOVE_IPK_DIR=$(BUILD_DIR)/jove-$(JOVE_VERSION)-ipk
-JOVE_IPK=$(BUILD_DIR)/jove_$(JOVE_VERSION)-$(JOVE_IPK_VERSION)_armeb.ipk
+JOVE_IPK=$(BUILD_DIR)/jove_$(JOVE_VERSION)-$(JOVE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

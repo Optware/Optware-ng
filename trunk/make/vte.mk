@@ -62,7 +62,7 @@ VTE_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 VTE_BUILD_DIR=$(BUILD_DIR)/vte
 VTE_SOURCE_DIR=$(SOURCE_DIR)/vte
 VTE_IPK_DIR=$(BUILD_DIR)/vte-$(VTE_VERSION)-ipk
-VTE_IPK=$(BUILD_DIR)/vte_$(VTE_VERSION)-$(VTE_IPK_VERSION)_armeb.ipk
+VTE_IPK=$(BUILD_DIR)/vte_$(VTE_VERSION)-$(VTE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(VTE_IPK_DIR)/CONTROL/control:
 	@install -d $(VTE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: vte" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(VTE_PRIORITY)" >>$@
 	@echo "Section: $(VTE_SECTION)" >>$@
 	@echo "Version: $(VTE_VERSION)-$(VTE_IPK_VERSION)" >>$@
@@ -177,7 +177,7 @@ vte-stage: $(STAGING_DIR)/opt/lib/libvte.so
 # You may need to patch your application to make it use these locations.
 #
 $(VTE_IPK): $(VTE_BUILD_DIR)/.built
-	rm -rf $(VTE_IPK_DIR) $(BUILD_DIR)/vte_*_armeb.ipk
+	rm -rf $(VTE_IPK_DIR) $(BUILD_DIR)/vte_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VTE_BUILD_DIR) DESTDIR=$(VTE_IPK_DIR) install-strip
 	rm -f $(VTE_IPK_DIR)/opt/lib/*.la
 	rm -rf $(VTE_IPK_DIR)/opt/share/gtk-doc

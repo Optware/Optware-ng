@@ -11,7 +11,7 @@ MYSQL=mysql-$(MYSQL_VERSION)-gamma
 MYSQL_SITE=http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1/
 MYSQL_SOURCE:=$(MYSQL).tar.gz
 MYSQL_UNZIP=zcat
-MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-1_armeb.ipk
+MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-1_$(TARGET_ARCH).ipk
 MYSQL_IPK_DIR:=$(BUILD_DIR)/mysql-$(MYSQL_VERSION)-ipk
 MYSQL_PATCH=$(SOURCE_DIR)/mysql.patch
 

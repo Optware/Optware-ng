@@ -62,7 +62,7 @@ LIBGD_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 LIBGD_BUILD_DIR=$(BUILD_DIR)/libgd
 LIBGD_SOURCE_DIR=$(SOURCE_DIR)/libgd
 LIBGD_IPK_DIR=$(BUILD_DIR)/libgd-$(LIBGD_VERSION)-ipk
-LIBGD_IPK=$(BUILD_DIR)/libgd_$(LIBGD_VERSION)-$(LIBGD_IPK_VERSION)_armeb.ipk
+LIBGD_IPK=$(BUILD_DIR)/libgd_$(LIBGD_VERSION)-$(LIBGD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(LIBGD_IPK_DIR)/CONTROL/control:
 	@install -d $(LIBGD_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: libgd" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(LIBGD_PRIORITY)" >>$@
 	@echo "Section: $(LIBGD_SECTION)" >>$@
 	@echo "Version: $(LIBGD_VERSION)-$(LIBGD_IPK_VERSION)" >>$@
@@ -170,7 +170,7 @@ libgd-stage: $(STAGING_DIR)/opt/lib/libgd.so
 # You may need to patch your application to make it use these locations.
 #
 $(LIBGD_IPK): $(LIBGD_BUILD_DIR)/.built
-	rm -rf $(LIBGD_IPK_DIR) $(BUILD_DIR)/libgd_*_armeb.ipk
+	rm -rf $(LIBGD_IPK_DIR) $(BUILD_DIR)/libgd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGD_BUILD_DIR) DESTDIR=$(LIBGD_IPK_DIR) install-strip
 	rm -f $(LIBGD_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBGD_IPK_DIR)/CONTROL/control

@@ -55,7 +55,7 @@ PATCH_LDFLAGS=
 PATCH_BUILD_DIR=$(BUILD_DIR)/patch
 PATCH_SOURCE_DIR=$(SOURCE_DIR)/patch
 PATCH_IPK_DIR=$(BUILD_DIR)/patch-$(PATCH_VERSION)-ipk
-PATCH_IPK=$(BUILD_DIR)/patch_$(PATCH_VERSION)-$(PATCH_IPK_VERSION)_armeb.ipk
+PATCH_IPK=$(BUILD_DIR)/patch_$(PATCH_VERSION)-$(PATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -133,7 +133,7 @@ patch: $(PATCH_BUILD_DIR)/patch
 # You may need to patch your application to make it use these locations.
 #
 $(PATCH_IPK): $(PATCH_BUILD_DIR)/patch
-	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_armeb.ipk
+	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_$(TARGET_ARCH).ipk
 	install -d $(PATCH_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PATCH_BUILD_DIR)/patch -o $(PATCH_IPK_DIR)/opt/bin/patch
 #	install -d $(PATCH_IPK_DIR)/opt/etc/init.d

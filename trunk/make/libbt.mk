@@ -52,7 +52,7 @@ LIBBT_LDFLAGS=
 LIBBT_BUILD_DIR=$(BUILD_DIR)/libbt
 LIBBT_SOURCE_DIR=$(SOURCE_DIR)/libbt
 LIBBT_IPK_DIR=$(BUILD_DIR)/libbt-$(LIBBT_VERSION)-ipk
-LIBBT_IPK=$(BUILD_DIR)/libbt_$(LIBBT_VERSION)-$(LIBBT_IPK_VERSION)_armeb.ipk
+LIBBT_IPK=$(BUILD_DIR)/libbt_$(LIBBT_VERSION)-$(LIBBT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -131,7 +131,7 @@ libbt: $(LIBBT_BUILD_DIR)/src/libbt.a
 # You may need to patch your application to make it use these locations.
 #
 $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/src/libbt.a
-	rm -rf $(LIBBT_IPK_DIR) $(BUILD_DIR)/libbt_*_armeb.ipk
+	rm -rf $(LIBBT_IPK_DIR) $(BUILD_DIR)/libbt_*_$(TARGET_ARCH).ipk
 	mkdir -p $(LIBBT_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libbt/control $(LIBBT_IPK_DIR)/CONTROL/control
 	install -d $(LIBBT_IPK_DIR)/opt/bin

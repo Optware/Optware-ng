@@ -55,7 +55,7 @@ LIBPNG_LDFLAGS=
 LIBPNG_BUILD_DIR=$(BUILD_DIR)/libpng
 LIBPNG_SOURCE_DIR=$(SOURCE_DIR)/libpng
 LIBPNG_IPK_DIR=$(BUILD_DIR)/libpng-$(LIBPNG_VERSION)-ipk
-LIBPNG_IPK=$(BUILD_DIR)/libpng_$(LIBPNG_VERSION)-$(LIBPNG_IPK_VERSION)_armeb.ipk
+LIBPNG_IPK=$(BUILD_DIR)/libpng_$(LIBPNG_VERSION)-$(LIBPNG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

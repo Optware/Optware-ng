@@ -62,7 +62,7 @@ ATK_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 ATK_BUILD_DIR=$(BUILD_DIR)/atk
 ATK_SOURCE_DIR=$(SOURCE_DIR)/atk
 ATK_IPK_DIR=$(BUILD_DIR)/atk-$(ATK_VERSION)-ipk
-ATK_IPK=$(BUILD_DIR)/atk_$(ATK_VERSION)-$(ATK_IPK_VERSION)_armeb.ipk
+ATK_IPK=$(BUILD_DIR)/atk_$(ATK_VERSION)-$(ATK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(ATK_IPK_DIR)/CONTROL/control:
 	@install -d $(ATK_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: atk" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(ATK_PRIORITY)" >>$@
 	@echo "Section: $(ATK_SECTION)" >>$@
 	@echo "Version: $(ATK_VERSION)-$(ATK_IPK_VERSION)" >>$@
@@ -161,7 +161,7 @@ atk-stage: $(STAGING_DIR)/opt/lib/libatk-1.0.so
 # You may need to patch your application to make it use these locations.
 #
 $(ATK_IPK): $(ATK_BUILD_DIR)/.built
-	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_armeb.ipk
+	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATK_BUILD_DIR) DESTDIR=$(ATK_IPK_DIR) install-strip
 	rm -f $(ATK_IPK_DIR)/opt/lib/*.la
 	rm -rf $(ATK_IPK_DIR)/opt/share/gtk-doc

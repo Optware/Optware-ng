@@ -54,7 +54,7 @@ MAN_LDFLAGS=
 MAN_BUILD_DIR=$(BUILD_DIR)/man
 MAN_SOURCE_DIR=$(SOURCE_DIR)/man
 MAN_IPK_DIR=$(BUILD_DIR)/man-$(MAN_VERSION)-ipk
-MAN_IPK=$(BUILD_DIR)/man_$(MAN_VERSION)-$(MAN_IPK_VERSION)_armeb.ipk
+MAN_IPK=$(BUILD_DIR)/man_$(MAN_VERSION)-$(MAN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -140,7 +140,7 @@ man-stage: $(MAN_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MAN_IPK): $(MAN_BUILD_DIR)/.built
-	rm -rf $(MAN_IPK_DIR) $(BUILD_DIR)/man_*_armeb.ipk
+	rm -rf $(MAN_IPK_DIR) $(BUILD_DIR)/man_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAN_BUILD_DIR) DESTDIR=$(MAN_IPK_DIR) install
 	install -d $(MAN_IPK_DIR)/opt/etc/
 	install -m 644 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf

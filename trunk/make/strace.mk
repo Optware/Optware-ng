@@ -54,7 +54,7 @@ STRACE_LDFLAGS=
 STRACE_BUILD_DIR=$(BUILD_DIR)/strace
 STRACE_SOURCE_DIR=$(SOURCE_DIR)/strace
 STRACE_IPK_DIR=$(BUILD_DIR)/strace-$(STRACE_VERSION)-ipk
-STRACE_IPK=$(BUILD_DIR)/strace_$(STRACE_VERSION)-$(STRACE_IPK_VERSION)_armeb.ipk
+STRACE_IPK=$(BUILD_DIR)/strace_$(STRACE_VERSION)-$(STRACE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -138,7 +138,8 @@ $(STRACE_IPK): $(STRACE_BUILD_DIR)/strace
 	install -d $(STRACE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
 	install -d $(STRACE_IPK_DIR)/CONTROL
-	install -m 644 $(STRACE_SOURCE_DIR)/control $(STRACE_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(STRACE_VERSION)/" \
+		-e "s/@RELEASE@/$(STRACE_IPK_VERSION)/"	$(STRACE_SOURCE_DIR)/control > $(STRACE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STRACE_IPK_DIR)
 
 #

@@ -22,7 +22,7 @@ RSYNC_LDFLAGS=
 RSYNC_BUILD_DIR=$(BUILD_DIR)/rsync
 RSYNC_SOURCE_DIR=$(SOURCE_DIR)/rsync
 RSYNC_IPK_DIR=$(BUILD_DIR)/rsync-$(RSYNC_VERSION)-ipk
-RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-$(RSYNC_IPK_VERSION)_armeb.ipk
+RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-$(RSYNC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(RSYNC_SOURCE):
 	$(WGET) -P $(DL_DIR) $(RSYNC_SITE)/$(RSYNC_SOURCE)
@@ -68,7 +68,7 @@ $(RSYNC_BUILD_DIR)/.staged: $(RSYNC_BUILD_DIR)/.built
 rsync-stage: $(RSYNC_BUILD_DIR)/.staged
 
 $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
-	rm -rf $(RSYNC_IPK_DIR) $(BUILD_DIR)/rsync_*_armeb.ipk
+	rm -rf $(RSYNC_IPK_DIR) $(BUILD_DIR)/rsync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RSYNC_BUILD_DIR) DESTDIR=$(RSYNC_IPK_DIR) install
 	$(STRIP_COMMAND) $(RSYNC_IPK_DIR)/opt/bin/rsync
 	find $(RSYNC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;

@@ -20,7 +20,7 @@ MT_DAAPD_LDFLAGS=
 MT_DAAPD_BUILD_DIR=$(BUILD_DIR)/mt-daapd
 MT_DAAPD_SOURCE_DIR=$(SOURCE_DIR)/mt-daapd
 MT_DAAPD_IPK_DIR=$(BUILD_DIR)/mt-daapd-$(MT_DAAPD_VERSION)-ipk
-MT_DAAPD_IPK=$(BUILD_DIR)/mt-daapd_$(MT_DAAPD_VERSION)-$(MT_DAAPD_IPK_VERSION)_armeb.ipk
+MT_DAAPD_IPK=$(BUILD_DIR)/mt-daapd_$(MT_DAAPD_VERSION)-$(MT_DAAPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(MT_DAAPD_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MT_DAAPD_SITE)/$(MT_DAAPD_SOURCE)
@@ -60,7 +60,7 @@ $(MT_DAAPD_BUILD_DIR)/src/mt-daapd: $(MT_DAAPD_BUILD_DIR)/.configured
 mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 
 $(MT_DAAPD_IPK): $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
-	rm -rf $(MT_DAAPD_IPK_DIR) $(BUILD_DIR)/mt-daapd_*_armeb.ipk
+	rm -rf $(MT_DAAPD_IPK_DIR) $(BUILD_DIR)/mt-daapd_*_$(TARGET_ARCH).ipk
 	install -d $(MT_DAAPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
 	install -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d

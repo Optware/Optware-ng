@@ -1,8 +1,8 @@
 Package: tcpdump
-Version: 3.8.3-1
-Architecture: armeb
+Version: @VERSION@-@RELEASE@
+Architecture: @ARCH@
 Maintainer: Sven Henkel <sidddy@gmail.com>
-Source: http://www.tcpdump.org/release/tcpdump-3.8.3.tar.gz
+Source: http://www.tcpdump.org/release/tcpdump-@VERSION@.tar.gz
 Section: net
 Priority: optional
 Depends: 

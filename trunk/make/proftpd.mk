@@ -59,7 +59,7 @@ PROFTPD_LDFLAGS=
 PROFTPD_BUILD_DIR=$(BUILD_DIR)/proftpd
 PROFTPD_SOURCE_DIR=$(SOURCE_DIR)/proftpd
 PROFTPD_IPK_DIR=$(BUILD_DIR)/proftpd-$(PROFTPD_VERSION)-ipk
-PROFTPD_IPK=$(BUILD_DIR)/proftpd_$(PROFTPD_VERSION)-$(PROFTPD_IPK_VERSION)_armeb.ipk
+PROFTPD_IPK=$(BUILD_DIR)/proftpd_$(PROFTPD_VERSION)-$(PROFTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,7 +153,7 @@ proftpd-stage: $(STAGING_DIR)/opt/lib/libproftpd.so.$(PROFTPD_VERSION)
 #
 $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	# Clean it all
-	rm -rf $(PROFTPD_IPK_DIR) $(BUILD_DIR)/proftpd_*_armeb.ipk
+	rm -rf $(PROFTPD_IPK_DIR) $(BUILD_DIR)/proftpd_*_$(TARGET_ARCH).ipk
 	# Install sbin files
 	install -d $(PROFTPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(PROFTPD_BUILD_DIR)/proftpd -o $(PROFTPD_IPK_DIR)/opt/sbin/proftpd

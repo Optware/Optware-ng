@@ -60,7 +60,7 @@ LIBOGG_LDFLAGS=
 LIBOGG_BUILD_DIR=$(BUILD_DIR)/libogg
 LIBOGG_SOURCE_DIR=$(SOURCE_DIR)/libogg
 LIBOGG_IPK_DIR=$(BUILD_DIR)/libogg-$(LIBOGG_VERSION)-ipk
-LIBOGG_IPK=$(BUILD_DIR)/libogg_$(LIBOGG_VERSION)-$(LIBOGG_IPK_VERSION)_armeb.ipk
+LIBOGG_IPK=$(BUILD_DIR)/libogg_$(LIBOGG_VERSION)-$(LIBOGG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -150,10 +150,11 @@ libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/.built
-	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_armeb.ipk
+	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(LIBOGG_IPK_DIR) install
 	install -d $(LIBOGG_IPK_DIR)/CONTROL
-	install -m 644 $(LIBOGG_SOURCE_DIR)/control $(LIBOGG_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBOGG_VERSION)/" \
+		-e "s/@RELEASE@/$(LIBOGG_IPK_VERSION)/" $(LIBOGG_SOURCE_DIR)/control > $(LIBOGG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOGG_IPK_DIR)
 
 #

@@ -59,7 +59,7 @@ GIMP-PRINT_LDFLAGS=
 GIMP-PRINT_BUILD_DIR=$(BUILD_DIR)/gimp-print
 GIMP-PRINT_SOURCE_DIR=$(SOURCE_DIR)/gimp-print
 GIMP-PRINT_IPK_DIR=$(BUILD_DIR)/gimp-print-$(GIMP-PRINT_VERSION)-ipk
-GIMP-PRINT_IPK=$(BUILD_DIR)/gimp-print_$(GIMP-PRINT_VERSION)-$(GIMP-PRINT_IPK_VERSION)_armeb.ipk
+GIMP-PRINT_IPK=$(BUILD_DIR)/gimp-print_$(GIMP-PRINT_VERSION)-$(GIMP-PRINT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ gimp-print-stage: $(GIMP-PRINT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(GIMP-PRINT_IPK): $(GIMP-PRINT_BUILD_DIR)/.built
-	rm -rf $(GIMP-PRINT_IPK_DIR) $(BUILD_DIR)/gimp-print_*_armeb.ipk
+	rm -rf $(GIMP-PRINT_IPK_DIR) $(BUILD_DIR)/gimp-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIMP-PRINT_BUILD_DIR) DESTDIR=$(GIMP-PRINT_IPK_DIR) install-strip
 	install -d $(GIMP-PRINT_IPK_DIR)/CONTROL
 	install -m 644 $(GIMP-PRINT_SOURCE_DIR)/control $(GIMP-PRINT_IPK_DIR)/CONTROL/control

@@ -59,7 +59,7 @@ FFMPEG_LDFLAGS=
 FFMPEG_BUILD_DIR=$(BUILD_DIR)/ffmpeg
 FFMPEG_SOURCE_DIR=$(SOURCE_DIR)/ffmpeg
 FFMPEG_IPK_DIR=$(BUILD_DIR)/ffmpeg-$(FFMPEG_VERSION)-ipk
-FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_armeb.ipk
+FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -150,7 +150,7 @@ ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
-	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_armeb.ipk
+	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) install
 	install -d $(FFMPEG_IPK_DIR)/CONTROL
 	install -m 644 $(FFMPEG_SOURCE_DIR)/control $(FFMPEG_IPK_DIR)/CONTROL/control

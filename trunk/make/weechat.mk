@@ -54,7 +54,7 @@ WEECHAT_LDFLAGS=
 WEECHAT_BUILD_DIR=$(BUILD_DIR)/weechat
 WEECHAT_SOURCE_DIR=$(SOURCE_DIR)/weechat
 WEECHAT_IPK_DIR=$(BUILD_DIR)/weechat-$(WEECHAT_VERSION)-ipk
-WEECHAT_IPK=$(BUILD_DIR)/weechat_$(WEECHAT_VERSION)-$(WEECHAT_IPK_VERSION)_armeb.ipk
+WEECHAT_IPK=$(BUILD_DIR)/weechat_$(WEECHAT_VERSION)-$(WEECHAT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -142,7 +142,7 @@ weechat-stage: $(WEECHAT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(WEECHAT_IPK): $(WEECHAT_BUILD_DIR)/.built
-	rm -rf $(WEECHAT_IPK_DIR) $(BUILD_DIR)/weechat_*_armeb.ipk
+	rm -rf $(WEECHAT_IPK_DIR) $(BUILD_DIR)/weechat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WEECHAT_BUILD_DIR) DESTDIR=$(WEECHAT_IPK_DIR) install
 #	install -d $(WEECHAT_IPK_DIR)/opt/etc/
 #	install -m 644 $(WEECHAT_SOURCE_DIR)/weechat.conf $(WEECHAT_IPK_DIR)/opt/etc/weechat.conf

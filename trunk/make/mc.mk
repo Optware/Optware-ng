@@ -40,7 +40,7 @@ MC_LDFLAGS=
 MC_BUILD_DIR=$(BUILD_DIR)/mc
 MC_SOURCE_DIR=$(SOURCE_DIR)/mc
 MC_IPK_DIR=$(BUILD_DIR)/mc-$(MC_VERSION)-ipk
-MC_IPK=$(BUILD_DIR)/mc_$(MC_VERSION)-$(MC_IPK_VERSION)_armeb.ipk
+MC_IPK=$(BUILD_DIR)/mc_$(MC_VERSION)-$(MC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

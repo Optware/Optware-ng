@@ -59,7 +59,7 @@ MPC_LDFLAGS=
 MPC_BUILD_DIR=$(BUILD_DIR)/mpc
 MPC_SOURCE_DIR=$(SOURCE_DIR)/mpc
 MPC_IPK_DIR=$(BUILD_DIR)/mpc-$(MPC_VERSION)-ipk
-MPC_IPK=$(BUILD_DIR)/mpc_$(MPC_VERSION)-$(MPC_IPK_VERSION)_armeb.ipk
+MPC_IPK=$(BUILD_DIR)/mpc_$(MPC_VERSION)-$(MPC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +146,7 @@ mpc-stage: $(MPC_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MPC_IPK): $(MPC_BUILD_DIR)/.built
-	rm -rf $(MPC_IPK_DIR) $(BUILD_DIR)/mpc_*_armeb.ipk
+	rm -rf $(MPC_IPK_DIR) $(BUILD_DIR)/mpc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPC_BUILD_DIR) DESTDIR=$(MPC_IPK_DIR) install
 	install -d $(MPC_IPK_DIR)/CONTROL
 	install -m 644 $(MPC_SOURCE_DIR)/control $(MPC_IPK_DIR)/CONTROL/control

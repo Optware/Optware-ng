@@ -55,7 +55,7 @@ LIBPCAP_LDFLAGS=
 LIBPCAP_BUILD_DIR=$(BUILD_DIR)/libpcap
 LIBPCAP_SOURCE_DIR=$(SOURCE_DIR)/libpcap
 LIBPCAP_IPK_DIR=$(BUILD_DIR)/libpcap-$(LIBPCAP_VERSION)-ipk
-LIBPCAP_IPK=$(BUILD_DIR)/libpcap_$(LIBPCAP_VERSION)-$(LIBPCAP_IPK_VERSION)_armeb.ipk
+LIBPCAP_IPK=$(BUILD_DIR)/libpcap_$(LIBPCAP_VERSION)-$(LIBPCAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -17,7 +17,7 @@ LYNX_CONFFILES=/opt/etc/lynx.cfg
 LYNX_BUILD_DIR=$(BUILD_DIR)/lynx
 LYNX_SOURCE_DIR=$(SOURCE_DIR)/lynx
 LYNX_IPK_DIR=$(BUILD_DIR)/lynx-$(LYNX_VERSION)-ipk
-LYNX_IPK=$(BUILD_DIR)/lynx_$(LYNX_VERSION)-$(LYNX_IPK_VERSION)_armeb.ipk
+LYNX_IPK=$(BUILD_DIR)/lynx_$(LYNX_VERSION)-$(LYNX_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(LYNX_SOURCE):
 	$(WGET) -P $(DL_DIR) $(LYNX_SITE)/$(LYNX_SOURCE)
@@ -60,7 +60,7 @@ $(LYNX_BUILD_DIR)/.built: $(LYNX_BUILD_DIR)/.configured
 lynx: $(LYNX_BUILD_DIR)/.built
 
 $(LYNX_IPK): $(LYNX_BUILD_DIR)/.built
-	rm -rf $(LYNX_IPK_DIR) $(BUILD_DIR)/lynx_*_armeb.ipk
+	rm -rf $(LYNX_IPK_DIR) $(BUILD_DIR)/lynx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -j1 -C $(LYNX_BUILD_DIR) DESTDIR=$(LYNX_IPK_DIR) install
 	$(STRIP_COMMAND) $(LYNX_IPK_DIR)/opt/bin/*
 	install -d $(LYNX_IPK_DIR)/CONTROL

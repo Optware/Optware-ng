@@ -55,7 +55,7 @@ XDMCP_LDFLAGS=
 XDMCP_BUILD_DIR=$(BUILD_DIR)/xdmcp
 XDMCP_SOURCE_DIR=$(SOURCE_DIR)/xdmcp
 XDMCP_IPK_DIR=$(BUILD_DIR)/xdmcp-$(XDMCP_VERSION)-ipk
-XDMCP_IPK=$(BUILD_DIR)/xdmcp_$(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)_armeb.ipk
+XDMCP_IPK=$(BUILD_DIR)/xdmcp_$(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(XDMCP_IPK_DIR)/CONTROL/control:
 	@install -d $(XDMCP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xdmcp" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XDMCP_PRIORITY)" >>$@
 	@echo "Section: $(XDMCP_SECTION)" >>$@
 	@echo "Version: $(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)" >>$@
@@ -152,7 +152,7 @@ xdmcp-stage: $(STAGING_LIB_DIR)/libXdmcp.so
 # You may need to patch your application to make it use these locations.
 #
 $(XDMCP_IPK): $(XDMCP_BUILD_DIR)/.built
-	rm -rf $(XDMCP_IPK_DIR) $(BUILD_DIR)/xdmcp_*_armeb.ipk $(XDMCP_SOURCE_DIR)/control
+	rm -rf $(XDMCP_IPK_DIR) $(BUILD_DIR)/xdmcp_*_$(TARGET_ARCH).ipk $(XDMCP_SOURCE_DIR)/control
 	$(MAKE) -C $(XDMCP_BUILD_DIR) DESTDIR=$(XDMCP_IPK_DIR) install-strip
 	$(MAKE) $(XDMCP_IPK_DIR)/CONTROL/control
 	rm -f $(XDMCP_IPK_DIR)/opt/lib/*.la

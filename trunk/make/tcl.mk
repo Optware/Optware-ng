@@ -59,7 +59,7 @@ TCL_LDFLAGS=
 TCL_BUILD_DIR=$(BUILD_DIR)/tcl
 TCL_SOURCE_DIR=$(SOURCE_DIR)/tcl
 TCL_IPK_DIR=$(BUILD_DIR)/tcl-$(TCL_VERSION)-ipk
-TCL_IPK=$(BUILD_DIR)/tcl_$(TCL_VERSION)-$(TCL_IPK_VERSION)_armeb.ipk
+TCL_IPK=$(BUILD_DIR)/tcl_$(TCL_VERSION)-$(TCL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ tcl-stage: $(TCL_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(TCL_IPK): $(TCL_BUILD_DIR)/.built
-	rm -rf $(TCL_IPK_DIR) $(BUILD_DIR)/tcl_*_armeb.ipk
+	rm -rf $(TCL_IPK_DIR) $(BUILD_DIR)/tcl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCL_BUILD_DIR)/unix DESTDIR=$(TCL_IPK_DIR) install
 #	install -d $(TCL_IPK_DIR)/opt/etc/
 #	install -m 755 $(TCL_SOURCE_DIR)/tcl.conf $(TCL_IPK_DIR)/opt/etc/tcl.conf

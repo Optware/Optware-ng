@@ -21,7 +21,7 @@ endif
 ZLIB_BUILD_DIR=$(BUILD_DIR)/zlib
 ZLIB_SOURCE_DIR=$(SOURCE_DIR)/zlib
 ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-$(ZLIB_VERSION)-ipk
-ZLIB_IPK=$(BUILD_DIR)/zlib_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_armeb.ipk
+ZLIB_IPK=$(BUILD_DIR)/zlib_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(ZLIB_SOURCE):
 	$(WGET) -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
@@ -71,7 +71,8 @@ $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so.1
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so
 	install -d $(ZLIB_IPK_DIR)/CONTROL
-	install -m 644 $(ZLIB_SOURCE_DIR)/control $(ZLIB_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(ZLIB_VERSION)/" \
+		-e "s/@RELEASE@/$(ZLIB_IPK_VERSION)/" $(ZLIB_SOURCE_DIR)/control > $(ZLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
 
 zlib-ipk: $(ZLIB_IPK)

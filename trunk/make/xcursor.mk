@@ -56,7 +56,7 @@ XCURSOR_LDFLAGS=
 XCURSOR_BUILD_DIR=$(BUILD_DIR)/xcursor
 XCURSOR_SOURCE_DIR=$(SOURCE_DIR)/xcursor
 XCURSOR_IPK_DIR=$(BUILD_DIR)/xcursor-$(XCURSOR_VERSION)-ipk
-XCURSOR_IPK=$(BUILD_DIR)/xcursor_$(XCURSOR_VERSION)-$(XCURSOR_IPK_VERSION)_armeb.ipk
+XCURSOR_IPK=$(BUILD_DIR)/xcursor_$(XCURSOR_VERSION)-$(XCURSOR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XCURSOR_IPK_DIR)/CONTROL/control:
 	@install -d $(XCURSOR_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xcursor" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XCURSOR_PRIORITY)" >>$@
 	@echo "Section: $(XCURSOR_SECTION)" >>$@
 	@echo "Version: $(XCURSOR_VERSION)-$(XCURSOR_IPK_VERSION)" >>$@
@@ -157,7 +157,7 @@ xcursor-stage: $(STAGING_LIB_DIR)/libXcursor.so
 # You may need to patch your application to make it use these locations.
 #
 $(XCURSOR_IPK): $(XCURSOR_BUILD_DIR)/.built
-	rm -rf $(XCURSOR_IPK_DIR) $(BUILD_DIR)/xcursor_*_armeb.ipk
+	rm -rf $(XCURSOR_IPK_DIR) $(BUILD_DIR)/xcursor_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XCURSOR_BUILD_DIR) DESTDIR=$(XCURSOR_IPK_DIR) install-strip
 	$(MAKE) $(XCURSOR_IPK_DIR)/CONTROL/control
 	rm -f $(XCURSOR_IPK_DIR)/opt/lib/*.la

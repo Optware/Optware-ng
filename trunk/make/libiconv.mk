@@ -59,7 +59,7 @@ LIBICONV_LDFLAGS=
 LIBICONV_BUILD_DIR=$(BUILD_DIR)/libiconv
 LIBICONV_SOURCE_DIR=$(SOURCE_DIR)/libiconv
 LIBICONV_IPK_DIR=$(BUILD_DIR)/libiconv-$(LIBICONV_VERSION)-ipk
-LIBICONV_IPK=$(BUILD_DIR)/libiconv_$(LIBICONV_VERSION)-$(LIBICONV_IPK_VERSION)_armeb.ipk
+LIBICONV_IPK=$(BUILD_DIR)/libiconv_$(LIBICONV_VERSION)-$(LIBICONV_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +146,7 @@ libiconv-stage: $(STAGING_DIR)/opt/lib/libiconv.so
 # You may need to patch your application to make it use these locations.
 #
 $(LIBICONV_IPK): $(LIBICONV_BUILD_DIR)/.built
-	rm -rf $(LIBICONV_IPK_DIR) $(BUILD_DIR)/libiconv_*_armeb.ipk
+	rm -rf $(LIBICONV_IPK_DIR) $(BUILD_DIR)/libiconv_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBICONV_BUILD_DIR) install prefix=$(LIBICONV_IPK_DIR)/opt
 	install -d $(LIBICONV_IPK_DIR)/CONTROL
 	install -m 644 $(LIBICONV_SOURCE_DIR)/control $(LIBICONV_IPK_DIR)/CONTROL/control

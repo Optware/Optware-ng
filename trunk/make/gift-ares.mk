@@ -62,7 +62,7 @@ GIFTARES_LDFLAGS=
 GIFTARES_BUILD_DIR=$(BUILD_DIR)/gift-ares
 GIFTARES_SOURCE_DIR=$(SOURCE_DIR)/gift-ares
 GIFTARES_IPK_DIR=$(BUILD_DIR)/gift-ares-$(GIFTARES_VERSION)-ipk
-GIFTARES_IPK=$(BUILD_DIR)/gift-ares_$(GIFTARES_VERSION)-$(GIFTARES_IPK_VERSION)_armeb.ipk
+GIFTARES_IPK=$(BUILD_DIR)/gift-ares_$(GIFTARES_VERSION)-$(GIFTARES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -167,7 +167,7 @@ gift-ares-stage: $(STAGING_DIR)/opt/lib/libgift-ares.so.$(GIFTARES_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTARES_IPK): $(GIFTARES_BUILD_DIR)/.built
-	rm -rf $(GIFTARES_IPK_DIR) $(BUILD_DIR)/gift-ares_*_armeb.ipk
+	rm -rf $(GIFTARES_IPK_DIR) $(BUILD_DIR)/gift-ares_*_$(TARGET_ARCH).ipk
 	install -d $(GIFTARES_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.so -o $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.so
 	install -m 644 $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.la $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.la

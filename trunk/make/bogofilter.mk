@@ -28,13 +28,13 @@ BOGOFILTER_LDFLAGS=
 BOGOFILTER_BUILD_DIR=$(BUILD_DIR)/bogofilter
 BOGOFILTER_SOURCE_DIR=$(SOURCE_DIR)/bogofilter
 BOGOFILTER_IPK_DIR=$(BUILD_DIR)/bogofilter-$(BOGOFILTER_VERSION)-ipk
-BOGOFILTER_IPK=$(BUILD_DIR)/bogofilter_$(BOGOFILTER_VERSION)-$(BOGOFILTER_IPK_VERSION)_armeb.ipk
+BOGOFILTER_IPK=$(BUILD_DIR)/bogofilter_$(BOGOFILTER_VERSION)-$(BOGOFILTER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(BOGOFILTER_IPK_DIR)/CONTROL/control:
 	@install -d $(BOGOFILTER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: bogofilter" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(BOGOFILTER_PRIORITY)" >>$@
 	@echo "Section: $(BOGOFILTER_SECTION)" >>$@
 	@echo "Version: $(BOGOFILTER_VERSION)-$(BOGOFILTER_IPK_VERSION)" >>$@
@@ -87,7 +87,7 @@ $(BOGOFILTER_BUILD_DIR)/.staged: $(BOGOFILTER_BUILD_DIR)/.built
 bogofilter-stage: $(BOGOFILTER_BUILD_DIR)/.staged
 
 $(BOGOFILTER_IPK): $(BOGOFILTER_BUILD_DIR)/.built
-	rm -rf $(BOGOFILTER_IPK_DIR) $(BUILD_DIR)/bogofilter_*_armeb.ipk
+	rm -rf $(BOGOFILTER_IPK_DIR) $(BUILD_DIR)/bogofilter_*_$(TARGET_ARCH).ipk
 	install -d $(BOGOFILTER_IPK_DIR)/opt/bin/
 	install -d $(BOGOFILTER_IPK_DIR)/opt/sbin/
 	install -d $(BOGOFILTER_IPK_DIR)/opt/doc/bogofilter/

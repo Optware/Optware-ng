@@ -17,7 +17,7 @@ PERL-DBI_CONFFILES=
 PERL-DBI_BUILD_DIR=$(BUILD_DIR)/perl-dbi
 PERL-DBI_SOURCE_DIR=$(SOURCE_DIR)/perl-dbi
 PERL-DBI_IPK_DIR=$(BUILD_DIR)/perl-dbi-$(PERL-DBI_VERSION)-ipk
-PERL-DBI_IPK=$(BUILD_DIR)/perl-dbi_$(PERL-DBI_VERSION)-$(PERL-DBI_IPK_VERSION)_armeb.ipk
+PERL-DBI_IPK=$(BUILD_DIR)/perl-dbi_$(PERL-DBI_VERSION)-$(PERL-DBI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-DBI_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PERL-DBI_SITE)/$(PERL-DBI_SOURCE)
@@ -58,7 +58,7 @@ $(PERL-DBI_BUILD_DIR)/.staged: $(PERL-DBI_BUILD_DIR)/.built
 perl-dbi-stage: $(PERL-DBI_BUILD_DIR)/.staged
 
 $(PERL-DBI_IPK): $(PERL-DBI_BUILD_DIR)/.built
-	rm -rf $(PERL-DBI_IPK_DIR) $(BUILD_DIR)/perl-dbi_*_armeb.ipk
+	rm -rf $(PERL-DBI_IPK_DIR) $(BUILD_DIR)/perl-dbi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DBI_BUILD_DIR) DESTDIR=$(PERL-DBI_IPK_DIR) install
 	find $(PERL-DBI_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DBI_IPK_DIR)/opt/lib/perl5 ; \

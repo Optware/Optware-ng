@@ -59,7 +59,7 @@ OPENLDAP_LDFLAGS=
 OPENLDAP_BUILD_DIR=$(BUILD_DIR)/openldap
 OPENLDAP_SOURCE_DIR=$(SOURCE_DIR)/openldap
 OPENLDAP_IPK_DIR=$(BUILD_DIR)/openldap-$(OPENLDAP_VERSION)-ipk
-OPENLDAP_IPK=$(BUILD_DIR)/openldap_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)_armeb.ipk
+OPENLDAP_IPK=$(BUILD_DIR)/openldap_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,7 +152,7 @@ openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
-	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_armeb.ipk
+	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) install
 	install -d $(OPENLDAP_IPK_DIR)/opt/etc/
 #	install -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf

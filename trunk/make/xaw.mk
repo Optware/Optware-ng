@@ -56,7 +56,7 @@ XAW_LDFLAGS=
 XAW_BUILD_DIR=$(BUILD_DIR)/xaw
 XAW_SOURCE_DIR=$(SOURCE_DIR)/xaw
 XAW_IPK_DIR=$(BUILD_DIR)/xaw-$(XAW_VERSION)-ipk
-XAW_IPK=$(BUILD_DIR)/xaw_$(XAW_VERSION)-$(XAW_IPK_VERSION)_armeb.ipk
+XAW_IPK=$(BUILD_DIR)/xaw_$(XAW_VERSION)-$(XAW_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XAW_IPK_DIR)/CONTROL/control:
 	@install -d $(XAW_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xaw" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XAW_PRIORITY)" >>$@
 	@echo "Section: $(XAW_SECTION)" >>$@
 	@echo "Version: $(XAW_VERSION)-$(XAW_IPK_VERSION)" >>$@
@@ -158,7 +158,7 @@ xaw-stage: $(STAGING_LIB_DIR)/libXaw.so
 # You may need to patch your application to make it use these locations.
 #
 $(XAW_IPK): $(XAW_BUILD_DIR)/.built
-	rm -rf $(XAW_IPK_DIR) $(BUILD_DIR)/xaw_*_armeb.ipk
+	rm -rf $(XAW_IPK_DIR) $(BUILD_DIR)/xaw_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAW_BUILD_DIR) DESTDIR=$(XAW_IPK_DIR) install-strip
 	$(MAKE) $(XAW_IPK_DIR)/CONTROL/control
 	rm -f $(XAW_IPK_DIR)/opt/lib/*.la

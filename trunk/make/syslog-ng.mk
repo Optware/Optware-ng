@@ -60,7 +60,7 @@ SYSLOG-NG_LDFLAGS=
 SYSLOG-NG_BUILD_DIR=$(BUILD_DIR)/syslog-ng
 SYSLOG-NG_SOURCE_DIR=$(SOURCE_DIR)/syslog-ng
 SYSLOG-NG_IPK_DIR=$(BUILD_DIR)/syslog-ng-$(SYSLOG-NG_VERSION)-ipk
-SYSLOG-NG_IPK=$(BUILD_DIR)/syslog-ng_$(SYSLOG-NG_VERSION)-$(SYSLOG-NG_IPK_VERSION)_armeb.ipk
+SYSLOG-NG_IPK=$(BUILD_DIR)/syslog-ng_$(SYSLOG-NG_VERSION)-$(SYSLOG-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -149,7 +149,7 @@ syslog-ng-stage: $(SYSLOG-NG_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SYSLOG-NG_IPK): $(SYSLOG-NG_BUILD_DIR)/.built
-	rm -rf $(SYSLOG-NG_IPK_DIR) $(BUILD_DIR)/syslog-ng_*_armeb.ipk
+	rm -rf $(SYSLOG-NG_IPK_DIR) $(BUILD_DIR)/syslog-ng_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR) DESTDIR=$(SYSLOG-NG_IPK_DIR) install
 	install -d $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
 	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/syslog-ng.conf $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng

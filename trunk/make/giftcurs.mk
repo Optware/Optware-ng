@@ -59,7 +59,7 @@ GIFTCURS_LDFLAGS=$(STAGING_LIB_DIR)/libglib-2.0.so
 GIFTCURS_BUILD_DIR=$(BUILD_DIR)/giftcurs
 GIFTCURS_SOURCE_DIR=$(SOURCE_DIR)/giftcurs
 GIFTCURS_IPK_DIR=$(BUILD_DIR)/giftcurs-$(GIFTCURS_VERSION)-ipk
-GIFTCURS_IPK=$(BUILD_DIR)/giftcurs_$(GIFTCURS_VERSION)-$(GIFTCURS_IPK_VERSION)_armeb.ipk
+GIFTCURS_IPK=$(BUILD_DIR)/giftcurs_$(GIFTCURS_VERSION)-$(GIFTCURS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,7 +153,7 @@ giFTcurs-stage: $(STAGING_DIR)/opt/lib/libgiFTcurs.so.$(GIFTCURS_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTCURS_IPK): $(GIFTCURS_BUILD_DIR)/.built
-	rm -rf $(GIFTCURS_IPK_DIR) $(BUILD_DIR)/giftcurs_*_armeb.ipk
+	rm -rf $(GIFTCURS_IPK_DIR) $(BUILD_DIR)/giftcurs_*_$(TARGET_ARCH).ipk
 	install -d $(GIFTCURS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GIFTCURS_BUILD_DIR)/src/giFTcurs -o $(GIFTCURS_IPK_DIR)/opt/bin/giFTcurs
 	install -d $(GIFTCURS_IPK_DIR)/CONTROL

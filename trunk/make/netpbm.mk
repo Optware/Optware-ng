@@ -55,7 +55,7 @@ NETPBM_LDFLAGS=
 NETPBM_BUILD_DIR=$(BUILD_DIR)/netpbm
 NETPBM_SOURCE_DIR=$(SOURCE_DIR)/netpbm
 NETPBM_IPK_DIR=$(BUILD_DIR)/netpbm-$(NETPBM_VERSION)-ipk
-NETPBM_IPK=$(BUILD_DIR)/netpbm_$(NETPBM_VERSION)-$(NETPBM_IPK_VERSION)_armeb.ipk
+NETPBM_IPK=$(BUILD_DIR)/netpbm_$(NETPBM_VERSION)-$(NETPBM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

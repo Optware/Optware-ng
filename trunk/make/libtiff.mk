@@ -55,7 +55,7 @@ LIBTIFF_LDFLAGS=
 LIBTIFF_BUILD_DIR=$(BUILD_DIR)/libtiff
 LIBTIFF_SOURCE_DIR=$(SOURCE_DIR)/libtiff
 LIBTIFF_IPK_DIR=$(BUILD_DIR)/libtiff-$(LIBTIFF_VERSION)-ipk
-LIBTIFF_IPK=$(BUILD_DIR)/libtiff_$(LIBTIFF_VERSION)-$(LIBTIFF_IPK_VERSION)_armeb.ipk
+LIBTIFF_IPK=$(BUILD_DIR)/libtiff_$(LIBTIFF_VERSION)-$(LIBTIFF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -55,7 +55,7 @@ XTST_LDFLAGS=
 XTST_BUILD_DIR=$(BUILD_DIR)/xtst
 XTST_SOURCE_DIR=$(SOURCE_DIR)/xtst
 XTST_IPK_DIR=$(BUILD_DIR)/xtst-$(XTST_VERSION)-ipk
-XTST_IPK=$(BUILD_DIR)/xtst_$(XTST_VERSION)-$(XTST_IPK_VERSION)_armeb.ipk
+XTST_IPK=$(BUILD_DIR)/xtst_$(XTST_VERSION)-$(XTST_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(XTST_IPK_DIR)/CONTROL/control:
 	@install -d $(XTST_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xtst" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XTST_PRIORITY)" >>$@
 	@echo "Section: $(XTST_SECTION)" >>$@
 	@echo "Version: $(XTST_VERSION)-$(XTST_IPK_VERSION)" >>$@
@@ -155,7 +155,7 @@ xtst-stage: $(STAGING_LIB_DIR)/libXtst.so
 # You may need to patch your application to make it use these locations.
 #
 $(XTST_IPK): $(XTST_BUILD_DIR)/.built
-	rm -rf $(XTST_IPK_DIR) $(BUILD_DIR)/xtst_*_armeb.ipk
+	rm -rf $(XTST_IPK_DIR) $(BUILD_DIR)/xtst_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(XTST_IPK_DIR) install-strip
 	rm -f $(XTST_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(XTST_IPK_DIR)/CONTROL/control

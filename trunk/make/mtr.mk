@@ -55,7 +55,7 @@ MTR_LDFLAGS=
 MTR_BUILD_DIR=$(BUILD_DIR)/mtr
 MTR_SOURCE_DIR=$(SOURCE_DIR)/mtr
 MTR_IPK_DIR=$(BUILD_DIR)/mtr-$(MTR_VERSION)-ipk
-MTR_IPK=$(BUILD_DIR)/mtr_$(MTR_VERSION)-$(MTR_IPK_VERSION)_armeb.ipk
+MTR_IPK=$(BUILD_DIR)/mtr_$(MTR_VERSION)-$(MTR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ mtr-stage: $(MTR_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MTR_IPK): $(MTR_BUILD_DIR)/.built
-	rm -rf $(MTR_IPK_DIR) $(BUILD_DIR)/mtr_*_armeb.ipk
+	rm -rf $(MTR_IPK_DIR) $(BUILD_DIR)/mtr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MTR_BUILD_DIR) DESTDIR=$(MTR_IPK_DIR) install
 #	install -d $(MTR_IPK_DIR)/opt/etc/
 #	install -m 755 $(MTR_SOURCE_DIR)/mtr.conf $(MTR_IPK_DIR)/opt/etc/mtr.conf

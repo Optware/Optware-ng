@@ -55,7 +55,7 @@ XPM_LDFLAGS=
 XPM_BUILD_DIR=$(BUILD_DIR)/xpm
 XPM_SOURCE_DIR=$(SOURCE_DIR)/xpm
 XPM_IPK_DIR=$(BUILD_DIR)/xpm-$(XPM_VERSION)-ipk
-XPM_IPK=$(BUILD_DIR)/xpm_$(XPM_VERSION)-$(XPM_IPK_VERSION)_armeb.ipk
+XPM_IPK=$(BUILD_DIR)/xpm_$(XPM_VERSION)-$(XPM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(XPM_IPK_DIR)/CONTROL/control:
 	@install -d $(XPM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xpm" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XPM_PRIORITY)" >>$@
 	@echo "Section: $(XPM_SECTION)" >>$@
 	@echo "Version: $(XPM_VERSION)-$(XPM_IPK_VERSION)" >>$@
@@ -155,7 +155,7 @@ xpm-stage: $(STAGING_LIB_DIR)/libXpm.so
 # You may need to patch your application to make it use these locations.
 #
 $(XPM_IPK): $(XPM_BUILD_DIR)/.built
-	rm -rf $(XPM_IPK_DIR) $(BUILD_DIR)/xpm_*_armeb.ipk
+	rm -rf $(XPM_IPK_DIR) $(BUILD_DIR)/xpm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XPM_BUILD_DIR) DESTDIR=$(XPM_IPK_DIR) install-strip
 	$(MAKE) $(XPM_IPK_DIR)/CONTROL/control
 	rm -f $(XPM_IPK_DIR)/opt/lib/*.la

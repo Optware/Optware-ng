@@ -18,7 +18,7 @@ OPENSSH_PATCHES=$(OPENSSH_SOURCE_DIR)/Makefile.patch \
 OPENSSH_BUILD_DIR=$(BUILD_DIR)/openssh
 OPENSSH_SOURCE_DIR=$(SOURCE_DIR)/openssh
 OPENSSH_IPK_DIR:=$(BUILD_DIR)/openssh-$(OPENSSH_VERSION)-ipk
-OPENSSH_IPK=$(BUILD_DIR)/openssh_$(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)_armeb.ipk
+OPENSSH_IPK=$(BUILD_DIR)/openssh_$(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(OPENSSH_SOURCE):
 	$(WGET) -P $(DL_DIR) $(OPENSSH_SITE)/$(OPENSSH_SOURCE)
@@ -73,7 +73,7 @@ $(OPENSSH_BUILD_DIR)/ssh: $(OPENSSH_BUILD_DIR)/.configured
 openssh: openssl-stage $(OPENSSH_BUILD_DIR)/ssh
 
 $(OPENSSH_IPK): $(OPENSSH_BUILD_DIR)/ssh
-	rm -rf $(OPENSSH_IPK_DIR) $(BUILD_DIR)/openssh_*_armeb.ipk
+	rm -rf $(OPENSSH_IPK_DIR) $(BUILD_DIR)/openssh_*_$(TARGET_ARCH).ipk
 	$(MAKE) DESTDIR=$(OPENSSH_IPK_DIR) -C $(OPENSSH_BUILD_DIR) install-files
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
 	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/

@@ -60,7 +60,7 @@ WXBASE_LDFLAGS=
 WXBASE_BUILD_DIR=$(BUILD_DIR)/wxbase
 WXBASE_SOURCE_DIR=$(SOURCE_DIR)/wxbase
 WXBASE_IPK_DIR=$(BUILD_DIR)/wxbase-$(WXBASE_VERSION)-ipk
-WXBASE_IPK=$(BUILD_DIR)/wxbase_$(WXBASE_VERSION)-$(WXBASE_IPK_VERSION)_armeb.ipk
+WXBASE_IPK=$(BUILD_DIR)/wxbase_$(WXBASE_VERSION)-$(WXBASE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -161,7 +161,7 @@ wxbase-stage: $(STAGING_DIR)/opt/lib/libwx_base-2.5.so.3.0.0
 # You may need to patch your application to make it use these locations.
 #
 $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
-	rm -rf $(WXBASE_IPK_DIR) $(BUILD_DIR)/wxbase_*_armeb.ipk
+	rm -rf $(WXBASE_IPK_DIR) $(BUILD_DIR)/wxbase_*_$(TARGET_ARCH).ipk
 	install -d $(WXBASE_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(WXBASE_BUILD_DIR)/lib/libwx_base-2.5.so.3.0.0  \
 		-o $(WXBASE_IPK_DIR)/opt/lib/libwx_base-2.5.so.3.0.0

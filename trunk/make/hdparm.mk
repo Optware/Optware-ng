@@ -62,7 +62,7 @@ HDPARM_LDFLAGS=
 HDPARM_BUILD_DIR=$(BUILD_DIR)/hdparm
 HDPARM_SOURCE_DIR=$(SOURCE_DIR)/hdparm
 HDPARM_IPK_DIR=$(BUILD_DIR)/hdparm-$(HDPARM_VERSION)-ipk
-HDPARM_IPK=$(BUILD_DIR)/hdparm_$(HDPARM_VERSION)-$(HDPARM_IPK_VERSION)_armeb.ipk
+HDPARM_IPK=$(BUILD_DIR)/hdparm_$(HDPARM_VERSION)-$(HDPARM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(HDPARM_IPK_DIR)/CONTROL/control:
 	@install -d $(HDPARM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: hdparm" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(HDPARM_PRIORITY)" >>$@
 	@echo "Section: $(HDPARM_SECTION)" >>$@
 	@echo "Version: $(HDPARM_VERSION)-$(HDPARM_IPK_VERSION)" >>$@
@@ -136,7 +136,7 @@ hdparm: $(HDPARM_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(HDPARM_IPK): $(HDPARM_BUILD_DIR)/.built
-	rm -rf $(HDPARM_IPK_DIR) $(BUILD_DIR)/hdparm_*_armeb.ipk
+	rm -rf $(HDPARM_IPK_DIR) $(BUILD_DIR)/hdparm_*_$(TARGET_ARCH).ipk
 	install -d $(HDPARM_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(HDPARM_BUILD_DIR) DESTDIR=$(HDPARM_IPK_DIR) install binprefix=/opt manprefix=/opt CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
 	$(MAKE) $(HDPARM_IPK_DIR)/CONTROL/control

@@ -54,7 +54,7 @@ MUTT_LDFLAGS=
 MUTT_BUILD_DIR=$(BUILD_DIR)/mutt
 MUTT_SOURCE_DIR=$(SOURCE_DIR)/mutt
 MUTT_IPK_DIR=$(BUILD_DIR)/mutt-$(MUTT_VERSION)-ipk
-MUTT_IPK=$(BUILD_DIR)/mutt_$(MUTT_VERSION)-$(MUTT_IPK_VERSION)_armeb.ipk
+MUTT_IPK=$(BUILD_DIR)/mutt_$(MUTT_VERSION)-$(MUTT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,7 +152,7 @@ mutt-stage: $(MUTT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MUTT_IPK): $(MUTT_BUILD_DIR)/.built
-	rm -rf $(MUTT_IPK_DIR) $(BUILD_DIR)/mutt_*_armeb.ipk
+	rm -rf $(MUTT_IPK_DIR) $(BUILD_DIR)/mutt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(MUTT_IPK_DIR) install
 	# install-strip doesn't work for some reason
 	$(STRIP_COMMAND) $(MUTT_IPK_DIR)/opt/bin/mutt $(MUTT_IPK_DIR)/opt/bin/pgpewrap $(MUTT_IPK_DIR)/opt/bin/pgpring

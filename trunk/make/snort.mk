@@ -59,7 +59,7 @@ SNORT_LDFLAGS=
 SNORT_BUILD_DIR=$(BUILD_DIR)/snort
 SNORT_SOURCE_DIR=$(SOURCE_DIR)/snort
 SNORT_IPK_DIR=$(BUILD_DIR)/snort-$(SNORT_VERSION)-ipk
-SNORT_IPK=$(BUILD_DIR)/snort_$(SNORT_VERSION)-$(SNORT_IPK_VERSION)_armeb.ipk
+SNORT_IPK=$(BUILD_DIR)/snort_$(SNORT_VERSION)-$(SNORT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ snort-stage: $(SNORT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SNORT_IPK): $(SNORT_BUILD_DIR)/.built
-	rm -rf $(SNORT_IPK_DIR) $(BUILD_DIR)/snort_*_armeb.ipk
+	rm -rf $(SNORT_IPK_DIR) $(BUILD_DIR)/snort_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SNORT_BUILD_DIR) DESTDIR=$(SNORT_IPK_DIR) install
 	install -d $(SNORT_IPK_DIR)/opt/etc/
 #	install -m 644 $(SNORT_SOURCE_DIR)/snort.conf $(SNORT_IPK_DIR)/opt/etc/snort.conf

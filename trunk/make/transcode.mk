@@ -61,7 +61,7 @@ TRANSCODE_LDFLAGS=
 TRANSCODE_BUILD_DIR=$(BUILD_DIR)/transcode
 TRANSCODE_SOURCE_DIR=$(SOURCE_DIR)/transcode
 TRANSCODE_IPK_DIR=$(BUILD_DIR)/transcode-$(TRANSCODE_VERSION)-ipk
-TRANSCODE_IPK=$(BUILD_DIR)/transcode_$(TRANSCODE_VERSION)-$(TRANSCODE_IPK_VERSION)_armeb.ipk
+TRANSCODE_IPK=$(BUILD_DIR)/transcode_$(TRANSCODE_VERSION)-$(TRANSCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -195,7 +195,7 @@ transcode-stage: $(TRANSCODE_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(TRANSCODE_IPK): $(TRANSCODE_BUILD_DIR)/.built
-	rm -rf $(TRANSCODE_IPK_DIR) $(BUILD_DIR)/transcode_*_armeb.ipk
+	rm -rf $(TRANSCODE_IPK_DIR) $(BUILD_DIR)/transcode_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TRANSCODE_BUILD_DIR) DESTDIR=$(TRANSCODE_IPK_DIR) install-strip
 	cd $(TRANSCODE_IPK_DIR)/opt/bin; \
 	mv $(GNU_TARGET_NAME)-avifix avifix; \

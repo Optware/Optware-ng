@@ -62,7 +62,7 @@ XCHAT_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 XCHAT_BUILD_DIR=$(BUILD_DIR)/xchat
 XCHAT_SOURCE_DIR=$(SOURCE_DIR)/xchat
 XCHAT_IPK_DIR=$(BUILD_DIR)/xchat-$(XCHAT_VERSION)-ipk
-XCHAT_IPK=$(BUILD_DIR)/xchat_$(XCHAT_VERSION)-$(XCHAT_IPK_VERSION)_armeb.ipk
+XCHAT_IPK=$(BUILD_DIR)/xchat_$(XCHAT_VERSION)-$(XCHAT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(XCHAT_IPK_DIR)/CONTROL/control:
 	@install -d $(XCHAT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xchat" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XCHAT_PRIORITY)" >>$@
 	@echo "Section: $(XCHAT_SECTION)" >>$@
 	@echo "Version: $(XCHAT_VERSION)-$(XCHAT_IPK_VERSION)" >>$@
@@ -180,7 +180,7 @@ xchat-stage: $(STAGING_DIR)/opt/lib/libxchat.so
 # You may need to patch your application to make it use these locations.
 #
 $(XCHAT_IPK): $(XCHAT_BUILD_DIR)/.built
-	rm -rf $(XCHAT_IPK_DIR) $(BUILD_DIR)/xchat_*_armeb.ipk
+	rm -rf $(XCHAT_IPK_DIR) $(BUILD_DIR)/xchat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XCHAT_BUILD_DIR) DESTDIR=$(XCHAT_IPK_DIR) install-strip
 	$(MAKE) $(XCHAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XCHAT_IPK_DIR)

@@ -57,7 +57,7 @@ GLIB_LDFLAGS=
 GLIB_BUILD_DIR=$(BUILD_DIR)/glib
 GLIB_SOURCE_DIR=$(SOURCE_DIR)/glib
 GLIB_IPK_DIR=$(BUILD_DIR)/glib-$(GLIB_VERSION)-ipk
-GLIB_IPK=$(BUILD_DIR)/glib_$(GLIB_VERSION)-$(GLIB_IPK_VERSION)_armeb.ipk
+GLIB_IPK=$(BUILD_DIR)/glib_$(GLIB_VERSION)-$(GLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -149,7 +149,7 @@ glib-stage: $(STAGING_DIR)/opt/lib/libglib-2.0.so
 # You may need to patch your application to make it use these locations.
 #
 $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
-	rm -rf $(GLIB_IPK_DIR) $(BUILD_DIR)/glib_*_armeb.ipk
+	rm -rf $(GLIB_IPK_DIR) $(BUILD_DIR)/glib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)/opt
 	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)/opt/man

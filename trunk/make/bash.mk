@@ -18,7 +18,7 @@ BASH_LDFLAGS=
 BASH_BUILD_DIR=$(BUILD_DIR)/bash
 BASH_SOURCE_DIR=$(SOURCE_DIR)/bash
 BASH_IPK_DIR=$(BUILD_DIR)/bash-$(BASH_VERSION)-ipk
-BASH_IPK=$(BUILD_DIR)/bash_$(BASH_VERSION)-$(BASH_IPK_VERSION)_armeb.ipk
+BASH_IPK=$(BUILD_DIR)/bash_$(BASH_VERSION)-$(BASH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(BASH_SOURCE):
 	$(WGET) -P $(DL_DIR) $(BASH_SITE)/$(BASH_SOURCE)
@@ -58,7 +58,7 @@ $(BASH_BUILD_DIR)/bash: $(BASH_BUILD_DIR)/.configured
 bash: termcap-stage $(BASH_BUILD_DIR)/bash
 
 $(BASH_IPK): $(BASH_BUILD_DIR)/bash
-	rm -rf $(BASH_IPK_DIR) $(BUILD_DIR)/bash_*_armeb.ipk
+	rm -rf $(BASH_IPK_DIR) $(BUILD_DIR)/bash_*_$(TARGET_ARCH).ipk
 	install -d $(BASH_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
 	install -d $(BASH_IPK_DIR)/opt/etc 

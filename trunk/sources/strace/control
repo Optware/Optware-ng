@@ -1,8 +1,8 @@
 Package: strace
-Version: 4.5.8-1
-Architecture: armeb
+Version: @VERSION@-@RELEASE@
+Architecture: @ARCH@
 Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: http://unc.dl.sourceforge.net/sourceforge/strace/strace-4.5.8.tar.bz2
+Source: http://unc.dl.sourceforge.net/sourceforge/strace/strace-@VERSION@.tar.bz2
 Section: utility
 Priority: optional
 Depends:

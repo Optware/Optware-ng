@@ -55,7 +55,7 @@ LIBTOOL_LDFLAGS=
 LIBTOOL_BUILD_DIR=$(BUILD_DIR)/libtool
 LIBTOOL_SOURCE_DIR=$(SOURCE_DIR)/libtool
 LIBTOOL_IPK_DIR=$(BUILD_DIR)/libtool-$(LIBTOOL_VERSION)-ipk
-LIBTOOL_IPK=$(BUILD_DIR)/libtool_$(LIBTOOL_VERSION)-$(LIBTOOL_IPK_VERSION)_armeb.ipk
+LIBTOOL_IPK=$(BUILD_DIR)/libtool_$(LIBTOOL_VERSION)-$(LIBTOOL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -144,11 +144,12 @@ libtool-stage: $(STAGING_DIR)/opt/lib/libltdl.so.3.1.0
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
-	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_armeb.ipk
+	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
 	rm -f $(LIBTOOL_IPK_DIR)/opt/info/dir
 	install -d $(LIBTOOL_IPK_DIR)/CONTROL
-	install -m 644 $(LIBTOOL_SOURCE_DIR)/control $(LIBTOOL_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBTOOL_VERSION)/" \
+		-e "s/@RELEASE@/$(LIBTOOL_IPK_VERSION)/" $(LIBTOOL_SOURCE_DIR)/control > $(LIBTOOL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTOOL_IPK_DIR)
 
 #

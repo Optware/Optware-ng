@@ -59,7 +59,7 @@ WAKELAN_LDFLAGS=
 WAKELAN_BUILD_DIR=$(BUILD_DIR)/wakelan
 WAKELAN_SOURCE_DIR=$(SOURCE_DIR)/wakelan
 WAKELAN_IPK_DIR=$(BUILD_DIR)/wakelan-$(WAKELAN_VERSION)-ipk
-WAKELAN_IPK=$(BUILD_DIR)/wakelan_$(WAKELAN_VERSION)-$(WAKELAN_IPK_VERSION)_armeb.ipk
+WAKELAN_IPK=$(BUILD_DIR)/wakelan_$(WAKELAN_VERSION)-$(WAKELAN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -136,7 +136,7 @@ wakelan: $(WAKELAN_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(WAKELAN_IPK): $(WAKELAN_BUILD_DIR)/.built
-	rm -rf $(WAKELAN_IPK_DIR) $(BUILD_DIR)/wakelan_*_armeb.ipk
+	rm -rf $(WAKELAN_IPK_DIR) $(BUILD_DIR)/wakelan_*_$(TARGET_ARCH).ipk
 	install -d $(WAKELAN_IPK_DIR)/opt/bin
 	install -d $(WAKELAN_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)/opt install

@@ -55,7 +55,7 @@ GAWK_LDFLAGS=
 GAWK_BUILD_DIR=$(BUILD_DIR)/gawk
 GAWK_SOURCE_DIR=$(SOURCE_DIR)/gawk
 GAWK_IPK_DIR=$(BUILD_DIR)/gawk-$(GAWK_VERSION)-ipk
-GAWK_IPK=$(BUILD_DIR)/gawk_$(GAWK_VERSION)-$(GAWK_IPK_VERSION)_armeb.ipk
+GAWK_IPK=$(BUILD_DIR)/gawk_$(GAWK_VERSION)-$(GAWK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,7 +152,7 @@ gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
-	rm -rf $(GAWK_IPK_DIR) $(BUILD_DIR)/gawk_*_armeb.ipk
+	rm -rf $(GAWK_IPK_DIR) $(BUILD_DIR)/gawk_*_$(TARGET_ARCH).ipk
 	install -d $(GAWK_IPK_DIR)/opt/bin
 	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install
 	rm -rf $(GAWK_IPK_DIR)/opt/{man,info}

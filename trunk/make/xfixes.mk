@@ -56,7 +56,7 @@ XFIXES_LDFLAGS=
 XFIXES_BUILD_DIR=$(BUILD_DIR)/xfixes
 XFIXES_SOURCE_DIR=$(SOURCE_DIR)/xfixes
 XFIXES_IPK_DIR=$(BUILD_DIR)/xfixes-$(XFIXES_VERSION)-ipk
-XFIXES_IPK=$(BUILD_DIR)/xfixes_$(XFIXES_VERSION)-$(XFIXES_IPK_VERSION)_armeb.ipk
+XFIXES_IPK=$(BUILD_DIR)/xfixes_$(XFIXES_VERSION)-$(XFIXES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XFIXES_IPK_DIR)/CONTROL/control:
 	@install -d $(XFIXES_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xfixes" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XFIXES_PRIORITY)" >>$@
 	@echo "Section: $(XFIXES_SECTION)" >>$@
 	@echo "Version: $(XFIXES_VERSION)-$(XFIXES_IPK_VERSION)" >>$@
@@ -155,7 +155,7 @@ xfixes-stage: $(STAGING_LIB_DIR)/libXfixes.so
 # You may need to patch your application to make it use these locations.
 #
 $(XFIXES_IPK): $(XFIXES_BUILD_DIR)/.built
-	rm -rf $(XFIXES_IPK_DIR) $(BUILD_DIR)/xfixes_*_armeb.ipk
+	rm -rf $(XFIXES_IPK_DIR) $(BUILD_DIR)/xfixes_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XFIXES_BUILD_DIR) DESTDIR=$(XFIXES_IPK_DIR) install-strip
 	$(MAKE) $(XFIXES_IPK_DIR)/CONTROL/control
 	rm -f $(XFIXES_IPK_DIR)/opt/lib/*.la

@@ -56,7 +56,7 @@ ICE_LDFLAGS=
 ICE_BUILD_DIR=$(BUILD_DIR)/ice
 ICE_SOURCE_DIR=$(SOURCE_DIR)/ice
 ICE_IPK_DIR=$(BUILD_DIR)/ice-$(ICE_VERSION)-ipk
-ICE_IPK=$(BUILD_DIR)/ice_$(ICE_VERSION)-$(ICE_IPK_VERSION)_armeb.ipk
+ICE_IPK=$(BUILD_DIR)/ice_$(ICE_VERSION)-$(ICE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(ICE_IPK_DIR)/CONTROL/control:
 	@install -d $(ICE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ice" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(ICE_PRIORITY)" >>$@
 	@echo "Section: $(ICE_SECTION)" >>$@
 	@echo "Version: $(ICE_VERSION)-$(ICE_IPK_VERSION)" >>$@
@@ -157,7 +157,7 @@ ice-stage: $(STAGING_LIB_DIR)/libICE.so
 # You may need to patch your application to make it use these locations.
 #
 $(ICE_IPK): $(ICE_BUILD_DIR)/.built
-	rm -rf $(ICE_IPK_DIR) $(BUILD_DIR)/ice_*_armeb.ipk
+	rm -rf $(ICE_IPK_DIR) $(BUILD_DIR)/ice_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ICE_BUILD_DIR) DESTDIR=$(ICE_IPK_DIR) install-strip
 	$(MAKE) $(ICE_IPK_DIR)/CONTROL/control
 	rm -f $(ICE_IPK_DIR)/opt/lib/*.la

@@ -62,7 +62,7 @@ GTK_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 GTK_BUILD_DIR=$(BUILD_DIR)/gtk
 GTK_SOURCE_DIR=$(SOURCE_DIR)/gtk
 GTK_IPK_DIR=$(BUILD_DIR)/gtk-$(GTK_VERSION)-ipk
-GTK_IPK=$(BUILD_DIR)/gtk_$(GTK_VERSION)-$(GTK_IPK_VERSION)_armeb.ipk
+GTK_IPK=$(BUILD_DIR)/gtk_$(GTK_VERSION)-$(GTK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(GTK_IPK_DIR)/CONTROL/control:
 	@install -d $(GTK_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: gtk" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(GTK_PRIORITY)" >>$@
 	@echo "Section: $(GTK_SECTION)" >>$@
 	@echo "Version: $(GTK_VERSION)-$(GTK_IPK_VERSION)" >>$@
@@ -183,7 +183,7 @@ gtk-stage: $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.so
 # You may need to patch your application to make it use these locations.
 #
 $(GTK_IPK): $(GTK_BUILD_DIR)/.built
-	rm -rf $(GTK_IPK_DIR) $(BUILD_DIR)/gtk_*_armeb.ipk
+	rm -rf $(GTK_IPK_DIR) $(BUILD_DIR)/gtk_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
 	install -d $(GTK_IPK_DIR)/opt/etc/gtk-2.0
 	rm -f $(GTK_IPK_DIR)/opt/lib/*.la

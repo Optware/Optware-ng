@@ -59,7 +59,7 @@ AUTOCONF_LDFLAGS=
 AUTOCONF_BUILD_DIR=$(BUILD_DIR)/autoconf
 AUTOCONF_SOURCE_DIR=$(SOURCE_DIR)/autoconf
 AUTOCONF_IPK_DIR=$(BUILD_DIR)/autoconf-$(AUTOCONF_VERSION)-ipk
-AUTOCONF_IPK=$(BUILD_DIR)/autoconf_$(AUTOCONF_VERSION)-$(AUTOCONF_IPK_VERSION)_armeb.ipk
+AUTOCONF_IPK=$(BUILD_DIR)/autoconf_$(AUTOCONF_VERSION)-$(AUTOCONF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -151,7 +151,7 @@ autoconf-stage: $(STAGING_DIR)/opt/lib/libautoconf.so.$(AUTOCONF_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
-	rm -rf $(AUTOCONF_IPK_DIR) $(BUILD_DIR)/autoconf_*_armeb.ipk
+	rm -rf $(AUTOCONF_IPK_DIR) $(BUILD_DIR)/autoconf_*_$(TARGET_ARCH).ipk
 	install -d $(AUTOCONF_IPK_DIR)/opt/bin
 	install -d $(AUTOCONF_IPK_DIR)/opt/info
 	install -d $(AUTOCONF_IPK_DIR)/opt/man/man1

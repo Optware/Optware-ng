@@ -1,6 +1,6 @@
 Package: libogg
-Version: 1.0-1
-Architecture: armeb
+Version: @VERSION@-@RELEASE@
+Architecture: @ARCH@
 Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Source: http://www.xiph.org/ogg/vorbis/download
 Section: lib

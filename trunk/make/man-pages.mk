@@ -54,7 +54,7 @@ MAN_PAGES_LDFLAGS=
 MAN_PAGES_BUILD_DIR=$(BUILD_DIR)/man-pages
 MAN_PAGES_SOURCE_DIR=$(SOURCE_DIR)/man-pages
 MAN_PAGES_IPK_DIR=$(BUILD_DIR)/man-pages-$(MAN_PAGES_VERSION)-ipk
-MAN_PAGES_IPK=$(BUILD_DIR)/man-pages_$(MAN_PAGES_VERSION)-$(MAN_PAGES_IPK_VERSION)_armeb.ipk
+MAN_PAGES_IPK=$(BUILD_DIR)/man-pages_$(MAN_PAGES_VERSION)-$(MAN_PAGES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -142,7 +142,7 @@ man-pages-stage: $(MAN_PAGES_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MAN_PAGES_IPK): $(MAN_PAGES_BUILD_DIR)/.built
-	rm -rf $(MAN_PAGES_IPK_DIR) $(BUILD_DIR)/man-pages_*_armeb.ipk
+	rm -rf $(MAN_PAGES_IPK_DIR) $(BUILD_DIR)/man-pages_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAN_PAGES_BUILD_DIR) MANDIR=$(MAN_PAGES_IPK_DIR)/opt/man install
 #	install -d $(MAN_PAGES_IPK_DIR)/opt/etc/
 #	install -m 755 $(MAN_PAGES_SOURCE_DIR)/man-pages.conf $(MAN_PAGES_IPK_DIR)/opt/etc/man-pages.conf

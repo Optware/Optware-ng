@@ -62,7 +62,7 @@ APR_LDFLAGS=
 APR_BUILD_DIR=$(BUILD_DIR)/apr
 APR_SOURCE_DIR=$(SOURCE_DIR)/apr
 APR_IPK_DIR=$(BUILD_DIR)/apr-$(APR_VERSION)-ipk
-APR_IPK=$(BUILD_DIR)/apr_$(APR_VERSION)-$(APR_IPK_VERSION)_armeb.ipk
+APR_IPK=$(BUILD_DIR)/apr_$(APR_VERSION)-$(APR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(APR_IPK_DIR)/CONTROL/control:
 	@install -d $(APR_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apr" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(APR_PRIORITY)" >>$@
 	@echo "Section: $(APR_SECTION)" >>$@
 	@echo "Version: $(APR_VERSION)-$(APR_IPK_VERSION)" >>$@
@@ -170,7 +170,7 @@ apr-stage: $(STAGING_DIR)/opt/bin/apr-config
 # You may need to patch your application to make it use these locations.
 #
 $(APR_IPK): $(APR_BUILD_DIR)/.built
-	rm -rf $(APR_IPK_DIR) $(BUILD_DIR)/apr_*_armeb.ipk
+	rm -rf $(APR_IPK_DIR) $(BUILD_DIR)/apr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APR_BUILD_DIR) DESTDIR=$(APR_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
 	rm -rf $(APR_IPK_DIR)/delete-me
 	rm -f $(APR_IPK_DIR)/opt/lib/*.la

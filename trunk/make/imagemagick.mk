@@ -57,7 +57,7 @@ IMAGEMAGICK_LDFLAGS=
 IMAGEMAGICK_BUILD_DIR=$(BUILD_DIR)/imagemagick
 IMAGEMAGICK_SOURCE_DIR=$(SOURCE_DIR)/imagemagick
 IMAGEMAGICK_IPK_DIR=$(BUILD_DIR)/imagemagick-$(IMAGEMAGICK_VERSION)-ipk
-IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)_armeb.ipk
+IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -158,7 +158,7 @@ imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
-	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_armeb.ipk
+	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/libltdl*

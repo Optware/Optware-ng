@@ -56,7 +56,7 @@ XFT_LDFLAGS=
 XFT_BUILD_DIR=$(BUILD_DIR)/xft
 XFT_SOURCE_DIR=$(SOURCE_DIR)/xft
 XFT_IPK_DIR=$(BUILD_DIR)/xft-$(XFT_VERSION)-ipk
-XFT_IPK=$(BUILD_DIR)/xft_$(XFT_VERSION)-$(XFT_IPK_VERSION)_armeb.ipk
+XFT_IPK=$(BUILD_DIR)/xft_$(XFT_VERSION)-$(XFT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XFT_IPK_DIR)/CONTROL/control:
 	@install -d $(XFT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xft" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XFT_PRIORITY)" >>$@
 	@echo "Section: $(XFT_SECTION)" >>$@
 	@echo "Version: $(XFT_VERSION)-$(XFT_IPK_VERSION)" >>$@
@@ -158,7 +158,7 @@ xft-stage: $(STAGING_LIB_DIR)/libXft.so
 # You may need to patch your application to make it use these locations.
 #
 $(XFT_IPK): $(XFT_BUILD_DIR)/.built
-	rm -rf $(XFT_IPK_DIR) $(BUILD_DIR)/xft_*_armeb.ipk
+	rm -rf $(XFT_IPK_DIR) $(BUILD_DIR)/xft_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XFT_BUILD_DIR) DESTDIR=$(XFT_IPK_DIR) install-strip
 	$(MAKE) $(XFT_IPK_DIR)/CONTROL/control
 	rm -f $(XFT_IPK_DIR)/opt/lib/*.la

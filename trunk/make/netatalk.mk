@@ -55,7 +55,7 @@ NETATALK_LDFLAGS=
 NETATALK_BUILD_DIR=$(BUILD_DIR)/netatalk
 NETATALK_SOURCE_DIR=$(SOURCE_DIR)/netatalk
 NETATALK_IPK_DIR=$(BUILD_DIR)/netatalk-$(NETATALK_VERSION)-ipk
-NETATALK_IPK=$(BUILD_DIR)/netatalk_$(NETATALK_VERSION)-$(NETATALK_IPK_VERSION)_armeb.ipk
+NETATALK_IPK=$(BUILD_DIR)/netatalk_$(NETATALK_VERSION)-$(NETATALK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

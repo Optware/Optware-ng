@@ -73,7 +73,7 @@ LIBDB_LDFLAGS=
 LIBDB_BUILD_DIR=$(BUILD_DIR)/libdb
 LIBDB_SOURCE_DIR=$(SOURCE_DIR)/libdb
 LIBDB_IPK_DIR=$(BUILD_DIR)/libdb-$(LIBDB_VERSION)-ipk
-LIBDB_IPK=$(BUILD_DIR)/libdb_$(LIBDB_VERSION)-$(LIBDB_IPK_VERSION)_armeb.ipk
+LIBDB_IPK=$(BUILD_DIR)/libdb_$(LIBDB_VERSION)-$(LIBDB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

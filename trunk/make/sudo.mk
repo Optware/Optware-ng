@@ -18,7 +18,7 @@ SUDO_PATCHES=$(SUDO_SOURCE_DIR)/configure.patch
 SUDO_BUILD_DIR:=$(BUILD_DIR)/sudo
 SUDO_SOURCE_DIR=$(SOURCE_DIR)/sudo
 SUDO_IPK_DIR=$(BUILD_DIR)/sudo-$(SUDO_VERSION)-ipk
-SUDO_IPK=$(BUILD_DIR)/sudo_$(SUDO_VERSION)-$(SUDO_IPK_VERSION)_armeb.ipk
+SUDO_IPK=$(BUILD_DIR)/sudo_$(SUDO_VERSION)-$(SUDO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 
 $(DL_DIR)/$(SUDO_SOURCE):
@@ -52,7 +52,7 @@ $(SUDO_BUILD_DIR)/sudo: $(SUDO_BUILD_DIR)/.configured
 sudo: $(SUDO_BUILD_DIR)/sudo
 
 $(SUDO_IPK): $(SUDO_BUILD_DIR)/sudo
-	rm -rf $(SUDO_IPK_DIR) $(BUILD_DIR)/sudo_*_armeb.ipk
+	rm -rf $(SUDO_IPK_DIR) $(BUILD_DIR)/sudo_*_$(TARGET_ARCH).ipk
 	install -d $(SUDO_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(SUDO_BUILD_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
 	$(STRIP_COMMAND) $(SUDO_BUILD_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo

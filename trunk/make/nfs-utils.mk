@@ -51,7 +51,7 @@ NFS-UTILS_LDFLAGS=
 NFS-UTILS_BUILD_DIR=$(BUILD_DIR)/nfs-utils
 NFS-UTILS_SOURCE_DIR=$(SOURCE_DIR)/nfs-utils
 NFS-UTILS_IPK_DIR=$(BUILD_DIR)/nfs-utils-$(NFS-UTILS_VERSION)-ipk
-NFS-UTILS_IPK=$(BUILD_DIR)/nfs-utils_$(NFS-UTILS_VERSION)-$(NFS-UTILS_IPK_VERSION)_armeb.ipk
+NFS-UTILS_IPK=$(BUILD_DIR)/nfs-utils_$(NFS-UTILS_VERSION)-$(NFS-UTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -131,7 +131,7 @@ nfs-utils: $(NFS-UTILS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
-	rm -rf $(NFS-UTILS_IPK_DIR) $(BUILD_DIR)/nfs-utils_*_armeb.ipk
+	rm -rf $(NFS-UTILS_IPK_DIR) $(BUILD_DIR)/nfs-utils_*_$(TARGET_ARCH).ipk
 	install -d $(NFS-UTILS_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsd
 	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mountd

@@ -55,7 +55,7 @@ SQUID_LDFLAGS=
 SQUID_BUILD_DIR=$(BUILD_DIR)/squid
 SQUID_SOURCE_DIR=$(SOURCE_DIR)/squid
 SQUID_IPK_DIR=$(BUILD_DIR)/squid-$(SQUID_VERSION)-ipk
-SQUID_IPK=$(BUILD_DIR)/squid_$(SQUID_VERSION)-$(SQUID_IPK_VERSION)_armeb.ipk
+SQUID_IPK=$(BUILD_DIR)/squid_$(SQUID_VERSION)-$(SQUID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 SQUID_INST_DIR=/opt
 SQUID_BIN_DIR=$(SQUID_INST_DIR)/bin
@@ -167,7 +167,7 @@ squid-stage: $(SQUID_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
-	rm -rf $(SQUID_IPK_DIR) $(BUILD_DIR)/squid_*_armeb.ipk
+	rm -rf $(SQUID_IPK_DIR) $(BUILD_DIR)/squid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(SQUID_IPK_DIR) install
 	install -d $(SQUID_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid

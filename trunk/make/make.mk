@@ -55,7 +55,7 @@ MAKE_LDFLAGS=
 MAKE_BUILD_DIR=$(BUILD_DIR)/make
 MAKE_SOURCE_DIR=$(SOURCE_DIR)/make
 MAKE_IPK_DIR=$(BUILD_DIR)/make-$(MAKE_VERSION)-ipk
-MAKE_IPK=$(BUILD_DIR)/make_$(MAKE_VERSION)-$(MAKE_IPK_VERSION)_armeb.ipk
+MAKE_IPK=$(BUILD_DIR)/make_$(MAKE_VERSION)-$(MAKE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -59,7 +59,7 @@ LIBMAD_LDFLAGS=
 LIBMAD_BUILD_DIR=$(BUILD_DIR)/libmad
 LIBMAD_SOURCE_DIR=$(SOURCE_DIR)/libmad
 LIBMAD_IPK_DIR=$(BUILD_DIR)/libmad-$(LIBMAD_VERSION)-ipk
-LIBMAD_IPK=$(BUILD_DIR)/libmad_$(LIBMAD_VERSION)-$(LIBMAD_IPK_VERSION)_armeb.ipk
+LIBMAD_IPK=$(BUILD_DIR)/libmad_$(LIBMAD_VERSION)-$(LIBMAD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,10 +146,11 @@ libmad-stage: $(LIBMAD_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMAD_IPK): $(LIBMAD_BUILD_DIR)/.built
-	rm -rf $(LIBMAD_IPK_DIR) $(BUILD_DIR)/libmad_*_armeb.ipk
+	rm -rf $(LIBMAD_IPK_DIR) $(BUILD_DIR)/libmad_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install
 	install -d $(LIBMAD_IPK_DIR)/CONTROL
-	install -m 644 $(LIBMAD_SOURCE_DIR)/control $(LIBMAD_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBMAD_VERSION)/" \
+		-e "s/@RELEASE@/$(LIBMAD_IPK_VERSION)/" $(LIBMAD_SOURCE_DIR)/control > $(LIBMAD_IPK_DIR)/CONTROL/control
 	echo $(LIBMAD_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMAD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMAD_IPK_DIR)
 

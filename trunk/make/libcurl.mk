@@ -56,7 +56,7 @@ LIBCURL_LDFLAGS=
 LIBCURL_BUILD_DIR=$(BUILD_DIR)/libcurl
 LIBCURL_SOURCE_DIR=$(SOURCE_DIR)/libcurl
 LIBCURL_IPK_DIR=$(BUILD_DIR)/libcurl-$(LIBCURL_VERSION)-ipk
-LIBCURL_IPK=$(BUILD_DIR)/libcurl_$(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)_armeb.ipk
+LIBCURL_IPK=$(BUILD_DIR)/libcurl_$(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

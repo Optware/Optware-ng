@@ -42,7 +42,7 @@ UNSLUNG-FEEDS_CONFFILES=/etc/ipkg/unslung-cross.conf /etc/ipkg/unslung-native.co
 UNSLUNG-FEEDS_BUILD_DIR=$(BUILD_DIR)/unslung-feeds
 UNSLUNG-FEEDS_SOURCE_DIR=$(SOURCE_DIR)/unslung-feeds
 UNSLUNG-FEEDS_IPK_DIR=$(BUILD_DIR)/unslung-feeds-$(UNSLUNG-FEEDS_VERSION)-ipk
-UNSLUNG-FEEDS_IPK=$(BUILD_DIR)/unslung-feeds_$(UNSLUNG-FEEDS_VERSION)-$(UNSLUNG-FEEDS_IPK_VERSION)_armeb.ipk
+UNSLUNG-FEEDS_IPK=$(BUILD_DIR)/unslung-feeds_$(UNSLUNG-FEEDS_VERSION)-$(UNSLUNG-FEEDS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,7 +98,7 @@ unslung-feeds: $(UNSLUNG-FEEDS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(UNSLUNG-FEEDS_IPK): $(UNSLUNG-FEEDS_BUILD_DIR)/.built
-	rm -rf $(UNSLUNG-FEEDS_IPK_DIR) $(BUILD_DIR)/unslung-feeds_*_armeb.ipk
+	rm -rf $(UNSLUNG-FEEDS_IPK_DIR) $(BUILD_DIR)/unslung-feeds_*_$(TARGET_ARCH).ipk
 	install -d $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg
 	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-cross.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-cross.conf
 	install -m 755 $(UNSLUNG-FEEDS_SOURCE_DIR)/unslung-native.conf $(UNSLUNG-FEEDS_IPK_DIR)/etc/ipkg/unslung-native.conf

@@ -55,7 +55,7 @@ WHICH_LDFLAGS=
 WHICH_BUILD_DIR=$(BUILD_DIR)/which
 WHICH_SOURCE_DIR=$(SOURCE_DIR)/which
 WHICH_IPK_DIR=$(BUILD_DIR)/which-$(WHICH_VERSION)-ipk
-WHICH_IPK=$(BUILD_DIR)/which_$(WHICH_VERSION)-$(WHICH_IPK_VERSION)_armeb.ipk
+WHICH_IPK=$(BUILD_DIR)/which_$(WHICH_VERSION)-$(WHICH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 WHICH_INST_DIR=/opt
 WHICH_BIN_DIR=$(WHICH_INST_DIR)/bin
@@ -167,7 +167,7 @@ which-stage: $(WHICH_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(WHICH_IPK): $(WHICH_BUILD_DIR)/.built
-	rm -rf $(WHICH_IPK_DIR) $(BUILD_DIR)/which_*_armeb.ipk
+	rm -rf $(WHICH_IPK_DIR) $(BUILD_DIR)/which_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WHICH_BUILD_DIR) DESTDIR=$(WHICH_IPK_DIR) install
 	install -d $(WHICH_IPK_DIR)/CONTROL
 	install -m 644 $(WHICH_SOURCE_DIR)/control $(WHICH_IPK_DIR)/CONTROL/control

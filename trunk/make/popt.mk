@@ -55,7 +55,7 @@ POPT_LDFLAGS=
 POPT_BUILD_DIR=$(BUILD_DIR)/popt
 POPT_SOURCE_DIR=$(SOURCE_DIR)/popt
 POPT_IPK_DIR=$(BUILD_DIR)/popt-$(POPT_VERSION)-ipk
-POPT_IPK=$(BUILD_DIR)/popt_$(POPT_VERSION)-$(POPT_IPK_VERSION)_armeb.ipk
+POPT_IPK=$(BUILD_DIR)/popt_$(POPT_VERSION)-$(POPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -143,10 +143,11 @@ popt-stage: $(STAGING_DIR)/opt/lib/libpopt.a
 # You may need to patch your application to make it use these locations.
 #
 $(POPT_IPK): $(POPT_BUILD_DIR)/.built
-	rm -rf $(POPT_IPK_DIR) $(BUILD_DIR)/popt_*_armeb.ipk
+	rm -rf $(POPT_IPK_DIR) $(BUILD_DIR)/popt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(POPT_IPK_DIR) install-includeHEADERS install-exec-am
 	install -d $(POPT_IPK_DIR)/CONTROL
-	install -m 644 $(POPT_SOURCE_DIR)/control $(POPT_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(POPT_VERSION)/" \
+		-e "s/@RELEASE@/$(POPT_IPK_VERSION)/" $(POPT_SOURCE_DIR)/control > $(POPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POPT_IPK_DIR)
 
 #

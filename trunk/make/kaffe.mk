@@ -57,7 +57,7 @@ KAFFE_LDFLAGS=
 KAFFE_BUILD_DIR=$(BUILD_DIR)/kaffe
 KAFFE_SOURCE_DIR=$(SOURCE_DIR)/kaffe
 KAFFE_IPK_DIR=$(BUILD_DIR)/kaffe-$(KAFFE_VERSION)-ipk
-KAFFE_IPK=$(BUILD_DIR)/kaffe_$(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)_armeb.ipk
+KAFFE_IPK=$(BUILD_DIR)/kaffe_$(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -158,7 +158,7 @@ kaffe-stage: $(KAFFE_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(KAFFE_IPK): $(KAFFE_BUILD_DIR)/.built
-	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_armeb.ipk
+	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install
 #	install -d $(KAFFE_IPK_DIR)/opt/etc/
 #	install -m 755 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf

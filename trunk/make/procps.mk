@@ -13,7 +13,7 @@ PROCPS_UNZIP=zcat
 
 PROCPS_IPK_VERSION=3
 
-PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-$(PROCPS_IPK_VERSION)_armeb.ipk
+PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-$(PROCPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 PROCPS_IPK_DIR=$(BUILD_DIR)/procps-$(PROCPS_VERSION)-ipk
 
 PROCPS_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/opt/include/ncurses"
@@ -72,7 +72,7 @@ procps: ncurses $(PROCPS_DIR)/watch
 # This builds the IPK file.
 #
 $(PROCPS_IPK): $(PROCPS_DIR)/watch
-	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_armeb.ipk
+	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_$(TARGET_ARCH).ipk
 	mkdir -p $(PROCPS_IPK_DIR)/CONTROL
 	mkdir -p $(PROCPS_IPK_DIR)/opt
 	mkdir -p $(PROCPS_IPK_DIR)/opt/bin

@@ -56,7 +56,7 @@ NMAP_LDFLAGS=
 NMAP_BUILD_DIR=$(BUILD_DIR)/nmap
 NMAP_SOURCE_DIR=$(SOURCE_DIR)/nmap
 NMAP_IPK_DIR=$(BUILD_DIR)/nmap-$(NMAP_VERSION)-ipk
-NMAP_IPK=$(BUILD_DIR)/nmap_$(NMAP_VERSION)-$(NMAP_IPK_VERSION)_armeb.ipk
+NMAP_IPK=$(BUILD_DIR)/nmap_$(NMAP_VERSION)-$(NMAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -154,7 +154,7 @@ nmap-stage: $(STAGING_DIR)/opt/lib/libnmap.so.$(NMAP_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(NMAP_IPK): $(NMAP_BUILD_DIR)/.built
-	rm -rf $(NMAP_IPK_DIR) $(BUILD_DIR)/nmap_*_armeb.ipk
+	rm -rf $(NMAP_IPK_DIR) $(BUILD_DIR)/nmap_*_$(TARGET_ARCH).ipk
 	install -d $(NMAP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NMAP_BUILD_DIR)/nmap -o $(NMAP_IPK_DIR)/opt/bin/nmap
 	install -d $(NMAP_IPK_DIR)/opt/share/nmap

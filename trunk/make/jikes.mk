@@ -54,7 +54,7 @@ JIKES_LDFLAGS=
 JIKES_BUILD_DIR=$(BUILD_DIR)/jikes
 JIKES_SOURCE_DIR=$(SOURCE_DIR)/jikes
 JIKES_IPK_DIR=$(BUILD_DIR)/jikes-$(JIKES_VERSION)-ipk
-JIKES_IPK=$(BUILD_DIR)/jikes_$(JIKES_VERSION)-$(JIKES_IPK_VERSION)_armeb.ipk
+JIKES_IPK=$(BUILD_DIR)/jikes_$(JIKES_VERSION)-$(JIKES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -142,7 +142,7 @@ jikes-stage: $(JIKES_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(JIKES_IPK): $(JIKES_BUILD_DIR)/.built
-	rm -rf $(JIKES_IPK_DIR) $(BUILD_DIR)/jikes_*_armeb.ipk
+	rm -rf $(JIKES_IPK_DIR) $(BUILD_DIR)/jikes_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JIKES_BUILD_DIR) DESTDIR=$(JIKES_IPK_DIR) install
 	$(STRIP_COMMAND) $(JIKES_IPK_DIR)/opt/bin/jikes
 #	install -d $(JIKES_IPK_DIR)/opt/etc/

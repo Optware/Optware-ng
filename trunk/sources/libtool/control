@@ -1,8 +1,8 @@
 Package: libtool
-Version: 1.5.10-2
-Architecture: armeb
+Version: @VERSION@-@RELEASE@
+Architecture: @ARCH@
 Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: http://ftp.gnu.org/gnu/libtool/libtool-1.5.10.tar.gz
+Source: http://ftp.gnu.org/gnu/libtool/libtool-@VERSION@.tar.gz
 Section: utilities
 Priority: optional
 Depends:

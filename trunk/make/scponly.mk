@@ -55,7 +55,7 @@ SCPONLY_LDFLAGS=
 SCPONLY_BUILD_DIR=$(BUILD_DIR)/scponly
 SCPONLY_SOURCE_DIR=$(SOURCE_DIR)/scponly
 SCPONLY_IPK_DIR=$(BUILD_DIR)/scponly-$(SCPONLY_VERSION)-ipk
-SCPONLY_IPK=$(BUILD_DIR)/scponly_$(SCPONLY_VERSION)-$(SCPONLY_IPK_VERSION)_armeb.ipk
+SCPONLY_IPK=$(BUILD_DIR)/scponly_$(SCPONLY_VERSION)-$(SCPONLY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -55,7 +55,7 @@ XTRANS_LDFLAGS=
 XTRANS_BUILD_DIR=$(BUILD_DIR)/xtrans
 XTRANS_SOURCE_DIR=$(SOURCE_DIR)/xtrans
 XTRANS_IPK_DIR=$(BUILD_DIR)/xtrans-$(XTRANS_VERSION)-ipk
-XTRANS_IPK=$(BUILD_DIR)/xtrans_$(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)_armeb.ipk
+XTRANS_IPK=$(BUILD_DIR)/xtrans_$(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(XTRANS_IPK_DIR)/CONTROL/control:
 	@install -d $(XTRANS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xtrans" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XTRANS_PRIORITY)" >>$@
 	@echo "Section: $(XTRANS_SECTION)" >>$@
 	@echo "Version: $(XTRANS_VERSION)-$(XTRANS_IPK_VERSION)" >>$@
@@ -150,7 +150,7 @@ xtrans-stage: $(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h
 # You may need to patch your application to make it use these locations.
 #
 $(XTRANS_IPK): $(XTRANS_BUILD_DIR)/.built
-	rm -rf $(XTRANS_IPK_DIR) $(BUILD_DIR)/xtrans_*_armeb.ipk
+	rm -rf $(XTRANS_IPK_DIR) $(BUILD_DIR)/xtrans_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(XTRANS_IPK_DIR) install
 	$(MAKE) $(XTRANS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTRANS_IPK_DIR)

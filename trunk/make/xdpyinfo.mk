@@ -56,7 +56,7 @@ XDPYINFO_LDFLAGS=-Wl,-rpath-link $(STAGING_LIB_DIR)
 XDPYINFO_BUILD_DIR=$(BUILD_DIR)/xdpyinfo
 XDPYINFO_SOURCE_DIR=$(SOURCE_DIR)/xdpyinfo
 XDPYINFO_IPK_DIR=$(BUILD_DIR)/xdpyinfo-$(XDPYINFO_VERSION)-ipk
-XDPYINFO_IPK=$(BUILD_DIR)/xdpyinfo_$(XDPYINFO_VERSION)-$(XDPYINFO_IPK_VERSION)_armeb.ipk
+XDPYINFO_IPK=$(BUILD_DIR)/xdpyinfo_$(XDPYINFO_VERSION)-$(XDPYINFO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XDPYINFO_IPK_DIR)/CONTROL/control:
 	@install -d $(XDPYINFO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xdpyinfo" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XDPYINFO_PRIORITY)" >>$@
 	@echo "Section: $(XDPYINFO_SECTION)" >>$@
 	@echo "Version: $(XDPYINFO_VERSION)-$(XDPYINFO_IPK_VERSION)" >>$@
@@ -158,7 +158,7 @@ xdpyinfo-stage: $(XDPYINFO_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XDPYINFO_IPK): $(XDPYINFO_BUILD_DIR)/.built
-	rm -rf $(XDPYINFO_IPK_DIR) $(BUILD_DIR)/xdpyinfo_*_armeb.ipk
+	rm -rf $(XDPYINFO_IPK_DIR) $(BUILD_DIR)/xdpyinfo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XDPYINFO_BUILD_DIR) DESTDIR=$(XDPYINFO_IPK_DIR) install-strip
 	$(MAKE) $(XDPYINFO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XDPYINFO_IPK_DIR)

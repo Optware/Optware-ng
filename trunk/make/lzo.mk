@@ -59,7 +59,7 @@ LZO_LDFLAGS=
 LZO_BUILD_DIR=$(BUILD_DIR)/lzo
 LZO_SOURCE_DIR=$(SOURCE_DIR)/lzo
 LZO_IPK_DIR=$(BUILD_DIR)/lzo-$(LZO_VERSION)-ipk
-LZO_IPK=$(BUILD_DIR)/lzo_$(LZO_VERSION)-$(LZO_IPK_VERSION)_armeb.ipk
+LZO_IPK=$(BUILD_DIR)/lzo_$(LZO_VERSION)-$(LZO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -163,7 +163,7 @@ lzo-stage: $(STAGING_DIR)/opt/lib/liblzo.so.$(LZO_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(LZO_IPK): $(LZO_BUILD_DIR)/.built
-	rm -rf $(LZO_IPK_DIR) $(BUILD_DIR)/lzo_*_armeb.ipk
+	rm -rf $(LZO_IPK_DIR) $(BUILD_DIR)/lzo_*_$(TARGET_ARCH).ipk
 #	install -d $(LZO_IPK_DIR)/opt/bin
 #	$(STRIP_COMMAND) $(LZO_BUILD_DIR)/lzo -o $(LZO_IPK_DIR)/opt/bin/lzo
 	# Install include files

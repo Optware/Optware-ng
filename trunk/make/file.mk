@@ -55,7 +55,7 @@ FILE_LDFLAGS=
 FILE_BUILD_DIR=$(BUILD_DIR)/file
 FILE_SOURCE_DIR=$(SOURCE_DIR)/file
 FILE_IPK_DIR=$(BUILD_DIR)/file-$(FILE_VERSION)-ipk
-FILE_IPK=$(BUILD_DIR)/file_$(FILE_VERSION)-$(FILE_IPK_VERSION)_armeb.ipk
+FILE_IPK=$(BUILD_DIR)/file_$(FILE_VERSION)-$(FILE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -136,7 +136,7 @@ file: $(FILE_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(FILE_IPK): $(FILE_BUILD_DIR)/.built
-	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_armeb.ipk
+	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_$(TARGET_ARCH).ipk
 	install -d $(FILE_IPK_DIR)/opt/bin
 	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install
 	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install

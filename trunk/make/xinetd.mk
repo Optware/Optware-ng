@@ -59,7 +59,7 @@ XINETD_LDFLAGS=
 XINETD_BUILD_DIR=$(BUILD_DIR)/xinetd
 XINETD_SOURCE_DIR=$(SOURCE_DIR)/xinetd
 XINETD_IPK_DIR=$(BUILD_DIR)/xinetd-$(XINETD_VERSION)-ipk
-XINETD_IPK=$(BUILD_DIR)/xinetd_$(XINETD_VERSION)-$(XINETD_IPK_VERSION)_armeb.ipk
+XINETD_IPK=$(BUILD_DIR)/xinetd_$(XINETD_VERSION)-$(XINETD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,12 +147,12 @@ xinetd: $(XINETD_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
-	rm -rf $(XINETD_IPK_DIR) $(BUILD_DIR)/xinetd_*_armeb.ipk
+	rm -rf $(XINETD_IPK_DIR) $(BUILD_DIR)/xinetd_*_$(TARGET_ARCH).ipk
 	# Install daemon, utils and man pages
 	$(MAKE) -C $(XINETD_BUILD_DIR) DAEMONDIR=$(XINETD_IPK_DIR)/opt/sbin \
 		MANDIR=$(XINETD_IPK_DIR)/opt/man install
 	# Strip executables
-	$(STRIP_COMMAND) $(XINETD_IPK_DIR)/opt/sbin/xinetd $(XINETD_IPK_DIR)/itox
+	$(STRIP_COMMAND) $(XINETD_IPK_DIR)/opt/sbin/xinetd $(XINETD_IPK_DIR)/opt/sbin/itox
 	# Install config file and create xinetd.d catalog
 	install -d $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 	install -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc/xinetd.conf
@@ -163,7 +163,8 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	install -d $(XINETD_IPK_DIR)/opt/doc/xinetd
 	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/doc/xinetd/rc.xinetd
 	install -d $(XINETD_IPK_DIR)/CONTROL
-	install -m 644 $(XINETD_SOURCE_DIR)/control $(XINETD_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(XINETD_VERSION)/" \
+		-e "s/@RELEASE@/$(XINETD_IPK_VERSION)/" $(XINETD_SOURCE_DIR)/control > $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 644 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/postinst
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)

@@ -55,7 +55,7 @@ RECORDEXT_LDFLAGS=
 RECORDEXT_BUILD_DIR=$(BUILD_DIR)/recordext
 RECORDEXT_SOURCE_DIR=$(SOURCE_DIR)/recordext
 RECORDEXT_IPK_DIR=$(BUILD_DIR)/recordext-$(RECORDEXT_VERSION)-ipk
-RECORDEXT_IPK=$(BUILD_DIR)/recordext_$(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSION)_armeb.ipk
+RECORDEXT_IPK=$(BUILD_DIR)/recordext_$(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(RECORDEXT_IPK_DIR)/CONTROL/control:
 	@install -d $(RECORDEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: recordext" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(RECORDEXT_PRIORITY)" >>$@
 	@echo "Section: $(RECORDEXT_SECTION)" >>$@
 	@echo "Version: $(RECORDEXT_VERSION)-$(RECORDEXT_IPK_VERSION)" >>$@
@@ -151,7 +151,7 @@ recordext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/record.h
 # You may need to patch your application to make it use these locations.
 #
 $(RECORDEXT_IPK): $(RECORDEXT_BUILD_DIR)/.built
-	rm -rf $(RECORDEXT_IPK_DIR) $(BUILD_DIR)/recordext_*_armeb.ipk
+	rm -rf $(RECORDEXT_IPK_DIR) $(BUILD_DIR)/recordext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RECORDEXT_BUILD_DIR) DESTDIR=$(RECORDEXT_IPK_DIR) install
 	$(MAKE) $(RECORDEXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RECORDEXT_IPK_DIR)

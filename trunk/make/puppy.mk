@@ -30,7 +30,7 @@ PUPPY_IPK_VERSION=1
 PUPPY_BUILD_DIR=$(BUILD_DIR)/puppy
 PUPPY_SOURCE_DIR=$(SOURCE_DIR)/puppy
 PUPPY_IPK_DIR=$(BUILD_DIR)/puppy-$(PUPPY_VERSION)-ipk
-PUPPY_IPK=$(BUILD_DIR)/puppy_$(PUPPY_VERSION)-$(PUPPY_IPK_VERSION)_armeb.ipk
+PUPPY_IPK=$(BUILD_DIR)/puppy_$(PUPPY_VERSION)-$(PUPPY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -98,7 +98,7 @@ puppy: $(PUPPY_BUILD_DIR)/puppy
 # You may need to patch your application to make it use these locations.
 #
 $(PUPPY_IPK): $(PUPPY_BUILD_DIR)/puppy
-	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_armeb.ipk
+	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_$(TARGET_ARCH).ipk
 	install -d $(PUPPY_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
 	install -d $(PUPPY_IPK_DIR)/CONTROL

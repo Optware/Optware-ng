@@ -59,7 +59,7 @@ AUTOMAKE_LDFLAGS=
 AUTOMAKE_BUILD_DIR=$(BUILD_DIR)/automake
 AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
 AUTOMAKE_IPK_DIR=$(BUILD_DIR)/automake-$(AUTOMAKE_VERSION)-ipk
-AUTOMAKE_IPK=$(BUILD_DIR)/automake_$(AUTOMAKE_VERSION)-$(AUTOMAKE_IPK_VERSION)_armeb.ipk
+AUTOMAKE_IPK=$(BUILD_DIR)/automake_$(AUTOMAKE_VERSION)-$(AUTOMAKE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -151,7 +151,7 @@ automake-stage: $(STAGING_DIR)/opt/lib/libautomake.so.$(AUTOMAKE_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
-	rm -rf $(AUTOMAKE_IPK_DIR) $(BUILD_DIR)/automake_*_armeb.ipk
+	rm -rf $(AUTOMAKE_IPK_DIR) $(BUILD_DIR)/automake_*_$(TARGET_ARCH).ipk
 	install -d $(AUTOMAKE_IPK_DIR)/opt/bin
 	install -d $(AUTOMAKE_IPK_DIR)/opt/info
 	install -d $(AUTOMAKE_IPK_DIR)/opt/share/aclocal-1.9

@@ -67,7 +67,7 @@ XMAIL_LDFLAGS=-R /opt/lib
 XMAIL_BUILD_DIR=$(BUILD_DIR)/xmail
 XMAIL_SOURCE_DIR=$(SOURCE_DIR)/xmail
 XMAIL_IPK_DIR=$(BUILD_DIR)/xmail-$(XMAIL_VERSION)-ipk
-XMAIL_IPK=$(BUILD_DIR)/xmail_$(XMAIL_VERSION)-$(XMAIL_IPK_VERSION)_armeb.ipk
+XMAIL_IPK=$(BUILD_DIR)/xmail_$(XMAIL_VERSION)-$(XMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -160,7 +160,7 @@ xmail-stage: $(XMAIL_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XMAIL_IPK): $(XMAIL_BUILD_DIR)/.built
-	rm -rf $(XMAIL_IPK_DIR) $(BUILD_DIR)/xmail_*_armeb.ipk
+	rm -rf $(XMAIL_IPK_DIR) $(BUILD_DIR)/xmail_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(XMAIL_BUILD_DIR) DESTDIR=$(XMAIL_IPK_DIR) install
 	# Main configuration and temporary stores - the MailRoot folder
 	install -d $(XMAIL_IPK_DIR)/opt/var/MailRoot

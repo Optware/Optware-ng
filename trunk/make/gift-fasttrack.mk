@@ -60,7 +60,7 @@ GIFTFASTTRACK_LDFLAGS=
 GIFTFASTTRACK_BUILD_DIR=$(BUILD_DIR)/gift-fasttrack
 GIFTFASTTRACK_SOURCE_DIR=$(SOURCE_DIR)/gift-fasttrack
 GIFTFASTTRACK_IPK_DIR=$(BUILD_DIR)/gift-fasttrack-$(GIFTFASTTRACK_VERSION)-ipk
-GIFTFASTTRACK_IPK=$(BUILD_DIR)/gift-fasttrack_$(GIFTFASTTRACK_VERSION)-$(GIFTFASTTRACK_IPK_VERSION)_armeb.ipk
+GIFTFASTTRACK_IPK=$(BUILD_DIR)/gift-fasttrack_$(GIFTFASTTRACK_VERSION)-$(GIFTFASTTRACK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -150,7 +150,7 @@ giFT-FastTrack-stage: $(STAGING_DIR)/opt/lib/libgiFT-FastTrack.so.$(GIFTFASTTRAC
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTFASTTRACK_IPK): $(GIFTFASTTRACK_BUILD_DIR)/.built
-	rm -rf $(GIFTFASTTRACK_IPK_DIR) $(BUILD_DIR)/gift-fasttrack_*_armeb.ipk
+	rm -rf $(GIFTFASTTRACK_IPK_DIR) $(BUILD_DIR)/gift-fasttrack_*_$(TARGET_ARCH).ipk
 	install -d $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so -o $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.so
 	install -m 644 $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.la $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.la

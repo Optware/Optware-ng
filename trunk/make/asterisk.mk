@@ -55,7 +55,7 @@ ASTERISK_LDFLAGS=-lcrypto -L/opt/lib -I/opt/include
 ASTERISK_BUILD_DIR=$(BUILD_DIR)/asterisk
 ASTERISK_SOURCE_DIR=$(SOURCE_DIR)/asterisk
 ASTERISK_IPK_DIR=$(BUILD_DIR)/asterisk-$(ASTERISK_VERSION)-ipk
-ASTERISK_IPK=$(BUILD_DIR)/asterisk_$(ASTERISK_VERSION)-$(ASTERISK_IPK_VERSION)_armeb.ipk
+ASTERISK_IPK=$(BUILD_DIR)/asterisk_$(ASTERISK_VERSION)-$(ASTERISK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 ASTERISK_INST_DIR=/opt
 ASTERISK_BIN_DIR=$(ASTERISK_INST_DIR)/bin
@@ -146,7 +146,7 @@ asterisk-stage: $(ASTERISK_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK_IPK): $(ASTERISK_BUILD_DIR)/.built
-	rm -rf $(ASTERISK_IPK_DIR) $(BUILD_DIR)/asterisk_*_armeb.ipk
+	rm -rf $(ASTERISK_IPK_DIR) $(BUILD_DIR)/asterisk_*_$(TARGET_ARCH).ipk
 	($(MAKE) -C $(ASTERISK_BUILD_DIR) DESTDIR=$(ASTERISK_IPK_DIR) \
 		INSTALL_PREFIX=$(ASTERISK_INST_DIR) \
 		ASTHEADERDIR=$(ASTERISK_INCLUDE_DIR) \

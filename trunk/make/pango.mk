@@ -62,7 +62,7 @@ PANGO_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 PANGO_BUILD_DIR=$(BUILD_DIR)/pango
 PANGO_SOURCE_DIR=$(SOURCE_DIR)/pango
 PANGO_IPK_DIR=$(BUILD_DIR)/pango-$(PANGO_VERSION)-ipk
-PANGO_IPK=$(BUILD_DIR)/pango_$(PANGO_VERSION)-$(PANGO_IPK_VERSION)_armeb.ipk
+PANGO_IPK=$(BUILD_DIR)/pango_$(PANGO_VERSION)-$(PANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(PANGO_IPK_DIR)/CONTROL/control:
 	@install -d $(PANGO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pango" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PANGO_PRIORITY)" >>$@
 	@echo "Section: $(PANGO_SECTION)" >>$@
 	@echo "Version: $(PANGO_VERSION)-$(PANGO_IPK_VERSION)" >>$@
@@ -175,7 +175,7 @@ pango-stage: $(STAGING_DIR)/opt/lib/libpango-1.0.so
 # You may need to patch your application to make it use these locations.
 #
 $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
-	rm -rf $(PANGO_IPK_DIR) $(BUILD_DIR)/pango_*_armeb.ipk
+	rm -rf $(PANGO_IPK_DIR) $(BUILD_DIR)/pango_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PANGO_BUILD_DIR) DESTDIR=$(PANGO_IPK_DIR) install-strip
 	rm -f $(PANGO_IPK_DIR)/opt/lib/*.la
 	rm -rf $(PANGO_IPK_DIR)/opt/share/gtk-doc

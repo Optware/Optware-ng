@@ -39,7 +39,7 @@ CPIO_LDFLAGS=
 CPIO_BUILD_DIR=$(BUILD_DIR)/cpio
 CPIO_SOURCE_DIR=$(SOURCE_DIR)/cpio
 CPIO_IPK_DIR=$(BUILD_DIR)/cpio-$(CPIO_VERSION)-ipk
-CPIO_IPK=$(BUILD_DIR)/cpio_$(CPIO_VERSION)-$(CPIO_IPK_VERSION)_armeb.ipk
+CPIO_IPK=$(BUILD_DIR)/cpio_$(CPIO_VERSION)-$(CPIO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -12,7 +12,7 @@ BISON_SITE=ftp://ftp.gnu.org/gnu/bison
 BISON_SOURCE=$(BISON).tar.gz
 BISON_UNZIP=zcat
 
-BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-2_armeb.ipk
+BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-2_$(TARGET_ARCH).ipk
 BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 
 $(DL_DIR)/$(BISON_SOURCE):
@@ -45,7 +45,7 @@ $(BISON_DIR)/src/bison: $(BISON_DIR)/.configured
 bison: $(BISON_DIR)/src/bison
 
 $(BISON_IPK): $(BISON_DIR)/src/bison
-	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_armeb.ipk
+	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_$(TARGET_ARCH).ipk
 	mkdir -p $(BISON_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/bison.control $(BISON_IPK_DIR)/CONTROL/control
 	# for now ignore the locale files

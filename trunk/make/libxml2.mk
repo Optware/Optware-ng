@@ -54,7 +54,7 @@ LIBXML2_LDFLAGS=
 LIBXML2_BUILD_DIR=$(BUILD_DIR)/libxml2
 LIBXML2_SOURCE_DIR=$(SOURCE_DIR)/libxml2
 LIBXML2_IPK_DIR=$(BUILD_DIR)/libxml2-$(LIBXML2_VERSION)-ipk
-LIBXML2_IPK=$(BUILD_DIR)/libxml2_$(LIBXML2_VERSION)-$(LIBXML2_IPK_VERSION)_armeb.ipk
+LIBXML2_IPK=$(BUILD_DIR)/libxml2_$(LIBXML2_VERSION)-$(LIBXML2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBXML2_IPK): $(LIBXML2_BUILD_DIR)/.built
-	rm -rf $(LIBXML2_IPK_DIR) $(BUILD_DIR)/libxml2_*_armeb.ipk
+	rm -rf $(LIBXML2_IPK_DIR) $(BUILD_DIR)/libxml2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(LIBXML2_IPK_DIR) install
 	# remove .la to avoid libtool problems
 	rm $(LIBXML2_IPK_DIR)/opt/lib/libxml2.la

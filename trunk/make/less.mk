@@ -40,7 +40,7 @@ LESS_LDFLAGS=
 LESS_BUILD_DIR=$(BUILD_DIR)/less
 LESS_SOURCE_DIR=$(SOURCE_DIR)/less
 LESS_IPK_DIR=$(BUILD_DIR)/less-$(LESS_VERSION)-ipk
-LESS_IPK=$(BUILD_DIR)/less_$(LESS_VERSION)-$(LESS_IPK_VERSION)_armeb.ipk
+LESS_IPK=$(BUILD_DIR)/less_$(LESS_VERSION)-$(LESS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -118,7 +118,7 @@ less: $(LESS_BUILD_DIR)/less
 # You may need to patch your application to make it use these locations.
 #
 $(LESS_IPK): $(LESS_BUILD_DIR)/less
-	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_armeb.ipk
+	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_$(TARGET_ARCH).ipk
 	install -d $(LESS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less
 	install -d $(LESS_IPK_DIR)/CONTROL

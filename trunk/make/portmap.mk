@@ -55,7 +55,7 @@ PORTMAP_LDFLAGS=
 PORTMAP_BUILD_DIR=$(BUILD_DIR)/portmap
 PORTMAP_SOURCE_DIR=$(SOURCE_DIR)/portmap
 PORTMAP_IPK_DIR=$(BUILD_DIR)/portmap-$(PORTMAP_VERSION)-ipk
-PORTMAP_IPK=$(BUILD_DIR)/portmap_$(PORTMAP_VERSION)-$(PORTMAP_IPK_VERSION)_armeb.ipk
+PORTMAP_IPK=$(BUILD_DIR)/portmap_$(PORTMAP_VERSION)-$(PORTMAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -151,7 +151,7 @@ portmap: $(PORTMAP_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(PORTMAP_IPK): $(PORTMAP_BUILD_DIR)/.built
-	rm -rf $(PORTMAP_IPK_DIR) $(BUILD_DIR)/portmap_*_armeb.ipk
+	rm -rf $(PORTMAP_IPK_DIR) $(BUILD_DIR)/portmap_*_$(TARGET_ARCH).ipk
 	install -d $(PORTMAP_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
 	install -d $(PORTMAP_IPK_DIR)/opt/etc/init.d

@@ -14,7 +14,7 @@ WU_FTPD_UNZIP:=zcat
 
 WU_FTPD_PATCHES:=$(SOURCE_DIR)/wu-ftpd-realpath.patch $(SOURCE_DIR)/wu-ftpd-connect-dos.patch
 
-WU_FTPD_IPK:=$(BUILD_DIR)/wu-ftpd_$(WU_FTPD_VERSION)_armeb.ipk
+WU_FTPD_IPK:=$(BUILD_DIR)/wu-ftpd_$(WU_FTPD_VERSION)_$(TARGET_ARCH).ipk
 WU_FTPD_IPK_DIR:=$(BUILD_DIR)/wu-ftpd-$(WU_FTPD_VERSION)-ipk
 
 $(DL_DIR)/$(WU_FTPD_SOURCE):
