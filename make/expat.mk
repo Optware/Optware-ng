@@ -124,13 +124,13 @@ expat: $(EXPAT_BUILD_DIR)/.built
 #
 $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 	rm -f $(EXPAT_BUILD_DIR)/.staged
-	mkdir -p $(STAGING_DIR)/opt/lib $(STAGING_DIR)/opt/include
+	mkdir -p $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
 	(cd $(EXPAT_BUILD_DIR); \
-		./libtool --mode=install install -c libexpat.la $(STAGING_DIR)/opt/lib/libexpat.la ; \
-		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_DIR)/opt/include ; \
+		./libtool --mode=install install -c libexpat.la $(STAGING_LIB_DIR)/libexpat.la ; \
+		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
 	)
 	# avoid problems with libtool later
-	rm $(STAGING_DIR)/opt/lib/libexpat.la
+	rm $(STAGING_LIB_DIR)/libexpat.la
 	touch $(EXPAT_BUILD_DIR)/.staged
 
 expat-stage: $(EXPAT_BUILD_DIR)/.staged
