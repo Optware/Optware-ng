@@ -135,9 +135,12 @@ $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
 	install -d $(NFS-UTILS_IPK_DIR)/opt/sbin
 	$(STRIP) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsd
 	$(STRIP) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mountd
+	$(STRIP) $(NFS-UTILS_BUILD_DIR)/utils/lockd/lockd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/lockd
+	$(STRIP) $(NFS-UTILS_BUILD_DIR)/utils/statd/statd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/statd
 	$(STRIP) $(NFS-UTILS_BUILD_DIR)/utils/exportfs/exportfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/exportfs
+	$(STRIP) $(NFS-UTILS_BUILD_DIR)/utils/showmount/showmount -o $(NFS-UTILS_IPK_DIR)/opt/sbin/showmount
 	install -d $(NFS-UTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/SXXnfs-utils
+	install -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/S56nfs-utils
 	install -d $(NFS-UTILS_IPK_DIR)/CONTROL
 	install -m 644 $(NFS-UTILS_SOURCE_DIR)/control $(NFS-UTILS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(NFS-UTILS_SOURCE_DIR)/postinst $(NFS-UTILS_IPK_DIR)/CONTROL/postinst
