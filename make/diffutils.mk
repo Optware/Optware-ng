@@ -28,7 +28,7 @@ DIFFUTILS_UNZIP=zcat
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=1-1
+DIFFUTILS_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
@@ -93,6 +93,7 @@ $(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
 	)
 	touch $(DIFFUTILS_BUILD_DIR)/.configured
 
@@ -144,9 +145,9 @@ $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	install -d $(DIFFUTILS_IPK_DIR)/opt/bin
 # Busybox provides cmp -- if you want a heavyweight cmp, uncomment the following line 
 #	$(STRIP) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/cmp
-	$(STRIP) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff
-	$(STRIP) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff3
-	$(STRIP) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/sdiff
+	$(TARGET_STRIP) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff
+	$(TARGET_STRIP) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff3
+	$(TARGET_STRIP) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/sdiff
 	install -d $(DIFFUTILS_IPK_DIR)/CONTROL
 	install -m 644 $(DIFFUTILS_SOURCE_DIR)/control $(DIFFUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIFFUTILS_IPK_DIR)
