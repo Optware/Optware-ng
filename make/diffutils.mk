@@ -28,7 +28,7 @@ DIFFUTILS_UNZIP=zcat
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=1
+DIFFUTILS_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -141,10 +141,9 @@ diffutils-stage: $(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
-	rm -rf $(DIFFUTILS_IPK_DIR) $(DIFFUTILS_IPK)
+	rm -rf $(DIFFUTILS_IPK_DIR) $(BUILD_DIR)/diffutils_*_armeb.ipk
 	install -d $(DIFFUTILS_IPK_DIR)/opt/bin
-# Busybox provides cmp -- if you want a heavyweight cmp, uncomment the following line 
-#	$(STRIP) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/cmp
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/cmp
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff3
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/sdiff
