@@ -1,0 +1,8 @@
+#!/bin/sh
+
+/bin/killall sshd
+
+/bin/rm -f /opt/etc/openssh/ssh_host_key
+/bin/rm -f /opt/etc/openssh/ssh_host_rsa_key
+/bin/rm -f /opt/etc/openssh/ssh_host_dsa_key
+
