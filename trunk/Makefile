@@ -65,6 +65,9 @@ CROSS_ONLY_PACKAGES = \
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
+	gift-opennap \
+
+# I don't have env to test native compiles for : gift-opennap
 
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
