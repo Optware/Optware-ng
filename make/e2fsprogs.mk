@@ -24,11 +24,17 @@ E2FSPROGS_VERSION=1.35
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
+E2FSPROGS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+E2FSPROGS_DESCRIPTION=Ext2 Filesystem Utilities (TESTING)
+E2FSPROGS_SECTION=lib
+E2FSPROGS_PRIORITY=optional
+E2FSPROGS_DEPENDS=
+E2FSPROGS_CONFLICTS=
 
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=2
+E2FSPROGS_IPK_VERSION=3
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -145,6 +151,24 @@ e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
 	install -m 644 $(E2FSPROGS_BUILD_DIR)/lib/et/*.h $(STAGING_INCLUDE_DIR)/et
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/e2fsprogs
+#
+$(E2FSPROGS_IPK_DIR)/CONTROL/control:
+	@install -d $(E2FSPROGS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: e2fsprogs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(E2FSPROGS_PRIORITY)" >>$@
+	@echo "Section: $(E2FSPROGS_SECTION)" >>$@
+	@echo "Version: $(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(E2FSPROGS_MAINTAINER)" >>$@
+	@echo "Source: $(E2FSPROGS_SITE)/$(E2FSPROGS_SOURCE)" >>$@
+	@echo "Description: $(E2FSPROGS_DESCRIPTION)" >>$@
+	@echo "Depends: $(E2FSPROGS_DEPENDS)" >>$@
+	@echo "Conflicts: $(E2FSPROGS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(E2FSPROGS_IPK_DIR)/opt/sbin or $(E2FSPROGS_IPK_DIR)/opt/bin
@@ -169,8 +193,7 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/resize/resize2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/resize2fs
 	# Package files
-	install -d $(E2FSPROGS_IPK_DIR)/CONTROL
-	install -m 644 $(E2FSPROGS_SOURCE_DIR)/control $(E2FSPROGS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(E2FSPROGS_SOURCE_DIR)/postinst $(E2FSPROGS_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(E2FSPROGS_SOURCE_DIR)/prerm $(E2FSPROGS_IPK_DIR)/CONTROL/prerm
 	echo $(E2FSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(E2FSPROGS_IPK_DIR)/CONTROL/conffiles
