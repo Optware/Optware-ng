@@ -25,7 +25,6 @@ NATIVE_AND_CROSS_PACKAGES = \
 	bash bison bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
-	emacs \
 	file findutils flex \
 	gawk gdbm grep \
 	imagemagick inetutils iptables \
@@ -58,6 +57,9 @@ CROSS_ONLY_PACKAGES = \
 	\
 	glib xinetd proftpd
 
+NATIVE_ONLY_PACKAGES =
+	emacs
+
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
@@ -70,7 +72,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = perl nethack scponly tcpdump nload nmap
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
-NATIVE_ONLY_PACKAGES =
 
 all: directories toolchain packages
 
