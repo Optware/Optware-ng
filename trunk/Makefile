@@ -90,6 +90,9 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
+HOST_MACHINE:=$(shell uname -m | sed \
+	-e 's/i[3-9]86/i386/' \
+	)
 
 ifeq ($(HOST_MACHINE),armv5b)
 native:
@@ -123,10 +126,6 @@ PACKAGE_DIR=$(BASE_DIR)/packages
 TARGET_OPTIMIZATION= #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 TARGET_CUSTOM_FLAGS= -pipe 
-
-HOST_MACHINE:=$(shell uname -m | sed \
-	-e 's/i[3-9]86/i386/' \
-	)
 
 ifeq ($(HOST_MACHINE),armv5b)
 HOSTCC = $(TARGET_CC)
