@@ -10,6 +10,12 @@ ZLIB_LIB_VERSION:=1.2.2
 ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
 ZLIB_UNZIP=bzcat
+ZLIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ZLIB_DESCRIPTION=zlib is a library implementing the 'deflate' compression system.
+ZLIB_SECTION=libs
+ZLIB_PRIORITY=optional
+ZLIB_DEPENDS=
+ZLIB_CONFLICTS=
 
 ZLIB_IPK_VERSION=1
 
