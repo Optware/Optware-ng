@@ -10,7 +10,7 @@ PERL-DIGEST-SHA1_SOURCE=Digest-SHA1-$(PERL-DIGEST-SHA1_VERSION).tar.gz
 PERL-DIGEST-SHA1_DIR=Digest-SHA1-$(PERL-DIGEST-SHA1_VERSION)
 PERL-DIGEST-SHA1_UNZIP=zcat
 
-PERL-DIGEST-SHA1_IPK_VERSION=1
+PERL-DIGEST-SHA1_IPK_VERSION=2
 
 PERL-DIGEST-SHA1_CONFFILES=
 
@@ -32,6 +32,7 @@ $(PERL-DIGEST-SHA1_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-SHA1_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -41,7 +42,8 @@ perl-digest-sha1-unpack: $(PERL-DIGEST-SHA1_BUILD_DIR)/.configured
 
 $(PERL-DIGEST-SHA1_BUILD_DIR)/.built: $(PERL-DIGEST-SHA1_BUILD_DIR)/.configured
 	rm -f $(PERL-DIGEST-SHA1_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-DIGEST-SHA1_BUILD_DIR)
+	$(MAKE) -C $(PERL-DIGEST-SHA1_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-DIGEST-SHA1_BUILD_DIR)/.built
 
 perl-digest-sha1: $(PERL-DIGEST-SHA1_BUILD_DIR)/.built
@@ -56,12 +58,13 @@ perl-digest-sha1-stage: $(PERL-DIGEST-SHA1_BUILD_DIR)/.staged
 $(PERL-DIGEST-SHA1_IPK): $(PERL-DIGEST-SHA1_BUILD_DIR)/.built
 	rm -rf $(PERL-DIGEST-SHA1_IPK_DIR) $(BUILD_DIR)/perl-digest-sha1_*_armeb.ipk
 	$(MAKE) -C $(PERL-DIGEST-SHA1_BUILD_DIR) DESTDIR=$(PERL-DIGEST-SHA1_IPK_DIR) install
-	find $(PERL-DIGEST-SHA1_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-DIGEST-SHA1_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DIGEST-SHA1_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-DIGEST-SHA1_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-DIGEST-SHA1_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-DIGEST-SHA1_SOURCE_DIR)/control $(PERL-DIGEST-SHA1_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-DIGEST-SHA1_SOURCE_DIR)/postinst $(PERL-DIGEST-SHA1_IPK_DIR)/CONTROL/postinst

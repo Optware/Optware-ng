@@ -10,7 +10,7 @@ PERL-HTML-TAGSET_SOURCE=HTML-Tagset-$(PERL-HTML-TAGSET_VERSION).tar.gz
 PERL-HTML-TAGSET_DIR=HTML-Tagset-$(PERL-HTML-TAGSET_VERSION)
 PERL-HTML-TAGSET_UNZIP=zcat
 
-PERL-HTML-TAGSET_IPK_VERSION=1
+PERL-HTML-TAGSET_IPK_VERSION=2
 
 PERL-HTML-TAGSET_CONFFILES=
 
@@ -32,6 +32,7 @@ $(PERL-HTML-TAGSET_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-TAGSET_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -41,7 +42,8 @@ perl-html-tagset-unpack: $(PERL-HTML-TAGSET_BUILD_DIR)/.configured
 
 $(PERL-HTML-TAGSET_BUILD_DIR)/.built: $(PERL-HTML-TAGSET_BUILD_DIR)/.configured
 	rm -f $(PERL-HTML-TAGSET_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-HTML-TAGSET_BUILD_DIR)
+	$(MAKE) -C $(PERL-HTML-TAGSET_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 
 perl-html-tagset: $(PERL-HTML-TAGSET_BUILD_DIR)/.built
@@ -56,12 +58,13 @@ perl-html-tagset-stage: $(PERL-HTML-TAGSET_BUILD_DIR)/.staged
 $(PERL-HTML-TAGSET_IPK): $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 	rm -rf $(PERL-HTML-TAGSET_IPK_DIR) $(BUILD_DIR)/perl-html-tagset_*_armeb.ipk
 	$(MAKE) -C $(PERL-HTML-TAGSET_BUILD_DIR) DESTDIR=$(PERL-HTML-TAGSET_IPK_DIR) install
-	find $(PERL-HTML-TAGSET_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-HTML-TAGSET_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-HTML-TAGSET_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-HTML-TAGSET_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-HTML-TAGSET_SOURCE_DIR)/control $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-HTML-TAGSET_SOURCE_DIR)/postinst $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/postinst

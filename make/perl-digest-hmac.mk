@@ -10,7 +10,7 @@ PERL-DIGEST-HMAC_SOURCE=Digest-HMAC-$(PERL-DIGEST-HMAC_VERSION).tar.gz
 PERL-DIGEST-HMAC_DIR=Digest-HMAC-$(PERL-DIGEST-HMAC_VERSION)
 PERL-DIGEST-HMAC_UNZIP=zcat
 
-PERL-DIGEST-HMAC_IPK_VERSION=1
+PERL-DIGEST-HMAC_IPK_VERSION=2
 
 PERL-DIGEST-HMAC_CONFFILES=
 
@@ -25,6 +25,7 @@ $(DL_DIR)/$(PERL-DIGEST-HMAC_SOURCE):
 perl-digest-hmac-source: $(DL_DIR)/$(PERL-DIGEST-HMAC_SOURCE) $(PERL-DIGEST-HMAC_PATCHES)
 
 $(PERL-DIGEST-HMAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-HMAC_SOURCE) $(PERL-DIGEST-HMAC_PATCHES)
+	$(MAKE) perl-digest-sha1-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DIGEST-HMAC_DIR) $(PERL-DIGEST-HMAC_BUILD_DIR)
 	$(PERL-DIGEST-HMAC_UNZIP) $(DL_DIR)/$(PERL-DIGEST-HMAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PERL-DIGEST-HMAC_DIR) $(PERL-DIGEST-HMAC_BUILD_DIR)
@@ -32,6 +33,7 @@ $(PERL-DIGEST-HMAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-HMAC_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -41,14 +43,15 @@ perl-digest-hmac-unpack: $(PERL-DIGEST-HMAC_BUILD_DIR)/.configured
 
 $(PERL-DIGEST-HMAC_BUILD_DIR)/.built: $(PERL-DIGEST-HMAC_BUILD_DIR)/.configured
 	rm -f $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-DIGEST-HMAC_BUILD_DIR)
+	$(MAKE) -C $(PERL-DIGEST-HMAC_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 
 perl-digest-hmac: $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 
 $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged: $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 	rm -f $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PERL-DIGEST-HMAC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(PERL-DIGEST-HMAC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged
 
 perl-digest-hmac-stage: $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged
@@ -56,12 +59,13 @@ perl-digest-hmac-stage: $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged
 $(PERL-DIGEST-HMAC_IPK): $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 	rm -rf $(PERL-DIGEST-HMAC_IPK_DIR) $(BUILD_DIR)/perl-digest-hmac_*_armeb.ipk
 	$(MAKE) -C $(PERL-DIGEST-HMAC_BUILD_DIR) DESTDIR=$(PERL-DIGEST-HMAC_IPK_DIR) install
-	find $(PERL-DIGEST-HMAC_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-DIGEST-HMAC_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DIGEST-HMAC_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-DIGEST-HMAC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-DIGEST-HMAC_SOURCE_DIR)/control $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-DIGEST-HMAC_SOURCE_DIR)/postinst $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/postinst

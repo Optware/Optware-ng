@@ -10,7 +10,7 @@ PERL-MIME-BASE64_SOURCE=MIME-Base64-$(PERL-MIME-BASE64_VERSION).tar.gz
 PERL-MIME-BASE64_DIR=MIME-Base64-$(PERL-MIME-BASE64_VERSION)
 PERL-MIME-BASE64_UNZIP=zcat
 
-PERL-MIME-BASE64_IPK_VERSION=1
+PERL-MIME-BASE64_IPK_VERSION=2
 
 PERL-MIME-BASE64_CONFFILES=
 
@@ -32,6 +32,7 @@ $(PERL-MIME-BASE64_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MIME-BASE64_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -41,14 +42,15 @@ perl-mime-base64-unpack: $(PERL-MIME-BASE64_BUILD_DIR)/.configured
 
 $(PERL-MIME-BASE64_BUILD_DIR)/.built: $(PERL-MIME-BASE64_BUILD_DIR)/.configured
 	rm -f $(PERL-MIME-BASE64_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-MIME-BASE64_BUILD_DIR)
+	$(MAKE) -C $(PERL-MIME-BASE64_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-MIME-BASE64_BUILD_DIR)/.built
 
 perl-mime-base64: $(PERL-MIME-BASE64_BUILD_DIR)/.built
 
 $(PERL-MIME-BASE64_BUILD_DIR)/.staged: $(PERL-MIME-BASE64_BUILD_DIR)/.built
 	rm -f $(PERL-MIME-BASE64_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PERL-MIME-BASE64_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(PERL-MIME-BASE64_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PERL-MIME-BASE64_BUILD_DIR)/.staged
 
 perl-mime-base64-stage: $(PERL-MIME-BASE64_BUILD_DIR)/.staged
@@ -56,12 +58,13 @@ perl-mime-base64-stage: $(PERL-MIME-BASE64_BUILD_DIR)/.staged
 $(PERL-MIME-BASE64_IPK): $(PERL-MIME-BASE64_BUILD_DIR)/.built
 	rm -rf $(PERL-MIME-BASE64_IPK_DIR) $(BUILD_DIR)/perl-mime-base64_*_armeb.ipk
 	$(MAKE) -C $(PERL-MIME-BASE64_BUILD_DIR) DESTDIR=$(PERL-MIME-BASE64_IPK_DIR) install
-	find $(PERL-MIME-BASE64_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-MIME-BASE64_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-MIME-BASE64_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-MIME-BASE64_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-MIME-BASE64_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-MIME-BASE64_SOURCE_DIR)/control $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-MIME-BASE64_SOURCE_DIR)/postinst $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/postinst

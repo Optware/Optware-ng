@@ -10,7 +10,7 @@ PERL-STORABLE_SOURCE=Storable-$(PERL-STORABLE_VERSION).tar.gz
 PERL-STORABLE_DIR=Storable-$(PERL-STORABLE_VERSION)
 PERL-STORABLE_UNZIP=zcat
 
-PERL-STORABLE_IPK_VERSION=1
+PERL-STORABLE_IPK_VERSION=2
 
 PERL-STORABLE_CONFFILES=
 
@@ -32,6 +32,7 @@ $(PERL-STORABLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-STORABLE_SOURCE) $(PERL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -41,14 +42,15 @@ perl-storable-unpack: $(PERL-STORABLE_BUILD_DIR)/.configured
 
 $(PERL-STORABLE_BUILD_DIR)/.built: $(PERL-STORABLE_BUILD_DIR)/.configured
 	rm -f $(PERL-STORABLE_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR)
+	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-STORABLE_BUILD_DIR)/.built
 
 perl-storable: $(PERL-STORABLE_BUILD_DIR)/.built
 
 $(PERL-STORABLE_BUILD_DIR)/.staged: $(PERL-STORABLE_BUILD_DIR)/.built
 	rm -f $(PERL-STORABLE_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PERL-STORABLE_BUILD_DIR)/.staged
 
 perl-storable-stage: $(PERL-STORABLE_BUILD_DIR)/.staged
@@ -56,12 +58,13 @@ perl-storable-stage: $(PERL-STORABLE_BUILD_DIR)/.staged
 $(PERL-STORABLE_IPK): $(PERL-STORABLE_BUILD_DIR)/.built
 	rm -rf $(PERL-STORABLE_IPK_DIR) $(BUILD_DIR)/perl-storable_*_armeb.ipk
 	$(MAKE) -C $(PERL-STORABLE_BUILD_DIR) DESTDIR=$(PERL-STORABLE_IPK_DIR) install
-	find $(PERL-STORABLE_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-STORABLE_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-STORABLE_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-STORABLE_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-STORABLE_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-STORABLE_SOURCE_DIR)/control $(PERL-STORABLE_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-STORABLE_SOURCE_DIR)/postinst $(PERL-STORABLE_IPK_DIR)/CONTROL/postinst

@@ -10,7 +10,7 @@ PERL-HTML-PARSER_SOURCE=HTML-Parser-$(PERL-HTML-PARSER_VERSION).tar.gz
 PERL-HTML-PARSER_DIR=HTML-Parser-$(PERL-HTML-PARSER_VERSION)
 PERL-HTML-PARSER_UNZIP=zcat
 
-PERL-HTML-PARSER_IPK_VERSION=1
+PERL-HTML-PARSER_IPK_VERSION=2
 
 PERL-HTML-PARSER_CONFFILES=
 
@@ -25,6 +25,7 @@ $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE):
 perl-html-parser-source: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) $(PERL-HTML-PARSER_PATCHES)
 
 $(PERL-HTML-PARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) $(PERL-HTML-PARSER_PATCHES)
+	$(MAKE) perl-html-tagset-stage
 	rm -rf $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) $(PERL-HTML-PARSER_BUILD_DIR)
 	$(PERL-HTML-PARSER_UNZIP) $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-HTML-PARSER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-HTML-PARSER_DIR) -p1
@@ -33,6 +34,7 @@ $(PERL-HTML-PARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) 
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		perl Makefile.PL \
 		PREFIX=/opt \
 	)
@@ -42,7 +44,8 @@ perl-html-parser-unpack: $(PERL-HTML-PARSER_BUILD_DIR)/.configured
 
 $(PERL-HTML-PARSER_BUILD_DIR)/.built: $(PERL-HTML-PARSER_BUILD_DIR)/.configured
 	rm -f $(PERL-HTML-PARSER_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-HTML-PARSER_BUILD_DIR)
+	$(MAKE) -C $(PERL-HTML-PARSER_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-HTML-PARSER_BUILD_DIR)/.built
 
 perl-html-parser: $(PERL-HTML-PARSER_BUILD_DIR)/.built
@@ -57,12 +60,13 @@ perl-html-parser-stage: $(PERL-HTML-PARSER_BUILD_DIR)/.staged
 $(PERL-HTML-PARSER_IPK): $(PERL-HTML-PARSER_BUILD_DIR)/.built
 	rm -rf $(PERL-HTML-PARSER_IPK_DIR) $(BUILD_DIR)/perl-html-parser_*_armeb.ipk
 	$(MAKE) -C $(PERL-HTML-PARSER_BUILD_DIR) DESTDIR=$(PERL-HTML-PARSER_IPK_DIR) install
-	find $(PERL-HTML-PARSER_IPK_DIR)/opt -name '*.pod' -exec rm {} \;
+	find $(PERL-HTML-PARSER_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-HTML-PARSER_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	find $(PERL-HTML-PARSER_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(PERL-HTML-PARSER_IPK_DIR)/CONTROL
 	install -m 644 $(PERL-HTML-PARSER_SOURCE_DIR)/control $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-HTML-PARSER_SOURCE_DIR)/postinst $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/postinst
