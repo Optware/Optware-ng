@@ -63,4 +63,4 @@ dnsmasq-clean:
 	-$(MAKE) -C $(DNSMASQ_BUILD_DIR) clean
 
 dnsmasq-dirclean:
-	rm -rf $(BUILD_DIR)/$(DNSMASQ_DIR)$(DNSMASQ_BUILD_DIR) $(DNSMASQ_IPK_DIR) $(DNSMASQ_IPK)
+	rm -rf $(BUILD_DIR)/$(DNSMASQ_DIR) $(DNSMASQ_BUILD_DIR) $(DNSMASQ_IPK_DIR) $(DNSMASQ_IPK)
