@@ -14,10 +14,13 @@
 # You should change all these variables to suit your package.
 #
 CROSSTOOL_SITE=http://kegel.com/crosstool
-CROSSTOOL_VERSION=0.28-rc35
+CROSSTOOL_VERSION=0.28-rc37
 CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
 CROSSTOOL_DIR=crosstool-$(CROSSTOOL_VERSION)
 CROSSTOOL_UNZIP=zcat
+
+CROSSTOOL_SCRIPT=nslu2-cross335.sh
+CROSSTOOL_DAT=gcc-3.3.5-glibc-2.2.5.dat
 
 #
 # CROSSTOOL_IPK_VERSION should be incremented when the ipk changes.
@@ -85,7 +88,10 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	$(CROSSTOOL_UNZIP) $(DL_DIR)/$(CROSSTOOL_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 #	cat $(CROSSTOOL_PATCHES) | patch -d $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) -p1
 	mv $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(CROSSTOOL_BUILD_DIR)
-	cp $(CROSSTOOL_SOURCE_DIR)/demo-nslu2.sh $(CROSSTOOL_BUILD_DIR)/demo-nslu2.sh
+	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(CROSSTOOL_BUILD_DIR)/$(CROSSTOOL_SCRIPT)
+	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_DAT)    $(CROSSTOOL_BUILD_DIR)/$(CROSSTOOL_DAT)
+	mkdir $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
+	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
 	touch $(CROSSTOOL_BUILD_DIR)/.configured
 
 crosstool-unpack: $(CROSSTOOL_BUILD_DIR)/.configured
@@ -98,7 +104,7 @@ $(CROSSTOOL_BUILD_DIR)/.built: $(CROSSTOOL_BUILD_DIR)/.configured
 	rm -f $(CROSSTOOL_BUILD_DIR)/.built
 	( cd $(CROSSTOOL_BUILD_DIR) ; \
 		export RESULT_TOP=$(TOOL_BUILD_DIR) ; \
-		sh demo-nslu2.sh \
+		sh $(CROSSTOOL_SCRIPT) \
 	)
 	touch $(CROSSTOOL_BUILD_DIR)/.built
 
