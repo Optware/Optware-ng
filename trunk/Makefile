@@ -30,8 +30,8 @@ NATIVE_AND_CROSS_PACKAGES = \
 	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
 	jamvm joe jove \
-	less libbt libcurl libdb libevent libid3tag libjpeg \
-	libnsl libpng libstdc++ libtiff libtool libxml2 lsof \
+	less libbt libcurl libdb libevent libiconv libid3tag \
+	libjpeg libnsl libpng libstdc++ libtiff libtool libxml2 lsof \
 	m4 make man man-pages mc mdadm miau mtr \
 	nail nano ncftp ncurses nload nmap ntp ntpclient \
 	openssh openssl \
@@ -63,7 +63,6 @@ CROSS_ONLY_PACKAGES = \
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
-	libiconv \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
