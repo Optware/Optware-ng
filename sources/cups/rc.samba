@@ -12,7 +12,7 @@ if ( !(grep "\[printers\]" /etc/samba/smb.conf -q) ) then
 cat << EOF >> /etc/samba/smb.conf
 [printers]
 comment = All Printers
-path = /opt/var/spool/samba
+path = /opt/var/spool/Samba
 read only = yes
 printable = yes
 use client driver = yes
