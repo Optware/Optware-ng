@@ -79,7 +79,7 @@ NATIVE_ONLY_PACKAGES = \
 	samba
 
 # Add new native-only packages here, and state why they don't cross compile.
-NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = 
+NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	clamav # needs to be fixed - requires zlib 1.2.2 or later
 
 UNSORTED_PACKAGES = \
