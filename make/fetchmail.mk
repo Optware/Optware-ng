@@ -28,13 +28,13 @@ FETCHMAIL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 FETCHMAIL_DESCRIPTION=A remote mail retrieval and forwarding utility
 FETCHMAIL_SECTION=util
 FETCHMAIL_PRIORITY=optional
-FETCHMAIL_DEPENDS=
+FETCHMAIL_DEPENDS=openssl
 FETCHMAIL_CONFLICTS=
 
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=4
+FETCHMAIL_IPK_VERSION=5
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
