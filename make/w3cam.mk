@@ -27,10 +27,10 @@ W3CAM_SOURCE=w3cam-$(W3CAM_VERSION).tar.gz
 W3CAM_DIR=w3cam-$(W3CAM_VERSION)
 W3CAM_UNZIP=zcat
 W3CAM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-W3CAM_DESCRIPTION=Describe w3cam here.
+W3CAM_DESCRIPTION=w3cam is a simple CGI to retrieve images from a so called video4linux device
 W3CAM_SECTION=misc
 W3CAM_PRIORITY=optional
-W3CAM_DEPENDS=jpeg
+W3CAM_DEPENDS=libjpeg
 
 #
 # W3CAM_IPK_VERSION should be incremented when the ipk changes.
@@ -184,7 +184,6 @@ $(W3CAM_IPK): $(W3CAM_BUILD_DIR)/.built
 	install -m 755 $(W3CAM_BUILD_DIR)/w3cam.cgi $(W3CAM_IPK_DIR)/opt/share/apache2/htdocs/cgi-bin/w3cam.cgi
 	install -m 755 $(W3CAM_BUILD_DIR)/vidcat $(W3CAM_IPK_DIR)/opt/bin/vidcat
 	install -m 644 $(W3CAM_BUILD_DIR)/vidcat.1 $(W3CAM_IPK_DIR)/opt/man/man1/vidcat.1
-	
 	$(MAKE) $(W3CAM_IPK_DIR)/CONTROL/control
 #	install -m 755 $(W3CAM_SOURCE_DIR)/postinst $(W3CAM_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(W3CAM_SOURCE_DIR)/prerm $(W3CAM_IPK_DIR)/CONTROL/prerm
