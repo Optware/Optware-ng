@@ -149,7 +149,7 @@ $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
-	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*-*_armeb.ipk
+	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_armeb.ipk
 	install -d $(<FOO>_IPK_DIR)/opt/bin
 	$(TARGET_STRIP) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
