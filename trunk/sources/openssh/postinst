@@ -2,6 +2,8 @@
 
 echo
 
+export LD_LIBRARY_PATH=/opt/lib
+
 # Check for the SSH1 RSA key
 if [ ! -f /opt/etc/openssh/ssh_host_key ]; then
     echo Generating RSA Key...
