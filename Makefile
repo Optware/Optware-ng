@@ -45,7 +45,7 @@ CROSS_ONLY_PACKAGES = \
 	bind busybox \
 	dhcp \
 	freeradius \
-	gift \
+	gift gift-fasttrack \
 	ircd-hybrid \
 	libbt libcurl libogg libvorbis libpcap logrotate \
 	mdadm mt-daapd \
