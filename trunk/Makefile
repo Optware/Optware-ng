@@ -33,7 +33,8 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb
 
-PACKAGES_TO_BE_TESTED:= 
+PACKAGES_TO_BE_TESTED:= \
+	   libcurl libbt
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
