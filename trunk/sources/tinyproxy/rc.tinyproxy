@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "`pidof tinyproxy`" ] ; then
+    killall tinyproxy 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/tinyproxy

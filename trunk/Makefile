@@ -23,11 +23,12 @@
 TARGETS:= slugtool slingbox
 
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
+	   tinyproxy dnsmasq \
 	   \
 	   sudo rsync rdate ntpclient \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
-	   ncurses ircd-hybrid procps dnsmasq \
+	   ncurses ircd-hybrid procps \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp
 
