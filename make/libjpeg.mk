@@ -113,19 +113,21 @@ libjpeg-unpack: $(LIBJPEG_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBJPEG_BUILD_DIR)/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.configured
+$(LIBJPEG_BUILD_DIR)/.built: $(LIBJPEG_BUILD_DIR)/.configured
+	rm -f $(LIBJPEG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR)
+	touch $(LIBJPEG_BUILD_DIR)/.built
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libjpeg: $(LIBJPEG_BUILD_DIR)/libjpeg.so
+libjpeg: $(LIBJPEG_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/libjpeg.so
+$(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
 	rm -f $(STAGING_DIR)/opt/lib/libjpeg.la
 
@@ -143,7 +145,7 @@ libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.so
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg.so
+$(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	rm -rf $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
 	install -d $(LIBJPEG_IPK_DIR)/opt/include
 	install -d $(LIBJPEG_IPK_DIR)/opt/lib
