@@ -4,7 +4,7 @@
 #
 #############################################################
 
-SLUGTOOL_DIR:=$(BUILD_DIR)/slugtool
+SLUGTOOL_DIR:=$(TOOL_BUILD_DIR)/slugtool
 
 SLUGTOOL_SITE:=http://www.lantz.com/filemgmt_data/files/
 SLUGTOOL_SOURCE:=slugtool.tar.gz
@@ -38,7 +38,7 @@ slugtool: $(STAGING_DIR)/bin/slugtool
 slugtool-install: slugtool
 
 slugtool-clean:
-	-make -C $(BUILD_DIR)/slugtool clean
+	-make -C $(SLUGTOOL_DIR) clean
 	rm -f $(STAGING_DIR)/bin/slugtool
 
 slugtool-dirclean:
