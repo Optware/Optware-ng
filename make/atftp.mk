@@ -10,7 +10,7 @@ ATFTP_SOURCE=atftp-$(ATFTP_VERSION).tar.gz
 ATFTP_DIR=atftp-$(ATFTP_VERSION)
 ATFTP_UNZIP=zcat
 
-ATFTP_IPK_VERSION=2
+ATFTP_IPK_VERSION=3
 
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
@@ -52,8 +52,6 @@ $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
 	$(TARGET_STRIP) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
 	install -d $(ATFTP_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
-	install -d $(ATFTP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(ATFTP_SOURCE_DIR)/rc.atftpd $(ATFTP_IPK_DIR)/opt/etc/init.d/S60atftpd
 	install -d $(ATFTP_IPK_DIR)/CONTROL
 	install -m 644 $(ATFTP_SOURCE_DIR)/control $(ATFTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
