@@ -28,13 +28,13 @@ ncurses-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
 $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 	(cd $(NCURSES_DIR); \
-        export CC=$(TARGET_CC) ;\
-        export CPPFLAGS="$(STAGING_CPPFLAGS)" ;\
-        export LDFLAGS="$(STAGING_LDFLAGS)" ;\
+	export CC=$(TARGET_CC) ;\
+	export CPPFLAGS="$(STAGING_CPPFLAGS)" ;\
+	export LDFLAGS="$(STAGING_LDFLAGS)" ;\
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--prefix=$(STAGING_DIR) \
+		--prefix=$(STAGING_DIR)	\
 		--with-shared		\
 		--without-progs		\
 		--disable-big-core	\
@@ -44,14 +44,14 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 	);
 	touch $(NCURSES_DIR)/.configured
 
-$(STAGING_DIR)/lib/ncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.configured
+$(STAGING_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.configured
 	$(MAKE) -C $(NCURSES_DIR) install
 
-ncurses-headers: $(STAGING_DIR)/lib/ncurses.a
+ncurses-headers: $(STAGING_DIR)/lib/libncurses.a
 
-ncurses: zlib $(STAGING_DIR)/lib/ncurses.so.$(NCURSES_SHLIBVERSION)
+ncurses: zlib $(STAGING_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
-$(NCURSES_IPK): $(STAGING_DIR)/lib/ncurses.so.$(NCURSES_SHLIBVERSION)
+$(NCURSES_IPK): $(STAGING_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	mkdir -p $(NCURSES_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/ncurses.control $(NCURSES_IPK_DIR)/CONTROL/control
 	mkdir -p $(NCURSES_IPK_DIR)/opt/include
