@@ -39,23 +39,20 @@ $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear: $(DROPBEAR_DIR)/dropbearmult
 	cd $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin && ln -sf dropbear dropbearkey
 	cd $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin && ln -sf dropbear dropbearconvert
 	$(STRIP) $(DROPBEAR_DIR)/scp -o $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/scp
-	install -m 755 $(SOURCE_DIR)/dropbear.install $(PACKAGE_DIR)/dropbear/opt/dropbear/install
 	install -m 755 $(SOURCE_DIR)/dropbear.rc $(PACKAGE_DIR)/dropbear/opt/dropbear/rc.dropbear
 
 $(PACKAGE_DIR)/dropbear_0.43_armeb.ipk: $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
 	install -d $(PACKAGE_DIR)/dropbear/CONTROL
 	install -m 644 $(SOURCE_DIR)/dropbear.control $(PACKAGE_DIR)/dropbear/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/dropbear.postinst $(PACKAGE_DIR)/dropbear/CONTROL/postinst
+	install -m 644 $(SOURCE_DIR)/dropbear.postrm $(PACKAGE_DIR)/dropbear/CONTROL/postrm
 	./ipkg-build -c -o root -g root $(PACKAGE_DIR)/dropbear $(PACKAGE_DIR)
-
-$(PACKAGE_DIR)/$(DROPBEAR).upkg: $(PACKAGE_DIR)/dropbear/opt/dropbear/sbin/dropbear
-	tar cvf $(PACKAGE_DIR)/$(DROPBEAR).upkg --group root -C $(PACKAGE_DIR)/dropbear/opt dropbear
 
 dropbear: $(DROPBEAR_DIR)/dropbearmulti
 
 dropbear-ipk: $(PACKAGE_DIR)/dropbear_0.43_armeb.ipk
 
-dropbear-upkg: $(PACKAGE_DIR)/$(DROPBEAR).upkg
+dropbear-upkg:
 
 dropbear-clean:
 	-make -C $(DROPBEAR_DIR) clean
