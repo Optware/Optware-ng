@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBTIFF_SITE=ftp://ftp.remotesensing.org/pub/libtiff
-LIBTIFF_VERSION=3.7.0
+LIBTIFF_VERSION=3.7.1
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
 LIBTIFF_UNZIP=zcat
@@ -28,7 +28,7 @@ LIBTIFF_UNZIP=zcat
 #
 # LIBTIFF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTIFF_IPK_VERSION=1
+LIBTIFF_IPK_VERSION=2
 
 #
 # LIBTIFF_PATCHES should list any patches, in the the order in
