@@ -149,7 +149,7 @@ gift-stage: $(GIFT_BUILD_DIR)/.staged
 #
 $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
 	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_armeb.ipk
-	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install
+	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install-strip
 	install -d $(GIFT_IPK_DIR)/CONTROL
 	install -m 644 $(GIFT_SOURCE_DIR)/control $(GIFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
