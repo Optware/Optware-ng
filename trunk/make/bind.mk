@@ -9,6 +9,11 @@ BIND_VERSION=9.3.0
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
 BIND_UNZIP=zcat
+BIND_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+BIND_DESCRIPTION=Bind provides a full name server package, including zone masters, slaves, zone transfers, security multiple views.  This is THE reference implementation from ISC, which has roots all the way back to the TOPS-20 original.  It is over-kill, unless you have a complex environment.  Other utilities (for debugging, remote management) are also included.  Full documentation and developers' files are included in this kit, though you may wish they weren't.
+BIND_SECTION=net
+BIND_PRIORITY=optional
+BIND_DEPENDS=
 
 BIND_IPK_VERSION=1
 
@@ -57,6 +62,19 @@ $(BIND_BUILD_DIR)/.built: $(BIND_BUILD_DIR)/.configured
 
 bind: $(BIND_BUILD_DIR)/.built
 
+$(BIND_IPK_DIR)/CONTROL/control:
+	@install -d $(BIND_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: bind" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BIND_PRIORITY)" >>$@
+	@echo "Section: $(BIND_SECTION)" >>$@
+	@echo "Version: $(BIND_VERSION)-$(BIND_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BIND_MAINTAINER)" >>$@
+	@echo "Source: $(BIND_SITE)/$(BIND_SOURCE)" >>$@
+	@echo "Description: $(BIND_DESCRIPTION)" >>$@
+	@echo "Depends: $(BIND_DEPENDS)" >>$@
+
 # The extra copy of named is a hack -- the kit installer seems to be
 # somewhat confused.
 #
@@ -71,8 +89,7 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(BIND_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(BIND_SOURCE_DIR)/S09named $(BIND_IPK_DIR)/opt/etc/init.d/S09named
-	install -d $(BIND_IPK_DIR)/CONTROL
-	install -m 644 $(BIND_SOURCE_DIR)/control  $(BIND_IPK_DIR)/CONTROL/control
+	$(MAKE) $(BIND_IPK_DIR)/CONTROL/control
 	install -m 755 $(BIND_SOURCE_DIR)/postinst $(BIND_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(BIND_SOURCE_DIR)/prerm    $(BIND_IPK_DIR)/CONTROL/prerm
 	install -d $(BIND_IPK_DIR)/opt/etc/named
