@@ -33,7 +33,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc mdadm miau mtr \
-	nail nano ncurses ntp ntpclient \
+	nail nano ncurses nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
@@ -60,11 +60,9 @@ CROSS_PACKAGES = \
 
 # appweb ships with x86 binaries which it requires during configure phase
 # bzflag native compile requires too much memory.
-# nmap requires a real sed.
 CROSS_ONLY_PACKAGES = \
 	appweb \
-	bzflag \
-	nmap
+	bzflag
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
