@@ -37,7 +37,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	screen strace sudo \
 	tar tcpwrappers termcap \
 	vdr-mediamvp vsftpd \
-	wget \
+	wget-ssl \
 	zlib \
 
 CROSS_ONLY_PACKAGES = \
