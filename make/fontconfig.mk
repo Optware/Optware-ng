@@ -20,12 +20,12 @@ FONTCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 FONTCONFIG_DESCRIPTION=Font configuration library
 FONTCONFIG_SECTION=lib
 FONTCONFIG_PRIORITY=optional
-FONTCONFIG_DEPENDS=expat, freetype
+FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=1
+FONTCONFIG_IPK_VERSION=2
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
@@ -41,7 +41,7 @@ FONTCONFIG_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FONTCONFIG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
+FONTCONFIG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2 -DLIBICONV_PLUG
 FONTCONFIG_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
