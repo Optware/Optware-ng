@@ -32,7 +32,8 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap ntp freeradius puppy screen bind svn \
-	   m4 make patch vsftpd distcc libjpeg 
+	   m4 make patch vsftpd distcc libjpeg \
+	   nfs-utils
 
 PACKAGES_TO_BE_TESTED:= 
 
