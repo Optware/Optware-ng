@@ -100,7 +100,7 @@ upslug: $(UPSLUG_BUILD_DIR)/upslug
 $(UPSLUG_IPK): $(UPSLUG_BUILD_DIR)/upslug
 	rm -rf $(UPSLUG_IPK_DIR) $(UPSLUG_IPK)
 	install -d $(UPSLUG_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(UPSLUG_BUILD_DIR)/upslug -o $(UPSLUG_IPK_DIR)/opt/bin/upslug
+	$(STRIP_COMMAND) $(UPSLUG_BUILD_DIR)/upslug -o $(UPSLUG_IPK_DIR)/opt/bin/upslug
 	install -d $(UPSLUG_IPK_DIR)/CONTROL
 	install -m 644 $(UPSLUG_SOURCE_DIR)/control $(UPSLUG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UPSLUG_IPK_DIR)

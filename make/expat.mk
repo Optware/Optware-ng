@@ -154,7 +154,7 @@ expat-stage: $(STAGING_DIR)/opt/lib/libexpat.so.$(EXPAT_VERSION)
 $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_armeb.ipk
 	install -d $(EXPAT_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(EXPAT_BUILD_DIR)/expat -o $(EXPAT_IPK_DIR)/opt/bin/expat
+	$(STRIP_COMMAND) $(EXPAT_BUILD_DIR)/expat -o $(EXPAT_IPK_DIR)/opt/bin/expat
 	install -d $(EXPAT_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(EXPAT_SOURCE_DIR)/rc.expat $(EXPAT_IPK_DIR)/opt/etc/init.d/SXXexpat
 	install -d $(EXPAT_IPK_DIR)/CONTROL

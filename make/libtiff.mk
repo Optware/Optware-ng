@@ -134,8 +134,8 @@ $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION): $(LIBTIFF_BUILD_DIR)/.buil
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.a $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_DIR)/opt/lib
-	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libtiff.a
-	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
+	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libtiff.a
+	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
 	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so.3
 	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so
 
@@ -157,28 +157,28 @@ $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	rm -rf $(LIBTIFF_IPK_DIR) $(LIBTIFF_IPK)
 	install -d $(LIBTIFF_IPK_DIR)/opt/bin
 	$(MAKE) -C $(LIBTIFF_BUILD_DIR) DESTDIR=$(LIBTIFF_IPK_DIR) install-exec
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-bmp2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/bmp2tiff
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2ps -o $(LIBTIFF_IPK_DIR)/opt/bin/fax2ps
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/fax2tiff
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-gif2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/gif2tiff
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-pal2rgb -o $(LIBTIFF_IPK_DIR)/opt/bin/pal2rgb
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ppm2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/ppm2tiff
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ras2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/ras2tiff
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-raw2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/raw2tiff
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-rgb2ycbcr -o $(LIBTIFF_IPK_DIR)/opt/bin/rgb2ycbcr
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-thumbnail -o $(LIBTIFF_IPK_DIR)/opt/bin/thumbnail
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2bw -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2bw
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2pdf -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2pdf*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2ps -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2ps*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2rgba -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2rgba*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcmp -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffcmp*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcp -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffcp*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdither -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffdither*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdump -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffdump*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffinfo -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffinfo*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffmedian -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffmedian*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffset -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffset*
-	$(TARGET_STRIP) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffsplit -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffsplit*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-bmp2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/bmp2tiff
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2ps -o $(LIBTIFF_IPK_DIR)/opt/bin/fax2ps
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/fax2tiff
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-gif2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/gif2tiff
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-pal2rgb -o $(LIBTIFF_IPK_DIR)/opt/bin/pal2rgb
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ppm2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/ppm2tiff
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ras2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/ras2tiff
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-raw2tiff -o $(LIBTIFF_IPK_DIR)/opt/bin/raw2tiff
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-rgb2ycbcr -o $(LIBTIFF_IPK_DIR)/opt/bin/rgb2ycbcr
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-thumbnail -o $(LIBTIFF_IPK_DIR)/opt/bin/thumbnail
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2bw -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2bw
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2pdf -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2pdf*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2ps -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2ps*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiff2rgba -o $(LIBTIFF_IPK_DIR)/opt/bin/tiff2rgba*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcmp -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffcmp*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffcp -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffcp*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdither -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffdither*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffdump -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffdump*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffinfo -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffinfo*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffmedian -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffmedian*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffset -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffset*
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-tiffsplit -o $(LIBTIFF_IPK_DIR)/opt/bin/tiffsplit*
 	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-bmp2tiff
 	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2ps
 	rm -f $(LIBTIFF_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-fax2tiff
@@ -208,10 +208,10 @@ $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(LIBTIFF_IPK_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(LIBTIFF_IPK_DIR)/opt/include
 
-	$(TARGET_STRIP) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.a
-	$(TARGET_STRIP) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
+	$(STRIP_COMMAND) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.a
+	$(STRIP_COMMAND) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
 
-#	$(TARGET_STRIP) $(LIBTIFF_BUILD_DIR)/libtiff -o $(LIBTIFF_IPK_DIR)/opt/bin/libtiff
+#	$(STRIP_COMMAND) $(LIBTIFF_BUILD_DIR)/libtiff -o $(LIBTIFF_IPK_DIR)/opt/bin/libtiff
 	install -d $(LIBTIFF_IPK_DIR)/CONTROL
 	install -m 644 $(LIBTIFF_SOURCE_DIR)/control $(LIBTIFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTIFF_IPK_DIR)

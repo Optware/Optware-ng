@@ -150,7 +150,7 @@ nload-stage: $(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION)
 $(NLOAD_IPK): $(NLOAD_BUILD_DIR)/.built
 	rm -rf $(NLOAD_IPK_DIR) $(BUILD_DIR)/nload_*_armeb.ipk
 	install -d $(NLOAD_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(NLOAD_BUILD_DIR)/src/nload -o $(NLOAD_IPK_DIR)/opt/bin/nload
+	$(STRIP_COMMAND) $(NLOAD_BUILD_DIR)/src/nload -o $(NLOAD_IPK_DIR)/opt/bin/nload
 	install -d $(NLOAD_IPK_DIR)/CONTROL
 	install -m 644 $(NLOAD_SOURCE_DIR)/control $(NLOAD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NLOAD_IPK_DIR)

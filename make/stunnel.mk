@@ -159,9 +159,9 @@ stunnel-stage: $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION)
 $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
 	rm -rf $(STUNNEL_IPK_DIR) $(BUILD_DIR)/stunnel_*_armeb.ipk
 	install -d $(STUNNEL_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/bin/stunnel
+	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/bin/stunnel
 	install -d $(STUNNEL_IPK_DIR)/opt/lib
-	$(TARGET_STRIP) $(STUNNEL_BUILD_DIR)/src/.libs/libstunnel.so -o $(STUNNEL_IPK_DIR)/opt/lib/libstunnel.so
+	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/.libs/libstunnel.so -o $(STUNNEL_IPK_DIR)/opt/lib/libstunnel.so
 	install -d $(STUNNEL_IPK_DIR)/opt/var/stunnel
 	install -d $(STUNNEL_IPK_DIR)/opt/etc/stunnel
 	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.cnf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel-cert.cnf

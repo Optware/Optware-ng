@@ -134,7 +134,7 @@ m4: $(M4_BUILD_DIR)/src/m4
 $(M4_IPK): $(M4_BUILD_DIR)/src/m4
 	rm -rf $(M4_IPK_DIR) $(M4_IPK)
 	install -d $(M4_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
+	$(STRIP_COMMAND) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
 #	install -d $(M4_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
 	install -d $(M4_IPK_DIR)/CONTROL

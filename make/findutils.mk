@@ -125,8 +125,8 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_IPK_DIR) $(FINDUTILS_IPK)
 	install -d $(FINDUTILS_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/find
-	$(TARGET_STRIP) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/xargs
+	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/find
+	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/xargs
 	install -d $(FINDUTILS_IPK_DIR)/CONTROL
 	install -m 644 $(FINDUTILS_SOURCE_DIR)/control $(FINDUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)

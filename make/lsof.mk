@@ -52,7 +52,7 @@ $(LSOF_IPK): $(LSOF_DIR)/lsof
 	rm -rf $(LSOF_IPK_DIR) $(BUILD_DIR)/lsof_*_armeb.ipk
 	install -d $(LSOF_IPK_DIR)/CONTROL
 	install -d $(LSOF_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(LSOF_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
+	$(STRIP_COMMAND) $(LSOF_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
 	install -m 644 $(LSOF_SOURCE_DIR)/control  $(LSOF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LSOF_IPK_DIR)
 

@@ -153,7 +153,7 @@ trickle-stage: $(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION)
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_armeb.ipk
 	install -d $(TRICKLE_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(TRICKLE_BUILD_DIR)/trickle -o $(TRICKLE_IPK_DIR)/opt/bin/trickle
+	$(STRIP_COMMAND) $(TRICKLE_BUILD_DIR)/trickle -o $(TRICKLE_IPK_DIR)/opt/bin/trickle
 	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)/opt/etc/init.d/SXXtrickle
 	install -d $(TRICKLE_IPK_DIR)/CONTROL

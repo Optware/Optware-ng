@@ -156,7 +156,7 @@ nmap-stage: $(STAGING_DIR)/opt/lib/libnmap.so.$(NMAP_VERSION)
 $(NMAP_IPK): $(NMAP_BUILD_DIR)/.built
 	rm -rf $(NMAP_IPK_DIR) $(BUILD_DIR)/nmap_*_armeb.ipk
 	install -d $(NMAP_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(NMAP_BUILD_DIR)/nmap -o $(NMAP_IPK_DIR)/opt/bin/nmap
+	$(STRIP_COMMAND) $(NMAP_BUILD_DIR)/nmap -o $(NMAP_IPK_DIR)/opt/bin/nmap
 	install -d $(NMAP_IPK_DIR)/opt/share/nmap
 	install -m 644 $(NMAP_BUILD_DIR)/nmap-services $(NMAP_IPK_DIR)/opt/share/nmap/nmap-services
 	install -m 644 $(NMAP_BUILD_DIR)/nmap-rpc $(NMAP_IPK_DIR)/opt/share/nmap/nmap-rpc

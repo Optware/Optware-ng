@@ -161,21 +161,21 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_armeb.ipk
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
-	$(TARGET_STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*
-	$(TARGET_STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.a
+	$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*
+	$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.a
 	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
 	cp $(IMAGEMAGICK_BUILD_DIR)/magick/Magick-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
 	cp $(IMAGEMAGICK_BUILD_DIR)/wand/Wand-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/animate -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/animate
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/compare -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/compare
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/composite -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/composite
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/conjure -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/conjure
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/convert
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/display -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/display
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/identify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/identify
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/import -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/import
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/mogrify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/mogrify
-	$(TARGET_STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/montage -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/montage
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/animate -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/animate
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/compare -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/compare
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/composite -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/composite
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/conjure -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/conjure
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/convert
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/display -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/display
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/identify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/identify
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/import -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/import
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/mogrify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/mogrify
+	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/montage -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/montage
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/www
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/images
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/man

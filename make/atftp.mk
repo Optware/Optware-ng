@@ -49,9 +49,9 @@ atftp: $(ATFTP_BUILD_DIR)/atftp
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
 	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_armeb.ipk
 	install -d $(ATFTP_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
+	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
 	install -d $(ATFTP_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
+	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
 	install -d $(ATFTP_IPK_DIR)/CONTROL
 	install -m 644 $(ATFTP_SOURCE_DIR)/control $(ATFTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst

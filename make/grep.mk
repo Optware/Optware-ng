@@ -42,9 +42,9 @@ grep: $(GREP_DIR)/src/grep
 $(GREP_IPK): $(GREP_DIR)/src/grep
 	mkdir -p $(GREP_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/grep/control $(GREP_IPK_DIR)/CONTROL/control
-	$(TARGET_STRIP) $(GREP_DIR)/src/grep
-	$(TARGET_STRIP) $(GREP_DIR)/src/egrep
-	$(TARGET_STRIP) $(GREP_DIR)/src/fgrep
+	$(STRIP_COMMAND) $(GREP_DIR)/src/grep
+	$(STRIP_COMMAND) $(GREP_DIR)/src/egrep
+	$(STRIP_COMMAND) $(GREP_DIR)/src/fgrep
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
 

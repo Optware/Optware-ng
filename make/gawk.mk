@@ -152,12 +152,12 @@ $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	rm -rf $(GAWK_IPK_DIR) $(GAWK_IPK)
 	install -d $(GAWK_IPK_DIR)/opt/bin
 	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install-exec
-	$(TARGET_STRIP) $(GAWK_IPK_DIR)/opt/bin/gawk
-	$(TARGET_STRIP) $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.4
-	$(TARGET_STRIP) $(GAWK_IPK_DIR)/opt/bin/pgawk
-	$(TARGET_STRIP) $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.4
-	$(TARGET_STRIP) $(GAWK_IPK_DIR)/opt/libexec/awk/grcat
-	$(TARGET_STRIP) $(GAWK_IPK_DIR)/opt/libexec/awk/pwcat
+	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/gawk
+	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.4
+	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/pgawk
+	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.4
+	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/grcat
+	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/pwcat
 
 	install -d $(GAWK_IPK_DIR)/CONTROL
 	install -m 644 $(GAWK_SOURCE_DIR)/control $(GAWK_IPK_DIR)/CONTROL/control

@@ -54,8 +54,8 @@ sudo: $(SUDO_BUILD_DIR)/sudo
 $(SUDO_IPK): $(SUDO_BUILD_DIR)/sudo
 	rm -rf $(SUDO_IPK_DIR) $(BUILD_DIR)/sudo_*_armeb.ipk
 	install -d $(SUDO_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(SUDO_BUILD_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
-	$(TARGET_STRIP) $(SUDO_BUILD_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
+	$(STRIP_COMMAND) $(SUDO_BUILD_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
+	$(STRIP_COMMAND) $(SUDO_BUILD_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
 	install -d $(SUDO_IPK_DIR)/opt/etc
 	install -m 600 $(SUDO_BUILD_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
 	install -d $(SUDO_IPK_DIR)/opt/doc/sudo

@@ -151,7 +151,7 @@ file-stage: $(STAGING_DIR)/opt/lib/libfile.so.$(FILE_VERSION)
 $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_armeb.ipk
 	install -d $(FILE_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(FILE_BUILD_DIR)/file -o $(FILE_IPK_DIR)/opt/bin/file
+	$(STRIP_COMMAND) $(FILE_BUILD_DIR)/file -o $(FILE_IPK_DIR)/opt/bin/file
 	install -d $(FILE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(FILE_SOURCE_DIR)/rc.file $(FILE_IPK_DIR)/opt/etc/init.d/SXXfile
 	install -d $(FILE_IPK_DIR)/CONTROL

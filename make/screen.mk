@@ -149,7 +149,7 @@ screen-stage: $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION)
 $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	rm -rf $(SCREEN_IPK_DIR) $(SCREEN_IPK)
 	install -d $(SCREEN_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(SCREEN_BUILD_DIR)/screen -o $(SCREEN_IPK_DIR)/opt/bin/screen
+	$(STRIP_COMMAND) $(SCREEN_BUILD_DIR)/screen -o $(SCREEN_IPK_DIR)/opt/bin/screen
 	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
 	install -d $(SCREEN_IPK_DIR)/CONTROL

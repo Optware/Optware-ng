@@ -54,15 +54,15 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_IPK_DIR)
 	cp $(SOURCE_DIR)/e2fsprogs/control $(E2FSPROGS_IPK_DIR)/CONTROL/control
 	cp $(E2FSPROGS_DIR)/lib/*.a $(E2FSPROGS_IPK_DIR)/opt/lib
 
-	$(TARGET_STRIP) $(E2FSPROGS_DIR)/debugfs/debugfs
+	$(STRIP_COMMAND) $(E2FSPROGS_DIR)/debugfs/debugfs
 	cp $(E2FSPROGS_DIR)/debugfs/debugfs $(E2FSPROGS_IPK_DIR)/opt/sbin
 
-	$(TARGET_STRIP) $(E2FSPROGS_DIR)/e2fsck/e2fsck
+	$(STRIP_COMMAND) $(E2FSPROGS_DIR)/e2fsck/e2fsck
 	cp $(E2FSPROGS_DIR)/e2fsck/e2fsck.static $(E2FSPROGS_IPK_DIR)/opt/sbin
 	cp $(E2FSPROGS_DIR)/e2fsck/e2fsck.shared $(E2FSPROGS_IPK_DIR)/opt/sbin
 	cp $(E2FSPROGS_DIR)/e2fsck/e2fsck $(E2FSPROGS_IPK_DIR)/opt/sbin
 
-	$(TARGET_STRIP) $(E2FSPROGS_DIR)/resize/resize2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_DIR)/resize/resize2fs
 	cp $(E2FSPROGS_DIR)/resize/resize2fs $(E2FSPROGS_IPK_DIR)/opt/sbin
 
 	rm -rf $(STAGING_DIR)/CONTROL

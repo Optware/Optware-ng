@@ -157,7 +157,7 @@ netpbm-stage: $(STAGING_DIR)/opt/lib/libnetpbm.so.$(NETPBM_VERSION)
 $(NETPBM_IPK): $(NETPBM_BUILD_DIR)/.built
 	rm -rf $(NETPBM_IPK_DIR) $(NETPBM_IPK)
 	install -d $(NETPBM_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(NETPBM_BUILD_DIR)/netpbm -o $(NETPBM_IPK_DIR)/opt/bin/netpbm
+	$(STRIP_COMMAND) $(NETPBM_BUILD_DIR)/netpbm -o $(NETPBM_IPK_DIR)/opt/bin/netpbm
 	install -d $(NETPBM_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NETPBM_SOURCE_DIR)/rc.netpbm $(NETPBM_IPK_DIR)/opt/etc/init.d/SXXnetpbm
 	install -d $(NETPBM_IPK_DIR)/CONTROL

@@ -100,7 +100,7 @@ puppy: $(PUPPY_BUILD_DIR)/puppy
 $(PUPPY_IPK): $(PUPPY_BUILD_DIR)/puppy
 	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_armeb.ipk
 	install -d $(PUPPY_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
+	$(STRIP_COMMAND) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
 	install -d $(PUPPY_IPK_DIR)/CONTROL
 	install -m 644 $(PUPPY_SOURCE_DIR)/control $(PUPPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PUPPY_IPK_DIR)

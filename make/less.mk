@@ -119,7 +119,7 @@ less: $(LESS_BUILD_DIR)/less
 $(LESS_IPK): $(LESS_BUILD_DIR)/less
 	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_armeb.ipk
 	install -d $(LESS_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less
+	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less
 	install -d $(LESS_IPK_DIR)/CONTROL
 	install -m 644 $(LESS_SOURCE_DIR)/control $(LESS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LESS_IPK_DIR)

@@ -125,7 +125,7 @@ cpio-stage: $(STAGING_DIR)/opt/lib/libcpio.so.$(CPIO_VERSION)
 $(CPIO_IPK): $(CPIO_BUILD_DIR)/cpio
 	rm -rf $(CPIO_IPK_DIR) $(CPIO_IPK)
 	install -d $(CPIO_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(CPIO_BUILD_DIR)/cpio -o $(CPIO_IPK_DIR)/opt/bin/cpio
+	$(STRIP_COMMAND) $(CPIO_BUILD_DIR)/cpio -o $(CPIO_IPK_DIR)/opt/bin/cpio
 	install -d $(CPIO_IPK_DIR)/CONTROL
 	install -m 644 $(CPIO_SOURCE_DIR)/control $(CPIO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)

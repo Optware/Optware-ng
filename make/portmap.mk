@@ -153,7 +153,7 @@ portmap: $(PORTMAP_BUILD_DIR)/.built
 $(PORTMAP_IPK): $(PORTMAP_BUILD_DIR)/.built
 	rm -rf $(PORTMAP_IPK_DIR) $(BUILD_DIR)/portmap_*_armeb.ipk
 	install -d $(PORTMAP_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
+	$(STRIP_COMMAND) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
 	install -d $(PORTMAP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(PORTMAP_SOURCE_DIR)/rc.portmap $(PORTMAP_IPK_DIR)/opt/etc/init.d/S55portmap
 	install -d $(PORTMAP_IPK_DIR)/CONTROL

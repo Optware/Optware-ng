@@ -47,7 +47,7 @@ $(CVS_IPK): $(CVS_BUILD_DIR)/src/cvs
 	mkdir -p $(CVS_IPK_DIR)/CONTROL
 	mkdir -p $(CVS_IPK_DIR)/opt
 	mkdir -p $(CVS_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)/opt/bin/cvs
+	$(STRIP_COMMAND) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)/opt/bin/cvs
 	cp $(SOURCE_DIR)/cvs.control $(CVS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CVS_IPK_DIR)
 
