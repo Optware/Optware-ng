@@ -31,17 +31,18 @@ NATIVE_AND_CROSS_PACKAGES = \
 	imagemagick inetutils iptables ircd-hybrid \
 	jove \
 	less libcurl libdb libevent libid3tag libjpeg \
-	libpng libstdc++ libtiff libtool lsof \
+	libbt libpng libstdc++ libtiff libtool lsof \
 	m4 make mc mdadm miau mtr \
-	nano ncurses ntp ntpclient \
+	nail nano ncurses ntp ntpclient \
 	openssl openssh \
 	patch portmap procps puppy \
 	rsync \
-	screen strace sudo \
+	screen strace stunnel sudo \
 	tar tcpwrappers termcap \
-	unslung-feeds \
+	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
 	wget-ssl \
+	xinetd \
 	zlib \
 
 CROSS_ONLY_PACKAGES = \
@@ -51,14 +52,12 @@ CROSS_ONLY_PACKAGES = \
 	freeradius \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft \
 	glib \
-	libbt libogg libvorbis libpcap logrotate \
+	libogg libvorbis libpcap logrotate \
 	mt-daapd \
-	nail nfs-server nfs-utils \
+	nfs-server nfs-utils \
 	popt proftpd \
 	rdate \
-	stunnel svn \
-	unfs3 \
-	xinetd
+	svn
 
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
