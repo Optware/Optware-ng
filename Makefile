@@ -20,8 +20,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-TARGETS:= slugtool slingbox
-
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   dnsmasq openssl openssh ntpclient \
 	   sudo rsync rdate grep jove \
@@ -61,7 +59,6 @@ HOSTCC:=gcc
 BASE_DIR=$(shell pwd)
 SOURCE_DIR=$(BASE_DIR)/sources
 DL_DIR=$(BASE_DIR)/downloads
-FIRMWARE_DIR=$(BASE_DIR)/firmware
 BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
 STAGING_PREFIX=$(STAGING_DIR)/opt
@@ -69,10 +66,12 @@ TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/bin:/sbin:/usr/bin:/usr/sbin
 PACKAGE_DIR=$(BASE_DIR)/packages
 
+CROSS_CONFIGURATION=gcc-3.3.4-glibc-2.2.5
+
 #GNU_TARGET_NAME=arm-linux
 GNU_TARGET_NAME=armv5b-softfloat-linux
 GNU_SHORT_TARGET_NAME=arm-linux
-TARGET_CROSS=$(GNU_TARGET_NAME)-
+TARGET_CROSS=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
 TARGET_CC=$(TARGET_CROSS)gcc
 TARGET_LD=$(TARGET_CROSS)ld
 TARGET_AR=$(TARGET_CROSS)ar
@@ -109,30 +108,19 @@ TARGET_CONFIGURE_OPTS= \
 		CXX=$(TARGET_CROSS)g++ \
 		RANLIB=$(TARGET_CROSS)ranlib
 
-all: directories packages
-
-unslung: directories $(TARGETS)
-	cd firmware ; $(MAKE) umount clean unslung
-
-TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
-TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
-TARGETS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TARGETS))
-TARGETS_INSTALL:=$(patsubst %,%-install,$(TARGETS))
-
-$(TARGETS) : directories
-$(TARGETS_INSTALL) : directories
+all: directories crosstool packages
 
 PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
-PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
+PACKAGES_STAGE:=$(patsubst %,%-stage,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
-$(PACKAGES) : directories
+$(PACKAGES) : directories crosstool
+$(PACKAGES_STAGE) : directories crosstool
+$(PACKAGES_IPKG) : directories crosstool ipkg-utils
 
-$(PACKAGES_IPK) : directories ipkg-utils
-
-$(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
+$(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 	-@mkdir -p $(PACKAGE_DIR)
 	{ \
 		cd $(PACKAGE_DIR); \
@@ -148,10 +136,9 @@ upload:
 	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 
-.PHONY: all clean dirclean distclean directories source unslung packages \
-	$(TARGETS) $(TARGETS_SOURCE) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) \
-	$(PACKAGES) $(PACKAGES_SOURCE) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) \
-	$(PACKAGES_IPKG)
+.PHONY: all clean dirclean distclean directories packages \
+	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
+	$(PACKAGES_STAGE) $(PACKAGES_IPKG)
 
 include make/*.mk
 
@@ -185,7 +172,6 @@ $(PACKAGE_DIR):
 source: $(TARGETS_SOURCE) $(PACKAGES_SOURCE)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
-	cd firmware ; $(MAKE) umount clean
 	find . -name '*~' -print | xargs /bin/rm -f
 	find . -name '.*~' -print | xargs /bin/rm -f
 	find . -name '.#*' -print | xargs /bin/rm -f
