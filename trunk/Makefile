@@ -30,7 +30,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	gawk gdbm grep gzip \
 	imagemagick inetutils iptables \
 	jove \
-	less libdb libevent libid3tag libjpeg \
+	less libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc miau \
 	nano ncurses ntp ntpclient \
@@ -51,7 +51,7 @@ CROSS_ONLY_PACKAGES = \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft \
 	glib groff \
 	ircd-hybrid \
-	libbt libcurl libogg libvorbis libpcap logrotate \
+	libbt libogg libvorbis libpcap logrotate \
 	mdadm mt-daapd \
 	nail nfs-server nfs-utils \
 	openssl openssh \
