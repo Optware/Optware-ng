@@ -28,7 +28,7 @@ SCREEN_UNZIP=zcat
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
 #
-SCREEN_IPK_VERSION=1
+SCREEN_IPK_VERSION=2
 
 #
 # SCREEN_PATCHES should list any patches, in the the order in
@@ -147,14 +147,14 @@ screen-stage: $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
-	rm -rf $(SCREEN_IPK_DIR) $(SCREEN_IPK)
+	rm -rf $(SCREEN_IPK_DIR) $(BUILD_DIR)/screen_*_armeb.ipk
 	install -d $(SCREEN_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(SCREEN_BUILD_DIR)/screen -o $(SCREEN_IPK_DIR)/opt/bin/screen
 	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
 	install -d $(SCREEN_IPK_DIR)/CONTROL
 	install -m 644 $(SCREEN_SOURCE_DIR)/control $(SCREEN_IPK_DIR)/CONTROL/control
-#	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCREEN_IPK_DIR)
 
