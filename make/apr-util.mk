@@ -110,12 +110,12 @@ apr-util-source: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
-		$(STAGING_DIR)/opt/bin/apr-config \
 		$(APR_UTIL_PATCHES)
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
 	$(MAKE) openldap-stage
+	$(MAKE) apr-stage
 	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
@@ -164,11 +164,11 @@ apr-util: $(APR_UTIL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/bin/apu-config: $(APR_UTIL_BUILD_DIR)/.built
+$(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_DIR)/opt/lib
 	rm -rf $(STAGING_DIR)/opt/lib/libaprutil.la
 
-apr-util-stage: $(STAGING_DIR)/opt/bin/apu-config
+apr-util-stage: $(APR_UTIL_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

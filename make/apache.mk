@@ -129,12 +129,11 @@ apache-source: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
-		$(STAGING_DIR)/opt/bin/apr-config \
-		$(STAGING_DIR)/opt/bin/apu-config \
 		$(APACHE_PATCHES)
 	$(MAKE) zlib-stage
 	$(MAKE) expat-stage
 	$(MAKE) openssl-stage
+	$(MAKE) apr-util-stage
 	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
@@ -192,17 +191,12 @@ apache: $(APACHE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/sbin/apxs: $(APACHE_BUILD_DIR)/.built
-	rm -f $(STAGING_DIR)/opt/sbin/apxs
+$(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
+	rm -f $(APACHE_BUILD_DIR)/.staged
 	$(MAKE) -C $(APACHE_BUILD_DIR) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
-	touch $(STAGING_DIR)/opt/sbin/apxs
-	rm -rf $(STAGING_DIR)/opt/share/apache2/manual
-	rm -rf $(STAGING_DIR)/opt/share/apache2/htdocs
-	rm -rf $(STAGING_DIR)/opt/share/apache2/error
-	rm -rf $(STAGING_DIR)/opt/share/apache2/icons
-	rm -rf $(STAGING_DIR)/opt/share/apache2/cgi-bin
+	touch $(APACHE_BUILD_DIR)/.staged
 
-apache-stage: $(STAGING_DIR)/opt/sbin/apxs
+apache-stage: $(APACHE_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

@@ -151,11 +151,11 @@ apr: $(APR_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/bin/apr-config: $(APR_BUILD_DIR)/.built
+$(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_DIR)/opt/lib
 	rm -f $(STAGING_DIR)/opt/lib/libapr.la
 
-apr-stage: $(STAGING_DIR)/opt/bin/apr-config
+apr-stage: $(APR_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
