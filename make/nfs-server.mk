@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NFS_SERVER_SITE=hhttp://linux.mathematik.tu-darmstadt.de/linux/people/okir
+NFS_SERVER_SITE=http://linux.mathematik.tu-darmstadt.de/linux/people/okir
 NFS_SERVER_VERSION=2.2beta47
 NFS_SERVER_SOURCE=nfs-server-$(NFS_SERVER_VERSION).tar.gz
 NFS_SERVER_DIR=nfs-server-$(NFS_SERVER_VERSION)
