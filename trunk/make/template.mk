@@ -112,8 +112,7 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 <foo>-unpack: $(<FOO>_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
 $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 	rm -f $(<FOO>_BUILD_DIR)/.built
@@ -121,8 +120,7 @@ $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 	touch $(<FOO>_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
 <foo>: $(<FOO>_BUILD_DIR)/.built
 
