@@ -41,7 +41,7 @@ $(IRCD_HYBRID_DIR)/src/ircd-hybrid: $(IRCD_HYBRID_DIR)/.configured
 
 ircd-hybrid: $(IRCD_HYBRID_DIR)/src/ircd-hybrid
 
-$(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd-hybrid
+$(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
 	mkdir -p $(IRCD_HYBRID_IPK_DIR)/CONTROL
 	mkdir -p $(IRCD_HYBRID_IPK_DIR)/opt
 	mkdir -p $(IRCD_HYBRID_IPK_DIR)/opt/bin
