@@ -103,8 +103,6 @@ $(PUPPY_IPK): $(PUPPY_BUILD_DIR)/puppy
 	$(STRIP) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
 	install -d $(PUPPY_IPK_DIR)/CONTROL
 	install -m 644 $(PUPPY_SOURCE_DIR)/control $(PUPPY_IPK_DIR)/CONTROL/control
-	install -m 644 $(PUPPY_SOURCE_DIR)/postinst $(PUPPY_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(PUPPY_SOURCE_DIR)/prerm $(PUPPY_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PUPPY_IPK_DIR)
 
 #
