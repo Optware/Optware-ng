@@ -121,7 +121,7 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $(CUPS_BUILD_DIR)/.built
 	$(MAKE) -C $(CUPS_BUILD_DIR) LDFLAGS="$(STAGING_LDFLAGS) -L../cups -L../filter $(RC_CFLAGS) -L/home/edmondsc/unslung/staging/opt/lib -Wl,-rpath,$(STAGING_DIR)/opt/lib -Wl,-rpath,/opt/lib $(OPTIM)"
-	$(MAKE) install -C $(CUPS_BUILD_DIR) BUILDROOT=$(CUPS_BUILD_DIR)/install/ 
+	$(MAKE) install -C $(CUPS_BUILD_DIR) BUILDROOT=$(CUPS_BUILD_DIR)/install/ INSTALL_BIN="install -m 755"
 	touch $(CUPS_BUILD_DIR)/.built
 
 #
