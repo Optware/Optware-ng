@@ -35,12 +35,12 @@ SNOWNEWS_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 SNOWNEWS_DESCRIPTION=Text mode RSS newsreader for Linux and Unix
 SNOWNEWS_SECTION=misc
 SNOWNEWS_PRIORITY=optional
-SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules
+SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules gettext
 
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=1
+SNOWNEWS_IPK_VERSION=2
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
