@@ -49,11 +49,6 @@ $(PROCPS_DIR)/.source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
 #
 $(PROCPS_DIR)/.configured: $(PROCPS_DIR)/.source
 	$(MAKE) ncurses-stage
-	(cd $(PROCPS_DIR); \
-	export CC=$(TARGET_CC); \
-	export LDFLAGS=$(STAGING_LDFLAGS); \
-	export CPPFLAGS=$(STAGING_CPPFLAGS); \
-	);
 	touch $(PROCPS_DIR)/.configured
 
 #
@@ -63,7 +58,7 @@ $(PROCPS_DIR)/watch: $(PROCPS_DIR)/.configured
 	$(MAKE) -C $(PROCPS_DIR)	\
 	CC=$(TARGET_CC)			\
 	CPPFLAGS=$(MY_STAGING_CPPFLAGS)	\
-	LDFLAGS=$(STAGING_LDFLAGS)	\
+	LDFLAGS=$(MY_STAGING_LDFLAGS)	\
 	RANLIB=$(TARGET_RANLIB)
 
 #
