@@ -3,7 +3,7 @@
 @@ -2,7 +2,7 @@
  CFLAGS += -I . -I ../libtopfield
  
- CFLAGS += -Wall -Werror -D_FILE_OFFSET_BITS=64
+ CFLAGS += -Wall -D_FILE_OFFSET_BITS=64
 -CFLAGS += -DHAVE_ERR -DKEEP_OPEN=1 -D_GNU_SOURCE
 +CFLAGS += -DKEEP_OPEN=1 -D_GNU_SOURCE
  CFLAGS += -DPATH_FTPDPID=\"ftpd.pid\"
