@@ -1,0 +1,30 @@
+#! /bin/sh
+# Diversion script: customize before starting crond
+#
+# Reason: alter samba to include cups
+#
+if [ ! -e /etc/samba/smb.conf.orig ]; then cp -p /etc/samba/smb.conf /etc/samba/smb.conf.orig; fi
+sed -i -e 's/printcap name = .*$/printcap name = \/etc\/printcap\nprinting = cups/' /etc/samba/smb.conf
+sed -i -e 's/security = .*$/security = share/' /etc/samba/smb.conf
+
+if ( !(grep "\[printers\]" /etc/samba/smb.conf -q) ) then
+
+cat << EOF >> /etc/samba/smb.conf
+[printers]
+comment = All Printers
+path = /opt/var/spool/samba
+read only = yes
+printable = yes
+use client driver = yes
+browseable = yes
+print command=lpr -P %p -o raw %s
+lpq command = lpstat -o %p
+lprm command = cancel %p-%j
+
+EOF
+fi
+#
+# Continue to start samba
+#
+return 1
+# EOF - include this line
