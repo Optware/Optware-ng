@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "`pidof fetchmail`" ]; then 
+    /bin/killall fetchmail 2>/dev/null
+fi
+
+/opt/bin/fetchmail -d 1800 -t 60 -a -e 50 --auth password -f /opt/etc/fetchmailrc -L /var/log/fetchmail 2>&1
