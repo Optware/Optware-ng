@@ -24,34 +24,64 @@
 # Packages after the second blank line do not build natively from CVS.
 # The ones in the middle haven't been tested yet ...
 
-PACKAGES:= zlib dropbear miau \
-	   \
-	   termcap bash iptables atftp \
-	   dnsmasq openssl openssh ntpclient \
-	   sudo rsync rdate grep jove lsof \
-	   portmap nfs-server flex inetutils \
-	   gdbm libid3tag mt-daapd unfs3 cvs \
-	   ncurses ircd-hybrid procps ntp popt \
-	   tcpwrappers libevent vdr-mediamvp \
-	   wget bzip2 dhcp nano ccxstream \
-	   mdadm strace libtool libdb libcurl libbt \
-	   libpcap freeradius puppy screen bind svn \
-	   m4 make vsftpd distcc libjpeg \
-	   tar coreutils gawk cpio findutils mc \
-	   libpng diffutils libtiff less nfs-utils \
-	   logrotate appweb imagemagick \
-	   nail stunnel patch \
-	   \
-	   busybox
+NATIVE_AND_CROSS_PACKAGES = \
+	bash \
+	bzip2 \
+	ccxstream \
+	distcc dnsmasq dropbear \
+	gdbm \
+	inetutils iptables \
+	libid3tag libtool lsof \
+	make miau \
+	ntpclient \
+	portmap puppy \
+	rsync \
+	strace sudo \
+	tcpwrappers \
+	termcap \
+	vsftpd \
+	zlib \
 
-PACKAGES_TO_BE_TESTED:= crosstool-native
+CROSS_ONLY_PACKAGES = \
+	atftp \
+	bind busybox \
+	cvs \
+	dhcp \
+	flex freeradius \
+	grep \
+	ircd-hybrid \
+	jove \
+	libbt libcurl libdb libevent libjpeg libpcap \
+	m4 mdadm mt-daapd \
+	nano ncurses nfs-server ntp \
+	openssl openssh \
+	popt procps \
+	rdate \
+	screen svn \
+	tar \
+	unfs3 \
+	vdr-mediamvp \
+	wget
 
-PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
+UNCATEGORISED_PACKAGES = \
+	coreutils gawk cpio findutils mc \
+	libpng diffutils libtiff less nfs-utils \
+	logrotate appweb imagemagick \
+	nail stunnel patch \
+
+PACKAGES = \
+	$(CROSS_ONLY_PACKAGES) $(NATIVE_AND_CROSS_PACKAGES) $(UNCATEGORISED_PACKAGES)
+
+PACKAGES_TO_BE_TESTED =
+
+PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file nethack scponly tcpdump nload nmap bison
+PACKAGES_THAT_NEED_TO_BE_FIXED = perl file nethack scponly tcpdump nload nmap bison
 
-PACKAGES_FOR_DEVELOPERS:= 
+PACKAGES_FOR_DEVELOPERS = crosstool-native
+
+NATIVE_ONLY_PACKAGES =
 
 WGET=wget --passive-ftp
 CVS=cvs
