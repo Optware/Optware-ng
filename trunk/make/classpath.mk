@@ -102,6 +102,8 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLASSPATH_LDFLAGS)" \
 		./configure \
 		--with-jikes \
+		--with-glibj=zip \
+		--enable-jni \
 		--disable-gtk-peer \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -154,6 +156,7 @@ classpath-stage: $(STAGING_DIR)/opt/lib/libclasspath.so.$(CLASSPATH_VERSION)
 #
 $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
 	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_armeb.ipk
+	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install prefix=$(CLASSPATH_IPK_DIR)/opt
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip prefix=$(CLASSPATH_IPK_DIR)/opt
 	install -d $(CLASSPATH_IPK_DIR)/CONTROL
 	install -m 644 $(CLASSPATH_SOURCE_DIR)/control $(CLASSPATH_IPK_DIR)/CONTROL/control
