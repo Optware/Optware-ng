@@ -42,9 +42,11 @@ inetutils-install: inetutils
 	$(SUDO) make  DESTDIR=$(INETUTILS_DIR)-ipk install
 
 $(INETUTILS_IPK): inetutils-install
+	mkdir -p $(INETUTILS_IPK_DIR)/opt/etc/init.d
 	install -d $(INETUTILS_IPK_DIR)/CONTROL
 	install -m 644 $(SOURCE_DIR)/inetutils-1.2.4.control  $(INETUTILS_IPK_DIR)/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/inetutils-1.2.4.postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
+	install -m 755 $(SOURCE_DIR)/inetutils.rc $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INETUTILS_IPK_DIR) $(PACKAGE_DIR)
 #	mv $(BUILD_DIR)/$(COREUTILS)_armeb.ipk $(PACKAGE_DIR)
 inetutils-ipk: $(INETUTILS_IPK)
