@@ -26,7 +26,7 @@ LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=1
+LIBGD_IPK_VERSION=2
 
 #
 # LIBGD_LOCALES defines which locales get installed
@@ -47,7 +47,7 @@ LIBGD_LOCALES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBGD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
+LIBGD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2 -DLIBICONV_PLUG
 LIBGD_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
@@ -120,6 +120,7 @@ $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) \
 		--prefix=/opt \
 		--disable-static \
 		--without-x \
+		--without-libiconv-prefix \
 		--with-png=$(STAGING_DIR)/opt \
 		--with-jpeg=$(STAGING_DIR)/opt \
 		--with-freetype=$(STAGING_DIR)/opt \
