@@ -27,7 +27,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
-	gawk gdb gdbm grep groff gzip \
+	gawk gconv-modules gdb gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	less libbt libcurl libdb libevent libiconv libid3tag \
@@ -48,7 +48,6 @@ NATIVE_AND_CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested both native compilation and cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
-	gconv-modules \
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
