@@ -31,7 +31,7 @@ NYLON_VERSION=1.2
 NYLON_SOURCE=nylon-$(NYLON_VERSION).tar.gz
 NYLON_DIR=nylon-$(NYLON_VERSION)
 NYLON_UNZIP=zcat
-NYLON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NYLON_MAINTAINER=Jean-Fabrice <jeanfabrice@users.sourceforge.net>
 NYLON_DESCRIPTION=Nylon is a small socks4/socks5 proxy server
 NYLON_SECTION=misc
 NYLON_PRIORITY=optional
@@ -45,7 +45,7 @@ NYLON_IPK_VERSION=1
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
-NYLON_CONFFILES=/opt/etc/nylon/nylon.conf-dist
+NYLON_CONFFILES=/opt/etc/nylon.conf
 
 #
 # NYLON_PATCHES should list any patches, in the the order in
@@ -181,8 +181,8 @@ $(NYLON_IPK): $(NYLON_BUILD_DIR)/.built
 	rm -rf $(NYLON_IPK_DIR) $(BUILD_DIR)/nylon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NYLON_BUILD_DIR) DESTDIR=$(NYLON_IPK_DIR) install
 	$(STRIP_COMMAND) $(NYLON_IPK_DIR)/opt/bin/nylon
-	install -d $(NYLON_IPK_DIR)/opt/etc/nylon
-	install -m 644 $(NYLON_SOURCE_DIR)/nylon.conf-dist $(NYLON_IPK_DIR)/opt/etc/nylon/nylon.conf-dist
+	install -d $(NYLON_IPK_DIR)/opt/etc
+	install -m 644 $(NYLON_SOURCE_DIR)/nylon.conf $(NYLON_IPK_DIR)/opt/etc/nylon.conf-dist
 	#install -d $(NYLON_IPK_DIR)/opt/etc/init.d
 	#install -m 755 $(NYLON_SOURCE_DIR)/rc.nylon $(NYLON_IPK_DIR)/opt/etc/init.d/SXXnylon
 	$(MAKE) $(NYLON_IPK_DIR)/CONTROL/control
