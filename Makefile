@@ -54,7 +54,7 @@ CROSS_PACKAGES = \
 	glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
-	nfs-server nfs-utils \
+	nfs-server nfs-utils nload \
 	popt proftpd \
 	rdate \
 	svn
@@ -83,7 +83,7 @@ PACKAGES_TO_BE_TESTED =
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump nload
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
