@@ -22,6 +22,7 @@
 
 TARGETS:= slugtool slingbox
 
+#PACKAGES:= db
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tinyproxy dnsmasq openssl openssh ntpclient libusb \
 	   \
