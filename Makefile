@@ -121,7 +121,6 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	perl-time-hires \
 
 UNSORTED_PACKAGES = \
-	freeradius \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
@@ -132,7 +131,7 @@ UNSORTED_PACKAGES = \
 
 DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm	clamav 
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm	clamav freeradius
 
 CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES) $(DEVELOPER_PACKAGES)
 
