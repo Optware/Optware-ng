@@ -87,7 +87,7 @@ elinks-source: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
-	$(MAKE) expat-stage
+	$(MAKE) zlib-stage bzip2-stage expat-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
 	$(ELINKS_UNZIP) $(DL_DIR)/$(ELINKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ELINKS_PATCHES) | patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1
