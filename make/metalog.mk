@@ -28,7 +28,7 @@ METALOG_UNZIP=zcat
 #
 # METALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-METALOG_IPK_VERSION=1
+METALOG_IPK_VERSION=2
 
 #
 # METALOG_CONFFILES should be a list of user-editable files
@@ -153,7 +153,7 @@ $(METALOG_IPK): $(METALOG_BUILD_DIR)/.built
 	install -d $(METALOG_IPK_DIR)/opt/etc/
 	install -m 755 $(METALOG_SOURCE_DIR)/metalog.conf $(METALOG_IPK_DIR)/opt/etc/metalog.conf
 	install -d $(METALOG_IPK_DIR)/opt/doc/metalog
-	install -m 755 $(METALOG_SOURCE_DIR)/S01metalog $(METALOG_IPK_DIR)/opt/doc/metalog
+	install -m 755 $(METALOG_SOURCE_DIR)/rc $(METALOG_IPK_DIR)/opt/doc/metalog
 	# Make log directory on HD
 	install -d $(METALOG_IPK_DIR)/opt/var/log
 	install -d $(METALOG_IPK_DIR)/CONTROL
