@@ -100,6 +100,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--disable-pam \
 		--prefix=/opt \
 	)
 	touch $(SCREEN_BUILD_DIR)/.configured
