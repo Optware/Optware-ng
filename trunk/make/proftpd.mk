@@ -193,6 +193,7 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 644 $(PROFTPD_SOURCE_DIR)/control $(PROFTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(PROFTPD_SOURCE_DIR)/postinst $(PROFTPD_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
+	echo $(PROFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PROFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROFTPD_IPK_DIR)
 
 #
