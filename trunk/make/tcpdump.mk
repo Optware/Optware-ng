@@ -102,6 +102,7 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-smb \
+		--without-crypto \
 		ac_cv_linux_vers=2.4.22 \
 	)
 	touch $(TCPDUMP_BUILD_DIR)/.configured
@@ -151,12 +152,8 @@ $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/tcpdump
 	rm -rf $(TCPDUMP_IPK_DIR) $(TCPDUMP_IPK)
 	install -d $(TCPDUMP_IPK_DIR)/opt/bin
 	$(TARGET_STRIP) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
-	install -d $(TCPDUMP_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
 	install -d $(TCPDUMP_IPK_DIR)/CONTROL
 	install -m 644 $(TCPDUMP_SOURCE_DIR)/control $(TCPDUMP_IPK_DIR)/CONTROL/control
-	install -m 644 $(TCPDUMP_SOURCE_DIR)/postinst $(TCPDUMP_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(TCPDUMP_SOURCE_DIR)/prerm $(TCPDUMP_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCPDUMP_IPK_DIR)
 
 #
