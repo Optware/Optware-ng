@@ -5,14 +5,14 @@
 #############################################################
 
 DROPBEAR_DIR:=$(BUILD_DIR)/dropbear
-
+DROPBEAR_SOURCE_DIR=$(SOURCE_DIR)/dropbear
 DROPBEAR_VERSION:=0.43
 DROPBEAR:=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_SITE:=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_SOURCE:=$(DROPBEAR).tar.bz2
 DROPBEAR_UNZIP:=bzcat
 
-DROPBEAR_PATCH:=$(SOURCE_DIR)/dropbear.patch
+DROPBEAR_PATCH:=$(DROPBEAR_SOURCE_DIR)/dropbear.patch
 
 DROPBEAR_IPK:=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-2_armeb.ipk
 DROPBEAR_IPK_DIR:=$(BUILD_DIR)/dropbear-$(DROPBEAR_VERSION)-ipk
@@ -59,10 +59,10 @@ $(DROPBEAR_IPK): $(DROPBEAR_DIR)/dropbearmulti
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbear dropbearkey
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbear dropbearconvert
 	$(STRIP) $(DROPBEAR_DIR)/scp -o $(DROPBEAR_IPK_DIR)/opt/sbin/scp
-	install -m 755 $(SOURCE_DIR)/dropbear.rc $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
-	install -m 644 $(SOURCE_DIR)/dropbear.control  $(DROPBEAR_IPK_DIR)/CONTROL/control
-	install -m 644 $(SOURCE_DIR)/dropbear.postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SOURCE_DIR)/dropbear.prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
+	install -m 644 $(DROPBEAR_SOURCE_DIR)/control  $(DROPBEAR_IPK_DIR)/CONTROL/control
+	install -m 644 $(DROPBEAR_SOURCE_DIR)/postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(DROPBEAR_SOURCE_DIR)/prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DROPBEAR_IPK_DIR)
 
 dropbear-ipk: $(DROPBEAR_IPK)
