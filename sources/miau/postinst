@@ -1,17 +1,17 @@
 #!/bin/sh
 
-if [ ! -d /root ] ;  then
-    mkdir /root
+if [ ! -d /var/spool ] ;  then
+    mkdir /var/spool
 fi
 
-if [ ! -d /root/.miau ] ;  then
-    mkdir /root/.miau
+if [ ! -d /var/spool/miau ] ;  then
+    mkdir /var/spool/miau
 fi
 
-if [ ! -f /root/.miau/miaurc ] ;  then
-    cp /opt/doc/miau/miaurc /root/.miau/miaurc
+if [ ! -f /opt/etc/miau.conf ] ;  then
+    cp /opt/doc/miau/miaurc /opt/etc/miau.conf
     echo ; echo
-    echo "To complete the installation, you must edit /root/.miau/miaurc,"
+    echo "To complete the installation, you must edit /opt/etc/miau.conf,"
     echo "and then run /opt/etc/init.d/S52miau to start miau."
     echo
 else

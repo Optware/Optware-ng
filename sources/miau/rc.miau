@@ -4,4 +4,4 @@ if [ -n "`pidof miau`" ]; then
     /bin/killall miau 2>/dev/null
 fi
 
-/opt/bin/miau -d /root/.miau
+/opt/bin/miau
