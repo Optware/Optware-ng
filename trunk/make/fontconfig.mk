@@ -42,7 +42,7 @@ FONTCONFIG_PATCHES=
 # compilation or linking flags, then list them here.
 #
 FONTCONFIG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
-FONTCONFIG_LDFLAGS=
+FONTCONFIG_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # FONTCONFIG_BUILD_DIR is the directory in which the build is done.
