@@ -23,8 +23,7 @@
 TARGETS:= slugtool slingbox
 
 PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
-	   tinyproxy dnsmasq openssl openssh ntpclient libusb \
-	   \
+	   tinyproxy dnsmasq openssl openssh ntpclient \
 	   sudo rsync rdate grep jove \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
