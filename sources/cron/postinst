@@ -1,0 +1,2 @@
+echo "Remember that the system crontab file is /opt/etc/crontab."
+return 0
