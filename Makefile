@@ -27,8 +27,8 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
 	   ncurses ircd-hybrid procps ntp popt \
 	   tcpwrappers libevent vdr-mediamvp \
-	   wget bzip2 dhcp nano nethack ccxstream \
-	   mdadm scponly strace libtool libdb libcurl libbt \
+	   wget bzip2 dhcp nano ccxstream \
+	   mdadm strace libtool libdb libcurl libbt \
 	   libpcap freeradius puppy screen bind svn \
 	   m4 make patch vsftpd distcc libjpeg \
 	   tar coreutils gawk cpio findutils mc \
@@ -41,7 +41,7 @@ PACKAGES_TO_BE_TESTED:= crosstool-native
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file 
+PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file nethack scponly 
 
 PACKAGES_FOR_DEVELOPERS:= 
 
