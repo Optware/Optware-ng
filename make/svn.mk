@@ -123,7 +123,7 @@ svn: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_DIR)/opt/lib/libneon.la: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
-	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(STAGING_DIR) external-install
+	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -rf $(STAGING_DIR)/opt/{man,info,share}
 
 svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
@@ -141,6 +141,7 @@ svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
 # You may need to patch your application to make it use these locations.
 #
 $(SVN_IPK): $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
+	$(MAKE) svn-stage
 	rm -rf $(SVN_IPK_DIR) $(SVN_IPK)
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) install
 	rm -rf $(SVN_IPK_DIR)/opt/{build,include,info,man,share}
