@@ -126,6 +126,11 @@ $(STAGING_DIR)/opt/lib/libjpeg.a: $(LIBJPEG_BUILD_DIR)/libjpeg.a
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBJPEG_BUILD_DIR)/libjpeg.a $(STAGING_DIR)/opt/lib
 
+	cp $(LIBJPEG_BUILD_DIR)/jpeglib.h $(STAGING_DIR)/opt/include	
+	cp $(LIBJPEG_BUILD_DIR)/jmorecfg.h $(STAGING_DIR)/opt/include	
+	cp $(LIBJPEG_BUILD_DIR)/jerror.h $(STAGING_DIR)/opt/include	
+	cp $(LIBJPEG_BUILD_DIR)/jconfig.h $(STAGING_DIR)/opt/include	
+
 libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.a
 
 #
@@ -140,7 +145,7 @@ libjpeg-stage: $(STAGING_DIR)/opt/lib/libjpeg.a
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg
+$(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg.a
 	rm -rf $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
 	install -d $(LIBJPEG_IPK_DIR)/opt/bin
 	install -d $(LIBJPEG_IPK_DIR)/opt/lib
@@ -151,7 +156,6 @@ $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg
 	$(STRIP) $(LIBJPEG_BUILD_DIR)/rdjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/rdjpgcom
 	$(STRIP) $(LIBJPEG_BUILD_DIR)/wrjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/wrjpgcom
 	$(STRIP) --strip-unneeded $(LIBJPEG_BUILD_DIR)/libjpeg.a -o $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.a
-		
 #	install -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
 	install -d $(LIBJPEG_IPK_DIR)/CONTROL
