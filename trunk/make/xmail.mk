@@ -31,16 +31,21 @@ XMAIL_VERSION=1.21
 XMAIL_SOURCE=xmail-$(XMAIL_VERSION).tar.gz
 XMAIL_DIR=xmail-$(XMAIL_VERSION)
 XMAIL_UNZIP=zcat
+XMAIL_MAINTAINER=Paul Hargreaves <paulhar@harg.ath.cx>
+XMAIL_DESCRIPTION=A combined easy to configure SMTP, POP3 and Finger server.
+XMAIL_SECTION=net
+XMAIL_PRIORITY=optional
+XMAIL_DEPENDS=libstdc++, syslogd
+XMAIL_CONFLICTS=
 
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=1
+XMAIL_IPK_VERSION=2
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
 #XMAIL_CONFFILES=/opt/etc/xmail.conf /opt/etc/init.d/S70xmail
-XMAIL_CONFFILES=
 
 #
 # XMAIL_PATCHES should list any patches, in the the order in
@@ -148,6 +153,24 @@ $(XMAIL_BUILD_DIR)/.staged: $(XMAIL_BUILD_DIR)/.built
 xmail-stage: $(XMAIL_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/xmail
+#
+$(XMAIL_IPK_DIR)/CONTROL/control:
+	@install -d $(XMAIL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xmail" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(XMAIL_PRIORITY)" >>$@
+	@echo "Section: $(XMAIL_SECTION)" >>$@
+	@echo "Version: $(XMAIL_VERSION)-$(XMAIL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XMAIL_MAINTAINER)" >>$@
+	@echo "Source: $(XMAIL_SITE)/$(XMAIL_SOURCE)" >>$@
+	@echo "Description: $(XMAIL_DESCRIPTION)" >>$@
+	@echo "Depends: $(XMAIL_DEPENDS)" >>$@
+	@echo "Conflicts: $(XMAIL_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(XMAIL_IPK_DIR)/opt/sbin or $(XMAIL_IPK_DIR)/opt/bin
@@ -183,11 +206,10 @@ $(XMAIL_IPK): $(XMAIL_BUILD_DIR)/.built
 	# rc  (/opt/etc/init.d)
 	# This is handled by the postinst script
 	# Rest of the stuff
-	install -d $(XMAIL_IPK_DIR)/CONTROL
-	install -m 644 $(XMAIL_SOURCE_DIR)/control $(XMAIL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XMAIL_IPK_DIR)/CONTROL/control
 	install -m 644 $(XMAIL_SOURCE_DIR)/postinst $(XMAIL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(XMAIL_SOURCE_DIR)/prerm $(XMAIL_IPK_DIR)/CONTROL/prerm
-	echo $(XMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(XMAIL_IPK_DIR)/CONTROL/conffiles
+	#echo $(XMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(XMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XMAIL_IPK_DIR)
 
 #
