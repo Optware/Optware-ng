@@ -128,6 +128,10 @@ libjpeg: $(LIBJPEG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_DIR)/opt/lib/libjpeg.so: $(LIBJPEG_BUILD_DIR)/.built
+	install -d $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/lib
+	install -d $(STAGING_DIR)/opt/bin
+	install -d $(STAGING_DIR)/opt/share/man/man1
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
 	rm -f $(STAGING_DIR)/opt/lib/libjpeg.la
 
