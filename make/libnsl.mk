@@ -1,0 +1,66 @@
+###########################################################
+#
+# libnsl
+#
+###########################################################
+
+LIBNSL_VERSION=2.2.5
+LIBNSL_DIR=libnsl-$(LIBNSL_VERSION)
+LIBNSL_LIBNAME=libnsl
+
+LIBNSL_IPK_VERSION=1
+
+LIBNSL_BUILD_DIR=$(BUILD_DIR)/libnsl
+LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
+LIBNSL_IPK_DIR=$(BUILD_DIR)/libnsl-$(LIBNSL_VERSION)-ipk
+LIBNSL_IPK=$(BUILD_DIR)/libnsl_$(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)_armeb.ipk
+
+$(LIBNSL_BUILD_DIR)/.configured: 
+	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR)
+	mkdir -p $(LIBNSL_BUILD_DIR)
+	touch $(LIBNSL_BUILD_DIR)/.configured
+
+libnsl-unpack: $(LIBNSL_BUILD_DIR)/.configured
+
+$(LIBNSL_BUILD_DIR)/.built: $(LIBNSL_BUILD_DIR)/.configured
+	rm -f $(LIBNSL_BUILD_DIR)/.built
+	cp $(TARGET_LIBDIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
+	touch $(LIBNSL_BUILD_DIR)/.built
+
+libnsl: $(LIBNSL_BUILD_DIR)/.built
+
+$(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
+	rm -f $(LIBNSL_BUILD_DIR)/.staged
+	install -d $(STAGING_DIR)/opt/lib
+	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_DIR)/opt/lib
+	(cd $(STAGING_DIR)/opt/lib; \
+	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
+               $(LIBNSL_LIBNAME).so; \
+	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
+               $(LIBNSL_LIBNAME).so.1 \
+	)
+	touch $(LIBNSL_BUILD_DIR)/.staged
+
+libnsl-stage: $(LIBNSL_BUILD_DIR)/.staged
+
+$(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
+	rm -rf $(LIBNSL_IPK_DIR) $(BUILD_DIR)/libnsl_*_armeb.ipk
+	install -d $(LIBNSL_IPK_DIR)/opt/lib
+	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_IPK_DIR)/opt/lib
+	(cd $(LIBNSL_IPK_DIR)/opt/lib; \
+	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
+               $(LIBNSL_LIBNAME).so; \
+	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
+               $(LIBNSL_LIBNAME).so.1 \
+	)
+	install -d $(LIBNSL_IPK_DIR)/CONTROL
+	install -m 644 $(LIBNSL_SOURCE_DIR)/control $(LIBNSL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNSL_IPK_DIR)
+
+libnsl-ipk: $(LIBNSL_IPK)
+
+libnsl-clean:
+	rm -rf $(LIBNSL_BUILD_DIR)/*
+
+libnsl-dirclean:
+	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR) $(LIBNSL_IPK_DIR) $(LIBNSL_IPK)
