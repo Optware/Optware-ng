@@ -175,7 +175,6 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 #	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
 #	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)
-	
 	install -d $(CUPS_IPK_DIR)-doc
 	install -d $(CUPS_IPK_DIR)-doc/opt/share/doc
 	install -d $(CUPS_IPK_DIR)-doc/opt/man
