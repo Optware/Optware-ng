@@ -41,7 +41,7 @@ FONTCONFIG_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FONTCONFIG_CPPFLAGS=
+FONTCONFIG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 FONTCONFIG_LDFLAGS=
 
 #
@@ -115,6 +115,7 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
 		--prefix=/opt \
 		--with-default-fonts=/opt/share/fonts \
 		--without-add-fonts \
+		--with-freetype-config=$(STAGING_DIR)/opt/bin/freetype-config \
 		--disable-docs \
 		--disable-static \
 	)
