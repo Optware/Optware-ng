@@ -123,7 +123,7 @@ SUDO=sudo
 WGET=wget --passive-ftp
 
 # Directory location definitions
-BASE_DIR=$(shell pwd)
+BASE_DIR:=$(shell pwd)
 SOURCE_DIR=$(BASE_DIR)/sources
 DL_DIR=$(BASE_DIR)/downloads
 BUILD_DIR=$(BASE_DIR)/builds
