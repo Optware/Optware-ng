@@ -23,7 +23,7 @@
 NATIVE_AND_CROSS_PACKAGES = \
 	atftp \
 	bash bison bzip2 \
-	ccxstream coreutils cpio \
+	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
 	file findutils \
 	gawk gdbm grep \
@@ -43,7 +43,6 @@ NATIVE_AND_CROSS_PACKAGES = \
 CROSS_ONLY_PACKAGES = \
 	appweb \
 	bind busybox \
-	cvs \
 	dhcp \
 	flex freeradius \
 	imagemagick ircd-hybrid \
