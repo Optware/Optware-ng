@@ -28,7 +28,7 @@ STUNNEL_UNZIP=zcat
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=3
+STUNNEL_IPK_VERSION=4
 
 #
 # STUNNEL_PATCHES should list any patches, in the the order in
@@ -162,6 +162,8 @@ $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
 ### do not mix with stunnel.conf!!!
 	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.cnf $(STUNNEL_IPK_DIR)/opt/doc/stunnel/stunnel.cert-conf
 	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.conf-sample $(STUNNEL_IPK_DIR)/opt/doc/stunnel/stunnel.conf-sample
+	install -d $(STUNNEL_IPK_DIR)/opt/etc/init.d
+	install -m 644 $(STUNNEL_SOURCE_DIR)/rc.stunnel $(STUNNEL_IPK_DIR)/opt/etc/init.d/S68stunnel
 	install -d $(STUNNEL_IPK_DIR)/CONTROL
 	install -m 644 $(STUNNEL_SOURCE_DIR)/control $(STUNNEL_IPK_DIR)/CONTROL/control
 	install -m 644 $(STUNNEL_SOURCE_DIR)/postinst $(STUNNEL_IPK_DIR)/CONTROL/postinst
