@@ -41,7 +41,7 @@ IMAGEMAGICK_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-IMAGEMAGICK_CPPFLAGS=
+IMAGEMAGICK_CPPFLAGS=-I$(STAGING_DIR)/opt/include
 IMAGEMAGICK_LDFLAGS=
 
 #
@@ -111,6 +111,20 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 	touch $(IMAGEMAGICK_BUILD_DIR)/.configured
 
 imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
+
+#
+# If you are building a library, then you need to stage it too.
+#
+#$(STAGING_DIR)/opt/lib/libimagemagick.so.$(IMAGEMAGICK_VERSION): $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION)
+#	install -d $(STAGING_DIR)/opt/include
+#	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/imagemagick.h $(STAGING_DIR)/opt/include
+#	install -d $(STAGING_DIR)/opt/lib
+#	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.a $(STAGING_DIR)/opt/lib
+#	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION) $(STAGING_DIR)/opt/lib
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so.1
+#	cd $(STAGING_DIR)/opt/lib && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so
+# 
+#imagemagick-stage: $(STAGING_DIR)/opt/lib/libimagemagick.so.$(IMAGEMAGICK_VERSION)
 
 #
 # This builds the actual binary.  You should change the target to refer
