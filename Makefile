@@ -46,6 +46,7 @@ PACKAGE_DIR=$(BASE_DIR)/packages
 
 #GNU_TARGET_NAME=arm-linux
 GNU_TARGET_NAME=armv5b-softfloat-linux
+GNU_SHORT_TARGET_NAME=arm-linux
 TARGET_CROSS=$(GNU_TARGET_NAME)-
 TARGET_CC=$(TARGET_CROSS)gcc
 STRIP=$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
@@ -80,16 +81,23 @@ TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
 TARGETS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TARGETS))
 TARGETS_INSTALL:=$(patsubst %,%-install,$(TARGETS))
 
+$(TARGETS) : directories
+$(TARGETS_INSTALL) : directories
+
 PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
-unslung: directories $(TARGETS)
+$(PACKAGES) : directories
+
+$(PACKAGES_IPK) : directories
+
+unslung: $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
 
-$(PACKAGE_DIR)/Packages: directories ipkg-utils $(PACKAGES_IPKG)
+$(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
 	-@mkdir -p $(PACKAGE_DIR)
 	{ \
 		cd $(PACKAGE_DIR); \
