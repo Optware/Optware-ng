@@ -49,7 +49,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 CROSS_PACKAGES = \
 	busybox \
 	freeradius \
-	gift gift-ares gift-fasttrack gift-gnutella gift-openft \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft \
 	glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
