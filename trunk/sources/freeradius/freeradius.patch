@@ -28,11 +28,26 @@ diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c freeradius-1.0.1-
      (void) vradlog(level, fmt, ap);
 diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c
 --- freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c	2004-02-26 11:04:37.000000000 -0800
-+++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c	2004-12-08 13:48:44.133738408 -0800
-@@ -109,6 +109,26 @@
++++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c	2004-12-08 14:07:05.996229848 -0800
+@@ -37,7 +37,6 @@
+  * TODO: support other than ILP32 (for State)
+  */
+ 
+-
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/types.h>
+@@ -109,6 +108,33 @@
      { NULL, -1, 0, NULL, NULL }		/* end the list */
  };
  
++static int x99_token_init(void);
++static int x99_token_instantiate(CONF_SECTION *conf, void **instance);
++static int x99_token_authorize(void *instance, REQUEST *request);
++static int x99_token_authenticate(void *instance, REQUEST *request);
++static int x99_token_detach(void *instance);
++static int x99_token_destroy(void);
++
 +module_t rlm_x99_token = {
 +	"x99_token",
 +	RLM_TYPE_THREAD_SAFE,		/* type */
@@ -56,7 +71,7 @@ diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c freeradius-1.0.1-
  
  /* per-module initialization */
  static int
-@@ -484,9 +504,9 @@
+@@ -484,9 +510,9 @@
  
      /* Add a message to the auth log. */
      pairadd(&request->packet->vps, pairmake("Module-Failure-Message",
@@ -68,7 +83,7 @@ diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c freeradius-1.0.1-
  
      /* Look up the user's info. */
      if (x99_get_user_info(inst->pwdfile, username, &user_info) != 0) {
-@@ -844,27 +864,3 @@
+@@ -844,27 +870,3 @@
      return 0;
  }
  
