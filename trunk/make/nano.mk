@@ -33,7 +33,7 @@ NANO_PATCHES="$(NANO_SOURCE_DIR)/configure.patch"
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NANO_CPPFLAGS=
+NANO_CPPFLAGS=-I$(STAGING_PREFIX)/include/ncurses
 NANO_LDFLAGS=
 
 #
