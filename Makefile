@@ -104,9 +104,9 @@ TARGET_CONFIGURE_OPTS= \
 		CXX=$(TARGET_CROSS)g++ \
 		RANLIB=$(TARGET_CROSS)ranlib
 
-all: world packages
+all: directories packages
 
-unslung: $(TARGETS)
+unslung: directories $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
@@ -142,12 +142,7 @@ upload:
 	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 
-world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
-	$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_INSTALL_DIR) \
-	$(PACKAGE_DIR) $(TARGETS_INSTALL)
-	@echo "ALL DONE."
-
-.PHONY: all world clean dirclean distclean directories source unslung packages \
+.PHONY: all clean dirclean distclean directories source unslung packages \
 	$(TARGETS) $(TARGETS_SOURCE) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) \
 	$(PACKAGES_IPKG)
