@@ -1,0 +1,17 @@
+*** ntop/ltconfig.orig	Wed Mar  9 15:39:23 2005
+--- ntop/ltconfig	Wed Mar  9 15:40:01 2005
+***************
+*** 1793,1798 ****
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec="/lib /usr/lib"
+! sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+  file_magic_cmd=
+  file_magic_test_file=
+--- 1793,1798 ----
+  version_type=none
+  dynamic_linker="$host_os ld.so"
+! sys_lib_dlsearch_path_spec=""
+! sys_lib_search_path_spec=""
+  file_magic_cmd=
+  file_magic_test_file=
