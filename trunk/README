@@ -58,7 +58,12 @@ INSTALLATION DETAILS
    would flash new firmware.
    The ext3flash firmware will cause all flash disks to be mounted with
    ext3 partitions, not Windows (vfat) partitions.
-   The non-ext3flash firmare will mount flash disks like the stock firmware.
+   The non-ext3flash firmare will mount flash disks as vfat like the stock
+   firmware.
+   Hard disks that are 1Gb or larger are always mounted ext3.  Hard disks
+   that are smaller than 1Gb are treated as flash by the Unslung firmware
+   (the stock firmware treats hard disks smaller than 10Gb as flash).
+   
 3) Verify your NSLU2 is working normally at this point.
 4) Make sure that you do *not* have a disk plugged in when you reboot to
    perform the next part of the installation.
