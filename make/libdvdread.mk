@@ -149,15 +149,8 @@ libdvdread-stage: $(LIBDVDREAD_BUILD_DIR)/.staged
 $(LIBDVDREAD_IPK): $(LIBDVDREAD_BUILD_DIR)/.built
 	rm -rf $(LIBDVDREAD_IPK_DIR) $(BUILD_DIR)/libdvdread_*_armeb.ipk
 	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) DESTDIR=$(LIBDVDREAD_IPK_DIR) install
-	install -d $(LIBDVDREAD_IPK_DIR)/opt/etc/
-	install -m 644 $(LIBDVDREAD_SOURCE_DIR)/libdvdread.conf $(LIBDVDREAD_IPK_DIR)/opt/etc/libdvdread.conf
-	install -d $(LIBDVDREAD_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(LIBDVDREAD_SOURCE_DIR)/rc.libdvdread $(LIBDVDREAD_IPK_DIR)/opt/etc/init.d/SXXlibdvdread
 	install -d $(LIBDVDREAD_IPK_DIR)/CONTROL
 	install -m 644 $(LIBDVDREAD_SOURCE_DIR)/control $(LIBDVDREAD_IPK_DIR)/CONTROL/control
-	install -m 644 $(LIBDVDREAD_SOURCE_DIR)/postinst $(LIBDVDREAD_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(LIBDVDREAD_SOURCE_DIR)/prerm $(LIBDVDREAD_IPK_DIR)/CONTROL/prerm
-	echo $(LIBDVDREAD_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDVDREAD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVDREAD_IPK_DIR)
 
 #
