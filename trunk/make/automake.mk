@@ -28,7 +28,7 @@ AUTOMAKE_UNZIP=bzcat
 #
 # AUTOMAKE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUTOMAKE_IPK_VERSION=1
+AUTOMAKE_IPK_VERSION=2
 
 #
 # AUTOMAKE_CONFFILES should be a list of user-editable files
@@ -168,6 +168,12 @@ $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 #	install -m 644 $(AUTOMAKE_SOURCE_DIR)/postinst $(AUTOMAKE_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(AUTOMAKE_SOURCE_DIR)/prerm $(AUTOMAKE_IPK_DIR)/CONTROL/prerm
 	echo $(AUTOMAKE_CONFFILES) | sed -e 's/ /\n/g' > $(AUTOMAKE_IPK_DIR)/CONTROL/conffiles
+	rm -f $(AUTOMAKE_IPK_DIR)/opt/info/dir
+	(cd $(AUTOMAKE_IPK_DIR)/opt/bin; \
+		rm automake aclocal; \
+		ln -s automake-1.9 automake; \
+		ln -s aclocal-1.9 aclocal; \
+	)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOMAKE_IPK_DIR)
 
 #
