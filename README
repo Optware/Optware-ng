@@ -33,7 +33,7 @@ RAMDISK CHANGES:
 7) Add /bin/ipkg and /etc/ipkg.conf to support the download of packages.
 
 WHERE TO GET IT:
-Binaries: TBA
+Binaries: http://sourceforge.net/project/showfiles.php?group_id=116564
 CVS: cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co unslung
 
 FIRMWARE/PACKAGE BUILD DETAILS:
@@ -53,7 +53,11 @@ PRE-INSTALLATION CONSIDERATIONS
  
 INSTALLATION DETAILS
 1) Make sure your NSLU2 is working properly.
-2) Flash UNSLUNG-1.x-V23R25.bin as you normally would flash new firmware.
+2) Flash UNSLUNG-1.x-V23R25.bin or UNSLUNG-1.x-ext3flash.bin as you normally
+   would flash new firmware.
+   The ext3flash firmware will cause all flash disks to be mounted with
+   ext3 partitions, not Windows (vfat) partitions.
+   The non-ext3flash firmare will mount flash disks like the stock firmware.
 3) Verify your NSLU2 is working normally at this point.
 
 'UNSLINGING' DETAILS
@@ -194,3 +198,6 @@ ADDITIONAL INFORMATION:
     if you would prefer to take the chance and get a different
     behaviour.
 
+11) The Unslung firmware will automatically execute any scripts
+    which are in /opt/etc/init.d - and this is where any packages
+    will put their startup scripts so that they execute on each boot.
