@@ -28,7 +28,7 @@
  			escape();
  		}
 +#endif
-+		s = "/var/spool";
++		s = "/opt/var/spool";
  		
  		cfg.home = xmalloc(strlen(s) + strlen(MIAUDIR) + 2);
  		xstrcpy(cfg.home, s);
