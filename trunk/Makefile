@@ -83,6 +83,8 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+        vim \
+        xmail
 
 # perl-spamassassin can't be downloaded: 404 not found
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
