@@ -92,7 +92,7 @@ PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
 $(PACKAGES) : directories
 
-$(PACKAGES_IPK) : directories
+$(PACKAGES_IPK) : directories ipkg-utils
 
 unslung: $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
