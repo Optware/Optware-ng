@@ -25,12 +25,12 @@ CROSS_PACKAGES = \
 	bash bind busybox bzflag bzip2 \
 	ccxstream classpath coreutils cpio ctorrent cups cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
-	ed elinks expat \
+	e2fsprogs ed elinks expat \
 	fetchmail file findutils flex \
 	gawk gconv-modules gdb gdbm gettext \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gzip \
-	imagemagick inetutils iptables ircd-hybrid \
+	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	less libbt libcurl libdb libevent libiconv libid3tag \
 	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 \
@@ -38,14 +38,14 @@ CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl \
-	patch pcre php pkgconfig popt portmap procps puppy \
-	rdate rsync \
-	screen sed strace stunnel sudo svn \
+	parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
+	rdate recordext rsync \
+	screen sed sm strace stunnel sudo svn \
 	tar tcpwrappers termcap torrent \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
 	wakelan wget-ssl which \
-	xinetd \
+	x11 xau xauth xdmcp xdpyinfo xext xextensions xinetd xmu xproto xt xtrans xtst \
 	zlib \
 	\
 	crosstool-native
@@ -53,23 +53,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	e2fsprogs \
-	parted proftpd \
-	recordext \
-	x11 \
-	xau \
-	xdmcp \
-	xdpyinfo \
-	xext \
-	xextensions \
-	xproto \
-	xtrans \
-	xtst \
-	ice \
-	sm \
-	xt \
-	xmu \
-	xauth \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
