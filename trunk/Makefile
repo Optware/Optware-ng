@@ -45,9 +45,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	xinetd \
 	zlib \
 
-# busybox has PATH_MAX define issue on native
 CROSS_PACKAGES = \
-	busybox \
 	freeradius \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft \
 	glib \
@@ -59,8 +57,10 @@ CROSS_PACKAGES = \
 	svn
 
 # appweb ships with x86 binaries which it requires during configure phase
+# busybox has PATH_MAX define issue on native
 CROSS_ONLY_PACKAGES = \
-	appweb
+	appweb \
+	busybox
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
