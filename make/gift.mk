@@ -131,12 +131,47 @@ gift: $(GIFT_BUILD_DIR)/src/.libs/giftd
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION): $(GIFT_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(GIFT_BUILD_DIR)/lib/libgift.pc $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/include/libgift/proto
+	install -m 644 $(GIFT_BUILD_DIR)/lib/list.h $(STAGING_DIR)/opt/include
+#	install -m 644 $(GIFT_BUILD_DIR)/lib/memory.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/list_lock.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/tree.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/array.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/tcpc.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/fdbuf.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/interface.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/conf.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/log.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/libgift.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/stopwatch.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/mime.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/giftconfig.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/platform.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/strobj.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/parse.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/event.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/file.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/list.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/dataset.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/network.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/fdbuf.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/lib/fdbuf.h $(STAGING_DIR)/opt/include/libgift
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/transfer_api.h $(STAGING_DIR)/opt/include/libgift/proto
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/share_hash.h $(STAGING_DIR)/opt/include/libgift/proto
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/share.h $(STAGING_DIR)/opt/include/libgift/proto
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/protocol.h $(STAGING_DIR)/opt/include/libgift/proto
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/protocol_ver.h $(STAGING_DIR)/opt/include/libgift/proto
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/if_event_api.h $(STAGING_DIR)/opt/include/libgift/proto
 	install -d $(STAGING_DIR)/opt/lib
+	install -m 644 $(GIFT_BUILD_DIR)/lib/libgift.pc $(STAGING_DIR)/opt/lib
 	install -m 644 $(GIFT_BUILD_DIR)/lib/.libs/libgift.so.$(GIFT_VERSION_LIB) $(STAGING_DIR)/opt/lib
+	install -m 644 $(GIFT_BUILD_DIR)/plugin/.libs/libgiftproto.so.$(GIFT_VERSION_LIB) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so.1
+	cd $(STAGING_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so.0
 	cd $(STAGING_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so
+	cd $(STAGING_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so.1
+	cd $(STAGING_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so.0
+	cd $(STAGING_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so
 
 gift-stage: $(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION)
 
