@@ -58,6 +58,7 @@ $(BASH_BUILD_DIR)/bash: $(BASH_BUILD_DIR)/.configured
 bash: termcap-stage $(BASH_BUILD_DIR)/bash
 
 $(BASH_IPK): $(BASH_BUILD_DIR)/bash
+	rm -rf $(BASH_IPK_DIR) $(BUILD_DIR)/bash_*_armeb.ipk
 	install -d $(BASH_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
 	install -d $(BASH_IPK_DIR)/opt/etc 
