@@ -59,7 +59,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	minicom sqlite
+	minicom sqlite nylon
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -117,10 +117,10 @@ WL500G_PACKAGES = \
 	gdb gdbm gift gzip \
 	hdparm \
 	inetutils \
-	less libgd libid3tag libol libogg libtool libvorbis \
+	less libgd libid3tag libevent libol libogg libtool libvorbis \
 	logrotate lua lzo \
 	miau muxsshssl \
-	ncurses ntpclient \
+	ncurses ntpclient nylon \
 	openssl \
 	pkgconfig popt postgresql procps proftpd puppy python \
 	rdate recordext rsync \
