@@ -114,6 +114,7 @@ mtr-unpack: $(MTR_BUILD_DIR)/.configured
 $(MTR_BUILD_DIR)/.built: $(MTR_BUILD_DIR)/.configured
 	rm -f $(MTR_BUILD_DIR)/.built
 	$(MAKE) -C $(MTR_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MTR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MTR_LDFLAGS)"
 	touch $(MTR_BUILD_DIR)/.built
