@@ -31,7 +31,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap freeradius puppy screen bind svn \
 	   m4 make patch vsftpd distcc libjpeg \
-	   tar gawk cpio findutils mc \
+	   tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff less nfs-utils
 
 PACKAGES_TO_BE_TESTED:= crosstool-native appweb
@@ -41,7 +41,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 
 PACKAGES_THAT_NEED_TO_BE_FIXED:= perl imagemagick 
 
-PACKAGES_FOR_DEVELOPERS:= coreutils
+PACKAGES_FOR_DEVELOPERS:= 
 
 WGET=wget --passive-ftp
 CVS=cvs
