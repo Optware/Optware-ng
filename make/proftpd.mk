@@ -19,16 +19,27 @@
 #
 # You should change all these variables to suit your package.
 #
+PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
 PROFTPD_VERSION=1.2.10
-PROFTPD_SOURCE=proftpd-$(PROFTPD_VERSION).tar.gz
-PROFTPD_DIR=proftpd-$(PROFTPD_VERSION)
+PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.gz
+PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=zcat
 
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=2
+PROFTPD_IPK_VERSION=3
+
+#
+# Control file info
+#
+PROFTPD_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+PROFTPD_DESCRIPTION=Highly configurable FTP server with SSL-TLS
+PROFTPD_SECTION=net
+PROFTPD_PRIORITY=optional
+PROFTPD_CONFLICTS=
+PROFTPD_DEPENDS=openssl
 
 #
 # PROFTPD_CONFFILES should be a list of user-editable files
@@ -60,6 +71,25 @@ PROFTPD_BUILD_DIR=$(BUILD_DIR)/proftpd
 PROFTPD_SOURCE_DIR=$(SOURCE_DIR)/proftpd
 PROFTPD_IPK_DIR=$(BUILD_DIR)/proftpd-$(PROFTPD_VERSION)-ipk
 PROFTPD_IPK=$(BUILD_DIR)/proftpd_$(PROFTPD_VERSION)-$(PROFTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# Automatically create a ipkg control file
+#
+$(PROFTPD_IPK_DIR)/CONTROL/control:
+	@install -d $(PROFTPD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: $(PROFTPD_NAME)" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PROFTPD_PRIORITY)" >>$@
+	@echo "Section: $(PROFTPD_SECTION)" >>$@
+	@echo "Version: $(PROFTPD_VERSION)-$(PROFTPD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PROFTPD_MAINTAINER)" >>$@
+	@echo "Source: $(PROFTPD_SITE)/$(PROFTPD_SOURCE)" >>$@
+	@echo "Description: $(PROFTPD_DESCRIPTION)" >>$@
+	@echo "Depends: $(PROFTPD_DEPENDS)" >>$@
+	@echo "Conflicts: $(PROFTPD_CONFLICTS)" >>$@
+
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -194,11 +224,10 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 644 $(PROFTPD_BUILD_DIR)/sample-configurations/virtual.conf $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	# Make directory in which to store keys
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/ftpd
-	# Install control files
-	install -d $(PROFTPD_IPK_DIR)/CONTROL
-	install -m 644 $(PROFTPD_SOURCE_DIR)/control $(PROFTPD_IPK_DIR)/CONTROL/control
-	install -m 644 $(PROFTPD_SOURCE_DIR)/postinst $(PROFTPD_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
+	# Install control file
+	make  $(PROFTPD_IPK_DIR)/CONTROL/control
+	install -m 755 $(PROFTPD_SOURCE_DIR)/postinst $(PROFTPD_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(PROFTPD_SOURCE_DIR)/prerm $(PROFTPD_IPK_DIR)/CONTROL/prerm
 	echo $(PROFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PROFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROFTPD_IPK_DIR)
 
