@@ -27,6 +27,7 @@ $(CVS_BUILD_DIR)/.source: $(DL_DIR)/$(CVS_SOURCE)
 
 $(CVS_BUILD_DIR)/.configured: $(CVS_BUILD_DIR)/.source
 	(cd $(CVS_BUILD_DIR); \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
