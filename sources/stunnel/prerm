@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/bin/killall miau
+/bin/killall stunnel
 
 # TODO: check if the /opt/etc/stunnel/stunnel.conf file is unmodified, and delete it if that is the case.
 
