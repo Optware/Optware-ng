@@ -111,8 +111,8 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PKGCONFIG_PATCHES) | patch -d $(BUILD_DIR)/$(PKGCONFIG_DIR) -p1
 	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(PKGCONFIG_BUILD_DIR)
-	autoreconf -i -v -f $(PKGCONFIG_BUILD_DIR) $(PKGCONFIG_BUILD_DIR)/glib-1.2.8
-	(cd $(PKGCONFIG_BUILD_DIR)/glib-1.2.8; aclocal -I .; autoconf)
+	(cd $(PKGCONFIG_BUILD_DIR); autoconf)
+	(cd $(PKGCONFIG_BUILD_DIR)/glib-1.2.8; aclocal-1.9 -I .; autoconf)
 	cp $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/arm.cache
 	cp $(PKGCONFIG_SOURCE_DIR)/glibconfig-sysdefs.h $(PKGCONFIG_BUILD_DIR)/glib-1.2.8
 	(cd $(PKGCONFIG_BUILD_DIR); \
