@@ -12,7 +12,7 @@ ZLIB_CFLAGS+= -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
 ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-1.1.4-ipk
-ZLIB_IPK=$(BUILD_DIR)/zlib_1.1.4-1_mipsel.ipk
+ZLIB_IPK=$(BUILD_DIR)/zlib_1.1.4-1_armeb.ipk
 
 $(DL_DIR)/$(ZLIB_SOURCE):
 	$(WGET) -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
@@ -67,10 +67,10 @@ zlib: $(TARGET_DIR)/lib/libz.so.1.1.4
 $(ZLIB_IPK): $(STAGING_DIR)/lib/libz.so.1.1.4
 	mkdir -p $(ZLIB_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/zlib.control $(ZLIB_IPK_DIR)/CONTROL/control
-	mkdir -p $(ZLIB_IPK_DIR)/lib
-	cp -dpf $(STAGING_DIR)/lib/libz.so* $(ZLIB_IPK_DIR)/lib;
-	-$(STRIP) --strip-unneeded $(ZLIB_IPK_DIR)/lib/libz.so*
-	touch -c $(ZLIB_IPK_DIR)/lib/libz.so.1.1.4
+	mkdir -p $(ZLIB_IPK_DIR)/opt/lib
+	cp -dpf $(STAGING_DIR)/lib/libz.so* $(ZLIB_IPK_DIR)/opt/lib;
+	-$(STRIP) --strip-unneeded $(ZLIB_IPK_DIR)/opt/lib/libz.so*
+	touch -c $(ZLIB_IPK_DIR)/opt/lib/libz.so.1.1.4
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
 
 zlib-ipk: $(ZLIB_IPK)
