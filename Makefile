@@ -40,6 +40,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
 
 WGET=wget --passive-ftp
+CVS=cvs
 
 # You must install the crosstool Linux Tool Chain.  See:
 # http://www.nslu2-linux.org/wiki/HowTo/CompileCrossTool
