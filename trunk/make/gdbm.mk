@@ -27,6 +27,7 @@ $(GDBM_DIR)/.source: $(DL_DIR)/$(GDBM_SOURCE)
 
 $(GDBM_DIR)/.configured: $(GDBM_DIR)/.source
 	(cd $(GDBM_DIR); \
+        export CC=$(TARGET_CC) ;\
 		./configure \
 		--host=arm-linux \
 		--prefix=$(STAGING_DIR) \
