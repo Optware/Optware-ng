@@ -10,7 +10,7 @@ DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
 
-DNSMASQ_IPK_VERSION=4
+DNSMASQ_IPK_VERSION=5
 
 DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch
 
@@ -41,6 +41,7 @@ dnsmasq: $(DNSMASQ_BUILD_DIR)/src/dnsmasq
 $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/src/dnsmasq
 	install -d $(DNSMASQ_IPK_DIR)/opt/sbin $(DNSMASQ_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(DNSMASQ_BUILD_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)/opt/sbin/dnsmasq
+	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example $(DNSMASQ_IPK_DIR)/opt/etc/dnsmasq.conf
 	install -m 755 $(DNSMASQ_SOURCE_DIR)/rc.dnsmasq $(DNSMASQ_IPK_DIR)/opt/etc/init.d/S56dnsmasq
 	install -d $(DNSMASQ_IPK_DIR)/CONTROL
 	install -m 644 $(DNSMASQ_SOURCE_DIR)/control $(DNSMASQ_IPK_DIR)/CONTROL/control
