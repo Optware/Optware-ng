@@ -26,17 +26,19 @@ $(GLIB_DIR)/.source: $(DL_DIR)/$(GLIB_SOURCE)
 	touch $(GLIB_DIR)/.source
 
 $(GLIB_DIR)/.configured: $(GLIB_DIR)/.source
-	cp $(SOURCE_DIR)/glib.cache $(GLIB_DIR)/arm.cache
+	cp $(SOURCE_DIR)/glib/glib.cache $(GLIB_DIR)/arm.cache
 	(cd $(GLIB_DIR); \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-    --cache-file=arm.cache \
+		--cache-file=arm.cache \
+		--disable-rebuilds \
+		--prefix=/opt \
 	);
 	touch $(GLIB_DIR)/.configured
 
 $(GLIB_IPK_DIR): $(GLIB_DIR)/.configured
-	$(MAKE) -C $(GLIB_DIR) CC=$(TARGET_CC) \
+	$(MAKE) -C $(GLIB_DIR) CC=$(TARGET_CC) CCLD=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
 
 
@@ -46,7 +48,7 @@ glib: $(GLIB_IPK_DIR)
 
 $(GLIB_IPK): $(GLIB_IPK_DIR)
 	mkdir -p $(GLIB_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/glib.control $(GLIB_IPK_DIR)/CONTROL/control
+	cp $(SOURCE_DIR)/glib/control $(GLIB_IPK_DIR)/CONTROL/control
 	mkdir -p $(GLIB_IPK_DIR)/opt/lib
 	cp $(GLIB_DIR)/gmodule/.libs/* $(GLIB_IPK_DIR)/opt/lib
 	cp $(GLIB_DIR)/gthread/.libs/* $(GLIB_IPK_DIR)/opt/lib
