@@ -25,6 +25,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	bash bison bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
+	emacs \
 	file findutils flex \
 	gawk gdbm grep \
 	imagemagick inetutils iptables \
@@ -102,6 +103,7 @@ GNU_HOST_NAME = armv5b-softfloat-linux
 GNU_TARGET_NAME = armv5b-softfloat-linux
 CROSS_CONFIGURATION = gcc-3.3.4-glibc-2.2.5
 TARGET_CROSS = /opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = /opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
 TARGET_LDFLAGS = -L/opt/lib
 TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain:
@@ -111,6 +113,7 @@ GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = armv5b-softfloat-linux
 CROSS_CONFIGURATION = gcc-3.3.4-glibc-2.2.5
 TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
 TARGET_LDFLAGS = 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: crosstool
