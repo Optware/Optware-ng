@@ -31,7 +31,16 @@ fi
 /bin/echo "ok"
 
 /bin/echo
-/bin/echo Please configure Postfix in /opt/etc/postfix/
-/bin/echo and start /opt/etc/init.d/S69postfix
+/bin/echo Please read the man-pages and docs carefully,
+/bin/echo -e "\t\$ ipkg install postfix-doc"
+/bin/echo -e "\t\$ less /opt/share/doc/postfix/readme/BASIC_CONFIGURATION_README"
+/bin/echo
+/bin/echo then configure postfix,
+/bin/echo -e "\t\$ vi /opt/etc/postfix/main.cf"
+/bin/echo -e "\t\$ vi /opt/etc/aliasas"
+/bin/echo -e "\t\$ newaliasas"
+/bin/echo
+/bin/echo and start the server
+/bin/echo -e "\t\$ /opt/etc/init.d/S69postfix"
 /bin/echo
 

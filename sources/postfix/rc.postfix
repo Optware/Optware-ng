@@ -2,8 +2,12 @@
 
 echo "(re)starting service postfix"
 
+#if [ -f "/opt/var/spool/postfix/pid/master.pid" ]; then
+#    /bin/kill -TERM `cat /opt/var/spool/postfix/pid/master.pid` 2>/dev/null
+#fi
+
 if [ -n "`pidof master`" ]; then
-    /opt/sbin/postfix -c /opt/etc/postfix stop
+    /opt/sbin/postfix -c /opt/etc/postfix stop > /dev/null 2>&1
 fi
 
 /opt/sbin/postfix -c /opt/etc/postfix start

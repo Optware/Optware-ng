@@ -96,10 +96,23 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_armeb.ipk
 	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
-#	install -d $(POSTFIX_IPK_DIR)/opt/etc/
-#	install -m 755 $(POSTFIX_SOURCE_DIR)/postfix.conf $(POSTFIX_IPK_DIR)/opt/etc/postfix.conf
+	install -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases
+	install -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
+	install -m 644 $(POSTFIX_SOURCE_DIR)/master.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/master.cf
+	install -d $(POSTFIX_IPK_DIR)/opt/lib/sasl2
+	install -m 644 $(POSTFIX_SOURCE_DIR)/smtpd.conf $(POSTFIX_IPK_DIR)/opt/lib/sasl2/smtpd.conf
 	install -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
+
+# Split into the different packages
+	rm -rf $(POSTFIX_IPK_DIR)-doc
+	install -d $(POSTFIX_IPK_DIR)-doc/opt
+	mv $(POSTFIX_IPK_DIR)/opt/man $(POSTFIX_IPK_DIR)-doc/opt
+	mv $(POSTFIX_IPK_DIR)/opt/share $(POSTFIX_IPK_DIR)-doc/opt
+	install -d $(POSTFIX_IPK_DIR)-doc/CONTROL
+	install -m 644 $(POSTFIX_SOURCE_DIR)/control-doc $(POSTFIX_IPK_DIR)-doc/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)-doc
+
 	install -d $(POSTFIX_IPK_DIR)/CONTROL
 	install -m 644 $(POSTFIX_SOURCE_DIR)/control $(POSTFIX_IPK_DIR)/CONTROL/control
 	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
