@@ -1,22 +1,48 @@
 #!/bin/sh
 
-echo "(re)starting service postfix"
-
-#if [ -f "/opt/var/spool/postfix/pid/master.pid" ]; then
-#    /bin/kill -TERM `cat /opt/var/spool/postfix/pid/master.pid` 2>/dev/null
-#fi
-
-if [ -n "`pidof master`" ]; then
-    /opt/sbin/postfix -c /opt/etc/postfix stop > /dev/null 2>&1
+if [ -z "$1" ] ; then
+    case `echo "$0" | /bin/sed 's/^.*\/\(.*\)/\1/g'` in
+	S??*) rc="start" ;;
+	K??*) rc="stop" ;;
+	*) rc="usage" ;;
+    esac
+else
+    rc="$1"
 fi
 
-/opt/sbin/postfix -c /opt/etc/postfix start
+case "$rc" in
+    start)
+	echo "starting service postfix"
+	
+	/opt/sbin/postfix -c /opt/etc/postfix start
 
-# waiting for qmgr
-( i=60
-  while [ -z "$(pidof qmgr)" -a $i -gt 0 ]; do
-	i=$(( $i - 1 ))
+	# waiting for qmgr
+	( i=60
+	    while [ -z "$(pidof qmgr)" -a $i -gt 0 ]; do
+		i=$(( $i - 1 ))
+		sleep 1
+	    done
+	    echo /opt/sbin/postfix flush
+	) > /dev/null 2>&1 &
+	;;
+    stop)
+	echo "stopping service postfix"
+	
+	#if [ -f "/opt/var/spool/postfix/pid/master.pid" ]; then
+	#    /bin/kill -TERM `cat /opt/var/spool/postfix/pid/master.pid` 2>/dev/null
+	#fi
+	
+	if [ -n "`pidof master`" ]; then
+	    /opt/sbin/postfix -c /opt/etc/postfix stop > /dev/null 2>&1
+	fi
+	;;
+    restart)
+	"$0" stop
 	sleep 1
-  done
-  echo /opt/sbin/postfix flush
-) > /dev/null 2>&1 &
+	"$0" start
+	;;
+    *)
+	echo "Usage: $0 (start|stop|restart|usage)"
+	;;
+esac
+

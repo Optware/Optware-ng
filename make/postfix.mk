@@ -90,14 +90,14 @@ postfix: $(POSTFIX_BUILD_DIR)/.built
 $(POSTFIX_BUILD_DIR)/.staged: $(POSTFIX_BUILD_DIR)/.built
 	rm -f $(POSTFIX_BUILD_DIR)/.staged
 #	$(MAKE) -C $(POSTFIX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	echo "The makefile target 'postfix-stage' is not available."
+	echo "Warning: the makefile target 'postfix-stage' is not available."
 	touch $(POSTFIX_BUILD_DIR)/.staged
 
 postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
 $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_armeb.ipk
-	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade
+	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade LD_LIBRARY_PATH=$(STAGING_LIB_DIR)
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
 	install -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases
 	install -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
@@ -106,6 +106,9 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	install -m 644 $(POSTFIX_SOURCE_DIR)/smtpd.conf $(POSTFIX_IPK_DIR)/opt/lib/sasl2/smtpd.conf
 	install -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
+	(cd $(POSTFIX_IPK_DIR)/opt/etc/init.d; \
+		ln -s S69postfix K31postfix \
+	)
 
 # Split into the different packages
 	rm -rf $(POSTFIX_IPK_DIR)-doc
