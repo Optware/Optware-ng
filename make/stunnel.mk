@@ -28,7 +28,14 @@ STUNNEL_UNZIP=zcat
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=4
+STUNNEL_IPK_VERSION=5
+
+#
+# STUNNEL_CONFFILES should be a list of user-editable files
+#
+STUNNEL_CONFFILES=/opt/etc/stunnel/stunnel.conf \
+		  /opt/etc/stunnel/stunnel-cert.cnf \
+		  /opt/etc/init.d/S68stunnel
 
 #
 # STUNNEL_PATCHES should list any patches, in the the order in
@@ -155,19 +162,17 @@ $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/bin/stunnel
 	install -d $(STUNNEL_IPK_DIR)/opt/lib
 	$(TARGET_STRIP) $(STUNNEL_BUILD_DIR)/src/.libs/libstunnel.so -o $(STUNNEL_IPK_DIR)/opt/lib/libstunnel.so
-#	install -d $(STUNNEL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(STUNNEL_SOURCE_DIR)/rc.stunnel $(STUNNEL_IPK_DIR)/opt/etc/init.d/S68stunnel
-	install -d $(STUNNEL_IPK_DIR)/opt/doc/stunnel
-### next one is the configuration for the creation of the server-certificate,
-### do not mix with stunnel.conf!!!
-	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.cnf $(STUNNEL_IPK_DIR)/opt/doc/stunnel/stunnel.cert-conf
-	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.conf-sample $(STUNNEL_IPK_DIR)/opt/doc/stunnel/stunnel.conf-sample
+	install -d $(STUNNEL_IPK_DIR)/opt/var/stunnel
+	install -d $(STUNNEL_IPK_DIR)/opt/etc/stunnel
+	install -m 644 $(STUNNEL_BUILD_DIR)/tools/stunnel.cnf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel-cert.cnf
+	install -m 644 $(STUNNEL_SOURCE_DIR)/stunnel.conf $(STUNNEL_IPK_DIR)/opt/etc/stunnel/stunnel.conf
 	install -d $(STUNNEL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(STUNNEL_SOURCE_DIR)/rc.stunnel $(STUNNEL_IPK_DIR)/opt/etc/init.d/S68stunnel
 	install -d $(STUNNEL_IPK_DIR)/CONTROL
 	install -m 644 $(STUNNEL_SOURCE_DIR)/control $(STUNNEL_IPK_DIR)/CONTROL/control
 	install -m 644 $(STUNNEL_SOURCE_DIR)/postinst $(STUNNEL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(STUNNEL_SOURCE_DIR)/prerm $(STUNNEL_IPK_DIR)/CONTROL/prerm
+	echo $(STUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(STUNNEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(STUNNEL_IPK_DIR)
 
 #
