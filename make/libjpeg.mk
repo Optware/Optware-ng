@@ -28,7 +28,7 @@ LIBJPEG_UNZIP=zcat
 #
 # LIBJPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBJPEG_IPK_VERSION=1
+LIBJPEG_IPK_VERSION=2
 
 #
 # LIBJPEG_PATCHES should list any patches, in the the order in
