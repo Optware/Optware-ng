@@ -91,7 +91,7 @@ giftcurs-source: $(DL_DIR)/$(GIFTCURS_SOURCE) $(GIFTCURS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFTCURS_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTCURS_SOURCE) $(GIFTCURS_PATCHES)
-	$(MAKE) gift-stage glib
+	$(MAKE) gift-stage glib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTCURS_DIR) $(GIFTCURS_BUILD_DIR)
 	$(GIFTCURS_UNZIP) $(DL_DIR)/$(GIFTCURS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GIFTCURS_PATCHES) | patch -d $(BUILD_DIR)/$(GIFTCURS_DIR) -p1
