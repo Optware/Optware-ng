@@ -14,14 +14,19 @@ GDBM_SOURCE=$(GDBM).tar.gz
 GDBM_UNZIP=zcat
 ZLIB_CFLAGS= $(TARGET_CFLAGS) -fPIC
 
+GDBM_PATCH:=$(SOURCE_DIR)/gdbm.patch
+
 GDBM_IPK=$(BUILD_DIR)/gdbm_$(GDBM_VERSION)-1_armeb.ipk
 GDBM_IPK_DIR=$(BUILD_DIR)/gdbm-$(GDBM_VERSION)-ipk
 
 $(DL_DIR)/$(GDBM_SOURCE):
 	$(WGET) -P $(DL_DIR) $(GDBM_SITE)/$(GDBM_SOURCE)
 
+gdbm-source: $(DL_DIR)/$(GDBM_SOURCE) $(GDBM_PATCH)
+
 $(GDBM_DIR)/.source: $(DL_DIR)/$(GDBM_SOURCE)
 	$(GDBM_UNZIP) $(DL_DIR)/$(GDBM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(GDBM_PATCH) | patch -d $(BUILD_DIR)/$(GDBM) -p1
 	mv $(BUILD_DIR)/$(GDBM) $(GDBM_DIR)
 	touch $(GDBM_DIR)/.source
 
