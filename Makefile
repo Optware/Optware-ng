@@ -84,6 +84,13 @@ all: directories toolchain packages
 native:
 	$(MAKE) PACKAGES="$(NATIVE_PACKAGES)" all
 
+native-upload:
+	mkdir -p native
+	rsync -avr nslu2:/src/unslung/packages/ native/
+	( cd native ; $(IPKG_MAKE_INDEX) . > Packages; gzip -c Packages > Packages.gz )
+	rsync -avr native/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+	rsync -avr native/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+
 # Common tools which may need overriding
 CVS=cvs
 SUDO=sudo
