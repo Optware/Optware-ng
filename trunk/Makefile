@@ -27,7 +27,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
-	gawk gdbm grep gzip \
+	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables \
 	jove \
 	less libcurl libdb libevent libid3tag libjpeg \
@@ -50,7 +50,7 @@ CROSS_ONLY_PACKAGES = \
 	dhcp \
 	freeradius \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft \
-	glib groff \
+	glib \
 	ircd-hybrid \
 	libbt libogg libvorbis libpcap logrotate \
 	mdadm mt-daapd \
@@ -93,7 +93,7 @@ native:
 
 native-upload:
 	mkdir -p native
-	rsync -avr nslu2:/src/unslung/packages/ native/
+	rsync -avr --delete nslu2:/src/unslung/packages/ native/
 	( cd native ; $(IPKG_MAKE_INDEX) . > Packages; gzip -c Packages > Packages.gz )
 	rsync -avr native/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
 	rsync -avr native/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
