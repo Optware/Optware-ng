@@ -69,5 +69,5 @@ busybox-ipk: $(BUSYBOX_IPK)
 busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_BUILD_DIR) clean
 
-busybox-dirclean: busybox-clean
-	rm -rf $(BUSYBOX_BUILD_DIR) $(BUSYBOX_IPK_DIR) $(BUSYBOX_IPK)
+busybox-dirclean:
+	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(BUSYBOX_BUILD_DIR) $(BUSYBOX_IPK_DIR) $(BUSYBOX_IPK)

@@ -88,5 +88,5 @@ openssh-ipk: openssl-stage $(OPENSSH_IPK)
 openssh-clean: 
 	-$(MAKE) -C $(OPENSSH_BUILD_DIR) clean
 
-openssh-dirclean: openssh-clean
+openssh-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) $(OPENSSH_IPK_DIR) $(OPENSSH_IPK)

@@ -68,6 +68,6 @@ gdbm-ipk: $(GDBM_IPK)
 gdbm-clean:
 	-$(MAKE) -C $(GDBM_BUILD_DIR) clean
 
-gdbm-dirclean: gdbm-clean
+gdbm-dirclean:
 	rm -rf $(BUILD_DIR)/$(GDBM_DIR) $(GDBM_BUILD_DIR) $(GDBM_IPK_DIR) $(GDBM_IPK)
 

@@ -72,5 +72,5 @@ bash-ipk: $(BASH_IPK)
 bash-clean:
 	-$(MAKE) -C $(BASH_BUILD_DIR) clean
 
-bash-dirclean: bash-clean
-	rm -rf $(BASH_BUILD_DIR) $(BASH_IPK_DIR) $(BASH_IPK)
+bash-dirclean:
+	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR) $(BASH_IPK_DIR) $(BASH_IPK)

@@ -131,5 +131,5 @@ ccxstream-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-ccxstream-dirclean: ccxstream-clean
+ccxstream-dirclean:
 	rm -rf $(BUILD_DIR)/$(CCXSTREAM_DIR) $(CCXSTREAM_BUILD_DIR) $(CCXSTREAM_IPK_DIR) $(CCXSTREAM_IPK)

@@ -75,4 +75,4 @@ bison-distclean:
 	-$(MAKE) -C $(BISON_DIR) distclean
 
 bison-dirclean:
-	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR) $(BISON_IPK_DIR) $(BISON_IPK)
+	rm -rf $(BUILD_DIR)/bison-$(BISON_VERSION) $(BISON_DIR) $(BISON_BUILD_DIR) $(BISON_IPK_DIR) $(BISON_IPK)

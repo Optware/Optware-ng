@@ -89,6 +89,6 @@ mt-daapd-ipk: $(MT_DAAPD_IPK)
 mt-daapd-clean:
 	-$(MAKE) -C $(MT_DAAPD_BUILD_DIR) clean
 
-mt-daapd-dirclean: mt-daapd-clean
-	rm -rf $(MT_DAAPD_BUILD_DIR) $(MT_DAAPD_IPK_DIR) $(MT_DAAPD_IPK)
+mt-daapd-dirclean:
+	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR) $(MT_DAAPD_IPK_DIR) $(MT_DAAPD_IPK)
 

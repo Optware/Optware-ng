@@ -80,5 +80,5 @@ dropbear-ipk: $(DROPBEAR_IPK)
 dropbear-clean:
 	-make -C $(DROPBEAR_BUILD_DIR) clean
 
-dropbear-dirclean: dropbear-clean
-	rm -rf $(DROPBEAR_BUILD_DIR) $(DROPBEAR_IPK_DIR) $(DROPBEAR_IPK)
+dropbear-dirclean:
+	rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR) $(DROPBEAR_BUILD_DIR) $(DROPBEAR_IPK_DIR) $(DROPBEAR_IPK)

@@ -52,6 +52,6 @@ vdr-mediamvp-clean:
 	-$(MAKE) -C $(VDR_MEDIAMVP_DIR) uninstall
 	-$(MAKE) -C $(VDR_MEDIAMVP_DIR) clean
 
-vdr-mediamvp-dirclean: vdr-mediamvp-clean
-	rm -rf $(VDR_MEDIAMVP_DIR) $(VDR_MEDIAMVP_IPK_DIR) $(VDR_MEDIAMVP_IPK)
+vdr-mediamvp-dirclean:
+	rm -rf $(BUILD_DIR)/$(VDR_MEDIAMVP) $(VDR_MEDIAMVP_DIR) $(VDR_MEDIAMVP_IPK_DIR) $(VDR_MEDIAMVP_IPK)
 

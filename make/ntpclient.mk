@@ -53,5 +53,5 @@ ntpclient-ipk: $(NTPCLIENT_IPK)
 ntpclient-clean:
 	-$(MAKE) -C $(NTPCLIENT_BUILD_DIR) clean
 
-ntpclient-dirclean: ntpclient-clean
+ntpclient-dirclean:
 	rm -rf $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR) $(NTPCLIENT_IPK_DIR) $(NTPCLIENT_IPK)
