@@ -2,6 +2,6 @@
 
 /bin/killall miau
 
-# TODO: check if the miaurc file is unmodified, and delete it if that is the case.
+# TODO: check if the /opt/etc/miau.conf file is unmodified, and delete it if that is the case.
 
-echo "ipkg_remove: Warning: Not removing /root/.miau/miaurc"
+echo "ipkg_remove: Warning: Not removing /opt/etc/miau.conf"
