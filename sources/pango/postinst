@@ -1,0 +1,5 @@
+#!/bin/sh
+
+### configure pango modules
+rm -f /opt/etc/pango/pango.modules
+/opt/bin/pango-querymodules > /opt/etc/pango/pango.modules
