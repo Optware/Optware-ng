@@ -24,11 +24,17 @@ FETCHMAIL_VERSION=6.2.5
 FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.gz
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
 FETCHMAIL_UNZIP=zcat
+FETCHMAIL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
+FETCHMAIL_DESCRIPTION=A remote mail retrieval and forwarding utility
+FETCHMAIL_SECTION=util
+FETCHMAIL_PRIORITY=optional
+FETCHMAIL_DEPENDS=
+FETCHMAIL_CONFLICTS=
 
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=3
+FETCHMAIL_IPK_VERSION=4
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
@@ -142,6 +148,24 @@ $(FETCHMAIL_BUILD_DIR)/.staged: $(FETCHMAIL_BUILD_DIR)/.built
 fetchmail-stage: $(FETCHMAIL_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/fetchmail
+#
+$(FETCHMAIL_IPK_DIR)/CONTROL/control:
+	@install -d $(FETCHMAIL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: fetchmail" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FETCHMAIL_PRIORITY)" >>$@
+	@echo "Section: $(FETCHMAIL_SECTION)" >>$@
+	@echo "Version: $(FETCHMAIL_VERSION)-$(FETCHMAIL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FETCHMAIL_MAINTAINER)" >>$@
+	@echo "Source: $(FETCHMAIL_SITE)/$(FETCHMAIL_SOURCE)" >>$@
+	@echo "Description: $(FETCHMAIL_DESCRIPTION)" >>$@
+	@echo "Depends: $(FETCHMAIL_DEPENDS)" >>$@
+	@echo "Conflicts: $(FETCHMAIL_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(FETCHMAIL_IPK_DIR)/opt/sbin or $(FETCHMAIL_IPK_DIR)/opt/bin
@@ -161,8 +185,7 @@ $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
 	install -m 600 $(FETCHMAIL_SOURCE_DIR)/fetchmailrc $(FETCHMAIL_IPK_DIR)/opt/etc/fetchmailrc
 	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(FETCHMAIL_SOURCE_DIR)/rc.fetchmail $(FETCHMAIL_IPK_DIR)/opt/etc/init.d/S52fetchmail
-	install -d $(FETCHMAIL_IPK_DIR)/CONTROL
-	install -m 644 $(FETCHMAIL_SOURCE_DIR)/control $(FETCHMAIL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FETCHMAIL_IPK_DIR)/CONTROL/control
 	install -m 644 $(FETCHMAIL_SOURCE_DIR)/postinst $(FETCHMAIL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FETCHMAIL_SOURCE_DIR)/prerm $(FETCHMAIL_IPK_DIR)/CONTROL/prerm
 	echo $(FETCHMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(FETCHMAIL_IPK_DIR)/CONTROL/conffiles

@@ -24,11 +24,17 @@ DIFFUTILS_VERSION=2.8.1
 DIFFUTILS_SOURCE=diffutils-$(DIFFUTILS_VERSION).tar.gz
 DIFFUTILS_DIR=diffutils-$(DIFFUTILS_VERSION)
 DIFFUTILS_UNZIP=zcat
+DIFFUTILS_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+DIFFUTILS_DESCRIPTION=contains gnu diff, cmp, sdiff and diff3 to display differences between and among text files
+DIFFUTILS_SECTION=util
+DIFFUTILS_PRIORITY=optional
+DIFFUTILS_DEPENDS=
+DIFFUTILS_CONFLICTS=busybox
 
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=2
+DIFFUTILS_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional
@@ -129,6 +135,24 @@ $(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION): $(DIFFUTILS_BUILD_D
 diffutils-stage: $(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/diffutils
+#
+$(DIFFUTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(DIFFUTILS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: diffutils" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DIFFUTILS_PRIORITY)" >>$@
+	@echo "Section: $(DIFFUTILS_SECTION)" >>$@
+	@echo "Version: $(DIFFUTILS_VERSION)-$(DIFFUTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DIFFUTILS_MAINTAINER)" >>$@
+	@echo "Source: $(DIFFUTILS_SITE)/$(DIFFUTILS_SOURCE)" >>$@
+	@echo "Description: $(DIFFUTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(DIFFUTILS_DEPENDS)" >>$@
+	@echo "Conflicts: $(DIFFUTILS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(DIFFUTILS_IPK_DIR)/opt/sbin or $(DIFFUTILS_IPK_DIR)/opt/bin
@@ -147,8 +171,7 @@ $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff3
 	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/sdiff
-	install -d $(DIFFUTILS_IPK_DIR)/CONTROL
-	install -m 644 $(DIFFUTILS_SOURCE_DIR)/control $(DIFFUTILS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(DIFFUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIFFUTILS_IPK_DIR)
 
 #
