@@ -124,7 +124,7 @@ WL500G_PACKAGES = \
 	openssl \
 	pkgconfig popt postgresql procps proftpd puppy python \
 	rdate recordext rsync \
-	strace stunnel syslog-ng \
+	sqlite strace stunnel syslog-ng \
 	tar tcpdump termcap ttf-bitstream-vera \
 	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xproto xtrans \
