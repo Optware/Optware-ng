@@ -306,8 +306,8 @@ else
 	rsync -vrlt packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
 endif
 else
-	rsync -vrlt packages/*.ipk root@wl500g:/tmp/harddisk/ipkg/
-	rsync -vrlt packages/      root@wl500g:/tmp/harddisk/ipkg/
+	rsync -vrlt packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/wl500g
+	rsync -vrlt packages/      unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/wl500g
 endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
