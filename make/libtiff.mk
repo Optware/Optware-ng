@@ -209,7 +209,7 @@ $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(LIBTIFF_IPK_DIR)/opt/include
 
 	$(TARGET_STRIP) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.a
-	$(TARGET_STRIP) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.$(LIBTIFF_VERSION)
+	$(TARGET_STRIP) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
 
 #	$(TARGET_STRIP) $(LIBTIFF_BUILD_DIR)/libtiff -o $(LIBTIFF_IPK_DIR)/opt/bin/libtiff
 	install -d $(LIBTIFF_IPK_DIR)/CONTROL
