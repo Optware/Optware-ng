@@ -85,6 +85,18 @@ $(APACHE_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(APACHE_DESCRIPTION)" >>$@
 	@echo "Depends: $(APACHE_DEPENDS)" >>$@
 
+$(APACHE_IPK_DIR)-manual/CONTROL/control:
+	@install -d $(APACHE_IPK_DIR)-manual/CONTROL
+	@rm -f $@
+	@echo "Package: apache-manual" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(APACHE_PRIORITY)" >>$@
+	@echo "Section: $(APACHE_SECTION)" >>$@
+	@echo "Version: $(APACHE_VERSION)-$(APACHE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(APACHE_MAINTAINER)" >>$@
+	@echo "Source: $(APACHE_SITE)/$(APACHE_SOURCE)" >>$@
+	@echo "Description: HTML manuals for apache" >>$@
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -226,6 +238,10 @@ $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
 	install -m 755 $(APACHE_SOURCE_DIR)/postinst $(APACHE_IPK_DIR)/CONTROL/postinst
 	echo $(APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(APACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_IPK_DIR)
+	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR)-manual installbuilddir=/opt/share/apache2/build install-man
+	rm -rf $(APACHE_IPK_DIR)-manual/opt/man
+	$(MAKE) $(APACHE_IPK_DIR)-manual/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_IPK_DIR)-manual
 
 #
 # This is called from the top level makefile to create the IPK file.
