@@ -44,7 +44,7 @@ TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSCODE_CPPFLAGS=-DO_LARGEFILE -DSYS_BSD
+TRANSCODE_CPPFLAGS=-DO_LARGEFILE -DSYS_BSD -I$(STAGING_DIR)/opt/include/freetype2
 TRANSCODE_LDFLAGS=
 
 #
@@ -91,13 +91,14 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
-	$(MAKE) ffmpeg-stage lame-stage
+	$(MAKE) ffmpeg-stage lame-stage freetype-stage libdvdread-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TRANSCODE_PATCHES) | patch -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1
 	mv $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	(cd $(TRANSCODE_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
+		FT2_CONFIG="$(STAGING_DIR)/opt/bin/freetype-config";export FT2_CONFIG; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
@@ -139,10 +140,11 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 		--with-gtk-libs=$(STAGING_DIR)/opt \
 		--with-imagemagick-libs=$(STAGING_DIR)/opt \
 		--with-libiconv-libs=$(STAGING_DIR)/opt \
+		--with-ft-exec-prefix=$(STAGING_DIR)/opt \
+		--with-ft-prefix=$(STAGING_DIR)/opt \
+		--disable-freetypetest \
 		--enable-ogg \
 		--enable-vorbis \
-		--disable-libdvdread \
-		--disable-freetype2 \
 		--prefix=/opt \
 		--disable-nls \
 		; sed -i 's/#define malloc rpl_malloc/\/* #define malloc rpl_malloc *\//' $(TRANSCODE_BUILD_DIR)/config.h \
@@ -156,7 +158,7 @@ transcode-unpack: $(TRANSCODE_BUILD_DIR)/.configured
 #
 $(TRANSCODE_BUILD_DIR)/.built: $(TRANSCODE_BUILD_DIR)/.configured
 	rm -f $(TRANSCODE_BUILD_DIR)/.built
-#	$(MAKE) 'CFLAGS=-Umalloc' -C $(TRANSCODE_BUILD_DIR)
+#	$(MAKE) 'CFLAGS=-I$(STAGING_DIR)/opt/include/freetype2' -C $(TRANSCODE_BUILD_DIR)
 	$(MAKE) -C $(TRANSCODE_BUILD_DIR)
 	touch $(TRANSCODE_BUILD_DIR)/.built
 
@@ -221,6 +223,7 @@ $(TRANSCODE_IPK): $(TRANSCODE_BUILD_DIR)/.built
 	mv $(GNU_TARGET_NAME)-tcmodinfo.1 tcmodinfo.1; \
 	mv $(GNU_TARGET_NAME)-tcprobe.1 tcprobe.1; \
 	mv $(GNU_TARGET_NAME)-tcscan.1 tcscan.1; \
+	mv $(GNU_TARGET_NAME)-tcpvmexportd.1 tcpvmexportd.1; \
 	mv $(GNU_TARGET_NAME)-tcxmlcheck.1 tcxmlcheck.1; \
 	mv $(GNU_TARGET_NAME)-transcode.1 transcode.1; 
 	cd $(TRANSCODE_IPK_DIR)/opt/lib/transcode; \
