@@ -24,7 +24,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   dnsmasq openssl openssh ntpclient \
 	   sudo rsync rdate grep jove lsof \
 	   portmap nfs-server flex inetutils \
-	   gdbm libid3tag mt-daapd unfs3 bison cvs \
+	   gdbm libid3tag mt-daapd unfs3 cvs \
 	   ncurses ircd-hybrid procps ntp popt \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano ccxstream \
@@ -41,7 +41,7 @@ PACKAGES_TO_BE_TESTED:= crosstool-native
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file nethack scponly tcpdump nload nmap
+PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file nethack scponly tcpdump nload nmap bison
 
 PACKAGES_FOR_DEVELOPERS:= 
 
