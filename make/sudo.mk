@@ -29,6 +29,7 @@ $(SUDO_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCH)
 	mv $(BUILD_DIR)/$(SUDO) $(SUDO_DIR)
 	patch -d $(SUDO_DIR) -p1 < $(SUDO_PATCH)
 	cd $(SUDO_DIR) && \
+		$(TARGET_CONFIGURE_OPTS) \
 		./configure \
 			--host=$(GNU_TARGET_NAME) \
 			--target=$(GNU_TARGET_NAME) \
