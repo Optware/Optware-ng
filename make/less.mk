@@ -9,11 +9,17 @@ LESS_VERSION=381
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
+LESS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LESS_DESCRIPTION=Less file browser
+LESS_SECTION=utilities
+LESS_PRIORITY=optional
+LESS_DEPENDS=ncurses
+LESS_CONFLICTS=
 
 #
 # LESS_IPK_VERSION should be incremented when the ipk changes.
 #
-LESS_IPK_VERSION=1
+LESS_IPK_VERSION=2
 
 #
 # LESS_PATCHES should list any patches, in the the order in
@@ -106,6 +112,24 @@ $(LESS_BUILD_DIR)/less: $(LESS_BUILD_DIR)/.configured
 less: $(LESS_BUILD_DIR)/less
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/less
+#
+$(LESS_IPK_DIR)/CONTROL/control:
+	@install -d $(LESS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: less" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LESS_PRIORITY)" >>$@
+	@echo "Section: $(LESS_SECTION)" >>$@
+	@echo "Version: $(LESS_VERSION)-$(LESS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LESS_MAINTAINER)" >>$@
+	@echo "Source: $(LESS_SITE)/$(LESS_SOURCE)" >>$@
+	@echo "Description: $(LESS_DESCRIPTION)" >>$@
+	@echo "Depends: $(LESS_DEPENDS)" >>$@
+	@echo "Conflicts: $(LESS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LESS_IPK_DIR)/opt/sbin or $(LESS_IPK_DIR)/opt/bin
@@ -121,8 +145,7 @@ $(LESS_IPK): $(LESS_BUILD_DIR)/less
 	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_$(TARGET_ARCH).ipk
 	install -d $(LESS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less
-	install -d $(LESS_IPK_DIR)/CONTROL
-	install -m 644 $(LESS_SOURCE_DIR)/control $(LESS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LESS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LESS_IPK_DIR)
 
 #

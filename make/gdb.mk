@@ -24,11 +24,17 @@ GDB_VERSION=6.3
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.bz2
 GDB_DIR=gdb-$(GDB_VERSION)
 GDB_UNZIP=bzcat
+GDB_MAINTAINER=Steve Henson <snhenson@gmail.com>
+GDB_DESCRIPTION=gdb is the standard GNU debugger
+GDB_SECTION=utility
+GDB_PRIORITY=optional
+GDB_DEPENDS=termcap
+GDB_CONFLICTS=
 
 #
 # GDB_IPK_VERSION should be incremented when the ipk changes.
 #
-GDB_IPK_VERSION=1
+GDB_IPK_VERSION=2
 
 #
 # GDB_CONFFILES should be a list of user-editable files
@@ -140,7 +146,7 @@ $(GDB_BUILD_DIR)/.built: $(GDB_BUILD_DIR)/.configured
 	bash_cv_func_sigsetjmp=present \
 	bash_cv_must_reinstall_sighandlers=no \
 	bash_cv_func_strcoll_broken=no \
- 	bash_cv_have_mbstate_t=yes \
+	bash_cv_have_mbstate_t=yes \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(GDB_LDFLAGS)" 
 	touch $(GDB_BUILD_DIR)/.built
@@ -159,6 +165,24 @@ gdb: $(GDB_BUILD_DIR)/.built
 #	touch $(GDB_BUILD_DIR)/.staged
 
 #gdb-stage: $(GDB_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gdb
+#
+$(GDB_IPK_DIR)/CONTROL/control:
+	@install -d $(GDB_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gdb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GDB_PRIORITY)" >>$@
+	@echo "Section: $(GDB_SECTION)" >>$@
+	@echo "Version: $(GDB_VERSION)-$(GDB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GDB_MAINTAINER)" >>$@
+	@echo "Source: $(GDB_SITE)/$(GDB_SOURCE)" >>$@
+	@echo "Description: $(GDB_DESCRIPTION)" >>$@
+	@echo "Depends: $(GDB_DEPENDS)" >>$@
+	@echo "Conflicts: $(GDB_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -190,8 +214,7 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 #	install -m 644 $(GDB_SOURCE_DIR)/gdb.conf $(GDB_IPK_DIR)/opt/etc/gdb.conf
 #	install -d $(GDB_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(GDB_SOURCE_DIR)/rc.gdb $(GDB_IPK_DIR)/opt/etc/init.d/SXXgdb
-	install -d $(GDB_IPK_DIR)/CONTROL
-	install -m 644 $(GDB_SOURCE_DIR)/control $(GDB_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GDB_IPK_DIR)/CONTROL/control
 #	install -m 644 $(GDB_SOURCE_DIR)/postinst $(GDB_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(GDB_SOURCE_DIR)/prerm $(GDB_IPK_DIR)/CONTROL/prerm
 #	echo $(GDB_CONFFILES) | sed -e 's/ /\n/g' > $(GDB_IPK_DIR)/CONTROL/conffiles

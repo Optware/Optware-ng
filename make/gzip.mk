@@ -24,11 +24,17 @@ GZIP_VERSION=1.2.4
 GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.gz
 GZIP_DIR=gzip-$(GZIP_VERSION)
 GZIP_UNZIP=zcat
+GZIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+GZIP_DESCRIPTION=GNU Zip data compression program
+GZIP_SECTION=compression
+GZIP_PRIORITY=optional
+GZIP_DEPENDS=
+GZIP_CONFLICTS=
 
 #
 # GZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-GZIP_IPK_VERSION=1
+GZIP_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -113,6 +119,24 @@ $(GZIP_BUILD_DIR)/.built: $(GZIP_BUILD_DIR)/.configured
 gzip: $(GZIP_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gzip
+#
+$(GZIP_IPK_DIR)/CONTROL/control:
+	@install -d $(GZIP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gzip" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GZIP_PRIORITY)" >>$@
+	@echo "Section: $(GZIP_SECTION)" >>$@
+	@echo "Version: $(GZIP_VERSION)-$(GZIP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GZIP_MAINTAINER)" >>$@
+	@echo "Source: $(GZIP_SITE)/$(GZIP_SOURCE)" >>$@
+	@echo "Description: $(GZIP_DESCRIPTION)" >>$@
+	@echo "Depends: $(GZIP_DEPENDS)" >>$@
+	@echo "Conflicts: $(GZIP_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GZIP_IPK_DIR)/opt/sbin or $(GZIP_IPK_DIR)/opt/bin
@@ -131,8 +155,7 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	install -d $(GZIP_IPK_DIR)/opt/info
 	install -d $(GZIP_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)/opt install
-	install -d $(GZIP_IPK_DIR)/CONTROL
-	install -m 644 $(GZIP_SOURCE_DIR)/control $(GZIP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
 	echo $(GZIP_CONFFILES) | sed -e 's/ /\n/g' > $(GZIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GZIP_IPK_DIR)
 
