@@ -27,7 +27,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
-	gawk gdbm gettext grep groff gzip \
+	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	less libbt libcurl libdb libevent libiconv libid3tag \
@@ -35,7 +35,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm miau mtr mutt \
 	nail nano ncftp ncurses nload nmap ntp ntpclient \
 	openssh openssl \
-	patch pkgconfig portmap procps puppy \
+	patch portmap procps puppy \
 	rsync \
 	screen sed strace stunnel sudo \
 	tar tcpwrappers termcap torrent \
@@ -55,12 +55,15 @@ NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
 # bzflag actually builds native, but it takes 11 hours
 # classpath requires a java compiler
 # metalog may compile native - don't have working native build support (bob_tm)
+# pkgconfig fails native during configure
 CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox \
 	bzflag \
 	classpath \
-	metalog
+	gettext \
+	metalog \
+	pkgconfig
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
