@@ -68,6 +68,7 @@ CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 # rsnapshot depends on perl
 # squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
+# vim probably just needs configure work
 NATIVE_PACKAGES = \
 	autoconf \
 	bison \
@@ -82,17 +83,16 @@ NATIVE_PACKAGES = \
 	rsnapshot \
 	squid \
 	samba \
+	vim \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# asterisk can't be downloaded, it's source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
-# vim won't compile: "vim.h:40: error: parse error before ':' token"
+# asterisk can't be downloaded, its source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
 # perl-spamassassin can't be downloaded: 404 not found
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	asterisk \
-        vim \
 	perl-spamassassin \
 	nethack scponly dump gkrellm clamav freeradius
 
