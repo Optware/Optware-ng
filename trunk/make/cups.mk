@@ -32,7 +32,7 @@ CUPS_IPK_VERSION=4
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
-CUPS_CONFFILES=/opt/etc/cups.conf /opt/etc/printers.conf
+CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
