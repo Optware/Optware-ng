@@ -80,6 +80,8 @@ NATIVE_PACKAGES = \
 # postfix's makefile runs executables it has built.
 # perl-modules are dependent of perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	perl-db-file \
+	perl-dbi \
 
 # cyrus-imapd fails when compiling the perl stuff
 # postfix fails when packaging
