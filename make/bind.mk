@@ -62,8 +62,8 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	rm -rf $(BIND_IPK_DIR) $(BIND_IPK)
 	$(MAKE) -C $(BIND_BUILD_DIR) DESTDIR=$(BIND_IPK_DIR) install
 	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/lib/*.so.*
-	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/bin/*
-	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/sbin/*
+	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/bin/*
+	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/sbin/*
 	rm -rf $(BIND_IPK_DIR)/opt/{man,include}
 	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(BIND_IPK_DIR)/opt/etc/init.d
