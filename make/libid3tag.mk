@@ -43,7 +43,7 @@ libid3tag-headers: $(STAGING_DIR)/lib/libid3tag.a
 
 libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 
-$(LIBID3TAG_IPK): lidid3tag
+$(LIBID3TAG_IPK): libid3tag
 	mkdir -p $(LIBID3TAG_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libid3tag.control $(LIBID3TAG_IPK_DIR)/CONTROL/control
 	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/include
