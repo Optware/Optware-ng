@@ -25,7 +25,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	bash bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
-	elinks expat \
+	ed elinks expat \
 	fetchmail file findutils flex \
 	gawk gdbm grep gzip \
 	imagemagick inetutils iptables \
