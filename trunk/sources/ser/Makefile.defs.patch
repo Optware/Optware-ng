@@ -1,28 +1,14 @@
---- ser-0.8.14/Makefile.defs~	2005-03-18 20:14:49.000000000 -0800
-+++ ser-0.8.14/Makefile.defs	2005-03-18 20:18:40.000000000 -0800
-@@ -53,7 +53,7 @@
- RELEASE=$(VERSION).$(PATCHLEVEL).$(SUBLEVEL)$(EXTRAVERSION)
- OS = $(shell uname -s | sed -e s/SunOS/solaris/ | tr "[A-Z]" "[a-z]")
- ARCH = $(shell uname -m |sed -e s/i.86/i386/ -e s/sun4u/sparc64/  \
--			-e s/armv4l/arm/ -e "s/Power Macintosh/ppc/" )
-+			-e s/armv5b/arm/ -e "s/Power Macintosh/ppc/" )
- OSREL = $(shell uname -r)
- 
- # TLS support
-@@ -520,11 +520,11 @@
+--- ser-0.8.14/Makefile.defs~	2005-03-28 15:00:38.789566896 -0800
++++ ser-0.8.14/Makefile.defs	2005-03-28 15:02:47.044069248 -0800
+@@ -520,7 +520,7 @@
  		# if gcc 
  ifeq		($(CC_NAME), gcc)
  				#common stuff
 -				CFLAGS=-O9 -funroll-loops  -Wcast-align $(PROFILE) \
-+				CFLAGS=-Os -Wcast-align $(PROFILE) \
++				CFLAGS=-Os -mcpu=xscale -Wcast-align $(PROFILE) \
  					-Wall   \
  			#if gcc 3.0
  ifeq			($(CC_SHORTVER), 3.0)
--					CFLAGS+= -mcpu=strongarm1100
-+					CFLAGS+= -mcpu=xscale
- 							#-mcpu=athlon
- else
- ifeq			($(CC_SHORTVER), 2.9x) #older gcc version (2.9[1-5])
 @@ -579,6 +579,7 @@
  
  
