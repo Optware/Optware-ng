@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 IMAGEMAGICK_SITE=http://www.imagemagick.net/download/
-IMAGEMAGICK_VERSION=6.1.6
-IMAGEMAGICK_REV=6
+IMAGEMAGICK_VERSION=6.1.7
+IMAGEMAGICK_REV=0
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
@@ -29,7 +29,7 @@ IMAGEMAGICK_UNZIP=zcat
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=1
+IMAGEMAGICK_IPK_VERSION=2
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
