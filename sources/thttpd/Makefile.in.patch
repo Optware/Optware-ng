@@ -1,6 +1,5 @@
-diff -urN thttpd/Makefile.in thttpd-patched/Makefile.in
 --- thttpd/Makefile.in	Tue Apr  2 21:49:35 2002
-+++ thttpd-patched/Makefile.in	Tue Apr  5 12:14:14 2005
++++ thttpd-patched/Makefile.in	Wed Apr  6 02:24:46 2005
 @@ -99,9 +99,10 @@
  	    cd $$i ; \
  	    pwd ; \
@@ -15,7 +14,20 @@ diff -urN thttpd/Makefile.in thttpd-patched/Makefile.in
  		WEBGROUP=$(WEBGROUP) \
  	) ; done
  
-@@ -121,9 +122,10 @@
+@@ -110,20 +111,21 @@
+ 
+ installthis:
+ 	-mkdir -p $(DESTDIR)$(BINDIR)
+-	$(INSTALL) -m 555 -o bin -g bin thttpd $(DESTDIR)$(BINDIR)
++	$(INSTALL) -m 555 thttpd $(DESTDIR)$(BINDIR)
+ 
+ install-man:
+ 	-mkdir -p $(DESTDIR)$(MANDIR)/man8
+-	$(INSTALL) -m 444 -o bin -g bin thttpd.8 $(DESTDIR)$(MANDIR)/man8
++	$(INSTALL) -m 444 thttpd.8 $(DESTDIR)$(MANDIR)/man8
+ 
+ installsubdirs:
+ 	for i in $(SUBDIRS) ; do ( \
  	    cd $$i ; \
  	    pwd ; \
  	    $(MAKE) $(MFLAGS) \
@@ -29,9 +41,46 @@ diff -urN thttpd/Makefile.in thttpd-patched/Makefile.in
  		WEBGROUP=$(WEBGROUP) \
  		install \
  	) ; done
-diff -urN thttpd/cgi-src/Makefile.in thttpd-patched/cgi-src/Makefile.in
+--- thttpd/extras/Makefile.in	Mon Nov 12 16:52:55 2001
++++ thttpd-patched/extras/Makefile.in	Wed Apr  6 02:25:07 2005
+@@ -26,10 +26,10 @@
+ 
+ prefix =	@prefix@
+ exec_prefix =	@exec_prefix@
+-BINDIR =	@sbindir@
+-WEBDIR =	$(prefix)/www
+-CGIBINDIR =	$(WEBDIR)/cgi-bin
+-MANDIR =	@mandir@
++#BINDIR =	@sbindir@
++#WEBDIR =	$(prefix)/www
++#CGIBINDIR =	$(WEBDIR)/cgi-bin
++#MANDIR =	@mandir@
+ 
+ CC =		@CC@
+ CCOPT =		@V_CCOPT@
+@@ -66,17 +66,15 @@
+ 
+ 
+ install:	all
+-	rm -f $(BINDIR)/makeweb $(BINDIR)/htpasswd $(BINDIR)/syslogtocern
++	-mkdir -p $(BINDIR)
+ 	cp makeweb $(BINDIR)/makeweb
+-	chgrp $(WEBGROUP) $(BINDIR)/makeweb
+ 	chmod 2755 $(BINDIR)/makeweb
+ 	cp htpasswd $(BINDIR)/htpasswd
+ 	cp syslogtocern $(BINDIR)/syslogtocern
+-	rm -f $(MANDIR)/man1/makeweb.1
++	-mkdir -p $(MANDIR)/man1
+ 	cp makeweb.1 $(MANDIR)/man1/makeweb.1
+-	rm -f $(MANDIR)/man1/htpasswd.1
+ 	cp htpasswd.1 $(MANDIR)/man1/htpasswd.1
+-	rm -f $(MANDIR)/man8/syslogtocern.8
++	-mkdir -p $(MANDIR)/man8
+ 	cp syslogtocern.8 $(MANDIR)/man8/syslogtocern.8
+ 
+ clean:
 --- thttpd/cgi-src/Makefile.in	Mon Nov 12 16:52:00 2001
-+++ thttpd-patched/cgi-src/Makefile.in	Tue Apr  5 12:17:25 2005
++++ thttpd-patched/cgi-src/Makefile.in	Wed Apr  6 02:25:20 2005
 @@ -26,9 +26,9 @@
  
  prefix =	@prefix@
@@ -60,44 +109,5 @@ diff -urN thttpd/cgi-src/Makefile.in thttpd-patched/cgi-src/Makefile.in
  	cp ssi.8 $(MANDIR)/man8/ssi.8
 -	rm -f $(CGIBINDIR)/phf
  	cp phf $(CGIBINDIR)/phf
- 
- clean:
-diff -urN thttpd/extras/Makefile.in thttpd-patched/extras/Makefile.in
---- thttpd/extras/Makefile.in	Mon Nov 12 16:52:55 2001
-+++ thttpd-patched/extras/Makefile.in	Tue Apr  5 12:16:22 2005
-@@ -26,10 +26,10 @@
- 
- prefix =	@prefix@
- exec_prefix =	@exec_prefix@
--BINDIR =	@sbindir@
--WEBDIR =	$(prefix)/www
--CGIBINDIR =	$(WEBDIR)/cgi-bin
--MANDIR =	@mandir@
-+#BINDIR =	@sbindir@
-+#WEBDIR =	$(prefix)/www
-+#CGIBINDIR =	$(WEBDIR)/cgi-bin
-+#MANDIR =	@mandir@
- 
- CC =		@CC@
- CCOPT =		@V_CCOPT@
-@@ -66,17 +66,15 @@
- 
- 
- install:	all
--	rm -f $(BINDIR)/makeweb $(BINDIR)/htpasswd $(BINDIR)/syslogtocern
-+	-mkdir -p (BINDIR)
- 	cp makeweb $(BINDIR)/makeweb
--	chgrp $(WEBGROUP) $(BINDIR)/makeweb
- 	chmod 2755 $(BINDIR)/makeweb
- 	cp htpasswd $(BINDIR)/htpasswd
- 	cp syslogtocern $(BINDIR)/syslogtocern
--	rm -f $(MANDIR)/man1/makeweb.1
-+	-mkdir -p $(MANDIR)/man1
- 	cp makeweb.1 $(MANDIR)/man1/makeweb.1
--	rm -f $(MANDIR)/man1/htpasswd.1
- 	cp htpasswd.1 $(MANDIR)/man1/htpasswd.1
--	rm -f $(MANDIR)/man8/syslogtocern.8
-+	-mkdir -p $(MANDIR)/man8
- 	cp syslogtocern.8 $(MANDIR)/man8/syslogtocern.8
  
  clean:
