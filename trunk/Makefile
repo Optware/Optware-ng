@@ -20,34 +20,41 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-NATIVE_AND_CROSS_PACKAGES = \
-	adns atftp automake \
-	bash bind bzip2 \
-	ccxstream coreutils cpio ctorrent cups cvs cyrus-sasl \
+CROSS_PACKAGES = \
+	adns atftp appweb apache apr apr-util automake \
+	bash bind busybox bzflag bzip2 \
+	ccxstream classpath coreutils cpio ctorrent cups cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
-	gawk gconv-modules gdb gdbm grep groff gzip \
+	gawk gconv-modules gdb gdbm gettext \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	glib grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	less libbt libcurl libdb libevent libiconv libid3tag \
-	libjpeg libnsl libpng libstdc++ libtiff libtool libxml2 lsof \
-	m4 make man man-pages mc mdadm miau mtr mutt \
-	nail nano ncftp ncurses nload nmap ntp ntpclient \
+	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 \
+	logrotate lsof \
+	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
+	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl \
-	patch portmap procps puppy \
-	rsync \
-	screen sed strace stunnel sudo \
+	patch pcre php pkgconfig popt portmap procps puppy \
+	rdate rsync \
+	screen sed strace stunnel sudo svn \
 	tar tcpwrappers termcap torrent \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
 	wakelan wget-ssl which \
 	xinetd \
 	zlib \
+	\
+	crosstool-native
 
-# Add new packages here - make sure you have tested both native compilation and cross compilation.
+# Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
-NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
+CROSS_PACKAGES_READY_FOR_TESTING = \
+	e2fsprogs \
+	parted proftpd \
 	recordext \
 	x11 \
 	xau \
@@ -64,26 +71,6 @@ NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
 	xmu \
 	xauth \
 
-# appweb ships with x86 binaries which it requires during configure phase
-# busybox has PATH_MAX define issue on native
-# bzflag actually builds native, but it takes 11 hours
-# classpath requires a java compiler
-# metalog may compile native - don't have working native build support (bob_tm)
-# pkgconfig fails native during configure
-CROSS_ONLY_PACKAGES = \
-	appweb apr \
-	busybox \
-	bzflag \
-	classpath \
-	gettext \
-	metalog \
-	pkgconfig \
-
-# Add new cross-only packages here, and state why they don't compile native.
-# proftpd e2fsprogs parted: May compile native - have no environment for it yet
-CROSS_ONLY_PACKAGES_READY_FOR_TESTING = proftpd e2fsprogs parted \
-
-
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
@@ -92,7 +79,7 @@ CROSS_ONLY_PACKAGES_READY_FOR_TESTING = proftpd e2fsprogs parted \
 # perl's Configure is not cross-compile "friendly"
 # squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
-NATIVE_ONLY_PACKAGES = \
+NATIVE_PACKAGES = \
 	autoconf \
 	bison \
 	emacs \
@@ -107,7 +94,7 @@ NATIVE_ONLY_PACKAGES = \
 # cyrus-imapd's makefile runs executables it has built.
 # postfix's makefile runs executables it has built.
 # perl-modules are dependent of perl
-NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
+NATIVE_PACKAGES_READY_FOR_TESTING = \
 	cyrus-imapd \
 	postfix \
 	perl-digest-hmac \
@@ -120,25 +107,7 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	perl-storable \
 	perl-time-hires \
 
-UNSORTED_PACKAGES = \
-	apache apr-util \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
-	libogg libvorbis libpcap logrotate \
-	mt-daapd \
-	nfs-server nfs-utils \
-	pcre php popt \
-	rdate \
-	svn 
-
-DEVELOPER_PACKAGES = crosstool-native
-
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm	clamav freeradius
-
-CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES) $(DEVELOPER_PACKAGES)
-
-# We prefer cross-compilation to native compilation ...
-# NATIVE_PACKAGES = $(NATIVE_AND_CROSS_PACKAGES) $(NATIVE_ONLY_PACKAGES)
-NATIVE_PACKAGES = $(NATIVE_ONLY_PACKAGES)
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
@@ -154,9 +123,9 @@ all: directories toolchain packages
 
 testing:
 ifeq ($(HOST_MACHINE),armv5b)
-	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(NATIVE_ONLY_PACKAGES_READY_FOR_TESTING)" all
+	$(MAKE) PACKAGES="$(NATIVE_PACKAGES_READY_FOR_TESTING)" all
 else
-	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(CROSS_ONLY_PACKAGES_READY_FOR_TESTING)" all
+	$(MAKE) PACKAGES="$(CROSS_PACKAGES_READY_FOR_TESTING)" all
 endif
 
 # Common tools which may need overriding
