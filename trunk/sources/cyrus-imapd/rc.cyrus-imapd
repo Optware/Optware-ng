@@ -1,9 +1,35 @@
 #!/bin/sh
 
-echo "(re)starting service cyrus-imapd"
-
-if [ -f "/opt/var/run/cyrus.pid" ]; then 
-    /bin/kill -TERM `cat /opt/var/run/cyrus.pid` 2>/dev/null
+if [ -z "$1" ] ; then
+    case `echo "$0" | /bin/sed 's/^.*\/\(.*\)/\1/g'` in
+	S??*) rc="start" ;;
+	K??*) rc="stop" ;;
+	*) rc="usage" ;;
+    esac
+else
+    rc="$1"
 fi
 
-/opt/libexec/cyrus/bin/master -p /opt/var/run/cyrus.pid -d > /dev/null 2>&1
+case "$rc" in
+    start)
+	echo "starting service cyrus-imapd"
+	
+	/opt/libexec/cyrus/bin/master -p /opt/var/run/cyrus.pid -d > /dev/null 2>&1
+	;;
+    stop)
+	echo "stopping service cyrus-imapd"
+	
+	if [ -f "/opt/var/run/cyrus.pid" ]; then 
+	    /bin/kill -TERM `cat /opt/var/run/cyrus.pid` 2>/dev/null
+	fi
+	;;
+    restart)
+	"$0" stop
+	sleep 1
+	"$0" start
+	;;
+    *)
+	echo "Usage: $0 (start|stop|restart|usage)"
+	;;
+esac
+
