@@ -89,7 +89,6 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
 	$(EMACS_UNZIP) $(DL_DIR)/$(EMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(EMACS_PATCHES) | patch -d $(BUILD_DIR)/$(EMACS_DIR) -p1
 	mv $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
 	(cd $(EMACS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -102,7 +101,6 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	# native/cross build test goes here - they will need different patches
 	cat $(EMACS_PATCHES) | patch -d $(EMACS_BUILD_DIR) -p1
 	touch $(EMACS_BUILD_DIR)/.configured
 
@@ -113,7 +111,7 @@ emacs-unpack: $(EMACS_BUILD_DIR)/.configured
 #
 $(EMACS_BUILD_DIR)/.built: $(EMACS_BUILD_DIR)/.configured
 	rm -f $(EMACS_BUILD_DIR)/.built
-	$(MAKE) -C $(EMACS_BUILD_DIR)
+	$(MAKE) -C $(EMACS_BUILD_DIR) TARGET_LIBDIR=$(TARGET_LIBDIR)
 	touch $(EMACS_BUILD_DIR)/.built
 
 #
