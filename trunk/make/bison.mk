@@ -12,7 +12,7 @@ BISON_SITE=ftp://ftp.gnu.org/gnu/bison
 BISON_SOURCE=$(BISON).tar.gz
 BISON_UNZIP=zcat
 
-BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-1_armeb.ipk
+BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-2_armeb.ipk
 BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 
 $(DL_DIR)/$(BISON_SOURCE):
