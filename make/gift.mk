@@ -92,7 +92,7 @@ gift-source: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
-	$(MAKE) libogg-stage libvorbis-stage
+	$(MAKE) libogg-stage libvorbis-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(GIFT_DIR) $(GIFT_BUILD_DIR)
 	$(GIFT_UNZIP) $(DL_DIR)/$(GIFT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFT_PATCHES) | patch -d $(BUILD_DIR)/$(GIFT_DIR) -p1
@@ -129,6 +129,8 @@ $(GIFT_BUILD_DIR)/.staged: $(GIFT_BUILD_DIR)/.built
 	rm -f $(GIFT_BUILD_DIR)/.staged
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_DIR)/opt/lib/libgift.la $(STAGING_DIR)/opt/lib/libgiftproto.la
+	rm -f $(STAGING_DIR)/opt/bin/giftd $(STAGING_DIR)/opt/bin/gift-setup
+	rm -rf $(STAGING_DIR)/opt/share $(STAGING_DIR)/opt/man
 	touch $(GIFT_BUILD_DIR)/.staged
 
 gift-stage: $(GIFT_BUILD_DIR)/.staged
