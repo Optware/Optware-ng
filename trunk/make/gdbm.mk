@@ -37,10 +37,10 @@ $(GDBM_DIR)/.configured: $(GDBM_DIR)/.source
 		--host=arm-linux \
 		--prefix=$(STAGING_DIR) \
 	);
-	touch $(GDBM_DIR)/.configured;
+	touch $(GDBM_DIR)/.configured
 
 $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION): $(GDBM_DIR)/.configured
-	$(MAKE) CFLAGS="$(GDBM_CFLAGS)" CC=$(TARGET_CC) -C $(GDBM_DIR) install;
+	$(MAKE) CFLAGS="$(GDBM_CFLAGS)" CC=$(TARGET_CC) -C $(GDBM_DIR) install
 
 gdbm-headers: $(STAGING_DIR)/lib/libgdbm.a
 
@@ -49,8 +49,10 @@ gdbm: $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION)
 $(GDBM_IPK): $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION)
 	mkdir -p $(GDBM_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/gdbm.control $(GDBM_IPK_DIR)/CONTROL/control
+	mkdir -p $(GDBM_IPK_DIR)/opt/include
+	cp -dpf $(STAGING_DIR)/include/gdbm.h $(GDBM_IPK_DIR)/opt/include
 	mkdir -p $(GDBM_IPK_DIR)/opt/lib
-	cp -dpf $(STAGING_DIR)/lib/libgdbm.so* $(GDBM_IPK_DIR)/opt/lib;
+	cp -dpf $(STAGING_DIR)/lib/libgdbm.so* $(GDBM_IPK_DIR)/opt/lib
 	-$(STRIP) --strip-unneeded $(GDBM_IPK_DIR)/opt/lib/libgdbm.so*
 	touch -c $(GDBM_IPK_DIR)/opt/lib/libgdbm.so.$(GDBM_LIBVERSION)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GDBM_IPK_DIR)
