@@ -7,6 +7,7 @@
 LIBID3TAG_DIR=$(BUILD_DIR)/libid3tag
 
 LIBID3TAG_VERSION=0.15.1b
+LIBID3TAG_SHLIBVERSION=0.3.0
 LIBID3TAG=libid3tag-$(LIBID3TAG_VERSION)
 LIBID3TAG_SITE=http://belnet.dl.sourceforge.net/sourceforge/mad
 LIBID3TAG_SOURCE=$(LIBID3TAG).tar.gz
@@ -36,14 +37,14 @@ $(LIBID3TAG_DIR)/.configured: $(LIBID3TAG_DIR)/.source
 	);
 	touch $(LIBID3TAG_DIR)/.configured
 
-$(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION): $(LIBID3TAG_DIR)/.configured
+$(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION): $(LIBID3TAG_DIR)/.configured
 	$(MAKE) CFLAGS="$(LIBID3TAG_CFLAGS)" CC=$(TARGET_CC) -C $(LIBID3TAG_DIR) install
 
 libid3tag-headers: $(STAGING_DIR)/lib/libid3tag.a
 
-libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
+libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 
-$(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
+$(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 	mkdir -p $(LIBID3TAG_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libid3tag.control $(LIBID3TAG_IPK_DIR)/CONTROL/control
 	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/include
@@ -51,7 +52,7 @@ $(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_VERSION)
 	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/lib
 	cp -dpf $(STAGING_DIR)/lib/libid3tag.so* $(LIBID3TAG_IPK_DIR)/opt/lib
 	-$(STRIP) --strip-unneeded $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so*
-	touch -c $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so.$(LIBID3TAG_VERSION)
+	touch -c $(LIBID3TAG_IPK_DIR)/opt/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBID3TAG_IPK_DIR)
 
 libid3tag-ipk: $(LIBID3TAG_IPK)
