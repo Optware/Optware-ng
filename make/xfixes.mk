@@ -61,9 +61,9 @@ XFIXES_IPK=$(BUILD_DIR)/xfixes_$(XFIXES_VERSION)-$(XFIXES_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XFIXES_SOURCE_DIR)/control:
+$(XFIXES_IPK_DIR)/CONTROL/control:
+	@install -d $(XFIXES_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XFIXES_SOURCE_DIR) || true
 	@echo "Package: xfixes" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XFIXES_PRIORITY)" >>$@
@@ -111,7 +111,6 @@ $(XFIXES_BUILD_DIR)/.configured: $(XFIXES_BUILD_DIR)/.fetched $(XFIXES_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XFIXES_BUILD_DIR)/.configured
@@ -155,12 +154,10 @@ xfixes-stage: $(XFIXES_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XFIXES_IPK): $(XFIXES_BUILD_DIR)/.built
-	rm -rf $(XFIXES_IPK_DIR) $(BUILD_DIR)/xfixes_*_armeb.ipk $(XFIXES_SOURCE_DIR)/control
-	$(MAKE) $(XFIXES_SOURCE_DIR)/control
+	rm -rf $(XFIXES_IPK_DIR) $(BUILD_DIR)/xfixes_*_armeb.ipk
 	$(MAKE) -C $(XFIXES_BUILD_DIR) DESTDIR=$(XFIXES_IPK_DIR) install-strip
+	$(MAKE) $(XFIXES_IPK_DIR)/CONTROL/control
 	rm -f $(XFIXES_IPK_DIR)/opt/lib/*.la
-	install -d $(XFIXES_IPK_DIR)/CONTROL
-	install -m 644 $(XFIXES_SOURCE_DIR)/control $(XFIXES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XFIXES_IPK_DIR)
 
 #
@@ -179,4 +176,4 @@ xfixes-clean:
 # directories.
 #
 xfixes-dirclean:
-	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR) $(XFIXES_IPK_DIR) $(XFIXES_IPK) $(XFIXES_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR) $(XFIXES_IPK_DIR) $(XFIXES_IPK)

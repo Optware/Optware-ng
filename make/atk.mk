@@ -67,9 +67,9 @@ ATK_IPK=$(BUILD_DIR)/atk_$(ATK_VERSION)-$(ATK_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(ATK_SOURCE_DIR)/control:
+$(ATK_IPK_DIR)/CONTROL/control:
+	@install -d $(ATK_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(ATK_SOURCE_DIR) || true
 	@echo "Package: atk" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(ATK_PRIORITY)" >>$@
@@ -114,7 +114,6 @@ $(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
 	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
 	$(ATK_UNZIP) $(DL_DIR)/$(ATK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
-	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(ATK_LOCALES)/;' $(ATK_BUILD_DIR)/configure
 	(cd $(ATK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ATK_CPPFLAGS)" \
@@ -128,7 +127,6 @@ $(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
 		--prefix=/opt \
 		--disable-static \
 		--disable-glibtest \
-		--disable-nls \
 	)
 	touch $(ATK_BUILD_DIR)/.configured
 
@@ -171,13 +169,10 @@ atk-stage: $(STAGING_DIR)/opt/lib/libatk-1.0.so
 # You may need to patch your application to make it use these locations.
 #
 $(ATK_IPK): $(ATK_BUILD_DIR)/.built
-	rm -f $(ATK_SOURCE_DIR)/control
-	$(MAKE) $(ATK_SOURCE_DIR)/control
 	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_armeb.ipk
 	$(MAKE) -C $(ATK_BUILD_DIR) DESTDIR=$(ATK_IPK_DIR) install-strip
 	rm -rf $(ATK_IPK_DIR)/opt/lib/*.la
-	install -d $(ATK_IPK_DIR)/CONTROL
-	install -m 644 $(ATK_SOURCE_DIR)/control $(ATK_IPK_DIR)/CONTROL/control
+	$(MAKE) $(ATK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATK_IPK_DIR)
 
 #
@@ -196,4 +191,4 @@ atk-clean:
 # directories.
 #
 atk-dirclean:
-	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR) $(ATK_IPK_DIR) $(ATK_IPK) $(ATK_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR) $(ATK_IPK_DIR) $(ATK_IPK)

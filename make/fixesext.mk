@@ -60,17 +60,17 @@ FIXESEXT_IPK=$(BUILD_DIR)/fixesext_$(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)_a
 #
 # Automatically create a ipkg control file
 #
-$(FIXESEXT_SOURCE_DIR)/control:
-	rm -f $@
-	mkdir -p $(FIXESEXT_SOURCE_DIR) || true
-	echo "Package: extensions" >>$@
-	echo "Architecture: armeb" >>$@
-	echo "Priority: $(FIXESEXT_PRIORITY)" >>$@
-	echo "Section: $(FIXESEXT_SECTION)" >>$@
-	echo "Version: $(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)" >>$@
-	echo "Maintainer: $(FIXESEXT_MAINTAINER)" >>$@
-	echo "Source: $(FIXESEXT_SITE)/$(FIXESEXT_SOURCE)" >>$@
-	echo "Description: $(FIXESEXT_DESCRIPTION)" >>$@
+$(FIXESEXT_IPK_DIR)/CONTROL/control:
+	@install -d $(FIXESEXT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: fixesext" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(FIXESEXT_PRIORITY)" >>$@
+	@echo "Section: $(FIXESEXT_SECTION)" >>$@
+	@echo "Version: $(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FIXESEXT_MAINTAINER)" >>$@
+	@echo "Source: $(FIXESEXT_SITE)/$(FIXESEXT_SOURCE)" >>$@
+	@echo "Description: $(FIXESEXT_DESCRIPTION)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -151,11 +151,9 @@ fixesext-stage: $(FIXESEXT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(FIXESEXT_IPK): $(FIXESEXT_BUILD_DIR)/.built
-	rm -rf $(FIXESEXT_IPK_DIR) $(BUILD_DIR)/fixesext_*_armeb.ipk $(FIXESEXT_SOURCE_DIR)/control
-	$(MAKE) $(FIXESEXT_SOURCE_DIR)/control
+	rm -rf $(FIXESEXT_IPK_DIR) $(BUILD_DIR)/fixesext_*_armeb.ipk
 	$(MAKE) -C $(FIXESEXT_BUILD_DIR) DESTDIR=$(FIXESEXT_IPK_DIR) install
-	install -d $(FIXESEXT_IPK_DIR)/CONTROL
-	install -m 644 $(FIXESEXT_SOURCE_DIR)/control $(FIXESEXT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FIXESEXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIXESEXT_IPK_DIR)
 
 #
@@ -174,4 +172,4 @@ fixesext-clean:
 # directories.
 #
 fixesext-dirclean:
-	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR) $(FIXESEXT_IPK_DIR) $(FIXESEXT_IPK) $(FIXESEXT_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR) $(FIXESEXT_IPK_DIR) $(FIXESEXT_IPK)

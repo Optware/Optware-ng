@@ -61,9 +61,9 @@ XCURSOR_IPK=$(BUILD_DIR)/xcursor_$(XCURSOR_VERSION)-$(XCURSOR_IPK_VERSION)_armeb
 #
 # Automatically create a ipkg control file
 #
-$(XCURSOR_SOURCE_DIR)/control:
+$(XCURSOR_IPK_DIR)/CONTROL/control:
+	@install -d $(XCURSOR_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XCURSOR_SOURCE_DIR) || true
 	@echo "Package: xcursor" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XCURSOR_PRIORITY)" >>$@
@@ -112,7 +112,6 @@ $(XCURSOR_BUILD_DIR)/.configured: $(XCURSOR_BUILD_DIR)/.fetched $(XCURSOR_PATCHE
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XCURSOR_BUILD_DIR)/.configured
@@ -156,12 +155,10 @@ xcursor-stage: $(XCURSOR_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XCURSOR_IPK): $(XCURSOR_BUILD_DIR)/.built
-	rm -rf $(XCURSOR_IPK_DIR) $(BUILD_DIR)/xcursor_*_armeb.ipk $(XCURSOR_SOURCE_DIR)/control
-	$(MAKE) $(XCURSOR_SOURCE_DIR)/control
+	rm -rf $(XCURSOR_IPK_DIR) $(BUILD_DIR)/xcursor_*_armeb.ipk
 	$(MAKE) -C $(XCURSOR_BUILD_DIR) DESTDIR=$(XCURSOR_IPK_DIR) install-strip
+	$(MAKE) $(XCURSOR_IPK_DIR)/CONTROL/control
 	rm -f $(XCURSOR_IPK_DIR)/opt/lib/*.la
-	install -d $(XCURSOR_IPK_DIR)/CONTROL
-	install -m 644 $(XCURSOR_SOURCE_DIR)/control $(XCURSOR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XCURSOR_IPK_DIR)
 
 #
@@ -180,4 +177,4 @@ xcursor-clean:
 # directories.
 #
 xcursor-dirclean:
-	rm -rf $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR) $(XCURSOR_IPK_DIR) $(XCURSOR_IPK) $(XCURSOR_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR) $(XCURSOR_IPK_DIR) $(XCURSOR_IPK)

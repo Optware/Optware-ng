@@ -60,9 +60,9 @@ XDMCP_IPK=$(BUILD_DIR)/xdmcp_$(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XDMCP_SOURCE_DIR)/control:
+$(XDMCP_IPK_DIR)/CONTROL/control:
+	@install -d $(XDMCP_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XDMCP_SOURCE_DIR) || true
 	@echo "Package: xdmcp" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XDMCP_PRIORITY)" >>$@
@@ -109,7 +109,6 @@ $(XDMCP_BUILD_DIR)/.configured: $(XDMCP_BUILD_DIR)/.fetched $(XDMCP_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XDMCP_BUILD_DIR)/.configured
@@ -154,10 +153,8 @@ xdmcp-stage: $(XDMCP_BUILD_DIR)/.staged
 #
 $(XDMCP_IPK): $(XDMCP_BUILD_DIR)/.built
 	rm -rf $(XDMCP_IPK_DIR) $(BUILD_DIR)/xdmcp_*_armeb.ipk $(XDMCP_SOURCE_DIR)/control
-	$(MAKE) $(XDMCP_SOURCE_DIR)/control
 	$(MAKE) -C $(XDMCP_BUILD_DIR) DESTDIR=$(XDMCP_IPK_DIR) install-strip
-	install -d $(XDMCP_IPK_DIR)/CONTROL
-	install -m 644 $(XDMCP_SOURCE_DIR)/control $(XDMCP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XDMCP_IPK_DIR)/CONTROL/control
 	rm -f $(XDMCP_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XDMCP_IPK_DIR)
 
@@ -177,4 +174,4 @@ xdmcp-clean:
 # directories.
 #
 xdmcp-dirclean:
-	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR) $(XDMCP_IPK_DIR) $(XDMCP_IPK) $(XDMCP_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR) $(XDMCP_IPK_DIR) $(XDMCP_IPK)

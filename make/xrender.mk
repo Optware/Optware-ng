@@ -61,9 +61,9 @@ XRENDER_IPK=$(BUILD_DIR)/xrender_$(XRENDER_VERSION)-$(XRENDER_IPK_VERSION)_armeb
 #
 # Automatically create a ipkg control file
 #
-$(XRENDER_SOURCE_DIR)/control:
+$(XRENDER_IPK_DIR)/CONTROL/control:
+	@install -d $(XRENDER_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XRENDER_SOURCE_DIR) || true
 	@echo "Package: xrender" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XRENDER_PRIORITY)" >>$@
@@ -111,7 +111,6 @@ $(XRENDER_BUILD_DIR)/.configured: $(XRENDER_BUILD_DIR)/.fetched $(XRENDER_PATCHE
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XRENDER_BUILD_DIR)/.configured
@@ -155,12 +154,10 @@ xrender-stage: $(XRENDER_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XRENDER_IPK): $(XRENDER_BUILD_DIR)/.built
-	rm -rf $(XRENDER_IPK_DIR) $(BUILD_DIR)/xrender_*_armeb.ipk $(XRENDER_SOURCE_DIR)/control
-	$(MAKE) $(XRENDER_SOURCE_DIR)/control
+	rm -rf $(XRENDER_IPK_DIR) $(BUILD_DIR)/xrender_*_armeb.ipk
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(XRENDER_IPK_DIR) install-strip
 	rm -f $(XRENDER_IPK_DIR)/opt/lib/*.la
-	install -d $(XRENDER_IPK_DIR)/CONTROL
-	install -m 644 $(XRENDER_SOURCE_DIR)/control $(XRENDER_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XRENDER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XRENDER_IPK_DIR)
 
 #
@@ -179,4 +176,4 @@ xrender-clean:
 # directories.
 #
 xrender-dirclean:
-	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR) $(XRENDER_IPK_DIR) $(XRENDER_IPK) $(XRENDER_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR) $(XRENDER_IPK_DIR) $(XRENDER_IPK)

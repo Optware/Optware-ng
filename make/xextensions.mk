@@ -60,17 +60,17 @@ XEXTENSIONS_IPK=$(BUILD_DIR)/xextensions_$(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IP
 #
 # Automatically create a ipkg control file
 #
-$(XEXTENSIONS_SOURCE_DIR)/control:
-	rm -f $@
-	mkdir -p $(XEXTENSIONS_SOURCE_DIR) || true
-	echo "Package: extensions" >>$@
-	echo "Architecture: armeb" >>$@
-	echo "Priority: $(XEXTENSIONS_PRIORITY)" >>$@
-	echo "Section: $(XEXTENSIONS_SECTION)" >>$@
-	echo "Version: $(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IPK_VERSION)" >>$@
-	echo "Maintainer: $(XEXTENSIONS_MAINTAINER)" >>$@
-	echo "Source: $(XEXTENSIONS_SITE)/$(XEXTENSIONS_SOURCE)" >>$@
-	echo "Description: $(XEXTENSIONS_DESCRIPTION)" >>$@
+$(XEXTENSIONS_IPK_DIR)/CONTROL/control:
+	@install -d $(XEXTENSIONS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: xextensions" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(XEXTENSIONS_PRIORITY)" >>$@
+	@echo "Section: $(XEXTENSIONS_SECTION)" >>$@
+	@echo "Version: $(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(XEXTENSIONS_MAINTAINER)" >>$@
+	@echo "Source: $(XEXTENSIONS_SITE)/$(XEXTENSIONS_SOURCE)" >>$@
+	@echo "Description: $(XEXTENSIONS_DESCRIPTION)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -101,12 +101,13 @@ $(XEXTENSIONS_BUILD_DIR)/.configured: $(XEXTENSIONS_BUILD_DIR)/.fetched $(XEXTEN
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEXTENSIONS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXTENSIONS_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XEXTENSIONS_BUILD_DIR)/.configured
@@ -150,11 +151,9 @@ xextensions-stage: $(XEXTENSIONS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XEXTENSIONS_IPK): $(XEXTENSIONS_BUILD_DIR)/.built
-	rm -rf $(XEXTENSIONS_IPK_DIR) $(BUILD_DIR)/xextensions_*_armeb.ipk $(XEXTENSIONS_SOURCE_DIR)/control
-	$(MAKE) $(XEXTENSIONS_SOURCE_DIR)/control
+	rm -rf $(XEXTENSIONS_IPK_DIR) $(BUILD_DIR)/xextensions_*_armeb.ipk
 	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR) DESTDIR=$(XEXTENSIONS_IPK_DIR) install
-	install -d $(XEXTENSIONS_IPK_DIR)/CONTROL
-	install -m 644 $(XEXTENSIONS_SOURCE_DIR)/control $(XEXTENSIONS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XEXTENSIONS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEXTENSIONS_IPK_DIR)
 
 #
@@ -173,4 +172,4 @@ xextensions-clean:
 # directories.
 #
 xextensions-dirclean:
-	rm -rf $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(XEXTENSIONS_BUILD_DIR) $(XEXTENSIONS_IPK_DIR) $(XEXTENSIONS_IPK) $(XEXTENSIONS_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(XEXTENSIONS_BUILD_DIR) $(XEXTENSIONS_IPK_DIR) $(XEXTENSIONS_IPK)

@@ -67,9 +67,9 @@ PANGO_IPK=$(BUILD_DIR)/pango_$(PANGO_VERSION)-$(PANGO_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(PANGO_SOURCE_DIR)/control:
+$(PANGO_IPK_DIR)/CONTROL/control:
+	@install -d $(PANGO_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(PANGO_SOURCE_DIR) || true
 	@echo "Package: pango" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(PANGO_PRIORITY)" >>$@
@@ -110,11 +110,13 @@ pango-source: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
-	$(MAKE) glib-stage xft-stage freetype-stage fontconfig-stage
+	$(MAKE) glib-stage
+	$(MAKE) xft-stage 
+	$(MAKE) freetype-stage 
+	$(MAKE) fontconfig-stage
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
-	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(PANGO_LOCALES)/;' $(PANGO_BUILD_DIR)/configure
 	(cd $(PANGO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PANGO_CPPFLAGS)" \
@@ -128,7 +130,6 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 		--prefix=/opt \
 		--disable-static \
 		--disable-glibtest \
-		--disable-nls \
 	)
 	touch $(PANGO_BUILD_DIR)/.configured
 
@@ -171,13 +172,10 @@ pango-stage: $(STAGING_DIR)/opt/lib/libpango-1.0.so
 # You may need to patch your application to make it use these locations.
 #
 $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
-	rm -f $(PANGO_SOURCE_DIR)/control
-	$(MAKE) $(PANGO_SOURCE_DIR)/control
 	rm -rf $(PANGO_IPK_DIR) $(BUILD_DIR)/pango_*_armeb.ipk
 	$(MAKE) -C $(PANGO_BUILD_DIR) DESTDIR=$(PANGO_IPK_DIR) install-strip
 	rm -rf $(PANGO_IPK_DIR)/opt/lib/*.la
-	install -d $(PANGO_IPK_DIR)/CONTROL
-	install -m 644 $(PANGO_SOURCE_DIR)/control $(PANGO_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PANGO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PANGO_IPK_DIR)
 
 #
@@ -196,4 +194,4 @@ pango-clean:
 # directories.
 #
 pango-dirclean:
-	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR) $(PANGO_IPK_DIR) $(PANGO_IPK) $(PANGO_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR) $(PANGO_IPK_DIR) $(PANGO_IPK)

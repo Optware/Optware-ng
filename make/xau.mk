@@ -60,9 +60,9 @@ XAU_IPK=$(BUILD_DIR)/xau_$(XAU_VERSION)-$(XAU_IPK_VERSION)_armeb.ipk
 #
 # Automatically create a ipkg control file
 #
-$(XAU_SOURCE_DIR)/control:
+$(XAU_IPK_DIR)/CONTROL/control:
+	@install -d $(XAU_IPK_DIR)/CONTROL
 	@rm -f $@
-	@mkdir -p $(XAU_SOURCE_DIR) || true
 	@echo "Package: xau" >>$@
 	@echo "Architecture: armeb" >>$@
 	@echo "Priority: $(XAU_PRIORITY)" >>$@
@@ -109,7 +109,6 @@ $(XAU_BUILD_DIR)/.configured: $(XAU_BUILD_DIR)/.fetched $(XAU_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(XAU_BUILD_DIR)/.configured
@@ -153,11 +152,9 @@ xau-stage: $(XAU_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XAU_IPK): $(XAU_BUILD_DIR)/.built
-	rm -rf $(XAU_IPK_DIR) $(BUILD_DIR)/xau_*_armeb.ipk $(XAU_SOURCE_DIR)/control
-	$(MAKE) $(XAU_SOURCE_DIR)/control
+	rm -rf $(XAU_IPK_DIR) $(BUILD_DIR)/xau_*_armeb.ipk
 	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(XAU_IPK_DIR) install-strip
-	install -d $(XAU_IPK_DIR)/CONTROL
-	install -m 644 $(XAU_SOURCE_DIR)/control $(XAU_IPK_DIR)/CONTROL/control
+	$(MAKE) $(XAU_IPK_DIR)/CONTROL/control
 	rm -f $(XAU_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAU_IPK_DIR)
 
@@ -177,4 +174,4 @@ xau-clean:
 # directories.
 #
 xau-dirclean:
-	rm -rf $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR) $(XAU_IPK_DIR) $(XAU_IPK) $(XAU_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR) $(XAU_IPK_DIR) $(XAU_IPK)

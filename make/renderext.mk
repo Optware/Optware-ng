@@ -60,17 +60,17 @@ RENDEREXT_IPK=$(BUILD_DIR)/renderext_$(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSIO
 #
 # Automatically create a ipkg control file
 #
-$(RENDEREXT_SOURCE_DIR)/control:
-	rm -f $@
-	mkdir -p $(RENDEREXT_SOURCE_DIR) || true
-	echo "Package: extensions" >>$@
-	echo "Architecture: armeb" >>$@
-	echo "Priority: $(RENDEREXT_PRIORITY)" >>$@
-	echo "Section: $(RENDEREXT_SECTION)" >>$@
-	echo "Version: $(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSION)" >>$@
-	echo "Maintainer: $(RENDEREXT_MAINTAINER)" >>$@
-	echo "Source: $(RENDEREXT_SITE)/$(RENDEREXT_SOURCE)" >>$@
-	echo "Description: $(RENDEREXT_DESCRIPTION)" >>$@
+$(RENDEREXT_IPK_DIR)/CONTROL/control:
+	@install -d $(RENDEREXT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: renderext" >>$@
+	@echo "Architecture: armeb" >>$@
+	@echo "Priority: $(RENDEREXT_PRIORITY)" >>$@
+	@echo "Section: $(RENDEREXT_SECTION)" >>$@
+	@echo "Version: $(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(RENDEREXT_MAINTAINER)" >>$@
+	@echo "Source: $(RENDEREXT_SITE)/$(RENDEREXT_SOURCE)" >>$@
+	@echo "Description: $(RENDEREXT_DESCRIPTION)" >>$@
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -101,6 +101,8 @@ $(RENDEREXT_BUILD_DIR)/.configured: $(RENDEREXT_BUILD_DIR)/.fetched $(RENDEREXT_
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RENDEREXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RENDEREXT_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -149,11 +151,9 @@ renderext-stage: $(RENDEREXT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(RENDEREXT_IPK): $(RENDEREXT_BUILD_DIR)/.built
-	rm -rf $(RENDEREXT_IPK_DIR) $(BUILD_DIR)/renderext_*_armeb.ipk $(RENDEREXT_SOURCE_DIR)/control
-	$(MAKE) $(RENDEREXT_SOURCE_DIR)/control
+	rm -rf $(RENDEREXT_IPK_DIR) $(BUILD_DIR)/renderext_*_armeb.ipk
 	$(MAKE) -C $(RENDEREXT_BUILD_DIR) DESTDIR=$(RENDEREXT_IPK_DIR) install
-	install -d $(RENDEREXT_IPK_DIR)/CONTROL
-	install -m 644 $(RENDEREXT_SOURCE_DIR)/control $(RENDEREXT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(RENDEREXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RENDEREXT_IPK_DIR)
 
 #
@@ -172,4 +172,4 @@ renderext-clean:
 # directories.
 #
 renderext-dirclean:
-	rm -rf $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR) $(RENDEREXT_IPK_DIR) $(RENDEREXT_IPK) $(RENDEREXT_SOURCE_DIR)/control
+	rm -rf $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR) $(RENDEREXT_IPK_DIR) $(RENDEREXT_IPK)
