@@ -26,7 +26,7 @@ APACHE_DEPENDS=apr, apr-util, openssl, expat, zlib
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=2
+APACHE_IPK_VERSION=3
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -147,6 +147,8 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		--enable-file-cache \
 		--enable-mem-cache \
 		--enable-deflate \
+		--enable-ldap \
+		--enable-auth-ldap \
 		--with-z=$(STAGING_DIR)/opt \
 		--with-ssl=$(STAGING_DIR)/opt \
 		--with-apr=$(STAGING_DIR)/opt \

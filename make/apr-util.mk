@@ -21,12 +21,12 @@ APR_UTIL_MAINTAINER=nslu2-linux@yahoogroups.com
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb
+APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb, openldap
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=1
+APR_UTIL_IPK_VERSION=2
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -48,7 +48,7 @@ APR_UTIL_PATCHES=$(APR_UTIL_SOURCE_DIR)/hostcc.patch $(APR_UTIL_SOURCE_DIR)/dbm-
 # compilation or linking flags, then list them here.
 #
 APR_UTIL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2
-APR_UTIL_LDFLAGS=
+APR_UTIL_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # APR_UTIL_BUILD_DIR is the directory in which the build is done.
@@ -115,6 +115,7 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
+	$(MAKE) openldap-stage
 	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
@@ -135,6 +136,9 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-expat=$(STAGING_DIR)/opt \
+		--with-ldap-library=$(STAGING_LIB_DIR) \
+		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
+		--with-ldap \
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
 	cp $(STAGING_DIR)/opt/share/apache2/build/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
