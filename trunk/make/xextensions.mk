@@ -96,13 +96,16 @@ xextensions-source: $(XEXTENSIONS_BUILD_DIR)/.fetched $(XEXTENSIONS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XEXTENSIONS_BUILD_DIR)/.configured: $(XEXTENSIONS_BUILD_DIR)/.fetched $(XEXTENSIONS_PATCHES)
+$(XEXTENSIONS_BUILD_DIR)/.configured: $(XEXTENSIONS_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(XEXTENSIONS_PATCHES)
 	(cd $(XEXTENSIONS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEXTENSIONS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXTENSIONS_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -130,13 +133,10 @@ xextensions: $(XEXTENSIONS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XEXTENSIONS_BUILD_DIR)/.staged: $(XEXTENSIONS_BUILD_DIR)/.built
-	$(MAKE) xproto-stage
-	rm -f $(XEXTENSIONS_BUILD_DIR)/.staged
+$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h: $(XEXTENSIONS_BUILD_DIR)/.built
 	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(XEXTENSIONS_BUILD_DIR)/.staged
 
-xextensions-stage: $(XEXTENSIONS_BUILD_DIR)/.staged
+xextensions-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h
 
 #
 # This builds the IPK file.

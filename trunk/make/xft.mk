@@ -98,14 +98,19 @@ xft-source: $(XFT_BUILD_DIR)/.fetched $(XFT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched $(XFT_PATCHES)
-	$(MAKE) x11-stage xrender-stage freetype-stage fontconfig-stage
+$(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libfreetype.so \
+		$(STAGING_LIB_DIR)/libfontconfig.so \
+		$(STAGING_LIB_DIR)/libX11.so \
+		$(STAGING_LIB_DIR)/libXrender.so \
+		$(XFT_PATCHES)
 	(cd $(XFT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XFT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -133,13 +138,11 @@ xft: $(XFT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XFT_BUILD_DIR)/.staged: $(XFT_BUILD_DIR)/.built
-	rm -f $(XFT_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXft.so: $(XFT_BUILD_DIR)/.built
 	$(MAKE) -C $(XFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXft.la
-	touch $(XFT_BUILD_DIR)/.staged
 
-xft-stage: $(XFT_BUILD_DIR)/.staged
+xft-stage: $(STAGING_LIB_DIR)/libXft.so
 
 #
 # This builds the IPK file.

@@ -48,7 +48,7 @@ ATK_LOCALES=
 # compilation or linking flags, then list them here.
 #
 ATK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
-ATK_LDFLAGS=-lgobject-2.0 -lglib-2.0
+ATK_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # ATK_BUILD_DIR is the directory in which the build is done.
@@ -100,17 +100,9 @@ atk-source: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-# This target also configures the build within the build directory.
-# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
-# and NOT $(MAKE) below.  Passing it to configure causes configure to
-# correctly BUILD the Makefile with the right paths, where passing it
-# to Make causes it to override the default search paths of the compiler.
-#
-# If the compilation of the package requires other packages to be staged
-# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
-#
-$(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
-	$(MAKE) glib-stage
+$(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) \
+		$(STAGING_DIR)/opt/lib/libglib-2.0.so \
+		$(ATK_PATCHES)
 	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
 	$(ATK_UNZIP) $(DL_DIR)/$(ATK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)

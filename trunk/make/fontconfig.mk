@@ -97,15 +97,17 @@ fontconfig-source: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
-	$(MAKE) expat-stage 
-	$(MAKE) freetype-stage
+$(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libfreetype.so \
+		$(FONTCONFIG_PATCHES)
+	$(MAKE) expat-stage
 	(cd $(FONTCONFIG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FONTCONFIG_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -136,13 +138,11 @@ fontconfig: $(FONTCONFIG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(FONTCONFIG_BUILD_DIR)/.staged: $(FONTCONFIG_BUILD_DIR)/.built
-	rm -f $(FONTCONFIG_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libfontconfig.so: $(FONTCONFIG_BUILD_DIR)/.built
 	$(MAKE) -C $(FONTCONFIG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libfontconfig.la
-	touch $(FONTCONFIG_BUILD_DIR)/.staged
 
-fontconfig-stage: $(FONTCONFIG_BUILD_DIR)/.staged
+fontconfig-stage: $(STAGING_LIB_DIR)/libfontconfig.so
 
 #
 # This builds the IPK file.

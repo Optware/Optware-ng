@@ -98,14 +98,17 @@ xext-source: $(XEXT_BUILD_DIR)/.fetched $(XEXT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XEXT_BUILD_DIR)/.configured: $(XEXT_BUILD_DIR)/.fetched $(XEXT_PATCHES)
-	$(MAKE) x11-stage xextensions-stage
+$(XEXT_BUILD_DIR)/.configured: $(XEXT_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
+		$(STAGING_LIB_DIR)/libX11.so \
+		$(XEXT_PATCHES)
 	(cd $(XEXT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -133,13 +136,11 @@ xext: $(XEXT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XEXT_BUILD_DIR)/.staged: $(XEXT_BUILD_DIR)/.built
-	rm -f $(XEXT_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXext.so: $(XEXT_BUILD_DIR)/.built
 	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXext.la
-	touch $(XEXT_BUILD_DIR)/.staged
 
-xext-stage: $(XEXT_BUILD_DIR)/.staged
+xext-stage: $(STAGING_LIB_DIR)/libXext.so
 
 #
 # This builds the IPK file.

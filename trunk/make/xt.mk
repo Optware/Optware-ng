@@ -99,9 +99,10 @@ xt-source: $(XT_BUILD_DIR)/.fetched $(XT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XT_BUILD_DIR)/.configured: $(XT_BUILD_DIR)/.fetched $(XT_PATCHES)
-	$(MAKE) x11-stage
-	$(MAKE) sm-stage
+$(XT_BUILD_DIR)/.configured: $(XT_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libX11.so \
+		$(STAGING_LIB_DIR)/libSM.so \
+		$(XT_PATCHES)
 	(cd $(XT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XT_CPPFLAGS)" \
@@ -138,13 +139,11 @@ xt: $(XT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XT_BUILD_DIR)/.staged: $(XT_BUILD_DIR)/.built
-	rm -f $(XT_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXt.so: $(XT_BUILD_DIR)/.built
 	$(MAKE) -C $(XT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXt.la
-	touch $(XT_BUILD_DIR)/.staged
 
-xt-stage: $(XT_BUILD_DIR)/.staged
+xt-stage: $(STAGING_LIB_DIR)/libXt.so
 
 #
 # This builds the IPK file.

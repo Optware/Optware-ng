@@ -99,9 +99,10 @@ xauth-source: $(XAUTH_BUILD_DIR)/.fetched $(XAUTH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAUTH_BUILD_DIR)/.configured: $(XAUTH_BUILD_DIR)/.fetched $(XAUTH_PATCHES)
-	$(MAKE) xau-stage
-	$(MAKE) xmu-stage
+$(XAUTH_BUILD_DIR)/.configured: $(XAUTH_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libXau.so \
+		$(STAGING_LIB_DIR)/libXmu.so \
+		$(XAUTH_PATCHES)
 	(cd $(XAUTH_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -v -i; \
 		$(TARGET_CONFIGURE_OPTS) \

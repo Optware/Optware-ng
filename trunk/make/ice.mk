@@ -99,9 +99,10 @@ ice-source: $(ICE_BUILD_DIR)/.fetched $(ICE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ICE_BUILD_DIR)/.configured: $(ICE_BUILD_DIR)/.fetched $(ICE_PATCHES)
-	$(MAKE) xproto-stage
-	$(MAKE) xtrans-stage
+$(ICE_BUILD_DIR)/.configured: $(ICE_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h \
+		$(ICE_PATCHES)
 	(cd $(ICE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICE_CPPFLAGS)" \
@@ -137,13 +138,11 @@ ice: $(ICE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(ICE_BUILD_DIR)/.staged: $(ICE_BUILD_DIR)/.built
-	rm -f $(ICE_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libICE.so: $(ICE_BUILD_DIR)/.built
 	$(MAKE) -C $(ICE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libICE.la
-	touch $(ICE_BUILD_DIR)/.staged
 
-ice-stage: $(ICE_BUILD_DIR)/.staged
+ice-stage: $(STAGING_LIB_DIR)/libICE.so
 
 #
 # This builds the IPK file.

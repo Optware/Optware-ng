@@ -95,13 +95,16 @@ xtrans-source: $(XTRANS_BUILD_DIR)/.fetched $(XTRANS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTRANS_BUILD_DIR)/.configured: $(XTRANS_BUILD_DIR)/.fetched $(XTRANS_PATCHES)
+$(XTRANS_BUILD_DIR)/.configured: $(XTRANS_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(XTRANS_PATCHES)
 	(cd $(XTRANS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTRANS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTRANS_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -129,13 +132,10 @@ xtrans: $(XTRANS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XTRANS_BUILD_DIR)/.staged: $(XTRANS_BUILD_DIR)/.built
-	$(MAKE) xproto-stage
-	rm -f $(XTRANS_BUILD_DIR)/.staged
+$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h: $(XTRANS_BUILD_DIR)/.built
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(XTRANS_BUILD_DIR)/.staged
 
-xtrans-stage: $(XTRANS_BUILD_DIR)/.staged
+xtrans-stage: $(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h
 
 #
 # This builds the IPK file.

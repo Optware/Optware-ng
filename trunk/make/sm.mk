@@ -99,8 +99,9 @@ sm-source: $(SM_BUILD_DIR)/.fetched $(SM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SM_BUILD_DIR)/.configured: $(SM_BUILD_DIR)/.fetched $(SM_PATCHES)
-	$(MAKE) ice-stage
+$(SM_BUILD_DIR)/.configured: $(SM_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libICE.so \
+		$(SM_PATCHES)
 	(cd $(SM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SM_CPPFLAGS)" \
@@ -136,13 +137,11 @@ sm: $(SM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(SM_BUILD_DIR)/.staged: $(SM_BUILD_DIR)/.built
-	rm -f $(SM_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libSM.so: $(SM_BUILD_DIR)/.built
 	$(MAKE) -C $(SM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libSM.la
-	touch $(SM_BUILD_DIR)/.staged
 
-sm-stage: $(SM_BUILD_DIR)/.staged
+sm-stage: $(STAGING_LIB_DIR)/libSM.so
 
 #
 # This builds the IPK file.

@@ -97,9 +97,14 @@ xdpyinfo-source: $(XDPYINFO_BUILD_DIR)/.fetched $(XDPYINFO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XDPYINFO_BUILD_DIR)/.configured: $(XDPYINFO_BUILD_DIR)/.fetched $(XDPYINFO_PATCHES)
-	$(MAKE) x11-stage xext-stage xtst-stage
+$(XDPYINFO_BUILD_DIR)/.configured: $(XDPYINFO_BUILD_DIR)/.fetched  \
+		$(STAGING_LIB_DIR)/libX11.so \
+		$(STAGING_LIB_DIR)/libXext.so \
+		$(STAGING_LIB_DIR)/libXtst.so \
+		$(XDPYINFO_PATCHES)
 	(cd $(XDPYINFO_BUILD_DIR); \
+		AUTOMAKE=automake-1.9 \
+		ACLOCAL=aclocal-1.9 \
 		autoreconf -v --install; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDPYINFO_CPPFLAGS)" \

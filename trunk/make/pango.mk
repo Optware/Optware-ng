@@ -48,7 +48,7 @@ PANGO_LOCALES=
 # compilation or linking flags, then list them here.
 #
 PANGO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
-PANGO_LDFLAGS=-lgobject-2.0 -lglib-2.0
+PANGO_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
 # PANGO_BUILD_DIR is the directory in which the build is done.
@@ -109,11 +109,10 @@ pango-source: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
-	$(MAKE) glib-stage
-	$(MAKE) xft-stage 
-	$(MAKE) freetype-stage 
-	$(MAKE) fontconfig-stage
+$(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) \
+		$(STAGING_LIB_DIR)/libglib-2.0.so \
+		$(STAGING_LIB_DIR)/libXft.so \
+		$(PANGO_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)

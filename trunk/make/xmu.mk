@@ -99,9 +99,10 @@ xmu-source: $(XMU_BUILD_DIR)/.fetched $(XMU_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XMU_BUILD_DIR)/.configured: $(XMU_BUILD_DIR)/.fetched $(XMU_PATCHES)
-	$(MAKE) xext-stage
-	$(MAKE) xt-stage
+$(XMU_BUILD_DIR)/.configured: $(XMU_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libXext.so \
+		$(STAGING_LIB_DIR)/libXt.so \
+		$(XMU_PATCHES)
 	(cd $(XMU_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMU_CPPFLAGS)" \
@@ -137,14 +138,12 @@ xmu: $(XMU_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XMU_BUILD_DIR)/.staged: $(XMU_BUILD_DIR)/.built
-	rm -f $(XMU_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXmu.so: $(XMU_BUILD_DIR)/.built
 	$(MAKE) -C $(XMU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXmu.la
 	rm -f $(STAGING_LIB_DIR)/libXmuu.la
-	touch $(XMU_BUILD_DIR)/.staged
 
-xmu-stage: $(XMU_BUILD_DIR)/.staged
+xmu-stage: $(STAGING_LIB_DIR)/libXmu.so
 
 #
 # This builds the IPK file.
