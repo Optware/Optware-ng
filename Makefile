@@ -54,6 +54,10 @@ TARGET_CC=$(TARGET_CROSS)gcc
 TARGET_LD=$(TARGET_CROSS)ld
 TARGET_AR=$(TARGET_CROSS)ar
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
+
+STAGING_CPPFLAGS=-I$(STAGING_DIR)/include
+STAGING_LDFLAGS=-L$(STAGING_DIR)/lib
+
 STRIP=$(TARGET_CROSS)strip --remove-section=.comment --remove-section=.note
 
 HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \

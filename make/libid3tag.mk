@@ -12,8 +12,6 @@ LIBID3TAG=libid3tag-$(LIBID3TAG_VERSION)
 LIBID3TAG_SITE=http://belnet.dl.sourceforge.net/sourceforge/mad
 LIBID3TAG_SOURCE=$(LIBID3TAG).tar.gz
 LIBID3TAG_UNZIP=zcat
-LIBID3TAG_CFLAGS= $(TARGET_CFLAGS) -I$(STAGING_DIR)/include -fPIC
-LIBID3TAG_LDFLAGS= $(TARGET_LDFLAGS) -L$(STAGING_DIR)/lib
 
 LIBID3TAG_IPK=$(BUILD_DIR)/libid3tag_$(LIBID3TAG_VERSION)-1_armeb.ipk
 LIBID3TAG_IPK_DIR=$(BUILD_DIR)/libid3tag-$(LIBID3TAG_VERSION)-ipk
@@ -29,22 +27,23 @@ $(LIBID3TAG_DIR)/.source: $(DL_DIR)/$(LIBID3TAG_SOURCE)
 $(LIBID3TAG_DIR)/.configured: $(LIBID3TAG_DIR)/.source
 	(cd $(LIBID3TAG_DIR); \
         export CC=$(TARGET_CC) ;\
-        export CFLAGS="$(LIBID3TAG_CFLAGS)" ;\
-        export LDFLAGS="$(LIBID3TAG_LDFLAGS)" ;\
+        export CPPFLAGS="$(STAGING_CPPFLAGS)" ;\
+        export LDFLAGS="$(STAGING_LDFLAGS)" ;\
 		./configure \
-		--host=arm-linux \
+		--host=$(GNU_TARGET_NAME) \
+		--build=$(GNU_HOST_NAME) \
 		--prefix=$(STAGING_DIR) \
 	);
 	touch $(LIBID3TAG_DIR)/.configured
 
 $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION): $(LIBID3TAG_DIR)/.configured
-	$(MAKE) CFLAGS="$(LIBID3TAG_CFLAGS)" CC=$(TARGET_CC) -C $(LIBID3TAG_DIR) install
+	$(MAKE) -C $(LIBID3TAG_DIR) install
 
 libid3tag-headers: $(STAGING_DIR)/lib/libid3tag.a
 
 libid3tag: zlib $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
 
-$(LIBID3TAG_IPK): $(STAGING_DIR)/lib/libid3tag.so.$(LIBID3TAG_SHLIBVERSION)
+$(LIBID3TAG_IPK): lidid3tag
 	mkdir -p $(LIBID3TAG_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libid3tag.control $(LIBID3TAG_IPK_DIR)/CONTROL/control
 	mkdir -p $(LIBID3TAG_IPK_DIR)/opt/include

@@ -32,21 +32,21 @@ $(GDBM_DIR)/.source: $(DL_DIR)/$(GDBM_SOURCE)
 
 $(GDBM_DIR)/.configured: $(GDBM_DIR)/.source
 	(cd $(GDBM_DIR); \
-        export CC=$(TARGET_CC) ;\
 		./configure \
-		--host=arm-linux \
+		--host=$(GNU_TARGET_NAME) \
+		--build=$(GNU_HOST_NAME) \
 		--prefix=$(STAGING_DIR) \
 	);
 	touch $(GDBM_DIR)/.configured
 
 $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION): $(GDBM_DIR)/.configured
-	$(MAKE) CFLAGS="$(GDBM_CFLAGS)" CC=$(TARGET_CC) -C $(GDBM_DIR) install
+	$(MAKE) -C $(GDBM_DIR) install
 
 gdbm-headers: $(STAGING_DIR)/lib/libgdbm.a
 
 gdbm: $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION)
 
-$(GDBM_IPK): $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION)
+$(GDBM_IPK): gdbm
 	mkdir -p $(GDBM_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/gdbm.control $(GDBM_IPK_DIR)/CONTROL/control
 	mkdir -p $(GDBM_IPK_DIR)/opt/include
