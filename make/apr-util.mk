@@ -21,7 +21,7 @@ APR_UTIL_MAINTAINER=nslu2-linux@yahoogroups.com
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION))
+APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
