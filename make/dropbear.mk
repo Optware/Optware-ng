@@ -45,7 +45,7 @@ $(PACKAGE_DIR)/dropbear_0.43_armeb.ipk: $(PACKAGE_DIR)/dropbear/opt/dropbear/sbi
 	install -d $(PACKAGE_DIR)/dropbear/CONTROL
 	install -m 644 $(SOURCE_DIR)/dropbear.control $(PACKAGE_DIR)/dropbear/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/dropbear.postinst $(PACKAGE_DIR)/dropbear/CONTROL/postinst
-	install -m 644 $(SOURCE_DIR)/dropbear.postrm $(PACKAGE_DIR)/dropbear/CONTROL/postrm
+	install -m 644 $(SOURCE_DIR)/dropbear.prerm $(PACKAGE_DIR)/dropbear/CONTROL/prerm
 	./ipkg-build -c -o root -g root $(PACKAGE_DIR)/dropbear $(PACKAGE_DIR)
 
 dropbear: $(DROPBEAR_DIR)/dropbearmulti

@@ -86,8 +86,12 @@ PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 unslung: $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
 
+$(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
+	cd $(PACKAGE_DIR) ; ../ipkg-make-index . > Packages
+
 world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) \
-	$(TARGETS_INSTALL) $(PACKAGES_UPKG)
+	$(TARGETS_INSTALL) $(PACKAGES_UPKG) $(PACKAGES_IPKG) \
+	$(PACKAGE_DIR)/Packages
 	@echo "ALL DONE."
 
 .PHONY: all world clean dirclean distclean directories source unslung \
@@ -113,7 +117,8 @@ $(PACKAGE_DIR):
 source: $(TARGETS_SOURCE) $(PACKAGES_SOURCE)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
+	cd firmware ; $(MAKE) umount clean
+	find . -name '*~' -print | xargs /bin/rm -f
 
 distclean: clean
-	rm -rf $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR)
-	find . -name '*~' -print | xargs /bin/rm -f
+	rm -rf $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) ipkg.pyc
