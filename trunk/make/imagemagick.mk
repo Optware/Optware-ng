@@ -87,7 +87,7 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
-	$(MAKE) zlib-stage
+	$(MAKE) zlib-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IMAGEMAGICK_PATCHES) | patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1
@@ -104,6 +104,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--without-perl \
 		--without-x \
 		--with-zlib \
+		--with-jpeg \
 		--without-gslib \
 	)
 	touch $(IMAGEMAGICK_BUILD_DIR)/.configured
@@ -153,14 +154,31 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/imagemagick
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(IMAGEMAGICK_IPK)
 #	install -d $(IMAGEMAGICK_IPK_DIR)/opt/bin
 
-# 
-# This is pretty ugly, but works.
-# 
-	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install_sh_PROGRAM="/bin/sh $(IMAGEMAGICK_BUILD_DIR)/install-sh -c -s" INSTALL_STRIP_FLAG=-s INSTALL_PROGRAM="/bin/sh $(IMAGEMAGICK_BUILD_DIR)/install-sh -c -s" install-exec-am
-
+	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
+	
+	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
+	$(STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*
+	$(STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.a
+#
+	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
+	cp $(IMAGEMAGICK_BUILD_DIR)/magick/Magick-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
+	cp $(IMAGEMAGICK_BUILD_DIR)/wand/Wand-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/animate -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/animate
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/compare -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/compare
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/composite -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/composite
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/conjure -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/conjure
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/convert
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/display -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/display
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/identify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/identify
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/import -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/import
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/mogrify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/mogrify
+	$(STRIP) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/montage -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/montage
+	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/www
+	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/images
+	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/man
 	install -d $(IMAGEMAGICK_IPK_DIR)/CONTROL
 	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/control $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
-	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/postinst $(IMAGEMAGICK_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/postinst $(IMAGEMAGICK_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/prerm $(IMAGEMAGICK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAGEMAGICK_IPK_DIR)
 
