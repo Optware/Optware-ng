@@ -118,14 +118,18 @@ libusb-stage: $(STAGING_LIB_DIR)/libusb.la
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la
+$(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la $(STAGING_LIB_DIR)/libusb.la
 	rm -rf $(LIBUSB_IPK_DIR) $(LIBUSB_IPK)
+	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(LIBUSB_IPK_DIR) install
+	( cd $(LIBUSB_BUILD_DIR)/tests ; \
+		$(TARGET_CC) -o $(LIBUSB_IPK_DIR)/opt/bin/testlibusb testlibusb.c \
+			-I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -lusb \
+			-Wl,--rpath -Wl,/opt/lib )
+	rm -rf $(LIBUSB_IPK_DIR)/opt/include
+	rm -rf $(LIBUSB_IPK_DIR)/opt/bin/libusb-config
+	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusb.{a,la}
 	install -d $(LIBUSB_IPK_DIR)/CONTROL
 	install -m 644 $(LIBUSB_SOURCE_DIR)/control $(LIBUSB_IPK_DIR)/CONTROL/control
-	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(LIBUSB_IPK_DIR) install
-	rm -rf $(LIBUSB_IPK_DIR)/opt/include
-	rm -rf $(LIBUSB_IPK_DIR)/opt/bin
-	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusb.a
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUSB_IPK_DIR)
 
 #
