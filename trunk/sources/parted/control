@@ -5,7 +5,7 @@ Maintainer: Inge Arnesen <inge.arnesen@gmail.com>
 Source: http://ftp.gnu.org/gnu/parted/parted-1.6.21.tar.gz
 Section: sys
 Priority: optional
-Depends:
+Depends: e2fsprogs, libiconv
 Conffiles: 
 Description: GNU partition editor
 
