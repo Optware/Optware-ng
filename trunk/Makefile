@@ -124,7 +124,8 @@ $(PACKAGES_STAGE) : directories crosstool
 $(PACKAGES_IPKG) : directories crosstool ipkg-utils
 
 $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
-	-@mkdir -p $(PACKAGE_DIR)
+	rm -rf $(PACKAGE_DIR)
+	mkdir -p $(PACKAGE_DIR)
 	{ \
 		cd $(PACKAGE_DIR); \
 		cp $(BUILD_DIR)/*.ipk .; \
