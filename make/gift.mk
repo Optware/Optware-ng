@@ -142,6 +142,7 @@ $(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION): $(GIFT_BUILD_DIR)/.built
 	install -m 644 $(GIFT_BUILD_DIR)/lib/interface.h $(STAGING_DIR)/opt/include
 	install -m 644 $(GIFT_BUILD_DIR)/lib/conf.h $(STAGING_DIR)/opt/include
 	install -m 644 $(GIFT_BUILD_DIR)/lib/log.h $(STAGING_DIR)/opt/include
+	install -m 644 $(GIFT_BUILD_DIR)/lib/tcpc.h $(STAGING_DIR)/opt/include/libgift
 	install -m 644 $(GIFT_BUILD_DIR)/lib/libgift.h $(STAGING_DIR)/opt/include/libgift
 	install -m 644 $(GIFT_BUILD_DIR)/lib/stopwatch.h $(STAGING_DIR)/opt/include/libgift
 	install -m 644 $(GIFT_BUILD_DIR)/lib/mime.h $(STAGING_DIR)/opt/include/libgift
@@ -189,11 +190,19 @@ gift-stage: $(STAGING_DIR)/opt/lib/libgift.so.$(GIFT_VERSION)
 #
 $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
 	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_armeb.ipk
+	install -d $(GIFT_IPK_DIR)/opt/share/giFT
+	install -m 644 $(GIFT_BUILD_DIR)/etc/giftd.conf.template $(GIFT_IPK_DIR)/opt/share/giFT/giftd.conf.template
+	install -m 644 $(GIFT_BUILD_DIR)/data/mime.types $(GIFT_IPK_DIR)/opt/share/giFT/mime.types
 	install -d $(GIFT_IPK_DIR)/opt/bin
+	install -m 644 $(GIFT_BUILD_DIR)/gift-setup $(GIFT_IPK_DIR)/opt/bin/gift-setup
 	$(STRIP_COMMAND) $(GIFT_BUILD_DIR)/src/.libs/giftd -o $(GIFT_IPK_DIR)/opt/bin/giftd
+	install -d $(GIFT_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(GIFT_BUILD_DIR)/lib/.libs/libgift.so.$(GIFT_VERSION_LIB) -o $(GIFT_IPK_DIR)/opt/lib/libgift.so.$(GIFT_VERSION_LIB)
+	$(STRIP_COMMAND) $(GIFT_BUILD_DIR)/plugin/.libs/libgiftproto.so.$(GIFT_VERSION_LIB) -o $(GIFT_IPK_DIR)/opt/lib/libgiftproto.so.$(GIFT_VERSION_LIB)
 	install -d $(GIFT_IPK_DIR)/CONTROL
 	install -m 644 $(GIFT_SOURCE_DIR)/control $(GIFT_IPK_DIR)/CONTROL/control
+	cd $(GIFT_IPK_DIR)/opt/lib && ln -fs libgift.so.$(GIFT_VERSION_LIB) libgift.so.0
+	cd $(GIFT_IPK_DIR)/opt/lib && ln -fs libgiftproto.so.$(GIFT_VERSION_LIB) libgiftproto.so.0
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
 
 #

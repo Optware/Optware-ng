@@ -168,6 +168,7 @@ $(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbis.so.$(LIBVORBIS_VERS
 	$(STRIP_COMMAND) $(LIBVORBIS_BUILD_DIR)/lib/.libs/libvorbisfile.so.$(LIBVORBIS_FILE_VERSION_LIB) -o $(LIBVORBIS_IPK_DIR)/opt/lib/libvorbisfile.so.$(LIBVORBIS_FILE_VERSION_LIB)
 	install -d $(LIBVORBIS_IPK_DIR)/CONTROL
 	install -m 644 $(LIBVORBIS_SOURCE_DIR)/control $(LIBVORBIS_IPK_DIR)/CONTROL/control
+	cd $(LIBVORBIS_IPK_DIR)/opt/lib && ln -fs libvorbisfile.so.$(LIBVORBIS_FILE_VERSION_LIB) libvorbisfile.so.3
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBIS_IPK_DIR)
 
 #
