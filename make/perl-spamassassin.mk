@@ -4,11 +4,17 @@
 #
 ###########################################################
 
-PERL-SPAMASSASSIN_SITE=http://www.apache.de/dist/perl-spamassassin/source
+PERL-SPAMASSASSIN_SITE=http://www.apache.de/dist/spamassassin/source
 PERL-SPAMASSASSIN_VERSION=3.0.2
 PERL-SPAMASSASSIN_SOURCE=Mail-SpamAssassin-$(PERL-SPAMASSASSIN_VERSION).tar.bz2
 PERL-SPAMASSASSIN_DIR=Mail-SpamAssassin-$(PERL-SPAMASSASSIN_VERSION)
 PERL-SPAMASSASSIN_UNZIP=bzcat
+
+PERL-SPAMASSASSIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-SPAMASSASSIN_DESCRIPTION=A mail filter which attempts to identify spam using a variety of mechanisms including text analysis, Bayesian filtering, DNS blocklists, and collaborative filtering databases.
+PERL-SPAMASSASSIN_SECTION=util
+PERL-SPAMASSASSIN_PRIORITY=optional
+PERL-SPAMASSASSIN_DEPENDS=perl, perl-digest-sha1, perl-html-parser, perl-net-dns, perl-db-file
 
 PERL-SPAMASSASSIN_IPK_VERSION=1
 
@@ -16,6 +22,11 @@ PERL-SPAMASSASSIN_IPK_VERSION=1
 PERL-SPAMASSASSIN_CONFFILES=/opt/etc/spamassassin/init.pre /opt/etc/spamassassin/local.cf /opt/etc/init.d/S62spamd
 
 PERL-SPAMASSASSIN_PATCHES=$(PERL-SPAMASSASSIN_SOURCE_DIR)/Makefile.PL.patch
+
+PERL-SPAMASSASSIN_BUILD_DIR=$(BUILD_DIR)/perl-spamassassin
+PERL-SPAMASSASSIN_SOURCE_DIR=$(SOURCE_DIR)/perl-spamassassin
+PERL-SPAMASSASSIN_IPK_DIR=$(BUILD_DIR)/perl-spamassassin-$(PERL-SPAMASSASSIN_VERSION)-ipk
+PERL-SPAMASSASSIN_IPK=$(BUILD_DIR)/perl-spamassassin_$(PERL-SPAMASSASSIN_VERSION)-$(PERL-SPAMASSASSIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PERL-SPAMASSASSIN_BUILD_DIR=$(BUILD_DIR)/perl-spamassassin
 PERL-SPAMASSASSIN_SOURCE_DIR=$(SOURCE_DIR)/perl-spamassassin
@@ -64,6 +75,19 @@ $(PERL-SPAMASSASSIN_BUILD_DIR)/.staged: $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 
 perl-spamassassin-stage: $(PERL-SPAMASSASSIN_BUILD_DIR)/.staged
 
+$(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-spamassassin" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-SPAMASSASSIN_PRIORITY)" >>$@
+	@echo "Section: $(PERL-SPAMASSASSIN_SECTION)" >>$@
+	@echo "Version: $(PERL-SPAMASSASSIN_VERSION)-$(PERL-SPAMASSASSIN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-SPAMASSASSIN_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-SPAMASSASSIN_SITE)/$(PERL-SPAMASSASSIN_SOURCE)" >>$@
+	@echo "Description: $(PERL-SPAMASSASSIN_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-SPAMASSASSIN_DEPENDS)" >>$@
+
 $(PERL-SPAMASSASSIN_IPK): $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 	rm -rf $(PERL-SPAMASSASSIN_IPK_DIR) $(BUILD_DIR)/perl-spamassassin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-SPAMASSASSIN_BUILD_DIR) DESTDIR=$(PERL-SPAMASSASSIN_IPK_DIR) install
@@ -84,8 +108,7 @@ $(PERL-SPAMASSASSIN_IPK): $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 	install -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin
 	install -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/README $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin/README
 	install -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/master.cf.patch $(PERL-SPAMASSASSIN_IPK_DIR)/opt/doc/perl-spamassassin/master.cf.patch
-	install -d $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-SPAMASSASSIN_SOURCE_DIR)/control $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/control
 	install -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/postinst $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PERL-SPAMASSASSIN_SOURCE_DIR)/prerm $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-SPAMASSASSIN_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/conffiles

@@ -87,13 +87,13 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# perl-spamassassin: fixed the link 
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	perl-spamassassin \
 
 # asterisk can't be downloaded, its source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
-# perl-spamassassin can't be downloaded: 404 not found
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	asterisk \
-	perl-spamassassin \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
