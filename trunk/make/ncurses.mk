@@ -62,7 +62,7 @@ $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	cp $(SOURCE_DIR)/ncurses.control $(NCURSES_IPK_DIR)/CONTROL/control
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) install.libs install.data install.panel install.menu install.form
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
-	rm -rf $(NCURSES_IPK_DIR)/opt/lib/lib*.a
+	#rm -rf $(NCURSES_IPK_DIR)/opt/lib/lib*.a
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
 ncurses-ipk: $(NCURSES_IPK)
