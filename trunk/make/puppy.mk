@@ -8,7 +8,7 @@
 PUPPY_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
 PUPPY_VERSION=1.0
 PUPPY_SOURCE=puppy-$(PUPPY_VERSION).tar.gz
-# PUPPY_TAG=-r PUPPY_1_0
+PUPPY_TAG=-r PUPPY_1_0
 PUPPY_MODULE=puppy
 PUPPY_DIR=puppy-$(PUPPY_VERSION)
 PUPPY_UNZIP=zcat
