@@ -10,7 +10,7 @@ MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
 MIAU_UNZIP=zcat
 
-MIAU_IPK_VERSION=7
+MIAU_IPK_VERSION=8
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
