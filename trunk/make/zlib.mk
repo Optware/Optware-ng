@@ -44,7 +44,7 @@ zlib-unpack: $(ZLIB_BUILD_DIR)/.configured
 $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/.configured
 	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" SHAREDLIB="libz.so" \
 		SHAREDLIBV="libz.so.$(ZLIB_LIB_VERSION)" SHAREDLIBM="libz.so.1" \
-		LDSHARED="$(TARGET_CROSS)ld -shared -soname,libz.so.1" \
+		LDSHARED="$(TARGET_LD) -shared -soname,libz.so.1" \
 		CFLAGS="$(ZLIB_CFLAGS)" CC=$(TARGET_CC) -C $(ZLIB_BUILD_DIR) all libz.so.$(ZLIB_LIB_VERSION) libz.a
 
 zlib: $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
