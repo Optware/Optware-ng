@@ -33,19 +33,19 @@ $(TERMCAP_DIR)/.configured: $(DL_DIR)/$(TERMCAP_SOURCE)
 
 termcap-unpack: $(TERMCAP_DIR)/.configured
 
-$(TERMCAP_DIR)/termcap: $(TERMCAP_DIR)/.configured
+$(TERMCAP_DIR)/libtermcap.a: $(TERMCAP_DIR)/.configured
 	make -C $(TERMCAP_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) 
 
-termcap: $(TERMCAP_DIR)/termcap
+termcap: $(TERMCAP_DIR)/libtermcap.a
 
-$(TERMCAP_IPK): $(TERMCAP_DIR)/termcap
+$(TERMCAP_IPK): $(TERMCAP_DIR)/libtermcap.a
 	install -d $(TERMCAP_IPK_DIR)/CONTROL
 	mkdir -p $(TERMCAP_IPK_DIR)/opt/lib 
 	cp $(TERMCAP_DIR)/libtermcap.a $(TERMCAP_IPK_DIR)/opt/lib 
 	install -m 644 $(SOURCE_DIR)/termcap.control  $(TERMCAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TERMCAP_IPK_DIR)
 
-$(STAGING_DIR)/lib/libtermcap.a: $(TERMCAP_DIR)/termcap
+$(STAGING_DIR)/lib/libtermcap.a: $(TERMCAP_DIR)/libtermcap.a
 	cp -dfp $(TERMCAP_DIR)/libtermcap.a $(STAGING_DIR)/lib
 
 termcap-ipk: $(TERMCAP_IPK) $(STAGING_DIR)/lib/libtermcap.a
