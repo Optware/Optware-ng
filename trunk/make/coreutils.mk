@@ -153,10 +153,10 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec
 	rm $(COREUTILS_IPK_DIR)/opt/bin/groups
-	$(STRIP) $(COREUTILS_IPK_DIR)/opt/bin/*
+	$(TARGET_STRIP) $(COREUTILS_IPK_DIR)/opt/bin/*
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
 
-#	$(STRIP) $(COREUTILS_BUILD_DIR)/coreutils -o $(COREUTILS_IPK_DIR)/opt/bin/coreutils
+#	$(TARGET_STRIP) $(COREUTILS_BUILD_DIR)/coreutils -o $(COREUTILS_IPK_DIR)/opt/bin/coreutils
 #	install -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/SXXcoreutils
 	install -d $(COREUTILS_IPK_DIR)/CONTROL

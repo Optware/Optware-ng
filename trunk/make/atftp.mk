@@ -49,9 +49,9 @@ atftp: $(ATFTP_BUILD_DIR)/atftp
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
 	rm -rf $(ATFTP_IPK_DIR) $(ATFTP_IPK)
 	install -d $(ATFTP_IPK_DIR)/opt/bin
-	$(STRIP) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
+	$(TARGET_STRIP) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
 	install -d $(ATFTP_IPK_DIR)/opt/sbin
-	$(STRIP) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
+	$(TARGET_STRIP) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
 	install -d $(ATFTP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(ATFTP_SOURCE_DIR)/rc.atftpd $(ATFTP_IPK_DIR)/opt/etc/init.d/S60atftpd
 	install -d $(ATFTP_IPK_DIR)/CONTROL

@@ -150,12 +150,12 @@ $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/libjpeg.a
 	install -d $(LIBJPEG_IPK_DIR)/opt/bin
 	install -d $(LIBJPEG_IPK_DIR)/opt/lib
 
-	$(STRIP) $(LIBJPEG_BUILD_DIR)/cjpeg -o $(LIBJPEG_IPK_DIR)/opt/bin/cjpeg
-	$(STRIP) $(LIBJPEG_BUILD_DIR)/djpeg -o $(LIBJPEG_IPK_DIR)/opt/bin/djpeg
-	$(STRIP) $(LIBJPEG_BUILD_DIR)/jpegtran -o $(LIBJPEG_IPK_DIR)/opt/bin/jpegtran
-	$(STRIP) $(LIBJPEG_BUILD_DIR)/rdjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/rdjpgcom
-	$(STRIP) $(LIBJPEG_BUILD_DIR)/wrjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/wrjpgcom
-	$(STRIP) --strip-unneeded $(LIBJPEG_BUILD_DIR)/libjpeg.a -o $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.a
+	$(TARGET_STRIP) $(LIBJPEG_BUILD_DIR)/cjpeg -o $(LIBJPEG_IPK_DIR)/opt/bin/cjpeg
+	$(TARGET_STRIP) $(LIBJPEG_BUILD_DIR)/djpeg -o $(LIBJPEG_IPK_DIR)/opt/bin/djpeg
+	$(TARGET_STRIP) $(LIBJPEG_BUILD_DIR)/jpegtran -o $(LIBJPEG_IPK_DIR)/opt/bin/jpegtran
+	$(TARGET_STRIP) $(LIBJPEG_BUILD_DIR)/rdjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/rdjpgcom
+	$(TARGET_STRIP) $(LIBJPEG_BUILD_DIR)/wrjpgcom -o $(LIBJPEG_IPK_DIR)/opt/bin/wrjpgcom
+	$(TARGET_STRIP) --strip-unneeded $(LIBJPEG_BUILD_DIR)/libjpeg.a -o $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.a
 #	install -d $(LIBJPEG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)/opt/etc/init.d/SXXlibjpeg
 	install -d $(LIBJPEG_IPK_DIR)/CONTROL

@@ -60,7 +60,7 @@ mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 
 $(MT_DAAPD_IPK): $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 	install -d $(MT_DAAPD_IPK_DIR)/opt/sbin
-	$(STRIP) --strip-unneeded $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
+	$(TARGET_STRIP) --strip-unneeded $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
 	install -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(MT_DAAPD_SOURCE_DIR)/rc.mt-daapd $(MT_DAAPD_IPK_DIR)/opt/etc/init.d/S60mt-daapd
 	install -d $(MT_DAAPD_IPK_DIR)/CONTROL

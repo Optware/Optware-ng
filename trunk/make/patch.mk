@@ -134,7 +134,7 @@ patch: $(PATCH_BUILD_DIR)/patch
 $(PATCH_IPK): $(PATCH_BUILD_DIR)/patch
 	rm -rf $(PATCH_IPK_DIR) $(PATCH_IPK)
 	install -d $(PATCH_IPK_DIR)/opt/bin
-	$(STRIP) $(PATCH_BUILD_DIR)/patch -o $(PATCH_IPK_DIR)/opt/bin/patch
+	$(TARGET_STRIP) $(PATCH_BUILD_DIR)/patch -o $(PATCH_IPK_DIR)/opt/bin/patch
 #	install -d $(PATCH_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(PATCH_SOURCE_DIR)/rc.patch $(PATCH_IPK_DIR)/opt/etc/init.d/SXXpatch
 	install -d $(PATCH_IPK_DIR)/CONTROL

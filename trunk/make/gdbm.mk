@@ -56,7 +56,7 @@ gdbm-stage: $(STAGING_DIR)/opt/lib/libgdbm.a
 $(GDBM_IPK): $(GDBM_BUILD_DIR)/.libs/libgdbm.a
 	rm -rf $(GDBM_IPK_DIR) $(GDBM_IPK)
 	$(MAKE) -C $(GDBM_BUILD_DIR) INSTALL_ROOT=$(GDBM_IPK_DIR) install install-compat
-	$(STRIP) --strip-unneeded $(GDBM_IPK_DIR)/opt/lib/*.so.*
+	$(TARGET_STRIP) --strip-unneeded $(GDBM_IPK_DIR)/opt/lib/*.so.*
 	rm -rf $(GDBM_IPK_DIR)/opt/{man,info}
 	rm -f $(GDBM_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(GDBM_IPK_DIR)/CONTROL

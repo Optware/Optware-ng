@@ -109,7 +109,7 @@ jove: $(JOVE_BUILD_DIR)/jjove
 $(JOVE_IPK): $(JOVE_BUILD_DIR)/jjove
 	rm -rf $(JOVE_IPK_DIR) $(JOVE_IPK)
 	install -d $(JOVE_IPK_DIR)/opt/bin
-	$(STRIP) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)/opt/bin/jove
+	$(TARGET_STRIP) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)/opt/bin/jove
 	install -d $(JOVE_IPK_DIR)/CONTROL
 	install -m 644 $(JOVE_SOURCE_DIR)/control $(JOVE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JOVE_IPK_DIR)

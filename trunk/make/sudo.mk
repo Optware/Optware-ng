@@ -51,8 +51,8 @@ sudo: $(SUDO_DIR)/sudo
 
 $(SUDO_IPK): $(SUDO_DIR)/sudo
 	install -d $(SUDO_IPK_DIR)/opt/bin
-	$(STRIP) $(SUDO_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
-	$(STRIP) $(SUDO_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
+	$(TARGET_STRIP) $(SUDO_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
+	$(TARGET_STRIP) $(SUDO_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
 	install -d $(SUDO_IPK_DIR)/opt/etc
 	install -m 600 $(SUDO_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
 	install -d $(SUDO_IPK_DIR)/opt/doc/sudo

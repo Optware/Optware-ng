@@ -34,7 +34,7 @@ NTP_IPK_VERSION=1
 # NTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTP_PATCHES=
+NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpdc-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -89,6 +89,7 @@ ntp-source: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(NTP_DIR) $(NTP_BUILD_DIR)
 	$(NTP_UNZIP) $(DL_DIR)/$(NTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(NTP_PATCHES) | patch -d $(BUILD_DIR)/$(NTP_DIR) -p1
 	mv $(BUILD_DIR)/$(NTP_DIR) $(NTP_BUILD_DIR)
 	(cd $(NTP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -100,7 +101,6 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt\
 	)
-	cp $(NTP_SOURCE_DIR)/Makefile $(NTP_BUILD_DIR)/ntpdc/Makefile
 	touch $(NTP_BUILD_DIR)/.configured
 
 ntp-unpack: $(NTP_BUILD_DIR)/.configured
@@ -135,12 +135,12 @@ $(NTP_IPK): $(NTP_BUILD_DIR)/ntpd/ntpd
 	install -d $(NTP_IPK_DIR)/opt/bin
 	install -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
 	install -d $(NTP_IPK_DIR)/var/spool/ntp
-	$(STRIP) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)/opt/bin/ntpd
-	$(STRIP) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)/opt/bin/ntpq
-	$(STRIP) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)/opt/bin/ntpdc
-	$(STRIP) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)/opt/bin/ntptime
-	$(STRIP) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)/opt/bin/tickadj
-	$(STRIP) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)/opt/bin/ntpdate
+	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)/opt/bin/ntpd
+	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)/opt/bin/ntpq
+	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)/opt/bin/ntpdc
+	$(TARGET_STRIP) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)/opt/bin/ntptime
+	$(TARGET_STRIP) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)/opt/bin/tickadj
+	$(TARGET_STRIP) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)/opt/bin/ntpdate
 	install -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)/opt/etc/ntp/ntp.conf
 	install -d $(NTP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp

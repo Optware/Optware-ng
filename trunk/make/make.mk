@@ -148,7 +148,7 @@ make-stage: $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION)
 $(MAKE_IPK): $(MAKE_BUILD_DIR)/make
 	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
 	install -d $(MAKE_IPK_DIR)/opt/bin
-	$(STRIP) $(MAKE_BUILD_DIR)/make -o $(MAKE_IPK_DIR)/opt/bin/make
+	$(TARGET_STRIP) $(MAKE_BUILD_DIR)/make -o $(MAKE_IPK_DIR)/opt/bin/make
 #	install -d $(MAKE_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
 	install -d $(MAKE_IPK_DIR)/CONTROL

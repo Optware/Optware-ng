@@ -148,12 +148,12 @@ $(SVN_IPK): $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 	rm -rf $(SVN_IPK_DIR)/opt/lib/*.{a,la,exp}
 	rm -rf $(SVN_IPK_DIR)/opt/lib/pkgconfig
 	rm -f $(SVN_IPK_DIR)/opt/bin/*-config
-	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svn
-	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnadmin
-	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svndumpfilter
-	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnlook
-	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnserve
-	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnversion
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/svn
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/svnadmin
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/svndumpfilter
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/svnlook
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/svnserve
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/svnversion
 	install -d $(SVN_IPK_DIR)/CONTROL
 	install -m 644 $(SVN_SOURCE_DIR)/control $(SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN_IPK_DIR)

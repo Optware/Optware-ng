@@ -55,7 +55,7 @@ libid3tag-stage: $(STAGING_DIR)/opt/lib/libid3tag.a
 $(LIBID3TAG_IPK): $(LIBID3TAG_BUILD_DIR)/.libs/libid3tag.a
 	rm -rf $(LIBID3TAG_IPK_DIR) $(LIBID3TAG_IPK)
 	$(MAKE) -C $(LIBID3TAG_BUILD_DIR) DESTDIR=$(LIBID3TAG_IPK_DIR) install
-	$(STRIP) --strip-unneeded $(LIBID3TAG_IPK_DIR)/opt/lib/*.so.*
+	$(TARGET_STRIP) --strip-unneeded $(LIBID3TAG_IPK_DIR)/opt/lib/*.so.*
 	rm -f $(LIBID3TAG_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(LIBID3TAG_IPK_DIR)/CONTROL
 	install -m 644 $(LIBID3TAG_SOURCE_DIR)/control $(LIBID3TAG_IPK_DIR)/CONTROL/control

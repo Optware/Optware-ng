@@ -107,7 +107,7 @@ $(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/ccxstream
 	install -d $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
 	install -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
 	install -d $(CCXSTREAM_IPK_DIR)/opt/sbin
-	$(STRIP) $(CCXSTREAM_BUILD_DIR)/ccxstream -o $(CCXSTREAM_IPK_DIR)/opt/sbin/ccxstream
+	$(TARGET_STRIP) $(CCXSTREAM_BUILD_DIR)/ccxstream -o $(CCXSTREAM_IPK_DIR)/opt/sbin/ccxstream
 	install -d $(CCXSTREAM_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CCXSTREAM_SOURCE_DIR)/rc.ccxstream $(CCXSTREAM_IPK_DIR)/opt/etc/init.d/S75ccxstream
 	install -d $(CCXSTREAM_IPK_DIR)/CONTROL

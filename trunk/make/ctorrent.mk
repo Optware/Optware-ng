@@ -128,7 +128,7 @@ ctorrent: $(CTORRENT_BUILD_DIR)/ctorrent
 $(CTORRENT_IPK): $(CTORRENT_BUILD_DIR)/ctorrent
 	rm -rf $(CTORRENT_IPK_DIR) $(CTORRENT_IPK)
 	install -d $(CTORRENT_IPK_DIR)/opt/bin
-	$(STRIP) $(CTORRENT_BUILD_DIR)/ctorrent -o $(CTORRENT_IPK_DIR)/opt/bin/ctorrent
+	$(TARGET_STRIP) $(CTORRENT_BUILD_DIR)/ctorrent -o $(CTORRENT_IPK_DIR)/opt/bin/ctorrent
 #	install -d $(CTORRENT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(CTORRENT_SOURCE_DIR)/rc.ctorrent $(CTORRENT_IPK_DIR)/opt/etc/init.d/SXXctorrent
 	install -d $(CTORRENT_IPK_DIR)/CONTROL

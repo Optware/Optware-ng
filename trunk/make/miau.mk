@@ -65,7 +65,7 @@ miau: $(MIAU_BUILD_DIR)/src/miau
 
 $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	install -d $(MIAU_IPK_DIR)/opt/bin
-	$(STRIP) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
+	$(TARGET_STRIP) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
 	install -d $(MIAU_IPK_DIR)/opt/doc/miau
 	install -m 644 $(MIAU_BUILD_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/doc/miau/miaurc
 	install -d $(MIAU_IPK_DIR)/opt/etc/init.d

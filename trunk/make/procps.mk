@@ -78,22 +78,22 @@ $(PROCPS_IPK): $(PROCPS_DIR)/watch
 	mkdir -p $(PROCPS_IPK_DIR)/CONTROL
 	mkdir -p $(PROCPS_IPK_DIR)/opt
 	mkdir -p $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP) $(PROCPS_DIR)/free -o $(PROCPS_IPK_DIR)/opt/bin/free
-	$(STRIP) $(PROCPS_DIR)/kill -o $(PROCPS_IPK_DIR)/opt/bin/kill
-	$(STRIP) $(PROCPS_DIR)/pgrep -o $(PROCPS_IPK_DIR)/opt/bin/pgrep
-	$(STRIP) $(PROCPS_DIR)/pmap -o $(PROCPS_IPK_DIR)/opt/bin/pmap
-	$(STRIP) $(PROCPS_DIR)/skill -o $(PROCPS_IPK_DIR)/opt/bin/skill
-	$(STRIP) $(PROCPS_DIR)/slabtop -o $(PROCPS_IPK_DIR)/opt/bin/slabtop
-	$(STRIP) $(PROCPS_DIR)/snice -o $(PROCPS_IPK_DIR)/opt/bin/snice
-	$(STRIP) $(PROCPS_DIR)/sysctl -o $(PROCPS_IPK_DIR)/opt/bin/sysctl
+	$(TARGET_STRIP) $(PROCPS_DIR)/free -o $(PROCPS_IPK_DIR)/opt/bin/free
+	$(TARGET_STRIP) $(PROCPS_DIR)/kill -o $(PROCPS_IPK_DIR)/opt/bin/kill
+	$(TARGET_STRIP) $(PROCPS_DIR)/pgrep -o $(PROCPS_IPK_DIR)/opt/bin/pgrep
+	$(TARGET_STRIP) $(PROCPS_DIR)/pmap -o $(PROCPS_IPK_DIR)/opt/bin/pmap
+	$(TARGET_STRIP) $(PROCPS_DIR)/skill -o $(PROCPS_IPK_DIR)/opt/bin/skill
+	$(TARGET_STRIP) $(PROCPS_DIR)/slabtop -o $(PROCPS_IPK_DIR)/opt/bin/slabtop
+	$(TARGET_STRIP) $(PROCPS_DIR)/snice -o $(PROCPS_IPK_DIR)/opt/bin/snice
+	$(TARGET_STRIP) $(PROCPS_DIR)/sysctl -o $(PROCPS_IPK_DIR)/opt/bin/sysctl
 	cp $(PROCPS_DIR)/t $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP) $(PROCPS_DIR)/tload -o $(PROCPS_IPK_DIR)/opt/bin/tload
-	$(STRIP) $(PROCPS_DIR)/top -o $(PROCPS_IPK_DIR)/opt/bin/top
-	$(STRIP) $(PROCPS_DIR)/uptime -o $(PROCPS_IPK_DIR)/opt/bin/uptime
+	$(TARGET_STRIP) $(PROCPS_DIR)/tload -o $(PROCPS_IPK_DIR)/opt/bin/tload
+	$(TARGET_STRIP) $(PROCPS_DIR)/top -o $(PROCPS_IPK_DIR)/opt/bin/top
+	$(TARGET_STRIP) $(PROCPS_DIR)/uptime -o $(PROCPS_IPK_DIR)/opt/bin/uptime
 	cp $(PROCPS_DIR)/v $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP) $(PROCPS_DIR)/vmstat -o $(PROCPS_IPK_DIR)/opt/bin/vmstat
-	$(STRIP) $(PROCPS_DIR)/w -o $(PROCPS_IPK_DIR)/opt/bin/w
-	$(STRIP) $(PROCPS_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/watch
+	$(TARGET_STRIP) $(PROCPS_DIR)/vmstat -o $(PROCPS_IPK_DIR)/opt/bin/vmstat
+	$(TARGET_STRIP) $(PROCPS_DIR)/w -o $(PROCPS_IPK_DIR)/opt/bin/w
+	$(TARGET_STRIP) $(PROCPS_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/watch
 	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
 	cp $(PROCPS_DIR)/proc/libproc-3.2.3.so $(PROCPS_IPK_DIR)/opt/lib
 	cp $(SOURCE_DIR)/procps.control $(PROCPS_IPK_DIR)/CONTROL/control

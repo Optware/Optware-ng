@@ -69,14 +69,14 @@ openssl-stage: $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION)
 $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 	install -d $(OPENSSL_IPK_DIR)/opt/bin
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)/opt/bin/openssl
-	$(STRIP) --strip-unneeded $(OPENSSL_IPK_DIR)/opt/bin/opensll
+	$(TARGET_STRIP) --strip-unneeded $(OPENSSL_IPK_DIR)/opt/bin/opensll
 	install -d $(OPENSSL_IPK_DIR)/opt/share/openssl
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)/opt/share/openssl/openssl.cnf
 	install -d $(OPENSSL_IPK_DIR)/opt/include/openssl
 	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_IPK_DIR)/opt/include/openssl
 	install -d $(OPENSSL_IPK_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/lib{crypto,ssl}.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
-	$(STRIP) --strip-unneeded $(OPENSSL_IPK_DIR)/opt/lib/lib{ssl,crypto}.so*
+	$(TARGET_STRIP) --strip-unneeded $(OPENSSL_IPK_DIR)/opt/lib/lib{ssl,crypto}.so*
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0

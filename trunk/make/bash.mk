@@ -59,7 +59,7 @@ bash: termcap-stage $(BASH_BUILD_DIR)/bash
 
 $(BASH_IPK): $(BASH_BUILD_DIR)/bash
 	install -d $(BASH_IPK_DIR)/opt/bin
-	$(STRIP) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
+	$(TARGET_STRIP) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
 	install -d $(BASH_IPK_DIR)/opt/etc 
 	install -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
 	install -d $(BASH_IPK_DIR)/CONTROL
