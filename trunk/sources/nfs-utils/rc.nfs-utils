@@ -16,6 +16,9 @@ if [ ! -d /var/lib/nfs ] ;  then
     mkdir -p /var/lib/nfs
 fi
 
+/bin/rm -f /etc/exports
+/bin/ln -s /opt/etc/exports /etc/exports
+
 /opt/sbin/statd
 /opt/sbin/exportfs -a
 /opt/sbin/nfsd
