@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "`pidof metalog`" ]; then
+    /bin/killall metalog 2>/dev/null
+fi
+
+return 0
+
