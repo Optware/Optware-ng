@@ -124,7 +124,6 @@ svn: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 #
 $(STAGING_DIR)/opt/lib/libneon.la: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	rm -rf $(STAGING_DIR)/opt/{man,info,share}
 
 svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
 

@@ -135,7 +135,6 @@ $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $(LIBVORBIS_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_DIR)/opt/lib/libvorbis.la
-	rm -rf $(STAGING_DIR)/opt/share
 	touch $(LIBVORBIS_BUILD_DIR)/.staged
 
 libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
