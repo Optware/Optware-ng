@@ -1,0 +1,17 @@
+#! /bin/ash
+#
+if [ -n "`pidof named`" ]; then
+    /bin/killall named 2>/dev/null
+fi
+
+if [ ! -e /opt/lib/libcrypto.so ]; then
+echo "?? openssl must be installed"
+exit 1
+else
+echo "You must now create your named.conf file"
+echo "When it is installed in /opt/etc/named/named.conf, execute"
+echo "/opt/etc/init.d/S08named to start service"
+echo "You will probably also want to create rndc.conf by running"
+echo "rndc-confgen.  Of course, you may want to set your name server"
+echo "in the GUI to 127.0.0.1!"
+endif

@@ -1,0 +1,102 @@
+*** bind-9.3.0/configure	2004-09-01 03:18:30.000000000 -0400
+--- bind-9.3.0.tl/configure	2004-12-05 11:23:44.122516872 -0500
+***************
+*** 23426,23470 ****
+  sed 's/^/| /' conftest.$ac_ext >&5
+  
+  echo "$as_me:$LINENO: result: no" >&5
+  echo "${ECHO_T}no" >&6
+  	ISC_PLATFORM_HAVEIF_LADDRCONF="#undef ISC_PLATFORM_HAVEIF_LADDRCONF"
+  fi
+  rm -f conftest.err conftest.$ac_objext \
+        conftest$ac_exeext conftest.$ac_ext
+  
+  
+  #
+  # Check for network functions that are often missing.  We do this
+  # after the libtool checking, so we can put the right suffix on
+  # the files.  It also needs to come after checking for a Kame add-on,
+  # which provides some (all?) of the desired functions.
+  #
+  
+  echo "$as_me:$LINENO: checking for inet_ntop with IPv6 support" >&5
+  echo $ECHO_N "checking for inet_ntop with IPv6 support... $ECHO_C" >&6
+  if test "$cross_compiling" = yes; then
+!   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+! See \`config.log' for more details." >&5
+! echo "$as_me: error: cannot run test program while cross compiling
+! See \`config.log' for more details." >&2;}
+!    { (exit 1); exit 1; }; }
+  else
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+  _ACEOF
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+  
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <arpa/inet.h>
+  main() {
+  char a[16],b[64]; return(inet_ntop(AF_INET6, a, b, sizeof(b)) == (char*)0);}
+  _ACEOF
+  rm -f conftest$ac_exeext
+  if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+    (eval $ac_link) 2>&5
+    ac_status=$?
+    echo "$as_me:$LINENO: \$? = $ac_status" >&5
+--- 23426,23477 ----
+  sed 's/^/| /' conftest.$ac_ext >&5
+  
+  echo "$as_me:$LINENO: result: no" >&5
+  echo "${ECHO_T}no" >&6
+  	ISC_PLATFORM_HAVEIF_LADDRCONF="#undef ISC_PLATFORM_HAVEIF_LADDRCONF"
+  fi
+  rm -f conftest.err conftest.$ac_objext \
+        conftest$ac_exeext conftest.$ac_ext
+  
+  
+  #
+  # Check for network functions that are often missing.  We do this
+  # after the libtool checking, so we can put the right suffix on
+  # the files.  It also needs to come after checking for a Kame add-on,
+  # which provides some (all?) of the desired functions.
+  #
+  
+  echo "$as_me:$LINENO: checking for inet_ntop with IPv6 support" >&5
+  echo $ECHO_N "checking for inet_ntop with IPv6 support... $ECHO_C" >&6
+  if test "$cross_compiling" = yes; then
+!   echo "$as_me:$LINENO: result: assuming target platform doesnt need inet_netop" >&5
+! echo "${ECHO_T}assuming target platform doesnt need inet_netop" >&6
+!         ISC_EXTRA_OBJS="$ISC_EXTRA_OBJS inet_ntop.$O"
+! #        ISC_EXTRA_SRCS="$ISC_EXTRA_SRCS inet_ntop.c"
+! #        ISC_PLATFORM_NEEDNTOP="#define ISC_PLATFORM_NEEDNTOP 1"
+!         ISC_PLATFORM_NEEDNTOP="#undef ISC_PLATFORM_NEEDNTOP"
+! 
+! #  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+! #See \`config.log' for more details." >&5
+! #echo "$as_me: error: cannot run test program while cross compiling
+! #See \`config.log' for more details." >&2;}
+! #   { (exit 1); exit 1; }; }
+  else
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+  _ACEOF
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+  
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <arpa/inet.h>
+  main() {
+  char a[16],b[64]; return(inet_ntop(AF_INET6, a, b, sizeof(b)) == (char*)0);}
+  _ACEOF
+  rm -f conftest$ac_exeext
+  if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+    (eval $ac_link) 2>&5
+    ac_status=$?
+    echo "$as_me:$LINENO: \$? = $ac_status" >&5
