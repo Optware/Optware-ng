@@ -89,11 +89,9 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	ruby tin
+	ruby tin asterisk
 
-# asterisk can't be downloaded, its source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	asterisk \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
