@@ -1,0 +1,29 @@
+--- Makefile	Sun Sep 12 03:37:58 2004
++++ tcp_wrappers.makefile.new	Sun Sep 12 03:37:47 2004
+@@ -143,7 +143,7 @@
+ 
+ linux:
+ 	@make REAL_DAEMON_DIR=$(REAL_DAEMON_DIR) STYLE=$(STYLE) \
+-	LIBS= RANLIB=ranlib ARFLAGS=rv AUX_OBJ=setenv.o \
++	LIBS= ARFLAGS=rv AUX_OBJ=setenv.o \
+ 	NETGROUP= TLI= EXTRA_CFLAGS="-DBROKEN_SO_LINGER" all
+ 
+ # This is good for many SYSV+BSD hybrids with NIS, probably also for HP-UX 7.x.
+@@ -375,7 +375,7 @@
+ # library; some don't care as long as the modules are in the right order;
+ # some systems don't even have a ranlib(1) command. Make your choice.
+ 
+-RANLIB	= ranlib	# have ranlib (BSD-ish UNIX)
++#RANLIB	= ranlib	# have ranlib (BSD-ish UNIX)
+ #RANLIB	= echo		# no ranlib (SYSV-ish UNIX)
+ 
+ ARFLAGS	= rv		# most systems
+@@ -590,7 +590,7 @@
+ # look for access control information. Watch out for the quotes and
+ # backslashes when you make changes.
+ 
+-TABLES	= -DHOSTS_DENY=\"/etc/hosts.deny\" -DHOSTS_ALLOW=\"/etc/hosts.allow\"
++TABLES	= -DHOSTS_DENY=\"/opt/etc/hosts.deny\" -DHOSTS_ALLOW=\"/opt/etc/hosts.allow\" -DSYS_ERRLIST_DEFINED
+ 
+ ####################################################
+ # Optional: dealing with host name/address conflicts

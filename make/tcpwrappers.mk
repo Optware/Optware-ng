@@ -4,16 +4,16 @@
 #
 #############################################################
 
-TCPWRAPPERS_DIR:=$(BUILD_DIR)/tcp_wrappers
+TCPWRAPPERS_DIR:=$(BUILD_DIR)/tcpwrappers
 
 TCPWRAPPERS_VERSION=7.6
 TCPWRAPPERS=tcp_wrappers_$(TCPWRAPPERS_VERSION)
 TCPWRAPPERS_SITE=ftp://ftp.porcupine.org/pub/security/
 TCPWRAPPERS_SOURCE:=$(TCPWRAPPERS).tar.gz
 TCPWRAPPERS_UNZIP=zcat
-TCPWRAPPERS_IPK=$(BUILD_DIR)/tcp_wrappers_$(TCPWRAPPERS_VERSION)-1_armeb.ipk
-TCPWRAPPERS_IPK_DIR:=$(BUILD_DIR)/tcp_wrappers-$(TCPWRAPPERS_VERSION)-ipk
-TCPWRAPPERS_PATCH=$(SOURCE_DIR)/tcp_wrappers.patch
+TCPWRAPPERS_IPK=$(BUILD_DIR)/tcpwrappers_$(TCPWRAPPERS_VERSION)-1_armeb.ipk
+TCPWRAPPERS_IPK_DIR:=$(BUILD_DIR)/tcpwrappers-$(TCPWRAPPERS_VERSION)-ipk
+TCPWRAPPERS_PATCH=$(SOURCE_DIR)/tcpwrappers.patch
 
 $(DL_DIR)/$(TCPWRAPPERS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(TCPWRAPPERS_SITE)/$(TCPWRAPPERS_SOURCE)
@@ -62,4 +62,4 @@ tcpwrappers-clean:
 	-make -C $(TCPWRAPPER_DIR) clean
 
 tcpwrappers-dirclean:
-	rm -rf $(TCPWRAPPERS_DIR) $(TCPWRAPPERS_DIR)
+	rm -rf $(TCPWRAPPERS_DIR) $(TCPWRAPPERS_IPK_DIR) $(TCPWRAPPERS_IPK)
