@@ -115,7 +115,7 @@ libogg-unpack: $(LIBOGG_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB): $(LIBOGG_BUILD_DIR)/.configured
+$(LIBOGG_BUILD_DIR)/.built: $(LIBOGG_BUILD_DIR)/.configured
 	rm -f $(LIBOGG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBOGG_BUILD_DIR)
 	touch $(LIBOGG_BUILD_DIR)/.built
@@ -124,7 +124,7 @@ $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB): $(LIBOGG_BUILD_DI
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libogg: $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB)
+libogg: $(LIBOGG_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -154,7 +154,7 @@ libogg-stage: $(STAGING_DIR)/opt/lib/libogg.so.$(LIBOGG_VERSION_LIB)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB)
+$(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/.built
 	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_armeb.ipk
 	install -d $(LIBOGG_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(LIBOGG_BUILD_DIR)/src/.libs/libogg.a -o $(LIBOGG_IPK_DIR)/opt/lib/libogg.a
