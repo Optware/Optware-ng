@@ -21,7 +21,7 @@ APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APACHE_DESCRIPTION=The internet\'s most popular web server
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
-APACHE_DEPENDS=apr, apr-util, openssl
+APACHE_DEPENDS=apr, apr-util, openssl, expat, zlib
 
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
@@ -118,6 +118,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		$(STAGING_DIR)/opt/bin/apr-config \
 		$(STAGING_DIR)/opt/bin/apu-config \
 		$(APACHE_PATCHES)
+	$(MAKE) zlib-stage
 	$(MAKE) expat-stage
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
@@ -130,6 +131,8 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APACHE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APACHE_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -137,6 +140,15 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		--prefix=/opt \
 		--enable-layout=GNU \
 		--enable-mods-shared=all \
+		--enable-ssl \
+		--enable-proxy \
+		--enable-cache \
+		--enable-disk-cache \
+		--enable-file-cache \
+		--enable-mem-cache \
+		--enable-deflate \
+		--with-z=$(STAGING_DIR)/opt \
+		--with-ssl=$(STAGING_DIR)/opt \
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-apr-util=$(STAGING_DIR)/opt \
 		--with-expat=/opt \
