@@ -22,9 +22,9 @@
 
 NATIVE_AND_CROSS_PACKAGES = \
 	adns atftp automake \
-	bash bzip2 \
+	bash bind bzflag bzip2 \
 	ccxstream coreutils cpio cvs \
-	diffutils distcc dnsmasq dropbear \
+	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
 	gawk gdbm grep groff gzip \
@@ -33,7 +33,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc mdadm miau mtr \
-	nail nano ncurses nmap ntp ntpclient \
+	nail nano ncurses nload nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
@@ -46,25 +46,21 @@ NATIVE_AND_CROSS_PACKAGES = \
 	zlib \
 
 # busybox has PATH_MAX define issue on native
-# dhcp builds native if nroff is installed
 CROSS_PACKAGES = \
-	bind busybox \
-	dhcp \
+	busybox \
 	freeradius \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft \
 	glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
-	nfs-server nfs-utils nload \
+	nfs-server nfs-utils \
 	popt proftpd \
 	rdate \
 	svn
 
 # appweb ships with x86 binaries which it requires during configure phase
-# bzflag native compile requires too much memory.
 CROSS_ONLY_PACKAGES = \
-	appweb \
-	bzflag
+	appweb
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
