@@ -38,12 +38,12 @@ $(RSYNC_DIR)/.configured: $(RSYNC_DIR)/.source
 	);
 	touch $(RSYNC_DIR)/.configured
 
-$(RSYNC_DIR)/src/rsync: $(RSYNC_DIR)/.configured
+$(RSYNC_DIR)/rsync: $(RSYNC_DIR)/.configured
 	$(MAKE) -C $(RSYNC_DIR)
 
-rsync: $(RSYNC_DIR)/src/rsync
+rsync: $(RSYNC_DIR)/rsync
 
-$(RSYNC_IPK): $(RSYNC_DIR)/src/rsync
+$(RSYNC_IPK): $(RSYNC_DIR)/rsync
 	mkdir -p $(RSYNC_IPK_DIR)/CONTROL
 	mkdir -p $(RSYNC_IPK_DIR)/opt/etc/init.d
 	cp $(SOURCE_DIR)/rsync.control $(RSYNC_IPK_DIR)/CONTROL/control
