@@ -4,6 +4,6 @@
 
 if [ -f /opt/etc/squid/squid.conf ] ; then
    echo "squid.conf -> squid.conf.old"
-   mv /opt/etc/squid/squid.conf /opt/etc/squid/squid.conf.old
+   cp /opt/etc/squid/squid.conf /opt/etc/squid/squid.conf.ipkg-old
 fi
 

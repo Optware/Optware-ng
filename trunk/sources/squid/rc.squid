@@ -1,22 +1,39 @@
-#!/bin/sh
+#! /bin/sh
 
-if [ -n "`pidof squid`" ]; then 
-    echo "Stopping squid-cache server: "
-    /bin/killall squid 
-fi
+case "$1" in
+    start)
+        echo -n "Starting proxy server: "
+        if [ -n "`pidof quotacheck`" ]; then
+           #you don't need it if you don't have quota check enable.
+           echo "Starting squid-cache server after delay for few mins:"
+           /opt/etc/squid/squid.delay-start.sh&
+        else
+           /opt/sbin/squid -f /opt/etc/squid/squid.conf
+           echo "done."
+        fi
+        echo "done."
+        ;;
+    stop)
+        echo -n "Stopping proxy server: "
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf -k shutdown
+        echo "done."
+        ;;
+    reload|force-reload)
+        echo -n "Reloading proxy server configuration files: "
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf -k reconfigure
+        echo "done."
+        ;;
+    restart)
+        echo -n "Restarting proxy server: "
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf -k shutdown
+	sleep 2
+        /opt/sbin/squid -f /opt/etc/squid/squid.conf
+        echo "done."
+        ;;
+    *)
+        echo "Usage: /opt/etc/init.d/S80squid {start|stop|reload|force-reload|restart}"
+        exit 1
+        ;;
+esac
 
-# Normally, the cache dir is on the data partition.
-# The data partition is not writable when it boot up,
-# if you have quota enable.
-# If you start the squid right away, it will 
-# quit and report 'no premission' to write cache.
-# The dely-start script is used to start squid with delay.
-# If you do not have that problem, you can just start 
-# squid right away using first 2 lines.
-
-#echo "Starting squid-cache server:"
-#/opt/sbin/squid -f /opt/etc/squid/squid.conf -S -F
-
-echo "Starting squid-cache server after delay for few mins:"
-/opt/etc/squid/squid.delay-start.sh&
-
+exit 0

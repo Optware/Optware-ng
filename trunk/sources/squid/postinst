@@ -10,7 +10,7 @@ chown nobody.nobody /opt/var/squid/logs
 /opt/sbin/squid -z
 
 echo
-echo "You should review the configuration file /opt/etc/squid/squid.conf"
-echo "make any necessary changes, and complete the install by running"
-echo "/opt/etc/init.d/S80squid"
+echo "You should review the configuration file /opt/etc/squid/squid.conf,"
+echo "make any necessary change, and complete the install by running - "
+echo "/opt/etc/init.d/S80squid start"
 echo
