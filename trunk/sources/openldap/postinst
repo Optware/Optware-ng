@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo Starting OpenLDAP
+
+/opt/etc/init.d/S58slapd
+

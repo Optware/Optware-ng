@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "`pidof slapd`" ]; then 
+    /bin/killall slapd 2>/dev/null
+fi
+
+/opt/libexec/slapd
