@@ -41,7 +41,7 @@ NYLON_CONFLICTS=
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=2
+NYLON_IPK_VERSION=3
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ NYLON_CONFFILES=/opt/etc/nylon.conf
 # NYLON_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NYLON_PATCHES=$(NYLON_SOURCE_DIR)/nylon.patch
+# NYLON_PATCHES=$(NYLON_SOURCE_DIR)/nylon.patch
 
 #
 # If the compilation of the package requires additional
@@ -86,7 +86,7 @@ $(DL_DIR)/$(NYLON_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-nylon-source: $(DL_DIR)/$(NYLON_SOURCE) $(NYLON_PATCHES)
+nylon-source: $(DL_DIR)/$(NYLON_SOURCE) 
 
 #
 # This target unpacks the source code in the build directory.
@@ -103,11 +103,11 @@ nylon-source: $(DL_DIR)/$(NYLON_SOURCE) $(NYLON_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE) $(NYLON_PATCHES)
+$(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE)
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(NYLON_DIR) $(NYLON_BUILD_DIR)
 	$(NYLON_UNZIP) $(DL_DIR)/$(NYLON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NYLON_PATCHES) | patch -d $(BUILD_DIR)/$(NYLON_DIR) -p1
+	#cat $(NYLON_PATCHES) | patch -d $(BUILD_DIR)/$(NYLON_DIR) -p1
 	mv $(BUILD_DIR)/$(NYLON_DIR) $(NYLON_BUILD_DIR)
 	(cd $(NYLON_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
