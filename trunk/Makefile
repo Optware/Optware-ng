@@ -179,7 +179,7 @@ upload:
 	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 
-.PHONY: all clean dirclean distclean directories packages \
+.PHONY: all clean dirclean distclean directories packages source toolchain \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
 	$(PACKAGES_STAGE) $(PACKAGES_IPKG)
 
@@ -212,12 +212,14 @@ $(TOOL_BUILD_DIR):
 $(PACKAGE_DIR):
 	mkdir $(PACKAGE_DIR)
 
-source: $(TARGETS_SOURCE) $(PACKAGES_SOURCE)
+source: $(PACKAGES_SOURCE)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '*~' -print | xargs /bin/rm -f
 	find . -name '.*~' -print | xargs /bin/rm -f
 	find . -name '.#*' -print | xargs /bin/rm -f
+
+dirclean: $(PACKAGES_DIRCLEAN)
 
 distclean:
 	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR)
