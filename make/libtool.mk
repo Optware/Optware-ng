@@ -115,12 +115,12 @@ $(LIBTOOL_BUILD_DIR)/libtool: $(LIBTOOL_BUILD_DIR)/.configured
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libtool: $(LIBTOOL_BUILD_DIR)/libtool
+libtool: $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libltdl.so.3.1.0: $(LIBTOOL_BUILD_DIR)/libtool
+$(STAGING_DIR)/opt/lib/libltdl.so.3.1.0: $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/ltdl.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
