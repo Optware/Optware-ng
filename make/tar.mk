@@ -93,6 +93,7 @@ $(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
 	)
 	touch $(TAR_BUILD_DIR)/.configured
 
@@ -114,20 +115,6 @@ $(TAR_BUILD_DIR)/.built: $(TAR_BUILD_DIR)/.configured
 tar: $(TAR_BUILD_DIR)/.built
 
 #
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libtar.so.$(TAR_VERSION): $(TAR_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(TAR_BUILD_DIR)/tar.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(TAR_BUILD_DIR)/libtar.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(TAR_BUILD_DIR)/libtar.so.$(TAR_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtar.so.$(TAR_VERSION) libtar.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtar.so.$(TAR_VERSION) libtar.so
-
-tar-stage: $(STAGING_DIR)/opt/lib/libtar.so.$(TAR_VERSION)
-
-#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(TAR_IPK_DIR)/opt/sbin or $(TAR_IPK_DIR)/opt/bin
@@ -142,7 +129,9 @@ tar-stage: $(STAGING_DIR)/opt/lib/libtar.so.$(TAR_VERSION)
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(TAR_IPK)
 	install -d $(TAR_IPK_DIR)/opt/bin
-	$(STRIP) $(TAR_BUILD_DIR)/tar -o $(TAR_IPK_DIR)/opt/bin/tar
+	$(STRIP) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
+	install -d $(TAR_IPK_DIR)/opt/libexec
+	$(STRIP) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
 	install -d $(TAR_IPK_DIR)/CONTROL
 	install -m 644 $(TAR_SOURCE_DIR)/control $(TAR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAR_IPK_DIR)
