@@ -20,7 +20,7 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox #lsof
+PACKAGES:= dropbear busybox zlib
 
 WGET=wget --passive-ftp
 
