@@ -36,7 +36,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 PACKAGES_TO_BE_TESTED:= 
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
-	   e2fsprogs dump glib gkrellm
+	   e2fsprogs dump glib gkrellm m4 make patch
 
 WGET=wget --passive-ftp
 CVS=cvs
