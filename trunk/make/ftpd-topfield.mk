@@ -53,7 +53,7 @@ FTPD-TOPFIELD_IPK_VERSION=3
 # which they should be applied to the source code.
 #
 FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/Makefile.patch \
-	$(FTPD-TOPFIELD_SOURCE_DIR)/turbo.patch $(FTPD-TOPFIELD_SOURCE_DIR)/listing.patch
+	$(FTPD-TOPFIELD_SOURCE_DIR)/turbo.patch
 
 #
 # If the compilation of the package requires additional
