@@ -6,4 +6,5 @@ Source: http://aleron.dl.sourceforge.net/sourceforge/tinyproxy/tinyproxy-1.6.3.t
 Section: net
 Priority: optional
 Depends:
+Conffiles: /opt/etc/tinyproxy/tinyproxy.conf
 Description: Lightweight HTTP/SSL proxy daemon

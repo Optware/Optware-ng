@@ -1,7 +1,3 @@
 #!/bin/sh
 
 /bin/killall tinyproxy
-
-# TODO: check if the tinyproxy.conf file is unmodified, and delete it if that is the case.
-
-echo "ipkg_remove: Warning: Not removing /opt/etc/tinyproxy/tinyproxy.conf"

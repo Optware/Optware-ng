@@ -1,11 +1,6 @@
 #!/bin/sh
 
-if [ ! -f /opt/etc/tinyproxy/tinyproxy.conf ] ;  then
-    cp /opt/doc/tinyproxy/tinyproxy.conf /opt/etc/tinyproxy/tinyproxy.conf
-    echo ; echo
-    echo "To complete the installation, you should check /opt/etc/tinyproxy/tinyproxy.conf,"
-    echo "and then run /opt/etc/init.d/S53tinyproxy to start tinyproxy."
-    echo
-else
-    /opt/etc/init.d/S53tinyproxy
-fi
+echo ; echo
+echo "To complete the installation, you should check /opt/etc/tinyproxy/tinyproxy.conf,"
+echo "and then run /opt/etc/init.d/S53tinyproxy to start tinyproxy."
+echo
