@@ -21,43 +21,41 @@
 #
 
 NATIVE_AND_CROSS_PACKAGES = \
-	bash \
-	bzip2 \
-	ccxstream cpio \
-	distcc dnsmasq dropbear \
-	gdbm \
+	atftp \
+	bash bzip2 \
+	ccxstream coreutils cpio \
+	diffutils distcc dnsmasq dropbear \
+	findutils \
+	gdbm grep \
 	inetutils iptables \
-	libid3tag libtool lsof \
-	make miau \
-	ntpclient \
-	patch portmap puppy \
+	jove \
+	libdb libevent libid3tag libjpeg libpng libtool lsof \
+	m4 make miau \
+	nano ntp ntpclient \
+	patch portmap procps puppy \
 	rsync \
-	strace sudo \
-	tcpwrappers \
-	termcap \
-	vsftpd \
+	screen strace sudo \
+	tar tcpwrappers termcap \
+	vdr-mediamvp vsftpd \
+	wget \
 	zlib \
 
 CROSS_ONLY_PACKAGES = \
-	appweb atftp \
+	appweb \
 	bind busybox \
-	coreutils cvs \
-	dhcp diffutils \
-	findutils flex freeradius \
-	gawk grep \
+	cvs \
+	dhcp \
+	flex freeradius \
+	gawk \
 	imagemagick ircd-hybrid \
-	jove \
-	less libbt libcurl libdb libevent libjpeg libpcap libpng libtiff logrotate \
-	m4 mc mdadm mt-daapd \
-	nail nano ncurses nfs-server nfs-utils ntp \
+	less libbt libcurl libpcap libtiff logrotate \
+	mc mdadm mt-daapd \
+	nail ncurses nfs-server nfs-utils \
 	openssl openssh \
-	popt procps \
+	popt \
 	rdate \
-	screen stunnel svn \
-	tar \
-	unfs3 \
-	vdr-mediamvp \
-	wget
+	stunnel svn \
+	unfs3
 
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
