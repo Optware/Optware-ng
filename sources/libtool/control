@@ -1,0 +1,9 @@
+Package: libtool
+Version: 1.5.10
+Architecture: armeb
+Maintainer: Christopher <edmondsc@onid.orst.edu>
+Source: http://ftp.gnu.org/gnu/libtool/libtool-1.5.10.tar.gz
+Section: utilities
+Priority: optional
+Depends:
+Description: Library tools.
