@@ -72,6 +72,8 @@ CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
+# lynx's makefile runs executables it has built.
+# openldap probably will build cross - may just need some configure work
 # perl's Configure is not cross-compile "friendly"
 # squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
@@ -80,14 +82,14 @@ NATIVE_ONLY_PACKAGES = \
 	bison \
 	emacs \
 	xemacs \
+	lynx \
+	openldap \
 	perl \
 	squid \
 	samba
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
-	lynx \
-	openldap \
 
 
 UNSORTED_PACKAGES = \
