@@ -1,15 +1,57 @@
-*** cron/pathnames.h.orig	Sat Feb 12 16:24:26 2005
---- cron/pathnames.h	Sat Feb 12 16:25:05 2005
-***************
-*** 75,79 ****
-  
-  			/* 4.3BSD-style crontab */
-! #define SYSCRONTAB	"/etc/crontab"
-  
-  			/* what editor to use if no EDITOR or VISUAL
---- 75,79 ----
-  
-  			/* 4.3BSD-style crontab */
-! #define SYSCRONTAB	"/opt/etc/crontab"
-  
-  			/* what editor to use if no EDITOR or VISUAL
+--- cron/pathnames.h.orig	2005-03-26 17:42:09.000000000 +1030
++++ cron/pathnames.h	2005-03-26 17:42:37.000000000 +1030
+@@ -35,7 +35,7 @@
+ 			 * to; SPOOL_DIR, CRON_ALLOW, CRON_DENY, and LOG_FILE
+ 			 * are all relative to this directory.
+ 			 */
+-#define CRONDIR		"/var/cron"
++#define CRONDIR		"/opt/var/cron"
+ #endif
+ 
+ 			/* SPOOLDIR is where the crontabs live.
+@@ -46,7 +46,7 @@
+ 			 * newer than they were last time around (or which
+ 			 * didn't exist last time around...)
+ 			 */
+-#define SPOOL_DIR	"tabs"
++#define SPOOL_DIR	"crontabs"
+ 
+ 			/* cron allow/deny file.  At least cron.deny must
+ 			 * exist for ordinary users to run crontab.
+@@ -60,30 +60,24 @@
+ 			 * LOG_CRON is defined by <syslog.h>, LOG_FILE will not
+ 			 * be used.
+ 			 */
+-#define LOG_FILE	"log"
++/* #define LOG_FILE	"log" */
++#define SYSLOG
+ 
+ 			/* where should the daemon stick its PID?
+ 			 * PIDDIR must end in '/'.
+ 			 */
+-#ifdef _PATH_VARRUN
+-# define PIDDIR	_PATH_VARRUN
+-#else
+-# define PIDDIR "/etc/"
+-#endif
++#define PIDDIR "/opt/var/run/"
+ #define PIDFILE		"cron.pid"
+ #define _PATH_CRON_PID	PIDDIR PIDFILE
+ 
+ 			/* 4.3BSD-style crontab */
+-#define SYSCRONTAB	"/etc/crontab"
++#define SYSCRONTAB	"/opt/etc/crontab"
++#define CROND_DIR	"/opt/etc/cron.d"
+ 
+ 			/* what editor to use if no EDITOR or VISUAL
+ 			 * environment variable specified.
+ 			 */
+-#if defined(_PATH_VI)
+-# define EDITOR _PATH_VI
+-#else
+-# define EDITOR "/usr/ucb/vi"
+-#endif
++#define EDITOR "/bin/vi"
+ 
+ #ifndef _PATH_SENDMAIL
+ # define _PATH_SENDMAIL "/usr/lib/sendmail"

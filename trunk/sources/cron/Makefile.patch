@@ -20,19 +20,15 @@
   #<<need bitstring.h>>
   INCLUDE		=	-I.
 ***************
-*** 67,73 ****
+*** 67,71 ****
   LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
   #<<want to use a nonstandard CC?>>
 ! CC		=	gcc -Wall -Wno-unused -Wno-comment
   #<<manifest defines>>
-! DEFS		=
-  #(SGI IRIX systems need this)
-  #DEFS		=	-D_BSD_SIGNALS -Dconst=
---- 67,73 ----
+  DEFS		=
+--- 67,71 ----
   LINTFLAGS	=	-hbxa $(INCLUDE) $(DEBUGGING)
   #<<want to use a nonstandard CC?>>
 ! CC		=	$(TARGET_CC) -Wall -Wno-unused -Wno-comment
   #<<manifest defines>>
-! DEFS		= -D_PATH_VARRUN=\"/opt/var/run\" -D_PATH_VI=\"/bin/vi\" -DCRONDIR=\"/opt/var/cron\" -DSYSCRONTAB=\"/opt/etc/crontab\" -DCROND_DIR=\"/opt/etc/cron.d\"
-  #(SGI IRIX systems need this)
-  #DEFS		=	-D_BSD_SIGNALS -Dconst=
+  DEFS		=
