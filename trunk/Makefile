@@ -70,10 +70,7 @@ TARGET_CONFIGURE_OPTS= \
 		CXX="$(TARGET_CROSS)g++" \
 		RANLIB=$(TARGET_CROSS)ranlib
 
-all: world
-
-unslung: $(TARGETS)
-	cd firmware ; $(MAKE) clean unslung
+all: world unslung
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
 TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
@@ -84,6 +81,9 @@ PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
+
+unslung: $(TARGETS)
+	cd firmware ; $(MAKE) umount clean unslung
 
 world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) \
 	$(TARGETS_INSTALL) $(PACKAGES_UPKG)
