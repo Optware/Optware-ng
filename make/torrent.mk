@@ -40,16 +40,11 @@ TORRENT_IPK_DIR=$(BUILD_DIR)/torrent-$(TORRENT_VERSION)-ipk
 TORRENT_IPK=$(BUILD_DIR)/torrent_$(TORRENT_VERSION)-$(TORRENT_IPK_VERSION)_armeb.ipk
 
 #
-# This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
-#
-$(DL_DIR)/$(TORRENT_SOURCE):
-#
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-torrent-source: $(DL_DIR)/$(TORRENT_SOURCE)
+torrent-source: 
 
 #
 # This target unpacks the source code in the build directory.
@@ -66,7 +61,7 @@ torrent-source: $(DL_DIR)/$(TORRENT_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(TORRENT_SOURCE)
+$(TORRENT_BUILD_DIR)/.configured:
 	rm -rf $(BUILD_DIR)/$(TORRENT_DIR) $(TORRENT_BUILD_DIR)
 	mkdir -p $(TORRENT_BUILD_DIR)
 	touch $(TORRENT_BUILD_DIR)/.configured
