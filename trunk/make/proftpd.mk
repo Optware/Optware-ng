@@ -38,13 +38,13 @@ PROFTPD_CONFFILES=/opt/etc/proftpd.conf
 # PROFTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PROFTPD_PATCHES=$(PROFTPD_SOURCE_DIR)/libcap-makefile.patch
+PROFTPD_PATCHES=$(PROFTPD_SOURCE_DIR)/libcap-makefile.patch $(PROFTPD_SOURCE_DIR)/default_paths.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PROFTPD_CPPFLAGS=-DHAVE_LLU=1 -UHAVE_LU
+PROFTPD_CPPFLAGS=-DHAVE_LLU=1 -UHAVE_LU -DFTPUSERS_PATH='\"/opt/etc/ftpusers\"'
 PROFTPD_LDFLAGS=
 
 #
