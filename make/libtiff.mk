@@ -125,7 +125,7 @@ libtiff: $(LIBTIFF_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/liblibtiff.so.$(LIBTIFF_VERSION): $(LIBTIFF_BUILD_DIR)/.built
+$(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION): $(LIBTIFF_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(STAGING_DIR)/opt/include
@@ -133,13 +133,13 @@ $(STAGING_DIR)/opt/lib/liblibtiff.so.$(LIBTIFF_VERSION): $(LIBTIFF_BUILD_DIR)/.b
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.$(LIBTIFF_VERSION) $(STAGING_DIR)/opt/lib
+	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_DIR)/opt/lib
 	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libtiff.a
-	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libtiff.$(LIBTIFF_VERSION)
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.$(LIBTIFF_VERSION) libtiff.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.$(LIBTIFF_VERSION) libtiff.so
+	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
+	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so.3
+	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so
 
-libtiff-stage: $(STAGING_DIR)/opt/lib/liblibtiff.so.$(LIBTIFF_VERSION)
+libtiff-stage: $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
 
 #
 # This builds the IPK file.
