@@ -10,7 +10,7 @@ CYRUS-SASL_SOURCE=cyrus-sasl-$(CYRUS-SASL_VERSION).tar.gz
 CYRUS-SASL_DIR=cyrus-sasl-$(CYRUS-SASL_VERSION)
 CYRUS-SASL_UNZIP=zcat
 
-CYRUS-SASL_IPK_VERSION=3
+CYRUS-SASL_IPK_VERSION=4
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
@@ -79,7 +79,6 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	find $(CYRUS-SASL_IPK_DIR) -type d -exec chmod go+rx {} \;
 	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/sbin/*
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
-	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/sasl2
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
 	install -d $(CYRUS-SASL_IPK_DIR)/CONTROL
