@@ -6,7 +6,9 @@ SUDO_DIR:=$(BUILD_DIR)/sudo
 SUDO_SOURCE_DIR:=$(SOURCE_DIR)/sudo
 SUDO_VERSION:=1.6.8p1
 SUDO:=sudo-$(SUDO_VERSION)
-SUDO_SITE=http://probsd.org/sudoftp
+#SUDO_SITE=http://probsd.org/sudoftp
+#SUDO_SOURCE:=$(SUDO).tar.gz
+SUDO_SITE=http://ipkg.nslu2-linux.org/downloads/
 SUDO_SOURCE:=$(SUDO).tar.gz
 
 SUDO_IPK_VERSION:=3
