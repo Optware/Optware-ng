@@ -1,7 +1,11 @@
 #!/bin/sh
 
-if [ ! -f /opt/lib/libappWeb.so.1 ]; then
-	cd /opt/lib
-	ln -s libappWeb.so.1.0.0 libappWeb.so.1
-	ln -s libappWeb.so.1 libappWeb.so
+if [ ! -f /opt/etc/appWeb.conf ] ;  then
+    cp /opt/doc/appweb/appWeb.conf /opt/etc/appWeb.conf
+    echo ; echo
+    echo "To complete the installation, you must edit /opt/etc/appWeb.conf,"
+    echo "and then run /opt/etc/init.d/S81appweb to start AppWeb."
+    echo
+else
+    /opt/etc/init.d/S81appweb
 fi
