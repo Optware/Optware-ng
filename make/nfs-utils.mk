@@ -23,7 +23,7 @@ NFS-UTILS_UNZIP=zcat
 #
 # NFS-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS-UTILS_IPK_VERSION=1
+NFS-UTILS_IPK_VERSION=2
 
 #
 # NFS-UTILS_PATCHES should list any patches, in the the order in
