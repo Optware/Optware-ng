@@ -31,7 +31,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano nethack ccxstream \
 	   mdadm scponly strace libtool libdb libcurl libbt \
-	   libpcap ntp freeradius puppy screen
+	   libpcap ntp freeradius puppy screen bind
 
 PACKAGES_TO_BE_TESTED:= 
 
