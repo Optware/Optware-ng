@@ -62,6 +62,9 @@ INSTALLATION DETAILS
    and press the enable button.
 2) Telnet into the NSLU2 using the username root and password uNSLUng.
 3) Identify which drive you wish you change to UNSLUNG capable, plug in.
+   Wait a minute or two while the disk is mounted.  If the disk has not
+   been previously formatted on the NSLU2, then now is the time to do
+   that.  Make sure that the drive is recognised in the web interface.
 4) Run /sbin/unsling and watch the ramdisk files be copied to your disk.
    The files from the ramdisk will be copied to the "conf" partition,
    not the "data" partition.
