@@ -1,5 +1,9 @@
 #!/bin/sh
 
-### configure gtk-pixbuf
+### configure gdk-pixbuf
 rm -f /opt/etc/gtk-2.0/gdk-pixbuf.loaders
 /opt/bin/gdk-pixbuf-query-loaders > /opt/etc/gtk-2.0/gdk-pixbuf.loaders
+
+### configure input modules
+rm -f /opt/etc/gtk-2.0/gtk.immodules
+/opt/bin/gtk-query-immodules-2.0 > /opt/etc/gtk-2.0/gtk.immodules
