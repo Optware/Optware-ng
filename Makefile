@@ -36,7 +36,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   logrotate appweb imagemagick \
 	   nail stunnel tcpdump nload
 
-PACKAGES_TO_BE_TESTED:= crosstool-native
+PACKAGES_TO_BE_TESTED:= crosstool-native nmap
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
