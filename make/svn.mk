@@ -78,7 +78,7 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 #
 #
 $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
-	$(MAKE) libdb-stage 
+	$(MAKE) libdb-stage openssl-stage gdbm-stage
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	zcat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p2
@@ -91,10 +91,12 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(SVN_BUILD_DIR)/opt \
+		--prefix=/opt \
+		--disable-nls \
 		--with-libs=$(STAGING_DIR)/opt \
 		--with-berkeley-db=$(STAGING_DIR)/opt \
-                --with-expat=$(SVN_BUILD_DIR)/apr-util/xml/expat \
+		--with-expat=$(SVN_BUILD_DIR)/apr-util/xml/expat \
+		--with-ssl=yes \
 		--with-apache=no \
 		--with-apxs=no \
 	)
@@ -106,31 +108,24 @@ svn-unpack: $(SVN_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(SVN_BUILD_DIR)/opt/bin/svn: $(SVN_BUILD_DIR)/.configured
-	$(MAKE) -C $(SVN_BUILD_DIR) install
+$(SVN_BUILD_DIR)/subversion/clients/cmdline/svn: $(SVN_BUILD_DIR)/.configured
+	$(MAKE) -C $(SVN_BUILD_DIR) all
 
 #
 # These are the dependencies for the package (remove svn-dependencies if
 # there are no build dependencies for this package.  Again, you should change
 # the final dependency to refer directly to the main binary which is built.
 #
-svn: $(SVN_BUILD_DIR)/opt/bin/svn
+svn: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libsvn_wc-1.so.0.0.0: $(SVN_BUILD_DIR)/opt/lib/libsvn_wc-1.so.0.0.0
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(SVN_BUILD_DIR)/opt/include/apr-0/*.h $(STAGING_DIR)/opt/include
-	install -m 644 $(SVN_BUILD_DIR)/opt/include/neon/*.h $(STAGING_DIR)/opt/include
-	install -m 644 $(SVN_BUILD_DIR)/opt/include/subversion-1/*.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(SVN_BUILD_DIR)/opt/lib/*.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(SVN_BUILD_DIR)/opt/lib/*.la $(STAGING_DIR)/opt/lib
-	install -m 644 $(SVN_BUILD_DIR)/opt/lib/*.so $(STAGING_DIR)/opt/lib
-	install -m 644 $(SVN_BUILD_DIR)/opt/lib/*.so.* $(STAGING_DIR)/opt/lib
+$(STAGING_DIR)/opt/lib/libneon.la: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
+	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(STAGING_DIR) external-install
+	rm -rf $(STAGING_DIR)/opt/{man,info,share}
 
-svn-stage: $(STAGING_DIR)/opt/lib/libsvn_wc-1.so.0.0.0
+svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
 
 #
 # This builds the IPK file.
@@ -144,30 +139,22 @@ svn-stage: $(STAGING_DIR)/opt/lib/libsvn_wc-1.so.0.0.0
 #
 # You may need to patch your application to make it use these locations.
 #
-$(SVN_IPK): svn
+$(SVN_IPK): $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 	rm -rf $(SVN_IPK_DIR) $(SVN_IPK)
-	install -d $(SVN_IPK_DIR)/opt/bin
-	$(STRIP) $(SVN_BUILD_DIR)/opt/bin/svn -o $(SVN_IPK_DIR)/opt/bin/svn
-	$(STRIP) $(SVN_BUILD_DIR)/opt/bin/svnadmin -o $(SVN_IPK_DIR)/opt/bin/svnadmin
-	$(STRIP) $(SVN_BUILD_DIR)/opt/bin/svndumpfilter -o $(SVN_IPK_DIR)/opt/bin/svndumpfilter
-	$(STRIP) $(SVN_BUILD_DIR)/opt/bin/svnlook -o $(SVN_IPK_DIR)/opt/bin/svnlook
-	$(STRIP) $(SVN_BUILD_DIR)/opt/bin/svnserve -o $(SVN_IPK_DIR)/opt/bin/svnserve
-	$(STRIP) $(SVN_BUILD_DIR)/opt/bin/svnversion -o $(SVN_IPK_DIR)/opt/bin/svnversion
-	install -d $(SVN_IPK_DIR)/opt/include
-	install -m 644 $(SVN_BUILD_DIR)/opt/include/apr-0/*.h $(SVN_IPK_DIR)/opt/include
-	install -m 644 $(SVN_BUILD_DIR)/opt/include/neon/*.h $(SVN_IPK_DIR)/opt/include
-	install -m 644 $(SVN_BUILD_DIR)/opt/include/subversion-1/*.h $(SVN_IPK_DIR)/opt/include
-	install -d $(SVN_IPK_DIR)/opt/lib
-	install $(SVN_BUILD_DIR)/opt/lib/*.a $(SVN_IPK_DIR)/opt/lib
-	install $(SVN_BUILD_DIR)/opt/lib/*.la $(SVN_IPK_DIR)/opt/lib
-	install $(SVN_BUILD_DIR)/opt/lib/*.so $(SVN_IPK_DIR)/opt/lib
-	install $(SVN_BUILD_DIR)/opt/lib/*.so.* $(SVN_IPK_DIR)/opt/lib
+	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) install
+	rm -rf $(SVN_IPK_DIR)/opt/{build,include,info,man,share}
+	rm -rf $(SVN_IPK_DIR)/opt/lib/*.{a,la,exp}
+	rm -rf $(SVN_IPK_DIR)/opt/lib/pkgconfig
+	rm -f $(SVN_IPK_DIR)/opt/bin/*-config
+	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svn
+	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnadmin
+	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svndumpfilter
+	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnlook
+	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnserve
+	$(STRIP) $(SVN_IPK_DIR)/opt/bin/svnversion
 	install -d $(SVN_IPK_DIR)/CONTROL
 	install -m 644 $(SVN_SOURCE_DIR)/control $(SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN_IPK_DIR)
-
-#	install -m 644 $(SVN_SOURCE_DIR)/postinst $(SVN_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(SVN_SOURCE_DIR)/prerm $(SVN_IPK_DIR)/CONTROL/prerm
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -184,5 +171,5 @@ svn-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-svn-dirclean: svn-clean
+svn-dirclean:
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR) $(SVN_IPK_DIR) $(SVN_IPK)
