@@ -3,3 +3,9 @@
 if [ -f /etc/ipkg/unslung-feed.old-conf ] ;  then
     mv /etc/ipkg/unslung-feed.old-conf /etc/ipkg/unslung-feed.conf
 fi
+if [ -f /usr/lib/ipkg/lists/unslung-cross ] ;  then
+    rm /usr/lib/ipkg/lists/unslung-cross
+fi
+if [ -f /usr/lib/ipkg/lists/unslung-native ] ;  then
+    rm /usr/lib/ipkg/lists/unslung-native
+fi
