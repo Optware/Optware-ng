@@ -88,3 +88,5 @@ dump-distclean:
 	-rm $(DUMP_DIR)/.configured
 	-$(MAKE) -C $(DUMP_DIR) distclean
 
+dump-dirclean:
+	rm -rf $(DUMP_DIR) $(DUMP_IPK_DIR) $(DUMP_IPK)
