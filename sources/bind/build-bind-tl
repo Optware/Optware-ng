@@ -1,0 +1,318 @@
+#! /bin/bash
+#
+# Build ISC bind for the NSLU2
+#
+# Author: T. Litt
+#
+# Disclaimer: It works for me, under FC3 on I386.  Your milage may vary.
+#
+echo "Building bind" >/dev/stderr
+#
+# Make sure the environment is setup properly.
+#
+# You should only have to modify the next two symbols:
+#
+# do NOT use ~/; doesn't work with GCC
+#
+# Directory under which source and build trees will be created
+#
+BASE=$HOME/linksys/nslu2/build/unslung/bind
+#
+# Directory containing results of package builds 
+#     -- in particular, DNSSEC needs openssl, found in /lib and /include
+#
+STAGED=$HOME/linksys/nslu2/build/unslung/staging/opt
+#
+# If you put the tools somehere else, point to them here:
+#
+TOOLSBASE=/opt/crosstool/armv5b-softfloat-linux/gcc-3.3.4-glibc-2.2.5/bin
+#
+BIND_VERS="9.3.0"
+#
+# Kitname is the name of the kit.  
+#
+KITNAME="bind-$BIND_VERS"
+KITFILE="$KITNAME.tar.gz"
+# Top directory in .tar file
+KITDIR="$KITNAME"
+#
+KITLOC="ftp://ftp.isc.org/isc/bind9/$BIND_VER/$KITFILE"
+#
+# Assuming you are using the proper toolchain, these are derrivative definitions.
+#
+export CC=$TOOLSBASE/armv5b-softfloat-linux-gcc
+export STRIP=$TOOLSBASE/armv5b-softfloat-linux-strip
+export RANLIB=$TOOLSBASE/armv5b-softfloat-linux-ranlib
+export ADDR2LINE=$TOOLSBASE/armv5b-softfloat-linux-addr2line
+export AR=$TOOLSBASE/armv5b-softfloat-linux-ar
+export AS=$TOOLSBASE/armv5b-softfloat-linux-as
+export CPP=$TOOLSBASE/armv5b-softfloat-linux-cpp
+export LD=$TOOLSBASE/armv5b-softfloat-linux-ld
+export NM=$TOOLSBASE/armv5b-softfloat-linux-nm
+export READELF=$TOOLSBASE/armv5b-softfloat-linux-readelf
+export SIZE=$TOOLSBASE/armv5b-softfloat-linux-size
+export STRINGS=$TOOLSBASE/armv5b-softfloat-linux-strings
+export LDFLAGS="-s -L$STAGED/lib"
+#-Wl,-nostdlib -Wl,-rpath,/opt/lib:/lib"
+export CFLAGS=-I$STAGED/include
+#
+# If necessary, get the kit
+#
+if [ ! -d $BASE ]; then
+mkdir -p $BASE
+fi
+#
+if [ -e $BASE/$KITFILE ]; then
+echo "Re-using existing kit in $BASE/$KITFILE" >/dev/stderr
+else
+echo "Obtaining kit..." >/dev/stderr
+wget -v -N --passive-ftp -O $BASE/$KITFILE $KITLOC
+if test $? ; then
+echo "Kit retrieved successfully" >/dev/stderr
+else
+echo "Unable to obtain kit, aborting" >/dev/stderr
+exit 1
+fi
+fi
+#
+#
+# Make sure we are in the base directory
+#
+cd $BASE
+# 
+# Remove old build & unpack the kit
+#
+if [ -e $BASE/$KITDIR ]; then
+echo "Removing old build tree" >/dev/stderr
+rm -r $BASE/$KITDIR
+fi
+#
+echo "Unpacking kit" >/dev/stderr
+tar -xzf $KITFILE
+if test $? ; then
+echo "Kit extracted" >/dev/stderr
+else
+echo "Failed to extract kit, aborting" >/dev/stderr
+exit 1
+fi
+#
+mkdir -p $BASE/install/opt
+#
+echo "Configuring BIND $BIND_VERS for the NSLU2" >/dev/stderr
+#
+# Configuration:
+# --prefix - Install to a local directory
+# --with-openssl - point to the arm openssl libraries
+# --with-libtool - build sharable images
+# --sysconfdir - point to default directory for named.conf & zone data
+# --localstatedir - point to parent directory for run/named.pid
+# --withrandomdev - point to /dev/random on target
+# --host - actually, this specifies the target
+# --disable-getifaddrs - work-around for a bug in configure
+#
+cd $BASE/$KITDIR
+if [ ! -x ./configure ]; then
+echo "Kit not installed or corrupt, aborting" >/dev/stderr
+exit 1
+fi
+#
+# Patch configure
+#
+cat >./configure_patch <<"PATCH_EOF"
+*** bind-9.3.0/configure	2004-09-01 03:18:30.000000000 -0400
+--- bind-9.3.0.tl/configure	2004-12-05 11:23:44.122516872 -0500
+***************
+*** 23426,23470 ****
+  sed 's/^/| /' conftest.$ac_ext >&5
+  
+  echo "$as_me:$LINENO: result: no" >&5
+  echo "${ECHO_T}no" >&6
+  	ISC_PLATFORM_HAVEIF_LADDRCONF="#undef ISC_PLATFORM_HAVEIF_LADDRCONF"
+  fi
+  rm -f conftest.err conftest.$ac_objext \
+        conftest$ac_exeext conftest.$ac_ext
+  
+  
+  #
+  # Check for network functions that are often missing.  We do this
+  # after the libtool checking, so we can put the right suffix on
+  # the files.  It also needs to come after checking for a Kame add-on,
+  # which provides some (all?) of the desired functions.
+  #
+  
+  echo "$as_me:$LINENO: checking for inet_ntop with IPv6 support" >&5
+  echo $ECHO_N "checking for inet_ntop with IPv6 support... $ECHO_C" >&6
+  if test "$cross_compiling" = yes; then
+!   { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+! See \`config.log' for more details." >&5
+! echo "$as_me: error: cannot run test program while cross compiling
+! See \`config.log' for more details." >&2;}
+!    { (exit 1); exit 1; }; }
+  else
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+  _ACEOF
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+  
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <arpa/inet.h>
+  main() {
+  char a[16],b[64]; return(inet_ntop(AF_INET6, a, b, sizeof(b)) == (char*)0);}
+  _ACEOF
+  rm -f conftest$ac_exeext
+  if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+    (eval $ac_link) 2>&5
+    ac_status=$?
+    echo "$as_me:$LINENO: \$? = $ac_status" >&5
+--- 23426,23477 ----
+  sed 's/^/| /' conftest.$ac_ext >&5
+  
+  echo "$as_me:$LINENO: result: no" >&5
+  echo "${ECHO_T}no" >&6
+  	ISC_PLATFORM_HAVEIF_LADDRCONF="#undef ISC_PLATFORM_HAVEIF_LADDRCONF"
+  fi
+  rm -f conftest.err conftest.$ac_objext \
+        conftest$ac_exeext conftest.$ac_ext
+  
+  
+  #
+  # Check for network functions that are often missing.  We do this
+  # after the libtool checking, so we can put the right suffix on
+  # the files.  It also needs to come after checking for a Kame add-on,
+  # which provides some (all?) of the desired functions.
+  #
+  
+  echo "$as_me:$LINENO: checking for inet_ntop with IPv6 support" >&5
+  echo $ECHO_N "checking for inet_ntop with IPv6 support... $ECHO_C" >&6
+  if test "$cross_compiling" = yes; then
+!   echo "$as_me:$LINENO: result: assuming target platform doesnt need inet_netop" >&5
+! echo "${ECHO_T}assuming target platform doesnt need inet_netop" >&6
+!         ISC_EXTRA_OBJS="$ISC_EXTRA_OBJS inet_ntop.$O"
+! #        ISC_EXTRA_SRCS="$ISC_EXTRA_SRCS inet_ntop.c"
+! #        ISC_PLATFORM_NEEDNTOP="#define ISC_PLATFORM_NEEDNTOP 1"
+!         ISC_PLATFORM_NEEDNTOP="#undef ISC_PLATFORM_NEEDNTOP"
+! 
+! #  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+! #See \`config.log' for more details." >&5
+! #echo "$as_me: error: cannot run test program while cross compiling
+! #See \`config.log' for more details." >&2;}
+! #   { (exit 1); exit 1; }; }
+  else
+    cat >conftest.$ac_ext <<_ACEOF
+  /* confdefs.h.  */
+  _ACEOF
+  cat confdefs.h >>conftest.$ac_ext
+  cat >>conftest.$ac_ext <<_ACEOF
+  /* end confdefs.h.  */
+  
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <arpa/inet.h>
+  main() {
+  char a[16],b[64]; return(inet_ntop(AF_INET6, a, b, sizeof(b)) == (char*)0);}
+  _ACEOF
+  rm -f conftest$ac_exeext
+  if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+    (eval $ac_link) 2>&5
+    ac_status=$?
+    echo "$as_me:$LINENO: \$? = $ac_status" >&5
+PATCH_EOF
+#
+patch -b ./configure ./configure_patch
+if test $? ; then
+echo "Patch succeeded" >/dev/stderr
+else
+echo "Patch failed, aborting" >/dev/stderr
+exit 1
+fi
+rm ./configure_patch
+#
+echo "Running configure.  Expect two warnings." >/dev/stderr
+./configure --prefix=$BASE/install/opt --with-openssl=$STAGED --with-libtool --sysconfdir=/opt/etc/named --localstatedir=/opt/var --with-randomdev=/dev/random --host=arm-linux --disable-getifaddrs
+if test $? ; then
+echo "Configure completed" >/dev/stderr
+else
+echo "Configure failed, aborting" >/dev/stderr
+exit 1
+fi
+if [ ! -e lib/dns/Makefile ]; then
+echo "Configure failed, aborting" >/dev/stderr
+exit 1
+fi
+#
+# Configure cross-builds gen.c  make it a local build.
+# It generates code & tables; these don't seem to be host dependent.
+#
+echo "Patching Configure results..." >/dev/stderr
+    sed -i.bak -e 's/${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}\/gen.c ${LIBS}/cc ${ALL_CPPFLAGS} ${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS} -o $@ ${srcdir}\/gen.c ${LIBS}/' lib/dns/Makefile
+echo "Done" >/dev/stderr
+echo "Build is starting, expect four warnings" >/dev/stderr
+make clean
+if test $? ; then
+echo "make clean succeeded" >/dev/stderr
+else
+echo "make failed, aborting" >/dev/stderr
+exit 1
+fi
+make
+if test $? ; then
+echo "Build succeeded" >/dev/stderr
+else
+echo "Build failed, aborting" >/dev/stderr
+exit 1
+fi
+echo "Installing to local directory, expect three warnings" >/dev/stderr
+make install
+if test $? ; then
+echo "Local install succeeded" >/dev/stderr
+else
+echo "Local install failed, aborting" >/dev/stderr
+exit 1
+fi
+echo "Building installation kit" >/dev/stderr
+#
+# This is a .tar file that can be installed on the target
+#
+cd $BASE/install
+#!
+#echo Removing man pages and headers >/dev/stderr
+#if(test -d man) then rm -r man; fi
+#if(test -d include) then rm -r include; fi
+echo Changing ownership >/dev/stderr
+sudo chown root.root opt opt/* opt/*/*
+echo Creating binary kit >/dev/stderr
+BASE_KIT="opt/bin opt/sbin opt/lib/*.so*"
+tar -czf bind.tar.gz $BASE_KIT
+tar -czf bind-full.tar.gz $BASE_KIT opt/man opt/lib/*.a opt/lib/*.la opt/include
+if test $? ; then
+echo "Binary kit built OK" >/dev/stderr
+else
+echo "Binary kit build failed, aborting" >/dev/stderr
+exit 1
+fi
+echo Restoring ownership >/dev/stderr
+sudo chown $USER.$USER opt opt/* opt/*/*
+
+
+exit 0
+
+if test $? ; then
+echo "Patch succeeded" >/dev/stderr
+else
+echo "Patch failed, aborting" >/dev/stderr
+exit 1
+fi
+
+# HERE, I WANT TO RESTORE TO $STAGED, Then do the package build
+#
+# If you have an nfs mount point, you can do this:
+#
+echo "sudo cp -p bind.tar.gz /mnt/nslu/hdd/conf/" >/dev/stderr
+echo "Install archive from slug /, with:" >/dev/stderr
+echo "tar -xvzp --same-owner -f bind.tar.gz" >/dev/stderr
+echo ">>DO NOT try this from an NFS mount point.<<" >/dev/stderr
