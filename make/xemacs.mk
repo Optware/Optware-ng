@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 XEMACS_SITE=ftp://ftp.xemacs.org/pub/xemacs/xemacs-21.4
-XEMACS_VERSION=21.4.16
+XEMACS_VERSION=21.4.17
 XEMACS_SOURCE=xemacs-$(XEMACS_VERSION).tar.bz2
 XEMACS_DIR=xemacs-$(XEMACS_VERSION)
 XEMACS_UNZIP=bzcat
