@@ -18,7 +18,7 @@ APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
 APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-APACHE_DESCRIPTION=The internet\'s most popular web server
+APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
 APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap
@@ -68,6 +68,8 @@ APACHE_BUILD_DIR=$(BUILD_DIR)/apache
 APACHE_SOURCE_DIR=$(SOURCE_DIR)/apache
 APACHE_IPK_DIR=$(BUILD_DIR)/apache-$(APACHE_VERSION)-ipk
 APACHE_IPK=$(BUILD_DIR)/apache_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_armeb.ipk
+APACHE_MANUAL_IPK_DIR=$(BUILD_DIR)/apache-manual-$(APACHE_VERSION)-ipk
+APACHE_MANUAL_IPK=$(BUILD_DIR)/apache-manual_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_armeb.ipk
 
 #
 # Automatically create a ipkg control file
@@ -85,8 +87,8 @@ $(APACHE_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(APACHE_DESCRIPTION)" >>$@
 	@echo "Depends: $(APACHE_DEPENDS)" >>$@
 
-$(APACHE_IPK_DIR)-manual/CONTROL/control:
-	@install -d $(APACHE_IPK_DIR)-manual/CONTROL
+$(APACHE_MANUAL_IPK_DIR)/CONTROL/control:
+	@install -d $(APACHE_MANUAL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apache-manual" >>$@
 	@echo "Architecture: armeb" >>$@
@@ -95,7 +97,7 @@ $(APACHE_IPK_DIR)-manual/CONTROL/control:
 	@echo "Version: $(APACHE_VERSION)-$(APACHE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(APACHE_MAINTAINER)" >>$@
 	@echo "Source: $(APACHE_SITE)/$(APACHE_SOURCE)" >>$@
-	@echo "Description: HTML manuals for apache" >>$@
+	@echo "Description: Online documentation for the apache webserver" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -238,10 +240,10 @@ $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
 	install -m 755 $(APACHE_SOURCE_DIR)/postinst $(APACHE_IPK_DIR)/CONTROL/postinst
 	echo $(APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(APACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_IPK_DIR)
-	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR)-manual installbuilddir=/opt/share/apache2/build install-man
-	rm -rf $(APACHE_IPK_DIR)-manual/opt/man
-	$(MAKE) $(APACHE_IPK_DIR)-manual/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_IPK_DIR)-manual
+	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_MANUAL_IPK_DIR) installbuilddir=/opt/share/apache2/build install-man
+	rm -rf $(APACHE_MANUAL_IPK_DIR)/opt/man
+	$(MAKE) $(APACHE_MANUAL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_MANUAL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -259,4 +261,4 @@ apache-clean:
 # directories.
 #
 apache-dirclean:
-	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR) $(APACHE_IPK_DIR) $(APACHE_IPK)
+	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR) $(APACHE_IPK_DIR) $(APACHE_IPK) $(APACHE_MANUAL_IPK_DIR) $(APACHE_MANUAL_IPK)
