@@ -11,7 +11,7 @@ PROCPS_SITE=http://procps.sourceforge.net
 PROCPS_SOURCE_ARCHIVE=$(PROCPS).tar.gz
 PROCPS_UNZIP=zcat
 
-PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-2_armeb.ipk
+PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-3_armeb.ipk
 PROCPS_IPK_DIR=$(BUILD_DIR)/procps-$(PROCPS_VERSION)-ipk
 
 MY_STAGING_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/opt/include/ncurses"
