@@ -16,9 +16,12 @@
 #
 KAFFE_SITE=http://www.kaffe.org/ftp/pub/kaffe/v1.1.x-development
 KAFFE_VERSION=20050129
-KAFFE_SOURCE=kaffe-$(KAFFE_VERSION).tgz
+KAFFE_SOURCE=kaffe-$(KAFFE_VERSION).tar.gz
 KAFFE_DIR=kaffe-$(KAFFE_VERSION)
 KAFFE_UNZIP=zcat
+KAFFE_REPOSITORY=:pserver:readonly@cvs.kaffe.org:/cvs/kaffe
+KAFFE_TAG="-D 2005-01-29"
+KAFFE_MODULE=kaffe
 
 #
 # KAFFE_IPK_VERSION should be incremented when the ipk changes.
@@ -61,7 +64,10 @@ KAFFE_IPK=$(BUILD_DIR)/kaffe_$(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)_armeb.ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(KAFFE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(KAFFE_SITE)/$(KAFFE_SOURCE)
+	cd $(DL_DIR) ; $(CVS) -d $(KAFFE_REPOSITORY) co $(KAFFE_TAG) $(KAFFE_MODULE)
+	mv $(DL_DIR)/$(KAFFE_MODULE) $(DL_DIR)/$(KAFFE_DIR)
+	cd $(DL_DIR) ; tar zcvf $(KAFFE_SOURCE) $(KAFFE_DIR)
+	rm -rf $(DL_DIR)/$(KAFFE_DIR)
 
 #
 # The source code depends on it existing within the download directory.
