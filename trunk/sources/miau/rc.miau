@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/opt/bin/miau -d /root/.miau
