@@ -1,7 +1,7 @@
 Package: libpcap
 Version: 0.8.3-1
 Architecture: armeb
-Maintainer: Joerg Berg <caplink@gmx.net>
+Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com> 
 Source: http://www.tcpdump.org/release/libpcap-0.8.3.tar.gz
 Section: utilities
 Priority: optional
