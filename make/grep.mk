@@ -44,7 +44,7 @@ grep: $(GREP_IPK_DIR)
 
 $(GREP_IPK): $(GREP_IPK_DIR)
 	mkdir -p $(GREP_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/grep.control $(GREP_IPK_DIR)/CONTROL/control
+	cp $(SOURCE_DIR)/grep/control $(GREP_IPK_DIR)/CONTROL/control
 	$(STRIP) $(GREP_DIR)/src/grep
 	$(STRIP) $(GREP_DIR)/src/egrep
 	$(STRIP) $(GREP_DIR)/src/fgrep
