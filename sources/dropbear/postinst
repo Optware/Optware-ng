@@ -1,0 +1,11 @@
+#!/bin/sh
+
+mkdir -p /opt/etc/dropbear
+/opt/sbin/dropbearkey -t rsa -f /opt/etc/dropbear/dropbear_rsa_host_key
+/opt/sbin/dropbearkey -t dss -f /opt/etc/dropbear/dropbear_dss_host_key
+
+if [ ! -d /root ] ;  then
+	mkdir /root
+fi
+
+/opt/etc/init.d/S51dropbear
