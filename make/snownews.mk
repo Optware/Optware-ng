@@ -40,7 +40,7 @@ SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules gettext
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=2
+SNOWNEWS_IPK_VERSION=3
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
