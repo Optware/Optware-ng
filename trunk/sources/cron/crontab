@@ -1,0 +1,8 @@
+SHELL=/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=""
+HOME=/
+# ---------- ---------- Default is Empty ---------- ---------- #
+0 0-23/8 * * * root /usr/sbin/CheckDiskFull &>/dev/null
+0 0 * * * root /usr/sbin/WatchDog &>/dev/null
+1 * * * * root /usr/sbin/hwclock -s &>/dev/null
