@@ -10,8 +10,14 @@ BZIP2_LIB_VERSION:=1.0.2
 BZIP2_SOURCE=bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_DIR=bzip2-$(BZIP2_VERSION)
 BZIP2_UNZIP=zcat
+BZIP2_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
+BZIP2_DESCRIPTION=Very high-quality data compression program
+BZIP2_SECTION=compression
+BZIP2_PRIORITY=optional
+BZIP2_DEPENDS=
+BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=2
+BZIP2_IPK_VERSION=3
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -55,6 +61,24 @@ $(STAGING_LIB_DIR)/libbz2.a: $(BZIP2_BUILD_DIR)/bzip2
 
 bzip2-stage: $(STAGING_LIB_DIR)/libbz2.a
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/bzip2
+#
+$(BZIP2_IPK_DIR)/CONTROL/control:
+	@install -d $(BZIP2_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: bzip2" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BZIP2_PRIORITY)" >>$@
+	@echo "Section: $(BZIP2_SECTION)" >>$@
+	@echo "Version: $(BZIP2_VERSION)-$(BZIP2_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BZIP2_MAINTAINER)" >>$@
+	@echo "Source: $(BZIP2_SITE)/$(BZIP2_SOURCE)" >>$@
+	@echo "Description: $(BZIP2_DESCRIPTION)" >>$@
+	@echo "Depends: $(BZIP2_DEPENDS)" >>$@
+	@echo "Conflicts: $(BZIP2_CONFLICTS)" >>$@
+
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	rm -rf $(BZIP2_IPK_DIR) $(BUILD_DIR)/bzip2_*_$(TARGET_ARCH).ipk
 	install -d $(BZIP2_IPK_DIR)/opt/bin
@@ -69,8 +93,7 @@ $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so
 	install -d $(BZIP2_IPK_DIR)/opt/doc/bzip2
 	install -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)/opt/doc/bzip2
-	install -d $(BZIP2_IPK_DIR)/CONTROL
-	install -m 644 $(BZIP2_SOURCE_DIR)/control $(BZIP2_IPK_DIR)/CONTROL/control
+	$(MAKE) $(BZIP2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BZIP2_IPK_DIR)
 
 bzip2-ipk: bzip2-stage $(BZIP2_IPK)
