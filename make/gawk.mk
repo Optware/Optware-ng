@@ -28,7 +28,7 @@ GAWK_UNZIP=zcat
 #
 # GAWK_IPK_VERSION should be incremented when the ipk changes.
 #
-GAWK_IPK_VERSION=1
+GAWK_IPK_VERSION=2
 
 #
 # GAWK_PATCHES should list any patches, in the the order in
@@ -149,16 +149,16 @@ gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
-	rm -rf $(GAWK_IPK_DIR) $(GAWK_IPK)
+	rm -rf $(GAWK_IPK_DIR) $(BUILD_DIR)/gawk_*_armeb.ipk
 	install -d $(GAWK_IPK_DIR)/opt/bin
-	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install-exec
+	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install
+	rm -rf $(GAWK_IPK_DIR)/opt/{man,info}
+	rm -f $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.4
+	rm -f $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.4
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/gawk
-	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.4
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/pgawk
-	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.4
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/grcat
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/pwcat
-
 	install -d $(GAWK_IPK_DIR)/CONTROL
 	install -m 644 $(GAWK_SOURCE_DIR)/control $(GAWK_IPK_DIR)/CONTROL/control
 #	install -m 644 $(GAWK_SOURCE_DIR)/postinst $(GAWK_IPK_DIR)/CONTROL/postinst
