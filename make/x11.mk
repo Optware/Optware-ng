@@ -12,10 +12,10 @@
 #
 X11_SITE=http://freedesktop.org
 X11_SOURCE=# none - available from CVS only
-X11_VERSION=6.2.1+cvs20050130
+X11_VERSION=6.2.1+cvs20050209
 X11_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 X11_DIR=X11
-X11_CVS_OPTS=-D20050130
+X11_CVS_OPTS=-D20050209
 X11_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 X11_DESCRIPTION=X protocol library
 X11_SECTION=lib
@@ -25,7 +25,7 @@ X11_DEPENDS=xau
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=2
+X11_IPK_VERSION=1
 
 #
 # X11_CONFFILES should be a list of user-editable files
@@ -99,8 +99,13 @@ x11-source: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(X11_BUILD_DIR)/.configured: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
-	$(MAKE) xproto-stage xau-stage xtrans-stage xdmcp-stage xextensions-stage
+$(X11_BUILD_DIR)/.configured: $(X11_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h \
+		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
+		$(STAGING_LIB_DIR)/libXau.so \
+		$(STAGING_LIB_DIR)/libXdmcp.so \
+		$(X11_PATCHES)
 	(cd $(X11_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(X11_CPPFLAGS)" \
@@ -135,13 +140,11 @@ x11: $(X11_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(X11_BUILD_DIR)/.staged: $(X11_BUILD_DIR)/.built
-	rm -f $(X11_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libX11.so: $(X11_BUILD_DIR)/.built
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libX11.la
-	touch $(X11_BUILD_DIR)/.staged
 
-x11-stage: $(X11_BUILD_DIR)/.staged
+x11-stage: $(STAGING_LIB_DIR)/libX11.so
 
 #
 # This builds the IPK file.

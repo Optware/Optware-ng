@@ -96,13 +96,17 @@ fixesext-source: $(FIXESEXT_BUILD_DIR)/.fetched $(FIXESEXT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FIXESEXT_BUILD_DIR)/.configured: $(FIXESEXT_BUILD_DIR)/.fetched $(FIXESEXT_PATCHES)
+$(FIXESEXT_BUILD_DIR)/.configured: $(FIXESEXT_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
+		$(FIXESEXT_PATCHES)
 	(cd $(FIXESEXT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FIXESEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FIXESEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -130,13 +134,10 @@ fixesext: $(FIXESEXT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(FIXESEXT_BUILD_DIR)/.staged: $(FIXESEXT_BUILD_DIR)/.built
-	$(MAKE) xproto-stage xextensions-stage
-	rm -f $(FIXESEXT_BUILD_DIR)/.staged
+$(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h: $(FIXESEXT_BUILD_DIR)/.built
 	$(MAKE) -C $(FIXESEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(FIXESEXT_BUILD_DIR)/.staged
 
-fixesext-stage: $(FIXESEXT_BUILD_DIR)/.staged
+fixesext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h
 
 #
 # This builds the IPK file.

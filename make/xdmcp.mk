@@ -96,14 +96,16 @@ xdmcp-source: $(XDMCP_BUILD_DIR)/.fetched $(XDMCP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XDMCP_BUILD_DIR)/.configured: $(XDMCP_BUILD_DIR)/.fetched $(XDMCP_PATCHES)
-	$(MAKE) xproto-stage
+$(XDMCP_BUILD_DIR)/.configured: $(XDMCP_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(XDMCP_PATCHES)
 	(cd $(XDMCP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDMCP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XDMCP_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -131,13 +133,11 @@ xdmcp: $(XDMCP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XDMCP_BUILD_DIR)/.staged: $(XDMCP_BUILD_DIR)/.built
-	rm -f $(XDMCP_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXdmcp.so: $(XDMCP_BUILD_DIR)/.built
 	$(MAKE) -C $(XDMCP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXdmcp.la
-	touch $(XDMCP_BUILD_DIR)/.staged
 
-xdmcp-stage: $(XDMCP_BUILD_DIR)/.staged
+xdmcp-stage: $(STAGING_LIB_DIR)/libXdmcp.so
 
 #
 # This builds the IPK file.

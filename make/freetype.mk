@@ -111,7 +111,8 @@ freetype-source: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
+$(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) \
+		$(FREETYPE_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR)
 	$(FREETYPE_UNZIP) $(DL_DIR)/$(FREETYPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -149,12 +150,12 @@ freetype: $(FREETYPE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(FREETYPE_BUILD_DIR)/.staged: $(FREETYPE_BUILD_DIR)/.built
+$(STAGING_LIB_DIR)/libfreetype.so: $(FREETYPE_BUILD_DIR)/.built
 	rm -f $(FREETYPE_BUILD_DIR)/.staged
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(FREETYPE_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libfreetype.la
 
-freetype-stage: $(FREETYPE_BUILD_DIR)/.staged
+freetype-stage: $(STAGING_LIB_DIR)/libfreetype.so
 
 #
 # This builds the IPK file.

@@ -97,14 +97,18 @@ xtst-source: $(XTST_BUILD_DIR)/.fetched $(XTST_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTST_BUILD_DIR)/.configured: $(XTST_BUILD_DIR)/.fetched $(XTST_PATCHES)
-	$(MAKE) x11-stage xext-stage recordext-stage
+$(XTST_BUILD_DIR)/.configured: $(XTST_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/extensions/record.h \
+		$(STAGING_LIB_DIR)/libX11.so \
+		$(STAGING_LIB_DIR)/libXext.so \
+		$(XTST_PATCHES)
 	(cd $(XTST_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTST_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XTST_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -132,13 +136,11 @@ xtst: $(XTST_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XTST_BUILD_DIR)/.staged: $(XTST_BUILD_DIR)/.built
-	rm -f $(XTST_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXtst.so: $(XTST_BUILD_DIR)/.built
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXtst.la
-	touch $(XTST_BUILD_DIR)/.staged
 
-xtst-stage: $(XTST_BUILD_DIR)/.staged
+xtst-stage: $(STAGING_LIB_DIR)/libXtst.so
 
 #
 # This builds the IPK file.

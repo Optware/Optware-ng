@@ -96,13 +96,16 @@ recordext-source: $(RECORDEXT_BUILD_DIR)/.fetched $(RECORDEXT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(RECORDEXT_BUILD_DIR)/.configured: $(RECORDEXT_BUILD_DIR)/.fetched $(RECORDEXT_PATCHES)
+$(RECORDEXT_BUILD_DIR)/.configured: $(RECORDEXT_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/X.h \
+		$(RECORDEXT_PATCHES)
 	(cd $(RECORDEXT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECORDEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RECORDEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -130,13 +133,10 @@ recordext: $(RECORDEXT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(RECORDEXT_BUILD_DIR)/.staged: $(RECORDEXT_BUILD_DIR)/.built
-	$(MAKE) xproto-stage
-	rm -f $(RECORDEXT_BUILD_DIR)/.staged
+$(STAGING_INCLUDE_DIR)/X11/extensions/record.h: $(RECORDEXT_BUILD_DIR)/.built
 	$(MAKE) -C $(RECORDEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(RECORDEXT_BUILD_DIR)/.staged
 
-recordext-stage: $(RECORDEXT_BUILD_DIR)/.staged
+recordext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/record.h
 
 #
 # This builds the IPK file.

@@ -98,14 +98,17 @@ xrender-source: $(XRENDER_BUILD_DIR)/.fetched $(XRENDER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XRENDER_BUILD_DIR)/.configured: $(XRENDER_BUILD_DIR)/.fetched $(XRENDER_PATCHES)
-	$(MAKE) x11-stage renderext-stage
+$(XRENDER_BUILD_DIR)/.configured: $(XRENDER_BUILD_DIR)/.fetched \
+		$(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h \
+		$(STAGING_LIB_DIR)/libX11.so \
+		$(XRENDER_PATCHES)
 	(cd $(XRENDER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XRENDER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XRENDER_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -133,13 +136,11 @@ xrender: $(XRENDER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(XRENDER_BUILD_DIR)/.staged: $(XRENDER_BUILD_DIR)/.built
-	rm -f $(XRENDER_BUILD_DIR)/.staged
+$(STAGING_LIB_DIR)/libXrender.so: $(XRENDER_BUILD_DIR)/.built
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXrender.la
-	touch $(XRENDER_BUILD_DIR)/.staged
 
-xrender-stage: $(XRENDER_BUILD_DIR)/.staged
+xrender-stage: $(STAGING_LIB_DIR)/libXrender.so
 
 #
 # This builds the IPK file.
