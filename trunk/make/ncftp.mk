@@ -28,7 +28,7 @@ NCFTP_UNZIP=zcat
 #
 # NCFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NCFTP_IPK_VERSION=1
+NCFTP_IPK_VERSION=2
 
 #
 # NCFTP_CONFFILES should be a list of user-editable files
@@ -107,8 +107,8 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--bindir=$(NCFTP_IPK_DIR)/opt/bin \
-		--mandir=$(NCFTP_IPK_DIR)/opt/man \
+		--bindir=/opt/bin \
+		--mandir=/opt/man \
 		--prefix=opt \
 		--disable-nls \
 	)
@@ -160,16 +160,13 @@ ncftp-stage: $(STAGING_DIR)/opt/lib/libncftp.so.$(NCFTP_VERSION)
 $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
 	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_armeb.ipk
 	install -d $(NCFTP_IPK_DIR)/opt/bin
-	$(MAKE) -C $(NCFTP_BUILD_DIR) prefix=$(NCFTP_IPK_DIR) install
-#	install -d $(NCFTP_IPK_DIR)/opt/etc/
-#	install -m 755 $(NCFTP_SOURCE_DIR)/ncftp.conf $(NCFTP_IPK_DIR)/opt/etc/ncftp.conf
+	$(MAKE) -C $(NCFTP_BUILD_DIR) BINDIR=$(NCFTP_IPK_DIR)/opt/bin \
+		mandir=$(NCFTP_IPK_DIR)/opt/man \
+		 prefix=$(NCFTP_IPK_DIR) install
 	install -d $(NCFTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NCFTP_SOURCE_DIR)/rc.ncftp $(NCFTP_IPK_DIR)/opt/etc/init.d/SXXncftp
 	install -d $(NCFTP_IPK_DIR)/CONTROL
 	install -m 644 $(NCFTP_SOURCE_DIR)/control $(NCFTP_IPK_DIR)/CONTROL/control
 #	install -m 644 $(NCFTP_SOURCE_DIR)/postinst $(NCFTP_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(NCFTP_SOURCE_DIR)/prerm $(NCFTP_IPK_DIR)/CONTROL/prerm
-#	echo $(NCFTP_CONFFILES) | sed -e 's/ /\n/g' > $(NCFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCFTP_IPK_DIR)
 
 #
