@@ -127,16 +127,12 @@ $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(<FOO>_BUILD_DIR)/<foo>.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(<FOO>_BUILD_DIR)/lib<foo>.so.$(<FOO>_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs lib<foo>.so.$(<FOO>_VERSION) lib<foo>.so
+$(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
+	rm -f $(<FOO>_BUILD_DIR)/.staged
+	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(<FOO>_BUILD_DIR)/.staged
 
-<foo>-stage: $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION)
+<foo>-stage: $(<FOO>_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -152,8 +148,7 @@ $(STAGING_DIR)/opt/lib/lib<foo>.so.$(<FOO>_VERSION): $(<FOO>_BUILD_DIR)/.built
 #
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_armeb.ipk
-	install -d $(<FOO>_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(<FOO>_BUILD_DIR)/<foo> -o $(<FOO>_IPK_DIR)/opt/bin/<foo>
+	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(<FOO>_IPK_DIR) install
 	install -d $(<FOO>_IPK_DIR)/opt/etc/
 	install -m 755 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
