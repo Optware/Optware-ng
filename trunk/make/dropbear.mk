@@ -70,6 +70,7 @@ $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/dropbearmulti
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
+	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti dbclient
 	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti ssh
 	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti scp
 	install -d $(DROPBEAR_IPK_DIR)/opt/etc/init.d
