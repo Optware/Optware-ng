@@ -22,7 +22,7 @@ SVN_UNZIP=zcat
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=2
+SVN_IPK_VERSION=3
 
 #
 # SVN_PATCHES should list any patches, in the the order in
