@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TI/TIMB/DBI-1.47.tar.gz
+PERL-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TI/TIMB
 PERL-DBI_VERSION=1.47
 PERL-DBI_SOURCE=DBI-$(PERL-DBI_VERSION).tar.gz
 PERL-DBI_DIR=DBI-$(PERL-DBI_VERSION)
