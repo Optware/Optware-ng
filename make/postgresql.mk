@@ -35,12 +35,12 @@ POSTGRESQL_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 POSTGRESQL_DESCRIPTION=PostgreSQL is a highly-scalable, SQL compliant, open source object-relational database management system
 POSTGRESQL_SECTION=misc
 POSTGRESQL_PRIORITY=optional
-POSTGRESQL_DEPENDS=
+POSTGRESQL_DEPENDS=readline
 
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=1
+POSTGRESQL_IPK_VERSION=2
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -146,7 +146,7 @@ postgresql: $(POSTGRESQL_BUILD_DIR)/.built
 #
 $(POSTGRESQL_BUILD_DIR)/.staged: $(POSTGRESQL_BUILD_DIR)/.built
 	rm -f $(POSTGRESQL_BUILD_DIR)/.staged
-	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
 	touch $(POSTGRESQL_BUILD_DIR)/.staged
 
 postgresql-stage: $(POSTGRESQL_BUILD_DIR)/.staged
@@ -182,14 +182,14 @@ $(POSTGRESQL_IPK_DIR)/CONTROL/control:
 #
 $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 	rm -rf $(POSTGRESQL_IPK_DIR) $(BUILD_DIR)/postgresql_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(POSTGRESQL_IPK_DIR) install
+	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(POSTGRESQL_IPK_DIR) install-strip
 	#install -d $(POSTGRESQL_IPK_DIR)/opt/etc/
 	#install -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf
-	#install -d $(POSTGRESQL_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/SXXpostgresql
+	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/S98postgresql
 	$(MAKE) $(POSTGRESQL_IPK_DIR)/CONTROL/control
-	#install -m 755 $(POSTGRESQL_SOURCE_DIR)/postinst $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(POSTGRESQL_SOURCE_DIR)/prerm $(POSTGRESQL_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(POSTGRESQL_SOURCE_DIR)/postinst $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(POSTGRESQL_SOURCE_DIR)/prerm $(POSTGRESQL_IPK_DIR)/CONTROL/prerm
 	echo $(POSTGRESQL_CONFFILES) | sed -e 's/ /\n/g' > $(POSTGRESQL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTGRESQL_IPK_DIR)
 
