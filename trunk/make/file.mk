@@ -24,11 +24,17 @@ FILE_VERSION=4.12
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
+FILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+FILE_DESCRIPTION=Ubiquitous file identification utility
+FILE_SECTION=utility
+FILE_PRIORITY=optional
+FILE_DEPENDS=
+FILE_CONFLICTS=
 
 #
 # FILE_IPK_VERSION should be incremented when the ipk changes.
 #
-FILE_IPK_VERSION=1
+FILE_IPK_VERSION=2
 
 #
 # FILE_PATCHES should list any patches, in the the order in
@@ -124,6 +130,24 @@ $(FILE_BUILD_DIR)/.built: $(FILE_BUILD_DIR)/.configured
 file: $(FILE_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/file
+#
+$(FILE_IPK_DIR)/CONTROL/control:
+	@install -d $(FILE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: file" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FILE_PRIORITY)" >>$@
+	@echo "Section: $(FILE_SECTION)" >>$@
+	@echo "Version: $(FILE_VERSION)-$(FILE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FILE_MAINTAINER)" >>$@
+	@echo "Source: $(FILE_SITE)/$(FILE_SOURCE)" >>$@
+	@echo "Description: $(FILE_DESCRIPTION)" >>$@
+	@echo "Depends: $(FILE_DEPENDS)" >>$@
+	@echo "Conflicts: $(FILE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(FILE_IPK_DIR)/opt/sbin or $(FILE_IPK_DIR)/opt/bin
@@ -140,8 +164,7 @@ $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	install -d $(FILE_IPK_DIR)/opt/bin
 	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install
 	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install
-	install -d $(FILE_IPK_DIR)/CONTROL
-	install -m 644 $(FILE_SOURCE_DIR)/control $(FILE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
 	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FILE_IPK_DIR)
