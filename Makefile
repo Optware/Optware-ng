@@ -41,7 +41,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	zlib \
 
 CROSS_ONLY_PACKAGES = \
-	appweb \
+	appweb autoconf automake \
 	bind busybox \
 	dhcp \
 	freeradius \
