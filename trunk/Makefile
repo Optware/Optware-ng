@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-TARGET=nslu2
+TARGET=wl500g
 
 CROSS_PACKAGES = \
 	adns atftp appweb apache apr apr-util atk automake \
