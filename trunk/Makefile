@@ -38,6 +38,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	rsync \
 	screen strace sudo \
 	tar tcpwrappers termcap \
+	unslung-feeds \
 	vdr-mediamvp vsftpd \
 	wget-ssl \
 	zlib \
