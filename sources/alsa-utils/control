@@ -5,6 +5,6 @@ Architecture: armeb
 Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: util
 Source: ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.8.tar.bz2
-Depends: alsa-lib gettext ncurses
+Depends: alsa-lib, gettext, ncurses
 Description: ALSA utils
 
