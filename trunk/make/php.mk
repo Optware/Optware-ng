@@ -26,7 +26,12 @@ PHP_DEPENDS=apache
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=1
+PHP_IPK_VERSION=2
+
+#
+# PHP_CONFFILES should be a list of user-editable files
+#
+PHP_CONFFILES=/opt/etc/php.ini
 
 #
 # PHP_LOCALES defines which locales get installed
@@ -175,12 +180,14 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_armeb.ipk
 	install -d $(PHP_IPK_DIR)/opt/etc/apache2/conf.d
 	install -m 644 $(PHP_SOURCE_DIR)/php.conf $(PHP_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
+	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
 	cp $(STAGING_DIR)/opt/etc/apache2/httpd.conf $(PHP_IPK_DIR)/opt/etc/apache2 # fool apxs into thinking we are installing into a live apache setup
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
 	rm -f $(PHP_IPK_DIR)/opt/etc/apache2/httpd.conf*
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/libexec/*.so
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
+	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IPK_DIR)
 
 #
