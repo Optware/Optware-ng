@@ -1,0 +1,28 @@
+--- builds/BitchX/Makefile.in	2003-04-10 18:09:04.000000000 -0700
++++ builds/bitchx/Makefile.in	2005-03-21 15:17:10.000000000 -0800
+@@ -75,6 +75,7 @@
+ # Set this to -g if you want to be able to debug the client, otherwise
+ # use -O to have the compiler do some optimization instead.
+ CFLAGS = @CFLAGS@
++CPPFLAGS = @CPPFLAGS@
+ 
+ # Set this to -s if you want the binary to be stripped.
+ LDFLAGS = @LDFLAGS@
+@@ -159,7 +160,7 @@
+ 	'INSTALL_IRC=$(INSTALL_IRC)'			\
+ 	'IRCLIB=$(IRCLIB)'				\
+ 	'CC=$(CC)'					\
+-	'CFLAGS=$(CFLAGS)'				\
++	'CFLAGS=$(CFLAGS) $(CPPFLAGS)'				\
+ 	'HELPDIR=$(HELPDIR)'				\
+         'INSTALL_WSERV=$(INSTALL_WSERV)'                \
+ 	'IRCPATH=$(IRCPATH)'				\
+@@ -226,7 +227,7 @@
+ installirc: installdirs $(_VERSION_)
+ 	$(INSTALL) source/$(_VERSION_)$(EXEEXT) $(bindir)/$(VERSION)$(EXEEXT)
+ 	$(RM) $(INSTALL_IRC)
+-	$(LN) $(bindir)/$(VERSION)$(EXEEXT) $(INSTALL_IRC)
++	cd $(bindir); $(LN) $(VERSION)$(EXEEXT) $(INSTALL_IRC)
+ 	$(INSTALL_DATA) $(top_srcdir)/BitchX.help $(IRCLIB)/$(DEFAULT_BITCHX_HELP_FILE)
+ 	$(INSTALL_DATA) $(top_srcdir)/BitchX.ircnames $(IRCLIB)/$(DEFAULT_BITCHX_IRCNAME_FILE)
+ 	$(INSTALL_DATA) $(top_srcdir)/BitchX.quit $(IRCLIB)/$(DEFAULT_BITCHX_QUIT_FILE)
