@@ -26,7 +26,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
 	file findutils flex \
-	gawk gdbm grep groff gzip \
+	gawk gdbm grep gzip \
 	imagemagick inetutils iptables \
 	jove \
 	less libdb libevent libid3tag libjpeg \
@@ -46,7 +46,7 @@ CROSS_ONLY_PACKAGES = \
 	bind busybox \
 	dhcp \
 	freeradius \
-	gift gift-fasttrack glib \
+	gift gift-fasttrack glib groff \
 	ircd-hybrid \
 	libbt libcurl libogg libvorbis libpcap logrotate \
 	mdadm mt-daapd \
