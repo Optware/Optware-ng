@@ -59,5 +59,5 @@ gdbm-clean:
 	-$(MAKE) -C $(GDBM_DIR) clean
 
 gdbm-dirclean: gdbm-clean
-	rm -rf $(GDBM_DIR)
+	rm -rf $(GDBM_DIR) $(GDBM_IPK_DIR)
 
