@@ -21,7 +21,7 @@
 #
 
 NATIVE_AND_CROSS_PACKAGES = \
-	adns atftp \
+	adns atftp autoconf \
 	bash bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
@@ -30,11 +30,11 @@ NATIVE_AND_CROSS_PACKAGES = \
 	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
 	jove \
-	less libcurl libdb libevent libid3tag libjpeg \
-	libbt libpng libstdc++ libtiff libtool lsof \
+	less libbt libcurl libdb libevent libid3tag libjpeg \
+	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc mdadm miau mtr \
 	nail nano ncurses ntp ntpclient \
-	openssl openssh \
+	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
 	screen strace stunnel sudo \
@@ -46,7 +46,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	zlib \
 
 CROSS_ONLY_PACKAGES = \
-	appweb autoconf automake \
+	appweb automake \
 	bind busybox \
 	dhcp \
 	freeradius \
