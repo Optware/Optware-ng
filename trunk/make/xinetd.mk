@@ -165,13 +165,13 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	install -m 644 $(XINETD_SOURCE_DIR)/control $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 644 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/postinst
 	# Install man pages
-	install -d $(STAGING_DIR)/opt/man/man5
-	install -d $(STAGING_DIR)/opt/man/man8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.conf.man	$(STAGING_DIR)/opt/man/man5/xinetd.conf.5
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.log.man	$(STAGING_DIR)/opt/man/man8/xinetd.log.8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.man		$(STAGING_DIR)/opt/man/man8/xinetd.8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/itox.8		$(STAGING_DIR)/opt/man/man8/itox.8
-	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xconv.pl.8		$(STAGING_DIR)/opt/man/man8/xconv.pl.8
+	install -d $(XINETD_IPK_DIR)/opt/man/man5
+	install -d $(XINETD_IPK_DIR)/opt/man/man8
+	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.conf.man	$(XINETD_IPK_DIR)/opt/man/man5/xinetd.conf.5
+	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.log.man	$(XINETD_IPK_DIR)/opt/man/man8/xinetd.log.8
+	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xinetd.man		$(XINETD_IPK_DIR)/opt/man/man8/xinetd.8
+	install -m 644 $(XINETD_BUILD_DIR)/xinetd/itox.8		$(XINETD_IPK_DIR)/opt/man/man8
+	install -m 644 $(XINETD_BUILD_DIR)/xinetd/xconv.pl.8		$(XINETD_IPK_DIR)/opt/man/man8
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)
 
