@@ -89,10 +89,21 @@ NATIVE_ONLY_PACKAGES = \
 	samba
 
 # Add new native-only packages here, and state why they don't cross compile.
+# cyrus-imapd's makefile runs executables it has built.
+# postfix's makefile runs executables it has built.
+# perl-modules are dependent of perl
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	cyrus-imapd \
 	postfix \
-
+	perl-digest-hmac \
+	perl-digest-sha1 \
+	perl-html-parser \
+	perl-html-tagset \
+	perl-mime-base64 \
+	perl-net-dns \
+	perl-ner-ident \
+	perl-storable \
+	perl-time-hires \
 
 UNSORTED_PACKAGES = \
 	freeradius \
