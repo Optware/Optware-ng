@@ -8,10 +8,12 @@ SLINGBOX_DIR:=$(BUILD_DIR)/slingbox
 
 ifneq ($(strip $(USE_SLINGBOX_SNAPSHOT)),)
 # Be aware that this changes daily....
-SLINGBOX:=busybox-$(strip $(USE_BUSYBOX_SNAPSHOT))
+SLINGBOX_VERSION:=$(strip $(USE_SLINGBOX_SNAPSHOT))
+SLINGBOX:=busybox-$(SLINGBOX_VERSION)
 SLINGBOX_SITE:=http://www.busybox.net/downloads/snapshots
 else
-SLINGBOX:=busybox-1.00-rc3
+SLINGBOX_VERSION:=1.00-rc3
+SLINGBOX:=busybox-$(SLINGBOX_VERSION)
 SLINGBOX_SITE:=http://www.busybox.net/downloads
 endif
 SLINGBOX_SOURCE:=$(SLINGBOX).tar.bz2
@@ -41,15 +43,18 @@ $(SLINGBOX_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 slingbox-unpack: $(SLINGBOX_DIR)/.configured
 
 $(SLINGBOX_DIR)/busybox: $(SLINGBOX_DIR)/.configured
-	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_DIR)/slingbox" \
+	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(BUILD_DIR)/slingbox" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" -C $(SLINGBOX_DIR)
+
+slingbox: $(SLINGBOX_DIR)/busybox
 
 $(FIRMWARE_DIR)/slingbox: $(SLINGBOX_DIR)/busybox
 	install -m 755 $(SLINGBOX_DIR)/busybox $(FIRMWARE_DIR)/slingbox
-
-slingbox: $(SLINGBOX_DIR)/busybox
 
 slingbox-install: $(FIRMWARE_DIR)/slingbox
 
 slingbox-clean:
 	-$(MAKE) -C $(SLINGBOX_DIR) clean
+
+slingbox-dirclean:
+	rm -rf $(SLINGBOX_DIR)
