@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-TARGET=wl500g
+TARGET=nslu2
 
 CROSS_PACKAGES = \
 	adns atftp appweb apache apr apr-util atk automake \
@@ -98,7 +98,9 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# stow depends on perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	stow \
 
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
