@@ -1,5 +1,7 @@
 #!/bin/sh
 
+echo
+
 mkdir -p /opt/etc/dropbear
 
 if [ ! -f /opt/etc/dropbear/dropbear_rsa_host_key ]; then
