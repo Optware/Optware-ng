@@ -53,7 +53,7 @@ CROSS_PACKAGES = \
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
-CROSS_PACKAGES_READY_FOR_TESTING = \
+CROSS_PACKAGES_READY_FOR_TESTING = ghostscript \
 
 # transcode: zcat: .../unslung/downloads/transcode-1.0.0beta2.tar.gz: not in gzip format
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
