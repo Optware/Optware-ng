@@ -166,7 +166,7 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/lib/*.a
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/man/*
 	mv $(FREERADIUS_IPK_DIR)/opt/etc/* $(FREERADIUS_IPK_DIR)/opt/doc/.radius/
-	mv $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
+	cp -f $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
 	install -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd -o $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd
 	$(STRIP) $(FREERADIUS_IPK_DIR)/opt/bin/radzap -o $(FREERADIUS_IPK_DIR)/opt/bin/radzap
