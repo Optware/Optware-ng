@@ -1,0 +1,7 @@
+#!/bin/sh
+echo "You'll need to add line like"
+echo "echo \"ftp stream tcp nowait root /opt/sbin/vsftpd /opt/etc/vsftpd.conf\" >>/etc/inetd.conf"
+echo "to your /unslung/rc.xinetd file -- see the wiki at http://www.nslu2-linux.org for more info"
+
+mkdir -p /usr/share/empty
+cp vsftpd.conf /opt/etc

@@ -87,6 +87,7 @@ m4-source: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(M4_BUILD_DIR)/.configured: $(DL_DIR)/$(M4_SOURCE) $(M4_PATCHES)
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(M4_DIR) $(M4_BUILD_DIR)
 	$(M4_UNZIP) $(DL_DIR)/$(M4_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(M4_PATCHES) | patch -d $(BUILD_DIR)/$(M4_DIR) -p1
@@ -133,9 +134,13 @@ m4: $(M4_BUILD_DIR)/src/m4
 $(M4_IPK): $(M4_BUILD_DIR)/src/m4
 	rm -rf $(M4_IPK_DIR) $(M4_IPK)
 	install -d $(M4_IPK_DIR)/opt/bin
-	$(STRIP) $(M4_BUILD_DIR)/m4 -o $(M4_IPK_DIR)/opt/bin/m4
+	$(STRIP) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
+#	install -d $(M4_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
 	install -d $(M4_IPK_DIR)/CONTROL
 	install -m 644 $(M4_SOURCE_DIR)/control $(M4_IPK_DIR)/CONTROL/control
+#	install -m 644 $(M4_SOURCE_DIR)/postinst $(M4_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(M4_SOURCE_DIR)/prerm $(M4_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(M4_IPK_DIR)
 
 #
