@@ -34,14 +34,14 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   tar coreutils gawk cpio findutils mc \
 	   libpng diffutils libtiff less nfs-utils \
 	   logrotate appweb imagemagick \
-	   nail stunnel
+	   nail stunnel patch
 
 PACKAGES_TO_BE_TESTED:= crosstool-native
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file nethack scponly tcpdump nload nmap bison patch
+PACKAGES_THAT_NEED_TO_BE_FIXED:= perl file nethack scponly tcpdump nload nmap bison
 
 PACKAGES_FOR_DEVELOPERS:= 
 
