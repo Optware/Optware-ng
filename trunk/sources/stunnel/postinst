@@ -1,25 +1,22 @@
 #!/bin/sh
 
-if [ ! -f /opt/etc/stunnel/stunnel.conf ] ;  then
-echo
-echo "No configuration found. Creating sample-configuration..."
-mkdir -p /opt/etc/stunnel
+mkdir -p /opt/var/stunnel
 
-## copy configuration for server-certificate
-cp /opt/doc/stunnel/stunnel.cert-conf /opt/etc/stunnel/stunnel.cert-conf
-## copy sample-configuration of stunnel
-cp /opt/doc/stunnel/stunnel.conf-sample /opt/etc/stunnel/stunnel.conf
+chmod 777 /opt/var/stunnel
 
-## create server-certificate according to certificate-configuration
-echo "Creating server-certificate..."
-dd if="/dev/urandom" of=/opt/etc/stunnel/stunnel.rnd bs=256 count=1
-PWD=`pwd` 
-## cd is needed to make openssl find rnd-file
-cd /opt/etc/stunnel
-/opt/bin/openssl req -new -x509 -days 365 -nodes -rand /opt/etc/stunnel/stunnel.rnd -config /opt/etc/stunnel/stunnel.cert-conf -out /opt/etc/stunnel/stunnel.pem -keyout /opt/etc/stunnel/stunnel.pem 
-/opt/bin/openssl x509 -subject -dates -fingerprint -noout -in /opt/etc/stunnel/stunnel.pem
-rm /opt/etc/stunnel/stunnel.rnd
-cd $PWD
+if [ ! -f /opt/etc/stunnel/stunnel.pem ] ;  then
 
-echo "Sample-configuration installed. You'll have to edit it at /opt/etc/stunnel before running stunnel."
+    echo
+    echo "Creating /opt/etc/stunnel/stunnel.pem (server certificate) ..."
+
+    mkdir -p /opt/etc/stunnel
+
+    /opt/bin/openssl req -new -x509 -days 365 -nodes -rand /dev/urandom \
+	-config /opt/etc/stunnel/stunnel-cert.cnf \
+	-out /opt/etc/stunnel/stunnel.pem -keyout /opt/etc/stunnel/stunnel.pem
+
+    /opt/bin/openssl x509 -subject -dates -fingerprint -noout -in /opt/etc/stunnel/stunnel.pem
+
 fi
+
+/opt/etc/init.d/S68stunnel
