@@ -29,10 +29,10 @@ NATIVE_AND_CROSS_PACKAGES = \
 	fetchmail file findutils flex \
 	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
-	jamvm joe jove \
+	jamvm jikes joe jove \
 	less libbt libcurl libdb libevent libiconv libid3tag \
 	libjpeg libnsl libpng libstdc++ libtiff libtool libxml2 lsof \
-	m4 make man man-pages mc mdadm miau mtr \
+	m4 make man man-pages mc mdadm miau mtr mutt \
 	nail nano ncftp ncurses nload nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
@@ -48,8 +48,6 @@ NATIVE_AND_CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested both native compilation and cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
-	mutt \
-	jikes \
 	pkgconfig \
 
 # appweb ships with x86 binaries which it requires during configure phase
