@@ -11,7 +11,7 @@ DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
 DNSMASQ_SOURCE:=$(DNSMASQ).tar.gz
 DNSMASQ_UNZIP=zcat
 
-DNSMASQ_IPK=$(BUILD_DIR)/dnsmasq_$(DNSMASQ_VERSION)_armeb.ipk
+DNSMASQ_IPK=$(BUILD_DIR)/dnsmasq_$(DNSMASQ_VERSION)-1_armeb.ipk
 DNSMASQ_IPK_DIR:=$(BUILD_DIR)/dnsmasq-$(DNSMASQ_VERSION)-ipk
 
 $(DL_DIR)/$(DNSMASQ_SOURCE):
