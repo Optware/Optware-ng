@@ -47,6 +47,7 @@ PACKAGES_FOR_DEVELOPERS:=
 
 WGET=wget --passive-ftp
 CVS=cvs
+SUDO=sudo
 
 # You must install the crosstool Linux Tool Chain.  See:
 # http://www.nslu2-linux.org/wiki/HowTo/CompileCrossTool

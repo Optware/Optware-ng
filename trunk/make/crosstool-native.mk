@@ -13,10 +13,10 @@
 #
 # You should change all these variables to suit your package.
 #
-CROSSTOOL_SITE=http://kegel.com/crosstool
-CROSSTOOL_VERSION=0.28-rc35
-CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
-CROSSTOOL-NATIVE_DIR=crosstool-$(CROSSTOOL_VERSION)
+CROSSTOOL-NATIVE_SITE=http://kegel.com/crosstool
+CROSSTOOL-NATIVE_VERSION=0.28-rc35
+CROSSTOOL-NATIVE_SOURCE=crosstool-$(CROSSTOOL-NATIVE_VERSION).tar.gz
+CROSSTOOL-NATIVE_DIR=crosstool-$(CROSSTOOL-NATIVE_VERSION)
 CROSSTOOL-NATIVE_UNZIP=zcat
 
 #
@@ -28,7 +28,7 @@ CROSSTOOL-NATIVE_IPK_VERSION=1
 # CROSSTOOL-NATIVE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# CROSSTOOL-NATIVE_PATCHES=$(CROSSTOOL-NATIVE_SOURCE_DIR)/configure.patch
+CROSSTOOL-NATIVE_PATCHES=$(CROSSTOOL-NATIVE_SOURCE_DIR)/all.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -55,8 +55,8 @@ CROSSTOOL-NATIVE_IPK=$(BUILD_DIR)/crosstool-native_$(CROSSTOOL-NATIVE_VERSION)-$
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
+# $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
+# 	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -83,6 +83,7 @@ crosstool-native-source: $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE) $(CROSSTOOL-NATIVE
 $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE) $(CROSSTOOL-NATIVE_PATCHES)
 	rm -rf $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) $(CROSSTOOL-NATIVE_BUILD_DIR)
 	$(CROSSTOOL-NATIVE_UNZIP) $(DL_DIR)/$(CROSSTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(CROSSTOOL-NATIVE_PATCHES) | patch -d $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) -p1
 	mv $(BUILD_DIR)/$(CROSSTOOL-NATIVE_DIR) $(CROSSTOOL-NATIVE_BUILD_DIR)
 	cp $(CROSSTOOL-NATIVE_SOURCE_DIR)/demo-nslu2.sh $(CROSSTOOL-NATIVE_BUILD_DIR)/demo-nslu2.sh
 	touch $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
@@ -95,8 +96,14 @@ crosstool-native-unpack: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 #
 $(CROSSTOOL-NATIVE_BUILD_DIR)/.built: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 	rm -f $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
+	rm -rf $(CROSSTOOL-NATIVE_BUILD_DIR)/opt
+	mkdir -p $(CROSSTOOL-NATIVE_BUILD_DIR)/opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)
+	$(SUDO) rm -rf /opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)
+	$(SUDO)	mkdir -p /opt/$(GNU_TARGET_NAME)
+	$(SUDO) ln -s $(CROSSTOOL-NATIVE_BUILD_DIR)/opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION) \
+		/opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)
 	( cd $(CROSSTOOL-NATIVE_BUILD_DIR) ; \
-		export RESULT_TOP=$(CROSSTOOL-NATIVE_BUILD_DIR) ; \
+		export RESULT_TOP=/opt ; \
 		export PATH=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin:$(PATH) ; \
 		export GCC_HOST=$(GNU_TARGET_NAME) ; \
                 export AR=$(TARGET_CROSS)ar ; \
@@ -132,8 +139,8 @@ crosstool-native: $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 #
 $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	rm -rf $(CROSSTOOL-NATIVE_IPK_DIR) $(CROSSTOOL-NATIVE_IPK)
-	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
-	$(STRIP) $(CROSSTOOL-NATIVE_BUILD_DIR)/crosstool-native -o $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/crosstool-native
+	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt
+	( cd /opt ; tar cf - . ) | ( cd $(CROSSTOOL-NATIVE_IPK_DIR)/opt ; tar xvf - )
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/CONTROL
 	install -m 644 $(CROSSTOOL-NATIVE_SOURCE_DIR)/control $(CROSSTOOL-NATIVE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL-NATIVE_IPK_DIR)
