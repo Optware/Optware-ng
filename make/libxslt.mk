@@ -33,7 +33,7 @@ LIBXSLT_IPK_VERSION=1
 # LIBXSLT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBXSLT_PATCHES=
+LIBXSLT_PATCHES=$(LIBXSLT_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -89,7 +89,7 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
 	$(LIBXSLT_UNZIP) $(DL_DIR)/$(LIBXSLT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBXSLT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1
+	cat $(LIBXSLT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
 	(cd $(LIBXSLT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
