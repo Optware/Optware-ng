@@ -107,6 +107,7 @@ $(X11_BUILD_DIR)/.configured: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(X11_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -158,6 +159,7 @@ $(X11_IPK): $(X11_BUILD_DIR)/.built
 	rm -rf $(X11_IPK_DIR) $(BUILD_DIR)/x11_*_armeb.ipk
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(X11_IPK_DIR) install-strip
 	$(MAKE) $(X11_IPK_DIR)/CONTROL/control
+	install -m 644 $(X11_SOURCE_DIR)/postinst $(X11_IPK_DIR)/CONTROL/postinst
 	rm -f $(X11_IPK_DIR)/opt/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X11_IPK_DIR)
 
