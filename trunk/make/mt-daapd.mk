@@ -5,7 +5,7 @@
 ###########################################################
 
 MT_DAAPD_SITE=http://belnet.dl.sourceforge.net/sourceforge/mt-daapd
-MT_DAAPD_VERSION=0.2.1-pre1
+MT_DAAPD_VERSION=0.2.1-pre2
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
