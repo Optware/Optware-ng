@@ -46,7 +46,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	zlib \
 
 CROSS_PACKAGES = \
-	appweb automake \
+	automake \
 	bind busybox \
 	dhcp \
 	freeradius \
@@ -61,9 +61,11 @@ CROSS_PACKAGES = \
 
 # bzflag native compile requires too much memory.
 # nmap requires a real sed.
+# appweb ships with x86 binaries which it requires during configure phase
 CROSS_ONLY_PACKAGES = \
 	bzflag \
-	nmap
+	nmap \
+	appweb
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
