@@ -22,7 +22,7 @@
 
 NATIVE_AND_CROSS_PACKAGES = \
 	adns atftp \
-	bash bzip2 bzflag \
+	bash bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
 	elinks expat \
@@ -81,7 +81,7 @@ PACKAGES_TO_BE_TESTED =
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump nload nmap
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump nload nmap bzflag
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
