@@ -122,13 +122,6 @@ else
 	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(CROSS_ONLY_PACKAGES_READY_FOR_TESTING)" all
 endif
 
-native-upload:
-	mkdir -p native
-	rsync -avr --delete nslu2:/src/unslung/packages/ native/
-	( cd native ; $(IPKG_MAKE_INDEX) . > Packages; gzip -c Packages > Packages.gz )
-	rsync -avr native/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
-	rsync -avr native/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
-
 # Common tools which may need overriding
 CVS=cvs
 SUDO=sudo
@@ -235,8 +228,11 @@ packages: $(PACKAGE_DIR)/Packages
 
 upload:
 ifeq ($(HOST_MACHINE),armv5b)
-	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
-	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+	ssh builds.nslu2-linux.org mkdir -p /home/unslung/packages/native/
+	rsync -avr --delete packages/ builds.nslu2-linux.org:/home/unslung/packages/native/
+	ssh builds.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
+	ssh builds.nslu2-linux.org rsync -avr /home/unslung/packages/native/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+	ssh builds.nslu2-linux.org rsync -avr /home/unslung/packages/native/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
 else
 	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/cross/
 	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/cross/
