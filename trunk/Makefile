@@ -61,6 +61,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = audiofile esound vorbis-tools\
+	libgc w3m \
 	thttpd
 
 # asterisk may just need configure work
