@@ -24,7 +24,7 @@
 TARGET=nslu2
 
 CROSS_PACKAGES = \
-	adns atftp appweb apache apr apr-util atk automake \
+	abook adns atftp appweb apache apr apr-util atk automake \
 	bash bc bind bitchx busybox bzflag bzip2 \
 	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dnsmasq dropbear \
@@ -60,7 +60,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	abook py-bittorrent py-sqlite
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -102,8 +101,12 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# py-sqlite cannot be downloaded - 404: Not Found.
+# py-bittorrent appears to require python 2.4 on the build host. we currently have 2.3.4, please email the list if you feel that we should upgrade
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	py-sqlite \
+	py-bittorrent \
 	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
