@@ -86,7 +86,7 @@ libxml2-source: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBXML2_DIR) $(LIBXML2_BUILD_DIR)
 	$(LIBXML2_UNZIP) $(DL_DIR)/$(LIBXML2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(LIBXML2_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXML2_DIR) -p1
@@ -101,6 +101,7 @@ $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--without-python \
 	)
 	touch $(LIBXML2_BUILD_DIR)/.configured
 
@@ -125,6 +126,10 @@ libxml2: $(LIBXML2_BUILD_DIR)/.built
 $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
 	rm -f $(LIBXML2_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	# move xml2-config to .../staging/bin so other .mk's can find it
+	mv $(STAGING_DIR)/opt/bin/xml2-config $(STAGING_DIR)/bin
+	# remove .la to avoid libtool problems
+	rm $(STAGING_LIB_DIR)/libxml2.la
 	touch $(LIBXML2_BUILD_DIR)/.staged
 
 libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
@@ -144,6 +149,8 @@ libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 $(LIBXML2_IPK): $(LIBXML2_BUILD_DIR)/.built
 	rm -rf $(LIBXML2_IPK_DIR) $(BUILD_DIR)/libxml2_*_armeb.ipk
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(LIBXML2_IPK_DIR) install
+	# remove .la to avoid libtool problems
+	rm $(LIBXML2_IPK_DIR)/opt/lib/libxml2.la
 #	install -d $(LIBXML2_IPK_DIR)/opt/etc/
 #	install -m 755 $(LIBXML2_SOURCE_DIR)/libxml2.conf $(LIBXML2_IPK_DIR)/opt/etc/libxml2.conf
 #	install -d $(LIBXML2_IPK_DIR)/opt/etc/init.d
