@@ -30,7 +30,7 @@ IMAGEMAGICK_UNZIP=zcat
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=3
+IMAGEMAGICK_IPK_VERSION=4
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
@@ -89,7 +89,7 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
-	$(MAKE) zlib-stage libjpeg-stage libpng-stage libtiff-stage
+	$(MAKE) zlib-stage libjpeg-stage libpng-stage libtiff-stage bzip2-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IMAGEMAGICK_PATCHES) | patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1
@@ -161,6 +161,8 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_armeb.ipk
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
+	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/libltdl*
+	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.la
 	$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*
 	$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.a
 	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
