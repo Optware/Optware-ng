@@ -67,6 +67,25 @@ $(STAGING_LIB_DIR)/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB
 
 zlib-stage: $(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
 
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nylon
+#
+$(ZLIB_IPK_DIR)/CONTROL/control:
+	@install -d $(ZLIB_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: zlib" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ZLIB_PRIORITY)" >>$@
+	@echo "Section: $(ZLIB_SECTION)" >>$@
+	@echo "Version: $(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ZLIB_MAINTAINER)" >>$@
+	@echo "Source: $(ZLIB_SITE)/$(ZLIB_SOURCE)" >>$@
+	@echo "Description: $(ZLIB_DESCRIPTION)" >>$@
+	@echo "Depends: $(ZLIB_DEPENDS)" >>$@
+	@echo "Conflicts: $(ZLIB_CONFLICTS)" >>$@
+
 $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 	install -d $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
@@ -76,9 +95,7 @@ $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
 	$(STRIP_COMMAND) $(ZLIB_IPK_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so.1
 	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so
-	install -d $(ZLIB_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(ZLIB_VERSION)/" \
-		-e "s/@RELEASE@/$(ZLIB_IPK_VERSION)/" $(ZLIB_SOURCE_DIR)/control > $(ZLIB_IPK_DIR)/CONTROL/control
+	$(MAKE) $(ZLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
 
 zlib-ipk: $(ZLIB_IPK)
