@@ -101,7 +101,7 @@ $(CROSSTOOL-NATIVE_BUILD_DIR)/.built: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 	rm -rf $(CROSSTOOL-NATIVE_BUILD_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	mkdir -p $(CROSSTOOL-NATIVE_BUILD_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	$(SUDO) rm -rf $(CROSSTOOL-NATIVE_PREFIX)
-	$(SUDO)	mkdir -p /opt/$(GNU_TARGET_NAME)
+	$(SUDO) mkdir -p /opt/$(GNU_TARGET_NAME)
 	$(SUDO) ln -s $(CROSSTOOL-NATIVE_BUILD_DIR)$(CROSSTOOL-NATIVE_PREFIX) \
 		$(CROSSTOOL-NATIVE_PREFIX)
 	( cd $(CROSSTOOL-NATIVE_BUILD_DIR) ; \
@@ -145,8 +145,8 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )
 # For some reason, syslimits.h is missing
-	touch $(CROSSTOOL-NATIVE_IPK_DIR)/opt/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
-	chmod 644 $(CROSSTOOL-NATIVE_IPK_DIR)/opt/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
+	touch $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
+	chmod 644 $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.4/include/syslimits.h
 # /lib/cpp is usually required
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/lib
 	ln -s $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-cpp /lib/cpp
