@@ -11,7 +11,7 @@ DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
 DNSMASQ_SOURCE:=$(DNSMASQ).tar.gz
 DNSMASQ_UNZIP=zcat
 
-DNSMASQ_IPK=$(BUILD_DIR)/dnsmasq_$(DNSMASQ_VERSION)-1_armeb.ipk
+DNSMASQ_IPK=$(BUILD_DIR)/dnsmasq_$(DNSMASQ_VERSION)_armeb.ipk
 DNSMASQ_IPK_DIR:=$(BUILD_DIR)/dnsmasq-$(DNSMASQ_VERSION)-ipk
 
 $(DL_DIR)/$(DNSMASQ_SOURCE):
@@ -37,7 +37,7 @@ $(DNSMASQ_DIR)/dnsmasq: $(DNSMASQ_DIR)/.configured
 
 #dhcp: $(DHCP_DIR)/dhcpd
 
-$(DNSMASQ_IPK): $(DNSMASQ_DIR)/dnsmasq
+$(DNSMASQ_IPK): $(DNSMASQ_DIR)/src/dnsmasq
 	install -d $(DNSMASQ_IPK_DIR)/CONTROL $(DNSMASQ_IPK_DIR)/opt/man/man8
 	install -d $(DNSMASQ_IPK_DIR)/opt/bin $(DNSMASQ_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(DNSMASQ_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)/opt/bin/dnsmasq
