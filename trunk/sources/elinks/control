@@ -1,0 +1,8 @@
+Package: elinks
+Priority: optional
+Version: 0.10.1-1
+Architecture: armeb
+Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
+Section: browsers
+Source: http://elinks.or.cz/download/elinks-0.10.1.tar.gz
+Description: text mode web browser
