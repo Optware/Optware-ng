@@ -29,7 +29,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	fetchmail file findutils flex \
 	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
-	jove \
+	jamvm jove \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool libxml2 lsof \
 	m4 make man man-pages mc mdadm miau mtr \
@@ -59,7 +59,6 @@ CROSS_ONLY_PACKAGES = \
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
-	jamvm \
 	classpath \
 	libiconv \
 
@@ -77,11 +76,11 @@ NATIVE_ONLY_PACKAGES = \
 	xemacs \
 	perl \
 	squid \
-	clamav \
 	samba
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = 
+	clamav # needs to be fixed - requires zlib 1.2.2 or later
 
 UNSORTED_PACKAGES = \
 	freeradius \
