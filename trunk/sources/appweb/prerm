@@ -1,7 +1,3 @@
 #!/bin/sh
 
 /bin/killall appWeb
-
-# TODO: check if the /opt/etc/appWeb.conf file is unmodified, and delete it if that is the case.
-
-echo "ipkg_remove: Warning: Not removing /opt/etc/appWeb.conf"
