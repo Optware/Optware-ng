@@ -35,7 +35,7 @@ PY-BITTORRENT_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-BITTORRENT_DESCRIPTION=BitTorrent is a scatter-gather network file transfer tool.
 PY-BITTORRENT_SECTION=misc
 PY-BITTORRENT_PRIORITY=optional
-PY-BITTORRENT_DEPENDS=
+PY-BITTORRENT_DEPENDS=python
 PY-BITTORRENT_CONFLICTS=
 
 #
