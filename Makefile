@@ -60,10 +60,12 @@ CROSS_ONLY_PACKAGES = \
 
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
+# perl's Configure is not cross-compile "friendly"
 NATIVE_ONLY_PACKAGES = \
 	bison \
 	emacs \
-	xemacs
+	xemacs \
+	perl
 
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
@@ -76,7 +78,7 @@ PACKAGES_TO_BE_TESTED = gift-fasttrack
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = perl nethack scponly tcpdump nload nmap
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump nload nmap
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
