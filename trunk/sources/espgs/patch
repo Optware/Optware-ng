@@ -1,7 +1,7 @@
 diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 --- a/lib/gs_init.ps	1970-01-01 00:00:00.000000000 +0000
-+++ b/lib/gs_init.ps	2005-02-25 15:11:38.000000000 +0000
-@@ -0,0 +1,2206 @@
++++ b/lib/gs_init.ps	2005-02-25 15:42:40.000000000 +0000
+@@ -0,0 +1,2210 @@
 +% Copyright (C) 1989-2004 artofcode LLC. All rights reserved.
 +% 
 +% This software is provided AS-IS with no warranty, either express or
@@ -33,7 +33,7 @@ diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 +
 +% Check the interpreter revision.  NOTE: the interpreter code requires
 +% that the first non-comment token in this file be an integer.
-+850
++815
 +dup revision ne
 + { (gs: Interpreter revision \() print revision 10 string cvs print
 +   (\) does not match gs_init.ps revision \() print 10 string cvs print
@@ -98,13 +98,8 @@ diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 +  /TTFDEBUG		% TTF Fonts
 +  /VGIFDEBUG		% ViewGIF
 +  /VJPGDEBUG		% ViewJPEG
-+  /RESMPDEBUG		% Resource map
 +counttomark array astore exch pop % ']' isn't defined yet
 +{ dup currentdict exch known DEBUG or def } forall
-+
-+currentdict /PDFSTEP known /PDFSTEP exch def
-+% if PDFSTEP is on, turn on PDFDEBUG
-+PDFSTEP { /PDFDEBUG true def } if
 +
 +  /VMDEBUG
 +    INITDEBUG {{print mark
@@ -149,6 +144,7 @@ diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 +currentdict /NOFONTPATH known   /NOFONTPATH exch def
 +currentdict /NOGC known   /NOGC exch def
 +currentdict /NOINTERPOLATE .knownget { /INTERPOLATE exch not def } if
++currentdict /NOMEDIAATTRS known /NOMEDIAATTRS exch def
 +currentdict /NOOUTERSAVE known   /NOOUTERSAVE exch def
 +currentdict /NOPAGEPROMPT known   /NOPAGEPROMPT exch def
 +currentdict /NOPAUSE known   /NOPAUSE exch def
@@ -1164,6 +1160,14 @@ diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 +
 +(END PROCS) VMDEBUG
 +
++%%%% MRS: Define the default character for missing chars in a font...
++%%%%      The first (commented) line represents the old way (box shown),
++%%%%      while the second (uncommented) line represents the new way
++%%%%      (space).
++
++%/espgsMissingChar /.notdef def
++/espgsMissingChar /space def
++
 +% Define the font directory.
 +/FontDirectory false .setglobal 100 dict true .setglobal
 +.forcedef		% FontDirectory is local, systemdict is global
@@ -1429,7 +1433,7 @@ diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 +% Set the default screen and BG/UCR.
 +/.setdefaultbgucr {
 +  systemdict /setblackgeneration known {
-+    { pop 0 } dup setblackgeneration setundercolorremoval
++    {} dup setblackgeneration setundercolorremoval
 +  } if
 +} bind def
 +/.useloresscreen {	% - .useloresscreen <bool>
@@ -2210,7 +2214,16 @@ diff -Naur a/lib/gs_init.ps b/lib/gs_init.ps
 +% The interpreter will run the initial procedure (start).
 diff -Naur a/src/unix-gcc.mak b/src/unix-gcc.mak
 --- a/src/unix-gcc.mak	2005-02-25 03:37:12.000000000 +0000
-+++ b/src/unix-gcc.mak	2005-02-25 15:02:58.000000000 +0000
++++ b/src/unix-gcc.mak	2005-02-28 02:39:16.000000000 +0000
+@@ -256,7 +256,7 @@
+ # Solaris may need -lnsl -lsocket -lposix4.
+ # (Libraries required by individual drivers are handled automatically.)
+ 
+-EXTRALIBS=-rdynamic -ldl
++EXTRALIBS=-rdynamic -ldl -lcupsimage -ltiff -ljpeg -lpng -lm -lz -lcups -lssl -lcrypto -lnsl
+ 
+ # Define the standard libraries to search at the end of linking.
+ # Most platforms require -lpthread for the POSIX threads library;
 @@ -367,7 +367,7 @@
  # Choose the device(s) to include.  See devs.mak for details,
  # devs.mak and contrib.mak for the list of available devices.
@@ -2220,6 +2233,15 @@ diff -Naur a/src/unix-gcc.mak b/src/unix-gcc.mak
  
  #DEVICE_DEVS1=
  #DEVICE_DEVS2=
+@@ -392,7 +392,7 @@
+ 
+ DEVICE_DEVS1=$(DD)bmpmono.dev $(DD)bmpgray.dev $(DD)bmpsep1.dev $(DD)bmpsep8.dev $(DD)bmp16.dev $(DD)bmp256.dev $(DD)bmp16m.dev $(DD)bmp32b.dev $(DD)stcolor.dev
+ DEVICE_DEVS2=$(DD)epson.dev $(DD)eps9high.dev $(DD)eps9mid.dev $(DD)epsonc.dev $(DD)ibmpro.dev
+-DEVICE_DEVS3=$(DD)deskjet.dev $(DD)djet500.dev $(DD)laserjet.dev $(DD)ljetplus.dev $(DD)ljet2p.dev $(DD)ljet3.dev $(DD)ljet3d.dev $(DD)ljet4.dev $(DD)ljet4d.dev $(DD)lj5mono.dev $(DD)lj5gray.dev
++DEVICE_DEVS3=$(DD)deskjet.dev $(DD)djet500.dev $(DD)laserjet.dev $(DD)ljetplus.dev $(DD)ljet2p.dev $(DD)ljet3.dev $(DD)ljet3d.dev $(DD)ljet4.dev $(DD)ljet4d.dev $(DD)lj5mono.dev $(DD)lj5gray.dev $(DD)cups.dev
+ DEVICE_DEVS4=$(DD)cdeskjet.dev $(DD)cdjcolor.dev $(DD)cdjmono.dev $(DD)cdj550.dev $(DD)pj.dev $(DD)pjxl.dev $(DD)pjxl300.dev
+ DEVICE_DEVS5=$(DD)uniprint.dev $(DD)ijs.dev
+ DEVICE_DEVS6=$(DD)bj10e.dev $(DD)bj200.dev $(DD)bjc600.dev $(DD)bjc800.dev
 @@ -414,8 +414,7 @@
  DEVICE_DEVS21=$(DD)spotcmyk.dev $(DD)devicen.dev $(DD)xcf.dev $(DD)bmpsep1.dev $(DD)bmpsep8.dev $(DD)bmp16m.dev $(DD)bmp32b.dev $(DD)psdcmyk.dev $(DD)psdrgb.dev
  
@@ -2230,6 +2252,14 @@ diff -Naur a/src/unix-gcc.mak b/src/unix-gcc.mak
  
  # ---------------------------- End of options --------------------------- #
  
+@@ -465,6 +464,7 @@
+ include $(GLSRCDIR)/unix-dll.mak
+ include $(GLSRCDIR)/unix-end.mak
+ include $(GLSRCDIR)/unixinst.mak
++include pstoraster/cups.mak
+ 
+ # This has to come last so it won't be taken as the default target.
+ $(AK):
 diff -Naur a/src/unixinst.mak b/src/unixinst.mak
 --- a/src/unixinst.mak	2005-02-25 08:10:24.000000000 +0000
 +++ b/src/unixinst.mak	2005-02-25 08:10:53.000000000 +0000
