@@ -38,7 +38,7 @@
 #
 LIBDB_SITE=ftp://sleepycat1.inetu.net/releases
 LIBDB_VERSION=4.2.52
-LIBDB_SOURCE=libdb-$(LIBDB_VERSION).tar.gz
+LIBDB_SOURCE=db-$(LIBDB_VERSION).tar.gz
 LIBDB_DIR=libdb-$(LIBDB_VERSION)
 LIBDB_UNZIP=zcat
 
