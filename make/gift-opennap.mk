@@ -21,6 +21,11 @@ GIFT_OPENNAP_TAG=-D 2005-02-12
 GIFT_OPENNAP_MODULE=giFT-OpenNap 
 GIFT_OPENNAP_DIR=gift-opennap-$(GIFT_OPENNAP_VERSION)
 GIFT_OPENNAP_UNZIP=zcat
+GIFT_OPENNAP_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIFT_OPENNAP_SECTION=net
+GIFT_OPENNAP_PRIORITY=optional
+GIFT_OPENNAP_DEPENDS=gift, zlib
+GIFT_OPENNAP_DESCRIPTION=gIFt opennap plugin
 
 #
 # GIFT_OPENNAP_IPK_VERSION should be incremented when the ipk changes.
@@ -142,6 +147,24 @@ $(STAGING_DIR)/opt/lib/libgift-opennap.so.$(GIFT_OPENNAP_VERSION): $(GIFT_OPENNA
 gift-opennap-stage: $(STAGING_DIR)/opt/lib/libgift-opennap.so.$(GIFT_OPENNAP_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gift-opennap
+#
+$(GIFT_OPENNAP_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFT_OPENNAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gift-opennap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFT_OPENNAP_PRIORITY)" >>$@
+	@echo "Section: $(GIFT_OPENNAP_SECTION)" >>$@
+	@echo "Version: $(GIFT_OPENNAP_VERSION)-$(GIFT_OPENNAP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFT_OPENNAP_MAINTAINER)" >>$@
+	@echo "Source: $(GIFT_OPENNAP_SITE)/$(GIFT_OPENNAP_SOURCE)" >>$@
+	@echo "Description: $(GIFT_OPENNAP_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFT_OPENNAP_DEPENDS)" >>$@
+	@echo "Conflicts: $(GIFT_OPENNAP_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFT_OPENNAP_IPK_DIR)/opt/sbin or $(GIFT_OPENNAP_IPK_DIR)/opt/bin
@@ -162,7 +185,7 @@ $(GIFT_OPENNAP_IPK): $(GIFT_OPENNAP_BUILD_DIR)/.built
 	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/data/OpenNap.conf.template $(GIFT_OPENNAP_IPK_DIR)/opt/share/giFT/OpenNap/OpenNap.conf.template
 	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/data/nodelist $(GIFT_OPENNAP_IPK_DIR)/opt/share/giFT/OpenNap/nodelist
 	install -d $(GIFT_OPENNAP_IPK_DIR)/CONTROL
-	install -m 644 $(GIFT_OPENNAP_SOURCE_DIR)/control $(GIFT_OPENNAP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFT_OPENNAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_OPENNAP_IPK_DIR)
 
 #

@@ -19,6 +19,10 @@ PERL_VERSION=5.8.6
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
+PERL_PRIORITY=optional
+PERL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL_SECTION=interpreters
+PERL_DESCRIPTION=perl language interpreter
 
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
@@ -55,6 +59,11 @@ PERL_BUILD_DIR=$(BUILD_DIR)/perl
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
 PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+MICROPERL_BUILD_DIR=$(BUILD_DIR)/microperl
+MICROPERL_SOURCE_DIR=$(SOURCE_DIR)/microperl
+MICROPERL_IPK_DIR=$(BUILD_DIR)/microperl-$(PERL_VERSION)-ipk
+MICROPERL_IPK=$(BUILD_DIR)/microperl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -111,6 +120,16 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
 perl-unpack: $(PERL_BUILD_DIR)/.configured
 
+# the same for microperl
+
+$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(MICROPERL_PATCHES)
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
+	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
+	touch $(MICROPERL_BUILD_DIR)/.configured
+
+microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured
+
 #
 # This builds the actual binary.
 #
@@ -119,10 +138,48 @@ $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
 	$(MAKE) -C $(PERL_BUILD_DIR)
 	touch $(PERL_BUILD_DIR)/.built
 
+$(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
+	rm -f $(MICROPERL_BUILD_DIR)/.built
+	$(MAKE) -C $(MICROPERL_BUILD_DIR) -f Makefile.micro CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)"
+	touch $(MICROPERL_BUILD_DIR)/.built
+
 #
 # This is the build convenience target.
 #
 perl: $(PERL_BUILD_DIR)/.built
+microperl: $(MICROPERL_BUILD_DIR)/.built
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/perl
+#
+$(PERL_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL_PRIORITY)" >>$@
+	@echo "Section: $(PERL_SECTION)" >>$@
+	@echo "Version: $(PERL_VERSION)-$(PERL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL_MAINTAINER)" >>$@
+	@echo "Source: $(PERL_SITE)/$(PERL_SOURCE)" >>$@
+	@echo "Description: $(PERL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
+
+$(MICROPERL_IPK_DIR)/CONTROL/control:
+	@install -d $(MICROPERL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: microperl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL_PRIORITY)" >>$@
+	@echo "Section: $(PERL_SECTION)" >>$@
+	@echo "Version: $(PERL_VERSION)-$(PERL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL_MAINTAINER)" >>$@
+	@echo "Source: $(PERL_SITE)/$(PERL_SOURCE)" >>$@
+	@echo "Description: $(PERL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -143,15 +200,24 @@ $(PERL_IPK): $(PERL_BUILD_DIR)/.built
 	ln -s /opt/bin/perl$(PERL_VERSION) $(PERL_IPK_DIR)/opt/bin/perl
 	install -d $(PERL_IPK_DIR)/usr/bin
 	ln -s /opt/bin/perl $(PERL_IPK_DIR)/usr/bin/perl
-	install -d $(PERL_IPK_DIR)/CONTROL
-	install -m 644 $(PERL_SOURCE_DIR)/control $(PERL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PERL_IPK_DIR)/CONTROL/control
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
+
+$(MICROPERL_IPK): $(MICROPERL_BUILD_DIR)/.built
+	rm -rf $(MICROPERL_IPK_DIR) $(BUILD_DIR)/microperl_*_$(TARGET_ARCH).ipk
+	install -d $(MICROPERL_IPK_DIR)/opt/bin
+	install -m 755 $(MICROPERL_BUILD_DIR)/microperl $(MICROPERL_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(MICROPERL_IPK_DIR)/opt/bin/*
+	$(MAKE) $(MICROPERL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROPERL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
 perl-ipk: $(PERL_IPK)
+
+microperl-ipk: $(MICROPERL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -159,9 +225,15 @@ perl-ipk: $(PERL_IPK)
 perl-clean:
 	-$(MAKE) -C $(PERL_BUILD_DIR) clean
 
+microperl-clean:
+	-$(MAKE) -C $(MICROPERL_BUILD_DIR) clean
+
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
 perl-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
+
+microperl-dirclean:
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR) $(MICROPERL_IPK_DIR) $(MICROPERL_IPK)

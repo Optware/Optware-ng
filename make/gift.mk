@@ -25,6 +25,11 @@ GIFT_VERSION_LIB=0.0.0
 GIFT_SOURCE=gift-$(GIFT_VERSION).tar.bz2
 GIFT_DIR=gift-$(GIFT_VERSION)
 GIFT_UNZIP=bzcat
+GIFT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIFT_SECTION=net
+GIFT_PRIORITY=optional
+GIFT_DEPENDS=libogg, libvorbis, libtool
+GIFT_DESCRIPTION=gIFt is a multi-platform multi-networks peer-to-peer client. gIFt runs as a daemon on the computer. It can be controlled using several interfaces.
 
 #
 # GIFT_IPK_VERSION should be incremented when the ipk changes.
@@ -135,6 +140,24 @@ $(GIFT_BUILD_DIR)/.staged: $(GIFT_BUILD_DIR)/.built
 gift-stage: $(GIFT_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gift
+#
+$(GIFT_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gift" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFT_PRIORITY)" >>$@
+	@echo "Section: $(GIFT_SECTION)" >>$@
+	@echo "Version: $(GIFT_VERSION)-$(GIFT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFT_MAINTAINER)" >>$@
+	@echo "Source: $(GIFT_SITE)/$(GIFT_SOURCE)" >>$@
+	@echo "Description: $(GIFT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFT_DEPENDS)" >>$@
+	@echo "Conflicts: $(GIFT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFT_IPK_DIR)/opt/sbin or $(GIFT_IPK_DIR)/opt/bin
@@ -150,8 +173,7 @@ $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
 	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install-strip
 	install -d $(GIFT_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(GIFT_VERSION)/" \
-		-e "s/@RELEASE@/$(GIFT_IPK_VERSION)/" $(GIFT_SOURCE_DIR)/control > $(GIFT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
 
 #

@@ -24,6 +24,11 @@ GIFTGNUTELLA_VERSION=0.0.10
 GIFTGNUTELLA_SOURCE=gift-gnutella-$(GIFTGNUTELLA_VERSION).tar.bz2
 GIFTGNUTELLA_DIR=gift-gnutella-$(GIFTGNUTELLA_VERSION)
 GIFTGNUTELLA_UNZIP=bzcat
+GIFTGNUTELLA_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GIFTGNUTELLA_SECTION=net
+GIFTGNUTELLA_PRIORITY=optional
+GIFTGNUTELLA_DEPENDS=
+GIFTGNUTELLA_DESCRIPTION=gIFt Gnutella plugin
 
 #
 # GIFTGNUTELLA_IPK_VERSION should be incremented when the ipk changes.
@@ -143,6 +148,24 @@ $(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION): $(GIFTGNUTEL
 gift-gnutella-stage: $(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/gift-gnutella
+#
+$(GIFTGNUTELLA_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gift-gnutella" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFTGNUTELLA_PRIORITY)" >>$@
+	@echo "Section: $(GIFTGNUTELLA_SECTION)" >>$@
+	@echo "Version: $(GIFTGNUTELLA_VERSION)-$(GIFTGNUTELLA_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFTGNUTELLA_MAINTAINER)" >>$@
+	@echo "Source: $(GIFTGNUTELLA_SITE)/$(GIFTGNUTELLA_SOURCE)" >>$@
+	@echo "Description: $(GIFTGNUTELLA_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFTGNUTELLA_DEPENDS)" >>$@
+	@echo "Conflicts: $(GIFTGNUTELLA_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFTGNUTELLA_IPK_DIR)/opt/sbin or $(GIFTGNUTELLA_IPK_DIR)/opt/bin
@@ -164,7 +187,7 @@ $(GIFTGNUTELLA_IPK): $(GIFTGNUTELLA_BUILD_DIR)/.built
 	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/hostiles.txt $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/hostiles.txt
 	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/gwebcaches $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/gwebcaches
 	install -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
-	install -m 644 $(GIFTGNUTELLA_SOURCE_DIR)/control $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTGNUTELLA_IPK_DIR)
 # This is called from the top level makefile to create the IPK file.
 #

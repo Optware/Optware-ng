@@ -17,6 +17,11 @@ NANO_VERSION=1.2.4
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
+NANO_MAINTAINER=Mark Donszelmann <mark@donszelmann.com>
+NANO_SECTION=editor
+NANO_PRIORITY=optional
+NANO_DEPENDS=ncurses
+NANO_DESCRIPTION=A pico like editor
 
 #
 # NANO_IPK_VERSION should be incremented when the ipk changes.
@@ -125,6 +130,24 @@ $(STAGING_DIR)/lib/libnano.so.$(NANO_VERSION): $(NANO_BUILD_DIR)/libnano.so.$(NA
 nano-stage: $(STAGING_DIR)/lib/libnano.so.$(NANO_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nano
+#
+$(NANO_IPK_DIR)/CONTROL/control:
+	@install -d $(NANO_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nano" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NANO_PRIORITY)" >>$@
+	@echo "Section: $(NANO_SECTION)" >>$@
+	@echo "Version: $(NANO_VERSION)-$(NANO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NANO_MAINTAINER)" >>$@
+	@echo "Source: $(NANO_SITE)/$(NANO_SOURCE)" >>$@
+	@echo "Description: $(NANO_DESCRIPTION)" >>$@
+	@echo "Depends: $(NANO_DEPENDS)" >>$@
+	@echo "Conflicts: $(NANO_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NANO_IPK_DIR)/opt/sbin or $(NANO_IPK_DIR)/opt/bin
@@ -146,7 +169,7 @@ $(NANO_IPK): $(NANO_BUILD_DIR)/nano
 	install -d $(NANO_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NANO_BUILD_DIR)/nano -o $(NANO_IPK_DIR)/opt/bin/nano
 	install -d $(NANO_IPK_DIR)/CONTROL
-	install -m 644 $(NANO_SOURCE_DIR)/control $(NANO_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)
 
 #
