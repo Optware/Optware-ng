@@ -4,22 +4,23 @@
 #
 #############################################################
 
-SLINGBOX_DIR:=$(BUILD_DIR)/slingbox
-SLINGBOX_SOURCE_DIR:=$(SOURCE_DIR)/slingbox
-
 ifneq ($(strip $(USE_SLINGBOX_SNAPSHOT)),)
 # Be aware that this changes daily....
-SLINGBOX_VERSION:=$(strip $(USE_SLINGBOX_SNAPSHOT))
-SLINGBOX:=busybox-$(SLINGBOX_VERSION)
-SLINGBOX_SITE:=http://www.busybox.net/downloads/snapshots
+SLINGBOX_SITE=http://www.busybox.net/downloads/snapshots
+SLINGBOX_VERSION=$(strip $(USE_SLINGBOX_SNAPSHOT))
+SLINGBOX_DIR=busybox-$(SLINGBOX_VERSION)
 else
-SLINGBOX_VERSION:=1.00
-SLINGBOX:=busybox-$(SLINGBOX_VERSION)
-SLINGBOX_SITE:=http://www.busybox.net/downloads
+SLINGBOX_SITE=http://www.busybox.net/downloads
+SLINGBOX_VERSION=1.00
+SLINGBOX_DIR=busybox-$(SLINGBOX_VERSION)
 endif
-SLINGBOX_SOURCE:=$(SLINGBOX).tar.bz2
+SLINGBOX_SOURCE=busybox-$(SLINGBOX_VERSION).tar.bz2
 SLINGBOX_UNZIP=bzcat
-SLINGBOX_CONFIG:=$(SLINGBOX_SOURCE_DIR)/defconfig
+
+SLINGBOX_CONFIG=$(SLINGBOX_SOURCE_DIR)/defconfig
+
+SLINGBOX_BUILD_DIR=$(BUILD_DIR)/slingbox
+SLINGBOX_SOURCE_DIR=$(SOURCE_DIR)/slingbox
 
 # Handled by busybox.mk
 # $(DL_DIR)/$(SLINGBOX_SOURCE):
@@ -27,35 +28,35 @@ SLINGBOX_CONFIG:=$(SLINGBOX_SOURCE_DIR)/defconfig
 
 slingbox-source: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 
-$(SLINGBOX_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
-	@rm -rf $(BUILD_DIR)/$(SLINGBOX) $(BUILD_DIR)/slingbox
+$(SLINGBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
+	rm -rf $(BUILD_DIR)/$(SLINGBOX_DIR) $(BUILD_DIR)/slingbox
 	$(SLINGBOX_UNZIP) $(DL_DIR)/$(SLINGBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	patch -d $(BUILD_DIR)/$(SLINGBOX) -p1 < $(SLINGBOX_SOURCE_DIR)/slingbox.patch
-	mv $(BUILD_DIR)/$(SLINGBOX) $(BUILD_DIR)/slingbox
-	cp $(SLINGBOX_CONFIG) $(SLINGBOX_DIR)/.config
+	patch -d $(BUILD_DIR)/$(SLINGBOX_DIR) -p1 < $(SLINGBOX_SOURCE_DIR)/slingbox.patch
+	mv $(BUILD_DIR)/$(SLINGBOX_DIR) $(BUILD_DIR)/slingbox
+	cp $(SLINGBOX_CONFIG) $(SLINGBOX_BUILD_DIR)/.config
 #ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
-#	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=y/;" $(SLINGBOX_DIR)/.config
+#	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=y/;" $(SLINGBOX_BUILD_DIR)/.config
 #else
-#	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(SLINGBOX_DIR)/.config
+#	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(SLINGBOX_BUILD_DIR)/.config
 #endif
-	$(MAKE) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" -C $(SLINGBOX_DIR) oldconfig
-	touch $(SLINGBOX_DIR)/.configured
+	$(MAKE) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" -C $(SLINGBOX_BUILD_DIR) oldconfig
+	touch $(SLINGBOX_BUILD_DIR)/.configured
 
-slingbox-unpack: $(SLINGBOX_DIR)/.configured
+slingbox-unpack: $(SLINGBOX_BUILD_DIR)/.configured
 
-$(SLINGBOX_DIR)/busybox: $(SLINGBOX_DIR)/.configured
+$(SLINGBOX_BUILD_DIR)/busybox: $(SLINGBOX_BUILD_DIR)/.configured
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(BUILD_DIR)/slingbox" \
-		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" -C $(SLINGBOX_DIR)
+		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" -C $(SLINGBOX_BUILD_DIR)
 
-slingbox: $(SLINGBOX_DIR)/busybox
+slingbox: $(SLINGBOX_BUILD_DIR)/busybox
 
-$(FIRMWARE_DIR)/slingbox: $(SLINGBOX_DIR)/busybox
-	install -m 755 $(SLINGBOX_DIR)/busybox $(FIRMWARE_DIR)/slingbox
+$(FIRMWARE_DIR)/slingbox: $(SLINGBOX_BUILD_DIR)/busybox
+	install -m 755 $(SLINGBOX_BUILD_DIR)/busybox $(FIRMWARE_DIR)/slingbox
 
 slingbox-install: $(FIRMWARE_DIR)/slingbox
 
 slingbox-clean:
-	-$(MAKE) -C $(SLINGBOX_DIR) clean
+	-$(MAKE) -C $(SLINGBOX_BUILD_DIR) clean
 
 slingbox-dirclean:
-	rm -rf $(SLINGBOX_DIR)
+	rm -rf $(SLINGBOX_BUILD_DIR)

@@ -1,6 +1,6 @@
 #############################################################
 #
-# Dropbear package
+# dropbear
 #
 #############################################################
 
@@ -30,15 +30,11 @@ $(DL_DIR)/$(DROPBEAR_SOURCE):
 
 dropbear-source: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCHES)
 
-$(DROPBEAR_BUILD_DIR)/.source: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCHES)
-	@rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR) $(DROPBEAR_BUILD_DIR)
+$(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCHES)
+	rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR) $(DROPBEAR_BUILD_DIR)
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(DROPBEAR_PATCHES) | patch -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1
 	mv $(BUILD_DIR)/$(DROPBEAR_DIR) $(DROPBEAR_BUILD_DIR)
-	touch $(DROPBEAR_BUILD_DIR)/.source
-
-
-$(DROPBEAR_BUILD_DIR)/.configured: $(DROPBEAR_BUILD_DIR)/.source
 	cd $(DROPBEAR_BUILD_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" LD="" \
@@ -62,7 +58,7 @@ $(DROPBEAR_BUILD_DIR)/dropbearmulti: $(DROPBEAR_BUILD_DIR)/.configured
 dropbear: $(DROPBEAR_BUILD_DIR)/dropbearmulti
 
 dropbear-diff: #$(DROPBEAR_BUILD_DIR)/.configured
-	@rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR)
+	rm -rf $(BUILD_DIR)/$(DROPBEAR_DIR)
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	-make -C $(DROPBEAR_BUILD_DIR) distclean
 	-cd $(BUILD_DIR) && diff -BurN $(DROPBEAR_DIR) dropbear | grep -v ^Only > $(DROPBEAR_PATCH)
