@@ -1,4 +1,4 @@
-echo "To activate xinetd, cop /opt/doc/xinetd/rc.xinetd to /unslung/rc.xinetd"
-echo "To start xinetd, either restart your system or run /opt/etc/init.d/S10xinetd"
-
+echo "To activate xinetd, copy /opt/doc/xinetd/rc.xinetd to /unslung"
+echo "To start xinetd, either restart your system or kill inetd before"
+echo "running /opt/etc/init.d/S10xinetd"
 return 0
