@@ -74,18 +74,14 @@ NATIVE_PACKAGES = \
 	xemacs \
 	lynx \
 	openldap \
-	perl perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
+	perl perl-db-file perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident perl-storable perl-time-hires \
+	postfix \
 	squid \
 	samba
 
 # Add new native-only packages here, and state why they don't cross compile.
-# cyrus-imapd's makefile runs executables it has built.
-# postfix's makefile runs executables it has built.
-# perl-modules are dependent of perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-db-file \
-	postfix \
 
 # cyrus-imapd fails when compiling the perl stuff
 # perl-dbi's sources cannot be be downloaded (404 not found)
