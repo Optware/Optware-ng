@@ -1,0 +1,15 @@
+*** proftpd-1.2.10/lib/libcap/Makefile.orig	Tue Jan 18 14:21:03 2005
+--- proftpd-1.2.10/lib/libcap/Makefile	Tue Jan 18 14:21:03 2005
+***************
+*** 27,31 ****
+  
+  _makenames: _makenames.c cap_names.sed
+! 	$(CC) $(CFLAGS) $(LDFLAGS) $< -o $@
+  
+  cap_names.h: _makenames
+--- 27,31 ----
+  
+  _makenames: _makenames.c cap_names.sed
+! 	gcc $< -o $@
+  
+  cap_names.h: _makenames
