@@ -33,7 +33,7 @@ BZFLAG_CONFFILES=
 # BZFLAG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BZFLAG_PATCHES=
+BZFLAG_PATCHES=$(BZFLAG_SOURCE_DIR)/bzflag-configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -86,10 +86,10 @@ bzflag-source: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(BZFLAG_BUILD_DIR)/.configured: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
-	$(MAKE) zlib-stage libcurl-stage adns-stage
+	$(MAKE) zlib-stage libcurl-stage adns-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BZFLAG_DIR) $(BZFLAG_BUILD_DIR)
 	$(BZFLAG_UNZIP) $(DL_DIR)/$(BZFLAG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BZFLAG_PATCHES) | patch -d $(BUILD_DIR)/$(BZFLAG_DIR) -p1
+	cat $(BZFLAG_PATCHES) | patch -d $(BUILD_DIR)/$(BZFLAG_DIR) -p1
 	mv $(BUILD_DIR)/$(BZFLAG_DIR) $(BZFLAG_BUILD_DIR)
 	(cd $(BZFLAG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -102,7 +102,6 @@ $(BZFLAG_BUILD_DIR)/.configured: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-client \
-		--disable-bzadmin \
 		--without-SDL \
 	)
 	touch $(BZFLAG_BUILD_DIR)/.configured
