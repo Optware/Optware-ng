@@ -31,7 +31,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	jove \
 	less libdb libevent libid3tag libjpeg libpng libtiff libtool lsof \
 	m4 make mc miau \
-	nano ntp ntpclient \
+	nano ncurses ntp ntpclient \
 	patch portmap procps puppy \
 	rsync \
 	screen strace sudo \
