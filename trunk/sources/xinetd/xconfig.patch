@@ -1,0 +1,20 @@
+--- xinetd/xinetd/xconfig.h.orig	2005-03-22 22:17:26.000000000 +1030
++++ xinetd/xinetd/xconfig.h	2005-03-22 22:18:18.000000000 +1030
+@@ -29,7 +29,7 @@
+ #endif
+ 
+ 
+-#define DEFAULT_CONFIG_FILE			"/etc/xinetd.conf"
++#define DEFAULT_CONFIG_FILE			"/opt/etc/xinetd.conf"
+ 
+ /*
+  * This is the facility used by xinetd to log syslog messages
+@@ -88,7 +88,7 @@
+  * receipt of STATE_DUMP_SIG
+  */
+ #ifndef DUMP_FILE
+-#define DUMP_FILE		"/var/run/xinetd.dump"
++#define DUMP_FILE		"/opt/var/run/xinetd.dump"
+ #endif
+ 
+ /*
