@@ -24,7 +24,7 @@ X11_PRIORITY=optional
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=1
+X11_IPK_VERSION=2
 
 #
 # X11_CONFFILES should be a list of user-editable files
@@ -34,7 +34,7 @@ X11_CONFFILES=
 # X11_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-X11_PATCHES=
+X11_PATCHES=$(X11_SOURCE_DIR)/localedir.patch
 
 #
 # If the compilation of the package requires additional
@@ -82,6 +82,7 @@ $(X11_BUILD_DIR)/.fetched:
 		cvs -d $(X11_REPOSITORY) -z3 co $(X11_CVS_OPTS) $(X11_DIR); \
 	)
 	mv $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR)
+	cat $(X11_PATCHES) | patch -d $(X11_BUILD_DIR) -p0
 	touch $@
 
 x11-source: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
@@ -109,7 +110,6 @@ $(X11_BUILD_DIR)/.configured: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--disable-static \
 	)
 	touch $(X11_BUILD_DIR)/.configured
