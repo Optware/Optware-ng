@@ -49,10 +49,10 @@ gkrellm: $(GKRELLM_IPK_DIR)
 
 $(GKRELLM_IPK): $(GKRELLM_IPK_DIR)
 	mkdir -p $(GKRELLM_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/gkrellm.control $(GKRELLM_IPK_DIR)/CONTROL/control
+	cp $(SOURCE_DIR)/gkrellmd/control $(GKRELLM_IPK_DIR)/CONTROL/control
 	install -d $(GKRELLM_IPK_DIR)/opt/sbin $(GKRELLM_IPK_DIR)/opt/etc/init.d
 	$(STRIP) $(GKRELLM_DIR)/server/gkrellmd -o $(GKRELLM_IPK_DIR)/opt/sbin/gkrellmd
-	install -m 755 $(SOURCE_DIR)/gkrellmd.rc $(GKRELLM_IPK_DIR)/opt/etc/init.d/S60gkrellmd
+	install -m 755 $(SOURCE_DIR)/gkrellmd/rc.gkrellmd $(GKRELLM_IPK_DIR)/opt/etc/init.d/S60gkrellmd
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GKRELLM_IPK_DIR)
 
