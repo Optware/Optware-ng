@@ -4,19 +4,25 @@
 #
 ###########################################################
 
-# PUPPY_REPOSITORY=:ext:$(LOGNAME)@cvs.sf.net:/cvsroot/puppy
-PUPPY_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
-PUPPY_VERSION=1.8
+PUPPY_REPOSITORY=:ext:$(LOGNAME)@cvs.sf.net:/cvsroot/puppy
+# PUPPY_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
+PUPPY_VERSION=1.6
 PUPPY_SOURCE=puppy-$(PUPPY_VERSION).tar.gz
-PUPPY_TAG=-r PUPPY_1_8
+PUPPY_TAG=-r PUPPY_1_6
 PUPPY_MODULE=puppy
 PUPPY_DIR=puppy-$(PUPPY_VERSION)
 PUPPY_UNZIP=zcat
+PUPPY_MAINTAINER=Peter Urbanec <purbanec@users.sourceforge.net>
+PUPPY_DESCRIPTION=Puppy will allow a user to communicate with a Topfield TF5000PVRt via a USB port.
+PUPPY_SECTION=utility
+PUPPY_PRIORITY=optional
+PUPPY_DEPENDS=
+PUPPY_CONFLICTS=
 
 #
 # PUPPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PUPPY_IPK_VERSION=1
+PUPPY_IPK_VERSION=2
 
 #
 # PUPPY_BUILD_DIR is the directory in which the build is done.
@@ -86,6 +92,24 @@ $(PUPPY_BUILD_DIR)/puppy: $(PUPPY_BUILD_DIR)/.configured
 puppy: $(PUPPY_BUILD_DIR)/puppy
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/puppy
+#
+$(PUPPY_IPK_DIR)/CONTROL/control:
+	@install -d $(PUPPY_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: puppy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PUPPY_PRIORITY)" >>$@
+	@echo "Section: $(PUPPY_SECTION)" >>$@
+	@echo "Version: $(PUPPY_VERSION)-$(PUPPY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PUPPY_MAINTAINER)" >>$@
+	@echo "Source: $(PUPPY_SITE)/$(PUPPY_SOURCE)" >>$@
+	@echo "Description: $(PUPPY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PUPPY_DEPENDS)" >>$@
+	@echo "Conflicts: $(PUPPY_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(PUPPY_IPK_DIR)/opt/sbin or $(PUPPY_IPK_DIR)/opt/bin
@@ -101,8 +125,7 @@ $(PUPPY_IPK): $(PUPPY_BUILD_DIR)/puppy
 	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_$(TARGET_ARCH).ipk
 	install -d $(PUPPY_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
-	install -d $(PUPPY_IPK_DIR)/CONTROL
-	install -m 644 $(PUPPY_SOURCE_DIR)/control $(PUPPY_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PUPPY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PUPPY_IPK_DIR)
 
 #

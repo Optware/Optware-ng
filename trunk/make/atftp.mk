@@ -9,8 +9,14 @@ ATFTP_VERSION=0.7
 ATFTP_SOURCE=atftp-$(ATFTP_VERSION).tar.gz
 ATFTP_DIR=atftp-$(ATFTP_VERSION)
 ATFTP_UNZIP=zcat
+ATFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ATFTP_DESCRIPTION=Advanced TFTP server and client
+ATFTP_SECTION=net
+ATFTP_PRIORITY=optional
+ATFTP_DEPENDS=
+ATFTP_CONFLICTS=
 
-ATFTP_IPK_VERSION=3
+ATFTP_IPK_VERSION=4
 
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
@@ -46,14 +52,27 @@ $(ATFTP_BUILD_DIR)/atftp: $(ATFTP_BUILD_DIR)/.configured
 
 atftp: $(ATFTP_BUILD_DIR)/atftp
 
+$(ATFTP_IPK_DIR)/CONTROL/control:
+	@install -d $(ATFTP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: atftp" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ATFTP_PRIORITY)" >>$@
+	@echo "Section: $(ATFTP_SECTION)" >>$@
+	@echo "Version: $(ATFTP_VERSION)-$(ATFTP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ATFTP_MAINTAINER)" >>$@
+	@echo "Source: $(ATFTP_SITE)/$(ATFTP_SOURCE)" >>$@
+	@echo "Description: $(ATFTP_DESCRIPTION)" >>$@
+	@echo "Depends: $(ATFTP_DEPENDS)" >>$@
+	@echo "Conflicts: $(ATFTP_CONFLICTS)" >>$@
+
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
 	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_$(TARGET_ARCH).ipk
 	install -d $(ATFTP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
 	install -d $(ATFTP_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
-	install -d $(ATFTP_IPK_DIR)/CONTROL
-	install -m 644 $(ATFTP_SOURCE_DIR)/control $(ATFTP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(ATFTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(ATFTP_SOURCE_DIR)/prerm $(ATFTP_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATFTP_IPK_DIR)

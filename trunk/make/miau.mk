@@ -9,8 +9,14 @@ MIAU_VERSION=0.5.3
 MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
 MIAU_UNZIP=zcat
+MIAU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MIAU_DESCRIPTION=The MIAU IRC Bouncer (Proxy)
+MIAU_SECTION=net
+MIAU_PRIORITY=optional
+MIAU_DEPENDS=
+MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=8
+MIAU_IPK_VERSION=9
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
@@ -67,6 +73,20 @@ $(MIAU_BUILD_DIR)/src/miau: $(MIAU_BUILD_DIR)/.configured
 
 miau: $(MIAU_BUILD_DIR)/src/miau
 
+$(MIAU_IPK_DIR)/CONTROL/control:
+	@install -d $(MIAU_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: miau" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MIAU_PRIORITY)" >>$@
+	@echo "Section: $(MIAU_SECTION)" >>$@
+	@echo "Version: $(MIAU_VERSION)-$(MIAU_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MIAU_MAINTAINER)" >>$@
+	@echo "Source: $(MIAU_SITE)/$(MIAU_SOURCE)" >>$@
+	@echo "Description: $(MIAU_DESCRIPTION)" >>$@
+	@echo "Depends: $(MIAU_DEPENDS)" >>$@
+	@echo "Conflicts: $(MIAU_CONFLICTS)" >>$@
+
 $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	rm -rf $(MIAU_IPK_DIR) $(BUILD_DIR)/miau_*_$(TARGET_ARCH).ipk
 	install -d $(MIAU_IPK_DIR)/opt/bin
@@ -77,8 +97,7 @@ $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	install -m 755 $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
 	install -d $(MIAU_IPK_DIR)/opt/etc/logrotate.d
 	install -m 755 $(MIAU_SOURCE_DIR)/logrotate.miau $(MIAU_IPK_DIR)/opt/etc/logrotate.d/miau
-	install -d $(MIAU_IPK_DIR)/CONTROL
-	install -m 644 $(MIAU_SOURCE_DIR)/control $(MIAU_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MIAU_IPK_DIR)/CONTROL/control
 	install -m 644 $(MIAU_SOURCE_DIR)/postinst $(MIAU_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(MIAU_SOURCE_DIR)/prerm $(MIAU_IPK_DIR)/CONTROL/prerm
 	echo $(MIAU_CONFFILES) | sed -e 's/ /\n/g' > $(MIAU_IPK_DIR)/CONTROL/conffiles
