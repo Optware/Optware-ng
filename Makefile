@@ -28,13 +28,13 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   sudo rsync rdate \
 	   portmap nfs-server flex inetutils \
 	   gdbm libid3tag mt-daapd unfs3 bison cvs \
-	   ncurses ircd-hybrid procps \
+	   ncurses ircd-hybrid procps jove \
 	   tcpwrappers libevent vdr-mediamvp \
 	   wget bzip2 dhcp nano nethack ccxstream
 
 PACKAGES_TO_BE_TESTED:= \
 	   dump e2fsprogs gkrellm glib \
-	   grep lsof jove
+	   grep lsof
 
 WGET=wget --passive-ftp
 
