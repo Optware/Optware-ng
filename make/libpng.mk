@@ -128,6 +128,9 @@ libpng: $(LIBPNG_BUILD_DIR)/.built
 $(STAGING_DIR)/opt/lib/liblibpng.so.$(LIBPNG_VERSION): $(LIBPNG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-exec-am
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-includeHEADERS
+	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libpng.a
+	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libpng.so.3.0.0
+	$(TARGET_STRIP) --strip-unneeded $(STAGING_DIR)/opt/lib/libpng12.so.0.0.0
 #	install -d $(STAGING_DIR)/opt/include
 #	install -m 644 $(LIBPNG_BUILD_DIR)/libpng.h $(STAGING_DIR)/opt/include
 #	install -d $(STAGING_DIR)/opt/lib
@@ -157,7 +160,9 @@ $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(LIBPNG_IPK_DIR) install-includeHEADERS
 	rm -f $(LIBPNG_IPK_DIR)/opt/bin/libpng-config
 	rm -f $(LIBPNG_IPK_DIR)/opt/bin/libpng12-config
-
+	$(TARGET_STRIP) --strip-unneeded $(LIBPNG_IPK_DIR)/opt/lib/libpng.a
+	$(TARGET_STRIP) --strip-unneeded $(LIBPNG_IPK_DIR)/opt/lib/libpng.so.3.0.0
+	$(TARGET_STRIP) --strip-unneeded $(LIBPNG_IPK_DIR)/opt/lib/libpng12.so.0.0.0
 #	$(TARGET_STRIP) $(LIBPNG_BUILD_DIR)/libpng -o $(LIBPNG_IPK_DIR)/opt/bin/libpng
 #	install -d $(LIBPNG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIBPNG_SOURCE_DIR)/rc.libpng $(LIBPNG_IPK_DIR)/opt/etc/init.d/SXXlibpng
