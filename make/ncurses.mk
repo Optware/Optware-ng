@@ -19,18 +19,18 @@ NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
 $(DL_DIR)/$(NCURSES_SOURCE):
 	$(WGET) -P $(DL_DIR) $(NCURSES_SITE)/$(NCURSES_SOURCE)
 
+ncurses-source: $(DL_DIR)/$(NCURSES_SOURCE)
+
 $(NCURSES_DIR)/.source: $(DL_DIR)/$(NCURSES_SOURCE)
 	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(NCURSES) $(NCURSES_DIR)
 	touch $(NCURSES_DIR)/.source
 
-ncurses-source: $(DL_DIR)/$(NCURSES_SOURCE)
-
 $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 	(cd $(NCURSES_DIR); \
-	export CC=$(TARGET_CC) ;\
-	export CPPFLAGS="$(STAGING_CPPFLAGS)" ;\
-	export LDFLAGS="$(STAGING_LDFLAGS)" ;\
+	export CC=$(TARGET_CC) ; \
+	export CPPFLAGS="$(STAGING_CPPFLAGS)"; \
+	export LDFLAGS="$(STAGING_LDFLAGS)"; \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
@@ -103,3 +103,6 @@ ncurses-clean:
 ncurses-dirclean: ncurses-clean
 	rm -rf $(NCURSES_DIR) $(NCURSES_IPK_DIR) $(NCURSES_IPK)
 
+ncurses-distclean:
+	-rm $(NCURSES_DIR)/.configured
+	-$(MAKE) -C $(NCURSES_DIR) distclean
