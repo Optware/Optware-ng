@@ -1,0 +1,35 @@
+--- groff/contrib/mom/Makefile.sub~	2005-01-23 10:48:26.000000000 +0100
++++ groff/contrib/mom/Makefile.sub	2005-01-23 10:52:49.000000000 +0100
+@@ -18,7 +18,7 @@
+ # Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ 
+ # These may be overridden if cross-compiling.
+-GROFFBIN=$(top_builddir)/src/roff/groff/groff
++GROFFBIN=echo
+ GROFF_BIN_PATH=`echo $(groff_bin_dirs) | sed -e 's|  *|$(SH_SEP)|g'`
+ 
+ groff_bin_dirs=\
+--- groff/doc/Makefile.in~	2005-01-23 10:58:22.000000000 +0100
++++ groff/doc/Makefile.in	2005-01-23 10:59:13.000000000 +0100
+@@ -35,8 +35,8 @@
+ pnmtops=@pnmtops_nosetpage@
+ 
+ # These may be overridden if cross-compiling.
+-TROFFBIN=$(top_builddir)/src/roff/troff/troff
+-GROFFBIN=$(top_builddir)/src/roff/groff/groff
++TROFFBIN=echo
++GROFFBIN=echo
+ GROFF_BIN_PATH=`echo $(groff_bin_dirs) | sed -e 's|  *|:|g'`
+ 
+ # Since info files are distributed within the groff package, no
+--- groff/doc/Makefile.sub~	2005-01-23 10:58:30.000000000 +0100
++++ groff/doc/Makefile.sub	2005-01-23 10:59:35.000000000 +0100
+@@ -18,7 +18,7 @@
+ # Foundation, 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ 
+ # These may be overridden if cross-compiling.
+-GROFFBIN=$(top_builddir)/src/roff/groff/groff
++GROFFBIN=echo
+ GROFF_BIN_PATH=`echo $(groff_bin_dirs) | sed -e 's|  *|$(SH_SEP)|g'`
+ 
+ # Since info files are distributed within the groff package, no
