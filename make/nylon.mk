@@ -182,7 +182,7 @@ $(NYLON_IPK): $(NYLON_BUILD_DIR)/.built
 	$(MAKE) -C $(NYLON_BUILD_DIR) DESTDIR=$(NYLON_IPK_DIR) install
 	$(STRIP_COMMAND) $(NYLON_IPK_DIR)/opt/bin/nylon
 	install -d $(NYLON_IPK_DIR)/opt/etc
-	install -m 644 $(NYLON_SOURCE_DIR)/nylon.conf $(NYLON_IPK_DIR)/opt/etc/nylon.conf-dist
+	install -m 644 $(NYLON_SOURCE_DIR)/nylon.conf $(NYLON_IPK_DIR)/opt/etc/nylon.conf
 	#install -d $(NYLON_IPK_DIR)/opt/etc/init.d
 	#install -m 755 $(NYLON_SOURCE_DIR)/rc.nylon $(NYLON_IPK_DIR)/opt/etc/init.d/SXXnylon
 	$(MAKE) $(NYLON_IPK_DIR)/CONTROL/control
