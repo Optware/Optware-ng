@@ -5,7 +5,8 @@
 #############################################################
 
 IPKG_UTILS_VERSION:=1.7
-IPKG_UTILS_SITE:=http://handhelds.org/packages/ipkg-utils/
+IPKG_UTILS_SITE:=http://ipkg.nslu2-linux.org/downloads
+#IPKG_UTILS_SITE:=http://handhelds.org/packages/ipkg-utils/
 IPKG_UTILS_SOURCE:=ipkg-utils-$(IPKG_UTILS_VERSION).tar.gz
 IPKG_UTILS_DIR:=$(TOOL_BUILD_DIR)/ipkg-utils-$(IPKG_UTILS_VERSION)
 
