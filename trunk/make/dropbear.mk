@@ -35,7 +35,7 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 	$(DROPBEAR_UNZIP) $(DL_DIR)/$(DROPBEAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(DROPBEAR_PATCHES) | patch -d $(BUILD_DIR)/$(DROPBEAR_DIR) -p1
 	mv $(BUILD_DIR)/$(DROPBEAR_DIR) $(DROPBEAR_BUILD_DIR)
-	cd $(DROPBEAR_BUILD_DIR) && \
+	(cd $(DROPBEAR_BUILD_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" LD="" \
 		./configure \
@@ -46,7 +46,8 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 		--disable-zlib --disable-shadow \
 		--disable-lastlog --disable-utmp \
 		--disable-utmpx --disable-wtmp \
-		--disable-wtmpx --disable-libutil
+		--disable-wtmpx --disable-libutil \
+	)
 	touch $(DROPBEAR_BUILD_DIR)/.configured
 
 dropbear-unpack: $(DROPBEAR_BUILD_DIR)/.configured
@@ -65,7 +66,8 @@ dropbear-diff: #$(DROPBEAR_BUILD_DIR)/.configured
 
 $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/dropbearmulti
 	install -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
-	$(STRIP) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbear
+	$(STRIP) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbearmulti
+	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
 	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti ssh
@@ -83,5 +85,5 @@ dropbear-ipk: $(DROPBEAR_IPK)
 dropbear-clean:
 	-make -C $(DROPBEAR_BUILD_DIR) clean
 
-dropbear-dirclean:
+dropbear-dirclean: dropbear-clean
 	rm -rf $(DROPBEAR_BUILD_DIR) $(DROPBEAR_IPK_DIR) $(DROPBEAR_IPK)
