@@ -5,5 +5,5 @@ Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Source: http://www.tcpdump.org/release/libpcap-@VERSION@.tar.gz
 Section: utilities
 Priority: optional
-Depends: Sed, Flex, Bison
+Depends: sed, flex, bison
 Description: PCAP Library
