@@ -122,7 +122,7 @@ proftpd-unpack: $(PROFTPD_BUILD_DIR)/.configured
 #
 $(PROFTPD_BUILD_DIR)/.built: $(PROFTPD_BUILD_DIR)/.configured
 	rm -f $(PROFTPD_BUILD_DIR)/.built
-	$(MAKE) -C $(PROFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
+	$(MAKE) -C $(PROFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) HOSTCC=$(HOSTCC)
 	touch $(PROFTPD_BUILD_DIR)/.built
 
 #
