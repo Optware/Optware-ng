@@ -129,6 +129,7 @@ glib: $(GLIB_BUILD_DIR)/.built
 #
 $(STAGING_DIR)/opt/lib/libglib-2.0.so: $(GLIB_BUILD_DIR)/.built
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	install -m 644 $(GLIB_BUILD_DIR)/glibconfig.h $(STAGING_DIR)/opt/include/glib-2.0/glibconfig.h
 	rm -rf $(STAGING_DIR)/opt/lib/libglib-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
