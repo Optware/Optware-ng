@@ -25,7 +25,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	bash bzip2 \
 	ccxstream coreutils cpio \
 	diffutils distcc dnsmasq dropbear \
-	findutils \
+	file findutils \
 	gdbm grep \
 	inetutils iptables \
 	jove \
@@ -60,7 +60,7 @@ CROSS_ONLY_PACKAGES = \
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
-PACKAGES_TO_BE_TESTED = file
+PACKAGES_TO_BE_TESTED =
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump glib gkrellm
