@@ -39,7 +39,7 @@ CROSS_PACKAGES = \
 	lame less libbt libcurl libdb libdvdread libevent libgd libid3tag \
 	libjpeg libnsl libogg libol libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt muxsshssl \
+	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	openssh openssl openvpn \
 	pango parted patch pcre php pkgconfig popt portmap postgresql \
