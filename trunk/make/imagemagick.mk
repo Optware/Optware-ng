@@ -21,7 +21,8 @@
 #
 IMAGEMAGICK_SITE=http://www.imagemagick.net/download/
 IMAGEMAGICK_VERSION=6.1.6
-IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-6.tar.gz
+IMAGEMAGICK_REV=6
+IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
 
@@ -55,7 +56,7 @@ IMAGEMAGICK_LDFLAGS=
 IMAGEMAGICK_BUILD_DIR=$(BUILD_DIR)/imagemagick
 IMAGEMAGICK_SOURCE_DIR=$(SOURCE_DIR)/imagemagick
 IMAGEMAGICK_IPK_DIR=$(BUILD_DIR)/imagemagick-$(IMAGEMAGICK_VERSION)-ipk
-IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_IPK_VERSION)_armeb.ipk
+IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)_armeb.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -115,28 +116,17 @@ imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(IMAGEMAGICK_BUILD_DIR)/imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.configured
+$(IMAGEMAGICK_BUILD_DIR)/.built: $(IMAGEMAGICK_BUILD_DIR)/.configured
+	rm -f $(IMAGEMAGICK_BUILD_DIR)/.built
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR)
+	touch $(IMAGEMAGICK_BUILD_DIR)/.built
+
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-imagemagick: $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert
-
-#
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libimagemagick.so.$(IMAGEMAGICK_VERSION): $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/imagemagick.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so
-
-imagemagick-stage: $(STAGING_DIR)/opt/lib/libimagemagick.so.$(IMAGEMAGICK_VERSION)
+imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
 
 #
 # This builds the IPK file.
@@ -150,16 +140,12 @@ imagemagick-stage: $(STAGING_DIR)/opt/lib/libimagemagick.so.$(IMAGEMAGICK_VERSIO
 #
 # You may need to patch your application to make it use these locations.
 #
-$(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/imagemagick
+$(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(IMAGEMAGICK_IPK)
-#	install -d $(IMAGEMAGICK_IPK_DIR)/opt/bin
-
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
-	
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
 	$(STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*
 	$(STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.a
-#
 	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
 	cp $(IMAGEMAGICK_BUILD_DIR)/magick/Magick-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
 	cp $(IMAGEMAGICK_BUILD_DIR)/wand/Wand-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
@@ -178,8 +164,6 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/imagemagick
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/man
 	install -d $(IMAGEMAGICK_IPK_DIR)/CONTROL
 	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/control $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
-#	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/postinst $(IMAGEMAGICK_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/prerm $(IMAGEMAGICK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAGEMAGICK_IPK_DIR)
 
 #
