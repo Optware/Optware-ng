@@ -12,7 +12,9 @@ GREP_SITE=ftp://ftp.gnu.org/pub/gnu/grep
 GREP_SOURCE=$(GREP).tar.gz
 GREP_UNZIP=zcat
 
-GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-3_armeb.ipk
+GREP_IPK_VERSION=3
+
+GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-$(GREP_IPK_VERSION)_armeb.ipk
 GREP_IPK_DIR=$(BUILD_DIR)/grep-$(GREP_VERSION)-ipk
 
 $(DL_DIR)/$(GREP_SOURCE):
