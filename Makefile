@@ -81,6 +81,7 @@ PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
+PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
 unslung: $(TARGETS)
 	cd firmware ; $(MAKE) umount clean unslung
@@ -91,7 +92,7 @@ world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) \
 
 .PHONY: all world clean dirclean distclean directories source unslung \
 	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) \
-	$(PACKAGES_UPKG)
+	$(PACKAGES_UPKG) $(PACKAGES_IPKG)
 
 include make/*.mk
 
