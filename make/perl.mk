@@ -104,6 +104,7 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 		-Dcc=gcc \
 		-Dprefix=/opt \
 		-de \
+		-A clear:ignore_versioned_solibs \
 	)
 	cat $(PERL_PATCHES) | patch -d $(PERL_BUILD_DIR) -p0
 	touch $(PERL_BUILD_DIR)/.configured
