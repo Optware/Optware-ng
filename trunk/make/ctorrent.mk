@@ -15,10 +15,10 @@
 # You should change all these variables to suit your package.
 #
 CTORRENT_SITE=http://heanet.dl.sourceforge.net/sourceforge/ctorrent
-CTORRENT_VERSION=1.3.3
-CTORRENT_SOURCE=ctorrent-$(CTORRENT_VERSION).tar.gz
+CTORRENT_VERSION=1.3.4
+CTORRENT_SOURCE=ctorrent-$(CTORRENT_VERSION).tar.bz2
 CTORRENT_DIR=ctorrent-$(CTORRENT_VERSION)
-CTORRENT_UNZIP=zcat
+CTORRENT_UNZIP=bzcat
 #
 # CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -28,7 +28,13 @@ CTORRENT_IPK_VERSION=1
 # CTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CTORRENT_PATCHES=$(CTORRENT_SOURCE_DIR)/configure.patch
+CTORRENT_PATCHES=$(CTORRENT_SOURCE_DIR)/align.patch \
+		$(CTORRENT_SOURCE_DIR)/configure.patch \
+		$(CTORRENT_SOURCE_DIR)/crash.patch \
+		$(CTORRENT_SOURCE_DIR)/fmt.patch \
+		$(CTORRENT_SOURCE_DIR)/getcwd.patch \
+		$(CTORRENT_SOURCE_DIR)/stall.patch \
+		$(CTORRENT_SOURCE_DIR)/tracker.patch
 
 #
 # If the compilation of the package requires additional
@@ -81,10 +87,10 @@ ctorrent-source: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(CTORRENT_SOURCE) $(CTORRENT_PATCHES)
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(CTORRENT_DIR) $(CTORRENT_BUILD_DIR)
 	$(CTORRENT_UNZIP) $(DL_DIR)/$(CTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(CTORRENT_DIR) -p1
+	cat $(CTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(CTORRENT_DIR) -p1
 	mv $(BUILD_DIR)/$(CTORRENT_DIR) $(CTORRENT_BUILD_DIR)
 	(cd $(CTORRENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \

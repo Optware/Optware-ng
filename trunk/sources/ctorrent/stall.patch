@@ -1,0 +1,27 @@
+diff --exclude '*Po' -ur ctorrent/peer.cpp ctorrent.new/peer.cpp
+--- ctorrent/peer.cpp	2005-02-10 18:27:44.980091472 +0000
++++ ctorrent.new/peer.cpp	2005-02-03 17:55:01.000000000 +0000
+@@ -252,7 +252,8 @@
+       if( (r - 1) != bitfield.NBytes() || !bitfield.IsEmpty()) return -1;
+       bitfield.SetReferBuffer(msgbuf + 5);
+       if(bitfield.IsFull() && BTCONTENT.pBF->IsFull()) return -2;
+-      return 0;
++
++      return RequestCheck();
+ 
+     case M_CANCEL:
+       if(r != H_CANCEL_LEN || !m_state.remote_interested) return -1;
+diff --exclude '*Po' -ur ctorrent/peerlist.cpp ctorrent.new/peerlist.cpp
+--- ctorrent/peerlist.cpp	2004-09-09 00:10:51.000000000 +0100
++++ ctorrent.new/peerlist.cpp	2005-02-02 00:23:04.000000000 +0000
+@@ -495,7 +496,9 @@
+ 	if(peer->GetStatus() == P_HANDSHAKE){
+ 	  if( peer->HandShake() < 0 ) peer->CloseConnection();
+ 	}else{
+-	  if( peer->RecvModule() < 0 ) peer->CloseConnection();
++	  if(peer->GetStatus() == P_SUCCESS) {
++	    if( peer->RecvModule() < 0 ) peer->CloseConnection();
++	  }
+ 	}
+       }else if(PEER_IS_SUCCESS(peer) && FD_ISSET(sk,wfdp)){
+ 	p->click++;
