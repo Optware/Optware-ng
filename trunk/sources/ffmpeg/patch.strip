@@ -1,0 +1,39 @@
+diff -Naur a/Makefile b/Makefile
+--- a/Makefile	2005-02-13 03:53:06.000000000 +0000
++++ b/Makefile	2005-02-13 05:12:51.000000000 +0000
+@@ -125,7 +125,8 @@
+ 	$(MAKE) -C libavcodec install
+ 	$(MAKE) -C libavformat install
+ 	install -d "$(bindir)"
+-	install -c -s -m 755 $(PROG) "$(bindir)"
++	install -c -m 755 $(PROG) "$(bindir)"
++	cd "$(bindir)"; $(STRIP) $(PROG)
+ 
+ # create the window installer
+ wininstaller: all install
+diff -Naur a/libavcodec/Makefile b/libavcodec/Makefile
+--- a/libavcodec/Makefile	2005-02-13 05:49:41.000000000 +0000
++++ b/libavcodec/Makefile	2005-02-13 05:57:53.000000000 +0000
+@@ -269,7 +269,8 @@
+ 	install -s -m 755 $(SLIB) "$(prefix)"
+ else
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
++	install -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
++	$(STRIP) $(prefix)/lib/libavcodec-$(VERSION).so
+ 	ln -sf libavcodec-$(VERSION).so $(prefix)/lib/libavcodec.so
+ 	ldconfig || true
+ endif
+diff -Naur a/libavformat/Makefile b/libavformat/Makefile
+--- a/libavformat/Makefile	2005-02-13 05:55:59.000000000 +0000
++++ b/libavformat/Makefile	2005-02-13 05:55:17.000000000 +0000
+@@ -105,7 +105,8 @@
+ 	install -s -m 755 $(SLIB) "$(prefix)"
+ else
+ 	install -d $(prefix)/lib
+-	install -s -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
++	install -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
++	$(STRIP) $(prefix)/lib/libavformat-$(VERSION).so
+ 	ln -sf libavformat-$(VERSION).so $(prefix)/lib/libavformat.so
+ 	ldconfig || true
+ endif

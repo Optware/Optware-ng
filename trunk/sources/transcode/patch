@@ -1,0 +1,75 @@
+diff -Naur a/config.cache b/config.cache
+--- a/config.cache	1970-01-01 00:00:00.000000000 +0000
++++ b/config.cache	2005-02-13 19:16:20.000000000 +0000
+@@ -0,0 +1 @@
++lame_version=396
+diff -Naur a/configure b/configure
+--- a/configure	2005-02-13 07:20:10.000000000 +0000
++++ b/configure	2005-02-13 07:25:54.000000000 +0000
+@@ -30183,66 +30183,6 @@
+   CPPFLAGS="$save_CPPFLAGS"
+ 
+   echo "$as_me:$LINENO: checking lame version" >&5
+-echo $ECHO_N "checking lame version... $ECHO_C" >&6
+-  ac_save_CFLAGS="$CFLAGS"
+-  ac_save_LIBS="$LIBS"
+-  CFLAGS="$CFLAGS $LAME_CFLAGS"
+-  LIBS="$LIBS $LAME_LIBS"
+-  if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
+-else
+-  cat >conftest.$ac_ext <<_ACEOF
+-/* confdefs.h.  */
+-_ACEOF
+-cat confdefs.h >>conftest.$ac_ext
+-cat >>conftest.$ac_ext <<_ACEOF
+-/* end confdefs.h.  */
+-
+-#include <stdio.h>
+-
+-#ifdef HAVE_LAME_INC
+-#include <lame/lame.h>
+-#else
+-#include <lame.h>
+-#endif
+-
+-int main () {
+-  lame_version_t lv;
+-  get_lame_version_numerical(&lv);
+-  if(lv.alpha || lv.beta) lv.minor--;
+-  printf("%d%d\n", lv.major, lv.minor);
+-  return 0;
+-}
+-
+-_ACEOF
+-rm -f conftest$ac_exeext
+-if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+-  (eval $ac_link) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+-  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+-  (eval $ac_try) 2>&5
+-  ac_status=$?
+-  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+-  (exit $ac_status); }; }; then
+-  lame_version="`./conftest$ac_exeext`"
+-else
+-  echo "$as_me: program exited with status $ac_status" >&5
+-echo "$as_me: failed program was:" >&5
+-sed 's/^/| /' conftest.$ac_ext >&5
+-
+-( exit $ac_status )
+-{ { echo "$as_me:$LINENO: error: lame requested, but cannot compile and run a test program" >&5
+-echo "$as_me: error: lame requested, but cannot compile and run a test program" >&2;}
+-   { (exit 1); exit 1; }; }
+-fi
+-rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+-fi
+   CFLAGS="$ac_save_CFLAGS"
+   LIBS="$ac_save_LIBS"
+ 
