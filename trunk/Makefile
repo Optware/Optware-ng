@@ -189,8 +189,13 @@ $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 packages: $(PACKAGE_DIR)/Packages
 
 upload:
-	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
-	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
+ifeq ($(HOST_MACHINE),armv5b)
+	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/native/
+else
+	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/cross/
+	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/cross/
+endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
