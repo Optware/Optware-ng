@@ -53,6 +53,7 @@ $(BUSYBOX_BUILD_DIR)/busybox: $(BUSYBOX_BUILD_DIR)/.configured
 busybox: $(BUSYBOX_BUILD_DIR)/busybox
 
 $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/busybox
+	rm -rf $(BUSYBOX_IPK_DIR) $(BUILD_DIR)/busybox_*_armeb.ipk
 	install -d $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(BUSYBOX_IPK_DIR)/opt" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_BUILD_DIR) install
