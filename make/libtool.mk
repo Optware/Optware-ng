@@ -146,6 +146,7 @@ libtool-stage: $(STAGING_DIR)/opt/lib/libltdl.so.3.1.0
 $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
 	rm -rf $(LIBTOOL_IPK_DIR) $(LIBTOOL_IPK)
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
+	rm -f $(LIBTOOL_IPK_DIR)/opt/info/dir
 	install -d $(LIBTOOL_IPK_DIR)/CONTROL
 	install -m 644 $(LIBTOOL_SOURCE_DIR)/control $(LIBTOOL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTOOL_IPK_DIR)
