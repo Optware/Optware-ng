@@ -22,7 +22,7 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox zlib portmap nfs-server inetutils \
+PACKAGES:= dropbear busybox zlib portmap nfs-server unfs3 inetutils \
 	   gdbm libid3tag mt-daapd tcpwrappers flex bison cvs \
 	   rsync sudo
 
