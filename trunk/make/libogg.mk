@@ -129,18 +129,14 @@ libogg: $(LIBOGG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libogg.so.$(LIBOGG_VERSION_LIB): $(LIBOGG_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include/ogg
-	install -m 644 $(LIBOGG_BUILD_DIR)/include/ogg/ogg.h $(STAGING_DIR)/opt/include/ogg
-	install -m 644 $(LIBOGG_BUILD_DIR)/include/ogg/os_types.h $(STAGING_DIR)/opt/include/ogg
-	install -m 644 $(LIBOGG_BUILD_DIR)/include/ogg/config_types.h $(STAGING_DIR)/opt/include/ogg
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBOGG_BUILD_DIR)/src/.libs/libogg.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libogg.so.$(LIBOGG_VERSION_LIB) libogg.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libogg.so.$(LIBOGG_VERSION_LIB) libogg.so
+$(LIBOGG_BUILD_DIR)/.staged: $(LIBOGG_BUILD_DIR)/.built
+	rm -f $(LIBOGG_BUILD_DIR)/.staged
+	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_DIR)/opt/lib/libogg.a $(STAGING_DIR)/opt/lib/libogg.la
+	rm -rf $(STAGING_DIR)/opt/share
+	touch $(LIBOGG_BUILD_DIR)/.staged
 
-libogg-stage: $(STAGING_DIR)/opt/lib/libogg.so.$(LIBOGG_VERSION_LIB)
+libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -156,12 +152,9 @@ libogg-stage: $(STAGING_DIR)/opt/lib/libogg.so.$(LIBOGG_VERSION_LIB)
 #
 $(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/.built
 	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_armeb.ipk
-	install -d $(LIBOGG_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(LIBOGG_BUILD_DIR)/src/.libs/libogg.a -o $(LIBOGG_IPK_DIR)/opt/lib/libogg.a
-	$(STRIP_COMMAND) $(LIBOGG_BUILD_DIR)/src/.libs/libogg.so.$(LIBOGG_VERSION_LIB) -o $(LIBOGG_IPK_DIR)/opt/lib/libogg.so.$(LIBOGG_VERSION_LIB)
+	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(LIBOGG_IPK_DIR) install
 	install -d $(LIBOGG_IPK_DIR)/CONTROL
 	install -m 644 $(LIBOGG_SOURCE_DIR)/control $(LIBOGG_IPK_DIR)/CONTROL/control
-	cd $(LIBOGG_IPK_DIR)/opt/lib && ln -fs libogg.so.$(LIBOGG_VERSION_LIB) libogg.so.0
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOGG_IPK_DIR)
 
 #
