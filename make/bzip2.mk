@@ -56,6 +56,7 @@ $(STAGING_LIB_DIR)/libbz2.a: $(BZIP2_BUILD_DIR)/bzip2
 bzip2-stage: $(STAGING_LIB_DIR)/libbz2.a
 
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
+	rm -rf $(BZIP2_IPK_DIR) $(BUILD_DIR)/bzip2_*_armeb.ipk
 	install -d $(BZIP2_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2
 	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover
