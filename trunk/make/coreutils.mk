@@ -28,7 +28,7 @@ COREUTILS_UNZIP=zcat
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=3
+COREUTILS_IPK_VERSION=4
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -149,20 +149,19 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 #
 $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	rm -rf $(COREUTILS_IPK_DIR) $(BUILD_DIR)/coreutils_*_armeb.ipk
+	# Install binaries
 	install -d $(COREUTILS_IPK_DIR)/opt/bin
-
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec
+	# Install makefiles
+	install -d $(COREUTILS_IPK_DIR)/opt/man/man1	
+	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
+	# Remove /opt/bin/groups
 	rm $(COREUTILS_IPK_DIR)/opt/bin/groups
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
-
-#	$(STRIP_COMMAND) $(COREUTILS_BUILD_DIR)/coreutils -o $(COREUTILS_IPK_DIR)/opt/bin/coreutils
-#	install -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/SXXcoreutils
 	install -d $(COREUTILS_IPK_DIR)/CONTROL
 	install -m 644 $(COREUTILS_SOURCE_DIR)/control $(COREUTILS_IPK_DIR)/CONTROL/control
 	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(COREUTILS_SOURCE_DIR)/prerm $(COREUTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 
 #
