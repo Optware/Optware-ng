@@ -77,8 +77,10 @@ NATIVE_PACKAGES = \
 	emacs \
 	xemacs \
 	openldap \
-	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
-	perl-mime-base64 perl-net-dns perl-net-ident perl-storable perl-time-hires \
+	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
+	perl-html-parser perl-html-tagset \
+	perl-mime-base64 perl-net-dns perl-net-ident \
+	perl-spamassassin perl-storable perl-time-hires \
 	postfix \
 	rsnapshot \
 	squid \
@@ -87,9 +89,7 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
-# perl-spamassassin: fixed the link 
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-spamassassin \
 
 # asterisk can't be downloaded, its source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
