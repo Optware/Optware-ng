@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "<foo>" and "<FOO>" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # <FOO>_VERSION, <FOO>_SITE and <FOO>_SOURCE define
 # the upstream location of the source code for the package.
@@ -126,20 +121,6 @@ $(EMACS_BUILD_DIR)/.built: $(EMACS_BUILD_DIR)/.configured
 emacs: $(EMACS_BUILD_DIR)/.built
 
 #
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libemacs.so.$(EMACS_VERSION): $(EMACS_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(EMACS_BUILD_DIR)/emacs.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(EMACS_BUILD_DIR)/libemacs.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(EMACS_BUILD_DIR)/libemacs.so.$(EMACS_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libemacs.so.$(EMACS_VERSION) libemacs.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libemacs.so.$(EMACS_VERSION) libemacs.so
-
-emacs-stage: $(STAGING_DIR)/opt/lib/libemacs.so.$(EMACS_VERSION)
-
-#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(EMACS_IPK_DIR)/opt/sbin or $(EMACS_IPK_DIR)/opt/bin
@@ -153,17 +134,15 @@ emacs-stage: $(STAGING_DIR)/opt/lib/libemacs.so.$(EMACS_VERSION)
 #
 $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 	rm -rf $(EMACS_IPK_DIR) $(BUILD_DIR)/emacs_*_armeb.ipk
-	install -d $(EMACS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(EMACS_BUILD_DIR)/emacs -o $(EMACS_IPK_DIR)/opt/bin/emacs
-	install -d $(EMACS_IPK_DIR)/opt/etc/
-	install -m 755 $(EMACS_SOURCE_DIR)/emacs.conf $(EMACS_IPK_DIR)/opt/etc/emacs.conf
-	install -d $(EMACS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(EMACS_SOURCE_DIR)/rc.emacs $(EMACS_IPK_DIR)/opt/etc/init.d/SXXemacs
+	install -d $(EMACS_IPK_DIR)/opt
+	$(MAKE) -C $(EMACS_BUILD_DIR) prefix=$(EMACS_IPK_DIR)/opt install
+	rm -f $(EMACS_IPK_DIR)/opt/bin/emacs
+	ln -s /opt/bin/emacs-$(EMACS_VERSION) $(EMACS_IPK_DIR)/opt/bin/emacs
 	install -d $(EMACS_IPK_DIR)/CONTROL
 	install -m 644 $(EMACS_SOURCE_DIR)/control $(EMACS_IPK_DIR)/CONTROL/control
-	install -m 644 $(EMACS_SOURCE_DIR)/postinst $(EMACS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(EMACS_SOURCE_DIR)/prerm $(EMACS_IPK_DIR)/CONTROL/prerm
-	echo $(EMACS_CONFFILES) | sed -e 's/ /\n/g' > $(EMACS_IPK_DIR)/CONTROL/conffiles
+#	install -m 644 $(EMACS_SOURCE_DIR)/postinst $(EMACS_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(EMACS_SOURCE_DIR)/prerm $(EMACS_IPK_DIR)/CONTROL/prerm
+#	echo $(EMACS_CONFFILES) | sed -e 's/ /\n/g' > $(EMACS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EMACS_IPK_DIR)
 
 #
