@@ -53,17 +53,17 @@ NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
 # busybox has PATH_MAX define issue on native
 # bzflag actually builds native, but it takes 11 hours
 # classpath requires a java compiler
+# metalog may compile native - don't have working native build support (bob_tm)
 CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox \
 	bzflag \
-	classpath
+	classpath \
+	metalog
 
 # Add new cross-only packages here, and state why they don't compile native.
-# Metalog: May compile native - don't have working native build support (bob_tm)
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 	libiconv \
-	metalog \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
