@@ -158,7 +158,7 @@ imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
-	rm -rf $(IMAGEMAGICK_IPK_DIR) $(IMAGEMAGICK_IPK)
+	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_armeb.ipk
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
 	$(TARGET_STRIP) --strip-unneeded $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*

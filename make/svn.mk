@@ -142,7 +142,7 @@ svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
 #
 $(SVN_IPK): $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 	$(MAKE) svn-stage
-	rm -rf $(SVN_IPK_DIR) $(SVN_IPK)
+	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_armeb.ipk
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) install
 	rm -rf $(SVN_IPK_DIR)/opt/{build,include,info,man,share}
 	rm -rf $(SVN_IPK_DIR)/opt/lib/*.{a,la,exp}
