@@ -1,8 +1,8 @@
 Package: lsof
-Version: 4.73-3
+Version: 4.74-1
 Architecture: armeb
 Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Source: http://http.us.debian.org/debian/pool/main/l/lsof/lsof_4.72.orig.tar.gz
+Source: http://http.us.debian.org/debian/pool/main/l/lsof/lsof_4.74.orig.tar.gz
 Section: admin
 Priority: optional
 Depends:
