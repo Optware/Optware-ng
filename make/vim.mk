@@ -152,7 +152,7 @@ vim-stage: $(VIM_BUILD_DIR)/.staged
 $(VIM_IPK_DIR)/CONTROL/control:
 	@install -d $(VIM_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: foo" >>$@
+	@echo "Package: vim" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(VIM_PRIORITY)" >>$@
 	@echo "Section: $(VIM_SECTION)" >>$@
