@@ -94,15 +94,15 @@ postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
 $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_armeb.ipk
-	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) upgrade
+	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
 #	install -d $(POSTFIX_IPK_DIR)/opt/etc/
 #	install -m 755 $(POSTFIX_SOURCE_DIR)/postfix.conf $(POSTFIX_IPK_DIR)/opt/etc/postfix.conf
-#	install -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
+	install -d $(POSTFIX_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(POSTFIX_SOURCE_DIR)/rc.postfix $(POSTFIX_IPK_DIR)/opt/etc/init.d/S69postfix
 	install -d $(POSTFIX_IPK_DIR)/CONTROL
 	install -m 644 $(POSTFIX_SOURCE_DIR)/control $(POSTFIX_IPK_DIR)/CONTROL/control
-#	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
 	echo $(POSTFIX_CONFFILES) | sed -e 's/ /\n/g' > $(POSTFIX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)
