@@ -130,6 +130,8 @@ wxbase: $(WXBASE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STAGING_DIR)/opt/lib/libwx_base-2.5.so.3.0.0: $(WXBASE_BUILD_DIR)/.built
+	install -d $(STAGING_DIR)/opt/bin
+	install -m 755 $(WXBASE_BUILD_DIR)/wx-config $(STAGING_DIR)/opt/bin
 	install -d $(STAGING_DIR)/opt/include
 	cp -r $(WXBASE_BUILD_DIR)/include/wx $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
