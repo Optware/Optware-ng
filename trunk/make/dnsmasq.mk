@@ -17,7 +17,6 @@ DNSMASQ_IPK_DIR:=$(BUILD_DIR)/dnsmasq-$(DNSMASQ_VERSION)-ipk
 $(DL_DIR)/$(DNSMASQ_SOURCE):
 	$(WGET) -P $(DL_DIR) $(DNSMASQ_SITE)/$(DNSMASQ_SOURCE)
 
-#dnsmasq-source: $(DL_DIR)/$(DNSMASQ_SOURCE) $(DNSMASQ_PATCH)
 dnsmasq-source: $(DL_DIR)/$(DNSMASQ_SOURCE)
 
 
@@ -39,8 +38,8 @@ $(DNSMASQ_DIR)/dnsmasq: $(DNSMASQ_DIR)/.configured
 
 $(DNSMASQ_IPK): $(DNSMASQ_DIR)/src/dnsmasq
 	install -d $(DNSMASQ_IPK_DIR)/CONTROL $(DNSMASQ_IPK_DIR)/opt/man/man8
-	install -d $(DNSMASQ_IPK_DIR)/opt/bin $(DNSMASQ_IPK_DIR)/opt/etc/init.d
-	$(STRIP) $(DNSMASQ_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)/opt/bin/dnsmasq
+	install -d $(DNSMASQ_IPK_DIR)/opt/sbin $(DNSMASQ_IPK_DIR)/opt/etc/init.d
+	$(STRIP) $(DNSMASQ_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)/opt/sbin/dnsmasq
 	install -m 755 $(SOURCE_DIR)/dnsmasq.rc $(DNSMASQ_IPK_DIR)/opt/etc/init.d/S56dnsmasq
 	install -m 755 $(SOURCE_DIR)/dnsmasq.control $(DNSMASQ_IPK_DIR)/CONTROL/control
 	install -m 755 $(SOURCE_DIR)/dnsmasq.postinst $(DNSMASQ_IPK_DIR)/CONTROL/postinst
