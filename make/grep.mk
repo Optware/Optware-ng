@@ -12,7 +12,7 @@ GREP_SITE=ftp://ftp.gnu.org/pub/gnu/grep
 GREP_SOURCE=$(GREP).tar.gz
 GREP_UNZIP=zcat
 
-GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-2_armeb.ipk
+GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-3_armeb.ipk
 GREP_IPK_DIR=$(BUILD_DIR)/grep-$(GREP_VERSION)-ipk
 
 $(DL_DIR)/$(GREP_SOURCE):
@@ -41,12 +41,12 @@ grep: $(GREP_DIR)/src/grep
 
 $(GREP_IPK): $(GREP_DIR)/src/grep
 	rm -rf $(GREP_IPK_DIR) $(BUILD_DIR)/grep_*_armeb.ipk
-	mkdir -p $(GREP_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/grep/control $(GREP_IPK_DIR)/CONTROL/control
-	$(STRIP_COMMAND) $(GREP_DIR)/src/grep
-	$(STRIP_COMMAND) $(GREP_DIR)/src/egrep
-	$(STRIP_COMMAND) $(GREP_DIR)/src/fgrep
-	rm -rf $(STAGING_DIR)/CONTROL
+	install -d $(GREP_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(GREP_DIR)/src/grep -o $(GREP_IPK_DIR)/opt/bin/grep
+	$(STRIP_COMMAND) $(GREP_DIR)/src/egrep -o $(GREP_IPK_DIR)/opt/bin/egrep
+	$(STRIP_COMMAND) $(GREP_DIR)/src/fgrep -o $(GREP_IPK_DIR)/opt/bin/fgrep
+	install -d $(GREP_IPK_DIR)/CONTROL
+	install -m 644 $(SOURCE_DIR)/grep/control $(GREP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
 
 grep-ipk: $(GREP_IPK)
