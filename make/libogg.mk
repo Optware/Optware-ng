@@ -100,6 +100,17 @@ $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOGG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBOGG_LDFLAGS)" \
+		sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib" \
+		sys_lib_search_path_spec="$(STAGING_DIR)/opt/lib" \
+		ac_cv_sizeof_char=1 \
+		ac_cv_sizeof_int=4 \
+		ac_cv_sizeof_long=4 \
+		ac_cv_sizeof_long_long=8 \
+		ac_cv_sizeof_short=2 \
+		ac_cv_sizeof_unsigned_char=1 \
+		ac_cv_sizeof_unsigned_int=4 \
+		ac_cv_sizeof_unsigned_long=4 \
+		ac_cv_sizeof_unsigned_short=2 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
