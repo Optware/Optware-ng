@@ -44,19 +44,16 @@ $(SUDO_DIR)/sudo: $(SUDO_DIR)/.configured
 sudo: $(SUDO_DIR)/sudo
 
 $(SUDO_IPK): $(SUDO_DIR)/sudo
-	install -d $(SUDO_IPK_DIR)/CONTROL
 	install -d $(SUDO_IPK_DIR)/opt/bin
-	install -d $(SUDO_IPK_DIR)/opt/etc
 	$(STRIP) $(SUDO_DIR)/sudo -o $(SUDO_IPK_DIR)/opt/bin/sudo
 	$(STRIP) $(SUDO_DIR)/visudo -o $(SUDO_IPK_DIR)/opt/bin/visudo
-#	sudo chown 0:0 $(SUDO_IPK_DIR)/opt/bin/sudo
-#	sudo chown 0:0 $(SUDO_IPK_DIR)/opt/bin/visudo
-#	sudo chmod 4555  $(SUDO_IPK_DIR)/opt/bin/sudo
-#	sudo chmod 4555  $(SUDO_IPK_DIR)/opt/bin/visudo
+	install -d $(SUDO_IPK_DIR)/opt/etc
+	install -m 600 $(SUDO_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
+	install -d $(SUDO_IPK_DIR)/opt/doc/sudo
+	install -m 644 $(SUDO_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/doc/sudo/sample.sudoers
+	install -d $(SUDO_IPK_DIR)/CONTROL
 	install -m 644 $(SUDO_SOURCE_DIR)/control $(SUDO_IPK_DIR)/CONTROL/control
 	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
-	install -m 600 $(SUDO_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
-	install -m 600 $(SUDO_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/etc/sample.sudoers
 	cd $(BUILD_DIR) && $(IPKG_BUILD) $(SUDO_IPK_DIR)
 
 
