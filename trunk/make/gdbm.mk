@@ -46,7 +46,7 @@ gdbm-headers: $(STAGING_DIR)/lib/libgdbm.a
 
 gdbm: $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION)
 
-$(GDBM_IPK): gdbm
+$(GDBM_IPK): $(STAGING_DIR)/lib/libgdbm.so.$(GDBM_LIBVERSION)
 	mkdir -p $(GDBM_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/gdbm.control $(GDBM_IPK_DIR)/CONTROL/control
 	mkdir -p $(GDBM_IPK_DIR)/opt/include
