@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Startup script for cups as standalone server
+#
+
+# Make sure the device has a /dev entry
+# Make device if not present (not devfs)
+if ( [ ! -c /dev/lp0 ] ) then
+  # Make /dev/net directory if needed
+  mknod /dev/lp0 c 180 0
+fi
+
+# Make sure the printer driver is running
+if ( !(grep "^printer" `lsmod` -q) ); then
+        insmod /opt/lib/modules/printer.o
+fi
+
+if [ -n "`pidof cupsd`" ]; then
+    /bin/killall cupsd 2>/dev/null
+fi
+
+/opt/sbin/cupsd
+
+
