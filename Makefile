@@ -79,10 +79,11 @@ NATIVE_PACKAGES = \
 # postfix's makefile runs executables it has built.
 # perl-modules are dependent of perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	cyrus-imapd \
-	postfix \
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius
+# cyrus-imapd fails when compiling the perl stuff
+# postfix fails when packaging
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump dump gkrellm clamav freeradius	postfix cyrus-imapd
+
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
