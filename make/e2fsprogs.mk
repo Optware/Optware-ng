@@ -92,3 +92,6 @@ e2fsprogs-distclean:
 	-rm $(E2FSPROGS_DIR)/.configured
 	-$(MAKE) -C $(E2FSPROGS_DIR) distclean
 
+e2fsprogs-dirclean:
+	rm -rf $(E2FSPROGS_DIR) $(E2FSPROGS_IPK_DIR) $(E2FSPROGS_IPK)
+

@@ -90,3 +90,5 @@ glib-distclean:
 	-rm $(GLIB_DIR)/.configured
 	-$(MAKE) -C $(GLIB_DIR) distclean
 
+glib-dirclean:
+	rm -rf $(GLIB_DIR) $(GLIB_IPK_DIR) $(GLIB_IPK)
