@@ -55,7 +55,7 @@ CROSS_ONLY_PACKAGES = \
 	stunnel svn \
 	unfs3 \
 	\
-	glib
+	glib xinetd proftpd
 
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
