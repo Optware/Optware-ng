@@ -18,7 +18,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-TARGETS:= slingbox
+TARGETS:= slugtool slingbox
 
 PACKAGES:= dropbear busybox
 
@@ -35,6 +35,7 @@ HOSTCC:=gcc
 BASE_DIR=$(shell pwd)
 SOURCE_DIR=$(BASE_DIR)/sources
 DL_DIR=$(BASE_DIR)/downloads
+FIRMWARE_DIR=$(BASE_DIR)/firmware
 BUILD_DIR=$(BASE_DIR)/builds
 TARGET_DIR=$(BUILD_DIR)/armeb
 PACKAGE_DIR=$(BASE_DIR)/packages
@@ -67,9 +68,11 @@ TARGET_CONFIGURE_OPTS= \
 		GCC="$(TARGET_CROSS)gcc -mbig-endian" \
 		CXX="$(TARGET_CROSS)g++ -mbig-endian" \
 		RANLIB=$(TARGET_CROSS)ranlib
-DISABLE_NLS:=--disable-nls
 
 all: world
+
+unslung: $(TARGETS)
+	cd firmware ; $(MAKE) clean unslung
 
 TARGETS_CLEAN:=$(patsubst %,%-clean,$(TARGETS))
 TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
@@ -78,11 +81,11 @@ TARGETS_INSTALL:=$(patsubst %,%-install,$(TARGETS))
 
 PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
 
-world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(TARGETS_INSTALL) \
-	$(PACKAGE_DIR) $(PACKAGES_UPKG)
+world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) \
+	$(TARGETS_INSTALL) $(PACKAGES_UPKG)
 	@echo "ALL DONE."
 
-.PHONY: all world clean dirclean distclean source $(TARGETS) \
+.PHONY: all world clean dirclean distclean source slugtool unslung $(TARGETS) \
 	$(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) \
 	$(PACKAGES_UPKG)
 
