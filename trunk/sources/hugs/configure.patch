@@ -1,0 +1,11 @@
+--- hugs/src/Makefile.in-orig	2005-03-04 15:18:07.000000000 -0800
++++ hugs/src/Makefile.in	2005-03-29 20:18:54.000000000 -0800
+@@ -90,7 +90,7 @@
+ 
+ hugs$(EXEEXT)	: $(IOBJECTS) $(WOBJECTS) $(RC_FILES)
+ 		  $(CC) $(LDFLAGS) $(IOBJECTS) $(WOBJECTS) $(LIBS) -o hugs$(EXEEXT) 
+-		  $(STRIP)
++		  $(STRIP) $@
+ 
+ version.$(OBJEXT) : version.c $(SOURCES)
+ 		  @$(CC) \
