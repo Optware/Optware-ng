@@ -66,12 +66,14 @@ CROSS_ONLY_PACKAGES = \
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # perl's Configure is not cross-compile "friendly"
+# squid probably will build cross - may just need some configure work
 NATIVE_ONLY_PACKAGES = \
 	autoconf \
 	bison \
 	emacs \
 	xemacs \
-	perl
+	perl \
+	squid
 
 PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
