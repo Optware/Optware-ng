@@ -37,12 +37,12 @@ PYTHON_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON_SECTION=misc
 PYTHON_PRIORITY=optional
-PYTHON_DEPENDS=
+PYTHON_DEPENDS=readline, ncurses, openssl
 
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=1
+PYTHON_IPK_VERSION=2
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -106,6 +106,7 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
+	make readline-stage ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
 	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cd $(BUILD_DIR)/$(PYTHON_DIR); \
@@ -113,6 +114,10 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 	    autoconf configure.in > configure
 	mkdir $(PYTHON_BUILD_DIR)
 	(cd $(PYTHON_BUILD_DIR); \
+	(echo "[build_ext]"; \
+	echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/ncurses"; \
+	echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	echo "rpath=/opt/lib") > setup.cfg; \
 		PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON_LDFLAGS)" \
@@ -185,6 +190,7 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(PYTHON_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/bin/python$(PYTHON_VERSION_MAJOR)
+	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/lib/python$(PYTHON_VERSION_MAJOR)/lib-dynload/*.so
 	rm $(PYTHON_IPK_DIR)/opt/bin/python
 	cd $(PYTHON_IPK_DIR)/opt/bin; ln -s python$(PYTHON_VERSION_MAJOR) python
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
