@@ -5,6 +5,7 @@
 #############################################################
 
 BUSYBOX_DIR:=$(BUILD_DIR)/busybox
+BUSYBOX_SOURCE_DIR:=$(SOURCE_DIR)/busybox
 
 ifneq ($(strip $(USE_BUSYBOX_SNAPSHOT)),)
 # Be aware that this changes daily....
@@ -19,7 +20,7 @@ endif
 BUSYBOX_SOURCE:=$(BUSYBOX).tar.bz2
 BUSYBOX_UNZIP:=bzcat
 
-BUSYBOX_CONFIG:=$(SOURCE_DIR)/busybox.config
+BUSYBOX_CONFIG:=$(BUSYBOX_SOURCE_DIR)/defconfig
 
 BUSYBOX_IPK:=$(BUILD_DIR)/busybox_$(BUSYBOX_VERSION)-1_armeb.ipk
 BUSYBOX_IPK_DIR:=$(BUILD_DIR)/busybox-$(BUSYBOX_VERSION)-ipk
@@ -54,7 +55,7 @@ $(BUSYBOX_IPK): $(BUSYBOX_DIR)/busybox
 	install -d $(BUSYBOX_IPK_DIR)/CONTROL $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(BUSYBOX_IPK_DIR)/opt" \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS)" -C $(BUSYBOX_DIR) install
-	install -m 644 $(SOURCE_DIR)/busybox.control $(BUSYBOX_IPK_DIR)/CONTROL/control
+	install -m 644 $(BUSYBOX_SOURCE_DIR)/control $(BUSYBOX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)
 
 busybox-ipk: $(BUSYBOX_IPK)
