@@ -1,5 +1,7 @@
 #!/bin/sh
-echo "To activate metalog, copy /opt/doc/metalog/S01metalog to /opt/etc/init.d"
-echo "To start metalog afterwards, reboot or run /opt/etc/init.d/S01metalog"
+echo "To activate metalog:"
+echo " - Uncomment the first line of /etc/inittab to disable syslog"
+echo " - Copy /opt/doc/metalog/rc to /unslung (if /unslung/rc exists, merge them)"
+echo "To start metalog afterwards, reboot."
 
 return 0
