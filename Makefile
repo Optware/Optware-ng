@@ -23,7 +23,7 @@
 NATIVE_AND_CROSS_PACKAGES = \
 	adns atftp automake \
 	bash bind bzip2 \
-	ccxstream coreutils cpio cvs \
+	ccxstream coreutils cpio cups cvs \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
@@ -63,9 +63,7 @@ CROSS_ONLY_PACKAGES = \
 	metalog
 
 # Add new cross-only packages here, and state why they don't compile native.
-# cups may compile native - don't have working native build support (bob_tm)
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
-	cups 
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
