@@ -1,0 +1,37 @@
+#!/bin/sh
+
+mail_owner=mail
+mail_group=mail
+setgid_group=maildrop
+setgid_group_id=69
+group_file=/etc/group
+
+/bin/echo -n "creating new user(s) and group(s) ... "
+if [ -z "`/bin/grep \"\(^$setgid_group\b\|:$setgid_group_id\):\" $group_file`" ] ; then
+    /bin/cp $group_file $group_file.postfix-save
+    /bin/echo -e "\n\t -> backup $group_file.postfix-save ceated"
+    /bin/sed -i "s/\(nobody\)/$setgid_group:x:$setgid_group_id:\n\1/g" $group_file
+    /bin/echo -e "\t -> new group $setgid_group created"
+    /bin/echo -e "\t -> `/bin/grep \"\(^$setgid_group\b\|:$setgid_group_id\):\" $group_file`"
+else
+    /bin/echo "failed"
+fi
+        
+/bin/echo -n "changing permissions of /opt/var/spool/postfix/* ... "
+/bin/chown -R $mail_owner.$mail_group /opt/var/spool/postfix/*
+/bin/chown -R $mail_owner.$setgid_group /opt/var/spool/postfix/public
+/bin/chown -R $mail_owner.$setgid_group /opt/var/spool/postfix/maildrop
+/bin/echo "ok"
+
+/bin/echo -n "changing permissions of /opt/sbin/post* ... "
+/bin/chown root.$setgid_group /opt/sbin/postqueue
+/bin/chown root.$setgid_group /opt/sbin/postdrop
+/bin/chmod 02755 /opt/sbin/postqueue
+/bin/chmod 02755 /opt/sbin/postdrop
+/bin/echo "ok"
+
+/bin/echo
+/bin/echo Please configure Postfix in /opt/etc/postfix/
+/bin/echo and start /opt/etc/init.d/S69postfix
+/bin/echo
+
