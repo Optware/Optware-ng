@@ -21,7 +21,7 @@
 #
 
 NATIVE_AND_CROSS_PACKAGES = \
-	adns atftp autoconf \
+	adns atftp \
 	bash bzip2 \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
@@ -37,7 +37,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
-	screen strace stunnel sudo \
+	screen sed strace stunnel sudo \
 	tar tcpwrappers termcap \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
@@ -65,10 +65,12 @@ CROSS_ONLY_PACKAGES = \
 	bzflag \
 	nmap
 
+# autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # perl's Configure is not cross-compile "friendly"
 NATIVE_ONLY_PACKAGES = \
+	autoconf \
 	bison \
 	emacs \
 	xemacs \
