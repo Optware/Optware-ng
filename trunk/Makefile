@@ -52,15 +52,16 @@ NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING =
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
 # bzflag actually builds native, but it takes 11 hours
+# classpath requires a java compiler
 CROSS_ONLY_PACKAGES = \
 	appweb \
 	busybox \
-	bzflag
+	bzflag \
+	classpath
 
 # Add new cross-only packages here, and state why they don't compile native.
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
-	classpath \
-	libiconv \
+	libiconv
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
