@@ -33,6 +33,7 @@ fi
 /bin/chown -R mail:root /opt/var/lib/imap/ptclient
 /bin/chown -R mail:root /opt/var/lib/imap/socket
 /bin/chown -R mail:root /opt/var/lib/imap/ssl
+/bin/chown -R mail:mail /opt/var/lib/imap/quota
 /bin/chown -R mail:mail /opt/var/lib/imap/sieve
 /bin/chown -R mail:mail /opt/var/lib/imap/user
 /bin/chown mail:mail /opt/var/spool/imap/mail
