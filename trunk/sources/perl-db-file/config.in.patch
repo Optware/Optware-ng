@@ -1,0 +1,25 @@
+--- ./config.in~	2005-02-20 20:17:45.000000000 +0100
++++ ./config.in	2005-02-20 20:18:40.000000000 +0100
+@@ -9,18 +9,20 @@
+ #    Change the path below to point to the directory where db.h is
+ #    installed on your system.
+ 
+-INCLUDE	= /usr/local/BerkeleyDB/include
++#INCLUDE	= /usr/local/BerkeleyDB/include
+ #INCLUDE	= /usr/local/include
+ #INCLUDE	= /usr/include
++INCLUDE	= /opt/include
+ 
+ # 2. Where is libdb?
+ #
+ #    Change the path below to point to the directory where libdb is
+ #    installed on your system.
+ 
+-LIB	= /usr/local/BerkeleyDB/lib
++#LIB	= /usr/local/BerkeleyDB/lib
+ #LIB	= /usr/local/lib
+ #LIB	= /usr/lib
++LIB	= /opt/lib
+ 
+ # 3. What version of Berkely DB have you got?
+ #
