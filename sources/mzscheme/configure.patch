@@ -1,0 +1,40 @@
+--- plt209-orig/src/mzscheme/Makefile.in	2004-12-19 00:38:25.000000000 -0800
++++ mzscheme/src/mzscheme/Makefile.in	2005-03-30 15:10:20.000000000 -0800
+@@ -248,7 +248,7 @@
+ # have to go up and install things from there.
+ 
+ normal-install:
+-	cd ..; if [ ! -d $(prefix)/bin ] ; then mkdir $(prefix)/bin ; fi
++	cd ..; if [ ! -d $(prefix)/bin ] ; then mkdir -p $(prefix)/bin ; fi
+ 	cd ..; rm -f $(prefix)/bin/mzscheme
+ 	cd ..; if [ ! -d $(LIBIDIR) ] ; then mkdir $(LIBIDIR) ; fi
+ 	cd ..; cp mzscheme/mzdyn.o $(LIBIDIR)/mzdyn.o
+--- plt209-orig/src/Makefile.in	2004-12-19 00:38:25.000000000 -0800
++++ mzscheme/src/Makefile.in	2005-03-30 16:35:07.000000000 -0800
+@@ -79,17 +79,18 @@
+ prefix = @prefix@
+ 
+ copy-finish:
+-	cd $(prefix); ./install
++	# cd $(prefix); ./install
+ 
+ inplace-finish:
+ 	if [ ! -d $(srcdir)/CVS ] ; then cd $(prefix); ./install ; fi
+ 	if [ -d $(srcdir)/CVS ] ; then cat $(srcdir)/mzscheme/imsg.txt ; fi
+ 
+ copytree:
+-	if [ ! -d $(prefix) ] ; then mkdir $(prefix) ; fi
+-	cp -p -r $(srcdir)/../collects $(prefix)/.
+-	cp -p -r $(srcdir)/../include $(prefix)/.
+-	cp -p -r $(srcdir)/../notes $(prefix)/.
+-	cp -p -r $(srcdir)/../man $(prefix)/.
+-	if [ -d $(srcdir)/../teachpack ] ; then  cp -r $(srcdir)/../teachpack $(prefix)/teachpack ; fi
+-	cp -p $(srcdir)/../install $(prefix)/install
++	for p in include lib man mzscheme/collects mzscheme/notes; \
++	    do install -d $(prefix)/$$p; done
++	cp -p -r $(srcdir)/../collects $(prefix)/mzscheme/
++	cp -p -r $(srcdir)/../include $(prefix)/
++	cp -p -r $(srcdir)/../notes $(prefix)/mzscheme/
++	cp -p -r $(srcdir)/../man $(prefix)/
++	if [ -d $(srcdir)/../teachpack ] ; then  cp -r $(srcdir)/../teachpack $(prefix)/mzscheme/teachpack ; fi
++	cp -p $(srcdir)/../install $(prefix)/mzscheme/
