@@ -51,6 +51,8 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/.configured
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install
 
+ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
+
 ncurses-headers: $(STAGING_DIR)/opt/lib/libncurses.a
 
 ncurses: zlib $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
@@ -101,12 +103,12 @@ $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 ncurses-ipk: $(NCURSES_IPK)
 
 ncurses-clean:
-	-$(MAKE) -C $(NCURSES_DIR) uninstall
-	-$(MAKE) -C $(NCURSES_DIR) clean
+	-$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) uninstall
+	-$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) clean
 
 ncurses-dirclean: ncurses-clean
 	rm -rf $(NCURSES_DIR) $(NCURSES_IPK_DIR) $(NCURSES_IPK)
 
 ncurses-distclean:
 	-rm $(NCURSES_DIR)/.configured
-	-$(MAKE) -C $(NCURSES_DIR) distclean
+	-$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) distclean
