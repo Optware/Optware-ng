@@ -87,6 +87,11 @@ $(NCURSES_IPK): $(STAGING_DIR)/lib/ncurses.so.$(NCURSES_SHLIBVERSION)
 	touch -c $(NCURSES_IPK_DIR)/opt/lib/menu.so.$(NCURSES_SHLIBVERSION)
 	touch -c $(NCURSES_IPK_DIR)/opt/lib/ncurses.so.$(NCURSES_SHLIBVERSION)
 	touch -c $(NCURSES_IPK_DIR)/opt/lib/panel.so.$(NCURSES_SHLIBVERSION)
+	mkdir -p $(NCURSES_IPK_DIR)/opt/share
+	mkdir -p $(NCURSES_IPK_DIR)/opt/share/tabset
+	mkdir -p $(NCURSES_IPK_DIR)/opt/share/terminfo
+	cp -dpf $(STAGING_DIR)/share/tabset/* $(NCURSES_IPK_DIR)/opt/share/tabset
+	cp -dpfr $(STAGING_DIR)/share/terminfo/* $(NCURSES_IPK_DIR)/opt/share/terminfo
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
 ncurses-ipk: $(NCURSES_IPK)
