@@ -94,6 +94,7 @@ $(LIBBT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBBT_SOURCE) $(LIBBT_PATCHES)
 		CFLAGS="$(STAGING_CFLAGS) $(LIBBT_CFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBBT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBBT_LDFLAGS)" \
+		LIBS="-lssl -lm -lcrypto" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
