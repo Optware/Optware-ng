@@ -6,6 +6,19 @@
 #
 # Released under GPL
 #
+#
+#   WARNING  WARNING  WARNING  WARNING  WARNING
+#
+#   This version of libusb suffers from some serious
+#   portability issues and does not work. It may appear
+#   to work, but there are issues with structure alignment
+#   and byte ordering. These issues require a non-trivial
+#   amount of effort to fix correctly. Contributions are
+#   welcome.
+#
+#   WARNING  WARNING  WARNING  WARNING  WARNING
+#
+#
 ###########################################################
 
 LIBUSB_SITE=http://optusnet.dl.sourceforge.net/sourceforge/libusb/
