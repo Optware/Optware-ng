@@ -45,9 +45,11 @@ bzip2: $(BZIP2_IPK_DIR)
 
 $(BZIP2_IPK): $(BZIP2_IPK_DIR)
 	mkdir -p $(BZIP2_IPK_DIR)/CONTROL
+	install -d $(BZIP2_IPK_DIR)/opt/bin $(BZIP2_IPK_DIR)/opt/lib
 	cp $(SOURCE_DIR)/bzip2.control $(BZIP2_IPK_DIR)/CONTROL/control
-	$(STRIP) $(BZIP2_DIR)/bzip2
-	$(STRIP) $(BZIP2_DIR)/bzip2recover
+	$(STRIP) $(BZIP2_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2
+	$(STRIP) $(BZIP2_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover
+	cp $(BZIP2_DIR)/libbz2.a $(BZIP2_IPK_DIR)/opt/lib
 	rm -rf $(STAGING_DIR)/CONTROL
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BZIP2_IPK_DIR)
 
