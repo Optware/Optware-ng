@@ -130,7 +130,6 @@ $(GIFT_BUILD_DIR)/.staged: $(GIFT_BUILD_DIR)/.built
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_DIR)/opt/lib/libgift.la $(STAGING_DIR)/opt/lib/libgiftproto.la
 	rm -f $(STAGING_DIR)/opt/bin/giftd $(STAGING_DIR)/opt/bin/gift-setup
-	rm -rf $(STAGING_DIR)/opt/share $(STAGING_DIR)/opt/man
 	touch $(GIFT_BUILD_DIR)/.staged
 
 gift-stage: $(GIFT_BUILD_DIR)/.staged
