@@ -38,8 +38,9 @@ $(CVS_DIR)/.configured: $(CVS_DIR)/.source
 	touch $(CVS_DIR)/.configured
 
 $(CVS_DIR)/src/cvs: $(CVS_DIR)/.configured
-	$(MAKE) -C $(CVS_DIR)
-
+	$(MAKE) -C $(CVS_DIR) \
+	CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
+	
 cvs: $(CVS_DIR)/src/cvs
 
 $(CVS_IPK): $(CVS_DIR)/src/cvs
