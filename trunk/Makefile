@@ -20,6 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
+# Options are "nslu2", and "wl500g"
+TARGET=nslu2
+
 CROSS_PACKAGES = \
 	adns atftp appweb apache apr apr-util atk automake \
 	bash bind bitchx busybox bzflag bzip2 \
@@ -96,14 +99,43 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
 PACKAGES_DEPRECATED = libiconv
 
+WL500G_PACKAGES = \
+	atftp \
+	cpio cron \
+	diffutils \
+	e2fsprogs \
+	fetchmail file findutils flex \
+	gdb gdbm gzip \
+	hdparm \
+	less libol logrotate \
+	miau muxsshssl \
+	ncurses ntpclient \
+	openssl \
+	popt procps puppy \
+	rdate rsync \
+	strace stunnel syslog-ng \
+	tar tcpdump termcap \
+	wakelan wget-ssl which \
+	xinetd zlib
+
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
 	)
 
+ifeq ($(TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 PACKAGES = $(NATIVE_PACKAGES)
 else
 PACKAGES = $(CROSS_PACKAGES)
+endif
+TARGET_ARCH=armeb
+TARGET_OS=linux
+endif
+
+ifeq ($(TARGET),wl500g)
+PACKAGES = $(WL500G_PACKAGES)
+TARGET_ARCH=mipsel
+TARGET_OS=linux-uclibc
 endif
 
 all: directories toolchain packages
@@ -131,14 +163,10 @@ TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 PACKAGE_DIR=$(BASE_DIR)/packages
 export TMPDIR=$(BASE_DIR)/tmp
 
-# Options are "armeb", and "mipsel"
-TARGET_ARCH=armeb
-# Options are "linux" (glibc) and "linux-uclibc"
-TARGET_OS=linux
-
 TARGET_OPTIMIZATION= #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
+ifeq ($(TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 HOSTCC = $(TARGET_CC)
 GNU_HOST_NAME = armv5b-softfloat-linux
@@ -161,6 +189,20 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: crosstool
+endif
+endif
+
+ifeq ($(TARGET),wl500g)
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME = mipsel-linux
+CROSS_CONFIGURATION = hndtools-mipsel-uclibc
+TARGET_CROSS = /opt/brcm/$(CROSS_CONFIGURATION)/bin/mipsel-uclibc-
+TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/mipsel-uclibc/lib
+TARGET_LDFLAGS = 
+TARGET_CUSTOM_FLAGS= -pipe 
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain:
 endif
 
 TARGET_CXX=$(TARGET_CROSS)g++
