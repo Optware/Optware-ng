@@ -1,0 +1,11 @@
+--- uri/Makefile.in~	2004-11-24 15:45:40.000000000 -0800
++++ uri/Makefile.in	2005-02-19 21:45:34.851477491 -0800
+@@ -10,7 +10,7 @@
+ 
+ gen_uri_delims_OBJECTS = gen_uri_delims.lo
+ gen_uri_delims: $(gen_uri_delims_OBJECTS)
+-	$(LINK) $(EXTRA_LDFLAGS) $(gen_uri_delims_OBJECTS) $(EXTRA_LIBS)
++	$(HOSTCC) gen_uri_delims.c -o gen_uri_delims
+ 
+ apr_uri.lo: uri_delims.h apr_uri.c
+ 
