@@ -107,14 +107,13 @@ libbt-unpack: $(LIBBT_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBBT_BUILD_DIR)/libbt: $(LIBBT_BUILD_DIR)/.configured
-	
-	$(MAKE) -C $(LIBBT_BUILD_DIR) PATH=$(STAGING_DIR)/bin:$(PATH) 
+	$(MAKE) -C $(LIBBT_BUILD_DIR) compile PATH=$(STAGING_DIR)/bin:$(PATH) 
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libbt: $(LIBBT_BUILD_DIR)/libbt
+libbt: $(LIBBT_BUILD_DIR)/src/libbt.a
 
 #
 # This builds the IPK file.
@@ -128,7 +127,7 @@ libbt: $(LIBBT_BUILD_DIR)/libbt
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBBT_IPK): $(LIBBT_BUILD_DIR)/libbt
+$(LIBBT_IPK): $(LIBBT_BUILD_DIR)/src/libbt.a
 	mkdir -p $(LIBBT_IPK_DIR)/CONTROL
 	cp $(SOURCE_DIR)/libbt/control $(LIBBT_IPK_DIR)/CONTROL/control
 	install -d $(LIBBT_IPK_DIR)/opt/bin
