@@ -33,7 +33,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libnsl libpng libstdc++ libtiff libtool libxml2 lsof \
 	m4 make man man-pages mc mdadm miau mtr \
-	nail nano ncurses nload nmap ntp ntpclient \
+	nail nano ncftp ncurses nload nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
@@ -60,11 +60,10 @@ CROSS_ONLY_PACKAGES = \
 	classpath
 
 # Add new cross-only packages here, and state why they don't compile native.
-# Metalog/ncftp: May compile native - don't have working native build support (bob_tm)
+# Metalog: May compile native - don't have working native build support (bob_tm)
 CROSS_ONLY_PACKAGES_READY_FOR_TESTING = \
 	libiconv \
 	metalog \
-	ncftp 
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
