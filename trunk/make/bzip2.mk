@@ -38,13 +38,13 @@ $(BZIP2_BUILD_DIR)/bzip2: $(BZIP2_BUILD_DIR)/.configured
 
 bzip2: $(BZIP2_BUILD_DIR)/bzip2
 
-$(STAGING_DIR)/lib/libbz2.a: $(BZIP2_BUILD_DIR)/bzip2
+$(STAGING_DIR)/opt/lib/libbz2.a: $(BZIP2_BUILD_DIR)/bzip2
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(STAGING_DIR)/opt/lib
 
-bzip2-stage: $(STAGING_DIR)/lib/libbz2.a
+bzip2-stage: $(STAGING_DIR)/opt/lib/libbz2.a
 
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	install -d $(BZIP2_IPK_DIR)/opt/bin
