@@ -28,7 +28,7 @@ FETCHMAIL_UNZIP=zcat
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=2
+FETCHMAIL_IPK_VERSION=3
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
@@ -154,6 +154,7 @@ fetchmail-stage: $(FETCHMAIL_BUILD_DIR)/.staged
 $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
 	rm -rf $(FETCHMAIL_IPK_DIR) $(BUILD_DIR)/fetchmail_*_armeb.ipk
 	$(MAKE) -C $(FETCHMAIL_BUILD_DIR) DESTDIR=$(FETCHMAIL_IPK_DIR) install
+	find $(FETCHMAIL_IPK_DIR) -type d -exec chmod go+rx {} \;
 	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/
 	install -m 600 $(FETCHMAIL_SOURCE_DIR)/fetchmailrc $(FETCHMAIL_IPK_DIR)/opt/etc/fetchmailrc
 	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/init.d
