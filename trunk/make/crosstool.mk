@@ -115,31 +115,6 @@ $(CROSSTOOL_BUILD_DIR)/.built: $(CROSSTOOL_BUILD_DIR)/.configured
 crosstool: $(CROSSTOOL_BUILD_DIR)/.built
 
 #
-# This builds the IPK file.
-#
-# Binaries should be installed into $(CROSSTOOL_IPK_DIR)/opt/sbin or $(CROSSTOOL_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CROSSTOOL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CROSSTOOL_IPK_DIR)/opt/etc/crosstool/...
-# Documentation files should be installed in $(CROSSTOOL_IPK_DIR)/opt/doc/crosstool/...
-# Daemon startup scripts should be installed in $(CROSSTOOL_IPK_DIR)/opt/etc/init.d/S??crosstool
-#
-# You may need to patch your application to make it use these locations.
-#
-$(CROSSTOOL_IPK): $(CROSSTOOL_BUILD_DIR)/.built
-	rm -rf $(CROSSTOOL_IPK_DIR) $(CROSSTOOL_IPK)
-	install -d $(CROSSTOOL_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(CROSSTOOL_BUILD_DIR)/crosstool -o $(CROSSTOOL_IPK_DIR)/opt/bin/crosstool
-	install -d $(CROSSTOOL_IPK_DIR)/CONTROL
-	install -m 644 $(CROSSTOOL_SOURCE_DIR)/control $(CROSSTOOL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(CROSSTOOL_IPK_DIR)
-
-#
-# This is called from the top level makefile to create the IPK file.
-#
-crosstool-ipk: $(CROSSTOOL_IPK)
-
-#
 # This is called from the top level makefile to clean all of the built files.
 #
 crosstool-clean:
