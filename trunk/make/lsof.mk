@@ -32,6 +32,11 @@ $(LSOF)-configure: $(LSOF)-unpack $(SOURCE_DIR)/$(LSOF)-patch
 	rm -rf $(BUILD_DIR)/lsof
 	mv $(BUILD_DIR)/$(LSOF) $(BUILD_DIR)/lsof
 	
+lsof-upkg: lsof
+	install -d $(TARGET_DIR)/lsof/sbin
+	strip $(BUILD_DIR)/lsof/lsof -o $(TARGET_DIR)/lsof/sbin
+	tar cvf $(PACKAGE_DIR)/$(LSOF).upkg --group root -C $(TARGET_DIR) lsof
+
 lsof-clean:
 	-make -C $(BUILD_DIR)/lsof clean
 
@@ -41,5 +46,3 @@ clean: lsof-clean
 
 lsof: directories $(LSOF)-configure
 	make -C $(BUILD_DIR)/lsof
-	echo "strip=$(STRIP)"
-	strip  $(BUILD_DIR)/lsof/lsof
