@@ -34,7 +34,7 @@ ELINKS_IPK_VERSION=1
 # ELINKS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ELINKS_PATCHES=
+ELINKS_PATCHES=$(ELINKS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -90,7 +90,7 @@ $(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
 	$(MAKE) zlib-stage bzip2-stage expat-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
 	$(ELINKS_UNZIP) $(DL_DIR)/$(ELINKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ELINKS_PATCHES) | patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1
+	cat $(ELINKS_PATCHES) | patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1
 	mv $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
 	(cd $(ELINKS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -103,6 +103,7 @@ $(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--enable-256-colors \
+		--without-x \
 	)
 	touch $(ELINKS_BUILD_DIR)/.configured
 
@@ -113,7 +114,7 @@ elinks-unpack: $(ELINKS_BUILD_DIR)/.configured
 #
 $(ELINKS_BUILD_DIR)/.built: $(ELINKS_BUILD_DIR)/.configured
 	rm -f $(ELINKS_BUILD_DIR)/.built
-	$(MAKE) -C $(ELINKS_BUILD_DIR)
+	$(MAKE) -C $(ELINKS_BUILD_DIR) C_INCLUDE_PATH=$(STAGING_INCLUDE_DIR)
 	touch $(ELINKS_BUILD_DIR)/.built
 
 #
