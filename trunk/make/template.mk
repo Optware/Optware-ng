@@ -153,7 +153,7 @@ $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
 $(<FOO>_IPK_DIR)/CONTROL/control:
 	@install -d $(<FOO>_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: foo" >>$@
+	@echo "Package: <foo>" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(<FOO>_PRIORITY)" >>$@
 	@echo "Section: $(<FOO>_SECTION)" >>$@
