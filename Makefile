@@ -33,7 +33,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
 	m4 make mc mdadm miau mtr \
-	nail nano ncurses ntp ntpclient \
+	nail nano ncurses nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
@@ -45,7 +45,7 @@ NATIVE_AND_CROSS_PACKAGES = \
 	xinetd \
 	zlib \
 
-CROSS_ONLY_PACKAGES = \
+CROSS_PACKAGES = \
 	appweb automake \
 	bind busybox \
 	dhcp \
@@ -59,6 +59,10 @@ CROSS_ONLY_PACKAGES = \
 	rdate \
 	svn
 
+# bzflag native compile requires too much memory.
+CROSS_ONLY_PACKAGES = \
+	bzflag
+
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # perl's Configure is not cross-compile "friendly"
@@ -69,7 +73,7 @@ NATIVE_ONLY_PACKAGES = \
 	perl
 
 PACKAGES = \
-	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
+	$(NATIVE_AND_CROSS_PACKAGES) $(CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES)
 
 NATIVE_PACKAGES = \
 	$(NATIVE_AND_CROSS_PACKAGES) $(NATIVE_ONLY_PACKAGES)
@@ -79,7 +83,7 @@ PACKAGES_TO_BE_TESTED =
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 	   e2fsprogs dump gkrellm
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump nload nmap bzflag
+PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump nload
 
 PACKAGES_FOR_DEVELOPERS = crosstool-native
 
