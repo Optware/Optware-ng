@@ -54,7 +54,7 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 
-CROSS_PACKAGES_READY_FOR_TESTING = bitchx ctags \
+CROSS_PACKAGES_READY_FOR_TESTING = bitchx ctags snownews \
 
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
