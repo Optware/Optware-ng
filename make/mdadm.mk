@@ -100,7 +100,7 @@ mdadm-unpack: $(MDADM_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(MDADM_BUILD_DIR)/mdadm: $(MDADM_BUILD_DIR)/.configured
-	$(MAKE) -C $(MDADM_BUILD_DIR) CC=armv5b-softfloat-linux-gcc DESTDIR="$(MDADM_BUILD_DIR)/opt/"
+	$(MAKE) -C $(MDADM_BUILD_DIR) CC=$(TARGET_CC) DESTDIR="$(MDADM_BUILD_DIR)/opt/"
 
 #
 # You should change the dependency to refer directly to the main binary
