@@ -14,8 +14,8 @@ PROCPS_UNZIP=zcat
 PROCPS_IPK=$(BUILD_DIR)/procps_$(PROCPS_VERSION)-1_armeb.ipk
 PROCPS_IPK_DIR=$(BUILD_DIR)/procps-$(PROCPS_VERSION)-ipk
 
-MY_STAGING_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/include/ncurses"
-MY_STAGING_LDFLAGS="$(STAGING_LDFLAGS) -L$(STAGING_DIR)/lib"
+MY_STAGING_CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_DIR)/opt/include/ncurses"
+MY_STAGING_LDFLAGS="$(STAGING_LDFLAGS)"
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -48,6 +48,7 @@ $(PROCPS_DIR)/.source: $(DL_DIR)/$(PROCPS_SOURCE_ARCHIVE)
 # to Make causes it to override the default search paths of the compiler.
 #
 $(PROCPS_DIR)/.configured: $(PROCPS_DIR)/.source
+	$(MAKE) ncurses-stage
 	(cd $(PROCPS_DIR); \
 	export CC=$(TARGET_CC); \
 	export LDFLAGS=$(STAGING_LDFLAGS); \
