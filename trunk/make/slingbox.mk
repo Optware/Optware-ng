@@ -5,6 +5,7 @@
 #############################################################
 
 SLINGBOX_DIR:=$(BUILD_DIR)/slingbox
+SLINGBOX_SOURCE_DIR:=$(SOURCE_DIR)/slingbox
 
 ifneq ($(strip $(USE_SLINGBOX_SNAPSHOT)),)
 # Be aware that this changes daily....
@@ -12,13 +13,13 @@ SLINGBOX_VERSION:=$(strip $(USE_SLINGBOX_SNAPSHOT))
 SLINGBOX:=busybox-$(SLINGBOX_VERSION)
 SLINGBOX_SITE:=http://www.busybox.net/downloads/snapshots
 else
-SLINGBOX_VERSION:=1.00-rc3
+SLINGBOX_VERSION:=1.00
 SLINGBOX:=busybox-$(SLINGBOX_VERSION)
 SLINGBOX_SITE:=http://www.busybox.net/downloads
 endif
 SLINGBOX_SOURCE:=$(SLINGBOX).tar.bz2
 SLINGBOX_UNZIP=bzcat
-SLINGBOX_CONFIG:=$(SOURCE_DIR)/slingbox.config
+SLINGBOX_CONFIG:=$(SLINGBOX_SOURCE_DIR)/defconfig
 
 # Handled by busybox.mk
 # $(DL_DIR)/$(SLINGBOX_SOURCE):
@@ -29,7 +30,7 @@ slingbox-source: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 $(SLINGBOX_DIR)/.configured: $(DL_DIR)/$(SLINGBOX_SOURCE) $(SLINGBOX_CONFIG)
 	@rm -rf $(BUILD_DIR)/$(SLINGBOX) $(BUILD_DIR)/slingbox
 	$(SLINGBOX_UNZIP) $(DL_DIR)/$(SLINGBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	patch -d $(BUILD_DIR)/$(SLINGBOX) -p1 < $(SOURCE_DIR)/slingbox.patch
+	patch -d $(BUILD_DIR)/$(SLINGBOX) -p1 < $(SLINGBOX_SOURCE_DIR)/slingbox.patch
 	mv $(BUILD_DIR)/$(SLINGBOX) $(BUILD_DIR)/slingbox
 	cp $(SLINGBOX_CONFIG) $(SLINGBOX_DIR)/.config
 #ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
