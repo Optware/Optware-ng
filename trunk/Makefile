@@ -71,7 +71,7 @@ NATIVE_ONLY_PACKAGES = \
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 	clamav \
 	wakelan
-	
+
 UNSORTED_PACKAGES = \
 	freeradius \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft glib \
@@ -83,7 +83,7 @@ UNSORTED_PACKAGES = \
 	rdate \
 	svn \
 	which 
-	
+
 DEVELOPER_PACKAGES = crosstool-native
 
 PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump e2fsprogs dump gkrellm
@@ -103,6 +103,14 @@ PACKAGES = $(CROSS_PACKAGES)
 endif
 
 all: directories toolchain packages
+
+ifeq ($(HOST_MACHINE),armv5b)
+testing:
+	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(NATIVE_ONLY_PACKAGES_READY_FOR_TESTING)" all
+else
+testing:
+	$(MAKE) PACKAGES="$(NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING) $(CROSS_ONLY_PACKAGES_READY_FOR_TESTING)" all
+endif
 
 native-upload:
 	mkdir -p native
