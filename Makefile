@@ -131,8 +131,8 @@ $(PACKAGE_DIR)/Packages: ipkg-utils $(PACKAGES_IPKG)
 packages: $(PACKAGE_DIR)/Packages
 
 upload:
-	rsync -avr packages/*.ipk ipkg.websb.net:/home/nslu2-linux/public_html/feeds/unslung/unstable/
-	rsync -avr packages/ ipkg.websb.net:/home/nslu2-linux/public_html/feeds/unslung/unstable/
+	rsync -avr packages/*.ipk ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
+	rsync -avr packages/ ipkg.nslu2-linux.org:/home/nslu2-linux/public_html/feeds/unslung/unstable/
 
 world:  $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) \
 	$(TOOL_INSTALL_DIR) $(PACKAGE_DIR) $(TARGETS_INSTALL)
