@@ -70,6 +70,8 @@ $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	install -m 644 $(MIAU_BUILD_DIR)/misc/miaurc $(MIAU_IPK_DIR)/opt/doc/miau/miaurc
 	install -d $(MIAU_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
+	install -d $(MIAU_IPK_DIR)/opt/etc/logrotate.d
+	install -m 755 $(MIAU_SOURCE_DIR)/logrotate.miau $(MIAU_IPK_DIR)/opt/etc/logrotate.d/miau
 	install -d $(MIAU_IPK_DIR)/CONTROL
 	install -m 644 $(MIAU_SOURCE_DIR)/control $(MIAU_IPK_DIR)/CONTROL/control
 	install -m 644 $(MIAU_SOURCE_DIR)/postinst $(MIAU_IPK_DIR)/CONTROL/postinst
