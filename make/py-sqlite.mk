@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLITE_SITE=http://voxel.dl.sourceforge.net/sourceforge/py-sqlite
+PY-SQLITE_SITE=http://voxel.dl.sourceforge.net/sourceforge/pysqlite
 PY-SQLITE_VERSION=2.0.alpha2
 PY-SQLITE_SOURCE=pysqlite-$(PY-SQLITE_VERSION).tar.gz
 PY-SQLITE_DIR=pysqlite-$(PY-SQLITE_VERSION)
