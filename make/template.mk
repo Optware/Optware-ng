@@ -172,5 +172,5 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/<foo>
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-<foo>-dirclean: <foo>-clean
+<foo>-dirclean:
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR) $(<FOO>_IPK_DIR) $(<FOO>_IPK)
