@@ -11,7 +11,10 @@ INETUTILS:=inetutils-$(INETUTILS_VERSION)
 INETUTILS_SITE:=ftp://ftp.gnu.org/pub/gnu/inetutils
 INETUTILS_SOURCE:=$(INETUTILS).tar.gz
 INETUTILS_UNZIP:=zcat
-INETUTILS_IPK:=$(BUILD_DIR)/inetutils_$(INETUTILS_VERSION)-1_armeb.ipk
+
+INETUTILS_IPK_VERSION=2
+
+INETUTILS_IPK:=$(BUILD_DIR)/inetutils_$(INETUTILS_VERSION)-$(INETUTILS_IPK_VERSION)_armeb.ipk
 INETUTILS_IPK_DIR:=$(BUILD_DIR)/inetutils-$(INETUTILS_VERSION)-ipk
 
 $(DL_DIR)/$(INETUTILS_SOURCE):
@@ -23,13 +26,16 @@ $(INETUTILS_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE)
 	@rm -rf $(BUILD_DIR)/$(INETUTILS) $(INETUTILS_DIR)
 	$(INETUTILS_UNZIP) $(DL_DIR)/$(INETUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(INETUTILS) $(INETUTILS_DIR)
-	cd $(INETUTILS_DIR) && \
+	(cd $(INETUTILS_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
-		--build=$(GNU_HOST_NAME)
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--infodir=/opt/doc/inetutils \
+	)
 	touch $(INETUTILS_DIR)/.configured
 
 inetutils-unpack: $(INETUTILS_DIR)/.configured
