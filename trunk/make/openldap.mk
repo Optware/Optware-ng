@@ -130,7 +130,7 @@ openldap: $(OPENLDAP_BUILD_DIR)/.built
 #
 $(OPENLDAP_BUILD_DIR)/.staged: $(OPENLDAP_BUILD_DIR)/.built
 	rm -f $(OPENLDAP_BUILD_DIR)/.staged
-	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(OPENLDAP_BUILD_DIR)/libraries DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libldap.la
 	rm -f $(STAGING_LIB_DIR)/libldap_r.la
 	rm -f $(STAGING_LIB_DIR)/liblber.la
