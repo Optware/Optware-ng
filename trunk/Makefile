@@ -59,17 +59,20 @@ CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
+# bogofilter's configure wants to run some small executables
 # cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # lynx's makefile runs executables it has built.
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
+# rsnapshot depends on perl
 # squid probably will build cross - may just need some configure work
 # samba probably will build cross - may just need some configure work
 NATIVE_PACKAGES = \
 	autoconf \
 	bison \
+	bogofilter \
 	cyrus-imapd \
 	emacs \
 	xemacs \
@@ -78,21 +81,19 @@ NATIVE_PACKAGES = \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident perl-storable perl-time-hires \
 	postfix \
+	rsnapshot \
 	squid \
 	samba \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
-# bogofilter's configure want's to run some small executables
-# rsnapshot depends on perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	asterisk \
-	bogofilter \
-	rsnapshot \
 
+# asterisk can't be downloaded, it's source uri is incorrect; it will also need to stage openssl instead of assuming that libcrypto can be found in /opt/lib
 # vim won't compile: "vim.h:40: error: parse error before ':' token"
 # perl-spamassassin can't be downloaded: 404 not found
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	asterisk \
         vim \
 	perl-spamassassin \
 	nethack scponly dump gkrellm clamav freeradius
