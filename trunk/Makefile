@@ -26,13 +26,13 @@ CROSS_PACKAGES = \
 	ccxstream classpath coreutils cpio ctorrent cups cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
 	e2fsprogs ed elinks expat \
-	fetchmail file findutils fixesext fontconfig flex freetype \
+	fetchmail ffmpeg file findutils fixesext fontconfig flex freetype \
 	gawk gconv-modules gdb gdbm gettext \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gzip \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
-	less libbt libcurl libdb libevent libiconv libid3tag \
+	lame less libbt libcurl libdb libevent libiconv libid3tag \
 	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 \
 	logrotate lsof \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
@@ -46,18 +46,20 @@ CROSS_PACKAGES = \
 	vdr-mediamvp vsftpd \
 	wakelan wget-ssl which \
 	x11 xau xauth xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
-	xproto xrender xt xtrans xtst \
+	xproto xrender xt xtrans xtst xvid \
 	zlib \
 	\
 	crosstool-native
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
-CROSS_PACKAGES_READY_FOR_TESTING = xvid lame libdvdread ffmpeg transcode \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
-# gtk fails in demos: /bin/sh: line 1: no: command not found
+# libdvdread: sources/libdvdread/libdvdread.conf is missing (forgot to cvs add?)
+# transcode: zcat: .../unslung/downloads/transcode-1.0.0beta2.tar.gz: not in gzip format
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	gtk
+	libdvdread \
+	transcode \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
