@@ -19,16 +19,27 @@
 #
 # You should change all these variables to suit your package.
 #
+LZO_NAME=lzo
 LZO_SITE=http://www.oberhumer.com/opensource/lzo/download/
 LZO_VERSION=1.08
-LZO_SOURCE=lzo-$(LZO_VERSION).tar.gz
-LZO_DIR=lzo-$(LZO_VERSION)
+LZO_SOURCE=$(LZO_NAME)-$(LZO_VERSION).tar.gz
+LZO_DIR=$(LZO_NAME)-$(LZO_VERSION)
 LZO_UNZIP=zcat
 
 #
 # LZO_IPK_VERSION should be incremented when the ipk changes.
 #
-LZO_IPK_VERSION=1
+LZO_IPK_VERSION=2
+
+#
+# Control file info
+#
+LZO_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+LZO_DESCRIPTION=Compression library
+LZO_SECTION=lib
+LZO_PRIORITY=optional
+LZO_CONFLICTS=
+LZO_DEPENDS=
 
 #
 # LZO_CONFFILES should be a list of user-editable files
@@ -60,6 +71,23 @@ LZO_BUILD_DIR=$(BUILD_DIR)/lzo
 LZO_SOURCE_DIR=$(SOURCE_DIR)/lzo
 LZO_IPK_DIR=$(BUILD_DIR)/lzo-$(LZO_VERSION)-ipk
 LZO_IPK=$(BUILD_DIR)/lzo_$(LZO_VERSION)-$(LZO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# Automatically create a ipkg control file
+#
+$(LZO_IPK_DIR)/CONTROL/control:
+	@install -d $(LZO_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: $(LZO_NAME)" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LZO_PRIORITY)" >>$@
+	@echo "Section: $(LZO_SECTION)" >>$@
+	@echo "Version: $(LZO_VERSION)-$(LZO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LZO_MAINTAINER)" >>$@
+	@echo "Source: $(LZO_SITE)/$(LZO_SOURCE)" >>$@
+	@echo "Description: $(LZO_DESCRIPTION)" >>$@
+	@echo "Depends: $(LZO_DEPENDS)" >>$@
+	@echo "Conflicts: $(LZO_CONFLICTS)" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -183,10 +211,8 @@ $(LZO_IPK): $(LZO_BUILD_DIR)/.built
 	# Install lib files
 	install -d $(LZO_IPK_DIR)/opt/lib
 	cd $(LZO_BUILD_DIR)/src ; /bin/sh ../libtool --mode=install install -c liblzo.la $(LZO_IPK_DIR)/opt/lib
-#	install -d $(LZO_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LZO_SOURCE_DIR)/rc.lzo $(LZO_IPK_DIR)/opt/etc/init.d/SXXlzo
-	install -d $(LZO_IPK_DIR)/CONTROL
-	install -m 644 $(LZO_SOURCE_DIR)/control $(LZO_IPK_DIR)/CONTROL
+	# Install control file
+	make  $(LZO_IPK_DIR)/CONTROL/control
 #	install -m 644 $(LZO_SOURCE_DIR)/postinst $(LZO_IPK_DIR)/CONTROL
 #	install -m 644 $(LZO_SOURCE_DIR)/prerm $(LZO_IPK_DIR)/CONTROL
 	echo $(LZO_CONFFILES) | sed -e 's/ /\n/g' > $(LZO_IPK_DIR)/CONTROL/conffiles
