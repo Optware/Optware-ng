@@ -3,16 +3,17 @@ PROFTPD on NSLU2 readme
 
 Manual install instructions:
 ----------------------------
-1: Proftpd can run either as standalone server or under some inetd
- (a) To run as standalone server, copy /opt/doc/proftpd/S68proftpd to /opt/etc/init.d/S68proftpd . Also edit proftpd.conf so that "ServerType" is "standalone" (by default it is "inetd")
- (b) To run under Linksys inetd, copy /opt/doc/rc.xinetd.proftpd to /unslung/rc.xinetd if there is no pre-existing /unslung/rc.xinetd, else edit it manually into the existing file.
- (c) To run under inetutils inetd, execute "cat /opt/doc/proftpd/inetd.conf.proftpd >> /opt/etc/inetd.conf"
- (d) To run under xinetd, copy /opt/doc/proftpd/proftpd.xinetd to /opt/etc/xinetd.d/proftpd"
-2: A default configuration is stored in /opt/etc/proftpd.conf - Please edit it to suit your needs and refer to the documentation and the tempates stored in /opt/doc/proftpd.
-3: Any FTP server already active on the system must be disabled.
-4: Starting proftd either by restarting your system or...
- (a) To run as standalone server, run ". /opt/etc/init.d/S68proftpd"
- (b) To run under Linksys/inetutils inetd or xinetd, run ". /etc/rc.d/rc.xinetd"
+1: Proftpd can run under xinetd or as standalone server. It is by default 
+   setup to run under xinetd and installs its xinetd definition file under 
+   /opt/etc/xinetd.d.
+
+   Edit the proftpd cofiguration file /opt/etc/proftpd.conf to suit your 
+   taste and run xinetd.reload to make xinetd enable the proftpd service.
+
+2: To run standalone, edit /opt/etc/xinet.d setting "disable=yes". Then copy 
+   /opt/doc/proftpd/S58proftpd to /opt/etc/init.d and edit proftpd.conf so that 
+   "ServerType" is "standalone".
+
 
 On creating certificates and keys:
 ----------------------------------
@@ -35,8 +36,7 @@ host and local network.
 
 On logging:
 -----------
-In the sample configuration file, proftpd.conf, WtmpLog has been disabled. Linksys 
-syslogd does not provide this type of logging. In order to have this, it is 
-recomended to install a proper syslogd, like the one from inetutils.
+In the sample configuration file, proftpd.conf, WtmpLog has been disabled as 
+the tinylogin wtmp has yet to be made reliable on the NSLU2.
 
 [END OF FILE]
