@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-TARGET=wl500g
+TARGET=nslu2
 
 CROSS_PACKAGES = \
 	abook adns atftp appweb apache apr apr-util atk automake \
@@ -61,6 +61,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	thttpd
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
