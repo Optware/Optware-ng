@@ -123,7 +123,7 @@ WL500G_PACKAGES = \
 	ncurses ntpclient nylon \
 	openssl \
 	pkgconfig popt postgresql procps proftpd puppy python \
-	rdate recordext rsync \
+	rdate readline recordext rsync \
 	sqlite strace stunnel syslog-ng \
 	tar tcpdump termcap ttf-bitstream-vera \
 	w3cam wakelan wget-ssl which \
