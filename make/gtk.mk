@@ -18,7 +18,7 @@ GTK_SOURCE=gtk+-$(GTK_VERSION).tar.bz2
 GTK_DIR=gtk+-$(GTK_VERSION)
 GTK_UNZIP=bzcat
 GTK_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
-GTK_DESCRIPTION=Gtk widget library
+GTK_DESCRIPTION=Gtk+ widget library
 GTK_SECTION=lib
 GTK_PRIORITY=optional
 GTK_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, xcursor, xft, ttf-bitstream-vera, gconv-modules
@@ -123,6 +123,7 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
 	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
 	$(GTK_UNZIP) $(DL_DIR)/$(GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
+	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
 	(cd $(GTK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
@@ -165,8 +166,6 @@ gtk: $(GTK_BUILD_DIR)/.built
 $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.so: $(GTK_BUILD_DIR)/.built
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -f $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.la
-	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
-	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-query-loaders
 
 gtk-stage: $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.so
 
