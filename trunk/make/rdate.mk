@@ -13,7 +13,9 @@ RDATE_SITE=http://freshmeat.net/redir/rdate/8862/url_tgz/
 RDATE_SOURCE=$(RDATE).tar.gz
 RDATE_UNZIP=zcat
 
-RDATE_IPK=$(BUILD_DIR)/rdate_$(RDATE_VERSION)-1_armeb.ipk
+RDATE_IPK_VERSION=1
+
+RDATE_IPK=$(BUILD_DIR)/rdate_$(RDATE_VERSION)-$(RDATE_IPK_VERSION)_armeb.ipk
 RDATE_IPK_DIR=$(BUILD_DIR)/rdate-$(RDATE_VERSION)-ipk
 
 $(DL_DIR)/$(RDATE_SOURCE):

@@ -12,7 +12,9 @@ CVS_SITE=https://ccvs.cvshome.org/files/documents/19/201
 CVS_SOURCE=$(CVS_DIR).tar.gz
 CVS_UNZIP=zcat
 
-CVS_IPK=$(BUILD_DIR)/cvs_$(CVS_VERSION)-1_armeb.ipk
+CVS_IPK_VERSION=1
+
+CVS_IPK=$(BUILD_DIR)/cvs_$(CVS_VERSION)-1$(CVS_IPK_VERSION)_armeb.ipk
 CVS_IPK_DIR=$(BUILD_DIR)/cvs-$(CVS_VERSION)-ipk
 
 $(DL_DIR)/$(CVS_SOURCE):
