@@ -93,7 +93,7 @@ parted-source: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES)
-	$(MAKE) e2fsprogs-stage e2fsprogs-stage
+	$(MAKE) e2fsprogs-stage libiconv-stage
 	rm -rf $(BUILD_DIR)/$(PARTED_DIR) $(PARTED_BUILD_DIR)
 	$(PARTED_UNZIP) $(DL_DIR)/$(PARTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PARTED_PATCHES) | patch -d $(BUILD_DIR)/$(PARTED_DIR) -p1
