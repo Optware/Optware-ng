@@ -4,8 +4,6 @@
 #
 #############################################################
 
-## So far, untested, unproven.
-
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/9.3.0/
 BIND_VERSION=9.3.0
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
@@ -58,12 +56,16 @@ $(BIND_BUILD_DIR)/.built: $(BIND_BUILD_DIR)/.configured
 
 bind: $(BIND_BUILD_DIR)/.built
 
+# The extra copy of named is a hack -- the kit installer seems to be
+# somewhat confused.
+#
 $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	rm -rf $(BIND_IPK_DIR) $(BIND_IPK)
 	$(MAKE) -C $(BIND_BUILD_DIR) DESTDIR=$(BIND_IPK_DIR) install
 	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/lib/*.so.*
 	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/bin/{dig,host,nslookup,nsupdate}
 	$(STRIP) --strip-unneeded $(BIND_IPK_DIR)/opt/sbin/*
+	cp -p $(BIND_IPK_DIR)/opt/sbin/named $(BIND_IPK_DIR)/opt/sbin/named.exe
 	rm -rf $(BIND_IPK_DIR)/opt/{man,include}
 	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(BIND_IPK_DIR)/opt/etc/init.d
@@ -72,6 +74,7 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	install -m 644 $(BIND_SOURCE_DIR)/control  $(BIND_IPK_DIR)/CONTROL/control
 	install -m 755 $(BIND_SOURCE_DIR)/postinst $(BIND_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(BIND_SOURCE_DIR)/prerm    $(BIND_IPK_DIR)/CONTROL/prerm
+	install -d $(BIND_IPK_DIR)/opt/etc/named
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BIND_IPK_DIR)
 
 bind-ipk: $(BIND_IPK)
