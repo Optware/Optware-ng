@@ -49,10 +49,12 @@ $(RSYNC_IPK): $(RSYNC_DIR)/rsync
 	rm -rf $(RSYNC_IPK_DIR) $(BUILD_DIR)/rsync_*_armeb.ipk
 	mkdir -p $(RSYNC_IPK_DIR)/CONTROL
 	mkdir -p $(RSYNC_IPK_DIR)/opt/etc/init.d
+	install -d $(RSYNC_IPK_DIR)/opt/bin
 	cp $(RSYNC_SOURCE_DIR)/control $(RSYNC_IPK_DIR)/CONTROL/control
 	cp $(RSYNC_SOURCE_DIR)/postinst $(RSYNC_IPK_DIR)/CONTROL/postinst
 	cp $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
-	install -m 755 -D $(RSYNC_DIR)/rsync $(RSYNC_IPK_DIR)/opt/bin/rsync
+	$(TARGET_STRIP) $(RSYNC_DIR)/rsync -o $(RSYNC_IPK_DIR)/opt/bin/rsync
+#	install -m 755 -D $(RSYNC_DIR)/rsync $(RSYNC_IPK_DIR)/opt/bin/rsync
 	touch $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	chmod 600 $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	install -m 644 -D $(RSYNC_SOURCE_DIR)/rsyncd.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
