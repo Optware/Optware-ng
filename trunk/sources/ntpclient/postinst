@@ -1,5 +1,4 @@
 #!/bin/sh
 
 mkdir -p /opt/etc/cron.d
-date +%M > /opt/etc/cron.d/ntpclient
-echo " * * * * root /opt/bin/ntpclient -h pool.ntp.org -s &>/dev/null" >> /opt/etc/cron.d/ntpclient
+date "+%M * * * * root /opt/bin/ntpclient -h pool.ntp.org -s &>/dev/null" > /opt/etc/cron.d/ntpclient
