@@ -1,4 +1,4 @@
-# Makefle for unslung packages
+# Makefile for unslung packages
 #
 # Copyright (C) 2004 by Rod Whitby <unslung@gmail.com>
 # Copyright (C) 2004 by Oleg I. Vdovikin <oleg@cs.msu.su>
@@ -34,7 +34,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables \
 
 PACKAGES_TO_BE_TESTED:= \
 	   dump e2fsprogs gkrellm glib \
-	   grep lsof openssl
+	   grep lsof openssl libusb
 
 WGET=wget --passive-ftp
 
