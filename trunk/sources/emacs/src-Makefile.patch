@@ -5,7 +5,7 @@
  C_SWITCH_SYSTEM=
  SHELL=/bin/sh
 -STARTFILES = pre-crt0.o /usr/lib/crt1.o /usr/lib/crti.o
-+STARTFILES = pre-crt0.o /opt/armv5b-softfloat-linux/gcc-3.3.4-glibc-2.2.5/armv5b-softfloat-linux/lib/crt1.o /opt/armv5b-softfloat-linux/gcc-3.3.4-glibc-2.2.5/armv5b-softfloat-linux/lib/crti.o
++STARTFILES = pre-crt0.o $(TARGET_LIBDIR)/crt1.o $(TARGET_LIBDIR)/crti.o
  TOOLKIT_DEFINES =
  ALL_CFLAGS=-Demacs -DHAVE_CONFIG_H $(TOOLKIT_DEFINES) $(MYCPPFLAGS) -I. -I${srcdir} -D_BSD_SOURCE ${CFLAGS}
  .c.o:
@@ -14,7 +14,7 @@
  shortlisp= ../lisp/abbrev.elc ../lisp/buff-menu.elc ../lisp/byte-run.elc ../lisp/cus-start.el ../lisp/custom.elc ../lisp/emacs-lisp/backquote.elc ../lisp/emacs-lisp/lisp-mode.elc ../lisp/emacs-lisp/lisp.elc ../lisp/facemenu.elc ../lisp/faces.elc ../lisp/files.elc ../lisp/float-sup.elc ../lisp/format.elc ../lisp/frame.elc ../lisp/help.elc ../lisp/indent.elc ../lisp/isearch.elc ../lisp/loadup.el ../lisp/loaddefs.el ../lisp/bindings.elc ../lisp/map-ynp.elc ../lisp/env.elc ../lisp/international/mule.elc ../lisp/international/mule-conf.el ../lisp/international/mule-cmds.elc ../lisp/international/characters.elc ../lisp/international/utf-8.elc ../lisp/international/utf-16.elc ../lisp/international/latin-1.el ../lisp/international/latin-2.el ../lisp/international/latin-3.el ../lisp/international/latin-4.el ../lisp/international/latin-5.el ../lisp/international/latin-8.el ../lisp/international/latin-9.el ../lisp/case-table.elc ../lisp/language/chinese.elc ../lisp/language/cyrillic.elc ../lisp/language/indian.elc ../lisp/language/devanagari.elc ../lisp/language/english.elc ../lisp/language/ethiopic.elc ../lisp/language/european.elc ../lisp/language/czech.elc ../lisp/language/slovak.elc ../lisp/language/romanian.elc ../lisp/language/greek.elc ../lisp/language/hebrew.elc ../lisp/language/japanese.elc ../lisp/language/korean.elc ../lisp/language/lao.elc ../lisp/language/thai.elc ../lisp/language/tibetan.elc ../lisp/language/vietnamese.elc ../lisp/language/misc-lang.elc ../lisp/international/ucs-tables.elc ../lisp/menu-bar.elc ../lisp/paths.el ../lisp/register.elc ../lisp/replace.elc ../lisp/simple.elc ../lisp/startup.elc ../lisp/subr.elc ../lisp/term/tty-colors.elc ../lisp/textmodes/fill.elc ../lisp/textmodes/page.elc ../lisp/textmodes/paragraphs.elc ../lisp/textmodes/text-mode.elc ../lisp/vc-hooks.elc ../lisp/ediff-hook.elc ../lisp/widget.elc ../lisp/window.elc ../lisp/version.el
  SOME_MACHINE_LISP = ${dotdot}/lisp/mouse.elc ${dotdot}/lisp/select.elc ${dotdot}/lisp/scroll-bar.elc ${dotdot}/lisp/vmsproc.elc ${dotdot}/lisp/vms-patch.elc ${dotdot}/lisp/ls-lisp.elc ${dotdot}/lisp/dos-fns.elc ${dotdot}/lisp/w32-fns.elc ${dotdot}/lisp/dos-w32.elc ${dotdot}/lisp/disp-table.elc ${dotdot}/lisp/dos-vars.elc ${dotdot}/lisp/international/ccl.elc ${dotdot}/lisp/international/codepage.elc
 -LIBES = $(LOADLIBES) $(LIBS) $(LIBX) $(LIBSOUND) -lncurses $(GETLOADAVG_LIBS) $(GNULIB_VAR) -lm -lgcc -lc -lgcc /usr/lib/crtn.o $(GNULIB_VAR)
-+LIBES = $(LOADLIBES) $(LIBS) $(LIBX) $(LIBSOUND) -lncurses $(GETLOADAVG_LIBS) $(GNULIB_VAR) -lm -lgcc -lc -lgcc /opt/armv5b-softfloat-linux/gcc-3.3.4-glibc-2.2.5/armv5b-softfloat-linux/lib/crtn.o $(GNULIB_VAR)
++LIBES = $(LOADLIBES) $(LIBS) $(LIBX) $(LIBSOUND) -lncurses $(GETLOADAVG_LIBS) $(GNULIB_VAR) -lm -lgcc -lc -lgcc $(TARGET_LIBDIR)/crtn.o $(GNULIB_VAR)
  all: emacs
  emacs: temacs ${etc}DOC ${lisp}
  	       LC_ALL=C ./temacs -batch -l loadup dump
