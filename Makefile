@@ -29,16 +29,16 @@ NATIVE_AND_CROSS_PACKAGES = \
 	fetchmail file findutils flex \
 	gawk gdbm grep groff gzip \
 	imagemagick inetutils iptables ircd-hybrid \
-	jamvm jove \
+	jamvm joe jove \
 	less libbt libcurl libdb libevent libid3tag libjpeg \
-	libpng libstdc++ libtiff libtool libxml2 lsof \
+	libnsl libpng libstdc++ libtiff libtool libxml2 lsof \
 	m4 make man man-pages mc mdadm miau mtr \
 	nail nano ncurses nload nmap ntp ntpclient \
 	openssh openssl \
 	patch portmap procps puppy \
 	rsync \
 	screen sed strace stunnel sudo \
-	tar tcpwrappers termcap \
+	tar tcpwrappers termcap torrent \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd \
 	wakelan wget-ssl which \
@@ -48,9 +48,6 @@ NATIVE_AND_CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested both native compilation and cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 NATIVE_AND_CROSS_PACKAGES_READY_FOR_TESTING = \
-	joe \
-	torrent \
-	libnsl
 
 # appweb ships with x86 binaries which it requires during configure phase
 # busybox has PATH_MAX define issue on native
