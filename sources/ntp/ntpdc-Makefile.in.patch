@@ -1,0 +1,24 @@
+--- ntp/ntpdc/Makefile.in.orig	2004-12-18 19:58:17.000000000 +1030
++++ ntp/ntpdc/Makefile.in	2004-12-18 19:58:52.000000000 +1030
+@@ -155,9 +155,9 @@
+ #AUTOMAKE_OPTIONS = ../util/ansi2knr no-dependencies
+ AUTOMAKE_OPTIONS = ../util/ansi2knr
+ bin_PROGRAMS = ntpdc
+-EXTRA_PROGRAMS = ntpdc-layout
+-EXTRA_DATA = check-layout
+-BUILT_SOURCES = maybe-layout
++# EXTRA_PROGRAMS = ntpdc-layout
++# EXTRA_DATA = check-layout
++# BUILT_SOURCES = maybe-layout
+ INCLUDES = -I$(top_srcdir)/include
+ # LDADD might need RESLIB and ADJLIB
+ ntpdc_LDADD = version.o ../libntp/libntp.a @READLINE_LIBS@
+@@ -175,7 +175,7 @@
+ mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
+ CONFIG_HEADER = $(top_builddir)/config.h
+ CONFIG_CLEAN_FILES = nl.pl
+-EXTRA_PROGRAMS = ntpdc-layout$(EXEEXT)
++# EXTRA_PROGRAMS = ntpdc-layout$(EXEEXT)
+ bin_PROGRAMS = ntpdc$(EXEEXT)
+ PROGRAMS = $(bin_PROGRAMS)
+ 
