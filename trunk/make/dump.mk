@@ -15,8 +15,8 @@ DUMP_UNZIP=zcat
 DUMP_IPK=$(BUILD_DIR)/dump_$(DUMP_VERSION)-1_armeb.ipk
 DUMP_IPK_DIR=$(BUILD_DIR)/dump-$(DUMP_VERSION)-ipk
 
-CFLAGS="-I $(STAGING_DIR)/include"
-LDFLAGS="-L $(STAGING_DIR)/lib"
+CFLAGS="-I $(STAGING_INCLUDE_DIR)"
+LDFLAGS="-L $(STAGING_LIB_DIR)"
 
 
 $(DL_DIR)/$(DUMP_SOURCE):
@@ -32,8 +32,10 @@ $(DUMP_DIR)/.source: $(DL_DIR)/$(DUMP_SOURCE)
 $(DUMP_DIR)/.configured: $(DUMP_DIR)/.source
 	(cd $(DUMP_DIR); \
 		./configure \
-	  --disable-readline \
-		--prefix=$(DUMP_IPK_DIR)/opt \
+		--disable-readline \
+		--includedir=$(STAGING_INCLUDE_DIR) \
+		--libdir=$(STAGING_LIB_DIR) \
+		--prefix=/opt \
 	);
 	touch $(DUMP_DIR)/.configured
 
