@@ -37,9 +37,11 @@ $(MTDAAPD_DIR)/.configured: $(MTDAAPD_DIR)/.source
         export LDFLAGS="$(MTDAAPD_LDFLAGS)" ;\
 		./configure \
         --host=arm-linux \
+		--target=$(GNU_TARGET_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--build=$(GNU_HOST_NAME) \
 		--prefix=$(STAGING_DIR) \
-        --with-static-libs=$(STAGING_DIR)/lib \
-        LIBS="-lgdbm -lid3tag -lz" \
+        LIBS="-lgdbm -lid3tag -lz -lpthread" \
         ac_cv_func_setpgrp_void=yes \
 	);
 	touch $(MTDAAPD_DIR)/.configured
