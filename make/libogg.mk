@@ -133,7 +133,6 @@ $(LIBOGG_BUILD_DIR)/.staged: $(LIBOGG_BUILD_DIR)/.built
 	rm -f $(LIBOGG_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_DIR)/opt/lib/libogg.la
-	rm -rf $(STAGING_DIR)/opt/share
 	touch $(LIBOGG_BUILD_DIR)/.staged
 
 libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
