@@ -91,7 +91,7 @@ openldap-source: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES)
-	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl
+	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl-stage
 	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR)
 	$(OPENLDAP_UNZIP) $(DL_DIR)/$(OPENLDAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(OPENLDAP_PATCHES) | patch -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1
@@ -149,14 +149,14 @@ openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
 $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_armeb.ipk
 	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) install
-#	install -d $(OPENLDAP_IPK_DIR)/opt/etc/
+	install -d $(OPENLDAP_IPK_DIR)/opt/etc/
 #	install -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf
-#	install -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)/opt/etc/init.d/SXXopenldap
+	install -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)/opt/etc/init.d/S58slapd
 	install -d $(OPENLDAP_IPK_DIR)/CONTROL
 	install -m 644 $(OPENLDAP_SOURCE_DIR)/control $(OPENLDAP_IPK_DIR)/CONTROL/control
-#	install -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
+	install -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
 	echo $(OPENLDAP_CONFFILES) | sed -e 's/ /\n/g' > $(OPENLDAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENLDAP_IPK_DIR)
 
