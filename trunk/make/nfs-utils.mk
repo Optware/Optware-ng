@@ -131,7 +131,7 @@ nfs-utils: $(NFS-UTILS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
-	rm -rf $(NFS-UTILS_IPK_DIR) $(NFS-UTILS_IPK)
+	rm -rf $(NFS-UTILS_IPK_DIR) $(BUILD_DIR)/nfs-utils_*_armeb.ipk
 	install -d $(NFS-UTILS_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsd
 	$(TARGET_STRIP) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mountd
