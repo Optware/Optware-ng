@@ -6,6 +6,7 @@
 
 BZIP2_SITE=ftp://sources.redhat.com/pub/bzip2/v102/
 BZIP2_VERSION=1.0.2
+BZIP2_LIB_VERSION:=1.0.2
 BZIP2_SOURCE=bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_DIR=bzip2-$(BZIP2_VERSION)
 BZIP2_UNZIP=zcat
@@ -38,10 +39,10 @@ $(BZIP2_BUILD_DIR)/bzip2: $(BZIP2_BUILD_DIR)/.configured
 bzip2: $(BZIP2_BUILD_DIR)/bzip2
 
 $(STAGING_DIR)/lib/libbz2.a: $(BZIP2_BUILD_DIR)/bzip2
-	install -d $(STAGING_DIR)/include
-	install -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(STAGING_DIR)/include
-	install -d $(STAGING_DIR)/lib
-	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(STAGING_DIR)/lib
+	install -d $(STAGING_DIR)/opt/include
+	install -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/lib
+	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(STAGING_DIR)/opt/lib
 
 bzip2-stage: $(STAGING_DIR)/lib/libbz2.a
 
