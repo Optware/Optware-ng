@@ -166,12 +166,10 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	#
 	install -d $(PROFTPD_IPK_DIR)/usr/share/empty
 	# Install conf files
-	install -d $(PROFTPD_IPK_DIR)/opt/etc
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
 	install -m 755 $(PROFTPD_SOURCE_DIR)/S58proftpd $(PROFTPD_IPK_DIR)/opt/etc/init.d/.S58proftpd
 	# Install doc file
-	install -d $(PROFTPD_IPK_DIR)/opt/doc
 	install -d $(PROFTPD_IPK_DIR)/opt/doc/proftpd
 	install -m 755 $(PROFTPD_SOURCE_DIR)/rc.xinetd.proftpd $(PROFTPD_IPK_DIR)/opt/doc/proftpd/rc.xinetd.proftpd
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd-install.doc $(PROFTPD_IPK_DIR)/opt/doc/proftpd/proftpd-install.doc
