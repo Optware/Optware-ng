@@ -28,7 +28,7 @@ LIBTIFF_UNZIP=zcat
 #
 # LIBTIFF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTIFF_IPK_VERSION=2
+LIBTIFF_IPK_VERSION=3
 
 #
 # LIBTIFF_PATCHES should list any patches, in the the order in

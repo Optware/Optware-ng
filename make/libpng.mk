@@ -28,7 +28,7 @@ LIBPNG_UNZIP=zcat
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=1
+LIBPNG_IPK_VERSION=2
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
