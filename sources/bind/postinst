@@ -4,6 +4,10 @@ if [ -n "`pidof named`" ]; then
     /bin/killall named 2>/dev/null
 fi
 
+# Register for shutdown/halt
+
+ln -sf /opt/etc/init.d/S09named /opt/etc/init.d/K09named
+
 if [ ! -e /opt/lib/libcrypto.so ]; then
 echo "?? openssl must be installed"
 exit 1
