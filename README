@@ -38,9 +38,8 @@ CVS: cvs -d :pserver:anonymous@cvs.sf.net:/cvsroot/nslu co unslung
 
 FIRMWARE/PACKAGE BUILD DETAILS:
 1)  To do a complete build with packages, you will need to get the
-    crosstool-0.28-rc32 toolchain working with the Big-Endian patch from
-    http://kegel.com/crosstool/crosstool-0.28-rc32.tar.gz
-    http://www.knowledgemessaging.com/nslu2/gcc-3.3.2-arm-softfloat.patch
+    crosstool-0.28-rc32 toolchain working.  See the wiki for details:
+	http://www.nslu2-linux.org/Wiki/HowTo/CompileCrossTool
 2)  get the project from CVS
 3)  make
 4)  make unslung
