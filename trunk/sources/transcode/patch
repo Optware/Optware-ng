@@ -1,12 +1,51 @@
 diff -Naur a/config.cache b/config.cache
 --- a/config.cache	1970-01-01 00:00:00.000000000 +0000
-+++ b/config.cache	2005-02-13 19:16:20.000000000 +0000
++++ b/config.cache	2005-02-22 05:29:06.000000000 +0000
 @@ -0,0 +1 @@
 +lame_version=396
 diff -Naur a/configure b/configure
 --- a/configure	2005-02-13 07:20:10.000000000 +0000
-+++ b/configure	2005-02-13 07:25:54.000000000 +0000
-@@ -30183,66 +30183,6 @@
++++ b/configure	2005-02-22 05:34:29.000000000 +0000
+@@ -27899,18 +27899,18 @@
+         echo "*** correct values for --with-ft-prefix or --with-ft-exec-prefix"
+         echo "*** are used, or set the FT2_CONFIG environment variable to the"
+         echo "*** full path to freetype-config."
+-      else
+-        echo "*** The FreeType test program failed to run.  If your system uses"
+-        echo "*** shared libraries and they are installed outside the normal"
+-        echo "*** system library path, make sure the variable LD_LIBRARY_PATH"
+-        echo "*** (or whatever is appropiate for your system) is correctly set."
++#      else
++#        echo "*** The FreeType test program failed to run.  If your system uses"
++#        echo "*** shared libraries and they are installed outside the normal"
++#        echo "*** system library path, make sure the variable LD_LIBRARY_PATH"
++#        echo "*** (or whatever is appropiate for your system) is correctly set."
+       fi
+     fi
+     FT2_CFLAGS=""
+     FT2_LIBS=""
+-    { { echo "$as_me:$LINENO: error: freetype2 support is requested, but not found" >&5
+-echo "$as_me: error: freetype2 support is requested, but not found" >&2;}
+-   { (exit 1); exit 1; }; }
++#    { { echo "$as_me:$LINENO: error: freetype2 support is requested, but not found" >&5
++#echo "$as_me: error: freetype2 support is requested, but not found" >&2;}
++#   { (exit 1); exit 1; }; }
+     :
+   fi
+ else
+@@ -27921,7 +27921,11 @@
+ 
+ 
+ 
++have_freetype2=yes
+ 
++cat >>confdefs.h <<\_ACEOF
++#define HAVE_FREETYPE2 1
++_ACEOF
+ 
+ if test x"$have_freetype2" = x"yes"; then
+   HAVE_FREETYPE2_TRUE=
+@@ -30183,66 +30187,6 @@
    CPPFLAGS="$save_CPPFLAGS"
  
    echo "$as_me:$LINENO: checking lame version" >&5
