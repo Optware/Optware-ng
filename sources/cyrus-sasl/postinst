@@ -1,0 +1,13 @@
+#!/bin/sh
+
+ln -s /opt/lib/sasl2 /usr/lib/sasl2 > /dev/null 2>&1
+
+echo
+echo Please read the man page of saslauthd and
+echo "check settings in /opt/etc/init.d/S52saslauthd "
+echo
+echo "If you dislike the link /usr/lib/sasl2 -> /opt/lib/sasl2"
+echo then you may want to set SASL_PATH instead
+echo
+
+/opt/etc/init.d/S52saslauthd

@@ -1,0 +1,20 @@
+--- ./man/Makefile.in	2005-01-28 23:09:42.000000000 +0100
++++ ./man/Makefile.in	2005-01-28 23:11:44.000000000 +0100
+@@ -291,7 +291,7 @@
+ 	  esac; \
+ 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+ 	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
+-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  inst=$$inst.$$ext; \
+ 	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man3dir)/$$inst"; \
+ 	  $(INSTALL_DATA) $$file $(DESTDIR)$(man3dir)/$$inst; \
+ 	done
+@@ -312,7 +312,7 @@
+ 	  esac; \
+ 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+ 	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
+-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  inst=$$inst.$$ext; \
+ 	  echo " rm -f $(DESTDIR)$(man3dir)/$$inst"; \
+ 	  rm -f $(DESTDIR)$(man3dir)/$$inst; \
+ 	done
