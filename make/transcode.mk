@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
-TRANSCODE_VERSION=20050223
+TRANSCODE_VERSION=cvs20050223
 TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.gz
 TRANSCODE_TAG=-D 2005-02-13
 TRANSCODE_MODULE=transcode
