@@ -1,0 +1,60 @@
+diff -burN openssl-prepatch/Makefile openssl/Makefile
+--- openssl-prepatch/Makefile	Fri Sep 17 20:23:43 2004
++++ openssl/Makefile	Sun Sep 26 22:39:43 2004
+@@ -59,20 +59,21 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
+-CC= gcc
++CROSS_PREFIX=armv5b-softfloat-linux-
++CC= $(CROSS_PREFIX)gcc
+ #CFLAG= -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall -Wuninitialized -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+ CFLAG= -fPIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DOPENSSL_NO_KRB5 -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall
+ DEPFLAG= 
+ PEX_LIBS= 
+-EX_LIBS= 
++EX_LIBS="-ldl"
+ EXE_EXT= 
+ ARFLAGS= 
+-AR=ar $(ARFLAGS) r
+-RANLIB= /usr/bin/ranlib
++AR=$(CROSS_PREFIX)ar $(ARFLAGS) r
++RANLIB=$(CROSS_PREFIX)ranlib   # /usr/bin/ranlib
+ PERL= /usr/bin/perl
+ TAR= tar
+ TARFLAGS= --no-recursion
+-MAKEDEPPROG= gcc
++MAKEDEPPROG= $(CROSS_PREFIX)gcc
+ 
+ # We let the C compiler driver to take care of .s files. This is done in
+ # order to be excused from maintaining a separate set of architecture
+diff -burN openssl-prepatch/Makefile.ssl openssl/Makefile.ssl
+--- openssl-prepatch/Makefile.ssl	Fri Sep 17 20:23:43 2004
++++ openssl/Makefile.ssl	Sun Sep 26 22:40:47 2004
+@@ -59,20 +59,21 @@
+ # equal 4.
+ # PKCS1_CHECK - pkcs1 tests.
+ 
+-CC= gcc
++CROSS_PREFIX=armv5b-softfloat-linux-
++CC= $(CROSS_PREFIX)gcc
+ #CFLAG= -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -m486 -Wall -Wuninitialized -DSHA1_ASM -DMD5_ASM -DRMD160_ASM
+ CFLAG= -fPIC -DOPENSSL_THREADS -D_REENTRANT -DDSO_DLFCN -DHAVE_DLFCN_H -DOPENSSL_NO_KRB5 -DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall
+ DEPFLAG= 
+ PEX_LIBS= 
+-EX_LIBS= 
++EX_LIBS="-ldl"
+ EXE_EXT= 
+ ARFLAGS= 
+-AR=ar $(ARFLAGS) r
+-RANLIB= /usr/bin/ranlib
++AR=$(CROSS_PREFIX)ar $(ARFLAGS) r
++RANLIB=$(CROSS_PREFIX)ranlib   # /usr/bin/ranlib
+ PERL= /usr/bin/perl
+ TAR= tar
+ TARFLAGS= --no-recursion
+-MAKEDEPPROG= gcc
++MAKEDEPPROG= $(CROSS_PREFIX)gcc
+ 
+ # We let the C compiler driver to take care of .s files. This is done in
+ # order to be excused from maintaining a separate set of architecture
