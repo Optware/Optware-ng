@@ -20,7 +20,7 @@
 
 TARGETS:= slugtool slingbox
 
-PACKAGES:= dropbear busybox zlib portmap nfs-server
+PACKAGES:= dropbear busybox zlib portmap nfs-server gdbm
 
 WGET=wget --passive-ftp
 
