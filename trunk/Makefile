@@ -132,7 +132,7 @@ WL500G_PACKAGES = \
 	tar tcpdump tcpwrappers termcap thttpd torrent ttf-bitstream-vera \
 	unfs3 vsftpd \
 	w3cam wakelan wget-ssl which \
-	xau xdmcp xextensions xinetd xproto xtrans xvid \
+	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
 	zlib
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
