@@ -157,20 +157,13 @@ libdb-stage: $(STAGING_DIR)/opt/lib/libdb.a
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBDB_IPK): $(LIBDB_BUILD_DIR)/libdb
-#	rm -rf $(LIBDB_IPK_DIR) $(LIBDB_IPK)
-	mkdir -p $(LIBDB_IPK_DIR)/CONTROL
-	mkdir -p $(LIBDB_IPK_DIR)/opt/lib
-	cp $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-4.2.a $(LIBDB_IPK_DIR)/opt/lib 
-	cp $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-4.2.so $(LIBDB_IPK_DIR)/opt/lib 
-#	install -d $(LIBDB_IPK_DIR)/opt/bin
-#	$(STRIP) $(LIBDB_BUILD_DIR)/libdb -o $(LIBDB_IPK_DIR)/opt/bin/libdb
-#	install -d $(LIBDB_IPK_DIR)/opt/etc/init.d
-##	install -m 755 $(LIBDB_SOURCE_DIR)/rc.libdb $(LIBDB_IPK_DIR)/opt/etc/init.d/SXXlibdb
+$(LIBDB_IPK): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
+	rm -rf $(LIBDB_IPK_DIR) $(LIBDB_IPK)
+	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(LIBDB_IPK_DIR) install_setup install_include install_lib
+	$(STRIP) --strip-unneeded $(LIBDB_IPK_DIR)/opt/lib/*.so.*
+	rm -f $(LIBDB_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(LIBDB_IPK_DIR)/CONTROL
 	install -m 644 $(LIBDB_SOURCE_DIR)/control $(LIBDB_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LIBDB_SOURCE_DIR)/postinst $(LIBDB_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LIBDB_SOURCE_DIR)/prerm $(LIBDB_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDB_IPK_DIR)
 #
 #
