@@ -23,7 +23,7 @@
 NATIVE_AND_CROSS_PACKAGES = \
 	adns atftp automake \
 	bash bind bzip2 \
-	ccxstream coreutils cpio cups cvs cyrus-sasl \
+	ccxstream coreutils cpio ctorrent cups cvs cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dropbear \
 	ed elinks expat \
 	fetchmail file findutils flex \
@@ -93,7 +93,7 @@ NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
 
 
 UNSORTED_PACKAGES = \
-	ctorrent freeradius \
+	freeradius \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap glib \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
