@@ -24,8 +24,9 @@ PACKAGES:= dropbear busybox
 
 WGET=wget --passive-ftp
 
-# You must install the ARM/XScale Linux Tool Chain from:
-# http://ftp.snapgear.org/pub/snapgear/tools/arm-linux/arm-linux-tools-20031127.tar.gz
+# You must install the crosstool Linux Tool Chain.  See:
+# http://groups.yahoo.com/group/nslu2-linux/message/422
+# and do exactly what it says there (i.e. do not use rc34).
 
 TARGET_OPTIMIZATION= #-Os
 TARGET_DEBUGGING= #-g
@@ -62,11 +63,11 @@ GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
 TARGET_CONFIGURE_OPTS= \
 		AR=$(TARGET_CROSS)ar \
 		AS=$(TARGET_CROSS)as \
-		LD="$(TARGET_CROSS)ld -EB" \
+		LD="$(TARGET_CROSS)ld" \
 		NM=$(TARGET_CROSS)nm \
-		CC="$(TARGET_CROSS)gcc -mbig-endian" \
-		GCC="$(TARGET_CROSS)gcc -mbig-endian" \
-		CXX="$(TARGET_CROSS)g++ -mbig-endian" \
+		CC="$(TARGET_CROSS)gcc" \
+		GCC="$(TARGET_CROSS)gcc" \
+		CXX="$(TARGET_CROSS)g++" \
 		RANLIB=$(TARGET_CROSS)ranlib
 
 all: world
