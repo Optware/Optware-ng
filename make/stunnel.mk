@@ -63,7 +63,7 @@ STUNNEL_LDFLAGS=
 STUNNEL_BUILD_DIR=$(BUILD_DIR)/stunnel
 STUNNEL_SOURCE_DIR=$(SOURCE_DIR)/stunnel
 STUNNEL_IPK_DIR=$(BUILD_DIR)/stunnel-$(STUNNEL_VERSION)-ipk
-STUNNEL_IPK=$(BUILD_DIR)/stunnel_$(STUNNEL_VERSION)-$(STUNNEL_IPK_VERSION)_armeb.ipk
+STUNNEL_IPK=$(BUILD_DIR)/stunnel_$(STUNNEL_VERSION)-$(STUNNEL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -157,7 +157,7 @@ stunnel-stage: $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(STUNNEL_IPK): $(STUNNEL_BUILD_DIR)/.built
-	rm -rf $(STUNNEL_IPK_DIR) $(BUILD_DIR)/stunnel_*_armeb.ipk
+	rm -rf $(STUNNEL_IPK_DIR) $(BUILD_DIR)/stunnel_*_$(TARGET_ARCH).ipk
 	install -d $(STUNNEL_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(STUNNEL_BUILD_DIR)/src/stunnel -o $(STUNNEL_IPK_DIR)/opt/sbin/stunnel
 	install -d $(STUNNEL_IPK_DIR)/opt/lib

@@ -59,7 +59,7 @@ FLAC_LDFLAGS=
 FLAC_BUILD_DIR=$(BUILD_DIR)/flac
 FLAC_SOURCE_DIR=$(SOURCE_DIR)/flac
 FLAC_IPK_DIR=$(BUILD_DIR)/flac-$(FLAC_VERSION)-ipk
-FLAC_IPK=$(BUILD_DIR)/flac_$(FLAC_VERSION)-$(FLAC_IPK_VERSION)_armeb.ipk
+FLAC_IPK=$(BUILD_DIR)/flac_$(FLAC_VERSION)-$(FLAC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -149,7 +149,7 @@ flac-stage: $(FLAC_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(FLAC_IPK): $(FLAC_BUILD_DIR)/.built
-	rm -rf $(FLAC_IPK_DIR) $(BUILD_DIR)/flac_*_armeb.ipk
+	rm -rf $(FLAC_IPK_DIR) $(BUILD_DIR)/flac_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FLAC_BUILD_DIR) DESTDIR=$(FLAC_IPK_DIR) install
 	#[JEC]install -d $(FLAC_IPK_DIR)/opt/etc/
 	#[JEC]install -m 644 $(FLAC_SOURCE_DIR)/flac.conf $(FLAC_IPK_DIR)/opt/etc/flac.conf

@@ -64,7 +64,7 @@ FREETYPE_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 FREETYPE_BUILD_DIR=$(BUILD_DIR)/freetype
 FREETYPE_SOURCE_DIR=$(SOURCE_DIR)/freetype
 FREETYPE_IPK_DIR=$(BUILD_DIR)/freetype-$(FREETYPE_VERSION)-ipk
-FREETYPE_IPK=$(BUILD_DIR)/freetype_$(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)_armeb.ipk
+FREETYPE_IPK=$(BUILD_DIR)/freetype_$(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -73,7 +73,7 @@ $(FREETYPE_IPK_DIR)/CONTROL/control:
 	@install -d $(FREETYPE_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: freetype" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(FREETYPE_PRIORITY)" >>$@
 	@echo "Section: $(FREETYPE_SECTION)" >>$@
 	@echo "Version: $(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)" >>$@
@@ -171,7 +171,7 @@ freetype-stage: $(STAGING_LIB_DIR)/libfreetype.so
 # You may need to patch your application to make it use these locations.
 #
 $(FREETYPE_IPK): $(FREETYPE_BUILD_DIR)/.built
-	rm -rf $(FREETYPE_IPK_DIR) $(BUILD_DIR)/freetype_*_armeb.ipk
+	rm -rf $(FREETYPE_IPK_DIR) $(BUILD_DIR)/freetype_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(FREETYPE_IPK_DIR) install
 	rm -f $(FREETYPE_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(FREETYPE_IPK_DIR)/CONTROL/control

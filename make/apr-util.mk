@@ -62,7 +62,7 @@ APR_UTIL_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 APR_UTIL_BUILD_DIR=$(BUILD_DIR)/apr-util
 APR_UTIL_SOURCE_DIR=$(SOURCE_DIR)/apr-util
 APR_UTIL_IPK_DIR=$(BUILD_DIR)/apr-util-$(APR_UTIL_VERSION)-ipk
-APR_UTIL_IPK=$(BUILD_DIR)/apr-util_$(APR_UTIL_VERSION)-$(APR_UTIL_IPK_VERSION)_armeb.ipk
+APR_UTIL_IPK=$(BUILD_DIR)/apr-util_$(APR_UTIL_VERSION)-$(APR_UTIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(APR_UTIL_IPK_DIR)/CONTROL/control:
 	@install -d $(APR_UTIL_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: apr-util" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(APR_UTIL_PRIORITY)" >>$@
 	@echo "Section: $(APR_UTIL_SECTION)" >>$@
 	@echo "Version: $(APR_UTIL_VERSION)-$(APR_UTIL_IPK_VERSION)" >>$@
@@ -183,7 +183,7 @@ apr-util-stage: $(STAGING_DIR)/opt/bin/apu-config
 # You may need to patch your application to make it use these locations.
 #
 $(APR_UTIL_IPK): $(APR_UTIL_BUILD_DIR)/.built
-	rm -rf $(APR_UTIL_IPK_DIR) $(BUILD_DIR)/apr-util_*_armeb.ipk
+	rm -rf $(APR_UTIL_IPK_DIR) $(BUILD_DIR)/apr-util_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) DESTDIR=$(APR_UTIL_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
 	rm -rf $(APR_UTIL_IPK_DIR)/delete-me
 	rm -f $(APR_UTIL_IPK_DIR)/opt/lib/*.la

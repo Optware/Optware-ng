@@ -56,7 +56,7 @@ SM_LDFLAGS=
 SM_BUILD_DIR=$(BUILD_DIR)/sm
 SM_SOURCE_DIR=$(SOURCE_DIR)/sm
 SM_IPK_DIR=$(BUILD_DIR)/sm-$(SM_VERSION)-ipk
-SM_IPK=$(BUILD_DIR)/sm_$(SM_VERSION)-$(SM_IPK_VERSION)_armeb.ipk
+SM_IPK=$(BUILD_DIR)/sm_$(SM_VERSION)-$(SM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(SM_IPK_DIR)/CONTROL/control:
 	@install -d $(SM_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: sm" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(SM_PRIORITY)" >>$@
 	@echo "Section: $(SM_SECTION)" >>$@
 	@echo "Version: $(SM_VERSION)-$(SM_IPK_VERSION)" >>$@
@@ -156,7 +156,7 @@ sm-stage: $(STAGING_LIB_DIR)/libSM.so
 # You may need to patch your application to make it use these locations.
 #
 $(SM_IPK): $(SM_BUILD_DIR)/.built
-	rm -rf $(SM_IPK_DIR) $(BUILD_DIR)/sm_*_armeb.ipk
+	rm -rf $(SM_IPK_DIR) $(BUILD_DIR)/sm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SM_BUILD_DIR) DESTDIR=$(SM_IPK_DIR) install-strip
 	$(MAKE) $(SM_IPK_DIR)/CONTROL/control
 	rm -f $(SM_IPK_DIR)/opt/lib/*.la

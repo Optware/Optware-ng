@@ -59,7 +59,7 @@ GIFTGNUTELLA_LDFLAGS=
 GIFTGNUTELLA_BUILD_DIR=$(BUILD_DIR)/gift-gnutella
 GIFTGNUTELLA_SOURCE_DIR=$(SOURCE_DIR)/gift-gnutella
 GIFTGNUTELLA_IPK_DIR=$(BUILD_DIR)/gift-gnutella-$(GIFTGNUTELLA_VERSION)-ipk
-GIFTGNUTELLA_IPK=$(BUILD_DIR)/gift-gnutella_$(GIFTGNUTELLA_VERSION)-$(GIFTGNUTELLA_IPK_VERSION)_armeb.ipk
+GIFTGNUTELLA_IPK=$(BUILD_DIR)/gift-gnutella_$(GIFTGNUTELLA_VERSION)-$(GIFTGNUTELLA_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -155,7 +155,7 @@ gift-gnutella-stage: $(STAGING_DIR)/opt/lib/libgift-gnutella.so.$(GIFTGNUTELLA_V
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTGNUTELLA_IPK): $(GIFTGNUTELLA_BUILD_DIR)/.built
-	rm -rf $(GIFTGNUTELLA_IPK_DIR) $(BUILD_DIR)/gift-gnutella_*_armeb.ipk
+	rm -rf $(GIFTGNUTELLA_IPK_DIR) $(BUILD_DIR)/gift-gnutella_*_$(TARGET_ARCH).ipk
 	install -d $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.so -o $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.so
 	install -m 644 $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.la $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.la

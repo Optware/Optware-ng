@@ -54,7 +54,7 @@ SED_LDFLAGS=
 SED_BUILD_DIR=$(BUILD_DIR)/sed
 SED_SOURCE_DIR=$(SOURCE_DIR)/sed
 SED_IPK_DIR=$(BUILD_DIR)/sed-$(SED_VERSION)-ipk
-SED_IPK=$(BUILD_DIR)/sed_$(SED_VERSION)-$(SED_IPK_VERSION)_armeb.ipk
+SED_IPK=$(BUILD_DIR)/sed_$(SED_VERSION)-$(SED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -142,7 +142,7 @@ sed-stage: $(SED_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SED_IPK): $(SED_BUILD_DIR)/.built
-	rm -rf $(SED_IPK_DIR) $(BUILD_DIR)/sed_*_armeb.ipk
+	rm -rf $(SED_IPK_DIR) $(BUILD_DIR)/sed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(SED_IPK_DIR) install
 #	install -d $(SED_IPK_DIR)/opt/etc/
 #	install -m 755 $(SED_SOURCE_DIR)/sed.conf $(SED_IPK_DIR)/opt/etc/sed.conf

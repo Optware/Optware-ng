@@ -60,7 +60,7 @@ NCFTP_LDFLAGS=
 NCFTP_BUILD_DIR=$(BUILD_DIR)/ncftp
 NCFTP_SOURCE_DIR=$(SOURCE_DIR)/ncftp
 NCFTP_IPK_DIR=$(BUILD_DIR)/ncftp-$(NCFTP_VERSION)-ipk
-NCFTP_IPK=$(BUILD_DIR)/ncftp_$(NCFTP_VERSION)-$(NCFTP_IPK_VERSION)_armeb.ipk
+NCFTP_IPK=$(BUILD_DIR)/ncftp_$(NCFTP_VERSION)-$(NCFTP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -158,7 +158,7 @@ ncftp-stage: $(STAGING_DIR)/opt/lib/libncftp.so.$(NCFTP_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
-	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_armeb.ipk
+	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_$(TARGET_ARCH).ipk
 	install -d $(NCFTP_IPK_DIR)/opt/bin
 	$(MAKE) -C $(NCFTP_BUILD_DIR) BINDIR=$(NCFTP_IPK_DIR)/opt/bin \
 		mandir=$(NCFTP_IPK_DIR)/opt/man \

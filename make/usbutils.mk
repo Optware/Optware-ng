@@ -54,7 +54,7 @@ USBUTILS_LDFLAGS=
 USBUTILS_BUILD_DIR=$(BUILD_DIR)/usbutils
 USBUTILS_SOURCE_DIR=$(SOURCE_DIR)/usbutils
 USBUTILS_IPK_DIR=$(BUILD_DIR)/usbutils-$(USBUTILS_VERSION)-ipk
-USBUTILS_IPK=$(BUILD_DIR)/usbutils_$(USBUTILS_VERSION)-$(USBUTILS_IPK_VERSION)_armeb.ipk
+USBUTILS_IPK=$(BUILD_DIR)/usbutils_$(USBUTILS_VERSION)-$(USBUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -141,7 +141,7 @@ usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
-	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_armeb.ipk
+	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install
 	# don't want these as they conflict with real libusb
 	rm -rf $(USBUTILS_IPK_DIR)/opt/lib $(USBUTILS_IPK_DIR)/opt/include

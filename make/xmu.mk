@@ -56,7 +56,7 @@ XMU_LDFLAGS=
 XMU_BUILD_DIR=$(BUILD_DIR)/xmu
 XMU_SOURCE_DIR=$(SOURCE_DIR)/xmu
 XMU_IPK_DIR=$(BUILD_DIR)/xmu-$(XMU_VERSION)-ipk
-XMU_IPK=$(BUILD_DIR)/xmu_$(XMU_VERSION)-$(XMU_IPK_VERSION)_armeb.ipk
+XMU_IPK=$(BUILD_DIR)/xmu_$(XMU_VERSION)-$(XMU_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XMU_IPK_DIR)/CONTROL/control:
 	@install -d $(XMU_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xmu" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XMU_PRIORITY)" >>$@
 	@echo "Section: $(XMU_SECTION)" >>$@
 	@echo "Version: $(XMU_VERSION)-$(XMU_IPK_VERSION)" >>$@
@@ -158,7 +158,7 @@ xmu-stage: $(STAGING_LIB_DIR)/libXmu.so
 # You may need to patch your application to make it use these locations.
 #
 $(XMU_IPK): $(XMU_BUILD_DIR)/.built
-	rm -rf $(XMU_IPK_DIR) $(BUILD_DIR)/xmu_*_armeb.ipk
+	rm -rf $(XMU_IPK_DIR) $(BUILD_DIR)/xmu_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XMU_BUILD_DIR) DESTDIR=$(XMU_IPK_DIR) install-strip
 	$(MAKE) $(XMU_IPK_DIR)/CONTROL/control
 	rm -f $(XMU_IPK_DIR)/opt/lib/*.la

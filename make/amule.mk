@@ -55,7 +55,7 @@ AMULE_LDFLAGS=
 AMULE_BUILD_DIR=$(BUILD_DIR)/amule
 AMULE_SOURCE_DIR=$(SOURCE_DIR)/amule
 AMULE_IPK_DIR=$(BUILD_DIR)/amule-$(AMULE_PRD_VERSION)-ipk
-AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_PRD_VERSION)-$(AMULE_IPK_VERSION)_armeb.ipk
+AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_PRD_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # AMULE_PATCHES should list any patches, in the the order in
@@ -150,7 +150,7 @@ amule: $(AMULE_BUILD_DIR)/.built
 # This builds the IPK file.
 #
 $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
-	rm -rf $(AMULE_IPK_DIR) $(BUILD_DIR)/amule_*_armeb.ipk
+	rm -rf $(AMULE_IPK_DIR) $(BUILD_DIR)/amule_*_$(TARGET_ARCH).ipk
 	install -d $(AMULE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(AMULE_BUILD_DIR)/src/amuled -o $(AMULE_IPK_DIR)/opt/bin/amuled
 	$(STRIP_COMMAND) $(AMULE_BUILD_DIR)/src/amulecmd -o $(AMULE_IPK_DIR)/opt/bin/amulecmd

@@ -51,7 +51,7 @@ LIBUSB_LDFLAGS=
 LIBUSB_BUILD_DIR=$(BUILD_DIR)/libusb
 LIBUSB_SOURCE_DIR=$(SOURCE_DIR)/libusb
 LIBUSB_IPK_DIR=$(BUILD_DIR)/libusb-$(LIBUSB_VERSION)-ipk
-LIBUSB_IPK=$(BUILD_DIR)/libusb_$(LIBUSB_VERSION)-$(LIBUSB_IPK_VERSION)_armeb.ipk
+LIBUSB_IPK=$(BUILD_DIR)/libusb_$(LIBUSB_VERSION)-$(LIBUSB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -30,7 +30,7 @@ UPSLUG_IPK_VERSION=1
 UPSLUG_BUILD_DIR=$(BUILD_DIR)/upslug
 UPSLUG_SOURCE_DIR=$(SOURCE_DIR)/upslug
 UPSLUG_IPK_DIR=$(BUILD_DIR)/upslug-$(UPSLUG_VERSION)-ipk
-UPSLUG_IPK=$(BUILD_DIR)/upslug_$(UPSLUG_VERSION)-$(UPSLUG_IPK_VERSION)_armeb.ipk
+UPSLUG_IPK=$(BUILD_DIR)/upslug_$(UPSLUG_VERSION)-$(UPSLUG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

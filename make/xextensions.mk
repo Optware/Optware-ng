@@ -55,7 +55,7 @@ XEXTENSIONS_LDFLAGS=
 XEXTENSIONS_BUILD_DIR=$(BUILD_DIR)/xextensions
 XEXTENSIONS_SOURCE_DIR=$(SOURCE_DIR)/xextensions
 XEXTENSIONS_IPK_DIR=$(BUILD_DIR)/xextensions-$(XEXTENSIONS_VERSION)-ipk
-XEXTENSIONS_IPK=$(BUILD_DIR)/xextensions_$(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IPK_VERSION)_armeb.ipk
+XEXTENSIONS_IPK=$(BUILD_DIR)/xextensions_$(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(XEXTENSIONS_IPK_DIR)/CONTROL/control:
 	@install -d $(XEXTENSIONS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xextensions" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XEXTENSIONS_PRIORITY)" >>$@
 	@echo "Section: $(XEXTENSIONS_SECTION)" >>$@
 	@echo "Version: $(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IPK_VERSION)" >>$@
@@ -151,7 +151,7 @@ xextensions-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h
 # You may need to patch your application to make it use these locations.
 #
 $(XEXTENSIONS_IPK): $(XEXTENSIONS_BUILD_DIR)/.built
-	rm -rf $(XEXTENSIONS_IPK_DIR) $(BUILD_DIR)/xextensions_*_armeb.ipk
+	rm -rf $(XEXTENSIONS_IPK_DIR) $(BUILD_DIR)/xextensions_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR) DESTDIR=$(XEXTENSIONS_IPK_DIR) install
 	$(MAKE) $(XEXTENSIONS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEXTENSIONS_IPK_DIR)

@@ -13,7 +13,7 @@ LIBSTDC++_IPK_VERSION=1
 LIBSTDC++_BUILD_DIR=$(BUILD_DIR)/libstdc++
 LIBSTDC++_SOURCE_DIR=$(SOURCE_DIR)/libstdc++
 LIBSTDC++_IPK_DIR=$(BUILD_DIR)/libstdc++-$(LIBSTDC++_VERSION)-ipk
-LIBSTDC++_IPK=$(BUILD_DIR)/libstdc++_$(LIBSTDC++_VERSION)-$(LIBSTDC++_IPK_VERSION)_armeb.ipk
+LIBSTDC++_IPK=$(BUILD_DIR)/libstdc++_$(LIBSTDC++_VERSION)-$(LIBSTDC++_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(LIBSTDC++_BUILD_DIR)/.configured: $(LIBSTDC++_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBSTDC++_DIR) $(LIBSTDC++_BUILD_DIR)
@@ -44,7 +44,7 @@ $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 libstdc++-stage: $(LIBSTDC++_BUILD_DIR)/.staged
 
 $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
-	rm -rf $(LIBSTDC++_IPK_DIR) $(BUILD_DIR)/libstdc++_*_armeb.ipk
+	rm -rf $(LIBSTDC++_IPK_DIR) $(BUILD_DIR)/libstdc++_*_$(TARGET_ARCH).ipk
 	install -d $(LIBSTDC++_IPK_DIR)/opt/lib
 	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_IPK_DIR)/opt/lib
 	(cd $(LIBSTDC++_IPK_DIR)/opt/lib; \

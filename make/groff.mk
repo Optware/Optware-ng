@@ -17,7 +17,7 @@ GROFF_PATCHES=$(GROFF_SOURCE_DIR)/groff.patch
 GROFF_BUILD_DIR=$(BUILD_DIR)/groff
 GROFF_SOURCE_DIR=$(SOURCE_DIR)/groff
 GROFF_IPK_DIR=$(BUILD_DIR)/groff-$(GROFF_VERSION)-ipk
-GROFF_IPK=$(BUILD_DIR)/groff_$(GROFF_VERSION)-$(GROFF_IPK_VERSION)_armeb.ipk
+GROFF_IPK=$(BUILD_DIR)/groff_$(GROFF_VERSION)-$(GROFF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(GROFF_SOURCE):
 	$(WGET) -P $(DL_DIR) $(GROFF_SITE)/$(GROFF_SOURCE)
@@ -52,7 +52,7 @@ $(GROFF_BUILD_DIR)/.built: $(GROFF_BUILD_DIR)/.configured
 groff: $(GROFF_BUILD_DIR)/.built
 
 $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
-	rm -rf $(GROFF_IPK_DIR) $(BUILD_DIR)/groff_*_armeb.ipk
+	rm -rf $(GROFF_IPK_DIR) $(BUILD_DIR)/groff_*_$(TARGET_ARCH).ipk
 	install -d $(GROFF_IPK_DIR)/opt/bin
 	install -d $(GROFF_IPK_DIR)/opt/info
 	install -d $(GROFF_IPK_DIR)/opt/lib/groff/site-tmac

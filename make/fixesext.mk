@@ -55,7 +55,7 @@ FIXESEXT_LDFLAGS=
 FIXESEXT_BUILD_DIR=$(BUILD_DIR)/fixesext
 FIXESEXT_SOURCE_DIR=$(SOURCE_DIR)/fixesext
 FIXESEXT_IPK_DIR=$(BUILD_DIR)/fixesext-$(FIXESEXT_VERSION)-ipk
-FIXESEXT_IPK=$(BUILD_DIR)/fixesext_$(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)_armeb.ipk
+FIXESEXT_IPK=$(BUILD_DIR)/fixesext_$(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(FIXESEXT_IPK_DIR)/CONTROL/control:
 	@install -d $(FIXESEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: fixesext" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(FIXESEXT_PRIORITY)" >>$@
 	@echo "Section: $(FIXESEXT_SECTION)" >>$@
 	@echo "Version: $(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)" >>$@
@@ -152,7 +152,7 @@ fixesext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h
 # You may need to patch your application to make it use these locations.
 #
 $(FIXESEXT_IPK): $(FIXESEXT_BUILD_DIR)/.built
-	rm -rf $(FIXESEXT_IPK_DIR) $(BUILD_DIR)/fixesext_*_armeb.ipk
+	rm -rf $(FIXESEXT_IPK_DIR) $(BUILD_DIR)/fixesext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FIXESEXT_BUILD_DIR) DESTDIR=$(FIXESEXT_IPK_DIR) install
 	$(MAKE) $(FIXESEXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIXESEXT_IPK_DIR)

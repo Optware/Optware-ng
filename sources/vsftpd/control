@@ -1,8 +1,8 @@
 Package: vsftpd
-Version: 2.0.1-6
-Architecture: armeb
+Version: @VERSION@-@RELEASE@
+Architecture: @ARCH@
 Maintainer: Jeremy Eglen <jieglen@sbcglobal.net>
-Source: ftp://vsftpd.beasts.org/users/cevans/vsftpd-2.0.1.tar.gz
+Source: ftp://vsftpd.beasts.org/users/cevans/vsftpd-@VERSION@.tar.gz
 Section: net
 Priority: optional
 Depends: 

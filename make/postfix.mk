@@ -26,7 +26,7 @@ POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix
 POSTFIX_IPK_DIR=$(BUILD_DIR)/postfix-$(POSTFIX_VERSION)-ipk
-POSTFIX_IPK=$(BUILD_DIR)/postfix_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)_armeb.ipk
+POSTFIX_IPK=$(BUILD_DIR)/postfix_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(POSTFIX_SOURCE):
 	$(WGET) -P $(DL_DIR) $(POSTFIX_SITE)/$(POSTFIX_SOURCE)
@@ -96,7 +96,7 @@ $(POSTFIX_BUILD_DIR)/.staged: $(POSTFIX_BUILD_DIR)/.built
 postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
 $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
-	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_armeb.ipk
+	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade LD_LIBRARY_PATH=$(STAGING_LIB_DIR)
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
 	install -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases

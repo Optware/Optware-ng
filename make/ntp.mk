@@ -55,7 +55,7 @@ NTP_LDFLAGS=
 NTP_BUILD_DIR=$(BUILD_DIR)/ntp
 NTP_SOURCE_DIR=$(SOURCE_DIR)/ntp
 NTP_IPK_DIR=$(BUILD_DIR)/ntp-$(NTP_VERSION)-ipk
-NTP_IPK=$(BUILD_DIR)/ntp_$(NTP_VERSION)-$(NTP_IPK_VERSION)_armeb.ipk
+NTP_IPK=$(BUILD_DIR)/ntp_$(NTP_VERSION)-$(NTP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

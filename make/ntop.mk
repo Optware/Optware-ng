@@ -75,7 +75,7 @@ NTOP_LDFLAGS=-ljpeg -lfreetype -lfontconfig -lexpat -lpng12 -lz
 NTOP_BUILD_DIR=$(BUILD_DIR)/ntop
 NTOP_SOURCE_DIR=$(SOURCE_DIR)/ntop
 NTOP_IPK_DIR=$(BUILD_DIR)/ntop-$(NTOP_VERSION)-ipk
-NTOP_IPK=$(BUILD_DIR)/ntop_$(NTOP_VERSION)-$(NTOP_IPK_VERSION)_armeb.ipk
+NTOP_IPK=$(BUILD_DIR)/ntop_$(NTOP_VERSION)-$(NTOP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 
 #
@@ -85,7 +85,7 @@ $(NTOP_IPK_DIR)/CONTROL/control:
 	@install -d $(NTOP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: $(NTOP_NAME)" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(NTOP_PRIORITY)" >>$@
 	@echo "Section: $(NTOP_SECTION)" >>$@
 	@echo "Version: $(NTOP_VERSION)-$(NTOP_IPK_VERSION)" >>$@
@@ -193,7 +193,7 @@ ntop-stage: $(NTOP_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(NTOP_IPK): $(NTOP_BUILD_DIR)/.built
-	rm -rf $(NTOP_IPK_DIR) $(BUILD_DIR)/ntop_*_armeb.ipk
+	rm -rf $(NTOP_IPK_DIR) $(BUILD_DIR)/ntop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) install-strip
 	install -d $(NTOP_IPK_DIR)/opt/etc/
 #	install -m 644 $(NTOP_SOURCE_DIR)/ntop.conf $(NTOP_IPK_DIR)/opt/etc/ntop.conf

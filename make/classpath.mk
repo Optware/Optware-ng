@@ -59,7 +59,7 @@ CLASSPATH_LDFLAGS=
 CLASSPATH_BUILD_DIR=$(BUILD_DIR)/classpath
 CLASSPATH_SOURCE_DIR=$(SOURCE_DIR)/classpath
 CLASSPATH_IPK_DIR=$(BUILD_DIR)/classpath-$(CLASSPATH_VERSION)-ipk
-CLASSPATH_IPK=$(BUILD_DIR)/classpath_$(CLASSPATH_VERSION)-$(CLASSPATH_IPK_VERSION)_armeb.ipk
+CLASSPATH_IPK=$(BUILD_DIR)/classpath_$(CLASSPATH_VERSION)-$(CLASSPATH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -155,7 +155,7 @@ classpath-stage: $(STAGING_DIR)/opt/lib/libclasspath.so.$(CLASSPATH_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
-	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_armeb.ipk
+	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install prefix=$(CLASSPATH_IPK_DIR)/opt
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip prefix=$(CLASSPATH_IPK_DIR)/opt
 	install -d $(CLASSPATH_IPK_DIR)/CONTROL

@@ -59,7 +59,7 @@ MADPLAY_LDFLAGS=
 MADPLAY_BUILD_DIR=$(BUILD_DIR)/madplay
 MADPLAY_SOURCE_DIR=$(SOURCE_DIR)/madplay
 MADPLAY_IPK_DIR=$(BUILD_DIR)/madplay-$(MADPLAY_VERSION)-ipk
-MADPLAY_IPK=$(BUILD_DIR)/madplay_$(MADPLAY_VERSION)-$(MADPLAY_IPK_VERSION)_armeb.ipk
+MADPLAY_IPK=$(BUILD_DIR)/madplay_$(MADPLAY_VERSION)-$(MADPLAY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,10 +147,11 @@ madplay-stage: $(MADPLAY_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MADPLAY_IPK): $(MADPLAY_BUILD_DIR)/.built
-	rm -rf $(MADPLAY_IPK_DIR) $(BUILD_DIR)/madplay_*_armeb.ipk
+	rm -rf $(MADPLAY_IPK_DIR) $(BUILD_DIR)/madplay_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MADPLAY_BUILD_DIR) DESTDIR=$(MADPLAY_IPK_DIR) install
 	install -d $(MADPLAY_IPK_DIR)/CONTROL
-	install -m 644 $(MADPLAY_SOURCE_DIR)/control $(MADPLAY_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(MADPLAY_VERSION)/" \
+		-e "s/@RELEASE@/$(MADPLAY_IPK_VERSION)/" $(MADPLAY_SOURCE_DIR)/control > $(MADPLAY_IPK_DIR)/CONTROL/control
 	echo $(MADPLAY_CONFFILES) | sed -e 's/ /\n/g' > $(MADPLAY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MADPLAY_IPK_DIR)
 

@@ -60,7 +60,7 @@ GIFT_LDFLAGS=
 GIFT_BUILD_DIR=$(BUILD_DIR)/gift
 GIFT_SOURCE_DIR=$(SOURCE_DIR)/gift
 GIFT_IPK_DIR=$(BUILD_DIR)/gift-$(GIFT_VERSION)-ipk
-GIFT_IPK=$(BUILD_DIR)/gift_$(GIFT_VERSION)-$(GIFT_IPK_VERSION)_armeb.ipk
+GIFT_IPK=$(BUILD_DIR)/gift_$(GIFT_VERSION)-$(GIFT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,10 +147,11 @@ gift-stage: $(GIFT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
-	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_armeb.ipk
+	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install-strip
 	install -d $(GIFT_IPK_DIR)/CONTROL
-	install -m 644 $(GIFT_SOURCE_DIR)/control $(GIFT_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(GIFT_VERSION)/" \
+		-e "s/@RELEASE@/$(GIFT_IPK_VERSION)/" $(GIFT_SOURCE_DIR)/control > $(GIFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
 
 #

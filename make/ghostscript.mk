@@ -59,7 +59,7 @@ GHOSTSCRIPT_LDFLAGS=
 GHOSTSCRIPT_BUILD_DIR=$(BUILD_DIR)/ghostscript
 GHOSTSCRIPT_SOURCE_DIR=$(SOURCE_DIR)/ghostscript
 GHOSTSCRIPT_IPK_DIR=$(BUILD_DIR)/ghostscript-$(GHOSTSCRIPT_VERSION)-ipk
-GHOSTSCRIPT_IPK=$(BUILD_DIR)/ghostscript_$(GHOSTSCRIPT_VERSION)-$(GHOSTSCRIPT_IPK_VERSION)_armeb.ipk
+GHOSTSCRIPT_IPK=$(BUILD_DIR)/ghostscript_$(GHOSTSCRIPT_VERSION)-$(GHOSTSCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -149,7 +149,7 @@ ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
-	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_armeb.ipk
+	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) prefix=$(GHOSTSCRIPT_IPK_DIR)/opt DESTDIR=$(GHOSTSCRIPT_IPK_DIR) install
 	install -d $(GHOSTSCRIPT_IPK_DIR)/CONTROL
 	install -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/control $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control

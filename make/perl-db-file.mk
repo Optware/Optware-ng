@@ -19,7 +19,7 @@ PERL-DB-FILE_PATCHES=$(PERL-DB-FILE_SOURCE_DIR)/config.in.patch
 PERL-DB-FILE_BUILD_DIR=$(BUILD_DIR)/perl-db-file
 PERL-DB-FILE_SOURCE_DIR=$(SOURCE_DIR)/perl-db-file
 PERL-DB-FILE_IPK_DIR=$(BUILD_DIR)/perl-db-file-$(PERL-DB-FILE_VERSION)-ipk
-PERL-DB-FILE_IPK=$(BUILD_DIR)/perl-db-file_$(PERL-DB-FILE_VERSION)-$(PERL-DB-FILE_IPK_VERSION)_armeb.ipk
+PERL-DB-FILE_IPK=$(BUILD_DIR)/perl-db-file_$(PERL-DB-FILE_VERSION)-$(PERL-DB-FILE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-DB-FILE_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PERL-DB-FILE_SITE)/$(PERL-DB-FILE_SOURCE)
@@ -60,7 +60,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.staged: $(PERL-DB-FILE_BUILD_DIR)/.built
 perl-db-file-stage: $(PERL-DB-FILE_BUILD_DIR)/.staged
 
 $(PERL-DB-FILE_IPK): $(PERL-DB-FILE_BUILD_DIR)/.built
-	rm -rf $(PERL-DB-FILE_IPK_DIR) $(BUILD_DIR)/perl-db-file_*_armeb.ipk
+	rm -rf $(PERL-DB-FILE_IPK_DIR) $(BUILD_DIR)/perl-db-file_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DB-FILE_BUILD_DIR) DESTDIR=$(PERL-DB-FILE_IPK_DIR) install
 	find $(PERL-DB-FILE_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DB-FILE_IPK_DIR)/opt/lib/perl5 ; \

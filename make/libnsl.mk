@@ -13,7 +13,7 @@ LIBNSL_IPK_VERSION=1
 LIBNSL_BUILD_DIR=$(BUILD_DIR)/libnsl
 LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
 LIBNSL_IPK_DIR=$(BUILD_DIR)/libnsl-$(LIBNSL_VERSION)-ipk
-LIBNSL_IPK=$(BUILD_DIR)/libnsl_$(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)_armeb.ipk
+LIBNSL_IPK=$(BUILD_DIR)/libnsl_$(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(LIBNSL_BUILD_DIR)/.configured: 
 	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR)
@@ -44,7 +44,7 @@ $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 libnsl-stage: $(LIBNSL_BUILD_DIR)/.staged
 
 $(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
-	rm -rf $(LIBNSL_IPK_DIR) $(BUILD_DIR)/libnsl_*_armeb.ipk
+	rm -rf $(LIBNSL_IPK_DIR) $(BUILD_DIR)/libnsl_*_$(TARGET_ARCH).ipk
 	install -d $(LIBNSL_IPK_DIR)/opt/lib
 	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_IPK_DIR)/opt/lib
 	(cd $(LIBNSL_IPK_DIR)/opt/lib; \

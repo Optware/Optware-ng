@@ -55,7 +55,7 @@ VSFTPD_LDFLAGS=
 VSFTPD_BUILD_DIR=$(BUILD_DIR)/vsftpd
 VSFTPD_SOURCE_DIR=$(SOURCE_DIR)/vsftpd
 VSFTPD_IPK_DIR=$(BUILD_DIR)/vsftpd-$(VSFTPD_VERSION)-ipk
-VSFTPD_IPK=$(BUILD_DIR)/vsftpd_$(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)_armeb.ipk
+VSFTPD_IPK=$(BUILD_DIR)/vsftpd_$(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,13 +146,14 @@ vsftpd-stage: $(STAGING_DIR)/opt/lib/libvsftpd.so.$(VSFTPD_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/vsftpd
-	rm -rf $(VSFTPD_IPK_DIR) $(BUILD_DIR)/vsftpd_*_armeb.ipk
+	rm -rf $(VSFTPD_IPK_DIR) $(BUILD_DIR)/vsftpd_*_$(TARGET_ARCH).ipk
 	install -d $(VSFTPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/sbin/vsftpd
 	install -d $(VSFTPD_IPK_DIR)/opt/etc
 	install -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/opt/etc/vsftpd.conf
 	install -d $(VSFTPD_IPK_DIR)/CONTROL
-	install -m 644 $(VSFTPD_SOURCE_DIR)/control $(VSFTPD_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(VSFTPD_VERSION)/" \
+		-e "s/@RELEASE@/$(VSFTPD_IPK_VERSION)/" $(VSFTPD_SOURCE_DIR)/control > $(VSFTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VSFTPD_IPK_DIR)
 

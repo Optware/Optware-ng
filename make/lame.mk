@@ -59,7 +59,7 @@ LAME_LDFLAGS=
 LAME_BUILD_DIR=$(BUILD_DIR)/lame
 LAME_SOURCE_DIR=$(SOURCE_DIR)/lame
 LAME_IPK_DIR=$(BUILD_DIR)/lame-$(LAME_VERSION)-ipk
-LAME_IPK=$(BUILD_DIR)/lame_$(LAME_VERSION)-$(LAME_IPK_VERSION)_armeb.ipk
+LAME_IPK=$(BUILD_DIR)/lame_$(LAME_VERSION)-$(LAME_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ lame-stage: $(LAME_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LAME_IPK): $(LAME_BUILD_DIR)/.built
-	rm -rf $(LAME_IPK_DIR) $(BUILD_DIR)/lame_*_armeb.ipk
+	rm -rf $(LAME_IPK_DIR) $(BUILD_DIR)/lame_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LAME_BUILD_DIR) DESTDIR=$(LAME_IPK_DIR) install-strip
 	install -d $(LAME_IPK_DIR)/CONTROL
 	install -m 644 $(LAME_SOURCE_DIR)/control $(LAME_IPK_DIR)/CONTROL/control

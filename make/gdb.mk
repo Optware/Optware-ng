@@ -61,7 +61,7 @@ GDB_LDFLAGS=-s
 GDB_BUILD_DIR=$(BUILD_DIR)/gdb
 GDB_SOURCE_DIR=$(SOURCE_DIR)/gdb
 GDB_IPK_DIR=$(BUILD_DIR)/gdb-$(GDB_VERSION)-ipk
-GDB_IPK=$(BUILD_DIR)/gdb_$(GDB_VERSION)-$(GDB_IPK_VERSION)_armeb.ipk
+GDB_IPK=$(BUILD_DIR)/gdb_$(GDB_VERSION)-$(GDB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -183,7 +183,7 @@ gdb: $(GDB_BUILD_DIR)/.built
 
 $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	ls -la $(GDB_BUILD_DIR)/.built
-	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_armeb.ipk
+	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)/opt install
 	rm -f $(GDB_IPK_DIR)/opt/info/standards.info
 #	install -d $(GDB_IPK_DIR)/opt/etc/

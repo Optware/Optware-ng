@@ -49,7 +49,7 @@ SVN_LDFLAGS=
 SVN_BUILD_DIR=$(BUILD_DIR)/svn
 SVN_SOURCE_DIR=$(SOURCE_DIR)/svn
 SVN_IPK_DIR=$(BUILD_DIR)/svn-$(SVN_VERSION)-ipk
-SVN_IPK=$(BUILD_DIR)/svn_$(SVN_VERSION)-$(SVN_IPK_VERSION)_armeb.ipk
+SVN_IPK=$(BUILD_DIR)/svn_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -141,7 +141,7 @@ svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
 #
 $(SVN_IPK): $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
 	$(MAKE) svn-stage
-	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_armeb.ipk
+	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) install
 	rm -rf $(SVN_IPK_DIR)/opt/{build,include,info,man,share}
 	rm -rf $(SVN_IPK_DIR)/opt/lib/*.{a,la,exp}

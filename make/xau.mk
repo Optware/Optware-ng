@@ -55,7 +55,7 @@ XAU_LDFLAGS=
 XAU_BUILD_DIR=$(BUILD_DIR)/xau
 XAU_SOURCE_DIR=$(SOURCE_DIR)/xau
 XAU_IPK_DIR=$(BUILD_DIR)/xau-$(XAU_VERSION)-ipk
-XAU_IPK=$(BUILD_DIR)/xau_$(XAU_VERSION)-$(XAU_IPK_VERSION)_armeb.ipk
+XAU_IPK=$(BUILD_DIR)/xau_$(XAU_VERSION)-$(XAU_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(XAU_IPK_DIR)/CONTROL/control:
 	@install -d $(XAU_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xau" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XAU_PRIORITY)" >>$@
 	@echo "Section: $(XAU_SECTION)" >>$@
 	@echo "Version: $(XAU_VERSION)-$(XAU_IPK_VERSION)" >>$@
@@ -152,7 +152,7 @@ xau-stage: $(STAGING_LIB_DIR)/libXau.so
 # You may need to patch your application to make it use these locations.
 #
 $(XAU_IPK): $(XAU_BUILD_DIR)/.built
-	rm -rf $(XAU_IPK_DIR) $(BUILD_DIR)/xau_*_armeb.ipk
+	rm -rf $(XAU_IPK_DIR) $(BUILD_DIR)/xau_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(XAU_IPK_DIR) install-strip
 	$(MAKE) $(XAU_IPK_DIR)/CONTROL/control
 	rm -f $(XAU_IPK_DIR)/opt/lib/*.la

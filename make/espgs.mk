@@ -60,7 +60,7 @@ ESPGS_LDFLAGS=
 ESPGS_BUILD_DIR=$(BUILD_DIR)/espgs
 ESPGS_SOURCE_DIR=$(SOURCE_DIR)/espgs
 ESPGS_IPK_DIR=$(BUILD_DIR)/espgs-$(ESPGS_VERSION)-ipk
-ESPGS_IPK=$(BUILD_DIR)/espgs_$(ESPGS_VERSION)-$(ESPGS_IPK_VERSION)_armeb.ipk
+ESPGS_IPK=$(BUILD_DIR)/espgs_$(ESPGS_VERSION)-$(ESPGS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,7 +152,7 @@ espgs-stage: $(ESPGS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(ESPGS_IPK): $(ESPGS_BUILD_DIR)/.built
-	rm -rf $(ESPGS_IPK_DIR) $(BUILD_DIR)/espgs_*_armeb.ipk
+	rm -rf $(ESPGS_IPK_DIR) $(BUILD_DIR)/espgs_*_$(TARGET_ARCH).ipk
 	cat $(ESPGS_BUILD_DIR)/pstoraster/pstopxl.in | sed 's/@bindir@/\/opt\/bin/g' | sed 's/@prefix@/\/opt/g'| sed 's/@exec_prefix@/\/opt/g' |sed 's/@GS_VERSION_MAJOR@/8/g'|  sed 's/@GS_VERSION_MINOR@/15/g' |  sed 's/@GS_VERSION_PATCH@//g' |  sed 's/@GS@/gs/g' > $(ESPGS_BUILD_DIR)/pstoraster/pstopxl
 	cat $(ESPGS_BUILD_DIR)/pstoraster/pstoraster.in | sed 's/@bindir@/\/opt\/bin/g' | sed 's/@prefix@/\/opt/g'| sed 's/@exec_prefix@/\/opt/g' |sed 's/@GS_VERSION_MAJOR@/8/g'|  sed 's/@GS_VERSION_MINOR@/15/g' |  sed 's/@GS_VERSION_PATCH@//g' |  sed 's/@GS@/gs/g' > $(ESPGS_BUILD_DIR)/pstoraster/pstoraster
 	$(MAKE) -C $(ESPGS_BUILD_DIR) install_prefix=$(ESPGS_IPK_DIR) prefix=$(ESPGS_IPK_DIR)/opt DESTDIR=$(ESPGS_IPK_DIR) install

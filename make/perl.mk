@@ -54,7 +54,7 @@ PERL_LDFLAGS=
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
-PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_armeb.ipk
+PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -93,7 +93,7 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
 	cat $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL | \
-	sed -e 's:/usr/include/errno.h:/opt/armeb/$(GNU_TARGET_NAME)/include/errno.h:g'\
+	sed -e 's:/usr/include/errno.h:/opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/include/errno.h:g'\
 	> $(PERL_BUILD_DIR)/ext/Errno/tmp
 	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
 	(cd $(PERL_BUILD_DIR); \
@@ -137,7 +137,7 @@ perl: $(PERL_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(PERL_IPK): $(PERL_BUILD_DIR)/.built
-	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_armeb.ipk
+	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
 	rm -f $(PERL_IPK_DIR)/opt/bin/perl
 	ln -s /opt/bin/perl$(PERL_VERSION) $(PERL_IPK_DIR)/opt/bin/perl

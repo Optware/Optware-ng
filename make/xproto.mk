@@ -59,7 +59,7 @@ XPROTO_LDFLAGS=
 XPROTO_BUILD_DIR=$(BUILD_DIR)/xproto
 XPROTO_SOURCE_DIR=$(SOURCE_DIR)/xproto
 XPROTO_IPK_DIR=$(BUILD_DIR)/xproto-$(XPROTO_VERSION)-ipk
-XPROTO_IPK=$(BUILD_DIR)/xproto_$(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)_armeb.ipk
+XPROTO_IPK=$(BUILD_DIR)/xproto_$(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -68,7 +68,7 @@ $(XPROTO_IPK_DIR)/CONTROL/control:
 	@install -d $(XPROTO_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xproto" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XPROTO_PRIORITY)" >>$@
 	@echo "Section: $(XPROTO_SECTION)" >>$@
 	@echo "Version: $(XPROTO_VERSION)-$(XPROTO_IPK_VERSION)" >>$@
@@ -153,7 +153,7 @@ xproto-stage: $(STAGING_INCLUDE_DIR)/X11/X.h
 # You may need to patch your application to make it use these locations.
 #
 $(XPROTO_IPK): $(XPROTO_BUILD_DIR)/.built
-	rm -rf $(XPROTO_IPK_DIR) $(BUILD_DIR)/xproto_*_armeb.ipk
+	rm -rf $(XPROTO_IPK_DIR) $(BUILD_DIR)/xproto_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XPROTO_BUILD_DIR) DESTDIR=$(XPROTO_IPK_DIR) install
 	$(MAKE) $(XPROTO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XPROTO_IPK_DIR)

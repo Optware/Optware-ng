@@ -1,10 +1,10 @@
 Package: libid3tag
 Priority: optional
-Version: 0.15.1b-1
-Architecture: armeb
+Version: @VERSION@-@RELEASE@
+Architecture: @ARCH@
 Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: libs
-Source: http://belnet.dl.sourceforge.net/sourceforge/mad/libid3tag-0.15.1b.tar.gz
+Source: http://belnet.dl.sourceforge.net/sourceforge/mad/libid3tag-@VERSION@.tar.gz
 Depends: zlib
 Description: The library used for ID3 tag reading
 

@@ -54,7 +54,7 @@ XEMACS_LDFLAGS=
 XEMACS_BUILD_DIR=$(BUILD_DIR)/xemacs
 XEMACS_SOURCE_DIR=$(SOURCE_DIR)/xemacs
 XEMACS_IPK_DIR=$(BUILD_DIR)/xemacs-$(XEMACS_VERSION)-ipk
-XEMACS_IPK=$(BUILD_DIR)/xemacs_$(XEMACS_VERSION)-$(XEMACS_IPK_VERSION)_armeb.ipk
+XEMACS_IPK=$(BUILD_DIR)/xemacs_$(XEMACS_VERSION)-$(XEMACS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -128,7 +128,7 @@ xemacs: $(XEMACS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(XEMACS_IPK): $(XEMACS_BUILD_DIR)/.built
-	rm -rf $(XEMACS_IPK_DIR) $(BUILD_DIR)/xemacs_*_armeb.ipk
+	rm -rf $(XEMACS_IPK_DIR) $(BUILD_DIR)/xemacs_*_$(TARGET_ARCH).ipk
 	install -d $(XEMACS_IPK_DIR)/opt
 	$(MAKE) -C $(XEMACS_BUILD_DIR) prefix=$(XEMACS_IPK_DIR)/opt install
 	rm -f $(XEMACS_IPK_DIR)/opt/bin/xemacs

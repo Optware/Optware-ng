@@ -56,7 +56,7 @@ XRENDER_LDFLAGS=
 XRENDER_BUILD_DIR=$(BUILD_DIR)/xrender
 XRENDER_SOURCE_DIR=$(SOURCE_DIR)/xrender
 XRENDER_IPK_DIR=$(BUILD_DIR)/xrender-$(XRENDER_VERSION)-ipk
-XRENDER_IPK=$(BUILD_DIR)/xrender_$(XRENDER_VERSION)-$(XRENDER_IPK_VERSION)_armeb.ipk
+XRENDER_IPK=$(BUILD_DIR)/xrender_$(XRENDER_VERSION)-$(XRENDER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XRENDER_IPK_DIR)/CONTROL/control:
 	@install -d $(XRENDER_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xrender" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XRENDER_PRIORITY)" >>$@
 	@echo "Section: $(XRENDER_SECTION)" >>$@
 	@echo "Version: $(XRENDER_VERSION)-$(XRENDER_IPK_VERSION)" >>$@
@@ -155,7 +155,7 @@ xrender-stage: $(STAGING_LIB_DIR)/libXrender.so
 # You may need to patch your application to make it use these locations.
 #
 $(XRENDER_IPK): $(XRENDER_BUILD_DIR)/.built
-	rm -rf $(XRENDER_IPK_DIR) $(BUILD_DIR)/xrender_*_armeb.ipk
+	rm -rf $(XRENDER_IPK_DIR) $(BUILD_DIR)/xrender_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(XRENDER_IPK_DIR) install-strip
 	rm -f $(XRENDER_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(XRENDER_IPK_DIR)/CONTROL/control

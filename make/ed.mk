@@ -55,7 +55,7 @@ ED_LDFLAGS=
 ED_BUILD_DIR=$(BUILD_DIR)/ed
 ED_SOURCE_DIR=$(SOURCE_DIR)/ed
 ED_IPK_DIR=$(BUILD_DIR)/ed-$(ED_VERSION)-ipk
-ED_IPK=$(BUILD_DIR)/ed_$(ED_VERSION)-$(ED_IPK_VERSION)_armeb.ipk
+ED_IPK=$(BUILD_DIR)/ed_$(ED_VERSION)-$(ED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -132,7 +132,7 @@ ed: $(ED_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(ED_IPK): $(ED_BUILD_DIR)/.built
-	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_armeb.ipk
+	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install
 	install -d $(ED_IPK_DIR)/CONTROL
 	install -m 644 $(ED_SOURCE_DIR)/control $(ED_IPK_DIR)/CONTROL/control

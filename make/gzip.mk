@@ -49,7 +49,7 @@ GZIP_LDFLAGS=
 GZIP_BUILD_DIR=$(BUILD_DIR)/gzip
 GZIP_SOURCE_DIR=$(SOURCE_DIR)/gzip
 GZIP_IPK_DIR=$(BUILD_DIR)/gzip-$(GZIP_VERSION)-ipk
-GZIP_IPK=$(BUILD_DIR)/gzip_$(GZIP_VERSION)-$(GZIP_IPK_VERSION)_armeb.ipk
+GZIP_IPK=$(BUILD_DIR)/gzip_$(GZIP_VERSION)-$(GZIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -125,7 +125,7 @@ gzip: $(GZIP_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
-	rm -rf $(GZIP_IPK_DIR) $(BUILD_DIR)/gzip_*_armeb.ipk
+	rm -rf $(GZIP_IPK_DIR) $(BUILD_DIR)/gzip_*_$(TARGET_ARCH).ipk
 	install -d $(GZIP_IPK_DIR)/opt/bin
 	install -d $(GZIP_IPK_DIR)/opt/lib
 	install -d $(GZIP_IPK_DIR)/opt/info

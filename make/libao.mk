@@ -59,7 +59,7 @@ LIBAO_LDFLAGS=
 LIBAO_BUILD_DIR=$(BUILD_DIR)/libao
 LIBAO_SOURCE_DIR=$(SOURCE_DIR)/libao
 LIBAO_IPK_DIR=$(BUILD_DIR)/libao-$(LIBAO_VERSION)-ipk
-LIBAO_IPK=$(BUILD_DIR)/libao_$(LIBAO_VERSION)-$(LIBAO_IPK_VERSION)_armeb.ipk
+LIBAO_IPK=$(BUILD_DIR)/libao_$(LIBAO_VERSION)-$(LIBAO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +146,7 @@ libao-stage: $(LIBAO_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBAO_IPK): $(LIBAO_BUILD_DIR)/.built
-	rm -rf $(LIBAO_IPK_DIR) $(BUILD_DIR)/libao_*_armeb.ipk
+	rm -rf $(LIBAO_IPK_DIR) $(BUILD_DIR)/libao_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBAO_BUILD_DIR) DESTDIR=$(LIBAO_IPK_DIR) install
 	install -d $(LIBAO_IPK_DIR)/CONTROL
 	install -m 644 $(LIBAO_SOURCE_DIR)/control $(LIBAO_IPK_DIR)/CONTROL/control

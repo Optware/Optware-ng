@@ -59,7 +59,7 @@ METALOG_LDFLAGS=
 METALOG_BUILD_DIR=$(BUILD_DIR)/metalog
 METALOG_SOURCE_DIR=$(SOURCE_DIR)/metalog
 METALOG_IPK_DIR=$(BUILD_DIR)/metalog-$(METALOG_VERSION)-ipk
-METALOG_IPK=$(BUILD_DIR)/metalog_$(METALOG_VERSION)-$(METALOG_IPK_VERSION)_armeb.ipk
+METALOG_IPK=$(BUILD_DIR)/metalog_$(METALOG_VERSION)-$(METALOG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ metalog-stage: $(METALOG_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(METALOG_IPK): $(METALOG_BUILD_DIR)/.built
-	rm -rf $(METALOG_IPK_DIR) $(BUILD_DIR)/metalog_*_armeb.ipk
+	rm -rf $(METALOG_IPK_DIR) $(BUILD_DIR)/metalog_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install-man
 	install -d $(METALOG_IPK_DIR)/opt/etc/

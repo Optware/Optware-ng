@@ -56,7 +56,7 @@ X11_LDFLAGS=
 X11_BUILD_DIR=$(BUILD_DIR)/x11
 X11_SOURCE_DIR=$(SOURCE_DIR)/x11
 X11_IPK_DIR=$(BUILD_DIR)/x11-$(X11_VERSION)-ipk
-X11_IPK=$(BUILD_DIR)/x11_$(X11_VERSION)-$(X11_IPK_VERSION)_armeb.ipk
+X11_IPK=$(BUILD_DIR)/x11_$(X11_VERSION)-$(X11_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(X11_IPK_DIR)/CONTROL/control:
 	@install -d $(X11_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: x11" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(X11_PRIORITY)" >>$@
 	@echo "Section: $(X11_SECTION)" >>$@
 	@echo "Version: $(X11_VERSION)-$(X11_IPK_VERSION)" >>$@
@@ -159,7 +159,7 @@ x11-stage: $(STAGING_LIB_DIR)/libX11.so
 # You may need to patch your application to make it use these locations.
 #
 $(X11_IPK): $(X11_BUILD_DIR)/.built
-	rm -rf $(X11_IPK_DIR) $(BUILD_DIR)/x11_*_armeb.ipk
+	rm -rf $(X11_IPK_DIR) $(BUILD_DIR)/x11_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(X11_IPK_DIR) install-strip
 	$(MAKE) $(X11_IPK_DIR)/CONTROL/control
 	install -m 644 $(X11_SOURCE_DIR)/postinst $(X11_IPK_DIR)/CONTROL/postinst

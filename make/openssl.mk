@@ -14,7 +14,7 @@ OPENSSL_IPK_VERSION=2
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
 OPENSSL_IPK_DIR=$(BUILD_DIR)/openssl-$(OPENSSL_VERSION)-ipk
-OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_armeb.ipk
+OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/Configure.patch
 
@@ -35,7 +35,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			$(STAGING_CPPFLAGS) \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
-			linux-elf-armeb \
+			linux-elf-$(TARGET_ARCH) \
 	)
 	touch $(OPENSSL_BUILD_DIR)/.configured
 
@@ -69,10 +69,10 @@ $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/li
 openssl-stage: $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION)
 
 $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
-	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_armeb.ipk
+	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk
 	install -d $(OPENSSL_IPK_DIR)/opt/bin
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)/opt/bin/openssl
-	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/bin/opensll
+	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/bin/openssl
 	install -d $(OPENSSL_IPK_DIR)/opt/share/openssl
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)/opt/share/openssl/openssl.cnf
 	install -d $(OPENSSL_IPK_DIR)/opt/include/openssl
@@ -87,7 +87,8 @@ $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
 	cd $(OPENSSL_IPK_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
 	install -d $(OPENSSL_IPK_DIR)/CONTROL
-	install -m 644 $(OPENSSL_SOURCE_DIR)/control $(OPENSSL_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(OPENSSL_VERSION)/" \
+		-e "s/@RELEASE@/$(OPENSSL_IPK_VERSION)/" $(OPENSSL_SOURCE_DIR)/control > $(OPENSSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
 
 openssl-ipk: $(OPENSSL_IPK)

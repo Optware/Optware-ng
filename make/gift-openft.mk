@@ -58,7 +58,7 @@ GIFTOPENFT_LDFLAGS=
 GIFTOPENFT_BUILD_DIR=$(BUILD_DIR)/gift-openft
 GIFTOPENFT_SOURCE_DIR=$(SOURCE_DIR)/gift-openft
 GIFTOPENFT_IPK_DIR=$(BUILD_DIR)/gift-openft-$(GIFTOPENFT_VERSION)-ipk
-GIFTOPENFT_IPK=$(BUILD_DIR)/gift-openft_$(GIFTOPENFT_VERSION)-$(GIFTOPENFT_IPK_VERSION)_armeb.ipk
+GIFTOPENFT_IPK=$(BUILD_DIR)/gift-openft_$(GIFTOPENFT_VERSION)-$(GIFTOPENFT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -155,7 +155,7 @@ gift-openft-stage: $(STAGING_DIR)/opt/lib/libgift-openft.so.$(GIFTOPENFT_VERSION
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTOPENFT_IPK): $(GIFTOPENFT_BUILD_DIR)/.built
-	rm -rf $(GIFTOPENFT_IPK_DIR) $(BUILD_DIR)/gift-openft_*_armeb.ipk
+	rm -rf $(GIFTOPENFT_IPK_DIR) $(BUILD_DIR)/gift-openft_*_$(TARGET_ARCH).ipk
 	install -d $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.so -o $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.so
 	install -m 644 $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.la $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.la

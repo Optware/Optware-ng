@@ -49,7 +49,7 @@ TAR_LDFLAGS=
 TAR_BUILD_DIR=$(BUILD_DIR)/tar
 TAR_SOURCE_DIR=$(SOURCE_DIR)/tar
 TAR_IPK_DIR=$(BUILD_DIR)/tar-$(TAR_VERSION)-ipk
-TAR_IPK=$(BUILD_DIR)/tar_$(TAR_VERSION)-$(TAR_IPK_VERSION)_armeb.ipk
+TAR_IPK=$(BUILD_DIR)/tar_$(TAR_VERSION)-$(TAR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -127,7 +127,7 @@ tar: $(TAR_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
-	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_armeb.ipk
+	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_$(TARGET_ARCH).ipk
 	install -d $(TAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
 	install -d $(TAR_IPK_DIR)/opt/libexec

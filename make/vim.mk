@@ -60,7 +60,7 @@ VIM_LDFLAGS=
 VIM_BUILD_DIR=$(BUILD_DIR)/vim
 VIM_SOURCE_DIR=$(SOURCE_DIR)/vim
 VIM_IPK_DIR=$(BUILD_DIR)/vim-$(VIM_VERSION)-ipk
-VIM_IPK=$(BUILD_DIR)/vim_$(VIM_VERSION)-$(VIM_IPK_VERSION)_armeb.ipk
+VIM_IPK=$(BUILD_DIR)/vim_$(VIM_VERSION)-$(VIM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,7 +153,7 @@ vim-stage: $(VIM_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(VIM_IPK): $(VIM_BUILD_DIR)/.built
-	rm -rf $(VIM_IPK_DIR) $(BUILD_DIR)/vim_*_armeb.ipk
+	rm -rf $(VIM_IPK_DIR) $(BUILD_DIR)/vim_*_$(TARGET_ARCH).ipk
 	cd $(VIM_BUILD_DIR)/src
 	$(MAKE) -C $(VIM_BUILD_DIR) DESTDIR=$(VIM_IPK_DIR) install
 	# Fix the $VIM directory

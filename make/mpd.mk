@@ -59,7 +59,7 @@ MPD_LDFLAGS=
 MPD_BUILD_DIR=$(BUILD_DIR)/mpd
 MPD_SOURCE_DIR=$(SOURCE_DIR)/mpd
 MPD_IPK_DIR=$(BUILD_DIR)/mpd-$(MPD_VERSION)-ipk
-MPD_IPK=$(BUILD_DIR)/mpd_$(MPD_VERSION)-$(MPD_IPK_VERSION)_armeb.ipk
+MPD_IPK=$(BUILD_DIR)/mpd_$(MPD_VERSION)-$(MPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -167,7 +167,7 @@ mpd-stage: $(MPD_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(MPD_IPK): $(MPD_BUILD_DIR)/.built
-	rm -rf $(MPD_IPK_DIR) $(BUILD_DIR)/mpd_*_armeb.ipk
+	rm -rf $(MPD_IPK_DIR) $(BUILD_DIR)/mpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPD_BUILD_DIR) DESTDIR=$(MPD_IPK_DIR) install
 	install -d $(MPD_IPK_DIR)/opt/etc/
 	install -m 644 $(MPD_SOURCE_DIR)/mpd.conf $(MPD_IPK_DIR)/opt/etc/mpd.conf

@@ -28,13 +28,13 @@ RSNAPSHOT_LDFLAGS=
 RSNAPSHOT_BUILD_DIR=$(BUILD_DIR)/rsnapshot
 RSNAPSHOT_SOURCE_DIR=$(SOURCE_DIR)/rsnapshot
 RSNAPSHOT_IPK_DIR=$(BUILD_DIR)/rsnapshot-$(RSNAPSHOT_VERSION)-ipk
-RSNAPSHOT_IPK=$(BUILD_DIR)/rsnapshot_$(RSNAPSHOT_VERSION)-$(RSNAPSHOT_IPK_VERSION)_armeb.ipk
+RSNAPSHOT_IPK=$(BUILD_DIR)/rsnapshot_$(RSNAPSHOT_VERSION)-$(RSNAPSHOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(RSNAPSHOT_IPK_DIR)/CONTROL/control:
 	@install -d $(RSNAPSHOT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: rsnapshot" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(RSNAPSHOT_PRIORITY)" >>$@
 	@echo "Section: $(RSNAPSHOT_SECTION)" >>$@
 	@echo "Version: $(RSNAPSHOT_VERSION)-$(RSNAPSHOT_IPK_VERSION)" >>$@
@@ -93,7 +93,7 @@ $(RSNAPSHOT_BUILD_DIR)/.staged: $(RSNAPSHOT_BUILD_DIR)/.built
 rsnapshot-stage: $(RSNAPSHOT_BUILD_DIR)/.staged
 
 $(RSNAPSHOT_IPK): $(RSNAPSHOT_BUILD_DIR)/.built
-	rm -rf $(RSNAPSHOT_IPK_DIR) $(BUILD_DIR)/rsnapshot_*_armeb.ipk
+	rm -rf $(RSNAPSHOT_IPK_DIR) $(BUILD_DIR)/rsnapshot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
 	find $(RSNAPSHOT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	rm -rf $(RSNAPSHOT_IPK_DIR)/opt/etc/rsnapshot.conf.default

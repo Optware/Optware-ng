@@ -52,7 +52,7 @@ GIFT_OPENNAP_LDFLAGS=
 GIFT_OPENNAP_BUILD_DIR=$(BUILD_DIR)/gift-opennap
 GIFT_OPENNAP_SOURCE_DIR=$(SOURCE_DIR)/gift-opennap
 GIFT_OPENNAP_IPK_DIR=$(BUILD_DIR)/gift-opennap-$(GIFT_OPENNAP_VERSION)-ipk
-GIFT_OPENNAP_IPK=$(BUILD_DIR)/gift-opennap_$(GIFT_OPENNAP_VERSION)-$(GIFT_OPENNAP_IPK_VERSION)_armeb.ipk
+GIFT_OPENNAP_IPK=$(BUILD_DIR)/gift-opennap_$(GIFT_OPENNAP_VERSION)-$(GIFT_OPENNAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,7 +153,7 @@ gift-opennap-stage: $(STAGING_DIR)/opt/lib/libgift-opennap.so.$(GIFT_OPENNAP_VER
 # You may need to patch your application to make it use these locations.
 #
 $(GIFT_OPENNAP_IPK): $(GIFT_OPENNAP_BUILD_DIR)/.built
-	rm -rf $(GIFT_OPENNAP_IPK_DIR) $(BUILD_DIR)/gift-opennap_*_armeb.ipk
+	rm -rf $(GIFT_OPENNAP_IPK_DIR) $(BUILD_DIR)/gift-opennap_*_$(TARGET_ARCH).ipk
 	install -d $(GIFT_OPENNAP_IPK_DIR)/opt/lib/giFT
 	$(STRIP_COMMAND) $(GIFT_OPENNAP_BUILD_DIR)/src/.libs/libOpenNap.so -o $(GIFT_OPENNAP_IPK_DIR)/opt/lib/giFT/libOpenNap.so
 	install -m 644 $(GIFT_OPENNAP_BUILD_DIR)/src/.libs/libOpenNap.la $(GIFT_OPENNAP_IPK_DIR)/opt/lib/giFT/libOpenNap.la

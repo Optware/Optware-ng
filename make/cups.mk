@@ -59,7 +59,7 @@ CUPS_LDFLAGS=
 CUPS_BUILD_DIR=$(BUILD_DIR)/cups
 CUPS_SOURCE_DIR=$(SOURCE_DIR)/cups
 CUPS_IPK_DIR=$(BUILD_DIR)/cups-$(CUPS_VERSION)-ipk
-CUPS_IPK=$(BUILD_DIR)/cups_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_armeb.ipk
+CUPS_IPK=$(BUILD_DIR)/cups_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -168,7 +168,7 @@ cups-stage: $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
-	rm -rf $(CUPS_IPK_DIR) $(BUILD_DIR)/cups_*_armeb.ipk
+	rm -rf $(CUPS_IPK_DIR) $(BUILD_DIR)/cups_*_$(TARGET_ARCH).ipk
 	install -d $(CUPS_IPK_DIR)
 	# Make sure /opt/var/spool has correct permissions
 	install -m 0755 -d $(CUPS_IPK_DIR)/opt/var/spool

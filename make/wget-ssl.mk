@@ -54,7 +54,7 @@ WGET-SSL_LDFLAGS=
 WGET-SSL_BUILD_DIR=$(BUILD_DIR)/wget-ssl
 WGET-SSL_SOURCE_DIR=$(SOURCE_DIR)/wget-ssl
 WGET-SSL_IPK_DIR=$(BUILD_DIR)/wget-ssl-$(WGET-SSL_VERSION)-ipk
-WGET-SSL_IPK=$(BUILD_DIR)/wget-ssl_$(WGET-SSL_VERSION)-$(WGET-SSL_IPK_VERSION)_armeb.ipk
+WGET-SSL_IPK=$(BUILD_DIR)/wget-ssl_$(WGET-SSL_VERSION)-$(WGET-SSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -133,7 +133,7 @@ wget-ssl: $(WGET-SSL_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
-	rm -rf $(WGET-SSL_IPK_DIR) $(BUILD_DIR)/wget-ssl_*_armeb.ipk
+	rm -rf $(WGET-SSL_IPK_DIR) $(BUILD_DIR)/wget-ssl_*_$(TARGET_ARCH).ipk
 	install -d $(WGET-SSL_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(WGET-SSL_BUILD_DIR)/src/wget -o $(WGET-SSL_IPK_DIR)/opt/bin/wget
 	install -d $(WGET-SSL_IPK_DIR)/opt/etc/

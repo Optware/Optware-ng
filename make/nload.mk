@@ -55,7 +55,7 @@ NLOAD_LDFLAGS=
 NLOAD_BUILD_DIR=$(BUILD_DIR)/nload
 NLOAD_SOURCE_DIR=$(SOURCE_DIR)/nload
 NLOAD_IPK_DIR=$(BUILD_DIR)/nload-$(NLOAD_VERSION)-ipk
-NLOAD_IPK=$(BUILD_DIR)/nload_$(NLOAD_VERSION)-$(NLOAD_IPK_VERSION)_armeb.ipk
+NLOAD_IPK=$(BUILD_DIR)/nload_$(NLOAD_VERSION)-$(NLOAD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -148,7 +148,7 @@ nload-stage: $(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(NLOAD_IPK): $(NLOAD_BUILD_DIR)/.built
-	rm -rf $(NLOAD_IPK_DIR) $(BUILD_DIR)/nload_*_armeb.ipk
+	rm -rf $(NLOAD_IPK_DIR) $(BUILD_DIR)/nload_*_$(TARGET_ARCH).ipk
 	install -d $(NLOAD_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NLOAD_BUILD_DIR)/src/nload -o $(NLOAD_IPK_DIR)/opt/bin/nload
 	install -d $(NLOAD_IPK_DIR)/CONTROL

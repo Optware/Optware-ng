@@ -55,7 +55,7 @@ NAIL_LDFLAGS=
 NAIL_BUILD_DIR=$(BUILD_DIR)/nail
 NAIL_SOURCE_DIR=$(SOURCE_DIR)/nail
 NAIL_IPK_DIR=$(BUILD_DIR)/nail-$(NAIL_VERSION)-ipk
-NAIL_IPK=$(BUILD_DIR)/nail_$(NAIL_VERSION)-$(NAIL_IPK_VERSION)_armeb.ipk
+NAIL_IPK=$(BUILD_DIR)/nail_$(NAIL_VERSION)-$(NAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +146,7 @@ nail: $(NAIL_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(NAIL_IPK): $(NAIL_BUILD_DIR)/.built
-	rm -rf $(NAIL_IPK_DIR) $(BUILD_DIR)/nail_*_armeb.ipk
+	rm -rf $(NAIL_IPK_DIR) $(BUILD_DIR)/nail_*_$(TARGET_ARCH).ipk
 	install -d $(NAIL_IPK_DIR)/opt/bin
 	install -d $(NAIL_IPK_DIR)/opt/doc/nail
 	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/nail -o $(NAIL_IPK_DIR)/opt/bin/nail

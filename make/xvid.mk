@@ -52,7 +52,7 @@ XVID_LDFLAGS=
 XVID_BUILD_DIR=$(BUILD_DIR)/xvid
 XVID_SOURCE_DIR=$(SOURCE_DIR)/xvid
 XVID_IPK_DIR=$(BUILD_DIR)/xvid-$(XVID_VERSION)-ipk
-XVID_IPK=$(BUILD_DIR)/xvid_$(XVID_VERSION)-$(XVID_IPK_VERSION)_armeb.ipk
+XVID_IPK=$(BUILD_DIR)/xvid_$(XVID_VERSION)-$(XVID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -154,7 +154,7 @@ xvid-stage: $(STAGING_DIR)/opt/lib/libxvid.so.$(XVID_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(XVID_IPK): $(XVID_BUILD_DIR)/.built
-	rm -rf $(XVID_IPK_DIR) $(BUILD_DIR)/xvid_*_armeb.ipk
+	rm -rf $(XVID_IPK_DIR) $(BUILD_DIR)/xvid_*_$(TARGET_ARCH).ipk
 	$(MAKE) DESTDIR=$(XVID_IPK_DIR) -C $(XVID_BUILD_DIR)/build/generic install
 	$(STRIP_COMMAND) $(XVID_IPK_DIR)/opt/lib/libxvidcore.a libxvidcore.so.4.1
 	ln -s $(XVID_IPK_DIR)/opt/lib/libxvidcore.so.4.1 $(XVID_IPK_DIR)/opt/lib/libxvidcore.so

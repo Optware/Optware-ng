@@ -55,7 +55,7 @@ SCREEN_LDFLAGS=
 SCREEN_BUILD_DIR=$(BUILD_DIR)/screen
 SCREEN_SOURCE_DIR=$(SOURCE_DIR)/screen
 SCREEN_IPK_DIR=$(BUILD_DIR)/screen-$(SCREEN_VERSION)-ipk
-SCREEN_IPK=$(BUILD_DIR)/screen_$(SCREEN_VERSION)-$(SCREEN_IPK_VERSION)_armeb.ipk
+SCREEN_IPK=$(BUILD_DIR)/screen_$(SCREEN_VERSION)-$(SCREEN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ screen-stage: $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
-	rm -rf $(SCREEN_IPK_DIR) $(BUILD_DIR)/screen_*_armeb.ipk
+	rm -rf $(SCREEN_IPK_DIR) $(BUILD_DIR)/screen_*_$(TARGET_ARCH).ipk
 	install -d $(SCREEN_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(SCREEN_BUILD_DIR)/screen -o $(SCREEN_IPK_DIR)/opt/bin/screen
 	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d

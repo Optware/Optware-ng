@@ -15,7 +15,7 @@ ATFTP_IPK_VERSION=3
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
 ATFTP_IPK_DIR=$(BUILD_DIR)/atftp-$(ATFTP_VERSION)-ipk
-ATFTP_IPK=$(BUILD_DIR)/atftp_$(ATFTP_VERSION)-$(ATFTP_IPK_VERSION)_armeb.ipk
+ATFTP_IPK=$(BUILD_DIR)/atftp_$(ATFTP_VERSION)-$(ATFTP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(ATFTP_SOURCE):
 	$(WGET) -P $(DL_DIR) $(ATFTP_SITE)/$(ATFTP_SOURCE)
@@ -47,7 +47,7 @@ $(ATFTP_BUILD_DIR)/atftp: $(ATFTP_BUILD_DIR)/.configured
 atftp: $(ATFTP_BUILD_DIR)/atftp
 
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
-	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_armeb.ipk
+	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_$(TARGET_ARCH).ipk
 	install -d $(ATFTP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
 	install -d $(ATFTP_IPK_DIR)/opt/sbin

@@ -56,7 +56,7 @@ XAUTH_LDFLAGS=-Wl,-rpath-link $(STAGING_LIB_DIR)
 XAUTH_BUILD_DIR=$(BUILD_DIR)/xauth
 XAUTH_SOURCE_DIR=$(SOURCE_DIR)/xauth
 XAUTH_IPK_DIR=$(BUILD_DIR)/xauth-$(XAUTH_VERSION)-ipk
-XAUTH_IPK=$(BUILD_DIR)/xauth_$(XAUTH_VERSION)-$(XAUTH_IPK_VERSION)_armeb.ipk
+XAUTH_IPK=$(BUILD_DIR)/xauth_$(XAUTH_VERSION)-$(XAUTH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XAUTH_IPK_DIR)/CONTROL/control:
 	@install -d $(XAUTH_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xauth" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XAUTH_PRIORITY)" >>$@
 	@echo "Section: $(XAUTH_SECTION)" >>$@
 	@echo "Version: $(XAUTH_VERSION)-$(XAUTH_IPK_VERSION)" >>$@
@@ -157,7 +157,7 @@ xauth-stage: $(XAUTH_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(XAUTH_IPK): $(XAUTH_BUILD_DIR)/.built
-	rm -rf $(XAUTH_IPK_DIR) $(BUILD_DIR)/xauth_*_armeb.ipk
+	rm -rf $(XAUTH_IPK_DIR) $(BUILD_DIR)/xauth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(XAUTH_IPK_DIR) install-strip
 	$(MAKE) $(XAUTH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAUTH_IPK_DIR)

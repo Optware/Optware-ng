@@ -55,7 +55,7 @@ CTORRENT_LDFLAGS=
 CTORRENT_BUILD_DIR=$(BUILD_DIR)/ctorrent
 CTORRENT_SOURCE_DIR=$(SOURCE_DIR)/ctorrent
 CTORRENT_IPK_DIR=$(BUILD_DIR)/ctorrent-$(CTORRENT_VERSION)-ipk
-CTORRENT_IPK=$(BUILD_DIR)/ctorrent_$(CTORRENT_VERSION)-$(CTORRENT_IPK_VERSION)_armeb.ipk
+CTORRENT_IPK=$(BUILD_DIR)/ctorrent_$(CTORRENT_VERSION)-$(CTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

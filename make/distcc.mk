@@ -55,7 +55,7 @@ DISTCC_LDFLAGS=
 DISTCC_BUILD_DIR=$(BUILD_DIR)/distcc
 DISTCC_SOURCE_DIR=$(SOURCE_DIR)/distcc
 DISTCC_IPK_DIR=$(BUILD_DIR)/distcc-$(DISTCC_VERSION)-ipk
-DISTCC_IPK=$(BUILD_DIR)/distcc_$(DISTCC_VERSION)-$(DISTCC_IPK_VERSION)_armeb.ipk
+DISTCC_IPK=$(BUILD_DIR)/distcc_$(DISTCC_VERSION)-$(DISTCC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

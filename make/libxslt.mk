@@ -54,7 +54,7 @@ LIBXSLT_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 LIBXSLT_BUILD_DIR=$(BUILD_DIR)/libxslt
 LIBXSLT_SOURCE_DIR=$(SOURCE_DIR)/libxslt
 LIBXSLT_IPK_DIR=$(BUILD_DIR)/libxslt-$(LIBXSLT_VERSION)-ipk
-LIBXSLT_IPK=$(BUILD_DIR)/libxslt_$(LIBXSLT_VERSION)-$(LIBXSLT_IPK_VERSION)_armeb.ipk
+LIBXSLT_IPK=$(BUILD_DIR)/libxslt_$(LIBXSLT_VERSION)-$(LIBXSLT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,7 +152,7 @@ libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBXSLT_IPK): $(LIBXSLT_BUILD_DIR)/.built
-	rm -rf $(LIBXSLT_IPK_DIR) $(BUILD_DIR)/libxslt_*_armeb.ipk
+	rm -rf $(LIBXSLT_IPK_DIR) $(BUILD_DIR)/libxslt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(LIBXSLT_IPK_DIR) install
 	rm $(LIBXSLT_IPK_DIR)/opt/lib/libxslt.la
 	rm $(LIBXSLT_IPK_DIR)/opt/lib/libexslt.la

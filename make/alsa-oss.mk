@@ -59,7 +59,7 @@ ALSA-OSS_LDFLAGS=
 ALSA-OSS_BUILD_DIR=$(BUILD_DIR)/alsa-oss
 ALSA-OSS_SOURCE_DIR=$(SOURCE_DIR)/alsa-oss
 ALSA-OSS_IPK_DIR=$(BUILD_DIR)/alsa-oss-$(ALSA-OSS_VERSION)-ipk
-ALSA-OSS_IPK=$(BUILD_DIR)/alsa-oss_$(ALSA-OSS_VERSION)-$(ALSA-OSS_IPK_VERSION)_armeb.ipk
+ALSA-OSS_IPK=$(BUILD_DIR)/alsa-oss_$(ALSA-OSS_VERSION)-$(ALSA-OSS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ alsa-oss-stage: $(ALSA-OSS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(ALSA-OSS_IPK): $(ALSA-OSS_BUILD_DIR)/.built
-	rm -rf $(ALSA-OSS_IPK_DIR) $(BUILD_DIR)/alsa-oss_*_armeb.ipk
+	rm -rf $(ALSA-OSS_IPK_DIR) $(BUILD_DIR)/alsa-oss_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ALSA-OSS_BUILD_DIR) DESTDIR=$(ALSA-OSS_IPK_DIR) install
 	install -d $(ALSA-OSS_IPK_DIR)/CONTROL
 	install -m 644 $(ALSA-OSS_SOURCE_DIR)/control $(ALSA-OSS_IPK_DIR)/CONTROL/control

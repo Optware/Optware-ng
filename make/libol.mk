@@ -60,7 +60,7 @@ LIBOL_LDFLAGS=
 LIBOL_BUILD_DIR=$(BUILD_DIR)/libol
 LIBOL_SOURCE_DIR=$(SOURCE_DIR)/libol
 LIBOL_IPK_DIR=$(BUILD_DIR)/libol-$(LIBOL_VERSION)-ipk
-LIBOL_IPK=$(BUILD_DIR)/libol_$(LIBOL_VERSION)-$(LIBOL_IPK_VERSION)_armeb.ipk
+LIBOL_IPK=$(BUILD_DIR)/libol_$(LIBOL_VERSION)-$(LIBOL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -148,7 +148,7 @@ libol-stage: $(LIBOL_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBOL_IPK): $(LIBOL_BUILD_DIR)/.built
-	rm -rf $(LIBOL_IPK_DIR) $(BUILD_DIR)/libol_*_armeb.ipk
+	rm -rf $(LIBOL_IPK_DIR) $(BUILD_DIR)/libol_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOL_BUILD_DIR) DESTDIR=$(LIBOL_IPK_DIR) install
 	install -d $(LIBOL_IPK_DIR)/CONTROL
 	install -m 644 $(LIBOL_SOURCE_DIR)/control $(LIBOL_IPK_DIR)/CONTROL/control

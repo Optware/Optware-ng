@@ -82,7 +82,7 @@ PHP_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 PHP_BUILD_DIR=$(BUILD_DIR)/php
 PHP_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_IPK_DIR=$(BUILD_DIR)/php-$(PHP_VERSION)-ipk
-PHP_IPK=$(BUILD_DIR)/php_$(PHP_VERSION)-$(PHP_IPK_VERSION)_armeb.ipk
+PHP_IPK=$(BUILD_DIR)/php_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -91,7 +91,7 @@ $(PHP_IPK_DIR)/CONTROL/control:
 	@install -d $(PHP_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: php" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PHP_PRIORITY)" >>$@
 	@echo "Section: $(PHP_SECTION)" >>$@
 	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
@@ -220,7 +220,7 @@ php-stage: $(STAGING_DIR)/opt/bin/php
 # You may need to patch your application to make it use these locations.
 #
 $(PHP_IPK): $(PHP_BUILD_DIR)/.built
-	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_armeb.ipk
+	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
 	install -d $(PHP_IPK_DIR)/opt/etc/apache2/conf.d
 	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session

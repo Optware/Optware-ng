@@ -59,7 +59,7 @@ CRON_LDFLAGS=
 CRON_BUILD_DIR=$(BUILD_DIR)/cron
 CRON_SOURCE_DIR=$(SOURCE_DIR)/cron
 CRON_IPK_DIR=$(BUILD_DIR)/cron-$(CRON_VERSION)-ipk
-CRON_IPK=$(BUILD_DIR)/cron_$(CRON_VERSION)-$(CRON_IPK_VERSION)_armeb.ipk
+CRON_IPK=$(BUILD_DIR)/cron_$(CRON_VERSION)-$(CRON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -137,7 +137,7 @@ cron-stage: $(CRON_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(CRON_IPK): $(CRON_BUILD_DIR)/.built
-	rm -rf $(CRON_IPK_DIR) $(BUILD_DIR)/cron_*_armeb.ipk
+	rm -rf $(CRON_IPK_DIR) $(BUILD_DIR)/cron_*_$(TARGET_ARCH).ipk
 	# Install and strip the two executables
 	install -d $(CRON_IPK_DIR)/opt/sbin
 	install -d $(CRON_IPK_DIR)/opt/bin

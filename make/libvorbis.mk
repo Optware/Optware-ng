@@ -61,7 +61,7 @@ LIBVORBIS_LDFLAGS=
 LIBVORBIS_BUILD_DIR=$(BUILD_DIR)/libvorbis
 LIBVORBIS_SOURCE_DIR=$(SOURCE_DIR)/libvorbis
 LIBVORBIS_IPK_DIR=$(BUILD_DIR)/libvorbis-$(LIBVORBIS_VERSION)-ipk
-LIBVORBIS_IPK=$(BUILD_DIR)/libvorbis_$(LIBVORBIS_VERSION)-$(LIBVORBIS_IPK_VERSION)_armeb.ipk
+LIBVORBIS_IPK=$(BUILD_DIR)/libvorbis_$(LIBVORBIS_VERSION)-$(LIBVORBIS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,10 +152,11 @@ libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/.built
-	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_armeb.ipk
+	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(LIBVORBIS_IPK_DIR) install
 	install -d $(LIBVORBIS_IPK_DIR)/CONTROL
-	install -m 644 $(LIBVORBIS_SOURCE_DIR)/control $(LIBVORBIS_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBVORBIS_VERSION)/" \
+		-e "s/@RELEASE@/$(LIBVORBIS_IPK_VERSION)/" $(LIBVORBIS_SOURCE_DIR)/control > $(LIBVORBIS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBIS_IPK_DIR)
 
 #

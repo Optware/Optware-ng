@@ -24,7 +24,7 @@ MIAU_LDFLAGS=
 MIAU_BUILD_DIR=$(BUILD_DIR)/miau
 MIAU_SOURCE_DIR=$(SOURCE_DIR)/miau
 MIAU_IPK_DIR=$(BUILD_DIR)/miau-$(MIAU_VERSION)-ipk
-MIAU_IPK=$(BUILD_DIR)/miau_$(MIAU_VERSION)-$(MIAU_IPK_VERSION)_armeb.ipk
+MIAU_IPK=$(BUILD_DIR)/miau_$(MIAU_VERSION)-$(MIAU_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(MIAU_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MIAU_SITE)/$(MIAU_SOURCE)
@@ -68,7 +68,7 @@ $(MIAU_BUILD_DIR)/src/miau: $(MIAU_BUILD_DIR)/.configured
 miau: $(MIAU_BUILD_DIR)/src/miau
 
 $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
-	rm -rf $(MIAU_IPK_DIR) $(BUILD_DIR)/miau_*_armeb.ipk
+	rm -rf $(MIAU_IPK_DIR) $(BUILD_DIR)/miau_*_$(TARGET_ARCH).ipk
 	install -d $(MIAU_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
 	install -d $(MIAU_IPK_DIR)/opt/etc

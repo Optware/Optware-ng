@@ -62,7 +62,7 @@ PKGCONFIG_LDFLAGS=
 PKGCONFIG_BUILD_DIR=$(BUILD_DIR)/pkgconfig
 PKGCONFIG_SOURCE_DIR=$(SOURCE_DIR)/pkgconfig
 PKGCONFIG_IPK_DIR=$(BUILD_DIR)/pkgconfig-$(PKGCONFIG_VERSION)-ipk
-PKGCONFIG_IPK=$(BUILD_DIR)/pkgconfig_$(PKGCONFIG_VERSION)-$(PKGCONFIG_IPK_VERSION)_armeb.ipk
+PKGCONFIG_IPK=$(BUILD_DIR)/pkgconfig_$(PKGCONFIG_VERSION)-$(PKGCONFIG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -71,7 +71,7 @@ $(PKGCONFIG_IPK_DIR)/CONTROL/control:
 	@install -d $(PKGCONFIG_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: pkgconfig" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PKGCONFIG_PRIORITY)" >>$@
 	@echo "Section: $(PKGCONFIG_SECTION)" >>$@
 	@echo "Version: $(PKGCONFIG_VERSION)-$(PKGCONFIG_IPK_VERSION)" >>$@
@@ -157,7 +157,7 @@ pkgconfig: $(PKGCONFIG_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(PKGCONFIG_IPK): $(PKGCONFIG_BUILD_DIR)/.built
-	rm -rf $(PKGCONFIG_IPK_DIR) $(BUILD_DIR)/pkgconfig_*_armeb.ipk
+	rm -rf $(PKGCONFIG_IPK_DIR) $(BUILD_DIR)/pkgconfig_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PKGCONFIG_BUILD_DIR) DESTDIR=$(PKGCONFIG_IPK_DIR) install-strip
 	$(MAKE) $(PKGCONFIG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PKGCONFIG_IPK_DIR)

@@ -60,7 +60,7 @@ CENTERICQ_LDFLAGS=
 CENTERICQ_BUILD_DIR=$(BUILD_DIR)/centericq
 CENTERICQ_SOURCE_DIR=$(SOURCE_DIR)/centericq
 CENTERICQ_IPK_DIR=$(BUILD_DIR)/centericq-$(CENTERICQ_VERSION)-ipk
-CENTERICQ_IPK=$(BUILD_DIR)/centericq_$(CENTERICQ_VERSION)-$(CENTERICQ_IPK_VERSION)_armeb.ipk
+CENTERICQ_IPK=$(BUILD_DIR)/centericq_$(CENTERICQ_VERSION)-$(CENTERICQ_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,7 +153,7 @@ centericq-stage: $(CENTERICQ_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(CENTERICQ_IPK): $(CENTERICQ_BUILD_DIR)/.built
-	rm -rf $(CENTERICQ_IPK_DIR) $(BUILD_DIR)/centericq_*_armeb.ipk
+	rm -rf $(CENTERICQ_IPK_DIR) $(BUILD_DIR)/centericq_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CENTERICQ_BUILD_DIR) DESTDIR=$(CENTERICQ_IPK_DIR) install
 	# Strip the executables
 	$(STRIP_COMMAND) $(CENTERICQ_IPK_DIR)/opt/bin/centericq

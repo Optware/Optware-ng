@@ -55,7 +55,7 @@ TRICKLE_LDFLAGS=
 TRICKLE_BUILD_DIR=$(BUILD_DIR)/trickle
 TRICKLE_SOURCE_DIR=$(SOURCE_DIR)/trickle
 TRICKLE_IPK_DIR=$(BUILD_DIR)/trickle-$(TRICKLE_VERSION)-ipk
-TRICKLE_IPK=$(BUILD_DIR)/trickle_$(TRICKLE_VERSION)-$(TRICKLE_IPK_VERSION)_armeb.ipk
+TRICKLE_IPK=$(BUILD_DIR)/trickle_$(TRICKLE_VERSION)-$(TRICKLE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -151,7 +151,7 @@ trickle-stage: $(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
-	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_armeb.ipk
+	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
 	install -d $(TRICKLE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TRICKLE_BUILD_DIR)/trickle -o $(TRICKLE_IPK_DIR)/opt/bin/trickle
 	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d

@@ -54,7 +54,7 @@ GETTEXT_LDFLAGS=
 GETTEXT_BUILD_DIR=$(BUILD_DIR)/gettext
 GETTEXT_SOURCE_DIR=$(SOURCE_DIR)/gettext
 GETTEXT_IPK_DIR=$(BUILD_DIR)/gettext-$(GETTEXT_VERSION)-ipk
-GETTEXT_IPK=$(BUILD_DIR)/gettext_$(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)_armeb.ipk
+GETTEXT_IPK=$(BUILD_DIR)/gettext_$(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -142,7 +142,7 @@ gettext-stage: $(GETTEXT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
-	rm -rf $(GETTEXT_IPK_DIR) $(BUILD_DIR)/gettext_*_armeb.ipk
+	rm -rf $(GETTEXT_IPK_DIR) $(BUILD_DIR)/gettext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(GETTEXT_IPK_DIR) install
 #	install -d $(GETTEXT_IPK_DIR)/opt/etc/
 #	install -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf

@@ -57,7 +57,7 @@ IRSSI_LDFLAGS=
 IRSSI_BUILD_DIR=$(BUILD_DIR)/irssi
 IRSSI_SOURCE_DIR=$(SOURCE_DIR)/irssi
 IRSSI_IPK_DIR=$(BUILD_DIR)/irssi-$(IRSSI_VERSION)-ipk
-IRSSI_IPK=$(BUILD_DIR)/irssi_$(IRSSI_VERSION)-$(IRSSI_IPK_VERSION)_armeb.ipk
+IRSSI_IPK=$(BUILD_DIR)/irssi_$(IRSSI_VERSION)-$(IRSSI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -150,7 +150,7 @@ irssi-stage: $(IRSSI_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(IRSSI_IPK): $(IRSSI_BUILD_DIR)/.built
-	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_armeb.ipk
+	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install-strip
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf

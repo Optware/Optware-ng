@@ -54,7 +54,7 @@ ADNS_LDFLAGS=
 ADNS_BUILD_DIR=$(BUILD_DIR)/adns
 ADNS_SOURCE_DIR=$(SOURCE_DIR)/adns
 ADNS_IPK_DIR=$(BUILD_DIR)/adns-$(ADNS_VERSION)-ipk
-ADNS_IPK=$(BUILD_DIR)/adns_$(ADNS_VERSION)-$(ADNS_IPK_VERSION)_armeb.ipk
+ADNS_IPK=$(BUILD_DIR)/adns_$(ADNS_VERSION)-$(ADNS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ adns-stage: $(ADNS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
-	rm -rf $(ADNS_IPK_DIR) $(BUILD_DIR)/adns_*_armeb.ipk
+	rm -rf $(ADNS_IPK_DIR) $(BUILD_DIR)/adns_*_$(TARGET_ARCH).ipk
 	install -d $(ADNS_IPK_DIR)/opt/lib/
 	install -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
 	install -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.1.0 $(ADNS_IPK_DIR)/opt/lib/libadns.so.1.0

@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FREERADIUS_SITE=ftp://www.freeradius.org/pub/radius
-FREERADIUS_VERSION=1.0.1
+FREERADIUS_VERSION=1.0.2
 FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.gz
 FREERADIUS_DIR=freeradius-$(FREERADIUS_VERSION)
 FREERADIUS_UNZIP=zcat
@@ -28,7 +28,7 @@ FREERADIUS_UNZIP=zcat
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=2
+FREERADIUS_IPK_VERSION=1
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -56,8 +56,8 @@ FREERADIUS_BUILD_DIR=$(BUILD_DIR)/freeradius
 FREERADIUS_SOURCE_DIR=$(SOURCE_DIR)/freeradius
 FREERADIUS_IPK_DIR=$(BUILD_DIR)/freeradius-$(FREERADIUS_VERSION)-ipk
 FREERADIUS_DOC_IPK_DIR=$(BUILD_DIR)/freeradius-doc-$(FREERADIUS_VERSION)-ipk
-FREERADIUS_IPK=$(BUILD_DIR)/freeradius_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_armeb.ipk
-FREERADIUS_DOC_IPK=$(BUILD_DIR)/freeradius-doc_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_armeb.ipk
+FREERADIUS_IPK=$(BUILD_DIR)/freeradius_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_$(TARGET_ARCH).ipk
+FREERADIUS_DOC_IPK=$(BUILD_DIR)/freeradius-doc_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_$(TARGET_ARCH).ipk
 FREERADIUS_RLMCFLAGS="${STAGING_CPPFLAGS} -I${FREERADIUS_BUILD_DIR}/src/include -I../rlm_eap_tls -I${FREERADIUS_BUILD_DIR}/src/modules/rlm_eap -I${FREERADIUS_BUILD_DIR}/src/modules/rlm_eap/libeap/ -DX99_MODULE_NAME=\"rlm_x99_token\"  -DFREERADIUS"
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -175,7 +175,8 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt -o $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
 	install -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)/opt/etc/init.d/S55freeradius
 	install -d $(FREERADIUS_IPK_DIR)/CONTROL
-	install -m 644 $(FREERADIUS_SOURCE_DIR)/control $(FREERADIUS_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(FREERADIUS_VERSION)/" \
+		-e "s/@RELEASE@/$(FREERADIUS_IPK_VERSION)/" $(FREERADIUS_SOURCE_DIR)/control > $(FREERADIUS_IPK_DIR)/CONTROL/control
 	install -m 644 $(FREERADIUS_SOURCE_DIR)/postinst $(FREERADIUS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FREERADIUS_SOURCE_DIR)/prerm $(FREERADIUS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_IPK_DIR)
@@ -187,7 +188,8 @@ $(FREERADIUS_DOC_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/man/* $(FREERADIUS_DOC_IPK_DIR)/opt/man/
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/share/doc/* $(FREERADIUS_DOC_IPK_DIR)/opt/doc/
 	install -d $(FREERADIUS_DOC_IPK_DIR)/CONTROL
-	install -m 644 $(FREERADIUS_SOURCE_DIR)/control.doc $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(FREERADIUS_VERSION)/" \
+		-e "s/@RELEASE@/$(FREERADIUS_IPK_VERSION)/" $(FREERADIUS_SOURCE_DIR)/control.doc > $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_DOC_IPK_DIR)
 
 #

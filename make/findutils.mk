@@ -39,9 +39,9 @@ FINDUTILS_LDFLAGS=
 FINDUTILS_BUILD_DIR=$(BUILD_DIR)/findutils
 FINDUTILS_SOURCE_DIR=$(SOURCE_DIR)/findutils
 FINDUTILS_IPK_DIR=$(BUILD_DIR)/findutils-$(FINDUTILS_VERSION)-ipk
-FINDUTILS_IPK=$(BUILD_DIR)/findutils_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_armeb.ipk
+FINDUTILS_IPK=$(BUILD_DIR)/findutils_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 FINDUTILS_DOC_IPK_DIR=$(BUILD_DIR)/findutils-doc-$(FINDUTILS_VERSION)-ipk
-FINDUTILS_DOC_IPK=$(BUILD_DIR)/findutils-doc_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_armeb.ipk
+FINDUTILS_DOC_IPK=$(BUILD_DIR)/findutils-doc_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -123,7 +123,7 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
-	rm -rf $(FINDUTILS_IPK_DIR) $(BUILD_DIR)/findutils_*_armeb.ipk
+	rm -rf $(FINDUTILS_IPK_DIR) $(BUILD_DIR)/findutils_*_$(TARGET_ARCH).ipk
 	install -d $(FINDUTILS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/find
 	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/xargs
@@ -132,7 +132,7 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
-	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(BUILD_DIR)/findutils-doc_*_armeb.ipk
+	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(BUILD_DIR)/findutils-doc_*_$(TARGET_ARCH).ipk
 	install -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	install -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	install -d $(FINDUTILS_DOC_IPK_DIR)/CONTROL

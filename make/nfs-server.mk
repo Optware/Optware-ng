@@ -55,7 +55,7 @@ NFS_SERVER_LDFLAGS=
 NFS_SERVER_BUILD_DIR=$(BUILD_DIR)/nfs-server
 NFS_SERVER_SOURCE_DIR=$(SOURCE_DIR)/nfs-server
 NFS_SERVER_IPK_DIR=$(BUILD_DIR)/nfs-server-$(NFS_SERVER_VERSION)-ipk
-NFS_SERVER_IPK=$(BUILD_DIR)/nfs-server_$(NFS_SERVER_VERSION)-$(NFS_SERVER_IPK_VERSION)_armeb.ipk
+NFS_SERVER_IPK=$(BUILD_DIR)/nfs-server_$(NFS_SERVER_VERSION)-$(NFS_SERVER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

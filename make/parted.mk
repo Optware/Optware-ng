@@ -61,7 +61,7 @@ PARTED_LDFLAGS=
 PARTED_BUILD_DIR=$(BUILD_DIR)/parted
 PARTED_SOURCE_DIR=$(SOURCE_DIR)/parted
 PARTED_IPK_DIR=$(BUILD_DIR)/parted-$(PARTED_VERSION)-ipk
-PARTED_IPK=$(BUILD_DIR)/parted_$(PARTED_VERSION)-$(PARTED_IPK_VERSION)_armeb.ipk
+PARTED_IPK=$(BUILD_DIR)/parted_$(PARTED_VERSION)-$(PARTED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -150,7 +150,7 @@ parted-stage: $(PARTED_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(PARTED_IPK): $(PARTED_BUILD_DIR)/.built
-	rm -rf $(PARTED_IPK_DIR) $(BUILD_DIR)/parted_*_armeb.ipk
+	rm -rf $(PARTED_IPK_DIR) $(BUILD_DIR)/parted_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PARTED_BUILD_DIR) DESTDIR=$(PARTED_IPK_DIR) install
 #	install -d $(PARTED_IPK_DIR)/opt/etc/
 #	install -m 644 $(PARTED_SOURCE_DIR)/parted.conf $(PARTED_IPK_DIR)/opt/etc/parted.conf

@@ -15,7 +15,7 @@ BZIP2_IPK_VERSION=2
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
-BZIP2_IPK=$(BUILD_DIR)/bzip2_$(BZIP2_VERSION)-$(BZIP2_IPK_VERSION)_armeb.ipk
+BZIP2_IPK=$(BUILD_DIR)/bzip2_$(BZIP2_VERSION)-$(BZIP2_IPK_VERSION)_$(TARGET_ARCH).ipk
 BZIP2_IPK_DIR=$(BUILD_DIR)/bzip2-$(BZIP2_VERSION)-ipk
 
 
@@ -56,7 +56,7 @@ $(STAGING_LIB_DIR)/libbz2.a: $(BZIP2_BUILD_DIR)/bzip2
 bzip2-stage: $(STAGING_LIB_DIR)/libbz2.a
 
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
-	rm -rf $(BZIP2_IPK_DIR) $(BUILD_DIR)/bzip2_*_armeb.ipk
+	rm -rf $(BZIP2_IPK_DIR) $(BUILD_DIR)/bzip2_*_$(TARGET_ARCH).ipk
 	install -d $(BZIP2_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2
 	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover

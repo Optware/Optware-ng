@@ -59,7 +59,7 @@ JAMVM_LDFLAGS=
 JAMVM_BUILD_DIR=$(BUILD_DIR)/jamvm
 JAMVM_SOURCE_DIR=$(SOURCE_DIR)/jamvm
 JAMVM_IPK_DIR=$(BUILD_DIR)/jamvm-$(JAMVM_VERSION)-ipk
-JAMVM_IPK=$(BUILD_DIR)/jamvm_$(JAMVM_VERSION)-$(JAMVM_IPK_VERSION)_armeb.ipk
+JAMVM_IPK=$(BUILD_DIR)/jamvm_$(JAMVM_VERSION)-$(JAMVM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,7 +152,7 @@ jamvm-stage: $(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(JAMVM_IPK): $(JAMVM_BUILD_DIR)/.built
-	rm -rf $(JAMVM_IPK_DIR) $(BUILD_DIR)/jamvm_*_armeb.ipk
+	rm -rf $(JAMVM_IPK_DIR) $(BUILD_DIR)/jamvm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JAMVM_BUILD_DIR) install-strip prefix=$(JAMVM_IPK_DIR)/opt
 	install -d $(JAMVM_IPK_DIR)/CONTROL
 	install -m 644 $(JAMVM_SOURCE_DIR)/control $(JAMVM_IPK_DIR)/CONTROL/control

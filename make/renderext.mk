@@ -55,7 +55,7 @@ RENDEREXT_LDFLAGS=
 RENDEREXT_BUILD_DIR=$(BUILD_DIR)/renderext
 RENDEREXT_SOURCE_DIR=$(SOURCE_DIR)/renderext
 RENDEREXT_IPK_DIR=$(BUILD_DIR)/renderext-$(RENDEREXT_VERSION)-ipk
-RENDEREXT_IPK=$(BUILD_DIR)/renderext_$(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSION)_armeb.ipk
+RENDEREXT_IPK=$(BUILD_DIR)/renderext_$(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(RENDEREXT_IPK_DIR)/CONTROL/control:
 	@install -d $(RENDEREXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: renderext" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(RENDEREXT_PRIORITY)" >>$@
 	@echo "Section: $(RENDEREXT_SECTION)" >>$@
 	@echo "Version: $(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSION)" >>$@
@@ -151,7 +151,7 @@ renderext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h
 # You may need to patch your application to make it use these locations.
 #
 $(RENDEREXT_IPK): $(RENDEREXT_BUILD_DIR)/.built
-	rm -rf $(RENDEREXT_IPK_DIR) $(BUILD_DIR)/renderext_*_armeb.ipk
+	rm -rf $(RENDEREXT_IPK_DIR) $(BUILD_DIR)/renderext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RENDEREXT_BUILD_DIR) DESTDIR=$(RENDEREXT_IPK_DIR) install
 	$(MAKE) $(RENDEREXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RENDEREXT_IPK_DIR)

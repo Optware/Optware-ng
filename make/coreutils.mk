@@ -55,7 +55,7 @@ COREUTILS_LDFLAGS=
 COREUTILS_BUILD_DIR=$(BUILD_DIR)/coreutils
 COREUTILS_SOURCE_DIR=$(SOURCE_DIR)/coreutils
 COREUTILS_IPK_DIR=$(BUILD_DIR)/coreutils-$(COREUTILS_VERSION)-ipk
-COREUTILS_IPK=$(BUILD_DIR)/coreutils_$(COREUTILS_VERSION)-$(COREUTILS_IPK_VERSION)_armeb.ipk
+COREUTILS_IPK=$(BUILD_DIR)/coreutils_$(COREUTILS_VERSION)-$(COREUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -148,7 +148,7 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
-	rm -rf $(COREUTILS_IPK_DIR) $(BUILD_DIR)/coreutils_*_armeb.ipk
+	rm -rf $(COREUTILS_IPK_DIR) $(BUILD_DIR)/coreutils_*_$(TARGET_ARCH).ipk
 	# Install binaries
 	install -d $(COREUTILS_IPK_DIR)/opt/bin
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec

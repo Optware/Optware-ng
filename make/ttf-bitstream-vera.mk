@@ -55,7 +55,7 @@ TTF_BITSTREAM_VERA_LOCALES=
 TTF_BITSTREAM_VERA_BUILD_DIR=$(BUILD_DIR)/ttf-bitstream-vera
 TTF_BITSTREAM_VERA_SOURCE_DIR=$(SOURCE_DIR)/ttf-bitstream-vera
 TTF_BITSTREAM_VERA_IPK_DIR=$(BUILD_DIR)/ttf-bitstream-vera-$(TTF_BITSTREAM_VERA_VERSION)-ipk
-TTF_BITSTREAM_VERA_IPK=$(BUILD_DIR)/ttf-bitstream-vera_$(TTF_BITSTREAM_VERA_VERSION)-$(TTF_BITSTREAM_VERA_IPK_VERSION)_armeb.ipk
+TTF_BITSTREAM_VERA_IPK=$(BUILD_DIR)/ttf-bitstream-vera_$(TTF_BITSTREAM_VERA_VERSION)-$(TTF_BITSTREAM_VERA_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -64,7 +64,7 @@ $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control:
 	@install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: ttf-bitstream-vera" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(TTF_BITSTREAM_VERA_PRIORITY)" >>$@
 	@echo "Section: $(TTF_BITSTREAM_VERA_SECTION)" >>$@
 	@echo "Version: $(TTF_BITSTREAM_VERA_VERSION)-$(TTF_BITSTREAM_VERA_IPK_VERSION)" >>$@
@@ -129,7 +129,7 @@ ttf-bitstream-vera: $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
 # You may need to patch your application to make it use these locations.
 #
 $(TTF_BITSTREAM_VERA_IPK): $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
-	rm -rf $(TTF_BITSTREAM_VERA_IPK_DIR) $(BUILD_DIR)/ttf-bitstream-vera_*_armeb.ipk
+	rm -rf $(TTF_BITSTREAM_VERA_IPK_DIR) $(BUILD_DIR)/ttf-bitstream-vera_*_$(TARGET_ARCH).ipk
 	install -d $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
 	install -m 644 $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
 	$(MAKE) $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control

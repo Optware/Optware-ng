@@ -55,7 +55,7 @@ SAMBA_LDFLAGS=
 SAMBA_BUILD_DIR=$(BUILD_DIR)/samba
 SAMBA_SOURCE_DIR=$(SOURCE_DIR)/samba
 SAMBA_IPK_DIR=$(BUILD_DIR)/samba-$(SAMBA_VERSION)-ipk
-SAMBA_IPK=$(BUILD_DIR)/samba_$(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)_armeb.ipk
+SAMBA_IPK=$(BUILD_DIR)/samba_$(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 SAMBA_BUILD_DIR_SRC=$(SAMBA_BUILD_DIR)/source
 
@@ -182,12 +182,13 @@ samba-stage: $(SAMBA_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
-	rm -rf $(SAMBA_IPK_DIR) $(BUILD_DIR)/samba_*_armeb.ipk
+	rm -rf $(SAMBA_IPK_DIR) $(BUILD_DIR)/samba_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(SAMBA_IPK_DIR) install
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S80samba
 	install -d $(SAMBA_IPK_DIR)/CONTROL
-	install -m 644 $(SAMBA_SOURCE_DIR)/control $(SAMBA_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(SAMBA_VERSION)/" \
+		-e "s/@RELEASE@/$(SAMBA_IPK_VERSION)/" $(SAMBA_SOURCE_DIR)/control > $(SAMBA_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)

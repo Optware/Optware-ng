@@ -55,7 +55,7 @@ ELINKS_LDFLAGS=
 ELINKS_BUILD_DIR=$(BUILD_DIR)/elinks
 ELINKS_SOURCE_DIR=$(SOURCE_DIR)/elinks
 ELINKS_IPK_DIR=$(BUILD_DIR)/elinks-$(ELINKS_VERSION)-ipk
-ELINKS_IPK=$(BUILD_DIR)/elinks_$(ELINKS_VERSION)-$(ELINKS_IPK_VERSION)_armeb.ipk
+ELINKS_IPK=$(BUILD_DIR)/elinks_$(ELINKS_VERSION)-$(ELINKS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -145,7 +145,7 @@ elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(ELINKS_IPK): $(ELINKS_BUILD_DIR)/.built
-	rm -rf $(ELINKS_IPK_DIR) $(BUILD_DIR)/elinks_*_armeb.ipk
+	rm -rf $(ELINKS_IPK_DIR) $(BUILD_DIR)/elinks_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(ELINKS_IPK_DIR) install
 	install -d $(ELINKS_IPK_DIR)/CONTROL
 	install -m 644 $(ELINKS_SOURCE_DIR)/control $(ELINKS_IPK_DIR)/CONTROL/control

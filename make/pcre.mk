@@ -66,7 +66,7 @@ PCRE_LDFLAGS=
 PCRE_BUILD_DIR=$(BUILD_DIR)/pcre
 PCRE_SOURCE_DIR=$(SOURCE_DIR)/pcre
 PCRE_IPK_DIR=$(BUILD_DIR)/pcre-$(PCRE_VERSION)-ipk
-PCRE_IPK=$(BUILD_DIR)/pcre_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_armeb.ipk
+PCRE_IPK=$(BUILD_DIR)/pcre_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -155,7 +155,7 @@ pcre-stage: $(PCRE_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(PCRE_IPK): $(PCRE_BUILD_DIR)/.built
-	rm -rf $(PCRE_IPK_DIR) $(BUILD_DIR)/pcre_*_armeb.ipk
+	rm -rf $(PCRE_IPK_DIR) $(BUILD_DIR)/pcre_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(PCRE_IPK_DIR) install
 	find $(PCRE_IPK_DIR) -type d -exec chmod go+rx {} \;
 	install -d $(PCRE_IPK_DIR)/CONTROL

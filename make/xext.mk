@@ -56,7 +56,7 @@ XEXT_LDFLAGS=
 XEXT_BUILD_DIR=$(BUILD_DIR)/xext
 XEXT_SOURCE_DIR=$(SOURCE_DIR)/xext
 XEXT_IPK_DIR=$(BUILD_DIR)/xext-$(XEXT_VERSION)-ipk
-XEXT_IPK=$(BUILD_DIR)/xext_$(XEXT_VERSION)-$(XEXT_IPK_VERSION)_armeb.ipk
+XEXT_IPK=$(BUILD_DIR)/xext_$(XEXT_VERSION)-$(XEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(XEXT_IPK_DIR)/CONTROL/control:
 	@install -d $(XEXT_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: xext" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(XEXT_PRIORITY)" >>$@
 	@echo "Section: $(XEXT_SECTION)" >>$@
 	@echo "Version: $(XEXT_VERSION)-$(XEXT_IPK_VERSION)" >>$@
@@ -155,7 +155,7 @@ xext-stage: $(STAGING_LIB_DIR)/libXext.so
 # You may need to patch your application to make it use these locations.
 #
 $(XEXT_IPK): $(XEXT_BUILD_DIR)/.built
-	rm -rf $(XEXT_IPK_DIR) $(BUILD_DIR)/xext_*_armeb.ipk
+	rm -rf $(XEXT_IPK_DIR) $(BUILD_DIR)/xext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(XEXT_IPK_DIR) install-strip
 	$(MAKE) $(XEXT_IPK_DIR)/CONTROL/control
 	rm -f $(XEXT_IPK_DIR)/opt/lib/*.la

@@ -17,7 +17,7 @@ PERL-NET-DNS_CONFFILES=
 PERL-NET-DNS_BUILD_DIR=$(BUILD_DIR)/perl-net-dns
 PERL-NET-DNS_SOURCE_DIR=$(SOURCE_DIR)/perl-net-dns
 PERL-NET-DNS_IPK_DIR=$(BUILD_DIR)/perl-net-dns-$(PERL-NET-DNS_VERSION)-ipk
-PERL-NET-DNS_IPK=$(BUILD_DIR)/perl-net-dns_$(PERL-NET-DNS_VERSION)-$(PERL-NET-DNS_IPK_VERSION)_armeb.ipk
+PERL-NET-DNS_IPK=$(BUILD_DIR)/perl-net-dns_$(PERL-NET-DNS_VERSION)-$(PERL-NET-DNS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-NET-DNS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PERL-NET-DNS_SITE)/$(PERL-NET-DNS_SOURCE)
@@ -57,7 +57,7 @@ $(PERL-NET-DNS_BUILD_DIR)/.staged: $(PERL-NET-DNS_BUILD_DIR)/.built
 perl-net-dns-stage: $(PERL-NET-DNS_BUILD_DIR)/.staged
 
 $(PERL-NET-DNS_IPK): $(PERL-NET-DNS_BUILD_DIR)/.built
-	rm -rf $(PERL-NET-DNS_IPK_DIR) $(BUILD_DIR)/perl-net-dns_*_armeb.ipk
+	rm -rf $(PERL-NET-DNS_IPK_DIR) $(BUILD_DIR)/perl-net-dns_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-NET-DNS_BUILD_DIR) DESTDIR=$(PERL-NET-DNS_IPK_DIR) install
 	find $(PERL-NET-DNS_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-NET-DNS_IPK_DIR)/opt/lib/perl5 ; \

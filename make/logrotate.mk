@@ -50,7 +50,7 @@ LOGROTATE_LDFLAGS=
 LOGROTATE_BUILD_DIR=$(BUILD_DIR)/logrotate
 LOGROTATE_SOURCE_DIR=$(SOURCE_DIR)/logrotate
 LOGROTATE_IPK_DIR=$(BUILD_DIR)/logrotate-$(LOGROTATE_VERSION)-ipk
-LOGROTATE_IPK=$(BUILD_DIR)/logrotate_$(LOGROTATE_VERSION)-$(LOGROTATE_IPK_VERSION)_armeb.ipk
+LOGROTATE_IPK=$(BUILD_DIR)/logrotate_$(LOGROTATE_VERSION)-$(LOGROTATE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -121,7 +121,7 @@ logrotate: $(LOGROTATE_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
-	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_armeb.ipk
+	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_$(TARGET_ARCH).ipk
 	install -d $(LOGROTATE_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
 	install -d $(LOGROTATE_IPK_DIR)/opt/doc/logrotate

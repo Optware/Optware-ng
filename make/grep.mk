@@ -14,7 +14,7 @@ GREP_UNZIP=zcat
 
 GREP_IPK_VERSION=3
 
-GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-$(GREP_IPK_VERSION)_armeb.ipk
+GREP_IPK=$(BUILD_DIR)/grep_$(GREP_VERSION)-$(GREP_IPK_VERSION)_$(TARGET_ARCH).ipk
 GREP_IPK_DIR=$(BUILD_DIR)/grep-$(GREP_VERSION)-ipk
 
 $(DL_DIR)/$(GREP_SOURCE):
@@ -42,7 +42,7 @@ $(GREP_DIR)/src/grep: $(GREP_DIR)/.configured
 grep: $(GREP_DIR)/src/grep
 
 $(GREP_IPK): $(GREP_DIR)/src/grep
-	rm -rf $(GREP_IPK_DIR) $(BUILD_DIR)/grep_*_armeb.ipk
+	rm -rf $(GREP_IPK_DIR) $(BUILD_DIR)/grep_*_$(TARGET_ARCH).ipk
 	install -d $(GREP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GREP_DIR)/src/grep -o $(GREP_IPK_DIR)/opt/bin/grep
 	$(STRIP_COMMAND) $(GREP_DIR)/src/egrep -o $(GREP_IPK_DIR)/opt/bin/egrep

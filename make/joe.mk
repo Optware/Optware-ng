@@ -53,7 +53,7 @@ JOE_LDFLAGS=
 JOE_BUILD_DIR=$(BUILD_DIR)/joe
 JOE_SOURCE_DIR=$(SOURCE_DIR)/joe
 JOE_IPK_DIR=$(BUILD_DIR)/joe-$(JOE_VERSION)-ipk
-JOE_IPK=$(BUILD_DIR)/joe_$(JOE_VERSION)-$(JOE_IPK_VERSION)_armeb.ipk
+JOE_IPK=$(BUILD_DIR)/joe_$(JOE_VERSION)-$(JOE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -139,7 +139,7 @@ joe-stage: $(JOE_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(JOE_IPK): $(JOE_BUILD_DIR)/.built
-	rm -rf $(JOE_IPK_DIR) $(BUILD_DIR)/joe_*_armeb.ipk
+	rm -rf $(JOE_IPK_DIR) $(BUILD_DIR)/joe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JOE_BUILD_DIR) DESTDIR=$(JOE_IPK_DIR) install-strip
 	install -d $(JOE_IPK_DIR)/opt/etc/
 	install -d $(JOE_IPK_DIR)/CONTROL

@@ -56,7 +56,7 @@ APPWEB_LDFLAGS=
 APPWEB_BUILD_DIR=$(BUILD_DIR)/appweb
 APPWEB_SOURCE_DIR=$(SOURCE_DIR)/appweb
 APPWEB_IPK_DIR=$(BUILD_DIR)/appweb-$(APPWEB_VERSION)-ipk
-APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_armeb.ipk
+APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +146,7 @@ appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
 # You may need to patch your application to make it use these locations.
 #
 $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
-	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_armeb.ipk
+	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_$(TARGET_ARCH).ipk
 	# Copy file package ./http/package/LINUX/http.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient

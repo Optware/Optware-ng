@@ -55,7 +55,7 @@ TCPDUMP_LDFLAGS=
 TCPDUMP_BUILD_DIR=$(BUILD_DIR)/tcpdump
 TCPDUMP_SOURCE_DIR=$(SOURCE_DIR)/tcpdump
 TCPDUMP_IPK_DIR=$(BUILD_DIR)/tcpdump-$(TCPDUMP_VERSION)-ipk
-TCPDUMP_IPK=$(BUILD_DIR)/tcpdump_$(TCPDUMP_VERSION)-$(TCPDUMP_IPK_VERSION)_armeb.ipk
+TCPDUMP_IPK=$(BUILD_DIR)/tcpdump_$(TCPDUMP_VERSION)-$(TCPDUMP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,7 +153,8 @@ $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/tcpdump
 	install -d $(TCPDUMP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
 	install -d $(TCPDUMP_IPK_DIR)/CONTROL
-	install -m 644 $(TCPDUMP_SOURCE_DIR)/control $(TCPDUMP_IPK_DIR)/CONTROL/control
+	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(TCPDUMP_VERSION)/" \
+		-e "s/@RELEASE@/$(TCPDUMP_IPK_VERSION)/" $(TCPDUMP_SOURCE_DIR)/control > $(TCPDUMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCPDUMP_IPK_DIR)
 
 #

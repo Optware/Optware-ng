@@ -56,7 +56,7 @@ FONTCONFIG_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 FONTCONFIG_BUILD_DIR=$(BUILD_DIR)/fontconfig
 FONTCONFIG_SOURCE_DIR=$(SOURCE_DIR)/fontconfig
 FONTCONFIG_IPK_DIR=$(BUILD_DIR)/fontconfig-$(FONTCONFIG_VERSION)-ipk
-FONTCONFIG_IPK=$(BUILD_DIR)/fontconfig_$(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VERSION)_armeb.ipk
+FONTCONFIG_IPK=$(BUILD_DIR)/fontconfig_$(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -65,7 +65,7 @@ $(FONTCONFIG_IPK_DIR)/CONTROL/control:
 	@install -d $(FONTCONFIG_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: fontconfig" >>$@
-	@echo "Architecture: armeb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(FONTCONFIG_PRIORITY)" >>$@
 	@echo "Section: $(FONTCONFIG_SECTION)" >>$@
 	@echo "Version: $(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VERSION)" >>$@
@@ -158,7 +158,7 @@ fontconfig-stage: $(STAGING_LIB_DIR)/libfontconfig.so
 # You may need to patch your application to make it use these locations.
 #
 $(FONTCONFIG_IPK): $(FONTCONFIG_BUILD_DIR)/.built
-	rm -rf $(FONTCONFIG_IPK_DIR) $(BUILD_DIR)/fontconfig_*_armeb.ipk
+	rm -rf $(FONTCONFIG_IPK_DIR) $(BUILD_DIR)/fontconfig_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FONTCONFIG_BUILD_DIR) DESTDIR=$(FONTCONFIG_IPK_DIR) install-strip
 	rm -f $(FONTCONFIG_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(FONTCONFIG_IPK_DIR)/CONTROL/control

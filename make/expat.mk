@@ -54,7 +54,7 @@ EXPAT_LDFLAGS=
 EXPAT_BUILD_DIR=$(BUILD_DIR)/expat
 EXPAT_SOURCE_DIR=$(SOURCE_DIR)/expat
 EXPAT_IPK_DIR=$(BUILD_DIR)/expat-$(EXPAT_VERSION)-ipk
-EXPAT_IPK=$(BUILD_DIR)/expat_$(EXPAT_VERSION)-$(EXPAT_IPK_VERSION)_armeb.ipk
+EXPAT_IPK=$(BUILD_DIR)/expat_$(EXPAT_VERSION)-$(EXPAT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -148,7 +148,7 @@ expat-stage: $(EXPAT_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
-	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_armeb.ipk
+	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_$(TARGET_ARCH).ipk
 	install -d $(EXPAT_IPK_DIR)/opt/lib $(EXPAT_IPK_DIR)/opt/include
 	(cd $(EXPAT_BUILD_DIR); \
 		./libtool --mode=install install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
