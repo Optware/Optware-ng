@@ -34,7 +34,7 @@ CROSS_PACKAGES = \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
 	lame less libbt libcurl libdb libdvdread libevent libgd libiconv libid3tag \
-	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 \
+	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 libxslt \
 	logrotate lsof \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
