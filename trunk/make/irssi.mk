@@ -106,7 +106,9 @@ $(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
+		--without-perl \
+		--with-ncurses=/opt \
+		--enable-ipv6 \
 	)
 	touch $(IRSSI_BUILD_DIR)/.configured
 
@@ -149,7 +151,7 @@ irssi-stage: $(IRSSI_BUILD_DIR)/.staged
 #
 $(IRSSI_IPK): $(IRSSI_BUILD_DIR)/.built
 	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_armeb.ipk
-	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install
+	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install-strip
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/init.d
