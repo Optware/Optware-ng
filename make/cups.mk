@@ -28,7 +28,7 @@ CUPS_UNZIP=zcat
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=4
+CUPS_IPK_VERSION=5
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
@@ -91,7 +91,7 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
-	$(MAKE) openssl-stage libpng-stage
+	$(MAKE) openssl-stage zlib-stage libpng-stage
 	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(CUPS_PATCHES) | patch -d $(BUILD_DIR)/$(CUPS_DIR) -p1
@@ -185,13 +185,13 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)/opt/etc/cups
         # Copy the init.d startup file
-	cp $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 755 $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)/opt/doc/cups
 	# Copy lpd startup files
-	cp $(CUPS_SOURCE_DIR)/S89cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
-	cp $(CUPS_SOURCE_DIR)/rc.xinetd.linksys $(CUPS_IPK_DIR)/opt/doc/cups
-	cp $(CUPS_SOURCE_DIR)/cups-install.doc $(CUPS_IPK_DIR)/opt/doc/cups
-	cp $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
-	cp $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 755 $(CUPS_SOURCE_DIR)/S89cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 755 $(CUPS_SOURCE_DIR)/rc.xinetd.linksys $(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 644 $(CUPS_SOURCE_DIR)/cups-install.doc $(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 755 $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 755 $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
 	# Install printer module
 	cp $(CUPS_SOURCE_DIR)/printer.o $(CUPS_IPK_DIR)/opt/lib/modules
 	install -d $(CUPS_IPK_DIR)/CONTROL
