@@ -173,7 +173,8 @@ pango-stage: $(STAGING_DIR)/opt/lib/libpango-1.0.so
 $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
 	rm -rf $(PANGO_IPK_DIR) $(BUILD_DIR)/pango_*_armeb.ipk
 	$(MAKE) -C $(PANGO_BUILD_DIR) DESTDIR=$(PANGO_IPK_DIR) install-strip
-	rm -rf $(PANGO_IPK_DIR)/opt/lib/*.la
+	rm -f $(PANGO_IPK_DIR)/opt/lib/*.la
+	rm -rf $(PANGO_IPK_DIR)/opt/share/gtk-doc
 	$(MAKE) $(PANGO_IPK_DIR)/CONTROL/control
 	install -m 644 $(PANGO_SOURCE_DIR)/postinst $(PANGO_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PANGO_IPK_DIR)
