@@ -87,7 +87,7 @@ libpng-source: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
 	$(LIBPNG_UNZIP) $(DL_DIR)/$(LIBPNG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1
