@@ -100,7 +100,7 @@ fetchmail-source: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES)
 $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PATCHES)
 	$(MAKE) zlib-stage
 	$(MAKE) openssl-stage
-	$(MAKE) openssh-stage
+#	$(MAKE) openssh-stage
 	rm -rf $(BUILD_DIR)/$(FETCHMAIL_DIR) $(FETCHMAIL_BUILD_DIR)
 	$(FETCHMAIL_UNZIP) $(DL_DIR)/$(FETCHMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(FETCHMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(FETCHMAIL_DIR) -p1
