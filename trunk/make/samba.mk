@@ -28,7 +28,7 @@ SAMBA_UNZIP=zcat
 #
 # SAMBA_IPK_VERSION should be incremented when the ipk changes.
 #
-SAMBA_IPK_VERSION=2
+SAMBA_IPK_VERSION=3
 
 #
 # SAMBA_PATCHES should list any patches, in the the order in
