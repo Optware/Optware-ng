@@ -88,7 +88,8 @@ NATIVE_ONLY_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_ONLY_PACKAGES_READY_FOR_TESTING = \
-
+	openldap \
+	
 
 UNSORTED_PACKAGES = \
 	freeradius \
