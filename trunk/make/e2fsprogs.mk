@@ -75,12 +75,16 @@ e2fsprogs-stage: $(E2FSPROGS_IPK_DIR)
 	mkdir -p $(STAGING_INCLUDE_DIR)/blkid
 	mkdir -p $(STAGING_INCLUDE_DIR)/ext2fs
 	mkdir -p $(STAGING_INCLUDE_DIR)/et
+	mkdir -p $(STAGING_INCLUDE_DIR)/uuid
+	mkdir -p $(STAGING_LIB_DIR)/
 	cp $(E2FSPROGS_DIR)/lib/*.a $(STAGING_LIB_DIR)
+	cp $(E2FSPROGS_DIR)/lib/uuid/uuid.h $(STAGING_INCLUDE_DIR)/uuid
+	cp $(E2FSPROGS_DIR)/lib/uuid/uuid_types.h $(STAGING_INCLUDE_DIR)/uuid
 	cp $(E2FSPROGS_DIR)/lib/blkid/*.h $(STAGING_INCLUDE_DIR)/blkid
 	cp $(E2FSPROGS_DIR)/lib/ext2fs/*.h $(STAGING_INCLUDE_DIR)/ext2fs
 	cp $(E2FSPROGS_DIR)/lib/et/*.h $(STAGING_INCLUDE_DIR)/et
 
-e2fsprogs-ipk: $(E2FSPROGS_IPK)/staging $(E2FSPROGS_IPK)
+e2fsprogs-ipk: $(E2FSPROGS_IPK)
 
 e2fsprogs-source: $(DL_DIR)/$(E2FSPROGS_SOURCE)
 
