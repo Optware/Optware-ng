@@ -13,10 +13,12 @@ ATFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ATFTP_DESCRIPTION=Advanced TFTP server and client
 ATFTP_SECTION=net
 ATFTP_PRIORITY=optional
-ATFTP_DEPENDS=
+ATFTP_DEPENDS=xinetd
 ATFTP_CONFLICTS=
 
-ATFTP_IPK_VERSION=4
+ATFTP_IPK_VERSION=5
+
+ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
@@ -72,9 +74,11 @@ $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
 	install -d $(ATFTP_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
+	install -d $(ATFTP_IPK_DIR)/opt/etc/xinetd.d
+	install -m 644 $(ATFTP_SOURCE_DIR)/atftp $(ATFTP_IPK_DIR)/opt/etc/xinetd.d/atftp
 	$(MAKE) $(ATFTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(ATFTP_SOURCE_DIR)/prerm $(ATFTP_IPK_DIR)/CONTROL/prerm
+	echo $(ATFTP_CONFFILES) | sed -e 's/ /\n/g' > $(ATFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ATFTP_IPK_DIR)
 
 atftp-ipk: $(ATFTP_IPK)
