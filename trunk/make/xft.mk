@@ -41,7 +41,7 @@ XFT_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-XFT_CPPFLAGS=
+XFT_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 XFT_LDFLAGS=
 
 #
@@ -111,6 +111,7 @@ $(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
+		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
