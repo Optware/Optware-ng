@@ -21,18 +21,18 @@
 #
 
 NATIVE_AND_CROSS_PACKAGES = \
-	atftp \
-	bash bzip2 \
+	adns atftp \
+	bash bzip2 bzflag \
 	ccxstream coreutils cpio cvs \
 	diffutils distcc dnsmasq dropbear \
 	elinks expat \
-	file findutils flex \
+	fetchmail file findutils flex \
 	gawk gdbm grep gzip \
 	imagemagick inetutils iptables \
 	jove \
 	less libcurl libdb libevent libid3tag libjpeg \
 	libpng libstdc++ libtiff libtool lsof \
-	m4 make mc miau \
+	m4 make mc miau mtr \
 	nano ncurses ntp ntpclient \
 	patch portmap procps puppy \
 	rsync \
@@ -59,8 +59,7 @@ CROSS_ONLY_PACKAGES = \
 	rdate \
 	stunnel svn \
 	unfs3 \
-	xinetd \
-	mtr adns fetchmail
+	xinetd
 
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
