@@ -4,3 +4,5 @@
 /bin/chown 0:0 /opt/bin/visudo
 /bin/chmod 4755 /opt/bin/sudo
 /bin/chmod 755 /opt/bin/visudo
+
+chmod 440 /opt/etc/sudoers
