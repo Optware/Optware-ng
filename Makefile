@@ -84,9 +84,11 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 # bogofilter's configure want's to run some small executables
+# rsnapshot depends on perl
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 	asterisk \
 	bogofilter \
+	rsnapshot \
 
 # vim won't compile: "vim.h:40: error: parse error before ':' token"
 # perl-spamassassin can't be downloaded: 404 not found
