@@ -56,7 +56,6 @@ $(TCPWRAPPERS_IPK): $(TCPWRAPPERS_DIR)/tcpd
 	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.3 $(TCPWRAPPERS_IPK_DIR)/opt/man/man3
 	install -m 755 $(TCPWRAPPERS_DIR)/hosts_access.5 $(TCPWRAPPERS_IPK_DIR)/opt/man/man5
 	install -m 755 $(TCPWRAPPERS_DIR)/libwrap.a $(TCPWRAPPERS_IPK_DIR)/opt/lib
-	install -m 755 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_DIR)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCPWRAPPERS_IPK_DIR)
 
 tcpwrappers-ipk: $(TCPWRAPPERS_IPK)
