@@ -41,7 +41,7 @@ CROSS_PACKAGES = \
 	openssh openssl \
 	pango parted patch pcre php pkgconfig popt portmap procps proftpd puppy \
 	rdate recordext renderext rsync \
-	screen sed sm strace stunnel sudo svn \
+	screen sed sm strace stunnel sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 unslung-feeds \
 	vdr-mediamvp vsftpd vte \
