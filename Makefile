@@ -33,7 +33,7 @@ CROSS_PACKAGES = \
 	hdparm \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
-	lame less libbt libcurl libdb libdvdread libevent libgd libiconv libid3tag \
+	lame less libbt libcurl libdb libdvdread libevent libgd libid3tag \
 	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 libxslt \
 	logrotate lsof lynx \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
@@ -96,6 +96,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	perl-spamassassin \
 	nethack scponly dump gkrellm clamav freeradius
 
+PACKAGES_DEPRECATED = libiconv
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
