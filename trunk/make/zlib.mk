@@ -5,6 +5,7 @@
 #############################################################
 
 ZLIB_DIR=$(BUILD_DIR)/zlib
+ZLIB_SOURCE_DIR=$(SOURCE_DIR)/zlib
 
 ZLIB_VERSION:=1.2.1
 ZLIB_SITE=http://aleron.dl.sourceforge.net/sourceforge/libpng
@@ -58,7 +59,7 @@ zlib: $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 
 $(ZLIB_IPK): $(STAGING_DIR)/lib/libz.so.$(ZLIB_VERSION)
 	mkdir -p $(ZLIB_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/zlib.control $(ZLIB_IPK_DIR)/CONTROL/control
+	cp $(ZLIB_SOURCE_DIR)/control $(ZLIB_IPK_DIR)/CONTROL/control
 	mkdir -p $(ZLIB_IPK_DIR)/opt/include
 	cp -dpf $(STAGING_DIR)/include/zlib.h $(ZLIB_IPK_DIR)/opt/include
 	cp -dpf $(STAGING_DIR)/include/zconf.h $(ZLIB_IPK_DIR)/opt/include
