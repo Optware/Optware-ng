@@ -5,7 +5,7 @@ $(DL_DIR)/$(DROPBEAR).tar.bz2:
 	cd $(DL_DIR) && $(WGET) $(DROPBEAR_SITE)/$(DROPBEAR).tar.bz2
 
 $(BUILD_DIR)/dropbear/config.h: $(DL_DIR)/$(DROPBEAR).tar.bz2 $(SOURCE_DIR)/dropbear.patch
-	@rm -rf $(BUILD_DIR)/$(DROPBEAR) $(BUILD_DIR)/dopbear
+	@rm -rf $(BUILD_DIR)/$(DROPBEAR) $(BUILD_DIR)/dropbear
 	tar xjf $(DL_DIR)/$(DROPBEAR).tar.bz2 -C $(BUILD_DIR)
 	patch -d $(BUILD_DIR)/$(DROPBEAR) -p1 < $(SOURCE_DIR)/dropbear.patch
 	cd $(BUILD_DIR)/$(DROPBEAR) && \
