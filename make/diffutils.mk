@@ -160,7 +160,7 @@ diffutils-ipk: $(DIFFUTILS_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 diffutils-clean:
-	$(MAKE) -C $(DIFFUTILS_BUILD_DIR) clean
+	-$(MAKE) -C $(DIFFUTILS_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
