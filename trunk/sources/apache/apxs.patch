@@ -1,5 +1,5 @@
---- support/apxs.in~	2005-02-04 12:21:18.000000000 -0800
-+++ support/apxs.in	2005-02-19 21:01:27.055269938 -0800
+--- ../httpd-2.0.53/support/apxs.in	2005-02-04 12:21:18.000000000 -0800
++++ support/apxs.in	2005-02-20 09:53:13.861402759 -0800
 @@ -199,18 +199,19 @@
      ($httpd = $0) =~ s:support/apxs$::;
  }
@@ -32,3 +32,15 @@
  
  sub get_config_vars{
      my ($file, $rh_config) = @_;
+@@ -528,9 +529,10 @@
+ 
+     #   activate module via LoadModule/AddModule directive
+     if ($opt_a or $opt_A) {
++	### when staging, this should be non-fatal
+         if (not -f "$CFG_SYSCONFDIR/$CFG_TARGET.conf") {
+             error("Config file $CFG_SYSCONFDIR/$CFG_TARGET.conf not found");
+-            exit(1);
++            exit(0);
+         }
+ 
+         open(FP, "<$CFG_SYSCONFDIR/$CFG_TARGET.conf") || die;

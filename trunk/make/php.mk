@@ -181,9 +181,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	install -d $(PHP_IPK_DIR)/opt/etc/apache2/conf.d
 	install -m 644 $(PHP_SOURCE_DIR)/php.conf $(PHP_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
 	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
-	cp $(STAGING_DIR)/opt/etc/apache2/httpd.conf $(PHP_IPK_DIR)/opt/etc/apache2 # fool apxs into thinking we are installing into a live apache setup
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
-	rm -f $(PHP_IPK_DIR)/opt/etc/apache2/httpd.conf*
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/libexec/*.so
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
