@@ -133,15 +133,10 @@ appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
 #
 $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 #	$(MAKE) DESTDIR=$(APPWEB_IPK_DIR) SKIP_PERMS=1 -C $(APPWEB_BUILD_DIR) install
-	install -d $(APPWEB_IPK_DIR)/CONTROL
-	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
-	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
-	#$(STRIP) $(APPWEB_BUILD_DIR)/appweb -o $(APPWEB_IPK_DIR)/opt/bin/appweb
-	#
 	# Copy file package ./http/package/LINUX/http.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
-	install -m 755 $(APPWEB_BUILD_DIR)/bin/httpClient $(APPWEB_IPK_DIR)/opt/sbin/httpClient
-	install -m 755 $(APPWEB_BUILD_DIR)/bin/httpPassword $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
+	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient
+	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/httpPassword -o $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
 	install -d $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libappWeb.so.1.0.0 $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libminiStdc++.so $(APPWEB_IPK_DIR)/opt/lib
@@ -164,6 +159,9 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/test* $(APPWEB_IPK_DIR)/opt/var/appWeb/web
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/mime.types $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
+	install -d $(APPWEB_IPK_DIR)/CONTROL
+	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
+	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APPWEB_IPK_DIR)
 
 #
