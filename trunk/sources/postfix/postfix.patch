@@ -1,0 +1,26 @@
+diff -Nru postfix-2.1.5-orig/makedefs postfix-2.1.5/makedefs
+--- postfix-2.1.5-orig/makedefs	2004-04-14 20:59:43.000000000 +0200
++++ postfix-2.1.5/makedefs	2005-01-29 21:45:02.000000000 +0100
+@@ -189,14 +189,14 @@
+ 		elif [ -f /usr/include/db/db.h ]
+ 		then
+ 		    CCARGS="$CCARGS -I/usr/include/db"
+-		else
+-		    # No, we're not going to try db1 db2 db3 etc.
+-		    # On a properly installed system, Postfix builds
+-		    # by including <db.h> and by linking with -ldb
+-		    echo "No <db.h> include file found." 1>&2
+-		    echo "Install the appropriate db*-devel package first." 1>&2
+-		    echo "See the RELEASE_NOTES file for more information." 1>&2
+-		    exit 1
++#		else
++#		    # No, we're not going to try db1 db2 db3 etc.
++#		    # On a properly installed system, Postfix builds
++#		    # by including <db.h> and by linking with -ldb
++#		    echo "No <db.h> include file found." 1>&2
++#		    echo "Install the appropriate db*-devel package first." 1>&2
++#		    echo "See the RELEASE_NOTES file for more information." 1>&2
++#		    exit 1
+ 		fi
+ 		# GDBM locks the DBM .pag file after open. This breaks postmap.
+ 		# if [ -f /usr/include/gdbm-ndbm.h ]
