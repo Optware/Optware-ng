@@ -94,13 +94,13 @@ UNSORTED_PACKAGES = \
 	libogg libvorbis libpcap logrotate \
 	mt-daapd \
 	nfs-server nfs-utils \
-	pcre popt proftpd \
+	pcre popt \
 	rdate \
 	svn 
 
 DEVELOPER_PACKAGES = crosstool-native
 
-PACKAGES_THAT_NEED_TO_BE_FIXED = nethack scponly tcpdump e2fsprogs dump gkrellm	clamav
+PACKAGES_THAT_NEED_TO_BE_FIXED = proftpd nethack scponly tcpdump e2fsprogs dump gkrellm	clamav
 
 CROSS_PACKAGES  = $(NATIVE_AND_CROSS_PACKAGES) $(CROSS_ONLY_PACKAGES) $(UNSORTED_PACKAGES)
 
