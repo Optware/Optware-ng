@@ -1,0 +1,10 @@
+#!/bin/ash
+#
+if [ -n "`pidof named`" ]; then
+    /bin/killall named 2>/dev/null
+fi
+#
+# Start the named (DNS) server daemon
+#
+cd /opt/etc/named
+/opt/sbin/named -c /opt/etc/named/named.conf &

@@ -1,0 +1,12 @@
+#! /bin/ash
+#
+mkdir -p /opt/var/named
+mkdir -p /opt/var/run
+if [ -n "`pidof named`" ]; then
+    /bin/killall named 2>/dev/null
+fi
+
+if [ ! -e /opt/lib/libcrypto.so ]; then
+echo "?? openssl must be installed"
+exit 1
+endif
