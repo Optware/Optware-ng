@@ -131,6 +131,7 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	install -m 644 $(FINDUTILS_SOURCE_DIR)/control $(FINDUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)
 
+$(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(FINDUTILS_DOC_IPK)
 	install -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
 	install -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
@@ -141,7 +142,7 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-findutils-ipk: $(FINDUTILS_IPK)
+findutils-ipk: $(FINDUTILS_IPK) $(FINDUTILS_DOC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -154,4 +155,5 @@ findutils-clean:
 # directories.
 #
 findutils-dirclean:
-	rm -rf $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR) $(FINDUTILS_IPK_DIR) $(FINDUTILS_IPK) $(FINDUTILS_DOC_IPK_DIR) $(FINDUTILS_DOC_IPK)
+	rm -rf $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR)
+	rm -rf $(FINDUTILS_IPK_DIR) $(FINDUTILS_IPK) $(FINDUTILS_DOC_IPK_DIR) $(FINDUTILS_DOC_IPK)
