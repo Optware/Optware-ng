@@ -119,7 +119,7 @@ WL500G_PACKAGES = \
 	inetutils \
 	less libgd libid3tag libevent libol libogg libtool libvorbis \
 	logrotate lua lzo \
-	miau muxsshssl \
+	miau \
 	ncurses ntpclient nylon \
 	openssl \
 	pkgconfig popt postgresql procps proftpd puppy python \
