@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=3
+VSFTPD_IPK_VERSION=4
 
 #
 # VSFTPD_PATCHES should list any patches, in the the order in
@@ -87,7 +87,7 @@ vsftpd-source: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
-	$(MAKE) openssl-stage
+#	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR)
 	$(VSFTPD_UNZIP) $(DL_DIR)/$(VSFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(VSFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1
@@ -111,7 +111,7 @@ vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(VSFTPD_BUILD_DIR)/vsftpd: $(VSFTPD_BUILD_DIR)/.configured
-	$(MAKE) -C $(VSFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) LIBS="$(STAGING_LDFLAGS) -lrt -lssl -lcrypto -lcrypt"
+	$(MAKE) -C $(VSFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) 
 
 #
 # You should change the dependency to refer directly to the main binary
