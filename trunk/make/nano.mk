@@ -78,10 +78,11 @@ nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 # we run a fake configure and then copy the correct makefile in...
 #
 $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE)
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NANO_PATCHES) | patch -d $(BUILD_DIR)/$(NANO_DIR)
-	ln -s -f $(STAGING_DIR)/include/ncurses/curses.h $(STAGING_DIR)/include/ncurses.h
+	ln -s -f $(STAGING_DIR)/opt/include/ncurses/curses.h $(STAGING_DIR)/opt/include/ncurses.h
 	mv $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR)
 	(cd $(NANO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
