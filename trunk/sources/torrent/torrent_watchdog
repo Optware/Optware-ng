@@ -1,0 +1,272 @@
+#! /opt/bin/bash
+
+source /opt/etc/torrent.conf
+SLEEP=60
+
+UMASK=033
+#
+##
+##############################################
+
+###
+## constants
+EXIT_NO=0
+EXIT_BTGET_NOT_RUNNING=2
+EXIT_COMPLETE=3
+EXIT_NO_DOWNLOAD=4
+##
+###
+
+##########################
+## Support functions
+function warning ()
+{
+    logger -t torrent_get -p warning $*
+}
+function notice ()
+{
+    logger -t torrent_get -p notice $*
+}
+
+function debug ()
+{
+    if [[ $DEBUG && $DEBUG -gt 0 ]]; then
+        echo $*
+    fi
+}
+
+##########################
+
+#
+# Checks
+#
+
+# check the configuration items
+if [ ! -d $SOURCE ]; then
+    warning "$SOURCE does not exist."
+    exit 1
+fi
+
+if [ ! -d $TARGET ]; then
+    warning "$TARGET does not exist."
+    exit 1
+fi
+
+if [ ! -d $WORK ]; then
+    warning "$WORK does not exist."
+    exit 1
+fi
+
+ID=`id $USER`
+if [ $? -eq 1 ]; then
+    warning "User $USER does not exist."
+    exit 1
+fi
+
+if [[ $DEBUG && $DEBUG -gt 0 ]]; then
+    echo "SOURCE: $SOURCE"
+    echo "WORK: $WORK"
+    echo "TARGET: $TARGET"
+    echo "USER: $USER"
+fi
+
+if [ -f $WORK/.watchdog ]; then
+    exit 0
+fi
+
+touch $WORK/.watchdog
+function _exit ()
+{
+    rm $WORK/.watchdog
+}
+trap _exit EXIT
+
+function write_info ()
+{
+    debug "Writing: $WORK/$TORRENTNAME/.info"
+    echo "STARTTIME=\"$STARTTIME\"
+TRIES=0
+PROGRESS=\"$PROGRESS\"
+PID=$PID
+TORRENTNAME=\"$TORRENTNAME\"
+TORRENT=\"$TORRENT\"" > $WORK/$TORRENTNAME/.info  
+
+}
+
+PAUSED=`ls -1 $WORK/*/*.torrent.paused 2>/dev/null | head -1`
+if [ ! -z "$PAUSED" ]; then
+    notice "Torrents paused"
+    debug "Torrents paused"
+    exit 3
+fi
+
+PROGRESS="0%"
+
+# check if torrent file exists in run env.
+TORRENT=`ls -1 $WORK/*/*.torrent 2>/dev/null | head -1`
+TORRENTNAME=${TORRENT%%.torrent*}
+TORRENTNAME=${TORRENTNAME##*/}
+
+# if no torrent and btget is running, user started a btget by hand :(
+# o well, exit!
+if [ -z $TORRENTNAME ]; then
+    if [ "`pidof btget`" != "" ]; then
+        warning "btget already running. exit."
+        debug "btget already running. Nothing to do"
+        exit 1
+    fi
+fi
+
+# Start up torrent
+if [ -z "$TORRENT" ]; then
+    # check if there is a torrent to process
+    FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -1`
+    if [ -z "$FILE" ]; then
+        notice "No torrents to process"
+        debug "Nothing to do"
+        exit 2
+    fi
+
+    TORRENTNAME=${FILE%%.torrent*}
+    TORRENTNAME=${TORRENTNAME##*/}
+    
+    mkdir -p "$WORK/$TORRENTNAME"
+    chmod 777 "$WORK/$TORRENTNAME"
+    
+    debug "Moving [$FILE] to [$WORK/$TORRENTNAME]"
+    mv "$FILE" "$WORK/$TORRENTNAME"
+    
+    TORRENT="$WORK/$TORRENTNAME/$TORRENTNAME.torrent"
+    debug "Torrent: $TORRENT"
+
+    STARTTIME=`date +"%H:%M:%S - %d %h %Y"`
+    DONE=0
+
+    cd "$WORK/$TORRENTNAME"
+    nohup btget -q=1 "$TORRENT" 2>>current_error.log >>current.log &
+    sleep 2
+    
+    PID=`pidof btget`
+    notice "Starting torrent $TORRENT ($PID)"
+    
+    write_info
+    
+    exit 0
+fi
+
+#####################################################################
+##
+#
+
+function move_to_target ()
+{
+    debug "Move to target"
+    TARGET=$TARGET/$TORRENTNAME
+
+    rm $WORK/$TORRENTNAME/.info
+    
+    
+    mkdir -p "$TARGET"
+    chmod 777 "$TARGET"
+    chown $USER:$GROUP "$TARGET"
+    
+    cd "$WORK/$TORRENTNAME"
+    chown $USER:$GROUP *
+    chmod ug+rw *
+
+    [ -e current.log ] && mv current.log "$TORRENT.log"
+    [ -e current_error.log ] && mv current_error.log "$TORRENT.error.log"
+    
+    notice "Moving files to: $TARGET"
+    mv * "$TARGET"
+    chmod 775 "$TARGET"
+
+    STATUS="Ok"
+}
+
+function cleanup_work ()
+{
+    debug "Clean up"
+    # cleanup
+    debug "Removing work dir: $WORK/$TORRENTNAME"
+    cd $WORK
+    rm -rf "$WORK/$TORRENTNAME"
+}
+
+
+function send_report ()
+{
+    debug "Mail from: $MAILFROM"
+    debug "Mail to: $MAILTO"
+
+    if [[ ! -z $MAILFROM && ! -z $MAILTO ]]; then
+        echo "Torrent finished.
+------------------
+Name          : $TORRENTNAME
+Torrent       : $TORRENT
+Started       : $STARTTIME
+Completed     : $ENDTIME
+Stored in     : $TARGET
+Status        : $STATUS
+"  | ${MAILER:-smtpclient} -s "Torrent finished ($STATUS)" ${MAILOPT} ${MAILFROM} $MAILTO
+        notice "Mail sent to : $MAILTO"
+    fi
+}
+
+[ -f $WORK/$TORRENTNAME/.info ] && source $WORK/$TORRENTNAME/.info
+
+# Torrent exists and runs 
+# now check if it is done, is failing or something else is wrong
+
+# Kill btget when torrent is complete
+DUMMY=`grep -q "100%" $WORK/$TORRENTNAME/current.log 2>/dev/null`
+if [ $? -eq 0 ]; then
+    
+    ENDTIME=`date +"%H:%M:%S - %d %h %Y"`
+
+    kill -TERM `pidof btget`
+    move_to_target
+    cleanup_work
+    send_report
+
+    exit 0
+fi
+
+
+if [ "`pidof btget`" = "" ]; then
+    debug "btget not running"
+
+    cd "$WORK/$TORRENTNAME"
+    nohup btget -q=1 "$TORRENT" 2>>current_error.log >>current.log &
+    sleep 2
+    
+    PID=`pidof btget`
+    notice "Starting torrent $TORRENT ($PID)"
+
+    write_info
+
+    exit 0
+fi
+
+DUMMY=`tail -10 $WORK/$TORRENTNAME/current.log | grep -q "Error from tracker"  2>/dev/null`
+if [ $? -eq 0 ]; then
+    debug "Error from tracker"
+    warning "Error from tracker"
+    kill -TERM `pidof btget`
+    mv "$TORRENT" "$TORRENT.suspended"
+    
+    notice "Torrent suspended"
+    STATUS="suspended"
+    write_info
+    
+    exit 1
+fi
+
+# All is well
+# Update progress
+DUMMY=`grep " Download " $WORK/$TORRENTNAME/current.log | tail -1 | cut -d ' ' -f 1`
+debug "Progress : $DUMMY"
+PROGRESS=$DUMMY
+
+write_info
+exit 0

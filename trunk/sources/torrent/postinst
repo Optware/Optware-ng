@@ -1,0 +1,6 @@
+#! /bin/sh
+
+# Add a rule to the crontab
+
+echo "0-59/10 * * * * root /opt/sbin/torrent_watchdog &>/dev/null" >> /etc/crontab
+
