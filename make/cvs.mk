@@ -52,7 +52,7 @@ $(CVS_IPK): $(CVS_BUILD_DIR)/src/cvs
 	mkdir -p $(CVS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)/opt/bin/cvs
 	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(CVS_VERSION)/" \
-		-e "s/@RELEASE@/$(CVS_IPK_VERSION)/" cvs.control > $(CVS_IPK_DIR)/CONTROL/control
+		-e "s/@RELEASE@/$(CVS_IPK_VERSION)/" $(SOURCE_DIR)/cvs.control > $(CVS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CVS_IPK_DIR)
 
 cvs-ipk: $(CVS_IPK)
