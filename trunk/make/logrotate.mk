@@ -85,7 +85,6 @@ $(LOGROTATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PA
 	$(MAKE) popt-stage
 	rm -rf $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	$(LOGROTATE_UNZIP) $(DL_DIR)/$(LOGROTATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LOGROTATE_PATCHES) | patch -d $(BUILD_DIR)/$(LOGROTATE_DIR) -p1
 	mv $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	touch $(LOGROTATE_BUILD_DIR)/.configured
 
@@ -125,12 +124,12 @@ $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
 	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_armeb.ipk
 	install -d $(LOGROTATE_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
-#	install -d $(LOGROTATE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LOGROTATE_SOURCE_DIR)/rc.logrotate $(LOGROTATE_IPK_DIR)/opt/etc/init.d/SXXlogrotate
+	install -d $(LOGROTATE_IPK_DIR)/opt/doc/logrotate
+	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/doc/logrotate/logrotate.conf
 	install -d $(LOGROTATE_IPK_DIR)/CONTROL
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/control $(LOGROTATE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm
+	install -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LOGROTATE_IPK_DIR)
 
 #
