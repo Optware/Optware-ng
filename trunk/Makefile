@@ -32,9 +32,9 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   libpcap ntp freeradius puppy screen bind svn \
 	   m4 make patch vsftpd distcc libjpeg imagemagick \
 	   nfs-utils tar coreutils gawk cpio findutils mc \
-	   libpng diffutils
+	   libpng diffutils libtiff
 
-PACKAGES_TO_BE_TESTED:= crosstool-native libtiff
+PACKAGES_TO_BE_TESTED:= crosstool-native
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
