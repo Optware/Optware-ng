@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Shut down xmail
+/opt/etc/init.d/K27xmail stop
+
+# Discard the symbolic links
+rm -rf /opt/etc/init.d/K27xmail
+rm -rf /opt/etc/init.d/S43xmail
+
