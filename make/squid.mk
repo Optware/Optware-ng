@@ -28,7 +28,7 @@ SQUID_UNZIP=zcat
 #
 # SQUID_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUID_IPK_VERSION=1
+SQUID_IPK_VERSION=2
 
 #
 # SQUID_PATCHES should list any patches, in the the order in
@@ -171,6 +171,7 @@ $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
 	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(SQUID_IPK_DIR) install
 	install -d $(SQUID_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid
+	ln -sf /opt/etc/init.d/S80squid $(SQUID_IPK_DIR)/opt/etc/init.d/K80squid 
 	install -m 755 $(SQUID_SOURCE_DIR)/squid.delay-start.sh $(SQUID_IPK_DIR)$(SQUID_SYSCONF_DIR)/squid.delay-start.sh
 	install -d $(SQUID_IPK_DIR)/CONTROL
 	install -m 644 $(SQUID_SOURCE_DIR)/control $(SQUID_IPK_DIR)/CONTROL/control
