@@ -61,7 +61,7 @@ $(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/libz.so.$(
 
 zlib-stage: $(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
 
-$(ZLIB_IPK): $(STAGING_DIR)/lib/libz.so.$(ZLIB_LIB_VERSION)
+$(ZLIB_IPK): $(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
 	install -d $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)/opt/include
