@@ -32,7 +32,7 @@ CROSS_PACKAGES = \
 	glib grep groff gzip \
 	ice imagemagick inetutils iptables ircd-hybrid \
 	jamvm jikes joe jove \
-	lame less libbt libcurl libdb libevent libiconv libid3tag \
+	lame less libbt libcurl libdb libdvdread libevent libiconv libid3tag \
 	libjpeg libnsl libogg libpcap libpng libstdc++ libtiff libtool libvorbis libxml2 \
 	logrotate lsof \
 	m4 make man man-pages mc mdadm metalog miau mt-daapd mtr mutt \
@@ -55,10 +55,8 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 
-# libdvdread: sources/libdvdread/libdvdread.conf is missing (forgot to cvs add?)
 # transcode: zcat: .../unslung/downloads/transcode-1.0.0beta2.tar.gz: not in gzip format
 CROSS_PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	libdvdread \
 	transcode \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -213,11 +211,11 @@ packages: $(PACKAGE_DIR)/Packages
 
 upload:
 ifeq ($(HOST_MACHINE),armv5b)
-	ssh builds.nslu2-linux.org mkdir -p /home/unslung/packages/native/
-	rsync -avr --delete packages/ builds.nslu2-linux.org:/home/unslung/packages/native/
-	ssh builds.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
-	ssh builds.nslu2-linux.org rsync -vrlt /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
-	ssh builds.nslu2-linux.org rsync -vrlt /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
+	ssh nudi.nslu2-linux.org mkdir -p /home/unslung/packages/native/
+	rsync -avr --delete packages/ nudi.nslu2-linux.org:/home/unslung/packages/native/
+	ssh nudi.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
+	ssh nudi.nslu2-linux.org rsync -vrlt /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
+	ssh nudi.nslu2-linux.org rsync -vrlt /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
 else
 	rsync -vrlt packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
 	rsync -vrlt packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
