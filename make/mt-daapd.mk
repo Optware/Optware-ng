@@ -4,13 +4,13 @@
 #
 ###########################################################
 
-MT_DAAPD_SITE=http://belnet.dl.sourceforge.net/sourceforge/mt-daapd
-MT_DAAPD_VERSION=0.2.1-pre2
+MT_DAAPD_SITE=http://unc.dl.sourceforge.net/sourceforge/mt-daapd
+MT_DAAPD_VERSION=0.2.1-pre4
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
 
-MT_DAAPD_IPK_VERSION=2
+MT_DAAPD_IPK_VERSION=1
 
 MT_DAAPD_PATCHES=
 
@@ -44,6 +44,7 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 		--prefix=/opt \
 	        --with-static-libs=$(STAGING_DIR)/opt/lib \
 		--with-gdbm-include=$(STAGING_DIR)/opt/include \
+		--enable-nslu2 \
 		LIBS="-lgdbm -lid3tag -lz" \
 		ac_cv_func_setpgrp_void=yes \
 	)
