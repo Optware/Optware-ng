@@ -29,7 +29,7 @@ APPWEB_UNZIP=zcat
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=2
+APPWEB_IPK_VERSION=3
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
@@ -167,8 +167,6 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	# Copy file package ./appWeb/package/LINUX/appWeb.files ...
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
 	$(TARGET_STRIP) $(APPWEB_BUILD_DIR)/bin/appWeb -o $(APPWEB_IPK_DIR)/opt/sbin/appWeb
-	install -d $(APPWEB_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(APPWEB_SOURCE_DIR)/rc.appweb $(APPWEB_IPK_DIR)/opt/etc/init.d/S81appweb
 	install -d $(APPWEB_IPK_DIR)/opt/var/appWeb/logs
 	install -d $(APPWEB_IPK_DIR)/opt/var/appWeb/web
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/index.html $(APPWEB_IPK_DIR)/opt/var/appWeb/web
@@ -177,7 +175,12 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.crt $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.key.pem $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -d $(APPWEB_IPK_DIR)/opt/doc/appweb
-	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/doc/appweb/appWeb.conf
+	install -m 644 $(APPWEB_BUILD_DIR)/README.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/README.txt
+	install -m 644 $(APPWEB_BUILD_DIR)/LICENSE.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/LICENSE.txt
+	install -d $(APPWEB_IPK_DIR)/opt/etc
+	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
+	install -d $(APPWEB_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(APPWEB_SOURCE_DIR)/rc.appweb $(APPWEB_IPK_DIR)/opt/etc/init.d/S81appweb
 	install -d $(APPWEB_IPK_DIR)/CONTROL
 	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
 	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
