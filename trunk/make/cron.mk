@@ -32,7 +32,7 @@ CRON_IPK_VERSION=3
 
 #
 # CRON_CONFFILES should be a list of user-editable files
-CRON_CONFFILES=/opt/etc/crontab /opt/etc/cron.conf /opt/etc/init.d/S10cron
+CRON_CONFFILES=/opt/etc/crontab /opt/etc/init.d/S10cron
 
 #
 # CRON_PATCHES should list any patches, in the the order in
