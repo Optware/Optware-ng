@@ -28,7 +28,7 @@ CRON_UNZIP=cat
 #
 # CRON_IPK_VERSION should be incremented when the ipk changes.
 #
-CRON_IPK_VERSION=1
+CRON_IPK_VERSION=2
 
 #
 # CRON_CONFFILES should be a list of user-editable files
@@ -91,12 +91,10 @@ cron-source: $(DL_DIR)/$(CRON_SOURCE) $(CRON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CRON_BUILD_DIR)/.configured: $(DL_DIR)/$(CRON_SOURCE) $(CRON_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(CRON_DIR) $(CRON_BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/$(CRON_DIR)
 	(cd $(BUILD_DIR)/$(CRON_DIR); \
-		$(CRON_UNZIP) $(DL_DIR)/$(CRON_SOURCE) | sh -x \
-	)
+		$(CRON_UNZIP) $(DL_DIR)/$(CRON_SOURCE) | sh -x)
 	cat $(CRON_PATCHES) | patch -d $(BUILD_DIR)/$(CRON_DIR) -p1
 	mv $(BUILD_DIR)/$(CRON_DIR) $(CRON_BUILD_DIR)
 	touch $(CRON_BUILD_DIR)/.configured
@@ -108,8 +106,7 @@ cron-unpack: $(CRON_BUILD_DIR)/.configured
 #
 $(CRON_BUILD_DIR)/.built: $(CRON_BUILD_DIR)/.configured
 	rm -f $(CRON_BUILD_DIR)/.built
-	$(MAKE) CRONDIR=/opt/var/cron TARGET_CC=$(TARGET_CC) \
-	_PATH_VARRUN=/var/run -C $(CRON_BUILD_DIR)
+	$(MAKE) CRONDIR=/opt/var/cron TARGET_CC=$(TARGET_CC) -C $(CRON_BUILD_DIR)
 	touch $(CRON_BUILD_DIR)/.built
 
 #
@@ -158,7 +155,7 @@ $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	install -d $(CRON_IPK_DIR)/CONTROL
 	install -m 644 $(CRON_SOURCE_DIR)/control $(CRON_IPK_DIR)/CONTROL/control
 	install -m 755 $(CRON_SOURCE_DIR)/postinst $(CRON_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/
+	install -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/
 #	echo $(CRON_CONFFILES) | sed -e 's/ /\n/g' > $(CRON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CRON_IPK_DIR)
 
