@@ -14,7 +14,7 @@ RSYNC_SOURCE=$(RSYNC).tar.gz
 RSYNC_PATCH:=$(RSYNC_SOURCE_DIR)/rsync.patch
 RSYNC_UNZIP=zcat
 
-RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-2_armeb.ipk
+RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-3_armeb.ipk
 RSYNC_IPK_DIR=$(BUILD_DIR)/rsync-$(RSYNC_VERSION)-ipk
 
 $(DL_DIR)/$(RSYNC_SOURCE):
@@ -30,6 +30,7 @@ $(RSYNC_DIR)/.source: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCH)
 
 $(RSYNC_DIR)/.configured: $(RSYNC_DIR)/.source
 	(cd $(RSYNC_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
