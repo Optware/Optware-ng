@@ -1,0 +1,29 @@
+*** proftpd/include/default_paths.h.orig	Wed Jan 19 02:08:54 2005
+--- proftpd/include/default_paths.h	Wed Jan 19 02:14:31 2005
+***************
+*** 64,68 ****
+--- 64,70 ----
+   * valid shells on your system.
+   */
++ #ifndef VALID_SHELL_PATH
+  #define VALID_SHELL_PATH	"/etc/shells"
++ #endif
+  
+  /* Where your log files are kept.  The "wu-ftpd style" xferlog is
+***************
+*** 77,86 ****
+--- 79,92 ----
+   * requests.
+   */
++ #ifndef SHUTMSG_PATH
+  #define SHUTMSG_PATH		"/etc/shutmsg"
++ #endif
+  
+  /* Location of the file containing users that *cannot* use ftp
+   * services (odd, eh?)
+   */
++ #ifndef FTPUSERS_PATH
+  #define FTPUSERS_PATH		"/etc/ftpusers"
++ #endif
+  
+  #endif /* PROFTPD_PATHS_H */
