@@ -95,6 +95,7 @@ $(MAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_SOURCE) $(MAN_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MAN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MAN_LDFLAGS)" \
+		BUILD_CC=$(HOSTCC) \
 		./configure \
 		--prefix=/opt \
 		-confdir /opt/etc \
