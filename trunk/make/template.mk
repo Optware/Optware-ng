@@ -76,13 +76,18 @@ $(DL_DIR)/$(<FOO>_SOURCE):
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
+#
 # This target also configures the build within the build directory.
 # Flags such as LDFLAGS and CPPFLAGS should be passed into configure
 # and NOT $(MAKE) below.  Passing it to configure causes configure to
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
 $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
+	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
 	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(<FOO>_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
