@@ -28,7 +28,7 @@ CRON_DEPENDS=
 #
 # CRON_IPK_VERSION should be incremented when the ipk changes.
 #
-CRON_IPK_VERSION=3
+CRON_IPK_VERSION=4
 
 #
 # CRON_CONFFILES should be a list of user-editable files
