@@ -53,8 +53,6 @@ $(CVS_IPK): $(CVS_DIR)/src/cvs
 
 cvs-ipk: $(CVS_IPK)
 
-cvs-source: $(DL_DIR)/$(CVS_SOURCE)
-
 cvs-clean:
 	-$(MAKE) -C $(CVS_DIR) uninstall
 	-$(MAKE) -C $(CVS_DIR) clean
