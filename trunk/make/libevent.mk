@@ -5,18 +5,18 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=0.9
+LIBEVENT_VERSION=1.0b
 LIBEVENT_SOURCE=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)
 LIBEVENT_UNZIP=zcat
-LIBEVENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBEVENT_MAINTAINER=Jean-Fabrice <jeanfabrice@users.sourceforge.net>
 LIBEVENT_DESCRIPTION=libevent to implement an event loop
 LIBEVENT_SECTION=libs
 LIBEVENT_PRIORITY=optional
 LIBEVENT_DEPENDS=
 LIBEVENT_CONFLICTS=
 
-LIBEVENT_IPK_VERSION=2
+LIBEVENT_IPK_VERSION=1
 
 LIBEVENT_CPPFLAGS= -fPIC
 
