@@ -36,6 +36,12 @@ $(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE)
 		CC_FOR_BUILD=$(HOSTCC) \
 		ac_cv_func_setvbuf_reversed=no \
 		bash_cv_have_mbstate_t=yes \
+		bash_cv_ulimit_maxfds=yes \
+		bash_cv_func_sigsetjmp=present \
+		bash_cv_printf_a_format=yes \
+		bash_cv_job_control_missing=present \
+		bash_cv_sys_named_pipes=present \
+		bash_cv_unusable_rtsigs=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
