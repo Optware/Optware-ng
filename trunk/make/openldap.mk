@@ -38,7 +38,7 @@ OPENLDAP_IPK_VERSION=1
 # OPENLDAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/configure.patch
+OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch
 
 #
 # If the compilation of the package requires additional
@@ -94,7 +94,7 @@ $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCH
 	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl-stage
 	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR)
 	$(OPENLDAP_UNZIP) $(DL_DIR)/$(OPENLDAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(OPENLDAP_PATCHES) | patch -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1
+	cat $(OPENLDAP_PATCHES) | patch -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1
 	mv $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR)
 	(cd $(OPENLDAP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -105,6 +105,7 @@ $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-yielding-select=yes \
 		--disable-nls \
 	)
 	touch $(OPENLDAP_BUILD_DIR)/.configured
@@ -116,7 +117,7 @@ openldap-unpack: $(OPENLDAP_BUILD_DIR)/.configured
 #
 $(OPENLDAP_BUILD_DIR)/.built: $(OPENLDAP_BUILD_DIR)/.configured
 	rm -f $(OPENLDAP_BUILD_DIR)/.built
-	$(MAKE) -C $(OPENLDAP_BUILD_DIR)
+	$(MAKE) -C $(OPENLDAP_BUILD_DIR) HOSTCC=$(HOSTCC)
 	touch $(OPENLDAP_BUILD_DIR)/.built
 
 #
