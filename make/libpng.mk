@@ -128,6 +128,7 @@ libpng: $(LIBPNG_BUILD_DIR)/.built
 $(STAGING_DIR)/opt/lib/liblibpng.so.$(LIBPNG_VERSION): $(LIBPNG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-exec-am
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-includeHEADERS
+	rm -f $(STAGING_DIR)/opt/lib/libpng.la
 	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libpng.a
 	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libpng.so.3.0.0
 	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libpng12.so.0.0.0
