@@ -24,6 +24,7 @@ $(DL_DIR)/$(BUSYBOX_SOURCE):
 busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_CONFIG)
 
 $(BUSYBOX_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_CONFIG)
+	@rm -rf $(BUILD_DIR)/$(BUSYBOX) $(BUILD_DIR)/busybox
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(BUSYBOX) $(BUILD_DIR)/busybox
 	cp $(BUSYBOX_CONFIG) $(BUSYBOX_DIR)/.config
