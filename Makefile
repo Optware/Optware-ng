@@ -33,7 +33,7 @@ PACKAGES:= dropbear busybox miau zlib termcap bash iptables atftp \
 	   mdadm scponly strace libtool libdb libcurl libbt \
 	   libpcap ntp freeradius puppy
 
-PACKAGES_TO_BE_TESTED:= 
+PACKAGES_TO_BE_TESTED:= screen
 
 PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE:= \
 	   e2fsprogs dump glib gkrellm
