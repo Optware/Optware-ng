@@ -53,7 +53,3 @@ busybox-upkg: $(TARGET_DIR)/busybox/bin/busybox
 
 busybox-clean:
 	-$(MAKE) -C $(BUSYBOX_DIR) clean
-
-install: busybox-install
-
-clean: busybox-clean

@@ -80,17 +80,22 @@ TARGETS_SOURCE:=$(patsubst %,%-source,$(TARGETS))
 TARGETS_DIRCLEAN:=$(patsubst %,%-dirclean,$(TARGETS))
 TARGETS_INSTALL:=$(patsubst %,%-install,$(TARGETS))
 
+PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
+PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
+PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_UPKG:=$(patsubst %,%-upkg,$(PACKAGES))
 
 world:  $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR) \
 	$(TARGETS_INSTALL) $(PACKAGES_UPKG)
 	@echo "ALL DONE."
 
-.PHONY: all world clean dirclean distclean source slugtool unslung $(TARGETS) \
-	$(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) \
+.PHONY: all world clean dirclean distclean directories source unslung \
+	$(TARGETS) $(TARGETS_CLEAN) $(TARGETS_DIRCLEAN) $(TARGETS_SOURCE) \
 	$(PACKAGES_UPKG)
 
 include make/*.mk
+
+directories: $(DL_DIR) $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR)
 
 $(DL_DIR):
 	mkdir $(DL_DIR)
@@ -104,7 +109,9 @@ $(TARGET_DIR):
 $(PACKAGE_DIR):
 	mkdir $(PACKAGE_DIR)
 
-source: $(TARGETS_SOURCE)
+source: $(TARGETS_SOURCE) $(PACKAGES_SOURCE)
+
+clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 
 distclean: clean
 	rm -rf $(BUILD_DIR) $(TARGET_DIR) $(PACKAGE_DIR)
