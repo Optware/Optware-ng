@@ -60,6 +60,8 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/busybox
 	# Remove the symlinks for potential "stock functionality" applets.
 	rm $(BUSYBOX_IPK_DIR)/opt/sbin/fdisk
 	rm $(BUSYBOX_IPK_DIR)/opt/sbin/insmod
+	# Remove broken df - stock is better
+	rm $(BUSYBOX_IPK_DIR)/opt/bin/df
 	install -d $(BUSYBOX_IPK_DIR)/CONTROL
 	install -m 644 $(BUSYBOX_SOURCE_DIR)/control $(BUSYBOX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)
