@@ -42,7 +42,7 @@ CROSS_ONLY_PACKAGES = \
 	atftp \
 	bind busybox \
 	coreutils cvs \
-	dhcp \
+	dhcp diffutils \
 	findutils flex freeradius \
 	gawk grep \
 	ircd-hybrid \
@@ -60,7 +60,7 @@ CROSS_ONLY_PACKAGES = \
 	wget \
 
 UNCATEGORISED_PACKAGES = \
-	diffutils libtiff less nfs-utils \
+	libtiff less nfs-utils \
 	logrotate appweb imagemagick \
 	nail stunnel patch \
 
@@ -74,9 +74,11 @@ PACKAGES_THAT_NEED_TO_BE_FIXED_TO_MATCH_TEMPLATE = \
 
 PACKAGES_THAT_NEED_TO_BE_FIXED = perl file nethack scponly tcpdump nload nmap bison
 
-PACKAGES_FOR_DEVELOPERS = crosstool-native
+PACKAGES_FOR_DEVELOPERS = toolchain-native
 
 NATIVE_ONLY_PACKAGES =
+
+all: directories toolchain packages
 
 # Common tools which may need overriding
 CVS=cvs
@@ -98,27 +100,26 @@ TARGET_DEBUGGING= #-g
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-HOSTCC:=gcc
-
-HOST_ARCH:=$(shell $(HOSTCC) -dumpmachine | sed -e s'/-.*//' \
-	-e 's/sparc.*/sparc/' \
-	-e 's/arm.*/arm/g' \
-	-e 's/m68k.*/m68k/' \
-	-e 's/ppc/powerpc/g' \
-	-e 's/v850.*/v850/g' \
-	-e 's/sh[234]/sh/' \
-	-e 's/mips-.*/mips/' \
-	-e 's/mipsel-.*/mipsel/' \
-	-e 's/cris.*/cris/' \
+HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
 	)
-GNU_HOST_NAME:=$(HOST_ARCH)-pc-linux-gnu
-GNU_TARGET_NAME=armv5b-softfloat-linux
-GNU_SHORT_TARGET_NAME=arm-linux
 
-CROSS_CONFIGURATION=gcc-3.3.4-glibc-2.2.5
+ifeq ($(HOST_MACHINE),armv5b)
+HOSTCC = $(TARGET_CC)
+GNU_HOST_NAME = armv5b-softfloat-linux
+GNU_TARGET_NAME = armv5b-softfloat-linux
+CROSS_CONFIGURATION = gcc-3.3.4-glibc-2.2.5
+TARGET_CROSS = /opt/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+toolchain:
+else
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME = armv5b-softfloat-linux
+CROSS_CONFIGURATION = gcc-3.3.4-glibc-2.2.5
+TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+toolchain: crosstool
+endif
 
-TARGET_CROSS=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
 TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
 TARGET_LD=$(TARGET_CROSS)ld
@@ -158,17 +159,15 @@ CXX=
 RANLIB=
 STRIP=
 
-all: directories crosstool packages
-
 PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_STAGE:=$(patsubst %,%-stage,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
-$(PACKAGES) : directories crosstool
-$(PACKAGES_STAGE) : directories crosstool
-$(PACKAGES_IPKG) : directories crosstool ipkg-utils
+$(PACKAGES) : directories toolchain
+$(PACKAGES_STAGE) : directories toolchain
+$(PACKAGES_IPKG) : directories toolchain ipkg-utils
 
 $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 	rm -f $(PACKAGE_DIR)/*
