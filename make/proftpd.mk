@@ -168,7 +168,13 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -d $(PROFTPD_IPK_DIR)/opt/man/man1
 	install -d $(PROFTPD_IPK_DIR)/opt/man/man5
 	install -d $(PROFTPD_IPK_DIR)/opt/man/man8	
-	$(MAKE) -C $(PROFTPD_BUILD_DIR) DESTDIR=$(PROFTPD_IPK_DIR) install-man
+	install -m 0644 $(PROFTPD_BUILD_DIR)/src/ftpdctl.8 $(PROFTPD_IPK_DIR)/opt/man/man8
+	install -m 0644 $(PROFTPD_BUILD_DIR)/src/proftpd.8 $(PROFTPD_IPK_DIR)/opt/man/man8   
+	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpshut.8 $(PROFTPD_IPK_DIR)/opt/man/man8 
+	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpcount.1 $(PROFTPD_IPK_DIR)/opt/man/man1
+	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftptop.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
+	install -m 0644 $(PROFTPD_BUILD_DIR)/utils/ftpwho.1  $(PROFTPD_IPK_DIR)/opt/man/man1 
+	install -m 0644 $(PROFTPD_BUILD_DIR)/src/xferlog.5   $(PROFTPD_IPK_DIR)/opt/man/man5
 	# Install empty file
 	install -d $(PROFTPD_IPK_DIR)/usr/share/empty
 	# Install conf files
