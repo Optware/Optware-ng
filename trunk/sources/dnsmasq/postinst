@@ -1,0 +1,3 @@
+#!/bin/sh
+[ -f /opt/etc/dnsmasq.conf ] || cp /opt/etc/dnsmasq.conf.sample /opt/etc/dnsmasq.conf
+ln -sf /opt/etc/dnsmasq.conf /etc/dnsmasq.conf
