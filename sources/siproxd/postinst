@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you must edit /opt/etc/siproxd.conf-example and rename it to /opt/etc/siproxd.conf,"
+echo "and then run /opt/etc/init.d/S90siproxd to start siproxd."
+echo
+
