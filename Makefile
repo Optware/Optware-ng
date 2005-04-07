@@ -121,17 +121,17 @@ WL500G_PACKAGES = \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
 	fontconfig freeradius freetype ftpd-topfield \
-	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap gzip \
+	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap groff gzip \
 	hdparm \
 	inetutils \
-	less libgd libid3tag libevent libjpeg libmad libol libogg libpng libtool libtopfield libusb libvorbis \
+	less libgd libid3tag libevent libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo \
-	madplay miau microperl \
+	m4 madplay make man man-pages miau microperl \
 	nano ncftp ncurses ntpclient nylon \
 	openssl \
-	pkgconfig popt postgresql procps proftpd puppy python \
+	patch pkgconfig popt portmap postgresql procps proftpd puppy python \
 	rdate readline recordext rsync \
-	sqlite strace stunnel syslog-ng \
+	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap thttpd torrent ttf-bitstream-vera \
 	unfs3 vsftpd \
 	w3cam wakelan wget-ssl which \
@@ -148,12 +148,11 @@ WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	classpath coreutils cyrus-sasl \
 	dhcp distcc dnsmasq dropbear \
 	ed ffmpeg flac \
-	ghostscript groff \
+	ghostscript \
 	iptables ircd-hybrid \
 	joe jove \
 	lame libcurl libdvdread \
-	m4 make man-pages man mc mt-daapd \
-	patch portmap \
+	mc mt-daapd \
 	vdr-mediamvp
 
 HOST_MACHINE:=$(shell uname -m | sed \
