@@ -19,11 +19,17 @@ MAN_PAGES_VERSION=2.01
 MAN_PAGES_SOURCE=man-pages-$(MAN_PAGES_VERSION).tar.gz
 MAN_PAGES_DIR=man-pages-$(MAN_PAGES_VERSION)
 MAN_PAGES_UNZIP=zcat
+MAN_PAGES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MAN_PAGES_DESCRIPTION=unix manual pages
+MAN_PAGES_SECTION=documentation
+MAN_PAGES_PRIORITY=optional
+MAN_PAGES_DEPENDS=man
+MAN_PAGES_CONFLICTS=
 
 #
 # MAN_PAGES_IPK_VERSION should be incremented when the ipk changes.
 #
-MAN_PAGES_IPK_VERSION=1
+MAN_PAGES_IPK_VERSION=2
 
 #
 # MAN_PAGES_CONFFILES should be a list of user-editable files
@@ -130,6 +136,24 @@ $(MAN_PAGES_BUILD_DIR)/.staged: $(MAN_PAGES_BUILD_DIR)/.built
 man-pages-stage: $(MAN_PAGES_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/man-pages
+# 
+$(MAN_PAGES_IPK_DIR)/CONTROL/control:
+	@install -d $(MAN_PAGES_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: man-pages" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MAN_PAGES_PRIORITY)" >>$@
+	@echo "Section: $(MAN_PAGES_SECTION)" >>$@
+	@echo "Version: $(MAN_PAGES_VERSION)-$(MAN_PAGES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MAN_PAGES_MAINTAINER)" >>$@
+	@echo "Source: $(MAN_PAGES_SITE)/$(MAN_PAGES_SOURCE)" >>$@
+	@echo "Description: $(MAN_PAGES_DESCRIPTION)" >>$@
+	@echo "Depends: $(MAN_PAGES_DEPENDS)" >>$@
+	@echo "Conflicts: $(MAN_PAGES_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(MAN_PAGES_IPK_DIR)/opt/sbin or $(MAN_PAGES_IPK_DIR)/opt/bin
@@ -148,8 +172,7 @@ $(MAN_PAGES_IPK): $(MAN_PAGES_BUILD_DIR)/.built
 #	install -m 755 $(MAN_PAGES_SOURCE_DIR)/man-pages.conf $(MAN_PAGES_IPK_DIR)/opt/etc/man-pages.conf
 #	install -d $(MAN_PAGES_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAN_PAGES_SOURCE_DIR)/rc.man-pages $(MAN_PAGES_IPK_DIR)/opt/etc/init.d/SXXman-pages
-	install -d $(MAN_PAGES_IPK_DIR)/CONTROL
-	install -m 644 $(MAN_PAGES_SOURCE_DIR)/control $(MAN_PAGES_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MAN_PAGES_IPK_DIR)/CONTROL/control
 #	install -m 644 $(MAN_PAGES_SOURCE_DIR)/postinst $(MAN_PAGES_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(MAN_PAGES_SOURCE_DIR)/prerm $(MAN_PAGES_IPK_DIR)/CONTROL/prerm
 #	echo $(MAN_PAGES_CONFFILES) | sed -e 's/ /\n/g' > $(MAN_PAGES_IPK_DIR)/CONTROL/conffiles

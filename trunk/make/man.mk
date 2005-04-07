@@ -19,11 +19,17 @@ MAN_VERSION=1.5p
 MAN_SOURCE=man-$(MAN_VERSION).tar.gz
 MAN_DIR=man-$(MAN_VERSION)
 MAN_UNZIP=zcat
+MAN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MAN_DESCRIPTION=unix manual page reader
+MAN_SECTION=documentation
+MAN_PRIORITY=optional
+MAN_DEPENDS=
+MAN_CONFLICTS=
 
 #
 # MAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MAN_IPK_VERSION=1
+MAN_IPK_VERSION=2
 
 #
 # MAN_CONFFILES should be a list of user-editable files
@@ -128,6 +134,25 @@ $(MAN_BUILD_DIR)/.staged: $(MAN_BUILD_DIR)/.built
 man-stage: $(MAN_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/man
+# 
+$(MAN_IPK_DIR)/CONTROL/control:
+	@install -d $(MAN_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: man" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MAN_PRIORITY)" >>$@
+	@echo "Section: $(MAN_SECTION)" >>$@
+	@echo "Version: $(MAN_VERSION)-$(MAN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MAN_MAINTAINER)" >>$@
+	@echo "Source: $(MAN_SITE)/$(MAN_SOURCE)" >>$@
+	@echo "Description: $(MAN_DESCRIPTION)" >>$@
+	@echo "Depends: $(MAN_DEPENDS)" >>$@
+	@echo "Conflicts: $(MAN_CONFLICTS)" >>$@
+
+#
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(MAN_IPK_DIR)/opt/sbin or $(MAN_IPK_DIR)/opt/bin
@@ -146,8 +171,7 @@ $(MAN_IPK): $(MAN_BUILD_DIR)/.built
 	install -m 644 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf
 #	install -d $(MAN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAN_SOURCE_DIR)/rc.man $(MAN_IPK_DIR)/opt/etc/init.d/SXXman
-	install -d $(MAN_IPK_DIR)/CONTROL
-	install -m 644 $(MAN_SOURCE_DIR)/control $(MAN_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MAN_IPK_DIR)/CONTROL/control
 #	install -m 644 $(MAN_SOURCE_DIR)/postinst $(MAN_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(MAN_SOURCE_DIR)/prerm $(MAN_IPK_DIR)/CONTROL/prerm
 	echo $(MAN_CONFFILES) | sed -e 's/ /\n/g' > $(MAN_IPK_DIR)/CONTROL/conffiles

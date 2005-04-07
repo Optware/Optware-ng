@@ -24,11 +24,18 @@ MAKE_VERSION=3.80
 MAKE_SOURCE=make-$(MAKE_VERSION).tar.gz
 MAKE_DIR=make-$(MAKE_VERSION)
 MAKE_UNZIP=zcat
+MAKE_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+MAKE_DESCRIPTION=examines files and runs commands necessary for compilation
+MAKE_SECTION=util
+MAKE_PRIORITY=optional
+MAKE_DEPENDS=
+MAKE_CONFLICTS=
+
 
 #
 # MAKE_IPK_VERSION should be incremented when the ipk changes.
 #
-MAKE_IPK_VERSION=1
+MAKE_IPK_VERSION=2
 
 #
 # MAKE_PATCHES should list any patches, in the the order in
@@ -110,14 +117,16 @@ make-unpack: $(MAKE_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(MAKE_BUILD_DIR)/make: $(MAKE_BUILD_DIR)/.configured
+$(MAKE_BUILD_DIR)/.built: $(MAKE_BUILD_DIR)/.configured
+	rm -f $(MAKE_BUILD_DIR)/.built
 	$(MAKE) -C $(MAKE_BUILD_DIR)
+	touch $(MAKE_BUILD_DIR)/.built
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-make: $(MAKE_BUILD_DIR)/make
+make: $(MAKE_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -134,6 +143,24 @@ $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION): $(MAKE_BUILD_DIR)/libmake.so.
 make-stage: $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/make
+# 
+$(MAKE_IPK_DIR)/CONTROL/control:
+	@install -d $(MAKE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: make" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MAKE_PRIORITY)" >>$@
+	@echo "Section: $(MAKE_SECTION)" >>$@
+	@echo "Version: $(MAKE_VERSION)-$(MAKE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MAKE_MAINTAINER)" >>$@
+	@echo "Source: $(MAKE_SITE)/$(MAKE_SOURCE)" >>$@
+	@echo "Description: $(MAKE_DESCRIPTION)" >>$@
+	@echo "Depends: $(MAKE_DEPENDS)" >>$@
+	@echo "Conflicts: $(MAKE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(MAKE_IPK_DIR)/opt/sbin or $(MAKE_IPK_DIR)/opt/bin
@@ -145,14 +172,13 @@ make-stage: $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(MAKE_IPK): $(MAKE_BUILD_DIR)/make
+$(MAKE_IPK): $(MAKE_BUILD_DIR)/.built
 	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
 	install -d $(MAKE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(MAKE_BUILD_DIR)/make -o $(MAKE_IPK_DIR)/opt/bin/make
 #	install -d $(MAKE_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
-	install -d $(MAKE_IPK_DIR)/CONTROL
-	install -m 644 $(MAKE_SOURCE_DIR)/control $(MAKE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MAKE_IPK_DIR)/CONTROL/control
 #	install -m 644 $(MAKE_SOURCE_DIR)/postinst $(MAKE_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(MAKE_SOURCE_DIR)/prerm $(MAKE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MAKE_IPK_DIR)
