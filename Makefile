@@ -124,7 +124,7 @@ WL500G_PACKAGES = \
 	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap groff gzip \
 	hdparm \
 	inetutils \
-	less libgd libid3tag libevent libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
+	less libcurl libevent libgd libid3tag libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages miau microperl \
 	nano ncftp ncurses ntpclient nylon \
@@ -139,8 +139,6 @@ WL500G_PACKAGES = \
 	zlib
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	libosip2 \
-	siproxd
 
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
@@ -151,7 +149,7 @@ WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	ghostscript \
 	iptables ircd-hybrid \
 	joe jove \
-	lame libcurl libdvdread \
+	lame libdvdread \
 	mc mt-daapd \
 	vdr-mediamvp
 
