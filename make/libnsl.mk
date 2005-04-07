@@ -7,8 +7,14 @@
 LIBNSL_VERSION=2.2.5
 LIBNSL_DIR=libnsl-$(LIBNSL_VERSION)
 LIBNSL_LIBNAME=libnsl
+LIBNSL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBNSL_DESCRIPTION=Network Services Library
+LIBNSL_SECTION=util
+LIBNSL_PRIORITY=optional
+LIBNSL_DEPENDS=
+LIBNSL_CONFLICTS=
 
-LIBNSL_IPK_VERSION=1
+LIBNSL_IPK_VERSION=2
 
 LIBNSL_BUILD_DIR=$(BUILD_DIR)/libnsl
 LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
@@ -43,6 +49,20 @@ $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 
 libnsl-stage: $(LIBNSL_BUILD_DIR)/.staged
 
+$(LIBNSL_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBNSL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libnsl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBNSL_PRIORITY)" >>$@
+	@echo "Section: $(LIBNSL_SECTION)" >>$@
+	@echo "Version: $(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBNSL_MAINTAINER)" >>$@
+	@echo "Source: $(LIBNSL_SITE)/$(LIBNSL_SOURCE)" >>$@
+	@echo "Description: $(LIBNSL_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBNSL_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBNSL_CONFLICTS)" >>$@
+
 $(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
 	rm -rf $(LIBNSL_IPK_DIR) $(BUILD_DIR)/libnsl_*_$(TARGET_ARCH).ipk
 	install -d $(LIBNSL_IPK_DIR)/opt/lib
@@ -53,8 +73,7 @@ $(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
 	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                $(LIBNSL_LIBNAME).so.1 \
 	)
-	install -d $(LIBNSL_IPK_DIR)/CONTROL
-	install -m 644 $(LIBNSL_SOURCE_DIR)/control $(LIBNSL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBNSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNSL_IPK_DIR)
 
 libnsl-ipk: $(LIBNSL_IPK)
