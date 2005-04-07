@@ -24,11 +24,17 @@ PATCH_VERSION=2.5.4
 PATCH_SOURCE=patch-$(PATCH_VERSION).tar.gz
 PATCH_DIR=patch-$(PATCH_VERSION)
 PATCH_UNZIP=zcat
+PATCH_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+PATCH_DESCRIPTION=applies a diff to produce a patched file
+PATCH_SECTION=util
+PATCH_PRIORITY=optional
+PATCH_DEPENDS=
+PATCH_CONFLICTS=
 
 #
 # PATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-PATCH_IPK_VERSION=2
+PATCH_IPK_VERSION=3
 
 #
 # PATCH_PATCHES should list any patches, in the the order in
@@ -111,14 +117,41 @@ patch-unpack: $(PATCH_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(PATCH_BUILD_DIR)/patch: $(PATCH_BUILD_DIR)/.configured
+$(PATCH_BUILD_DIR)/.built: $(PATCH_BUILD_DIR)/.configured
+	rm -f $(PATCH_BUILD_DIR)/.built
 	$(MAKE) -C $(PATCH_BUILD_DIR)
+	touch $(PATCH_BUILD_DIR)/.built
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-patch: $(PATCH_BUILD_DIR)/patch
+patch: $(PATCH_BUILD_DIR)/.built
+
+$(PATCH_BUILD_DIR)/.staged: $(PATCH_BUILD_DIR)/.built
+	rm -f $(PATCH_BUILD_DIR)/.staged
+	$(MAKE) -C $(PATCH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(PATCH_BUILD_DIR)/.staged
+
+patch-stage: $(PATCH_BUILD_DIR)/.staged
+			
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/patch
+# 
+$(PATCH_IPK_DIR)/CONTROL/control:
+	@install -d $(PATCH_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: patch" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PATCH_PRIORITY)" >>$@
+	@echo "Section: $(PATCH_SECTION)" >>$@
+	@echo "Version: $(PATCH_VERSION)-$(PATCH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PATCH_MAINTAINER)" >>$@
+	@echo "Source: $(PATCH_SITE)/$(PATCH_SOURCE)" >>$@
+	@echo "Description: $(PATCH_DESCRIPTION)" >>$@
+	@echo "Depends: $(PATCH_DEPENDS)" >>$@
+	@echo "Conflicts: $(PATCH_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -132,14 +165,13 @@ patch: $(PATCH_BUILD_DIR)/patch
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PATCH_IPK): $(PATCH_BUILD_DIR)/patch
+$(PATCH_IPK): $(PATCH_BUILD_DIR)/.built
 	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_$(TARGET_ARCH).ipk
 	install -d $(PATCH_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PATCH_BUILD_DIR)/patch -o $(PATCH_IPK_DIR)/opt/bin/patch
 #	install -d $(PATCH_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(PATCH_SOURCE_DIR)/rc.patch $(PATCH_IPK_DIR)/opt/etc/init.d/SXXpatch
-	install -d $(PATCH_IPK_DIR)/CONTROL
-	install -m 644 $(PATCH_SOURCE_DIR)/control $(PATCH_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PATCH_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PATCH_SOURCE_DIR)/postinst $(PATCH_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(PATCH_SOURCE_DIR)/prerm $(PATCH_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PATCH_IPK_DIR)

@@ -24,11 +24,17 @@ M4_VERSION=1.4.1
 M4_SOURCE=m4-$(M4_VERSION).tar.gz
 M4_DIR=m4-$(M4_VERSION)
 M4_UNZIP=zcat
+M4_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+M4_DESCRIPTION=gnu macro processor and compiler front end
+M4_SECTION=util
+M4_PRIORITY=optional
+M4_DEPENDS=
+M4_CONFLICTS=
 
 #
 # M4_IPK_VERSION should be incremented when the ipk changes.
 #
-M4_IPK_VERSION=1
+M4_IPK_VERSION=2
 
 #
 # M4_PATCHES should list any patches, in the the order in
@@ -110,14 +116,34 @@ m4-unpack: $(M4_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(M4_BUILD_DIR)/src/m4: $(M4_BUILD_DIR)/.configured
+$(M4_BUILD_DIR)/src/.built: $(M4_BUILD_DIR)/.configured
+	rm -f $(M4_BUILD_DIR)/.built
 	$(MAKE) -C $(M4_BUILD_DIR)
+	touch $(M4_BUILD_DIR)/.built
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-m4: $(M4_BUILD_DIR)/src/m4
+m4: $(M4_BUILD_DIR)/src/.built
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/m4
+#
+$(M4_IPK_DIR)/CONTROL/control:
+	@install -d $(M4_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: m4" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(M4_PRIORITY)" >>$@
+	@echo "Section: $(M4_SECTION)" >>$@
+	@echo "Version: $(M4_VERSION)-$(M4_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(M4_MAINTAINER)" >>$@
+	@echo "Source: $(M4_SITE)/$(M4_SOURCE)" >>$@
+	@echo "Description: $(M4_DESCRIPTION)" >>$@
+	@echo "Depends: $(M4_DEPENDS)" >>$@
+	@echo "Conflicts: $(M4_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -131,14 +157,13 @@ m4: $(M4_BUILD_DIR)/src/m4
 #
 # You may need to patch your application to make it use these locations.
 #
-$(M4_IPK): $(M4_BUILD_DIR)/src/m4
+$(M4_IPK): $(M4_BUILD_DIR)/src/.built
 	rm -rf $(M4_IPK_DIR) $(M4_IPK)
 	install -d $(M4_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
 #	install -d $(M4_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
-	install -d $(M4_IPK_DIR)/CONTROL
-	install -m 644 $(M4_SOURCE_DIR)/control $(M4_IPK_DIR)/CONTROL/control
+#	$(MAKE) $(M4_IPK_DIR)/CONTROL/control
 #	install -m 644 $(M4_SOURCE_DIR)/postinst $(M4_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(M4_SOURCE_DIR)/prerm $(M4_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(M4_IPK_DIR)

@@ -24,11 +24,17 @@ PORTMAP_VERSION=4
 PORTMAP_SOURCE=portmap_$(PORTMAP_VERSION).tar.gz
 PORTMAP_DIR=portmap_$(PORTMAP_VERSION)
 PORTMAP_UNZIP=zcat
+PORTMAP_MAINTAINER=Roy Silvernail <roy@rant-central.com>
+PORTMAP_DESCRIPTION=Portmap daemon for NFS
+PORTMAP_SECTION=net
+PORTMAP_PRIORITY=optional
+PORTMAP_DEPENDS=
+PORTMAP_CONFLICTS=
 
 #
 # PORTMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-PORTMAP_IPK_VERSION=2
+PORTMAP_IPK_VERSION=3
 
 #
 # PORTMAP_PATCHES should list any patches, in the the order in
@@ -138,7 +144,25 @@ portmap: $(PORTMAP_BUILD_DIR)/.built
 #
 #portmap-stage: $(STAGING_DIR)/opt/lib/libportmap.so.$(PORTMAP_VERSION)
 #
-#
+
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/portmap
+# 
+$(PORTMAP_IPK_DIR)/CONTROL/control:
+	@install -d $(PORTMAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: portmap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PORTMAP_PRIORITY)" >>$@
+	@echo "Section: $(PORTMAP_SECTION)" >>$@
+	@echo "Version: $(PORTMAP_VERSION)-$(PORTMAP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PORTMAP_MAINTAINER)" >>$@
+	@echo "Source: $(PORTMAP_SITE)/$(PORTMAP_SOURCE)" >>$@
+	@echo "Description: $(PORTMAP_DESCRIPTION)" >>$@
+	@echo "Depends: $(PORTMAP_DEPENDS)" >>$@
+	@echo "Conflicts: $(PORTMAP_CONFLICTS)" >>$@
+
+
 # This builds the IPK file.
 #
 # Binaries should be installed into $(PORTMAP_IPK_DIR)/opt/sbin or $(PORTMAP_IPK_DIR)/opt/bin
@@ -156,8 +180,7 @@ $(PORTMAP_IPK): $(PORTMAP_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
 	install -d $(PORTMAP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(PORTMAP_SOURCE_DIR)/rc.portmap $(PORTMAP_IPK_DIR)/opt/etc/init.d/S55portmap
-	install -d $(PORTMAP_IPK_DIR)/CONTROL
-	install -m 644 $(PORTMAP_SOURCE_DIR)/control $(PORTMAP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PORTMAP_IPK_DIR)/CONTROL/control
 	install -m 644 $(PORTMAP_SOURCE_DIR)/postinst $(PORTMAP_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(PORTMAP_SOURCE_DIR)/prerm $(PORTMAP_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PORTMAP_IPK_DIR)
