@@ -7,8 +7,14 @@
 LIBSTDC++_VERSION=5.0.7
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
 LIBSTDC++_LIBNAME=libstdc++.so
+LIBSTDC++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBSTDC++_DESCRIPTION=Standard C++ library, needed for dynamically linked C++ programs
+LIBSTDC++_SECTION=util
+LIBSTDC++_PRIORITY=optional
+LIBSTDC++_DEPENDS=
+LIBSTDC++_CONFLICTS=
 
-LIBSTDC++_IPK_VERSION=1
+LIBSTDC++_IPK_VERSION=2
 
 LIBSTDC++_BUILD_DIR=$(BUILD_DIR)/libstdc++
 LIBSTDC++_SOURCE_DIR=$(SOURCE_DIR)/libstdc++
@@ -43,6 +49,20 @@ $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 
 libstdc++-stage: $(LIBSTDC++_BUILD_DIR)/.staged
 
+$(LIBSTDC++_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBSTDC++_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libstdc++" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBSTDC++_PRIORITY)" >>$@
+	@echo "Section: $(LIBSTDC++_SECTION)" >>$@
+	@echo "Version: $(LIBSTDC++_VERSION)-$(LIBSTDC++_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBSTDC++_MAINTAINER)" >>$@
+	@echo "Source: $(LIBSTDC++_SITE)/$(LIBSTDC++_SOURCE)" >>$@
+	@echo "Description: $(LIBSTDC++_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBSTDC++_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBSTDC++_CONFLICTS)" >>$@
+
 $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
 	rm -rf $(LIBSTDC++_IPK_DIR) $(BUILD_DIR)/libstdc++_*_$(TARGET_ARCH).ipk
 	install -d $(LIBSTDC++_IPK_DIR)/opt/lib
@@ -53,8 +73,7 @@ $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
 	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
                $(LIBSTDC++_LIBNAME).5 \
 	)
-	install -d $(LIBSTDC++_IPK_DIR)/CONTROL
-	install -m 644 $(LIBSTDC++_SOURCE_DIR)/control $(LIBSTDC++_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBSTDC++_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBSTDC++_IPK_DIR)
 
 libstdc++-ipk: $(LIBSTDC++_IPK)

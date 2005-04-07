@@ -9,8 +9,14 @@ GROFF_VERSION=1.19.1
 GROFF_SOURCE=groff-$(GROFF_VERSION).tar.gz
 GROFF_DIR=groff-$(GROFF_VERSION)
 GROFF_UNZIP=zcat
+GROFF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+GROFF_DESCRIPTION=front-end for the groff document formatting system
+GROFF_SECTION=util
+GROFF_PRIORITY=optional
+GROFF_DEPENDS=libstdc++
+GROFF_CONFLICTS=
 
-GROFF_IPK_VERSION=2
+GROFF_IPK_VERSION=3
 
 GROFF_PATCHES=$(GROFF_SOURCE_DIR)/groff.patch
 
@@ -51,6 +57,20 @@ $(GROFF_BUILD_DIR)/.built: $(GROFF_BUILD_DIR)/.configured
 
 groff: $(GROFF_BUILD_DIR)/.built
 
+$(GROFF_IPK_DIR)/CONTROL/control:
+	@install -d $(GROFF_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: groff" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GROFF_PRIORITY)" >>$@
+	@echo "Section: $(GROFF_SECTION)" >>$@
+	@echo "Version: $(GROFF_VERSION)-$(GROFF_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GROFF_MAINTAINER)" >>$@
+	@echo "Source: $(GROFF_SITE)/$(GROFF_SOURCE)" >>$@
+	@echo "Description: $(GROFF_DESCRIPTION)" >>$@
+	@echo "Depends: $(GROFF_DEPENDS)" >>$@
+	@echo "Conflicts: $(GROFF_CONFLICTS)" >>$@
+
 $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
 	rm -rf $(GROFF_IPK_DIR) $(BUILD_DIR)/groff_*_$(TARGET_ARCH).ipk
 	install -d $(GROFF_IPK_DIR)/opt/bin
@@ -84,8 +104,7 @@ $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/tbl
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/tfmtodit
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/troff
-	install -d $(GROFF_IPK_DIR)/CONTROL
-	install -m 644 $(GROFF_SOURCE_DIR)/control $(GROFF_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GROFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GROFF_IPK_DIR)
 
 groff-ipk: $(GROFF_IPK)
