@@ -163,7 +163,7 @@ $(M4_IPK): $(M4_BUILD_DIR)/src/.built
 	$(STRIP_COMMAND) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
 #	install -d $(M4_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)/opt/etc/init.d/SXXm4
-#	$(MAKE) $(M4_IPK_DIR)/CONTROL/control
+	$(MAKE) $(M4_IPK_DIR)/CONTROL/control
 #	install -m 644 $(M4_SOURCE_DIR)/postinst $(M4_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(M4_SOURCE_DIR)/prerm $(M4_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(M4_IPK_DIR)
