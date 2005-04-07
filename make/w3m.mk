@@ -103,17 +103,17 @@ w3m-source: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-		#autoconf configure.in > configure; \
-
 $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
-	$(MAKE) libgc-stage openssl-stage
+	$(MAKE) libgc-stage openssl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(W3M_PATCHES) | patch -d $(BUILD_DIR)/$(W3M_DIR) -p1
 	mv $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
+ifneq ($(HOSTCC), $(TARGET_CC))
 	mkdir $(W3M_BUILD_DIR)/hostbuild
 	cd $(W3M_BUILD_DIR)/hostbuild; \
 		../configure
+endif
 	(cd $(W3M_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
@@ -137,9 +137,13 @@ w3m-unpack: $(W3M_BUILD_DIR)/.configured
 #
 $(W3M_BUILD_DIR)/.built: $(W3M_BUILD_DIR)/.configured
 	rm -f $(W3M_BUILD_DIR)/.built
+ifeq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
+else
 	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
 	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
 	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=yes
+endif
 	touch $(W3M_BUILD_DIR)/.built
 
 #
@@ -190,6 +194,8 @@ $(W3M_IPK_DIR)/CONTROL/control:
 $(W3M_IPK): $(W3M_BUILD_DIR)/.built
 	rm -rf $(W3M_IPK_DIR) $(BUILD_DIR)/w3m_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(W3M_BUILD_DIR) DESTDIR=$(W3M_IPK_DIR) install
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/bin/w3m
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/inflate
 	#install -d $(W3M_IPK_DIR)/opt/etc/
 	#install -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
 	#install -d $(W3M_IPK_DIR)/opt/etc/init.d
