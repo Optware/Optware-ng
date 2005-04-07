@@ -116,7 +116,7 @@ m4-unpack: $(M4_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(M4_BUILD_DIR)/src/.built: $(M4_BUILD_DIR)/.configured
+$(M4_BUILD_DIR)/.built: $(M4_BUILD_DIR)/.configured
 	rm -f $(M4_BUILD_DIR)/.built
 	$(MAKE) -C $(M4_BUILD_DIR)
 	touch $(M4_BUILD_DIR)/.built
@@ -125,7 +125,7 @@ $(M4_BUILD_DIR)/src/.built: $(M4_BUILD_DIR)/.configured
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-m4: $(M4_BUILD_DIR)/src/.built
+m4: $(M4_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -157,7 +157,7 @@ $(M4_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(M4_IPK): $(M4_BUILD_DIR)/src/.built
+$(M4_IPK): $(M4_BUILD_DIR)/.built
 	rm -rf $(M4_IPK_DIR) $(M4_IPK)
 	install -d $(M4_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(M4_BUILD_DIR)/src/m4 -o $(M4_IPK_DIR)/opt/bin/m4
