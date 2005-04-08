@@ -35,7 +35,7 @@ APPWEB_CONFLICTS=
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=4
+APPWEB_IPK_VERSION=5
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
@@ -149,7 +149,7 @@ $(APPWEB_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(APPWEB_PRIORITY)" >>$@
 	@echo "Section: $(APPWEB_SECTION)" >>$@
-	@echo "Version: $(NYLON_VERSION)-$(APPWEB_IPK_VERSION)" >>$@
+	@echo "Version: $(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(APPWEB_MAINTAINER)" >>$@
 	@echo "Source: $(APPWEB_SITE)/$(APPWEB_SOURCE)" >>$@
 	@echo "Description: $(APPWEB_DESCRIPTION)" >>$@

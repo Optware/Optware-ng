@@ -34,7 +34,7 @@ LAME_CONFLICTS=
 #
 # LAME_IPK_VERSION should be incremented when the ipk changes.
 #
-LAME_IPK_VERSION=1
+LAME_IPK_VERSION=3
 
 #
 # LAME_CONFFILES should be a list of user-editable files
@@ -152,7 +152,7 @@ $(LAME_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(LAME_PRIORITY)" >>$@
 	@echo "Section: $(LAME_SECTION)" >>$@
-	@echo "Version: $(NYLON_VERSION)-$(LAME_IPK_VERSION)" >>$@
+	@echo "Version: $(LAME_VERSION)-$(LAME_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(LAME_MAINTAINER)" >>$@
 	@echo "Source: $(LAME_SITE)/$(LAME_SOURCE)" >>$@
 	@echo "Description: $(LAME_DESCRIPTION)" >>$@

@@ -19,7 +19,7 @@ CCXSTREAM_CONFLICTS=
 #
 # CCXSTREAM_IPK_VERSION should be incremented when the ipk changes.
 #
-CCXSTREAM_IPK_VERSION=2
+CCXSTREAM_IPK_VERSION=3
 
 #
 # CCXSTREAM_PATCHES should list any patches, in the the order in
@@ -108,7 +108,7 @@ $(CCXSTREAM_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CCXSTREAM_PRIORITY)" >>$@
 	@echo "Section: $(CCXSTREAM_SECTION)" >>$@
-	@echo "Version: $(NYLON_VERSION)-$(CCXSTREAM_IPK_VERSION)" >>$@
+	@echo "Version: $(CCXSTREAM_VERSION)-$(CCXSTREAM_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(CCXSTREAM_MAINTAINER)" >>$@
 	@echo "Source: $(CCXSTREAM_SITE)/$(CCXSTREAM_SOURCE)" >>$@
 	@echo "Description: $(CCXSTREAM_DESCRIPTION)" >>$@

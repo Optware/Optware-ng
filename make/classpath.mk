@@ -34,7 +34,7 @@ CLASSPATH_CONFLICTS=
 #
 # CLASSPATH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLASSPATH_IPK_VERSION=2
+CLASSPATH_IPK_VERSION=3
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
@@ -158,7 +158,7 @@ $(CLASSPATH_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CLASSPATH_PRIORITY)" >>$@
 	@echo "Section: $(CLASSPATH_SECTION)" >>$@
-	@echo "Version: $(NYLON_VERSION)-$(CLASSPATH_IPK_VERSION)" >>$@
+	@echo "Version: $(CLASSPATH_VERSION)-$(CLASSPATH_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(CLASSPATH_MAINTAINER)" >>$@
 	@echo "Source: $(CLASSPATH_SITE)/$(CLASSPATH_SOURCE)" >>$@
 	@echo "Description: $(CLASSPATH_DESCRIPTION)" >>$@

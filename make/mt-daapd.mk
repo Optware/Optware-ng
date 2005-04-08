@@ -16,7 +16,7 @@ MT_DAAPD_PRIORITY=optional
 MT_DAAPD_DEPENDS=gdbm, libid3tag
 MT_DAAPD_CONFLICTS=
 
-MT_DAAPD_IPK_VERSION=2
+MT_DAAPD_IPK_VERSION=3
 
 MT_DAAPD_PATCHES=
 
@@ -76,7 +76,7 @@ $(MT_DAAPD_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(MT_DAAPD_PRIORITY)" >>$@
 	@echo "Section: $(MT_DAAPD_SECTION)" >>$@
-	@echo "Version: $(NYLON_VERSION)-$(MT_DAAPD_IPK_VERSION)" >>$@
+	@echo "Version: $(MT_DAAPD_VERSION)-$(MT_DAAPD_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MT_DAAPD_MAINTAINER)" >>$@
 	@echo "Source: $(MT_DAAPD_SITE)/$(MT_DAAPD_SOURCE)" >>$@
 	@echo "Description: $(MT_DAAPD_DESCRIPTION)" >>$@
