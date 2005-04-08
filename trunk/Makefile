@@ -38,7 +38,8 @@ CROSS_PACKAGES = \
 	jamvm jikes joe jove \
 	lame less \
 	libao libbt libcurl libdb libdvdread libevent libgc libgd libid3tag \
-	libjpeg libnsl libogg libol libpcap libpng libstdc++ libtiff libtool \
+	libjpeg libnsl libogg libol libosip2 \
+	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libxml2 libxslt logrotate lsof lua lynx lzo \
 	m4 make man man-pages mc mdadm metalog miau minicom mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
@@ -48,8 +49,8 @@ CROSS_PACKAGES = \
 	procps proftpd puppy python \
 	py-sqlite py-bittorrent \
 	rdate readline recordext renderext rsync \
-	screen sed ser sm snownews sqlite strace stunnel streamripper \
-	sudo svn syslog-ng \
+	screen sed ser siproxy sm snownews \
+	sqlite strace stunnel streamripper sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap torrent transcode ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
@@ -63,7 +64,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	libosip2 siproxd
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
