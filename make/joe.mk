@@ -18,11 +18,17 @@ JOE_VERSION=3.1
 JOE_SOURCE=joe-$(JOE_VERSION).tar.gz
 JOE_DIR=joe-$(JOE_VERSION)
 JOE_UNZIP=zcat
+JOE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+JOE_DESCRIPTION=Joe's own editor. A text editor with wordstar-like and emacs-like keybindings.
+JOE_SECTION=editor
+JOE_PRIORITY=optional
+JOE_DEPENDS=ncurses
+JOE_CONFLICTS=
 
 #
 # JOE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOE_IPK_VERSION=1
+JOE_IPK_VERSION=2
 
 #
 # JOE_CONFFILES should be a list of user-editable files
@@ -127,6 +133,24 @@ $(JOE_BUILD_DIR)/.staged: $(JOE_BUILD_DIR)/.built
 joe-stage: $(JOE_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/joe
+#
+$(JOE_IPK_DIR)/CONTROL/control:
+	@install -d $(JOE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: joe" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(JOE_PRIORITY)" >>$@
+	@echo "Section: $(JOE_SECTION)" >>$@
+	@echo "Version: $(JOE_VERSION)-$(JOE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(JOE_MAINTAINER)" >>$@
+	@echo "Source: $(JOE_SITE)/$(JOE_SOURCE)" >>$@
+	@echo "Description: $(JOE_DESCRIPTION)" >>$@
+	@echo "Depends: $(JOE_DEPENDS)" >>$@
+	@echo "Conflicts: $(JOE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(JOE_IPK_DIR)/opt/sbin or $(JOE_IPK_DIR)/opt/bin
@@ -142,8 +166,7 @@ $(JOE_IPK): $(JOE_BUILD_DIR)/.built
 	rm -rf $(JOE_IPK_DIR) $(BUILD_DIR)/joe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JOE_BUILD_DIR) DESTDIR=$(JOE_IPK_DIR) install-strip
 	install -d $(JOE_IPK_DIR)/opt/etc/
-	install -d $(JOE_IPK_DIR)/CONTROL
-	install -m 644 $(JOE_SOURCE_DIR)/control $(JOE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(JOE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JOE_IPK_DIR)
 
 #

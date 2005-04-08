@@ -9,8 +9,14 @@ CYRUS-SASL_VERSION=2.1.20
 CYRUS-SASL_SOURCE=cyrus-sasl-$(CYRUS-SASL_VERSION).tar.gz
 CYRUS-SASL_DIR=cyrus-sasl-$(CYRUS-SASL_VERSION)
 CYRUS-SASL_UNZIP=zcat
+CYRUS-SASL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
+CYRUS-SASL_DESCRIPTION=Provides client or server side authentication (see RFC 2222).
+CYRUS-SASL_SECTION=util
+CYRUS-SASL_PRIORITY=optional
+CYRUS-SASL_DEPENDS=
+CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=4
+CYRUS-SASL_IPK_VERSION=5
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
@@ -73,6 +79,24 @@ $(CYRUS-SASL_BUILD_DIR)/.staged: $(CYRUS-SASL_BUILD_DIR)/.built
 
 cyrus-sasl-stage: $(CYRUS-SASL_BUILD_DIR)/.staged
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/cyrus-sasl
+#
+$(CYRUS-SASL_IPK_DIR)/CONTROL/control:
+	@install -d $(CYRUS-SASL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: cyrus-sasl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CYRUS-SASL_PRIORITY)" >>$@
+	@echo "Section: $(CYRUS-SASL_SECTION)" >>$@
+	@echo "Version: $(CYRUS-SASL_VERSION)-$(CYRUS-SASL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CYRUS-SASL_MAINTAINER)" >>$@
+	@echo "Source: $(CYRUS-SASL_SITE)/$(CYRUS-SASL_SOURCE)" >>$@
+	@echo "Description: $(CYRUS-SASL_DESCRIPTION)" >>$@
+	@echo "Depends: $(CYRUS-SASL_DEPENDS)" >>$@
+	@echo "Conflicts: $(CYRUS-SASL_CONFLICTS)" >>$@
+
 $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -rf $(CYRUS-SASL_IPK_DIR) $(BUILD_DIR)/cyrus-sasl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install
@@ -81,8 +105,7 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
-	install -d $(CYRUS-SASL_IPK_DIR)/CONTROL
-	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/control $(CYRUS-SASL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CYRUS-SASL_IPK_DIR)/CONTROL/control
 	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/postinst $(CYRUS-SASL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/prerm $(CYRUS-SASL_IPK_DIR)/CONTROL/prerm
 	echo $(CYRUS-SASL_CONFFILES) | sed -e 's/ /\n/g' > $(CYRUS-SASL_IPK_DIR)/CONTROL/conffiles

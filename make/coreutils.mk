@@ -24,11 +24,17 @@ COREUTILS_VERSION=5.2.1
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
+COREUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+COREUTILS_DESCRIPTION=Bunch of heavyweight *nix core utilities
+COREUTILS_SECTION=core
+COREUTILS_PRIORITY=optional
+COREUTILS_DEPENDS=
+COREUTILS_CONFLICTS=busybox
 
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=4
+COREUTILS_IPK_VERSION=5
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -136,6 +142,24 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 #coreutils-stage: $(STAGING_DIR)/opt/lib/libcoreutils.so.$(COREUTILS_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/coreutils
+#
+$(COREUTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(COREUTILS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: coreutils" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(COREUTILS_PRIORITY)" >>$@
+	@echo "Section: $(COREUTILS_SECTION)" >>$@
+	@echo "Version: $(COREUTILS_VERSION)-$(COREUTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(COREUTILS_MAINTAINER)" >>$@
+	@echo "Source: $(COREUTILS_SITE)/$(COREUTILS_SOURCE)" >>$@
+	@echo "Description: $(COREUTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(COREUTILS_DEPENDS)" >>$@
+	@echo "Conflicts: $(COREUTILS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(COREUTILS_IPK_DIR)/opt/sbin or $(COREUTILS_IPK_DIR)/opt/bin
@@ -159,8 +183,7 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	rm $(COREUTILS_IPK_DIR)/opt/bin/groups
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
-	install -d $(COREUTILS_IPK_DIR)/CONTROL
-	install -m 644 $(COREUTILS_SOURCE_DIR)/control $(COREUTILS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
 	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 
