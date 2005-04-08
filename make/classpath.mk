@@ -24,11 +24,17 @@ CLASSPATH_VERSION=0.13
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
+CLASSPATH_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+CLASSPATH_DESCRIPTION=GNU Classpath for java
+CLASSPATH_SECTION=language
+CLASSPATH_PRIORITY=optional
+CLASSPATH_DEPENDS=
+CLASSPATH_CONFLICTS=
 
 #
 # CLASSPATH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLASSPATH_IPK_VERSION=1
+CLASSPATH_IPK_VERSION=2
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
@@ -142,6 +148,24 @@ $(STAGING_DIR)/opt/lib/libclasspath.so.$(CLASSPATH_VERSION): $(CLASSPATH_BUILD_D
 classpath-stage: $(STAGING_DIR)/opt/lib/libclasspath.so.$(CLASSPATH_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/classpath
+#
+$(CLASSPATH_IPK_DIR)/CONTROL/control:
+	@install -d $(CLASSPATH_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: classpath" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CLASSPATH_PRIORITY)" >>$@
+	@echo "Section: $(CLASSPATH_SECTION)" >>$@
+	@echo "Version: $(NYLON_VERSION)-$(CLASSPATH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CLASSPATH_MAINTAINER)" >>$@
+	@echo "Source: $(CLASSPATH_SITE)/$(CLASSPATH_SOURCE)" >>$@
+	@echo "Description: $(CLASSPATH_DESCRIPTION)" >>$@
+	@echo "Depends: $(CLASSPATH_DEPENDS)" >>$@
+	@echo "Conflicts: $(CLASSPATH_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(CLASSPATH_IPK_DIR)/opt/sbin or $(CLASSPATH_IPK_DIR)/opt/bin
@@ -157,8 +181,7 @@ $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
 	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install prefix=$(CLASSPATH_IPK_DIR)/opt
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip prefix=$(CLASSPATH_IPK_DIR)/opt
-	install -d $(CLASSPATH_IPK_DIR)/CONTROL
-	install -m 644 $(CLASSPATH_SOURCE_DIR)/control $(CLASSPATH_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CLASSPATH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLASSPATH_IPK_DIR)
 
 #
