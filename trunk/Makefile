@@ -117,14 +117,15 @@ PACKAGES_DEPRECATED = libiconv
 WL500G_PACKAGES = \
 	appweb adns atftp autoconf audiofile automake \
 	bash bc bind bitchx bzip2 \
-	ccxstream classpath cpio cron ctags \
-	diffutils \
+	cyrus-sasl coreutils ccxstream classpath cpio cron ctags \
+	distcc dnsmasq diffutils \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
 	fontconfig freeradius freetype ftpd-topfield \
 	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap groff gzip \
 	hdparm \
 	inetutils \
+	joe \
 	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo \
 	mc mt-daapd m4 madplay make man man-pages miau microperl \
@@ -144,12 +145,11 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	busybox \
-	coreutils cyrus-sasl \
-	dhcp distcc dnsmasq dropbear \
+	dhcp dropbear \
 	ed ffmpeg flac \
 	ghostscript \
 	iptables ircd-hybrid \
-	joe jove \
+	jove \
 	libdvdread \
 	vdr-mediamvp
 

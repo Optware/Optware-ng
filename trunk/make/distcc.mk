@@ -24,11 +24,17 @@ DISTCC_VERSION=2.18.3
 DISTCC_SOURCE=distcc-$(DISTCC_VERSION).tar.bz2
 DISTCC_DIR=distcc-$(DISTCC_VERSION)
 DISTCC_UNZIP=bzcat
+DISTCC_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+DISTCC_DESCRIPTION=distributes builds across a local network
+DISTCC_SECTION=util
+DISTCC_PRIORITY=optional
+DISTCC_DEPENDS=
+DISTCC_CONFLICTS=
 
 #
 # DISTCC_IPK_VERSION should be incremented when the ipk changes.
 #
-DISTCC_IPK_VERSION=1
+DISTCC_IPK_VERSION=2
 
 #
 # DISTCC_PATCHES should list any patches, in the the order in
@@ -120,6 +126,24 @@ $(DISTCC_BUILD_DIR)/distcc: $(DISTCC_BUILD_DIR)/.configured
 distcc: $(DISTCC_BUILD_DIR)/distcc
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/distcc
+#
+$(DISTCC_IPK_DIR)/CONTROL/control:
+	@install -d $(DISTCC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: distcc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DISTCC_PRIORITY)" >>$@
+	@echo "Section: $(DISTCC_SECTION)" >>$@
+	@echo "Version: $(DISTCC_VERSION)-$(DISTCC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DISTCC_MAINTAINER)" >>$@
+	@echo "Source: $(DISTCC_SITE)/$(DISTCC_SOURCE)" >>$@
+	@echo "Description: $(DISTCC_DESCRIPTION)" >>$@
+	@echo "Depends: $(DISTCC_DEPENDS)" >>$@
+	@echo "Conflicts: $(DISTCC_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(DISTCC_IPK_DIR)/opt/sbin or $(DISTCC_IPK_DIR)/opt/bin
@@ -139,8 +163,7 @@ $(DISTCC_IPK): $(DISTCC_BUILD_DIR)/distcc
 	$(STRIP_COMMAND) $(DISTCC_BUILD_DIR)/distccmon-text -o $(DISTCC_IPK_DIR)/opt/bin/distccmon-text
 #	install -d $(DISTCC_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(DISTCC_SOURCE_DIR)/rc.distcc $(DISTCC_IPK_DIR)/opt/etc/init.d/SXXdistcc
-	install -d $(DISTCC_IPK_DIR)/CONTROL
-	install -m 644 $(DISTCC_SOURCE_DIR)/control $(DISTCC_IPK_DIR)/CONTROL/control
+	$(MAKE) $(DISTCC_IPK_DIR)/CONTROL/control
 #	install -m 644 $(DISTCC_SOURCE_DIR)/postinst $(DISTCC_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(DISTCC_SOURCE_DIR)/prerm $(DISTCC_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DISTCC_IPK_DIR)
