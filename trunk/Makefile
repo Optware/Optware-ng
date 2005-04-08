@@ -115,9 +115,9 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
-	adns atftp autoconf audiofile automake \
+	appweb adns atftp autoconf audiofile automake \
 	bash bc bind bitchx bzip2 \
-	cpio cron ctags \
+	ccxstream classpath cpio cron ctags \
 	diffutils \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
@@ -143,8 +143,8 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	appweb busybox ccxstream \
-	classpath coreutils cyrus-sasl \
+	busybox \
+	coreutils cyrus-sasl \
 	dhcp distcc dnsmasq dropbear \
 	ed ffmpeg flac \
 	ghostscript \
