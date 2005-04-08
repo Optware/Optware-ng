@@ -9,11 +9,17 @@ CCXSTREAM_VERSION=1.0.15
 CCXSTREAM_SOURCE=ccxstream-$(CCXSTREAM_VERSION).tar.gz
 CCXSTREAM_DIR=ccxstream-$(CCXSTREAM_VERSION)
 CCXSTREAM_UNZIP=zcat
+CCXSTREAM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+CCXSTREAM_DESCRIPTION=A server to stream music and video to an XBox running Xbox Media Player using XBMSP protocol
+CCXSTREAM_SECTION=net
+CCXSTREAM_PRIORITY=optional
+CCXSTREAM_DEPENDS=
+CCXSTREAM_CONFLICTS=
 
 #
 # CCXSTREAM_IPK_VERSION should be incremented when the ipk changes.
 #
-CCXSTREAM_IPK_VERSION=1
+CCXSTREAM_IPK_VERSION=2
 
 #
 # CCXSTREAM_PATCHES should list any patches, in the the order in
@@ -88,7 +94,26 @@ $(CCXSTREAM_BUILD_DIR)/ccxstream: $(CCXSTREAM_BUILD_DIR)/.configured
 # there are no build dependencies for this package.  Again, you should change
 # the final dependency to refer directly to the main binary which is built.
 #
-ccxstream: ccxstream-dependencies $(CCXSTREAM_BUILD_DIR)/ccxstream
+#ccxstream: ccxstream-dependencies $(CCXSTREAM_BUILD_DIR)/ccxstream
+ccxstream: $(CCXSTREAM_BUILD_DIR)/ccxstream
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ccxstream
+#
+$(CCXSTREAM_IPK_DIR)/CONTROL/control:
+	@install -d $(CCXSTREAM_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ccxstream" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CCXSTREAM_PRIORITY)" >>$@
+	@echo "Section: $(CCXSTREAM_SECTION)" >>$@
+	@echo "Version: $(NYLON_VERSION)-$(CCXSTREAM_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CCXSTREAM_MAINTAINER)" >>$@
+	@echo "Source: $(CCXSTREAM_SITE)/$(CCXSTREAM_SOURCE)" >>$@
+	@echo "Description: $(CCXSTREAM_DESCRIPTION)" >>$@
+	@echo "Depends: $(CCXSTREAM_DEPENDS)" >>$@
+	@echo "Conflicts: $(CCXSTREAM_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -110,8 +135,7 @@ $(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/ccxstream
 	$(STRIP_COMMAND) $(CCXSTREAM_BUILD_DIR)/ccxstream -o $(CCXSTREAM_IPK_DIR)/opt/sbin/ccxstream
 	install -d $(CCXSTREAM_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CCXSTREAM_SOURCE_DIR)/rc.ccxstream $(CCXSTREAM_IPK_DIR)/opt/etc/init.d/S75ccxstream
-	install -d $(CCXSTREAM_IPK_DIR)/CONTROL
-	install -m 644 $(CCXSTREAM_SOURCE_DIR)/control $(CCXSTREAM_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CCXSTREAM_IPK_DIR)/CONTROL/control
 	install -m 644 $(CCXSTREAM_SOURCE_DIR)/postinst $(CCXSTREAM_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CCXSTREAM_SOURCE_DIR)/prerm $(CCXSTREAM_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CCXSTREAM_IPK_DIR)

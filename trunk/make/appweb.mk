@@ -25,11 +25,17 @@ APPWEB_VERSION_EXTRA=0
 APPWEB_SOURCE=appWeb-src-$(APPWEB_VERSION)-$(APPWEB_VERSION_EXTRA).tar.gz
 APPWEB_DIR=appWeb-$(APPWEB_VERSION)
 APPWEB_UNZIP=zcat
+APPWEB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+APPWEB_DESCRIPTION=AppWeb is the leading web server technology for embedding in devices and applications.
+APPWEB_SECTION=net
+APPWEB_PRIORITY=optional
+APPWEB_DEPENDS=
+APPWEB_CONFLICTS=
 
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=3
+APPWEB_IPK_VERSION=4
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
@@ -133,6 +139,24 @@ $(APPWEB_BUILD_DIR)/bin/appWeb: $(APPWEB_BUILD_DIR)/.configured
 #
 appweb: $(APPWEB_BUILD_DIR)/bin/appWeb
 
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/appweb
+#
+$(APPWEB_IPK_DIR)/CONTROL/control:
+	@install -d $(APPWEB_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: appweb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(APPWEB_PRIORITY)" >>$@
+	@echo "Section: $(APPWEB_SECTION)" >>$@
+	@echo "Version: $(NYLON_VERSION)-$(APPWEB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(APPWEB_MAINTAINER)" >>$@
+	@echo "Source: $(APPWEB_SITE)/$(APPWEB_SOURCE)" >>$@
+	@echo "Description: $(APPWEB_DESCRIPTION)" >>$@
+	@echo "Depends: $(APPWEB_DEPENDS)" >>$@
+	@echo "Conflicts: $(APPWEB_CONFLICTS)" >>$@
+
+#
 #
 # This builds the IPK file.
 #
@@ -183,8 +207,7 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
 	install -d $(APPWEB_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(APPWEB_SOURCE_DIR)/rc.appweb $(APPWEB_IPK_DIR)/opt/etc/init.d/S81appweb
-	install -d $(APPWEB_IPK_DIR)/CONTROL
-	install -m 644 $(APPWEB_SOURCE_DIR)/control $(APPWEB_IPK_DIR)/CONTROL/control
+	$(MAKE) $(APPWEB_IPK_DIR)/CONTROL/control
 	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(APPWEB_SOURCE_DIR)/prerm $(APPWEB_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APPWEB_IPK_DIR)
