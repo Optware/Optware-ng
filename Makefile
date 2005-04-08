@@ -125,9 +125,9 @@ WL500G_PACKAGES = \
 	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap groff gzip \
 	hdparm \
 	inetutils \
-	less libcurl libevent libgd libid3tag libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
+	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo \
-	m4 madplay make man man-pages miau microperl \
+	mc mt-daapd m4 madplay make man man-pages miau microperl \
 	nano ncftp ncurses ntpclient nylon \
 	openssl \
 	patch pkgconfig popt portmap postgresql procps proftpd puppy python \

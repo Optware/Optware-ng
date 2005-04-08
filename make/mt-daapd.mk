@@ -9,8 +9,14 @@ MT_DAAPD_VERSION=0.2.1.1
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
+MT_DAAPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MT_DAAPD_DESCRIPTION=A multi-threaded DAAP server for Linux and other POSIX type systems. Allows a Linux box to share audio files with iTunes users on Windows or Mac.
+MT_DAAPD_SECTION=net
+MT_DAAPD_PRIORITY=optional
+MT_DAAPD_DEPENDS=gdbm, libid3tag
+MT_DAAPD_CONFLICTS=
 
-MT_DAAPD_IPK_VERSION=1
+MT_DAAPD_IPK_VERSION=2
 
 MT_DAAPD_PATCHES=
 
@@ -59,14 +65,31 @@ $(MT_DAAPD_BUILD_DIR)/src/mt-daapd: $(MT_DAAPD_BUILD_DIR)/.configured
 
 mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 
+#
+# This rule creates a control file for iipkg.  It is no longer
+# necessary to create a seperate control file under sources/mt-daapd
+#
+$(MT_DAAPD_IPK_DIR)/CONTROL/control:
+	@install -d $(MT_DAAPD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: mt-daapd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MT_DAAPD_PRIORITY)" >>$@
+	@echo "Section: $(MT_DAAPD_SECTION)" >>$@
+	@echo "Version: $(NYLON_VERSION)-$(MT_DAAPD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MT_DAAPD_MAINTAINER)" >>$@
+	@echo "Source: $(MT_DAAPD_SITE)/$(MT_DAAPD_SOURCE)" >>$@
+	@echo "Description: $(MT_DAAPD_DESCRIPTION)" >>$@
+	@echo "Depends: $(MT_DAAPD_DEPENDS)" >>$@
+	@echo "Conflicts: $(MT_DAAPD_CONFLICTS)" >>$@
+
 $(MT_DAAPD_IPK): $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 	rm -rf $(MT_DAAPD_IPK_DIR) $(BUILD_DIR)/mt-daapd_*_$(TARGET_ARCH).ipk
 	install -d $(MT_DAAPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
 	install -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(MT_DAAPD_SOURCE_DIR)/rc.mt-daapd $(MT_DAAPD_IPK_DIR)/opt/etc/init.d/S60mt-daapd
-	install -d $(MT_DAAPD_IPK_DIR)/CONTROL
-	install -m 644 $(MT_DAAPD_SOURCE_DIR)/control $(MT_DAAPD_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MT_DAAPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(MT_DAAPD_SOURCE_DIR)/postinst $(MT_DAAPD_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(MT_DAAPD_SOURCE_DIR)/prerm $(MT_DAAPD_IPK_DIR)/CONTROL/prerm
 	install -m 644 $(MT_DAAPD_SOURCE_DIR)/conffiles $(MT_DAAPD_IPK_DIR)/CONTROL/conffiles

@@ -24,6 +24,12 @@ LAME_VERSION=3.96.1
 LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
 LAME_DIR=lame-$(LAME_VERSION)
 LAME_UNZIP=zcat
+LAME_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+LAME_DESCRIPTION=LAME is an LGPL MP3 encoder.
+LAME_SECTION=lib
+LAME_PRIORITY=optional
+LAME_DEPENDS=ncurses
+LAME_CONFLICTS=
 
 #
 # LAME_IPK_VERSION should be incremented when the ipk changes.
@@ -134,6 +140,25 @@ $(LAME_BUILD_DIR)/.staged: $(LAME_BUILD_DIR)/.built
 
 lame-stage: $(LAME_BUILD_DIR)/.staged
 
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/lame
+#
+$(LAME_IPK_DIR)/CONTROL/control:
+	@install -d $(LAME_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: lame" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LAME_PRIORITY)" >>$@
+	@echo "Section: $(LAME_SECTION)" >>$@
+	@echo "Version: $(NYLON_VERSION)-$(LAME_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LAME_MAINTAINER)" >>$@
+	@echo "Source: $(LAME_SITE)/$(LAME_SOURCE)" >>$@
+	@echo "Description: $(LAME_DESCRIPTION)" >>$@
+	@echo "Depends: $(LAME_DEPENDS)" >>$@
+	@echo "Conflicts: $(LAME_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -149,8 +174,7 @@ lame-stage: $(LAME_BUILD_DIR)/.staged
 $(LAME_IPK): $(LAME_BUILD_DIR)/.built
 	rm -rf $(LAME_IPK_DIR) $(BUILD_DIR)/lame_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LAME_BUILD_DIR) DESTDIR=$(LAME_IPK_DIR) install-strip
-	install -d $(LAME_IPK_DIR)/CONTROL
-	install -m 644 $(LAME_SOURCE_DIR)/control $(LAME_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LAME_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LAME_IPK_DIR)
 
 #

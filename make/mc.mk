@@ -9,11 +9,17 @@ MC_VERSION=4.1.35
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
+MC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MC_DESCRIPTION=Midnight Commander File Manager
+MC_SECTION=utilities
+MC_PRIORITY=optional
+MC_DEPENDS=ncurses
+MC_CONFLICTS=
 
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=1
+MC_IPK_VERSION=2
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -105,6 +111,24 @@ $(MC_BUILD_DIR)/src/mc: $(MC_BUILD_DIR)/.configured
 mc: $(MC_BUILD_DIR)/src/mc
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/mc
+#
+$(MC_IPK_DIR)/CONTROL/control:
+	@install -d $(MC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: mc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MC_PRIORITY)" >>$@
+	@echo "Section: $(MC_SECTION)" >>$@
+	@echo "Version: $(MC_VERSION)-$(MC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MC_MAINTAINER)" >>$@
+	@echo "Source: $(MC_SITE)/$(MC_SOURCE)" >>$@
+	@echo "Description: $(MC_DESCRIPTION)" >>$@
+	@echo "Depends: $(MC_DEPENDS)" >>$@
+	@echo "Conflicts: $(MC_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(MC_IPK_DIR)/opt/sbin or $(MC_IPK_DIR)/opt/bin
@@ -125,8 +149,7 @@ $(MC_IPK): $(MC_BUILD_DIR)/src/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.lib  $(MC_IPK_DIR)/opt/lib/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.menu $(MC_IPK_DIR)/opt/lib/mc
 	$(STRIP_COMMAND) $(MC_BUILD_DIR)/src/mc -o $(MC_IPK_DIR)/opt/bin/mc
-	install -d $(MC_IPK_DIR)/CONTROL
-	install -m 644 $(MC_SOURCE_DIR)/control $(MC_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MC_IPK_DIR)
 
 #
