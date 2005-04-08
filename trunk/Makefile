@@ -150,8 +150,7 @@ WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	ghostscript \
 	iptables ircd-hybrid \
 	joe jove \
-	lame libdvdread \
-	mc mt-daapd \
+	libdvdread \
 	vdr-mediamvp
 
 HOST_MACHINE:=$(shell uname -m | sed \
