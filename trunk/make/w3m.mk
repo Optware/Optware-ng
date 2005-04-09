@@ -109,11 +109,25 @@ $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(W3M_PATCHES) | patch -d $(BUILD_DIR)/$(W3M_DIR) -p1
 	mv $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
-ifneq ($(HOSTCC), $(TARGET_CC))
+ifeq ($(HOSTCC), $(TARGET_CC))
+	(cd $(W3M_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(W3M_LDFLAGS)" \
+		WCCFLAGS="-DUSE_UNICODE $(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
+        	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--with-ssl \
+		--disable-image \
+	)
+else
 	mkdir $(W3M_BUILD_DIR)/hostbuild
 	cd $(W3M_BUILD_DIR)/hostbuild; \
 		../configure
-endif
 	(cd $(W3M_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
@@ -128,6 +142,7 @@ endif
 		--with-ssl \
 		--disable-image \
 	)
+endif
 	touch $(W3M_BUILD_DIR)/.configured
 
 w3m-unpack: $(W3M_BUILD_DIR)/.configured
@@ -138,7 +153,8 @@ w3m-unpack: $(W3M_BUILD_DIR)/.configured
 $(W3M_BUILD_DIR)/.built: $(W3M_BUILD_DIR)/.configured
 	rm -f $(W3M_BUILD_DIR)/.built
 ifeq ($(HOSTCC), $(TARGET_CC))
-	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
+	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+	    $(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
 else
 	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
 	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
