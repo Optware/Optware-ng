@@ -117,9 +117,9 @@ PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
 	appweb adns atftp autoconf audiofile automake \
-	bash bc bind bitchx bzip2 \
-	cyrus-sasl coreutils ccxstream classpath cpio cron ctags \
-	distcc dnsmasq diffutils \
+	bash bc bind bitchx busybox bzip2 \
+	ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
+	diffutils distcc dnsmasq \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
 	fontconfig freeradius freetype ftpd-topfield \
@@ -127,17 +127,18 @@ WL500G_PACKAGES = \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol libosip2 libpng libtool libtopfield libusb libvorbis \
+	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol \
+	libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo \
-	mc mt-daapd m4 madplay make man man-pages miau microperl \
+	m4 madplay make man man-pages mc miau microperl minicom mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
-	openssl \
+	openssl openvpn \
 	patch pkgconfig popt portmap postgresql procps proftpd puppy python \
-	rdate readline recordext rsync \
+	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap thttpd torrent ttf-bitstream-vera \
-	unfs3 vsftpd \
-	w3cam wakelan wget-ssl which \
+	unfs3 units vsftpd \
+	w3cam wakelan wget-ssl which wxbase \
 	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
 	zlib
 
@@ -145,7 +146,6 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	busybox \
 	dhcp dropbear \
 	ed ffmpeg flac \
 	ghostscript \
