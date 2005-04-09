@@ -104,11 +104,10 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	w3m
 
-# w3m - needs to be configured to look for gc.h in staging
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	w3m \
 	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
