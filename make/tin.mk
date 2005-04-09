@@ -31,7 +31,7 @@ TIN_VERSION=1.7.8
 TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
 TIN_DIR=tin-$(TIN_VERSION)
 TIN_UNZIP=zcat
-TIN_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+TIN_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 TIN_DESCRIPTION=tin is a threaded NNTP and spool based UseNet newsreader
 TIN_SECTION=misc
 TIN_PRIORITY=optional
@@ -40,7 +40,7 @@ TIN_DEPENDS=
 #
 # TIN_IPK_VERSION should be incremented when the ipk changes.
 #
-TIN_IPK_VERSION=1
+TIN_IPK_VERSION=2
 
 #
 # TIN_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ $(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
 	make ncurses-stage
 	rm -rf $(BUILD_DIR)/$(TIN_DIR) $(TIN_BUILD_DIR)
 	$(TIN_UNZIP) $(DL_DIR)/$(TIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(TIN_PATCHES) | patch -d $(BUILD_DIR)/$(TIN_DIR) -p2
+	cat $(TIN_PATCHES) | patch -d $(BUILD_DIR)/$(TIN_DIR) -p1
 	mv $(BUILD_DIR)/$(TIN_DIR) $(TIN_BUILD_DIR)
 	(cd $(TIN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -128,7 +128,7 @@ tin-unpack: $(TIN_BUILD_DIR)/.configured
 #
 $(TIN_BUILD_DIR)/.built: $(TIN_BUILD_DIR)/.configured
 	rm -f $(TIN_BUILD_DIR)/.built
-	$(MAKE) -C $(TIN_BUILD_DIR) build
+	$(MAKE) -C $(TIN_BUILD_DIR) build BUILD_CC=$(HOSTCC)
 	touch $(TIN_BUILD_DIR)/.built
 
 #
@@ -141,7 +141,7 @@ tin: $(TIN_BUILD_DIR)/.built
 #
 $(TIN_BUILD_DIR)/.staged: $(TIN_BUILD_DIR)/.built
 	rm -f $(TIN_BUILD_DIR)/.staged
-	$(MAKE) -C $(TIN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(TIN_BUILD_DIR) DESTDIR=$(STAGING_DIR) STRIP="$(STRIP_COMMAND)" install
 	touch $(TIN_BUILD_DIR)/.staged
 
 tin-stage: $(TIN_BUILD_DIR)/.staged
@@ -177,7 +177,7 @@ $(TIN_IPK_DIR)/CONTROL/control:
 #
 $(TIN_IPK): $(TIN_BUILD_DIR)/.built
 	rm -rf $(TIN_IPK_DIR) $(BUILD_DIR)/tin_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TIN_BUILD_DIR) DESTDIR=$(TIN_IPK_DIR) install
+	$(MAKE) -C $(TIN_BUILD_DIR) DESTDIR=$(TIN_IPK_DIR) STRIP="$(STRIP_COMMAND)" install
 	install -d $(TIN_IPK_DIR)/opt/etc/
 	# install -m 644 $(TIN_SOURCE_DIR)/tin.conf $(TIN_IPK_DIR)/opt/etc/tin.conf
 	# install -d $(TIN_IPK_DIR)/opt/etc/init.d
