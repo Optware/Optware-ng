@@ -136,7 +136,7 @@ WL500G_PACKAGES = \
 	patch pkgconfig popt portmap postgresql procps proftpd puppy python \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
-	tar tcpdump tcpwrappers termcap thttpd torrent ttf-bitstream-vera \
+	tar tcpdump tcpwrappers termcap thttpd thttpdphp torrent ttf-bitstream-vera \
 	unfs3 units vsftpd \
 	w3cam wakelan wget-ssl which wxbase \
 	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
