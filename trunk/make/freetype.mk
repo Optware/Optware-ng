@@ -153,6 +153,7 @@ freetype: $(FREETYPE_BUILD_DIR)/.built
 $(STAGING_LIB_DIR)/libfreetype.so: $(FREETYPE_BUILD_DIR)/.built
 	rm -f $(FREETYPE_BUILD_DIR)/.staged
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/freetype-config $(STAGING_DIR)/bin/freetype-config
 	rm -f $(STAGING_LIB_DIR)/libfreetype.la
 
