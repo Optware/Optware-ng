@@ -72,7 +72,7 @@ OPENVPN_LDFLAGS=
 OPENVPN_BUILD_DIR=$(BUILD_DIR)/openvpn
 OPENVPN_SOURCE_DIR=$(SOURCE_DIR)/openvpn
 OPENVPN_IPK_DIR=$(BUILD_DIR)/openvpn-$(OPENVPN_VERSION)-ipk
-OPENVPN_IPK=$(BUILD_DIR)/openvpn_$(OPENVPN_VERSION)-$(OPENVPN_IPK_VERSION)_armeb.ipk
+OPENVPN_IPK=$(BUILD_DIR)/openvpn_$(OPENVPN_VERSION)-$(OPENVPN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -184,7 +184,7 @@ openvpn-stage: $(STAGING_DIR)/opt/lib/libopenvpn.so.$(OPENVPN_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
-	rm -rf $(OPENVPN_IPK_DIR) $(BUILD_DIR)/openvpn_*_armeb.ipk
+	rm -rf $(OPENVPN_IPK_DIR) $(BUILD_DIR)/openvpn_*_$(TARGET_ARCH).ipk
 	# Install server to /opt/sbin
 	install -d $(OPENVPN_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(OPENVPN_BUILD_DIR)/openvpn -o $(OPENVPN_IPK_DIR)/opt/sbin/openvpn
