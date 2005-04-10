@@ -138,7 +138,7 @@ WL500G_PACKAGES = \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap thttpd thttpdphp torrent ttf-bitstream-vera \
 	unfs3 units vsftpd \
-	w3cam wakelan wget-ssl which wxbase \
+	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
 	zlib
 
