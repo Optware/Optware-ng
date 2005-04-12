@@ -110,10 +110,8 @@ vte-source: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) \
-		$(STAGING_LIB_DIR)/libgtk-x11-2.0.so \
-		$(STAGING_LIB_DIR)/libSM.so \
 		$(VTE_PATCHES)
-	$(MAKE) ncurses-stage termcap-stage
+	$(MAKE) gtk-stage sm-stage ncurses-stage termcap-stage
 	rm -rf $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR)
 	$(VTE_UNZIP) $(DL_DIR)/$(VTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR)
@@ -158,11 +156,11 @@ vte: $(VTE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libvte.so: $(VTE_BUILD_DIR)/.built
+$(VTE_BUILD_DIR)/.staged: $(VTE_BUILD_DIR)/.built
 	$(MAKE) -C $(VTE_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -rf $(STAGING_DIR)/opt/lib/libvte.la
 
-vte-stage: $(STAGING_DIR)/opt/lib/libvte.so
+vte-stage: $(VTE_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
