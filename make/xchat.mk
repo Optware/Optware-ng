@@ -110,8 +110,8 @@ xchat-source: $(DL_DIR)/$(XCHAT_SOURCE) $(XCHAT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
-		$(STAGING_LIB_DIR)/libgtk-x11-2.0.so \
 		$(XCHAT_PATCHES)
+	$(MAKE) gtk-stage
 	rm -rf $(BUILD_DIR)/$(XCHAT_DIR) $(XCHAT_BUILD_DIR)
 	$(XCHAT_UNZIP) $(DL_DIR)/$(XCHAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(XCHAT_DIR) $(XCHAT_BUILD_DIR)
@@ -161,11 +161,11 @@ xchat: $(XCHAT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libxchat.so: $(XCHAT_BUILD_DIR)/.built
+$(XCHAT_BUILD_DIR)/.staged: $(XCHAT_BUILD_DIR)/.built
 	$(MAKE) -C $(XCHAT_BUILD_DIR) install-strip DESTDIR=$(STAGING_DIR)
 	rm -rf $(STAGING_DIR)/opt/lib/libxchat.la
 
-xchat-stage: $(STAGING_DIR)/opt/lib/libxchat.so
+xchat-stage: $(XCHAT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

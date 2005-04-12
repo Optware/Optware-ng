@@ -164,11 +164,11 @@ gtk: $(GTK_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgtk-x11-2.0.so: $(GTK_BUILD_DIR)/.built
+$(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -f $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.la
 
-gtk-stage: $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.so
+gtk-stage: $(GTK_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
