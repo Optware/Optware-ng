@@ -97,6 +97,7 @@ fontconfig-source: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+ifeq ($(TARGET),nslu2)
 $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
 		$(STAGING_LIB_DIR)/libfreetype.so \
 		$(FONTCONFIG_PATCHES)
@@ -120,6 +121,30 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
 		--disable-static \
 	)
 	touch $(FONTCONFIG_BUILD_DIR)/.configured
+else
+$(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
+		$(STAGING_LIB_DIR)/libfreetype.so \
+		$(FONTCONFIG_PATCHES)
+	$(MAKE) expat-stage
+	(cd $(FONTCONFIG_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(FONTCONFIG_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		./autogen.sh \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--with-default-fonts=/opt/share/fonts \
+		--without-add-fonts \
+		--with-freetype-config=$(STAGING_DIR)/opt/bin/freetype-config \
+		--disable-docs \
+		--disable-static \
+	)
+	touch $(FONTCONFIG_BUILD_DIR)/.configured
+endif
 
 fontconfig-unpack: $(FONTCONFIG_BUILD_DIR)/.configured
 
