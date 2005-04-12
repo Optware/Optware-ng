@@ -144,6 +144,7 @@ libcurl: $(LIBCURL_BUILD_DIR)/.built
 $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
 	rm -f $(LIBCURL_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	cp $(STAGING_DIR)/opt/bin/curl-config $(STAGING_DIR)/bin/curl-config
 	touch $(LIBCURL_BUILD_DIR)/.staged
 
 libcurl-stage: $(LIBCURL_BUILD_DIR)/.staged
