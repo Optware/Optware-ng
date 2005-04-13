@@ -106,7 +106,10 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# mzscheme core can cross compile, there is some problem in cross building native extension
+# w3m has build time dependency on libgc
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	mzscheme \
 	w3m
 
 # byRequest - please use a cvs tag or date, see x11.mk for an example
