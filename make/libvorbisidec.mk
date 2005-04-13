@@ -44,7 +44,7 @@ LIBVORBISIDEC_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-#LIBVORBISIDEC_CPPFLAGS=-D_ARM_ASSEM_
+LIBVORBISIDEC_CPPFLAGS=-D_ARM_ASSEM_
 LIBVORBISIDEC_LDFLAGS=
 
 #
