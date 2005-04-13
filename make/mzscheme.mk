@@ -40,7 +40,7 @@ MZSCHEME_DEPENDS=
 #
 # MZSCHEME_IPK_VERSION should be incremented when the ipk changes.
 #
-MZSCHEME_IPK_VERSION=1
+MZSCHEME_IPK_VERSION=2
 
 #
 # MZSCHEME_CONFFILES should be a list of user-editable files
@@ -104,7 +104,7 @@ mzscheme-source: $(DL_DIR)/$(MZSCHEME_SOURCE) $(MZSCHEME_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MZSCHEME_BUILD_DIR)/.configured: $(DL_DIR)/$(MZSCHEME_SOURCE) $(MZSCHEME_PATCHES)
-	# $(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(MZSCHEME_DIR) $(MZSCHEME_BUILD_DIR)
 	$(MZSCHEME_UNZIP) $(DL_DIR)/$(MZSCHEME_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MZSCHEME_PATCHES) | patch -d $(BUILD_DIR)/$(MZSCHEME_DIR) -p1
@@ -118,7 +118,7 @@ $(MZSCHEME_BUILD_DIR)/.configured: $(DL_DIR)/$(MZSCHEME_SOURCE) $(MZSCHEME_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=/opt/lib/plt \
 		--disable-nls \
 	)
 	touch $(MZSCHEME_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ mzscheme: $(MZSCHEME_BUILD_DIR)/.built
 #
 $(MZSCHEME_BUILD_DIR)/.staged: $(MZSCHEME_BUILD_DIR)/.built
 	rm -f $(MZSCHEME_BUILD_DIR)/.staged
-	$(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(STAGING_DIR) install
+	#$(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(STAGING_DIR) install
 	touch $(MZSCHEME_BUILD_DIR)/.staged
 
 mzscheme-stage: $(MZSCHEME_BUILD_DIR)/.staged
@@ -179,13 +179,22 @@ $(MZSCHEME_IPK_DIR)/CONTROL/control:
 #
 $(MZSCHEME_IPK): $(MZSCHEME_BUILD_DIR)/.built
 	rm -rf $(MZSCHEME_IPK_DIR) $(BUILD_DIR)/mzscheme_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(MZSCHEME_IPK_DIR)/opt install
+	umask 022; PLT_EXTENSION_LIB_PATHS=$(STAGING_DIR)/opt \
+            $(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(MZSCHEME_IPK_DIR)/opt/lib/plt install
 	sed -i \
 	    -e '/^CC=/s:^.*$$:CC=/opt/bin/gcc:' \
 	    -e 's:$(STAGING_DIR)::' \
-	    $(MZSCHEME_IPK_DIR)/opt/lib/buildinfo
+	    $(MZSCHEME_IPK_DIR)/opt/lib/plt/lib/buildinfo
+	sed -i \
+	    -e 's:$(MZSCHEME_IPK_DIR)::' \
+            `file $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/* | grep 'shell script' | awk -F: '{print $$1}'`
+	$(STRIP_COMMAND) $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/mzscheme
+	$(STRIP_COMMAND) `find $(MZSCHEME_IPK_DIR)/opt/lib/plt -name '*.so'`
+	install -d $(MZSCHEME_IPK_DIR)/opt/bin/
+	cd $(MZSCHEME_IPK_DIR)/opt/bin/; \
+            for f in ../lib/plt/bin/*; do ln -s $$f .; done
 	# a hack to work around POSIX tar 100 character limitation
-	cd $(MZSCHEME_IPK_DIR)/opt/mzscheme; \
+	cd $(MZSCHEME_IPK_DIR)/opt/lib/plt; \
 	    mv collects/web-server/default-web-root .
 	$(MAKE) $(MZSCHEME_IPK_DIR)/CONTROL/control
 	install -m 755 $(MZSCHEME_SOURCE_DIR)/postinst $(MZSCHEME_IPK_DIR)/CONTROL/postinst
