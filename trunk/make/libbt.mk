@@ -111,6 +111,7 @@ libbt-unpack: $(LIBBT_BUILD_DIR)/.configured
 #
 $(LIBBT_BUILD_DIR)/.built: $(LIBBT_BUILD_DIR)/.configured
 	$(MAKE) -C $(LIBBT_BUILD_DIR) compile PATH=$(STAGING_DIR)/bin:$(PATH) 
+	touch $(LIBBT_BUILD_DIR)/.built
 
 #
 # You should change the dependency to refer directly to the main binary
