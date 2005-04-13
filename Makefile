@@ -108,11 +108,13 @@ NATIVE_PACKAGES = \
 # mzscheme core can cross compile, there is some problem in cross building native extension
 # w3m has build time dependency on libgc
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	mzscheme \
-	w3m
 
+# w3m - assumes libgc is installed (not just that it is staged)
+# mzscheme - fails during install with "sed: can't read -: No such file or directory"
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	w3m \
+	mzscheme \
 	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
