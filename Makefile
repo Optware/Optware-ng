@@ -66,7 +66,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	thttpdphp \
 	tin \
-	sqlite2 libvorbisidec ivorbis-tools \
+	sqlite2 libvorbisidec ivorbis-tools alac-decoder \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
