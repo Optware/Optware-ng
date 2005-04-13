@@ -52,7 +52,7 @@ CROSS_PACKAGES = \
 	rdate readline recordext renderext rsync \
 	screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
-	tar tcpdump tcpwrappers termcap tin torrent transcode 
+	tar tcpdump tcpwrappers termcap tin torrent transcode \
 	thttpdphp ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
