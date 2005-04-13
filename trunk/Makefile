@@ -121,7 +121,7 @@ PACKAGES_DEPRECATED = libiconv
 WL500G_PACKAGES = \
 	appweb adns atftp autoconf audiofile automake \
 	bash bc bind bitchx busybox bzip2 \
-	ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
+	chillispot ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
@@ -146,7 +146,6 @@ WL500G_PACKAGES = \
 	zlib
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	chillispot \
 
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
