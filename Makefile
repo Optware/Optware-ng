@@ -204,7 +204,7 @@ TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 PACKAGE_DIR=$(BASE_DIR)/packages
 export TMPDIR=$(BASE_DIR)/tmp
 
-TARGET_OPTIMIZATION= #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
+TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
 ifeq ($(TARGET),nslu2)
