@@ -21,7 +21,7 @@ PHP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd $(PHP_NATIVE_DEPENDS)
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd, gdbm $(PHP_NATIVE_DEPENDS)
 
 ifeq ($(HOST_MACHINE),armv5b)
 PHP_NATIVE_STAGE=cyrus-imapd-stage
@@ -131,7 +131,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage $(PHP_NATIVE_STAGE)
+	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage gdbm-stage $(PHP_NATIVE_STAGE)
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
