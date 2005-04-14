@@ -48,7 +48,7 @@ PHP_APACHE_PATCHES=$(PHP_PATCHES)
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PHP_APACHE_CPPFLAGS=
+PHP_APACHE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2
 PHP_APACHE_LDFLAGS=-ldl
 
 #
