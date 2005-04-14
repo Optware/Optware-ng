@@ -32,7 +32,7 @@ LIBGC_SOURCE=gc$(LIBGC_VERSION).tar.gz
 LIBGC_DIR=gc$(LIBGC_VERSION)
 LIBGC_UNZIP=zcat
 LIBGC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-LIBGC_DESCRIPTION=Describe libgc here.
+LIBGC_DESCRIPTION=The Boehm-Demers-Weiser conservative garbage collector can be used as a garbage collecting replacement for C malloc or C++ new.
 LIBGC_SECTION=misc
 LIBGC_PRIORITY=optional
 LIBGC_DEPENDS=
@@ -41,7 +41,7 @@ LIBGC_CONFLICTS=
 #
 # LIBGC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGC_IPK_VERSION=1
+LIBGC_IPK_VERSION=2
 
 #
 # LIBGC_CONFFILES should be a list of user-editable files
@@ -118,6 +118,7 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-static \
 		--disable-nls \
 	)
 	touch $(LIBGC_BUILD_DIR)/.configured
