@@ -21,7 +21,7 @@ PHP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-PHP_DEPENDS=apache, bzip2, openssl, zlib, libxml2, libxslt, libgd $(PHP_NATIVE_DEPENDS)
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd $(PHP_NATIVE_DEPENDS)
 
 ifeq ($(HOST_MACHINE),armv5b)
 PHP_NATIVE_STAGE=cyrus-imapd-stage
@@ -41,7 +41,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -68,7 +68,7 @@ PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
-PHP_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
+PHP_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR) -ldl
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
@@ -131,7 +131,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) apache-stage bzip2-stage libgd-stage libxml2-stage libxslt-stage $(PHP_NATIVE_STAGE)
+	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage $(PHP_NATIVE_STAGE)
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -141,6 +141,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS) -O2" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
 		./configure \
@@ -150,29 +151,30 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--prefix=/opt \
 		--with-layout=GNU \
 		--disable-static \
-		--enable-bcmath \
-		--enable-calendar \
-		--enable-dba \
+		--enable-bcmath=shared \
+		--enable-calendar=shared \
+		--enable-dba=shared \
 		--with-inifile \
 		--with-flatfile \
-		--enable-dbx \
-		--enable-ftp \
-		--enable-shmop \
-		--enable-sockets \
-		--enable-sysvmsg \
-		--enable-sysvshm \
-		--enable-sysvsem \
-		--with-apxs2=$(STAGING_DIR)/opt/sbin/apxs \
-		--with-bz2=$(STAGING_DIR)/opt \
-		--with-db4=$(STAGING_DIR)/opt \
-		--with-dom=$(STAGING_DIR)/opt \
-		--with-gdbm=$(STAGING_DIR)/opt \
-		--with-gd=$(STAGING_DIR)/opt \
-		--with-ldap=$(STAGING_DIR)/opt \
+		--enable-dbx=shared \
+		--enable-dom=shared \
+		--enable-exif=shared \
+		--enable-ftp=shared \
+		--enable-shmop=shared \
+		--enable-sockets=shared \
+		--enable-sysvmsg=shared \
+		--enable-sysvshm=shared \
+		--enable-sysvsem=shared \
+		--with-bz2=shared,$(STAGING_DIR)/opt \
+		--with-db4=shared,$(STAGING_DIR)/opt \
+		--with-dom=shared,$(STAGING_DIR)/opt \
+		--with-gdbm=shared,$(STAGING_DIR)/opt \
+		--with-gd=shared,$(STAGING_DIR)/opt \
+		--with-ldap=shared,$(STAGING_DIR)/opt \
 		--with-ldap-sasl=$(STAGING_DIR)/opt \
-		--with-openssl=$(STAGING_DIR)/opt \
-		--with-xsl=$(STAGING_DIR)/opt \
-		--with-zlib=$(STAGING_DIR)/opt \
+		--with-openssl=shared,$(STAGING_DIR)/opt \
+		--with-xsl=shared,$(STAGING_DIR)/opt \
+		--with-zlib=shared,$(STAGING_DIR)/opt \
 		--with-libxml-dir=$(STAGING_DIR)/opt \
 		--with-jpeg-dir=$(STAGING_DIR)/opt \
 		--with-png-dir=$(STAGING_DIR)/opt \
@@ -221,14 +223,14 @@ php-stage: $(STAGING_DIR)/opt/bin/php
 #
 $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
-	install -d $(PHP_IPK_DIR)/opt/etc/apache2/conf.d
 	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
-	install -m 644 $(PHP_SOURCE_DIR)/php.conf $(PHP_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
-	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
-	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/libexec/*.so
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
+	mv $(PHP_IPK_DIR)/opt/lib/php/20041030 $(PHP_IPK_DIR)/opt/lib/php/extensions
+	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
+	install -d $(PHP_IPK_DIR)/opt/etc
+	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IPK_DIR)
