@@ -58,7 +58,7 @@ W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 W3M_CPPFLAGS=-I$(STAGING_DIR)/opt/include/gc
-W3M_LDFLAGS=
+W3M_LDFLAGS=-ldl -lpthread
 
 #
 # W3M_BUILD_DIR is the directory in which the build is done.
@@ -115,7 +115,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(W3M_LDFLAGS)" \
 		WCCFLAGS="-DUSE_UNICODE $(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
-        	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
