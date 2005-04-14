@@ -104,7 +104,7 @@ sqlite-source: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
-	$(MAKE) readline-stage
+	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1
