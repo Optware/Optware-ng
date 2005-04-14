@@ -131,7 +131,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage gdbm-stage $(PHP_NATIVE_STAGE)
+	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage gdbm-stage openssl-stage $(PHP_NATIVE_STAGE)
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
