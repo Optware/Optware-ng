@@ -23,12 +23,12 @@ XEMACS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XEMACS_DESCRIPTION=XEmacs text editor
 XEMACS_SECTION=editors
 XEMACS_PRIORITY=optional
-XEMACS_DEPENDS=
-XEMACS_CONFLICTS=
+XEMACS_DEPENDS=libdb, ncurses
+XEMACS_CONFLICTS=emacs
 #
 # XEMACS_IPK_VERSION should be incremented when the ipk changes.
 #
-XEMACS_IPK_VERSION=2
+XEMACS_IPK_VERSION=3
 
 #
 # XEMACS_CONFFILES should be a list of user-editable files
@@ -91,7 +91,7 @@ xemacs-source: $(DL_DIR)/$(XEMACS_SOURCE) $(XEMACS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(XEMACS_SOURCE) $(XEMACS_PATCHES)
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(XEMACS_DIR) $(XEMACS_BUILD_DIR)
 	$(XEMACS_UNZIP) $(DL_DIR)/$(XEMACS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(XEMACS_DIR) $(XEMACS_BUILD_DIR)
