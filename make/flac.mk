@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-FLAC_SITE=http://aleron.dl.sourceforge.net/sourceforge/flac
+FLAC_SITE=http://dl.sourceforge.net/sourceforge/flac
 FLAC_VERSION=1.1.2
 FLAC_SOURCE=flac-$(FLAC_VERSION).tar.gz
 FLAC_DIR=flac-$(FLAC_VERSION)
