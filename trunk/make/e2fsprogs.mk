@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-E2FSPROGS_SITE=http://aleron.dl.sourceforge.net/sourceforge/e2fsprogs
+E2FSPROGS_SITE=http://dl.sourceforge.net/sourceforge/e2fsprogs
 E2FSPROGS_VERSION=1.35
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)

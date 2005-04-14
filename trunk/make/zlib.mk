@@ -4,7 +4,7 @@
 #
 #############################################################
 
-ZLIB_SITE=http://aleron.dl.sourceforge.net/sourceforge/libpng
+ZLIB_SITE=http://dl.sourceforge.net/sourceforge/libpng
 ZLIB_VERSION:=1.2.2
 ZLIB_LIB_VERSION:=1.2.2
 ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
