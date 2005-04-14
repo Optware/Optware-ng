@@ -20,12 +20,12 @@ FONTCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 FONTCONFIG_DESCRIPTION=Font configuration library
 FONTCONFIG_SECTION=lib
 FONTCONFIG_PRIORITY=optional
-FONTCONFIG_DEPENDS=expat, freetype
+FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=3
+FONTCONFIG_IPK_VERSION=4
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
