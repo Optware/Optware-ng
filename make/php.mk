@@ -166,9 +166,9 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--enable-sysvshm=shared \
 		--enable-sysvsem=shared \
 		--with-bz2=shared,$(STAGING_DIR)/opt \
-		--with-db4=shared,$(STAGING_DIR)/opt \
+		--with-db4=$(STAGING_DIR)/opt \
 		--with-dom=shared,$(STAGING_DIR)/opt \
-		--with-gdbm=shared,$(STAGING_DIR)/opt \
+		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-gd=shared,$(STAGING_DIR)/opt \
 		--with-ldap=shared,$(STAGING_DIR)/opt \
 		--with-ldap-sasl=$(STAGING_DIR)/opt \
