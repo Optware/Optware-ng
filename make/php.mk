@@ -21,27 +21,12 @@ PHP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd, gdbm $(PHP_NATIVE_DEPENDS)
-
-ifeq ($(HOST_MACHINE),armv5b)
-PHP_NATIVE_STAGE=cyrus-imapd-stage
-PHP_NATIVE_DEPENDS=, cyrus-imapd
-PHP_NATIVE_CONFIG_PARAMS= \
-	--with-cyrus=$(STAGING_DIR)/opt \
-	--with-iconv \
-	--with-pear
-else
-PHP_NATIVE_STAGE=
-PHP_NATIVE_DEPENDS=
-PHP_NATIVE_CONFIG_PARAMS= \
-	--without-pear \
-	--without-iconv
-endif
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd, gdbm, libdb
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=3
+PHP_IPK_VERSION=4
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -131,7 +116,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage gdbm-stage openssl-stage $(PHP_NATIVE_STAGE)
+	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage gdbm-stage openssl-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -141,7 +126,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
-		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS) -O2" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
 		./configure \
@@ -180,7 +165,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-png-dir=$(STAGING_DIR)/opt \
 		--with-freetype-dir=$(STAGING_DIR)/opt \
 		--with-zlib-dir=$(STAGING_DIR)/opt \
-		$(PHP_NATIVE_CONFIG_PARAMS) \
+		--without-iconv \
+		--without-pear \
 	)
 	touch $(PHP_BUILD_DIR)/.configured
 
