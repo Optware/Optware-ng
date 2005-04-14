@@ -134,7 +134,7 @@ WL500G_PACKAGES = \
 	joe \
 	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol \
 	libosip2 libpng libtool libtopfield libusb libvorbis \
-	logrotate lua lynx lzo \
+	logrotate lua lynx lzo libvorbis \
 	m4 madplay make man man-pages mc miau microperl minicom mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
@@ -142,7 +142,8 @@ WL500G_PACKAGES = \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap thttpd thttpdphp torrent ttf-bitstream-vera \
-	unfs3 units vsftpd \
+	unfs3 units \
+	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
 	zlib
