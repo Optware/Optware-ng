@@ -38,7 +38,7 @@ CROSS_PACKAGES = \
 	ice imagemagick inetutils iptables ircd-hybrid ivorbis-tools \
 	jamvm jikes joe jove \
 	lame less \
-	libcurl libdb libdvdread libevent libgc libgd libid3tag \
+	libbt libcurl libdb libdvdread libevent libgc libgd libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libvorbisdec libxml2 libxslt logrotate lsof lua lynx lzo \
@@ -108,13 +108,11 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# libbt - types.c:66: error: `use_btcalloc_instead' undeclared  - slugbug #136
 # libao - has runtime trouble
 # w3m (native) - build trouble on official build system 
 # mzscheme - fails during install with "sed: can't read -: No such file or directory"
 # byRequest - please use a cvs tag or date, see x11.mk for an example
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	libbt \
 	libao \
 	w3m \
 	mzscheme \
