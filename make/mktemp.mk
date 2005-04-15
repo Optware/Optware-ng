@@ -36,7 +36,7 @@ MKTEMP_DESCRIPTION=Mktemp is a small program to allow safe temporary file creati
 MKTEMP_SECTION=util
 MKTEMP_PRIORITY=optional
 MKTEMP_DEPENDS=
-MKTEMP_CONFLICTS=busybox
+MKTEMP_CONFLICTS=
 
 #
 # MKTEMP_IPK_VERSION should be incremented when the ipk changes.
