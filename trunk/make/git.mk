@@ -35,7 +35,7 @@ GIT_MAINTAINER=Rod Whitby <nslu2-linux@yahoogroups.com>
 GIT_DESCRIPTION=GIT - the stupid content tracker
 GIT_SECTION=net
 GIT_PRIORITY=optional
-GIT_DEPENDS=openssl, zlib, busybox, rsync, patch, mktemp
+GIT_DEPENDS=openssl, zlib, rsync, patch, mktemp, textutils
 GIT_CONFLICTS=
 
 #
