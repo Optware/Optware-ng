@@ -42,7 +42,7 @@ PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=4
+PYTHON_IPK_VERSION=5
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -126,6 +126,7 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
 	touch $(PYTHON_BUILD_DIR)/.configured
@@ -191,6 +192,9 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 		$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(PYTHON_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/bin/python$(PYTHON_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/lib/python$(PYTHON_VERSION_MAJOR)/lib-dynload/*.so
+	chmod 755 $(PYTHON_IPK_DIR)/opt/lib/libpython$(PYTHON_VERSION_MAJOR).so.1.0
+	$(STRIP_COMMAND) $(PYTHON_IPK_DIR)/opt/lib/libpython$(PYTHON_VERSION_MAJOR).so.1.0
+	chmod 555 $(PYTHON_IPK_DIR)/opt/lib/libpython$(PYTHON_VERSION_MAJOR).so.1.0
 	rm $(PYTHON_IPK_DIR)/opt/bin/python
 	cd $(PYTHON_IPK_DIR)/opt/bin; ln -s python$(PYTHON_VERSION_MAJOR) python
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
