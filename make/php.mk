@@ -123,6 +123,10 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	cat $(PHP_PATCHES) |patch -p0 -d $(PHP_BUILD_DIR)
 	(cd $(PHP_BUILD_DIR); \
 		autoconf; \
+		sed -i \
+		    -e 's|sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"|sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib"|' \
+		    -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib"|sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib"|' \
+			configure ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
