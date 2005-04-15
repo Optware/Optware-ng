@@ -51,7 +51,7 @@ GIT_CONFFILES=
 # GIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GIT_PATCHES=$(GIT_SOURCE_DIR)/struct-stat.patch
+GIT_PATCHES=$(GIT_SOURCE_DIR)/endian.patch
 
 #
 # If the compilation of the package requires additional
