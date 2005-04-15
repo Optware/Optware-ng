@@ -17,7 +17,7 @@ APACHE_VERSION=2.0.53
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
-APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
@@ -26,7 +26,7 @@ APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=4
+APACHE_IPK_VERSION=5
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -139,6 +139,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
 	cat $(APACHE_PATCHES) |patch -p0 -d $(APACHE_BUILD_DIR)
 	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_DIR)/opt/share/apache2/build%" $(APACHE_BUILD_DIR)/config.layout
+	sed -i -e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" $(APACHE_BUILD_DIR)/config.layout
 	cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
 	(cd $(APACHE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
