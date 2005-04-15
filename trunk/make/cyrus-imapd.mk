@@ -31,7 +31,7 @@ $(DL_DIR)/$(CYRUS-IMAPD_SOURCE):
 cyrus-imapd-source: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IMAPD_PATCHES)
 
 $(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IMAPD_PATCHES)
-	$(MAKE) libdb-stage openssl-stage
+	$(MAKE) libdb-stage openssl-stage e2fsprogs-stage
 	$(MAKE) cyrus-sasl-stage
 	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
 	$(CYRUS-IMAPD_UNZIP) $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
