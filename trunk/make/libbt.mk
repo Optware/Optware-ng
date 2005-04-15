@@ -30,6 +30,7 @@ LIBBT_IPK_VERSION=5
 # which they should be applied to the source code.
 #
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
+	$(LIBBT_SOURCE_DIR)/libbt-headerfix.patch \
 	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \
 	$(LIBBT_SOURCE_DIR)/benc.c.patch \
 
@@ -37,6 +38,7 @@ LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+LIBBT_CFLAGS=
 LIBBT_CPPFLAGS=
 LIBBT_LDFLAGS=
 
