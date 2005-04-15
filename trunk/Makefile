@@ -33,7 +33,7 @@ CROSS_PACKAGES = \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	glib grep groff gtk gzip \
+	git glib grep groff gtk gzip \
 	hdparm hnb \
 	ice imagemagick inetutils iptables ircd-hybrid ivorbis-tools \
 	jamvm jikes joe jove \
@@ -42,7 +42,7 @@ CROSS_PACKAGES = \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libvorbisdec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm metalog miau minicom mt-daapd mtr mutt \
+	m4 make man man-pages mc mdadm metalog miau minicom mktemp mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	nylon \
 	openssh openssl openvpn \
@@ -52,7 +52,7 @@ CROSS_PACKAGES = \
 	rdate readline recordext renderext rsync \
 	screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
-	tar tcpdump tcpwrappers termcap tin torrent transcode \
+	tar tcpdump tcpwrappers termcap textutils tin torrent transcode \
 	thttpdphp ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
@@ -66,6 +66,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
+
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -130,20 +131,20 @@ WL500G_PACKAGES = \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
 	fontconfig freeradius freetype ftpd-topfield \
-	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap groff gzip \
+	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git groff gzip \
 	hdparm \
 	inetutils \
 	joe \
 	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol \
 	libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo libvorbis \
-	m4 madplay make man man-pages mc miau microperl minicom mt-daapd \
+	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
 	patch pkgconfig popt portmap postgresql procps proftpd puppy python \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
-	tar tcpdump tcpwrappers termcap thttpd thttpdphp torrent ttf-bitstream-vera \
+	tar tcpdump tcpwrappers termcap textutils thttpd thttpdphp torrent ttf-bitstream-vera \
 	unfs3 units \
 	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
