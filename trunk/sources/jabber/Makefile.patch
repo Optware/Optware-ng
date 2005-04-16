@@ -1,0 +1,19 @@
+--- jabber-1.4.2-orig/Makefile	2001-01-20 21:32:48.000000000 -0800
++++ jabber/Makefile	2005-04-15 15:20:42.368219000 -0700
+@@ -14,7 +14,15 @@
+ single: single-recursive
+ 
+ install:
+-	printf "\n\nNo actual make install, you just run it out of the directory!\n"
++	install -d $(DESTDIR)/sbin $(DESTDIR)/etc/jabber $(DESTDIR)/etc/init.d
++	install jabberd/jabberd $(DESTDIR)/sbin/
++	$(STRIP_COMMAND) $(DESTDIR)/sbin/jabberd
++	install jabber.xml $(DESTDIR)/etc/jabber/
++	for d in pthsock jsm xdb_file dnsrv dialback; do \
++	    install -d $(DESTDIR)/lib/jabber/$$d; \
++	    install $$d/*.so $(DESTDIR)/lib/jabber/$$d; \
++	    $(STRIP_COMMAND) $(DESTDIR)/lib/jabber/$$d/*.so; \
++	done
+ 
+ all-local:
+ 
