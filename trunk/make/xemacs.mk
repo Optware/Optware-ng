@@ -1,6 +1,6 @@
 ###########################################################
 #
-# emacs
+# xemacs
 #
 ###########################################################
 
@@ -102,6 +102,7 @@ $(XEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(XEMACS_SOURCE) $(XEMACS_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEMACS_LDFLAGS)" \
 		./configure \
 		--prefix=/opt \
+		--without-x \
 		$(GNU_TARGET_NAME) \
 	)
 	touch $(XEMACS_BUILD_DIR)/.configured
