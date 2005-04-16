@@ -24,11 +24,17 @@ OPENLDAP_VERSION=2.2.23
 OPENLDAP_SOURCE=openldap-stable-20050125.tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
+OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
+OPENLDAP_DESCRIPTION=Open Lightweight Directory Access Protocol
+OPENLDAP_SECTION=net
+OPENLDAP_PRIORITY=optional
+OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl
+OPENLDAP_CONFLICTS=
 
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=1
+OPENLDAP_IPK_VERSION=2
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
@@ -60,6 +66,9 @@ OPENLDAP_BUILD_DIR=$(BUILD_DIR)/openldap
 OPENLDAP_SOURCE_DIR=$(SOURCE_DIR)/openldap
 OPENLDAP_IPK_DIR=$(BUILD_DIR)/openldap-$(OPENLDAP_VERSION)-ipk
 OPENLDAP_IPK=$(BUILD_DIR)/openldap_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+OPENLDAP_LIBS_IPK_DIR=$(BUILD_DIR)/openldap-libs-$(OPENLDAP_VERSION)-ipk
+OPENLDAP_LIBS_IPK=$(BUILD_DIR)/openldap-libs_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -140,6 +149,38 @@ $(OPENLDAP_BUILD_DIR)/.staged: $(OPENLDAP_BUILD_DIR)/.built
 openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/openldap
+#
+$(OPENLDAP_IPK_DIR)/CONTROL/control:
+	@install -d $(OPENLDAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: openldap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(OPENLDAP_PRIORITY)" >>$@
+	@echo "Section: $(OPENLDAP_SECTION)" >>$@
+	@echo "Version: $(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(OPENLDAP_MAINTAINER)" >>$@
+	@echo "Source: $(OPENLDAP_SITE)/$(OPENLDAP_SOURCE)" >>$@
+	@echo "Description: $(OPENLDAP_DESCRIPTION)" >>$@
+	@echo "Depends: $(OPENLDAP_DEPENDS), openldap-libs" >>$@
+	@echo "Conflicts: $(OPENLDAP_CONFLICTS)" >>$@
+
+$(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control:
+	@install -d $(OPENLDAP_LIBS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: openldap-libs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(OPENLDAP_PRIORITY)" >>$@
+	@echo "Section: $(OPENLDAP_SECTION)" >>$@
+	@echo "Version: $(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(OPENLDAP_MAINTAINER)" >>$@
+	@echo "Source: $(OPENLDAP_SITE)/$(OPENLDAP_SOURCE)" >>$@
+	@echo "Description: $(OPENLDAP_DESCRIPTION)" >>$@
+	@echo "Depends: $(OPENLDAP_DEPENDS)" >>$@
+	@echo "Conflicts: $(OPENLDAP_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(OPENLDAP_IPK_DIR)/opt/sbin or $(OPENLDAP_IPK_DIR)/opt/bin
@@ -153,17 +194,22 @@ openldap-stage: $(OPENLDAP_BUILD_DIR)/.staged
 #
 $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_$(TARGET_ARCH).ipk
+	rm -rf $(OPENLDAP_LIBS_IPK_DIR) $(BUILD_DIR)/openldap-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) install
 	install -d $(OPENLDAP_IPK_DIR)/opt/etc/
 #	install -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf
 	install -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)/opt/etc/init.d/S58slapd
-	install -d $(OPENLDAP_IPK_DIR)/CONTROL
-	install -m 644 $(OPENLDAP_SOURCE_DIR)/control $(OPENLDAP_IPK_DIR)/CONTROL/control
+	$(MAKE)  $(OPENLDAP_IPK_DIR)/CONTROL/control
 	install -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
 	echo $(OPENLDAP_CONFFILES) | sed -e 's/ /\n/g' > $(OPENLDAP_IPK_DIR)/CONTROL/conffiles
+	install -d $(OPENLDAP_LIBS_IPK_DIR)/opt
+	mv $(OPENLDAP_IPK_DIR)/opt/include  $(OPENLDAP_LIBS_IPK_DIR)/opt
+	mv $(OPENLDAP_IPK_DIR)/opt/lib  $(OPENLDAP_LIBS_IPK_DIR)/opt
+	$(MAKE)  $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENLDAP_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENLDAP_LIBS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
