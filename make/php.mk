@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=4
+PHP_IPK_VERSION=5
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -133,6 +133,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
+		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -217,7 +218,6 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
-	mv $(PHP_IPK_DIR)/opt/lib/php/20041030 $(PHP_IPK_DIR)/opt/lib/php/extensions
 	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
 	install -d $(PHP_IPK_DIR)/opt/etc
 	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
