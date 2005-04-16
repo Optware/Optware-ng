@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-TARGET=nslu2
+UNSLUNG_TARGET=nslu2
 
 CROSS_PACKAGES = \
 	abook adns alac-decoder \
@@ -165,7 +165,7 @@ HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
 	)
 
-ifeq ($(TARGET),nslu2)
+ifeq ($(UNSLUNG_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 PACKAGES = $(NATIVE_PACKAGES)
 else
@@ -175,7 +175,7 @@ TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
-ifeq ($(TARGET),wl500g)
+ifeq ($(UNSLUNG_TARGET),wl500g)
 PACKAGES = $(WL500G_PACKAGES)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
@@ -209,7 +209,7 @@ export TMPDIR=$(BASE_DIR)/tmp
 TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
-ifeq ($(TARGET),nslu2)
+ifeq ($(UNSLUNG_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 HOSTCC = $(TARGET_CC)
 GNU_HOST_NAME = armv5b-softfloat-linux
@@ -235,7 +235,7 @@ toolchain: crosstool
 endif
 endif
 
-ifeq ($(TARGET),wl500g)
+ifeq ($(UNSLUNG_TARGET),wl500g)
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = mipsel-linux
@@ -309,7 +309,7 @@ $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 packages: $(PACKAGE_DIR)/Packages
 
 upload:
-ifeq ($(TARGET),nslu2)
+ifeq ($(UNSLUNG_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 	ssh nudi.nslu2-linux.org mkdir -p /home/unslung/packages/native/
 	rsync -avr --delete packages/ nudi.nslu2-linux.org:/home/unslung/packages/native/

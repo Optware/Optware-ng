@@ -22,6 +22,12 @@ $(DL_DIR)/$(GREP_SOURCE):
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
+ifeq ($(UNSLUNG_TARGET),wl500g)
+GREP_CONFIGURE_ARGS=--disable-nls
+else
+GREP_CONFIGURE_ARGS=
+endif
+
 $(GREP_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE)
 	$(GREP_UNZIP) $(DL_DIR)/$(GREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(GREP_DIR)
@@ -30,6 +36,7 @@ $(GREP_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE)
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--prefix=$(GREP_IPK_DIR)/opt \
+		$(GREP_CONFIGURE_ARGS) \
 	);
 	touch $(GREP_DIR)/.configured
 
