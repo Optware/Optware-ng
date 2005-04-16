@@ -46,7 +46,7 @@ CROSS_PACKAGES = \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	nylon \
 	openssh openssl openvpn \
-	pango parted patch pcre php pkgconfig popt portmap postgresql \
+	pango parted patch pcre php php-apache pkgconfig popt portmap postgresql \
 	procps proftpd puppy python \
 	py-sqlite py-bittorrent \
 	rdate readline recordext renderext rsync \
