@@ -139,18 +139,18 @@ WL500G_PACKAGES = \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch pkgconfig popt portmap procps puppy \
+	patch pkgconfig popt portmap procps proftpd puppy \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils thttpd \
 	unfs3 units \
-	vorbis-tools \
+	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
 WL500G_PACKAGES_THAT_NEED_FIXING = \
-	bind fontconfig groff libgd postgresql proftpd python syslog-ng thttpdphp torrent ttf-bitstream-vera vsftpd xmail
+	bind fontconfig groff libgd postgresql python syslog-ng thttpdphp torrent ttf-bitstream-vera xmail
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 
