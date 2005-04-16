@@ -26,7 +26,7 @@ PHP_APACHE_DEPENDS=apache, php
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=1
+PHP_APACHE_IPK_VERSION=2
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -125,6 +125,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_APACHE_SOURCE) \
 		CFLAGS="$(TARGET_CFLAGS) -ldl" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
+		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
