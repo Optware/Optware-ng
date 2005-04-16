@@ -207,8 +207,6 @@ $(PROFTPD_IPK): $(PROFTPD_BUILD_DIR)/.built
 	install -m 0644 $(PROFTPD_BUILD_DIR)/src/xferlog.5   $(PROFTPD_IPK_DIR)/opt/man/man5
 	# Install folder for storing socket file and scoreboard
 	install -d $(PROFTPD_IPK_DIR)/opt/var/proftpd
-	# Install empty file
-	install -d $(PROFTPD_IPK_DIR)/usr/share/empty
 	# Install conf files
 	install -d $(PROFTPD_IPK_DIR)/opt/etc/init.d
 	install -m 644 $(PROFTPD_SOURCE_DIR)/proftpd.conf $(PROFTPD_IPK_DIR)/opt/etc/proftpd.conf
