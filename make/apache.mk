@@ -21,12 +21,12 @@ APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
-APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap
+APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap-libs
 
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=5
+APACHE_IPK_VERSION=6
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
