@@ -29,7 +29,7 @@ PROFTPD_UNZIP=zcat
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=4
+PROFTPD_IPK_VERSION=5
 
 #
 # Control file info
