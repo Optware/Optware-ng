@@ -123,31 +123,34 @@ PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
 	appweb adns atftp autoconf audiofile automake \
-	bash bc bind bitchx busybox bzip2 \
+	bash bc bitchx busybox bzip2 \
 	chillispot ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
-	fontconfig freeradius freetype ftpd-topfield \
-	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git grep groff gzip \
+	freeradius freetype ftpd-topfield \
+	gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git grep gzip \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libevent libgd libid3tag libjpeg libmad libogg libol \
+	lame less libcurl libevent libid3tag libjpeg libmad libogg libol \
 	libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo libvorbis \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch pkgconfig popt portmap postgresql procps proftpd puppy python \
+	patch pkgconfig popt portmap procps puppy \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
-	tar tcpdump tcpwrappers termcap textutils thttpd thttpdphp torrent ttf-bitstream-vera \
+	tar tcpdump tcpwrappers termcap textutils thttpd \
 	unfs3 units \
-	vorbis-tools vsftpd \
+	vorbis-tools \
 	w3cam wakelan wget-ssl which \
-	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
+	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
+
+WL500G_PACKAGES_THAT_NEED_FIXING = \
+	bind fontconfig groff libgd postgresql proftpd python syslog-ng thttpdphp torrent ttf-bitstream-vera vsftpd xmail
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 
