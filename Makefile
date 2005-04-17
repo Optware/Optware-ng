@@ -41,7 +41,7 @@ CROSS_PACKAGES = \
 	libbt libcurl libdb libdvdread libevent libgc libgd libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
-	libvorbis libvorbisdec libxml2 libxslt logrotate lsof lua lynx lzo \
+	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
 	m4 make man man-pages mc mdadm metalog miau minicom mktemp mt-daapd mtr mutt \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	nylon \
