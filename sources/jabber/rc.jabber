@@ -1,33 +1,57 @@
 #!/bin/sh
 
-if [ -n "`pidof jabberd`" ] ; then
-	echo -n "Stopping Jabber Daemon: "
-	killall jabberd
+if [ -z "$1" ] ; then
+    case `echo "$0" | /bin/sed 's:^.*/\(.*\):\1:g'` in
+	S??*) rc="start" ;;
+	K??*) rc="stop" ;;
+	*) rc="usage" ;;
+    esac
+else
+    rc="$1"
+fi
+
+case "$rc" in
+    start)
+	JABBER_USER=jabber
+
+	JABBER_DAEMON=/opt/sbin/jabberd
+
+	if [ -f /opt/etc/jabber/jabber.conf ]; then
+		. /opt/etc/jabber/jabber.conf
+	fi
+
+	if [ x"$JABBER_ENABLED" != x"yes" ]; then
+		echo "Jabber Daemon not enabled"
+		exit 0
+	fi
+
+	CMDLINE="-U $JABBER_USER -c /opt/etc/jabber/jabber.xml"
+	if [ x"$JABBER_HOSTNAME" != x"" ]; then
+		CMDLINE="$CMDLINE -h $JABBER_HOSTNAME"
+	fi
+	if [ x"$JABBER_SPOOL" != x"" ]; then
+		CMDLINE="$CMDLINE -s $JABBER_SPOOL"
+	fi
+
+	echo -n "Starting Jabber Daemon: "
+	echo $JABBER_DAEMON $CMDLINE
+	$JABBER_DAEMON $CMDLINE 2>/dev/null &
 	echo ok
-fi
+	;;
+    stop)
+	if [ -n "`pidof jabberd`" ] ; then
+		echo -n "Stopping Jabber Daemon: "
+		killall jabberd
+		echo ok
+	fi
+	;;
+    restart)
+	"$0" stop
+	sleep 1
+	"$0" start
+	;;
+    *)
+	echo "Usage: $0 (start|stop|restart|usage)"
+	;;
+esac
 
-JABBER_USER=jabber
-
-JABBER_DAEMON=/opt/sbin/jabberd
-
-if [ -x /opt/etc/jabber/jabber.conf ]; then
-        . /opt/etc/jabber/jabber.conf
-fi
-
-if [ x"$JABBER_ENABLED" != x"yes" ]; then
-	echo "Jabber Daemon not enabled"
-	exit 0
-fi
-
-CMDLINE=""
-if [ x"$JABBER_HOSTNAME" != x"" ]; then
-	CMDLINE="$CMDLINE -h $JABBER_HOSTNAME"
-fi
-if [ x"$JABBER_SPOOL" != x"" ]; then
-	CMDLINE="$CMDLINE -s $JABBER_SPOOL"
-fi
-
-
-echo -n "Starting Jabber Daemon: "
-su - $JABBER_USER -c "$JABBER_DAEMON $CMDLINE"
-echo ok
