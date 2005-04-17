@@ -1,0 +1,33 @@
+#!/bin/sh
+
+if [ -n "`pidof jabberd`" ] ; then
+	echo -n "Stopping Jabber Daemon: "
+	killall jabberd
+	echo ok
+fi
+
+JABBER_USER=jabber
+
+JABBER_DAEMON=/opt/sbin/jabberd
+
+if [ -x /opt/etc/jabber/jabber.conf ]; then
+        . /opt/etc/jabber/jabber.conf
+fi
+
+if [ x"$JABBER_ENABLED" != x"yes" ]; then
+	echo "Jabber Daemon not enabled"
+	exit 0
+fi
+
+CMDLINE=""
+if [ x"$JABBER_HOSTNAME" != x"" ]; then
+	CMDLINE="$CMDLINE -h $JABBER_HOSTNAME"
+fi
+if [ x"$JABBER_SPOOL" != x"" ]; then
+	CMDLINE="$CMDLINE -s $JABBER_SPOOL"
+fi
+
+
+echo -n "Starting Jabber Daemon: "
+su - $JABBER_USER -c "$JABBER_DAEMON $CMDLINE"
+echo ok

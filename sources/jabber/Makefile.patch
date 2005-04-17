@@ -1,11 +1,14 @@
 --- jabber-1.4.2-orig/Makefile	2001-01-20 21:32:48.000000000 -0800
-+++ jabber/Makefile	2005-04-15 15:20:42.368219000 -0700
-@@ -14,7 +14,15 @@
++++ jabber/Makefile	2005-04-17 11:06:10.712376000 -0700
+@@ -14,7 +14,18 @@
  single: single-recursive
  
  install:
 -	printf "\n\nNo actual make install, you just run it out of the directory!\n"
 +	install -d $(DESTDIR)/sbin $(DESTDIR)/etc/jabber $(DESTDIR)/etc/init.d
++	for d in lib log run; do \
++	    install -d $(DESTDIR)/var/$$d/jabber; \
++	done
 +	install jabberd/jabberd $(DESTDIR)/sbin/
 +	$(STRIP_COMMAND) $(DESTDIR)/sbin/jabberd
 +	install jabber.xml $(DESTDIR)/etc/jabber/

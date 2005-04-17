@@ -1,0 +1,15 @@
+#!/bin/sh
+
+if grep -q ^jabber /etc/passwd; then
+    echo There already is a jabber user on the system.
+else
+    echo -n "No jabber user found, creating jabber user ... "
+    cat >>/etc/passwd <<EOF
+jabber:x:110:110:Jabber:/opt/var/run/jabber:/bin/false
+EOF
+    cp /etc/passwd /share/hdd/conf/
+    echo ok
+fi
+
+# start the jabber daemon
+/opt/etc/init.d/S80jabberql
