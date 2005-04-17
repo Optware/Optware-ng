@@ -1,6 +1,26 @@
 --- jabber-1.4.2-orig/jabber.xml	2001-05-15 08:21:56.000000000 -0700
-+++ jabber/jabber.xml	2005-04-17 10:51:05.732376000 -0700
-@@ -298,7 +298,7 @@
++++ jabber/jabber.xml	2005-04-17 14:04:32.292376000 -0700
+@@ -193,7 +193,9 @@
+       entry for <host/> above.
+       -->
+ 
++      <!--
+       <update><jabberd:cmdline flag="h">localhost</jabberd:cmdline></update>
++      -->
+ 
+       <!--
+       This enables the server to automatically update the 
+@@ -203,7 +205,9 @@
+       automatically added to the directory.
+       -->
+ 
++      <!--
+       <vcard2jud/>
++      -->
+ 
+       <!--
+       The <browse/> section identifies the transports and other
+@@ -298,7 +302,7 @@
        <xdb_file>./xdb_file/xdb_file.so</xdb_file>
      </load>
      <xdb_file xmlns="jabber:config:xdb_file">
@@ -9,7 +29,7 @@
      </xdb_file>
    </xdb>
  
-@@ -359,7 +359,7 @@
+@@ -359,7 +363,7 @@
      <host/>
      <logtype/>
      <format>%d: [%t] (%h): %s</format>
@@ -18,7 +38,7 @@
      <stderr/>
    </log>
  
-@@ -372,7 +372,7 @@
+@@ -372,7 +376,7 @@
      <host/>
      <logtype>record</logtype>
      <format>%d %h %s</format>
@@ -27,7 +47,7 @@
    </log>
  
    <!-- The following two services are for handling server-to-server traffic. -->
-@@ -596,7 +596,7 @@
+@@ -596,7 +600,7 @@
    <!--
    This specifies the file to store the pid of the process in.
    -->
