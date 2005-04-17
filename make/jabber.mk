@@ -31,11 +31,11 @@ JABBER_VERSION=1.4.2
 JABBER_SOURCE=jabber-$(JABBER_VERSION).tar.gz
 JABBER_DIR=jabber-$(JABBER_VERSION)
 JABBER_UNZIP=zcat
-JABBER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+JABBER_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 JABBER_DESCRIPTION=Jabber is an open-source IM platform designed to be open, fast, and easy to use and extend.
 JABBER_SECTION=misc
 JABBER_PRIORITY=optional
-JABBER_DEPENDS=
+JABBER_DEPENDS=coreutils
 JABBER_CONFLICTS=
 
 #
@@ -45,13 +45,13 @@ JABBER_IPK_VERSION=1
 
 #
 # JABBER_CONFFILES should be a list of user-editable files
-JABBER_CONFFILES=/opt/etc/jabber.xml #/opt/etc/init.d/SXXjabber
+JABBER_CONFFILES=/opt/etc/jabber/jabber.xml /opt/etc/jabber/jabber.conf /opt/etc/init.d/S80jabber
 
 #
 # JABBER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-JABBER_PATCHES=$(JABBER_SOURCE_DIR)/Makefile.patch
+JABBER_PATCHES=$(JABBER_SOURCE_DIR)/Makefile.patch $(JABBER_SOURCE_DIR)/jabber.xml.patch
 
 #
 # If the compilation of the package requires additional
@@ -179,14 +179,14 @@ $(JABBER_IPK_DIR)/CONTROL/control:
 #
 $(JABBER_IPK): $(JABBER_BUILD_DIR)/.built
 	rm -rf $(JABBER_IPK_DIR) $(BUILD_DIR)/jabber_*_$(TARGET_ARCH).ipk
+	install -d $(JABBER_IPK_DIR)/opt/etc/jabber
 	$(MAKE) -C $(JABBER_BUILD_DIR) DESTDIR="$(JABBER_IPK_DIR)/opt" STRIP_COMMAND="$(STRIP_COMMAND)" install
-	#install -d $(JABBER_IPK_DIR)/opt/etc/
-	#install -m 644 $(JABBER_SOURCE_DIR)/jabber.conf $(JABBER_IPK_DIR)/opt/etc/jabber.conf
-	#install -d $(JABBER_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(JABBER_SOURCE_DIR)/rc.jabber $(JABBER_IPK_DIR)/opt/etc/init.d/SXXjabber
+	install -m 644 $(JABBER_SOURCE_DIR)/jabber.conf $(JABBER_IPK_DIR)/opt/etc/jabber/jabber.conf
+	install -d $(JABBER_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(JABBER_SOURCE_DIR)/rc.jabber $(JABBER_IPK_DIR)/opt/etc/init.d/S80jabber
 	$(MAKE) $(JABBER_IPK_DIR)/CONTROL/control
-	#install -m 755 $(JABBER_SOURCE_DIR)/postinst $(JABBER_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(JABBER_SOURCE_DIR)/prerm $(JABBER_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(JABBER_SOURCE_DIR)/postinst $(JABBER_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(JABBER_SOURCE_DIR)/prerm $(JABBER_IPK_DIR)/CONTROL/prerm
 	echo $(JABBER_CONFFILES) | sed -e 's/ /\n/g' > $(JABBER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JABBER_IPK_DIR)
 
