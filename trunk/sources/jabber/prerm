@@ -1,7 +1,3 @@
 #!/bin/sh
 
-if [ -n "`pidof jabberd`" ] ; then
-	echo -n "Stopping Jabber Daemon: "
-        killall jabberd
-	echo "ok"
-fi
+/opt/etc/init.d/S80jabber stop

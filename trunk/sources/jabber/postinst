@@ -5,11 +5,12 @@ if grep -q ^jabber /etc/passwd; then
 else
     echo -n "No jabber user found, creating jabber user ... "
     cat >>/etc/passwd <<EOF
-jabber:x:110:110:Jabber:/opt/var/run/jabber:/bin/false
+jabber:x:110:500:Jabber:/opt/var/run/jabber:/opt/bin/false
 EOF
     cp /etc/passwd /share/hdd/conf/
     echo ok
 fi
 
-# start the jabber daemon
-/opt/etc/init.d/S80jabberql
+chown -R jabber:administrators /opt/var/lib/jabber /opt/var/log/jabber /opt/var/run/jabber
+
+/opt/etc/init.d/S80jabber restart

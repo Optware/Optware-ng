@@ -20,3 +20,21 @@
  
  all-local:
  
+--- jabber-1.4.2-orig/jabberd/Makefile	2001-12-17 12:09:12.000000000 -0800
++++ jabber/jabberd/Makefile	2005-04-17 13:00:10.562376000 -0700
+@@ -4,12 +4,12 @@
+ include ../platform-settings
+ 
+ ifeq ($(ISSINGLE),1)
+-	DEFINES=-DHOME="\"$(JHOME)\"" -DSINGLE -DSTATIC
++	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DSINGLE -DSTATIC
+ else
+-	DEFINES=-DHOME="\"$(JHOME)\"" -DCONFIGXML="\"jabber.xml\""
++	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DCONFIGXML="\"/opt/etc/jabber/jabber.xml\""
+ endif
+ ifeq ($(ISSTATIC),1)
+-	DEFINES=-DHOME="\"$(JHOME)\"" -DSTATIC
++	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DSTATIC
+ endif
+ 
+ CFLAGS=$(CCFLAGS) $(DEFINES)
