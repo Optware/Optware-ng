@@ -16,3 +16,5 @@ fi
 if [ -d /opt/var/lib/mysql ] ; then
     chown -R root:root /opt/var/lib/mysql
 fi
+
+/opt/etc/init.d/S70mysqld start
