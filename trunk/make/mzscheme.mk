@@ -40,7 +40,7 @@ MZSCHEME_DEPENDS=
 #
 # MZSCHEME_IPK_VERSION should be incremented when the ipk changes.
 #
-MZSCHEME_IPK_VERSION=3
+MZSCHEME_IPK_VERSION=4
 
 #
 # MZSCHEME_CONFFILES should be a list of user-editable files
@@ -196,9 +196,10 @@ $(MZSCHEME_IPK): $(MZSCHEME_BUILD_DIR)/.built
 	# a hack to work around POSIX tar 100 character limitation
 	cd $(MZSCHEME_IPK_DIR)/opt/lib/plt; \
 	    mv collects/web-server/default-web-root .
+	cd $(MZSCHEME_IPK_DIR)/opt/lib/plt/collects/web-server; \
+            ln -s ../../default-web-root .
+	umask 111; touch $(MZSCHEME_IPK_DIR)/opt/lib/plt/collects/web-server/default-web-root/log
 	$(MAKE) $(MZSCHEME_IPK_DIR)/CONTROL/control
-	install -m 755 $(MZSCHEME_SOURCE_DIR)/postinst $(MZSCHEME_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MZSCHEME_SOURCE_DIR)/prerm $(MZSCHEME_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MZSCHEME_IPK_DIR)
 
 
