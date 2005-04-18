@@ -26,7 +26,7 @@ APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap-libs
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=6
+APACHE_IPK_VERSION=7
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
