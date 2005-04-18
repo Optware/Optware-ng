@@ -181,7 +181,15 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 #
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_PATCHES)
-	$(MAKE) bzip2-stage libgd-stage libxml2-stage libxslt-stage gdbm-stage openssl-stage openldap-stage libdb-stage
+	$(MAKE) bzip2-stage 
+	$(MAKE) gdbm-stage 
+	$(MAKE) libdb-stage
+	$(MAKE) libgd-stage 
+	$(MAKE) libxml2-stage 
+	$(MAKE) libxslt-stage 
+	$(MAKE) mysql-stage 
+	$(MAKE) openldap-stage 
+	$(MAKE) openssl-stage 
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
