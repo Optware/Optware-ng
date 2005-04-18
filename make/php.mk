@@ -299,6 +299,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	install -d $(PHP_IPK_DIR)/opt/etc/php.d
 	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
 	### now make php-dev
+	rm -rf $(PHP_DEV_IPK_DIR) $(BUILD_DIR)/php-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_DEV_IPK_DIR)/CONTROL/control
 	install -d $(PHP_DEV_IPK_DIR)/opt/lib/php
 	mv $(PHP_IPK_DIR)/opt/lib/php/build $(PHP_DEV_IPK_DIR)/opt/lib/php/build
@@ -306,6 +307,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/include $(PHP_DEV_IPK_DIR)/opt/include
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_DEV_IPK_DIR)
 	### now make php-gd
+	rm -rf $(PHP_GD_IPK_DIR) $(BUILD_DIR)/php-gd_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_GD_IPK_DIR)/CONTROL/control
 	install -d $(PHP_GD_IPK_DIR)/opt/lib/php/extensions
 	install -d $(PHP_GD_IPK_DIR)/opt/etc/php.d
@@ -313,6 +315,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	echo extension=gd.so >$(PHP_GD_IPK_DIR)/opt/etc/php.d/gd.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GD_IPK_DIR)
 	### now make php-ldap
+	rm -rf $(PHP_LDAP_IPK_DIR) $(BUILD_DIR)/php-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_LDAP_IPK_DIR)/CONTROL/control
 	install -d $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions
 	install -d $(PHP_LDAP_IPK_DIR)/opt/etc/php.d
@@ -320,6 +323,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	echo extension=ldap.so >$(PHP_LDAP_IPK_DIR)/opt/etc/php.d/ldap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_LDAP_IPK_DIR)
 	### now make php-mysql
+	rm -rf $(PHP_MYSQL_IPK_DIR) $(BUILD_DIR)/php-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control
 	install -d $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions
 	install -d $(PHP_MYSQL_IPK_DIR)/opt/etc/php.d
