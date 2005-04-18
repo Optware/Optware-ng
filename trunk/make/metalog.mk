@@ -28,7 +28,7 @@ METALOG_UNZIP=zcat
 #
 # METALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-METALOG_IPK_VERSION=2
+METALOG_IPK_VERSION=3
 
 #
 # METALOG_CONFFILES should be a list of user-editable files
