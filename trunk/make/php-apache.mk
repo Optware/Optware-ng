@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_APACHE_SITE=$(PHP_SITE)
-PHP_APACHE_VERSION=5.0.3
+PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 PHP_APACHE_SOURCE=$(PHP_SOURCE)
 PHP_APACHE_DIR=$(PHP_DIR)
 PHP_APACHE_UNZIP=$(PHP_UNZIP)
@@ -26,7 +26,7 @@ PHP_APACHE_DEPENDS=apache, php
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=2
+PHP_APACHE_IPK_VERSION=3
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -131,6 +131,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_APACHE_SOURCE) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
 		--disable-dom \
