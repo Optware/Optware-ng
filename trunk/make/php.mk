@@ -53,7 +53,7 @@ PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
-PHP_LDFLAGS=-Wl,-rpath=/opt/lib/mysql -ldl
+PHP_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath=/opt/lib/mysql -ldl
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
@@ -231,6 +231,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--enable-sysvmsg=shared \
 		--enable-sysvshm=shared \
 		--enable-sysvsem=shared \
+		--enable-xml=shared \
 		--with-bz2=shared,$(STAGING_DIR)/opt \
 		--with-db4=$(STAGING_DIR)/opt \
 		--with-dom=shared,$(STAGING_DIR)/opt \
@@ -240,6 +241,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-ldap-sasl=$(STAGING_DIR)/opt \
 		--with-mysql=shared,$(STAGING_DIR)/opt \
 		--with-mysql-sock=/tmp/mysql.sock \
+		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config \
 		--with-openssl=shared,$(STAGING_DIR)/opt \
 		--with-xsl=shared,$(STAGING_DIR)/opt \
 		--with-zlib=shared,$(STAGING_DIR)/opt \
@@ -304,9 +306,8 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_DEV_IPK_DIR) $(BUILD_DIR)/php-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_DEV_IPK_DIR)/CONTROL/control
 	install -d $(PHP_DEV_IPK_DIR)/opt/lib/php
-	mv $(PHP_IPK_DIR)/opt/lib/php/build $(PHP_DEV_IPK_DIR)/opt/lib/php/build
-	install -d $(PHP_DEV_IPK_DIR)/opt/include
-	mv $(PHP_IPK_DIR)/opt/include $(PHP_DEV_IPK_DIR)/opt/include
+	mv $(PHP_IPK_DIR)/opt/lib/php/build $(PHP_DEV_IPK_DIR)/opt/lib/php/
+	mv $(PHP_IPK_DIR)/opt/include $(PHP_DEV_IPK_DIR)/opt/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_DEV_IPK_DIR)
 	### now make php-gd
 	rm -rf $(PHP_GD_IPK_DIR) $(BUILD_DIR)/php-gd_*_$(TARGET_ARCH).ipk
@@ -331,6 +332,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	install -d $(PHP_MYSQL_IPK_DIR)/opt/etc/php.d
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mysql.so $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions/mysql.so
 	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
+	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
