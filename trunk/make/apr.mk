@@ -152,8 +152,10 @@ apr: $(APR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_DIR)/opt/lib
 	rm -f $(STAGING_DIR)/opt/lib/libapr.la
+	touch $@
 
 apr-stage: $(APR_BUILD_DIR)/.staged
 

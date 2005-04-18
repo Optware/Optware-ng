@@ -165,8 +165,10 @@ apr-util: $(APR_UTIL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_DIR)/opt/lib
-	rm -rf $(STAGING_DIR)/opt/lib/libaprutil.la
+	rm -f $(STAGING_DIR)/opt/lib/libaprutil.la
+	touch $@
 
 apr-util-stage: $(APR_UTIL_BUILD_DIR)/.staged
 
