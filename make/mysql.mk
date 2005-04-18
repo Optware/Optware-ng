@@ -32,7 +32,7 @@ MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
 MYSQL_UNZIP=zcat
 MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-MYSQL_DESCRIPTION=Describe mysql here.
+MYSQL_DESCRIPTION=Popular free SQL database system
 MYSQL_SECTION=misc
 MYSQL_PRIORITY=optional
 MYSQL_DEPENDS=zlib, ncurses, openssl, readline
@@ -41,7 +41,7 @@ MYSQL_CONFLICTS=
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=1
+MYSQL_IPK_VERSION=2
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
