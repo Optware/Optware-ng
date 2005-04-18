@@ -29,7 +29,7 @@ CROSS_PACKAGES = \
 	bash bc bind bitchx busybox bzflag bzip2 \
 	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dnsmasq dropbear \
-	e2fsprogs ed elinks esound expat \
+	e2fsprogs eaccelerator ed elinks esound expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -42,11 +42,14 @@ CROSS_PACKAGES = \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm metalog miau minicom mktemp mt-daapd mtr mutt mysql \
+	m4 make man man-pages mc mdadm mediawiki metalog miau \
+	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	nylon \
 	openssh openssl openvpn \
-	pango parted patch pcre php php-apache pkgconfig popt portmap postgresql \
+	pango parted patch pcre \
+	php php-apache phpmysqladmin \
+	pkgconfig popt portmap postgresql \
 	procps proftpd puppy python \
 	py-sqlite py-bittorrent \
 	rdate readline recordext renderext rsync \
@@ -91,6 +94,7 @@ NATIVE_PACKAGES = \
 	xemacs \
 	hugs \
 	openldap \
+	mzscheme \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
 	perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident \
@@ -106,7 +110,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	mzscheme \
 
 # libao - has runtime trouble
 # w3m (native) - build trouble on official build system 
