@@ -339,4 +339,4 @@ php-clean:
 # directories.
 #
 php-dirclean:
-	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK) $(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) $(PHP_GD_IPK_DIR) $(PHP_GD_IPK) $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) $(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK)
