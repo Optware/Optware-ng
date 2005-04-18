@@ -275,10 +275,16 @@ php: $(PHP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/bin/php: $(PHP_BUILD_DIR)/.built
-	$(MAKE) -C $(PHP_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+$(PHP_BUILD_DIR)/.staged: $(PHP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) install
+	cp $(STAGING_DIR)/opt/bin/php-config $(STAGING_DIR)/bin/php-config
+	cp $(STAGING_DIR)/opt/bin/phpize $(STAGING_DIR)/bin/phpize
+	sed -i -e 's!prefix=.*!prefix=$(STAGING_DIR)/opt!' $(STAGING_DIR)/bin/phpize
+	chmod a+rx $(STAGING_DIR)/bin/phpize
+	touch $@
 
-php-stage: $(STAGING_DIR)/opt/bin/php
+php-stage: $(PHP_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
