@@ -159,10 +159,6 @@ $(XEMACS_IPK): $(XEMACS_BUILD_DIR)/.built
 	rm -f $(XEMACS_IPK_DIR)/opt/bin/xemacs
 	ln -s /opt/bin/xemacs-$(XEMACS_VERSION) $(XEMACS_IPK_DIR)/opt/bin/xemacs
 	$(MAKE) $(XEMACS_IPK_DIR)/CONTROL/control
-	install -m 644 $(XEMACS_SOURCE_DIR)/control $(XEMACS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(XEMACS_SOURCE_DIR)/postinst $(XEMACS_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(XEMACS_SOURCE_DIR)/prerm $(XEMACS_IPK_DIR)/CONTROL/prerm
-#	echo $(XEMACS_CONFFILES) | sed -e 's/ /\n/g' > $(XEMACS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEMACS_IPK_DIR)
 
 #
