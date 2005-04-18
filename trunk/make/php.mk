@@ -17,16 +17,16 @@ PHP_VERSION=5.0.3
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
-PHP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PHP_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, libgd, gdbm, libdb
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=5
+PHP_IPK_VERSION=6
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
-PHP_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR) -ldl
+PHP_LDFLAGS=-ldl
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
@@ -68,6 +68,19 @@ PHP_BUILD_DIR=$(BUILD_DIR)/php
 PHP_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_IPK_DIR=$(BUILD_DIR)/php-$(PHP_VERSION)-ipk
 PHP_IPK=$(BUILD_DIR)/php_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_DEV_IPK_DIR=$(BUILD_DIR)/php-dev-$(PHP_VERSION)-ipk
+PHP_DEV_IPK=$(BUILD_DIR)/php-dev_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_GD_IPK_DIR=$(BUILD_DIR)/php-gd-$(PHP_VERSION)-ipk
+PHP_GD_IPK=$(BUILD_DIR)/php-gd_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_LDAP_IPK_DIR=$(BUILD_DIR)/php-ldap-$(PHP_VERSION)-ipk
+PHP_LDAP_IPK=$(BUILD_DIR)/php-ldap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_MYSQL_IPK_DIR=$(BUILD_DIR)/php-mysql-$(PHP_VERSION)-ipk
+PHP_MYSQL_IPK=$(BUILD_DIR)/php-mysql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 
 #
 # Automatically create a ipkg control file
@@ -84,6 +97,58 @@ $(PHP_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: $(PHP_DESCRIPTION)" >>$@
 	@echo "Depends: $(PHP_DEPENDS)" >>$@
+
+$(PHP_DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_DEV_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: php native development environment" >>$@
+	@echo "Depends: php" >>$@
+
+$(PHP_GD_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_GD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-gd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: libgd extension for php" >>$@
+	@echo "Depends: php, libgd" >>$@
+
+$(PHP_LDAP_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_LDAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-ldap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: ldap extension for php" >>$@
+	@echo "Depends: php, openldap-libs" >>$@
+
+$(PHP_MYSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_MYSQL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-mysql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: mysql extension for php" >>$@
+	@echo "Depends: php, mysql" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -124,8 +189,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	(cd $(PHP_BUILD_DIR); \
 		autoconf; \
 		sed -i \
-		    -e 's|sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"|sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib"|' \
-		    -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib"|sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib"|' \
+		    -e 's|sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"|sys_lib_search_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
+		    -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib"|sys_lib_dlsearch_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
 			configure ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
@@ -139,6 +204,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
 		--enable-bcmath=shared \
@@ -162,6 +228,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-gd=shared,$(STAGING_DIR)/opt \
 		--with-ldap=shared,$(STAGING_DIR)/opt \
 		--with-ldap-sasl=$(STAGING_DIR)/opt \
+		--with-mysql=shared,$(STAGING_DIR)/opt \
+		--with-mysql-sock=/tmp/mysql.sock \
 		--with-openssl=shared,$(STAGING_DIR)/opt \
 		--with-xsl=shared,$(STAGING_DIR)/opt \
 		--with-zlib=shared,$(STAGING_DIR)/opt \
@@ -220,7 +288,37 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
 	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
 	install -d $(PHP_IPK_DIR)/opt/etc
+	install -d $(PHP_IPK_DIR)/opt/etc/php.d
 	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_IPK_DIR)/opt/etc/php.ini
+	### now make php-dev
+	$(MAKE) $(PHP_DEV_IPK_DIR)/CONTROL/control
+	install -d $(PHP_DEV_IPK_DIR)/opt/lib/php
+	mv $(PHP_IPK_DIR)/opt/lib/php/build $(PHP_DEV_IPK_DIR)/opt/lib/php/build
+	install -d $(PHP_DEV_IPK_DIR)/opt/include
+	mv $(PHP_IPK_DIR)/opt/include $(PHP_DEV_IPK_DIR)/opt/include
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_DEV_IPK_DIR)
+	### now make php-gd
+	$(MAKE) $(PHP_GD_IPK_DIR)/CONTROL/control
+	install -d $(PHP_GD_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_GD_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/gd.so $(PHP_GD_IPK_DIR)/opt/lib/php/extensions/gd.so
+	echo extension=gd.so >$(PHP_GD_IPK_DIR)/opt/etc/php.d/gd.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GD_IPK_DIR)
+	### now make php-ldap
+	$(MAKE) $(PHP_LDAP_IPK_DIR)/CONTROL/control
+	install -d $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_LDAP_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/ldap.so $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions/ldap.so
+	echo extension=ldap.so >$(PHP_LDAP_IPK_DIR)/opt/etc/php.d/ldap.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_LDAP_IPK_DIR)
+	### now make php-mysql
+	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control
+	install -d $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_MYSQL_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mysql.so $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions/mysql.so
+	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
+	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IPK_DIR)
