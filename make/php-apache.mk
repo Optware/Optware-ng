@@ -183,7 +183,7 @@ php-apache-stage: $(PHP_APACHE_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(PHP_APACHE_IPK): $(PHP_APACHE_BUILD_DIR)/.built
-	rm -rf $(PHP_APACHE_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
+	rm -rf $(PHP_APACHE_IPK_DIR) $(BUILD_DIR)/php-apache_*_$(TARGET_ARCH).ipk
 	install -d $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d
 	install -m 644 $(PHP_APACHE_SOURCE_DIR)/php.conf $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
 	install -d $(PHP_APACHE_IPK_DIR)/opt/libexec
