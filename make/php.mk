@@ -221,9 +221,11 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-inifile \
 		--with-flatfile \
 		--enable-dbx=shared \
+		--enable-dio=shared \
 		--enable-dom=shared \
 		--enable-exif=shared \
 		--enable-ftp=shared \
+		--enable-mbstring=shared \
 		--enable-shmop=shared \
 		--enable-sockets=shared \
 		--enable-sysvmsg=shared \
