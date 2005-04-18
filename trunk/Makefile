@@ -108,6 +108,7 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	mzscheme \
 
 # libao - has runtime trouble
 # w3m (native) - build trouble on official build system 
@@ -116,7 +117,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	w3m \
-	mzscheme \
 	byRequest \
 	nethack scponly dump gkrellm clamav freeradius
 
