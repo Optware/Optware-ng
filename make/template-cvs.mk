@@ -17,6 +17,8 @@
 <BAR>_SECTION=
 <BAR>_PRIORITY=optional
 <BAR>_DEPENDS=
+<BAR>_SUGGESTS=
+<BAR>_CONFLICTS=
 
 #
 # Software downloaded from CVS repositories must either use a tag or a
@@ -158,6 +160,7 @@ $(<BAR>_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(<BAR>_REPOSITORY)" >>$@
 	@echo "Description: $(<BAR>_DESCRIPTION)" >>$@
 	@echo "Depends: $(<BAR>_DEPENDS)" >>$@
+	@echo "Suggests: $(<BAR>_SUGGESTS)" >>$@
 	@echo "Conflicts: $(<BAR>_CONFLICTS)" >>$@
 
 #

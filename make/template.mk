@@ -36,6 +36,7 @@
 <FOO>_SECTION=
 <FOO>_PRIORITY=optional
 <FOO>_DEPENDS=
+<FOO>_SUGGESTS=
 <FOO>_CONFLICTS=
 
 #
@@ -163,6 +164,7 @@ $(<FOO>_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(<FOO>_SITE)/$(<FOO>_SOURCE)" >>$@
 	@echo "Description: $(<FOO>_DESCRIPTION)" >>$@
 	@echo "Depends: $(<FOO>_DEPENDS)" >>$@
+	@echo "Suggests: $(<FOO>_SUGGESTS)" >>$@
 	@echo "Conflicts: $(<FOO>_CONFLICTS)" >>$@
 
 #
