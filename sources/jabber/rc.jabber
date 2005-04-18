@@ -25,7 +25,7 @@ case "$rc" in
 		exit 0
 	fi
 
-	CMDLINE="-U $JABBER_USER -c /opt/etc/jabber/jabber.xml"
+	CMDLINE="-U $JABBER_USER"
 	if [ x"$JABBER_HOSTNAME" != x"" ]; then
 		CMDLINE="$CMDLINE -h $JABBER_HOSTNAME"
 	fi
@@ -34,7 +34,6 @@ case "$rc" in
 	fi
 
 	echo -n "Starting Jabber Daemon: "
-	echo $JABBER_DAEMON $CMDLINE
 	$JABBER_DAEMON $CMDLINE 2>/dev/null &
 	echo ok
 	;;
