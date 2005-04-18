@@ -40,7 +40,7 @@ MZSCHEME_DEPENDS=
 #
 # MZSCHEME_IPK_VERSION should be incremented when the ipk changes.
 #
-MZSCHEME_IPK_VERSION=2
+MZSCHEME_IPK_VERSION=3
 
 #
 # MZSCHEME_CONFFILES should be a list of user-editable files
@@ -187,7 +187,7 @@ $(MZSCHEME_IPK): $(MZSCHEME_BUILD_DIR)/.built
 	    $(MZSCHEME_IPK_DIR)/opt/lib/plt/lib/buildinfo
 	sed -i \
 	    -e 's:$(MZSCHEME_IPK_DIR)::' \
-            `file $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/* | grep 'shell script' | awk -F: '{print $$1}'`
+            `ls $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/*  | grep -v plt/bin/mzscheme`
 	$(STRIP_COMMAND) $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/mzscheme
 	$(STRIP_COMMAND) `find $(MZSCHEME_IPK_DIR)/opt/lib/plt -name '*.so'`
 	install -d $(MZSCHEME_IPK_DIR)/opt/bin/
