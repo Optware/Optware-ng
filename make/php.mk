@@ -53,7 +53,7 @@ PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
-PHP_LDFLAGS=-ldl
+PHP_LDFLAGS=-Wl,-rpath=/opt/lib/mysql -ldl
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
