@@ -30,9 +30,11 @@ MEDIAWIKI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEDIAWIKI_DESCRIPTION=A fast, full-featured, wiki based on php.
 MEDIAWIKI_SECTION=web
 MEDIAWIKI_PRIORITY=optional
-MEDIAWIKI_DEPENDS=php-mysql
+MEDIAWIKI_DEPENDS=php-mysql, mysql
 MEDIAWIKI_SUGGESTS=php-apache, eaccelerator
 MEDIAWIKI_CONFLICTS=
+
+MEDIAWIKI_INSTALL_DIR=/opt/share/www/mediawiki
 
 #
 # MEDIAWIKI_IPK_VERSION should be incremented when the ipk changes.
@@ -41,7 +43,7 @@ MEDIAWIKI_IPK_VERSION=1
 
 #
 # MEDIAWIKI_CONFFILES should be a list of user-editable files
-#MEDIAWIKI_CONFFILES=/opt/share/www/mediawiki/LocalSettings.php
+#MEDIAWIKI_CONFFILES=$(MEDIAWIKI_INSTALL_DIR)/LocalSettings.php
 
 #
 # MEDIAWIKI_PATCHES should list any patches, in the the order in
@@ -160,9 +162,9 @@ $(MEDIAWIKI_IPK_DIR)/CONTROL/control:
 #
 $(MEDIAWIKI_IPK): $(MEDIAWIKI_BUILD_DIR)/.built
 	rm -rf $(MEDIAWIKI_IPK_DIR) $(BUILD_DIR)/mediawiki_*_$(TARGET_ARCH).ipk
-	install -d $(MEDIAWIKI_IPK_DIR)/opt/share/www/mediawiki
-	cp -a $(MEDIAWIKI_BUILD_DIR)/* $(MEDIAWIKI_IPK_DIR)/opt/share/www/mediawiki/
-	chmod a+rwx $(MEDIAWIKI_IPK_DIR)/opt/share/www/mediawiki/config
+	install -d $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)
+	cp -a $(MEDIAWIKI_BUILD_DIR)/* $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)/
+	chmod a+rwx $(MEDIAWIKI_IPK_DIR)$(MEDIAWIKI_INSTALL_DIR)/config
 	$(MAKE) $(MEDIAWIKI_IPK_DIR)/CONTROL/control
 	#install -m 755 $(MEDIAWIKI_SOURCE_DIR)/postinst $(MEDIAWIKI_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(MEDIAWIKI_SOURCE_DIR)/prerm $(MEDIAWIKI_IPK_DIR)/CONTROL/prerm
