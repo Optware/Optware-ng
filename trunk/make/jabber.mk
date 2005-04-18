@@ -35,13 +35,13 @@ JABBER_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 JABBER_DESCRIPTION=Jabber is an open-source IM platform designed to be open, fast, and easy to use and extend.
 JABBER_SECTION=misc
 JABBER_PRIORITY=optional
-JABBER_DEPENDS=coreutils
+JABBER_DEPENDS=coreutils, openssl
 JABBER_CONFLICTS=
 
 #
 # JABBER_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBER_IPK_VERSION=1
+JABBER_IPK_VERSION=2
 
 #
 # JABBER_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ JABBER_CONFFILES=/opt/etc/jabber/jabber.xml /opt/etc/jabber/jabber.conf /opt/etc
 # JABBER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-JABBER_PATCHES=$(JABBER_SOURCE_DIR)/Makefile.patch $(JABBER_SOURCE_DIR)/jabber.xml.patch
+JABBER_PATCHES=$(JABBER_SOURCE_DIR)/Makefile.patch $(JABBER_SOURCE_DIR)/jabber.xml.patch $(JABBER_SOURCE_DIR)/config.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,21 +104,18 @@ jabber-source: $(DL_DIR)/$(JABBER_SOURCE) $(JABBER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(JABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBER_SOURCE) $(JABBER_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(JABBER_DIR) $(JABBER_BUILD_DIR)
 	$(JABBER_UNZIP) $(DL_DIR)/$(JABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(JABBER_PATCHES) | patch -d $(BUILD_DIR)/$(JABBER_DIR) -p1
 	mv $(BUILD_DIR)/$(JABBER_DIR) $(JABBER_BUILD_DIR)
 	(cd $(JABBER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(JABBER_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(JABBER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JABBER_LDFLAGS)" \
+		prefix="$(STAGING_DIR)/opt" \
 		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
+		--enable-ssl \
 	)
 	touch $(JABBER_BUILD_DIR)/.configured
 
