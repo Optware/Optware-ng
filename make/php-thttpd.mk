@@ -47,11 +47,11 @@ PHP_THTTPD_LIBPHP_UNZIP=bzcat
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=1
+PHP_THTTPD_IPK_VERSION=2
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
-PHP_THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf
+PHP_THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf  /opt/etc/php.ini
 
 #
 # PHP_THTTPD_PATCHES should list any patches, in the the order in
@@ -227,6 +227,8 @@ $(PHP_THTTPD_IPK): $(PHP_THTTPD_BUILD_DIR)/.built
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/var/run/
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/var/log/
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/etc/
+	install -m 644 $(PHP_SOURCE_DIR)/php.ini $(PHP_THTTPD_IPK_DIR)/opt/etc/php.ini
+	sed -i  -e 's/extension=dom.so/; extension=dom.so/' $(PHP_THTTPD_IPK_DIR)/opt/etc/php.ini
 	install -m 644 $(PHP_THTTPD_SOURCE_DIR)/thttpd.conf $(PHP_THTTPD_IPK_DIR)/opt/etc/thttpd.conf
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(PHP_THTTPD_SOURCE_DIR)/rc.thttpd $(PHP_THTTPD_IPK_DIR)/opt/etc/init.d/S80thttpd
