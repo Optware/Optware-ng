@@ -28,13 +28,13 @@ OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
 OPENLDAP_DESCRIPTION=Open Lightweight Directory Access Protocol
 OPENLDAP_SECTION=net
 OPENLDAP_PRIORITY=optional
-OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl
+OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl-libs
 OPENLDAP_CONFLICTS=
 
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=2
+OPENLDAP_IPK_VERSION=3
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
@@ -163,7 +163,7 @@ $(OPENLDAP_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(OPENLDAP_MAINTAINER)" >>$@
 	@echo "Source: $(OPENLDAP_SITE)/$(OPENLDAP_SOURCE)" >>$@
 	@echo "Description: $(OPENLDAP_DESCRIPTION)" >>$@
-	@echo "Depends: $(OPENLDAP_DEPENDS), openldap-libs" >>$@
+	@echo "Depends: openldap-libs, cyrus-sasl" >>$@
 	@echo "Conflicts: $(OPENLDAP_CONFLICTS)" >>$@
 
 $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control:

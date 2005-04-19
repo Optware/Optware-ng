@@ -16,7 +16,7 @@ CYRUS-SASL_PRIORITY=optional
 CYRUS-SASL_DEPENDS=
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=5
+CYRUS-SASL_IPK_VERSION=6
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
@@ -26,6 +26,9 @@ CYRUS-SASL_BUILD_DIR=$(BUILD_DIR)/cyrus-sasl
 CYRUS-SASL_SOURCE_DIR=$(SOURCE_DIR)/cyrus-sasl
 CYRUS-SASL_IPK_DIR=$(BUILD_DIR)/cyrus-sasl-$(CYRUS-SASL_VERSION)-ipk
 CYRUS-SASL_IPK=$(BUILD_DIR)/cyrus-sasl_$(CYRUS-SASL_VERSION)-$(CYRUS-SASL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+CYRUS-SASL-LIBS_IPK_DIR=$(BUILD_DIR)/cyrus-sasl-libs-$(CYRUS-SASL_VERSION)-ipk
+CYRUS-SASL-LIBS_IPK=$(BUILD_DIR)/cyrus-sasl-libs_$(CYRUS-SASL_VERSION)-$(CYRUS-SASL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(CYRUS-SASL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(CYRUS-SASL_SITE)/$(CYRUS-SASL_SOURCE)
@@ -94,6 +97,20 @@ $(CYRUS-SASL_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(CYRUS-SASL_MAINTAINER)" >>$@
 	@echo "Source: $(CYRUS-SASL_SITE)/$(CYRUS-SASL_SOURCE)" >>$@
 	@echo "Description: $(CYRUS-SASL_DESCRIPTION)" >>$@
+	@echo "Depends: cyrus-sasl-libs" >>$@
+	@echo "Conflicts: $(CYRUS-SASL_CONFLICTS)" >>$@
+
+$(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control:
+	@install -d $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: cyrus-sasl-libs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CYRUS-SASL_PRIORITY)" >>$@
+	@echo "Section: $(CYRUS-SASL_SECTION)" >>$@
+	@echo "Version: $(CYRUS-SASL_VERSION)-$(CYRUS-SASL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CYRUS-SASL_MAINTAINER)" >>$@
+	@echo "Source: $(CYRUS-SASL_SITE)/$(CYRUS-SASL_SOURCE)" >>$@
+	@echo "Description: $(CYRUS-SASL_DESCRIPTION)" >>$@
 	@echo "Depends: $(CYRUS-SASL_DEPENDS)" >>$@
 	@echo "Conflicts: $(CYRUS-SASL_CONFLICTS)" >>$@
 
@@ -105,6 +122,13 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+	### build cyrus-sasl-libs
+	$(MAKE) $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control
+	install -d $(CYRUS-SASL-LIBS_IPK_DIR)/opt
+	mv $(CYRUS-SASL_IPK_DIR)/opt/include $(CYRUS-SASL-LIBS_IPK_DIR)/opt
+	mv $(CYRUS-SASL_IPK_DIR)/opt/lib $(CYRUS-SASL-LIBS_IPK_DIR)/opt
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-SASL-LIBS_IPK_DIR)
+	### build the main ipk
 	$(MAKE) $(CYRUS-SASL_IPK_DIR)/CONTROL/control
 	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/postinst $(CYRUS-SASL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CYRUS-SASL_SOURCE_DIR)/prerm $(CYRUS-SASL_IPK_DIR)/CONTROL/prerm
