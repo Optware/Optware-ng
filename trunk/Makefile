@@ -140,7 +140,7 @@ WL500G_PACKAGES = \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch pkgconfig popt portmap procps proftpd puppy php-thttpd\
+	patch pkgconfig popt portmap procps proftpd puppy \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils thttpd \
@@ -150,8 +150,10 @@ WL500G_PACKAGES = \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
+# php-thttpd needs patches to be applied to php.mk in order to have php correctly built for wl500g
 WL500G_PACKAGES_THAT_NEED_FIXING = \
-	bind groff postgresql python syslog-ng torrent ttf-bitstream-vera xmail
+	bind groff postgresql python syslog-ng torrent ttf-bitstream-vera xmail \
+	php-thttpd
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 
