@@ -1,0 +1,42 @@
+#!/bin/sh
+
+PIDFILE=/opt/var/run/thttpd.pid
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+start() {
+	if [ -f $PIDFILE ]; then
+		echo "Warning : $PIDFILE still present. Unclean shutdown ?"
+		kill -9 `cat $PIDFILE` 2>/dev/null
+		rm -f $PIDFILE 2>/dev/null
+	fi
+	echo -n "Starting thttpd... "
+	/opt/sbin/thttpd -C /opt/etc/thttpd.conf
+	echo "done"
+}
+
+stop() {
+	echo -n "Shutting down thttpd... "
+	if [ -f $PIDFILE ]; then
+		kill -9 `cat $PIDFILE` 2>/dev/null
+		rm -f $PIDFILE 2>/dev/null
+	fi
+	echo "done"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart)"
+		exit 1
+		;;
+esac

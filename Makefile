@@ -69,6 +69,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	php-thttpd
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -128,18 +129,18 @@ WL500G_PACKAGES = \
 	diffutils distcc dnsmasq \
 	e2fsprogs expat \
 	fetchmail file findutils fixesext flex \
-	freeradius freetype ftpd-topfield \
+	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git grep gzip \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libevent libid3tag libjpeg libmad libogg libol \
+	lame less libcurl libevent libid3tag libjpeg libmad libgd libogg libol \
 	libosip2 libpng libtool libtopfield libusb libvorbis \
 	logrotate lua lynx lzo libvorbis \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch pkgconfig popt portmap procps proftpd puppy \
+	patch pkgconfig popt portmap procps proftpd puppy php-thttpd\
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils thttpd \
@@ -150,7 +151,7 @@ WL500G_PACKAGES = \
 	zlib
 
 WL500G_PACKAGES_THAT_NEED_FIXING = \
-	bind fontconfig groff libgd postgresql python syslog-ng thttpdphp torrent ttf-bitstream-vera xmail
+	bind groff postgresql python syslog-ng torrent ttf-bitstream-vera xmail
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 

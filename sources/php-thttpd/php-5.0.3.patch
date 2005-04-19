@@ -1,0 +1,337 @@
+diff -urN php-5.0.0/configure php-5.0.0-thttpd/configure
+--- php-5.0.0/configure	2004-07-13 22:13:15.000000000 +0300
++++ php-5.0.0-thttpd/configure	2004-07-28 08:05:48.021849513 +0300
+@@ -9573,11 +9573,13 @@
+   if grep thttpd.2.21b $withval/version.h >/dev/null; then
+     patch="test -f $THTTPD/php_patched || \
+     (cd $THTTPD && patch -p1 < $abs_srcdir/sapi/thttpd/thttpd_patch && touch php_patched)"
+-
++  elif grep thttpd.2.25b $withval/version.h >/dev/null; then
++    patch="test -f $THTTPD/php_patched || \
++    (cd $THTTPD && patch -p1 < $abs_srcdir/sapi/thttpd/thttpd-2.25b_patch && touch php_patched)"
+   elif grep Premium $withval/version.h >/dev/null; then
+     patch=
+   else
+-    { echo "configure: error: This version only supports thttpd-2.21b and Premium thttpd" 1>&2; exit 1; }
++    { echo "configure: error: This version only supports thttpd-2.21b, thttpd-2.25b and Premium thttpd" 1>&2; exit 1; }
+   fi
+   
+   if test -n "$GCC"; then
+diff -urN php-5.0.0/sapi/thttpd/thttpd-2.25b_patch php-5.0.0-thttpd/sapi/thttpd/thttpd-2.25b_patch
+--- php-5.0.0/sapi/thttpd/thttpd-2.25b_patch	1970-01-01 02:00:00.000000000 +0200
++++ php-5.0.0-thttpd/sapi/thttpd/thttpd-2.25b_patch	2004-07-28 08:02:52.632236518 +0300
+@@ -0,0 +1,314 @@
++diff -ru thttpd-2.25b.orig/Makefile.in thttpd-2.25b/Makefile.in
++--- thttpd-2.25b.orig/Makefile.in	Wed Apr  3 11:49:35 2002
+++++ thttpd-2.25b/Makefile.in	Wed Mar 17 17:48:53 2004
++@@ -46,13 +46,15 @@
++ 
++ # You shouldn't need to edit anything below here.
++ 
+++include php_makefile
+++
++ CC =		@CC@
++ CCOPT =		@V_CCOPT@
++ DEFS =		@DEFS@
++-INCLS =		-I.
+++INCLS =		-I. $(PHP_CFLAGS)
++ CFLAGS =	$(CCOPT) $(DEFS) $(INCLS)
++-LDFLAGS =	@LDFLAGS@
++-LIBS =		@LIBS@
+++LDFLAGS =	@LDFLAGS@ $(PHP_LDFLAGS)
+++LIBS =		@LIBS@ $(PHP_LIBS)
++ NETLIBS =	@V_NETLIBS@
++ INSTALL =	@INSTALL@
++ 
++@@ -62,7 +64,7 @@
++ 	@rm -f $@
++ 	$(CC) $(CFLAGS) -c $*.c
++ 
++-SRC =		thttpd.c libhttpd.c fdwatch.c mmc.c timers.c match.c tdate_parse.c
+++SRC =		thttpd.c libhttpd.c fdwatch.c mmc.c timers.c match.c tdate_parse.c php_thttpd.c
++ 
++ OBJ =		$(SRC:.c=.o) @LIBOBJS@
++ 
++@@ -77,7 +79,7 @@
++ all:		this subdirs
++ this:		$(ALL)
++ 
++-thttpd: $(OBJ)
+++thttpd: $(OBJ) libphp5.a
++ 	@rm -f $@
++ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS) $(NETLIBS)
++ 
++diff -ru thttpd-2.25b.orig/config.h thttpd-2.25b/config.h
++--- thttpd-2.25b.orig/config.h	Sun Nov 30 12:40:00 2003
+++++ thttpd-2.25b/config.h	Wed Mar 17 18:16:57 2004
++@@ -333,7 +333,7 @@
++ /* CONFIGURE: A list of index filenames to check.  The files are searched
++ ** for in this order.
++ */
++-#define INDEX_NAMES "index.html", "index.htm", "index.xhtml", "index.xht", "Default.htm", "index.cgi"
+++#define INDEX_NAMES "index.php", "index.html", "index.htm", "index.xhtml", "index.xht", "Default.htm", "index.cgi"
++ 
++ /* CONFIGURE: If this is defined then thttpd will automatically generate
++ ** index pages for directories that don't have an explicit index file.
++diff -ru thttpd-2.25b.orig/configure thttpd-2.25b/configure
++--- thttpd-2.25b.orig/configure	Fri Dec 26 03:44:33 2003
+++++ thttpd-2.25b/configure	Wed Mar 17 17:52:14 2004
++@@ -1021,7 +1021,7 @@
++ fi
++ echo "$ac_t""$CPP" 1>&6
++ 
++-for ac_hdr in fcntl.h grp.h memory.h paths.h poll.h sys/poll.h sys/devpoll.h sys/event.h osreldate.h
+++for ac_hdr in fcntl.h grp.h memory.h paths.h poll.h sys/poll.h sys/devpoll.h sys/event.h osreldate.h netinet/tcp.h
++ do
++ ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
++ echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
++diff -ru thttpd-2.25b.orig/configure.in thttpd-2.25b/configure.in
++--- thttpd-2.25b.orig/configure.in	Fri Dec 26 03:41:13 2003
+++++ thttpd-2.25b/configure.in	Wed Mar 17 17:53:20 2004
++@@ -64,7 +64,7 @@
++ 	AC_MSG_RESULT(no)   
++ fi
++ 
++-AC_CHECK_HEADERS(fcntl.h grp.h memory.h paths.h poll.h sys/poll.h sys/devpoll.h sys/event.h osreldate.h)
+++AC_CHECK_HEADERS(fcntl.h grp.h memory.h paths.h poll.h sys/poll.h sys/devpoll.h sys/event.h osreldate.h netinet/tcp.h)
++ AC_HEADER_TIME
++ AC_HEADER_DIRENT
++ 
++diff -ru thttpd-2.25b.orig/libhttpd.c thttpd-2.25b/libhttpd.c
++--- thttpd-2.25b.orig/libhttpd.c	Fri Dec 26 04:06:05 2003
+++++ thttpd-2.25b/libhttpd.c	Sun Mar 21 18:44:02 2004
++@@ -55,6 +55,10 @@
++ #include <unistd.h>
++ #include <stdarg.h>
++ 
+++#ifdef HAVE_NETINET_TCP_H
+++#include <netinet/tcp.h>
+++#endif
+++
++ #ifdef HAVE_OSRELDATE_H
++ #include <osreldate.h>
++ #endif /* HAVE_OSRELDATE_H */
++@@ -84,6 +88,8 @@
++ #include "match.h"
++ #include "tdate_parse.h"
++ 
+++#include "php_thttpd.h"
+++
++ #ifndef STDIN_FILENO
++ #define STDIN_FILENO 0
++ #endif
++@@ -214,6 +220,10 @@
++ 	free( (void*) hs->cwd );
++     if ( hs->cgi_pattern != (char*) 0 )
++ 	free( (void*) hs->cgi_pattern );
+++    if ( hs->php_pattern != (char*) 0 )
+++	free( (void*) hs->php_pattern );
+++    if ( hs->phps_pattern != (char*) 0 )
+++	free( (void*) hs->phps_pattern );
++     if ( hs->charset != (char*) 0 )
++ 	free( (void*) hs->charset );
++     if ( hs->p3p != (char*) 0 )
++@@ -223,6 +233,7 @@
++     if ( hs->local_pattern != (char*) 0 )
++ 	free( (void*) hs->local_pattern );
++     free( (void*) hs );
+++    thttpd_php_shutdown();
++     }
++ 
++ 
++@@ -232,7 +243,7 @@
++     unsigned short port, char* cgi_pattern, int cgi_limit, char* charset,
++     char* p3p, int max_age, char* cwd, int no_log, FILE* logfp,
++     int no_symlink_check, int vhost, int global_passwd, char* url_pattern,
++-    char* local_pattern, int no_empty_referers )
+++    char* local_pattern, int no_empty_referers, char* php_pattern, char* phps_pattern )
++     {
++     httpd_server* hs;
++     static char ghnbuf[256];
++@@ -279,6 +290,8 @@
++ 	}
++ 
++     hs->port = port;
+++    hs->php_pattern = strdup(php_pattern);
+++    hs->phps_pattern = strdup(phps_pattern);
++     if ( cgi_pattern == (char*) 0 )
++ 	hs->cgi_pattern = (char*) 0;
++     else
++@@ -357,6 +370,7 @@
++ 	}
++ 
++     init_mime();
+++    thttpd_php_init();
++ 
++     /* Done initializing. */
++     if ( hs->binding_hostname == (char*) 0 )
++@@ -1380,6 +1394,8 @@
++     if ( hc->tildemapped )
++ 	return 1;
++ 
+++    if ( hc->hostname[0] == '.' || strchr( hc->hostname, '/' ) != (char*) 0 )
+++	return 0;
++     /* Figure out the host directory. */
++ #ifdef VHOST_DIRLEVELS
++     httpd_realloc_str(
++@@ -1488,7 +1504,7 @@
++     restlen = strlen( path );
++     httpd_realloc_str( &rest, &maxrest, restlen );
++     (void) strcpy( rest, path );
++-    if ( rest[restlen - 1] == '/' )
+++    if ( restlen > 0 && rest[restlen - 1] == '/' )
++ 	rest[--restlen] = '\0';         /* trim trailing slash */
++     if ( ! tildemapped )
++ 	/* Remove any leading slashes. */
++@@ -2438,7 +2454,9 @@
++     {
++     make_log_entry( hc, nowP );
++ 
++-    if ( hc->file_address != (char*) 0 )
+++    if ( hc->file_address == (char*) 1 )
+++	thttpd_closed_conn(hc->conn_fd);
+++    else if ( hc->file_address != (char*) 0 )
++ 	{
++ 	mmc_unmap( hc->file_address, &(hc->sb), nowP );
++ 	hc->file_address = (char*) 0;
++@@ -3786,6 +3804,14 @@
++ 	 ( hc->sb.st_mode & S_IXOTH ) &&
++ 	 match( hc->hs->cgi_pattern, hc->expnfilename ) )
++ 	return cgi( hc );
+++
+++    if ( hc->hs->php_pattern != (char*) 0 &&
+++	 match( hc->hs->php_pattern, hc->expnfilename ) )
+++	return thttpd_php_request( hc, 0 );
+++
+++    if ( hc->hs->phps_pattern != (char*) 0 &&
+++	 match( hc->hs->phps_pattern, hc->expnfilename ) )
+++	return thttpd_php_request( hc, 1 );
++ 
++     /* It's not CGI.  If it's executable or there's pathinfo, someone's
++     ** trying to either serve or run a non-CGI file as CGI.   Either case
++diff -ru thttpd-2.25b.orig/libhttpd.h thttpd-2.25b/libhttpd.h
++--- thttpd-2.25b.orig/libhttpd.h	Tue Dec  9 01:20:51 2003
+++++ thttpd-2.25b/libhttpd.h	Wed Mar 17 20:49:34 2004
++@@ -73,6 +73,8 @@
++     char* cgi_pattern;
++     int cgi_limit, cgi_count;
++     char* charset;
+++    char* php_pattern;
+++    char* phps_pattern;
++     char* p3p;
++     int max_age;
++     char* cwd;
++@@ -174,7 +176,7 @@
++     unsigned short port, char* cgi_pattern, int cgi_limit, char* charset,
++     char* p3p, int max_age, char* cwd, int no_log, FILE* logfp,
++     int no_symlink_check, int vhost, int global_passwd, char* url_pattern,
++-    char* local_pattern, int no_empty_referers );
+++    char* local_pattern, int no_empty_referers, char* php_pattern, char* phps_pattern );
++ 
++ /* Change the log file. */
++ extern void httpd_set_logfp( httpd_server* hs, FILE* logfp );
++diff -ru thttpd-2.25b.orig/php_thttpd.c thttpd-2.25b/php_thttpd.c
++--- thttpd-2.25b.orig/php_thttpd.c	Sun Mar 21 18:33:30 2004
+++++ thttpd-2.25b/php_thttpd.c	Sun Mar 21 20:29:44 2004
++@@ -220,12 +220,12 @@
++ 		h = zend_llist_get_next_ex(&sapi_headers->headers, &pos);
++ 	}
++ 
++-	if (TG(seen_cl) && !TG(seen_cn) && TG(hc)->do_keep_alive) {
+++	/*if (TG(seen_cl) && !TG(seen_cn) && TG(hc)->do_keep_alive) {
++ 		ADD_VEC(KA_DO, sizeof(KA_DO)-1);
++ 	} else {
++ 		TG(hc)->do_keep_alive = 0;
++ 		ADD_VEC(KA_NO, sizeof(KA_NO)-1);
++-	}
+++	}*/
++ 		
++ 	ADD_VEC("\r\n", 2);
++ 
++@@ -656,12 +656,12 @@
++ 
++ 	if (hc->contentlength != -1) {
++ 		hc->should_linger = 1;
++-		hc->do_keep_alive = 0;
+++		/*hc->do_keep_alive = 0;*/
++ 	}
++ 	
++ 	if (hc->contentlength != -1
++ 			&& SIZEOF_UNCONSUMED_BYTES() < hc->contentlength) {
++-		hc->read_body_into_mem = 1;
+++		/*hc->read_body_into_mem = 1;*/
++ 		return 0;
++ 	}
++ 	
++@@ -670,9 +670,9 @@
++ 	thttpd_module_main(show_source TSRMLS_CC);
++ 
++ 	/* disable kl, if no content-length was seen or Connection: was set */
++-	if (TG(seen_cl) == 0 || TG(seen_cn) == 1) {
+++	/*if (TG(seen_cl) == 0 || TG(seen_cn) == 1) {
++ 		TG(hc)->do_keep_alive = 0;
++-	}
+++	}*/
++ 	
++ 	if (TG(sbuf).c != 0) {
++ 		if (TG(hc)->response)
++diff -ru thttpd-2.25b.orig/thttpd.c thttpd-2.25b/thttpd.c
++--- thttpd-2.25b.orig/thttpd.c	Fri Dec 26 04:06:52 2003
+++++ thttpd-2.25b/thttpd.c	Sun Mar 21 18:11:33 2004
++@@ -77,6 +77,8 @@
++ static int do_chroot, no_log, no_symlink_check, do_vhost, do_global_passwd;
++ static char* cgi_pattern;
++ static int cgi_limit;
+++static char* php_pattern;
+++static char* phps_pattern;
++ static char* url_pattern;
++ static int no_empty_referers;
++ static char* local_pattern;
++@@ -642,7 +644,7 @@
++ 	gotv4 ? &sa4 : (httpd_sockaddr*) 0, gotv6 ? &sa6 : (httpd_sockaddr*) 0,
++ 	port, cgi_pattern, cgi_limit, charset, p3p, max_age, cwd, no_log, logfp,
++ 	no_symlink_check, do_vhost, do_global_passwd, url_pattern,
++-	local_pattern, no_empty_referers );
+++	local_pattern, no_empty_referers, php_pattern, phps_pattern );
++     if ( hs == (httpd_server*) 0 )
++ 	exit( 1 );
++ 
++@@ -869,6 +871,8 @@
++ #else /* CGI_LIMIT */
++     cgi_limit = 0;
++ #endif /* CGI_LIMIT */
+++    php_pattern = "**.php";
+++    phps_pattern = "**.phps";
++     url_pattern = (char*) 0;
++     no_empty_referers = 0;
++     local_pattern = (char*) 0;
++@@ -1103,6 +1107,16 @@
++ 		{
++ 		value_required( name, value );
++ 		cgi_limit = atoi( value );
+++		}
+++	    else if ( strcasecmp( name, "phppat" ) == 0 )
+++		{
+++		value_required( name, value );
+++		php_pattern = e_strdup( value );
+++		}
+++	    else if ( strcasecmp( name, "phpspat" ) == 0 )
+++		{
+++		value_required( name, value );
+++		phps_pattern = e_strdup( value );
++ 		}
++ 	    else if ( strcasecmp( name, "urlpat" ) == 0 )
++ 		{
++diff -ru thttpd-2.25b.orig/version.h thttpd-2.25b/version.h
++--- thttpd-2.25b.orig/version.h	Tue Dec 30 02:02:40 2003
+++++ thttpd-2.25b/version.h	Sun Mar 21 22:31:24 2004
++@@ -3,7 +3,8 @@
++ #ifndef _VERSION_H_
++ #define _VERSION_H_
++ 
++-#define SERVER_SOFTWARE "thttpd/2.25b 29dec2003"
+++#include "php_version.h"
+++#define SERVER_SOFTWARE "thttpd/2.25b PHP/" PHP_VERSION
++ #define SERVER_ADDRESS "http://www.acme.com/software/thttpd/"
++ 
++ #endif /* _VERSION_H_ */
