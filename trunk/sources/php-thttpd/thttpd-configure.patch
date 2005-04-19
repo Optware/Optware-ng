@@ -1,0 +1,11 @@
+--- thttpdphp/configure	Fri Apr  8 19:57:34 2005
++++ thttpdphp-patched/configure	Fri Apr  8 20:00:50 2005
+@@ -2016,7 +2016,7 @@
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   if test "$cross_compiling" = yes; then
+-  ac_cv_func_mmap_fixed_mapped=no
++  ac_cv_func_mmap_fixed_mapped=yes
+ else
+   cat > conftest.$ac_ext <<EOF
+ #line 2023 "configure"
