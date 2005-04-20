@@ -124,7 +124,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_APACHE_SOURCE) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_APACHE_LDFLAGS)" \
 		CFLAGS="$(TARGET_CFLAGS) -ldl" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
-		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
+		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
