@@ -129,7 +129,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SO
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_THTTPD_LDFLAGS)" \
 		CFLAGS="$(TARGET_CFLAGS) -ldl" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
-		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
+		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
