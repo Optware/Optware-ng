@@ -251,7 +251,7 @@ endif
 		$(PHP_CONFIGURE_OPTIONAL_ARGS) \
 		--with-mysql=shared,$(STAGING_DIR)/opt \
 		--with-mysql-sock=/tmp/mysql.sock \
-		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config
+		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config \
 		--with-openssl=shared,$(STAGING_DIR)/opt \
 		--with-xsl=shared,$(STAGING_DIR)/opt \
 		--with-zlib=shared,$(STAGING_DIR)/opt \
