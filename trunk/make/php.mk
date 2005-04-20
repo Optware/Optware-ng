@@ -164,14 +164,11 @@ $(DL_DIR)/$(PHP_SOURCE):
 #
 php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 
-# We need this because openldap and mysql do not build on the wl500g.
+# We need this because openldap does not build on the wl500g.
 ifneq ($(UNSLUNG_TARGET),wl500g)
 PHP_CONFIGURE_OPTIONAL_ARGS= \
 		--with-ldap=shared,$(STAGING_DIR)/opt \
 		--with-ldap-sasl=$(STAGING_DIR)/opt \
-		--with-mysql=shared,$(STAGING_DIR)/opt \
-		--with-mysql-sock=/tmp/mysql.sock \
-		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config
 else
 PHP_CONFIGURE_OPTIONAL_ARGS=
 endif
@@ -200,8 +197,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	$(MAKE) libxml2-stage 
 	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
-ifneq ($(UNSLUNG_TARGET),wl500g)
 	$(MAKE) mysql-stage 
+ifneq ($(UNSLUNG_TARGET),wl500g)
 	$(MAKE) openldap-stage
 endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -252,6 +249,9 @@ endif
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-gd=shared,$(STAGING_DIR)/opt \
 		$(PHP_CONFIGURE_OPTIONAL_ARGS) \
+		--with-mysql=shared,$(STAGING_DIR)/opt \
+		--with-mysql-sock=/tmp/mysql.sock \
+		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config
 		--with-openssl=shared,$(STAGING_DIR)/opt \
 		--with-xsl=shared,$(STAGING_DIR)/opt \
 		--with-zlib=shared,$(STAGING_DIR)/opt \
@@ -342,6 +342,7 @@ ifneq ($(UNSLUNG_TARGET),wl500g)
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/ldap.so $(PHP_LDAP_IPK_DIR)/opt/lib/php/extensions/ldap.so
 	echo extension=ldap.so >$(PHP_LDAP_IPK_DIR)/opt/etc/php.d/ldap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_LDAP_IPK_DIR)
+endif
 	### now make php-mysql
 	rm -rf $(PHP_MYSQL_IPK_DIR) $(BUILD_DIR)/php-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control
@@ -351,7 +352,6 @@ ifneq ($(UNSLUNG_TARGET),wl500g)
 	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
-endif
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
