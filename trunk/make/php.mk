@@ -164,6 +164,18 @@ $(DL_DIR)/$(PHP_SOURCE):
 #
 php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 
+# We need this because openldap and mysql do not build on the wl500g.
+ifneq ($(UNSLUNG_TARGET),wl500g)
+PHP_CONFIGURE_OPTIONAL_ARGS= \
+		--with-ldap=shared,$(STAGING_DIR)/opt \
+		--with-ldap-sasl=$(STAGING_DIR)/opt \
+		--with-mysql=shared,$(STAGING_DIR)/opt \
+		--with-mysql-sock=/tmp/mysql.sock \
+		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config
+else
+PHP_CONFIGURE_OPTIONAL_ARGS=
+endif
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -187,9 +199,11 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	$(MAKE) libgd-stage 
 	$(MAKE) libxml2-stage 
 	$(MAKE) libxslt-stage 
-	$(MAKE) mysql-stage 
-	$(MAKE) openldap-stage 
 	$(MAKE) openssl-stage 
+ifneq ($(UNSLUNG_TARGET),wl500g)
+	$(MAKE) mysql-stage 
+	$(MAKE) openldap-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -205,7 +219,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
-		XML2_CONFIG=$(STAGING_DIR)/bin/xml2-config \
+		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -237,11 +251,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-dom=shared,$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-gd=shared,$(STAGING_DIR)/opt \
-		--with-ldap=shared,$(STAGING_DIR)/opt \
-		--with-ldap-sasl=$(STAGING_DIR)/opt \
-		--with-mysql=shared,$(STAGING_DIR)/opt \
-		--with-mysql-sock=/tmp/mysql.sock \
-		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config \
+		$(PHP_CONFIGURE_OPTIONAL_ARGS) \
 		--with-openssl=shared,$(STAGING_DIR)/opt \
 		--with-xsl=shared,$(STAGING_DIR)/opt \
 		--with-zlib=shared,$(STAGING_DIR)/opt \
@@ -323,6 +333,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/gd.so $(PHP_GD_IPK_DIR)/opt/lib/php/extensions/gd.so
 	echo extension=gd.so >$(PHP_GD_IPK_DIR)/opt/etc/php.d/gd.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GD_IPK_DIR)
+ifneq ($(UNSLUNG_TARGET),wl500g)
 	### now make php-ldap
 	rm -rf $(PHP_LDAP_IPK_DIR) $(BUILD_DIR)/php-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_LDAP_IPK_DIR)/CONTROL/control
@@ -340,6 +351,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
+endif
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
