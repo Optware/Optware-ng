@@ -168,7 +168,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 ifneq ($(UNSLUNG_TARGET),wl500g)
 PHP_CONFIGURE_OPTIONAL_ARGS= \
 		--with-ldap=shared,$(STAGING_DIR)/opt \
-		--with-ldap-sasl=$(STAGING_DIR)/opt \
+		--with-ldap-sasl=$(STAGING_DIR)/opt
 else
 PHP_CONFIGURE_OPTIONAL_ARGS=
 endif
