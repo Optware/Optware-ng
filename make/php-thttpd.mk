@@ -26,11 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PHP_THTTPD_SITE=http://www.acme.com/software/thttpd
-PHP_THTTPD_VERSION=2.25b
-PHP_THTTPD_SOURCE=thttpd-$(PHP_THTTPD_VERSION).tar.gz
-PHP_THTTPD_DIR=thttpd-$(PHP_THTTPD_VERSION)
-PHP_THTTPD_UNZIP=zcat
+PHP_THTTPD_SITE=$(THTTPD_SITE)
+PHP_THTTPD_VERSION=$(shell cat make/thttpd.mk | sed -n -e 's/^THTTPD_VERSION *=//p')
+PHP_THTTPD_SOURCE=$(shell cat make/thttpd.mk | sed -n -e 's/^THTTPD_SOURCE *=//p' | sed -n -e "s|..THTTPD_VERSION.|${PHP_THTTPD_VERSION}|p")
+PHP_THTTPD_DIR=$(THTTPD_DIR)
+PHP_THTTPD_UNZIP=$(THTTPD_UNZIP)
 PHP_THTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_THTTPD_DESCRIPTION=php-thttpd is thttpd webserver with php support
 PHP_THTTPD_SECTION=net
@@ -38,27 +38,27 @@ PHP_THTTPD_PRIORITY=optional
 PHP_THTTPD_DEPENDS=php
 PHP_THTTPD_CONFLICTS=thttpd
 
-PHP_THTTPD_LIBPHP_SITE=http://static.php.net/www.php.net/distributions
-PHP_THTTPD_LIBPHP_VERSION=5.0.3
-PHP_THTTPD_LIBPHP_SOURCE=php-$(PHP_THTTPD_LIBPHP_VERSION).tar.bz2
-PHP_THTTPD_LIBPHP_DIR=php-$(PHP_THTTPD_LIBPHP_VERSION)
-PHP_THTTPD_LIBPHP_UNZIP=bzcat
+PHP_THTTPD_LIBPHP_SITE=$(PHP_SITE)
+PHP_THTTPD_LIBPHP_VERSION=$(shell cat make/php.mk | sed -n -e 's/^PHP_VERSION *=//p')
+PHP_THTTPD_LIBPHP_SOURCE=$(shell cat make/php.mk | sed -n -e 's/^PHP_SOURCE *=//p' | sed -n -e "s|..PHP_VERSION.|${PHP_THTTPD_LIBPHP_VERSION}|p")
+PHP_THTTPD_LIBPHP_DIR=$(PHP_DIR)
+PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=2
+PHP_THTTPD_IPK_VERSION=3
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
-PHP_THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf  /opt/etc/php.ini
+PHP_THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf /opt/etc/php.ini
 
 #
 # PHP_THTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 PHP_THTTPD_LIBPHP_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/php-5.0.3.patch $(PHP_THTTPD_SOURCE_DIR)/php-configure.patch
-PHP_THTTPD_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/thttpd-Makefile.in.patch $(PHP_THTTPD_SOURCE_DIR)/thttpd-configure.patch
+PHP_THTTPD_PATCHES=$(THTTPD_PATCHES)
 
 #
 # If the compilation of the package requires additional
@@ -66,7 +66,11 @@ PHP_THTTPD_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/thttpd-Makefile.in.patch $(PHP_THTTP
 #
 PHP_THTTPD_CPPFLAGS=
 PHP_THTTPD_LDFLAGS=-ldl
-
+ifneq ($(UNSLUNG_TARGET),wl500g)
+	PHP_THTTPD_CFLAGS=-ldl -lpthread
+else
+	PHP_THTTPD_CFLAGS=-ldl
+endif
 #
 # PHP_THTTPD_BUILD_DIR is the directory in which the build is done.
 # PHP_THTTPD_SOURCE_DIR is the directory which holds all the
@@ -86,17 +90,30 @@ PHP_THTTPD_LIBPHP_BUILD_DIR=$(PHP_THTTPD_BUILD_DIR)/_libphp
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/php-thttpd-$(PHP_THTTPD_SOURCE):
-	$(WGET) -O $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SOURCE) $(PHP_THTTPD_SITE)/$(PHP_THTTPD_SOURCE)
+$(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded:
+	rm -f $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded
+	$(WGET) -P $(DL_DIR) $(PHP_THTTPD_SITE)/$(PHP_THTTPD_SOURCE)
+	touch $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded
 
-$(DL_DIR)/php-thttpd-$(PHP_THTTPD_LIBPHP_SOURCE):
-	$(WGET) -O $(DL_DIR)/php-thttpd-$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_LIBPHP_SITE)/$(PHP_THTTPD_LIBPHP_SOURCE)
+$(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded:
+	rm -f $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded
+	$(WGET) -P $(DL_DIR) $(PHP_THTTPD_LIBPHP_SITE)/$(PHP_THTTPD_LIBPHP_SOURCE)
+	touch $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-php-thttpd-source: $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SOURCE) $(DL_DIR)/php-thttpd-$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_PATCHES) $(PHP_THTTPD_LIBPHP_PATCHES)
+php-thttpd-source: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded $(PHP_THTTPD_PATCHES) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
+
+
+# We need this because openldap does not build on the wl500g.
+ifneq ($(UNSLUNG_TARGET),wl500g)
+PHP_THTTPD_LIBPHP_CONFIGURE_OPTIONAL_ARGS= \
+		--enable-maintainer-zts 
+else
+PHP_THTTPD_LIBPHP_CONFIGURE_OPTIONAL_ARGS= 
+endif
 
 #
 # This target unpacks the source code in the build directory.
@@ -114,11 +131,11 @@ php-thttpd-source: $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SOURCE) $(DL_DIR)/php-thttp
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 
-$(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SOURCE) $(DL_DIR)/php-thttpd-$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_LIBPHP_PATCHES)
+$(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR)
 	rm -rf $(PHP_THTTPD_BUILD_DIR) $(PHP_THTTPD_LIBPHP_BUILD_DIR)
-	$(PHP_THTTPD_UNZIP) $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	$(PHP_THTTPD_LIBPHP_UNZIP) $(DL_DIR)/php-thttpd-$(PHP_THTTPD_LIBPHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PHP_THTTPD_UNZIP) $(DL_DIR)/$(PHP_THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PHP_THTTPD_LIBPHP_UNZIP) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PHP_PATCHES) | patch -d $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR) -p0
 	cat $(PHP_THTTPD_LIBPHP_PATCHES) | patch -d $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR) -p1
 	mv $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(PHP_THTTPD_BUILD_DIR)
@@ -127,7 +144,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SO
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_THTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_THTTPD_LDFLAGS)" \
-		CFLAGS="$(TARGET_CFLAGS) -ldl" \
+		CFLAGS="$(TARGET_CFLAGS) $(PHP_THTTPD_CFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
@@ -137,17 +154,17 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/php-thttpd-$(PHP_THTTPD_SO
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-ipv6 \
 		--with-config-file-scan-dir=/opt/etc/php.d \
+		$(PHP_THTTPD_LIBPHP_CONFIGURE_OPTIONAL_ARGS) \
 		--with-layout=GNU \
 		--disable-static \
 		--disable-dom \
 		--disable-xml \
 		--disable-libxml \
+		--with-thttpd=$(PHP_THTTPD_BUILD_DIR) \
 		--without-pear \
 		--without-iconv \
 		--disable-cli \
-		--with-thttpd=$(PHP_THTTPD_BUILD_DIR) \
 	)
 	touch $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured
 
@@ -255,4 +272,4 @@ php-thttpd-clean:
 # directories.
 #
 php-thttpd-dirclean:
-	rm -rf $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(PHP_THTTPD_BUILD_DIR) $(PHP_THTTPD_IPK_DIR) $(PHP_THTTPD_IPK)
+	-rm -rf $(PHP_THTTPD_BUILD_DIR) $(PHP_THTTPD_LIBPHP_BUILD_DIR) $(PHP_THTTPD_IPK_DIR) $(PHP_THTTPD_IPK)
