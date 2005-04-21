@@ -12,11 +12,6 @@
 # PHP_APACHE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-PHP_APACHE_SITE=$(PHP_SITE)
-PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
-PHP_APACHE_SOURCE:=$(shell sed -n -e 's/^PHP_SOURCE *=//p' make/php.mk)
-PHP_APACHE_DIR=$(PHP_DIR)
-PHP_APACHE_UNZIP=$(PHP_UNZIP)
 PHP_APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
@@ -48,7 +43,7 @@ PHP_APACHE_PATCHES=$(PHP_PATCHES)
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PHP_APACHE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2
+PHP_APACHE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2 -I$(STAGING_INCLUDE_DIR)/libxml2
 PHP_APACHE_LDFLAGS=-ldl
 
 #
@@ -62,8 +57,8 @@ PHP_APACHE_LDFLAGS=-ldl
 #
 PHP_APACHE_BUILD_DIR=$(BUILD_DIR)/php-apache
 PHP_APACHE_SOURCE_DIR=$(SOURCE_DIR)/php
-PHP_APACHE_IPK_DIR=$(BUILD_DIR)/php-apache-$(PHP_APACHE_VERSION)-ipk
-PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PHP_APACHE_IPK_DIR=$(BUILD_DIR)/php-apache-$(PHP_VERSION)-ipk
+PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_VERSION)-$(PHP_APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -75,9 +70,9 @@ $(PHP_APACHE_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PHP_APACHE_PRIORITY)" >>$@
 	@echo "Section: $(PHP_APACHE_SECTION)" >>$@
-	@echo "Version: $(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VERSION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_APACHE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PHP_APACHE_MAINTAINER)" >>$@
-	@echo "Source: $(PHP_APACHE_SITE)/$(PHP_APACHE_SOURCE)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: $(PHP_APACHE_DESCRIPTION)" >>$@
 	@echo "Depends: $(PHP_APACHE_DEPENDS)" >>$@
 
@@ -85,15 +80,15 @@ $(PHP_APACHE_IPK_DIR)/CONTROL/control:
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(PHP_APACHE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PHP_APACHE_SITE)/$(PHP_APACHE_SOURCE)
+$(DL_DIR)/$(PHP_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PHP_SITE)/$(PHP_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-php-apache-source: $(DL_DIR)/$(PHP_APACHE_SOURCE)
+php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 
 #
 # This target unpacks the source code in the build directory.
@@ -110,12 +105,12 @@ php-apache-source: $(DL_DIR)/$(PHP_APACHE_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_APACHE_SOURCE) \
+$(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_APACHE_PATCHES)
 	$(MAKE) apache-stage
-	rm -rf $(BUILD_DIR)/$(PHP_APACHE_DIR) $(PHP_APACHE_BUILD_DIR)
-	$(PHP_APACHE_UNZIP) $(DL_DIR)/$(PHP_APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PHP_APACHE_DIR) $(PHP_APACHE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
+	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
 	cat $(PHP_APACHE_PATCHES) |patch -p0 -d $(PHP_APACHE_BUILD_DIR)
 	(cd $(PHP_APACHE_BUILD_DIR); \
 		autoconf; \
@@ -210,4 +205,4 @@ php-apache-clean:
 # directories.
 #
 php-apache-dirclean:
-	rm -rf $(BUILD_DIR)/$(PHP_APACHE_DIR) $(PHP_APACHE_BUILD_DIR) $(PHP_APACHE_IPK_DIR) $(PHP_APACHE_IPK)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR) $(PHP_APACHE_IPK_DIR) $(PHP_APACHE_IPK)
