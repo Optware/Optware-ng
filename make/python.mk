@@ -152,7 +152,8 @@ python: $(PYTHON_BUILD_DIR)/.built
 #
 $(PYTHON_BUILD_DIR)/.staged: $(PYTHON_BUILD_DIR)/.built
 	rm -f $(PYTHON_BUILD_DIR)/.staged
-	$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PYTHON_BUILD_DIR)/.staged
 
 python-stage: $(PYTHON_BUILD_DIR)/.staged
