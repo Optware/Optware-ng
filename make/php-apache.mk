@@ -14,19 +14,19 @@
 #
 PHP_APACHE_SITE=$(PHP_SITE)
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
-PHP_APACHE_SOURCE=$(PHP_SOURCE)
+PHP_APACHE_SOURCE:=$(shell sed -n -e 's/^PHP_SOURCE *=//p' make/php.mk)
 PHP_APACHE_DIR=$(PHP_DIR)
 PHP_APACHE_UNZIP=$(PHP_UNZIP)
 PHP_APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
-PHP_APACHE_DEPENDS=apache, php
+PHP_APACHE_DEPENDS=apache, php (>= 5.0.3-7)
 
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=3
+PHP_APACHE_IPK_VERSION=4
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -122,7 +122,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_APACHE_SOURCE) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_APACHE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_APACHE_LDFLAGS)" \
-		CFLAGS="$(TARGET_CFLAGS) -ldl" \
+		CFLAGS="$(TARGET_CFLAGS) -ldl -lpthread" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
@@ -134,9 +134,10 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_APACHE_SOURCE) \
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
+		--enable-maintainer-zts \
 		--disable-dom \
 		--disable-xml \
-		--disable-libxml \
+		--enable-libxml \
 		--with-apxs2=$(STAGING_DIR)/opt/sbin/apxs \
 		--without-pear \
 		--without-iconv \
