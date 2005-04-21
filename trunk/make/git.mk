@@ -26,12 +26,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GIT_SITE=http://pasky.or.cz/~pasky/dev/git/
-GIT_VERSION=pasky-0.4
-GIT_SOURCE=git-pasky-base.tar.bz2
+GIT_SITE=http://pasky.or.cz/~pasky/dev/git
+GIT_VERSION=pasky-0.6.2
+GIT_SOURCE=git-$(GIT_VERSION).tar.bz2
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=bzcat
-GIT_MAINTAINER=Rod Whitby <nslu2-linux@yahoogroups.com>
+GIT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GIT_DESCRIPTION=GIT - the stupid content tracker
 GIT_SECTION=net
 GIT_PRIORITY=optional
@@ -51,7 +51,7 @@ GIT_CONFFILES=
 # GIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GIT_PATCHES=$(GIT_SOURCE_DIR)/endian.patch
+GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
