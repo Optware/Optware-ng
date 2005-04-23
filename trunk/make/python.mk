@@ -154,6 +154,7 @@ $(PYTHON_BUILD_DIR)/.staged: $(PYTHON_BUILD_DIR)/.built
 	rm -f $(PYTHON_BUILD_DIR)/.staged
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	install $(PYTHON_BUILD_DIR)/buildpython/python $(STAGING_DIR)/opt/bin/
 	touch $(PYTHON_BUILD_DIR)/.staged
 
 python-stage: $(PYTHON_BUILD_DIR)/.staged
