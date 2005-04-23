@@ -144,7 +144,7 @@ WL500G_PACKAGES = \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch pkgconfig popt portmap procps proftpd puppy \
+	patch pkgconfig popt portmap procps proftpd puppy php php-thttpd \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils thttpd \
@@ -156,8 +156,12 @@ WL500G_PACKAGES = \
 
 # php-thttpd needs patches to be applied to php.mk in order to have php correctly built for wl500g
 WL500G_PACKAGES_THAT_NEED_FIXING = \
-	bind groff postgresql python syslog-ng torrent ttf-bitstream-vera xmail \
-	php-thttpd
+	bind \
+	groff \
+	postgresql python \
+	syslog-ng \
+	torrent ttf-bitstream-vera \
+	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 
@@ -337,7 +341,11 @@ endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
-	$(PACKAGES_STAGE) $(PACKAGES_IPKG)
+	$(PACKAGES_STAGE) $(PACKAGES_IPKG) \
+	query-%
+
+query-%:
+	@echo $($(*))
 
 include make/*.mk
 
