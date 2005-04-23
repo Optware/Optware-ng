@@ -42,11 +42,17 @@ LIBDB_LIB_VERSION=4.2
 LIBDB_SOURCE=db-$(LIBDB_VERSION).tar.gz
 LIBDB_DIR=db-$(LIBDB_VERSION)
 LIBDB_UNZIP=zcat
+LIBDB_MAINTAINER=ka6sox <ka6sox@gmail.com>
+LIBDB_DESCRIPTION=Berkeley DB Libraries
+LIBDB_SECTION=lib
+LIBDB_PRIORITY=optional
+LIBDB_DEPENDS=
+LIBDB_CONFLICTS=
 
 #
 # <FOO>_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDB_IPK_VERSION=1
+LIBDB_IPK_VERSION=2
 
 #
 # <FOO>_PATCHES should list any patches, in the the order in
@@ -146,6 +152,23 @@ $(STAGING_DIR)/opt/lib/libdb.a: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBD
 libdb-stage: $(STAGING_DIR)/opt/lib/libdb.a
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libdb
+#
+$(LIBDB_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBDB_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libdb" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBDB_PRIORITY)" >>$@
+	@echo "Section: $(LIBDB_SECTION)" >>$@
+	@echo "Version: $(LIBDB_VERSION)-$(LIBDB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBDB_MAINTAINER)" >>$@
+	@echo "Source: $(LIBDB_SITE)/$(LIBDB_SOURCE)" >>$@
+	@echo "Description: $(LIBDB_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBDB_DEPENDS)" >>$@
+	@echo "Conflicts: $(LIBDB_CONFLICTS)" >>$@
+
 # This builds the IPK file.
 #
 # Binaries should be installed into $(<FOO>_IPK_DIR)/opt/sbin or $(LIBDB_IPK_DIR)/opt/bin
@@ -160,10 +183,9 @@ libdb-stage: $(STAGING_DIR)/opt/lib/libdb.a
 $(LIBDB_IPK): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 	rm -rf $(LIBDB_IPK_DIR) $(LIBDB_IPK)
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(LIBDB_IPK_DIR) install_setup install_include install_lib
-	$(STRIP_COMMAND) $(LIBDB_IPK_DIR)/opt/lib/*.so.*
+	-$(STRIP_COMMAND) $(LIBDB_IPK_DIR)/opt/lib/*.so.*
 	rm -f $(LIBDB_IPK_DIR)/opt/lib/*.{la,a}
-	install -d $(LIBDB_IPK_DIR)/CONTROL
-	install -m 644 $(LIBDB_SOURCE_DIR)/control $(LIBDB_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBDB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDB_IPK_DIR)
 #
 #
