@@ -70,6 +70,7 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	mod-python \
+	py-mysql \
 	php-thttpd
 
 # asterisk may just need configure work
