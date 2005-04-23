@@ -1,0 +1,208 @@
+###########################################################
+#
+# py-mx-base
+#
+###########################################################
+
+#
+# PY-MX-BASE_VERSION, PY-MX-BASE_SITE and PY-MX-BASE_SOURCE define
+# the upstream location of the source code for the package.
+# PY-MX-BASE_DIR is the directory which is created when the source
+# archive is unpacked.
+# PY-MX-BASE_UNZIP is the command used to unzip the source.
+# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
+#
+# You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
+#
+PY-MX-BASE_SITE=http://www.egenix.com/files/python
+PY-MX-BASE_VERSION=2.0.6
+PY-MX-BASE_SOURCE=egenix-mx-base-$(PY-MX-BASE_VERSION).tar.gz
+PY-MX-BASE_DIR=egenix-mx-base-$(PY-MX-BASE_VERSION)
+PY-MX-BASE_UNZIP=zcat
+PY-MX-BASE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-MX-BASE_DESCRIPTION=A collection of userful open source python packages from eGenix.com.
+PY-MX-BASE_SECTION=misc
+PY-MX-BASE_PRIORITY=optional
+PY-MX-BASE_DEPENDS=
+PY-MX-BASE_CONFLICTS=
+
+#
+# PY-MX-BASE_IPK_VERSION should be incremented when the ipk changes.
+#
+PY-MX-BASE_IPK_VERSION=1
+
+#
+# PY-MX-BASE_CONFFILES should be a list of user-editable files
+#PY-MX-BASE_CONFFILES=/opt/etc/py-mx-base.conf /opt/etc/init.d/SXXpy-mx-base
+
+#
+# PY-MX-BASE_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+#PY-MX-BASE_PATCHES=$(PY-MX-BASE_SOURCE_DIR)/configure.patch
+
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+PY-MX-BASE_CPPFLAGS=-I $(STAGING_DIR)/opt/include/python2.4
+PY-MX-BASE_LDFLAGS=
+
+#
+# PY-MX-BASE_BUILD_DIR is the directory in which the build is done.
+# PY-MX-BASE_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# PY-MX-BASE_IPK_DIR is the directory in which the ipk is built.
+# PY-MX-BASE_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+PY-MX-BASE_BUILD_DIR=$(BUILD_DIR)/py-mx-base
+PY-MX-BASE_SOURCE_DIR=$(SOURCE_DIR)/py-mx-base
+PY-MX-BASE_IPK_DIR=$(BUILD_DIR)/py-mx-base-$(PY-MX-BASE_VERSION)-ipk
+PY-MX-BASE_IPK=$(BUILD_DIR)/py-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(PY-MX-BASE_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PY-MX-BASE_SITE)/$(PY-MX-BASE_SOURCE)
+
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+py-mx-base-source: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES)
+
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+$(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES)
+	$(MAKE) python-stage
+	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR)
+	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR)
+	(cd $(PY-MX-BASE_BUILD_DIR); \
+            ( \
+                echo "[build_ext]"; \
+                echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/python2.4"; \
+                echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+                echo "rpath=/opt/lib"; \
+                echo "[build_scripts]"; \
+                echo "executable=/opt/bin/python" \
+            ) > setup.cfg; \
+        )
+	touch $(PY-MX-BASE_BUILD_DIR)/.configured
+
+py-mx-base-unpack: $(PY-MX-BASE_BUILD_DIR)/.configured
+
+#
+# This builds the actual binary.
+            #$(BUILD_DIR)/python/buildpython/python setup.py build; \
+#
+$(PY-MX-BASE_BUILD_DIR)/.built: $(PY-MX-BASE_BUILD_DIR)/.configured
+	rm -f $(PY-MX-BASE_BUILD_DIR)/.built
+	(cd $(PY-MX-BASE_BUILD_DIR); \
+	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY-MX-BASE_CPPFLAGS)` \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(STAGING_DIR)/opt/bin/python setup.py build; \
+        )
+	touch $(PY-MX-BASE_BUILD_DIR)/.built
+
+#
+# This is the build convenience target.
+#
+py-mx-base: $(PY-MX-BASE_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(PY-MX-BASE_BUILD_DIR)/.staged: $(PY-MX-BASE_BUILD_DIR)/.built
+	rm -f $(PY-MX-BASE_BUILD_DIR)/.staged
+	(cd $(PY-MX-BASE_BUILD_DIR); \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            python2.4 setup.py install --prefix=$(STAGING_DIR)/opt; \
+        )
+	touch $(PY-MX-BASE_BUILD_DIR)/.staged
+
+py-mx-base-stage: $(PY-MX-BASE_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/py-mx-base
+#
+$(PY-MX-BASE_IPK_DIR)/CONTROL/control:
+	@install -d $(PY-MX-BASE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: py-mx-base" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MX-BASE_PRIORITY)" >>$@
+	@echo "Section: $(PY-MX-BASE_SECTION)" >>$@
+	@echo "Version: $(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MX-BASE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MX-BASE_SITE)/$(PY-MX-BASE_SOURCE)" >>$@
+	@echo "Description: $(PY-MX-BASE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY-MX-BASE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MX-BASE_CONFLICTS)" >>$@
+
+#
+# This builds the IPK file.
+#
+# Binaries should be installed into $(PY-MX-BASE_IPK_DIR)/opt/sbin or $(PY-MX-BASE_IPK_DIR)/opt/bin
+# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Libraries and include files should be installed into $(PY-MX-BASE_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(PY-MX-BASE_IPK_DIR)/opt/etc/py-mx-base/...
+# Documentation files should be installed in $(PY-MX-BASE_IPK_DIR)/opt/doc/py-mx-base/...
+# Daemon startup scripts should be installed in $(PY-MX-BASE_IPK_DIR)/opt/etc/init.d/S??py-mx-base
+#
+# You may need to patch your application to make it use these locations.
+#
+$(PY-MX-BASE_IPK): $(PY-MX-BASE_BUILD_DIR)/.built
+	rm -rf $(PY-MX-BASE_IPK_DIR) $(BUILD_DIR)/py-mx-base_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MX-BASE_BUILD_DIR); \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            python2.4 setup.py install --prefix=$(PY-MX-BASE_IPK_DIR)/opt; \
+        )
+	$(STRIP_COMMAND) `find $(PY-MX-BASE_IPK_DIR) -name '*.so'`
+	$(MAKE) $(PY-MX-BASE_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MX-BASE_IPK_DIR)
+
+#
+# This is called from the top level makefile to create the IPK file.
+#
+py-mx-base-ipk: $(PY-MX-BASE_IPK)
+
+#
+# This is called from the top level makefile to clean all of the built files.
+#
+py-mx-base-clean:
+	-$(MAKE) -C $(PY-MX-BASE_BUILD_DIR) clean
+
+#
+# This is called from the top level makefile to clean all dynamically created
+# directories.
+#
+py-mx-base-dirclean:
+	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR) $(PY-MX-BASE_IPK_DIR) $(PY-MX-BASE_IPK)

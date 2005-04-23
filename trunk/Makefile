@@ -70,7 +70,9 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	mod-python \
+	py-mx-base \
 	py-mysql \
+	py-psycopg \
 	php-thttpd
 
 # asterisk may just need configure work
