@@ -19,11 +19,18 @@ MUTT_VERSION=1.5.7
 MUTT_SOURCE=mutt-$(MUTT_VERSION)i.tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
+MUTT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MUTT_DESCRIPTION=text mode mail client
+MUTT_SECTION=mail
+MUTT_PRIORITY=optional
+MUTT_DEPENDS=ncurses, openssl, cyrus-sasl, libdb
+MUTT_SUGGESTS=
+MUTT_CONFLICTS=
 
 #
 # MUTT_IPK_VERSION should be incremented when the ipk changes.
 #
-MUTT_IPK_VERSION=1
+MUTT_IPK_VERSION=2
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
@@ -100,6 +107,7 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MUTT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MUTT_LDFLAGS)" \
+		ac_cv_path_SENDMAIL=/opt/sbin/sendmail \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -140,6 +148,25 @@ $(MUTT_BUILD_DIR)/.staged: $(MUTT_BUILD_DIR)/.built
 mutt-stage: $(MUTT_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/mutt
+#
+$(MUTT_IPK_DIR)/CONTROL/control:
+	@install -d $(MUTT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: mutt" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MUTT_PRIORITY)" >>$@
+	@echo "Section: $(MUTT_SECTION)" >>$@
+	@echo "Version: $(MUTT_VERSION)-$(MUTT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MUTT_MAINTAINER)" >>$@
+	@echo "Source: $(MUTT_SITE)/$(MUTT_SOURCE)" >>$@
+	@echo "Description: $(MUTT_DESCRIPTION)" >>$@
+	@echo "Depends: $(MUTT_DEPENDS)" >>$@
+	@echo "Suggests: $(MUTT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(MUTT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(MUTT_IPK_DIR)/opt/sbin or $(MUTT_IPK_DIR)/opt/bin
@@ -160,8 +187,7 @@ $(MUTT_IPK): $(MUTT_BUILD_DIR)/.built
 #	install -m 755 $(MUTT_SOURCE_DIR)/mutt.conf $(MUTT_IPK_DIR)/opt/etc/mutt.conf
 #	install -d $(MUTT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MUTT_SOURCE_DIR)/rc.mutt $(MUTT_IPK_DIR)/opt/etc/init.d/SXXmutt
-	install -d $(MUTT_IPK_DIR)/CONTROL
-	install -m 644 $(MUTT_SOURCE_DIR)/control $(MUTT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MUTT_IPK_DIR)/CONTROL/control
 #	install -m 644 $(MUTT_SOURCE_DIR)/postinst $(MUTT_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(MUTT_SOURCE_DIR)/prerm $(MUTT_IPK_DIR)/CONTROL/prerm
 #	echo $(MUTT_CONFFILES) | sed -e 's/ /\n/g' > $(MUTT_IPK_DIR)/CONTROL/conffiles
