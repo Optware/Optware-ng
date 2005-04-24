@@ -48,7 +48,7 @@ CROSS_PACKAGES = \
 	nylon \
 	openssh openssl openvpn \
 	pango parted patch pcre \
-	php php-apache phpmysqladmin \
+	php php-apache phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procps proftpd puppy python \
 	py-sqlite py-bittorrent \
