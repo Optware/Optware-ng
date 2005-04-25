@@ -59,7 +59,7 @@ CROSS_PACKAGES = \
 	thttpdphp ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
-	w3cam wakelan wget-ssl which \
+	w3cam wakelan wget-ssl which webalizer\
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xterm xtrans xtst xvid \
 	zlib \
