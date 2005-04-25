@@ -71,6 +71,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	esmtp \
 	libesmtp \
+	getmail \
 	mod-python \
 	py-mx-base \
 	py-mysql \
