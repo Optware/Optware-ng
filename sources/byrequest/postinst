@@ -1,0 +1,16 @@
+#!/bin/sh
+
+if [ -n "`pidof byRequest`" ] ; then
+    killall byRequest 2>/dev/null
+fi
+
+if [ ! -f /opt/etc/byRequest.conf ] ;  then
+    cp /opt/usr/doc/byRequest/byRequest.conf /opt/etc/byRequest.conf
+    echo ; echo
+    echo "To complete the installation, you must edit /opt/etc/byRequest.conf,"
+    echo "and then run /opt/etc/init.d/S99byRequest to start the byRequest daemon."
+    echo "e.g. You might want to set the logfile to /dev/null."
+    echo
+else
+    /opt/etc/init.d/S99byRequest
+fi
