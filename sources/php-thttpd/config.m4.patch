@@ -1,0 +1,13 @@
+--- php-5.0.3/sapi/thttpd/config.m4	2004-01-17 08:00:16.000000000 -0500
++++ php-5.0.3-patched/sapi/thttpd/config.m4	2005-04-24 08:20:55.100000000 -0400
+@@ -13,7 +13,9 @@
+   if grep thttpd.2.21b $withval/version.h >/dev/null; then
+     patch="test -f $THTTPD/php_patched || \
+     (cd $THTTPD && patch -p1 < $abs_srcdir/sapi/thttpd/thttpd_patch && touch php_patched)"
+-
++  elif grep thttpd.2.25b $withval/version.h >/dev/null; then
++    patch="test -f $THTTPD/php_patched || \
++    (cd $THTTPD && patch -p1 < $abs_srcdir/sapi/thttpd/thttpd-2.25b_patch && touch php_patched)"
+   elif grep Premium $withval/version.h >/dev/null; then
+     patch=
+   else

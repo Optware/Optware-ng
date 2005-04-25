@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=3
+PHP_THTTPD_IPK_VERSION=4
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -57,20 +57,15 @@ PHP_THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf /opt/etc/php
 # PHP_THTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_THTTPD_LIBPHP_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/php-5.0.3.patch $(PHP_THTTPD_SOURCE_DIR)/php-configure.patch
+PHP_THTTPD_LIBPHP_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/php-5.0.3.patch $(PHP_THTTPD_SOURCE_DIR)/config.m4.patch
 PHP_THTTPD_PATCHES=$(THTTPD_PATCHES)
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PHP_THTTPD_CPPFLAGS=
+PHP_THTTPD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
 PHP_THTTPD_LDFLAGS=-ldl
-ifneq ($(UNSLUNG_TARGET),wl500g)
-	PHP_THTTPD_CFLAGS=-ldl -lpthread
-else
-	PHP_THTTPD_CFLAGS=-ldl
-endif
 #
 # PHP_THTTPD_BUILD_DIR is the directory in which the build is done.
 # PHP_THTTPD_SOURCE_DIR is the directory which holds all the
@@ -137,14 +132,15 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).down
 	$(PHP_THTTPD_UNZIP) $(DL_DIR)/$(PHP_THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	$(PHP_THTTPD_LIBPHP_UNZIP) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PHP_PATCHES) | patch -d $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR) -p0
-	cat $(PHP_THTTPD_LIBPHP_PATCHES) | patch -d $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR) -p1
+	cat $(PHP_THTTPD_LIBPHP_PATCHES) | patch -d $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR) -p1 
 	mv $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(PHP_THTTPD_BUILD_DIR)
 	mv $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR) $(PHP_THTTPD_LIBPHP_BUILD_DIR)
 	(cd $(PHP_THTTPD_LIBPHP_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_THTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_THTTPD_LDFLAGS)" \
-		CFLAGS="$(TARGET_CFLAGS) $(PHP_THTTPD_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS) -ldl -lpthread" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
@@ -160,7 +156,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).down
 		--disable-static \
 		--disable-dom \
 		--disable-xml \
-		--disable-libxml \
+		--enable-libxml \
 		--with-thttpd=$(PHP_THTTPD_BUILD_DIR) \
 		--without-pear \
 		--without-iconv \
@@ -173,7 +169,8 @@ $(PHP_THTTPD_BUILD_DIR)/.configured: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured 
 	(cd $(PHP_THTTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_THTTPD_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_THTTPD_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_THTTPD_LDFLAGS) -lpthread" \
+		CFLAGS="$(TARGET_CFLAGS) -ldl -lpthread" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

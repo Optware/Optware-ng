@@ -168,7 +168,8 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 ifneq ($(UNSLUNG_TARGET),wl500g)
 PHP_CONFIGURE_OPTIONAL_ARGS= \
 		--with-ldap=shared,$(STAGING_DIR)/opt \
-		--with-ldap-sasl=$(STAGING_DIR)/opt
+		--with-ldap-sasl=$(STAGING_DIR)/opt \
+		--enable-maintainer-zts 
 else
 PHP_CONFIGURE_OPTIONAL_ARGS=
 endif
@@ -226,7 +227,6 @@ endif
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
-		--enable-maintainer-zts \
 		--enable-bcmath=shared \
 		--enable-calendar=shared \
 		--enable-dba=shared \
