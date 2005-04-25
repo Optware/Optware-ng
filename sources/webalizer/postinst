@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you must edit /opt/etc/webalizer.conf.sample and,"
+echo "rename it webalizer.conf then run /opt/etc/init.d/S99webalizer to start webalizer."
+echo
+
