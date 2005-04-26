@@ -114,7 +114,7 @@ $(ESMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ESMTP_SOURCE) $(ESMTP_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESMTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESMTP_LDFLAGS)" \
-		PATH=$$PATH:$(STAGING_DIR)/opt/bin \
+		PATH=$(STAGING_DIR)/opt/bin:$$PATH \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -183,7 +183,7 @@ $(ESMTP_IPK_DIR)/CONTROL/control:
 #
 $(ESMTP_IPK): $(ESMTP_BUILD_DIR)/.built
 	rm -rf $(ESMTP_IPK_DIR) $(BUILD_DIR)/esmtp_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ESMTP_BUILD_DIR) DESTDIR=$(ESMTP_IPK_DIR) install
+	$(MAKE) -C $(ESMTP_BUILD_DIR) DESTDIR=$(ESMTP_IPK_DIR) install-strip
 	install -d $(ESMTP_IPK_DIR)/opt/etc/
 	#install -m 644 $(ESMTP_SOURCE_DIR)/esmtp.conf $(ESMTP_IPK_DIR)/opt/etc/esmtp.conf
 	#install -d $(ESMTP_IPK_DIR)/opt/etc/init.d
