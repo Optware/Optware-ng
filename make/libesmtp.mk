@@ -177,7 +177,7 @@ $(LIBESMTP_IPK_DIR)/CONTROL/control:
 #
 $(LIBESMTP_IPK): $(LIBESMTP_BUILD_DIR)/.built
 	rm -rf $(LIBESMTP_IPK_DIR) $(BUILD_DIR)/libesmtp_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBESMTP_BUILD_DIR) DESTDIR=$(LIBESMTP_IPK_DIR) install
+	$(MAKE) -C $(LIBESMTP_BUILD_DIR) DESTDIR=$(LIBESMTP_IPK_DIR) install-strip
 	install -d $(LIBESMTP_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBESMTP_SOURCE_DIR)/libesmtp.conf $(LIBESMTP_IPK_DIR)/opt/etc/libesmtp.conf
 	#install -d $(LIBESMTP_IPK_DIR)/opt/etc/init.d
