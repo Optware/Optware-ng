@@ -26,10 +26,10 @@ UNSLUNG_TARGET=nslu2
 CROSS_PACKAGES = \
 	abook adns alac-decoder \
 	atftp appweb apache apr apr-util atk audiofile automake \
-	bash bc bind bitchx busybox bzflag bzip2 \
+	bash bc bind bitchx busybox byrequest bzflag bzip2 \
 	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dnsmasq dropbear \
-	e2fsprogs eaccelerator ed elinks esound expat \
+	e2fsprogs eaccelerator ed elinks esmtp esound expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -38,7 +38,8 @@ CROSS_PACKAGES = \
 	ice imagemagick inetutils iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame less \
-	libbt libcurl libdb libdvdread libevent libgc libgd libid3tag \
+	libbt libcurl libdb libdvdread libesmtp libevent \
+	libgc libgd libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
@@ -69,15 +70,12 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	esmtp \
-	libesmtp \
 	getmail \
 	procmail \
 	mod-python \
 	py-mx-base \
 	py-mysql \
-	py-psycopg \
-	php-thttpd
+	py-psycopg
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -122,10 +120,10 @@ NATIVE_PACKAGES = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # libao - has runtime trouble
-# byRequest - please use a cvs tag or date, see x11.mk for an example
+# php-thttpd - php_thttpd.c:485:2: #error No thread primitives available
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
-	byRequest \
+	php-thttpd \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
