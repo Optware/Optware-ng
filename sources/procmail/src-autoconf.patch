@@ -1,0 +1,11 @@
+--- procmail-3.22-orig/src/autoconf	2001-09-10 21:55:46.000000000 -0700
++++ procmail/src/autoconf	2005-04-25 23:13:12.102376000 -0700
+@@ -152,7 +152,7 @@
+ Would you like to skip running autoconf and use the existing autoconf.h file?
+ When in doubt, press return [n]:
+ HERE
+-     read a
++     a=yes
+      case "$a"n in
+ 	[yY]*) touch $ACONF; exit 0;;
+      esac

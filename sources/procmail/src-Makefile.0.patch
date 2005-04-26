@@ -1,0 +1,20 @@
+--- procmail-3.22-orig/src/Makefile.0	2001-06-28 19:20:35.000000000 -0700
++++ procmail/src/Makefile.0	2005-04-25 23:10:50.532376000 -0700
+@@ -170,13 +170,13 @@
+ setid: setid.$(O)
+ 	@$(CC) $(CFLAGS) $@.$(O) -o $@ $(LDFLAGS)
+ 
+-recommend: recommend.$(O) sublib.$(O)
+-	@$(CC) $(CFLAGS) $@.$(O) sublib.$(O) -o $@ $(LDFLAGS)
++recommend: recommend.c sublib.c
++	#@$(CC) $(CFLAGS) $@.$(O) sublib.$(O) -o $@ $(LDFLAGS)
++	gcc -O recommend.c sublib.c -o $@
+ 
+ ../man/man.sed: manconf.c ../autoconf.h ../config.h includes.h procmail.h
+ ../man/man.sed: ../patchlevel.h
+-	@$(CC) $(CFLAGS) "-DBINDIR=\"$(VISIBLE_BINDIR)\"" -o _autotst \
+- manconf.c $(LDFLAGS)
++	gcc -O "-DBINDIR=\"$(VISIBLE_BINDIR)\"" -o _autotst manconf.c
+ 	@./_autotst $@
+ 	@echo Housekeeping file >$@
+ 	@$(RM) _autotst
