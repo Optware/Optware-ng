@@ -1,0 +1,71 @@
+diff -Nru cyrus-imapd-2.2.10-orig/configure.in cyrus-imapd-2.2.10/configure.in
+--- cyrus-imapd-2.2.10-orig/configure.in	2004-11-22 16:27:07.000000000 -0500
++++ cyrus-imapd-2.2.10/configure.in	2005-04-26 05:47:23.690000000 -0400
+@@ -1008,6 +1008,16 @@
+ IMAP_COM_ERR_LIBS="${COM_ERR_LIBS}"
+ IMAP_LIBS="${LIB_SASL} ${LIBS}"
+ 
++if test "x$CC_FOR_BUILD" = "x"; then
++  CC_FOR_BUILD="$(CC)"
++fi 
++if test "x$BUILD_CFLAGS" = "x"; then
++  BUILD_CFLAGS="$(CFLAGS)"
++fi 
++if test "x$BUILD_LDFLAGS" = "x"; then
++  BUILD_LDFLAGS="$(LDFLAGS)"
++fi 
++
+ AC_SUBST(LIB_RT)
+ AC_SUBST(IMAP_COM_ERR_LIBS)
+ AC_SUBST(IMAP_LIBS)
+@@ -1021,6 +1031,9 @@
+ AC_SUBST(PERL_SUBDIRS)
+ AC_SUBST(PERL_DEPSUBDIRS)
+ AC_SUBST(PERL)
++AC_SUBST(CC_FOR_BUILD)
++AC_SUBST(BUILD_LDFLAGS)
++AC_SUBST(BUILD_CFLAGS)
+ 
+ AH_TOP([
+ /* $Id$ */
+diff -Nru cyrus-imapd-2.2.10-orig/lib/Makefile.in cyrus-imapd-2.2.10/lib/Makefile.in
+--- cyrus-imapd-2.2.10-orig/lib/Makefile.in	2004-05-28 14:03:04.000000000 -0400
++++ cyrus-imapd-2.2.10/lib/Makefile.in	2005-04-26 05:47:23.690000000 -0400
+@@ -53,6 +53,7 @@
+ VPATH = @srcdir@
+ 
+ CC = @CC@
++CC_FOR_BUILD = @CC_FOR_BUILD@
+ 
+ INSTALL = @INSTALL@
+ RANLIB = @RANLIB@
+@@ -63,7 +64,9 @@
+ 
+ MAKEDEPEND_CFLAGS = @CFLAGS@
+ CFLAGS = @CFLAGS@ @PERL_CCCDLFLAGS@
++BUILD_CFLAGS = @BUILD_CFLAGS@
+ LDFLAGS = @LDFLAGS@
++BUILD_LDFLAGS = @BUILD_LDFLAGS@
+ 
+ SHELL = /bin/sh
+ MAKEDEPEND = @MAKEDEPEND@
+@@ -149,8 +152,17 @@
+ #	./mkchartable -m $(srcdir)/charset/unicode.map $(srcdir)/charset/*.t >x-chartables.h
+ #	mv x-chartables.h chartables.h
+ 
+-mkchartable: mkchartable.o xmalloc.o assert.o
+-	$(CC) $(LDFLAGS) -o mkchartable mkchartable.o xmalloc.o assert.o
++mkchartable: mkchartable.native.o xmalloc.native.o assert.native.o
++	$(CC_FOR_BUILD) $(BUILD_LDFLAGS) -o mkchartable mkchartable.native.o xmalloc.native.o assert.native.o
++
++xmalloc.native.o: xmalloc.c
++	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o xmalloc.native.o xmalloc.c
++
++assert.native.o: assert.c
++	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o assert.native.o assert.c
++
++mkchartable.native.o: mkchartable.c
++	$(CC_FOR_BUILD) $(BUILD_CFLAGS) -c -o mkchartable.native.o mkchartable.c
+ 
+ clean:
+ 	rm -f *.o *.a chartable.c Makefile.bak mkchartable makedepend.log \
