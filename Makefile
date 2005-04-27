@@ -70,7 +70,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	libdvb
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -114,9 +113,11 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# libdvb - "../include/devices.hh:14:32: linux/dvb/frontend.h: No such file or directory" - find -name frontend.h returns no match in unslung cross buildroot
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
+	libdvb \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
