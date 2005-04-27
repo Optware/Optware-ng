@@ -18,6 +18,8 @@ PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
 PHP_APACHE_DEPENDS=apache, php (>= 5.0.3-7)
 
+PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
+
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -57,8 +59,8 @@ PHP_APACHE_LDFLAGS=-ldl -lpthread
 #
 PHP_APACHE_BUILD_DIR=$(BUILD_DIR)/php-apache
 PHP_APACHE_SOURCE_DIR=$(SOURCE_DIR)/php
-PHP_APACHE_IPK_DIR=$(BUILD_DIR)/php-apache-$(PHP_VERSION)-ipk
-PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_VERSION)-$(PHP_APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PHP_APACHE_IPK_DIR=$(BUILD_DIR)/php-apache-$(PHP_APACHE_VERSION)-ipk
+PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # Automatically create a ipkg control file
@@ -70,7 +72,7 @@ $(PHP_APACHE_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PHP_APACHE_PRIORITY)" >>$@
 	@echo "Section: $(PHP_APACHE_SECTION)" >>$@
-	@echo "Version: $(PHP_VERSION)-$(PHP_APACHE_IPK_VERSION)" >>$@
+	@echo "Version: $(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PHP_APACHE_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: $(PHP_APACHE_DESCRIPTION)" >>$@
@@ -80,8 +82,8 @@ $(PHP_APACHE_IPK_DIR)/CONTROL/control:
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(PHP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PHP_SITE)/$(PHP_SOURCE)
+#$(DL_DIR)/$(PHP_SOURCE):
+#	$(WGET) -P $(DL_DIR) $(PHP_SITE)/$(PHP_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
