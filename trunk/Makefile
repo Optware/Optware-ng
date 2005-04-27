@@ -127,14 +127,14 @@ WL500G_PACKAGES = \
 	bash bc bitchx busybox bzip2 \
 	chillispot ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq \
-	e2fsprogs expat \
+	e2fsprogs expat esmtp \
 	fetchmail file findutils fixesext flex \
 	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git grep gzip \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libevent libid3tag libjpeg libmad libgd libogg libol \
+	lame less libcurl libevent libesmtp libid3tag libjpeg libmad libgd libogg libol \
 	libdb libosip2 libpng libtool libtopfield libusb libvorbis libxslt \
 	logrotate lua lynx lzo libvorbis \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
@@ -150,7 +150,6 @@ WL500G_PACKAGES = \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
-# php-thttpd needs patches to be applied to php.mk in order to have php correctly built for wl500g
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
