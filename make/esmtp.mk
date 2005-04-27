@@ -35,14 +35,14 @@ ESMTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ESMTP_DESCRIPTION=esmtp is a user configurable relay-only Mail Transfer Agent (MTA) with a sendmail compatible syntax.
 ESMTP_SECTION=mail
 ESMTP_PRIORITY=optional
-ESMTP_DEPENDS=
+ESMTP_DEPENDS=libesmtp
 ESMTP_SUGGESTS=
 ESMTP_CONFLICTS=postfix
 
 #
 # ESMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-ESMTP_IPK_VERSION=1
+ESMTP_IPK_VERSION=2
 
 #
 # ESMTP_CONFFILES should be a list of user-editable files
