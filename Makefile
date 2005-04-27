@@ -57,7 +57,7 @@ CROSS_PACKAGES = \
 	screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils tin torrent transcode \
-	thttpdphp ttf-bitstream-vera \
+	ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
 	w3cam wakelan wget-ssl which webalizer \
