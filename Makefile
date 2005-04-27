@@ -31,7 +31,7 @@ CROSS_PACKAGES = \
 	dhcp dict diffutils distcc dnsmasq dropbear \
 	e2fsprogs eaccelerator ed elinks esmtp esound expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
-	gawk gconv-modules gdb gdbm gettext ghostscript \
+	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git glib grep groff gtk gzip \
 	hdparm hnb \
@@ -43,7 +43,7 @@ CROSS_PACKAGES = \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm mediawiki metalog miau \
+	m4 make man man-pages mc mdadm mediawiki metalog miau mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	nylon \
@@ -51,8 +51,8 @@ CROSS_PACKAGES = \
 	pango parted patch pcre \
 	php php-apache phpmyadmin \
 	pkgconfig popt portmap postgresql \
-	procps proftpd puppy python \
-	py-sqlite py-bittorrent \
+	procmail procps proftpd puppy python \
+	py-sqlite py-bittorrent py-mxbase py-mysql py-psycopg \
 	rdate readline recordext renderext rsync \
 	screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
@@ -60,7 +60,7 @@ CROSS_PACKAGES = \
 	thttpdphp ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
-	w3cam wakelan wget-ssl which webalizer\
+	w3cam wakelan wget-ssl which webalizer \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xterm xtrans xtst xvid \
 	zlib \
@@ -70,12 +70,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	getmail \
-	procmail \
-	mod-python \
-	py-mx-base \
-	py-mysql \
-	py-psycopg
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
