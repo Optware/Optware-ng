@@ -1,0 +1,123 @@
+diff -ruN libdvb-0.5.5/Makefile libdvb-0.5.5-topfield/Makefile
+--- libdvb-0.5.5/Makefile	2004-09-16 04:56:21.000000000 +1000
++++ libdvb-0.5.5-topfield/Makefile	2004-12-03 15:53:24.677184191 +1100
+@@ -68,7 +68,7 @@
+ 	make -C libdvbmpeg clean
+ 	make -C sample_progs clean
+ 	make -C dvb-mpegtools clean
+-	rm include/*~
++	-rm -f include/*~
+ 
+ dist:	
+ 	mkdir libdvb-$(VERSION)
+diff -ruN libdvb-0.5.5/dvb-mpegtools/Makefile libdvb-0.5.5-topfield/dvb-mpegtools/Makefile
+--- libdvb-0.5.5/dvb-mpegtools/Makefile	2004-09-16 04:56:21.000000000 +1000
++++ libdvb-0.5.5-topfield/dvb-mpegtools/Makefile	2004-12-03 12:38:58.000000000 +1100
+@@ -16,7 +16,7 @@
+ 	pesplot pes2ts2 pes_repack split_mpg cut_mpg ts2ps ts2es\
+ 	insert_pat_pmt get_http extract_pes extract_pes_payload\
+ 	change_aspect_1_1 change_aspect_4_3 change_aspect_16_9 \
+-	change_aspect_221_1
++	change_aspect_221_1 topf2ps
+ 
+ .PHONY: depend clean install uninstall
+ 
+diff -ruN libdvb-0.5.5/dvb-mpegtools/main.cc libdvb-0.5.5-topfield/dvb-mpegtools/main.cc
+--- libdvb-0.5.5/dvb-mpegtools/main.cc	2004-09-16 04:56:21.000000000 +1000
++++ libdvb-0.5.5-topfield/dvb-mpegtools/main.cc	2004-12-03 12:45:39.000000000 +1100
+@@ -52,7 +52,7 @@
+         write(STDOUT_FILENO, buf, count);
+ }
+ 
+-#define PROGS 29
++#define PROGS 30
+ 
+ char *prognames[PROGS+1] = { "streamtype",    // 0
+                              "ts2pes", 	    // 1
+@@ -83,6 +83,7 @@
+                              "change_aspect_4_3",
+                              "change_aspect_16_9",
+                              "change_aspect_221_1",	// 28
++                             "topf2ps",
+                              " "
+                            };
+ 
+@@ -116,6 +117,7 @@
+        change_aspect_4_3_,
+        change_aspect_16_9_,
+        change_aspect_221_1_,	// 28
++       topf2ps_,
+        none_,
+      };
+ 
+@@ -226,6 +228,11 @@
+                 cerr << "or     insert_pat_pmt < <filename> (or pipe)" << endl;
+                 break;
+ 
++        case topf2ps_:
++                cerr << "usage: topf2ps <filename>" << endl;
++                cerr << "or     topf2ps < <filename> (or pipe)" << endl;
++                break;
++
+         case get_http_:
+                 cerr << "usage: get_http <URL>" << endl;
+                 break;
+@@ -345,6 +352,10 @@
+                         }
+                         break;
+ 
++                case topf2ps_:
++                        topf_to_ps(fd, STDOUT_FILENO);
++                        break;
++
+                 case insert_pat_pmt_:
+                         insert_pat_pmt( fd, STDOUT_FILENO);
+                         break;
+diff -ruN libdvb-0.5.5/include/transform.h libdvb-0.5.5-topfield/include/transform.h
+--- libdvb-0.5.5/include/transform.h	2004-09-16 04:56:21.000000000 +1000
++++ libdvb-0.5.5-topfield/include/transform.h	2004-12-03 12:49:20.000000000 +1100
+@@ -192,6 +192,7 @@
+ 	void kpes_to_ts( p2p *p,uint8_t *buf ,int count );
+ 	void setup_ts2pes( p2p *pa, p2p *pv, uint32_t pida, uint32_t pidv, 
+ 			   void (*pes_write)(uint8_t *buf, int count, void *p));
++    void topf_to_ps(int fdin, int fdout);
+ 	void kts_to_pes( p2p *p, uint8_t *buf);
+ 	void pes_repack(p2p *p);
+ 	void extract_from_pes(int fdin, int fdout, uint8_t id, int es);
+diff -ruN libdvb-0.5.5/libdvbmpeg/transform.c libdvb-0.5.5-topfield/libdvbmpeg/transform.c
+--- libdvb-0.5.5/libdvbmpeg/transform.c	2004-09-16 04:56:21.000000000 +1000
++++ libdvb-0.5.5-topfield/libdvbmpeg/transform.c	2004-12-03 12:50:55.000000000 +1100
+@@ -1247,6 +1247,30 @@
+ 
+ }
+ 
++void topf_to_ps( int fdin, int fdout)
++{
++
++  uint16_t pida, pidv;
++  uint8_t buf[1880];
++  int count = 1;
++
++  if ((count = save_read(fdin, buf, sizeof(buf))) < 0)
++      perror("reading");
++
++  if ((count != sizeof(buf)) || (buf[0] != 'T') || (buf[1] != 'F') ||
++      (buf[2] != 'r') || (buf[3] != 'c')) {
++
++      fprintf(stderr, "Couldn't read Topfield header\n");
++      return;
++  }
++
++  pida = (buf[24] << 8) + buf[25];
++  pidv = ((buf[26] & 0x7f) << 8) + buf[27];
++
++        fprintf(stderr, "apid %d (0x%02x)\n",pida,pida);
++        fprintf(stderr, "vpid %d (0x%02x)\n",pidv,pidv);
++  ts_to_pes(fdin, pida, pidv, 1);
++}
+ 
+ #define INN_SIZE 2*IN_SIZE
+ void insert_pat_pmt( int fdin, int fdout)
+
+
+
