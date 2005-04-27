@@ -166,12 +166,19 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 
 # We need this because openldap does not build on the wl500g.
 ifneq ($(UNSLUNG_TARGET),wl500g)
-PHP_CONFIGURE_OPTIONAL_ARGS= \
+PHP_CONFIGURE_TARGET_ARGS= \
 		--with-ldap=shared,$(STAGING_DIR)/opt \
-		--with-ldap-sasl=$(STAGING_DIR)/opt \
+		--with-ldap-sasl=$(STAGING_DIR)/opt
+else
+PHP_CONFIGURE_TARGET_ARGS=
+endif
+
+# Allow for experimentally configuring apache's worker MPM
+ifeq ($(APACHE_MPM),worker)
+PHP_CONFIGURE_THREAD_ARGS= \
 		--enable-maintainer-zts 
 else
-PHP_CONFIGURE_OPTIONAL_ARGS=
+PHP_CONFIGURE_THREAD_ARGS=
 endif
 
 #
@@ -249,7 +256,8 @@ endif
 		--with-dom=shared,$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-gd=shared,$(STAGING_DIR)/opt \
-		$(PHP_CONFIGURE_OPTIONAL_ARGS) \
+		$(PHP_CONFIGURE_TARGET_ARGS) \
+		$(PHP_CONFIGURE_THREAD_ARGS) \
 		--with-mysql=shared,$(STAGING_DIR)/opt \
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config \

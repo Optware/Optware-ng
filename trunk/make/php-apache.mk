@@ -16,7 +16,7 @@ PHP_APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
-PHP_APACHE_DEPENDS=apache, php (>= 5.0.3-7)
+PHP_APACHE_DEPENDS=apache, php
 
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 
@@ -92,6 +92,14 @@ $(PHP_APACHE_IPK_DIR)/CONTROL/control:
 #
 php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 
+# Allow for experimentally configuring apache's worker MPM
+ifeq ($(APACHE_MPM),worker)
+PHP_CONFIGURE_APACHE_THREAD_ARGS= \
+                --enable-maintainer-zts
+else
+PHP_CONFIGURE_APACHE_THREAD_ARGS=
+endif
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -131,7 +139,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
-		--enable-maintainer-zts \
+		$(PHP_APACHE_CONFIGURE_THREAD_ARGS) \
 		--disable-dom \
 		--disable-xml \
 		--enable-libxml \

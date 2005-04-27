@@ -39,7 +39,7 @@ MEDIAWIKI_INSTALL_DIR=/opt/share/www/mediawiki
 #
 # MEDIAWIKI_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIAWIKI_IPK_VERSION=1
+MEDIAWIKI_IPK_VERSION=2
 
 #
 # MEDIAWIKI_CONFFILES should be a list of user-editable files
@@ -106,6 +106,15 @@ $(MEDIAWIKI_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIAWIKI_SOURCE) $(MEDIAWIKI_PA
 	$(MEDIAWIKI_UNZIP) $(DL_DIR)/$(MEDIAWIKI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(MEDIAWIKI_PATCHES) | patch -d $(BUILD_DIR)/$(MEDIAWIKI_DIR) -p1
 	mv $(BUILD_DIR)/$(MEDIAWIKI_DIR) $(MEDIAWIKI_BUILD_DIR)
+	( cd $(MEDIAWIKI_BUILD_DIR) ; \
+		sed -i -e 's/mmcache_/eaccelerator_/g' \
+		includes/ObjectCache.php \
+		config/index.php \
+	)
+	( cd $(MEDIAWIKI_BUILD_DIR) ; \
+		sed -i -e 's/Turck MMCache/EAccelerator/g' \
+		config/index.php \
+	)
 	touch $(MEDIAWIKI_BUILD_DIR)/.configured
 
 mediawiki-unpack: $(MEDIAWIKI_BUILD_DIR)/.configured
