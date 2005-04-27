@@ -49,7 +49,7 @@ CROSS_PACKAGES = \
 	nylon \
 	openssh openssl openvpn \
 	pango parted patch pcre \
-	php php-apache phpmyadmin \
+	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
 	py-sqlite py-bittorrent py-mxbase py-mysql py-psycopg \
@@ -114,10 +114,8 @@ NATIVE_PACKAGES = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # libao - has runtime trouble
-# php-thttpd - php_thttpd.c:485:2: #error No thread primitives available
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
-	php-thttpd \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
