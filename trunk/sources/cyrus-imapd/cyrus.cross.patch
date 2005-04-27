@@ -1,6 +1,6 @@
-diff -Nru cyrus-imapd-2.2.10-orig/configure.in cyrus-imapd-2.2.10/configure.in
+diff -Nur cyrus-imapd-2.2.10-orig/configure.in cyrus-imapd-2.2.10/configure.in
 --- cyrus-imapd-2.2.10-orig/configure.in	2004-11-22 16:27:07.000000000 -0500
-+++ cyrus-imapd-2.2.10/configure.in	2005-04-26 05:47:23.690000000 -0400
++++ cyrus-imapd-2.2.10/configure.in	2005-04-27 03:26:43.970000000 -0400
 @@ -1008,6 +1008,16 @@
  IMAP_COM_ERR_LIBS="${COM_ERR_LIBS}"
  IMAP_LIBS="${LIB_SASL} ${LIBS}"
@@ -28,9 +28,21 @@ diff -Nru cyrus-imapd-2.2.10-orig/configure.in cyrus-imapd-2.2.10/configure.in
  
  AH_TOP([
  /* $Id$ */
-diff -Nru cyrus-imapd-2.2.10-orig/lib/Makefile.in cyrus-imapd-2.2.10/lib/Makefile.in
+diff -Nur cyrus-imapd-2.2.10-orig/imtest/Makefile.in cyrus-imapd-2.2.10/imtest/Makefile.in
+--- cyrus-imapd-2.2.10-orig/imtest/Makefile.in	2004-05-28 14:03:03.000000000 -0400
++++ cyrus-imapd-2.2.10/imtest/Makefile.in	2005-04-27 03:19:15.110000000 -0400
+@@ -72,7 +72,7 @@
+ all: imtest
+ 
+ install:
+-	$(INSTALL) -s -m 755 imtest $(DESTDIR)$(exec_prefix)/bin
++	$(INSTALL) -m 755 imtest $(DESTDIR)$(exec_prefix)/bin
+ 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/pop3test
+ 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/nntptest
+ 	ln -f $(DESTDIR)$(exec_prefix)/bin/imtest $(DESTDIR)$(exec_prefix)/bin/lmtptest
+diff -Nur cyrus-imapd-2.2.10-orig/lib/Makefile.in cyrus-imapd-2.2.10/lib/Makefile.in
 --- cyrus-imapd-2.2.10-orig/lib/Makefile.in	2004-05-28 14:03:04.000000000 -0400
-+++ cyrus-imapd-2.2.10/lib/Makefile.in	2005-04-26 05:47:23.690000000 -0400
++++ cyrus-imapd-2.2.10/lib/Makefile.in	2005-04-27 03:29:34.980000000 -0400
 @@ -53,6 +53,7 @@
  VPATH = @srcdir@
  

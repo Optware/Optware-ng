@@ -179,14 +179,17 @@ $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin/*
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a
+	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/*
+ifeq ($(HOST_MACHINE),armv5b)
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/5.8.6/armv5b-linux/auto/Cyrus ; \
-	 chmod +w IMAP/IMAP.so; \
-	 chmod +w SIEVE/managesieve/managesieve.so; \
-	 $(STRIP_COMMAND) IMAP/IMAP.so; \
-	 $(STRIP_COMMAND) SIEVE/managesieve/managesieve.so; \
-	 chmod -w IMAP/IMAP.so; \
-	 chmod -w SIEVE/managesieve/managesieve.so; \
+		chmod +w IMAP/IMAP.so; \
+		chmod +w SIEVE/managesieve/managesieve.so; \
+		$(STRIP_COMMAND) IMAP/IMAP.so; \
+		$(STRIP_COMMAND) SIEVE/managesieve/managesieve.so; \
+		chmod -w IMAP/IMAP.so; \
+		chmod -w SIEVE/managesieve/managesieve.so; \
 	)
+endif
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/5.8.6
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/lib -type d -exec chmod go+rx {} \;
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/man -type d -exec chmod go+rx {} \;
