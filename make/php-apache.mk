@@ -44,7 +44,7 @@ PHP_APACHE_PATCHES=$(PHP_PATCHES)
 # compilation or linking flags, then list them here.
 #
 PHP_APACHE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2 -I$(STAGING_INCLUDE_DIR)/libxml2
-PHP_APACHE_LDFLAGS=-ldl
+PHP_APACHE_LDFLAGS=-ldl -lpthread
 
 #
 # PHP_APACHE_BUILD_DIR is the directory in which the build is done.
@@ -117,7 +117,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_APACHE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_APACHE_LDFLAGS)" \
-		CFLAGS="$(TARGET_CFLAGS) -ldl -lpthread" \
+		CFLAGS="$(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(PHP_APACHE_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_DIR) \
 		EXTENSION_DIR=/opt/lib/php/extensions \

@@ -27,8 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PHP_THTTPD_SITE=$(THTTPD_SITE)
-PHP_THTTPD_VERSION=$(shell cat make/thttpd.mk | sed -n -e 's/^THTTPD_VERSION *=//p')
-PHP_THTTPD_SOURCE=$(shell cat make/thttpd.mk | sed -n -e 's/^THTTPD_SOURCE *=//p' | sed -n -e "s|..THTTPD_VERSION.|${PHP_THTTPD_VERSION}|p")
+PHP_THTTPD_VERSION:=$(shell cat make/thttpd.mk | sed -n -e 's/^THTTPD_VERSION *=//p')
+PHP_THTTPD_SOURCE:=$(shell cat make/thttpd.mk | sed -n -e 's/^THTTPD_SOURCE *=//p' | sed -n -e "s|..THTTPD_VERSION.|${PHP_THTTPD_VERSION}|p")
 PHP_THTTPD_DIR=$(THTTPD_DIR)
 PHP_THTTPD_UNZIP=$(THTTPD_UNZIP)
 PHP_THTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -39,8 +39,8 @@ PHP_THTTPD_DEPENDS=php
 PHP_THTTPD_CONFLICTS=thttpd
 
 PHP_THTTPD_LIBPHP_SITE=$(PHP_SITE)
-PHP_THTTPD_LIBPHP_VERSION=$(shell cat make/php.mk | sed -n -e 's/^PHP_VERSION *=//p')
-PHP_THTTPD_LIBPHP_SOURCE=$(shell cat make/php.mk | sed -n -e 's/^PHP_SOURCE *=//p' | sed -n -e "s|..PHP_VERSION.|${PHP_THTTPD_LIBPHP_VERSION}|p")
+PHP_THTTPD_LIBPHP_VERSION:=$(shell cat make/php.mk | sed -n -e 's/^PHP_VERSION *=//p')
+PHP_THTTPD_LIBPHP_SOURCE:=$(shell cat make/php.mk | sed -n -e 's/^PHP_SOURCE *=//p' | sed -n -e "s|..PHP_VERSION.|${PHP_THTTPD_LIBPHP_VERSION}|p")
 PHP_THTTPD_LIBPHP_DIR=$(PHP_DIR)
 PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 
@@ -87,12 +87,12 @@ PHP_THTTPD_LIBPHP_BUILD_DIR=$(PHP_THTTPD_BUILD_DIR)/_libphp
 #
 $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded:
 	rm -f $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded
-	$(WGET) -P $(DL_DIR) $(PHP_THTTPD_SITE)/$(PHP_THTTPD_SOURCE)
+	$(WGET) -c -P $(DL_DIR) $(PHP_THTTPD_SITE)/$(PHP_THTTPD_SOURCE)
 	touch $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded
 
 $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded:
 	rm -f $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded
-	$(WGET) -P $(DL_DIR) $(PHP_THTTPD_LIBPHP_SITE)/$(PHP_THTTPD_LIBPHP_SOURCE)
+	$(WGET) -c -P $(DL_DIR) $(PHP_THTTPD_LIBPHP_SITE)/$(PHP_THTTPD_LIBPHP_SOURCE)
 	touch $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded
 #
 # The source code depends on it existing within the download directory.
