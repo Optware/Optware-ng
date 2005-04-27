@@ -131,10 +131,10 @@ MaxRequestsPerChild  0
 # ThreadsPerChild: constant number of worker threads in each server process
 # MaxRequestsPerChild: maximum number of requests a server process serves
 <IfModule worker.c>
-StartServers         2
-MaxClients         150
-MinSpareThreads     25
-MaxSpareThreads     75 
+StartServers         1
+MaxClients          25
+MinSpareThreads      2
+MaxSpareThreads      5 
 ThreadsPerChild     25
 MaxRequestsPerChild  0
 </IfModule>
