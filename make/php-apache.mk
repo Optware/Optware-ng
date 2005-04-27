@@ -117,7 +117,7 @@ endif
 #
 $(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 		$(PHP_APACHE_PATCHES)
-	$(MAKE) apache-stage
+	$(MAKE) apache-stage libxml2-stage
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
