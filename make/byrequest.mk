@@ -25,7 +25,7 @@ BYREQUEST_DEPENDS=imagemagick
 BYREQUEST_BUILD_DIR=$(BUILD_DIR)/byrequest
 BYREQUEST_SOURCE_DIR=$(SOURCE_DIR)/byrequest
 BYREQUEST_IPK_DIR=$(BUILD_DIR)/byrequest-ipk
-BYREQUEST_IPK=$(BUILD_DIR)/byrequest_CVS-$(BYREQUEST_IPK_VERSION)_$(TARGET_ARCH).ipk
+BYREQUEST_IPK=$(BUILD_DIR)/byrequest_cvs-$(BYREQUEST_VERSION)-$(BYREQUEST_IPK_VERSION)_$(TARGET_ARCH).ipk
 BYREQUEST_IPK_VERSION=1
 
 # Fetch source code
@@ -79,7 +79,7 @@ $(BYREQUEST_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(BYREQUEST_PRIORITY)" >>$@
 	@echo "Section: $(BYREQUEST_SECTION)" >>$@
-	@echo "Version: $(BYREQUEST_VERSION)" >>$@
+	@echo "Version: cvs-$(BYREQUEST_VERSION)-$(BYREQUEST_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(BYREQUEST_MAINTAINER)" >>$@
 	@echo "Source: $(BYREQUEST_SITE)/$(BYREQUEST_SOURCE)" >>$@
 	@echo "Description: $(BYREQUEST_DESCRIPTION)" >>$@
