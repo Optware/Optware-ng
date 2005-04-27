@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=4
+PHP_THTTPD_IPK_VERSION=5
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -82,24 +82,11 @@ PHP_THTTPD_IPK=$(BUILD_DIR)/php-thttpd_$(PHP_THTTPD_VERSION)-$(PHP_THTTPD_LIBPHP
 PHP_THTTPD_LIBPHP_BUILD_DIR=$(PHP_THTTPD_BUILD_DIR)/_libphp
 
 #
-# This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
-#
-$(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded:
-	rm -f $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded
-	$(WGET) -c -P $(DL_DIR) $(PHP_THTTPD_SITE)/$(PHP_THTTPD_SOURCE)
-	touch $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded
-
-$(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded:
-	rm -f $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded
-	$(WGET) -c -P $(DL_DIR) $(PHP_THTTPD_LIBPHP_SITE)/$(PHP_THTTPD_LIBPHP_SOURCE)
-	touch $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded
-#
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-php-thttpd-source: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded $(PHP_THTTPD_PATCHES) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
+php-thttpd-source: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_PATCHES) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -117,7 +104,8 @@ php-thttpd-source: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded $(DL_DIR)/.$(PHP_T
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 
-$(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
+$(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_DIR)/$(PHP_THTTPD_LIBPHP_SOURCE) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
+	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(PHP_THTTPD_DIR) $(BUILD_DIR)/$(PHP_THTTPD_LIBPHP_DIR)
 	rm -rf $(PHP_THTTPD_BUILD_DIR) $(PHP_THTTPD_LIBPHP_BUILD_DIR)
 	$(PHP_THTTPD_UNZIP) $(DL_DIR)/$(PHP_THTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
