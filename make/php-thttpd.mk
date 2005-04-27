@@ -101,15 +101,6 @@ $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded:
 #
 php-thttpd-source: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).downloaded $(DL_DIR)/.$(PHP_THTTPD_LIBPHP_SOURCE).downloaded $(PHP_THTTPD_PATCHES) $(PHP_THTTPD_LIBPHP_PATCHES) $(PHP_PATCHES)
 
-
-# We need this because openldap does not build on the wl500g.
-ifneq ($(UNSLUNG_TARGET),wl500g)
-PHP_THTTPD_LIBPHP_CONFIGURE_OPTIONAL_ARGS= \
-		--enable-maintainer-zts 
-else
-PHP_THTTPD_LIBPHP_CONFIGURE_OPTIONAL_ARGS= 
-endif
-
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -151,7 +142,6 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/.$(PHP_THTTPD_SOURCE).down
 		--prefix=/opt \
 		--disable-nls \
 		--with-config-file-scan-dir=/opt/etc/php.d \
-		$(PHP_THTTPD_LIBPHP_CONFIGURE_OPTIONAL_ARGS) \
 		--with-layout=GNU \
 		--disable-static \
 		--disable-dom \

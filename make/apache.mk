@@ -23,10 +23,13 @@ APACHE_SECTION=lib
 APACHE_PRIORITY=optional
 APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap-libs
 
+#APACHE_MPM=worker
+APACHE_MPM=prefork
+
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=7
+APACHE_IPK_VERSION=8
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -153,6 +156,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-layout=GNU \
+		--with-mpm=$(APACHE_MPM) \
 		--enable-mods-shared=all \
 		--enable-ssl \
 		--enable-proxy \
