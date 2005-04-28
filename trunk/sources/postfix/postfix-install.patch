@@ -1,0 +1,59 @@
+diff -Nru postfix-2.1.5-orig/postfix-install postfix-2.1.5/postfix-install
+--- postfix-2.1.5-orig/postfix-install	2004-04-14 11:45:23.000000000 -0400
++++ postfix-2.1.5/postfix-install	2005-04-27 09:39:16.470000000 -0400
+@@ -191,8 +191,8 @@
+     exit 1
+ }
+ 
+-test -x bin/postconf || {
+-    echo $0: Error: no bin/postconf file. Did you forget to run \"make\"? 1>&2
++test -x $POSTCONF || {
++    echo $0: Error: no $POSTCONF file. Did you forget to run \"make\"? 1>&2
+     exit 1
+ }
+ 
+@@ -352,7 +352,7 @@
+ 
+ : ${install_root=/}
+ : ${tempdir=`pwd`}
+-: ${config_directory=`bin/postconf -h -d config_directory`}
++: ${config_directory=`$POSTCONF -h -d config_directory`}
+ 
+ # Find out the location of installed configuration files.
+ 
+@@ -415,7 +415,7 @@
+ 	case "$junk" in
+ 	"") eval unset $name;;
+ 	esac
+-	eval : \${$name=\`bin/postconf -c $CONFIG_DIRECTORY -h $name\`} ||
++	eval : \${$name=\`$POSTCONF -c $CONFIG_DIRECTORY -h $name\`} ||
+ 	    exit 1
+     done
+ }
+@@ -430,7 +430,7 @@
+     case "$junk" in
+     "") eval unset $name;;
+     esac
+-    eval : \${$name=\`bin/postconf -d -h $name\`} || exit 1
++    eval : \${$name=\`$POSTCONF -d -h $name\`} || exit 1
+ done
+ 
+ # Override settings manually.
+@@ -552,6 +552,8 @@
+ SAMPLE_DIRECTORY=$install_root$sample_directory
+ README_DIRECTORY=$install_root$readme_directory
+ 
++test "x$POSTCONF" != "x" || POSTCONF="bin/postconf"
++
+ # Avoid repeated tests for existence of these; default permissions suffice.
+ 
+ test -d $DAEMON_DIRECTORY || mkdir -p $DAEMON_DIRECTORY || exit 1
+@@ -701,7 +703,7 @@
+ # Postfix releases, and software should not suddenly be installed in
+ # the wrong place when Postfix is being upgraded.
+ 
+-bin/postconf -c $CONFIG_DIRECTORY -e \
++$POSTCONF -c $CONFIG_DIRECTORY -e \
+     "daemon_directory = $daemon_directory" \
+     "command_directory = $command_directory" \
+     "queue_directory = $queue_directory" \
