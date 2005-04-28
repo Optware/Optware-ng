@@ -4,24 +4,13 @@
 #
 ###########################################################
 
-# If you want to cross compile postfix you have to install
-# some additional software. E.g. for Debian testing this 
-# is libdb4.2, libdb4.2-dev, libpcre3, libpcre3-dev
-
 POSTFIX_SITE=ftp://netmirror.org/postfix.org/official
 POSTFIX_VERSION=2.1.5
 POSTFIX_SOURCE=postfix-$(POSTFIX_VERSION).tar.gz
 POSTFIX_DIR=postfix-$(POSTFIX_VERSION)
 POSTFIX_UNZIP=zcat
-POSTFIX_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
-POSTFIX_DESCRIPTION=The Postfix mail system is an alternative to sendmail.
-POSTFIX_SECTION=util
-POSTFIX_PRIORITY=optional
-POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl
-POSTFIX_SUGGESTS=cyrus-imapd
-POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=2
+POSTFIX_IPK_VERSION=1
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -29,88 +18,22 @@ POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/lib/sasl2/smtpd.conf \
 		  /opt/etc/init.d/S69postfix
 
-POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch $(POSTFIX_SOURCE_DIR)/postfix-install.patch
+POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch
 
 POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
 POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2
 
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
-POSTFIX_NATIVE_BUILD_DIR=$(BUILD_DIR)/postfix-native
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix
 POSTFIX_IPK_DIR=$(BUILD_DIR)/postfix-$(POSTFIX_VERSION)-ipk
 POSTFIX_IPK=$(BUILD_DIR)/postfix_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)_$(TARGET_ARCH).ipk
-POSTFIX_DOC_IPK_DIR=$(BUILD_DIR)/postfix-$(POSTFIX_VERSION)-ipk-doc
-POSTFIX_DOC_IPK=$(BUILD_DIR)/postfix-doc_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-ifeq ($(HOST_MACHINE),armv5b)
-    POSTFIX_POSTCONF_STAGE=bin/postconf
-else
-    POSTFIX_POSTCONF_STAGE=$(STAGING_PREFIX)/bin/postconf
-endif
 
 $(DL_DIR)/$(POSTFIX_SOURCE):
 	$(WGET) -P $(DL_DIR) $(POSTFIX_SITE)/$(POSTFIX_SOURCE)
 
 postfix-source: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 
-#
-# We have to build a native postconf for the host system
-#
-
-$(POSTFIX_NATIVE_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
-	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_NATIVE_BUILD_DIR)
-	$(POSTFIX_UNZIP) $(DL_DIR)/$(POSTFIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(POSTFIX_PATCHES) | patch -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1
-	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_NATIVE_BUILD_DIR)
-	(cd $(POSTFIX_NATIVE_BUILD_DIR); \
-		$(MAKE) makefiles \
-		CCARGS=' \
-			-DHAS_PCRE -I/usr/include \
-			-DDEF_COMMAND_DIR=\"/opt/sbin\" \
-			-DDEF_CONFIG_DIR=\"/opt/etc/postfix\" \
-			-DDEF_DAEMON_DIR=\"/opt/libexec/postfix\" \
-			-DDEF_MAILQ_PATH=\"/opt/bin/mailq\" \
-			-DDEF_HTML_DIR=\"/opt/share/doc/postfix/html\" \
-			-DDEF_MANPAGE_DIR=\"/opt/man\" \
-			-DDEF_NEWALIAS_PATH=\"/opt/bin/newaliases\" \
-			-DDEF_QUEUE_DIR=\"/opt/var/spool/postfix\" \
-			-DDEF_README_DIR=\"/opt/share/doc/postfix/readme\" \
-			-DDEF_SENDMAIL_PATH=\"/opt/sbin/sendmail\" \
-		       ' \
-		AUXLIBS="-L/usr/lib -lpcre" \
-		SYSLIBS="-lpcre -ldb -lresolv" \
-		OPT='' DEBUG='-g' \
-		DIRS='src/util src/global src/postconf' \
-	)
-	touch $(POSTFIX_NATIVE_BUILD_DIR)/.configured
-
-postfix-native-unpack: $(POSTFIX_NATIVE_BUILD_DIR)/.configured
-
-$(POSTFIX_NATIVE_BUILD_DIR)/.built: $(POSTFIX_NATIVE_BUILD_DIR)/.configured
-	rm -f $(POSTFIX_NATIVE_BUILD_DIR)/.built
-	$(MAKE) -C $(POSTFIX_BUILD_DIR)-native DIRS='src/util src/global src/postconf'
-	touch $(POSTFIX_NATIVE_BUILD_DIR)/.built
-
-postfix-native: $(POSTFIX_NATIVE_BUILD_DIR)/.built
-
-$(POSTFIX_NATIVE_BUILD_DIR)/.staged: $(POSTFIX_NATIVE_BUILD_DIR)/.built
-	rm -f $(POSTFIX_NATIVE_BUILD_DIR)/.staged
-	install -m 0755 $(POSTFIX_NATIVE_BUILD_DIR)/src/postconf/postconf $(STAGING_PREFIX)/bin
-	touch $(POSTFIX_NATIVE_BUILD_DIR)/.staged
-
-postfix-native-staged: $(POSTFIX_NATIVE_BUILD_DIR)/.staged
-
-postfix-native-clean:
-	-$(MAKE) -C $(POSTFIX_NATIVE_BUILD_DIR) tidy
-
-#
-# Now we can compile the whole package
-#
-
 $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
-ifneq ($(HOST_MACHINE),armv5b)
-	$(MAKE) postfix-native-staged
-endif
 	$(MAKE) libdb-stage libnsl-stage pcre-stage cyrus-sasl-stage
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR)
 	$(POSTFIX_UNZIP) $(DL_DIR)/$(POSTFIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -172,39 +95,9 @@ $(POSTFIX_BUILD_DIR)/.staged: $(POSTFIX_BUILD_DIR)/.built
 
 postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
-$(POSTFIX_IPK_DIR)/CONTROL/control:
-	@install -d $(POSTFIX_IPK_DIR)/CONTROL
-	@rm -f $@
-	@echo "Package: postfix" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(POSTFIX_PRIORITY)" >>$@
-	@echo "Section: $(POSTFIX_SECTION)" >>$@
-	@echo "Version: $(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(POSTFIX_MAINTAINER)" >>$@
-	@echo "Source: $(POSTFIX_SITE)/$(POSTFIX_SOURCE)" >>$@
-	@echo "Description: $(POSTFIX_DESCRIPTION)" >>$@
-	@echo "Depends: $(POSTFIX_DEPENDS)" >>$@
-	@echo "Suggests: postfix-doc, $(POSTFIX_SUGGESTS)" >>$@
-	@echo "Conflicts: $(POSTFIX_CONFLICTS)" >>$@
-
-$(POSTFIX_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(POSTFIX_DOC_IPK_DIR)/CONTROL
-	@rm -f $@
-	@echo "Package: postfix-doc" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(POSTFIX_PRIORITY)" >>$@
-	@echo "Section: $(POSTFIX_SECTION)" >>$@
-	@echo "Version: $(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(POSTFIX_MAINTAINER)" >>$@
-	@echo "Source: $(POSTFIX_SITE)/$(POSTFIX_SOURCE)" >>$@
-	@echo "Description: $(POSTFIX_DESCRIPTION)" >>$@
-	@echo "Depends: " >>$@
-	@echo "Suggests: man" >>$@
-	@echo "Conflicts: " >>$@
-
 $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	rm -rf $(POSTFIX_IPK_DIR) $(BUILD_DIR)/postfix_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade POSTCONF=$(POSTFIX_POSTCONF_STAGE)
+	$(MAKE) -C $(POSTFIX_BUILD_DIR) install_root=$(POSTFIX_IPK_DIR) mail_owner=mail setgid_group=maildrop upgrade LD_LIBRARY_PATH=$(STAGING_LIB_DIR)
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
 	install -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases
 	install -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
@@ -216,18 +109,18 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	(cd $(POSTFIX_IPK_DIR)/opt/etc/init.d; \
 		ln -s S69postfix K31postfix \
 	)
-	$(STRIP_COMMAND) $(POSTFIX_IPK_DIR)/opt/sbin/*
-	$(STRIP_COMMAND) $(POSTFIX_IPK_DIR)/opt/libexec/postfix/*
 
-	# Split into the different packages
-	rm -rf $(POSTFIX_DOC_IPK_DIR)
-	install -d $(POSTFIX_DOC_IPK_DIR)/opt
-	mv $(POSTFIX_IPK_DIR)/opt/man $(POSTFIX_DOC_IPK_DIR)/opt
-	mv $(POSTFIX_IPK_DIR)/opt/share $(POSTFIX_DOC_IPK_DIR)/opt
-	$(MAKE) $(POSTFIX_DOC_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_DOC_IPK_DIR)
+# Split into the different packages
+	rm -rf $(POSTFIX_IPK_DIR)-doc
+	install -d $(POSTFIX_IPK_DIR)-doc/opt
+	mv $(POSTFIX_IPK_DIR)/opt/man $(POSTFIX_IPK_DIR)-doc/opt
+	mv $(POSTFIX_IPK_DIR)/opt/share $(POSTFIX_IPK_DIR)-doc/opt
+	install -d $(POSTFIX_IPK_DIR)-doc/CONTROL
+	install -m 644 $(POSTFIX_SOURCE_DIR)/control-doc $(POSTFIX_IPK_DIR)-doc/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)-doc
 
-	$(MAKE) $(POSTFIX_IPK_DIR)/CONTROL/control
+	install -d $(POSTFIX_IPK_DIR)/CONTROL
+	install -m 644 $(POSTFIX_SOURCE_DIR)/control $(POSTFIX_IPK_DIR)/CONTROL/control
 	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
 	echo $(POSTFIX_CONFFILES) | sed -e 's/ /\n/g' > $(POSTFIX_IPK_DIR)/CONTROL/conffiles
@@ -240,5 +133,3 @@ postfix-clean:
 
 postfix-dirclean:
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR) $(POSTFIX_IPK_DIR) $(POSTFIX_IPK)
-	rm -rf $(POSTFIX_DOC_IPK_DIR) $(POSTFIX_DOC_IPK)
-	rm -rf $(POSTFIX_BUILD_DIR)-native $(STAGING_PREFIX)/bin/postconf
