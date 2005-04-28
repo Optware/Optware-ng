@@ -71,7 +71,8 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	mod-fastcgi \
-	py-moin
+	py-moin \
+	dokuwiki
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -128,7 +129,7 @@ WL500G_PACKAGES = \
 	appweb adns atftp autoconf audiofile automake \
 	bash bc bitchx busybox bzip2 \
 	chillispot ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
-	diffutils distcc dnsmasq \
+	diffutils distcc dnsmasq dokuwiki  \
 	e2fsprogs expat esmtp \
 	fetchmail file findutils fixesext flex \
 	freeradius freetype ftpd-topfield fontconfig \
