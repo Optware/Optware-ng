@@ -137,7 +137,7 @@ WL500G_PACKAGES = \
 	inetutils \
 	joe \
 	lame less libcurl libevent libesmtp libid3tag libjpeg libmad libgd libogg libol \
-	libdb libosip2 libpng libtool libtopfield libusb libvorbis libxslt \
+	libdb libosip2 libpng libtool libtopfield libusb libvorbis libxslt libxml2 \
 	logrotate lua lynx lzo libvorbis \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
