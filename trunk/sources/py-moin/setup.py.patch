@@ -1,0 +1,11 @@
+--- moinmoin/setup.py.orig	2005-04-05 09:26:32.000000000 -0700
++++ moinmoin/setup.py	2005-04-05 09:26:57.000000000 -0700
+@@ -134,7 +134,7 @@
+             module = os.path.splitext(os.path.basename(script))[0]
+             module = string.translate(module, to_module)
+             script_vars = {
+-                'python': os.path.normpath(sys.executable),
++                'python': self.executable,
+                 'package': self.package_name,
+                 'module': module,
+             }
