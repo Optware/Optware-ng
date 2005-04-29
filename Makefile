@@ -98,6 +98,7 @@ NATIVE_PACKAGES = \
 	openldap \
 	mzscheme \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
+	perl-appconfig \
 	perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident \
 	perl-spamassassin perl-storable perl-time-hires \
@@ -113,7 +114,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-appconfig
 
 # libdvb - "../include/devices.hh:14:32: linux/dvb/frontend.h: No such file or directory" - find -name frontend.h returns no match in unslung cross buildroot
 # libao - has runtime trouble
