@@ -28,7 +28,7 @@ CROSS_PACKAGES = \
 	atftp appweb apache apr apr-util atk audiofile automake \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
 	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
-	dhcp dict diffutils distcc dnsmasq dropbear \
+	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed elinks esmtp esound expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
@@ -43,7 +43,8 @@ CROSS_PACKAGES = \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm mediawiki metalog miau mod-python \
+	m4 make man man-pages mc mdadm mediawiki metalog miau \
+	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
 	nylon \
@@ -52,7 +53,7 @@ CROSS_PACKAGES = \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
-	py-sqlite py-bittorrent py-mxbase py-mysql py-psycopg \
+	py-sqlite py-bittorrent pt-moin py-mxbase py-mysql py-psycopg \
 	rdate readline recordext renderext rsync \
 	screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
@@ -70,9 +71,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	mod-fastcgi \
-	py-moin \
-	dokuwiki
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -162,7 +160,9 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-
+	mod-fastcgi \
+	py-moin \
+	dokuwiki
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
