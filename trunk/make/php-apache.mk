@@ -115,8 +115,9 @@ endif
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
+$(PHP_APACHE_BUILD_DIR)/.configured: \
 		$(PHP_APACHE_PATCHES)
+	$(MAKE) $(DL_DIR)/$(PHP_SOURCE)
 	$(MAKE) apache-stage libxml2-stage
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
