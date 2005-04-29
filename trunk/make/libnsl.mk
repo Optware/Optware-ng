@@ -4,7 +4,11 @@
 #
 ###########################################################
 
+ifneq ($(UNSLUNG_TARGET),wl500g) 
 LIBNSL_VERSION=2.2.5
+else
+LIBNSL_VERSION=0.9.19
+endif
 LIBNSL_DIR=libnsl-$(LIBNSL_VERSION)
 LIBNSL_LIBNAME=libnsl
 LIBNSL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
