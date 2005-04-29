@@ -124,24 +124,24 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_DEPRECATED = libiconv
 
 WL500G_PACKAGES = \
-	appweb adns atftp autoconf audiofile automake \
+	adns appweb atftp audiofile autoconf automake \
 	bash bc bitchx busybox bzip2 \
-	chillispot ccxstream classpath coreutils cpio cron ctags cyrus-sasl \
+	ccxstream chillispot classpath coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq dokuwiki  \
-	e2fsprogs expat esmtp \
+	e2fsprogs esmtp expat \
 	fetchmail file findutils fixesext flex \
 	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git grep gzip \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libevent libesmtp libid3tag libjpeg libmad libgd libogg libol \
-	libdb libosip2 libpng libtool libtopfield libusb libvorbis libxslt libxml2 \
-	logrotate lua lynx lzo libvorbis \
+	lame less libcurl libdb libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
+	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
+	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch pkgconfig popt portmap procps proftpd puppy php php-thttpd \
+	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils thttpd \
