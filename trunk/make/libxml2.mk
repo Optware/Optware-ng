@@ -131,8 +131,6 @@ libxml2: $(LIBXML2_BUILD_DIR)/.built
 $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
 	rm -f $(LIBXML2_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	# move xml2-config to .../staging/bin so other .mk's can find it
-	mv $(STAGING_DIR)/opt/bin/xml2-config $(STAGING_DIR)/bin
 	# remove .la to avoid libtool problems
 	rm $(STAGING_LIB_DIR)/libxml2.la
 	touch $(LIBXML2_BUILD_DIR)/.staged
