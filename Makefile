@@ -114,6 +114,7 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	perl-template-toolkit
 
 # libdvb - "../include/devices.hh:14:32: linux/dvb/frontend.h: No such file or directory" - find -name frontend.h returns no match in unslung cross buildroot
 # libao - has runtime trouble
