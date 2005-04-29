@@ -33,7 +33,7 @@ VIM_DEPENDS=ncurses
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=1
+VIM_IPK_VERSION=2
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -116,6 +116,7 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-x \
 		--disable-nls \
 	)
 	touch $(VIM_BUILD_DIR)/.configured
