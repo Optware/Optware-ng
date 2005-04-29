@@ -57,7 +57,7 @@ PHP_THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf
 # PHP_THTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_THTTPD_LIBPHP_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/php-5.0.3.patch $(PHP_THTTPD_SOURCE_DIR)/config.m4.patch
+PHP_THTTPD_LIBPHP_PATCHES=$(PHP_THTTPD_SOURCE_DIR)/php-5.0.3.patch $(PHP_THTTPD_SOURCE_DIR)/config.m4.patch $(PHP_THTTPD_SOURCE_DIR)/thttpd.c.patch
 PHP_THTTPD_PATCHES=$(THTTPD_PATCHES)
 
 #
