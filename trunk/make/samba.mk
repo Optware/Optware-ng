@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SAMBA_SITE=http://us4.samba.org/samba/ftp/stable
-SAMBA_VERSION=3.0.11
+SAMBA_VERSION=3.0.14a
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
