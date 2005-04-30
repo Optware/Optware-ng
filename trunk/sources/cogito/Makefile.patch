@@ -1,0 +1,37 @@
+--- cogito-0.8-orig/Makefile	2005-04-25 20:02:01.000000000 -0700
++++ cogito/Makefile	2005-04-30 14:18:46.802376000 -0700
+@@ -15,6 +15,7 @@
+ # BREAK YOUR LOCAL DIFFS! show-diff and anything using it will likely randomly
+ # break unless your underlying filesystem supports those sub-second times
+ # (my ext3 doesn't).
++CPPFLAGS=
+ CFLAGS=-g -O2 -Wall
+ 
+ # Should be changed to /usr/local
+@@ -70,7 +71,7 @@
+ endif
+ endif
+ 
+-CFLAGS += '-DSHA1_HEADER=$(SHA1_HEADER)'
++CFLAGS += $(CPPFLAGS) '-DSHA1_HEADER=$(SHA1_HEADER)'
+ 
+ 
+ all: $(PROG) $(GEN_SCRIPT)
+@@ -91,13 +92,16 @@
+ 	@echo Generating cg-version...
+ 	@rm -f $@
+ 	@echo "#!/bin/sh" > $@
+-	@PATH=.:$(PATH) echo "echo \"$(shell cat $(VERSION)) ($(shell commit-id))\"" >> $@
++	@PATH=.:$(PATH) echo "echo \"$(shell cat $(VERSION))\"" >> $@
+ 	@chmod +x $@
+ 
+ install: $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT)
+ 	install -m755 -d $(DESTDIR)$(bindir)
+ 	install $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT) $(DESTDIR)$(bindir)
+ 
++install-strip: install
++	for p in $(PROG); do $(STRIP) $(DESTDIR)$(bindir)/$$p; done
++
+ clean:
+ 	rm -f *.o mozilla-sha1/*.o ppc/*.o $(PROG) $(GEN_SCRIPT) $(LIB_FILE)
+ 
