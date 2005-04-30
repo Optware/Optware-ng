@@ -21,9 +21,16 @@
 #
 SAMBA_SITE=http://us4.samba.org/samba/ftp/stable
 SAMBA_VERSION=3.0.11
-SAMBA_SOURCE=samba-3.0.11.tar.gz
-SAMBA_DIR=samba-3.0.11
+SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
+SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
+SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SAMBA_DESCRIPTION=Samba is an Open Source/Free Software suite that provides seamless file and print services to SMB/CIFS clients.
+SAMBA_SECTION=net
+SAMBA_PRIORITY=optional
+SAMBA_DEPENDS=popt
+SAMBA_SUGGESTS=
+SAMBA_CONFLICTS=
 
 #
 # SAMBA_IPK_VERSION should be incremented when the ipk changes.
@@ -31,10 +38,15 @@ SAMBA_UNZIP=zcat
 SAMBA_IPK_VERSION=1
 
 #
+# SAMBA_CONFFILES should be a list of user-editable files
+SAMBA_CONFFILES=/opt/etc/init.d/S80samba
+
+
+#
 # SAMBA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/samba.patch
+SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch $(SAMBA_SOURCE_DIR)/samba.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,10 +120,15 @@ $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
+	(cd $(SAMBA_BUILD_DIR)/source; \
+		autoconf configure.in > configure; \
+	)
 	(cd $(SAMBA_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SAMBA_LDFLAGS)" \
+		linux_getgrouplist_ok=no \
+		samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 		source/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -170,6 +187,25 @@ $(SAMBA_BUILD_DIR)/.staged: $(SAMBA_BUILD_DIR)/.built
 samba-stage: $(SAMBA_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/samba
+#
+$(SAMBA_IPK_DIR)/CONTROL/control:
+	@install -d $(SAMBA_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: samba" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SAMBA_PRIORITY)" >>$@
+	@echo "Section: $(SAMBA_SECTION)" >>$@
+	@echo "Version: $(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SAMBA_MAINTAINER)" >>$@
+	@echo "Source: $(SAMBA_SITE)/$(SAMBA_SOURCE)" >>$@
+	@echo "Description: $(SAMBA_DESCRIPTION)" >>$@
+	@echo "Depends: $(SAMBA_DEPENDS)" >>$@
+	@echo "Suggests: $(SAMBA_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SAMBA_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(SAMBA_IPK_DIR)/opt/sbin or $(SAMBA_IPK_DIR)/opt/bin
@@ -184,13 +220,15 @@ samba-stage: $(SAMBA_BUILD_DIR)/.staged
 $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	rm -rf $(SAMBA_IPK_DIR) $(BUILD_DIR)/samba_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(SAMBA_IPK_DIR) install
+	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
+	$(STRIP_COMMAND) $(SAMBA_IPK_DIR)/opt/sbin/*
+	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S80samba
-	install -d $(SAMBA_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(SAMBA_VERSION)/" \
-		-e "s/@RELEASE@/$(SAMBA_IPK_VERSION)/" $(SAMBA_SOURCE_DIR)/control > $(SAMBA_IPK_DIR)/CONTROL/control
+	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
+	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
 
 #
@@ -210,3 +248,4 @@ samba-clean:
 #
 samba-dirclean:
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR) $(SAMBA_IPK_DIR) $(SAMBA_IPK)
+

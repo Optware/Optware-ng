@@ -1,0 +1,19 @@
+--- samba-3.0.11-orig/source/configure.in	2005-02-03 19:07:48.000000000 -0800
++++ samba/source/configure.in	2005-04-28 22:39:03.032376000 -0700
+@@ -1034,6 +1034,7 @@
+ #
+ case "$host_os" in
+     *linux*)
++AC_CACHE_CHECK([for getgrouplist],linux_getgrouplist_ok,[
+        # glibc <= 2.3.2 has a broken getgrouplist
+        AC_TRY_RUN([
+ #include <unistd.h>
+@@ -1051,7 +1052,7 @@
+ #endif
+        exit(0);
+ }
+-], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])
++], [linux_getgrouplist_ok=yes], [linux_getgrouplist_ok=no])])
+        if test x"$linux_getgrouplist_ok" = x"yes"; then
+           AC_DEFINE(HAVE_GETGROUPLIST, 1, [Have good getgrouplist])
+        fi
