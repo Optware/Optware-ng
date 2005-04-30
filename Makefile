@@ -38,7 +38,7 @@ CROSS_PACKAGES = \
 	ice imagemagick inetutils iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame less \
-	libbt libcurl libdb libdvdread libesmtp libevent \
+	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
 	libgc libgd libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool \
@@ -116,11 +116,9 @@ NATIVE_PACKAGES = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-template-toolkit
 
-# libdvb - "../include/devices.hh:14:32: linux/dvb/frontend.h: No such file or directory" - find -name frontend.h returns no match in unslung cross buildroot
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
-	libdvb \
 	nethack scponly dump gkrellm clamav freeradius
 
 PACKAGES_DEPRECATED = libiconv
