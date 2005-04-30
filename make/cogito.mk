@@ -31,7 +31,7 @@ COGITO_DESCRIPTION=Petr "Pasky" Baudis's SCM layer over Linus Torvald's git, for
 COGITO_SECTION=net
 COGITO_PRIORITY=optional
 COGITO_DEPENDS=openssl, zlib, rsync, patch, mktemp, coreutils, grep, libcurl
-COGITO_CONFLICTS=
+COGITO_CONFLICTS=git
 
 #
 # COGITO_IPK_VERSION should be incremented when the ipk changes.
