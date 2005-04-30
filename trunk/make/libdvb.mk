@@ -111,7 +111,7 @@ libdvb-source: $(DL_DIR)/$(LIBDVB_SOURCE) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) $(L
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBDVB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVB_SOURCE) $(LIBDVB_PATCHES)
+$(LIBDVB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDVB_SOURCE) $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE) $(LIBDVB_PATCHES)
 #	$(MAKE) dvb-kernel-stage
 	rm -rf $(BUILD_DIR)/$(LIBDVB_DIR) $(LIBDVB_BUILD_DIR)
 	$(LIBDVB_UNZIP) $(DL_DIR)/$(LIBDVB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
