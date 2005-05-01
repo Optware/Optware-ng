@@ -98,7 +98,6 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 	mv $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
 	(cd $(LIBXSLT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBXSLT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBXSLT_LDFLAGS)" \
 		./configure \
@@ -109,6 +108,7 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 		--disable-nls \
 		--without-python \
 		--without-crypto \
+		--with-libxml-prefix=$(STAGING_DIR)/opt \
 		--with-libxml-libs-prefix=$(STAGING_DIR)/opt \
 		--with-libxml-include-prefix=$(STAGING_DIR)/opt \
 	)
