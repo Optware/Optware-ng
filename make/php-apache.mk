@@ -16,14 +16,14 @@ PHP_APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
-PHP_APACHE_DEPENDS=apache, php
+PHP_APACHE_DEPENDS=apache (>= 2.0.53-9), php (>= 5.0.3-8)
 
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=4
+PHP_APACHE_IPK_VERSION=5
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files

@@ -35,7 +35,7 @@ PHP_THTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_THTTPD_DESCRIPTION=php-thttpd is thttpd webserver with php support
 PHP_THTTPD_SECTION=net
 PHP_THTTPD_PRIORITY=optional
-PHP_THTTPD_DEPENDS=php
+PHP_THTTPD_DEPENDS=php (>= 5.0.3-8)
 PHP_THTTPD_CONFLICTS=thttpd
 
 PHP_THTTPD_LIBPHP_SITE=$(PHP_SITE)
@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=5
+PHP_THTTPD_IPK_VERSION=6
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files

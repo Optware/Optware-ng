@@ -23,13 +23,13 @@ APACHE_SECTION=lib
 APACHE_PRIORITY=optional
 APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap-libs
 
-#APACHE_MPM=worker
-APACHE_MPM=prefork
+APACHE_MPM=worker
+#APACHE_MPM=prefork
 
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=8
+APACHE_IPK_VERSION=9
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
