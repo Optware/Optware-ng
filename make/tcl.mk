@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-TCL_SITE=http://belnet.dl.sourceforge.net/sourceforge/tcl/
+TCL_SITE=http://puzzle.dl.sourceforge.net/sourceforge/tcl/
 TCL_VERSION=8.4.9
 TCL_SOURCE=tcl$(TCL_VERSION)-src.tar.gz
 TCL_DIR=tcl$(TCL_VERSION)
@@ -148,15 +148,9 @@ tcl-stage: $(TCL_BUILD_DIR)/.staged
 #
 $(TCL_IPK): $(TCL_BUILD_DIR)/.built
 	rm -rf $(TCL_IPK_DIR) $(BUILD_DIR)/tcl_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TCL_BUILD_DIR)/unix DESTDIR=$(TCL_IPK_DIR) install
-#	install -d $(TCL_IPK_DIR)/opt/etc/
-#	install -m 755 $(TCL_SOURCE_DIR)/tcl.conf $(TCL_IPK_DIR)/opt/etc/tcl.conf
-#	install -d $(TCL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TCL_SOURCE_DIR)/rc.tcl $(TCL_IPK_DIR)/opt/etc/init.d/SXXtcl
+	$(MAKE) -C $(TCL_BUILD_DIR)/unix INSTALL_ROOT=$(TCL_IPK_DIR) install
 	install -d $(TCL_IPK_DIR)/CONTROL
 	install -m 644 $(TCL_SOURCE_DIR)/control $(TCL_IPK_DIR)/CONTROL/control
-#	install -m 644 $(TCL_SOURCE_DIR)/postinst $(TCL_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(TCL_SOURCE_DIR)/prerm $(TCL_IPK_DIR)/CONTROL/prerm
 	echo $(TCL_CONFFILES) | sed -e 's/ /\n/g' > $(TCL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCL_IPK_DIR)
 
