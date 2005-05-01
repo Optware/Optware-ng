@@ -37,7 +37,7 @@ MOD_PYTHON_CONFLICTS=
 #
 # MOD_PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_PYTHON_IPK_VERSION=1
+MOD_PYTHON_IPK_VERSION=2
 
 #
 # MOD_PYTHON_CONFFILES should be a list of user-editable files
