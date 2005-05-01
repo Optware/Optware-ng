@@ -92,14 +92,6 @@ $(PHP_APACHE_IPK_DIR)/CONTROL/control:
 #
 php-apache-source: $(DL_DIR)/$(PHP_SOURCE)
 
-# Allow for experimentally configuring apache's worker MPM
-ifeq ($(APACHE_MPM),worker)
-PHP_CONFIGURE_APACHE_THREAD_ARGS= \
-                --enable-maintainer-zts
-else
-PHP_CONFIGURE_APACHE_THREAD_ARGS=
-endif
-
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -140,7 +132,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: \
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
-		$(PHP_APACHE_CONFIGURE_THREAD_ARGS) \
+		$(PHP_CONFIGURE_THREAD_ARGS) \
 		--disable-dom \
 		--disable-xml \
 		--enable-libxml \
