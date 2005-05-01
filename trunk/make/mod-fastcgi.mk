@@ -37,7 +37,7 @@ MOD_FASTCGI_CONFLICTS=
 #
 # MOD_FASTCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_FASTCGI_IPK_VERSION=1
+MOD_FASTCGI_IPK_VERSION=2
 
 #
 # MOD_FASTCGI_CONFFILES should be a list of user-editable files
