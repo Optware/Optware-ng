@@ -27,7 +27,8 @@ CROSS_PACKAGES = \
 	abook adns alac-decoder \
 	atftp appweb apache apr apr-util atk audiofile automake \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
-	ccxstream classpath coreutils cpio cron ctorrent cups ctags cvs cyrus-sasl \
+	ccxstream classpath cogito coreutils cpio \
+	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed elinks esmtp esound expat \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
@@ -55,7 +56,7 @@ CROSS_PACKAGES = \
 	procmail procps proftpd puppy python \
 	py-sqlite py-bittorrent pt-moin py-mxbase py-mysql py-psycopg \
 	rdate readline recordext renderext rsync \
-	screen sed ser siproxy sm snownews \
+	samba screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	tar tcpdump tcpwrappers termcap textutils tin torrent transcode \
 	ttf-bitstream-vera \
@@ -71,8 +72,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	cogito \
-	samba
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -84,7 +83,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
 # rsnapshot depends on perl
-# samba probably will build cross - may just need some configure work
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
 # vim probably just needs configure work
@@ -107,7 +105,6 @@ NATIVE_PACKAGES = \
 	postfix \
 	rsnapshot ruby \
 	squid \
-	samba \
 	stow \
 	tin \
 	vim \
@@ -165,7 +162,9 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 	mod-fastcgi \
 	py-moin \
-	dokuwiki
+	dokuwiki \
+	cogito \
+	samba
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
