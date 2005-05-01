@@ -23,13 +23,13 @@ MAN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MAN_DESCRIPTION=unix manual page reader
 MAN_SECTION=documentation
 MAN_PRIORITY=optional
-MAN_DEPENDS=groff
+MAN_DEPENDS=groff, less
 MAN_CONFLICTS=
 
 #
 # MAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MAN_IPK_VERSION=3
+MAN_IPK_VERSION=4
 
 #
 # MAN_CONFFILES should be a list of user-editable files
