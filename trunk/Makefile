@@ -34,7 +34,7 @@ CROSS_PACKAGES = \
 	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
 	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git glib grep groff gtk gzip \
+	glib grep groff gtk gzip \
 	hdparm hnb \
 	ice imagemagick inetutils iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
@@ -102,26 +102,25 @@ NATIVE_PACKAGES = \
 	perl-html-parser perl-html-tagset \
 	perl-mime-base64 perl-net-dns perl-net-ident \
 	perl-spamassassin perl-storable perl-time-hires \
+	perl-template-toolkit \
+	perl-term-readkey \
 	postfix \
 	rsnapshot ruby \
 	squid \
 	stow \
-	tin \
 	vim \
 	w3m \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-template-toolkit \
-	perl-term-readkey
 
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	nethack scponly dump gkrellm clamav freeradius
 
-PACKAGES_DEPRECATED = libiconv
+PACKAGES_OBSOLETED = libiconv git
 
 WL500G_PACKAGES = \
 	adns appweb atftp audiofile autoconf automake \
