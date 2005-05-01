@@ -30,13 +30,13 @@ EACCELERATOR_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 EACCELERATOR_DESCRIPTION=Yet another php cache / accelerator
 EACCELERATOR_SECTION=web
 EACCELERATOR_PRIORITY=optional
-EACCELERATOR_DEPENDS=php
+EACCELERATOR_DEPENDS=php (>= 5.0.3-8)
 EACCELERATOR_CONFLICTS=
 
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=2
+EACCELERATOR_IPK_VERSION=3
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
