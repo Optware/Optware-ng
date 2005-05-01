@@ -27,9 +27,9 @@ CYRUS-IMAPD_CPPFLAGS=
 CYRUS-IMAPD_LDFLAGS=
 
 ifeq ($(HOST_MACHINE),armv5b)
-  CYRUS-IMAPD_CONFIGURE_OPTS=""
+  CYRUS-IMAPD_CONFIGURE_OPTS=
 else
-  CYRUS-IMAPD_CONFIGURE_OPTS="--without-perl"
+  CYRUS-IMAPD_CONFIGURE_OPTS=--without-perl
 endif
 
 CYRUS-IMAPD_BUILD_DIR=$(BUILD_DIR)/cyrus-imapd
@@ -179,7 +179,8 @@ $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin/*
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a
-	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/*
+# more work is needed to strip the following files
+#	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/*
 ifeq ($(HOST_MACHINE),armv5b)
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/5.8.6/armv5b-linux/auto/Cyrus ; \
 		chmod +w IMAP/IMAP.so; \
