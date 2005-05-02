@@ -20,15 +20,22 @@
 # You should change all these variables to suit your package.
 #
 LIBTIFF_SITE=ftp://ftp.remotesensing.org/pub/libtiff
-LIBTIFF_VERSION=3.7.1
+LIBTIFF_VERSION=3.7.2
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
 LIBTIFF_UNZIP=zcat
+LIBTIFF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBTIFF_DESCRIPTION=Tag Image File Format Libraries
+LIBTIFF_SECTION=lib
+LIBTIFF_PRIORITY=optional
+LIBTIFF_DEPENDS=zlib, libstdc++
+LIBTIFF_SUGGESTS=
+LIBTIFF_CONFLICTS=
 
 #
 # LIBTIFF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTIFF_IPK_VERSION=3
+LIBTIFF_IPK_VERSION=1
 
 #
 # LIBTIFF_PATCHES should list any patches, in the the order in
@@ -142,6 +149,25 @@ $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION): $(LIBTIFF_BUILD_DIR)/.buil
 libtiff-stage: $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libtiff
+#
+$(LIBTIFF_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBTIFF_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libtiff" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBTIFF_PRIORITY)" >>$@
+	@echo "Section: $(LIBTIFF_SECTION)" >>$@
+	@echo "Version: $(LIBTIFF_VERSION)-$(LIBTIFF_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBTIFF_MAINTAINER)" >>$@
+	@echo "Source: $(LIBTIFF_SITE)/$(LIBTIFF_SOURCE)" >>$@
+	@echo "Description: $(LIBTIFF_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBTIFF_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBTIFF_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBTIFF_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBTIFF_IPK_DIR)/opt/sbin or $(LIBTIFF_IPK_DIR)/opt/bin
@@ -208,12 +234,11 @@ $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(LIBTIFF_IPK_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(LIBTIFF_IPK_DIR)/opt/include
 
-	$(STRIP_COMMAND) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.a
-	$(STRIP_COMMAND) --strip-unneeded $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.a
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
 
 #	$(STRIP_COMMAND) $(LIBTIFF_BUILD_DIR)/libtiff -o $(LIBTIFF_IPK_DIR)/opt/bin/libtiff
-	install -d $(LIBTIFF_IPK_DIR)/CONTROL
-	install -m 644 $(LIBTIFF_SOURCE_DIR)/control $(LIBTIFF_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBTIFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTIFF_IPK_DIR)
 
 #
@@ -233,3 +258,4 @@ libtiff-clean:
 #
 libtiff-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(LIBTIFF_BUILD_DIR) $(LIBTIFF_IPK_DIR) $(LIBTIFF_IPK)
+
