@@ -121,7 +121,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_THTTPD_LDFLAGS)" \
 		CFLAGS="$(TARGET_CFLAGS) -ldl -lpthread" \
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
-		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
+		PHP_LIBXML_DIR=$(STAGING_PREFIX)/opt \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \

@@ -224,7 +224,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
-		PHP_LIBXML_DIR=$(STAGING_DIR) \
+		PHP_LIBXML_DIR=$(STAGING_DIR)/opt \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
