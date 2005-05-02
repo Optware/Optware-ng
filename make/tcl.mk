@@ -32,7 +32,7 @@ TCL_CONFLICTS=
 #
 # TCL_IPK_VERSION should be incremented when the ipk changes.
 #
-TCL_IPK_VERSION=2
+TCL_IPK_VERSION=3
 
 #
 # TCL_CONFFILES should be a list of user-editable files #TCL_CONFFILES=/opt/etc/tcl.conf /opt/etc/init.d/SXXtcl
@@ -42,7 +42,6 @@ TCL_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 TCL_PATCHES=$(TCL_SOURCE_DIR)/configure.in.patch $(TCL_SOURCE_DIR)/strstr.c.patch
-#TCL_PATCHES=$(TCL_SOURCE_DIR)/strstr.c.patch
 
 
 #
@@ -137,6 +136,7 @@ tcl: $(TCL_BUILD_DIR)/.built
 $(TCL_BUILD_DIR)/.staged: $(TCL_BUILD_DIR)/.built
 	rm -f $(TCL_BUILD_DIR)/.staged
 	$(MAKE) -C $(TCL_BUILD_DIR)/unix INSTALL_ROOT=$(STAGING_DIR) install
+	cd $(STAGING_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9].so$$/so/'` libtcl.so
 	touch $(TCL_BUILD_DIR)/.staged
 
 tcl-stage: $(TCL_BUILD_DIR)/.staged
