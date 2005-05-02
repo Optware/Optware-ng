@@ -9,8 +9,15 @@ PERL-TIME-HIRES_VERSION=1.66
 PERL-TIME-HIRES_SOURCE=Time-HiRes-$(PERL-TIME-HIRES_VERSION).tar.gz
 PERL-TIME-HIRES_DIR=Time-HiRes-$(PERL-TIME-HIRES_VERSION)
 PERL-TIME-HIRES_UNZIP=zcat
+PERL-TIME-HIRES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-TIME-HIRES_DESCRIPTION=Implement usleep, ualarm, and gettimeofday for Perl, as well as wrappers to implement time, sleep, and alarm that know about non-integral seconds.
+PERL-TIME-HIRES_SECTION=util
+PERL-TIME-HIRES_PRIORITY=optional
+PERL-TIME-HIRES_DEPENDS=perl
+PERL-TIME-HIRES_SUGGESTS=
+PERL-TIME-HIRES_CONFLICTS=
 
-PERL-TIME-HIRES_IPK_VERSION=2
+PERL-TIME-HIRES_IPK_VERSION=3
 
 PERL-TIME-HIRES_CONFFILES=
 
@@ -55,6 +62,21 @@ $(PERL-TIME-HIRES_BUILD_DIR)/.staged: $(PERL-TIME-HIRES_BUILD_DIR)/.built
 
 perl-time-hires-stage: $(PERL-TIME-HIRES_BUILD_DIR)/.staged
 
+$(PERL-TIME-HIRES_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-TIME-HIRES_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-time-hires" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-TIME-HIRES_PRIORITY)" >>$@
+	@echo "Section: $(PERL-TIME-HIRES_SECTION)" >>$@
+	@echo "Version: $(PERL-TIME-HIRES_VERSION)-$(PERL-TIME-HIRES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-TIME-HIRES_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-TIME-HIRES_SITE)/$(PERL-TIME-HIRES_SOURCE)" >>$@
+	@echo "Description: $(PERL-TIME-HIRES_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-TIME-HIRES_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-TIME-HIRES_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-TIME-HIRES_CONFLICTS)" >>$@
+
 $(PERL-TIME-HIRES_IPK): $(PERL-TIME-HIRES_BUILD_DIR)/.built
 	rm -rf $(PERL-TIME-HIRES_IPK_DIR) $(BUILD_DIR)/perl-time-hires_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-TIME-HIRES_BUILD_DIR) DESTDIR=$(PERL-TIME-HIRES_IPK_DIR) install
@@ -65,10 +87,7 @@ $(PERL-TIME-HIRES_IPK): $(PERL-TIME-HIRES_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-TIME-HIRES_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(PERL-TIME-HIRES_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-TIME-HIRES_SOURCE_DIR)/control $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-TIME-HIRES_SOURCE_DIR)/postinst $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-TIME-HIRES_SOURCE_DIR)/prerm $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/control
 	echo $(PERL-TIME-HIRES_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-TIME-HIRES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-TIME-HIRES_IPK_DIR)
 

@@ -9,8 +9,15 @@ PERL-DB-FILE_VERSION=1.810
 PERL-DB-FILE_SOURCE=DB_File-$(PERL-DB-FILE_VERSION).tar.gz
 PERL-DB-FILE_DIR=DB_File-$(PERL-DB-FILE_VERSION)
 PERL-DB-FILE_UNZIP=zcat
+PERL-DB-FILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-DB-FILE_DESCRIPTION=A module which allows Perl programs to make use of the facilities provided by Berkeley DB version 1.
+PERL-DB-FILE_SECTION=util
+PERL-DB-FILE_PRIORITY=optional
+PERL-DB-FILE_DEPENDS=perl, libdb
+PERL-DB-FILE_SUGGESTS=
+PERL-DB-FILE_CONFLICTS=
 
-PERL-DB-FILE_IPK_VERSION=1
+PERL-DB-FILE_IPK_VERSION=2
 
 PERL-DB-FILE_CONFFILES=
 
@@ -59,6 +66,21 @@ $(PERL-DB-FILE_BUILD_DIR)/.staged: $(PERL-DB-FILE_BUILD_DIR)/.built
 
 perl-db-file-stage: $(PERL-DB-FILE_BUILD_DIR)/.staged
 
+$(PERL-DB-FILE_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-db-file" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-DB-FILE_PRIORITY)" >>$@
+	@echo "Section: $(PERL-DB-FILE_SECTION)" >>$@
+	@echo "Version: $(PERL-DB-FILE_VERSION)-$(PERL-DB-FILE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-DB-FILE_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-DB-FILE_SITE)/$(PERL-DB-FILE_SOURCE)" >>$@
+	@echo "Description: $(PERL-DB-FILE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-DB-FILE_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-DB-FILE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-DB-FILE_CONFLICTS)" >>$@
+
 $(PERL-DB-FILE_IPK): $(PERL-DB-FILE_BUILD_DIR)/.built
 	rm -rf $(PERL-DB-FILE_IPK_DIR) $(BUILD_DIR)/perl-db-file_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DB-FILE_BUILD_DIR) DESTDIR=$(PERL-DB-FILE_IPK_DIR) install
@@ -69,8 +91,9 @@ $(PERL-DB-FILE_IPK): $(PERL-DB-FILE_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-DB-FILE_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/control $(PERL-DB-FILE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PERL-DB-FILE_IPK_DIR)/CONTROL/control
+#	install -d $(PERL-DB-FILE_IPK_DIR)/CONTROL
+#	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/control $(PERL-DB-FILE_IPK_DIR)/CONTROL/control
 #	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/postinst $(PERL-DB-FILE_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(PERL-DB-FILE_SOURCE_DIR)/prerm $(PERL-DB-FILE_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-DB-FILE_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DB-FILE_IPK_DIR)/CONTROL/conffiles

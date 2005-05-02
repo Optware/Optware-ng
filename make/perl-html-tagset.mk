@@ -9,8 +9,15 @@ PERL-HTML-TAGSET_VERSION=3.04
 PERL-HTML-TAGSET_SOURCE=HTML-Tagset-$(PERL-HTML-TAGSET_VERSION).tar.gz
 PERL-HTML-TAGSET_DIR=HTML-Tagset-$(PERL-HTML-TAGSET_VERSION)
 PERL-HTML-TAGSET_UNZIP=zcat
+PERL-HTML-TAGSET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-HTML-TAGSET_DESCRIPTION=This module contains data tables useful in dealing with HTML.
+PERL-HTML-TAGSET_SECTION=util
+PERL-HTML-TAGSET_PRIORITY=optional
+PERL-HTML-TAGSET_DEPENDS=perl
+PERL-HTML-TAGSET_SUGGESTS=
+PERL-HTML-TAGSET_CONFLICTS=
 
-PERL-HTML-TAGSET_IPK_VERSION=2
+PERL-HTML-TAGSET_IPK_VERSION=3
 
 PERL-HTML-TAGSET_CONFFILES=
 
@@ -55,6 +62,21 @@ $(PERL-HTML-TAGSET_BUILD_DIR)/.staged: $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 
 perl-html-tagset-stage: $(PERL-HTML-TAGSET_BUILD_DIR)/.staged
 
+$(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-html-tagset" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-HTML-TAGSET_PRIORITY)" >>$@
+	@echo "Section: $(PERL-HTML-TAGSET_SECTION)" >>$@
+	@echo "Version: $(PERL-HTML-TAGSET_VERSION)-$(PERL-HTML-TAGSET_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-HTML-TAGSET_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-HTML-TAGSET_SITE)/$(PERL-HTML-TAGSET_SOURCE)" >>$@
+	@echo "Description: $(PERL-HTML-TAGSET_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-HTML-TAGSET_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-HTML-TAGSET_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-HTML-TAGSET_CONFLICTS)" >>$@
+
 $(PERL-HTML-TAGSET_IPK): $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 	rm -rf $(PERL-HTML-TAGSET_IPK_DIR) $(BUILD_DIR)/perl-html-tagset_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-HTML-TAGSET_BUILD_DIR) DESTDIR=$(PERL-HTML-TAGSET_IPK_DIR) install
@@ -65,10 +87,7 @@ $(PERL-HTML-TAGSET_IPK): $(PERL-HTML-TAGSET_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-HTML-TAGSET_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-HTML-TAGSET_SOURCE_DIR)/control $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-HTML-TAGSET_SOURCE_DIR)/postinst $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-HTML-TAGSET_SOURCE_DIR)/prerm $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/control
 	echo $(PERL-HTML-TAGSET_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-HTML-TAGSET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-HTML-TAGSET_IPK_DIR)
 

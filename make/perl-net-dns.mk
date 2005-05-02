@@ -9,8 +9,15 @@ PERL-NET-DNS_VERSION=0.48
 PERL-NET-DNS_SOURCE=Net-DNS-$(PERL-NET-DNS_VERSION).tar.gz
 PERL-NET-DNS_DIR=Net-DNS-$(PERL-NET-DNS_VERSION)
 PERL-NET-DNS_UNZIP=zcat
+PERL-NET-DNS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-NET-DNS_DESCRIPTION=Perl DNS Resolver Module.
+PERL-NET-DNS_SECTION=util
+PERL-NET-DNS_PRIORITY=optional
+PERL-NET-DNS_DEPENDS=perl, perl-digest-hmac
+PERL-NET-DNS_SUGGESTS=
+PERL-NET-DNS_CONFLICTS=
 
-PERL-NET-DNS_IPK_VERSION=2
+PERL-NET-DNS_IPK_VERSION=3
 
 PERL-NET-DNS_CONFFILES=
 
@@ -56,6 +63,21 @@ $(PERL-NET-DNS_BUILD_DIR)/.staged: $(PERL-NET-DNS_BUILD_DIR)/.built
 
 perl-net-dns-stage: $(PERL-NET-DNS_BUILD_DIR)/.staged
 
+$(PERL-NET-DNS_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-NET-DNS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-net-dns" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-NET-DNS_PRIORITY)" >>$@
+	@echo "Section: $(PERL-NET-DNS_SECTION)" >>$@
+	@echo "Version: $(PERL-NET-DNS_VERSION)-$(PERL-NET-DNS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-NET-DNS_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-NET-DNS_SITE)/$(PERL-NET-DNS_SOURCE)" >>$@
+	@echo "Description: $(PERL-NET-DNS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-NET-DNS_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-NET-DNS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-NET-DNS_CONFLICTS)" >>$@
+
 $(PERL-NET-DNS_IPK): $(PERL-NET-DNS_BUILD_DIR)/.built
 	rm -rf $(PERL-NET-DNS_IPK_DIR) $(BUILD_DIR)/perl-net-dns_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-NET-DNS_BUILD_DIR) DESTDIR=$(PERL-NET-DNS_IPK_DIR) install
@@ -66,14 +88,7 @@ $(PERL-NET-DNS_IPK): $(PERL-NET-DNS_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-NET-DNS_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-#	install -d $(PERL-NET-DNS_IPK_DIR)/opt/etc/
-#	install -m 644 $(PERL-NET-DNS_SOURCE_DIR)/perl-net-dns.conf $(PERL-NET-DNS_IPK_DIR)/opt/etc/perl-net-dns.conf
-#	install -d $(PERL-NET-DNS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PERL-NET-DNS_SOURCE_DIR)/rc.perl-net-dns $(PERL-NET-DNS_IPK_DIR)/opt/etc/init.d/SXXperl-net-dns
-	install -d $(PERL-NET-DNS_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-NET-DNS_SOURCE_DIR)/control $(PERL-NET-DNS_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-NET-DNS_SOURCE_DIR)/postinst $(PERL-NET-DNS_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-NET-DNS_SOURCE_DIR)/prerm $(PERL-NET-DNS_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-NET-DNS_IPK_DIR)/CONTROL/control
 	echo $(PERL-NET-DNS_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-NET-DNS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-NET-DNS_IPK_DIR)
 

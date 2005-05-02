@@ -9,8 +9,15 @@ PERL-DBI_VERSION=1.47
 PERL-DBI_SOURCE=DBI-$(PERL-DBI_VERSION).tar.gz
 PERL-DBI_DIR=DBI-$(PERL-DBI_VERSION)
 PERL-DBI_UNZIP=zcat
+PERL-DBI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-DBI_DESCRIPTION=DBI - The Perl Database Interface by Tim Bunce.
+PERL-DBI_SECTION=util
+PERL-DBI_PRIORITY=optional
+PERL-DBI_DEPENDS=
+PERL-DBI_SUGGESTS=
+PERL-DBI_CONFLICTS=
 
-PERL-DBI_IPK_VERSION=1
+PERL-DBI_IPK_VERSION=2
 
 PERL-DBI_CONFFILES=
 
@@ -57,6 +64,21 @@ $(PERL-DBI_BUILD_DIR)/.staged: $(PERL-DBI_BUILD_DIR)/.built
 
 perl-dbi-stage: $(PERL-DBI_BUILD_DIR)/.staged
 
+$(PERL-DBI_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-DBI_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-dbi" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-DBI_PRIORITY)" >>$@
+	@echo "Section: $(PERL-DBI_SECTION)" >>$@
+	@echo "Version: $(PERL-DBI_VERSION)-$(PERL-DBI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-DBI_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-DBI_SITE)/$(PERL-DBI_SOURCE)" >>$@
+	@echo "Description: $(PERL-DBI_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-DBI_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-DBI_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-DBI_CONFLICTS)" >>$@
+
 $(PERL-DBI_IPK): $(PERL-DBI_BUILD_DIR)/.built
 	rm -rf $(PERL-DBI_IPK_DIR) $(BUILD_DIR)/perl-dbi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DBI_BUILD_DIR) DESTDIR=$(PERL-DBI_IPK_DIR) install
@@ -67,14 +89,7 @@ $(PERL-DBI_IPK): $(PERL-DBI_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-DBI_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-#	install -d $(PERL-DBI_IPK_DIR)/opt/etc/
-#	install -m 644 $(PERL-DBI_SOURCE_DIR)/perl-dbi.conf $(PERL-DBI_IPK_DIR)/opt/etc/perl-dbi.conf
-#	install -d $(PERL-DBI_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PERL-DBI_SOURCE_DIR)/rc.perl-dbi $(PERL-DBI_IPK_DIR)/opt/etc/init.d/SXXperl-dbi
-	install -d $(PERL-DBI_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-DBI_SOURCE_DIR)/control $(PERL-DBI_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-DBI_SOURCE_DIR)/postinst $(PERL-DBI_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-DBI_SOURCE_DIR)/prerm $(PERL-DBI_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-DBI_IPK_DIR)/CONTROL/control
 	echo $(PERL-DBI_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DBI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DBI_IPK_DIR)
 
