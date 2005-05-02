@@ -58,7 +58,7 @@ CROSS_PACKAGES = \
 	rdate readline recordext renderext rsync \
 	samba screen sed ser siproxy sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
-	tar tcpdump tcpwrappers termcap textutils tin torrent transcode \
+	tar tcl tcpdump tcpwrappers termcap textutils tin torrent transcode \
 	ttf-bitstream-vera \
 	unfs3 units unslung-feeds \
 	vdr-mediamvp vsftpd vte vorbis-tools \
@@ -72,7 +72,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	tcl \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
