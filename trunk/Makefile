@@ -72,6 +72,8 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	tcl \
+	quagga 
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -141,6 +143,7 @@ WL500G_PACKAGES = \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy \
+	quagga \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd \
@@ -161,7 +164,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 	mod-fastcgi \
 	py-moin \
-	dokuwiki \
 	cogito \
 	samba
 

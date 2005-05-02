@@ -1,0 +1,34 @@
+#!/bin/sh
+
+ZEBRA="/opt/sbin/zebra"
+RIPD="/opt/sbin/ripd"
+OSPFD="/opt/sbin/ospfd"
+OSPF6D="/opt/sbin/ospf6d"
+
+ZEBRA_CONF="/opt/etc/quagga/zebra.conf"
+RIPD_CONF="/opt/etc/quagga/ripd.conf"
+OSPFD_CONF="/opt/etc/quagga/ospfd.conf"
+OSPF6D_CONF="/opt/etc/quagga/ospf6d.conf"
+
+ZEBRA_OPTS="-d -A127.0.0.1"
+RIPD_OPTS="-d -A127.0.0.1"
+OSPFD_OPTS="-d -A127.0.0.1"
+OSPF6D_OPTS="-d -A127.0.0.1"
+BGPD_OPTS="-d -A127.0.0.1"
+
+[ -f $ZEBRA_CONF ] || exit 0
+[ -x $ZEBRA ] || exit 0
+
+$ZEBRA $ZEBRA_OPTS &
+
+if ( [ -f $OSPFD_CONF ] && [ -x $OSPFD ] ); then
+	$OSPFD $OSPFD_OPTS &
+fi
+
+if ( [ -f $OSPF6D_CONF ] && [ -x $OSPF6D ] ); then
+	$OSPF6D $OSPF6D_OPTS &
+fi
+
+if ( [ -f $RIPD_CONF ] && [ -x $RIPD ] ); then
+	$RIPD $RIPD_OPTS &
+fi
