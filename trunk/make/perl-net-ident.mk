@@ -9,8 +9,15 @@ PERL-NET-IDENT_VERSION=1.20
 PERL-NET-IDENT_SOURCE=Net-Ident-$(PERL-NET-IDENT_VERSION).tar.gz
 PERL-NET-IDENT_DIR=Net-Ident-$(PERL-NET-IDENT_VERSION)
 PERL-NET-IDENT_UNZIP=zcat
+PERL-NET-IDENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-NET-IDENT_DESCRIPTION=Net::Ident
+PERL-NET-IDENT_SECTION=util
+PERL-NET-IDENT_PRIORITY=optional
+PERL-NET-IDENT_DEPENDS=perl
+PERL-NET-IDENT_SUGGESTS=
+PERL-NET-IDENT_CONFLICTS=
 
-PERL-NET-IDENT_IPK_VERSION=2
+PERL-NET-IDENT_IPK_VERSION=3
 
 PERL-NET-IDENT_CONFFILES=
 
@@ -56,6 +63,21 @@ $(PERL-NET-IDENT_BUILD_DIR)/.staged: $(PERL-NET-IDENT_BUILD_DIR)/.built
 
 perl-net-ident-stage: $(PERL-NET-IDENT_BUILD_DIR)/.staged
 
+$(PERL-NET-IDENT_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-NET-IDENT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-net-ident" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-NET-IDENT_PRIORITY)" >>$@
+	@echo "Section: $(PERL-NET-IDENT_SECTION)" >>$@
+	@echo "Version: $(PERL-NET-IDENT_VERSION)-$(PERL-NET-IDENT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-NET-IDENT_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-NET-IDENT_SITE)/$(PERL-NET-IDENT_SOURCE)" >>$@
+	@echo "Description: $(PERL-NET-IDENT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-NET-IDENT_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-NET-IDENT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-NET-IDENT_CONFLICTS)" >>$@
+
 $(PERL-NET-IDENT_IPK): $(PERL-NET-IDENT_BUILD_DIR)/.built
 	rm -rf $(PERL-NET-IDENT_IPK_DIR) $(BUILD_DIR)/perl-net-ident_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-NET-IDENT_BUILD_DIR) DESTDIR=$(PERL-NET-IDENT_IPK_DIR) install
@@ -66,14 +88,7 @@ $(PERL-NET-IDENT_IPK): $(PERL-NET-IDENT_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-NET-IDENT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-#	install -d $(PERL-NET-IDENT_IPK_DIR)/opt/etc/
-#	install -m 644 $(PERL-NET-IDENT_SOURCE_DIR)/perl-net-ident.conf $(PERL-NET-IDENT_IPK_DIR)/opt/etc/perl-net-ident.conf
-#	install -d $(PERL-NET-IDENT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PERL-NET-IDENT_SOURCE_DIR)/rc.perl-net-ident $(PERL-NET-IDENT_IPK_DIR)/opt/etc/init.d/SXXperl-net-ident
-	install -d $(PERL-NET-IDENT_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-NET-IDENT_SOURCE_DIR)/control $(PERL-NET-IDENT_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-NET-IDENT_SOURCE_DIR)/postinst $(PERL-NET-IDENT_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-NET-IDENT_SOURCE_DIR)/prerm $(PERL-NET-IDENT_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-NET-IDENT_IPK_DIR)/CONTROL/control
 	echo $(PERL-NET-IDENT_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-NET-IDENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-NET-IDENT_IPK_DIR)
 

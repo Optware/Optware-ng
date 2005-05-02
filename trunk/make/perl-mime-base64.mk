@@ -9,8 +9,15 @@ PERL-MIME-BASE64_VERSION=3.05
 PERL-MIME-BASE64_SOURCE=MIME-Base64-$(PERL-MIME-BASE64_VERSION).tar.gz
 PERL-MIME-BASE64_DIR=MIME-Base64-$(PERL-MIME-BASE64_VERSION)
 PERL-MIME-BASE64_UNZIP=zcat
+PERL-MIME-BASE64_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-MIME-BASE64_DESCRIPTION=This package contains a base64 encoder/decoder and a quoted-printable encoder/decoder. These encoding methods are specified in RFC 2045 - MIME.
+PERL-MIME-BASE64_SECTION=util
+PERL-MIME-BASE64_PRIORITY=optional
+PERL-MIME-BASE64_DEPENDS=perl
+PERL-MIME-BASE64_SUGGESTS=
+PERL-MIME-BASE64_CONFLICTS=
 
-PERL-MIME-BASE64_IPK_VERSION=2
+PERL-MIME-BASE64_IPK_VERSION=3
 
 PERL-MIME-BASE64_CONFFILES=
 
@@ -55,6 +62,21 @@ $(PERL-MIME-BASE64_BUILD_DIR)/.staged: $(PERL-MIME-BASE64_BUILD_DIR)/.built
 
 perl-mime-base64-stage: $(PERL-MIME-BASE64_BUILD_DIR)/.staged
 
+$(PERL-MIME-BASE64_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-MIME-BASE64_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-mime-base64" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-MIME-BASE64_PRIORITY)" >>$@
+	@echo "Section: $(PERL-MIME-BASE64_SECTION)" >>$@
+	@echo "Version: $(PERL-MIME-BASE64_VERSION)-$(PERL-MIME-BASE64_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-MIME-BASE64_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-MIME-BASE64_SITE)/$(PERL-MIME-BASE64_SOURCE)" >>$@
+	@echo "Description: $(PERL-MIME-BASE64_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-MIME-BASE64_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-MIME-BASE64_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-MIME-BASE64_CONFLICTS)" >>$@
+
 $(PERL-MIME-BASE64_IPK): $(PERL-MIME-BASE64_BUILD_DIR)/.built
 	rm -rf $(PERL-MIME-BASE64_IPK_DIR) $(BUILD_DIR)/perl-mime-base64_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-MIME-BASE64_BUILD_DIR) DESTDIR=$(PERL-MIME-BASE64_IPK_DIR) install
@@ -65,10 +87,7 @@ $(PERL-MIME-BASE64_IPK): $(PERL-MIME-BASE64_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-MIME-BASE64_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(PERL-MIME-BASE64_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-MIME-BASE64_SOURCE_DIR)/control $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-MIME-BASE64_SOURCE_DIR)/postinst $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-MIME-BASE64_SOURCE_DIR)/prerm $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/control
 	echo $(PERL-MIME-BASE64_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-MIME-BASE64_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-MIME-BASE64_IPK_DIR)
 

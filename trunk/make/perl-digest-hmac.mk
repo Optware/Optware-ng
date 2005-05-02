@@ -9,8 +9,15 @@ PERL-DIGEST-HMAC_VERSION=1.01
 PERL-DIGEST-HMAC_SOURCE=Digest-HMAC-$(PERL-DIGEST-HMAC_VERSION).tar.gz
 PERL-DIGEST-HMAC_DIR=Digest-HMAC-$(PERL-DIGEST-HMAC_VERSION)
 PERL-DIGEST-HMAC_UNZIP=zcat
+PERL-DIGEST-HMAC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-DIGEST-HMAC_DESCRIPTION=The module allows you to use the NIST SHA-1 message digest algorithm.
+PERL-DIGEST-HMAC_SECTION=util
+PERL-DIGEST-HMAC_PRIORITY=optional
+PERL-DIGEST-HMAC_DEPENDS=perl, perl-digest-sha1
+PERL-DIGEST-HMAC_SUGGESTS=
+PERL-DIGEST-HMAC_CONFLICTS=
 
-PERL-DIGEST-HMAC_IPK_VERSION=2
+PERL-DIGEST-HMAC_IPK_VERSION=3
 
 PERL-DIGEST-HMAC_CONFFILES=
 
@@ -56,6 +63,21 @@ $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged: $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 
 perl-digest-hmac-stage: $(PERL-DIGEST-HMAC_BUILD_DIR)/.staged
 
+$(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-digest-hmac" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-DIGEST-HMAC_PRIORITY)" >>$@
+	@echo "Section: $(PERL-DIGEST-HMAC_SECTION)" >>$@
+	@echo "Version: $(PERL-DIGEST-HMAC_VERSION)-$(PERL-DIGEST-HMAC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-DIGEST-HMAC_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-DIGEST-HMAC_SITE)/$(PERL-DIGEST-HMAC_SOURCE)" >>$@
+	@echo "Description: $(PERL-DIGEST-HMAC_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-DIGEST-HMAC_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-DIGEST-HMAC_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-DIGEST-HMAC_CONFLICTS)" >>$@
+
 $(PERL-DIGEST-HMAC_IPK): $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 	rm -rf $(PERL-DIGEST-HMAC_IPK_DIR) $(BUILD_DIR)/perl-digest-hmac_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DIGEST-HMAC_BUILD_DIR) DESTDIR=$(PERL-DIGEST-HMAC_IPK_DIR) install
@@ -66,10 +88,7 @@ $(PERL-DIGEST-HMAC_IPK): $(PERL-DIGEST-HMAC_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-DIGEST-HMAC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-DIGEST-HMAC_SOURCE_DIR)/control $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-DIGEST-HMAC_SOURCE_DIR)/postinst $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-DIGEST-HMAC_SOURCE_DIR)/prerm $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/control
 	echo $(PERL-DIGEST-HMAC_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DIGEST-HMAC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DIGEST-HMAC_IPK_DIR)
 

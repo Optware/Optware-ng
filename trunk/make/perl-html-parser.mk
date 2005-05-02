@@ -9,8 +9,15 @@ PERL-HTML-PARSER_VERSION=3.45
 PERL-HTML-PARSER_SOURCE=HTML-Parser-$(PERL-HTML-PARSER_VERSION).tar.gz
 PERL-HTML-PARSER_DIR=HTML-Parser-$(PERL-HTML-PARSER_VERSION)
 PERL-HTML-PARSER_UNZIP=zcat
+PERL-HTML-PARSER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-HTML-PARSER_DESCRIPTION=A collection of modules that parse and extract information from HTML documents.
+PERL-HTML-PARSER_SECTION=util
+PERL-HTML-PARSER_PRIORITY=optional
+PERL-HTML-PARSER_DEPENDS=perl, perl-html-tagset
+PERL-HTML-PARSER_SUGGESTS=
+PERL-HTML-PARSER_CONFLICTS=
 
-PERL-HTML-PARSER_IPK_VERSION=2
+PERL-HTML-PARSER_IPK_VERSION=3
 
 PERL-HTML-PARSER_CONFFILES=
 
@@ -57,6 +64,21 @@ $(PERL-HTML-PARSER_BUILD_DIR)/.staged: $(PERL-HTML-PARSER_BUILD_DIR)/.built
 
 perl-html-parser-stage: $(PERL-HTML-PARSER_BUILD_DIR)/.staged
 
+$(PERL-HTML-PARSER_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-HTML-PARSER_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-html-parser" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-HTML-PARSER_PRIORITY)" >>$@
+	@echo "Section: $(PERL-HTML-PARSER_SECTION)" >>$@
+	@echo "Version: $(PERL-HTML-PARSER_VERSION)-$(PERL-HTML-PARSER_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-HTML-PARSER_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-HTML-PARSER_SITE)/$(PERL-HTML-PARSER_SOURCE)" >>$@
+	@echo "Description: $(PERL-HTML-PARSER_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-HTML-PARSER_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-HTML-PARSER_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-HTML-PARSER_CONFLICTS)" >>$@
+
 $(PERL-HTML-PARSER_IPK): $(PERL-HTML-PARSER_BUILD_DIR)/.built
 	rm -rf $(PERL-HTML-PARSER_IPK_DIR) $(BUILD_DIR)/perl-html-parser_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-HTML-PARSER_BUILD_DIR) DESTDIR=$(PERL-HTML-PARSER_IPK_DIR) install
@@ -67,10 +89,7 @@ $(PERL-HTML-PARSER_IPK): $(PERL-HTML-PARSER_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-HTML-PARSER_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
-	install -d $(PERL-HTML-PARSER_IPK_DIR)/CONTROL
-	install -m 644 $(PERL-HTML-PARSER_SOURCE_DIR)/control $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PERL-HTML-PARSER_SOURCE_DIR)/postinst $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PERL-HTML-PARSER_SOURCE_DIR)/prerm $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/control
 	echo $(PERL-HTML-PARSER_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-HTML-PARSER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-HTML-PARSER_IPK_DIR)
 
