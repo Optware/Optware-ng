@@ -69,7 +69,7 @@ TCL_IPK=$(BUILD_DIR)/tcl_$(TCL_VERSION)-$(TCL_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 # This is the dependency on the source code.  If the source is missing, # then it will be fetched from the site using wget. #
 $(DL_DIR)/$(TCL_SOURCE):
-        $(WGET) -P $(DL_DIR) $(TCL_SITE)/$(TCL_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TCL_SITE)/$(TCL_SOURCE)
 
 #
 # The source code depends on it existing within the download directory. # This target will be called by the top level Makefile to download the # source code's archive (.tar.gz, .bz2, etc.) #
