@@ -144,7 +144,7 @@ WL500G_PACKAGES = \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
-	tar tcpdump tcpwrappers termcap textutils thttpd \
+	tar tcl tcpdump tcpwrappers termcap textutils thttpd \
 	unfs3 units \
 	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
