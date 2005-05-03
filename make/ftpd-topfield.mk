@@ -42,7 +42,7 @@ FTPD-TOPFIELD_DEPENDS=
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=4
+FTPD-TOPFIELD_IPK_VERSION=5
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
@@ -168,11 +168,11 @@ $(FTPD-TOPFIELD_IPK): $(FTPD-TOPFIELD_BUILD_DIR)/.built
 	install -m 755 $(FTPD-TOPFIELD_BUILD_DIR)/ftpd $(FTPD-TOPFIELD_IPK_DIR)/opt/sbin/ftpd-topfield
 #	install -d $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/
 #	install -m 644 $(FTPD-TOPFIELD_SOURCE_DIR)/ftpd-topfield.conf $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/ftpd-topfield.conf
-#	install -d $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(FTPD-TOPFIELD_SOURCE_DIR)/rc.ftpd-topfield $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/init.d/S67ftpd-topfield
+	install -d $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(FTPD-TOPFIELD_SOURCE_DIR)/rc.ftpd-topfield $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/init.d/S67ftpd-topfield
 	$(MAKE) $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(FTPD-TOPFIELD_SOURCE_DIR)/postinst $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(FTPD-TOPFIELD_SOURCE_DIR)/prerm $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(FTPD-TOPFIELD_SOURCE_DIR)/postinst $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(FTPD-TOPFIELD_SOURCE_DIR)/prerm $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/prerm
 	echo $(FTPD-TOPFIELD_CONFFILES) | sed -e 's/ /\n/g' > $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FTPD-TOPFIELD_IPK_DIR)
 
