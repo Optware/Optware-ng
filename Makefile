@@ -24,7 +24,7 @@
 UNSLUNG_TARGET=nslu2
 
 CROSS_PACKAGES = \
-	abook adns alac-decoder \
+	abook adduser adns alac-decoder \
 	atftp appweb apache apr apr-util atk audiofile automake \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
 	ccxstream classpath cogito coreutils cpio \
@@ -73,8 +73,7 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	tcl \
-	quagga \
-	adduser
+	quagga
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
