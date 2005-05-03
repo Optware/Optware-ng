@@ -127,12 +127,12 @@ PACKAGES_OBSOLETED = libiconv git
 WL500G_PACKAGES = \
 	adns appweb atftp audiofile autoconf automake \
 	bash bc bitchx busybox bzip2 \
-	ccxstream chillispot classpath coreutils cpio cron ctags cyrus-sasl \
+	ccxstream chillispot classpath cogito coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq dokuwiki  \
 	e2fsprogs esmtp expat \
 	fetchmail file findutils fixesext flex \
 	freeradius freetype ftpd-topfield fontconfig \
-	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap git grep gzip \
+	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap grep gzip \
 	hdparm \
 	inetutils \
 	joe \
@@ -142,10 +142,10 @@ WL500G_PACKAGES = \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy \
+	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin \
 	quagga \
 	rdate readline recordext renderext rsync \
-	siproxd sqlite strace stunnel syslog-ng \
+	samba siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd \
 	unfs3 units \
 	vorbis-tools vsftpd \
@@ -162,10 +162,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	mod-fastcgi \
-	py-moin \
-	cogito \
-	samba
+	mod-fastcgi
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
