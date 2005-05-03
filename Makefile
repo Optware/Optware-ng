@@ -73,7 +73,8 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	tcl \
-	quagga 
+	quagga \
+	tinylogin
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -146,7 +147,7 @@ WL500G_PACKAGES = \
 	quagga \
 	rdate readline recordext renderext rsync \
 	samba siproxd sqlite strace stunnel syslog-ng \
-	tar tcl tcpdump tcpwrappers termcap textutils thttpd \
+	tar tcl tcpdump tcpwrappers termcap textutils thttpd tinylogin \
 	unfs3 units \
 	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
