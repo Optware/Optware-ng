@@ -74,7 +74,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	tcl \
 	quagga \
-	tinylogin
+	adduser
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -126,7 +126,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_OBSOLETED = libiconv git
 
 WL500G_PACKAGES = \
-	adns appweb atftp audiofile autoconf automake \
+	adduser adns appweb atftp audiofile autoconf automake \
 	bash bc bitchx busybox bzip2 \
 	ccxstream chillispot classpath cogito coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq dokuwiki  \
@@ -147,7 +147,7 @@ WL500G_PACKAGES = \
 	quagga \
 	rdate readline recordext renderext rsync \
 	samba siproxd sqlite strace stunnel syslog-ng \
-	tar tcl tcpdump tcpwrappers termcap textutils thttpd tinylogin \
+	tar tcl tcpdump tcpwrappers termcap textutils thttpd  \
 	unfs3 units \
 	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
