@@ -42,7 +42,7 @@ ADDUSER_CONFLICTS=
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #
-ADDUSER_IPK_VERSION=1
+ADDUSER_IPK_VERSION=2
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
@@ -52,7 +52,9 @@ ADDUSER_IPK_VERSION=1
 # ADDUSER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ADDUSER_PATCHES=$(ADDUSER_SOURCE_DIR)/install.sh.patch $(ADDUSER_SOURCE_DIR)/Config.h.patch
+ADDUSER_PATCHES=$(ADDUSER_SOURCE_DIR)/install.sh.patch \
+	$(ADDUSER_SOURCE_DIR)/Config.h.patch \
+	$(ADDUSER_SOURCE_DIR)/adduser.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -160,14 +162,7 @@ $(ADDUSER_IPK_DIR)/CONTROL/control:
 $(ADDUSER_IPK): $(ADDUSER_BUILD_DIR)/.built
 	rm -rf $(ADDUSER_IPK_DIR) $(BUILD_DIR)/adduser_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ADDUSER_BUILD_DIR) PREFIX=$(ADDUSER_IPK_DIR)/opt  install
-	#install -d $(ADDUSER_IPK_DIR)/opt/etc/
-	#install -m 644 $(ADDUSER_SOURCE_DIR)/adduser.conf $(ADDUSER_IPK_DIR)/opt/etc/adduser.conf
-	#install -d $(ADDUSER_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(ADDUSER_SOURCE_DIR)/rc.adduser $(ADDUSER_IPK_DIR)/opt/etc/init.d/SXXadduser
 	$(MAKE) $(ADDUSER_IPK_DIR)/CONTROL/control
-	#install -m 755 $(ADDUSER_SOURCE_DIR)/postinst $(ADDUSER_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(ADDUSER_SOURCE_DIR)/prerm $(ADDUSER_IPK_DIR)/CONTROL/prerm
-	echo $(ADDUSER_CONFFILES) | sed -e 's/ /\n/g' > $(ADDUSER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADDUSER_IPK_DIR)
 
 #
