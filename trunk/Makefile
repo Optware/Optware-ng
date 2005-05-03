@@ -143,6 +143,7 @@ WL500G_PACKAGES = \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy \
+	quagga \
 	rdate readline recordext renderext rsync \
 	siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd \
@@ -158,7 +159,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	postgresql python \
 	syslog-ng \
 	torrent ttf-bitstream-vera \
-	quagga \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
