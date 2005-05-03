@@ -121,16 +121,13 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/quagga \
-		--exec-prefix=/opt \
-		--localstatedir=/var/run/quagga \
 		--disable-nls \
 		--disable-ripngd \
 		--disable-bgpd \
 		--disable-bgpd-announce \
 		--disable-isisd \
+		--disable-static \
 		--enable-vtysh \
-		--disable-shared \
-		--enable-static \
 	)
 	touch $(QUAGGA_BUILD_DIR)/.configured
 
@@ -195,7 +192,10 @@ $(QUAGGA_IPK): $(QUAGGA_BUILD_DIR)/.built
 	$(MAKE) -C $(QUAGGA_BUILD_DIR) DESTDIR=$(QUAGGA_IPK_DIR) install
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/bin/*
-	install -d $(QUAGGA_IPK_DIR)/opt/etc/
+	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/lib/*.so*
+	install -d $(QUAGGA_IPK_DIR)/opt/etc/quagga
+	install -d $(QUAGGA_IPK_DIR)/opt/var/run
+	install -d $(QUAGGA_IPK_DIR)/opt/var/log
 	install -d $(QUAGGA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(QUAGGA_SOURCE_DIR)/rc.quagga $(QUAGGA_IPK_DIR)/opt/etc/init.d/S50quagga
 	$(MAKE) $(QUAGGA_IPK_DIR)/CONTROL/control
