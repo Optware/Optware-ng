@@ -100,8 +100,8 @@ NATIVE_PACKAGES = \
 	openldap \
 	mzscheme \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
-	perl-appconfig \
-	perl-html-parser perl-html-tagset \
+	perl-appconfig perl-cgi-application \
+	perl-html-parser perl-html-tagset perl-html-template \
 	perl-mime-base64 perl-net-dns perl-net-ident \
 	perl-spamassassin perl-storable perl-time-hires \
 	perl-template-toolkit \
@@ -116,8 +116,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-html-template \
-	perl-cgi-application \
 
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
