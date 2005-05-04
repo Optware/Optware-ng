@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=8
+PHP_IPK_VERSION=9
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -78,8 +78,14 @@ PHP_GD_IPK=$(BUILD_DIR)/php-gd_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).
 PHP_LDAP_IPK_DIR=$(BUILD_DIR)/php-ldap-$(PHP_VERSION)-ipk
 PHP_LDAP_IPK=$(BUILD_DIR)/php-ldap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_MBSTRING_IPK_DIR=$(BUILD_DIR)/php-mbstring-$(PHP_VERSION)-ipk
+PHP_MBSTRING_IPK=$(BUILD_DIR)/php-mbstring_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_MYSQL_IPK_DIR=$(BUILD_DIR)/php-mysql-$(PHP_VERSION)-ipk
 PHP_MYSQL_IPK=$(BUILD_DIR)/php-mysql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
+PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 
 #
@@ -137,6 +143,19 @@ $(PHP_LDAP_IPK_DIR)/CONTROL/control:
 	@echo "Description: ldap extension for php" >>$@
 	@echo "Depends: php, openldap-libs" >>$@
 
+$(PHP_MBSTRING_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_MBSTRING_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-mbstring" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: mbstring extension for php" >>$@
+	@echo "Depends: php" >>$@
+
 $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@install -d $(PHP_MYSQL_IPK_DIR)/CONTROL
 	@rm -f $@
@@ -149,6 +168,19 @@ $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: mysql extension for php" >>$@
 	@echo "Depends: php, mysql" >>$@
+
+$(PHP_PEAR_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_PEAR_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-pear" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: PHP Extension and Application Repository" >>$@
+	@echo "Depends: php" >>$@
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -173,13 +205,8 @@ else
 PHP_CONFIGURE_TARGET_ARGS=
 endif
 
-# Allow for experimentally configuring apache's worker MPM
-ifeq ($(APACHE_MPM),worker)
 PHP_CONFIGURE_THREAD_ARGS= \
 		--enable-maintainer-zts 
-else
-PHP_CONFIGURE_THREAD_ARGS=
-endif
 
 #
 # This target unpacks the source code in the build directory.
@@ -352,6 +379,14 @@ ifneq ($(UNSLUNG_TARGET),wl500g)
 	echo extension=ldap.so >$(PHP_LDAP_IPK_DIR)/opt/etc/php.d/ldap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_LDAP_IPK_DIR)
 endif
+	### now make php-mbstring
+	rm -rf $(PHP_MBSTRING_IPK_DIR) $(BUILD_DIR)/php-mbstring_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_MBSTRING_IPK_DIR)/CONTROL/control
+	install -d $(PHP_MBSTRING_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_MBSTRING_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mbstring.so $(PHP_MBSTRING_IPK_DIR)/opt/lib/php/extensions/mbstring.so
+	echo extension=mbstring.so >$(PHP_MBSTRING_IPK_DIR)/opt/etc/php.d/mbstring.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MBSTRING_IPK_DIR)
 	### now make php-mysql
 	rm -rf $(PHP_MYSQL_IPK_DIR) $(BUILD_DIR)/php-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control
@@ -361,6 +396,14 @@ endif
 	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
+	### now make php-pear
+	rm -rf $(PHP_PEAR_IPK_DIR) $(BUILD_DIR)/php-pear_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_PEAR_IPK_DIR)/CONTROL/control
+	install -m 644 $(PHP_SOURCE_DIR)/postinst.pear $(PHP_PEAR_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(PHP_SOURCE_DIR)/prerm.pear $(PHP_PEAR_IPK_DIR)/CONTROL/prerm
+	install -d $(PHP_PEAR_IPK_DIR)/tmp
+	cp -a $(PHP_BUILD_DIR)/pear $(PHP_PEAR_IPK_DIR)/tmp
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PEAR_IPK_DIR)
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
