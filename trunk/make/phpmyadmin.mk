@@ -30,7 +30,7 @@ PHPMYADMIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHPMYADMIN_DESCRIPTION=Web-based administration interface for mysql
 PHPMYADMIN_SECTION=web
 PHPMYADMIN_PRIORITY=optional
-PHPMYADMIN_DEPENDS=php-mysql, mysql
+PHPMYADMIN_DEPENDS=php-mysql, php-mbstring, mysql
 PHPMYADMIN_SUGGESTS=php-apache, eaccelerator
 PHPMYADMIN_CONFLICTS=
 
@@ -39,7 +39,7 @@ PHPMYADMIN_INSTALL_DIR=/opt/share/www/phpmyadmin
 #
 # PHPMYADMIN_IPK_VERSION should be incremented when the ipk changes.
 #
-PHPMYADMIN_IPK_VERSION=1
+PHPMYADMIN_IPK_VERSION=2
 
 #
 # PHPMYADMIN_CONFFILES should be a list of user-editable files
