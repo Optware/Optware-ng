@@ -75,6 +75,9 @@ PHP_DEV_IPK=$(BUILD_DIR)/php-dev_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH
 PHP_GD_IPK_DIR=$(BUILD_DIR)/php-gd-$(PHP_VERSION)-ipk
 PHP_GD_IPK=$(BUILD_DIR)/php-gd_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_IMAP_IPK_DIR=$(BUILD_DIR)/php-imap-$(PHP_VERSION)-ipk
+PHP_IMAP_IPK=$(BUILD_DIR)/php-imap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_LDAP_IPK_DIR=$(BUILD_DIR)/php-ldap-$(PHP_VERSION)-ipk
 PHP_LDAP_IPK=$(BUILD_DIR)/php-ldap_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -129,6 +132,19 @@ $(PHP_GD_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: libgd extension for php" >>$@
 	@echo "Depends: php, libgd" >>$@
+
+$(PHP_IMAP_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_IMAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-imap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: imap extension for php" >>$@
+	@echo "Depends: php, imap-libs" >>$@
 
 $(PHP_LDAP_IPK_DIR)/CONTROL/control:
 	@install -d $(PHP_LDAP_IPK_DIR)/CONTROL
@@ -199,8 +215,8 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 # We need this because openldap does not build on the wl500g.
 ifneq ($(UNSLUNG_TARGET),wl500g)
 PHP_CONFIGURE_TARGET_ARGS= \
-		--with-ldap=shared,$(STAGING_DIR)/opt \
-		--with-ldap-sasl=$(STAGING_DIR)/opt
+		--with-ldap=shared,$(STAGING_PREFIX) \
+		--with-ldap-sasl=$(STAGING_PREFIX)
 else
 PHP_CONFIGURE_TARGET_ARGS=
 endif
@@ -232,7 +248,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	$(MAKE) libxml2-stage 
 	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
-	$(MAKE) mysql-stage 
+	$(MAKE) mysql-stage
+	$(MAKE) imap-stage
 ifneq ($(UNSLUNG_TARGET),wl500g)
 	$(MAKE) openldap-stage
 endif
@@ -251,7 +268,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
-		PHP_LIBXML_DIR=$(STAGING_DIR)/opt \
+		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -278,24 +295,25 @@ endif
 		--enable-sysvshm=shared \
 		--enable-sysvsem=shared \
 		--enable-xml=shared \
-		--with-bz2=shared,$(STAGING_DIR)/opt \
-		--with-db4=$(STAGING_DIR)/opt \
-		--with-dom=shared,$(STAGING_DIR)/opt \
-		--with-gdbm=$(STAGING_DIR)/opt \
-		--with-gd=shared,$(STAGING_DIR)/opt \
+		--with-bz2=shared,$(STAGING_PREFIX) \
+		--with-db4=$(STAGING_PREFIX) \
+		--with-dom=shared,$(STAGING_PREFIX) \
+		--with-gdbm=$(STAGING_PREFIX) \
+		--with-gd=shared,$(STAGING_PREFIX) \
+		--with-imap=shared,$(STAGING_PREFIX) \
+		--with-mysql=shared,$(STAGING_PREFIX) \
+		--with-mysql-sock=/tmp/mysql.sock \
+		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
+		--with-openssl=shared,$(STAGING_PREFIX) \
+		--with-xsl=shared,$(STAGING_PREFIX) \
+		--with-zlib=shared,$(STAGING_PREFIX) \
+		--with-libxml-dir=$(STAGING_PREFIX) \
+		--with-jpeg-dir=$(STAGING_PREFIX) \
+		--with-png-dir=$(STAGING_PREFIX) \
+		--with-freetype-dir=$(STAGING_PREFIX) \
+		--with-zlib-dir=$(STAGING_PREFIX) \
 		$(PHP_CONFIGURE_TARGET_ARGS) \
 		$(PHP_CONFIGURE_THREAD_ARGS) \
-		--with-mysql=shared,$(STAGING_DIR)/opt \
-		--with-mysql-sock=/tmp/mysql.sock \
-		--with-mysqli=shared,$(STAGING_DIR)/opt/bin/mysql_config \
-		--with-openssl=shared,$(STAGING_DIR)/opt \
-		--with-xsl=shared,$(STAGING_DIR)/opt \
-		--with-zlib=shared,$(STAGING_DIR)/opt \
-		--with-libxml-dir=$(STAGING_DIR)/opt \
-		--with-jpeg-dir=$(STAGING_DIR)/opt \
-		--with-png-dir=$(STAGING_DIR)/opt \
-		--with-freetype-dir=$(STAGING_DIR)/opt \
-		--with-zlib-dir=$(STAGING_DIR)/opt \
 		--without-iconv \
 		--without-pear \
 	)
@@ -324,9 +342,9 @@ php: $(PHP_BUILD_DIR)/.built
 $(PHP_BUILD_DIR)/.staged: $(PHP_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) install
-	cp $(STAGING_DIR)/opt/bin/php-config $(STAGING_DIR)/bin/php-config
-	cp $(STAGING_DIR)/opt/bin/phpize $(STAGING_DIR)/bin/phpize
-	sed -i -e 's!prefix=.*!prefix=$(STAGING_DIR)/opt!' $(STAGING_DIR)/bin/phpize
+	cp $(STAGING_PREFIX)/bin/php-config $(STAGING_DIR)/bin/php-config
+	cp $(STAGING_PREFIX)/bin/phpize $(STAGING_DIR)/bin/phpize
+	sed -i -e 's!prefix=.*!prefix=$(STAGING_PREFIX)!' $(STAGING_DIR)/bin/phpize
 	chmod a+rx $(STAGING_DIR)/bin/phpize
 	touch $@
 
@@ -350,6 +368,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
+	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/lib/php/extensions/*.so
 	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
 	install -d $(PHP_IPK_DIR)/opt/etc
 	install -d $(PHP_IPK_DIR)/opt/etc/php.d
@@ -369,6 +388,14 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/gd.so $(PHP_GD_IPK_DIR)/opt/lib/php/extensions/gd.so
 	echo extension=gd.so >$(PHP_GD_IPK_DIR)/opt/etc/php.d/gd.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_GD_IPK_DIR)
+	### now make php-imap
+	rm -rf $(PHP_IMAP_IPK_DIR) $(BUILD_DIR)/php-imap_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_IMAP_IPK_DIR)/CONTROL/control
+	install -d $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_IMAP_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/imap.so $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions/imap.so
+	echo extension=imap.so >$(PHP_IMAP_IPK_DIR)/opt/etc/php.d/imap.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IMAP_IPK_DIR)
 ifneq ($(UNSLUNG_TARGET),wl500g)
 	### now make php-ldap
 	rm -rf $(PHP_LDAP_IPK_DIR) $(BUILD_DIR)/php-ldap_*_$(TARGET_ARCH).ipk
@@ -425,4 +452,4 @@ php-clean:
 # directories.
 #
 php-dirclean:
-	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK) $(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) $(PHP_GD_IPK_DIR) $(PHP_GD_IPK) $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) $(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK) $(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) $(PHP_GD_IPK_DIR) $(PHP_GD_IPK) $(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) $(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) $(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) $(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
