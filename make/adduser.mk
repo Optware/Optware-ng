@@ -26,23 +26,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ADDUSER_SITE=http://tinylogin.busybox.net/downloads
-ADDUSER_VERSION=1.4
-ADDUSER_SOURCE=tinylogin-$(ADDUSER_VERSION).tar.gz
-ADDUSER_DIR=tinylogin-$(ADDUSER_VERSION)
-ADDUSER_UNZIP=zcat
 ADDUSER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ADDUSER_DESCRIPTION=a multi-call binary for login and user account administration
-ADDUSER_SECTION=util
+ADDUSER_SECTION=core
 ADDUSER_PRIORITY=optional
 ADDUSER_DEPENDS=
 ADDUSER_SUGGESTS=
 ADDUSER_CONFLICTS=
-
+ADDUSER_VERSION:=$(shell sed -n -e 's/^BUSYBOX_VERSION *=\([0-9]\)/\1/p' make/busybox.mk)
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #
-ADDUSER_IPK_VERSION=2
+ADDUSER_IPK_VERSION=3
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
@@ -52,9 +47,7 @@ ADDUSER_IPK_VERSION=2
 # ADDUSER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ADDUSER_PATCHES=$(ADDUSER_SOURCE_DIR)/install.sh.patch \
-	$(ADDUSER_SOURCE_DIR)/Config.h.patch \
-	$(ADDUSER_SOURCE_DIR)/adduser.c.patch
+ADDUSER_PATCHES=$(ADDUSER_SOURCE_DIR)/install.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -81,15 +74,15 @@ ADDUSER_IPK=$(BUILD_DIR)/adduser_$(ADDUSER_VERSION)-$(ADDUSER_IPK_VERSION)_$(TAR
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(ADDUSER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ADDUSER_SITE)/$(ADDUSER_SOURCE)
+#$(DL_DIR)/$(ADDUSER_SOURCE):
+#	$(WGET) -P $(DL_DIR) $(ADDUSER_SITE)/$(ADDUSER_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-adduser-source: $(DL_DIR)/$(ADDUSER_SOURCE) $(ADDUSER_PATCHES)
+adduser-source: $(DL_DIR)/$(BUSYBOX_SOURCE)
 
 #
 # This target unpacks the source code in the build directory.
@@ -106,11 +99,14 @@ adduser-source: $(DL_DIR)/$(ADDUSER_SOURCE) $(ADDUSER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ADDUSER_BUILD_DIR)/.configured: $(DL_DIR)/$(ADDUSER_SOURCE) $(ADDUSER_PATCHES)
-	rm -rf $(BUILD_DIR)/$(ADDUSER_DIR) $(ADDUSER_BUILD_DIR)
-	$(ADDUSER_UNZIP) $(DL_DIR)/$(ADDUSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ADDUSER_PATCHES) | patch -d $(BUILD_DIR)/$(ADDUSER_DIR) -p1
-	mv $(BUILD_DIR)/$(ADDUSER_DIR) $(ADDUSER_BUILD_DIR)
+$(ADDUSER_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) # $(ADDUSER_CONFIG)
+	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
+	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(ADDUSER_PATCHES) | patch -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
+	mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
+	cp $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
+	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS=$(TARGET_CROSS) \
+		-C $(ADDUSER_BUILD_DIR) oldconfig
 	touch $(ADDUSER_BUILD_DIR)/.configured
 
 adduser-unpack: $(ADDUSER_BUILD_DIR)/.configured
@@ -120,7 +116,9 @@ adduser-unpack: $(ADDUSER_BUILD_DIR)/.configured
 #
 $(ADDUSER_BUILD_DIR)/.built: $(ADDUSER_BUILD_DIR)/.configured
 	rm -f $(ADDUSER_BUILD_DIR)/.built
-	$(MAKE) CROSS=$(TARGET_CROSS) -C $(ADDUSER_BUILD_DIR)
+	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="/opt" \
+		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
+		-C $(ADDUSER_BUILD_DIR)
 	touch $(ADDUSER_BUILD_DIR)/.built
 
 #
@@ -146,7 +144,6 @@ $(ADDUSER_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(ADDUSER_DEPENDS)" >>$@
 	@echo "Suggests: $(ADDUSER_SUGGESTS)" >>$@
 	@echo "Conflicts: $(ADDUSER_CONFLICTS)" >>$@
-
 #
 # This builds the IPK file.
 #
@@ -161,7 +158,11 @@ $(ADDUSER_IPK_DIR)/CONTROL/control:
 #
 $(ADDUSER_IPK): $(ADDUSER_BUILD_DIR)/.built
 	rm -rf $(ADDUSER_IPK_DIR) $(BUILD_DIR)/adduser_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ADDUSER_BUILD_DIR) PREFIX=$(ADDUSER_IPK_DIR)/opt  install
+	install -d $(ADDUSER_IPK_DIR)/opt/bin
+	install -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)/opt/bin/adduser
+	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser addgroup
+	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser delgroup
+	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser deluser
 	$(MAKE) $(ADDUSER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADDUSER_IPK_DIR)
 
@@ -181,4 +182,4 @@ adduser-clean:
 # directories.
 #
 adduser-dirclean:
-	rm -rf $(BUILD_DIR)/$(ADDUSER_DIR) $(ADDUSER_BUILD_DIR) $(ADDUSER_IPK_DIR) $(ADDUSER_IPK)
+	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR) $(ADDUSER_IPK_DIR) $(ADDUSER_IPK)
