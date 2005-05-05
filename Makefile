@@ -117,11 +117,12 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	clamav \
 
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
-	nethack scponly dump gkrellm clamav freeradius
+	nethack scponly dump gkrellm freeradius
 
 PACKAGES_OBSOLETED = libiconv git
 
