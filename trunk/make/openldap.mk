@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 OPENLDAP_SITE=ftp://ftp.openldap.org/pub/openldap/openldap-stable/
-OPENLDAP_VERSION=2.2.23
-OPENLDAP_SOURCE=openldap-stable-20050125.tgz
+OPENLDAP_VERSION=2.2.26
+OPENLDAP_SOURCE=openldap-stable-20050429.tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
 OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
@@ -34,7 +34,7 @@ OPENLDAP_CONFLICTS=
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=3
+OPENLDAP_IPK_VERSION=4
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
