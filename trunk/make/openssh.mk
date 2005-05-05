@@ -4,9 +4,9 @@
 #
 #############################################################
 
-OPENSSH_SITE=ftp://ftp.tux.org/bsd/openbsd/OpenSSH/portable
+OPENSSH_SITE=http://openbsd.mirrors.pair.com/OpenSSH/portable
 OPENSSH_VERSION=3.8p1
-OPENSSH_SOURCE=openssh-3.8p1.tar.gz
+OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
 
