@@ -18,12 +18,26 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
-CLAMAV_SITE=http://puzzle.dl.sourceforge.net/clamav/
-CLAMAV_VERSION=0.81
+CLAMAV_SITE=http://puzzle.dl.sourceforge.net/clamav
+CLAMAV_VERSION=0.84
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
+CLAMAV_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+CLAMAV_DESCRIPTION=Clam ANtivirus is a GPL anti-virus toolkit for UNIX
+CLAMAV_SECTION=misc
+CLAMAV_PRIORITY=optional
+CLAMAV_DEPENDS=adduser,zlib
+CLAMAV_SUGGESTS=
+CLAMAV_CONFLICTS=
 
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
@@ -32,13 +46,13 @@ CLAMAV_IPK_VERSION=1
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
-CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf
+CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf /opt/etc/init.d/S98clamav
 
 #
 # CLAMAV_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CLAMAV_PATCHES=$(CLAMAV_SOURCE_DIR)/configure.patch
+CLAMAV_PATCHES=$(CLAMAV_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -90,7 +104,7 @@ clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
+$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -137,6 +151,25 @@ $(CLAMAV_BUILD_DIR)/.staged: $(CLAMAV_BUILD_DIR)/.built
 clamav-stage: $(CLAMAV_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/clamav
+#
+$(CLAMAV_IPK_DIR)/CONTROL/control:
+	@install -d $(CLAMAV_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: clamav" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CLAMAV_PRIORITY)" >>$@
+	@echo "Section: $(CLAMAV_SECTION)" >>$@
+	@echo "Version: $(CLAMAV_VERSION)-$(CLAMAV_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CLAMAV_MAINTAINER)" >>$@
+	@echo "Source: $(CLAMAV_SITE)/$(CLAMAV_SOURCE)" >>$@
+	@echo "Description: $(CLAMAV_DESCRIPTION)" >>$@
+	@echo "Depends: $(CLAMAV_DEPENDS)" >>$@
+	@echo "Suggests: $(CLAMAV_SUGGESTS)" >>$@
+	@echo "Conflicts: $(CLAMAV_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(CLAMAV_IPK_DIR)/opt/sbin or $(CLAMAV_IPK_DIR)/opt/bin
@@ -152,13 +185,13 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(CLAMAV_IPK_DIR) install
 	install -d $(CLAMAV_IPK_DIR)/opt/etc/
-	install -m 755 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
-	install -m 755 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
-#	install -d $(CLAMAV_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)/opt/etc/init.d/S91clamav
-	install -d $(CLAMAV_IPK_DIR)/CONTROL
-	install -m 644 $(CLAMAV_SOURCE_DIR)/control $(CLAMAV_IPK_DIR)/CONTROL/control
-	install -m 644 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
+	install -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
+	install -d $(CLAMAV_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)/opt/etc/init.d/S98clamav
+	$(MAKE) $(CLAMAV_IPK_DIR)/CONTROL/control
+	install -m 755 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
 	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
 	cd $(CLAMAV_IPK_DIR)/opt/bin
 	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamav-config $(CLAMAV_IPK_DIR)/opt/bin/clamav-config
@@ -198,3 +231,5 @@ clamav-clean:
 #
 clamav-dirclean:
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR) $(CLAMAV_IPK_DIR) $(CLAMAV_IPK)
+
+
