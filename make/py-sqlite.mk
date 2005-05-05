@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "py-sqlite" and "PY-SQLITE" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # PY-SQLITE_VERSION, PY-SQLITE_SITE and PY-SQLITE_SOURCE define
 # the upstream location of the source code for the package.
@@ -26,10 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLITE_SITE=http://dl.sourceforge.net/sourceforge/pysqlite
-PY-SQLITE_VERSION=2.0.alpha2
+PY-SQLITE_VERSION=2.0.alpha4
+PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.0/$(PY-SQLITE_VERSION)
 PY-SQLITE_SOURCE=pysqlite-$(PY-SQLITE_VERSION).tar.gz
-PY-SQLITE_DIR=pysqlite-$(PY-SQLITE_VERSION)
+PY-SQLITE_DIR=pysqlite$(PY-SQLITE_VERSION)
 PY-SQLITE_UNZIP=zcat
 PY-SQLITE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SQLITE_DESCRIPTION=pysqlite is an interface to the SQLite database server for Python. It aims to be fully compliant with Python database API version 2.0 while also exploiting the unique features of SQLite.
@@ -186,7 +181,7 @@ $(PY-SQLITE_IPK): $(PY-SQLITE_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    python2.4 setup.py install --prefix=$(PY-SQLITE_IPK_DIR)/opt; \
 	)
-	#$(STRIP_COMMAND) $(PY-SQLITE_IPK_DIR)/opt/lib/python2.4/site-packages/pysqlite2/_sqlite.so
+	$(STRIP_COMMAND) $(PY-SQLITE_IPK_DIR)/opt/lib/python2.4/site-packages/pysqlite2/_sqlite.so
 	$(MAKE) $(PY-SQLITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SQLITE_IPK_DIR)
 
