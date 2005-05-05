@@ -35,7 +35,7 @@ SAMBA_CONFLICTS=
 #
 # SAMBA_IPK_VERSION should be incremented when the ipk changes.
 #
-SAMBA_IPK_VERSION=1
+SAMBA_IPK_VERSION=2
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
