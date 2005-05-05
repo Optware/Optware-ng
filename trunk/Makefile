@@ -116,6 +116,7 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# clamavs configure script wants to run an inline program, and breaks, cause this couldn't do while cross compiling
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 	clamav \
 
