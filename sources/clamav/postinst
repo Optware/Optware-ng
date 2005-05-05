@@ -1,9 +1,13 @@
 #!/bin/sh
 
-echo "To complete the installation you must" 
-echo "add a new user clamav and also a new group clamav"
-echo "Make sure that the directory /opt/share/clamav is owned by clamav"
-echo "$ chown clamav /opt/share/clamav"
-echo "and the owned group is also clamav"
-echo "$ chgrp clamav /opt/share/clamav"
+addgroup clamav
+
+adduser -s /dev/null -H -h /opt/share/clamav -D -G clamav clamav
+
+#my=`grep clamav /etc/passwd | awk -F: '{ print $4 }'`
+#sed -i "s/^$my/clamav/g" /etc/group
+
+
+chown clamav /opt/share/clamav
+chgrp clamav /opt/share/clamav
 
