@@ -72,6 +72,9 @@ PHP_IPK=$(BUILD_DIR)/php_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 PHP_DEV_IPK_DIR=$(BUILD_DIR)/php-dev-$(PHP_VERSION)-ipk
 PHP_DEV_IPK=$(BUILD_DIR)/php-dev_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_EMBED_IPK_DIR=$(BUILD_DIR)/php-embed-$(PHP_VERSION)-ipk
+PHP_EMBED_IPK=$(BUILD_DIR)/php-embed_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_GD_IPK_DIR=$(BUILD_DIR)/php-gd-$(PHP_VERSION)-ipk
 PHP_GD_IPK=$(BUILD_DIR)/php-gd_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -118,6 +121,19 @@ $(PHP_DEV_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: php native development environment" >>$@
+	@echo "Depends: php" >>$@
+
+$(PHP_EMBED_IPK_DIR)/CONTROL/control:
+	@install -d $(PHP_EMBED_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: php-embed" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: php embedded library - the embed SAPI" >>$@
 	@echo "Depends: php" >>$@
 
 $(PHP_GD_IPK_DIR)/CONTROL/control:
@@ -286,6 +302,7 @@ endif
 		--enable-dbx=shared \
 		--enable-dio=shared \
 		--enable-dom=shared \
+		--enable-embed=shared \
 		--enable-exif=shared \
 		--enable-ftp=shared \
 		--enable-mbstring=shared \
@@ -380,6 +397,12 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/lib/php/build $(PHP_DEV_IPK_DIR)/opt/lib/php/
 	mv $(PHP_IPK_DIR)/opt/include $(PHP_DEV_IPK_DIR)/opt/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_DEV_IPK_DIR)
+	### now make php-embed
+	rm -rf $(PHP_EMBED_IPK_DIR) $(BUILD_DIR)/php-embed_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_EMBED_IPK_DIR)/CONTROL/control
+	install -d $(PHP_EMBED_IPK_DIR)/opt/lib/
+	mv $(PHP_IPK_DIR)/opt/lib/libphp5.so $(PHP_EMBED_IPK_DIR)/opt/lib
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_EMBED_IPK_DIR)
 	### now make php-gd
 	rm -rf $(PHP_GD_IPK_DIR) $(BUILD_DIR)/php-gd_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_GD_IPK_DIR)/CONTROL/control
@@ -452,4 +475,4 @@ php-clean:
 # directories.
 #
 php-dirclean:
-	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK) $(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) $(PHP_GD_IPK_DIR) $(PHP_GD_IPK) $(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) $(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) $(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) $(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK) $(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) $(PHP_EMBED_IPK_DIR) $(PHP_EMBED_IPK) $(PHP_GD_IPK_DIR) $(PHP_GD_IPK) $(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) $(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) $(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) $(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
