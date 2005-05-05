@@ -31,7 +31,8 @@ CROSS_PACKAGES = \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed elinks esmtp esound expat \
-	fetchmail ffmpeg file findutils fixesext fontconfig flac flex freetype \
+	fetchmail ffmpeg file findutils fixesext flac flex \
+	fontconfig freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
@@ -42,7 +43,7 @@ CROSS_PACKAGES = \
 	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
 	libgc libgd libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
-	libpcap libpng libstdc++ libtiff libtool \
+	libpcap libpng libstdc++ libtiff libtool libtopfield libusb \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
 	m4 make man man-pages mc mdadm mediawiki metalog miau \
 	mod-fastcgi mod-python \
