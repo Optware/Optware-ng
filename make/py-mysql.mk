@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "py-mysql" and "PY-MYSQL" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # PY-MYSQL_VERSION, PY-MYSQL_SITE and PY-MYSQL_SOURCE define
 # the upstream location of the source code for the package.
@@ -27,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://dl.sourceforge.net/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.1c1
+PY-MYSQL_VERSION=1.2.1c2
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
