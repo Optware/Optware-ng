@@ -99,7 +99,8 @@ adduser-source: $(DL_DIR)/$(BUSYBOX_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ADDUSER_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) # $(ADDUSER_CONFIG)
+$(ADDUSER_BUILD_DIR)/.configured:
+	$(MAKE) $(DL_DIR)/$(BUSYBOX_SOURCE)
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ADDUSER_PATCHES) | patch -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
