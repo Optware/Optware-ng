@@ -105,8 +105,10 @@ clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
+	if [ ! -e /opt/bin/adduser ]; then ipkg update; ipkg install unslung-feeds; ipkg update; ipkg install adduser; fi 
+	if (! (grep clamav /etc/passwd)) then addgroup clamav; adduser -s /dev/null -H -D -G clamav clamav; fi     
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(CLAMAV_PATCHES) | patch -d $(BUILD_DIR)/$(CLAMAV_DIR) -p1
 	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
@@ -120,8 +122,8 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--with-zlib=/opt \
 		--sysconfdir=/opt/etc \
+		--with-zlib=$(STAGING_DIR)/opt \
 	)
 	touch $(CLAMAV_BUILD_DIR)/.configured
 
@@ -212,6 +214,7 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	cd $(CLAMAV_IPK_DIR)/opt/man/man8
 	rm $(CLAMAV_IPK_DIR)/opt/man/man8/armv5b-softfloat-linux-clamav-milter.8
 	mv $(CLAMAV_IPK_DIR)/opt/man/man8/armv5b-softfloat-linux-clamd.8 $(CLAMAV_IPK_DIR)/opt/man/man8/clamd.8
+#	deluser clamav
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLAMAV_IPK_DIR)
 
 #
