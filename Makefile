@@ -75,6 +75,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	eggdrop
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -133,7 +134,7 @@ WL500G_PACKAGES = \
 	bash bc bitchx busybox bzip2 \
 	ccxstream chillispot classpath cogito coreutils cpio cron ctags cyrus-sasl \
 	diffutils distcc dnsmasq dokuwiki  \
-	e2fsprogs esmtp expat \
+	e2fsprogs eggdrop esmtp expat \
 	fetchmail file findutils fixesext flex \
 	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap grep gzip \
