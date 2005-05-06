@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=11
+PHP_IPK_VERSION=12
 
 #
 # PHP_CONFFILES should be a list of user-editable files
