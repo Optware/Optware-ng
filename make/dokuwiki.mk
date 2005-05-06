@@ -151,7 +151,7 @@ $(DOKUWIKI_IPK_DIR)/CONTROL/control:
 $(DOKUWIKI_IPK): $(DOKUWIKI_BUILD_DIR)/.configured
 	rm -rf $(DOKUWIKI_IPK_DIR) $(BUILD_DIR)/dokuwiki_*_$(TARGET_ARCH).ipk
 	install -d $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki/
-	cp -R $(DOKUWIKI_BUILD_DIR)/* $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki	
+	cp -a $(DOKUWIKI_BUILD_DIR)/* $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki	
 	$(MAKE) $(DOKUWIKI_IPK_DIR)/CONTROL/control
 	install -m 755 $(DOKUWIKI_SOURCE_DIR)/postinst $(DOKUWIKI_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(DOKUWIKI_SOURCE_DIR)/prerm $(DOKUWIKI_IPK_DIR)/CONTROL/prerm
