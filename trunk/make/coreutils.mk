@@ -34,7 +34,7 @@ COREUTILS_CONFLICTS=busybox
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=5
+COREUTILS_IPK_VERSION=6
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -183,8 +183,11 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	rm $(COREUTILS_IPK_DIR)/opt/bin/groups
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
+	mv $(COREUTILS_IPK_DIR)/opt/bin/kill $(COREUTILS_IPK_DIR)/opt/bin/coreutils-kill
+	mv $(COREUTILS_IPK_DIR)/opt/bin/uptime $(COREUTILS_IPK_DIR)/opt/bin/coreutils-uptime
 	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
 	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(COREUTILS_SOURCE_DIR)/prerm $(COREUTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 
 #
