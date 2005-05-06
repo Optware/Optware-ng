@@ -2,4 +2,4 @@
 
 /opt/sbin/httpd -k stop
 
-update-alternatives --remove htpasswd /opt/bin/apache-thttpd-htpasswd
+update-alternatives --remove htpasswd /opt/sbin/apache-thttpd-htpasswd
