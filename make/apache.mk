@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://mirrors.ccs.neu.edu/Apache/dist/httpd
-APACHE_VERSION=2.0.53
+APACHE_VERSION=2.0.54
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -29,7 +29,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=10
+APACHE_IPK_VERSION=1
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ APACHE_LOCALES=
 # APACHE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch $(APACHE_SOURCE_DIR)/hostcc-pcre.patch $(APACHE_SOURCE_DIR)/apxs.patch
+APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch $(APACHE_SOURCE_DIR)/hostcc-pcre.patch $(APACHE_SOURCE_DIR)/apxs.patch $(APACHE_SOURCE_DIR)/ulimit.patch
 
 #
 # If the compilation of the package requires additional
@@ -145,6 +145,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 	sed -i -e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" $(APACHE_BUILD_DIR)/config.layout
 	cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
 	(cd $(APACHE_BUILD_DIR); \
+		autoconf ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APACHE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APACHE_LDFLAGS)" \

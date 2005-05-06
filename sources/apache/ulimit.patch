@@ -1,0 +1,15 @@
+--- support/config.m4~	2004-11-24 11:31:09.000000000 -0800
++++ support/config.m4	2005-05-05 20:10:56.000000000 -0700
+@@ -94,11 +94,7 @@
+         APACHECTL_ULIMIT="ulimit -S -n \`ulimit -h -n\`"
+         ;;
+     *)
+-        if TMP_ULIMIT=`ulimit -H -n` && ulimit -S -n $TMP_ULIMIT ; then
+-            APACHECTL_ULIMIT="ulimit -S -n \`ulimit -H -n\`"
+-        else
+-            APACHECTL_ULIMIT=""
+-        fi
++        APACHECTL_ULIMIT=""
+         ;;
+ esac
+ APACHE_SUBST(APACHECTL_ULIMIT)
