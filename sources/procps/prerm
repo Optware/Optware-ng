@@ -1,0 +1,4 @@
+#!/bin/sh
+
+update-alternatives --remove kill /opt/bin/procps-kill
+update-alternatives --remove uptime /opt/bin/procps-uptime
