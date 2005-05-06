@@ -78,6 +78,7 @@ less-source: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LESS_BUILD_DIR)/.configured: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR)
 	$(LESS_UNZIP) $(DL_DIR)/$(LESS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR)
