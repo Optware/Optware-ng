@@ -118,11 +118,11 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 # clamavs configure script wants to run an inline program, and breaks, cause this couldn't do while cross compiling
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	clamav \
 
 # clamav - configure: error: User clamav (and/or group clamav) doesn't exist.
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	clamav \
 	libao \
 	nethack scponly dump gkrellm freeradius
 
