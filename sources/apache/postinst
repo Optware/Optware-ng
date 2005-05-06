@@ -1,4 +1,6 @@
 #!/bin/sh
 
+update-alternatives --install /opt/sbin/htpasswd htpasswd /opt/bin/apache-thttpd-htpasswd 60
+
 /opt/sbin/httpd -k stop
 /opt/sbin/httpd -k start

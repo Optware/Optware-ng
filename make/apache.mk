@@ -29,7 +29,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=9
+APACHE_IPK_VERSION=10
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -228,6 +228,8 @@ $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httpd
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/logresolve
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/rotatelogs
+	mv $(APACHE_IPK_DIR)/opt/sbin/htpasswd $(APACHE_IPK_DIR)/opt/sbin/apache-htpasswd
+	rm -f $(APACHE_IPK_DIR)/opt/man/man1/htpasswd.1
 	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)/opt/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/dbmmanage

@@ -1,3 +1,5 @@
 #!/bin/sh
 
 killall thttpd
+
+update-alternatives --remove htpasswd /opt/bin/php-thttpd-htpasswd

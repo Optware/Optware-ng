@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=6
+PHP_THTTPD_IPK_VERSION=7
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -217,6 +217,7 @@ $(PHP_THTTPD_IPK): $(PHP_THTTPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/sbin/makeweb
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/sbin/htpasswd
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/share/www/cgi-bin/*
+	mv $(PHP_THTTPD_IPK_DIR)/opt/sbin/htpasswd $(PHP_THTTPD_IPK_DIR)/opt/sbin/php-thttpd-htpasswd
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/var/run/
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/var/log/
 	install -d $(PHP_THTTPD_IPK_DIR)/opt/etc/
