@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SYSLOG-NG_SITE=http://www.balabit.com/downloads/syslog-ng/stable/src
-SYSLOG-NG_VERSION=1.6.6
+SYSLOG-NG_VERSION=1.6.7
 SYSLOG-NG_SOURCE=syslog-ng-$(SYSLOG-NG_VERSION).tar.gz
 SYSLOG-NG_DIR=syslog-ng-$(SYSLOG-NG_VERSION)
 SYSLOG-NG_UNZIP=zcat
@@ -34,7 +34,7 @@ SYSLOG-NG_CONFLICTS=
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=2
+SYSLOG-NG_IPK_VERSION=1
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
