@@ -7,7 +7,7 @@
 UNSLUNG-DEVEL_VERSION=3.18
 UNSLUNG-DEVEL_DIR=unslung-devel-$(UNSLUNG-DEVEL_VERSION)
 UNSLUNG-DEVEL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-UNSLUNG-DEVEL_DESCRIPTION=This is a meta package that bundels all the utils required for unslung development.
+UNSLUNG-DEVEL_DESCRIPTION=This is a meta package that bundles all the packages required for unslung development.
 UNSLUNG-DEVEL_SECTION=util
 UNSLUNG-DEVEL_PRIORITY=optional
 UNSLUNG-DEVEL_DEPENDS=autoconf, automake, bash, bison, bzip2, coreutils, crosstool-native, cvs, diffutils, findutils, flex, gawk, libstdc++, groff, libtool, make, m4, ncurses, openssl, patch, perl, pkgconfig, sed, tar, wget-ssl
