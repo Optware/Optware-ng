@@ -30,7 +30,7 @@ CROSS_PACKAGES = \
 	ccxstream classpath cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
-	e2fsprogs eaccelerator ed elinks esmtp esound expat \
+	e2fsprogs eaccelerator ed eggdrop elinks esmtp esound expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	fontconfig freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
@@ -75,7 +75,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	eggdrop
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -95,6 +94,7 @@ NATIVE_PACKAGES = \
 	autoconf \
 	bison \
 	bogofilter \
+	clamav \
 	cyrus-imapd \
 	emacs \
 	xemacs \
@@ -117,11 +117,8 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
-# clamavs configure script wants to run an inline program, and breaks, cause this couldn't do while cross compiling
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	clamav \
 
-# clamav - configure: error: User clamav (and/or group clamav) doesn't exist.
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
