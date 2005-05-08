@@ -2,12 +2,12 @@
 
 PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
 
-if grep -q ^eggdrop /etc/group; then
+if grep -q ^eggdrop: /etc/group; then
 	echo There already is an eggdrop group on the system.
 	ADDUSER_OPT="-G eggdrop"
 fi
 
-if grep -q ^eggdrop /etc/passwd; then
+if grep -q ^eggdrop: /etc/passwd; then
 	echo There already is an eggdrop user on the system.
 else
 	echo -n "No eggdrop user found, creating it... "
@@ -20,6 +20,5 @@ chmod 700 /opt/eggdrop
 echo ; echo
 echo "A template configuration file is installed here : /opt/etc/eggdrop.conf"
 echo "Please read the eggdrop documentation to create a configuration file matching you needs."
-echo "Once done, as root, run su eggdrop -c /opt/eggdrop/eggdrop -m <yourconffile>"
 echo
 

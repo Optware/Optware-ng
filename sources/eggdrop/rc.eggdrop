@@ -14,6 +14,3 @@ else
 	adduser -h /opt/eggdrop -g "eggdrop daemon" -s /bin/false -D -H  $ADDUSER_OPT eggdrop > /dev/null 2>&1
 	echo done
 fi
-
-#edit then uncomment the following line to have eggdrop automatically started
-#su eggdrop -c /opt/eggdrop/eggdrop /opt/eggdrop/place.the.name.of.your.configuration.file.here
