@@ -52,13 +52,13 @@ EGGDROP_IPK_VERSION=1
 # EGGDROP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-EGGDROP_PATCHES=$(EGGDROP_SOURCE_DIR)/Makefile.in.patch $(EGGDROP_SOURCE_DIR)/eggdrop.h.patch
+EGGDROP_PATCHES=$(EGGDROP_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-EGGDROP_CPPFLAGS=
+EGGDROP_CPPFLAGS=-DHAVE_SOCKLEN_T
 EGGDROP_LDFLAGS=-lresolv
 
 #
