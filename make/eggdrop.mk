@@ -42,7 +42,7 @@ EGGDROP_CONFLICTS=
 #
 # EGGDROP_IPK_VERSION should be incremented when the ipk changes.
 #
-EGGDROP_IPK_VERSION=1
+EGGDROP_IPK_VERSION=2
 
 #
 # EGGDROP_CONFFILES should be a list of user-editable files
