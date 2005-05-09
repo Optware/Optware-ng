@@ -189,6 +189,7 @@ $(MAILMAN_IPK_DIR)/CONTROL/control:
 $(MAILMAN_IPK): $(MAILMAN_BUILD_DIR)/.built
 	rm -rf $(MAILMAN_IPK_DIR) $(BUILD_DIR)/mailman_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAILMAN_BUILD_DIR) DESTDIR=$(MAILMAN_IPK_DIR) install
+	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/mail/mailman
 	#install -d $(MAILMAN_IPK_DIR)/opt/etc/
 	#install -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
 	#install -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
