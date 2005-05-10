@@ -37,7 +37,7 @@ NGET_CONFLICTS=
 #
 # NGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NGET_IPK_VERSION=1
+NGET_IPK_VERSION=2
 
 #
 # NGET_CONFFILES should be a list of user-editable files
@@ -192,7 +192,8 @@ $(NGET_IPK): $(NGET_BUILD_DIR)/.built
 		install_bin="install -m 0755" \
 		install
 	$(STRIP_COMMAND) $(NGET_IPK_DIR)/opt/bin/*
-	install -d $(NGET_IPK_DIR)/opt/etc/
+	install -d $(NGET_IPK_DIR)/opt/share/doc/example/nget
+	install -m 644 $(NGET_SOURCE_DIR)/example.ngetrc $(NGET_IPK_DIR)/opt/share/doc/example/nget/
 	$(MAKE) $(NGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGET_IPK_DIR)
 
