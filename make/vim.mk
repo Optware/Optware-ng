@@ -33,7 +33,7 @@ VIM_DEPENDS=ncurses
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=2
+VIM_IPK_VERSION=3
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -44,14 +44,14 @@ VIM_CONFFILES=""
 # VIM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.patch
+VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 VIM_CPPFLAGS=
-VIM_LDFLAGS=
+VIM_LDFLAGS=-lncurses 
 
 #
 # VIM_BUILD_DIR is the directory in which the build is done.
@@ -103,19 +103,28 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 	# Rename the directory since they seem to include version numbers
 	# in the unpacked file. 
 	mv $(BUILD_DIR)/`echo $(VIM_DIR)|sed 's/[-.]//g'` $(BUILD_DIR)/$(VIM_DIR)
-	#cat $(VIM_PATCHES) | patch -d $(BUILD_DIR)/$(VIM_DIR) -p1
+ifneq ($(HOSTCC), $(TARGET_CC))
+	cat $(VIM_PATCHES) | patch -d $(BUILD_DIR)/$(VIM_DIR) -p1
+endif
 	mv $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
+ifneq ($(HOSTCC), $(TARGET_CC))
+	(cd $(VIM_BUILD_DIR); \
+		autoconf src/configure.in > src/auto/configure; \
+	)
+endif
 	(cd $(VIM_BUILD_DIR)/src; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VIM_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(VIM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VIM_LDFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(VIM_LDFLAGS)" \
+		ac_cv_sizeof_int=4 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-gui=no \
 		--without-x \
 		--disable-nls \
 	)
