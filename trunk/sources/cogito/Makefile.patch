@@ -1,5 +1,5 @@
---- cogito/Makefile-orig	2005-05-09 16:47:47.000000000 -0700
-+++ cogito/Makefile	2005-05-09 17:17:57.000000000 -0700
+--- cogito-0.10/Makefile	2005-05-08 16:55:36.000000000 -0700
++++ cogito/Makefile	2005-05-09 19:05:10.109398000 -0700
 @@ -21,6 +21,7 @@
  
  # DEFINES += -DNSEC
@@ -17,6 +17,15 @@
  
  
  all: $(PROG) $(GEN_SCRIPT)
+@@ -129,7 +130,7 @@
+ 	sed -e 's/@@VERSION@@/$(shell cat $(VERSION) | cut -d"-" -f2)/g' < $< > $@
+ 
+ 
+-sedlibdir=$(shell echo $(libdir) | sed 's/\//\\\//g')
++sedlibdir=$(shell echo "/opt/lib/cogito" | sed 's/\//\\\//g')
+ 
+ install: $(PROG) $(SCRIPTS) $(SCRIPT) $(LIB_SCRIPT) $(GEN_SCRIPT)
+ 	$(INSTALL) -m755 -d $(DESTDIR)$(bindir)
 @@ -147,6 +148,10 @@
  		cat $$file.new > $$file; rm $$file.new; \
  	done
