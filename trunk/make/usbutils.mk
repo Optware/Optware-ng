@@ -39,7 +39,7 @@ USBUTILS_IPK_VERSION=1
 # USBUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-USBUTILS_PATCHES=$(USBUTILS_SOURCE_DIR)/lsusb-endian.patch $(USBUTILS_SOURCE_DIR)/ltconfig.patch \
+USBUTILS_PATCHES=$(USBUTILS_SOURCE_DIR)/lsusb-endian.patch \
 	$(USBUTILS_SOURCE_DIR)/lsusb-wchar-unused.patch
 
 #
@@ -99,6 +99,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 	cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR)
 	(cd $(USBUTILS_BUILD_DIR); \
+		ACLOCAL=aclocal-1.4 AUTOMAKE=automake-1.4 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USBUTILS_LDFLAGS)" \
