@@ -1,0 +1,12 @@
+--- usbutils/lsusb.c.orig	2005-04-12 11:57:17.836427984 +0400
++++ usbutils/lsusb.c	2005-04-12 11:57:30.519499864 +0400
+@@ -130,7 +130,9 @@
+ static int get_string(int fd, char *buf, size_t size, u_int8_t id, u_int16_t lang)
+ {
+ 	unsigned char b[256];
++#if 0
+ 	wchar_t w[128];
++#endif
+ 	unsigned int i;
+ 	int ret;
+ 
