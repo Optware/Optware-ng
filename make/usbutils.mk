@@ -19,6 +19,12 @@ USBUTILS_VERSION=0.11
 USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.gz
 USBUTILS_DIR=usbutils-$(USBUTILS_VERSION)
 USBUTILS_UNZIP=zcat
+USBUTILS_PRIORITY=optional
+USBUTILS_DEPENDS=
+USBUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+USBUTILS_SECTION=utility
+USBUTILS_DESCRIPTION=USB enumeration utilities
+
 
 #
 # USBUTILS_IPK_VERSION should be incremented when the ipk changes.
@@ -33,7 +39,8 @@ USBUTILS_IPK_VERSION=1
 # USBUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-USBUTILS_PATCHES=$(USBUTILS_SOURCE_DIR)/lsusb-endian.patch $(USBUTILS_SOURCE_DIR)/ltconfig.patch
+USBUTILS_PATCHES=$(USBUTILS_SOURCE_DIR)/lsusb-endian.patch $(USBUTILS_SOURCE_DIR)/ltconfig.patch \
+	$(USBUTILS_SOURCE_DIR)/lsusb-wchar-unused.patch
 
 #
 # If the compilation of the package requires additional
@@ -96,7 +103,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USBUTILS_LDFLAGS)" \
 		./configure \
-		--host=arm-unknown-linux-gnu \
+		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
 		--datadir=/opt/share/misc \
@@ -128,6 +135,23 @@ $(USBUTILS_BUILD_DIR)/.staged: $(USBUTILS_BUILD_DIR)/.built
 
 usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
 
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/usbutils
+#
+$(USBUTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(USBUTILS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: usbutils" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(USBUTILS_PRIORITY)" >>$@
+	@echo "Section: $(USBUTILS_SECTION)" >>$@
+	@echo "Version: $(USBUTILS_VERSION)-$(USBUTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(USBUTILS_MAINTAINER)" >>$@
+	@echo "Source: $(USBUTILS_SITE)/$(USBUTILS_SOURCE)" >>$@
+	@echo "Description: $(USBUTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(USBUTILS_DEPENDS)" >>$@
+	@echo "Conflicts: $(USBUTILS_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -149,8 +173,7 @@ $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
 #	install -m 644 $(USBUTILS_SOURCE_DIR)/usbutils.conf $(USBUTILS_IPK_DIR)/opt/etc/usbutils.conf
 #	install -d $(USBUTILS_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(USBUTILS_SOURCE_DIR)/rc.usbutils $(USBUTILS_IPK_DIR)/opt/etc/init.d/SXXusbutils
-	install -d $(USBUTILS_IPK_DIR)/CONTROL
-	install -m 644 $(USBUTILS_SOURCE_DIR)/control $(USBUTILS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(USBUTILS_IPK_DIR)/CONTROL/control
 #	install -m 755 $(USBUTILS_SOURCE_DIR)/postinst $(USBUTILS_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(USBUTILS_SOURCE_DIR)/prerm $(USBUTILS_IPK_DIR)/CONTROL/prerm
 #	echo $(USBUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(USBUTILS_IPK_DIR)/CONTROL/conffiles

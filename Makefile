@@ -77,6 +77,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	nget \
 	py-cherrypy \
+	usbutils
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -151,7 +152,7 @@ WL500G_PACKAGES = \
 	rdate readline recordext renderext rsync \
 	samba siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  \
-	unfs3 units \
+	unfs3 units usbutils \
 	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
@@ -161,12 +162,10 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
 	postgresql python \
-	syslog-ng \
 	torrent ttf-bitstream-vera \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	mod-fastcgi
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
