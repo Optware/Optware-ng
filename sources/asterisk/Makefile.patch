@@ -1,11 +1,30 @@
---- asterisk-1.0.6/Makefile~	2005-03-10 07:56:20.000000000 -0800
-+++ asterisk-1.0.6/Makefile	2005-03-10 07:55:42.000000000 -0800
-@@ -63,10 +63,10 @@
- #K6OPT  = -DK6OPT
+--- asterisk-1.0.99/Makefile~	2005-04-02 12:32:12.000000000 -0800
++++ asterisk-1.0.99/Makefile	2005-04-02 12:29:26.000000000 -0800
+@@ -11,7 +11,8 @@
+ # the GNU General Public License
+ #
+ 
+-.EXPORT_ALL_VARIABLES:
++#.EXPORT_ALL_VARIABLES:
++export
+ 
+ # Create OPTIONS variable
+ OPTIONS=
+@@ -61,7 +62,7 @@
+ OPTIONS+=-fsigned-char -mcpu=ep9312
+ else
+ ifeq ($(SUB_PROC),xscale)
+-OPTIONS+=-fsigned-char -msoft-float -mcpu=xscale
++OPTIONS+=-fsigned-char -mcpu=xscale -mbig-endian
+ else
+ OPTIONS+=-fsigned-char -msoft-float 
+ endif
+@@ -101,10 +102,10 @@
+ OVERWRITE=y
  
  #Tell gcc to optimize the asterisk's code
 -OPTIMIZE+=-O6
-+OPTIMIZE+=-Os -mcpu=xscale
++OPTIMIZE+=-Os
  
  #Include debug symbols in the executables (-g) and profiling info (-pg)
 -DEBUG=-g #-pg
@@ -13,16 +32,7 @@
  
  # If you are running a radio application, define RADIO_RELAX so that the DTMF
  # will be received more reliably
-@@ -74,7 +74,7 @@
- 
- # If you don't have a lot of memory (e.g. embedded Asterisk), uncomment the
- # following to reduce the size of certain static buffers
--#OPTIONS += -DLOW_MEMORY
-+OPTIONS += -DLOW_MEMORY
- 
- # Optional debugging parameters
- DEBUG_THREADS = #-DDEBUG_THREADS #-DDO_CRASH 
-@@ -128,6 +128,7 @@
+@@ -169,6 +170,7 @@
  
  INCLUDE=-Iinclude -I../include
  CFLAGS=-pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations $(DEBUG) $(INCLUDE) -D_REENTRANT -D_GNU_SOURCE #-DMAKE_VALGRIND_HAPPY
@@ -30,7 +40,7 @@
  CFLAGS+=$(OPTIMIZE)
  
  ifneq ($(PROC),ultrasparc)
-@@ -218,8 +219,8 @@
+@@ -271,8 +273,8 @@
  ASTLINK=-Wl,-dynamic
  SOLINK=-dynamic -bundle -undefined suppress -force_flat_namespace
  else
@@ -39,5 +49,5 @@
 +ASTLINK= $(LDFLAGS) -Wl,-E 
 +SOLINK= $(LDFLAGS) -shared -Xlinker -x
  endif
- 
- CC=gcc
+ ifeq (${OSARCH},SunOS)
+ OBJS+=strcompat.o
