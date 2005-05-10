@@ -1,14 +1,14 @@
---- cogito-0.8-orig/Makefile	2005-04-25 20:02:01.000000000 -0700
-+++ cogito/Makefile	2005-04-30 14:18:46.802376000 -0700
-@@ -15,6 +15,7 @@
- # BREAK YOUR LOCAL DIFFS! show-diff and anything using it will likely randomly
- # break unless your underlying filesystem supports those sub-second times
- # (my ext3 doesn't).
-+CPPFLAGS=
- CFLAGS=-g -O2 -Wall
+--- cogito/Makefile-orig	2005-05-09 16:47:47.000000000 -0700
++++ cogito/Makefile	2005-05-09 17:17:57.000000000 -0700
+@@ -21,6 +21,7 @@
  
- # Should be changed to /usr/local
-@@ -70,7 +71,7 @@
+ # DEFINES += -DNSEC
+ 
++CPPFLAGS=
+ CFLAGS?=-g -O2
+ CFLAGS+=-Wall $(DEFINES)
+ 
+@@ -84,7 +85,7 @@
  endif
  endif
  
@@ -17,21 +17,14 @@
  
  
  all: $(PROG) $(GEN_SCRIPT)
-@@ -91,13 +92,16 @@
- 	@echo Generating cg-version...
- 	@rm -f $@
- 	@echo "#!/bin/sh" > $@
--	@PATH=.:$(PATH) echo "echo \"$(shell cat $(VERSION)) ($(shell commit-id))\"" >> $@
-+	@PATH=.:$(PATH) echo "echo \"$(shell cat $(VERSION))\"" >> $@
- 	@chmod +x $@
- 
- install: $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT)
- 	install -m755 -d $(DESTDIR)$(bindir)
- 	install $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT) $(DESTDIR)$(bindir)
+@@ -147,6 +148,10 @@
+ 		cat $$file.new > $$file; rm $$file.new; \
+ 	done
  
 +install-strip: install
 +	for p in $(PROG); do $(STRIP) $(DESTDIR)$(bindir)/$$p; done
 +
- clean:
- 	rm -f *.o mozilla-sha1/*.o ppc/*.o $(PROG) $(GEN_SCRIPT) $(LIB_FILE)
- 
++
+ uninstall:
+ 	cd $(DESTDIR)$(bindir) && rm $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT)
+ 	cd $(DESTDIR)$(libdir) && rm $(LIB_SCRIPT)
