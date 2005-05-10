@@ -48,13 +48,14 @@ CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm mediawiki metalog miau \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
-	nail nano ncftp ncurses nfs-server nfs-utils nload nmap ntp ntpclient \
-	nylon \
+	nail nano ncftp ncurses nfs-server nfs-utils nget \
+	nload nmap ntp ntpclient nylon \
 	openssh openssl openvpn \
 	pango parted patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
+	py-cherrypy \
 	py-sqlite py-bittorrent pt-moin py-mxbase py-mysql py-psycopg \
 	quagga \
 	rdate readline recordext renderext rsync \
@@ -62,8 +63,8 @@ CROSS_PACKAGES = \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils tin torrent transcode \
 	ttf-bitstream-vera \
-	unfs3 units unslung-feeds \
-	vdr-mediamvp vsftpd vte vorbis-tools \
+	unfs3 units unslung-feeds usbutils \
+	vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan wget-ssl which webalizer \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xterm xtrans xtst xvid \
@@ -75,10 +76,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	nget \
-	py-cherrypy \
-	usbutils \
-	vim \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -116,7 +113,6 @@ NATIVE_PACKAGES = \
 	rsnapshot ruby \
 	squid \
 	stow \
-	vim \
 	w3m \
         xmail \
 
