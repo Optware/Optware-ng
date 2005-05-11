@@ -56,7 +56,7 @@ CROSS_PACKAGES = \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
 	py-cherrypy \
-	py-sqlite py-bittorrent pt-moin py-mxbase py-mysql py-psycopg \
+	py-sqlite py-bittorrent py-moin py-mxbase py-mysql py-psycopg \
 	quagga \
 	rdate readline recordext renderext rsync \
 	samba screen sed ser siproxy sm snownews \
