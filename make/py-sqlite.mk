@@ -21,10 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLITE_VERSION=2.0.alpha4
+PY-SQLITE_VERSION=2.0.beta1
 PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.0/$(PY-SQLITE_VERSION)
 PY-SQLITE_SOURCE=pysqlite-$(PY-SQLITE_VERSION).tar.gz
-PY-SQLITE_DIR=pysqlite$(PY-SQLITE_VERSION)
+PY-SQLITE_DIR=pysqlite-$(PY-SQLITE_VERSION)
 PY-SQLITE_UNZIP=zcat
 PY-SQLITE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SQLITE_DESCRIPTION=pysqlite is an interface to the SQLite database server for Python. It aims to be fully compliant with Python database API version 2.0 while also exploiting the unique features of SQLite.
