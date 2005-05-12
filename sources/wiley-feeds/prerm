@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ -f /opt/etc/ipkg.conf ] ;  then
+	if ( grep -q ".* unslung" /opt/etc/ipkg.conf ) ; then
+		sed -i -e "/.* unslung/d" /opt/etc/ipkg.conf
+	fi
+
+	if ( grep -q ".* wl500g" /opt/etc/ipkg.conf ) ; then
+		sed -i -e "/.* wl500g/d" /opt/etc/ipkg.conf
+	fi
+	
+	rm -rf /opt/lib/ipkg/lists/unslung
+	rm -rf /opt/lib/ipkg/lists/wl500g
+fi
