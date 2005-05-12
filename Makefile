@@ -76,9 +76,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	nget \
-	py-cherrypy \
-	usbutils \
 	sane-backends
 
 # asterisk may just need configure work
