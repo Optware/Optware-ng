@@ -1,0 +1,70 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+ROOT_USER=`sed -n -e 's/^\(.*\):.*:0:0.*/\1/p' /etc/passwd`
+ROOT_GROUPID=`sed -n -e "s/^$ROOT_USER:.*:.*:\([0-9][0-9]*\):.*/\1/p" /etc/passwd`
+ROOT_GROUP=`sed -n -e "s/^\(.*\):.*:$ROOT_GROUPID:.*/\1/p" /etc/group`
+
+# Adding sane-port to /etc/services
+if !( grep -q ^sane-port /etc/services ); then
+	echo
+	echo -n "Adding sane-port to /etc/services..."
+        echo "sane-port         6566/tcp        # SANE network scanner daemon" >> /etc/services
+	echo "done."
+fi
+
+#If the end-user has xinetd running and configured, add saned to xinetd configuration
+if [ -d /opt/etc/xinet.d -a -n "`pidof xinetd`" ]; then
+	cat > /opt/etc/xinet.d/saned <<\_ACEOF
+{
+	socket_type = stream
+	server = /opt/sbin/saned
+	protocol = tcp
+_ACEOF
+	echo "	user = $ROOT_USER" >> /opt/etc/xinet.d/saned
+	echo "	group = $ROOT_GROUP" >> /opt/etc/xinet.d/saned
+	cat >> /opt/etc/xinet.d/saned <<\_ACEOF
+	wait = no
+	disable = no
+}
+_ACEOF
+	echo 
+	echo "It seems you have xinetd configured and running. Good."
+	echo "sane-backends has been installed and configured to run with xinetd in /opt/etc/xinet.d/saned"
+	echo "Please reload xinetd to start sane-backends."
+	exit 1
+	fi
+
+#If the end-user has inetd running and configured, add saned to inetd configuration
+if [ -f /opt/etc/inetd.conf -a -n "`pidof inetd`" ]; then
+	echo "sane-port  stream  tcp  nowait  $ROOT_USER.$ROOT_GROUP  /opt/sbin/saned saned" >> /opt/etc/inetd.conf
+	echo 
+	echo "It seems you have inetd configured and running. Good."
+	echo "sane-backends has been installed and configured to run with inetd in /opt/etc/inetd.conf"
+	echo "Please reload inetd to start sane-backends."
+	exit 1
+fi
+
+#if the end-user doesn't run xinetd nor inetd
+echo 
+echo "sane-backends has been installed. To finish the installation, you should consider installing"
+echo "either xinetd or inetd to make sane-backend running."
+echo
+echo "For inetd, add the following to /opt/etc/inetd.conf:"
+echo "	sane-port  stream  tcp  nowait  $ROOT_USER.$ROOT_GROUP  /opt/sbin/saned saned"
+echo
+echo "For xinetd, create a /opt/etc/xinet.d/saned file like:"
+cat << _ACEOF
+{
+	socket_type = stream
+	server = /opt/sbin/saned
+	protocol = tcp
+_ACEOF
+echo "	user = $ROOT_USER" 
+echo "	group = $ROOT_GROUP" 
+cat << _ACEOF
+	wait = no
+	disable = no
+}
+_ACEOF
+
