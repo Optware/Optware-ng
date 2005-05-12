@@ -76,6 +76,10 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	nget \
+	py-cherrypy \
+	usbutils \
+	sane-backends
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -147,7 +151,7 @@ WL500G_PACKAGES = \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin \
 	quagga \
 	rdate readline recordext renderext rsync \
-	samba siproxd sqlite strace stunnel syslog-ng \
+	samba sane-backends siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  \
 	unfs3 units usbutils \
 	vorbis-tools vsftpd \
