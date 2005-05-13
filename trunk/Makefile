@@ -76,7 +76,8 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	sane-backends
+	sane-backends \
+	ipkg
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -137,7 +138,7 @@ WL500G_PACKAGES = \
 	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap grep gzip \
 	hdparm \
-	inetutils \
+	inetutils ipkg \
 	joe \
 	lame less libcurl libbt libdb libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
