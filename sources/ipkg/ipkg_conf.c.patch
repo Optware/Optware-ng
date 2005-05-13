@@ -1,0 +1,20 @@
+--- ipkg-0.99.144/ipkg_conf.c	2005-02-23 01:45:14.000000000 +0300
++++ ipkg/ipkg_conf.c	2005-03-12 15:11:40.000000000 +0300
+@@ -103,7 +103,7 @@
+      nv_pair_list_t tmp_dest_nv_pair_list;
+      char * lists_dir =NULL;
+      glob_t globbuf;
+-     char *etc_ipkg_conf_pattern = "/etc/ipkg/*.conf";
++     char *etc_ipkg_conf_pattern = "/opt/etc/ipkg/*.conf";
+      char *pending_dir  =NULL;
+ 
+      memset(conf, 0, sizeof(ipkg_conf_t));
+@@ -185,7 +185,7 @@
+      conf->pending_dir = strdup(pending_dir);
+ 
+      if (args->offline_root) 
+-	  sprintf_alloc(&etc_ipkg_conf_pattern, "%s/etc/ipkg/*.conf", args->offline_root);
++	  sprintf_alloc(&etc_ipkg_conf_pattern, "%s/opt/etc/ipkg/*.conf", args->offline_root);
+      memset(&globbuf, 0, sizeof(globbuf));
+      err = glob(etc_ipkg_conf_pattern, 0, NULL, &globbuf);
+      if (!err) {
