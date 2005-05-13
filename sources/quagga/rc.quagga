@@ -1,23 +1,57 @@
 #!/bin/sh
 
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
 ZEBRA="/opt/sbin/zebra"
 RIPD="/opt/sbin/ripd"
+RIPNGD="/opt/sbin/ripngd"
 OSPFD="/opt/sbin/ospfd"
 OSPF6D="/opt/sbin/ospf6d"
+BGPD="/opt/sbin/bgpd"
 
 ZEBRA_CONF="/opt/etc/quagga/zebra.conf"
 RIPD_CONF="/opt/etc/quagga/ripd.conf"
+RIPNGD_CONF="/opt/etc/quagga/ripngd.conf"
 OSPFD_CONF="/opt/etc/quagga/ospfd.conf"
 OSPF6D_CONF="/opt/etc/quagga/ospf6d.conf"
+BGPD_CONF="/opt/etc/quagga/bgpd.conf"
 
 ZEBRA_OPTS="-d -A127.0.0.1"
 RIPD_OPTS="-d -A127.0.0.1"
+RIPNGD_OPTS="-d -A127.0.0.1"
 OSPFD_OPTS="-d -A127.0.0.1"
 OSPF6D_OPTS="-d -A127.0.0.1"
 BGPD_OPTS="-d -A127.0.0.1"
 
+#
+# make sure zebra and its config file exist, otherwise there is no point in continuing
+#
+
 [ -f $ZEBRA_CONF ] || exit 0
 [ -x $ZEBRA ] || exit 0
+
+#
+# make sure quagga userid exists and used directories/ files are owned by that user
+# user may already exist, so discard output
+#
+if grep -q ^quagga: /etc/group; then
+        echo There already is a quagga group on the system.
+        ADDUSER_OPT="-G quagga"
+fi
+if grep -q ^quagga: /etc/passwd; then
+        echo There already is an quagga user on the system.
+else
+	echo -n "No quagga user found, creating it... "
+	adduser -h /opt/var/log/quagga -g "quagga daemon" -s /bin/false -D  $ADDUSER_OPT quagga > /dev/null 2>&1
+echo done
+fi
+
+#
+# these may fail (files may not yet exist), so discard output
+#
+
+chown -R quagga.quagga /opt/var/run/quagga /opt/var/log/quagga /opt/etc/quagga > /dev/null 2>&1
+
 
 $ZEBRA $ZEBRA_OPTS &
 
@@ -31,4 +65,12 @@ fi
 
 if ( [ -f $RIPD_CONF ] && [ -x $RIPD ] ); then
 	$RIPD $RIPD_OPTS &
+fi
+
+if ( [ -f $RIPNGD_CONF ] && [ -x $RIPNGD ] ); then
+	$RIPNGD $RIPNGD_OPTS &
+fi
+
+if ( [ -f $BGPD_CONF ] && [ -x $BGPD ] ); then
+	$BGPD $BGPD_OPTS &
 fi
