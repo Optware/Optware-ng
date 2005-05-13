@@ -1,4 +1,2 @@
 #!/bin/sh
-mkdir -p /var/run/quagga
-mkdir -p /var/log/quagga
-chown quagga.quagga /var/run/quagga /var/log/quagga
+/opt/etc/init.d/S50quagga
