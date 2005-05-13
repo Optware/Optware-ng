@@ -139,7 +139,7 @@ WL500G_PACKAGES = \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libdb libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
+	lame less libcurl libbt libdb libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
@@ -149,7 +149,7 @@ WL500G_PACKAGES = \
 	quagga \
 	rdate readline recordext renderext rsync \
 	samba sane-backends siproxd sqlite strace stunnel syslog-ng \
-	tar tcl tcpdump tcpwrappers termcap textutils thttpd  \
+	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
 	vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which wiley-feeds \
@@ -160,7 +160,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
 	postgresql \
-	torrent ttf-bitstream-vera \
+	ttf-bitstream-vera \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
