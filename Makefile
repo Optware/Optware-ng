@@ -145,7 +145,7 @@ WL500G_PACKAGES = \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
-	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin \
+	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rsync \
 	samba sane-backends siproxd sqlite strace stunnel syslog-ng \
@@ -159,7 +159,7 @@ WL500G_PACKAGES = \
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
-	postgresql python \
+	postgresql \
 	torrent ttf-bitstream-vera \
 	xmail 
 
