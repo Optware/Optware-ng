@@ -19,20 +19,35 @@ LIBBT_VERSION=1.03
 LIBBT_SOURCE=libbt-$(LIBBT_VERSION).tar.gz
 LIBBT_DIR=libbt-$(LIBBT_VERSION)
 LIBBT_UNZIP=zcat
+LIBBT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBBT_DESCRIPTION=a C library implementing the core BitTorrent protocol
+LIBBT_SECTION=net
+LIBBT_PRIORITY=optional
+LIBBT_DEPENDS=libcurl, openssl
+LIBBT_SUGGESTS=
+LIBBT_CONFLICTS=
 
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=5
+LIBBT_IPK_VERSION=6
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifneq ($(UNSLUNG_TARGET),wl500g)
+LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
+	$(LIBBT_SOURCE_DIR)/libbt-headerfix.patch \
+	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \
+	$(LIBBT_SOURCE_DIR)/benc.c.patch 
+else
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
 	$(LIBBT_SOURCE_DIR)/libbt-headerfix.patch \
 	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \
 	$(LIBBT_SOURCE_DIR)/benc.c.patch \
+	$(LIBBT_SOURCE_DIR)/random.c.patch 
+endif
 
 #
 # If the compilation of the package requires additional
@@ -122,6 +137,25 @@ $(LIBBT_BUILD_DIR)/.built: $(LIBBT_BUILD_DIR)/.configured
 libbt: $(LIBBT_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libbt
+#
+$(LIBBT_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBBT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libbt" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBBT_PRIORITY)" >>$@
+	@echo "Section: $(LIBBT_SECTION)" >>$@
+	@echo "Version: $(LIBBT_VERSION)-$(LIBBT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBBT_MAINTAINER)" >>$@
+	@echo "Source: $(LIBBT_SITE)/$(LIBBT_SOURCE)" >>$@
+	@echo "Description: $(LIBBT_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBBT_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBBT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBBT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBBT_IPK_DIR)/opt/sbin or $(LIBBT_IPK_DIR)/opt/bin
@@ -135,8 +169,7 @@ libbt: $(LIBBT_BUILD_DIR)/.built
 #
 $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/.built
 	rm -rf $(LIBBT_IPK_DIR) $(BUILD_DIR)/libbt_*_$(TARGET_ARCH).ipk
-	mkdir -p $(LIBBT_IPK_DIR)/CONTROL
-	cp $(SOURCE_DIR)/libbt/control $(LIBBT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBBT_IPK_DIR)/CONTROL/control
 	install -d $(LIBBT_IPK_DIR)/opt/bin
 	install -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)/opt/bin
 	install -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)/opt/bin
