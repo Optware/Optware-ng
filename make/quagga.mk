@@ -32,17 +32,17 @@ QUAGGA_SOURCE=quagga-$(QUAGGA_VERSION).tar.gz
 QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
 QUAGGA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, ospf6, and rip .
+QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, ospf6, and rip, ripngd and bgp.
 QUAGGA_SECTION=net
 QUAGGA_PRIORITY=optional
-QUAGGA_DEPENDS=readline, termcap
+QUAGGA_DEPENDS=adduser, readline, termcap
 QUAGGA_SUGGESTS=
 QUAGGA_CONFLICTS=
 
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=1
+QUAGGA_IPK_VERSION=2
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -121,13 +121,12 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/quagga \
+		--localstatedir=/opt/var/run/quagga \
 		--disable-nls \
-		--disable-ripngd \
-		--disable-bgpd \
-		--disable-bgpd-announce \
 		--disable-isisd \
 		--disable-static \
 		--enable-vtysh \
+		--enable-ospf6d \
 	)
 	touch $(QUAGGA_BUILD_DIR)/.configured
 
@@ -193,14 +192,12 @@ $(QUAGGA_IPK): $(QUAGGA_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(QUAGGA_IPK_DIR)/opt/lib/*.so*
-	install -d $(QUAGGA_IPK_DIR)/opt/etc/quagga
-	install -d $(QUAGGA_IPK_DIR)/opt/var/run
-	install -d $(QUAGGA_IPK_DIR)/opt/var/log
+	install -d $(QUAGGA_IPK_DIR)/opt/var/run/quagga
 	install -d $(QUAGGA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(QUAGGA_SOURCE_DIR)/rc.quagga $(QUAGGA_IPK_DIR)/opt/etc/init.d/S50quagga
 	$(MAKE) $(QUAGGA_IPK_DIR)/CONTROL/control
 	install -m 755 $(QUAGGA_SOURCE_DIR)/postinst $(QUAGGA_IPK_DIR)/CONTROL/postinst
-	echo $(QUAGGA_CONFFILES) | sed -e 's/ /\n/g' > $(QUAGGA_IPK_DIR)/CONTROL/conffiles
+	#echo $(QUAGGA_CONFFILES) | sed -e 's/ /\n/g' > $(QUAGGA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUAGGA_IPK_DIR)
 
 #
