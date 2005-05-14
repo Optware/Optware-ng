@@ -1,0 +1,11 @@
+--- erlang/erts/emulator/Makefile.in-bak	2005-05-10 08:08:05.000000000 -0700
++++ erlang/erts/emulator/Makefile.in	2005-05-13 23:32:11.739398000 -0700
+@@ -213,7 +213,7 @@
+ UNIX_ONLY_BUILDS =
+ endif
+ 
+-all: generate erts_lib zlib $(BINDIR)/$(EMULATOR_EXECUTABLE) $(UNIX_ONLY_BUILDS)
++all: generate erts_lib zlib $(BINDIR)/$(EMULATOR_EXECUTABLE) $(BINDIR)/$(EMULATOR_EXECUTABLE_SAE) $(UNIX_ONLY_BUILDS)
+ 
+ zlib:
+ 	@set -e ; cd zlib && $(MAKE) $(TYPE)
