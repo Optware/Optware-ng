@@ -1,0 +1,21 @@
+--- otp_src_R10B-5-orig/Makefile.in	2005-02-09 05:30:54.000000000 -0800
++++ erlang/Makefile.in	2005-05-14 08:52:22.009398000 -0700
+@@ -531,12 +531,12 @@
+ install.bin:
+ 	rm -f $(BINDIR)/erl $(BINDIR)/erlc \
+ 	      $(BINDIR)/ecc $(BINDIR)/elink $(BINDIR)/ear $(BINDIR)/escript
+-	${LN_S} $(ERLANG_BINDIR)/erl      $(BINDIR)/erl
+-	${LN_S} $(ERLANG_BINDIR)/erlc     $(BINDIR)/erlc
+-	${LN_S} $(ERLANG_BINDIR)/ecc      $(BINDIR)/ecc
+-	${LN_S} $(ERLANG_BINDIR)/elink    $(BINDIR)/elink
+-	${LN_S} $(ERLANG_BINDIR)/ear      $(BINDIR)/ear
+-	${LN_S} $(ERLANG_BINDIR)/escript  $(BINDIR)/escript
++	#${LN_S} $(ERLANG_BINDIR)/erl      $(BINDIR)/erl
++	#${LN_S} $(ERLANG_BINDIR)/erlc     $(BINDIR)/erlc
++	#${LN_S} $(ERLANG_BINDIR)/ecc      $(BINDIR)/ecc
++	#${LN_S} $(ERLANG_BINDIR)/elink    $(BINDIR)/elink
++	#${LN_S} $(ERLANG_BINDIR)/ear      $(BINDIR)/ear
++	#${LN_S} $(ERLANG_BINDIR)/escript  $(BINDIR)/escript
+ 
+ #
+ # Directories needed before we can install
