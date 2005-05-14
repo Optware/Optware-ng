@@ -37,7 +37,7 @@ CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
 	hdparm hnb \
-	ice imagemagick inetutils iptables ircd-hybrid ivorbis-tools \
+	ice imagemagick imap inetutils iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame less \
 	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
@@ -328,11 +328,11 @@ ifeq ($(HOST_MACHINE),armv5b)
 	ssh nudi.nslu2-linux.org mkdir -p /home/unslung/packages/native/
 	rsync -avr --delete packages/ nudi.nslu2-linux.org:/home/unslung/packages/native/
 	ssh nudi.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
-	ssh nudi.nslu2-linux.org rsync -vrlt /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
-	ssh nudi.nslu2-linux.org rsync -vrlt /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
+	ssh nudi.nslu2-linux.org rsync -vrlt --progress /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
+	ssh nudi.nslu2-linux.org rsync -vrlt --progress /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
 else
-	rsync -vrlt packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
-	rsync -vrl packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
+	rsync -vrlt --progress packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
+	rsync -vrl --progress packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
 endif
 else
 	rsync -vrlt packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/wl500g
