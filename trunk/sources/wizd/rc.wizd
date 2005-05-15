@@ -4,4 +4,4 @@ if [ -n "`pidof wizd`" ]; then
     killall wizd 2>/dev/null
 fi
 
-/opt/sbin/wizd
+/opt/sbin/wizd -d
