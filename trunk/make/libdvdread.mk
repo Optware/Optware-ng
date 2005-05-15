@@ -24,11 +24,18 @@ LIBDVDREAD_VERSION=0.9.4
 LIBDVDREAD_SOURCE=libdvdread-$(LIBDVDREAD_VERSION).tar.gz
 LIBDVDREAD_DIR=libdvdread-$(LIBDVDREAD_VERSION)
 LIBDVDREAD_UNZIP=zcat
+LIBDVDREAD_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+LIBDVDREAD_DESCRIPTION=library for reading dvd
+LIBDVDREAD_SECTION=lib
+LIBDVDREAD_PRIORITY=optional
+LIBDVDREAD_DEPENDS=
+LIBDVDREAD_SUGGESTS=
+LIBDVDREAD_CONFLICTS=
 
 #
 # LIBDVDREAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVDREAD_IPK_VERSION=1
+LIBDVDREAD_IPK_VERSION=2
 
 #
 # LIBDVDREAD_CONFFILES should be a list of user-editable files
@@ -135,6 +142,25 @@ $(LIBDVDREAD_BUILD_DIR)/.staged: $(LIBDVDREAD_BUILD_DIR)/.built
 libdvdread-stage: $(LIBDVDREAD_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/libdvdread
+#
+$(LIBDVDREAD_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBDVDREAD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libdvdread" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBDVDREAD_PRIORITY)" >>$@
+	@echo "Section: $(LIBDVDREAD_SECTION)" >>$@
+	@echo "Version: $(LIBDVDREAD_VERSION)-$(LIBDVDREAD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBDVDREAD_MAINTAINER)" >>$@
+	@echo "Source: $(LIBDVDREAD_SITE)/$(LIBDVDREAD_SOURCE)" >>$@
+	@echo "Description: $(LIBDVDREAD_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBDVDREAD_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBDVDREAD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBDVDREAD_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBDVDREAD_IPK_DIR)/opt/sbin or $(LIBDVDREAD_IPK_DIR)/opt/bin
@@ -149,8 +175,7 @@ libdvdread-stage: $(LIBDVDREAD_BUILD_DIR)/.staged
 $(LIBDVDREAD_IPK): $(LIBDVDREAD_BUILD_DIR)/.built
 	rm -rf $(LIBDVDREAD_IPK_DIR) $(BUILD_DIR)/libdvdread_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDVDREAD_BUILD_DIR) DESTDIR=$(LIBDVDREAD_IPK_DIR) install
-	install -d $(LIBDVDREAD_IPK_DIR)/CONTROL
-	install -m 644 $(LIBDVDREAD_SOURCE_DIR)/control $(LIBDVDREAD_IPK_DIR)/CONTROL/control
+	$(MAKE) $(LIBDVDREAD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVDREAD_IPK_DIR)
 
 #
