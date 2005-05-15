@@ -35,7 +35,7 @@ WIZD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WIZD_DESCRIPTION=Mediaserver program for IO-DATA and other players
 WIZD_SECTION=net
 WIZD_PRIORITY=optional
-WIZD_DEPENDS=libdvdread libjpeg
+WIZD_DEPENDS=libdvdread, libjpeg
 WIZD_SUGGESTS=
 WIZD_CONFLICTS=
 
