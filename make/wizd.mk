@@ -52,14 +52,14 @@ WIZD_CONFFILES=/opt/etc/wizd.conf
 # WIZD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#WIZD_PATCHES=$(WIZD_SOURCE_DIR)/configure.patch
+WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-WIZD_CPPFLAGS=
-WIZD_LDFLAGS=
+WIZD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
+WIZD_LDFLAGS=-lm
 
 #
 # WIZD_BUILD_DIR is the directory in which the build is done.
@@ -108,8 +108,8 @@ $(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 	$(MAKE) libdvdread-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) -d $(BUILD_DIR)
+	cat $(WIZD_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
 	mv $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
-
 	touch $(WIZD_BUILD_DIR)/.configured
 
 wizd-unpack: $(WIZD_BUILD_DIR)/.configured
@@ -120,8 +120,8 @@ wizd-unpack: $(WIZD_BUILD_DIR)/.configured
 $(WIZD_BUILD_DIR)/.built: $(WIZD_BUILD_DIR)/.configured
 	rm -f $(WIZD_BUILD_DIR)/.built
 	sed -i "s#/usr/local#${STAGING_DIR}/opt#g" $(WIZD_BUILD_DIR)/source/Makefile
-	CPPFLAGS="$(STAGING_CPPFLAGS) $(WIZD_CPPFLAGS) -I/slug/unslung/staging/opt/include/" \
-        LDFLAGS="$(STAGING_LDFLAGS) $(WIZD_LDFLAGS) -lm" \
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(WIZD_CPPFLAGS)" \
+        LDFLAGS="$(STAGING_LDFLAGS) $(WIZD_LDFLAGS)" \
 	$(MAKE) -C $(WIZD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
 	touch $(WIZD_BUILD_DIR)/.built
 
@@ -173,11 +173,15 @@ $(WIZD_IPK_DIR)/CONTROL/control:
 #
 $(WIZD_IPK): $(WIZD_BUILD_DIR)/.built
 	rm -rf $(WIZD_IPK_DIR) $(BUILD_DIR)/wizd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(WIZD_BUILD_DIR) DESTDIR=$(WIZD_IPK_DIR) install
+#	$(MAKE) -C $(WIZD_BUILD_DIR) DESTDIR=$(WIZD_IPK_DIR) install
 	install -d $(WIZD_IPK_DIR)/opt/etc/
 	install -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
 	install -d $(WIZD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)/opt/etc/init.d/SXXwizd
+	install -d $(WIZD_IPK_DIR)/opt/share/wizd
+	cp -rip $(WIZD_SOURCE_DIR)/docroot/* $(WIZD_IPK_DIR)/opt/share/wizd
+	chmod 644 $(WIZD_IPK_DIR)/opt/share/wizd/*
+	install -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
 	$(MAKE) $(WIZD_IPK_DIR)/CONTROL/control
 	install -m 755 $(WIZD_SOURCE_DIR)/postinst $(WIZD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(WIZD_SOURCE_DIR)/prerm $(WIZD_IPK_DIR)/CONTROL/prerm
