@@ -59,7 +59,7 @@ CROSS_PACKAGES = \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg \
 	quagga \
 	rdate readline recordext renderext rsync \
-	samba screen sed ser siproxy sm snownews \
+	samba screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils tin torrent transcode \
 	ttf-bitstream-vera \
