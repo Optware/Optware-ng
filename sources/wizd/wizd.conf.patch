@@ -5,7 +5,7 @@
  
  ## Base location for your media files
 -document_root           ./docroot
-+document_root           /opt/share/wizd
++document_root           /opt/share/wizd/docroot
  
  ## Aliases show up in the base location as virtual folders
  ## When selected they get redirected to the path you enter here
@@ -35,6 +35,15 @@
  
  
  ## (Daemon conversion)
+@@ -162,7 +162,7 @@
+ ## Skin name is the subdirectory under skin_root for the selected skin.
+ ##  When using skins, if these directories do not exist, the server will 
+ ##  close immediately.
+-skin_root               ./skin
++skin_root               /opt/share/wizd/skin
+ skin_name		linkplayer
+ #skin_name		linkplayer_hires
+ 
 @@ -364,7 +364,7 @@
  ## (output error when executing CGI script)
  # default: /dev/null
