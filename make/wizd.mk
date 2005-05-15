@@ -52,7 +52,7 @@ WIZD_CONFFILES=/opt/etc/wizd.conf
 # WIZD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch
+WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch $(WIZD_SOURCE_DIR)/wizd.conf.patch
 
 #
 # If the compilation of the package requires additional
