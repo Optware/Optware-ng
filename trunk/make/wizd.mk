@@ -180,8 +180,8 @@ $(WIZD_IPK): $(WIZD_BUILD_DIR)/.built
 	install -d $(WIZD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)/opt/etc/init.d/S84wizd
 	install -d $(WIZD_IPK_DIR)/opt/share/wizd
-	cp -rip $(WIZD_BUILD_DIR)/docroot/* $(WIZD_IPK_DIR)/opt/share/wizd
-	chmod 644 $(WIZD_IPK_DIR)/opt/share/wizd/*
+	cp -rip $(WIZD_BUILD_DIR)/docroot $(WIZD_IPK_DIR)/opt/share/wizd
+	cp -rip $(WIZD_BUILD_DIR)/skin $(WIZD_IPK_DIR)/opt/share/wizd
 	$(MAKE) $(WIZD_IPK_DIR)/CONTROL/control
 	install -m 755 $(WIZD_SOURCE_DIR)/postinst $(WIZD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(WIZD_SOURCE_DIR)/prerm $(WIZD_IPK_DIR)/CONTROL/prerm
