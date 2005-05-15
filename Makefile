@@ -65,7 +65,7 @@ CROSS_PACKAGES = \
 	ttf-bitstream-vera \
 	unfs3 units unslung-feeds usbutils \
 	vdr-mediamvp vim vsftpd vte vorbis-tools \
-	w3cam wakelan wget-ssl which webalizer \
+	w3cam wakelan webalizer wget-ssl which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xterm xtrans xtst xvid \
 	zlib \
@@ -140,7 +140,7 @@ WL500G_PACKAGES = \
 	hdparm \
 	inetutils ipkg \
 	joe \
-	lame less libcurl libbt libdb libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
+	lame less libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
@@ -153,7 +153,7 @@ WL500G_PACKAGES = \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
 	vorbis-tools vsftpd \
-	w3cam wakelan wget-ssl which wiley-feeds \
+	w3cam wakelan wget-ssl which wiley-feeds wizd \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
