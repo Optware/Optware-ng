@@ -22,18 +22,20 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_TARBALL_VERSION=R10B-4
-ERLANG_VERSION=R10B4
+ERLANG_TARBALL_VERSION=R10B-5
+ERLANG_VERSION=R10B5
 ERLANG_SOURCE=otp_src_$(ERLANG_TARBALL_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_TARBALL_VERSION)
 ERLANG_UNZIP=zcat
 ERLANG_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
-ERLANG_DESCRIPTION=Describe erlang here.
+ERLANG_DESCRIPTION=Erlang is a general-purpose programming language and runtime environment, with built-in support for concurrency, distribution and fault tolerance.
 ERLANG_SECTION=misc
 ERLANG_PRIORITY=optional
 ERLANG_DEPENDS=ncurses
 ERLANG_SUGGESTS=
 ERLANG_CONFLICTS=
+
+ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
@@ -48,7 +50,7 @@ ERLANG_IPK_VERSION=1
 # ERLANG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ERLANG_PATCHES=$(ERLANG_SOURCE_DIR)/configure.patch
+ERLANG_PATCHES=$(ERLANG_SOURCE_DIR)/Makefile.in.patch $(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch $(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch
 
 #
 # If the compilation of the package requires additional
@@ -105,7 +107,7 @@ $(ERLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
 	#$(MAKE) ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
+	cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
 	mv $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)
 	(cd $(ERLANG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -130,10 +132,16 @@ erlang-unpack: $(ERLANG_BUILD_DIR)/.configured
 $(ERLANG_BUILD_DIR)/.built: $(ERLANG_BUILD_DIR)/.configured
 	rm -f $(ERLANG_BUILD_DIR)/.built
 	TARGET=$(GNU_TARGET_NAME)-gnu \
-	OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
-	CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
-	LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
-		$(MAKE) -C $(ERLANG_BUILD_DIR)
+		OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
+		$(MAKE) -C $(ERLANG_BUILD_DIR) $(ERLANG_MAKE_OPTION)
+	ERL_TOP=$(ERLANG_BUILD_DIR) PATH="$(ERLANG_BUILD_DIR)/bin:$$PATH" \
+		TARGET=$(GNU_TARGET_NAME)-gnu \
+		OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
+		$(MAKE) -C $(ERLANG_BUILD_DIR)/erts/boot/src $(ERLANG_MAKE_OPTION)
 	touch $(ERLANG_BUILD_DIR)/.built
 
 #
@@ -185,18 +193,49 @@ $(ERLANG_IPK_DIR)/CONTROL/control:
 $(ERLANG_IPK): $(ERLANG_BUILD_DIR)/.built
 	rm -rf $(ERLANG_IPK_DIR) $(BUILD_DIR)/erlang_*_$(TARGET_ARCH).ipk
 	TARGET=$(GNU_TARGET_NAME)-gnu \
-	OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
-	CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
-	LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
-		$(MAKE) -C $(ERLANG_BUILD_DIR) INSTALL_PREFIX=$(ERLANG_IPK_DIR) install
-	#install -d $(ERLANG_IPK_DIR)/opt/etc/
-	#install -m 644 $(ERLANG_SOURCE_DIR)/erlang.conf $(ERLANG_IPK_DIR)/opt/etc/erlang.conf
-	#install -d $(ERLANG_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(ERLANG_SOURCE_DIR)/rc.erlang $(ERLANG_IPK_DIR)/opt/etc/init.d/SXXerlang
+		OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
+		$(MAKE) -C $(ERLANG_BUILD_DIR) INSTALL_PREFIX=$(ERLANG_IPK_DIR) $(ERLANG_MAKE_OPTION) install
+	# 
+	for f in erl start; do \
+        	sed -i -e 's:ROOTDIR=.*:ROOTDIR=/opt/lib/erlang:' $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/$$f; \
+        done
+	# SAE related scripts
+	install $(ERLANG_BUILD_DIR)/bin/$(GNU_TARGET_NAME)-gnu/beam_evm $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
+	ERTS_VERSION=`cd $(ERLANG_IPK_DIR)/opt/lib/erlang; ls -d erts-*`; \
+	install $(ERLANG_BUILD_DIR)/erts/boot/src/erlang.ear $(ERLANG_IPK_DIR)/opt/lib/erlang/$$ERTS_VERSION; \
+	for f in ear ecc elink escript esh; do \
+        	install $(ERLANG_BUILD_DIR)/erts/boot/src/$$f $(ERLANG_IPK_DIR)/opt/lib/erlang/bin; \
+		sed -i -e "s:ERLANG_EARS=.*:ERLANG_EARS=/opt/lib/erlang/$$ERTS_VERSION:" $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/$$f; \
+	done
+	for f in ecc elink; do \
+		sed -i -e 's:exec .*beam_evm:exec /opt/bin/beam_evm:' $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/$$f; \
+	done
+	# strip binaries
+	for f in \
+		"lib/erlang/bin/beam_evm" \
+		"lib/erlang/bin/erlc" \
+		"lib/erlang/bin/run_erl" \
+		"lib/erlang/bin/to_erl" \
+		"lib/erlang/erts-*/bin/beam*" \
+		"lib/erlang/erts-*/bin/child_setup*" \
+		"lib/erlang/erts-*/bin/epmd" \
+		"lib/erlang/erts-*/bin/erlc" \
+		"lib/erlang/erts-*/bin/erlexec" \
+		"lib/erlang/erts-*/bin/heart" \
+		"lib/erlang/erts-*/bin/inet_gethost" \
+		"lib/erlang/erts-*/bin/run_erl" \
+		"lib/erlang/erts-*/bin/to_erl" \
+	; do \
+		$(STRIP_COMMAND) $(ERLANG_IPK_DIR)/opt/$$f; \
+        done
+	# symlinks in /opt/bin
+	cd $(ERLANG_IPK_DIR)/opt/bin; \
+        for f in beam_evm erl erlc ear ecc elink escript esh; do \
+        	ln -s ../lib/erlang/bin/$$f .; \
+        done
 	$(MAKE) $(ERLANG_IPK_DIR)/CONTROL/control
-	#install -m 755 $(ERLANG_SOURCE_DIR)/postinst $(ERLANG_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(ERLANG_SOURCE_DIR)/prerm $(ERLANG_IPK_DIR)/CONTROL/prerm
-	#echo $(ERLANG_CONFFILES) | sed -e 's/ /\n/g' > $(ERLANG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG_IPK_DIR)
 
 #
