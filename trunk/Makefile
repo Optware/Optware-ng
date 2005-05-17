@@ -57,7 +57,6 @@ CROSS_PACKAGES = \
 	procmail procps proftpd puppy python \
 	py-cherrypy \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg \
-	quagga \
 	rdate readline recordext renderext rsync \
 	samba screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
@@ -124,9 +123,11 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 	erlang \
 
 # libao - has runtime trouble
+# quagga is waiting for fix not to use compiler host include files
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
-	nethack scponly dump gkrellm freeradius
+	nethack scponly dump gkrellm freeradius \
+	quagga 
 
 PACKAGES_OBSOLETED = libiconv git
 
@@ -149,7 +150,6 @@ WL500G_PACKAGES = \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin python \
-	quagga \
 	rdate readline recordext renderext rsync \
 	samba sane-backends siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
@@ -159,12 +159,14 @@ WL500G_PACKAGES = \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
+# quagga is waiting for fix not to use compiler host include files
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
 	postgresql \
 	ttf-bitstream-vera \
-	xmail 
+	xmail \
+	quagga
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 
