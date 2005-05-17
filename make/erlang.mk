@@ -31,16 +31,16 @@ ERLANG_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 ERLANG_DESCRIPTION=Erlang is a general-purpose programming language and runtime environment, with built-in support for concurrency, distribution and fault tolerance.
 ERLANG_SECTION=misc
 ERLANG_PRIORITY=optional
-ERLANG_DEPENDS=ncurses
+ERLANG_DEPENDS=ncurses openssl
 ERLANG_SUGGESTS=
 ERLANG_CONFLICTS=
 
-ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
+ERLANG_MAKE_OPTION=#"OTP_SMALL_BUILD=true"
 
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -50,7 +50,11 @@ ERLANG_IPK_VERSION=1
 # ERLANG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ERLANG_PATCHES=$(ERLANG_SOURCE_DIR)/Makefile.in.patch $(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch $(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch
+ERLANG_PATCHES=\
+	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
+	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -103,8 +107,7 @@ erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ERLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
-	$(MAKE) ncurses-stage
-	#$(MAKE) ncurses-stage openssl-stage
+	$(MAKE) ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
@@ -113,12 +116,13 @@ $(ERLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
+		ac_cv_prog_javac_ver_1_2=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-                --without-ssl \
+                --with-ssl=$(STAGING_DIR)/opt \
                 --disable-hipe \
 		--disable-nls \
 	)
