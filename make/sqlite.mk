@@ -124,6 +124,7 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-tcl \
 	)
 	touch $(SQLITE_BUILD_DIR)/.configured
 
