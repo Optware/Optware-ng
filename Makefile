@@ -27,7 +27,7 @@ CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
 	atftp appweb apache apr apr-util atk audiofile automake \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
-	ccxstream classpath cogito coreutils cpio \
+	ccxstream chrpath classpath cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp esound expat \
@@ -37,7 +37,8 @@ CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
 	hdparm hnb \
-	ice imagemagick imap inetutils iptables ircd-hybrid ivorbis-tools \
+	ice imagemagick imap inetutils \
+	ipkg iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame less \
 	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
@@ -58,7 +59,7 @@ CROSS_PACKAGES = \
 	py-cherrypy \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg \
 	rdate readline recordext renderext rsync \
-	samba screen sed ser siproxd sm snownews \
+	samba sane-backends screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils tin torrent transcode \
 	ttf-bitstream-vera \
@@ -75,9 +76,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	chrpath \
-	sane-backends \
-	ipkg
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
