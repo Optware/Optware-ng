@@ -35,7 +35,7 @@ SAMBA_CONFLICTS=
 #
 # SAMBA_IPK_VERSION should be incremented when the ipk changes.
 #
-SAMBA_IPK_VERSION=3
+SAMBA_IPK_VERSION=4
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
@@ -133,6 +133,7 @@ $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 		samba_cv_have_setresuid=yes \
 		samba_cv_have_setresgid=yes \
 		samba_cv_USE_SETRESUID=yes \
+		samba_cv_HAVE_IFACE_IFCONF=yes \
 		source/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
