@@ -41,7 +41,7 @@ NYLON_CONFLICTS=
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=3
+NYLON_IPK_VERSION=4
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
@@ -181,13 +181,14 @@ $(NYLON_IPK): $(NYLON_BUILD_DIR)/.built
 	rm -rf $(NYLON_IPK_DIR) $(BUILD_DIR)/nylon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NYLON_BUILD_DIR) DESTDIR=$(NYLON_IPK_DIR) install
 	$(STRIP_COMMAND) $(NYLON_IPK_DIR)/opt/bin/nylon
+	install -d $(NYLON_IPK_DIR)/opt/var/run
 	install -d $(NYLON_IPK_DIR)/opt/etc
 	install -m 644 $(NYLON_SOURCE_DIR)/nylon.conf $(NYLON_IPK_DIR)/opt/etc/nylon.conf
-	#install -d $(NYLON_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(NYLON_SOURCE_DIR)/rc.nylon $(NYLON_IPK_DIR)/opt/etc/init.d/SXXnylon
+	install -d $(NYLON_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(NYLON_SOURCE_DIR)/rc.nylon $(NYLON_IPK_DIR)/opt/etc/init.d/S10nylon
 	$(MAKE) $(NYLON_IPK_DIR)/CONTROL/control
-	#install -m 755 $(NYLON_SOURCE_DIR)/postinst $(NYLON_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(NYLON_SOURCE_DIR)/prerm $(NYLON_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(NYLON_SOURCE_DIR)/postinst $(NYLON_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(NYLON_SOURCE_DIR)/prerm $(NYLON_IPK_DIR)/CONTROL/prerm
 	echo $(NYLON_CONFFILES) | sed -e 's/ /\n/g' > $(NYLON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NYLON_IPK_DIR)
 

@@ -1,0 +1,49 @@
+#!/bin/sh
+
+PIDFILE=/opt/var/run/nylon.pid
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+NYLON=/opt/bin/nylon
+NYLONCONF=/opt/etc/nylon.conf
+
+if ! [ -f $NYLON -a -f $NYLONCONF ] ; then
+	echo "nylon was not found on your system!"
+	exit 1
+fi
+
+start() {
+	if [ -f $PIDFILE ]; then
+		echo "Warning : $PIDFILE still present. Unclean shutdown ?"
+		kill -9 `cat $PIDFILE` 2>/dev/null
+		rm -f $PIDFILE 2>/dev/null
+	fi
+	echo -n "Starting nylon... "
+	$NYLON -c $NYLONCONF
+	echo "done"
+}
+
+stop() {
+	echo -n "Shutting down nylon... "
+	if [ -f $PIDFILE ]; then
+		kill -9 `cat $PIDFILE` 2>/dev/null
+		rm -f $PIDFILE 2>/dev/null
+	fi
+	echo "done"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart)"
+		exit 1
+		;;
+esac
