@@ -99,6 +99,7 @@ NATIVE_PACKAGES = \
 	cyrus-imapd \
 	emacs \
 	xemacs \
+	erlang \
 	hugs \
 	openldap \
 	mzscheme \
@@ -118,7 +119,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	erlang \
 
 # libao - has runtime trouble
 # quagga is waiting for fix not to use compiler host include files
