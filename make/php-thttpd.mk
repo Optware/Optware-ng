@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=7
+PHP_THTTPD_IPK_VERSION=8
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -172,7 +172,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configure
 
 $(PHP_THTTPD_BUILD_DIR)/.built: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built $(PHP_THTTPD_BUILD_DIR)/.configured
 	rm -f $(PHP_THTTPD_BUILD_DIR)/.built
-	$(MAKE) -C $(PHP_THTTPD_BUILD_DIR)
+	$(MAKE) -C $(PHP_THTTPD_BUILD_DIR) PHP_LIBS="libphp5.a -lxml2 -lcrypt -lm"
 	touch $(PHP_THTTPD_BUILD_DIR)/.built
 
 #
