@@ -174,7 +174,6 @@ WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	ghostscript \
 	iptables ircd-hybrid \
 	jove \
-	libdvdread \
 	vdr-mediamvp
 
 HOST_MACHINE:=$(shell uname -m | sed \
@@ -200,12 +199,15 @@ endif
 all: directories toolchain packages
 
 testing:
+ifeq ($(UNSLUNG_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 	$(MAKE) PACKAGES="$(NATIVE_PACKAGES_READY_FOR_TESTING)" all
 else
 	$(MAKE) PACKAGES="$(CROSS_PACKAGES_READY_FOR_TESTING)" all
 endif
-
+else
+	$(MAKE) PACKAGES="$(WL500G_PACKAGES_READY_FOR_TESTING)" all
+endif
 # Common tools which may need overriding
 CVS=cvs
 SUDO=sudo
