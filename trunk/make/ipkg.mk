@@ -29,11 +29,11 @@ IPKG_CONFLICTS=
 #
 # IPKG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_IPK_VERSION=2
+IPKG_IPK_VERSION=3
 
 #
 # IPKG_CONFFILES should be a list of user-editable files
-IPKG_CONFFILES=/opt/etc/ipkg.conf
+# IPKG_CONFFILES=
 
 #
 # IPKG_PATCHES should list any patches, in the the order in
@@ -176,8 +176,6 @@ ifeq ($(UNSLUNG_TARGET),wl500g)
 	install -d $(IPKG_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(IPKG_SOURCE_DIR)/rc.unslung  $(IPKG_IPK_DIR)/opt/etc/init.d/rc.unslung
 endif
-	install -d $(IPKG_IPK_DIR)/opt/etc/
-	install -m 644 $(IPKG_SOURCE_DIR)/ipkg.conf $(IPKG_IPK_DIR)/opt/etc/ipkg.conf
 	$(MAKE) $(IPKG_IPK_DIR)/CONTROL/control
 	echo $(IPKG_CONFFILES) | sed -e 's/ /\n/g' > $(IPKG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG_IPK_DIR)
