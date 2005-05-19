@@ -38,7 +38,7 @@ CROSS_PACKAGES = \
 	glib grep groff gtk gzip \
 	hdparm hnb \
 	ice imagemagick imap inetutils \
-	ipkg iptables ircd-hybrid ivorbis-tools \
+	iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame less \
 	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
