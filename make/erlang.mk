@@ -35,12 +35,12 @@ ERLANG_DEPENDS=ncurses openssl
 ERLANG_SUGGESTS=
 ERLANG_CONFLICTS=
 
-ERLANG_MAKE_OPTION=#"OTP_SMALL_BUILD=true"
+ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=3
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
