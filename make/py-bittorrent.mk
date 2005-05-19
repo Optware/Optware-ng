@@ -26,9 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BITTORRENT_SITE=http://dl.sourceforge.net/sourceforge/bittorrent
-PY-BITTORRENT_VERSION=4.1.0
-#BitTorrent-4.1.0.tar.gz
+PY-BITTORRENT_SITE=http://www.bittorrent.com/dl
+PY-BITTORRENT_VERSION=4.0.1
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -52,7 +51,7 @@ PY-BITTORRENT_IPK_VERSION=1
 # PY-BITTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PY-BITTORRENT_PATCHES=$(PY-BITTORRENT_SOURCE_DIR)/btdownloadcurses.py.patch
+#PY-BITTORRENT_PATCHES=$(PY-BITTORRENT_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +107,7 @@ $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-B
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
+	#cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
 	(cd $(PY-BITTORRENT_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
