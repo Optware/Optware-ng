@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.0.2
+POSTGRESQL_VERSION=8.0.3
 POSTGRESQL_SITE=ftp://ftp8.us.postgresql.org/postgresql/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-base-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
