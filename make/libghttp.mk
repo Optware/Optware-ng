@@ -110,7 +110,7 @@ $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCH
 	mv $(BUILD_DIR)/$(LIBGHTTP_DIR) $(LIBGHTTP_BUILD_DIR)
 	(cd $(LIBGHTTP_BUILD_DIR); \
 		sed -i -e 's/AC_DIVERT_/dnl AC_DIVERT_/g' configure.in; \
-		ACLOCAL=aclocal-1.4 AUTOMAKE=automake-1.4 autoreconf -vif; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGHTTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGHTTP_LDFLAGS)" \
