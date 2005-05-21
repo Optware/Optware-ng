@@ -1,0 +1,18 @@
+--- clips/clipssrc/makefile.orig	2005-02-03 17:23:03.000000000 -0800
++++ clips/clipssrc/makefile	2005-05-20 07:12:38.674321000 -0700
+@@ -29,13 +29,13 @@
+  	tmpltpsr.o tmpltrhs.o tmpltutl.o userdata.o utility.o watch.o
+ 
+ .c.o :
+-	gcc -c -Wall  -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
++	$(GCC) $(CPPFLAGS) -c -Wall  -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
+ 	    -Wcast-align -Winline -Wmissing-declarations -Wredundant-decls \
+ 	    -Wmissing-prototypes -Wnested-externs \
+ 	    -Wstrict-prototypes -Waggregate-return -Wno-implicit $<
+ 
+ clips : $(OBJS)
+-	gcc -o clips $(OBJS) -lm -ltermcap   
++	$(GCC) -o clips $(OBJS) -lm -ltermcap $(LDFLAGS)
+ 
+ agenda.o: agenda.c setup.h envrnmnt.h usrsetup.h argacces.h \
+   expressn.h exprnops.h exprnpsr.h extnfunc.h symbol.h userdata.h \
