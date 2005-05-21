@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QUAGGA_SITE=http://www.quagga.net/download
-QUAGGA_VERSION=0.98.3
+QUAGGA_VERSION=0.99.1
 QUAGGA_SOURCE=quagga-$(QUAGGA_VERSION).tar.gz
 QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=2
+QUAGGA_IPK_VERSION=1
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -74,6 +74,12 @@ QUAGGA_BUILD_DIR=$(BUILD_DIR)/quagga
 QUAGGA_SOURCE_DIR=$(SOURCE_DIR)/quagga
 QUAGGA_IPK_DIR=$(BUILD_DIR)/quagga-$(QUAGGA_VERSION)-ipk
 QUAGGA_IPK=$(BUILD_DIR)/quagga_$(QUAGGA_VERSION)-$(QUAGGA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+# FIXME: 
+# ugly hack to set the path to the target platform include files
+# this is wl-500 specific!!!
+TARGET_INCLUDEDIR = /opt/brcm/$(CROSS_CONFIGURATION)/include
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -119,6 +125,7 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--oldincludedir=$(TARGET_INCLUDEDIR) \
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/quagga \
 		--localstatedir=/opt/var/run/quagga \
