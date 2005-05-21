@@ -109,6 +109,8 @@ $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCH
 	$(LIBGHTTP_UNZIP) $(DL_DIR)/$(LIBGHTTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBGHTTP_DIR) $(LIBGHTTP_BUILD_DIR)
 	(cd $(LIBGHTTP_BUILD_DIR); \
+		sed -i -e 's/AC_DIVERT_/dnl AC_DIVERT_/g' configure.in; \
+		ACLOCAL=aclocal-1.4 AUTOMAKE=automake-1.4 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGHTTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGHTTP_LDFLAGS)" \
@@ -118,6 +120,8 @@ $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--enable-shared \
+		--disable-static \
 	)
 	touch $(LIBGHTTP_BUILD_DIR)/.configured
 
