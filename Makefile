@@ -212,6 +212,7 @@ endif
 CVS=cvs
 SUDO=sudo
 WGET=wget --passive-ftp
+PERL=perl
 
 # Directory location definitions
 BASE_DIR:=$(shell pwd)
@@ -346,6 +347,7 @@ else
 endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
+	autoclean \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
 	$(PACKAGES_STAGE) $(PACKAGES_IPKG) \
 	query-%
@@ -387,6 +389,10 @@ $(TMPDIR):
 	mkdir $(TMPDIR)
 
 source: $(PACKAGES_SOURCE)
+
+autoclean:
+	$(PERL) -w unslung-autoclean.pl -v
+	rm -f $(BUILD_DIR)/*.ipk $(PACKAGE_DIR)/*.ipk
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '*~' -print | xargs /bin/rm -f
