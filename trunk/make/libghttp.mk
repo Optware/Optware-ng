@@ -109,6 +109,7 @@ $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCH
 	$(LIBGHTTP_UNZIP) $(DL_DIR)/$(LIBGHTTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBGHTTP_DIR) $(LIBGHTTP_BUILD_DIR)
 	(cd $(LIBGHTTP_BUILD_DIR); \
+		sed -i -e 's/libdir)/libdir)\/..\/bin/g' Makefile.am; \
 		sed -i -e 's/AC_DIVERT_/dnl AC_DIVERT_/g' configure.in; \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -146,10 +147,10 @@ libghttp: $(LIBGHTTP_BUILD_DIR)/.built
 $(LIBGHTTP_BUILD_DIR)/.staged: $(LIBGHTTP_BUILD_DIR)/.built
 	rm -f $(LIBGHTTP_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBGHTTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	install -d $(STAGING_INCLUDE_DIR)
-	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(STAGING_INCLUDE_DIR)
-	install -d $(STAGING_LIB_DIR)
-	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(STAGING_LIB_DIR)
+#	install -d $(STAGING_INCLUDE_DIR)
+#	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(STAGING_INCLUDE_DIR)
+#	install -d $(STAGING_LIB_DIR)
+#	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(STAGING_LIB_DIR)
 	touch $(LIBGHTTP_BUILD_DIR)/.staged
 
 libghttp-stage: $(LIBGHTTP_BUILD_DIR)/.staged
@@ -187,10 +188,11 @@ $(LIBGHTTP_IPK_DIR)/CONTROL/control:
 #
 $(LIBGHTTP_IPK): $(LIBGHTTP_BUILD_DIR)/.built
 	rm -rf $(LIBGHTTP_IPK_DIR) $(BUILD_DIR)/LIBGHTTP_*_$(TARGET_ARCH).ipk
-	install -d $(LIBGHTTP_IPK_DIR)/opt/include
-	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(LIBGHTTP_IPK_DIR)/opt/include
-	install -d $(LIBGHTTP_IPK_DIR)/opt/lib
-	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(LIBGHTTP_IPK_DIR)/opt/lib
+	$(MAKE) -C $(LIBGHTTP_BUILD_DIR) DESTDIR=$(LIBGHTTP_IPK_DIR) install-strip
+#	install -d $(LIBGHTTP_IPK_DIR)/opt/include
+#	install -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(LIBGHTTP_IPK_DIR)/opt/include
+#	install -d $(LIBGHTTP_IPK_DIR)/opt/lib
+#	install -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(LIBGHTTP_IPK_DIR)/opt/lib
 	$(MAKE) $(LIBGHTTP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGHTTP_IPK_DIR)
 
