@@ -392,7 +392,6 @@ source: $(PACKAGES_SOURCE)
 
 autoclean:
 	$(PERL) -w unslung-autoclean.pl -v
-	rm -f $(BUILD_DIR)/*.ipk $(PACKAGE_DIR)/*.ipk
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '*~' -print | xargs /bin/rm -f
