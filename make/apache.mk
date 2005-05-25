@@ -200,6 +200,7 @@ apache: $(APACHE_BUILD_DIR)/.built
 $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
 	rm -f $(APACHE_BUILD_DIR)/.staged
 	$(MAKE) -C $(APACHE_BUILD_DIR) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
+	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
 	touch $(APACHE_BUILD_DIR)/.staged
 
 apache-stage: $(APACHE_BUILD_DIR)/.staged
