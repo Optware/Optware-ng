@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=8
+PHP_THTTPD_IPK_VERSION=9
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -123,6 +123,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
+		ac_cv_func_memcmp_working=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

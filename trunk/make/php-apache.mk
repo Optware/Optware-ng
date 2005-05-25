@@ -23,7 +23,7 @@ PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=5
+PHP_APACHE_IPK_VERSION=6
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -124,6 +124,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: \
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
+		ac_cv_func_memcmp_working=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

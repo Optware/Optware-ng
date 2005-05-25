@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=12
+PHP_IPK_VERSION=13
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -286,6 +286,7 @@ endif
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
+		ac_cv_func_memcmp_working=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
