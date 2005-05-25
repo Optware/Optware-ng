@@ -4,6 +4,12 @@
 #
 ###########################################################
 
+# You must replace "svn" and "SVN" with the lower case name and
+# upper case name of your new package.  Some places below will say
+# "Do not change this" - that does not include this global change,
+# which must always be done to ensure we have unique names.
+
+#
 # SVN_VERSION, SVN_SITE and SVN_SOURCE define
 # the upstream location of the source code for the package.
 # SVN_DIR is the directory which is created when the source
@@ -12,29 +18,47 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
-SVN_SITE=http://subversion.tigris.org/tarballs
-SVN_VERSION=1.1.1
-SVN_SOURCE=subversion-$(SVN_VERSION).tar.gz
+SVN_SITE=http://subversion.tigris.org/downloads
+SVN_VERSION=1.2.0
+SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
-SVN_UNZIP=zcat
+SVN_UNZIP=bzcat
+SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SVN_DESCRIPTION=a compelling replacement for CVS
+SVN_SECTION=net
+SVN_PRIORITY=optional
+SVN_DEPENDS=neon, apr, apr-util
+SVN_SUGGESTS=
+SVN_CONFLICTS=
 
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=3
+SVN_IPK_VERSION=1
+
+#
+# SVN_CONFFILES should be a list of user-editable files
+SVN_CONFFILES=
 
 #
 # SVN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SVN_PATCHES=$(SVN_SOURCE_DIR)/svn.patch.gz
+#SVN_PATCHES=$(SVN_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SVN_CPPFLAGS=
+SVN_CPPFLAGS=-I$(STAGING_PREFIX)/include/neon
 SVN_LDFLAGS=
 
 #
@@ -70,62 +94,88 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
+#
 # This target also configures the build within the build directory.
 # Flags such as LDFLAGS and CPPFLAGS should be passed into configure
 # and NOT $(MAKE) below.  Passing it to configure causes configure to
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE)
-	$(MAKE) libdb-stage openssl-stage gdbm-stage
+$(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
+	$(MAKE) apr-stage
+	$(MAKE) apr-util-stage
+	$(MAKE) apache-stage
+	$(MAKE) neon-stage
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	zcat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p2
+	#cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
 	mv $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
 	(cd $(SVN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
-		KRB5_CONFIG=none \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
-		--with-libs=$(STAGING_DIR)/opt \
-		--with-berkeley-db=$(STAGING_DIR)/opt \
-		--with-expat=$(SVN_BUILD_DIR)/apr-util/xml/expat \
-		--with-ssl=yes \
-		--with-apache=no \
-		--with-apxs=no \
+		--with-neon=$(STAGING_DIR)/opt \
+		--with-apr=$(STAGING_DIR)/opt \
+		--with-apr=$(STAGING_DIR)/opt \
+		--with-apr-util=$(STAGING_DIR)/opt \
+		--with-apxs=$(STAGING_DIR)/opt/sbin/apxs \
+		--without-swig \
+		--enable-shared \
+		--disable-static \
 	)
 	touch $(SVN_BUILD_DIR)/.configured
 
 svn-unpack: $(SVN_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(SVN_BUILD_DIR)/subversion/clients/cmdline/svn: $(SVN_BUILD_DIR)/.configured
-	$(MAKE) -C $(SVN_BUILD_DIR) all
+$(SVN_BUILD_DIR)/.built: $(SVN_BUILD_DIR)/.configured
+	rm -f $(SVN_BUILD_DIR)/.built
+	$(MAKE) -C $(SVN_BUILD_DIR)
+	touch $(SVN_BUILD_DIR)/.built
 
 #
-# These are the dependencies for the package (remove svn-dependencies if
-# there are no build dependencies for this package.  Again, you should change
-# the final dependency to refer directly to the main binary which is built.
+# This is the build convenience target.
 #
-svn: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
+svn: $(SVN_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libneon.la: $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
+$(SVN_BUILD_DIR)/.staged: $(SVN_BUILD_DIR)/.built
+	rm -f $(SVN_BUILD_DIR)/.staged
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(SVN_BUILD_DIR)/.staged
 
-svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
+svn-stage: $(SVN_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/svn
+#
+$(SVN_IPK_DIR)/CONTROL/control:
+	@install -d $(SVN_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: svn" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SVN_PRIORITY)" >>$@
+	@echo "Section: $(SVN_SECTION)" >>$@
+	@echo "Version: $(SVN_VERSION)-$(SVN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SVN_MAINTAINER)" >>$@
+	@echo "Source: $(SVN_SITE)/$(SVN_SOURCE)" >>$@
+	@echo "Description: $(SVN_DESCRIPTION)" >>$@
+	@echo "Depends: $(SVN_DEPENDS)" >>$@
+	@echo "Suggests: $(SVN_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SVN_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -139,22 +189,16 @@ svn-stage: $(STAGING_DIR)/opt/lib/libneon.la
 #
 # You may need to patch your application to make it use these locations.
 #
-$(SVN_IPK): $(SVN_BUILD_DIR)/subversion/clients/cmdline/svn
-	$(MAKE) svn-stage
+$(SVN_IPK): $(SVN_BUILD_DIR)/.built
 	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) install
-	rm -rf $(SVN_IPK_DIR)/opt/{build,include,info,man,share}
-	rm -rf $(SVN_IPK_DIR)/opt/lib/*.{a,la,exp}
-	rm -rf $(SVN_IPK_DIR)/opt/lib/pkgconfig
-	rm -f $(SVN_IPK_DIR)/opt/bin/*-config
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/svn
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/svnadmin
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/svndumpfilter
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/svnlook
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/svnserve
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/svnversion
-	install -d $(SVN_IPK_DIR)/CONTROL
-	install -m 644 $(SVN_SOURCE_DIR)/control $(SVN_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) external-install local-install
+	install -d $(SVN_IPK_DIR)/opt/etc/apache2/conf.d
+	install -m 644 $(SVN_SOURCE_DIR)/mod_dav_svn.conf $(SVN_IPK_DIR)/opt/etc/apache2/conf.d/mod_dav_svn.conf
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/bin/*
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/lib/*.so
+	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/libexec/*.so
+	rm -f $(SVN_IPK_DIR)/opt/lib/*.la
+	$(MAKE) $(SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN_IPK_DIR)
 
 #
