@@ -166,8 +166,9 @@ apr-util: $(APR_UTIL_BUILD_DIR)/.built
 #
 $(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_DIR)/opt/lib
-	rm -f $(STAGING_DIR)/opt/lib/libaprutil.la
+	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
+	rm -f $(STAGING_PREFIX)/lib/libaprutil.la
+	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apu-config
 	touch $@
 
 apr-util-stage: $(APR_UTIL_BUILD_DIR)/.staged

@@ -153,8 +153,9 @@ apr: $(APR_BUILD_DIR)/.built
 #
 $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_DIR)/opt/lib
-	rm -f $(STAGING_DIR)/opt/lib/libapr.la
+	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
+	rm -f $(STAGING_PREFIX)/lib/libapr.la
+	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-config
 	touch $@
 
 apr-stage: $(APR_BUILD_DIR)/.staged
