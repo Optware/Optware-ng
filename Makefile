@@ -49,7 +49,7 @@ CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm mediawiki metalog miau \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
-	nail nano ncftp ncurses nfs-server nfs-utils nget \
+	nail nano ncftp ncurses neon nfs-server nfs-utils nget \
 	nload nmap ntp ntpclient nylon \
 	openssh openssl openvpn \
 	pango parted patch pcre \
@@ -167,6 +167,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	quagga
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	neon svn
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
