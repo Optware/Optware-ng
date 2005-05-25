@@ -12,7 +12,7 @@ IPKG_UTILS_DIR:=$(TOOL_BUILD_DIR)/ipkg-utils-$(IPKG_UTILS_VERSION)
 
 IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_buildpackage.patch
 IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_build_clean.patch
-IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_tar_argument_order.patch
+IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_tar_invocation.patch
 ifeq ($(HOST_MACHINE),armv5b)
 IPKG_UTILS_PATCHES += ipkg-utils-1.7-ipkg_native_shell.patch
 endif
@@ -43,6 +43,6 @@ ipkg-utils-dirclean:
 
 
 IPKG_BUILDPACKAGE := PATH=$(TARGET_PATH) ipkg-buildpackage -c -o root -g root
-IPKG_BUILD := PATH=$(TARGET_PATH) ipkg-build -c -o root -g root
+IPKG_BUILD := PATH=$(TARGET_PATH) TAR_OPTIONS=--format=ustar ipkg-build -c -o root -g root
 IPKG_MAKE_INDEX := PATH=$(TARGET_PATH) ipkg-make-index
 
