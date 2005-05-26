@@ -26,6 +26,7 @@ UNSLUNG_TARGET=nslu2
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
 	atftp appweb apache apr apr-util atk audiofile automake \
+	asterisk-sounds \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
 	ccxstream chrpath classpath cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
