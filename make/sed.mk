@@ -19,11 +19,18 @@ SED_VERSION=4.1.4
 SED_SOURCE=sed-$(SED_VERSION).tar.gz
 SED_DIR=sed-$(SED_VERSION)
 SED_UNZIP=zcat
+SED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SED_DESCRIPTION=Stream editor.
+SED_SECTION=util
+SED_PRIORITY=optional
+SED_DEPENDS=
+SED_SUGGESTS=
+SED_CONFLICTS=
 
 #
 # SED_IPK_VERSION should be incremented when the ipk changes.
 #
-SED_IPK_VERSION=1
+SED_IPK_VERSION=2
 
 #
 # SED_CONFFILES should be a list of user-editable files
@@ -95,6 +102,7 @@ $(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SED_LDFLAGS)" \
+		ac_cv_func_mmap_fixed_mapped=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -130,6 +138,25 @@ $(SED_BUILD_DIR)/.staged: $(SED_BUILD_DIR)/.built
 sed-stage: $(SED_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(SED_IPK_DIR)/CONTROL/control:
+	@install -d $(SED_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: sed" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SED_PRIORITY)" >>$@
+	@echo "Section: $(SED_SECTION)" >>$@
+	@echo "Version: $(SED_VERSION)-$(SED_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SED_MAINTAINER)" >>$@
+	@echo "Source: $(SED_SITE)/$(SED_SOURCE)" >>$@
+	@echo "Description: $(SED_DESCRIPTION)" >>$@
+	@echo "Depends: $(SED_DEPENDS)" >>$@
+	@echo "Suggests: $(SED_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SED_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(SED_IPK_DIR)/opt/sbin or $(SED_IPK_DIR)/opt/bin
@@ -143,16 +170,8 @@ sed-stage: $(SED_BUILD_DIR)/.staged
 #
 $(SED_IPK): $(SED_BUILD_DIR)/.built
 	rm -rf $(SED_IPK_DIR) $(BUILD_DIR)/sed_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(SED_IPK_DIR) install
-#	install -d $(SED_IPK_DIR)/opt/etc/
-#	install -m 755 $(SED_SOURCE_DIR)/sed.conf $(SED_IPK_DIR)/opt/etc/sed.conf
-#	install -d $(SED_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SED_SOURCE_DIR)/rc.sed $(SED_IPK_DIR)/opt/etc/init.d/SXXsed
-	install -d $(SED_IPK_DIR)/CONTROL
-	install -m 644 $(SED_SOURCE_DIR)/control $(SED_IPK_DIR)/CONTROL/control
-#	install -m 644 $(SED_SOURCE_DIR)/postinst $(SED_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(SED_SOURCE_DIR)/prerm $(SED_IPK_DIR)/CONTROL/prerm
-#	echo $(SED_CONFFILES) | sed -e 's/ /\n/g' > $(SED_IPK_DIR)/CONTROL/conffiles
+	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(SED_IPK_DIR) install-strip
+	$(MAKE) $(SED_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SED_IPK_DIR)
 
 #
