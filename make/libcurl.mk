@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=1
+LIBCURL_IPK_VERSION=2
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -182,7 +182,7 @@ $(LIBCURL_IPK_DIR)/CONTROL/control:
 #
 $(LIBCURL_IPK): $(LIBCURL_BUILD_DIR)/.built
 	rm -rf $(LIBCURL_IPK_DIR) $(BUILD_DIR)/libcurl_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install
+	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install-strip
 	#install -d $(LIBCURL_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBCURL_SOURCE_DIR)/libcurl.conf $(LIBCURL_IPK_DIR)/opt/etc/libcurl.conf
 	#install -d $(LIBCURL_IPK_DIR)/opt/etc/init.d
