@@ -386,6 +386,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
+	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/lib/*.so
 	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/lib/php/extensions/*.so
 	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
 	install -d $(PHP_IPK_DIR)/opt/etc
