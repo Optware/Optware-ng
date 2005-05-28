@@ -116,6 +116,9 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RRDTOOL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RRDTOOL_LDFLAGS)" \
+		rd_cv_ieee_works=yes \
+		rd_cv_null_realloc=nope \
+		ac_cv_func_mmap_fixed_mapped=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -125,6 +128,8 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 		--disable-nls \
 		--disable-perl \
 		--disable-python \
+		--disable-static \
+		--program-prefix="" \
 	)
 	touch $(RRDTOOL_BUILD_DIR)/.configured
 
@@ -186,7 +191,7 @@ $(RRDTOOL_IPK_DIR)/CONTROL/control:
 #
 $(RRDTOOL_IPK): $(RRDTOOL_BUILD_DIR)/.built
 	rm -rf $(RRDTOOL_IPK_DIR) $(BUILD_DIR)/rrdtool_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install
+	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip
 #	install -d $(RRDTOOL_IPK_DIR)/opt/etc/
 #	install -m 644 $(RRDTOOL_SOURCE_DIR)/rrdtool.conf $(RRDTOOL_IPK_DIR)/opt/etc/rrdtool.conf
 #	install -d $(RRDTOOL_IPK_DIR)/opt/etc/init.d
