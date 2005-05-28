@@ -140,7 +140,7 @@ WL500G_PACKAGES = \
 	e2fsprogs eggdrop esmtp expat \
 	fetchmail file findutils fixesext flex \
 	freeradius freetype ftpd-topfield fontconfig \
-	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-openap grep gzip \
+	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap grep gzip \
 	hdparm \
 	inetutils \
 	joe \
