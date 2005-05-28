@@ -52,12 +52,12 @@ CROSS_PACKAGES = \
 	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses neon nfs-server nfs-utils nget \
 	nload nmap ntp ntpclient nylon \
-	openssh openssl openvpn \
+	openssh openssl openvpn oww \
 	pango parted patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
-	py-cherrypy \
+	py-cherrypy py-clips \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg \
 	rdate readline recordext renderext rsync \
 	samba sane-backends screen sed ser siproxd sm snownews \
@@ -77,8 +77,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	py-clips \
-	oww \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
