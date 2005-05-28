@@ -78,6 +78,7 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-clips \
+	oww \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -124,12 +125,10 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # libao - has runtime trouble
 # quagga is waiting for fix not to use compiler host include files
-# oww depends on XML::Parser, which is not available on official build system
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	nethack scponly dump gkrellm freeradius \
 	quagga  \
-	oww
 
 PACKAGES_OBSOLETED = libiconv git
 
