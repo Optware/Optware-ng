@@ -2,6 +2,7 @@
 
 echo ; echo
 echo "To complete the installation, you must edit /opt/etc/webalizer.conf.sample and,"
-echo "rename it webalizer.conf then run /opt/etc/init.d/S99webalizer to start webalizer."
+echo "rename it webalizer.conf. And then you might add an entry to /etc/crontab to run"
+echo "Webalyzer periodicly."
 echo
 
