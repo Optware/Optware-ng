@@ -43,7 +43,7 @@ CROSS_PACKAGES = \
 	jabber jamvm jikes joe jove \
 	lame less \
 	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
-	libgc libgd libid3tag \
+	libgc libgd libghttp libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool libtopfield libusb \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
@@ -77,8 +77,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	libghttp \
-	oww
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -125,10 +123,12 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # libao - has runtime trouble
 # quagga is waiting for fix not to use compiler host include files
+# oww depends on XML::Parser, which is not available on official build system
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	nethack scponly dump gkrellm freeradius \
-	quagga 
+	quagga  \
+	oww
 
 PACKAGES_OBSOLETED = libiconv git
 
