@@ -123,8 +123,6 @@ $(LIBART_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES)
 		--enable-shared \
 		--disable-static \
 	)
-	touch $(LIBART_BUILD_DIR)/gen_art_config
-	cp $(LIBART_SOURCE_DIR)/art_config.h $(LIBART_BUILD_DIR)
 	touch $(LIBART_BUILD_DIR)/.configured
 
 libart-unpack: $(LIBART_BUILD_DIR)/.configured
@@ -134,6 +132,8 @@ libart-unpack: $(LIBART_BUILD_DIR)/.configured
 #
 $(LIBART_BUILD_DIR)/.built: $(LIBART_BUILD_DIR)/.configured
 	rm -f $(LIBART_BUILD_DIR)/.built
+	$(MAKE) -C $(LIBART_BUILD_DIR) gen_art_config
+	cp $(LIBART_SOURCE_DIR)/art_config.h $(LIBART_BUILD_DIR)
 	$(MAKE) -C $(LIBART_BUILD_DIR)
 	touch $(LIBART_BUILD_DIR)/.built
 
