@@ -120,7 +120,11 @@ $(LIBART_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--enable-shared \
+		--disable-static \
 	)
+	touch $(LIBART_BUILD_DIR)/gen_art_config
+	cp $(LIBART_SOURCE_DIR)/art_config.h $(LIBART_BUILD_DIR)
 	touch $(LIBART_BUILD_DIR)/.configured
 
 libart-unpack: $(LIBART_BUILD_DIR)/.configured
@@ -181,7 +185,7 @@ $(LIBART_IPK_DIR)/CONTROL/control:
 #
 $(LIBART_IPK): $(LIBART_BUILD_DIR)/.built
 	rm -rf $(LIBART_IPK_DIR) $(BUILD_DIR)/libart_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(LIBART_IPK_DIR) install
+	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(LIBART_IPK_DIR) install-strip
 #	install -d $(LIBART_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBART_SOURCE_DIR)/libart.conf $(LIBART_IPK_DIR)/opt/etc/libart.conf
 #	install -d $(LIBART_IPK_DIR)/opt/etc/init.d
