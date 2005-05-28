@@ -1,0 +1,10 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+echo ; echo
+echo "Oww (owwnogui) has been installed."
+echo "Set up your devices interactively by running owwnogui -i"
+echo "Then run /opt/etc/init.d/S80oww"
+echo
+
