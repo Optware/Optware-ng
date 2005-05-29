@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-CCXSTREAM_SITE=http://belnet.dl.sourceforge.net/sourceforge/xbmc
+CCXSTREAM_SITE=http://download.sourceforge.net/xbmc
 CCXSTREAM_VERSION=1.0.15
 CCXSTREAM_SOURCE=ccxstream-$(CCXSTREAM_VERSION).tar.gz
 CCXSTREAM_DIR=ccxstream-$(CCXSTREAM_VERSION)
