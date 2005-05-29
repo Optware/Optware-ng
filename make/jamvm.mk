@@ -28,7 +28,7 @@ JAMVM_UNZIP=zcat
 #
 # JAMVM_IPK_VERSION should be incremented when the ipk changes.
 #
-JAMVM_IPK_VERSION=1
+JAMVM_IPK_VERSION=2
 
 #
 # JAMVM_CONFFILES should be a list of user-editable files
@@ -91,7 +91,7 @@ jamvm-source: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(JAMVM_DIR) $(JAMVM_BUILD_DIR)
 	$(JAMVM_UNZIP) $(DL_DIR)/$(JAMVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(JAMVM_PATCHES) | patch -d $(BUILD_DIR)/$(JAMVM_DIR) -p1
