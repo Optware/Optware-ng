@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-FREETYPE_SITE=http://dl.sf.net/sourceforge/freetype
+FREETYPE_SITE=http://download.sourceforge.net/freetype
 FREETYPE_VERSION=2.1.9
 FREETYPE_SOURCE=freetype-$(FREETYPE_VERSION).tar.bz2
 FREETYPE_DIR=freetype-$(FREETYPE_VERSION)
