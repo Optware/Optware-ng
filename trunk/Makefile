@@ -28,7 +28,7 @@ CROSS_PACKAGES = \
 	atftp appweb apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
-	ccxstream chrpath classpath cogito coreutils cpio \
+	ccxstream chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp esound expat \
@@ -77,7 +77,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	clips \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -169,7 +168,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	quagga
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	neon svn
+	neon svn clips
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
