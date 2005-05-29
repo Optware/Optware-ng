@@ -126,7 +126,7 @@ py-xml-unpack: $(PY-XML_BUILD_DIR)/.configured
 $(PY-XML_BUILD_DIR)/.built: $(PY-XML_BUILD_DIR)/.configured
 	rm -f $(PY-XML_BUILD_DIR)/.built
 	(cd $(PY-XML_BUILD_DIR); \
-         CC='$(TARGET_CC)' LDSHARED='$(TARGET_LD) -shared' \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             python2.4 setup.py build; \
         )
 	touch $(PY-XML_BUILD_DIR)/.built
@@ -180,7 +180,7 @@ $(PY-XML_IPK_DIR)/CONTROL/control:
 $(PY-XML_IPK): $(PY-XML_BUILD_DIR)/.built
 	rm -rf $(PY-XML_IPK_DIR) $(BUILD_DIR)/py-xml_*_$(TARGET_ARCH).ipk
 	(cd $(PY-XML_BUILD_DIR); \
-         CC='$(TARGET_CC)' LDSHARED='$(TARGET_LD) -shared' \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             python2.4 setup.py install --prefix=$(PY-XML_IPK_DIR)/opt; \
         )
 	$(STRIP_COMMAND) `find $(PY-XML_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
