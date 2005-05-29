@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBOL_SITE=http://www.balabit.com/downloads/libol/0.3
-LIBOL_VERSION=0.3.15
+LIBOL_VERSION=0.3.16
 LIBOL_SOURCE=libol-$(LIBOL_VERSION).tar.gz
 LIBOL_DIR=libol-$(LIBOL_VERSION)
 LIBOL_UNZIP=zcat
