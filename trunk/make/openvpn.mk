@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 OPENVPN_NAME=openvpn
-OPENVPN_SITE=http://download.sourceforge.net/openvpn
+OPENVPN_SITE=http://dl.sourceforge.net/sourceforge/openvpn
 OPENVPN_VERSION=2.0_rc17
 OPENVPN_SOURCE=$(OPENVPN_NAME)-$(OPENVPN_VERSION).tar.gz
 OPENVPN_DIR=$(OPENVPN_NAME)-$(OPENVPN_VERSION)
