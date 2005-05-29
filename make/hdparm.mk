@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 HDPARM_SITE=http://www.ibiblio.org/pub/Linux/system/hardware
-HDPARM_VERSION=5.9
+HDPARM_VERSION=6.1
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)
 HDPARM_UNZIP=zcat
