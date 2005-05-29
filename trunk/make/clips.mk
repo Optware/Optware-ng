@@ -54,7 +54,7 @@ CLIPS_PATCHES=$(CLIPS_SOURCE_DIR)/makefile.patch $(CLIPS_SOURCE_DIR)/setup.h.pat
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CLIPS_CPPFLAGS=
+CLIPS_CPPFLAGS=-fPIC
 CLIPS_LDFLAGS=
 
 #
@@ -77,7 +77,7 @@ CLIPS_IPK=$(BUILD_DIR)/clips_$(CLIPS_VERSION)-$(CLIPS_IPK_VERSION)_$(TARGET_ARCH
 #
 $(DL_DIR)/$(CLIPS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/$(CLIPS_TARBALL) -O $(DL_DIR)/$(CLIPS_SOURCE)
-	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/makefile -O $(DL_DIR)/clips-$(CLIPS_VERSION)-makefile
+	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/makefile -O $(DL_DIR)/clips-$(CLIPS_VERSION)-Makefile
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,7 +105,7 @@ $(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(CLIPS_PATCHES)
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
 	$(CLIPS_UNZIP) $(DL_DIR)/$(CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cp $(DL_DIR)/clips-$(CLIPS_VERSION)-makefile $(BUILD_DIR)/$(CLIPS_DIR)/clipssrc/makefile
+	cp $(DL_DIR)/clips-$(CLIPS_VERSION)-Makefile $(BUILD_DIR)/$(CLIPS_DIR)/clipssrc/Makefile
 	mv $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
 	cat $(CLIPS_PATCHES) | patch -d $(BUILD_DIR) -p0
 	touch $(CLIPS_BUILD_DIR)/.configured
@@ -171,7 +171,8 @@ $(CLIPS_IPK_DIR)/CONTROL/control:
 #
 $(CLIPS_IPK): $(CLIPS_BUILD_DIR)/.built
 	rm -rf $(CLIPS_IPK_DIR) $(BUILD_DIR)/clips_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CLIPS_BUILD_DIR) DESTDIR=$(CLIPS_IPK_DIR) install
+	$(TARGET_CONFIGURE_OPTS) \
+	$(MAKE) -C $(CLIPS_BUILD_DIR)/clipssrc DESTDIR=$(CLIPS_IPK_DIR) install
 	$(MAKE) $(CLIPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS_IPK_DIR)
 
