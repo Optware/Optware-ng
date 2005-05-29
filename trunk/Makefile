@@ -58,7 +58,7 @@ CROSS_PACKAGES = \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
 	py-cherrypy py-clips \
-	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg \
+	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	rdate readline recordext renderext rsync \
 	samba sane-backends screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
@@ -77,7 +77,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	py-xml \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
