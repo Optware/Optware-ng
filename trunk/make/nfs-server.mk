@@ -28,7 +28,7 @@ NFS_SERVER_UNZIP=zcat
 #
 # NFS_SERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS_SERVER_IPK_VERSION=3
+NFS_SERVER_IPK_VERSION=4
 
 #
 # NFS_SERVER_PATCHES should list any patches, in the the order in
