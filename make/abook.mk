@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "abook" and "ABOOK" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # ABOOK_VERSION, ABOOK_SITE and ABOOK_SOURCE define
 # the upstream location of the source code for the package.
@@ -26,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ABOOK_SITE=http://voxel.dl.sourceforge.net/sourceforge/abook
+ABOOK_SITE=http://dl.sourceforge.net/sourceforge/abook
 ABOOK_VERSION=0.5.3
 ABOOK_SOURCE=abook-$(ABOOK_VERSION).tar.gz
 ABOOK_DIR=abook-$(ABOOK_VERSION)
