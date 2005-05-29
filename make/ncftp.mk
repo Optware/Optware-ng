@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NCFTP_SITE=ftp://ftp.ncftp.com/ncftp
-NCFTP_VERSION=3.1.8
+NCFTP_VERSION=3.1.9
 NCFTP_SOURCE=ncftp-$(NCFTP_VERSION)-src.tar.gz
 NCFTP_DIR=ncftp-$(NCFTP_VERSION)
 NCFTP_UNZIP=zcat
@@ -44,7 +44,7 @@ NCFTP_CONFFILES=
 # NCFTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NCFTP_PATCHES=$(NCFTP_SOURCE_DIR)/configure.patch
+#NCFTP_PATCHES=$(NCFTP_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -100,7 +100,7 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
 	$(NCFTP_UNZIP) $(DL_DIR)/$(NCFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NCFTP_PATCHES) | patch -d $(BUILD_DIR)/$(NCFTP_DIR) -p1
+#	cat $(NCFTP_PATCHES) | patch -d $(BUILD_DIR)/$(NCFTP_DIR) -p1
 	mv $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
 	(cd $(NCFTP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
