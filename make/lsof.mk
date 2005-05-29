@@ -6,10 +6,10 @@
 
 LSOF_DIR:=$(BUILD_DIR)/lsof
 LSOF_SOURCE_DIR:=$(SOURCE_DIR)/lsof
-LSOF_VERSION:=4.74
-LSOF:=lsof_$(LSOF_VERSION)_src
+LSOF_VERSION:=4.74.dfsg.3
+LSOF:=lsof-$(LSOF_VERSION).orig
 LSOF_FILE:=lsof_$(LSOF_VERSION).orig
-LSOF_DSC=lsof_$(LSOF_VERSION)-1.dsc
+LSOF_DSC=lsof_$(LSOF_VERSION)-2.dsc
 LSOF_SITE=http://http.us.debian.org/debian/pool/main/l/lsof
 LSOF_SOURCE:=$(LSOF_FILE).tar.gz
 LSOF_IPK_VERSION=1
