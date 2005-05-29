@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 STREAMRIPPER_NAME=streamripper
-STREAMRIPPER_SITE=http://belnet.dl.sourceforge.net/sourceforge/streamripper/
+STREAMRIPPER_SITE=http://download.sourceforge.net/streamripper/
 STREAMRIPPER_VERSION=1.61.5
 STREAMRIPPER_SOURCE=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION).tar.gz
 STREAMRIPPER_DIR=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION)
