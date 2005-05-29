@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-EACCELERATOR_SITE=http://download.sourceforge.net/eaccelerator
+EACCELERATOR_SITE=http://dl.sourceforge.net/sourceforge/eaccelerator
 EACCELERATOR_VERSION=0.9.2a
 EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VERSION).tar.gz
 EACCELERATOR_DIR=eaccelerator
