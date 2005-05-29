@@ -14,7 +14,7 @@
 #
 # You should change all these variables to suit your package.
 #
-JIKES_SITE=ftp://www-126.ibm.com/pub/jikes/1.22
+JIKES_SITE=http://download.sourceforge.net/jikes
 JIKES_VERSION=1.22
 JIKES_SOURCE=jikes-$(JIKES_VERSION).tar.bz2
 JIKES_DIR=jikes-$(JIKES_VERSION)
