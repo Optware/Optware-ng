@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-<FOO>_SITE=http://www.<foo>.org/downloads
+<FOO>_SITE=http://dl.sourceforge.net/sourceforge/<foo>
 <FOO>_VERSION=3.2.3
 <FOO>_SOURCE=<foo>-$(<FOO>_VERSION).tar.gz
 <FOO>_DIR=<foo>-$(<FOO>_VERSION)
