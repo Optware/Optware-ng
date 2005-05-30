@@ -40,7 +40,7 @@ READLINE_DEPENDS=
 #
 # READLINE_IPK_VERSION should be incremented when the ipk changes.
 #
-READLINE_IPK_VERSION=1
+READLINE_IPK_VERSION=2
 
 #
 # READLINE_CONFFILES should be a list of user-editable files
@@ -118,6 +118,7 @@ $(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(READLINE_BUILD_DIR)/.configured
 
@@ -178,6 +179,7 @@ $(READLINE_IPK_DIR)/CONTROL/control:
 $(READLINE_IPK): $(READLINE_BUILD_DIR)/.built
 	rm -rf $(READLINE_IPK_DIR) $(BUILD_DIR)/readline_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(READLINE_IPK_DIR) install
+	$(STRIP_COMMAND) $(READLINE_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(READLINE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(READLINE_IPK_DIR)
 
