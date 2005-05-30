@@ -41,7 +41,7 @@ TEXTUTILS_CONFLICTS=busybox
 #
 # TEXTUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-TEXTUTILS_IPK_VERSION=1
+TEXTUTILS_IPK_VERSION=2
 
 #
 # TEXTUTILS_CONFFILES should be a list of user-editable files
@@ -179,7 +179,7 @@ $(TEXTUTILS_IPK_DIR)/CONTROL/control:
 #
 $(TEXTUTILS_IPK): $(TEXTUTILS_BUILD_DIR)/.built
 	rm -rf $(TEXTUTILS_IPK_DIR) $(BUILD_DIR)/textutils_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TEXTUTILS_BUILD_DIR) DESTDIR=$(TEXTUTILS_IPK_DIR) install
+	$(MAKE) -C $(TEXTUTILS_BUILD_DIR) DESTDIR=$(TEXTUTILS_IPK_DIR) install-strip
 	$(MAKE) $(TEXTUTILS_IPK_DIR)/CONTROL/control
 	echo $(TEXTUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(TEXTUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TEXTUTILS_IPK_DIR)
