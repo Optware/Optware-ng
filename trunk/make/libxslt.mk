@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=2
+LIBXSLT_IPK_VERSION=3
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -106,6 +106,8 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
+		--enable-shared \
 		--without-python \
 		--without-crypto \
 		--with-libxml-prefix=$(STAGING_DIR)/opt \
@@ -175,17 +177,11 @@ $(LIBXSLT_IPK_DIR)/CONTROL/control:
 #
 $(LIBXSLT_IPK): $(LIBXSLT_BUILD_DIR)/.built
 	rm -rf $(LIBXSLT_IPK_DIR) $(BUILD_DIR)/libxslt_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(LIBXSLT_IPK_DIR) install
-	rm $(LIBXSLT_IPK_DIR)/opt/lib/libxslt.la
-	rm $(LIBXSLT_IPK_DIR)/opt/lib/libexslt.la
-#	install -d $(LIBXSLT_IPK_DIR)/opt/etc/
-#	install -m 755 $(LIBXSLT_SOURCE_DIR)/libxslt.conf $(LIBXSLT_IPK_DIR)/opt/etc/libxslt.conf
-#	install -d $(LIBXSLT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBXSLT_SOURCE_DIR)/rc.libxslt $(LIBXSLT_IPK_DIR)/opt/etc/init.d/SXXlibxslt
+	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(LIBXSLT_IPK_DIR) install-strip
+	rm -f $(LIBXSLT_IPK_DIR)/opt/lib/libxslt.la
+	rm -f $(LIBXSLT_IPK_DIR)/opt/lib/libexslt.la
+	rm -rf $(LIBXSLT_IPK_DIR)/opt/share/doc
 	$(MAKE) $(LIBXSLT_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LIBXSLT_SOURCE_DIR)/postinst $(LIBXSLT_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LIBXSLT_SOURCE_DIR)/prerm $(LIBXSLT_IPK_DIR)/CONTROL/prerm
-#	echo $(LIBXSLT_CONFFILES) | sed -e 's/ /\n/g' > $(LIBXSLT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBXSLT_IPK_DIR)
 
 #
