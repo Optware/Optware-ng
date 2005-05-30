@@ -29,7 +29,7 @@ USBUTILS_DESCRIPTION=USB enumeration utilities
 #
 # USBUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-USBUTILS_IPK_VERSION=1
+USBUTILS_IPK_VERSION=2
 
 #
 # USBUTILS_CONFFILES should be a list of user-editable files
