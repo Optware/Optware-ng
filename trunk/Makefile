@@ -41,7 +41,7 @@ CROSS_PACKAGES = \
 	ice imagemagick imap inetutils \
 	iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
-	lame less \
+	lame ldconfig less \
 	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
 	libgc libgd libghttp libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
@@ -162,13 +162,12 @@ WL500G_PACKAGES = \
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
-	postgresql \
 	ttf-bitstream-vera \
 	xmail \
 	quagga
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	neon svn clips
+	neon clips sed postgresql
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
