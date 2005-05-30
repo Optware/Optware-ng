@@ -1,0 +1,11 @@
+--- ipkg/update-alternatives~	2005-04-10 13:49:47.000000000 -0700
++++ ipkg/update-alternatives	2005-05-29 21:50:30.000000000 -0700
+@@ -21,7 +21,7 @@
+ set -e
+ 
+ # admin dir
+-ad="$IPKG_OFFLINE_ROOT/usr/lib/ipkg/alternatives"
++ad="$IPKG_OFFLINE_ROOT/opt/lib/ipkg/alternatives"
+ 
+ usage() {
+ 	echo "update-alternatives: $*
