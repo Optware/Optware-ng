@@ -29,7 +29,7 @@ IPKG_CONFLICTS=
 #
 # IPKG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_IPK_VERSION=3
+IPKG_IPK_VERSION=4
 
 #
 # IPKG_CONFFILES should be a list of user-editable files
@@ -39,7 +39,7 @@ IPKG_IPK_VERSION=3
 # IPKG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patch 
+IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patch $(IPKG_SOURCE_DIR)/update-alternatives.patch
 
 #
 # If the compilation of the package requires additional
