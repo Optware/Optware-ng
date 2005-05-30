@@ -34,7 +34,7 @@ FETCHMAIL_CONFLICTS=
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=5
+FETCHMAIL_IPK_VERSION=6
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
@@ -117,6 +117,7 @@ $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PA
 		--with-ssl=$(STAGING_DIR)/opt \
 		--without-kerberos5 \
 		--without-kerberos \
+		--without-hesiod \
 		--prefix=/opt \
 		--disable-nls \
 	)
@@ -180,6 +181,7 @@ $(FETCHMAIL_IPK_DIR)/CONTROL/control:
 $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
 	rm -rf $(FETCHMAIL_IPK_DIR) $(BUILD_DIR)/fetchmail_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FETCHMAIL_BUILD_DIR) DESTDIR=$(FETCHMAIL_IPK_DIR) install
+	$(STRIP_COMMAND) $(FETCHMAIL_IPK_DIR)/opt/bin/fetchmail
 	find $(FETCHMAIL_IPK_DIR) -type d -exec chmod go+rx {} \;
 	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/
 	install -m 600 $(FETCHMAIL_SOURCE_DIR)/fetchmailrc $(FETCHMAIL_IPK_DIR)/opt/etc/fetchmailrc
