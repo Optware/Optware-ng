@@ -28,7 +28,7 @@ LIBXML2_DEPENDS=zlib
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=2
+LIBXML2_IPK_VERSION=3
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files
@@ -106,6 +106,8 @@ $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
+		--enable-shared \
 		--without-python \
 	)
 	touch $(LIBXML2_BUILD_DIR)/.configured
@@ -131,7 +133,6 @@ libxml2: $(LIBXML2_BUILD_DIR)/.built
 $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
 	rm -f $(LIBXML2_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	# remove .la to avoid libtool problems
 	rm $(STAGING_LIB_DIR)/libxml2.la
 	touch $(LIBXML2_BUILD_DIR)/.staged
 
@@ -168,17 +169,10 @@ $(LIBXML2_IPK_DIR)/CONTROL/control:
 #
 $(LIBXML2_IPK): $(LIBXML2_BUILD_DIR)/.built
 	rm -rf $(LIBXML2_IPK_DIR) $(BUILD_DIR)/libxml2_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(LIBXML2_IPK_DIR) install
-	# remove .la to avoid libtool problems
-	rm $(LIBXML2_IPK_DIR)/opt/lib/libxml2.la
-#	install -d $(LIBXML2_IPK_DIR)/opt/etc/
-#	install -m 755 $(LIBXML2_SOURCE_DIR)/libxml2.conf $(LIBXML2_IPK_DIR)/opt/etc/libxml2.conf
-#	install -d $(LIBXML2_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBXML2_SOURCE_DIR)/rc.libxml2 $(LIBXML2_IPK_DIR)/opt/etc/init.d/SXXlibxml2
+	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(LIBXML2_IPK_DIR) install-strip
+	rm -f $(LIBXML2_IPK_DIR)/opt/lib/libxml2.la
+	rm -rf $(LIBXML2_IPK_DIR)/opt/share/doc
 	$(MAKE) $(LIBXML2_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LIBXML2_SOURCE_DIR)/postinst $(LIBXML2_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LIBXML2_SOURCE_DIR)/prerm $(LIBXML2_IPK_DIR)/CONTROL/prerm
-#	echo $(LIBXML2_CONFFILES) | sed -e 's/ /\n/g' > $(LIBXML2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBXML2_IPK_DIR)
 
 #
