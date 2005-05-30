@@ -42,7 +42,7 @@ AUDIOFILE_CONFLICTS=
 #
 # AUDIOFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUDIOFILE_IPK_VERSION=1
+AUDIOFILE_IPK_VERSION=2
 
 #
 # AUDIOFILE_CONFFILES should be a list of user-editable files
@@ -120,6 +120,7 @@ $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(AUDIOFILE_BUILD_DIR)/.configured
 
@@ -181,7 +182,7 @@ $(AUDIOFILE_IPK_DIR)/CONTROL/control:
 #
 $(AUDIOFILE_IPK): $(AUDIOFILE_BUILD_DIR)/.built
 	rm -rf $(AUDIOFILE_IPK_DIR) $(BUILD_DIR)/audiofile_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(AUDIOFILE_IPK_DIR) install
+	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(AUDIOFILE_IPK_DIR) install-strip
 	#install -d $(AUDIOFILE_IPK_DIR)/opt/etc/
 	#install -m 644 $(AUDIOFILE_SOURCE_DIR)/audiofile.conf $(AUDIOFILE_IPK_DIR)/opt/etc/audiofile.conf
 	install -d $(AUDIOFILE_IPK_DIR)/opt/etc/init.d
