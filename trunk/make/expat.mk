@@ -29,7 +29,7 @@ EXPAT_CONFLICTS=
 #
 # EXPAT_IPK_VERSION should be incremented when the ipk changes.
 #
-EXPAT_IPK_VERSION=1
+EXPAT_IPK_VERSION=3
 
 #
 # EXPAT_CONFFILES should be a list of user-editable files
@@ -106,6 +106,7 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-static \
 		--disable-nls \
 	)
 	touch $(EXPAT_BUILD_DIR)/.configured
@@ -178,6 +179,7 @@ $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 		./libtool --mode=install install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
 		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
 	)
+	$(STRIP_COMMAND) $(EXPAT_IPK_DIR)/opt/lib/libexpat.so
 	# avoid problems with libtool later
 	rm $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
 	$(MAKE) $(EXPAT_IPK_DIR)/CONTROL/control
