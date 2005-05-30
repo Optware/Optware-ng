@@ -28,7 +28,7 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba is an Open Source/Free Software suite that provides seamless file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-SAMBA_DEPENDS=popt, openldap-libs
+SAMBA_DEPENDS=popt, openldap-libs, readline
 SAMBA_SUGGESTS=
 SAMBA_CONFLICTS=
 
