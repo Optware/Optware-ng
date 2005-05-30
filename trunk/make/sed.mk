@@ -40,7 +40,7 @@ SED_IPK_VERSION=2
 # SED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SED_PATCHES=$(SED_SOURCE_DIR)/configure.patch
+SED_PATCHES=$(SED_SOURCE_DIR)/wchar_t.patch
 
 #
 # If the compilation of the package requires additional
@@ -93,10 +93,9 @@ sed-source: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(SED_DIR) $(SED_BUILD_DIR)
 	$(SED_UNZIP) $(DL_DIR)/$(SED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(SED_PATCHES) | patch -d $(BUILD_DIR)/$(SED_DIR) -p1
+	cat $(SED_PATCHES) | patch -d $(BUILD_DIR)/$(SED_DIR) -p1
 	mv $(BUILD_DIR)/$(SED_DIR) $(SED_BUILD_DIR)
 	(cd $(SED_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
