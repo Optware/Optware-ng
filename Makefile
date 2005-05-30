@@ -33,7 +33,7 @@ CROSS_PACKAGES = \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp esound expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
-	fontconfig freetype ftpd-topfield \
+	fontconfig freeradius freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
@@ -125,7 +125,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # quagga is waiting for fix not to use compiler host include files
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
-	nethack scponly dump gkrellm freeradius \
+	nethack scponly dump gkrellm \
 	quagga  \
 
 PACKAGES_OBSOLETED = libiconv git
