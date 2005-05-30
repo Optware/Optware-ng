@@ -28,20 +28,20 @@ FREERADIUS_UNZIP=zcat
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=1
+FREERADIUS_IPK_VERSION=2
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FREERADIUS_PATCHES=${FREERADIUS_SOURCE_DIR}/freeradius.patch
+FREERADIUS_PATCHES=$(FREERADIUS_SOURCE_DIR)/freeradius.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FREERADIUS_CPPFLAGS="-I${FREERADIUS_BUILD_DIR}/src/include"
-FREERADIUS_LDFLAGS=
+FREERADIUS_CPPFLAGS=-I$(FREERADIUS_BUILD_DIR)/src/include -I$(STAGING_INCLUDE_DIR)/mysql
+FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql
 
 #
 # FREERADIUS_BUILD_DIR is the directory in which the build is done.
@@ -91,6 +91,8 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 	$(MAKE) openssl-stage
 	$(MAKE) libtool-stage
+	$(MAKE) mysql-stage
+	$(MAKE) postgresql-stage
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(FREERADIUS_BUILD_DIR)
 	$(FREERADIUS_UNZIP) $(DL_DIR)/$(FREERADIUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(FREERADIUS_PATCHES) | patch -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1
@@ -98,7 +100,9 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 	(cd $(FREERADIUS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FREERADIUS_LDFLAGS)" \
+		MYSQL_CONFIG=$(STAGING_PREFIX)/bin/mysql_config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -108,6 +112,10 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 		--with-logdir=/var/spool/radius/log \
 		--with-radacctdir=/var/spool/radius/radacct \
 		--with-raddbdir=/opt/etc/raddb \
+		--with-mysql-include-dir=$(STAGING_INCLUDE_DIR)/mysql \
+		--with-mysql-lib-dir=$(STAGING_LIB_DIR)/mysql \
+		--with-rlm-sql-postgresql-include-dir=$(STAGING_INCLUDE_DIR) \
+		--with-rlm-sql-postgresql-lib-dir=$(STAGING_LIB_DIR) \
 		--without-rlm-ippool \
 	)
 	touch $(FREERADIUS_BUILD_DIR)/.configured
