@@ -6,7 +6,7 @@
 
 BZIP2_SITE=ftp://sources.redhat.com/pub/bzip2/v102/
 BZIP2_VERSION=1.0.2
-BZIP2_LIB_VERSION:=1.0.2
+BZIP2_LIB_VERSION=1.0.2
 BZIP2_SOURCE=bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_DIR=bzip2-$(BZIP2_VERSION)
 BZIP2_UNZIP=zcat
@@ -17,7 +17,7 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=3
+BZIP2_IPK_VERSION=4
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -87,7 +87,6 @@ $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	install -d $(BZIP2_IPK_DIR)/opt/include
 	install -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(BZIP2_IPK_DIR)/opt/include
 	install -d $(BZIP2_IPK_DIR)/opt/lib
-	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.a $(BZIP2_IPK_DIR)/opt/lib
 	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(BZIP2_IPK_DIR)/opt/lib
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so
