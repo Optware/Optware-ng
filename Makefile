@@ -150,7 +150,7 @@ WL500G_PACKAGES = \
 	openssl openvpn \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin python \
 	rdate readline recordext renderext rsync \
-	samba sane-backends siproxd sqlite strace stunnel syslog-ng \
+	sane-backends siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
 	vorbis-tools vsftpd \
