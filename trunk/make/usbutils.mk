@@ -99,7 +99,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 	cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR)
 	(cd $(USBUTILS_BUILD_DIR); \
-		ACLOCAL=aclocal-1.4 AUTOMAKE=automake-1.4 autoreconf -vif; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USBUTILS_LDFLAGS)" \
@@ -167,7 +167,7 @@ $(USBUTILS_IPK_DIR)/CONTROL/control:
 #
 $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
 	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install
+	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install-strip
 	# don't want these as they conflict with real libusb
 	rm -rf $(USBUTILS_IPK_DIR)/opt/lib $(USBUTILS_IPK_DIR)/opt/include
 #	install -d $(USBUTILS_IPK_DIR)/opt/etc/
