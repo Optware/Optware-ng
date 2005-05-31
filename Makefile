@@ -59,6 +59,7 @@ CROSS_PACKAGES = \
 	procmail procps proftpd puppy python \
 	py-cherrypy py-clips \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
+	quagga  \
 	rdate readline recordext renderext rsync \
 	samba sane-backends screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
@@ -126,7 +127,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	nethack scponly dump gkrellm \
-	quagga  \
 
 PACKAGES_OBSOLETED = libiconv git
 
@@ -167,7 +167,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	quagga
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	neon clips sed postgresql
+	neon clips sed postgresql quagga
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
