@@ -123,7 +123,6 @@ NATIVE_PACKAGES = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # libao - has runtime trouble
-# quagga is waiting for fix not to use compiler host include files
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	nethack scponly dump gkrellm \
@@ -149,6 +148,7 @@ WL500G_PACKAGES = \
 	nano ncftp ncurses ntpclient nylon \
 	openssl openvpn \
 	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin python \
+	quagga \
 	rdate readline recordext renderext rsync \
 	sane-backends siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
@@ -158,13 +158,11 @@ WL500G_PACKAGES = \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
-# quagga is waiting for fix not to use compiler host include files
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
 	ttf-bitstream-vera \
-	xmail \
-	quagga
+	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 	neon clips sed postgresql quagga
