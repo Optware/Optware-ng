@@ -1,142 +1,25 @@
-*** quagga-0.99.1/configure.ac	2005-04-29 05:20:54.000000000 +0200
---- quagga/configure.ac	2005-05-14 22:53:42.812201570 +0200
+*** quagga.work/configure.ac.orig	2005-05-28 19:50:23.830149617 +0200
+--- quagga.work/configure.ac	2005-05-28 20:18:41.748898323 +0200
 ***************
-*** 637,643 ****
-  elif test "$opsys" = "openbsd";then
-    AC_MSG_RESULT(openbsd)
-    IF_METHOD=if_ioctl.o
-! elif grep NET_RT_IFLIST /usr/include/sys/socket.h >/dev/null 2>&1; then
-    AC_MSG_RESULT(sysctl)
-      IF_METHOD=if_sysctl.o
-      AC_DEFINE(HAVE_NET_RT_IFLIST,,NET_RT_IFLIST)
---- 642,648 ----
-  elif test "$opsys" = "openbsd";then
-    AC_MSG_RESULT(openbsd)
-    IF_METHOD=if_ioctl.o
-! elif grep NET_RT_IFLIST ${oldincludedir}/sys/socket.h >/dev/null 2>&1; then
-    AC_MSG_RESULT(sysctl)
-      IF_METHOD=if_sysctl.o
-      AC_DEFINE(HAVE_NET_RT_IFLIST,,NET_RT_IFLIST)
-***************
-*** 699,705 ****
-  dnl ----------
-  dnl INRIA IPv6
-  dnl ----------
-!   if grep IPV6_INRIA_VERSION /usr/include/netinet/in.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,INRIA IPv6)
-      AC_DEFINE(INRIA_IPV6,1,INRIA IPv6)
---- 704,710 ----
-  dnl ----------
-  dnl INRIA IPv6
-  dnl ----------
-!   if grep IPV6_INRIA_VERSION ${oldincludedir}/netinet/in.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,INRIA IPv6)
-      AC_DEFINE(INRIA_IPV6,1,INRIA IPv6)
-***************
-*** 710,716 ****
-  dnl ---------
-  dnl KAME IPv6
-  dnl ---------
-!   elif grep WIDE /usr/include/netinet6/in6.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,KAME IPv6)
-      AC_DEFINE(KAME,1,KAME IPv6)
---- 715,721 ----
-  dnl ---------
-  dnl KAME IPv6
-  dnl ---------
-!   elif grep WIDE ${oldincludedir}/netinet6/in6.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,KAME IPv6)
-      AC_DEFINE(KAME,1,KAME IPv6)
-***************
-*** 725,731 ****
-  dnl  default host check
-  dnl  It is not used by Kheops
-  dnl -------------------------
-!   elif grep MUSICA /usr/include6/netinet6/in6.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,Musicia IPv6)
-      AC_DEFINE(MUSICA,1,Musica IPv6 stack)
---- 730,736 ----
-  dnl  default host check
-  dnl  It is not used by Kheops
-  dnl -------------------------
-!   elif grep MUSICA ${oldincludedir}6/netinet6/in6.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,Musicia IPv6)
-      AC_DEFINE(MUSICA,1,Musica IPv6 stack)
-***************
-*** 739,745 ****
-  dnl ---------
-  dnl NRL check
-  dnl ---------
-!   elif grep NRL /usr/include/netinet6/in6.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,NRL IPv6)
-      AC_DEFINE(NRL,1,NRL)
---- 744,750 ----
-  dnl ---------
-  dnl NRL check
-  dnl ---------
-!   elif grep NRL ${oldincludedir}/netinet6/in6.h >/dev/null 2>&1; then
-      zebra_cv_ipv6=yes
-      AC_DEFINE(HAVE_IPV6,1,NRL IPv6)
-      AC_DEFINE(NRL,1,NRL)
-***************
-*** 976,1001 ****
+*** 784,789 ****
+--- 784,803 ----
     fi
   
-    if test "${HAVE_SNMP}" = "yes"; then
-!     for ac_snmp in /usr/include/net-snmp/library/asn1.h /usr/include/ucd-snmp/asn1.h /usr/local/include/ucd-snmp/asn1.h /dev/null
-      do
-        test -f "${ac_snmp}" && break
-      done
-  
-      case ${ac_snmp} in
-!       /usr/include/net-snmp/*)
-                    AC_DEFINE(HAVE_SNMP,,SNMP)
-  		  AC_DEFINE(HAVE_NETSNMP,,SNMP)
-                    AC_DEFINE(UCD_COMPATIBLE,,SNMP)
-!                   SNMP_INCLUDES="${SNMP_INCLUDES} -I/usr/include/net-snmp -I/usr/include/net-snmp/library"
-  		  if test "${HAVE_NETSNMP}" = "yes"; then
-  		        LIBS="${LIBS} -lnetsnmp"
-  		  else
-  			LIBS="${LIBS} -lsnmp"
-  		  fi
-                    ;;
-!       /usr/include/ucd-snmp/*) 
-                    AC_DEFINE(HAVE_SNMP,,SNMP)
-!                   SNMP_INCLUDES="${SNMP_INCLUDES} -I/usr/include/ucd-snmp"
-      		  LIBS="${LIBS} -lsnmp"
-                    ;;
-        /usr/local/include/ucd-snmp/*) 
---- 981,1006 ----
-    fi
-  
-    if test "${HAVE_SNMP}" = "yes"; then
-!     for ac_snmp in ${oldincludedir}/net-snmp/library/asn1.h ${target-includedir}/ucd-snmp/asn1.h /usr/local/include/ucd-snmp/asn1.h /dev/null
-      do
-        test -f "${ac_snmp}" && break
-      done
-  
-      case ${ac_snmp} in
-!       ${oldincludedir}/net-snmp/*)
-                    AC_DEFINE(HAVE_SNMP,,SNMP)
-  		  AC_DEFINE(HAVE_NETSNMP,,SNMP)
-                    AC_DEFINE(UCD_COMPATIBLE,,SNMP)
-!                   SNMP_INCLUDES="${SNMP_INCLUDES} -I${oldincludedir}/net-snmp -I${target-includedir}/net-snmp/library"
-  		  if test "${HAVE_NETSNMP}" = "yes"; then
-  		        LIBS="${LIBS} -lnetsnmp"
-  		  else
-  			LIBS="${LIBS} -lsnmp"
-  		  fi
-                    ;;
-!       ${oldincludedir}/ucd-snmp/*) 
-                    AC_DEFINE(HAVE_SNMP,,SNMP)
-!                   SNMP_INCLUDES="${SNMP_INCLUDES} -I${oldincludedir}/ucd-snmp"
-      		  LIBS="${LIBS} -lsnmp"
-                    ;;
-        /usr/local/include/ucd-snmp/*) 
+    if test "$zebra_cv_linux_ipv6" = "yes";then
++     AC_MSG_CHECKING(whether libc has IPv6 support)
++     AC_TRY_LINK([#include <netinet/in.h>
++     ],[ int a; a = (int) in6addr_any.s6_addr[0]; if (a != 12345) return a; ],
++     [AC_MSG_RESULT(yes)
++      zebra_cv_ipv6=yes
++      zebra_cv_linux_ipv6=yes],
++     [AC_MSG_RESULT(no)
++      zebra_cv_ipv6=no
++      zebra_cv_linux_ipv6=no])
++   fi
++ 
++ 
++ 
++   if test "$zebra_cv_linux_ipv6" = "yes";then
+      AC_MSG_CHECKING(for GNU libc >= 2.1)
+      AC_DEFINE(HAVE_IPV6,1,Linux IPv6)
+      AC_EGREP_CPP(yes, [
