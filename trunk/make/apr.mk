@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=1
+APR_IPK_VERSION=2
 
 #
 # APR_LOCALES defines which locales get installed
@@ -48,7 +48,7 @@ APR_LOCALES=
 # compilation or linking flags, then list them here.
 #
 APR_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2
-APR_LDFLAGS=
+APR_LDFLAGS=-lpthread
 
 #
 # APR_BUILD_DIR is the directory in which the build is done.
@@ -114,11 +114,16 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) \
 	rm -rf $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR)
 	$(APR_UNZIP) $(DL_DIR)/$(APR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR)
-	cp $(APR_SOURCE_DIR)/arm.cache $(APR_BUILD_DIR)
 	(cd $(APR_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APR_LDFLAGS)" \
+		ac_cv_func_setpgrp_void=yes \
+		ac_cv_sizeof_size_t=4 \
+		ac_cv_sizeof_ssize_t=4 \
+		ac_cv_sizeof_off_t=4 \
+		ac_cv_sizeof_pid_t=4 \
+		apr_cv_process_shared_works=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,7 +132,6 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) \
 		--libdir=/opt/lib \
 		--disable-static \
 		--enable-layout=GNU \
-		--cache-file=$(APR_BUILD_DIR)/arm.cache \
 	)
 	touch $(APR_BUILD_DIR)/.configured
 
