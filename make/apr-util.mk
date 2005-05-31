@@ -21,7 +21,7 @@ APR_UTIL_MAINTAINER=nslu2-linux@yahoogroups.com
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb, openldap-libs
+APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TARGET_DEPENDS)
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
@@ -32,6 +32,18 @@ APR_UTIL_IPK_VERSION=3
 # APR_UTIL_LOCALES defines which locales get installed
 #
 APR_UTIL_LOCALES=
+
+# We need this because openldap does not build on the wl500g.
+ifneq ($(UNSLUNG_TARGET),wl500g)
+APR_UTIL_CONFIGURE_TARGET_ARGS= \
+		--with-ldap-library=$(STAGING_LIB_DIR) \
+		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
+		--with-ldap
+APR_UTIL_TARGET_DEPENDS=, openldap-libs
+else
+APR_UTIL_CONFIGURE_TARGET_ARGS=--without-ldap
+APR_UTIL_TARGET_DEPENDS=
+endif
 
 #
 # APR_UTIL_CONFFILES should be a list of user-editable files
@@ -114,7 +126,9 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
+ifneq ($(UNSLUNG_TARGET),wl500g)
 	$(MAKE) openldap-stage
+endif
 	$(MAKE) apr-stage
 	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -136,9 +150,7 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-expat=$(STAGING_DIR)/opt \
-		--with-ldap-library=$(STAGING_LIB_DIR) \
-		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
-		--with-ldap \
+		$(APR_UTIL_CONFIGURE_TARGET_FLAGS) \
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
 	cp $(STAGING_DIR)/opt/share/apache2/build/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
