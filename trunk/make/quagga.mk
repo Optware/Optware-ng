@@ -32,6 +32,7 @@ QUAGGA_SOURCE=quagga-$(QUAGGA_VERSION).tar.gz
 QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
 QUAGGA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, rip, and bgp (ospf6d and ripngd are included if library has IPv6 support).
 QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, ospf6, and rip, ripngd and bgp.
 QUAGGA_SECTION=net
 QUAGGA_PRIORITY=optional
@@ -52,7 +53,7 @@ QUAGGA_IPK_VERSION=1
 # QUAGGA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#QUAGGA_PATCHES=$(QUAGGA_SOURCE_DIR)/configure.ac.patch
+QUAGGA_PATCHES=$(QUAGGA_SOURCE_DIR)/configure.ac.patch $(QUAGGA_SOURCE_DIR)/rt_netlink.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,9 +109,12 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 	$(MAKE) termcap-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1
+	cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1
 	mv $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
+	# Cross compilation requires checks for include files to point to target include dirictory
 	sed -i -e 's!/usr/include/!$(TARGET_LIBDIR)/../include/!g' $(QUAGGA_BUILD_DIR)/configure.ac
+	# Some gdb header defines struct user, so let's patch the definition in quagga vtysh_user
+	sed -i -e 's!struct user!struct vtysh_user!g' $(QUAGGA_BUILD_DIR)/vtysh/vtysh_user.c
 	(cd $(QUAGGA_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -119,7 +123,6 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/quagga \
 		--localstatedir=/opt/var/run/quagga \
@@ -127,7 +130,6 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		--disable-isisd \
 		--disable-static \
 		--enable-vtysh \
-		--enable-ospf6d \
 	)
 	touch $(QUAGGA_BUILD_DIR)/.configured
 
