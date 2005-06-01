@@ -16,7 +16,7 @@ CYRUS-SASL_PRIORITY=optional
 CYRUS-SASL_DEPENDS=
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=6
+CYRUS-SASL_IPK_VERSION=7
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
@@ -116,7 +116,8 @@ $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control:
 
 $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -rf $(CYRUS-SASL_IPK_DIR) $(BUILD_DIR)/cyrus-sasl_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install
+	rm -rf $(CYRUS-SASL-LIBS_IPK_DIR) $(BUILD_DIR)/cyrus-sasl-libs_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install-strip
 	find $(CYRUS-SASL_IPK_DIR) -type d -exec chmod go+rx {} \;
 	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/sbin/*
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
