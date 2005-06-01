@@ -52,7 +52,7 @@ LIBDB_CONFLICTS=
 #
 # <FOO>_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDB_IPK_VERSION=2
+LIBDB_IPK_VERSION=3
 
 #
 # <FOO>_PATCHES should list any patches, in the the order in
@@ -183,7 +183,7 @@ $(LIBDB_IPK_DIR)/CONTROL/control:
 $(LIBDB_IPK): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 	rm -rf $(LIBDB_IPK_DIR) $(LIBDB_IPK)
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(LIBDB_IPK_DIR) install_setup install_include install_lib
-	-$(STRIP_COMMAND) $(LIBDB_IPK_DIR)/opt/lib/*.so.*
+	-$(STRIP_COMMAND) $(LIBDB_IPK_DIR)/opt/lib/*.so
 	rm -f $(LIBDB_IPK_DIR)/opt/lib/*.{la,a}
 	$(MAKE) $(LIBDB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDB_IPK_DIR)
