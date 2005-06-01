@@ -50,13 +50,13 @@ CONFIG_DRIVER_HOSTAP=y
 #CFLAGS += -I../madwifi/wpa
 
 # Driver interface for Prism54 driver
-CONFIG_DRIVER_PRISM54=y
+#CONFIG_DRIVER_PRISM54=y
 
 # Driver interface for ndiswrapper
 #CONFIG_DRIVER_NDISWRAPPER=y
 
 # Driver interface for Atmel driver
-CONFIG_DRIVER_ATMEL=y
+#CONFIG_DRIVER_ATMEL=y
 
 # Driver interface for Broadcom driver
 CONFIG_DRIVER_BROADCOM=y
@@ -146,7 +146,7 @@ CONFIG_CTRL_IFACE=y
 
 # Include interface for using external supplicant (Xsupplicant) for EAP
 # authentication
-#CONFIG_XSUPPLICANT_IFACE=y
+CONFIG_XSUPPLICANT_IFACE=y
 
 # Include support for GNU Readline and History Libraries in wpa_cli.
 # When building a wpa_cli binary for distribution, please note that these
