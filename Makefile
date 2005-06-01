@@ -154,7 +154,7 @@ WL500G_PACKAGES = \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
 	vorbis-tools vsftpd \
-	w3cam wakelan wget-ssl which wiley-feeds wizd \
+	w3cam wakelan wget-ssl which wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
