@@ -46,7 +46,7 @@ WPA_SUPPLICANT_IPK_VERSION=1
 
 #
 # WPA_SUPPLICANT_CONFFILES should be a list of user-editable files
-#WPA_SUPPLICANT_CONFFILES=/opt/etc/wpa-supplicant.conf /opt/etc/init.d/SXXwpa-supplicant
+WPA_SUPPLICANT_CONFFILES=/opt/etc/wpa-supplicant.conf 
 
 #
 # WPA_SUPPLICANT_PATCHES should list any patches, in the the order in
@@ -187,6 +187,8 @@ $(WPA_SUPPLICANT_IPK): $(WPA_SUPPLICANT_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_passphrase
 	install -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)/opt/sbin/wpa_supplicant
+	install -d -d $(WPA_SUPPLICANT_IPK_DIR)/opt/etc
+	install -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wpa-supplicant.conf $(WPA_SUPPLICANT_IPK_DIR)/opt/etc/wpa-supplicant.conf
 	$(MAKE) $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control
 	install -m 755 $(WPA_SUPPLICANT_SOURCE_DIR)/postinst $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(WPA_SUPPLICANT_SOURCE_DIR)/prerm $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/prerm
