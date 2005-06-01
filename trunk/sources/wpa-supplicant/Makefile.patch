@@ -1,0 +1,15 @@
+--- wpa_supplicant-0.3.8/Makefile.orig	2005-05-31 18:43:08.870000000 -0400
++++ wpa_supplicant-0.3.8/Makefile	2005-05-31 18:44:16.010000000 -0400
+@@ -312,10 +312,10 @@
+ 	$(CC) -o preauth_test $(OBJS_t2) $(LIBS)
+ 
+ wpa_passphrase: $(OBJS_p)
+-	$(CC) -o wpa_passphrase $(OBJS_p) $(LIBS_p)
++	$(CC) -o wpa_passphrase $(OBJS_p) $(LIBS_p) $(LDFLAGS)
+ 
+ wpa_cli: $(OBJS_c)
+-	$(CC) -o wpa_cli $(OBJS_c) $(LIBS_c)
++	$(CC) -o wpa_cli $(OBJS_c) $(LIBS_c) $(LDFLAGS)
+ 
+ win_if_list: win_if_list.c
+ 	$(CC) -o $@ win_if_list.c $(CFLAGS) $(LIBS_w)
