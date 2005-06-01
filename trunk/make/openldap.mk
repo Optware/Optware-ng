@@ -34,7 +34,7 @@ OPENLDAP_CONFLICTS=
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=4
+OPENLDAP_IPK_VERSION=5
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
@@ -44,7 +44,7 @@ OPENLDAP_IPK_VERSION=4
 # OPENLDAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch
+OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch $(OPENLDAP_SOURCE_DIR)/install.patch
 
 #
 # If the compilation of the package requires additional
@@ -205,6 +205,11 @@ $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 	install -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
 	echo $(OPENLDAP_CONFFILES) | sed -e 's/ /\n/g' > $(OPENLDAP_IPK_DIR)/CONTROL/conffiles
+	rm -f $(OPENLDAP_IPK_DIR)/opt/lib/*.a
+	rm -f $(OPENLDAP_IPK_DIR)/opt/lib/*.la
+	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/lib/*.so
+	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/libexec/*
 	install -d $(OPENLDAP_LIBS_IPK_DIR)/opt
 	mv $(OPENLDAP_IPK_DIR)/opt/include  $(OPENLDAP_LIBS_IPK_DIR)/opt
 	mv $(OPENLDAP_IPK_DIR)/opt/lib  $(OPENLDAP_LIBS_IPK_DIR)/opt
