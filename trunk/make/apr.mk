@@ -133,6 +133,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) \
 		--disable-static \
 		--enable-layout=GNU \
 	)
+	$(PATCH_LIBTOOL) $(APR_BUILD_DIR)/libtool
 	touch $(APR_BUILD_DIR)/.configured
 
 apr-unpack: $(APR_BUILD_DIR)/.configured
@@ -160,7 +161,6 @@ $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libapr.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-config
-	$(PATCH_LIBTOOL) $(STAGING_PREFIX)/share/apache2/build/libtool
 	touch $@
 
 apr-stage: $(APR_BUILD_DIR)/.staged
