@@ -42,7 +42,7 @@ SVN_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=1
+SVN_IPK_VERSION=2
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -132,6 +132,7 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 		--enable-shared \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(SVN_BUILD_DIR)/libtool
 	touch $(SVN_BUILD_DIR)/.configured
 
 svn-unpack: $(SVN_BUILD_DIR)/.configured
