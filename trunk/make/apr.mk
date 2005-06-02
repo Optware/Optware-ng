@@ -160,6 +160,7 @@ $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libapr.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-config
+	sed -i -e 's/hardcode_libdir_flag_spec=.*/hardcode_libdir_flag_spec=""/' $(STAGING_PREFIX)/share/apache2/build/libtool
 	touch $@
 
 apr-stage: $(APR_BUILD_DIR)/.staged
