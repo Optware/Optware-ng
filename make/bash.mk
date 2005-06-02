@@ -16,7 +16,7 @@ BASH_PRIORITY=optional
 BASH_DEPENDS=ncurses
 BASH_CONFLICTS=
 
-BASH_IPK_VERSION=4
+BASH_IPK_VERSION=5
 
 BASH_CPPFLAGS=
 BASH_LDFLAGS=
@@ -32,6 +32,7 @@ $(DL_DIR)/$(BASH_SOURCE):
 bash-source: $(DL_DIR)/$(BASH_SOURCE)
 
 $(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE)
+	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR)
 	$(BASH_UNZIP) $(DL_DIR)/$(BASH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR)
@@ -48,6 +49,8 @@ $(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE)
 		bash_cv_job_control_missing=present \
 		bash_cv_sys_named_pipes=present \
 		bash_cv_unusable_rtsigs=no \
+		bash_cv_sys_siglist=yes \
+		bash_cv_under_sys_siglist=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -61,7 +64,7 @@ bash-unpack: $(BASH_BUILD_DIR)/.configured
 $(BASH_BUILD_DIR)/bash: $(BASH_BUILD_DIR)/.configured
 	$(MAKE) -C $(BASH_BUILD_DIR)
 
-bash: termcap-stage $(BASH_BUILD_DIR)/bash
+bash: $(BASH_BUILD_DIR)/bash
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -87,6 +90,8 @@ $(BASH_IPK): $(BASH_BUILD_DIR)/bash
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
 	install -d $(BASH_IPK_DIR)/opt/etc 
 	install -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
+	install -d $(BASH_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(BASH_SOURCE_DIR)/rc.bash $(BASH_IPK_DIR)/opt/etc/init.d/S05bash
 	install -d $(BASH_IPK_DIR)/bin
 	ln -s /opt/bin/bash $(BASH_IPK_DIR)/bin/bash
 	$(MAKE) $(BASH_IPK_DIR)/CONTROL/control
