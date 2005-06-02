@@ -21,7 +21,7 @@ APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
-APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib, openldap-libs
+APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib $(APACHE_TARGET_DEPENDS)
 
 APACHE_MPM=worker
 #APACHE_MPM=prefork
@@ -29,7 +29,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=1
+APACHE_IPK_VERSION=2
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -57,6 +57,17 @@ APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch $(APACHE_SOURCE_DIR)/hostcc-pcr
 #
 APACHE_CPPFLAGS=
 APACHE_LDFLAGS=
+
+# We need this because openldap does not build on the wl500g.
+ifneq ($(UNSLUNG_TARGET),wl500g)
+APACHE_CONFIGURE_TARGET_ARGS= \
+		--enable-ldap \
+		--enable-auth-ldap
+APACHE_TARGET_DEPENDS=,openldap-libs
+else
+APACHE_CONFIGURE_TARGET_ARGS=
+APACHE_TARGET_DEPENDS=
+endif
 
 #
 # APACHE_BUILD_DIR is the directory in which the build is done.
@@ -166,8 +177,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
 		--enable-file-cache \
 		--enable-mem-cache \
 		--enable-deflate \
-		--enable-ldap \
-		--enable-auth-ldap \
+		$(APACHE_CONFIGURE_TARGET_ARGS) \
 		--with-z=$(STAGING_DIR)/opt \
 		--with-ssl=$(STAGING_DIR)/opt \
 		--with-apr=$(STAGING_DIR)/opt \
