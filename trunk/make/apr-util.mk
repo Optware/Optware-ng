@@ -150,7 +150,7 @@ endif
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-expat=$(STAGING_DIR)/opt \
-		$(APR_UTIL_CONFIGURE_TARGET_FLAGS) \
+		$(APR_UTIL_CONFIGURE_TARGET_ARGS) \
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
 	cp $(STAGING_DIR)/opt/share/apache2/build/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
