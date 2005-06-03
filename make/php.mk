@@ -46,7 +46,7 @@ PHP_LOCALES=
 # PHP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4-5.0.4.patch $(PHP_SOURCE_DIR)/endian-5.0.4.patch
+PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4-5.0.4.patch $(PHP_SOURCE_DIR)/endian-5.0.4.patch $(PHP_SOURCE_DIR)/zend_strtod.patch
 
 #
 # If the compilation of the package requires additional
