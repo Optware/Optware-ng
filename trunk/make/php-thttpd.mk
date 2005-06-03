@@ -35,7 +35,7 @@ PHP_THTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_THTTPD_DESCRIPTION=php-thttpd is thttpd webserver with php support
 PHP_THTTPD_SECTION=net
 PHP_THTTPD_PRIORITY=optional
-PHP_THTTPD_DEPENDS=php (>= 5.0.3-8)
+PHP_THTTPD_DEPENDS=php (>= 5.0.3-8), libxml2
 PHP_THTTPD_CONFLICTS=thttpd
 
 PHP_THTTPD_LIBPHP_SITE=$(PHP_SITE)
@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=9
+PHP_THTTPD_IPK_VERSION=1
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -144,7 +144,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_
 	)
 	touch $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured
 
-$(PHP_THTTPD_BUILD_DIR)/.configured: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured $(PHP_THTTPD_PATCHES)
+$(PHP_THTTPD_BUILD_DIR)/.configured: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built $(PHP_THTTPD_PATCHES)
 	cat $(PHP_THTTPD_PATCHES) | patch -d $(PHP_THTTPD_BUILD_DIR) -p1
 	(cd $(PHP_THTTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -214,6 +214,7 @@ $(PHP_THTTPD_IPK_DIR)/CONTROL/control:
 $(PHP_THTTPD_IPK): $(PHP_THTTPD_BUILD_DIR)/.built
 	rm -rf $(PHP_THTTPD_IPK_DIR) $(BUILD_DIR)/php-thttpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PHP_THTTPD_BUILD_DIR) DESTDIR=$(PHP_THTTPD_IPK_DIR) install
+	chmod u+rw $(PHP_THTTPD_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/sbin/thttpd
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/sbin/makeweb
 	$(STRIP_COMMAND) $(PHP_THTTPD_IPK_DIR)/opt/sbin/htpasswd

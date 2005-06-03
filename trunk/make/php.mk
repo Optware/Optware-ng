@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.0.3
+PHP_VERSION=5.0.4
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=13
+PHP_IPK_VERSION=1
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ PHP_LOCALES=
 # PHP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/zend-m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4.patch
+PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4-5.0.4.patch $(PHP_SOURCE_DIR)/endian-5.0.4.patch
 
 #
 # If the compilation of the package requires additional
@@ -275,10 +275,6 @@ endif
 	cat $(PHP_PATCHES) |patch -p0 -d $(PHP_BUILD_DIR)
 	(cd $(PHP_BUILD_DIR); \
 		autoconf; \
-		sed -i \
-		    -e 's|sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"|sys_lib_search_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
-		    -e 's|sys_lib_dlsearch_path_spec="/lib /usr/lib"|sys_lib_dlsearch_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
-			configure ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
@@ -335,6 +331,7 @@ endif
 		--without-iconv \
 		--without-pear \
 	)
+	$(PATCH_LIBTOOL) $(PHP_BUILD_DIR)/libtool
 	touch $(PHP_BUILD_DIR)/.configured
 
 php-unpack: $(PHP_BUILD_DIR)/.configured
@@ -385,9 +382,9 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
 	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
-	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/bin/php
-	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/lib/*.so
-	$(TARGET_STRIP) $(PHP_IPK_DIR)/opt/lib/php/extensions/*.so
+	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/bin/php
+	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/*.so
+	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/php/extensions/*.so
 	rm -f $(PHP_IPK_DIR)/opt/lib/php/extensions/*.a
 	install -d $(PHP_IPK_DIR)/opt/etc
 	install -d $(PHP_IPK_DIR)/opt/etc/php.d
