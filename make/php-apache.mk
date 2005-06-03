@@ -16,14 +16,14 @@ PHP_APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
-PHP_APACHE_DEPENDS=apache (>= 2.0.53-9), php (>= 5.0.3-8)
+PHP_APACHE_DEPENDS=apache (>= 2.0.53-9), php (>= 5.0.3-8), libxml2
 
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=6
+PHP_APACHE_IPK_VERSION=1
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -141,6 +141,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: \
 		--without-pear \
 		--without-iconv \
 	)
+	$(PATCH_LIBTOOL) $(PHP_BUILD_DIR)/libtool
 	touch $(PHP_APACHE_BUILD_DIR)/.configured
 
 php-apache-unpack: $(PHP_APACHE_BUILD_DIR)/.configured
@@ -188,7 +189,7 @@ $(PHP_APACHE_IPK): $(PHP_APACHE_BUILD_DIR)/.built
 	install -m 644 $(PHP_APACHE_SOURCE_DIR)/php.conf $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
 	install -d $(PHP_APACHE_IPK_DIR)/opt/libexec
 	install -m 755 $(PHP_APACHE_BUILD_DIR)/libs/libphp5.so $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
-	$(TARGET_STRIP) $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
+	$(STRIP_COMMAND) $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
 	$(MAKE) $(PHP_APACHE_IPK_DIR)/CONTROL/control
 	echo $(PHP_APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_APACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_APACHE_IPK_DIR)
