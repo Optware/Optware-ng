@@ -1,0 +1,14 @@
+--- otp_src_R10B-5-orig/erts/configure.in	2005-05-10 08:08:31.000000000 -0700
++++ erlang/erts/configure.in	2005-06-03 09:26:50.000000000 -0700
+@@ -1245,7 +1245,11 @@
+ 	DED_CFLAGS="$ETHR_DEFS $DED_CFLAGS"
+ fi
+ 
++if test "x$LD" = x; then
+ DED_LD=ld
++else
++DED_LD=$LD
++fi
+ DED_LD_FLAG_RUNTIME_LIBRARY_PATH="-R"
+ 
+ case $host_os in

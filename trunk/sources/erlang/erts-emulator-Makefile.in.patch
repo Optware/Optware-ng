@@ -1,5 +1,5 @@
---- erlang/erts/emulator/Makefile.in-bak	2005-05-10 08:08:05.000000000 -0700
-+++ erlang/erts/emulator/Makefile.in	2005-05-13 23:32:11.739398000 -0700
+--- otp_src_R10B-5-orig/erts/emulator/Makefile.in	2005-05-10 08:08:05.000000000 -0700
++++ erlang/erts/emulator/Makefile.in	2005-05-30 10:52:35.004321000 -0700
 @@ -213,7 +213,7 @@
  UNIX_ONLY_BUILDS =
  endif
@@ -9,3 +9,12 @@
  
  zlib:
  	@set -e ; cd zlib && $(MAKE) $(TYPE)
+@@ -667,7 +667,7 @@
+ 	$(CC) $(subst O2,O3, $(CFLAGS)) $(INCLUDES) -c $< -o $@
+ 
+ $(BINDIR)/hipe_mkliterals$(TYPEMARKER):	$(OBJDIR)/hipe_mkliterals.o
+-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $<
++	gcc $(CFLAGS) $(INCLUDES) -o $@ hipe/hipe_mkliterals.c
+ 
+ $(OBJDIR)/hipe_mkliterals.o:	$(TARGET)/hipe_x86_asm.h $(TARGET)/hipe_ppc_asm.h
+ 
