@@ -31,7 +31,7 @@ CROSS_PACKAGES = \
 	ccxstream chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
-	e2fsprogs eaccelerator ed eggdrop elinks esmtp esound expat \
+	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	fontconfig freeradius freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
@@ -42,7 +42,7 @@ CROSS_PACKAGES = \
 	iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame ldconfig less \
-	libbt libcurl libdb libdvb libdvdread libesmtp libevent \
+	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent \
 	libgc libgd libghttp libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtiff libtool libtopfield libusb \
@@ -60,7 +60,7 @@ CROSS_PACKAGES = \
 	py-cherrypy py-clips \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	quagga  \
-	rdate readline recordext renderext rsync \
+	rdate readline recordext renderext rrdtool rsync \
 	samba sane-backends screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils tin torrent transcode \
@@ -78,9 +78,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	erlang \
-	libart \
-	rrdtool \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -104,7 +101,6 @@ NATIVE_PACKAGES = \
 	cyrus-imapd \
 	emacs \
 	xemacs \
-	erlang \
 	hugs \
 	openldap \
 	mzscheme \
@@ -130,7 +126,10 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	libao \
 	nethack scponly dump gkrellm \
 
-PACKAGES_OBSOLETED = libiconv git
+# libiconv - has been made obsolete by gconv-modules
+# git - ?
+# thttpd - has been made obsolete by php-thttpd
+PACKAGES_OBSOLETED = libiconv git thttpd
 
 WL500G_PACKAGES = \
 	adduser adns appweb atftp audiofile autoconf automake \
@@ -168,7 +167,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	neon clips sed postgresql quagga
+	neon clips sed postgresql quagga libart rrdtool
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \

@@ -123,6 +123,7 @@ $(LIBART_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES)
 		--enable-shared \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBART_BUILD_DIR)/libtool
 	touch $(LIBART_BUILD_DIR)/.configured
 
 libart-unpack: $(LIBART_BUILD_DIR)/.configured
@@ -186,6 +187,7 @@ $(LIBART_IPK_DIR)/CONTROL/control:
 $(LIBART_IPK): $(LIBART_BUILD_DIR)/.built
 	rm -rf $(LIBART_IPK_DIR) $(BUILD_DIR)/libart_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(LIBART_IPK_DIR) install-strip
+	$(STRIP_COMMAND) $(LIBART_IPK_DIR)/opt/lib/*.so
 #	install -d $(LIBART_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBART_SOURCE_DIR)/libart.conf $(LIBART_IPK_DIR)/opt/etc/libart.conf
 #	install -d $(LIBART_IPK_DIR)/opt/etc/init.d
