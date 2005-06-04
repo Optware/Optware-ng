@@ -13,10 +13,17 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 GLIB_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-GLIB_VERSION=2.6.1
+GLIB_VERSION=2.6.4
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.gz
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=zcat
+GLIB_MAINTAINER=giel <giel@caffeinetrip.com>
+GLIB_DESCRIPTION=The GLib library of C routines.
+GLIB_SECTION=lib
+GLIB_PRIORITY=optional
+GLIB_DEPENDS=
+GLIB_SUGGESTS=
+GLIB_CONFLICTS=
 
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
@@ -104,7 +111,9 @@ $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 		--cache-file=arm.cache \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(GLIB_BUILD_DIR)/libtool
 	touch $(GLIB_BUILD_DIR)/.configured
 
 glib-unpack: $(GLIB_BUILD_DIR)/.configured
@@ -127,14 +136,35 @@ glib: $(GLIB_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libglib-2.0.so: $(GLIB_BUILD_DIR)/.built
+$(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -rf $(STAGING_DIR)/opt/lib/libglib-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgthread-2.0.la
+	touch $@
 
-glib-stage: $(STAGING_DIR)/opt/lib/libglib-2.0.so
+glib-stage: $(GLIB_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/glib
+#
+$(GLIB_IPK_DIR)/CONTROL/control:
+	@install -d $(GLIB_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: glib" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GLIB_PRIORITY)" >>$@
+	@echo "Section: $(GLIB_SECTION)" >>$@
+	@echo "Version: $(GLIB_VERSION)-$(GLIB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GLIB_MAINTAINER)" >>$@
+	@echo "Source: $(GLIB_SITE)/$(GLIB_SOURCE)" >>$@
+	@echo "Description: $(GLIB_DESCRIPTION)" >>$@
+	@echo "Depends: $(GLIB_DEPENDS)" >>$@
+	@echo "Suggests: $(GLIB_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GLIB_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -153,8 +183,7 @@ $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)/opt
 	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)/opt/man
-	install -d $(GLIB_IPK_DIR)/CONTROL
-	install -m 644 $(GLIB_SOURCE_DIR)/control $(GLIB_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)
 
 #

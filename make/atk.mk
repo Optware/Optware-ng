@@ -48,7 +48,7 @@ ATK_LOCALES=
 # compilation or linking flags, then list them here.
 #
 ATK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
-ATK_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
+ATK_LDFLAGS=
 
 #
 # ATK_BUILD_DIR is the directory in which the build is done.
@@ -101,8 +101,8 @@ atk-source: $(DL_DIR)/$(ATK_SOURCE) $(ATK_PATCHES)
 # applied in this target as required.
 #
 $(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) \
-		$(STAGING_DIR)/opt/lib/libglib-2.0.so \
 		$(ATK_PATCHES)
+	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
 	$(ATK_UNZIP) $(DL_DIR)/$(ATK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ATK_DIR) $(ATK_BUILD_DIR)
@@ -120,6 +120,7 @@ $(ATK_BUILD_DIR)/.configured: $(DL_DIR)/$(ATK_SOURCE) \
 		--disable-static \
 		--disable-glibtest \
 	)
+	$(PATCH_LIBTOOL) $(ATK_BUILD_DIR)/libtool
 	touch $(ATK_BUILD_DIR)/.configured
 
 atk-unpack: $(ATK_BUILD_DIR)/.configured
@@ -142,11 +143,13 @@ atk: $(ATK_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libatk-1.0.so: $(ATK_BUILD_DIR)/.built
+$(ATK_BUILD_DIR)/.staged: $(ATK_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(ATK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -rf $(STAGING_DIR)/opt/lib/libatk-1.0.la
+	touch $@
 
-atk-stage: $(STAGING_DIR)/opt/lib/libatk-1.0.so
+atk-stage: $(ATK_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

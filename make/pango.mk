@@ -110,10 +110,9 @@ pango-source: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) \
-		$(STAGING_LIB_DIR)/libglib-2.0.so \
-		$(STAGING_LIB_DIR)/libXft.so \
-		$(STAGING_LIB_DIR)/libICE.so \
-		$(PANGO_PATCHES)
+	$(MAKE) glib-stage
+	$(MAKE) xft-stage
+	$(MAKE) ice-stage
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
@@ -134,6 +133,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) \
 		--disable-static \
 		--disable-glibtest \
 	)
+	$(PATCH_LIBTOOL) $(PANGO_BUILD_DIR)/libtool
 	touch $(PANGO_BUILD_DIR)/.configured
 
 pango-unpack: $(PANGO_BUILD_DIR)/.configured
@@ -156,11 +156,13 @@ pango: $(PANGO_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libpango-1.0.so: $(PANGO_BUILD_DIR)/.built
+$(PANGO_BUILD_DIR)/.staged: $(PANGO_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PANGO_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -rf $(STAGING_DIR)/opt/lib/libpango-1.0.la
+	touch $@
 
-pango-stage: $(STAGING_DIR)/opt/lib/libpango-1.0.so
+pango-stage: $(PANGO_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
