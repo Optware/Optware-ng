@@ -109,7 +109,7 @@ pango-source: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) \
+$(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 	$(MAKE) glib-stage
 	$(MAKE) xft-stage
 	$(MAKE) ice-stage
@@ -118,7 +118,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) \
 	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	(cd $(PANGO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PANGO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PANGO_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
