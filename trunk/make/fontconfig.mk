@@ -12,10 +12,10 @@
 #
 FONTCONFIG_SITE=http://freedesktop.org
 FONTCONFIG_SOURCE=# none - available from CVS only
-FONTCONFIG_VERSION=2.2.99
+FONTCONFIG_VERSION=2.3.2
 FONTCONFIG_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/fontconfig
 FONTCONFIG_DIR=fontconfig
-FONTCONFIG_CVS_OPTS=-r fc-2_2_99
+FONTCONFIG_CVS_OPTS=-r fc-2_3_2
 FONTCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 FONTCONFIG_DESCRIPTION=Font configuration library
 FONTCONFIG_SECTION=lib
@@ -25,7 +25,7 @@ FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=5
+FONTCONFIG_IPK_VERSION=1
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
@@ -41,8 +41,8 @@ FONTCONFIG_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FONTCONFIG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2 -DLIBICONV_PLUG
-FONTCONFIG_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
+FONTCONFIG_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
+FONTCONFIG_LDFLAGS=
 
 #
 # FONTCONFIG_BUILD_DIR is the directory in which the build is done.
@@ -98,8 +98,8 @@ fontconfig-source: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
-		$(STAGING_LIB_DIR)/libfreetype.so \
 		$(FONTCONFIG_PATCHES)
+	$(MAKE) freetype-stage
 	$(MAKE) expat-stage
 	(cd $(FONTCONFIG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -119,6 +119,7 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
 		--disable-docs \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(FONTCONFIG_BUILD_DIR)/libtool
 	touch $(FONTCONFIG_BUILD_DIR)/.configured
 
 fontconfig-unpack: $(FONTCONFIG_BUILD_DIR)/.configured
@@ -139,11 +140,11 @@ fontconfig: $(FONTCONFIG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libfontconfig.so: $(FONTCONFIG_BUILD_DIR)/.built
+$(FONTCONFIG_BUILD_DIR)/.staged: $(FONTCONFIG_BUILD_DIR)/.built
 	$(MAKE) -C $(FONTCONFIG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libfontconfig.la
 
-fontconfig-stage: $(STAGING_LIB_DIR)/libfontconfig.so
+fontconfig-stage: $(FONTCONFIG_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
