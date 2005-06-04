@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 GTK_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-GTK_VERSION=2.6.1
+GTK_VERSION=2.6.7
 GTK_SOURCE=gtk+-$(GTK_VERSION).tar.bz2
 GTK_DIR=gtk+-$(GTK_VERSION)
 GTK_UNZIP=bzcat
@@ -26,7 +26,7 @@ GTK_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, x
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=2
+GTK_IPK_VERSION=1
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -48,7 +48,7 @@ GTK_LOCALES=
 # compilation or linking flags, then list them here.
 #
 GTK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -I$(STAGING_INCLUDE_DIR)/pango-1.0 -I$(STAGING_INCLUDE_DIR)/atk-1.0 -I$(STAGING_INCLUDE_DIR)/freetype2
-GTK_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
+GTK_LDFLAGS=
 
 #
 # GTK_BUILD_DIR is the directory in which the build is done.
@@ -110,20 +110,19 @@ gtk-source: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
-		$(STAGING_LIB_DIR)/libX11.so \
-		$(STAGING_LIB_DIR)/libXext.so \
-		$(STAGING_LIB_DIR)/libXfixes.so \
-		$(STAGING_LIB_DIR)/libXcursor.so \
-		$(STAGING_LIB_DIR)/libpango-1.0.so \
-		$(STAGING_LIB_DIR)/libatk-1.0.so \
-		$(STAGING_LIB_DIR)/libjpeg.so \
-		$(STAGING_LIB_DIR)/libpng.so \
 		$(GTK_PATCHES)
 	$(MAKE) libtiff-stage
+	$(MAKE) libpng-stage
+	$(MAKE) libjpeg-stage
+	$(MAKE) atk-stage
+	$(MAKE) pango-stage
+	$(MAKE) xcursor-stage
+	$(MAKE) xfixes-stage
+	$(MAKE) xext-stage
+	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
 	$(GTK_UNZIP) $(DL_DIR)/$(GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
-	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
 	(cd $(GTK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
@@ -141,6 +140,7 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
 		--disable-static \
 		--disable-glibtest \
 	)
+	$(PATCH_LIBTOOL) $(GTK_BUILD_DIR)/libtool
 	touch $(GTK_BUILD_DIR)/.configured
 
 gtk-unpack: $(GTK_BUILD_DIR)/.configured
@@ -165,8 +165,11 @@ gtk: $(GTK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
+	rm -f $(GTK_BUILD_DIR)/.staged
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
 	rm -f $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.la
+	touch $(GTK_BUILD_DIR)/.staged
 
 gtk-stage: $(GTK_BUILD_DIR)/.staged
 
