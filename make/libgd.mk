@@ -127,8 +127,7 @@ $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) \
 		--with-fontconfig=$(STAGING_DIR)/opt \
 		--without-xpm \
 	)
-	sed -i -e 's%/usr/lib%/opt/lib%' $(LIBGD_BUILD_DIR)/libtool
-	sed -i -e 's%/usr/local/lib%/opt/lib%' $(LIBGD_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(LIBGD_BUILD_DIR)/libtool
 	touch $(LIBGD_BUILD_DIR)/.configured
 
 libgd-unpack: $(LIBGD_BUILD_DIR)/.configured
