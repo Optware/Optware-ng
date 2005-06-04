@@ -99,11 +99,11 @@ xft-source: $(XFT_BUILD_DIR)/.fetched $(XFT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched \
-		$(STAGING_LIB_DIR)/libfreetype.so \
-		$(STAGING_LIB_DIR)/libfontconfig.so \
-		$(STAGING_LIB_DIR)/libX11.so \
-		$(STAGING_LIB_DIR)/libXrender.so \
 		$(XFT_PATCHES)
+	$(MAKE) freetype-stage
+	$(MAKE) fontconfig-stage
+	$(MAKE) x11-stage
+	$(MAKE) xrender-stage
 	(cd $(XFT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFT_CPPFLAGS)" \
@@ -111,7 +111,7 @@ $(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
-		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
