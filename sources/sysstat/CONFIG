@@ -1,0 +1,51 @@
+# Configuration file for sysstat
+# (C) 2000 Sebastien GODARD (sysstat <at> wanadoo.fr)
+
+# Directories
+PREFIX = /opt
+SA_LIB_DIR = /opt/lib/sa
+SADC_PATH = ${SA_LIB_DIR}/sadc
+SA_DIR = /opt/var/log/sa
+MAN_DIR = /opt/man
+CLEAN_SA_DIR = n
+YESTERDAY = 
+HISTORY = 7
+
+SYSCONFIG_DIR = /opt/etc/sysconfig
+
+DFLAGS =
+SAS_DFLAGS =
+
+ENABLE_NLS = n
+ENABLE_SMP_WRKARD = n
+
+IGNORE_MAN_GROUP = TRUE
+
+ifeq ($(ENABLE_NLS),y)
+# NLS (National Language Support)
+REQUIRE_NLS = -DUSE_NLS -DPACKAGE=\"$(PACKAGE)\" -DLOCALEDIR=\"$(PREFIX)/share/locale\"
+endif
+ifdef REQUIRE_NLS
+   DFLAGS += $(REQUIRE_NLS)
+endif
+
+ifeq ($(ENABLE_SMP_WRKARD),y)
+# Uncomment this to enable workaround for Linux kernel SMP race condition
+SAS_DFLAGS += -DSMP_RACE
+endif
+
+#define IGNORE_MAN_GROUP
+
+# Man page group
+MAN_GROUP =
+
+# Crontab owner
+CRON_OWNER = root
+
+# Run-command directories
+RC_DIR = /opt/etc
+INIT_DIR = /opt/etc/init.d
+INITD_DIR = init.d
+
+INSTALL_CRON = n
+
