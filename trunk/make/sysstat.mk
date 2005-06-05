@@ -32,8 +32,8 @@ SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.gz
 SYSSTAT_DIR=sysstat-$(SYSSTAT_VERSION)
 SYSSTAT_UNZIP=zcat
 SYSSTAT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-SYSSTAT_DESCRIPTION=Describe sysstat here.
-SYSSTAT_SECTION=
+SYSSTAT_DESCRIPTION=System performance tools for linux os
+SYSSTAT_SECTION=admin
 SYSSTAT_PRIORITY=optional
 SYSSTAT_DEPENDS=
 SYSSTAT_SUGGESTS=
@@ -46,7 +46,7 @@ SYSSTAT_IPK_VERSION=1
 
 #
 # SYSSTAT_CONFFILES should be a list of user-editable files
-SYSSTAT_CONFFILES=/opt/etc/sysstat.conf /opt/etc/init.d/SXXsysstat
+SYSSTAT_CONFFILES=
 
 #
 # SYSSTAT_PATCHES should list any patches, in the the order in
@@ -180,15 +180,17 @@ $(SYSSTAT_IPK_DIR)/CONTROL/control:
 $(SYSSTAT_IPK): $(SYSSTAT_BUILD_DIR)/.built
 	rm -rf $(SYSSTAT_IPK_DIR) $(BUILD_DIR)/sysstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SYSSTAT_BUILD_DIR) DESTDIR=$(SYSSTAT_IPK_DIR) install
-#	install -d $(SYSSTAT_IPK_DIR)/opt/etc/
+	install -d $(SYSSTAT_IPK_DIR)/opt/etc/
 #	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.conf $(SYSSTAT_IPK_DIR)/opt/etc/sysstat.conf
-#	install -d $(SYSSTAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)/opt/etc/init.d/SXXsysstat
+	install -d $(SYSSTAT_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)/opt/etc/init.d/S99sysstat
+	install -d $(SYSSTAT_IPK_DIR)/opt/doc/sysstat-6.0.0/
+	install -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)/opt/doc/sysstat-6.0.0/sysstat.crond
 	$(MAKE) $(SYSSTAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SYSSTAT_SOURCE_DIR)/postinst $(SYSSTAT_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(SYSSTAT_SOURCE_DIR)/postinst $(SYSSTAT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(SYSSTAT_SOURCE_DIR)/prerm $(SYSSTAT_IPK_DIR)/CONTROL/prerm
 	echo $(SYSSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(SYSSTAT_IPK_DIR)/CONTROL/conffiles
-#	cd $(BUILD_DIR); $(IPKG_BUILD) $(SYSSTAT_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(SYSSTAT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
