@@ -40,7 +40,7 @@ ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=4
+ERLANG_IPK_VERSION=5
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -293,7 +293,7 @@ else
 		$(MAKE) -C $(ERLANG_BUILD_DIR) INSTALL_PREFIX=$(ERLANG_IPK_DIR) $(ERLANG_MAKE_OPTION) install
 	rm -f $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/erl-host
 	rm -rf `find $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/ -mindepth 1 -type d`
-	# \
+	#
 	for f in erl start; do \
         	sed -i -e 's:ROOTDIR=.*:ROOTDIR=/opt/lib/erlang:' $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/$$f; \
         done
