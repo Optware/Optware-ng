@@ -143,15 +143,15 @@ WL500G_PACKAGES = \
 	hdparm \
 	inetutils \
 	joe \
-	lame less libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
+	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses neon ntpclient nylon \
 	openssl openvpn \
-	patch php php-thttpd pkgconfig popt portmap procps proftpd puppy py-moin python \
+	patch php php-thttpd pkgconfig popt portmap postgresql procps proftpd puppy py-moin python \
 	quagga \
-	rdate readline recordext renderext rsync \
+	rdate readline recordext renderext irrdtool rsync \
 	sane-backends sed siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
@@ -167,7 +167,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	postgresql quagga libart rrdtool
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
 	dhcp dropbear \
