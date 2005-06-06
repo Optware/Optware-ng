@@ -36,7 +36,7 @@ INETUTILS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 INETUTILS_DESCRIPTION=A set of common daemons and clients found on commercial UNIX systems.
 INETUTILS_SECTION= net
 INETUTILS_PRIORITY=optional
-INETUTILS_DEPENDS=ncurses
+INETUTILS_DEPENDS=ncurses, zlib
 
 #
 # INETUTILS_IPK_VERSION should be incremented when the ipk changes.
@@ -104,7 +104,7 @@ inetutils-source: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES)
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(INETUTILS_DIR) $(INETUTILS_BUILD_DIR)
 	$(INETUTILS_UNZIP) $(DL_DIR)/$(INETUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(INETUTILS_DIR) $(INETUTILS_BUILD_DIR)
