@@ -142,8 +142,8 @@ WL500G_PACKAGES = \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	ghostscript grep gzip \
 	hdparm \
-	inetutils \
-	joe \
+	inetutils iptables ircd-hybrid \
+	joe jove \
 	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
@@ -156,7 +156,7 @@ WL500G_PACKAGES = \
 	sane-backends sed siproxd sqlite strace stunnel syslog-ng \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
-	vorbis-tools vsftpd \
+	vdr-mediamvp vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
@@ -168,11 +168,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-
-WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	iptables ircd-hybrid \
-	jove \
-	vdr-mediamvp
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \

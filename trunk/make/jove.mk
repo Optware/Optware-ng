@@ -9,11 +9,18 @@ JOVE_VERSION=4.16.0.65
 JOVE_SOURCE=jove$(JOVE_VERSION).tgz
 JOVE_DIR=jove$(JOVE_VERSION)
 JOVE_UNZIP=zcat
+JOVE_MAINTAINER=Ron Pedde <rpedde@users.sourceforge.net>
+JOVE_DESCRIPTION=A tiny, fast editor with emacs keybindings
+JOVE_SECTION=editor
+JOVE_PRIORITY=optional
+JOVE_DEPENDS=ncurses
+JOVE_SUGGESTS=
+JOVE_CONFLICTS=
 
 #
 # JOVE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOVE_IPK_VERSION=1
+JOVE_IPK_VERSION=2
 
 #
 # JOVE_PATCHES should list any patches, in the the order in
@@ -95,6 +102,25 @@ $(JOVE_BUILD_DIR)/jjove: $(JOVE_BUILD_DIR)/.configured
 jove: $(JOVE_BUILD_DIR)/jjove
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/jove
+#
+$(JOVE_IPK_DIR)/CONTROL/control:
+	@install -d $(JOVE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: jove" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(JOVE_PRIORITY)" >>$@
+	@echo "Section: $(JOVE_SECTION)" >>$@
+	@echo "Version: $(JOVE_VERSION)-$(JOVE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(JOVE_MAINTAINER)" >>$@
+	@echo "Source: $(JOVE_SITE)/$(JOVE_SOURCE)" >>$@
+	@echo "Description: $(JOVE_DESCRIPTION)" >>$@
+	@echo "Depends: $(JOVE_DEPENDS)" >>$@
+	@echo "Suggests: $(JOVE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(JOVE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(JOVE_IPK_DIR)/opt/sbin or $(JOVE_IPK_DIR)/opt/bin
@@ -110,8 +136,7 @@ $(JOVE_IPK): $(JOVE_BUILD_DIR)/jjove
 	rm -rf $(JOVE_IPK_DIR) $(JOVE_IPK)
 	install -d $(JOVE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)/opt/bin/jove
-	install -d $(JOVE_IPK_DIR)/CONTROL
-	install -m 644 $(JOVE_SOURCE_DIR)/control $(JOVE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(JOVE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JOVE_IPK_DIR)
 
 #
