@@ -142,7 +142,7 @@ WL500G_PACKAGES = \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	ghostscript grep gzip \
 	hdparm \
-	inetutils iptables ircd-hybrid \
+	inetutils ircd-hybrid \
 	joe jove \
 	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
@@ -164,6 +164,7 @@ WL500G_PACKAGES = \
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	bind \
 	groff \
+	iptables \
 	ttf-bitstream-vera \
 	xmail 
 
