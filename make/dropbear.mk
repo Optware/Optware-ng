@@ -18,7 +18,7 @@ DROPBEAR_SUGGESTS=
 DROPBEAR_CONFLICTS=
 
 
-DROPBEAR_IPK_VERSION=2
+DROPBEAR_IPK_VERSION=3
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/key-path.patch \
@@ -31,7 +31,7 @@ DROPBEAR_LDFLAGS=
 DROPBEAR_BUILD_DIR=$(BUILD_DIR)/dropbear
 DROPBEAR_SOURCE_DIR=$(SOURCE_DIR)/dropbear
 DROPBEAR_IPK_DIR=$(BUILD_DIR)/dropbear-$(DROPBEAR_VERSION)-ipk
-DROPBEAR_IPK=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-1_$(TARGET_ARCH).ipk
+DROPBEAR_IPK=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-$(DROPBEAR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(DROPBEAR_SOURCE):
 	$(WGET) -P $(DL_DIR) $(DROPBEAR_SITE)/$(DROPBEAR_SOURCE)
@@ -60,11 +60,13 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 
 dropbear-unpack: $(DROPBEAR_BUILD_DIR)/.configured
 
-$(DROPBEAR_BUILD_DIR)/dropbearmulti: $(DROPBEAR_BUILD_DIR)/.configured
-	make -C $(DROPBEAR_BUILD_DIR) MULTI=1 SCPPROGRESS=1 \
+$(DROPBEAR_BUILD_DIR)/.built: $(DROPBEAR_BUILD_DIR)/.configured
+	rm -f $(DROPBEAR_BUILD_DIR)/.built
+	$(MAKE) -C $(DROPBEAR_BUILD_DIR) MULTI=1 SCPPROGRESS=1 \
 		PROGRAMS="dropbear dropbearkey dropbearconvert dbclient ssh scp"
+	touch $(DROPBEAR_BUILD_DIR)/.built
 
-dropbear: $(DROPBEAR_BUILD_DIR)/dropbearmulti
+dropbear: $(DROPBEAR_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -85,7 +87,8 @@ $(DROPBEAR_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(DROPBEAR_SUGGESTS)" >>$@
 	@echo "Conflicts: $(DROPBEAR_CONFLICTS)" >>$@
 
-$(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/dropbearmulti
+$(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/.built
+	rm -rf $(DROPBEAR_IPK_DIR) $(BUILD_DIR)/dropbear_*_$(TARGET_ARCH).ipk
 	install -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbearmulti
 	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
