@@ -140,7 +140,7 @@ WL500G_PACKAGES = \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	ghostcript grep gzip \
+	ghostscript grep gzip \
 	hdparm \
 	inetutils \
 	joe \
