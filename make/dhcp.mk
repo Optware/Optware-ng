@@ -12,7 +12,15 @@ DHCP=dhcp-$(DHCP_VERSION)
 DHCP_SITE=ipkg.nslu2-linux.org/downloads
 DHCP_SOURCE:=$(DHCP).tar.gz
 DHCP_UNZIP=zcat
-DHCP_IPK_VERSION=1
+DHCP_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
+DHCP_DESCRIPTION=A DHCP Server
+DHCP_SECTION=net
+DHCP_PRIORITY=optional
+DHCP_DEPENDS=
+DHCP_SUGGESTS=
+DHCP_CONFLICTS=
+
+DHCP_IPK_VERSION=2
 DHCP_IPK=$(BUILD_DIR)/dhcp_$(DHCP_VERSION)-$(DHCP_IPK_VERSION)_$(TARGET_ARCH).ipk
 DHCP_IPK_DIR:=$(BUILD_DIR)/dhcp-$(DHCP_VERSION)-ipk
 
@@ -30,7 +38,7 @@ $(DHCP_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE)
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DHCP) $(DHCP_DIR)
 	(cd $(DHCP_DIR) && \
-   ./configure)
+		./configure)
 	touch $(DHCP_DIR)/.configured
 
 dhcp-unpack: $(DHCP_DIR)/.configured
@@ -41,12 +49,31 @@ $(DHCP_DIR)/.built: $(DHCP_DIR)/.configured
 
 dhcp: $(DHCP_DIR)/.built
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/dhcp
+#
+$(DHCP_IPK_DIR)/CONTROL/control:
+	@install -d $(DHCP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: dhcp" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DHCP_PRIORITY)" >>$@
+	@echo "Section: $(DHCP_SECTION)" >>$@
+	@echo "Version: $(DHCP_VERSION)-$(DHCP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DHCP_MAINTAINER)" >>$@
+	@echo "Source: $(DHCP_SITE)/$(DHCP_SOURCE)" >>$@
+	@echo "Description: $(DHCP_DESCRIPTION)" >>$@
+	@echo "Depends: $(DHCP_DEPENDS)" >>$@
+	@echo "Suggests: $(DHCP_SUGGESTS)" >>$@
+	@echo "Conflicts: $(DHCP_CONFLICTS)" >>$@
+
 $(DHCP_IPK): $(DHCP_DIR)/.built
 	install -d $(DHCP_IPK_DIR)/CONTROL
 	install -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(DHCP_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
 	install -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
-	install -m 644 $(SOURCE_DIR)/dhcp.control  $(DHCP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(DHCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DHCP_IPK_DIR)
 
 dhcp-ipk: $(DHCP_IPK)

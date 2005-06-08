@@ -135,11 +135,12 @@ WL500G_PACKAGES = \
 	adduser adns appweb atftp audiofile autoconf automake \
 	bash bc bitchx busybox bzip2 \
 	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cyrus-sasl \
-	diffutils distcc dnsmasq dokuwiki  \
-	e2fsprogs eggdrop esmtp expat \
-	fetchmail file findutils fixesext flex \
+	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
+	e2fsprogs ed eggdrop esmtp expat \
+	fetchmail ffmpeg file findutils fixesext flac flex \
 	freeradius freetype ftpd-topfield fontconfig \
-	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap grep gzip \
+	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	ghostcript grep gzip \
 	hdparm \
 	inetutils \
 	joe \
@@ -169,9 +170,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 WL500G_PACKAGES_JUST_REQUIRING_CONTROL_GENERATION = \
-	dhcp dropbear \
-	ed ffmpeg flac \
-	ghostscript \
 	iptables ircd-hybrid \
 	jove \
 	vdr-mediamvp

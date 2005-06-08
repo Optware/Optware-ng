@@ -24,11 +24,18 @@ GHOSTSCRIPT_VERSION=8.50
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
+GHOSTSCRIPT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GHOSTSCRIPT_DESCRIPTION=An interpreter for the PostScript (TM) language
+GHOSTSCRIPT_SECTION=tool
+GHOSTSCRIPT_PRIORITY=optional
+GHOSTSCRIPT_DEPENDS=
+GHOSTSCRIPT_SUGGESTS=
+GHOSTSCRIPT_CONFLICTS=
 
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=1
+GHOSTSCRIPT_IPK_VERSION=2
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
@@ -137,6 +144,25 @@ $(GHOSTSCRIPT_BUILD_DIR)/.staged: $(GHOSTSCRIPT_BUILD_DIR)/.built
 ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ghostscript
+#
+$(GHOSTSCRIPT_IPK_DIR)/CONTROL/control:
+	@install -d $(GHOSTSCRIPT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ghostscript" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GHOSTSCRIPT_PRIORITY)" >>$@
+	@echo "Section: $(GHOSTSCRIPT_SECTION)" >>$@
+	@echo "Version: $(GHOSTSCRIPT_VERSION)-$(GHOSTSCRIPT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GHOSTSCRIPT_MAINTAINER)" >>$@
+	@echo "Source: $(GHOSTSCRIPT_SITE)/$(GHOSTSCRIPT_SOURCE)" >>$@
+	@echo "Description: $(GHOSTSCRIPT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GHOSTSCRIPT_DEPENDS)" >>$@
+	@echo "Suggests: $(GHOSTSCRIPT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GHOSTSCRIPT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GHOSTSCRIPT_IPK_DIR)/opt/sbin or $(GHOSTSCRIPT_IPK_DIR)/opt/bin
@@ -151,8 +177,7 @@ ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) prefix=$(GHOSTSCRIPT_IPK_DIR)/opt DESTDIR=$(GHOSTSCRIPT_IPK_DIR) install
-	install -d $(GHOSTSCRIPT_IPK_DIR)/CONTROL
-	install -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/control $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GHOSTSCRIPT_IPK_DIR)
 
 #
