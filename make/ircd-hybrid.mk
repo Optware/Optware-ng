@@ -10,8 +10,15 @@ IRCD_HYBRID=ircd-hybrid-$(IRCD_HYBRID_VERSION)
 IRCD_HYBRID_SITE=http://aleron.dl.sourceforge.net/sourceforge/ircd-hybrid
 IRCD_HYBRID_SOURCE_ARCHIVE=$(IRCD_HYBRID).tgz
 IRCD_HYBRID_UNZIP=zcat
+IRCD_HYBRID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+IRCD_HYBRID_DESCRIPTION=IRCD Hybrid
+IRCD_HYBRID_SECTION=devel
+IRCD_HYBRID_PRIORITY=optional
+IRCD_HYBRID_DEPENDS=zlib, flex
+IRCD_HYBRID_SUGGESTS=
+IRCD_HYBRID_CONFLICTS=
 
-IRCD_HYBRID_IPK_VERSION=2
+IRCD_HYBRID_IPK_VERSION=3
 
 IRCD_HYBRID_IPK=$(BUILD_DIR)/ircd-hybrid_$(IRCD_HYBRID_VERSION)-$(IRCD_HYBRID_IPK_VERSION)_$(TARGET_ARCH).ipk
 IRCD_HYBRID_IPK_DIR=$(BUILD_DIR)/ircd-hybrid-$(IRCD_HYBRID_VERSION)-ipk
@@ -75,6 +82,24 @@ $(IRCD_HYBRID_DIR)/src/ircd: $(IRCD_HYBRID_DIR)/.configured
 ircd-hybrid: zlib flex $(IRCD_HYBRID_DIR)/src/ircd
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ircd-hybrid
+#
+$(IRCD_HYBRID_IPK_DIR)/CONTROL/control:
+	@install -d $(IRCD_HYBRID_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ircd-hybrid" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(IRCD_HYBRID_PRIORITY)" >>$@
+	@echo "Section: $(IRCD_HYBRID_SECTION)" >>$@
+	@echo "Version: $(IRCD_HYBRID_VERSION)-$(IRCD_HYBRID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(IRCD_HYBRID_MAINTAINER)" >>$@
+	@echo "Source: $(IRCD_HYBRID_SITE)/$(IRCD_HYBRID_SOURCE)" >>$@
+	@echo "Description: $(IRCD_HYBRID_DESCRIPTION)" >>$@
+	@echo "Depends: $(IRCD_HYBRID_DEPENDS)" >>$@
+	@echo "Suggests: $(IRCD_HYBRID_SUGGESTS)" >>$@
+	@echo "Conflicts: $(IRCD_HYBRID_CONFLICTS)" >>$@
+
 # This builds the IPK file.
 #
 $(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
@@ -82,8 +107,7 @@ $(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
 	$(STRIP_COMMAND) $(IRCD_HYBRID_DIR)/src/ircd -o $(IRCD_HYBRID_IPK_DIR)/opt/bin/ircd
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
 	install -m 644 $(IRCD_HYBRID_DIR)/doc/simple.conf $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
-	install -d $(IRCD_HYBRID_IPK_DIR)/CONTROL
-	install -m 644 $(SOURCE_DIR)/ircd-hybrid.control $(IRCD_HYBRID_IPK_DIR)/CONTROL/control
+	$(MAKE) $(IRCD_HYBRID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRCD_HYBRID_IPK_DIR)
 
 #
