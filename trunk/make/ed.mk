@@ -24,11 +24,18 @@ ED_VERSION=0.2
 ED_SOURCE=ed-$(ED_VERSION).tar.gz
 ED_DIR=ed-$(ED_VERSION)
 ED_UNZIP=zcat
+ED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ED_DESCRIPTION=Line editor
+ED_SECTION=util
+ED_PRIORITY=optional
+ED_DEPENDS=
+ED_SUGGESTS=
+ED_CONFLICTS=
 
 #
 # ED_IPK_VERSION should be incremented when the ipk changes.
 #
-ED_IPK_VERSION=1
+ED_IPK_VERSION=2
 
 #
 # ED_PATCHES should list any patches, in the the order in
@@ -120,6 +127,24 @@ $(ED_BUILD_DIR)/.built: $(ED_BUILD_DIR)/.configured
 ed: $(ED_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ed
+#
+$(ED_IPK_DIR)/CONTROL/control:
+	@install -d $(ED_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ed" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ED_PRIORITY)" >>$@
+	@echo "Section: $(ED_SECTION)" >>$@
+	@echo "Version: $(ED_VERSION)-$(ED_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ED_MAINTAINER)" >>$@
+	@echo "Source: $(ED_SITE)/$(ED_SOURCE)" >>$@
+	@echo "Description: $(ED_DESCRIPTION)" >>$@
+	@echo "Depends: $(ED_DEPENDS)" >>$@
+	@echo "Suggests: $(ED_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ED_CONFLICTS)" >>$@
+
 # This builds the IPK file.
 #
 # Binaries should be installed into $(ED_IPK_DIR)/opt/sbin or $(ED_IPK_DIR)/opt/bin
@@ -134,8 +159,7 @@ ed: $(ED_BUILD_DIR)/.built
 $(ED_IPK): $(ED_BUILD_DIR)/.built
 	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install
-	install -d $(ED_IPK_DIR)/CONTROL
-	install -m 644 $(ED_SOURCE_DIR)/control $(ED_IPK_DIR)/CONTROL/control
+	$(MAKE) $(ED_IPK_DIR)/CONTROL/control
 #	echo $(ED_CONFFILES) | sed -e 's/ /\n/g' > $(ED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ED_IPK_DIR)
 

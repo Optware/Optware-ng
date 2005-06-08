@@ -9,8 +9,16 @@ DROPBEAR_VERSION=0.44test4
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_UNZIP=bzcat
+DROPBEAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+DROPBEAR_DESCRIPTION=Lightweight SSH client and server system
+DROPBEAR_SECTION=net
+DROPBEAR_PRIORITY=optional
+DROPBEAR_DEPENDS=
+DROPBEAR_SUGGESTS=
+DROPBEAR_CONFLICTS=
 
-DROPBEAR_IPK_VERSION=1
+
+DROPBEAR_IPK_VERSION=2
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/key-path.patch \
@@ -58,6 +66,25 @@ $(DROPBEAR_BUILD_DIR)/dropbearmulti: $(DROPBEAR_BUILD_DIR)/.configured
 
 dropbear: $(DROPBEAR_BUILD_DIR)/dropbearmulti
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/dropbear
+#
+$(DROPBEAR_IPK_DIR)/CONTROL/control:
+	@install -d $(DROPBEAR_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: dropbear" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DROPBEAR_PRIORITY)" >>$@
+	@echo "Section: $(DROPBEAR_SECTION)" >>$@
+	@echo "Version: $(DROPBEAR_VERSION)-$(DROPBEAR_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DROPBEAR_MAINTAINER)" >>$@
+	@echo "Source: $(DROPBEAR_SITE)/$(DROPBEAR_SOURCE)" >>$@
+	@echo "Description: $(DROPBEAR_DESCRIPTION)" >>$@
+	@echo "Depends: $(DROPBEAR_DEPENDS)" >>$@
+	@echo "Suggests: $(DROPBEAR_SUGGESTS)" >>$@
+	@echo "Conflicts: $(DROPBEAR_CONFLICTS)" >>$@
+
 $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/dropbearmulti
 	install -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbearmulti
@@ -69,8 +96,7 @@ $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/dropbearmulti
 	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti scp
 	install -d $(DROPBEAR_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
-	install -d $(DROPBEAR_IPK_DIR)/CONTROL
-	install -m 644 $(DROPBEAR_SOURCE_DIR)/control  $(DROPBEAR_IPK_DIR)/CONTROL/control
+	$(MAKE) $(DROPBEAR_IPK_DIR)/CONTROL/control
 	install -m 644 $(DROPBEAR_SOURCE_DIR)/postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(DROPBEAR_SOURCE_DIR)/prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DROPBEAR_IPK_DIR)

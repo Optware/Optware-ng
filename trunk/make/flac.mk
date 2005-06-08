@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-# You must replace "<foo>" and "<FOO>" with the lower case name and
+# You must replace "flac" and "FLAC" with the lower case name and
 # upper case name of your new package.  Some places below will say
 # "Do not change this" - that does not include this global change,
 # which must always be done to ensure we have unique names.
@@ -24,11 +24,18 @@ FLAC_VERSION=1.1.2
 FLAC_SOURCE=flac-$(FLAC_VERSION).tar.gz
 FLAC_DIR=flac-$(FLAC_VERSION)
 FLAC_UNZIP=zcat
+FLAC_MAINTAINER=Josh Coalson <jcoalson@users.sourceforge.net>
+FLAC_DESCRIPTION=FLAC is a free lossless audio codec.  This package contains the codec libraries and the command-line tools flac and metaflac.
+FLAC_SECTION=compression
+FLAC_PRIORITY=optional
+FLAC_DEPENDS=
+FLAC_SUGGESTS=
+FLAC_CONFLICTS=
 
 #
 # FLAC_IPK_VERSION should be incremented when the ipk changes.
 #
-FLAC_IPK_VERSION=2
+FLAC_IPK_VERSION=3
 
 #
 # FLAC_CONFFILES should be a list of user-editable files
@@ -137,6 +144,25 @@ $(FLAC_BUILD_DIR)/.staged: $(FLAC_BUILD_DIR)/.built
 flac-stage: $(FLAC_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/flac
+#
+$(FLAC_IPK_DIR)/CONTROL/control:
+	@install -d $(FLAC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: flac" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FLAC_PRIORITY)" >>$@
+	@echo "Section: $(FLAC_SECTION)" >>$@
+	@echo "Version: $(FLAC_VERSION)-$(FLAC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FLAC_MAINTAINER)" >>$@
+	@echo "Source: $(FLAC_SITE)/$(FLAC_SOURCE)" >>$@
+	@echo "Description: $(FLAC_DESCRIPTION)" >>$@
+	@echo "Depends: $(FLAC_DEPENDS)" >>$@
+	@echo "Suggests: $(FLAC_SUGGESTS)" >>$@
+	@echo "Conflicts: $(FLAC_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(FLAC_IPK_DIR)/opt/sbin or $(FLAC_IPK_DIR)/opt/bin
@@ -155,8 +181,7 @@ $(FLAC_IPK): $(FLAC_BUILD_DIR)/.built
 	#[JEC]install -m 644 $(FLAC_SOURCE_DIR)/flac.conf $(FLAC_IPK_DIR)/opt/etc/flac.conf
 	#[JEC]install -d $(FLAC_IPK_DIR)/opt/etc/init.d
 	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/rc.flac $(FLAC_IPK_DIR)/opt/etc/init.d/SXXflac
-	install -d $(FLAC_IPK_DIR)/CONTROL
-	install -m 644 $(FLAC_SOURCE_DIR)/control $(FLAC_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FLAC_IPK_DIR)/CONTROL/control
 	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/postinst $(FLAC_IPK_DIR)/CONTROL/postinst
 	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/prerm $(FLAC_IPK_DIR)/CONTROL/prerm
 	#[JEC]echo $(FLAC_CONFFILES) | sed -e 's/ /\n/g' > $(FLAC_IPK_DIR)/CONTROL/conffiles

@@ -24,11 +24,18 @@ FFMPEG_VERSION=0.4.9-pre1
 FFMPEG_SOURCE=ffmpeg-$(FFMPEG_VERSION).tar.gz
 FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)
 FFMPEG_UNZIP=zcat
+FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
+FFMPEG_SECTION=tool
+FFMPEG_PRIORITY=optional
+FFMPEG_DEPENDS=
+FFMPEG_SUGGESTS=
+FFMPEG_CONFLICTS=
 
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION=1
+FFMPEG_IPK_VERSION=2
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -138,6 +145,25 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ffmpeg
+#
+$(FFMPEG_IPK_DIR)/CONTROL/control:
+	@install -d $(FFMPEG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ffmpeg" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FFMPEG_PRIORITY)" >>$@
+	@echo "Section: $(FFMPEG_SECTION)" >>$@
+	@echo "Version: $(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FFMPEG_MAINTAINER)" >>$@
+	@echo "Source: $(FFMPEG_SITE)/$(FFMPEG_SOURCE)" >>$@
+	@echo "Description: $(FFMPEG_DESCRIPTION)" >>$@
+	@echo "Depends: $(FFMPEG_DEPENDS)" >>$@
+	@echo "Suggests: $(FFMPEG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(FFMPEG_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(FFMPEG_IPK_DIR)/opt/sbin or $(FFMPEG_IPK_DIR)/opt/bin
@@ -152,8 +178,7 @@ ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) install
-	install -d $(FFMPEG_IPK_DIR)/CONTROL
-	install -m 644 $(FFMPEG_SOURCE_DIR)/control $(FFMPEG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FFMPEG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FFMPEG_IPK_DIR)
 
 #
