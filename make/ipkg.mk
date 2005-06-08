@@ -33,7 +33,7 @@ IPKG_IPK_VERSION=4
 
 #
 # IPKG_CONFFILES should be a list of user-editable files
-# IPKG_CONFFILES=
+IPKG_CONFFILES=/opt/etc/ipkg.conf
 
 #
 # IPKG_PATCHES should list any patches, in the the order in
@@ -172,6 +172,8 @@ $(IPKG_IPK): $(IPKG_BUILD_DIR)/.built
 	install -d $(IPKG_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(IPKG_BUILD_DIR)/ipkg-cl -o $(IPKG_IPK_DIR)/opt/bin/ipkg
 	install -m 755 $(IPKG_BUILD_DIR)/update-alternatives $(IPKG_IPK_DIR)/opt/bin/update-alternatives
+	install -d $(IPKG_IPK_DIR)/opt/etc
+	install -m 644 $(IPKG_SOURCE_DIR)/ipkg.conf $(IPKG_IPK_DIR)/opt/etc/ipkg.conf
 ifeq ($(UNSLUNG_TARGET),wl500g)
 	install -d $(IPKG_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(IPKG_SOURCE_DIR)/rc.unslung  $(IPKG_IPK_DIR)/opt/etc/init.d/rc.unslung

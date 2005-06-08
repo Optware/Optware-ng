@@ -23,14 +23,14 @@ LIBBT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBBT_DESCRIPTION=a C library implementing the core BitTorrent protocol
 LIBBT_SECTION=net
 LIBBT_PRIORITY=optional
-LIBBT_DEPENDS=libcurl, openssl
+LIBBT_DEPENDS=libcurl, openssl, zlib
 LIBBT_SUGGESTS=
 LIBBT_CONFLICTS=
 
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=6
+LIBBT_IPK_VERSION=7
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
@@ -101,7 +101,7 @@ libbt-source: $(DL_DIR)/$(LIBBT_SOURCE) $(LIBBT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBBT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBBT_SOURCE) $(LIBBT_PATCHES)
-	$(MAKE) openssl-stage libcurl-stage
+	$(MAKE) openssl-stage libcurl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBBT_DIR) $(LIBBT_BUILD_DIR)
 	$(LIBBT_UNZIP) $(DL_DIR)/$(LIBBT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(LIBBT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBBT_DIR) -p0
