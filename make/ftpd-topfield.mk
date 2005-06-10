@@ -27,9 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FTPD-TOPFIELD_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
-FTPD-TOPFIELD_VERSION=1.0
+FTPD-TOPFIELD_VERSION=0.5.1
 FTPD-TOPFIELD_SOURCE=ftpd-topfield-$(FTPD-TOPFIELD_VERSION).tar.gz
-# FTPD-TOPFIELD_TAG=-r FTPD-TOPFIELD_1_0
+FTPD-TOPFIELD_TAG=-r FTPD_TOPFIELD_0_5_1
 FTPD-TOPFIELD_MODULE=ftpd-topfield
 FTPD-TOPFIELD_DIR=ftpd-topfield-$(FTPD-TOPFIELD_VERSION)
 FTPD-TOPFIELD_UNZIP=zcat
@@ -42,7 +42,7 @@ FTPD-TOPFIELD_DEPENDS=
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=5
+FTPD-TOPFIELD_IPK_VERSION=1
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
