@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FTPD-TOPFIELD_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
-FTPD-TOPFIELD_VERSION=0.5.1
+FTPD-TOPFIELD_VERSION=0.5.0
 FTPD-TOPFIELD_SOURCE=ftpd-topfield-$(FTPD-TOPFIELD_VERSION).tar.gz
 FTPD-TOPFIELD_TAG=-r FTPD_TOPFIELD_0_5_0
 FTPD-TOPFIELD_MODULE=ftpd-topfield
