@@ -1,0 +1,23 @@
+diff -urN pptpd-1.2.1/configure pptpd-1.2.1-patched/configure
+--- pptpd-1.2.1/configure	2004-06-23 03:39:15.000000000 -0400
++++ pptpd-1.2.1-patched/configure	2005-06-09 12:06:23.610000000 -0400
+@@ -4410,6 +4410,7 @@
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   eval "$as_ac_Header=\$ac_header_preproc"
++  eval "$as_ac_Header=no"
+ fi
+ echo "$as_me:$LINENO: result: `eval echo '${'$as_ac_Header'}'`" >&5
+ echo "${ECHO_T}`eval echo '${'$as_ac_Header'}'`" >&6
+diff -urN pptpd-1.2.1/plugins/Makefile pptpd-1.2.1-patched/plugins/Makefile
+--- pptpd-1.2.1/plugins/Makefile	2004-05-21 05:26:37.000000000 -0400
++++ pptpd-1.2.1-patched/plugins/Makefile	2005-06-09 12:09:57.130000000 -0400
+@@ -2,7 +2,7 @@
+ COPTS	= -O2 -g
+ CFLAGS	= $(COPTS) -I.. -I../../include -fPIC
+ LDFLAGS	= -shared
+-INSTALL	= install -o root
++INSTALL	= install
+ prefix  = /usr/local
+ 
+ PLUGINS = pptpd-logwtmp.so

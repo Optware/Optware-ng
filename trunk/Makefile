@@ -150,7 +150,7 @@ WL500G_PACKAGES = \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses neon ntpclient nylon \
 	openssl openvpn \
-	patch php php-thttpd pkgconfig popt portmap postgresql procps proftpd puppy py-moin python \
+	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
 	sane-backends sed siproxd sqlite strace stunnel syslog-ng \
