@@ -20,7 +20,7 @@ DHCP_DEPENDS=
 DHCP_SUGGESTS=
 DHCP_CONFLICTS=
 
-DHCP_IPK_VERSION=2
+DHCP_IPK_VERSION=3
 DHCP_IPK=$(BUILD_DIR)/dhcp_$(DHCP_VERSION)-$(DHCP_IPK_VERSION)_$(TARGET_ARCH).ipk
 DHCP_IPK_DIR:=$(BUILD_DIR)/dhcp-$(DHCP_VERSION)-ipk
 
@@ -37,6 +37,9 @@ $(DHCP_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE)
 	@rm -rf $(BUILD_DIR)/$(DHCP) $(DHCP_DIR)
 	$(DHCP_UNZIP) $(DL_DIR)/$(DHCP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DHCP) $(DHCP_DIR)
+	sed -ie 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(DHCP_DIR)/includes/site.h
+	sed -ie 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(DHCP_DIR)/includes/site.h
+	sed -ie 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(DHCP_DIR)/includes/site.h
 	(cd $(DHCP_DIR) && \
 		./configure)
 	touch $(DHCP_DIR)/.configured
@@ -73,6 +76,7 @@ $(DHCP_IPK): $(DHCP_DIR)/.built
 	install -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(DHCP_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
 	install -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
+	touch $(DHCP_IPK_DIR)/opt/etc/dhcpd.leases
 	$(MAKE) $(DHCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DHCP_IPK_DIR)
 
