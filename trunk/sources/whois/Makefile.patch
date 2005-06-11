@@ -1,0 +1,21 @@
+--- ./Makefile	2005-01-30 12:52:28.000000000 +0000
++++ ./Makefile	2005-06-11 00:19:43.947490129 +0100
+@@ -1,4 +1,4 @@
+-prefix ?= /usr/local
++prefix ?= /opt
+ 
+ OPTS=-O2
+ 
+@@ -43,10 +43,8 @@
+ 	$(PERL) -w make_tld_serv.pl < tld_serv_list > tld_serv.h
+ 
+ install: whois
+-	install -m 0755 whois $(BASEDIR)$(prefix)/bin/
+-	strip $(BASEDIR)$(prefix)/bin/whois
+-	install -m 0644 whois.1 $(BASEDIR)$(prefix)/share/man/man1/
+-	cd po && $(MAKE) $@
++	install -D -m 0755 whois $(BASEDIR)$(prefix)/bin/whois
++	install -D -m 0644 whois.1 $(BASEDIR)$(prefix)/man/man1/whois.1
+ 
+ 
+ distclean: clean
