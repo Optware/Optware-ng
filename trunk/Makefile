@@ -119,7 +119,9 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# sysstat - compiles only cross, cause i'm unable to figure out the right parameters to build cross in the makefile 
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	sysstat \
 
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
