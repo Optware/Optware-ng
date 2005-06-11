@@ -41,7 +41,7 @@ INETUTILS_DEPENDS=ncurses, zlib
 #
 # INETUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-INETUTILS_IPK_VERSION=4
+INETUTILS_IPK_VERSION=5
 
 #
 # INETUTILS_CONFFILES should be a list of user-editable files
@@ -179,10 +179,17 @@ $(INETUTILS_IPK_DIR)/CONTROL/control:
 #
 $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 	rm -rf $(INETUTILS_IPK_DIR) $(BUILD_DIR)/inetutils_*_$(TARGET_ARCH).ipk
+	# Install everything
 	$(MAKE) -C $(INETUTILS_BUILD_DIR) DESTDIR=$(INETUTILS_IPK_DIR) install
+	# Remove the stuff we don't want: inetd, whois, ftpd
+	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/inetd
+	rm -f $(INETUTILS_IPK_DIR)/opt/man/man8/inetd.8
+	rm -f $(INETUTILS_IPK_DIR)/opt/bin/whois
+	rm -f $(INETUTILS_IPK_DIR)/opt/man/man8/ftpd.8
+	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/ftpd
 	$(STRIP_COMMAND) $(INETUTILS_IPK_DIR)/opt/bin/* $(INETUTILS_IPK_DIR)/opt/libexec/*
-	install -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
+#	install -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
 	$(MAKE) $(INETUTILS_IPK_DIR)/CONTROL/control
 	# Setuid stuff doesn't work as non-root, but we fix in in the postinst script.
 	install -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
