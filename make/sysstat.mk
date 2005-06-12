@@ -117,7 +117,6 @@ $(SYSSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYSSTAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYSSTAT_LDFLAGS)" \
-		make \
 		)
 	touch $(SYSSTAT_BUILD_DIR)/.configured
 
@@ -128,7 +127,7 @@ sysstat-unpack: $(SYSSTAT_BUILD_DIR)/.configured
 #
 $(SYSSTAT_BUILD_DIR)/.built: $(SYSSTAT_BUILD_DIR)/.configured
 	rm -f $(SYSSTAT_BUILD_DIR)/.built
-	$(MAKE) -C $(SYSSTAT_BUILD_DIR)
+	$(MAKE) CC=$(TARGET_CC) -C $(SYSSTAT_BUILD_DIR)
 	touch $(SYSSTAT_BUILD_DIR)/.built
 
 #
