@@ -30,7 +30,7 @@ TIGHTVNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TIGHTVNC_DESCRIPTION=A free remote control software package derived from the popular VNC software.
 TIGHTVNC_SECTION=x11
 TIGHTVNC_PRIORITY=optional
-TIGHTVNC_DEPENDS=
+TIGHTVNC_DEPENDS=perl
 TIGHTVNC_SUGGESTS=
 TIGHTVNC_CONFLICTS=
 
@@ -47,7 +47,7 @@ TIGHTVNC_IPK_VERSION=1
 # TIGHTVNC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TIGHTVNC_PATCHES=$(TIGHTVNC_SOURCE_DIR)/configure.patch
+TIGHTVNC_PATCHES=$(TIGHTVNC_SOURCE_DIR)/linux.cf.patch $(TIGHTVNC_SOURCE_DIR)/WC.c.patch $(TIGHTVNC_SOURCE_DIR)/vncviewer-Imakefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -55,6 +55,7 @@ TIGHTVNC_IPK_VERSION=1
 #
 TIGHTVNC_CPPFLAGS=
 TIGHTVNC_LDFLAGS=
+
 
 #
 # TIGHTVNC_BUILD_DIR is the directory in which the build is done.
@@ -100,45 +101,35 @@ tightvnc-source: $(DL_DIR)/$(TIGHTVNC_SOURCE) $(TIGHTVNC_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TIGHTVNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TIGHTVNC_SOURCE) $(TIGHTVNC_PATCHES)
-	$(MAKE) x11-stage
+	$(MAKE) x11-stage xdmcp-stage libjpeg-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(TIGHTVNC_DIR) $(TIGHTVNC_BUILD_DIR)
 	$(TIGHTVNC_UNZIP) $(DL_DIR)/$(TIGHTVNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(TIGHTVNC_PATCHES) | patch -d $(BUILD_DIR)/$(TIGHTVNC_DIR) -p1
+	cat $(TIGHTVNC_PATCHES) | patch -d $(BUILD_DIR)/$(TIGHTVNC_DIR) -p1
+		#echo "#define __arm__ 1"; \
+		#echo "#define CrossCompiling 1"; 
 	mv $(BUILD_DIR)/$(TIGHTVNC_DIR) $(TIGHTVNC_BUILD_DIR)
 	make -C $(TIGHTVNC_BUILD_DIR)/Xvnc/config/imake -f Makefile.ini
+	#cp $(STAGING_INCLUDE_DIR)/{jconfig,jmorecfg,jpeglib,zconf,zlib}.h $(TIGHTVNC_BUILD_DIR)/Xvnc/
 	( \
 		echo "#define OSName Linux"; \
 		echo "#define OSMajorVersion 2"; \
 		echo "#define OSMinorVersion 4"; \
 		echo "#define OSTeenyVersion 22"; \
+		echo "#define CcCmd $(TARGET_CC)"; \
+		echo "#define CppCmd $(TARGET_CPP)"; \
+		echo "#define ArCmdBase $(TARGET_AR)"; \
 	) > $(TIGHTVNC_BUILD_DIR)/Xvnc/config/cf/platform.def
 	( \
 		cd $(TIGHTVNC_BUILD_DIR)/Xvnc/; \
-		config/imake/imake -Iconfig/cf -DTOPDIR=./ -DCURDIR=./; \
+		config/imake/imake -Iconfig/cf -DTOPDIR=. -DCURDIR=.; \
 		make Makefiles; \
+		make -C $(TIGHTVNC_BUILD_DIR)/Xvnc/config/makedepend CC=$(HOSTCC); \
 		make includes; \
 		make depend; \
 	)
 	( \
 		cd $(TIGHTVNC_BUILD_DIR)/; \
-		Xvnc/config/imake/imake -IXvnc/config/cf -DTOPDIR=Xvnc/ -DCURDIR=./; \
-	)
-	#(\
-	 cd $(TIGHTVNC_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(TIGHTVNC_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(TIGHTVNC_LDFLAGS)" \
-		xmkmf; \
-	 cd $(TIGHTVNC_BUILD_DIR)/Xvnc; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(TIGHTVNC_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(TIGHTVNC_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
+		Xvnc/config/imake/imake -IXvnc/config/cf -DTOPDIR=Xvnc -DCURDIR=.; \
 	)
 	touch $(TIGHTVNC_BUILD_DIR)/.configured
 
@@ -149,8 +140,14 @@ tightvnc-unpack: $(TIGHTVNC_BUILD_DIR)/.configured
 #
 $(TIGHTVNC_BUILD_DIR)/.built: $(TIGHTVNC_BUILD_DIR)/.configured
 	rm -f $(TIGHTVNC_BUILD_DIR)/.built
-	$(MAKE) -C $(TIGHTVNC_BUILD_DIR) EXTRA_LDOPTIONS=-L/usr/X11R6/lib World
-	$(MAKE) -C $(TIGHTVNC_BUILD_DIR)/Xvnc
+	$(MAKE) -C $(TIGHTVNC_BUILD_DIR) \
+	    EXTRA_INCLUDES="$(STAGING_CPPFLAGS) $(TIGHTVNC_CPPFLAGS)" \
+	    EXTRA_LDOPTIONS="$(STAGING_LDFLAGS) $(TIGHTVNC_LDFLAGS)" \
+	    World
+	$(MAKE) -C $(TIGHTVNC_BUILD_DIR)/Xvnc \
+	    EXTRA_INCLUDES="$(STAGING_CPPFLAGS) $(TIGHTVNC_CPPFLAGS)" \
+	    EXTRA_LDOPTIONS="$(STAGING_LDFLAGS) $(TIGHTVNC_LDFLAGS)" \
+	    all
 	touch $(TIGHTVNC_BUILD_DIR)/.built
 
 #
@@ -201,15 +198,19 @@ $(TIGHTVNC_IPK_DIR)/CONTROL/control:
 #
 $(TIGHTVNC_IPK): $(TIGHTVNC_BUILD_DIR)/.built
 	rm -rf $(TIGHTVNC_IPK_DIR) $(BUILD_DIR)/tightvnc_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TIGHTVNC_BUILD_DIR) DESTDIR=$(TIGHTVNC_IPK_DIR) install
-	install -d $(TIGHTVNC_IPK_DIR)/opt/etc/
-	install -m 644 $(TIGHTVNC_SOURCE_DIR)/tightvnc.conf $(TIGHTVNC_IPK_DIR)/opt/etc/tightvnc.conf
-	install -d $(TIGHTVNC_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(TIGHTVNC_SOURCE_DIR)/rc.tightvnc $(TIGHTVNC_IPK_DIR)/opt/etc/init.d/SXXtightvnc
+	( \
+	    cd $(TIGHTVNC_BUILD_DIR); \
+	    install -d $(TIGHTVNC_IPK_DIR)/opt/bin $(TIGHTVNC_IPK_DIR)/opt/man/man1; \
+	    ./vncinstall $(TIGHTVNC_IPK_DIR)/opt/bin $(TIGHTVNC_IPK_DIR)/opt/man; \
+	)
+	#install -d $(TIGHTVNC_IPK_DIR)/opt/etc/
+	#install -m 644 $(TIGHTVNC_SOURCE_DIR)/tightvnc.conf $(TIGHTVNC_IPK_DIR)/opt/etc/tightvnc.conf
+	#install -d $(TIGHTVNC_IPK_DIR)/opt/etc/init.d
+	#install -m 755 $(TIGHTVNC_SOURCE_DIR)/rc.tightvnc $(TIGHTVNC_IPK_DIR)/opt/etc/init.d/SXXtightvnc
 	$(MAKE) $(TIGHTVNC_IPK_DIR)/CONTROL/control
-	install -m 755 $(TIGHTVNC_SOURCE_DIR)/postinst $(TIGHTVNC_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(TIGHTVNC_SOURCE_DIR)/prerm $(TIGHTVNC_IPK_DIR)/CONTROL/prerm
-	echo $(TIGHTVNC_CONFFILES) | sed -e 's/ /\n/g' > $(TIGHTVNC_IPK_DIR)/CONTROL/conffiles
+	#install -m 755 $(TIGHTVNC_SOURCE_DIR)/postinst $(TIGHTVNC_IPK_DIR)/CONTROL/postinst
+	#install -m 755 $(TIGHTVNC_SOURCE_DIR)/prerm $(TIGHTVNC_IPK_DIR)/CONTROL/prerm
+	#echo $(TIGHTVNC_CONFFILES) | sed -e 's/ /\n/g' > $(TIGHTVNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TIGHTVNC_IPK_DIR)
 
 #
