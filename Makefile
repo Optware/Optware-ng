@@ -156,11 +156,11 @@ WL500G_PACKAGES = \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
-	sane-backends sed siproxd sqlite strace stunnel syslog-ng \
+	sane-backends sed siproxd sqlite strace stunnel syslog-ng sysstat \
 	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
 	unfs3 units usbutils \
 	vdr-mediamvp vorbis-tools vsftpd \
-	w3cam wakelan wget-ssl which wiley-feeds wizd wpa-supplicant \
+	w3cam wakelan wget-ssl which whois wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
