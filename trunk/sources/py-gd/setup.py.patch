@@ -1,0 +1,35 @@
+--- gdmodule-0.56-orig/Setup.py	2005-03-10 20:29:59.000000000 -0800
++++ py-gd/Setup.py	2005-06-12 21:04:56.084321000 -0700
+@@ -38,19 +38,16 @@
+ 
+ # library_dirs option is rather non-portable, but since I am targetting
+ # Unixoid OS's I will just look for the usual suspects.
++prefix = "@STAGING_PREFIX@"
+ 
+ libdirs = dirtest([
+-    "/usr/local/lib", "/sw/lib", "/usr/lib",
+-    "/usr/lib/X11", "/usr/X11R6/lib",
+-    "/opt/gnome/lib",
++    prefix + "/lib",
+ ])
+ 
+ # include_dirs are also non-portable; same trick here.
+ 
+ incdirs = dirtest([
+-    "/usr/local/include", "/sw/include", "/usr/include",
+-    "/usr/include/X11", "/usr/X11R6/include",
+-    "/opt/gnome/include",
++    prefix + "/include",
+ ])
+ 
+ # Try to identify our libraries
+@@ -58,8 +55,7 @@
+ want_libs = [
+     "gd",
+     "jpeg", "png", "gif", "z",
+-    "X11", "Xpm",
+-    "ttf", "freetype",
++    "freetype",
+ ]
+ 
+ libs = filetest(libdirs, want_libs)
