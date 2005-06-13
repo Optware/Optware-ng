@@ -79,6 +79,9 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	 hpijs \
+	gdchart \
+	py-gdchart2 \
+	py-gd \
 	py-pil \
 	 whois \
 	 sysstat \
