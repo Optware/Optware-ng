@@ -79,6 +79,7 @@ CROSS_PACKAGES = \
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	 hpijs \
+	py-pil \
 	 whois \
 	 sysstat \
 
