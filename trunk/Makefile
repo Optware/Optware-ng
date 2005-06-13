@@ -147,9 +147,9 @@ WL500G_PACKAGES = \
 	e2fsprogs ed eggdrop esmtp expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	freeradius freetype ftpd-topfield fontconfig \
-	gconv-modules gdb gdbm gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	gconv-modules gdb gdbm gdchart gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	ghostscript grep gzip \
-	hdparm \
+	hdparm hexcurse \
 	inetutils ircd-hybrid \
 	joe jove \
 	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
