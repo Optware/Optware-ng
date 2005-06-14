@@ -165,9 +165,9 @@ WL500G_PACKAGES = \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
 	sane-backends sed siproxd sqlite strace stunnel syslog-ng sysstat \
-	tar tcl tcpdump tcpwrappers termcap textutils thttpd  torrent \
+	tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent \
 	unfs3 units usbutils \
-	vdr-mediamvp vorbis-tools vsftpd \
+	vblade vdr-mediamvp vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which whois wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
