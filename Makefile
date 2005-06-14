@@ -145,7 +145,7 @@ PACKAGES_OBSOLETED = libiconv git thttpd metalog
 WL500G_PACKAGES = \
 	adduser adns appweb atftp audiofile autoconf automake \
 	bash bc bitchx busybox bzip2 \
-	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cyrus-sasl \
+	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
 	e2fsprogs ed eggdrop esmtp expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
@@ -179,7 +179,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	ttf-bitstream-vera \
 	xmail 
 
-WL500G_PACKAGES_READY_FOR_TESTING =  cups \
+WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
