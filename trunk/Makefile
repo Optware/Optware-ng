@@ -87,7 +87,8 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	whois \
 	sysstat \
 	tftp-hpa \
-	vblade
+	vblade \
+	tsocks \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
