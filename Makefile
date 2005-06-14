@@ -139,7 +139,8 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
 # thttpd - has been made obsolete by php-thttpd
-PACKAGES_OBSOLETED = libiconv git thttpd
+# Metalog - has been made obsolete by syslog-ng
+PACKAGES_OBSOLETED = libiconv git thttpd metalog
 
 WL500G_PACKAGES = \
 	adduser adns appweb atftp audiofile autoconf automake \
@@ -178,7 +179,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	ttf-bitstream-vera \
 	xmail 
 
-WL500G_PACKAGES_READY_FOR_TESTING =  \
+WL500G_PACKAGES_READY_FOR_TESTING =  cups \
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
