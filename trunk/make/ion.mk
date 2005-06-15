@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "ion" and "ION" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # ION_VERSION, ION_SITE and ION_SOURCE define
 # the upstream location of the source code for the package.
@@ -26,16 +21,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ION_SITE=http://modeemi.cs.tut.fi/~tuomov/ion/dl/
-ION_VERSION=20050304
-ION_SOURCE=ion-3ds-$(ION_VERSION)-1.tar.gz
-ION_DIR=ion-3ds-$(ION_VERSION)-1
+ION_SITE=http://modeemi.cs.tut.fi/~tuomov/ion/dl
+ION_VERSION=20050607
+ION_SOURCE=ion-3ds-$(ION_VERSION).tar.gz
+ION_DIR=ion-3ds-$(ION_VERSION)
 ION_UNZIP=zcat
-ION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-ION_DESCRIPTION=Describe ion here.
+ION_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+ION_DESCRIPTION=Ion is a tiling tabbed window manager designed with keyboard users in mind.
 ION_SECTION=x11
 ION_PRIORITY=optional
-ION_DEPENDS=
+ION_DEPENDS=lua
 
 #
 # ION_IPK_VERSION should be incremented when the ipk changes.
@@ -44,13 +39,13 @@ ION_IPK_VERSION=1
 
 #
 # ION_CONFFILES should be a list of user-editable files
-ION_CONFFILES=/opt/etc/ion.conf /opt/etc/init.d/SXXion
+#ION_CONFFILES=/opt/etc/ion.conf /opt/etc/init.d/SXXion
 
 #
 # ION_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ION_PATCHES=$(ION_SOURCE_DIR)/configure.patch
+ION_PATCHES=$(ION_SOURCE_DIR)/configure.ac.patch $(ION_SOURCE_DIR)/Makefiles.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,6 +104,7 @@ $(ION_BUILD_DIR)/.configured: $(DL_DIR)/$(ION_SOURCE) $(ION_PATCHES)
 	cat $(ION_PATCHES) | patch -d $(BUILD_DIR)/$(ION_DIR) -p1
 	mv $(BUILD_DIR)/$(ION_DIR) $(ION_BUILD_DIR)
 	(cd $(ION_BUILD_DIR); \
+		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ION_LDFLAGS)" \
@@ -183,14 +179,7 @@ $(ION_IPK): $(ION_BUILD_DIR)/.built
 	rm -rf $(ION_IPK_DIR) $(BUILD_DIR)/ion_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(ION_BUILD_DIR) prefix=$(ION_IPK_DIR)/opt LOCALEDIR=$(ION_IPK_DIR)/opt/share/locale install
-	# install -d $(ION_IPK_DIR)/opt/etc/
-	# install -m 644 $(ION_SOURCE_DIR)/ion.conf $(ION_IPK_DIR)/opt/etc/ion.conf
-	# install -d $(ION_IPK_DIR)/opt/etc/init.d
-	# install -m 755 $(ION_SOURCE_DIR)/rc.ion $(ION_IPK_DIR)/opt/etc/init.d/SXXion
 	$(MAKE) $(ION_IPK_DIR)/CONTROL/control
-	# install -m 755 $(ION_SOURCE_DIR)/postinst $(ION_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(ION_SOURCE_DIR)/prerm $(ION_IPK_DIR)/CONTROL/prerm
-	# echo $(ION_CONFFILES) | sed -e 's/ /\n/g' > $(ION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ION_IPK_DIR)
 
 #
