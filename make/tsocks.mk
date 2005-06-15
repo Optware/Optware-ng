@@ -37,7 +37,7 @@ TSOCKS_CONFLICTS=
 #
 # TSOCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-TSOCKS_IPK_VERSION=1
+TSOCKS_IPK_VERSION=2
 
 #
 # TSOCKS_CONFFILES should be a list of user-editable files
@@ -179,6 +179,8 @@ $(TSOCKS_IPK): $(TSOCKS_BUILD_DIR)/.built
 	$(MAKE) -C $(TSOCKS_BUILD_DIR) DESTDIR=$(TSOCKS_IPK_DIR) install
 	sed -i -e 's:/usr/:/opt/:g' $(TSOCKS_IPK_DIR)/opt/bin/tsocks
 	install -d $(TSOCKS_IPK_DIR)/opt/etc/
+	mv $(TSOCKS_IPK_DIR)/lib $(TSOCKS_IPK_DIR)/opt/
+	$(STRIP_COMMAND) $(TSOCKS_IPK_DIR)/opt/lib/libtsocks.so.1.8
 	#install -m 644 $(TSOCKS_SOURCE_DIR)/tsocks.conf $(TSOCKS_IPK_DIR)/opt/etc/tsocks.conf
 	$(MAKE) $(TSOCKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TSOCKS_IPK_DIR)
