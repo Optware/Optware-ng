@@ -35,7 +35,7 @@ SAMBA_CONFLICTS=
 #
 # SAMBA_IPK_VERSION should be incremented when the ipk changes.
 #
-SAMBA_IPK_VERSION=5
+SAMBA_IPK_VERSION=6
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
@@ -86,6 +86,34 @@ SAMBA_INFO_DIR=$(SAMBA_INST_DIR)/info
 SAMBA_MAN_DIR=$(SAMBA_INST_DIR)/man
 SAMBA_SWAT_DIR=$(SAMBA_INST_DIR)/share/swat
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+SAMBA_CROSS_ENVS=\
+		LOOK_DIRS=$(STAGING_PREFIX) \
+		linux_getgrouplist_ok=no \
+		samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
+		samba_cv_have_setresuid=yes \
+		samba_cv_have_setresgid=yes \
+		samba_cv_USE_SETRESUID=yes \
+		samba_cv_HAVE_IFACE_IFCONF=yes \
+		samba_cv_SIZEOF_OFF_T=yes \
+		samba_cv_SIZEOF_INO_T=yes \
+		samba_cv_HAVE_DEVICE_MAJOR_FN=yes \
+		samba_cv_HAVE_DEVICE_MINOR_FN=yes \
+		samba_cv_HAVE_MAKEDEV=yes \
+		samba_cv_HAVE_UNSIGNED_CHAR=yes \
+		samba_cv_HAVE_C99_VSNPRINTF=yes \
+		samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=yes \
+		samba_cv_HAVE_KERNEL_CHANGE_NOTIFY=yes \
+		samba_cv_HAVE_KERNEL_SHARE_MODES=yes \
+		samba_cv_HAVE_FTRUNCATE_EXTEND=yes \
+		samba_cv_HAVE_SECURE_MKSTEMP=yes \
+		samba_cv_SYSCONF_SC_NGROUPS_MAX=yes \
+		samba_cv_HAVE_MMAP=yes \
+		samba_cv_HAVE_FCNTL_LOCK=yes \
+		samba_cv_HAVE_STRUCT_FLOCK64=yes \
+		fu_cv_sys_stat_statvfs64=yes
+endif
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -128,12 +156,7 @@ $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SAMBA_LDFLAGS)" \
-		linux_getgrouplist_ok=no \
-		samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
-		samba_cv_have_setresuid=yes \
-		samba_cv_have_setresgid=yes \
-		samba_cv_USE_SETRESUID=yes \
-		samba_cv_HAVE_IFACE_IFCONF=yes \
+		$(SAMBA_CROSS_ENVS) \
 		source/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
