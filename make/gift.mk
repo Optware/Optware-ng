@@ -28,13 +28,17 @@ GIFT_UNZIP=bzcat
 GIFT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 GIFT_SECTION=net
 GIFT_PRIORITY=optional
+ifeq ($(UNSLUNG_TARGET),wl500g)
+GIFT_DEPENDS=libogg, libvorbis, libtool, microperl
+else
 GIFT_DEPENDS=libogg, libvorbis, libtool, perl
+endif
 GIFT_DESCRIPTION=gIFt is a multi-platform multi-networks peer-to-peer client. gIFt runs as a daemon on the computer. It can be controlled using several interfaces.
 
 #
 # GIFT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFT_IPK_VERSION=2
+GIFT_IPK_VERSION=3
 
 #
 # GIFT_CONFFILES should be a list of user-editable files
