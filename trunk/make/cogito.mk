@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-COGITO_SITE=ftp://ftp.kernel.org/pub/software/scm/cogito/
-COGITO_VERSION=0.10
+COGITO_SITE=http://www.kernel.org/pub/software/scm/cogito
+COGITO_VERSION=0.11.3
 COGITO_SOURCE=cogito-$(COGITO_VERSION).tar.bz2
 COGITO_DIR=cogito-$(COGITO_VERSION)
 COGITO_UNZIP=bzcat
@@ -36,7 +36,7 @@ COGITO_CONFLICTS=git
 #
 # COGITO_IPK_VERSION should be incremented when the ipk changes.
 #
-COGITO_IPK_VERSION=2
+COGITO_IPK_VERSION=1
 
 #
 # COGITO_CONFFILES should be a list of user-editable files
@@ -115,7 +115,7 @@ $(COGITO_BUILD_DIR)/.built: $(COGITO_BUILD_DIR)/.configured
 	rm -f $(COGITO_BUILD_DIR)/.built
 	$(MAKE) -C $(COGITO_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		LIBS="$(STAGING_LDFLAGS) -lssl -lz -lcurl"
+		LDFLAGS="$(STAGING_LDFLAGS)"
 	touch $(COGITO_BUILD_DIR)/.built
 
 #
