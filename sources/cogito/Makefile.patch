@@ -1,14 +1,16 @@
---- cogito-0.10/Makefile	2005-05-08 16:55:36.000000000 -0700
-+++ cogito/Makefile	2005-05-09 19:05:10.109398000 -0700
-@@ -21,6 +21,7 @@
+--- cogito-0.11.3.orig/Makefile	2005-06-09 02:15:09.000000000 -0700
++++ cogito/Makefile	2005-06-16 22:30:50.021310000 -0700
+@@ -29,6 +29,9 @@
  
- # DEFINES += -DNSEC
+ # DEFINES += -DUSE_STDEV
  
 +CPPFLAGS=
++LDFLAGS=
++
  CFLAGS?=-g -O2
  CFLAGS+=-Wall $(DEFINES)
  
-@@ -84,7 +85,7 @@
+@@ -110,7 +113,7 @@
  endif
  endif
  
@@ -17,16 +19,25 @@
  
  
  all: $(PROG) $(GEN_SCRIPT)
-@@ -129,7 +130,7 @@
- 	sed -e 's/@@VERSION@@/$(shell cat $(VERSION) | cut -d"-" -f2)/g' < $< > $@
+@@ -123,7 +126,7 @@
+ 	$(CC) $(CFLAGS) -o $@ test-date.c date.o
  
+ git-%: %.c $(LIB_FILE)
+-	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LIBS)
++	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LDFLAGS) $(LIBS)
+ 
+ git-rev-list: LIBS += -lssl
+ git-http-pull: LIBS += -lcurl
+@@ -167,7 +170,7 @@
+ test: all
+ 	$(MAKE) -C t/ all
  
 -sedlibdir=$(shell echo $(libdir) | sed 's/\//\\\//g')
 +sedlibdir=$(shell echo "/opt/lib/cogito" | sed 's/\//\\\//g')
  
  install: $(PROG) $(SCRIPTS) $(SCRIPT) $(LIB_SCRIPT) $(GEN_SCRIPT)
  	$(INSTALL) -m755 -d $(DESTDIR)$(bindir)
-@@ -147,6 +148,10 @@
+@@ -185,6 +188,10 @@
  		cat $$file.new > $$file; rm $$file.new; \
  	done
  
@@ -35,5 +46,5 @@
 +
 +
  uninstall:
- 	cd $(DESTDIR)$(bindir) && rm $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT)
- 	cd $(DESTDIR)$(libdir) && rm $(LIB_SCRIPT)
+ 	cd $(DESTDIR)$(bindir) && rm -f $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT)
+ 	cd $(DESTDIR)$(libdir) && rm -f $(LIB_SCRIPT)
