@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=2
+NET_SNMP_IPK_VERSION=3
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -88,14 +88,14 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # We need to know if we are cross compiling. For cross compiling configure
 # need an extra flag with the endianness. The package won't configure
 # native with this flag.
-# I guess that the wl500g is a litle endian computor?
+# I guess that the wl500g is a little endian computor?
 #
 ifeq ($(HOST_MACHINE),i386) 
   ifeq ($(UNSLUNG_TARGET),nslu2)
     NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=big"
   else
     ifeq ($(UNSLUNG_TARGET),wl500g)
-      NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=litle"
+      NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=little"
     endif
   endif
 else
