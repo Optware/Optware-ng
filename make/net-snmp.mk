@@ -12,7 +12,7 @@ NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
 NET_SNMP_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
-NET_SNMP_DESCRIPTION=et-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3 using both IPv4 and IPv6
+NET_SNMP_DESCRIPTION=net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3 using both IPv4 and IPv6
 NET_SNMP_SECTION=net
 NET_SNMP_PRIORITY=optional
 NET_SNMP_DEPENDS=
@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=1
+NET_SNMP_IPK_VERSION=2
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -84,6 +84,24 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+#
+# We need to know if we are cross compiling. For cross compiling configure
+# need an extra flag with the endianness. The package won't configure
+# native with this flag.
+# I guess that the wl500g is a litle endian computor?
+#
+ifeq ($(HOST_MACHINE),i386) 
+  ifeq ($(UNSLUNG_TARGET),nslu2)
+    NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=big"
+  else
+    ifeq ($(UNSLUNG_TARGET),wl500g)
+      NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=litle"
+    endif
+  endif
+else
+  NET_SNMP_CROSS_CONFIG_FLAGS=
+endif
+
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
@@ -100,7 +118,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--with-endianness=big \
+		$(NET_SNMP_CROSS_CONFIG_FLAGS) \
 		--with-default-snmp-version=3 \
 		--with-sys-contact=root@localhost \
 		--with-sys-location="(Unknown)" \
