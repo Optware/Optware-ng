@@ -34,7 +34,7 @@ COREUTILS_CONFLICTS=busybox
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=6
+COREUTILS_IPK_VERSION=7
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -185,6 +185,12 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
 	mv $(COREUTILS_IPK_DIR)/opt/bin/kill $(COREUTILS_IPK_DIR)/opt/bin/coreutils-kill
 	mv $(COREUTILS_IPK_DIR)/opt/bin/uptime $(COREUTILS_IPK_DIR)/opt/bin/coreutils-uptime
+ifeq ($(UNSLUNG_TARGET),nslu2)
+	install -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/S05coreutils
+	install -d $(COREUTILS_IPK_DIR)/usr/bin
+	ln -s /opt/bin/env $(COREUTILS_IPK_DIR)/usr/bin/env
+endif
 	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
 	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(COREUTILS_SOURCE_DIR)/prerm $(COREUTILS_IPK_DIR)/CONTROL/prerm
