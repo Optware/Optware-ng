@@ -34,7 +34,7 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=3
+LIBPNG_IPK_VERSION=4
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
@@ -99,6 +99,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 #	cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBPNG_DIR)-config $(LIBPNG_BUILD_DIR)
 	(cd $(LIBPNG_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPNG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPNG_LDFLAGS)" \
@@ -108,7 +109,9 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBPNG_BUILD_DIR)/libtool
 	touch $(LIBPNG_BUILD_DIR)/.configured
 
 libpng-unpack: $(LIBPNG_BUILD_DIR)/.configured
@@ -131,22 +134,13 @@ libpng: $(LIBPNG_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libpng.so: $(LIBPNG_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-exec-am
-	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-includeHEADERS
+$(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libpng.a
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libpng.so.3.0.0
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libpng12.so.0.0.0
-#	install -d $(STAGING_DIR)/opt/include
-#	install -m 644 $(LIBPNG_BUILD_DIR)/libpng.h $(STAGING_DIR)/opt/include
-#	install -d $(STAGING_DIR)/opt/lib
-#	install -m 644 $(LIBPNG_BUILD_DIR)/liblibpng.a $(STAGING_DIR)/opt/lib
-#	install -m 644 $(LIBPNG_BUILD_DIR)/liblibpng.so.$(LIBPNG_VERSION) $(STAGING_DIR)/opt/lib
-#	cd $(STAGING_DIR)/opt/lib && ln -fs liblibpng.so.$(LIBPNG_VERSION) liblibpng.so.1
-#	cd $(STAGING_DIR)/opt/lib && ln -fs liblibpng.so.$(LIBPNG_VERSION) liblibpng.so
+	touch $@
 
-libpng-stage: $(STAGING_DIR)/opt/lib/libpng.so
+libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -180,20 +174,9 @@ $(LIBPNG_IPK_DIR)/CONTROL/control:
 #
 $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 	rm -rf $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
-	install -d $(LIBPNG_IPK_DIR)/opt/bin
-	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(LIBPNG_IPK_DIR) install-exec-am
-	$(MAKE) -C $(LIBPNG_BUILD_DIR) DESTDIR=$(LIBPNG_IPK_DIR) install-includeHEADERS
-	rm -f $(LIBPNG_IPK_DIR)/opt/bin/libpng-config
-	rm -f $(LIBPNG_IPK_DIR)/opt/bin/libpng12-config
-	$(STRIP_COMMAND) --strip-unneeded $(LIBPNG_IPK_DIR)/opt/lib/libpng.a
-	$(STRIP_COMMAND) --strip-unneeded $(LIBPNG_IPK_DIR)/opt/lib/libpng.so.3.0.0
-	$(STRIP_COMMAND) --strip-unneeded $(LIBPNG_IPK_DIR)/opt/lib/libpng12.so.0.0.0
-#	$(STRIP_COMMAND) $(LIBPNG_BUILD_DIR)/libpng -o $(LIBPNG_IPK_DIR)/opt/bin/libpng
-#	install -d $(LIBPNG_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIBPNG_SOURCE_DIR)/rc.libpng $(LIBPNG_IPK_DIR)/opt/etc/init.d/SXXlibpng
+	install -d $(LIBPNG_IPK_DIR)/opt
+	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)/opt install-strip
 	$(MAKE) $(LIBPNG_IPK_DIR)/CONTROL/control
-#	install -m 644 $(LIBPNG_SOURCE_DIR)/postinst $(LIBPNG_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(LIBPNG_SOURCE_DIR)/prerm $(LIBPNG_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPNG_IPK_DIR)
 
 #
