@@ -63,6 +63,7 @@ $(VDR_MEDIAMVP_IPK_DIR)/CONTROL/control:
 
 
 $(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/console/mediamvp
+	rm -rf $(VDR_MEDIAMVP_IPK_DIR) $(BUILD_DIR)/vdr-mediavp_*_$(TARGET_ARCH).ipk
 	-mkdir -p $(VDR_MEDIAMVP_IPK_DIR)	
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin
 	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp
