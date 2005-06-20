@@ -37,7 +37,7 @@ LIBUSB_CONFLICTS=
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUSB_IPK_VERSION=2
+LIBUSB_IPK_VERSION=3
 
 #
 # LIBUSB_PATCHES should list any patches, in the the order in
@@ -102,18 +102,20 @@ $(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES)
 #	cat $(LIBUSB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	(cd $(LIBUSB_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBUSB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBUSB_LDFLAGS)" \
 		./configure \
 		--enable-shared \
-		--enable-static \
+		--disable-static \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--disable-build-docs \
 		--prefix=/opt \
 	)
+	$(PATCH_LIBTOOL) $(LIBUSB_BUILD_DIR)/libtool
 	touch $(LIBUSB_BUILD_DIR)/.configured
 
 libusb-unpack: $(LIBUSB_BUILD_DIR)/.configured
@@ -165,7 +167,7 @@ $(LIBUSB_IPK_DIR)/CONTROL/control:
 #
 $(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la $(STAGING_LIB_DIR)/libusb.la
 	rm -rf $(LIBUSB_IPK_DIR) $(LIBUSB_IPK)
-	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(LIBUSB_IPK_DIR) install
+	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(LIBUSB_IPK_DIR) install-strip
 	( cd $(LIBUSB_BUILD_DIR)/tests ; \
 		$(TARGET_CC) -o $(LIBUSB_IPK_DIR)/opt/bin/testlibusb testlibusb.c \
 			-I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -lusb \
