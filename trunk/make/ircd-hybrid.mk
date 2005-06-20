@@ -103,6 +103,7 @@ $(IRCD_HYBRID_IPK_DIR)/CONTROL/control:
 # This builds the IPK file.
 #
 $(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
+	rm -rf $(IRCD_HYBRID_IPK_DIR) $(BUILD_DIR)/ircd-hybrid_*_$(TARGET_ARCH).ipk
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(IRCD_HYBRID_DIR)/src/ircd -o $(IRCD_HYBRID_IPK_DIR)/opt/bin/ircd
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid

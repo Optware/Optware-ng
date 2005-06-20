@@ -72,6 +72,7 @@ $(DHCP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DHCP_CONFLICTS)" >>$@
 
 $(DHCP_IPK): $(DHCP_DIR)/.built
+	rm -rf $(DHCP_IPK_DIR) $(BUILD_DIR)/dhcp_*_$(TARGET_ARCH).ipk
 	install -d $(DHCP_IPK_DIR)/CONTROL
 	install -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(DHCP_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
