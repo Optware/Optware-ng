@@ -34,10 +34,10 @@ CROSS_PACKAGES = \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	fontconfig freeradius freetype ftpd-topfield \
-	gawk gconv-modules getmail gdb gdbm gettext ghostscript \
+	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib grep groff gtk gzip \
-	hdparm hnb \
+	hdparm hexcurse hnb hpijs \
 	ice imagemagick imap inetutils \
 	iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
@@ -58,16 +58,19 @@ CROSS_PACKAGES = \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
 	py-cherrypy py-clips \
+	py-gdchart2 py-gd py-pil \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	quagga  \
-	rdate readline recordext renderext rrdtool rsync \
+	rcs rdate readline recordext renderext rrdtool rsync \
 	samba sane-backends screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
-	tar tcl tcpdump tcpwrappers termcap textutils tin torrent transcode \
+	sysstat \
+	tar tcl tcpdump tcpwrappers termcap textutils tftp-hda \
+	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
 	unfs3 units unslung-feeds usbutils \
-	vdr-mediamvp vim vsftpd vte vorbis-tools \
-	w3cam wakelan webalizer wget-ssl which wizd \
+	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
+	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpm xproto xrender xt xterm xtrans xtst xvid \
 	zlib \
@@ -78,18 +81,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	hpijs \
-	hexcurse \
-	gdchart \
-	py-gdchart2 \
-	py-gd \
-	py-pil \
-	whois \
-	sysstat \
-	tftp-hpa \
-	vblade \
-	tsocks \
-	rcs \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -182,6 +173,18 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	hpijs \
+	hexcurse \
+	gdchart \
+	py-gdchart2 \
+	py-gd \
+	py-pil \
+	whois \
+	sysstat \
+	tftp-hpa \
+	vblade \
+	tsocks \
+	rcs \
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
