@@ -26,7 +26,7 @@ XCHAT_DEPENDS=gtk
 #
 # XCHAT_IPK_VERSION should be incremented when the ipk changes.
 #
-XCHAT_IPK_VERSION=1
+XCHAT_IPK_VERSION=2
 
 #
 # XCHAT_LOCALES defines which locales get installed
@@ -123,6 +123,7 @@ $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XCHAT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		gdkpixbufcsourcepath=/bin/false \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -138,6 +139,7 @@ $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
 		--disable-python \
 		--disable-tcl \
 	)
+	$(PATCH_LIBTOOL) $(XCHAT_BUILD_DIR)/libtool
 	touch $(XCHAT_BUILD_DIR)/.configured
 
 xchat-unpack: $(XCHAT_BUILD_DIR)/.configured
