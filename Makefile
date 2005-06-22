@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-UNSLUNG_TARGET=wl500g
+UNSLUNG_TARGET=nslu2
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
@@ -137,7 +137,7 @@ PACKAGES_OBSOLETED = libiconv git thttpd metalog
 
 WL500G_PACKAGES = \
 	adduser adns appweb atftp audiofile autoconf automake \
-	bash bc bitchx busybox bzip2 \
+	bash bc bind bitchx busybox bzip2 \
 	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
 	e2fsprogs ed eggdrop esmtp expat \
@@ -158,7 +158,7 @@ WL500G_PACKAGES = \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
 	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
-	tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent \
+	tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent tsocks \
 	unfs3 units usbutils \
 	vblade vdr-mediamvp vorbis-tools vsftpd \
 	w3cam wakelan wget-ssl which whois wiley-feeds wizd wpa-supplicant \
@@ -172,20 +172,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	bind \
-	emacs \
-	hpijs \
-	hexcurse \
-	gdchart \
-	py-gdchart2 \
-	py-gd \
-	py-pil \
-	whois \
-	sysstat \
-	tftp-hpa \
-	vblade \
-	tsocks \
-	rcs \
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
