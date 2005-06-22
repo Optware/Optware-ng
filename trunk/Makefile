@@ -32,6 +32,7 @@ CROSS_PACKAGES = \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
+	emacs \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	fontconfig freeradius freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
@@ -102,7 +103,6 @@ NATIVE_PACKAGES = \
 	bogofilter \
 	clamav \
 	cyrus-imapd \
-	emacs \
 	xemacs \
 	hugs \
 	openldap \
@@ -173,6 +173,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	emacs \
 	hpijs \
 	hexcurse \
 	gdchart \
