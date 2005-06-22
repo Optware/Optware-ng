@@ -27,7 +27,7 @@ CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
 	atftp appweb apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
-	bash bc bind bitchx busybox byrequest bzflag bzip2 \
+	bash bc bitchx busybox byrequest bzflag bzip2 \
 	ccxstream chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
@@ -80,8 +80,8 @@ CROSS_PACKAGES = \
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
-
-CROSS_PACKAGES_READY_FOR_TESTING = \
+# Bind updated, so it works correctly on wiley + updated to latest release
+CROSS_PACKAGES_READY_FOR_TESTING = bind \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -166,13 +166,13 @@ WL500G_PACKAGES = \
 	zlib
 
 WL500G_PACKAGES_THAT_NEED_FIXING = \
-	bind \
 	groff \
 	iptables \
 	ttf-bitstream-vera \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	bind \
 	emacs \
 	hpijs \
 	hexcurse \

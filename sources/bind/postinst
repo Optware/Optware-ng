@@ -10,30 +10,24 @@ mkdir -p /opt/var/run
 # the opt/etc/directory of the same name.
 # The image IS in the data tarball of the kit.
 #
-if [ ! -e /opt/sbin/named ]; then 
-    echo "Missing named, using redundant copy"
-    mv /opt/sbin/named.exe /opt/sbin/named 
-else
-    rm /opt/sbin/named.exe
-fi
-if [ -n "`pidof named`" ]; then
-    /bin/killall named 2>/dev/null
-fi
+#if [ ! -e /opt/sbin/named ]; then 
+#    echo "Missing named, using redundant copy"
+#    mv /opt/sbin/named.exe /opt/sbin/named 
+#else
+#    rm -f /opt/sbin/named.exe
+#fi
+#if [ -n "`pidof named`" ]; then
+#    /bin/killall named 2>/dev/null
+#fi
 
 # Register for shutdown/halt
 
-ln -sf /opt/etc/init.d/S09named /opt/etc/init.d/K09named
+ln -sf /opt/etc/init.d/S09named /opt/etc/init.d/K91named
 
-if [ ! -e /opt/lib/libcrypto.so ]; then
-echo "?? openssl must be installed"
-exit 1
-else
-. /etc/sysconfig/network-scripts/ifcfg-ixp0
 echo "You must now create your named.conf file"
 echo "When it is installed in /opt/etc/named/named.conf, execute"
-echo "    /opt/etc/init.d/S09named start"
+echo "              /opt/etc/init.d/S09named start"
 echo "to start service"
 echo "You will probably also want to create rndc.conf by running"
 echo "rndc-confgen.  Of course, you may want to set your name server"
-echo "in the GUI to $IPADDR!"
-fi
+echo "in the GUI to 127.0.0.1 or your local ip-address"

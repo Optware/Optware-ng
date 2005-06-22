@@ -1,20 +1,18 @@
 #!/bin/sh
 #
-. /etc/rc.d/rc.functions
-#
 # Start the named (DNS) server daemon
 #  
 
 start() {
     echo -n "Starting DNS Services: "
     if [ -n "`pidof named`" ]; then
-	echo -n "?already running"
-	false; check_status;
+	echo "already running..."
+	false; 
 	return
     fi
     cd /opt/etc/named
     /opt/sbin/named -c /opt/etc/named/named.conf 
-    check_status;
+    echo "started"
     return
 }
 stop() {
