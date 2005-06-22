@@ -148,12 +148,13 @@ WL500G_PACKAGES = \
 	hdparm hexcurse \
 	inetutils ircd-hybrid \
 	joe jove \
-	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libid3tag libjpeg libmad libogg libol \
+	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libghttp libid3tag libjpeg \
+	libmad libogg libol \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses neon ntpclient nylon \
-	openssl openvpn \
+	openssl openvpn oww \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
