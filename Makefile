@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-UNSLUNG_TARGET=nslu2
+UNSLUNG_TARGET=wl500g
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
@@ -157,7 +157,7 @@ WL500G_PACKAGES = \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
-	sane-backends sed siproxd sqlite strace stunnel syslog-ng sysstat \
+	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
 	tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent \
 	unfs3 units usbutils \
 	vblade vdr-mediamvp vorbis-tools vsftpd \
