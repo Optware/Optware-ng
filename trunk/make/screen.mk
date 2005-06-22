@@ -24,6 +24,13 @@ SCREEN_VERSION=4.0.2
 SCREEN_SOURCE=screen-$(SCREEN_VERSION).tar.gz
 SCREEN_DIR=screen-$(SCREEN_VERSION)
 SCREEN_UNZIP=zcat
+SCREEN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SCREEN_DESCRIPTION=A screen manager that supports multiple logins on single terminal
+SCREEN_SECTION=term
+SCREEN_PRIORITY=optional
+SCREEN_DEPENDS=termcap
+SCREEN_SUGGESTS=
+SCREEN_CONFLICTS=
 
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
@@ -35,7 +42,6 @@ SCREEN_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 SCREEN_PATCHES=$(SCREEN_SOURCE_DIR)/configure.patch 
-
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -103,6 +109,9 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 		--disable-pam \
 		--prefix=/opt \
 	)
+ifeq ($(UNSLUNG_TARGET),wl500g)
+		sed -ie 's|sys/stropts.h|stropts.h|g' $(SCREEN_BUILD_DIR)/pty.c 
+endif
 	touch $(SCREEN_BUILD_DIR)/.configured
 
 screen-unpack: $(SCREEN_BUILD_DIR)/.configured
@@ -135,6 +144,25 @@ $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION): $(SCREEN_BUILD_DIR)/libsc
 screen-stage: $(STAGING_DIR)/opt/lib/libscreen.so.$(SCREEN_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/screen
+#
+$(SCREEN_IPK_DIR)/CONTROL/control:
+	@install -d $(SCREEN_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: screen" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SCREEN_PRIORITY)" >>$@
+	@echo "Section: $(SCREEN_SECTION)" >>$@
+	@echo "Version: $(SCREEN_VERSION)-$(SCREEN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SCREEN_MAINTAINER)" >>$@
+	@echo "Source: $(SCREEN_SITE)/$(SCREEN_SOURCE)" >>$@
+	@echo "Description: $(SCREEN_DESCRIPTION)" >>$@
+	@echo "Depends: $(SCREEN_DEPENDS)" >>$@
+	@echo "Suggests: $(SCREEN_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SCREEN_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(SCREEN_IPK_DIR)/opt/sbin or $(SCREEN_IPK_DIR)/opt/bin
@@ -152,8 +180,7 @@ $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	$(STRIP_COMMAND) $(SCREEN_BUILD_DIR)/screen -o $(SCREEN_IPK_DIR)/opt/bin/screen
 	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
-	install -d $(SCREEN_IPK_DIR)/CONTROL
-	install -m 644 $(SCREEN_SOURCE_DIR)/control $(SCREEN_IPK_DIR)/CONTROL/control
+	$(MAKE) $(SCREEN_IPK_DIR)/CONTROL/control
 	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCREEN_IPK_DIR)
