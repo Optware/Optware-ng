@@ -33,7 +33,6 @@ QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
 QUAGGA_MAINTAINER=Louis Lagendijk <louis.lagendijk@gmail.com>
 QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, rip, and bgp (ospf6d and ripngd are included if library has IPv6 support).
-QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, ospf6, and rip, ripngd and bgp.
 QUAGGA_SECTION=net
 QUAGGA_PRIORITY=optional
 QUAGGA_DEPENDS=adduser, readline, termcap
