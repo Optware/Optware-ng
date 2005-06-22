@@ -4,18 +4,18 @@
 #
 #############################################################
 
-BIND_SITE=ftp://ftp.isc.org/isc/bind9/9.3.0/
-BIND_VERSION=9.3.0
+BIND_SITE=ftp://ftp.isc.org/isc/bind9/9.3.1/
+BIND_VERSION=9.3.1
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
 BIND_UNZIP=zcat
-BIND_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+BIND_MAINTAINER=Louis Lagendijk <louis.lagendijk@gmail.com>
 BIND_DESCRIPTION=Bind provides a full name server package, including zone masters, slaves, zone transfers, security multiple views.  This is THE reference implementation from ISC, which has roots all the way back to the TOPS-20 original.  It is over-kill, unless you have a complex environment.  Other utilities (for debugging, remote management) are also included.  Full documentation and developers' files are included in this kit, though you may wish they weren't.
 BIND_SECTION=net
 BIND_PRIORITY=optional
-BIND_DEPENDS=
+BIND_DEPENDS=openssl
 
-BIND_IPK_VERSION=1
+BIND_IPK_VERSION=2
 
 BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
@@ -84,7 +84,7 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/lib/*.so.*
 	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/bin/{dig,host,nslookup,nsupdate}
 	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/sbin/*
-	cp -p $(BIND_IPK_DIR)/opt/sbin/named $(BIND_IPK_DIR)/opt/sbin/named.exe
+	# cp -p $(BIND_IPK_DIR)/opt/sbin/named $(BIND_IPK_DIR)/opt/sbin/named.exe
 	rm -rf $(BIND_IPK_DIR)/opt/{man,include}
 	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}
 	install -d $(BIND_IPK_DIR)/opt/etc/init.d
