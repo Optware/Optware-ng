@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=1
+QUAGGA_IPK_VERSION=2
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
