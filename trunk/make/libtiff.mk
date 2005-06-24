@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBTIFF_SITE=ftp://ftp.remotesensing.org/pub/libtiff
+LIBTIFF_SITE=ftp://ftp.remotesensing.org/remotesensing/libtiff
 LIBTIFF_VERSION=3.7.2
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
