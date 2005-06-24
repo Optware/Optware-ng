@@ -34,7 +34,7 @@ COREUTILS_CONFLICTS=busybox
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=7
+COREUTILS_IPK_VERSION=8
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -179,8 +179,11 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	# Install makefiles
 	install -d $(COREUTILS_IPK_DIR)/opt/man/man1	
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
-	# Remove /opt/bin/groups
+	# Temporarily Remove /opt/bin/groups (it is a script so doesn't strip)
 	rm $(COREUTILS_IPK_DIR)/opt/bin/groups
+	# Remove /opt/bin/hostname (conflicts with net-tools)
+	rm $(COREUTILS_IPK_DIR)/opt/bin/hostname
+	rm $(COREUTILS_IPK_DIR)/opt/man/man1/hostname.1
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
 	mv $(COREUTILS_IPK_DIR)/opt/bin/kill $(COREUTILS_IPK_DIR)/opt/bin/coreutils-kill
