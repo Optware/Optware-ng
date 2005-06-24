@@ -1,6 +1,6 @@
---- otp_src_R10B-5-orig/erts/emulator/Makefile.in	2005-05-10 08:08:05.000000000 -0700
-+++ erlang/erts/emulator/Makefile.in	2005-05-30 10:52:35.004321000 -0700
-@@ -213,7 +213,7 @@
+--- otp_src_R10B-6-orig/erts/emulator/Makefile.in	2005-06-21 09:35:55.000000000 -0700
++++ erlang/erts/emulator/Makefile.in	2005-06-23 22:13:11.195415000 -0700
+@@ -215,7 +215,7 @@
  UNIX_ONLY_BUILDS =
  endif
  
@@ -9,7 +9,7 @@
  
  zlib:
  	@set -e ; cd zlib && $(MAKE) $(TYPE)
-@@ -667,7 +667,7 @@
+@@ -669,7 +669,7 @@
  	$(CC) $(subst O2,O3, $(CFLAGS)) $(INCLUDES) -c $< -o $@
  
  $(BINDIR)/hipe_mkliterals$(TYPEMARKER):	$(OBJDIR)/hipe_mkliterals.o

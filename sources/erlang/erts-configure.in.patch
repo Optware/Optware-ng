@@ -1,6 +1,15 @@
---- otp_src_R10B-5-orig/erts/configure.in	2005-05-10 08:08:31.000000000 -0700
-+++ erlang/erts/configure.in	2005-06-03 09:26:50.000000000 -0700
-@@ -1245,7 +1245,11 @@
+--- otp_src_R10B-6-orig/erts/configure.in	2005-06-21 09:37:14.000000000 -0700
++++ erlang/erts/configure.in	2005-06-23 22:09:58.055415000 -0700
+@@ -1277,7 +1277,7 @@
+   exit(0);
+ #endif
+ }
+-], poll_works=true, poll_works=false, poll_works=false)
++], poll_works=true, poll_works=false, poll_works=true)
+ case $poll_works in
+ true)
+ 	AC_MSG_RESULT(ok)
+@@ -1325,7 +1325,11 @@
  	DED_CFLAGS="$ETHR_DEFS $DED_CFLAGS"
  fi
  
@@ -10,5 +19,5 @@
 +DED_LD=$LD
 +fi
  DED_LD_FLAG_RUNTIME_LIBRARY_PATH="-R"
+ STATIC_CFLAGS=""
  
- case $host_os in
