@@ -100,7 +100,7 @@ monotone-source: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MONOTONE_BUILD_DIR)/.configured: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libboost-stage
 	rm -rf $(BUILD_DIR)/$(MONOTONE_DIR) $(MONOTONE_BUILD_DIR)
 	$(MONOTONE_UNZIP) $(DL_DIR)/$(MONOTONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(MONOTONE_PATCHES) | patch -d $(BUILD_DIR)/$(MONOTONE_DIR) -p1
@@ -126,6 +126,7 @@ monotone-unpack: $(MONOTONE_BUILD_DIR)/.configured
 #
 $(MONOTONE_BUILD_DIR)/.built: $(MONOTONE_BUILD_DIR)/.configured
 	rm -f $(MONOTONE_BUILD_DIR)/.built
+	$(MAKE) -C $(MONOTONE_BUILD_DIR) CXX=g++ txt2c
 	$(MAKE) -C $(MONOTONE_BUILD_DIR)
 	touch $(MONOTONE_BUILD_DIR)/.built
 
@@ -178,14 +179,8 @@ $(MONOTONE_IPK_DIR)/CONTROL/control:
 $(MONOTONE_IPK): $(MONOTONE_BUILD_DIR)/.built
 	rm -rf $(MONOTONE_IPK_DIR) $(BUILD_DIR)/monotone_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MONOTONE_BUILD_DIR) DESTDIR=$(MONOTONE_IPK_DIR) install
-	install -d $(MONOTONE_IPK_DIR)/opt/etc/
-	install -m 644 $(MONOTONE_SOURCE_DIR)/monotone.conf $(MONOTONE_IPK_DIR)/opt/etc/monotone.conf
-	install -d $(MONOTONE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(MONOTONE_SOURCE_DIR)/rc.monotone $(MONOTONE_IPK_DIR)/opt/etc/init.d/SXXmonotone
+	$(STRIP_COMMAND) $(MONOTONE_IPK_DIR)/opt/bin/monotone
 	$(MAKE) $(MONOTONE_IPK_DIR)/CONTROL/control
-	install -m 755 $(MONOTONE_SOURCE_DIR)/postinst $(MONOTONE_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(MONOTONE_SOURCE_DIR)/prerm $(MONOTONE_IPK_DIR)/CONTROL/prerm
-	echo $(MONOTONE_CONFFILES) | sed -e 's/ /\n/g' > $(MONOTONE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MONOTONE_IPK_DIR)
 
 #
