@@ -83,7 +83,8 @@ CROSS_PACKAGES = \
 # net-tools package added and coreutils updated to not install hostname so it doesn't conflict
 # (Linksys supply busybox hostname so no functionality is lost by not having it in coreutils)
 CROSS_PACKAGES_READY_FOR_TESTING = net-tools coreutils \
-	bluez-libs bluez-utils bluez-hcidump
+	bluez-libs bluez-utils bluez-hcidump \
+	py-cheetah \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
