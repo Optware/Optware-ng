@@ -12,7 +12,7 @@
 # PHP_APACHE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-PHP_APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PHP_APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
