@@ -22,11 +22,11 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=3
+NET_SNMP_IPK_VERSION=4
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
-# NET_SNMP_CONFFILES=/opt/etc/net-snmp.conf /opt/etc/init.d/SXXnet-snmp
+NET_SNMP_CONFFILES=/opt/etc/snmpd.conf /opt/etc/init.d/S70net-snmp
 
 #
 # NET_SNMP_PATCHES should list any patches, in the the order in
@@ -187,13 +187,13 @@ $(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
 	rm -rf $(NET_SNMP_IPK_DIR) $(BUILD_DIR)/net-snmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NET_SNMP_BUILD_DIR) INSTALL_PREFIX=$(NET_SNMP_IPK_DIR) install
 	install -d $(NET_SNMP_IPK_DIR)/opt/etc/
-#	install -m 644 $(NET_SNMP_SOURCE_DIR)/net-snmp.conf $(NET_SNMP_IPK_DIR)/opt/etc/net-snmp.conf
-#	install -d $(NET_SNMP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)/opt/etc/init.d/SXXnet-snmp
+	install -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)/opt/etc/snmpd.conf
+	install -d $(NET_SNMP_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)/opt/etc/init.d/S70net-snmp
 	$(MAKE) $(NET_SNMP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NET_SNMP_SOURCE_DIR)/postinst $(NET_SNMP_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(NET_SNMP_SOURCE_DIR)/postinst $(NET_SNMP_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(NET_SNMP_SOURCE_DIR)/prerm $(NET_SNMP_IPK_DIR)/CONTROL/prerm
-#	echo $(NET_SNMP_CONFFILES) | sed -e 's/ /\n/g' > $(NET_SNMP_IPK_DIR)/CONTROL/conffiles
+	echo $(NET_SNMP_CONFFILES) | sed -e 's/ /\n/g' > $(NET_SNMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NET_SNMP_IPK_DIR)
 
 #
