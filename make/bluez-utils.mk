@@ -116,6 +116,7 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(BLUEZ-UTILS_BUILD_DIR)/libtool
 	touch $(BLUEZ-UTILS_BUILD_DIR)/.configured
 
 bluez-utils-unpack: $(BLUEZ-UTILS_BUILD_DIR)/.configured
