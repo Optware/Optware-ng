@@ -115,7 +115,9 @@ $(BLUEZ-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-LIBS_SOURCE) $(BLUEZ-LIBS
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(BLUEZ-LIBS_BUILD_DIR)/libtool
 	touch $(BLUEZ-LIBS_BUILD_DIR)/.configured
 
 bluez-libs-unpack: $(BLUEZ-LIBS_BUILD_DIR)/.configured
