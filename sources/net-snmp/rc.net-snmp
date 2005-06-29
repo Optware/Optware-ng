@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# $Header$
+#
+
+if [ -n "`pidof snmpd`" ] ; then
+    killall snmpd 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/snmpd -c /opt/etc/snmpd.conf
