@@ -63,7 +63,7 @@ NET-TOOLS_PATCHES=sources/net-tools/net-tools-1.60-miitool-gcc33-1.patch \
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NET-TOOLS_CPPFLAGS=
+NET-TOOLS_CPPFLAGS=-D_GNU_SOURCE -O2
 NET-TOOLS_LDFLAGS=
 
 #
@@ -115,11 +115,6 @@ $(NET-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(NET-TOOLS_SOURCE) $(NET-TOOLS_PA
 	$(NET-TOOLS_UNZIP) $(DL_DIR)/$(NET-TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NET-TOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(NET-TOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(NET-TOOLS_DIR) $(NET-TOOLS_BUILD_DIR)
-	(cd $(NET-TOOLS_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(NET-TOOLS_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(NET-TOOLS_LDFLAGS)" \
-	)
 	touch $(NET-TOOLS_BUILD_DIR)/.configured
 
 net-tools-unpack: $(NET-TOOLS_BUILD_DIR)/.configured
@@ -129,7 +124,7 @@ net-tools-unpack: $(NET-TOOLS_BUILD_DIR)/.configured
 #
 $(NET-TOOLS_BUILD_DIR)/.built: $(NET-TOOLS_BUILD_DIR)/.configured
 	rm -f $(NET-TOOLS_BUILD_DIR)/.built
-	$(MAKE) CC=$(TARGET_CC) BASEDIR=/opt -C $(NET-TOOLS_BUILD_DIR)
+	$(MAKE) CC=$(TARGET_CC) BASEDIR=/opt COPTS="$(STAGING_CPPFLAGS) $(NET-TOOLS_CPPFLAGS)" LOPTS="$(STAGING_LDFLAGS) $(NET-TOOLS_LDFLAGS)" -C $(NET-TOOLS_BUILD_DIR)
 	touch $(NET-TOOLS_BUILD_DIR)/.built
 
 #
@@ -181,6 +176,8 @@ $(NET-TOOLS_IPK_DIR)/CONTROL/control:
 $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 	rm -rf $(NET-TOOLS_IPK_DIR) $(BUILD_DIR)/net-tools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NET-TOOLS_BUILD_DIR) BASEDIR=$(NET-TOOLS_IPK_DIR)/opt install
+	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/sbin/*
 	install -d $(NET-TOOLS_IPK_DIR)/opt/etc/
 	#install -m 644 $(NET-TOOLS_SOURCE_DIR)/net-tools.conf $(NET-TOOLS_IPK_DIR)/opt/etc/net-tools.conf
 	#install -d $(NET-TOOLS_IPK_DIR)/opt/etc/init.d
