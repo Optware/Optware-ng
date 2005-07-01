@@ -139,7 +139,7 @@ PACKAGES_OBSOLETED = libiconv git thttpd metalog
 
 WL500G_PACKAGES = \
 	adduser adns appweb atftp audiofile autoconf automake \
-	bash bc bind bitchx busybox bzip2 \
+	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
 	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
 	e2fsprogs ed eggdrop esmtp expat \
@@ -155,7 +155,7 @@ WL500G_PACKAGES = \
 	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
-	nano ncftp ncurses neon ntpclient nylon \
+	nano ncftp ncurses neon net-tools ntpclient nylon \
 	openssl openvpn oww \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd puppy py-moin python \
 	quagga \
@@ -175,9 +175,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	net-tools \
-	bluez-libs bluez-utils bluez-hcidump \
-	py-cheetah \
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
