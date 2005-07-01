@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 WGET-SSL_SITE=http://ftp.gnu.org/pub/gnu/wget
-WGET-SSL_VERSION=1.9.1
+WGET-SSL_VERSION=1.10
 WGET-SSL_SOURCE=wget-$(WGET-SSL_VERSION).tar.gz
 WGET-SSL_DIR=wget-$(WGET-SSL_VERSION)
 WGET-SSL_UNZIP=zcat
@@ -29,7 +29,7 @@ WGET-SSL_CONFLICTS=
 #
 # WGET-SSL_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET-SSL_IPK_VERSION=2
+WGET-SSL_IPK_VERSION=1
 
 #
 # WGET-SSL_CONFFILES should be a list of user-editable files
@@ -160,6 +160,8 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 	rm -rf $(WGET-SSL_IPK_DIR) $(BUILD_DIR)/wget-ssl_*_$(TARGET_ARCH).ipk
 	install -d $(WGET-SSL_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(WGET-SSL_BUILD_DIR)/src/wget -o $(WGET-SSL_IPK_DIR)/opt/bin/wget
+	install -d $(WGET-SSL_IPK_DIR)/opt/man/man1
+	install -m 644 $(WGET-SSL_BUILD_DIR)/doc/wget.1 $(WGET-SSL_IPK_DIR)/opt/man/man1
 	install -d $(WGET-SSL_IPK_DIR)/opt/etc/
 	install -m 755 $(WGET-SSL_BUILD_DIR)/doc/sample.wgetrc $(WGET-SSL_IPK_DIR)/opt/etc/wgetrc
 	$(MAKE) $(WGET-SSL_IPK_DIR)/CONTROL/control
