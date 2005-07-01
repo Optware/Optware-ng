@@ -44,7 +44,7 @@ LIBUSB_CONFLICTS=
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUSB_IPK_VERSION=4
+LIBUSB_IPK_VERSION=5
 
 #
 # LIBUSB_PATCHES should list any patches, in the the order in
@@ -182,6 +182,7 @@ $(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la $(STAGING_LIB_DIR)/libusb.la
 	rm -rf $(LIBUSB_IPK_DIR)/opt/include
 	rm -rf $(LIBUSB_IPK_DIR)/opt/bin/libusb-config
 	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusb.{a,la}
+	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusbpp.la
 	$(MAKE) $(LIBUSB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUSB_IPK_DIR)
 
