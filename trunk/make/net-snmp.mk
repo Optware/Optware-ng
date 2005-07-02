@@ -186,6 +186,9 @@ $(NET_SNMP_IPK_DIR)/CONTROL/control:
 $(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
 	rm -rf $(NET_SNMP_IPK_DIR) $(BUILD_DIR)/net-snmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NET_SNMP_BUILD_DIR) INSTALL_PREFIX=$(NET_SNMP_IPK_DIR) install
+	for F in $(NET_SNMP_IPK_DIR)/opt/bin/* ; do (file $$F |fgrep -vq ELF) || $(STRIP_COMMAND) $$F ; done
+	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)/opt/sbin/*
+	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)/opt/lib/*.so
 	install -d $(NET_SNMP_IPK_DIR)/opt/etc/
 	install -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)/opt/etc/snmpd.conf
 	install -d $(NET_SNMP_IPK_DIR)/opt/etc/init.d
