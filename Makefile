@@ -52,14 +52,14 @@ CROSS_PACKAGES = \
 	m4 make man man-pages mc mdadm mediawiki metalog miau \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
-	nail nano ncftp ncurses neon net-tools nfs-server nfs-utils nget \
-	nload nmap ntp ntpclient nylon \
+	nail nano ncftp ncurses neon net-snmp net-tools nfs-server nfs-utils \
+	nget nload nmap ntp ntpclient nylon \
 	openssh openssl openvpn oww \
 	pango parted patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd puppy python \
-	py-cheetah py-cherrypy py-clips \
+	py-bluez py-cheetah py-cherrypy py-clips \
 	py-gdchart2 py-gd py-pil \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	quagga  \
@@ -82,8 +82,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	py-bluez \
-	net-snmp
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -175,6 +173,8 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	py-bluez \
+	net-snmp
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
