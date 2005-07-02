@@ -43,7 +43,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=1
+RRDTOOL_IPK_VERSION=2
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -53,8 +53,9 @@ RRDTOOL_IPK_VERSION=1
 # RRDTOOL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/rrd_rpncalc.patch
-
+ifeq ($(UNSLUNG_TARGET),wl500g)
+RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/rrd_gfx.c.wiley.patch
+endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -109,7 +110,9 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage
 	rm -rf $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
 	$(RRDTOOL_UNZIP) $(DL_DIR)/$(RRDTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(RRDTOOL_PATCHES) | patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p0
+ifeq ($(UNSLUNG_TARGET),wl500g)
+	cat $(RRDTOOL_PATCHES) | patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1
+endif
 	mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
 	(cd $(RRDTOOL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
