@@ -37,7 +37,7 @@ TSOCKS_CONFLICTS=
 #
 # TSOCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-TSOCKS_IPK_VERSION=2
+TSOCKS_IPK_VERSION=3
 
 #
 # TSOCKS_CONFFILES should be a list of user-editable files
@@ -114,6 +114,7 @@ $(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-conf=/opt/etc/tsocks.conf \
 		--disable-nls \
 	)
 	touch $(TSOCKS_BUILD_DIR)/.configured
