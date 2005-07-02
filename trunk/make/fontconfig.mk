@@ -108,6 +108,7 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
+		ac_cv_prog_HASDOCBOOK=no \
 		./autogen.sh \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
