@@ -53,7 +53,11 @@ MONOTONE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(UNSLUNG_TARGET),nslu2)
+MONOTONE_CPPFLAGS=-D__BIG_ENDIAN__
+else
 MONOTONE_CPPFLAGS=
+endif
 MONOTONE_LDFLAGS=
 
 #
@@ -109,6 +113,9 @@ $(MONOTONE_BUILD_DIR)/.configured: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MONOTONE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MONOTONE_LDFLAGS)" \
+		ac_cv_locale_works=yes \
+		ac_cv_func_stat_empty_string_bug=no \
+		ac_cv_func_lstat_dereferences_slashed_symlink=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -116,6 +123,8 @@ $(MONOTONE_BUILD_DIR)/.configured: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCH
 		--prefix=/opt \
 		--disable-nls \
 		--enable-ipv6=no \
+		--with-bundled-lua \
+		--with-bundled-sqlite \
 	)
 	touch $(MONOTONE_BUILD_DIR)/.configured
 
