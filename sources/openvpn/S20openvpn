@@ -16,7 +16,7 @@ if ( [ ! -c /dev/net/tun ] ) then
 fi
 
 # Make sure the tunnel driver is loaded
-if ( !(grep -q "^tun" `lsmod`) ); then
+if ( !(lsmod | grep -q "^tun") ); then
 	insmod /opt/lib/modules/tun.o
 fi
 
