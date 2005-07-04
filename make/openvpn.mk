@@ -29,7 +29,7 @@ OPENVPN_UNZIP=zcat
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENVPN_IPK_VERSION=1
+OPENVPN_IPK_VERSION=2
 
 #
 # Control file info
@@ -57,7 +57,7 @@ OPENVPN_PATCHES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-OPENVPN_CPPFLAGS=
+OPENVPN_CPPFLAGS=-fno-inline
 OPENVPN_LDFLAGS=
 
 #
