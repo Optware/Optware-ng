@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-UNSLUNG_TARGET=wl500g
+UNSLUNG_TARGET=nslu2
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
