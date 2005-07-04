@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-UNSLUNG_TARGET=nslu2
+UNSLUNG_TARGET=wl500g
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
@@ -164,7 +164,7 @@ WL500G_PACKAGES = \
 	tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent tsocks \
 	unfs3 units usbutils \
 	vblade vdr-mediamvp vorbis-tools vsftpd \
-	w3cam wakelan wget-ssl which whois wiley-feeds wizd wpa-supplicant \
+	w3cam wakelan which whois wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 	zlib
 
@@ -175,7 +175,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	py-bluez \
 	net-snmp
 
 HOST_MACHINE:=$(shell uname -m | sed \
