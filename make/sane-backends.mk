@@ -42,7 +42,7 @@ SANE_BACKENDS_CONFLICTS=
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
 #
-SANE_BACKENDS_IPK_VERSION=1
+SANE_BACKENDS_IPK_VERSION=2
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ SANE_BACKENDS_CONFFILES=/opt/etc/sane.d/saned.conf /opt/etc/init.d/S01sane-backe
 # SANE_BACKENDS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch
+SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch $(SANE_BACKENDS_SOURCE_DIR)/sane-plustek.patch
 
 #
 # If the compilation of the package requires additional
