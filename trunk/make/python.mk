@@ -42,7 +42,7 @@ PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=5
+PYTHON_IPK_VERSION=6
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -121,6 +121,7 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 		PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON_LDFLAGS)" \
+		ac_cv_sizeof_off_t=8 \
 		../$(PYTHON_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
