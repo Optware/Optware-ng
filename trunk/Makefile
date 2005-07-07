@@ -83,6 +83,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	net-snmp \
+	netio   \
 	monotone \
 	py-serial \
 	openvpn
