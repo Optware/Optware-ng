@@ -1,0 +1,12 @@
+service ircd
+{
+	disable		= no
+	socket_type	= stream
+	instances	= 5
+	log_on_success	= HOST PID
+	log_on_failure	= HOST
+	protocol	= tcp
+	user		= nobody
+	server		= /opt/sbin/bitlbee
+	wait		= no
+}
