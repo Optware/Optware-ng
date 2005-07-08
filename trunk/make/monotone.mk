@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MONOTONE_SITE=http://venge.net/monotone/downloads
-MONOTONE_VERSION=0.19
+MONOTONE_VERSION=0.20
 MONOTONE_SOURCE=monotone-$(MONOTONE_VERSION).tar.gz
 MONOTONE_DIR=monotone-$(MONOTONE_VERSION)
 MONOTONE_UNZIP=zcat
@@ -111,7 +111,7 @@ $(MONOTONE_BUILD_DIR)/.configured: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCH
 	mv $(BUILD_DIR)/$(MONOTONE_DIR) $(MONOTONE_BUILD_DIR)
 	(cd $(MONOTONE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MONOTONE_CPPFLAGS)" \
+		CXXFLAGS="$(STAGING_CPPFLAGS) $(MONOTONE_CPPFLAGS) -fno-strict-aliasing" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MONOTONE_LDFLAGS)" \
 		ac_cv_locale_works=yes \
 		ac_cv_func_stat_empty_string_bug=no \
