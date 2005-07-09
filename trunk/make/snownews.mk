@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SNOWNEWS_SITE=http://kiza.kcore.de/software/snownews/download
-SNOWNEWS_VERSION=1.5.6.1
+SNOWNEWS_VERSION=1.5.7
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
-SNOWNEWS_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+SNOWNEWS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 SNOWNEWS_DESCRIPTION=Text mode RSS newsreader for Linux and Unix
 SNOWNEWS_SECTION=misc
 SNOWNEWS_PRIORITY=optional
@@ -40,7 +40,7 @@ SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules gettext
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=3
+SNOWNEWS_IPK_VERSION=1
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ $(SNOWNEWS_BUILD_DIR)/.configured: $(DL_DIR)/$(SNOWNEWS_SOURCE) $(SNOWNEWS_PATCH
 	$(MAKE) libxml2-stage ncurses-stage gconv-modules-stage
 	rm -rf $(BUILD_DIR)/$(SNOWNEWS_DIR) $(SNOWNEWS_BUILD_DIR)
 	$(SNOWNEWS_UNZIP) $(DL_DIR)/$(SNOWNEWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SNOWNEWS_PATCHES) | patch -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p2
+	cat $(SNOWNEWS_PATCHES) | patch -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p1
 	mv $(BUILD_DIR)/$(SNOWNEWS_DIR) $(SNOWNEWS_BUILD_DIR)
 	@(cd $(SNOWNEWS_BUILD_DIR); \
                 $(TARGET_CONFIGURE_OPTS) \
