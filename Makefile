@@ -85,6 +85,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	net-snmp \
 	netio   \
 	monotone \
+	py-roundup \
 	py-serial \
 	openvpn
 
