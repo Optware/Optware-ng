@@ -40,7 +40,7 @@ TFTP_HPA_CONFLICTS=atftp
 #
 # TFTP_HPA_IPK_VERSION should be incremented when the ipk changes.
 #
-TFTP_HPA_IPK_VERSION=1
+TFTP_HPA_IPK_VERSION=2
 
 #
 # TFTP_HPA_CONFFILES should be a list of user-editable files
@@ -169,15 +169,6 @@ $(TFTP_HPA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TFTP_HPA_IPK_DIR)/opt/sbin or $(TFTP_HPA_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TFTP_HPA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TFTP_HPA_IPK_DIR)/opt/etc/tftp-hpa/...
-# Documentation files should be installed in $(TFTP_HPA_IPK_DIR)/opt/doc/tftp-hpa/...
-# Daemon startup scripts should be installed in $(TFTP_HPA_IPK_DIR)/opt/etc/init.d/S??tftp-hpa
-#
-# You may need to patch your application to make it use these locations.
-#
 $(TFTP_HPA_IPK): $(TFTP_HPA_BUILD_DIR)/.built
 	rm -rf $(TFTP_HPA_IPK_DIR) $(BUILD_DIR)/tftp-hpa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TFTP_HPA_BUILD_DIR) INSTALLROOT=$(TFTP_HPA_IPK_DIR) install
@@ -186,7 +177,7 @@ $(TFTP_HPA_IPK): $(TFTP_HPA_BUILD_DIR)/.built
 	install -m 644 $(TFTP_HPA_BUILD_DIR)/tftp-xinetd $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d/tftp
 	$(MAKE) $(TFTP_HPA_IPK_DIR)/CONTROL/control
 	install -m 755 $(TFTP_HPA_SOURCE_DIR)/postinst $(TFTP_HPA_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(TFTP_HPA_SOURCE_DIR)/prerm $(TFTP_HPA_IPK_DIR)/CONTROL/prerm
+	$(STRIP_COMMAND) $(TFTP_HPA_IPK_DIR)/opt/sbin/* $(TFTP_HPA_IPK_DIR)/opt/bin/*
 	echo $(TFTP_HPA_CONFFILES) | sed -e 's/ /\n/g' > $(TFTP_HPA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TFTP_HPA_IPK_DIR)
 
