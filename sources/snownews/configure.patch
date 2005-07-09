@@ -1,5 +1,5 @@
---- builds/snownews-1.5.6.1/platform_settings	2004-12-09 03:29:08.000000000 -0800
-+++ builds/snownews/platform_settings	2005-03-21 22:12:11.000000000 -0800
+--- snownews-1.5.7/platform_settings	2005-06-05 02:50:22.000000000 -0700
++++ snownews/platform_settings	2005-07-08 21:20:52.365415000 -0700
 @@ -1,3 +1,5 @@
 -PREFIX=  /usr/local
 -CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" `xml2-config --cflags` $(EXTRA_CFLAGS)  -DSTATIC_CONST_ICONV -I/usr/local/include
@@ -9,45 +9,15 @@
 +CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" -pipe @CPPFLAGS@ $(EXTRA_CFLAGS) -DSTATIC_CONST_ICONV
 +LDFLAGS= @LDFLAGS@ $(EXTRA_LDFLAGS)
 +STRIP=@STRIP@
---- builds/snownews-orig/Makefile	2004-12-09 03:29:08.000000000 -0800
-+++ builds/snownews/Makefile	2005-03-22 11:16:28.000000000 -0800
-@@ -58,32 +58,33 @@
- 
- install-bin: snownews
+--- snownews-1.5.7/Makefile	2005-06-05 02:50:22.000000000 -0700
++++ snownews/Makefile	2005-07-08 21:28:03.965415000 -0700
+@@ -59,7 +59,8 @@
  	if [ ! -d "$(DESTDIR)$(PREFIX)/bin" ]; then \
--		mkdir -p $(DESTDIR)$(PREFIX)/bin; \
-+		install -d $(DESTDIR)$(PREFIX)/bin; \
+ 		mkdir -p $(DESTDIR)$(PREFIX)/bin; \
  	fi
 -	$(INSTALL) -s snownews $(DESTDIR)$(PREFIX)/bin
-+	$(STRIP) snownews
 +	$(INSTALL) snownews $(DESTDIR)$(PREFIX)/bin
++	$(STRIP) -s snownews
  	$(INSTALL) opml2snow $(DESTDIR)$(PREFIX)/bin
- 	$(INSTALL) snowsync $(DESTDIR)$(PREFIX)/bin
- 
- install-locales: locales
- 	for L in $(LOCALES); do \
- 		if [ ! -d "$(DESTDIR)$(LOCALEPATH)/$$L/LC_MESSAGES" ]; then \
--			mkdir -p $(DESTDIR)$(LOCALEPATH)/$$L/LC_MESSAGES; \
-+			install -d $(DESTDIR)$(LOCALEPATH)/$$L/LC_MESSAGES; \
- 		fi; \
- 		$(INSTALL) -m 0644 $(LOC)/$$L.mo $(DESTDIR)$(LOCALEPATH)/$$L/LC_MESSAGES/snownews.mo; \
- 	done
- 
- install-man: manpages
- 	if [ ! -d "$(DESTDIR)$(PREFIX)/man/man1" ]; then \
--		mkdir -p $(DESTDIR)$(PREFIX)/man/man1; \
-+		install -d $(DESTDIR)$(PREFIX)/man/man1; \
- 	fi
- 	$(INSTALL) -m 0644 $(MAN)/snownews.1 $(DESTDIR)$(PREFIX)/man/man1
- 	$(INSTALL) -m 0644 $(MAN)/opml2snow.1 $(DESTDIR)$(PREFIX)/man/man1
- 	
- 	for L in $(LANGS); do \
- 		if [ ! -d "$(DESTDIR)$(PREFIX)/man/$$L/man1" ]; then \
--			mkdir -p $(DESTDIR)$(PREFIX)/man/$$L/man1; \
-+			install -d $(DESTDIR)$(PREFIX)/man/$$L/man1; \
- 		fi; \
--		$(INSTALL) -m 0644 $(DESTDIR)$(MAN)/$$L/snownews.1 $(PREFIX)/man/$$L/man1; \
-+		$(INSTALL) -m 0644 $(MAN)/$$L/snownews.1 $(DESTDIR)$(PREFIX)/man/$$L/man1; \
- 	done
- 
- ### Cleanup ###
+ 	if [ ! -f "$(DESTDIR)$(PREFIX)/bin/snow2opml" ]; then \
+ 		ln -sf $(DESTDIR)$(PREFIX)/bin/opml2snow $(DESTDIR)$(PREFIX)/bin/snow2opml; \
