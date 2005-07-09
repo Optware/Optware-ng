@@ -156,7 +156,7 @@ WL500G_PACKAGES = \
 	joe jove \
 	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libghttp libid3tag libjpeg \
 	libmad libogg libol \
-	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
+	libnsl libosip2 libpng libtool libtopfield libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses neon net-snmp net-tools ntpclient nylon \
