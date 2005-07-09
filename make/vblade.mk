@@ -30,7 +30,7 @@ VBLADE_CONFLICTS=
 #
 # VBLADE_IPK_VERSION should be incremented when the ipk changes.
 #
-VBLADE_IPK_VERSION=1
+VBLADE_IPK_VERSION=2
 
 #
 # VBLADE_CONFFILES should be a list of user-editable files
@@ -174,14 +174,8 @@ $(VBLADE_IPK): $(VBLADE_BUILD_DIR)/.built
 	rm -rf $(VBLADE_IPK_DIR) $(BUILD_DIR)/vblade_*_$(TARGET_ARCH).ipk
 	mkdir -p $(VBLADE_IPK_DIR)/opt/sbin
 	install -m 755 $(VBLADE_BUILD_DIR)/vblade $(VBLADE_IPK_DIR)/opt/sbin
-	#$(MAKE) -C $(VBLADE_BUILD_DIR) DESTDIR=$(VBLADE_IPK_DIR) install
-	#install -d $(VBLADE_IPK_DIR)/opt/etc/
-	#install -m 644 $(VBLADE_SOURCE_DIR)/vblade.conf $(VBLADE_IPK_DIR)/opt/etc/vblade.conf
-	#install -d $(VBLADE_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(VBLADE_SOURCE_DIR)/rc.vblade $(VBLADE_IPK_DIR)/opt/etc/init.d/SXXvblade
 	$(MAKE) $(VBLADE_IPK_DIR)/CONTROL/control
-	#install -m 755 $(VBLADE_SOURCE_DIR)/postinst $(VBLADE_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(VBLADE_SOURCE_DIR)/prerm $(VBLADE_IPK_DIR)/CONTROL/prerm
+	$(STRIP_COMMAND) $(VBLADE_IPK_DIR)/opt/sbin/vblade
 	echo $(VBLADE_CONFFILES) | sed -e 's/ /\n/g' > $(VBLADE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VBLADE_IPK_DIR)
 
