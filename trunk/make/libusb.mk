@@ -29,8 +29,13 @@
 #
 ###########################################################
 
+ifeq ($(UNSLUNG_TARGET),wl500g)
+LIBUSB_SITE=http://puzzle.dl.sourceforge.net/sourceforge/libusb
+LIBUSB_VERSION=0.1.8
+else
 LIBUSB_SITE=http://dl.sourceforge.net/sourceforge/libusb/
 LIBUSB_VERSION:=0.1.10a
+endif
 LIBUSB_SOURCE=libusb-$(LIBUSB_VERSION).tar.gz
 LIBUSB_DIR=libusb-$(LIBUSB_VERSION)
 LIBUSB_UNZIP=zcat
@@ -44,14 +49,18 @@ LIBUSB_CONFLICTS=
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
+ifeq ($(UNSLUNG_TARGET),wl500g)
+LIBUSB_IPK_VERSION=4
+else
 LIBUSB_IPK_VERSION=5
-
+endif
 #
 # LIBUSB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifneq ($(UNSLUNG_TARGET),wl500g)
 LIBUSB_PATCHES=$(LIBUSB_SOURCE_DIR)/debian-changes.patch
-
+endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -106,10 +115,12 @@ libusb-source: $(DL_DIR)/$(LIBUSB_SOURCE)
 $(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	$(LIBUSB_UNZIP) $(DL_DIR)/$(LIBUSB_SOURCE) | tar -C $(BUILD_DIR) -xf -
+ifneq ($(UNSLUNG_TARGET),wl500g)
 	cat $(LIBUSB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB_DIR) -p1
+endif
 	mv $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	(cd $(LIBUSB_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
+		autoconf ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBUSB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBUSB_LDFLAGS)" \
