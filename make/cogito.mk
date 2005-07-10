@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 COGITO_SITE=http://www.kernel.org/pub/software/scm/cogito
-COGITO_VERSION=0.11.3
+COGITO_VERSION=0.12
 COGITO_SOURCE=cogito-$(COGITO_VERSION).tar.bz2
 COGITO_DIR=cogito-$(COGITO_VERSION)
 COGITO_UNZIP=bzcat

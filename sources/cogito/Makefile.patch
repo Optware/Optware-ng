@@ -1,5 +1,5 @@
---- cogito-0.11.3.orig/Makefile	2005-06-09 02:15:09.000000000 -0700
-+++ cogito/Makefile	2005-06-16 22:30:50.021310000 -0700
+--- cogito-0.12/Makefile.orig	2005-07-03 16:36:15.000000000 -0700
++++ cogito-0.12/Makefile	2005-07-09 20:29:48.428125000 -0700
 @@ -29,6 +29,9 @@
  
  # DEFINES += -DUSE_STDEV
@@ -10,34 +10,34 @@
  CFLAGS?=-g -O2
  CFLAGS+=-Wall $(DEFINES)
  
-@@ -110,7 +113,7 @@
+@@ -121,7 +124,7 @@
  endif
  endif
  
 -CFLAGS += '-DSHA1_HEADER=$(SHA1_HEADER)'
 +CFLAGS += $(CPPFLAGS) '-DSHA1_HEADER=$(SHA1_HEADER)'
  
- 
- all: $(PROG) $(GEN_SCRIPT)
-@@ -123,7 +126,7 @@
+ .PHONY: all git cogito
+ all: git cogito
+@@ -138,7 +141,7 @@
  	$(CC) $(CFLAGS) -o $@ test-date.c date.o
  
- git-%: %.c $(LIB_FILE)
--	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LIBS)
-+	$(CC) $(CFLAGS) -o $@ $(filter %.c,$^) $(LDFLAGS) $(LIBS)
+ git-%: %.o $(LIB_FILE)
+-	$(CC) $(CFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
++	$(CC) $(CFLAGS) -o $@ $(filter %.o,$^) $(LDFLAGS) $(LIBS)
  
  git-rev-list: LIBS += -lssl
  git-http-pull: LIBS += -lcurl
-@@ -167,7 +170,7 @@
- test: all
- 	$(MAKE) -C t/ all
+@@ -185,7 +188,7 @@
+ doc:
+ 	$(MAKE) -C Documentation/ all
  
 -sedlibdir=$(shell echo $(libdir) | sed 's/\//\\\//g')
 +sedlibdir=$(shell echo "/opt/lib/cogito" | sed 's/\//\\\//g')
  
- install: $(PROG) $(SCRIPTS) $(SCRIPT) $(LIB_SCRIPT) $(GEN_SCRIPT)
- 	$(INSTALL) -m755 -d $(DESTDIR)$(bindir)
-@@ -185,6 +188,10 @@
+ .PHONY: install install-git install-cogito
+ install: install-git install-cogito
+@@ -210,6 +213,10 @@
  		cat $$file.new > $$file; rm $$file.new; \
  	done
  
