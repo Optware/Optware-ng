@@ -84,6 +84,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	net-snmp \
 	netio   \
+	iperf   \
 	monotone \
 	py-roundup \
 	py-serial \
