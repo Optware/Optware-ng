@@ -144,7 +144,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_OBSOLETED = libiconv git thttpd metalog
 
 WL500G_PACKAGES = \
-	adduser adns appweb atftp audiofile autoconf automake \
+	adduser adns antinat appweb atftp audiofile autoconf automake \
 	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
 	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
