@@ -87,6 +87,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	monotone \
 	py-roundup \
 	py-serial \
+	py-soappy \
 	openvpn
 
 # asterisk may just need configure work
