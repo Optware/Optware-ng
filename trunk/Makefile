@@ -199,8 +199,10 @@ HOST_MACHINE:=$(shell uname -m | sed \
 ifeq ($(UNSLUNG_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 PACKAGES = $(NATIVE_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 else
 PACKAGES = $(CROSS_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 TARGET_ARCH=armeb
 TARGET_OS=linux
@@ -208,6 +210,7 @@ endif
 
 ifeq ($(UNSLUNG_TARGET),wl500g)
 PACKAGES = $(WL500G_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(WL500G_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 endif
@@ -215,15 +218,9 @@ endif
 all: directories toolchain packages
 
 testing:
-ifeq ($(UNSLUNG_TARGET),nslu2)
-ifeq ($(HOST_MACHINE),armv5b)
-	$(MAKE) PACKAGES="$(NATIVE_PACKAGES_READY_FOR_TESTING)" all
-else
-	$(MAKE) PACKAGES="$(CROSS_PACKAGES_READY_FOR_TESTING)" all
-endif
-else
-	$(MAKE) PACKAGES="$(WL500G_PACKAGES_READY_FOR_TESTING)" all
-endif
+	$(MAKE) PACKAGES="$(PACKAGES_READY_FOR_TESTING)" all
+	$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump $(patsubst %,$(BUILD_DIR)/%*.ipk,$(PACKAGES_READY_FOR_TESTING))
+
 # Common tools which may need overriding
 CVS=cvs
 SUDO=sudo
@@ -412,7 +409,7 @@ $(TMPDIR):
 source: $(PACKAGES_SOURCE)
 
 check-packages:
-	$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump $(BUILD_DIR)/*.ipk
+	@$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
 
 autoclean:
 	$(PERL) -w unslung-autoclean.pl -v
