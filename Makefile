@@ -74,7 +74,7 @@ CROSS_PACKAGES = \
 	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
-	xpm xproto xrender xt xterm xtrans xtst xvid \
+	xpm xproto xrender xt xtrans xtst xvid \
 	zlib \
 	unslung-devel \
 	crosstool-native
@@ -134,8 +134,10 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# xterm - download retrieves wrong version
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	xterm \
 	libao \
 	nethack scponly dump gkrellm \
 
