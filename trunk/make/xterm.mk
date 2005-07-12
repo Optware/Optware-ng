@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 XTERM_SITE=ftp://invisible-island.net/xterm
-XTERM_VERSION=202
-XTERM_SOURCE=xterm.tar.gz
+XTERM_VERSION=203
+XTERM_SOURCE=xterm-$(XTERM_VERSION).tgz
 XTERM_DIR=xterm-$(XTERM_VERSION)
 XTERM_UNZIP=zcat
-XTERM_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+XTERM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTERM_DESCRIPTION=Terminal emulator for X.
 XTERM_SECTION=x11
 XTERM_PRIORITY=optional
@@ -180,6 +180,7 @@ $(XTERM_IPK_DIR)/CONTROL/control:
 $(XTERM_IPK): $(XTERM_BUILD_DIR)/.built
 	rm -rf $(XTERM_IPK_DIR) $(BUILD_DIR)/xterm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTERM_BUILD_DIR) DESTDIR=$(XTERM_IPK_DIR) install
+	$(STRIP_COMMAND) $(XTERM_IPK_DIR)/opt/bin/{resize,xterm}
 	$(MAKE) $(XTERM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTERM_IPK_DIR)
 
