@@ -104,6 +104,9 @@ $(DL_DIR)/$(<FOO>_SOURCE):
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
 $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
@@ -120,7 +123,9 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(<FOO>_BUILD_DIR)/libtool
 	touch $(<FOO>_BUILD_DIR)/.configured
 
 <foo>-unpack: $(<FOO>_BUILD_DIR)/.configured
@@ -181,7 +186,7 @@ $(<FOO>_IPK_DIR)/CONTROL/control:
 #
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(<FOO>_IPK_DIR) install
+	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(<FOO>_IPK_DIR) install-strip
 	install -d $(<FOO>_IPK_DIR)/opt/etc/
 	install -m 644 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
