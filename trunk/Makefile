@@ -411,6 +411,9 @@ $(TMPDIR):
 
 source: $(PACKAGES_SOURCE)
 
+check-packages:
+	$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump $(BUILD_DIR)/*.ipk
+
 autoclean:
 	$(PERL) -w unslung-autoclean.pl -v
 
