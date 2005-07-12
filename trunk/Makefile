@@ -91,7 +91,13 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-serial \
 	py-simpy \
 	py-soappy \
-	openvpn
+	openvpn \
+	gnutls \
+	bitlbee \
+	libgpg-error \
+	libgcrypt \
+	libtasn1 \
+	opencdk
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
