@@ -1,0 +1,4 @@
+#!/bin/sh
+
+### make sure we have a working /dev/pts filesystem
+/opt/etc/init.d/S05devpts

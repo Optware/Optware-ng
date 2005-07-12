@@ -21,12 +21,12 @@ VTE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 VTE_DESCRIPTION=Gtk+ terminal widget
 VTE_SECTION=lib
 VTE_PRIORITY=optional
-VTE_DEPENDS=gtk, ncurses, termcap, sm
+VTE_DEPENDS=gtk, ncurses, termcap, sm, dev-pts
 
 #
 # VTE_IPK_VERSION should be incremented when the ipk changes.
 #
-VTE_IPK_VERSION=1
+VTE_IPK_VERSION=2
 
 #
 # VTE_LOCALES defines which locales get installed
@@ -48,7 +48,7 @@ VTE_PATCHES=$(VTE_SOURCE_DIR)/default-font.patch
 # compilation or linking flags, then list them here.
 #
 VTE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -I$(STAGING_INCLUDE_DIR)/freetype2 -I$(STAGING_INCLUDE_DIR)/gtk-2.0 -I$(STAGING_LIB_DIR)/gtk-2.0/include -I$(STAGING_INCLUDE_DIR)/pango-1.0 -I$(STAGING_INCLUDE_DIR)/atk-1.0
-VTE_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
+VTE_LDFLAGS=
 
 #
 # VTE_BUILD_DIR is the directory in which the build is done.
@@ -134,6 +134,7 @@ $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) \
 		--disable-static \
 		--disable-glibtest \
 	)
+	$(PATCH_LIBTOOL) $(VTE_BUILD_DIR)/libtool
 	touch $(VTE_BUILD_DIR)/.configured
 
 vte-unpack: $(VTE_BUILD_DIR)/.configured
@@ -180,9 +181,7 @@ $(VTE_IPK): $(VTE_BUILD_DIR)/.built
 	rm -f $(VTE_IPK_DIR)/opt/lib/*.la
 	rm -rf $(VTE_IPK_DIR)/opt/share/gtk-doc
 	install -d $(VTE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(VTE_SOURCE_DIR)/S05devpts $(VTE_IPK_DIR)/opt/etc/init.d/S05devpts-vte
 	$(MAKE) $(VTE_IPK_DIR)/CONTROL/control
-	install -m 755 $(VTE_SOURCE_DIR)/postinst $(VTE_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VTE_IPK_DIR)
 
 #
