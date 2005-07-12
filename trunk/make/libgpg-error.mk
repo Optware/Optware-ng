@@ -120,7 +120,9 @@ $(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBGPG-ERROR_BUILD_DIR)/libtool
 	touch $(LIBGPG-ERROR_BUILD_DIR)/.configured
 
 libgpg-error-unpack: $(LIBGPG-ERROR_BUILD_DIR)/.configured
@@ -183,7 +185,7 @@ $(LIBGPG-ERROR_IPK_DIR)/CONTROL/control:
 #
 $(LIBGPG-ERROR_IPK): $(LIBGPG-ERROR_BUILD_DIR)/.built
 	rm -rf $(LIBGPG-ERROR_IPK_DIR) $(BUILD_DIR)/libgpg-error_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(LIBGPG-ERROR_IPK_DIR) install
+	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(LIBGPG-ERROR_IPK_DIR) install-strip
 	#install -d $(LIBGPG-ERROR_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBGPG-ERROR_SOURCE_DIR)/libgpg-error.conf $(LIBGPG-ERROR_IPK_DIR)/opt/etc/libgpg-error.conf
 	#install -d $(LIBGPG-ERROR_IPK_DIR)/opt/etc/init.d

@@ -121,7 +121,9 @@ $(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PA
 		--prefix=/opt \
 		--with-gpg-error-prefix=$(STAGING_DIR)/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBGCRYPT_BUILD_DIR)/libtool
 	touch $(LIBGCRYPT_BUILD_DIR)/.configured
 
 libgcrypt-unpack: $(LIBGCRYPT_BUILD_DIR)/.configured
@@ -186,7 +188,7 @@ $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
 #
 $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -rf $(LIBGCRYPT_IPK_DIR) $(BUILD_DIR)/libgcrypt_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) install
+	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) install-strip
 	ln -s armv5b-softfloat-linux-libgcrypt-config $(LIBGCRYPT_IPK_DIR)/opt/bin/libgcrypt-config
 	rm -r $(LIBGCRYPT_IPK_DIR)/opt/info
 	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/

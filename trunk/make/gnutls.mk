@@ -123,7 +123,9 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 		--with-libtasn1-prefix=$(STAGING_DIR)/opt \
 		--with-libopencdk-prefix=$(STAGING_DIR)/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(GNUTLS_BUILD_DIR)/libtool
 	touch $(GNUTLS_BUILD_DIR)/.configured
 
 gnutls-unpack: $(GNUTLS_BUILD_DIR)/.configured
@@ -184,7 +186,7 @@ $(GNUTLS_IPK_DIR)/CONTROL/control:
 #
 $(GNUTLS_IPK): $(GNUTLS_BUILD_DIR)/.built
 	rm -rf $(GNUTLS_IPK_DIR) $(BUILD_DIR)/gnutls_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) install
+	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) install-strip
 	rm -r $(GNUTLS_IPK_DIR)/opt/info
 	install -d $(GNUTLS_IPK_DIR)/opt/etc/
 	#install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf

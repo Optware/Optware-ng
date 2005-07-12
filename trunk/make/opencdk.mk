@@ -121,7 +121,9 @@ $(OPENCDK_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENCDK_SOURCE) $(OPENCDK_PATCHES)
 		--prefix=/opt \
 		--with-libgcrypt-prefix=$(STAGING_DIR)/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(OPENCDK_BUILD_DIR)/libtool
 	touch $(OPENCDK_BUILD_DIR)/.configured
 
 opencdk-unpack: $(OPENCDK_BUILD_DIR)/.configured
@@ -184,7 +186,7 @@ $(OPENCDK_IPK_DIR)/CONTROL/control:
 #
 $(OPENCDK_IPK): $(OPENCDK_BUILD_DIR)/.built
 	rm -rf $(OPENCDK_IPK_DIR) $(BUILD_DIR)/opencdk_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(OPENCDK_BUILD_DIR) DESTDIR=$(OPENCDK_IPK_DIR) install
+	$(MAKE) -C $(OPENCDK_BUILD_DIR) DESTDIR=$(OPENCDK_IPK_DIR) install-strip
 	#install -d $(OPENCDK_IPK_DIR)/opt/etc/
 	#install -m 644 $(OPENCDK_SOURCE_DIR)/opencdk.conf $(OPENCDK_IPK_DIR)/opt/etc/opencdk.conf
 	#install -d $(OPENCDK_IPK_DIR)/opt/etc/init.d
