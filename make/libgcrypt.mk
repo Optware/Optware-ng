@@ -147,8 +147,7 @@ libgcrypt: $(LIBGCRYPT_BUILD_DIR)/.built
 $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -f $(LIBGCRYPT_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	QUOTED_STAGING_DIR=`echo $(STAGING_DIR) | sed -e "s/\\\//\\\\\\\\\//g"`; sed -e "s/'\/opt\/lib/'$$QUOTED_STAGING_DIR\/opt\/lib/" <$(STAGING_DIR)/opt/lib/libgcrypt.la >$(STAGING_DIR)/opt/lib/libgcrypt.la.tmp
-	mv $(STAGING_DIR)/opt/lib/libgcrypt.la.tmp $(STAGING_DIR)/opt/lib/libgcrypt.la
+	rm -f $(STAGING_DIR)/opt/lib/libgcrypt.la
 	rm -f $(STAGING_DIR)/opt/bin/libgcrypt-config
 	ln -s armv5b-softfloat-linux-libgcrypt-config $(STAGING_DIR)/opt/bin/libgcrypt-config
 	touch $(LIBGCRYPT_BUILD_DIR)/.staged

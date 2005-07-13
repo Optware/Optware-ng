@@ -147,8 +147,7 @@ opencdk: $(OPENCDK_BUILD_DIR)/.built
 $(OPENCDK_BUILD_DIR)/.staged: $(OPENCDK_BUILD_DIR)/.built
 	rm -f $(OPENCDK_BUILD_DIR)/.staged
 	$(MAKE) -C $(OPENCDK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	QUOTED_STAGING_DIR=`echo $(STAGING_DIR) | sed -e "s/\\\//\\\\\\\\\//g"`; sed -e "s/'\/opt\/lib/'$$QUOTED_STAGING_DIR\/opt\/lib/" <$(STAGING_DIR)/opt/lib/libopencdk.la >$(STAGING_DIR)/opt/lib/libopencdk.la.tmp
-	mv $(STAGING_DIR)/opt/lib/libopencdk.la.tmp $(STAGING_DIR)/opt/lib/libopencdk.la
+	rm -f $(STAGING_DIR)/opt/lib/libopencdk.la
 	touch $(OPENCDK_BUILD_DIR)/.staged
 
 opencdk-stage: $(OPENCDK_BUILD_DIR)/.staged

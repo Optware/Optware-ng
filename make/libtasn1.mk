@@ -146,8 +146,7 @@ libtasn1: $(LIBTASN1_BUILD_DIR)/.built
 $(LIBTASN1_BUILD_DIR)/.staged: $(LIBTASN1_BUILD_DIR)/.built
 	rm -f $(LIBTASN1_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBTASN1_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	QUOTED_STAGING_DIR=`echo $(STAGING_DIR) | sed -e "s/\\\//\\\\\\\\\//g"`; sed -e "s/'\/opt\/lib/'$$QUOTED_STAGING_DIR\/opt\/lib/" <$(STAGING_DIR)/opt/lib/libtasn1.la >$(STAGING_DIR)/opt/lib/libtasn1.la.tmp
-	mv $(STAGING_DIR)/opt/lib/libtasn1.la.tmp $(STAGING_DIR)/opt/lib/libtasn1.la
+	rm -f $(STAGING_DIR)/opt/lib/libtasn1.la
 	touch $(LIBTASN1_BUILD_DIR)/.staged
 
 libtasn1-stage: $(LIBTASN1_BUILD_DIR)/.staged
