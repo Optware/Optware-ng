@@ -106,6 +106,7 @@ $(CROSSTOOL_BUILD_DIR)/.built: $(CROSSTOOL_BUILD_DIR)/.configured
 		export RESULT_TOP=$(TOOL_BUILD_DIR) ; \
 		sh $(CROSSTOOL_SCRIPT) \
 	)
+	rm -f $(TARGET_LIBDIR)/*.la
 	touch $(CROSSTOOL_BUILD_DIR)/.built
 
 #
