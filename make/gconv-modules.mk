@@ -68,6 +68,10 @@ $(GCONV_MODULES_IPK): $(GCONV_MODULES_BUILD_DIR)/.built
 	rm -rf $(GCONV_MODULES_IPK_DIR) $(BUILD_DIR)/gconv-modules_*_$(TARGET_ARCH).ipk
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	cp $(TARGET_LIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
+	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/EUC-*.so
+	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/ISO-2022-*.so
+	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/JOHAB.so
+	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/UHC.so
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
 	cp $(TARGET_LIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
