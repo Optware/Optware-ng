@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=1
+FREETYPE_IPK_VERSION=2
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
@@ -130,6 +130,7 @@ $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(FREETYPE_BUILD_DIR)/builds/unix/libtool
 	touch $(FREETYPE_BUILD_DIR)/.configured
 
 freetype-unpack: $(FREETYPE_BUILD_DIR)/.configured
@@ -174,6 +175,7 @@ freetype-stage: $(STAGING_LIB_DIR)/libfreetype.so
 $(FREETYPE_IPK): $(FREETYPE_BUILD_DIR)/.built
 	rm -rf $(FREETYPE_IPK_DIR) $(BUILD_DIR)/freetype_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(FREETYPE_IPK_DIR) install
+	$(STRIP_COMMAND) $(FREETYPE_IPK_DIR)/opt/lib/*.so
 	rm -f $(FREETYPE_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(FREETYPE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREETYPE_IPK_DIR)
