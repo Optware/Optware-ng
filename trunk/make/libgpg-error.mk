@@ -146,8 +146,7 @@ libgpg-error: $(LIBGPG-ERROR_BUILD_DIR)/.built
 $(LIBGPG-ERROR_BUILD_DIR)/.staged: $(LIBGPG-ERROR_BUILD_DIR)/.built
 	rm -f $(LIBGPG-ERROR_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	QUOTED_STAGING_DIR=`echo $(STAGING_DIR) | sed -e "s/\\\//\\\\\\\\\//g"`; sed -e "s/'\/opt\/lib/'$$QUOTED_STAGING_DIR\/opt\/lib/" <$(STAGING_DIR)/opt/lib/libgpg-error.la >$(STAGING_DIR)/opt/lib/libgpg-error.la.tmp
-	mv $(STAGING_DIR)/opt/lib/libgpg-error.la.tmp $(STAGING_DIR)/opt/lib/libgpg-error.la
+	rm -f $(STAGING_DIR)/opt/lib/libgpg-error.la
 	touch $(LIBGPG-ERROR_BUILD_DIR)/.staged
 
 libgpg-error-stage: $(LIBGPG-ERROR_BUILD_DIR)/.staged
