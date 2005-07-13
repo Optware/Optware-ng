@@ -168,6 +168,9 @@ $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $(GTK_BUILD_DIR)/.staged
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
 	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
+	rm -f $(STAGING_DIR)/opt/lib/libgdk-x11-2.0.la
+	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf-2.0.la
+	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf_xlib-2.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.la
 	touch $(GTK_BUILD_DIR)/.staged
 
