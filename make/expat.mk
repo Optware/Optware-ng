@@ -137,7 +137,7 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 		./libtool --mode=install install -c libexpat.la $(STAGING_LIB_DIR)/libexpat.la ; \
 		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
 	)
-	rm -f $(STAGING_LIB_DIR)/libexpat.la
+	sed -i -e 's%$(STAGING_DIR)%%' $(STAGING_DIR)/opt/lib/libexpat.la
 	touch $(EXPAT_BUILD_DIR)/.staged
 
 expat-stage: $(EXPAT_BUILD_DIR)/.staged
@@ -181,7 +181,7 @@ $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	)
 	$(STRIP_COMMAND) $(EXPAT_IPK_DIR)/opt/lib/libexpat.so
 	# avoid problems with libtool later
-	rm $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
+	rm -f $(STAGING_LIB_DIR)/libexpat.la
 	$(MAKE) $(EXPAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EXPAT_IPK_DIR)
 
