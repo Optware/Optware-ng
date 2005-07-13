@@ -19,7 +19,7 @@ NCURSES_PRIORITY=optional
 NCURSES_DEPENDS=
 NCURSES_CONFLICTS=
 
-NCURSES_IPK_VERSION=3
+NCURSES_IPK_VERSION=4
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
@@ -61,7 +61,7 @@ ncurses: $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
 $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
-	ln -s ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
+	ln ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
 
 ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
@@ -84,6 +84,9 @@ $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
 		install.libs install.progs install.data install.panel install.menu install.form
 	rm -rf $(NCURSES_IPK_DIR)/opt/include
+	rm -f $(NCURSES_IPK_DIR)/opt/lib/*.a
+	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(NCURSES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
