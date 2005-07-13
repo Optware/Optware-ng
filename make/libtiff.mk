@@ -35,7 +35,7 @@ LIBTIFF_CONFLICTS=
 #
 # LIBTIFF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTIFF_IPK_VERSION=1
+LIBTIFF_IPK_VERSION=2
 
 #
 # LIBTIFF_PATCHES should list any patches, in the the order in
@@ -109,7 +109,9 @@ $(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBTIFF_BUILD_DIR)/libtool
 	touch $(LIBTIFF_BUILD_DIR)/.configured
 
 libtiff-unpack: $(LIBTIFF_BUILD_DIR)/.configured
@@ -132,21 +134,21 @@ libtiff: $(LIBTIFF_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION): $(LIBTIFF_BUILD_DIR)/.built
+$(LIBTIFF_BUILD_DIR)/.staged: $(LIBTIFF_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiff.h $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffio.h $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(STAGING_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.a $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/.libs/libtiff.so.$(LIBTIFF_VERSION) $(STAGING_DIR)/opt/lib
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libtiff.a
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
+	rm -f $(STAGING_DIR)/opt/lib/libtiff*.la
 	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so.3
 	cd $(STAGING_DIR)/opt/lib && ln -fs libtiff.so.$(LIBTIFF_VERSION) libtiff.so
+	touch -f $@
 
-libtiff-stage: $(STAGING_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
+libtiff-stage: $(LIBTIFF_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -234,10 +236,9 @@ $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffconf.h $(LIBTIFF_IPK_DIR)/opt/include
 	install -m 644 $(LIBTIFF_BUILD_DIR)/libtiff/tiffvers.h $(LIBTIFF_IPK_DIR)/opt/include
 
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.a
-	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/lib/libtiff.so.$(LIBTIFF_VERSION)
-
-#	$(STRIP_COMMAND) $(LIBTIFF_BUILD_DIR)/libtiff -o $(LIBTIFF_IPK_DIR)/opt/bin/libtiff
+	rm -f $(LIBTIFF_IPK_DIR)/opt/lib/lib*.a
+	rm -f $(LIBTIFF_IPK_DIR)/opt/lib/lib*.la
+	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)/opt/lib/lib*.so
 	$(MAKE) $(LIBTIFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTIFF_IPK_DIR)
 
