@@ -34,7 +34,7 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=4
+LIBPNG_IPK_VERSION=5
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
@@ -138,6 +138,7 @@ $(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
+	rm -f $(STAGING_DIR)/opt/lib/libpng12.la
 	touch $@
 
 libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
@@ -176,6 +177,7 @@ $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 	rm -rf $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
 	install -d $(LIBPNG_IPK_DIR)/opt
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)/opt install-strip
+	rm -f $(LIBPNG_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBPNG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPNG_IPK_DIR)
 
