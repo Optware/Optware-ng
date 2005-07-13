@@ -109,6 +109,7 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 		--disable-static \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(EXPAT_BUILD_DIR)/libtool
 	touch $(EXPAT_BUILD_DIR)/.configured
 
 expat-unpack: $(EXPAT_BUILD_DIR)/.configured
@@ -136,6 +137,7 @@ $(EXPAT_BUILD_DIR)/.staged: $(EXPAT_BUILD_DIR)/.built
 		./libtool --mode=install install -c libexpat.la $(STAGING_LIB_DIR)/libexpat.la ; \
 		install -c -m 644 ./lib/expat.h ./lib/expat_external.h $(STAGING_INCLUDE_DIR) ; \
 	)
+	rm -f $(STAGING_LIB_DIR)/libexpat.la
 	touch $(EXPAT_BUILD_DIR)/.staged
 
 expat-stage: $(EXPAT_BUILD_DIR)/.staged
