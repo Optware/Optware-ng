@@ -28,7 +28,7 @@ ADNS_DESCRIPTION=Asynchronous resolver library and DNS resolver utilities.
 #
 # ADNS_IPK_VERSION should be incremented when the ipk changes.
 #
-ADNS_IPK_VERSION=1
+ADNS_IPK_VERSION=2
 
 #
 # ADNS_CONFFILES should be a list of user-editable files
@@ -172,16 +172,18 @@ $(ADNS_IPK_DIR)/CONTROL/control:
 $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
 	rm -rf $(ADNS_IPK_DIR) $(BUILD_DIR)/adns_*_$(TARGET_ARCH).ipk
 	install -d $(ADNS_IPK_DIR)/opt/lib/
-	install -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
+	#install -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
 	install -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.1.0 $(ADNS_IPK_DIR)/opt/lib/libadns.so.1.0
 	ln -sf libadns.so.1.0 $(ADNS_IPK_DIR)/opt/lib/libadns.so.1
 	ln -sf libadns.so.1.0 $(ADNS_IPK_DIR)/opt/lib/libadns.so
+	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/lib/libadns.so
 	install -d $(ADNS_IPK_DIR)/opt/include/
 	install -m 644 $(ADNS_BUILD_DIR)/src/adns.h $(ADNS_IPK_DIR)/opt/include/adns.h
 	install -d $(ADNS_IPK_DIR)/opt/bin/
 	install -m 755 $(ADNS_BUILD_DIR)/client/adnslogres    $(ADNS_IPK_DIR)/opt/bin/adnslogres
 	install -m 755 $(ADNS_BUILD_DIR)/client/adnshost      $(ADNS_IPK_DIR)/opt/bin/adnshost
 	install -m 755 $(ADNS_BUILD_DIR)/client/adnsresfilter $(ADNS_IPK_DIR)/opt/bin/adnsresfilter
+	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/bin/*
 	install -d $(ADNS_IPK_DIR)/CONTROL
 	$(MAKE) $(ADNS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADNS_IPK_DIR)
