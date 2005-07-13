@@ -118,6 +118,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 		$(NET_SNMP_CROSS_CONFIG_FLAGS) \
 		--with-default-snmp-version=3 \
 		--with-sys-contact=root@localhost \
