@@ -58,6 +58,7 @@ do
 	NAME=${line%% - *}
 	line=${line#* - }
 	VERSION=${line%% - *}
+	VERSION=${VERSION% -}
 	COMMENT=${line#* - }
 	if [ "$COMMENT" = "$line" ]
 	then
