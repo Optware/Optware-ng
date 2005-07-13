@@ -36,7 +36,7 @@ ABOOK_CONFLICTS=
 #
 # ABOOK_IPK_VERSION should be incremented when the ipk changes.
 #
-ABOOK_IPK_VERSION=1
+ABOOK_IPK_VERSION=2
 
 #
 # ABOOK_CONFFILES should be a list of user-editable files
@@ -174,7 +174,7 @@ $(ABOOK_IPK_DIR)/CONTROL/control:
 #
 $(ABOOK_IPK): $(ABOOK_BUILD_DIR)/.built
 	rm -rf $(ABOOK_IPK_DIR) $(BUILD_DIR)/abook_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ABOOK_BUILD_DIR) DESTDIR=$(ABOOK_IPK_DIR) install
+	$(MAKE) -C $(ABOOK_BUILD_DIR) DESTDIR=$(ABOOK_IPK_DIR) install-strip
 	#install -d $(ABOOK_IPK_DIR)/opt/etc/
 	#install -m 644 $(ABOOK_SOURCE_DIR)/abook.conf $(ABOOK_IPK_DIR)/opt/etc/abook.conf
 	#install -d $(ABOOK_IPK_DIR)/opt/etc/init.d
