@@ -31,30 +31,30 @@ CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
-	dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
+	dev-pts dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	emacs \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	fontconfig freeradius freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	glib grep groff gtk gzip \
+	glib gnupg gnutls grep groff gtk gzip \
 	hdparm hexcurse hnb hpijs \
 	ice imagemagick imap inetutils \
-	iptables ircd-hybrid ivorbis-tools \
+	iperf iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame ldconfig less \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent \
-	libgc libgd libghttp libid3tag \
+	libgc libgcrypt libgd libghttp libgpg-error libid3tag \
 	libjpeg libnsl libogg libol libosip2 \
-	libpcap libpng libstdc++ libtiff libtool libtopfield libusb \
+	libpcap libpng libstdc++ libtasn1 libtiff libtool libtopfield libusb \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm mediawiki metalog miau \
+	m4 make man man-pages mc mdadm mediawiki metalog miau monotone \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
-	nail nano ncftp ncurses neon net-snmp net-tools nfs-server nfs-utils \
+	nail nano ncftp ncurses neon net-snmp net-tools netio nfs-server nfs-utils \
 	nget nload nmap ntp ntpclient nylon \
-	openssh openssl openvpn oww \
+	opencdk openssh openssl openvpn oww \
 	pango parted patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
@@ -62,6 +62,7 @@ CROSS_PACKAGES = \
 	py-bluez py-cheetah py-cherrypy py-clips \
 	py-gdchart2 py-gd py-pil \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
+	py-roundup py-serial py-simpy py-soappy \
 	quagga  \
 	rcs rdate readline recordext renderext rrdtool rsync \
 	samba sane-backends screen sed ser siproxd sm snownews \
@@ -82,21 +83,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	net-snmp \
-	netio   \
-	gnupg \
-	iperf   \
-	monotone \
-	py-roundup \
-	py-serial \
-	py-simpy \
-	py-soappy \
-	openvpn \
-	gnutls \
-	libgpg-error \
-	libgcrypt \
-	libtasn1 \
-	opencdk
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -190,6 +176,19 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	netio \
+	gnupg \
+	iperf   \
+	monotone \
+	py-roundup \
+	py-serial \
+	py-simpy \
+	py-soappy \
+	gnutls \
+	libgpg-error \
+	libgcrypt \
+	libtasn1 \
+	opencdk
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
