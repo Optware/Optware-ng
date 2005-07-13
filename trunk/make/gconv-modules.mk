@@ -14,7 +14,7 @@ GCONV_MODULES_PRIORITY=optional
 GCONV_MODULES_DEPENDS=
 GCONV_MODULES_CONFLICTS=
 
-GCONV_MODULES_IPK_VERSION=4
+GCONV_MODULES_IPK_VERSION=5
 
 GCONV_MODULES_BUILD_DIR=$(BUILD_DIR)/gconv-modules
 GCONV_MODULES_SOURCE_DIR=$(SOURCE_DIR)/gconv-modules
@@ -68,8 +68,10 @@ $(GCONV_MODULES_IPK): $(GCONV_MODULES_BUILD_DIR)/.built
 	rm -rf $(GCONV_MODULES_IPK_DIR) $(BUILD_DIR)/gconv-modules_*_$(TARGET_ARCH).ipk
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	cp $(TARGET_LIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
+	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
 	cp $(TARGET_LIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d/S05gconv-modules
 
