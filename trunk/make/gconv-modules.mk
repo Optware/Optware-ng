@@ -68,7 +68,7 @@ $(GCONV_MODULES_IPK): $(GCONV_MODULES_BUILD_DIR)/.built
 	rm -rf $(GCONV_MODULES_IPK_DIR) $(BUILD_DIR)/gconv-modules_*_$(TARGET_ARCH).ipk
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	cp $(TARGET_LIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
-	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*
+	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
 	cp $(TARGET_LIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
