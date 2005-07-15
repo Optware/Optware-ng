@@ -30,7 +30,7 @@ TRANSCODE_UNZIP=zcat
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=2
+TRANSCODE_IPK_VERSION=3
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files
@@ -113,6 +113,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--without-x \
 		--with-ffmpeg_libs-includes=$(STAGING_DIR)/opt \
 		--with-avifile-includes=$(STAGING_DIR)/opt \
 		--with-lame-includes=$(STAGING_DIR)/opt \
