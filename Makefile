@@ -425,3 +425,9 @@ distclean:
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
+
+make/%.mk:
+	PKG_UP=$$(echo $* | tr [a-z\-] [A-Z_]);			\
+	sed -e "s/<foo>/$*/g" -e "s/<FOO>/$${PKG_UP}/g"		\
+		 -e '5a#' -e '5a# $$Header$$'			\
+		 -e '6,11d' make/template.mk > $@
