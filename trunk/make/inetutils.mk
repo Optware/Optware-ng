@@ -34,7 +34,7 @@ INETUTILS_DIR=$(INETUTILS_NAME)-$(INETUTILS_VERSION)
 INETUTILS_UNZIP=zcat
 INETUTILS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 INETUTILS_DESCRIPTION=A set of common daemons and clients found on commercial UNIX systems.
-INETUTILS_SECTION= net
+INETUTILS_SECTION=net
 INETUTILS_PRIORITY=optional
 INETUTILS_DEPENDS=ncurses, zlib
 
