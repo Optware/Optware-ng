@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IMAP_SITE=ftp://ftp.cac.washington.edu/imap/
-IMAP_VERSION=2004d
+IMAP_VERSION=2004e
 IMAP_SOURCE=imap-$(IMAP_VERSION).tar.Z
 IMAP_DIR=imap-$(IMAP_VERSION)
 IMAP_UNZIP=zcat
@@ -42,7 +42,7 @@ IMAP_CONFLICTS=
 #
 # IMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAP_IPK_VERSION=1
+IMAP_IPK_VERSION=2
 
 #
 # IMAP_CONFFILES should be a list of user-editable files
