@@ -29,7 +29,7 @@ OPENVPN_UNZIP=zcat
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENVPN_IPK_VERSION=2
+OPENVPN_IPK_VERSION=3
 
 #
 # Control file info
