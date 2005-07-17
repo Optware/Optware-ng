@@ -144,7 +144,7 @@ samba-source: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
-	$(MAKE) openldap-stage
+	$(MAKE) openldap-stage cups-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
