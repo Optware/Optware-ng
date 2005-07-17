@@ -39,7 +39,7 @@ OPENVPN_DESCRIPTION=SSL based VPN server with Windows client support
 OPENVPN_SECTION=net
 OPENVPN_PRIORITY=optional
 OPENVPN_CONFLICTS=
-OPENVPN_DEPENDS=openssl, lzo
+OPENVPN_DEPENDS=openssl, lzo, kernel-module-tun
 
 
 #
