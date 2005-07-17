@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNUTLS_SITE=ftp://ftp.gnutls.org/pub/gnutls/
+GNUTLS_SITE=ftp://ftp.gnutls.org/pub/gnutls/attic
 GNUTLS_VERSION=1.2.4
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
