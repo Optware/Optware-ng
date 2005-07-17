@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MAN_PAGES_SITE=http://www.kernel.org/pub/linux/docs/manpages
-MAN_PAGES_VERSION=2.01
+MAN_PAGES_VERSION=2.05
 MAN_PAGES_SOURCE=man-pages-$(MAN_PAGES_VERSION).tar.gz
 MAN_PAGES_DIR=man-pages-$(MAN_PAGES_VERSION)
 MAN_PAGES_UNZIP=zcat
@@ -29,7 +29,7 @@ MAN_PAGES_CONFLICTS=
 #
 # MAN_PAGES_IPK_VERSION should be incremented when the ipk changes.
 #
-MAN_PAGES_IPK_VERSION=2
+MAN_PAGES_IPK_VERSION=3
 
 #
 # MAN_PAGES_CONFFILES should be a list of user-editable files
