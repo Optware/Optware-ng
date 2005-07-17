@@ -93,7 +93,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # bogofilter's configure wants to run some small executables
 # cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
-# ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
@@ -110,7 +109,6 @@ NATIVE_PACKAGES = \
 	xemacs \
 	hugs \
 	mzscheme \
-        ocaml \
 	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
 	perl-appconfig perl-cgi-application \
@@ -127,7 +125,9 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
+# ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+        ocaml \
 
 # bitlbee - "Could not find a suitable SSL library" - assumes cross-build host has gnutls installed?
 # libao - has runtime trouble
