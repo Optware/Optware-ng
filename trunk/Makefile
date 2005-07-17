@@ -92,13 +92,13 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # bogofilter's configure wants to run some small executables
 # cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
+# ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
 # rsnapshot depends on perl
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
-# vim probably just needs configure work
 NATIVE_PACKAGES = \
 	asterisk \
 	autoconf \
@@ -108,8 +108,9 @@ NATIVE_PACKAGES = \
 	cyrus-imapd \
 	xemacs \
 	hugs \
-	openldap \
 	mzscheme \
+        ocaml \
+	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
 	perl-appconfig perl-cgi-application \
 	perl-html-parser perl-html-tagset perl-html-template \
