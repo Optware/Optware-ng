@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SYSSTAT_SITE=ftp://ibiblio.org/pub/linux/system/status/
-SYSSTAT_VERSION=6.0.0
+SYSSTAT_VERSION=6.0.1
 SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.gz
 SYSSTAT_DIR=sysstat-$(SYSSTAT_VERSION)
 SYSSTAT_UNZIP=zcat
@@ -42,7 +42,7 @@ SYSSTAT_CONFLICTS=
 #
 # SYSSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSSTAT_IPK_VERSION=1
+SYSSTAT_IPK_VERSION=2
 
 #
 # SYSSTAT_CONFFILES should be a list of user-editable files
