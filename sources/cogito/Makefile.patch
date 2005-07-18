@@ -1,5 +1,5 @@
---- cogito-0.12/Makefile.orig	2005-07-03 16:36:15.000000000 -0700
-+++ cogito-0.12/Makefile	2005-07-09 20:29:48.428125000 -0700
+--- cogito-0.12.1/Makefile	2005-07-11 17:49:04.000000000 -0700
++++ cogito/Makefile	2005-07-17 22:19:34.382267000 -0700
 @@ -29,6 +29,9 @@
  
  # DEFINES += -DUSE_STDEV
@@ -10,7 +10,7 @@
  CFLAGS?=-g -O2
  CFLAGS+=-Wall $(DEFINES)
  
-@@ -121,7 +124,7 @@
+@@ -126,7 +129,7 @@
  endif
  endif
  
@@ -19,7 +19,7 @@
  
  .PHONY: all git cogito
  all: git cogito
-@@ -138,7 +141,7 @@
+@@ -143,7 +146,7 @@
  	$(CC) $(CFLAGS) -o $@ test-date.c date.o
  
  git-%: %.o $(LIB_FILE)
@@ -28,7 +28,7 @@
  
  git-rev-list: LIBS += -lssl
  git-http-pull: LIBS += -lcurl
-@@ -185,7 +188,7 @@
+@@ -190,7 +193,7 @@
  doc:
  	$(MAKE) -C Documentation/ all
  
@@ -37,7 +37,7 @@
  
  .PHONY: install install-git install-cogito
  install: install-git install-cogito
-@@ -210,6 +213,10 @@
+@@ -217,6 +220,10 @@
  		cat $$file.new > $$file; rm $$file.new; \
  	done
  
