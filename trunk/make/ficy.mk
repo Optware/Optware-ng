@@ -110,7 +110,8 @@ $(FICY_BUILD_DIR)/.configured: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES)
 	$(FICY_UNZIP) $(DL_DIR)/$(FICY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(FICY_DIR) $(FICY_BUILD_DIR)
 	(cd $(FICY_BUILD_DIR); \
-        $(TARGET_CONFIGURE_OPTS) make -e \
+        $(TARGET_CONFIGURE_OPTS) LDFLAGS="$(STAGING_LDFLAGS)" make -e; \
+	$(STRIP_COMMAND) fIcy fPls fResync \
 	)
 	touch $(FICY_BUILD_DIR)/.configured
 
