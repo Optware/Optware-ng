@@ -42,7 +42,7 @@ FTPD-TOPFIELD_DEPENDS=libusb (>=0.1.8-3)
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=2
+FTPD-TOPFIELD_IPK_VERSION=3
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
@@ -52,8 +52,7 @@ FTPD-TOPFIELD_IPK_VERSION=2
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/Makefile.patch \
-	$(FTPD-TOPFIELD_SOURCE_DIR)/turbo.patch
+FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
