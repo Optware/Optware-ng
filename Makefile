@@ -34,7 +34,7 @@ CROSS_PACKAGES = \
 	dev-pts dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	emacs \
-	fetchmail ffmpeg file findutils fixesext flac flex \
+	fetchmail ffmpeg ficy file findutils fixesext flac flex \
 	fontconfig freeradius freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -84,7 +84,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	imap ipkg-web \
-	ficy
 
 
 # asterisk may just need configure work
@@ -192,7 +191,8 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 	libgpg-error \
 	libgcrypt \
 	libtasn1 \
-	opencdk
+	opencdk \
+	ficy
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
@@ -431,5 +431,4 @@ toolclean:
 make/%.mk:
 	PKG_UP=$$(echo $* | tr [a-z\-] [A-Z_]);			\
 	sed -e "s/<foo>/$*/g" -e "s/<FOO>/$${PKG_UP}/g"		\
-		 -e '5a#' -e '5a# $$Header$$'			\
 		 -e '6,11d' make/template.mk > $@
