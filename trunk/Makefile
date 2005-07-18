@@ -40,8 +40,8 @@ CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib gnupg gnutls grep groff gtk gzip \
 	hdparm hexcurse hnb hpijs \
-	ice imagemagick inetutils \
-	iperf iptables ircd-hybrid ivorbis-tools \
+	ice imagemagick imap inetutils \
+	iperf ipkg-web iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
 	lame ldconfig less \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent \
@@ -83,7 +83,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	imap ipkg-web \
 
 
 # asterisk may just need configure work
