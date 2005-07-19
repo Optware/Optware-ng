@@ -1,0 +1,12 @@
+diff -Nur taged-3.0.orig/confuse/configure.ac taged-3.0/confuse/configure.ac
+--- taged-3.0.orig/confuse/configure.ac	2002-12-06 23:44:22.000000000 +0100
++++ taged-3.0/confuse/configure.ac	2005-07-19 01:33:20.140356401 +0200
+@@ -25,7 +25,7 @@
+ AC_C_CONST
+ 
+ # Checks for library functions.
+-AC_FUNC_MALLOC
++#AC_FUNC_MALLOC
+ AC_FUNC_VPRINTF
+ AC_CHECK_FUNCS([strcasecmp strdup])
+ 
