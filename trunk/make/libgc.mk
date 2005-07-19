@@ -41,7 +41,7 @@ LIBGC_CONFLICTS=
 #
 # LIBGC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGC_IPK_VERSION=2
+LIBGC_IPK_VERSION=3
 
 #
 # LIBGC_CONFFILES should be a list of user-editable files
@@ -121,6 +121,7 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 		--disable-static \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(LIBGC_BUILD_DIR)/libtool
 	touch $(LIBGC_BUILD_DIR)/.configured
 
 libgc-unpack: $(LIBGC_BUILD_DIR)/.configured
@@ -144,6 +145,7 @@ libgc: $(LIBGC_BUILD_DIR)/.built
 $(LIBGC_BUILD_DIR)/.staged: $(LIBGC_BUILD_DIR)/.built
 	rm -f $(LIBGC_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBGC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libgc.la
 	touch $(LIBGC_BUILD_DIR)/.staged
 
 libgc-stage: $(LIBGC_BUILD_DIR)/.staged
@@ -180,7 +182,7 @@ $(LIBGC_IPK_DIR)/CONTROL/control:
 #
 $(LIBGC_IPK): $(LIBGC_BUILD_DIR)/.built
 	rm -rf $(LIBGC_IPK_DIR) $(BUILD_DIR)/libgc_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBGC_BUILD_DIR) DESTDIR=$(LIBGC_IPK_DIR) install
+	$(MAKE) -C $(LIBGC_BUILD_DIR) DESTDIR=$(LIBGC_IPK_DIR) install-strip
 	#install -d $(LIBGC_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBGC_SOURCE_DIR)/libgc.conf $(LIBGC_IPK_DIR)/opt/etc/libgc.conf
 	#install -d $(LIBGC_IPK_DIR)/opt/etc/init.d

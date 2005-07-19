@@ -53,11 +53,14 @@ $(GDBM_BUILD_DIR)/.libs/libgdbm.a: $(GDBM_BUILD_DIR)/.configured
 
 gdbm: $(GDBM_BUILD_DIR)/.libs/libgdbm.a
 
-$(STAGING_DIR)/opt/lib/libgdbm.a: $(GDBM_BUILD_DIR)/.libs/libgdbm.a
+$(GDBM_BUILD_DIR)/.staged: $(GDBM_BUILD_DIR)/.libs/libgdbm.a
+	rm -f $@
 	$(MAKE) -C $(GDBM_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) install install-compat
-	rm -rf $(STAGING_DIR)/opt/{man,info}
+	rm -rf $(STAGING_LIB_DIR)/libgdbm.la
+	rm -rf $(STAGING_LIB_DIR)/libgdbm_compat.la
+	touch $@
 
-gdbm-stage: $(STAGING_DIR)/opt/lib/libgdbm.a
+gdbm-stage: $(GDBM_BUILD_DIR)/.staged
 
 $(GDBM_IPK_DIR)/CONTROL/control:
 	@install -d $(GDBM_IPK_DIR)/CONTROL
