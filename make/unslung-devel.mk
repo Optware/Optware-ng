@@ -10,11 +10,11 @@ UNSLUNG-DEVEL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNSLUNG-DEVEL_DESCRIPTION=This is a meta package that bundles all the packages required for unslung development.
 UNSLUNG-DEVEL_SECTION=util
 UNSLUNG-DEVEL_PRIORITY=optional
-UNSLUNG-DEVEL_DEPENDS=autoconf, automake, bash, bison, bzip2, coreutils, crosstool-native, cvs, diffutils, findutils, flex, gawk, libstdc++, groff, libtool, make, m4, ncurses, openssl, patch, perl, pkgconfig, sed, tar, wget-ssl
+UNSLUNG-DEVEL_DEPENDS=autoconf, automake, bash, bison, bzip2, coreutils, crosstool-native, cvs, diffutils, file, findutils, flex, gawk, libstdc++, groff, libtool, make, m4, ncurses, openssl, patch, perl, pkgconfig, sed, tar, wget-ssl
 UNSLUNG-DEVEL_SUGGESTS=
 UNSLUNG-DEVEL_CONFLICTS=
 
-UNSLUNG-DEVEL_IPK_VERSION=2
+UNSLUNG-DEVEL_IPK_VERSION=3
 
 UNSLUNG-DEVEL_IPK_DIR=$(BUILD_DIR)/unslung-devel-$(UNSLUNG-DEVEL_VERSION)-ipk
 UNSLUNG-DEVEL_IPK=$(BUILD_DIR)/unslung-devel_$(UNSLUNG-DEVEL_VERSION)-$(UNSLUNG-DEVEL_IPK_VERSION)_$(TARGET_ARCH).ipk
