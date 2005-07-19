@@ -16,7 +16,7 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=9
+MIAU_IPK_VERSION=10
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
