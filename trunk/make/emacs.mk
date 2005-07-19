@@ -30,7 +30,7 @@ EMACS_CONFLICTS=
 #
 # EMACS_IPK_VERSION should be incremented when the ipk changes.
 #
-EMACS_IPK_VERSION=4
+EMACS_IPK_VERSION=5
 
 #
 # EMACS_CONFFILES should be a list of user-editable files
@@ -46,8 +46,13 @@ EMACS_PATCHES=#$(EMACS_SOURCE_DIR)/dont-dump.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(HOST_MACHINE),armv5b)
+EMACS_CPPFLAGS=
+EMACS_LDFLAGS=
+else
 EMACS_CPPFLAGS=-DCANNOT_DUMP
 EMACS_LDFLAGS=
+endif
 
 #
 # EMACS_BUILD_DIR is the directory in which the build is done.
