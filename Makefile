@@ -33,7 +33,6 @@ CROSS_PACKAGES = \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dev-pts dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
-	emacs \
 	fetchmail ffmpeg ficy file findutils fixesext flac flex \
 	fontconfig freeradius freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
@@ -68,7 +67,7 @@ CROSS_PACKAGES = \
 	samba sane-backends screen sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	sysstat \
-	tar tcl tcpdump tcpwrappers termcap textutils tftp-hda \
+	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
 	unfs3 units unslung-feeds usbutils \
@@ -83,7 +82,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	taged
 
 
 # asterisk may just need configure work
@@ -92,6 +90,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # bogofilter's configure wants to run some small executables
 # cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
+# ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
@@ -105,9 +104,11 @@ NATIVE_PACKAGES = \
 	bogofilter \
 	clamav \
 	cyrus-imapd \
+	emacs \
 	xemacs \
 	hugs \
 	mzscheme \
+        ocaml \
 	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
 	perl-appconfig perl-cgi-application \
@@ -124,9 +125,7 @@ NATIVE_PACKAGES = \
         xmail \
 
 # Add new native-only packages here, and state why they don't cross compile.
-# ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-        ocaml \
 
 # bitlbee - "Could not find a suitable SSL library" - assumes cross-build host has gnutls installed?
 # libao - has runtime trouble
@@ -192,7 +191,8 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 	libgcrypt \
 	libtasn1 \
 	opencdk \
-	ficy
+	ficy \
+	taged
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
