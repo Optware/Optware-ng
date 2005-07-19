@@ -40,7 +40,7 @@ ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -142,14 +142,25 @@ else
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
 	mv $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)-host
+#	hack to reduce build host dependency on ncurses-dev
+	$(TERMCAP_UNZIP) $(DL_DIR)/$(TERMCAP_SOURCE) | tar -C $(ERLANG_BUILD_DIR)-host -xvf -
+	mv $(ERLANG_BUILD_DIR)-host/termcap-$(TERMCAP_VERSION) $(ERLANG_BUILD_DIR)-host/termcap
+	(cd $(ERLANG_BUILD_DIR)-host/termcap; \
+		./configure; \
+		make; \
+	)
+#	configure erlang (host version)
 	(cd $(ERLANG_BUILD_DIR)-host; \
 		ac_cv_prog_javac_ver_1_2=no \
+		CPPFLAGS="-I$(ERLANG_BUILD_DIR)-host/termcap" \
+		LDFLAGS="-L$(ERLANG_BUILD_DIR)-host/termcap" \
 		./configure \
 		--prefix=/opt \
                 --without-ssl \
                 --disable-hipe \
 		--disable-nls \
 	)
+#	configure erlang (cross version)
 	(cd $(ERLANG_BUILD_DIR)/erts; \
 		autoconf configure.in > configure; \
 	)
@@ -199,6 +210,8 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		$(MAKE) -C $(ERLANG_BUILD_DIR)/erts/boot/src $(ERLANG_MAKE_OPTION)
 else
 	# build host erlang
+	CPPFLAGS="-I$(ERLANG_BUILD_DIR)-host/termcap" \
+	LDFLAGS="-L$(ERLANG_BUILD_DIR)-host/termcap" \
 	$(MAKE) -C $(ERLANG_BUILD_DIR)-host OTP_SMALL_BUILD=true
 	# build host SAE (StandAlone Erlang)
 	ERL_TOP=$(ERLANG_BUILD_DIR)-host \
