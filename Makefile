@@ -221,7 +221,7 @@ all: directories toolchain packages
 
 testing:
 	$(MAKE) PACKAGES="$(PACKAGES_READY_FOR_TESTING)" all
-	$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump $(patsubst %,$(BUILD_DIR)/%*.ipk,$(PACKAGES_READY_FOR_TESTING))
+	$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(patsubst %,$(BUILD_DIR)/%*.ipk,$(PACKAGES_READY_FOR_TESTING))
 
 # Common tools which may need overriding
 CVS=cvs
@@ -410,7 +410,7 @@ $(TMPDIR):
 source: $(PACKAGES_SOURCE)
 
 check-packages:
-	@$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
+	@$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
 
 autoclean:
 	$(PERL) -w unslung-autoclean.pl -v
