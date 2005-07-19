@@ -146,10 +146,13 @@ libdb: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libdb.a: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
+$(LIBDB_BUILD_DIR)/.staged: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
+	rm -f $@
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(STAGING_DIR) install_setup install_include install_lib
+	rm -f $(STAGING_LIB_DIR)/libdb-$(LIBDB_LIB_VERSION).la
+	touch 4@
 
-libdb-stage: $(STAGING_DIR)/opt/lib/libdb.a
+libdb-stage: $(LIBDB_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
