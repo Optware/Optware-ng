@@ -22,7 +22,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=3
+PCRE_IPK_VERSION=4
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
@@ -52,7 +52,9 @@ $(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(PCRE_BUILD_DIR)/libtool
 	touch $(PCRE_BUILD_DIR)/.configured
 
 pcre-unpack: $(PCRE_BUILD_DIR)/.configured
@@ -67,6 +69,8 @@ pcre: $(PCRE_BUILD_DIR)/.built
 $(PCRE_BUILD_DIR)/.staged: $(PCRE_BUILD_DIR)/.built
 	rm -f $(PCRE_BUILD_DIR)/.staged
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libpcre.la
+	rm -f $(STAGING_LIB_DIR)/libpcreposix.la
 	touch $(PCRE_BUILD_DIR)/.staged
 
 pcre-stage: $(PCRE_BUILD_DIR)/.staged
@@ -89,6 +93,10 @@ $(PCRE_IPK): $(PCRE_BUILD_DIR)/.built
 	rm -rf $(PCRE_IPK_DIR) $(BUILD_DIR)/pcre_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(PCRE_IPK_DIR) install
 	find $(PCRE_IPK_DIR) -type d -exec chmod go+rx {} \;
+	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcregrep
+	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcretest
+	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/lib/*.so
+	rm -f $(PCRE_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(PCRE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE_IPK_DIR)
 
