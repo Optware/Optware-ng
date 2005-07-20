@@ -49,9 +49,11 @@ EMACS_PATCHES=#$(EMACS_SOURCE_DIR)/dont-dump.patch
 ifeq ($(HOST_MACHINE),armv5b)
 EMACS_CPPFLAGS=
 EMACS_LDFLAGS=
+EMACS_LD_LIBRARY_PATH=$(STAGING_LIB_DIR)
 else
 EMACS_CPPFLAGS=-DCANNOT_DUMP
 EMACS_LDFLAGS=
+EMACS_LD_LIBRARY_PATH=
 endif
 
 #
@@ -136,7 +138,9 @@ emacs-unpack: $(EMACS_BUILD_DIR)/.configured
 $(EMACS_BUILD_DIR)/.built: $(EMACS_BUILD_DIR)/.configured
 	rm -f $(EMACS_BUILD_DIR)/.built
 	$(MAKE) -C $(EMACS_BUILD_DIR)/lib-src make-docfile test-distrib CC=$(HOSTCC)
-	$(MAKE) -C $(EMACS_BUILD_DIR) lib-src src leim TARGET_LIBDIR=$(TARGET_LIBDIR)
+	LD_LIBRARY_PATH=$(EMACS_LD_LIBRARY_PATH) \
+		$(MAKE) -C $(EMACS_BUILD_DIR) lib-src src leim \
+		TARGET_LIBDIR=$(TARGET_LIBDIR)
 	touch $(EMACS_BUILD_DIR)/.built
 
 #
