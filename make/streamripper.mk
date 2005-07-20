@@ -27,8 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 STREAMRIPPER_NAME=streamripper
-STREAMRIPPER_SITE=http://dl.sourceforge.net/sourceforge/streamripper
-STREAMRIPPER_VERSION=1.61.5
+#STREAMRIPPER_SITE=http://dl.sourceforge.net/sourceforge/streamripper
+STREAMRIPPER_SITE=http://puzzle.dl.sourceforge.net/sourceforge/streamripper/
+STREAMRIPPER_VERSION=1.61.10
 STREAMRIPPER_SOURCE=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION).tar.gz
 STREAMRIPPER_DIR=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION)
 STREAMRIPPER_UNZIP=zcat
@@ -36,13 +37,13 @@ STREAMRIPPER_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 STREAMRIPPER_DESCRIPTION=Shoutcast ripper
 STREAMRIPPER_SECTION=net
 STREAMRIPPER_PRIORITY=optional
-STREAMRIPPER_DEPENDS=
+STREAMRIPPER_DEPENDS=libogg, libvorbis
 STREAMRIPPER_CONFLICTS=
 
 #
 # STREAMRIPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-STREAMRIPPER_IPK_VERSION=1
+STREAMRIPPER_IPK_VERSION=2
 
 #
 # STREAMRIPPER_CONFFILES should be a list of user-editable files
@@ -108,6 +109,7 @@ streamripper-source: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES)
 #
 $(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libvorbis-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(STREAMRIPPER_BUILD_DIR)
 	$(STREAMRIPPER_UNZIP) $(DL_DIR)/$(STREAMRIPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(STREAMRIPPER_PATCHES) | patch -d $(BUILD_DIR)/$(STREAMRIPPER_DIR) -p1
@@ -122,6 +124,10 @@ $(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAM
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-oggtest \
+		--disable-vorbistest \
+		--with-ogg=$(STAGING_DIR)/opt \
+		--with-vorbis=$(STAGING_DIR)/opt \
 	)
 	touch $(STREAMRIPPER_BUILD_DIR)/.configured
 
