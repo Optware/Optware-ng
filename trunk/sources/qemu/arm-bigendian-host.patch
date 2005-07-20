@@ -1,0 +1,15 @@
+--- qemu/Makefile.target~	2005-04-27 13:52:05.000000000 -0700
++++ qemu/Makefile.target	2005-07-20 13:41:46.000000000 -0700
+@@ -191,8 +191,12 @@
+ 
+ ifeq ($(ARCH),arm)
+ OP_CFLAGS=$(CFLAGS) -mno-sched-prolog -fno-omit-frame-pointer
++ifeq ($(WORDS_BIGENDIAN),yes)
++LDFLAGS+=-Wl,-T,$(SRC_PATH)/armeb.ld
++else
+ LDFLAGS+=-Wl,-T,$(SRC_PATH)/arm.ld
+ endif
++endif
+ 
+ ifeq ($(ARCH),m68k)
+ OP_CFLAGS=$(CFLAGS) -fomit-frame-pointer

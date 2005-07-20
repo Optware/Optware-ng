@@ -1,0 +1,22 @@
+--- qemu/cpu-exec.c~	2005-04-27 13:52:05.000000000 -0700
++++ qemu/cpu-exec.c	2005-07-20 11:39:18.000000000 -0700
+@@ -1124,7 +1124,7 @@
+     is_write = 0;
+     return handle_cpu_signal(pc, (unsigned long)info->si_addr, 
+                              is_write,
+-                             &uc->uc_sigmask);
++                             &uc->uc_sigmask,puc);
+ }
+ 
+ #elif defined(__mc68000)
+--- qemu/disas.c~	2005-04-27 13:52:05.000000000 -0700
++++ qemu/disas.c	2005-07-20 11:42:30.000000000 -0700
+@@ -226,7 +226,7 @@
+ #endif
+     for (pc = (unsigned long)code; pc < (unsigned long)code + size; pc += count) {
+ 	fprintf(out, "0x%08lx:  ", pc);
+-#ifdef __arm__
++#if 0 /*def __arm__*/
+         /* since data are included in the code, it is better to
+            display code data too */
+         if (is_host) {
