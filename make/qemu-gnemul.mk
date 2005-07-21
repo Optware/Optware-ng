@@ -80,7 +80,7 @@ $(QEMU_GNEMUL_BUILD_DIR)/.built: $(QEMU_GNEMUL_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-qemu: $(QEMU_GNEMUL_BUILD_DIR)/.built
+qemu-gnemul: $(QEMU_GNEMUL_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
