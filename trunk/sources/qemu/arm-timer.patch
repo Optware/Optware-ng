@@ -8,7 +8,7 @@
 +
 +int64_t cpu_get_real_ticks(void)
 +{
-+	return 0;
++	return 1;
 +}
 +
  #else

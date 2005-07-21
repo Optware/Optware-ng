@@ -53,14 +53,14 @@ QEMU_CONFFILES=
 # QEMU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/cross-build.patch
+QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/cross-build.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/disable-largefiles.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-QEMU_CPPFLAGS=-DDEBUG_MMAP
-QEMU_LDFLAGS=
+QEMU_CPPFLAGS=-DDEBUG_MMAP -g
+QEMU_LDFLAGS=-g
 
 #
 # QEMU_BUILD_DIR is the directory in which the build is done.
@@ -108,6 +108,7 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 		--cpu=$(QEMU_CPU) \
 		--make="$(MAKE)" \
 		--prefix=/opt \
+		--interp-prefix=/opt/lib/gnemul/qemu-%M \
 		--disable-sdl \
 	)
 	touch $(QEMU_BUILD_DIR)/.configured
@@ -185,6 +186,7 @@ qemu-ipk: $(QEMU_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 qemu-clean:
+	rm $(QEMU_BUILD_DIR)/.built
 	-$(MAKE) -C $(QEMU_BUILD_DIR) clean
 
 #
