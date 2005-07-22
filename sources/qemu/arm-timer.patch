@@ -1,14 +1,30 @@
---- qemu/vl.c~	2005-04-27 13:52:05.000000000 -0700
-+++ qemu/vl.c	2005-07-20 13:55:09.000000000 -0700
-@@ -528,6 +528,13 @@
+--- qemu-0.7.0/vl.c	2005-04-27 13:52:05.000000000 -0700
++++ qemu/vl.c	2005-07-21 18:36:36.000000000 -0700
+@@ -528,6 +528,29 @@
  	return val;
  }
  
 +#elif defined(__arm__)
 +
++/* Derived from: "m68k updates #2" by Richard Zidlicky
++   "crude hack to get some sort of rdtsc support" */
++ 
++#include <sys/time.h>
++static int64_t cputicks=0;
++static struct timeval lastcptcall={0,0};
++
 +int64_t cpu_get_real_ticks(void)
 +{
-+	return 1;
++      struct timeval tp;
++      gettimeofday(&tp,(void*)0);
++      if (tp.tv_sec == lastcptcall.tv_sec &&
++         tp.tv_usec == lastcptcall.tv_usec ){
++        cputicks += 1;
++      } else {
++        cputicks=0;
++        lastcptcall=tp;
++      }
++      return ((int64_t)tp.tv_sec*1000000+tp.tv_usec)*5+cputicks;
 +}
 +
  #else
