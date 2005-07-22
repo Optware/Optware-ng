@@ -29,7 +29,7 @@ QEMU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 QEMU_DESCRIPTION=A portable machine emulator.
 QEMU_SECTION=misc
 QEMU_PRIORITY=optional
-QEMU_DEPENDS=zlib
+QEMU_DEPENDS=zlib, sdl
 QEMU_SUGGESTS=
 QEMU_CONFLICTS=
 
@@ -53,13 +53,13 @@ QEMU_CONFFILES=
 # QEMU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/cross-build.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/disable-largefiles.patch $(QEMU_SOURCE_DIR)/no-schedule.patch
+QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/makefile.patch $(QEMU_SOURCE_DIR)/no-schedule.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-QEMU_CPPFLAGS=-g -fno-strict-aliasing
+QEMU_CPPFLAGS=-g -I$(STAGING_INCLUDE_DIR)/SDL
 QEMU_LDFLAGS=-g
 
 #
@@ -95,6 +95,7 @@ qemu-source: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 #
 $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 	$(MAKE) zlib-stage
+	$(MAKE) sdl-stage
 	rm -rf $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR)
 	$(QEMU_UNZIP) $(DL_DIR)/$(QEMU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(QEMU_PATCHES) | patch -d $(BUILD_DIR)/$(QEMU_DIR) -p1
@@ -109,8 +110,10 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 		--make="$(MAKE)" \
 		--prefix=/opt \
 		--interp-prefix=/opt/lib/gnemul/qemu-%M \
-		--disable-sdl \
 	)
+	sed -i -e 's%/tmp/qemu.log%/opt/tmp/qemu.log%' $(QEMU_BUILD_DIR)/vl.c $(QEMU_BUILD_DIR)/exec.c $(QEMU_BUILD_DIR)/linux-user/main.c
+	echo "CONFIG_SDL=yes" >>$(QEMU_BUILD_DIR)/config-host.mak
+	echo "#define CONFIG_SDL 1" >>$(QEMU_BUILD_DIR)/config-host.h
 	touch $(QEMU_BUILD_DIR)/.configured
 
 qemu-unpack: $(QEMU_BUILD_DIR)/.configured
@@ -120,11 +123,7 @@ qemu-unpack: $(QEMU_BUILD_DIR)/.configured
 #
 $(QEMU_BUILD_DIR)/.built: $(QEMU_BUILD_DIR)/.configured
 	rm -f $(QEMU_BUILD_DIR)/.built
-	$(MAKE) -C $(QEMU_BUILD_DIR) HOST_CC=$(HOSTCC) dyngen
-	$(MAKE) -C $(QEMU_BUILD_DIR) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(QEMU_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(QEMU_LDFLAGS)" \
-		VL_LDFLAGS="$(STAGING_LDFLAGS) $(QEMU_LDFLAGS)"
+	$(MAKE) -C $(QEMU_BUILD_DIR) HOST_CC=$(HOSTCC) SDL_LIBS=-lSDL
 	touch $(QEMU_BUILD_DIR)/.built
 
 #
@@ -173,6 +172,8 @@ $(QEMU_IPK): $(QEMU_BUILD_DIR)/.built
 		docdir=$(QEMU_IPK_DIR)/opt/share/doc/qemu \
 		install
 	$(STRIP_COMMAND) $(QEMU_IPK_DIR)/opt/bin/*
+	mkdir $(QEMU_IPK_DIR)/opt/tmp
+	chmod a+rwxt $(QEMU_IPK_DIR)/opt/tmp
 	$(MAKE) $(QEMU_IPK_DIR)/CONTROL/control
 	#echo $(QEMU_CONFFILES) | sed -e 's/ /\n/g' > $(QEMU_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_IPK_DIR)
