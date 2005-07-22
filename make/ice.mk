@@ -100,9 +100,10 @@ ice-source: $(ICE_BUILD_DIR)/.fetched $(ICE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ICE_BUILD_DIR)/.configured: $(ICE_BUILD_DIR)/.fetched \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
-		$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h \
 		$(ICE_PATCHES)
+	$(MAKE) xproto-stage
+	$(MAKE) xtrans-stage
+	$(MAKE) x11-stage
 	(cd $(ICE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICE_CPPFLAGS)" \
@@ -118,6 +119,7 @@ $(ICE_BUILD_DIR)/.configured: $(ICE_BUILD_DIR)/.fetched \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(ICE_BUILD_DIR)/libtool
 	touch $(ICE_BUILD_DIR)/.configured
 
 ice-unpack: $(ICE_BUILD_DIR)/.configured
@@ -138,23 +140,16 @@ ice: $(ICE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libICE.so: $(ICE_BUILD_DIR)/.built
+$(ICE_BUILD_DIR)/.staged: $(ICE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(ICE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libICE.la
+	touch $@
 
-ice-stage: $(STAGING_LIB_DIR)/libICE.so
+ice-stage: $(ICE_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
-#
-# Binaries should be installed into $(ICE_IPK_DIR)/opt/sbin or $(ICE_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ICE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ICE_IPK_DIR)/opt/etc/ice/...
-# Documentation files should be installed in $(ICE_IPK_DIR)/opt/doc/ice/...
-# Daemon startup scripts should be installed in $(ICE_IPK_DIR)/opt/etc/init.d/S??ice
-#
-# You may need to patch your application to make it use these locations.
 #
 $(ICE_IPK): $(ICE_BUILD_DIR)/.built
 	rm -rf $(ICE_IPK_DIR) $(BUILD_DIR)/ice_*_$(TARGET_ARCH).ipk
@@ -172,6 +167,7 @@ ice-ipk: $(ICE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 ice-clean:
+	rm -f $(ICE_BUILD_DIR)/.built
 	-$(MAKE) -C $(ICE_BUILD_DIR) clean
 
 #

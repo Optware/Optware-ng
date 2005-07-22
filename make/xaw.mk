@@ -100,10 +100,10 @@ xaw-source: $(XAW_BUILD_DIR)/.fetched $(XAW_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XAW_BUILD_DIR)/.configured: $(XAW_BUILD_DIR)/.fetched \
-		$(STAGING_LIB_DIR)/libXt.so \
-		$(STAGING_LIB_DIR)/libXmu.so \
-		$(STAGING_LIB_DIR)/libXpm.so \
 		$(XAW_PATCHES)
+	$(MAKE) xt-stage
+	$(MAKE) xmu-stage
+	$(MAKE) xpm-stage
 	(cd $(XAW_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAW_CPPFLAGS)" \
@@ -119,6 +119,7 @@ $(XAW_BUILD_DIR)/.configured: $(XAW_BUILD_DIR)/.fetched \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(XAW_BUILD_DIR)/libtool
 	touch $(XAW_BUILD_DIR)/.configured
 
 xaw-unpack: $(XAW_BUILD_DIR)/.configured
@@ -139,23 +140,16 @@ xaw: $(XAW_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXaw.so: $(XAW_BUILD_DIR)/.built
+$(XAW_BUILD_DIR)/.staged: $(XAW_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XAW_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXaw.la
+	touch $@
 
-xaw-stage: $(STAGING_LIB_DIR)/libXaw.so
+xaw-stage: $(XAW_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
-#
-# Binaries should be installed into $(XAW_IPK_DIR)/opt/sbin or $(XAW_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XAW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XAW_IPK_DIR)/opt/etc/xaw/...
-# Documentation files should be installed in $(XAW_IPK_DIR)/opt/doc/xaw/...
-# Daemon startup scripts should be installed in $(XAW_IPK_DIR)/opt/etc/init.d/S??xaw
-#
-# You may need to patch your application to make it use these locations.
 #
 $(XAW_IPK): $(XAW_BUILD_DIR)/.built
 	rm -rf $(XAW_IPK_DIR) $(BUILD_DIR)/xaw_*_$(TARGET_ARCH).ipk
@@ -173,6 +167,7 @@ xaw-ipk: $(XAW_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 xaw-clean:
+	rm -f $(XAW_BUILD_DIR)/.built
 	-$(MAKE) -C $(XAW_BUILD_DIR) clean
 
 #
