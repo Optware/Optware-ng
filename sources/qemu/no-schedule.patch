@@ -1,0 +1,10 @@
+--- qemu/Makefile.target~	2005-07-21 17:05:30.000000000 -0700
++++ qemu/Makefile.target	2005-07-21 17:12:14.000000000 -0700
+@@ -420,6 +420,7 @@
+ 
+ translate-all.o: translate-all.c opc.h cpu.h
+ 
++translate-op.o: override CFLAGS+=-fno-schedule-insns
+ translate-op.o: translate-all.c op.h opc.h cpu.h
+ 
+ op.h: op.o $(DYNGEN)

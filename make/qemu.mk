@@ -53,13 +53,13 @@ QEMU_CONFFILES=
 # QEMU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/cross-build.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/disable-largefiles.patch
+QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/cross-build.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/disable-largefiles.patch $(QEMU_SOURCE_DIR)/no-schedule.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-QEMU_CPPFLAGS=-DDEBUG_MMAP -g
+QEMU_CPPFLAGS=-g -fno-strict-aliasing
 QEMU_LDFLAGS=-g
 
 #
