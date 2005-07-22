@@ -100,8 +100,8 @@ sm-source: $(SM_BUILD_DIR)/.fetched $(SM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SM_BUILD_DIR)/.configured: $(SM_BUILD_DIR)/.fetched \
-		$(STAGING_LIB_DIR)/libICE.so \
 		$(SM_PATCHES)
+	$(MAKE) ice-stage
 	(cd $(SM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SM_CPPFLAGS)" \
@@ -117,6 +117,7 @@ $(SM_BUILD_DIR)/.configured: $(SM_BUILD_DIR)/.fetched \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(SM_BUILD_DIR)/libtool
 	touch $(SM_BUILD_DIR)/.configured
 
 sm-unpack: $(SM_BUILD_DIR)/.configured
@@ -137,23 +138,16 @@ sm: $(SM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libSM.so: $(SM_BUILD_DIR)/.built
+$(SM_BUILD_DIR)/.staged: $(SM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libSM.la
+	touch $@
 
-sm-stage: $(STAGING_LIB_DIR)/libSM.so
+sm-stage: $(SM_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
-#
-# Binaries should be installed into $(SM_IPK_DIR)/opt/sbin or $(SM_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SM_IPK_DIR)/opt/etc/sm/...
-# Documentation files should be installed in $(SM_IPK_DIR)/opt/doc/sm/...
-# Daemon startup scripts should be installed in $(SM_IPK_DIR)/opt/etc/init.d/S??sm
-#
-# You may need to patch your application to make it use these locations.
 #
 $(SM_IPK): $(SM_BUILD_DIR)/.built
 	rm -rf $(SM_IPK_DIR) $(BUILD_DIR)/sm_*_$(TARGET_ARCH).ipk
@@ -171,6 +165,7 @@ sm-ipk: $(SM_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 sm-clean:
+	rm -f $(SM_BUILD_DIR)/.built
 	-$(MAKE) -C $(SM_BUILD_DIR) clean
 
 #

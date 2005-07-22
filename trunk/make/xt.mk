@@ -100,9 +100,9 @@ xt-source: $(XT_BUILD_DIR)/.fetched $(XT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XT_BUILD_DIR)/.configured: $(XT_BUILD_DIR)/.fetched \
-		$(STAGING_LIB_DIR)/libX11.so \
-		$(STAGING_LIB_DIR)/libSM.so \
 		$(XT_PATCHES)
+	$(MAKE) x11-stage
+	$(MAKE) sm-stage
 	(cd $(XT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XT_CPPFLAGS)" \
@@ -118,6 +118,7 @@ $(XT_BUILD_DIR)/.configured: $(XT_BUILD_DIR)/.fetched \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(XT_BUILD_DIR)/libtool
 	touch $(XT_BUILD_DIR)/.configured
 
 xt-unpack: $(XT_BUILD_DIR)/.configured
@@ -139,23 +140,16 @@ xt: $(XT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXt.so: $(XT_BUILD_DIR)/.built
+$(XT_BUILD_DIR)/.staged: $(XT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXt.la
+	touch $@
 
-xt-stage: $(STAGING_LIB_DIR)/libXt.so
+xt-stage: $(XT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
-#
-# Binaries should be installed into $(XT_IPK_DIR)/opt/sbin or $(XT_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XT_IPK_DIR)/opt/etc/xt/...
-# Documentation files should be installed in $(XT_IPK_DIR)/opt/doc/xt/...
-# Daemon startup scripts should be installed in $(XT_IPK_DIR)/opt/etc/init.d/S??xt
-#
-# You may need to patch your application to make it use these locations.
 #
 $(XT_IPK): $(XT_BUILD_DIR)/.built
 	rm -rf $(XT_IPK_DIR) $(BUILD_DIR)/xt_*_$(TARGET_ARCH).ipk
@@ -173,6 +167,7 @@ xt-ipk: $(XT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 xt-clean:
+	rm -f $(XT_BUILD_DIR)/.built
 	-$(MAKE) -C $(XT_BUILD_DIR) clean
 
 #
