@@ -197,6 +197,7 @@ $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 # This is called from the top level makefile to clean all of the built files.
 #
 <bar>-clean:
+	rm -f $(<FOO>_BUILD_DIR)/.built
 	-$(MAKE) -C $(<BAR>_BUILD_DIR) clean
 
 #
