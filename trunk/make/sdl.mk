@@ -29,7 +29,7 @@ SDL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SDL_DESCRIPTION=Simple direct media library.
 SDL_SECTION=lib
 SDL_PRIORITY=optional
-SDL_DEPENDS=x11, xext, ice
+SDL_DEPENDS=x11, xext
 SDL_SUGGESTS=
 SDL_CONFLICTS=
 
