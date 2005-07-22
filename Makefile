@@ -64,7 +64,7 @@ CROSS_PACKAGES = \
 	py-roundup py-serial py-simpy py-soappy \
 	quagga  \
 	rcs rdate readline recordext renderext rrdtool rsync \
-	samba sane-backends screen sed ser siproxd sm snownews \
+	samba sane-backends screen sdl sed ser siproxd sm snownews \
 	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	sysstat \
 	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
@@ -192,7 +192,8 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 	libtasn1 \
 	opencdk \
 	ficy \
-	taged
+	taged \
+	sdl
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
