@@ -1,7 +1,7 @@
 #!/bin/sh
 set -ex
 TARBALLS_DIR=$HOME/downloads
-export TARBALLS_DIR RESULT_TOP
+export TARBALLS_DIR RESULT_TOP PREFIX
 GCC_LANGUAGES="c,c++"
 export GCC_LANGUAGES
 
