@@ -57,7 +57,7 @@ CROSS_PACKAGES = \
 	pango parted patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
-	procmail procps proftpd puppy python \
+	procmail procps proftpd psutils puppy python \
 	py-bluez py-cheetah py-cherrypy py-clips \
 	py-gdchart2 py-gd py-pil \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
@@ -74,7 +74,7 @@ CROSS_PACKAGES = \
 	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
-	xpm xproto xrender xt xterm xtrans xtst xvid \
+	xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zlib \
 	unslung-devel \
 	crosstool-native
@@ -82,8 +82,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	xpdf \
-	psutils
 
 
 # asterisk may just need configure work
@@ -195,7 +193,9 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 	opencdk \
 	ficy \
 	taged \
-	sdl
+	sdl \
+	xpdf \
+	psutils
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
