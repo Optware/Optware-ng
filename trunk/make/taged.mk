@@ -36,7 +36,7 @@ TAGED_CONFLICTS=
 #
 # TAGED_IPK_VERSION should be incremented when the ipk changes.
 #
-TAGED_IPK_VERSION=1
+TAGED_IPK_VERSION=2
 
 #
 # TAGED_CONFFILES should be a list of user-editable files
@@ -185,6 +185,7 @@ $(TAGED_IPK_DIR)/CONTROL/control:
 $(TAGED_IPK): $(TAGED_BUILD_DIR)/.built
 	rm -rf $(TAGED_IPK_DIR) $(BUILD_DIR)/taged_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAGED_BUILD_DIR) DESTDIR=$(TAGED_IPK_DIR) install-strip
+	rm -rf $(TAGED_IPK_DIR)/opt/lib $(TAGED_IPK_DIR)/opt/include
 	$(MAKE) $(TAGED_IPK_DIR)/CONTROL/control
 	echo $(TAGED_CONFFILES) | sed -e 's/ /\n/g' > $(TAGED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAGED_IPK_DIR)
