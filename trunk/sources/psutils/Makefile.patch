@@ -1,0 +1,81 @@
+--- psutils.orig/Makefile.unix	2005-07-23 19:46:36.391576352 +0200
++++ psutils/Makefile.unix	2005-07-23 19:51:31.094828816 +0200
+@@ -28,7 +28,8 @@
+ BINDIR = /usr/local/bin
+ SCRIPTDIR = $(BINDIR)
+ INCLUDEDIR = /usr/local/share/psutils
+-PERL = /usr/local/bin/perl
++PERL = /usr/bin/perl
++PERL_TARGET = /opt/bin/perl
+ 
+ BINMODE = 0755
+ MANMODE = 0644
+@@ -99,55 +100,55 @@
+ 	cp $? $@
+ 
+ psmerge: psmerge.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixfmps: fixfmps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixmacps: fixmacps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) INCLUDE=$(INCLUDEDIR) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) INCLUDE=$(INCLUDEDIR) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixpsditps: fixpsditps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixpspps: fixpspps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixscribeps: fixscribeps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixtpps: fixtpps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixwfwps: fixwfwps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixwpps: fixwpps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixwwps: fixwwps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ fixdlsrps: fixdlsrps.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ extractres: extractres.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ includeres: includeres.pl
+-	$(PERL) maketext OS=$(OS) PERL=$(PERL) INCLUDE=$(INCLUDEDIR) $? > $@
++	$(PERL) maketext OS=$(OS) PERL=$(PERL_TARGET) INCLUDE=$(INCLUDEDIR) $? > $@
+ 	$(CHMOD) $(BINMODE) $@
+ 
+ epsffit.$(MANEXT): epsffit.man
