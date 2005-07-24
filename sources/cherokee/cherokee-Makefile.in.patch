@@ -1,0 +1,29 @@
+--- cherokee-0.4.24-orig/cherokee/Makefile.in	2005-07-07 07:03:19.000000000 -0700
++++ cherokee/cherokee/Makefile.in	2005-07-24 09:40:30.000000000 -0700
+@@ -341,7 +341,7 @@
+ am_cherokee_admin_OBJECTS = cherokee_admin.$(OBJEXT)
+ cherokee_admin_OBJECTS = $(am_cherokee_admin_OBJECTS)
+ cherokee_admin_DEPENDENCIES = libcherokee-config.la \
+-	libcherokee-base.la libcherokee-client.la
++	libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
+ SCRIPTS = $(bin_SCRIPTS)
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
+@@ -819,7 +819,7 @@
+ 
+ libplugin_admin_la_LDFLAGS = -module -export-dynamic -avoid-version  
+ libplugin_admin_la_SOURCES = $(handler_admin)
+-libplugin_admin_la_LIBADD = -lcherokee-config -lcherokee-client
++libplugin_admin_la_LIBADD = -lcherokee-config -lcherokee-client -lcherokee-server
+ @STATIC_HANDLER_ADMIN_TRUE@static_handler_admin_src = $(handler_admin)
+ @STATIC_HANDLER_ADMIN_FALSE@dynamic_handler_admin_lib = libplugin_admin.la
+ 
+@@ -1220,7 +1220,7 @@
+ libcherokee-server.la
+ 
+ cherokee_admin_SOURCES = cherokee_admin.c 
+-cherokee_admin_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la 
++cherokee_admin_LDADD = libcherokee-config.la libcherokee-base.la libcherokee-client.la libcherokee-server.la
+ 
+ #noinst_PROGRAMS = cherokee_modules cherokee_base64 cherokee_headers cherokee_fastcgi
+ 
