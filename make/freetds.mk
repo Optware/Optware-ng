@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=1
+FREETDS_IPK_VERSION=2
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
@@ -119,6 +119,7 @@ $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/freetds \
+		--enable-msdblib \
 		--disable-nls \
 		--disable-static \
 	)
