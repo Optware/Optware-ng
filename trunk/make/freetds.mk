@@ -26,7 +26,7 @@ FREETDS_VERSION=0.63
 FREETDS_SOURCE=freetds-$(FREETDS_VERSION).tar.gz
 FREETDS_DIR=freetds-$(FREETDS_VERSION)
 FREETDS_UNZIP=zcat
-FREETDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+FREETDS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 FREETDS_DESCRIPTION=A free re-implementation of the Tabular Data Stream protocol for Sybase or MS SQL Server.
 FREETDS_SECTION=misc
 FREETDS_PRIORITY=optional
@@ -41,7 +41,7 @@ FREETDS_IPK_VERSION=1
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
-#FREETDS_CONFFILES=/opt/etc/freetds.conf /opt/etc/init.d/SXXfreetds
+FREETDS_CONFFILES=/opt/etc/freetds/freetds.conf /opt/etc/freetds/locales.conf /opt/etc/freetds/pool.conf
 
 #
 # FREETDS_PATCHES should list any patches, in the the order in
@@ -118,6 +118,7 @@ $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir=/opt/etc/freetds \
 		--disable-nls \
 		--disable-static \
 	)
@@ -190,7 +191,7 @@ $(FREETDS_IPK): $(FREETDS_BUILD_DIR)/.built
 	$(MAKE) $(FREETDS_IPK_DIR)/CONTROL/control
 #	install -m 755 $(FREETDS_SOURCE_DIR)/postinst $(FREETDS_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(FREETDS_SOURCE_DIR)/prerm $(FREETDS_IPK_DIR)/CONTROL/prerm
-#	echo $(FREETDS_CONFFILES) | sed -e 's/ /\n/g' > $(FREETDS_IPK_DIR)/CONTROL/conffiles
+	echo $(FREETDS_CONFFILES) | sed -e 's/ /\n/g' > $(FREETDS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREETDS_IPK_DIR)
 
 #
