@@ -1,0 +1,19 @@
+--- cherokee-0.4.24-orig/configure.in	2005-07-07 07:02:47.000000000 -0700
++++ cherokee/configure.in	2005-07-23 16:36:15.000000000 -0700
+@@ -573,15 +573,7 @@
+ 
+ # Is sendfile broken?
+ AC_MSG_CHECKING(if sendfile works)
+-AC_TRY_RUN([#include <errno.h>
+-            int main() {
+-               int o = 0;
+-               if (-1 == sendfile(0, 0, &o, 0) && errno == ENOSYS) return -1;
+-               return 0;
+-            } ], 
+-            AC_MSG_RESULT(yes), 
+-            [ AC_MSG_RESULT(no) 
+-              AC_DEFINE([HAVE_SENDFILE_BROKEN], [1], [broken sendfile]) ])
++            AC_MSG_RESULT(yes)
+ 
+ # readdir_r()
+ PHP_READDIR_R_TYPE
