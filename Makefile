@@ -84,6 +84,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	freetds \
 	sqsh \
+	py-mssql \
 
 
 # asterisk may just need configure work
