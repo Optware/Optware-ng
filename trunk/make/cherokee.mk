@@ -127,7 +127,6 @@ $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCH
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--disable-pthread \
 	)
 	$(PATCH_LIBTOOL) $(CHEROKEE_BUILD_DIR)/libtool
 	touch $(CHEROKEE_BUILD_DIR)/.configured
