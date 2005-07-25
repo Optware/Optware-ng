@@ -16,7 +16,7 @@
      for (pc = (unsigned long)code; pc < (unsigned long)code + size; pc += count) {
  	fprintf(out, "0x%08lx:  ", pc);
 -#ifdef __arm__
-+#if 0 /*def __arm__*/
++#if 0 /*def __arm__ - this code no longer works as is_host is not around */
          /* since data are included in the code, it is better to
             display code data too */
          if (is_host) {
