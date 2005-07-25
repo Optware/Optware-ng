@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MAILMAN_SITE=http://ftp.gnu.org/gnu/mailman
-MAILMAN_VERSION=2.1.5
+MAILMAN_SITE=http://dl.sourceforge.net/sourceforge/mailman
+MAILMAN_VERSION=2.1.6
 MAILMAN_SOURCE=mailman-$(MAILMAN_VERSION).tgz
 MAILMAN_DIR=mailman-$(MAILMAN_VERSION)
 MAILMAN_UNZIP=zcat
@@ -189,15 +189,16 @@ $(MAILMAN_IPK_DIR)/CONTROL/control:
 $(MAILMAN_IPK): $(MAILMAN_BUILD_DIR)/.built
 	rm -rf $(MAILMAN_IPK_DIR) $(BUILD_DIR)/mailman_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAILMAN_BUILD_DIR) DESTDIR=$(MAILMAN_IPK_DIR) install
+	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/cgi-bin/*
 	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/mail/mailman
-	#install -d $(MAILMAN_IPK_DIR)/opt/etc/
-	#install -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
-	#install -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(MAILMAN_SOURCE_DIR)/rc.mailman $(MAILMAN_IPK_DIR)/opt/etc/init.d/SXXmailman
+#	install -d $(MAILMAN_IPK_DIR)/opt/etc/
+#	install -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
+#	install -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(MAILMAN_SOURCE_DIR)/rc.mailman $(MAILMAN_IPK_DIR)/opt/etc/init.d/SXXmailman
 	$(MAKE) $(MAILMAN_IPK_DIR)/CONTROL/control
-	#install -m 755 $(MAILMAN_SOURCE_DIR)/postinst $(MAILMAN_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(MAILMAN_SOURCE_DIR)/prerm $(MAILMAN_IPK_DIR)/CONTROL/prerm
-	#echo $(MAILMAN_CONFFILES) | sed -e 's/ /\n/g' > $(MAILMAN_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(MAILMAN_SOURCE_DIR)/postinst $(MAILMAN_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(MAILMAN_SOURCE_DIR)/prerm $(MAILMAN_IPK_DIR)/CONTROL/prerm
+#	echo $(MAILMAN_CONFFILES) | sed -e 's/ /\n/g' > $(MAILMAN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MAILMAN_IPK_DIR)
 
 #
