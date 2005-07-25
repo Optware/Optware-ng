@@ -126,6 +126,7 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	perl-date-manip \
 
 # bitlbee - "Could not find a suitable SSL library" - assumes cross-build host has gnutls installed?
 # libao - has runtime trouble
