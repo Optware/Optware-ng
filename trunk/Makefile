@@ -34,7 +34,7 @@ CROSS_PACKAGES = \
 	dev-pts dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	fetchmail ffmpeg ficy file findutils fixesext flac flex \
-	fontconfig freeradius freetype ftpd-topfield \
+	fontconfig freeradius freetds freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	glib gnupg gnutls grep groff gtk gzip \
@@ -59,13 +59,13 @@ CROSS_PACKAGES = \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd psutils puppy python \
 	py-bluez py-cheetah py-cherrypy py-clips \
-	py-gdchart2 py-gd py-pil \
+	py-gdchart2 py-gd py-pil py-mssql \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	py-roundup py-serial py-simpy py-soappy \
-	quagga  \
+	qemu qemu-libc-i386 quagga  \
 	rcs rdate readline recordext renderext rrdtool rsync \
 	samba sane-backends screen sdl sed ser siproxd sm snownews \
-	sqlite sqlite2 strace stunnel streamripper sudo svn syslog-ng \
+	sqlite sqsh sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	sysstat \
 	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
 	tin torrent transcode tsocks \
@@ -82,9 +82,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	freetds \
-	sqsh \
-	py-mssql \
 
 
 # asterisk may just need configure work
@@ -198,7 +195,11 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 	taged \
 	sdl \
 	xpdf \
-	psutils
+	psutils \
+	freetds \
+	sqsh \
+	py-mssql \
+	qemu qemu-libc-i386
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
