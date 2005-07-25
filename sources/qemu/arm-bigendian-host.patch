@@ -5,7 +5,7 @@
  ifeq ($(ARCH),arm)
  OP_CFLAGS=$(CFLAGS) -mno-sched-prolog -fno-omit-frame-pointer
 +ifeq ($(WORDS_BIGENDIAN),yes)
-+LDFLAGS+=-Wl,-T,$(SRC_PATH)/armeb.ld
++LDFLAGS+=-Wl,-EB -Wl,-T,$(SRC_PATH)/arm.ld
 +else
  LDFLAGS+=-Wl,-T,$(SRC_PATH)/arm.ld
  endif
@@ -13,3 +13,11 @@
  
  ifeq ($(ARCH),m68k)
  OP_CFLAGS=$(CFLAGS) -fomit-frame-pointer
+--- qemu/arm.ld~	2005-07-24 11:52:08.000000000 -0700
++++ qemu/arm.ld	2005-07-24 23:21:29.000000000 -0700
+@@ -1,4 +1,4 @@
+-OUTPUT_FORMAT("elf32-littlearm", "elf32-littlearm",
++OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm",
+ 	      "elf32-littlearm")
+ OUTPUT_ARCH(arm)
+ ENTRY(_start)

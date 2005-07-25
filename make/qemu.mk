@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QEMU_SITE=http://fabrice.bellard.free.fr/qemu
-QEMU_VERSION=0.7.0
+QEMU_VERSION=0.7.1
 QEMU_SOURCE=qemu-$(QEMU_VERSION).tar.gz
 QEMU_DIR=qemu-$(QEMU_VERSION)
 QEMU_UNZIP=zcat
@@ -55,7 +55,7 @@ QEMU_CONFFILES=
 # QEMU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/arm-timer.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/makefile.patch $(QEMU_SOURCE_DIR)/no-schedule.patch
+QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-bigendian-host.patch $(QEMU_SOURCE_DIR)/dyngen.patch $(QEMU_SOURCE_DIR)/makefile.patch $(QEMU_SOURCE_DIR)/no-schedule.patch $(QEMU_SOURCE_DIR)/op-gen-label.patch $(QEMU_SOURCE_DIR)/arm-timer.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +104,6 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 	$(QEMU_UNZIP) $(DL_DIR)/$(QEMU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(QEMU_PATCHES) | patch -d $(BUILD_DIR)/$(QEMU_DIR) -p1
 	mv $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR)
-	cp $(QEMU_SOURCE_DIR)/armeb.ld $(QEMU_BUILD_DIR)
 	(cd $(QEMU_BUILD_DIR); \
 		./configure \
 		--cross-prefix=$(TARGET_CROSS) \
@@ -115,6 +114,7 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 		--prefix=/opt \
 		--interp-prefix=/opt/lib/gnemul/qemu-%M \
 		--target-list="$(QEMU_TARGET_LIST)" \
+		--disable-gfx-check \
 	)
 	sed -i -e 's%/tmp/qemu.log%/opt/tmp/qemu.log%' $(QEMU_BUILD_DIR)/vl.c $(QEMU_BUILD_DIR)/exec.c $(QEMU_BUILD_DIR)/linux-user/main.c
 	echo "CONFIG_SDL=yes" >>$(QEMU_BUILD_DIR)/config-host.mak
