@@ -25,11 +25,11 @@ QEMU_VERSION=0.7.0
 QEMU_SOURCE=qemu-$(QEMU_VERSION).tar.gz
 QEMU_DIR=qemu-$(QEMU_VERSION)
 QEMU_UNZIP=zcat
-QEMU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+QEMU_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 QEMU_DESCRIPTION=A portable machine emulator.
 QEMU_SECTION=misc
 QEMU_PRIORITY=optional
-QEMU_DEPENDS=zlib, sdl
+QEMU_DEPENDS=zlib
 QEMU_SUGGESTS=
 QEMU_CONFLICTS=
 
@@ -39,6 +39,8 @@ endif
 ifeq ($(UNSLUNG_TARGET),wl500g)
 QEMU_CPU=mips
 endif
+
+QEMU_TARGET_LIST=i386-user i386-softmmu
 
 #
 # QEMU_IPK_VERSION should be incremented when the ipk changes.
@@ -59,8 +61,8 @@ QEMU_PATCHES=$(QEMU_SOURCE_DIR)/arm-build-fixes.patch $(QEMU_SOURCE_DIR)/arm-big
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-QEMU_CPPFLAGS=-g -I$(STAGING_INCLUDE_DIR)/SDL
-QEMU_LDFLAGS=-g
+QEMU_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/SDL #-g -DDEBUG_EXEC -DDEBUG_MMAP
+QEMU_LDFLAGS=#-g
 
 #
 # QEMU_BUILD_DIR is the directory in which the build is done.
@@ -75,6 +77,8 @@ QEMU_BUILD_DIR=$(BUILD_DIR)/qemu
 QEMU_SOURCE_DIR=$(SOURCE_DIR)/qemu
 QEMU_IPK_DIR=$(BUILD_DIR)/qemu-$(QEMU_VERSION)-ipk
 QEMU_IPK=$(BUILD_DIR)/qemu_$(QEMU_VERSION)-$(QEMU_IPK_VERSION)_$(TARGET_ARCH).ipk
+QEMU_USER_IPK_DIR=$(BUILD_DIR)/qemu-user-$(QEMU_VERSION)-ipk
+QEMU_USER_IPK=$(BUILD_DIR)/qemu-user_$(QEMU_VERSION)-$(QEMU_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -110,6 +114,7 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 		--make="$(MAKE)" \
 		--prefix=/opt \
 		--interp-prefix=/opt/lib/gnemul/qemu-%M \
+		--target-list="$(QEMU_TARGET_LIST)" \
 	)
 	sed -i -e 's%/tmp/qemu.log%/opt/tmp/qemu.log%' $(QEMU_BUILD_DIR)/vl.c $(QEMU_BUILD_DIR)/exec.c $(QEMU_BUILD_DIR)/linux-user/main.c
 	echo "CONFIG_SDL=yes" >>$(QEMU_BUILD_DIR)/config-host.mak
@@ -146,21 +151,27 @@ $(QEMU_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(QEMU_MAINTAINER)" >>$@
 	@echo "Source: $(QEMU_SITE)/$(QEMU_SOURCE)" >>$@
 	@echo "Description: $(QEMU_DESCRIPTION)" >>$@
+	@echo "Depends: $(QEMU_DEPENDS), sdl" >>$@
+	@echo "Suggests: $(QEMU_SUGGESTS)" >>$@
+	@echo "Conflicts: $(QEMU_CONFLICTS)" >>$@
+
+$(QEMU_USER_IPK_DIR)/CONTROL/control:
+	@install -d $(QEMU_USER_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: qemu-user" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(QEMU_PRIORITY)" >>$@
+	@echo "Section: $(QEMU_SECTION)" >>$@
+	@echo "Version: $(QEMU_VERSION)-$(QEMU_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(QEMU_MAINTAINER)" >>$@
+	@echo "Source: $(QEMU_SITE)/$(QEMU_SOURCE)" >>$@
+	@echo "Description: $(QEMU_DESCRIPTION)" >>$@
 	@echo "Depends: $(QEMU_DEPENDS)" >>$@
 	@echo "Suggests: $(QEMU_SUGGESTS)" >>$@
 	@echo "Conflicts: $(QEMU_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
-#
-# Binaries should be installed into $(QEMU_IPK_DIR)/opt/sbin or $(QEMU_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(QEMU_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(QEMU_IPK_DIR)/opt/etc/qemu/...
-# Documentation files should be installed in $(QEMU_IPK_DIR)/opt/doc/qemu/...
-# Daemon startup scripts should be installed in $(QEMU_IPK_DIR)/opt/etc/init.d/S??qemu
-#
-# You may need to patch your application to make it use these locations.
 #
 $(QEMU_IPK): $(QEMU_BUILD_DIR)/.built
 	rm -rf $(QEMU_IPK_DIR) $(BUILD_DIR)/qemu_*_$(TARGET_ARCH).ipk
@@ -175,8 +186,15 @@ $(QEMU_IPK): $(QEMU_BUILD_DIR)/.built
 	mkdir $(QEMU_IPK_DIR)/opt/tmp
 	chmod a+rwxt $(QEMU_IPK_DIR)/opt/tmp
 	$(MAKE) $(QEMU_IPK_DIR)/CONTROL/control
-	#echo $(QEMU_CONFFILES) | sed -e 's/ /\n/g' > $(QEMU_IPK_DIR)/CONTROL/conffiles
+	mkdir -p $(QEMU_USER_IPK_DIR)/opt/bin
+	for F in $(QEMU_TARGET_LIST) ; \
+		do if test -r  $(QEMU_IPK_DIR)/opt/bin/qemu-$${F%-user} ; \
+		then mv $(QEMU_IPK_DIR)/opt/bin/qemu-$${F%-user} \
+			$(QEMU_USER_IPK_DIR)/opt/bin ; \
+		fi ; done
+	$(MAKE) $(QEMU_USER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_USER_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

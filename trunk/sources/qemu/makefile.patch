@@ -60,3 +60,14 @@
  endif
  
  ifneq ($(wildcard .depend),)
+--- qemu/Makefile~	2005-07-24 15:43:12.000000000 -0700
++++ qemu/Makefile	2005-07-24 15:49:01.000000000 -0700
+@@ -55,7 +55,7 @@
+ 
+ install: all 
+ 	mkdir -p "$(bindir)"
+-	install -m 755 -s $(TOOLS) "$(bindir)"
++	install -m 755 $(TOOLS) "$(bindir)"
+ 	mkdir -p "$(datadir)"
+ 	install -m 644 pc-bios/bios.bin pc-bios/vgabios.bin \
+                        pc-bios/vgabios-cirrus.bin \
