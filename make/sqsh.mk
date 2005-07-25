@@ -30,7 +30,7 @@ SQSH_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 SQSH_DESCRIPTION=Command line SQL client for MS SQL and Sybase servers.
 SQSH_SECTION=misc
 SQSH_PRIORITY=optional
-SQSH_DEPENDS=freetds, readline
+SQSH_DEPENDS=freetds, readline, ncurses
 SQSH_SUGGESTS=
 SQSH_CONFLICTS=
 
@@ -103,7 +103,7 @@ sqsh-source: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES)
 # shown below to make various patches to it.
 #
 $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES)
-	$(MAKE) freetds-stage readline-stage
+	$(MAKE) freetds-stage readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
 	$(SQSH_UNZIP) $(DL_DIR)/$(SQSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p1

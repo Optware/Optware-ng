@@ -147,6 +147,10 @@ freetds: $(FREETDS_BUILD_DIR)/.built
 $(FREETDS_BUILD_DIR)/.staged: $(FREETDS_BUILD_DIR)/.built
 	rm -f $(FREETDS_BUILD_DIR)/.staged
 	$(MAKE) -C $(FREETDS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libct.la
+	rm -f $(STAGING_LIB_DIR)/libsybdb.la
+	rm -f $(STAGING_LIB_DIR)/libtds.la
+	rm -f $(STAGING_LIB_DIR)/libtdssrv.la
 	touch $(FREETDS_BUILD_DIR)/.staged
 
 freetds-stage: $(FREETDS_BUILD_DIR)/.staged
@@ -185,6 +189,7 @@ $(FREETDS_IPK_DIR)/CONTROL/control:
 $(FREETDS_IPK): $(FREETDS_BUILD_DIR)/.built
 	rm -rf $(FREETDS_IPK_DIR) $(BUILD_DIR)/freetds_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FREETDS_BUILD_DIR) DESTDIR=$(FREETDS_IPK_DIR) install-strip
+	rm -f $(FREETDS_IPK_DIR)/opt/lib/*.la
 #	install -d $(FREETDS_IPK_DIR)/opt/etc/
 #	install -m 644 $(FREETDS_SOURCE_DIR)/freetds.conf $(FREETDS_IPK_DIR)/opt/etc/freetds.conf
 #	install -d $(FREETDS_IPK_DIR)/opt/etc/init.d
