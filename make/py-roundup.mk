@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://dl.sourceforge.net/sourceforge/roundup
-PY-ROUNDUP_VERSION=0.8.3
+PY-ROUNDUP_VERSION=0.8.4
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -180,7 +180,7 @@ $(PY-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    python2.4 setup.py install --prefix=$(PY-ROUNDUP_IPK_DIR)/opt; \
 	)
-	#$(STRIP_COMMAND) `find $(PY-ROUNDUP_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+#	$(STRIP_COMMAND) `find $(PY-ROUNDUP_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY-ROUNDUP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-ROUNDUP_IPK_DIR)
 
