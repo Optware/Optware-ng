@@ -141,6 +141,7 @@ bluez-libs: $(BLUEZ-LIBS_BUILD_DIR)/.built
 $(BLUEZ-LIBS_BUILD_DIR)/.staged: $(BLUEZ-LIBS_BUILD_DIR)/.built
 	rm -f $(BLUEZ-LIBS_BUILD_DIR)/.staged
 	$(MAKE) -C $(BLUEZ-LIBS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
+	rm -f $(STAGING_LIB_DIR)/libbluetooth.la
 	touch $(BLUEZ-LIBS_BUILD_DIR)/.staged
 
 bluez-libs-stage: $(BLUEZ-LIBS_BUILD_DIR)/.staged
@@ -179,6 +180,7 @@ $(BLUEZ-LIBS_IPK_DIR)/CONTROL/control:
 $(BLUEZ-LIBS_IPK): $(BLUEZ-LIBS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ-LIBS_IPK_DIR) $(BUILD_DIR)/bluez-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ-LIBS_BUILD_DIR) DESTDIR=$(BLUEZ-LIBS_IPK_DIR) install-strip
+	rm -f $(BLUEZ-LIBS_IPK_DIR)/opt/lib/libbluetooth.la
 	$(MAKE) $(BLUEZ-LIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ-LIBS_IPK_DIR)
 
