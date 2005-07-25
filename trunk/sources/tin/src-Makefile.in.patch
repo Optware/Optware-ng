@@ -1,0 +1,21 @@
+--- tin-1.7.9/src/Makefile.in	2005-06-28 10:49:36.000000000 -0700
++++ tin/src/Makefile.in	2005-07-24 22:15:18.000000000 -0700
+@@ -336,8 +336,6 @@
+ 	@$(INSTALL) -m 444 $(DOCDIR)/tin.1 $(DESTDIR)$(INS_MANUAL_DIR)$(INS_MANUAL_EXT)/$(PROJECT).$(INS_MANUAL_EXT)
+ 	@( $(CD) $(DESTDIR)$(INS_MANUAL_DIR)$(INS_MANUAL_EXT) && $(RM) -f r$(PROJECT).$(INS_MANUAL_EXT) && $(LN) $(PROJECT).$(INS_MANUAL_EXT) r$(PROJECT).$(INS_MANUAL_EXT) )
+ 	@$(INSTALL) -m 444 $(DOCDIR)/tin.5 $(DESTDIR)$(INS_MANUAL_DIR)5/$(PROJECT).5
+-	@-if test ! -f $(DESTDIR)$(INS_MANUAL_DIR)5/mbox.5 ; then $(INSTALL) -m 444 $(DOCDIR)/mbox.5 $(DESTDIR)$(INS_MANUAL_DIR)5/mbox.5 ; else $(ECHO) "  ... skipping $(DESTDIR)$(INS_MANUAL_DIR)5/mbox.5 - file already exists" ; fi
+-	@-if test ! -f $(DESTDIR)$(INS_MANUAL_DIR)5/mmdf.5 ; then $(INSTALL) -m 444 $(DOCDIR)/mmdf.5 $(DESTDIR)$(INS_MANUAL_DIR)5/mmdf.5 ; else $(ECHO) "  ... skipping $(DESTDIR)$(INS_MANUAL_DIR)5/mmdf.5 - file already exists" ; fi
+ 
+ uninstall_manpage :
+ 	@$(ECHO) "Uninstalling $(PROJECT) manual page in $(DESTDIR)$(INS_MANUAL_DIR)$(INS_MANUAL_EXT) ..."
+@@ -382,7 +380,8 @@
+ install : $(DESTDIR)$(INS_BINARY_DIR)
+ 	@$(MAKE) all
+ 	@$(ECHO) "Installing $(EXE) v$(VER) to $(DESTDIR)$(INS_BINARY_DIR) ..."
+-	@$(INSTALL) -s $(BINDIR)/$(EXE) $(DESTDIR)$(INS_BINARY_DIR)/$(EXE)
++	@$(INSTALL) $(BINDIR)/$(EXE) $(DESTDIR)$(INS_BINARY_DIR)/$(EXE)
++	@$(STRIP) $(DESTDIR)$(INS_BINARY_DIR)/$(EXE)
+ 	@( $(CD) $(DESTDIR)$(INS_BINARY_DIR) && $(RM) -f r$(EXE) && $(LN) $(EXE) r$(EXE) )
+ 	@$(MAKE) install_helpers
+ 	@$(MAKE) install_manpage

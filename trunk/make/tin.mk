@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/unstable
-TIN_VERSION=1.7.8
+TIN_VERSION=1.7.9
 TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
 TIN_DIR=tin-$(TIN_VERSION)
 TIN_UNZIP=zcat
@@ -40,7 +40,7 @@ TIN_DEPENDS=
 #
 # TIN_IPK_VERSION should be incremented when the ipk changes.
 #
-TIN_IPK_VERSION=2
+TIN_IPK_VERSION=1
 
 #
 # TIN_CONFFILES should be a list of user-editable files
@@ -50,7 +50,7 @@ TIN_IPK_VERSION=2
 # TIN_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TIN_PATCHES=$(TIN_SOURCE_DIR)/configure.patch
+TIN_PATCHES=$(TIN_SOURCE_DIR)/src-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,6 +116,7 @@ $(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--with-build-cc=$(HOSTCC) \
 		--prefix=/opt \
 		--disable-nls \
 	)
@@ -179,13 +180,13 @@ $(TIN_IPK): $(TIN_BUILD_DIR)/.built
 	rm -rf $(TIN_IPK_DIR) $(BUILD_DIR)/tin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TIN_BUILD_DIR) DESTDIR=$(TIN_IPK_DIR) STRIP="$(STRIP_COMMAND)" install
 	install -d $(TIN_IPK_DIR)/opt/etc/
-	# install -m 644 $(TIN_SOURCE_DIR)/tin.conf $(TIN_IPK_DIR)/opt/etc/tin.conf
-	# install -d $(TIN_IPK_DIR)/opt/etc/init.d
-	# install -m 755 $(TIN_SOURCE_DIR)/rc.tin $(TIN_IPK_DIR)/opt/etc/init.d/SXXtin
+#	install -m 644 $(TIN_SOURCE_DIR)/tin.conf $(TIN_IPK_DIR)/opt/etc/tin.conf
+#	install -d $(TIN_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(TIN_SOURCE_DIR)/rc.tin $(TIN_IPK_DIR)/opt/etc/init.d/SXXtin
 	$(MAKE) $(TIN_IPK_DIR)/CONTROL/control
-	# install -m 755 $(TIN_SOURCE_DIR)/postinst $(TIN_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(TIN_SOURCE_DIR)/prerm $(TIN_IPK_DIR)/CONTROL/prerm
-	# echo $(TIN_CONFFILES) | sed -e 's/ /\n/g' > $(TIN_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(TIN_SOURCE_DIR)/postinst $(TIN_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(TIN_SOURCE_DIR)/prerm $(TIN_IPK_DIR)/CONTROL/prerm
+#	echo $(TIN_CONFFILES) | sed -e 's/ /\n/g' > $(TIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TIN_IPK_DIR)
 
 #
