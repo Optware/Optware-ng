@@ -30,7 +30,7 @@ CHEROKEE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CHEROKEE_DESCRIPTION=A flexible, very fast, lightweight web server.
 CHEROKEE_SECTION=web
 CHEROKEE_PRIORITY=optional
-CHEROKEE_DEPENDS=
+CHEROKEE_DEPENDS=libtasn1, gnutls, libgcrypt
 CHEROKEE_SUGGESTS=
 CHEROKEE_CONFLICTS=
 
@@ -41,7 +41,14 @@ CHEROKEE_IPK_VERSION=1
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
-#CHEROKEE_CONFFILES=/opt/etc/cherokee.conf /opt/etc/init.d/SXXcherokee
+CHEROKEE_CONFFILES=\
+	/opt/etc/cherokee/mods-available/ssl \
+	/opt/etc/cherokee/sites-available/default \
+	/opt/etc/cherokee/sites-available/example.com \
+	/opt/etc/cherokee/cherokee.conf \
+	/opt/etc/cherokee/advanced.conf \
+	/opt/etc/cherokee/icons.conf \
+	/opt/etc/cherokee/mime.conf \
 
 #
 # CHEROKEE_PATCHES should list any patches, in the the order in
@@ -191,6 +198,7 @@ $(CHEROKEE_IPK_DIR)/CONTROL/control:
 $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	rm -rf $(CHEROKEE_IPK_DIR) $(BUILD_DIR)/cherokee_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHEROKEE_BUILD_DIR) DESTDIR=$(CHEROKEE_IPK_DIR) install-strip
+	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/
 #	install -m 644 $(CHEROKEE_SOURCE_DIR)/cherokee.conf $(CHEROKEE_IPK_DIR)/opt/etc/cherokee.conf
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
@@ -198,7 +206,7 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	$(MAKE) $(CHEROKEE_IPK_DIR)/CONTROL/control
 #	install -m 755 $(CHEROKEE_SOURCE_DIR)/postinst $(CHEROKEE_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(CHEROKEE_SOURCE_DIR)/prerm $(CHEROKEE_IPK_DIR)/CONTROL/prerm
-#	echo $(CHEROKEE_CONFFILES) | sed -e 's/ /\n/g' > $(CHEROKEE_IPK_DIR)/CONTROL/conffiles
+	echo $(CHEROKEE_CONFFILES) | sed -e 's/ /\n/g' > $(CHEROKEE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHEROKEE_IPK_DIR)
 
 #
