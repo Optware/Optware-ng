@@ -124,6 +124,7 @@ $(ASTERISK_BUILD_DIR)/.configured: $(DL_DIR)/asterisk-$(ASTERISK_VERSION).tar.gz
 	$(MAKE) ncurses-stage openssl-stage
 	rm -rf $(ASTERISK_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/asterisk-$(ASTERISK_VERSION).tar.gz
+	cat $(ASTERISK_PATCHES) |patch -p1 -d $(ASTERISK_BUILD_DIR)
 	touch $(ASTERISK_BUILD_DIR)/.configured
 
 asterisk-unpack: $(ASTERISK_BUILD_DIR)/.configured
