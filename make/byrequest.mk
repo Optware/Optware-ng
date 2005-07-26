@@ -29,15 +29,25 @@ BYREQUEST_IPK=$(BUILD_DIR)/byrequest_cvs-$(BYREQUEST_VERSION)-$(BYREQUEST_IPK_VE
 BYREQUEST_IPK_VERSION=1
 
 # Fetch source code
-byrequest-source: 
+byrequest-source: $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
 
-$(BYREQUEST_BUILD_DIR)/README:
-	(cd $(BUILD_DIR); cvs -d$(BYREQUEST_REPOSITORY) co -D "$(BYREQUEST_VERSION)" byRequest;)
-	mv $(BUILD_DIR)/byRequest $(BUILD_DIR)/byrequest
+$(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf byRequest && \
+		cvs -d$(BYREQUEST_REPOSITORY) co \
+			-D "$(BYREQUEST_VERSION)" \
+			byRequest && \
+		tar -czf $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz \
+			byRequest && \
+		rm -rf byRequest \
+	)
 
 # Configure
-$(BYREQUEST_BUILD_DIR)/.configured: $(BYREQUEST_BUILD_DIR)/README
+$(BYREQUEST_BUILD_DIR)/.configured: \
+		$(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
 	$(MAKE) ncurses-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
+	mv $(BUILD_DIR)/byRequest $(BUILD_DIR)/byrequest
 	touch $(BYREQUEST_BUILD_DIR)/.configured
 
 byrequest-unpack: $(BYREQUEST_BUILD_DIR)/.configured
