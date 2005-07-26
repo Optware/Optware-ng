@@ -132,6 +132,7 @@ $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-wwwroot=/opt/share/www \
 		--disable-nls \
 		--disable-static \
 	)
@@ -202,6 +203,7 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
 	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
 	sed -i -e 's|/usr/lib/|/opt/share/cherokee/|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/sites-available/default
+	sed -i -e 's|^Port.*|Port 8008|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/
 #	install -m 644 $(CHEROKEE_SOURCE_DIR)/cherokee.conf $(CHEROKEE_IPK_DIR)/opt/etc/cherokee.conf
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
