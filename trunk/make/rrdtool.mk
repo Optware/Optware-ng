@@ -130,6 +130,7 @@ endif
 		--prefix=/opt \
 		--disable-rrdcgi \
 		--disable-nls \
+		--disable-tcl \
 		--disable-perl \
 		--disable-python \
 		--disable-static \
