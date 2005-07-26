@@ -103,6 +103,7 @@ $(ICE_BUILD_DIR)/.configured: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz \
 	$(MAKE) xproto-stage
 	$(MAKE) xtrans-stage
 	$(MAKE) x11-stage
+	rm -rf $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ice-$(ICE_VERSION).tar.gz
 	if test -n "$(ICE_PATCHES)" ; \
 		then cat $(ICE_PATCHES) | \

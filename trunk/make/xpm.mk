@@ -100,6 +100,7 @@ xpm-source: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz $(XPM_PATCHES)
 $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XPM_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz
 	if test -n "$(XPM_PATCHES)" ; \
 		then cat $(XPM_PATCHES) | \

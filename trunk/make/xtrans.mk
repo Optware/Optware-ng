@@ -99,6 +99,7 @@ xtrans-source: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz $(XTRANS_PATCHES)
 $(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XTRANS_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz
 	if test -n "$(XTRANS_PATCHES)" ; \
 		then cat $(XTRANS_PATCHES) | \

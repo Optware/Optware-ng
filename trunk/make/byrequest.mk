@@ -46,6 +46,7 @@ $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz:
 $(BYREQUEST_BUILD_DIR)/.configured: \
 		$(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
 	$(MAKE) ncurses-stage
+	rm -rf $(BUILD_DIR)/byRequest $(BUILD_DIR)/byrequest
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
 	mv $(BUILD_DIR)/byRequest $(BUILD_DIR)/byrequest
 	touch $(BYREQUEST_BUILD_DIR)/.configured

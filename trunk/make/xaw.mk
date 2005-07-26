@@ -103,6 +103,7 @@ $(XAW_BUILD_DIR)/.configured: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz \
 	$(MAKE) xt-stage
 	$(MAKE) xmu-stage
 	$(MAKE) xpm-stage
+	rm -rf $(BUILD_DIR)/$(XAW_DIR) $(XAW_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz
 	if test -n "$(XAW_PATCHES)" ; \
 		then cat $(XAW_PATCHES) | \

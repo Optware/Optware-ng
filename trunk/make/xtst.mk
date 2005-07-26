@@ -101,6 +101,7 @@ $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(STAGING_LIB_DIR)/libXext.so \
 		$(XTST_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz
 	if test -n "$(XTST_PATCHES)" ; \
 		then cat $(XTST_PATCHES) | \

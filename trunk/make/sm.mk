@@ -101,6 +101,7 @@ sm-source: $(DL_DIR)/sm-$(SM_VERSION).tar.gz $(SM_PATCHES)
 $(SM_BUILD_DIR)/.configured: $(DL_DIR)/sm-$(SM_VERSION).tar.gz \
 		$(SM_PATCHES)
 	$(MAKE) ice-stage
+	rm -rf $(BUILD_DIR)/$(SM_DIR) $(SM_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/sm-$(SM_VERSION).tar.gz
 	if test -n "$(SM_PATCHES)" ; \
 		then cat $(SM_PATCHES) | \

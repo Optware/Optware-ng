@@ -102,6 +102,7 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libXext.so \
 		$(STAGING_LIB_DIR)/libXt.so \
 		$(XMU_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz
 	if test -n "$(XMU_PATCHES)" ; \
 		then cat $(XMU_PATCHES) | \

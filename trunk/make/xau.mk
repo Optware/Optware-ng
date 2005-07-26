@@ -99,6 +99,7 @@ xau-source: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz $(XAU_PATCHES)
 $(XAU_BUILD_DIR)/.configured: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XAU_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xau-$(XAU_VERSION).tar.gz
 	if test -n "$(XAU_PATCHES)" ; \
 		then cat $(XAU_PATCHES) | \
