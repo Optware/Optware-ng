@@ -76,16 +76,15 @@ $(XTST_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XTST_BUILD_DIR)/.fetched: $(XTST_PATCHES)
-	rm -rf $(XTST_BUILD_DIR) $(BUILD_DIR)/$(XTST_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XTST_REPOSITORY) -z3 co $(XTST_CVS_OPTS) $(XTST_DIR); \
+$(DL_DIR)/xtst-$(XTST_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XTST_DIR) && \
+		cvs -d $(XTST_REPOSITORY) -z3 co $(XTST_CVS_OPTS) $(XTST_DIR) && \
+		tar -czf $@ $(XTST_DIR) && \
+		rm -rf $(XTST_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR)
-	cat $(XTST_PATCHES) | patch -d $(XTST_BUILD_DIR) -p0
-	touch $@
 
-xtst-source: $(XTST_BUILD_DIR)/.fetched $(XTST_PATCHES)
+xtst-source: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz $(XTST_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -97,11 +96,19 @@ xtst-source: $(XTST_BUILD_DIR)/.fetched $(XTST_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTST_BUILD_DIR)/.configured: $(XTST_BUILD_DIR)/.fetched \
+$(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/record.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(STAGING_LIB_DIR)/libXext.so \
 		$(XTST_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz
+	if test -n "$(XTST_PATCHES)" ; \
+		then cat $(XTST_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XTST_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XTST_DIR)" != "$(XTST_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR) ; \
+	fi
 	(cd $(XTST_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTST_CPPFLAGS)" \

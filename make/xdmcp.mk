@@ -76,15 +76,15 @@ $(XDMCP_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XDMCP_BUILD_DIR)/.fetched:
-	rm -rf $(XDMCP_BUILD_DIR) $(BUILD_DIR)/$(XDMCP_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XDMCP_REPOSITORY) -z3 co $(XDMCP_CVS_OPTS) $(XDMCP_DIR); \
+$(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XDMCP_DIR) && \
+		cvs -d $(XDMCP_REPOSITORY) -z3 co $(XDMCP_CVS_OPTS) $(XDMCP_DIR) && \
+		tar -czf $@ $(XDMCP_DIR) && \
+		rm -rf $(XDMCP_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR)
-	touch $@
 
-xdmcp-source: $(XDMCP_BUILD_DIR)/.fetched $(XDMCP_PATCHES)
+xdmcp-source: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz $(XDMCP_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,9 +96,17 @@ xdmcp-source: $(XDMCP_BUILD_DIR)/.fetched $(XDMCP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XDMCP_BUILD_DIR)/.configured: $(XDMCP_BUILD_DIR)/.fetched \
+$(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XDMCP_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz
+	if test -n "$(XDMCP_PATCHES)" ; \
+		then cat $(XDMCP_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XDMCP_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XDMCP_DIR)" != "$(XDMCP_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR) ; \
+	fi
 	(cd $(XDMCP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDMCP_CPPFLAGS)" \

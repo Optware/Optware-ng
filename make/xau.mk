@@ -76,15 +76,15 @@ $(XAU_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XAU_BUILD_DIR)/.fetched:
-	rm -rf $(XAU_BUILD_DIR) $(BUILD_DIR)/$(XAU_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XAU_REPOSITORY) -z3 co $(XAU_CVS_OPTS) $(XAU_DIR); \
+$(DL_DIR)/xau-$(XAU_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XAU_DIR) && \
+		cvs -d $(XAU_REPOSITORY) -z3 co $(XAU_CVS_OPTS) $(XAU_DIR) && \
+		tar -czf $@ $(XAU_DIR) && \
+		rm -rf $(XAU_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR)
-	touch $@
 
-xau-source: $(XAU_BUILD_DIR)/.fetched $(XAU_PATCHES)
+xau-source: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz $(XAU_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,9 +96,17 @@ xau-source: $(XAU_BUILD_DIR)/.fetched $(XAU_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAU_BUILD_DIR)/.configured: $(XAU_BUILD_DIR)/.fetched \
+$(XAU_BUILD_DIR)/.configured: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XAU_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xau-$(XAU_VERSION).tar.gz
+	if test -n "$(XAU_PATCHES)" ; \
+		then cat $(XAU_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XAU_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XAU_DIR)" != "$(XAU_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR) ; \
+	fi
 	(cd $(XAU_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAU_CPPFLAGS)" \

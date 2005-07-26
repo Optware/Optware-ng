@@ -78,16 +78,15 @@ $(SM_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(SM_BUILD_DIR)/.fetched:
-	rm -rf $(SM_BUILD_DIR) $(BUILD_DIR)/$(SM_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(SM_REPOSITORY) -z3 co $(SM_CVS_OPTS) $(SM_DIR); \
+$(DL_DIR)/sm-$(SM_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(SM_DIR) && \
+		cvs -d $(SM_REPOSITORY) -z3 co $(SM_CVS_OPTS) $(SM_DIR) && \
+		tar -czf $@ $(SM_DIR) && \
+		rm -rf $(SM_DIR) \
 	)
-	mv $(BUILD_DIR)/$(SM_DIR) $(SM_BUILD_DIR)
-	#cat $(SM_PATCHES) | patch -d $(SM_BUILD_DIR) -p0
-	touch $@
 
-sm-source: $(SM_BUILD_DIR)/.fetched $(SM_PATCHES)
+sm-source: $(DL_DIR)/sm-$(SM_VERSION).tar.gz $(SM_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,9 +98,17 @@ sm-source: $(SM_BUILD_DIR)/.fetched $(SM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SM_BUILD_DIR)/.configured: $(SM_BUILD_DIR)/.fetched \
+$(SM_BUILD_DIR)/.configured: $(DL_DIR)/sm-$(SM_VERSION).tar.gz \
 		$(SM_PATCHES)
 	$(MAKE) ice-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/sm-$(SM_VERSION).tar.gz
+	if test -n "$(SM_PATCHES)" ; \
+		then cat $(SM_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SM_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(SM_DIR)" != "$(SM_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(SM_DIR) $(SM_BUILD_DIR) ; \
+	fi
 	(cd $(SM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SM_CPPFLAGS)" \

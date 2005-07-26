@@ -111,8 +111,13 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES)
 	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
 	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(<FOO>_PATCHES) | patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p1
-	mv $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
+	if test -n "$(<FOO>_PATCHES)" ; \
+		then cat $(<FOO>_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(<FOO>_DIR)" != "$(<FOO>_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR) ; \
+	fi
 	(cd $(<FOO>_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(<FOO>_CPPFLAGS)" \

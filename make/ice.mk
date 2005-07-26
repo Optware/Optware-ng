@@ -78,16 +78,15 @@ $(ICE_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(ICE_BUILD_DIR)/.fetched:
-	rm -rf $(ICE_BUILD_DIR) $(BUILD_DIR)/$(ICE_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(ICE_REPOSITORY) -z3 co $(ICE_CVS_OPTS) $(ICE_DIR); \
+$(DL_DIR)/ice-$(ICE_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(ICE_DIR) && \
+		cvs -d $(ICE_REPOSITORY) -z3 co $(ICE_CVS_OPTS) $(ICE_DIR) && \
+		tar -czf $@ $(ICE_DIR) && \
+		rm -rf $(ICE_DIR) \
 	)
-	mv $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR)
-	#cat $(ICE_PATCHES) | patch -d $(ICE_BUILD_DIR) -p0
-	touch $@
 
-ice-source: $(ICE_BUILD_DIR)/.fetched $(ICE_PATCHES)
+ice-source: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz $(ICE_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,11 +98,19 @@ ice-source: $(ICE_BUILD_DIR)/.fetched $(ICE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ICE_BUILD_DIR)/.configured: $(ICE_BUILD_DIR)/.fetched \
+$(ICE_BUILD_DIR)/.configured: $(DL_DIR)/ice-$(ICE_VERSION).tar.gz \
 		$(ICE_PATCHES)
 	$(MAKE) xproto-stage
 	$(MAKE) xtrans-stage
 	$(MAKE) x11-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ice-$(ICE_VERSION).tar.gz
+	if test -n "$(ICE_PATCHES)" ; \
+		then cat $(ICE_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(ICE_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(ICE_DIR)" != "$(ICE_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR) ; \
+	fi
 	(cd $(ICE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICE_CPPFLAGS)" \

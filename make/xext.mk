@@ -78,15 +78,15 @@ $(XEXT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XEXT_BUILD_DIR)/.fetched:
-	rm -rf $(XEXT_BUILD_DIR) $(BUILD_DIR)/$(XEXT_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XEXT_REPOSITORY) -z3 co $(XEXT_CVS_OPTS) $(XEXT_DIR); \
+$(DL_DIR)/xext-$(XEXT_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XEXT_DIR) && \
+		cvs -d $(XEXT_REPOSITORY) -z3 co $(XEXT_CVS_OPTS) $(XEXT_DIR) && \
+		tar -czf $@ $(XEXT_DIR) && \
+		rm -rf $(XEXT_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR)
-	touch $@
 
-xext-source: $(XEXT_BUILD_DIR)/.fetched $(XEXT_PATCHES)
+xext-source: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz $(XEXT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,10 +98,18 @@ xext-source: $(XEXT_BUILD_DIR)/.fetched $(XEXT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XEXT_BUILD_DIR)/.configured: $(XEXT_BUILD_DIR)/.fetched \
+$(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XEXT_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz
+	if test -n "$(XEXT_PATCHES)" ; \
+		then cat $(XEXT_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XEXT_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XEXT_DIR)" != "$(XEXT_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR) ; \
+	fi
 	(cd $(XEXT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEXT_CPPFLAGS)" \

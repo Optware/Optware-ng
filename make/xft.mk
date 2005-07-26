@@ -78,15 +78,15 @@ $(XFT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XFT_BUILD_DIR)/.fetched:
-	rm -rf $(XFT_BUILD_DIR) $(BUILD_DIR)/$(XFT_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XFT_REPOSITORY) -z3 co $(XFT_CVS_OPTS) $(XFT_DIR); \
+$(DL_DIR)/xft-$(XFT_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XFT_DIR) && \
+		cvs -d $(XFT_REPOSITORY) -z3 co $(XFT_CVS_OPTS) $(XFT_DIR) && \
+		tar -czf $@ $(XFT_DIR) && \
+		rm -rf $(XFT_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR)
-	touch $@
 
-xft-source: $(XFT_BUILD_DIR)/.fetched $(XFT_PATCHES)
+xft-source: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz $(XFT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,12 +98,20 @@ xft-source: $(XFT_BUILD_DIR)/.fetched $(XFT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XFT_BUILD_DIR)/.configured: $(XFT_BUILD_DIR)/.fetched \
+$(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
 		$(XFT_PATCHES)
 	$(MAKE) freetype-stage
 	$(MAKE) fontconfig-stage
 	$(MAKE) x11-stage
 	$(MAKE) xrender-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xft-$(XFT_VERSION).tar.gz
+	if test -n "$(XFT_PATCHES)" ; \
+		then cat $(XFT_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XFT_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XFT_DIR)" != "$(XFT_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR) ; \
+	fi
 	(cd $(XFT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFT_CPPFLAGS)" \

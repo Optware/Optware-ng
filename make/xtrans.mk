@@ -76,14 +76,15 @@ $(XTRANS_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XTRANS_BUILD_DIR)/.fetched:
-	rm -rf $(XTRANS_BUILD_DIR) $(BUILD_DIR)/$(XTRANS_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XTRANS_REPOSITORY) -z3 co $(XTRANS_CVS_OPTS) $(XTRANS_DIR); \
+$(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XTRANS_DIR) && \
+		cvs -d $(XTRANS_REPOSITORY) -z3 co $(XTRANS_CVS_OPTS) $(XTRANS_DIR) && \
+		tar -czf $@ $(XTRANS_DIR) && \
+		rm -rf $(XTRANS_DIR) \
 	)
-	touch $@
 
-xtrans-source: $(XTRANS_BUILD_DIR)/.fetched $(XTRANS_PATCHES)
+xtrans-source: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz $(XTRANS_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -95,9 +96,17 @@ xtrans-source: $(XTRANS_BUILD_DIR)/.fetched $(XTRANS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XTRANS_BUILD_DIR)/.configured: $(XTRANS_BUILD_DIR)/.fetched \
+$(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XTRANS_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz
+	if test -n "$(XTRANS_PATCHES)" ; \
+		then cat $(XTRANS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XTRANS_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XTRANS_DIR)" != "$(XTRANS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR) ; \
+	fi
 	(cd $(XTRANS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XTRANS_CPPFLAGS)" \

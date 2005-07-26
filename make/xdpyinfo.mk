@@ -78,14 +78,15 @@ $(XDPYINFO_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XDPYINFO_BUILD_DIR)/.fetched:
-	rm -rf $(XDPYINFO_BUILD_DIR) $(BUILD_DIR)/$(XDPYINFO_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XDPYINFO_REPOSITORY) -z3 co $(XDPYINFO_CVS_OPTS) $(XDPYINFO_DIR); \
+$(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XDPYINFO_DIR) && \
+		cvs -d $(XDPYINFO_REPOSITORY) -z3 co $(XDPYINFO_CVS_OPTS) $(XDPYINFO_DIR) && \
+		tar -czf $@ $(XDPYINFO_DIR) && \
+		rm -rf $(XDPYINFO_DIR) \
 	)
-	touch $@
 
-xdpyinfo-source: $(XDPYINFO_BUILD_DIR)/.fetched $(XDPYINFO_PATCHES)
+xdpyinfo-source: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz $(XDPYINFO_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -97,11 +98,19 @@ xdpyinfo-source: $(XDPYINFO_BUILD_DIR)/.fetched $(XDPYINFO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XDPYINFO_BUILD_DIR)/.configured: $(XDPYINFO_BUILD_DIR)/.fetched  \
+$(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz  \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(STAGING_LIB_DIR)/libXext.so \
 		$(STAGING_LIB_DIR)/libXtst.so \
 		$(XDPYINFO_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
+	if test -n "$(XDPYINFO_PATCHES)" ; \
+		then cat $(XDPYINFO_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XDPYINFO_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XDPYINFO_DIR)" != "$(XDPYINFO_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) ; \
+	fi
 	(cd $(XDPYINFO_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 \
 		ACLOCAL=aclocal-1.9 \

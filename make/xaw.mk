@@ -78,16 +78,15 @@ $(XAW_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XAW_BUILD_DIR)/.fetched:
-	rm -rf $(XAW_BUILD_DIR) $(BUILD_DIR)/$(XAW_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XAW_REPOSITORY) -z3 co $(XAW_CVS_OPTS) $(XAW_DIR); \
+$(DL_DIR)/xaw-$(XAW_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XAW_DIR) && \
+		cvs -d $(XAW_REPOSITORY) -z3 co $(XAW_CVS_OPTS) $(XAW_DIR) && \
+		tar -czf $@ $(XAW_DIR) && \
+		rm -rf $(XAW_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XAW_DIR) $(XAW_BUILD_DIR)
-	#cat $(XAW_PATCHES) | patch -d $(XAW_BUILD_DIR) -p0
-	touch $@
 
-xaw-source: $(XAW_BUILD_DIR)/.fetched $(XAW_PATCHES)
+xaw-source: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz $(XAW_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,11 +98,19 @@ xaw-source: $(XAW_BUILD_DIR)/.fetched $(XAW_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAW_BUILD_DIR)/.configured: $(XAW_BUILD_DIR)/.fetched \
+$(XAW_BUILD_DIR)/.configured: $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz \
 		$(XAW_PATCHES)
 	$(MAKE) xt-stage
 	$(MAKE) xmu-stage
 	$(MAKE) xpm-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xaw-$(XAW_VERSION).tar.gz
+	if test -n "$(XAW_PATCHES)" ; \
+		then cat $(XAW_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XAW_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XAW_DIR)" != "$(XAW_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XAW_DIR) $(XAW_BUILD_DIR) ; \
+	fi
 	(cd $(XAW_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAW_CPPFLAGS)" \

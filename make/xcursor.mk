@@ -78,16 +78,15 @@ $(XCURSOR_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XCURSOR_BUILD_DIR)/.fetched:
-	rm -rf $(XCURSOR_BUILD_DIR) $(BUILD_DIR)/$(XCURSOR_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XCURSOR_REPOSITORY) -z3 co $(XCURSOR_CVS_OPTS) $(XCURSOR_DIR); \
+$(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XCURSOR_DIR) && \
+		cvs -d $(XCURSOR_REPOSITORY) -z3 co $(XCURSOR_CVS_OPTS) $(XCURSOR_DIR) && \
+		tar -czf $@ $(XCURSOR_DIR) && \
+		rm -rf $(XCURSOR_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR)
-	cat $(XCURSOR_PATCHES) | patch -d $(XCURSOR_BUILD_DIR) -p0
-	touch $@
 
-xcursor-source: $(XCURSOR_BUILD_DIR)/.fetched $(XCURSOR_PATCHES)
+xcursor-source: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz $(XCURSOR_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,11 +98,19 @@ xcursor-source: $(XCURSOR_BUILD_DIR)/.fetched $(XCURSOR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XCURSOR_BUILD_DIR)/.configured: $(XCURSOR_BUILD_DIR)/.fetched \
+$(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(STAGING_LIB_DIR)/libXrender.so \
 		$(STAGING_LIB_DIR)/libXfixes.so \
 		$(XCURSOR_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz
+	if test -n "$(XCURSOR_PATCHES)" ; \
+		then cat $(XCURSOR_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XCURSOR_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XCURSOR_DIR)" != "$(XCURSOR_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR) ; \
+	fi
 	(cd $(XCURSOR_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XCURSOR_CPPFLAGS)" \

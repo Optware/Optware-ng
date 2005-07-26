@@ -78,14 +78,15 @@ $(FONTCONFIG_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(FONTCONFIG_BUILD_DIR)/.fetched:
-	rm -rf $(FONTCONFIG_BUILD_DIR) $(BUILD_DIR)/$(FONTCONFIG_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(FONTCONFIG_REPOSITORY) -z3 co $(FONTCONFIG_CVS_OPTS) $(FONTCONFIG_DIR); \
+$(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(FONTCONFIG_DIR) && \
+		cvs -d $(FONTCONFIG_REPOSITORY) -z3 co $(FONTCONFIG_CVS_OPTS) $(FONTCONFIG_DIR) && \
+		tar -czf $@ $(FONTCONFIG_DIR) && \
+		rm -rf $(FONTCONFIG_DIR) \
 	)
-	touch $@
 
-fontconfig-source: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
+fontconfig-source: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz $(FONTCONFIG_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -97,10 +98,18 @@ fontconfig-source: $(FONTCONFIG_BUILD_DIR)/.fetched $(FONTCONFIG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FONTCONFIG_BUILD_DIR)/.configured: $(FONTCONFIG_BUILD_DIR)/.fetched \
+$(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz \
 		$(FONTCONFIG_PATCHES)
 	$(MAKE) freetype-stage
 	$(MAKE) expat-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz
+	if test -n "$(FONTCONFIG_PATCHES)" ; \
+		then cat $(FONTCONFIG_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(FONTCONFIG_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(FONTCONFIG_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \
+	fi
 	(cd $(FONTCONFIG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \

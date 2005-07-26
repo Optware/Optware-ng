@@ -76,15 +76,15 @@ $(RENDEREXT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(RENDEREXT_BUILD_DIR)/.fetched:
-	rm -rf $(RENDEREXT_BUILD_DIR) $(BUILD_DIR)/$(RENDEREXT_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(RENDEREXT_REPOSITORY) -z3 co $(RENDEREXT_CVS_OPTS) $(RENDEREXT_DIR); \
+$(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(RENDEREXT_DIR) && \
+		cvs -d $(RENDEREXT_REPOSITORY) -z3 co $(RENDEREXT_CVS_OPTS) $(RENDEREXT_DIR) && \
+		tar -czf $@ $(RENDEREXT_DIR) && \
+		rm -rf $(RENDEREXT_DIR) \
 	)
-	mv $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR)
-	touch $@
 
-renderext-source: $(RENDEREXT_BUILD_DIR)/.fetched $(RENDEREXT_PATCHES)
+renderext-source: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz $(RENDEREXT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,9 +96,17 @@ renderext-source: $(RENDEREXT_BUILD_DIR)/.fetched $(RENDEREXT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(RENDEREXT_BUILD_DIR)/.configured: $(RENDEREXT_BUILD_DIR)/.fetched \
+$(RENDEREXT_BUILD_DIR)/.configured: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(RENDEREXT_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz
+	if test -n "$(RENDEREXT_PATCHES)" ; \
+		then cat $(RENDEREXT_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(RENDEREXT_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(RENDEREXT_DIR)" != "$(RENDEREXT_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR) ; \
+	fi
 	(cd $(RENDEREXT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RENDEREXT_CPPFLAGS)" \
