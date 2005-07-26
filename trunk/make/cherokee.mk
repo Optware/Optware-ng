@@ -113,7 +113,7 @@ cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
 # shown below to make various patches to it.
 #
 $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
-	$(MAKE) gnutls-stage
+	$(MAKE) gnutls-stage libtasn1-stage libgcrypt-stage
 	rm -rf $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR)
 	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1
@@ -136,6 +136,7 @@ $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCH
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(CHEROKEE_BUILD_DIR)/libtool
+	sed -i 's|^hardcode_libdir_flag_spec=.*$$|hardcode_libdir_flag_spec=""|' $(CHEROKEE_BUILD_DIR)/libtool
 	touch $(CHEROKEE_BUILD_DIR)/.configured
 
 cherokee-unpack: $(CHEROKEE_BUILD_DIR)/.configured
@@ -199,6 +200,8 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	rm -rf $(CHEROKEE_IPK_DIR) $(BUILD_DIR)/cherokee_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHEROKEE_BUILD_DIR) DESTDIR=$(CHEROKEE_IPK_DIR) install-strip
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
+	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
+	sed -i -e 's|/usr/lib/|/opt/share/cherokee/|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/sites-available/default
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/
 #	install -m 644 $(CHEROKEE_SOURCE_DIR)/cherokee.conf $(CHEROKEE_IPK_DIR)/opt/etc/cherokee.conf
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
