@@ -149,6 +149,7 @@ libart: $(LIBART_BUILD_DIR)/.built
 $(LIBART_BUILD_DIR)/.staged: $(LIBART_BUILD_DIR)/.built
 	rm -f $(LIBART_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libart_lgpl_2.la
 	touch $(LIBART_BUILD_DIR)/.staged
 
 libart-stage: $(LIBART_BUILD_DIR)/.staged
