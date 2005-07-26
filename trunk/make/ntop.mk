@@ -99,14 +99,13 @@ $(NTOP_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(NTOP_BUILD_DIR)/.fetched:
-	rm -rf $(NTOP_BUILD_DIR) $(BUILD_DIR)/$(NTOP_DIR)
+$(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz:
 	( cd $(BUILD_DIR) ; \
-		cvs -d $(NTOP_REPOSITORY) -z3 co $(NTOP_CVS_OPTS) $(NTOP_DIR); \
+		rm -rf $(NTOP_DIR) && \
+		cvs -d $(NTOP_REPOSITORY) -z3 co $(NTOP_CVS_OPTS) $(NTOP_DIR) && \
+		tar -czf $@ $(NTOP_DIR) && \
+		rm -rf $(NTOP_DIR) \
 	)
-#	mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
-	cat $(NTOP_PATCHES) | patch -d $(NTOP_BUILD_DIR) -p1
-	touch $@
 
 
 #
@@ -114,7 +113,7 @@ $(NTOP_BUILD_DIR)/.fetched:
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-ntop-source: $(NTOP_BUILD_DIR)/.fetched $(NTOP_PATCHES)
+ntop-source: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -131,12 +130,20 @@ ntop-source: $(NTOP_BUILD_DIR)/.fetched $(NTOP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 # 
-$(NTOP_BUILD_DIR)/.configured: $(NTOP_BUILD_DIR)/.fetched $(NTOP_PATCHES)
+$(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage libgd-stage
 #	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
 #	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(NTOP_PATCHES) | patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1
 #	mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz
+	if test -n "$(NTOP_PATCHES)" ; \
+		then cat $(NTOP_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(NTOP_DIR)" != "$(NTOP_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR) ; \
+	fi
 	(cd $(NTOP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTOP_CPPFLAGS)" \

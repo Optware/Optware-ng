@@ -78,16 +78,15 @@ $(XT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XT_BUILD_DIR)/.fetched:
-	rm -rf $(XT_BUILD_DIR) $(BUILD_DIR)/$(XT_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XT_REPOSITORY) -z3 co $(XT_CVS_OPTS) $(XT_DIR); \
+$(DL_DIR)/xt-$(XT_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XT_DIR) && \
+		cvs -d $(XT_REPOSITORY) -z3 co $(XT_CVS_OPTS) $(XT_DIR) && \
+		tar -czf $@ $(XT_DIR) && \
+		rm -rf $(XT_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR)
-	#cat $(XT_PATCHES) | patch -d $(XT_BUILD_DIR) -p0
-	touch $@
 
-xt-source: $(XT_BUILD_DIR)/.fetched $(XT_PATCHES)
+xt-source: $(DL_DIR)/xt-$(XT_VERSION).tar.gz $(XT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,10 +98,18 @@ xt-source: $(XT_BUILD_DIR)/.fetched $(XT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XT_BUILD_DIR)/.configured: $(XT_BUILD_DIR)/.fetched \
+$(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
 		$(XT_PATCHES)
 	$(MAKE) x11-stage
 	$(MAKE) sm-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xt-$(XT_VERSION).tar.gz
+	if test -n "$(XT_PATCHES)" ; \
+		then cat $(XT_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XT_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XT_DIR)" != "$(XT_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR) ; \
+	fi
 	(cd $(XT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XT_CPPFLAGS)" \

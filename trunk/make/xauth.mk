@@ -78,16 +78,15 @@ $(XAUTH_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XAUTH_BUILD_DIR)/.fetched:
-	rm -rf $(XAUTH_BUILD_DIR) $(BUILD_DIR)/$(XAUTH_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XAUTH_REPOSITORY) -z3 co $(XAUTH_CVS_OPTS) $(XAUTH_DIR); \
+$(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XAUTH_DIR) && \
+		cvs -d $(XAUTH_REPOSITORY) -z3 co $(XAUTH_CVS_OPTS) $(XAUTH_DIR) && \
+		tar -czf $@ $(XAUTH_DIR) && \
+		rm -rf $(XAUTH_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR)
-	cat $(XAUTH_PATCHES) | patch -d $(XAUTH_BUILD_DIR) -p1
-	touch $@
 
-xauth-source: $(XAUTH_BUILD_DIR)/.fetched $(XAUTH_PATCHES)
+xauth-source: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz $(XAUTH_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,10 +98,18 @@ xauth-source: $(XAUTH_BUILD_DIR)/.fetched $(XAUTH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XAUTH_BUILD_DIR)/.configured: $(XAUTH_BUILD_DIR)/.fetched \
+$(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libXau.so \
 		$(STAGING_LIB_DIR)/libXmu.so \
 		$(XAUTH_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz
+	if test -n "$(XAUTH_PATCHES)" ; \
+		then cat $(XAUTH_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XAUTH_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XAUTH_DIR)" != "$(XAUTH_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR) ; \
+	fi
 	(cd $(XAUTH_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -v -i; \
 		$(TARGET_CONFIGURE_OPTS) \

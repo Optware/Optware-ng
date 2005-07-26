@@ -80,15 +80,15 @@ $(XPROTO_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XPROTO_BUILD_DIR)/.fetched:
-	rm -rf $(XPROTO_BUILD_DIR) $(BUILD_DIR)/$(XPROTO_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XPROTO_REPOSITORY) -z3 co $(XPROTO_CVS_OPTS) $(XPROTO_DIR); \
+$(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XPROTO_DIR) && \
+		cvs -d $(XPROTO_REPOSITORY) -z3 co $(XPROTO_CVS_OPTS) $(XPROTO_DIR) && \
+		tar -czf $@ $(XPROTO_DIR) && \
+		rm -rf $(XPROTO_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR)
-	touch $@
 
-xproto-source: $(XPROTO_BUILD_DIR)/.fetched $(XPROTO_PATCHES)
+xproto-source: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -100,7 +100,15 @@ xproto-source: $(XPROTO_BUILD_DIR)/.fetched $(XPROTO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XPROTO_BUILD_DIR)/.configured: $(XPROTO_BUILD_DIR)/.fetched $(XPROTO_PATCHES)
+$(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz
+	if test -n "$(XPROTO_PATCHES)" ; \
+		then cat $(XPROTO_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XPROTO_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XPROTO_DIR)" != "$(XPROTO_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR) ; \
+	fi
 	(cd $(XPROTO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPROTO_CPPFLAGS)" \

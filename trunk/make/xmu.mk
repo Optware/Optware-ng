@@ -78,16 +78,15 @@ $(XMU_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XMU_BUILD_DIR)/.fetched:
-	rm -rf $(XMU_BUILD_DIR) $(BUILD_DIR)/$(XMU_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XMU_REPOSITORY) -z3 co $(XMU_CVS_OPTS) $(XMU_DIR); \
+$(DL_DIR)/xmu-$(XMU_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XMU_DIR) && \
+		cvs -d $(XMU_REPOSITORY) -z3 co $(XMU_CVS_OPTS) $(XMU_DIR) && \
+		tar -czf $@ $(XMU_DIR) && \
+		rm -rf $(XMU_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR)
-	#cat $(XMU_PATCHES) | patch -d $(XMU_BUILD_DIR) -p0
-	touch $@
 
-xmu-source: $(XMU_BUILD_DIR)/.fetched $(XMU_PATCHES)
+xmu-source: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz $(XMU_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,10 +98,18 @@ xmu-source: $(XMU_BUILD_DIR)/.fetched $(XMU_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XMU_BUILD_DIR)/.configured: $(XMU_BUILD_DIR)/.fetched \
+$(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libXext.so \
 		$(STAGING_LIB_DIR)/libXt.so \
 		$(XMU_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz
+	if test -n "$(XMU_PATCHES)" ; \
+		then cat $(XMU_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XMU_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XMU_DIR)" != "$(XMU_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR) ; \
+	fi
 	(cd $(XMU_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMU_CPPFLAGS)" \

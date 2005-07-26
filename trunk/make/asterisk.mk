@@ -77,7 +77,7 @@ ASTERISK_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-ASTERISK_BUILD_DIR=$(BUILD_DIR)/asterisk-cvs
+ASTERISK_BUILD_DIR=$(BUILD_DIR)/asterisk
 ASTERISK_SOURCE_DIR=$(SOURCE_DIR)/asterisk
 ASTERISK_IPK_DIR=$(BUILD_DIR)/asterisk-$(ASTERISK_VERSION)-ipk
 ASTERISK_IPK=$(BUILD_DIR)/asterisk_$(ASTERISK_VERSION)-$(ASTERISK_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -100,16 +100,15 @@ ASTERISK_SYSCONF_SAMPLE_DIR=$(ASTERISK_INST_DIR)/etc/asterisk/sample
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(ASTERISK_BUILD_DIR)/.fetched: $(ASTERISK_PATCHES)
-	rm -rf $(ASTERISK_BUILD_DIR) $(BUILD_DIR)/$(ASTERISK_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(ASTERISK_REPOSITORY) -z3 co $(ASTERISK_CVS_OPTS) $(ASTERISK_DIR); \
+$(DL_DIR)/asterisk-$(ASTERISK_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(ASTERISK_DIR) && \
+		cvs -d $(ASTERISK_REPOSITORY) -z3 co $(ASTERISK_CVS_OPTS) $(ASTERISK_DIR) && \
+		tar -czf $@ $(ASTERISK_DIR) && \
+		rm -rf $(ASTERISK_DIR) \
 	)
-	mv $(BUILD_DIR)/$(ASTERISK_DIR) $(ASTERISK_BUILD_DIR)
-	cat $(ASTERISK_PATCHES) | patch -d $(ASTERISK_BUILD_DIR) -p1
-	touch $@
 
-asterisk-source: $(ASTERISK_BUILD_DIR)/.fetched
+asterisk-source: $(DL_DIR)/asterisk-$(ASTERISK_VERSION).tar.gz
 
 #
 # This target also configures the build within the build directory.
@@ -121,19 +120,10 @@ asterisk-source: $(ASTERISK_BUILD_DIR)/.fetched
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(ASTERISK_BUILD_DIR)/.configured: $(ASTERISK_BUILD_DIR)/.fetched
+$(ASTERISK_BUILD_DIR)/.configured: $(DL_DIR)/asterisk-$(ASTERISK_VERSION).tar.gz
 	$(MAKE) ncurses-stage openssl-stage
-#	(cd $(ASTERISK_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#		--disable-nls \
-#	)
+	rm -rf $(ASTERISK_BUILD_DIR)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/asterisk-$(ASTERISK_VERSION).tar.gz
 	touch $(ASTERISK_BUILD_DIR)/.configured
 
 asterisk-unpack: $(ASTERISK_BUILD_DIR)/.configured

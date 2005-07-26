@@ -77,16 +77,15 @@ $(XPM_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XPM_BUILD_DIR)/.fetched:
-	rm -rf $(XPM_BUILD_DIR) $(BUILD_DIR)/$(XPM_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XPM_REPOSITORY) -z3 co $(XPM_CVS_OPTS) $(XPM_DIR); \
+$(DL_DIR)/xpm-$(XPM_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XPM_DIR) && \
+		cvs -d $(XPM_REPOSITORY) -z3 co $(XPM_CVS_OPTS) $(XPM_DIR) && \
+		tar -czf $@ $(XPM_DIR) && \
+		rm -rf $(XPM_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR)
-	#cat $(XPM_PATCHES) | patch -d $(XPM_BUILD_DIR) -p0
-	touch $@
 
-xpm-source: $(XPM_BUILD_DIR)/.fetched $(XPM_PATCHES)
+xpm-source: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz $(XPM_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,9 +97,17 @@ xpm-source: $(XPM_BUILD_DIR)/.fetched $(XPM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XPM_BUILD_DIR)/.configured: $(XPM_BUILD_DIR)/.fetched \
+$(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XPM_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz
+	if test -n "$(XPM_PATCHES)" ; \
+		then cat $(XPM_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XPM_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XPM_DIR)" != "$(XPM_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR) ; \
+	fi
 	(cd $(XPM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPM_CPPFLAGS)" \

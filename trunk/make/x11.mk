@@ -78,16 +78,15 @@ $(X11_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(X11_BUILD_DIR)/.fetched:
-	rm -rf $(X11_BUILD_DIR) $(BUILD_DIR)/$(X11_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(X11_REPOSITORY) -z3 co $(X11_CVS_OPTS) $(X11_DIR); \
+$(DL_DIR)/x11-$(X11_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(X11_DIR) && \
+		cvs -d $(X11_REPOSITORY) -z3 co $(X11_CVS_OPTS) $(X11_DIR) && \
+		tar -czf $@ $(X11_DIR) && \
+		rm -rf $(X11_DIR) \
 	)
-	mv $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR)
-	cat $(X11_PATCHES) | patch -d $(X11_BUILD_DIR) -p0
-	touch $@
 
-x11-source: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
+x11-source: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -99,13 +98,21 @@ x11-source: $(X11_BUILD_DIR)/.fetched $(X11_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(X11_BUILD_DIR)/.configured: $(X11_BUILD_DIR)/.fetched \
+$(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
 		$(STAGING_LIB_DIR)/libXau.so \
 		$(STAGING_LIB_DIR)/libXdmcp.so \
 		$(X11_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/x11-$(X11_VERSION).tar.gz
+	if test -n "$(X11_PATCHES)" ; \
+		then cat $(X11_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(X11_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(X11_DIR)" != "$(X11_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR) ; \
+	fi
 	(cd $(X11_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(X11_CPPFLAGS)" \

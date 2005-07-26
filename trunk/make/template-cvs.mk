@@ -83,16 +83,15 @@
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(<BAR>_BUILD_DIR)/.fetched: $(<BAR>_PATCHES)
-	rm -rf $(<BAR>_BUILD_DIR) $(BUILD_DIR)/$(<BAR>_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(<BAR>_REPOSITORY) -z3 co $(<BAR>_CVS_OPTS) $(<BAR>_DIR); \
+$(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(<BAR>_DIR) && \
+		cvs -d $(<BAR>_REPOSITORY) -z3 co $(<BAR>_CVS_OPTS) $(<BAR>_DIR) && \
+		tar -czf $@ $(<BAR>_DIR) && \
+		rm -rf $(<BAR>_DIR) \
 	)
-	mv $(BUILD_DIR)/$(<BAR>_DIR) $(<BAR>_BUILD_DIR)
-	cat $(<BAR>_PATCHES) | patch -d $(<BAR>_BUILD_DIR) -p0
-	touch $@
 
-<bar>-source: $(<BAR>_BUILD_DIR)/.fetched
+<bar>-source: $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 
 #
 # This target also configures the build within the build directory.
@@ -104,8 +103,16 @@ $(<BAR>_BUILD_DIR)/.fetched: $(<BAR>_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(<BAR>_BUILD_DIR)/.configured: $(<BAR>_BUILD_DIR)/.fetched
+$(<BAR>_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 	$(MAKE) <foo>-stage <baz>-stage
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
+	if test -n "$(<BAR>_PATCHES)" ; \
+		then cat $(<BAR>_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(<BAR>_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(<BAR>_DIR)" != "$(<BAR>_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(<BAR>_DIR) $(<BAR>_BUILD_DIR) ; \
+	fi
 	(cd $(<BAR>_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(<BAR>_CPPFLAGS)" \

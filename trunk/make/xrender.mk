@@ -78,15 +78,15 @@ $(XRENDER_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XRENDER_BUILD_DIR)/.fetched:
-	rm -rf $(XRENDER_BUILD_DIR) $(BUILD_DIR)/$(XRENDER_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XRENDER_REPOSITORY) -z3 co $(XRENDER_CVS_OPTS) $(XRENDER_DIR); \
+$(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XRENDER_DIR) && \
+		cvs -d $(XRENDER_REPOSITORY) -z3 co $(XRENDER_CVS_OPTS) $(XRENDER_DIR) && \
+		tar -czf $@ $(XRENDER_DIR) && \
+		rm -rf $(XRENDER_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR)
-	touch $@
 
-xrender-source: $(XRENDER_BUILD_DIR)/.fetched $(XRENDER_PATCHES)
+xrender-source: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz $(XRENDER_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,10 +98,18 @@ xrender-source: $(XRENDER_BUILD_DIR)/.fetched $(XRENDER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XRENDER_BUILD_DIR)/.configured: $(XRENDER_BUILD_DIR)/.fetched \
+$(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XRENDER_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz
+	if test -n "$(XRENDER_PATCHES)" ; \
+		then cat $(XRENDER_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XRENDER_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XRENDER_DIR)" != "$(XRENDER_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR) ; \
+	fi
 	(cd $(XRENDER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XRENDER_CPPFLAGS)" \

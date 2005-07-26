@@ -78,15 +78,15 @@ $(XFIXES_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(XFIXES_BUILD_DIR)/.fetched:
-	rm -rf $(XFIXES_BUILD_DIR) $(BUILD_DIR)/$(XFIXES_DIR)
-	( cd $(BUILD_DIR); \
-		cvs -d $(XFIXES_REPOSITORY) -z3 co $(XFIXES_CVS_OPTS) $(XFIXES_DIR); \
+$(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(XFIXES_DIR) && \
+		cvs -d $(XFIXES_REPOSITORY) -z3 co $(XFIXES_CVS_OPTS) $(XFIXES_DIR) && \
+		tar -czf $@ $(XFIXES_DIR) && \
+		rm -rf $(XFIXES_DIR) \
 	)
-	mv $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR)
-	touch $@
 
-xfixes-source: $(XFIXES_BUILD_DIR)/.fetched $(XFIXES_PATCHES)
+xfixes-source: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz $(XFIXES_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,10 +98,18 @@ xfixes-source: $(XFIXES_BUILD_DIR)/.fetched $(XFIXES_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XFIXES_BUILD_DIR)/.configured: $(XFIXES_BUILD_DIR)/.fetched \
+$(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XFIXES_PATCHES)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz
+	if test -n "$(XFIXES_PATCHES)" ; \
+		then cat $(XFIXES_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(XFIXES_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(XFIXES_DIR)" != "$(XFIXES_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR) ; \
+	fi
 	(cd $(XFIXES_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFIXES_CPPFLAGS)" \
