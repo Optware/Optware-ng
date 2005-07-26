@@ -160,6 +160,8 @@ rrdtool: $(RRDTOOL_BUILD_DIR)/.built
 $(RRDTOOL_BUILD_DIR)/.staged: $(RRDTOOL_BUILD_DIR)/.built
 	rm -f $(RRDTOOL_BUILD_DIR)/.staged
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/librrd.la
+	rm -f $(STAGING_LIB_DIR)/librrd_th.la
 	touch $(RRDTOOL_BUILD_DIR)/.staged
 
 rrdtool-stage: $(RRDTOOL_BUILD_DIR)/.staged
@@ -198,6 +200,8 @@ $(RRDTOOL_IPK_DIR)/CONTROL/control:
 $(RRDTOOL_IPK): $(RRDTOOL_BUILD_DIR)/.built
 	rm -rf $(RRDTOOL_IPK_DIR) $(BUILD_DIR)/rrdtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip
+	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd.la
+	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd_th.la
 #	install -d $(RRDTOOL_IPK_DIR)/opt/etc/
 #	install -m 644 $(RRDTOOL_SOURCE_DIR)/rrdtool.conf $(RRDTOOL_IPK_DIR)/opt/etc/rrdtool.conf
 #	install -d $(RRDTOOL_IPK_DIR)/opt/etc/init.d
