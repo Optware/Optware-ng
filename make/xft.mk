@@ -104,6 +104,7 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
 	$(MAKE) fontconfig-stage
 	$(MAKE) x11-stage
 	$(MAKE) xrender-stage
+	rm -rf $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xft-$(XFT_VERSION).tar.gz
 	if test -n "$(XFT_PATCHES)" ; \
 		then cat $(XFT_PATCHES) | \

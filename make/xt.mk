@@ -102,6 +102,7 @@ $(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
 		$(XT_PATCHES)
 	$(MAKE) x11-stage
 	$(MAKE) sm-stage
+	rm -rf $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xt-$(XT_VERSION).tar.gz
 	if test -n "$(XT_PATCHES)" ; \
 		then cat $(XT_PATCHES) | \

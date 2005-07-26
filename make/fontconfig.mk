@@ -102,6 +102,7 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).
 		$(FONTCONFIG_PATCHES)
 	$(MAKE) freetype-stage
 	$(MAKE) expat-stage
+	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz
 	if test -n "$(FONTCONFIG_PATCHES)" ; \
 		then cat $(FONTCONFIG_PATCHES) | \

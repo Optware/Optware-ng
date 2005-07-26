@@ -102,6 +102,7 @@ $(XEXT_BUILD_DIR)/.configured: $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XEXT_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XEXT_DIR) $(XEXT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xext-$(XEXT_VERSION).tar.gz
 	if test -n "$(XEXT_PATCHES)" ; \
 		then cat $(XEXT_PATCHES) | \

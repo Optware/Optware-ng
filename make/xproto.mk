@@ -101,6 +101,7 @@ xproto-source: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XPROTO_BUILD_DIR)/.configured: $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz $(XPROTO_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XPROTO_DIR) $(XPROTO_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xproto-$(XPROTO_VERSION).tar.gz
 	if test -n "$(XPROTO_PATCHES)" ; \
 		then cat $(XPROTO_PATCHES) | \

@@ -99,6 +99,7 @@ xdmcp-source: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz $(XDMCP_PATCHES)
 $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XDMCP_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz
 	if test -n "$(XDMCP_PATCHES)" ; \
 		then cat $(XDMCP_PATCHES) | \

@@ -99,6 +99,7 @@ recordext-source: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz $(RECORDEXT_PA
 $(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(RECORDEXT_PATCHES)
+	rm -rf $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz
 	if test -n "$(RECORDEXT_PATCHES)" ; \
 		then cat $(RECORDEXT_PATCHES) | \

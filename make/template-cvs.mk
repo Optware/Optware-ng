@@ -105,6 +105,7 @@ $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz:
 #
 $(<BAR>_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 	$(MAKE) <foo>-stage <baz>-stage
+	rm -rf $(BUILD_DIR)/$(<BAR>_DIR) $(<BAR>_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/template-cvs-$(<BAR>_VERSION).tar.gz
 	if test -n "$(<BAR>_PATCHES)" ; \
 		then cat $(<BAR>_PATCHES) | \

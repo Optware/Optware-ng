@@ -100,6 +100,7 @@ $(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
 		$(FIXESEXT_PATCHES)
+	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 	if test -n "$(FIXESEXT_PATCHES)" ; \
 		then cat $(FIXESEXT_PATCHES) | \

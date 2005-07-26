@@ -102,13 +102,14 @@ $(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
 		$(STAGING_LIB_DIR)/libXau.so \
 		$(STAGING_LIB_DIR)/libXmu.so \
 		$(XAUTH_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz
-	if test -n "$(XAUTH_PATCHES)" ; \
-		then cat $(XAUTH_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(XAUTH_DIR) -p1 ; \
-	fi
 	if test "$(BUILD_DIR)/$(XAUTH_DIR)" != "$(XAUTH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR) ; \
+	fi
+	if test -n "$(XAUTH_PATCHES)" ; \
+		then cat $(XAUTH_PATCHES) | \
+		patch -d $(XAUTH_BUILD_DIR) -p1 ; \
 	fi
 	(cd $(XAUTH_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -v -i; \

@@ -103,6 +103,7 @@ $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 		$(STAGING_LIB_DIR)/libXext.so \
 		$(STAGING_LIB_DIR)/libXtst.so \
 		$(XDPYINFO_PATCHES)
+	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 	if test -n "$(XDPYINFO_PATCHES)" ; \
 		then cat $(XDPYINFO_PATCHES) | \
