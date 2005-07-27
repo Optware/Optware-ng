@@ -29,7 +29,7 @@ CROSS_PACKAGES = \
 	asterisk-sounds \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	ccxstream chrpath classpath clips cogito coreutils cpio \
+	ccxstream cherokee chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dev-pts dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
@@ -82,7 +82,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	cherokee \
 
 
 # asterisk may just need configure work
@@ -201,7 +200,8 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 	freetds \
 	sqsh \
 	py-mssql \
-	qemu qemu-libc-i386
+	qemu qemu-libc-i386 \
+	cherokee \
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
