@@ -33,10 +33,10 @@ QEMU_DEPENDS=zlib
 QEMU_SUGGESTS=
 QEMU_CONFLICTS=
 
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 QEMU_CPU=armv4b
 endif
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 QEMU_CPU=mips
 endif
 

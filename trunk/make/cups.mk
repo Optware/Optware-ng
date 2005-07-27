@@ -29,7 +29,7 @@ CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=Printing
 CUPS_PRIORITY=optional
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 CUPS_DEPENDS=openssl, zlib, libpng, libjpeg
 else
 CUPS_DEPENDS=openssl, zlib, libpng, libjpeg, libtiff
@@ -134,7 +134,7 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openssl-stage zlib-stage libpng-stage libjpeg-stage
 else
 	$(MAKE) openssl-stage zlib-stage libpng-stage libjpeg-stage libtiff-stage
@@ -157,7 +157,7 @@ endif
 		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
 		--with-openssl-includes=$(STAGING_DIR)/opt/include \
 	)
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 	sed -ie 's/pdftops//' $(CUPS_BUILD_DIR)/Makefile
 endif
 	touch $(CUPS_BUILD_DIR)/.configured

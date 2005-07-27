@@ -28,7 +28,7 @@ $(DL_DIR)/$(GREP_SOURCE):
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 GREP_CONFIGURE_ARGS=--disable-nls
 else
 GREP_CONFIGURE_ARGS=

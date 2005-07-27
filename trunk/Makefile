@@ -1,4 +1,4 @@
-# Makefile for unslung packages
+# Makefile for Optware packages
 #
 # Copyright (C) 2004 by Rod Whitby <unslung@gmail.com>
 # Copyright (C) 2004 by Oleg I. Vdovikin <oleg@cs.msu.su>
@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-UNSLUNG_TARGET ?= nslu2
+OPTWARE_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
@@ -207,7 +207,7 @@ HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
 	)
 
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 PACKAGES = $(NATIVE_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
@@ -219,7 +219,7 @@ TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 PACKAGES = $(WL500G_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(WL500G_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
@@ -230,7 +230,7 @@ all: directories toolchain packages
 
 testing:
 	$(MAKE) PACKAGES="$(PACKAGES_READY_FOR_TESTING)" all
-	$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(patsubst %,$(BUILD_DIR)/%*.ipk,$(PACKAGES_READY_FOR_TESTING))
+	$(PERL) -w scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(patsubst %,$(BUILD_DIR)/%*.ipk,$(PACKAGES_READY_FOR_TESTING))
 
 # Common tools which may need overriding
 CVS=cvs
@@ -252,7 +252,7 @@ export TMPDIR=$(BASE_DIR)/tmp
 TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 CROSS_CONFIGURATION_GCC_VERSION=3.3.5
 CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
@@ -281,7 +281,7 @@ toolchain: crosstool
 endif
 endif
 
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = mipsel-linux
@@ -362,7 +362,7 @@ $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 packages: $(PACKAGE_DIR)/Packages
 
 upload:
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 	ssh nudi.nslu2-linux.org mkdir -p /home/unslung/packages/native/
 	rsync -avr --delete packages/ nudi.nslu2-linux.org:/home/unslung/packages/native/
@@ -423,10 +423,10 @@ $(TMPDIR):
 source: $(PACKAGES_SOURCE)
 
 check-packages:
-	@$(PERL) -w unslung-check-package.pl --target=$(UNSLUNG_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
+	@$(PERL) -w scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
 
 autoclean:
-	$(PERL) -w unslung-autoclean.pl -v
+	$(PERL) -w scripts/optware-autoclean.pl -v
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '*~' -print | xargs /bin/rm -f

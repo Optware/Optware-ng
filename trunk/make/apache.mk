@@ -59,7 +59,7 @@ APACHE_CPPFLAGS=
 APACHE_LDFLAGS=
 
 # We need this because openldap does not build on the wl500g.
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 APACHE_CONFIGURE_TARGET_ARGS= \
 		--enable-ldap \
 		--enable-auth-ldap

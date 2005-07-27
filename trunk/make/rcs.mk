@@ -117,7 +117,7 @@ $(RCS_BUILD_DIR)/.configured: $(DL_DIR)/$(RCS_SOURCE) $(RCS_PATCHES)
 		--disable-nls \
 	)
 ifneq ($(HOSTCC),$(TARGET_CC))
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 	cp $(RCS_SOURCE_DIR)/slug-src-conf.h $(RCS_BUILD_DIR)/src/conf.h
 else
 	cp $(RCS_SOURCE_DIR)/wiley-src-conf.h $(RCS_BUILD_DIR)/src/conf.h

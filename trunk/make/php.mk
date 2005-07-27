@@ -229,7 +229,7 @@ $(DL_DIR)/$(PHP_SOURCE):
 php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 
 # We need this because openldap does not build on the wl500g.
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 PHP_CONFIGURE_TARGET_ARGS= \
 		--with-ldap=shared,$(STAGING_PREFIX) \
 		--with-ldap-sasl=$(STAGING_PREFIX)
@@ -266,7 +266,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	$(MAKE) openssl-stage 
 	$(MAKE) mysql-stage
 	$(MAKE) imap-stage
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openldap-stage
 endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -418,7 +418,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/imap.so $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions/imap.so
 	echo extension=imap.so >$(PHP_IMAP_IPK_DIR)/opt/etc/php.d/imap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IMAP_IPK_DIR)
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 	### now make php-ldap
 	rm -rf $(PHP_LDAP_IPK_DIR) $(BUILD_DIR)/php-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_LDAP_IPK_DIR)/CONTROL/control

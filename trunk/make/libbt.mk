@@ -36,7 +36,7 @@ LIBBT_IPK_VERSION=7
 # LIBBT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
 	$(LIBBT_SOURCE_DIR)/libbt-headerfix.patch \
 	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \

@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-ifneq ($(UNSLUNG_TARGET),wl500g) 
+ifneq ($(OPTWARE_TARGET),wl500g) 
 LIBNSL_VERSION=2.2.5
 else
 LIBNSL_VERSION=0.9.19

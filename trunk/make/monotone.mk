@@ -53,7 +53,7 @@ MONOTONE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 MONOTONE_CPPFLAGS=-D__BIG_ENDIAN__
 else
 MONOTONE_CPPFLAGS=
