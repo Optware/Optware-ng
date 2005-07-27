@@ -99,9 +99,9 @@ xauth-source: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz $(XAUTH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XAUTH_BUILD_DIR)/.configured: $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz \
-		$(STAGING_LIB_DIR)/libXau.so \
-		$(STAGING_LIB_DIR)/libXmu.so \
 		$(XAUTH_PATCHES)
+	$(MAKE) xau-stage
+	$(MAKE) xmu-stage
 	rm -rf $(BUILD_DIR)/$(XAUTH_DIR) $(XAUTH_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xauth-$(XAUTH_VERSION).tar.gz
 	if test "$(BUILD_DIR)/$(XAUTH_DIR)" != "$(XAUTH_BUILD_DIR)" ; \
