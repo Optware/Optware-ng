@@ -42,7 +42,7 @@ ANTINAT_CONFLICTS=
 #
 # ANTINAT_IPK_VERSION should be incremented when the ipk changes.
 #
-ANTINAT_IPK_VERSION=1
+ANTINAT_IPK_VERSION=2
 
 #
 # ANTINAT_CONFFILES should be a list of user-editable files
@@ -105,6 +105,7 @@ antinat-source: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
+	$(MAKE) expat-stage
 	rm -rf $(BUILD_DIR)/$(ANTINAT_DIR) $(ANTINAT_BUILD_DIR)
 	$(ANTINAT_UNZIP) $(DL_DIR)/$(ANTINAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ANTINAT_DIR) $(ANTINAT_BUILD_DIR)
