@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", and "wl500g"
-UNSLUNG_TARGET=nslu2
+UNSLUNG_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
@@ -338,6 +338,7 @@ GCC=
 CXX=
 RANLIB=
 STRIP=
+LD_LIBRARY_PATH=
 
 PACKAGES_CLEAN:=$(patsubst %,%-clean,$(PACKAGES))
 PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
