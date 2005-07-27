@@ -1,0 +1,98 @@
+#!/bin/sh
+
+#
+# Copyright (c) 2005 Josh Parsons <jbparsons@ucdavis.edu>
+#
+# Portions derived from qemu-binfmt-conf.sh
+# Copyright (c) 2003 Fabrice Bellard
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+#
+
+QEMU_BIN_DIR=/opt/bin
+BINFMT_MISC_DIR=""
+MOUNT_AT=""
+
+# try to install binfmt_misc
+if grep -Fq binfmt_misc /proc/modules
+then true ;
+elif [ -x /sbin/modprobe ]
+then /sbin/modprobe binfmt_misc
+elif [ -x /opt/sbin/modprobe ]
+then /opt/sbin/modprobe binfmt_misc
+elif [ -r /lib/modules/`uname -r`/kernel/fs/binfmt_misc.o ]
+then insmod /lib/modules/`uname -r`/kernel/fs/binfmt_misc.o
+else exit 0 # no binfmt_misc module
+fi
+
+# now look for its controls
+parse_mounts() {
+    BINFMT_MISC_DIR=$2
+}
+
+if [ -d /proc/sys/fs/binfmt_misc/status ]
+then BINFMT_MISC_DIR=/proc/sys/fs/binfmt_misc
+elif grep -Fq binfmt_misc /proc/mounts
+then parse_mounts `grep -F binfmt_misc /proc/mounts`
+elif [ -d /proc/sys/fs/binfmt_misc ]
+then MOUNT_AT=/proc/sys/fs/binfmt_misc
+else mkdir -p /tmp/binfmt_misc ; MOUNT_AT=/tmp/binfmt_misc
+fi
+
+# mount binfmt_misc's control interface if we need to
+if [ -n "$MOUNT_AT" ]
+then 
+    mount -t binfmt_misc nodev $MOUNT_AT
+    BINFMT_MISC_DIR=$MOUNT_AT
+fi
+
+echo "Using binfmt_misc interface fs at $BINFMT_MISC_DIR"
+echo "Using qemu binaries in $QEMU_BIN_DIR"
+
+# probe cpu type
+cpu=`uname -m`
+case "$cpu" in
+  i386|i486|i586|i686|i86pc|BePC)
+    cpu="i386"
+  ;;
+  "Power Macintosh"|ppc|ppc64)
+    cpu="ppc"
+  ;;
+  arm*)
+    cpu="arm"
+  ;;
+esac
+
+# register the interpreter for each cpu except for the native one
+if [ $cpu != "i386" ] ; then
+    echo ":i386:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x03\x00:\xff\xff\xff\xff\xff\xfe\xfe\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfb\xff\xff\xff:$QEMU_BIN_DIR/qemu-i386:" > $BINFMT_MISC_DIR/register
+    echo ":i486:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x06\x00:\xff\xff\xff\xff\xff\xfe\xfe\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfb\xff\xff\xff:$QEMU_BIN_DIR/qemu-i386:" > $BINFMT_MISC_DIR/register
+fi
+if [ $cpu != "arm" ] ; then
+    echo   ":arm:M::\x7fELF\x01\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfb\xff\xff\xff:$QEMU_BIN_DIR/qemu-arm:" > $BINFMT_MISC_DIR/register
+    echo   ":armeb:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x28:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfb\xff\xff:$QEMU_BIN_DIR/qemu-armeb:" > $BINFMT_MISC_DIR/register
+fi
+if [ $cpu != "sparc" ] ; then
+    echo   ":sparc:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x02:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfb\xff\xff\xff:$QEMU_BIN_DIR/qemu-sparc:" > $BINFMT_MISC_DIR/register
+fi
+if [ $cpu != "ppc" ] ; then
+    echo   ":ppc:M::\x7fELF\x01\x02\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x14:\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xfb\xff\xff\xff:$QEMU_BIN_DIR/qemu-ppc:" > $BINFMT_MISC_DIR/register
+fi
+
+# umount binfmt_misc's control interface if we mounted it earlier
+if [ -n "$MOUNT_AT" ]
+then 
+    umount $MOUNT_AT
+fi
