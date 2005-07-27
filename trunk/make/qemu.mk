@@ -30,7 +30,7 @@ QEMU_DESCRIPTION=A portable machine emulator.
 QEMU_SECTION=misc
 QEMU_PRIORITY=optional
 QEMU_DEPENDS=zlib
-QEMU_SUGGESTS=
+QEMU_SUGGESTS=kernel-module-binfmt-misc
 QEMU_CONFLICTS=
 
 ifeq ($(OPTWARE_TARGET),nslu2)
@@ -45,7 +45,7 @@ QEMU_TARGET_LIST=i386-user i386-softmmu
 #
 # QEMU_IPK_VERSION should be incremented when the ipk changes.
 #
-QEMU_IPK_VERSION=1
+QEMU_IPK_VERSION=2
 
 #
 # QEMU_CONFFILES should be a list of user-editable files
@@ -187,12 +187,17 @@ $(QEMU_IPK): $(QEMU_BUILD_DIR)/.built
 	chmod a+rwxt $(QEMU_IPK_DIR)/opt/tmp
 	$(MAKE) $(QEMU_IPK_DIR)/CONTROL/control
 	mkdir -p $(QEMU_USER_IPK_DIR)/opt/bin
+	mkdir -p $(QEMU_USER_IPK_DIR)/opt/etc/init.d
 	for F in $(QEMU_TARGET_LIST) ; \
 		do if test -r  $(QEMU_IPK_DIR)/opt/bin/qemu-$${F%-user} ; \
 		then mv $(QEMU_IPK_DIR)/opt/bin/qemu-$${F%-user} \
 			$(QEMU_USER_IPK_DIR)/opt/bin ; \
 		fi ; done
 	$(MAKE) $(QEMU_USER_IPK_DIR)/CONTROL/control
+	install -m 755 $(QEMU_SOURCE_DIR)/rc.qemu-user \
+		$(QEMU_USER_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(QEMU_SOURCE_DIR)/rc.qemu-user \
+		$(QEMU_USER_IPK_DIR)/opt/etc/init.d/S10qemu-user
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_USER_IPK_DIR)
 
