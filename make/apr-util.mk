@@ -34,7 +34,7 @@ APR_UTIL_IPK_VERSION=3
 APR_UTIL_LOCALES=
 
 # We need this because openldap does not build on the wl500g.
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 APR_UTIL_CONFIGURE_TARGET_ARGS= \
 		--with-ldap-library=$(STAGING_LIB_DIR) \
 		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
@@ -126,7 +126,7 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
-ifneq ($(UNSLUNG_TARGET),wl500g)
+ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openldap-stage
 endif
 	$(MAKE) apr-stage

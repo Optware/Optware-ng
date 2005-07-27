@@ -28,7 +28,7 @@ GIFT_UNZIP=bzcat
 GIFT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 GIFT_SECTION=net
 GIFT_PRIORITY=optional
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 GIFT_DEPENDS=libogg, libvorbis, libtool, microperl
 else
 GIFT_DEPENDS=libogg, libvorbis, libtool, perl

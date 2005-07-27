@@ -109,7 +109,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 		--disable-pam \
 		--prefix=/opt \
 	)
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 		sed -ie 's|sys/stropts.h|stropts.h|g' $(SCREEN_BUILD_DIR)/pty.c 
 endif
 	touch $(SCREEN_BUILD_DIR)/.configured

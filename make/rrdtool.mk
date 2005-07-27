@@ -53,7 +53,7 @@ RRDTOOL_IPK_VERSION=1
 # RRDTOOL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/rrd_gfx.c.wiley.patch
 endif
 #
@@ -110,7 +110,7 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage
 	rm -rf $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
 	$(RRDTOOL_UNZIP) $(DL_DIR)/$(RRDTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-ifeq ($(UNSLUNG_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),wl500g)
 	cat $(RRDTOOL_PATCHES) | patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1
 endif
 	mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)

@@ -48,7 +48,7 @@ OCAML_IPK_VERSION=1
 # OCAML_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(UNSLUNG_TARGET),nslu2)
+ifeq ($(OPTWARE_TARGET),nslu2)
 OCAML_PATCHES=$(OCAML_SOURCE_DIR)/asmcomp-arm-emit.mlp.patch
 endif
 
