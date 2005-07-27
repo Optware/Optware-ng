@@ -99,10 +99,10 @@ xdpyinfo-source: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz $(XDPYINFO_PATCHE
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz  \
-		$(STAGING_LIB_DIR)/libX11.so \
-		$(STAGING_LIB_DIR)/libXext.so \
-		$(STAGING_LIB_DIR)/libXtst.so \
 		$(XDPYINFO_PATCHES)
+	$(MAKE) x11-stage
+	$(MAKE) xext-stage
+	$(MAKE) xtst-stage
 	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 	if test -n "$(XDPYINFO_PATCHES)" ; \

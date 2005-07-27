@@ -99,9 +99,9 @@ xmu-source: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz $(XMU_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
-		$(STAGING_LIB_DIR)/libXext.so \
-		$(STAGING_LIB_DIR)/libXt.so \
 		$(XMU_PATCHES)
+	$(MAKE) xext-stage
+	$(MAKE) xt-stage
 	rm -rf $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz
 	if test -n "$(XMU_PATCHES)" ; \
@@ -126,6 +126,7 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(XMU_BUILD_DIR)/libtool
 	touch $(XMU_BUILD_DIR)/.configured
 
 xmu-unpack: $(XMU_BUILD_DIR)/.configured
@@ -146,12 +147,14 @@ xmu: $(XMU_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXmu.so: $(XMU_BUILD_DIR)/.built
+$(XMU_BUILD_DIR)/.staged: $(XMU_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XMU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXmu.la
 	rm -f $(STAGING_LIB_DIR)/libXmuu.la
+	touch $@
 
-xmu-stage: $(STAGING_LIB_DIR)/libXmu.so
+xmu-stage: $(XMU_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -181,6 +184,7 @@ xmu-ipk: $(XMU_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 xmu-clean:
+	rm -f $(XMU_BUILD_DIR)/.built
 	-$(MAKE) -C $(XMU_BUILD_DIR) clean
 
 #

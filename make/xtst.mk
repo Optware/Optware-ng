@@ -97,10 +97,10 @@ xtst-source: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz $(XTST_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/extensions/record.h \
-		$(STAGING_LIB_DIR)/libX11.so \
-		$(STAGING_LIB_DIR)/libXext.so \
 		$(XTST_PATCHES)
+	$(MAKE) x11-stage
+	$(MAKE) xext-stage
+	$(MAKE) recordext-stage
 	rm -rf $(BUILD_DIR)/$(XTST_DIR) $(XTST_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz
 	if test -n "$(XTST_PATCHES)" ; \
@@ -124,6 +124,7 @@ $(XTST_BUILD_DIR)/.configured: $(DL_DIR)/xtst-$(XTST_VERSION).tar.gz \
 		--prefix=/opt \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(XTST_BUILD_DIR)/libtool
 	touch $(XTST_BUILD_DIR)/.configured
 
 xtst-unpack: $(XTST_BUILD_DIR)/.configured
@@ -144,11 +145,13 @@ xtst: $(XTST_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXtst.so: $(XTST_BUILD_DIR)/.built
+$(XTST_BUILD_DIR)/.staged: $(XTST_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXtst.la
+	touch $@
 
-xtst-stage: $(STAGING_LIB_DIR)/libXtst.so
+xtst-stage: $(XTST_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -178,6 +181,7 @@ xtst-ipk: $(XTST_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 xtst-clean:
+	rm -f $(XTST_BUILD_DIR)/.built
 	-$(MAKE) -C $(XTST_BUILD_DIR) clean
 
 #
