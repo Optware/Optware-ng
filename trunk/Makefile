@@ -155,7 +155,7 @@ WL500G_PACKAGES = \
 	inetutils ircd-hybrid \
 	joe jove \
 	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
-	libgcrypt libid3tag libjpeg libmad libogg libol \ 
+	libgcrypt libid3tag libjpeg libmad libogg libol \
 	libnsl libosip2 libpng libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
@@ -348,13 +348,7 @@ ifeq ($(HOST_MACHINE),armv5b)
 	ssh nudi.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
 	ssh nudi.nslu2-linux.org rsync -vrlt --progress /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
 	ssh nudi.nslu2-linux.org rsync -vrlt --progress /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
-else
-	rsync -vrlt --progress packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
-	rsync -vrl --progress packages/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/cross/
 endif
-else
-	rsync -vrlt packages/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/wl500g
-	rsync -vrl packages/      unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/wl500g
 endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
