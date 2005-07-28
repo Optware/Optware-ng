@@ -44,7 +44,7 @@ LIBUSB_CONFLICTS=
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUSB_IPK_VERSION=5
+LIBUSB_IPK_VERSION=6
 #
 # LIBUSB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
