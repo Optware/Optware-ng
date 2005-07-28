@@ -154,18 +154,18 @@ WL500G_PACKAGES = \
 	hdparm hexcurse \
 	inetutils ircd-hybrid \
 	joe jove \
-	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgd libghttp libid3tag libjpeg \
-	libmad libogg libol \
-	libnsl libosip2 libpng libtool libtopfield libusb libvorbis libxml2 libxslt \
+	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
+	libgcrypt libid3tag libjpeg libmad libogg libol \ 
+	libnsl libosip2 libpng libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
-	nano ncftp ncurses neon net-snmp net-tools ntpclient nylon \
+	nano ncftp ncurses netio neon net-snmp net-tools ntpclient nylon \
 	openssl openvpn oww \
-	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd puppy py-moin python \
+	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd psutils puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
 	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
-	tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent tsocks \
+	taged tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent tsocks \
 	unfs3 units usbutils \
 	vblade vdr-mediamvp vorbis-tools vsftpd \
 	w3cam wakelan which whois wiley-feeds wizd wpa-supplicant \
@@ -179,27 +179,6 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	netio \
-	gnupg \
-	iperf   \
-	monotone \
-	py-roundup \
-	py-serial \
-	py-simpy \
-	py-soappy \
-	gnutls \
-	libgpg-error \
-	libgcrypt \
-	libtasn1 \
-	opencdk \
-	ficy \
-	taged \
-	sdl \
-	xpdf \
-	psutils \
-	freetds \
-	sqsh \
-	py-mssql \
 	qemu qemu-libc-i386 \
 	cherokee \
 
