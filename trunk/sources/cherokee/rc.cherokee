@@ -33,16 +33,8 @@ case "$rc" in
         sleep 1
         "$0" start
         ;;
-    reload)
-        if [ -n "`pidof cherokee`" ]; then
-            echo "Reload web server: $NAME"
-            killall -HUP cherokee
-        else
-            "$0" restart
-        fi
-	;;
     *)  
-        echo "Usage: $0 (start|stop|restart|reload|usage)"
+        echo "Usage: $0 (start|stop|restart|usage)"
         ;;
 esac
 
