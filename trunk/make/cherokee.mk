@@ -30,14 +30,14 @@ CHEROKEE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CHEROKEE_DESCRIPTION=A flexible, very fast, lightweight web server.
 CHEROKEE_SECTION=web
 CHEROKEE_PRIORITY=optional
-CHEROKEE_DEPENDS=libtasn1, gnutls, libgcrypt
+CHEROKEE_DEPENDS=libtasn1, gnutls, libgcrypt, pcre
 CHEROKEE_SUGGESTS=
 CHEROKEE_CONFLICTS=
 
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -113,7 +113,7 @@ cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
 # shown below to make various patches to it.
 #
 $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
-	$(MAKE) gnutls-stage libtasn1-stage libgcrypt-stage
+	$(MAKE) gnutls-stage libtasn1-stage libgcrypt-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR)
 	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1
@@ -206,8 +206,8 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	sed -i -e 's|^Port.*|Port 8008|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/
 #	install -m 644 $(CHEROKEE_SOURCE_DIR)/cherokee.conf $(CHEROKEE_IPK_DIR)/opt/etc/cherokee.conf
-#	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/SXXcherokee
+	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
 	$(MAKE) $(CHEROKEE_IPK_DIR)/CONTROL/control
 #	install -m 755 $(CHEROKEE_SOURCE_DIR)/postinst $(CHEROKEE_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(CHEROKEE_SOURCE_DIR)/prerm $(CHEROKEE_IPK_DIR)/CONTROL/prerm
