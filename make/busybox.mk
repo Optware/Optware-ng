@@ -4,15 +4,8 @@
 #
 ###########################################################
 
-ifneq ($(strip $(USE_BUSYBOX_SNAPSHOT)),)
-# Be aware that this changes daily....
-BUSYBOX_SITE=http://www.busybox.net/downloads/snapshots
-BUSYBOX_VERSION=$(strip $(USE_BUSYBOX_SNAPSHOT))
-else
 BUSYBOX_SITE=http://www.busybox.net/downloads
 BUSYBOX_VERSION=1.00
-endif
-
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
