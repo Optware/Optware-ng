@@ -150,7 +150,7 @@ $(LIBDB_BUILD_DIR)/.staged: $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LI
 	rm -f $@
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(STAGING_DIR) install_setup install_include install_lib
 	rm -f $(STAGING_LIB_DIR)/libdb-$(LIBDB_LIB_VERSION).la
-	touch 4@
+	touch $@
 
 libdb-stage: $(LIBDB_BUILD_DIR)/.staged
 
