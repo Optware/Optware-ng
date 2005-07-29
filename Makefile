@@ -327,7 +327,7 @@ $(PACKAGES) : directories toolchain
 $(PACKAGES_STAGE) : directories toolchain
 $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 
-$(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
+$(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 	rsync -avr --delete $(BUILD_DIR)/*.ipk $(PACKAGE_DIR)/
 	{ \
 		cd $(PACKAGE_DIR); \
@@ -336,7 +336,8 @@ $(PACKAGE_DIR)/Packages: $(PACKAGES_IPKG)
 	}
 	@echo "ALL DONE."
 
-packages: $(PACKAGE_DIR)/Packages
+packages: $(PACKAGES_IPK)
+	$(MAKE) $(PACKAGE_DIR)/Packages
 
 upload:
 ifeq ($(OPTWARE_TARGET),nslu2)
