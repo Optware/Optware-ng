@@ -55,5 +55,7 @@ mount_devpts() {
     fi
 }
 
-upgrade_dev /dev.state
+if [ -d /dev.state ] 
+then upgrade_dev /dev.state
+fi
 mount_devpts /dev

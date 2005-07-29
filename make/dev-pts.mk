@@ -5,7 +5,7 @@
 ###########################################################
 
 DEV-PTS_SITE=
-DEV-PTS_VERSION=1.0
+DEV-PTS_VERSION=5.5
 DEV-PTS_SOURCE=
 DEV-PTS_DIR=dev-pts-$(DEV-PTS_VERSION)
 DEV-PTS_UNZIP=zcat
