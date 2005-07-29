@@ -397,7 +397,7 @@ check-packages:
 	@$(PERL) -w scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
 
 autoclean:
-	$(PERL) -w scripts/optware-autoclean.pl -v
+	$(PERL) -w scripts/optware-autoclean.pl -v -C $(BASE_DIR)
 
 clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 	find . -name '*~' -print | xargs /bin/rm -f

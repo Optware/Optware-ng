@@ -140,7 +140,7 @@ sub parse_Packages
 	    
 	    # if it seems to have failed, slow check with make query
 	    unless($uploaded_version{$p} eq $v) {
-		my $ipk=`make -C $optware_dir -s query-${P}_IPK`;
+		my $ipk=`MAKEFLAGS="" make -C $optware_dir -s query-${P}_IPK`;
 		chomp $ipk;
 		$v=$1 if $ipk=~/${p_pattern}_(.*?)_\w+\.ipk$/i;
 	    }
