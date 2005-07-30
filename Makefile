@@ -336,7 +336,7 @@ $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 	}
 	@echo "ALL DONE."
 
-packages: $(PACKAGES_IPK)
+packages: $(PACKAGES_IPKG)
 	$(MAKE) $(PACKAGE_DIR)/Packages
 
 upload:
