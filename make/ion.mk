@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ION_SITE=http://modeemi.cs.tut.fi/~tuomov/ion/dl
-ION_VERSION=20050625
+ION_VERSION=20050728
 ION_SOURCE=ion-3ds-$(ION_VERSION).tar.gz
 ION_DIR=ion-3ds-$(ION_VERSION)
 ION_UNZIP=zcat
