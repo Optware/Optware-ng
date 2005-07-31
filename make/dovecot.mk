@@ -11,7 +11,6 @@
 #	This is work in progress.
 #	The package compiles native.
 # TODO:
-#	- Cross compilation (configure error)
 #	- Start up scripts (inetd or daemonized?)
 #	- Testing
 #
@@ -40,14 +39,14 @@ DOVECOT_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 DOVECOT_DESCRIPTION=Dovecot secure IMAP server
 DOVECOT_SECTION=net
 DOVECOT_PRIORITY=optional
-DOVECOT_DEPENDS=
+DOVECOT_DEPENDS=openssl
 DOVECOT_SUGGESTS=
 DOVECOT_CONFLICTS=cyrus-imapd imap
 
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=1
+DOVECOT_IPK_VERSION=2
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -131,7 +130,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
 		ignore_signed_size=1 \
-		./configure \
+		PKG_CONFIG_PATH=$(BUILD_DIR)/openssl ./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
