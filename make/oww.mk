@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OWW_SITE=http://dl.sourceforge.net/sourceforge/oww
-OWW_VERSION=0.81.5
+OWW_VERSION=0.81.6
 OWW_SOURCE=oww-$(OWW_VERSION).tar.gz
 OWW_DIR=oww-$(OWW_VERSION)
 OWW_UNZIP=zcat
