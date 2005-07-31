@@ -58,7 +58,7 @@ DOVECOT_CONFFILES=	# TODO
 # DOVECOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# DOVECOT_PATCHES=
+DOVECOT_PATCHES=sources/dovecot/configure.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -125,9 +125,12 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		then mv $(BUILD_DIR)/$(DOVECOT_DIR) $(DOVECOT_BUILD_DIR) ; \
 	fi
 	(cd $(DOVECOT_BUILD_DIR); \
+		rm -rf config.cache; \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
+		ignore_signed_size=1 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -136,7 +139,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(DOVECOT_BUILD_DIR)/libtool
+	#$(PATCH_LIBTOOL) $(DOVECOT_BUILD_DIR)/libtool
 	touch $(DOVECOT_BUILD_DIR)/.configured
 
 dovecot-unpack: $(DOVECOT_BUILD_DIR)/.configured

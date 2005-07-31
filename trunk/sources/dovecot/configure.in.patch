@@ -1,0 +1,85 @@
+--- ./configure.in.dovecot	2005-07-30 23:44:48.571463846 +0100
++++ ./configure.in	2005-07-31 00:22:17.564381142 +0100
+@@ -529,7 +529,22 @@
+   echo "..ignoring as requested.."
+ ],[
+   AC_MSG_RESULT(no)
+-],[])
++],[
++
++  AC_MSG_RESULT(can't check)
++
++  echo
++  echo "You are cross compiling so I can't tell if the destination uses a signed"
++  echo "size_t. Dovecot isn't designed to work with a signed size_t, It probably"
++  echo "works just fine, but it's less resistant to buffer overflows."
++  echo "You may want to manually check what your target uses for size_t."
++  echo "To compile Dovecot anyway, set ignore_signed_size=1 environment."
++
++  if test "$ignore_signed_size" = ""; then
++    AC_MSG_ERROR([aborting])
++  fi
++  echo "..proceeding as requested.."
++])
+ 
+ dnl Note: we check size_t rather than ssize_t here, because on OSX 10.2
+ dnl ssize_t = int and size_t = unsigned long. We're mostly concerned about
+@@ -659,7 +674,10 @@
+ ], [
+   AC_MSG_RESULT([check failed, assuming 31])
+   max_bits=31
+-],[])
++],[
++  AC_MSG_RESULT([cross compiling, assuming 31])
++  max_bits=31
++])
+ AC_DEFINE_UNQUOTED(TIME_T_MAX_BITS, $max_bits, max. time_t bits gmtime() can handle)
+ 
+ dnl * do we have struct iovec
+@@ -768,6 +786,8 @@
+ ], [
+   AC_MSG_RESULT(no)
+   AC_DEFINE(MMAP_CONFLICTS_WRITE,, [Define if shared mmaps don't get updated by write()s])
++], [
++  AC_MSG_RESULT(cross-compiling so target PROBABLY isn't the buggy version of OpenBSD)
+ ])
+ 
+ dnl * see if fd passing works
+@@ -831,6 +851,9 @@
+     if test $i = 2; then
+       AC_MSG_RESULT(no)
+     fi
++  ], [
++    CFLAGS=$old_cflags
++    AC_MSG_RESULT(cross compiling so target probably isn't 64 bit)
+   ])
+ done
+ 
+@@ -878,7 +901,7 @@
+ dnl ***
+ 
+ AC_CACHE_CHECK([for an implementation of va_copy()],lib_cv_va_copy,[
+-	AC_RUN_IFELSE([AC_LANG_SOURCE([[
++	AC_LINK_IFELSE([AC_LANG_SOURCE([[
+ 	#include <stdarg.h>
+ 	void f (int i, ...) {
+ 	va_list args1, args2;
+@@ -896,7 +919,7 @@
+ 	[lib_cv_va_copy=no],[])
+ ])
+ AC_CACHE_CHECK([for an implementation of __va_copy()],lib_cv___va_copy,[
+-	AC_RUN_IFELSE([AC_LANG_SOURCE([[
++	AC_LINK_IFELSE([AC_LANG_SOURCE([[
+ 	#include <stdarg.h>
+ 	void f (int i, ...) {
+ 	va_list args1, args2;
+@@ -941,7 +964,8 @@
+ 	  return 0;
+ 	}]])],
+ 	[lib_cv_va_val_copy=yes],
+-	[lib_cv_va_val_copy=no],[])
++	[lib_cv_va_val_copy=no],
++        [lib_cv_va_val_copy=yes])
+ ])
+ 
+ if test "x$lib_cv_va_val_copy" = "xno"; then
