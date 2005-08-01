@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# $Header$
+#
+
+if [ -n "`pidof dovecot`" ] ; then
+    killall dovecot 2>/dev/null
+    sleep 2
+fi
+
+/opt/sbin/dovecot
