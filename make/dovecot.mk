@@ -9,9 +9,7 @@
 #
 # Warning:
 #	This is work in progress.
-#	The package compiles native.
 # TODO:
-#	- Start up scripts (inetd or daemonized?)
 #	- Testing
 #
 # DOVECOT_VERSION, DOVECOT_SITE and DOVECOT_SOURCE define
@@ -46,12 +44,11 @@ DOVECOT_CONFLICTS=cyrus-imapd imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=2
+DOVECOT_IPK_VERSION=3
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
-# DOVECOT_CONFFILES=/opt/etc/dovecot.conf /opt/etc/init.d/S90dovecot /opt/etc/xinetd.d/dovecot
-DOVECOT_CONFFILES=	# TODO
+DOVECOT_CONFFILES=/opt/etc/dovecot.conf /opt/etc/init.d/S90dovecot
 
 #
 # DOVECOT_PATCHES should list any patches, in the the order in
@@ -200,13 +197,14 @@ $(DOVECOT_IPK_DIR)/CONTROL/control:
 $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	rm -rf $(DOVECOT_IPK_DIR) $(BUILD_DIR)/dovecot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(DOVECOT_IPK_DIR) install-strip
+	rm -f $(DOVECOT_IPK_DIR)/opt/etc/dovecot-example.conf
 	install -d $(DOVECOT_IPK_DIR)/opt/etc/
-	# install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot.conf
-	# install -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
-	# install -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/SXXdovecot
+	install -m 700 -o nobody -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
+	install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot.conf
+	install -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
 	$(MAKE) $(DOVECOT_IPK_DIR)/CONTROL/control
-	# install -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(DOVECOT_SOURCE_DIR)/prerm $(DOVECOT_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOVECOT_IPK_DIR)
 
