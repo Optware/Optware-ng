@@ -10,7 +10,7 @@
 # this cvs module is checked out.
 #
 
-ASTERISK_REPOSITORY=:pserver:anoncvs@cvs.digium.com:/usr/cvsroot
+ASTERISK_REPOSITORY=:pserver:anoncvs:anoncvs@cvs.digium.com:/usr/cvsroot
 ASTERISK_DIR=asterisk
 ASTERISK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ASTERISK_DESCRIPTION=Open Source VoIP PBX System
