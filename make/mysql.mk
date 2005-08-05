@@ -119,7 +119,7 @@ endif
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -v $(MYSQL_BUILD_DIR)
+	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf --install --force -v $(MYSQL_BUILD_DIR)
 	(cd $(MYSQL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL_CPPFLAGS)" \
