@@ -1,0 +1,40 @@
+*** ncftp/configure.orig	Sat Aug  6 17:31:58 2005
+--- ncftp/configure	Sat Aug  6 17:33:28 2005
+***************
+*** 3906,3912 ****
+  if test "$cross_compiling" = yes; then
+    
+  	# action if cross compiling
+! 	wi_cv_type_long_long=no
+  
+  else
+    cat > conftest.$ac_ext <<EOF
+--- 3906,3913 ----
+  if test "$cross_compiling" = yes; then
+    
+  	# action if cross compiling
+! 	wi_cv_type_long_long=yes
+! 	LONGEST_INT="long long"
+  
+  else
+    cat > conftest.$ac_ext <<EOF
+***************
+*** 3969,3974 ****
+--- 3970,3976 ----
+    
+  	# action if cross compiling
+  	:
++ 	wi_cv_printf_long_long="%lld"
+  
+  else
+    cat > conftest.$ac_ext <<EOF
+***************
+*** 4096,4101 ****
+--- 4098,4104 ----
+    
+  	# action if cross compiling
+  	:
++ 	wi_cv_scanf_long_long="%lld"
+  
+  else
+    cat > conftest.$ac_ext <<EOF
