@@ -42,7 +42,7 @@ PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=6
+PYTHON_IPK_VERSION=7
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -200,6 +200,8 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 	chmod 555 $(PYTHON_IPK_DIR)/opt/lib/libpython$(PYTHON_VERSION_MAJOR).so.1.0
 	rm $(PYTHON_IPK_DIR)/opt/bin/python
 	cd $(PYTHON_IPK_DIR)/opt/bin; ln -s python$(PYTHON_VERSION_MAJOR) python
+	install -d $(PYTHON_IPK_DIR)/usr/bin
+	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
 	#install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
