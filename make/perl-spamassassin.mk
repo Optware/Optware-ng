@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-SPAMASSASSIN_SITE=http://www.apache.de/dist/spamassassin/source
-PERL-SPAMASSASSIN_VERSION=3.0.2
+PERL-SPAMASSASSIN_VERSION=3.0.4
 PERL-SPAMASSASSIN_SOURCE=Mail-SpamAssassin-$(PERL-SPAMASSASSIN_VERSION).tar.bz2
 PERL-SPAMASSASSIN_DIR=Mail-SpamAssassin-$(PERL-SPAMASSASSIN_VERSION)
 PERL-SPAMASSASSIN_UNZIP=bzcat

@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-STORABLE_SITE=http://search.cpan.org/CPAN/authors/id/A/AM/AMS
-PERL-STORABLE_VERSION=2.13
+PERL-STORABLE_VERSION=2.15
 PERL-STORABLE_SOURCE=Storable-$(PERL-STORABLE_VERSION).tar.gz
 PERL-STORABLE_DIR=Storable-$(PERL-STORABLE_VERSION)
 PERL-STORABLE_UNZIP=zcat
