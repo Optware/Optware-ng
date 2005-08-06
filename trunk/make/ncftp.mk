@@ -33,7 +33,7 @@ NCFTP_DESCRIPTION=Nice command line FTP client
 #
 # NCFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NCFTP_IPK_VERSION=2
+NCFTP_IPK_VERSION=3
 
 #
 # NCFTP_CONFFILES should be a list of user-editable files
@@ -44,7 +44,7 @@ NCFTP_CONFFILES=
 # NCFTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NCFTP_PATCHES=$(NCFTP_SOURCE_DIR)/configure.patch
+NCFTP_PATCHES=$(NCFTP_SOURCE_DIR)/configure2.patch
 
 #
 # If the compilation of the package requires additional
@@ -100,7 +100,7 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
 	$(NCFTP_UNZIP) $(DL_DIR)/$(NCFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(NCFTP_PATCHES) | patch -d $(BUILD_DIR)/$(NCFTP_DIR) -p1
+	cat $(NCFTP_PATCHES) | patch -d $(BUILD_DIR)/$(NCFTP_DIR) -p1
 	mv $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
 	(cd $(NCFTP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
