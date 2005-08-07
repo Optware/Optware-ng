@@ -82,7 +82,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	dovecot	\
 
 
 # asterisk may just need configure work
@@ -112,6 +111,7 @@ NATIVE_PACKAGES = \
         ocaml \
 	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
+	perl-date-manip \
 	perl-appconfig perl-cgi-application \
 	perl-html-parser perl-html-tagset perl-html-template \
 	perl-mime-base64 perl-net-dns perl-net-ident \
@@ -127,11 +127,19 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-date-manip \
 
-# bitlbee - "Could not find a suitable SSL library" - assumes cross-build host has gnutls installed?
+# dovecot: "install: cannot change owner and/or group of
+# `/home/unslung/packages/builds/dovecot-stable-latest-ipk/opt/var':
+# Operation not permitted". You can't install a file with a user
+# other than root by using install -o, because the build system does
+# not run as root.  Use chown in a postinst script instead.
+# 
+# bitlbee: "Could not find a suitable SSL library". Assumes
+# cross-build host has gnutls installed?
+#
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	dovecot \
 	bitlbee \
 	libao \
 	nethack scponly dump gkrellm \
