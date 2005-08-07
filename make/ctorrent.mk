@@ -22,7 +22,7 @@ CTORRENT_UNZIP=bzcat
 #
 # CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-CTORRENT_IPK_VERSION=1
+CTORRENT_IPK_VERSION=2
 
 #
 # CTORRENT_PATCHES should list any patches, in the the order in
@@ -34,7 +34,8 @@ CTORRENT_PATCHES=$(CTORRENT_SOURCE_DIR)/align.patch \
 		$(CTORRENT_SOURCE_DIR)/fmt.patch \
 		$(CTORRENT_SOURCE_DIR)/getcwd.patch \
 		$(CTORRENT_SOURCE_DIR)/stall.patch \
-		$(CTORRENT_SOURCE_DIR)/tracker.patch
+		$(CTORRENT_SOURCE_DIR)/tracker.patch \
+		$(CTORRENT_SOURCE_DIR)/passkey.patch
 
 #
 # If the compilation of the package requires additional
