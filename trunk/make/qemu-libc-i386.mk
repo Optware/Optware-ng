@@ -36,7 +36,7 @@ QEMU_LIBC_I386_PREFIX=$(QEMU_LIBC_I386_RESULT_TOP)/$(QEMU_LIBC_I386_TARGET)/$(QE
 #
 # QEMU_LIBC_I386_IPK_VERSION should be incremented when the ipk changes.
 #
-QEMU_LIBC_I386_IPK_VERSION=1
+QEMU_LIBC_I386_IPK_VERSION=2
 
 #
 # QEMU_LIBC_I386_PATCHES should list any patches, in the the order in
@@ -164,7 +164,7 @@ $(QEMU_LIBC_I386_IPK): $(QEMU_LIBC_I386_BUILD_DIR)/.built
 	)
 	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/sbin
 	$(QEMU_LIBC_I386_PREFIX)/bin/$(QEMU_LIBC_I386_TARGET)-strip \
-		$(QEMU_LIBC_I386_PREFIX)/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig
+		$(QEMU_LIBC_I386_PREFIX)/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig \
 		-o $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig
 	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)/opt/lib/gnemul
 	ln -s ../../$(QEMU_LIBC_I386_TARGET) \
