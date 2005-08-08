@@ -127,19 +127,14 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
+	dovecot \
 
-# dovecot: "install: cannot change owner and/or group of
-# `/home/unslung/packages/builds/dovecot-stable-latest-ipk/opt/var':
-# Operation not permitted". You can't install a file with a user
-# other than root by using install -o, because the build system does
-# not run as root.  Use chown in a postinst script instead.
 # 
 # bitlbee: "Could not find a suitable SSL library". Assumes
 # cross-build host has gnutls installed?
 #
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	dovecot \
 	bitlbee \
 	libao \
 	nethack scponly dump gkrellm \
