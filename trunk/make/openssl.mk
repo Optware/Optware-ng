@@ -15,7 +15,7 @@ OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
 
-OPENSSL_IPK_VERSION=3
+OPENSSL_IPK_VERSION=4
 
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
@@ -77,6 +77,8 @@ $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/li
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
 	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
+	install -d $(STAGING_DIR)/opt/lib/pkgconfig
+	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(STAGING_DIR)/opt/lib/pkgconfig
 
 openssl-stage: $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION)
 
