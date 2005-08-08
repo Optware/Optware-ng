@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=http://public.planetmirror.com/pub/file
-FILE_VERSION=4.12
+FILE_VERSION=4.13
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -28,13 +28,13 @@ FILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FILE_DESCRIPTION=Ubiquitous file identification utility
 FILE_SECTION=utility
 FILE_PRIORITY=optional
-FILE_DEPENDS=
+FILE_DEPENDS=zlib
 FILE_CONFLICTS=
 
 #
 # FILE_IPK_VERSION should be incremented when the ipk changes.
 #
-FILE_IPK_VERSION=2
+FILE_IPK_VERSION=1
 
 #
 # FILE_PATCHES should list any patches, in the the order in
@@ -93,7 +93,7 @@ file-source: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(FILE_BUILD_DIR)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p1
@@ -108,7 +108,9 @@ $(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(FILE_BUILD_DIR)/libtool
 	touch $(FILE_BUILD_DIR)/.configured
 
 file-unpack: $(FILE_BUILD_DIR)/.configured
@@ -162,8 +164,8 @@ $(FILE_IPK_DIR)/CONTROL/control:
 $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_$(TARGET_ARCH).ipk
 	install -d $(FILE_IPK_DIR)/opt/bin
-	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install
-	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install
+	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install-strip
+	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install-strip
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
 	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
