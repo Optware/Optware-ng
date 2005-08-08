@@ -2,4 +2,5 @@
 #
 # $Header$
 #
+chown nobody /opt/var/run/dovecot
 /opt/etc/init.d/S90dovecot start

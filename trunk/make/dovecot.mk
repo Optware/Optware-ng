@@ -199,7 +199,7 @@ $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(DOVECOT_IPK_DIR) install-strip
 	rm -f $(DOVECOT_IPK_DIR)/opt/etc/dovecot-example.conf
 	install -d $(DOVECOT_IPK_DIR)/opt/etc/
-	install -m 700 -o nobody -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
+	install -m 700 -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
 	install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot.conf
 	install -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
