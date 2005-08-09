@@ -30,14 +30,14 @@ NGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NGET_DESCRIPTION=nget is a command line nntp file grabber.
 NGET_SECTION=misc
 NGET_PRIORITY=optional
-NGET_DEPENDS=
+NGET_DEPENDS=pcre,popt,zlib
 NGET_SUGGESTS=
 NGET_CONFLICTS=
 
 #
 # NGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NGET_IPK_VERSION=2
+NGET_IPK_VERSION=3
 
 #
 # NGET_CONFFILES should be a list of user-editable files
@@ -100,7 +100,7 @@ nget-source: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) pcre-stage popt-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NGET_DIR) $(NGET_BUILD_DIR)
 	$(NGET_UNZIP) $(DL_DIR)/$(NGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(NGET_PATCHES) | patch -d $(BUILD_DIR)/$(NGET_DIR) -p1
@@ -125,6 +125,10 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-gnugetopt \
+		--with-pcre \
+		--with-popt \
+		--with-zlib \
 		--disable-nls \
 	)
 	touch $(NGET_BUILD_DIR)/.configured
