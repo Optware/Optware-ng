@@ -36,13 +36,13 @@ ESOUND_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ESOUND_DESCRIPTION=The Enlighted Sound Daemon.
 ESOUND_SECTION=misc
 ESOUND_PRIORITY=optional
-ESOUND_DEPENDS=
+ESOUND_DEPENDS=audiofile
 ESOUND_CONFLICTS=
 
 #
 # ESOUND_IPK_VERSION should be incremented when the ipk changes.
 #
-ESOUND_IPK_VERSION=1
+ESOUND_IPK_VERSION=2
 
 #
 # ESOUND_CONFFILES should be a list of user-editable files
@@ -110,6 +110,8 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 	$(ESOUND_UNZIP) $(DL_DIR)/$(ESOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ESOUND_PATCHES) | patch -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
 	mv $(BUILD_DIR)/$(ESOUND_DIR) $(ESOUND_BUILD_DIR)
+	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
+		autoreconf -vif $(ESOUND_BUILD_DIR)
 	(cd $(ESOUND_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESOUND_CPPFLAGS)" \
@@ -122,7 +124,9 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-alsa \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(ESOUND_BUILD_DIR)/libtool
 	touch $(ESOUND_BUILD_DIR)/.configured
 
 esound-unpack: $(ESOUND_BUILD_DIR)/.configured
@@ -147,6 +151,8 @@ $(ESOUND_BUILD_DIR)/.staged: $(ESOUND_BUILD_DIR)/.built
 	rm -f $(ESOUND_BUILD_DIR)/.staged
 	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	cp $(STAGING_DIR)/opt/bin/esd-config $(STAGING_DIR)/bin/esd-config
+	rm -f $(STAGING_LIB_DIR)/libesd.la
+	rm -f $(STAGING_LIB_DIR)/libesddsp.la
 	touch $(ESOUND_BUILD_DIR)/.staged
 
 esound-stage: $(ESOUND_BUILD_DIR)/.staged
@@ -183,7 +189,7 @@ $(ESOUND_IPK_DIR)/CONTROL/control:
 #
 $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	rm -rf $(ESOUND_IPK_DIR) $(BUILD_DIR)/esound_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(ESOUND_IPK_DIR) install
+	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(ESOUND_IPK_DIR) install-strip
 	#install -d $(ESOUND_IPK_DIR)/opt/etc/
 	#install -m 644 $(ESOUND_SOURCE_DIR)/esound.conf $(ESOUND_IPK_DIR)/opt/etc/esound.conf
 	#install -d $(ESOUND_IPK_DIR)/opt/etc/init.d
@@ -192,6 +198,8 @@ $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	#install -m 755 $(ESOUND_SOURCE_DIR)/postinst $(ESOUND_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(ESOUND_SOURCE_DIR)/prerm $(ESOUND_IPK_DIR)/CONTROL/prerm
 	echo $(ESOUND_CONFFILES) | sed -e 's/ /\n/g' > $(ESOUND_IPK_DIR)/CONTROL/conffiles
+	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesd.la
+	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesddsp.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESOUND_IPK_DIR)
 
 #

@@ -42,7 +42,7 @@ AUDIOFILE_CONFLICTS=
 #
 # AUDIOFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUDIOFILE_IPK_VERSION=2
+AUDIOFILE_IPK_VERSION=3
 
 #
 # AUDIOFILE_CONFFILES should be a list of user-editable files
@@ -110,6 +110,8 @@ $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PA
 	$(AUDIOFILE_UNZIP) $(DL_DIR)/$(AUDIOFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(AUDIOFILE_PATCHES) | patch -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p1
 	mv $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
+	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
+		autoreconf -vif $(AUDIOFILE_BUILD_DIR)
 	(cd $(AUDIOFILE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AUDIOFILE_CPPFLAGS)" \
@@ -122,6 +124,7 @@ $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PA
 		--disable-nls \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(AUDIOFILE_BUILD_DIR)/libtool
 	touch $(AUDIOFILE_BUILD_DIR)/.configured
 
 audiofile-unpack: $(AUDIOFILE_BUILD_DIR)/.configured
@@ -146,6 +149,7 @@ $(AUDIOFILE_BUILD_DIR)/.staged: $(AUDIOFILE_BUILD_DIR)/.built
 	rm -f $(AUDIOFILE_BUILD_DIR)/.staged
 	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	cp $(STAGING_DIR)/opt/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
+	rm -f $(STAGING_LIB_DIR)/libaudiofile.la
 	touch $(AUDIOFILE_BUILD_DIR)/.staged
 
 audiofile-stage: $(AUDIOFILE_BUILD_DIR)/.staged
@@ -191,6 +195,7 @@ $(AUDIOFILE_IPK): $(AUDIOFILE_BUILD_DIR)/.built
 	#install -m 755 $(AUDIOFILE_SOURCE_DIR)/postinst $(AUDIOFILE_IPK_DIR)/CONTROL/postinst
 	#install -m 755 $(AUDIOFILE_SOURCE_DIR)/prerm $(AUDIOFILE_IPK_DIR)/CONTROL/prerm
 	echo $(AUDIOFILE_CONFFILES) | sed -e 's/ /\n/g' > $(AUDIOFILE_IPK_DIR)/CONTROL/conffiles
+	rm -f $(AUDIOFILE_IPK_DIR)/opt/lib/libaudiofile.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUDIOFILE_IPK_DIR)
 
 #
