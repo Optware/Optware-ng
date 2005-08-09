@@ -110,7 +110,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 	$(ESOUND_UNZIP) $(DL_DIR)/$(ESOUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(ESOUND_PATCHES) | patch -d $(BUILD_DIR)/$(ESOUND_DIR) -p1
 	mv $(BUILD_DIR)/$(ESOUND_DIR) $(ESOUND_BUILD_DIR)
-	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
+	ACLOCAL="aclocal-1.9 -I $(STAGING_DIR)/opt/share/aclocal" AUTOMAKE=automake-1.9 \
 		autoreconf -vif $(ESOUND_BUILD_DIR)
 	(cd $(ESOUND_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
