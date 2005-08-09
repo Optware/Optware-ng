@@ -20,6 +20,7 @@
 #
 
 use Cwd;
+use File::stat;
 use Getopt::Long;
 
 $optware_dir=undef;
@@ -109,6 +110,9 @@ sub parse_Packages
 
     open(IN,"<$fn") ||die "$! opening $fn";
     while(<IN>) {
+	my $doclean=0;
+	my $pkg_fn;
+
 	chomp;
 	next unless /^Package: (.*)/;
 	my $p=$1;
@@ -117,10 +121,21 @@ sub parse_Packages
 	    last if /^$/;
 	    $uploaded_version{$p}=$1 if /^Version: (.*)/;
 	    $uploaded_maintainer{$p}=$1 if /^Maintainer: (.*)/;
+	    $pkg_fn="$optware_dir/builds/$1" if /^Filename: (.*)/;
 	}
 
-	my $dot_mk=slurp("$optware_dir/make/$p.mk");
-	if(defined($dot_mk) && !$blacklist{$p}) {
+	my $mk_fn="$optware_dir/make/$p.mk";
+	next unless -r $mk_fn;
+	my $dot_mk=slurp($mk_fn);
+	my $mk_stat=stat($mk_fn);
+	my $pkg_stat=stat($pkg_fn);
+
+	if($blacklist{$p}) {}
+	elsif($pkg_stat && $pkg_stat->mtime<$mk_stat->mtime) {
+		print STDERR "$p package is older than makefile\n" if $verbose;
+		$doclean=1;
+	}
+	elsif(defined($dot_mk)) {
 
 	    # try to figure out what the uppercased version of the
 	    # package name is.
@@ -149,11 +164,13 @@ sub parse_Packages
 	    
 	    unless($uploaded_version{$p} eq $v) {
 		print STDERR "$p is out of date. Feed=".$uploaded_version{$p}." .mk=$v\n" if $verbose;
-		unless($dry_run) {
-		    invoke("rm -rf $optware_dir/builds/${p} $optware_dir/builds/${p}_*.ipk $optware_dir/builds/${p}-*.ipk $optware_dir/packages/${p}_*.ipk $optware_dir/packages/${p}-*.ipk");
-		}
-		push @out_of_date_packages,$p;
+		$doclean=1;
 	    }
+	}
+
+	if($doclean) {
+	    invoke("rm -rf $optware_dir/builds/${p} $optware_dir/builds/${p}_*.ipk $optware_dir/builds/${p}-*.ipk $optware_dir/packages/${p}_*.ipk $optware_dir/packages/${p}-*.ipk") unless $dry_run;
+	    push @out_of_date_packages,$p;
 	}
     }
     close(IN);
