@@ -45,10 +45,10 @@ CROSS_PACKAGES = \
 	lame ldconfig less \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag \
-	libjpeg libnsl libogg libol libosip2 \
+	libjpeg libmad libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtasn1 libtiff libtool libtopfield libusb \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 make man man-pages mc mdadm mediawiki metalog miau monotone \
+	m4 madplay make man man-pages mc mdadm mediawiki metalog miau monotone \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses neon net-snmp net-tools netio nfs-server nfs-utils \
