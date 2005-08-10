@@ -18,7 +18,7 @@ UNRAR_CONFLICTS=
 
 UNRAR_IPK_VERSION=1
 
-UNRAR_CFLAGS= $(TARGET_CFLAGS) -fPIC -DBIG_ENDIAN
+UNRAR_CFLAGS=$(TARGET_CFLAGS) -DBIG_ENDIAN
 
 UNRAR_BUILD_DIR=$(BUILD_DIR)/unrar
 UNRAR_SOURCE_DIR=$(SOURCE_DIR)/unrar
@@ -34,18 +34,15 @@ $(UNRAR_BUILD_DIR)/.configured: $(DL_DIR)/$(UNRAR_SOURCE)
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(UNRAR_DIR) $(UNRAR_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/$(UNRAR_SOURCE)
-	(cd $(UNRAR_BUILD_DIR); \
-	 	sed -ir 's/#define( *)LITTLE_ENDIAN/#define BIG_ENDIAN/' os.hpp ; \
-		cp makefile.unix Makefile ; \
-		sed -ir 's/^CXXFLAGS=(.*)$$/CXXFLAGS=$$\(CFLAGS\)/' Makefile \
-	)
+	ln $(UNRAR_BUILD_DIR)/makefile.unix $(UNRAR_BUILD_DIR)/Makefile
 	touch $(UNRAR_BUILD_DIR)/.configured
 
 unrar-unpack: $(UNRAR_BUILD_DIR)/.configured
 
 $(UNRAR_BUILD_DIR)/unrar: $(UNRAR_BUILD_DIR)/.configured
-	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" \
-		CFLAGS="$(UNRAR_CFLAGS)" CC=$(TARGET_CC) -C $(UNRAR_BUILD_DIR) \
+	$(MAKE) $(TARGET_CONFIGURE_OPTS) \
+		CFLAGS="$(UNRAR_CFLAGS)" CXXFLAGS="$(UNRAR_CFLAGS)" \
+		-C $(UNRAR_BUILD_DIR) \
 		LDFLAGS="$(STAGING_LDFLAGS)"
 
 unrar: $(UNRAR_BUILD_DIR)/unrar
