@@ -331,6 +331,9 @@ $(PACKAGES) : directories toolchain
 $(PACKAGES_STAGE) : directories toolchain
 $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 
+.PHONY: index
+index: $(PACKAGE_DIR)/Packages
+
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 	rsync -avr --delete $(BUILD_DIR)/*.ipk $(PACKAGE_DIR)/
 	{ \
@@ -341,7 +344,7 @@ $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 	@echo "ALL DONE."
 
 packages: $(PACKAGES_IPKG)
-	$(MAKE) $(PACKAGE_DIR)/Packages
+	$(MAKE) index
 
 upload:
 ifeq ($(OPTWARE_TARGET),nslu2)
