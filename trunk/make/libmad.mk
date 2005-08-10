@@ -24,11 +24,18 @@ LIBMAD_VERSION=0.15.1b
 LIBMAD_SOURCE=libmad-$(LIBMAD_VERSION).tar.gz
 LIBMAD_DIR=libmad-$(LIBMAD_VERSION)
 LIBMAD_UNZIP=zcat
+LIBMAD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBMAD_DESCRIPTION=MPEG Audio Decoder library
+LIBMAD_SECTION=lib
+LIBMAD_PRIORITY=optional
+LIBMAD_DEPENDS=
+LIBMAD_SUGGESTS=
+LIBMAD_CONFLICTS=
 
 #
 # LIBMAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMAD_IPK_VERSION=1
+LIBMAD_IPK_VERSION=2
 
 #
 # LIBMAD_CONFFILES should be a list of user-editable files
@@ -105,6 +112,7 @@ $(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(LIBMAD_BUILD_DIR)/.configured
 
@@ -129,28 +137,38 @@ libmad: $(LIBMAD_BUILD_DIR)/.built
 $(LIBMAD_BUILD_DIR)/.staged: $(LIBMAD_BUILD_DIR)/.built
 	rm -f $(LIBMAD_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libmad.la
 	touch $(LIBMAD_BUILD_DIR)/.staged
 
 libmad-stage: $(LIBMAD_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(LIBMAD_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBMAD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libmad" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBMAD_PRIORITY)" >>$@
+	@echo "Section: $(LIBMAD_SECTION)" >>$@
+	@echo "Version: $(LIBMAD_VERSION)-$(LIBMAD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBMAD_MAINTAINER)" >>$@
+	@echo "Source: $(LIBMAD_SITE)/$(LIBMAD_SOURCE)" >>$@
+	@echo "Description: $(LIBMAD_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBMAD_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBMAD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBMAD_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
-#
-# Binaries should be installed into $(LIBMAD_IPK_DIR)/opt/sbin or $(LIBMAD_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMAD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMAD_IPK_DIR)/opt/etc/libmad/...
-# Documentation files should be installed in $(LIBMAD_IPK_DIR)/opt/doc/libmad/...
-# Daemon startup scripts should be installed in $(LIBMAD_IPK_DIR)/opt/etc/init.d/S??libmad
-#
-# You may need to patch your application to make it use these locations.
 #
 $(LIBMAD_IPK): $(LIBMAD_BUILD_DIR)/.built
 	rm -rf $(LIBMAD_IPK_DIR) $(BUILD_DIR)/libmad_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install
-	install -d $(LIBMAD_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBMAD_VERSION)/" \
-		-e "s/@RELEASE@/$(LIBMAD_IPK_VERSION)/" $(LIBMAD_SOURCE_DIR)/control > $(LIBMAD_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install-strip
+	rm -f $(LIBMAD_IPK_DIR)/opt/lib/libmad.la
+	$(MAKE) $(LIBMAD_IPK_DIR)/CONTROL/control
 	echo $(LIBMAD_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMAD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMAD_IPK_DIR)
 
