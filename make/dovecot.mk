@@ -110,7 +110,7 @@ dovecot-source: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 # shown below to make various patches to it.
 #
 $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(DOVECOT_DIR) $(DOVECOT_BUILD_DIR)
 	$(DOVECOT_UNZIP) $(DL_DIR)/$(DOVECOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOVECOT_PATCHES)" ; \
@@ -126,8 +126,9 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ignore_signed_size=1 \
-		PKG_CONFIG_PATH=$(BUILD_DIR)/openssl ./configure \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
