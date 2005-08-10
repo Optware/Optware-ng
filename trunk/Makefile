@@ -82,6 +82,7 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	dovecot \
 
 
 # asterisk may just need configure work
@@ -127,7 +128,6 @@ NATIVE_PACKAGES = \
 
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	dovecot \
 
 # 
 # bitlbee: "Could not find a suitable SSL library". Assumes
