@@ -24,11 +24,18 @@ MADPLAY_VERSION=0.15.2b
 MADPLAY_SOURCE=madplay-$(MADPLAY_VERSION).tar.gz
 MADPLAY_DIR=madplay-$(MADPLAY_VERSION)
 MADPLAY_UNZIP=zcat
+MADPLAY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MADPLAY_DESCRIPTION=MPEG Audio Decoder player
+MADPLAY_SECTION=misc
+MADPLAY_PRIORITY=optional
+MADPLAY_DEPENDS=libmad, libid3tag, esound
+MADPLAY_SUGGESTS=
+MADPLAY_CONFLICTS=
 
 #
 # MADPLAY_IPK_VERSION should be incremented when the ipk changes.
 #
-MADPLAY_IPK_VERSION=1
+MADPLAY_IPK_VERSION=2
 
 #
 # MADPLAY_CONFFILES should be a list of user-editable files
@@ -91,7 +98,7 @@ madplay-source: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
-	$(MAKE) libmad-stage libid3tag-stage
+	$(MAKE) libmad-stage libid3tag-stage esound-stage
 	rm -rf $(BUILD_DIR)/$(MADPLAY_DIR) $(MADPLAY_BUILD_DIR)
 	$(MADPLAY_UNZIP) $(DL_DIR)/$(MADPLAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MADPLAY_PATCHES) | patch -d $(BUILD_DIR)/$(MADPLAY_DIR) -p1
@@ -135,23 +142,32 @@ $(MADPLAY_BUILD_DIR)/.staged: $(MADPLAY_BUILD_DIR)/.built
 madplay-stage: $(MADPLAY_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/madplay
+#
+$(MADPLAY_IPK_DIR)/CONTROL/control:
+	@install -d $(MADPLAY_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: madplay" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MADPLAY_PRIORITY)" >>$@
+	@echo "Section: $(MADPLAY_SECTION)" >>$@
+	@echo "Version: $(MADPLAY_VERSION)-$(MADPLAY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MADPLAY_MAINTAINER)" >>$@
+	@echo "Source: $(MADPLAY_SITE)/$(MADPLAY_SOURCE)" >>$@
+	@echo "Description: $(MADPLAY_DESCRIPTION)" >>$@
+	@echo "Depends: $(MADPLAY_DEPENDS)" >>$@
+	@echo "Suggests: $(MADPLAY_SUGGESTS)" >>$@
+	@echo "Conflicts: $(MADPLAY_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
-#
-# Binaries should be installed into $(MADPLAY_IPK_DIR)/opt/sbin or $(MADPLAY_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MADPLAY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MADPLAY_IPK_DIR)/opt/etc/madplay/...
-# Documentation files should be installed in $(MADPLAY_IPK_DIR)/opt/doc/madplay/...
-# Daemon startup scripts should be installed in $(MADPLAY_IPK_DIR)/opt/etc/init.d/S??madplay
-#
-# You may need to patch your application to make it use these locations.
 #
 $(MADPLAY_IPK): $(MADPLAY_BUILD_DIR)/.built
 	rm -rf $(MADPLAY_IPK_DIR) $(BUILD_DIR)/madplay_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MADPLAY_BUILD_DIR) DESTDIR=$(MADPLAY_IPK_DIR) install
 	install -d $(MADPLAY_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(MADPLAY_VERSION)/" \
-		-e "s/@RELEASE@/$(MADPLAY_IPK_VERSION)/" $(MADPLAY_SOURCE_DIR)/control > $(MADPLAY_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MADPLAY_IPK_DIR)/CONTROL/control
 	echo $(MADPLAY_CONFFILES) | sed -e 's/ /\n/g' > $(MADPLAY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MADPLAY_IPK_DIR)
 
