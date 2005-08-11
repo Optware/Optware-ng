@@ -84,7 +84,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	dump \
-	appweb appweb-php
+	appweb
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
