@@ -12,7 +12,7 @@ DUMP_SITE=http://dl.sourceforge.net/sourceforge/dump/
 DUMP_SOURCE=$(DUMP).tar.gz
 DUMP_UNZIP=zcat
 
-DUMP_IPK=$(BUILD_DIR)/dump_$(DUMP_VERSION)-1_$(TARGET_ARCH).ipk
+DUMP_IPK=$(BUILD_DIR)/dump_$(DUMP_VERSION)-2_$(TARGET_ARCH).ipk
 DUMP_IPK_DIR=$(BUILD_DIR)/dump-$(DUMP_VERSION)-ipk
 
 DUMP_CFLAGS="-I $(STAGING_INCLUDE_DIR)"
@@ -31,7 +31,11 @@ $(DUMP_DIR)/.source: $(DL_DIR)/$(DUMP_SOURCE)
 
 $(DUMP_DIR)/.configured: $(DUMP_DIR)/.source
 	$(MAKE) e2fsprogs-stage
+	$(MAKE) bzip2-stage
+	$(MAKE) zlib-stage
 	(cd $(DUMP_DIR); \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--disable-readline \
 		--includedir=$(STAGING_INCLUDE_DIR) \
