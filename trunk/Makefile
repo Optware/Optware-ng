@@ -25,7 +25,7 @@ OPTWARE_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder \
-	atftp appweb apache apr apr-util atk audiofile automake \
+	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
@@ -83,6 +83,7 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	appweb appweb-php
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -145,7 +146,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = \
 PACKAGES_OBSOLETED = libiconv git thttpd metalog
 
 WL500G_PACKAGES = \
-	adduser adns antinat appweb atftp audiofile autoconf automake \
+	adduser adns antinat atftp audiofile autoconf automake \
 	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
 	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
@@ -182,7 +183,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar
+	dovecot unrar appweb appweb-php
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
