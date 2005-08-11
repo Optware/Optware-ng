@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-# You must replace "appweb" and "APPWEB" with the lower case name and
+# You must replace "appweb" and "APPWEB-PHP" with the lower case name and
 # upper case name of your new package.  Some places below will say
 # "Do not change this" - that does not include this global change,
 # which must always be done to ensure we have unique names.
@@ -29,7 +29,7 @@ APPWEB_MAINTAINER=Matt McNeill <matt_mcneill@hotmail.com>
 APPWEB_DESCRIPTION=AppWeb is the leading web server technology for embedding in devices and applications. Supports embedded javascript, CGI, Virtual Sites, SSL, user passwords, virtual directories - all with minimal memory footprint.
 APPWEB_SECTION=net
 APPWEB_PRIORITY=optional
-APPWEB_DEPENDS=openssl
+APPWEB_DEPENDS=openssl, php-embed
 APPWEB_CONFLICTS=
 
 #
@@ -41,7 +41,7 @@ APPWEB_IPK_VERSION=6
 # APPWEB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch
+APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/adjustphp5libpath.patch $(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,8 +68,12 @@ APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_$(TARGET_
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(APPWEB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(APPWEB_SITE)/$(APPWEB_SOURCE)
+
+# *** commented out this rule for the batch make to prevent a duplication with
+# *** similar declaration in appweb.mk. If this is being built as a stand alone 
+# *** item locally, please uncomment the following 2 lines.
+# $(DL_DIR)/$(APPWEB_SOURCE):
+# 	$(WGET) -P $(DL_DIR) $(APPWEB_SITE)/$(APPWEB_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -93,8 +97,16 @@ appweb-source: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+# ***
+# NOTE: according to the appweb build instructions the paths for the loadable
+#       modules must be relative paths - please dont replace the ../../../../staging
+#       with the makefile symbol 
+#
+#       see the following for more information:
+#       http://www.appwebserver.org/products/appWeb/doc/source/packages.html
+#
 $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage php-stage
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	$(APPWEB_UNZIP) $(DL_DIR)/$(APPWEB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 
@@ -134,6 +146,10 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 		--with-openssl-dir=../../staging/opt/lib \
 		--with-openssl-iflags="-I../../../../../staging/opt/include/" \
 		--with-openssl-libs="crypto ssl" \
+		--with-php5=loadable \
+		--with-php5-dir=../../staging/opt \
+		--with-php5-iflags="-I../../../../../staging/opt/include/php/ -I../../../../../staging/opt/include/php/Zend -I../../../../../staging/opt/include/php/TSRM -I../../../../../staging/opt/include/php/main -I../../../../../staging/opt/include/php/regex" \
+		--with-php5-libs="php5 dl crypt db m xml2 z c" \
 	)
 	touch $(APPWEB_BUILD_DIR)/.configured
 
@@ -212,6 +228,8 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libmpr.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libopenSslModule.so $(APPWEB_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libopenSslModule.so
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libphp5Module.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libphp5Module.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libsslModule.so $(APPWEB_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libsslModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libuploadModule.so $(APPWEB_IPK_DIR)/opt/lib
@@ -244,8 +262,8 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 
 	# Copy service startup and configuration files
 	install -d $(APPWEB_IPK_DIR)/opt/etc
-#	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
-	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/var/appWeb/appWeb.conf
+#	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb-php.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
+	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb-php.conf $(APPWEB_IPK_DIR)/opt/var/appWeb/appWeb.conf
 	install -d $(APPWEB_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(APPWEB_SOURCE_DIR)/rc.appweb $(APPWEB_IPK_DIR)/opt/etc/init.d/S81appweb
 
