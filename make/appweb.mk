@@ -60,7 +60,6 @@ APPWEB_LDFLAGS=
 # You should not change any of these variables.
 #
 APPWEB_BUILD_DIR=$(BUILD_DIR)/appweb
-# *** note updated source files in sub folder ***
 APPWEB_SOURCE_DIR=$(SOURCE_DIR)/appweb
 APPWEB_IPK_DIR=$(BUILD_DIR)/appweb-$(APPWEB_VERSION)-ipk
 APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -99,6 +98,7 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	$(APPWEB_UNZIP) $(DL_DIR)/$(APPWEB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 
+# *** <-- waiting for fix from appweb
 #	cat $(APPWEB_PATCHES) | patch -d $(BUILD_DIR)/$(APPWEB_DIR) -p0
 
 	# need to remove the appweb samples directory which 
