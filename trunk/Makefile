@@ -49,7 +49,7 @@ CROSS_PACKAGES = \
 	libjpeg libmad libnsl libogg libol libosip2 \
 	libpcap libpng libstdc++ libtasn1 libtiff libtool libtopfield libusb \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 madplay make man man-pages mc mdadm mediawiki metalog miau monotone \
+	m4 make man man-pages mc mdadm mediawiki metalog miau monotone \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses neon net-snmp net-tools netio nfs-server nfs-utils \
@@ -137,7 +137,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	bitlbee \
 	libao \
-	nethack scponly dump gkrellm \
+	madplay nethack scponly dump gkrellm \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
