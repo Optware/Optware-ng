@@ -1,0 +1,23 @@
+--- http/utils/Makefile.original	2005-06-12 16:04:00.000000000 +0100
++++ http/utils/Makefile	2005-08-11 10:59:23.000000000 +0100
+@@ -14,17 +14,17 @@
+ 	$(BLD_BIN_DIR)/httpComp$(BLD_EXE) $(BLD_BIN_DIR)/httpPassword$(BLD_EXE)
+ 
+ $(BLD_BIN_DIR)/charGen$(BLD_EXE): charGen$(BLD_OBJ)
+-	@bld --native --executable $(BLD_BIN_DIR)/charGen$(BLD_EXE) \
++	@bld --executable $(BLD_BIN_DIR)/charGen$(BLD_EXE) \
+ 		--preferStatic \
+ 		--objects charGen$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/httpComp$(BLD_EXE): httpComp$(BLD_OBJ)
+-	@bld --native --executable $(BLD_BIN_DIR)/httpComp$(BLD_EXE) \
++	@bld --executable $(BLD_BIN_DIR)/httpComp$(BLD_EXE) \
+ 		--preferStatic \
+ 		--objects httpComp$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/httpPassword$(BLD_EXE): httpPassword$(BLD_OBJ)
+-	@bld --native --executable $(BLD_BIN_DIR)/httpPassword$(BLD_EXE) \
++	@bld --executable $(BLD_BIN_DIR)/httpPassword$(BLD_EXE) \
+ 		--preferStatic \
+ 		--objects httpPassword$(BLD_OBJ)
+ 
