@@ -83,6 +83,7 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	dump \
 	appweb appweb-php
 
 # asterisk may just need configure work
@@ -137,7 +138,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	bitlbee \
 	libao \
-	madplay nethack scponly dump gkrellm \
+	madplay nethack scponly gkrellm \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
