@@ -20,28 +20,28 @@
 # You should change all these variables to suit your package.
 #
 APPWEB_SITE=http://www.appwebserver.org/software
-APPWEB_VERSION=1.2.3
-APPWEB_VERSION_EXTRA=0
+APPWEB_VERSION=2.0.3
+APPWEB_VERSION_EXTRA=1
 APPWEB_SOURCE=appWeb-src-$(APPWEB_VERSION)-$(APPWEB_VERSION_EXTRA).tar.gz
 APPWEB_DIR=appWeb-$(APPWEB_VERSION)
 APPWEB_UNZIP=zcat
-APPWEB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-APPWEB_DESCRIPTION=AppWeb is the leading web server technology for embedding in devices and applications.
+APPWEB_MAINTAINER=Matt McNeill <matt_mcneill@hotmail.com>
+APPWEB_DESCRIPTION=AppWeb is the leading web server technology for embedding in devices and applications. Supports embedded javascript, CGI, Virtual Sites, SSL, user passwords, virtual directories - all with minimal memory footprint.
 APPWEB_SECTION=net
 APPWEB_PRIORITY=optional
-APPWEB_DEPENDS=
+APPWEB_DEPENDS=openssl
 APPWEB_CONFLICTS=
 
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=5
+APPWEB_IPK_VERSION=6
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/nonrootinstall.patch
+APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch
 
 #
 # If the compilation of the package requires additional
@@ -60,6 +60,7 @@ APPWEB_LDFLAGS=
 # You should not change any of these variables.
 #
 APPWEB_BUILD_DIR=$(BUILD_DIR)/appweb
+# *** note updated source files in sub folder ***
 APPWEB_SOURCE_DIR=$(SOURCE_DIR)/appweb
 APPWEB_IPK_DIR=$(BUILD_DIR)/appweb-$(APPWEB_VERSION)-ipk
 APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -94,18 +95,27 @@ appweb-source: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
-ifneq ($(HOST_MACHINE),armv5b)
 	$(MAKE) openssl-stage
-endif
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	$(APPWEB_UNZIP) $(DL_DIR)/$(APPWEB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(APPWEB_PATCHES) | patch -d $(BUILD_DIR)/$(APPWEB_DIR) -p0
+
+#	cat $(APPWEB_PATCHES) | patch -d $(BUILD_DIR)/$(APPWEB_DIR) -p0
+
+	# need to remove the appweb samples directory which 
+	# can only be built statically
+	rm -rf $(BUILD_DIR)/$(APPWEB_DIR)/appWebSamples
+	
+	#need to update the configure script for 2.0.3
+	#wget http://www.appwebserver.org/software/configure $(BUILD_DIR)/$(APPWEB_DIR)/configure
+	cp $(APPWEB_SOURCE_DIR)/configure $(BUILD_DIR)/$(APPWEB_DIR)/
+	
 	mv $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	(cd $(APPWEB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APPWEB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APPWEB_LDFLAGS)" \
 		./configure \
+		--type=RELEASE \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
@@ -118,11 +128,16 @@ endif
 		--buildNumber=$(APPWEB_IPK_VERSION) \
 		--port=7777 --sslPort=4443 \
 		--disable-static \
+		--enable-shared \
 		--with-admin=loadable \
-		--with-ssl=loadable --with-openssl=loadable \
-		--with-openssl-dir=../../staging/opt \
+		--with-ssl=loadable \
+		--with-openssl=loadable \
+		--with-openssl-dir=../../staging/opt/lib \
+		--with-openssl-iflags="-I../../../../../staging/opt/include/" \
+		--with-openssl-libs="crypto ssl" \
 	)
 	touch $(APPWEB_BUILD_DIR)/.configured
+
 
 appweb-unpack: $(APPWEB_BUILD_DIR)/.configured
 
@@ -171,42 +186,63 @@ $(APPWEB_IPK_DIR)/CONTROL/control:
 #
 $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	rm -rf $(APPWEB_IPK_DIR) $(BUILD_DIR)/appweb_*_$(TARGET_ARCH).ipk
-	# Copy file package ./http/package/LINUX/http.files ...
-	install -d $(APPWEB_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient
-	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpPassword -o $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
+
+	# Copy shared libraries
 	install -d $(APPWEB_IPK_DIR)/opt/lib
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libadminModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libappWeb.so.1.0.0 $(APPWEB_IPK_DIR)/opt/lib
 	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1.0.0 libappWeb.so.1 )
 	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1 libappWeb.so )
-	install -m 755 $(APPWEB_BUILD_DIR)/bin/libminiStdc++.so $(APPWEB_IPK_DIR)/opt/lib
-	install -m 755 $(APPWEB_BUILD_DIR)/bin/libadminModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libauthModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libcapiModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libcgiModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libcopyModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libegiModule.so $(APPWEB_IPK_DIR)/opt/lib
-	install -m 755 $(APPWEB_BUILD_DIR)/bin/libejsModule.so $(APPWEB_IPK_DIR)/opt/lib
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libejs.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libespModule.so $(APPWEB_IPK_DIR)/opt/lib
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libmpr.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libopenSslModule.so $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libsslModule.so $(APPWEB_IPK_DIR)/opt/lib
-	# Copy file package ./appWeb/package/LINUX/appWeb.files ...
+	install -m 755 $(APPWEB_BUILD_DIR)/bin/libuploadModule.so $(APPWEB_IPK_DIR)/opt/lib
+
+	# Copy executables
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/appWeb -o $(APPWEB_IPK_DIR)/opt/sbin/appWeb
+	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpClient -o $(APPWEB_IPK_DIR)/opt/sbin/httpClient
+
+#	NOTE: httpPassword and httpComp currently compile for the HOST system and not the TARGET
+#	      I have created a patch to build for the TARGET system, but then httpPassword does not build
+#	      the bug has been registered with appweb's developers.
+
+#	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpPassword -o $(APPWEB_IPK_DIR)/opt/sbin/httpPassword
+#	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/httpComp -o $(APPWEB_IPK_DIR)/opt/sbin/httpComp
+#	$(STRIP_COMMAND) $(APPWEB_BUILD_DIR)/bin/charGen -o $(APPWEB_IPK_DIR)/opt/sbin/charGen
+
+	# Create log directories
 	install -d $(APPWEB_IPK_DIR)/opt/var/appWeb/logs
+
+	# Copy default site files and certificates
 	install -d $(APPWEB_IPK_DIR)/opt/var/appWeb/web
-	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/index.html $(APPWEB_IPK_DIR)/opt/var/appWeb/web
-	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/web/test* $(APPWEB_IPK_DIR)/opt/var/appWeb/web
+	cp -r $(APPWEB_BUILD_DIR)/appWeb/web $(APPWEB_IPK_DIR)/opt/var/appWeb/
+	chmod -R a+rX $(APPWEB_IPK_DIR)/opt/var/appWeb/web
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/mime.types $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.crt $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.key.pem $(APPWEB_IPK_DIR)/opt/var/appWeb
+	
+	# Copy documentation
 	install -d $(APPWEB_IPK_DIR)/opt/doc/appweb
-	install -m 644 $(APPWEB_BUILD_DIR)/README.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/README.txt
+	install -m 644 $(APPWEB_BUILD_DIR)/COPYRIGHT.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/COPYRIGHT.txt
+	install -m 644 $(APPWEB_BUILD_DIR)/README_SRC.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/README.txt
 	install -m 644 $(APPWEB_BUILD_DIR)/LICENSE.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/LICENSE.txt
+	
+	# Copy service startup and configuration files
 	install -d $(APPWEB_IPK_DIR)/opt/etc
-	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
+#	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
+	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/var/appWeb/appWeb.conf
 	install -d $(APPWEB_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(APPWEB_SOURCE_DIR)/rc.appweb $(APPWEB_IPK_DIR)/opt/etc/init.d/S81appweb
+	
+	# Copy ipkg control files
 	$(MAKE) $(APPWEB_IPK_DIR)/CONTROL/control
 	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(APPWEB_SOURCE_DIR)/prerm $(APPWEB_IPK_DIR)/CONTROL/prerm
