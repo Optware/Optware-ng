@@ -39,7 +39,7 @@ DOVECOT_SECTION=net
 DOVECOT_PRIORITY=optional
 DOVECOT_DEPENDS=openssl
 DOVECOT_SUGGESTS=
-DOVECOT_CONFLICTS=cyrus-imapd imap
+DOVECOT_CONFLICTS=cyrus-imapd, imap
 
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
@@ -127,6 +127,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		ignore_signed_size=1 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
