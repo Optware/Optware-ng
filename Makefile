@@ -31,7 +31,8 @@ CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream cherokee chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
-	dev-pts dhcp dict diffutils distcc dokuwiki dnsmasq dropbear \
+	dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
+	dnsmasq dropbear \
 	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	fetchmail ffmpeg ficy file findutils fixesext flac flex \
 	fontconfig freeradius freetds freetype ftpd-topfield \
@@ -70,7 +71,7 @@ CROSS_PACKAGES = \
 	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
-	unfs3 units unslung-feeds usbutils \
+	unfs3 units unrar unslung-feeds usbutils \
 	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
@@ -82,8 +83,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	dovecot \
-	unrar \
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -183,6 +182,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
+	dovecot unrar
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
