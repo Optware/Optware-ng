@@ -190,20 +190,33 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	# Copy shared libraries
 	install -d $(APPWEB_IPK_DIR)/opt/lib
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libadminModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libadminModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libappWeb.so.1.0.0 $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libappWeb.so.1.0.0
 	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1.0.0 libappWeb.so.1 )
 	( cd $(APPWEB_IPK_DIR)/opt/lib ; ln -s libappWeb.so.1 libappWeb.so )
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libauthModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libauthModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libcapiModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libcapiModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libcgiModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libcgiModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libcopyModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libcopyModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libegiModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libegiModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libejs.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libejs.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libespModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libespModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libmpr.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libmpr.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libopenSslModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libopenSslModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libsslModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libsslModule.so
 	install -m 755 $(APPWEB_BUILD_DIR)/bin/libuploadModule.so $(APPWEB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(APPWEB_IPK_DIR)/opt/lib/libuploadModule.so
 
 	# Copy executables
 	install -d $(APPWEB_IPK_DIR)/opt/sbin
