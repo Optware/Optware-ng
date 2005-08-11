@@ -104,11 +104,11 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 	# need to remove the appweb samples directory which 
 	# can only be built statically
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR)/appWebSamples
-	
+
 	#need to update the configure script for 2.0.3
 	#wget http://www.appwebserver.org/software/configure $(BUILD_DIR)/$(APPWEB_DIR)/configure
 	cp $(APPWEB_SOURCE_DIR)/configure $(BUILD_DIR)/$(APPWEB_DIR)/
-	
+
 	mv $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	(cd $(APPWEB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -228,20 +228,20 @@ $(APPWEB_IPK): $(APPWEB_BUILD_DIR)/bin/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/mime.types $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.crt $(APPWEB_IPK_DIR)/opt/var/appWeb
 	install -m 644 $(APPWEB_BUILD_DIR)/appWeb/server.key.pem $(APPWEB_IPK_DIR)/opt/var/appWeb
-	
+
 	# Copy documentation
 	install -d $(APPWEB_IPK_DIR)/opt/doc/appweb
 	install -m 644 $(APPWEB_BUILD_DIR)/COPYRIGHT.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/COPYRIGHT.txt
 	install -m 644 $(APPWEB_BUILD_DIR)/README_SRC.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/README.txt
 	install -m 644 $(APPWEB_BUILD_DIR)/LICENSE.TXT $(APPWEB_IPK_DIR)/opt/doc/appweb/LICENSE.txt
-	
+
 	# Copy service startup and configuration files
 	install -d $(APPWEB_IPK_DIR)/opt/etc
 #	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/etc/appWeb.conf
 	install -m 644 $(APPWEB_SOURCE_DIR)/appWeb.conf $(APPWEB_IPK_DIR)/opt/var/appWeb/appWeb.conf
 	install -d $(APPWEB_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(APPWEB_SOURCE_DIR)/rc.appweb $(APPWEB_IPK_DIR)/opt/etc/init.d/S81appweb
-	
+
 	# Copy ipkg control files
 	$(MAKE) $(APPWEB_IPK_DIR)/CONTROL/control
 	install -m 644 $(APPWEB_SOURCE_DIR)/postinst $(APPWEB_IPK_DIR)/CONTROL/postinst
