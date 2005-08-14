@@ -184,7 +184,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb appweb-php
+	dovecot unrar appweb
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
