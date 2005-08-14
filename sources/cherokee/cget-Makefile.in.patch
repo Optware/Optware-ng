@@ -1,6 +1,6 @@
---- cherokee-0.4.24-orig/cget/Makefile.in	2005-07-07 07:03:18.000000000 -0700
-+++ cherokee/cget/Makefile.in	2005-07-24 09:50:55.000000000 -0700
-@@ -58,6 +58,7 @@
+--- cherokee-0.4.25/cget/Makefile.in	2005-08-02 09:24:45.000000000 -0700
++++ cherokee/cget/Makefile.in	2005-08-13 11:41:02.063204480 -0700
+@@ -57,6 +57,7 @@
  cget_OBJECTS = $(am_cget_OBJECTS)
  am__DEPENDENCIES_1 =
  cget_DEPENDENCIES = ../cherokee/libcherokee-client.la \
@@ -8,7 +8,7 @@
  	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
  	$(am__DEPENDENCIES_1)
  DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
-@@ -275,6 +276,7 @@
+@@ -273,6 +274,7 @@
  
  cget_LDADD = \
  ../cherokee/libcherokee-client.la \
