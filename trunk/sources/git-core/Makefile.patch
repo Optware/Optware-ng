@@ -1,0 +1,31 @@
+--- git-core-0.99.4-orig/Makefile	2005-08-10 14:43:08.000000000 -0700
++++ git-core/Makefile	2005-08-15 21:58:28.436207120 -0700
+@@ -159,9 +159,9 @@
+ 
+ .SECONDARY: %.o
+ .c.o:
+-	$(CC) $(CFLAGS) -o $*.o -c $*.c
++	$(CC) $(CPPFLAGS) $(CFLAGS) -o $*.o -c $*.c
+ git-%: %.o $(LIB_FILE)
+-	$(CC) $(CFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
++	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
+ 
+ git-http-pull: pull.o
+ git-local-pull: pull.o
+@@ -172,7 +172,7 @@
+ git-rev-list: LIBS += $(OPENSSL_LIBSSL)
+ 
+ init-db.o: init-db.c
+-	$(CC) -c $(CFLAGS) -DDEFAULT_GIT_TEMPLATE_DIR='"$(template_dir)"' $*.c
++	$(CC) -c $(CPPFLAGS) $(CFLAGS) -DDEFAULT_GIT_TEMPLATE_DIR='"$(template_dir)"' $*.c
+ 
+ $(LIB_OBJS): $(LIB_H)
+ $(patsubst git-%,%.o,$(PROG)): $(LIB_H)
+@@ -207,6 +207,7 @@
+ install: $(PROG) $(SCRIPTS)
+ 	$(INSTALL) -m755 -d $(dest)$(bindir)
+ 	$(INSTALL) $(PROG) $(SCRIPTS) $(dest)$(bindir)
++	cd $(dest)$(bindir); $(STRIP) $(PROG)
+ 	$(MAKE) -C templates install
+ 
+ install-tools:
