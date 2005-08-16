@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 COGITO_SITE=http://www.kernel.org/pub/software/scm/cogito
-COGITO_VERSION=0.12.1
+COGITO_VERSION=0.13
 COGITO_SOURCE=cogito-$(COGITO_VERSION).tar.bz2
 COGITO_DIR=cogito-$(COGITO_VERSION)
 COGITO_UNZIP=bzcat
@@ -30,7 +30,7 @@ COGITO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 COGITO_DESCRIPTION=Petr "Pasky" Baudis's SCM layer over Linus Torvald's git, formerly called git-pasky
 COGITO_SECTION=net
 COGITO_PRIORITY=optional
-COGITO_DEPENDS=openssl, zlib, rsync, patch, mktemp, coreutils, grep, libcurl, rcs
+COGITO_DEPENDS=git-core, rsync, patch, mktemp, coreutils, grep, rcs
 COGITO_CONFLICTS=git
 
 #
@@ -46,7 +46,7 @@ COGITO_CONFFILES=
 # COGITO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-COGITO_PATCHES=$(COGITO_SOURCE_DIR)/Makefile.patch
+#COGITO_PATCHES=$(COGITO_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -99,10 +99,10 @@ cogito-source: $(DL_DIR)/$(COGITO_SOURCE) $(COGITO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(COGITO_BUILD_DIR)/.configured: $(DL_DIR)/$(COGITO_SOURCE) $(COGITO_PATCHES)
-	$(MAKE) libcurl-stage openssl-stage zlib-stage
+#	$(MAKE) libcurl-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(COGITO_DIR) $(COGITO_BUILD_DIR)
 	$(COGITO_UNZIP) $(DL_DIR)/$(COGITO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(COGITO_PATCHES) | patch -d $(BUILD_DIR)/$(COGITO_DIR) -p1
+#	cat $(COGITO_PATCHES) | patch -d $(BUILD_DIR)/$(COGITO_DIR) -p1
 	mv $(BUILD_DIR)/$(COGITO_DIR) $(COGITO_BUILD_DIR)
 	touch $(COGITO_BUILD_DIR)/.configured
 
@@ -166,9 +166,7 @@ $(COGITO_IPK_DIR)/CONTROL/control:
 $(COGITO_IPK): $(COGITO_BUILD_DIR)/.built
 	rm -rf $(COGITO_IPK_DIR) $(BUILD_DIR)/cogito_*_$(TARGET_ARCH).ipk
 	install -d $(COGITO_IPK_DIR)/opt/bin
-	$(MAKE) -C $(COGITO_BUILD_DIR) HOME=$(COGITO_IPK_DIR)/opt \
-		STRIP="$(STRIP_COMMAND)" \
-		install-strip
+	$(MAKE) -C $(COGITO_BUILD_DIR) DESTDIR=$(COGITO_IPK_DIR) prefix=/opt install
 	$(MAKE) $(COGITO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COGITO_IPK_DIR)
 
