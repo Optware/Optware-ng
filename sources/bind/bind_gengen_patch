@@ -1,1 +1,1 @@
-s/${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}\/gen.c ${LIBS}/$(HOSTCC) ${ALL_CPPFLAGS} ${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS} -o $@ ${srcdir}\/gen.c ${LIBS}/
+s/${CC} ${ALL_CFLAGS} ${LDFLAGS} -o $@ ${srcdir}\/gen.c ${LIBS}/$(HOSTCC) ${ALL_CPPFLAGS} ${ALWAYS_WARNINGS} ${STD_CWARNINGS} ${CWARNINGS} -o $@ ${srcdir}\/gen.c/
