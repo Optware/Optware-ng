@@ -32,12 +32,12 @@ NET-TOOLS_SECTION=net
 NET-TOOLS_PRIORITY=optional
 NET-TOOLS_DEPENDS=
 NET-TOOLS_SUGGESTS=
-NET-TOOLS_CONFLICTS=
+NET-TOOLS_CONFLICTS=busybox-links
 
 #
 # NET-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-NET-TOOLS_IPK_VERSION=1
+NET-TOOLS_IPK_VERSION=2
 
 #
 # NET-TOOLS_CONFFILES should be a list of user-editable files
