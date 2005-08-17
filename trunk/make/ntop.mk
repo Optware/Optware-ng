@@ -34,7 +34,7 @@ NTOP_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 NTOP_DESCRIPTION=Network monitoring software
 NTOP_SECTION=net
 NTOP_PRIORITY=optional
-NTOP_DEPENDS=openssl, zlib, gdbm, libgd
+NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2
 
 # CVS info
 NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
@@ -43,7 +43,7 @@ NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=1
+NTOP_IPK_VERSION=2
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
