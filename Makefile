@@ -170,7 +170,7 @@ WL500G_PACKAGES = \
 	libnsl libosip2 libpng libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
-	nano ncftp ncurses netio neon net-snmp net-tools ntop ntpclient nylon \
+	nano ncftp ncurses netio neon net-snmp net-tools ntpclient nylon \
 	openssl openvpn oww \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd psutils puppy py-moin python \
 	quagga \
