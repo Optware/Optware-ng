@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -n "`pidof ntop`" ]; then 
+    killall ntop 2>/dev/null
+fi
+
+mkdir -p /opt/var/ntop/log
+
+/opt/bin/ntop -a /opt/var/ntop/log/access_log -d -L -M --skip-version-check -u root -w 3000 -W 3001

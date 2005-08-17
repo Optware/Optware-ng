@@ -20,7 +20,8 @@
 # You should change all these variables to suit your package.
 #
 NTOP_NAME=ntop
-NTOP_VERSION=cvs
+NTOP_VERSION=3.1.50
+NTOP_CVS_OPTS=-D 20050817
 NTOP_DIR=$(NTOP_NAME)
 # Tarball info
 NTOP_SITE=# none - available from CVS only
@@ -53,8 +54,8 @@ NTOP_CONFFILES=
 # NTOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTOP_PATCHES=$(NTOP_SOURCE_DIR)/configure.patch \
-	$(NTOP_SOURCE_DIR)/ltconfig.patch
+NTOP_PATCHES=$(NTOP_SOURCE_DIR)/configure.patch
+#	$(NTOP_SOURCE_DIR)/ltconfig.patch
 
 #
 # If the compilation of the package requires additional
@@ -158,8 +159,10 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 		--target=$(GNU_TARGET_NAME) \
 		--disable-ipv6 \
 		--prefix=/opt \
-		--disable-nls \
+		--disable-nls --disable-i18n \
 	)
+	sed -i -e '/HAVE_LOCALE_H/d' -e '/HAVE_MALLINFO_MALLOC_H/d' \
+		$(NTOP_BUILD_DIR)/config.status
 	touch $(NTOP_BUILD_DIR)/.configured
 
 ntop-unpack: $(NTOP_BUILD_DIR)/.configured
@@ -202,13 +205,12 @@ ntop-stage: $(NTOP_BUILD_DIR)/.staged
 $(NTOP_IPK): $(NTOP_BUILD_DIR)/.built
 	rm -rf $(NTOP_IPK_DIR) $(BUILD_DIR)/ntop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) install-strip
-	install -d $(NTOP_IPK_DIR)/opt/etc/
-#	install -m 644 $(NTOP_SOURCE_DIR)/ntop.conf $(NTOP_IPK_DIR)/opt/etc/ntop.conf
-#	install -d $(NTOP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)/opt/etc/init.d/SXXntop
+	mv $(NTOP_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ntop $(NTOP_IPK_DIR)/opt/bin/ntop
+	install -d $(NTOP_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)/opt/etc/init.d/S01ntop
 	$(MAKE) $(NTOP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NTOP_SOURCE_DIR)/postinst $(NTOP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NTOP_SOURCE_DIR)/prerm $(NTOP_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(NTOP_SOURCE_DIR)/postinst $(NTOP_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(NTOP_SOURCE_DIR)/prerm $(NTOP_IPK_DIR)/CONTROL/prerm
 #	echo $(NTOP_CONFFILES) | sed -e 's/ /\n/g' > $(NTOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTOP_IPK_DIR)
 
