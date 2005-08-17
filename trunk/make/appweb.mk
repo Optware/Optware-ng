@@ -69,11 +69,8 @@ APPWEB_IPK=$(BUILD_DIR)/appweb_$(APPWEB_VERSION)-$(APPWEB_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 
-# *** commented out this rule for the batch make to prevent a duplication with
-# *** similar declaration in appweb.mk. If this is being built as a stand alone 
-# *** item locally, please uncomment the following 2 lines.
-# $(DL_DIR)/$(APPWEB_SOURCE):
-# 	$(WGET) -P $(DL_DIR) $(APPWEB_SITE)/$(APPWEB_SOURCE)
+$(DL_DIR)/$(APPWEB_SOURCE):
+	$(WGET) -P $(DL_DIR) $(APPWEB_SITE)/$(APPWEB_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
