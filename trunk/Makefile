@@ -24,7 +24,7 @@
 OPTWARE_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
-	abook adduser adns alac-decoder \
+	abook adduser adns alac-decoder appweb \
 	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
 	bash bc bind bitchx busybox byrequest bzflag bzip2 \
@@ -38,7 +38,7 @@ CROSS_PACKAGES = \
 	fontconfig freeradius freetds freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	glib gnupg gnutls grep groff gtk gzip \
+	git-core glib gnupg gnutls grep groff gtk gzip \
 	hdparm hexcurse hnb hpijs \
 	ice imagemagick imap inetutils \
 	iperf ipkg-web iptables ircd-hybrid ivorbis-tools \
@@ -83,10 +83,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	dump \
-	git-core \
-	cogito \
-	appweb
 
 # asterisk may just need configure work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -132,12 +128,18 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# dump: is broken in several ways. It is using the host's e2fsprogs
+# includes.  It is also misconfigured: --includedir and --libdir as
+# arguments to configure affect installation directories, not where
+# things get searched for.  I think it would be best to rewrite this
+# .mk from scratch, following template.mk.
 # 
 # bitlbee: "Could not find a suitable SSL library". Assumes
 # cross-build host has gnutls installed?
 #
 # libao - has runtime trouble
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	dump \
 	bitlbee \
 	libao \
 	madplay nethack scponly gkrellm \
@@ -186,7 +188,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb
+	dovecot unrar appweb git-core cogito
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
