@@ -55,7 +55,7 @@ CROSS_PACKAGES = \
 	nail nano ncftp ncurses neon net-snmp net-tools netio nfs-server nfs-utils \
 	nget nload nmap ntop ntp ntpclient nylon \
 	opencdk openssh openssl openvpn oww \
-	pango parted patch pcre \
+	pango patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail procps proftpd psutils puppy python \
@@ -138,11 +138,13 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # cross-build host has gnutls installed?
 #
 # libao - has runtime trouble
+# parted - does not work on the slug, even when compiled natively
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	dump \
 	bitlbee \
 	libao \
 	madplay nethack scponly gkrellm \
+	parted
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
