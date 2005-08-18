@@ -30,14 +30,14 @@ GIT-CORE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GIT-CORE_DESCRIPTION=GIT is a "directory tree content manager" that can be used for distributed revision control.
 GIT-CORE_SECTION=net
 GIT-CORE_PRIORITY=optional
-GIT-CORE_DEPENDS=zlib, openssl, libcurl, diff, rcs
+GIT-CORE_DEPENDS=zlib, openssl, libcurl, diffutils, rcs
 GIT-CORE_SUGGESTS=
 GIT-CORE_CONFLICTS=
 
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=1
+GIT-CORE_IPK_VERSION=2
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
