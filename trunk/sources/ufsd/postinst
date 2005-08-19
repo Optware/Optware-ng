@@ -1,0 +1,30 @@
+#!/bin/sh
+
+cd /tmp
+echo "Downloading the NSLU2_V23R63.zip firmware ...."
+if [ ! -f NSLU2_V23R63.zip ] ; then
+  wget 'http://www.linksys.com/servlet/Satellite?blobcol=urldata&blobheadername1=Content-Type&blobheadername2=Content-Disposition&blobheadervalue1=application%2Fzip&blobheadervalue2=inline%3B+filename%3DNSLU2_V23R63.zip&blobkey=id&blobtable=MungoBlobs&blobwhere=1123342755292&ssbinary=true' -O NSLU2_V23R63.zip
+fi
+if [ "`md5sum < NSLU2_V23R63.zip`" != "8a170844a6ef7b683cdff1b455c4e614  -" ] ; then
+  echo "ERROR: The download from www.linksys.com has failed."
+  echo "Please download the NSLU2_V23R63.zip firmware manually into /tmp and try again."
+  exit 1
+fi
+echo "Extracting the firmware binary ..."
+/opt/bin/unzip -o NSLU2_V23R63.zip
+echo "Extracting the ramdisk image ..."
+dd if=NSLU2_V23R63.bin of=ramdisk.gz bs=16 skip=90113 count=288898
+gunzip ramdisk.gz
+echo "Mounting the ramdisk image ..."
+if [ ! -e /dev/loop0 ] ; then
+  mknod /dev/loop b 7 0
+fi
+mount -o loop ramdisk /mnt
+echo "Extracting the ufsd kernel module ..."
+cp /mnt/lib/modules/ufsd.o /lib/modules/ufsd.o
+cp /mnt/lib/modules/ufsd.o /initrd/lib/modules/ufsd.o
+echo "Unmounting the ramdisk image ..."
+umount /mnt
+echo "Cleaning up ..."
+rm -rf NSLU2_V23R63.bin ramdisk ramdisk.gz
+echo "Done."
