@@ -71,7 +71,7 @@ CROSS_PACKAGES = \
 	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
-	unfs3 units unrar unslung-feeds unzip usbutils \
+	ufsd unfs3 units unrar unslung-feeds unzip usbutils \
 	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
