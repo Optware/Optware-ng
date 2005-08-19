@@ -71,7 +71,7 @@ CROSS_PACKAGES = \
 	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
-	unfs3 units unrar unslung-feeds usbutils \
+	unfs3 units unrar unslung-feeds unzip usbutils \
 	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
@@ -177,7 +177,7 @@ WL500G_PACKAGES = \
 	rdate readline recordext renderext rrdtool rsync \
 	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
 	taged tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent tsocks \
-	unfs3 units usbutils \
+	unfs3 units unzip usbutils \
 	vblade vdr-mediamvp vorbis-tools vsftpd \
 	w3cam wakelan which whois wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
