@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://dl.sourceforge.net/sourceforge/e2fsprogs
-E2FSPROGS_VERSION=1.35
+E2FSPROGS_VERSION=1.38
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=3
+E2FSPROGS_IPK_VERSION=1
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
