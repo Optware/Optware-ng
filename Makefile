@@ -53,7 +53,7 @@ CROSS_PACKAGES = \
 	mod-fastcgi mod-python \
 	minicom mktemp mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses neon net-snmp net-tools netio nfs-server nfs-utils \
-	nget nload nmap ntop ntp ntpclient nylon \
+	nget nload nmap noip ntop ntp ntpclient nylon \
 	opencdk openssh openssl openvpn oww \
 	pango patch pcre \
 	php php-apache php-thttpd phpmyadmin \
@@ -171,7 +171,7 @@ WL500G_PACKAGES = \
 	libnsl libosip2 libpng libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
-	nano ncftp ncurses netio neon net-snmp net-tools ntpclient nylon \
+	nano ncftp ncurses netio neon net-snmp net-tools noip ntpclient nylon \
 	openssl openvpn oww \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd psutils puppy py-moin python \
 	quagga \
