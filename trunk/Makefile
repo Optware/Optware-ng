@@ -98,7 +98,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
 NATIVE_PACKAGES = \
-	asterisk \
 	autoconf \
 	bison \
 	bogofilter \
@@ -128,6 +127,7 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# asterisk: editline.c:4:10: empty file name in #include
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
 # arguments to configure affect installation directories, not where
@@ -140,6 +140,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	asterisk \
 	dump \
 	bitlbee \
 	libao \
