@@ -26,14 +26,14 @@ UFSD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UFSD_DESCRIPTION=NTFS read/write kernel module from Linksys V2.3R63 firmware.
 UFSD_SECTION=kernel
 UFSD_PRIORITY=optional
-UFSD_DEPENDS=unzip
+UFSD_DEPENDS=unzip, unslung-rootfs (>= 2.3r63-r0)
 UFSD_SUGGESTS=
 UFSD_CONFLICTS=
 
 #
 # UFSD_IPK_VERSION should be incremented when the ipk changes.
 #
-UFSD_IPK_VERSION=1
+UFSD_IPK_VERSION=2
 
 #
 # <FOO>_SOURCE_DIR is the directory which holds all the
