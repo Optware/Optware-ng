@@ -15,16 +15,9 @@ echo "Extracting the firmware binary ..."
 echo "Extracting the ramdisk image ..."
 dd if=NSLU2_V23R63.bin of=ramdisk.gz bs=16 skip=90113 count=288898
 gunzip ramdisk.gz
-echo "Mounting the ramdisk image ..."
-if [ ! -e /dev/loop0 ] ; then
-  mknod /dev/loop0 b 7 0
-fi
-mount -o loop ramdisk /mnt
 echo "Extracting the ufsd kernel module ..."
-cp /mnt/lib/modules/ufsd.o /lib/modules/ufsd.o
-cp /mnt/lib/modules/ufsd.o /initrd/lib/modules/ufsd.o
-echo "Unmounting the ramdisk image ..."
-umount /mnt
+/opt/bin/e2cp ramdisk:/lib/modules/ufsd.o /lib/modules/ufsd.o
+/opt/bin/e2cp ramdisk:/lib/modules/ufsd.o /initrd/lib/modules/ufsd.o
 echo "Cleaning up ..."
 rm -rf NSLU2_V23R63.bin ramdisk ramdisk.gz
 echo "Done."

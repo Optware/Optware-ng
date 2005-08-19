@@ -33,7 +33,7 @@ CROSS_PACKAGES = \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
 	dnsmasq dropbear \
-	e2fsprogs eaccelerator ed eggdrop elinks esmtp erlang esound expat \
+	e2fsprogs e2tools eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	fetchmail ffmpeg ficy file findutils fixesext flac flex \
 	fontconfig freeradius freetds freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
@@ -158,7 +158,7 @@ WL500G_PACKAGES = \
 	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
 	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
 	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
-	e2fsprogs ed eggdrop esmtp expat \
+	e2fsprogs e2tools ed eggdrop esmtp expat \
 	fetchmail ffmpeg file findutils fixesext flac flex \
 	freeradius freetype ftpd-topfield fontconfig \
 	gconv-modules gdb gdbm gdchart gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
