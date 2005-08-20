@@ -15,14 +15,14 @@ NET_SNMP_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 NET_SNMP_DESCRIPTION=net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3 using both IPv4 and IPv6
 NET_SNMP_SECTION=net
 NET_SNMP_PRIORITY=optional
-NET_SNMP_DEPENDS=
+NET_SNMP_DEPENDS=openssl
 NET_SNMP_SUGGESTS=
 NET_SNMP_CONFLICTS=
 
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=4
+NET_SNMP_IPK_VERSION=5
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -104,6 +104,7 @@ endif
 
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p1
@@ -112,6 +113,8 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NET_SNMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NET_SNMP_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
