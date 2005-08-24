@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.2.2
+SQLITE_VERSION=3.2.3
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -186,6 +186,8 @@ $(SQLITE_IPK_DIR)/CONTROL/control:
 $(SQLITE_IPK): $(SQLITE_BUILD_DIR)/.built
 	rm -rf $(SQLITE_IPK_DIR) $(BUILD_DIR)/sqlite_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQLITE_BUILD_DIR) DESTDIR=$(SQLITE_IPK_DIR) install
+	$(STRIP_COMMAND) $(SQLITE_IPK_DIR)/opt/bin/sqlite3 $(SQLITE_IPK_DIR)/opt/lib/*.so
+	rm -f $(SQLITE_IPK_DIR)/opt/lib/libsqlite3.a
 	$(MAKE) $(SQLITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQLITE_IPK_DIR)
 
