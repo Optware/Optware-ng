@@ -2,5 +2,9 @@
 #
 # $Header$
 #
-chown nobody /opt/var/run/dovecot
+mkdir -p /opt/var/run/dovecot/login
+chown root:root /opt/var/run/dovecot
+chmod 700 /opt/var/run/dovecot
+chown root:nobody /opt/var/run/dovecot/login
+chmod 750 /opt/var/run/dovecot/login
 /opt/etc/init.d/S90dovecot start
