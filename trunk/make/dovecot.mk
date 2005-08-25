@@ -28,10 +28,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DOVECOT_SITE=http://www.dovecot.org/nightly/stable
-DOVECOT_VERSION=stable-20050820
+DOVECOT_SITE=http://www.dovecot.org/releases
+DOVECOT_VERSION=1.0.alpha1
 DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
-DOVECOT_DIR=dovecot-1.0-stable
+DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
 DOVECOT_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 DOVECOT_DESCRIPTION=Dovecot secure IMAP server
@@ -44,7 +44,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=5
+DOVECOT_IPK_VERSION=6
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
