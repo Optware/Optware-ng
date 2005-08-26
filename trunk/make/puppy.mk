@@ -6,9 +6,9 @@
 
 # PUPPY_REPOSITORY=:ext:$(LOGNAME)@cvs.sf.net:/cvsroot/puppy
 PUPPY_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
-PUPPY_VERSION=1.9
+PUPPY_VERSION=1.11
 PUPPY_SOURCE=puppy-$(PUPPY_VERSION).tar.gz
-PUPPY_TAG=-r PUPPY_1_9
+PUPPY_TAG=-r PUPPY_1_11
 PUPPY_MODULE=puppy
 PUPPY_DIR=puppy-$(PUPPY_VERSION)
 PUPPY_UNZIP=zcat
@@ -22,7 +22,7 @@ PUPPY_CONFLICTS=
 #
 # PUPPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PUPPY_IPK_VERSION=2
+PUPPY_IPK_VERSION=1
 
 #
 # PUPPY_BUILD_DIR is the directory in which the build is done.
