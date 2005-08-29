@@ -19,7 +19,7 @@ CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
 CROSSTOOL_DIR=crosstool-$(CROSSTOOL_VERSION)
 CROSSTOOL_UNZIP=zcat
 
-CROSSTOOL_SCRIPT=nslu2-cross335.sh
+CROSSTOOL_SCRIPT ?= nslu2-cross335.sh
 
 #
 # CROSSTOOL_IPK_VERSION should be incremented when the ipk changes.
