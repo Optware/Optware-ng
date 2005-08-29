@@ -14,7 +14,7 @@
 # You should change all these variables to suit your package.
 #
 CROSSTOOL_SITE=http://kegel.com/crosstool
-CROSSTOOL_VERSION=0.28-rc37
+CROSSTOOL_VERSION=0.38
 CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
 CROSSTOOL_DIR=crosstool-$(CROSSTOOL_VERSION)
 CROSSTOOL_UNZIP=zcat
@@ -94,6 +94,7 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(CROSSTOOL_BUILD_DIR)/$(CROSSTOOL_SCRIPT)
 	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(CROSSTOOL_BUILD_DIR)
 	mkdir -p $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
+	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
 	touch $(CROSSTOOL_BUILD_DIR)/.configured
 

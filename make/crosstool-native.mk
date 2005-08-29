@@ -60,8 +60,8 @@ CROSSTOOL-NATIVE_IPK=$(BUILD_DIR)/crosstool-native_$(CROSSTOOL-NATIVE_VERSION)-$
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-# $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
-# 	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
+$(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE):
+	$(WGET) -P $(DL_DIR) $(CROSSTOOL-NATIVE_SITE)/$(CROSSTOOL-NATIVE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
