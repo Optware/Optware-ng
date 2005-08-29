@@ -19,7 +19,11 @@ CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
 CROSSTOOL_DIR=crosstool-$(CROSSTOOL_VERSION)
 CROSSTOOL_UNZIP=zcat
 
+ifeq ($(OPTWARE_TARGET),ds101)
+CROSSTOOL_SCRIPT = ds101-cross302.sh
+else
 CROSSTOOL_SCRIPT ?= nslu2-cross335.sh
+endif
 
 #
 # CROSSTOOL_IPK_VERSION should be incremented when the ipk changes.
