@@ -22,7 +22,7 @@ CROSSTOOL_UNZIP=zcat
 ifeq ($(OPTWARE_TARGET),ds101)
 CROSSTOOL_SCRIPT = ds101-cross302.sh
 else
-CROSSTOOL_SCRIPT ?= nslu2-cross335.sh
+CROSSTOOL_SCRIPT = nslu2-cross335.sh
 endif
 
 #
