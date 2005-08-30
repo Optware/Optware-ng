@@ -22,7 +22,11 @@ CROSSTOOL_UNZIP=zcat
 ifeq ($(OPTWARE_TARGET),ds101)
 CROSSTOOL_SCRIPT = ds101-cross302.sh
 else
+ifeq ($(OPTWARE_TARGET),ds101g)
+CROSSTOOL_SCRIPT = ds101g-cross334.sh
+else
 CROSSTOOL_SCRIPT = nslu2-cross335.sh
+endif
 endif
 
 #
@@ -94,8 +98,14 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(CROSSTOOL_BUILD_DIR)/$(CROSSTOOL_SCRIPT)
 	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(CROSSTOOL_BUILD_DIR)
 	mkdir -p $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
-	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
-	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
+	( if [ "$(CROSS_CONFIGURATION_GCC_VERSION)" =  "3.4.3" ]; then \
+ 		cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC); \
+	  fi \
+	)
+	( if [ "$(CROSS_CONFIGURATION_GCC_VERSIO)" = "3.3.4" ]; then \
+	  	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC); \
+	  fi \
+	)
 	touch $(CROSSTOOL_BUILD_DIR)/.configured
 
 crosstool-unpack: $(CROSSTOOL_BUILD_DIR)/.configured
