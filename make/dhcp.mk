@@ -8,8 +8,8 @@ DHCP_DIR:=$(BUILD_DIR)/dhcp
 
 DHCP_VERSION=3.0.1
 DHCP=dhcp-$(DHCP_VERSION)
-#DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
-DHCP_SITE=ipkg.nslu2-linux.org/downloads
+DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/dhcp-3.0-history/
+#DHCP_SITE=ipkg.nslu2-linux.org/downloads
 DHCP_SOURCE:=$(DHCP).tar.gz
 DHCP_UNZIP=zcat
 DHCP_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
@@ -20,7 +20,7 @@ DHCP_DEPENDS=
 DHCP_SUGGESTS=
 DHCP_CONFLICTS=
 
-DHCP_IPK_VERSION=3
+DHCP_IPK_VERSION=4
 DHCP_IPK=$(BUILD_DIR)/dhcp_$(DHCP_VERSION)-$(DHCP_IPK_VERSION)_$(TARGET_ARCH).ipk
 DHCP_IPK_DIR:=$(BUILD_DIR)/dhcp-$(DHCP_VERSION)-ipk
 
@@ -78,6 +78,7 @@ $(DHCP_IPK): $(DHCP_DIR)/.built
 	$(STRIP_COMMAND) $(DHCP_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
 	install -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
 	touch $(DHCP_IPK_DIR)/opt/etc/dhcpd.leases
+	cp $(DHCP_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)/opt/etc/
 	$(MAKE) $(DHCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DHCP_IPK_DIR)
 
