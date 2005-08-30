@@ -84,7 +84,7 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 
-# asterisk may just need configure work
+# asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # bogofilter's configure wants to run some small executables
@@ -98,6 +98,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
 NATIVE_PACKAGES = \
+	asterisk \
 	autoconf \
 	bison \
 	bogofilter \
@@ -127,7 +128,6 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# asterisk: editline.c:4:10: empty file name in #include
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
 # arguments to configure affect installation directories, not where
@@ -140,7 +140,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	asterisk \
 	dump \
 	bitlbee \
 	libao \
@@ -201,6 +200,9 @@ ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 PACKAGES = $(NATIVE_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
+# when native building on unslung, it's important to have a working awk 
+# in the path ahead of busybox's broken one.
+PATH=/opt/bin:/usr/bin:/bin
 else
 PACKAGES = $(CROSS_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
