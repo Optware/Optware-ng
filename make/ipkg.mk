@@ -8,6 +8,7 @@ ifneq ($(OPTWARE_TARGET),ds101)
 ifneq ($(OPTWARE_TARGET),ds101g)
 $(error This target may only be used for the DS-101* boxen!)
 endif
+endif
 #
 # IPKG_REPOSITORY defines the upstream location of the source code
 # for the package.  IPKG_DIR is the directory which is created when
