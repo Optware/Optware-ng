@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-ifneq ($(OPTWARE_TARGET),ds101)
-ifneq ($(OPTWARE_TARGET),ds101g)
-$(error This target may only be used for the DS-101* boxen!)
-endif
-endif
 #
 # IPKG_REPOSITORY defines the upstream location of the source code
 # for the package.  IPKG_DIR is the directory which is created when
@@ -168,6 +163,12 @@ $(IPKG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(IPKG_IPK): $(IPKG_BUILD_DIR)/.built
+ifneq ($(OPTWARE_TARGET),ds101)
+ifneq ($(OPTWARE_TARGET),ds101g)
+	echo "This target may only be used for the DS-101* boxen!"
+	fail
+endif
+endif
 	rm -rf $(IPKG_IPK_DIR) $(BUILD_DIR)/ipkg_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG_BUILD_DIR) DESTDIR=$(IPKG_IPK_DIR) install-strip
