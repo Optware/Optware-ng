@@ -32,7 +32,11 @@ openssl-source: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 ifeq ($(TARGET_ARCH),mipsel)
 OPENSSL_ARCH=linux-$(TARGET_ARCH)
 else
+ifeq ($(TARGET_ARCH),powerpc)
+OPENSSL_ARCH=linux-ppc
+else
 OPENSSL_ARCH=linux-elf-$(TARGET_ARCH)
+endif
 endif
 
 $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
