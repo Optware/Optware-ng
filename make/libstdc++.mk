@@ -4,7 +4,12 @@
 #
 ###########################################################
 
+ifeq ($(OPTWARE_TARGET),ds101g)
+LIBSTDC++_VERSION=5.0.6
+else
 LIBSTDC++_VERSION=5.0.7
+endif
+
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
 LIBSTDC++_LIBNAME=libstdc++.so
 LIBSTDC++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
