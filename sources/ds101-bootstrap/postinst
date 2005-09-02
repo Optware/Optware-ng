@@ -20,8 +20,12 @@ if ! grep 'mount -o bind /volume1/opt /opt' /etc/rc.local >/dev/null 2>&1
 then
   echo "Modifying /etc/rc.local"
   [ ! -e /etc/rc.local ] && echo "#!/bin/sh" >/etc/rc.local
-  echo "[ -e /opt ] &&  [ -e /volume1/opt ] && mount -o bind /volume1/opt /opt" >>/etc/rc.local
-  echo "[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware" >>/etc/rc.local
+  cat >>/etc/rc.local <<EOF
+
+# Optware setup
+[ -e /opt ] &&  [ -e /volume1/opt ] && mount -o bind /volume1/opt /opt
+[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
+EOF
   chmod 755 /etc/rc.local
 fi
 
