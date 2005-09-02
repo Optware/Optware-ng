@@ -103,28 +103,24 @@ $(DS101_BOOTSTRAP_IPK): $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DS101_BOOTSTRAP_IPK_DIR)
 
 $(DS101_BOOTSTRAP_XTAR): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
-	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)
-	cp $(BUILD_DIR)/$(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)
-	cp $(BUILD_DIR)/$(DS101_OPENSSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)
-	cp $(BUILD_DIR)/$(DS101_WGET_SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)
-	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)
-	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)
+	mkdir -p $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(BUILD_DIR)/$(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(BUILD_DIR)/$(DS101_OPENSSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(BUILD_DIR)/$(DS101_WGET_SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's skip= argument, otherwise the self-
-	# extracting archive will break!
+	# extracting archive will break! Using tail+n would be much simpler
+	# but the tail command available on the DS-101 doesn't support this.
 	echo "#!/bin/sh" >$@
 	echo 'echo "DS-101 Bootstrap extracting archive... please wait"' >>$@
-	echo 'dd if=$$0 bs=1 skip=124| tar xvz' >>$@
-	echo "sh bootstrap.sh" >>$@
+	echo 'dd if=$$0 bs=1 skip=168| tar xvz' >>$@
+	echo "cd bootstrap && sh bootstrap.sh && cd .. && rm -r bootstrap" >>$@
 	echo 'exit $$?' >>$@
-	tar -C $(DS101_BOOTSTRAP_BUILD_DIR) -czf - \
-		ipkg.sh \
-		ds101-bootstrap_$(DS101_BOOTSTRAP_VERSION)-$(DS101_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).ipk \
-		$(DS101_IPKG_IPK) \
-		$(DS101_OPENSSL_IPK) \
-		$(DS101_WGET_SSL_IPK) \
-		bootstrap.sh >>$@
+	tar -C $(DS101_BOOTSTRAP_BUILD_DIR) -czf - bootstrap >>$@
 	chmod 755 $@
 
 ds101-bootstrap-ipk: $(DS101_BOOTSTRAP_IPK)
