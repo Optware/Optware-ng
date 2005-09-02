@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ ! -e /opt ] && mkdir /opt
+[ ! -e /volume1/opt ] && mkdir -p /volume1/opt
+mount -o bind /volume1/opt /opt
+[ ! -d /opt/etc ] && mkdir -p /opt/etc
+[ ! -d /opt/var ] && mkdir -p /opt/var/lib
+[ ! -d /opt/tmp ] && mkdir -p /opt/tmp
+[ ! -d /opt/lib/ipkg/info ] && mkdir -p /opt/lib/ipkg/info

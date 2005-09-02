@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if ! grep '^/opt/lib' /etc/ld.so.conf >/dev/null 2>&1
+then
+	echo "Adding /opt/lib to dynamic linker configuration..."
+	echo "/opt/lib" >> /etc/ld.so.conf
+fi
+
+echo "Regenerating dynamic linker cache..."
+/opt/sbin/ldconfig
+
+if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1
+then
+  echo "Modifying /etc/profile..."
+  sed 's!^PATH="\(.*$\)!PATH="/opt/bin:/opt/sbin:\1!' /etc/profile > /tmp/$$ && mv /tmp/$$ /etc/profile
+fi
+
+
+if ! grep 'mount -o bind /volume1/opt /opt' /etc/rc.local >/dev/null 2>&1
+then
+  echo "Modifying /etc/rc.local"
+  [ ! -e /etc/rc.local ] && echo "#!/bin/sh" >/etc/rc.local
+  echo "[ -e /opt ] &&  [ -e /volume1/opt ] && mount -o bind /volume1/opt /opt" >>/etc/rc.local
+  chmod 755 /etc/rc.local
+fi
+
