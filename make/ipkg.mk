@@ -37,12 +37,6 @@ IPKG_IPK_VERSION=1
 IPKG_CONFFILES=/opt/etc/ipkg.conf
 
 #
-# IPKG_PATCHES should list any patches, in the the order in
-# which they should be applied to the source code.
-#
-IPKG_PATCHES=
-
-#
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
@@ -62,6 +56,12 @@ IPKG_BUILD_DIR=$(BUILD_DIR)/ipkg
 IPKG_SOURCE_DIR=$(SOURCE_DIR)/ipkg
 IPKG_IPK_DIR=$(BUILD_DIR)/ipkg-$(IPKG_VERSION)-ipk
 IPKG_IPK=$(BUILD_DIR)/ipkg_$(IPKG_VERSION)-$(IPKG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# IPKG_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patch $(IPKG_SOURCE_DIR)/update-alternatives.patch
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -93,7 +93,7 @@ $(IPKG_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-$(IPKG_VERSION).tar.gz
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-$(IPKG_VERSION).tar.gz
 	if test -n "$(IPKG_PATCHES)" ; \
 		then cat $(IPKG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IPKG_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(IPKG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPKG_DIR)" != "$(IPKG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IPKG_DIR) $(IPKG_BUILD_DIR) ; \
