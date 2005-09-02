@@ -7,11 +7,16 @@
 #
 ###########################################################
 
+ifeq ($(OPTWARE_TARGET),ds101)
 DS101_GLIBC_VERSION=2.2.5
+endif
+ifeq ($(OPTWARE_TARGET),ds101g)
+DS101_GLIBC_VERSION=2.3.3
+endif
 DS101_BOOTSTRAP_VERSION=0.1
 DS101_BOOTSTRAP_DIR=ds101-bootstrap-$(DS101_BOOTSTRAP_VERSION)
 DS101_BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-DS101_BOOTSTRAP_DESCRIPTION=Bootstrap package for the DS-101
+DS101_BOOTSTRAP_DESCRIPTION=Bootstrap package for the DS-101(g)
 DS101_BOOTSTRAP_SECTION=util
 DS101_BOOTSTRAP_PRIORITY=optional
 DS101_BOOTSTRAP_DEPENDS=
@@ -46,7 +51,7 @@ $(DS101_BOOTSTRAP_BUILD_DIR)/.staged: $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	rm -f $(DS101_BOOTSTRAP_BUILD_DIR)/.staged
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/sbin
-	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.9.so $(STAGING_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(STAGING_DIR)/opt/lib
@@ -73,7 +78,7 @@ $(DS101_BOOTSTRAP_IPK): $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	rm -rf $(DS101_BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/ds101-bootstrap_*_$(TARGET_ARCH).ipk
 	install -d $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -d $(DS101_BOOTSTRAP_IPK_DIR)/opt/sbin
-	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.10.so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
