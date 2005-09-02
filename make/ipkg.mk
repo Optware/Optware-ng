@@ -102,10 +102,10 @@ $(IPKG_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-$(IPKG_VERSION).tar.gz
 		rm -f etc/Makefile; \
 		rm -f aclocal.m4; \
 		libtoolize --force --copy; \
-		aclocal; \
+		aclocal-1.9; \
 		autoconf; \
 		autoheader; \
-		automake -a -c; \
+		automake-1.9 -a -c; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPKG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IPKG_LDFLAGS)" \
 		PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
