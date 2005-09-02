@@ -36,6 +36,8 @@ $(DS101_BOOTSTRAP_BUILD_DIR)/.built: $(DS101_BOOTSTRAP_BUILD_DIR)/.configured
 	cp $(TARGET_LIBDIR)/libpthread-0.9.so $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/libutil-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_BUILD_DIR)/
+	cp $(TARGET_LIBDIR)/libstdc++.so.5.0.7 $(DS101_BOOTSTRAP_BUILD_DIR)/
+	cp $(TARGET_LIBDIR)/libgcc.so.1 $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(DS101_BOOTSTRAP_BUILD_DIR)/
 	touch $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 
@@ -45,9 +47,11 @@ $(DS101_BOOTSTRAP_BUILD_DIR)/.staged: $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	rm -f $(DS101_BOOTSTRAP_BUILD_DIR)/.staged
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/sbin
-	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.10.so $(STAGING_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.9.so $(STAGING_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libstdc++.so.5.0.7 $(STAGING_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc.so.1 $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_DIR)/opt/sbin
 	touch $(DS101_BOOTSTRAP_BUILD_DIR)/.staged
 
@@ -74,6 +78,8 @@ $(DS101_BOOTSTRAP_IPK): $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.10.so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libstdc++.so.5.0.7 $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
+	install -m 644 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc.so.1 $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldconfig $(DS101_BOOTSTRAP_IPK_DIR)/opt/sbin
 
 	$(STRIP_COMMAND) $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/*.so
