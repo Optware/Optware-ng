@@ -25,6 +25,7 @@ then
 # Optware setup
 [ -e /opt ] &&  [ -e /volume1/opt ] && mount -o bind /volume1/opt /opt
 [ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
+[ -e /bin/killall ] || ln -s /bin/busybox /bin/killall
 EOF
   chmod 755 /etc/rc.local
 fi
