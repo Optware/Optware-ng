@@ -13,19 +13,19 @@ export IPKG_CONF_DIR=$BSDIR
 export IPKG_DIR_PREFIX=$BSDIR 
 
 echo "Installing DS101(g)-bootstrap package..."
-sh ./ipkg.sh install ds101-bootstrap_0.1-?_*.ipk || exit 1
+sh ./ipkg.sh install bootstrap.ipk
 
 echo "Installing IPKG package..."
-sh ./ipkg.sh install ipkg_0.99-148-1_*.ipk || exit 1
+sh ./ipkg.sh install ipkg.ipk
 
 echo "Removing temporary ipkg repository..."
 rm -rf $BSDIR
 
 echo "Instaling OpenSSL.."
-/opt/bin/ipkg install openssl_0.9.7d-4_*.ipk || exit 1
+/opt/bin/ipkg install openssl.ipk || exit 1
 
 echo "Instaling wget-SSL..."
-/opt/bin/ipkg install wget-ssl_1.10-1_*.ipk || exit 1
+/opt/bin/ipkg install wget-ssl.ipk || exit 1
 
 [ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
@@ -39,4 +39,4 @@ then
 	fi
 fi
 
-echo "OK, now call . /etc/profile"
+echo "Setup complete..."
