@@ -59,7 +59,7 @@ IVORBIS_TOOLS_LDFLAGS=
 IVORBIS_TOOLS_BUILD_DIR=$(BUILD_DIR)/ivorbis-tools
 IVORBIS_TOOLS_SOURCE_DIR=$(SOURCE_DIR)/ivorbis-tools
 IVORBIS_TOOLS_IPK_DIR=$(BUILD_DIR)/ivorbis-tools-$(IVORBIS_TOOLS_VERSION)-ipk
-IVORBIS_TOOLS_IPK=$(BUILD_DIR)/ivorbis-tools_$(IVORBIS_TOOLS_VERSION)-$(IVORBIS_TOOLS_IPK_VERSION)_armeb.ipk
+IVORBIS_TOOLS_IPK=$(BUILD_DIR)/ivorbis-tools_$(IVORBIS_TOOLS_VERSION)-$(IVORBIS_TOOLS_IPK_VERSION)_${TARGET_ARCH}.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -149,7 +149,7 @@ ivorbis-tools: $(IVORBIS_TOOLS_BUILD_DIR)/.built
 # You may need to patch your application to make it use these locations.
 #
 $(IVORBIS_TOOLS_IPK): $(IVORBIS_TOOLS_BUILD_DIR)/.built
-	rm -rf $(IVORBIS_TOOLS_IPK_DIR) $(BUILD_DIR)/ivorbis-tools_*_armeb.ipk
+	rm -rf $(IVORBIS_TOOLS_IPK_DIR) $(BUILD_DIR)/ivorbis-tools_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(IVORBIS_TOOLS_BUILD_DIR) DESTDIR=$(IVORBIS_TOOLS_IPK_DIR) install
 	install -d $(IVORBIS_TOOLS_IPK_DIR)/CONTROL
 	install -m 644 $(IVORBIS_TOOLS_SOURCE_DIR)/control $(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control
