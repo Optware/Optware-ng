@@ -196,19 +196,18 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
-	bash whois
-
-# Packages that only work for ds101
-DS101_SPECIFIC_PACKAGES = \
-	openssh
-
-# Packages that only work for ds101g+
-DS101G_SPECIFIC_PACKAGES = \
-	bc bzip2 coreutils cpio cron dhcp diffutils dnsmasq dropbear fetchmail \
+	bash bzip2 whois cpio cron dhcp diffutils dnsmasq dropbear fetchmail \
 	findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
 	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openvpn \
 	patch procps rsync screen sed tcpdump tar termcap vim wget-ssl which \
-	zlib
+	zlib 
+
+# Packages that only work for ds101
+DS101_SPECIFIC_PACKAGES = \
+
+# Packages that only work for ds101g+
+DS101G_SPECIFIC_PACKAGES = \
+	bc coreutils \
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
