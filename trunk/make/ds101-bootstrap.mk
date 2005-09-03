@@ -22,13 +22,13 @@ DS101_BOOTSTRAP_PRIORITY=optional
 DS101_BOOTSTRAP_DEPENDS=
 DS101_BOOTSTRAP_CONFLICTS=
 
-DS101_BOOTSTRAP_IPK_VERSION=3
+DS101_BOOTSTRAP_IPK_VERSION=4
 
 DS101_BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/ds101-bootstrap
 DS101_BOOTSTRAP_SOURCE_DIR=$(SOURCE_DIR)/ds101-bootstrap
 DS101_BOOTSTRAP_IPK_DIR=$(BUILD_DIR)/ds101-bootstrap-$(DS101_BOOTSTRAP_VERSION)-ipk
 DS101_BOOTSTRAP_IPK=$(BUILD_DIR)/ds101-bootstrap_$(DS101_BOOTSTRAP_VERSION)-$(DS101_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).ipk
-DS101_BOOTSTRAP_XTAR=$(BUILD_DIR)/ds101-bootstrap_$(DS101_BOOTSTRAP_VERSION)-$(DS101_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).sh
+DS101_BOOTSTRAP_XSH=$(BUILD_DIR)/ds101-bootstrap_$(DS101_BOOTSTRAP_VERSION)-$(DS101_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
 
 # Additional ipk's we require
 DS101_IPKG_IPK=ipkg_0.99-148-1_$(TARGET_ARCH).ipk
@@ -102,12 +102,12 @@ $(DS101_BOOTSTRAP_IPK): $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(DS101_BOOTSTRAP_SOURCE_DIR)/postinst $(DS101_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DS101_BOOTSTRAP_IPK_DIR)
 
-$(DS101_BOOTSTRAP_XTAR): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
+$(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	mkdir -p $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(BUILD_DIR)/$(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(BUILD_DIR)/$(DS101_OPENSSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(BUILD_DIR)/$(DS101_WGET_SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
+	cp $(BUILD_DIR)/$(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
+	cp $(BUILD_DIR)/$(DS101_OPENSSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
+	cp $(BUILD_DIR)/$(DS101_WGET_SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	
@@ -117,18 +117,18 @@ $(DS101_BOOTSTRAP_XTAR): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ip
 	# but the tail command available on the DS-101 doesn't support this.
 	echo "#!/bin/sh" >$@
 	echo 'echo "DS-101 Bootstrap extracting archive... please wait"' >>$@
-	echo 'dd if=$$0 bs=1 skip=168| tar xvz' >>$@
+	echo 'dd if=$$0 bs=1 skip=181| tar xvz' >>$@
 	echo "cd bootstrap && sh bootstrap.sh && cd .. && rm -r bootstrap" >>$@
-	echo 'exit $$?' >>$@
+	echo 'exec /bin/sh --login' >>$@
 	tar -C $(DS101_BOOTSTRAP_BUILD_DIR) -czf - bootstrap >>$@
 	chmod 755 $@
 
 ds101-bootstrap-ipk: $(DS101_BOOTSTRAP_IPK)
 
-ds101-bootstrap-xtar: $(DS101_BOOTSTRAP_XTAR)
+ds101-bootstrap-xsh: $(DS101_BOOTSTRAP_XSH)
 
 ds101-bootstrap-clean:
 	rm -rf $(DS101_BOOTSTRAP_BUILD_DIR)/*
 
 ds101-bootstrap-dirclean:
-	rm -rf $(BUILD_DIR)/$(DS101_BOOTSTRAP_DIR) $(DS101_BOOTSTRAP_BUILD_DIR) $(DS101_BOOTSTRAP_IPK_DIR) $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_XTAR)
+	rm -rf $(BUILD_DIR)/$(DS101_BOOTSTRAP_DIR) $(DS101_BOOTSTRAP_BUILD_DIR) $(DS101_BOOTSTRAP_IPK_DIR) $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_XSH)
