@@ -59,7 +59,7 @@ LIBVORBISIDEC_LDFLAGS=
 LIBVORBISIDEC_BUILD_DIR=$(BUILD_DIR)/libvorbisidec
 LIBVORBISIDEC_SOURCE_DIR=$(SOURCE_DIR)/libvorbisidec
 LIBVORBISIDEC_IPK_DIR=$(BUILD_DIR)/libvorbisidec-$(LIBVORBISIDEC_VERSION)-ipk
-LIBVORBISIDEC_IPK=$(BUILD_DIR)/libvorbisidec_$(LIBVORBISIDEC_VERSION)-$(LIBVORBISIDEC_IPK_VERSION)_armeb.ipk
+LIBVORBISIDEC_IPK=$(BUILD_DIR)/libvorbisidec_$(LIBVORBISIDEC_VERSION)-$(LIBVORBISIDEC_IPK_VERSION)_${TARGET_ARCH}.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -147,7 +147,7 @@ libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(LIBVORBISIDEC_IPK): $(LIBVORBISIDEC_BUILD_DIR)/.built
-	rm -rf $(LIBVORBISIDEC_IPK_DIR) $(BUILD_DIR)/libvorbisidec_*_armeb.ipk
+	rm -rf $(LIBVORBISIDEC_IPK_DIR) $(BUILD_DIR)/libvorbisidec_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(LIBVORBISIDEC_BUILD_DIR) DESTDIR=$(LIBVORBISIDEC_IPK_DIR) install
 	install -d $(LIBVORBISIDEC_IPK_DIR)/CONTROL
 	install -m 644 $(LIBVORBISIDEC_SOURCE_DIR)/control $(LIBVORBISIDEC_IPK_DIR)/CONTROL/control

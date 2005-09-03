@@ -54,7 +54,7 @@ QPOPPER_LDFLAGS=
 QPOPPER_BUILD_DIR=$(BUILD_DIR)/qpopper
 QPOPPER_SOURCE_DIR=$(SOURCE_DIR)/qpopper
 QPOPPER_IPK_DIR=$(BUILD_DIR)/qpopper-$(QPOPPER_VERSION)-ipk
-QPOPPER_IPK=$(BUILD_DIR)/qpopper_$(QPOPPER_VERSION)-$(QPOPPER_IPK_VERSION)_armeb.ipk
+QPOPPER_IPK=$(BUILD_DIR)/qpopper_$(QPOPPER_VERSION)-$(QPOPPER_IPK_VERSION)_${TARGET_ARCH}.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -145,7 +145,7 @@ qpopper-stage: $(QPOPPER_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(QPOPPER_IPK): $(QPOPPER_BUILD_DIR)/.built
-	rm -rf $(QPOPPER_IPK_DIR) $(BUILD_DIR)/qpopper_*_armeb.ipk
+	rm -rf $(QPOPPER_IPK_DIR) $(BUILD_DIR)/qpopper_*_${TARGET_ARCH}.ipk
 	install -d $(QPOPPER_IPK_DIR)/opt/man/man8
 	install -m 644 $(QPOPPER_BUILD_DIR)/man/popper.8 $(QPOPPER_IPK_DIR)/opt/man/man8
 	install -d $(QPOPPER_IPK_DIR)/opt/sbin

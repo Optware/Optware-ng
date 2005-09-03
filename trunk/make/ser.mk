@@ -66,7 +66,7 @@ endif
 SER_BUILD_DIR=$(BUILD_DIR)/ser
 SER_SOURCE_DIR=$(SOURCE_DIR)/ser
 SER_IPK_DIR=$(BUILD_DIR)/ser-$(SER_VERSION)-ipk
-SER_IPK=$(BUILD_DIR)/ser_$(SER_VERSION)-$(SER_IPK_VERSION)_armeb.ipk
+SER_IPK=$(BUILD_DIR)/ser_$(SER_VERSION)-$(SER_IPK_VERSION)_${TARGET_ARCH}.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -163,7 +163,7 @@ ser-stage: $(SER_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SER_IPK): $(SER_BUILD_DIR)/.built
-	rm -rf $(SER_IPK_DIR) $(BUILD_DIR)/ser_*_armeb.ipk
+	rm -rf $(SER_IPK_DIR) $(BUILD_DIR)/ser_*_${TARGET_ARCH}.ipk
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
 	CC="$(TARGET_CC)" \
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \

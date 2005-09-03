@@ -57,7 +57,7 @@ SQLITE2_LDFLAGS=
 SQLITE2_BUILD_DIR=$(BUILD_DIR)/sqlite2
 SQLITE2_SOURCE_DIR=$(SOURCE_DIR)/sqlite2
 SQLITE2_IPK_DIR=$(BUILD_DIR)/sqlite2-$(SQLITE2_VERSION)-ipk
-SQLITE2_IPK=$(BUILD_DIR)/sqlite2_$(SQLITE2_VERSION)-$(SQLITE2_IPK_VERSION)_armeb.ipk
+SQLITE2_IPK=$(BUILD_DIR)/sqlite2_$(SQLITE2_VERSION)-$(SQLITE2_IPK_VERSION)_${TARGET_ARCH}.ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -146,7 +146,7 @@ sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
 # You may need to patch your application to make it use these locations.
 #
 $(SQLITE2_IPK): $(SQLITE2_BUILD_DIR)/.built
-	rm -rf $(SQLITE2_IPK_DIR) $(BUILD_DIR)/sqlite2_*_armeb.ipk
+	rm -rf $(SQLITE2_IPK_DIR) $(BUILD_DIR)/sqlite2_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(SQLITE2_BUILD_DIR) DESTDIR=$(SQLITE2_IPK_DIR) install
 	install -d $(SQLITE2_IPK_DIR)/CONTROL
 	install -m 644 $(SQLITE2_SOURCE_DIR)/control $(SQLITE2_IPK_DIR)/CONTROL/control
