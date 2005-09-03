@@ -63,7 +63,7 @@ CROSS_PACKAGES = \
 	py-gdchart2 py-gd py-pil py-mssql \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	py-roundup py-serial py-simpy py-soappy \
-	qemu qemu-libc-i386 quagga  \
+	quagga  \
 	rcs rdate readline recordext renderext rrdtool rsync \
 	samba sane-backends screen sdl sed ser siproxd sm snownews \
 	sqlite sqsh sqlite2 strace stunnel streamripper sudo svn syslog-ng \
@@ -139,12 +139,14 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 #
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
+# qemu fails while building gas
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	dump \
 	bitlbee \
 	libao \
 	madplay nethack scponly gkrellm \
-	parted
+	parted \
+	qemu qemu-libc-i386 
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
