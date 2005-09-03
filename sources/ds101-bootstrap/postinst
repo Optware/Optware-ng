@@ -1,13 +1,28 @@
 #!/bin/sh
 
+
 if ! grep '^/opt/lib' /etc/ld.so.conf >/dev/null 2>&1
 then
 	echo "Adding /opt/lib to dynamic linker configuration..."
 	echo "/opt/lib" >> /etc/ld.so.conf
 fi
 
-echo "Regenerating dynamic linker cache..."
-/opt/sbin/ldconfig
+if [ `uname -m` = armv5b ]; then
+	echo "Setting up libraries"
+	ln -s /lib/libgcc_s.so.1 /lib/libgcc.so.1
+	ln -s /lib/libcrypto.so.0.9.7 /lib/libcrypto.so.0
+	ln -s /lib/libcrypto.so.0.9.7 /lib/libcrypto.so
+	ln -s /lib/libc.so.6 /lib/libc.so
+	ln -s /lib/libpthread-0.9.so /lib/libpthread.so.0
+	ln -s /lib/libpthread-0.9.so /lib/libpthread.so
+	ln -s /lib/librt-2.2.5.so /lib/librd.so.0
+	ln -s /lib/librt-2.2.5.so /lib/librd.so
+	/opt/sbin/ldconfig -n /opt/lib
+fi
+if [ `uname -m` = ppc ]; then
+	echo "Regenerating dynamic linker cache..."
+	/opt/sbin/ldconfig
+fi
 
 if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1
 then
