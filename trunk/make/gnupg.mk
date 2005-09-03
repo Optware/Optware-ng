@@ -70,6 +70,10 @@ GNUPG_SOURCE_DIR=$(SOURCE_DIR)/gnupg
 GNUPG_IPK_DIR=$(BUILD_DIR)/gnupg-$(GNUPG_VERSION)-ipk
 GNUPG_IPK=$(BUILD_DIR)/gnupg_$(GNUPG_VERSION)-$(GNUPG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+# Disable assembly for the ds101g
+ifeq ($(OPTWARE_TARGET), ds101g) 
+	CFG_OPTS = --disable-asm
+endif
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -115,6 +119,7 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		$(CFG_OPTS) \
 	)
 	touch $(GNUPG_BUILD_DIR)/.configured
 
