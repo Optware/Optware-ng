@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", "wl500g", "ds101" and "ds101g"
-OPTWARE_TARGET ?= ds101g
+OPTWARE_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
 	abook adduser adns alac-decoder appweb \
@@ -204,12 +204,14 @@ DS101_SPECIFIC_PACKAGES = \
 
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
-	bzip2 coreutils cpio cron dhcp dnsmasq dropbear findutils grep \
-	gnupg libdb libnsl libstdc++ lzo ncurses openssl openvpn tar termcap \
-	vim wget-ssl which zlib
+	bc bzip2 coreutils cpio cron dhcp diffutils dnsmasq dropbear fetchmail \
+	findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
+	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openvpn \
+	patch procps rsync screen sed tcpdump tar termcap vim wget-ssl which \
+	zlib
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
-	ldconfig openssh sudo
+	ldconfig mc 
 
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
