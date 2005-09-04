@@ -1,0 +1,17 @@
+--- configure	2005-09-01 17:43:21.000000000 +0200
++++ configure.patched	2005-09-04 19:29:04.000000000 +0200
+@@ -19500,11 +19500,11 @@
+ echo $ECHO_N "checking the byte alignment... $ECHO_C" >&6
+ 
+   if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++  { { echo "$as_me:$LINENO: warning: cannot run test program while cross compiling
+ See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
++echo "$as_me: warning: cannot run test program while cross compiling
+ See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++   }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ #include <inttypes.h>
