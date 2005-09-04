@@ -207,7 +207,8 @@ DS101_SPECIFIC_PACKAGES = \
 
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
-	bc coreutils file modutils
+	bc coreutils file iptables libcurl libsigc++ libtorrent rtorrent \
+	modutils strace
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
