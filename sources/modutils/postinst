@@ -1,0 +1,24 @@
+#!/bin/sh 
+# post install script for the modutils package
+
+set -e
+
+# Create the /etc/modules file if it does not exist
+if [ ! -e /opt/etc/modules ] ; then
+	cat <<EOF > /opt/etc/modules
+# /opt/etc/modules: kernel modules to load at boot time.
+#
+# This file should contain the names of kernel modules that are
+# to be loaded at boot time, one per line.  Comments begin with
+# a "#", and everything on the line after them are ignored.
+
+EOF
+	chmod 644 /opt/etc/modules
+fi
+
+
+if [ ! -e /opt/lib/modules/`uname -r` ] ; then
+	mkdir -p /opt/lib/modules/`uname -r`
+fi
+
+exit 0

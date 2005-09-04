@@ -1,0 +1,31 @@
+#!/bin/sh
+
+PATH="/opt/sbin:/opt/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+[ "`kernelversion`" = 2.4 ] || exit 0 
+[ -f /proc/ksyms ] || exit 0
+[ -e /opt/sbin/depmod ] || exit 0
+
+if touch /opt/lib/modules/$(uname -r)/modules.dep 2>/dev/null; then
+	echo -n "Calculating module dependencies... "
+	depmod -a -q
+	echo "done."
+else
+	echo "Not calculating module dependencies: /opt/lib/modules/$(uname -r) is read only."
+fi
+
+# Loop over every line in /etc/modules.
+echo -n 'Loading modules: '
+(cat /opt/etc/modules; echo) | # make sure there is a LF at the end
+while read module args
+do
+	case "$module" in
+		\#*|"") continue ;;
+	esac
+	echo -n "$module "
+	modprobe $module $args
+done
+echo
+
+exit 0
+

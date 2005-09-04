@@ -1,0 +1,74 @@
+diff -ru modutils-2.4.25/util/alias.h modutils-2.4.25-lucasvr/util/alias.h
+--- modutils-2.4.25/util/alias.h	2003-01-27 14:19:52.000000000 -0200
++++ modutils-2.4.25-lucasvr/util/alias.h	2003-07-27 16:27:22.000000000 -0300
+@@ -9,7 +9,11 @@
+  */
+ static char *tbpath[] =
+ {
++#ifdef MODDIR
++	MODDIR,
++#else
+ 	"/lib/modules",
++#endif
+ 	NULL			/* marks the end of the list! */
+ };
+ 
+diff -ru modutils-2.4.25/util/config.c modutils-2.4.25-lucasvr/util/config.c
+--- modutils-2.4.25/util/config.c	2002-11-25 02:01:57.000000000 -0200
++++ modutils-2.4.25-lucasvr/util/config.c	2003-07-26 19:40:13.000000000 -0300
+@@ -65,6 +65,10 @@
+ #include "config.h"
+ #include "alias.h"
+ 
++#ifndef MODDIR
++#define MODDIR "/lib/modules"
++#endif
++
+ int flag_autoclean; /* set/used by modprobe and insmod */
+ 
+ struct utsname uts_info;
+@@ -196,7 +200,7 @@
+ 			return 1;	/* Config file is newer. */
+ 	}
+ 
+-	snprintf (dep, sizeof(dep), "%s/lib/modules/%s", base_dir, force_ver);
++	snprintf (dep, sizeof(dep), "%s/%s/%s", base_dir, MODDIR, force_ver);
+ 	return xftw (dep, check_update);
+ }
+ 
+@@ -454,8 +458,8 @@
+ 		 * specification, the default value is used since
+ 		 * the system can't work without one.
+ 		 */
+-		snprintf(tmp, sizeof(tmp), "%s/lib/modules/%s/modules.%s",
+-			base_dir, version, gf->base);
++		snprintf(tmp, sizeof(tmp), "%s/%s/%s/modules.%s",
++			base_dir, MODDIR, version, gf->base);
+ 		gf->name = xstrdup(tmp);
+ 	} else { /* xxxfile defined in modules.conf */
+ 		/*
+@@ -730,13 +734,13 @@
+ 
+ 			/* The first entry in the path list */
+ 			modpath[nmodpath].type = xstrdup("boot");
+-			snprintf(tmpline, sizeof(tmpline), "%s/lib/modules/boot", base_dir);
++			snprintf(tmpline, sizeof(tmpline), "%s/%s/boot", base_dir, MODDIR);
+ 			modpath[nmodpath].path = xstrdup(tmpline);
+ 			++nmodpath;
+ 
+ 			/* The second entry in the path list, `uname -r` */
+ 			modpath[nmodpath].type = xstrdup("toplevel");
+-			snprintf(tmpline, sizeof(tmpline), "%s/lib/modules/%s", base_dir, version);
++			snprintf(tmpline, sizeof(tmpline), "%s/%s/%s", base_dir, MODDIR, version);
+ 			modpath[nmodpath].path = xstrdup(tmpline);
+ 			++nmodpath;
+ 
+@@ -746,7 +750,7 @@
+ 				if (*k == '.' && ++n == 2)
+ 					break;
+ 			}
+-			snprintf(tmpline, sizeof(tmpline), "%s/lib/modules/%.*s", base_dir,
++			snprintf(tmpline, sizeof(tmpline), "%s/%s/%.*s", base_dir, MODDIR,
+ 				(/* typecast for Alpha */ int)(k - version), version);
+ 			modpath[nmodpath].path = xstrdup(tmpline);
+ 			++nmodpath;
