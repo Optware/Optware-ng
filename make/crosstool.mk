@@ -97,6 +97,7 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	mv $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(CROSSTOOL_BUILD_DIR)
 	cp $(CROSSTOOL_SOURCE_DIR)/$(CROSSTOOL_SCRIPT) $(CROSSTOOL_BUILD_DIR)/$(CROSSTOOL_SCRIPT)
 	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(CROSSTOOL_BUILD_DIR)
+	cp $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(CROSSTOOL_BUILD_DIR)
 	mkdir -p $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
 	# these patches are required for gcc-3.3.5 to work with optware/unslung
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5

@@ -1,3 +1,4 @@
+KERNELCONFIG=`pwd`/powerpc-603e.config
 TARGET=powerpc-603e-linux
 TARGET_CFLAGS="-O -mcpu=603e"
 GCC_EXTRA_CONFIG="--with-cpu=603e --enable-cxx-flags=-mcpu=603e"
