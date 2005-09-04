@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SAMBA_SITE=http://us4.samba.org/samba/ftp/stable
-SAMBA_VERSION=3.0.20
+SAMBA_VERSION=3.0.14a
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -254,17 +254,16 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S80samba
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
-	ifeq ($(OPTWARE_TARGET),ds101)
-	install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
-	else
-	ifeq ($(OPTWARE_TARGET),ds101g)
-	install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
-	else
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
-	endif
+ifeq ($(OPTWARE_TARGET),ds101)
+		install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
+		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
+endif
+ifeq ($(OPTWARE_TARGET),ds101g)
+		install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
+		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
+endif
 	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
 
