@@ -35,7 +35,7 @@ SAMBA_CONFLICTS=
 #
 # SAMBA_IPK_VERSION should be incremented when the ipk changes.
 #
-SAMBA_IPK_VERSION=6
+SAMBA_IPK_VERSION=1
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
@@ -256,11 +256,11 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	ifeq ($(OPTWARE_TARGET),ds101)
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
-        install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
+	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
 	else
 	ifeq ($(OPTWARE_TARGET),ds101g)
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
-        install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
+	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
 	else
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
