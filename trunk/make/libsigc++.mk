@@ -136,6 +136,10 @@ libsigc++: $(LIBSIGC++_BUILD_DIR)/.built
 $(LIBSIGC++_BUILD_DIR)/.staged: $(LIBSIGC++_BUILD_DIR)/.built
 	rm -f $(LIBSIGC++_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBSIGC++_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+		sed -e 's!{includedir}!/$(STAGING_DIR)/opt/include!' \
+		-e 's!{libdir}!/$(STAGING_DIR)/opt/lib!' $(LIBSIGC++_BUILD_DIR)/sigc++-2.0.pc \
+		> $(STAGING_DIR)/opt/lib/pkgconfig/sigc++-2.0.pc 
+
 	touch $(LIBSIGC++_BUILD_DIR)/.staged
 
 libsigc++-stage: $(LIBSIGC++_BUILD_DIR)/.staged
