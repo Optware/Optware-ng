@@ -1,0 +1,10 @@
+#!/bin/sh
+echo Setting up samba symlinks so webinterface config works
+[ -e /opt/sbin/smbd ] && ln -sf /opt/sbin/smbd /usr/syno/sbin/smbd
+[ -e /opt/sbin/nmbd ] && ln -sf /opt/sbin/nmbd /usr/syno/sbin/nmbd
+[ ! -d /opt/etc/samba ] && mkdir -p /opt/etc/samba
+[ ! -d /opt/etc/private ] && mkdir -p /opt/etc/private
+ln -sf /writeable/configs/usr/syno/etc/smb.conf /opt/etc/samba/
+ln -sf /writeable/configs/usr/syno/etc/private/secrets.tdb /opt/etc/samba/
+ln -sf /writeable/configs/usr/syno/etc/private/smbpasswd /opt/etc/samba/
+echo done
