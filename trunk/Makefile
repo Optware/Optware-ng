@@ -207,7 +207,7 @@ DS101_SPECIFIC_PACKAGES = \
 
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
-	bc coreutils \
+	bc coreutils file modutils
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
