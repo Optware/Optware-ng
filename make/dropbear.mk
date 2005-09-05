@@ -4,8 +4,8 @@
 #
 #############################################################
 
-DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/testing
-DROPBEAR_VERSION=0.44test4
+DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear
+DROPBEAR_VERSION=0.46
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_UNZIP=bzcat
@@ -18,7 +18,7 @@ DROPBEAR_SUGGESTS=
 DROPBEAR_CONFLICTS=
 
 
-DROPBEAR_IPK_VERSION=3
+DROPBEAR_IPK_VERSION=1
 
 DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/key-path.patch \
@@ -32,6 +32,12 @@ DROPBEAR_BUILD_DIR=$(BUILD_DIR)/dropbear
 DROPBEAR_SOURCE_DIR=$(SOURCE_DIR)/dropbear
 DROPBEAR_IPK_DIR=$(BUILD_DIR)/dropbear-$(DROPBEAR_VERSION)-ipk
 DROPBEAR_IPK=$(BUILD_DIR)/dropbear_$(DROPBEAR_VERSION)-$(DROPBEAR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifneq ($(OPTWARE_TARGET),ds101)
+ifneq ($(OPTWARE_TARGET),ds101g)
+DROPBEAR_DISABLE_SHADOW=--disable-shadow
+endif
+endif
 
 $(DL_DIR)/$(DROPBEAR_SOURCE):
 	$(WGET) -P $(DL_DIR) $(DROPBEAR_SITE)/$(DROPBEAR_SOURCE)
@@ -51,10 +57,11 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-zlib --disable-shadow \
+		--disable-zlib \
 		--disable-lastlog --disable-utmp \
 		--disable-utmpx --disable-wtmp \
 		--disable-wtmpx --disable-libutil \
+		$(DROPBEAR_DISABLE_SHADOW) \
 	)
 	touch $(DROPBEAR_BUILD_DIR)/.configured
 
