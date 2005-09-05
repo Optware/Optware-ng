@@ -200,7 +200,7 @@ DS101_COMMON_PACKAGES = \
 	findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
 	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openvpn \
 	patch procps rsync screen sed tcpdump tar termcap vim wget-ssl which \
-	zlib ctorrent 
+	zlib 
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
