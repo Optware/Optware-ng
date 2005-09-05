@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNITS_SITE=ftp://ftp.gnu.org/gnu/units/
-UNITS_VERSION=1.80
+UNITS_VERSION=1.85
 UNITS_SOURCE=units-$(UNITS_VERSION).tar.gz
 UNITS_DIR=units-$(UNITS_VERSION)
 UNITS_UNZIP=zcat
-UNITS_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+UNITS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 UNITS_DESCRIPTION=GNU units converts between different systems of units.
 UNITS_SECTION=misc
 UNITS_PRIORITY=optional
@@ -40,7 +40,7 @@ UNITS_DEPENDS=readline
 #
 # UNITS_IPK_VERSION should be incremented when the ipk changes.
 #
-UNITS_IPK_VERSION=2
+UNITS_IPK_VERSION=1
 
 #
 # UNITS_CONFFILES should be a list of user-editable files
@@ -50,7 +50,7 @@ UNITS_IPK_VERSION=2
 # UNITS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UNITS_PATCHES=$(UNITS_SOURCE_DIR)/if0.patch $(UNITS_SOURCE_DIR)/install-d.patch
+UNITS_PATCHES=$(UNITS_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -106,9 +106,10 @@ $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
 	$(MAKE) readline-stage
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p2
+	cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p1
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
 	(cd $(UNITS_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UNITS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UNITS_LDFLAGS)" \
@@ -177,15 +178,16 @@ $(UNITS_IPK_DIR)/CONTROL/control:
 #
 $(UNITS_IPK): $(UNITS_BUILD_DIR)/.built
 	rm -rf $(UNITS_IPK_DIR) $(BUILD_DIR)/units_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(UNITS_IPK_DIR) prefix=$(UNITS_IPK_DIR)/opt install
-	# install -d $(UNITS_IPK_DIR)/opt/etc/
-	# install -m 644 $(UNITS_SOURCE_DIR)/units.conf $(UNITS_IPK_DIR)/opt/etc/units.conf
-	# install -d $(UNITS_IPK_DIR)/opt/etc/init.d
-	# install -m 755 $(UNITS_SOURCE_DIR)/rc.units $(UNITS_IPK_DIR)/opt/etc/init.d/SXXunits
+	STRIP=$(TARGET_STRIP) \
+	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(UNITS_IPK_DIR) prefix=$(UNITS_IPK_DIR)/opt install-strip
+#	install -d $(UNITS_IPK_DIR)/opt/etc/
+#	install -m 644 $(UNITS_SOURCE_DIR)/units.conf $(UNITS_IPK_DIR)/opt/etc/units.conf
+#	install -d $(UNITS_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(UNITS_SOURCE_DIR)/rc.units $(UNITS_IPK_DIR)/opt/etc/init.d/SXXunits
 	$(MAKE) $(UNITS_IPK_DIR)/CONTROL/control
-	# install -m 755 $(UNITS_SOURCE_DIR)/postinst $(UNITS_IPK_DIR)/CONTROL/postinst
-	# install -m 755 $(UNITS_SOURCE_DIR)/prerm $(UNITS_IPK_DIR)/CONTROL/prerm
-	# echo $(UNITS_CONFFILES) | sed -e 's/ /\n/g' > $(UNITS_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(UNITS_SOURCE_DIR)/postinst $(UNITS_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(UNITS_SOURCE_DIR)/prerm $(UNITS_IPK_DIR)/CONTROL/prerm
+#	echo $(UNITS_CONFFILES) | sed -e 's/ /\n/g' > $(UNITS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNITS_IPK_DIR)
 
 #
