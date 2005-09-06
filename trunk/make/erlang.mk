@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_TARBALL_VERSION=R10B-6
-ERLANG_VERSION=R10B6
+ERLANG_TARBALL_VERSION=R10B-7
+ERLANG_VERSION=R10B7
 ERLANG_SOURCE=otp_src_$(ERLANG_TARBALL_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_TARBALL_VERSION)
 ERLANG_UNZIP=zcat
@@ -40,7 +40,7 @@ ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=1
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
