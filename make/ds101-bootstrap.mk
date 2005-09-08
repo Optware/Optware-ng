@@ -103,6 +103,7 @@ $(DS101_BOOTSTRAP_IPK): $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DS101_BOOTSTRAP_IPK_DIR)
 
 $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
+	rm -rf $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
 	cp $(BUILD_DIR)/$(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
@@ -112,12 +113,12 @@ $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	
 	# If you should ever change the archive header (echo lines below), 
-	# make sure to recalculate dd's skip= argument, otherwise the self-
+	# make sure to recalculate dd's bs= argument, otherwise the self-
 	# extracting archive will break! Using tail+n would be much simpler
 	# but the tail command available on the DS-101 doesn't support this.
 	echo "#!/bin/sh" >$@
 	echo 'echo "DS-101 Bootstrap extracting archive... please wait"' >>$@
-	echo 'dd if=$$0 bs=1 skip=181| tar xvz' >>$@
+	echo 'dd if=$$0 bs=181 skip=1| tar xvz' >>$@
 	echo "cd bootstrap && sh bootstrap.sh && cd .. && rm -r bootstrap" >>$@
 	echo 'exec /bin/sh --login' >>$@
 	tar -C $(DS101_BOOTSTRAP_BUILD_DIR) -czf - bootstrap >>$@
