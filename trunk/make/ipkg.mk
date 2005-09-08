@@ -30,7 +30,7 @@ IPKG_CVS_OPTS=-r $(IPKG_CVS_TAG)
 #
 # IPKG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_IPK_VERSION=1
+IPKG_IPK_VERSION=2
 
 #
 # IPKG_CONFFILES should be a list of user-editable files
@@ -192,7 +192,7 @@ ipkg-ipk: $(IPKG_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 ipkg-clean:
-	rm -f $(<FOO>_BUILD_DIR)/.built
+	rm -f $(IPKG_BUILD_DIR)/.built
 	-$(MAKE) -C $(IPKG_BUILD_DIR) clean
 
 #
