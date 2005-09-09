@@ -37,7 +37,7 @@ BITLBEE_CONFLICTS=
 #
 # BITLBEE_IPK_VERSION should be incremented when the ipk changes.
 #
-BITLBEE_IPK_VERSION=1
+BITLBEE_IPK_VERSION=2
 
 #
 # BITLBEE_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ BITLBEE_CONFFILES=/opt/etc/bitlbee/bitlbee.conf /opt/etc/xinetd.d/bitlbee
 # BITLBEE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BITLBEE_PATCHES=$(BITLBEE_SOURCE_DIR)/configure.patch
+BITLBEE_PATCHES=$(BITLBEE_SOURCE_DIR)/configure.patch $(BITLBEE_SOURCE_DIR)/bitlbee-jabberserver.patch
 
 #
 # If the compilation of the package requires additional
@@ -112,6 +112,7 @@ $(BITLBEE_BUILD_DIR)/.configured: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
                 PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
                 PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		STAGING_DIR=$(STAGING_DIR) \
+		PATH=$(STAGING_DIR)/opt/bin:$(PATH) \
 		./configure \
 		--prefix=/opt \
 		--cpu=armv5b \
