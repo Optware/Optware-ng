@@ -31,12 +31,15 @@
 -fi
  
  if [ -e /usr/include/iconv.h ]; then
-@@ -166,6 +154,6 @@
- 	if libgnutls-config --version > /dev/null 2> /dev/null; then
+@@ -164,8 +152,8 @@
+ detect_gnutls()
+ {
+-	if libgnutls-config --version > /dev/null 2> /dev/null; then
++	if armv5b-softfloat-linux-libgnutls-config --version > /dev/null 2> /dev/null; then
  		cat <<EOF>>Makefile.settings
 -EFLAGS+=`libgnutls-config --libs`
 -CFLAGS+=`libgnutls-config --cflags`
 +EFLAGS+=-lz -lgnutls -lgcrypt -lgpg-error
-+CFLAGS+=-I/space/aab/build/unslung/staging/opt/include
++CFLAGS+=-I$STAGING_DIR/opt/include
  EOF
  		
