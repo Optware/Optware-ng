@@ -8,9 +8,9 @@ CVS_BUILD_DIR=$(BUILD_DIR)/cvs
 
 CVS_VERSION=1.12.9
 CVS_DIR=cvs-$(CVS_VERSION)
-CVS_SITE=https://ccvs.cvshome.org/files/documents/19/201
-CVS_SOURCE=$(CVS_DIR).tar.gz
-CVS_UNZIP=zcat
+CVS_SITE=http://musthave.sunbase.org/progs/ccvs/$(CVS_DIR)/
+CVS_SOURCE=$(CVS_DIR).tar.bz2
+CVS_UNZIP=bzcat
 
 CVS_IPK_VERSION=1
 
