@@ -15,9 +15,21 @@ if [ `uname -m` = armv5b ]; then
 	ln -s /lib/libc.so.6 /lib/libc.so
 	ln -s /lib/libpthread-0.9.so /lib/libpthread.so.0
 	ln -s /lib/libpthread-0.9.so /lib/libpthread.so
-	ln -s /lib/librt-2.2.5.so /lib/librd.so.0
-	ln -s /lib/librt-2.2.5.so /lib/librd.so
+	ln -s /lib/librt-2.2.5.so /lib/librt.so.1
+	ln -s /lib/librt-2.2.5.so /lib/librt.so
+	ln -s /lib/libutil-2.2.5.so /lib/libutil.so.1
 	/opt/sbin/ldconfig -n /opt/lib
+	echo "Setting up ipkg arch-file"
+	cat >> /opt/etc/ipkg/arch.conf << EOF
+arch all 1
+arch any 6
+arch noarch 11
+arch armeb 16
+arch all 21
+arch armeb 26
+arch nslu2 31
+arch nslu2 36
+EOF
 fi
 if [ `uname -m` = ppc ]; then
 	echo "Regenerating dynamic linker cache..."
