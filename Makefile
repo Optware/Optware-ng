@@ -204,6 +204,13 @@ DS101_COMMON_PACKAGES = \
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
+	ccxstream coreutils rtorrent cvs eggdrop elinks expat file flex \
+	gawk gdb gdbm gettext glib gnupg groff gzip joe logrotate lsof \
+	m4 make mc miau mt-daapd mtr mutt mysql \
+	nail nano nmap noip ntp openssh patch pcre \
+	proftpd psutils python rdate readline sane-backends sqlite sqlite2 strace syslog-ng \
+	textutils rtorrent unrar unzip usbutils wakelan \
+
 
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
