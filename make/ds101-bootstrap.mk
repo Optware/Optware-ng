@@ -22,7 +22,7 @@ DS101_BOOTSTRAP_PRIORITY=optional
 DS101_BOOTSTRAP_DEPENDS=
 DS101_BOOTSTRAP_CONFLICTS=
 
-DS101_BOOTSTRAP_IPK_VERSION=5
+DS101_BOOTSTRAP_IPK_VERSION=6
 
 DS101_BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/ds101-bootstrap
 DS101_BOOTSTRAP_SOURCE_DIR=$(SOURCE_DIR)/ds101-bootstrap
@@ -45,10 +45,23 @@ ds101-bootstrap-unpack: $(DS101_BOOTSTRAP_BUILD_DIR)/.configured
 
 $(DS101_BOOTSTRAP_BUILD_DIR)/.built: $(DS101_BOOTSTRAP_BUILD_DIR)/.configured
 	rm -f $(DS101_BOOTSTRAP_BUILD_DIR)/.built
+
+ifeq ($(OPTWARE_TARGET),ds101)
+	wget -nc -P downloads  http://ipkg.nslu2-linux.org/feeds/optware/nslu2/cross/unstable/crosstool-native-arch-lib_0.28-rc37-5_armeb.ipk
+	tar zxf downloads/crosstool-native-arch-lib_0.28-rc37-5_armeb.ipk 
+	tar zxf data.tar.gz 
+	rm control.tar.gz data.tar.gz debian-binary
+	mv opt ${DS101_BOOTSTRAP_BUILD_DIR}
+	cp ${DS101_BOOTSTRAP_BUILD_DIR}/opt/armeb/armv5b-softfloat-linux/lib/libpthread-0.*.so $(DS101_BOOTSTRAP_BUILD_DIR)/
+	cp ${DS101_BOOTSTRAP_BUILD_DIR}/opt/armeb/armv5b-softfloat-linux/lib/librt-${DS101_GLIBC_VERSION}.so $(DS101_BOOTSTRAP_BUILD_DIR)/
+	cp ${DS101_BOOTSTRAP_BUILD_DIR}/opt/armeb/armv5b-softfloat-linux/lib/libutil-${DS101_GLIBC_VERSION}.so $(DS101_BOOTSTRAP_BUILD_DIR)/
+	cp ${DS101_BOOTSTRAP_BUILD_DIR}/opt/armeb/armv5b-softfloat-linux/lib/libgcc_s.so.1 $(DS101_BOOTSTRAP_BUILD_DIR)/
+else
 	cp $(TARGET_LIBDIR)/libpthread-0.*.so $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/libutil-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/libgcc_s.so.1 $(DS101_BOOTSTRAP_BUILD_DIR)/
+endif
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(SOURCE_DIR)/ipkg/rc.optware $(DS101_BOOTSTRAP_BUILD_DIR)/
 	touch $(DS101_BOOTSTRAP_BUILD_DIR)/.built
@@ -60,10 +73,18 @@ $(DS101_BOOTSTRAP_BUILD_DIR)/.staged: $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/sbin
 	install -d $(STAGING_DIR)/opt/etc
+	install -d $(STAGING_DIR)/writeable/lib
+ifeq ($(OPTWARE_TARGET),ds101)
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_DIR)/writeable/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/writeable/lib	
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/writeable/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(STAGING_DIR)/writeable/lib
+else
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(STAGING_DIR)/opt/lib
+endif
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_DIR)/opt/sbin
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/rc.optware $(STAGING_DIR)/opt/etc
 	touch $(DS101_BOOTSTRAP_BUILD_DIR)/.staged
@@ -86,13 +107,22 @@ $(DS101_BOOTSTRAP_IPK_DIR)/CONTROL/control:
 
 $(DS101_BOOTSTRAP_IPK): $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 	rm -rf $(DS101_BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/ds101-bootstrap_*_$(TARGET_ARCH).ipk
-	install -d $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -d $(DS101_BOOTSTRAP_IPK_DIR)/opt/sbin
 	install -d $(DS101_BOOTSTRAP_IPK_DIR)/opt/etc
+	install -d $(DS101_BOOTSTRAP_IPK_DIR)/writeable/lib
+ifeq ($(OPTWARE_TARGET),ds101)
+	install -d $(DS101_BOOTSTRAP_IPK_DIR)/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(DS101_BOOTSTRAP_IPK_DIR)/writeable/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/writeable/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/writeable/lib
+	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(DS101_BOOTSTRAP_IPK_DIR)/writeable/lib
+else
+	install -d $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libutil-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libgcc_s.so.1 $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
+endif
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldconfig $(DS101_BOOTSTRAP_IPK_DIR)/opt/sbin
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/rc.optware $(DS101_BOOTSTRAP_IPK_DIR)/opt/etc
 
