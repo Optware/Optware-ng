@@ -50,7 +50,8 @@ then
   cat >>/etc/rc.local <<EOF
 
 # Optware setup
-[ -e /opt ] &&  [ -e /volume1/opt ] && mount -o bind /volume1/opt /opt
+mkdir -p /opt
+[ -e /volume1/opt ] && mount -o bind /volume1/opt /opt
 [ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
 [ -e /bin/killall ] || ln -s /bin/busybox /bin/killall
 EOF
