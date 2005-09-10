@@ -17,7 +17,7 @@ UPSLUG2_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 UPSLUG2_DESCRIPTION=Slug upgrade server
 UPSLUG2_SECTION=net
 UPSLUG2_PRIORITY=optional
-UPSLUG2_DEPENDS=
+UPSLUG2_DEPENDS=libstdc++
 UPSLUG2_SUGGESTS=
 UPSLUG2_CONFLICTS=
 
@@ -117,7 +117,7 @@ $(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.
 		then mv $(BUILD_DIR)/$(UPSLUG2_DIR) $(UPSLUG2_BUILD_DIR) ; \
 	fi
 	(cd $(UPSLUG2_BUILD_DIR); \
-		autoreconf -i ;\
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -i ;\
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UPSLUG2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UPSLUG2_LDFLAGS)" \
@@ -188,7 +188,7 @@ $(UPSLUG2_IPK_DIR)/CONTROL/control:
 #
 $(UPSLUG2_IPK): $(UPSLUG2_BUILD_DIR)/.built
 	rm -rf $(UPSLUG2_IPK_DIR) $(BUILD_DIR)/upslug2_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(UPSLUG2_BUILD_DIR) DESTDIR=$(UPSLUG2_IPK_DIR) install
+	$(MAKE) -C $(UPSLUG2_BUILD_DIR) DESTDIR=$(UPSLUG2_IPK_DIR) install-strip
 	install -d $(UPSLUG2_IPK_DIR)/opt/etc/
 #	install -m 644 $(UPSLUG2_SOURCE_DIR)/upslug2.conf $(UPSLUG2_IPK_DIR)/opt/etc/upslug2.conf
 #	install -d $(UPSLUG2_IPK_DIR)/opt/etc/init.d
