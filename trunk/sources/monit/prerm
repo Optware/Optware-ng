@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/bin/killall monit 2>/dev/null
