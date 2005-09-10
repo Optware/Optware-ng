@@ -197,26 +197,26 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
-	bash bzip2 whois cpio cron dhcp diffutils dnsmasq dropbear fetchmail \
-	findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
-	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openvpn \
-	patch procps rsync screen sed tcpdump tar termcap vim wget-ssl which \
+	bash bzip2 whois coreutils cpio cvs cron dhcp diffutils dnsmasq dropbear fetchmail \
+	file findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
+	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openssh openvpn \
+	patch procps readline rsync rtorrent screen sed strace textutils tcpdump tar termcap vim wget-ssl which \
 	zlib 
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
-	ccxstream coreutils rtorrent cvs eggdrop elinks expat file flex \
+	ccxstream eggdrop elinks expat flex \
 	gawk gdb gdbm gettext glib gnupg groff gzip joe logrotate lsof \
 	m4 make mc miau mt-daapd mtr mutt mysql \
-	nail nano nmap noip ntp openssh patch pcre \
-	proftpd psutils python rdate readline sane-backends sqlite sqlite2 strace syslog-ng \
-	textutils rtorrent unrar unzip usbutils wakelan \
+	nail nano nmap noip ntp patch pcre \
+	proftpd psutils python rdate sane-backends sqlite sqlite2 syslog-ng \
+	unrar unzip usbutils wakelan \
 
 
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
-	bc coreutils file iptables libcurl libsigc++ libtorrent openssh \
-	rtorrent modutils strace
+	bc iptables libcurl libsigc++ libtorrent \
+	modutils monit 
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
