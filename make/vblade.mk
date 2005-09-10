@@ -15,7 +15,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VBLADE_SITE=http://dl.sourceforge.net/sourceforge/aoetools
-VBLADE_VERSION=5
+VBLADE_VERSION=6
 VBLADE_SOURCE=vblade-$(VBLADE_VERSION).tar.gz
 VBLADE_DIR=vblade-$(VBLADE_VERSION)
 VBLADE_UNZIP=zcat
@@ -30,7 +30,7 @@ VBLADE_CONFLICTS=
 #
 # VBLADE_IPK_VERSION should be incremented when the ipk changes.
 #
-VBLADE_IPK_VERSION=2
+VBLADE_IPK_VERSION=3
 
 #
 # VBLADE_CONFFILES should be a list of user-editable files
@@ -40,7 +40,7 @@ VBLADE_CONFFILES=""
 # VBLADE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VBLADE_PATCHES=$(VBLADE_SOURCE_DIR)/vblade-5.patch $(VBLADE_SOURCE_DIR)/cross-compile.patch
+VBLADE_PATCHES=$(VBLADE_SOURCE_DIR)/vblade-u64.patch $(VBLADE_SOURCE_DIR)/cross-compile.patch
 
 #
 # If the compilation of the package requires additional
