@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ION_SITE=http://modeemi.cs.tut.fi/~tuomov/ion/dl
-ION_VERSION=20050728
+ION_VERSION=20050820
 ION_SOURCE=ion-3ds-$(ION_VERSION).tar.gz
 ION_DIR=ion-3ds-$(ION_VERSION)
 ION_UNZIP=zcat
@@ -98,7 +98,7 @@ ion-source: $(DL_DIR)/$(ION_SOURCE) $(ION_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ION_BUILD_DIR)/.configured: $(DL_DIR)/$(ION_SOURCE) $(ION_PATCHES)
-	$(MAKE) lua-stage
+	$(MAKE) lua-stage xau-stage xext-stage sm-stage
 	rm -rf $(BUILD_DIR)/$(ION_DIR) $(ION_BUILD_DIR)
 	$(ION_UNZIP) $(DL_DIR)/$(ION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ION_PATCHES) | patch -d $(BUILD_DIR)/$(ION_DIR) -p1
