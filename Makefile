@@ -83,7 +83,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	upslug2 \
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -129,6 +128,9 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# upslug2: please use a timestamp or tag to retrieve a stable CVS snapshot, 
+# and give the cached tarball a more descriptive name.
+#
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
 # arguments to configure affect installation directories, not where
@@ -142,6 +144,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # parted - does not work on the slug, even when compiled natively
 # qemu fails while building gas
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	upslug2 \
 	dump \
 	bitlbee \
 	libao \
