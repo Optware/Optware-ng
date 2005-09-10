@@ -1,0 +1,43 @@
+#!/bin/sh
+#
+
+MONIT=/opt/bin/monit
+MONITRC=/opt/etc/monitrc
+INTERVAL=120
+
+[ -f $MONIT ] || exit 0
+
+RETVAL=0
+
+case "$1" in
+  start)
+	echo -n "Starting monit: "
+	$MONIT -c $MONITRC -d $INTERVAL
+	RETVAL=$?
+	echo
+	;;
+  stop)
+	echo -n "Stopping monit: "
+	/bin/killall monit
+	;;
+  restart)
+  	$0 stop
+	$0 start
+	RETVAL=$?
+	;;
+  reload)
+	echo -n "Reloading monit: "
+	$MONIT -c $MONITRC reload
+	RETVAL=$?
+	echo
+	;;
+  status)
+	$MONIT -c $MONITRC status
+	RETVAL=$?
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|reload|status}"
+	exit 1
+esac
+
+exit $RETVAL

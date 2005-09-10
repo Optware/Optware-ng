@@ -1,0 +1,9 @@
+#!/bin/sh
+
+cat <<EOF
+
+  monit has been installed sucessfully. Now edit /opt/etc/monitrc
+  and start the daemon by invoking /opt/etc/init.d/S99monit start.
+
+EOF
+
