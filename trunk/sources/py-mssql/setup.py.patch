@@ -1,5 +1,5 @@
---- pymssql-0.7.1-orig/setup.py	2005-07-23 01:04:22.000000000 -0700
-+++ py-mssql/setup.py	2005-07-23 21:54:07.249695000 -0700
+--- pymssql-0.7.3-orig/setup.py	2005-09-05 13:44:40.000000000 -0700
++++ py-mssql/setup.py	2005-09-10 15:19:14.789039096 -0700
 @@ -21,16 +21,6 @@
  	libraries = ["ntwdblib", "msvcrt", "kernel32", "user32", "gdi32", "winspool", "comdlg32", "advapi32", "shell32", "ole32", "oleaut32", "uuid", "odbc32", "odbccp32", ]
  	data_files = []
@@ -17,7 +17,7 @@
  	libraries = ["sybdb"]
  	data_files = []
  
-@@ -50,8 +40,6 @@
+@@ -54,8 +44,6 @@
  	url="http://pymssql.sourceforge.net",
  	py_modules=[ 'pymssql', ],
  	ext_modules=[Extension("_mssql", ["mssqldbmodule.c"],
