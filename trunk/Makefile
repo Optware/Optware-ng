@@ -200,11 +200,11 @@ WL500G_PACKAGES_READY_FOR_TESTING =  \
 
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
-	bash bzip2 whois coreutils cpio cvs cron dhcp diffutils dnsmasq dropbear fetchmail \
-	file findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
-	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openssh openvpn \
-	patch procps python readline rsync rtorrent screen sed strace textutils tcpdump \
-	tar termcap vim wget-ssl which zlib 
+	bash bzip2 coreutils cpio cron cvs dhcp diffutils dnsmasq dropbear fetchmail \
+	file findutils grep gnupg hdparm inetutils lame less lynx libcurl libdb libnsl \
+	libpcap libsigc++ libtorrent libstdc++ lzo minicom mktemp ncftp ncurses openssl openssh \
+	openvpn patch procps python readline rsync rtorrent screen sed strace textutils tcpdump \
+	tar termcap vim wget-ssl which whois zlib 
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
@@ -218,8 +218,7 @@ DS101_SPECIFIC_PACKAGES = \
 
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
-	bc iptables libcurl libsigc++ libtorrent \
-	libxml2 modutils monit py-bittorrent smartmontools 
+	bc iptables libxml2 modutils monit py-bittorrent smartmontools 
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
