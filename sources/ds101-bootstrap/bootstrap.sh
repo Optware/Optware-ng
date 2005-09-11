@@ -13,6 +13,7 @@ export IPKG_CONF_DIR=$BSDIR
 export IPKG_DIR_PREFIX=$BSDIR 
 
 echo "Installing DS101(g)-bootstrap package..."
+mkdir -p /usr/lib/ipkg/info/
 sh ./ipkg.sh install bootstrap.ipk
 
 echo "Installing IPKG package..."
@@ -20,6 +21,7 @@ sh ./ipkg.sh install ipkg.ipk
 
 echo "Removing temporary ipkg repository..."
 rm -rf $BSDIR
+rm -rf /usr/lib/ipkg
 
 echo "Instaling OpenSSL.."
 /opt/bin/ipkg install openssl.ipk || exit 1
