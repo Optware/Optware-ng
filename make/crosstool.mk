@@ -102,6 +102,7 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	# these patches are required for gcc-3.3.5 to work with optware/unslung
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4
+	cp $(CROSSTOOL_BUILD_DIR)/patches/glibc-2.3.2/glibc-2.3.2-arm-fix-strlen.patch $(CROSSTOOL_BUILD_DIR)/patches/glibc-2.2.5
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
 	touch $(CROSSTOOL_BUILD_DIR)/.configured
 
