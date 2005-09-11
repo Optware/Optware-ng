@@ -219,7 +219,7 @@ DS101_SPECIFIC_PACKAGES = \
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
 	bc iptables libcurl libsigc++ libtorrent \
-	modutils monit py-bittorrent smartmontools 
+	libxml2 modutils monit py-bittorrent smartmontools 
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
