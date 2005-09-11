@@ -203,8 +203,8 @@ DS101_COMMON_PACKAGES = \
 	bash bzip2 whois coreutils cpio cvs cron dhcp diffutils dnsmasq dropbear fetchmail \
 	file findutils grep gnupg hdparm inetutils lame less lynx libdb libnsl \
 	libpcap libstdc++ lzo minicom mktemp ncftp ncurses openssl openssh openvpn \
-	patch procps readline rsync rtorrent screen sed strace textutils tcpdump tar termcap vim wget-ssl which \
-	zlib 
+	patch procps python readline rsync rtorrent screen sed strace textutils tcpdump \
+	tar termcap vim wget-ssl which zlib 
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
@@ -219,7 +219,7 @@ DS101_SPECIFIC_PACKAGES = \
 # Packages that only work for ds101g+
 DS101G_SPECIFIC_PACKAGES = \
 	bc iptables libcurl libsigc++ libtorrent \
-	modutils monit smartmontools
+	modutils monit py-bittorrent smartmontools 
 
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
