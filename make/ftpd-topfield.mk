@@ -52,7 +52,7 @@ FTPD-TOPFIELD_IPK_VERSION=0
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/Makefile.patch
+FTPD-TOPFIELD_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +111,7 @@ $(FTPD-TOPFIELD_BUILD_DIR)/.configured: $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) $(FTPD
 	$(MAKE) libtopfield-stage libusb-stage
 	rm -rf $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) $(FTPD-TOPFIELD_BUILD_DIR)
 	$(FTPD-TOPFIELD_UNZIP) $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(FTPD-TOPFIELD_PATCHES) | patch -d $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) -p1
+#	cat $(FTPD-TOPFIELD_PATCHES) | patch -d $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) -p1
 	mv $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) $(FTPD-TOPFIELD_BUILD_DIR)
 	touch $(FTPD-TOPFIELD_BUILD_DIR)/.configured
 
