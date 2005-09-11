@@ -1,9 +1,10 @@
 #!/bin/sh
-BSDIR="/tmp/ipkg-bootstrap"
+BSDIR="/volume1/tmp/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."
 rm -rf $BSDIR
 mkdir -p $BSDIR
+ln -s $BSDIR /tmp/ipkg
 cat >>$BSDIR/ipkg.conf <<EOF
 dest root /
 lists_dir ext /$BSDIR/ipkg
@@ -16,11 +17,12 @@ echo "Installing DS101(g)-bootstrap package..."
 mkdir -p /usr/lib/ipkg/info/
 sh ./ipkg.sh install bootstrap.ipk
 
-echo "Installing IPKG package..."
+echo "Installing IPKG package... (Ignore missing md5sum warning)"
 sh ./ipkg.sh install ipkg.ipk
 
 echo "Removing temporary ipkg repository..."
 rm -rf $BSDIR
+rm /tmp/ipkg
 rm -rf /usr/lib/ipkg
 
 echo "Instaling OpenSSL.."

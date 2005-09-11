@@ -3,6 +3,7 @@
 
 if ! grep '^/opt/lib' /etc/ld.so.conf >/dev/null 2>&1
 then
+	echo
 	echo "Adding /opt/lib to dynamic linker configuration..."
 	echo "/opt/lib" >> /etc/ld.so.conf
 fi
