@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License as published by the Free
+# Software Foundation; either version 2, or (at your option) any later
+# version. 
+# You should have received a copy of the GNU General Public License (for
+# example COPYING); if not, write to the Free Software Foundation, Inc., 675
+# Mass Ave, Cambridge, MA 02139, USA.
+# This code was originally developed as a Senior Thesis by Michael Cornwell
+# at the Concurrent Systems Laboratory (now part of the Storage Systems
+# Research Center), Jack Baskin School of Engineering, University of
+# California, Santa Cruz. http://ssrc.soe.ucsc.edu/.
+
+# Uncomment the line below to pass options to smartd on startup. 
+# Note that distribution specific configuration files like
+# /etc/{default,sysconfig}/smartmontools might override these
+#SMARTD_OPTS="--interval=1800"
+
+# Uncomment the line below to enable smartd startup
+#ENABLE_SMARTD=1
+
+SMARTD_BIN=/opt/sbin/smartd
+
+[ "$ENABLE_SMARTD" = 1 ] || exit 0
+[ -x $SMARTD_BIN ] || exit 0
+
+RETVAL=0
+
+PROG=smartd
+
+case "$1" in
+	start)
+		echo -n "Starting $PROG: "
+		$SMARTD_BIN $SMARTD_OPTS
+		RETVAL=$?
+		echo
+		;;
+	stop)
+		echo -n "Shutting down $PROG: "
+		/bin/killall $PROG
+		RETVAL=$?
+		echo
+		;;
+	reload)
+		echo -n "Reloading $PROG daemon configuration: "
+		/bin/killall -HUP $PROG
+		RETVAL=$?
+		echo
+		;;
+	report)
+		echo -n "Checking SMART devices now: "
+		/bin/killall -USR1 $PROG
+		RETVAL=$?
+		echo
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	*)
+		echo $"Usage: $0 {start|stop|reload|report|restart}"
+		RETVAL=1
+esac
+
+exit $RETVAL
+
