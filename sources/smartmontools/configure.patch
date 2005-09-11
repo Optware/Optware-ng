@@ -1,0 +1,17 @@
+--- configure	2004-09-10 06:11:46.000000000 +0200
++++ configure.patched	2005-09-11 13:27:13.000000000 +0200
+@@ -2166,11 +2166,11 @@
+   echo "$as_me: failed program was:" >&5
+ sed 's/^/| /' conftest.$ac_ext >&5
+ 
+-{ { echo "$as_me:$LINENO: error: C compiler cannot create executables
++{ { echo "$as_me:$LINENO: warning: C compiler cannot create executables
+ See \`config.log' for more details." >&5
+-echo "$as_me: error: C compiler cannot create executables
++echo "$as_me: warning: C compiler cannot create executables
+ See \`config.log' for more details." >&2;}
+-   { (exit 77); exit 77; }; }
++    }
+ fi
+ 
+ ac_exeext=$ac_cv_exeext

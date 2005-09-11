@@ -1,0 +1,18 @@
+#!/bin/sh
+
+cat <<EOF
+
+#################################################################
+#
+#   To automatically start smartd on bootup, edit 
+#
+#     /opt/etc/init.d/S20smartmon
+#
+#   and follow the instructions in this file. smartd can be
+#   configured in /opt/etc/smartd.conf
+#
+#################################################################
+
+EOF
+
+exit 0
