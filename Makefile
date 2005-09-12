@@ -209,7 +209,7 @@ DS101_COMMON_PACKAGES = \
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
 	ccxstream eggdrop elinks expat flex \
-	gawk gdb gdbm gettext glib gnupg groff gzip joe logrotate lsof \
+	gawk gdb gdbm gettext glib gnupg groff gzip joe libol logrotate lsof \
 	m4 make mc miau mt-daapd mtr mutt mysql \
 	nail nano nmap noip ntp patch pcre \
 	proftpd psutils python rdate sane-backends sqlite sqlite2 syslog-ng \
