@@ -204,7 +204,7 @@ DS101_COMMON_PACKAGES = \
 	file findutils grep gnupg hdparm inetutils lame less lynx libcurl libdb libnsl \
 	libpcap libsigc++ libtorrent libstdc++ lzo minicom mktemp ncftp ncurses openssl openssh \
 	openvpn patch procps python readline rsync rtorrent screen sed strace textutils tcpdump \
-	tar termcap vim wget-ssl which whois zlib 
+	tar termcap vim wakelan wget-ssl which whois zlib 
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = \
@@ -213,7 +213,7 @@ DS101_SPECIFIC_PACKAGES = \
 	m4 make mc miau mt-daapd mtr mutt mysql \
 	nail nano nmap noip ntp patch pcre \
 	proftpd psutils python rdate sane-backends sqlite sqlite2 syslog-ng \
-	unrar unzip usbutils wakelan \
+	unrar unzip usbutils 
 
 
 # Packages that only work for ds101g+
