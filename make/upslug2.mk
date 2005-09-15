@@ -33,22 +33,21 @@ UPSLUG2_CONFLICTS=
 
 #UPSLUG2_CVS_DATE=20050201
 #UPSLUG2_VERSION=cvs$(UPSLUG2_CVS_DATE)
-#UPSLUG2_CVS_OPTS=-D $(UPSLUG2_CVS_DATE)
-UPSLUG2_VERSION=alpha
+UPSLUG2_CVS_OPTS=-D $(UPSLUG2_CVS_DATE)
+UPSLUG2_VERSION=upslug2_3
 
 #
 # If you want to use a tag, uncomment the variables below and modify
 # UPSLUG2_CVS_TAG and UPSLUG2_CVS_VERSION
 #
 
-#UPSLUG2_CVS_TAG=version_1_2_3
-#UPSLUG2_VERSION=1.2.3
-#UPSLUG2_CVS_OPTS=-r $(UPSLUG2_CVS_TAG)
+UPSLUG2_CVS_TAG=upslug2_3
+UPSLUG2_CVS_OPTS=-r $(UPSLUG2_CVS_TAG)
 
 #
 # UPSLUG2_IPK_VERSION should be incremented when the ipk changes.
 #
-UPSLUG2_IPK_VERSION=1
+UPSLUG2_IPK_VERSION=2
 
 #
 # UPSLUG2_CONFFILES should be a list of user-editable files
@@ -85,7 +84,7 @@ UPSLUG2_IPK=$(BUILD_DIR)/upslug2_$(UPSLUG2_VERSION)-$(UPSLUG2_IPK_VERSION)_$(TAR
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.gz:
+$(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz:
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(UPSLUG2_DIR) && \
 		cvs -d $(UPSLUG2_REPOSITORY) -z3 co $(UPSLUG2_CVS_OPTS) $(UPSLUG2_DIR) && \
@@ -93,7 +92,7 @@ $(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.gz:
 		rm -rf $(UPSLUG2_DIR) \
 	)
 
-upslug2-source: $(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.gz
+upslug2-source: $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
 
 #
 # This target also configures the build within the build directory.
@@ -105,10 +104,10 @@ upslug2-source: $(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.gz
+$(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
 #	$(MAKE) <foo>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(UPSLUG2_DIR) $(UPSLUG2_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/template-cvs-$(UPSLUG2_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
 	if test -n "$(UPSLUG2_PATCHES)" ; \
 		then cat $(UPSLUG2_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UPSLUG2_DIR) -p0 ; \
