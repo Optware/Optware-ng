@@ -68,7 +68,7 @@ CROSS_PACKAGES = \
 	samba sane-backends screen sdl sed ser siproxd sm snownews \
 	sqlite sqsh sqlite2 strace stunnel streamripper sudo svn syslog-ng \
 	sysstat \
-	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hda \
+	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hpa \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
 	ufsd unfs3 units unrar unslung-feeds unzip usbutils \
