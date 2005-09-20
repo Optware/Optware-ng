@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=0.99.4
+GIT-CORE_VERSION=0.99.7
 GIT-CORE_SOURCE=git-core-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-core-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -37,7 +37,7 @@ GIT-CORE_CONFLICTS=
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=2
+GIT-CORE_IPK_VERSION=1
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
@@ -190,8 +190,8 @@ $(GIT-CORE_IPK_DIR)/CONTROL/control:
 #
 $(GIT-CORE_IPK): $(GIT-CORE_BUILD_DIR)/.built
 	rm -rf $(GIT-CORE_IPK_DIR) $(BUILD_DIR)/git-core_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GIT-CORE_BUILD_DIR) dest=$(GIT-CORE_IPK_DIR) prefix=/opt $(TARGET_CONFIGURE_OPTS) \
-	    install install-tools
+	$(MAKE) -C $(GIT-CORE_BUILD_DIR) DESTDIR=$(GIT-CORE_IPK_DIR) prefix=/opt $(TARGET_CONFIGURE_OPTS) \
+	    install
 	$(STRIP_COMMAND) $(GIT-CORE_IPK_DIR)/opt/bin/git-mail*
 #	install -d $(GIT-CORE_IPK_DIR)/opt/etc/
 #	install -m 644 $(GIT-CORE_SOURCE_DIR)/git-core.conf $(GIT-CORE_IPK_DIR)/opt/etc/git-core.conf
