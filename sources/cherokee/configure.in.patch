@@ -1,6 +1,6 @@
---- cherokee-0.4.24-orig/configure.in	2005-07-07 07:02:47.000000000 -0700
-+++ cherokee/configure.in	2005-07-23 16:36:15.000000000 -0700
-@@ -573,15 +573,7 @@
+--- cherokee-0.4.26/configure.in	2005-09-19 09:44:21.000000000 -0700
++++ cherokee/configure.in	2005-09-20 07:42:50.843066768 -0700
+@@ -600,15 +600,7 @@
  
  # Is sendfile broken?
  AC_MSG_CHECKING(if sendfile works)

@@ -1,6 +1,6 @@
---- cherokee-0.4.25-orig/cherokee/Makefile.in	2005-08-02 09:24:46.000000000 -0700
-+++ cherokee/cherokee/Makefile.in	2005-08-13 20:53:26.980411168 -0700
-@@ -331,11 +331,11 @@
+--- cherokee-0.4.26/cherokee/Makefile.in	2005-09-19 09:44:33.000000000 -0700
++++ cherokee/cherokee/Makefile.in	2005-09-20 07:42:50.913056128 -0700
+@@ -395,11 +395,11 @@
  am_cherokee_admin_OBJECTS = cherokee_admin.$(OBJEXT)
  cherokee_admin_OBJECTS = $(am_cherokee_admin_OBJECTS)
  cherokee_admin_DEPENDENCIES = libcherokee-config.la \
@@ -14,16 +14,16 @@
  binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
  SCRIPTS = $(bin_SCRIPTS)
  DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
-@@ -915,7 +915,7 @@
+@@ -912,7 +912,7 @@
  
- libplugin_admin_la_LDFLAGS = -module -export-dynamic -avoid-version  
+ libplugin_admin_la_LDFLAGS = $(module_ldflags)  
  libplugin_admin_la_SOURCES = $(handler_admin)
 -libplugin_admin_la_LIBADD = -lcherokee-config -lcherokee-client
 +libplugin_admin_la_LIBADD = -lcherokee-config -lcherokee-client -lcherokee-server
  @STATIC_HANDLER_ADMIN_TRUE@static_handler_admin_src = $(handler_admin)
  @STATIC_HANDLER_ADMIN_TRUE@static_handler_admin_lib = -lcherokee-config
  @STATIC_HANDLER_ADMIN_FALSE@dynamic_handler_admin_lib = libplugin_admin.la
-@@ -1322,9 +1322,9 @@
+@@ -1326,9 +1326,9 @@
  
  cherokee_LDFLAGS = -export-dynamic
  cherokee_logrotate_SOURCES = cherokee_logrotate.c
