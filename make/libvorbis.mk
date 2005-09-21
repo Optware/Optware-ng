@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBVORBIS_SITE=http://www.xiph.org/ogg/vorbis/download
+LIBVORBIS_SITE=http://downloads.xiph.org/releases/vorbis
 LIBVORBIS_VERSION=1.0
 LIBVORBIS_VERSION_LIB=0.2.0
 LIBVORBIS_FILE_VERSION_LIB=3.0.0
