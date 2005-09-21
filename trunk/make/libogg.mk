@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBOGG_SITE=http://www.xiph.org/ogg/vorbis/download
+LIBOGG_SITE=http://downloads.xiph.org/releases/ogg
 LIBOGG_VERSION=1.0
 LIBOGG_VERSION_LIB=0.4.0
 LIBOGG_SOURCE=libogg-$(LIBOGG_VERSION).tar.gz
