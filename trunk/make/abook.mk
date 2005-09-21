@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ABOOK_SITE=http://dl.sourceforge.net/sourceforge/abook
-ABOOK_VERSION=0.5.3
+ABOOK_VERSION=0.5.4
 ABOOK_SOURCE=abook-$(ABOOK_VERSION).tar.gz
 ABOOK_DIR=abook-$(ABOOK_VERSION)
 ABOOK_UNZIP=zcat
@@ -36,7 +36,7 @@ ABOOK_CONFLICTS=
 #
 # ABOOK_IPK_VERSION should be incremented when the ipk changes.
 #
-ABOOK_IPK_VERSION=2
+ABOOK_IPK_VERSION=1
 
 #
 # ABOOK_CONFFILES should be a list of user-editable files
