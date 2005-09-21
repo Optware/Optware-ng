@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PSYCOPG_SITE=http://initd.org/pub/software/psycopg/PSYCOPG-1-1
-PY-PSYCOPG_VERSION=1.1.18
+PY-PSYCOPG_SITE=http://initd.org/pub/software/psycopg
+PY-PSYCOPG_VERSION=1.1.20
 PY-PSYCOPG_SOURCE=psycopg-$(PY-PSYCOPG_VERSION).tar.gz
 PY-PSYCOPG_DIR=psycopg-$(PY-PSYCOPG_VERSION)
 PY-PSYCOPG_UNZIP=zcat
@@ -74,7 +74,8 @@ PY-PSYCOPG_IPK=$(BUILD_DIR)/py-psycopg_$(PY-PSYCOPG_VERSION)-$(PY-PSYCOPG_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-PSYCOPG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/$(PY-PSYCOPG_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/$(PY-PSYCOPG_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/PSYCOPG-1-1/$(PY-PSYCOPG_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
