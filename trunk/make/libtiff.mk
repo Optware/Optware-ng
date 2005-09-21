@@ -69,7 +69,8 @@ LIBTIFF_IPK=$(BUILD_DIR)/libtiff_$(LIBTIFF_VERSION)-$(LIBTIFF_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBTIFF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBTIFF_SITE)/$(LIBTIFF_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBTIFF_SITE)/$(LIBTIFF_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(LIBTIFF_SITE)/old/$(LIBTIFF_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
