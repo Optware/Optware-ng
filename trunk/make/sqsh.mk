@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SQSH_SITE=http://www.sqsh.org
-SQSH_VERSION=2.1
-SQSH_SOURCE=sqsh-$(SQSH_VERSION)-src.tar.gz
+SQSH_SITE=http://dl.sf.net/sourceforge/sqsh
+SQSH_VERSION=2.1.3
+SQSH_SOURCE=sqsh-$(SQSH_VERSION).tar.gz
 SQSH_DIR=sqsh-$(SQSH_VERSION)
 SQSH_UNZIP=zcat
 SQSH_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
