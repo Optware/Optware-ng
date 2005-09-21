@@ -5,7 +5,7 @@
 ###########################################################
 
 #NTPCLIENT_SITE=http://doolittle.faludi.com/ntpclient
-NTPCLIENT_SITE=http://ipkg.nslu2-linux.org/downloads
+NTPCLIENT_SITE=http://sources.nslu2-linux.org/sources
 NTPCLIENT_VERSION=2003_194
 NTPCLIENT_SOURCE=ntpclient_$(NTPCLIENT_VERSION).tar.gz
 NTPCLIENT_DIR=ntpclient
