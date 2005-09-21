@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGC_SITE=http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source
-LIBGC_VERSION=6.4
+LIBGC_VERSION=6.5
 LIBGC_SOURCE=gc$(LIBGC_VERSION).tar.gz
 LIBGC_DIR=gc$(LIBGC_VERSION)
 LIBGC_UNZIP=zcat
@@ -41,7 +41,7 @@ LIBGC_CONFLICTS=
 #
 # LIBGC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGC_IPK_VERSION=3
+LIBGC_IPK_VERSION=1
 
 #
 # LIBGC_CONFFILES should be a list of user-editable files
