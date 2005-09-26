@@ -83,6 +83,10 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	py-celementtree \
+	py-elementtree \
+	py-kid \
+	py-sqlobject \
 	upslug2 \
 
 # asterisk may just need configure and HOSTCC work
