@@ -1,0 +1,22 @@
+--- Python-2.4.2/setup.py.orig	2005-03-09 14:27:24.000000000 -0800
++++ Python-2.4.2/setup.py	2005-09-28 20:24:23.000000000 -0700
+@@ -198,6 +198,10 @@
+             self.announce('WARNING: skipping import check for Cygwin-based "%s"'
+                 % ext.name)
+             return
++        if True:
++            self.announce('WARNING: skipping import check for cross compiled "%s"'
++                % ext.name)
++            return
+         ext_filename = os.path.join(
+             self.build_lib,
+             self.get_ext_filename(self.get_ext_fullname(ext.name)))
+@@ -593,7 +597,7 @@
+             # is on an NFS server that goes away).
+             exts.append(Extension('_bsddb', ['_bsddb.c'],
+                                   library_dirs=dblib_dir,
+-                                  runtime_library_dirs=dblib_dir,
++                                  #runtime_library_dirs=dblib_dir,
+                                   include_dirs=db_incs,
+                                   libraries=dblibs))
+         else:

@@ -26,23 +26,23 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON_VERSION=2.4.1
+PYTHON_VERSION=2.4.2
 PYTHON_VERSION_MAJOR=2.4
 PYTHON_SITE=http://www.python.org/ftp/python/$(PYTHON_VERSION)
-PYTHON_SOURCE=Python-$(PYTHON_VERSION).tgz
+PYTHON_SOURCE=Python-$(PYTHON_VERSION).tar.bz2
 PYTHON_DIR=Python-$(PYTHON_VERSION)
-PYTHON_UNZIP=zcat
+PYTHON_UNZIP=bzcat
 
 PYTHON_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON_SECTION=misc
 PYTHON_PRIORITY=optional
-PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl
+PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl, libdb
 
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=7
+PYTHON_IPK_VERSION=1
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -53,7 +53,13 @@ PYTHON_IPK_VERSION=7
 # which they should be applied to the source code.
 #
 # http://mail.python.org/pipermail/patches/2004-October/016312.html
-PYTHON_PATCHES=$(PYTHON_SOURCE_DIR)/python-cross-compile1006238.patch
+PYTHON_PATCHES=\
+	$(PYTHON_SOURCE_DIR)/Makefile.pre.in.patch \
+	$(PYTHON_SOURCE_DIR)/README.patch \
+	$(PYTHON_SOURCE_DIR)/config.guess.patch \
+	$(PYTHON_SOURCE_DIR)/config.sub.patch \
+	$(PYTHON_SOURCE_DIR)/configure.in.patch \
+	$(PYTHON_SOURCE_DIR)/setup.py.patch \
 
 #
 # If the compilation of the package requires additional
@@ -106,11 +112,11 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
-	make readline-stage ncurses-stage openssl-stage
+	make readline-stage ncurses-stage openssl-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
 	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cd $(BUILD_DIR)/$(PYTHON_DIR); \
-	    cat $(PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(PYTHON_DIR) -p3; \
+	    cat $(PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(PYTHON_DIR) -p1; \
 	    autoconf configure.in > configure
 	mkdir $(PYTHON_BUILD_DIR)
 	(cd $(PYTHON_BUILD_DIR); \
