@@ -1,0 +1,53 @@
+--- Python-2.4.2/configure.in.orig	2005-08-07 14:08:53.000000000 -0700
++++ Python-2.4.2/configure.in	2005-09-28 20:24:23.000000000 -0700
+@@ -9,6 +9,11 @@
+ AC_CONFIG_SRCDIR([Include/object.h])
+ AC_CONFIG_HEADER(pyconfig.h)
+ 
++# find compiler while respecting --host setting
++AC_CANONICAL_HOST()
++AC_CHECK_TOOLS(CC,gcc cc)
++AC_CHECK_TOOLS(CXX,g++ c++)
++
+ dnl This is for stuff that absolutely must end up in pyconfig.h.
+ dnl Please use pyport.h instead, if possible.
+ AH_TOP([
+@@ -604,9 +609,9 @@
+ 
+ AC_MSG_RESULT($LDLIBRARY)
+ 
+-AC_PROG_RANLIB
+-AC_SUBST(AR)
+-AC_CHECK_PROGS(AR, ar aal, ar)
++# find tools while respecting --host setting
++AC_CHECK_TOOL(RANLIB,ranlib)
++AC_CHECK_TOOLS(AR,ar aal,ar)
+ 
+ case $MACHDEP in
+ bsdos*|hp*|HP*)
+@@ -3125,6 +3130,25 @@
+ done
+ AC_MSG_RESULT(done)
+ 
++AC_SUBST(BUILDPYTHON)
++AC_SUBST(BUILDPGEN)
++AC_SUBST(CROSS_COMPILE)
++if [[ $build != $host ]]; then
++    AC_MSG_NOTICE(Cross compiling: Configuring build python)
++    absconfigcommand=$(pwd)/$0
++    mkdir -p buildpython
++    cd buildpython
++    CC="" CXX="" AR="" RANLIB="" $absconfigcommand --prefix=$prefix
++    cd ..
++    BUILDPYTHON='buildpython/python$(BUILDEXE)'
++    BUILDPGEN='buildpython/Parser/pgen$(BUILDEXE)'
++    CROSS_COMPILE=yes
++else
++    BUILDPYTHON='$(HOSTPYTHON)'
++    BUILDPGEN='$(HOSTPGEN)'
++    CROSS_COMPILE=no
++fi
++
+ # generate output files
+ AC_CONFIG_FILES(Makefile.pre Modules/Setup.config)
+ AC_OUTPUT
