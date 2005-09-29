@@ -63,6 +63,7 @@ CROSS_PACKAGES = \
 	py-gdchart2 py-gd py-pil py-mssql \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	py-roundup py-serial py-simpy py-soappy \
+	qemu qemu-libc-i386 \
 	quagga  \
 	rcs rdate readline recordext renderext rrdtool rsync \
 	samba sane-backends screen sdl sed ser siproxd sm snownews \
@@ -86,7 +87,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-celementtree \
 	py-cherrytemplate \
 	py-elementtree \
-	py-kid \
 	py-sqlobject \
 	upslug2 \
 
@@ -134,6 +134,7 @@ NATIVE_PACKAGES = \
 # Add new native-only packages here, and state why they don't cross compile.
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# py-kid: "ImportError: No module named elementtree.ElementTree"
 #
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
@@ -148,12 +149,12 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # parted - does not work on the slug, even when compiled natively
 # qemu fails while building gas
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
+	py-kid \
 	dump \
 	bitlbee \
 	libao \
 	madplay nethack scponly gkrellm \
 	parted \
-	qemu qemu-libc-i386 
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
