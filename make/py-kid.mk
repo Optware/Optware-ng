@@ -46,7 +46,7 @@ PY-KID_IPK_VERSION=1
 # PY-KID_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PY-KID_PATCHES=$(PY-KID_SOURCE_DIR)/configure.patch
+PY-KID_PATCHES=$(PY-KID_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -102,7 +102,7 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
 	$(PY-KID_UNZIP) $(DL_DIR)/$(PY-KID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1
+	cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
 	(cd $(PY-KID_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
