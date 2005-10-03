@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PSYCOPG_SITE=http://initd.org/pub/software/psycopg
-PY-PSYCOPG_VERSION=1.1.20
+PY-PSYCOPG_VERSION=1.1.21
 PY-PSYCOPG_SOURCE=psycopg-$(PY-PSYCOPG_VERSION).tar.gz
 PY-PSYCOPG_DIR=psycopg-$(PY-PSYCOPG_VERSION)
 PY-PSYCOPG_UNZIP=zcat
