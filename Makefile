@@ -90,6 +90,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-kid \
 	py-sqlobject \
 	upslug2 \
+	bitlbee
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -141,15 +142,11 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # things get searched for.  I think it would be best to rewrite this
 # .mk from scratch, following template.mk.
 # 
-# bitlbee: "Could not find a suitable SSL library". Assumes
-# cross-build host has gnutls installed?
-#
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 # qemu fails while building gas
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	dump \
-	bitlbee \
 	libao \
 	madplay nethack scponly gkrellm \
 	parted \
