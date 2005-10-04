@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -n "`pidof knockd`" ]; then 
+    /bin/killall knockd 2>/dev/null
+fi
+
+umask 077
+
+/opt/bin/knockd -d -i ipx0 -v -V
