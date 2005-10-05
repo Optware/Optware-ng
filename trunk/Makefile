@@ -27,7 +27,7 @@ CROSS_PACKAGES = \
 	abook adduser adns alac-decoder appweb \
 	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
-	bash bc bind bitchx busybox byrequest bzflag bzip2 \
+	bash bc bind bitchx bitlbee busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream cherokee chrpath classpath clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
@@ -43,6 +43,7 @@ CROSS_PACKAGES = \
 	ice imagemagick imap inetutils \
 	iperf ipkg-web iptables ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes joe jove \
+	knock \
 	lame ldconfig less \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag \
@@ -63,6 +64,8 @@ CROSS_PACKAGES = \
 	py-gdchart2 py-gd py-pil py-mssql \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
 	py-roundup py-serial py-simpy py-soappy \
+	py-celementtree py-cherrytemplate \
+	py-elementtree py-kid py-sqlobject \
 	qemu qemu-libc-i386 \
 	quagga  \
 	rcs rdate readline recordext renderext rrdtool rsync \
@@ -72,7 +75,7 @@ CROSS_PACKAGES = \
 	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hpa \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
-	ufsd unfs3 units unrar unslung-feeds unzip usbutils \
+	ufsd unfs3 units unrar unslung-feeds unzip upslug2 usbutils \
 	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
 	w3cam wakelan webalizer wget-ssl whois which wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
@@ -84,14 +87,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	py-celementtree \
-	py-cherrytemplate \
-	py-elementtree \
-	py-kid \
-	py-sqlobject \
-	upslug2 \
-	bitlbee \
-	knock
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -196,7 +191,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb git-core cogito
+	dovecot unrar appweb git-core cogito knock bitlbee upslug2
 
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
