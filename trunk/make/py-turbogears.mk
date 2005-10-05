@@ -30,7 +30,7 @@ PY-TURBOGEARS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
-PY-TURBOGEARS_DEPENDS=python, py-kid, py-cherrypy, py-sqlobject
+PY-TURBOGEARS_DEPENDS=python, py-kid, py-cherrypy, py-sqlobject, py-formencode
 PY-TURBOGEARS_CONFLICTS=
 
 #
