@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLOBJECT_SITE=http://dl.sf.net/sourceforge/sqlobject
-PY-SQLOBJECT_VERSION=0.6.1
+PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
+PY-SQLOBJECT_VERSION=0.7.0
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
 PY-SQLOBJECT_UNZIP=zcat
@@ -169,7 +169,7 @@ $(PY-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 	rm -rf $(PY-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-SQLOBJECT_BUILD_DIR) DESTDIR=$(PY-SQLOBJECT_IPK_DIR) install
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-SQLOBJECT_IPK_DIR)/opt)
+	python2.4 setup.py install --prefix=$(PY-SQLOBJECT_IPK_DIR)/opt --old-and-unmanageable)
 #	install -d $(PY-SQLOBJECT_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-SQLOBJECT_SOURCE_DIR)/py-sqlobject.conf $(PY-SQLOBJECT_IPK_DIR)/opt/etc/py-sqlobject.conf
 #	install -d $(PY-SQLOBJECT_IPK_DIR)/opt/etc/init.d
