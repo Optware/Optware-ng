@@ -168,6 +168,7 @@ $(KNOCK_IPK): $(KNOCK_BUILD_DIR)/.built
 	install -d $(KNOCK_IPK_DIR)/opt/bin
 	install -m 755 $(KNOCK_BUILD_DIR)/knockd $(KNOCK_IPK_DIR)/opt/bin
 	install -m 755 $(KNOCK_BUILD_DIR)/knock $(KNOCK_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)/opt/bin/*
 	$(MAKE) $(KNOCK_IPK_DIR)/CONTROL/control
 	echo $(KNOCK_CONFFILES) | sed -e 's/ /\n/g' > $(KNOCK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KNOCK_IPK_DIR)
