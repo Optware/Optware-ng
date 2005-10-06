@@ -33,7 +33,7 @@ UFSD_CONFLICTS=
 #
 # UFSD_IPK_VERSION should be incremented when the ipk changes.
 #
-UFSD_IPK_VERSION=5
+UFSD_IPK_VERSION=6
 
 #
 # <FOO>_SOURCE_DIR is the directory which holds all the
