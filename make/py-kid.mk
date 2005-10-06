@@ -67,7 +67,7 @@ PY-KID_LDFLAGS=
 PY-KID_BUILD_DIR=$(BUILD_DIR)/py-kid
 PY-KID_SOURCE_DIR=$(SOURCE_DIR)/py-kid
 PY-KID_IPK_DIR=$(BUILD_DIR)/py-kid-$(PY-KID_VERSION)-ipk
-PY-KID_IPK=$(BUILD_DIR)/py-kid$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-KID_IPK=$(BUILD_DIR)/py-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
