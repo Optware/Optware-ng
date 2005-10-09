@@ -6,4 +6,4 @@ fi
 
 umask 077
 
-/opt/bin/knockd -d -i ipx0 -v -V
+/opt/bin/knockd -d -i ixp0 -v
