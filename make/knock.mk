@@ -1,7 +1,7 @@
 ###########################################################
 #
 # knock
-#
+# 
 ###########################################################
 #
 KNOCK_SITE=http://www.zeroflux.org/knock/files
@@ -13,9 +13,6 @@ KNOCK_MAINTAINER=Don Lubinski <nlsu2@shine-hs.com>
 KNOCK_DESCRIPTION=knockd is a port-knock server. It listens to all traffic on an ethernet (or PPP) interface, looking for special "knock" sequences of port-hits. A client makes these port-hits by sending a TCP (or UDP) packet to a port on the server. This port need not be open -- since knockd listens at the link-layer level, it sees all traffic even if it's destined for a closed port. When the server detects a specific sequence of port-hits, it runs a command defined in its configuration file. This can be used to open up holes in a firewall for quick access.
 KNOCK_SECTION= Security
 KNOCK_PRIORITY=optional
-KNOCK_DEPENDS=libpcap
-KNOCK_SUGGESTS=
-KNOCK_CONFLICTS=
 
 #
 # KNOCK_IPK_VERSION should be incremented when the ipk changes.
@@ -33,7 +30,7 @@ KNOCK_CONFFILES=/etc/knockd.conf /opt/etc/init.d/S05knockd
 #
 KNOCK_CPPFLAGS=
 KNOCK_LDFLAGS=
-KNOCK_CFLAGS=$(TARGET_CFLAGS) -I$(BUILD_DIR)/libpcap
+KNOCK_CFLAGS=$(TARGET_CFLAGS) 
 
 #
 # KNOCK_BUILD_DIR is the directory in which the build is done.
@@ -90,7 +87,7 @@ $(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE)
 	fi
 	(cd $(KNOCK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(KNOCK_CFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KNOCK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(KNOCK_LDFLAGS)" \
 		./configure \
@@ -143,10 +140,7 @@ $(KNOCK_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(KNOCK_MAINTAINER)" >>$@
 	@echo "Source: $(KNOCK_SITE)/$(KNOCK_SOURCE)" >>$@
 	@echo "Description: $(KNOCK_DESCRIPTION)" >>$@
-	@echo "Depends: $(KNOCK_DEPENDS)" >>$@
-	@echo "Suggests: $(KNOCK_SUGGESTS)" >>$@
-	@echo "Conflicts: $(KNOCK_CONFLICTS)" >>$@
-
+#
 #
 # This builds the IPK file.
 #
@@ -169,6 +163,9 @@ $(KNOCK_IPK): $(KNOCK_BUILD_DIR)/.built
 	install -m 755 $(KNOCK_BUILD_DIR)/knockd $(KNOCK_IPK_DIR)/opt/bin
 	install -m 755 $(KNOCK_BUILD_DIR)/knock $(KNOCK_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)/opt/bin/*
+	install -d $(KNOCK_IPK_DIR)/opt/man/man1
+	install -m 644 $(KNOCK_BUILD_DIR)/doc/knock.1 $(KNOCK_IPK_DIR)/opt/man/man1
+	install -m 644 $(KNOCK_BUILD_DIR)/doc/knockd.1 $(KNOCK_IPK_DIR)/opt/man/man1
 	$(MAKE) $(KNOCK_IPK_DIR)/CONTROL/control
 	echo $(KNOCK_CONFFILES) | sed -e 's/ /\n/g' > $(KNOCK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KNOCK_IPK_DIR)
