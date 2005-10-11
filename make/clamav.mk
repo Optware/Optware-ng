@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=1
+CLAMAV_IPK_VERSION=2
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -110,9 +110,10 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 #	if [ ! -e /opt/bin/adduser ]; then ipkg update; ipkg install unslung-feeds; ipkg update; ipkg install adduser; fi 
 #	if (! (grep clamav /etc/passwd)) then addgroup clamav; adduser -s /dev/null -H -D -G clamav clamav; fi     
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CLAMAV_PATCHES) | patch -d $(BUILD_DIR)/$(CLAMAV_DIR) -p1
+	cat $(CLAMAV_PATCHES) | patch -d $(BUILD_DIR)/$(CLAMAV_DIR) -p1
 	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
 	(cd $(CLAMAV_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLAMAV_LDFLAGS)" \
@@ -125,6 +126,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 		--disable-clamav \
 		--sysconfdir=/opt/etc \
 		--with-zlib=$(STAGING_DIR)/opt \
+		--without-libcurl	\
 	)
 	touch $(CLAMAV_BUILD_DIR)/.configured
 
