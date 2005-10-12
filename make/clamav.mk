@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=3
+CLAMAV_IPK_VERSION=4
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -200,7 +200,9 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 #	install -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
 	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
 	cd $(CLAMAV_IPK_DIR)/opt/bin
-	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamav-config $(CLAMAV_IPK_DIR)/opt/bin/clamav-config
+	rm $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamav-config # contains staging paths
+	rm $(CLAMAV_IPK_DIR)/opt/lib/libclamav.la # contains staging paths
+	rm $(CLAMAV_IPK_DIR)/opt/lib/pkgconfig/libclamav.pc # contains staging paths
 	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamdscan $(CLAMAV_IPK_DIR)/opt/bin/clamdscan
 	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamscan $(CLAMAV_IPK_DIR)/opt/bin/clamscan
 	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-freshclam $(CLAMAV_IPK_DIR)/opt/bin/freshclam
