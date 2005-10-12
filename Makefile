@@ -29,7 +29,8 @@ CROSS_PACKAGES = \
 	asterisk-sounds \
 	bash bc bind bitchx bitlbee busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	ccxstream cherokee chrpath classpath clips cogito coreutils cpio \
+	ccxstream cherokee chrpath classpath clamav \
+	clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
 	dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
 	dnsmasq dropbear \
@@ -87,7 +88,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	clamav \
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -107,7 +107,6 @@ NATIVE_PACKAGES = \
 	autoconf \
 	bison \
 	bogofilter \
-	clamav \
 	cyrus-imapd \
 	emacs \
 	xemacs \
@@ -192,7 +191,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	xmail 
 
 WL500G_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb git-core cogito knock bitlbee upslug2
+	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav
 
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
