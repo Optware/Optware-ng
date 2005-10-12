@@ -124,6 +124,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-clamav \
+		--disable-static \
 		--sysconfdir=/opt/etc \
 		--with-zlib=$(STAGING_DIR)/opt \
 		--without-libcurl	\
@@ -188,7 +189,7 @@ $(CLAMAV_IPK_DIR)/CONTROL/control:
 #
 $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(CLAMAV_IPK_DIR) install
+	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(CLAMAV_IPK_DIR) install-strip
 	install -d $(CLAMAV_IPK_DIR)/opt/etc/
 	install -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
 	install -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
