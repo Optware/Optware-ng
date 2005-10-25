@@ -5,7 +5,7 @@ echo "Downloading the NSLU2_V23R63.zip firmware ...."
 if [ ! -f NSLU2_V23R63.zip ] ; then
   wget 'http://www.linksys.com/servlet/Satellite?blobcol=urldata&blobheadername1=Content-Type&blobheadername2=Content-Disposition&blobheadervalue1=application%2Fzip&blobheadervalue2=inline%3B+filename%3DNSLU2_V23R63.zip&blobkey=id&blobtable=MungoBlobs&blobwhere=1124848568017&ssbinary=true' -O NSLU2_V23R63.zip
 fi
-if [ "`md5sum < NSLU2_V23R63.zip`" != "d8be97bdb38137d08d82654c6021a348  -" ] ; then
+if [ "`md5sum < NSLU2_V23R63.zip`" != "423f65fb2121bbf9855d060dce29b3af  -" ] ; then
   echo "ERROR: The download from www.linksys.com has failed."
   echo "Please download the NSLU2_V23R63.zip firmware manually into /tmp and try again."
   exit 1
