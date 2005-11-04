@@ -165,8 +165,10 @@ $(IPKG_IPK_DIR)/CONTROL/control:
 $(IPKG_IPK): $(IPKG_BUILD_DIR)/.built
 ifneq ($(OPTWARE_TARGET),ds101)
 ifneq ($(OPTWARE_TARGET),ds101g)
-	echo "This target may only be used for the DS-101* boxen!"
+ifneq ($(OPTWARE_TARGET),nas100d)
+	echo "This target may only be used for the DS-101* or NAS100d boxen!"
 	fail
+endif
 endif
 endif
 	rm -rf $(IPKG_IPK_DIR) $(BUILD_DIR)/ipkg_*_$(TARGET_ARCH).ipk
