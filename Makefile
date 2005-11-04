@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "ds101", "ds101g" and "nas100d"
+# Options are "nslu2", "wl500g", "ds101", "ds101g", "mss"  and "nas100d"
 OPTWARE_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
@@ -193,6 +193,61 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 WL500G_PACKAGES_READY_FOR_TESTING =  \
 	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav
 
+MSS_PACKAGES = \
+	adduser adns antinat audiofile autoconf automake \
+	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
+	ccxstream chillispot clips cogito coreutils cpio cron ctags cups cyrus-sasl \
+	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
+	e2fsprogs e2tools ed eggdrop esmtp expat \
+	fetchmail ffmpeg file findutils fixesext flac flex \
+	freetype ftpd-topfield fontconfig \
+	gconv-modules gdb gdbm gdchart \
+        gift gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	ghostscript grep gzip \
+	hdparm hexcurse \
+	inetutils ircd-hybrid \
+	joe jove \
+	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
+	libgcrypt libid3tag libjpeg libmad libogg libol \
+	libnsl libosip2 libpng \
+	libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
+	logrotate lua lynx lzo \
+	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
+	nano ncftp ncurses netio neon noip ntpclient nylon \
+	openssl openvpn oww \
+	patch php-thttpd pkgconfig popt poptop portmap procps proftpd psutils puppy \
+	quagga \
+	rdate readline recordext renderext rrdtool rsync \
+	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
+	taged tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent \
+	unfs3 units unzip usbutils \
+	vdr-mediamvp vorbis-tools vsftpd \
+	w3cam wakelan which whois wiley-feeds wizd wpa-supplicant \
+	xau xdmcp xextensions xinetd xproto xtrans xvid \
+	zlib \
+\
+	iptables \
+	ttf-bitstream-vera \
+	xmail 
+
+# classpath: javac
+# freeradius: requires mysql
+# gift-ares: fails to configure
+# libstdc++: Hmmm..?
+# net-snmp: Fails configure on endianness.
+# net-tools: Building libnet-tools.a
+# php: requires mysql
+# postgresql: crs???
+# py-moin, python
+# tsocks: couldn't download
+# vblade: couldn't download
+# groff: compiles but fails installation
+MSS_PACKAGES_THAT_NEED_FIXING = \
+ classpath cyrus-sasl freeradius gift-ares libstdc++ net-snmp net-tools php postgresql py-moin  python tsocks vblade groff
+
+MSS_PACKAGES_READY_FOR_TESTING =  \
+	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav
+
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
 	bash bzip2 coreutils cpio cron cvs dhcp diffutils dnsmasq dropbear fetchmail \
@@ -249,6 +304,13 @@ PACKAGES = $(WL500G_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(WL500G_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
+endif
+
+ifeq ($(OPTWARE_TARGET),mss)
+PACKAGES = $(MSS_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(MSS_PACKAGES_READY_FOR_TESTING)
+TARGET_ARCH=mipsel
+TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101)
@@ -336,6 +398,19 @@ GNU_TARGET_NAME = mipsel-linux
 CROSS_CONFIGURATION = hndtools-mipsel-uclibc
 TARGET_CROSS = /opt/brcm/$(CROSS_CONFIGURATION)/bin/mipsel-uclibc-
 TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/lib
+TARGET_LDFLAGS = 
+TARGET_CUSTOM_FLAGS= -pipe 
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain:
+endif
+
+ifeq ($(OPTWARE_TARGET),mss)
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME = mipsel-linux
+CROSS_CONFIGURATION = hndtools-mipsel-linux
+TARGET_CROSS = /opt/brcm/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
 TARGET_LDFLAGS = 
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
@@ -523,7 +598,7 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 dirclean: $(PACKAGES_DIRCLEAN)
 
 distclean:
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)

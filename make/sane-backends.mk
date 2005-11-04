@@ -26,8 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
-SANE_BACKENDS_VERSION=1.0.15
+#SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
+SANE_BACKENDS_VERSION=1.0.16
+SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
 SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_UNZIP=zcat
