@@ -22,13 +22,13 @@ JOE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 JOE_DESCRIPTION=Joe's own editor. A text editor with wordstar-like and emacs-like keybindings.
 JOE_SECTION=editor
 JOE_PRIORITY=optional
-JOE_DEPENDS=ncurses
+JOE_DEPENDS=ncurses, termcap
 JOE_CONFLICTS=
 
 #
 # JOE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOE_IPK_VERSION=2
+JOE_IPK_VERSION=3
 
 #
 # JOE_CONFFILES should be a list of user-editable files
