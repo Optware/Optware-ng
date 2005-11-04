@@ -9,6 +9,9 @@ LIBSTDC++_VERSION=5.0.6
 else
 LIBSTDC++_VERSION=5.0.7
 endif
+ifeq ($(OPTWARE_TARGET),mss)
+LIBSTDC++_VERSION=5.0.3
+endif
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
 LIBSTDC++_LIBNAME=libstdc++.so
