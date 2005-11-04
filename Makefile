@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "ds101" and "ds101g"
+# Options are "nslu2", "wl500g", "ds101", "ds101g" and "nas100d"
 OPTWARE_TARGET ?= nslu2
 
 CROSS_PACKAGES = \
@@ -218,6 +218,13 @@ DS101G_SPECIFIC_PACKAGES = \
 DS101G_PACKAGES_THAT_NEED_FIXING = \
 	ldconfig mc 
 
+NAS100D_CROSS_PACKAGES = \
+	ipkg
+
+NAS100D_NATIVE_PACKAGES = \
+
+
+
 HOST_MACHINE:=$(shell uname -m | sed \
 	-e 's/i[3-9]86/i386/' \
 	)
@@ -257,6 +264,13 @@ DS101G_PACKAGES=$(DS101_COMMON_PACKAGES) $(DS101G_SPECIFIC_PACKAGES)
 PACKAGES = $(DS101G_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(DS101G_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=powerpc
+TARGET_OS=linux
+endif
+
+ifeq ($(OPTWARE_TARGET),nas100d)
+PACKAGES = $(NAS100D_CROSS_PACKAGES) $(CROSS_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(NAS100D_PACKAGES_READY_FOR_TESTING)
+TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
@@ -362,6 +376,23 @@ TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: crosstool
 endif
 
+ifeq ($(OPTWARE_TARGET),nas100d)
+CROSS_CONFIGURATION_GCC_VERSION=3.3.5
+CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
+CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
+CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
+CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME = armv5b-softfloat-linux
+TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
+TARGET_LDFLAGS =
+TARGET_CUSTOM_FLAGS= -pipe
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain: crosstool
+endif
+
 
 TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
@@ -433,17 +464,6 @@ $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 
 packages: $(PACKAGES_IPKG)
 	$(MAKE) index
-
-upload:
-ifeq ($(OPTWARE_TARGET),nslu2)
-ifeq ($(HOST_MACHINE),armv5b)
-	ssh nudi.nslu2-linux.org mkdir -p /home/unslung/packages/native/
-	rsync -avr --delete packages/ nudi.nslu2-linux.org:/home/unslung/packages/native/
-	ssh nudi.nslu2-linux.org "cd /home/unslung/packages/native ; /home/unslung/packages/staging/bin/ipkg-make-index . > Packages; gzip -c Packages > Packages.gz"
-	ssh nudi.nslu2-linux.org rsync -vrlt --progress /home/unslung/packages/native/*.ipk unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
-	ssh nudi.nslu2-linux.org rsync -vrlt --progress /home/unslung/packages/native/ unslung@ipkg.nslu2-linux.org:/home/groups/n/ns/nslu/htdocs/feeds/unslung/native/
-endif
-endif
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
 	autoclean \
