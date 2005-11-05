@@ -91,12 +91,9 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # I guess that the wl500g is a little endian computor?
 #
 ifeq ($(HOST_MACHINE),i386) 
-  ifeq ($(OPTWARE_TARGET),nslu2)
-    NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=big"
-  else
-    ifeq ($(OPTWARE_TARGET),wl500g)
-      NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=little"
-    endif
+  NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=big"
+  ifeq ($(OPTWARE_TARGET),wl500g)
+    NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=little"
   endif
 else
   NET_SNMP_CROSS_CONFIG_FLAGS=
