@@ -36,6 +36,9 @@ QEMU_CONFLICTS=
 ifeq ($(OPTWARE_TARGET),nslu2)
 QEMU_CPU=armv4b
 endif
+ifeq ($(OPTWARE_TARGET),nas100d)
+QEMU_CPU=armv4b
+endif
 ifeq ($(OPTWARE_TARGET),wl500g)
 QEMU_CPU=mips
 endif
