@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=3.8p1
+OPENSSH_VERSION=4.2p1
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=4
+OPENSSH_IPK_VERSION=1
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
@@ -106,6 +106,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--with-zlib=$(STAGING_DIR)/opt \
 		--with-ssl-dir=$(STAGING_DIR)/opt \
 		--with-md5-passwords=yes \
+		--disable-etc-default-login \
 		--with-default-path="/opt/sbin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
 		--with-privsep-user=nobody \
 		--disable-lastlog --disable-utmp \
@@ -165,7 +166,7 @@ $(OPENSSH_IPK_DIR)/CONTROL/control:
 #
 $(OPENSSH_IPK): $(OPENSSH_BUILD_DIR)/.built
 	rm -rf $(OPENSSH_IPK_DIR) $(BUILD_DIR)/openssh_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(OPENSSH_BUILD_DIR) DESTDIR=$(OPENSSH_IPK_DIR) install-files
+	$(MAKE) -C $(OPENSSH_BUILD_DIR) DESTDIR=$(OPENSSH_IPK_DIR) install-nokeys
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
 	rm -rf $(OPENSSH_IPK_DIR)/opt/man
 	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
