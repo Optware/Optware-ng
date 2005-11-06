@@ -1,0 +1,9 @@
+#!/bin/sh
+
+echo "Running denyhosts for the 1st time"
+
+sed -i -e 's!log/secure!log/messages!' -i -e 's!Redhat!Nslu2!' /opt/etc/denyhosts.cfg
+
+/opt/etc/init.d/S01denyhosts
+
+
