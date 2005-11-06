@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -n "`pidof denyhosts`" ]; then 
+    /bin/killall denyhosts 2>/dev/null
+fi
+umask 077
+
+rm -f /var/lock/subsys/denyhosts
+
+/opt/var/lib/denyhosts/denyhosts.py --daemon  -c /opt/etc/denyhosts.cfg
