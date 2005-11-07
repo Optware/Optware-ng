@@ -27,12 +27,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-RUBY_VERSION=1.8.2
+RUBY_VERSION=1.8.3
 RUBY_SOURCE=ruby-$(RUBY_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_VERSION)
 RUBY_UNZIP=zcat
-RUBY_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
-RUBY_DESCRIPTION=Describe ruby here.
+RUBY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+RUBY_DESCRIPTION=An interpreted scripting language for quick and easy object-oriented programming.
 RUBY_SECTION=misc
 RUBY_PRIORITY=optional
 RUBY_DEPENDS=
@@ -103,7 +103,7 @@ ruby-source: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
-	# $(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(RUBY_BUILD_DIR)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	# cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
@@ -118,6 +118,8 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+                --with-opt-dir=$(STAGING_PREFIX) \
+                --with-target-dir=$(STAGING_PREFIX) \
 	)
 	touch $(RUBY_BUILD_DIR)/.configured
 
