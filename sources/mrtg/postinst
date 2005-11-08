@@ -1,0 +1,4 @@
+echo "MRTG is now installed, you now need to make a config file"
+echo "for it and set up a cron job to run it."
+echo "See the cfgmaker man page for the former. Setting up crontab"
+echo "depends on the version of cron you are running."
