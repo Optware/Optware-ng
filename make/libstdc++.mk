@@ -48,10 +48,10 @@ $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(STAGING_DIR)/opt/lib
 	(cd $(STAGING_DIR)/opt/lib; \
-	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-               $(LIBSTDC++_LIBNAME); \
-	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-               $(LIBSTDC++_LIBNAME).5 \
+	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
+		$(LIBSTDC++_LIBNAME); \
+	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
+		$(LIBSTDC++_LIBNAME).5 \
 	)
 	touch $(LIBSTDC++_BUILD_DIR)/.staged
 
