@@ -41,7 +41,7 @@ ALAC_DECODER_CONFLICTS=
 #
 # ALAC_DECODER_IPK_VERSION should be incremented when the ipk changes.
 #
-ALAC_DECODER_IPK_VERSION=1
+ALAC_DECODER_IPK_VERSION=2
 
 #
 # ALAC_DECODER_CONFFILES should be a list of user-editable files
@@ -51,13 +51,13 @@ ALAC_DECODER_CONFFILES=
 # ALAC_DECODER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ALAC_DECODER_PATCHES=$(ALAC_DECODER_SOURCE_DIR)/makefile.patch
+ALAC_DECODER_PATCHES=$(ALAC_DECODER_SOURCE_DIR)/makefile.patch $(ALAC_DECODER_SOURCE_DIR)/alac_performance.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ALAC_DECODER_CPPFLAGS=
+ALAC_DECODER_CPPFLAGS=-O3
 ALAC_DECODER_LDFLAGS=
 
 #
@@ -111,7 +111,7 @@ $(ALAC_DECODER_BUILD_DIR)/.built: $(DL_DIR)/$(ALAC_DECODER_SOURCE) $(ALAC_DECODE
 	mv $(BUILD_DIR)/$(ALAC_DECODER_DIR) $(ALAC_DECODER_BUILD_DIR)
 	(cd $(ALAC_DECODER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ALAC_DECODER_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(ALAC_DECODER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ALAC_DECODER_LDFLAGS)" \
 		$(MAKE) \
 	)
