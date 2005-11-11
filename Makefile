@@ -35,7 +35,7 @@ CROSS_PACKAGES = \
 	dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
 	dnsmasq dropbear \
 	e2fsprogs e2tools eaccelerator ed eggdrop elinks esmtp erlang esound expat \
-	fetchmail ffmpeg ficy file findutils fixesext flac flex \
+	fetchmail ffmpeg file findutils fixesext flac flex \
 	fontconfig freeradius freetds freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -90,6 +90,7 @@ CROSS_PACKAGES = \
 CROSS_PACKAGES_READY_FOR_TESTING = \
 				denyhosts \
 				openssh \
+				ficy \
 				mrtg
 
 # asterisk may just need configure and HOSTCC work
