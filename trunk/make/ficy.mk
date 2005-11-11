@@ -27,10 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FICY_SITE=http://dl.sourceforge.net/sourceforge/ficy/
-FICY_VERSION=1.0.13
-FICY_VERSION_UNDERSCORE=1_0_13
-FICY_SOURCE=fIcy-$(FICY_VERSION_UNDERSCORE).tar.gz
-FICY_DIR=fIcy-$(FICY_VERSION_UNDERSCORE)
+FICY_VERSION=1.0.15
+FICY_VERSION_UNDERSCORE=1_0_15
+FICY_SOURCE=fIcy-$(FICY_VERSION).tar.gz
+FICY_DIR=fIcy-$(FICY_VERSION)
 FICY_UNZIP=zcat
 FICY_MAINTAINER=Bernhard Walle <bernhard.walle@gmx.de>
 FICY_DESCRIPTION=an icecast/shoutcast stream grabber suite
