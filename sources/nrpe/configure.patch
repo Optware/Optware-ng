@@ -1,0 +1,29 @@
+--- configure.org	2003-09-09 04:52:37.000000000 +0200
++++ configure	2005-11-15 23:45:13.000000000 +0100
+@@ -1538,7 +1538,7 @@
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   if test "$cross_compiling" = yes; then
+-    { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
++	ac_cv_sizeof_int=4
+ else
+   cat > conftest.$ac_ext <<EOF
+ #line 1545 "configure"
+@@ -1577,7 +1577,7 @@
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   if test "$cross_compiling" = yes; then
+-    { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
++  	ac_cv_sizeof_short=2
+ else
+   cat > conftest.$ac_ext <<EOF
+ #line 1584 "configure"
+@@ -1616,7 +1616,7 @@
+   echo $ac_n "(cached) $ac_c" 1>&6
+ else
+   if test "$cross_compiling" = yes; then
+-    { echo "configure: error: can not run test program while cross compiling" 1>&2; exit 1; }
++  	ac_cv_sizeof_long=4
+ else
+   cat > conftest.$ac_ext <<EOF
+ #line 1623 "configure"
