@@ -1,0 +1,5 @@
+#!/bin/sh
+echo 'Your bash shell at' ~/'.bashrc is being modified so that cdargs will work.'
+echo 'source /opt/var/lib/cdargs/cdargs-bash.sh' >>~/.bashrc
+
+
