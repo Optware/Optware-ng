@@ -91,7 +91,8 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 				denyhosts \
 				openssh \
 				ficy \
-				mrtg
+				mrtg \
+				cdargs
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
