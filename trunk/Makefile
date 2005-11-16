@@ -92,7 +92,8 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 				openssh \
 				ficy \
 				mrtg \
-				cdargs
+				cdargs \
+				pwgen
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
