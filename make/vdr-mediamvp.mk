@@ -40,7 +40,7 @@ $(VDR_MEDIAMVP_DIR)/console/mediamvp: $(VDR_MEDIAMVP_DIR)/.source
 	echo "HAVE_LIBID3TAG=1" >> $(VDR_MEDIAMVP_DIR)/config.mak
 	$(MAKE) -C $(VDR_MEDIAMVP_DIR)/console RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR)" CC="$(TARGET_CC)" 
 
-vdr-mediamvp: zlib libevent libid3tag $(VDR_MEDIAMVP_DIR)/src/vdr-mediamvp
+vdr-mediamvp: $(VDR_MEDIAMVP_DIR)/console/mediamvp
 
 #
 # This rule creates a control file for ipkg.  It is no longer
