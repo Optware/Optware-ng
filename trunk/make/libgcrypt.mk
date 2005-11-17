@@ -149,7 +149,7 @@ $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_DIR)/opt/lib/libgcrypt.la
 	rm -f $(STAGING_DIR)/opt/bin/libgcrypt-config
-	ln -s armv5b-softfloat-linux-libgcrypt-config $(STAGING_DIR)/opt/bin/libgcrypt-config
+	ln -s $(GNU_TARGET_NAME)-libgcrypt-config $(STAGING_DIR)/opt/bin/libgcrypt-config
 	touch $(LIBGCRYPT_BUILD_DIR)/.staged
 
 libgcrypt-stage: $(LIBGCRYPT_BUILD_DIR)/.staged
@@ -188,7 +188,7 @@ $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
 $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -rf $(LIBGCRYPT_IPK_DIR) $(BUILD_DIR)/libgcrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) install-strip
-	ln -s armv5b-softfloat-linux-libgcrypt-config $(LIBGCRYPT_IPK_DIR)/opt/bin/libgcrypt-config
+	ln -s $(GNU_TARGET_NAME)-libgcrypt-config $(LIBGCRYPT_IPK_DIR)/opt/bin/libgcrypt-config
 	rm -r $(LIBGCRYPT_IPK_DIR)/opt/info
 	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt.conf
