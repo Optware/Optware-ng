@@ -29,13 +29,13 @@ CROSS_PACKAGES = \
 	asterisk-sounds \
 	bash bc bind bitchx bitlbee busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	ccxstream cherokee chrpath classpath clamav \
+	ccxstream cdargs cherokee chrpath classpath clamav \
 	clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
-	dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
+	denyhosts dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
 	dnsmasq dropbear \
 	e2fsprogs e2tools eaccelerator ed eggdrop elinks esmtp erlang esound expat \
-	fetchmail ffmpeg file findutils fixesext flac flex \
+	fetchmail ffmpeg ficy file findutils fixesext flac flex \
 	fontconfig freeradius freetds freetype ftpd-topfield \
 	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -53,14 +53,14 @@ CROSS_PACKAGES = \
 	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
 	m4 make man man-pages mc mdadm mediawiki metalog miau monotone \
 	mod-fastcgi mod-python \
-	minicom mktemp mt-daapd mtr mutt mysql \
+	minicom mktemp mrtg mt-daapd mtr mutt mysql \
 	nail nano ncftp ncurses neon net-snmp net-tools netio nfs-server nfs-utils \
 	nget nload nmap noip ntop ntp ntpclient nylon \
 	opencdk openssh openssl openvpn oww \
 	pango patch pcre \
 	php php-apache php-thttpd phpmyadmin \
 	pkgconfig popt portmap postgresql \
-	procmail procps proftpd psutils puppy python \
+	procmail procps proftpd psutils puppy pwgen python \
 	py-bluez py-cheetah py-cherrypy py-clips \
 	py-gdchart2 py-gd py-pil py-mssql \
 	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
@@ -88,12 +88,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-				denyhosts \
-				openssh \
-				ficy \
-				mrtg \
-				cdargs \
-				pwgen
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
