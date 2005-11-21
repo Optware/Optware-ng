@@ -30,7 +30,7 @@ MRTG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MRTG_DESCRIPTION=Multi Router Traffic Grapher
 MRTG_SECTION=admin
 MRTG_PRIORITY=optional
-MRTG_DEPENDS=libgd perl
+MRTG_DEPENDS=libgd, perl
 MRTG_SUGGESTS=
 MRTG_CONFLICTS=
 
@@ -188,6 +188,7 @@ $(MRTG_IPK_DIR)/CONTROL/control:
 $(MRTG_IPK): $(MRTG_BUILD_DIR)/.built
 	rm -rf $(MRTG_IPK_DIR) $(BUILD_DIR)/mrtg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MRTG_BUILD_DIR) TARGET_PERL="/opt/bin/perl" DESTDIR=$(MRTG_IPK_DIR) install
+	$(STRIP_COMMAND) $(MRTG_IPK_DIR)/opt/bin/rateup
 #	install -d $(MRTG_IPK_DIR)/opt/etc/
 #	install -m 644 $(MRTG_SOURCE_DIR)/mrtg.conf $(MRTG_IPK_DIR)/opt/etc/mrtg.conf
 #	install -d $(MRTG_IPK_DIR)/opt/etc/init.d
