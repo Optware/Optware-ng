@@ -23,14 +23,63 @@ NAGIOS_PLUGINS_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 NAGIOS_PLUGINS_DESCRIPTION=The nagios (network monitor system) plugins
 NAGIOS_PLUGINS_SECTION=net
 NAGIOS_PLUGINS_PRIORITY=optional
-NAGIOS_PLUGINS_DEPENDS=
+NAGIOS_PLUGINS_DEPENDS=openssl
 NAGIOS_PLUGINS_SUGGESTS=
 NAGIOS_PLUGINS_CONFLICTS=
 
 #
+# Perl script plugins
+#
+PERL_PLUGINS=			\
+	utils.pm		\
+	check_breeze		\
+	check_disk_smb		\
+	check_file_age		\
+	check_flexlm		\
+	check_ifoperstatus	\
+	check_ifstatus		\
+	check_ircd		\
+	check_mailq		\
+	check_ntp		\
+	check_rpc		\
+	check_wave		
+
+#
+# Shell script plugins
+#
+SHELL_PLUGINS=			\
+	utils.sh		\
+	check_log		\
+	check_oracle		\
+	check_sensors
+#
+# Plugins that aren't working
+#
+PLUGINS_REMOVE=			\
+	$(PERL_PLUGINS)		\
+	$(SHELL_PLUGINS)	\
+	check_by_ssh		\
+	check_dig		\
+	check_dns		\
+	check_fping		\
+	check_icmp		\
+	check_ldaps		\
+	check_mrtg		\
+	check_mrtgtraf		\
+	check_nagios		\
+	check_nt		\
+	check_overcr		\
+	check_pgsql		\
+	check_ping		\
+	check_procs		\
+	check_snmp		\
+	check_ups		\
+	check_users
+
+#
 # NAGIOS_PLUGINS_IPK_VERSION should be incremented when the ipk changes.
 #
-NAGIOS_PLUGINS_IPK_VERSION=1
+NAGIOS_PLUGINS_IPK_VERSION=2
 
 #
 # NAGIOS_PLUGINS_CONFFILES should be a list of user-editable files
@@ -96,7 +145,7 @@ nagios-plugins-source: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCH
 # shown below to make various patches to it.
 #
 $(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCHES)
-	# $(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) $(NAGIOS_PLUGINS_BUILD_DIR)
 	$(NAGIOS_PLUGINS_UNZIP) $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NAGIOS_PLUGINS_PATCHES)" ; \
@@ -180,6 +229,7 @@ $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/control:
 $(NAGIOS_PLUGINS_IPK): $(NAGIOS_PLUGINS_BUILD_DIR)/.built
 	rm -rf $(NAGIOS_PLUGINS_IPK_DIR) $(BUILD_DIR)/nagios-plugins_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NAGIOS_PLUGINS_BUILD_DIR) DESTDIR=$(NAGIOS_PLUGINS_IPK_DIR) install-strip
+	(cd $(NAGIOS_PLUGINS_IPK_DIR)/opt/libexec; rm $(PLUGINS_REMOVE)) 
 #	install -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/
 #	install -m 644 $(NAGIOS_PLUGINS_SOURCE_DIR)/nagios-plugins.conf $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/nagios-plugins.conf
 #	install -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/init.d
