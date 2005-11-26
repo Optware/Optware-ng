@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Startup script for proftpd as standalone server
+#
+
+if [ -n "`pidof bip`" ]; then
+    /bin/killall bip 2>/dev/null
+    fi
+
+    /opt/bin/bip -f /opt/etc/bip.conf
+
