@@ -91,6 +91,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	digitemp \
 	nagios-plugins \
 	nrpe \
+	bip \
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
