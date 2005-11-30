@@ -74,8 +74,7 @@ NRPE_IPK=$(BUILD_DIR)/nrpe_$(NRPE_VERSION)-$(NRPE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NRPE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NRPE_DOWNLOAD)
-	mv $(DL_DIR)/download.php?file=uploads*tar.gz $(DL_DIR)/$(NRPE_SOURCE)
+	$(WGET) -O $@ $(NRPE_DOWNLOAD)
 
 #
 # The source code depends on it existing within the download directory.
