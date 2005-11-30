@@ -27,12 +27,12 @@ CROSS_PACKAGES = \
 	abook adduser adns alac-decoder appweb \
 	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
-	bash bc bind bitchx bitlbee busybox byrequest bzflag bzip2 \
+	bash bc bind bip bitchx bitlbee busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream cdargs cherokee chrpath classpath clamav \
 	clips cogito coreutils cpio \
 	cron ctorrent cups ctags cvs cyrus-sasl \
-	denyhosts dev-pts dhcp dict diffutils distcc dokuwiki dovecot \
+	denyhosts dev-pts dhcp dict diffutils digitemp distcc dokuwiki dovecot \
 	dnsmasq dropbear \
 	e2fsprogs e2tools eaccelerator ed eggdrop elinks esmtp erlang esound expat \
 	fetchmail ffmpeg ficy file findutils fixesext flac flex \
@@ -88,8 +88,6 @@ CROSS_PACKAGES = \
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	digitemp \
-	bip \
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
