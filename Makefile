@@ -89,7 +89,6 @@ CROSS_PACKAGES = \
 # When they have been tested, they will be promoted and uploaded.
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	digitemp \
-	nrpe \
 	bip \
 
 # asterisk may just need configure and HOSTCC work
@@ -145,12 +144,17 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # parted - does not work on the slug, even when compiled natively
 # qemu fails while building gas
 # nagios-plugins - cannot be downloaded from specified source uri
+# nrpe - "checking for SSL... configure: error: Cannot find ssl
+#	libraries"; configure.in needs to be patched so that the host openssl
+#	binary can be located on a different prefix from the openssl include
+#	files; also, please patch configure.in rather than configure
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	dump \
 	libao \
 	madplay nethack scponly gkrellm \
 	parted \
 	nagios-plugins \
+	nrpe \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
