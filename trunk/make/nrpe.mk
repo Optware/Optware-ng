@@ -197,7 +197,7 @@ $(NRPE_IPK): $(NRPE_BUILD_DIR)/.built
 	rm -rf $(NRPE_IPK_DIR) $(BUILD_DIR)/nrpe_*_$(TARGET_ARCH).ipk
 	install -d $(NRPE_IPK_DIR)/opt/sbin/
 	cp $(NRPE_BUILD_DIR)/src/nrpe $(NRPE_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(NRPE_IPK_DIR)/opt/sbin
+	$(STRIP_COMMAND) $(NRPE_IPK_DIR)/opt/sbin/*
 	install -d $(NRPE_IPK_DIR)/opt/etc/
 	install -m 644 $(NRPE_BUILD_DIR)/nrpe.cfg $(NRPE_IPK_DIR)/opt/etc/nrpe.cfg
 	install -d $(NRPE_IPK_DIR)/opt/etc/init.d

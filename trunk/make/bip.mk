@@ -119,6 +119,7 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES)
 		then mv $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR) ; \
 	fi
 	(cd $(BIP_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BIP_LDFLAGS)" \
@@ -191,7 +192,7 @@ $(BIP_IPK_DIR)/CONTROL/control:
 #
 $(BIP_IPK): $(BIP_BUILD_DIR)/.built
 	rm -rf $(BIP_IPK_DIR) $(BUILD_DIR)/bip_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(BIP_IPK_DIR) install
+	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(BIP_IPK_DIR) install-strip
 	install -d $(BIP_IPK_DIR)/opt/etc/
 	install -m 644 $(BIP_BUILD_DIR)/samples/bip.conf $(BIP_IPK_DIR)/opt/etc/bip.conf
 	install -d $(BIP_IPK_DIR)/opt/doc/bip
