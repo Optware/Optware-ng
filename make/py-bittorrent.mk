@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BITTORRENT_SITE=http://dl.sourceforge.net/sourceforge/bittorrent
-PY-BITTORRENT_VERSION=4.1.4
+PY-BITTORRENT_SITE=http://www.bittorrent.com/dl
+PY-BITTORRENT_VERSION=4.2.0
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -172,17 +172,17 @@ $(PY-BITTORRENT_IPK_DIR)/CONTROL/control:
 #
 $(PY-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
 	rm -rf $(PY-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
-	#$(MAKE) -C $(PY-BITTORRENT_BUILD_DIR) DESTDIR=$(PY-BITTORRENT_IPK_DIR) install
+#	$(MAKE) -C $(PY-BITTORRENT_BUILD_DIR) DESTDIR=$(PY-BITTORRENT_IPK_DIR) install
 	(cd $(PY-BITTORRENT_BUILD_DIR); \
 	python2.4 setup.py install --prefix=$(PY-BITTORRENT_IPK_DIR)/opt)
-	#install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/
-	#install -m 644 $(PY-BITTORRENT_SOURCE_DIR)/py-bittorrent.conf $(PY-BITTORRENT_IPK_DIR)/opt/etc/py-bittorrent.conf
-	#install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/rc.py-bittorrent $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d/SXXpy-bittorrent
+#	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/
+#	install -m 644 $(PY-BITTORRENT_SOURCE_DIR)/py-bittorrent.conf $(PY-BITTORRENT_IPK_DIR)/opt/etc/py-bittorrent.conf
+#	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/rc.py-bittorrent $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d/SXXpy-bittorrent
 	$(MAKE) $(PY-BITTORRENT_IPK_DIR)/CONTROL/control
-	#install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/postinst $(PY-BITTORRENT_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/prerm $(PY-BITTORRENT_IPK_DIR)/CONTROL/prerm
-	#echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-BITTORRENT_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/postinst $(PY-BITTORRENT_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/prerm $(PY-BITTORRENT_IPK_DIR)/CONTROL/prerm
+#	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-BITTORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-BITTORRENT_IPK_DIR)
 
 #
