@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=1
+E2FSPROGS_IPK_VERSION=3
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -186,14 +186,28 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	# We place files in /opt/lib and /opt/sbin only
 	install -d $(E2FSPROGS_IPK_DIR)/opt/lib
 	install -d $(E2FSPROGS_IPK_DIR)/opt/sbin
+	install -d $(E2FSPROGS_IPK_DIR)/opt/bin
+	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man8
+	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
 	# Install libs
 	install -m 755 $(E2FSPROGS_BUILD_DIR)/lib/*.a $(E2FSPROGS_IPK_DIR)/opt/lib
 	# Strip in the 3 executables - take both e2fsck versions for now
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/debugfs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/resize/resize2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/resize2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/tune2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/tune2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/dumpe2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/chattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/chattr
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/lsattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/lsattr
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/debugfs.8
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/tune2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/tune2fs.8
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/dumpe2fs.8
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/lsattr.1
+	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/chattr.1
 	# Package files
-	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control 
 #	install -m 644 $(E2FSPROGS_SOURCE_DIR)/postinst $(E2FSPROGS_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(E2FSPROGS_SOURCE_DIR)/prerm $(E2FSPROGS_IPK_DIR)/CONTROL/prerm
 	echo $(E2FSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(E2FSPROGS_IPK_DIR)/CONTROL/conffiles
