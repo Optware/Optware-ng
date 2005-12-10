@@ -1,0 +1,69 @@
+--- src/context.c	2004-07-01 07:13:01.000000000 +0200
++++ src/context.c	2005-12-02 13:02:40.000000000 +0100
+@@ -65,6 +65,7 @@
+     FILE *config;
+     char hexbuf[80];
+     int lineno = 0;
++    char *env;
+ #ifdef BROKEN_HOSTNAME_CODE
+     char host[80];
+     struct hostent* hent;
+@@ -117,7 +118,11 @@
+     }
+ 
+     ctx->ulfactor = ulfactor;
+-    ctx->listenport = MIN_PORT;
++    env = getenv("BTLIB_MINPORT");
++    if (env)
++      ctx->listenport = atoi(env);
++    else
++      ctx->listenport = MIN_PORT;
+ 
+ #ifdef BROKEN_HOSTNAME_CODE
+     /* look up my ip address */
+@@ -491,6 +497,9 @@
+ }
+ 
+ int ctx_startserver( btContext *ctx) {
++    char *env;
++    int min_port, max_port;
++
+     struct sockaddr_in sin;
+ 
+     /* open server socket */
+@@ -501,8 +510,24 @@
+         bts_perror(errno, "setsockopt"); abort();
+     }
+ #endif
+-    for ( ctx->listenport = MIN_PORT;
+-          ctx->listenport <=MAX_PORT; 
++    env = getenv("BTLIB_MINPORT");
++    if (env) 
++       min_port = atoi(env);
++    else {
++       min_port = MIN_PORT;
++       printf("BTLIB_MINPORT not set. Using standard %d\n", min_port);
++    }
++    env = getenv("BTLIB_MAXPORT");
++    if (env) 
++       max_port = atoi(env);
++    else {
++       max_port = MAX_PORT;
++       printf("BTLIB_MAXPORT not set. Using standard %d\n", max_port);
++    }
++     
++       
++    for ( ctx->listenport =  min_port;
++          ctx->listenport <= max_port; 
+           ctx->listenport++) 
+     {
+ 	sin.sin_family = AF_INET;
+@@ -512,7 +537,7 @@
+             break;
+ 	}
+     }
+-    if (ctx->listenport > MAX_PORT) {
++    if (ctx->listenport > max_port) {
+         bts_perror(errno, "bind"); abort();
+     }
+     if (listen( ctx->ss, 10)) { bts_perror(errno, "listen"); abort(); }

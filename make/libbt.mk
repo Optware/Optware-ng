@@ -14,8 +14,8 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBBT_SITE=http://aleron.dl.sourceforge.net/sourceforge/libbt
-LIBBT_VERSION=1.03
+LIBBT_SITE=http://dl.sourceforge.net/sourceforge/libbt
+LIBBT_VERSION=1.04
 LIBBT_SOURCE=libbt-$(LIBBT_VERSION).tar.gz
 LIBBT_DIR=libbt-$(LIBBT_VERSION)
 LIBBT_UNZIP=zcat
@@ -30,7 +30,7 @@ LIBBT_CONFLICTS=
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=7
+LIBBT_IPK_VERSION=1
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
@@ -38,15 +38,12 @@ LIBBT_IPK_VERSION=7
 #
 ifneq ($(OPTWARE_TARGET),wl500g)
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
-	$(LIBBT_SOURCE_DIR)/libbt-headerfix.patch \
-	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \
-	$(LIBBT_SOURCE_DIR)/benc.c.patch 
+	$(LIBBT_SOURCE_DIR)/Makefile.in.patch
 else
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
-	$(LIBBT_SOURCE_DIR)/libbt-headerfix.patch \
-	$(LIBBT_SOURCE_DIR)/Makefile.in.patch \
-	$(LIBBT_SOURCE_DIR)/benc.c.patch \
-	$(LIBBT_SOURCE_DIR)/random.c.patch 
+	$(LIBBT_SOURCE_DIR)/random.c.patch \
+	$(LIBBT_SOURCE_DIR)/Makefile.in.patch\
+	$(LIBBT_SOURCE_DIR)/port_range.patch
 endif
 
 #
