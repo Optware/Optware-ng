@@ -15,7 +15,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VBLADE_SITE=http://dl.sourceforge.net/sourceforge/aoetools
-VBLADE_VERSION=6
+VBLADE_VERSION=10
 VBLADE_SOURCE=vblade-$(VBLADE_VERSION).tar.gz
 VBLADE_DIR=vblade-$(VBLADE_VERSION)
 VBLADE_UNZIP=zcat
@@ -40,7 +40,7 @@ VBLADE_CONFFILES=""
 # VBLADE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VBLADE_PATCHES=$(VBLADE_SOURCE_DIR)/vblade-u64.patch $(VBLADE_SOURCE_DIR)/cross-compile.patch
+# VBLADE_PATCHES=$(VBLADE_SOURCE_DIR)/vblade-u64.patch $(VBLADE_SOURCE_DIR)/cross-compile.patch
 
 #
 # If the compilation of the package requires additional
@@ -96,8 +96,9 @@ $(VBLADE_BUILD_DIR)/.configured: $(DL_DIR)/$(VBLADE_SOURCE) $(VBLADE_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(VBLADE_DIR) $(VBLADE_BUILD_DIR)
 	$(VBLADE_UNZIP) $(DL_DIR)/$(VBLADE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(VBLADE_PATCHES) | patch -d $(BUILD_DIR)/$(VBLADE_DIR) -p1
+	# cat $(VBLADE_PATCHES) | patch -d $(BUILD_DIR)/$(VBLADE_DIR) -p1
 	mv $(BUILD_DIR)/$(VBLADE_DIR) $(VBLADE_BUILD_DIR)
+	cd $(VBLADE_BUILD_DIR); sed -i '/CC = gcc/d' makefile
 	#(cd $(VBLADE_BUILD_DIR); \
 	#$(TARGET_CONFIGURE_OPTS) \
 	#	CPPFLAGS="$(STAGING_CPPFLAGS) $(VBLADE_CPPFLAGS)" \
