@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LIBBT_SITE=http://dl.sourceforge.net/sourceforge/libbt
-LIBBT_VERSION=1.04
+LIBBT_VERSION=1.05
 LIBBT_SOURCE=libbt-$(LIBBT_VERSION).tar.gz
 LIBBT_DIR=libbt-$(LIBBT_VERSION)
 LIBBT_UNZIP=zcat
@@ -37,13 +37,16 @@ LIBBT_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 ifneq ($(OPTWARE_TARGET),wl500g)
-LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
-	$(LIBBT_SOURCE_DIR)/Makefile.in.patch
+LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch\
+	$(LIBBT_SOURCE_DIR)/Makefile.in.patch\
+	$(LIBBT_SOURCE_DIR)/port_range.patch\
+	$(LIBBT_SOURCE_DIR)/report_interval.patch
 else
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
 	$(LIBBT_SOURCE_DIR)/random.c.patch \
 	$(LIBBT_SOURCE_DIR)/Makefile.in.patch\
-	$(LIBBT_SOURCE_DIR)/port_range.patch
+	$(LIBBT_SOURCE_DIR)/port_range.patch\
+        $(LIBBT_SOURCE_DIR)/report_interval.patch
 endif
 
 #
