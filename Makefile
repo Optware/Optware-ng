@@ -247,13 +247,12 @@ MSS_PACKAGES = \
 # postgresql: crs???
 # py-moin, python
 # tsocks: couldn't download
-# vblade: couldn't download
 # groff: compiles but fails installation
 MSS_PACKAGES_THAT_NEED_FIXING = \
- classpath cyrus-sasl freeradius gift-ares libstdc++ net-snmp net-tools php postgresql py-moin  python tsocks vblade groff
+ classpath cyrus-sasl freeradius gift-ares libstdc++ net-snmp net-tools php postgresql py-moin  python tsocks groff
 
 MSS_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav
+	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav vblade
 
 # Packages that work on both the ds101 and ds101g+
 DS101_COMMON_PACKAGES = \
