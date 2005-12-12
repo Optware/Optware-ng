@@ -20,9 +20,11 @@ NRPE_SITE=http://www.nagiosexchange.org/NRPE.77.0.html
 NRPE_VERSION=2.0
 NRPE_SOURCE=nrpe-$(NRPE_VERSION).tar.gz
 #
-# Unfortinatly this is the way they do it!!!
+# Unfortinatly they don't have a normal download url.
+# I placed a stable verion on my website!
 #
-NRPE_DOWNLOAD="http://www.nagiosexchange.org/NRPE.77.0.html?&tx_netnagext_pi1[download]=1&tx_netnagext_pi1[path]=qfqN7ALa4Yh9Xs%252FJ%252FsG1clGtO3VcgxWN%252B5v9CN3Sbqw%253D&tx_netnagext_pi1[file]=jHne8oBaP0Lt0k2N1drVGJeXpUaOEvCpZW6A4ODWuf4%253D&tx_netnagext_pi1[project]=NRPE&tx_netnagext_pi1[ext]=.0.tar.gz"
+NRPE_DOWNLOAD="http://pion.xs4all.nl/~marceln/tmp/$(NRPE_SOURCE)"
+
 NRPE_DIR=nrpe-$(NRPE_VERSION)
 NRPE_UNZIP=zcat
 NRPE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
