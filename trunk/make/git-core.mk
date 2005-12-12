@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=0.99.7
+GIT-CORE_VERSION=0.99.9i
 GIT-CORE_SOURCE=git-core-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-core-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -30,7 +30,7 @@ GIT-CORE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GIT-CORE_DESCRIPTION=GIT is a "directory tree content manager" that can be used for distributed revision control.
 GIT-CORE_SECTION=net
 GIT-CORE_PRIORITY=optional
-GIT-CORE_DEPENDS=zlib, openssl, libcurl, diffutils, rcs
+GIT-CORE_DEPENDS=zlib, openssl, libcurl, diffutils, rcs, expat
 GIT-CORE_SUGGESTS=
 GIT-CORE_CONFLICTS=
 
@@ -103,7 +103,7 @@ git-core-source: $(DL_DIR)/$(GIT-CORE_SOURCE) $(GIT-CORE_PATCHES)
 # shown below to make various patches to it.
 #
 $(GIT-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT-CORE_SOURCE) $(GIT-CORE_PATCHES)
-	$(MAKE) zlib-stage openssl-stage libcurl-stage
+	$(MAKE) zlib-stage openssl-stage libcurl-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(GIT-CORE_DIR) $(GIT-CORE_BUILD_DIR)
 	$(GIT-CORE_UNZIP) $(DL_DIR)/$(GIT-CORE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GIT-CORE_PATCHES)" ; \

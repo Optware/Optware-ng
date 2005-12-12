@@ -1,28 +1,19 @@
---- git-core-0.99.7-orig/Makefile	2005-09-18 15:45:59.000000000 -0700
-+++ git-core/Makefile	2005-09-19 21:37:04.569540216 -0700
-@@ -43,7 +43,7 @@
- GIT_VERSION = 0.99.7
+--- git-core.orig/Makefile	2005-11-14 18:39:18.000000000 -0800
++++ git-core/Makefile	2005-12-11 20:35:42.000000000 -0800
+@@ -56,7 +56,7 @@
  
  CFLAGS = -g -O2 -Wall
--ALL_CFLAGS = $(CFLAGS) $(PLATFORM_DEFINES) $(DEFINES)
-+ALL_CFLAGS = $(CFLAGS) $(PLATFORM_DEFINES) $(DEFINES) $(CPPFLAGS)
+ LDFLAGS =
+-ALL_CFLAGS = $(CFLAGS)
++ALL_CFLAGS = $(CFLAGS) $(CPPFLAGS)
+ ALL_LDFLAGS = $(LDFLAGS)
  
  prefix = $(HOME)
- bindir = $(prefix)/bin
-@@ -247,7 +247,7 @@
- 	$(CC) -o $*.o -c $(ALL_CFLAGS) $<
- 
- git-%: %.o $(LIB_FILE)
--	$(CC) $(ALL_CFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
-+	$(CC) $(ALL_CFLAGS) $(LDFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
- 
- git-mailinfo : SIMPLE_LIB += $(LIB_4_ICONV)
- $(SIMPLE_PROGRAMS) : $(LIB_FILE)
-@@ -300,6 +300,7 @@
+@@ -434,6 +434,7 @@
  install: $(PROGRAMS) $(SCRIPTS)
- 	$(INSTALL) -d -m755 $(DESTDIR)$(bindir)
- 	$(INSTALL) $(PROGRAMS) $(SCRIPTS) $(DESTDIR)$(bindir)
+ 	$(INSTALL) -d -m755 $(call shellquote,$(DESTDIR)$(bindir))
+ 	$(INSTALL) $(PROGRAMS) $(SCRIPTS) $(call shellquote,$(DESTDIR)$(bindir))
 +	cd $(DESTDIR)$(bindir); $(STRIP) $(PROGRAMS)
- 	$(INSTALL) git-revert $(DESTDIR)$(bindir)/git-cherry-pick
- 	sh ./cmd-rename.sh $(DESTDIR)$(bindir)
  	$(MAKE) -C templates install
+ 	$(INSTALL) -d -m755 $(call shellquote,$(DESTDIR)$(GIT_PYTHON_DIR))
+ 	$(INSTALL) $(PYMODULES) $(call shellquote,$(DESTDIR)$(GIT_PYTHON_DIR))
