@@ -38,7 +38,7 @@ NRPE_CONFLICTS=
 #
 # NRPE_IPK_VERSION should be incremented when the ipk changes.
 #
-NRPE_IPK_VERSION=1
+NRPE_IPK_VERSION=2
 
 #
 # NRPE_CONFFILES should be a list of user-editable files
@@ -48,7 +48,7 @@ NRPE_IPK_VERSION=1
 # NRPE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NRPE_PATCHES=$(NRPE_SOURCE_DIR)/configure.patch
+# NRPE_PATCHES=$(NRPE_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -121,7 +121,11 @@ $(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 	#
 	# End Hack
 	#
+	#
+	# NOTE: Run a modern autoconf (2.59) to solve cross compile issues.
+	#
 	(cd $(NRPE_BUILD_DIR); \
+		autoconf; \	
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NRPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NRPE_LDFLAGS)" \
