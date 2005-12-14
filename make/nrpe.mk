@@ -125,7 +125,7 @@ $(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 	# NOTE: Run a modern autoconf (2.59) to solve cross compile issues.
 	#
 	(cd $(NRPE_BUILD_DIR); \
-		autoconf; \	
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NRPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NRPE_LDFLAGS)" \
