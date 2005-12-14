@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MYSQL_SITE=http://mirrors.develooper.com/mysql/Downloads/MySQL-4.1
-MYSQL_VERSION=4.1.11
+MYSQL_SITE=ftp://ftp.orst.edu/pub/mysql/Downloads/MySQL-4.1
+MYSQL_VERSION=4.1.16
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
 MYSQL_UNZIP=zcat
@@ -55,7 +55,7 @@ MYSQL_CONFFILES=/opt/etc/my.cnf
 # MYSQL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MYSQL_PATCHES=$(MYSQL_SOURCE_DIR)/configure.patch
+MYSQL_PATCHES=$(MYSQL_SOURCE_DIR)/configure.patch $(MYSQL_SOURCE_DIR)/lex_hash.patch
 
 #
 # If the compilation of the package requires additional
@@ -143,7 +143,8 @@ endif
 		--without-bench \
 		--without-isam \
 		--without-innodb \
-		--without-geometry \
+		--with-geometry \
+		--with-low-memory \
 		; \
 		sed -i -e 's!"/etc!"/opt/etc!g' \
 		*/default.c \
