@@ -136,7 +136,7 @@ endif
 		--with-zlib-dir=$(STAGING_DIR)/opt \
 		--without-readline \
 		--enable-thread-safe-client \
-		--with-comment="unslung distribution $(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)" \
+		--with-comment="optware distribution $(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)" \
 		--without-debug \
 		--without-extra-tools \
 		--without-docs \
@@ -145,7 +145,7 @@ endif
 		--without-innodb \
 		--with-geometry \
 		--with-low-memory \
-		; \
+		&& \
 		sed -i -e 's!"/etc!"/opt/etc!g' \
 		*/default.c \
 		scripts/*.sh \
