@@ -14,8 +14,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NAGIOS_PLUGINS_SITE=http://dl.sourceforge.net/sourceforge/nagios-plugins
-NAGIOS_PLUGINS_VERSION=1.4.1
+NAGIOS_PLUGINS_SITE=http://dl.sourceforge.net/sourceforge/nagiosplug
+NAGIOS_PLUGINS_VERSION=1.4.2
 NAGIOS_PLUGINS_SOURCE=nagios-plugins-$(NAGIOS_PLUGINS_VERSION).tar.gz
 NAGIOS_PLUGINS_DIR=nagios-plugins-$(NAGIOS_PLUGINS_VERSION)
 NAGIOS_PLUGINS_UNZIP=zcat
@@ -229,7 +229,7 @@ $(NAGIOS_PLUGINS_IPK_DIR)/CONTROL/control:
 $(NAGIOS_PLUGINS_IPK): $(NAGIOS_PLUGINS_BUILD_DIR)/.built
 	rm -rf $(NAGIOS_PLUGINS_IPK_DIR) $(BUILD_DIR)/nagios-plugins_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NAGIOS_PLUGINS_BUILD_DIR) DESTDIR=$(NAGIOS_PLUGINS_IPK_DIR) install-strip
-	(cd $(NAGIOS_PLUGINS_IPK_DIR)/opt/libexec; rm $(PLUGINS_REMOVE)) 
+	(cd $(NAGIOS_PLUGINS_IPK_DIR)/opt/libexec; rm -f $(PLUGINS_REMOVE)) 
 #	install -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/
 #	install -m 644 $(NAGIOS_PLUGINS_SOURCE_DIR)/nagios-plugins.conf $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/nagios-plugins.conf
 #	install -d $(NAGIOS_PLUGINS_IPK_DIR)/opt/etc/init.d
