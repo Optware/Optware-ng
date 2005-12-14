@@ -1,6 +1,6 @@
---- mysql-4.1.11/configure.in	2005-04-01 03:36:51.000000000 -0800
-+++ mysql/configure.in	2005-04-17 11:11:39.000000000 -0700
-@@ -241,6 +241,9 @@
+--- mysql-4.1.16/configure.in	2005-11-30 12:36:23.000000000 -0800
++++ mysql/configure.in	2005-12-13 11:04:03.000000000 -0800
+@@ -263,6 +263,9 @@
    *netware*)
      AC_DEFINE(SPRINTF_RETURNS_INT, [1]) AC_MSG_RESULT("int")
      ;;
@@ -10,8 +10,8 @@
    *)
  AC_TRY_RUN([
    int main()
-@@ -844,38 +847,6 @@
- if test "$IS_LINUX" = "true"; then
+@@ -872,38 +875,6 @@
+ if test "$TARGET_LINUX" = "true"; then
    AC_MSG_CHECKING([for atomic operations])
  
 -  atom_ops=
@@ -49,7 +49,7 @@
    if test -z "$atom_ops"; then atom_ops="no"; fi
    AC_MSG_RESULT($atom_ops)
  
-@@ -935,6 +906,9 @@
+@@ -963,6 +934,9 @@
    *netware)
      AC_MSG_RESULT([no])
      ;;
@@ -59,16 +59,16 @@
    *)
  AC_TRY_RUN([
  #ifdef HAVE_STDLIB_H
-@@ -1271,7 +1245,7 @@
- then
-   # Look for LinuxThreads.
-   AC_MSG_CHECKING("LinuxThreads")
--    res=`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
-+    res=1 #`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
-     if test "$res" -gt 0
-     then
-       AC_MSG_RESULT("Found")
-@@ -1815,16 +1789,6 @@
+@@ -1317,7 +1291,7 @@
+           # old method, check headers
+           # Look for LinuxThreads.
+           AC_MSG_CHECKING("LinuxThreads in header file comment")
+-          res=`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
++          res=1#`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
+           if test "$res" -gt 0
+           then
+             AC_MSG_RESULT("Found")
+@@ -1846,20 +1820,6 @@
  MYSQL_CHECK_IN_ADDR_T
  # Do the c++ compiler have a bool type
  MYSQL_CXX_BOOL
@@ -82,6 +82,10 @@
 -again]);
 -fi
 -fi
+-AC_CHECK_TYPES([sigset_t, off_t], [], [], [#include <sys/types.h>])
+-AC_CHECK_TYPES([size_t], [], [], [#include <stdio.h>])
+-AC_CHECK_TYPES([u_int32_t])
+-
  MYSQL_PTHREAD_YIELD
  
  ######################################################################

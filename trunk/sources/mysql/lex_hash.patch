@@ -1,0 +1,11 @@
+--- mysql-4.1.16/sql/Makefile.am	2005-11-30 21:36:04.000000000 +0100
++++ mysql/sql/Makefile.am	2005-12-14 15:44:34.737142248 +0100
+@@ -105,7 +105,7 @@
+ 			-DSHAREDIR="\"$(MYSQLSHAREdir)\"" \
+ 			@DEFS@
+ 
+-BUILT_SOURCES =		sql_yacc.cc sql_yacc.h lex_hash.h
++BUILT_SOURCES =		sql_yacc.cc sql_yacc.h
+ EXTRA_DIST =		udf_example.cc $(BUILT_SOURCES)
+ AM_YFLAGS =		-d
+ 
