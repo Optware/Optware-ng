@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ABOOK_SITE=http://dl.sourceforge.net/sourceforge/abook
-ABOOK_VERSION=0.5.4
+ABOOK_VERSION=0.5.5
 ABOOK_SOURCE=abook-$(ABOOK_VERSION).tar.gz
 ABOOK_DIR=abook-$(ABOOK_VERSION)
 ABOOK_UNZIP=zcat
@@ -30,7 +30,7 @@ ABOOK_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 ABOOK_DESCRIPTION=Abook is a text-based addressbook program designed to use with mutt mail client.
 ABOOK_SECTION=misc
 ABOOK_PRIORITY=optional
-ABOOK_DEPENDS=
+ABOOK_DEPENDS=ncurses, readline
 ABOOK_CONFLICTS=
 
 #
