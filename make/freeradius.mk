@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-FREERADIUS_SITE=http://www.mirrors.wiretapped.net/security/authentication/radius/freeradius/old
-FREERADIUS_VERSION=1.0.2
+FREERADIUS_SITE=http://www.mirrors.wiretapped.net/security/authentication/radius/freeradius
+FREERADIUS_VERSION=1.0.5
 FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.gz
 FREERADIUS_DIR=freeradius-$(FREERADIUS_VERSION)
 FREERADIUS_UNZIP=zcat
@@ -28,7 +28,7 @@ FREERADIUS_UNZIP=zcat
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=2
+FREERADIUS_IPK_VERSION=1
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -41,7 +41,7 @@ FREERADIUS_PATCHES=$(FREERADIUS_SOURCE_DIR)/freeradius.patch
 # compilation or linking flags, then list them here.
 #
 FREERADIUS_CPPFLAGS=-I$(FREERADIUS_BUILD_DIR)/src/include -I$(STAGING_INCLUDE_DIR)/mysql
-FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql
+FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR) -L$(STAGING_LIB_DIR)/mysql
 
 #
 # FREERADIUS_BUILD_DIR is the directory in which the build is done.
@@ -177,7 +177,6 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	cp -f $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
 	install -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd -o $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radzap -o $(FREERADIUS_IPK_DIR)/opt/bin/radzap
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radrelay -o $(FREERADIUS_IPK_DIR)/opt/bin/radrelay
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radclient -o $(FREERADIUS_IPK_DIR)/opt/bin/radclient
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt -o $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
