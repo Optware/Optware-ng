@@ -88,7 +88,12 @@ CROSS_PACKAGES = \
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
+#
+# nrpe - Corrected most of the configure problems. But a native openssl
+#	 needs to be installed to generate some keys.
+#
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	nrpe \
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -141,16 +146,11 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # 
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
-# nrpe - "checking for SSL... configure: error: Cannot find ssl
-#	libraries"; configure.in needs to be patched so that the host openssl
-#	binary can be located on a different prefix from the openssl include
-#	files; also, please patch configure.in rather than configure
 PACKAGES_THAT_NEED_TO_BE_FIXED = \
 	dump \
 	libao \
 	nethack scponly gkrellm \
 	parted \
-	nrpe \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - ?
