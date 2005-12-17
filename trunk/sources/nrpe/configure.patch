@@ -1,0 +1,19 @@
+diff -Naur nrpe-2.0.org/configure.in nrpe-2.0/configure.in
+--- nrpe-2.0.org/configure.in	2003-09-09 04:52:37.000000000 +0200
++++ nrpe-2.0/configure.in	2005-12-17 10:43:40.000000000 +0100
+@@ -154,8 +154,14 @@
+ 		echo "*** Generating DH Parameters for SSL/TLS ***"
+ 		if test -f "$ssldir/sbin/openssl"; then
+ 			sslbin=$ssldir/sbin/openssl
+-		else
++		elif test -f "$ssldir/bin/openssl"; then
+ 			sslbin=$ssldir/bin/openssl
++		elif test -f /usr/bin/openssl; then
++			sslbin=/usr/bin/openssl
++		elif test -f /usr/sbin/bin/openssl; then
++			sslbin=/usr/sbin/openssl
++		else
++			sslbin=openssl
+ 		fi
+ 		$sslbin dhparam -out /dev/null -C 512 > src/dh.h
+ 	fi
