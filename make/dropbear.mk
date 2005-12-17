@@ -4,8 +4,8 @@
 #
 #############################################################
 
-DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear
-DROPBEAR_VERSION=0.46
+DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
+DROPBEAR_VERSION=0.47
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
 DROPBEAR_UNZIP=bzcat
