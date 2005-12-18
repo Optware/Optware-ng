@@ -16,7 +16,7 @@ LYNX_PRIORITY=optional
 LYNX_DEPENDS=bzip2, openssl, ncurses, zlib
 LYNX_CONFLICTS=
 
-LYNX_IPK_VERSION=3
+LYNX_IPK_VERSION=4
 
 LYNX_CONFFILES=/opt/etc/lynx.cfg
 
@@ -24,6 +24,11 @@ LYNX_BUILD_DIR=$(BUILD_DIR)/lynx
 LYNX_SOURCE_DIR=$(SOURCE_DIR)/lynx
 LYNX_IPK_DIR=$(BUILD_DIR)/lynx-$(LYNX_VERSION)-ipk
 LYNX_IPK=$(BUILD_DIR)/lynx_$(LYNX_VERSION)-$(LYNX_IPK_VERSION)_$(TARGET_ARCH).ipk
+#
+# LYNX_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+LYNX_PATCHES=$(LYNX_SOURCE_DIR)/LYCurses.h.patch
 
 $(DL_DIR)/$(LYNX_SOURCE):
 	$(WGET) -P $(DL_DIR) $(LYNX_SITE)/$(LYNX_SOURCE)
@@ -34,6 +39,7 @@ $(LYNX_BUILD_DIR)/.configured: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES)
 	$(MAKE) ncurses-stage openssl-stage bzip2-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LYNX_DIR) $(LYNX_BUILD_DIR)
 	$(LYNX_UNZIP) $(DL_DIR)/$(LYNX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(LYNX_PATCHES) | patch -d $(BUILD_DIR)/$(LYNX_DIR) -p1
 	mv $(BUILD_DIR)/$(LYNX_DIR) $(LYNX_BUILD_DIR)
 	(cd $(LYNX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
