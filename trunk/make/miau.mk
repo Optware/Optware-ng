@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-MIAU_SITE=http://aleron.dl.sourceforge.net/sourceforge/miau
+MIAU_SITE=http://dl.sourceforge.net/sourceforge/miau
 MIAU_VERSION=0.5.3
 MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
@@ -16,7 +16,7 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=10
+MIAU_IPK_VERSION=11
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
@@ -63,6 +63,7 @@ $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 		--enable-enduserdebug \
 		--enable-pingstat \
 		--enable-dumpstatus \
+		--enable-ipv6 \
 	)
 	touch $(MIAU_BUILD_DIR)/.configured
 
