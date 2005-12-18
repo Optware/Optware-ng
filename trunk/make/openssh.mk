@@ -27,6 +27,10 @@ OPENSSH_PATCHES=\
 	$(OPENSSH_SOURCE_DIR)/Makefile.patch \
 	$(OPENSSH_SOURCE_DIR)/configure.patch
 
+ifeq ($(OPTWARE_TARGET),wl500g)
+OPENSSH_PATCHES+=$(OPENSSH_SOURCE_DIR)/dn_expand.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
