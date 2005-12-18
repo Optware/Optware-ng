@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CELEMENTTREE_SITE=http://effbot.org/downloads
-PY-CELEMENTTREE_VERSION=1.0.2-20050302
+PY-CELEMENTTREE_VERSION=1.0.5-20051216
 PY-CELEMENTTREE_SOURCE=cElementTree-$(PY-CELEMENTTREE_VERSION).tar.gz
 PY-CELEMENTTREE_DIR=cElementTree-$(PY-CELEMENTTREE_VERSION)
 PY-CELEMENTTREE_UNZIP=zcat
@@ -30,7 +30,7 @@ PY-CELEMENTTREE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-CELEMENTTREE_DESCRIPTION=A toolkit that contains a number of light-weight components for working with XML (C implementation).
 PY-CELEMENTTREE_SECTION=misc
 PY-CELEMENTTREE_PRIORITY=optional
-PY-CELEMENTTREE_DEPENDS=python
+PY-CELEMENTTREE_DEPENDS=python, py-elementtree
 PY-CELEMENTTREE_CONFLICTS=
 
 #
