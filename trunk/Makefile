@@ -177,7 +177,7 @@ WL500G_PACKAGES = \
 	logrotate lua lynx lzo \
 	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
 	nano ncftp ncurses netio neon net-snmp net-tools noip ntpclient nylon \
-	openssl openvpn oww \
+	openssh openssl openvpn oww \
 	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd psutils puppy py-moin python \
 	quagga \
 	rdate readline recordext renderext rrdtool rsync \
