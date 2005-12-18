@@ -1,0 +1,314 @@
+--- /dev/null	2005-10-05 21:35:01.000000000 +0930
++++ openssh/openbsd-compat/dn_expand.c	2005-12-18 19:16:13.918100408 +1030
+@@ -0,0 +1,300 @@
++/*
++ * Portions Copyright (c) 1985, 1993
++ *    The Regents of the University of California.  All rights reserved.
++ * 
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 4. Neither the name of the University nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ * 
++ * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
++
++/*
++ * Portions Copyright (c) 1993 by Digital Equipment Corporation.
++ * 
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies, and that
++ * the name of Digital Equipment Corporation not be used in advertising or
++ * publicity pertaining to distribution of the document or software without
++ * specific, written prior permission.
++ * 
++ * THE SOFTWARE IS PROVIDED "AS IS" AND DIGITAL EQUIPMENT CORP. DISCLAIMS ALL
++ * WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES
++ * OF MERCHANTABILITY AND FITNESS.   IN NO EVENT SHALL DIGITAL EQUIPMENT
++ * CORPORATION BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
++ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
++ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
++ * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
++ * SOFTWARE.
++ */
++
++/*
++ * Portions Copyright (c) 1996-1999 by Internet Software Consortium.
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND INTERNET SOFTWARE CONSORTIUM DISCLAIMS
++ * ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES
++ * OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL INTERNET SOFTWARE
++ * CONSORTIUM BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
++ * DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR
++ * PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
++ * ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
++ * SOFTWARE.
++ */
++
++#include <resolv.h>
++#include <errno.h>
++
++extern int dn_expand(const u_char *, const u_char *, const u_char *, char *, int);
++extern int ns_name_uncompress(const u_char *, const u_char *, const u_char *, char *, size_t);
++extern int ns_name_ntop(const u_char *, char *, size_t);
++extern int ns_name_unpack(const u_char *, const u_char *, const u_char *, u_char *, size_t);
++ 
++/*
++ * Expand compressed domain name 'comp_dn' to full domain name.
++ * 'msg' is a pointer to the begining of the message,
++ * 'eomorig' points to the first location after the message,
++ * 'exp_dn' is a pointer to a buffer of size 'length' for the result.
++ * Return size of compressed name or -1 if there was an error.
++ */
++int dn_expand(const u_char *msg, const u_char *eom, const u_char *src,
++          char *dst, int dstsiz)
++{
++	int n = ns_name_uncompress(msg, eom, src, dst, (size_t)dstsiz);
++
++	if (n > 0 && dst[0] == '.')
++		dst[0] = '\0';
++	return (n);
++}
++
++/*
++ * printable(ch)
++ *      Thinking in noninternationalized USASCII (per the DNS spec),
++ *      is this character visible and not a space when printed ?
++ * return:
++ *      boolean.
++ */
++static int printable(int ch) 
++{
++        return (ch > 0x20 && ch < 0x7f);
++}
++
++/*
++ * special(ch)
++ *      Thinking in noninternationalized USASCII (per the DNS spec),
++ *      is this characted special ("in need of quoting") ?
++ * return:
++ *      boolean.
++ */
++static int special(int ch) 
++{
++        switch (ch) {
++        case 0x22: /* '"' */
++        case 0x2E: /* '.' */
++        case 0x3B: /* ';' */
++        case 0x5C: /* '\\' */
++        /* Special modifiers in zone files. */
++        case 0x40: /* '@' */
++        case 0x24: /* '$' */
++                return (1);
++        default:
++                return (0);
++        }
++}
++
++/*
++ * ns_name_uncompress(msg, eom, src, dst, dstsiz)
++ *      Expand compressed domain name to presentation format.
++ * return:
++ *      Number of bytes read out of `src', or -1 (with errno set).
++ * note:
++ *      Root domain returns as "." not "".
++ */
++int ns_name_uncompress(const u_char *msg, const u_char *eom, 
++		const u_char *src, char *dst, size_t dstsiz)
++{
++	u_char tmp[NS_MAXCDNAME];
++	int n;
++
++	if ((n = ns_name_unpack(msg, eom, src, tmp, sizeof tmp)) == -1)
++		return (-1);
++	if (ns_name_ntop(tmp, dst, dstsiz) == -1)
++		return (-1);
++	return (n);
++}
++
++
++/*
++ * ns_name_ntop(src, dst, dstsiz)
++ *      Convert an encoded domain name to printable ascii as per RFC1035.
++ * return:
++ *      Number of bytes written to buffer, or -1 (with errno set)
++ * notes:
++ *      The root is returned as "."
++ *      All other domains are returned in non absolute form
++ */
++int ns_name_ntop(const u_char *src, char *dst, size_t dstsiz) {
++	const u_char *cp;
++	char *dn, *eom;
++	u_char c;
++	u_int n;
++	const char digits[] = "0123456789";
++
++	cp = src;
++	dn = dst;
++	eom = dst + dstsiz;
++
++	while ((n = *cp++) != 0) {
++		if ((n & NS_CMPRSFLGS) != 0) {
++			/* Some kind of compression pointer. */
++			errno=(EMSGSIZE);
++			return (-1);
++		}
++		if (dn != dst) {
++			if (dn >= eom) {
++				errno=(EMSGSIZE);
++				return (-1);
++			}
++			*dn++ = '.';
++		}
++		if (dn + n >= eom) {
++			errno=(EMSGSIZE);
++			return (-1);
++		}
++		for ((void)NULL; n > 0; n--) {
++			c = *cp++;
++			if (special(c)) {
++				if (dn + 1 >= eom) {
++					errno=(EMSGSIZE);
++					return (-1);
++				}
++				*dn++ = '\\';
++				*dn++ = (char)c;
++			} else if (!printable(c)) {
++				if (dn + 3 >= eom) {
++					errno=(EMSGSIZE);
++					return (-1);
++				}
++				*dn++ = '\\';
++				*dn++ = digits[c / 100];
++				*dn++ = digits[(c % 100) / 10];
++				*dn++ = digits[c % 10];
++			} else {
++				if (dn >= eom) {
++					errno=(EMSGSIZE);
++					return (-1);
++				}
++				*dn++ = (char)c;
++			}
++		}
++	}
++	if (dn == dst) {
++		if (dn >= eom) {
++			errno=(EMSGSIZE);
++			return (-1);
++		}
++		*dn++ = '.';
++	}
++	if (dn >= eom) {
++		errno=(EMSGSIZE);
++		return (-1);
++	}
++	*dn++ = '\0';
++        return (dn - dst);
++}
++
++/*
++ * ns_name_unpack(msg, eom, src, dst, dstsiz)
++ *      Unpack a domain name from a message, source may be compressed.
++ * return:
++ *      -1 if it fails, or consumed octets if it succeeds.
++ */
++int ns_name_unpack(const u_char *msg, const u_char *eom, const u_char *src,
++               u_char *dst, size_t dstsiz)
++{
++	const u_char *srcp, *dstlim;
++	u_char *dstp;
++	int n, len, checked;
++
++	len = -1;
++	checked = 0;
++	dstp = dst;
++	srcp = src;
++	dstlim = dst + dstsiz;
++	if (srcp < msg || srcp >= eom) {
++		errno=(EMSGSIZE);
++		return (-1);
++	}
++	/* Fetch next label in domain name. */
++	while ((n = *srcp++) != 0) {
++		/* Check for indirection. */
++		switch (n & NS_CMPRSFLGS) {
++		case 0:
++			/* Limit checks. */
++			if (dstp + n + 1 >= dstlim || srcp + n >= eom) {
++				errno=(EMSGSIZE);
++				return (-1);
++			}
++			checked += n + 1;
++			*dstp++ = n;
++			memcpy(dstp, srcp, n);
++			dstp += n;
++			srcp += n;
++			break;
++
++		case NS_CMPRSFLGS:
++			if (srcp >= eom) {
++				errno=(EMSGSIZE);
++				return (-1);
++			}
++			if (len < 0)
++				len = srcp - src + 1;
++			srcp = msg + (((n & 0x3f) << 8) | (*srcp & 0xff));
++			if (srcp < msg || srcp >= eom) {  /* Out of range. */
++				errno=(EMSGSIZE);
++				return (-1);
++			}
++			checked += 2;
++			/*
++			 * Check for loops in the compressed name;
++			 * if we've looked at the whole message,
++			 * there must be a loop.
++			 */
++			if (checked >= eom - msg) {
++				errno=(EMSGSIZE);
++				return (-1);
++			}
++			break;
++
++		default:
++			errno=(EMSGSIZE);
++			return (-1);                    /* flag error */
++		}
++	}
++	*dstp = '\0';
++	if (len < 0)
++		len = srcp - src;
++	return (len);
++}
+--- openssh/openbsd-compat/Makefile.in~	2005-08-27 05:45:20.000000000 +0930
++++ openssh/openbsd-compat/Makefile.in	2005-12-18 19:22:31.917635744 +1030
+@@ -16,7 +16,7 @@
+ INSTALL=@INSTALL@
+ LDFLAGS=-L. @LDFLAGS@
+ 
+-OPENBSD=base64.o basename.o bindresvport.o daemon.o dirname.o getcwd.o getgrouplist.o getopt.o getrrsetbyname.o glob.o inet_aton.o inet_ntoa.o inet_ntop.o mktemp.o readpassphrase.o realpath.o rresvport.o setenv.o setproctitle.o sigact.o strlcat.o strlcpy.o strmode.o strsep.o strtonum.o strtoll.o strtoul.o vis.o
++OPENBSD=base64.o basename.o bindresvport.o daemon.o dirname.o getcwd.o getgrouplist.o getopt.o getrrsetbyname.o glob.o inet_aton.o inet_ntoa.o inet_ntop.o mktemp.o readpassphrase.o realpath.o rresvport.o setenv.o setproctitle.o sigact.o strlcat.o strlcpy.o strmode.o strsep.o strtonum.o strtoll.o strtoul.o vis.o dn_expand.o
+ 
+ COMPAT=bsd-arc4random.o bsd-closefrom.o bsd-cray.o bsd-cygwin_util.o bsd-getpeereid.o bsd-misc.o bsd-nextstep.o bsd-openpty.o bsd-snprintf.o bsd-waitpid.o fake-rfc2553.o openssl-compat.o xmmap.o xcrypt.o
+ 
