@@ -1,0 +1,10 @@
+--- lynx2-8-5/src/LYCurses.h	2004-01-28 20:30:38.000000000 +0100
++++ lynx/src/LYCurses.h	2005-12-18 18:38:04.673405432 +0100
+@@ -1,6 +1,7 @@
+ #ifndef LYCURSES_H
+ #define LYCURSES_H
+ 
++#undef _XOPEN_SOURCE_EXTENDED
+ #ifndef HTUTILS_H
+ #include <HTUtils.h>
+ #endif
