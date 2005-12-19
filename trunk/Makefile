@@ -199,7 +199,6 @@ MSS_BROKEN_PACKAGES = \
 	php-apache \
 	qemu qemu-libc-i386 \
 	svn \
-	tcl \
 	transcode \
 
 # classpath: javac
@@ -225,14 +224,18 @@ DS101_BROKEN_PACKAGES = \
 	php-apache \
 	qemu qemu-libc-i386 \
 	svn \
-	tcl \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for ds101g+.
 DS101G_BROKEN_PACKAGES = \
-	apache apr-utils appweb \
+	apache apr-util appweb \
+	bitlbee \
+	cherokee \
+	gnutls \
+	libgcrypt \
+	opencdk \
 	php \
 
 DS101G_PACKAGES_THAT_NEED_FIXING = ldconfig mc
