@@ -58,8 +58,6 @@ COMMON_CROSS_PACKAGES = \
 	vblade vim \
 	wakelan which whois \
 	zlib \
-
-NSLU2_CROSS_PACKAGES = \
 	abook adns alac-decoder \
 	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
@@ -116,10 +114,8 @@ NSLU2_CROSS_PACKAGES = \
 	w3cam webalizer wizd \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
-	unslung-devel \
-	crosstool-native \
 
-NSLU2_SPECIFIC_PACKAGES = upslug2
+NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-devel crosstool-native
 
 # Packages that do not work for nslu2.
 NSLU2_BROKEN_PACKAGES = 
@@ -303,7 +299,7 @@ PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 # in the path ahead of busybox's broken one.
 PATH=/opt/bin:/usr/bin:/bin
 else
-PACKAGES = $(filter-out $(NSLU2_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NSLU2_CROSS_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES))
+PACKAGES = $(filter-out $(NSLU2_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 TARGET_ARCH=armeb
