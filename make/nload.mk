@@ -24,6 +24,13 @@ NLOAD_VERSION=0.6.0
 NLOAD_SOURCE=nload-$(NLOAD_VERSION).tar.gz
 NLOAD_DIR=nload-$(NLOAD_VERSION)
 NLOAD_UNZIP=zcat
+NLOAD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NLOAD_DESCRIPTION=Nload is a console application which monitors network traffic and bandwidth usage in real time
+NLOAD_SECTION=net
+NLOAD_PRIORITY=optional
+NLOAD_DEPENDS=ncurses, libstdc++
+NLOAD_SUGGESTS=
+NLOAD_CONFLICTS=
 
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
@@ -136,6 +143,25 @@ $(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION): $(NLOAD_BUILD_DIR)/.built
 nload-stage: $(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nload
+#
+$(NLOAD_IPK_DIR)/CONTROL/control:
+	@install -d $(NLOAD_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nload" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NLOAD_PRIORITY)" >>$@
+	@echo "Section: $(NLOAD_SECTION)" >>$@
+	@echo "Version: $(NLOAD_VERSION)-$(NLOAD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NLOAD_MAINTAINER)" >>$@
+	@echo "Source: $(NLOAD_SITE)/$(NLOAD_SOURCE)" >>$@
+	@echo "Description: $(NLOAD_DESCRIPTION)" >>$@
+	@echo "Depends: $(NLOAD_DEPENDS)" >>$@
+	@echo "Suggests: $(NLOAD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NLOAD_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NLOAD_IPK_DIR)/opt/sbin or $(NLOAD_IPK_DIR)/opt/bin
@@ -151,8 +177,7 @@ $(NLOAD_IPK): $(NLOAD_BUILD_DIR)/.built
 	rm -rf $(NLOAD_IPK_DIR) $(BUILD_DIR)/nload_*_$(TARGET_ARCH).ipk
 	install -d $(NLOAD_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NLOAD_BUILD_DIR)/src/nload -o $(NLOAD_IPK_DIR)/opt/bin/nload
-	install -d $(NLOAD_IPK_DIR)/CONTROL
-	install -m 644 $(NLOAD_SOURCE_DIR)/control $(NLOAD_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NLOAD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NLOAD_IPK_DIR)
 
 #
