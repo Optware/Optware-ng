@@ -85,7 +85,7 @@ $(TCL_BUILD_DIR)/.configured: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES)
 	mv $(BUILD_DIR)/$(TCL_DIR) $(TCL_BUILD_DIR)
 	(cd $(TCL_BUILD_DIR)/unix; \
 		autoconf configure.in > configure; \
-		sed -i.bak "s/relid'/relid/" configure; # bash 3.1 choke. TCL bug #1377619 \
+		sed -i.bak "s/relid'/relid/" configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TCL_LDFLAGS)" \
