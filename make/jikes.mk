@@ -19,6 +19,13 @@ JIKES_VERSION=1.22
 JIKES_SOURCE=jikes-$(JIKES_VERSION).tar.bz2
 JIKES_DIR=jikes-$(JIKES_VERSION)
 JIKES_UNZIP=bzcat
+JIKES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+JIKES_DESCRIPTION=IBM java compiler
+JIKES_SECTION=compilers
+JIKES_PRIORITY=optional
+JIKES_DEPENDS=libstdc++
+JIKES_SUGGESTS=
+JIKES_CONFLICTS=
 
 #
 # JIKES_IPK_VERSION should be incremented when the ipk changes.
@@ -130,6 +137,25 @@ $(JIKES_BUILD_DIR)/.staged: $(JIKES_BUILD_DIR)/.built
 jikes-stage: $(JIKES_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/jikes
+#
+$(JIKES_IPK_DIR)/CONTROL/control:
+	@install -d $(JIKES_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: jikes" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(JIKES_PRIORITY)" >>$@
+	@echo "Section: $(JIKES_SECTION)" >>$@
+	@echo "Version: $(JIKES_VERSION)-$(JIKES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(JIKES_MAINTAINER)" >>$@
+	@echo "Source: $(JIKES_SITE)/$(JIKES_SOURCE)" >>$@
+	@echo "Description: $(JIKES_DESCRIPTION)" >>$@
+	@echo "Depends: $(JIKES_DEPENDS)" >>$@
+	@echo "Suggests: $(JIKES_SUGGESTS)" >>$@
+	@echo "Conflicts: $(JIKES_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(JIKES_IPK_DIR)/opt/sbin or $(JIKES_IPK_DIR)/opt/bin
@@ -149,8 +175,7 @@ $(JIKES_IPK): $(JIKES_BUILD_DIR)/.built
 #	install -m 755 $(JIKES_SOURCE_DIR)/jikes.conf $(JIKES_IPK_DIR)/opt/etc/jikes.conf
 #	install -d $(JIKES_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(JIKES_SOURCE_DIR)/rc.jikes $(JIKES_IPK_DIR)/opt/etc/init.d/SXXjikes
-	install -d $(JIKES_IPK_DIR)/CONTROL
-	install -m 644 $(JIKES_SOURCE_DIR)/control $(JIKES_IPK_DIR)/CONTROL/control
+	$(MAKE) $(JIKES_IPK_DIR)/CONTROL/control
 #	install -m 644 $(JIKES_SOURCE_DIR)/postinst $(JIKES_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(JIKES_SOURCE_DIR)/prerm $(JIKES_IPK_DIR)/CONTROL/prerm
 #	echo $(JIKES_CONFFILES) | sed -e 's/ /\n/g' > $(JIKES_IPK_DIR)/CONTROL/conffiles

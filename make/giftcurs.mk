@@ -24,6 +24,13 @@ GIFTCURS_VERSION=0.6.2
 GIFTCURS_SOURCE=giFTcurs-$(GIFTCURS_VERSION).tar.gz
 GIFTCURS_DIR=giFTcurs-$(GIFTCURS_VERSION)
 GIFTCURS_UNZIP=zcat
+GIFTCURS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+GIFTCURS_DESCRIPTION=giFTcurs is a curses front end to the giFT daemon
+GIFTCURS_SECTION=net
+GIFTCURS_PRIORITY=optional
+GIFTCURS_DEPENDS=gift, glib
+GIFTCURS_SUGGESTS=
+GIFTCURS_CONFLICTS=
 
 #
 # GIFTCURS_IPK_VERSION should be incremented when the ipk changes.
@@ -141,6 +148,25 @@ $(STAGING_DIR)/opt/lib/libgiFTcurs.so.$(GIFTCURS_VERSION): $(GIFTCURS_BUILD_DIR)
 giFTcurs-stage: $(STAGING_DIR)/opt/lib/libgiFTcurs.so.$(GIFTCURS_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/giftcurs
+#
+$(GIFTCURS_IPK_DIR)/CONTROL/control:
+	@install -d $(GIFTCURS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: giftcurs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GIFTCURS_PRIORITY)" >>$@
+	@echo "Section: $(GIFTCURS_SECTION)" >>$@
+	@echo "Version: $(GIFTCURS_VERSION)-$(GIFTCURS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GIFTCURS_MAINTAINER)" >>$@
+	@echo "Source: $(GIFTCURS_SITE)/$(GIFTCURS_SOURCE)" >>$@
+	@echo "Description: $(GIFTCURS_DESCRIPTION)" >>$@
+	@echo "Depends: $(GIFTCURS_DEPENDS)" >>$@
+	@echo "Suggests: $(GIFTCURS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GIFTCURS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(GIFTCURS_IPK_DIR)/opt/sbin or $(GIFTCURS_IPK_DIR)/opt/bin
@@ -156,8 +182,7 @@ $(GIFTCURS_IPK): $(GIFTCURS_BUILD_DIR)/.built
 	rm -rf $(GIFTCURS_IPK_DIR) $(BUILD_DIR)/giftcurs_*_$(TARGET_ARCH).ipk
 	install -d $(GIFTCURS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GIFTCURS_BUILD_DIR)/src/giFTcurs -o $(GIFTCURS_IPK_DIR)/opt/bin/giFTcurs
-	install -d $(GIFTCURS_IPK_DIR)/CONTROL
-	install -m 644 $(GIFTCURS_SOURCE_DIR)/control $(GIFTCURS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GIFTCURS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTCURS_IPK_DIR)
 
 #

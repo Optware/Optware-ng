@@ -26,6 +26,13 @@ IMAGEMAGICK_REV=5
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
+IMAGEMAGICK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
+IMAGEMAGICK_SECTION=graphics
+IMAGEMAGICK_PRIORITY=optional
+IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2
+IMAGEMAGICK_SUGGESTS=
+IMAGEMAGICK_CONFLICTS=
 
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
@@ -146,6 +153,25 @@ $(IMAGEMAGICK_BUILD_DIR)/.built: $(IMAGEMAGICK_BUILD_DIR)/.configured
 imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/imagemagick
+#
+$(IMAGEMAGICK_IPK_DIR)/CONTROL/control:
+	@install -d $(IMAGEMAGICK_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: imagemagick" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(IMAGEMAGICK_PRIORITY)" >>$@
+	@echo "Section: $(IMAGEMAGICK_SECTION)" >>$@
+	@echo "Version: $(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(IMAGEMAGICK_MAINTAINER)" >>$@
+	@echo "Source: $(IMAGEMAGICK_SITE)/$(IMAGEMAGICK_SOURCE)" >>$@
+	@echo "Description: $(IMAGEMAGICK_DESCRIPTION)" >>$@
+	@echo "Depends: $(IMAGEMAGICK_DEPENDS)" >>$@
+	@echo "Suggests: $(IMAGEMAGICK_SUGGESTS)" >>$@
+	@echo "Conflicts: $(IMAGEMAGICK_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(IMAGEMAGICK_IPK_DIR)/opt/sbin or $(IMAGEMAGICK_IPK_DIR)/opt/bin
@@ -181,8 +207,7 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/www
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/images
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/man
-	install -d $(IMAGEMAGICK_IPK_DIR)/CONTROL
-	install -m 644 $(IMAGEMAGICK_SOURCE_DIR)/control $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
+	$(MAKE) $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAGEMAGICK_IPK_DIR)
 
 #
