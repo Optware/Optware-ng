@@ -35,7 +35,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = nrpe
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
-	adduser \
+	adduser appweb \
 	bash bc bzip2 \
 	ccxstream coreutils cpio cron \
 	dhcp diffutils dnsmasq dovecot dropbear \
@@ -50,7 +50,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	nano ncftp ncurses noip \
 	openssh openssl openvpn \
-	patch php-thttpd procps proftpd psutils puppy python py-bittorrent \
+	patch php php-thttpd procps proftpd psutils puppy python py-bittorrent \
 	rdate readline rsync \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	tar tcpdump termcap textutils thttpd \
@@ -59,21 +59,8 @@ COMMON_CROSS_PACKAGES = \
 	wakelan which whois \
 	zlib \
 
-GLIBC_CROSS_PACKAGES = \
-	clamav cogito cvs \
-	elinks \
-	gawk gettext git-core glib gnupg \
-	iptables \
-	libsigc++ libtorrent lsof \
-	mtr mutt \
-	nail nmap ntp \
-	pcre \
-	rtorrent \
-	unrar \
-	wget-ssl \
-
-NSLU2_CROSS_PACKAGES = appweb \
-	abook adns alac-decoder appweb \
+NSLU2_CROSS_PACKAGES = \
+	abook adns alac-decoder \
 	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
 	bind bip bitchx bitlbee busybox byrequest bzflag \
@@ -106,7 +93,7 @@ NSLU2_CROSS_PACKAGES = appweb \
 	nget nload ntop ntpclient nylon \
 	opencdk oww \
 	pango \
-	php php-apache phpmyadmin \
+	php-apache phpmyadmin \
 	pkgconfig popt portmap postgresql \
 	procmail pwgen \
 	py-bluez py-cheetah py-cherrypy py-clips \
@@ -132,8 +119,10 @@ NSLU2_CROSS_PACKAGES = appweb \
 	unslung-devel \
 	crosstool-native \
 
-NSLU2_SPECIFIC_PACKAGES = \
-	upslug2 \
+NSLU2_SPECIFIC_PACKAGES = upslug2
+
+# Packages that do not work for nslu2.
+NSLU2_BROKEN_PACKAGES = 
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -175,7 +164,7 @@ NSLU2_NATIVE_PACKAGES = \
 	w3m \
         xmail \
 
-WL500G_SPECIFIC_PACKAGES = appweb \
+WL500G_SPECIFIC_PACKAGES = \
 	adns antinat atftp audiofile autoconf automake \
 	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
 	chillispot classpath clips ctags cups cyrus-sasl \
@@ -195,7 +184,7 @@ WL500G_SPECIFIC_PACKAGES = appweb \
 	madplay man man-pages microperl \
 	netio neon net-snmp net-tools ntpclient nylon \
 	oww \
-	php pkgconfig popt poptop portmap postgresql py-moin \
+	pkgconfig popt poptop portmap postgresql py-moin \
 	quagga \
 	recordext renderext rrdtool \
 	siproxd stunnel sysstat \
@@ -205,11 +194,25 @@ WL500G_SPECIFIC_PACKAGES = appweb \
 	w3cam wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xproto xtrans xvid \
 
+# Packages that do not work for wl500g.
+WL500G_BROKEN_PACKAGES = \
+	clamav cogito cvs \
+	elinks \
+	gawk gettext git-core glib gnupg \
+	iptables \
+	libsigc++ libtorrent lsof \
+	mtr mutt \
+	nail nmap ntp \
+	pcre \
+	rtorrent \
+	unrar \
+	wget-ssl \
+
 WL500G_PACKAGES_THAT_NEED_FIXING = \
 	ttf-bitstream-vera \
 	xmail \
 
-MSS_SPECIFIC_PACKAGES = appweb \
+MSS_SPECIFIC_PACKAGES = \
 	adns antinat audiofile autoconf automake \
 	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
 	chillispot clips ctags cups cyrus-sasl \
@@ -231,7 +234,7 @@ MSS_SPECIFIC_PACKAGES = appweb \
 	madplay man man-pages microperl \
 	netio neon ntpclient nylon \
 	openssl oww \
-	php pkgconfig popt poptop portmap \
+	pkgconfig popt poptop portmap \
 	quagga \
 	recordext renderext rrdtool \
 	siproxd stunnel sysstat \
@@ -241,6 +244,9 @@ MSS_SPECIFIC_PACKAGES = appweb \
 	vdr-mediamvp vorbis-tools vsftpd \
 	w3cam wiley-feeds wizd wpa-supplicant \
 	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
+
+# Packages that do not work for mss.
+MSS_BROKEN_PACKAGES = 
 
 # classpath: javac
 # freeradius: requires mysql
@@ -254,15 +260,24 @@ MSS_PACKAGES_THAT_NEED_FIXING = \
  classpath cyrus-sasl freeradius gift-ares net-snmp net-tools postgresql py-moin tsocks
 
 # Packages that only work for ds101
-DS101_SPECIFIC_PACKAGES = php appweb
+DS101_SPECIFIC_PACKAGES = 
+
+# Packages that do not work for ds101.
+DS101_BROKEN_PACKAGES = 
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = 
+
+# Packages that do not work for ds101g+.
+DS101G_BROKEN_PACKAGES = php appweb
 
 DS101G_PACKAGES_THAT_NEED_FIXING = ldconfig mc
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
+
+# Packages that do not work for nas100d.
+NAS100D_BROKEN_PACKAGES = 
 
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
@@ -287,7 +302,7 @@ PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 # in the path ahead of busybox's broken one.
 PATH=/opt/bin:/usr/bin:/bin
 else
-PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(NSLU2_CROSS_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES)
+PACKAGES = $(filter-out $(NSLU2_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NSLU2_CROSS_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 TARGET_ARCH=armeb
@@ -295,35 +310,35 @@ TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),wl500g)
-PACKAGES = $(COMMON_CROSS_PACKAGES) $(WL500G_SPECIFIC_PACKAGES)
+PACKAGES = $(filter-out $(WL500G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(WL500G_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 endif
 
 ifeq ($(OPTWARE_TARGET),mss)
-PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(MSS_SPECIFIC_PACKAGES)
+PACKAGES = $(filter-out $(MSS_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(MSS_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
 TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101)
-PACKAGES=$(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(DS101_SPECIFIC_PACKAGES)
+PACKAGES = $(filter-out $(DS101_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101g)
-PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(DS101G_SPECIFIC_PACKAGES)
+PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101G_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=powerpc
 TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),nas100d)
-PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(NAS100D_SPECIFIC_PACKAGES)
+PACKAGES = $(filter-out $(NAS100D_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NAS100D_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
