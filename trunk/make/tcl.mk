@@ -137,7 +137,7 @@ tcl: $(TCL_BUILD_DIR)/.built
 $(TCL_BUILD_DIR)/.staged: $(TCL_BUILD_DIR)/.built
 	rm -f $(TCL_BUILD_DIR)/.staged
 	$(MAKE) -C $(TCL_BUILD_DIR)/unix INSTALL_ROOT=$(STAGING_DIR) install
-	cd $(STAGING_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9].so$$/so/'` libtcl.so
+	cd $(STAGING_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'` libtcl.so
 	touch $(TCL_BUILD_DIR)/.staged
 
 tcl-stage: $(TCL_BUILD_DIR)/.staged
@@ -151,9 +151,9 @@ tcl-stage: $(TCL_BUILD_DIR)/.staged
 $(TCL_IPK): $(TCL_BUILD_DIR)/.built
 	rm -rf $(TCL_IPK_DIR) $(BUILD_DIR)/tcl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCL_BUILD_DIR)/unix INSTALL_ROOT=$(TCL_IPK_DIR) install
-	$(STRIP_COMMAND) $(TCL_IPK_DIR)/opt/lib/`echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9].so$$/so/'`
-	$(STRIP_COMMAND) $(TCL_IPK_DIR)/opt/bin/`echo tclsh$(TCL_VERSION) | sed -e 's/\.[0-9]$$//'`
-	cd $(TCL_IPK_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9].so$$/so/'` libtcl.so
+	$(STRIP_COMMAND) $(TCL_IPK_DIR)/opt/lib/`echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'`
+	$(STRIP_COMMAND) $(TCL_IPK_DIR)/opt/bin/`echo tclsh$(TCL_VERSION) | sed -e 's/\.[0-9]\{1,\}$$//'`
+	cd $(TCL_IPK_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'` libtcl.so
 	$(MAKE) $(TCL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCL_IPK_DIR)
 
