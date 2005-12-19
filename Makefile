@@ -232,7 +232,7 @@ DS101G_SPECIFIC_PACKAGES =
 DS101G_BROKEN_PACKAGES = \
 	apache apr-util appweb \
 	bitlbee \
-	cherokee \
+	cherokee clamav \
 	gnutls \
 	libgcrypt \
 	opencdk \
