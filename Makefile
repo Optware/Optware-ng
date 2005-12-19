@@ -243,7 +243,20 @@ MSS_SPECIFIC_PACKAGES = \
 	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
 
 # Packages that do not work for mss.
-MSS_BROKEN_PACKAGES = 
+MSS_BROKEN_PACKAGES = \
+	apache apr-util \
+	bitlbee \
+	clamav \
+	erlang \
+	ivorbis-tools \
+	jamvm \
+	ldconfig libvorbisidec \
+	mod-fastcgi mod-python monotone \
+	php-apache \
+	qemu qemu-libc-i386 \
+	svn \
+	tcl \
+	transcode \
 
 # classpath: javac
 # freeradius: requires mysql
@@ -260,7 +273,15 @@ MSS_PACKAGES_THAT_NEED_FIXING = \
 DS101_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for ds101.
-DS101_BROKEN_PACKAGES = 
+DS101_BROKEN_PACKAGES = \
+	apache apr-util \
+	cyrus-sasl \
+	imagemagick \
+	mod-fastcgi mod-python monotone \
+	php-apache \
+	qemu qemu-libc-i386 \
+	svn \
+	tcl \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = 
