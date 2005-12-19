@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CLAMAV_SITE=http://puzzle.dl.sourceforge.net/clamav
+CLAMAV_SITE=http://dl.sourceforge.net/clamav
 CLAMAV_VERSION=0.87.1
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)

@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-GIFTGNUTELLA_SITE=http://unc.dl.sourceforge.net/sourceforge/gift
+GIFTGNUTELLA_SITE=http://dl.sourceforge.net/sourceforge/gift
 GIFTGNUTELLA_VERSION=0.0.10
 GIFTGNUTELLA_SOURCE=gift-gnutella-$(GIFTGNUTELLA_VERSION).tar.bz2
 GIFTGNUTELLA_DIR=gift-gnutella-$(GIFTGNUTELLA_VERSION)

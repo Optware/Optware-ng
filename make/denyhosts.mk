@@ -4,7 +4,7 @@
 #
 ###########################################################
 #
-DENYHOSTS_SITE=http://umn.dl.sourceforge.net/sourceforge/denyhosts
+DENYHOSTS_SITE=http://dl.sourceforge.net/sourceforge/denyhosts
 DENYHOSTS_VERSION=1.1.2
 DENYHOSTS_SOURCE=DenyHosts-$(DENYHOSTS_VERSION).tar.gz
 DENYHOSTS_DIR=DenyHosts-$(DENYHOSTS_VERSION)

@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NETPBM_SITE=http://unc.dl.sourceforge.net/sourceforge/netpbm
+NETPBM_SITE=http://dl.sourceforge.net/sourceforge/netpbm
 NETPBM_VERSION=10.18.17
 NETPBM_SOURCE=netpbm-$(NETPBM_VERSION).tgz
 NETPBM_DIR=netpbm-$(NETPBM_VERSION)

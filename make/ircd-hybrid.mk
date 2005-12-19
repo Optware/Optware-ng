@@ -7,7 +7,7 @@
 IRCD_HYBRID_DIR=$(BUILD_DIR)/ircd-hybrid
 IRCD_HYBRID_VERSION=7.0.3
 IRCD_HYBRID=ircd-hybrid-$(IRCD_HYBRID_VERSION)
-IRCD_HYBRID_SITE=http://aleron.dl.sourceforge.net/sourceforge/ircd-hybrid
+IRCD_HYBRID_SITE=http://dl.sourceforge.net/sourceforge/ircd-hybrid
 IRCD_HYBRID_SOURCE_ARCHIVE=$(IRCD_HYBRID).tgz
 IRCD_HYBRID_UNZIP=zcat
 IRCD_HYBRID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>

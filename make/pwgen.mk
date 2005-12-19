@@ -4,7 +4,7 @@
 # 
 ###########################################################
 #
-PWGEN_SITE=http://heanet.dl.sourceforge.net/sourceforge/pwgen
+PWGEN_SITE=http://dl.sourceforge.net/sourceforge/pwgen
 PWGEN_VERSION=2.04
 PWGEN_SOURCE=pwgen-$(PWGEN_VERSION).tar.gz
 PWGEN_DIR=pwgen-$(PWGEN_VERSION)

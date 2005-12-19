@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NETHACK_SITE=ftp://umn.dl.sourceforge.net/pub/sourceforge/n/ne/nethack/
+NETHACK_SITE=ftp://dl.sourceforge.net/pub/sourceforge/n/ne/nethack/
 NETHACK_VERSION=3.4.3
 NETHACK_SOURCE=nethack-343-src.tgz
 NETHACK_DIR=nethack-$(NETHACK_VERSION)
