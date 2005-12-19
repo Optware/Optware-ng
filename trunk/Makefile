@@ -201,7 +201,7 @@ WL500G_BROKEN_PACKAGES = \
 	elinks \
 	gawk gettext git-core glib gnupg \
 	iptables \
-	libsigc++ libtorrent lsof \
+	libstdc++ libsigc++ libtorrent lsof \
 	mtr mutt \
 	nail nmap ntp \
 	pcre \
