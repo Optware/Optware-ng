@@ -12,7 +12,7 @@
 # APR_UTIL_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-APR_UTIL_SITE=http://mirrors.ccs.neu.edu/Apache/dist/apr
+APR_UTIL_SITE=http://archive.apache.org/dist/apr
 APR_UTIL_VERSION=0.9.6
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
