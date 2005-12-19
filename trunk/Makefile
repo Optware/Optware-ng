@@ -231,7 +231,9 @@ DS101_BROKEN_PACKAGES = \
 DS101G_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for ds101g+.
-DS101G_BROKEN_PACKAGES = php appweb
+DS101G_BROKEN_PACKAGES = \
+	apache apr-utils appweb \
+	php \
 
 DS101G_PACKAGES_THAT_NEED_FIXING = ldconfig mc
 
