@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OPENCDK_SITE=ftp://ftp.gnutls.org/pub/gnutls/opencdk
+OPENCDK_SITE=http://ftp.gnupg.org/GnuPG/alpha/gnutls/opencdk
 OPENCDK_VERSION=0.5.7
 OPENCDK_SOURCE=opencdk-$(OPENCDK_VERSION).tar.gz
 OPENCDK_DIR=opencdk-$(OPENCDK_VERSION)
