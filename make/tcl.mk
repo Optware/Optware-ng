@@ -16,8 +16,8 @@
 #
 # You should change all these variables to suit your package.
 #
-TCL_SITE=http://heanet.dl.sourceforge.net/sourceforge/tcl/
-TCL_VERSION=8.4.9
+TCL_SITE=http://dl.sourceforge.net/sourceforge/tcl/
+TCL_VERSION=8.4.12
 TCL_SOURCE=tcl$(TCL_VERSION)-src.tar.gz
 TCL_DIR=tcl$(TCL_VERSION)
 TCL_UNZIP=zcat
@@ -32,7 +32,7 @@ TCL_CONFLICTS=
 #
 # TCL_IPK_VERSION should be incremented when the ipk changes.
 #
-TCL_IPK_VERSION=3
+TCL_IPK_VERSION=1
 
 #
 # TCL_CONFFILES should be a list of user-editable files #TCL_CONFFILES=/opt/etc/tcl.conf /opt/etc/init.d/SXXtcl
@@ -85,6 +85,7 @@ $(TCL_BUILD_DIR)/.configured: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES)
 	mv $(BUILD_DIR)/$(TCL_DIR) $(TCL_BUILD_DIR)
 	(cd $(TCL_BUILD_DIR)/unix; \
 		autoconf configure.in > configure; \
+		sed -i.bak "s/relid'/relid/" configure; # bash 3.1 choke. TCL bug #1377619 \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TCL_LDFLAGS)" \
