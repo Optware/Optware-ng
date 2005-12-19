@@ -24,6 +24,13 @@ NFS_SERVER_VERSION=2.2beta47
 NFS_SERVER_SOURCE=nfs-server-$(NFS_SERVER_VERSION).tar.gz
 NFS_SERVER_DIR=nfs-server-$(NFS_SERVER_VERSION)
 NFS_SERVER_UNZIP=zcat
+NFS_SERVER_MAINTAINER=Roy Silvernail <roy@rant-central.com>
+NFS_SERVER_DESCRIPTION=Minimal NFS server without TCP Wrappers (not recommended, use nfs-utils instead)
+NFS_SERVER_SECTION=net
+NFS_SERVER_PRIORITY=optional
+NFS_SERVER_DEPENDS=portmap
+NFS_SERVER_SUGGESTS=
+NFS_SERVER_CONFLICTS=
 
 #
 # NFS_SERVER_IPK_VERSION should be incremented when the ipk changes.
@@ -125,6 +132,25 @@ $(NFS_SERVER_BUILD_DIR)/rpc.nfsd: $(NFS_SERVER_BUILD_DIR)/.configured
 nfs-server: $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nfs_server
+#
+$(NFS_SERVER_IPK_DIR)/CONTROL/control:
+	@install -d $(NFS_SERVER_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nfs_server" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NFS_SERVER_PRIORITY)" >>$@
+	@echo "Section: $(NFS_SERVER_SECTION)" >>$@
+	@echo "Version: $(NFS_SERVER_VERSION)-$(NFS_SERVER_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NFS_SERVER_MAINTAINER)" >>$@
+	@echo "Source: $(NFS_SERVER_SITE)/$(NFS_SERVER_SOURCE)" >>$@
+	@echo "Description: $(NFS_SERVER_DESCRIPTION)" >>$@
+	@echo "Depends: $(NFS_SERVER_DEPENDS)" >>$@
+	@echo "Suggests: $(NFS_SERVER_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NFS_SERVER_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NFS_SERVER_IPK_DIR)/opt/sbin or $(NFS_SERVER_IPK_DIR)/opt/bin
@@ -143,8 +169,7 @@ $(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.mountd
 	install -d $(NFS_SERVER_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NFS_SERVER_SOURCE_DIR)/rc.nfs-server $(NFS_SERVER_IPK_DIR)/opt/etc/init.d/S56nfsd
-	install -d $(NFS_SERVER_IPK_DIR)/CONTROL
-	install -m 644 $(NFS_SERVER_SOURCE_DIR)/control $(NFS_SERVER_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NFS_SERVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NFS_SERVER_IPK_DIR)
 
 #
