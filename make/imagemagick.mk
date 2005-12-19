@@ -163,7 +163,7 @@ $(IMAGEMAGICK_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(IMAGEMAGICK_PRIORITY)" >>$@
 	@echo "Section: $(IMAGEMAGICK_SECTION)" >>$@
-	@echo "Version: $(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_IPK_VERSION)" >>$@
+	@echo "Version: $(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(IMAGEMAGICK_MAINTAINER)" >>$@
 	@echo "Source: $(IMAGEMAGICK_SITE)/$(IMAGEMAGICK_SOURCE)" >>$@
 	@echo "Description: $(IMAGEMAGICK_DESCRIPTION)" >>$@
