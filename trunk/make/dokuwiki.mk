@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DOKUWIKI_SITE=http://www.splitbrain.org/Programming/PHP/DokuWiki
-DOKUWIKI_VERSION=2005-02-18
+DOKUWIKI_SITE=http://www.splitbrain.org/_media/projects/dokuwiki
+DOKUWIKI_VERSION=2005-09-22
 DOKUWIKI_SOURCE=dokuwiki-$(DOKUWIKI_VERSION).tgz
 DOKUWIKI_DIR=dokuwiki-$(DOKUWIKI_VERSION)
 DOKUWIKI_UNZIP=zcat
