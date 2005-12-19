@@ -24,6 +24,13 @@ METALOG_VERSION=0.7
 METALOG_SOURCE=metalog-$(METALOG_VERSION).tar.gz
 METALOG_DIR=metalog-$(METALOG_VERSION)
 METALOG_UNZIP=zcat
+METALOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+METALOG_DESCRIPTION=Modern, highly configurable syslogd replacement
+METALOG_SECTION=sys
+METALOG_PRIORITY=optional
+METALOG_DEPENDS=pcre
+METALOG_SUGGESTS=
+METALOG_CONFLICTS=
 
 #
 # METALOG_IPK_VERSION should be incremented when the ipk changes.
@@ -135,6 +142,25 @@ $(METALOG_BUILD_DIR)/.staged: $(METALOG_BUILD_DIR)/.built
 metalog-stage: $(METALOG_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/metalog
+#
+$(METALOG_IPK_DIR)/CONTROL/control:
+	@install -d $(METALOG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: metalog" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(METALOG_PRIORITY)" >>$@
+	@echo "Section: $(METALOG_SECTION)" >>$@
+	@echo "Version: $(METALOG_VERSION)-$(METALOG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(METALOG_MAINTAINER)" >>$@
+	@echo "Source: $(METALOG_SITE)/$(METALOG_SOURCE)" >>$@
+	@echo "Description: $(METALOG_DESCRIPTION)" >>$@
+	@echo "Depends: $(METALOG_DEPENDS)" >>$@
+	@echo "Suggests: $(METALOG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(METALOG_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(METALOG_IPK_DIR)/opt/sbin or $(METALOG_IPK_DIR)/opt/bin
@@ -156,8 +182,7 @@ $(METALOG_IPK): $(METALOG_BUILD_DIR)/.built
 	install -m 755 $(METALOG_SOURCE_DIR)/rc.sysinit $(METALOG_IPK_DIR)/opt/doc/metalog
 	# Make log directory on HD
 	install -d $(METALOG_IPK_DIR)/opt/var/log
-	install -d $(METALOG_IPK_DIR)/CONTROL
-	install -m 644 $(METALOG_SOURCE_DIR)/control $(METALOG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(METALOG_IPK_DIR)/CONTROL/control
 	install -m 644 $(METALOG_SOURCE_DIR)/postinst $(METALOG_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(METALOG_SOURCE_DIR)/prerm $(METALOG_IPK_DIR)/CONTROL/prerm
 	echo $(METALOG_CONFFILES) | sed -e 's/ /\n/g' > $(METALOG_IPK_DIR)/CONTROL/conffiles

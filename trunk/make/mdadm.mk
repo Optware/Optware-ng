@@ -24,6 +24,13 @@ MDADM_VERSION=1.8.0
 MDADM_SOURCE=mdadm-$(MDADM_VERSION).tgz
 MDADM_DIR=mdadm-$(MDADM_VERSION)
 MDADM_UNZIP=zcat
+MDADM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+MDADM_DESCRIPTION=A software raid configuration utility.
+MDADM_SECTION=RAID
+MDADM_PRIORITY=optional
+MDADM_DEPENDS=
+MDADM_SUGGESTS=
+MDADM_CONFLICTS=
 
 #
 # MDADM_IPK_VERSION should be incremented when the ipk changes.
@@ -112,6 +119,24 @@ mdadm: $(MDADM_BUILD_DIR)/mdadm
 # If you are building a library, then you need to stage it too.
 #
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/mdadm
+#
+$(MDADM_IPK_DIR)/CONTROL/control:
+	@install -d $(MDADM_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: mdadm" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(MDADM_PRIORITY)" >>$@
+	@echo "Section: $(MDADM_SECTION)" >>$@
+	@echo "Version: $(MDADM_VERSION)-$(MDADM_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(MDADM_MAINTAINER)" >>$@
+	@echo "Source: $(MDADM_SITE)/$(MDADM_SOURCE)" >>$@
+	@echo "Description: $(MDADM_DESCRIPTION)" >>$@
+	@echo "Depends: $(MDADM_DEPENDS)" >>$@
+	@echo "Suggests: $(MDADM_SUGGESTS)" >>$@
+	@echo "Conflicts: $(MDADM_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -132,8 +157,7 @@ $(MDADM_IPK): $(MDADM_BUILD_DIR)/mdadm
 	install -d $(MDADM_IPK_DIR)/opt/man/man4
 	install -d $(MDADM_IPK_DIR)/opt/man/man5
 	$(STRIP_COMMAND) $(MDADM_BUILD_DIR)/mdadm -o $(MDADM_IPK_DIR)/opt/sbin/mdadm
-	install -d $(MDADM_IPK_DIR)/CONTROL
-	install -m 644 $(MDADM_SOURCE_DIR)/control $(MDADM_IPK_DIR)/CONTROL/control
+	$(MAKE) $(MDADM_IPK_DIR)/CONTROL/control
 	install -m 644 $(MDADM_BUILD_DIR)/mdadm.8 $(MDADM_IPK_DIR)/opt/man/man8
 	install -m 644 $(MDADM_BUILD_DIR)/md.4 $(MDADM_IPK_DIR)/opt/man/man4
 	install -m 644 $(MDADM_BUILD_DIR)/mdadm.conf.5 $(MDADM_IPK_DIR)/opt/man/man5/mdadm.c

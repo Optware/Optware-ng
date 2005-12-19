@@ -19,6 +19,14 @@ CTORRENT_VERSION=1.3.4
 CTORRENT_SOURCE=ctorrent-$(CTORRENT_VERSION).tar.bz2
 CTORRENT_DIR=ctorrent-$(CTORRENT_VERSION)
 CTORRENT_UNZIP=bzcat
+CTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+CTORRENT_DESCRIPTION=CTorrent is a BitTorrent client written in the C programming language.
+CTORRENT_SECTION=net
+CTORRENT_PRIORITY=optional
+CTORRENT_DEPENDS=libstdc++, openssl
+CTORRENT_SUGGESTS=
+CTORRENT_CONFLICTS=
+
 #
 # CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -121,6 +129,25 @@ $(CTORRENT_BUILD_DIR)/ctorrent: $(CTORRENT_BUILD_DIR)/.configured
 ctorrent: $(CTORRENT_BUILD_DIR)/ctorrent
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ctorrent
+#
+$(CTORRENT_IPK_DIR)/CONTROL/control:
+	@install -d $(CTORRENT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ctorrent" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CTORRENT_PRIORITY)" >>$@
+	@echo "Section: $(CTORRENT_SECTION)" >>$@
+	@echo "Version: $(CTORRENT_VERSION)-$(CTORRENT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CTORRENT_MAINTAINER)" >>$@
+	@echo "Source: $(CTORRENT_SITE)/$(CTORRENT_SOURCE)" >>$@
+	@echo "Description: $(CTORRENT_DESCRIPTION)" >>$@
+	@echo "Depends: $(CTORRENT_DEPENDS)" >>$@
+	@echo "Suggests: $(CTORRENT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(CTORRENT_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(CTORRENT_IPK_DIR)/opt/sbin or $(CTORRENT_IPK_DIR)/opt/bin
@@ -138,8 +165,7 @@ $(CTORRENT_IPK): $(CTORRENT_BUILD_DIR)/ctorrent
 	$(STRIP_COMMAND) $(CTORRENT_BUILD_DIR)/ctorrent -o $(CTORRENT_IPK_DIR)/opt/bin/ctorrent
 #	install -d $(CTORRENT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(CTORRENT_SOURCE_DIR)/rc.ctorrent $(CTORRENT_IPK_DIR)/opt/etc/init.d/SXXctorrent
-	install -d $(CTORRENT_IPK_DIR)/CONTROL
-	install -m 644 $(CTORRENT_SOURCE_DIR)/control $(CTORRENT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CTORRENT_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CTORRENT_SOURCE_DIR)/postinst $(CTORRENT_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(CTORRENT_SOURCE_DIR)/prerm $(CTORRENT_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTORRENT_IPK_DIR)
