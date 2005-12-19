@@ -24,13 +24,13 @@ SQLITE2_VERSION=2.8.16
 SQLITE2_SOURCE=sqlite-$(SQLITE2_VERSION).tar.gz
 SQLITE2_DIR=sqlite-$(SQLITE2_VERSION)
 SQLITE2_UNZIP=zcat
-<FOO>_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-<FOO>_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
-<FOO>_SECTION=lib
-<FOO>_PRIORITY=optional
-<FOO>_DEPENDS=readline
-<FOO>_SUGGESTS=
-<FOO>_CONFLICTS=
+SQLITE2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SQLITE2_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
+SQLITE2_SECTION=lib
+SQLITE2_PRIORITY=optional
+SQLITE2_DEPENDS=readline
+SQLITE2_SUGGESTS=
+SQLITE2_CONFLICTS=
 
 #
 # SQLITE2_IPK_VERSION should be incremented when the ipk changes.
