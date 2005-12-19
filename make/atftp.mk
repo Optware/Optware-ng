@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-ATFTP_SITE=ftp://ftp.mamalinux.com/pub/atftp
+ATFTP_SITE=http://downloads.openwrt.org/sources
 ATFTP_VERSION=0.7
 ATFTP_SOURCE=atftp-$(ATFTP_VERSION).tar.gz
 ATFTP_DIR=atftp-$(ATFTP_VERSION)
