@@ -35,7 +35,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = nrpe
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
-	adduser appweb \
+	adduser \
 	bash bc bzip2 \
 	ccxstream coreutils cpio cron \
 	dhcp diffutils dnsmasq dovecot dropbear \
@@ -72,7 +72,7 @@ GLIBC_CROSS_PACKAGES = \
 	unrar \
 	wget-ssl \
 
-NSLU2_CROSS_PACKAGES = \
+NSLU2_CROSS_PACKAGES = appweb \
 	abook adns alac-decoder appweb \
 	atftp apache apr apr-util atk audiofile automake \
 	asterisk-sounds \
@@ -175,7 +175,7 @@ NSLU2_NATIVE_PACKAGES = \
 	w3m \
         xmail \
 
-WL500G_SPECIFIC_PACKAGES = \
+WL500G_SPECIFIC_PACKAGES = appweb \
 	adns antinat atftp audiofile autoconf automake \
 	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
 	chillispot classpath clips ctags cups cyrus-sasl \
@@ -209,7 +209,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	ttf-bitstream-vera \
 	xmail \
 
-MSS_SPECIFIC_PACKAGES = \
+MSS_SPECIFIC_PACKAGES = appweb \
 	adns antinat audiofile autoconf automake \
 	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
 	chillispot clips ctags cups cyrus-sasl \
@@ -254,7 +254,7 @@ MSS_PACKAGES_THAT_NEED_FIXING = \
  classpath cyrus-sasl freeradius gift-ares net-snmp net-tools postgresql py-moin tsocks
 
 # Packages that only work for ds101
-DS101_SPECIFIC_PACKAGES = php
+DS101_SPECIFIC_PACKAGES = php appweb
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = 
