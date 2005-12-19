@@ -138,7 +138,7 @@ nfs-server: $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 $(NFS_SERVER_IPK_DIR)/CONTROL/control:
 	@install -d $(NFS_SERVER_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: nfs_server" >>$@
+	@echo "Package: nfs-server" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(NFS_SERVER_PRIORITY)" >>$@
 	@echo "Section: $(NFS_SERVER_SECTION)" >>$@
