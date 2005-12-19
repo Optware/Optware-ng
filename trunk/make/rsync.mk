@@ -4,8 +4,10 @@
 #
 ###########################################################
 
-RSYNC_SITE=http://rsync.samba.org/ftp/rsync/old-versions
-RSYNC_VERSION=2.6.3
+#RSYNC_SITE=http://rsync.samba.org/ftp/rsync/old-versions
+#RSYNC_VERSION=2.6.3
+RSYNC_SITE=ftp://ftp.samba.org/pub/rsync
+RSYNC_VERSION=2.6.6
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
@@ -16,7 +18,7 @@ RSYNC_PRIORITY=optional
 RSYNC_DEPENDS=
 RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=7
+RSYNC_IPK_VERSION=8
 
 RSYNC_CONFFILES=/opt/etc/rsyncd.conf /opt/etc/init.d/S57rsyncd
 
