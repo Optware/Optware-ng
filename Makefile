@@ -23,68 +23,7 @@
 # Options are "nslu2", "wl500g", "ds101", "ds101g", "mss"  and "nas100d"
 OPTWARE_TARGET ?= nslu2
 
-CROSS_PACKAGES = \
-	abook adduser adns alac-decoder appweb \
-	atftp apache apr apr-util atk audiofile automake \
-	asterisk-sounds \
-	bash bc bind bip bitchx bitlbee busybox byrequest bzflag bzip2 \
-	bluez-libs bluez-utils bluez-hcidump \
-	ccxstream cdargs cherokee chrpath classpath clamav \
-	clips cogito coreutils cpio \
-	cron ctorrent cups ctags cvs cyrus-sasl \
-	denyhosts dev-pts dhcp dict diffutils digitemp distcc dokuwiki dovecot \
-	dnsmasq dropbear \
-	e2fsprogs e2tools eaccelerator ed eggdrop elinks esmtp erlang esound expat \
-	fetchmail ffmpeg ficy file findutils fixesext flac flex \
-	fontconfig freeradius freetds freetype ftpd-topfield \
-	gawk gconv-modules getmail gdb gdbm gdchart gettext ghostscript \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git-core glib gnupg gnutls grep groff gtk gzip \
-	hdparm hexcurse hnb hpijs \
-	ice imagemagick imap inetutils \
-	iperf ipkg-web iptables ipython ircd-hybrid ivorbis-tools \
-	jabber jamvm jikes joe jove \
-	knock \
-	lame ldconfig less \
-	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent \
-	libgc libgcrypt libgd libghttp libgpg-error libid3tag \
-	libjpeg libmad libnsl libogg libol libosip2 \
-	libpcap libpng libstdc++ libtasn1 libtiff libtool libtopfield libusb \
-	libvorbis libvorbisidec libxml2 libxslt logrotate lsof lua lynx lzo \
-	m4 madplay make man man-pages mc mdadm mediawiki metalog miau monotone \
-	mod-fastcgi mod-python \
-	minicom mktemp mrtg mt-daapd mtr mutt mysql \
-	nail nagios-plugins nano ncftp ncurses neon net-snmp \
-	net-tools netio nfs-server nfs-utils \
-	nget nload nmap noip ntop ntp ntpclient nylon \
-	opencdk openssh openssl openvpn oww \
-	pango patch pcre \
-	php php-apache php-thttpd phpmyadmin \
-	pkgconfig popt portmap postgresql \
-	procmail procps proftpd psutils puppy pwgen python \
-	py-bluez py-cheetah py-cherrypy py-clips \
-	py-gdchart2 py-gd py-pil py-mssql \
-	py-sqlite py-bittorrent py-moin py-mx-base py-mysql py-psycopg py-xml \
-	py-roundup py-serial py-simpy py-soappy \
-	py-celementtree py-cherrytemplate \
-	py-elementtree py-kid py-sqlobject \
-	qemu qemu-libc-i386 \
-	quagga  \
-	rcs rdate readline recordext renderext rrdtool rsync \
-	samba sane-backends screen sdl sed ser siproxd sm snownews \
-	sqlite sqsh sqlite2 strace stunnel streamripper sudo svn syslog-ng \
-	sysstat \
-	tar taged tcl tcpdump tcpwrappers termcap textutils tftp-hpa \
-	tin torrent transcode tsocks \
-	ttf-bitstream-vera \
-	ufsd unfs3 units unrar unslung-feeds unzip upslug2 usbutils \
-	vblade vdr-mediamvp vim vsftpd vte vorbis-tools \
-	w3cam wakelan webalizer wget-ssl whois which wizd \
-	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
-	xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
-	zlib \
-	unslung-devel \
-	crosstool-native
+HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
@@ -92,8 +31,109 @@ CROSS_PACKAGES = \
 # nrpe - Corrected most of the configure problems. But a native openssl
 #	 needs to be installed to generate some keys.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = \
-	nrpe \
+CROSS_PACKAGES_READY_FOR_TESTING = nrpe
+NATIVE_PACKAGES_READY_FOR_TESTING = 
+
+COMMON_CROSS_PACKAGES = \
+	adduser appweb \
+	bash bc bzip2 \
+	ccxstream coreutils cpio cron \
+	dhcp diffutils dnsmasq dovecot dropbear \
+	eggdrop expat \
+	fetchmail file findutils flex ftpd-topfield \
+	gdb gdbm grep groff gzip \
+	hdparm \
+	inetutils \
+	joe \
+	knock \
+	lame less libcurl libdb libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
+	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
+	nano ncftp ncurses noip \
+	openssh openssl openvpn \
+	patch php-thttpd procps proftpd psutils puppy python py-bittorrent \
+	rdate readline rsync \
+	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
+	tar tcpdump termcap textutils thttpd \
+	unzip usbutils \
+	vblade vim \
+	wakelan which whois \
+	zlib \
+
+GLIBC_CROSS_PACKAGES = \
+	clamav cogito cvs \
+	elinks \
+	gawk gettext git-core glib gnupg \
+	iptables \
+	libsigc++ libtorrent lsof \
+	mtr mutt \
+	nail nmap ntp \
+	pcre \
+	rtorrent \
+	unrar \
+	wget-ssl \
+
+NSLU2_CROSS_PACKAGES = \
+	abook adns alac-decoder appweb \
+	atftp apache apr apr-util atk audiofile automake \
+	asterisk-sounds \
+	bind bip bitchx bitlbee busybox byrequest bzflag \
+	bluez-libs bluez-utils bluez-hcidump \
+	cdargs cherokee chrpath classpath clamav \
+	clips \
+	ctorrent cups ctags cyrus-sasl \
+	denyhosts dev-pts dict digitemp distcc dokuwiki \
+	e2fsprogs e2tools eaccelerator ed esmtp erlang esound \
+	ffmpeg ficy fixesext flac \
+	fontconfig freeradius freetds freetype \
+	gconv-modules getmail gdchart ghostscript \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	git-core gnutls gtk \
+	hexcurse hnb hpijs \
+	ice imagemagick imap \
+	iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
+	jabber jamvm jikes jove \
+	ldconfig \
+	libart libbt libdvb libdvdread libesmtp libevent \
+	libgc libgcrypt libgd libghttp libgpg-error libid3tag \
+	libjpeg libmad libogg libosip2 \
+	libpng libtasn1 libtiff libtool libtopfield libusb \
+	libvorbis libvorbisidec libxslt lua \
+	madplay man man-pages mdadm mediawiki metalog monotone \
+	mod-fastcgi mod-python \
+	mrtg \
+	nagios-plugins neon net-snmp \
+	net-tools netio nfs-server nfs-utils \
+	nget nload ntop ntpclient nylon \
+	opencdk oww \
+	pango \
+	php php-apache phpmyadmin \
+	pkgconfig popt portmap postgresql \
+	procmail pwgen \
+	py-bluez py-cheetah py-cherrypy py-clips \
+	py-gdchart2 py-gd py-pil py-mssql \
+	py-sqlite py-moin py-mx-base py-mysql py-psycopg py-xml \
+	py-roundup py-serial py-simpy py-soappy \
+	py-celementtree py-cherrytemplate \
+	py-elementtree py-kid py-sqlobject \
+	qemu qemu-libc-i386 \
+	quagga  \
+	rcs recordext renderext rrdtool \
+	samba sdl ser siproxd sm snownews \
+	sqsh stunnel streamripper sudo svn \
+	sysstat \
+	taged tcl tcpwrappers tftp-hpa \
+	tin torrent transcode tsocks \
+	ttf-bitstream-vera \
+	ufsd unfs3 units unslung-feeds \
+	vblade vdr-mediamvp vsftpd vte vorbis-tools \
+	w3cam webalizer wizd \
+	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
+	xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
+	unslung-devel \
+	crosstool-native \
+
+NSLU2_SPECIFIC_PACKAGES = \
+	upslug2 \
 
 # asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
@@ -108,7 +148,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # rsnapshot depends on perl
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
-NATIVE_PACKAGES = \
+NSLU2_NATIVE_PACKAGES = \
 	asterisk \
 	autoconf \
 	bison \
@@ -135,8 +175,94 @@ NATIVE_PACKAGES = \
 	w3m \
         xmail \
 
-# Add new native-only packages here, and state why they don't cross compile.
-NATIVE_PACKAGES_READY_FOR_TESTING = \
+WL500G_SPECIFIC_PACKAGES = \
+	adns antinat atftp audiofile autoconf automake \
+	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
+	chillispot classpath clips ctags cups cyrus-sasl \
+	distcc dokuwiki \
+	e2fsprogs e2tools ed esmtp \
+	ffmpeg fixesext flac \
+	freeradius freetype fontconfig \
+	gconv-modules gdchart gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	ghostscript \
+	hexcurse \
+	ircd-hybrid \
+	jove \
+	libart libbt libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
+	libgcrypt libid3tag libjpeg libmad libogg \
+	libosip2 libpng libtasn1 libtool libtopfield libusb libvorbis libxslt \
+	lua \
+	madplay man man-pages microperl \
+	netio neon net-snmp net-tools ntpclient nylon \
+	oww \
+	php pkgconfig popt poptop portmap postgresql py-moin \
+	quagga \
+	recordext renderext rrdtool \
+	siproxd stunnel sysstat \
+	taged tcl tcpwrappers tftp-hpa torrent tsocks \
+	unfs3 units \
+	vblade vdr-mediamvp vorbis-tools vsftpd \
+	w3cam wiley-feeds wizd wpa-supplicant \
+	xau xdmcp xextensions xinetd xproto xtrans xvid \
+
+WL500G_PACKAGES_THAT_NEED_FIXING = \
+	ttf-bitstream-vera \
+	xmail \
+
+MSS_SPECIFIC_PACKAGES = \
+	adns antinat audiofile autoconf automake \
+	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
+	chillispot clips ctags cups cyrus-sasl \
+	distcc dokuwiki \
+	e2fsprogs e2tools ed esmtp \
+	ffmpeg fixesext flac \
+	freetype fontconfig \
+	gconv-modules gdchart \
+        gift gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	ghostscript \
+	hexcurse \
+	ircd-hybrid \
+	jove \
+	libart libbt libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
+	libgcrypt libid3tag libjpeg libmad libogg \
+	libosip2 libpng \
+	libtasn1 libtool libtopfield libusb libvorbis libxslt \
+	lua \
+	madplay man man-pages microperl \
+	netio neon ntpclient nylon \
+	openssl oww \
+	php pkgconfig popt poptop portmap \
+	quagga \
+	recordext renderext rrdtool \
+	siproxd stunnel sysstat \
+	taged tcl tcpwrappers tftp-hpa torrent \
+	ttf-bitstream-vera \
+	unfs3 units \
+	vdr-mediamvp vorbis-tools vsftpd \
+	w3cam wiley-feeds wizd wpa-supplicant \
+	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
+
+# classpath: javac
+# freeradius: requires mysql
+# gift-ares: fails to configure
+# net-snmp: Fails configure on endianness.
+# net-tools: Building libnet-tools.a
+# postgresql: crs???
+# py-moin
+# tsocks: couldn't download
+MSS_PACKAGES_THAT_NEED_FIXING = \
+ classpath cyrus-sasl freeradius gift-ares net-snmp net-tools postgresql py-moin tsocks
+
+# Packages that only work for ds101
+DS101_SPECIFIC_PACKAGES = php
+
+# Packages that *only* work for ds101g+ - do not just put new packages here.
+DS101G_SPECIFIC_PACKAGES = 
+
+DS101G_PACKAGES_THAT_NEED_FIXING = ldconfig mc
+
+# Packages that *only* work for nas100d - do not just put new packages here.
+NAS100D_SPECIFIC_PACKAGES = ipkg
 
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
@@ -146,157 +272,22 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # 
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
-PACKAGES_THAT_NEED_TO_BE_FIXED = \
-	dump \
-	libao \
-	nethack scponly gkrellm \
-	parted \
+PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted
 
 # libiconv - has been made obsolete by gconv-modules
-# git - ?
-# thttpd - has been made obsolete by php-thttpd
+# git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git thttpd metalog
-
-WL500G_PACKAGES = \
-	adduser adns antinat atftp audiofile autoconf automake \
-	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
-	ccxstream chillispot classpath clips cogito coreutils cpio cron ctags cups cyrus-sasl \
-	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
-	e2fsprogs e2tools ed eggdrop esmtp expat \
-	fetchmail ffmpeg file findutils fixesext flac flex \
-	freeradius freetype ftpd-topfield fontconfig \
-	gconv-modules gdb gdbm gdchart gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	ghostscript grep gzip \
-	hdparm hexcurse \
-	inetutils ircd-hybrid \
-	joe jove \
-	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
-	libgcrypt libid3tag libjpeg libmad libogg libol \
-	libnsl libosip2 libpng libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
-	logrotate lua lynx lzo \
-	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
-	nano ncftp ncurses netio neon net-snmp net-tools noip ntpclient nylon \
-	openssh openssl openvpn oww \
-	patch php php-thttpd pkgconfig popt poptop portmap postgresql procps proftpd psutils puppy py-moin python \
-	quagga \
-	rdate readline recordext renderext rrdtool rsync \
-	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
-	taged tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent tsocks \
-	unfs3 units unzip usbutils \
-	vblade vdr-mediamvp vorbis-tools vsftpd \
-	w3cam wakelan which whois wiley-feeds wizd wpa-supplicant \
-	xau xdmcp xextensions xinetd xproto xtrans xvid \
-	zlib
-
-WL500G_PACKAGES_THAT_NEED_FIXING = \
-	groff \
-	iptables \
-	ttf-bitstream-vera \
-	xmail 
-
-WL500G_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav
-
-MSS_PACKAGES = \
-	adduser adns antinat audiofile autoconf automake \
-	bash bc bind bitchx bluez-libs bluez-utils bluez-hcidump busybox bzip2 \
-	ccxstream chillispot clips cogito coreutils cpio cron ctags cups cyrus-sasl \
-	dhcp diffutils distcc dnsmasq dokuwiki  dropbear \
-	e2fsprogs e2tools ed eggdrop esmtp expat \
-	fetchmail ffmpeg file findutils fixesext flac flex \
-	freetype ftpd-topfield fontconfig \
-	gconv-modules gdb gdbm gdchart \
-        gift gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	ghostscript grep gzip \
-	hdparm hexcurse \
-	inetutils ircd-hybrid \
-	joe jove \
-	lame less libart libcurl libbt libdb libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
-	libgcrypt libid3tag libjpeg libmad libogg libol \
-	libnsl libosip2 libpng \
-	libtasn1 libtool libtopfield libusb libvorbis libxml2 libxslt \
-	logrotate lua lynx lzo \
-	m4 madplay make man man-pages mc miau microperl minicom mktemp mt-daapd \
-	nano ncftp ncurses netio neon noip ntpclient nylon \
-	openssl openvpn oww \
-	patch php-thttpd pkgconfig popt poptop portmap procps proftpd psutils puppy \
-	quagga \
-	rdate readline recordext renderext rrdtool rsync \
-	sane-backends screen sed siproxd sqlite strace stunnel syslog-ng sysstat \
-	taged tar tcl tcpdump tcpwrappers termcap textutils tftp-hpa thttpd  torrent \
-	unfs3 units unzip usbutils \
-	vdr-mediamvp vorbis-tools vsftpd \
-	w3cam wakelan which whois wiley-feeds wizd wpa-supplicant \
-	xau xdmcp xextensions xinetd xproto xtrans xvid \
-	zlib \
-\
-	iptables \
-	ttf-bitstream-vera \
-	xmail 
-
-# classpath: javac
-# freeradius: requires mysql
-# gift-ares: fails to configure
-# libstdc++: Hmmm..?
-# net-snmp: Fails configure on endianness.
-# net-tools: Building libnet-tools.a
-# php: requires mysql
-# postgresql: crs???
-# py-moin, python
-# tsocks: couldn't download
-# groff: compiles but fails installation
-MSS_PACKAGES_THAT_NEED_FIXING = \
- classpath cyrus-sasl freeradius gift-ares libstdc++ net-snmp net-tools php postgresql py-moin  python tsocks groff
-
-MSS_PACKAGES_READY_FOR_TESTING =  \
-	dovecot unrar appweb git-core cogito knock bitlbee upslug2 clamav vblade
-
-# Packages that work on both the ds101 and ds101g+
-DS101_COMMON_PACKAGES = \
-	bash bzip2 coreutils cpio cron cvs dhcp diffutils dnsmasq dropbear fetchmail \
-	file findutils grep gnupg hdparm inetutils lame less lynx libcurl libdb libnsl \
-	libpcap libsigc++ libtorrent libstdc++ lzo minicom mktemp ncftp ncurses openssl openssh \
-	openvpn patch procps python readline rsync rtorrent screen sed strace textutils tcpdump \
-	tar termcap vim wakelan wget-ssl which whois zlib 
-
-# Packages that only work for ds101
-DS101_SPECIFIC_PACKAGES = \
-	ccxstream eggdrop elinks expat flex \
-	gawk gdb gdbm gettext glib gnupg groff gzip joe libol logrotate lsof \
-	m4 make mc miau mt-daapd mtr mutt mysql \
-	nail nano nmap noip ntp patch pcre \
-	proftpd psutils python rdate sane-backends sqlite sqlite2 syslog-ng \
-	unrar unzip usbutils 
-
-
-# Packages that only work for ds101g+
-DS101G_SPECIFIC_PACKAGES = \
-	bc iptables libxml2 modutils monit py-bittorrent smartmontools 
-
-DS101G_PACKAGES_THAT_NEED_FIXING = \
-	ldconfig mc 
-
-NAS100D_CROSS_PACKAGES = \
-	ipkg
-
-NAS100D_NATIVE_PACKAGES = \
-
-
-
-HOST_MACHINE:=$(shell uname -m | sed \
-	-e 's/i[3-9]86/i386/' \
-	)
+PACKAGES_OBSOLETED = libiconv git metalog
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
-PACKAGES = $(NATIVE_PACKAGES)
+PACKAGES = $(NSLU2_NATIVE_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 # when native building on unslung, it's important to have a working awk 
 # in the path ahead of busybox's broken one.
 PATH=/opt/bin:/usr/bin:/bin
 else
-PACKAGES = $(CROSS_PACKAGES)
+PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(NSLU2_CROSS_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 TARGET_ARCH=armeb
@@ -304,38 +295,36 @@ TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),wl500g)
-PACKAGES = $(WL500G_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(WL500G_PACKAGES_READY_FOR_TESTING)
+PACKAGES = $(COMMON_CROSS_PACKAGES) $(WL500G_SPECIFIC_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 endif
 
 ifeq ($(OPTWARE_TARGET),mss)
-PACKAGES = $(MSS_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(MSS_PACKAGES_READY_FOR_TESTING)
+PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(MSS_SPECIFIC_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=mipsel
 TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101)
-DS101_PACKAGES=$(DS101_COMMON_PACKAGES) $(DS101_SPECIFIC_PACKAGES)
-PACKAGES = $(DS101_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(DS101_PACKAGES_READY_FOR_TESTING)
+PACKAGES=$(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(DS101_SPECIFIC_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101g)
-DS101G_PACKAGES=$(DS101_COMMON_PACKAGES) $(DS101G_SPECIFIC_PACKAGES)
-PACKAGES = $(DS101G_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(DS101G_PACKAGES_READY_FOR_TESTING)
+PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(DS101G_SPECIFIC_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=powerpc
 TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),nas100d)
-PACKAGES = $(NAS100D_CROSS_PACKAGES) $(CROSS_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(NAS100D_PACKAGES_READY_FOR_TESTING)
+PACKAGES = $(COMMON_CROSS_PACKAGES) $(GLIBC_CROSS_PACKAGES) $(NAS100D_SPECIFIC_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
