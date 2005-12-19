@@ -24,6 +24,13 @@ SQLITE2_VERSION=2.8.16
 SQLITE2_SOURCE=sqlite-$(SQLITE2_VERSION).tar.gz
 SQLITE2_DIR=sqlite-$(SQLITE2_VERSION)
 SQLITE2_UNZIP=zcat
+<FOO>_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+<FOO>_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
+<FOO>_SECTION=lib
+<FOO>_PRIORITY=optional
+<FOO>_DEPENDS=readline
+<FOO>_SUGGESTS=
+<FOO>_CONFLICTS=
 
 #
 # SQLITE2_IPK_VERSION should be incremented when the ipk changes.
@@ -134,6 +141,25 @@ $(SQLITE2_BUILD_DIR)/.staged: $(SQLITE2_BUILD_DIR)/.built
 sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/sqlite2
+#
+$(SQLITE2_IPK_DIR)/CONTROL/control:
+	@install -d $(SQLITE2_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: sqlite2" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SQLITE2_PRIORITY)" >>$@
+	@echo "Section: $(SQLITE2_SECTION)" >>$@
+	@echo "Version: $(SQLITE2_VERSION)-$(SQLITE2_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SQLITE2_MAINTAINER)" >>$@
+	@echo "Source: $(SQLITE2_SITE)/$(SQLITE2_SOURCE)" >>$@
+	@echo "Description: $(SQLITE2_DESCRIPTION)" >>$@
+	@echo "Depends: $(SQLITE2_DEPENDS)" >>$@
+	@echo "Suggests: $(SQLITE2_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SQLITE2_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(SQLITE2_IPK_DIR)/opt/sbin or $(SQLITE2_IPK_DIR)/opt/bin
@@ -148,7 +174,7 @@ sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
 $(SQLITE2_IPK): $(SQLITE2_BUILD_DIR)/.built
 	rm -rf $(SQLITE2_IPK_DIR) $(BUILD_DIR)/sqlite2_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(SQLITE2_BUILD_DIR) DESTDIR=$(SQLITE2_IPK_DIR) install
-	install -d $(SQLITE2_IPK_DIR)/CONTROL
+	$(MAKE) $(SQLITE2_IPK_DIR)/CONTROL/control
 	install -m 644 $(SQLITE2_SOURCE_DIR)/control $(SQLITE2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQLITE2_IPK_DIR)
 
