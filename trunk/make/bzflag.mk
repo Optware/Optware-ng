@@ -19,6 +19,13 @@ BZFLAG_VERSION=2.0.0.20050117
 BZFLAG_SOURCE=bzflag-$(BZFLAG_VERSION).tar.gz
 BZFLAG_DIR=bzflag-$(BZFLAG_VERSION)
 BZFLAG_UNZIP=zcat
+BZFLAG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+BZFLAG_DESCRIPTION=bzflag server
+BZFLAG_SECTION=games
+BZFLAG_PRIORITY=optional
+BZFLAG_DEPENDS=zlib, adns, libcurl, ncurses, openssl
+BZFLAG_SUGGESTS=
+BZFLAG_CONFLICTS=
 
 #
 # BZFLAG_IPK_VERSION should be incremented when the ipk changes.
@@ -136,6 +143,25 @@ $(BZFLAG_BUILD_DIR)/.staged: $(BZFLAG_BUILD_DIR)/.built
 bzflag-stage: $(BZFLAG_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/bzflag
+#
+$(BZFLAG_IPK_DIR)/CONTROL/control:
+	@install -d $(BZFLAG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: bzflag" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(BZFLAG_PRIORITY)" >>$@
+	@echo "Section: $(BZFLAG_SECTION)" >>$@
+	@echo "Version: $(BZFLAG_VERSION)-$(BZFLAG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BZFLAG_MAINTAINER)" >>$@
+	@echo "Source: $(BZFLAG_SITE)/$(BZFLAG_SOURCE)" >>$@
+	@echo "Description: $(BZFLAG_DESCRIPTION)" >>$@
+	@echo "Depends: $(BZFLAG_DEPENDS)" >>$@
+	@echo "Suggests: $(BZFLAG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(BZFLAG_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(BZFLAG_IPK_DIR)/opt/sbin or $(BZFLAG_IPK_DIR)/opt/bin
@@ -158,8 +184,7 @@ $(BZFLAG_IPK): $(BZFLAG_BUILD_DIR)/.built
 #	install -m 755 $(BZFLAG_SOURCE_DIR)/bzflag.conf $(BZFLAG_IPK_DIR)/opt/etc/bzflag.conf
 #	install -d $(BZFLAG_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(BZFLAG_SOURCE_DIR)/rc.bzflag $(BZFLAG_IPK_DIR)/opt/etc/init.d/SXXbzflag
-	install -d $(BZFLAG_IPK_DIR)/CONTROL
-	install -m 644 $(BZFLAG_SOURCE_DIR)/control $(BZFLAG_IPK_DIR)/CONTROL/control
+	$(MAKE) $(BZFLAG_IPK_DIR)/CONTROL/control
 #	install -m 644 $(BZFLAG_SOURCE_DIR)/postinst $(BZFLAG_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(BZFLAG_SOURCE_DIR)/prerm $(BZFLAG_IPK_DIR)/CONTROL/prerm
 #	echo $(BZFLAG_CONFFILES) | sed -e 's/ /\n/g' > $(BZFLAG_IPK_DIR)/CONTROL/conffiles
