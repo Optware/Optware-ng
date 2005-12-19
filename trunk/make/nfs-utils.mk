@@ -19,6 +19,13 @@ NFS-UTILS_VERSION=1.0.6
 NFS-UTILS_SOURCE=nfs-utils-$(NFS-UTILS_VERSION).tar.gz
 NFS-UTILS_DIR=nfs-utils-$(NFS-UTILS_VERSION)
 NFS-UTILS_UNZIP=zcat
+NFS-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NFS-UTILS_DESCRIPTION=Kernel NFS Server
+NFS-UTILS_SECTION=net
+NFS-UTILS_PRIORITY=optional
+NFS-UTILS_DEPENDS=portmap
+NFS-UTILS_SUGGESTS=
+NFS-UTILS_CONFLICTS=
 
 #
 # NFS-UTILS_IPK_VERSION should be incremented when the ipk changes.
@@ -119,6 +126,25 @@ $(NFS-UTILS_BUILD_DIR)/.built: $(NFS-UTILS_BUILD_DIR)/.configured
 nfs-utils: $(NFS-UTILS_BUILD_DIR)/.built
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nfs-utils
+#
+$(NFS-UTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(NFS-UTILS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nfs-utils" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NFS-UTILS_PRIORITY)" >>$@
+	@echo "Section: $(NFS-UTILS_SECTION)" >>$@
+	@echo "Version: $(NFS-UTILS_VERSION)-$(NFS-UTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NFS-UTILS_MAINTAINER)" >>$@
+	@echo "Source: $(NFS-UTILS_SITE)/$(NFS-UTILS_SOURCE)" >>$@
+	@echo "Description: $(NFS-UTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(NFS-UTILS_DEPENDS)" >>$@
+	@echo "Suggests: $(NFS-UTILS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NFS-UTILS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NFS-UTILS_IPK_DIR)/opt/sbin or $(NFS-UTILS_IPK_DIR)/opt/bin
@@ -145,8 +171,7 @@ $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
 	install -m 644 $(NFS-UTILS_SOURCE_DIR)/exports $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils/exports
 	install -d $(NFS-UTILS_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/S56nfs-utils
-	install -d $(NFS-UTILS_IPK_DIR)/CONTROL
-	install -m 644 $(NFS-UTILS_SOURCE_DIR)/control $(NFS-UTILS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NFS-UTILS_IPK_DIR)/CONTROL/control
 	install -m 644 $(NFS-UTILS_SOURCE_DIR)/postinst $(NFS-UTILS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(NFS-UTILS_SOURCE_DIR)/prerm $(NFS-UTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NFS-UTILS_IPK_DIR)
