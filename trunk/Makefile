@@ -196,6 +196,7 @@ WL500G_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
+	appweb \
 	clamav cogito cvs \
 	elinks \
 	gawk gettext git-core glib gnupg \
