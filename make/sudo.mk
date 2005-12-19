@@ -8,6 +8,13 @@ SUDO_VERSION=1.6.8p1
 SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_VERSION)
 SUDO_UNZIP=zcat
+SUDO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SUDO_DESCRIPTION=System utility to execute commands as the superuser
+SUDO_SECTION=sysutil
+SUDO_PRIORITY=optional
+SUDO_DEPENDS=
+SUDO_SUGGESTS=
+SUDO_CONFLICTS=
 
 SUDO_IPK_VERSION=5
 
@@ -51,6 +58,25 @@ $(SUDO_BUILD_DIR)/sudo: $(SUDO_BUILD_DIR)/.configured
 
 sudo: $(SUDO_BUILD_DIR)/sudo
 
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/sudo
+#
+$(SUDO_IPK_DIR)/CONTROL/control:
+	@install -d $(SUDO_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: sudo" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SUDO_PRIORITY)" >>$@
+	@echo "Section: $(SUDO_SECTION)" >>$@
+	@echo "Version: $(SUDO_VERSION)-$(SUDO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SUDO_MAINTAINER)" >>$@
+	@echo "Source: $(SUDO_SITE)/$(SUDO_SOURCE)" >>$@
+	@echo "Description: $(SUDO_DESCRIPTION)" >>$@
+	@echo "Depends: $(SUDO_DEPENDS)" >>$@
+	@echo "Suggests: $(SUDO_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SUDO_CONFLICTS)" >>$@
+
 $(SUDO_IPK): $(SUDO_BUILD_DIR)/sudo
 	rm -rf $(SUDO_IPK_DIR) $(BUILD_DIR)/sudo_*_$(TARGET_ARCH).ipk
 	install -d $(SUDO_IPK_DIR)/opt/bin
@@ -60,8 +86,7 @@ $(SUDO_IPK): $(SUDO_BUILD_DIR)/sudo
 	install -m 600 $(SUDO_BUILD_DIR)/sudoers $(SUDO_IPK_DIR)/opt/etc/sudoers
 	install -d $(SUDO_IPK_DIR)/opt/doc/sudo
 	install -m 644 $(SUDO_BUILD_DIR)/sample.sudoers $(SUDO_IPK_DIR)/opt/doc/sudo/sample.sudoers
-	install -d $(SUDO_IPK_DIR)/CONTROL
-	install -m 644 $(SUDO_SOURCE_DIR)/control $(SUDO_IPK_DIR)/CONTROL/control
+	$(MAKE) $(SUDO_IPK_DIR)/CONTROL/control
 	install -m 644 $(SUDO_SOURCE_DIR)/postinst $(SUDO_IPK_DIR)/CONTROL/postinst
 	echo $(SUDO_CONFFILES) | sed -e 's/ /\n/g' > $(SUDO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR) && $(IPKG_BUILD) $(SUDO_IPK_DIR)

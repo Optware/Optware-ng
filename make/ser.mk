@@ -24,6 +24,13 @@ SER_VERSION=0.8.14
 SER_SOURCE=ser-$(SER_VERSION)_src.tar.gz
 SER_DIR=ser-$(SER_VERSION)
 SER_UNZIP=zcat
+SER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SER_DESCRIPTION=SIP Express Router
+SER_SECTION=util
+SER_PRIORITY=optional
+SER_DEPENDS=flex
+SER_SUGGESTS=
+SER_CONFLICTS=
 
 #
 # SER_IPK_VERSION should be incremented when the ipk changes.
@@ -151,6 +158,25 @@ $(SER_BUILD_DIR)/.staged: $(SER_BUILD_DIR)/.built
 ser-stage: $(SER_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ser
+#
+$(SER_IPK_DIR)/CONTROL/control:
+	@install -d $(SER_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ser" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SER_PRIORITY)" >>$@
+	@echo "Section: $(SER_SECTION)" >>$@
+	@echo "Version: $(SER_VERSION)-$(SER_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SER_MAINTAINER)" >>$@
+	@echo "Source: $(SER_SITE)/$(SER_SOURCE)" >>$@
+	@echo "Description: $(SER_DESCRIPTION)" >>$@
+	@echo "Depends: $(SER_DEPENDS)" >>$@
+	@echo "Suggests: $(SER_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SER_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(SER_IPK_DIR)/opt/sbin or $(SER_IPK_DIR)/opt/bin
@@ -173,8 +199,7 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 #	install -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
 #	install -d $(SER_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SER_SOURCE_DIR)/rc.ser $(SER_IPK_DIR)/opt/etc/init.d/SXXser
-	install -d $(SER_IPK_DIR)/CONTROL
-	install -m 644 $(SER_SOURCE_DIR)/control $(SER_IPK_DIR)/CONTROL/control
+	$(MAKE) $(SER_IPK_DIR)/CONTROL/control
 #	install -m 755 $(SER_SOURCE_DIR)/postinst $(SER_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(SER_SOURCE_DIR)/prerm $(SER_IPK_DIR)/CONTROL/prerm
 #	echo $(SER_CONFFILES) | sed -e 's/ /\n/g' > $(SER_IPK_DIR)/CONTROL/conffiles
