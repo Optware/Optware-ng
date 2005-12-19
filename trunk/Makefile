@@ -538,7 +538,7 @@ $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
 index: $(PACKAGE_DIR)/Packages
 
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
-	rsync -avr --delete $(BUILD_DIR)/*.ipk $(PACKAGE_DIR)/
+	rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(PACKAGE_DIR)/
 	{ \
 		cd $(PACKAGE_DIR); \
 		$(IPKG_MAKE_INDEX) . > Packages; \
