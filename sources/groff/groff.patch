@@ -33,3 +33,17 @@
  GROFF_BIN_PATH=`echo $(groff_bin_dirs) | sed -e 's|  *|$(SH_SEP)|g'`
  
  # Since info files are distributed within the groff package, no
+@@ -148,9 +148,10 @@
+ 
+ distfiles: groff gnu.eps gnu.png
+ 
+-install_data: groff $(DOCFILES) $(PROCESSEDDOCFILES) $(make_install_html) \
+-              $(EXAMPLEFILES) $(PROCESSEDEXAMPLEFILES)
+-	-test -d $(infodir) || $(mkinstalldirs) $(infodir)
++#install_data: groff $(DOCFILES) $(PROCESSEDDOCFILES) $(make_install_html) \
++#              $(EXAMPLEFILES) $(PROCESSEDEXAMPLEFILES)
++#	-test -d $(infodir) || $(mkinstalldirs) $(infodir)
++install_data:
+ # Prefer info files in builddir over srcdir; we test for
+ # the existence of `groff'.
+ 	d=.; \
