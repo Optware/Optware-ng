@@ -178,7 +178,10 @@ $(MODUTILS_IPK): $(MODUTILS_BUILD_DIR)/.built
 	# Remove man pages
 	rm -rf $(MODUTILS_IPK_DIR)/opt/man
 	# Strip binaries
-	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/depmod
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/genksyms
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/insmod
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/modinfo
 	install -d $(MODUTILS_IPK_DIR)/opt/etc/
 	install -d $(MODUTILS_IPK_DIR)/opt/etc/init.d
 	install -d $(MODUTILS_IPK_DIR)/opt/lib/
