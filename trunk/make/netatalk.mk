@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NETATALK_SITE=http://unc.dl.sourceforge.net/sourceforge/netatalk
+NETATALK_SITE=http://dl.sourceforge.net/sourceforge/netatalk
 NETATALK_VERSION=2.0.1
 NETATALK_SOURCE=netatalk-$(NETATALK_VERSION).tar.gz
 NETATALK_DIR=netatalk-$(NETATALK_VERSION)

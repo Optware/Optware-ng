@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-GHOSTSCRIPT_SITE=http://unc.dl.sourceforge.net/sourceforge/ghostscript
+GHOSTSCRIPT_SITE=http://dl.sourceforge.net/sourceforge/ghostscript
 GHOSTSCRIPT_VERSION=8.50
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)

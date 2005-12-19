@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-JAMVM_SITE=http://unc.dl.sourceforge.net/sourceforge/jamvm
+JAMVM_SITE=http://dl.sourceforge.net/sourceforge/jamvm
 JAMVM_VERSION=1.2.4
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)

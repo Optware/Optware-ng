@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-FFMPEG_SITE=http://unc.dl.sourceforge.net/sourceforge/ffmpeg
+FFMPEG_SITE=http://dl.sourceforge.net/sourceforge/ffmpeg
 FFMPEG_VERSION=0.4.9-pre1
 FFMPEG_SOURCE=ffmpeg-$(FFMPEG_VERSION).tar.gz
 FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)

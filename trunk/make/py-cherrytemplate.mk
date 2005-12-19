@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CHERRYTEMPLATE_SITE=http://dl.sf.net/sourceforge/cherrypy
+PY-CHERRYTEMPLATE_SITE=http://dl.sourceforge.net/sourceforge/cherrypy
 PY-CHERRYTEMPLATE_VERSION=1.0.0
 PY-CHERRYTEMPLATE_SOURCE=CherryTemplate-$(PY-CHERRYTEMPLATE_VERSION).tar.gz
 PY-CHERRYTEMPLATE_DIR=CherryTemplate-$(PY-CHERRYTEMPLATE_VERSION)
