@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTASN1_SITE=ftp://ftp.gnutls.org/pub/gnutls/libtasn1
+LIBTASN1_SITE=http://ftp.gnupg.org/GnuPG/alpha/gnutls/libtasn1
 LIBTASN1_VERSION=0.2.13
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
