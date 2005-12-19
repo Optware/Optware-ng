@@ -35,87 +35,62 @@ CROSS_PACKAGES_READY_FOR_TESTING = nrpe
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
-	adduser appweb \
-	bash bc bzip2 \
-	ccxstream coreutils cpio cron \
-	dhcp diffutils dnsmasq dovecot dropbear \
-	eggdrop expat \
-	fetchmail file findutils flex ftpd-topfield \
-	gdb gdbm grep groff gzip \
-	hdparm \
-	inetutils \
-	joe \
-	knock \
-	lame less libcurl libdb libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
-	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
-	nano ncftp ncurses noip \
-	openssh openssl openvpn \
-	patch php php-thttpd procps proftpd psutils puppy python py-bittorrent \
-	rdate readline rsync \
-	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
-	tar tcpdump termcap textutils thttpd \
-	unzip usbutils \
-	vblade vim \
-	wakelan which whois \
-	zlib \
-	abook adns alac-decoder \
-	atftp apache apr apr-util atk audiofile automake \
-	asterisk-sounds \
-	bind bip bitchx bitlbee busybox byrequest bzflag \
+	abook adns alac-decoder adduser appweb asterisk-sounds \
+	atftp apache apr apr-util atk audiofile automake antinat \
+	bash bc bzip2 bind bip bitchx bitlbee busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
-	cdargs cherokee chrpath classpath clamav \
-	clips \
+	ccxstream coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	ctorrent cups ctags cyrus-sasl \
-	denyhosts dev-pts dict digitemp distcc dokuwiki \
-	e2fsprogs e2tools eaccelerator ed esmtp erlang esound \
-	ffmpeg ficy fixesext flac \
+	denyhosts dev-pts dict digitemp distcc dokuwiki dhcp diffutils dnsmasq dovecot dropbear \
+	e2fsprogs e2tools eaccelerator ed esmtp erlang esound eggdrop expat \
+	fetchmail file findutils flex ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
-	gconv-modules getmail gdchart ghostscript \
+	gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core gnutls gtk \
-	hexcurse hnb hpijs \
-	ice imagemagick imap \
-	iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
-	jabber jamvm jikes jove \
-	ldconfig \
-	libart libbt libdvb libdvdread libesmtp libevent \
-	libgc libgcrypt libgd libghttp libgpg-error libid3tag \
-	libjpeg libmad libogg libosip2 \
-	libpng libtasn1 libtiff libtool libtopfield libusb \
-	libvorbis libvorbisidec libxslt lua \
-	madplay man man-pages mdadm mediawiki metalog monotone \
-	mod-fastcgi mod-python \
-	mrtg \
-	nagios-plugins neon net-snmp \
-	net-tools netio nfs-server nfs-utils \
+	hdparm hexcurse hnb hpijs \
+	ice imagemagick imap inetutils iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
+	jabber jamvm jikes jove joe \
+	knock \
+	lame less libcurl libdb libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
+	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
+	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
+	libpng libtasn1 libtiff libtool libtopfield libusb libvorbis libvorbisidec libxslt lua \
+	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
+	madplay man man-pages mdadm mediawiki metalog monotone mod-fastcgi mod-python mrtg \
+	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
 	nget nload ntop ntpclient nylon \
-	opencdk oww \
-	pango \
-	php-apache phpmyadmin \
-	pkgconfig popt portmap postgresql \
-	procmail pwgen \
+	opencdk oww openssh openssl openvpn \
+	pango patch php php-thttpd procps proftpd psutils puppy python py-bittorrent \
+	php-apache phpmyadmin pkgconfig popt portmap postgresql procmail pwgen \
 	py-bluez py-cheetah py-cherrypy py-clips \
-	py-gdchart2 py-gd py-pil py-mssql \
-	py-sqlite py-moin py-mx-base py-mysql py-psycopg py-xml \
-	py-roundup py-serial py-simpy py-soappy \
 	py-celementtree py-cherrytemplate \
 	py-elementtree py-kid py-sqlobject \
-	qemu qemu-libc-i386 \
-	quagga  \
+	py-gdchart2 py-gd py-pil py-mssql \
+	py-roundup py-serial py-simpy py-soappy \
+	py-sqlite py-moin py-mx-base py-mysql py-psycopg py-xml \
+	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
+	rdate readline rsync \
 	samba sdl ser siproxd sm snownews \
+	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh stunnel streamripper sudo svn \
 	sysstat \
 	taged tcl tcpwrappers tftp-hpa \
+	tar tcpdump termcap textutils thttpd \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
-	ufsd unfs3 units unslung-feeds \
+	ufsd unfs3 units \
+	unzip usbutils \
 	vblade vdr-mediamvp vsftpd vte vorbis-tools \
+	vblade vim \
 	w3cam webalizer wizd \
+	wakelan which whois \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd xmu \
 	xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
+	zlib \
 
-NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-devel crosstool-native
+NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
 
 # Packages that do not work for nslu2.
 NSLU2_BROKEN_PACKAGES = 
@@ -209,38 +184,7 @@ WL500G_PACKAGES_THAT_NEED_FIXING = \
 	ttf-bitstream-vera \
 	xmail \
 
-MSS_SPECIFIC_PACKAGES = \
-	adns antinat audiofile autoconf automake \
-	bind bitchx bluez-libs bluez-utils bluez-hcidump busybox \
-	chillispot clips ctags cups cyrus-sasl \
-	distcc dokuwiki \
-	e2fsprogs e2tools ed esmtp \
-	ffmpeg fixesext flac \
-	freetype fontconfig \
-	gconv-modules gdchart \
-        gift gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	ghostscript \
-	hexcurse \
-	ircd-hybrid \
-	jove \
-	libart libbt libdvdread libevent libesmtp libgcrypt libgd libghttp libgpg-error \
-	libgcrypt libid3tag libjpeg libmad libogg \
-	libosip2 libpng \
-	libtasn1 libtool libtopfield libusb libvorbis libxslt \
-	lua \
-	madplay man man-pages microperl \
-	netio neon ntpclient nylon \
-	openssl oww \
-	pkgconfig popt poptop portmap \
-	quagga \
-	recordext renderext rrdtool \
-	siproxd stunnel sysstat \
-	taged tcl tcpwrappers tftp-hpa torrent \
-	ttf-bitstream-vera \
-	unfs3 units \
-	vdr-mediamvp vorbis-tools vsftpd \
-	w3cam wiley-feeds wizd wpa-supplicant \
-	xau xdmcp xextensions xinetd xmail xproto xtrans xvid \
+MSS_SPECIFIC_PACKAGES = autoconf chillispot microperl poptop wpa-supplicant xmail
 
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
@@ -267,7 +211,7 @@ MSS_BROKEN_PACKAGES = \
 # py-moin
 # tsocks: couldn't download
 MSS_PACKAGES_THAT_NEED_FIXING = \
- classpath cyrus-sasl freeradius gift-ares net-snmp net-tools postgresql py-moin tsocks
+	classpath cyrus-sasl freeradius gift-ares net-snmp net-tools postgresql py-moin tsocks
 
 # Packages that only work for ds101
 DS101_SPECIFIC_PACKAGES = 
