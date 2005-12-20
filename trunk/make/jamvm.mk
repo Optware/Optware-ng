@@ -24,6 +24,13 @@ JAMVM_VERSION=1.2.4
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
 JAMVM_UNZIP=zcat
+JAMVM_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+JAMVM_DESCRIPTION=VM spec version 2 conformant. Extremely small with stripped executable
+JAMVM_SECTION=language
+JAMVM_PRIORITY=optional
+JAMVM_DEPENDS=zlib
+JAMVM_SUGGESTS=
+JAMVM_CONFLICTS=
 
 #
 # JAMVM_IPK_VERSION should be incremented when the ipk changes.
@@ -140,6 +147,25 @@ $(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION): $(JAMVM_BUILD_DIR)/.built
 jamvm-stage: $(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/jamvm
+#
+$(JAMVM_IPK_DIR)/CONTROL/control:
+	@install -d $(JAMVM_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: jamvm" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(JAMVM_PRIORITY)" >>$@
+	@echo "Section: $(JAMVM_SECTION)" >>$@
+	@echo "Version: $(JAMVM_VERSION)-$(JAMVM_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(JAMVM_MAINTAINER)" >>$@
+	@echo "Source: $(JAMVM_SITE)/$(JAMVM_SOURCE)" >>$@
+	@echo "Description: $(JAMVM_DESCRIPTION)" >>$@
+	@echo "Depends: $(JAMVM_DEPENDS)" >>$@
+	@echo "Suggests: $(JAMVM_SUGGESTS)" >>$@
+	@echo "Conflicts: $(JAMVM_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(JAMVM_IPK_DIR)/opt/sbin or $(JAMVM_IPK_DIR)/opt/bin
@@ -154,8 +180,7 @@ jamvm-stage: $(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION)
 $(JAMVM_IPK): $(JAMVM_BUILD_DIR)/.built
 	rm -rf $(JAMVM_IPK_DIR) $(BUILD_DIR)/jamvm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JAMVM_BUILD_DIR) install-strip prefix=$(JAMVM_IPK_DIR)/opt
-	install -d $(JAMVM_IPK_DIR)/CONTROL
-	install -m 644 $(JAMVM_SOURCE_DIR)/control $(JAMVM_IPK_DIR)/CONTROL/control
+	$(MAKE) $(JAMVM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JAMVM_IPK_DIR)
 
 #
