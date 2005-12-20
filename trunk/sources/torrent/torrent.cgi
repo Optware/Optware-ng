@@ -76,7 +76,7 @@ _stop_torrent ()
 	kill -TERM ${PID} 
 	ENDTIME=`date +"${DATE_FORMAT}"`
 	PID=""
-	PROGRESS=`cut -f 1 -d " "`
+	PROGRESS=`echo "${PROGRESS}" | cut -f 1 -d " "`
 	_write_info
     fi
 }
