@@ -26,6 +26,13 @@ TRANSCODE_TAG=-D 2005-02-13
 TRANSCODE_MODULE=transcode
 TRANSCODE_DIR=transcode-$(TRANSCODE_VERSION)
 TRANSCODE_UNZIP=zcat
+TRANSCODE_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
+TRANSCODE_SECTION=tool
+TRANSCODE_PRIORITY=optional
+TRANSCODE_DEPENDS=ffmpeg, lame, libdvdread, freetype, libogg, libvorbis
+TRANSCODE_SUGGESTS=
+TRANSCODE_CONFLICTS=
 
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
@@ -184,6 +191,25 @@ $(TRANSCODE_BUILD_DIR)/.staged: $(TRANSCODE_BUILD_DIR)/.built
 transcode-stage: $(TRANSCODE_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/transcode
+#
+$(TRANSCODE_IPK_DIR)/CONTROL/control:
+	@install -d $(TRANSCODE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: transcode" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TRANSCODE_PRIORITY)" >>$@
+	@echo "Section: $(TRANSCODE_SECTION)" >>$@
+	@echo "Version: $(TRANSCODE_VERSION)-$(TRANSCODE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TRANSCODE_MAINTAINER)" >>$@
+	@echo "Source: $(TRANSCODE_SITE)/$(TRANSCODE_SOURCE)" >>$@
+	@echo "Description: $(TRANSCODE_DESCRIPTION)" >>$@
+	@echo "Depends: $(TRANSCODE_DEPENDS)" >>$@
+	@echo "Suggests: $(TRANSCODE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(TRANSCODE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(TRANSCODE_IPK_DIR)/opt/sbin or $(TRANSCODE_IPK_DIR)/opt/bin
@@ -235,8 +261,7 @@ $(TRANSCODE_IPK): $(TRANSCODE_BUILD_DIR)/.built
 	cd $(TRANSCODE_IPK_DIR)/opt/lib/transcode; \
 	mv $(GNU_TARGET_NAME)-filter_list.awk filter_list.awk; \
 	mv $(GNU_TARGET_NAME)-parse_csv.awk parse_csv.awk; 
-	install -d $(TRANSCODE_IPK_DIR)/CONTROL
-	install -m 644 $(TRANSCODE_SOURCE_DIR)/control $(TRANSCODE_IPK_DIR)/CONTROL/control
+	$(MAKE) $(TRANSCODE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSCODE_IPK_DIR)
 
 #
