@@ -2,5 +2,7 @@
 
 # Add a rule to the crontab
 
-echo "0-59/10 * * * * root /opt/sbin/torrent_watchdog &>/dev/null" >> /etc/crontab
+# grep -q torrent_watchdog /etc/crontab || echo "0-59/10 * * * * root /opt/sbin/torrent_watchdog &>/dev/null" >> /etc/crontab
+# m h dom mon dow user  command
+grep -q torrent_watchdog /opt/etc/crontab || echo "*/15 * * * * admin /opt/sbin/torrent_watchdog" >> /opt/etc/crontab
 
