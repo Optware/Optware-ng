@@ -149,15 +149,21 @@ WL500G_BROKEN_PACKAGES = \
 	ficy freetds \
 	gawk gettext giftcurs git-core glib gnupg gtk \
 	hnb \
-	ice iptables \
-	libstdc++ libsigc++ libtiff libtorrent lsof \
-	mtr mutt \
-	nail nmap ntp \
-	pcre \
-	rtorrent \
+	ice imagemagick iperf iptables ivorbis-tools \
+	jabber jamvm jikes \
+	ldconfig libdvb libgc libstdc++ libsigc++ libtiff libtorrent libvorbisidec lsof \
+	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
+	nagios-plugins nail nfs-server nfs-utils nget nload nmap ntp \
+	pango pcre py-bluez py-cheetah py-clips py-celementtree py-gdchart2 py-gd py-pil \
+	py-mssql py-sqlite py-mx-base py-mysql py-psycopg py-xml \
+	qemu qemu-libc-i386 \
+	rcs rtorrent \
+	samba sdl ser sm snownews sqsh sudo \
+	transcode \
 	unrar \
+	vte \
 	wget-ssl \
-	x11 \
+	x11 xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpdf xpm xrender xt xterm xtst \
 
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
@@ -203,8 +209,12 @@ DS101G_BROKEN_PACKAGES = \
 	gnutls \
 	ivorbis-tools \
 	ldconfig libgcrypt libvorbisidec \
+	ntop \
 	opencdk \
-	php \
+	php php-apache portmap \
+	qemu qemu-libc-i386 \
+	rsync \
+	ser \
 
 DS101G_PACKAGES_THAT_NEED_FIXING = ldconfig mc
 
