@@ -1,4 +1,9 @@
 #!/bin/sh
+# httpd.conf for busybox_httpd -p 8008 -c /opt/etc/httpd.conf -h /opt/share/www
+# A:*
+# /cgi-bin:admin:admin
+# For thttpd.conf add cgipat=/cgi-bin/* and user=admin
+# replace standard "admin" on wl500gx with "root" for other systems
 
 . /opt/etc/torrent.conf
 
@@ -108,7 +113,7 @@ _seed ()
 {
    # Double check
    if [ ! -f "${TARGET}${TORRENT#${TARGET}}" ] ; then
-	echo -e "${BOLD}Can only seed already done torrents${NORMAL}"
+	echo "<b>Can only seed already done torrents</b>"
 	return
    fi
    
@@ -128,19 +133,23 @@ _purge ()
     if [ -z "${LOG}" ] ; then
 	echo "No LOG to purge."
     else
+      echo "<pre>"
       for f in $TARGET/*/*.log ; do
 	echo "Purging $f"
 	rm "$f"
       done
+      echo "</pre>"
     fi
     
     REMOVED=`ls -1 $WORK/*/*.torrent.removed 2>/dev/null | head -1`
     if [ ! -z "${REMOVED}" ]; then
+        echo "<pre>"
 	for f in $WORK/*/*.torrent.removed ; do
 		DIR=`dirname "$f"`
 		echo "Purging $DIR"
 		rm -fr "${DIR}"			
 	done
+        echo "</pre>"
     fi
 }
 
@@ -149,7 +158,7 @@ _pause ()
 {
     if [ -f "$WORK/.paused" ] ; then
 	rm "$WORK/.paused"
-	echo -e "${BOLD}Watchdog will resume torrents!${NORMAL}"
+	echo "<b>Watchdog will resume torrents!</b>"
     else
 	touch "$WORK/.paused"
 	for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
@@ -162,7 +171,7 @@ _pause ()
                 _write_info
 	    fi
 	done
-	echo -e "${BOLD}All torrents killed!${NORMAL}"
+	echo "<b>All torrents killed!</b>"
     fi 
 }
 
@@ -207,26 +216,27 @@ __list ()
     
     if [ ! -z "`ls ${FILEPAT} 2>/dev/null | head -1`" ]
     then
-	echo "#####################################"
-	echo "### ${DESC} "
+	echo "<table>"
+	echo "<thead><tr><td></td><td>${DESC}</td><td>status</td></tr>"
+	echo "</thead><tbody>"
 	for i in $FILEPAT
 	do
 	    DUMMY="${i%.torrent*}"
 	    P="${i%/*}"
 	    DUMMY=${DUMMY##*/}
-	    echo -ne "${BOLD}${idx}) ${GREEN}$DUMMY${NORMAL}\t"
+	    echo "<tr><td><input name=ID value=$idx type=radio></td><td>$DUMMY</td>"
 	    if [ -f "$P/.info" ] ; then
 		. "$P/.info"
-		echo -n "${PROGRESS}"
-		[ ! -z "${PID}" ]  && echo -n " PID:${PID} "
-		echo -n " Start: ${STARTTIME}"
-		[ ! -z "${ENDTIME}" ] && echo -n " End: ${ENDTIME}"
-		[ ${TRIES} -gt 0 ] && echo -n " Tries: ${TRIES}"
+		echo "<td>${PROGRESS}"
+		[ ! -z "${PID}" ]  && echo " PID:${PID} "
+		echo " Start: ${STARTTIME}"
+		[ ! -z "${ENDTIME}" ] && echo " End: ${ENDTIME}"
+		[ ${TRIES} -gt 0 ] && echo " Tries: ${TRIES}"
+		echo "</td></tr>"
 	    fi
-	    echo ""
 	    idx=`expr $idx + 1`
 	done
-	echo ""
+	echo "</tbody></table>"
     echo
     fi
 }
@@ -236,7 +246,7 @@ _list ()
     idx=0
    __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
-    [ "${ACTION}" = "-u" ] && return
+    [ "${ACTION}" = "Update" ] && return
     __list "$WORK/*/*.torrent.suspended" "Suspended" 
     __list "$WORK/*/*.torrent.removed" "Removed" 
     __list "$SOURCE/*.torrent" "Queued"
@@ -256,7 +266,7 @@ _root_check () {
 _remove ()
 {
     if [ -z "$ID" ] ; then
-	echo -e "${WARN}Please select torrent first!${NORMAL}"
+	echo "<b>Please select torrent first!</b>"
 	return
     fi
    
@@ -265,7 +275,7 @@ _remove ()
    if [ -f "${TORRENT%.torrent.suspended}.torrent.suspended" ]; then
 	mv "${TORRENT}" "${TORRENT%.suspended}.removed"
    else
-	echo -e "${BOLD}Can only remove suspended torrents!${NORMAL}"
+	echo "<b>Can only remove suspended torrents!</b>"
    fi
 }
 
@@ -273,7 +283,7 @@ _remove ()
 _push()
 {
     if [ -z "$ID" ] ; then
-	echo -e "${BOLD}Please select torrent first!${NORMAL}"
+	echo "<b>Please select torrent first!</b>"
 	return
     fi
     _find
@@ -301,81 +311,140 @@ _push()
        return
     fi
     
-    echo -e "${WARN}Nothing to push!${NORMAL}" 
+    echo "<p><em>Nothing to push!</em></p>" 
 }
 
 # Show tail of the selected torrent log
 _log ()
 {
     if [ -z "$ID" ] ; then
-	echo -e "${WARN}Please select torrent first!${NORMAL}"
+	echo "<b>Please select torrent first!</b>"
 	return
     fi
     _find
     DIR="${TORRENT%/*}"
     NAME="${TORRENT##*/}"
-    echo -e "${BOLD}${NAME}${NORMAL}"
+    echo "<h3>${NAME}</h3><pre>"
     tail -10 "${DIR}/current.log"
+    echo "</pre>"
     SECONDS=`tail -10 "${DIR}/current.log" | tr '\r' '\n' | grep Time | tail -1 | cut -d " " -f 2`
     if [ ! -z "${SECONDS}" ]; then
       DATE=`/opt/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
-      echo -e "${BOLD}Last timestamp seen at ${DATE}${NORMAL}"
+      echo "<p>Last timestamp seen at ${DATE}</p>"
     fi
 }
 
 _info ()
 {
     if [ -z "$ID" ] ; then
-	echo -e "${BOLD}Please select torrent first!${NORMAL}"
+	echo "<b>Please select torrent first!</b>"
 	return
     fi
     _find
-    echo "Status"
-    echo ""
+    echo "<h3>Status</h3>"
+    echo "<pre>"
     btlist "${TORRENT}"
-    echo ""
+    echo "</pre>"
 }
 
 _help ()
 {
     cat << __EOF__
-This is quick explanation of the options:
--u	Updates active torrents status
--c n	Shows current.log of selected torrent
--s	All active torrent processing should stop/resume imediately
--p n	Push selected torrent to other queue
--l	Lists queued, active, suspended and completed torrents
--r n	Mark torrent for purging
--g	Purge removes all logs from completed torrents and clean removed torrents
--w 	Watchdog forces torrent_watchdog processing
--i n	Info shows selected torrent info ((file content and size)
--h	More help needed ?
+This is quick explanation of the buttons:
+<dl>
+<dt>Update<dd>updates active torrents status
+<dt>Log<dd>shows current.log of active torrent
+<dt>Pause<dd>all active torrent processing should stop/resume imediately
+<dt>Push<dd> Push selected torrent to other queue
+<dt>List<dd>lists queued, active, suspended and completed torrents
+<dt>Remove<dt>mark torrent for purging
+<dt>Purge<dd>removes all logs from completed torrents and clean removed torrents
+<dt>Watchdog<dd>forces torrent_watchdog processing
+<dt>Info<dd>shows selected torrent info ((file content and size)
+<dt>Help<dd>?
+</dl>
 __EOF__
 _root_check
 }
 
 #############################################
 # MAIN PROCESS
+cat << __EOF__                                 
+Content-type: text/html
+
+<html>
+<head>
+  <title>Torrent admin</title>
+  <h1>Torrent admin</h1>
+  <style type="text/css">
+  <!--
+      BODY { background-color: #F8F4E7; color: #552800 }
+      A:link { color: #0000A0 }
+      A:visited { color: #A000A0 }
+      THEAD {
+        background: #D0D0D0;
+        color: #000000;
+        text-align: center;
+      }
+      TBODY {
+        background: #D0D0E7;
+      }
+   //-->
+  </style>
+</head>
+<body>
+<form action=torrent.cgi method=get>
+<input type=submit name=ACTION value=Update>
+<input type=submit name=ACTION value=Log>
+<input type=submit name=ACTION value=Pause>
+<input type=submit name=ACTION value=Push>
+<input type=submit name=ACTION value=List><br>
+<input type=submit name=ACTION value=Remove>
+<input type=submit name=ACTION value=Purge>
+<input type=submit name=ACTION value=Watchdog>
+<input type=submit name=ACTION value=Info>
+<input type=submit name=ACTION value=Help>
+<! img align=top alt="" src=pingvin.gif>
+<br>
+
+
+__EOF__
 
 QUERY_STRING=`echo "$QUERY_STRING" | sed 's/&/;/g'`
 eval ${QUERY_STRING}
 #export ACTION
 #/opt/bin/printenv
-ACTION="$1"
-ID="$2"
+
 case "${ACTION}" in
-	-u) _update_progress ; _list ;;
-	-c) _log ;;
-	-p) _push  ;;
-	-s) _pause ;;
-        -r) _remove ;;
-        -g) _purge ;;
-        -w) torrent_watchdog ;;
-        -i) _info ;;
-        -l) _list ;;
-        -?) _help ;;
-        *) _help ;;
+	Update) _update_progress ; _list ;;
+	Log) _log ;;
+	Push)	_push ; _list ;;
+	Pause) _pause ; _list ;;
+        Remove) _remove; _list ;;
+        Purge) _purge ;;
+        Watchdog) torrent_watchdog ;;
+        Info) _info ;;
+        Help) _help ;;
+        *) _list ;;
 esac
 	
 
-uptime
+
+
+echo "<p>" ; uptime ; echo "</p>" 
+
+cat << __EOF__  
+</form>
+<h3>Links</h3>
+<ul>
+  <li><a href=../torrent/source>source</a></li>
+  <li><a href=../torrent/work>work</a></li>
+  <li><a href=../torrent/target>target</a></li>
+</ul>
+<hr>
+<address>
+&copy; 2005 oleo
+</address>
+</body>
+</html>
+__EOF__

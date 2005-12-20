@@ -15,13 +15,13 @@
 # You should change all these variables to suit your package.
 #
 TORRENT_SITE=
-TORRENT_VERSION=1.0
+TORRENT_VERSION=1.1
 TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
 TORRENT_PRIORITY=optional
-TORRENT_DEPENDS=libbt, bash
-TORRENT_MAINTAINER=perlguru <perlguru@mauricekoster.com>
+TORRENT_DEPENDS=libbt, cron
+TORRENT_MAINTAINER=oleo <oleon@users.sourceforge.net>
 TORRENT_SECTION=net
 TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
 
@@ -120,8 +120,10 @@ $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	install -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
 	install -d $(TORRENT_IPK_DIR)/opt/sbin
 	install -d $(TORRENT_IPK_DIR)/opt/etc
+	install -d $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)/opt/sbin
-	install -m 700 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
+	install -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
+	install -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORRENT_IPK_DIR)
 
