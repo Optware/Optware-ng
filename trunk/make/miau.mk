@@ -16,7 +16,7 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=11
+MIAU_IPK_VERSION=12
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
@@ -36,6 +36,12 @@ $(DL_DIR)/$(MIAU_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MIAU_SITE)/$(MIAU_SOURCE)
 
 miau-source: $(DL_DIR)/$(MIAU_SOURCE) $(MIAU_PATCHES)
+
+ifeq ($(OPTWARE_TARGET),nslu2)
+MIAU_IPV6_FLAGS=--enable-ipv6
+else
+MIAU_IPV6_FLAGS=
+endif
 
 $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 	$(MIAU_UNZIP) $(DL_DIR)/$(MIAU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -63,7 +69,7 @@ $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 		--enable-enduserdebug \
 		--enable-pingstat \
 		--enable-dumpstatus \
-		--enable-ipv6 \
+		$(MIAU_IPV6_FLAGS) \
 	)
 	touch $(MIAU_BUILD_DIR)/.configured
 
