@@ -30,7 +30,7 @@ LIBBT_CONFLICTS=
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=1
+LIBBT_IPK_VERSION=2
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
@@ -174,6 +174,9 @@ $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/.built
 	install -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)/opt/bin
 	install -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)/opt/bin
 	install -m 755 $(LIBBT_BUILD_DIR)/src/btlist $(LIBBT_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btget
+	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btcheck
+	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btlist
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBBT_IPK_DIR)
 
 #
