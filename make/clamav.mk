@@ -200,27 +200,26 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 #	install -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
 	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
 	cd $(CLAMAV_IPK_DIR)/opt/bin
-	rm $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamav-config # contains staging paths
+	rm $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-clamav-config # contains staging paths
 	rm $(CLAMAV_IPK_DIR)/opt/lib/libclamav.la # contains staging paths
 	rm $(CLAMAV_IPK_DIR)/opt/lib/pkgconfig/libclamav.pc # contains staging paths
-	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamdscan $(CLAMAV_IPK_DIR)/opt/bin/clamdscan
-	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-clamscan $(CLAMAV_IPK_DIR)/opt/bin/clamscan
-	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-freshclam $(CLAMAV_IPK_DIR)/opt/bin/freshclam
-	mv $(CLAMAV_IPK_DIR)/opt/bin/armv5b-softfloat-linux-sigtool $(CLAMAV_IPK_DIR)/opt/bin/sigtool
+	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-clamdscan $(CLAMAV_IPK_DIR)/opt/bin/clamdscan
+	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-clamscan $(CLAMAV_IPK_DIR)/opt/bin/clamscan
+	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-freshclam $(CLAMAV_IPK_DIR)/opt/bin/freshclam
+	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-sigtool $(CLAMAV_IPK_DIR)/opt/bin/sigtool
 	cd $(CLAMAV_IPK_DIR)/opt/sbin
-	mv $(CLAMAV_IPK_DIR)/opt/sbin/armv5b-softfloat-linux-clamd $(CLAMAV_IPK_DIR)/opt/sbin/clamd
+	mv $(CLAMAV_IPK_DIR)/opt/sbin/$(GNU_TARGET_NAME)-clamd $(CLAMAV_IPK_DIR)/opt/sbin/clamd
 	cd $(CLAMAV_IPK_DIR)/opt/man/man1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-clamdscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamdscan.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-clamscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamscan.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-freshclam.1 $(CLAMAV_IPK_DIR)/opt/man/man1/freshclam.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/armv5b-softfloat-linux-sigtool.1 $(CLAMAV_IPK_DIR)/opt/man/man1/sigtool.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-clamdscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamdscan.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-clamscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamscan.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-freshclam.1 $(CLAMAV_IPK_DIR)/opt/man/man1/freshclam.1
+	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-sigtool.1 $(CLAMAV_IPK_DIR)/opt/man/man1/sigtool.1
 	cd $(CLAMAV_IPK_DIR)/opt/man/man5
-	mv $(CLAMAV_IPK_DIR)/opt/man/man5/armv5b-softfloat-linux-clamd.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/clamd.conf.5
-	mv $(CLAMAV_IPK_DIR)/opt/man/man5/armv5b-softfloat-linux-freshclam.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/freshclam.conf.5
+	mv $(CLAMAV_IPK_DIR)/opt/man/man5/$(GNU_TARGET_NAME)-clamd.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/clamd.conf.5
+	mv $(CLAMAV_IPK_DIR)/opt/man/man5/$(GNU_TARGET_NAME)-freshclam.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/freshclam.conf.5
 	cd $(CLAMAV_IPK_DIR)/opt/man/man8
-	rm $(CLAMAV_IPK_DIR)/opt/man/man8/armv5b-softfloat-linux-clamav-milter.8
-	mv $(CLAMAV_IPK_DIR)/opt/man/man8/armv5b-softfloat-linux-clamd.8 $(CLAMAV_IPK_DIR)/opt/man/man8/clamd.8
-#	deluser clamav
+	rm $(CLAMAV_IPK_DIR)/opt/man/man8/$(GNU_TARGET_NAME)-clamav-milter.8
+	mv $(CLAMAV_IPK_DIR)/opt/man/man8/$(GNU_TARGET_NAME)-clamd.8 $(CLAMAV_IPK_DIR)/opt/man/man8/clamd.8
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLAMAV_IPK_DIR)
 
 #
