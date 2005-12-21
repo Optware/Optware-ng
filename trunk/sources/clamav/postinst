@@ -10,4 +10,10 @@ adduser -s /dev/null -H -h /opt/share/clamav -D -G clamav clamav
 
 chown clamav /opt/share/clamav
 chgrp clamav /opt/share/clamav
+chown clamav /opt/share/clamav/*
+chgrp clamav /opt/dhare/clamav/*
+
+touch /opt/var/log/freshclam.log
+chown clamav /opt/var/log/freshclam.log 
+chgrp clamav /opt/var/log/freshclam.log
 
