@@ -30,7 +30,13 @@ IMAGEMAGICK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
 IMAGEMAGICK_SECTION=graphics
 IMAGEMAGICK_PRIORITY=optional
+ifneq ($(OPTWARE_TARGET),wl500g)
 IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2
+IMAGEMAGICK_USE_TIFF=--with-tiff
+else
+IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtool, bzip2
+IMAGEMAGICK_USE_TIFF=--without-tiff
+endif
 IMAGEMAGICK_SUGGESTS=
 IMAGEMAGICK_CONFLICTS=
 
@@ -96,7 +102,10 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
-	$(MAKE) zlib-stage libjpeg-stage libpng-stage libtiff-stage bzip2-stage
+	make zlib-stage libjpeg-stage libpng-stage bzip2-stage
+ifneq ($(OPTWARE_TARGET),wl500g)
+	make libtiff-stage
+endif
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IMAGEMAGICK_PATCHES) | patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1
@@ -115,7 +124,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--with-zlib \
 		--with-jpeg \
 		--with-png \
-		--with-tiff \
+		$(IMAGEMAGICK_USE_TIFF) \
 		--without-gslib \
 	)
 	touch $(IMAGEMAGICK_BUILD_DIR)/.configured
