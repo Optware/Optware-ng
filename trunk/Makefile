@@ -83,7 +83,7 @@ COMMON_CROSS_PACKAGES = \
 	ufsd unfs3 units \
 	unzip usbutils \
 	vblade vdr-mediamvp vsftpd vte vorbis-tools \
-	vblade vim \
+	vim \
 	w3cam webalizer wizd \
 	wakelan which whois wpa-supplicant \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
@@ -149,7 +149,7 @@ WL500G_BROKEN_PACKAGES = \
 	ficy freetds \
 	gawk gettext giftcurs git-core glib gnupg gtk \
 	hnb \
-	ice imagemagick iperf iptables ivorbis-tools \
+	ice iperf iptables ivorbis-tools \
 	jabber jamvm jikes \
 	ldconfig libdvb libgc libstdc++ libsigc++ libtiff libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
