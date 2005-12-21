@@ -1,6 +1,6 @@
---- git-core.orig/Makefile	2005-11-14 18:39:18.000000000 -0800
-+++ git-core/Makefile	2005-12-11 20:35:42.000000000 -0800
-@@ -56,7 +56,7 @@
+--- git-1.0.0/Makefile.orig	2005-12-21 00:01:00.000000000 -0800
++++ git-1.0.0/Makefile	2005-12-21 14:46:42.000000000 -0800
+@@ -61,7 +61,7 @@
  
  CFLAGS = -g -O2 -Wall
  LDFLAGS =
@@ -9,11 +9,11 @@
  ALL_LDFLAGS = $(LDFLAGS)
  
  prefix = $(HOME)
-@@ -434,6 +434,7 @@
- install: $(PROGRAMS) $(SCRIPTS)
+@@ -459,6 +459,7 @@
+ install: all
  	$(INSTALL) -d -m755 $(call shellquote,$(DESTDIR)$(bindir))
- 	$(INSTALL) $(PROGRAMS) $(SCRIPTS) $(call shellquote,$(DESTDIR)$(bindir))
-+	cd $(DESTDIR)$(bindir); $(STRIP) $(PROGRAMS)
+ 	$(INSTALL) $(ALL_PROGRAMS) $(call shellquote,$(DESTDIR)$(bindir))
++	cd $(DESTDIR)$(bindir); $(STRIP) $(SIMPLE_PROGRAMS) $(PROGRAMS) git$X
  	$(MAKE) -C templates install
  	$(INSTALL) -d -m755 $(call shellquote,$(DESTDIR)$(GIT_PYTHON_DIR))
  	$(INSTALL) $(PYMODULES) $(call shellquote,$(DESTDIR)$(GIT_PYTHON_DIR))
