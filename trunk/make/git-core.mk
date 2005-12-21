@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=0.99.9i
-GIT-CORE_SOURCE=git-core-$(GIT-CORE_VERSION).tar.gz
-GIT-CORE_DIR=git-core-$(GIT-CORE_VERSION)
+GIT-CORE_VERSION=1.0.0
+GIT-CORE_SOURCE=git-$(GIT-CORE_VERSION).tar.gz
+GIT-CORE_DIR=git-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
 GIT-CORE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GIT-CORE_DESCRIPTION=GIT is a "directory tree content manager" that can be used for distributed revision control.
