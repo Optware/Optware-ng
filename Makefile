@@ -143,7 +143,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds
 WL500G_BROKEN_PACKAGES = \
 	appweb atk \
 	bitlbee bzflag \
-	cdargs cherokee cogito ctorrent cvs \
+	cdargs cherokee	clamav cogito ctorrent cvs \
 	dict \
 	elinks erlang \
 	ficy freetds \
@@ -215,8 +215,6 @@ DS101G_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	rsync \
 	ser \
-
-DS101G_PACKAGES_THAT_NEED_FIXING = ldconfig mc
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
