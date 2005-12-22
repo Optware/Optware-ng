@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=1
+OPENSSH_IPK_VERSION=2
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
@@ -26,10 +26,6 @@ OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 OPENSSH_PATCHES=\
 	$(OPENSSH_SOURCE_DIR)/Makefile.patch \
 	$(OPENSSH_SOURCE_DIR)/configure.patch
-
-ifeq ($(OPTWARE_TARGET),wl500g)
-OPENSSH_PATCHES+=$(OPENSSH_SOURCE_DIR)/dn_expand.patch
-endif
 
 #
 # If the compilation of the package requires additional
