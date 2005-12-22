@@ -143,7 +143,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds
 WL500G_BROKEN_PACKAGES = \
 	appweb atk \
 	bitlbee bzflag \
-	cdargs cherokee	clamav cogito ctorrent cvs \
+	cdargs cherokee cogito ctorrent cvs \
 	dict \
 	elinks erlang \
 	ficy freetds \
