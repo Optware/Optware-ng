@@ -40,7 +40,7 @@ ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -54,6 +54,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
 else
 ERLANG_PATCHES=\
@@ -61,6 +62,7 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
 endif
 
