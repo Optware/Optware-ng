@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_TARBALL_VERSION=R10B-8
-ERLANG_VERSION=R10B8
+ERLANG_TARBALL_VERSION=R10B-9
+ERLANG_VERSION=R10B9
 ERLANG_SOURCE=otp_src_$(ERLANG_TARBALL_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_TARBALL_VERSION)
 ERLANG_UNZIP=zcat
@@ -54,7 +54,6 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.native-patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
 else
 ERLANG_PATCHES=\
@@ -62,7 +61,6 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.cross-patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
 endif
 

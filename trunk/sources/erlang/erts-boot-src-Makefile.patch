@@ -1,5 +1,5 @@
---- otp_src_R10B-5-orig/erts/boot/src/Makefile	2003-07-07 05:19:02.000000000 -0700
-+++ erlang/erts/boot/src/Makefile	2005-06-02 21:28:25.864321000 -0700
+--- otp_src_R10B-9/erts/boot/src/Makefile	2003-07-07 05:19:02.000000000 -0700
++++ erlang/erts/boot/src/Makefile	2005-12-24 10:35:39.000000000 -0800
 @@ -55,26 +55,26 @@
  ## Build escript ear and esh using ecc and elink
  
