@@ -1,6 +1,6 @@
---- otp_src_R10B-5-orig/Makefile.in	2005-02-09 05:30:54.000000000 -0800
-+++ erlang/Makefile.in	2005-05-14 08:52:22.009398000 -0700
-@@ -531,12 +531,12 @@
+--- otp_src_R10B-9/Makefile.in	2005-10-24 02:43:23.000000000 -0700
++++ erlang/Makefile.in	2005-12-24 10:35:39.000000000 -0800
+@@ -532,12 +532,12 @@
  install.bin:
  	rm -f $(BINDIR)/erl $(BINDIR)/erlc \
  	      $(BINDIR)/ecc $(BINDIR)/elink $(BINDIR)/ear $(BINDIR)/escript
