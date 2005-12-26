@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://turbogears.org/download/eggs
-PY-TURBOGEARS_VERSION=0.5.1
+PY-TURBOGEARS_VERSION=0.8a5
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -106,7 +106,7 @@ $(PY-TURBOGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-T
 	mv $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)
 	(cd $(PY-TURBOGEARS_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    echo "executable=/opt/bin/python") >> setup.cfg \
 	)
 	touch $(PY-TURBOGEARS_BUILD_DIR)/.configured
 
@@ -169,7 +169,7 @@ $(PY-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py-turbogears_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-TURBOGEARS_BUILD_DIR) DESTDIR=$(PY-TURBOGEARS_IPK_DIR) install
 	(cd $(PY-TURBOGEARS_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-TURBOGEARS_IPK_DIR)/opt --old-and-unmanageable)
+	python2.4 setup.py install --root=$(PY-TURBOGEARS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 #	install -d $(PY-TURBOGEARS_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-TURBOGEARS_SOURCE_DIR)/py-turbogears.conf $(PY-TURBOGEARS_IPK_DIR)/opt/etc/py-turbogears.conf
 #	install -d $(PY-TURBOGEARS_IPK_DIR)/opt/etc/init.d
