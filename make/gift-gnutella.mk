@@ -107,7 +107,7 @@ $(GIFTGNUTELLA_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTGNUTELLA_SOURCE) $(GIFTGN
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTGNUTELLA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTGNUTELLA_LDFLAGS)" \
 		./configure \
-		--with-zlib=/home/slug/unslung/staging/opt \
+		--with-zlib=$(STAGING_DIR)/opt \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
