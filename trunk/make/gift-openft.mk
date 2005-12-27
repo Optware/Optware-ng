@@ -106,7 +106,7 @@ $(GIFTOPENFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTOPENFT_SOURCE) $(GIFTOPENFT
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIFTOPENFT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIFTOPENFT_LDFLAGS)" \
 		./configure \
-		--with-zlib=/home/slug/unslung/staging/opt \
+		--with-zlib=$(STAGING_DIR)/opt \
 		--disable-libdb \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
