@@ -42,7 +42,7 @@ PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl, libdb, zlib
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=2
+PYTHON_IPK_VERSION=3
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -60,6 +60,8 @@ PYTHON_PATCHES=\
 	$(PYTHON_SOURCE_DIR)/config.sub.patch \
 	$(PYTHON_SOURCE_DIR)/configure.in.patch \
 	$(PYTHON_SOURCE_DIR)/setup.py.patch \
+	$(PYTHON_SOURCE_DIR)/Lib-site.py.patch \
+	$(PYTHON_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 
 #
 # If the compilation of the package requires additional
@@ -206,11 +208,13 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 	chmod 555 $(PYTHON_IPK_DIR)/opt/lib/libpython$(PYTHON_VERSION_MAJOR).so.1.0
 	rm $(PYTHON_IPK_DIR)/opt/bin/python
 	cd $(PYTHON_IPK_DIR)/opt/bin; ln -s python$(PYTHON_VERSION_MAJOR) python
+	install -d $(PYTHON_IPK_DIR)/opt/local/bin
+	install -d $(PYTHON_IPK_DIR)/opt/local/lib/python$(PYTHON_VERSION_MAJOR)/site-packages
 	install -d $(PYTHON_IPK_DIR)/usr/bin
 	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
-	#install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
+#	install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYTHON_IPK_DIR)
 
 #
