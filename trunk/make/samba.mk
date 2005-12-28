@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-SAMBA_SITE=http://us4.samba.org/samba/ftp/stable
+SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA_VERSION=3.0.14a
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
@@ -28,7 +28,11 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba is an Open Source/Free Software suite that provides seamless file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
+ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_DEPENDS=popt, openldap-libs, readline
+else
+SAMBA_DEPENDS=popt, readline
+endif
 SAMBA_SUGGESTS=
 SAMBA_CONFLICTS=
 
@@ -144,7 +148,10 @@ samba-source: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
-	$(MAKE) openldap-stage cups-stage
+ifneq ($(OPTWARE_TARGET),wl500g)
+	$(MAKE) openldap-stage 
+endif
+	$(MAKE) cups-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
