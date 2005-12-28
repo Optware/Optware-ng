@@ -158,7 +158,7 @@ WL500G_BROKEN_PACKAGES = \
 	py-mssql py-sqlite py-mx-base py-mysql py-psycopg py-xml \
 	qemu qemu-libc-i386 \
 	rcs rtorrent \
-	samba sdl ser sm snownews sqsh sudo \
+	sdl ser sm snownews sqsh sudo \
 	transcode \
 	unrar \
 	vte \
