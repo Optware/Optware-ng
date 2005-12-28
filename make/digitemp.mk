@@ -12,15 +12,15 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DIGITEMP_SITE=http://www.digitemp.com/software/linux
-DIGITEMP_VERSION=1.7
+DIGITEMP_VERSION=3.4.0
 DIGITEMP_SOURCE=digitemp-$(DIGITEMP_VERSION).tar.gz
 DIGITEMP_DIR=digitemp-$(DIGITEMP_VERSION)
 DIGITEMP_UNZIP=zcat
 DIGITEMP_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
-DIGITEMP_DESCRIPTION=Reads 1-Wire Temperature sensor PCB (http://www.digitemp.com)
+DIGITEMP_DESCRIPTION=Reads 1-Wire Temperature sensor (http://www.digitemp.com)
 DIGITEMP_SECTION=misc
 DIGITEMP_PRIORITY=optional
-DIGITEMP_DEPENDS=
+DIGITEMP_DEPENDS=libusb
 DIGITEMP_SUGGESTS=
 DIGITEMP_CONFLICTS=
 
@@ -37,7 +37,7 @@ DIGITEMP_IPK_VERSION=1
 # DIGITEMP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# DIGITEMP_PATCHES=$(DIGITEMP_SOURCE_DIR)/configure.patch
+DIGITEMP_PATCHES=$(DIGITEMP_SOURCE_DIR)/Makefile.patch $(DIGITEMP_SOURCE_DIR)/linebuf.patch
 
 #
 # If the compilation of the package requires additional
@@ -93,18 +93,18 @@ digitemp-source: $(DL_DIR)/$(DIGITEMP_SOURCE) $(DIGITEMP_PATCHES)
 # shown below to make various patches to it.
 #
 $(DIGITEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DIGITEMP_SOURCE) $(DIGITEMP_PATCHES)
-	# $(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libusb-stage
 	rm -rf $(BUILD_DIR)/$(DIGITEMP_DIR) $(DIGITEMP_BUILD_DIR)
 	$(DIGITEMP_UNZIP) $(DL_DIR)/$(DIGITEMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DIGITEMP_PATCHES)" ; \
 		then cat $(DIGITEMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DIGITEMP_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(DIGITEMP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DIGITEMP_DIR)" != "$(DIGITEMP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DIGITEMP_DIR) $(DIGITEMP_BUILD_DIR) ; \
 	fi
 	touch $(DIGITEMP_BUILD_DIR)/.configured
-	sed -i '/^CC/d' $(DIGITEMP_BUILD_DIR)/Makefile
+#	sed -i '/^CC/d' $(DIGITEMP_BUILD_DIR)/Makefile
 
 digitemp-unpack: $(DIGITEMP_BUILD_DIR)/.configured
 
@@ -116,7 +116,9 @@ $(DIGITEMP_BUILD_DIR)/.built: $(DIGITEMP_BUILD_DIR)/.configured
 	echo $(TARGET_CONFIGURE_OPTS)
 	echo
 	rm -f $(DIGITEMP_BUILD_DIR)/.built
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) digitemp
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) ds9097 ds9097u 
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) \
+	                STAGING_DIR=$(STAGING_DIR) clean ds2490
 	touch $(DIGITEMP_BUILD_DIR)/.built
 
 #
@@ -127,12 +129,12 @@ digitemp: $(DIGITEMP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(DIGITEMP_BUILD_DIR)/.staged: $(DIGITEMP_BUILD_DIR)/.built
-	rm -f $(DIGITEMP_BUILD_DIR)/.staged
-	$(MAKE) -C $(DIGITEMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(DIGITEMP_BUILD_DIR)/.staged
-
-digitemp-stage: $(DIGITEMP_BUILD_DIR)/.staged
+#$(DIGITEMP_BUILD_DIR)/.staged: $(DIGITEMP_BUILD_DIR)/.built
+#	rm -f $(DIGITEMP_BUILD_DIR)/.staged
+#	$(MAKE) -C $(DIGITEMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $(DIGITEMP_BUILD_DIR)/.staged
+#
+#digitemp-stage: $(DIGITEMP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -168,8 +170,12 @@ $(DIGITEMP_IPK_DIR)/CONTROL/control:
 $(DIGITEMP_IPK): $(DIGITEMP_BUILD_DIR)/.built
 	rm -rf $(DIGITEMP_IPK_DIR) $(BUILD_DIR)/digitemp_*_$(TARGET_ARCH).ipk
 	install -d $(DIGITEMP_IPK_DIR)/opt/bin
-	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp $(DIGITEMP_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp
+	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097 $(DIGITEMP_IPK_DIR)/opt/bin
+	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097U $(DIGITEMP_IPK_DIR)/opt/bin
+	install -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS2490 $(DIGITEMP_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS9097
+	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS9097U
+	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS2490
 	$(MAKE) $(DIGITEMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIGITEMP_IPK_DIR)
 

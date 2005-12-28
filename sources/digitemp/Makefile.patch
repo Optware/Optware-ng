@@ -1,0 +1,21 @@
+--- digitemp-3.4.0/Makefile	2005-06-26 03:02:48.000000000 +0200
++++ digitemp/Makefile	2005-12-28 11:41:58.000000000 +0100
+@@ -12,7 +12,6 @@
+ VERSION = 3.4.0
+ 
+ 
+-CC	= gcc
+ CFLAGS	= -I./src -I./userial -O2 # -g -Wall
+ LIBS	= -lm
+ 
+@@ -90,8 +89,8 @@
+ 
+ 
+ # USB specific flags
+-ds2490:  CFLAGS += -DOWUSB
+-ds2490:  LIBS   += -lusb
++ds2490:  CFLAGS += -DOWUSB -I$(STAGING_DIR)/opt/include
++ds2490:  LIBS   += -L$(STAGING_DIR)/opt/lib -lusb
+ 
+ 
+ help:
