@@ -21,10 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SIMPLEJSON_SITE=http://cheeseshop.python.org/packages/source/s/simple_json
-PY-SIMPLEJSON_VERSION=1.0
-PY-SIMPLEJSON_SOURCE=simple_json-$(PY-SIMPLEJSON_VERSION).tar.gz
-PY-SIMPLEJSON_DIR=simple_json-$(PY-SIMPLEJSON_VERSION)
+PY-SIMPLEJSON_SITE=http://cheeseshop.python.org/packages/source/s/simplejson
+PY-SIMPLEJSON_VERSION=1.1
+PY-SIMPLEJSON_SOURCE=simplejson-$(PY-SIMPLEJSON_VERSION).tar.gz
+PY-SIMPLEJSON_DIR=simplejson-$(PY-SIMPLEJSON_VERSION)
 PY-SIMPLEJSON_UNZIP=zcat
 PY-SIMPLEJSON_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SIMPLEJSON_DESCRIPTION=Simple, fast, extensible JSON encoder/decoder for Python.
