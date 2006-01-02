@@ -40,7 +40,7 @@ ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=3
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -117,7 +117,7 @@ erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ERLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
-	$(MAKE) ncurses-stage openssl-stage
+	$(MAKE) ncurses-stage openssl-stage termcap-source
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
