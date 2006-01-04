@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
-SAMBA_VERSION=3.0.14a
+SAMBA_VERSION=3.0.21a
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
@@ -115,6 +115,20 @@ SAMBA_CROSS_ENVS=\
 		samba_cv_HAVE_MMAP=yes \
 		samba_cv_HAVE_FCNTL_LOCK=yes \
 		samba_cv_HAVE_STRUCT_FLOCK64=yes \
+		samba_cv_have_longlong=yes \
+		samba_cv_HAVE_OFF64_T=no \
+		samba_cv_HAVE_INO64_T=no \
+		samba_cv_HAVE_DEV64_T=no \
+		samba_cv_HAVE_BROKEN_READDIR=no \
+		samba_cv_HAVE_IRIX_SPECIFIC_CAPABILITIES=no \
+		samba_cv_HAVE_WORKING_AF_LOCAL=yes \
+		samba_cv_HAVE_BROKEN_GETGROUPS=no \
+		samba_cv_REPLACE_INET_NTOA=no \
+		samba_cv_SYSCONF_SC_NPROC_ONLN=no \
+		samba_cv_HAVE_IFACE_AIX=no \
+		samba_cv_HAVE_BROKEN_FCNTL64_LOCKS=no \
+		samba_cv_REALPATH_TAKES_NULL=no \
+		samba_cv_HAVE_TRUNCATED_SALT=no \
 		fu_cv_sys_stat_statvfs64=yes
 endif
 
