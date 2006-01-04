@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-FILE_SITE=http://public.planetmirror.com/pub/file
+FILE_SITE=http://downloads.planetmirror.com/pub/file
 FILE_VERSION=4.13
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
