@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/unstable
-TIN_VERSION=1.7.9
+TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/v1.8
+TIN_VERSION=1.8.0
 TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
 TIN_DIR=tin-$(TIN_VERSION)
 TIN_UNZIP=zcat
