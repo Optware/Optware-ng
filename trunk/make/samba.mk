@@ -20,7 +20,11 @@
 # You should change all these variables to suit your package.
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
+ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.21a
+else
+SAMBA_VERSION=3.0.14a
+endif
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
