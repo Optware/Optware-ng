@@ -31,7 +31,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # nrpe - Corrected most of the configure problems. But a native openssl
 #	 needs to be installed to generate some keys.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = nrpe py-mercurial
+CROSS_PACKAGES_READY_FOR_TESTING = nrpe py-mercurial zip
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
