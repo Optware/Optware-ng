@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.4.2
+GETMAIL_VERSION=4.4.4
 GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 GETMAIL_UNZIP=zcat
@@ -102,7 +102,7 @@ getmail-source: $(DL_DIR)/$(GETMAIL_SOURCE) $(GETMAIL_PATCHES)
 $(GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(GETMAIL_SOURCE) $(GETMAIL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(GETMAIL_DIR) $(GETMAIL_BUILD_DIR)
 	$(GETMAIL_UNZIP) $(DL_DIR)/$(GETMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(GETMAIL_DIR) -p1
+#	cat $(GETMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(GETMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(GETMAIL_DIR) $(GETMAIL_BUILD_DIR)
 	(cd $(GETMAIL_BUILD_DIR); \
 	    ( \
@@ -175,14 +175,14 @@ $(GETMAIL_IPK): $(GETMAIL_BUILD_DIR)/.built
 	(cd $(GETMAIL_BUILD_DIR); \
 	    python2.4 setup.py install --prefix=$(GETMAIL_IPK_DIR)/opt; \
 	)
-	#install -d $(GETMAIL_IPK_DIR)/opt/etc/
-	#install -m 644 $(GETMAIL_SOURCE_DIR)/getmail.conf $(GETMAIL_IPK_DIR)/opt/etc/getmail.conf
-	#install -d $(GETMAIL_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(GETMAIL_SOURCE_DIR)/rc.getmail $(GETMAIL_IPK_DIR)/opt/etc/init.d/SXXgetmail
+#	install -d $(GETMAIL_IPK_DIR)/opt/etc/
+#	install -m 644 $(GETMAIL_SOURCE_DIR)/getmail.conf $(GETMAIL_IPK_DIR)/opt/etc/getmail.conf
+#	install -d $(GETMAIL_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(GETMAIL_SOURCE_DIR)/rc.getmail $(GETMAIL_IPK_DIR)/opt/etc/init.d/SXXgetmail
 	$(MAKE) $(GETMAIL_IPK_DIR)/CONTROL/control
-	#install -m 755 $(GETMAIL_SOURCE_DIR)/postinst $(GETMAIL_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(GETMAIL_SOURCE_DIR)/prerm $(GETMAIL_IPK_DIR)/CONTROL/prerm
-	#echo $(GETMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(GETMAIL_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(GETMAIL_SOURCE_DIR)/postinst $(GETMAIL_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(GETMAIL_SOURCE_DIR)/prerm $(GETMAIL_IPK_DIR)/CONTROL/prerm
+#	echo $(GETMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(GETMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GETMAIL_IPK_DIR)
 
 #
