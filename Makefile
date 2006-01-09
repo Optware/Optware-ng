@@ -139,7 +139,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	appweb atk \
+	appweb asterisk atk \
 	bitlbee bzflag \
 	cdargs cherokee cogito ctorrent cvs \
 	dict \
@@ -153,7 +153,7 @@ WL500G_BROKEN_PACKAGES = \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nagios-plugins nail nfs-server nfs-utils nget nload nmap ntp \
 	pango pcre py-bluez py-cheetah py-clips py-celementtree py-gdchart2 py-gd py-pil \
-	py-mssql py-sqlite py-mx-base py-mysql py-psycopg py-xml \
+	py-mercurial py-mssql py-sqlite py-mx-base py-mysql py-psycopg py-xml \
 	qemu qemu-libc-i386 \
 	rcs rtorrent \
 	sdl ser sm snownews sqsh sudo \
