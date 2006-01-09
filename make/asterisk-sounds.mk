@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK-SOUNDS_SITE=http://ftp.digium.com/pub/asterisk/old-releases
-ASTERISK-SOUNDS_VERSION=1.0.6
+ASTERISK-SOUNDS_SITE=http://ftp.digium.com/pub/asterisk
+ASTERISK-SOUNDS_VERSION=1.2.1
 ASTERISK-SOUNDS_SOURCE=asterisk-sounds-$(ASTERISK-SOUNDS_VERSION).tar.gz
 ASTERISK-SOUNDS_DIR=asterisk-sounds-$(ASTERISK-SOUNDS_VERSION)
 ASTERISK-SOUNDS_UNZIP=zcat
