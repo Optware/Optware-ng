@@ -28,9 +28,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-# nrpe - Corrected most of the configure problems. But a native openssl
-#	 needs to be installed to generate some keys.
-#
 CROSS_PACKAGES_READY_FOR_TESTING =
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
