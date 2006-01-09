@@ -31,7 +31,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # nrpe - Corrected most of the configure problems. But a native openssl
 #	 needs to be installed to generate some keys.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = nrpe py-mercurial zip
+CROSS_PACKAGES_READY_FOR_TESTING =
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
@@ -59,7 +59,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
-	nget nload ntop ntpclient nylon \
+	nget nload nrpe ntop ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
 	pango patch php php-thttpd procps proftpd psutils puppy python py-bittorrent \
 	php-apache phpmyadmin pkgconfig popt poptop portmap postgresql procmail pwgen \
@@ -68,7 +68,7 @@ COMMON_CROSS_PACKAGES = \
 	py-elementtree py-kid py-sqlobject \
 	py-gdchart2 py-gd py-pil py-mssql \
 	py-roundup py-serial py-simpy py-soappy \
-	py-sqlite py-moin py-mx-base py-mysql py-psycopg py-xml \
+	py-sqlite py-mercurial py-moin py-mx-base py-mysql py-psycopg py-xml \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
 	rdate readline rsync \
@@ -88,7 +88,7 @@ COMMON_CROSS_PACKAGES = \
 	wakelan which whois wpa-supplicant \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
-	zlib \
+	zip zlib \
 
 # Packages that *only* work for nslu2 - do not just put new packages here.
 NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
