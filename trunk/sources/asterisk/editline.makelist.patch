@@ -1,5 +1,5 @@
---- asterisk-1.0.6/editline/makelist~	2005-03-07 23:43:56.000000000 -0800
-+++ asterisk-1.0.6/editline/makelist	2005-03-07 23:44:23.000000000 -0800
+--- asterisk-1.2.0-rc2/editline/makelist~	2005-11-12 16:27:23.000000000 -0800
++++ asterisk-1.2.0-rc2/editline/makelist	2005-11-12 16:28:40.000000000 -0800
 @@ -39,7 +39,7 @@
  
  # makelist.sh: Automatically generate header files...

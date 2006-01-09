@@ -1,5 +1,5 @@
---- asterisk-1.0.99/Makefile~	2005-04-02 12:32:12.000000000 -0800
-+++ asterisk-1.0.99/Makefile	2005-04-02 12:29:26.000000000 -0800
+--- asterisk-1.2.1/Makefile~	2005-12-25 19:26:40.000000000 -0800
++++ asterisk-1.2.1/Makefile	2005-12-25 22:23:13.000000000 -0800
 @@ -11,7 +11,8 @@
  # the GNU General Public License
  #
@@ -10,44 +10,84 @@
  
  # Create OPTIONS variable
  OPTIONS=
-@@ -61,7 +62,7 @@
- OPTIONS+=-fsigned-char -mcpu=ep9312
- else
- ifeq ($(SUB_PROC),xscale)
--OPTIONS+=-fsigned-char -msoft-float -mcpu=xscale
-+OPTIONS+=-fsigned-char -mcpu=xscale -mbig-endian
- else
- OPTIONS+=-fsigned-char -msoft-float 
+@@ -44,14 +45,14 @@
+ #K6OPT  = -DK6OPT
+ 
+ #Tell gcc to optimize the code
+-OPTIMIZE+=-O6
++OPTIMIZE+=-O2
  endif
-@@ -101,10 +102,10 @@
+ 
+ #Overwite config files on "make samples"
  OVERWRITE=y
  
- #Tell gcc to optimize the asterisk's code
--OPTIMIZE+=-O6
-+OPTIMIZE+=-Os
+ #Include debug and macro symbols in the executables (-g) and profiling info (-pg)
+-DEBUG=-g3 #-pg
++DEBUG=#-g3 #-pg
  
- #Include debug symbols in the executables (-g) and profiling info (-pg)
--DEBUG=-g #-pg
-+DEBUG=#-g #-pg
+ #Set NOCRYPTO to yes if you do not want to have crypto support or 
+ #dependencies
+@@ -65,7 +66,7 @@
+ # to reduce the size of certain static buffers
  
- # If you are running a radio application, define RADIO_RELAX so that the DTMF
- # will be received more reliably
-@@ -169,6 +170,7 @@
+ #ifneq ($(CROSS_COMPILE),)
+-#OPTIONS += -DLOW_MEMORY
++OPTIONS += -DLOW_MEMORY
+ #endif
  
- INCLUDE=-Iinclude -I../include
- CFLAGS=-pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations $(DEBUG) $(INCLUDE) -D_REENTRANT -D_GNU_SOURCE #-DMAKE_VALGRIND_HAPPY
-+CFLAGS+=$(CPPFLAGS)
- CFLAGS+=$(OPTIMIZE)
+ # Optional debugging parameters
+@@ -150,9 +151,9 @@
+ #ASTCFLAGS+=-DOLD_DSP_ROUTINES
  
- ifneq ($(PROC),ultrasparc)
-@@ -271,8 +273,8 @@
- ASTLINK=-Wl,-dynamic
- SOLINK=-dynamic -bundle -undefined suppress -force_flat_namespace
- else
--ASTLINK=-Wl,-E 
--SOLINK=-shared -Xlinker -x
-+ASTLINK= $(LDFLAGS) -Wl,-E 
-+SOLINK= $(LDFLAGS) -shared -Xlinker -x
+ # Determine by a grep 'DocumentRoot' of your httpd.conf file
+-HTTP_DOCSDIR=/var/www/html
++HTTP_DOCSDIR=/opt/share/www/html
+ # Determine by a grep 'ScriptAlias' of your httpd.conf file
+-HTTP_CGIDIR=/var/www/cgi-bin
++HTTP_CGIDIR=/opt/share/www/cgi-bin
+ 
+ # If the file .asterisk.makeopts is present in your home directory, you can
+ # include all of your favorite Makefile options so that every time you download
+@@ -200,7 +201,7 @@
+       OPTIONS+=-fsigned-char -mcpu=ep9312
+     else
+       ifeq ($(SUB_PROC),xscale)
+-        OPTIONS+=-fsigned-char -msoft-float -mcpu=xscale
++        OPTIONS+=-fsigned-char -mcpu=xscale -mbig-endian
+       else
+         OPTIONS+=-fsigned-char -msoft-float 
+       endif
+@@ -219,6 +220,7 @@
+ 
+ INCLUDE+=-Iinclude -I../include
+ ASTCFLAGS+=-pipe  -Wall -Wstrict-prototypes -Wmissing-prototypes -Wmissing-declarations $(DEBUG) $(INCLUDE) -D_REENTRANT -D_GNU_SOURCE #-DMAKE_VALGRIND_HAPPY
++ASTCFLAGS+=$(CPPFLAGS)
+ ASTCFLAGS+=$(OPTIMIZE)
+ ASTOBJ=-o asterisk
+ 
+@@ -345,12 +347,12 @@
+ 	netsock.o slinfactory.o ast_expr2.o ast_expr2f.o \
+ 	cryptostub.o
+ 
+-ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/sys/poll.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/sys/poll.h),)
+   OBJS+= poll.o
+   ASTCFLAGS+=-DPOLLCOMPAT
  endif
- ifeq (${OSARCH},SunOS)
- OBJS+=strcompat.o
+ 
+-ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/dlfcn.h),)
++ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/dlfcn.h),)
+   OBJS+= dlfcn.o
+   ASTCFLAGS+=-DDLFCNCOMPAT
+ endif
+@@ -371,8 +373,8 @@
+   ASTCFLAGS+=-DPOLLCOMPAT
+ else
+ #These are used for all but Darwin
+-  ASTLINK=-Wl,-E 
+-  SOLINK=-shared -Xlinker -x
++  ASTLINK=$(LDFLAGS) -Wl,-E 
++  SOLINK=$(LDFLAGS) -shared -Xlinker -x
+ endif
+ 
+ ifeq ($(OSARCH),FreeBSD)
