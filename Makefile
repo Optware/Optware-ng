@@ -35,7 +35,7 @@ CROSS_PACKAGES_READY_FOR_TESTING =
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
-	abook adns alac-decoder adduser antinat appweb asterisk-sounds \
+	abook adns alac-decoder adduser antinat appweb asterisk asterisk-sounds \
 	apache apr apr-util atftp atk audiofile autoconf automake \
 	bash bc bzip2 bind bip bitchx bitlbee busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
@@ -96,7 +96,6 @@ NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
 # Packages that do not work for nslu2.
 NSLU2_BROKEN_PACKAGES = 
 
-# asterisk may just need configure and HOSTCC work
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # bogofilter's configure wants to run some small executables
@@ -110,7 +109,6 @@ NSLU2_BROKEN_PACKAGES =
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
 NSLU2_NATIVE_PACKAGES = \
-	asterisk \
 	autoconf \
 	bison \
 	bogofilter \
