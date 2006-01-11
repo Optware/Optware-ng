@@ -42,7 +42,7 @@ FTPD-TOPFIELD_PRIORITY=optional
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=0
+FTPD-TOPFIELD_IPK_VERSION=1
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
@@ -165,6 +165,7 @@ $(FTPD-TOPFIELD_IPK): $(FTPD-TOPFIELD_BUILD_DIR)/.built
 	rm -rf $(FTPD-TOPFIELD_IPK_DIR) $(BUILD_DIR)/ftpd-topfield_*_$(TARGET_ARCH).ipk
 	install -d $(FTPD-TOPFIELD_IPK_DIR)/opt/sbin/
 	install -m 755 $(FTPD-TOPFIELD_BUILD_DIR)/ftpd $(FTPD-TOPFIELD_IPK_DIR)/opt/sbin/ftpd-topfield
+	$(STRIP_COMMAND) $(FTPD-TOPFIELD_IPK_DIR)/opt/sbin/ftpd-topfield
 #	install -d $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/
 #	install -m 644 $(FTPD-TOPFIELD_SOURCE_DIR)/ftpd-topfield.conf $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/ftpd-topfield.conf
 	install -d $(FTPD-TOPFIELD_IPK_DIR)/opt/etc/init.d
