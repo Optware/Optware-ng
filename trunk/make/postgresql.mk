@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.0.5
+POSTGRESQL_VERSION=8.0.6
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-base-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -106,7 +106,7 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 	$(MAKE) readline-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(POSTGRESQL_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1
+#	cat $(POSTGRESQL_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1
 	mv $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
 	(cd $(POSTGRESQL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -183,8 +183,9 @@ $(POSTGRESQL_IPK_DIR)/CONTROL/control:
 $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 	rm -rf $(POSTGRESQL_IPK_DIR) $(BUILD_DIR)/postgresql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(POSTGRESQL_IPK_DIR) install-strip
-	#install -d $(POSTGRESQL_IPK_DIR)/opt/etc/
-	#install -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf
+	$(STRIP_COMMAND) $(POSTGRESQL_IPK_DIR)/opt/bin/pg_config
+#	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/
+#	install -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf
 	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/S98postgresql
 	$(MAKE) $(POSTGRESQL_IPK_DIR)/CONTROL/control
