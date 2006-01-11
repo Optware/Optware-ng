@@ -52,7 +52,7 @@ COMMON_CROSS_PACKAGES = \
 	lame less libcurl libdb libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
 	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
-	libpng libtasn1 libtiff libtool libtopfield libusb libvorbis libvorbisidec libxslt lua \
+	libpng libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt lua \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
