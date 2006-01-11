@@ -28,7 +28,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = lumikki
+CROSS_PACKAGES_READY_FOR_TESTING =
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
@@ -53,6 +53,7 @@ COMMON_CROSS_PACKAGES = \
 	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
 	libpng libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt lua \
+	lumikki \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
