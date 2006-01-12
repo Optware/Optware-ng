@@ -207,7 +207,7 @@ sub check_file {
     check_binary($f) if(-x $f || $f=~/\.so/ || $thorough);
 }
 
-sub check_dir {
+sub check_subdir {
     my $dir=shift ||die;
     -d $dir ||die;
     print "Checking in directory $dir...\n" if $verbose;
@@ -215,8 +215,21 @@ sub check_dir {
     foreach my $f (glob "$dir/*") {
 	if($f =~ /^[.]/) { next; }
 	elsif(-l $f) { next; }
-	elsif(-d $f) { check_dir($f); }
+	elsif(-d $f) { check_subdir($f); }
 	else { check_file($f); }
+    }
+}
+
+sub check_dir {
+    my $dir=shift ||die;
+    -d $dir ||die;
+    print "Checking in root $dir...\n" if $verbose;
+
+    foreach my $f (glob "$dir/*") {
+	if($f =~ /^[.]/) { next; }
+	elsif(-d $f && $f =~ m%/CONTROL$%) { check_subdir($f); }
+	elsif(-d $f && $f =~ m%/opt$%) { check_subdir($f); }
+	else { error($f, "is installed outside /opt"); }
     }
 }
 
