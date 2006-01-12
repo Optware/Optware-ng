@@ -53,7 +53,6 @@ COMMON_CROSS_PACKAGES = \
 	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
 	libpng libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt lua \
-	lumikki \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
@@ -226,7 +225,8 @@ NAS100D_BROKEN_PACKAGES =
 # 
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
-PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted
+# lumikki - does not install to /opt
+PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
