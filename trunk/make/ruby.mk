@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-RUBY_VERSION=1.8.3
+RUBY_VERSION=1.8.4
 RUBY_SOURCE=ruby-$(RUBY_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_VERSION)
 RUBY_UNZIP=zcat
@@ -50,7 +50,7 @@ RUBY_IPK_VERSION=1
 # RUBY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RUBY_PATCHES=$(RUBY_SOURCE_DIR)/configure.patch
+RUBY_PATCHES=$(RUBY_SOURCE_DIR)/ext-socket.patch $(RUBY_SOURCE_DIR)/lib-mkmf.rb.patch
 
 #
 # If the compilation of the package requires additional
@@ -102,16 +102,19 @@ ruby-source: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+# http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-talk/159766
 $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
-	$(MAKE) zlib-stage
+	$(MAKE) zlib-stage readline-stage openssl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(RUBY_BUILD_DIR)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	# cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
+	cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
 	mv $(BUILD_DIR)/$(RUBY_DIR) $(RUBY_BUILD_DIR)
 	(cd $(RUBY_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RUBY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RUBY_LDFLAGS)" \
+		DLDFLAGS="$(STAGING_LDFLAGS) $(RUBY_LDFLAGS)" \
+		ac_cv_func_setpgrp_void=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -120,6 +123,8 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 		--disable-nls \
                 --with-opt-dir=$(STAGING_PREFIX) \
                 --with-target-dir=$(STAGING_PREFIX) \
+		--enable-shared \
+		--disable-ipv6 \
 	)
 	touch $(RUBY_BUILD_DIR)/.configured
 
@@ -180,6 +185,11 @@ $(RUBY_IPK_DIR)/CONTROL/control:
 $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	rm -rf $(RUBY_IPK_DIR) $(BUILD_DIR)/ruby_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
+	for so in $(RUBY_IPK_DIR)/opt/bin/ruby \
+	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.$(RUBY_VERSION) \
+	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/1.8/ -name '*.so'`; \
+	do $(STRIP_COMMAND) $$so; \
+	done
 	install -d $(RUBY_IPK_DIR)/opt/etc/
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RUBY_IPK_DIR)
