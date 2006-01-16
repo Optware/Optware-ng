@@ -22,8 +22,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.08
-OCAML_VERSION=3.08.3
+OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.09
+OCAML_VERSION=3.09.1
 OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.bz2
 OCAML_DIR=ocaml-$(OCAML_VERSION)
 OCAML_UNZIP=bzcat
@@ -188,14 +188,15 @@ $(OCAML_IPK): $(OCAML_BUILD_DIR)/.built
 	rm -rf $(OCAML_IPK_DIR) $(BUILD_DIR)/ocaml_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OCAML_BUILD_DIR) PREFIX=$(OCAML_IPK_DIR)/opt install
 	for exe in ocamlrun ocamlyacc; do $(STRIP_COMMAND) $(OCAML_IPK_DIR)/opt/bin/$$exe; done
-	#install -d $(OCAML_IPK_DIR)/opt/etc/
-	#install -m 644 $(OCAML_SOURCE_DIR)/ocaml.conf $(OCAML_IPK_DIR)/opt/etc/ocaml.conf
-	#install -d $(OCAML_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(OCAML_SOURCE_DIR)/rc.ocaml $(OCAML_IPK_DIR)/opt/etc/init.d/SXXocaml
+	for so in $(OCAML_IPK_DIR)/opt/lib/ocaml/stublibs/*.so; do $(STRIP_COMMAND) $$so; done
+#	install -d $(OCAML_IPK_DIR)/opt/etc/
+#	install -m 644 $(OCAML_SOURCE_DIR)/ocaml.conf $(OCAML_IPK_DIR)/opt/etc/ocaml.conf
+#	install -d $(OCAML_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(OCAML_SOURCE_DIR)/rc.ocaml $(OCAML_IPK_DIR)/opt/etc/init.d/SXXocaml
 	$(MAKE) $(OCAML_IPK_DIR)/CONTROL/control
-	#install -m 755 $(OCAML_SOURCE_DIR)/postinst $(OCAML_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(OCAML_SOURCE_DIR)/prerm $(OCAML_IPK_DIR)/CONTROL/prerm
-	#echo $(OCAML_CONFFILES) | sed -e 's/ /\n/g' > $(OCAML_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(OCAML_SOURCE_DIR)/postinst $(OCAML_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(OCAML_SOURCE_DIR)/prerm $(OCAML_IPK_DIR)/CONTROL/prerm
+#	echo $(OCAML_CONFFILES) | sed -e 's/ /\n/g' > $(OCAML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OCAML_IPK_DIR)
 
 #
