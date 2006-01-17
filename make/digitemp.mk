@@ -27,7 +27,7 @@ DIGITEMP_CONFLICTS=
 #
 # DIGITEMP_IPK_VERSION should be incremented when the ipk changes.
 #
-DIGITEMP_IPK_VERSION=1
+DIGITEMP_IPK_VERSION=2
 
 #
 # DIGITEMP_CONFFILES should be a list of user-editable files
