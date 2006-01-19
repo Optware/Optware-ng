@@ -36,10 +36,12 @@ _update_progress()
 {
     for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
 	INFO="${TORRENT%/*}/.info"  
-	. "${INFO}"
-	LOG="${TORRENT%/*}/current.log"
-	PROGRESS=`tail -10 "${LOG}"|tr '\r' '\n'|grep "Download"|tail -1`  
-	_write_info
+	if [ -f "${INFO}" ]; then
+	    . "${INFO}"
+	    LOG="${TORRENT%/*}/current.log"
+	    PROGRESS=`tail -20 "${LOG}"|tr '\r' '\n'|grep "Download"|tail -1`  
+	    _write_info
+	fi
     done
 }
 
@@ -398,7 +400,7 @@ Content-type: text/html
 <input type=submit name=ACTION value=Log>
 <input type=submit name=ACTION value=Pause>
 <input type=submit name=ACTION value=Push>
-<input type=submit name=ACTION value=List><br>
+<input type=submit name=ACTION value=List>
 <input type=submit name=ACTION value=Remove>
 <input type=submit name=ACTION value=Purge>
 <input type=submit name=ACTION value=Watchdog>

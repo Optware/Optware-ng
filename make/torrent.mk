@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 TORRENT_SITE=
-TORRENT_VERSION=1.1
+TORRENT_VERSION=1.2
 TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
