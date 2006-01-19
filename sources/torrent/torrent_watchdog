@@ -104,18 +104,20 @@ move_to_target ()
 
     mkdir -p "${DEST}"
     chmod 777 "${DEST}"
-    chown $USER:$GROUP "${DEST}"
+    chgrp ${GROUP} "${DEST}"
+    chown ${USER} "${DEST}"
     
     cd "${TORRENT%/*}"
     
-    chown $USER:$GROUP *
+    chgrp ${GROUP} *
+    chown ${USER} *
     chmod ug+rw *
 
 #    [ -e current.log ] && mv current.log "$TORRENT.log"
 #    [ -e current_error.log ] && mv current_error.log "$TORRENT.error.log"
     
     notice "Moving files to: ${DEST}"
-    mv * "${DEST}"
+    mv * .* "${DEST}"
     chmod 775 "${DEST}"
 
     STATUS="Ok"
@@ -129,13 +131,26 @@ cleanup_work ()
     rm -rf "${TORRENT%/*}"
 }
 
+# Seed recently completed torrent
+auto_seed_completed()
+{
+    if [ "${AUTOSEED}" = "YES" ]; then
+	DIRNAME="${TORRENT%/*}"
+	DEST="${TARGET}/${DIRNAME##*/}"
+	NEWNAME="${DEST}/${TORRENT##*/}"
+	notice "Auto seeding ${NEWNAME}.seeding"
+	mv "${NEWNAME}" "${NEWNAME}.seeding"
+	TORRENT="${NEWNAME}.seeding"
+	respawn_torrent
+    fi
+}
 
 send_report ()
 {
     debug "Mail from: $MAILFROM"
     debug "Mail to: $MAILTO"
 
-    if [  ! -z $MAILFROM && ! -z $MAILTO ]; then
+    if [  ! -z "${MAILFROM}" && ! -z ${MAILTO} ]; then
         echo "Torrent finished.
 ------------------
 Name          : $TORRENTNAME
@@ -164,6 +179,8 @@ update_progress ()
 
 check_tracker_error ()
 {
+    [ -f "${TORRENT%/*}/current.log" ] || return
+
     tail -10 "${TORRENT%/*}/current.log" | grep -q "Error from tracker"  2>/dev/null
 if [ $? -eq 0 ]; then   
     debug "Error from tracker"
@@ -183,8 +200,8 @@ fi
 
 
 
-# Torrent died and now is the time to start it over
-respawn_died_torrent()
+# Torrent (died) and now is the time to start it over
+respawn_torrent()
 {
     warning "Respawning torrent ${TORRENT}"
     if [ -f "${TORRENT%.seeding}.seeding" ]; then
@@ -224,6 +241,7 @@ check_if_complete()
        move_to_target
        cleanup_work
        send_report
+       auto_seed_completed 
    fi
 }
 
@@ -241,8 +259,24 @@ if [ -f "${WORK}/.paused" ]; then
     exit 3
 fi
 
+# We will check all torrents for running state
+for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
+    INFO="${TORRENT%/*}/.info"
+    if [ -f "${INFO}" ]; then
+	. "${INFO}"
+	if  `grep -q btget /proc/${PID}/cmdline 2> /dev/null` ; then
+	    update_progress
+	    check_if_complete
+	    check_tracker_error
+	else # Not a valid PID
+		respawn_torrent
+	fi   
+else
+    debug "${INFO} not found!"
+fi
+done
 
-# check if torrent file exists in run env.
+# Check if any torrent file exists in run env.
 TORRENT=`ls -1 $WORK/*/*.torrent 2>/dev/null | head -1`
 
 # Start up new  torrent if work is empty
@@ -268,7 +302,7 @@ if [ -z "$TORRENT" ]; then
     TORRENT="$WORK/$TORRENTNAME/$TORRENTNAME.torrent"
     debug "Torrent: $TORRENT"
 
-    STARTTIME=`date +"%H:%M:%S - %d %h %Y"`
+    STARTTIME=`date +"${DATE_FORMAT}"`
     DONE=0
 
     cd "$WORK/$TORRENTNAME"
@@ -277,29 +311,10 @@ if [ -z "$TORRENT" ]; then
     
     PID=$!
     notice "Starting torrent $TORRENT $PID"
-    
     write_info
-    
-    exit 0
-else # We will check all torrents for running state
-   for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
-   	INFO="${TORRENT%/*}/.info"
-	if [ -f "${INFO}" ]; then
-	    . "${INFO}"
-	   if  `grep -q btget /proc/${PID}/cmdline 2> /dev/null` ; then
-               update_progress
-               check_if_complete
-               check_tracker_error
-           else # Not a valid PID
-               respawn_died_torrent
-           fi   
-	else
-	    debug "${INFO} not found!"
-	fi
-   done
-fi
 
-exit 0
+    exit 0
+fi
 
 
 
