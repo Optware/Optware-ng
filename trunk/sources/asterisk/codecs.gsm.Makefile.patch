@@ -1,5 +1,5 @@
---- asterisk-1.2.0.rc2/codecs/gsm/Makefile~	2005-11-07 19:31:45.000000000 -0800
-+++ asterisk-1.2.0.rc2/codecs/gsm/Makefile	2005-11-12 16:51:08.000000000 -0800
+--- asterisk-1.2.2/codecs/gsm/Makefile~	2005-11-07 19:31:45.000000000 -0800
++++ asterisk-1.2.2/codecs/gsm/Makefile	2005-11-12 16:51:08.000000000 -0800
 @@ -297,6 +297,7 @@
  ifneq ($(shell uname -m), alpha)
  ifneq ($(shell uname -m), sparc64)
