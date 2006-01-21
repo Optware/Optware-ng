@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.4.29
+CHEROKEE_VERSION=0.4.30
 CHEROKEE_SITE=http://www.0x50.org/download/0.4/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
@@ -48,7 +48,8 @@ CHEROKEE_CONFFILES=\
 	/opt/etc/cherokee/cherokee.conf \
 	/opt/etc/cherokee/advanced.conf \
 	/opt/etc/cherokee/icons.conf \
-	/opt/etc/cherokee/mime.conf \
+	/opt/etc/cherokee/mime.types \
+	/opt/etc/cherokee/mime.compression.types \
 
 #
 # CHEROKEE_PATCHES should list any patches, in the the order in
