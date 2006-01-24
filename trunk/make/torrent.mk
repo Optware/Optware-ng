@@ -115,6 +115,7 @@ $(TORRENT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
+	rm -rf $(TORRENT_IPK_DIR) $(BUILD_DIR)/torrent_*_$(TARGET_ARCH).ipk
 	mkdir -p $(TORRENT_IPK_DIR)/CONTROL
 	$(MAKE) $(TORRENT_IPK_DIR)/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
