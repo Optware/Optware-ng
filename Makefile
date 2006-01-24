@@ -148,7 +148,7 @@ WL500G_BROKEN_PACKAGES = \
 	jabber jamvm jikes \
 	ldconfig libdvb libgc libstdc++ libsigc++ libtiff libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
-	nagios-plugins nail nfs-server nfs-utils nget nload nmap ntp \
+	nagios-plugins nail nfs-server nfs-utils nget nload nmap nrpe ntp \
 	pango pcre py-bluez py-cheetah py-clips py-celementtree py-gdchart2 py-gd py-pil \
 	py-mercurial py-mssql py-sqlite py-mx-base py-mysql py-psycopg py-xml \
 	qemu qemu-libc-i386 \
@@ -165,7 +165,7 @@ MSS_SPECIFIC_PACKAGES =
 
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
-	apache apr-util \
+	apache apr-util asterisk \
 	bitlbee \
 	clamav \
 	erlang \
@@ -196,7 +196,7 @@ DS101G_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ds101g+.
 DS101G_BROKEN_PACKAGES = \
-	apache apr-util appweb \
+	apache apr-util appweb asterisk \
 	bitlbee \
 	cherokee clamav \
 	eaccelerator \
