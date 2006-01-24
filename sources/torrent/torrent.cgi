@@ -137,8 +137,14 @@ _purge ()
     else
       echo "<pre>"
       for f in $TARGET/*/*.log ; do
-	echo "Purging $f"
-	rm "$f"
+	  DUMMY="${f%/*.log}"
+	  TORRENT="${DUMMY}/${DUMMY##*/}.torrent.seeding"
+	  if [ -f "${TORRENT}" ]; then
+		echo "<b>$f not purged</b>"
+	  else
+          	echo "Purging $f"
+		rm "$f"
+	  fi 
       done
       echo "</pre>"
     fi

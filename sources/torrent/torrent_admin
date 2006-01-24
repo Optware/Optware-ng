@@ -131,8 +131,14 @@ _purge ()
 	echo "No LOG to purge."
     else
       for f in $TARGET/*/*.log ; do
-	echo "Purging $f"
-	rm "$f"
+	DUMMY="${f%/*.log}"
+	TORRENT="${DUMMY}/${DUMMY##*/}.torrent.seeding"
+	if [ -f "${TORRENT}" ]; then
+		echo -e "${WARN} $f not purged${NORMAL}"
+	else
+		echo "Purging $f"
+		rm "$f"
+	fi
       done
     fi
     
