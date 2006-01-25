@@ -152,7 +152,7 @@ WL500G_BROKEN_PACKAGES = \
 	pango pcre py-bluez py-cheetah py-clips py-celementtree py-gdchart2 py-gd py-pil \
 	py-mercurial py-mssql py-sqlite py-mx-base py-mysql py-psycopg py-xml \
 	qemu qemu-libc-i386 \
-	rcs rtorrent \
+	rtorrent \
 	sdl ser sm snownews sqsh sudo \
 	transcode \
 	unrar \
