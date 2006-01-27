@@ -29,7 +29,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOVECOT_SITE=http://www.dovecot.org/releases
-DOVECOT_VERSION=1.0.alpha1
+DOVECOT_VERSION=1.0.beta2
 DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
 DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
@@ -44,7 +44,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=6
+DOVECOT_IPK_VERSION=7
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -130,6 +130,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		ignore_signed_size=1 \
 		./configure \
+		--without-gssapi \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
