@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK_SITE=http://ftp.digium.com/pub/asterisk
-ASTERISK_VERSION=1.2.2
+ASTERISK_VERSION=1.2.3
 ASTERISK_SOURCE=asterisk-$(ASTERISK_VERSION).tar.gz
 ASTERISK_DIR=asterisk-$(ASTERISK_VERSION)
 ASTERISK_UNZIP=zcat
