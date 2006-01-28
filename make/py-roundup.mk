@@ -22,11 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://dl.sourceforge.net/sourceforge/roundup
-PY-ROUNDUP_VERSION=0.8.5
+PY-ROUNDUP_VERSION=0.8.6
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
-PY-ROUNDUP_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-ROUNDUP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-ROUNDUP_DESCRIPTION=An issue-tracking system with command-line, web and e-mail interfaces.
 PY-ROUNDUP_SECTION=misc
 PY-ROUNDUP_PRIORITY=optional
