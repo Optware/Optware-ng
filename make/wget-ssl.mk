@@ -3,7 +3,8 @@
 # wget-ssl
 #
 ###########################################################
-
+#
+# $Header$
 #
 # WGET-SSL_VERSION, WGET-SSL_SITE and WGET-SSL_SOURCE define
 # the upstream location of the source code for the package.
@@ -15,7 +16,7 @@
 # You should change all these variables to suit your package.
 #
 WGET-SSL_SITE=http://ftp.gnu.org/pub/gnu/wget
-WGET-SSL_VERSION=1.10
+WGET-SSL_VERSION=1.10.2
 WGET-SSL_SOURCE=wget-$(WGET-SSL_VERSION).tar.gz
 WGET-SSL_DIR=wget-$(WGET-SSL_VERSION)
 WGET-SSL_UNZIP=zcat
@@ -29,7 +30,7 @@ WGET-SSL_CONFLICTS=
 #
 # WGET-SSL_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET-SSL_IPK_VERSION=1
+WGET-SSL_IPK_VERSION=2
 
 #
 # WGET-SSL_CONFFILES should be a list of user-editable files
@@ -104,6 +105,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WGET-SSL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WGET-SSL_LDFLAGS)" \
 		./configure \
+		--disable-rpath \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
