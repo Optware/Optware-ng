@@ -39,7 +39,7 @@ _update_progress()
 	if [ -f "${INFO}" ]; then
 	    . "${INFO}"
 	    LOG="${TORRENT%/*}/current.log"
-	    PROGRESS=`tail -20 "${LOG}"|tr '\r' '\n'|grep "Download"|tail -1`  
+	    PROGRESS=`tail -30 "${LOG}"|tr '\r' '\n'|grep "Download"|tail -1`  
 	    _write_info
 	fi
     done
@@ -241,6 +241,10 @@ __list ()
 		[ ! -z "${ENDTIME}" ] && echo " End: ${ENDTIME}"
 		[ ${TRIES} -gt 0 ] && echo " Tries: ${TRIES}"
 		echo "</td></tr>"
+DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
+UL=`echo "${PROGRESS}" | sed 's/.*Upload \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
+		download=$((${download}+${DL}))
+		upload=$((${upload}+${UL}))
 	    fi
 	    idx=`expr $idx + 1`
 	done
@@ -252,8 +256,12 @@ __list ()
 _list ()
 {
     idx=0
-   __list "$WORK/*/*.torrent" "Active"
+    download=0
+    upload=0
+    __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
+    echo "<table><tr><td>Total</td><td>Download ${download}kbs</td>"
+    echo "<td>Upload ${upload}kbs</td></tr></table>"
     [ "${ACTION}" = "Update" ] && return
     __list "$WORK/*/*.torrent.suspended" "Suspended" 
     __list "$WORK/*/*.torrent.removed" "Removed" 
@@ -383,7 +391,6 @@ Content-type: text/html
 <html>
 <head>
   <title>Torrent admin</title>
-  <h1>Torrent admin</h1>
   <style type="text/css">
   <!--
       BODY { background-color: #F8F4E7; color: #552800 }
@@ -451,7 +458,7 @@ cat << __EOF__
 </ul>
 <hr>
 <address>
-&copy; 2005 oleo
+&copy; 2005, 2006 oleo
 </address>
 </body>
 </html>
