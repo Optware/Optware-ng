@@ -28,7 +28,7 @@ TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=2
+TORRENT_IPK_VERSION=3
 
 #
 # TORRENT_BUILD_DIR is the directory in which the build is done.

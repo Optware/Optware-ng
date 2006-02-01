@@ -230,6 +230,10 @@ __list ()
 		echo -n " Start: ${STARTTIME}"
 		[ ! -z "${ENDTIME}" ] && echo -n " End: ${ENDTIME}"
 		[ ${TRIES} -gt 0 ] && echo -n " Tries: ${TRIES}"
+   		DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
+   		UL=`echo "${PROGRESS}" | sed 's/.*Upload \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
+   		download=$((${download}+${DL}))
+   		upload=$((${upload}+${UL}))
 	    fi
 	    echo ""
 	    idx=`expr $idx + 1`
@@ -242,8 +246,11 @@ __list ()
 _list ()
 {
     idx=0
-   __list "$WORK/*/*.torrent" "Active"
+    download=0
+    upload=0
+    __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
+    echo -e "${BOLD}Total Download ${download}kbs Upload ${upload}kbs${NORMAL}"
     [ "${ACTION}" = "-u" ] && return
     __list "$WORK/*/*.torrent.suspended" "Suspended" 
     __list "$WORK/*/*.torrent.removed" "Removed" 
