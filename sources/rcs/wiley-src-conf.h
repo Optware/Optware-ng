@@ -359,7 +359,8 @@ char *getlogin P((void));
 
 /* <stdio.h> */
 #ifndef L_tmpnam
-#define L_tmpnam 32 /* power of 2 > sizeof("/usr/tmp/xxxxxxxxxxxxxxx") */ #endif
+#define L_tmpnam 32 /* power of 2 > sizeof("/usr/tmp/xxxxxxxxxxxxxxx") */
+#endif
 #ifndef SEEK_SET
 #define SEEK_SET 0
 #endif
