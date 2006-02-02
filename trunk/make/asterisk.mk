@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK_SITE=http://ftp.digium.com/pub/asterisk
-ASTERISK_VERSION=1.2.3
+ASTERISK_VERSION=1.2.4
 ASTERISK_SOURCE=asterisk-$(ASTERISK_VERSION).tar.gz
 ASTERISK_DIR=asterisk-$(ASTERISK_VERSION)
 ASTERISK_UNZIP=zcat
-ASTERISK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ASTERISK_MAINTAINER=Corneliu Doban <corneliu_doban@yahoo.com>
 ASTERISK_DESCRIPTION=Open Source VoIP PBX System
 ASTERISK_SECTION=util
 ASTERISK_PRIORITY=optional
