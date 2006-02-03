@@ -37,7 +37,7 @@ RCS_CONFLICTS=
 #
 # RCS_IPK_VERSION should be incremented when the ipk changes.
 #
-RCS_IPK_VERSION=1
+RCS_IPK_VERSION=2
 
 #
 # RCS_CONFFILES should be a list of user-editable files
