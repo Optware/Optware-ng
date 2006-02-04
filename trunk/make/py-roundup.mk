@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-ROUNDUP_SITE=http://dl.sourceforge.net/sourceforge/roundup
-PY-ROUNDUP_VERSION=0.8.6
+PY-ROUNDUP_SITE=http://cheeseshop.python.org/packages/source/r/roundup
+PY-ROUNDUP_VERSION=1.0.1
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
