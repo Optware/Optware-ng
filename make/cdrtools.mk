@@ -34,7 +34,7 @@ CDRTOOLS_IPK_VERSION=1
 #
 # Force using gcc rather than cc
 #
-MAKE+= CCOM=gcc
+CDRTOOLS_MAKE=$(MAKE) CCOM=gcc
 
 #
 # CDRTOOLS_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ cdrtools-unpack: $(CDRTOOLS_BUILD_DIR)/.configured
 #
 $(CDRTOOLS_BUILD_DIR)/.built: $(CDRTOOLS_BUILD_DIR)/.configured
 	rm -f $(CDRTOOLS_BUILD_DIR)/.built
-	$(MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS)
+	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS)
 	touch $(CDRTOOLS_BUILD_DIR)/.built
 
 #
@@ -118,7 +118,7 @@ cdrtools: $(CDRTOOLS_BUILD_DIR)/.built
 #
 $(CDRTOOLS_BUILD_DIR)/.staged: $(CDRTOOLS_BUILD_DIR)/.built
 	rm -f $(CDRTOOLS_BUILD_DIR)/.staged
-	$(MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
+	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
 		INS_BASE=$(STAGING_DIR) install
 	touch $(CDRTOOLS_BUILD_DIR)/.staged
 
@@ -157,9 +157,9 @@ $(CDRTOOLS_IPK_DIR)/CONTROL/control:
 #
 $(CDRTOOLS_IPK): $(CDRTOOLS_BUILD_DIR)/.built
 	rm -rf $(CDRTOOLS_IPK_DIR) $(BUILD_DIR)/cdrtools_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
+	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
 		INS_BASE=$(CDRTOOLS_IPK_DIR)/opt install
-	$(MAKE) $(CDRTOOLS_IPK_DIR)/CONTROL/control
+	$(CDRTOOLS_MAKE) $(CDRTOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CDRTOOLS_IPK_DIR)
 
 #
@@ -172,7 +172,7 @@ cdrtools-ipk: $(CDRTOOLS_IPK)
 #
 cdrtools-clean:
 	rm -f $(CDRTOOLS_BUILD_DIR)/.built
-	-$(MAKE) -C $(CDRTOOLS_BUILD_DIR) clean
+	-$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
