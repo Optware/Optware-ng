@@ -131,7 +131,10 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) $(PERL_H
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
 	ln -s $(PERL_HOSTPERL) $(PERL_BUILD_DIR)/hostperl
 	(cd $(PERL_BUILD_DIR)/Cross; \
-		cp -f $(PERL_SOURCE_DIR)/Cross/{config,config.sh-*-linux,Makefile.SH.patch} . ; \
+		rm -f config; \
+		printf "### Target Arch\nARCH = $(GNU_TARGET_NAME)\n" | sed 's/-linux$$//' > config; \
+		printf "### Target OS\nOS = linux\n" >> config; \
+		cp -f $(PERL_SOURCE_DIR)/Cross/{config.sh-*-linux,Makefile.SH.patch} . ; \
 		make patch; \
 	)
 #	$(PATCH_LIBTOOL) $(PERL_BUILD_DIR)/libtool
