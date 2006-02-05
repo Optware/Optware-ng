@@ -4,11 +4,6 @@
 #
 ###########################################################
 
-# You must replace "perl" and "PERL" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # PERL_VERSION, PERL_SITE and PERL_SOURCE define
 # the upstream location of the source code for the package.
@@ -18,23 +13,16 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
-# Please make sure that you add a description, and that you
-# list all your packages' dependencies, seperated by commas.
-# 
-# If you list yourself as MAINTAINER, please give a valid email
-# address, and indicate your irc nick if it cannot be easily deduced
-# from your name or email address.  If you leave MAINTAINER set to
-# "NSLU2 Linux" other developers will feel free to edit.
 #
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
 PERL_VERSION=5.8.7
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
-PERL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-PERL_DESCRIPTION=Practical Extraction and Report Language.
-PERL_SECTION=lang
 PERL_PRIORITY=optional
+PERL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL_SECTION=interpreters
+PERL_DESCRIPTION=Practical Extraction and Report Language.
 PERL_DEPENDS=
 PERL_SUGGESTS=
 PERL_CONFLICTS=
@@ -52,14 +40,24 @@ PERL_IPK_VERSION=1
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(HOSTCC), $(TARGET_CC))
+PERL_PATCHES=
+PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
+else
 PERL_PATCHES=$(PERL_SOURCE_DIR)/Cross/Makefile.patch
+#PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 PERL_CPPFLAGS=
+ifeq ($(HOSTCC), $(TARGET_CC))
+PERL_LDFLAGS=
+else
 PERL_LDFLAGS=-lm
+endif
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
@@ -71,11 +69,18 @@ PERL_LDFLAGS=-lm
 # You should not change any of these variables.
 #
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
+ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/staging-install/bin/perl
+endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
 PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+MICROPERL_BUILD_DIR=$(BUILD_DIR)/microperl
+MICROPERL_SOURCE_DIR=$(SOURCE_DIR)/microperl
+MICROPERL_IPK_DIR=$(BUILD_DIR)/microperl-$(PERL_VERSION)-ipk
+MICROPERL_IPK=$(BUILD_DIR)/microperl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -91,6 +96,7 @@ $(DL_DIR)/$(PERL_SOURCE):
 #
 perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
+ifneq ($(HOSTCC), $(TARGET_CC))
 $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -102,6 +108,7 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
 		make install.perl; \
 	)
 	touch $(PERL_HOST_BUILD_DIR)/.hostbuilt
+endif
 
 #
 # This target unpacks the source code in the build directory.
@@ -118,17 +125,36 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
-# shown below to make various patches to it.
-#
+ifeq ($(HOSTCC), $(TARGET_CC))
+$(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
+else
 $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) $(PERL_HOST_BUILD_DIR)/.hostbuilt
-#	$(MAKE) <bar>-stage <baz>-stage
+endif
+#	$(MAKE) <bar>-stage <baz>-stage # maybe add bdb here at some point
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
 		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
+ifeq ($(HOSTCC), $(TARGET_CC))
+	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
+	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
+	cat $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL | \
+	sed -e 's:/usr/include/errno.h:/opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/include/errno.h:g'\
+	> $(PERL_BUILD_DIR)/ext/Errno/tmp
+	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
+	(cd $(PERL_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
+		./Configure \
+		-Dcc=gcc \
+		-Dprefix=/opt \
+		-de \
+		-A clear:ignore_versioned_solibs \
+	)
+else
 	ln -s $(PERL_HOSTPERL) $(PERL_BUILD_DIR)/hostperl
 	(cd $(PERL_BUILD_DIR)/Cross; \
 		rm -f config; \
@@ -137,27 +163,50 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) $(PERL_H
 		cp -f $(PERL_SOURCE_DIR)/Cross/{config.sh-*-linux,Makefile.SH.patch} . ; \
 		make patch; \
 	)
-#	$(PATCH_LIBTOOL) $(PERL_BUILD_DIR)/libtool
+endif
+	if test -n "$(PERL_POST_CONFIGURE_PATCHES)" ; then \
+		cat $(PERL_POST_CONFIGURE_PATCHES) | patch -d $(PERL_BUILD_DIR) -p0 ; \
+	fi
 	touch $(PERL_BUILD_DIR)/.configured
 
 perl-unpack: $(PERL_BUILD_DIR)/.configured
+
+# the same for microperl
+
+$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(MICROPERL_PATCHES)
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
+	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
+	touch $(MICROPERL_BUILD_DIR)/.configured
+
+microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
 $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
 	rm -f $(PERL_BUILD_DIR)/.built
+ifeq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) -C $(PERL_BUILD_DIR)
+else
 	$(TARGET_CONFIGURE_OPTS) \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
 	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
 		$(MAKE) -C $(PERL_BUILD_DIR)/Cross perl
+endif
 	touch $(PERL_BUILD_DIR)/.built
+
+$(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
+	rm -f $(MICROPERL_BUILD_DIR)/.built
+	$(MAKE) -C $(MICROPERL_BUILD_DIR) -f Makefile.micro CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)"
+	touch $(MICROPERL_BUILD_DIR)/.built
 
 #
 # This is the build convenience target.
 #
 perl: $(PERL_BUILD_DIR)/.built
+microperl: $(MICROPERL_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -188,6 +237,20 @@ $(PERL_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(PERL_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
 
+$(MICROPERL_IPK_DIR)/CONTROL/control:
+	@install -d $(MICROPERL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: microperl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL_PRIORITY)" >>$@
+	@echo "Section: $(PERL_SECTION)" >>$@
+	@echo "Version: $(PERL_VERSION)-$(PERL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL_MAINTAINER)" >>$@
+	@echo "Source: $(PERL_SITE)/$(PERL_SOURCE)" >>$@
+	@echo "Description: $(PERL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -202,8 +265,12 @@ $(PERL_IPK_DIR)/CONTROL/control:
 #
 $(PERL_IPK): $(PERL_BUILD_DIR)/.built
 	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_$(TARGET_ARCH).ipk
+ifeq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
+else
 	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
 		$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) INSTALL_DEPENDENCE="" install-strip
+endif
 	(cd $(PERL_IPK_DIR)/opt/bin; \
 		rm -f perl; \
 		ln -s perl$(PERL_VERSION) perl; \
@@ -214,10 +281,20 @@ $(PERL_IPK): $(PERL_BUILD_DIR)/.built
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
 
+$(MICROPERL_IPK): $(MICROPERL_BUILD_DIR)/.built
+	rm -rf $(MICROPERL_IPK_DIR) $(BUILD_DIR)/microperl_*_$(TARGET_ARCH).ipk
+	install -d $(MICROPERL_IPK_DIR)/opt/bin
+	install -m 755 $(MICROPERL_BUILD_DIR)/microperl $(MICROPERL_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(MICROPERL_IPK_DIR)/opt/bin/*
+	$(MAKE) $(MICROPERL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROPERL_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
 perl-ipk: $(PERL_IPK)
+
+microperl-ipk: $(MICROPERL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -226,9 +303,20 @@ perl-clean:
 	rm -f $(PERL_BUILD_DIR)/.built
 	-$(MAKE) -C $(PERL_BUILD_DIR) clean
 
+microperl-clean:
+	rm -f $(MICROPERL_BUILD_DIR)/.built
+	-$(MAKE) -C $(MICROPERL_BUILD_DIR) clean
+
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
 perl-dirclean:
+ifeq ($(HOSTCC), $(TARGET_CC))
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
+else
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_HOST_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
+endif
+
+microperl-dirclean:
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR) $(MICROPERL_IPK_DIR) $(MICROPERL_IPK)
