@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://turbogears.org/download/eggs
-PY-TURBOGEARS_VERSION=0.8a5
+PY-TURBOGEARS_VERSION=0.8.8
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -99,7 +99,7 @@ py-turbogears-source: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-TURBOGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)
 	$(PY-TURBOGEARS_UNZIP) $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TURBOGEARS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) -p1
@@ -167,16 +167,10 @@ $(PY-TURBOGEARS_IPK_DIR)/CONTROL/control:
 #
 $(PY-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py-turbogears_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-TURBOGEARS_BUILD_DIR) DESTDIR=$(PY-TURBOGEARS_IPK_DIR) install
 	(cd $(PY-TURBOGEARS_BUILD_DIR); \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-TURBOGEARS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-#	install -d $(PY-TURBOGEARS_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-TURBOGEARS_SOURCE_DIR)/py-turbogears.conf $(PY-TURBOGEARS_IPK_DIR)/opt/etc/py-turbogears.conf
-#	install -d $(PY-TURBOGEARS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-TURBOGEARS_SOURCE_DIR)/rc.py-turbogears $(PY-TURBOGEARS_IPK_DIR)/opt/etc/init.d/SXXpy-turbogears
 	$(MAKE) $(PY-TURBOGEARS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-TURBOGEARS_SOURCE_DIR)/postinst $(PY-TURBOGEARS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-TURBOGEARS_SOURCE_DIR)/prerm $(PY-TURBOGEARS_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-TURBOGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOGEARS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOGEARS_IPK_DIR)
 
