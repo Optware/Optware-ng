@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-KID_SITE=http://lesscode.org/dist/kid
-PY-KID_VERSION=0.6.4
+PY-KID_VERSION=0.8
+PY-KID_SITE=http://kid.lesscode.org/dist/$(PY-KID_VERSION)
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
 PY-KID_UNZIP=zcat
@@ -99,10 +99,12 @@ py-kid-source: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
 	$(PY-KID_UNZIP) $(DL_DIR)/$(PY-KID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1
+	if test -n "$(PY-KID_PATCHES)"; then \
+	    cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
 	(cd $(PY-KID_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -167,16 +169,10 @@ $(PY-KID_IPK_DIR)/CONTROL/control:
 #
 $(PY-KID_IPK): $(PY-KID_BUILD_DIR)/.built
 	rm -rf $(PY-KID_IPK_DIR) $(BUILD_DIR)/py-kid_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-KID_BUILD_DIR) DESTDIR=$(PY-KID_IPK_DIR) install
 	(cd $(PY-KID_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-KID_IPK_DIR)/opt)
-#	install -d $(PY-KID_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-KID_SOURCE_DIR)/py-kid.conf $(PY-KID_IPK_DIR)/opt/etc/py-kid.conf
-#	install -d $(PY-KID_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-KID_SOURCE_DIR)/rc.py-kid $(PY-KID_IPK_DIR)/opt/etc/init.d/SXXpy-kid
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 setup.py install --root=$(PY-KID_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(MAKE) $(PY-KID_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-KID_SOURCE_DIR)/postinst $(PY-KID_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-KID_SOURCE_DIR)/prerm $(PY-KID_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-KID_IPK_DIR)
 
