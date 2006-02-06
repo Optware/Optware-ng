@@ -22,10 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SETUPTOOLS_SITE=http://cheeseshop.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_SVN_REV=41831
-PY-SETUPTOOLS_VERSION=0.6a9+r$(PY-SETUPTOOLS_SVN_REV)
-PY-SETUPTOOLS_SOURCE=#none
-#PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).zip
+PY-SETUPTOOLS_VERSION=0.6a9
+PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).zip
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
 PY-SETUPTOOLS_UNZIP=unzip
 PY-SETUPTOOLS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
@@ -76,7 +74,7 @@ PY-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPT
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -103,11 +101,7 @@ py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
-#	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
-	( \
-	    cd $(BUILD_DIR); \
-	    svn co -q -r $(PY-SETUPTOOLS_SVN_REV) http://svn.python.org/projects/sandbox/trunk/setuptools $(PY-SETUPTOOLS_DIR); \
-	)
+	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
 	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
@@ -137,7 +131,7 @@ py-setuptools: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 $(PY-SETUPTOOLS_BUILD_DIR)/.staged: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.staged
 	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
-	python2.4 setup.py install --root=$(STAGING_IPK_DIR) --prefix=/opt)
+	python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt --single-version-externally-managed)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.staged
 
 py-setuptools-stage: $(PY-SETUPTOOLS_BUILD_DIR)/.staged
@@ -173,18 +167,13 @@ $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
+	make py-setuptools-stage
 	rm -rf $(PY-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py-setuptools_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-SETUPTOOLS_BUILD_DIR) DESTDIR=$(PY-SETUPTOOLS_IPK_DIR) install
 	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-SETUPTOOLS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-#	install -d $(PY-SETUPTOOLS_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-SETUPTOOLS_SOURCE_DIR)/py-setuptools.conf $(PY-SETUPTOOLS_IPK_DIR)/opt/etc/py-setuptools.conf
-#	install -d $(PY-SETUPTOOLS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-SETUPTOOLS_SOURCE_DIR)/rc.py-setuptools $(PY-SETUPTOOLS_IPK_DIR)/opt/etc/init.d/SXXpy-setuptools
 	$(MAKE) $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-SETUPTOOLS_SOURCE_DIR)/postinst $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-SETUPTOOLS_SOURCE_DIR)/prerm $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/prerm
-#	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
+	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SETUPTOOLS_IPK_DIR)
 
 #
