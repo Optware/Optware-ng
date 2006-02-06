@@ -28,7 +28,15 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = ruby librsync py-rdiff-backup py-curl
+CROSS_PACKAGES_READY_FOR_TESTING = \
+	ruby \
+	librsync \
+	py-curl \
+	py-rdiff-backup \
+	py-setuptools \
+	py-formencode \
+	py-simplejson \
+
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
 # A web search shows some interest (and effort) in making cdrtools 
