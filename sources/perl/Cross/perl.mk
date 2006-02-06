@@ -53,11 +53,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 PERL_CPPFLAGS=
-ifeq ($(HOSTCC), $(TARGET_CC))
 PERL_LDFLAGS=
-else
-PERL_LDFLAGS=-lm
-endif
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
@@ -270,6 +266,8 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 else
 	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
 		$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) INSTALL_DEPENDENCE="" install-strip
+	for so in `find $(PERL_IPK_DIR)/opt/lib/perl5/ -name '*.so'`; do \
+		chmod u+w $$so; $(STRIP_COMMAND) $$so; done
 endif
 	(cd $(PERL_IPK_DIR)/opt/bin; \
 		rm -f perl; \
