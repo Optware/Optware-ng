@@ -36,7 +36,7 @@ PY-SQLOBJECT_CONFLICTS=
 #
 # PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SQLOBJECT_IPK_VERSION=1
+PY-SQLOBJECT_IPK_VERSION=2
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-sqlobject-source: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SQLOBJECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
 	$(PY-SQLOBJECT_UNZIP) $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p1
@@ -167,16 +167,10 @@ $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control:
 #
 $(PY-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 	rm -rf $(PY-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-SQLOBJECT_BUILD_DIR) DESTDIR=$(PY-SQLOBJECT_IPK_DIR) install
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-SQLOBJECT_IPK_DIR)/opt --old-and-unmanageable)
-#	install -d $(PY-SQLOBJECT_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-SQLOBJECT_SOURCE_DIR)/py-sqlobject.conf $(PY-SQLOBJECT_IPK_DIR)/opt/etc/py-sqlobject.conf
-#	install -d $(PY-SQLOBJECT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-SQLOBJECT_SOURCE_DIR)/rc.py-sqlobject $(PY-SQLOBJECT_IPK_DIR)/opt/etc/init.d/SXXpy-sqlobject
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 setup.py install --root=$(PY-SQLOBJECT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(MAKE) $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-SQLOBJECT_SOURCE_DIR)/postinst $(PY-SQLOBJECT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-SQLOBJECT_SOURCE_DIR)/prerm $(PY-SQLOBJECT_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SQLOBJECT_IPK_DIR)
 
