@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FORMENCODE_SITE=http://cheeseshop.python.org/packages/source/F/FormEncode
-PY-FORMENCODE_VERSION=0.2.2
+PY-FORMENCODE_VERSION=0.4
 PY-FORMENCODE_SOURCE=FormEncode-$(PY-FORMENCODE_VERSION).tar.gz
 PY-FORMENCODE_DIR=FormEncode-$(PY-FORMENCODE_VERSION)
 PY-FORMENCODE_UNZIP=zcat
@@ -99,7 +99,7 @@ py-formencode-source: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-FORMENCODE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-FORMENCODE_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
@@ -167,16 +167,10 @@ $(PY-FORMENCODE_IPK_DIR)/CONTROL/control:
 #
 $(PY-FORMENCODE_IPK): $(PY-FORMENCODE_BUILD_DIR)/.built
 	rm -rf $(PY-FORMENCODE_IPK_DIR) $(BUILD_DIR)/py-formencode_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-FORMENCODE_BUILD_DIR) DESTDIR=$(PY-FORMENCODE_IPK_DIR) install
 	(cd $(PY-FORMENCODE_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-FORMENCODE_IPK_DIR)/opt --old-and-unmanageable)
-#	install -d $(PY-FORMENCODE_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-FORMENCODE_SOURCE_DIR)/py-formencode.conf $(PY-FORMENCODE_IPK_DIR)/opt/etc/py-formencode.conf
-#	install -d $(PY-FORMENCODE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-FORMENCODE_SOURCE_DIR)/rc.py-formencode $(PY-FORMENCODE_IPK_DIR)/opt/etc/init.d/SXXpy-formencode
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 setup.py install --root=$(PY-FORMENCODE_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(MAKE) $(PY-FORMENCODE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-FORMENCODE_SOURCE_DIR)/postinst $(PY-FORMENCODE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-FORMENCODE_SOURCE_DIR)/prerm $(PY-FORMENCODE_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-FORMENCODE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-FORMENCODE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-FORMENCODE_IPK_DIR)
 

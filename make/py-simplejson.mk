@@ -99,7 +99,7 @@ py-simplejson-source: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-SIMPLEJSON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-SIMPLEJSON_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)
 	$(PY-SIMPLEJSON_UNZIP) $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SIMPLEJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) -p1
@@ -167,16 +167,10 @@ $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 #
 $(PY-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
 	rm -rf $(PY-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py-simplejson_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-SIMPLEJSON_BUILD_DIR) DESTDIR=$(PY-SIMPLEJSON_IPK_DIR) install
 	(cd $(PY-SIMPLEJSON_BUILD_DIR); \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-SIMPLEJSON_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-#	install -d $(PY-SIMPLEJSON_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-SIMPLEJSON_SOURCE_DIR)/py-simplejson.conf $(PY-SIMPLEJSON_IPK_DIR)/opt/etc/py-simplejson.conf
-#	install -d $(PY-SIMPLEJSON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-SIMPLEJSON_SOURCE_DIR)/rc.py-simplejson $(PY-SIMPLEJSON_IPK_DIR)/opt/etc/init.d/SXXpy-simplejson
 	$(MAKE) $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-SIMPLEJSON_SOURCE_DIR)/postinst $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-SIMPLEJSON_SOURCE_DIR)/prerm $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/prerm
 #	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SIMPLEJSON_IPK_DIR)
 
