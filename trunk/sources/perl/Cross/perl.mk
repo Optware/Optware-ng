@@ -53,7 +53,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 PERL_CPPFLAGS=
-PERL_LDFLAGS=
+PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/5.8.7/armv5b-softfloat-linux/CORE"
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
