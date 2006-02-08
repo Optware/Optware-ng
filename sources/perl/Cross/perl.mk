@@ -40,13 +40,8 @@ PERL_IPK_VERSION=1
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(HOSTCC), $(TARGET_CC))
 PERL_PATCHES=
 PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
-else
-PERL_PATCHES=$(PERL_SOURCE_DIR)/Cross/Makefile.patch
-#PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
-endif
 
 #
 # If the compilation of the package requires additional
@@ -106,6 +101,8 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
 	touch $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
 
+perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -124,7 +121,7 @@ endif
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 else
-$(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) $(PERL_HOST_BUILD_DIR)/.hostbuilt
+$(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) perl-hostperl
 endif
 #	$(MAKE) <bar>-stage <baz>-stage # maybe add bdb here at some point
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
@@ -156,8 +153,10 @@ else
 		rm -f config; \
 		printf "### Target Arch\nARCH = $(GNU_TARGET_NAME)\n" | sed 's/-linux$$//' > config; \
 		printf "### Target OS\nOS = linux\n" >> config; \
-		cp -f $(PERL_SOURCE_DIR)/Cross/{config.sh-*-linux,Makefile.SH.patch} . ; \
-		make patch; \
+		cp -f $(PERL_SOURCE_DIR)/Cross/{config.sh-*-linux,Makefile,Makefile.SH.patch} . ; \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
+		$(MAKE) patch perl_Configure; \
 	)
 endif
 	if test -n "$(PERL_POST_CONFIGURE_PATCHES)" ; then \
