@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.21a
+SAMBA_VERSION=3.0.21b
 else
 SAMBA_VERSION=3.0.14a
 endif
