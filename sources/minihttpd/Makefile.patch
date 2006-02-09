@@ -1,0 +1,15 @@
+--- mini_httpd-1.19/Makefile	2002-11-02 00:02:57.000000000 +0100
++++ mini_httpd/Makefile	2006-02-09 11:33:09.000000000 +0100
+@@ -20,9 +20,9 @@
+ #SSL_LIBS =	-L${SSL_TREE}/lib -lssl -lcrypto
+ 
+ 
+-BINDIR =	/usr/local/sbin
+-MANDIR =	/usr/local/man
+-CC =		gcc
++BINDIR =	/opt/sbin
++MANDIR =	/opt/man
++#CC =		gcc
+ CDEFS =		${SSL_DEFS} ${SSL_INC}
+ CFLAGS =	-O ${CDEFS}
+ #CFLAGS =	-g ${CDEFS}

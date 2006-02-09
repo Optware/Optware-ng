@@ -1,0 +1,20 @@
+--- mini_httpd-1.19/port.h	2002-07-30 20:45:22.000000000 +0200
++++ minihttpd/port.h	2006-02-09 14:03:16.000000000 +0100
+@@ -78,6 +78,10 @@
+ # define HAVE_LINUX_SENDFILE
+ # define HAVE_SCANDIR
+ # define HAVE_INT64T
++# ifdef __MIPSEL__
++#   undef HAVE_TM_GMTOFF
++#   undef MADV_SEQUENTIAL
++# endif
+ #endif /* OS_Linux */
+ 
+ #ifdef OS_Solaris
+@@ -104,3 +108,6 @@
+ # define HAVE_MEMORY_H
+ # define HAVE_SIGSET
+ #endif /* OS_Solaris */
++
++
++
