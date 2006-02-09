@@ -36,6 +36,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-setuptools \
 	py-formencode \
 	py-simplejson \
+	mini_httpd \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
