@@ -1,0 +1,57 @@
+diff -urN mini_httpd-1.19/scripts/mini_httpd.sh minihttpd/scripts/mini_httpd.sh
+--- mini_httpd-1.19/scripts/mini_httpd.sh	2001-12-28 23:14:33.000000000 +0100
++++ minihttpd/scripts/mini_httpd.sh	2006-02-09 14:21:06.000000000 +0100
+@@ -1,20 +1,20 @@
+ #!/bin/sh
+ #
+-# mini_httpd.sh - startup script for mini_httpd on FreeBSD
++# mini_httpd.sh - startup script for mini_httpd on Optware
+ #
+ # This goes in /usr/local/etc/rc.d and gets run at boot-time.
+ 
+ case "$1" in
+  
+     start)
+-    if [ -x /usr/local/sbin/mini_httpd_wrapper ] ; then
++    if [ -x /opt/sbin/mini_httpd_wrapper ] ; then
+ 	echo -n " mini_httpd"
+-	/usr/local/sbin/mini_httpd_wrapper &
++	/opt/sbin/mini_httpd_wrapper &
+     fi
+     ;;
+ 
+     stop)
+-    kill -USR1 `cat /var/run/mini_httpd.pid`
++    kill -USR1 `cat /opt/var/run/mini_httpd.pid`
+     ;;
+ 	    
+     *)
+diff -urN mini_httpd-1.19/scripts/mini_httpd_wrapper minihttpd/scripts/mini_httpd_wrapper
+--- mini_httpd-1.19/scripts/mini_httpd_wrapper	2002-06-19 16:13:21.000000000 +0200
++++ minihttpd/scripts/mini_httpd_wrapper	2006-02-09 14:23:29.000000000 +0100
+@@ -1,8 +1,8 @@
+ #!/bin/sh
+ #
+-# mini_httpd_wrapper - wrapper script for mini_httpd on FreeBSD
++# mini_httpd_wrapper - wrapper script for mini_httpd on Optware
+ #
+-# This goes in /usr/local/sbin.  It runs mini_httpd in a loop.  If mini_httpd
++# This goes in /opt/sbin.  It runs mini_httpd in a loop.  If mini_httpd
+ # exits then the script restarts it automatically.
+ #
+ # The -D flag tells mini_httpd to *not* put itself into the background,
+@@ -10,12 +10,9 @@
+ # the specified config file.
+ 
+ while true ; do
+-    /usr/local/sbin/mini_httpd -D -C /usr/local/www/mini_httpd_config
+-    if [ -f /var/run/nologin ] ; then
++    /opt/sbin/mini_httpd -D -C /opt/etc/mini_httpd.conf
++    if [ -f /opt/var/run/nologin ] ; then
+ 	exit
+     fi
+     sleep 10
+-    egrep ' mini_httpd\[' /var/log/messages |
+-      tail -33 |
+-      mail -s "mini_httpd on `hostname` restarted" root
+ done
