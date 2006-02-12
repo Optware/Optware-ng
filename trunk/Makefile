@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	wget-ssl \
 	ruby \
 	librsync \
 	py-curl \
@@ -97,7 +96,7 @@ COMMON_CROSS_PACKAGES = \
 	unzip usbutils \
 	vblade vdr-mediamvp vsftpd vte vorbis-tools \
 	vim \
-	w3cam webalizer wizd \
+	w3cam webalizer wget-ssl wizd \
 	wakelan which whois wpa-supplicant \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
