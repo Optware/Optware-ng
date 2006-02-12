@@ -20,7 +20,7 @@
  	    ;;
  	os390)	test -f /bin/env && ldlibpth="/bin/env $ldlibpth"
  		;;
-@@ -377,9 +366,21 @@
+@@ -377,9 +366,22 @@
  .c.s:
  	$(CCCMDSRC) -S $*.c
  
@@ -34,6 +34,7 @@
 +all: $(FIRSTMAKEFILE) miniperl$(EXE_EXT)
 +	mv miniperl miniperl-arm
 +	ln -s hostperl miniperl
++	touch miniperl
 +
 +more: extra.pods $(private) $(unidatafiles) $(public)
 +
