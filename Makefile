@@ -37,6 +37,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-setuptools \
 	py-formencode \
 	py-simplejson \
+	py-testgears \
 	mini_httpd \
 	libftdi \
 
