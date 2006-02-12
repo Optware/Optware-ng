@@ -1,0 +1,219 @@
+diff -Naur ../appweb/appWeb/Makefile ./appWeb/Makefile
+--- ../appweb/appWeb/Makefile	2005-11-19 07:42:22.000000000 +0100
++++ ./appWeb/Makefile	2006-02-12 23:17:11.000000000 +0100
+@@ -129,7 +129,7 @@
+ $(BLD_BIN_DIR)/$(BLD_PRODUCT)$(BLD_EXE): \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB) $(FILES)
+ 	@bld --graphical --executable $(BLD_BIN_DIR)/$(BLD_PRODUCT)$(BLD_EXE) \
+-		--rpath "$(BLD_PREFIX)/bin" --libraryPath "$(LIBPATH)" \
++		--rpath "$(BLD_PREFIX)/lib" --libraryPath "$(LIBPATH)" \
+ 		$(MODE) --smartLibs "appWeb" --libs "$(LIBS)" $(RES) \
+ 		$(BLD_OBJ_DIR)/appWeb$(BLD_OBJ) \
+ 		$(BLD_OBJ_DIR)/romFiles$(BLD_OBJ) \
+@@ -147,7 +147,7 @@
+ 		$(BLD_BIN_DIR)/libappWebStatic$(BLD_ARCHIVE) $(FILES)
+ 	@bld --graphical \
+ 		--executable $(BLD_BIN_DIR)/$(BLD_PRODUCT)Static$(BLD_EXE) \
+-		--rpath "$(BLD_PREFIX)/bin" --libraryPath "$(STATIC_LIBPATH)" \
++		--rpath "$(BLD_PREFIX)/lib" --libraryPath "$(STATIC_LIBPATH)" \
+ 		$(MODE) --smartLibs "appWebStatic" --libs "$(STATIC_LIBS)" \
+ 		$(BLD_OBJ_DIR)/appWeb$(BLD_OBJ) \
+ 		$(BLD_OBJ_DIR)/romFiles$(BLD_OBJ) \
+@@ -160,7 +160,7 @@
+ $(BLD_BIN_DIR)/testAppWeb$(BLD_EXE): $(BLD_BIN_DIR)/libappWeb$(BLD_LIB) \
+ 	$(FILES) $(TEST_OBJS)
+ 	@bld --graphical --executable $(BLD_BIN_DIR)/testAppWeb$(BLD_EXE) \
+-		--rpath "$(BLD_PREFIX)/bin" --libraryPath "$(LIBPATH)" \
++		--rpath "$(BLD_PREFIX)/lib" --libraryPath "$(LIBPATH)" \
+ 		$(MODE) --smartLibs "appWeb" --libs "$(LIBS)" $(RES) \
+ 		$(BLD_OBJ_DIR)/appWeb$(BLD_OBJ) \
+ 		test/testStaticLink$(BLD_OBJ) \
+@@ -190,7 +190,7 @@
+ 
+ $(BLD_PRODUCT).dsp: always
+ 	@makeProj --graphical --executable $(BLD_PRODUCT)$(BLD_EXE) \
+-		--rpath "$(BLD_PREFIX)/bin" --libraryPath "$(LIBPATH)" \
++		--rpath "$(BLD_PREFIX)/lib" --libraryPath "$(LIBPATH)" \
+ 		--libs "appWeb $(LIBS)" \
+ 		--resources appWeb.rc \
+ 		--sources "appWeb.cpp romFiles.cpp appWebStaticLink.cpp" \
+diff -Naur ../appweb/ejs/Makefile ./ejs/Makefile
+--- ../appweb/ejs/Makefile	2005-11-19 07:41:38.000000000 +0100
++++ ./ejs/Makefile	2006-02-12 23:34:33.000000000 +0100
+@@ -30,10 +30,12 @@
+ 
+ $(BLD_BIN_DIR)/libejsStatic$(BLD_ARCHIVE): $(FILES)
+ 	@bld --static --library $(BLD_BIN_DIR)/libejsStatic \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--objectsDir $(BLD_OBJ_DIR) --objectList files
+ 
+ $(BLD_BIN_DIR)/libejs$(BLD_SHOBJ): $(FILES)
+ 	@bld --shared --library $(BLD_BIN_DIR)/libejs \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--objectsDir $(BLD_OBJ_DIR) --objectList files --libs mpr
+ 
+ cleanExtra:
+diff -Naur ../appweb/http/Makefile ./http/Makefile
+--- ../appweb/http/Makefile	2005-11-19 07:41:35.000000000 +0100
++++ ./http/Makefile	2006-02-12 23:21:18.000000000 +0100
+@@ -176,7 +176,7 @@
+ 		$(BLD_OBJ_DIR)/httpClient$(BLD_OBJ) $(BLD_OBJ_DIR)/client$(BLD_OBJ) \
+ 		$(BLD_OBJ_DIR)/url$(BLD_OBJ) $(BLD_OBJ_DIR)/crypt$(BLD_OBJ)
+ 	@bld --executable $(BLD_BIN_DIR)/httpClient$(BLD_EXE) \
+-		--rpath "$(BLD_PREFIX)/bin" \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--preferStatic --smartLibs "mpr" \
+ 		--objectsDir $(BLD_OBJ_DIR) \
+ 		--objects "$(BLD_OBJ_DIR)/httpClient$(BLD_OBJ) \
+diff -Naur ../appweb/http/modules/gaCompat/Makefile ./http/modules/gaCompat/Makefile
+--- ../appweb/http/modules/gaCompat/Makefile	2005-11-19 07:41:34.000000000 +0100
++++ ./http/modules/gaCompat/Makefile	2006-02-12 23:22:43.000000000 +0100
+@@ -37,7 +37,7 @@
+ 		$(BLD_OBJ_DIR)/gaCompatModule$(BLD_OBJ) \
+ 		$(FILES)
+ 	@bld --shared --library $(BLD_BIN_DIR)/lib$(NAME) \
+-		--rpath "$(BLD_PREFIX)" --rpath "../bin" \
++		--rpath "$(BLD_PREFIX)/lib" --rpath "../lib" \
+ 		--preferShared --smartLibs "appWeb" --libs "$(ESP_LIB) $(EGI_LIB)" \
+ 		$(BLD_OBJ_DIR)/gaCompatModule$(BLD_OBJ) \
+ 		$(BLD_OBJ_DIR)/emfdb$(BLD_OBJ) \
+diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
+--- ../appweb/http/modules/Makefile	2005-11-19 07:41:34.000000000 +0100
++++ ./http/modules/Makefile	2006-02-12 23:22:16.000000000 +0100
+@@ -134,33 +134,33 @@
+ $(BLD_BIN_DIR)/$(AUTH_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/authHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(AUTH_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/authHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(CGI_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/cgiHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(CGI_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/cgiHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(C_API_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/capiModule$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(C_API_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--libs "$(ESP_LIB) $(EGI_LIB)" \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/capiModule$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(ADMIN_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/adminHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(ADMIN_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" \
+ 		$(BLD_OBJ_DIR)/adminHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(EGI_MODULE)$(BLD_SHOBJ): $(BLD_OBJ_DIR)/egiHandler$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(EGI_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/egiHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(ESP_MODULE)$(BLD_SHOBJ): \
+@@ -174,7 +174,7 @@
+ 		$(BLD_OBJ_DIR)/ejsCompat$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(ESP_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" \
+ 		$(BLD_OBJ_DIR)/espHandler$(BLD_OBJ) \
+ 		$(BLD_OBJ_DIR)/esp$(BLD_OBJ) \
+@@ -189,27 +189,27 @@
+ 		$(BLD_OBJ_DIR)/aspnetHandler$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(ASPNET_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" \
+ 		$(BLD_OBJ_DIR)/aspnetHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(COPY_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/copyHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(COPY_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/copyHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(SSL_MODULE)$(BLD_SHOBJ): $(BLD_OBJ_DIR)/sslModule$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(SSL_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/sslModule$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(UPLOAD_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/uploadHandler$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(UPLOAD_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" \
+ 		$(BLD_OBJ_DIR)/uploadHandler$(BLD_OBJ)
+ 
+@@ -217,7 +217,7 @@
+ 		$(BLD_OBJ_DIR)/xdbModule$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(XDB_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" \
+ 		$(BLD_OBJ_DIR)/xdbModule$(BLD_OBJ)
+ 
+diff -Naur ../appweb/http/modules/matrixSsl/Makefile ./http/modules/matrixSsl/Makefile
+--- ../appweb/http/modules/matrixSsl/Makefile	2005-11-21 20:01:39.000000000 +0100
++++ ./http/modules/matrixSsl/Makefile	2006-02-12 23:22:53.000000000 +0100
+@@ -37,7 +37,7 @@
+ 		$(BLD_OBJ_DIR)/matrixSslModule$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/libmatrixSslModule \
+-		--rpath "$(BLD_PREFIX)/bin" \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--libraryPath $(BLD_TOP)/$(BLD_MATRIXSSL_DIR) \
+ 		--libs "appWeb $(MODULE_LIBS) appWeb $(BLD_MATRIXSSL_LIBS)" \
+ 		--objectsDir "$(BLD_BIN_DIR)" \
+diff -Naur ../appweb/http/modules/openSsl/Makefile ./http/modules/openSsl/Makefile
+--- ../appweb/http/modules/openSsl/Makefile	2005-11-21 20:01:39.000000000 +0100
++++ ./http/modules/openSsl/Makefile	2006-02-12 23:23:01.000000000 +0100
+@@ -39,7 +39,7 @@
+ 		$(BLD_OBJ_DIR)/openSslModule$(BLD_OBJ) \
+ 		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/libopenSslModule \
+-		--rpath "$(BLD_PREFIX)/bin" \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--libraryPath $(BLD_TOP)/$(BLD_OPENSSL_DIR) \
+ 		--libs "appWeb $(MODULE_LIBS) appWeb $(BLD_OPENSSL_LIBS)" \
+ 		--objectsDir "$(BLD_BIN_DIR)" \
+diff -Naur ../appweb/http/modules/php4/Makefile ./http/modules/php4/Makefile
+--- ../appweb/http/modules/php4/Makefile	2005-11-21 20:01:39.000000000 +0100
++++ ./http/modules/php4/Makefile	2006-02-12 23:31:40.000000000 +0100
+@@ -24,7 +24,7 @@
+ $(BLD_BIN_DIR)/libphp4Module$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/php4Handler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/libphp4Module \
+-		--rpath "$(BLD_PREFIX)/bin" \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--libraryPath "$(BLD_TOP)/$(BLD_PHP4_DIR)/libs" \
+ 		--preferShared --smartLibs "appWeb" --libs "$(BLD_PHP4_LIBS)" \
+ 		$(BLD_OBJ_DIR)/php4Handler$(BLD_OBJ)
+diff -Naur ../appweb/http/modules/php5/Makefile ./http/modules/php5/Makefile
+--- ../appweb/http/modules/php5/Makefile	2005-12-22 06:20:49.000000000 +0100
++++ ./http/modules/php5/Makefile	2006-02-12 23:23:11.000000000 +0100
+@@ -28,7 +28,7 @@
+ $(BLD_BIN_DIR)/libphp5Module$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/php5Handler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/libphp5Module \
+-		--rpath "$(BLD_PREFIX)/bin" \
++		--rpath "$(BLD_PREFIX)/lib" \
+ 		--libraryPath "$(BLD_TOP)/$(BLD_PHP5_DIR)" \
+ 		--preferShared --smartLibs "appWeb" --libs "$(BLD_PHP5_LIBS)" \
+ 		$(BLD_OBJ_DIR)/php5Handler$(BLD_OBJ)

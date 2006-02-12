@@ -3,6 +3,8 @@
 # appweb
 #
 ###########################################################
+#
+# $Header$
 
 # You must replace "appweb" and "APPWEB-PHP" with the lower case name and
 # upper case name of your new package.  Some places below will say
@@ -20,8 +22,8 @@
 # You should change all these variables to suit your package.
 #
 APPWEB_SITE=http://www.appwebserver.org/software
-APPWEB_VERSION=2.0.3
-APPWEB_VERSION_EXTRA=1
+APPWEB_VERSION=2.0.5
+APPWEB_VERSION_EXTRA=4
 APPWEB_SOURCE=appWeb-src-$(APPWEB_VERSION)-$(APPWEB_VERSION_EXTRA).tar.gz
 APPWEB_DIR=appWeb-$(APPWEB_VERSION)
 APPWEB_UNZIP=zcat
@@ -35,13 +37,13 @@ APPWEB_CONFLICTS=
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=6
+APPWEB_IPK_VERSION=7
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/adjustphp5libpath.patch $(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch
+APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch $(APPWEB_SOURCE_DIR)/rpath.patch
 
 #
 # If the compilation of the package requires additional
@@ -140,12 +142,13 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 		--with-admin=loadable \
 		--with-ssl=loadable \
 		--with-openssl=loadable \
-		--with-openssl-dir=../../staging/opt/lib \
-		--with-openssl-iflags="-I../../../../../staging/opt/include/" \
+		--with-openssl-iflags="-I$(STAGING_PREFIX)/include/" \
+		--with-openssl-dir="../../staging/opt/lib" \
 		--with-openssl-libs="crypto ssl" \
 		--with-php5=loadable \
-		--with-php5-dir=../../staging/opt \
-		--with-php5-iflags="-I../../../../../staging/opt/include/php/ -I../../../../../staging/opt/include/php/Zend -I../../../../../staging/opt/include/php/TSRM -I../../../../../staging/opt/include/php/main -I../../../../../staging/opt/include/php/regex" \
+		--with-php5-dir="../../staging/opt/lib" \
+		--with-php5-iflags="-I$(STAGING_PREFIX)/include/php/ -I$(STAGING_PREFIX)/include/php/Zend -I$(STAGING_PREFIX)/include/php/TSRM -I$(STAGING_PREFIX)/include/php/main -I$(STAGING_PREFIX)/include/php/regex" \
+		--with-php5-ldflags="$(STAGING_LDFLAGS)" \
 		--with-php5-libs="php5 dl crypt db m xml2 z c" \
 	)
 	touch $(APPWEB_BUILD_DIR)/.configured
