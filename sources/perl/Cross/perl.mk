@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
-PERL_VERSION=5.8.7
+PERL_VERSION=5.8.8
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
@@ -40,7 +40,7 @@ PERL_IPK_VERSION=1
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PERL_PATCHES=
+PERL_PATCHES=$(PERL_SOURCE_DIR)/Cross/Configure.patch
 PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 
 #
@@ -48,7 +48,7 @@ PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 # compilation or linking flags, then list them here.
 #
 PERL_CPPFLAGS=
-PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/5.8.7/armv5b-softfloat-linux/CORE"
+PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/armv5b-softfloat-linux/CORE"
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
@@ -62,7 +62,7 @@ PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/5.8.7/armv5b-softfloat-linux/CORE"
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
-PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/staging-install/bin/perl
+PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/miniperl
 endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
@@ -91,17 +91,19 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PERL_PATCHES)" ; then \
+		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR) ; \
 	(cd $(PERL_HOST_BUILD_DIR); \
 		rm -f config.sh Policy.sh; \
 		sh ./Configure -des -Dprefix=$(PERL_HOST_BUILD_DIR)/staging-install; \
-		make; \
 		make install.perl; \
 	)
 	touch $(PERL_HOST_BUILD_DIR)/.hostbuilt
-endif
 
 perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
+endif
 
 #
 # This target unpacks the source code in the build directory.
