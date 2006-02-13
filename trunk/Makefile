@@ -35,6 +35,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-rdiff-backup \
 	py-setuptools \
 	py-formencode \
+	py-json \
 	py-simplejson \
 	py-testgears \
 	mini_httpd \
