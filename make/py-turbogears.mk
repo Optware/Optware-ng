@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://turbogears.org/download/eggs
-PY-TURBOGEARS_VERSION=0.8.8
+PY-TURBOGEARS_VERSION=0.8.9
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -30,7 +30,7 @@ PY-TURBOGEARS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
-PY-TURBOGEARS_DEPENDS=python, py-kid, py-cherrypy, py-sqlobject, py-formencode
+PY-TURBOGEARS_DEPENDS=python, py-kid (>=0.8), py-cherrypy (>=2.1.1), py-sqlobject (>=0.8dev_r1457), py-json (>=3.4), py-elementtree (>=1.2.6), py-celementtree (>=1.0.2), py-formencode (>=0.4), py-testgears (>=0.2)
 PY-TURBOGEARS_CONFLICTS=
 
 #
@@ -171,7 +171,7 @@ $(PY-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-TURBOGEARS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(MAKE) $(PY-TURBOGEARS_IPK_DIR)/CONTROL/control
-#	echo $(PY-TURBOGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOGEARS_IPK_DIR)/CONTROL/conffiles
+	echo $(PY-TURBOGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOGEARS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOGEARS_IPK_DIR)
 
 #
