@@ -23,6 +23,10 @@
 #
 PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
 PY-SQLOBJECT_VERSION=0.7.0
+#PY-SQLOBJECT_SVN_REV=1457
+ifneq ($(PY-SQLOBJECT_SVN_REV),)
+PY-SQLOBJECT_VERSION+=dev_r$(PY-SQLOBJECT_SVN_REV)
+endif
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
 PY-SQLOBJECT_UNZIP=zcat
@@ -31,12 +35,13 @@ PY-SQLOBJECT_DESCRIPTION=An object-relational mapper for python.
 PY-SQLOBJECT_SECTION=misc
 PY-SQLOBJECT_PRIORITY=optional
 PY-SQLOBJECT_DEPENDS=python
+PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
 PY-SQLOBJECT_CONFLICTS=
 
 #
 # PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SQLOBJECT_IPK_VERSION=2
+PY-SQLOBJECT_IPK_VERSION=3
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -74,7 +79,9 @@ PY-SQLOBJECT_IPK=$(BUILD_DIR)/py-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJEC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SQLOBJECT_SOURCE):
+ifeq ($(PY-SQLOBJECT_SVN_REV),)
 	$(WGET) -P $(DL_DIR) $(PY-SQLOBJECT_SITE)/$(PY-SQLOBJECT_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -101,12 +108,19 @@ py-sqlobject-source: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
 $(PY-SQLOBJECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
+ifeq ($(PY-SQLOBJECT_SVN_REV),)
 	$(PY-SQLOBJECT_UNZIP) $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p1
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-SQLOBJECT_SVN_REV) http://svn.colorstudy.com/SQLObject/trunk $(PY-SQLOBJECT_DIR); \
+	)
+endif
+	if test -n "$(PY-SQLOBJECT_PATCHES)" ; then \
+	    cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
+        fi
 	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
-	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
 	)
 	touch $(PY-SQLOBJECT_BUILD_DIR)/.configured
 
