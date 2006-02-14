@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 GIFTARES_REPOSITORY=:pserver:anonymous@cvs.gift-ares.berlios.de:/cvsroot/gift-ares
-GIFTARES_VERSION=20050212
+GIFTARES_VERSION=20060130
 GIFTARES_SOURCE=gift-ares-$(GIFTARES_VERSION).tar.gz
 GIFTARES_DIR=gift-ares-$(GIFTARES_VERSION)
-GIFTARES_TAG=-D 2005-02-12
+GIFTARES_TAG=-D 2006-01-30
 GIFTARES_MODULE=gift-ares
 GIFTARES_DIR=gift-ares-${GIFTARES_VERSION}
 GIFTARES_UNZIP=zcat

@@ -19,7 +19,7 @@
 # You should change all these variables to suit your package.
 #
 GIFTOPENFT_SITE=http://dl.sourceforge.net/gift
-GIFTOPENFT_VERSION=0.2.1.5
+GIFTOPENFT_VERSION=0.2.1.6
 GIFTOPENFT_SOURCE=gift-openft-$(GIFTOPENFT_VERSION).tar.bz2
 GIFTOPENFT_DIR=gift-openft-$(GIFTOPENFT_VERSION)
 GIFTOPENFT_UNZIP=bzcat
