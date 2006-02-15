@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL81_VERSION=8.1.2
+POSTGRESQL81_VERSION=8.1.3
 POSTGRESQL81_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL81_VERSION)
 POSTGRESQL81_SOURCE=postgresql-base-$(POSTGRESQL81_VERSION).tar.bz2
 POSTGRESQL81_DIR=postgresql-$(POSTGRESQL81_VERSION)
