@@ -30,7 +30,7 @@ LIBBT_CONFLICTS=
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=2
+LIBBT_IPK_VERSION=3
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in
@@ -40,13 +40,15 @@ ifneq ($(OPTWARE_TARGET),wl500g)
 LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch\
 	$(LIBBT_SOURCE_DIR)/Makefile.in.patch\
 	$(LIBBT_SOURCE_DIR)/port_range.patch\
-	$(LIBBT_SOURCE_DIR)/report_interval.patch
+	$(LIBBT_SOURCE_DIR)/report_interval.patch\
+	$(LIBBT_SOURCE_DIR)/scrape.patch
 else
-LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch \
+LIBBT_PATCHES=$(LIBBT_SOURCE_DIR)/configure.patch\
 	$(LIBBT_SOURCE_DIR)/random.c.patch \
 	$(LIBBT_SOURCE_DIR)/Makefile.in.patch\
 	$(LIBBT_SOURCE_DIR)/port_range.patch\
-        $(LIBBT_SOURCE_DIR)/report_interval.patch
+        $(LIBBT_SOURCE_DIR)/report_interval.patch\
+	$(LIBBT_SOURCE_DIR)/scrape.patch
 endif
 
 #
