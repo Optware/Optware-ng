@@ -29,6 +29,7 @@ ENDTIME=\"${ENDTIME}\"
 TRIES=${TRIES:-0}
 PROGRESS=\"${PROGRESS}\"
 PID=${PID}
+SCRAPE=\"${SCRAPE}\"
 TORRENTNAME=\"${TORRENTNAME}\"" > "${TORRENT%/*}/.info"
 }
     
@@ -169,18 +170,57 @@ _pause ()
 	echo "<b>Watchdog will resume torrents!</b>"
     else
 	touch "$WORK/.paused"
-	for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
+    	for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
 	    INFO="${TORRENT%/*}/.info"
 	    if [ -f "${INFO}" ]; then
 		. "${INFO}"
 		kill -TERM ${PID}
-                PROGRESS="paused ${PROGRESS}"
-                PID=
-                _write_info
+		PROGRESS="paused ${PROGRESS}"
+		PID=
+		_write_info
 	    fi
 	done
 	echo "<b>All torrents killed!</b>"
-    fi 
+    fi
+}
+
+# Update scrape info for active and downloaded torrents
+_scrape ()
+{
+  for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent* ; do
+    INFO="${TORRENT%/*}/.info"
+    if [ -f "${INFO}" ]; then
+	. "${INFO}"
+	SCRAPE=`btlist -sq "${TORRENT}" | grep seeders`
+	_write_info
+    fi  
+  done
+}
+
+# Search for best done torrent and suggest seeding based on ratio
+_best_seed ()                     
+{                                
+   BEST=0              
+    if [ ! -z "`ls ${TARGET}/*/*.torrent 2>/dev/null | head -1`" ] ; then
+	for TORRENT in ${TARGET}/*/*.torrent ; do
+	    INFO="${TORRENT%/*}/.info"
+	    if [ -f "${INFO}" ]; then
+		. "${INFO}"
+		QUOTIENT=`echo "${SCRAPE}" | sed '/seeders: [1-9]\{1,\}/s/seeders:.\([0-9]\{1,\}\) leechers: \([0-9]\{1,\}\).*/(\2000\/\1/;t;d'` 
+		RATIO=$((QUOTIENT))
+		if [ ${RATIO} -gt ${BEST} ]; then
+		    BESTTORRENT="${TORRENT}"
+		    BESTSCRAPE="${SCRAPE}"
+		    BEST=${RATIO}
+		fi                                   
+            fi       
+	done 
+	echo "<h3>Best seed suggestion</h3>"
+	echo "<p>${BESTTORRENT##*/}</p>"
+	echo "<p>${BESTSCRAPE}</p>"
+   else                                                                
+	echo "<b>No torrents to suggest for seeding</b>"
+   fi                                       
 }
 
 # Sub for directory search
@@ -240,11 +280,17 @@ __list ()
 		echo " Start: ${STARTTIME}"
 		[ ! -z "${ENDTIME}" ] && echo " End: ${ENDTIME}"
 		[ ${TRIES} -gt 0 ] && echo " Tries: ${TRIES}"
+		[ ! -z "${SCRAPE}" ] && echo " ${SCRAPE}"
 		echo "</td></tr>"
 DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
 UL=`echo "${PROGRESS}" | sed 's/.*Upload \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
 		download=$((${download}+${DL}))
 		upload=$((${upload}+${UL}))
+		STARTTIME=""
+		ENDTIME=""
+		TRIES=0
+		SCRAPE=""
+		PROGRESS=""
 	    fi
 	    idx=`expr $idx + 1`
 	done
@@ -258,6 +304,9 @@ _list ()
     idx=0
     download=0
     upload=0
+    if [ -f "$WORK/.paused" ] ; then
+	echo "<h3>Torrent processing paused!</h3>"
+    fi
     __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
     echo "<table><tr><td>Total</td><td>Download ${download}kbs</td>"
@@ -359,7 +408,7 @@ _info ()
     _find
     echo "<h3>Status</h3>"
     echo "<pre>"
-    btlist "${TORRENT}"
+    btlist -s "${TORRENT}"
     echo "</pre>"
 }
 
@@ -377,6 +426,9 @@ This is quick explanation of the buttons:
 <dt>Purge<dd>removes all logs from completed torrents and clean removed torrents
 <dt>Watchdog<dd>forces torrent_watchdog processing
 <dt>Info<dd>shows selected torrent info ((file content and size)
+<dt>Scrape<dd>Update scrape info (seeders, leechers, downloaded)
+     from tracker for downloaded torrents
+<dt>Best<dd>Search scrape for best done torrent and suggest seeding based on (leecees/seeds) ratio 
 <dt>Help<dd>?
 </dl>
 __EOF__
@@ -418,6 +470,8 @@ Content-type: text/html
 <input type=submit name=ACTION value=Purge>
 <input type=submit name=ACTION value=Watchdog>
 <input type=submit name=ACTION value=Info>
+<input type=submit name=ACTION value=Scrape>
+<input type=submit name=ACTION value=Best>
 <input type=submit name=ACTION value=Help>
 <! img align=top alt="" src=pingvin.gif>
 <br>
@@ -440,6 +494,8 @@ case "${ACTION}" in
         Watchdog) torrent_watchdog ;;
         Info) _info ;;
         Help) _help ;;
+	Scrape) _scrape ; _list;;
+	Best) _best_seed ; _list;;
         *) _list ;;
 esac
 	
