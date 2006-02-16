@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 TORRENT_SITE=
-TORRENT_VERSION=1.2
+TORRENT_VERSION=1.3
 TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
@@ -28,7 +28,7 @@ TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=3
+TORRENT_IPK_VERSION=1
 
 #
 # TORRENT_BUILD_DIR is the directory in which the build is done.

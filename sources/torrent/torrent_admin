@@ -24,6 +24,7 @@ ENDTIME=\"${ENDTIME}\"
 TRIES=${TRIES:-0}
 PROGRESS=\"${PROGRESS}\"
 PID=${PID}
+SCRAPE=\"${SCRAPE}\"
 TORRENTNAME=\"${TORRENTNAME}\"" > "${TORRENT%/*}/.info"
 }
     
@@ -174,6 +175,48 @@ _pause ()
     fi 
 }
 
+# Update scrape info for active and downloaded torrents                                                         
+_scrape ()                                                                                                      
+{                                                                                                               
+  for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent* ; do
+	INFO="${TORRENT%/*}/.info"
+	if [ -f "${INFO}" ]; then
+	    . "${INFO}"
+	    SCRAPE=`btlist -sq "${TORRENT}" | grep seeders` 
+   	    _write_info 
+	fi
+  done
+}                                                                                                               
+
+_best_seed ()
+{
+   BEST=0
+   if [ ! -z "`ls ${TARGET}/*/*.torrent 2>/dev/null | head -1`" ] ; then
+   for TORRENT in ${TARGET}/*/*.torrent ; do
+	INFO="${TORRENT%/*}/.info"
+	if [ -f "${INFO}" ]; then
+	    . "${INFO}"
+	    QUOTIENT=`echo "${SCRAPE}" | sed '/seeders: [1-9]\{1,\}/s/seeders:.\([0-9]\{1,\}\) leechers: \([0-9]\{1,\}\).*/(\2000\/\1/;t;d'`
+	    RATIO=$((QUOTIENT))
+	    if [ ${RATIO} -gt ${BEST} ]; then
+	        BESTTORRENT="${TORRENT}"
+	        BESTSCRAPE="${SCRAPE}"
+	        BEST=${RATIO}
+	    fi
+	fi
+   done
+   echo "#####################################"                                                            
+   echo "### Best seed suggestion" 
+   echo ""
+   echo "${BESTTORRENT##*/}"
+   echo "${BESTSCRAPE}"
+   echo ""
+   else
+   echo -e "${BOLD}No torrents to suggest for seeding${NORMAL}"
+   fi
+}
+
+                                          
 # Sub for directory search
 __find ()
 {
@@ -230,10 +273,16 @@ __list ()
 		echo -n " Start: ${STARTTIME}"
 		[ ! -z "${ENDTIME}" ] && echo -n " End: ${ENDTIME}"
 		[ ${TRIES} -gt 0 ] && echo -n " Tries: ${TRIES}"
+   		[ ! -z "${SCRAPE}" ] && echo -n " ${SCRAPE}"
    		DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
    		UL=`echo "${PROGRESS}" | sed 's/.*Upload \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
    		download=$((${download}+${DL}))
    		upload=$((${upload}+${UL}))
+   		STARTTIME=""
+   		ENDTIME=""
+   		PROGRESS=""
+   		PID=""
+   		SCRAPE=""
 	    fi
 	    echo ""
 	    idx=`expr $idx + 1`
@@ -364,6 +413,9 @@ This is quick explanation of the options:
 -g	Purge removes all logs from completed torrents and clean removed torrents
 -w 	Watchdog forces torrent_watchdog processing
 -i n	Info shows selected torrent info ((file content and size)
+-a	Update scrape info from tracker for downloaded torrents
+-b	Suggest torrent with best (leeches/seeds) ratio for seeding
+-ab	Equals -a -b
 -h	More help needed ?
 __EOF__
 _root_check
@@ -388,6 +440,9 @@ case "${ACTION}" in
         -w) torrent_watchdog ;;
         -i) _info ;;
         -l) _list ;;
+        -a) _scrape ;;
+        -b) _best_seed ;;
+        -ab) _scrape ; _best_seed ;;
         -?) _help ;;
         *) _help ;;
 esac
