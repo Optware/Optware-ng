@@ -27,15 +27,15 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUA_SITE=http://www.lua.org/ftp
-LUA_VERSION=5.0.2
+LUA_VERSION=5.1
 LUA_SOURCE=lua-$(LUA_VERSION).tar.gz
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_UNZIP=zcat
-LUA_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+LUA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LUA_DESCRIPTION=Lua is a powerful light-weight programming language designed for extending applications.
 LUA_SECTION=misc
 LUA_PRIORITY=optional
-LUA_DEPENDS=
+LUA_DEPENDS=readline, ncurses
 
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
@@ -56,7 +56,7 @@ LUA_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LUA_CPPFLAGS=
+LUA_CPPFLAGS=-DLUA_USE_LINUX
 LUA_LDFLAGS=
 
 #
@@ -103,27 +103,10 @@ lua-source: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
+	make readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
-	(cd $(LUA_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS); export CC GCC LD STRIP RANLIB AR; \
-		sed -i \
-		    -e 's:/usr/local:/opt:g' \
-		    -e "s:^CC=.*$$:CC=$$CC:g" \
-		    -e "s:^AR=.*$$:AR=$$AR rcu:g" \
-		    -e "s:^RANLIB=.*$$:RANLIB=$$RANLIB:g" \
-		    -e "s:^STRIP=.*$$:STRIP=$$STRIP:g" \
-		    config; \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LUA_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(LUA_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
-	)
 	touch $(LUA_BUILD_DIR)/.configured
 
 lua-unpack: $(LUA_BUILD_DIR)/.configured
@@ -133,7 +116,13 @@ lua-unpack: $(LUA_BUILD_DIR)/.configured
 #
 $(LUA_BUILD_DIR)/.built: $(LUA_BUILD_DIR)/.configured
 	rm -f $(LUA_BUILD_DIR)/.built
-	$(MAKE) -C $(LUA_BUILD_DIR)
+	$(MAKE) -C $(LUA_BUILD_DIR)/src \
+		$(TARGET_CONFIGURE_OPTS) \
+		AR="$(TARGET_AR) rcu" \
+		MYCFLAGS="$(STAGING_CPPFLAGS) $(LUA_CPPFLAGS)" \
+		MYLDFLAGS="$(STAGING_LDFLAGS) $(LUA_LDFLAGS)" \
+		MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses" \
+		all
 	touch $(LUA_BUILD_DIR)/.built
 
 #
@@ -146,10 +135,7 @@ lua: $(LUA_BUILD_DIR)/.built
 #
 $(LUA_BUILD_DIR)/.staged: $(LUA_BUILD_DIR)/.built
 	rm -f $(LUA_BUILD_DIR)/.staged
-	(cd $(LUA_BUILD_DIR); \
-		install -m 0644 include/*.h $(STAGING_DIR)/opt/include; \
-		install -m 0644 lib/*.a $(STAGING_DIR)/opt/lib; \
-	)
+	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(STAGING_PREFIX) install
 	touch $(LUA_BUILD_DIR)/.staged
 
 lua-stage: $(LUA_BUILD_DIR)/.staged
@@ -185,18 +171,8 @@ $(LUA_IPK_DIR)/CONTROL/control:
 #
 $(LUA_IPK): $(LUA_BUILD_DIR)/.built
 	rm -rf $(LUA_IPK_DIR) $(BUILD_DIR)/lua_*_$(TARGET_ARCH).ipk
-	(cd $(LUA_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS); export STRIP; \
-		$${STRIP} bin/*; \
-		install -d $(LUA_IPK_DIR)/opt/bin \
-			$(LUA_IPK_DIR)/opt/include \
-			$(LUA_IPK_DIR)/opt/lib \
-			$(LUA_IPK_DIR)/opt/man/man1; \
-		install -m 0755 bin/* $(LUA_IPK_DIR)/opt/bin; \
-		install -m 0644 include/*.h $(LUA_IPK_DIR)/opt/include; \
-		install -m 0644 lib/*.a $(LUA_IPK_DIR)/opt/lib; \
-		install -m 0644 doc/*.1 $(LUA_IPK_DIR)/opt/man/man1; \
-	)
+	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(LUA_IPK_DIR)/opt install
+	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/bin/*
 	$(MAKE) $(LUA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUA_IPK_DIR)
 
