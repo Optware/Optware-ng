@@ -36,7 +36,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=1
+PY-SETUPTOOLS_IPK_VERSION=2
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -130,6 +130,7 @@ py-setuptools: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.staged: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.staged
+	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/setuptools*
 	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
 	python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt --single-version-externally-managed)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.staged
