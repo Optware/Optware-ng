@@ -21,13 +21,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+# PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
+#
 PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
-PY-SQLOBJECT_VERSION=0.7.0
-#PY-SQLOBJECT_SVN_REV=1457
+PY-SQLOBJECT_VERSION=0.8
+PY-SQLOBJECT_SVN_REV=1457
+PY-SQLOBJECT_IPK_VERSION=1
 ifneq ($(PY-SQLOBJECT_SVN_REV),)
-PY-SQLOBJECT_VERSION+=dev_r$(PY-SQLOBJECT_SVN_REV)
-endif
+PY-SQLOBJECT_VERSION:=$(PY-SQLOBJECT_VERSION)dev_r$(PY-SQLOBJECT_SVN_REV)
+else
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
+endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
 PY-SQLOBJECT_UNZIP=zcat
 PY-SQLOBJECT_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
@@ -38,10 +42,6 @@ PY-SQLOBJECT_DEPENDS=python
 PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-#
-# PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
-#
-PY-SQLOBJECT_IPK_VERSION=3
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -78,8 +78,8 @@ PY-SQLOBJECT_IPK=$(BUILD_DIR)/py-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJEC
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(PY-SQLOBJECT_SOURCE):
 ifeq ($(PY-SQLOBJECT_SVN_REV),)
+$(DL_DIR)/$(PY-SQLOBJECT_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PY-SQLOBJECT_SITE)/$(PY-SQLOBJECT_SOURCE)
 endif
 
