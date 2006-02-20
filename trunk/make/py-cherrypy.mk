@@ -36,7 +36,7 @@ PY-CHERRYPY_CONFLICTS=
 #
 # PY-CHERRYPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHERRYPY_IPK_VERSION=1
+PY-CHERRYPY_IPK_VERSION=2
 
 #
 # PY-CHERRYPY_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-cherrypy-source: $(DL_DIR)/$(PY-CHERRYPY_SOURCE) $(PY-CHERRYPY_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CHERRYPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYPY_SOURCE) $(PY-CHERRYPY_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(PY-CHERRYPY_BUILD_DIR)
 	$(PY-CHERRYPY_UNZIP) $(DL_DIR)/$(PY-CHERRYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHERRYPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
@@ -169,7 +169,9 @@ $(PY-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	rm -rf $(PY-CHERRYPY_IPK_DIR) $(BUILD_DIR)/py-cherrypy_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-CHERRYPY_BUILD_DIR) DESTDIR=$(PY-CHERRYPY_IPK_DIR) install
 	(cd $(PY-CHERRYPY_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-CHERRYPY_IPK_DIR)/opt)
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 -c "import setuptools; execfile('setup.py')" \
+	install --root=$(PY-CHERRYPY_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 #	install -d $(PY-CHERRYPY_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-CHERRYPY_SOURCE_DIR)/py-cherrypy.conf $(PY-CHERRYPY_IPK_DIR)/opt/etc/py-cherrypy.conf
 #	install -d $(PY-CHERRYPY_IPK_DIR)/opt/etc/init.d

@@ -36,7 +36,7 @@ PY-CELEMENTTREE_CONFLICTS=
 #
 # PY-CELEMENTTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CELEMENTTREE_IPK_VERSION=1
+PY-CELEMENTTREE_IPK_VERSION=2
 
 #
 # PY-CELEMENTTREE_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-celementtree-source: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(PY-CELEMENTTREE_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(PY-CELEMENTTREE_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) $(PY-CELEMENTTREE_BUILD_DIR)
 	$(PY-CELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) -p1
@@ -179,7 +179,9 @@ $(PY-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	rm -rf $(PY-CELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py-celementtree_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-CELEMENTTREE_BUILD_DIR) DESTDIR=$(PY-CELEMENTTREE_IPK_DIR) install
 	(cd $(PY-CELEMENTTREE_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-CELEMENTTREE_IPK_DIR)/opt)
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 -c "import setuptools; execfile('setup.py')" \
+	install --root=$(PY-CELEMENTTREE_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(STRIP_COMMAND) $(PY-CELEMENTTREE_IPK_DIR)/opt/lib/python2.4/site-packages/*.so
 #	install -d $(PY-CELEMENTTREE_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-CELEMENTTREE_SOURCE_DIR)/py-celementtree.conf $(PY-CELEMENTTREE_IPK_DIR)/opt/etc/py-celementtree.conf
