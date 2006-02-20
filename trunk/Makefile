@@ -38,6 +38,8 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-json \
 	py-simplejson \
 	py-testgears \
+	py-turbogears \
+	py-docutils \
 	mini_httpd \
 	libftdi \
 
