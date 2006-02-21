@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -48,6 +48,7 @@ CHEROKEE_CONFFILES=\
 	/opt/etc/cherokee/cherokee.conf \
 	/opt/etc/cherokee/advanced.conf \
 	/opt/etc/cherokee/icons.conf \
+	/opt/etc/cherokee/mime.conf \
 	/opt/etc/cherokee/mime.types \
 	/opt/etc/cherokee/mime.compression.types \
 
@@ -59,6 +60,7 @@ CHEROKEE_PATCHES=\
 	$(CHEROKEE_SOURCE_DIR)/configure.in.patch \
 	$(CHEROKEE_SOURCE_DIR)/cherokee-Makefile.in.patch \
 	$(CHEROKEE_SOURCE_DIR)/cget-Makefile.in.patch \
+	$(CHEROKEE_SOURCE_DIR)/handler_common.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -117,7 +119,9 @@ $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCH
 	$(MAKE) gnutls-stage libtasn1-stage libgcrypt-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR)
 	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1
+	if test -n "$(CHEROKEE_PATCHES)"; then \
+	    cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR)
 	(cd $(CHEROKEE_BUILD_DIR); \
 		autoconf configure.in > configure; \
@@ -204,7 +208,8 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
 	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
 	sed -i -e 's|/usr/lib/|/opt/share/cherokee/|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/sites-available/default
-	sed -i -e 's|^Port.*|Port 8008|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
+	sed -i -e 's|^Port.*|Port 8008|; s|^Timeout.*|Timeout 60|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
+	touch $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/mime.conf
 #	install -d $(CHEROKEE_IPK_DIR)/opt/etc/
 #	install -m 644 $(CHEROKEE_SOURCE_DIR)/cherokee.conf $(CHEROKEE_IPK_DIR)/opt/etc/cherokee.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
