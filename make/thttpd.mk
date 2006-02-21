@@ -41,7 +41,7 @@ THTTPD_CONFLICTS=
 #
 # THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-THTTPD_IPK_VERSION=1
+THTTPD_IPK_VERSION=2
 
 #
 # THTTPD_CONFFILES should be a list of user-editable files
@@ -51,7 +51,9 @@ THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf
 # THTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-THTTPD_PATCHES=$(THTTPD_SOURCE_DIR)/Makefile.in.patch $(THTTPD_SOURCE_DIR)/configure.patch
+THTTPD_PATCHES=$(THTTPD_SOURCE_DIR)/Makefile.in.patch \
+		$(THTTPD_SOURCE_DIR)/configure.patch \
+		$(THTTPD_SOURCE_DIR)/config.h.patch
 
 #
 # If the compilation of the package requires additional

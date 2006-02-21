@@ -1,0 +1,42 @@
+--- thttpd-2.25b/config.h	2005-06-29 19:53:18.000000000 +0200
++++ thttpd/config.h	2006-02-21 21:00:07.000000000 +0100
+@@ -75,7 +75,7 @@
+ ** or whatever.  If you don't want any limit, comment this out, but that's
+ ** probably a really bad idea.
+ */
+-#define CGI_TIMELIMIT 30
++#define CGI_TIMELIMIT 300
+ 
+ /* CONFIGURE: Maximum number of simultaneous CGI programs allowed.
+ ** If this many are already running, then attempts to run more will
+@@ -84,17 +84,17 @@
+ ** set in the runtime config file.
+ */
+ #ifdef notdef
+-#define CGI_LIMIT 50
+ #endif
++#define CGI_LIMIT 10
+ 
+ /* CONFIGURE: How many seconds to allow for reading the initial request
+ ** on a new connection.
+ */
+-#define IDLE_READ_TIMELIMIT 60
++#define IDLE_READ_TIMELIMIT 120
+ 
+ /* CONFIGURE: How many seconds before an idle connection gets closed.
+ */
+-#define IDLE_SEND_TIMELIMIT 300
++#define IDLE_SEND_TIMELIMIT 600
+ 
+ /* CONFIGURE: The syslog facility to use.  Using this you can set up your
+ ** syslog.conf so that all thttpd messages go into a separate file.  Note
+@@ -291,7 +291,9 @@
+ /* CONFIGURE: Seconds between stats syslogs.  If this is undefined then
+ ** no stats are accumulated and no stats syslogs are done.
+ */
++#ifdef notdef
+ #define STATS_TIME 3600
++#endif
+ 
+ /* CONFIGURE: The mmap cache tries to keep the total number of mapped
+ ** files below this number, so you don't run out of kernel file descriptors.
