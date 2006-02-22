@@ -24,7 +24,7 @@
 # PY-PASTESCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-PASTESCRIPT_SITE=http://turbogears.org/download/eggs
-PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script
+PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 PY-PASTESCRIPT_VERSION=0.4
 PY-PASTESCRIPT_SVN_REV=4192
 PY-PASTESCRIPT_IPK_VERSION=1
@@ -184,7 +184,7 @@ $(PY-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
 	rm -rf $(PY-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py-pastescript_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTESCRIPT_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py --without-speedups install \
+		python2.4 setup.py install\
 		--root=$(PY-PASTESCRIPT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(MAKE) $(PY-PASTESCRIPT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
