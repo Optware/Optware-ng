@@ -150,6 +150,7 @@ libftdi: $(LIBFTDI_BUILD_DIR)/.built
 $(LIBFTDI_BUILD_DIR)/.staged: $(LIBFTDI_BUILD_DIR)/.built
 	rm -f $(LIBFTDI_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBFTDI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libftdi.la
 	touch $(LIBFTDI_BUILD_DIR)/.staged
 
 libftdi-stage: $(LIBFTDI_BUILD_DIR)/.staged
@@ -188,6 +189,8 @@ $(LIBFTDI_IPK_DIR)/CONTROL/control:
 $(LIBFTDI_IPK): $(LIBFTDI_BUILD_DIR)/.built
 	rm -rf $(LIBFTDI_IPK_DIR) $(BUILD_DIR)/libftdi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBFTDI_BUILD_DIR) DESTDIR=$(LIBFTDI_IPK_DIR) install-strip
+	rm -f $(LIBFTDI_IPK_DIR)/opt/lib/libftdi.la
+	$(STRIP_COMMAND) $(LIBFTDI_IPK_DIR)/opt/lib/*.so.?.*
 	$(MAKE) $(LIBFTDI_IPK_DIR)/CONTROL/control
 	echo $(LIBFTDI_CONFFILES) | sed -e 's/ /\n/g' > $(LIBFTDI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBFTDI_IPK_DIR)
