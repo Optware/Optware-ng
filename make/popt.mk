@@ -24,11 +24,18 @@ POPT_VERSION=1.7
 POPT_SOURCE=popt_$(POPT_VERSION).orig.tar.gz
 POPT_DIR=popt-$(POPT_VERSION)
 POPT_UNZIP=zcat
+POPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+POPT_DESCRIPTION=A C library for parsing command line parameters.
+POPT_SECTION=libs
+POPT_PRIORITY=optional
+POPT_DEPENDS=
+POPT_SUGGESTS=
+POPT_CONFLICTS=
 
 #
 # POPT_IPK_VERSION should be incremented when the ipk changes.
 #
-POPT_IPK_VERSION=1
+POPT_IPK_VERSION=2
 
 #
 # POPT_PATCHES should list any patches, in the the order in
@@ -103,6 +110,7 @@ $(POPT_BUILD_DIR)/.configured: $(DL_DIR)/$(POPT_SOURCE) $(POPT_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(POPT_BUILD_DIR)/libtool
 	touch $(POPT_BUILD_DIR)/.configured
 
 popt-unpack: $(POPT_BUILD_DIR)/.configured
@@ -125,29 +133,43 @@ popt: $(POPT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libpopt.a: $(POPT_BUILD_DIR)/.built
-	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-includeHEADERS install-exec-am
+$(POPT_BUILD_DIR)/.staged: $(POPT_BUILD_DIR)/.built
+	rm -f $(POPT_BUILD_DIR)/.staged
+	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libpopt.la
+	touch $(POPT_BUILD_DIR)/.staged
 
-popt-stage: $(STAGING_DIR)/opt/lib/libpopt.a
+popt-stage: $(POPT_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources
+#
+$(POPT_IPK_DIR)/CONTROL/control:
+	@install -d $(POPT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: popt" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(POPT_PRIORITY)" >>$@
+	@echo "Section: $(POPT_SECTION)" >>$@
+	@echo "Version: $(POPT_VERSION)-$(POPT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(POPT_MAINTAINER)" >>$@
+	@echo "Source: $(POPT_SITE)/$(POPT_SOURCE)" >>$@
+	@echo "Description: $(POPT_DESCRIPTION)" >>$@
+	@echo "Depends: $(POPT_DEPENDS)" >>$@
+	@echo "Suggests: $(POPT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(POPT_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(POPT_IPK_DIR)/opt/sbin or $(POPT_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(POPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(POPT_IPK_DIR)/opt/etc/popt/...
-# Documentation files should be installed in $(POPT_IPK_DIR)/opt/doc/popt/...
-# Daemon startup scripts should be installed in $(POPT_IPK_DIR)/opt/etc/init.d/S??popt
-#
-# You may need to patch your application to make it use these locations.
-#
 $(POPT_IPK): $(POPT_BUILD_DIR)/.built
 	rm -rf $(POPT_IPK_DIR) $(BUILD_DIR)/popt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(POPT_IPK_DIR) install-includeHEADERS install-exec-am
-	install -d $(POPT_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(POPT_VERSION)/" \
-		-e "s/@RELEASE@/$(POPT_IPK_VERSION)/" $(POPT_SOURCE_DIR)/control > $(POPT_IPK_DIR)/CONTROL/control
+	rm -f $(POPT_IPK_DIR)/opt/lib/*.a
+	rm -f $(POPT_IPK_DIR)/opt/lib/*.la
+	$(STRIP_COMMAND) $(POPT_IPK_DIR)/opt/lib/*
+	$(MAKE) $(POPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POPT_IPK_DIR)
 
 #
