@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TCPDUMP_SITE=http://www.tcpdump.org/release
-TCPDUMP_VERSION=3.8.3
+TCPDUMP_VERSION=3.9.4
 TCPDUMP_SOURCE=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_DIR=tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_UNZIP=zcat
