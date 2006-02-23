@@ -35,7 +35,7 @@ TETHEREAL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TETHEREAL_DESCRIPTION=Terminal based ethereal to dump and analyze network traffic
 TETHEREAL_SECTION=net
 TETHEREAL_PRIORITY=optional
-TETHEREAL_DEPENDS=adns, glib, pcre
+TETHEREAL_DEPENDS=adns, glib, pcre, zlib
 TETHEREAL_SUGGESTS=
 TETHEREAL_CONFLICTS=
 
@@ -108,7 +108,7 @@ tethereal-source: $(DL_DIR)/$(TETHEREAL_SOURCE) $(TETHEREAL_PATCHES)
 # shown below to make various patches to it.
 #
 $(TETHEREAL_BUILD_DIR)/.configured: $(DL_DIR)/$(TETHEREAL_SOURCE) $(TETHEREAL_PATCHES)
-	$(MAKE) adns-stage glib-stage libpcap-stage pcre-stage
+	$(MAKE) adns-stage glib-stage libpcap-stage pcre-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(TETHEREAL_DIR) $(TETHEREAL_BUILD_DIR)
 	$(TETHEREAL_UNZIP) $(DL_DIR)/$(TETHEREAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TETHEREAL_PATCHES)" ; \
