@@ -35,7 +35,7 @@ LIBRSYNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBRSYNC_DESCRIPTION=librsync is a free software library that implements the rsync remote-delta algorithm.
 LIBRSYNC_SECTION=net
 LIBRSYNC_PRIORITY=optional
-LIBRSYNC_DEPENDS=
+LIBRSYNC_DEPENDS=popt, bzip2
 LIBRSYNC_SUGGESTS=
 LIBRSYNC_CONFLICTS=
 
@@ -108,7 +108,7 @@ librsync-source: $(DL_DIR)/$(LIBRSYNC_SOURCE) $(LIBRSYNC_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBRSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBRSYNC_SOURCE) $(LIBRSYNC_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) popt-stage bzip2-stage
 	rm -rf $(BUILD_DIR)/$(LIBRSYNC_DIR) $(LIBRSYNC_BUILD_DIR)
 	$(LIBRSYNC_UNZIP) $(DL_DIR)/$(LIBRSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBRSYNC_PATCHES)" ; \
@@ -128,7 +128,7 @@ $(LIBRSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBRSYNC_SOURCE) $(LIBRSYNC_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-static \
+		--disable-static --enable-shared \
 	)
 	$(PATCH_LIBTOOL) $(LIBRSYNC_BUILD_DIR)/libtool
 	touch $(LIBRSYNC_BUILD_DIR)/.configured
@@ -192,6 +192,7 @@ $(LIBRSYNC_IPK_DIR)/CONTROL/control:
 $(LIBRSYNC_IPK): $(LIBRSYNC_BUILD_DIR)/.built
 	rm -rf $(LIBRSYNC_IPK_DIR) $(BUILD_DIR)/librsync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBRSYNC_BUILD_DIR) DESTDIR=$(LIBRSYNC_IPK_DIR) install-strip
+	rm -f $(LIBRSYNC_IPK_DIR)/opt/lib/*.la
 #	install -d $(LIBRSYNC_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBRSYNC_SOURCE_DIR)/librsync.conf $(LIBRSYNC_IPK_DIR)/opt/etc/librsync.conf
 #	install -d $(LIBRSYNC_IPK_DIR)/opt/etc/init.d
