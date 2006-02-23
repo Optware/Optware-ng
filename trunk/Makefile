@@ -41,7 +41,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-turbogears \
 	py-docutils \
 	py-scgi \
-	mini_httpd \
 	libftdi \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
@@ -245,7 +244,11 @@ NAS100D_BROKEN_PACKAGES =
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
-PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki
+# mini_httpd - Underscores shouldn't appear in package names: please rename
+#              this package to "minihttpd", or to "mini-httpd". In the latter
+#              case the .mk file and the variables in it must also be renamed.
+PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd
+
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
