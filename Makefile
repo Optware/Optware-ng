@@ -41,7 +41,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-turbogears \
 	py-docutils \
 	py-scgi \
-	libftdi \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -67,7 +66,7 @@ COMMON_CROSS_PACKAGES = \
 	ice imagemagick imap inetutils iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
-	lame less libcurl libdb libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
+	lame less libcurl libdb libftdi libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
 	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
 	libpng libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt lua \
