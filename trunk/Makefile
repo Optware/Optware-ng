@@ -40,6 +40,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-testgears \
 	py-turbogears \
 	py-docutils \
+	py-scgi \
 	mini_httpd \
 	libftdi \
 
