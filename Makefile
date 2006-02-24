@@ -185,6 +185,7 @@ MSS_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	svn \
 	transcode \
+	tethereal \
 
 # Packages that *only* work for ds101 - do not just put new packages here.
 DS101_SPECIFIC_PACKAGES = 
