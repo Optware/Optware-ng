@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	tethereal \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -81,7 +80,7 @@ COMMON_CROSS_PACKAGES = \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh stunnel streamripper sudo svn \
 	sysstat \
-	taged tcl tcpwrappers tftp-hpa \
+	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
