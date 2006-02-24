@@ -36,7 +36,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=2
+PY-SETUPTOOLS_IPK_VERSION=3
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -105,8 +105,12 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-S
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
 	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
-	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    ( \
+		echo "[install]"; \
+		echo "install_scripts = /opt/bin"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python"; \
+	    ) >> setup.cfg \
 	)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 
