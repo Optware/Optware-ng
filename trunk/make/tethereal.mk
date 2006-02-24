@@ -202,6 +202,8 @@ $(TETHEREAL_IPK): $(TETHEREAL_BUILD_DIR)/.built
 		DESTDIR=$(TETHEREAL_IPK_DIR) \
 		program_transform_name="" \
 		install-strip
+	rm -f $(TETHEREAL_IPK_DIR)/opt/lib/*.la
+	rm -f $(TETHEREAL_IPK_DIR)/opt/lib/ethereal/plugins/*/*.la
 	install -d $(TETHEREAL_IPK_DIR)/opt/etc/
 #	install -m 644 $(TETHEREAL_SOURCE_DIR)/tethereal.conf $(TETHEREAL_IPK_DIR)/opt/etc/tethereal.conf
 #	install -d $(TETHEREAL_IPK_DIR)/opt/etc/init.d
