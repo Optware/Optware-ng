@@ -23,20 +23,20 @@
 #
 # PY-PASTESCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PASTESCRIPT_SITE=http://turbogears.org/download/eggs
-PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
-PY-PASTESCRIPT_VERSION=0.4
-PY-PASTESCRIPT_SVN_REV=4192
+PY-PASTESCRIPT_SITE=http://cheeseshop.python.org/packages/source/P/PasteScript
+PY-PASTESCRIPT_VERSION=0.4.1
+#PY-PASTESCRIPT_SVN_REV=
 PY-PASTESCRIPT_IPK_VERSION=1
 ifneq ($(PY-PASTESCRIPT_SVN_REV),)
+PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 PY-PASTESCRIPT_VERSION:=$(PY-PASTESCRIPT_VERSION)dev_r$(PY-PASTESCRIPT_SVN_REV)
 else
-PY-PASTESCRIPT_SOURCE=PasteScript-$(PY-PASTESCRIPT_VERSION).zip
+PY-PASTESCRIPT_SOURCE=PasteScript-$(PY-PASTESCRIPT_VERSION).tar.gz
 endif
 PY-PASTESCRIPT_DIR=PasteScript-$(PY-PASTESCRIPT_VERSION)
 PY-PASTESCRIPT_UNZIP=zcat
 PY-PASTESCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-PY-PASTESCRIPT_DESCRIPTION=Python module.
+PY-PASTESCRIPT_DESCRIPTION=A pluggable command-line frontend, including commands to setup package file layouts.
 PY-PASTESCRIPT_SECTION=misc
 PY-PASTESCRIPT_PRIORITY=optional
 PY-PASTESCRIPT_DEPENDS=python
