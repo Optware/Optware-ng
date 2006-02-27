@@ -36,7 +36,7 @@ PY-SQLITE_CONFLICTS=
 #
 # PY-SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SQLITE_IPK_VERSION=1
+PY-SQLITE_IPK_VERSION=2
 
 #
 # PY-SQLITE_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-sqlite-source: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PATCHES)
-	$(MAKE) py-setuptools-stage sqlite-stage
+	$(MAKE) python-stage py-setuptools-stage sqlite-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLITE_DIR) $(PY-SQLITE_BUILD_DIR)
 	$(PY-SQLITE_UNZIP) $(DL_DIR)/$(PY-SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLITE_DIR) -p1
@@ -107,8 +107,8 @@ $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PA
 	(cd $(PY-SQLITE_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_DIR)/opt/include"; \
-	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "libraries=sqlite3"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \

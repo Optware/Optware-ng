@@ -36,7 +36,7 @@ PY-MX-BASE_CONFLICTS=
 #
 # PY-MX-BASE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MX-BASE_IPK_VERSION=1
+PY-MX-BASE_IPK_VERSION=2
 
 #
 # PY-MX-BASE_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ PY-MX-BASE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PY-MX-BASE_CPPFLAGS=-I $(STAGING_DIR)/opt/include/python2.4
+PY-MX-BASE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.4
 PY-MX-BASE_LDFLAGS=
 
 #
@@ -107,8 +107,8 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	(cd $(PY-MX-BASE_BUILD_DIR); \
             ( \
                 echo "[build_ext]"; \
-                echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/python2.4"; \
-                echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+                echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+                echo "library-dirs=$(STAGING_LIB_DIR)"; \
                 echo "rpath=/opt/lib"; \
                 echo "[build_scripts]"; \
                 echo "executable=/opt/bin/python" \

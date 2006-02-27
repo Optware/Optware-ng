@@ -37,7 +37,7 @@ PY-XML_CONFLICTS=
 #
 # PY-XML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-XML_IPK_VERSION=1
+PY-XML_IPK_VERSION=2
 
 #
 # PY-XML_CONFFILES should be a list of user-editable files
@@ -100,17 +100,17 @@ py-xml-source: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-XML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) python-stage
 	rm -rf $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)
 	$(PY-XML_UNZIP) $(DL_DIR)/$(PY-XML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-XML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
+#	cat $(PY-XML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)
 	(cd $(PY-XML_BUILD_DIR); \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
-		echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/python2.4"; \
-		echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \

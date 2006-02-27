@@ -36,7 +36,7 @@ PY-GDCHART2_CONFLICTS=
 #
 # PY-GDCHART2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GDCHART2_IPK_VERSION=1
+PY-GDCHART2_IPK_VERSION=2
 
 #
 # PY-GDCHART2_CONFFILES should be a list of user-editable files
@@ -107,8 +107,8 @@ $(PY-GDCHART2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GDCHART2_SOURCE) $(PY-GDCHA
 	(cd $(PY-GDCHART2_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_DIR)/opt/include"; \
-	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
