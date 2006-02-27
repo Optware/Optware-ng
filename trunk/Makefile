@@ -29,6 +29,10 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	py-django \
+	py-paste \
+	py-pastescript \
+	py-psycopg2 \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
