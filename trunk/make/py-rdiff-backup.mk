@@ -111,7 +111,9 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured
@@ -178,7 +180,7 @@ $(PY-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
 	rm -rf $(PY-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py-rdiff-backup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-RDIFF-BACKUP_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-RDIFF-BACKUP_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY-RDIFF-BACKUP_IPK_DIR)/opt/lib/python2.4/site-packages/*/*.so
 	$(MAKE) $(PY-RDIFF-BACKUP_IPK_DIR)/CONTROL/control
