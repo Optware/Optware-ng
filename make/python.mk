@@ -42,7 +42,7 @@ PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl, libdb, zlib
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=3
+PYTHON_IPK_VERSION=4
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -122,11 +122,13 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 	    autoconf configure.in > configure
 	mkdir $(PYTHON_BUILD_DIR)
 	(cd $(PYTHON_BUILD_DIR); \
-	(echo "[build_ext]"; \
-	echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/ncurses"; \
-	echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	( \
+	echo "[build_ext]"; \
+	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
+	echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	echo "rpath=/opt/lib") > setup.cfg; \
-		PATH="`dirname $(TARGET_CC)`:$$PATH" \
+	\
+	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON_LDFLAGS)" \
 		ac_cv_sizeof_off_t=8 \
