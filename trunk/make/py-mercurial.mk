@@ -36,7 +36,7 @@ PY-MERCURIAL_CONFLICTS=
 #
 # PY-MERCURIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MERCURIAL_IPK_VERSION=2
+PY-MERCURIAL_IPK_VERSION=3
 
 #
 # PY-MERCURIAL_CONFFILES should be a list of user-editable files
@@ -111,7 +111,9 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg; \
 	)
 	touch $(PY-MERCURIAL_BUILD_DIR)/.configured
@@ -177,7 +179,7 @@ $(PY-MERCURIAL_IPK_DIR)/CONTROL/control:
 $(PY-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	rm -rf $(PY-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR); \
-	    python2.4 setup.py install --prefix=$(PY-MERCURIAL_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY-MERCURIAL_IPK_DIR)/opt/lib/python2.4/site-packages/mercurial/*.so
 	$(MAKE) $(PY-MERCURIAL_IPK_DIR)/CONTROL/control
