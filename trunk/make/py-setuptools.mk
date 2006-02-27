@@ -36,7 +36,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=3
+PY-SETUPTOOLS_IPK_VERSION=4
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -67,7 +67,7 @@ PY-SETUPTOOLS_LDFLAGS=
 PY-SETUPTOOLS_BUILD_DIR=$(BUILD_DIR)/py-setuptools
 PY-SETUPTOOLS_SOURCE_DIR=$(SOURCE_DIR)/py-setuptools
 PY-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
-PY-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

@@ -36,7 +36,7 @@ PY-TURBOGEARS_CONFLICTS=
 #
 # PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOGEARS_IPK_VERSION=1
+PY-TURBOGEARS_IPK_VERSION=2
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
@@ -67,7 +67,7 @@ PY-TURBOGEARS_LDFLAGS=
 PY-TURBOGEARS_BUILD_DIR=$(BUILD_DIR)/py-turbogears
 PY-TURBOGEARS_SOURCE_DIR=$(SOURCE_DIR)/py-turbogears
 PY-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
-PY-TURBOGEARS_IPK=$(BUILD_DIR)/py-turbogears$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-TURBOGEARS_IPK=$(BUILD_DIR)/py-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

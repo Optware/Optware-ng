@@ -36,7 +36,7 @@ PY-TESTGEARS_CONFLICTS=
 #
 # PY-TESTGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TESTGEARS_IPK_VERSION=1
+PY-TESTGEARS_IPK_VERSION=2
 
 #
 # PY-TESTGEARS_CONFFILES should be a list of user-editable files
@@ -67,7 +67,7 @@ PY-TESTGEARS_LDFLAGS=
 PY-TESTGEARS_BUILD_DIR=$(BUILD_DIR)/py-testgears
 PY-TESTGEARS_SOURCE_DIR=$(SOURCE_DIR)/py-testgears
 PY-TESTGEARS_IPK_DIR=$(BUILD_DIR)/py-testgears-$(PY-TESTGEARS_VERSION)-ipk
-PY-TESTGEARS_IPK=$(BUILD_DIR)/py-testgears$(PY-TESTGEARS_VERSION)-$(PY-TESTGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-TESTGEARS_IPK=$(BUILD_DIR)/py-testgears_$(PY-TESTGEARS_VERSION)-$(PY-TESTGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,

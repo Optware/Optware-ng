@@ -67,7 +67,7 @@ PY-DJANGO_LDFLAGS=
 PY-DJANGO_BUILD_DIR=$(BUILD_DIR)/py-django
 PY-DJANGO_SOURCE_DIR=$(SOURCE_DIR)/py-django
 PY-DJANGO_IPK_DIR=$(BUILD_DIR)/py-django-$(PY-DJANGO_VERSION)-ipk
-PY-DJANGO_IPK=$(BUILD_DIR)/py-django$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-DJANGO_IPK=$(BUILD_DIR)/py-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
