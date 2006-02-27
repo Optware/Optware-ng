@@ -36,7 +36,7 @@ PY-MERCURIAL_CONFLICTS=
 #
 # PY-MERCURIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MERCURIAL_IPK_VERSION=1
+PY-MERCURIAL_IPK_VERSION=2
 
 #
 # PY-MERCURIAL_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-mercurial-source: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MERCURIAL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MERCURIAL_PATCHES)
-#	$(MAKE) somepkg-stage
+	$(MAKE) python-stage
 	rm -rf $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(PY-MERCURIAL_BUILD_DIR)
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
@@ -107,7 +107,7 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	(cd $(PY-MERCURIAL_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_DIR)/opt/include"; \
+	        echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
@@ -124,7 +124,7 @@ py-mercurial-unpack: $(PY-MERCURIAL_BUILD_DIR)/.configured
 $(PY-MERCURIAL_BUILD_DIR)/.built: $(PY-MERCURIAL_BUILD_DIR)/.configured
 	rm -f $(PY-MERCURIAL_BUILD_DIR)/.built
 	(cd $(PY-MERCURIAL_BUILD_DIR); \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    python2.4 setup.py build; \
 	)
 	touch $(PY-MERCURIAL_BUILD_DIR)/.built
@@ -177,7 +177,6 @@ $(PY-MERCURIAL_IPK_DIR)/CONTROL/control:
 $(PY-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	rm -rf $(PY-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR); \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    python2.4 setup.py install --prefix=$(PY-MERCURIAL_IPK_DIR)/opt; \
 	)
 	$(STRIP_COMMAND) $(PY-MERCURIAL_IPK_DIR)/opt/lib/python2.4/site-packages/mercurial/*.so

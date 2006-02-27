@@ -36,7 +36,7 @@ PY-CELEMENTTREE_CONFLICTS=
 #
 # PY-CELEMENTTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CELEMENTTREE_IPK_VERSION=2
+PY-CELEMENTTREE_IPK_VERSION=3
 
 #
 # PY-CELEMENTTREE_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-celementtree-source: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(PY-CELEMENTTREE_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(PY-CELEMENTTREE_PATCHES)
-	$(MAKE) py-setuptools-stage
+	$(MAKE) python-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) $(PY-CELEMENTTREE_BUILD_DIR)
 	$(PY-CELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR) -p1
@@ -108,8 +108,8 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(
 	(cd $(PY-CELEMENTTREE_BUILD_DIR); \
 	    (\
 	    echo "[build_ext]"; \
-	    echo "include-dirs=$(STAGING_DIR)/opt/include"; \
-	    echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	    echo "rpath=/opt/lib"; \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python") > setup.cfg \

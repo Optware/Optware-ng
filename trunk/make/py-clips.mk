@@ -105,17 +105,17 @@ py-clips-source: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) $(PY-CLIPS_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) python-stage
 	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
+#	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)
 	(cd $(PY-CLIPS_BUILD_DIR); \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
-		echo "include-dirs=$(STAGING_DIR)/opt/include:$(STAGING_DIR)/opt/include/python2.4"; \
-		echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
