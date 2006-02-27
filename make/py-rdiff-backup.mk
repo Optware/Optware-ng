@@ -36,7 +36,7 @@ PY-RDIFF-BACKUP_CONFLICTS=
 #
 # PY-RDIFF-BACKUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-RDIFF-BACKUP_IPK_VERSION=1
+PY-RDIFF-BACKUP_IPK_VERSION=2
 
 #
 # PY-RDIFF-BACKUP_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-rdiff-backup-source: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(PY-RDIFF-BACKUP_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(PY-RDIFF-BACKUP_PATCHES)
-	$(MAKE) librsync-stage
+	$(MAKE) python-stage librsync-stage
 	rm -rf $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(PY-RDIFF-BACKUP_BUILD_DIR)
 	$(PY-RDIFF-BACKUP_UNZIP) $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-RDIFF-BACKUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
@@ -107,7 +107,7 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_DIR)/opt/include"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \

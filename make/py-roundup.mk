@@ -36,7 +36,7 @@ PY-ROUNDUP_CONFLICTS=
 #
 # PY-ROUNDUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ROUNDUP_IPK_VERSION=1
+PY-ROUNDUP_IPK_VERSION=2
 
 #
 # PY-ROUNDUP_CONFFILES should be a list of user-editable files
@@ -107,8 +107,8 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 	(cd $(PY-ROUNDUP_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_DIR)/opt/include"; \
-	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
