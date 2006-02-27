@@ -26,7 +26,7 @@ PY-MYSQL_VERSION=1.2.1c3
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
-PY-MYSQL_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MYSQL_DESCRIPTION=MySQL support for Python.
 PY-MYSQL_SECTION=misc
 PY-MYSQL_PRIORITY=optional
@@ -36,7 +36,7 @@ PY-MYSQL_CONFLICTS=
 #
 # PY-MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYSQL_IPK_VERSION=1
+PY-MYSQL_IPK_VERSION=2
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files
@@ -107,8 +107,8 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 	(cd $(PY-MYSQL_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_DIR)/opt/include"; \
-	        echo "library-dirs=$(STAGING_DIR)/opt/lib/mysql"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)/mysql"; \
 	        echo "libraries=mysqlclient_r"; \
 	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
 		echo "[build_scripts]"; \
