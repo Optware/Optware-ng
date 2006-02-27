@@ -22,11 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BLUEZ_SITE=http://org.csail.mit.edu/pybluez/release
-PY-BLUEZ_VERSION=0.2
+PY-BLUEZ_VERSION=0.6.1
 PY-BLUEZ_SOURCE=pybluez-src-$(PY-BLUEZ_VERSION).tar.gz
 PY-BLUEZ_DIR=pybluez-$(PY-BLUEZ_VERSION)
 PY-BLUEZ_UNZIP=zcat
-PY-BLUEZ_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-BLUEZ_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BLUEZ_DESCRIPTION=Python wrappers around bluez.
 PY-BLUEZ_SECTION=misc
 PY-BLUEZ_PRIORITY=optional
@@ -36,7 +36,7 @@ PY-BLUEZ_CONFLICTS=
 #
 # PY-BLUEZ_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BLUEZ_IPK_VERSION=2
+PY-BLUEZ_IPK_VERSION=1
 
 #
 # PY-BLUEZ_CONFFILES should be a list of user-editable files
@@ -112,6 +112,8 @@ $(PY-BLUEZ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BLUEZ_SOURCE) $(PY-BLUEZ_PATCH
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin" \
 	    ) > setup.cfg; \
 	)
 	touch $(PY-BLUEZ_BUILD_DIR)/.configured
