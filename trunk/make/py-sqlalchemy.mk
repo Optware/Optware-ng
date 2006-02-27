@@ -79,7 +79,7 @@ PY-SQLALCHEMY_LDFLAGS=
 PY-SQLALCHEMY_BUILD_DIR=$(BUILD_DIR)/py-sqlalchemy
 PY-SQLALCHEMY_SOURCE_DIR=$(SOURCE_DIR)/py-sqlalchemy
 PY-SQLALCHEMY_IPK_DIR=$(BUILD_DIR)/py-sqlalchemy-$(PY-SQLALCHEMY_VERSION)-ipk
-PY-SQLALCHEMY_IPK=$(BUILD_DIR)/py-sqlalchemy$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-SQLALCHEMY_IPK=$(BUILD_DIR)/py-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -112,8 +112,11 @@ py-sqlalchemy-source: $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) $(PY-SQLALCHEMY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-### $(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) $(PY-SQLALCHEMY_PATCHES)
+ifeq ($(PY-SQLALCHEMY_SVN),)
+$(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE) $(PY-SQLALCHEMY_PATCHES)
+else
 $(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(PY-SQLALCHEMY_PATCHES)
+endif
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(PY-SQLALCHEMY_BUILD_DIR)
 ifeq ($(PY-SQLALCHEMY_SVN),)
