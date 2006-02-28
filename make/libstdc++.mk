@@ -22,6 +22,13 @@ LIBSTDC++_PRIORITY=optional
 LIBSTDC++_DEPENDS=
 LIBSTDC++_CONFLICTS=
 
+ifeq ($(OPTWARE_TARGET),wl500g)
+LIBSTDC++_DEPENDS=libuclibc++
+LIBSTDC++_VERSION=0.1.12
+LIBSTDC++_DESCRIPTION==Standard C++ library, wrapped for uClibc++
+LIBSTDC++_LIBNAME=
+endif
+
 LIBSTDC++_IPK_VERSION=3
 
 LIBSTDC++_BUILD_DIR=$(BUILD_DIR)/libstdc++
@@ -38,13 +45,16 @@ libstdc++-unpack: $(LIBSTDC++_BUILD_DIR)/.configured
 
 $(LIBSTDC++_BUILD_DIR)/.built: $(LIBSTDC++_BUILD_DIR)/.configured
 	rm -f $(LIBSTDC++_BUILD_DIR)/.built
+ifneq ($(OPTWARE_TARGET),wl500g)
 	cp $(TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_BUILD_DIR)/
+endif
 	touch $(LIBSTDC++_BUILD_DIR)/.built
 
 libstdc++: $(LIBSTDC++_BUILD_DIR)/.built
 
 $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 	rm -f $(LIBSTDC++_BUILD_DIR)/.staged
+ifneq ($(OPTWARE_TARGET),wl500g)
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(STAGING_DIR)/opt/lib
 	(cd $(STAGING_DIR)/opt/lib; \
@@ -53,6 +63,7 @@ $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
 		$(LIBSTDC++_LIBNAME).5 \
 	)
+endif
 	touch $(LIBSTDC++_BUILD_DIR)/.staged
 
 libstdc++-stage: $(LIBSTDC++_BUILD_DIR)/.staged
@@ -73,6 +84,7 @@ $(LIBSTDC++_IPK_DIR)/CONTROL/control:
 
 $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
 	rm -rf $(LIBSTDC++_IPK_DIR) $(BUILD_DIR)/libstdc++_*_$(TARGET_ARCH).ipk
+ifneq ($(OPTWARE_TARGET),wl500g)
 	install -d $(LIBSTDC++_IPK_DIR)/opt/lib
 	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_IPK_DIR)/opt/lib
 	(cd $(LIBSTDC++_IPK_DIR)/opt/lib; \
@@ -82,6 +94,7 @@ $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
                $(LIBSTDC++_LIBNAME).5 \
 	)
 	$(STRIP_COMMAND) $(LIBSTDC++_IPK_DIR)/opt/lib/*.so
+endif
 	$(MAKE) $(LIBSTDC++_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBSTDC++_IPK_DIR)
 
