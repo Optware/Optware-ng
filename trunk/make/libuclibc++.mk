@@ -38,7 +38,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=1
+LIBUCLIBC++_IPK_VERSION=2
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -49,7 +49,8 @@ LIBUCLIBC++_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 LIBUCLIBC++_PATCHES=$(LIBUCLIBC++_SOURCE_DIR)/math.patch \
-			$(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch
+			$(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch \
+			$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch
 
 #
 # If the compilation of the package requires additional
@@ -235,3 +236,11 @@ libuclibc++-clean:
 #
 libuclibc++-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) $(LIBUCLIBC++_IPK_DIR) $(LIBUCLIBC++_IPK)
+#
+# Toolchain instalation and deinstalation
+#
+libuclibc++-install:
+	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install	
+
+libuclibc++-deinstall:
+	ln -sf mipsel-uclibc-gcc $(TARGET_CROSS)g++
