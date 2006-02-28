@@ -1,0 +1,42 @@
+diff -urN uClibc++/include/cmath libuclibc++/include/cmath
+--- uClibc++/include/cmath	2005-12-11 01:37:02.000000000 +0100
++++ libuclibc++/include/cmath	2006-02-25 01:38:57.000000000 +0100
+@@ -145,9 +145,9 @@
+ 
+   inline float 
+   acos(float __x) { return __gnu_cxx::__c99_binding::acosf(__x); }
+-
++#if 0
+   using ::acos;
+-  
++ 
+   inline long double 
+   acos(long double __x) { return ::acosl(__x); }
+ 
+@@ -347,6 +347,7 @@
+ 
+   inline long double 
+   tanh(long double __x) { return ::tanhl(__x); }
++ #endif
+ } 
+ 
+ 
+diff -urN uClibc++/include/valarray libuclibc++/include/valarray
+--- uClibc++/include/valarray	2005-12-11 01:37:01.000000000 +0100
++++ libuclibc++/include/valarray	2006-02-25 01:35:15.000000000 +0100
+@@ -872,6 +872,7 @@
+ 			retval[i] = abs(x[i]);
+ 		}
+ 	}
++#if 0
+ 	template<class T> valarray<T> acos (const valarray<T>& x){
+ 		valarray<T> retval(x.size());
+ 		for(size_t i = 0; i < retval.size(); ++i){
+@@ -986,6 +987,7 @@
+ 			retval[i] = tanh(x[i]);
+ 		}
+ 	}
++#endif
+ 	
+ }
+ 
