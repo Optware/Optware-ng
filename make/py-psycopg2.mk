@@ -30,13 +30,13 @@ PY-PSYCOPG2_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-PSYCOPG2_DESCRIPTION=psycopg2 is a PostgreSQL database adapter for the Python programming language.
 PY-PSYCOPG2_SECTION=misc
 PY-PSYCOPG2_PRIORITY=optional
-PY-PSYCOPG2_DEPENDS=python, py-mx-base, postgresql
+PY-PSYCOPG2_DEPENDS=python, py-mx-base
 PY-PSYCOPG2_CONFLICTS=
 
 #
 # PY-PSYCOPG2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG2_IPK_VERSION=1
+PY-PSYCOPG2_IPK_VERSION=2
 
 #
 # PY-PSYCOPG2_CONFFILES should be a list of user-editable files
