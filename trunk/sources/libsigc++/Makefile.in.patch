@@ -1,0 +1,11 @@
+--- libsigc++-2.0.17/Makefile.in	2005-12-20 09:42:07.000000000 +0100
++++ libsigc++/Makefile.in	2006-03-01 23:17:43.000000000 +0100
+@@ -205,7 +205,7 @@
+ # other stuff here
+ EXTRA_DIST = autogen.sh sigc++config.h.in libsigc++-2.0.spec.in
+ # ACLOCAL_FLAGS = -I scripts
+-SUBDIRS = sigc++ tests docs examples scripts MSVC_Net2003
++SUBDIRS = sigc++ docs scripts
+ DIST_SUBDIRS = $(SUBDIRS)
+ sigc_configdir = $(libdir)/sigc++-2.0/include
+ sigc_config_DATA = sigc++config.h
