@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBSIGC++_SITE=http://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.0/
-LIBSIGC++_VERSION=2.0.16
+LIBSIGC++_VERSION=2.0.17
 LIBSIGC++_SOURCE=libsigc++-$(LIBSIGC++_VERSION).tar.gz
 LIBSIGC++_DIR=libsigc++-$(LIBSIGC++_VERSION)
 LIBSIGC++_UNZIP=zcat
@@ -21,7 +21,7 @@ LIBSIGC++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBSIGC++_DESCRIPTION=libsigc++ implements a typesafe callback system for standard C++.
 LIBSIGC++_SECTION=libs
 LIBSIGC++_PRIORITY=optional
-LIBSIGC++_DEPENDS=
+LIBSIGC++_DEPENDS=libstdc++
 LIBSIGC++_SUGGESTS=
 LIBSIGC++_CONFLICTS=
 
@@ -38,7 +38,7 @@ LIBSIGC++_CONFFILES=
 # LIBSIGC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBSIGC++_PATCHES=$(LIBSIGC++_SOURCE_DIR)/configure.patch
+LIBSIGC++_PATCHES=$(LIBSIGC++_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -95,7 +95,7 @@ $(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PA
 	$(LIBSIGC++_UNZIP) $(DL_DIR)/$(LIBSIGC++_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSIGC++_PATCHES)" ; \
 		then cat $(LIBSIGC++_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIBSIGC++_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LIBSIGC++_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBSIGC++_DIR)" != "$(LIBSIGC++_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBSIGC++_DIR) $(LIBSIGC++_BUILD_DIR) ; \
