@@ -30,7 +30,7 @@ PY-MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MYSQL_DESCRIPTION=MySQL support for Python.
 PY-MYSQL_SECTION=misc
 PY-MYSQL_PRIORITY=optional
-PY-MYSQL_DEPENDS=python, mysql
+PY-MYSQL_DEPENDS=python
 PY-MYSQL_CONFLICTS=
 
 #
@@ -113,7 +113,9 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
-	    ) > setup.cfg; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin" \
+	    ) >> setup.cfg; \
 	)
 	touch $(PY-MYSQL_BUILD_DIR)/.configured
 
@@ -125,9 +127,9 @@ py-mysql-unpack: $(PY-MYSQL_BUILD_DIR)/.configured
 $(PY-MYSQL_BUILD_DIR)/.built: $(PY-MYSQL_BUILD_DIR)/.configured
 	rm -f $(PY-MYSQL_BUILD_DIR)/.built
 	(cd $(PY-MYSQL_BUILD_DIR); \
-	 PATH=$$PATH:$(STAGING_DIR)/opt/bin \
+	 PATH=$(STAGING_DIR)/opt/bin:$$PATH \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    python setup.py build; \
 	)
 	touch $(PY-MYSQL_BUILD_DIR)/.built
 
@@ -179,8 +181,9 @@ $(PY-MYSQL_IPK_DIR)/CONTROL/control:
 $(PY-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	rm -rf $(PY-MYSQL_IPK_DIR) $(BUILD_DIR)/py-mysql_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MYSQL_BUILD_DIR); \
+	 PATH=$(STAGING_DIR)/opt/bin:$$PATH \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-MYSQL_IPK_DIR)/opt; \
+	    python setup.py install --prefix=$(PY-MYSQL_IPK_DIR)/opt; \
 	)
 	$(STRIP_COMMAND) $(PY-MYSQL_IPK_DIR)/opt/lib/python2.4/site-packages/_mysql.so
 	$(MAKE) $(PY-MYSQL_IPK_DIR)/CONTROL/control
