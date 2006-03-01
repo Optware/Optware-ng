@@ -33,6 +33,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-paste \
 	py-pastescript \
 	py-psycopg2 \
+	py-pygresql \
 	py-sqlalchemy \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
