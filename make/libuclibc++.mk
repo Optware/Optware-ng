@@ -38,7 +38,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=2
+LIBUCLIBC++_IPK_VERSION=3
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
