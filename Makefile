@@ -164,6 +164,7 @@ WL500G_BROKEN_PACKAGES = \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nagios-plugins nail nfs-server nfs-utils nget nload nmap nrpe ntp \
 	pango py-mssql py-sqlobject \
+	python \
 	qemu qemu-libc-i386 \
 	rtorrent \
 	sdl ser sm snownews sqsh sudo \
