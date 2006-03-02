@@ -146,13 +146,13 @@ NSLU2_NATIVE_PACKAGES = \
         xmail \
 
 # Packages that *only* work for wl500g - do not just put new packages here.
-WL500G_SPECIFIC_PACKAGES = wiley-feeds
+WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ 
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
 	appweb asterisk atk \
 	bitlbee bzflag \
-	cdargs cherokee cogito ctorrent cvs \
+	cdargs cogito cvs \
 	dict \
 	elinks erlang \
 	ficy freetds \
@@ -160,14 +160,14 @@ WL500G_BROKEN_PACKAGES = \
 	hnb \
 	ice iperf iptables ivorbis-tools \
 	jabber jamvm jikes \
-	ldconfig libdvb libgc libstdc++ libsigc++ libtiff libtorrent libvorbisidec lsof \
+	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nagios-plugins nail nfs-server nfs-utils nget nload nmap nrpe ntp \
-	pango pcre \
+	pango py-mssql py-sqlobject \
 	qemu qemu-libc-i386 \
 	rtorrent \
 	sdl ser sm snownews sqsh sudo \
-	transcode \
+	tethereal transcode \
 	unrar \
 	vte \
 	wget-ssl \
@@ -366,7 +366,7 @@ TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/lib
 TARGET_LDFLAGS = 
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
+toolchain: libuclibc++-toolchain
 endif
 
 ifeq ($(OPTWARE_TARGET),mss)
