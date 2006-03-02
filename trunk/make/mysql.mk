@@ -35,17 +35,13 @@ MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MYSQL_DESCRIPTION=Popular free SQL database system
 MYSQL_SECTION=misc
 MYSQL_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET),wl500g)
 MYSQL_DEPENDS=zlib, ncurses, openssl, readline, libstdc++
-else
-MYSQL_DEPENDS=zlib, ncurses, openssl, readline
-endif
 MYSQL_CONFLICTS=
 
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=4
+MYSQL_IPK_VERSION=5
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -112,9 +108,7 @@ $(MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
 	$(MAKE) ncurses-stage
 	$(MAKE) zlib-stage
 	$(MAKE) readline-stage
-ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) libstdc++-stage
-endif
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(MYSQL_DIR) -p1
