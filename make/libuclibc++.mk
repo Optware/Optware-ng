@@ -116,20 +116,6 @@ $(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIB
 	if test "$(BUILD_DIR)/$(LIBUCLIBC++_DIR)" != "$(LIBUCLIBC++_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) ; \
 	fi
-#	(cd $(LIBUCLIBC++_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBUCLIBC++_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(LIBUCLIBC++_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#		--disable-nls \
-#		--disable-static \
-#	)
-#	$(PATCH_LIBTOOL) $(LIBUCLIBC++_BUILD_DIR)/libtool
-#
 	cp $(LIBUCLIBC++_SOURCE_DIR)/.config $(LIBUCLIBC++_BUILD_DIR)
 	make -C $(LIBUCLIBC++_BUILD_DIR) oldconfig
 	touch $(LIBUCLIBC++_BUILD_DIR)/.configured
@@ -158,6 +144,10 @@ $(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built
 	touch $(LIBUCLIBC++_BUILD_DIR)/.staged
 
 libuclibc++-stage: $(LIBUCLIBC++_BUILD_DIR)/.staged
+#
+# toolchain requires staged lib
+# 
+libuclibc++-toolchain: $(LIBUCLIBC++_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
