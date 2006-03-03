@@ -5,7 +5,7 @@
 ###########################################################
 
 MT_DAAPD_SITE=http://dl.sourceforge.net/sourceforge/mt-daapd
-MT_DAAPD_VERSION=0.2.3
+MT_DAAPD_VERSION=0.2.4
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
