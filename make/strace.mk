@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 STRACE_SITE=http://dl.sourceforge.net/sourceforge/strace/
-STRACE_VERSION=4.5.8
+STRACE_VERSION=4.5.14
 STRACE_SOURCE=strace-$(STRACE_VERSION).tar.bz2
 STRACE_DIR=strace-$(STRACE_VERSION)
 STRACE_UNZIP=bzcat
