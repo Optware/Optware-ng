@@ -222,7 +222,9 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 	install -d $(PYTHON_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON_IPK_DIR)/opt/local/lib/python$(PYTHON_VERSION_MAJOR)/site-packages
 	install -d $(PYTHON_IPK_DIR)/usr/bin
+ifneq ($(OPTWARE_TARGET),wl500g)
 	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
+endif
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
 #	install -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm
