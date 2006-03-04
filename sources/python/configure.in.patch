@@ -1,5 +1,5 @@
 --- Python-2.4.2/configure.in.orig	2005-08-07 14:08:53.000000000 -0700
-+++ Python-2.4.2/configure.in	2005-09-28 20:24:23.000000000 -0700
++++ Python-2.4.2/configure.in	2006-03-04 10:08:03.000000000 -0800
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -25,7 +25,7 @@
  
  case $MACHDEP in
  bsdos*|hp*|HP*)
-@@ -3125,6 +3130,25 @@
+@@ -3125,6 +3130,27 @@
  done
  AC_MSG_RESULT(done)
  
@@ -46,6 +46,8 @@
 +    BUILDPYTHON='$(HOSTPYTHON)'
 +    BUILDPGEN='$(HOSTPGEN)'
 +    CROSS_COMPILE=no
++    CPPFLAGS="${HOSTPYTHON_CPPFLAGS}"
++    LDFLAGS="${HOSTPYTHON_LDFLAGS}"
 +fi
 +
  # generate output files
