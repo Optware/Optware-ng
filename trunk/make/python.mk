@@ -221,8 +221,8 @@ $(PYTHON_IPK): $(PYTHON_BUILD_DIR)/.built
 	cd $(PYTHON_IPK_DIR)/opt/bin; ln -s python$(PYTHON_VERSION_MAJOR) python
 	install -d $(PYTHON_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON_IPK_DIR)/opt/local/lib/python$(PYTHON_VERSION_MAJOR)/site-packages
-	install -d $(PYTHON_IPK_DIR)/usr/bin
 ifneq ($(OPTWARE_TARGET),wl500g)
+	install -d $(PYTHON_IPK_DIR)/usr/bin
 	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
 endif
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
