@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MSSQL_SITE=http://dl.sourceforge.net/sourceforge/pymssql
-PY-MSSQL_VERSION=0.7.3
+PY-MSSQL_VERSION=0.7.4
 PY-MSSQL_SOURCE=pymssql-$(PY-MSSQL_VERSION).tar.gz
 PY-MSSQL_DIR=pymssql-$(PY-MSSQL_VERSION)
 PY-MSSQL_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-MSSQL_CONFLICTS=
 #
 # PY-MSSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MSSQL_IPK_VERSION=2
+PY-MSSQL_IPK_VERSION=1
 
 #
 # PY-MSSQL_CONFFILES should be a list of user-editable files
