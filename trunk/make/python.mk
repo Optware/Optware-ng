@@ -68,7 +68,14 @@ PYTHON_PATCHES=\
 # compilation or linking flags, then list them here.
 #
 PYTHON_CPPFLAGS=
+# workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
+ifeq ($(OPTWARE_TARGET),wl500g)
+PYTHON_LDFLAGS=-lncurses -lreadline -lcrypt -lssl
+else
 PYTHON_LDFLAGS=
+endif
+PYTHON_HOSTPYTHON_CPPFLAGS=
+PYTHON_HOSTPYTHON_LDFLAGS=
 
 #
 # PYTHON_BUILD_DIR is the directory in which the build is done.
@@ -116,9 +123,9 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 	make readline-stage ncurses-stage openssl-stage libdb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
-	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON_DIR); \
-	    cat $(PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(PYTHON_DIR) -p1; \
+	    cat $(PYTHON_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON_DIR) -p1; \
 	    autoconf configure.in > configure
 	mkdir $(PYTHON_BUILD_DIR)
 	(cd $(PYTHON_BUILD_DIR); \
@@ -131,6 +138,8 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON_LDFLAGS)" \
+		HOSTPYTHON_CPPFLAGS=$(PYTHON_HOSTPYTHON_CPPFLAGS) \
+		HOSTPYTHON_LDFLAGS=$(PYTHON_HOSTPYTHON_LDFLAGS) \
 		ac_cv_sizeof_off_t=8 \
 		../$(PYTHON_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
