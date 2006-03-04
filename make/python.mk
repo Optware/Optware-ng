@@ -70,12 +70,10 @@ PYTHON_PATCHES=\
 PYTHON_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 ifeq ($(OPTWARE_TARGET),wl500g)
-PYTHON_LDFLAGS=-lncurses -lreadline -lcrypt -lssl
+PYTHON_LDFLAGS=-lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON_LDFLAGS=
 endif
-PYTHON_HOSTPYTHON_CPPFLAGS=
-PYTHON_HOSTPYTHON_LDFLAGS=
 
 #
 # PYTHON_BUILD_DIR is the directory in which the build is done.
@@ -138,8 +136,6 @@ $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON_LDFLAGS)" \
-		HOSTPYTHON_CPPFLAGS=$(PYTHON_HOSTPYTHON_CPPFLAGS) \
-		HOSTPYTHON_LDFLAGS=$(PYTHON_HOSTPYTHON_LDFLAGS) \
 		ac_cv_sizeof_off_t=8 \
 		../$(PYTHON_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
