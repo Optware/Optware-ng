@@ -155,7 +155,7 @@ WL500G_BROKEN_PACKAGES = \
 	cdargs cogito cvs \
 	dict \
 	elinks erlang \
-	ficy freetds \
+	ficy freetds ftpd-topfield \
 	gawk gettext giftcurs git-core glib gnupg gtk \
 	hnb \
 	ice iperf iptables ivorbis-tools \
@@ -376,7 +376,7 @@ TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/lib
 TARGET_LDFLAGS = 
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: libuclibc++-toolchain
+toolchain:
 endif
 
 ifeq ($(OPTWARE_TARGET),mss)

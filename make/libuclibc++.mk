@@ -140,7 +140,7 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 #
 $(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -f $(LIBUCLIBC++_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install
+#	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install
 	touch $(LIBUCLIBC++_BUILD_DIR)/.staged
 
 libuclibc++-stage: $(LIBUCLIBC++_BUILD_DIR)/.staged
