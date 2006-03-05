@@ -42,7 +42,7 @@ PYTHON_DEPENDS=libstdc++, readline, ncurses, openssl, libdb, zlib
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=4
+PYTHON_IPK_VERSION=5
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
@@ -70,7 +70,7 @@ PYTHON_PATCHES=\
 PYTHON_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 ifeq ($(OPTWARE_TARGET),wl500g)
-PYTHON_LDFLAGS=-lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
+PYTHON_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON_LDFLAGS=
 endif
@@ -119,7 +119,7 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
-	make readline-stage ncurses-stage openssl-stage libdb-stage zlib-stage
+	make bzip2-stage readline-stage ncurses-stage openssl-stage libdb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
 	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON_DIR); \
