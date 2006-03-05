@@ -30,13 +30,13 @@ PY-MX-BASE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-MX-BASE_DESCRIPTION=A collection of userful open source python packages from eGenix.com.
 PY-MX-BASE_SECTION=misc
 PY-MX-BASE_PRIORITY=optional
-PY-MX-BASE_DEPENDS=
+PY-MX-BASE_DEPENDS=python
 PY-MX-BASE_CONFLICTS=
 
 #
 # PY-MX-BASE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MX-BASE_IPK_VERSION=2
+PY-MX-BASE_IPK_VERSION=3
 
 #
 # PY-MX-BASE_CONFFILES should be a list of user-editable files
