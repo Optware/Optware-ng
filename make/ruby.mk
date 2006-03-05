@@ -40,7 +40,7 @@ RUBY_DEPENDS=
 #
 # RUBY_IPK_VERSION should be incremented when the ipk changes.
 #
-RUBY_IPK_VERSION=1
+RUBY_IPK_VERSION=2
 
 #
 # RUBY_CONFFILES should be a list of user-editable files
@@ -120,6 +120,7 @@ $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-sitedir=/opt/local/lib/ruby/site_ruby \
 		--disable-nls \
                 --with-opt-dir=$(STAGING_PREFIX) \
                 --with-target-dir=$(STAGING_PREFIX) \
