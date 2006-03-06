@@ -108,7 +108,7 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) bzip2-stage lua-stage memcached-stage mysql-stage openldap-stage openssl-stage pcre-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR)
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
@@ -122,11 +122,21 @@ $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
+		PCRE_LIB="-lpcre" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir=/opt/etc/lighttpd \
+		--libdir=/opt/lib/lighttpd \
+		--with-bzip2 \
+		--with-ldap \
+		--with-lua \
+		--with-memcache \
+		--with-mysql=$(STAGING_PREFIX)/bin/mysql_config \
+		--with-openssl \
 		--disable-nls \
 		--disable-static \
 	)
@@ -193,7 +203,8 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	rm -rf $(LIGHTTPD_IPK_DIR) $(BUILD_DIR)/lighttpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIGHTTPD_BUILD_DIR) \
 	    DESTDIR=$(LIGHTTPD_IPK_DIR) program_transform_name="" install-strip
-	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/
+	rm -f $(LIGHTTPD_IPK_DIR)/opt/lib/lighttpd/*.la
+	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd
 #	install -m 644 $(LIGHTTPD_SOURCE_DIR)/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd.conf
 #	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(LIGHTTPD_SOURCE_DIR)/rc.lighttpd $(LIGHTTPD_IPK_DIR)/opt/etc/init.d/SXXlighttpd
