@@ -23,9 +23,9 @@ case "$rc" in
 	$DAEMON -b
         ;;
     stop)
-        if [ -n "`pidof cherokee`" ]; then
+        if [ -n "`pidof $NAME`" ]; then
             echo "Stopping web server: $NAME"
-            killall cherokee 2> /dev/null
+            killall $NAME 2> /dev/null
         fi
         ;;
     restart)
