@@ -54,7 +54,7 @@ LIGHTTPD_CONFFILES=\
 # LIGHTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIGHTTPD_PATCHES=$(LIGHTTPD_SOURCE_DIR)/configure.patch
+LIGHTTPD_PATCHES=$(LIGHTTPD_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -115,12 +115,13 @@ $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCH
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
 		then cat $(LIGHTTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIGHTTPD_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(LIGHTTPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(LIGHTTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
 	fi
 	(cd $(LIGHTTPD_BUILD_DIR); \
+	autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
@@ -131,13 +132,13 @@ $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--sysconfdir=/opt/etc/lighttpd \
 		--libdir=/opt/lib/lighttpd \
 		--with-bzip2 \
 		--with-ldap \
 		--with-lua \
 		--with-memcache \
 		--with-mysql=$(STAGING_PREFIX)/bin/mysql_config \
+		--with-pcre \
 		--with-openssl \
 		--disable-nls \
 		--disable-static \
@@ -206,10 +207,11 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	$(MAKE) -C $(LIGHTTPD_BUILD_DIR) \
 	    DESTDIR=$(LIGHTTPD_IPK_DIR) program_transform_name="" install-strip
 	rm -f $(LIGHTTPD_IPK_DIR)/opt/lib/lighttpd/*.la
-	install -d $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd
-	install $(LIGHTTPD_BUILD_DIR)/doc/* $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd/
+	install -d $(LIGHTTPD_IPK_DIR)/opt/{share/doc,share/www,var/log}/lighttpd
+	install -m 644 $(LIGHTTPD_BUILD_DIR)/doc/* $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd/
+	install -m 644 $(LIGHTTPD_SOURCE_DIR)/index.html $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd/
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd
-	install -m 644 $(LIGHTTPD_BUILD_DIR)/doc/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/
+	install -m 644 $(LIGHTTPD_SOURCE_DIR)/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(LIGHTTPD_SOURCE_DIR)/rc.lighttpd $(LIGHTTPD_IPK_DIR)/opt/etc/init.d/S80lighttpd
 	$(MAKE) $(LIGHTTPD_IPK_DIR)/CONTROL/control
