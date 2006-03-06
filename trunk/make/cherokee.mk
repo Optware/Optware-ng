@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=2
+CHEROKEE_IPK_VERSION=3
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -51,6 +51,7 @@ CHEROKEE_CONFFILES=\
 	/opt/etc/cherokee/mime.conf \
 	/opt/etc/cherokee/mime.types \
 	/opt/etc/cherokee/mime.compression.types \
+	/opt/etc/init.d/S80cherokee \
 
 #
 # CHEROKEE_PATCHES should list any patches, in the the order in
@@ -210,13 +211,11 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	sed -i -e 's|/usr/lib/|/opt/share/cherokee/|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/sites-available/default
 	sed -i -e 's|^Port.*|Port 8008|; s|^Timeout.*|Timeout 60|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 	touch $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/mime.conf
-#	install -d $(CHEROKEE_IPK_DIR)/opt/etc/
-#	install -m 644 $(CHEROKEE_SOURCE_DIR)/cherokee.conf $(CHEROKEE_IPK_DIR)/opt/etc/cherokee.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
 	$(MAKE) $(CHEROKEE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(CHEROKEE_SOURCE_DIR)/postinst $(CHEROKEE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(CHEROKEE_SOURCE_DIR)/prerm $(CHEROKEE_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(CHEROKEE_SOURCE_DIR)/postinst $(CHEROKEE_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(CHEROKEE_SOURCE_DIR)/prerm $(CHEROKEE_IPK_DIR)/CONTROL/prerm
 	echo $(CHEROKEE_CONFFILES) | sed -e 's/ /\n/g' > $(CHEROKEE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHEROKEE_IPK_DIR)
 
