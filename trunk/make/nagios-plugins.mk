@@ -79,7 +79,7 @@ PLUGINS_REMOVE=			\
 #
 # NAGIOS_PLUGINS_IPK_VERSION should be incremented when the ipk changes.
 #
-NAGIOS_PLUGINS_IPK_VERSION=2
+NAGIOS_PLUGINS_IPK_VERSION=3
 
 #
 # NAGIOS_PLUGINS_CONFFILES should be a list of user-editable files
@@ -96,7 +96,7 @@ NAGIOS_PLUGINS_PATCHES=$(NAGIOS_PLUGINS_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 NAGIOS_PLUGINS_CPPFLAGS=
-NAGIOS_PLUGINS_LDFLAGS=
+NAGIOS_PLUGINS_LDFLAGS=-lm
 
 #
 # NAGIOS_PLUGINS_BUILD_DIR is the directory in which the build is done.
