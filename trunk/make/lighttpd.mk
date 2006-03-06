@@ -35,8 +35,8 @@ LIGHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
-LIGHTTPD_DEPENDS=
-LIGHTTPD_SUGGESTS=
+LIGHTTPD_DEPENDS=pcre, zlib
+LIGHTTPD_SUGGESTS=bzip2, lua, memcached, mysql, openldap, openssl
 LIGHTTPD_CONFLICTS=
 
 #
@@ -46,7 +46,9 @@ LIGHTTPD_IPK_VERSION=1
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
-#LIGHTTPD_CONFFILES=/opt/etc/lighttpd.conf /opt/etc/init.d/SXXlighttpd
+LIGHTTPD_CONFFILES=\
+	/opt/etc/lighttpd/lighttpd.conf \
+	/opt/etc/init.d/S80lighttpd \
 
 #
 # LIGHTTPD_PATCHES should list any patches, in the the order in
@@ -204,13 +206,15 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	$(MAKE) -C $(LIGHTTPD_BUILD_DIR) \
 	    DESTDIR=$(LIGHTTPD_IPK_DIR) program_transform_name="" install-strip
 	rm -f $(LIGHTTPD_IPK_DIR)/opt/lib/lighttpd/*.la
+	install -d $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd
+	install $(LIGHTTPD_BUILD_DIR)/doc/* $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd/
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd
-#	install -m 644 $(LIGHTTPD_SOURCE_DIR)/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd.conf
-#	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LIGHTTPD_SOURCE_DIR)/rc.lighttpd $(LIGHTTPD_IPK_DIR)/opt/etc/init.d/SXXlighttpd
+	install -m 644 $(LIGHTTPD_BUILD_DIR)/doc/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/
+	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(LIGHTTPD_SOURCE_DIR)/rc.lighttpd $(LIGHTTPD_IPK_DIR)/opt/etc/init.d/S80lighttpd
 	$(MAKE) $(LIGHTTPD_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LIGHTTPD_SOURCE_DIR)/postinst $(LIGHTTPD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LIGHTTPD_SOURCE_DIR)/prerm $(LIGHTTPD_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(LIGHTTPD_SOURCE_DIR)/postinst $(LIGHTTPD_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(LIGHTTPD_SOURCE_DIR)/prerm $(LIGHTTPD_IPK_DIR)/CONTROL/prerm
 	echo $(LIGHTTPD_CONFFILES) | sed -e 's/ /\n/g' > $(LIGHTTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIGHTTPD_IPK_DIR)
 
