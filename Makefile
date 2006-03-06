@@ -163,7 +163,7 @@ WL500G_BROKEN_PACKAGES = \
 	jabber jamvm \
 	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr \
-	nagios-plugins nail nfs-server nfs-utils nget ntp \
+	nail nfs-server nfs-utils nget ntp \
 	pango py-mssql py-sqlobject \
 	unslung-devel \
 	qemu qemu-libc-i386 \
