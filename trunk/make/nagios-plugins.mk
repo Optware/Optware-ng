@@ -144,7 +144,7 @@ nagios-plugins-source: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCH
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCHES)
+$(NAGIOS_PLUGINS_BUILD_DIR)/.configured: $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) $(NAGIOS_PLUGINS_PATCHES) make/nagios-plugins.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NAGIOS_PLUGINS_DIR) $(NAGIOS_PLUGINS_BUILD_DIR)
 	$(NAGIOS_PLUGINS_UNZIP) $(DL_DIR)/$(NAGIOS_PLUGINS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
