@@ -20,8 +20,8 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "ds101", "ds101g", "mss"  and "nas100d"
-OPTWARE_TARGET ?= nslu2
+# Options are "nslu2", "wl500g", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
+OPTWARE_TARGET ?= ds101j
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
@@ -200,6 +200,7 @@ DS101_SPECIFIC_PACKAGES =
 # Packages that do not work for ds101.
 DS101_BROKEN_PACKAGES = \
 	apache apr-util \
+	atftp \
 	cyrus-sasl \
 	imagemagick \
 	mod-fastcgi mod-python monotone \
@@ -207,6 +208,22 @@ DS101_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	svn \
 
+# Packages that *only* work for ds101j - do not just put new packages here.
+DS101J_SPECIFIC_PACKAGES = bip
+
+# Packages that do not work for ds101j.
+DS101J_BROKEN_PACKAGES = \
+	apache apr-util \
+	cyrus-sasl \
+	imagemagick \
+	glib \
+	mod-fastcgi mod-python monotone \
+	php-apache \
+	qemu qemu-libc-i386 \
+	svn \
+	atk bitlbee ctrlproxy giftcurs gkrellm irssi pango \
+	
+                                                        
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = 
 
@@ -284,6 +301,13 @@ endif
 
 ifeq ($(OPTWARE_TARGET),ds101)
 PACKAGES = $(filter-out $(DS101_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101_SPECIFIC_PACKAGES))
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+TARGET_ARCH=armeb
+TARGET_OS=linux
+endif
+
+ifeq ($(OPTWARE_TARGET),ds101j)
+PACKAGES = $(filter-out $(DS101J_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101J_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
@@ -387,6 +411,23 @@ endif
 ifeq ($(OPTWARE_TARGET),ds101)
 CROSS_CONFIGURATION_GCC_VERSION=3.3.5
 CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
+CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
+CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
+CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME = armv5b-softfloat-linux
+TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
+TARGET_LDFLAGS =
+TARGET_CUSTOM_FLAGS= -pipe
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain: crosstool
+endif
+
+ifeq ($(OPTWARE_TARGET),ds101j)
+CROSS_CONFIGURATION_GCC_VERSION=3.3.4
+CROSS_CONFIGURATION_GLIBC_VERSION=2.3.3
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
 CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
@@ -565,7 +606,7 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 dirclean: $(PACKAGES_DIRCLEAN)
 
 distclean:
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss ds101 ds101j ds101g
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
