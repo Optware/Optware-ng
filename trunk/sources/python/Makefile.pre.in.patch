@@ -1,5 +1,5 @@
---- Python-2.4.2/Makefile.pre.in.orig	2005-09-28 20:43:39.801231552 -0700
-+++ Python-2.4.2/Makefile.pre.in	2005-09-28 20:43:08.573978816 -0700
+--- Python-2.4.2/Makefile.pre.in.orig	2006-03-06 22:17:54.000000000 +0100
++++ Python-2.4.2/Makefile.pre.in	2006-03-06 22:19:06.000000000 +0100
 @@ -34,6 +34,8 @@
  AR=		@AR@
  RANLIB=		@RANLIB@
@@ -38,7 +38,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -305,10 +309,10 @@
+@@ -305,13 +309,13 @@
  # Rules
  
  # Default target
@@ -47,10 +47,15 @@
  
  # Build the interpreter
 -$(BUILDPYTHON):	Modules/$(MAINOBJ) $(LIBRARY) $(LDLIBRARY)
+-		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
 +$(HOSTPYTHON):	Modules/$(MAINOBJ) $(LIBRARY) $(LDLIBRARY)
- 		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
++		$(LINKCC)  -o $@ \
  			Modules/$(MAINOBJ) \
- 			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+-			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
++			$(BLDLIBRARY) $(LDFLAGS) $(LINKFORSHARED) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+ 
+ platform: $(BUILDPYTHON)
+ 	$(RUNSHARED) ./$(BUILDPYTHON) -E -c 'import sys ; from distutils.util import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
 @@ -441,11 +445,11 @@
  	$(CXX) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/ccpython.cc
  
