@@ -4,6 +4,7 @@ prefix="/opt"
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=lighttpd
 DAEMON=${prefix}/sbin/${NAME}
+DAEMON_OPTS="-f ${prefix}/etc/lighttpd/lighttpd.conf"
 
 test -x $DAEMON || exit 0
 
@@ -20,7 +21,7 @@ fi
 case "$rc" in
     start)
 	echo "Starting web server: $NAME"
-	$DAEMON -D
+	$DAEMON $DAEMON_OPTS
         ;;
     stop)
         if [ -n "`pidof $NAME`" ]; then
