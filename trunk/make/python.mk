@@ -119,7 +119,7 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
+$(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES) make/python.mk
 	make bzip2-stage readline-stage ncurses-stage openssl-stage libdb-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
 	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xf -
