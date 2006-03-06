@@ -43,7 +43,7 @@ PYTHON_SUGGESTS=
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=6
+PYTHON_IPK_VERSION=7
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
