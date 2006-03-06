@@ -48,7 +48,7 @@ COMMON_CROSS_PACKAGES = \
 	bash bc bzip2 bind bip bitchx bitlbee busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
-	ctorrent cups ctags cyrus-sasl \
+	cogito ctags ctorrent cups cyrus-sasl \
 	denyhosts dev-pts dict digitemp distcc dokuwiki dhcp diffutils dnsmasq dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex ftpd-topfield ffmpeg ficy fixesext flac \
