@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", "wl500g", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
-OPTWARE_TARGET ?= ds101j
+OPTWARE_TARGET ?= nslu2
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
