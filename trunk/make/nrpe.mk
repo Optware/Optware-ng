@@ -16,15 +16,9 @@
 # NOTE 2:
 #	The nagios plugins will follow. First get this working
 #
-NRPE_SITE=http://www.nagiosexchange.org/NRPE.77.0.html
-NRPE_VERSION=2.0
+NRPE_SITE=http://dl.sourceforge.net/sourceforge/nagios
+NRPE_VERSION=2.4
 NRPE_SOURCE=nrpe-$(NRPE_VERSION).tar.gz
-#
-# Unfortinatly they don't have a normal download url.
-# I placed a stable verion on my website!
-#
-NRPE_DOWNLOAD="http://pion.xs4all.nl/~marceln/tmp/$(NRPE_SOURCE)"
-
 NRPE_DIR=nrpe-$(NRPE_VERSION)
 NRPE_UNZIP=zcat
 NRPE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
@@ -38,7 +32,7 @@ NRPE_CONFLICTS=
 #
 # NRPE_IPK_VERSION should be incremented when the ipk changes.
 #
-NRPE_IPK_VERSION=3
+NRPE_IPK_VERSION=1
 
 #
 # NRPE_CONFFILES should be a list of user-editable files
@@ -76,7 +70,7 @@ NRPE_IPK=$(BUILD_DIR)/nrpe_$(NRPE_VERSION)-$(NRPE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NRPE_SOURCE):
-	$(WGET) -O $@ $(NRPE_DOWNLOAD)
+	$(WGET) -P $(DL_DIR) $(NRPE_SITE)/$(NRPE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -198,9 +192,9 @@ $(NRPE_IPK): $(NRPE_BUILD_DIR)/.built
 	cp $(NRPE_BUILD_DIR)/src/nrpe $(NRPE_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NRPE_IPK_DIR)/opt/sbin/*
 	install -d $(NRPE_IPK_DIR)/opt/etc/
-	install -m 644 $(NRPE_BUILD_DIR)/nrpe.cfg $(NRPE_IPK_DIR)/opt/etc/nrpe.cfg
+	install -m 644 $(NRPE_BUILD_DIR)/sample-config/nrpe.cfg $(NRPE_IPK_DIR)/opt/etc/nrpe.cfg
 	install -d $(NRPE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(NRPE_BUILD_DIR)/init-script.freebsd $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
+	install -m 755 $(NRPE_BUILD_DIR)/init-script $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
 	sed -i 's#/opt/bin#/opt/sbin#' $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
 	$(MAKE) $(NRPE_IPK_DIR)/CONTROL/control
 	# install -m 755 $(NRPE_SOURCE_DIR)/postinst $(NRPE_IPK_DIR)/CONTROL/postinst
