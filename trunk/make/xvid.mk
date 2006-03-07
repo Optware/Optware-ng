@@ -15,9 +15,9 @@
 # You should change all these variables to suit your package.
 #
 XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
-XVID_VERSION=20050214
+XVID_VERSION=20060306
 XVID_SOURCE=xvid-$(XVID_VERSION).tar.gz
-XVID_TAG=-D 2005-02-14
+XVID_TAG=-D 2006-03-06
 XVID_MODULE=xvidcore
 XVID_DIR=xvid-$(XVID_VERSION)
 XVID_UNZIP=zcat
@@ -31,7 +31,7 @@ XVID_CONFLICTS=
 #
 # XVID_IPK_VERSION should be incremented when the ipk changes.
 #
-XVID_IPK_VERSION=2
+XVID_IPK_VERSION=1
 
 #
 # XVID_PATCHES should list any patches, in the the order in
