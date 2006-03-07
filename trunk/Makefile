@@ -153,13 +153,6 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	py-psycopg2 py-gdchart2 \
-	denyhosts getmail ipython mailman py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy \
-	py-cherrytemplate py-clips py-curl py-django py-docutils py-elementtree py-formencode py-gd \
-	py-json py-kid py-mercurial py-moin py-mssql py-mx-base py-mysql py-nose py-paste py-pastescript \
-	py-pil py-protocols py-psycopg py-pygresql py-rdiff-backup py-roundup py-ruledispatch py-scgi \
-	py-serial py-setuptools py-simplejson py-simpy py-soappy py-sqlalchemy py-sqlite py-sqlobject \
-	py-testgears py-turbogears py-xml unslung-devel \
 	asterisk atk \
 	bitlbee bzflag \
 	cvs \
