@@ -98,7 +98,7 @@ py-cheetah-source: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES)
+$(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES) make/py-cheetah.mk
 	$(MAKE) python-stage
 	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
