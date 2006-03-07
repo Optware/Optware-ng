@@ -175,7 +175,7 @@ WL500G_BROKEN_PACKAGES = \
 	unrar \
 	vte \
 	wget-ssl \
-	x11 xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpdf xpm xrender xt xterm xtst \
+	x11 xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
 
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
