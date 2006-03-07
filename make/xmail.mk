@@ -27,7 +27,7 @@
 # You should change all these variables to suit your package.
 #
 XMAIL_SITE=http://www.xmailserver.org/
-XMAIL_VERSION=1.21
+XMAIL_VERSION=1.22
 XMAIL_SOURCE=xmail-$(XMAIL_VERSION).tar.gz
 XMAIL_DIR=xmail-$(XMAIL_VERSION)
 XMAIL_UNZIP=zcat
@@ -41,7 +41,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=2
+XMAIL_IPK_VERSION=1
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ xmail-source: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES)
+$(XMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES) make/xmail.mk
 	# The dependency is already installed as part of the core installation
 	# but is here just in case. Uncomment if needed
 	# $(MAKE) libstdc++-stage
