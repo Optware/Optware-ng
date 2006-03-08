@@ -5,6 +5,7 @@ prefix="/opt"
 
 # Data directory
 PGDATA="$prefix/var/pgsql/data"
+PG_DUMP_DIR="$prefix/var/pgsql/8.0/dump"
 
 # Who to run the postmaster as, usually "postgres".  (NOT "root")
 PGUSER=postgres
@@ -47,7 +48,19 @@ case "$rc" in
         sleep 1
         "$0" start
         ;;
+    dumpall)
+        PG_DUMP_FILE=$PG_DUMP_DIR/dumpall-`date +%FT%H%M%S`
+        if [ -x $prefix/bin/gzip ]; then
+            PG_DUMP_FILE=$PG_DUMP_FILE.gz
+            echo -n "PostgreSQL pg_dumpall and gzip to $PG_DUMP_FILE "
+            su - $PGUSER -c "$prefix/bin/pg_dumpall | $prefix/bin/gzip -c > $PG_DUMP_FILE"
+        else
+            echo -n "PostgreSQL pg_dumpall to $PG_DUMP_FILE "
+            su - $PGUSER -c "$prefix/bin/pg_dumpall > $PG_DUMP_FILE"
+        fi
+	echo ok
+        ;;
     *)  
-        echo "Usage: $0 (start|stop|restart|usage)"
+        echo "Usage: $0 (start|stop|restart|dumpall|usage)"
         ;;
 esac

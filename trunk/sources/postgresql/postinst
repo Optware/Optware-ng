@@ -2,6 +2,8 @@
 
 pghome="/opt/var/pgsql"
 pgdata="$pghome/data"
+pgver="$pghome/8.0"
+pgdumpground="$pgver/dump"
 
 # create postgres user in /etc/passwd if it's not there
 if grep -q ^postgres /etc/group; then
@@ -24,6 +26,11 @@ postgres:x:31:31:PostgreSQL:$pghome:/bin/sh
 EOF
     cp /etc/passwd /share/hdd/conf/
     echo ok
+fi
+
+if [ ! -d $pgdumpground ]; then
+    mkdir -p $pgdumpground
+    chown -R postgres:postgres $pgver
 fi
 
 # initdb if not done before
