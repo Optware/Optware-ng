@@ -15,10 +15,17 @@
 # You should change all these variables to suit your package.
 #
 GETTEXT_SITE=http://ftp.gnu.org/gnu/gettext
-GETTEXT_VERSION=0.14.1
+GETTEXT_VERSION=0.14.5
 GETTEXT_SOURCE=gettext-$(GETTEXT_VERSION).tar.gz
 GETTEXT_DIR=gettext-$(GETTEXT_VERSION)
 GETTEXT_UNZIP=zcat
+GETTEXT_SECTION=devel
+GETTEXT_PRIORITY=optional
+GETTEXT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+GETTEXT_DESCRIPTION=Set of tools for producing multi-lingual messages
+GETTEXT_DEPENDS=
+GETTEXT_SUGGESTS=
+GETTEXT_CONFLICTS=
 
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
@@ -33,7 +40,7 @@ GETTEXT_IPK_VERSION=1
 # GETTEXT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/configure.patch
+GETTEXT_PATCHES=$(GETTEXT_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -89,7 +96,7 @@ $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(GETTEXT_BUILD_DIR)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(GETTEXT_PATCHES) | patch -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
+	cat $(GETTEXT_PATCHES) | patch -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
 	mv $(BUILD_DIR)/$(GETTEXT_DIR) $(GETTEXT_BUILD_DIR)
 	(cd $(GETTEXT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -129,6 +136,26 @@ $(GETTEXT_BUILD_DIR)/.staged: $(GETTEXT_BUILD_DIR)/.built
 
 gettext-stage: $(GETTEXT_BUILD_DIR)/.staged
 
+
+#
+# This rule creates a control file for ipkg.
+#
+$(GETTEXT_IPK_DIR)/CONTROL/control:
+	@install -d $(GETTEXT_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gettext" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GETTEXT_PRIORITY)" >>$@
+	@echo "Section: $(GETTEXT_SECTION)" >>$@
+	@echo "Version: $(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GETTEXT_MAINTAINER)" >>$@
+	@echo "Source: $(GETTEXT_SITE)/$(GETTEXT_SOURCE)" >>$@
+	@echo "Description: $(GETTEXT_DESCRIPTION)" >>$@
+	@echo "Depends: $(GETTEXT_DEPENDS)" >>$@
+	@echo "Suggests: $(GETTEXT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GETTEXT_CONFLICTS)" >>$@
+
+
 #
 # This builds the IPK file.
 #
@@ -148,8 +175,7 @@ $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
 #	install -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf
 #	install -d $(GETTEXT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(GETTEXT_SOURCE_DIR)/rc.gettext $(GETTEXT_IPK_DIR)/opt/etc/init.d/SXXgettext
-	install -d $(GETTEXT_IPK_DIR)/CONTROL
-	install -m 644 $(GETTEXT_SOURCE_DIR)/control $(GETTEXT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GETTEXT_IPK_DIR)/CONTROL/control
 #	install -m 644 $(GETTEXT_SOURCE_DIR)/postinst $(GETTEXT_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(GETTEXT_SOURCE_DIR)/prerm $(GETTEXT_IPK_DIR)/CONTROL/prerm
 #	echo $(GETTEXT_CONFFILES) | sed -e 's/ /\n/g' > $(GETTEXT_IPK_DIR)/CONTROL/conffiles
