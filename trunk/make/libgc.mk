@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGC_SITE=http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source
-LIBGC_VERSION=6.5
+LIBGC_VERSION=6.7
 LIBGC_SOURCE=gc$(LIBGC_VERSION).tar.gz
 LIBGC_DIR=gc$(LIBGC_VERSION)
 LIBGC_UNZIP=zcat
@@ -104,10 +104,10 @@ libgc-source: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBGC_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1
+#	cat $(LIBGC_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
 	(cd $(LIBGC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -183,14 +183,14 @@ $(LIBGC_IPK_DIR)/CONTROL/control:
 $(LIBGC_IPK): $(LIBGC_BUILD_DIR)/.built
 	rm -rf $(LIBGC_IPK_DIR) $(BUILD_DIR)/libgc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGC_BUILD_DIR) DESTDIR=$(LIBGC_IPK_DIR) install-strip
-	#install -d $(LIBGC_IPK_DIR)/opt/etc/
-	#install -m 644 $(LIBGC_SOURCE_DIR)/libgc.conf $(LIBGC_IPK_DIR)/opt/etc/libgc.conf
-	#install -d $(LIBGC_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(LIBGC_SOURCE_DIR)/rc.libgc $(LIBGC_IPK_DIR)/opt/etc/init.d/SXXlibgc
+#	install -d $(LIBGC_IPK_DIR)/opt/etc/
+#	install -m 644 $(LIBGC_SOURCE_DIR)/libgc.conf $(LIBGC_IPK_DIR)/opt/etc/libgc.conf
+#	install -d $(LIBGC_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(LIBGC_SOURCE_DIR)/rc.libgc $(LIBGC_IPK_DIR)/opt/etc/init.d/SXXlibgc
 	$(MAKE) $(LIBGC_IPK_DIR)/CONTROL/control
-	#install -m 755 $(LIBGC_SOURCE_DIR)/postinst $(LIBGC_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(LIBGC_SOURCE_DIR)/prerm $(LIBGC_IPK_DIR)/CONTROL/prerm
-	#echo $(LIBGC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGC_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(LIBGC_SOURCE_DIR)/postinst $(LIBGC_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(LIBGC_SOURCE_DIR)/prerm $(LIBGC_IPK_DIR)/CONTROL/prerm
+#	echo $(LIBGC_CONFFILES) | sed -e 's/ /\n/g' > $(LIBGC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGC_IPK_DIR)
 
 #
