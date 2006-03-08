@@ -41,7 +41,7 @@ W3M_CONFLICTS=
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=1
+W3M_IPK_VERSION=2
 
 #
 # W3M_CONFFILES should be a list of user-editable files
@@ -70,6 +70,7 @@ W3M_LDFLAGS=-ldl -lpthread
 # You should not change any of these variables.
 #
 W3M_BUILD_DIR=$(BUILD_DIR)/w3m
+W3M_LIBGC_HOSTBUILD_DIR=$(W3M_BUILD_DIR)/libgc-hostbuild
 W3M_SOURCE_DIR=$(SOURCE_DIR)/w3m
 W3M_IPK_DIR=$(BUILD_DIR)/w3m-$(W3M_VERSION)-ipk
 W3M_IPK=$(BUILD_DIR)/w3m_$(W3M_VERSION)-$(W3M_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -125,9 +126,15 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--disable-image \
 	)
 else
+	rm -rf $(W3M_LIBGC_HOSTBUILD_DIR)
+	mkdir $(W3M_LIBGC_HOSTBUILD_DIR)
+	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR) -xvf -
+	cd $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR); \
+		./configure --prefix=/opt --disable-static; \
+		make DESTDIR=$(W3M_LIBGC_HOSTBUILD_DIR) install
 	mkdir $(W3M_BUILD_DIR)/hostbuild
 	cd $(W3M_BUILD_DIR)/hostbuild; \
-		../configure
+		../configure --with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
 	(cd $(W3M_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
@@ -212,14 +219,15 @@ $(W3M_IPK): $(W3M_BUILD_DIR)/.built
 	$(MAKE) -C $(W3M_BUILD_DIR) DESTDIR=$(W3M_IPK_DIR) install
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/bin/w3m
 	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/inflate
-	#install -d $(W3M_IPK_DIR)/opt/etc/
-	#install -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
-	#install -d $(W3M_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(W3M_SOURCE_DIR)/rc.w3m $(W3M_IPK_DIR)/opt/etc/init.d/SXXw3m
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/{w3mbookmark,w3mhelperpanel}
+#	install -d $(W3M_IPK_DIR)/opt/etc/
+#	install -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
+#	install -d $(W3M_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(W3M_SOURCE_DIR)/rc.w3m $(W3M_IPK_DIR)/opt/etc/init.d/SXXw3m
 	$(MAKE) $(W3M_IPK_DIR)/CONTROL/control
-	#install -m 755 $(W3M_SOURCE_DIR)/postinst $(W3M_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(W3M_SOURCE_DIR)/prerm $(W3M_IPK_DIR)/CONTROL/prerm
-	#echo $(W3M_CONFFILES) | sed -e 's/ /\n/g' > $(W3M_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(W3M_SOURCE_DIR)/postinst $(W3M_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(W3M_SOURCE_DIR)/prerm $(W3M_IPK_DIR)/CONTROL/prerm
+#	echo $(W3M_CONFFILES) | sed -e 's/ /\n/g' > $(W3M_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(W3M_IPK_DIR)
 
 #
