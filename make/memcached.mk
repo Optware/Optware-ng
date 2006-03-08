@@ -129,6 +129,7 @@ $(MEMCACHED_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMCACHED_SOURCE) $(MEMCACHED_PA
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-libevent=$(STAGING_PREFIX) \
 	)
 #	$(PATCH_LIBTOOL) $(MEMCACHED_BUILD_DIR)/libtool
 	touch $(MEMCACHED_BUILD_DIR)/.configured
