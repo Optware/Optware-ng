@@ -38,6 +38,9 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-pygresql \
 	py-sqlalchemy \
 	rubygems \
+	w3m \
+
+#	w3m	native => cross, so please remove the native w3m after promotion
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
