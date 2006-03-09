@@ -41,7 +41,7 @@ W3M_CONFLICTS=
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=2
+W3M_IPK_VERSION=3
 
 #
 # W3M_CONFFILES should be a list of user-editable files
@@ -129,12 +129,16 @@ else
 	rm -rf $(W3M_LIBGC_HOSTBUILD_DIR)
 	mkdir $(W3M_LIBGC_HOSTBUILD_DIR)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR) -xvf -
+	@echo "=============================== host libgc configure & build ============"
 	cd $(W3M_LIBGC_HOSTBUILD_DIR)/$(LIBGC_DIR); \
 		./configure --prefix=/opt --disable-static; \
 		make DESTDIR=$(W3M_LIBGC_HOSTBUILD_DIR) install
 	mkdir $(W3M_BUILD_DIR)/hostbuild
+	@echo "=============================== host w3m configure ======================="
 	cd $(W3M_BUILD_DIR)/hostbuild; \
+		ac_cv_sizeof_long_long=8 \
 		../configure --with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
+	@echo "=============================== cross w3m configure ======================"
 	(cd $(W3M_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
@@ -163,8 +167,10 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
 	    $(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
 else
+	@echo "=============================== cross w3m build ======================"
 	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
 	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
+	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib \
 	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=yes
 endif
 	touch $(W3M_BUILD_DIR)/.built
