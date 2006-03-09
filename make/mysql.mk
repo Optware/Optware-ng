@@ -168,6 +168,7 @@ mysql: $(MYSQL_BUILD_DIR)/.built
 $(MYSQL_BUILD_DIR)/.staged: $(MYSQL_BUILD_DIR)/.built
 	rm -f $(MYSQL_BUILD_DIR)/.staged
 	$(MAKE) -C $(MYSQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
+	rm -f $(STAGING_PREFIX)/lib/mysql/*.la
 	touch $(MYSQL_BUILD_DIR)/.staged
 
 mysql-stage: $(MYSQL_BUILD_DIR)/.staged
