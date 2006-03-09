@@ -138,6 +138,7 @@ else
 	cd $(W3M_BUILD_DIR)/hostbuild; \
 		ac_cv_sizeof_long_long=8 \
 		../configure \
+		--disable-image \
 		--without-ssl \
 		--with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
 	@echo "=============================== cross w3m configure ======================"
