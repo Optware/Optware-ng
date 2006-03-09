@@ -29,14 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	lighttpd \
-	py-django \
-	py-paste \
-	py-pastescript \
-	py-psycopg2 \
-	py-pygresql \
-	py-sqlalchemy \
-	rubygems \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -65,7 +57,8 @@ COMMON_CROSS_PACKAGES = \
 	lame less libcurl libdb libftdi libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
 	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
-	libpng librsync libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt lua \
+	libpng librsync libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt \
+	lighttpd lua \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
@@ -81,9 +74,11 @@ COMMON_CROSS_PACKAGES = \
 	py-sqlite py-mercurial py-moin py-mx-base py-mysql py-psycopg py-xml \
 	py-curl py-rdiff-backup py-setuptools py-formencode py-json \
 	py-simplejson py-testgears py-turbogears py-docutils py-scgi \
+	py-django py-paste py-pastescript py-psycopg2 py-pygresql \
+	py-sqlalchemy \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
-	rdate readline rsync ruby \
+	rdate readline rsync ruby rubygems \
 	samba sdl ser siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh stunnel streamripper sudo svn \
