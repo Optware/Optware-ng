@@ -42,7 +42,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=1
+LIGHTTPD_IPK_VERSION=2
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -110,7 +110,10 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
-	$(MAKE) bzip2-stage lua-stage memcached-stage mysql-stage openldap-stage openssl-stage pcre-stage zlib-stage
+	$(MAKE) bzip2-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
+ifneq ($(OPTWARE_TARGET), wl500g)
+	$(MAKE) openldap-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR)
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
