@@ -35,14 +35,14 @@ MEMCACHED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEMCACHED_DESCRIPTION=memcached is a high-performance, distributed memory object caching system.
 MEMCACHED_SECTION=misc
 MEMCACHED_PRIORITY=optional
-MEMCACHED_DEPENDS=
+MEMCACHED_DEPENDS=libevent
 MEMCACHED_SUGGESTS=
 MEMCACHED_CONFLICTS=
 
 #
 # MEMCACHED_IPK_VERSION should be incremented when the ipk changes.
 #
-MEMCACHED_IPK_VERSION=1
+MEMCACHED_IPK_VERSION=2
 
 #
 # MEMCACHED_CONFFILES should be a list of user-editable files
@@ -60,6 +60,11 @@ MEMCACHED_IPK_VERSION=1
 #
 MEMCACHED_CPPFLAGS=
 MEMCACHED_LDFLAGS=
+ifneq ($(OPTWARE_TARGET), wl500g)
+MEMCACHED_CONFIGURE_OPTS=
+else
+MEMCACHED_CONFIGURE_OPTS=ac_cv_member_struct_mallinfo_arena=no
+endif
 
 #
 # MEMCACHED_BUILD_DIR is the directory in which the build is done.
@@ -119,9 +124,10 @@ $(MEMCACHED_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMCACHED_SOURCE) $(MEMCACHED_PA
 		then mv $(BUILD_DIR)/$(MEMCACHED_DIR) $(MEMCACHED_BUILD_DIR) ; \
 	fi
 	(cd $(MEMCACHED_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
+		$(MEMCACHED_TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEMCACHED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MEMCACHED_LDFLAGS)" \
+		$(MEMCACHED_CONFIGURE_OPTS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
