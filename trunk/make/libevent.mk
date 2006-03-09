@@ -5,7 +5,7 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=1.0b
+LIBEVENT_VERSION=1.1a
 LIBEVENT_SOURCE=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)
 LIBEVENT_UNZIP=zcat
@@ -30,6 +30,21 @@ $(DL_DIR)/$(LIBEVENT_SOURCE):
 
 libevent-source: $(DL_DIR)/$(LIBEVENT_SOURCE)
 
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
 $(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE)
 	rm -rf $(BUILD_DIR)/$(LIBEVENT_DIR) $(LIBEVENT_BUILD_DIR)
 	$(LIBEVENT_UNZIP) $(DL_DIR)/$(LIBEVENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -47,18 +62,22 @@ $(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE)
 
 libevent-unpack: $(LIBEVENT_BUILD_DIR)/.configured
 
-$(LIBEVENT_BUILD_DIR)/libevent.a: $(LIBEVENT_BUILD_DIR)/.configured
+$(LIBEVENT_BUILD_DIR)/.built: $(LIBEVENT_BUILD_DIR)/.configured
+	rm -f $(LIBEVENT_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBEVENT_BUILD_DIR)
+	touch $(LIBEVENT_BUILD_DIR)/.built
 
-libevent: $(LIBEVENT_BUILD_DIR)/libevent.a
+libevent: $(LIBEVENT_BUILD_DIR)/.built
 
-$(STAGING_DIR)/opt/lib/libevent.a: $(LIBEVENT_BUILD_DIR)/libevent.a
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBEVENT_BUILD_DIR)/event.h $(STAGING_DIR)/opt/include/event.h
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBEVENT_BUILD_DIR)/libevent.a $(STAGING_DIR)/opt/lib/libevent.a
+#
+# If you are building a library, then you need to stage it too.
+#
+$(LIBEVENT_BUILD_DIR)/.staged: $(LIBEVENT_BUILD_DIR)/.built
+	rm -f $(LIBEVENT_BUILD_DIR)/.staged
+	$(MAKE) -C $(LIBEVENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(LIBEVENT_BUILD_DIR)/.staged
 
-libevent-stage: $(STAGING_DIR)/opt/lib/libevent.a
+libevent-stage: $(LIBEVENT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -78,11 +97,12 @@ $(LIBEVENT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(LIBEVENT_DEPENDS)" >>$@
 	@echo "Conflicts: $(LIBEVENT_CONFLICTS)" >>$@
 
-$(LIBEVENT_IPK): $(LIBEVENT_BUILD_DIR)/libevent.a
-	install -d $(LIBEVENT_IPK_DIR)/opt/include
-	install -m 644 $(LIBEVENT_BUILD_DIR)/event.h $(LIBEVENT_IPK_DIR)/opt/include
-	install -d $(LIBEVENT_IPK_DIR)/opt/lib
-	install -m 644 $(LIBEVENT_BUILD_DIR)/libevent.a $(LIBEVENT_IPK_DIR)/opt/lib
+#
+# This builds the IPK file.
+#
+$(LIBEVENT_IPK): $(LIBEVENT_BUILD_DIR)/.built
+	rm -rf $(LIBEVENT_IPK_DIR) $(BUILD_DIR)/libevent_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(LIBEVENT_BUILD_DIR) DESTDIR=$(LIBEVENT_IPK_DIR) install-strip
 	$(MAKE) $(LIBEVENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEVENT_IPK_DIR)
 
