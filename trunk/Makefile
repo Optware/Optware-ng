@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	lighttpd \
-	memcached \
 	py-django \
 	py-paste \
 	py-pastescript \
@@ -38,9 +37,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-pygresql \
 	py-sqlalchemy \
 	rubygems \
-	w3m \
-
-#	w3m	native => cross, so please remove the native w3m after promotion
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -71,7 +67,7 @@ COMMON_CROSS_PACKAGES = \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
 	libpng librsync libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt lua \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
-	madplay man man-pages mdadm mediawiki metalog microperl monotone mod-fastcgi mod-python mrtg \
+	madplay man man-pages mdadm mediawiki memcached metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
 	nget nload nrpe ntop ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
@@ -227,8 +223,7 @@ DS101J_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	svn \
 	atk bitlbee ctrlproxy giftcurs gkrellm irssi pango \
-	
-                                                        
+
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = 
 
@@ -267,7 +262,9 @@ NAS100D_BROKEN_PACKAGES =
 # mini_httpd - Underscores shouldn't appear in package names: please rename
 #              this package to "minihttpd", or to "mini-httpd". In the latter
 #              case the .mk file and the variables in it must also be renamed.
-PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd
+# w3m - requires host libgc for cross-compilation, but this is not easily
+#       able to be installed on the official build system (native still works)
+PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd w3m
 
 
 # libiconv - has been made obsolete by gconv-modules
