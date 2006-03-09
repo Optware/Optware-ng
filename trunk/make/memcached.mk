@@ -112,7 +112,7 @@ memcached-source: $(DL_DIR)/$(MEMCACHED_SOURCE) $(MEMCACHED_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(MEMCACHED_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMCACHED_SOURCE) $(MEMCACHED_PATCHES)
+$(MEMCACHED_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMCACHED_SOURCE) $(MEMCACHED_PATCHES) make/memcached.mk
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(MEMCACHED_DIR) $(MEMCACHED_BUILD_DIR)
 	$(MEMCACHED_UNZIP) $(DL_DIR)/$(MEMCACHED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
