@@ -137,7 +137,9 @@ else
 	@echo "=============================== host w3m configure ======================="
 	cd $(W3M_BUILD_DIR)/hostbuild; \
 		ac_cv_sizeof_long_long=8 \
-		../configure --with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
+		../configure \
+		--without-ssl \
+		--with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
 	@echo "=============================== cross w3m configure ======================"
 	(cd $(W3M_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -150,7 +152,8 @@ else
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-ssl \
+		--with-ssl=$(STAGING_PREFIX) \
+		--with-gc=$(STAGING_PREFIX) \
 		--disable-image \
 	)
 endif
@@ -167,9 +170,10 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
 	    $(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
 else
-	@echo "=============================== cross w3m build ======================"
+	@echo "=============================== host w3m mktable =========================="
 	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
 	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
+	@echo "=============================== cross w3m build ============================"
 	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib \
 	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=yes
 endif
