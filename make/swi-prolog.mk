@@ -1,0 +1,230 @@
+###########################################################
+#
+# swi-prolog
+#
+###########################################################
+
+# You must replace "swi-prolog" and "SWI-PROLOG" with the lower case name and
+# upper case name of your new package.  Some places below will say
+# "Do not change this" - that does not include this global change,
+# which must always be done to ensure we have unique names.
+
+#
+# SWI-PROLOG_VERSION, SWI-PROLOG_SITE and SWI-PROLOG_SOURCE define
+# the upstream location of the source code for the package.
+# SWI-PROLOG_DIR is the directory which is created when the source
+# archive is unpacked.
+# SWI-PROLOG_UNZIP is the command used to unzip the source.
+# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
+#
+# You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
+#
+SWI-PROLOG_SITE=http://gollem.science.uva.nl/cgi-bin/nph-download/SWI-Prolog
+SWI-PROLOG_VERSION=5.6.7
+SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
+SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
+SWI-PROLOG_UNZIP=zcat
+SWI-PROLOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SWI-PROLOG_DESCRIPTION=SWI-Prolog, a Prolog implementation.
+SWI-PROLOG_SECTION=lang
+SWI-PROLOG_PRIORITY=optional
+SWI-PROLOG_DEPENDS=libgmp
+SWI-PROLOG_SUGGESTS=
+SWI-PROLOG_CONFLICTS=
+
+#
+# SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
+#
+SWI-PROLOG_IPK_VERSION=1
+
+#
+# SWI-PROLOG_CONFFILES should be a list of user-editable files
+#SWI-PROLOG_CONFFILES=/opt/etc/swi-prolog.conf /opt/etc/init.d/SXXswi-prolog
+
+#
+# SWI-PROLOG_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+#SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/configure.patch
+
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+SWI-PROLOG_CPPFLAGS=
+SWI-PROLOG_LDFLAGS=
+
+#
+# SWI-PROLOG_BUILD_DIR is the directory in which the build is done.
+# SWI-PROLOG_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# SWI-PROLOG_IPK_DIR is the directory in which the ipk is built.
+# SWI-PROLOG_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+SWI-PROLOG_BUILD_DIR=$(BUILD_DIR)/swi-prolog
+SWI-PROLOG_SOURCE_DIR=$(SOURCE_DIR)/swi-prolog
+SWI-PROLOG_IPK_DIR=$(BUILD_DIR)/swi-prolog-$(SWI-PROLOG_VERSION)-ipk
+SWI-PROLOG_IPK=$(BUILD_DIR)/swi-prolog_$(SWI-PROLOG_VERSION)-$(SWI-PROLOG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(SWI-PROLOG_SOURCE):
+	$(WGET) -P $(DL_DIR) $(SWI-PROLOG_SITE)/$(SWI-PROLOG_SOURCE)
+
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+swi-prolog-source: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES)
+
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES)
+# make/swi-prolog.mk
+	$(MAKE) libgmp-stage
+	rm -rf $(BUILD_DIR)/$(SWI-PROLOG_DIR) $(SWI-PROLOG_BUILD_DIR)
+	$(SWI-PROLOG_UNZIP) $(DL_DIR)/$(SWI-PROLOG_SOURCE) | tar -C $(BUILD_DIR) -xf -
+	if test -n "$(SWI-PROLOG_PATCHES)" ; \
+		then cat $(SWI-PROLOG_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SWI-PROLOG_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(SWI-PROLOG_DIR)" != "$(SWI-PROLOG_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(SWI-PROLOG_DIR) $(SWI-PROLOG_BUILD_DIR) ; \
+	fi
+	(cd $(SWI-PROLOG_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
+		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
+                LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-readline \
+		--disable-nls \
+		--disable-static \
+	)
+#	$(PATCH_LIBTOOL) $(SWI-PROLOG_BUILD_DIR)/libtool
+	touch $(SWI-PROLOG_BUILD_DIR)/.configured
+
+swi-prolog-unpack: $(SWI-PROLOG_BUILD_DIR)/.configured
+
+#
+# This builds the actual binary.
+#
+$(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
+	rm -f $(SWI-PROLOG_BUILD_DIR)/.built
+	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)
+	touch $(SWI-PROLOG_BUILD_DIR)/.built
+
+#
+# This is the build convenience target.
+#
+swi-prolog: $(SWI-PROLOG_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(SWI-PROLOG_BUILD_DIR)/.staged: $(SWI-PROLOG_BUILD_DIR)/.built
+	rm -f $(SWI-PROLOG_BUILD_DIR)/.staged
+	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(SWI-PROLOG_BUILD_DIR)/.staged
+
+swi-prolog-stage: $(SWI-PROLOG_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/swi-prolog
+#
+$(SWI-PROLOG_IPK_DIR)/CONTROL/control:
+	@install -d $(SWI-PROLOG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: swi-prolog" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SWI-PROLOG_PRIORITY)" >>$@
+	@echo "Section: $(SWI-PROLOG_SECTION)" >>$@
+	@echo "Version: $(SWI-PROLOG_VERSION)-$(SWI-PROLOG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SWI-PROLOG_MAINTAINER)" >>$@
+	@echo "Source: $(SWI-PROLOG_SITE)/$(SWI-PROLOG_SOURCE)" >>$@
+	@echo "Description: $(SWI-PROLOG_DESCRIPTION)" >>$@
+	@echo "Depends: $(SWI-PROLOG_DEPENDS)" >>$@
+	@echo "Suggests: $(SWI-PROLOG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SWI-PROLOG_CONFLICTS)" >>$@
+
+#
+# This builds the IPK file.
+#
+# Binaries should be installed into $(SWI-PROLOG_IPK_DIR)/opt/sbin or $(SWI-PROLOG_IPK_DIR)/opt/bin
+# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Libraries and include files should be installed into $(SWI-PROLOG_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog/...
+# Documentation files should be installed in $(SWI-PROLOG_IPK_DIR)/opt/doc/swi-prolog/...
+# Daemon startup scripts should be installed in $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d/S??swi-prolog
+#
+# You may need to patch your application to make it use these locations.
+#
+$(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
+	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
+	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(SWI-PROLOG_IPK_DIR) install
+	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/bin/$(HOST_MACHINE)-$(TARGET_OS)/pl*
+#	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
+#	install -m 644 $(SWI-PROLOG_SOURCE_DIR)/swi-prolog.conf $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog.conf
+#	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(SWI-PROLOG_SOURCE_DIR)/rc.swi-prolog $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d/SXXswi-prolog
+	$(MAKE) $(SWI-PROLOG_IPK_DIR)/CONTROL/control
+#	install -m 755 $(SWI-PROLOG_SOURCE_DIR)/postinst $(SWI-PROLOG_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(SWI-PROLOG_SOURCE_DIR)/prerm $(SWI-PROLOG_IPK_DIR)/CONTROL/prerm
+	echo $(SWI-PROLOG_CONFFILES) | sed -e 's/ /\n/g' > $(SWI-PROLOG_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(SWI-PROLOG_IPK_DIR)
+
+#
+# This is called from the top level makefile to create the IPK file.
+#
+swi-prolog-ipk: $(SWI-PROLOG_IPK)
+
+#
+# This is called from the top level makefile to clean all of the built files.
+#
+swi-prolog-clean:
+	rm -f $(SWI-PROLOG_BUILD_DIR)/.built
+	-$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) clean
+
+#
+# This is called from the top level makefile to clean all dynamically created
+# directories.
+#
+swi-prolog-dirclean:
+	rm -rf $(BUILD_DIR)/$(SWI-PROLOG_DIR) $(SWI-PROLOG_BUILD_DIR) $(SWI-PROLOG_IPK_DIR) $(SWI-PROLOG_IPK)
