@@ -108,7 +108,7 @@ $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
 	$(MAKE) libgc-stage openssl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(W3M_PATCHES) | patch -d $(BUILD_DIR)/$(W3M_DIR) -p1
+	cat $(W3M_PATCHES) | patch -b -d $(BUILD_DIR)/$(W3M_DIR) -p1
 	mv $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR)
 ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(W3M_BUILD_DIR); \
@@ -116,6 +116,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(W3M_LDFLAGS)" \
 		WCCFLAGS="-DUSE_UNICODE $(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -147,6 +148,7 @@ else
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(W3M_LDFLAGS)" \
 		WCCFLAGS="-DUSE_UNICODE $(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_func_setpgrp_void=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
