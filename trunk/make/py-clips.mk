@@ -39,7 +39,7 @@ PY-CLIPS_CONFLICTS=
 #
 # PY-CLIPS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CLIPS_IPK_VERSION=1
+PY-CLIPS_IPK_VERSION=2
 
 #
 # PY-CLIPS_CONFFILES should be a list of user-editable files
@@ -187,7 +187,7 @@ $(PY-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
 	rm -rf $(PY-CLIPS_IPK_DIR) $(BUILD_DIR)/py-clips_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CLIPS_BUILD_DIR); \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py install --prefix=$(PY-CLIPS_IPK_DIR)/opt; \
+            python2.4 setup.py install --root=$(PY-CLIPS_IPK_DIR) --prefix=/opt; \
         )
 	$(STRIP_COMMAND) $(PY-CLIPS_IPK_DIR)/opt/lib/python2.4/site-packages/clips/_clips.so
 	$(MAKE) $(PY-CLIPS_IPK_DIR)/CONTROL/control
