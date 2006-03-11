@@ -36,7 +36,7 @@ PY-SERIAL_CONFLICTS=
 #
 # PY-SERIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SERIAL_IPK_VERSION=1
+PY-SERIAL_IPK_VERSION=2
 
 #
 # PY-SERIAL_CONFFILES should be a list of user-editable files
@@ -169,7 +169,7 @@ $(PY-SERIAL_IPK): $(PY-SERIAL_BUILD_DIR)/.built
 	rm -rf $(PY-SERIAL_IPK_DIR) $(BUILD_DIR)/py-serial_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(PY-SERIAL_BUILD_DIR) DESTDIR=$(PY-SERIAL_IPK_DIR) install
 	(cd $(PY-SERIAL_BUILD_DIR); \
-	$(STAGING_PREFIX)/bin/python setup.py install --prefix=$(PY-SERIAL_IPK_DIR)/opt)
+	$(STAGING_PREFIX)/bin/python setup.py install --root=$(PY-SERIAL_IPK_DIR) --prefix=/opt)
 	install -d $(PY-SERIAL_IPK_DIR)/opt/share/doc/py-serial/examples
 	install $(PY-SERIAL_BUILD_DIR)/README.txt $(PY-SERIAL_IPK_DIR)/opt/share/doc/py-serial/
 	install $(PY-SERIAL_BUILD_DIR)/examples/* $(PY-SERIAL_IPK_DIR)/opt/share/doc/py-serial/examples/

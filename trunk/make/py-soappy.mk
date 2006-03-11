@@ -39,7 +39,7 @@ PY-SOAPPY_FPCONST_SOURCE=$(PY-SOAPPY_FPCONST_DIR).tar.gz
 #
 # PY-SOAPPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SOAPPY_IPK_VERSION=1
+PY-SOAPPY_IPK_VERSION=2
 
 #
 # PY-SOAPPY_CONFFILES should be a list of user-editable files
@@ -175,7 +175,7 @@ $(PY-SOAPPY_IPK): $(PY-SOAPPY_BUILD_DIR)/.built
 	rm -rf $(PY-SOAPPY_IPK_DIR) $(BUILD_DIR)/py-soappy_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(PY-SOAPPY_BUILD_DIR) DESTDIR=$(PY-SOAPPY_IPK_DIR) install
 	(cd $(PY-SOAPPY_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-SOAPPY_IPK_DIR)/opt)
+	python2.4 setup.py install --root=$(PY-SOAPPY_IPK_DIR) --prefix=/opt)
 	for d in bid contrib docs tests tools validate fpconst; do \
 		install -d $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \
 		install $(PY-SOAPPY_BUILD_DIR)/$$d*/* $(PY-SOAPPY_IPK_DIR)/opt/share/doc/SOAPpy/$$d; \

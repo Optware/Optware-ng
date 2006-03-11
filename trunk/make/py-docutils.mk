@@ -36,7 +36,7 @@ PY-DOCUTILS_CONFLICTS=
 #
 # PY-DOCUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DOCUTILS_IPK_VERSION=1
+PY-DOCUTILS_IPK_VERSION=2
 
 #
 # PY-DOCUTILS_CONFFILES should be a list of user-editable files
@@ -172,7 +172,7 @@ $(PY-DOCUTILS_IPK_DIR)/CONTROL/control:
 $(PY-DOCUTILS_IPK): $(PY-DOCUTILS_BUILD_DIR)/.built
 	rm -rf $(PY-DOCUTILS_IPK_DIR) $(BUILD_DIR)/py-docutils_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DOCUTILS_BUILD_DIR); \
-	    python2.4 setup.py install --prefix=$(PY-DOCUTILS_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-DOCUTILS_IPK_DIR) --prefix=/opt; \
 	)
 #	$(STRIP_COMMAND) $(PY-DOCUTILS_IPK_DIR)/opt/lib/python2.4/site-packages/pydocutils2/_docutils.so
 	$(MAKE) $(PY-DOCUTILS_IPK_DIR)/CONTROL/control

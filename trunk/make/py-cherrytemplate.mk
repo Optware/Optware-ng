@@ -36,7 +36,7 @@ PY-CHERRYTEMPLATE_CONFLICTS=
 #
 # PY-CHERRYTEMPLATE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHERRYTEMPLATE_IPK_VERSION=1
+PY-CHERRYTEMPLATE_IPK_VERSION=2
 
 #
 # PY-CHERRYTEMPLATE_CONFFILES should be a list of user-editable files
@@ -169,7 +169,7 @@ $(PY-CHERRYTEMPLATE_IPK): $(PY-CHERRYTEMPLATE_BUILD_DIR)/.built
 	rm -rf $(PY-CHERRYTEMPLATE_IPK_DIR) $(BUILD_DIR)/py-cherrytemplate_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-CHERRYTEMPLATE_BUILD_DIR) DESTDIR=$(PY-CHERRYTEMPLATE_IPK_DIR) install
 	(cd $(PY-CHERRYTEMPLATE_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-CHERRYTEMPLATE_IPK_DIR)/opt)
+	python2.4 setup.py install --root=$(PY-CHERRYTEMPLATE_IPK_DIR) --prefix=/opt)
 #	install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-CHERRYTEMPLATE_SOURCE_DIR)/py-cherrytemplate.conf $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/py-cherrytemplate.conf
 #	install -d $(PY-CHERRYTEMPLATE_IPK_DIR)/opt/etc/init.d

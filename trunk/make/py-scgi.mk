@@ -36,7 +36,7 @@ PY-SCGI_CONFLICTS=
 #
 # PY-SCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SCGI_IPK_VERSION=2
+PY-SCGI_IPK_VERSION=3
 
 #
 # PY-SCGI_CONFFILES should be a list of user-editable files
@@ -178,7 +178,7 @@ $(PY-SCGI_IPK): $(PY-SCGI_BUILD_DIR)/.built
 	rm -rf $(PY-SCGI_IPK_DIR) $(BUILD_DIR)/py-scgi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SCGI_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-SCGI_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-SCGI_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY-SCGI_IPK_DIR)/opt/lib/python2.4/site-packages/scgi/*.so
 	$(MAKE) $(PY-SCGI_IPK_DIR)/CONTROL/control

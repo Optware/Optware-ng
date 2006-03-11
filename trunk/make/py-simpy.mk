@@ -36,7 +36,7 @@ PY-SIMPY_CONFLICTS=
 #
 # PY-SIMPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIMPY_IPK_VERSION=1
+PY-SIMPY_IPK_VERSION=2
 
 #
 # PY-SIMPY_CONFFILES should be a list of user-editable files
@@ -171,7 +171,7 @@ $(PY-SIMPY_IPK_DIR)/CONTROL/control:
 $(PY-SIMPY_IPK): $(PY-SIMPY_BUILD_DIR)/.built
 	rm -rf $(PY-SIMPY_IPK_DIR) $(BUILD_DIR)/py-simpy_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SIMPY_BUILD_DIR); \
-	    python2.4 setup.py install --prefix=$(PY-SIMPY_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-SIMPY_IPK_DIR) --prefix=/opt; \
 	)
 	install -d $(PY-SIMPY_IPK_DIR)/opt/share/doc/SimPy/
 	install -m 644 $(PY-SIMPY_BUILD_DIR)/*.{txt,html} $(PY-SIMPY_IPK_DIR)/opt/share/doc/SimPy/

@@ -36,7 +36,7 @@ PY-CURL_CONFLICTS=
 #
 # PY-CURL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CURL_IPK_VERSION=2
+PY-CURL_IPK_VERSION=3
 
 #
 # PY-CURL_CONFFILES should be a list of user-editable files
@@ -180,7 +180,7 @@ $(PY-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 	(cd $(PY-CURL_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    python2.4 setup.py install \
-	    --prefix=$(PY-CURL_IPK_DIR)/opt \
+	    --root=$(PY-CURL_IPK_DIR) --prefix=/opt \
 	    --curl-config=$(STAGING_DIR)/opt/bin/curl-config; \
 	)
 	$(STRIP_COMMAND) `find $(PY-CURL_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`

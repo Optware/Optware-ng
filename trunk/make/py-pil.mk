@@ -36,7 +36,7 @@ PY-PIL_CONFLICTS=
 #
 # PY-PIL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PIL_IPK_VERSION=2
+PY-PIL_IPK_VERSION=3
 
 #
 # PY-PIL_CONFFILES should be a list of user-editable files
@@ -179,7 +179,7 @@ $(PY-PIL_IPK): $(PY-PIL_BUILD_DIR)/.built
 	rm -rf $(PY-PIL_IPK_DIR) $(BUILD_DIR)/py-pil_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PIL_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-PIL_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-PIL_IPK_DIR) --prefix=/opt; \
 	)
 	for so in `find $(PY-PIL_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`; do \
 	    $(STRIP_COMMAND) $$so; \

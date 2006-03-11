@@ -36,7 +36,7 @@ PY-ROUNDUP_CONFLICTS=
 #
 # PY-ROUNDUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ROUNDUP_IPK_VERSION=1
+PY-ROUNDUP_IPK_VERSION=2
 
 #
 # PY-ROUNDUP_CONFFILES should be a list of user-editable files
@@ -178,7 +178,7 @@ $(PY-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
 	rm -rf $(PY-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py-roundup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ROUNDUP_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-ROUNDUP_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-ROUNDUP_IPK_DIR) --prefix=/opt; \
 	)
 #	$(STRIP_COMMAND) `find $(PY-ROUNDUP_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY-ROUNDUP_IPK_DIR)/CONTROL/control

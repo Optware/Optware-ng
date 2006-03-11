@@ -36,7 +36,7 @@ PY-MSSQL_CONFLICTS=
 #
 # PY-MSSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MSSQL_IPK_VERSION=1
+PY-MSSQL_IPK_VERSION=2
 
 #
 # PY-MSSQL_CONFFILES should be a list of user-editable files
@@ -179,7 +179,7 @@ $(PY-MSSQL_IPK): $(PY-MSSQL_BUILD_DIR)/.built
 	rm -rf $(PY-MSSQL_IPK_DIR) $(BUILD_DIR)/py-mssql_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MSSQL_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-MSSQL_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-MSSQL_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) `find $(PY-MSSQL_IPK_DIR)/opt/lib/python2.4/site-packages/ -name '*.so'`
 	$(MAKE) $(PY-MSSQL_IPK_DIR)/CONTROL/control

@@ -36,7 +36,7 @@ PY-CHEETAH_CONFLICTS=
 #
 # PY-CHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHEETAH_IPK_VERSION=2
+PY-CHEETAH_IPK_VERSION=3
 
 #
 # PY-CHEETAH_CONFFILES should be a list of user-editable files
@@ -178,7 +178,7 @@ $(PY-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	rm -rf $(PY-CHEETAH_IPK_DIR) $(BUILD_DIR)/py-cheetah_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CHEETAH_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --prefix=$(PY-CHEETAH_IPK_DIR)/opt; \
+	    python2.4 setup.py install --root=$(PY-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) `find $(PY-CHEETAH_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY-CHEETAH_IPK_DIR)/CONTROL/control
