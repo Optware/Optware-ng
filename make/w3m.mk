@@ -142,6 +142,9 @@ else
 		--disable-image \
 		--without-ssl \
 		--with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
+	@echo "=============================== host w3m mktable =========================="
+	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
+	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
 	@echo "=============================== cross w3m configure ======================"
 	(cd $(W3M_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -159,6 +162,7 @@ else
 		--with-gc=$(STAGING_PREFIX) \
 		--disable-image \
 	)
+	touch $(W3M_BUILD_DIR)/mktable
 endif
 	touch $(W3M_BUILD_DIR)/.configured
 
@@ -173,9 +177,6 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	LD_LIBRARY_PATH=$(STAGING_LIB_DIR) \
 	    $(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=no
 else
-	@echo "=============================== host w3m mktable =========================="
-	$(MAKE) -C $(W3M_BUILD_DIR)/hostbuild mktable CROSS_COMPILATION=no
-	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
 	@echo "=============================== cross w3m build ============================"
 	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib \
 	$(MAKE) -C $(W3M_BUILD_DIR) CROSS_COMPILATION=yes
