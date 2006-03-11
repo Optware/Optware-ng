@@ -36,7 +36,7 @@ PY-MX-BASE_CONFLICTS=
 #
 # PY-MX-BASE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MX-BASE_IPK_VERSION=3
+PY-MX-BASE_IPK_VERSION=4
 
 #
 # PY-MX-BASE_CONFFILES should be a list of user-editable files
@@ -143,7 +143,7 @@ $(PY-MX-BASE_BUILD_DIR)/.staged: $(PY-MX-BASE_BUILD_DIR)/.built
 	rm -f $(PY-MX-BASE_BUILD_DIR)/.staged
 	(cd $(PY-MX-BASE_BUILD_DIR); \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py install --prefix=$(STAGING_DIR)/opt; \
+            python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
         )
 	touch $(PY-MX-BASE_BUILD_DIR)/.staged
 
@@ -183,7 +183,7 @@ $(PY-MX-BASE_IPK): $(PY-MX-BASE_BUILD_DIR)/.built
 	rm -rf $(PY-MX-BASE_IPK_DIR) $(BUILD_DIR)/py-mx-base_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MX-BASE_BUILD_DIR); \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py install --prefix=$(PY-MX-BASE_IPK_DIR)/opt; \
+            python2.4 setup.py install --root=$(PY-MX-BASE_IPK_DIR) --prefix=/opt; \
         )
 	$(STRIP_COMMAND) `find $(PY-MX-BASE_IPK_DIR) -name '*.so'`
 	$(MAKE) $(PY-MX-BASE_IPK_DIR)/CONTROL/control

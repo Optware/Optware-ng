@@ -36,7 +36,7 @@ PY-GD_CONFLICTS=
 #
 # PY-GD_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GD_IPK_VERSION=2
+PY-GD_IPK_VERSION=3
 
 #
 # PY-GD_CONFFILES should be a list of user-editable files
@@ -179,7 +179,7 @@ $(PY-GD_IPK): $(PY-GD_BUILD_DIR)/.built
 	rm -rf $(PY-GD_IPK_DIR) $(BUILD_DIR)/py-gd_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GD_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 Setup.py install --prefix=$(PY-GD_IPK_DIR)/opt; \
+	    python2.4 Setup.py install --root=$(PY-GD_IPK_DIR) --prefix=/opt; \
 	)
 	for so in `find $(PY-GD_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`; do \
 	    $(STRIP_COMMAND) $$so; \

@@ -41,7 +41,7 @@ PY-BITTORRENT_CONFLICTS=
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=1
+PY-BITTORRENT_IPK_VERSION=2
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
@@ -174,7 +174,7 @@ $(PY-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
 	rm -rf $(PY-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-BITTORRENT_BUILD_DIR) DESTDIR=$(PY-BITTORRENT_IPK_DIR) install
 	(cd $(PY-BITTORRENT_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(PY-BITTORRENT_IPK_DIR)/opt)
+	python2.4 setup.py install --root=$(PY-BITTORRENT_IPK_DIR) --prefix=/opt)
 #	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-BITTORRENT_SOURCE_DIR)/py-bittorrent.conf $(PY-BITTORRENT_IPK_DIR)/opt/etc/py-bittorrent.conf
 #	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d

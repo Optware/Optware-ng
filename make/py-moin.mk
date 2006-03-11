@@ -36,7 +36,7 @@ PY-MOIN_CONFLICTS=
 #
 # PY-MOIN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MOIN_IPK_VERSION=1
+PY-MOIN_IPK_VERSION=2
 
 #
 # PY-MOIN_CONFFILES should be a list of user-editable files
@@ -166,7 +166,7 @@ $(PY-MOIN_IPK_DIR)/CONTROL/control:
 $(PY-MOIN_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	rm -rf $(PY-MOIN_IPK_DIR) $(BUILD_DIR)/py-moin_*_$(TARGET_ARCH).ipk
 	cd $(PY-MOIN_BUILD_DIR); \
-	    python2.4 setup.py install --prefix=$(PY-MOIN_IPK_DIR)/opt;
+	    python2.4 setup.py install --root=$(PY-MOIN_IPK_DIR) --prefix=/opt;
 	cd $(PY-MOIN_IPK_DIR)/opt/share/moin; \
 	    tar --remove-files -cvzf underlay.tar.gz underlay; \
 	    rm -rf underlay

@@ -37,7 +37,7 @@ PY-XML_CONFLICTS=
 #
 # PY-XML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-XML_IPK_VERSION=2
+PY-XML_IPK_VERSION=3
 
 #
 # PY-XML_CONFFILES should be a list of user-editable files
@@ -181,7 +181,7 @@ $(PY-XML_IPK): $(PY-XML_BUILD_DIR)/.built
 	rm -rf $(PY-XML_IPK_DIR) $(BUILD_DIR)/py-xml_*_$(TARGET_ARCH).ipk
 	(cd $(PY-XML_BUILD_DIR); \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py install --prefix=$(PY-XML_IPK_DIR)/opt; \
+            python2.4 setup.py install --root=$(PY-XML_IPK_DIR) --prefix=/opt; \
         )
 	$(STRIP_COMMAND) `find $(PY-XML_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY-XML_IPK_DIR)/CONTROL/control
