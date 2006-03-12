@@ -28,7 +28,7 @@ PY-PASTE_SVN=http://svn.pythonpaste.org/Paste/trunk
 PY-PASTE_SVN_REV=4745
 PY-PASTE_IPK_VERSION=1
 ifneq ($(PY-PASTE_SVN_REV),)
-PY-PASTE_VERSION:=$(PY-PASTE_VERSION)dev_r$(PY-PASTE_SVN_REV)
+PY-PASTE_VERSION:=$(PY-PASTE_VERSION)dev$(PY-PASTE_SVN_REV)
 else
 PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
 PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).zip
@@ -106,7 +106,7 @@ py-paste-source: $(DL_DIR)/$(PY-PASTE_SOURCE) $(PY-PASTE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PASTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTE_SOURCE) $(PY-PASTE_PATCHES)
+$(PY-PASTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTE_SOURCE) $(PY-PASTE_PATCHES) make/py-paste.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR) $(PY-PASTE_BUILD_DIR)
 ifeq ($(PY-PASTE_SVN_REV),)

@@ -28,7 +28,7 @@ PY-SQLOBJECT_VERSION=0.8
 PY-SQLOBJECT_SVN_REV=1457
 PY-SQLOBJECT_IPK_VERSION=1
 ifneq ($(PY-SQLOBJECT_SVN_REV),)
-PY-SQLOBJECT_VERSION:=$(PY-SQLOBJECT_VERSION)dev_r$(PY-SQLOBJECT_SVN_REV)
+PY-SQLOBJECT_VERSION:=$(PY-SQLOBJECT_VERSION)dev$(PY-SQLOBJECT_SVN_REV)
 else
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 endif
@@ -105,7 +105,7 @@ py-sqlobject-source: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SQLOBJECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
+$(PY-SQLOBJECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES) make/py-sqlobject.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
 ifeq ($(PY-SQLOBJECT_SVN_REV),)
