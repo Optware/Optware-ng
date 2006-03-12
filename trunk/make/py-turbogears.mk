@@ -30,13 +30,13 @@ PY-TURBOGEARS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
-PY-TURBOGEARS_DEPENDS=python, py-kid (>=0.8), py-cherrypy (>=2.1.1), py-sqlobject (>=0.8dev_r1457), py-json (>=3.4), py-elementtree (>=1.2.6), py-celementtree (>=1.0.2), py-formencode (>=0.4), py-testgears (>=0.2)
+PY-TURBOGEARS_DEPENDS=python, py-kid (>=0.8), py-cherrypy (>=2.1.1), py-sqlobject (>=0.8dev1457), py-json (>=3.4), py-elementtree (>=1.2.6), py-celementtree (>=1.0.2), py-formencode (>=0.4), py-testgears (>=0.2)
 PY-TURBOGEARS_CONFLICTS=
 
 #
 # PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOGEARS_IPK_VERSION=2
+PY-TURBOGEARS_IPK_VERSION=3
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
@@ -98,7 +98,7 @@ py-turbogears-source: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TURBOGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES)
+$(PY-TURBOGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES) make/py-turbogears.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)
 	$(PY-TURBOGEARS_UNZIP) $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
