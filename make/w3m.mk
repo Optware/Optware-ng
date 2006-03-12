@@ -51,7 +51,11 @@ W3M_IPK_VERSION=3
 # W3M_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(HOSTCC), $(TARGET_CC))
 W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch
+else
+W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch $(W3M_SOURCE_DIR)/configure.in.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -147,6 +151,7 @@ else
 	cp $(W3M_BUILD_DIR)/hostbuild/mktable $(W3M_BUILD_DIR)
 	@echo "=============================== cross w3m configure ======================"
 	(cd $(W3M_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3M_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(W3M_LDFLAGS)" \
