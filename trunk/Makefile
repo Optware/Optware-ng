@@ -29,8 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	py-urwid \
-	w3m \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -77,7 +75,7 @@ COMMON_CROSS_PACKAGES = \
 	py-curl py-rdiff-backup py-setuptools py-formencode py-json \
 	py-simplejson py-testgears py-turbogears py-docutils py-scgi \
 	py-django py-paste py-pastescript py-psycopg2 py-pygresql \
-	py-sqlalchemy \
+	py-sqlalchemy py-urwid \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
 	rdate readline rsync ruby rubygems \
@@ -93,7 +91,7 @@ COMMON_CROSS_PACKAGES = \
 	unzip usbutils \
 	vblade vdr-mediamvp vsftpd vte vorbis-tools \
 	vim \
-	w3cam webalizer wget-ssl wizd \
+	w3cam w3m webalizer wget-ssl wizd \
 	wakelan which whois wpa-supplicant \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
@@ -141,7 +139,6 @@ NSLU2_NATIVE_PACKAGES = \
 	rsnapshot \
 	squid \
 	stow \
-	w3m \
         xmail \
 
 # Packages that *only* work for wl500g - do not just put new packages here.
