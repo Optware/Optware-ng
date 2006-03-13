@@ -241,6 +241,8 @@ $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(SWI-PROLOG_IPK_DIR) install
 	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/bin/*-$(TARGET_OS)/pl*
+	install -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
+	install -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 #	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
 #	install -m 644 $(SWI-PROLOG_SOURCE_DIR)/swi-prolog.conf $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog.conf
 #	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d
