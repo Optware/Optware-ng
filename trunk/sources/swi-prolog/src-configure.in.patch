@@ -1,0 +1,91 @@
+--- swi-prolog/src/configure.in.orig	2006-03-01 04:46:49.000000000 -0800
++++ swi-prolog/src/configure.in	2006-03-09 09:21:27.000000000 -0800
+@@ -383,16 +383,9 @@
+   AC_CHECK_FUNCS(pthread_mutexattr_setkind_np pthread_mutexattr_settype)
+   AC_CHECK_FUNCS(pthread_kill)
+   AC_MSG_CHECKING("whether mutex support recursive locking")
+-  echo '#include "confdefs.h"' > conftest.c
+-  cat $srcdir/test/recmutex.c >> conftest.c
+-  (eval $ac_link) 2>&5
+-  if test -s conftest && ./conftest; then
+     AC_MSG_RESULT(yes)
+     AC_DEFINE(RECURSIVE_MUTEXES, 1,
+ 	      [Define to make use of standard (UNIX98) pthread recursive mutexes])
+-  else
+-    AC_MSG_RESULT(no)
+-  fi
+   AC_CHECK_FUNCS(pthread_sigmask pthread_setconcurrency)
+ 
+ dnl ATOMIC inc/dec for reference counts
+@@ -984,15 +977,9 @@
+ dnl ****************************************************************
+ 
+ AC_MSG_CHECKING("memory model");
+-echo '#include "confdefs.h"' > conftest.c
+-cat $srcdir/test/memmodel.c >> conftest.c
+-(eval $ac_link) 2>&5
+-if test -s conftest && eval `./conftest`; then
++STACK_DIRECTION=-1
+     AC_DEFINE_UNQUOTED(STACK_DIRECTION, $STACK_DIRECTION)
+     AC_MSG_RESULT(yes)
+-else
+-    AC_MSG_WARN("Failed to compile test/memmodel.c")
+-fi
+ rm -fr conftest*
+ 
+ dnl ****************************************************************
+@@ -1001,16 +988,7 @@
+ dnl ****************************************************************
+ 
+ AC_MSG_CHECKING("for nop");
+-echo '#include "confdefs.h"' > conftest.c
+-cat $srcdir/test/nop.c >> conftest.c
+-(eval $ac_link) 2>&5
+-if test -s conftest && eval `./conftest`; then
+     AC_MSG_RESULT(yes)
+-else
+-    AC_DEFINE(NO_ASM_NOP, 1,
+-	      "Define if you can't use asm("nop") to separate two labels")
+-    AC_MSG_RESULT(no)
+-fi
+ rm -fr conftest*
+ 
+ 
+@@ -1099,13 +1077,11 @@
+ mmap_tried=sgi;
+ mmap_test=sgimmap.c
+ AC_MSG_CHECKING("if we can use mmap for stack allocation")
+-while test ! "$MMAP_STACK" = "1" -a ! $mmap_tried = "stop"; do
+ echo '#include "confdefs.h"' > conftest.c
+ cat $srcdir/test/$mmap_test >> conftest.c
+-(eval $ac_link) 2>&5
+-if test -s conftest; then
+-    res=`./conftest`
+-    if test "$?" = 0 && eval $res; then
++    MMAP_STACK=1
++    HAVE_MAP_ANON=1
++    mmap_tried=segv
+ 	if test "$MMAP_STACK" = "1"; then
+ 	    if test "$HAVE_MAP_ANON" = "1"; then
+ 		AC_DEFINE(HAVE_MAP_ANON, 1,
+@@ -1130,11 +1106,6 @@
+ 	else
+ 	    AC_MSG_RESULT("mmap is not good enough")
+ 	fi
+-    else
+-        AC_MSG_RESULT("could not run mmap test");
+-    fi
+-fi
+-rm -fr conftest*
+ if test ! "$MMAP_STACK" = "1"; then
+   if test "$mmap_tried" = "sgi"; then
+     mmap_tried=segv
+@@ -1149,7 +1120,7 @@
+ else
+     mmap_tried=stop
+ fi
+-done
++    AC_DEFINE(NO_SEGV_HANDLING)
+ fi # mmap
+ 
+ case "$ARCH" in
