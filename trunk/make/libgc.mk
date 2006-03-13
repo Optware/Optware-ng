@@ -51,7 +51,11 @@ LIBGC_IPK_VERSION=1
 # LIBGC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBGC_PATCHES=$(LIBGC_SOURCE_DIR)/configure.patch
+ifneq ($(OPTWARE_TARGET), wl500g)
+LIBGC_PATCHES=
+else
+LIBGC_PATCHES=$(LIBGC_SOURCE_DIR)/backtrace.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -107,7 +111,10 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBGC_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1
+	if test -n "$(LIBGC_PATCHES)" ; \
+		then cat $(LIBGC_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
 	(cd $(LIBGC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
