@@ -167,7 +167,7 @@ WL500G_BROKEN_PACKAGES = \
 	tethereal transcode \
 	unrar \
 	vte \
-	wget-ssl \
+	w3m wget-ssl \
 	x11 xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
 
 # Packages that *only* work for mss - do not just put new packages here.
