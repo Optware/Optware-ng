@@ -155,7 +155,9 @@ $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG
 # make/swi-prolog.mk
 	@echo "=============== target swi-prolog configure ============"
 	$(MAKE) libgmp-stage readline-stage
+ifneq ($(HOSTCC), $(TARGET_CC))
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
+endif
 	(cd $(SWI-PROLOG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
@@ -170,7 +172,9 @@ $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG
 		--disable-nls \
 		--disable-static \
 	)
+ifneq ($(HOSTCC), $(TARGET_CC))
 	cp $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/src/pl.sh $(SWI-PROLOG_BUILD_DIR)/src
+endif
 #	$(PATCH_LIBTOOL) $(SWI-PROLOG_BUILD_DIR)/libtool
 	touch $(SWI-PROLOG_BUILD_DIR)/.configured
 
