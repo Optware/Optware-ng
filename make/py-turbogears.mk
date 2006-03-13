@@ -30,13 +30,13 @@ PY-TURBOGEARS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
-PY-TURBOGEARS_DEPENDS=python, py-kid (>=0.8), py-cherrypy (>=2.1.1), py-sqlobject (>=0.8dev1457), py-json (>=3.4), py-elementtree (>=1.2.6), py-celementtree (>=1.0.2), py-formencode (>=0.4), py-testgears (>=0.2)
+PY-TURBOGEARS_DEPENDS=python, py-kid (>=0.8), py-cherrypy (>=2.1.1), py-sqlobject (>=0.8dev_r1457), py-json (>=3.4), py-elementtree (>=1.2.6), py-celementtree (>=1.0.2), py-formencode (>=0.4), py-testgears (>=0.2)
 PY-TURBOGEARS_CONFLICTS=
 
 #
 # PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOGEARS_IPK_VERSION=3
+PY-TURBOGEARS_IPK_VERSION=4
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
