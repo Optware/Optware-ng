@@ -159,6 +159,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
 endif
 	(cd $(SWI-PROLOG_BUILD_DIR); \
+		$(MAKE) distclean; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
@@ -173,6 +174,9 @@ endif
 		--disable-static \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
+	if test -r "$(SWI-PROLOG_SOURCE_DIR)/config.h-$(OPTWARE_TARGET)" ; then \
+		cp "$(SWI-PROLOG_SOURCE_DIR)/config.h-$(OPTWARE_TARGET)" $(SWI-PROLOG_BUILD_DIR)/src/config.h; \
+	fi
 	cp $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/src/pl.sh $(SWI-PROLOG_BUILD_DIR)/src
 endif
 #	$(PATCH_LIBTOOL) $(SWI-PROLOG_BUILD_DIR)/libtool
