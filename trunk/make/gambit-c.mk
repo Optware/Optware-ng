@@ -32,11 +32,11 @@ GAMBIT-C_SOURCE=gambc$(GAMBIT-C_VERSION).tar.gz
 GAMBIT-C_DIR=gambc$(GAMBIT-C_VERSION)
 GAMBIT-C_UNZIP=zcat
 GAMBIT-C_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-GAMBIT-C_DESCRIPTION=Describe gambit-c here.
+GAMBIT-C_DESCRIPTION=A portable implementation of Scheme.
 GAMBIT-C_SECTION=lang
 GAMBIT-C_PRIORITY=optional
 GAMBIT-C_DEPENDS=
-GAMBIT-C_SUGGESTS=
+GAMBIT-C_SUGGESTS=crosstool-native
 GAMBIT-C_CONFLICTS=
 
 #
@@ -107,8 +107,7 @@ gambit-c-source: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(GAMBIT-C_BUILD_DIR)/.configured: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCHES)
-# make/gambit-c.mk
+$(GAMBIT-C_BUILD_DIR)/.configured: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCHES) make/gambit-c.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(GAMBIT-C_DIR) $(GAMBIT-C_BUILD_DIR)
 	$(GAMBIT-C_UNZIP) $(DL_DIR)/$(GAMBIT-C_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -196,6 +195,7 @@ $(GAMBIT-C_IPK): $(GAMBIT-C_BUILD_DIR)/.built
 	rm -rf $(GAMBIT-C_IPK_DIR) $(BUILD_DIR)/gambit-c_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GAMBIT-C_BUILD_DIR) prefix=$(GAMBIT-C_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(GAMBIT-C_IPK_DIR)/opt/bin/gs[ci] $(GAMBIT-C_IPK_DIR)/opt/lib/lib*.so
+	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o
 #	install -d $(GAMBIT-C_IPK_DIR)/opt/etc/
 #	install -m 644 $(GAMBIT-C_SOURCE_DIR)/gambit-c.conf $(GAMBIT-C_IPK_DIR)/opt/etc/gambit-c.conf
 #	install -d $(GAMBIT-C_IPK_DIR)/opt/etc/init.d
