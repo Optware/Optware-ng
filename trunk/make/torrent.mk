@@ -24,11 +24,15 @@ TORRENT_DEPENDS=libbt, cron
 TORRENT_MAINTAINER=oleo <oleon@users.sourceforge.net>
 TORRENT_SECTION=net
 TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
+SQSH_SUGGESTS=cron
 
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=2
+TORRENT_IPK_VERSION=3
+
+# TORRENT_CONFFILES should be a list of user-editable files
+TORRENT_CONFFILES=/opt/etc/torrent.conf
 
 #
 # TORRENT_BUILD_DIR is the directory in which the build is done.
@@ -126,6 +130,7 @@ $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	install -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
 	install -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
+	echo $(TORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(TORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORRENT_IPK_DIR)
 
 #
