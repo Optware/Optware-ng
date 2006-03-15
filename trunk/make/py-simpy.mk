@@ -22,11 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPY_SITE=http://dl.sourceforge.net/sourceforge/simpy
-PY-SIMPY_VERSION=1.6.1
+PY-SIMPY_VERSION=1.7
 PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).tar.gz
 PY-SIMPY_DIR=SimPy-$(PY-SIMPY_VERSION)
 PY-SIMPY_UNZIP=zcat
-PY-SIMPY_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-SIMPY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SIMPY_DESCRIPTION=An object-oriented, process-based discrete-event simulation language based on standard Python.
 PY-SIMPY_SECTION=misc
 PY-SIMPY_PRIORITY=optional
@@ -36,7 +36,7 @@ PY-SIMPY_CONFLICTS=
 #
 # PY-SIMPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIMPY_IPK_VERSION=2
+PY-SIMPY_IPK_VERSION=1
 
 #
 # PY-SIMPY_CONFFILES should be a list of user-editable files
@@ -101,7 +101,7 @@ py-simpy-source: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCHES)
 $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR) $(PY-SIMPY_BUILD_DIR)
 	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
+#	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(PY-SIMPY_BUILD_DIR)
 	(cd $(PY-SIMPY_BUILD_DIR); \
 	    ( \
