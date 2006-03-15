@@ -21,8 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SWI-PROLOG_SITE=http://gollem.science.uva.nl/cgi-bin/nph-download/SWI-Prolog
-SWI-PROLOG_VERSION=5.6.7
+SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
+ifneq ($(OPTWARE_TARGET),wl500g)
+SWI-PROLOG_VERSION=5.6.8
+else
+SWI-PROLOG_VERSION=5.4.7
+endif
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
 SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
 SWI-PROLOG_UNZIP=zcat
@@ -48,7 +52,9 @@ SWI-PROLOG_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
+ifneq ($(OPTWARE_TARGET),wl500g)
 SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/src-configure.in.patch
+endif
 endif
 
 #
@@ -78,6 +84,13 @@ else
 SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib
 endif
 
+ifneq ($(OPTWARE_TARGET),wl500g)
+SWI-PROLOG_HOST_INSTALL=DESTDIR=$(SWI-PROLOG_BUILD_DIR)/hostbuild
+SWI-PROLOG_TARGET_INSTALL=DESTDIR=$(SWI-PROLOG_IPK_DIR)
+else
+SWI-PROLOG_HOST_INSTALL=prefix=$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt
+SWI-PROLOG_TARGET_INSTALL=prefix=$(SWI-PROLOG_IPK_DIR)/opt
+endif
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -128,7 +141,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 		--disable-nls \
 		--disable-static; \
 	    $(MAKE); \
-	    $(MAKE) DESTDIR=$(SWI-PROLOG_BUILD_DIR)/hostbuild install; \
+	    $(MAKE) $(SWI-PROLOG_HOST_INSTALL) install; \
 	)
 endif
 	touch $(SWI-PROLOG_BUILD_DIR)/.hostbuilt
@@ -243,7 +256,7 @@ $(SWI-PROLOG_IPK_DIR)/CONTROL/control:
 #
 $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(SWI-PROLOG_IPK_DIR) install
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) $(SWI-PROLOG_TARGET_INSTALL) install
 	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/bin/*-$(TARGET_OS)/pl*
 	install -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 	install -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
