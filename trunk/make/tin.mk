@@ -27,11 +27,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/v1.8
-TIN_VERSION=1.8.0
+TIN_SITE2=ftp://ftp.stikman.com/pub/tin/v1.8
+TIN_VERSION=1.8.1
 TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
 TIN_DIR=tin-$(TIN_VERSION)
 TIN_UNZIP=zcat
-TIN_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+TIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TIN_DESCRIPTION=tin is a threaded NNTP and spool based UseNet newsreader
 TIN_SECTION=misc
 TIN_PRIORITY=optional
@@ -78,7 +79,8 @@ TIN_IPK=$(BUILD_DIR)/tin_$(TIN_VERSION)-$(TIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TIN_SITE)/$(TIN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TIN_SITE)/$(TIN_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(TIN_SITE2)/$(TIN_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
