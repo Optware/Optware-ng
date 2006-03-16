@@ -34,7 +34,7 @@ SWI-PROLOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SWI-PROLOG_DESCRIPTION=An LGPL comprehensive portable Prolog implementation.
 SWI-PROLOG_SECTION=lang
 SWI-PROLOG_PRIORITY=optional
-SWI-PROLOG_DEPENDS=libgmp
+SWI-PROLOG_DEPENDS=libgmp, ncurses, readline
 SWI-PROLOG_SUGGESTS=
 SWI-PROLOG_CONFLICTS=
 
@@ -167,7 +167,7 @@ endif
 $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt
 # make/swi-prolog.mk
 	@echo "=============== target swi-prolog configure ============"
-	$(MAKE) libgmp-stage readline-stage
+	$(MAKE) libgmp-stage ncurses-stage readline-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
 endif
@@ -183,6 +183,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-shared \
 		--disable-nls \
 		--disable-static \
 	)
@@ -191,6 +192,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 		cp "$(SWI-PROLOG_SOURCE_DIR)/config.h-$(OPTWARE_TARGET)" $(SWI-PROLOG_BUILD_DIR)/src/config.h; \
 	fi
 	cp $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/src/pl.sh $(SWI-PROLOG_BUILD_DIR)/src
+	cp $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/packages/pl*.sh $(SWI-PROLOG_BUILD_DIR)/packages
 endif
 #	$(PATCH_LIBTOOL) $(SWI-PROLOG_BUILD_DIR)/libtool
 	touch $(SWI-PROLOG_BUILD_DIR)/.configured
@@ -204,6 +206,25 @@ $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.built
 	@echo "=============== target swi-prolog build ============"
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)
+	@echo "=============== target swi-prolog packages configure ============"
+	(cd $(SWI-PROLOG_BUILD_DIR)/packages; \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
+		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
+		PKG=clib \
+		$(SWI-PROLOG_LD_LIBRARY_PATH) \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+		; \
+		sed -i -e 's|bdir/plld |bdir/plld -cc $(TARGET_CC) -ld $(TARGET_LD) |' plld.sh; \
+		$(MAKE); \
+	)
 	touch $(SWI-PROLOG_BUILD_DIR)/.built
 
 #
@@ -258,6 +279,9 @@ $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) $(SWI-PROLOG_TARGET_INSTALL) install
 	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/bin/*-$(TARGET_OS)/pl*
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages $(SWI-PROLOG_TARGET_INSTALL) install
+	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/lib/*-$(TARGET_OS)/*.so
+	rm $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/lib/*-$(TARGET_OS)/lib*.a
 	install -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 	install -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 #	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
