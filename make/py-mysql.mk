@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://dl.sourceforge.net/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.1c5
+PY-MYSQL_VERSION=1.2.1c7
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
@@ -99,7 +99,7 @@ py-mysql-source: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCHES)
-	$(MAKE) python-stage mysql-stage
+	$(MAKE) python-stage mysql-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)
 	$(PY-MYSQL_UNZIP) $(DL_DIR)/$(PY-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
@@ -108,13 +108,11 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)/mysql"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR):$(STAGING_LIB_DIR)/mysql"; \
 	        echo "libraries=mysqlclient_r"; \
 	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
-		echo "[install]"; \
-		echo "install_scripts=/opt/bin" \
 	    ) >> setup.cfg; \
 	)
 	touch $(PY-MYSQL_BUILD_DIR)/.configured
@@ -127,9 +125,9 @@ py-mysql-unpack: $(PY-MYSQL_BUILD_DIR)/.configured
 $(PY-MYSQL_BUILD_DIR)/.built: $(PY-MYSQL_BUILD_DIR)/.configured
 	rm -f $(PY-MYSQL_BUILD_DIR)/.built
 	(cd $(PY-MYSQL_BUILD_DIR); \
-	 PATH=$(STAGING_DIR)/opt/bin:$$PATH \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python setup.py build; \
+	    python2.4 -c "import setuptools; execfile('setup.py')" build; \
 	)
 	touch $(PY-MYSQL_BUILD_DIR)/.built
 
@@ -181,9 +179,10 @@ $(PY-MYSQL_IPK_DIR)/CONTROL/control:
 $(PY-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	rm -rf $(PY-MYSQL_IPK_DIR) $(BUILD_DIR)/py-mysql_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MYSQL_BUILD_DIR); \
-	 PATH=$(STAGING_DIR)/opt/bin:$$PATH \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python setup.py install --prefix=$(PY-MYSQL_IPK_DIR)/opt; \
+	    python2.4 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY-MYSQL_IPK_DIR) --prefix=/opt --single-version-externally-managed; \
 	)
 	$(STRIP_COMMAND) $(PY-MYSQL_IPK_DIR)/opt/lib/python2.4/site-packages/_mysql.so
 	$(MAKE) $(PY-MYSQL_IPK_DIR)/CONTROL/control
