@@ -200,19 +200,24 @@ endif
 swi-prolog-unpack: $(SWI-PROLOG_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.
+# This builds the actual binary. -L$(SWI-PROLOG_BUILD_DIR)/lib/armv5b-linux
+#		PKG="clib cpp odbc table xpce sgml sgml/RDF semweb http chr clpqr nlp ssl jpl" \
 #
 $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.built
 	@echo "=============== target swi-prolog build ============"
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)
-	@echo "=============== target swi-prolog packages configure ============"
+	touch $(SWI-PROLOG_BUILD_DIR)/.built
+
+$(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
+	rm -f $(SWI-PROLOG_BUILD_DIR)/.packages-built
+	@echo "=============== target swi-prolog packages ============"
 	(cd $(SWI-PROLOG_BUILD_DIR)/packages; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
-		PKG=clib \
+		PKG="clib cpp table semweb http chr clpqr nlp" \
 		$(SWI-PROLOG_LD_LIBRARY_PATH) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -222,15 +227,15 @@ $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
 		--disable-nls \
 		--disable-static \
 		; \
-		sed -i -e 's|bdir/plld |bdir/plld -cc $(TARGET_CC) -ld $(TARGET_LD) |' plld.sh; \
+		sed -i -e 's|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_LD) -pl|' plld.sh; \
 		$(MAKE); \
 	)
-	touch $(SWI-PROLOG_BUILD_DIR)/.built
+	touch $(SWI-PROLOG_BUILD_DIR)/.packages-built
 
 #
 # This is the build convenience target.
 #
-swi-prolog: $(SWI-PROLOG_BUILD_DIR)/.built
+swi-prolog: $(SWI-PROLOG_BUILD_DIR)/.packages-built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -275,7 +280,7 @@ $(SWI-PROLOG_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
+$(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.packages-built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) $(SWI-PROLOG_TARGET_INSTALL) install
 	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/bin/*-$(TARGET_OS)/pl*
