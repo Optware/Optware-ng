@@ -36,7 +36,7 @@ PY-MYSQL_CONFLICTS=
 #
 # PY-MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYSQL_IPK_VERSION=1
+PY-MYSQL_IPK_VERSION=2
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files
@@ -102,9 +102,10 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 	$(MAKE) python-stage mysql-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)
 	$(PY-MYSQL_UNZIP) $(DL_DIR)/$(PY-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
+#	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)
 	(cd $(PY-MYSQL_BUILD_DIR); \
+	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup.py; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
