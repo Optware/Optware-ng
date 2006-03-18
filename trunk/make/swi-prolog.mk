@@ -25,6 +25,7 @@ SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
 ifneq ($(OPTWARE_TARGET),wl500g)
 SWI-PROLOG_VERSION=5.6.8
 else
+# 5.6.x requires wchar
 SWI-PROLOG_VERSION=5.4.7
 endif
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
@@ -164,10 +165,9 @@ endif
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt
-# make/swi-prolog.mk
+$(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt make/swi-prolog.mk
 	@echo "=============== target swi-prolog configure ============"
-	$(MAKE) libgmp-stage ncurses-stage readline-stage
+	$(MAKE) libgmp-stage ncurses-stage openssl-stage readline-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
 endif
@@ -200,9 +200,9 @@ endif
 swi-prolog-unpack: $(SWI-PROLOG_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary. -L$(SWI-PROLOG_BUILD_DIR)/lib/armv5b-linux
+# This builds the actual binary.
 #		PKG="clib cpp odbc table xpce sgml sgml/RDF semweb http chr clpqr nlp ssl jpl" \
-#
+#		rm -f $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/lib/*/libpl.a;
 $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.built
 	@echo "=============== target swi-prolog build ============"
@@ -217,7 +217,8 @@ $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
-		PKG="clib cpp table semweb http chr clpqr nlp" \
+		ac_cv_lib_ssl_SSL_library_init=yes \
+		ac_cv_lib_crypto_main=yes \
 		$(SWI-PROLOG_LD_LIBRARY_PATH) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -226,10 +227,18 @@ $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--without-jpl \
+		--without-odbc \
+		--without-xpce \
 		; \
-		sed -i -e 's|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_LD) -pl|' plld.sh; \
-		$(MAKE); \
+		sed -i -e "s|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_CC) -I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -L$(SWI-PROLOG_BUILD_DIR)/lib/`$(TARGET_CC) -dumpmachine | sed 's/-.*//'`-$(TARGET_OS) -pl|" plld.sh; \
 	)
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/clib
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/ssl \
+	    LDFLAGS="-shared -Wl,-rpath,/opt/lib"
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/sgml \
+	    LDFLAGS="-lreadline -O2"
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages
 	touch $(SWI-PROLOG_BUILD_DIR)/.packages-built
 
 #
