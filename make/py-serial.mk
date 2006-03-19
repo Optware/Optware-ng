@@ -36,7 +36,7 @@ PY-SERIAL_CONFLICTS=
 #
 # PY-SERIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SERIAL_IPK_VERSION=2
+PY-SERIAL_IPK_VERSION=3
 
 #
 # PY-SERIAL_CONFFILES should be a list of user-editable files
@@ -99,10 +99,10 @@ py-serial-source: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR) $(PY-SERIAL_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE)
-	#cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
+#	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(PY-SERIAL_BUILD_DIR)
 	(cd $(PY-SERIAL_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -130,7 +130,7 @@ py-serial: $(PY-SERIAL_BUILD_DIR)/.built
 #
 $(PY-SERIAL_BUILD_DIR)/.staged: $(PY-SERIAL_BUILD_DIR)/.built
 	rm -f $(PY-SERIAL_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-SERIAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(PY-SERIAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PY-SERIAL_BUILD_DIR)/.staged
 
 py-serial-stage: $(PY-SERIAL_BUILD_DIR)/.staged
@@ -167,9 +167,9 @@ $(PY-SERIAL_IPK_DIR)/CONTROL/control:
 #
 $(PY-SERIAL_IPK): $(PY-SERIAL_BUILD_DIR)/.built
 	rm -rf $(PY-SERIAL_IPK_DIR) $(BUILD_DIR)/py-serial_*_$(TARGET_ARCH).ipk
-	#$(MAKE) -C $(PY-SERIAL_BUILD_DIR) DESTDIR=$(PY-SERIAL_IPK_DIR) install
+#	$(MAKE) -C $(PY-SERIAL_BUILD_DIR) DESTDIR=$(PY-SERIAL_IPK_DIR) install
 	(cd $(PY-SERIAL_BUILD_DIR); \
-	$(STAGING_PREFIX)/bin/python setup.py install --root=$(PY-SERIAL_IPK_DIR) --prefix=/opt)
+	python2.4 setup.py install --root=$(PY-SERIAL_IPK_DIR) --prefix=/opt)
 	install -d $(PY-SERIAL_IPK_DIR)/opt/share/doc/py-serial/examples
 	install $(PY-SERIAL_BUILD_DIR)/README.txt $(PY-SERIAL_IPK_DIR)/opt/share/doc/py-serial/
 	install $(PY-SERIAL_BUILD_DIR)/examples/* $(PY-SERIAL_IPK_DIR)/opt/share/doc/py-serial/examples/
