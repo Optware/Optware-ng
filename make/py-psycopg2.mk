@@ -36,7 +36,7 @@ PY-PSYCOPG2_CONFLICTS=
 #
 # PY-PSYCOPG2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG2_IPK_VERSION=2
+PY-PSYCOPG2_IPK_VERSION=3
 
 #
 # PY-PSYCOPG2_CONFFILES should be a list of user-editable files
@@ -107,8 +107,9 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(PY-PSYCOPG2_BUILD_DIR)
 	(cd $(PY-PSYCOPG2_BUILD_DIR); \
 	    ( \
-	        echo "include_dirs=.:$(STAGING_DIR)/opt/include"; \
-	        echo "library_dirs=$(STAGING_DIR)/opt/lib"; \
+		echo "#pg_config=$(STAGING_PREFIX)/bin/pg_config"; \
+	        echo "include_dirs=.:$(STAGING_INCLUDE_DIR)"; \
+	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python"; \
@@ -141,7 +142,7 @@ py-psycopg2: $(PY-PSYCOPG2_BUILD_DIR)/.built
 #
 $(PY-PSYCOPG2_BUILD_DIR)/.staged: $(PY-PSYCOPG2_BUILD_DIR)/.built
 	rm -f $(PY-PSYCOPG2_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-PSYCOPG2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(PY-PSYCOPG2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PY-PSYCOPG2_BUILD_DIR)/.staged
 
 py-psycopg2-stage: $(PY-PSYCOPG2_BUILD_DIR)/.staged
@@ -179,8 +180,7 @@ $(PY-PSYCOPG2_IPK_DIR)/CONTROL/control:
 $(PY-PSYCOPG2_IPK): $(PY-PSYCOPG2_BUILD_DIR)/.built
 	rm -rf $(PY-PSYCOPG2_IPK_DIR) $(BUILD_DIR)/py-psycopg2_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PSYCOPG2_BUILD_DIR); \
-	 PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
-	    python setup.py install --root=$(PY-PSYCOPG2_IPK_DIR) --prefix=/opt; \
+	    python2.4 setup.py install --root=$(PY-PSYCOPG2_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) `find $(PY-PSYCOPG2_IPK_DIR)/opt/lib -name '*.so'`
 	$(MAKE) $(PY-PSYCOPG2_IPK_DIR)/CONTROL/control
