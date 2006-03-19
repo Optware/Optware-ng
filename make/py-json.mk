@@ -121,7 +121,7 @@ py-json-unpack: $(PY-JSON_BUILD_DIR)/.configured
 #
 $(PY-JSON_BUILD_DIR)/.built: $(PY-JSON_BUILD_DIR)/.configured
 	rm -f $(PY-JSON_BUILD_DIR)/.built
-#	cd $(PY-JSON_BUILD_DIR) &&  $(STAGING_PREFIX)/bin/python setup.py build
+#	cd $(PY-JSON_BUILD_DIR) &&  python2.4 setup.py build
 	touch $(PY-JSON_BUILD_DIR)/.built
 
 #
@@ -173,7 +173,7 @@ $(PY-JSON_IPK): $(PY-JSON_BUILD_DIR)/.built
 	rm -rf $(PY-JSON_IPK_DIR) $(BUILD_DIR)/py-json_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-JSON_BUILD_DIR) DESTDIR=$(PY-JSON_IPK_DIR) install
 #	(cd $(PY-JSON_BUILD_DIR); \
-		$(STAGING_PREFIX)/bin/python setup.py install --prefix=$(PY-JSON_IPK_DIR)/opt)
+		python2.4 setup.py install --root=$(PY-JSON_IPK_DIR) --prefix=/opt)
 	install -d $(PY-JSON_PYLIBDIR)
 	install $(PY-JSON_BUILD_DIR)/*.py* $(PY-JSON_PYLIBDIR)
 	install -d $(PY-JSON_PYLIBDIR)/$(PY-JSON_EGG)-info
