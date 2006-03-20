@@ -135,14 +135,16 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	$(SWI-PROLOG_UNZIP) $(DL_DIR)/$(SWI-PROLOG_SOURCE) | tar -C $(SWI-PROLOG_BUILD_DIR)/hostbuild -xf -
 	( \
 	    cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR); \
-	    LDFLAGS="-L$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt" \
+	    CIFLAGS="-I$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/include" \
+	    LDFLAGS="-L$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib" \
+	    $(SWI-PROLOG_LD_LIBRARY_PATH) \
 	    ./configure \
 		--prefix=/opt \
 		--disable-readline \
 		--disable-nls \
 		--disable-static; \
-	    $(MAKE); \
-	    $(MAKE) $(SWI-PROLOG_HOST_INSTALL) install; \
+	    $(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE); \
+	    $(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) $(SWI-PROLOG_HOST_INSTALL) install; \
 	)
 endif
 	touch $(SWI-PROLOG_BUILD_DIR)/.hostbuilt
@@ -233,12 +235,12 @@ $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 		; \
 		sed -i -e "s|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_CC) -I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -L$(SWI-PROLOG_BUILD_DIR)/lib/`$(TARGET_CC) -dumpmachine | sed 's/-.*//'`-$(TARGET_OS) -pl|" plld.sh; \
 	)
-	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/clib
-	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/ssl \
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/clib
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/ssl \
 	    LDFLAGS="-shared -Wl,-rpath,/opt/lib"
-	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/sgml \
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/sgml \
 	    LDFLAGS="-lreadline -O2"
-	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages
 	touch $(SWI-PROLOG_BUILD_DIR)/.packages-built
 
 #
@@ -251,9 +253,7 @@ swi-prolog: $(SWI-PROLOG_BUILD_DIR)/.packages-built
 #
 $(SWI-PROLOG_BUILD_DIR)/.staged: $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.staged
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) \
-		-C $(SWI-PROLOG_BUILD_DIR) \
-		DESTDIR=$(STAGING_DIR) install
+	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(SWI-PROLOG_BUILD_DIR)/.staged
 
 swi-prolog-stage: $(SWI-PROLOG_BUILD_DIR)/.staged
