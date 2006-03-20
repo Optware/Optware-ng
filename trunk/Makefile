@@ -29,9 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	libmemcache \
-	gambit-c \
-	swi-prolog \
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -50,7 +47,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
-	gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
+	gambit-c gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core gnutls gtk \
 	hdparm hexcurse hnb hpijs \
@@ -59,7 +56,7 @@ COMMON_CROSS_PACKAGES = \
 	knock \
 	lame less libcurl libdb libftdi libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
 	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
-	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libogg libosip2 \
+	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libogg libosip2 \
 	libpng librsync libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt \
 	lighttpd lua \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
@@ -84,7 +81,7 @@ COMMON_CROSS_PACKAGES = \
 	rdate readline rsync ruby rubygems \
 	samba sdl ser siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
-	sqsh stunnel streamripper sudo svn \
+	sqsh stunnel streamripper sudo swi-prolog svn \
 	sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
