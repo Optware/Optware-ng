@@ -1,5 +1,5 @@
---- vim63-orig/src/configure.in	2004-04-25 04:22:43.000000000 -0700
-+++ vim/src/configure.in	2005-05-09 21:55:48.289398000 -0700
+--- vim/src/configure.in.orig	2005-10-15 05:53:28.000000000 -0700
++++ vim/src/configure.in	2006-03-20 21:54:21.000000000 -0800
 @@ -41,13 +41,6 @@
    fi
  fi
@@ -11,10 +11,10 @@
 -  (cross compiling doesn't work)])
 -fi
 -
- dnl gcc-cpp has the wonderful -MM option to produce nicer dependencies
+ dnl gcc-cpp has the wonderful -MM option to produce nicer dependencies.
+ dnl But gcc 3.1 changed the meaning!  See near the end.
  test "$GCC" = yes && CPP_MM=M; AC_SUBST(CPP_MM)
- 
-@@ -1793,10 +1786,7 @@
+@@ -1798,10 +1791,7 @@
  dnl Checks for libraries and include files.
  
  AC_MSG_CHECKING(quality of toupper)
@@ -26,7 +26,7 @@
  
  AC_MSG_CHECKING(whether __DATE__ and __TIME__ work)
  AC_TRY_COMPILE(, [printf("(" __DATE__ " " __TIME__ ")");],
-@@ -2113,48 +2103,7 @@
+@@ -2118,48 +2108,7 @@
  dnl
  dnl support provided by Luke Mewburn <lm@rmit.edu.au>, 931222
  AC_MSG_CHECKING(default tty permissions/group)
@@ -75,7 +75,7 @@
  
  dnl Checks for library functions. ===================================
  
-@@ -2184,19 +2133,7 @@
+@@ -2189,19 +2138,7 @@
  dnl tricky stuff: try to find out if getcwd() is implemented with
  dnl system("sh -c pwd")
  AC_MSG_CHECKING(getcwd implementation)
@@ -96,7 +96,7 @@
  
  dnl Check for functions in one big call, to reduce the size of configure
  AC_CHECK_FUNCS(bcmp fchdir fchown fseeko fsync ftello getcwd getpseudotty \
-@@ -2220,12 +2157,7 @@
+@@ -2225,12 +2162,7 @@
  	AC_MSG_RESULT(no))
  
  AC_MSG_CHECKING(whether stat() ignores a trailing slash)
@@ -110,7 +110,7 @@
  
  dnl Link with iconv for charset translation, if not found without library.
  dnl check for iconv() requires including iconv.h
-@@ -2344,27 +2276,7 @@
+@@ -2349,27 +2281,7 @@
  fi
  
  AC_MSG_CHECKING(for vsnprintf())
@@ -139,7 +139,7 @@
  
  
  dnl rename needs to be checked separately to work on Nextstep with cc
-@@ -2450,15 +2362,7 @@
+@@ -2455,15 +2367,7 @@
  dnl Check for memmove() before bcopy(), makes memmove() be used when both are
  dnl present, fixes problem with incompatibility between Solaris 2.4 and 2.5.
  
