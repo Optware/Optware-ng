@@ -36,13 +36,13 @@ LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib
-LIGHTTPD_SUGGESTS=bzip2, lua, memcached, mysql, openldap, openssl
+LIGHTTPD_SUGGESTS=bzip2, libmemcache, lua, memcached, mysql, openldap, openssl
 LIGHTTPD_CONFLICTS=
 
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=1
+LIGHTTPD_IPK_VERSION=2
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
-	$(MAKE) bzip2-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
+	$(MAKE) bzip2-stage libmemcache-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
 ifneq ($(OPTWARE_TARGET), wl500g)
 	$(MAKE) openldap-stage
 endif
@@ -130,6 +130,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
 		PCRE_LIB="-lpcre" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		ac_cv_lib_memcache_mc_new=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
