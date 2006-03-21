@@ -235,12 +235,16 @@ $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 		; \
 		sed -i -e "s|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_CC) -I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -L$(SWI-PROLOG_BUILD_DIR)/lib/`$(TARGET_CC) -dumpmachine | sed 's/-.*//'`-$(TARGET_OS) -pl|" plld.sh; \
 	)
+	cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/lib/`uname -m`*; \
+		mv libpl.a libpl.a.out-of-the-way
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/clib
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/ssl \
 	    LDFLAGS="-shared -Wl,-rpath,/opt/lib"
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/sgml \
 	    LDFLAGS="-lreadline -O2"
 	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages
+	cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/lib/`uname -m`*; \
+		mv libpl.a.out-of-the-way libpl.a
 	touch $(SWI-PROLOG_BUILD_DIR)/.packages-built
 
 #
