@@ -51,7 +51,7 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core gnutls gtk \
 	hdparm hexcurse hnb hpijs \
-	ice imagemagick imap inetutils iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
+	ice iozone imagemagick imap inetutils iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
 	lame less libcurl libdb libftdi libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
@@ -152,7 +152,7 @@ WL500G_BROKEN_PACKAGES = \
 	dict \
 	elinks erlang \
 	ficy freetds \
-	gawk giftcurs git-core glib gnupg gtk \
+	gawk gambit-c giftcurs git-core glib gnupg gtk \
 	hnb \
 	ice iperf iptables ivorbis-tools \
 	jabber jamvm \
@@ -163,7 +163,7 @@ WL500G_BROKEN_PACKAGES = \
 	unslung-devel \
 	qemu qemu-libc-i386 \
 	rtorrent \
-	sdl ser sm snownews sqsh sudo \
+	sdl ser sm snownews sqsh sudo swi-prolog \
 	tethereal transcode \
 	unrar \
 	vte \
@@ -253,9 +253,6 @@ NAS100D_BROKEN_PACKAGES =
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
-# mini_httpd - Underscores shouldn't appear in package names: please rename
-#              this package to "minihttpd", or to "mini-httpd". In the latter
-#              case the .mk file and the variables in it must also be renamed.
 # w3m - requires host libgc for cross-compilation, but this is not easily
 #       able to be installed on the official build system (native still works)
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd w3m
