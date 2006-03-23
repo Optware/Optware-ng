@@ -1,0 +1,17 @@
+--- iozone3_259/src/current/makefile	2006-01-20 15:02:11.000000000 +0100
++++ iozone/src/current/makefile	2006-03-23 12:01:53.000000000 +0100
+@@ -9,12 +9,12 @@
+ #		convex, FreeBSD, OpenBSD, OSFV3, OSFV4, OSFV5, SCO
+ #		SCO_Unixware_gcc,NetBSD,TRU64, Mac OS X
+ 
+-CC	= cc
++#CC	= cc
+ C89	= c89
+ GCC	= gcc
+ CCS	= /usr/ccs/bin/cc
+ NACC	= /opt/ansic/bin/cc
+-CFLAGS	=
++#CFLAGS	=
+ 
+ all:  
+ 	@echo ""
