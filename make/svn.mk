@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.2.0
+SVN_VERSION=1.3.0
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -42,7 +42,7 @@ SVN_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=2
+SVN_IPK_VERSION=1
 
 #
 # SVN_CONFFILES should be a list of user-editable files
