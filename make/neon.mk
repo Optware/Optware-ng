@@ -153,6 +153,7 @@ neon: $(NEON_BUILD_DIR)/.built
 $(NEON_BUILD_DIR)/.staged: $(NEON_BUILD_DIR)/.built
 	rm -f $(NEON_BUILD_DIR)/.staged
 	$(MAKE) -C $(NEON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -e "s:echo \$${libdir}/libneon.la:echo $(STAGING_DIR)/\$${libdir}/libneon.la:" <$(NEON_BUILD_DIR)/neon-config >$(STAGING_DIR)/opt/bin/neon-config
 	touch $(NEON_BUILD_DIR)/.staged
 
 neon-stage: $(NEON_BUILD_DIR)/.staged
