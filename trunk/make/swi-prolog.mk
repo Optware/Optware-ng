@@ -42,7 +42,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=1
+SWI-PROLOG_IPK_VERSION=2
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -54,7 +54,7 @@ SWI-PROLOG_IPK_VERSION=1
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifneq ($(OPTWARE_TARGET),wl500g)
-SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/src-configure.in.patch
+SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/src-configure.in.patch $(SWI-PROLOG_SOURCE_DIR)/packages-plld.sh.in.patch
 endif
 endif
 
@@ -62,8 +62,19 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+SWI-PROLOG_TARGET=$(shell $(TARGET_CC) -dumpmachine | sed 's/-.*//')-$(TARGET_OS)
 SWI-PROLOG_CPPFLAGS=
-SWI-PROLOG_LDFLAGS=
+SWI-PROLOG_LDFLAGS=-L$(SWI-PROLOG_BUILD_DIR)/lib/$(SWI-PROLOG_TARGET)
+
+SWI-PROLOG_PL=swipl
+
+ifeq ($(HOST_MACHINE), x86_64)
+SWI-PROLOG_HOST32="--host=i586-pc-linux-gnu"
+SWI-PROLOG_M32=-m32
+else
+SWI-PROLOG_HOST32=
+SWI-PROLOG_M32=
+endif
 
 #
 # SWI-PROLOG_BUILD_DIR is the directory in which the build is done.
@@ -85,13 +96,6 @@ else
 SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib
 endif
 
-ifneq ($(OPTWARE_TARGET),wl500g)
-SWI-PROLOG_HOST_INSTALL=DESTDIR=$(SWI-PROLOG_BUILD_DIR)/hostbuild
-SWI-PROLOG_TARGET_INSTALL=DESTDIR=$(SWI-PROLOG_IPK_DIR)
-else
-SWI-PROLOG_HOST_INSTALL=prefix=$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt
-SWI-PROLOG_TARGET_INSTALL=prefix=$(SWI-PROLOG_IPK_DIR)/opt
-endif
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -125,27 +129,33 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	$(LIBGMP_UNZIP) $(DL_DIR)/$(LIBGMP_SOURCE) | tar -C $(SWI-PROLOG_BUILD_DIR)/hostbuild -xf -
 	( \
 	    cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(LIBGMP_DIR); \
+	    CPPFLAGS="$(SWI-PROLOG_M32)" \
 	    ./configure \
-		--prefix=/opt \
+		--prefix=/opt $(SWI-PROLOG_HOST32) \
 		--disable-nls \
-		--disable-static; \
+		--disable-shared; \
 	    $(MAKE) DESTDIR=$(SWI-PROLOG_BUILD_DIR)/hostbuild install; \
 	)
 	@echo "=============== host swi-prolog ============"
 	$(SWI-PROLOG_UNZIP) $(DL_DIR)/$(SWI-PROLOG_SOURCE) | tar -C $(SWI-PROLOG_BUILD_DIR)/hostbuild -xf -
 	( \
 	    cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR); \
-	    CIFLAGS="-I$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/include" \
-	    LDFLAGS="-L$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib" \
-	    $(SWI-PROLOG_LD_LIBRARY_PATH) \
+	    cp $(SWI-PROLOG_BUILD_DIR)/packages/plld.sh.in packages/; \
+	    CIFLAGS="$(SWI-PROLOG_M32) -I$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/include" \
+	    LDFLAGS="$(SWI-PROLOG_M32) -L$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib" \
+	    ac_cv_lib_ncursesw_main=no \
 	    ./configure \
-		--prefix=/opt \
+		--prefix=/opt $(SWI-PROLOG_HOST32) \
 		--disable-readline \
 		--disable-nls \
-		--disable-static; \
-	    $(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE); \
-	    $(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) $(SWI-PROLOG_HOST_INSTALL) install; \
+		--disable-shared; \
 	)
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/src parms.h \
+		LNLIBS="-ldl -lm -lrt -lgmp -lncurses -lreadline" \
+		CMFLAGS="-fPIC" \
+		CIFLAGS="-O2 -pipe -I$(STAGING_INCLUDE_DIR)" \
+		LDFLAGS="-O2 $(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)"
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR) all install DESTDIR=$(SWI-PROLOG_BUILD_DIR)/hostbuild
 endif
 	touch $(SWI-PROLOG_BUILD_DIR)/.hostbuilt
 
@@ -174,12 +184,11 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
 endif
 	(cd $(SWI-PROLOG_BUILD_DIR); \
-		$(MAKE) distclean; \
+		PL=$(SWI-PROLOG_PL) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
-		$(SWI-PROLOG_LD_LIBRARY_PATH) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -203,25 +212,24 @@ swi-prolog-unpack: $(SWI-PROLOG_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
-#		PKG="clib cpp odbc table xpce sgml sgml/RDF semweb http chr clpqr nlp ssl jpl" \
-#		rm -f $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/lib/*/libpl.a;
 $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.built
 	@echo "=============== target swi-prolog build ============"
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)
 	touch $(SWI-PROLOG_BUILD_DIR)/.built
 
 $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.packages-built
 	@echo "=============== target swi-prolog packages ============"
 	(cd $(SWI-PROLOG_BUILD_DIR)/packages; \
+		sed -i -e "s|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_CC) -pl|" plld.sh; \
+		sed -i -e '/cd.*configure)/s|)$$| --build=$(GNU_HOST_NAME) --host=$(GNU_TARGET_NAME) --target=$(GNU_TARGET_NAME))|' clib/configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
+		LDFLAGS="-O2 $(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
 		ac_cv_lib_ssl_SSL_library_init=yes \
 		ac_cv_lib_crypto_main=yes \
-		$(SWI-PROLOG_LD_LIBRARY_PATH) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -233,18 +241,8 @@ $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 		--without-odbc \
 		--without-xpce \
 		; \
-		sed -i -e "s|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_CC) -I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -L$(SWI-PROLOG_BUILD_DIR)/lib/`$(TARGET_CC) -dumpmachine | sed 's/-.*//'`-$(TARGET_OS) -pl|" plld.sh; \
 	)
-	cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/lib/`uname -m`*; \
-		mv libpl.a libpl.a.out-of-the-way
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/clib
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/ssl \
-	    LDFLAGS="-shared -Wl,-rpath,/opt/lib"
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages/sgml \
-	    LDFLAGS="-lreadline -O2"
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages
-	cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/lib/`uname -m`*; \
-		mv libpl.a.out-of-the-way libpl.a
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages LDFLAGS="-shared -O2 $(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)"
 	touch $(SWI-PROLOG_BUILD_DIR)/.packages-built
 
 #
@@ -257,7 +255,7 @@ swi-prolog: $(SWI-PROLOG_BUILD_DIR)/.packages-built
 #
 $(SWI-PROLOG_BUILD_DIR)/.staged: $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.staged
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(SWI-PROLOG_BUILD_DIR)/.staged
 
 swi-prolog-stage: $(SWI-PROLOG_BUILD_DIR)/.staged
@@ -295,11 +293,11 @@ $(SWI-PROLOG_IPK_DIR)/CONTROL/control:
 #
 $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.packages-built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR) $(SWI-PROLOG_TARGET_INSTALL) install
-	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/bin/*-$(TARGET_OS)/pl*
-	$(SWI-PROLOG_LD_LIBRARY_PATH) $(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages $(SWI-PROLOG_TARGET_INSTALL) install
-	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/lib/*-$(TARGET_OS)/*.so
-	rm $(SWI-PROLOG_IPK_DIR)/opt/lib/pl-$(SWI-PROLOG_VERSION)/lib/*-$(TARGET_OS)/lib*.a
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) install DESTDIR=$(SWI-PROLOG_IPK_DIR)
+	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/bin/$(SWI-PROLOG_TARGET)/*pl*
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages install DESTDIR=$(SWI-PROLOG_IPK_DIR)
+	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/*.so
+	rm $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/lib*.a
 	install -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 	install -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 #	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
