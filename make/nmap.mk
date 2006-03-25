@@ -3,32 +3,30 @@
 # nmap
 #
 ###########################################################
-
-# You must replace "nmap" and "NMAP" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
-# NMAP_VERSION, NMAP_SITE and NMAP_SOURCE define
-# the upstream location of the source code for the package.
-# NMAP_DIR is the directory which is created when the source
-# archive is unpacked.
-# NMAP_UNZIP is the command used to unzip the source.
-# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
-#
-# You should change all these variables to suit your package.
+# $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
 NMAP_VERSION=3.75
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
+NMAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NMAP_DESCRIPTION=Nmap is a feature-rich portscanner
+NMAP_SECTION=net
+NMAP_PRIORITY=optional
+NMAP_DEPENDS=openssl
+NMAP_SUGGESTS=
+NMAP_CONFLICTS=
 
 #
 # NMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-NMAP_IPK_VERSION=1
+NMAP_IPK_VERSION=2
+
+#
+# NMAP_CONFFILES should be a list of user-editable files
+# NMAP_CONFFILES=/opt/etc/nmap.conf /opt/etc/init.d/SXXnmap
 
 #
 # NMAP_PATCHES should list any patches, in the the order in
@@ -87,12 +85,20 @@ nmap-source: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES)
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nmap.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NMAP_DIR) $(NMAP_BUILD_DIR)
 	$(NMAP_UNZIP) $(DL_DIR)/$(NMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NMAP_PATCHES) | patch -d $(BUILD_DIR)/$(NMAP_DIR) -p1
-	mv $(BUILD_DIR)/$(NMAP_DIR) $(NMAP_BUILD_DIR)
+	if test -n "$(NMAP_PATCHES)" ; \
+		then cat $(NMAP_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(NMAP_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(NMAP_DIR)" != "$(NMAP_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(NMAP_DIR) $(NMAP_BUILD_DIR) ; \
+	fi
 	(cd $(NMAP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NMAP_CPPFLAGS)" \
@@ -102,19 +108,21 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
 		--with-openssl=$(STAGING_DIR)/opt \
 		--with-pcap=linux \
 		--with-nmapfe=no \
 		ac_cv_prog_CXXPROG=$(TARGET_CXX) \
 		ac_cv_linux_vers=2.4.22 \
 	)
+	# $(PATCH_LIBTOOL) $(NMAP_BUILD_DIR)/libtool
 	touch $(NMAP_BUILD_DIR)/.configured
 
 nmap-unpack: $(NMAP_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
 $(NMAP_BUILD_DIR)/.built: $(NMAP_BUILD_DIR)/.configured
 	rm -f $(NMAP_BUILD_DIR)/.built
@@ -122,24 +130,38 @@ $(NMAP_BUILD_DIR)/.built: $(NMAP_BUILD_DIR)/.configured
 	touch $(NMAP_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
 nmap: $(NMAP_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libnmap.so.$(NMAP_VERSION): $(NMAP_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(NMAP_BUILD_DIR)/nmap.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(NMAP_BUILD_DIR)/libnmap.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(NMAP_BUILD_DIR)/libnmap.so.$(NMAP_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libnmap.so.$(NMAP_VERSION) libnmap.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libnmap.so.$(NMAP_VERSION) libnmap.so
+$(NMAP_BUILD_DIR)/.staged: $(NMAP_BUILD_DIR)/.built
+	rm -f $(NMAP_BUILD_DIR)/.staged
+	$(MAKE) -C $(NMAP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(NMAP_BUILD_DIR)/.staged
 
-nmap-stage: $(STAGING_DIR)/opt/lib/libnmap.so.$(NMAP_VERSION)
+nmap-stage: $(NMAP_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nmap
+#
+$(NMAP_IPK_DIR)/CONTROL/control:
+	@install -d $(NMAP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nmap" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NMAP_PRIORITY)" >>$@
+	@echo "Section: $(NMAP_SECTION)" >>$@
+	@echo "Version: $(NMAP_VERSION)-$(NMAP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NMAP_MAINTAINER)" >>$@
+	@echo "Source: $(NMAP_SITE)/$(NMAP_SOURCE)" >>$@
+	@echo "Description: $(NMAP_DESCRIPTION)" >>$@
+	@echo "Depends: $(NMAP_DEPENDS)" >>$@
+	@echo "Suggests: $(NMAP_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NMAP_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -155,19 +177,16 @@ nmap-stage: $(STAGING_DIR)/opt/lib/libnmap.so.$(NMAP_VERSION)
 #
 $(NMAP_IPK): $(NMAP_BUILD_DIR)/.built
 	rm -rf $(NMAP_IPK_DIR) $(BUILD_DIR)/nmap_*_$(TARGET_ARCH).ipk
-	install -d $(NMAP_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(NMAP_BUILD_DIR)/nmap -o $(NMAP_IPK_DIR)/opt/bin/nmap
-	install -d $(NMAP_IPK_DIR)/opt/share/nmap
-	install -m 644 $(NMAP_BUILD_DIR)/nmap-services $(NMAP_IPK_DIR)/opt/share/nmap/nmap-services
-	install -m 644 $(NMAP_BUILD_DIR)/nmap-rpc $(NMAP_IPK_DIR)/opt/share/nmap/nmap-rpc
-	install -m 644 $(NMAP_BUILD_DIR)/nmap-os-fingerprints $(NMAP_IPK_DIR)/opt/share/nmap/nmap-os-fingerprints
-	install -m 644 $(NMAP_BUILD_DIR)/nmap-service-probes $(NMAP_IPK_DIR)/opt/share/nmap/nmap-service-probes
-	install -m 644 $(NMAP_BUILD_DIR)/nmap-protocols $(NMAP_IPK_DIR)/opt/share/nmap/nmap-protocols
-	install -m 644 $(NMAP_BUILD_DIR)/nmap-mac-prefixes $(NMAP_IPK_DIR)/opt/share/nmap/nmap-mac-prefixes
-	install -d $(NMAP_IPK_DIR)/CONTROL
-	install -m 644 $(NMAP_SOURCE_DIR)/control $(NMAP_IPK_DIR)/CONTROL/control
-#	install -m 644 $(NMAP_SOURCE_DIR)/postinst $(NMAP_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(NMAP_SOURCE_DIR)/prerm $(NMAP_IPK_DIR)/CONTROL/prerm
+	STRIPPROG="$(STRIP_COMMAND)" $(MAKE) -C $(NMAP_BUILD_DIR) DESTDIR=$(NMAP_IPK_DIR) install
+	#$(STRIP_COMMAND) $(NMAP_IPK_DIR)/opt/bin/nmap
+	#install -d $(NMAP_IPK_DIR)/opt/etc/
+	#install -m 644 $(NMAP_SOURCE_DIR)/nmap.conf $(NMAP_IPK_DIR)/opt/etc/nmap.conf
+	#install -d $(NMAP_IPK_DIR)/opt/etc/init.d
+	#install -m 755 $(NMAP_SOURCE_DIR)/rc.nmap $(NMAP_IPK_DIR)/opt/etc/init.d/SXXnmap
+	$(MAKE) $(NMAP_IPK_DIR)/CONTROL/control
+	#install -m 755 $(NMAP_SOURCE_DIR)/postinst $(NMAP_IPK_DIR)/CONTROL/postinst
+	#install -m 755 $(NMAP_SOURCE_DIR)/prerm $(NMAP_IPK_DIR)/CONTROL/prerm
+	echo $(NMAP_CONFFILES) | sed -e 's/ /\n/g' > $(NMAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NMAP_IPK_DIR)
 
 #
@@ -179,6 +198,7 @@ nmap-ipk: $(NMAP_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 nmap-clean:
+	rm -f $(NMAP_BUILD_DIR)/.built
 	-$(MAKE) -C $(NMAP_BUILD_DIR) clean
 
 #
