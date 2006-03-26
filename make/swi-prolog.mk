@@ -23,7 +23,7 @@
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
 ifneq ($(OPTWARE_TARGET),wl500g)
-SWI-PROLOG_VERSION=5.6.8
+SWI-PROLOG_VERSION=5.6.9
 else
 # 5.6.x requires wchar
 SWI-PROLOG_VERSION=5.4.7
@@ -42,7 +42,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=2
+SWI-PROLOG_IPK_VERSION=1
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
