@@ -18,9 +18,9 @@ RSYNC_PRIORITY=optional
 RSYNC_DEPENDS=
 RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=1
+RSYNC_IPK_VERSION=2
 
-RSYNC_CONFFILES=/opt/etc/rsyncd.conf /opt/etc/init.d/S57rsyncd
+RSYNC_CONFFILES=/opt/etc/rsyncd.conf /opt/etc/init.d/S57rsyncd /opt/etc/rsyncd.secrets
 
 RSYNC_PATCHES=$(RSYNC_SOURCE_DIR)/rsync.patch
 
