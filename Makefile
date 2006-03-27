@@ -179,6 +179,7 @@ MSS_BROKEN_PACKAGES = \
 	bitlbee \
 	clamav \
 	erlang \
+	gambit-c \
 	ivorbis-tools \
 	jamvm \
 	ldconfig libvorbisidec \
