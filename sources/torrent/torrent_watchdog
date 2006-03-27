@@ -113,11 +113,12 @@ move_to_target ()
     chown ${USER} *
     chmod ug+rw *
 
-#    [ -e current.log ] && mv current.log "$TORRENT.log"
-#    [ -e current_error.log ] && mv current_error.log "$TORRENT.error.log"
+    # Auto purge old logs
+    [ -e current.log ] && rm current.log
+    [ -e current_error.log ] && rm current_error.log
     
     notice "Moving files to: ${DEST}"
-    mv * .* "${DEST}"
+    mv * .info .libbtrc "${DEST}"
     chmod 775 "${DEST}"
 
     STATUS="Ok"
@@ -150,7 +151,7 @@ send_report ()
     debug "Mail from: $MAILFROM"
     debug "Mail to: $MAILTO"
 
-    if [  ! -z "${MAILFROM}" && ! -z "${MAILTO}" ]; then
+    if [  ! -z "${MAILFROM}" -a ! -z "${MAILTO}" ]; then
         echo "Torrent finished.
 ------------------
 Name          : $TORRENTNAME
