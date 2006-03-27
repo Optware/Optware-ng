@@ -29,9 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	php-fcgi \
-	neon \
-	svn
 
 # No provision is made in the cdrtools build for cross-compilation.  It
 # always uses shell calls to uname to determine the target arch.
@@ -65,9 +62,9 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
-	nget nload nrpe ntop ntpclient nylon \
+	nget nmap nload nrpe ntop ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
-	pango patch php php-thttpd procps proftpd psutils puppy python py-bittorrent \
+	pango patch php php-thttpd php-fcgi procps proftpd psutils puppy python py-bittorrent \
 	php-apache phpmyadmin pkgconfig popt poptop portmap postgresql procmail pwgen \
 	py-bluez py-cheetah py-cherrypy py-clips \
 	py-celementtree py-cherrytemplate \
