@@ -15,14 +15,14 @@ NMAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NMAP_DESCRIPTION=Nmap is a feature-rich portscanner
 NMAP_SECTION=net
 NMAP_PRIORITY=optional
-NMAP_DEPENDS=openssl pcre
+NMAP_DEPENDS=openssl, pcre
 NMAP_SUGGESTS=
 NMAP_CONFLICTS=
 
 #
 # NMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-NMAP_IPK_VERSION=3
+NMAP_IPK_VERSION=4
 
 #
 # NMAP_CONFFILES should be a list of user-editable files
