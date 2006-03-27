@@ -230,7 +230,7 @@ DS101G_BROKEN_PACKAGES = \
 	flac \
 	gnutls \
 	ivorbis-tools \
-	ldconfig libgcrypt libvorbisidec \
+	ldconfig libgcrypt libmemcache libvorbisidec \
 	ntop \
 	opencdk \
 	php php-apache portmap \
