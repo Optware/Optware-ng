@@ -20,16 +20,16 @@ TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
 TORRENT_PRIORITY=optional
-TORRENT_DEPENDS=libbt, cron
+TORRENT_DEPENDS=libbt, coreutils
 TORRENT_MAINTAINER=oleo <oleon@users.sourceforge.net>
 TORRENT_SECTION=net
 TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
-SQSH_SUGGESTS=cron
+TORRENT_SUGGESTS=cron
 
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=3
+TORRENT_IPK_VERSION=4
 
 # TORRENT_CONFFILES should be a list of user-editable files
 TORRENT_CONFFILES=/opt/etc/torrent.conf
@@ -123,11 +123,13 @@ $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	mkdir -p $(TORRENT_IPK_DIR)/CONTROL
 	$(MAKE) $(TORRENT_IPK_DIR)/CONTROL/control
 	install -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
+	install -d $(TORRENT_IPK_DIR)/opt/bin
 	install -d $(TORRENT_IPK_DIR)/opt/sbin
 	install -d $(TORRENT_IPK_DIR)/opt/etc
 	install -d $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)/opt/sbin
 	install -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
+	install -m 755 $(SOURCE_DIR)/torrent/btcheck-target $(TORRENT_IPK_DIR)/opt/bin
 	install -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
 	echo $(TORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(TORRENT_IPK_DIR)/CONTROL/conffiles
