@@ -17,13 +17,13 @@ PHP_FCGI_DESCRIPTION=The php scripting language, built as an fcgi module
 PHP_FCGI_SECTION=net
 PHP_FCGI_PRIORITY=optional
 PHP_FCGI_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
-PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION))
+PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 
 
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=1
+PHP_FCGI_IPK_VERSION=2
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -108,7 +108,7 @@ php-fcgi-source: $(DL_DIR)/$(PHP_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PHP_FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_FCGI_PATCHES)
-	$(MAKE) libxml2-stage
+	$(MAKE) libxml2-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
@@ -132,10 +132,10 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_FCGI_PATCHES)
 		--with-layout=GNU \
 		--disable-static \
 		$(PHP_CONFIGURE_THREAD_ARGS) \
-		--disable-all \
 		--enable-libxml \
 		--with-libxml-dir=$(STAGING_PREFIX) \
 		--enable-spl \
+		--with-pcre-regex=$(STAGING_PREFIX) \
 		--with-regex=php \
 		--with-sqlite \
 		--without-iconv \
