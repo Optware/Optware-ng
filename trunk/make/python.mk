@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON_VERSION=2.4.2
+PYTHON_VERSION=2.4.3
 PYTHON_VERSION_MAJOR=2.4
 PYTHON_SITE=http://www.python.org/ftp/python/$(PYTHON_VERSION)
 PYTHON_SOURCE=Python-$(PYTHON_VERSION).tar.bz2
@@ -43,7 +43,7 @@ PYTHON_SUGGESTS=
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=7
+PYTHON_IPK_VERSION=1
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
