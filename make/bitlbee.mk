@@ -30,14 +30,14 @@ BITLBEE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BITLBEE_DESCRIPTION=A gateway between IRC and proprietary IM networks
 BITLBEE_SECTION=net
 BITLBEE_PRIORITY=optional
-BITLBEE_DEPENDS=glib, gnutls, xinetd
+BITLBEE_DEPENDS=glib, gnutls, xinetd, libgcrypt, libtasn1
 BITLBEE_SUGGESTS=
 BITLBEE_CONFLICTS=
 
 #
 # BITLBEE_IPK_VERSION should be incremented when the ipk changes.
 #
-BITLBEE_IPK_VERSION=1
+BITLBEE_IPK_VERSION=2
 
 #
 # BITLBEE_CONFFILES should be a list of user-editable files
