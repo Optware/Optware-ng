@@ -7,7 +7,7 @@
 # $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
-NMAP_VERSION=3.75
+NMAP_VERSION=4.01
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
@@ -22,7 +22,7 @@ NMAP_CONFLICTS=
 #
 # NMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-NMAP_IPK_VERSION=4
+NMAP_IPK_VERSION=1
 
 #
 # NMAP_CONFFILES should be a list of user-editable files
@@ -32,8 +32,7 @@ NMAP_IPK_VERSION=4
 # NMAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NMAP_PATCHES=$(NMAP_SOURCE_DIR)/chartables.c.patch \
-		$(NMAP_SOURCE_DIR)/Makefile.in.patch
+NMAP_PATCHES=$(NMAP_SOURCE_DIR)/libdnet-configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -115,6 +114,8 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		--with-nmapfe=no \
 		ac_cv_prog_CXXPROG=$(TARGET_CXX) \
 		ac_cv_linux_vers=2.4.22 \
+		; \
+		sed -i -e 's|^[ 	]*strip|$(STRIP_COMMAND)|' shtool; \
 	)
 	# $(PATCH_LIBTOOL) $(NMAP_BUILD_DIR)/libtool
 	touch $(NMAP_BUILD_DIR)/.configured
@@ -126,6 +127,7 @@ nmap-unpack: $(NMAP_BUILD_DIR)/.configured
 #
 $(NMAP_BUILD_DIR)/.built: $(NMAP_BUILD_DIR)/.configured
 	rm -f $(NMAP_BUILD_DIR)/.built
+#	$(MAKE) -C $(NMAP_BUILD_DIR)/libpcre dftables CC=$(HOSTCC)
 	$(MAKE) -C $(NMAP_BUILD_DIR)
 	touch $(NMAP_BUILD_DIR)/.built
 
