@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.4.30
-CHEROKEE_SITE=http://www.0x50.org/download/0.4/$(CHEROKEE_VERSION)
+CHEROKEE_VERSION=0.5.0
+CHEROKEE_SITE=http://www.0x50.org/download/0.5/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
 CHEROKEE_UNZIP=zcat
@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=3
+CHEROKEE_IPK_VERSION=1
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -61,7 +61,6 @@ CHEROKEE_PATCHES=\
 	$(CHEROKEE_SOURCE_DIR)/configure.in.patch \
 	$(CHEROKEE_SOURCE_DIR)/cherokee-Makefile.in.patch \
 	$(CHEROKEE_SOURCE_DIR)/cget-Makefile.in.patch \
-	$(CHEROKEE_SOURCE_DIR)/handler_common.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -138,7 +137,7 @@ $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-wwwroot=/opt/share/www \
+		--with-wwwroot=/opt/share/www/cherokee \
 		--disable-nls \
 		--disable-static \
 	)
@@ -210,6 +209,7 @@ $(CHEROKEE_IPK): $(CHEROKEE_BUILD_DIR)/.built
 	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
 	sed -i -e 's|/usr/lib/|/opt/share/cherokee/|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/sites-available/default
 	sed -i -e 's|^Port.*|Port 8008|; s|^Timeout.*|Timeout 60|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
+	sed -i -e 's|^MaxFds.*|MaxFds 1024|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/advanced.conf
 	touch $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/mime.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
