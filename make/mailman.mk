@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MAILMAN_SITE=http://dl.sourceforge.net/sourceforge/mailman
-MAILMAN_VERSION=2.1.6
+MAILMAN_VERSION=2.1.7
 MAILMAN_SOURCE=mailman-$(MAILMAN_VERSION).tgz
 MAILMAN_DIR=mailman-$(MAILMAN_VERSION)
 MAILMAN_UNZIP=zcat
