@@ -14,8 +14,8 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBXML2_SITE=http://xmlsoft.org/sources
-LIBXML2_VERSION=2.6.17
+LIBXML2_SITE=http://xmlsoft.org/sources/libxml2
+LIBXML2_VERSION=2.6.23
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
@@ -28,7 +28,7 @@ LIBXML2_DEPENDS=zlib
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=3
+LIBXML2_IPK_VERSION=1
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files
