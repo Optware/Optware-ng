@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLITE_VERSION=2.1.3
-PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.1/$(PY-SQLITE_VERSION)
+PY-SQLITE_VERSION=2.2.0
+PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.2/$(PY-SQLITE_VERSION)
 PY-SQLITE_SOURCE=pysqlite-$(PY-SQLITE_VERSION).tar.gz
 PY-SQLITE_DIR=pysqlite-$(PY-SQLITE_VERSION)
 PY-SQLITE_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-SQLITE_CONFLICTS=
 #
 # PY-SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SQLITE_IPK_VERSION=2
+PY-SQLITE_IPK_VERSION=1
 
 #
 # PY-SQLITE_CONFFILES should be a list of user-editable files
@@ -180,7 +180,8 @@ $(PY-SQLITE_IPK): $(PY-SQLITE_BUILD_DIR)/.built
 	rm -rf $(PY-SQLITE_IPK_DIR) $(BUILD_DIR)/py-sqlite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLITE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    python2.4 setup.py install --root=$(PY-SQLITE_IPK_DIR) --prefix=/opt --single-version-externally-managed; \
+	python2.4 -c "import setuptools; execfile('setup.py')" install \
+	    --root=$(PY-SQLITE_IPK_DIR) --prefix=/opt --single-version-externally-managed; \
 	)
 	$(STRIP_COMMAND) $(PY-SQLITE_IPK_DIR)/opt/lib/python2.4/site-packages/pysqlite2/_sqlite.so
 	$(MAKE) $(PY-SQLITE_IPK_DIR)/CONTROL/control
