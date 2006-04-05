@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHERRYPY_SITE=http://dl.sourceforge.net/sourceforge/cherrypy
-PY-CHERRYPY_VERSION=2.1.1
+PY-CHERRYPY_VERSION=2.2.0
 PY-CHERRYPY_SOURCE=CherryPy-$(PY-CHERRYPY_VERSION).tar.gz
 PY-CHERRYPY_DIR=CherryPy-$(PY-CHERRYPY_VERSION)
 PY-CHERRYPY_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-CHERRYPY_CONFLICTS=
 #
 # PY-CHERRYPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHERRYPY_IPK_VERSION=2
+PY-CHERRYPY_IPK_VERSION=1
 
 #
 # PY-CHERRYPY_CONFFILES should be a list of user-editable files
