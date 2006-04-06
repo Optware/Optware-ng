@@ -41,7 +41,7 @@ PY-SQLOBJECT_DEPENDS=python
 PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-PY-SQLOBJECT_IPK_VERSION=2
+PY-SQLOBJECT_IPK_VERSION=3
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -183,7 +183,8 @@ $(PY-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 	rm -rf $(PY-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-SQLOBJECT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	python2.4 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY-SQLOBJECT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
 	$(MAKE) $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SQLOBJECT_IPK_DIR)

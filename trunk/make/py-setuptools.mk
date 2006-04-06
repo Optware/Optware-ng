@@ -36,7 +36,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=1
+PY-SETUPTOOLS_IPK_VERSION=2
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -98,7 +98,7 @@ py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
+$(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES) make/py-setuptools.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
 	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
