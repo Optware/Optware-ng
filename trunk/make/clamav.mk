@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://dl.sourceforge.net/clamav
-CLAMAV_VERSION=0.87.1
+CLAMAV_VERSION=0.88.1
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
