@@ -31,10 +31,8 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-lxml \
 
-# No provision is made in the cdrtools build for cross-compilation.  It
-# always uses shell calls to uname to determine the target arch.
-# A web search shows some interest (and effort) in making cdrtools 
-# cross-compile, but no apparent success.
+# Add new native-only packages here
+# When they have been tested, they will be promoted and uploaded.
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
@@ -107,6 +105,8 @@ NSLU2_BROKEN_PACKAGES =
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # bogofilter's configure wants to run some small executables
+# cdrtools makes no provision in the build for cross-compilation.  It
+#   *always* uses shell calls to uname to determine the target arch.
 # cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
