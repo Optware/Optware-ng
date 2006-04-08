@@ -51,7 +51,7 @@ PY-SQLOBJECT_IPK_VERSION=3
 # PY-SQLOBJECT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PY-SQLOBJECT_PATCHES=$(PY-SQLOBJECT_SOURCE_DIR)/configure.patch
+#PY-SQLOBJECT_PATCHES=$(PY-SQLOBJECT_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -120,6 +120,7 @@ endif
         fi
 	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
+	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
 	)
 	touch $(PY-SQLOBJECT_BUILD_DIR)/.configured
