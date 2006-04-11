@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LIBXSLT_SITE=http://xmlsoft.org/sources/libxslt
-LIBXSLT_VERSION=1.1.12
+LIBXSLT_VERSION=1.1.15
 LIBXSLT_SOURCE=libxslt-$(LIBXSLT_VERSION).tar.gz
 LIBXSLT_DIR=libxslt-$(LIBXSLT_VERSION)
 LIBXSLT_UNZIP=zcat
@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=3
+LIBXSLT_IPK_VERSION=4
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
