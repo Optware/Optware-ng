@@ -417,19 +417,19 @@ _help ()
     cat << __EOF__
 This is quick explanation of the buttons:
 <dl>
-<dt>Update<dd>updates active torrents status
-<dt>Log<dd>shows current.log of active torrent
-<dt>Pause<dd>all active torrent processing should stop/resume imediately
-<dt>Push<dd> Push selected torrent to other queue
-<dt>List<dd>lists queued, active, suspended and completed torrents
-<dt>Remove<dt>mark torrent for purging
-<dt>Purge<dd>removes all logs from completed torrents and clean removed torrents
-<dt>Watchdog<dd>forces torrent_watchdog processing
-<dt>Info<dd>shows selected torrent info ((file content and size)
-<dt>Scrape<dd>Update scrape info (seeders, leechers, downloaded)
+<dt><u>U</u>pdate<dd>updates active torrents status
+<dt>Log<dd>shows <u>c</u>urrent.log of active torrent
+<dt>Pau<u>s</u>e<dd>all active torrent processing should stop/resume imediately
+<dt><u>P</u>ush<dd> Push selected torrent to other queue
+<dt><u>L</u>ist<dd>lists queued, active, suspended and completed torrents
+<dt><u>R</u>emove<dt>mark torrent for purging
+<dt>Pur<u>g</u>e<dd>removes all logs from completed torrents and clean removed torrents
+<dt><u>W</u>atchdog<dd>forces torrent_watchdog processing
+<dt><u>I</u>nfo<dd>shows selected torrent info ((file content and size)
+<dt>Scr<u>a</u>pe<dd>Update scrape info (seeders, leechers, downloaded)
      from tracker for downloaded torrents
-<dt>Best<dd>Search scrape for best done torrent and suggest seeding based on (leecees/seeds) ratio 
-<dt>Help<dd>?
+<dt><u>B</u>est<dd>Search scrape for best done torrent and suggest seeding based on (leecees/seeds) ratio 
+<dt><u>H</u>elp<dd> Access keys <u>underlined</u>!
 </dl>
 __EOF__
 _root_check
@@ -461,18 +461,18 @@ Content-type: text/html
 </head>
 <body>
 <form action=torrent.cgi method=get>
-<input type=submit name=ACTION value=Update>
-<input type=submit name=ACTION value=Log>
-<input type=submit name=ACTION value=Pause>
-<input type=submit name=ACTION value=Push>
-<input type=submit name=ACTION value=List>
-<input type=submit name=ACTION value=Remove>
-<input type=submit name=ACTION value=Purge>
-<input type=submit name=ACTION value=Watchdog>
-<input type=submit name=ACTION value=Info>
-<input type=submit name=ACTION value=Scrape>
-<input type=submit name=ACTION value=Best>
-<input type=submit name=ACTION value=Help>
+<input type=submit accesskey=u name=ACTION value=Update>
+<input type=submit accesskey=c name=ACTION value=Log>
+<input type=submit accesskey=s name=ACTION value=Pause>
+<input type=submit accesskey=p name=ACTION value=Push>
+<input type=submit accesskey=l name=ACTION value=List>
+<input type=submit accesskey=r name=ACTION value=Remove>
+<input type=submit accesskey=g name=ACTION value=Purge>
+<input type=submit accesskey=w name=ACTION value=Watchdog>
+<input type=submit accesskey=i name=ACTION value=Info>
+<input type=submit accesskey=a name=ACTION value=Scrape>
+<input type=submit accesskey=b name=ACTION value=Best>
+<input type=submit accesskey=h name=ACTION value=Help>
 <! img align=top alt="" src=pingvin.gif>
 <br>
 
