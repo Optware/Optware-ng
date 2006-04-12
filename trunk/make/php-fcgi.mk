@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=2
+PHP_FCGI_IPK_VERSION=3
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ PHP_FCGI_PATCHES=$(PHP_PATCHES)
 # compilation or linking flags, then list them here.
 #
 PHP_FCGI_CPPFLAGS=$(PHP_CPPFLAGS)
-PHP_FCGI_LDFLAGS=$(PHP_LDFLAGS)
+PHP_FCGI_LDFLAGS=$(PHP_LDFLAGS) -pthread
 
 #
 # PHP_FCGI_BUILD_DIR is the directory in which the build is done.
