@@ -35,13 +35,14 @@ XMAIL_MAINTAINER=Paul Hargreaves <paulhar@harg.ath.cx>
 XMAIL_DESCRIPTION=A combined easy to configure SMTP, POP3 and Finger server.
 XMAIL_SECTION=net
 XMAIL_PRIORITY=optional
-XMAIL_DEPENDS=libstdc++, syslogd
+XMAIL_DEPENDS=libstdc++
+XMAIL_SUGGESTS=syslogd-ng
 XMAIL_CONFLICTS=
 
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=1
+XMAIL_IPK_VERSION=2
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
