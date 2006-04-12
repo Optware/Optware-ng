@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://dl.sourceforge.net/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.1c7
+PY-MYSQL_VERSION=1.2.1_p2
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-MYSQL_CONFLICTS=
 #
 # PY-MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYSQL_IPK_VERSION=2
+PY-MYSQL_IPK_VERSION=1
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files
