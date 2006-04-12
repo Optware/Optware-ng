@@ -6,6 +6,7 @@
 
 MIAU_SITE=http://dl.sourceforge.net/sourceforge/miau
 MIAU_VERSION=0.5.3
+#MIAU_VERSION=0.6.0.2
 MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
 MIAU_UNZIP=zcat
@@ -23,6 +24,7 @@ MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/logrotate.d/miau
 
 MIAU_PATCHES=$(MIAU_SOURCE_DIR)/paths.patch
+#MIAU_PATCHES=$(MIAU_SOURCE_DIR)/paths.patch.0.6
 
 MIAU_CPPFLAGS=
 MIAU_LDFLAGS=
@@ -100,6 +102,7 @@ $(MIAU_IPK): $(MIAU_BUILD_DIR)/src/miau
 	$(STRIP_COMMAND) $(MIAU_BUILD_DIR)/src/miau -o $(MIAU_IPK_DIR)/opt/bin/miau
 	install -d $(MIAU_IPK_DIR)/opt/etc
 	install -m 644 $(MIAU_SOURCE_DIR)/miau.conf $(MIAU_IPK_DIR)/opt/etc/miau.conf
+#	install -m 644 $(MIAU_SOURCE_DIR)/miau.conf.0.6 $(MIAU_IPK_DIR)/opt/etc/miau.con
 	install -d $(MIAU_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(MIAU_SOURCE_DIR)/rc.miau $(MIAU_IPK_DIR)/opt/etc/init.d/S52miau
 	install -d $(MIAU_IPK_DIR)/opt/etc/logrotate.d
