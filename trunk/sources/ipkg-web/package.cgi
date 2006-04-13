@@ -102,8 +102,7 @@ trap "[ -f ${TMPFILE} ] && rm ${TMPFILE}" 0
 
 echo '<table border=1>'
 echo '<tr><th>task</th><th>Package</th><th>I-Ver</th><th>P-Ver</th><th>Comment</th><th>Delete</th></tr>'
-# ipkg list | while read line
-cat /tmp/list | while read line
+ipkg list | while read line
 do
 	NAME=${line%% - *}
 	line=${line#* - }
