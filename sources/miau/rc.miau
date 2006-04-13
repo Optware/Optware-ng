@@ -8,4 +8,5 @@ if [ ! -d /opt/var/spool/miau ] ;  then
     mkdir -p /opt/var/spool/miau
 fi
 
-/opt/bin/miau
+/opt/bin/miau -d /opt/var/spool/miau
+
