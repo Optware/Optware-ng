@@ -30,6 +30,12 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-lxml \
+	py-axiom.mk \
+	py-epsilon.mk \
+	py-mantissa.mk \
+	py-nevow.mk \
+	py-twisted.mk \
+	py-zope-interface.mk \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
