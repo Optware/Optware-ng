@@ -300,7 +300,7 @@ _list ()
     __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
     echo -e "${BOLD}Total Download ${download}kbs Upload ${upload}kbs${NORMAL}"
-    [ "${ACTION}" = "-u" ] && return
+    [ "${ACTION}" = "-u" -o "${ACTION}" = "-q" ] && return
     __list "$WORK/*/*.torrent.suspended" "Suspended" 
     __list "$WORK/*/*.torrent.removed" "Removed" 
     __list "$SOURCE/*.torrent" "Queued"
@@ -383,7 +383,7 @@ _log ()
     SECONDS=`tail -10 "${DIR}/current.log" | tr '\r' '\n' | grep Time | tail -1 | cut -d " " -f 2`
     if [ ! -z "${SECONDS}" ]; then
       DATE=`/opt/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
-      echo -e "${BOLD}Last timestamp seen at ${DATE}${NORMAL}"
+      echo -e "\n${BOLD}Last timestamp seen at ${DATE}${NORMAL}"
     fi
 }
 
@@ -405,6 +405,7 @@ _help ()
     cat << __EOF__
 This is quick explanation of the options:
 -u	Updates active torrents status
+-q	Quick show active torrents (without update)
 -c n	Shows current.log of selected torrent
 -s	All active torrent processing should stop/resume imediately
 -p n	Push selected torrent to other queue
@@ -432,6 +433,7 @@ ACTION="$1"
 ID="$2"
 case "${ACTION}" in
 	-u) _update_progress ; _list ;;
+	-q) _list ;;
 	-c) _log ;;
 	-p) _push  ;;
 	-s) _pause ;;
