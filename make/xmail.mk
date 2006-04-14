@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=2
+XMAIL_IPK_VERSION=3
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -52,7 +52,11 @@ XMAIL_IPK_VERSION=2
 # XMAIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#XMAIL_PATCHES=$(XMAIL_SOURCE_DIR)/configure.patch
+# xmail.patch 
+# 1. Lower the ulimit
+# 2. Reduce the number of threads xmail uses
+# 3. Change the hard-coded directory to MailRoot
+XMAIL_PATCHES=$(XMAIL_SOURCE_DIR)/Makefile.patch $(XMAIL_SOURCE_DIR)/xmail.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,15 +114,9 @@ $(XMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(XMAIL_SOURCE) $(XMAIL_PATCHES) make/
 	# $(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(XMAIL_DIR) $(XMAIL_BUILD_DIR)
 	$(XMAIL_UNZIP) $(DL_DIR)/$(XMAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	# cat $(XMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
+	cat $(XMAIL_PATCHES) | patch -d $(BUILD_DIR)/$(XMAIL_DIR) -p1
 	mv $(BUILD_DIR)/$(XMAIL_DIR) $(XMAIL_BUILD_DIR)
-	# Fix the compilation so that /opt/lib is in the path
-	sed -ie 's/lpthread/lpthread -Wl,-rpath,\/opt\/lib/' $(XMAIL_BUILD_DIR)/Makefile.lnx
-	(cd $(XMAIL_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMAIL_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(XMAIL_LDFLAGS)" \
-	)
+	cp $(XMAIL_SOURCE_DIR)/SysMachine.h $(XMAIL_BUILD_DIR)
 	touch $(XMAIL_BUILD_DIR)/.configured
 
 xmail-unpack: $(XMAIL_BUILD_DIR)/.configured
@@ -129,13 +127,7 @@ xmail-unpack: $(XMAIL_BUILD_DIR)/.configured
 $(XMAIL_BUILD_DIR)/.built: $(XMAIL_BUILD_DIR)/.configured
 	rm -f $(XMAIL_BUILD_DIR)/.built
 	#$(MAKE) -C $(XMAIL_BUILD_DIR)
-	$(MAKE) -C $(XMAIL_BUILD_DIR) -f Makefile.lnx
-	# Lower the ulimit
-	sed -ie 's/ulimit -c 20000/ulimit -c 10000/' $(XMAIL_BUILD_DIR)/xmail
-	# Reduce the number of threads xmail uses
-	sed -ie 's/XMAIL_CMD_LINE=""/XMAIL_CMD_LINE="-SX 1 -Qn 1 -Yt 1 -Ln 1 -PX 1 -CX 1"/' $(XMAIL_BUILD_DIR)/xmail
-	# Change the hard-coded directory to MailRoot
-	sed -ie 's/var\/MailRoot/opt\/var\/MailRoot/' $(XMAIL_BUILD_DIR)/xmail
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(XMAIL_BUILD_DIR) -f Makefile.lnx
 	touch $(XMAIL_BUILD_DIR)/.built
 
 #
