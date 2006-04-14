@@ -300,7 +300,7 @@ _list ()
     __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
     echo -e "${BOLD}Total Download ${download}kbs Upload ${upload}kbs${NORMAL}"
-    [ "${ACTION}" = "-u" -o "${ACTION}" = "-q" ] && return
+    [ "x${ACTION}" = "x-u" -o "x${ACTION}" = "x-q" ] && return
     __list "$WORK/*/*.torrent.suspended" "Suspended" 
     __list "$WORK/*/*.torrent.removed" "Removed" 
     __list "$SOURCE/*.torrent" "Queued"
