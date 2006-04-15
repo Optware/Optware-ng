@@ -29,6 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	ncursesw \
 	py-lxml \
 	py-axiom.mk \
 	py-epsilon.mk \
@@ -165,7 +166,7 @@ WL500G_BROKEN_PACKAGES = \
 	jabber jamvm \
 	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr \
-	nail nfs-server nfs-utils nget ntp \
+	nail ncursesw nfs-server nfs-utils nget ntp \
 	pango py-mssql py-paste py-psycopg2 \
 	unslung-devel \
 	qemu qemu-libc-i386 \
