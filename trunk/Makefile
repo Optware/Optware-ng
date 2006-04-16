@@ -38,6 +38,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	py-nevow.mk \
 	py-twisted.mk \
 	py-zope-interface.mk \
+	nail \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -167,7 +168,7 @@ WL500G_BROKEN_PACKAGES = \
 	jabber jamvm \
 	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr \
-	nail ncursesw nfs-server nfs-utils nget ntp \
+	ncursesw nfs-server nfs-utils nget ntp \
 	pango py-mssql py-paste py-psycopg2 \
 	unslung-devel \
 	qemu qemu-libc-i386 \
