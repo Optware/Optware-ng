@@ -29,12 +29,12 @@ DIFFUTILS_DESCRIPTION=contains gnu diff, cmp, sdiff and diff3 to display differe
 DIFFUTILS_SECTION=util
 DIFFUTILS_PRIORITY=optional
 DIFFUTILS_DEPENDS=
-DIFFUTILS_CONFLICTS=busybox
+DIFFUTILS_CONFLICTS=busybox-links
 
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=3
+DIFFUTILS_IPK_VERSION=4
 
 #
 # If the compilation of the package requires additional
