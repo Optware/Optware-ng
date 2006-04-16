@@ -20,10 +20,18 @@
 # You should change all these variables to suit your package.
 #
 NAIL_SITE=http://dl.sourceforge.net/sourceforge/nail/
-NAIL_VERSION=11.19
+NAIL_VERSION=11.25
 NAIL_SOURCE=nail-$(NAIL_VERSION).tar.bz2
 NAIL_DIR=nail-$(NAIL_VERSION)
 NAIL_UNZIP=bzcat
+NAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NAIL_DESCRIPTION=command-line email-client supporting POP3, IMAP, SMTP, ...
+NAIL_SECTION=net
+NAIL_PRIORITY=optional
+NAIL_DEPENDS=openssl
+NAIL_SUGGESTS=
+NAIL_CONFLICTS=
+
 
 #
 # NAIL_IPK_VERSION should be incremented when the ipk changes.
@@ -40,7 +48,11 @@ NAIL_PATCHES=$(NAIL_SOURCE_DIR)/Makefile.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NAIL_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET),wl500g)
+  NAIL_CPPFLAGS=-DMB_CUR_MAX=1
+else
+  NAIL_CPPFLAGS=
+endif
 NAIL_LDFLAGS=
 
 #
@@ -134,6 +146,26 @@ nail: $(NAIL_BUILD_DIR)/.built
 #nail-stage: $(STAGING_DIR)/opt/lib/libnail.so.$(NAIL_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nail
+#
+$(NAIL_IPK_DIR)/CONTROL/control:
+	@install -d $(NAIL_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nail" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NAIL_PRIORITY)" >>$@
+	@echo "Section: $(NAIL_SECTION)" >>$@
+	@echo "Version: $(NAIL_VERSION)-$(NAIL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NAIL_MAINTAINER)" >>$@
+	@echo "Source: $(NAIL_SITE)/$(NAIL_SOURCE)" >>$@
+	@echo "Description: $(NAIL_DESCRIPTION)" >>$@
+	@echo "Depends: $(NAIL_DEPENDS)" >>$@
+	@echo "Suggests: $(NAIL_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NAIL_CONFLICTS)" >>$@
+
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NAIL_IPK_DIR)/opt/sbin or $(NAIL_IPK_DIR)/opt/bin
@@ -153,8 +185,7 @@ $(NAIL_IPK): $(NAIL_BUILD_DIR)/.built
 	install -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/doc/nail/nail.rc
 #	install -d $(NAIL_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)/opt/etc/init.d/SXXnail
-	install -d $(NAIL_IPK_DIR)/CONTROL
-	install -m 644 $(NAIL_SOURCE_DIR)/control $(NAIL_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NAIL_IPK_DIR)/CONTROL/control
 	install -m 644 $(NAIL_SOURCE_DIR)/postinst $(NAIL_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(NAIL_SOURCE_DIR)/prerm $(NAIL_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NAIL_IPK_DIR)
