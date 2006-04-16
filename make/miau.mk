@@ -17,7 +17,7 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=14
+MIAU_IPK_VERSION=15
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
@@ -45,6 +45,15 @@ miau-source: $(DL_DIR)/$(MIAU_SOURCE) $(MIAU_PATCHES)
 MIAU_IPV6_FLAGS=
 # endif
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+MIAU_CROSS_FLAGS=\
+		ac_cv_func_lstat_empty_string_bug=no \
+		ac_cv_func_stat_empty_string_bug=no \
+		ac_cv_func_lstat_dereferences_slashed_symlink=yes \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes
+endif
+
 $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 	$(MIAU_UNZIP) $(DL_DIR)/$(MIAU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MIAU_PATCHES) | patch -d $(BUILD_DIR)/$(MIAU_DIR) -p1
@@ -53,6 +62,7 @@ $(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MIAU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MIAU_LDFLAGS)" \
+		$(MIAU_CROSS_FLAGS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
