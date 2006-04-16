@@ -8,4 +8,5 @@ if [ ! -d /opt/var/spool/miau ] ;  then
     mkdir /opt/var/spool/miau
 fi
 
-/opt/etc/init.d/S52miau
+/opt/etc/init.d/S52miau -d /opt/var/spool/miau
+
