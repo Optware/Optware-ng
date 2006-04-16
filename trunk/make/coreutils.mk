@@ -29,12 +29,12 @@ COREUTILS_DESCRIPTION=Bunch of heavyweight *nix core utilities
 COREUTILS_SECTION=core
 COREUTILS_PRIORITY=optional
 COREUTILS_DEPENDS=
-COREUTILS_CONFLICTS=busybox
+COREUTILS_CONFLICTS=busybox-links
 
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=8
+COREUTILS_IPK_VERSION=9
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in

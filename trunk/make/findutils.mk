@@ -15,7 +15,7 @@ FINDUTILS_UNZIP=zcat
 #
 # FINDUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-FINDUTILS_IPK_VERSION=3
+FINDUTILS_IPK_VERSION=4
 
 #
 # Control file info
@@ -24,7 +24,7 @@ FINDUTILS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 FINDUTILS_DESCRIPTION=File finding utilities
 FINDUTILS_SECTION=utilities
 FINDUTILS_PRIORITY=optional
-FINDUTILS_CONFLICTS=busybox
+FINDUTILS_CONFLICTS=busybox-links
 FINDUTILS_DEPENDS=
 
 FINDUTILS_DOC_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>

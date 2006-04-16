@@ -29,12 +29,12 @@ TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
 TAR_SECTION=util
 TAR_PRIORITY=optional
 TAR_DEPENDS=bzip2
-TAR_CONFLICTS=busybox
+TAR_CONFLICTS=busybox-links
 
 #
 # TAR_IPK_VERSION should be incremented when the ipk changes.
 #
-TAR_IPK_VERSION=3
+TAR_IPK_VERSION=4
 
 #
 # If the compilation of the package requires additional

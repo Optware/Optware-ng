@@ -36,12 +36,12 @@ TEXTUTILS_DESCRIPTION=GNU Text Utilities
 TEXTUTILS_SECTION=util
 TEXTUTILS_PRIORITY=optional
 TEXTUTILS_DEPENDS=
-TEXTUTILS_CONFLICTS=busybox
+TEXTUTILS_CONFLICTS=busybox-links
 
 #
 # TEXTUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-TEXTUTILS_IPK_VERSION=2
+TEXTUTILS_IPK_VERSION=3
 
 #
 # TEXTUTILS_CONFFILES should be a list of user-editable files
