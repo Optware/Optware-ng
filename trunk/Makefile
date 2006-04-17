@@ -55,7 +55,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
-	gambit-c gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
+	gambit-c gawk gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core gnutls gtk \
 	hdparm hexcurse hnb hpijs \
