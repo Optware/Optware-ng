@@ -203,6 +203,7 @@ DS101_BROKEN_PACKAGES = \
 	atftp \
 	cyrus-sasl \
 	imagemagick \
+	libstdc++ \
 	mod-fastcgi mod-python monotone \
 	php-apache \
 	qemu qemu-libc-i386 \
