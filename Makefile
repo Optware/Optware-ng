@@ -75,8 +75,8 @@ COMMON_CROSS_PACKAGES = \
 	py-scgi py-simplejson py-testgears py-turbogears \
 	py-paste py-pastescript py-psycopg2 py-pygresql \
 	py-sqlalchemy py-urwid py-xml \
-	py-lxml py-axiom.mk py-epsilon.mk py-mantissa.mk py-nevow.mk py-twisted.mk \
-	py-zope-interface.mk \
+	py-lxml py-axiom py-epsilon py-mantissa py-nevow py-twisted \
+	py-zope-interface \
 	python \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
