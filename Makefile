@@ -28,20 +28,11 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = \
-	flip \
-	ncursesw \
-	py-lxml \
-	py-axiom.mk \
-	py-epsilon.mk \
-	py-mantissa.mk \
-	py-nevow.mk \
-	py-twisted.mk \
-	py-zope-interface.mk \
-	nail \
+CROSS_PACKAGES_READY_FOR_TESTING = 
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
+#
 NATIVE_PACKAGES_READY_FOR_TESTING = 
 
 COMMON_CROSS_PACKAGES = \
@@ -53,7 +44,7 @@ COMMON_CROSS_PACKAGES = \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
 	denyhosts dev-pts dict digitemp distcc dokuwiki dhcp diffutils dnsmasq dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed elinks esmtp erlang esound eggdrop expat \
-	fetchmail file findutils flex ftpd-topfield ffmpeg ficy fixesext flac \
+	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -69,7 +60,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
 	monotone mrtg mtr \
-	nagios-plugins neon net-snmp nano ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
+	nagios-plugins nail nano neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntop ntp ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
 	pango patch php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
@@ -84,6 +75,8 @@ COMMON_CROSS_PACKAGES = \
 	py-scgi py-simplejson py-testgears py-turbogears \
 	py-paste py-pastescript py-psycopg2 py-pygresql \
 	py-sqlalchemy py-urwid py-xml \
+	py-lxml py-axiom.mk py-epsilon.mk py-mantissa.mk py-nevow.mk py-twisted.mk \
+	py-zope-interface.mk \
 	python \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
