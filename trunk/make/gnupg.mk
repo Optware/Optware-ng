@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=1.4.2
+GNUPG_VERSION=1.4.3
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
