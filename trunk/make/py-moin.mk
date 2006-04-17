@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://dl.sourceforge.net/sourceforge/moin
-PY-MOIN_VERSION=1.5.2
+PY-MOIN_VERSION=1.5.3
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-MOIN_CONFLICTS=
 #
 # PY-MOIN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MOIN_IPK_VERSION=2
+PY-MOIN_IPK_VERSION=1
 
 #
 # PY-MOIN_CONFFILES should be a list of user-editable files
