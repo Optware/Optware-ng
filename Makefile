@@ -52,41 +52,42 @@ COMMON_CROSS_PACKAGES = \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
 	denyhosts dev-pts dict digitemp distcc dokuwiki dhcp diffutils dnsmasq dovecot dropbear \
-	e2fsprogs e2tools eaccelerator ed esmtp erlang esound eggdrop expat \
+	e2fsprogs e2tools eaccelerator ed elinks esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git-core gnutls gtk \
+	git-core glib gnupg gnutls gtk \
 	hdparm hexcurse hnb hpijs \
-	ice iozone imagemagick imap inetutils iperf ipkg-web ipython ircd-hybrid ivorbis-tools \
+	ice iozone imagemagick imap inetutils iperf ipkg-web iptables ipython ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
-	lame less libcurl libdb libftdi libnsl libol libpcap libstdc++ libxml2 logrotate lynx lzo \
-	ldconfig libart libbt libdvb libdvdread libesmtp libevent \
-	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libogg libosip2 \
-	libpng librsync libtasn1 libtiff libtool libusb libvorbis libvorbisidec libxslt \
-	lighttpd lua \
+	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libftdi \
+	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libnsl \
+	libol libogg libosip2 libpcap libpng librsync libstdc++ libtasn1 libtiff libtool libtorrent \
+	libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
-	madplay man man-pages mdadm mediawiki memcached metalog microperl monotone mod-fastcgi mod-python mrtg \
-	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
+	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
+	monotone mrtg mtr \
+	nagios-plugins neon net-snmp nano ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntop ntp ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
-	pango patch php php-thttpd php-fcgi procps proftpd psutils puppy python py-bittorrent \
-	php-apache phpmyadmin pkgconfig popt poptop portmap postgresql procmail pwgen \
-	py-bluez py-cheetah py-cherrypy py-clips \
-	py-celementtree py-cherrytemplate \
+	pango patch php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
+	popt poptop portmap postgresql procmail procps proftpd psutils puppy pwgen \
+	py-bittorrent py-bluez py-cheetah py-cherrypy py-clips \
+	py-celementtree py-cherrytemplate py-curl py-django py-docutils \
 	py-elementtree py-kid py-sqlobject \
 	py-gdchart2 py-gd py-pil py-mssql py-nose \
-	py-roundup py-serial py-simpy py-soappy \
-	py-sqlite py-mercurial py-moin py-mx-base py-mysql py-psycopg py-xml \
-	py-curl py-rdiff-backup py-setuptools py-formencode py-json \
-	py-simplejson py-testgears py-turbogears py-docutils py-scgi \
-	py-django py-paste py-pastescript py-psycopg2 py-pygresql \
-	py-sqlalchemy py-urwid \
+	py-paste py-roundup py-serial py-simpy py-soappy \
+	py-sqlite py-mercurial py-moin py-mx-base py-mysql py-psycopg \
+	py-rdiff-backup py-setuptools py-formencode py-json \
+	py-scgi py-simplejson py-testgears py-turbogears \
+	py-paste py-pastescript py-psycopg2 py-pygresql \
+	py-sqlalchemy py-urwid py-xml \
+	python \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
-	rdate readline rsync ruby rubygems \
+	rdate readline rsync rtorrent ruby rubygems \
 	samba sdl ser siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh stunnel streamripper sudo swi-prolog svn \
@@ -95,7 +96,7 @@ COMMON_CROSS_PACKAGES = \
 	tar tcpdump termcap textutils thttpd \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
-	ufsd unfs3 units \
+	ufsd unfs3 units unrar \
 	unzip usbutils \
 	vblade vdr-mediamvp vsftpd vte vorbis-tools \
 	vim \
