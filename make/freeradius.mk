@@ -112,6 +112,8 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 		--with-logdir=/var/spool/radius/log \
 		--with-radacctdir=/var/spool/radius/radacct \
 		--with-raddbdir=/opt/etc/raddb \
+		--with-openssl-includes=$(STAGING_INCLUDE_DIR) \
+		--with-openssl-libraries=$(STAGING_LIB_DIR) \
 		--with-mysql-include-dir=$(STAGING_INCLUDE_DIR)/mysql \
 		--with-mysql-lib-dir=$(STAGING_LIB_DIR)/mysql \
 		--with-rlm-sql-postgresql-include-dir=$(STAGING_INCLUDE_DIR) \
