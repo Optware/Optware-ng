@@ -1,0 +1,38 @@
+--- php/sapi/thttpd/thttpd.c~	2004-01-08 00:18:18.000000000 -0800
++++ php/sapi/thttpd/thttpd.c	2005-04-30 17:56:25.000000000 -0700
+@@ -56,7 +56,7 @@
+ # define do_keep_alive persistent
+ #endif
+ 
+-#ifdef ZTS
++#ifdef THREADED_THTTPD
+ static int thttpd_globals_id;
+ #define TG(v) TSRMG(thttpd_globals_id, php_thttpd_globals *, v)
+ #else
+@@ -472,7 +472,7 @@
+ 		free(SG(request_info).content_type);
+ }
+ 
+-#ifdef ZTS
++#ifdef THREADED_THTTPD
+ 
+ #ifdef TSRM_ST
+ #define thread_create_simple_detached(n) st_thread_create(n, NULL, 0, 0)
+@@ -694,7 +694,7 @@
+ 
+ off_t thttpd_php_request(httpd_conn *hc, int show_source)
+ {
+-#ifdef ZTS
++#ifdef THREADED_THTTPD
+ 	queue_request(hc);
+ #else
+ 	TSRMLS_FETCH();
+@@ -735,6 +735,8 @@
+ 
+ #ifdef ZTS
+ 	tsrm_startup(1, 1, 0, NULL);
++#endif
++#ifdef THREADED_THTTPD
+ 	ts_allocate_id(&thttpd_globals_id, sizeof(php_thttpd_globals), NULL, NULL);
+ 	qr_lock = tsrm_mutex_alloc();
+ 	thttpd_register_on_close(remove_dead_conn);
