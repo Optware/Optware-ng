@@ -70,7 +70,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl monotone mod-fastcgi mod-python mrtg \
 	nagios-plugins neon net-snmp nano ncftp ncurses noip net-tools netio nfs-server nfs-utils \
-	nget nmap nload nrpe ntop ntpclient nylon \
+	nget nmap nload nrpe ntop ntp ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
 	pango patch php php-thttpd php-fcgi procps proftpd psutils puppy python py-bittorrent \
 	php-apache phpmyadmin pkgconfig popt poptop portmap postgresql procmail pwgen \
