@@ -201,14 +201,17 @@ DS101_SPECIFIC_PACKAGES =
 # Packages that do not work for ds101.
 DS101_BROKEN_PACKAGES = \
 	adns apache appweb apr-util \
-	atftp bash bitchx \
-	cyrus-sasl hexcurse \
+	atftp bash bitchx bzflag \
+	ctorrent cyrus-sasl eaccelerator freeradius hexcurse \
 	imagemagick \
-	libstdc++ \
-	mod-fastcgi mod-python monotone \
-	php-apache \
+	ldconfig libstdc++ lighttpd \
+	mc mod-fastcgi mod-python monotone mysql \
+	net-tools \
+	php php-apache \
+	py-mysql \
 	qemu qemu-libc-i386 \
 	svn \
+	tcpwrappers tethereal textutils unrar
 
 # Packages that *only* work for ds101j - do not just put new packages here.
 DS101J_SPECIFIC_PACKAGES = bip
@@ -234,16 +237,16 @@ DS101G_BROKEN_PACKAGES = \
 	bitlbee \
 	cherokee clamav \
 	eaccelerator \
-	flac \
+	flac freeradius \
 	gnutls \
 	ivorbis-tools \
 	ldconfig libgcrypt libmemcache libvorbisidec lighttpd \
-	ntop \
+	mod-fastcgi mod-python mutt ntop \
 	opencdk \
 	php php-apache portmap \
 	qemu qemu-libc-i386 \
 	rsync \
-	ser \
+	ser svn \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
