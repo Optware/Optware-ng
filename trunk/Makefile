@@ -46,7 +46,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed elinks esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
-	gambit-c gawk gconv-modules getmail gdchart ghostscript gdb gdbm grep groff gzip \
+	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core glib gnupg gnutls gtk \
 	hdparm hexcurse hnb hpijs \
@@ -55,15 +55,15 @@ COMMON_CROSS_PACKAGES = \
 	knock \
 	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libftdi \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libnsl \
-	libol libogg libosip2 libpcap libpng librsync libstdc++ libtasn1 libtiff libtool libtorrent \
+	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
-	monotone mrtg mtr \
+	monotone mrtg mtr mutt \
 	nagios-plugins nail nano neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntop ntp ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
-	pango patch php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
+	pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql procmail procps proftpd psutils puppy pwgen \
 	py-bittorrent py-bluez py-cheetah py-cherrypy py-clips \
 	py-celementtree py-cherrytemplate py-curl py-django py-docutils \
