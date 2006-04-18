@@ -200,9 +200,9 @@ DS101_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ds101.
 DS101_BROKEN_PACKAGES = \
-	apache apr-util \
-	atftp \
-	cyrus-sasl \
+	adns apache appweb apr-util \
+	atftp bash bitchx \
+	cyrus-sasl hexcurse \
 	imagemagick \
 	libstdc++ \
 	mod-fastcgi mod-python monotone \
