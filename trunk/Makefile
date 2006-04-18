@@ -28,7 +28,8 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = 
+CROSS_PACKAGES_READY_FOR_TESTING = \
+	py-lxml 
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -75,7 +76,7 @@ COMMON_CROSS_PACKAGES = \
 	py-scgi py-simplejson py-testgears py-turbogears \
 	py-paste py-pastescript py-psycopg2 py-pygresql \
 	py-sqlalchemy py-urwid py-xml \
-	py-lxml py-axiom py-epsilon py-mantissa py-nevow py-twisted \
+	py-axiom py-epsilon py-mantissa py-nevow py-twisted \
 	py-zope-interface \
 	python \
 	qemu qemu-libc-i386 quagga  \
@@ -161,8 +162,8 @@ WL500G_BROKEN_PACKAGES = \
 	ice iperf iptables ivorbis-tools \
 	jabber jamvm \
 	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
-	mdadm metalog mod-fastcgi mod-python monotone mtr \
-	ncursesw nfs-server nfs-utils nget ntp \
+	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
+	nail ncursesw nfs-server nfs-utils nget ntp nylon \
 	pango py-mssql py-paste py-psycopg2 \
 	unslung-devel \
 	qemu qemu-libc-i386 \
