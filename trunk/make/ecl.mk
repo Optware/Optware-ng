@@ -149,6 +149,9 @@ $(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_
 		--disable-nls \
 		--disable-static \
 		--with-cross-config=$(ECL_BUILD_DIR)/cross_config \
+		--without-clx \
+		--without-defsystem \
+		--without-asdf \
 	)
 #	$(PATCH_LIBTOOL) $(ECL_BUILD_DIR)/libtool
 	touch $(ECL_BUILD_DIR)/.configured
@@ -212,6 +215,9 @@ $(ECL_IPK_DIR)/CONTROL/control:
 $(ECL_IPK): $(ECL_BUILD_DIR)/.built
 	rm -rf $(ECL_IPK_DIR) $(BUILD_DIR)/ecl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ECL_BUILD_DIR) DESTDIR=$(ECL_IPK_DIR) install
+	rm -f $(ECL_IPK_DIR)/opt/info/*
+	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/bin/ecl
+	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/lib/ecl/libecl.so
 #	install -d $(ECL_IPK_DIR)/opt/etc/
 #	install -m 644 $(ECL_SOURCE_DIR)/ecl.conf $(ECL_IPK_DIR)/opt/etc/ecl.conf
 #	install -d $(ECL_IPK_DIR)/opt/etc/init.d
