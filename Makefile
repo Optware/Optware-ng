@@ -188,7 +188,7 @@ MSS_BROKEN_PACKAGES = \
 	jamvm \
 	ldconfig libvorbisidec \
 	mod-fastcgi mod-python monotone \
-	php-apache \
+	php-apache py-lxml \
 	qemu qemu-libc-i386 \
 	svn \
 	transcode \
