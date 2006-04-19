@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	py-lxml 
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -69,8 +68,8 @@ COMMON_CROSS_PACKAGES = \
 	py-bittorrent py-bluez py-cheetah py-cherrypy py-clips \
 	py-celementtree py-cherrytemplate py-curl py-django py-docutils \
 	py-elementtree py-kid py-sqlobject \
-	py-gdchart2 py-gd py-pil py-mssql py-nose \
-	py-paste py-roundup py-serial py-simpy py-soappy \
+	py-gdchart2 py-gd py-lxml py-mssql py-nose \
+	py-paste py-pil py-roundup py-serial py-simpy py-soappy \
 	py-sqlite py-mercurial py-moin py-mx-base py-mysql py-psycopg \
 	py-rdiff-backup py-setuptools py-formencode py-json \
 	py-scgi py-simplejson py-testgears py-turbogears \
