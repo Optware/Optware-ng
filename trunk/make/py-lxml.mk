@@ -36,7 +36,7 @@ PY-LXML_CONFLICTS=
 #
 # PY-LXML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-LXML_IPK_VERSION=1
+PY-LXML_IPK_VERSION=2
 
 #
 # PY-LXML_CONFFILES should be a list of user-editable files
@@ -125,7 +125,7 @@ py-lxml-unpack: $(PY-LXML_BUILD_DIR)/.configured
 $(PY-LXML_BUILD_DIR)/.built: $(PY-LXML_BUILD_DIR)/.configured
 	rm -f $(PY-LXML_BUILD_DIR)/.built
 	(cd $(PY-LXML_BUILD_DIR); \
-	    python2.4 build; \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' python2.4 setup.py build; \
 	)
 	touch $(PY-LXML_BUILD_DIR)/.built
 
