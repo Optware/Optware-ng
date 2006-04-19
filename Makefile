@@ -159,11 +159,11 @@ WL500G_BROKEN_PACKAGES = \
 	gawk gambit-c giftcurs git-core glib gnupg gtk \
 	hnb \
 	ice iperf iptables ivorbis-tools \
-	jabber jamvm \
+	jabber jamvm jikes \
 	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nail ncursesw nfs-server nfs-utils nget ntp nylon \
-	pango py-mssql py-paste py-psycopg2 \
+	pango py-lxml py-mssql py-paste py-psycopg2 \
 	unslung-devel \
 	qemu qemu-libc-i386 \
 	rtorrent \
