@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=4
+LIBXSLT_IPK_VERSION=5
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -110,9 +110,9 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 		--enable-shared \
 		--without-python \
 		--without-crypto \
-		--with-libxml-prefix=$(STAGING_DIR)/opt \
-		--with-libxml-libs-prefix=$(STAGING_DIR)/opt \
-		--with-libxml-include-prefix=$(STAGING_DIR)/opt \
+		--with-libxml-prefix=$(STAGING_PREFIX) \
+		--with-libxml-libs-prefix=$(STAGING_LIB_DIR) \
+		--with-libxml-include-prefix=$(STAGING_INCLUDE_DIR) \
 	)
 	touch $(LIBXSLT_BUILD_DIR)/.configured
 
