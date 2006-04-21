@@ -23,14 +23,14 @@
 #
 # PY-PASTE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PASTE_SVN=http://svn.pythonpaste.org/Paste/trunk
-PY-PASTE_SVN_REV=4745
+#PY-PASTE_SVN=http://svn.pythonpaste.org/Paste/trunk
+#PY-PASTE_SVN_REV=4745
 #ifneq ($(PY-PASTE_SVN_REV),)
-PY-PASTE_VERSION=0.5dev_r4745
+#PY-PASTE____VERSION=0.5dev_r4745
 #else
-#PY-PASTE_VERSION_=0.5
-#PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
-#PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).zip
+PY-PASTE_VERSION=0.9
+PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
+PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).tar.gz
 #endif
 PY-PASTE_DIR=Paste-$(PY-PASTE_VERSION)
 PY-PASTE_UNZIP=zcat
@@ -42,7 +42,7 @@ PY-PASTE_DEPENDS=python
 PY-PASTE_SUGGESTS=
 PY-PASTE_CONFLICTS=
 
-PY-PASTE_IPK_VERSION=2
+PY-PASTE_IPK_VERSION=1
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
