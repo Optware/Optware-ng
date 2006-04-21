@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-KID_VERSION=0.8
+PY-KID_VERSION=0.9.1
 PY-KID_SITE=http://kid.lesscode.org/dist/$(PY-KID_VERSION)
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
@@ -46,7 +46,7 @@ PY-KID_IPK_VERSION=1
 # PY-KID_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PY-KID_PATCHES=$(PY-KID_SOURCE_DIR)/setup.py.patch
+#PY-KID_PATCHES=$(PY-KID_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,8 +107,12 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	fi
 	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
 	(cd $(PY-KID_BUILD_DIR); \
-	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg \
 	)
 	touch $(PY-KID_BUILD_DIR)/.configured
 
