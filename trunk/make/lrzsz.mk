@@ -53,9 +53,6 @@ LRZSZ_CONFFILES=
 # which they should be applied to the source code.
 #
 LRZSZ_PATCHES=
-#	      $(LRZSZ_SOURCE_DIR)/autotools.patch \
-#	      $(LRZSZ_SOURCE_DIR)/makefile.patch \
-#	      $(LRZSZ_SOURCE_DIR)/gettext.patch
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +108,6 @@ lrzsz-source: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES)
 # shown below to make various patches to it.
 #
 $(LRZSZ_BUILD_DIR)/.configured: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES) make/lrzsz.mk
-#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LRZSZ_DIR) $(LRZSZ_BUILD_DIR)
 	$(LRZSZ_UNZIP) $(DL_DIR)/$(LRZSZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LRZSZ_PATCHES)" ; \
@@ -133,7 +129,6 @@ $(LRZSZ_BUILD_DIR)/.configured: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(LRZSZ_BUILD_DIR)/libtool
 	touch $(LRZSZ_BUILD_DIR)/.configured
 
 lrzsz-unpack: $(LRZSZ_BUILD_DIR)/.configured
