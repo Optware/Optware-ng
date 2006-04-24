@@ -36,7 +36,7 @@ PY-CONSTRAINT_CONFLICTS=
 #
 # PY-CONSTRAINT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CONSTRAINT_IPK_VERSION=1
+PY-CONSTRAINT_IPK_VERSION=2
 
 #
 # PY-CONSTRAINT_CONFFILES should be a list of user-editable files
@@ -168,6 +168,9 @@ $(PY-CONSTRAINT_IPK): $(PY-CONSTRAINT_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 -c "import setuptools; execfile('setup.py')" \
 		install --root=$(PY-CONSTRAINT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	install -d $(PY-CONSTRAINT_IPK_DIR)/opt/share/doc/py-constraint/
+	install $(PY-CONSTRAINT_BUILD_DIR)/README $(PY-CONSTRAINT_IPK_DIR)/opt/share/doc/py-constraint/
+	cp -a $(PY-CONSTRAINT_BUILD_DIR)/examples $(PY-CONSTRAINT_IPK_DIR)/opt/share/doc/py-constraint/
 #	$(STRIP_COMMAND) `find $(PY-CONSTRAINT_IPK_DIR)/opt/lib/ -name '*.so'`
 #	install -d $(PY-CONSTRAINT_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-CONSTRAINT_SOURCE_DIR)/py-constraint.conf $(PY-CONSTRAINT_IPK_DIR)/opt/etc/py-constraint.conf
