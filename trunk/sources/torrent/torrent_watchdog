@@ -152,16 +152,18 @@ send_report ()
     debug "Mail to: $MAILTO"
 
     if [  ! -z "${MAILFROM}" -a ! -z "${MAILTO}" ]; then
-        echo "Torrent finished.
+	echo "From: <${MAILFROM}>
+To: <${MAILTO}>
+Subject: Torrent finished ($STATUS)
 ------------------
-Name          : $TORRENTNAME
-Torrent       : $TORRENT
-Started       : $STARTTIME
-Completed     : $ENDTIME
-Stored in     : $TARGET
-Status        : $STATUS
-"  | ${MAILER:-smtpclient} -s "Torrent finished ($STATUS)" ${MAILOPT} ${MAILFROM} $MAILTO
-        notice "Mail sent to : $MAILTO"
+Name          : ${TORRENTNAME}
+Torrent       : ${TORRENT}
+Started       : ${STARTTIME}
+Completed     : ${ENDTIME}
+Stored in     : ${TARGET}
+Status        : ${STATUS}
+"  | ${MAILER:-mini_sendmail} ${MAILOPT}${MAILFROM} ${MAILTO}
+        notice "Mail sent to : ${MAILTO}"
     fi
 }
 
@@ -234,11 +236,12 @@ check_if_complete()
 # Kill btget when torrent is complete
    tail -20 "${TORRENT%/*}/current.log" | grep -q "100%" 
    if [ $? -eq 0 ]; then
-       ENDTIME=`date +"${DATE_FORMAT}"`
        . "${TORRENT%/*}/.info"
        kill -TERM $PID
        PID=""
        PROGRESS="completed"
+       ENDTIME=`date +"${DATE_FORMAT}"`
+       write_info
        move_to_target
        cleanup_work
        send_report
@@ -312,6 +315,11 @@ if [ -z "$TORRENT" ]; then
     
     PID=$!
     notice "Starting torrent $TORRENT $PID"
+    
+    PROGRESS="started" 
+    TRIES=
+    ENDTIME=
+    SCRAPE=
     write_info
 
     exit 0

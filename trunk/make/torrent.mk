@@ -29,7 +29,7 @@ TORRENT_SUGGESTS=cron
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=7
+TORRENT_IPK_VERSION=8
 
 # TORRENT_CONFFILES should be a list of user-editable files
 TORRENT_CONFFILES=/opt/etc/torrent.conf

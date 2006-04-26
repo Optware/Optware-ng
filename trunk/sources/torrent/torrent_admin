@@ -272,7 +272,7 @@ __list ()
 		[ ! -z "${PID}" ]  && echo -n " PID:${PID} "
 		echo -n " Start: ${STARTTIME}"
 		[ ! -z "${ENDTIME}" ] && echo -n " End: ${ENDTIME}"
-		[ ${TRIES} -gt 0 ] && echo -n " Tries: ${TRIES}"
+		[ "${TRIES}" -gt 0 ] && echo -n " Tries: ${TRIES}"
    		[ ! -z "${SCRAPE}" ] && echo -n " ${SCRAPE}"
    		DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
    		UL=`echo "${PROGRESS}" | sed 's/.*Upload \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
