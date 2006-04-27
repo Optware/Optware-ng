@@ -231,16 +231,17 @@ DS101J_BROKEN_PACKAGES = \
 DS101G_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for ds101g+.
+# elinks, gawk, mtr and ntp need a .mk template update (they emit _armeb.ipks)
 DS101G_BROKEN_PACKAGES = \
 	apache apr-util appweb asterisk \
 	bitlbee \
 	cherokee clamav \
-	eaccelerator \
+	eaccelerator elinks \
 	flac freeradius \
-	gnutls \
+	gawk gnutls \
 	ivorbis-tools \
 	ldconfig libgcrypt libmemcache libvorbisidec lighttpd \
-	mod-fastcgi mod-python mutt ntop \
+	mod-fastcgi mod-python mtr mutt ntop ntp \
 	opencdk \
 	php php-apache portmap \
 	qemu qemu-libc-i386 \
