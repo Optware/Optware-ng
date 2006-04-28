@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://cheeseshop.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.1.1
+PY-ROUNDUP_VERSION=1.1.2
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-ROUNDUP_CONFLICTS=
 #
 # PY-ROUNDUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ROUNDUP_IPK_VERSION=2
+PY-ROUNDUP_IPK_VERSION=1
 
 #
 # PY-ROUNDUP_CONFFILES should be a list of user-editable files
