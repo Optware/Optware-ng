@@ -1,0 +1,34 @@
+--- squeak/platforms/unix/config/configure.ac.orig	2006-04-24 12:33:41.000000000 -0700
++++ squeak/platforms/unix/config/configure.ac	2006-04-29 10:45:58.000000000 -0700
+@@ -146,10 +146,8 @@
+ 
+ # Check size assumptions of basic data types
+ 
+-AC_REQUIRE_SIZEOF(int,    4)
+-AC_REQUIRE_SIZEOF(double, 8)
+-
+-AC_CHECK_INT64_T
++SQUEAK_INT64_T="long long"
++AC_DEFINE_UNQUOTED(squeakInt64, long long)
+ 
+ AC_CHECK_SIZEOF(int)
+ AC_CHECK_SIZEOF(long)
+@@ -257,8 +255,7 @@
+ CFLAGS="$CFLAGS_32 $CFLAGS"
+ 
+ AC_C_BYTEORDER
+-AC_C_DOUBLE_ALIGNMENT
+-AC_C_DOUBLE_ORDER
++AC_DEFINE(DOUBLE_WORD_ORDER)
+ 
+ case $host_os in
+   darwin*)
+@@ -339,7 +336,7 @@
+ 
+ # Configure plugins
+ 
+-disabled_plugins=""
++disabled_plugins="vm-display-fbdev SqueakFFIPrims"
+ rm -f plugins.exc
+ sinclude(acplugins.m4)
+ 
