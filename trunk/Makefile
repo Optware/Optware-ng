@@ -178,16 +178,18 @@ WL500G_BROKEN_PACKAGES = \
 MSS_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for mss.
+# elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
 MSS_BROKEN_PACKAGES = \
 	apache apr-util asterisk \
 	bitlbee \
 	clamav \
-	erlang \
-	gambit-c \
+	elinks erlang \
+	gambit-c gawk \
 	ivorbis-tools \
 	jamvm \
-	ldconfig libvorbisidec \
-	mod-fastcgi mod-python monotone \
+	ldconfig libvorbisidec lsof \
+	mod-fastcgi mod-python monotone mtr \
+	ntp \
 	php-apache py-lxml \
 	qemu qemu-libc-i386 \
 	svn \
