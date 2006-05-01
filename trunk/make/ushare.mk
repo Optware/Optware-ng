@@ -86,6 +86,8 @@ $(USHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(USHARE_SOURCE) $(USHARE_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USHARE_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
