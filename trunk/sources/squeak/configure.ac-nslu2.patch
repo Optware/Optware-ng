@@ -1,5 +1,5 @@
 --- squeak/platforms/unix/config/configure.ac.orig	2006-04-24 12:33:41.000000000 -0700
-+++ squeak/platforms/unix/config/configure.ac	2006-04-29 10:45:58.000000000 -0700
++++ squeak/platforms/unix/config/configure.ac	2006-04-30 23:31:48.000000000 -0700
 @@ -146,10 +146,8 @@
  
  # Check size assumptions of basic data types
@@ -13,17 +13,25 @@
  
  AC_CHECK_SIZEOF(int)
  AC_CHECK_SIZEOF(long)
-@@ -257,8 +255,7 @@
+@@ -237,7 +235,7 @@
+ 
+ AC_CHECK_FUNCS(snprintf __snprintf,[break])
+ 
+-AC_FUNC_MMAP
++AC_DEFINE(HAVE_MMAP,[1])
+ AC_FUNC_ALLOCA
+ 
+ #AC_ARG_ENABLE(jit,
+@@ -257,8 +255,6 @@
  CFLAGS="$CFLAGS_32 $CFLAGS"
  
  AC_C_BYTEORDER
 -AC_C_DOUBLE_ALIGNMENT
 -AC_C_DOUBLE_ORDER
-+AC_DEFINE(DOUBLE_WORD_ORDER)
  
  case $host_os in
    darwin*)
-@@ -339,7 +336,7 @@
+@@ -339,7 +335,7 @@
  
  # Configure plugins
  
