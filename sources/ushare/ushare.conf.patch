@@ -1,0 +1,18 @@
+--- scripts/ushare.conf	2006-03-06 05:30:28.000000000 +1100
++++ scripts/usharenew.conf	2006-04-21 08:06:00.000000000 +1000
+@@ -2,11 +2,11 @@
+ # Configuration file for uShare
+ 
+ # uShare UPnP Friendly Name (default is 'uShare').
+-USHARE_NAME=
++USHARE_NAME=NSLU2
+ 
+ # Interface to listen to (default is eth0).
+ # Ex : USHARE_IFACE=eth1
+-USHARE_IFACE=
++USHARE_IFACE=ixp0
+ 
+ # Port to listen to (default is random from IANA Dynamic Ports range)
+ # Ex : USHARE_PORT=49200
+-USHARE_PORT=
++USHARE_PORT=50003

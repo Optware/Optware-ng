@@ -1,0 +1,29 @@
+--- scripts/ushare	2006-03-06 05:30:28.000000000 +1100
++++ scripts/usharenew	2006-04-21 08:21:42.000000000 +1000
+@@ -8,13 +8,13 @@
+ # Description: 
+ ### END INIT INFO
+ 
+-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+-DAEMON=/usr/bin/ushare
++PATH=/opt/bin:/opt/sbin:/usr/sbin:/usr/bin:/sbin:/bin
++DAEMON=/opt/bin/ushare
+ NAME=ushare
+ DESC="uShare UPnP A/V Media Server"
+ PIDFILE=/var/run/ushare.pid
+ 
+-[ -r "/etc/ushare.conf" ] && . /etc/ushare.conf
++[ -r "/opt/etc/ushare.conf" ] && . /opt/etc/ushare.conf
+ 
+ # abort if no executable exists
+ [ -x $DAEMON ] || exit 0
+@@ -52,8 +52,7 @@
+     $1 start
+   ;;
+   *)
+-    N=/etc/init.d/$NAME
+-    echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
++    echo "Usage: $0 {start|stop|restart|reload|force-reload}" >&2
+     exit 2
+   ;;
+ esac
