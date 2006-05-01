@@ -29,8 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-libupnp \
-ushare \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -58,7 +56,7 @@ COMMON_CROSS_PACKAGES = \
 	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libftdi \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
-	libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
+	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
 	monotone mrtg mtr mutt \
@@ -92,7 +90,7 @@ COMMON_CROSS_PACKAGES = \
 	tin torrent transcode tsocks \
 	ttf-bitstream-vera \
 	ufsd unfs3 units unrar \
-	unzip usbutils \
+	unzip usbutils ushare \
 	vblade vdr-mediamvp vsftpd vte vorbis-tools \
 	vim \
 	w3cam w3m webalizer wget-ssl wizd \
