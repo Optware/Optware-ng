@@ -7,4 +7,4 @@ if [ -n "`pidof ftpd-topfield`" ]; then
     killall ftpd-topfield 2>/dev/null
 fi
 
-/opt/sbin/ftpd-topfield -D -P 21 -e
+/opt/sbin/ftpd-topfield -D -P 21
