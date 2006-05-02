@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo "Squeak Smalltalk has just been installed."
+echo "This package contains Squeak VM and SqueakV3.sources, but no image."
+echo "Please download image/changes files before starting Squeak VM."
+echo "For more tips, see http://www.nslu2-linux.org/wiki/HowTo/RunSqueakSmalltalk"
+echo "Happy Squeaking!"
