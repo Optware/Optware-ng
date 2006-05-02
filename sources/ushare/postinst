@@ -2,7 +2,5 @@
 
 echo ; echo
 echo "To complete the installation, you must edit /opt/etc/ushare.conf to add the "
-echo " location(s) of your media files, and then run /opt/etc/init.d/S99ushare "
-echo " to start ushare."
+echo " location(s) of your media files, and then run /opt/etc/init.d/S99ushare start."
 echo
-
