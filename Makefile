@@ -83,7 +83,7 @@ COMMON_CROSS_PACKAGES = \
 	rdate readline rsync rtorrent ruby rubygems \
 	samba sdl ser siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
-	sqsh stunnel streamripper sudo swi-prolog svn \
+	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
