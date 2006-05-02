@@ -5,7 +5,7 @@
 ###########################################################
 
 #
-# SQUEAK_VERSION, SQUEAK_SITE and SQUEAK_SOURCE define
+# SQUEAK_VERSION, SQUEAK_SITE and SQUEAK_VM_SRC define
 # the upstream location of the source code for the package.
 # SQUEAK_DIR is the directory which is created when the source
 # archive is unpacked.
@@ -22,10 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQUEAK_SITE=http://www.squeakvm.org/unix/release/
+SQUEAK_VERSION_MAJOR_MINOR=3.9
 SQUEAK_VERSION=3.9.7
-SQUEAK_UPSTREAM_VER=3.9-7
-SQUEAK_SOURCE=Squeak-$(SQUEAK_UPSTREAM_VER).src.tar.gz
-SQUEAK_DIR=Squeak-$(SQUEAK_UPSTREAM_VER)
+SQUEAK_VM_VERSION=$(SQUEAK_VERSION_MAJOR_MINOR)-7
+SQUEAK_VM_SRC=Squeak-$(SQUEAK_VM_VERSION).src.tar.gz
+SQUEAK_DIR=Squeak-$(SQUEAK_VM_VERSION)
 SQUEAK_UNZIP=zcat
 SQUEAK_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 SQUEAK_DESCRIPTION=Squeak is a full-featured implementation of the Smalltalk programming language and environment.
@@ -50,7 +51,9 @@ SQUEAK_IPK_VERSION=1
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(OPTWARE_TARGET),nslu2)
-SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-$(OPTWARE_TARGET).patch $(SQUEAK_SOURCE_DIR)/Makefile.in-$(OPTWARE_TARGET).patch
+SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-$(OPTWARE_TARGET).patch $(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch
+else
+SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-cross.patch $(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch
 endif
 endif
 
@@ -58,7 +61,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SQUEAK_CPPFLAGS=
+SQUEAK_CPPFLAGS=-O3
 SQUEAK_LDFLAGS=
 
 #
@@ -75,19 +78,25 @@ SQUEAK_SOURCE_DIR=$(SOURCE_DIR)/squeak
 SQUEAK_IPK_DIR=$(BUILD_DIR)/squeak-$(SQUEAK_VERSION)-ipk
 SQUEAK_IPK=$(BUILD_DIR)/squeak_$(SQUEAK_VERSION)-$(SQUEAK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+SQUEAK_IMG_SRC_SITE=http://ftp.squeak.org/current_stable
+SQUEAK_IMG_SRC=SqueakV3.sources
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(SQUEAK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQUEAK_SITE)/$(SQUEAK_SOURCE)
+$(DL_DIR)/$(SQUEAK_VM_SRC):
+	$(WGET) -P $(DL_DIR) $(SQUEAK_SITE)/$(SQUEAK_VM_SRC)
+
+$(DL_DIR)/$(SQUEAK_IMG_SRC).gz:
+	$(WGET) -P $(DL_DIR) $(SQUEAK_IMG_SRC_SITE)/$(SQUEAK_IMG_SRC).gz
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-squeak-source: $(DL_DIR)/$(SQUEAK_SOURCE) $(SQUEAK_PATCHES)
+squeak-source: $(SQUEAK_PATCHES) $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz
 
 #
 # This target unpacks the source code in the build directory.
@@ -107,11 +116,10 @@ squeak-source: $(DL_DIR)/$(SQUEAK_SOURCE) $(SQUEAK_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_SOURCE) $(SQUEAK_PATCHES)
-# make/squeak.mk
+$(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz make/squeak.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR)
-	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_VM_SRC) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUEAK_PATCHES)" ; then \
 		cat $(SQUEAK_PATCHES) | patch -bd $(BUILD_DIR)/$(SQUEAK_DIR) -p1 ; \
 	fi
@@ -136,11 +144,12 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_SOURCE) $(SQUEAK_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-rfb \
 		--without-x \
 		--without-ffi \
 		--without-npsqueak \
 	)
-#	$(PATCH_LIBTOOL) $(SQUEAK_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(SQUEAK_BUILD_DIR)/bld/libtool
 	touch $(SQUEAK_BUILD_DIR)/.configured
 
 squeak-unpack: $(SQUEAK_BUILD_DIR)/.configured
@@ -181,7 +190,7 @@ $(SQUEAK_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(SQUEAK_SECTION)" >>$@
 	@echo "Version: $(SQUEAK_VERSION)-$(SQUEAK_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(SQUEAK_MAINTAINER)" >>$@
-	@echo "Source: $(SQUEAK_SITE)/$(SQUEAK_SOURCE)" >>$@
+	@echo "Source: $(SQUEAK_SITE)/$(SQUEAK_VM_SRC)" >>$@
 	@echo "Description: $(SQUEAK_DESCRIPTION)" >>$@
 	@echo "Depends: $(SQUEAK_DEPENDS)" >>$@
 	@echo "Suggests: $(SQUEAK_SUGGESTS)" >>$@
@@ -202,13 +211,15 @@ $(SQUEAK_IPK_DIR)/CONTROL/control:
 $(SQUEAK_IPK): $(SQUEAK_BUILD_DIR)/.built
 	rm -rf $(SQUEAK_IPK_DIR) $(BUILD_DIR)/squeak_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUEAK_BUILD_DIR)/bld ROOT=$(SQUEAK_IPK_DIR) install
-	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_UPSTREAM_VER)/*
+	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_VM_VERSION)/*
+	install -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)/opt/bin/
+	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz > $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_IMG_SRC)
 #	install -d $(SQUEAK_IPK_DIR)/opt/etc/
 #	install -m 644 $(SQUEAK_SOURCE_DIR)/squeak.conf $(SQUEAK_IPK_DIR)/opt/etc/squeak.conf
 #	install -d $(SQUEAK_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SQUEAK_SOURCE_DIR)/rc.squeak $(SQUEAK_IPK_DIR)/opt/etc/init.d/SXXsqueak
 	$(MAKE) $(SQUEAK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SQUEAK_SOURCE_DIR)/postinst $(SQUEAK_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(SQUEAK_SOURCE_DIR)/postinst $(SQUEAK_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(SQUEAK_SOURCE_DIR)/prerm $(SQUEAK_IPK_DIR)/CONTROL/prerm
 	echo $(SQUEAK_CONFFILES) | sed -e 's/ /\n/g' > $(SQUEAK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUEAK_IPK_DIR)
