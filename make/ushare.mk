@@ -20,7 +20,7 @@ USHARE_CONFLICTS=
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=1
+USHARE_IPK_VERSION=2
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
@@ -30,7 +30,7 @@ USHARE_CONFFILES=/opt/etc/ushare.conf
 # USHARE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-USHARE_PATCHES=$(USHARE_SOURCE_DIR)/ushare.conf.patch $(USHARE_SOURCE_DIR)/ushare.patch $(USHARE_SOURCE_DIR)/cfgparser.h.patch
+USHARE_PATCHES=$(USHARE_SOURCE_DIR)/ushare.conf.patch $(USHARE_SOURCE_DIR)/cfgparser.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -163,8 +163,9 @@ $(USHARE_IPK): $(USHARE_BUILD_DIR)/.built
 	install -d $(USHARE_IPK_DIR)/opt/etc/
 	install -m 644 $(USHARE_BUILD_DIR)/scripts/ushare.conf $(USHARE_IPK_DIR)/opt/etc/ushare.conf
 	install -d $(USHARE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(USHARE_BUILD_DIR)/scripts/ushare $(USHARE_IPK_DIR)/opt/etc/init.d/S99ushare
+	install -m 755 $(USHARE_SOURCE_DIR)/ushare $(USHARE_IPK_DIR)/opt/etc/init.d/S99ushare
 	$(MAKE) $(USHARE_IPK_DIR)/CONTROL/control
+	install -m 755 $(USHARE_SOURCE_DIR)/preinst $(USHARE_IPK_DIR)/CONTROL/preinst
 	install -m 755 $(USHARE_SOURCE_DIR)/postinst $(USHARE_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(USHARE_SOURCE_DIR)/prerm $(USHARE_IPK_DIR)/CONTROL/prerm
 	echo $(USHARE_CONFFILES) | sed -e 's/ /\n/g' > $(USHARE_IPK_DIR)/CONTROL/conffiles
