@@ -165,7 +165,6 @@ $(USHARE_IPK): $(USHARE_BUILD_DIR)/.built
 	install -d $(USHARE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(USHARE_SOURCE_DIR)/ushare $(USHARE_IPK_DIR)/opt/etc/init.d/S99ushare
 	$(MAKE) $(USHARE_IPK_DIR)/CONTROL/control
-	install -m 755 $(USHARE_SOURCE_DIR)/preinst $(USHARE_IPK_DIR)/CONTROL/preinst
 	install -m 755 $(USHARE_SOURCE_DIR)/postinst $(USHARE_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(USHARE_SOURCE_DIR)/prerm $(USHARE_IPK_DIR)/CONTROL/prerm
 	echo $(USHARE_CONFFILES) | sed -e 's/ /\n/g' > $(USHARE_IPK_DIR)/CONTROL/conffiles
