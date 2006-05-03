@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LOGROTATE_SITE=http://ftp.debian.org/debian/pool/main/l/logrotate
-LOGROTATE_VERSION=3.7
+LOGROTATE_VERSION=3.7.1
 LOGROTATE_SOURCE=logrotate_$(LOGROTATE_VERSION).orig.tar.gz
 LOGROTATE_DIR=logrotate-$(LOGROTATE_VERSION)
 LOGROTATE_UNZIP=zcat
@@ -28,7 +28,7 @@ LOGROTATE_DEPENDS=popt
 #
 # LOGROTATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LOGROTATE_IPK_VERSION=2
+LOGROTATE_IPK_VERSION=3
 
 #
 # LOGROTATE_CONFFILES should be a list of user-editable files
