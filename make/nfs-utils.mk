@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 NFS-UTILS_SITE=http://dl.sourceforge.net/sourceforge/nfs
-NFS-UTILS_VERSION=1.0.6
+NFS-UTILS_VERSION=1.0.7
 NFS-UTILS_SOURCE=nfs-utils-$(NFS-UTILS_VERSION).tar.gz
 NFS-UTILS_DIR=nfs-utils-$(NFS-UTILS_VERSION)
 NFS-UTILS_UNZIP=zcat
@@ -30,14 +30,14 @@ NFS-UTILS_CONFLICTS=
 #
 # NFS-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS-UTILS_IPK_VERSION=3
+NFS-UTILS_IPK_VERSION=4
 
 #
 # NFS-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 NFS-UTILS_PATCHES=$(NFS-UTILS_SOURCE_DIR)/acinclude-lossage.patch \
-		 $(NFS-UTILS_SOURCE_DIR)/rpcgen-lossage.patch
+		$(NFS-UTILS_SOURCE_DIR)/rpcgen-lossage.patch
 
 #
 # If the compilation of the package requires additional
@@ -92,6 +92,7 @@ nfs-utils-source: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES)
 $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	$(NFS-UTILS_UNZIP) $(DL_DIR)/$(NFS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	chmod u+w $(BUILD_DIR)/$(NFS-UTILS_DIR)/*
 	cat $(NFS-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(NFS-UTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	(cd $(NFS-UTILS_BUILD_DIR); \
@@ -105,6 +106,8 @@ $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PA
 		--prefix=/opt \
 		--with-statduser=nobody \
 		--enable-nfsv3 \
+		--disable-nfsv4 \
+		--disable-gss \
 	)
 	touch $(NFS-UTILS_BUILD_DIR)/.configured
 
