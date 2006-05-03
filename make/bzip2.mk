@@ -4,9 +4,9 @@
 #
 ###########################################################
 
-BZIP2_SITE=ftp://sources.redhat.com/pub/bzip2/v102/
-BZIP2_VERSION=1.0.2
-BZIP2_LIB_VERSION=1.0.2
+BZIP2_SITE=http://www.bzip.org/1.0.3
+BZIP2_VERSION=1.0.3
+BZIP2_LIB_VERSION=1.0.3
 BZIP2_SOURCE=bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_DIR=bzip2-$(BZIP2_VERSION)
 BZIP2_UNZIP=zcat
@@ -17,7 +17,7 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=4
+BZIP2_IPK_VERSION=5
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -31,6 +31,7 @@ $(DL_DIR)/$(BZIP2_SOURCE):
 bzip2-source: $(DL_DIR)/$(BZIP2_SOURCE)
 
 $(BZIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(BZIP2_SOURCE)
+	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR)
 	$(BZIP2_UNZIP) $(DL_DIR)/$(BZIP2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR)
 	touch $(BZIP2_BUILD_DIR)/.configured
