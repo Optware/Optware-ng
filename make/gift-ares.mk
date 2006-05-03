@@ -20,10 +20,12 @@
 # You should change all these variables to suit your package.
 #
 GIFTARES_REPOSITORY=:pserver:anonymous@cvs.gift-ares.berlios.de:/cvsroot/gift-ares
-GIFTARES_VERSION=20060130
+GIFTARES_SITE=http://download.berlios.de/gift-ares
+#GIFTARES_VERSION=20060501
+GIFTARES_VERSION=0.3.0
 GIFTARES_SOURCE=gift-ares-$(GIFTARES_VERSION).tar.gz
 GIFTARES_DIR=gift-ares-$(GIFTARES_VERSION)
-GIFTARES_TAG=-D 2006-01-30
+GIFTARES_TAG=-D 2006-05-01
 GIFTARES_MODULE=gift-ares
 GIFTARES_DIR=gift-ares-${GIFTARES_VERSION}
 GIFTARES_UNZIP=zcat
@@ -36,11 +38,11 @@ GIFTARES_DESCRIPTION=giFT ares plugin
 #
 # GIFTARES_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFTARES_IPK_VERSION=1
+GIFTARES_IPK_VERSION=2
 
 #
 # GIFTARES_CONFFILES should be a list of user-editable files
-GIFTARES_CONFFILES=/opt/etc/gift-ares.conf /opt/etc/init.d/SXXgift-ares
+GIFTARES_CONFFILES=/opt/share/giFT/Ares/Ares.conf.template
 
 #
 # GIFTARES_PATCHES should list any patches, in the the order in
@@ -74,10 +76,11 @@ GIFTARES_IPK=$(BUILD_DIR)/gift-ares_$(GIFTARES_VERSION)-$(GIFTARES_IPK_VERSION)_
 # then it will be fetched from cvs.
 #
 $(DL_DIR)/$(GIFTARES_SOURCE):
-	cd $(DL_DIR) ; $(CVS) -z3 -d $(GIFTARES_REPOSITORY) co $(GIFTARES_TAG) $(GIFTARES_MODULE)
-	mv $(DL_DIR)/$(GIFTARES_MODULE) $(DL_DIR)/$(GIFTARES_DIR)
-	cd $(DL_DIR) ; tar zcvf $(GIFTARES_SOURCE) $(GIFTARES_DIR)
-	rm -rf $(DL_DIR)/$(GIFTARES_DIR)
+#	cd $(DL_DIR) ; $(CVS) -z3 -d $(GIFTARES_REPOSITORY) co $(GIFTARES_TAG) $(GIFTARES_MODULE)
+#	mv $(DL_DIR)/$(GIFTARES_MODULE) $(DL_DIR)/$(GIFTARES_DIR)
+#	cd $(DL_DIR) ; tar zcvf $(GIFTARES_SOURCE) $(GIFTARES_DIR)
+#	rm -rf $(DL_DIR)/$(GIFTARES_DIR)
+	$(WGET) -P $(DL_DIR) $(GIFTARES_SITE)/$(GIFTARES_SOURCE)
 
 #
 # This is the dependency on the source code.  If the source is missing,
