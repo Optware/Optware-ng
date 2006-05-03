@@ -1,0 +1,18 @@
+--- builds/nano/configure.orig	2006-05-02 20:50:37.000000000 +1000
++++ builds/nano/configure	2006-05-02 20:52:09.000000000 +1000
+@@ -5804,11 +5804,10 @@
+   echo "$as_me:$LINENO: checking for broken regexec" >&5
+ echo $ECHO_N "checking for broken regexec... $ECHO_C" >&6
+     if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++echo "${ECHO_T}yes (tricked for cross compile)" >&6;
++cat >>confdefs.h <<\_ACEOF
++#define BROKEN_REGEXEC 1
++_ACEOF
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */

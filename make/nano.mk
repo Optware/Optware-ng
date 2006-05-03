@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v1.2
-NANO_VERSION=1.2.4
+NANO_VERSION=1.2.5
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -16,11 +16,11 @@ NANO_PRIORITY=optional
 NANO_DEPENDS=ncurses
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=2
+NANO_IPK_VERSION=3
 
 NANO_CONFFILES=/opt/etc/nanorc
 
-NANO_PATCHES=$(NANO_SOURCE_DIR)/configure.patch
+NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
 
 NANO_CPPFLAGS=-I$(STAGING_PREFIX)/include/ncurses
 NANO_LDFLAGS=
