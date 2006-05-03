@@ -1,6 +1,6 @@
---- nfs-utils-1.0.6/config.mk.in.old	2004-11-07 12:30:05.000000000 +0000
-+++ nfs-utils-1.0.6/config.mk.in	2004-11-07 12:30:19.000000000 +0000
-@@ -52,7 +52,7 @@
+--- nfs-utils-1.0.7/config.mk.in.orig	2004-10-19 10:22:53.000000000 +1000
++++ nfs-utils-1.0.7/config.mk.in	2006-05-02 14:39:12.000000000 +1000
+@@ -55,7 +55,7 @@
  LN_S		= ln -sf
  RANLIB		= @RANLIB@
  INDENT		= indent

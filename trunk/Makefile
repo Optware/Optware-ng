@@ -29,6 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+nfs-utils
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -60,7 +61,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
 	monotone mrtg mtr mutt \
-	nagios-plugins nail nano neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
+	nagios-plugins nail nano neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server \
 	nget nmap nload nrpe ntop ntp ntpclient nylon \
 	opencdk oww openssh openssl openvpn \
 	pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
