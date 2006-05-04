@@ -43,7 +43,7 @@ COMMON_CROSS_PACKAGES = \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
 	denyhosts dev-pts dict digitemp distcc dokuwiki dhcp diffutils dnsmasq dovecot dropbear \
-	e2fsprogs e2tools eaccelerator ed elinks esmtp erlang esound eggdrop expat \
+	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
@@ -154,7 +154,7 @@ WL500G_BROKEN_PACKAGES = \
 	bitlbee bzflag \
 	cvs \
 	dict \
-	elinks erlang \
+	ecl elinks erlang \
 	ficy freetds \
 	gawk gambit-c giftcurs git-core glib gnupg gtk \
 	hnb \
