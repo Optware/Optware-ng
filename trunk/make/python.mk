@@ -37,32 +37,21 @@ PYTHON_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON_SECTION=misc
 PYTHON_PRIORITY=optional
+ifneq ($(OPTWARE_TARGET),wl500g)
+PYTHON_DEPENDS=libstdc++, readline, ncursesw, bzip2, openssl, libdb, zlib
+else
 PYTHON_DEPENDS=libstdc++, readline, ncurses, bzip2, openssl, libdb, zlib
+endif
 PYTHON_SUGGESTS=
 
 #
 # PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON_IPK_VERSION=1
+PYTHON_IPK_VERSION=2
 
 #
 # PYTHON_CONFFILES should be a list of user-editable files
 #PYTHON_CONFFILES=/opt/etc/python.conf /opt/etc/init.d/SXXpython
-
-#
-# PYTHON_PATCHES should list any patches, in the the order in
-# which they should be applied to the source code.
-#
-# http://mail.python.org/pipermail/patches/2004-October/016312.html
-PYTHON_PATCHES=\
-	$(PYTHON_SOURCE_DIR)/Makefile.pre.in.patch \
-	$(PYTHON_SOURCE_DIR)/README.patch \
-	$(PYTHON_SOURCE_DIR)/config.guess.patch \
-	$(PYTHON_SOURCE_DIR)/config.sub.patch \
-	$(PYTHON_SOURCE_DIR)/configure.in.patch \
-	$(PYTHON_SOURCE_DIR)/setup.py.patch \
-	$(PYTHON_SOURCE_DIR)/Lib-site.py.patch \
-	$(PYTHON_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 
 #
 # If the compilation of the package requires additional
@@ -89,6 +78,25 @@ PYTHON_BUILD_DIR=$(BUILD_DIR)/python
 PYTHON_SOURCE_DIR=$(SOURCE_DIR)/python
 PYTHON_IPK_DIR=$(BUILD_DIR)/python-$(PYTHON_VERSION)-ipk
 PYTHON_IPK=$(BUILD_DIR)/python_$(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+#
+# PYTHON_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+# http://mail.python.org/pipermail/patches/2004-October/016312.html
+PYTHON_PATCHES=\
+	$(PYTHON_SOURCE_DIR)/Makefile.pre.in.patch \
+	$(PYTHON_SOURCE_DIR)/README.patch \
+	$(PYTHON_SOURCE_DIR)/config.guess.patch \
+	$(PYTHON_SOURCE_DIR)/config.sub.patch \
+	$(PYTHON_SOURCE_DIR)/configure.in.patch \
+	$(PYTHON_SOURCE_DIR)/setup.py.patch \
+	$(PYTHON_SOURCE_DIR)/Lib-site.py.patch \
+	$(PYTHON_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
+
+ifeq ($(OPTWARE_TARGET),wl500g)
+PYTHON_PATCHES:=$(PYTHON_PATCHES) $(PYTHON_SOURCE_DIR)/disable-ncursesw.patch
+endif
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -120,7 +128,11 @@ python-source: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON_SOURCE) $(PYTHON_PATCHES) make/python.mk
+ifneq ($(OPTWARE_TARGET),wl500g)
+	make bzip2-stage readline-stage ncursesw-stage openssl-stage libdb-stage zlib-stage
+else
 	make bzip2-stage readline-stage ncurses-stage openssl-stage libdb-stage zlib-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PYTHON_DIR) $(PYTHON_BUILD_DIR)
 	$(PYTHON_UNZIP) $(DL_DIR)/$(PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON_DIR); \
