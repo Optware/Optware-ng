@@ -42,7 +42,7 @@ ECL_CONFLICTS=
 #
 # ECL_IPK_VERSION should be incremented when the ipk changes.
 #
-ECL_IPK_VERSION=1
+ECL_IPK_VERSION=2
 
 #
 # ECL_CONFFILES should be a list of user-editable files
@@ -160,6 +160,7 @@ endif
 		--disable-static \
 		--enable-boehm=included \
 		--with-cross-config=$(ECL_BUILD_DIR)/cross_config \
+		--with-tcp=yes \
 		--without-clx \
 		--without-defsystem \
 	)
