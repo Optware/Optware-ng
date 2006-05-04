@@ -95,10 +95,16 @@ $(ECL_HOST_BUILD_DIR)/.host-built: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ECL_DIR) $(ECL_HOST_BUILD_DIR)
 	(cd $(ECL_HOST_BUILD_DIR); \
+		ac_cv_path_INSTALL_INFO=/bin/true \
 		./configure \
 		--prefix=$(ECL_HOST_BUILD_DIR)/install \
 		--disable-nls \
 		--disable-static \
+		--enable-boehm=included \
+		--without-x \
+		--without-clx \
+		--without-defsystem \
+		--without-asdf \
 	)
 	$(MAKE) -C $(ECL_HOST_BUILD_DIR) all install
 # now ready to invoke like this:
@@ -127,20 +133,24 @@ $(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR)
 	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(ECL_PATCHES)" ; \
-		then cat $(ECL_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ECL_DIR) -p0 ; \
+	if test -n "$(ECL_PATCHES)" ; then \
+		cat $(ECL_PATCHES) | patch -d $(BUILD_DIR)/$(ECL_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ECL_DIR)" != "$(ECL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR) ; \
 	fi
+ifeq ($(OPTWARE_TARGET),nslu2)
 	cp $(ECL_SOURCE_DIR)/cross_config_$(OPTWARE_TARGET) $(ECL_BUILD_DIR)/cross_config
+else
+	cp $(ECL_SOURCE_DIR)/cross_config $(ECL_BUILD_DIR)/
+endif
 	echo ECL_TO_RUN=$(ECL_HOST_BUILD_DIR)/install/bin/ecl >> $(ECL_BUILD_DIR)/cross_config
 	(cd $(ECL_BUILD_DIR); \
 		PATH=$(ECL_HOST_BUILD_DIR)/install/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ECL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ECL_LDFLAGS)" \
+		ac_cv_path_INSTALL_INFO=/bin/true \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -148,6 +158,7 @@ $(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--enable-boehm=included \
 		--with-cross-config=$(ECL_BUILD_DIR)/cross_config \
 		--without-clx \
 		--without-defsystem \
@@ -214,7 +225,6 @@ $(ECL_IPK_DIR)/CONTROL/control:
 $(ECL_IPK): $(ECL_BUILD_DIR)/.built
 	rm -rf $(ECL_IPK_DIR) $(BUILD_DIR)/ecl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ECL_BUILD_DIR) DESTDIR=$(ECL_IPK_DIR) install
-	rm -f $(ECL_IPK_DIR)/opt/info/*
 	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/bin/ecl
 	$(STRIP_COMMAND) $(ECL_IPK_DIR)/opt/lib/ecl/{*.so,*.fas}
 #	install -d $(ECL_IPK_DIR)/opt/etc/
