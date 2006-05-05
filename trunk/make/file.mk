@@ -20,12 +20,12 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=http://downloads.planetmirror.com/pub/file
-FILE_VERSION=4.13
+FILE_VERSION=4.17
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
 FILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-FILE_DESCRIPTION=Ubiquitous file identification utility
+FILE_DESCRIPTION=Ubiquitous file identification utility.
 FILE_SECTION=utility
 FILE_PRIORITY=optional
 FILE_DEPENDS=zlib
@@ -34,7 +34,7 @@ FILE_CONFLICTS=
 #
 # FILE_IPK_VERSION should be incremented when the ipk changes.
 #
-FILE_IPK_VERSION=1
+FILE_IPK_VERSION=2
 
 #
 # FILE_PATCHES should list any patches, in the the order in
@@ -130,6 +130,16 @@ $(FILE_BUILD_DIR)/.built: $(FILE_BUILD_DIR)/.configured
 # which is built.
 #
 file: $(FILE_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(FILE_BUILD_DIR)/.staged: $(FILE_BUILD_DIR)/.built
+	rm -f $(FILE_BUILD_DIR)/.staged
+	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(STAGING_DIR) pkgdata_DATA="magic magic.mime" install
+	touch $(FILE_BUILD_DIR)/.staged
+
+file-stage: $(FILE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
