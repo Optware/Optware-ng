@@ -111,6 +111,7 @@ libexif-source: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES)
 # You will need doxygen on your build machine.
 
 $(LIBEXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES) make/libexif.mk
+	$(MAKE) doxygen-stage
 	rm -rf $(BUILD_DIR)/$(LIBEXIF_DIR) $(LIBEXIF_BUILD_DIR)
 	$(LIBEXIF_UNZIP) $(DL_DIR)/$(LIBEXIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXIF_PATCHES)" ; \
