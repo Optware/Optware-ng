@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.35.tar.gz
+#ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2/esound-0.2.36.tar.gz
 ESOUND_SITE=ftp://ftp.gnome.org/pub/GNOME/sources/esound/0.2
-ESOUND_VERSION=0.2.35
+ESOUND_VERSION=0.2.36
 ESOUND_SOURCE=esound-$(ESOUND_VERSION).tar.gz
 ESOUND_DIR=esound-$(ESOUND_VERSION)
 ESOUND_UNZIP=zcat
@@ -42,7 +42,7 @@ ESOUND_CONFLICTS=
 #
 # ESOUND_IPK_VERSION should be incremented when the ipk changes.
 #
-ESOUND_IPK_VERSION=2
+ESOUND_IPK_VERSION=3
 
 #
 # ESOUND_CONFFILES should be a list of user-editable files
