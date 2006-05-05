@@ -26,13 +26,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VORBIS-TOOLS_SITE=http://www.vorbis.com/files/1.0.1/unix
-VORBIS-TOOLS_VERSION=1.0.1
+VORBIS-TOOLS_SITE=http://downloads.xiph.org/releases/vorbis
+VORBIS-TOOLS_VERSION=1.1.1
 VORBIS-TOOLS_SOURCE=vorbis-tools-$(VORBIS-TOOLS_VERSION).tar.gz
 VORBIS-TOOLS_DIR=vorbis-tools-$(VORBIS-TOOLS_VERSION)
 VORBIS-TOOLS_UNZIP=zcat
 VORBIS-TOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-VORBIS-TOOLS_DESCRIPTION=vorbis-tools contains a set of tools to manipulate ogg-vorbis files.
+VORBIS-TOOLS_DESCRIPTION=A set of tools to manipulate ogg-vorbis files.
 VORBIS-TOOLS_SECTION=misc
 VORBIS-TOOLS_PRIORITY=optional
 VORBIS-TOOLS_DEPENDS=
@@ -51,7 +51,7 @@ VORBIS-TOOLS_CONFFILES=
 # VORBIS-TOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VORBIS-TOOLS_PATCHES=$(VORBIS-TOOLS_SOURCE_DIR)/libtool.patch
+#VORBIS-TOOLS_PATCHES=$(VORBIS-TOOLS_SOURCE_DIR)/libtool.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,7 +107,10 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 	$(MAKE) libogg-stage libao-stage audiofile-stage esound-stage libcurl-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) $(VORBIS-TOOLS_BUILD_DIR)
 	$(VORBIS-TOOLS_UNZIP) $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(VORBIS-TOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) -p1
+	if test -n "$(VORBIS-TOOLS_PATCHES)" ; \
+		then cat $(VORBIS-TOOLS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) $(VORBIS-TOOLS_BUILD_DIR)
 	(cd $(VORBIS-TOOLS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -119,8 +122,8 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--without-flac \
 		--without-speex \
+		--without-flac \
 		--with-ogg-libraries=$(STAGING_LIB_DIR) \
 		--with-ogg-includes=$(STAGING_INCLUDE_DIR) \
 		--with-vorbis-libraries=$(STAGING_LIB_DIR) \
@@ -130,7 +133,7 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 		--with-curl-libraries=$(STAGING_LIB_DIR) \
 	       	--with-curl-includes=$(STAGING_INCLUDE_DIR) \
 	)
-	cat $(VORBIS-TOOLS_PATCHES) | patch -d $(VORBIS-TOOLS_BUILD_DIR) -p1
+#	cat $(VORBIS-TOOLS_PATCHES) | patch -d $(VORBIS-TOOLS_BUILD_DIR) -p1
 	touch $(VORBIS-TOOLS_BUILD_DIR)/.configured
 
 vorbis-tools-unpack: $(VORBIS-TOOLS_BUILD_DIR)/.configured
@@ -191,13 +194,7 @@ $(VORBIS-TOOLS_IPK_DIR)/CONTROL/control:
 $(VORBIS-TOOLS_IPK): $(VORBIS-TOOLS_BUILD_DIR)/.built
 	rm -rf $(VORBIS-TOOLS_IPK_DIR) $(BUILD_DIR)/vorbis-tools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VORBIS-TOOLS_BUILD_DIR) DESTDIR=$(VORBIS-TOOLS_IPK_DIR) install
-	#install -d $(VORBIS-TOOLS_IPK_DIR)/opt/etc/
-	#install -m 644 $(VORBIS-TOOLS_SOURCE_DIR)/vorbis-tools.conf $(VORBIS-TOOLS_IPK_DIR)/opt/etc/vorbis-tools.conf
-	#install -d $(VORBIS-TOOLS_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(VORBIS-TOOLS_SOURCE_DIR)/rc.vorbis-tools $(VORBIS-TOOLS_IPK_DIR)/opt/etc/init.d/SXXvorbis-tools
 	$(MAKE) $(VORBIS-TOOLS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(VORBIS-TOOLS_SOURCE_DIR)/postinst $(VORBIS-TOOLS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(VORBIS-TOOLS_SOURCE_DIR)/prerm $(VORBIS-TOOLS_IPK_DIR)/CONTROL/prerm
 	echo $(VORBIS-TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(VORBIS-TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VORBIS-TOOLS_IPK_DIR)
 
