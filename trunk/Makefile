@@ -159,7 +159,7 @@ WL500G_BROKEN_PACKAGES = \
 	ficy freetds \
 	gawk gambit-c giftcurs git-core glib gnupg gtk \
 	hnb \
-	ice iperf iptables ivorbis-tools \
+	ice id3lib iperf iptables ivorbis-tools \
 	jabber jamvm jikes \
 	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
