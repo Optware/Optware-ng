@@ -42,7 +42,7 @@ AUDIOFILE_CONFLICTS=
 #
 # AUDIOFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUDIOFILE_IPK_VERSION=3
+AUDIOFILE_IPK_VERSION=4
 
 #
 # AUDIOFILE_CONFFILES should be a list of user-editable files
