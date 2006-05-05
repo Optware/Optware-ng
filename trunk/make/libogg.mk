@@ -20,20 +20,26 @@
 # You should change all these variables to suit your package.
 #
 LIBOGG_SITE=http://downloads.xiph.org/releases/ogg
-LIBOGG_VERSION=1.0
-LIBOGG_VERSION_LIB=0.4.0
+LIBOGG_VERSION=1.1.3
 LIBOGG_SOURCE=libogg-$(LIBOGG_VERSION).tar.gz
 LIBOGG_DIR=libogg-$(LIBOGG_VERSION)
 LIBOGG_UNZIP=zcat
+LIBOGG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBOGG_DESCRIPTION=Ogg is a multimedia container format.
+LIBOGG_SECTION=lib
+LIBOGG_PRIORITY=optional
+LIBOGG_DEPENDS=
+LIBOGG_SUGGESTS=
+LIBOGG_CONFLICTS=
 
 #
 # LIBOGG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOGG_IPK_VERSION=1
+LIBOGG_IPK_VERSION=2
 
 #
 # LIBOGG_CONFFILES should be a list of user-editable files
-LIBOGG_CONFFILES=/opt/etc/libogg.conf /opt/etc/init.d/SXXlibogg
+#LIBOGG_CONFFILES=/opt/etc/libogg.conf /opt/etc/init.d/SXXlibogg
 
 #
 # LIBOGG_PATCHES should list any patches, in the the order in
@@ -100,17 +106,6 @@ $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOGG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBOGG_LDFLAGS)" \
-		sys_lib_dlsearch_path_spec="$(STAGING_DIR)/opt/lib" \
-		sys_lib_search_path_spec="$(STAGING_DIR)/opt/lib" \
-		ac_cv_sizeof_char=1 \
-		ac_cv_sizeof_int=4 \
-		ac_cv_sizeof_long=4 \
-		ac_cv_sizeof_long_long=8 \
-		ac_cv_sizeof_short=2 \
-		ac_cv_sizeof_unsigned_char=1 \
-		ac_cv_sizeof_unsigned_int=4 \
-		ac_cv_sizeof_unsigned_long=4 \
-		ac_cv_sizeof_unsigned_short=2 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -121,6 +116,7 @@ $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES)
 	touch $(LIBOGG_BUILD_DIR)/.configured
 
 libogg-unpack: $(LIBOGG_BUILD_DIR)/.configured
+
 
 #
 # This builds the actual binary.  You should change the target to refer
@@ -148,6 +144,22 @@ $(LIBOGG_BUILD_DIR)/.staged: $(LIBOGG_BUILD_DIR)/.built
 
 libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
 
+
+$(LIBOGG_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBOGG_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libogg" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBOGG_PRIORITY)" >>$@
+	@echo "Section: $(LIBOGG_SECTION)" >>$@
+	@echo "Version: $(LIBOGG_VERSION)-$(LIBOGG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBOGG_MAINTAINER)" >>$@
+	@echo "Source: $(LIBOGG_SITE)/$(LIBOGG_SOURCE)" >>$@
+	@echo "Description: $(LIBOGG_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBOGG_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBOGG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBOGG_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -162,10 +174,9 @@ libogg-stage: $(LIBOGG_BUILD_DIR)/.staged
 #
 $(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/.built
 	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(LIBOGG_IPK_DIR) install
-	install -d $(LIBOGG_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBOGG_VERSION)/" \
-		-e "s/@RELEASE@/$(LIBOGG_IPK_VERSION)/" $(LIBOGG_SOURCE_DIR)/control > $(LIBOGG_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(LIBOGG_IPK_DIR) install-strip
+	$(MAKE) $(LIBOGG_IPK_DIR)/CONTROL/control
+	echo $(LIBOGG_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOGG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOGG_IPK_DIR)
 
 #
