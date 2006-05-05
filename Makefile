@@ -161,7 +161,8 @@ WL500G_BROKEN_PACKAGES = \
 	hnb \
 	ice id3lib iperf iptables ivorbis-tools \
 	jabber jamvm jikes \
-	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
+	ldconfig libdvb libexif libftdi libgc libtorrent libvorbisidec 
+lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nail ncursesw nfs-server nfs-utils nget ntp nylon \
 	pango py-lxml py-mssql py-paste py-psycopg2 \
