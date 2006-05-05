@@ -20,27 +20,32 @@
 # You should change all these variables to suit your package.
 #
 LIBVORBIS_SITE=http://downloads.xiph.org/releases/vorbis
-LIBVORBIS_VERSION=1.0
-LIBVORBIS_VERSION_LIB=0.2.0
-LIBVORBIS_FILE_VERSION_LIB=3.0.0
+LIBVORBIS_VERSION=1.1.2
 LIBVORBIS_SOURCE=libvorbis-$(LIBVORBIS_VERSION).tar.gz
 LIBVORBIS_DIR=libvorbis-$(LIBVORBIS_VERSION)
 LIBVORBIS_UNZIP=zcat
+LIBVORBIS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBVORBIS_DESCRIPTION=Ogg Vorbis compressed audio format.
+LIBVORBIS_SECTION=lib
+LIBVORBIS_PRIORITY=optional
+LIBVORBIS_DEPENDS=libogg
+LIBVORBIS_SUGGESTS=
+LIBVORBIS_CONFLICTS=
 
 #
 # LIBVORBIS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBIS_IPK_VERSION=1
+LIBVORBIS_IPK_VERSION=2
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files
-LIBVORBIS_CONFFILES=/opt/etc/libvorbis.conf /opt/etc/init.d/SXXlibvorbis
+#LIBVORBIS_CONFFILES=/opt/etc/libvorbis.conf /opt/etc/init.d/SXXlibvorbis
 
 #
 # LIBVORBIS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBVORBIS_PATCHES=$(LIBVORBIS_SOURCE_DIR)/configure.patch
+#LIBVORBIS_PATCHES=$(LIBVORBIS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -96,7 +101,10 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	$(MAKE) libogg-stage
 	rm -rf $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR)
 	$(LIBVORBIS_UNZIP) $(DL_DIR)/$(LIBVORBIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBVORBIS_PATCHES) | patch -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p1
+	if test -n "$(LIBVORBIS_PATCHES)" ; \
+		then cat $(LIBVORBIS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR)
 	(cd $(LIBVORBIS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -139,6 +147,22 @@ $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 
 libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
 
+
+$(LIBVORBIS_IPK_DIR)/CONTROL/control:
+	@install -d $(LIBVORBIS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: libvorbis" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBVORBIS_PRIORITY)" >>$@
+	@echo "Section: $(LIBVORBIS_SECTION)" >>$@
+	@echo "Version: $(LIBVORBIS_VERSION)-$(LIBVORBIS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBVORBIS_MAINTAINER)" >>$@
+	@echo "Source: $(LIBVORBIS_SITE)/$(LIBVORBIS_SOURCE)" >>$@
+	@echo "Description: $(LIBVORBIS_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBVORBIS_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBVORBIS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBVORBIS_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -153,10 +177,9 @@ libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
 #
 $(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/.built
 	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(LIBVORBIS_IPK_DIR) install
-	install -d $(LIBVORBIS_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBVORBIS_VERSION)/" \
-		-e "s/@RELEASE@/$(LIBVORBIS_IPK_VERSION)/" $(LIBVORBIS_SOURCE_DIR)/control > $(LIBVORBIS_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(LIBVORBIS_IPK_DIR) install-strip
+	$(MAKE) $(LIBVORBIS_IPK_DIR)/CONTROL/control
+	echo $(LIBVORBIS_CONFFILES) | sed -e 's/ /\n/g' > $(LIBVORBIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBIS_IPK_DIR)
 
 #
