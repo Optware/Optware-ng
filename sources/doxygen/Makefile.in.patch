@@ -1,0 +1,30 @@
+--- Makefile.in.orig	2006-05-05 09:26:34.000000000 +1000
++++ Makefile.in	2006-05-05 09:26:51.000000000 +1000
+@@ -49,19 +49,19 @@
+ MAN1DIR = man/man1
+ 
+ install: doxywizard_install 
+-	$(INSTTOOL) -d $(INSTALL)/bin
+-	$(INSTTOOL) -m 755 bin/doxygen    $(INSTALL)/bin
+-	$(INSTTOOL) -m 755 bin/doxytag    $(INSTALL)/bin
+-	$(INSTTOOL) -d $(INSTALL)/$(MAN1DIR)
+-	cat doc/doxygen.1    | sed -e "s/DATE/$(DATE)/g" -e "s/VERSION/$(VERSION)/g" > $(INSTALL)/$(MAN1DIR)/doxygen.1 ; \
+-	cat doc/doxytag.1    | sed -e "s/DATE/$(DATE)/g" -e "s/VERSION/$(VERSION)/g" > $(INSTALL)/$(MAN1DIR)/doxytag.1 ; \
+-	cat doc/doxywizard.1 | sed -e "s/DATE/$(DATE)/g" -e "s/VERSION/$(VERSION)/g" > $(INSTALL)/$(MAN1DIR)/doxywizard.1 ;
++	$(INSTTOOL) -d $(DESTDIR)$(INSTALL)/bin
++	$(INSTTOOL) -m 755 bin/doxygen    $(DESTDIR)$(INSTALL)/bin
++	$(INSTTOOL) -m 755 bin/doxytag    $(DESTDIR)$(INSTALL)/bin
++	$(INSTTOOL) -d $(DESTDIR)$(INSTALL)/$(MAN1DIR)
++	cat doc/doxygen.1    | sed -e "s/DATE/$(DATE)/g" -e "s/VERSION/$(VERSION)/g" > $(DESTDIR)$(INSTALL)/$(MAN1DIR)/doxygen.1 ; \
++	cat doc/doxytag.1    | sed -e "s/DATE/$(DATE)/g" -e "s/VERSION/$(VERSION)/g" > $(DESTDIR)$(INSTALL)/$(MAN1DIR)/doxytag.1 ; \
++	cat doc/doxywizard.1 | sed -e "s/DATE/$(DATE)/g" -e "s/VERSION/$(VERSION)/g" > $(DESTDIR)$(INSTALL)/$(MAN1DIR)/doxywizard.1 ;
+ 
+ install_docs: 
+ 	$(INSTTOOL) -d $(DOCDIR)
+ 	cp -r doc $(DOCDIR)
+ 	cp -r examples $(DOCDIR)
+-	echo "DOXYGEN  = $(INSTALL)" >  $(DOCDIR)/doc/Makefile
++	echo "DOXYGEN  = $(DESTDIR)$(INSTALL)" >  $(DOCDIR)/doc/Makefile
+ 	echo "DOXYDOCS = .."         >> $(DOCDIR)/doc/Makefile
+ 	echo "VERSION  = $(VERSION)" >> $(DOCDIR)/doc/Makefile
+ 	echo "PERL     = $(PERL)"    >> $(DOCDIR)/doc/Makefile
