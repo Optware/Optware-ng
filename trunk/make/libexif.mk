@@ -42,7 +42,7 @@ LIBEXIF_CONFLICTS=
 #
 # LIBEXIF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEXIF_IPK_VERSION=1
+LIBEXIF_IPK_VERSION=2
 
 #
 # LIBEXIF_CONFFILES should be a list of user-editable files
