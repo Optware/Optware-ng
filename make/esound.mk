@@ -150,9 +150,7 @@ esound: $(ESOUND_BUILD_DIR)/.built
 $(ESOUND_BUILD_DIR)/.staged: $(ESOUND_BUILD_DIR)/.built
 	rm -f $(ESOUND_BUILD_DIR)/.staged
 	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	cp $(STAGING_DIR)/opt/bin/esd-config $(STAGING_DIR)/bin/esd-config
-	rm -f $(STAGING_LIB_DIR)/libesd.la
-	rm -f $(STAGING_LIB_DIR)/libesddsp.la
+#	cp $(STAGING_DIR)/opt/bin/esd-config $(STAGING_DIR)/bin/esd-config
 	touch $(ESOUND_BUILD_DIR)/.staged
 
 esound-stage: $(ESOUND_BUILD_DIR)/.staged
