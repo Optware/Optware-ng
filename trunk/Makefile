@@ -43,7 +43,7 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
-	denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot  doxygendropbear \
+	denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot  doxygen dropbear \
 	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
