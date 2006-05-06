@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.0.4
+PHP_VERSION=5.0.5
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=1
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ PHP_LOCALES=
 # PHP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4-5.0.4.patch $(PHP_SOURCE_DIR)/endian-5.0.4.patch $(PHP_SOURCE_DIR)/zend_strtod.patch
+PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4.patch $(PHP_SOURCE_DIR)/endian-5.0.4.patch $(PHP_SOURCE_DIR)/zend_strtod.patch
 
 #
 # If the compilation of the package requires additional
@@ -272,7 +272,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
-	cat $(PHP_PATCHES) |patch -p0 -d $(PHP_BUILD_DIR)
+	cat $(PHP_PATCHES) |patch -p0 -bd $(PHP_BUILD_DIR)
 	(cd $(PHP_BUILD_DIR); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
