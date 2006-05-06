@@ -105,7 +105,9 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 		then cat $(LIBVORBIS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p0 ; \
 	fi
-	mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR)
+	if test "$(BUILD_DIR)/$(LIBVORBIS_DIR)" != "$(LIBVORBIS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR) ; \
+	fi
 	(cd $(LIBVORBIS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBIS_CPPFLAGS)" \
@@ -116,6 +118,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-static \
 	)
 	touch $(LIBVORBIS_BUILD_DIR)/.configured
 
@@ -142,7 +145,6 @@ libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $(LIBVORBIS_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	rm -f $(STAGING_DIR)/opt/lib/libvorbis.la
 	touch $(LIBVORBIS_BUILD_DIR)/.staged
 
 libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
