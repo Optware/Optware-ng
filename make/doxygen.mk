@@ -42,7 +42,7 @@ DOXYGEN_CONFLICTS=
 #
 # DOXYGEN_IPK_VERSION should be incremented when the ipk changes.
 #
-DOXYGEN_IPK_VERSION=1
+DOXYGEN_IPK_VERSION=2
 
 #
 # DOXYGEN_CONFFILES should be a list of user-editable files
