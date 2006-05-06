@@ -105,13 +105,15 @@ audiofile-source: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
 	$(AUDIOFILE_UNZIP) $(DL_DIR)/$(AUDIOFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(AUDIOFILE_PATCHES) | patch -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p1
+	if test -n "$(AUDIOFILE_PATCHES)" ; \
+		then cat $(AUDIOFILE_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
-	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
-		autoreconf -vif $(AUDIOFILE_BUILD_DIR)
+#	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
+#		autoreconf -vif $(AUDIOFILE_BUILD_DIR)
 	(cd $(AUDIOFILE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AUDIOFILE_CPPFLAGS)" \
@@ -187,15 +189,8 @@ $(AUDIOFILE_IPK_DIR)/CONTROL/control:
 $(AUDIOFILE_IPK): $(AUDIOFILE_BUILD_DIR)/.built
 	rm -rf $(AUDIOFILE_IPK_DIR) $(BUILD_DIR)/audiofile_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(AUDIOFILE_IPK_DIR) install-strip
-	#install -d $(AUDIOFILE_IPK_DIR)/opt/etc/
-	#install -m 644 $(AUDIOFILE_SOURCE_DIR)/audiofile.conf $(AUDIOFILE_IPK_DIR)/opt/etc/audiofile.conf
-	install -d $(AUDIOFILE_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(AUDIOFILE_SOURCE_DIR)/rc.audiofile $(AUDIOFILE_IPK_DIR)/opt/etc/init.d/SXXaudiofile
 	$(MAKE) $(AUDIOFILE_IPK_DIR)/CONTROL/control
-	#install -m 755 $(AUDIOFILE_SOURCE_DIR)/postinst $(AUDIOFILE_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(AUDIOFILE_SOURCE_DIR)/prerm $(AUDIOFILE_IPK_DIR)/CONTROL/prerm
 	echo $(AUDIOFILE_CONFFILES) | sed -e 's/ /\n/g' > $(AUDIOFILE_IPK_DIR)/CONTROL/conffiles
-	rm -f $(AUDIOFILE_IPK_DIR)/opt/lib/libaudiofile.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUDIOFILE_IPK_DIR)
 
 #
