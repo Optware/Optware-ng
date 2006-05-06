@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-
+libexif
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -54,7 +54,7 @@ COMMON_CROSS_PACKAGES = \
 	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables ipython ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
-	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
+	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libftdi \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
@@ -92,8 +92,7 @@ COMMON_CROSS_PACKAGES = \
 	ttf-bitstream-vera \
 	ufsd unfs3 units unrar \
 	unzip usbutils ushare \
-	vblade vdr-mediamvp vsftpd vte vorbis-tools \
-	vim \
+	vblade vdr-mediamvp vim  vorbis-tools vsftpd vte \
 	w3cam w3m webalizer wget-ssl wizd \
 	wakelan which whois wpa-supplicant \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
