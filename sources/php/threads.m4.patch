@@ -1,11 +1,11 @@
---- ../php-5.0.3/TSRM/threads.m4	2002-10-05 04:26:17.000000000 -0700
-+++ TSRM/threads.m4	2005-06-02 15:49:46.000000000 -0700
-@@ -84,7 +84,7 @@
-   pthreads_working=yes
-   ], [
+--- TSRM/threads.m4.orig	2005-04-27 05:29:15.000000000 -0700
++++ TSRM/threads.m4	2006-03-25 10:35:51.000000000 -0800
+@@ -86,7 +86,7 @@
    pthreads_working=no
--  ], pthreads_working=no ) ] )dnl
-+  ], pthreads_working=yes ) ] )dnl
- dnl
- dnl PTHREADS_CHECK()
- dnl
+   ], [
+   dnl For cross compiling running this test is of no use. NetWare supports pthreads
+-  pthreads_working=no
++  pthreads_working=yes
+   case $host_alias in
+   *netware*)
+     pthreads_working=yes
