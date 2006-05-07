@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BLUEZ_SITE=http://org.csail.mit.edu/pybluez/release
-PY-BLUEZ_VERSION=0.6.1
+PY-BLUEZ_VERSION=0.7
 PY-BLUEZ_SOURCE=pybluez-src-$(PY-BLUEZ_VERSION).tar.gz
 PY-BLUEZ_DIR=pybluez-$(PY-BLUEZ_VERSION)
 PY-BLUEZ_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-BLUEZ_CONFLICTS=
 #
 # PY-BLUEZ_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BLUEZ_IPK_VERSION=2
+PY-BLUEZ_IPK_VERSION=1
 
 #
 # PY-BLUEZ_CONFFILES should be a list of user-editable files
