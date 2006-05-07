@@ -1,0 +1,12 @@
+--- aclocal.m4~	2004-12-14 09:55:17.000000000 -0800
++++ aclocal.m4	2005-02-19 21:23:29.077134774 -0800
+@@ -1511,7 +1511,8 @@
+ 
+ 					   ],
+ 					   [ cookie_io_functions_use_off64_t=yes ],
+-					   [ ] )
++					   [ ],
++					   [ cookie_io_functions_use_off64_t=yes ] )
+ 		
+       else
+   	    dnl older glibc versions (up to 2.1.2 ?)

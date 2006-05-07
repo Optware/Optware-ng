@@ -1,0 +1,22 @@
+--- configure.in~	2005-06-02 16:09:05.000000000 -0700
++++ configure.in	2005-06-02 16:46:05.000000000 -0700
+@@ -174,7 +174,7 @@
+ fi
+ 
+ dnl Check whether byte ordering is bigendian
+-PHP_C_BIGENDIAN
++AC_C_BIGENDIAN
+ 
+ 
+ dnl Platform-specific compile settings.
+--- Zend/configure.in~	2005-01-22 12:29:39.000000000 -0800
++++ Zend/configure.in	2005-06-02 16:48:54.000000000 -0700
+@@ -10,7 +10,7 @@
+ AM_PROG_LEX
+ AM_PROG_CC_STDC
+ ZEND_VERSION=$VERSION
+-AC_ZEND_C_BIGENDIAN
++AC_C_BIGENDIAN
+ 
+ dnl We want this one before the checks, so the checks can modify CFLAGS.
+ test -z "$CFLAGS" && auto_cflags=1
