@@ -180,7 +180,7 @@ $(LIBVORBIS_IPK_DIR)/CONTROL/control:
 $(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/.built
 	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(LIBVORBIS_IPK_DIR) install-strip
-	rm $(LIBVORBIS_IPK_DIR)/opt/lib/*.la
+	rm $(LIBVORBIS_IPK_DIR)/opt/lib/libvorbis*.la
 	$(MAKE) $(LIBVORBIS_IPK_DIR)/CONTROL/control
 	echo $(LIBVORBIS_CONFFILES) | sed -e 's/ /\n/g' > $(LIBVORBIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBIS_IPK_DIR)
