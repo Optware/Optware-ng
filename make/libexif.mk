@@ -42,7 +42,7 @@ LIBEXIF_CONFLICTS=
 #
 # LIBEXIF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEXIF_IPK_VERSION=3
+LIBEXIF_IPK_VERSION=4
 
 #
 # LIBEXIF_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ libexif-source: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES)
 # You will need doxygen on your build machine.
 
 $(LIBEXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXIF_SOURCE) $(LIBEXIF_PATCHES) make/libexif.mk
-	$(MAKE) doxygen-stage
+#	$(MAKE) doxygen-stage
 	rm -rf $(BUILD_DIR)/$(LIBEXIF_DIR) $(LIBEXIF_BUILD_DIR)
 	$(LIBEXIF_UNZIP) $(DL_DIR)/$(LIBEXIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXIF_PATCHES)" ; \
@@ -194,7 +194,7 @@ $(LIBEXIF_IPK_DIR)/CONTROL/control:
 #
 $(LIBEXIF_IPK): $(LIBEXIF_BUILD_DIR)/.built
 	rm -rf $(LIBEXIF_IPK_DIR) $(BUILD_DIR)/libexif_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBEXIF_BUILD_DIR) DESTDIR=$(LIBEXIF_IPK_DIR) install-strip
+	$(MAKE) -C $(LIBEXIF_BUILD_DIR)/libexif DESTDIR=$(LIBEXIF_IPK_DIR) install-strip
 #	install -d $(LIBEXIF_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBEXIF_SOURCE_DIR)/libexif.conf $(LIBEXIF_IPK_DIR)/opt/etc/libexif.conf
 #	install -d $(LIBEXIF_IPK_DIR)/opt/etc/init.d
