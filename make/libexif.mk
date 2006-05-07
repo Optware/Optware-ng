@@ -156,7 +156,7 @@ libexif: $(LIBEXIF_BUILD_DIR)/.built
 #
 $(LIBEXIF_BUILD_DIR)/.staged: $(LIBEXIF_BUILD_DIR)/.built
 	rm -f $(LIBEXIF_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBEXIF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(LIBEXIF_BUILD_DIR)/libexif DESTDIR=$(STAGING_DIR) install
 	touch $(LIBEXIF_BUILD_DIR)/.staged
 
 libexif-stage: $(LIBEXIF_BUILD_DIR)/.staged
