@@ -42,7 +42,7 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
-	denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot  doxygen dropbear \
+	denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
@@ -264,9 +264,9 @@ NAS100D_BROKEN_PACKAGES =
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
-# w3m - requires host libgc for cross-compilation, but this is not easily
-#       able to be installed on the official build system (native still works)
-PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd w3m
+# doxygen - host binary, not stripped
+PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
+	doxygen \
 
 
 # libiconv - has been made obsolete by gconv-modules
