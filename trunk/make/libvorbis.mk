@@ -35,7 +35,7 @@ LIBVORBIS_CONFLICTS=
 #
 # LIBVORBIS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBIS_IPK_VERSION=2
+LIBVORBIS_IPK_VERSION=3
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files
@@ -180,6 +180,7 @@ $(LIBVORBIS_IPK_DIR)/CONTROL/control:
 $(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/.built
 	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(LIBVORBIS_IPK_DIR) install-strip
+	rm $(LIBVORBIS_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBVORBIS_IPK_DIR)/CONTROL/control
 	echo $(LIBVORBIS_CONFFILES) | sed -e 's/ /\n/g' > $(LIBVORBIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBIS_IPK_DIR)
