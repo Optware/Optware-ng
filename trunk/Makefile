@@ -53,7 +53,7 @@ COMMON_CROSS_PACKAGES = \
 	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables ipython ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
-	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libextractor libftdi \
+	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
@@ -267,6 +267,7 @@ NAS100D_BROKEN_PACKAGES =
 # doxygen - host binary, not stripped
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
+	libextractor \
 
 
 # libiconv - has been made obsolete by gconv-modules
