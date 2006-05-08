@@ -91,7 +91,7 @@ COMMON_CROSS_PACKAGES = \
 	ttf-bitstream-vera \
 	ufsd unfs3 units unrar \
 	unzip usbutils ushare \
-	vblade vdr-mediamvp vim vsftpd vte \
+	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
 	w3cam w3m webalizer wget-ssl wizd \
 	wakelan which whois wpa-supplicant \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
