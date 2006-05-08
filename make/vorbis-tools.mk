@@ -41,7 +41,7 @@ VORBIS-TOOLS_CONFLICTS=
 #
 # VORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-VORBIS-TOOLS_IPK_VERSION=1
+VORBIS-TOOLS_IPK_VERSION=3
 
 #
 # VORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ VORBIS-TOOLS_CONFFILES=
 # VORBIS-TOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#VORBIS-TOOLS_PATCHES=$(VORBIS-TOOLS_SOURCE_DIR)/libtool.patch
+VORBIS-TOOLS_PATCHES=$(VORBIS-TOOLS_SOURCE_DIR)/configure.ac.patch
 
 #
 # If the compilation of the package requires additional
@@ -112,6 +112,7 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 		patch -d $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(VORBIS-TOOLS_DIR) $(VORBIS-TOOLS_BUILD_DIR)
+	autoreconf -vif $(VORBIS-TOOLS_BUILD_DIR)
 	(cd $(VORBIS-TOOLS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VORBIS-TOOLS_CPPFLAGS)" \
@@ -193,7 +194,7 @@ $(VORBIS-TOOLS_IPK_DIR)/CONTROL/control:
 #
 $(VORBIS-TOOLS_IPK): $(VORBIS-TOOLS_BUILD_DIR)/.built
 	rm -rf $(VORBIS-TOOLS_IPK_DIR) $(BUILD_DIR)/vorbis-tools_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(VORBIS-TOOLS_BUILD_DIR) DESTDIR=$(VORBIS-TOOLS_IPK_DIR) install
+	$(MAKE) -C $(VORBIS-TOOLS_BUILD_DIR) DESTDIR=$(VORBIS-TOOLS_IPK_DIR) install-strip
 	$(MAKE) $(VORBIS-TOOLS_IPK_DIR)/CONTROL/control
 	echo $(VORBIS-TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(VORBIS-TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VORBIS-TOOLS_IPK_DIR)
