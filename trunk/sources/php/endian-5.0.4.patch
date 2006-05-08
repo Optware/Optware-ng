@@ -1,14 +1,14 @@
---- configure.in~	2005-06-02 16:09:05.000000000 -0700
-+++ configure.in	2005-06-02 16:46:05.000000000 -0700
-@@ -174,7 +174,7 @@
- fi
+--- configure.in~	2006-04-01 20:56:06.000000000 -0800
++++ configure.in	2006-04-01 20:57:14.000000000 -0800
+@@ -276,7 +276,7 @@
+ PHP_EBCDIC
  
- dnl Check whether byte ordering is bigendian
+ dnl Check whether the system byte ordering is bigendian
 -PHP_C_BIGENDIAN
 +AC_C_BIGENDIAN
  
- 
- dnl Platform-specific compile settings.
+ dnl Check for /usr/pkg/{lib,include} which is where NetBSD puts binary
+ dnl and source packages.  This should be harmless on other OSs.
 --- Zend/configure.in~	2005-01-22 12:29:39.000000000 -0800
 +++ Zend/configure.in	2005-06-02 16:48:54.000000000 -0700
 @@ -10,7 +10,7 @@

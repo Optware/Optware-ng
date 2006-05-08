@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.0.5
+PHP_VERSION=5.1.4
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -255,8 +255,7 @@ PHP_CONFIGURE_THREAD_ARGS= \
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
-		$(PHP_PATCHES)
+$(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) bzip2-stage 
 	$(MAKE) gdbm-stage 
 	$(MAKE) libdb-stage
@@ -264,6 +263,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) \
 	$(MAKE) libxml2-stage 
 	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
+	$(MAKE) mysql-stage
 	$(MAKE) mysql-stage
 	$(MAKE) imap-stage
 ifneq ($(OPTWARE_TARGET),wl500g)
@@ -283,6 +283,8 @@ endif
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		ac_cv_func_memcmp_working=yes \
+		cv_php_mbstring_stdarg=yes \
+		STAGING_PREFIX="$(STAGING_PREFIX)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -296,19 +298,19 @@ endif
 		--enable-dba=shared \
 		--with-inifile \
 		--with-flatfile \
-		--enable-dbx=shared \
-		--enable-dio=shared \
 		--enable-dom=shared \
 		--enable-embed=shared \
 		--enable-exif=shared \
 		--enable-ftp=shared \
 		--enable-mbstring=shared \
+		--enable-pdo=shared \
 		--enable-shmop=shared \
 		--enable-sockets=shared \
 		--enable-sysvmsg=shared \
 		--enable-sysvshm=shared \
 		--enable-sysvsem=shared \
 		--enable-xml=shared \
+		--enable-xmlreader=shared \
 		--with-bz2=shared,$(STAGING_PREFIX) \
 		--with-db4=$(STAGING_PREFIX) \
 		--with-dom=shared,$(STAGING_PREFIX) \
@@ -319,6 +321,9 @@ endif
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
 		--with-openssl=shared,$(STAGING_PREFIX) \
+		--with-sqlite=shared \
+		--with-pdo-mysql=shared,$(STAGING_PREFIX) \
+		--with-pdo-sqlite=shared \
 		--with-xsl=shared,$(STAGING_PREFIX) \
 		--with-zlib=shared,$(STAGING_PREFIX) \
 		--with-libxml-dir=$(STAGING_PREFIX) \
@@ -356,7 +361,7 @@ php: $(PHP_BUILD_DIR)/.built
 #
 $(PHP_BUILD_DIR)/.staged: $(PHP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) install
+	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) program_prefix="" install
 	cp $(STAGING_PREFIX)/bin/php-config $(STAGING_DIR)/bin/php-config
 	cp $(STAGING_PREFIX)/bin/phpize $(STAGING_DIR)/bin/phpize
 	sed -i -e 's!prefix=.*!prefix=$(STAGING_PREFIX)!' $(STAGING_DIR)/bin/phpize
@@ -381,7 +386,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	rm -rf $(PHP_IPK_DIR) $(BUILD_DIR)/php_*_$(TARGET_ARCH).ipk
 	install -d $(PHP_IPK_DIR)/opt/var/lib/php/session
 	chmod a=rwx $(PHP_IPK_DIR)/opt/var/lib/php/session
-	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) install
+	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(PHP_IPK_DIR) program_prefix="" install
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/bin/php
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/*.so
 	$(STRIP_COMMAND) $(PHP_IPK_DIR)/opt/lib/php/extensions/*.so
