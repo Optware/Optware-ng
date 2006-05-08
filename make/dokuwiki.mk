@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOKUWIKI_SITE=http://www.splitbrain.org/_media/projects/dokuwiki
-DOKUWIKI_VERSION=2005-09-22
+DOKUWIKI_VERSION=2006-03-09
 DOKUWIKI_SOURCE=dokuwiki-$(DOKUWIKI_VERSION).tgz
 DOKUWIKI_DIR=dokuwiki-$(DOKUWIKI_VERSION)
 DOKUWIKI_UNZIP=zcat
@@ -150,7 +150,7 @@ $(DOKUWIKI_IPK_DIR)/CONTROL/control:
 #
 $(DOKUWIKI_IPK): $(DOKUWIKI_BUILD_DIR)/.configured
 	rm -rf $(DOKUWIKI_IPK_DIR) $(BUILD_DIR)/dokuwiki_*_$(TARGET_ARCH).ipk
-	install -d $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki/
+	install -d $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki/data/changes.log
 	cp -a $(DOKUWIKI_BUILD_DIR)/* $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki	
 	$(MAKE) $(DOKUWIKI_IPK_DIR)/CONTROL/control
 	install -m 755 $(DOKUWIKI_SOURCE_DIR)/postinst $(DOKUWIKI_IPK_DIR)/CONTROL/postinst
