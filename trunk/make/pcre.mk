@@ -22,7 +22,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=4
+PCRE_IPK_VERSION=5
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
@@ -51,6 +51,7 @@ $(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-utf8 \
 		--disable-nls \
 		--disable-static \
 	)
