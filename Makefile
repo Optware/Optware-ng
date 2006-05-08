@@ -77,7 +77,7 @@ COMMON_CROSS_PACKAGES = \
 	py-sqlalchemy py-urwid py-xml \
 	py-axiom py-epsilon py-mantissa py-nevow py-twisted \
 	py-zope-interface \
-	pyogg python \
+	python \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
 	rdate readline rsync rtorrent ruby rubygems \
