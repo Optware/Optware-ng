@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://cheeseshop.python.org/packages/source/l/lxml
-PY-LXML_VERSION=0.9.1
+PY-LXML_VERSION=0.9.2
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-LXML_CONFLICTS=
 #
 # PY-LXML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-LXML_IPK_VERSION=2
+PY-LXML_IPK_VERSION=1
 
 #
 # PY-LXML_CONFFILES should be a list of user-editable files
