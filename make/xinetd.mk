@@ -3,6 +3,9 @@
 # xinetd
 #
 ###########################################################
+#
+# $Header$
+#
 
 # You must replace "xinetd" and "XINETD" with the lower case name and
 # upper case name of your new package.  Some places below will say
@@ -21,7 +24,7 @@
 #
 XINETD_NAME=xinetd
 XINETD_SITE=http://www.xinetd.org/
-XINETD_VERSION=2.3.13
+XINETD_VERSION=2.3.14
 XINETD_SOURCE=xinetd-$(XINETD_VERSION).tar.gz
 XINETD_DIR=xinetd-$(XINETD_VERSION)
 XINETD_UNZIP=zcat

@@ -1,5 +1,10 @@
+#
+# $Header$
+#
 echo "Note that telnetd is enabled by default. Edit /opt/etc/xinetd.d/telnetd"
 echo "and set 'disable=yes' to disable telnet AFTER making sure that Dropbear"
 echo "or other means of logging onto your system are enabled and working."
+echo
+echo "Note that only 192.168.1.0/24 has access in the default configuration"
 
 /opt/etc/init.d/S10xinetd
