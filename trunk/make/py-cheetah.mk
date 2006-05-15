@@ -22,11 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHEETAH_SITE=http://dl.sourceforge.net/sourceforge/cheetahtemplate
-PY-CHEETAH_VERSION=1.0
+PY-CHEETAH_VERSION=2.0rc6
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
-PY-CHEETAH_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-CHEETAH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CHEETAH_DESCRIPTION=Cheetah - The Python-Powered Template Engine.
 PY-CHEETAH_SECTION=misc
 PY-CHEETAH_PRIORITY=optional
@@ -36,7 +36,7 @@ PY-CHEETAH_CONFLICTS=
 #
 # PY-CHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHEETAH_IPK_VERSION=3
+PY-CHEETAH_IPK_VERSION=1
 
 #
 # PY-CHEETAH_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-cheetah-source: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES) make/py-cheetah.mk
-	$(MAKE) python-stage
+	$(MAKE) python-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
@@ -178,7 +178,9 @@ $(PY-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	rm -rf $(PY-CHEETAH_IPK_DIR) $(BUILD_DIR)/py-cheetah_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CHEETAH_BUILD_DIR); \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --root=$(PY-CHEETAH_IPK_DIR) --prefix=/opt; \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    python2.4 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) `find $(PY-CHEETAH_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY-CHEETAH_IPK_DIR)/CONTROL/control
