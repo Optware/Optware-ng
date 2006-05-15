@@ -69,7 +69,7 @@ COMMON_CROSS_PACKAGES = \
 	py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-constraint py-curl py-django py-docutils \
 	py-elementtree py-kid py-sqlobject \
-	py-gdchart2 py-gd py-htconsole py-lxml py-mssql py-nose \
+	py-gdchart2 py-gd py-lxml py-mssql py-nose \
 	py-paste py-pil py-roundup py-serial py-simpy py-soappy \
 	py-sqlite py-mercurial py-moin py-mx-base py-mysql py-psycopg \
 	py-rdiff-backup py-setuptools py-formencode py-json \
