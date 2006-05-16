@@ -26,7 +26,7 @@
 PY-PASTESCRIPT_SITE=http://cheeseshop.python.org/packages/source/P/PasteScript
 PY-PASTESCRIPT_VERSION=0.5.1
 #PY-PASTESCRIPT_SVN_REV=
-PY-PASTESCRIPT_IPK_VERSION=1
+PY-PASTESCRIPT_IPK_VERSION=2
 #ifneq ($(PY-PASTESCRIPT_SVN_REV),)
 #PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-PASTESCRIPT_xxx_VERSION:=$(PY-PASTESCRIPT_VERSION)dev_r$(PY-PASTESCRIPT_SVN_REV)
@@ -39,7 +39,7 @@ PY-PASTESCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTESCRIPT_DESCRIPTION=A pluggable command-line frontend, including commands to setup package file layouts.
 PY-PASTESCRIPT_SECTION=misc
 PY-PASTESCRIPT_PRIORITY=optional
-PY-PASTESCRIPT_DEPENDS=python
+PY-PASTESCRIPT_DEPENDS=python, py-cheetah, py-paste, py-pastedeploy
 PY-PASTESCRIPT_SUGGESTS=
 PY-PASTESCRIPT_CONFLICTS=
 
