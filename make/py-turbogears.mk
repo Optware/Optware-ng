@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOGEARS_SITE=http://turbogears.org/download/eggs
-PY-TURBOGEARS_VERSION=0.8.9
+PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
+PY-TURBOGEARS_VERSION=0.9a6
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -30,13 +30,13 @@ PY-TURBOGEARS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
-PY-TURBOGEARS_DEPENDS=python, py-kid (>=0.8), py-cherrypy (>=2.1.1), py-sqlobject (>=0.8dev_r1457), py-json (>=3.4), py-elementtree (>=1.2.6), py-celementtree (>=1.0.2), py-formencode (>=0.4), py-testgears (>=0.2)
+PY-TURBOGEARS_DEPENDS=python, py-celementtree (>=1.0.5), py-cherrypy (>=2.1.1), py-configobj (>=4.3.0), py-elementtree (>=1.2.6), py-formencode (>=0.5.1), py-nose (>=0.8), py-ruledispatch, py-simplejson (>=1.3), py-sqlobject (>=0.7.1dev_r1457), py-turbocheetah (0.9.5), py-turbojson (>=0.9.2), py-turbokid (>=0.9.5)
 PY-TURBOGEARS_CONFLICTS=
 
 #
 # PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOGEARS_IPK_VERSION=4
+PY-TURBOGEARS_IPK_VERSION=1
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
