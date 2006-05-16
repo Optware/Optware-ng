@@ -169,7 +169,7 @@ $(PY-TURBOCHEETAH_IPK): $(PY-TURBOCHEETAH_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py-turbocheetah_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/cheetah; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TURBOCHEETAH_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	python2.4 setup.py install --root=$(PY-TURBOCHEETAH_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control
 	echo $(PY-TURBOCHEETAH_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOCHEETAH_IPK_DIR)

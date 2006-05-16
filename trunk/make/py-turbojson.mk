@@ -169,7 +169,7 @@ $(PY-TURBOJSON_IPK): $(PY-TURBOJSON_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py-turbojson_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOJSON_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/json; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TURBOJSON_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	python2.4 setup.py install --root=$(PY-TURBOJSON_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TURBOJSON_IPK_DIR)/CONTROL/control
 	echo $(PY-TURBOJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOJSON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOJSON_IPK_DIR)
