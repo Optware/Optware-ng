@@ -39,7 +39,7 @@ PY-WAREWEB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WAREWEB_DESCRIPTION=A web framework, a next generation evolution from Webware/WebKit servlet model.
 PY-WAREWEB_SECTION=misc
 PY-WAREWEB_PRIORITY=optional
-PY-WAREWEB_DEPENDS=python
+PY-WAREWEB_DEPENDS=python, py-paste, py-pastedeploy, py-pastescript
 PY-WAREWEB_SUGGESTS=
 PY-WAREWEB_CONFLICTS=
 
