@@ -24,24 +24,24 @@
 # PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
-PY-SQLOBJECT_SVN_REV=1457
+PY-SQLOBJECT_SVN_REV=1675
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
-PY-SQLOBJECT_VERSION=0.8dev_r1457
+PY-SQLOBJECT_VERSION=0.8dev_r1675
 #else
 #PY-SQLOBJECT_ ### VERSION_=0.8
 #PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
 PY-SQLOBJECT_UNZIP=zcat
-PY-SQLOBJECT_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-SQLOBJECT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SQLOBJECT_DESCRIPTION=An object-relational mapper for python.
 PY-SQLOBJECT_SECTION=misc
 PY-SQLOBJECT_PRIORITY=optional
-PY-SQLOBJECT_DEPENDS=python
+PY-SQLOBJECT_DEPENDS=python, py-formencode
 PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-PY-SQLOBJECT_IPK_VERSION=3
+PY-SQLOBJECT_IPK_VERSION=1
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -185,7 +185,7 @@ $(PY-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY-SQLOBJECT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	--root=$(PY-SQLOBJECT_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SQLOBJECT_IPK_DIR)
