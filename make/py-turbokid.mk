@@ -169,7 +169,7 @@ $(PY-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOKID_IPK_DIR) $(BUILD_DIR)/py-turbokid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOKID_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/kid; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TURBOKID_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	python2.4 setup.py install --root=$(PY-TURBOKID_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TURBOKID_IPK_DIR)/CONTROL/control
 	echo $(PY-TURBOKID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOKID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOKID_IPK_DIR)
