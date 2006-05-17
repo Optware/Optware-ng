@@ -279,7 +279,7 @@ __list ()
 		[ ! -z "${PID}" ]  && echo " PID:${PID} "
 		echo " Start: ${STARTTIME}"
 		[ ! -z "${ENDTIME}" ] && echo " End: ${ENDTIME}"
-		[ ${TRIES} -gt 0 ] && echo " Tries: ${TRIES}"
+		[ "${TRIES}" -gt 0 ] && echo " Tries: ${TRIES}"
 		[ ! -z "${SCRAPE}" ] && echo " ${SCRAPE}"
 		echo "</td></tr>"
 DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`

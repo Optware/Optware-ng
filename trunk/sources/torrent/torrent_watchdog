@@ -253,10 +253,6 @@ check_if_complete()
 # MAIN PROGRAM
 #
 
-PROGRESS="0%"
-TRIES=0
-
-
 if [ -f "${WORK}/.paused" ]; then
     notice "Torrents paused"
     debug "Torrents paused"
@@ -317,7 +313,7 @@ if [ -z "$TORRENT" ]; then
     notice "Starting torrent $TORRENT $PID"
     
     PROGRESS="started" 
-    TRIES=
+    TRIES=0
     ENDTIME=
     SCRAPE=
     write_info
