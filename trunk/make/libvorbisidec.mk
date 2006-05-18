@@ -107,6 +107,7 @@ $(LIBVORBISIDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBV
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(LIBVORBISIDEC_BUILD_DIR)/libtool
 	touch $(LIBVORBISIDEC_BUILD_DIR)/.configured
 
 libvorbisidec-unpack: $(LIBVORBISIDEC_BUILD_DIR)/.configured
@@ -130,6 +131,7 @@ libvorbisidec: $(LIBVORBISIDEC_BUILD_DIR)/.built
 $(LIBVORBISIDEC_BUILD_DIR)/.staged: $(LIBVORBISIDEC_BUILD_DIR)/.built
 	rm -f $(LIBVORBISIDEC_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBVORBISIDEC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libvorbisidec.la
 	touch $(LIBVORBISIDEC_BUILD_DIR)/.staged
 
 libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
