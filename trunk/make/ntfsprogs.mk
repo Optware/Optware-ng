@@ -183,11 +183,10 @@ $(NTFSPROGS_IPK): $(NTFSPROGS_BUILD_DIR)/.built
 #	install -m 755 $(NTFSPROGS_SOURCE_DIR)/postinst $(NTFSPROGS_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(NTFSPROGS_SOURCE_DIR)/prerm $(NTFSPROGS_IPK_DIR)/CONTROL/prerm
 #	echo $(NTFSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(NTFSPROGS_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTFSPROGS_IPK_DIR)
-	rm  $(NTFSPROGS_IPK_DIR)/sbin/mkfs.ntfs
-	rmdir $(NTFSPROGS_IPK_DIR)/sbin
+	rm -f $(NTFSPROGS_IPK_DIR)/opt/lib/*.la
+	rm -rf $(NTFSPROGS_IPK_DIR)/sbin
 	rm -rf $(NTFSPROGS_IPK_DIR)/opt/include
-	
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTFSPROGS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
