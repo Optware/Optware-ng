@@ -120,6 +120,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 		--disable-nls \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBVORBIS_BUILD_DIR)/libtool
 	touch $(LIBVORBIS_BUILD_DIR)/.configured
 
 libvorbis-unpack: $(LIBVORBIS_BUILD_DIR)/.configured
@@ -145,6 +146,9 @@ libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $(LIBVORBIS_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libvorbisenc.la
+	rm -f $(STAGING_LIB_DIR)/libvorbisfile.la
+	rm -f $(STAGING_LIB_DIR)/libvorbis.la
 	touch $(LIBVORBIS_BUILD_DIR)/.staged
 
 libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged

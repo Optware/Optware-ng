@@ -109,6 +109,7 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 		--disable-curltest \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(IVORBIS_TOOLS_BUILD_DIR)/libtool
 	touch $(IVORBIS_TOOLS_BUILD_DIR)/.configured
 
 ivorbis-tools-unpack: $(IVORBIS_TOOLS_BUILD_DIR)/.configured
