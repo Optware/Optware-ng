@@ -5,8 +5,8 @@
 #############################################################
 
 ZLIB_SITE=http://dl.sourceforge.net/sourceforge/libpng
-ZLIB_VERSION:=1.2.2
-ZLIB_LIB_VERSION:=1.2.2
+ZLIB_VERSION:=1.2.3
+ZLIB_LIB_VERSION:=1.2.3
 ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.bz2
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
 ZLIB_UNZIP=bzcat
@@ -17,7 +17,7 @@ ZLIB_PRIORITY=optional
 ZLIB_DEPENDS=
 ZLIB_CONFLICTS=
 
-ZLIB_IPK_VERSION=2
+ZLIB_IPK_VERSION=1
 
 ZLIB_CFLAGS= $(TARGET_CFLAGS) -fPIC
 ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
