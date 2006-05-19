@@ -33,7 +33,8 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
 #
-NATIVE_PACKAGES_READY_FOR_TESTING = 
+NATIVE_PACKAGES_READY_FOR_TESTING = \
+	perl-dbd-mysql
 
 COMMON_CROSS_PACKAGES = \
 	abook adns alac-decoder adduser antinat appweb asterisk asterisk-sounds \
