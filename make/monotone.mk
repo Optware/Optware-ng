@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MONOTONE_SITE=http://venge.net/monotone/downloads
-MONOTONE_VERSION=0.25
+MONOTONE_VERSION=0.25.2
 MONOTONE_SOURCE=monotone-$(MONOTONE_VERSION).tar.gz
 MONOTONE_DIR=monotone-$(MONOTONE_VERSION)
 MONOTONE_UNZIP=zcat
