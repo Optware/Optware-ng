@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MONOTONE_SITE=http://venge.net/monotone/downloads
-MONOTONE_VERSION=0.24
+MONOTONE_VERSION=0.25
 MONOTONE_SOURCE=monotone-$(MONOTONE_VERSION).tar.gz
 MONOTONE_DIR=monotone-$(MONOTONE_VERSION)
 MONOTONE_UNZIP=zcat
@@ -30,7 +30,7 @@ MONOTONE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MONOTONE_DESCRIPTION=monotone is a free distributed version control system.
 MONOTONE_SECTION=misc
 MONOTONE_PRIORITY=optional
-MONOTONE_DEPENDS=
+MONOTONE_DEPENDS=zlib
 MONOTONE_SUGGESTS=
 MONOTONE_CONFLICTS=
 
@@ -47,7 +47,7 @@ MONOTONE_IPK_VERSION=1
 # MONOTONE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MONOTONE_PATCHES=$(MONOTONE_SOURCE_DIR)/configure.patch
+MONOTONE_PATCHES=$(MONOTONE_SOURCE_DIR)/monotone-0.25-try-run.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,11 +104,12 @@ monotone-source: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MONOTONE_BUILD_DIR)/.configured: $(DL_DIR)/$(MONOTONE_SOURCE) $(MONOTONE_PATCHES)
-	$(MAKE) libboost-stage
+	$(MAKE) libboost-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(MONOTONE_DIR) $(MONOTONE_BUILD_DIR)
 	$(MONOTONE_UNZIP) $(DL_DIR)/$(MONOTONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(MONOTONE_PATCHES) | patch -d $(BUILD_DIR)/$(MONOTONE_DIR) -p1
+	cat $(MONOTONE_PATCHES) | patch -d $(BUILD_DIR)/$(MONOTONE_DIR) -p1
 	mv $(BUILD_DIR)/$(MONOTONE_DIR) $(MONOTONE_BUILD_DIR)
+	autoreconf --verbose $(MONOTONE_BUILD_DIR)
 	(cd $(MONOTONE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CXXFLAGS="$(STAGING_CPPFLAGS) $(MONOTONE_CPPFLAGS) -fno-strict-aliasing" \
