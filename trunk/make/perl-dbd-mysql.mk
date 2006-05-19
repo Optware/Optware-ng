@@ -42,7 +42,7 @@ $(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PE
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL -libs="$(STAGING_LDFLAGS)" \
+		perl Makefile.PL  \
 		PREFIX=/opt \
 	)
 	touch $(PERL-DBD-MYSQL_BUILD_DIR)/.configured
