@@ -1,21 +1,14 @@
---- otp_src_R10B-9/Makefile.in	2005-10-24 02:43:23.000000000 -0700
-+++ erlang/Makefile.in	2005-12-24 10:35:39.000000000 -0800
-@@ -532,12 +532,12 @@
+--- erlang/Makefile.in.orig	2006-05-12 07:43:44.000000000 -0700
++++ erlang/Makefile.in	2006-05-20 13:42:29.000000000 -0700
+@@ -545,9 +545,10 @@
+ # Install erlang base public files
+ #
  install.bin:
- 	rm -f $(BINDIR)/erl $(BINDIR)/erlc \
- 	      $(BINDIR)/ecc $(BINDIR)/elink $(BINDIR)/ear $(BINDIR)/escript
--	${LN_S} $(ERLANG_BINDIR)/erl      $(BINDIR)/erl
--	${LN_S} $(ERLANG_BINDIR)/erlc     $(BINDIR)/erlc
--	${LN_S} $(ERLANG_BINDIR)/ecc      $(BINDIR)/ecc
--	${LN_S} $(ERLANG_BINDIR)/elink    $(BINDIR)/elink
--	${LN_S} $(ERLANG_BINDIR)/ear      $(BINDIR)/ear
--	${LN_S} $(ERLANG_BINDIR)/escript  $(BINDIR)/escript
-+	#${LN_S} $(ERLANG_BINDIR)/erl      $(BINDIR)/erl
-+	#${LN_S} $(ERLANG_BINDIR)/erlc     $(BINDIR)/erlc
-+	#${LN_S} $(ERLANG_BINDIR)/ecc      $(BINDIR)/ecc
-+	#${LN_S} $(ERLANG_BINDIR)/elink    $(BINDIR)/elink
-+	#${LN_S} $(ERLANG_BINDIR)/ear      $(BINDIR)/ear
-+	#${LN_S} $(ERLANG_BINDIR)/escript  $(BINDIR)/escript
++	cd $(BINDIR); \
+ 	for file in $(ERL_BASE_PUB_FILES); do \
+ 		rm -f $(BINDIR)/$$file; \
+-		${LN_S} $(ERLANG_BINDIR)/$$file $(BINDIR)/$$file; \
++		${LN_S} ../lib/erlang/bin/$$file .; \
+ 	done
  
  #
- # Directories needed before we can install
