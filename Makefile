@@ -34,7 +34,14 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # When they have been tested, they will be promoted and uploaded.
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-dbd-mysql
+	perl-algorithm-diff \
+	perl-archive-tar \
+	perl-compress-zlib \
+	perl-dbd-mysql \
+	perl-io-string \
+	perl-io-zlib \
+	perl-text-diff
+
 
 COMMON_CROSS_PACKAGES = \
 	abook adns alac-decoder adduser antinat appweb asterisk asterisk-sounds \
