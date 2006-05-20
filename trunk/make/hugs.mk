@@ -26,10 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HUGS_SITE=http://cvs.haskell.org/Hugs/downloads/Mar2005
-HUGS_VERSION=Mar2005
-HUGS_SOURCE=hugs98-$(HUGS_VERSION)-patched.tar.gz
-HUGS_DIR=hugs98-$(HUGS_VERSION)-patched
+HUGS_SITE=http://cvs.haskell.org/Hugs/downloads/2006-05
+HUGS_UPSTREAM_VERSION=May2006
+HUGS_VERSION=Rel200605
+HUGS_SOURCE=hugs98-plus-$(HUGS_UPSTREAM_VERSION).tar.gz
+HUGS_DIR=hugs98-plus-$(HUGS_UPSTREAM_VERSION)
 HUGS_UNZIP=zcat
 HUGS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 HUGS_DESCRIPTION=Hugs 98 is a functional programming system based on Haskell 98, the de facto standard for non-strict functional programming languages.
@@ -51,7 +52,9 @@ HUGS_IPK_VERSION=1
 # HUGS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-HUGS_PATCHES=$(HUGS_SOURCE_DIR)/configure.patch
+HUGS_PATCHES=$(HUGS_SOURCE_DIR)/configure.patch \
+	$(HUGS_SOURCE_DIR)/src-builtin.c.patch \
+       	$(HUGS_SOURCE_DIR)/libraries-Makefile.in.patch \
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +107,7 @@ hugs-source: $(DL_DIR)/$(HUGS_SOURCE) $(HUGS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(HUGS_BUILD_DIR)/.configured: $(DL_DIR)/$(HUGS_SOURCE) $(HUGS_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(HUGS_DIR) $(HUGS_BUILD_DIR)
 	$(HUGS_UNZIP) $(DL_DIR)/$(HUGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(HUGS_PATCHES) | patch -d $(BUILD_DIR)/$(HUGS_DIR) -p1
@@ -180,6 +183,11 @@ $(HUGS_IPK_DIR)/CONTROL/control:
 $(HUGS_IPK): $(HUGS_BUILD_DIR)/.built
 	rm -rf $(HUGS_IPK_DIR) $(BUILD_DIR)/hugs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HUGS_BUILD_DIR) DESTDIR=$(HUGS_IPK_DIR) install
+	for f in \
+        	$(HUGS_IPK_DIR)/opt/bin/ffihugs \
+        	$(HUGS_IPK_DIR)/opt/bin/runhugs \
+                `find $(HUGS_IPK_DIR)/opt/lib/hugs/packages -name '*.so'`; \
+            do $(STRIP_COMMAND) $$f; done
 	$(MAKE) $(HUGS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HUGS_IPK_DIR)
 
