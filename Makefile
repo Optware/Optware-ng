@@ -68,7 +68,7 @@ COMMON_CROSS_PACKAGES = \
 	popt poptop portmap postgresql procmail procps proftpd psutils puppy pwgen \
 	python \
 	py-axiom py-epsilon py-mantissa py-nevow py-twisted \
-	py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
+	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-configobj py-constraint py-curl py-django py-docutils py-elementtree py-formencode \
 	py-gdchart2 py-gd py-kid py-lxml py-nose \
 	py-mercurial py-moin py-mssql py-mx-base py-mysql \
