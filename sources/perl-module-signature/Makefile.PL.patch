@@ -1,0 +1,12 @@
+--- Module-Signature-0.54/Makefile.PL.orig	2006-05-20 21:34:05.000000000 +0200
++++ Module-Signature-0.54/Makefile.PL	2006-05-20 21:35:07.000000000 +0200
+@@ -101,6 +101,9 @@
+ }
+ 
+ sub want_openpgp {
++#Force option 3:
++    return 0;
++
+     return if (locate_gpg() or locate_openpgp());
+ 
+     print << '.';
