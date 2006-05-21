@@ -36,19 +36,29 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-algorithm-diff \
 	perl-archive-tar \
+	perl-class-accessor \
+	perl-class-data-inheritable \
+	perl-class-dbi \
+	perl-class-trigger \
+	perl-clone \
 	perl-compress-zlib \
 	perl-digest-sha \
 	perl-dbd-mysql \
+	perl-dbix-contextualfetch \
 	perl-extutils-cbuilder \
 	perl-extutils-install \
 	perl-extutils-parsexs \
+	perl-ima-dbi \
 	perl-io-string \
+	perl-io-stringy \
 	perl-io-zlib \
 	perl-module-build \
 	perl-module-signature \
 	perl-par-dist \
 	perl-pod-readme \
-	perl-text-diff
+	perl-text-diff \
+	perl-universal-moniker \
+	perl-version
 
 
 COMMON_CROSS_PACKAGES = \
