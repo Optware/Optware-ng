@@ -46,7 +46,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-dbd-mysql \
 	perl-dbix-contextualfetch \
 	perl-extutils-cbuilder \
-	perl-extutils-install \
 	perl-extutils-parsexs \
 	perl-ima-dbi \
 	perl-io-string \
