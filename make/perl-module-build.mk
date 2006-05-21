@@ -43,8 +43,7 @@ $(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Build.PL --install_base=$(STAGING_DIR)/opt/lib/perl5/site_perl \
-		PREFIX=/opt \
+		perl Build.PL \
 	)
 	touch $(PERL-MODULE-BUILD_BUILD_DIR)/.configured
 
@@ -62,7 +61,7 @@ perl-module-build: $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 $(PERL-MODULE-BUILD_BUILD_DIR)/.staged: $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 	rm -f $(PERL-MODULE-BUILD_BUILD_DIR)/.staged
 	(cd $(PERL-MODULE-BUILD_BUILD_DIR); \
-	 	./Build --destdir $(STAGING_DIR) install \
+	 	./Build --prefix $(STAGING_DIR)/opt install \
 	)
 	touch $(PERL-MODULE-BUILD_BUILD_DIR)/.staged
 
@@ -86,7 +85,7 @@ $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL/control:
 $(PERL-MODULE-BUILD_IPK): $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 	rm -rf $(PERL-MODULE-BUILD_IPK_DIR) $(BUILD_DIR)/perl-module-build_*_$(TARGET_ARCH).ipk
 	(cd $(PERL-MODULE-BUILD_BUILD_DIR); \
-       		./Build --destdir $(PERL-MODULE-BUILD_IPK_DIR) install \
+       		./Build --prefix $(PERL-MODULE-BUILD_IPK_DIR)/opt install \
 	)
 	find $(PERL-MODULE-BUILD_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-MODULE-BUILD_IPK_DIR)/opt/lib/perl5 ; \
