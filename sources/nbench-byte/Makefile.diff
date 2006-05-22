@@ -1,0 +1,35 @@
+--- /tmp/nbench-byte-2.2.2/Makefile	2004-12-30 03:23:30.000000000 +0100
++++ Makefile	2006-05-20 16:53:31.000000000 +0200
+@@ -19,10 +19,10 @@
+ # You should leave -static in the CFLAGS so that your sysinfo can be
+ # compiled into the executable.
+ 
+-CC = gcc
++#CC = gcc
+ 
+ # generic options for gcc
+-CFLAGS = -s -static -Wall -O3
++#CFLAGS = -s -static -Wall -O3
+ 
+ # if your gcc lets you do it, then try this one
+ #CFLAGS = -s -static -Wall -O3 -fomit-frame-pointer -funroll-loops
+@@ -119,12 +119,13 @@
+ 	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
+ 		-c emfloat.c
+ 
+-pointer.h: pointer Makefile
+-	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
+-		-o pointer pointer.c
+-	rm -f pointer.h
+-	if [ "4" = `./pointer` ] ; then touch pointer.h ;\
+-	else echo "#define LONG64" >pointer.h ; fi
++pointer.h: Makefile
++	touch pointer.h
++	#$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
++	#	-o pointer pointer.c
++	#rm -f pointer.h
++	#if [ "4" = `./pointer` ] ; then touch pointer.h ;\
++	#else echo "#define LONG64" >pointer.h ; fi
+ 
+ misc.o: misc.h misc.c Makefile
+ 	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
