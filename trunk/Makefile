@@ -51,12 +51,14 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-io-string \
 	perl-io-stringy \
 	perl-io-zlib \
+	perl-libwww \
 	perl-module-build \
 	perl-module-signature \
 	perl-par-dist \
 	perl-pod-readme \
 	perl-text-diff \
 	perl-universal-moniker \
+	perl-uri \
 	perl-version
 
 
