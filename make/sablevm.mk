@@ -32,12 +32,12 @@ SABLEVM_PRIORITY=optional
 # it really depends on libltdl
 SABLEVM_DEPENDS=libtool
 SABLEVM_SUGGESTS=
-SABLEVM_CONFLICTS=
+SABLEVM_CONFLICTS=classpath
 
 #
 # SABLEVM_IPK_VERSION should be incremented when the ipk changes.
 #
-SABLEVM_IPK_VERSION=1
+SABLEVM_IPK_VERSION=2
 
 #
 # SABLEVM_CONFFILES should be a list of user-editable files
