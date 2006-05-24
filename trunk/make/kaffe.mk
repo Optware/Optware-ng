@@ -217,7 +217,7 @@ $(KAFFE_IPK_DIR)/CONTROL/control:
 #
 $(KAFFE_IPK): $(KAFFE_BUILD_DIR)/.built
 	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install
+	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install-strip
 #	install -d $(KAFFE_IPK_DIR)/opt/etc/
 #	install -m 644 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
 #	install -d $(KAFFE_IPK_DIR)/opt/etc/init.d
