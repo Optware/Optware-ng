@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://dl.sourceforge.net/sourceforge/jamvm
-JAMVM_VERSION=1.2.4
+JAMVM_VERSION=1.4.3
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
 JAMVM_UNZIP=zcat
@@ -30,12 +30,12 @@ JAMVM_SECTION=language
 JAMVM_PRIORITY=optional
 JAMVM_DEPENDS=zlib
 JAMVM_SUGGESTS=
-JAMVM_CONFLICTS=
+JAMVM_CONFLICTS=sablevm
 
 #
 # JAMVM_IPK_VERSION should be incremented when the ipk changes.
 #
-JAMVM_IPK_VERSION=2
+JAMVM_IPK_VERSION=1
 
 #
 # JAMVM_CONFFILES should be a list of user-editable files
