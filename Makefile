@@ -48,6 +48,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-dbix-contextualfetch \
 	perl-extutils-cbuilder \
 	perl-extutils-parsexs \
+	perl-gd \
 	perl-ima-dbi \
 	perl-io-string \
 	perl-io-stringy \
