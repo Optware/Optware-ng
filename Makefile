@@ -37,6 +37,8 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-algorithm-diff \
 	perl-archive-tar \
+	perl-business-isbn \
+	perl-business-isbn-data \
 	perl-class-accessor \
 	perl-class-data-inheritable \
 	perl-class-dbi \
@@ -49,6 +51,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-extutils-cbuilder \
 	perl-extutils-parsexs \
 	perl-gd \
+	perl-gd-barcode \
 	perl-ima-dbi \
 	perl-io-string \
 	perl-io-stringy \
