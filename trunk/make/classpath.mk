@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CLASSPATH_SITE=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_VERSION=0.13
+CLASSPATH_VERSION=0.91
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -34,7 +34,7 @@ CLASSPATH_CONFLICTS=
 #
 # CLASSPATH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLASSPATH_IPK_VERSION=3
+CLASSPATH_IPK_VERSION=1
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
