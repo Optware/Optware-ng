@@ -30,7 +30,7 @@ JAMVM_SECTION=language
 JAMVM_PRIORITY=optional
 JAMVM_DEPENDS=zlib
 JAMVM_SUGGESTS=
-JAMVM_CONFLICTS=sablevm
+JAMVM_CONFLICTS=
 
 #
 # JAMVM_IPK_VERSION should be incremented when the ipk changes.
