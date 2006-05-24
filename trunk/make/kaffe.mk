@@ -3,7 +3,6 @@
 # kaffe
 #
 ###########################################################
-
 #
 # KAFFE_VERSION, KAFFE_SITE and KAFFE_SOURCE define
 # the upstream location of the source code for the package.
@@ -13,15 +12,26 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
-KAFFE_SITE=http://www.kaffe.org/ftp/pub/kaffe/v1.1.x-development
-KAFFE_VERSION=20050129
-KAFFE_SOURCE=kaffe-$(KAFFE_VERSION).tar.gz
+KAFFE_SITE=ftp://ftp.kaffe.org/pub/kaffe/v1.1.x-development
+KAFFE_VERSION=1.1.7
+KAFFE_SOURCE=kaffe-$(KAFFE_VERSION).tar.bz2
 KAFFE_DIR=kaffe-$(KAFFE_VERSION)
-KAFFE_UNZIP=zcat
-KAFFE_REPOSITORY=:pserver:readonly@cvs.kaffe.org:/cvs/kaffe
-KAFFE_TAG="-D 2005-01-29"
-KAFFE_MODULE=kaffe
+KAFFE_UNZIP=bzcat
+KAFFE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+KAFFE_DESCRIPTION=A clean room implementation of the Java virtual machine, plus the associated class libraries.
+KAFFE_SECTION=lang
+KAFFE_PRIORITY=optional
+KAFFE_DEPENDS=
+KAFFE_SUGGESTS=
+KAFFE_CONFLICTS=
 
 #
 # KAFFE_IPK_VERSION should be incremented when the ipk changes.
@@ -55,6 +65,7 @@ KAFFE_LDFLAGS=
 # You should not change any of these variables.
 #
 KAFFE_BUILD_DIR=$(BUILD_DIR)/kaffe
+KAFFE_HOST_BUILD_DIR=$(BUILD_DIR)/kaffe-host
 KAFFE_SOURCE_DIR=$(SOURCE_DIR)/kaffe
 KAFFE_IPK_DIR=$(BUILD_DIR)/kaffe-$(KAFFE_VERSION)-ipk
 KAFFE_IPK=$(BUILD_DIR)/kaffe_$(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -64,10 +75,7 @@ KAFFE_IPK=$(BUILD_DIR)/kaffe_$(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(KAFFE_SOURCE):
-	cd $(DL_DIR) ; $(CVS) -d $(KAFFE_REPOSITORY) co $(KAFFE_TAG) $(KAFFE_MODULE)
-	mv $(DL_DIR)/$(KAFFE_MODULE) $(DL_DIR)/$(KAFFE_DIR)
-	cd $(DL_DIR) ; tar zcvf $(KAFFE_SOURCE) $(KAFFE_DIR)
-	rm -rf $(DL_DIR)/$(KAFFE_DIR)
+	$(WGET) -P $(DL_DIR) $(KAFFE_SITE)/$(KAFFE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -91,33 +99,59 @@ kaffe-source: $(DL_DIR)/$(KAFFE_SOURCE) $(KAFFE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-# *** NOTE *** before configuring kaffe rt.jar must be in $(KAFFE_SOURCE_DIR) and jikes must be installed *** NOTE ***
-$(KAFFE_BUILD_DIR)/.configured: $(DL_DIR)/$(KAFFE_SOURCE) $(KAFFE_PATCHES)
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(KAFFE_BUILD_DIR)/.unpacked: $(DL_DIR)/$(KAFFE_SOURCE)
 #	$(MAKE) <bar>-stage <baz>-stage
+	rm -f $(KAFFE_BUILD_DIR)/.unpacked
 	rm -rf $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR)
 	$(KAFFE_UNZIP) $(DL_DIR)/$(KAFFE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(KAFFE_PATCHES) | patch -d $(BUILD_DIR)/$(KAFFE_DIR) -p1
-	mv $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR)
+	if test -n "$(KAFFE_PATCHES)" ; \
+		then cat $(KAFFE_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(KAFFE_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(KAFFE_DIR)" != "$(KAFFE_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR) ; \
+	fi
+	touch $(KAFFE_BUILD_DIR)/.unpacked
+
+$(KAFFE_BUILD_DIR)/.hostbuilt: $(KAFFE_BUILD_DIR)/.unpacked
+#	$(MAKE) <bar>-stage <baz>-stage
+	rm -f $(KAFFE_BUILD_DIR)/.hostbuilt
+	rm -rf $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_HOST_BUILD_DIR)
+	$(KAFFE_UNZIP) $(DL_DIR)/$(KAFFE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_HOST_BUILD_DIR) ; \
+	(cd $(KAFFE_HOST_BUILD_DIR); \
+		./configure \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+		--disable-gtk-peer \
+		--without-x \
+	)
+	$(MAKE) -C $(KAFFE_HOST_BUILD_DIR)
+	$(MAKE) -C $(KAFFE_HOST_BUILD_DIR) DESTDIR=$(KAFFE_HOST_BUILD_DIR) install
+	touch $(KAFFE_BUILD_DIR)/.hostbuilt
+
+$(KAFFE_BUILD_DIR)/.configured: $(KAFFE_BUILD_DIR)/.hostbuilt
 	(cd $(KAFFE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KAFFE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(KAFFE_LDFLAGS)" \
+		KAFFEH=$(KAFFE_HOST_BUILD_DIR)/opt/bin/kaffeh \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
-		--without-classpath-gtk-awt \
-		--enable-pure-java-math \
-		--disable-alsatest \
-		--disable-esdtest \
-		--disable-sound \
+		--disable-gtk-peer \
 		--without-x \
-		--enable-xscale \
-		--with-engine=intrp \
-		--with-rt-jar=$(KAFFE_SOURCE_DIR)/rt.jar \
+		--enable-binreloc \
+		--disable-nls \
+		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(KAFFE_BUILD_DIR)/libtool
 	touch $(KAFFE_BUILD_DIR)/.configured
 
 kaffe-unpack: $(KAFFE_BUILD_DIR)/.configured
@@ -146,6 +180,25 @@ $(KAFFE_BUILD_DIR)/.staged: $(KAFFE_BUILD_DIR)/.built
 kaffe-stage: $(KAFFE_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/kaffe
+#
+$(KAFFE_IPK_DIR)/CONTROL/control:
+	@install -d $(KAFFE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: kaffe" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(KAFFE_PRIORITY)" >>$@
+	@echo "Section: $(KAFFE_SECTION)" >>$@
+	@echo "Version: $(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(KAFFE_MAINTAINER)" >>$@
+	@echo "Source: $(KAFFE_SITE)/$(KAFFE_SOURCE)" >>$@
+	@echo "Description: $(KAFFE_DESCRIPTION)" >>$@
+	@echo "Depends: $(KAFFE_DEPENDS)" >>$@
+	@echo "Suggests: $(KAFFE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(KAFFE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(KAFFE_IPK_DIR)/opt/sbin or $(KAFFE_IPK_DIR)/opt/bin
@@ -161,14 +214,13 @@ $(KAFFE_IPK): $(KAFFE_BUILD_DIR)/.built
 	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install
 #	install -d $(KAFFE_IPK_DIR)/opt/etc/
-#	install -m 755 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
+#	install -m 644 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
 #	install -d $(KAFFE_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)/opt/etc/init.d/SXXkaffe
-	install -d $(KAFFE_IPK_DIR)/CONTROL
-	install -m 644 $(KAFFE_SOURCE_DIR)/control $(KAFFE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm
-#	echo $(KAFFE_CONFFILES) | sed -e 's/ /\n/g' > $(KAFFE_IPK_DIR)/CONTROL/conffiles
+	$(MAKE) $(KAFFE_IPK_DIR)/CONTROL/control
+#	install -m 755 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm
+	echo $(KAFFE_CONFFILES) | sed -e 's/ /\n/g' > $(KAFFE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KAFFE_IPK_DIR)
 
 #
@@ -180,6 +232,7 @@ kaffe-ipk: $(KAFFE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 kaffe-clean:
+	rm -f $(KAFFE_BUILD_DIR)/.built
 	-$(MAKE) -C $(KAFFE_BUILD_DIR) clean
 
 #
@@ -187,4 +240,4 @@ kaffe-clean:
 # directories.
 #
 kaffe-dirclean:
-	rm -rf $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_BUILD_DIR) $(KAFFE_IPK_DIR) $(KAFFE_IPK)
+	rm -rf $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_HOST_BUILD_DIR) $(KAFFE_BUILD_DIR) $(KAFFE_IPK_DIR) $(KAFFE_IPK)
