@@ -108,7 +108,7 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
 	rdate readline rsync rtorrent ruby rubygems \
-	samba sdl ser siproxd sm snownews \
+	sablevm samba sdl ser siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
@@ -193,7 +193,7 @@ WL500G_BROKEN_PACKAGES = \
 	unslung-devel \
 	qemu qemu-libc-i386 \
 	rtorrent \
-	sdl ser sm snownews sqsh sudo swi-prolog \
+	sablevm sdl ser sm snownews sqsh sudo swi-prolog \
 	tethereal transcode \
 	unrar \
 	vte \
