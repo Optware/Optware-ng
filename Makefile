@@ -102,7 +102,7 @@ COMMON_CROSS_PACKAGES = \
 	py-paste py-pastedeploy py-pastescript py-pil py-protocols py-psycopg py-psycopg2 py-pygresql \
 	py-rdiff-backup py-routes py-roundup py-ruledispatch \
 	py-scgi py-serial py-setuptools py-simplejson py-simpy py-soappy \
-	py-sqlalchemy py-sqlite py-sqlobject \
+	py-sqlalchemy py-sqlite \
 	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-xml py-zope-interface \
 	qemu qemu-libc-i386 quagga  \
