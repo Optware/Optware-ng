@@ -70,6 +70,10 @@ KAFFE_SOURCE_DIR=$(SOURCE_DIR)/kaffe
 KAFFE_IPK_DIR=$(BUILD_DIR)/kaffe-$(KAFFE_VERSION)-ipk
 KAFFE_IPK=$(BUILD_DIR)/kaffe_$(KAFFE_VERSION)-$(KAFFE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ifeq ($(OPTWARE_TARGET),wl500g)
+KAFFE_CROSS_CONFIG_OPTIONS=--disable-sound
+endif
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -148,6 +152,7 @@ $(KAFFE_BUILD_DIR)/.configured: $(KAFFE_BUILD_DIR)/.hostbuilt
 		--disable-gtk-peer \
 		--without-x \
 		--enable-binreloc \
+		$(KAFFE_CROSS_CONFIG_OPTIONS) \
 		--disable-nls \
 		--disable-static \
 	)
