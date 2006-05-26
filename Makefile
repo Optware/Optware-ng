@@ -222,7 +222,7 @@ MSS_BROKEN_PACKAGES = \
 	ntp \
 	php-apache py-lxml \
 	qemu qemu-libc-i386 \
-	svn \
+	sablevm svn \
 	transcode \
 	tethereal \
 
