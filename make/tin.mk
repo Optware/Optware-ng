@@ -28,7 +28,7 @@
 #
 TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/v1.8
 TIN_SITE2=ftp://ftp.stikman.com/pub/tin/v1.8
-TIN_VERSION=1.8.1
+TIN_VERSION=1.8.2
 TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
 TIN_DIR=tin-$(TIN_VERSION)
 TIN_UNZIP=zcat
