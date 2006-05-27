@@ -17,7 +17,7 @@ IPKG_WEB_CONFLICTS=
 #
 # IPKG_WEB_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_WEB_IPK_VERSION=3
+IPKG_WEB_IPK_VERSION=4
 #
 # There is no external version!
 #
@@ -77,6 +77,7 @@ $(IPKG_WEB_IPK): $(IPKG_WEB_SOURCE_DIR)/package.cgi
 	rm -rf $(IPKG_WEB_IPK_DIR) $(BUILD_DIR)/ipkg-web_*_$(TARGET_ARCH).ipk
 	install -d $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management
 	install -m 755 $(IPKG_WEB_SOURCE_DIR)/package.cgi $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management/package.cgi
+	install -m 755 $(IPKG_WEB_SOURCE_DIR)/sluginfo.cgi $(IPKG_WEB_IPK_DIR)/home/httpd/html/Management/sluginfo.cgi
 	$(MAKE) $(IPKG_WEB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG_WEB_IPK_DIR)
 
