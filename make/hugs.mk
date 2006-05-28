@@ -42,7 +42,7 @@ HUGS_CONFLICTS=
 #
 # HUGS_IPK_VERSION should be incremented when the ipk changes.
 #
-HUGS_IPK_VERSION=1
+HUGS_IPK_VERSION=2
 
 #
 # HUGS_CONFFILES should be a list of user-editable files
@@ -53,7 +53,6 @@ HUGS_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 HUGS_PATCHES=$(HUGS_SOURCE_DIR)/configure.patch \
-	$(HUGS_SOURCE_DIR)/src-builtin.c.patch \
        	$(HUGS_SOURCE_DIR)/libraries-Makefile.in.patch \
 
 #
@@ -81,8 +80,10 @@ HUGS_IPK=$(BUILD_DIR)/hugs_$(HUGS_VERSION)-$(HUGS_IPK_VERSION)_$(TARGET_ARCH).ip
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(HUGS_SOURCE):
+$(DL_DIR)/$(HUGS_SOURCE): make/hugs.mk
+	rm -f $(DL_DIR)/$(HUGS_SOURCE)
 	$(WGET) -P $(DL_DIR) $(HUGS_SITE)/$(HUGS_SOURCE)
+	touch $(DL_DIR)/$(HUGS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
