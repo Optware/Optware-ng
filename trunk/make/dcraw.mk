@@ -28,9 +28,9 @@ DCRAW_DIR=dcraw-$(DCRAW_VERSION)
 DCRAW_UNZIP=zcat
 DCRAW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DCRAW_DESCRIPTION=Decoding raw digital photos.
-DCRAW_SECTION=misc
+DCRAW_SECTION=graphics
 DCRAW_PRIORITY=optional
-DCRAW_DEPENDS=
+DCRAW_DEPENDS=libjpeg, liblcms
 DCRAW_SUGGESTS=
 DCRAW_CONFLICTS=
 
@@ -53,7 +53,7 @@ DCRAW_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-DCRAW_CPPFLAGS=-lm -DNO_JPEG -DNO_LCMS
+DCRAW_CPPFLAGS=-lm -ljpeg -llcms
 DCRAW_LDFLAGS=
 
 #
@@ -106,7 +106,7 @@ dcraw-source: $(DL_DIR)/$(DCRAW_SOURCE) $(DCRAW_PATCHES)
 # shown below to make various patches to it.
 #
 $(DCRAW_BUILD_DIR)/.configured: $(DL_DIR)/$(DCRAW_SOURCE) $(DCRAW_PATCHES) make/dcraw.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libjpeg-stage liblcms-stage
 	rm -rf $(BUILD_DIR)/$(DCRAW_DIR) $(DCRAW_BUILD_DIR)
 #	$(DCRAW_UNZIP) $(DL_DIR)/$(DCRAW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mkdir -p $(BUILD_DIR)/$(DCRAW_DIR)
