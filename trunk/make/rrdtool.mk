@@ -28,7 +28,7 @@
 #
 #http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.2.8.tar.gz
 RRDTOOL_SITE=http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/
-RRDTOOL_VERSION=1.2.12
+RRDTOOL_VERSION=1.2.13
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
