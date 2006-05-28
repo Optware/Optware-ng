@@ -74,7 +74,7 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
-	denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
+	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
@@ -86,7 +86,7 @@ COMMON_CROSS_PACKAGES = \
 	jabber jamvm jikes jove joe \
 	knock \
 	lame ldconfig less libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
-	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg libmad libmemcache libnsl \
+	libgc libgcrypt libgd libghttp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit mt-daapd mysql \
