@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=3
+LUA_IPK_VERSION=4
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -72,6 +72,7 @@ LUA_BUILD_DIR=$(BUILD_DIR)/lua
 LUA_SOURCE_DIR=$(SOURCE_DIR)/lua
 LUA_IPK_DIR=$(BUILD_DIR)/lua-$(LUA_VERSION)-ipk
 LUA_IPK=$(BUILD_DIR)/lua_$(LUA_VERSION)-$(LUA_IPK_VERSION)_$(TARGET_ARCH).ipk
+LUA_HOST_BUILD_DIR=$(BUILD_DIR)/lua-host
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -106,6 +107,8 @@ $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 	make readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR)
+	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
 	touch $(LUA_BUILD_DIR)/.configured
 
@@ -116,6 +119,11 @@ lua-unpack: $(LUA_BUILD_DIR)/.configured
 #
 $(LUA_BUILD_DIR)/.built: $(LUA_BUILD_DIR)/.configured
 	rm -f $(LUA_BUILD_DIR)/.built
+	$(MAKE) -C $(LUA_HOST_BUILD_DIR)/src \
+		MYCFLAGS="-DLUA_ANSI" \
+		MYLDFLAGS="$(LUA_LDFLAGS)" \
+		MYLIBS="-Wl,-E -ldl" \
+		all
 	$(MAKE) -C $(LUA_BUILD_DIR)/src \
 		$(TARGET_CONFIGURE_OPTS) \
 		AR="$(TARGET_AR) rcu" \
@@ -135,6 +143,7 @@ lua: $(LUA_BUILD_DIR)/.built
 #
 $(LUA_BUILD_DIR)/.staged: $(LUA_BUILD_DIR)/.built
 	rm -f $(LUA_BUILD_DIR)/.staged
+	$(MAKE) -C $(LUA_HOST_BUILD_DIR) INSTALL_TOP=$(LUA_HOST_BUILD_DIR)/opt install
 	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(STAGING_PREFIX) install
 	sed -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(LUA_BUILD_DIR)/etc/lua.pc > $(STAGING_LIB_DIR)/pkgconfig/lua.pc
 	touch $(LUA_BUILD_DIR)/.staged
@@ -195,4 +204,4 @@ lua-clean:
 # directories.
 #
 lua-dirclean:
-	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR) $(LUA_IPK_DIR) $(LUA_IPK)
+	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR) $(LUA_HOST_BUILD_DIR) $(LUA_IPK_DIR) $(LUA_IPK)
