@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ION_SITE=http://modeemi.cs.tut.fi/~tuomov/ion/dl
-ION_VERSION=20060107
+ION_VERSION=20060524
 ION_SOURCE=ion-3ds-$(ION_VERSION).tar.gz
 ION_DIR=ion-3ds-$(ION_VERSION)
 ION_UNZIP=zcat
@@ -115,6 +115,7 @@ $(ION_BUILD_DIR)/.configured: $(DL_DIR)/$(ION_SOURCE) $(ION_PATCHES)
 		--prefix=/opt \
                 --x-includes=$(STAGING_INCLUDE_DIR) \
                 --x-libraries=$(STAGING_LIB_DIR) \
+		--with-lua-prefix=$(LUA_HOST_BUILD_DIR)/opt \
 		--with-lua-includes=$(STAGING_INCLUDE_DIR) \
 		--with-lua-libraries=$(STAGING_LIB_DIR) \
 		--disable-nls \

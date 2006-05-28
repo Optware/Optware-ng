@@ -1,6 +1,6 @@
---- ion-3ds-20050607-orig/configure.ac	2005-06-07 06:06:03.000000000 -0700
-+++ ion/configure.ac	2005-06-14 21:10:34.694321000 -0700
-@@ -250,28 +250,7 @@
+--- ion-3ds-20060524/configure.ac.orig	2006-05-24 09:23:47.000000000 -0700
++++ ion-3ds-20060524/configure.ac	2006-05-28 12:27:39.000000000 -0700
+@@ -260,25 +260,7 @@
  save_LIBS="$LIBS"
  CFLAGS="$CFLAGS $LUA_INCLUDES"
  LIBS="$LIBS $LUA_LIBS"
@@ -9,17 +9,14 @@
 -#include <lua.h>
 -#include <stdlib.h>
 -#include <string.h>
+-#include <stdio.h>
 -
 -int main()
 -{
--    if(strcmp(lua_version(), LUA_VERSION)!=0){
--        printf("Error: lua_version() does not match LUA_VERSION. ");
--        exit(EXIT_FAILURE);
--    }
--    printf("(found %s)... ", lua_version());
--    if(strcmp(lua_version(), "Lua 5.0")<0)
--        exit(EXIT_FAILURE);
--    exit(EXIT_SUCCESS);
+-    printf("(found %s, %d)... ", LUA_VERSION, LUA_VERSION_NUM);
+-    if(LUA_VERSION_NUM >= 501)
+-        exit(EXIT_SUCCESS);
+-    exit(EXIT_FAILURE);
 -}
 -
 -]])],
@@ -30,7 +27,7 @@
  CFLAGS="$save_CFLAGS"
  LIBS="$save_LIBS"
  dnl }}}
-@@ -342,30 +321,8 @@
+@@ -349,30 +331,8 @@
  AC_MSG_CHECKING([for va_copy])
  save_CFLAGS="$CFLAGS"
  CFLAGS="$CFLAGS $C99_SOURCE"
