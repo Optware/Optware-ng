@@ -42,7 +42,7 @@ PY-PROTOCOLS_DEPENDS=python
 PY-PROTOCOLS_SUGGESTS=
 PY-PROTOCOLS_CONFLICTS=
 
-PY-PROTOCOLS_IPK_VERSION=2
+PY-PROTOCOLS_IPK_VERSION=3
 
 #
 # PY-PROTOCOLS_CONFFILES should be a list of user-editable files
@@ -106,7 +106,11 @@ py-protocols-source: $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) $(PY-PROTOCOLS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+ifeq ($(PY-PROTOCOLS_SVN_REV),)
 $(PY-PROTOCOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) $(PY-PROTOCOLS_PATCHES)
+else
+$(PY-PROTOCOLS_BUILD_DIR)/.configured: $(PY-PROTOCOLS_PATCHES)
+endif
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)
 ifeq ($(PY-PROTOCOLS_SVN_REV),)

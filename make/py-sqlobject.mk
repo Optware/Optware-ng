@@ -24,12 +24,12 @@
 # PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
-PY-SQLOBJECT_SVN_REV=1675
+#PY-SQLOBJECT_SVN_REV=1675
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
-PY-SQLOBJECT_VERSION=0.8dev_r1675
+#PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-#PY-SQLOBJECT_ ### VERSION_=0.8
-#PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
+PY-SQLOBJECT_VERSION=0.7.1b1
+PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
 PY-SQLOBJECT_UNZIP=zcat
@@ -41,7 +41,7 @@ PY-SQLOBJECT_DEPENDS=python, py-formencode
 PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-PY-SQLOBJECT_IPK_VERSION=1
+PY-SQLOBJECT_IPK_VERSION=2
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -105,7 +105,11 @@ py-sqlobject-source: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+ifeq ($(PY-SQLOBJECT_SVN_REV),)
 $(PY-SQLOBJECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) $(PY-SQLOBJECT_PATCHES) make/py-sqlobject.mk
+else
+$(PY-SQLOBJECT_BUILD_DIR)/.configured: $(PY-SQLOBJECT_PATCHES) make/py-sqlobject.mk
+endif
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
 ifeq ($(PY-SQLOBJECT_SVN_REV),)

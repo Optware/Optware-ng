@@ -42,7 +42,7 @@ PY-RULEDISPATCH_DEPENDS=python, py-protocols (>=1.0a0)
 PY-RULEDISPATCH_SUGGESTS=
 PY-RULEDISPATCH_CONFLICTS=
 
-PY-RULEDISPATCH_IPK_VERSION=2
+PY-RULEDISPATCH_IPK_VERSION=3
 
 #
 # PY-RULEDISPATCH_CONFFILES should be a list of user-editable files
@@ -106,7 +106,11 @@ py-ruledispatch-source: $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) $(PY-RULEDISPATCH_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+ifeq ($(PY-RULEDISPATCH_SVN_REV),)
 $(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) $(PY-RULEDISPATCH_PATCHES)
+else
+$(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(PY-RULEDISPATCH_PATCHES)
+endif
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)
 ifeq ($(PY-RULEDISPATCH_SVN_REV),)
