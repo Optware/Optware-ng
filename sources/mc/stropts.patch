@@ -1,0 +1,21 @@
+# uClibc does not support STREAMS (stropts.h)
+--- mc-4.1.35/src/utilunix.c	1998-05-25 12:16:07.000000000 +0200
++++ mc/src/utilunix.c	2006-05-29 12:19:52.000000000 +0200
+@@ -849,7 +849,6 @@
+ 
+ #include <sys/types.h>
+ #include <sys/stream.h>  /* defines queue_t */
+-#include <stropts.h>     /* defines struct strtdinsert */
+ #include <fcntl.h>
+ 
+ #define SPX_DEVICE "/dev/spx"
+--- mc-4.1.35/src/subshell.c	1998-05-25 12:16:07.000000000 +0200
++++ mc/src/subshell.c	2006-05-29 12:20:54.000000000 +0200
+@@ -62,6 +62,7 @@
+ #   define WIFEXITED(stat_val) (((stat_val) & 255) == 0)
+ #endif
+ 
++#undef HAVE_GRANTPT
+ #ifdef HAVE_GRANTPT
+ #   include <stropts.h> /* For I_PUSH			      */
+ #else
