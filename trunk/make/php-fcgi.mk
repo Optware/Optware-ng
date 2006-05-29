@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=1
+PHP_FCGI_IPK_VERSION=2
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -107,8 +107,8 @@ php-fcgi-source: $(DL_DIR)/$(PHP_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_FCGI_PATCHES)
-	$(MAKE) libxml2-stage pcre-stage
+$(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
+	$(MAKE) $(DL_DIR)/$(PHP_SOURCE) libxml2-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
