@@ -39,7 +39,7 @@ SQUEAK_CONFLICTS=
 #
 # SQUEAK_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEAK_IPK_VERSION=1
+SQUEAK_IPK_VERSION=2
 
 #
 # SQUEAK_CONFFILES should be a list of user-editable files
@@ -51,9 +51,12 @@ SQUEAK_IPK_VERSION=1
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(OPTWARE_TARGET),nslu2)
-SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-$(OPTWARE_TARGET).patch $(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch
+SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-$(OPTWARE_TARGET).patch \
+	$(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch
 else
-SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-cross.patch $(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch
+SQUEAK_PATCHES=$(SQUEAK_SOURCE_DIR)/configure.ac-cross.patch \
+	$(SQUEAK_SOURCE_DIR)/Makefile.in-cross.patch \
+	$(SQUEAK_SOURCE_DIR)/sqUnixMain.c.patch
 endif
 endif
 
