@@ -35,7 +35,7 @@ PY-TURBOCHEETAH_CONFLICTS=
 #
 # PY-TURBOCHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOCHEETAH_IPK_VERSION=1
+PY-TURBOCHEETAH_IPK_VERSION=2
 
 #
 # PY-TURBOCHEETAH_CONFFILES should be a list of user-editable files
@@ -97,8 +97,8 @@ py-turbocheetah-source: $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) $(PY-TURBOCHEETAH_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TURBOCHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) $(PY-TURBOCHEETAH_PATCHES) make/py-turbocheetah.mk
-	$(MAKE) py-setuptools-stage
+$(PY-TURBOCHEETAH_BUILD_DIR)/.configured: $(PY-TURBOCHEETAH_PATCHES) make/py-turbocheetah.mk
+	$(MAKE) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)
 	mkdir $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR)
 	$(PY-TURBOCHEETAH_UNZIP) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/cheetah
