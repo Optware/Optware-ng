@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=4
+LUA_IPK_VERSION=5
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ lua-source: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 #
 $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 	make readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR) $(LUA_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
