@@ -19,13 +19,17 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=2
+MC_IPK_VERSION=3
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(OPTWARE_TARGET),wl500g)
+MC_PATCHES=$(MC_SOURCE_DIR)/stropts.patch
+else
 MC_PATCHES=
+endif
 
 #
 # If the compilation of the package requires additional
@@ -80,6 +84,10 @@ mc-source: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(MC_PATCHES)" ; \
+		then cat $(MC_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(MC_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
 	(cd $(MC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
