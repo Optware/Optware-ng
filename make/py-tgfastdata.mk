@@ -35,7 +35,7 @@ PY-TGFASTDATA_CONFLICTS=
 #
 # PY-TGFASTDATA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TGFASTDATA_IPK_VERSION=1
+PY-TGFASTDATA_IPK_VERSION=2
 
 #
 # PY-TGFASTDATA_CONFFILES should be a list of user-editable files
@@ -80,7 +80,7 @@ PY-TGFASTDATA_IPK=$(BUILD_DIR)/py-tgfastdata_$(PY-TGFASTDATA_VERSION)-$(PY-TGFAS
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-tgfastdata-source: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-TGFASTDATA_PATCHES)
+py-tgfastdata-source: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TGFASTDATA_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -97,11 +97,11 @@ py-tgfastdata-source: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-TGFASTDATA_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TGFASTDATA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) $(PY-TGFASTDATA_PATCHES) make/py-tgfastdata.mk
-	$(MAKE) py-setuptools-stage
+$(PY-TGFASTDATA_BUILD_DIR)/.configured: $(PY-TGFASTDATA_PATCHES) make/py-tgfastdata.mk
+	$(MAKE) $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
 	mkdir $(BUILD_DIR)/$(PY-TGFASTDATA_DIR)
-	$(PY-TGFASTDATA_UNZIP) $(DL_DIR)/$(PY-TGFASTDATA_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/fastdata
+	$(PY-TGFASTDATA_UNZIP) $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/fastdata
 #	cat $(PY-TGFASTDATA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TGFASTDATA_DIR) $(PY-TGFASTDATA_BUILD_DIR)
 	(cd $(PY-TGFASTDATA_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/fastdata; \
