@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#OWW_SITE=http://dl.sourceforge.net/sourceforge/oww
+OWW_SITE=http://dl.sourceforge.net/sourceforge/oww
 #OWW_VERSION=0.81.7
-OWW_SITE=http://localhost/~sjm/oww
+#OWW_SITE=http://localhost/~sjm/oww
 OWW_VERSION=0.81.8
 OWW_SOURCE=oww-$(OWW_VERSION).tar.gz
 OWW_DIR=oww-$(OWW_VERSION)
