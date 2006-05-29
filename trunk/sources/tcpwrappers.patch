@@ -27,3 +27,54 @@
  
  ####################################################
  # Optional: dealing with host name/address conflicts
+--- tcp_wrappers_7.6/percent_m.c	1994-12-28 17:42:37.000000000 +0100
++++ tcpwrappers/percent_m.c	2006-05-29 11:49:52.000000000 +0200
+@@ -13,10 +13,6 @@
+ #include <string.h>
+ 
+ extern int errno;
+-#ifndef SYS_ERRLIST_DEFINED
+-extern char *sys_errlist[];
+-extern int sys_nerr;
+-#endif
+ 
+ #include "mystdarg.h"
+ 
+@@ -29,11 +25,7 @@
+ 
+     while (*bp = *cp)
+ 	if (*cp == '%' && cp[1] == 'm') {
+-	    if (errno < sys_nerr && errno > 0) {
+-		strcpy(bp, sys_errlist[errno]);
+-	    } else {
+-		sprintf(bp, "Unknown error %d", errno);
+-	    }
++	    strcpy(bp, strerror(errno));
+ 	    bp += strlen(bp);
+ 	    cp += 2;
+ 	} else {
+--- tcp_wrappers_7.6/tli.c	1997-03-21 19:27:26.000000000 +0100
++++ tcpwrappers/tli.c	2006-05-29 11:51:51.000000000 +0200
+@@ -40,8 +40,6 @@
+ 
+ extern char *nc_sperror();
+ extern int errno;
+-extern char *sys_errlist[];
+-extern int sys_nerr;
+ extern int t_errno;
+ extern char *t_errlist[];
+ extern int t_nerr;
+@@ -305,12 +303,7 @@
+ 	    return (t_errlist[t_errno]);
+ 	}
+     } else {
+-	if (errno < 0 || errno >= sys_nerr) {
+-	    sprintf(buf, "Unknown UNIX error %d", errno);
+-	    return (buf);
+-	} else {
+-	    return (sys_errlist[errno]);
+-	}
++	return (strerror(errno));
+     }
+ }
+ 
