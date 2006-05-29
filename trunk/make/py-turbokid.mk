@@ -35,7 +35,7 @@ PY-TURBOKID_CONFLICTS=
 #
 # PY-TURBOKID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOKID_IPK_VERSION=1
+PY-TURBOKID_IPK_VERSION=2
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
@@ -97,8 +97,8 @@ py-turbokid-source: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
-	$(MAKE) py-setuptools-stage
+$(PY-TURBOKID_BUILD_DIR)/.configured: $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
+	$(MAKE) $(DL_DIR)/$(PY-TURBOKID_SOURCE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)
 	mkdir $(BUILD_DIR)/$(PY-TURBOKID_DIR)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TURBOKID_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/kid

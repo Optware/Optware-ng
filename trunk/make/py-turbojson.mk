@@ -35,7 +35,7 @@ PY-TURBOJSON_CONFLICTS=
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=1
+PY-TURBOJSON_IPK_VERSION=2
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
@@ -97,8 +97,8 @@ py-turbojson-source: $(DL_DIR)/$(PY-TURBOJSON_SOURCE) $(PY-TURBOJSON_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TURBOJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOJSON_SOURCE) $(PY-TURBOJSON_PATCHES) make/py-turbojson.mk
-	$(MAKE) py-setuptools-stage
+$(PY-TURBOJSON_BUILD_DIR)/.configured: $(PY-TURBOJSON_PATCHES) make/py-turbojson.mk
+	$(MAKE) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)
 	mkdir $(BUILD_DIR)/$(PY-TURBOJSON_DIR)
 	$(PY-TURBOJSON_UNZIP) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/json
