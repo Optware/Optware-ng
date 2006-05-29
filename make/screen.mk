@@ -35,7 +35,7 @@ SCREEN_CONFLICTS=
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
 #
-SCREEN_IPK_VERSION=2
+SCREEN_IPK_VERSION=3
 
 #
 # SCREEN_PATCHES should list any patches, in the the order in
@@ -110,7 +110,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 		--prefix=/opt \
 	)
 ifeq ($(OPTWARE_TARGET),wl500g)
-		sed -ie 's|sys/stropts.h|stropts.h|g' $(SCREEN_BUILD_DIR)/pty.c 
+		sed -ie '/HAVE_SVR4_PTYS/d' $(SCREEN_BUILD_DIR)/config.h
 endif
 	touch $(SCREEN_BUILD_DIR)/.configured
 
