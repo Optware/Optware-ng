@@ -34,13 +34,14 @@ PORTMAP_CONFLICTS=
 #
 # PORTMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-PORTMAP_IPK_VERSION=3
+PORTMAP_IPK_VERSION=4
 
 #
 # PORTMAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PORTMAP_PATCHES=$(PORTMAP_SOURCE_DIR)/Makefile.patch
+PORTMAP_PATCHES=$(PORTMAP_SOURCE_DIR)/Makefile.patch \
+		$(PORTMAP_SOURCE_DIR)/strerror.c.patch
 
 #
 # If the compilation of the package requires additional
