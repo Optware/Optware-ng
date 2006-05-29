@@ -26,8 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OWW_SITE=http://dl.sourceforge.net/sourceforge/oww
-OWW_VERSION=0.81.7
+#OWW_SITE=http://dl.sourceforge.net/sourceforge/oww
+#OWW_VERSION=0.81.7
+OWW_SITE=http://localhost/~sjm/oww
+OWW_VERSION=0.81.8
 OWW_SOURCE=oww-$(OWW_VERSION).tar.gz
 OWW_DIR=oww-$(OWW_VERSION)
 OWW_UNZIP=zcat
@@ -35,7 +37,7 @@ OWW_MAINTAINER=Simon Melhuish - simon@melhuish.info
 OWW_DESCRIPTION=Oww reads from a DalSemi/AAG weather station.
 OWW_SECTION=misc
 OWW_PRIORITY=optional
-OWW_DEPENDS=libghttp, libusb
+OWW_DEPENDS=libcurl, libusb
 OWW_SUGGESTS=
 OWW_CONFLICTS=
 
@@ -105,7 +107,7 @@ oww-source: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
-	$(MAKE) libghttp-stage libusb-stage
+	$(MAKE) libcurl-stage libusb-stage
 	rm -rf $(BUILD_DIR)/$(OWW_DIR) $(OWW_BUILD_DIR)
 	$(OWW_UNZIP) $(DL_DIR)/$(OWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(OWW_PATCHES) | patch -d $(BUILD_DIR)/$(OWW_DIR) -p1
@@ -115,6 +117,7 @@ $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OWW_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OWW_LDFLAGS)" \
 		LIBUSB_CONFIG=$(STAGING_PREFIX)/bin/libusb-config \
+		_libcurl_config=$(STAGING_PREFIX)/bin/curl-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
