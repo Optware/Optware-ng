@@ -183,14 +183,14 @@ WL500G_BROKEN_PACKAGES = \
 	asterisk atk \
 	bitlbee bzflag \
 	cvs \
-	dict \
+	dcraw dict \
 	ecl elinks erlang \
 	ficy freetds \
 	gawk gambit-c giftcurs git-core glib gnupg gtk \
 	hnb \
 	ice id3lib iperf iptables ivorbis-tools \
 	jabber jamvm jikes \
-	ldconfig libdvb libftdi libgc libtorrent libvorbisidec lsof \
+	ldconfig libdvb libftdi libgc liblcms libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nail ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi nylon \
 	pango py-lxml py-mssql py-paste py-psycopg2 \
