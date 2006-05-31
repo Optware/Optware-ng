@@ -29,13 +29,13 @@ PY-TURBOJSON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOJSON_DESCRIPTION=Python template plugin that supports JSON.
 PY-TURBOJSON_SECTION=misc
 PY-TURBOJSON_PRIORITY=optional
-PY-TURBOJSON_DEPENDS=python, py-simplesjon
+PY-TURBOJSON_DEPENDS=python, py-simplejson
 PY-TURBOJSON_CONFLICTS=
 
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=2
+PY-TURBOJSON_IPK_VERSION=3
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
