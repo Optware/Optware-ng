@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CTAGS_SITE=http://dl.sourceforge.net/sourceforge/ctags
-CTAGS_VERSION=5.5.4
+CTAGS_VERSION=5.6
 CTAGS_SOURCE=ctags-$(CTAGS_VERSION).tar.gz
 CTAGS_DIR=ctags-$(CTAGS_VERSION)
 CTAGS_UNZIP=zcat
@@ -177,6 +177,7 @@ $(CTAGS_IPK_DIR)/CONTROL/control:
 $(CTAGS_IPK): $(CTAGS_BUILD_DIR)/.built
 	rm -rf $(CTAGS_IPK_DIR) $(BUILD_DIR)/ctags_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CTAGS_BUILD_DIR) DESTDIR=$(CTAGS_IPK_DIR) prefix=$(CTAGS_IPK_DIR)/opt install
+	$(STRIP_COMMAND) $(CTAGS_IPK_DIR)/opt/bin/ctags
 	$(MAKE) $(CTAGS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTAGS_IPK_DIR)
 
