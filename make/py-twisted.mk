@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TWISTED_VERSION=2.2.0
-PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/2.2
+PY-TWISTED_VERSION=2.4.0
+PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/2.4
 #http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/TwistedSumo-2006-02-12.tar.bz2
 #http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/Twisted-2.2.0.tar.bz2
 PY-TWISTED_SOURCE=Twisted-$(PY-TWISTED_VERSION).tar.bz2
