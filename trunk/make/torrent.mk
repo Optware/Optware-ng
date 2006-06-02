@@ -20,16 +20,16 @@ TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
 TORRENT_PRIORITY=optional
-TORRENT_DEPENDS=libbt, coreutils
+TORRENT_DEPENDS=libbt
 TORRENT_MAINTAINER=oleo <oleon@users.sourceforge.net>
 TORRENT_SECTION=net
 TORRENT_DESCRIPTION=a collection of scripts that processes torrent files
-TORRENT_SUGGESTS=cron
+TORRENT_SUGGESTS=cron, coreutils
 
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=9
+TORRENT_IPK_VERSION=10
 
 # TORRENT_CONFFILES should be a list of user-editable files
 TORRENT_CONFFILES=/opt/etc/torrent.conf
