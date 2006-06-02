@@ -58,12 +58,6 @@ if [ ! -d $WORK ]; then
     exit 1
 fi
 
-ID=`id $USER`
-if [ $? -eq 1 ]; then
-    warning "User $USER does not exist."
-    exit 1
-fi
-
 if [  ! -z "$DEBUG"  ]; then
     echo "SOURCE: $SOURCE"
     echo "WORK: $WORK"
