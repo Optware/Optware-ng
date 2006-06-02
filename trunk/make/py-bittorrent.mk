@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BITTORRENT_SITE=http://www.bittorrent.com/dl
-PY-BITTORRENT_VERSION=4.4.0
+PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
+PY-BITTORRENT_VERSION=4.9.7
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -35,13 +35,13 @@ PY-BITTORRENT_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-BITTORRENT_DESCRIPTION=BitTorrent is a scatter-gather network file transfer tool.
 PY-BITTORRENT_SECTION=misc
 PY-BITTORRENT_PRIORITY=optional
-PY-BITTORRENT_DEPENDS=python
+PY-BITTORRENT_DEPENDS=py-twisted, py-crypto
 PY-BITTORRENT_CONFLICTS=
 
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=2
+PY-BITTORRENT_IPK_VERSION=1
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
