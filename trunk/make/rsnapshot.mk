@@ -5,7 +5,7 @@
 ###########################################################
 
 RSNAPSHOT_SITE=http://www.rsnapshot.org/downloads
-RSNAPSHOT_VERSION=1.2.0
+RSNAPSHOT_VERSION=1.2.9
 RSNAPSHOT_SOURCE=rsnapshot-$(RSNAPSHOT_VERSION).tar.gz
 RSNAPSHOT_DIR=rsnapshot-$(RSNAPSHOT_VERSION)
 RSNAPSHOT_UNZIP=zcat
@@ -54,6 +54,7 @@ $(RSNAPSHOT_BUILD_DIR)/.configured: $(DL_DIR)/$(RSNAPSHOT_SOURCE) $(RSNAPSHOT_PA
 	$(RSNAPSHOT_UNZIP) $(DL_DIR)/$(RSNAPSHOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(RSNAPSHOT_PATCHES) | patch -d $(BUILD_DIR)/$(RSNAPSHOT_DIR) -p1
 	mv $(BUILD_DIR)/$(RSNAPSHOT_DIR) $(RSNAPSHOT_BUILD_DIR)
+	sed -i 's#/usr/bin/pod2man#pod2man#' $(RSNAPSHOT_BUILD_DIR)/Makefile.in
 	(cd $(RSNAPSHOT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSNAPSHOT_CPPFLAGS)" \
