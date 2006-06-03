@@ -103,7 +103,8 @@ COMMON_CROSS_PACKAGES = \
 	py-clips py-configobj py-constraint py-crypto py-curl py-django py-docutils py-elementtree \
 	py-formencode py-gdchart2 py-gd py-kid py-lxml py-nose \
 	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
-	py-paste py-pastedeploy py-pastescript py-pil py-protocols py-psycopg py-psycopg2 py-pygresql \
+	py-paste py-pastedeploy py-pastescript py-pil py-protocols \
+	py-pgsql py-psycopg py-psycopg2 py-pygresql \
 	py-rdiff-backup py-routes py-roundup py-ruledispatch \
 	py-scgi py-serial py-setuptools py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
