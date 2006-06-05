@@ -194,7 +194,8 @@ WL500G_BROKEN_PACKAGES = \
 	ldconfig libdvb libftdi libgc liblcms libtorrent libvorbisidec lsof \
 	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nail ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi nylon \
-	pango py-lxml py-mssql py-paste py-psycopg2 \
+	pango py-axiom py-epsilon py-lxml py-mantissa py-mssql \
+	py-nevow py-paste py-psycopg2 py-twisted \
 	unslung-devel \
 	qemu qemu-libc-i386 \
 	rtorrent \
