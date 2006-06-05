@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CONFIGOBJ_SITE=http://dl.sourceforge.net/sourceforge/configobj
-PY-CONFIGOBJ_VERSION=4.3.1
+PY-CONFIGOBJ_SITE=http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=
+PY-CONFIGOBJ_VERSION=4.3.2
 PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).zip
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
 PY-CONFIGOBJ_UNZIP=unzip
@@ -74,7 +74,7 @@ PY-CONFIGOBJ_IPK=$(BUILD_DIR)/py-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOB
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CONFIGOBJ_SITE)/$(PY-CONFIGOBJ_SOURCE)
+	$(WGET) -O $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CONFIGOBJ_SITE)$(PY-CONFIGOBJ_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
