@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PYGRESQL_SITE=ftp://ftp.PyGreSQL.org/pub/distrib
-PY-PYGRESQL_VERSION=3.8
+PY-PYGRESQL_VERSION=3.8.1
 PY-PYGRESQL_SOURCE=PyGreSQL-$(PY-PYGRESQL_VERSION).tgz
 PY-PYGRESQL_DIR=PyGreSQL-$(PY-PYGRESQL_VERSION)
 PY-PYGRESQL_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-PYGRESQL_CONFLICTS=
 #
 # PY-PYGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYGRESQL_IPK_VERSION=2
+PY-PYGRESQL_IPK_VERSION=1
 
 #
 # PY-PYGRESQL_CONFFILES should be a list of user-editable files
@@ -141,7 +141,7 @@ py-pygresql: $(PY-PYGRESQL_BUILD_DIR)/.built
 #
 $(PY-PYGRESQL_BUILD_DIR)/.staged: $(PY-PYGRESQL_BUILD_DIR)/.built
 	rm -f $(PY-PYGRESQL_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-PYGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(PY-PYGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(PY-PYGRESQL_BUILD_DIR)/.staged
 
 py-pygresql-stage: $(PY-PYGRESQL_BUILD_DIR)/.staged
