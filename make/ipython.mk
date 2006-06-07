@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.7.1.fix1
+IPYTHON_VERSION=0.7.2
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
@@ -170,7 +170,9 @@ $(IPYTHON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_IPK_DIR) $(BUILD_DIR)/ipython_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(IPYTHON_BUILD_DIR) DESTDIR=$(IPYTHON_IPK_DIR) install
 	(cd $(IPYTHON_BUILD_DIR); \
-	python2.4 setup.py install --prefix=$(IPYTHON_IPK_DIR)/opt)
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 -c "import setuptools; execfile('setup.py')" \
+	install --root=$(IPYTHON_IPK_DIR) --prefix=/opt)
 #	install -d $(IPYTHON_IPK_DIR)/opt/etc/
 #	install -m 644 $(IPYTHON_SOURCE_DIR)/ipython.conf $(IPYTHON_IPK_DIR)/opt/etc/ipython.conf
 #	install -d $(IPYTHON_IPK_DIR)/opt/etc/init.d
