@@ -63,6 +63,7 @@ $(TCPWRAPPERS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(TCPWRAPPERS_CONFLICTS)" >>$@
 
 $(TCPWRAPPERS_IPK): $(TCPWRAPPERS_DIR)/tcpd
+	rm -rf $(TCPWRAPPERS_IPK_DIR) $(BUILD_DIR)/tcpwrappers_*_$(TARGET_ARCH).ipk
 	install -d $(TCPWRAPPERS_IPK_DIR)/CONTROL
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/lib
 	install -d $(TCPWRAPPERS_IPK_DIR)/opt/sbin
