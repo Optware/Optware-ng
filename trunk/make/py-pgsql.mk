@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PGSQL_SITE=http://dl.sourceforge.net/sourceforge/pypgsql
+PY-PGSQL_SITE=http://umn.dl.sourceforge.net/sourceforge/pypgsql
 PY-PGSQL_VERSION=2.5
 PY-PGSQL_SOURCE=pyPgSQL-$(PY-PGSQL_VERSION).tar.gz
 PY-PGSQL_DIR=pyPgSQL-$(PY-PGSQL_VERSION)
