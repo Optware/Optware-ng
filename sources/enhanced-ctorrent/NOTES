@@ -1,0 +1,10 @@
+Enhanced CTorrent is built from the original CTorrent sources from
+SourceForge (http://sourceforge.net/projects/ctorrent/), plus the
+dnh2 set of patches from http://www.rahul.net/dholmes/ctorrent.
+
+These are the additional patches that are applied to the source,
+also from dholmes:
+
+btfiles.patch: fix for vfat filesystem problems, released 2006-04-25
+
+Fernando (carolo@gmail.com).
