@@ -15,8 +15,8 @@
 # You should change all these variables to suit your package.
 #
 
-LIBXML2_SITE=http://xmlsoft.org/sources/libxml2
-LIBXML2_VERSION=2.6.23
+LIBXML2_SITE=ftp://xmlsoft.org/libxml2
+LIBXML2_VERSION=2.6.26
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
