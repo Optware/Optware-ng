@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SETUPTOOLS_SITE=http://cheeseshop.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=0.6b2
+PY-SETUPTOOLS_VERSION=0.6b3
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).zip
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
 PY-SETUPTOOLS_UNZIP=unzip
@@ -99,7 +99,7 @@ py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES) make/py-setuptools.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) python-stage
 	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
 	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
