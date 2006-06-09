@@ -379,7 +379,7 @@ WGET=wget --passive-ftp
 PERL=perl
 
 # The hostname or IP number of our local dl.sf.net mirror
-SOURCEFORGE_MIRROR=dl.sf.net
+SOURCEFORGE_MIRROR=easynews.dl.sf.net
 
 # Directory location definitions
 BASE_DIR:=$(shell pwd)
