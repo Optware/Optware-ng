@@ -27,15 +27,6 @@
  
  #Set NOCRYPTO to yes if you do not want to have crypto support or 
  #dependencies
-@@ -65,7 +66,7 @@
- # to reduce the size of certain static buffers
- 
- #ifneq ($(CROSS_COMPILE),)
--#OPTIONS += -DLOW_MEMORY
-+OPTIONS += -DLOW_MEMORY
- #endif
- 
- # Optional debugging parameters
 @@ -150,9 +151,9 @@
  #ASTCFLAGS+=-DOLD_DSP_ROUTINES
  
@@ -70,13 +61,13 @@
  	cryptostub.o
  
 -ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/sys/poll.h),)
-+ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/sys/poll.h),)
++ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/include/sys/poll.h),)
    OBJS+= poll.o
    ASTCFLAGS+=-DPOLLCOMPAT
  endif
  
 -ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/dlfcn.h),)
-+ifneq ($(wildcard $(CROSS_COMPILE_TARGET)/usr/include/dlfcn.h),)
++ifeq ($(wildcard $(CROSS_COMPILE_TARGET)/include/dlfcn.h),)
    OBJS+= dlfcn.o
    ASTCFLAGS+=-DDLFCNCOMPAT
  endif
