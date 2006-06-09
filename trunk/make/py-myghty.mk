@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MYGHTY_SITE=http://dl.sourceforge.net/sourceforge/myghty
+PY-MYGHTY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/myghty
 PY-MYGHTY_VERSION=1.0.1
 PY-MYGHTY_SOURCE=Myghty-$(PY-MYGHTY_VERSION).tar.gz
 PY-MYGHTY_DIR=Myghty-$(PY-MYGHTY_VERSION)

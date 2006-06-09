@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBPNG_SITE=http://dl.sourceforge.net/sourceforge/libpng
+LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
 LIBPNG_VERSION=1.2.8
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION)-config.tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)

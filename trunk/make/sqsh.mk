@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SQSH_SITE=http://dl.sourceforge.net/sourceforge/sqsh
+SQSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sqsh
 SQSH_VERSION=2.1.3
 SQSH_SOURCE=sqsh-$(SQSH_VERSION).tar.gz
 SQSH_DIR=sqsh-$(SQSH_VERSION)

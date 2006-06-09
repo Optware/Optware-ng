@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-LIBID3TAG_SITE=http://dl.sourceforge.net/sourceforge/mad
+LIBID3TAG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mad
 LIBID3TAG_VERSION=0.15.1b
 LIBID3TAG_LIB_VERSION=0.3.0
 LIBID3TAG_SOURCE=libid3tag-$(LIBID3TAG_VERSION).tar.gz

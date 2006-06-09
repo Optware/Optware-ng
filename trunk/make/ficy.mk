@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FICY_SITE=http://dl.sourceforge.net/sourceforge/ficy/
+FICY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ficy/
 FICY_VERSION=1.0.15
 FICY_VERSION_UNDERSCORE=1_0_15
 FICY_SOURCE=fIcy-$(FICY_VERSION).tar.gz

@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ANTINAT_SITE=http://dl.sourceforge.net/sourceforge/antinat
+ANTINAT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/antinat
 ANTINAT_VERSION=0.90
 ANTINAT_SOURCE=antinat-$(ANTINAT_VERSION).tar.bz2
 ANTINAT_DIR=antinat-$(ANTINAT_VERSION)

@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SIPROXD_SITE=http://dl.sourceforge.net/sourceforge/siproxd
+SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
 SIPROXD_VERSION=0.5.10
 SIPROXD_SOURCE=siproxd-$(SIPROXD_VERSION).tar.gz
 SIPROXD_DIR=siproxd-$(SIPROXD_VERSION)

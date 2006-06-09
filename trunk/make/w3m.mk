@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-W3M_SITE=http://dl.sourceforge.net/sourceforge/w3m
+W3M_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/w3m
 W3M_VERSION=0.5.1
 W3M_SOURCE=w3m-$(W3M_VERSION).tar.gz
 W3M_DIR=w3m-$(W3M_VERSION)

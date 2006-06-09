@@ -13,7 +13,7 @@
 #
 # You should change all these variables to suit your package.
 #
-JOE_SITE=http://dl.sourceforge.net/sourceforge/joe-editor
+JOE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/joe-editor
 JOE_VERSION=3.1
 JOE_SOURCE=joe-$(JOE_VERSION).tar.gz
 JOE_DIR=joe-$(JOE_VERSION)

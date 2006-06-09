@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TIGHTVNC_SITE=http://dl.sourceforge.net/sourceforge/vnc-tight
+TIGHTVNC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/vnc-tight
 TIGHTVNC_VERSION=1.2.9
 TIGHTVNC_SOURCE=tightvnc-$(TIGHTVNC_VERSION)_unixsrc.tar.bz2
 TIGHTVNC_DIR=vnc_unixsrc

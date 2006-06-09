@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MEDIAWIKI_SITE=http://dl.sourceforge.net/sourceforge/wikipedia
+MEDIAWIKI_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wikipedia
 MEDIAWIKI_VERSION=1.4.0
 MEDIAWIKI_SOURCE=mediawiki-$(MEDIAWIKI_VERSION).tar.gz
 MEDIAWIKI_DIR=mediawiki-$(MEDIAWIKI_VERSION)

@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SOAPPY_SITE=http://dl.sourceforge.net/sourceforge/pywebsvcs
+PY-SOAPPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pywebsvcs
 PY-SOAPPY_VERSION=0.12.0
 PY-SOAPPY_SOURCE=SOAPpy-$(PY-SOAPPY_VERSION).tar.gz
 PY-SOAPPY_DIR=SOAPpy-$(PY-SOAPPY_VERSION)

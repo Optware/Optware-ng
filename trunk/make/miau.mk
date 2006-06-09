@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-MIAU_SITE=http://dl.sourceforge.net/sourceforge/miau
+MIAU_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/miau
 #MIAU_VERSION=0.5.3
 MIAU_VERSION=0.6.0.2
 MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz

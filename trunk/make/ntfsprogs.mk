@@ -6,7 +6,7 @@
 #
 # $Header$
 #
-NTFSPROGS_SITE=http://dl.sourceforge.net/sourceforge/linux-ntfs
+NTFSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/linux-ntfs
 NTFSPROGS_VERSION=1.13.0
 NTFSPROGS_SOURCE=ntfsprogs-$(NTFSPROGS_VERSION).tar.gz
 NTFSPROGS_DIR=ntfsprogs-$(NTFSPROGS_VERSION)

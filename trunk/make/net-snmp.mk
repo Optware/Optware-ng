@@ -6,7 +6,7 @@
 #
 # $Header$
 #
-NET_SNMP_SITE=http://dl.sourceforge.net/sourceforge/net-snmp
+NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
 NET_SNMP_VERSION=5.2.1
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)

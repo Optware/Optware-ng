@@ -14,7 +14,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBBT_SITE=http://dl.sourceforge.net/sourceforge/libbt
+LIBBT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libbt
 LIBBT_VERSION=1.05
 LIBBT_SOURCE=libbt-$(LIBBT_VERSION).tar.gz
 LIBBT_DIR=libbt-$(LIBBT_VERSION)

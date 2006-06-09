@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TSOCKS_SITE=http://dl.sourceforge.net/sourceforge/tsocks
+TSOCKS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/tsocks
 TSOCKS_VERSION=1.8beta5
 TSOCKS_SOURCE=tsocks-$(TSOCKS_VERSION).tar.gz
 TSOCKS_DIR=tsocks-1.8

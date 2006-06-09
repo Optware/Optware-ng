@@ -14,7 +14,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CTORRENT_SITE=http://dl.sourceforge.net/sourceforge/ctorrent
+CTORRENT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ctorrent
 CTORRENT_VERSION=1.3.4
 CTORRENT_SOURCE=ctorrent-$(CTORRENT_VERSION).tar.bz2
 CTORRENT_DIR=ctorrent-$(CTORRENT_VERSION)

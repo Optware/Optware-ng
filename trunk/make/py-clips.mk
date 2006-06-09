@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CLIPS_SITE=http://dl.sourceforge.net/sourceforge/pyclips
+PY-CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyclips
 PY-CLIPS_VERSION=1.0_R3
 PY-CLIPS_SOURCE=pyclips-$(PY-CLIPS_VERSION).tar.gz
 PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source

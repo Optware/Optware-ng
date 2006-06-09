@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ID3LIB_SITE=http://dl.sourceforge.net/sourceforge/id3lib
+ID3LIB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/id3lib
 ID3LIB_VERSION=3.8.3
 ID3LIB_SOURCE=id3lib-$(ID3LIB_VERSION).tar.gz
 ID3LIB_DIR=id3lib-$(ID3LIB_VERSION)

@@ -378,6 +378,9 @@ SUDO=sudo
 WGET=wget --passive-ftp
 PERL=perl
 
+# The hostname or IP number of our local dl.sf.net mirror
+SOURCEFORGE_MIRROR=dl.sf.net
+
 # Directory location definitions
 BASE_DIR:=$(shell pwd)
 SOURCE_DIR=$(BASE_DIR)/sources

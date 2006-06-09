@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MOIN_SITE=http://dl.sourceforge.net/sourceforge/moin
+PY-MOIN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/moin
 PY-MOIN_VERSION=1.5.3
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)

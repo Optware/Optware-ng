@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-GIFT_SITE=http://dl.sourceforge.net/sourceforge/gift
+GIFT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gift
 GIFT_VERSION=0.11.8.1
 GIFT_VERSION_LIB=0.0.0
 GIFT_SOURCE=gift-$(GIFT_VERSION).tar.bz2

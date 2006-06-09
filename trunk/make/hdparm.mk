@@ -12,7 +12,7 @@
 # HDPARM_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-HDPARM_SITE=http://dl.sourceforge.net/sourceforge/hdparm
+HDPARM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hdparm
 HDPARM_VERSION=6.1
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)

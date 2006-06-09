@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-XML_SITE=http://dl.sourceforge.net/sourceforge/pyxml
+PY-XML_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyxml
 PY-XML_VERSION=0.8.4
 PY-XML_SOURCE=PyXML-$(PY-XML_VERSION).tar.gz
 PY-XML_DIR=PyXML-$(PY-XML_VERSION)

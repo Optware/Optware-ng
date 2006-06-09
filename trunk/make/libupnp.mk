@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBUPNP_SITE=http://dl.sourceforge.net/sourceforge/upnp
+LIBUPNP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/upnp
 LIBUPNP_VERSION=1.3.1
 LIBUPNP_SOURCE=libupnp-$(LIBUPNP_VERSION).tar.gz
 LIBUPNP_DIR=libupnp-$(LIBUPNP_VERSION)

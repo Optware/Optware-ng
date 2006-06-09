@@ -16,7 +16,7 @@
 #
 # You should change all these variables to suit your package.
 #
-TCL_SITE=http://dl.sourceforge.net/sourceforge/tcl/
+TCL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/tcl/
 TCL_VERSION=8.4.12
 TCL_SOURCE=tcl$(TCL_VERSION)-src.tar.gz
 TCL_DIR=tcl$(TCL_VERSION)

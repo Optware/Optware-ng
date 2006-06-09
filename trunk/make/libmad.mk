@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBMAD_SITE=http://dl.sourceforge.net/sourceforge/mad
+LIBMAD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mad
 LIBMAD_VERSION=0.15.1b
 LIBMAD_SOURCE=libmad-$(LIBMAD_VERSION).tar.gz
 LIBMAD_DIR=libmad-$(LIBMAD_VERSION)

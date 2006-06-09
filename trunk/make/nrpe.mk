@@ -16,7 +16,7 @@
 # NOTE 2:
 #	The nagios plugins will follow. First get this working
 #
-NRPE_SITE=http://dl.sourceforge.net/sourceforge/nagios
+NRPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nagios
 NRPE_VERSION=2.4
 NRPE_SOURCE=nrpe-$(NRPE_VERSION).tar.gz
 NRPE_DIR=nrpe-$(NRPE_VERSION)

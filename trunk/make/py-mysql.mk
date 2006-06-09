@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MYSQL_SITE=http://dl.sourceforge.net/sourceforge/mysql-python
+PY-MYSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mysql-python
 PY-MYSQL_VERSION=1.2.1_p2
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)

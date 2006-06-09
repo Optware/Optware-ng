@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBBOOST_SITE=http://dl.sourceforge.net/sourceforge/boost
+LIBBOOST_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/boost
 LIBBOOST_VERSION=1_32_0
 LIBBOOST_SOURCE=boost_$(LIBBOOST_VERSION).tar.gz
 LIBBOOST_DIR=boost_$(LIBBOOST_VERSION)

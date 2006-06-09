@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LAME_SITE=http://dl.sourceforge.net/sourceforge/lame
+LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
 LAME_VERSION=3.96.1
 LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
 LAME_DIR=lame-$(LAME_VERSION)

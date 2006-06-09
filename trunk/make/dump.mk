@@ -8,7 +8,7 @@ DUMP_DIR=$(BUILD_DIR)/dump
 
 DUMP_VERSION=0.4b37
 DUMP=dump-$(DUMP_VERSION)
-DUMP_SITE=http://dl.sourceforge.net/sourceforge/dump/
+DUMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dump/
 DUMP_SOURCE=$(DUMP).tar.gz
 DUMP_UNZIP=zcat
 

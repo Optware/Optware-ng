@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBRSYNC_SITE=http://dl.sourceforge.net/sourceforge/librsync
+LIBRSYNC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/librsync
 LIBRSYNC_VERSION=0.9.7
 LIBRSYNC_SOURCE=librsync-$(LIBRSYNC_VERSION).tar.gz
 LIBRSYNC_DIR=librsync-$(LIBRSYNC_VERSION)

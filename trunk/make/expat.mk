@@ -14,7 +14,7 @@
 #
 # You should change all these variables to suit your package.
 #
-EXPAT_SITE=http://dl.sourceforge.net/sourceforge/expat
+EXPAT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/expat
 EXPAT_VERSION=1.95.8
 EXPAT_SOURCE=expat-$(EXPAT_VERSION).tar.gz
 EXPAT_DIR=expat-$(EXPAT_VERSION)

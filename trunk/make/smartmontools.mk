@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-SMARTMONTOOLS_SITE=http://dl.sourceforge.net/sourceforge/smartmontools
+SMARTMONTOOLS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/smartmontools
 SMARTMONTOOLS_VERSION=5.33
 SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
 SMARTMONTOOLS_DIR=smartmontools-$(SMARTMONTOOLS_VERSION)

@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HPIJS_SITE=http://dl.sourceforge.net/sourceforge/hpinkjet/
+HPIJS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hpinkjet/
 HPIJS_VERSION=1.7.1
 HPIJS_SOURCE=hpijs-$(HPIJS_VERSION).tar.gz
 HPIJS_DIR=hpijs-$(HPIJS_VERSION)
