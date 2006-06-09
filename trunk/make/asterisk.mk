@@ -42,7 +42,7 @@ ASTERISK_CONFLICTS=
 #
 # ASTERISK_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK_IPK_VERSION=1
+ASTERISK_IPK_VERSION=2
 
 #
 # ASTERISK_CONFFILES should be a list of user-editable files
