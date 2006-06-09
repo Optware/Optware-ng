@@ -14,7 +14,7 @@
 #
 # You should change all these variables to suit your package.
 #
-JIKES_SITE=http://dl.sourceforge.net/sourceforge/jikes
+JIKES_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jikes
 JIKES_VERSION=1.22
 JIKES_SOURCE=jikes-$(JIKES_VERSION).tar.bz2
 JIKES_DIR=jikes-$(JIKES_VERSION)

@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-METALOG_SITE=http://dl.sourceforge.net/sourceforge/metalog
+METALOG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/metalog
 METALOG_VERSION=0.7
 METALOG_SOURCE=metalog-$(METALOG_VERSION).tar.gz
 METALOG_DIR=metalog-$(METALOG_VERSION)

@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TETHEREAL_SITE=http://dl.sourceforge.net/sourceforge/ethereal
+TETHEREAL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ethereal
 TETHEREAL_VERSION=0.10.14
 TETHEREAL_SOURCE=ethereal-$(TETHEREAL_VERSION).tar.gz
 TETHEREAL_DIR=ethereal-$(TETHEREAL_VERSION)

@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NAIL_SITE=http://dl.sourceforge.net/sourceforge/nail/
+NAIL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nail/
 NAIL_VERSION=11.25
 NAIL_SOURCE=nail-$(NAIL_VERSION).tar.bz2
 NAIL_DIR=nail-$(NAIL_VERSION)

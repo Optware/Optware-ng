@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CHERRYPY_SITE=http://dl.sourceforge.net/sourceforge/cherrypy
+PY-CHERRYPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cherrypy
 PY-CHERRYPY_VERSION=2.2.1
 PY-CHERRYPY_SOURCE=CherryPy-$(PY-CHERRYPY_VERSION).tar.gz
 PY-CHERRYPY_DIR=CherryPy-$(PY-CHERRYPY_VERSION)

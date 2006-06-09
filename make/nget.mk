@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NGET_SITE=http://dl.sourceforge.net/sourceforge/nget
+NGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nget
 NGET_VERSION=0.27.1
 NGET_SOURCE=nget-$(NGET_VERSION)+uulib.tar.gz
 NGET_DIR=nget-$(NGET_VERSION)

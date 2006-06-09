@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MAILMAN_SITE=http://dl.sourceforge.net/sourceforge/mailman
+MAILMAN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mailman
 MAILMAN_VERSION=2.1.8
 MAILMAN_SOURCE=mailman-$(MAILMAN_VERSION).tgz
 MAILMAN_DIR=mailman-$(MAILMAN_VERSION)

@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ECL_SITE=http://dl.sourceforge.net/sourceforge/ecls
+ECL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ecls
 ECL_VERSION=0.9h
 ECL_SOURCE=ecl-$(ECL_VERSION).tgz
 ECL_DIR=ecl-$(ECL_VERSION)

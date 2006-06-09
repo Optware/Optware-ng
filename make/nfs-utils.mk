@@ -14,7 +14,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NFS-UTILS_SITE=http://dl.sourceforge.net/sourceforge/nfs
+NFS-UTILS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nfs
 NFS-UTILS_VERSION=1.0.7
 NFS-UTILS_SOURCE=nfs-utils-$(NFS-UTILS_VERSION).tar.gz
 NFS-UTILS_DIR=nfs-utils-$(NFS-UTILS_VERSION)

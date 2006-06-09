@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ESMTP_SITE=http://dl.sourceforge.net/sourceforge/esmtp
+ESMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esmtp
 ESMTP_VERSION=0.5.1
 ESMTP_SOURCE=esmtp-$(ESMTP_VERSION).tar.bz2
 ESMTP_DIR=esmtp-$(ESMTP_VERSION)

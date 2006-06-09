@@ -14,7 +14,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VBLADE_SITE=http://dl.sourceforge.net/sourceforge/aoetools
+VBLADE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aoetools
 VBLADE_VERSION=10
 VBLADE_SOURCE=vblade-$(VBLADE_VERSION).tar.gz
 VBLADE_DIR=vblade-$(VBLADE_VERSION)

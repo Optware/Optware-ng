@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PHPMYADMIN_SITE=http://dl.sourceforge.net/sourceforge/phpmyadmin
+PHPMYADMIN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/phpmyadmin
 PHPMYADMIN_VERSION=2.6.2
 PHPMYADMIN_SOURCE=phpMyAdmin-$(PHPMYADMIN_VERSION).tar.bz2
 PHPMYADMIN_DIR=phpMyAdmin-$(PHPMYADMIN_VERSION)

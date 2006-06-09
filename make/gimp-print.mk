@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-GIMP-PRINT_SITE=http://dl.sourceforge.net/sourceforge/gimp-print
+GIMP-PRINT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gimp-print
 GIMP-PRINT_VERSION=5.0.0-beta2
 GIMP-PRINT_SOURCE=gimp-print-$(GIMP-PRINT_VERSION).tar.bz2
 GIMP-PRINT_DIR=gimp-print-$(GIMP-PRINT_VERSION)

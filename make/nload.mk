@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NLOAD_SITE=http://dl.sourceforge.net/sourceforge/nload
+NLOAD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nload
 NLOAD_VERSION=0.6.0
 NLOAD_SOURCE=nload-$(NLOAD_VERSION).tar.gz
 NLOAD_DIR=nload-$(NLOAD_VERSION)

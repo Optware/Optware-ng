@@ -29,7 +29,7 @@
 #
 ###########################################################
 
-LIBUSB_SITE=http://dl.sourceforge.net/sourceforge/libusb/
+LIBUSB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libusb/
 LIBUSB_VERSION:=0.1.10a
 LIBUSB_SOURCE=libusb-$(LIBUSB_VERSION).tar.gz
 LIBUSB_DIR=libusb-$(LIBUSB_VERSION)

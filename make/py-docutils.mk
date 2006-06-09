@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DOCUTILS_SITE=http://dl.sf.net/sourceforge/docutils
+PY-DOCUTILS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/docutils
 PY-DOCUTILS_VERSION=0.4
 PY-DOCUTILS_SOURCE=docutils-$(PY-DOCUTILS_VERSION).tar.gz
 PY-DOCUTILS_DIR=docutils-$(PY-DOCUTILS_VERSION)

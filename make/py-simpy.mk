@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SIMPY_SITE=http://dl.sourceforge.net/sourceforge/simpy
+PY-SIMPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/simpy
 PY-SIMPY_VERSION=1.7
 PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).tar.gz
 PY-SIMPY_DIR=SimPy-$(PY-SIMPY_VERSION)

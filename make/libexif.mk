@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBEXIF_SITE=http://dl.sourceforge.net/sourceforge/libexif
+LIBEXIF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libexif
 LIBEXIF_VERSION=0.6.13
 LIBEXIF_SOURCE=libexif-$(LIBEXIF_VERSION).tar.bz2
 LIBEXIF_DIR=libexif-$(LIBEXIF_VERSION)

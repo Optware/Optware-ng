@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-BOGOFILTER_SITE=http://dl.sourceforge.net/sourceforge/bogofilter
+BOGOFILTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bogofilter
 BOGOFILTER_VERSION=0.93.5
 BOGOFILTER_SOURCE=bogofilter-$(BOGOFILTER_VERSION).tar.bz2
 BOGOFILTER_DIR=bogofilter-$(BOGOFILTER_VERSION)

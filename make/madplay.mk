@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-MADPLAY_SITE=http://dl.sourceforge.net/sourceforge/mad
+MADPLAY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mad
 MADPLAY_VERSION=0.15.2b
 MADPLAY_SOURCE=madplay-$(MADPLAY_VERSION).tar.gz
 MADPLAY_DIR=madplay-$(MADPLAY_VERSION)

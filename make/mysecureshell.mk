@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MYSECURESHELL_SITE=http://dl.sourceforge.net/sourceforge/mysecureshell
+MYSECURESHELL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mysecureshell
 MYSECURESHELL_VERSION=0.8
 MYSECURESHELL_SOURCE=MySecureShell-$(MYSECURESHELL_VERSION)_source.tgz
 MYSECURESHELL_DIR=MySecureShell_$(MYSECURESHELL_VERSION)

@@ -14,7 +14,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NAGIOS_PLUGINS_SITE=http://dl.sourceforge.net/sourceforge/nagiosplug
+NAGIOS_PLUGINS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nagiosplug
 NAGIOS_PLUGINS_VERSION=1.4.2
 NAGIOS_PLUGINS_SOURCE=nagios-plugins-$(NAGIOS_PLUGINS_VERSION).tar.gz
 NAGIOS_PLUGINS_DIR=nagios-plugins-$(NAGIOS_PLUGINS_VERSION)

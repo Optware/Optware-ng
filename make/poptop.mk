@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POPTOP_SITE=http://dl.sourceforge.net/sourceforge/poptop
+POPTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/poptop
 POPTOP_VERSION=1.2.1
 POPTOP_SOURCE=pptpd-$(POPTOP_VERSION).tar.gz
 POPTOP_DIR=pptpd-$(POPTOP_VERSION)

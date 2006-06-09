@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TURCK_MMCACHE_SITE=http://dl.sourceforge.net/sourceforge/turck-mmcache
+TURCK_MMCACHE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/turck-mmcache
 TURCK_MMCACHE_VERSION=2.4.6
 TURCK_MMCACHE_SOURCE=turck-mmcache-$(TURCK_MMCACHE_VERSION).tar.bz2
 TURCK_MMCACHE_DIR=turck-mmcache-$(TURCK_MMCACHE_VERSION)

@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CTAGS_SITE=http://dl.sourceforge.net/sourceforge/ctags
+CTAGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ctags
 CTAGS_VERSION=5.6
 CTAGS_SOURCE=ctags-$(CTAGS_VERSION).tar.gz
 CTAGS_DIR=ctags-$(CTAGS_VERSION)

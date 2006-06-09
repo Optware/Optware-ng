@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 # WXBASE_SITE=ftp://biolpc22.york.ac.uk/pub/2.5.3/
-WXBASE_SITE=http://dl.sourceforge.net/sourceforge/wxwindows
+WXBASE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wxwindows
 WXBASE_VERSION=2.5.3
 WXBASE_SOURCE=wxBase-$(WXBASE_VERSION).tar.bz2
 WXBASE_DIR=wxBase-$(WXBASE_VERSION)

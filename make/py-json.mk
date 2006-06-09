@@ -23,7 +23,7 @@
 #
 PY-JSON_VERSION=3.4
 PY-JSON_SITE=http://turbogears.org/download/eggs
-#PY-JSON_SITE=http://dl.sourceforge.net/sourceforge/json-py
+#PY-JSON_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/json-py
 #PY-JSON_SOURCE=json-py-3_4.zip
 # ok, we cheat here: this egg is platform independent already
 PY-JSON_EGG=json_py-$(PY-JSON_VERSION)-py2.4.egg

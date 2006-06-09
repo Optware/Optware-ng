@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HNB_SITE=http://dl.sourceforge.net/sourceforge/hnb
+HNB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hnb
 HNB_VERSION=1.9.17
 HNB_SOURCE=hnb-$(HNB_VERSION).tar.gz
 HNB_DIR=hnb-$(HNB_VERSION)
