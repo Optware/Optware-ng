@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	nbench-byte	\
-	enhanced-ctorrent	\
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -76,7 +75,8 @@ COMMON_CROSS_PACKAGES = \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
-	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop expat \
+	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop \
+	enhanced-ctorrent expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
