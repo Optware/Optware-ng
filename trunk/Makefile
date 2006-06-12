@@ -236,7 +236,8 @@ DS101_SPECIFIC_PACKAGES =
 DS101_BROKEN_PACKAGES = \
 	adns apache appweb apr-util \
 	atftp bash bitchx bzflag \
-	ctorrent cyrus-sasl eaccelerator freeradius hexcurse \
+	ctorrent cyrus-sasl eaccelerator \
+	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
 	ldconfig libstdc++ lighttpd \
 	mc mod-fastcgi mod-python monotone mysql \
