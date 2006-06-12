@@ -76,7 +76,7 @@ COMMON_CROSS_PACKAGES = \
 	cogito ctags ctorrent cups cvs cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop \
-	enhanced-ctorrent expat \
+	expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
@@ -301,10 +301,12 @@ NAS100D_BROKEN_PACKAGES =
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # py-twisted - "twisted.python.dist module not found.  Make sure you have installed the Twisted core package before attempting to install any other Twisted projects. Error: Subprocess exited with result 1 for project conch"
+# enhanced-ctorrent - depends on py-twisted
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	libextractor \
-	py-twisted
+	py-twisted \
+	enhanced-ctorrent \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
