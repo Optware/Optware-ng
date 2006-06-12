@@ -100,7 +100,7 @@ ipython-source: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
