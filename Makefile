@@ -99,7 +99,7 @@ COMMON_CROSS_PACKAGES = \
 	pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql procmail procps proftpd psutils puppy pwgen \
 	python \
-	py-axiom py-epsilon py-mantissa py-nevow py-twisted \
+	py-axiom py-epsilon py-mantissa py-nevow \
 	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-configobj py-constraint py-crypto py-curl py-django py-docutils py-elementtree \
 	py-formencode py-gdchart2 py-gd py-kid py-lxml py-nose \
@@ -300,10 +300,11 @@ NAS100D_BROKEN_PACKAGES =
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
+# py-twisted - "twisted.python.dist module not found.  Make sure you have installed the Twisted core package before attempting to install any other Twisted projects. Error: Subprocess exited with result 1 for project conch"
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	libextractor \
-
+	py-twisted
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
