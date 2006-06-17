@@ -108,6 +108,7 @@ $(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 	$(MAKE) libdvdread-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) -d $(BUILD_DIR)
+	dos2unix $(BUILD_DIR)/$(WIZD_DIR)/wizd.conf
 	cat $(WIZD_PATCHES) | patch -d $(BUILD_DIR)/$(WIZD_DIR) -p1
 	mv $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	touch $(WIZD_BUILD_DIR)/.configured
