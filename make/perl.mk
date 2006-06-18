@@ -150,6 +150,16 @@ perl: $(PERL_BUILD_DIR)/.built
 microperl: $(MICROPERL_BUILD_DIR)/.built
 
 #
+# If you are building a library, then you need to stage it too.
+#
+$(PERL_BUILD_DIR)/.staged: $(PERL_BUILD_DIR)/.built
+	rm -f $(PERL_BUILD_DIR)/.staged
+	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(PERL_BUILD_DIR)/.staged
+
+perl-stage: $(PERL_BUILD_DIR)/.staged
+
+#
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/perl
 #
