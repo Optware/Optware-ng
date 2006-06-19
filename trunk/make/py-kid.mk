@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-KID_VERSION=0.9.1
+PY-KID_VERSION=0.9.2
 PY-KID_SITE=http://kid.lesscode.org/dist/$(PY-KID_VERSION)
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
