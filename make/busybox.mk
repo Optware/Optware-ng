@@ -5,7 +5,7 @@
 ###########################################################
 
 BUSYBOX_SITE=http://www.busybox.net/downloads
-BUSYBOX_VERSION=1.00
+BUSYBOX_VERSION=1.1.3
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -18,7 +18,7 @@ BUSYBOX_PRIORITY=optional
 BUSYBOX_DEPENDS=
 BUSYBOX_CONFLICTS=
 
-BUSYBOX_IPK_VERSION=10
+BUSYBOX_IPK_VERSION=1
 
 BUSYBOX_BUILD_DIR=$(BUILD_DIR)/busybox
 BUSYBOX_SOURCE_DIR=$(SOURCE_DIR)/busybox
