@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-EPSILON_VERSION=0.4.0
+PY-EPSILON_VERSION=0.5.0
 PY-EPSILON_SOURCE=Epsilon-$(PY-EPSILON_VERSION).tar.gz
 PY-EPSILON_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-EPSILON_SOURCE)?format=raw
 PY-EPSILON_DIR=Epsilon-$(PY-EPSILON_VERSION)
