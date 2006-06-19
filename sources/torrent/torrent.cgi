@@ -10,6 +10,7 @@
 PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin
 export PATH
 
+
 #################################################
 ## Debug
 
@@ -320,8 +321,8 @@ _list ()
 }
 
 _root_check () {
-	if  [ "`whoami`" != "admin" ]; then
-	    echo "You must be admin! Because of killing stuff"
+	if  [ ${USER} != admin -a  ${USER} != root ]; then
+	    echo "You must be root! Because of killing stuff"
 	    return 1
 	fi
 	return 0
