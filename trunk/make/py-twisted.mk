@@ -23,8 +23,6 @@
 #
 PY-TWISTED_VERSION=2.4.0
 PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/2.4
-#http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/TwistedSumo-2006-02-12.tar.bz2
-#http://tmrc.mit.edu/mirror/twisted/Twisted/2.2/Twisted-2.2.0.tar.bz2
 PY-TWISTED_SOURCE=Twisted-$(PY-TWISTED_VERSION).tar.bz2
 PY-TWISTED_DIR=Twisted-$(PY-TWISTED_VERSION)
 PY-TWISTED_UNZIP=bzcat
@@ -38,7 +36,7 @@ PY-TWISTED_CONFLICTS=
 #
 # PY-TWISTED_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TWISTED_IPK_VERSION=1
+PY-TWISTED_IPK_VERSION=2
 
 #
 # PY-TWISTED_CONFFILES should be a list of user-editable files
@@ -118,6 +116,7 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
+	cp $(PY-TWISTED_BUILD_DIR)/setup.cfg $(PY-TWISTED_BUILD_DIR)/TwistedCore-*
 	touch $(PY-TWISTED_BUILD_DIR)/.configured
 
 py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
@@ -128,7 +127,7 @@ py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
 $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 	rm -f $(PY-TWISTED_BUILD_DIR)/.built
 	(cd $(PY-TWISTED_BUILD_DIR); \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		python2.4 setup.py build)
 	touch $(PY-TWISTED_BUILD_DIR)/.built
@@ -144,7 +143,7 @@ py-twisted: $(PY-TWISTED_BUILD_DIR)/.built
 $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 	rm -f $(PY-TWISTED_BUILD_DIR)/.staged
 	(cd $(PY-TWISTED_BUILD_DIR); \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/TwistedCore-*`" \
 		python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $(PY-TWISTED_BUILD_DIR)/.staged
 
@@ -183,7 +182,7 @@ $(PY-TWISTED_IPK_DIR)/CONTROL/control:
 $(PY-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	rm -rf $(PY-TWISTED_IPK_DIR) $(BUILD_DIR)/py-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR); \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/TwistedCore-*`" \
 		python2.4 setup.py install --root=$(PY-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
 	$(MAKE) $(PY-TWISTED_IPK_DIR)/CONTROL/control
