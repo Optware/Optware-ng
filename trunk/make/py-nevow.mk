@@ -99,7 +99,7 @@ py-nevow-source: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-NEVOW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCHES)
-#	$(MAKE) py-epsilon-stage
+	$(MAKE) py-epsilon-stage
 	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)
 	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
