@@ -155,7 +155,7 @@ $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	install -d $(TAR_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/tar -o $(TAR_IPK_DIR)/opt/bin/tar
 	install -d $(TAR_IPK_DIR)/opt/libexec
-	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
+#	$(STRIP_COMMAND) $(TAR_BUILD_DIR)/src/rmt -o $(TAR_IPK_DIR)/opt/libexec/rmt
 	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAR_IPK_DIR)
 
