@@ -99,7 +99,7 @@ py-twisted-source: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES)
-	$(MAKE) py-zope-interface-stage
+	$(MAKE) python-stage py-zope-interface-stage py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(PY-TWISTED_BUILD_DIR)
 	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TWISTED_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TWISTED_DIR) -p1
@@ -116,7 +116,8 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	cp $(PY-TWISTED_BUILD_DIR)/setup.cfg $(PY-TWISTED_BUILD_DIR)/TwistedCore-*
+	for d in $(PY-TWISTED_BUILD_DIR)/Twisted*-[0-9]*; \
+		do cp $(PY-TWISTED_BUILD_DIR)/setup.cfg $$d; done
 	touch $(PY-TWISTED_BUILD_DIR)/.configured
 
 py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
@@ -129,7 +130,7 @@ $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 	(cd $(PY-TWISTED_BUILD_DIR); \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		python2.4 setup.py build)
+		python2.4 -c "import setuptools; execfile('setup.py')" build)
 	touch $(PY-TWISTED_BUILD_DIR)/.built
 
 #
