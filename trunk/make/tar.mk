@@ -20,11 +20,11 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-TAR_VERSION=1.14
-TAR_SOURCE=tar-$(TAR_VERSION).tar.gz
+TAR_VERSION=1.15.1
+TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
-TAR_UNZIP=zcat
-TAR_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+TAR_UNZIP=bzcat
+TAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
 TAR_SECTION=util
 TAR_PRIORITY=optional
@@ -34,7 +34,7 @@ TAR_CONFLICTS=busybox-links
 #
 # TAR_IPK_VERSION should be incremented when the ipk changes.
 #
-TAR_IPK_VERSION=4
+TAR_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
