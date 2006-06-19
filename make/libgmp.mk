@@ -187,6 +187,7 @@ $(LIBGMP_IPK_DIR)/CONTROL/control:
 $(LIBGMP_IPK): $(LIBGMP_BUILD_DIR)/.built
 	rm -rf $(LIBGMP_IPK_DIR) $(BUILD_DIR)/libgmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGMP_BUILD_DIR) DESTDIR=$(LIBGMP_IPK_DIR) install-strip
+	$(STRIP_COMMAND) $(LIBGMP_IPK_DIR)/opt/lib/libgmp.so.[0-9].[0-9].[0-9]
 #	install -d $(LIBGMP_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBGMP_SOURCE_DIR)/libgmp.conf $(LIBGMP_IPK_DIR)/opt/etc/libgmp.conf
 #	install -d $(LIBGMP_IPK_DIR)/opt/etc/init.d
