@@ -5,16 +5,13 @@
 ###########################################################
 
 SMARTMONTOOLS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/smartmontools
-SMARTMONTOOLS_VERSION=5.33
+SMARTMONTOOLS_VERSION=5.36
 SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
 SMARTMONTOOLS_DIR=smartmontools-$(SMARTMONTOOLS_VERSION)
 SMARTMONTOOLS_UNZIP=zcat
 SMARTMONTOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-SMARTMONTOOLS_DESCRIPTION=The smartmontools package contains two utility\
- programs (smartctl and smartd) to control and monitor storage systems\
- using the Self-Monitoring, Analysis and Reporting Technology System\
- (SMART) built into most modern ATA and SCSI hard disks. In many cases,\
- these utilities will provide advanced warning of disk degradation and failure.
+SMARTMONTOOLS_DESCRIPTION=Utility programs to control and monitor \
+ (SMART) built into most modern ATA and SCSI hard disks.
 SMARTMONTOOLS_SECTION=misc
 SMARTMONTOOLS_PRIORITY=optional
 SMARTMONTOOLS_DEPENDS=
@@ -97,6 +94,7 @@ $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMAR
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SMARTMONTOOLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SMARTMONTOOLS_LDFLAGS)" \
+		libc_have_working_snprintf=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
