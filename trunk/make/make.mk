@@ -20,11 +20,11 @@
 # You should change all these variables to suit your package.
 #
 MAKE_SITE=http://ftp.gnu.org/pub/gnu/make
-MAKE_VERSION=3.80
-MAKE_SOURCE=make-$(MAKE_VERSION).tar.gz
+MAKE_VERSION=3.81
+MAKE_SOURCE=make-$(MAKE_VERSION).tar.bz2
 MAKE_DIR=make-$(MAKE_VERSION)
-MAKE_UNZIP=zcat
-MAKE_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
+MAKE_UNZIP=bzcat
+MAKE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MAKE_DESCRIPTION=examines files and runs commands necessary for compilation
 MAKE_SECTION=util
 MAKE_PRIORITY=optional
@@ -35,7 +35,7 @@ MAKE_CONFLICTS=
 #
 # MAKE_IPK_VERSION should be incremented when the ipk changes.
 #
-MAKE_IPK_VERSION=2
+MAKE_IPK_VERSION=1
 
 #
 # MAKE_PATCHES should list any patches, in the the order in
