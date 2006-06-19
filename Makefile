@@ -109,6 +109,7 @@ COMMON_CROSS_PACKAGES = \
 	py-sqlalchemy py-sqlite py-sqlobject \
 	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-xml py-zope-interface \
+	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
 	rdate readline rsync rtorrent ruby rubygems \
@@ -305,10 +306,7 @@ NAS100D_BROKEN_PACKAGES =
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	libextractor \
-	py-twisted \
 	enhanced-ctorrent \
-	py-epsilon \
-	py-axiom py-mantissa py-nevow \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
