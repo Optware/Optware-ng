@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-NEVOW_VERSION=0.8.0
+PY-NEVOW_VERSION=0.9.0
 PY-NEVOW_SOURCE=Nevow-$(PY-NEVOW_VERSION).tar.gz
 PY-NEVOW_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-NEVOW_SOURCE)?format=raw
 PY-NEVOW_DIR=Nevow-$(PY-NEVOW_VERSION)
