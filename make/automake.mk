@@ -5,7 +5,7 @@
 ###########################################################
 
 AUTOMAKE_SITE=http://ftp.gnu.org/gnu/automake
-AUTOMAKE_VERSION=1.9.4
+AUTOMAKE_VERSION=1.9.6
 AUTOMAKE_SOURCE=automake-$(AUTOMAKE_VERSION).tar.bz2
 AUTOMAKE_DIR=automake-$(AUTOMAKE_VERSION)
 AUTOMAKE_UNZIP=bzcat
