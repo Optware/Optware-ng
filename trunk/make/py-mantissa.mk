@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MANTISSA_VERSION=0.4.1
+PY-MANTISSA_VERSION=0.5.0
 PY-MANTISSA_SOURCE=Mantissa-$(PY-MANTISSA_VERSION).tar.gz
 PY-MANTISSA_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-MANTISSA_SOURCE)?format=raw
 PY-MANTISSA_DIR=Mantissa-$(PY-MANTISSA_VERSION)
@@ -30,7 +30,7 @@ PY-MANTISSA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MANTISSA_DESCRIPTION=An extensible, multi-protocol, multi-user, interactive application server built on top of Axiom and Nevow.
 PY-MANTISSA_SECTION=misc
 PY-MANTISSA_PRIORITY=optional
-PY-MANTISSA_DEPENDS=python, py-mantissa, py-nevow
+PY-MANTISSA_DEPENDS=python, py-epsilon, py-nevow
 PY-MANTISSA_CONFLICTS=
 
 #
@@ -99,7 +99,7 @@ py-mantissa-source: $(DL_DIR)/$(PY-MANTISSA_SOURCE) $(PY-MANTISSA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-MANTISSA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MANTISSA_SOURCE) $(PY-MANTISSA_PATCHES)
-#	$(MAKE) py-epsilon-stage
+	$(MAKE) py-epsilon-stage
 	rm -rf $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR)
 	$(PY-MANTISSA_UNZIP) $(DL_DIR)/$(PY-MANTISSA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MANTISSA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MANTISSA_DIR) -p1

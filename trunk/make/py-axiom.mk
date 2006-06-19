@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-AXIOM_VERSION=0.4.0
+PY-AXIOM_VERSION=0.5.0
 PY-AXIOM_SOURCE=Axiom-$(PY-AXIOM_VERSION).tar.gz
 PY-AXIOM_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-AXIOM_SOURCE)?format=raw
 PY-AXIOM_DIR=Axiom-$(PY-AXIOM_VERSION)
