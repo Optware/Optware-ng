@@ -26,11 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SYSSTAT_SITE=ftp://ibiblio.org/pub/linux/system/status/
-SYSSTAT_VERSION=6.0.2
-SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.gz
+SYSSTAT_SITE=ftp://ibiblio.org/pub/linux/system/status
+SYSSTAT_VERSION=6.1.3
+SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.bz2
 SYSSTAT_DIR=sysstat-$(SYSSTAT_VERSION)
-SYSSTAT_UNZIP=zcat
+SYSSTAT_UNZIP=bzcat
 SYSSTAT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SYSSTAT_DESCRIPTION=System performance tools for linux os
 SYSSTAT_SECTION=admin
