@@ -1,11 +1,11 @@
---- ./Makefile.in	2005-11-08 21:56:06.000000000 +0000
-+++ ../Makefile.mrtg	2005-06-19 14:31:44.000000000 +0100
+--- mrtg-2.14.3/Makefile.in	2006-05-05 00:36:00.000000000 +0200
++++ mrtg/Makefile.in	2006-06-20 13:02:12.000000000 +0200
 @@ -36,7 +36,7 @@
  	$(CC) $(CPPFLAGS) $(CFLAGS) -c $(top_srcdir)/src/rateup.c -o bin/rateup.o
  
  subst:
--	$(PERL) -0777 -p -i~ -e 's@^#!\s*/\S*perl@#! $(PERL)@' $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
-+	$(PERL) -0777 -p -i~ -e 's@^#!\s*/\S*perl@#! $(TARGET_PERL)@' $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
+-	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
++	$(PERL) -0777 -p -i~ -e "s'^#!\s*/\S*perl'#! $(TARGET_PERL)'" $(top_srcdir)/bin/cfgmaker $(top_srcdir)/bin/indexmaker $(top_srcdir)/bin/mrtg
  	$(PERL) -0777 -p -i~ -e 's@GRAPHFMT="...";@GRAPHFMT="$(GDFORM_EXT)";@' $(top_srcdir)/bin/mrtg $(top_srcdir)/bin/indexmaker
  
  clean:
