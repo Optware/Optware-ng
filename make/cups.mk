@@ -20,8 +20,8 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_SITE=http://ftp.easysw.com/pub/cups/1.1.23/
 CUPS_VERSION=1.1.23
+CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.gz
 CUPS_DIR=cups-$(CUPS_VERSION)
 CUPS_UNZIP=zcat
