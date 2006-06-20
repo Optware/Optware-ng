@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-FREERADIUS_SITE=http://www.mirrors.wiretapped.net/security/authentication/radius/freeradius
+FREERADIUS_SITE=http://www.mirrors.wiretapped.net/security/authentication/radius/freeradius/old
 FREERADIUS_VERSION=1.0.5
 FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.gz
 FREERADIUS_DIR=freeradius-$(FREERADIUS_VERSION)
