@@ -4,8 +4,8 @@
 # 
 ###########################################################
 #
-CDARGS_SITE=http://www.skamphausen.de/software/cdargs
-CDARGS_VERSION=1.33
+CDARGS_SITE=http://www.skamphausen.de/downloads/cdargs
+CDARGS_VERSION=1.35
 CDARGS_SOURCE=cdargs-$(CDARGS_VERSION).tar.gz
 CDARGS_DIR=cdargs-$(CDARGS_VERSION)
 CDARGS_UNZIP=zcat
