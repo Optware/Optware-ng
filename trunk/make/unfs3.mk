@@ -6,13 +6,13 @@
 
 UNFS3_DIR:=$(BUILD_DIR)/unfs3
 
-UNFS3_VERSION=0.9.10
+UNFS3_VERSION=0.9.13
 UNFS3=unfs3-$(UNFS3_VERSION)
-UNFS3_SITE=http://aleron.dl.sourceforge.net/sourceforge/unfs3
+UNFS3_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/unfs3
 UNFS3_SOURCE:=$(UNFS3).tar.gz
 UNFS3_UNZIP=zcat
 UNFS3_PATCH:=$(SOURCE_DIR)/unfs3.patch
-UNFS3_IPK_VERSION=2
+UNFS3_IPK_VERSION=1
 UNFS3_IPK=$(BUILD_DIR)/unfs3_$(UNFS3_VERSION)-$(UNFS3_IPK_VERSION)_$(TARGET_ARCH).ipk
 UNFS3_IPK_DIR:=$(BUILD_DIR)/unfs3-$(UNFS3_VERSION)-ipk
 UNFS3_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
