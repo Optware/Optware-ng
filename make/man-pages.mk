@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MAN_PAGES_SITE=http://www.kernel.org/pub/linux/docs/manpages
-MAN_PAGES_VERSION=2.13
+MAN_PAGES_VERSION=2.33
 MAN_PAGES_SOURCE=man-pages-$(MAN_PAGES_VERSION).tar.gz
 MAN_PAGES_DIR=man-pages-$(MAN_PAGES_VERSION)
 MAN_PAGES_UNZIP=zcat
