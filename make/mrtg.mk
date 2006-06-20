@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MRTG_SITE=http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/
-MRTG_VERSION=2.12.2
+MRTG_VERSION=2.14.3
 MRTG_SOURCE=mrtg-$(MRTG_VERSION).tar.gz
 MRTG_DIR=mrtg-$(MRTG_VERSION)
 MRTG_UNZIP=zcat
@@ -108,7 +108,7 @@ $(MRTG_BUILD_DIR)/.configured: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
 	$(MRTG_UNZIP) $(DL_DIR)/$(MRTG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MRTG_PATCHES)" ; \
 		then cat $(MRTG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MRTG_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MRTG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MRTG_DIR)" != "$(MRTG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MRTG_DIR) $(MRTG_BUILD_DIR) ; \
