@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGCRYPT_SITE=ftp://ftp.gnupg.org/gcrypt/libgcrypt
-LIBGCRYPT_VERSION=1.2.1
+LIBGCRYPT_SITE=http://ftp.gnupg.org/GnuPG/libgcrypt
+LIBGCRYPT_VERSION=1.2.2
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.gz
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_UNZIP=zcat
