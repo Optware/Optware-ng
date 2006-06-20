@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=4.2p1
+OPENSSH_VERSION=4.3p2
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -18,14 +18,13 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=2
+OPENSSH_IPK_VERSION=1
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
 
 OPENSSH_PATCHES=\
-	$(OPENSSH_SOURCE_DIR)/Makefile.patch \
-	$(OPENSSH_SOURCE_DIR)/configure.patch
+	$(OPENSSH_SOURCE_DIR)/Makefile.patch 
 
 #
 # If the compilation of the package requires additional
