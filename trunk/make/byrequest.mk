@@ -4,10 +4,10 @@
 #
 ###########################################################
 
-BYREQUEST_VERSION=2005-04-23
-BYREQUEST_SITE=http://sourceforge.net/project/byRequest
+BYREQUEST_VERSION=2005-11-15
+BYREQUEST_SITE=http://sourceforge.net/project/byrequest
 BYREQUEST_SOURCE=#none, available by CVS
-BYREQUEST_REPOSITORY=:pserver:anonymous@cvs.sourceforge.net:/cvsroot/byrequest
+BYREQUEST_REPOSITORY=:pserver:anonymous@byrequest.cvs.sourceforge.net:/cvsroot/byrequest
 
 BYREQUEST_PRIORITY=optional
 BYREQUEST_SECTION=net
