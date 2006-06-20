@@ -5,7 +5,7 @@
 ###########################################################
 
 # PUPPY_REPOSITORY=:ext:$(LOGNAME)@cvs.sf.net:/cvsroot/puppy
-PUPPY_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
+PUPPY_REPOSITORY=:pserver:anonymous@puppy.cvs.sf.net:/cvsroot/puppy
 PUPPY_VERSION=1.11
 PUPPY_SOURCE=puppy-$(PUPPY_VERSION).tar.gz
 PUPPY_TAG=-r PUPPY_1_11
