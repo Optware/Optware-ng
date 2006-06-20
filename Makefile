@@ -29,6 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	adduser
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -67,7 +68,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 
 COMMON_CROSS_PACKAGES = \
-	abook adns alac-decoder adduser antinat appweb asterisk asterisk-sounds \
+	abook adns alac-decoder antinat appweb asterisk asterisk-sounds \
 	apache apr apr-util atftp atk audiofile autoconf automake \
 	bash bc bzip2 bind bip bitchx bitlbee busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
