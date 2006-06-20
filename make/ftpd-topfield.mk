@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FTPD-TOPFIELD_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/puppy
-FTPD-TOPFIELD_VERSION=0.6.6
+FTPD-TOPFIELD_REPOSITORY=:pserver:anonymous@puppy.cvs.sf.net:/cvsroot/puppy
+FTPD-TOPFIELD_VERSION=0.6.7
 FTPD-TOPFIELD_SOURCE=ftpd-topfield-$(FTPD-TOPFIELD_VERSION).tar.gz
-FTPD-TOPFIELD_TAG=-r FTPD_TOPFIELD_0_6_6
+FTPD-TOPFIELD_TAG=-r FTPD_TOPFIELD_0_6_7
 FTPD-TOPFIELD_MODULE=ftpd-topfield
 FTPD-TOPFIELD_LIBTOPFIELD_MODULE=libtopfield
 FTPD-TOPFIELD_DIR=ftpd-topfield-$(FTPD-TOPFIELD_VERSION)
