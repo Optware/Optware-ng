@@ -26,11 +26,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-WIZD_SITE=http://www.geocities.com/flipflop7146/
-WIZD_VERSION=0_12h_pvb_12
-WIZD_SOURCE=wizd_$(WIZD_VERSION).zip
+#WIZD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wizd
+WIZD_VERSION=0_12h_pvb_21
+WIZD_SOURCE=wizd_$(WIZD_VERSION).tar.gz
+WIZD_REPOSITORY=:pserver:anonymous@wizd.cvs.sf.net:/cvsroot/wizd
+WIZD_TAG=-r v$(WIZD_VERSION)
+WIZD_MODULE=wizd
 WIZD_DIR=wizd_$(WIZD_VERSION)
-WIZD_UNZIP=unzip
+WIZD_UNZIP=zcat
 WIZD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WIZD_DESCRIPTION=Mediaserver program for IO-DATA and other players
 WIZD_SECTION=net
@@ -52,7 +55,7 @@ WIZD_CONFFILES=/opt/etc/wizd.conf
 # WIZD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch $(WIZD_SOURCE_DIR)/wizd.conf.patch
+WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -80,7 +83,12 @@ WIZD_IPK=$(BUILD_DIR)/wizd_$(WIZD_VERSION)-$(WIZD_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WIZD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WIZD_SITE)/$(WIZD_SOURCE)
+	cd $(DL_DIR) ; $(CVS) -d $(WIZD_REPOSITORY) co $(WIZD_TAG) $(WIZD_MODULE)
+	cd $(DL_DIR) ; $(CVS) -d $(WIZD_REPOSITORY) co skin
+	mv $(DL_DIR)/$(WIZD_MODULE) $(DL_DIR)/$(WIZD_DIR)
+	mv $(DL_DIR)/skin $(DL_DIR)/$(WIZD_DIR)
+	cd $(DL_DIR) ; tar zcvf $(WIZD_SOURCE) $(WIZD_DIR)
+	rm -rf $(DL_DIR)/$(WIZD_DIR)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,8 +115,9 @@ wizd-source: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 $(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 	$(MAKE) libdvdread-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
-	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) -d $(BUILD_DIR)
-	dos2unix $(BUILD_DIR)/$(WIZD_DIR)/wizd.conf
+	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	sed -i -e 's/\r//' $(BUILD_DIR)/$(WIZD_DIR)/wizd.conf
+	mv $(BUILD_DIR)/$(WIZD_DIR)/makefile $(BUILD_DIR)/$(WIZD_DIR)/Makefile
 	cat $(WIZD_PATCHES) | patch -d $(BUILD_DIR)/$(WIZD_DIR) -p1
 	mv $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	touch $(WIZD_BUILD_DIR)/.configured
@@ -120,7 +129,8 @@ wizd-unpack: $(WIZD_BUILD_DIR)/.configured
 #
 $(WIZD_BUILD_DIR)/.built: $(WIZD_BUILD_DIR)/.configured
 	rm -f $(WIZD_BUILD_DIR)/.built
-	sed -i "s#/usr/local#${STAGING_DIR}/opt#g" $(WIZD_BUILD_DIR)/source/Makefile
+	sed -i "s#/usr/local#${STAGING_DIR}/opt#g" $(WIZD_BUILD_DIR)/Makefile 
+	sed -i "s/-static //" $(WIZD_BUILD_DIR)/Makefile
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(WIZD_CPPFLAGS)" \
         LDFLAGS="$(STAGING_LDFLAGS) $(WIZD_LDFLAGS)" \
 	$(MAKE) -C $(WIZD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS)
@@ -177,11 +187,12 @@ $(WIZD_IPK): $(WIZD_BUILD_DIR)/.built
 	install -d $(WIZD_IPK_DIR)/opt/sbin/
 	install -m 755 $(WIZD_BUILD_DIR)/wizd $(WIZD_IPK_DIR)/opt/sbin/wizd
 	install -d $(WIZD_IPK_DIR)/opt/etc/
-	install -m 644 $(WIZD_BUILD_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
+	install -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
 	install -d $(WIZD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)/opt/etc/init.d/S84wizd
 	install -d $(WIZD_IPK_DIR)/opt/share/wizd
-	cp -rip $(WIZD_BUILD_DIR)/docroot $(WIZD_IPK_DIR)/opt/share/wizd
+	#cp -rip $(WIZD_BUILD_DIR)/docroot $(WIZD_IPK_DIR)/opt/share/wizd
+	install -d $(WIZD_IPK_DIR)/opt/share/wizd/docroot
 	cp -rip $(WIZD_BUILD_DIR)/skin $(WIZD_IPK_DIR)/opt/share/wizd
 	$(MAKE) $(WIZD_IPK_DIR)/CONTROL/control
 	install -m 755 $(WIZD_SOURCE_DIR)/postinst $(WIZD_IPK_DIR)/CONTROL/postinst

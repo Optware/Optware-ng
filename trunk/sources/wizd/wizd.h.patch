@@ -1,5 +1,5 @@
---- wizd/source/wizd.h.orig	2005-05-15 13:07:23.380000000 +0000
-+++ wizd/source/wizd.h	2005-05-15 13:12:40.430000000 +0000
+--- wizd/wizd.h.orig	2005-05-15 13:07:23.380000000 +0000
++++ wizd/wizd.h	2005-05-15 13:12:40.430000000 +0000
 @@ -60,15 +60,13 @@
  #ifdef NEED_CONFIG_FILE_DEFINITION
  char *config_file[] = {
