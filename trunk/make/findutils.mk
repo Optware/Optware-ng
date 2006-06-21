@@ -7,7 +7,7 @@
 FINDUTILS_NAME=findutils
 FINDUTILS_DOC_NAME=findutils-doc
 FINDUTILS_SITE=http://ftp.gnu.org/pub/gnu/findutils
-FINDUTILS_VERSION=4.1.20
+FINDUTILS_VERSION=4.2.27
 FINDUTILS_SOURCE=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION).tar.gz
 FINDUTILS_DIR=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION)
 FINDUTILS_UNZIP=zcat
@@ -15,19 +15,19 @@ FINDUTILS_UNZIP=zcat
 #
 # FINDUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-FINDUTILS_IPK_VERSION=4
+FINDUTILS_IPK_VERSION=1
 
 #
 # Control file info
 #
-FINDUTILS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+FINDUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FINDUTILS_DESCRIPTION=File finding utilities
 FINDUTILS_SECTION=utilities
 FINDUTILS_PRIORITY=optional
 FINDUTILS_CONFLICTS=busybox-links
 FINDUTILS_DEPENDS=
 
-FINDUTILS_DOC_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+FINDUTILS_DOC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FINDUTILS_DOC_DESCRIPTION=Documentation for file finding utilities
 FINDUTILS_DOC_SECTION=documentation
 FINDUTILS_DOC_PRIORITY=optional
