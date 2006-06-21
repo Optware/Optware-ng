@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	
+	enhanced-ctorrent \	
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -186,7 +186,7 @@ WL500G_BROKEN_PACKAGES = \
 	bitlbee bzflag \
 	cvs \
 	dcraw dict \
-	ecl elinks erlang \
+	ecl elinks enhanced-ctorrent erlang \
 	ficy freetds \
 	gawk gambit-c giftcurs git-core glib gnupg gtk \
 	hnb \
@@ -254,6 +254,7 @@ DS101J_SPECIFIC_PACKAGES = bip
 # Packages that do not work for ds101j.
 DS101J_BROKEN_PACKAGES = \
 	apache apr-util \
+	enhanced-ctorrent \
 	cyrus-sasl \
 	imagemagick \
 	glib \
@@ -301,13 +302,11 @@ NAS100D_BROKEN_PACKAGES =
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # py-twisted - "twisted.python.dist module not found.  Make sure you have installed the Twisted core package before attempting to install any other Twisted projects. Error: Subprocess exited with result 1 for project conch"
-# enhanced-ctorrent - depends on py-twisted
 # py-epsilon - depends on py-twisted
 # py-axiom py-mantissa py-nevow - depend on py-epsilon
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	libextractor \
-	enhanced-ctorrent \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
