@@ -1,0 +1,28 @@
+CTorrent Control Server
+
+This is a port of CTCS for the NSLU2. This README file only covers 
+details from this port. For the original instructions, see the
+readme.txt file. It is also a good idea to take a look at the web
+page at http://www.rahul.net/dholmes/ctorrent/ctcs.html.
+
+----------------------------------------------------------------------
+INIT SCRIPT
+
+This package installs a init script at /opt/etc/init.d/S90ctcs. The
+script starts CTCS in the background using the default port (2780) and
+redirects all output to /dev/null. 
+
+CTCS writes messages to the console, something unappropriate for a 
+server running in the background. If you want to log the output, then
+change the destination at the init script.
+
+----------------------------------------------------------------------
+SECURITY
+
+CTCS has an option ("-P") to prompt for a password when the server
+starts. This password is then used to authenticate Enhanced CTorrent
+clients, but not for web browser authentication. If you are using the
+init script provided by the package, you will *not* be able to use
+this option, since CTCS will be started from the init script with no
+user intervention.
+

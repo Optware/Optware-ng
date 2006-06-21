@@ -1,0 +1,23 @@
+diff -u ctcs.old/ctcs ctcs/ctcs
+--- ctcs.old/ctcs	2006-01-28 04:11:46.000000000 -0200
++++ ctcs/ctcs	2006-06-21 15:33:45.000000000 -0300
+@@ -286,7 +286,8 @@
+ 				} while(defined($_ = &getline($client)));
+ 			} else {
+ 				# peer disconnected
+-				close $cfh{$client};
++				shutdown ($cfh{$client},1);
++				shutdown ($cfh{$client},2);
+ 				delete $cfh{$client};
+ 				delete $clients2{$client};
+ 				if (defined $torrents{$client}) {
+@@ -1059,7 +1060,8 @@
+ status.
+ EOF
+ 	}
+-	close $cfh{$client};
++	shutdown ($cfh{$client},1);
++	shutdown ($cfh{$client},2);
+ 	delete $cfh{$client};
+ 	delete $ctsentone{$client};
+ 	delete $htclients{$client};

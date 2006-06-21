@@ -1,0 +1,13 @@
+#
+# ctcs - postinst script
+#
+echo
+echo "Options for CTCS can be configured at the init script, please take a"
+echo "look at /opt/etc/init.d/S90ctcs and /opt/doc/ctcs/README.nslu2."
+echo
+echo "Note that the init script sends all output from CTCS to /dev/null."
+echo "The usual output is somewhat verbose and could be a problem if your"
+echo "root device is in a flash drive. If you want to keep a log somewhere,"
+echo "please edit the init script."
+
+/opt/etc/init.d/S90ctcs
