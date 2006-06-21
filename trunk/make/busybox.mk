@@ -43,7 +43,7 @@ BUSYBOX_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 BUSYBOX_CPPFLAGS=
-BUSYBOX_LDFLAGS=-Wl,lm
+#BUSYBOX_LDFLAGS=-Wl,lm
 
 #
 # USHARE_BUILD_DIR is the directory in which the build is done.
