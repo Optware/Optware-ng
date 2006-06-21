@@ -138,7 +138,9 @@ $(FINDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(FINDUTILS_SOURCE) $(FINDUTILS_PA
 	if test "$(BUILD_DIR)/$(FINDUTILS_DIR)" != "$(FINDUTILS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR) ; \
 	fi
-	sed -ie 's/\/\* #.*include <wchar\.h>.*/#define NO_WCHAR_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
+ifeq ($(OPTWARE_TARGET),wl500g)
+	$(SED) 's/\/\* #.*include <wchar\.h>.*/#define NO_WCHAR_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
+endif
 	(cd $(FINDUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FINDUTILS_CPPFLAGS)" \
