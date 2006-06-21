@@ -6,9 +6,9 @@
 
 CVS_BUILD_DIR=$(BUILD_DIR)/cvs
 
-CVS_VERSION=1.12.9
+CVS_VERSION=1.11.22
 CVS_DIR=cvs-$(CVS_VERSION)
-CVS_SITE=http://musthave.sunbase.org/progs/ccvs/$(CVS_DIR)/
+CVS_SITE=http://ftp.gnu.org/non-gnu/cvs/source/stable/$(CVS_VERSION)
 CVS_SOURCE=$(CVS_DIR).tar.bz2
 CVS_UNZIP=bzcat
 
