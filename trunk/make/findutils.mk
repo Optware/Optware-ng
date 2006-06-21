@@ -142,15 +142,13 @@ ifeq ($(OPTWARE_TARGET),wl500g)
 #	$(SED) 's/.*#.*include <wchar\.h>.*/#define NO_WCHAR_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
 #	$(SED) 's/.*#.*include <wctype\.h>.*/#define NO_WCTYPE_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
 endif
+ifeq ($(OPTWARE_TARGET),wl500g)
+		ac_cv_header_wchar_h=no
+endif
 	(cd $(FINDUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FINDUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FINDUTILS_LDFLAGS)" \
-ifeq ($(OPTWARE_TARGET),wl500g)
-#	$(SED) 's/.*#.*include <wchar\.h>.*/#define NO_WCHAR_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
-#	$(SED) 's/.*#.*include <wctype\.h>.*/#define NO_WCTYPE_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
-		ac_cv_header_wchar_h=no \
-endif
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
