@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Startup script for ctcs
+#
+
+# 
+# Command line options for CTCS. Please read /opt/doc/ctcs/README
+#
+options="-p 2780"
+
+#
+# CTCS writes a log and it is somewhat verbose.  If your root device is
+# a flash drive, it could be troublesome, so the default is to send all
+# output to /dev/null. You may change this if you want to keep a log.
+#
+# Default destination is /dev/null
+log_file=/dev/null
+# Sample alternate locations, change with caution
+#log_file=/var/log/ctcs.log
+#log_file=/share/hdd/data/HDD_1_1_1/ctcs.log
+
+#
+# pid_file stores the pid of the running server, this usually should
+# not be changed
+pid_file=/var/run/ctcs.pid
+
+# Stop itself if running
+if [ -n "`pidof ctcs`" ]; then
+    /bin/killall ctcs 2>/dev/null
+fi
+
+sleep 2
+
+/opt/bin/ctcs ${options} 2>&1 >${log_file} &
+if [ "$?" -eq "0" ]; then echo $! > ${pid_file}; fi
