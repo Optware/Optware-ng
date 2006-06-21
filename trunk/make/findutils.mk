@@ -34,6 +34,7 @@ FINDUTILS_DOC_PRIORITY=optional
 FINDUTILS_DOC_CONFLICTS=
 FINDUTILS_DOC_DEPENDS=
 
+SED=sed -ie
 
 #
 # FINDUTILS_PATCHES should list any patches, in the the order in
@@ -130,7 +131,14 @@ findutils-source: $(DL_DIR)/$(FINDUTILS_SOURCE) $(FINDUTILS_PATCHES)
 $(FINDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(FINDUTILS_SOURCE) $(FINDUTILS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR)
 	$(FINDUTILS_UNZIP) $(DL_DIR)/$(FINDUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR)
+	if test -n "$(FINDUTILS_PATCHES)" ; \
+		then cat $(FINDUTILS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(FINDUTILS_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(FINDUTILS_DIR)" != "$(FINDUTILS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR) ; \
+	fi
+	sed -ie 's/\/\* #.*include <wchar\.h>.*/#define NO_WCHAR_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
 	(cd $(FINDUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FINDUTILS_CPPFLAGS)" \
