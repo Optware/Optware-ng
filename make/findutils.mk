@@ -7,7 +7,11 @@
 FINDUTILS_NAME=findutils
 FINDUTILS_DOC_NAME=findutils-doc
 FINDUTILS_SITE=http://ftp.gnu.org/pub/gnu/findutils
+ifneq ($(OPTWARE_TARGET),wl500g)
 FINDUTILS_VERSION=4.2.27
+else
+FINDUTILS_VERSION=4.1.20
+endif
 FINDUTILS_SOURCE=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION).tar.gz
 FINDUTILS_DIR=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION)
 FINDUTILS_UNZIP=zcat
@@ -138,13 +142,6 @@ $(FINDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(FINDUTILS_SOURCE) $(FINDUTILS_PA
 	if test "$(BUILD_DIR)/$(FINDUTILS_DIR)" != "$(FINDUTILS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR) ; \
 	fi
-ifeq ($(OPTWARE_TARGET),wl500g)
-#	$(SED) 's/.*#.*include <wchar\.h>.*/#define NO_WCHAR_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
-#	$(SED) 's/.*#.*include <wctype\.h>.*/#define NO_WCTYPE_FOR_YOU/' $(FINDUTILS_BUILD_DIR)/gnulib/lib/*.h
-endif
-ifeq ($(OPTWARE_TARGET),wl500g)
-		ac_cv_header_wchar_h=no
-endif
 	(cd $(FINDUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FINDUTILS_CPPFLAGS)" \
