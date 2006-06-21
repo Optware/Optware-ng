@@ -33,6 +33,8 @@ BUSYBOX_PRIORITY=optional
 BUSYBOX_DEPENDS=
 BUSYBOX_CONFLICTS=
 
+SED=sed -ie
+
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -95,11 +97,6 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(BUSYBOX_BUILD_DIR) ; \
 	fi
 	cp $(BUSYBOX_CONFIG) $(BUSYBOX_BUILD_DIR)/.config
-#ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
-#	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=y/;" $(BUSYBOX_BUILD_DIR)/.config
-#else
-#	$(SED) "s/^.*CONFIG_LFS.*/CONFIG_LFS=n/;" $(BUSYBOX_BUILD_DIR)/.config
-#endif
 ifeq ($(OPTWARE_TARGET),wl500g)
 	$(SED) "s/^.*CONFIG_FEATURE_SORT_BIG.*/CONFIG_FEATURE_SORT_BIG=n/;" $(BUSYBOX_BUILD_DIR)/.config
 else
