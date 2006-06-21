@@ -5,10 +5,10 @@
 ###########################################################
 
 CPIO_SITE=http://ftp.gnu.org/gnu/cpio
-CPIO_VERSION=2.5
-CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.gz
+CPIO_VERSION=2.6
+CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.bz2
 CPIO_DIR=cpio-$(CPIO_VERSION)
-CPIO_UNZIP=zcat
+CPIO_UNZIP=bzcat
 CPIO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CPIO_DESCRIPTION=file archive utility
 CPIO_SECTION=utilities
@@ -18,7 +18,7 @@ CPIO_DEPENDS=
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=2
+CPIO_IPK_VERSION=1
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
