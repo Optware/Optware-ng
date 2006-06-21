@@ -147,7 +147,7 @@ $(CPIO_IPK_DIR)/CONTROL/control:
 $(CPIO_IPK): $(CPIO_BUILD_DIR)/cpio
 	rm -rf $(CPIO_IPK_DIR) $(CPIO_IPK)
 	install -d $(CPIO_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(CPIO_BUILD_DIR)/cpio -o $(CPIO_IPK_DIR)/opt/bin/cpio
+	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
 	$(MAKE) $(CPIO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)
 
