@@ -145,7 +145,7 @@ $(CPIO_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(CPIO_IPK): $(CPIO_BUILD_DIR)/cpio
-	rm -rf $(CPIO_IPK_DIR) $(CPIO_IPK)
+	rm -rf $(CPIO_IPK_DIR) $(BUILD_DIR)/cpio_*_$(TARGET_ARCH).ipk
 	install -d $(CPIO_IPK_DIR)/opt/bin
 	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
 	$(MAKE) $(CPIO_IPK_DIR)/CONTROL/control
