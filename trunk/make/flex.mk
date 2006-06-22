@@ -4,20 +4,20 @@
 #
 ###########################################################
 
-FLEX_SITE=ftp://ftp.gnu.org/gnu/non-gnu/flex
-FLEX_VERSION=2.5.4a
-FLEX_LIB_VERSION=2.5.4
-FLEX_SOURCE=flex-$(FLEX_VERSION).tar.gz
-FLEX_DIR=flex-2.5.4
-FLEX_UNZIP=zcat
+FLEX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flex
+FLEX_VERSION=2.5.33
+FLEX_LIB_VERSION=2.5.33
+FLEX_SOURCE=flex-$(FLEX_VERSION).tar.bz2
+FLEX_DIR=flex-2.5.33
+FLEX_UNZIP=bzcat
 FLEX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-FLEX_DESCRIPTION=A Free-Lexer Implentmentation
-FLEX_SECTION=libs
+FLEX_DESCRIPTION=Generates programs that perform pattern-matching on text.
+FLEX_SECTION=devel
 FLEX_PRIORITY=optional
 FLEX_DEPENDS=
 FLEX_CONFLICTS=
 
-FLEX_IPK_VERSION=2
+FLEX_IPK_VERSION=1
 
 FLEX_BUILD_DIR=$(BUILD_DIR)/flex
 FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
@@ -45,17 +45,28 @@ $(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE)
 
 flex-unpack: $(FLEX_BUILD_DIR)/.configured
 
-$(FLEX_BUILD_DIR)/libfl.a: $(FLEX_BUILD_DIR)/.configured
+#
+# This builds the actual binary.
+#
+$(FLEX_BUILD_DIR)/.built: $(FLEX_BUILD_DIR)/.configured
+	rm -f $(FLEX_BUILD_DIR)/.built
 	$(MAKE) -C $(FLEX_BUILD_DIR)
+	touch $(FLEX_BUILD_DIR)/.built
 
-flex: $(FLEX_BUILD_DIR)/libfl.a
+#
+# This is the build convenience target.
+#
+flex: $(FLEX_BUILD_DIR)/.built
 
-$(STAGING_DIR)/opt/lib/libfl.a: $(FLEX_BUILD_DIR)/libfl.a
-	$(MAKE) -C $(FLEX_BUILD_DIR) prefix=$(STAGING_DIR)/opt install
-	rm -rf $(STAGING_DIR)/opt/bin/flex*
-	rm -rf $(STAGING_DIR)/opt/man
+#
+# If you are building a library, then you need to stage it too.
+#
+$(FLEX_BUILD_DIR)/.staged: $(FLEX_BUILD_DIR)/.built
+	rm -f $(FLEX_BUILD_DIR)/.staged
+	$(MAKE) -C $(FLEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(FLEX_BUILD_DIR)/.staged
 
-flex-stage: $(STAGING_DIR)/opt/lib/libfl.a
+libupnp-stage: $(LIBUPNP_BUILD_DIR)/.staged
 
 $(FLEX_IPK_DIR)/CONTROL/control:
 	@install -d $(FLEX_IPK_DIR)/CONTROL
@@ -71,8 +82,9 @@ $(FLEX_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(FLEX_DEPENDS)" >>$@
 	@echo "Conflicts: $(FLEX_CONFLICTS)" >>$@
 
-$(FLEX_IPK): $(FLEX_BUILD_DIR)/libfl.a
-	$(MAKE) -C $(FLEX_BUILD_DIR) prefix=$(FLEX_IPK_DIR)/opt install
+$(FLEX_IPK): $(FLEX_BUILD_DIR)/.built
+	rm -rf $(FLEX_IPK_DIR) $(BUILD_DIR)/flex_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(FLEX_BUILD_DIR) DESTDIR=$(FLEX_IPK_DIR) install-strip
 	rm -rf $(FLEX_IPK_DIR)/opt/man
 	$(MAKE) $(FLEX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FLEX_IPK_DIR)
