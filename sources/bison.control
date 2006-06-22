@@ -1,9 +1,0 @@
-Package: bison
-Priority: optional
-Version: 1.875-2
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: devel
-Source: http://ftp.gnu.org/gnu/non-gnu/flex/flex-2.5.4a.tar.gz
-Description: A Free-Lexer Implentmentation
-
