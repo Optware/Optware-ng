@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PSYCOPG2_SITE=http://initd.org/pub/software/psycopg
-PY-PSYCOPG2_VERSION=2.0b8
+PY-PSYCOPG2_VERSION=2.0.2
 PY-PSYCOPG2_SOURCE=psycopg2-$(PY-PSYCOPG2_VERSION).tar.gz
 PY-PSYCOPG2_DIR=psycopg2-$(PY-PSYCOPG2_VERSION)
 PY-PSYCOPG2_UNZIP=zcat
@@ -30,13 +30,13 @@ PY-PSYCOPG2_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-PSYCOPG2_DESCRIPTION=psycopg2 is a PostgreSQL database adapter for the Python programming language.
 PY-PSYCOPG2_SECTION=misc
 PY-PSYCOPG2_PRIORITY=optional
-PY-PSYCOPG2_DEPENDS=python, py-mx-base
+PY-PSYCOPG2_DEPENDS=python
 PY-PSYCOPG2_CONFLICTS=
 
 #
 # PY-PSYCOPG2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG2_IPK_VERSION=3
+PY-PSYCOPG2_IPK_VERSION=1
 
 #
 # PY-PSYCOPG2_CONFFILES should be a list of user-editable files
@@ -100,7 +100,7 @@ py-psycopg2-source: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCOPG2_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCOPG2_PATCHES)
-	$(MAKE) postgresql-stage python-stage py-mx-base-stage
+	$(MAKE) postgresql-stage python-stage
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(PY-PSYCOPG2_BUILD_DIR)
 	$(PY-PSYCOPG2_UNZIP) $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-PSYCOPG2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
@@ -108,7 +108,7 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	(cd $(PY-PSYCOPG2_BUILD_DIR); \
 	    ( \
 		echo "#pg_config=$(STAGING_PREFIX)/bin/pg_config"; \
-	        echo "include_dirs=.:$(STAGING_INCLUDE_DIR)"; \
+	        echo "include_dirs=.:$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
@@ -116,6 +116,7 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
+	    sed -i -e '/datetime\.h/s/^/if True: #/' $(PY-PSYCOPG2_BUILD_DIR)/setup.py; \
 	)
 	touch $(PY-PSYCOPG2_BUILD_DIR)/.configured
 
