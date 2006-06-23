@@ -30,7 +30,7 @@ VIM_SECTION=util
 VIM_PRIORITY=optional
 VIM_DEPENDS=ncurses
 
-SED=sed -ie
+VIM_SED=sed -ie
 
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
@@ -131,7 +131,7 @@ endif
 		--disable-nls \
 	)
 # Fix issue with Makefile not using --prefix as default install location.
-	$(SED) "s/^.*#DESTDIR.*=.*~\/pkg\/vim/prefix=\/opt/;" $(VIM_BUILD_DIR)/src/Makefile
+	$(VIM_SED) "s/^.*#DESTDIR.*=.*~\/pkg\/vim/prefix=\/opt/;" $(VIM_BUILD_DIR)/src/Makefile
 	touch $(VIM_BUILD_DIR)/.configured
 
 vim-unpack: $(VIM_BUILD_DIR)/.configured
