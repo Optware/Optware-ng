@@ -95,19 +95,17 @@ $(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
 cpio-unpack: $(CPIO_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-#$(CPIO_BUILD_DIR)/.built: $(CPIO_BUILD_DIR)/.configured
-$(CPIO_BUILD_DIR)/cpio: $(CPIO_BUILD_DIR)/.configured
-	rm -f $(CPIO_BUILD_DIR)/cpio
+$(CPIO_BUILD_DIR)/.built: $(CPIO_BUILD_DIR)/.configured
+	rm -f $(CPIO_BUILD_DIR)/.built
 	$(MAKE) -C $(CPIO_BUILD_DIR)
+	touch $(USHARE_CPIO_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
-cpio: $(CPIO_BUILD_DIR)/cpio
+cpio: $(CPIO_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -144,7 +142,7 @@ $(CPIO_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(CPIO_IPK): $(CPIO_BUILD_DIR)/cpio
+$(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	rm -rf $(CPIO_IPK_DIR) $(BUILD_DIR)/cpio_*_$(TARGET_ARCH).ipk
 	install -d $(CPIO_IPK_DIR)/opt/bin
 	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
@@ -160,6 +158,7 @@ cpio-ipk: $(CPIO_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 cpio-clean:
+	rm -f $(CPIO_BUILD_DIR)/.built
 	-$(MAKE) -C $(CPIO_BUILD_DIR) clean
 
 #
