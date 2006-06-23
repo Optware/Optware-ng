@@ -3,7 +3,8 @@ CTorrent Control Server
 This is a port of CTCS for the NSLU2. This README file only covers 
 details from this port. For the original instructions, see the
 readme.txt file. It is also a good idea to take a look at the web
-page at http://www.rahul.net/dholmes/ctorrent/ctcs.html.
+page at http://www.rahul.net/dholmes/ctorrent/ctcs.html and the
+nslu2-linux wiki page at http://www.nslu2-linux.org/wiki/Unslung/CTCS.
 
 ----------------------------------------------------------------------
 INIT SCRIPT
