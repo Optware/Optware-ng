@@ -1,0 +1,15 @@
+Enhanced CTorrent
+
+This is a port of Enhanced CTorrent for the NSLU2. This README file 
+only covers details from this port. For the original instructions, see
+the README-DNH.TXT file. It is also a good idea to take a look at the web
+page at http://www.rahul.net/dholmes/ctorrent and the nslu2-linux wiki
+page at http://www.nslu2-linux.org/wiki/Unslung/EnhancedCTorrent.
+
+Enhanced CTorrent has only been tested on the NSLU2, although it builds
+correctly on some other platforms. Testers are welcomed.
+
+Enhanced CTorrent is not available for the DS101, due to the fact that 
+it depends on libstdc++, which is currently marked as broken for that
+platform. It is also not available for the following platforms, due to
+build problems still being worked on: DS101J, WL500G.
