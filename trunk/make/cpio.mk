@@ -18,7 +18,7 @@ CPIO_DEPENDS=
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=2
+CPIO_IPK_VERSION=3
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
