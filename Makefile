@@ -110,7 +110,7 @@ COMMON_CROSS_PACKAGES = \
 	py-scgi py-serial py-setuptools py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
 	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
-	py-urwid py-xml py-zope-interface \
+	py-urwid py-yaml py-xml py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
