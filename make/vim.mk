@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-VIM_SITE=ftp://ftp.vim.org/pub/vim/unix
-VIM_VERSION=6.4
+VIM_SITE=http://ftp.vim.org/pub/vim/unix
+VIM_VERSION=7.0
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
 VIM_DIR=vim-$(VIM_VERSION)
 VIM_UNZIP=bzcat
@@ -29,6 +29,8 @@ VIM_DESCRIPTION=Yet another version of the vi editor.
 VIM_SECTION=util
 VIM_PRIORITY=optional
 VIM_DEPENDS=ncurses
+
+SED=sed -ie
 
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
@@ -109,7 +111,7 @@ endif
 	mv $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	(cd $(VIM_BUILD_DIR); \
-		autoconf src/configure.in > src/auto/configure; \
+		autoconf src/configure.in > src/auto/configure;\
 	)
 endif
 	(cd $(VIM_BUILD_DIR)/src; \
@@ -128,6 +130,8 @@ endif
 		--without-x \
 		--disable-nls \
 	)
+# Fix issue with Makefile not using --prefix as default install location.
+	$(SED) "s/^.*#DESTDIR.*=.*~\/pkg\/vim/prefix=\/opt/;" $(VIM_BUILD_DIR)/src/Makefile
 	touch $(VIM_BUILD_DIR)/.configured
 
 vim-unpack: $(VIM_BUILD_DIR)/.configured
@@ -189,9 +193,9 @@ $(VIM_IPK): $(VIM_BUILD_DIR)/.built
 	cd $(VIM_BUILD_DIR)/src
 	$(MAKE) -C $(VIM_BUILD_DIR) DESTDIR=$(VIM_IPK_DIR) install
 #	Fix the $VIM directory
-	mv $(VIM_IPK_DIR)/opt/share/vim $(VIM_IPK_DIR)/opt/share/vim-temp
-	mv $(VIM_IPK_DIR)/opt/share/vim-temp/vim* $(VIM_IPK_DIR)/opt/share/vim
-	rm -rf $(VIM_IPK_DIR)/opt/share/vim-temp
+#	mv $(VIM_IPK_DIR)/opt/share/vim $(VIM_IPK_DIR)/opt/share/vim-temp
+#	mv $(VIM_IPK_DIR)/opt/share/vim-temp/vim* $(VIM_IPK_DIR)/opt/share/vim
+#	rm -rf $(VIM_IPK_DIR)/opt/share/vim-temp
 	$(MAKE) $(VIM_IPK_DIR)/CONTROL/control
 #	install -m 644 $(VIM_SOURCE_DIR)/prerm $(VIM_IPK_DIR)/CONTROL/prerm
 #	install -m 644 $(VIM_SOURCE_DIR)/postinst $(VIM_IPK_DIR)/CONTROL/postinst
