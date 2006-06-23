@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.1_p2
+PY-MYSQL_VERSION=1.2.1
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
