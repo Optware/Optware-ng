@@ -30,13 +30,13 @@ PY-AMARA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-AMARA_DESCRIPTION=A collection of Python/XML processing tools to complement 4Suite.
 PY-AMARA_SECTION=misc
 PY-AMARA_PRIORITY=optional
-PY-AMARA_DEPENDS=python
+PY-AMARA_DEPENDS=py-4suite
 PY-AMARA_CONFLICTS=
 
 #
 # PY-AMARA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-AMARA_IPK_VERSION=1
+PY-AMARA_IPK_VERSION=2
 
 #
 # PY-AMARA_CONFFILES should be a list of user-editable files
