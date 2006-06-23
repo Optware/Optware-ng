@@ -1,23 +1,30 @@
 diff -u ctcs.old/ctcs ctcs/ctcs
---- ctcs.old/ctcs	2006-01-28 04:11:46.000000000 -0200
-+++ ctcs/ctcs	2006-06-21 15:33:45.000000000 -0300
-@@ -286,7 +286,8 @@
+--- ctcs.old/ctcs	2006-06-22 22:45:07.000000000 -0300
++++ ctcs/ctcs	2006-06-22 22:58:52.000000000 -0300
+@@ -286,7 +286,7 @@
  				} while(defined($_ = &getline($client)));
  			} else {
  				# peer disconnected
 -				close $cfh{$client};
-+				shutdown ($cfh{$client},1);
-+				shutdown ($cfh{$client},2);
++				shutdown ($cfh{$client}, 1);
  				delete $cfh{$client};
  				delete $clients2{$client};
  				if (defined $torrents{$client}) {
-@@ -1059,7 +1060,8 @@
+@@ -334,7 +334,7 @@
+ 	$client = *Client{IO};
+ 
+ 	($port,$iaddr) = sockaddr_in($paddr);
+-	$name = gethostbyaddr($iaddr,AF_INET);
++	$name = gethostbyaddr($iaddr,AF_INET) || inet_ntoa($iaddr);
+ 
+ 	&logmsg("connection from $name [", inet_ntoa($iaddr), "] at port $port");
+ 
+@@ -1059,7 +1059,7 @@
  status.
  EOF
  	}
 -	close $cfh{$client};
-+	shutdown ($cfh{$client},1);
-+	shutdown ($cfh{$client},2);
++	shutdown ($cfh{$client}, 1);
  	delete $cfh{$client};
  	delete $ctsentone{$client};
  	delete $htclients{$client};

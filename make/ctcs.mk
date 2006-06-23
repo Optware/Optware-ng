@@ -27,7 +27,7 @@ CTCS_CONFLICTS=
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=1
+CTCS_IPK_VERSION=2
 
 #
 # CTCS_CONFFILES should be a list of user-editable files
