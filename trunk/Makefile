@@ -29,6 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	ctcs \
 	enhanced-ctorrent \	
 
 # Add new native-only packages here
@@ -184,7 +185,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 WL500G_BROKEN_PACKAGES = \
 	asterisk atk \
 	bitlbee bzflag \
-	cvs \
+	ctcs cvs \
 	dcraw dict \
 	ecl elinks enhanced-ctorrent erlang \
 	ficy freetds \
@@ -236,7 +237,7 @@ DS101_SPECIFIC_PACKAGES =
 DS101_BROKEN_PACKAGES = \
 	adns apache appweb apr-util \
 	atftp bash bitchx bzflag \
-	ctorrent cyrus-sasl eaccelerator \
+	ctcs ctorrent cyrus-sasl eaccelerator \
 	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
 	ldconfig libstdc++ lighttpd \
@@ -254,8 +255,9 @@ DS101J_SPECIFIC_PACKAGES = bip
 # Packages that do not work for ds101j.
 DS101J_BROKEN_PACKAGES = \
 	apache apr-util \
-	enhanced-ctorrent \
+	ctcs \
 	cyrus-sasl \
+	enhanced-ctorrent \
 	imagemagick \
 	glib \
 	mod-fastcgi mod-python monotone \
