@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.6.2
+GETMAIL_VERSION=4.6.3
 GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 GETMAIL_UNZIP=zcat
