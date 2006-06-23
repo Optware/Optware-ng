@@ -100,7 +100,7 @@ cpio-unpack: $(CPIO_BUILD_DIR)/.configured
 $(CPIO_BUILD_DIR)/.built: $(CPIO_BUILD_DIR)/.configured
 	rm -f $(CPIO_BUILD_DIR)/.built
 	$(MAKE) -C $(CPIO_BUILD_DIR)
-	touch $(USHARE_CPIO_DIR)/.built
+	touch $(CPIO_CPIO_DIR)/.built
 
 #
 # This is the build convenience target.
