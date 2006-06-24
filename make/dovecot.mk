@@ -4,7 +4,7 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
 #
 #
 # Warning:
@@ -29,7 +29,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOVECOT_SITE=http://www.dovecot.org/releases
-DOVECOT_VERSION=1.0.beta8
+DOVECOT_VERSION=1.0.beta9
 DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
 DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
