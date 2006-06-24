@@ -107,7 +107,7 @@ COMMON_CROSS_PACKAGES = \
 	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
 	py-paste py-pastedeploy py-pastescript py-pil py-protocols \
 	py-psycopg py-psycopg2 py-pygresql py-pgsql \
-	py-rdiff-backup py-routes py-roundup py-ruledispatch \
+	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
 	py-scgi py-serial py-setuptools py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
 	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
