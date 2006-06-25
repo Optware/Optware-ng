@@ -273,7 +273,7 @@ DS101G_SPECIFIC_PACKAGES =
 # Packages that do not work for ds101g+.
 # elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
 DS101G_BROKEN_PACKAGES = \
-	apache apr-util appweb asterisk \
+	apache apr-util appweb \
 	bitlbee \
 	cherokee clamav \
 	eaccelerator elinks \
