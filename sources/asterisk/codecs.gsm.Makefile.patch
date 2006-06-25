@@ -1,17 +1,35 @@
---- asterisk-1.2.2/codecs/gsm/Makefile~	2005-11-07 19:31:45.000000000 -0800
-+++ asterisk-1.2.2/codecs/gsm/Makefile	2005-11-12 16:51:08.000000000 -0800
-@@ -297,6 +297,7 @@
+--- asterisk/codecs/gsm/Makefile.orig	2006-05-30 12:18:30.000000000 -0700
++++ asterisk/codecs/gsm/Makefile	2006-06-24 23:49:43.000000000 -0700
+@@ -243,6 +243,7 @@
+ ifneq (${PROC},arm)
+ ifneq ($(shell uname -m), parisc)
+ ifneq (${PROC}, s390)
++ifneq (${PROC}, ppc)
+ GSM_SOURCES+= $(SRC)/k6opt.s
+ endif
+ endif
+@@ -255,6 +256,7 @@
+ endif
+ endif
+ endif
++endif
+ 
+ TOAST_SOURCES = $(SRC)/toast.c 		\
+ 		$(SRC)/toast_lin.c	\
+@@ -309,6 +311,8 @@
  ifneq ($(shell uname -m), sparc64)
  ifneq ($(shell uname -m), armv4l)
  ifneq ($(shell uname -m), parisc)
 +ifneq (${PROC},arm)
++ifneq (${PROC},ppc)
  GSM_OBJECTS+= $(SRC)/k6opt.o
  endif
  endif
-@@ -305,6 +306,7 @@
+@@ -319,6 +323,8 @@
  endif
  endif
  endif
++endif
 +endif
  
  TOAST_OBJECTS =	$(SRC)/toast.o 		\
