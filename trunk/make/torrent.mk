@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 TORRENT_SITE=
-TORRENT_VERSION=1.3
+TORRENT_VERSION=1.4
 TORRENT_SOURCE=
 TORRENT_DIR=torrent-$(TORRENT_VERSION)
 TORRENT_UNZIP=zcat
@@ -29,10 +29,10 @@ TORRENT_SUGGESTS=cron, coreutils
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=11
+TORRENT_IPK_VERSION=1
 
 # TORRENT_CONFFILES should be a list of user-editable files
-TORRENT_CONFFILES=/opt/etc/torrent.conf
+TORRENT_CONFFILES=/opt/etc/torrent.conf /opt/etc/init.d/S80busybox_httpd
 
 #
 # TORRENT_BUILD_DIR is the directory in which the build is done.
@@ -125,13 +125,14 @@ $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	install -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
 	install -d $(TORRENT_IPK_DIR)/opt/bin
 	install -d $(TORRENT_IPK_DIR)/opt/sbin
-	install -d $(TORRENT_IPK_DIR)/opt/etc
+	install -d $(TORRENT_IPK_DIR)/opt/etc/init.d
 	install -d $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)/opt/sbin
 	install -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
 	install -m 755 $(SOURCE_DIR)/torrent/btcheck-target $(TORRENT_IPK_DIR)/opt/bin
 	install -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
+	install -m 755 $(SOURCE_DIR)/torrent/S80busybox_httpd $(TORRENT_IPK_DIR)/opt/etc/init.d
 	echo $(TORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(TORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORRENT_IPK_DIR)
 
