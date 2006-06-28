@@ -19,10 +19,12 @@
 #
 # You should change all these variables to suit your package.
 #
-VIM_SITE=ftp://ftp.vim.org/pub/vim/unix
-VIM_VERSION=6.4
+VIM_SITE=http://ftp.vim.org/pub/vim/unix
+VIM_VERSION_MAJOR=7
+VIM_VERSION_MINOR=0
+VIM_VERSION=$(VIM_VERSION_MAJOR).$(VIM_VERSION_MINOR)
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
-VIM_DIR=vim-$(VIM_VERSION)
+VIM_DIR=vim$(VIM_VERSION_MAJOR)$(VIM_VERSION_MINOR)
 VIM_UNZIP=bzcat
 VIM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VIM_DESCRIPTION=Yet another version of the vi editor.
@@ -33,7 +35,7 @@ VIM_DEPENDS=ncurses
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=1
+VIM_IPK_VERSION=2
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -100,9 +102,6 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	Rename the directory since they seem to include version numbers
-#	in the unpacked file. 
-	mv $(BUILD_DIR)/`echo $(VIM_DIR)|sed 's/[-.]//g'` $(BUILD_DIR)/$(VIM_DIR)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	cat $(VIM_PATCHES) | patch -d $(BUILD_DIR)/$(VIM_DIR) -p1
 endif
