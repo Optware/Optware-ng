@@ -1,6 +1,6 @@
---- vim-7.0-vanilla/src/configure.in	2006-05-04 12:46:11.000000000 +0200
-+++ vim-7.0/src/configure.in		2006-06-20 22:57:48.000000000 +0200
-@@ -47,13 +47,6 @@
+--- vim/src/configure.in.orig	2005-10-15 05:53:28.000000000 -0700
++++ vim/src/configure.in	2006-03-20 21:54:21.000000000 -0800
+@@ -41,13 +41,6 @@
    fi
  fi
  
@@ -14,7 +14,7 @@
  dnl gcc-cpp has the wonderful -MM option to produce nicer dependencies.
  dnl But gcc 3.1 changed the meaning!  See near the end.
  test "$GCC" = yes && CPP_MM=M; AC_SUBST(CPP_MM)
-@@ -1974,10 +1967,7 @@
+@@ -1798,10 +1791,7 @@
  dnl Checks for libraries and include files.
  
  AC_MSG_CHECKING(quality of toupper)
@@ -26,7 +26,7 @@
  
  AC_MSG_CHECKING(whether __DATE__ and __TIME__ work)
  AC_TRY_COMPILE(, [printf("(" __DATE__ " " __TIME__ ")");],
-@@ -2320,48 +2310,7 @@
+@@ -2118,48 +2108,7 @@
  dnl
  dnl support provided by Luke Mewburn <lm@rmit.edu.au>, 931222
  AC_MSG_CHECKING(default tty permissions/group)
@@ -75,7 +75,7 @@
  
  dnl Checks for library functions. ===================================
  
-@@ -2391,19 +2340,7 @@
+@@ -2189,19 +2138,7 @@
  dnl tricky stuff: try to find out if getcwd() is implemented with
  dnl system("sh -c pwd")
  AC_MSG_CHECKING(getcwd implementation)
@@ -96,7 +96,7 @@
  
  dnl Check for functions in one big call, to reduce the size of configure
  AC_CHECK_FUNCS(bcmp fchdir fchown fseeko fsync ftello getcwd getpseudotty \
-@@ -2428,12 +2365,7 @@
+@@ -2225,12 +2162,7 @@
  	AC_MSG_RESULT(no))
  
  AC_MSG_CHECKING(whether stat() ignores a trailing slash)
@@ -110,7 +110,36 @@
  
  dnl Link with iconv for charset translation, if not found without library.
  dnl check for iconv() requires including iconv.h
-@@ -2634,15 +2566,7 @@
+@@ -2349,27 +2281,7 @@
+ fi
+ 
+ AC_MSG_CHECKING(for vsnprintf())
+-AC_TRY_RUN([
+-#include <stdio.h>
+-#include <stdarg.h>
+-	/* Check use of vsnprintf() */
+-	void warn(char *fmt, ...);
+-	void warn(char *fmt, ...)
+-	{
+-	  va_list ap; char buf[20];
+-	  va_start(ap, fmt);
+-	  vsnprintf(buf, 20, fmt, ap);
+-	  va_end(ap);
+-	}
+-	main()
+-	{
+-	warn("testing %s\n", "a very long string that won't fit");
+-	exit(0);
+-	}
+-	    ],
+-	AC_DEFINE(HAVE_VSNPRINTF) AC_MSG_RESULT(yes),
+-	AC_MSG_RESULT(no),
+-	AC_MSG_ERROR(failed to compile test program))
++	AC_DEFINE(HAVE_VSNPRINTF) AC_MSG_RESULT(yes)
+ 
+ 
+ dnl rename needs to be checked separately to work on Nextstep with cc
+@@ -2455,15 +2367,7 @@
  dnl Check for memmove() before bcopy(), makes memmove() be used when both are
  dnl present, fixes problem with incompatibility between Solaris 2.4 and 2.5.
  
