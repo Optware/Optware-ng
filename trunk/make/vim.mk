@@ -22,7 +22,7 @@
 VIM_SITE=http://ftp.vim.org/pub/vim/unix
 VIM_VERSION=7.0
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
-VIM_DIR=vim-$(VIM_VERSION)
+VIM_DIR=vim70
 VIM_UNZIP=bzcat
 VIM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VIM_DESCRIPTION=Yet another version of the vi editor.
@@ -40,13 +40,13 @@ VIM_IPK_VERSION=1
 #
 # VIM_CONFFILES should be a list of user-editable files
 #VIM_CONFFILES=/opt/etc/vim.conf /opt/etc/init.d/SXXvim
-VIM_CONFFILES=""
 
 #
 # VIM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.in.patch
+#VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.in.patch
+VIM_PATCHES=$(VIM_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -102,18 +102,15 @@ $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	Rename the directory since they seem to include version numbers
-#	in the unpacked file. 
-	mv $(BUILD_DIR)/`echo $(VIM_DIR)|sed 's/[-.]//g'` $(BUILD_DIR)/$(VIM_DIR)
-ifneq ($(HOSTCC), $(TARGET_CC))
-	cat $(VIM_PATCHES) | patch -d $(BUILD_DIR)/$(VIM_DIR) -p1
-endif
-	mv $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR)
-ifneq ($(HOSTCC), $(TARGET_CC))
-	(cd $(VIM_BUILD_DIR); \
-		autoconf src/configure.in > src/auto/configure;\
-	)
-endif
+	if test -n "$(VIM_PATCHES)" ; \
+		then cat $(VIM_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(VIM_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(VIM_DIR)" != "$(VIM_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR) ; \
+	fi
+# Vim calls src/Makefile to build and run the configure script.
+### Not working - target configure flags are not flowing through!
 	(cd $(VIM_BUILD_DIR)/src; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VIM_CPPFLAGS)" \
@@ -121,17 +118,8 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(VIM_LDFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(VIM_LDFLAGS)" \
 		ac_cv_sizeof_int=4 \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--enable-gui=no \
-		--without-x \
-		--disable-nls \
+		$(MAKE) \
 	)
-# Fix issue with Makefile not using --prefix as default install location.
-	$(VIM_SED) "s/^.*#DESTDIR.*=.*~\/pkg\/vim/prefix=\/opt/;" $(VIM_BUILD_DIR)/src/Makefile
 	touch $(VIM_BUILD_DIR)/.configured
 
 vim-unpack: $(VIM_BUILD_DIR)/.configured
