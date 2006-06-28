@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.8
-LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION)-config.tar.gz
+LIBPNG_VERSION=1.2.12
+LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
 LIBPNG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -34,7 +34,7 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=5
+LIBPNG_IPK_VERSION=1
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
@@ -97,7 +97,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
 	$(LIBPNG_UNZIP) $(DL_DIR)/$(LIBPNG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBPNG_DIR)-config $(LIBPNG_BUILD_DIR)
+	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
 	(cd $(LIBPNG_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
