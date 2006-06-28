@@ -394,7 +394,7 @@ _log ()
     tail -10 "${DIR}/current.log"
     echo "</pre>"
     SECONDS=`tail -10 "${DIR}/current.log" | tr '\r' '\n' | grep Time | tail -1 | cut -d " " -f 2`
-    if [ ! -z "${SECONDS}" ]; then
+    if [ ! -z "${SECONDS}" -a -x /opt/bin/date ]; then
       DATE=`/opt/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
       echo "<p>Last timestamp seen at ${DATE}</p>"
     fi
