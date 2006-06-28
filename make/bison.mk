@@ -5,9 +5,9 @@
 ###########################################################
 
 BISON_SITE=ftp://ftp.gnu.org/gnu/bison
-BISON_VERSION=1.875
-BISON_SOURCE=$(BISON).tar.bz2
-BISON_DIR=$(BUILD_DIR)/bison
+BISON_VERSION=2.3
+BISON_SOURCE=bison-$(BISON_VERSION).tar.bz2
+BISON_DIR=bison-$(BISON_VERSION)
 BISON_UNZIP=bzcat
 BISON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BISON_DESCRIPTION=A Free-Lexer implementation.
@@ -17,9 +17,9 @@ BISON_DEPENDS=
 BISON_SUGGESTS=
 BISON_CONFLICTS=
 
-BISON_IPK_VERSION=2
+BISON_IPK_VERSION=1
 
-BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)--$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
+BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
 BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 
 #
@@ -62,17 +62,11 @@ $(BISON_BUILD_DIR)/.source: $(DL_DIR)/$(BISON_SOURCE)
 	mv $(BUILD_DIR)/bison-$(BISON_VERSION) $(BISON_DIR)
 	touch $(BISON_BUILD_DIR)/.source
 
-$(BISON_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/bison.mk
+$(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/bison.mk
 	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR)
 	$(BISON_UNZIP) $(DL_DIR)/$(BISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(BISON_PATCHES)" ; \
-		then cat $(BISON_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(BISON_DIR) -p0 ; \
-	fi
-	if test "$(BUILD_DIR)/$(BISON_DIR)" != "$(BISON_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR) ; \
-	fi
-	(cd $(BISON_DIR); \
+	mv $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR)
+	(cd $(BISON_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BISON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BISON_LDFLAGS)" \
@@ -85,7 +79,7 @@ $(BISON_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/bison.
 		--prefix=/opt \
 		--disable-nls \
 	);
-	touch $(BISON_DIR)/.configured
+	touch $(BISON_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
@@ -132,22 +126,22 @@ $(BISON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CVS_IPK_DIR)/opt/sbin or $(CVS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BISON_IPK_DIR)/opt/sbin or $(BISON_IPK_DIR)/opt/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CVS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CVS_IPK_DIR)/opt/etc/ushare/...
-# Documentation files should be installed in $(CVS_IPK_DIR)/opt/doc/ushare/...
-# Daemon startup scripts should be installed in $(CVS_IPK_DIR)/opt/etc/init.d/S??ushare
+# Libraries and include files should be installed into $(BISON_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(BISON_IPK_DIR)/opt/etc/ushare/...
+# Documentation files should be installed in $(BISON_IPK_DIR)/opt/doc/ushare/...
+# Daemon startup scripts should be installed in $(BISON_IPK_DIR)/opt/etc/init.d/S??ushare
 #
 # You may need to patch your application to make it use these locations.
 #
-	install -d $(CVS_IPK_DIR)/opt/bin/
+	install -d $(BISON_IPK_DIR)/opt/bin/
 
 
 $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_$(TARGET_ARCH).ipk
 	install -d $(BISON_IPK_DIR)/opt/bin $(BISON_IPK_DIR)/opt/share/bison
-	$(MAKE) -C $(CVS_BUILD_DIR) DESTDIR=$(CVS_IPK_DIR) install-strip
+	$(MAKE) -C $(BISON_BUILD_DIR) DESTDIR=$(BISON_IPK_DIR) install-strip
 # for now ignore the locale files
 #	$(STRIP_COMMAND) $(BISON_DIR)/src/bison -o $(BISON_IPK_DIR)/opt/bin/bison
 	cp $(BISON_BUILD_DIR)/src/yacc $(BISON_IPK_DIR)/opt/bin/yacc
@@ -156,9 +150,9 @@ $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	cp $(BISON_BUILD_DIR)/data/glr.c    $(BISON_IPK_DIR)/opt/share/bison
 	cp $(BISON_BUILD_DIR)/data/lalr1.cc $(BISON_IPK_DIR)/opt/share/bison
 	cp $(BISON_BUILD_DIR)/data/yacc.c   $(BISON_IPK_DIR)/opt/share/bison
-	install -d $(BISON_IPK_DIR)/opt/share/bison/m4sugar
-	cp $(BISON_DIR)/data/m4sugar/m4sugar.m4 $(BISON_IPK_DIR)/opt/share/bison/m4sugar
-	$(MAKE) $(CVS_IPK_DIR)/CONTROL/control
+	install -d $(BISON_IPK_DIR)/opt/share/bison/m4
+	cp -a $(BISON_BUILD_DIR)/m4 $(BISON_IPK_DIR)/opt/share/bison/m4
+	$(MAKE) $(BISON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BISON_IPK_DIR)
 
 #
