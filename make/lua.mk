@@ -145,6 +145,7 @@ $(LUA_BUILD_DIR)/.staged: $(LUA_BUILD_DIR)/.built
 	rm -f $(LUA_BUILD_DIR)/.staged
 	$(MAKE) -C $(LUA_HOST_BUILD_DIR) INSTALL_TOP=$(LUA_HOST_BUILD_DIR)/opt install
 	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(STAGING_PREFIX) install
+	mkdir -p $(STAGING_LIB_DIR)/pkgconfig
 	sed -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(LUA_BUILD_DIR)/etc/lua.pc > $(STAGING_LIB_DIR)/pkgconfig/lua.pc
 	touch $(LUA_BUILD_DIR)/.staged
 
