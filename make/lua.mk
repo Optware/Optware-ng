@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=5
+LUA_IPK_VERSION=6
 
 #
 # LUA_CONFFILES should be a list of user-editable files
