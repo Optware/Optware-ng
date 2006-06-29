@@ -116,7 +116,7 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga  \
 	rcs recordext renderext rrdtool \
 	rdate readline rsync rtorrent ruby rubygems \
-	sablevm samba sdl ser siproxd sm snownews \
+	sablevm samba sdl ser setpwc siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
