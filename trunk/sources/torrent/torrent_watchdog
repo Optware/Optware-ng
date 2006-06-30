@@ -32,7 +32,7 @@ notice ()
 
 debug ()
 {
-    if [ ! -z "$DEBUG"  ]; then
+    if [ -n "$DEBUG"  ]; then
         echo $*
     fi
 }
@@ -58,7 +58,7 @@ if [ ! -d $WORK ]; then
     exit 1
 fi
 
-if [  ! -z "$DEBUG"  ]; then
+if [  -n "$DEBUG"  ]; then
     echo "SOURCE: $SOURCE"
     echo "WORK: $WORK"
     echo "TARGET: $TARGET"
@@ -145,10 +145,10 @@ send_report ()
     debug "Mail from: $MAILFROM"
     debug "Mail to: $MAILTO"
 
-    if [  ! -z "${MAILFROM}" -a ! -z "${MAILTO}" ]; then
+    if [  -n "${MAILFROM}" -a -n "${MAILTO}" ]; then
 	echo "From: <${MAILFROM}>
 To: <${MAILTO}>
-Subject: Torrent finished ($STATUS)
+Subject: ${TORRENTNAME} torrent finished ($STATUS)
 ------------------
 Name          : ${TORRENTNAME}
 Torrent       : ${TORRENT}
@@ -211,7 +211,7 @@ respawn_torrent()
     nice nohup btget ${SEED} -t ${LOG_TIME} "${TORRENT}" 2>> current_error.log >> current.log &
 
     PID=$!
-    STARTTIME="`date +"${DATE_FORMAT}"`" 
+    [-z "${STARTTIME}" ]  && STARTTIME="`date +"${DATE_FORMAT}"`" 
     PROGRESS="respawned"
     TRIES=$(($TRIES+1))
     write_info 

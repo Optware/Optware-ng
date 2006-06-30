@@ -59,7 +59,7 @@ _start_torrent()
     nice nohup btget ${SEED} -t ${LOG_TIME} "${TORRENT}" 2>> current_error.log >> current.log &
     sleep 2 # Throttle for torrent to settle
     PID=$!
-    STARTTIME=`date +"${DATE_FORMAT}"`
+    [ -z "${STARTTIME}" ] && STARTTIME=`date +"${DATE_FORMAT}"`
     PROGRESS=""
     _write_info 
 
@@ -73,7 +73,7 @@ _stop_torrent ()
     if [ -f ./.info ] ; then
 	. ./.info
 	kill -TERM ${PID} 
-	ENDTIME=`date +"${DATE_FORMAT}"`
+	[ -z "${ENDTIME}" ] && ENDTIME=`date +"${DATE_FORMAT}"`
 	PID=""
 	PROGRESS=`echo "${PROGRESS}" | cut -f 1 -d " "`
 	_write_info
@@ -145,7 +145,7 @@ _purge ()
     fi
     
     REMOVED=`ls -1 $WORK/*/*.torrent.removed 2>/dev/null | head -1`
-    if [ ! -z "${REMOVED}" ]; then
+    if [ -n "${REMOVED}" ]; then
 	for f in $WORK/*/*.torrent.removed ; do
 		DIR=`dirname "$f"`
 		echo "Purging $DIR"
@@ -192,7 +192,7 @@ _scrape ()
 _best_seed ()
 {
    BEST=0
-   if [ ! -z "`ls ${TARGET}/*/*.torrent 2>/dev/null | head -1`" ] ; then
+   if [ -n "`ls ${TARGET}/*/*.torrent 2>/dev/null | head -1`" ] ; then
    for TORRENT in ${TARGET}/*/*.torrent ; do
 	INFO="${TORRENT%/*}/.info"
 	if [ -f "${INFO}" ]; then
@@ -221,10 +221,10 @@ _best_seed ()
 # Sub for directory search
 __find ()
 {
-    [ ! -z "${TORRENT}" ] && return
+    [ -n "${TORRENT}" ] && return
     
     FILEPAT="$1"
-    if [ ! -z "`ls ${FILEPAT} 2>/dev/null | head -1`" ] ; then
+    if [ -n "`ls ${FILEPAT} 2>/dev/null | head -1`" ] ; then
 	for i in $FILEPAT ; do
 	    if [ $ID = $idx ]; then
 		TORRENT="$i"
@@ -257,7 +257,7 @@ __list ()
     FILEPAT="$1"
     DESC="$2"
     
-    if [ ! -z "`ls ${FILEPAT} 2>/dev/null | head -1`" ]
+    if [ -n "`ls ${FILEPAT} 2>/dev/null | head -1`" ]
     then
 	echo "#####################################"
 	echo "### ${DESC} "
@@ -270,11 +270,11 @@ __list ()
 	    if [ -f "$P/.info" ] ; then
 		. "$P/.info"
 		echo -n "${PROGRESS}"
-		[ ! -z "${PID}" ]  && echo -n " PID:${PID} "
+		[ -n "${PID}" ]  && echo -n " PID:${PID} "
 		echo -n " Start: ${STARTTIME}"
-		[ ! -z "${ENDTIME}" ] && echo -n " End: ${ENDTIME}"
+		[ -n "${ENDTIME}" ] && echo -n " End: ${ENDTIME}"
 		[ "${TRIES}" -gt 0 ] && echo -n " Tries: ${TRIES}"
-   		[ ! -z "${SCRAPE}" ] && echo -n " ${SCRAPE}"
+   		[ -n "${SCRAPE}" ] && echo -n " ${SCRAPE}"
    		DL=`echo "${PROGRESS}" | sed 's/.*Download \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
    		UL=`echo "${PROGRESS}" | sed 's/.*Upload \([0-9]\{1,\}\)kbs.*/\1/;t;s/.*/0/'`
    		download=$((${download}+${DL}))
@@ -382,7 +382,7 @@ _log ()
     echo -e "${BOLD}${NAME}${NORMAL}"
     tail -10 "${DIR}/current.log"
     SECONDS=`tail -10 "${DIR}/current.log" | tr '\r' '\n' | grep Time | tail -1 | cut -d " " -f 2`
-    if [ ! -z "${SECONDS}" -a -x /opt/bin/date ]; then
+    if [ -n "${SECONDS}" -a -x /opt/bin/date ]; then
       DATE=`/opt/bin/date -d "1970-01-01 UTC ${SECONDS} seconds" +"${DATE_FORMAT}"`
       echo -e "\n${BOLD}Last timestamp seen at ${DATE}${NORMAL}"
     fi
