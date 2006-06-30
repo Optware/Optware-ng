@@ -211,7 +211,7 @@ respawn_torrent()
     nice nohup btget ${SEED} -t ${LOG_TIME} "${TORRENT}" 2>> current_error.log >> current.log &
 
     PID=$!
-    [-z "${STARTTIME}" ]  && STARTTIME="`date +"${DATE_FORMAT}"`" 
+    [ -z "${STARTTIME}" ]  && STARTTIME="`date +"${DATE_FORMAT}"`" 
     PROGRESS="respawned"
     TRIES=$(($TRIES+1))
     write_info 
