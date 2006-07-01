@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ECL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ecls
-ECL_VERSION=0.9h
+ECL_VERSION=0.9i
 ECL_SOURCE=ecl-$(ECL_VERSION).tgz
 ECL_DIR=ecl-$(ECL_VERSION)
 ECL_UNZIP=zcat
@@ -42,7 +42,7 @@ ECL_CONFLICTS=
 #
 # ECL_IPK_VERSION should be incremented when the ipk changes.
 #
-ECL_IPK_VERSION=2
+ECL_IPK_VERSION=1
 
 #
 # ECL_CONFFILES should be a list of user-editable files
