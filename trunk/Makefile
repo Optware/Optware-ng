@@ -97,7 +97,7 @@ COMMON_CROSS_PACKAGES = \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
 	opencdk oww openssh openssl openvpn \
-	palantair pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
+	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql procmail procps proftpd psutils puppy pwgen \
 	python \
 	py-4suite py-amara \
