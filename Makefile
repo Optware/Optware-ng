@@ -29,43 +29,11 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	ctcs \
-	enhanced-ctorrent \	
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-algorithm-diff \
-	perl-archive-tar \
-	perl-business-isbn \
-	perl-business-isbn-data \
-	perl-class-accessor \
-	perl-class-data-inheritable \
-	perl-class-dbi \
-	perl-class-trigger \
-	perl-clone \
-	perl-compress-zlib \
-	perl-digest-sha \
-	perl-dbd-mysql \
-	perl-dbix-contextualfetch \
-	perl-extutils-cbuilder \
-	perl-extutils-parsexs \
-	perl-gd \
-	perl-gd-barcode \
-	perl-ima-dbi \
-	perl-io-string \
-	perl-io-stringy \
-	perl-io-zlib \
-	perl-libwww \
-	perl-module-build \
-	perl-module-signature \
-	perl-par-dist \
-	perl-pod-readme \
-	perl-text-diff \
-	perl-universal-moniker \
-	perl-uri \
-	perl-version
 
 
 COMMON_CROSS_PACKAGES = \
@@ -74,9 +42,9 @@ COMMON_CROSS_PACKAGES = \
 	bash bc bzip2 bind bip bitchx bitlbee busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
-	cogito ctags ctorrent cups cvs cyrus-sasl \
+	cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
-	e2fsprogs e2tools eaccelerator ed ecl elinks esmtp erlang esound eggdrop \
+	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
 	expat \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
@@ -166,13 +134,43 @@ NSLU2_NATIVE_PACKAGES = \
         ocaml \
 	openldap \
 	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
-	perl-date-manip \
+	perl-algorithm-diff \
 	perl-appconfig perl-cgi-application \
+	perl-archive-tar \
+	perl-business-isbn \
+	perl-business-isbn-data \
+	perl-class-accessor \
+	perl-class-data-inheritable \
+	perl-class-dbi \
+	perl-class-trigger \
+	perl-clone \
+	perl-compress-zlib \
+	perl-date-manip \
+	perl-dbd-mysql \
+	perl-dbix-contextualfetch \
+	perl-digest-sha \
+	perl-extutils-cbuilder \
+	perl-extutils-parsexs \
+	perl-gd \
+	perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template \
+	perl-ima-dbi \
+	perl-io-string \
+	perl-io-stringy \
+	perl-io-zlib \
+	perl-libwww \
 	perl-mime-base64 perl-net-dns perl-net-ident \
+	perl-module-build \
+	perl-module-signature \
+	perl-par-dist \
+	perl-pod-readme \
 	perl-spamassassin perl-storable perl-time-hires \
 	perl-template-toolkit \
 	perl-term-readkey \
+	perl-text-diff \
+	perl-universal-moniker \
+	perl-uri \
+	perl-version \
 	postfix \
 	rsnapshot \
 	squid \
