@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	extract-xiso
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -46,7 +45,7 @@ COMMON_CROSS_PACKAGES = \
 	cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
-	expat \
+	expat extract-xiso \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
