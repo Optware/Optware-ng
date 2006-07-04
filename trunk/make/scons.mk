@@ -119,6 +119,7 @@ $(SCONS_BUILD_DIR)/.configured: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES) make/
 		then mv $(BUILD_DIR)/$(SCONS_DIR) $(SCONS_BUILD_DIR) ; \
 	fi
 	(cd $(SCONS_BUILD_DIR); \
+	    chmod +w setup.cfg ; \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
@@ -139,7 +140,7 @@ scons-unpack: $(SCONS_BUILD_DIR)/.configured
 $(SCONS_BUILD_DIR)/.built: $(SCONS_BUILD_DIR)/.configured
 	rm -f $(SCONS_BUILD_DIR)/.built
 	(cd $(SCONS_BUILD_DIR); \
-        	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
         )
 	touch $(SCONS_BUILD_DIR)/.built
@@ -155,7 +156,7 @@ scons: $(SCONS_BUILD_DIR)/.built
 $(SCONS_BUILD_DIR)/.staged: $(SCONS_BUILD_DIR)/.built
 	rm -f $(SCONS_BUILD_DIR)/.staged
 	(cd $(SCONS_BUILD_DIR); \
-        	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
         )
 	touch $(SCONS_BUILD_DIR)/.staged
@@ -196,8 +197,8 @@ $(SCONS_IPK_DIR)/CONTROL/control:
 $(SCONS_IPK): $(SCONS_BUILD_DIR)/.built
 	rm -rf $(SCONS_IPK_DIR) $(BUILD_DIR)/scons_*_$(TARGET_ARCH).ipk
 	(cd $(SCONS_BUILD_DIR); \
-        	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            	python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(SCONS_IPK_DIR) --prefix=/opt; \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(SCONS_IPK_DIR) --prefix=/opt; \
         )
 	install -d $(SCONS_IPK_DIR)/opt/etc/
 	$(MAKE) $(SCONS_IPK_DIR)/CONTROL/control
