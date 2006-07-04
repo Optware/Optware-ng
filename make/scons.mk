@@ -128,7 +128,6 @@ $(SCONS_BUILD_DIR)/.configured: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES) make/
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
 	    ) >> setup.cfg; \
-        	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	)
 	touch $(SCONS_BUILD_DIR)/.configured
 
