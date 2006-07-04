@@ -5,7 +5,7 @@
 ###########################################################
 
 #
-# ORIGINAL_CTORRENT_BASE_VERSION and ENHANCED_CTORRENT_VERSION define
+# ENHANCED_CTORRENT_BASE_VERSION and ENHANCED_CTORRENT_VERSION define
 # the upstream version of Enhanced CTorrent
 # ENHANCED_CTORRENT_SITE and ENHANCED_CTORRENT_SOURCE define
 # the upstream location of the source code for the package.
@@ -17,9 +17,9 @@
 # You should change all these variables to suit your package.
 #
 ENHANCED_CTORRENT_SITE=http://www.rahul.net/dholmes/ctorrent
-ORIGINAL_CTORRENT_BASE_VERSION=1.3.4
+ENHANCED_CTORRENT_BASE_VERSION=1.3.4
 ENHANCED_CTORRENT_VERSION=dnh2
-ENHANCED_CTORRENT_SOURCE=ctorrent-$(ORIGINAL_CTORRENT_BASE_VERSION)-$(ENHANCED_CTORRENT_VERSION).tar.gz
+ENHANCED_CTORRENT_SOURCE=ctorrent-$(ENHANCED_CTORRENT_BASE_VERSION)-$(ENHANCED_CTORRENT_VERSION).tar.gz
 ENHANCED_CTORRENT_DIR=ctorrent-$(ENHANCED_CTORRENT_VERSION)
 ENHANCED_CTORRENT_UNZIP=zcat
 ENHANCED_CTORRENT_MAINTAINER=Fernando Carolo <carolo@gmail.com>
@@ -91,12 +91,17 @@ enhanced-ctorrent-source: $(DL_DIR)/$(ENHANCED_CTORRENT_SOURCE) $(ENHANCED_CTORR
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ENHANCED_CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(ENHANCED_CTORRENT_SOURCE) $(ENHANCED_CTORRENT_PATCHES)
+$(ENHANCED_CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(ENHANCED_CTORRENT_SOURCE) $(ENHANCED_CTORRENT_PATCHES) make/enhanced-ctorrent.mk
 	$(MAKE) openssl-stage libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) $(ENHANCED_CTORRENT_BUILD_DIR)
 	$(ENHANCED_CTORRENT_UNZIP) $(DL_DIR)/$(ENHANCED_CTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ENHANCED_CTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) -p1
-	mv $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) $(ENHANCED_CTORRENT_BUILD_DIR)
+	if test -n "$(ENHANCED_CTORRENT_PATCHES)" ; \
+                then cat $(ENHANCED_CTORRENT_PATCHES) | \
+                patch -d $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) -p1 ; \
+        fi
+	if test "$(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR)" != "$(ENHANCED_CTORRENT_BUILD_DIR)" ; \
+                then mv $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) $(ENHANCED_CTORRENT_BUILD_DIR) ; \
+        fi
 	(cd $(ENHANCED_CTORRENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ENHANCED_CTORRENT_CPPFLAGS)" \
@@ -115,14 +120,15 @@ enhanced-ctorrent-unpack: $(ENHANCED_CTORRENT_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(ENHANCED_CTORRENT_BUILD_DIR)/enhanced-ctorrent: $(ENHANCED_CTORRENT_BUILD_DIR)/.configured
+$(ENHANCED_CTORRENT_BUILD_DIR)/.built: $(ENHANCED_CTORRENT_BUILD_DIR)/.configured
+	rm -f $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 	$(MAKE) -C $(ENHANCED_CTORRENT_BUILD_DIR)
+	touch $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
-enhanced-ctorrent: $(ENHANCED_CTORRENT_BUILD_DIR)/enhanced-ctorrent
+enhanced-ctorrent: $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -150,23 +156,18 @@ $(ENHANCED_CTORRENT_IPK_DIR)/CONTROL/control:
 # in order to prevent a conflict with the original CTorrent package
 # available in the Optware repository. 
 #
-# Binaries should be installed into $(ENHANCED_CTORRENT_IPK_DIR)/opt/sbin or $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Binaries should be installed into $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin
 # Libraries and include files should be installed into $(ENHANCED_CTORRENT_IPK_DIR)/opt/{lib,include}
 # Configuration files should be installed in $(ENHANCED_CTORRENT_IPK_DIR)/opt/etc/enhanced-ctorrent/...
 # Documentation files should be installed in $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/...
-# Daemon startup scripts should be installed in $(ENHANCED_CTORRENT_IPK_DIR)/opt/etc/init.d/S??enhanced-ctorrent
 #
-# You may need to patch your application to make it use these locations.
-#
-$(ENHANCED_CTORRENT_IPK): $(ENHANCED_CTORRENT_BUILD_DIR)/enhanced-ctorrent
+$(ENHANCED_CTORRENT_IPK): $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 	rm -rf $(ENHANCED_CTORRENT_IPK_DIR) $(ENHANCED_CTORRENT_IPK)
 	install -d $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ENHANCED_CTORRENT_BUILD_DIR)/ctorrent -o $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin/enhanced-ctorrent
 	install -d $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent
 	install -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README.nslu2 $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/README.nslu2
 	install -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README-DNH.TXT $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/README-DNH.TXT
-		 
 	$(MAKE) $(ENHANCED_CTORRENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ENHANCED_CTORRENT_IPK_DIR)
 
@@ -179,6 +180,7 @@ enhanced-ctorrent-ipk: $(ENHANCED_CTORRENT_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 enhanced-ctorrent-clean:
+	rm -f $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 	-$(MAKE) -C $(ENHANCED_CTORRENT_BUILD_DIR) clean
 
 #
