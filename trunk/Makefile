@@ -35,7 +35,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder antinat appweb asterisk asterisk-sounds \
 	apache apr apr-util atftp atk audiofile autoconf automake \
@@ -101,12 +100,6 @@ COMMON_CROSS_PACKAGES = \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zip zlib \
 
-# Packages that *only* work for nslu2 - do not just put new packages here.
-NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
-
-# Packages that do not work for nslu2.
-NSLU2_BROKEN_PACKAGES = 
-
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # bogofilter's configure wants to run some small executables
@@ -121,7 +114,7 @@ NSLU2_BROKEN_PACKAGES =
 # rsnapshot depends on perl
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
-NSLU2_NATIVE_PACKAGES = \
+COMMON_NATIVE_PACKAGES = \
 	autoconf \
 	bison \
 	bogofilter \
@@ -176,6 +169,12 @@ NSLU2_NATIVE_PACKAGES = \
 	squid \
 	stow \
         xmail \
+
+# Packages that *only* work for nslu2 - do not just put new packages here.
+NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
+
+# Packages that do not work for nslu2.
+NSLU2_BROKEN_PACKAGES = 
 
 # Packages that *only* work for wl500g - do not just put new packages here.
 WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ 
@@ -316,7 +315,7 @@ PACKAGES_OBSOLETED = libiconv git metalog
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
-PACKAGES = $(NSLU2_NATIVE_PACKAGES)
+PACKAGES = $(COMMON_NATIVE_PACKAGES)
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 # when native building on unslung, it's important to have a working awk 
 # in the path ahead of busybox's broken one.
@@ -358,8 +357,13 @@ TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101g)
+ifeq ($(HOST_MACHINE),ppc)
+PACKAGES = $(COMMON_NATIVE_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
+else
 PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101G_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+endif
 TARGET_ARCH=powerpc
 TARGET_OS=linux
 endif
@@ -495,6 +499,17 @@ CROSS_CONFIGURATION_GLIBC_VERSION=2.3.3
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
 CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
+ifeq ($(HOST_MACHINE),ppc)
+HOSTCC = $(TARGET_CC)
+GNU_HOST_NAME = powerpc-603e-linux
+GNU_TARGET_NAME = powerpc-603e-linux
+TARGET_CROSS = /opt/$(TARGET_ARCH)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = /opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/lib
+TARGET_LDFLAGS = -L/opt/lib
+TARGET_CUSTOM_FLAGS=
+TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain:
+else
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = powerpc-603e-linux
@@ -504,6 +519,7 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: crosstool
+endif
 endif
 
 ifeq ($(OPTWARE_TARGET),nas100d)
