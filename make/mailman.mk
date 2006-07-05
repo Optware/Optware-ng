@@ -58,7 +58,7 @@ MAILMAN_PATCHES=$(MAILMAN_SOURCE_DIR)/src-configure.in.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MAILMAN_CPPFLAGS=
+MAILMAN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.4
 MAILMAN_LDFLAGS=
 
 #
@@ -138,6 +138,10 @@ mailman-unpack: $(MAILMAN_BUILD_DIR)/.configured
 #
 $(MAILMAN_BUILD_DIR)/.built: $(MAILMAN_BUILD_DIR)/.configured
 	rm -f $(MAILMAN_BUILD_DIR)/.built
+	$(TARGET_CONFIGURE_OPTS) \
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(MAILMAN_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
+	LDSHARED='$(TARGET_CC) -shared' \
 	$(MAKE) -C $(MAILMAN_BUILD_DIR)
 	touch $(MAILMAN_BUILD_DIR)/.built
 
@@ -151,6 +155,10 @@ mailman: $(MAILMAN_BUILD_DIR)/.built
 #
 $(MAILMAN_BUILD_DIR)/.staged: $(MAILMAN_BUILD_DIR)/.built
 	rm -f $(MAILMAN_BUILD_DIR)/.staged
+	$(TARGET_CONFIGURE_OPTS) \
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(MAILMAN_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
+	LDSHARED='$(TARGET_CC) -shared' \
 	$(MAKE) -C $(MAILMAN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(MAILMAN_BUILD_DIR)/.staged
 
@@ -188,9 +196,14 @@ $(MAILMAN_IPK_DIR)/CONTROL/control:
 #
 $(MAILMAN_IPK): $(MAILMAN_BUILD_DIR)/.built
 	rm -rf $(MAILMAN_IPK_DIR) $(BUILD_DIR)/mailman_*_$(TARGET_ARCH).ipk
+	$(TARGET_CONFIGURE_OPTS) \
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(MAILMAN_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
+	LDSHARED='$(TARGET_CC) -shared' \
 	$(MAKE) -C $(MAILMAN_BUILD_DIR) DESTDIR=$(MAILMAN_IPK_DIR) install
 	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/cgi-bin/*
 	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/mail/mailman
+	$(STRIP_COMMAND) `find $(MAILMAN_IPK_DIR)/opt/lib/mailman/ -name '*.so'`
 #	install -d $(MAILMAN_IPK_DIR)/opt/etc/
 #	install -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
 #	install -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
