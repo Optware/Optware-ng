@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", "wl500g", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
-OPTWARE_TARGET ?= nslu2
+OPTWARE_TARGET ?= ds101g
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
@@ -29,6 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	motion
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
