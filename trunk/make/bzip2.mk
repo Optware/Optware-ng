@@ -17,7 +17,7 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=5
+BZIP2_IPK_VERSION=6
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -93,6 +93,7 @@ $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so
 	install -d $(BZIP2_IPK_DIR)/opt/doc/bzip2
 	install -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)/opt/doc/bzip2
+	cd $(BZIP2_IPK_DIR)/opt/bin && ln -fs bzip2 bzcat
 	$(MAKE) $(BZIP2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BZIP2_IPK_DIR)
 
