@@ -1,0 +1,93 @@
+--- ../builds/buildroot-vanilla/toolchain/uClibc/uclibc.mk	2006-07-03 09:15:10.000000000 +0200
++++ buildroot/toolchain/uClibc/uclibc.mk	2006-07-05 14:57:42.000000000 +0200
+@@ -19,7 +19,7 @@
+ #"
+ UCLIBC_SITE:=http://www.uclibc.org/downloads/snapshots
+ else
+-UCLIBC_VER:=0.9.28
++UCLIBC_VER:=0.9.28
+ UCLIBC_DIR:=$(TOOL_BUILD_DIR)/uClibc-$(UCLIBC_VER)
+ UCLIBC_SOURCE:=uClibc-$(UCLIBC_VER).tar.bz2
+ UCLIBC_SITE:=http://www.uclibc.org/downloads
+@@ -74,9 +74,9 @@
+ 		-e 's,# TARGET_$(UCLIBC_TARGET_ARCH) is not set,TARGET_$(UCLIBC_TARGET_ARCH)=y,g' \
+ 		-e 's,^TARGET_ARCH="none",TARGET_ARCH=\"$(UCLIBC_TARGET_ARCH)\",g' \
+ 		-e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' \
+-		-e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/\",g' \
+-		-e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/usr/\",g' \
+-		-e 's,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX=\"/lib\",g' \
++		-e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/opt/\",g' \
++		-e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/opt/\",g' \
++		-e 's,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX=\"/opt/lib\",g' \
+ 		$(UCLIBC_DIR)/.config
+ ifeq ($(UCLIBC_TARGET_ARCH),arm)
+ 	$(SED) 's,^.*CONFIG_$(shell echo $(BR2_ARM_TYPE)).*,CONFIG_$(shell echo $(BR2_ARM_TYPE))=y,g' \
+@@ -150,25 +150,30 @@
+ 	touch -c $(STAGING_DIR)/lib/libc.a
+ 
+ ifneq ($(TARGET_DIR),)
+-$(TARGET_DIR)/lib/libc.so.0: $(STAGING_DIR)/lib/libc.a
++$(TARGET_DIR)/opt/lib/libc.so.0: $(STAGING_DIR)/lib/libc.a
+ 	$(MAKE1) -C $(UCLIBC_DIR) \
+ 		PREFIX=$(TARGET_DIR) \
+-		DEVEL_PREFIX=/usr/ \
+-		RUNTIME_PREFIX=/ \
++		DEVEL_PREFIX=/opt/ \
++		RUNTIME_PREFIX=/opt/ \
+ 		install_runtime
+-	touch -c $(TARGET_DIR)/lib/libc.so.0
++	touch -c $(TARGET_DIR)/opt/lib/libc.so.0
+ 
+-$(TARGET_DIR)/usr/bin/ldd:
++# utils are installed into $(PREFIX)/usr/bin
++# and must be moved into $(PREFIX)/bin
++$(TARGET_DIR)/opt/bin/ldd:
+ 	$(MAKE1) -C $(UCLIBC_DIR) $(TARGET_CONFIGURE_OPTS) \
+ 		PREFIX=$(TARGET_DIR) utils install_utils
++	mkdir -p $(TARGET_DIR)/opt/bin
++	install -c $(TARGET_DIR)/opt/usr/bin/ldd  $(TARGET_DIR)/opt/bin
++	rm -rf $(TARGET_DIR)/opt/usr
+ ifeq ($(strip $(BR2_CROSS_TOOLCHAIN_TARGET_UTILS)),y)
+ 	mkdir -p $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils
+-	install -c $(TARGET_DIR)/usr/bin/ldd \
++	install -c $(TARGET_DIR)/opt/bin/ldd \
+ 		$(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
+ endif
+-	touch -c $(TARGET_DIR)/usr/bin/ldd
++	touch -c $(TARGET_DIR)/opt/bin/ldd
+ 
+-UCLIBC_TARGETS=$(TARGET_DIR)/lib/libc.so.0
++UCLIBC_TARGETS=$(TARGET_DIR)/opt/lib/libc.so.0
+ endif
+ 
+ uclibc-configured: $(UCLIBC_DIR)/.configured
+@@ -187,7 +192,7 @@
+ uclibc-dirclean:
+ 	rm -rf $(UCLIBC_DIR)
+ 
+-uclibc-target-utils: $(TARGET_DIR)/usr/bin/ldd
++uclibc-target-utils: $(TARGET_DIR)/opt/bin/ldd
+ 
+ #############################################################
+ #
+@@ -196,15 +201,15 @@
+ #
+ #############################################################
+ 
+-$(TARGET_DIR)/usr/lib/libc.a: $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libc.a
++$(TARGET_DIR)/opt/lib/libc.a: $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libc.a
+ 	$(MAKE1) -C $(UCLIBC_DIR) \
+ 		PREFIX=$(TARGET_DIR) \
+-		DEVEL_PREFIX=/usr/ \
+-		RUNTIME_PREFIX=/ \
++		DEVEL_PREFIX=/opt/ \
++		RUNTIME_PREFIX=/opt/ \
+ 		install_dev
+-	touch -c $(TARGET_DIR)/usr/lib/libc.a
++	touch -c $(TARGET_DIR)/opt/lib/libc.a
+ 
+-uclibc_target: gcc uclibc $(TARGET_DIR)/usr/lib/libc.a $(TARGET_DIR)/usr/bin/ldd
++uclibc_target: gcc uclibc $(TARGET_DIR)/opt/lib/libc.a $(TARGET_DIR)/opt/bin/ldd
+ 
+ uclibc_target-clean:
+ 	rm -f $(TARGET_DIR)/include
