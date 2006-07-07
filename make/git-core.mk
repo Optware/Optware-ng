@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=1.3.3
+GIT-CORE_VERSION=1.4.1
 GIT-CORE_SOURCE=git-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -192,8 +192,12 @@ $(GIT-CORE_IPK_DIR)/CONTROL/control:
 $(GIT-CORE_IPK): $(GIT-CORE_BUILD_DIR)/.built
 	rm -rf $(GIT-CORE_IPK_DIR) $(BUILD_DIR)/git-core_*_$(TARGET_ARCH).ipk
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
-	$(MAKE) -C $(GIT-CORE_BUILD_DIR) DESTDIR=$(GIT-CORE_IPK_DIR) prefix=/opt $(TARGET_CONFIGURE_OPTS) \
-	    install
+	$(MAKE) -C $(GIT-CORE_BUILD_DIR) DESTDIR=$(GIT-CORE_IPK_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT-CORE_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(GIT-CORE_LDFLAGS)" \
+		prefix=/opt \
+		install
 	$(STRIP_COMMAND) $(GIT-CORE_IPK_DIR)/opt/bin/git-mail*
 #	install -d $(GIT-CORE_IPK_DIR)/opt/etc/
 #	install -m 644 $(GIT-CORE_SOURCE_DIR)/git-core.conf $(GIT-CORE_IPK_DIR)/opt/etc/git-core.conf
