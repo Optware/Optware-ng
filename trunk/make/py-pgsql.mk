@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PGSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pypgsql
-PY-PGSQL_VERSION=2.5
+PY-PGSQL_VERSION=2.5.1
 PY-PGSQL_SOURCE=pyPgSQL-$(PY-PGSQL_VERSION).tar.gz
 PY-PGSQL_DIR=pyPgSQL-$(PY-PGSQL_VERSION)
 PY-PGSQL_UNZIP=zcat
