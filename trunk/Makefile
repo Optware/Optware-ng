@@ -286,7 +286,7 @@ DS101G_BROKEN_PACKAGES = \
 	rsync \
 	ser svn \
 	bash bison bogofilter cyrus-imapd emacs xemacs hugs mzscheme ocaml \
-	perl perl-db-file perl-algorithm-diff perl-archive-tar \
+	openldap perl perl-db-file perl-algorithm-diff perl-archive-tar \
 	perl-business-isbn perl-class-dbi \
 	perl-dbix-contextualfetch \
 	perl-digest-sha \
