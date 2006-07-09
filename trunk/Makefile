@@ -285,7 +285,7 @@ DS101G_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	rsync \
 	ser svn \
-	bash bison cyrus-imapd emacs xemacs hugs mzscheme ocaml \
+	bash bison bogofilter cyrus-imapd emacs xemacs hugs mzscheme ocaml \
 	perl perl-db-file perl-algorithm-diff perl-archive-tar \
 	perl-business-isbn perl-class-dbi \
 	perl-dbix-contextualfetch \
