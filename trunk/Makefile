@@ -285,6 +285,9 @@ DS101G_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	rsync \
 	ser svn \
+	bash bison freetype gdbm hugs libdb libjpeg libpng libtiff \
+	mzscheme ncurses ocaml openssl perl perl-dbix-contextualfetch \
+	perl-io-zlib perl-libwww rsync squid termcap zlib
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
@@ -359,7 +362,7 @@ endif
 
 ifeq ($(OPTWARE_TARGET),ds101g)
 ifeq ($(HOST_MACHINE),ppc)
-PACKAGES = $(COMMON_NATIVE_PACKAGES)
+PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_NATIVE_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 else
 PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101G_SPECIFIC_PACKAGES))
