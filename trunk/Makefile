@@ -285,9 +285,24 @@ DS101G_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	rsync \
 	ser svn \
-	bash bison freetype gdbm hugs libdb libjpeg libpng libtiff \
-	mzscheme ncurses ocaml openssl perl perl-dbix-contextualfetch \
-	perl-io-zlib perl-libwww rsync squid termcap zlib
+	bash bison cyrus-imapd emacs xemacs hugs mzscheme ocaml \
+	perl perl-db-file perl-algorithm-diff perl-archive-tar \
+	perl-business-isbn perl-class-dbi \
+	perl-dbix-contextualfetch \
+	perl-digest-sha \
+	perl-gd \
+	perl-gd-barcode \
+	perl-ima-dbi \
+	perl-io-zlib \
+	perl-libwww \
+	perl-module-build \
+	perl-module-signature \
+	perl-spamassassin \
+	perl-text-diff \
+	perl-version \
+	postfix \
+	rsnapshot \
+	squid \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
