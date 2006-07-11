@@ -40,7 +40,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder antinat appweb asterisk asterisk-sounds \
 	apache apr apr-util atftp atk audiofile autoconf automake \
-	bash bc bzip2 bind bip bitchx bitlbee busybox byrequest bzflag \
+	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
 	cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
