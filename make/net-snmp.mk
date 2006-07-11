@@ -7,11 +7,11 @@
 # $Header$
 #
 NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
-NET_SNMP_VERSION=5.2.1
+NET_SNMP_VERSION=5.3.0.1
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
-NET_SNMP_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
+NET_SNMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NET_SNMP_DESCRIPTION=net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3 using both IPv4 and IPv6
 NET_SNMP_SECTION=net
 NET_SNMP_PRIORITY=optional
@@ -88,7 +88,7 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # We need to know if we are cross compiling. For cross compiling configure
 # need an extra flag with the endianness. The package won't configure
 # native with this flag.
-# I guess that the wl500g is a little endian computor?
+# I guess that the wl500g is a little endian computer?
 #
 ifeq ($(HOST_MACHINE),i386) 
   NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=big"
@@ -100,7 +100,6 @@ else
 endif
 
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
