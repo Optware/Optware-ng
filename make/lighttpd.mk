@@ -42,7 +42,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=2
+LIGHTTPD_IPK_VERSION=3
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -54,7 +54,9 @@ LIGHTTPD_CONFFILES=\
 # LIGHTTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIGHTTPD_PATCHES=$(LIGHTTPD_SOURCE_DIR)/configure.in.patch
+LIGHTTPD_PATCHES=\
+	$(LIGHTTPD_SOURCE_DIR)/configure.in.patch \
+	$(LIGHTTPD_SOURCE_DIR)/src-server.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -118,7 +120,7 @@ endif
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
 		then cat $(LIGHTTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(LIGHTTPD_DIR) -p1 ; \
+		patch -bd $(BUILD_DIR)/$(LIGHTTPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(LIGHTTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
