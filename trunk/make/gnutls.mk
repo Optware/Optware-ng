@@ -26,13 +26,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNUTLS_SITE=http://ftp.gnupg.org/GnuPG/alpha/gnutls/attic
-GNUTLS_VERSION=1.2.4
+GNUTLS_SITE=ftp://ftp.gnutls.org/pub/gnutls
+GNUTLS_VERSION=1.4.0
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
 GNUTLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-GNUTLS_DESCRIPTION=Describe gnutls here.
+GNUTLS_DESCRIPTION=GNU Transport Layer Security Library.
 GNUTLS_SECTION=libs
 GNUTLS_PRIORITY=optional
 GNUTLS_DEPENDS=
