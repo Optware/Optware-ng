@@ -1,13 +1,13 @@
---- samba-3.0.10/source/script/installbin.sh	2004-10-25 15:05:10.000000000 -0600
-+++ samba-3.0.10/source/script/installbin.sh		2005-02-03 12:01:57.000000000 -0700
-@@ -28,7 +28,9 @@
-    if [ ! -d $DESTDIR/sbin ]; then
-       mkdir $DESTDIR/sbin
-    fi 
--   ln -sf $BINDIR/$p2 $DESTDIR/sbin/mount.smbfs
+--- samba-3.0.23/source/script/installbin.sh.in.orig	2006-07-11 21:00:51.000000000 -0700
++++ samba-3.0.23/source/script/installbin.sh.in	2006-07-11 21:03:22.000000000 -0700
+@@ -26,7 +26,9 @@
+       mkdir $DESTDIR/@rootsbindir@
+    fi
+    echo "Creating sym link $DESTDIR/@rootsbindir@/mount.smbfs to $BINDIR/$p2 "
+-   ln -sf $BINDIR/$p2 $DESTDIR/@rootsbindir@/mount.smbfs
 +   DEST=`echo $DESTDIR | sed 's/\//\\\\\//g'`
 +   nBINDIR=`echo $BINDIR | sed "s/$DEST//g"`
-+   ln -sf $nBINDIR/$p2 $DESTDIR/sbin/mount.smbfs
++   ln -sf $nBINDIR/$p2 $DESTDIR/@rootsbindir@/mount.smbfs
   fi
  done
  
