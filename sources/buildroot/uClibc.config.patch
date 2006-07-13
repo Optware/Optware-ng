@@ -1,5 +1,5 @@
---- ../builds/buildroot-vanilla/toolchain/uClibc/uClibc.config	2006-07-03 09:15:10.000000000 +0200
-+++ buildroot/toolchain/uClibc/uClibc.config	2006-07-05 16:35:05.000000000 +0200
+--- buildroot.r15494/toolchain/uClibc/uClibc.config	2006-07-05 03:11:18.000000000 +0200
++++ buildroot/toolchain/uClibc/uClibc.config	2006-07-13 20:42:50.000000000 +0200
 @@ -32,11 +32,18 @@
  TARGET_ARCH="none"
  # ARCH_LITTLE_ENDIAN is not set
@@ -20,7 +20,7 @@
  DO_C99_MATH=y
  WARNINGS="-Wall"
  KERNEL_SOURCE="/usr/src/linux"
-@@ -62,6 +69,7 @@
+@@ -62,14 +69,16 @@
  DOPIC=y
  # HAVE_NO_SHARED is not set
  # ARCH_HAS_NO_LDSO is not set
@@ -28,10 +28,13 @@
  HAVE_SHARED=y
  # FORCE_SHAREABLE_TEXT_SEGMENTS is not set
  LDSO_LDD_SUPPORT=y
-@@ -70,6 +78,7 @@
- LDSO_BASE_FILENAME="ld.so"
+ LDSO_CACHE_SUPPORT=y
+ # LDSO_PRELOAD_FILE_SUPPORT is not set
+-LDSO_BASE_FILENAME="ld.so"
++LDSO_BASE_FILENAME="ld-opt.so"
  # UCLIBC_STATIC_LDCONFIG is not set
- # LDSO_RUNPATH is not set
+-# LDSO_RUNPATH is not set
++LDSO_RUNPATH=y
 +DL_FINI_CRT_COMPAT=y
  UCLIBC_CTOR_DTOR=y
  # HAS_NO_THREADS is not set
