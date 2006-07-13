@@ -43,7 +43,7 @@ IMAGEMAGICK_CONFLICTS=
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=4
+IMAGEMAGICK_IPK_VERSION=5
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
