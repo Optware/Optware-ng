@@ -207,7 +207,7 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/rc.buildroot $(BUILDROOT_IPK_DIR)/opt/etc/init.d/SXXbuildroot
 	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.mipsel.tar ./opt
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
 	echo $(BUILDROOT_CONFFILES) | sed -e 's/ /\n/g' > $(BUILDROOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILDROOT_IPK_DIR)
