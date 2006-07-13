@@ -21,19 +21,20 @@ CTCS_DESCRIPTION=CTorrent Control Server (CTCS) is an interface for monitoring a
 CTCS_SECTION=net
 CTCS_PRIORITY=optional
 CTCS_DEPENDS=perl
-CTCS_SUGGESTS=enhanced-ctorrent
+CTCS_SUGGESTS=
 CTCS_CONFLICTS=
 
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=2
+CTCS_IPK_VERSION=3
 
 #
 # CTCS_CONFFILES should be a list of user-editable files
 #
-# currently, there is a init.d script that starts the server
-CTCS_CONFFILES=/opt/etc/init.d/S90ctcs
+# currently, there is a init.d script that starts the server and
+# a configuration file with startup options
+CTCS_CONFFILES=/opt/etc/ctcs.conf /opt/etc/init.d/S90ctcs
 
 #
 # CTCS_PATCHES should list any patches, in the the order in
@@ -113,8 +114,10 @@ ctcs-unpack: $(CTCS_BUILD_DIR)/.configured
 #
 # This builds the actual binary.
 #
+# There is no actual binary to build. Unpacking the source and
+# applying the patches is all that is necessary.
+#
 $(CTCS_BUILD_DIR)/.built: $(CTCS_BUILD_DIR)/.configured
-	rm -f $(CTCS_BUILD_DIR)/.built
 	touch $(CTCS_BUILD_DIR)/.built
 
 #
@@ -160,6 +163,8 @@ $(CTCS_IPK): $(CTCS_BUILD_DIR)/.built
 	install -d $(CTCS_IPK_DIR)/opt/doc/ctcs
 	install -m 755 $(CTCS_SOURCE_DIR)/README.nslu2 $(CTCS_IPK_DIR)/opt/doc/ctcs/README.nslu2
 	install -m 755 $(CTCS_SOURCE_DIR)/readme.txt $(CTCS_IPK_DIR)/opt/doc/ctcs/readme.txt
+	install -d $(CTCS_IPK_DIR)/opt/etc
+	install -m 755 $(CTCS_SOURCE_DIR)/ctcs.conf $(CTCS_IPK_DIR)/opt/etc/ctcs.conf
 	install -d $(CTCS_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CTCS_SOURCE_DIR)/rc.ctcs $(CTCS_IPK_DIR)/opt/etc/init.d/S90ctcs
 	$(MAKE) $(CTCS_IPK_DIR)/CONTROL/control

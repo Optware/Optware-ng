@@ -7,15 +7,24 @@ page at http://www.rahul.net/dholmes/ctorrent/ctcs.html and the
 nslu2-linux wiki page at http://www.nslu2-linux.org/wiki/Unslung/CTCS.
 
 ----------------------------------------------------------------------
-INIT SCRIPT
+CONFIGURATION FILE
 
-This package installs a init script at /opt/etc/init.d/S90ctcs. The
-script starts CTCS in the background using the default port (2780) and
-redirects all output to /dev/null. 
+This package installs a configuration file, /opt/etc/ctcs.conf, where
+you can change the options used by the init script to start the server
+(see below). A list of options is available in the readme.txt file, or
+at the wiki page at http://www.nslu2-linux.org/wiki/Unslung/CTCS.
 
 CTCS writes messages to the console, something unappropriate for a 
 server running in the background. If you want to log the output, then
-change the destination at the init script.
+change the log destination at the conf file. By default, all output is
+simply discarded to /dev/null.
+
+----------------------------------------------------------------------
+INIT SCRIPT
+
+This package installs a init script at /opt/etc/init.d/S90ctcs. The
+script starts CTCS in the background using the options provided by the
+/opt/etc/ctcs.conf file.
 
 ----------------------------------------------------------------------
 SECURITY
