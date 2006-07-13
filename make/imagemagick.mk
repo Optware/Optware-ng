@@ -31,10 +31,10 @@ IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
 IMAGEMAGICK_SECTION=graphics
 IMAGEMAGICK_PRIORITY=optional
 ifneq ($(OPTWARE_TARGET),wl500g)
-IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2
+IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms
 IMAGEMAGICK_USE_TIFF=--with-tiff
 else
-IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtool, bzip2
+IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtool, bzip2, libtool, liblcms
 IMAGEMAGICK_USE_TIFF=--without-tiff
 endif
 IMAGEMAGICK_SUGGESTS=
