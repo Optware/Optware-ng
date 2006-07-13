@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLIPS_SITE=http://www.ghg.net/clips/download/source
-CLIPS_VERSION=6.23
+CLIPS_VERSION=6.24
 CLIPS_TARBALL=clipssrc.tar.Z
 CLIPS_SOURCE=clipssrc-$(CLIPS_VERSION).tar.Z
 CLIPS_DIR=clipssrc
@@ -48,7 +48,8 @@ CLIPS_IPK_VERSION=1
 # CLIPS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CLIPS_PATCHES=$(CLIPS_SOURCE_DIR)/makefile.patch $(CLIPS_SOURCE_DIR)/setup.h.patch
+CLIPS_PATCHES=$(CLIPS_SOURCE_DIR)/makefile.patch 
+#$(CLIPS_SOURCE_DIR)/setup.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -77,7 +78,7 @@ CLIPS_IPK=$(BUILD_DIR)/clips_$(CLIPS_VERSION)-$(CLIPS_IPK_VERSION)_$(TARGET_ARCH
 #
 $(DL_DIR)/$(CLIPS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/$(CLIPS_TARBALL) -O $(DL_DIR)/$(CLIPS_SOURCE)
-	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/makefile -O $(DL_DIR)/clips-$(CLIPS_VERSION)-Makefile
+	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/makefile.gcc -O $(DL_DIR)/clips-$(CLIPS_VERSION)-Makefile
 
 #
 # The source code depends on it existing within the download directory.

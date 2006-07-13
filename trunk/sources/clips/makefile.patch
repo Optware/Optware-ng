@@ -1,5 +1,5 @@
---- ../downloads/clips-6.23-Makefile	2005-02-03 17:23:03.000000000 -0800
-+++ clips/clipssrc/Makefile	2005-05-28 20:37:53.174321000 -0700
+--- ../downloads/clips-6.24-Makefile	2006-06-15 23:42:14.000000000 +0200
++++ clips/clipssrc/Makefile	2006-07-13 10:40:49.000000000 +0200
 @@ -15,7 +15,7 @@
   	genrcpsr.o globlbin.o globlbsc.o globlcmp.o globlcom.o \
   	globldef.o globlpsr.o immthpsr.o incrrset.o inherpsr.o \
@@ -11,7 +11,7 @@
   	multifld.o multifun.o objbin.o objcmp.o objrtbin.o objrtbld.o \
 @@ -28,14 +28,31 @@
   	tmpltbin.o tmpltbsc.o tmpltcmp.o tmpltdef.o tmpltfun.o tmpltlhs.o \
-  	tmpltpsr.o tmpltrhs.o tmpltutl.o userdata.o utility.o watch.o
+  	tmpltpsr.o tmpltrhs.o tmpltutl.o userdata.o userfunctions.o utility.o watch.o
  
 +SHLIB = libclips.6.23.so
 +
@@ -42,5 +42,5 @@
 +	install *.so $(DESTDIR)/opt/lib/
 +	$(STRIP) $(DESTDIR)/opt/lib/$(SHLIB)
  
- agenda.o: agenda.c setup.h envrnmnt.h usrsetup.h argacces.h \
-   expressn.h exprnops.h exprnpsr.h extnfunc.h symbol.h userdata.h \
+ # Dependencies generated using "gcc -MM *.c"
+ 
