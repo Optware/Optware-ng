@@ -27,19 +27,21 @@ ENHANCED_CTORRENT_DESCRIPTION=Enhanced CTorrent is a revised version of CTorrent
 ENHANCED_CTORRENT_SECTION=net
 ENHANCED_CTORRENT_PRIORITY=optional
 ENHANCED_CTORRENT_DEPENDS=libstdc++, openssl
-ENHANCED_CTORRENT_SUGGESTS=ctcs
+ENHANCED_CTORRENT_SUGGESTS=
 ENHANCED_CTORRENT_CONFLICTS=
 
 #
 # ENHANCED_CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-ENHANCED_CTORRENT_IPK_VERSION=2
+ENHANCED_CTORRENT_IPK_VERSION=3
 
 #
 # ENHANCED_CTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ENHANCED_CTORRENT_PATCHES=$(ENHANCED_CTORRENT_SOURCE_DIR)/btfiles.patch
+ENHANCED_CTORRENT_PATCHES= \
+	$(ENHANCED_CTORRENT_SOURCE_DIR)/btfiles.patch \
+	$(ENHANCED_CTORRENT_SOURCE_DIR)/peer.patch
 
 #
 # If the compilation of the package requires additional
