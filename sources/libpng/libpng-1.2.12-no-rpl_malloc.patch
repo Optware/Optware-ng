@@ -1,0 +1,10 @@
+--- libpng/configure.ac.orig	2006-07-14 15:56:24.000000000 +0200
++++ libpng/configure.ac	2006-07-14 15:57:30.000000000 +0200
+@@ -52,7 +52,6 @@
+ AC_STRUCT_TM
+ 
+ # Checks for library functions.
+-AC_FUNC_MALLOC
+ AC_FUNC_STRTOD
+ AC_CHECK_FUNCS([memset], , AC_ERROR([memset not found in libc]))
+ AC_CHECK_FUNCS([pow], , AC_CHECK_LIB(m, pow, , AC_ERROR([cannot find pow])) )
