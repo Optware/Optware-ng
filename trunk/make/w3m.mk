@@ -41,7 +41,7 @@ W3M_CONFLICTS=
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=4
+W3M_IPK_VERSION=5
 
 #
 # W3M_CONFFILES should be a list of user-editable files
