@@ -54,7 +54,11 @@ SAMBA_CONFFILES=/opt/etc/init.d/S80samba
 # SAMBA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch $(SAMBA_SOURCE_DIR)/samba.patch
+else
+SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch
+endif
 
 #
 # If the compilation of the package requires additional
