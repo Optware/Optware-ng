@@ -24,11 +24,12 @@
 PY-CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyclips
 PY-CLIPS_VERSION=1.0_R3
 PY-CLIPS_SOURCE=pyclips-$(PY-CLIPS_VERSION).tar.gz
-PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
-PY-CLIPS_CLIPS_SOURCE=CLIPSSrc.zip
+#PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
+PY-CLIPS_CLIPS_SITE=http://jywiki.sf.net/clips
+PY-CLIPS_CLIPS_SOURCE=CLIPSSrc-6.23.zip
 PY-CLIPS_DIR=pyclips
 PY-CLIPS_UNZIP=zcat
-PY-CLIPS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-CLIPS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CLIPS_DESCRIPTION=PyCLIPS is an extension module that embeds full CLIPS functionality in Python applications.
 PY-CLIPS_SECTION=misc
 PY-CLIPS_PRIORITY=optional
@@ -39,7 +40,7 @@ PY-CLIPS_CONFLICTS=
 #
 # PY-CLIPS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CLIPS_IPK_VERSION=2
+PY-CLIPS_IPK_VERSION=3
 
 #
 # PY-CLIPS_CONFFILES should be a list of user-editable files
@@ -120,7 +121,7 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python" \
 	    ) >> setup.cfg; \
-	    cp $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) . \
+	    cp $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) ./clipssrc.zip \
 	)
 	touch $(PY-CLIPS_BUILD_DIR)/.configured
 
