@@ -183,7 +183,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
 	asterisk atk \
-	bitlbee bzflag \
+	bitlbee bzflag bsdmainutils \
 	ctcs cvs \
 	dcraw dict \
 	ecl elinks enhanced-ctorrent erlang \
