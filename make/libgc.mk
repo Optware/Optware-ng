@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGC_SITE=http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source
-LIBGC_VERSION=6.7
+LIBGC_VERSION=6.8
 LIBGC_SOURCE=gc$(LIBGC_VERSION).tar.gz
 LIBGC_DIR=gc$(LIBGC_VERSION)
 LIBGC_UNZIP=zcat
