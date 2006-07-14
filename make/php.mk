@@ -26,7 +26,7 @@ PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=1
+PHP_IPK_VERSION=2
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.pa
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
-PHP_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath=/opt/lib/mysql -ldl -pthread
+PHP_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath=/opt/lib/mysql -ldl -lpthread
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
@@ -285,6 +285,7 @@ endif
 		ac_cv_func_memcmp_working=yes \
 		cv_php_mbstring_stdarg=yes \
 		STAGING_PREFIX="$(STAGING_PREFIX)" \
+		LIBS="-lsasl2" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
