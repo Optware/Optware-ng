@@ -1,0 +1,24 @@
+Submitted By: Robert Connolly <robert at linuxfromscratch dot org> (ashes)
+Date: 2005-10-02
+Initial Package Version: 0.9.28
+Upstream Status: Not submitted
+Origin: http://busybox.net/lists/uclibc/2005-September/012492.html
+Description: This fixes "undefined reference to `__libc_stack_end'" when
+installing from a non-uClibc host.
+
+Also see:
+http://www.linuxfromscratch.org/hlfs/
+http://www.linuxfromscratch.org/hints/downloads/files/entropy.txt
+
+diff -Naur uClibc-0.9.28.orig/libc/misc/internals/__uClibc_main.c uClibc-0.9.28/libc/misc/internals/__uClibc_main.c
+--- uClibc-0.9.28.orig/libc/misc/internals/__uClibc_main.c	2005-08-17 22:49:48.000000000 +0000
++++ uClibc-0.9.28/libc/misc/internals/__uClibc_main.c	2005-10-02 05:16:26.000000000 +0000
+@@ -28,6 +28,8 @@
+ extern void __guard_setup(void);
+ #endif
+ 
++void * __dummy_libc_stack_end = NULL;
++weak_alias(__dummy_libc_stack_end, __libc_stack_end);
+ 
+ /*
+  * Prototypes.

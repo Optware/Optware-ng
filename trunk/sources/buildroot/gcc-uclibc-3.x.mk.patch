@@ -1,6 +1,6 @@
---- /tmp/buildroot/toolchain/gcc/gcc-uclibc-3.x.mk	2006-07-05 03:11:26.000000000 +0200
-+++ buildroot/toolchain/gcc/gcc-uclibc-3.x.mk	2006-07-05 09:20:43.000000000 +0200
-@@ -245,25 +246,25 @@
+--- buildroot.r15597/toolchain/gcc/gcc-uclibc-3.x.mk	2006-07-14 01:16:07.000000000 +0200
++++ buildroot/toolchain/gcc/gcc-uclibc-3.x.mk	2006-07-14 12:39:03.000000000 +0200
+@@ -246,25 +246,25 @@
  	#
  	touch $(GCC_BUILD_DIR2)/.installed
  
@@ -38,7 +38,7 @@
  
  gcc-source: $(DL_DIR)/$(GCC_SOURCE)
  
-@@ -288,13 +289,13 @@
+@@ -289,13 +289,13 @@
  	mkdir -p $(GCC_BUILD_DIR3)
  	(cd $(GCC_BUILD_DIR3); PATH=$(TARGET_PATH) \
  		$(GCC_DIR)/configure \
@@ -54,7 +54,7 @@
  		--disable-__cxa_atexit \
  		--enable-target-optspace \
  		--with-gnu-ld \
-@@ -331,53 +332,53 @@
+@@ -332,53 +332,53 @@
  GCC_LIB_SUBDIR=lib/gcc/$(REAL_GNU_TARGET_NAME)/$(GCC_VERSION)
  endif
  
