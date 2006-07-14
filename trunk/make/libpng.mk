@@ -34,13 +34,13 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=1
+LIBPNG_IPK_VERSION=2
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBPNG_PATCHES=$(LIBPNG_SOURCE_DIR)/configure.patch
+LIBPNG_PATCHES=$(LIBPNG_SOURCE_DIR)/libpng-1.2.12-no-rpl_malloc.patch
 
 #
 # If the compilation of the package requires additional
@@ -96,7 +96,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
 	$(LIBPNG_UNZIP) $(DL_DIR)/$(LIBPNG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1
+	cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
 	(cd $(LIBPNG_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
