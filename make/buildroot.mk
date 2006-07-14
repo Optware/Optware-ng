@@ -26,7 +26,7 @@ BUILDROOT_UCLIBC=0.9.28
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
-BUILDROOT_SVN_REV=15494
+BUILDROOT_SVN_REV=15597
 BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
 BUILDROOT_DIR=buildroot
 BUILDROOT_UNZIP=zcat
@@ -233,14 +233,14 @@ buildroot-dirclean:
 
 #
 # create patches
-# diff -u buildroot-vanilla/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
-# diff -u buildroot/toolchain/uClibc/uClibc.config.orig buildroot/toolchain/uClibc/uClibc.config > ../sources/buildroot/uClibc.config.patch
-# diff -u ../builds/buildroot-vanilla/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
+# diff -u buildroot.r15597/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
+#  diff -u buildroot.r15597/toolchain/gcc/gcc-uclibc-3.x.mk buildroot/toolchain/gcc/gcc-uclibc-3.x.mk > ../sources/buildroot/gcc-uclibc-3.x.mk.patch 
 # rebuilding uClibc by hand:
 # rm -rf rm -rf toolchain_build_mipsel/uClibc-0.*
 # make uclibc-configured 
 # make uclibc
 # make uclibc_target
+# make
 # 
 # Creating uClibc.config patch
 # make uclibc-dirclean
