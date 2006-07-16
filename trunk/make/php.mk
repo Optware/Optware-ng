@@ -268,6 +268,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) imap-stage
 ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openldap-stage
+else
+	$(MAKE) cyrus-sasl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
