@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", "wl500g", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
-OPTWARE_TARGET ?= ds101g
+OPTWARE_TARGET ?= nslu2
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
@@ -85,7 +85,7 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga  \
 	rcs rdate readline recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
-	sablevm samba scons sdl ser setpwc siproxd sm snownews \
+	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
