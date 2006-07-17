@@ -30,7 +30,7 @@ MUTT_CONFLICTS=
 #
 # MUTT_IPK_VERSION should be incremented when the ipk changes.
 #
-MUTT_IPK_VERSION=2
+MUTT_IPK_VERSION=3
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ MUTT_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 MUTT_CPPFLAGS=
-MUTT_LDFLAGS=
+MUTT_LDFLAGS=-lsasl2 -ldl
 
 #
 # MUTT_BUILD_DIR is the directory in which the build is done.
