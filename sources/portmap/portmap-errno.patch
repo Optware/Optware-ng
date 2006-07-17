@@ -1,0 +1,11 @@
+--- portmap/portmap.c.orig	2006-07-17 22:41:48.000000000 +0200
++++ portmap/portmap.c	2006-07-17 22:42:09.000000000 +0200
+@@ -124,7 +124,7 @@
+ static void callit();
+ struct pmaplist *pmaplist;
+ int debugging = 0;
+-extern int errno;
++#include <errno.h>
+ 
+ #include "pmap_check.h"
+ 

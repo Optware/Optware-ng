@@ -10,7 +10,7 @@ group_file=/etc/group
 if [ -z "`/bin/grep \"\(^$setgid_group\b\|:$setgid_group_id\):\" $group_file`" ] ; then
     /bin/cp $group_file $group_file.postfix-save
     /bin/echo -e "\n\t -> backup $group_file.postfix-save ceated"
-    /bin/sed -i "s/\(nobody\)/$setgid_group:x:$setgid_group_id:\n\1/g" $group_file
+    /bin/sed -i "s/^\(nobody\)/$setgid_group:x:$setgid_group_id:\n\1/g" $group_file
     /bin/echo -e "\t -> new group $setgid_group created"
     /bin/echo -e "\t -> `/bin/grep \"\(^$setgid_group\b\|:$setgid_group_id\):\" $group_file`"
 else
