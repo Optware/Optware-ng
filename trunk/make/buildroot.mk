@@ -53,8 +53,9 @@ BUILDROOT_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
-		$(BUILDROOT_SOURCE_DIR)/uClibc.config.patch \
-		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch
+		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
+		$(BUILDROOT_SOURCE_DIR)/uClibc.config-locale.patch
+#		$(BUILDROOT_SOURCE_DIR)/uClibc.config.patch 
 
 #
 # If the compilation of the package requires additional
@@ -149,7 +150,7 @@ buildroot-unpack: $(BUILDROOT_BUILD_DIR)/.configured
 #
 $(BUILDROOT_BUILD_DIR)/.built: $(BUILDROOT_BUILD_DIR)/.configured
 	rm -f $(BUILDROOT_BUILD_DIR)/.built
-	GCC="ccache gcc" $(MAKE) -C $(BUILDROOT_BUILD_DIR)
+	$(MAKE) -C $(BUILDROOT_BUILD_DIR)
 	touch $(BUILDROOT_BUILD_DIR)/.built
 
 #
@@ -162,7 +163,7 @@ buildroot: $(BUILDROOT_BUILD_DIR)/.built
 #
 $(BUILDROOT_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.built
 	rm -f $(BUILDROOT_BUILD_DIR)/.staged
-	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(BUILDROOT_BUILD_DIR)/.staged
 
 buildroot-stage: $(BUILDROOT_BUILD_DIR)/.staged
@@ -202,10 +203,11 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(BUILDROOT_IPK_DIR) $(BUILD_DIR)/buildroot_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(BUILDROOT_IPK_DIR) install-strip
 	install -d $(BUILDROOT_IPK_DIR)
+	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
+	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
 #	install -m 644 $(BUILDROOT_SOURCE_DIR)/buildroot.conf $(BUILDROOT_IPK_DIR)/opt/etc/buildroot.conf
 #	install -d $(BUILDROOT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/rc.buildroot $(BUILDROOT_IPK_DIR)/opt/etc/init.d/SXXbuildroot
-	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.mipsel.tar ./opt
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
