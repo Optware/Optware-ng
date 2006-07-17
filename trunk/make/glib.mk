@@ -14,9 +14,9 @@
 #
 GLIB_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
 GLIB_VERSION=2.6.4
-GLIB_SOURCE=glib-$(GLIB_VERSION).tar.gz
+GLIB_SOURCE=glib-$(GLIB_VERSION).tar.bz2
 GLIB_DIR=glib-$(GLIB_VERSION)
-GLIB_UNZIP=zcat
+GLIB_UNZIP=bzcat
 GLIB_MAINTAINER=giel <giel@caffeinetrip.com>
 GLIB_DESCRIPTION=The GLib library of C routines.
 GLIB_SECTION=lib
