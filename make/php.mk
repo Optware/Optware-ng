@@ -266,6 +266,8 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) mysql-stage
 	$(MAKE) mysql-stage
 	$(MAKE) imap-stage
+	$(MAKE) libpng-stage
+	$(MAKE) libjpeg-stage
 ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openldap-stage
 else
