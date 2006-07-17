@@ -9,7 +9,7 @@
 # is libdb4.2, libdb4.2-dev, libpcre3, libpcre3-dev
 
 POSTFIX_SITE=ftp://netmirror.org/postfix.org/official
-POSTFIX_VERSION=2.1.5
+POSTFIX_VERSION=2.3.0
 POSTFIX_SOURCE=postfix-$(POSTFIX_VERSION).tar.gz
 POSTFIX_DIR=postfix-$(POSTFIX_VERSION)
 POSTFIX_UNZIP=zcat
@@ -17,11 +17,11 @@ POSTFIX_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 POSTFIX_DESCRIPTION=The Postfix mail system is an alternative to sendmail.
 POSTFIX_SECTION=util
 POSTFIX_PRIORITY=optional
-POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl
+POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, find
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=2
+POSTFIX_IPK_VERSION=1
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -29,10 +29,10 @@ POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/lib/sasl2/smtpd.conf \
 		  /opt/etc/init.d/S69postfix
 
-POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch $(POSTFIX_SOURCE_DIR)/postfix-install.patch
+POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch $(POSTFIX_SOURCE_DIR)/postfix-install.patch $(POSTFIX_SOURCE_DIR)/postfix-script.patch
 
 POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
-POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2
+POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl
 
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix
@@ -67,6 +67,7 @@ $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 			-DDEF_README_DIR=\"/opt/share/doc/postfix/readme\" \
 			-DDEF_SENDMAIL_PATH=\"/opt/sbin/sendmail\" \
 			-DHAS_PCRE \
+			-DUSE_CYRUS_SASL \
 			-DUSE_SASL_AUTH \
 			$(STAGING_CPPFLAGS) $(POSTFIX_CPPFLAGS) \
 			' \
