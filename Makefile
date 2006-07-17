@@ -271,22 +271,21 @@ DS101G_SPECIFIC_PACKAGES =
 # Packages that do not work for ds101g+.
 # elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
 DS101G_BROKEN_PACKAGES = \
-	apache apr-util appweb \
+	appweb \
 	bitlbee \
-	cherokee clamav \
-	eaccelerator elinks \
+	cherokee \
+	eaccelerator \
 	flac freeradius \
-	gawk gnutls \
+	gnutls \
 	ivorbis-tools \
-	ldconfig libgcrypt libmemcache libvorbisidec lighttpd lsof \
-	mod-fastcgi mod-python mtr mutt ntop ntp \
+	ldconfig libgcrypt libvorbisidec lsof \
+	mod-python mtr ntop ntp \
 	opencdk \
-	php php-apache portmap \
 	qemu qemu-libc-i386 \
 	rsync \
-	ser svn \
-	bash bison bogofilter cyrus-imapd emacs xemacs hugs mzscheme ocaml \
-	openldap perl perl-db-file perl-algorithm-diff perl-archive-tar \
+	ser \
+	bogofilter emacs xemacs hugs mzscheme ocaml \
+	perl perl-db-file perl-algorithm-diff perl-archive-tar \
 	perl-business-isbn perl-class-dbi \
 	perl-dbix-contextualfetch \
 	perl-digest-sha \
@@ -300,7 +299,6 @@ DS101G_BROKEN_PACKAGES = \
 	perl-spamassassin \
 	perl-text-diff \
 	perl-version \
-	postfix \
 	rsnapshot \
 	squid \
 
