@@ -4,6 +4,16 @@
 #
 ###########################################################
 #
+# Provides  toolchain, native toolchain as buildroot.ipk or uclibc.ipk
+#
+# PATH for target cross toolchain is:
+# $(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)/staging_dir/bin
+#
+# TARGET_CROSS = $(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)\
+#			/staging_dir/bin/$(TARGET_ARCH)-$(TARGET_OS)-
+# TARGET_LIBDIR =  $(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)\
+#			/staging_dir/lib
+#
 # BUILDROOT_VERSION, BUILDROOT_SITE and BUILDROOT_SOURCE define
 # the upstream location of the source code for the package.
 # BUILDROOT_DIR is the directory which is created when the source
@@ -22,7 +32,7 @@
 #
 BUILDROOT_GCC=3.4.6
 BUILDROOT_BINUTILS=2.16.1
-BUILDROOT_UCLIBC=0.9.28
+UCLIBC_VERSION=0.9.28
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
@@ -36,8 +46,15 @@ BUILDROOT_SECTION=devel
 BUILDROOT_PRIORITY=optional
 BUILDROOT_DEPENDS=
 BUILDROOT_SUGGESTS=
-BUILDROOT_CONFLICTS=
+BUILDROOT_CONFLICTS=uclibc
 
+# uClibc library target provided by buildroot
+UCLIBC_DESCRIPTION=micro C library for embedded Linux systems
+UCLIBC_SECTION=base
+UCLIBC_PRIORITY=required
+UCLIBC_DEPENDS=
+UCLIBC_SUGGESTS=
+UCLIBC_CONFLICTS=buildroot
 
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
@@ -78,6 +95,9 @@ BUILDROOT_SOURCE_DIR=$(SOURCE_DIR)/buildroot
 BUILDROOT_IPK_DIR=$(BUILD_DIR)/buildroot-$(BUILDROOT_VERSION)-ipk
 BUILDROOT_IPK=$(BUILD_DIR)/buildroot_$(BUILDROOT_VERSION)-$(BUILDROOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+UCLIBC_IPK_DIR=$(BUILD_DIR)/uclibc-$(UCLIBC_VERSION)-ipk
+UCLIBC_IPK=$(BUILD_DIR)/uclibc_$(UCLIBC_VERSION)-$(BUILDROOT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk 
 
 #
@@ -100,7 +120,7 @@ $(DL_DIR)/$(BUILDROOT_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-buildroot-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHES)
+buildroot-source uclibc-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -143,7 +163,8 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PA
 	sed -i.orig.2 -e 's|=/usr|=/opt|g;s|=\\"/lib|=\\"/opt/lib|g;s|=\\"/usr|=\\"/opt|g' $(BUILDROOT_TOOLS_MK)
 	touch $(BUILDROOT_BUILD_DIR)/.configured
 
-buildroot-unpack: $(BUILDROOT_BUILD_DIR)/.configured
+buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
+
 
 #
 # This builds the actual binary.
@@ -153,10 +174,11 @@ $(BUILDROOT_BUILD_DIR)/.built: $(BUILDROOT_BUILD_DIR)/.configured
 	$(MAKE) -C $(BUILDROOT_BUILD_DIR)
 	touch $(BUILDROOT_BUILD_DIR)/.built
 
+
 #
 # This is the build convenience target.
 #
-buildroot: $(BUILDROOT_BUILD_DIR)/.built
+buildroot uclibc: $(BUILDROOT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -166,7 +188,7 @@ $(BUILDROOT_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.built
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(BUILDROOT_BUILD_DIR)/.staged
 
-buildroot-stage: $(BUILDROOT_BUILD_DIR)/.staged
+buildroot-stage uclibc-stage: $(BUILDROOT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -187,6 +209,21 @@ $(BUILDROOT_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(BUILDROOT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BUILDROOT_CONFLICTS)" >>$@
 
+$(UCLIBC_IPK_DIR)/CONTROL/control:
+	@install -d $(UCLIBC_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: uclibc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(UCLIBC_PRIORITY)" >>$@
+	@echo "Section: $(UCLIBC_SECTION)" >>$@
+	@echo "Version: $(UCLIBC_VERSION)-$(BUILDROOT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(BUILDROOT_MAINTAINER)" >>$@
+	@echo "Source: $(BUILDROOT_SITE)/$(BUILDROOT_SOURCE)" >>$@
+	@echo "Description: $(UCLIBC_DESCRIPTION)" >>$@
+	@echo "Depends: $(UCLIBC_DEPENDS)" >>$@
+	@echo "Suggests: $(UCLIBC_SUGGESTS)" >>$@
+	@echo "Conflicts: $(UCLIBC_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -205,24 +242,43 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	install -d $(BUILDROOT_IPK_DIR)
 	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
 	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
-#	install -m 644 $(BUILDROOT_SOURCE_DIR)/buildroot.conf $(BUILDROOT_IPK_DIR)/opt/etc/buildroot.conf
-#	install -d $(BUILDROOT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(BUILDROOT_SOURCE_DIR)/rc.buildroot $(BUILDROOT_IPK_DIR)/opt/etc/init.d/SXXbuildroot
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
 	echo $(BUILDROOT_CONFFILES) | sed -e 's/ /\n/g' > $(BUILDROOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILDROOT_IPK_DIR)
 
+
+UCLIBC_LIBS=ld-uClibc libc libdl libgcc_s libm libnsl libpthread libresolv \
+		librt libutil libuClibc
+UCLIBC_LIBS_PATTERN=$(patsubst %,./opt/lib/%*so*,$(UCLIBC_LIBS))
+
+$(UCLIBC_IPK): $(BUILDROOT_BUILD_DIR)/.built
+	rm -rf $(UCLIBC_IPK_DIR) $(BUILD_DIR)/uclibc_*_$(TARGET_ARCH).ipk
+#	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC_IPK_DIR) install-strip
+	install -d $(UCLIBC_IPK_DIR)
+	tar -xv -C $(UCLIBC_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
+		$(UCLIBC_LIBS_PATTERN) ./opt/sbin/ldconfig
+#	install -d $(UCLIBC_IPK_DIR)/opt/sbin
+#	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
+#		$(UCLIBC_IPK_DIR)/opt/sbin
+	$(MAKE) $(UCLIBC_IPK_DIR)/CONTROL/control
+	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC_IPK_DIR)/CONTROL/prerm
+	echo $(UCLIBC_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBC_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBC_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
 buildroot-ipk: $(BUILDROOT_IPK)
 
+uclibc-ipk: $(UCLIBC_IPK)
+
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-buildroot-clean:
+buildroot-clean uclibc-clean:
 	rm -f $(BUILDROOT_BUILD_DIR)/.built
 	-$(MAKE) -C $(BUILDROOT_BUILD_DIR) clean
 
@@ -230,7 +286,7 @@ buildroot-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-buildroot-dirclean:
+buildroot-dirclean uclibc-dirclean:
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK)
 
 #
