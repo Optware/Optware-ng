@@ -28,7 +28,7 @@
 #
 #http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.2.8.tar.gz
 RRDTOOL_SITE=http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/
-RRDTOOL_VERSION=1.2.13
+RRDTOOL_VERSION=1.2.14
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
@@ -128,7 +128,6 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 		--disable-tcl \
 		--disable-perl \
 		--disable-python \
-		--disable-static \
 		--program-prefix="" \
 	)
 	$(PATCH_LIBTOOL) $(RRDTOOL_BUILD_DIR)/libtool
