@@ -66,7 +66,7 @@ $(FLEX_BUILD_DIR)/.staged: $(FLEX_BUILD_DIR)/.built
 	$(MAKE) -C $(FLEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(FLEX_BUILD_DIR)/.staged
 
-libupnp-stage: $(LIBUPNP_BUILD_DIR)/.staged
+flex-stage: $(FLEX_BUILD_DIR)/.staged
 
 $(FLEX_IPK_DIR)/CONTROL/control:
 	@install -d $(FLEX_IPK_DIR)/CONTROL
