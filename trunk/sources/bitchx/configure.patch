@@ -1,5 +1,5 @@
---- builds/BitchX/Makefile.in	2003-04-10 18:09:04.000000000 -0700
-+++ builds/bitchx/Makefile.in	2005-03-21 15:17:10.000000000 -0800
+--- BitchX/Makefile.in	2003-04-10 18:09:04.000000000 -0700
++++ bitchx/Makefile.in	2005-03-21 15:17:10.000000000 -0800
 @@ -75,6 +75,7 @@
  # Set this to -g if you want to be able to debug the client, otherwise
  # use -O to have the compiler do some optimization instead.
