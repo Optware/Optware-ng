@@ -23,7 +23,7 @@ FFMPEG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ffmpeg
 #FFMPEG_SOURCE=ffmpeg-$(FFMPEG_VERSION).tar.gz
 FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
 FFMPEG_SVN_REV=5754
-FFMPEG_VERSION=0.4.9-r$(FFMPEG_SVN_REV)
+FFMPEG_VERSION=0.4.9+r$(FFMPEG_SVN_REV)
 FFMPEG_SOURCE=ffmpeg-svn-$(FFMPEG_SVN_REV).tar.gz
 FFMPEG_DIR=ffmpeg
 FFMPEG_UNZIP=zcat
@@ -38,7 +38,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION=2
+FFMPEG_IPK_VERSION=1
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -129,6 +129,7 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 		--cross-prefix=$(TARGET_CROSS) \
 		--cpu=mipsel \
 		--enable-shared \
+		--disable-static \
 		--prefix=/opt \
 	)
 	touch $(FFMPEG_BUILD_DIR)/.configured
