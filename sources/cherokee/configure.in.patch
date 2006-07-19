@@ -1,6 +1,51 @@
---- cherokee-0.4.26/configure.in	2005-09-19 09:44:21.000000000 -0700
-+++ cherokee/configure.in	2005-09-20 07:42:50.843066768 -0700
-@@ -600,15 +600,7 @@
+--- cherokee-0.5.4/configure.in	2006-07-11 18:08:14.000000000 +0200
++++ cherokee/configure.in	2006-07-19 13:35:19.000000000 +0200
+@@ -280,25 +280,25 @@
+ if test "x$have_epoll_include" = "xyes"; then
+  	AC_MSG_CHECKING(for epoll system call)
+ 
+-     AC_TRY_RUN([
+-		#include <stdint.h>
+-		#include <sys/param.h>
+-		#include <sys/types.h>
+-		#include <sys/syscall.h>
+-		#include <sys/epoll.h>
+-		#include <unistd.h>
+-
+-		int epoll_create (int size) {
+-	        return (syscall(__NR_epoll_create, size));
+-		}
+-	
+-		int main (int argc, char **argv) {
+-	        int epfd;
+-	        epfd = epoll_create(256);
+-	    	   exit (epfd == -1 ? 1 : 0);
+-		}
+-	], have_epoll=yes)
+-	AC_MSG_RESULT($have_epoll)
++#     AC_TRY_RUN([
++#		#include <stdint.h>
++#		#include <sys/param.h>
++#		#include <sys/types.h>
++#		#include <sys/syscall.h>
++#		#include <sys/epoll.h>
++#		#include <unistd.h>
++#
++#		int epoll_create (int size) {
++#	        return (syscall(__NR_epoll_create, size));
++#		}
++#	
++#		int main (int argc, char **argv) {
++#	        int epfd;
++#	        epfd = epoll_create(256);
++#	    	   exit (epfd == -1 ? 1 : 0);
++#		}
++#	], have_epoll=yes)
++	AC_MSG_RESULT(yes)
+ fi
+ 
+ dnl
+@@ -614,15 +614,7 @@
  
  # Is sendfile broken?
  AC_MSG_CHECKING(if sendfile works)
@@ -16,4 +61,4 @@
 +            AC_MSG_RESULT(yes)
  
  # readdir_r()
- PHP_READDIR_R_TYPE
+ LIBWWW_READDIR_R_TYPE
