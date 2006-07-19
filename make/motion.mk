@@ -41,7 +41,7 @@ MOTION_CONFLICTS=
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=4
+MOTION_IPK_VERSION=5
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
