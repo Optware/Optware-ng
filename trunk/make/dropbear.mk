@@ -3,12 +3,15 @@
 # dropbear
 #
 #############################################################
+#
+# $Id$
+#
 
 DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
-DROPBEAR_VERSION=0.47
-DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
+DROPBEAR_VERSION=0.48.1
+DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.gz
 DROPBEAR_DIR=dropbear-$(DROPBEAR_VERSION)
-DROPBEAR_UNZIP=bzcat
+DROPBEAR_UNZIP=zcat
 DROPBEAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DROPBEAR_DESCRIPTION=Lightweight SSH client and server system
 DROPBEAR_SECTION=net
