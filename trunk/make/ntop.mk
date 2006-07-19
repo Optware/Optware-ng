@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 NTOP_NAME=ntop
-NTOP_VERSION=3.1.50
-NTOP_CVS_OPTS=-D 20050817
+NTOP_VERSION=3.2.3
+NTOP_CVS_OPTS=-D 20060617
 NTOP_DIR=$(NTOP_NAME)
 # Tarball info
 NTOP_SITE=# none - available from CVS only
@@ -34,7 +34,7 @@ NTOP_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 NTOP_DESCRIPTION=Network monitoring software
 NTOP_SECTION=net
 NTOP_PRIORITY=optional
-NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2
+NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool
 
 # CVS info
 NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
@@ -43,7 +43,7 @@ NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=2
+NTOP_IPK_VERSION=1
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -54,8 +54,9 @@ NTOP_CONFFILES=
 # NTOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTOP_PATCHES=$(NTOP_SOURCE_DIR)/configure.patch
-#	$(NTOP_SOURCE_DIR)/ltconfig.patch
+NTOP_PATCHES=
+#      $(NTOP_SOURCE_DIR)/ltconfig.patch
+
 
 #
 # If the compilation of the package requires additional
@@ -132,7 +133,7 @@ ntop-source: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 # 
 $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
-	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage libgd-stage
+	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage libgd-stage rrdtool-stage
 #	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
 #	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(NTOP_PATCHES) | patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1
@@ -146,6 +147,7 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 		then mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR) ; \
 	fi
 	(cd $(NTOP_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NTOP_LDFLAGS)" \
@@ -160,9 +162,11 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 		--disable-ipv6 \
 		--prefix=/opt \
 		--disable-nls --disable-i18n \
+		--with-rrd-home=$(STAGING_DIR)/opt \
 	)
 	sed -i -e '/HAVE_LOCALE_H/d' -e '/HAVE_MALLINFO_MALLOC_H/d' \
 		$(NTOP_BUILD_DIR)/config.status
+	$(PATCH_LIBTOOL) $(NTOP_BUILD_DIR)/libtool
 	touch $(NTOP_BUILD_DIR)/.configured
 
 ntop-unpack: $(NTOP_BUILD_DIR)/.configured
