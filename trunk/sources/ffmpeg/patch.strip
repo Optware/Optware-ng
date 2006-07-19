@@ -1,39 +1,25 @@
-diff -Naur a/Makefile b/Makefile
---- a/Makefile	2005-02-13 03:53:06.000000000 +0000
-+++ b/Makefile	2005-02-13 05:12:51.000000000 +0000
-@@ -125,7 +125,8 @@
- 	$(MAKE) -C libavcodec install
- 	$(MAKE) -C libavformat install
+--- ffmpeg/common.mak.orig	2006-07-19 18:21:06.000000000 +0200
++++ ffmpeg/common.mak	2006-07-19 18:22:46.000000000 +0200
+@@ -64,8 +64,9 @@
+ ifeq ($(CONFIG_MINGW),yes)
+ 	install $(INSTALLSTRIP) -m 755 $(SLIBNAME) "$(prefix)"
+ else
+-	install $(INSTALLSTRIP) -m 755 $(SLIBNAME) \
++	install -m 755 $(SLIBNAME) \
+ 		$(libdir)/$(SLIBNAME_WITH_VERSION)
++	$(STRIP) $(libdir)/$(SLIBNAME_WITH_VERSION)
+ 	ln -sf $(SLIBNAME_WITH_VERSION) \
+ 		$(libdir)/$(SLIBNAME_WITH_MAJOR)
+ 	ln -sf $(SLIBNAME_WITH_VERSION) \
+--- ffmpeg/Makefile.orig	2006-07-19 18:27:55.000000000 +0200
++++ ffmpeg/Makefile	2006-07-19 18:30:35.000000000 +0200
+@@ -116,7 +116,8 @@
+ install-progs: $(PROGS)
+ endif
  	install -d "$(bindir)"
--	install -c -s -m 755 $(PROG) "$(bindir)"
-+	install -c -m 755 $(PROG) "$(bindir)"
-+	cd "$(bindir)"; $(STRIP) $(PROG)
+-	install -c $(INSTALLSTRIP) -m 755 $(PROGS) "$(bindir)"
++	install -c -m 755 $(PROGS) "$(bindir)"
++	cd "$(bindir)"; $(STRIP) $(PROGS)
  
  # create the window installer
  wininstaller: all install
-diff -Naur a/libavcodec/Makefile b/libavcodec/Makefile
---- a/libavcodec/Makefile	2005-02-13 05:49:41.000000000 +0000
-+++ b/libavcodec/Makefile	2005-02-13 05:57:53.000000000 +0000
-@@ -269,7 +269,8 @@
- 	install -s -m 755 $(SLIB) "$(prefix)"
- else
- 	install -d $(prefix)/lib
--	install -s -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
-+	install -m 755 $(SLIB) $(prefix)/lib/libavcodec-$(VERSION).so
-+	$(STRIP) $(prefix)/lib/libavcodec-$(VERSION).so
- 	ln -sf libavcodec-$(VERSION).so $(prefix)/lib/libavcodec.so
- 	ldconfig || true
- endif
-diff -Naur a/libavformat/Makefile b/libavformat/Makefile
---- a/libavformat/Makefile	2005-02-13 05:55:59.000000000 +0000
-+++ b/libavformat/Makefile	2005-02-13 05:55:17.000000000 +0000
-@@ -105,7 +105,8 @@
- 	install -s -m 755 $(SLIB) "$(prefix)"
- else
- 	install -d $(prefix)/lib
--	install -s -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
-+	install -m 755 $(SLIB) $(prefix)/lib/libavformat-$(VERSION).so
-+	$(STRIP) $(prefix)/lib/libavformat-$(VERSION).so
- 	ln -sf libavformat-$(VERSION).so $(prefix)/lib/libavformat.so
- 	ldconfig || true
- endif
