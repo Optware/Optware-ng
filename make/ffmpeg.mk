@@ -20,9 +20,12 @@
 # You should change all these variables to suit your package.
 #
 FFMPEG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ffmpeg
-FFMPEG_VERSION=0.4.9-pre1
-FFMPEG_SOURCE=ffmpeg-$(FFMPEG_VERSION).tar.gz
-FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)
+#FFMPEG_SOURCE=ffmpeg-$(FFMPEG_VERSION).tar.gz
+FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
+FFMPEG_SVN_REV=5754
+FFMPEG_VERSION=0.4.9-r$(FFMPEG_SVN_REV)
+FFMPEG_SOURCE=ffmpeg-svn-$(FFMPEG_SVN_REV).tar.gz
+FFMPEG_DIR=ffmpeg
 FFMPEG_UNZIP=zcat
 FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
@@ -72,8 +75,17 @@ FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_$(TARGET_
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+#$(DL_DIR)/$(FFMPEG_SOURCE):
+#	$(WGET) -P $(DL_DIR) $(FFMPEG_SITE)/$(FFMPEG_SOURCE)
+
 $(DL_DIR)/$(FFMPEG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FFMPEG_SITE)/$(FFMPEG_SOURCE)
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(FFMPEG_DIR) && \
+		svn co -r $(FFMPEG_SVN_REV) $(FFMPEG_SVN) && \
+		tar -czf $@ $(FFMPEG_DIR) && \
+		rm -rf $(FFMPEG_DIR) \
+	)
+
 
 #
 # The source code depends on it existing within the download directory.
@@ -101,23 +113,28 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR)
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(FFMPEG_PATCHES) | patch -d $(BUILD_DIR)/$(FFMPEG_DIR) -p1
-	mv $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR)
+	if test -n "$(FFMPEG_PATCHES)" ; \
+		then cat $(FFMPEG_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(FFMPEG_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(FFMPEG_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR) ; \
+	fi
 	(cd $(FFMPEG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FFMPEG_LDFLAGS)" \
 		./configure \
+		--cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--cpu=armv5b \
+		--cpu=mipsel \
 		--enable-shared \
 		--prefix=/opt \
-		--disable-nls \
 	)
 	touch $(FFMPEG_BUILD_DIR)/.configured
+#		--host=$(GNU_TARGET_NAME) \
+#		--target=$(GNU_TARGET_NAME) \
+#		--disable-nls \
 
 ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 
@@ -177,7 +194,9 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 #
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) install
+	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man \
+		bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt \
+		DESTDIR=$(FFMPEG_IPK_DIR)/opt install
 	$(MAKE) $(FFMPEG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FFMPEG_IPK_DIR)
 
