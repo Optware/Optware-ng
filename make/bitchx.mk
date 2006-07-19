@@ -40,7 +40,7 @@ BITCHX_DEPENDS=ncurses
 #
 # BITCHX_IPK_VERSION should be incremented when the ipk changes.
 #
-BITCHX_IPK_VERSION=1
+BITCHX_IPK_VERSION=2
 
 #
 # BITCHX_CONFFILES should be a list of user-editable files
@@ -50,7 +50,8 @@ BITCHX_IPK_VERSION=1
 # BITCHX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BITCHX_PATCHES=$(BITCHX_SOURCE_DIR)/configure.patch
+BITCHX_PATCHES=$(BITCHX_SOURCE_DIR)/configure.patch \
+		$(BITCHX_SOURCE_DIR)/static-clash.patch
 
 #
 # If the compilation of the package requires additional
@@ -106,7 +107,7 @@ $(BITCHX_BUILD_DIR)/.configured: $(DL_DIR)/$(BITCHX_SOURCE) $(BITCHX_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BITCHX_DIR) $(BITCHX_BUILD_DIR)
 	$(BITCHX_UNZIP) $(DL_DIR)/$(BITCHX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(BITCHX_PATCHES) | patch -d $(BUILD_DIR)/$(BITCHX_DIR) -p2
+	cat $(BITCHX_PATCHES) | patch -d $(BUILD_DIR)/$(BITCHX_DIR) -p1
 	mv $(BUILD_DIR)/$(BITCHX_DIR) $(BITCHX_BUILD_DIR)
 	(cd $(BITCHX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
