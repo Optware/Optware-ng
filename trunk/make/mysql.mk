@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MYSQL_SITE=ftp://ftp.orst.edu/pub/mysql/Downloads/MySQL-4.1
-MYSQL_VERSION=4.1.16
+MYSQL_VERSION=4.1.20
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
 MYSQL_UNZIP=zcat
@@ -41,7 +41,7 @@ MYSQL_CONFLICTS=
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=5
+MYSQL_IPK_VERSION=1
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -139,12 +139,16 @@ $(MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
 		--without-innodb \
 		--with-geometry \
 		--with-low-memory \
+		--enable-assembler \
 		&& \
 		sed -i -e 's!"/etc!"/opt/etc!g' \
 		*/default.c \
 		scripts/*.sh \
 	)
+#		--with-named-thread-libs=-lpthread \
+
 	cp $(MYSQL_SOURCE_DIR)/lex_hash.h $(MYSQL_BUILD_DIR)/sql
+	$(PATCH_LIBTOOL) $(MYSQL_BUILD_DIR)/libtool
 	touch $(MYSQL_BUILD_DIR)/.configured
 
 mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
