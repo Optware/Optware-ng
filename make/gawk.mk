@@ -20,15 +20,22 @@
 # You should change all these variables to suit your package.
 #
 GAWK_SITE=http://ftp.gnu.org/gnu/gawk
-GAWK_VERSION=3.1.4
+GAWK_VERSION=3.1.5
 GAWK_SOURCE=gawk-$(GAWK_VERSION).tar.gz
 GAWK_DIR=gawk-$(GAWK_VERSION)
 GAWK_UNZIP=zcat
+GAWK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+GAWK_DESCRIPTION=Gnu AWK interpreter
+GAWK_SECTION=util
+GAWK_PRIORITY=optional
+GAWK_DEPENDS=
+GAWK_SUGGESTS=
+GAWK_CONFLICTS=
 
 #
 # GAWK_IPK_VERSION should be incremented when the ipk changes.
 #
-GAWK_IPK_VERSION=2
+GAWK_IPK_VERSION=1
 
 #
 # GAWK_PATCHES should list any patches, in the the order in
@@ -56,7 +63,6 @@ GAWK_BUILD_DIR=$(BUILD_DIR)/gawk
 GAWK_SOURCE_DIR=$(SOURCE_DIR)/gawk
 GAWK_IPK_DIR=$(BUILD_DIR)/gawk-$(GAWK_VERSION)-ipk
 GAWK_IPK=$(BUILD_DIR)/gawk_$(GAWK_VERSION)-$(GAWK_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -139,6 +145,21 @@ $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
 
 gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
 
+$(GAWK_IPK_DIR)/CONTROL/control:
+	@install -d $(GAWK_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: gawk" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GAWK_PRIORITY)" >>$@
+	@echo "Section: $(GAWK_SECTION)" >>$@
+	@echo "Version: $(GAWK_VERSION)-$(GAWK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GAWK_MAINTAINER)" >>$@
+	@echo "Source: $(GAWK_SITE)/$(GAWK_SOURCE)" >>$@
+	@echo "Description: $(GAWK_DESCRIPTION)" >>$@
+	@echo "Depends: $(GAWK_DEPENDS)" >>$@
+	@echo "Suggests: $(GAWK_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GAWK_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -156,14 +177,13 @@ $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	install -d $(GAWK_IPK_DIR)/opt/bin
 	$(MAKE) -C $(GAWK_BUILD_DIR) DESTDIR=$(GAWK_IPK_DIR) install
 	rm -rf $(GAWK_IPK_DIR)/opt/{man,info}
-	rm -f $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.4
-	rm -f $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.4
+	rm -f $(GAWK_IPK_DIR)/opt/bin/gawk-3.1.5
+	rm -f $(GAWK_IPK_DIR)/opt/bin/pgawk-3.1.5
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/gawk
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/bin/pgawk
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/grcat
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/pwcat
-	install -d $(GAWK_IPK_DIR)/CONTROL
-	install -m 644 $(GAWK_SOURCE_DIR)/control $(GAWK_IPK_DIR)/CONTROL/control
+	$(MAKE) $(GAWK_IPK_DIR)/CONTROL/control
 #	install -m 644 $(GAWK_SOURCE_DIR)/postinst $(GAWK_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(GAWK_SOURCE_DIR)/prerm $(GAWK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAWK_IPK_DIR)
