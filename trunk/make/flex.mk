@@ -64,6 +64,11 @@ flex: $(FLEX_BUILD_DIR)/.built
 $(FLEX_BUILD_DIR)/.staged: $(FLEX_BUILD_DIR)/.built
 	rm -f $(FLEX_BUILD_DIR)/.staged
 	$(MAKE) -C $(FLEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+ifneq ($(HOSTCC), $(TARGET_CC)) # prevent PATH=staging/opt/bin problems
+	if test -x $(STAGING_DIR)/opt/bin/flex ;\
+		 then rm $(STAGING_DIR)/opt/bin/flex ;\
+	fi
+endif
 	touch $(FLEX_BUILD_DIR)/.staged
 
 flex-stage: $(FLEX_BUILD_DIR)/.staged
