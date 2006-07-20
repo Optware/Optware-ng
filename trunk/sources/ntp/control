@@ -1,9 +1,0 @@
-Package: ntp
-Priority: optional
-Version: 4.2.0-1
-Architecture: armeb
-Maintainer: Christopher <edmondsc@onid.ors.edu>
-Section: network
-Depends:
-Source: ftp://ftp.udel.edu/pub/ntp/ntp4/ntp-4.2.0.tar.gz
-Description: A time synchronization daemon which keeps your system time accurate.
