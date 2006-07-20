@@ -19,11 +19,19 @@
 #
 # You should change all these variables to suit your package.
 #
-NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/
-NTP_VERSION=4.2.0
+NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
+NTP_VERSION=4.2.2
 NTP_SOURCE=ntp-$(NTP_VERSION).tar.gz
 NTP_DIR=ntp-$(NTP_VERSION)
 NTP_UNZIP=zcat
+NTP_MAINTAINER=Christopher <edmondsc@onid.ors.edu>
+NTP_DESCRIPTION=A time synchronization daemon
+NTP_SECTION=net
+NTP_PRIORITY=optional
+NTP_DEPENDS=
+NTP_SUGGESTS=
+NTP_CONFLICTS=
+
 
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
@@ -120,6 +128,26 @@ $(NTP_BUILD_DIR)/ntpd/ntpd: $(NTP_BUILD_DIR)/.configured
 ntp: $(NTP_BUILD_DIR)/ntpd/ntpd
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/ntp
+#
+$(NTP_IPK_DIR)/CONTROL/control:
+	@install -d $(NTP_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: ntp" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NTP_PRIORITY)" >>$@
+	@echo "Section: $(NTP_SECTION)" >>$@
+	@echo "Version: $(NTP_VERSION)-$(NTP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NTP_MAINTAINER)" >>$@
+	@echo "Source: $(NTP_SITE)/$(NTP_SOURCE)" >>$@
+	@echo "Description: $(NTP_DESCRIPTION)" >>$@
+	@echo "Depends: $(NTP_DEPENDS)" >>$@
+	@echo "Suggests: $(NTP_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NTP_CONFLICTS)" >>$@
+
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(NTP_IPK_DIR)/opt/sbin or $(NTP_IPK_DIR)/opt/bin
@@ -145,8 +173,7 @@ $(NTP_IPK): $(NTP_BUILD_DIR)/ntpd/ntpd
 	install -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)/opt/etc/ntp/ntp.conf
 	install -d $(NTP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp
-	install -d $(NTP_IPK_DIR)/CONTROL
-	install -m 644 $(NTP_SOURCE_DIR)/control $(NTP_IPK_DIR)/CONTROL/control
+	$(MAKE) $(NTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(NTP_SOURCE_DIR)/postinst $(NTP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTP_IPK_DIR)
 
