@@ -1,20 +1,20 @@
 ###########################################################
 #
-# <foo>
+# asterisk
 #
 ###########################################################
 
-# You must replace "<foo>" and "<FOO>" with the lower case name and
+# You must replace "asterisk" and "ASTERISK" with the lower case name and
 # upper case name of your new package.  Some places below will say
 # "Do not change this" - that does not include this global change,
 # which must always be done to ensure we have unique names.
 
 #
-# <FOO>_VERSION, <FOO>_SITE and <FOO>_SOURCE define
+# ASTERISK_VERSION, ASTERISK_SITE and ASTERISK_SOURCE define
 # the upstream location of the source code for the package.
-# <FOO>_DIR is the directory which is created when the source
+# ASTERISK_DIR is the directory which is created when the source
 # archive is unpacked.
-# <FOO>_UNZIP is the command used to unzip the source.
+# ASTERISK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK_SITE=http://ftp.digium.com/pub/asterisk
-ASTERISK_VERSION=1.2.9.1
+ASTERISK_VERSION=1.2.10
 ASTERISK_SOURCE=asterisk-$(ASTERISK_VERSION).tar.gz
 ASTERISK_DIR=asterisk-$(ASTERISK_VERSION)
 ASTERISK_UNZIP=zcat
@@ -54,7 +54,13 @@ ASTERISK_CONFFILES=
 #
 ASTERISK_PATCHES=$(ASTERISK_SOURCE_DIR)/Makefile.patch \
 		$(ASTERISK_SOURCE_DIR)/editline.makelist.patch \
-		$(ASTERISK_SOURCE_DIR)/codecs.gsm.Makefile.patch
+		$(ASTERISK_SOURCE_DIR)/codecs.gsm.Makefile.patch \
+		$(ASTERISK_SOURCE_DIR)/asterisk.c.patch \
+		$(ASTERISK_SOURCE_DIR)/asterisk-1.2.10-dns.patch
+
+#		http://bugs.digium.com/view.php?id=5549
+
+
 
 #
 # If the compilation of the package requires additional
@@ -97,8 +103,19 @@ ifeq ($(OPTWARE_TARGET),ds101g)
 TARGET_PROC=ppc
 TARGET_SUB_PROC=
 else
+ifeq ($(OPTWARE_TARGET),wl500g)
+TARGET_PROC=mips1
+TARGET_SUB_PROC=
+else
 TARGET_PROC=arm
 TARGET_SUB_PROC=xscale
+endif
+endif
+
+ifeq ($(OPTWARE_TARGET),wl500g)
+ASTERISK_CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)/staging_dir
+else
+ASTERISK_CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)
 endif
 
 #
@@ -158,8 +175,8 @@ $(ASTERISK_BUILD_DIR)/.built: $(ASTERISK_BUILD_DIR)/.configured
 	$(MAKE) -C $(ASTERISK_BUILD_DIR) \
 	INSTALL_PREFIX=$(ASTERISK_INST_DIR) \
 	CROSS_COMPILE=$(TARGET_CROSS) \
-	CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)  \
-	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
+	CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
+	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin/ \
 	CROSS_ARCH=Linux \
 	CROSS_PROC=$(TARGET_PROC) \
 	SUB_PROC=$(TARGET_SUB_PROC) \
@@ -179,7 +196,7 @@ $(ASTERISK_BUILD_DIR)/.staged: $(ASTERISK_BUILD_DIR)/.built
 	$(MAKE) -C $(ASTERISK_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
 	INSTALL_PREFIX=$(ASTERISK_INST_DIR) \
 	CROSS_COMPILE=$(TARGET_CROSS) \
-	CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)  \
+	CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
 	CROSS_ARCH=Linux \
 	CROSS_PROC=$(TARGET_PROC) \
@@ -230,8 +247,8 @@ $(ASTERISK_IPK): $(ASTERISK_BUILD_DIR)/.built
 		ASTMANDIR=$(ASTERISK_MAN_DIR) \
 		ASTLIBDIR=$(ASTERISK_LIB_DIR) \
 		CROSS_COMPILE=$(TARGET_CROSS) \
-		CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)  \
-		CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
+		CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
+		CROSS_COMPILE_BIN=$(STAGING_DIR)/bin/ \
 		CROSS_ARCH=Linux \
 		CROSS_PROC=$(TARGET_PROC) \
 		SUB_PROC=$(TARGET_SUB_PROC) \
