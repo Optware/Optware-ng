@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FREETDS_SITE=ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable
-FREETDS_VERSION=0.63
+FREETDS_VERSION=0.64
 FREETDS_SOURCE=freetds-$(FREETDS_VERSION).tar.gz
 FREETDS_DIR=freetds-$(FREETDS_VERSION)
 FREETDS_UNZIP=zcat
