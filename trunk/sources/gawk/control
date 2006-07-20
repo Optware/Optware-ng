@@ -1,9 +1,0 @@
-Package: gawk
-Priority: optional
-Version: 3.1.4-2
-Architecture: armeb
-Depends: 
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: util
-Source: http://ftp.gnu.org/gnu/gawk/gawk-3.1.4.tar.gz
-Description: awk parsing language
