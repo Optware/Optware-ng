@@ -1,5 +1,5 @@
 --- buildroot.r15597/toolchain/uClibc/uClibc.config-locale	2006-07-14 01:15:53.000000000 +0200
-+++ buildroot/toolchain/uClibc/uClibc.config-locale	2006-07-17 16:04:51.000000000 +0200
++++ buildroot/toolchain/uClibc/uClibc.config-locale	2006-07-19 10:45:27.000000000 +0200
 @@ -32,11 +32,18 @@
  TARGET_ARCH="none"
  # ARCH_LITTLE_ENDIAN is not set
@@ -76,9 +76,3 @@
  UCLIBC_HAS_GNU_GETOPT=y
  
  #
-@@ -183,4 +195,4 @@
- # SUPPORT_LD_DEBUG_EARLY is not set
- WARNINGS="-Wall"
- # DOMULTI is not set
--# UCLIBC_MJN3_ONLY is not set
-+UCLIBC_MJN3_ONLY=y

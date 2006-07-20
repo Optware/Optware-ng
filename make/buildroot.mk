@@ -61,6 +61,33 @@ UCLIBC_CONFLICTS=buildroot
 #
 BUILDROOT_IPK_VERSION=1
 
+# Custom linux headers
+BUILDROOT_HEADERS_DIR=$(TOOL_BUILD_DIR)/buildroot/toolchain_build_$(TARGET_ARCH)
+
+# Oleg firmware for Asus Wireless routers
+HEADERS_OLEG_SITE=http://www.wlan-sat.com/boleo/optware
+HEADERS_OLEG_SOURCE=linux-libc-headers-oleg.tar.bz2
+HEADERS_OLEG_UNPACK_DIR=linux
+HEADERS_OLEG=LINUX_HEADERS_SOURCE=$(HEADERS_OLEG_SOURCE) \
+ LINUX_HEADERS_UNPACK_DIR=$(BUILDROOT_HEADERS_DIR)/$(HEADERS_OLEG_UNPACK_DIR)
+$(DL_DIR)/$(HEADERS_OLEG_SOURCE):
+	$(WGET) -P $(DL_DIR) $(HEADERS_OLEG_SITE)/$(HEADERS_OLEG_SOURCE)
+
+# DD-WRT firmware for various Broadcom based routers
+HEADERS_DD-WRT_SITE=http://www.wlan-sat.com/boleo/optware
+HEADERS_DD-WRT_SOURCE=linux-libc-headers-DD-WRT-v23.tar.bz2
+HEADERS_DD-WRT_UNPACK_DIR=linux.v23
+HEADERS_DD-WRT=LINUX_HEADERS_SOURCE=$(HEADERS_DD-WRT_SOURCE) \
+ LINUX_HEADERS_UNPACK_DIR=$(BUILDROOT_HEADERS_DIR)/$(HEADERS_DD-WRT_UNPACK_DIR) 
+$(DL_DIR)/$(HEADERS_DD-WRT_SOURCE):
+	$(WGET) -P $(DL_DIR) $(HEADERS_DD-WRT_SITE)/$(HEADERS_DD-WRT_SOURCE)
+
+BUILDROOT_HEADERS=$(DL_DIR)/$(HEADERS_OLEG_SOURCE) \
+		$(DL_DIR)/$(HEADERS_DD-WRT_SOURCE)
+
+# Select appropriate headers or leave empty for default
+BUILDROOT_CUSTOM_HEADERS=$(HEADERS_OLEG)
+
 #
 # BUILDROOT_CONFFILES should be a list of user-editable files
 # BUILDROOT_CONFFILES=/opt/etc/buildroot.conf /opt/etc/init.d/SXXbuildroot
@@ -140,7 +167,8 @@ buildroot-source uclibc-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHE
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHES)
+$(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
+	$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR)
 	$(BUILDROOT_UNZIP) $(DL_DIR)/$(BUILDROOT_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
@@ -171,9 +199,8 @@ buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
 #
 $(BUILDROOT_BUILD_DIR)/.built: $(BUILDROOT_BUILD_DIR)/.configured
 	rm -f $(BUILDROOT_BUILD_DIR)/.built
-	$(MAKE) -C $(BUILDROOT_BUILD_DIR)
+	$(MAKE) -C $(BUILDROOT_BUILD_DIR) $(BUILDROOT_CUSTOM_HEADERS)
 	touch $(BUILDROOT_BUILD_DIR)/.built
-
 
 #
 # This is the build convenience target.
@@ -241,7 +268,7 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(BUILDROOT_IPK_DIR) install-strip
 	install -d $(BUILDROOT_IPK_DIR)
 	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
-	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
+#	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
@@ -249,8 +276,8 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILDROOT_IPK_DIR)
 
 
-UCLIBC_LIBS=ld-uClibc libc libdl libgcc_s libm libnsl libpthread libresolv \
-		librt libutil libuClibc
+UCLIBC_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
+	libresolv  librt libutil libuClibc
 UCLIBC_LIBS_PATTERN=$(patsubst %,./opt/lib/%*so*,$(UCLIBC_LIBS))
 
 $(UCLIBC_IPK): $(BUILDROOT_BUILD_DIR)/.built
@@ -289,12 +316,17 @@ buildroot-clean uclibc-clean:
 buildroot-dirclean uclibc-dirclean:
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK)
 
+# Notes:
 #
-# create patches
+# Reconfiguring buildroot
+# cd buildroot ; make menuconfig
+# cp .config ../../sources/buildroot.config
+#
+# Create patches:
 # diff -u buildroot.r15597/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
 #  diff -u buildroot.r15597/toolchain/gcc/gcc-uclibc-3.x.mk buildroot/toolchain/gcc/gcc-uclibc-3.x.mk > ../sources/buildroot/gcc-uclibc-3.x.mk.patch 
 # rebuilding uClibc by hand:
-# rm -rf rm -rf toolchain_build_mipsel/uClibc-0.*
+# make uclibc-dirclean
 # make uclibc-configured 
 # make uclibc
 # make uclibc_target
@@ -304,11 +336,7 @@ buildroot-dirclean uclibc-dirclean:
 # make uclibc-dirclean
 # make uclibc-configured
 # manually add/change missing configs from buildroot/toolchain_build_mipsel/uClibc-0.9.28/.config
-# create diff to vanilla uClibc.conf 
+# create diff to vanilla uClibc.conf-locale
+# diff -u buildroot.r15597/toolchain/uClibc/uClibc.config-locale buildroot/toolchain/uClibc/uClibc.config-locale > ../sources/buildroot/uClibc.config-locale.patch
 # diff -u ../builds/buildroot-vanilla/toolchain/uClibc/uClibc.config buildroot/toolchain/uClibc/uClibc.config > ../sources/buildroot/uClibc.config.patch
-# same procedure for uClibc.config-locale
-#
-# Reconfiguring buildroot
-# cd builroodt ; make menuconfig
-# cp .config ../../sources/buildroot.config
 #
