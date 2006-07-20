@@ -20,10 +20,17 @@
 # You should change all these variables to suit your package.
 #
 ELINKS_SITE=http://elinks.or.cz/download
-ELINKS_VERSION=0.10.3
+ELINKS_VERSION=0.11.1
 ELINKS_SOURCE=elinks-$(ELINKS_VERSION).tar.gz
 ELINKS_DIR=elinks-$(ELINKS_VERSION)
 ELINKS_UNZIP=zcat
+ELINKS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+ELINKS_DESCRIPTION=Full-Featured Text WWW Browser
+ELINKS_SECTION=web
+ELINKS_PRIORITY=optional
+ELINKS_DEPENDS=openssl, zlib, bzip2, expat
+ELINKS_SUGGESTS=
+ELINKS_CONFLICTS=
 
 #
 # ELINKS_IPK_VERSION should be incremented when the ipk changes.
@@ -42,6 +49,9 @@ ELINKS_PATCHES=$(ELINKS_SOURCE_DIR)/configure.patch
 #
 ELINKS_CPPFLAGS=
 ELINKS_LDFLAGS=
+
+# Clear the follwing variable if preaty-print is favorable
+ELINKS_VERBOSE="V=1"
 
 #
 # ELINKS_BUILD_DIR is the directory in which the build is done.
@@ -90,7 +100,10 @@ $(ELINKS_BUILD_DIR)/.configured: $(DL_DIR)/$(ELINKS_SOURCE) $(ELINKS_PATCHES)
 	$(MAKE) zlib-stage bzip2-stage expat-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
 	$(ELINKS_UNZIP) $(DL_DIR)/$(ELINKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ELINKS_PATCHES) | patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1
+	if test -n "$(ELINKS_PATCHES)" ; \
+		then cat $(ELINKS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(ELINKS_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR)
 	(cd $(ELINKS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -114,7 +127,9 @@ elinks-unpack: $(ELINKS_BUILD_DIR)/.configured
 #
 $(ELINKS_BUILD_DIR)/.built: $(ELINKS_BUILD_DIR)/.configured
 	rm -f $(ELINKS_BUILD_DIR)/.built
-	$(MAKE) -C $(ELINKS_BUILD_DIR) C_INCLUDE_PATH=$(STAGING_INCLUDE_DIR)
+	$(TARGET_CONFIGURE_OPTS) \
+	$(MAKE) -C $(ELINKS_BUILD_DIR) \
+		C_INCLUDE_PATH=$(STAGING_INCLUDE_DIR) $(ELINKS_VERBOSE) 
 	touch $(ELINKS_BUILD_DIR)/.built
 
 #
@@ -127,10 +142,30 @@ elinks: $(ELINKS_BUILD_DIR)/.built
 #
 $(ELINKS_BUILD_DIR)/.staged: $(ELINKS_BUILD_DIR)/.built
 	rm -f $(ELINKS_BUILD_DIR)/.staged
-	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(TARGET_CONFIGURE_OPTS) \
+	$(MAKE) -C $(ELINKS_BUILD_DIR) 
+		DESTDIR=$(STAGING_DIR) $(ELINKS_VERBOSE) install
 	touch $(ELINKS_BUILD_DIR)/.staged
 
 elinks-stage: $(ELINKS_BUILD_DIR)/.staged
+
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(ELINKS_IPK_DIR)/CONTROL/control:
+	@install -d $(ELINKS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: elinks" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ELINKS_PRIORITY)" >>$@
+	@echo "Section: $(ELINKS_SECTION)" >>$@
+	@echo "Version: $(ELINKS_VERSION)-$(ELINKS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ELINKS_MAINTAINER)" >>$@
+	@echo "Source: $(ELINKS_SITE)/$(ELINKS_SOURCE)" >>$@
+	@echo "Description: $(ELINKS_DESCRIPTION)" >>$@
+	@echo "Depends: $(ELINKS_DEPENDS)" >>$@
+	@echo "Suggests: $(ELINKS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ELINKS_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -146,9 +181,10 @@ elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 #
 $(ELINKS_IPK): $(ELINKS_BUILD_DIR)/.built
 	rm -rf $(ELINKS_IPK_DIR) $(BUILD_DIR)/elinks_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(ELINKS_IPK_DIR) install
-	install -d $(ELINKS_IPK_DIR)/CONTROL
-	install -m 644 $(ELINKS_SOURCE_DIR)/control $(ELINKS_IPK_DIR)/CONTROL/control
+	$(TARGET_CONFIGURE_OPTS) \
+	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(ELINKS_IPK_DIR) \
+		$(ELINKS_VERBOSE) install
+	$(MAKE) $(ELINKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ELINKS_IPK_DIR)
 
 #
