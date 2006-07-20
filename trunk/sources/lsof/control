@@ -1,9 +1,0 @@
-Package: lsof
-Version: 4.74.dfsg.3-1
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Source: http://http.us.debian.org/debian/pool/main/l/lsof/lsof_4.74.dfsg.3.orig.tar.gz
-Section: admin
-Priority: optional
-Depends:
-Description: LiSt Open Files - a diagnostic tool.
