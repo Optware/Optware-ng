@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 READLINE_SITE=ftp://ftp.cwru.edu/pub/bash
-READLINE_VERSION=5.0
+READLINE_VERSION=5.1
 READLINE_SOURCE=readline-$(READLINE_VERSION).tar.gz
 READLINE_DIR=readline-$(READLINE_VERSION)
 READLINE_UNZIP=zcat
@@ -40,7 +40,7 @@ READLINE_DEPENDS=
 #
 # READLINE_IPK_VERSION should be incremented when the ipk changes.
 #
-READLINE_IPK_VERSION=2
+READLINE_IPK_VERSION=1
 
 #
 # READLINE_CONFFILES should be a list of user-editable files
