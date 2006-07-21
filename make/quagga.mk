@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QUAGGA_SITE=http://www.quagga.net/download
-QUAGGA_VERSION=0.99.1
+QUAGGA_VERSION=0.99.4
 QUAGGA_SOURCE=quagga-$(QUAGGA_VERSION).tar.gz
 QUAGGA_DIR=quagga-$(QUAGGA_VERSION)
 QUAGGA_UNZIP=zcat
@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=2
+QUAGGA_IPK_VERSION=1
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -52,14 +52,14 @@ QUAGGA_IPK_VERSION=2
 # QUAGGA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-QUAGGA_PATCHES=$(QUAGGA_SOURCE_DIR)/configure.ac.patch $(QUAGGA_SOURCE_DIR)/rt_netlink.patch
+QUAGGA_PATCHES=$(QUAGGA_SOURCE_DIR)/configure.ac.patch 
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 QUAGGA_CPPFLAGS=
-QUAGGA_LDFLAGS=
+QUAGGA_LDFLAGS=-lreadline -ltermcap
 
 #
 # QUAGGA_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +105,7 @@ quagga-source: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
-	$(MAKE) termcap-stage readline-stage
+	$(MAKE) readline-stage termcap-stage 
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1
