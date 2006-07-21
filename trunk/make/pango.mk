@@ -26,7 +26,7 @@ PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PANGO_IPK_VERSION=2
+PANGO_IPK_VERSION=3
 
 #
 # PANGO_LOCALES defines which locales get installed

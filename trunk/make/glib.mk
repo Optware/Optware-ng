@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 GLIB_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-GLIB_VERSION=2.6.4
+GLIB_VERSION=2.6.6
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.bz2
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=bzcat

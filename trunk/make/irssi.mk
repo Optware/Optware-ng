@@ -26,7 +26,7 @@ IRSSI_MODULE=irssi
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=1
+IRSSI_IPK_VERSION=2
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
