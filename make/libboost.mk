@@ -22,10 +22,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBBOOST_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/boost
-LIBBOOST_VERSION=1_32_0
-LIBBOOST_SOURCE=boost_$(LIBBOOST_VERSION).tar.gz
+LIBBOOST_VERSION=1_33_1
+LIBBOOST_SOURCE=boost_$(LIBBOOST_VERSION).tar.bz2
 LIBBOOST_DIR=boost_$(LIBBOOST_VERSION)
-LIBBOOST_UNZIP=zcat
+LIBBOOST_UNZIP=bzcat
 LIBBOOST_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBBOOST_DESCRIPTION=Describe libboost here.
 LIBBOOST_SECTION=misc
@@ -105,6 +105,13 @@ $(LIBBOOST_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBBOOST_SOURCE) $(LIBBOOST_PATCH
 	$(LIBBOOST_UNZIP) $(DL_DIR)/$(LIBBOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBBOOST_PATCHES) | patch -d $(BUILD_DIR)/$(LIBBOOST_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBBOOST_DIR) $(LIBBOOST_BUILD_DIR)
+	(cd $(LIBBOOST_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBBOOST_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(LIBBOOST_LDFLAGS)" \
+		./configure \
+		--prefix=/opt \
+	)
 	touch $(LIBBOOST_BUILD_DIR)/.configured
 
 libboost-unpack: $(LIBBOOST_BUILD_DIR)/.configured
@@ -192,13 +199,13 @@ $(LIBBOOST_IPK): $(LIBBOOST_BUILD_DIR)/.built
 	rm -rf $(LIBBOOST_IPK_DIR) $(BUILD_DIR)/libboost_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBBOOST_BUILD_DIR) DESTDIR=$(LIBBOOST_IPK_DIR) install
 	install -d $(LIBBOOST_IPK_DIR)/opt/etc/
-	install -m 644 $(LIBBOOST_SOURCE_DIR)/libboost.conf $(LIBBOOST_IPK_DIR)/opt/etc/libboost.conf
-	install -d $(LIBBOOST_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(LIBBOOST_SOURCE_DIR)/rc.libboost $(LIBBOOST_IPK_DIR)/opt/etc/init.d/SXXlibboost
+#	install -m 644 $(LIBBOOST_SOURCE_DIR)/libboost.conf $(LIBBOOST_IPK_DIR)/opt/etc/libboost.conf
+#	install -d $(LIBBOOST_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(LIBBOOST_SOURCE_DIR)/rc.libboost $(LIBBOOST_IPK_DIR)/opt/etc/init.d/SXXlibboost
 	$(MAKE) $(LIBBOOST_IPK_DIR)/CONTROL/control
-	install -m 755 $(LIBBOOST_SOURCE_DIR)/postinst $(LIBBOOST_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(LIBBOOST_SOURCE_DIR)/prerm $(LIBBOOST_IPK_DIR)/CONTROL/prerm
-	echo $(LIBBOOST_CONFFILES) | sed -e 's/ /\n/g' > $(LIBBOOST_IPK_DIR)/CONTROL/conffiles
+#	install -m 755 $(LIBBOOST_SOURCE_DIR)/postinst $(LIBBOOST_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(LIBBOOST_SOURCE_DIR)/prerm $(LIBBOOST_IPK_DIR)/CONTROL/prerm
+#	echo $(LIBBOOST_CONFFILES) | sed -e 's/ /\n/g' > $(LIBBOOST_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBBOOST_IPK_DIR)
 
 #
