@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://ftp.gnu.org/pub/gnu/mc
-MC_VERSION=4.1.35
+MC_VERSION=4.5.55
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -13,7 +13,7 @@ MC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MC_DESCRIPTION=Midnight Commander File Manager
 MC_SECTION=utilities
 MC_PRIORITY=optional
-MC_DEPENDS=ncurses
+MC_DEPENDS=ncurses, glib
 MC_CONFLICTS=
 
 #
@@ -35,9 +35,12 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MC_CPPFLAGS=
-MC_LDFLAGS=
-
+#  When not cross compiling one should use pkg-config
+#  PKG_CONFIG_LIBDIR=staging/opt/lib/pkgconfig pkg-config --libs glib-2.0
+#
+MC_CPPFLAGS=-I$(STAGING_DIR)/opt/include/glib-2.0 \
+	-I$(STAGING_DIR)/opt/lib/glib-2.0/include
+MC_LDFLAGS=-lglib-2.0
 #
 # MC_BUILD_DIR is the directory in which the build is done.
 # MC_SOURCE_DIR is the directory which holds all the
@@ -83,6 +86,7 @@ mc-source: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 #
 $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
+	$(MAKE) glib-stage
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MC_PATCHES)" ; \
 		then cat $(MC_PATCHES) | \
@@ -93,12 +97,14 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MC_LDFLAGS)" \
+		ac_cv_path_GLIB_CONFIG=y\
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--disable-glibtest \
 	)
 	touch $(MC_BUILD_DIR)/.configured
 
@@ -110,6 +116,7 @@ mc-unpack: $(MC_BUILD_DIR)/.configured
 #
 $(MC_BUILD_DIR)/src/mc: $(MC_BUILD_DIR)/.configured
 	rm -f $(MC_BUILD_DIR)/src/mc
+	$(TARGET_CONFIGURE_OPTS)\
 	$(MAKE) -C $(MC_BUILD_DIR)
 
 #
