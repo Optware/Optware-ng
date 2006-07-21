@@ -57,7 +57,7 @@ SNOWNEWS_PATCHES=$(SNOWNEWS_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
-SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm
+SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lintl
 
 #
 # SNOWNEWS_BUILD_DIR is the directory in which the build is done.
