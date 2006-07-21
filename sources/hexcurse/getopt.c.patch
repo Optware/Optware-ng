@@ -1,0 +1,11 @@
+--- hexcurse/src/getopt.c.orig	2006-07-21 09:58:39.000000000 +0200
++++ hexcurse/src/getopt.c	2006-07-21 09:58:49.000000000 +0200
+@@ -37,7 +37,7 @@
+ #ifdef _SGIAPI
+ #include <alloca.h>
+ #else
+-char *alloca ();
++void *alloca ();
+ #endif
+ #define __alloca      alloca
+ /* end of modification */

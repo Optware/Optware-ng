@@ -38,7 +38,7 @@ HEXCURSE_CONFLICTS=
 #
 # HEXCURSE_IPK_VERSION should be incremented when the ipk changes.
 #
-HEXCURSE_IPK_VERSION=1
+HEXCURSE_IPK_VERSION=2
 
 #
 # HEXCURSE_CONFFILES should be a list of user-editable files
@@ -48,7 +48,7 @@ HEXCURSE_IPK_VERSION=1
 # HEXCURSE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HEXCURSE_PATCHES=$(HEXCURSE_SOURCE_DIR)/configure.patch
+HEXCURSE_PATCHES=$(HEXCURSE_SOURCE_DIR)/getopt.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +104,7 @@ $(HEXCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(HEXCURSE_SOURCE) $(HEXCURSE_PATCH
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR)
 	$(HEXCURSE_UNZIP) $(DL_DIR)/$(HEXCURSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(HEXCURSE_PATCHES) | patch -d $(BUILD_DIR)/$(HEXCURSE_DIR) -p1
+	cat $(HEXCURSE_PATCHES) | patch -d $(BUILD_DIR)/$(HEXCURSE_DIR) -p1
 	mv $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR)
 	(cd $(HEXCURSE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
