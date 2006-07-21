@@ -42,7 +42,7 @@ TETHEREAL_CONFLICTS=
 #
 # TETHEREAL_IPK_VERSION should be incremented when the ipk changes.
 #
-TETHEREAL_IPK_VERSION=1
+TETHEREAL_IPK_VERSION=2
 
 #
 # TETHEREAL_CONFFILES should be a list of user-editable files

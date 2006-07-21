@@ -35,7 +35,7 @@ GIFTCURS_CONFLICTS=
 #
 # GIFTCURS_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFTCURS_IPK_VERSION=1
+GIFTCURS_IPK_VERSION=2
 
 #
 # GIFTCURS_CONFFILES should be a list of user-editable files
