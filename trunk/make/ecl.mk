@@ -32,7 +32,7 @@ ECL_SOURCE=ecl-$(ECL_VERSION).tgz
 ECL_DIR=ecl-$(ECL_VERSION)
 ECL_UNZIP=zcat
 ECL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-ECL_DESCRIPTION=Embeddable Common-Lisp.
+ECL_DESCRIPTION=Embeddable Common-Lisp
 ECL_SECTION=lang
 ECL_PRIORITY=optional
 ECL_DEPENDS=
@@ -42,7 +42,7 @@ ECL_CONFLICTS=
 #
 # ECL_IPK_VERSION should be incremented when the ipk changes.
 #
-ECL_IPK_VERSION=1
+ECL_IPK_VERSION=2
 
 #
 # ECL_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ ECL_IPK_VERSION=1
 # ECL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ECL_PATCHES=$(ECL_SOURCE_DIR)/configure.patch
+ECL_PATCHES=$(ECL_SOURCE_DIR)/gc-os_dep.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -134,7 +134,7 @@ $(ECL_BUILD_DIR)/.configured: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES) $(ECL_HOST_
 	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR)
 	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ECL_PATCHES)" ; then \
-		cat $(ECL_PATCHES) | patch -d $(BUILD_DIR)/$(ECL_DIR) -p0 ; \
+		cat $(ECL_PATCHES) | patch -d $(BUILD_DIR)/$(ECL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ECL_DIR)" != "$(ECL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ECL_DIR) $(ECL_BUILD_DIR) ; \
