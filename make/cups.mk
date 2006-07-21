@@ -1,4 +1,3 @@
-                                                                                                                                                                                                                                                               
 ###########################################################
 #
 # cups
@@ -20,20 +19,15 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.1.23
+CUPS_VERSION=1.2.2
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
-CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.gz
+CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
-CUPS_UNZIP=zcat
+CUPS_UNZIP=bzcat
 CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=Printing
 CUPS_PRIORITY=optional
-ifeq ($(OPTWARE_TARGET),wl500g)
-CUPS_DEPENDS=openssl, zlib, libpng, libjpeg
-else
-CUPS_DEPENDS=openssl, zlib, libpng, libjpeg, libtiff
-endif
 
 CUPS_SUGGESTS=
 CUPS_CONFLICTS=
@@ -41,31 +35,12 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=6
+CUPS_IPK_VERSION=1
 
-CUPS_DOC_IPK_VERSION=2
-CUPS_DOC_DEPENDS=
-CUPS_DOC_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
-
-CUPS_DOC_BE_IPK_VERSION=2
-CUPS_DOC_BE_DEPENDS=
-CUPS_DOC_BE_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
-CUPS_DOC_BE_DESCRIPTION=Belarus documentation for CUPS
-
-CUPS_DOC_FR_IPK_VERSION=2
-CUPS_DOC_FR_DEPENDS=
-CUPS_DOC_FR_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
 CUPS_DOC_FR_DESCRIPTION=French documentation for CUPS
-
-CUPS_DOC_ES_IPK_VERSION=2
-CUPS_DOC_ES_DEPENDS=
-CUPS_DOC_ES_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DOC_ES_DESCRIPTION=Spanish documentation for CUPS
-
-CUPS_DOC_DE_IPK_VERSION=2
-CUPS_DOC_DE_DEPENDS=
-CUPS_DOC_DE_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DOC_DE_DESCRIPTION=German documentation for CUPS
 
 #
@@ -76,7 +51,7 @@ CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 # CUPS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CUPS_PATCHES=
+CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -99,10 +74,10 @@ CUPS_SOURCE_DIR=$(SOURCE_DIR)/cups
 CUPS_IPK_DIR=$(BUILD_DIR)/cups-$(CUPS_VERSION)-ipk
 CUPS_IPK=$(BUILD_DIR)/cups_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CUPS_DOC_IPK=$(BUILD_DIR)/cups-doc_$(CUPS_VERSION)-$(CUPS_DOC_IPK_VERSION)_$(TARGET_ARCH).ipk
-CUPS_DOC_FR_IPK=$(BUILD_DIR)/cups-doc-fr_$(CUPS_VERSION)-$(CUPS_DOC_FR_IPK_VERSION)_$(TARGET_ARCH).ipk
-CUPS_DOC_ES_IPK=$(BUILD_DIR)/cups-doc-es_$(CUPS_VERSION)-$(CUPS_DOC_ES_IPK_VERSION)_$(TARGET_ARCH).ipk
-CUPS_DOC_BE_IPK=$(BUILD_DIR)/cups-doc-be_$(CUPS_VERSION)-$(CUPS_DOC_BE_IPK_VERSION)_$(TARGET_ARCH).ipk
-CUPS_DOC_DE_IPK=$(BUILD_DIR)/cups-doc-de_$(CUPS_VERSION)-$(CUPS_DOC_DE_IPK_VERSION)_$(TARGET_ARCH).ipk
+CUPS_DOC_FR_IPK=$(BUILD_DIR)/cups-doc-fr_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+CUPS_DOC_ES_IPK=$(BUILD_DIR)/cups-doc-es_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+CUPS_DOC_PL_IPK=$(BUILD_DIR)/cups-doc-pl_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+CUPS_DOC_DE_IPK=$(BUILD_DIR)/cups-doc-de_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -134,15 +109,17 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
-ifeq ($(OPTWARE_TARGET),wl500g)
-	$(MAKE) openssl-stage zlib-stage libpng-stage libjpeg-stage
-else
-	$(MAKE) openssl-stage zlib-stage libpng-stage libjpeg-stage libtiff-stage
-endif
+	$(MAKE) openssl-stage zlib-stage libpng-stage
+	$(MAKE) libjpeg-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CUPS_PATCHES) | patch -d $(BUILD_DIR)/$(CUPS_DIR) -p1
-	mv $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR)
+	if test -n "$(CUPS_PATCHES)" ; \
+		then cat $(CUPS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(CUPS_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(CUPS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR) ; \
+	fi
 	(cd $(CUPS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CUPS_CPPFLAGS)" \
@@ -157,9 +134,7 @@ endif
 		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
 		--with-openssl-includes=$(STAGING_DIR)/opt/include \
 	)
-ifeq ($(OPTWARE_TARGET),wl500g)
-	sed -ie 's/pdftops//' $(CUPS_BUILD_DIR)/Makefile
-endif
+
 	touch $(CUPS_BUILD_DIR)/.configured
 
 cups-unpack: $(CUPS_BUILD_DIR)/.configured
@@ -170,12 +145,17 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 #
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $(CUPS_BUILD_DIR)/.built
-	$(MAKE) -C $(CUPS_BUILD_DIR) LDFLAGS="$(STAGING_LDFLAGS) -L../cups -L../filter $(RC_CFLAGS) -L/home/edmondsc/unslung/staging/opt/lib -Wl,-rpath,$(STAGING_DIR)/opt/lib -Wl,-rpath,/opt/lib $(OPTIM)"
-	$(MAKE) install -C $(CUPS_BUILD_DIR) BUILDROOT=$(CUPS_BUILD_DIR)/install/ INSTALL_BIN="install -m 755"
-	# Remove cat files from man page areas
-	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/cat?
-	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/es/cat?
-	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/fr/cat?
+	$(MAKE) -C $(CUPS_BUILD_DIR) LDFLAGS="$(STAGING_LDFLAGS) \
+		-L../cups -L../filter $(RC_CFLAGS) \
+		-L/home/edmondsc/unslung/staging/opt/lib \
+		-Wl,-rpath,$(STAGING_DIR)/opt/lib \
+		-Wl,-rpath,/opt/lib $(OPTIM)"
+	$(MAKE) install -C $(CUPS_BUILD_DIR) \
+	BUILDROOT=$(CUPS_BUILD_DIR)/install/ INSTALL_BIN="install -m 755"
+# 	Remove cat files from man page areas
+#	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/cat?
+#	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/es/cat?
+#	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/fr/cat?
 	touch $(CUPS_BUILD_DIR)/.built
 
 #
@@ -190,14 +170,20 @@ cups: $(CUPS_BUILD_DIR)/.built
 $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION): $(CUPS_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include/cups
 	install -d $(STAGING_DIR)/opt/include/filter
-	install -m 644 $(CUPS_BUILD_DIR)/cups/*.h $(STAGING_DIR)/opt/include/cups
-	install -m 644 $(CUPS_BUILD_DIR)/filter/*.h $(STAGING_DIR)/opt/include/cups
+	install -m 644 $(CUPS_BUILD_DIR)/cups/*.h \
+		$(STAGING_DIR)/opt/include/cups
+	install -m 644 $(CUPS_BUILD_DIR)/filter/*.h \
+		$(STAGING_DIR)/opt/include/cups
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config $(STAGING_DIR)/opt/bin
-	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a $(STAGING_DIR)/opt/lib
+	install -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config \
+		$(STAGING_DIR)/opt/bin
+	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a \
+		$(STAGING_DIR)/opt/lib
 	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.so.2 $(STAGING_DIR)/opt/lib
-	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.so.2 $(STAGING_DIR)/opt/lib
+	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.so.2 \
+		$(STAGING_DIR)/opt/lib
+	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.so.2 \
+		$(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcupsimage.so.2 libcupsimage.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so
@@ -232,25 +218,25 @@ $(CUPS_IPK_DIR)-doc/CONTROL/control:
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
 	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(CUPS_DOC_MAINTAINER)" >>$@
+	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
 	@echo "Description: $(CUPS_DOC_DESCRIPTION)" >>$@
-	@echo "Depends: $(CUPS_DOC_DEPENDS)" >>$@
+	@echo "Depends: $(CUPS_DEPENDS)" >>$@
 	@echo "Suggests: $(CUPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
-$(CUPS_IPK_DIR)-doc-be/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)-doc-be/CONTROL
+$(CUPS_IPK_DIR)-doc-pl/CONTROL/control:
+	@install -d $(CUPS_IPK_DIR)-doc-pl/CONTROL
 	@rm -f $@
-	@echo "Package: cups-doc-be" >>$@
+	@echo "Package: cups-doc-pl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
-	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_BE_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(CUPS_DOC_BE_MAINTAINER)" >>$@
+	@echo "Version: $(CUPS_VERSION)-$(CUPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
-	@echo "Description: $(CUPS_DOC_BE_DESCRIPTION)" >>$@
-	@echo "Depends: $(CUPS_DOC_BE_DEPENDS)" >>$@
+	@echo "Description: $(CUPS_DOC_PL_DESCRIPTION)" >>$@
+	@echo "Depends: $(CUPS_DEPENDS)" >>$@
 	@echo "Suggests: $(CUPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
@@ -261,11 +247,11 @@ $(CUPS_IPK_DIR)-doc-de/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
-	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_DE_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(CUPS_DOC_DE_MAINTAINER)" >>$@
+	@echo "Version: $(CUPS_VERSION)-$(CUPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
 	@echo "Description: $(CUPS_DOC_DE_DESCRIPTION)" >>$@
-	@echo "Depends: $(CUPS_DOC_DE_DEPENDS)" >>$@
+	@echo "Depends: $(CUPS_DEPENDS)" >>$@
 	@echo "Suggests: $(CUPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
@@ -276,11 +262,11 @@ $(CUPS_IPK_DIR)-doc-es/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
-	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_ES_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(CUPS_DOC_ES_MAINTAINER)" >>$@
+	@echo "Version: $(CUPS_VERSION)-$(CUPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
 	@echo "Description: $(CUPS_DOC_ES_DESCRIPTION)" >>$@
-	@echo "Depends: $(CUPS_DOC_ES_DEPENDS)" >>$@
+	@echo "Depends: $(CUPS_DEPENDS)" >>$@
 	@echo "Suggests: $(CUPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
@@ -291,11 +277,11 @@ $(CUPS_IPK_DIR)-doc-fr/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
-	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_FR_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(CUPS_DOC_FR_MAINTAINER)" >>$@
+	@echo "Version: $(CUPS_VERSION)-$(CUPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
 	@echo "Description: $(CUPS_DOC_FR_DESCRIPTION)" >>$@
-	@echo "Depends: $(CUPS_DOC_FR_DEPENDS)" >>$@
+	@echo "Depends: $(CUPS_DEPENDS)" >>$@
 	@echo "Suggests: $(CUPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
@@ -314,14 +300,14 @@ $(CUPS_IPK_DIR)-doc-fr/CONTROL/control:
 $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	rm -rf $(CUPS_IPK_DIR) $(BUILD_DIR)/cups_*_$(TARGET_ARCH).ipk
 	install -d $(CUPS_IPK_DIR)
-	# Make sure /opt/var/spool has correct permissions
+# Make sure /opt/var/spool has correct permissions
 	install -m 0755 -d $(CUPS_IPK_DIR)/opt/var/spool
 	cp -rf $(CUPS_BUILD_DIR)/install/* $(CUPS_IPK_DIR)
 	rm -f $(CUPS_IPK_DIR)/opt/lib/*.a
 	rm -rf $(CUPS_IPK_DIR)/etc
 	rm -rf $(CUPS_IPK_DIR)/opt/share/doc/cups
 	rm -rf $(CUPS_IPK_DIR)/opt/man
-	# Create binary directories
+# Create binary directories
 	install -d $(CUPS_IPK_DIR)/opt/sbin
 	install -d $(CUPS_IPK_DIR)/opt/bin
 	install -d $(CUPS_IPK_DIR)/opt/doc/cups
@@ -330,44 +316,52 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
 	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
-	# Copy the configuration file
+# Copy the configuration file
 	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)/opt/etc/cups
-        # Copy the init.d startup file
+# Copy the init.d startup file
 	install -m 755 $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)/opt/doc/cups
-	# Copy lpd startup files
-	install -m 755 $(CUPS_SOURCE_DIR)/S89cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
-	install -m 755 $(CUPS_SOURCE_DIR)/rc.xinetd.linksys $(CUPS_IPK_DIR)/opt/doc/cups
-	install -m 644 $(CUPS_SOURCE_DIR)/cups-install.doc $(CUPS_IPK_DIR)/opt/doc/cups
+# Copy lpd startup files
+	install -m 755 $(CUPS_SOURCE_DIR)/S89cups-lpd \
+		$(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 755 $(CUPS_SOURCE_DIR)/rc.xinetd.linksys \
+		$(CUPS_IPK_DIR)/opt/doc/cups
+	install -m 644 $(CUPS_SOURCE_DIR)/cups-install.doc \
+		$(CUPS_IPK_DIR)/opt/doc/cups
 	install -m 755 $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
 	install -m 755 $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
-	# Install printer module
+# Install printer module
 	cp $(CUPS_SOURCE_DIR)/printer.o $(CUPS_IPK_DIR)/opt/lib/modules
 	$(MAKE) $(CUPS_IPK_DIR)/CONTROL/control
 #	install -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
-	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
+	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > \
+		$(CUPS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)
 
 $(CUPS_DOC_DE_IPK): $(CUPS_BUILD_DIR)/.built
 	# German
-	rm -rf $(CUPS_IPK_DIR)-doc-de $(BUILD_DIR)/cups-doc-de_*_$(TARGET_ARCH).ipk
+	rm -rf $(CUPS_IPK_DIR)-doc-de \
+		$(BUILD_DIR)/cups-doc-de_*_$(TARGET_ARCH).ipk
 	install -d $(CUPS_IPK_DIR)-doc-de
 	install -d $(CUPS_IPK_DIR)-doc-de/opt/share/doc/cups/de
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/de $(CUPS_IPK_DIR)-doc-de/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/de \
+		$(CUPS_IPK_DIR)-doc-de/opt/share/doc/cups
 	$(MAKE) $(CUPS_IPK_DIR)-doc-de/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-de
 
-$(CUPS_DOC_BE_IPK): $(CUPS_BUILD_DIR)/.built
-	# Belarusian
-	rm -rf $(CUPS_IPK_DIR)-doc-be $(BUILD_DIR)/cups-doc-be_*_$(TARGET_ARCH).ipk
-	install -d $(CUPS_IPK_DIR)-doc-be
-	install -d $(CUPS_IPK_DIR)-doc-be/opt/share/doc/cups/be
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/be $(CUPS_IPK_DIR)-doc-be/opt/share/doc/cups
-	$(MAKE) $(CUPS_IPK_DIR)-doc-be/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-be
+$(CUPS_DOC_PL_IPK): $(CUPS_BUILD_DIR)/.built
+	# Polish
+	rm -rf $(CUPS_IPK_DIR)-doc-pl \
+		$(BUILD_DIR)/cups-doc-pl_*_$(TARGET_ARCH).ipk
+	install -d $(CUPS_IPK_DIR)-doc-pl
+	install -d $(CUPS_IPK_DIR)-doc-pl/opt/share/doc/cups/pl
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/pl \
+		$(CUPS_IPK_DIR)-doc-pl/opt/share/doc/cups
+	$(MAKE) $(CUPS_IPK_DIR)-doc-pl/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-pl
 
 $(CUPS_DOC_FR_IPK): $(CUPS_BUILD_DIR)/.built
 	# French
@@ -375,19 +369,22 @@ $(CUPS_DOC_FR_IPK): $(CUPS_BUILD_DIR)/.built
 	install -d $(CUPS_IPK_DIR)-doc-fr
 	install -d $(CUPS_IPK_DIR)-doc-fr/opt/share/doc/cups/fr
 	install -d $(CUPS_IPK_DIR)-doc-fr/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/fr $(CUPS_IPK_DIR)-doc-fr/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/fr $(CUPS_IPK_DIR)-doc-fr/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man $(CUPS_IPK_DIR)-doc-fr/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/fr \
+		$(CUPS_IPK_DIR)-doc-fr/opt/share/doc/cups
 	$(MAKE) $(CUPS_IPK_DIR)-doc-fr/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-fr
 
 $(CUPS_DOC_ES_IPK): $(CUPS_BUILD_DIR)/.built
 	# Spanish
-	rm -rf $(CUPS_IPK_DIR)-doc-es $(BUILD_DIR)/cups-doc-es_*_$(TARGET_ARCH).ipk
+	rm -rf $(CUPS_IPK_DIR)-doc-es \
+		$(BUILD_DIR)/cups-doc-es_*_$(TARGET_ARCH).ipk
 	install -d $(CUPS_IPK_DIR)-doc-es
 	install -d $(CUPS_IPK_DIR)-doc-es/opt/share/doc/cups/es
-	install -d $(CUPS_IPK_DIR)-doc-es/opt/man/es
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/es $(CUPS_IPK_DIR)-doc-es/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/es $(CUPS_IPK_DIR)-doc-es/opt/share/doc/cups
+	install -d $(CUPS_IPK_DIR)-doc-es/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man $(CUPS_IPK_DIR)-doc-es/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/es \
+		$(CUPS_IPK_DIR)-doc-es/opt/share/doc/cups
 	$(MAKE) $(CUPS_IPK_DIR)-doc-es/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc-es
 
@@ -397,21 +394,30 @@ $(CUPS_DOC_IPK): $(CUPS_BUILD_DIR)/.built
 	install -d $(CUPS_IPK_DIR)-doc
 	install -d $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
 	install -d $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man1 $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man5 $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man8 $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.css $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.html $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.pdf $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.txt $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/images $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man1 \
+		$(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man5 \
+		$(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man8 \
+		$(CUPS_IPK_DIR)-doc/opt/man
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.css \
+		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.*html \
+		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+#	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.pdf \
+#		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.txt \
+		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/images \
+		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
 	$(MAKE) $(CUPS_IPK_DIR)-doc/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-cups-ipk: $(CUPS_IPK) $(CUPS_DOC_IPK) $(CUPS_DOC_DE_IPK) $(CUPS_DOC_FR_IPK) $(CUPS_DOC_ES_IPK) $(CUPS_DOC_BE_IPK)
+cups-ipk: $(CUPS_IPK) $(CUPS_DOC_IPK)  $(CUPS_DOC_DE_IPK)  \
+		$(CUPS_DOC_ES_IPK) $(CUPS_DOC_DE_IPK) 
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -424,7 +430,10 @@ cups-clean:
 # directories.
 #
 cups-dirclean:
-	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR) $(CUPS_IPK_DIR) $(CUPS_IPK) \
-		$(CUPS_DOC_IPK) $(CUPS_DOC_DE_IPK) $(CUPS_DOC_FR_IPK) $(CUPS_DOC_ES_IPK) $(CUPS_DOC_BE_IPK) \
-		$(CUPS_IPK_DIR)-doc $(CUPS_IPK_DIR)-doc-de $(CUPS_IPK_DIR)-doc-fr $(CUPS_IPK_DIR)-doc-es \
-		$(CUPS_IPK_DIR)-doc-be
+	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR) \
+		$(CUPS_IPK_DIR) $(CUPS_IPK) \
+		$(CUPS_DOC_IPK) $(CUPS_DOC_DE_IPK) $(CUPS_DOC_FR_IPK)\
+		$(CUPS_DOC_ES_IPK) $(CUPS_DOC_PL_IPK) \
+		$(CUPS_IPK_DIR)-doc $(CUPS_IPK_DIR)-doc-de \
+		$(CUPS_IPK_DIR)-doc-fr $(CUPS_IPK_DIR)-doc-es \
+		$(CUPS_IPK_DIR)-doc-pl
