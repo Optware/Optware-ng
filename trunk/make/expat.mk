@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 EXPAT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/expat
-EXPAT_VERSION=1.95.8
+EXPAT_VERSION=2.0.0
 EXPAT_SOURCE=expat-$(EXPAT_VERSION).tar.gz
 EXPAT_DIR=expat-$(EXPAT_VERSION)
 EXPAT_UNZIP=zcat
@@ -105,12 +105,13 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
 		--disable-static \
+		--prefix=/opt \
 		--disable-nls \
 	)
 	$(PATCH_LIBTOOL) $(EXPAT_BUILD_DIR)/libtool
 	touch $(EXPAT_BUILD_DIR)/.configured
+
 
 expat-unpack: $(EXPAT_BUILD_DIR)/.configured
 
