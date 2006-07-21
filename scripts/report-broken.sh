@@ -9,9 +9,11 @@ i=0
 NL="\\\\\\n"
 
 for package in ${PACKAGES} ; do
+	echo "####### >>>  Building ${package}"
 	make ${package}-ipk
 	status=$?
 	if [ ${status} != 0 ]; then
+		echo "%%%%%%% ${package} Error ${status}"
 		BROKEN="${BROKEN} ${package}"
 		i=$((${i}+1))
 		if [ ${i} = 7 ]; then
