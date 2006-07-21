@@ -37,7 +37,7 @@ GIT-CORE_CONFLICTS=
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=1
+GIT-CORE_IPK_VERSION=2
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
@@ -47,7 +47,8 @@ GIT-CORE_IPK_VERSION=1
 # GIT-CORE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GIT-CORE_PATCHES=$(GIT-CORE_SOURCE_DIR)/Makefile.patch
+GIT-CORE_PATCHES=$(GIT-CORE_SOURCE_DIR)/Makefile.patch \
+		$(GIT-CORE_SOURCE_DIR)/template-Makefile.patch
 
 #
 # If the compilation of the package requires additional
