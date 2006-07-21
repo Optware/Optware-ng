@@ -1,0 +1,11 @@
+--- ecl-0.9i/src/gc/os_dep.c	2006-06-30 14:35:20.000000000 +0200
++++ ecl/src/gc/os_dep.c	2006-07-21 09:11:43.000000000 +0200
+@@ -4001,7 +4001,7 @@
+ 
+ #endif /* NEED_CALLINFO */
+ 
+-#if defined(GC_HAVE_BUILTIN_BACKTRACE)
++#if defined(GC_HAVE_BUILTIN_BACKTRACE) && !defined(__UCLIBC__)
+ # include <execinfo.h>
+ #endif
+ 
