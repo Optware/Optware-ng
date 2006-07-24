@@ -193,7 +193,7 @@ WL500G_BROKEN_PACKAGES = \
 	ice id3lib iperf iptables ivorbis-tools \
 	jabber jamvm jikes \
 	ldconfig libdvb libftdi libgc liblcms libtorrent libvorbisidec lsof \
-	mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
+	mc mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
 	nail ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi nylon \
 	pango py-axiom py-epsilon py-lxml py-mantissa py-mssql \
 	py-nevow py-paste py-psycopg2 py-twisted \
