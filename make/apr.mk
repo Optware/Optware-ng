@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=1
+APR_IPK_VERSION=2
 
 #
 # APR_LOCALES defines which locales get installed
@@ -177,7 +177,7 @@ apr-stage: $(APR_BUILD_DIR)/.staged
 #
 # You may need to patch your application to make it use these locations.
 #
-$(APR_IPK): $(APR_BUILD_DIR)/.built
+$(APR_IPK): $(APR_BUILD_DIR)/.staged
 	rm -rf $(APR_IPK_DIR) $(BUILD_DIR)/apr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APR_BUILD_DIR) DESTDIR=$(APR_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
 	rm -rf $(APR_IPK_DIR)/delete-me

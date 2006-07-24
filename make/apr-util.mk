@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=1
+APR_UTIL_IPK_VERSION=2
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -197,7 +197,7 @@ apr-util-stage: $(APR_UTIL_BUILD_DIR)/.staged
 #
 # You may need to patch your application to make it use these locations.
 #
-$(APR_UTIL_IPK): $(APR_UTIL_BUILD_DIR)/.built
+$(APR_UTIL_IPK): $(APR_UTIL_BUILD_DIR)/.staged
 	rm -rf $(APR_UTIL_IPK_DIR) $(BUILD_DIR)/apr-util_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) DESTDIR=$(APR_UTIL_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
 	rm -rf $(APR_UTIL_IPK_DIR)/delete-me
