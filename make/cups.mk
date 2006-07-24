@@ -35,7 +35,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -51,7 +51,8 @@ CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 # CUPS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch
+CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch \
+	$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -125,6 +126,7 @@ $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CUPS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CUPS_LDFLAGS)" \
 		./configure \
+		--verbose \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
