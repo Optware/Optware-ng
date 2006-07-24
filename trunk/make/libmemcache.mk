@@ -190,7 +190,7 @@ $(LIBMEMCACHE_IPK): $(LIBMEMCACHE_BUILD_DIR)/.built
 	rm -rf $(LIBMEMCACHE_IPK_DIR) $(BUILD_DIR)/libmemcache_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMEMCACHE_BUILD_DIR) DESTDIR=$(LIBMEMCACHE_IPK_DIR) install
 	rm -f $(LIBMEMCACHE_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(LIBMEMCACHE_IPK_DIR)/opt/lib/libmemcache.so.*.*.*
+	$(STRIP_COMMAND) $(LIBMEMCACHE_IPK_DIR)/opt/lib/libmemcache.so.[0-9]*.[0-9]*.[0-9]*
 #	install -d $(LIBMEMCACHE_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBMEMCACHE_SOURCE_DIR)/libmemcache.conf $(LIBMEMCACHE_IPK_DIR)/opt/etc/libmemcache.conf
 #	install -d $(LIBMEMCACHE_IPK_DIR)/opt/etc/init.d
