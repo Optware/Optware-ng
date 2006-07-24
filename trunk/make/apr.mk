@@ -182,7 +182,7 @@ $(APR_IPK): $(APR_BUILD_DIR)/.built
 	$(MAKE) -C $(APR_BUILD_DIR) DESTDIR=$(APR_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
 	rm -rf $(APR_IPK_DIR)/delete-me
 	rm -f $(APR_IPK_DIR)/opt/lib/*.la
-	$(TARGET_STRIP) $(APR_IPK_DIR)/opt/lib/*.so.?.?.?
+	$(TARGET_STRIP) $(APR_IPK_DIR)/opt/lib/*.so.[0-9]*.[0-9]*.[0-9]*
 	$(MAKE) $(APR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APR_IPK_DIR)
 
