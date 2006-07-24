@@ -1,15 +1,13 @@
---- cups/backend/lpd.c.orig	2006-07-24 10:16:27.000000000 +0200
-+++ cups/backend/lpd.c	2006-07-24 10:35:34.000000000 +0200
-@@ -102,9 +102,17 @@
+--- cups-1.2.2/backend/lpd.c	2006-05-05 19:58:07.000000000 +0200
++++ cups/backend/lpd.c	2006-07-24 11:42:02.000000000 +0200
+@@ -102,9 +102,15 @@
  			  int manual_copies, int timeout, int contimeout);
  static void	lpd_timeout(int sig);
  static int	lpd_write(int lpd_fd, char *buffer, int length);
 +
  #ifndef HAVE_RRESVPORT_AF
-+# ifdef __UCLIBC__
-+#   if (__UCLIBC_MAJOR__ < 1 && __UCLIBC_MINOR__ < 28)
++# if defined (__UCLIBC__) && __UCLIBC_SUBLEVEL__ < 28
 +#     warning rresvport_af not defined in old UCLIBC
-+#   endif
 +# else
  static int	rresvport_af(int *port, int family);
 +# endif
@@ -18,16 +16,15 @@
  static void	sigterm_handler(int sig);
  
  
-@@ -1134,7 +1142,13 @@
+@@ -1134,7 +1140,12 @@
  
  static int				/* O  - Socket or -1 on error */
  rresvport_af(int *port,			/* IO - Port number to bind to */
-+# ifdef __UCLIBC__
++#if defined(__UCLIBC__) && __UCLIBC_SUBLEVEL__ < 28
 +             sa_family_t family) /* I  - Address family */
-+# else
++#else
               int family)		/* I  - Address family */
-+# endif
-+
++#endif
 +
  {
    http_addr_t	addr;			/* Socket address */
