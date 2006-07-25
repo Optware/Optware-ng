@@ -35,7 +35,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=3
+CUPS_IPK_VERSION=4
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -123,8 +123,8 @@ $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 	fi
 	(cd $(CUPS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CUPS_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(CUPS_LDFLAGS)" \
+		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(CUPS_LDFLAGS) $(STAGING_LDFLAGS)" \
 		./configure \
 		--verbose \
 		--build=$(GNU_HOST_NAME) \
@@ -147,9 +147,8 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 #
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $(CUPS_BUILD_DIR)/.built
-	$(MAKE) -C $(CUPS_BUILD_DIR) LDFLAGS="$(STAGING_LDFLAGS) \
-		-L../cups -L../filter $(RC_CFLAGS) \
-		-L/home/edmondsc/unslung/staging/opt/lib \
+	$(MAKE) -C $(CUPS_BUILD_DIR) $(RC_CFLAGS) \
+		LDFLAGS="-L../cups -L../filter $(STAGING_LDFLAGS) \
 		-Wl,-rpath,$(STAGING_DIR)/opt/lib \
 		-Wl,-rpath,/opt/lib $(OPTIM)"
 	$(MAKE) install -C $(CUPS_BUILD_DIR) \
