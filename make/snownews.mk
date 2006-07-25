@@ -40,7 +40,7 @@ SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules gettext
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=1
+SNOWNEWS_IPK_VERSION=2
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
@@ -57,7 +57,7 @@ SNOWNEWS_PATCHES=$(SNOWNEWS_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
-SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lintl
+SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm 
 
 #
 # SNOWNEWS_BUILD_DIR is the directory in which the build is done.
