@@ -67,7 +67,7 @@ COMMON_CROSS_PACKAGES = \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
 	opencdk oww openssh openssl openvpn \
 	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
-	popt poptop portmap postgresql pound procmail procps proftpd psutils puppy pwgen \
+	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
 	python \
 	py-4suite py-amara \
 	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
