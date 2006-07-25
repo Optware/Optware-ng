@@ -253,6 +253,7 @@ if [ -f "${WORK}/.paused" ]; then
     exit 3
 fi
 
+ACTIVE_TORRENTS=0
 # We will check all torrents for running state
 for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
     INFO="${TORRENT%/*}/.info"
@@ -264,7 +265,8 @@ for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
 	    check_tracker_error
 	else # Not a valid PID
 		respawn_torrent
-	fi   
+	ACTIVE_TORRENTS=$((${ACTIVE_TORRENTS}+1))
+    fi   
 else
     debug "${INFO} not found!"
 fi
@@ -275,6 +277,11 @@ TORRENT=`ls -1 $WORK/*/*.torrent 2>/dev/null | head -1`
 
 # Start up new  torrent if work is empty
 if [ -z "$TORRENT" ]; then
+    max_active_torrents=$((${BTLIB_MAXPORT}-${BTLIB_MINPORT}+1))
+    if [ ${ACTIVE_TORRENTS} = ${max_active_torrents} ]; then
+	notice "Max active torrents (${max_active_torrents}) reached."
+	exit 4
+    fi
     # check if there is a torrent to process
     FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -1`
     if [ -z "$FILE" ]; then
