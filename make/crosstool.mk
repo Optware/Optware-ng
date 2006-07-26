@@ -139,4 +139,4 @@ crosstool-clean:
 # directories.
 #
 crosstool-dirclean:
-	rm -rf $(BUILD_DIR)/$(CROSSTOOL_DIR) $(CROSSTOOL_BUILD_DIR) $(CROSSTOOL_IPK_DIR) $(CROSSTOOL_IPK)
+	rm -rf $(TOOL_BUILD_DIR)/$(CROSSTOOL_DIR) $(CROSSTOOL_BUILD_DIR) $(CROSSTOOL_IPK_DIR) $(CROSSTOOL_IPK)
