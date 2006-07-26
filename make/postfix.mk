@@ -17,11 +17,11 @@ POSTFIX_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 POSTFIX_DESCRIPTION=The Postfix mail system is an alternative to sendmail.
 POSTFIX_SECTION=util
 POSTFIX_PRIORITY=optional
-POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, find
+POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=2
+POSTFIX_IPK_VERSION=3
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
