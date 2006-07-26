@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, find
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=1
+POSTFIX_IPK_VERSION=2
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -29,7 +29,10 @@ POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/lib/sasl2/smtpd.conf \
 		  /opt/etc/init.d/S69postfix
 
-POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch $(POSTFIX_SOURCE_DIR)/postfix-install.patch $(POSTFIX_SOURCE_DIR)/postfix-script.patch
+POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch \
+		$(POSTFIX_SOURCE_DIR)/postfix-install.patch \
+		$(POSTFIX_SOURCE_DIR)/postfix-script.patch \
+		$(POSTFIX_SOURCE_DIR)/sys_defs.h.patch
 
 POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
 POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl
