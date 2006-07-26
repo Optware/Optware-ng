@@ -182,31 +182,19 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	asterisk atk \
-	bitlbee bzflag bsdmainutils \
-	ctcs cvs \
-	dcraw dict \
-	ecl elinks enhanced-ctorrent erlang \
-	ficy freetds \
-	gawk gambit-c giftcurs git-core glib gnupg gtk \
-	hnb \
-	ice id3lib iperf iptables ivorbis-tools \
-	jabber jamvm jikes \
-	ldconfig libdvb libftdi libgc liblcms libtorrent libvorbisidec lsof \
-	mc mdadm metalog mod-fastcgi mod-python monotone mtr mutt \
-	nail ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi nylon \
-	pango py-axiom py-epsilon py-lxml py-mantissa py-mssql \
-	py-nevow py-paste py-psycopg2 py-twisted \
-	unslung-devel \
-	qemu qemu-libc-i386 \
-	rtorrent \
-	sablevm sdl ser sm snownews sqsh sudo swi-prolog \
-	tethereal transcode \
-	unrar \
-	vte \
-	w3m wget-ssl \
-	x11 xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
-
+	 asterisk atk bitlbee bsdmainutils bzflag dcraw dict \
+	 ecl elinks erlang ficy freetds gambit-c gawk \
+	 giftcurs git-core glib gnupg gtk hnb ice \
+	 id3lib iperf iptables ivorbis-tools jabber jamvm jikes \
+	 ldconfig libdvb libftdi liblcms libtorrent libvorbisidec lsof \
+	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
+	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
+	 nylon pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
+	 sdl ser sm snownews sqsh sudo swi-prolog \
+	 tethereal transcode unrar vte w3m wget-ssl x11 \
+	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
+	 xft xmu xpm xrender xt xterm xtst \
+	
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
 
