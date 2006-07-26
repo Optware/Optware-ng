@@ -7,12 +7,25 @@
 # Provides  toolchain, native toolchain as buildroot.ipk or uclibc.ipk
 #
 # PATH for target cross toolchain is:
-# $(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)/staging_dir/bin
+# $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
+#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/bin/
 #
-# TARGET_CROSS = $(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)\
-#			/staging_dir/bin/$(TARGET_ARCH)-$(TARGET_OS)-
-# TARGET_LIBDIR =  $(TOOL_BUILD_DIR)/buildroot/build_$(TARGET_ARCH)\
-#			/staging_dir/lib
+# TARGET_CROSS = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
+#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/\
+#			bin/$(TARGET_ARCH)-$(TARGET_OS)-
+# TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
+#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/lib
+#
+# Some variables for higher level Makefile:
+#
+# GNU_TARGET_NAME = $(TARGET_ARCH)-$(TARGET_OS)
+#
+# BUILDROOT_GCC = $(CROSS_CONFIGURATION_GCC_VERSION)
+# CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
+# 
+# UCLIBC_VERSION = $(CROSS_CONFIGURATION_UCLIBC_VERSION)
+# CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
+# CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
 #
 # BUILDROOT_VERSION, BUILDROOT_SITE and BUILDROOT_SOURCE define
 # the upstream location of the source code for the package.
@@ -30,9 +43,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BUILDROOT_GCC=3.4.6
-BUILDROOT_BINUTILS=2.16.1
-UCLIBC_VERSION=0.9.28
+BUILDROOT_GCC ?= 3.4.6
+BUILDROOT_BINUTILS ?= 2.16.1
+UCLIBC_VERSION ?= 0.9.28
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
@@ -86,7 +99,7 @@ BUILDROOT_HEADERS=$(DL_DIR)/$(HEADERS_OLEG_SOURCE) \
 		$(DL_DIR)/$(HEADERS_DD-WRT_SOURCE)
 
 # Select appropriate headers or leave empty for default
-BUILDROOT_CUSTOM_HEADERS=$(HEADERS_OLEG)
+BUILDROOT_CUSTOM_HEADERS ?= $(HEADERS_OLEG)
 
 #
 # BUILDROOT_CONFFILES should be a list of user-editable files
@@ -180,6 +193,18 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/buildroot.config $(BUILDROOT_BUILD_DIR)/.config
+#	change GCC version in .config
+	sed  -i -e 's|.*\(BR2_GCC_VERSION_[0-9_]\{1,\}\).*|# \1 is not set|' \
+	 -e 's|# BR2_GCC_VERSION_$(BUILDROOT_GCC) is not set|BR2_GCC_VERSION_$(BUILDROOT_GCC)=y|' \
+	 -e '/BR2_GCC_VERSION_$(BUILDROOT_GCC)=y/s|\.|_|g' \
+	 -e 's|^BR2_GCC_VERSION=.*|BR2_GCC_VERSION="$(BUILDROOT_GCC)"|' $(BUILDROOT_BUILD_DIR)/.config
+# 	change binutils version in .config
+	sed  -i -e 's|.*\(BR2_BINUTILS_VERSION_[0-9_]\{1,\}\).*|# \1 is not set|' \
+	 -e 's|# BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS) is not set|BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS)=y|' \
+	 -e '/BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS)=y/s|\.|_|g' \
+	 -e 's|^BR2_BINUTILS_VERSION=.*|BR2_BINUTILS_VERSION="$(BUILDROOT_BINUTILS)"|' $(BUILDROOT_BUILD_DIR)/.config
+#	change toolchain staging dir
+	sed -i -e 's|^BR2_STAGING_DIR=*|BR2_STAGING_DIR="$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)"|' $(BUILDROOT_BUILD_DIR)/.config
 	(cd $(BUILDROOT_BUILD_DIR); \
 		make oldconfig \
 	)
@@ -314,7 +339,7 @@ buildroot-clean uclibc-clean:
 # directories.
 #
 buildroot-dirclean uclibc-dirclean:
-	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK)
+	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK) $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)
 
 # Notes:
 #
