@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOD_PYTHON_SITE=http://www.apache.org/dist/httpd/modpython
-MOD_PYTHON_VERSION=3.1.4
+MOD_PYTHON_VERSION=3.2.8
 MOD_PYTHON_SOURCE=mod_python-$(MOD_PYTHON_VERSION).tgz
 MOD_PYTHON_DIR=mod_python-$(MOD_PYTHON_VERSION)
 MOD_PYTHON_UNZIP=zcat
@@ -37,7 +37,7 @@ MOD_PYTHON_CONFLICTS=
 #
 # MOD_PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_PYTHON_IPK_VERSION=2
+MOD_PYTHON_IPK_VERSION=1
 
 #
 # MOD_PYTHON_CONFFILES should be a list of user-editable files
@@ -101,6 +101,7 @@ mod-python-source: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+# Note: configure breaks if bash 3.1 is installed!
 $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES)
 	$(MAKE) python-stage apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(MOD_PYTHON_BUILD_DIR)
