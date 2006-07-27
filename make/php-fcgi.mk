@@ -119,7 +119,6 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_FCGI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
 		CFLAGS="$(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
-		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		ac_cv_func_memcmp_working=yes \
@@ -152,6 +151,8 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 	)
 	$(PATCH_LIBTOOL) $(PHP_FCGI_BUILD_DIR)/libtool
 	touch $(PHP_FCGI_BUILD_DIR)/.configured
+
+#		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 
 php-fcgi-unpack: $(PHP_FCGI_BUILD_DIR)/.configured
 

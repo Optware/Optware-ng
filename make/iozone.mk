@@ -52,7 +52,7 @@ IOZONE_PATCHES=$(IOZONE_SOURCE_DIR)/makefile.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), wl500g)
+ifeq ($(LIBC_STYLE), uclibc)
 IOZONE_CPPFLAGS=-DNO_MADVISE
 IOZONE_TARGET=generic
 else

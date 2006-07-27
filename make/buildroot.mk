@@ -17,8 +17,8 @@
 #		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/lib
 #
 # Some variables for higher level Makefile:
-#
-# GNU_TARGET_NAME = $(TARGET_ARCH)-$(TARGET_OS)
+# Note that GNU_TARGET_NAME is not $(TARGET_ARCH)-$(TARGET_OS) but
+# GNU_TARGET_NAME = $(TARGET_ARCH)-linux
 #
 # BUILDROOT_GCC = $(CROSS_CONFIGURATION_GCC_VERSION)
 # CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
@@ -75,6 +75,8 @@ UCLIBC_CONFLICTS=buildroot
 BUILDROOT_IPK_VERSION=1
 
 # Custom linux headers
+# Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
+# $(HEADERS_._UNPACK_DIR)/include directory
 BUILDROOT_HEADERS_DIR=$(TOOL_BUILD_DIR)/buildroot/toolchain_build_$(TARGET_ARCH)
 
 # Oleg firmware for Asus Wireless routers
@@ -99,8 +101,10 @@ BUILDROOT_HEADERS=$(DL_DIR)/$(HEADERS_OLEG_SOURCE) \
 		$(DL_DIR)/$(HEADERS_DD-WRT_SOURCE)
 
 # Select appropriate headers or leave empty for default
-BUILDROOT_CUSTOM_HEADERS ?= $(HEADERS_OLEG)
+BUILDROOT_CUSTOM_HEADERS ?=
 
+buildroot-headers:
+	@echo "$(OPTWARE_TARGET): $(BUILDROOT_CUSTOM_HEADERS)"
 #
 # BUILDROOT_CONFFILES should be a list of user-editable files
 # BUILDROOT_CONFFILES=/opt/etc/buildroot.conf /opt/etc/init.d/SXXbuildroot
@@ -193,6 +197,14 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/buildroot.config $(BUILDROOT_BUILD_DIR)/.config
+#	change TARGET_ARCH in .config
+	sed  -i -e 's|.*\(BR2_[a-z0-9_]\{2,\}\).*|# \1 is not set|' \
+	 -e 's|# BR2_$(TARGET_ARCH) is not set|BR2_$(TARGET_ARCH)=y|' \
+	 -e 's|^BR2_ARCH=.*|BR2_ARCH="$(TARGET_ARCH)"|' $(BUILDROOT_BUILD_DIR)/.config
+#	change BR2_ENDIAN for armeb and mipsel only !
+	sed  -i -e 's|BR2_ENDIAN=.*|BR2_ENDIAN="$(TARGET_ARCH)"|' \
+	 -e '/BR2_ENDIAN=/s|armeb|BIG|;/BR2_ENDIAN=/s|mipsel|LITTLE|' \
+	$(BUILDROOT_BUILD_DIR)/.config
 #	change GCC version in .config
 	sed  -i -e 's|.*\(BR2_GCC_VERSION_[0-9_]\{1,\}\).*|# \1 is not set|' \
 	 -e 's|# BR2_GCC_VERSION_$(BUILDROOT_GCC) is not set|BR2_GCC_VERSION_$(BUILDROOT_GCC)=y|' \
@@ -240,7 +252,7 @@ $(BUILDROOT_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.built
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(BUILDROOT_BUILD_DIR)/.staged
 
-buildroot-stage uclibc-stage: $(BUILDROOT_BUILD_DIR)/.staged
+buildroot-stage uclibc-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -303,17 +315,20 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 
 UCLIBC_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
 	libresolv  librt libutil libuClibc
-UCLIBC_LIBS_PATTERN=$(patsubst %,./opt/lib/%*so*,$(UCLIBC_LIBS))
+UCLIBC_LIBS_PATTERN=$(patsubst %,\
+	$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib/%*so*,$(UCLIBC_LIBS))
 
 $(UCLIBC_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(UCLIBC_IPK_DIR) $(BUILD_DIR)/uclibc_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC_IPK_DIR) install-strip
 	install -d $(UCLIBC_IPK_DIR)
-	tar -xv -C $(UCLIBC_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
-		$(UCLIBC_LIBS_PATTERN) ./opt/sbin/ldconfig
-#	install -d $(UCLIBC_IPK_DIR)/opt/sbin
-#	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
-#		$(UCLIBC_IPK_DIR)/opt/sbin
+#	tar -xv -C $(UCLIBC_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
+#		--wildcards $(UCLIBC_LIBS_PATTERN) ./opt/sbin/ldconfig
+	install -d $(UCLIBC_IPK_DIR)/opt/lib
+	cp -d $(UCLIBC_LIBS_PATTERN) $(UCLIBC_IPK_DIR)/opt/lib
+	install -d $(UCLIBC_IPK_DIR)/opt/sbin
+	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
+		$(UCLIBC_IPK_DIR)/opt/sbin
 	$(MAKE) $(UCLIBC_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC_IPK_DIR)/CONTROL/prerm

@@ -22,12 +22,21 @@
 #
 # make libuclibc++-stage will install g++ wrapper in toolchain
 #
+# Currently configured for mipsel architecture only
+# TODO: svn co svn://uclibc.org/trunk/uClibc++
+#       wrapper patch cleanup for ccache
+#
 LIBUCLIBC++_SITE=http://cxx.uclibc.org/src
+ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_VERSION=0.1.12
-LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
 LIBUCLIBC++_DIR=uClibc++
+else
+LIBUCLIBC++_VERSION=0.2.0
+LIBUCLIBC++_DIR=uClibc++-$(LIBUCLIBC++_VERSION)
+endif
+LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
 LIBUCLIBC++_UNZIP=bzcat
-LIBUCLIBC++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBUCLIBC++_MAINTAINER=Leon Kos <oleo@email.si>
 LIBUCLIBC++_DESCRIPTION=C++ standard library designed for use in embedded systems
 LIBUCLIBC++_SECTION=libs
 LIBUCLIBC++_PRIORITY=required
@@ -38,7 +47,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=3
+LIBUCLIBC++_IPK_VERSION=4
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -48,9 +57,12 @@ LIBUCLIBC++_IPK_VERSION=3
 # LIBUCLIBC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUCLIBC++_PATCHES=$(LIBUCLIBC++_SOURCE_DIR)/math.patch \
-			$(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch \
-			$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch
+LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/math.patch \
+			$(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch
+
+ifeq ($(OPTWARE_TARGET), wl500g)
+LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -116,6 +128,10 @@ $(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIB
 	if test "$(BUILD_DIR)/$(LIBUCLIBC++_DIR)" != "$(LIBUCLIBC++_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) ; \
 	fi
+ifneq ($(OPTWARE_TARGET),wl500g)
+	sed -i -e 's|mipsel-uclibc|$(TARGET_ARCH)-$(TARGET_OS)|g' \
+		$(LIBUCLIBC++_BUILD_DIR)/bin/Makefile
+endif
 	cp $(LIBUCLIBC++_SOURCE_DIR)/.config $(LIBUCLIBC++_BUILD_DIR)
 	make -C $(LIBUCLIBC++_BUILD_DIR) oldconfig
 	touch $(LIBUCLIBC++_BUILD_DIR)/.configured
@@ -140,6 +156,8 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 #
 $(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -f $(LIBUCLIBC++_BUILD_DIR)/.staged
+	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) \
+		DESTDIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION) install
 #	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install
 	touch $(LIBUCLIBC++_BUILD_DIR)/.staged
 
@@ -184,7 +202,7 @@ $(LIBUCLIBC++_IPK): $(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -rf $(LIBUCLIBC++_IPK_DIR) $(BUILD_DIR)/libuclibc++_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=$(LIBUCLIBC++_IPK_DIR) install-strip
 	install -d $(LIBUCLIBC++_IPK_DIR)/opt/lib
-	install -m 755 $(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++-0.1.12.so \
+	install -m 755 $(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++-$(LIBUCLIBC++_VERSION).so \
 		$(LIBUCLIBC++_IPK_DIR)/opt/lib
 	cp -fa $(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++.so.0 \
 		$(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++.so \
