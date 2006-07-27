@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.23
+SAMBA_VERSION=3.0.23a
 else
 SAMBA_VERSION=3.0.14a
 endif
@@ -29,11 +29,11 @@ SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
 SAMBA_UNZIP=zcat
 SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-SAMBA_DESCRIPTION=Samba is an Open Source/Free Software suite that provides seamless file and print services to SMB/CIFS clients.
+SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_DEPENDS=popt, openldap-libs, readline
+SAMBA_DEPENDS=popt, openldap, readline
 else
 SAMBA_DEPENDS=popt, readline
 endif
@@ -214,8 +214,11 @@ endif
 		--with-mandir=$(SAMBA_MAN_DIR) \
 		--with-smbmount \
 		--with-quotas \
+		--with-krb5=no \
 		--disable-nls \
 	)
+#	Remove Kerberos libs produced by broken configure
+	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' $(SAMBA_BUILD_DIR)/Makefile
 	touch $(SAMBA_BUILD_DIR)/.configured
 
 samba-unpack: $(SAMBA_BUILD_DIR)/.configured
@@ -278,7 +281,7 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	rm -rf $(SAMBA_IPK_DIR) $(BUILD_DIR)/samba_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(SAMBA_IPK_DIR) install
 	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
-	$(STRIP_COMMAND) $(SAMBA_IPK_DIR)/opt/sbin/*
+	-$(STRIP_COMMAND) $(SAMBA_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S80samba
