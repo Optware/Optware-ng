@@ -51,7 +51,7 @@ LIBGC_IPK_VERSION=1
 # LIBGC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifneq ($(OPTWARE_TARGET), wl500g)
+ifneq ($(LIBC_STYLE), uclibc)
 LIBGC_PATCHES=
 else
 LIBGC_PATCHES=$(LIBGC_SOURCE_DIR)/backtrace.patch

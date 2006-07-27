@@ -58,7 +58,7 @@ $(GCONV_MODULES_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GCONV_MODULES_DEPENDS)" >>$@
 	@echo "Conflicts: $(GCONV_MODULES_CONFLICTS)" >>$@
 
-ifeq ($(OPTWARE_TARGET),wl500g)
+ifeq ($(LIBC_STYLE),uclibc)
 $(GCONV_MODULES_IPK): $(GCONV_MODULES_BUILD_DIR)/.built
 	rm -rf $(GCONV_MODULES_IPK_DIR) $(BUILD_DIR)/gconv-modules_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(GCONV_MODULES_IPK_DIR)/CONTROL/control

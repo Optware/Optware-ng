@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
+# Options are "nslu2", "wl500g", "oleg", "dd-wrt", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
 OPTWARE_TARGET ?= nslu2
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
@@ -194,12 +194,24 @@ WL500G_BROKEN_PACKAGES = \
 	 tethereal transcode unrar vte w3m wget-ssl x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst \
-	
+
+# Packages that do not work for uclibc
+UCLIBC_BROKEN_PACKAGES = \
+	 bitlbee bzflag erlang fetchmail gambit-c gnupg \
+	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
+	 jamvm jikes ldconfig libdvb libtorrent libvorbisidec monotone \
+	 mtr net-tools nfs-server nfs-utils nget nvi oww \
+	 pango qemu qemu-libc-i386 rtorrent ser sm snownews \
+	 screen swi-prolog transcode vte xauth xaw xchat \
+	 xmu xt xterm
+
+# Packages that *only* work for uclibc - do not just put new packages here.
+UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc 
+
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for mss.
-# elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
 MSS_BROKEN_PACKAGES = \
 	apache apr-util asterisk \
 	bitlbee \
@@ -439,6 +451,7 @@ endif
 endif
 
 ifeq ($(OPTWARE_TARGET),wl500g)
+LIBC_STYLE=uclibc
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = mipsel-linux
@@ -449,6 +462,44 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain:
+endif
+
+ifeq ($(OPTWARE_TARGET), oleg)
+LIBC_STYLE=uclibc
+TARGET_ARCH=mipsel
+BUILDROOT_CUSTOM_HEADERS = $(HEADERS_OLEG)
+endif
+
+ifeq ($(OPTWARE_TARGET), dd-wrt)
+LIBC_STYLE=uclibc
+TARGET_ARCH=mipsel
+BUILDROOT_CUSTOM_HEADERS = $(HEADERS_DD-WRT)
+endif
+
+ifeq ($(LIBC_STYLE), uclibc)
+ifneq ($(OPTWARE_TARGET), wl500g)
+PACKAGES = $(filter-out $(UCLIBC_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(UCLIBC_SPECIFIC_PACKAGES))
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+TARGET_OS=linux-uclibc
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME=$(TARGET_ARCH)-linux
+CROSS_CONFIGURATION_GCC_VERSION=3.4.6
+CROSS_CONFIGURATION_UCLIBC_VERSION=0.9.28
+BUILDROOT_GCC=$(CROSS_CONFIGURATION_GCC_VERSION)
+UCLIBC_VERSION=$(CROSS_CONFIGURATION_UCLIBC_VERSION)
+CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
+CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
+CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
+TARGET_CROSS = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/bin/$(TARGET_ARCH)-$(TARGET_OS)-
+TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/lib
+TARGET_LDFLAGS = 
+TARGET_CUSTOM_FLAGS= -pipe 
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain: buildroot-toolchain libuclibc++-toolchain
+endif
+else
+LIBC_STYLE=glibc
 endif
 
 ifeq ($(OPTWARE_TARGET),mss)

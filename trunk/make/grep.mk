@@ -28,7 +28,7 @@ $(DL_DIR)/$(GREP_SOURCE):
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
-ifeq ($(OPTWARE_TARGET),wl500g)
+ifeq ($(LIBC_STYLE),uclibc)
 GREP_CONFIGURE_ARGS=--disable-nls
 else
 GREP_CONFIGURE_ARGS=
