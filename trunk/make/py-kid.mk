@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-KID_VERSION=0.9.3
-PY-KID_SITE=http://kid.lesscode.org/dist/$(PY-KID_VERSION)
+PY-KID_SITE=  http://www.kid-templating.org/dist/$(PY-KID_VERSION)
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
 PY-KID_UNZIP=zcat
