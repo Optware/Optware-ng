@@ -11,7 +11,7 @@ UNFS3=unfs3-$(UNFS3_VERSION)
 UNFS3_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/unfs3
 UNFS3_SOURCE:=$(UNFS3).tar.gz
 UNFS3_UNZIP=zcat
-UNFS3_PATCH:=$(SOURCE_DIR)/unfs3.patch
+# UNFS3_PATCH:=$(SOURCE_DIR)/unfs3.patch
 UNFS3_IPK_VERSION=1
 UNFS3_IPK=$(BUILD_DIR)/unfs3_$(UNFS3_VERSION)-$(UNFS3_IPK_VERSION)_$(TARGET_ARCH).ipk
 UNFS3_IPK_DIR:=$(BUILD_DIR)/unfs3-$(UNFS3_VERSION)-ipk
@@ -23,7 +23,7 @@ UNFS3_DESCRIPTION=Version 3 NFS server (not recommended, use nfs-utils instead)
 $(DL_DIR)/$(UNFS3_SOURCE):
 	$(WGET) -P $(DL_DIR) $(UNFS3_SITE)/$(UNFS3_SOURCE)
 
-unfs3-source: $(DL_DIR)/$(UNFS3_SOURCE) $(UNFS3_PATCH)
+unfs3-source: $(DL_DIR)/$(UNFS3_SOURCE) # $(UNFS3_PATCH)
 
 #
 # This rule creates a control file for ipkg.  It is no longer
