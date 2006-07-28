@@ -19,11 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-FFMPEG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ffmpeg
-#FFMPEG_SOURCE=ffmpeg-$(FFMPEG_VERSION).tar.gz
 FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
-FFMPEG_SVN_REV=5754
-FFMPEG_VERSION=0.4.9+r$(FFMPEG_SVN_REV)
+FFMPEG_SVN_REV=5834
+FFMPEG_VERSION=0.4.9-pre1+r$(FFMPEG_SVN_REV)
 FFMPEG_SOURCE=ffmpeg-svn-$(FFMPEG_SVN_REV).tar.gz
 FFMPEG_DIR=ffmpeg
 FFMPEG_UNZIP=zcat
@@ -48,7 +46,7 @@ FFMPEG_CONFFILES=/opt/etc/ffmpeg.conf /opt/etc/init.d/SXXffmpeg
 ## FFMPEG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FFMPEG_PATCHES=$(FFMPEG_SOURCE_DIR)/patch.strip
+FFMPEG_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -109,6 +107,17 @@ ffmpeg-source: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+#
+# CPU selection is mainly fo distingush between bigendian=yes/no
+# See:  http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2006-May/011317.html
+ifeq ($(TARGET_ARCH), mipsel)
+FFMPEG_CPU=mipsel
+else
+FFMPEG_CPU=mips
+endif
+
+# Snow is know to create build problems on ds101 
+
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR)
@@ -127,15 +136,18 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 		./configure \
 		--cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
-		--cpu=mipsel \
+		--cpu=$(FFMPEG_CPU) \
+		--disable-encoder=snow \
+		--disable-decoder=snow \
 		--enable-shared \
 		--disable-static \
+		--disable-strip \
 		--prefix=/opt \
 	)
 	touch $(FFMPEG_BUILD_DIR)/.configured
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
-#		--disable-nls \
+##		--disable-nls \
 
 ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 
@@ -196,8 +208,13 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/man \
-		bindir=$(FFMPEG_IPK_DIR)/opt/bin prefix=$(FFMPEG_IPK_DIR)/opt \
-		DESTDIR=$(FFMPEG_IPK_DIR)/opt install
+		bindir=$(FFMPEG_IPK_DIR)/opt/bin libdir=$(FFMPEG_IPK_DIR)/opt/lib \
+		prefix=$(FFMPEG_IPK_DIR)/opt DESTDIR=$(FFMPEG_IPK_DIR) \
+		LDCONFIG='$$(warning ldconfig disabled when building package)' install
+	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/bin/ffmpeg
+	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/bin/ffserver
+	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/lib/*.so
+	$(TARGET_STRIP) $(FFMPEG_IPK_DIR)/opt/lib/vhook/*.so
 	$(MAKE) $(FFMPEG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FFMPEG_IPK_DIR)
 
