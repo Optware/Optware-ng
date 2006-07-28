@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "oleg", "dd-wrt", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
+# Options are "nslu2", "wl500g", "ddwrt", "oleg", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
 OPTWARE_TARGET ?= nslu2
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
@@ -470,10 +470,10 @@ TARGET_ARCH=mipsel
 BUILDROOT_CUSTOM_HEADERS = $(HEADERS_OLEG)
 endif
 
-ifeq ($(OPTWARE_TARGET), dd-wrt)
+ifeq ($(OPTWARE_TARGET), ddwrt)
 LIBC_STYLE=uclibc
 TARGET_ARCH=mipsel
-BUILDROOT_CUSTOM_HEADERS = $(HEADERS_DD-WRT)
+BUILDROOT_CUSTOM_HEADERS = $(HEADERS_DDWRT)
 endif
 
 ifeq ($(LIBC_STYLE), uclibc)
