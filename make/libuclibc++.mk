@@ -23,18 +23,19 @@
 # make libuclibc++-stage will install g++ wrapper in toolchain
 #
 # Currently configured for mipsel architecture only
-# TODO: svn co svn://uclibc.org/trunk/uClibc++
-#       wrapper patch cleanup for ccache
+# TODO: wrapper patch cleanup for ccache
 #
-LIBUCLIBC++_SITE=http://cxx.uclibc.org/src
 ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_VERSION=0.1.12
-LIBUCLIBC++_DIR=uClibc++
-else
-LIBUCLIBC++_VERSION=0.2.0
-LIBUCLIBC++_DIR=uClibc++-$(LIBUCLIBC++_VERSION)
-endif
+LIBUCLIBC++_SITE=http://cxx.uclibc.org/src
 LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
+else
+LIBUCLIBC++_VERSION=0.2.1
+LIBUCLIBC++_SVN=svn://uclibc.org/trunk/uClibc++
+LIBUCLIBC++_SVN_REV=15741
+LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION)+r$(LIBUCLIBC++_SVN_REV).tbz2
+endif
+LIBUCLIBC++_DIR=uClibc++
 LIBUCLIBC++_UNZIP=bzcat
 LIBUCLIBC++_MAINTAINER=Leon Kos <oleo@email.si>
 LIBUCLIBC++_DESCRIPTION=C++ standard library designed for use in embedded systems
@@ -47,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=4
+LIBUCLIBC++_IPK_VERSION=5
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -57,11 +58,11 @@ LIBUCLIBC++_IPK_VERSION=4
 # LIBUCLIBC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/math.patch \
-			$(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch
+LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch 
 
 ifeq ($(OPTWARE_TARGET), wl500g)
-LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch
+LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch \
+	$(LIBUCLIBC++_SOURCE_DIR)/math.patch
 endif
 
 #
@@ -88,16 +89,26 @@ LIBUCLIBC++_IPK=$(BUILD_DIR)/libuclibc++_$(LIBUCLIBC++_VERSION)-$(LIBUCLIBC++_IP
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
-#
+
+ifeq ($(OPTWARE_TARGET), wl500g)
 $(DL_DIR)/$(LIBUCLIBC++_SOURCE):
 	$(WGET) -P $(DL_DIR) $(LIBUCLIBC++_SITE)/$(LIBUCLIBC++_SOURCE)
+else
+$(DL_DIR)/$(LIBUCLIBC++_SOURCE):
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(LIBUCLIBC++_DIR) && \
+		svn co -r $(LIBUCLIBC++_SVN_REV) $(LIBUCLIBC++_SVN) && \
+		tar -cjf $@ $(LIBUCLIBC++_DIR) && \
+		rm -rf $(LIBUCLIBC++_DIR) \
+	)
+endif
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-libuclibc++-source: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIBC++_PATCHES)
+libuclibc++-source: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(DL_DIR)/$(LIBUCLIBC++_SOURCE_WL500G) $(LIBUCLIBC++_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -128,11 +139,13 @@ $(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIB
 	if test "$(BUILD_DIR)/$(LIBUCLIBC++_DIR)" != "$(LIBUCLIBC++_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) ; \
 	fi
+	cp $(LIBUCLIBC++_SOURCE_DIR)/.config $(LIBUCLIBC++_BUILD_DIR)
 ifneq ($(OPTWARE_TARGET),wl500g)
 	sed -i -e 's|mipsel-uclibc|$(TARGET_ARCH)-$(TARGET_OS)|g' \
 		$(LIBUCLIBC++_BUILD_DIR)/bin/Makefile
+	sed -i -e 's|^# IMPORT_LIBSUP is not set|IMPORT_LIBSUP=y|' \
+		$(LIBUCLIBC++_BUILD_DIR)/.config
 endif
-	cp $(LIBUCLIBC++_SOURCE_DIR)/.config $(LIBUCLIBC++_BUILD_DIR)
 	make -C $(LIBUCLIBC++_BUILD_DIR) oldconfig
 	touch $(LIBUCLIBC++_BUILD_DIR)/.configured
 
