@@ -652,14 +652,6 @@ $(PACKAGES) : directories toolchain
 $(PACKAGES_STAGE) %-stage : directories toolchain
 $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
 
-.PHONY: %-log
-%-log: $(BUILD_DIR)/%.log
-	
-
-.PRECIOUS: $(BUILD_DIR)/%.log
-$(BUILD_DIR)/%.log:
-	script -c "make $*-ipk" $@
-
 .PHONY: index
 index: $(PACKAGE_DIR)/Packages
 
