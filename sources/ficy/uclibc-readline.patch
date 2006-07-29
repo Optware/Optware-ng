@@ -1,0 +1,48 @@
+diff -urN fIcy-1.0.15/authparse.cc ficy/authparse.cc
+--- fIcy-1.0.15/authparse.cc	2005-08-31 20:12:35.000000000 +0200
++++ ficy/authparse.cc	2006-07-29 14:56:44.000000000 +0200
+@@ -10,6 +10,8 @@
+ 
+ // system headers
+ #include <fstream>
++#include <string_iostream>
++
+ using std::ifstream;
+ using std::getline;
+ 
+diff -urN fIcy-1.0.15/http.cc ficy/http.cc
+--- fIcy-1.0.15/http.cc	2005-11-08 18:44:18.000000000 +0100
++++ ficy/http.cc	2006-07-29 14:56:04.000000000 +0200
+@@ -16,6 +16,8 @@
+ #include <stdexcept>
+ #include <memory>
+ #include <string>
++#include <string_iostream>
++
+ using std::string;
+ using std::getline;
+ 
+diff -urN fIcy-1.0.15/match.cc ficy/match.cc
+--- fIcy-1.0.15/match.cc	2005-11-09 16:40:01.000000000 +0100
++++ ficy/match.cc	2006-07-29 14:57:13.000000000 +0200
+@@ -11,6 +11,8 @@
+ 
+ // system headers
+ #include <fstream>
++#include <string_iostream>
++
+ using std::ifstream;
+ using std::getline;
+ 
+diff -urN fIcy-1.0.15/plsparse.cc ficy/plsparse.cc
+--- fIcy-1.0.15/plsparse.cc	2005-04-28 23:46:30.000000000 +0200
++++ ficy/plsparse.cc	2006-07-29 15:36:30.000000000 +0200
+@@ -12,6 +12,8 @@
+ 
+ // system headers
+ #include <stdexcept>
++#include <string_iostream>
++using std::getline;
+ using std::runtime_error;
+ 
+ 

@@ -43,7 +43,7 @@ FICY_CONFLICTS=
 #
 # FICY_IPK_VERSION should be incremented when the ipk changes.
 #
-FICY_IPK_VERSION=1
+FICY_IPK_VERSION=2
 
 #
 # FICY_CONFFILES should be a list of user-editable files
@@ -53,7 +53,11 @@ FICY_CONFFILES=
 # FICY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(LIBC_STYLE), uclibc)
+FICY_PATCHES=$(FICY_SOURCE_DIR)/uclibc-readline.patch
+else
 FICY_PATCHES=
+endif
 
 #
 # If the compilation of the package requires additional
@@ -108,11 +112,13 @@ ficy-source: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES)
 $(FICY_BUILD_DIR)/.configured: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES)
 	rm -rf $(BUILD_DIR)/$(FICY_DIR) $(FICY_BUILD_DIR)
 	$(FICY_UNZIP) $(DL_DIR)/$(FICY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(FICY_DIR) $(FICY_BUILD_DIR)
-	(cd $(FICY_BUILD_DIR); \
-        $(TARGET_CONFIGURE_OPTS) LDFLAGS="$(STAGING_LDFLAGS)" make -e; \
-	$(STRIP_COMMAND) fIcy fPls fResync \
-	)
+	if test -n "$(FICY_PATCHES)" ; \
+		then cat $(FICY_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(FICY_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(FICY_DIR)" != "$(FICY_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(FICY_DIR) $(FICY_BUILD_DIR) ; \
+	fi
 	touch $(FICY_BUILD_DIR)/.configured
 
 ficy-unpack: $(FICY_BUILD_DIR)/.configured
@@ -122,7 +128,9 @@ ficy-unpack: $(FICY_BUILD_DIR)/.configured
 #
 $(FICY_BUILD_DIR)/.built: $(FICY_BUILD_DIR)/.configured
 	rm -f $(FICY_BUILD_DIR)/.built
-	$(MAKE) -C $(FICY_BUILD_DIR)
+	(cd $(FICY_BUILD_DIR); \
+        	$(TARGET_CONFIGURE_OPTS) LDFLAGS="$(STAGING_LDFLAGS)" make -e; \
+	)
 	touch $(FICY_BUILD_DIR)/.built
 
 #
@@ -177,6 +185,9 @@ $(FICY_IPK): $(FICY_BUILD_DIR)/.built
 	install -m 755 $(FICY_BUILD_DIR)/fIcy $(FICY_IPK_DIR)/opt/bin
 	install -m 755 $(FICY_BUILD_DIR)/fPls $(FICY_IPK_DIR)/opt/bin
 	install -m 755 $(FICY_BUILD_DIR)/fResync $(FICY_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fIcy 
+	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fPls
+	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fResync
 	$(MAKE) $(FICY_IPK_DIR)/CONTROL/control
 	echo $(FICY_CONFFILES) | sed -e 's/ /\n/g' > $(FICY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FICY_IPK_DIR)
