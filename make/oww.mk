@@ -42,7 +42,7 @@ OWW_CONFLICTS=
 #
 # OWW_IPK_VERSION should be incremented when the ipk changes.
 #
-OWW_IPK_VERSION=1
+OWW_IPK_VERSION=2
 
 #
 # OWW_CONFFILES should be a list of user-editable files
@@ -116,6 +116,7 @@ $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(OWW_LDFLAGS)" \
 		LIBUSB_CONFIG=$(STAGING_PREFIX)/bin/libusb-config \
 		_libcurl_config=$(STAGING_PREFIX)/bin/curl-config \
+		ac_cv_header_libintl_h=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
