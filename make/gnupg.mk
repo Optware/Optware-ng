@@ -30,14 +30,14 @@ GNUPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPG_DESCRIPTION=GNU privacy guard - a free PGP replacement.
 GNUPG_SECTION=misc
 GNUPG_PRIORITY=optional
-GNUPG_DEPENDS=
+GNUPG_DEPENDS=libusb, zlib-stage, readline, libcurl, openldap
 GNUPG_SUGGESTS=
 GNUPG_CONFLICTS=
 
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=1
+GNUPG_IPK_VERSION=2
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -72,8 +72,14 @@ GNUPG_IPK=$(BUILD_DIR)/gnupg_$(GNUPG_VERSION)-$(GNUPG_IPK_VERSION)_$(TARGET_ARCH
 
 # Disable assembly for the ds101g
 ifeq ($(OPTWARE_TARGET), ds101g) 
-	CFG_OPTS = --disable-asm
+GNUPG_CFG_OPTS = --disable-asm
 endif
+
+# uclibc 0.9.28 is missing dn_skipname() impleemtation
+ifeq ($(LIBC_STYLE), uclibc)
+GNUPG_CFG_OPTS= --disable-dns-pka --disable-dns-cert --disable-dns-srv
+endif
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -104,7 +110,7 @@ gnupg-source: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libusb-stage zlib-stage readline-stage libcurl-stage openldap-stage
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
@@ -117,12 +123,16 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--with-libusb=$(STAGING_DIR)/opt \
+		--with-zlib=$(STAGING_DIR)/opt \
+		--with-readline=$(STAGING_DIR)/opt \
+		--with-libcurl=$(STAGING_DIR)/opt \
+		--with-ldap=$(STAGING_DIR)/opt \
 		--prefix=/opt \
 		--disable-nls \
-		$(CFG_OPTS) \
+		$(GNUPG_CFG_OPTS) \
 	)
 	touch $(GNUPG_BUILD_DIR)/.configured
-
 gnupg-unpack: $(GNUPG_BUILD_DIR)/.configured
 
 #
