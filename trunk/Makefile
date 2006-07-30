@@ -197,12 +197,12 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 bitlbee bzflag erlang fetchmail gambit-c gnupg \
+	 bitlbee bzflag erlang gambit-c \
 	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
-	 jamvm jikes ldconfig libdvb libtorrent libvorbisidec monotone \
-	 mtr net-tools nfs-server nfs-utils nget nvi oww \
-	 pango qemu qemu-libc-i386 rtorrent ser sm snownews \
-	 screen swi-prolog transcode vte xauth xaw xchat \
+	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
+	 mtr net-tools nfs-server nfs-utils nget \
+	 pango qemu qemu-libc-i386 rtorrent ser sm \
+	 swi-prolog transcode vte xauth xaw xchat \
 	 xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
