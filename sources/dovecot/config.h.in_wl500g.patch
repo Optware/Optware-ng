@@ -1,0 +1,20 @@
+--- /export/Nslu2/master/optware/trunk/builds/dovecot/config.h.in	2006-07-03 17:39:43.000000000 +0200
++++ config.h.in	2006-07-30 18:15:09.000000000 +0200
+@@ -157,7 +157,7 @@
+ #undef HAVE_PQESCAPE_STRING_CONN
+ 
+ /* Define to 1 if you have the `pread' function. */
+-#undef HAVE_PREAD
++/* #undef HAVE_PREAD */
+ 
+ /* Define to 1 if you have the `quotactl' function. */
+ #undef HAVE_QUOTACTL
+@@ -409,7 +409,7 @@
+ #undef PASSDB_VPOPMAIL
+ 
+ /* Define if pread/pwrite needs _XOPEN_SOURCE 500 */
+-#undef PREAD_WRAPPERS
++/* #undef PREAD_WRAPPERS */
+ 
+ /* printf() format for size_t */
+ #undef PRIuSIZE_T
