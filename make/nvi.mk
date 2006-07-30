@@ -42,7 +42,7 @@ NVI_CONFLICTS=
 #
 # NVI_IPK_VERSION should be incremented when the ipk changes.
 #
-NVI_IPK_VERSION=1
+NVI_IPK_VERSION=2
 
 #
 # NVI_CONFFILES should be a list of user-editable files
@@ -76,7 +76,10 @@ NVI_IPK_DIR=$(BUILD_DIR)/nvi-$(NVI_VERSION)-ipk
 NVI_IPK=$(BUILD_DIR)/nvi_$(NVI_VERSION)-$(NVI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 ifneq ($(HOSTCC),$(TARGET_CC))
-NVI_CROSS_AC_PARAM=vi_cv_sprintf_count=yes
+NVI_CROSS_AC_PARAM=vi_cv_sprintf_count=yes 
+ifeq ($(LIBC_STYLE), uclibc)
+NVI_CROSS_AC_PARAM += vi_cv_sys5_pty=no
+endif
 endif
 
 #
