@@ -104,7 +104,7 @@ $(PROCPS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-$(PROCPS_IPK): $(PROCPS_BUILD_DIR)/watch
+$(PROCPS_IPK): $(PROCPS_BUILD_DIR)/.built
 	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_$(TARGET_ARCH).ipk
 	mkdir -p $(PROCPS_IPK_DIR)/opt
 	mkdir -p $(PROCPS_IPK_DIR)/opt/bin
