@@ -266,7 +266,7 @@ DS101J_BROKEN_PACKAGES = \
 	atk bitlbee ctrlproxy giftcurs gkrellm irssi pango \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
-DS101G_SPECIFIC_PACKAGES = 
+DS101G_SPECIFIC_PACKAGES = perl
 
 # Packages that do not work for ds101g+.
 # elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
@@ -285,7 +285,7 @@ DS101G_BROKEN_PACKAGES = \
 	rsync \
 	ser \
 	bogofilter emacs xemacs hugs mzscheme ocaml \
-	perl perl-db-file perl-algorithm-diff perl-archive-tar \
+	perl-db-file perl-algorithm-diff perl-archive-tar \
 	perl-business-isbn perl-class-dbi \
 	perl-dbix-contextualfetch \
 	perl-digest-sha \
