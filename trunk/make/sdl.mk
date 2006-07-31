@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SDL_SITE=http://www.libsdl.org/release
-SDL_VERSION=1.2.8
+SDL_VERSION=1.2.11
 SDL_SOURCE=SDL-$(SDL_VERSION).tar.gz
 SDL_DIR=SDL-$(SDL_VERSION)
 SDL_UNZIP=zcat
@@ -138,6 +138,7 @@ $(SDL_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES)
 		--disable-video-svga \
 		--disable-video-opengl \
 		--disable-video-aalib \
+		--disable-video-fbcon \
 	)
 	$(PATCH_LIBTOOL) $(SDL_BUILD_DIR)/libtool
 	touch $(SDL_BUILD_DIR)/.configured
@@ -207,12 +208,13 @@ $(SDL_DEV_IPK_DIR)/CONTROL/control:
 $(SDL_IPK): $(SDL_BUILD_DIR)/.built
 	rm -rf $(SDL_IPK_DIR) $(BUILD_DIR)/sdl_*_$(TARGET_ARCH).ipk
 	rm -rf $(SDL_DEV_IPK_DIR) $(BUILD_DIR)/sdl-dev_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SDL_BUILD_DIR) DESTDIR=$(SDL_DEV_IPK_DIR) install-strip
+	$(MAKE) -C $(SDL_BUILD_DIR) DESTDIR=$(SDL_DEV_IPK_DIR) install
 	$(MAKE) $(SDL_DEV_IPK_DIR)/CONTROL/control
 	$(MAKE) $(SDL_IPK_DIR)/CONTROL/control
 	mkdir -p $(SDL_IPK_DIR)/opt
 	mv $(SDL_DEV_IPK_DIR)/opt/lib $(SDL_IPK_DIR)/opt
 	rm -f $(SDL_IPK_DIR)/opt/lib/libSDL.la
+	-$(STRIP_COMMAND) $(SDL_IPK_DIR)/opt/lib/*.so.*
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SDL_DEV_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SDL_IPK_DIR)
 
