@@ -4,7 +4,11 @@
 #
 ###########################################################
 
+ifeq ($(OPTWARE_TARGET), wl500g)
+PROCPS_VERSION=3.2.3
+else
 PROCPS_VERSION=3.2.7
+endif
 PROCPS=procps-$(PROCPS_VERSION)
 PROCPS_SITE=http://procps.sourceforge.net
 PROCPS_SOURCE_ARCHIVE=$(PROCPS).tar.gz
@@ -16,7 +20,7 @@ PROCPS_PRIORITY=optional
 PROCPS_DEPENDS=ncurses
 PROCPS_CONFLICTS=busybox-links
 
-PROCPS_IPK_VERSION=1
+PROCPS_IPK_VERSION=2
 
 PROCPS_BUILD_DIR=$(BUILD_DIR)/procps
 PROCPS_SOURCE_DIR=$(SOURCE_DIR)/procps
@@ -65,17 +69,19 @@ procps-unpack: $(PROCPS_BUILD_DIR)/.configured
 #
 # This builds the actual binary.
 #
-$(PROCPS_BUILD_DIR)/watch: $(PROCPS_BUILD_DIR)/.configured
+$(PROCPS_BUILD_DIR)/.built: $(PROCPS_BUILD_DIR)/.configured
+	rm -f $(PROCPS_BUILD_DIR)/.built
+	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(PROCPS_BUILD_DIR)	\
 	CC=$(TARGET_CC)			\
 	CPPFLAGS=$(PROCPS_CPPFLAGS)	\
 	LDFLAGS=$(PROCPS_LDFLAGS)	\
 	RANLIB=$(TARGET_RANLIB)
-
+	touch $(PROCPS_BUILD_DIR)/.built
 #
 # These are the dependencies for the binary.  
 #
-procps: ncurses $(PROCPS_BUILD_DIR)/watch
+procps: ncurses $(PROCPS_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -120,7 +126,7 @@ $(PROCPS_IPK): $(PROCPS_BUILD_DIR)/watch
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/w -o $(PROCPS_IPK_DIR)/opt/bin/w
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/watch
 	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/proc/libproc-3.2.3.so -o $(PROCPS_IPK_DIR)/opt/lib/libproc-3.2.3.so
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/proc/libproc-$(PROCPS_VERSION).so -o $(PROCPS_IPK_DIR)/opt/lib/libproc-$(PROCPS_VERSION).so
 	$(MAKE) $(PROCPS_IPK_DIR)/CONTROL/control
 	install -m 644 $(PROCPS_SOURCE_DIR)/postinst $(PROCPS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(PROCPS_SOURCE_DIR)/prerm $(PROCPS_IPK_DIR)/CONTROL/prerm
