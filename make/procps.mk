@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PROCPS_VERSION=3.2.3
+PROCPS_VERSION=3.2.7
 PROCPS=procps-$(PROCPS_VERSION)
 PROCPS_SITE=http://procps.sourceforge.net
 PROCPS_SOURCE_ARCHIVE=$(PROCPS).tar.gz
@@ -16,7 +16,7 @@ PROCPS_PRIORITY=optional
 PROCPS_DEPENDS=ncurses
 PROCPS_CONFLICTS=busybox-links
 
-PROCPS_IPK_VERSION=6
+PROCPS_IPK_VERSION=1
 
 PROCPS_BUILD_DIR=$(BUILD_DIR)/procps
 PROCPS_SOURCE_DIR=$(SOURCE_DIR)/procps
