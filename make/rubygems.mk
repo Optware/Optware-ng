@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/5207
-RUBYGEMS_VERSION=0.8.11
+RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/11289
+RUBYGEMS_VERSION=0.9.0
 RUBYGEMS_SOURCE=rubygems-$(RUBYGEMS_VERSION).tgz
 RUBYGEMS_DIR=rubygems-$(RUBYGEMS_VERSION)
 RUBYGEMS_UNZIP=zcat
