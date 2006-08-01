@@ -1,5 +1,5 @@
 --- buildroot.r15597/toolchain/uClibc/uClibc.config-locale	2006-07-14 01:15:53.000000000 +0200
-+++ buildroot/toolchain/uClibc/uClibc.config-locale	2006-07-19 10:45:27.000000000 +0200
++++ buildroot/toolchain/uClibc/uClibc.config-locale	2006-08-01 12:36:20.000000000 +0200
 @@ -32,11 +32,18 @@
  TARGET_ARCH="none"
  # ARCH_LITTLE_ENDIAN is not set
@@ -36,7 +36,7 @@
 -LDSO_RUNPATH=n
 -# DL_FINI_CRT_COMPAT is not set
 +LDSO_BASE_FILENAME="ld-opt.so"
-+# UCLIBC_STATIC_LDCONFIG is not set
++UCLIBC_STATIC_LDCONFIG=y
 +LDSO_RUNPATH=y
 +DL_FINI_CRT_COMPAT=y
  UCLIBC_CTOR_DTOR=y
