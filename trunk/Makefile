@@ -206,7 +206,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
-UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc 
+UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc ipkg
 
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
