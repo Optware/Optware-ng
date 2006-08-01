@@ -21,28 +21,23 @@
 #
 GIFT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gift
 GIFT_VERSION=0.11.8.1
-GIFT_VERSION_LIB=0.0.0
 GIFT_SOURCE=gift-$(GIFT_VERSION).tar.bz2
 GIFT_DIR=gift-$(GIFT_VERSION)
 GIFT_UNZIP=bzcat
 GIFT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 GIFT_SECTION=net
 GIFT_PRIORITY=optional
-ifeq ($(OPTWARE_TARGET),wl500g)
-GIFT_DEPENDS=libogg, libvorbis, libtool, microperl
-else
-GIFT_DEPENDS=libogg, libvorbis, libtool, perl
-endif
+GIFT_DEPENDS=libogg, libvorbis, libtool
 GIFT_DESCRIPTION=gIFt is a multi-platform multi-networks peer-to-peer client. gIFt runs as a daemon on the computer. It can be controlled using several interfaces.
 
 #
 # GIFT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFT_IPK_VERSION=3
+GIFT_IPK_VERSION=4
 
 #
 # GIFT_CONFFILES should be a list of user-editable files
-GIFT_CONFFILES=/opt/etc/gift.conf /opt/etc/init.d/SXXgift
+GIFT_CONFFILES=/opt/share/giFT/giftd.conf /opt/etc/init.d/S30giftd /usr/sbin/giftd_wrapper
 
 #
 # GIFT_PATCHES should list any patches, in the the order in
@@ -176,6 +171,10 @@ $(GIFT_IPK_DIR)/CONTROL/control:
 $(GIFT_IPK): $(GIFT_BUILD_DIR)/.built
 	rm -rf $(GIFT_IPK_DIR) $(BUILD_DIR)/gift_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(GIFT_IPK_DIR) install-strip
+	install -d $(GIFT_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(GIFT_SOURCE_DIR)/S30giftd $(GIFT_IPK_DIR)/opt/etc/init.d/S30giftd
+	install -d $(GIFT_IPK_DIR)/opt/sbin
+	install -m 755 $(GIFT_SOURCE_DIR)/giftd_wrapper $(GIFT_IPK_DIR)/opt/sbin
 	install -d $(GIFT_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_IPK_DIR)
