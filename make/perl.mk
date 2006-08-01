@@ -27,7 +27,7 @@ PERL_DESCRIPTION=perl language interpreter
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=4
+PERL_IPK_VERSION=5
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -105,27 +105,7 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 	sed -e 's:/usr/include/errno.h:$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/include/errno.h:g'\
 	> $(PERL_BUILD_DIR)/ext/Errno/tmp
 	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
-ifeq ($(OPTWARE_TARGET),ds101g)
-  ifneq ($(HOST_MACHINE),ppc)
-	export TARGET_CROSS=$(TARGET_CROSS); \
-	(cd $(PERL_BUILD_DIR); \
-		rm -f $(PERL_BUILD_DIR)/Cross/config; \
-		cp $(PERL_SOURCE_DIR)/Cross/config-ppc-linux $(PERL_BUILD_DIR)/Cross/config; \
-		rm -f $(PERL_BUILD_DIR)/Cross/Makefile.SH.patch; \
-		cp $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch $(PERL_BUILD_DIR)/Cross; \
-		rm -f $(PERL_BUILD_DIR)/Cross/Makefile; \
-		cp $(PERL_SOURCE_DIR)/Cross/Makefile $(PERL_BUILD_DIR)/Cross; \
-		sed -e 's:DESTDIR:$(PERL_IPK_DIR):g' \
-		<$(PERL_SOURCE_DIR)/Cross/config.sh-ppc-linux \
-		>$(PERL_BUILD_DIR)/Cross/config.sh-ppc-linux; \
-		(cd  $(PERL_BUILD_DIR)/Cross; \
-		 make patch) \
-	)
-  else
-	@echo "no native build, aborting."
-	@exit 2
-  endif
-else
+ifneq ($(OPTWARE_TARGET),ds101g)
 	(cd $(PERL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
@@ -159,8 +139,19 @@ $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
 	rm -f $(PERL_BUILD_DIR)/.built
 ifeq ($(OPTWARE_TARGET),ds101g)
   ifneq ($(HOST_MACHINE),ppc)
+	export TARGET_CROSS=$(TARGET_CROSS); \
 	(cd $(PERL_BUILD_DIR); \
-		(cd  $(PERL_BUILD_DIR)/Cross; export TARGET_CROSS=$(TARGET_CROSS); make perl) \
+		rm -f $(PERL_BUILD_DIR)/Cross/config; \
+		cp $(PERL_SOURCE_DIR)/Cross/config-ppc-linux $(PERL_BUILD_DIR)/Cross/config; \
+		rm -f $(PERL_BUILD_DIR)/Cross/Makefile.SH.patch; \
+		cp $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch $(PERL_BUILD_DIR)/Cross; \
+		rm -f $(PERL_BUILD_DIR)/Cross/Makefile; \
+		cp $(PERL_SOURCE_DIR)/Cross/Makefile $(PERL_BUILD_DIR)/Cross; \
+		sed -e 's:DESTDIR:$(PERL_IPK_DIR):g' \
+		<$(PERL_SOURCE_DIR)/Cross/config.sh-ppc-linux \
+		>$(PERL_BUILD_DIR)/Cross/config.sh-ppc-linux; \
+		(cd  $(PERL_BUILD_DIR)/Cross; \
+		 make patch; make perl) \
 	)
   else
 	@echo "no native build, aborting."
