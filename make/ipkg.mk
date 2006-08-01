@@ -9,7 +9,7 @@
 # for the package.  IPKG_DIR is the directory which is created when
 # this cvs module is checked out.
 #
-IPKG_REPOSITORY=:pserver:anoncvs@cvs.handhelds.org:/cvs
+IPKG_REPOSITORY=:pserver:anoncvs@anoncvs.handhelds.org
 IPKG_DIR=ipkg
 IPKG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPKG_DESCRIPTION=The Itsy Package Manager
@@ -23,14 +23,14 @@ IPKG_CONFLICTS=
 # Software downloaded from CVS repositories must either use a tag or a
 # date to ensure that the same sources can be downloaded later.
 #
-IPKG_CVS_TAG=V0-99-148
-IPKG_VERSION=0.99-148
+IPKG_CVS_TAG=v0-99-163
+IPKG_VERSION=0.99-163
 IPKG_CVS_OPTS=-r $(IPKG_CVS_TAG)
 
 #
 # IPKG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_IPK_VERSION=2
+IPKG_IPK_VERSION=1
 
 #
 # IPKG_CONFFILES should be a list of user-editable files
@@ -62,7 +62,9 @@ IPKG_IPK=$(BUILD_DIR)/ipkg_$(IPKG_VERSION)-$(IPKG_IPK_VERSION)_$(TARGET_ARCH).ip
 # which they should be applied to the source code.
 #
 IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patch $(IPKG_SOURCE_DIR)/update-alternatives.patch
-
+ifeq ($(LIBC_STYLE), uclibc)
+IPKG_PATCHES += $(IPKG_SOURCE_DIR)/ipkg_download.c.patch
+endif
 #
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
@@ -70,8 +72,11 @@ IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patc
 $(DL_DIR)/ipkg-$(IPKG_VERSION).tar.gz:
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(IPKG_DIR) && \
-		echo  "/1 :pserver:anoncvs@cvs.handhelds.org:2401/cvs Ay=0=h<Z" > ipkg.cvspass && \
-		CVS_PASSFILE=ipkg.cvspass cvs -d $(IPKG_REPOSITORY) -z3 co $(IPKG_CVS_OPTS) -d $(IPKG_DIR) familiar/dist/ipkg/C && \
+		echo  "/1 $(IPKG_REPOSITORY):2401/cvs Ay=0=h<Z" \
+			> ipkg.cvspass && \
+		CVS_PASSFILE=ipkg.cvspass \
+		cvs -d $(IPKG_REPOSITORY):/cvs -z3 co $(IPKG_CVS_OPTS) \
+			-d $(IPKG_DIR) familiar/dist/ipkg/C && \
 		tar -czf $@ $(IPKG_DIR) && \
 		rm -rf $(IPKG_DIR) \
 	)
@@ -108,13 +113,18 @@ $(IPKG_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-$(IPKG_VERSION).tar.gz
 		automake-1.9 -a -c; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPKG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IPKG_LDFLAGS)" \
-		PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
+		$(TARGET_CONFIGURE_OPTS) \
 		./configure \
-                --host=$(GNU_TARGET_NAME) \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--with-ipkglibdir=/opt/lib \
 		--prefix=/opt \
 		--disable-nls \
 	)
 	touch $(IPKG_BUILD_DIR)/.configured
+
+#		PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 
 ipkg-unpack: $(IPKG_BUILD_DIR)/.configured
 
@@ -123,8 +133,10 @@ ipkg-unpack: $(IPKG_BUILD_DIR)/.configured
 #
 $(IPKG_BUILD_DIR)/.built: $(IPKG_BUILD_DIR)/.configured
 	rm -f $(IPKG_BUILD_DIR)/.built
-	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" $(MAKE) -C $(IPKG_BUILD_DIR)
+	$(MAKE) -C $(IPKG_BUILD_DIR)
 	touch $(IPKG_BUILD_DIR)/.built
+
+#	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" 
 
 #
 # This is the build convenience target.
@@ -163,20 +175,15 @@ $(IPKG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(IPKG_IPK): $(IPKG_BUILD_DIR)/.built
-ifneq ($(OPTWARE_TARGET),ds101)
-ifneq ($(OPTWARE_TARGET),ds101g)
-ifneq ($(OPTWARE_TARGET),nas100d)
-	echo "This target may only be used for the DS-101* or NAS100d boxen!"
-	fail
-endif
-endif
-endif
+	echo "This target may only be used for the uclibc, DS-101* or NAS100d boxen!"
 	rm -rf $(IPKG_IPK_DIR) $(BUILD_DIR)/ipkg_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG_BUILD_DIR) DESTDIR=$(IPKG_IPK_DIR) install-strip
 	install -d $(IPKG_IPK_DIR)/opt/etc/
 	install -m 644 $(IPKG_SOURCE_DIR)/ipkg.conf $(IPKG_IPK_DIR)/opt/etc/ipkg.conf
+ifneq ($(LIBC_STYLE), uclibc)
 	echo "lists_dir ext /opt/var/lib/ipkg" >> $(IPKG_IPK_DIR)/opt/etc/ipkg.conf
+endif
 	rm $(IPKG_IPK_DIR)/opt/lib/*.a
 	rm $(IPKG_IPK_DIR)/opt/lib/*.la
 	rm -rf $(IPKG_IPK_DIR)/opt/include
