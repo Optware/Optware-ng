@@ -30,14 +30,14 @@ GNUPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPG_DESCRIPTION=GNU privacy guard - a free PGP replacement.
 GNUPG_SECTION=misc
 GNUPG_PRIORITY=optional
-GNUPG_DEPENDS=libusb, zlib-stage, readline, libcurl, openldap
+GNUPG_DEPENDS=libusb, zlib, readline, libcurl, openldap
 GNUPG_SUGGESTS=
 GNUPG_CONFLICTS=
 
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=2
+GNUPG_IPK_VERSION=3
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
