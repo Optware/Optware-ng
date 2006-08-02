@@ -202,7 +202,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango qemu qemu-libc-i386 rtorrent ser sm \
-	 swi-prolog transcode vte xauth xaw xchat \
+	 transcode vte xauth xaw xchat \
 	 xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
