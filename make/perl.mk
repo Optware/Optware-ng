@@ -27,7 +27,7 @@ PERL_DESCRIPTION=perl language interpreter
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=5
+PERL_IPK_VERSION=6
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -232,7 +232,14 @@ endif
 #
 # You may need to patch your application to make it use these locations.
 #
+
+ifeq ($(OPTWARE_TARGET),ds101g)
+# temporary hack, don't touch
+#
+$(PERL_IPK): perl-dirclean $(PERL_BUILD_DIR)/.configured $(PERL_BUILD_DIR)/.built
+else
 $(PERL_IPK): $(PERL_BUILD_DIR)/.built
+endif
 	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_$(TARGET_ARCH).ipk
 ifeq ($(OPTWARE_TARGET),ds101g)
   ifneq ($(HOST_MACHINE),ppc)
