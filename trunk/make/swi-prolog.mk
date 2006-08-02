@@ -23,7 +23,7 @@
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
 ifneq ($(OPTWARE_TARGET),wl500g)
-SWI-PROLOG_VERSION=5.6.16
+SWI-PROLOG_VERSION=5.6.17
 else
 # 5.6.x requires wchar
 SWI-PROLOG_VERSION=5.4.7
