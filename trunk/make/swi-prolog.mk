@@ -42,7 +42,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=1
+SWI-PROLOG_IPK_VERSION=2
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -62,9 +62,12 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SWI-PROLOG_TARGET=$(shell $(TARGET_CC) -dumpmachine | sed 's/-.*//')-$(TARGET_OS)
+SWI-PROLOG_TARGET=$(shell $(TARGET_CC) -dumpmachine | sed 's/-.*//')-linux
 SWI-PROLOG_CPPFLAGS=
 SWI-PROLOG_LDFLAGS=-L$(SWI-PROLOG_BUILD_DIR)/lib/$(SWI-PROLOG_TARGET)
+ifeq ($(LIBC_STYLE), uclibc)
+SWI-PROLOG_LDFLAGS += -lpthread
+endif
 
 SWI-PROLOG_PL=swipl
 
@@ -177,7 +180,7 @@ endif
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt make/swi-prolog.mk
+$(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt 
 	@echo "=============== target swi-prolog configure ============"
 	$(MAKE) libgmp-stage ncurses-stage openssl-stage readline-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
