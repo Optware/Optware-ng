@@ -52,7 +52,7 @@ NZBGET_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NZBGET_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
+NZBGET_CPPFLAGS=
 NZBGET_LDFLAGS=
 
 #
@@ -123,6 +123,10 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-stl-includes=$(STAGING_INCLUDE_DIR) \
+		--with-stl-libraries=$(STAGING_LIB_DIR) \
+		--with-libxml2-includes=$(STAGING_INCLUDE_DIR)/libxml2 \
+		--with-libxml2-libraries=$(STAGING_LIB_DIR) \
 	)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
 		$(NZBGET_BUILD_DIR)/Makefile
