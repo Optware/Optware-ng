@@ -64,7 +64,7 @@ COMMON_CROSS_PACKAGES = \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
 	monotone mrtg mtr mutt \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
-	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
+	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
 	opencdk oww openssh openssl openvpn \
 	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
