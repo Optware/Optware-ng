@@ -186,7 +186,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ecl elinks erlang ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gtk hnb ice \
 	 id3lib iperf iptables ivorbis-tools jabber jamvm jikes \
-	 ldconfig libdvb libftdi liblcms libtorrent libvorbisidec lsof \
+	 ldconfig lftp libdvb libftdi liblcms libtorrent libvorbisidec lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
