@@ -241,7 +241,7 @@ DS101_BROKEN_PACKAGES = \
 	imagemagick \
 	ldconfig libstdc++ lighttpd \
 	mc mod-fastcgi mod-python monotone mysql \
-	net-tools \
+	net-tools nzbget \
 	php php-apache \
 	py-mysql \
 	qemu qemu-libc-i386 \
