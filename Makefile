@@ -239,7 +239,7 @@ DS101_BROKEN_PACKAGES = \
 	ctcs ctorrent cyrus-sasl eaccelerator \
 	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
-	ldconfig libstdc++ lighttpd \
+	ldconfig lftp libstdc++ lighttpd \
 	mc mod-fastcgi mod-python monotone mysql \
 	net-tools nzbget \
 	php php-apache \
