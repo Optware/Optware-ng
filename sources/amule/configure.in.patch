@@ -1,0 +1,10 @@
+--- amule/configure.in.orig	2006-08-04 23:02:55.000000000 -0700
++++ amule/configure.in	2006-08-04 23:03:06.000000000 -0700
+@@ -234,7 +234,6 @@
+ 		equivalent variable and wxWidgets version is 2.6.0 or above.
+ 	])
+ fi
+-AM_WXCONFIG_LARGEFILE
+ 
+ GET_WX_VERSION
+ 
