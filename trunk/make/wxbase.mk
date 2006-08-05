@@ -21,7 +21,7 @@
 #
 # WXBASE_SITE=ftp://biolpc22.york.ac.uk/pub/2.5.3/
 WXBASE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wxwindows
-WXBASE_VERSION=2.5.3
+WXBASE_VERSION=2.6.3
 WXBASE_SOURCE=wxBase-$(WXBASE_VERSION).tar.bz2
 WXBASE_DIR=wxBase-$(WXBASE_VERSION)
 WXBASE_UNZIP=bzcat
@@ -35,7 +35,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=3
+WXBASE_IPK_VERSION=1
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -98,7 +98,7 @@ wxbase-source: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
-##	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(WXBASE_DIR) $(WXBASE_BUILD_DIR)
 	$(WXBASE_UNZIP) $(DL_DIR)/$(WXBASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 ##	cat $(WXBASE_PATCHES) | patch -d $(BUILD_DIR)/$(WXBASE_DIR) -p1
@@ -111,8 +111,9 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-zlib=no \
-		--disable-fs_zip \
+		--with-zlib=sys \
+		--with-expat=builtin \
+		--enable-largefile \
 		--without-sdl \
 		--prefix=/opt \
 	)
@@ -136,23 +137,13 @@ wxbase: $(WXBASE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libwx_base-2.5.so.3.0.0: $(WXBASE_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/bin
-	install -m 755 $(WXBASE_BUILD_DIR)/wx-config $(STAGING_DIR)/opt/bin
-	install -d $(STAGING_DIR)/opt/include
-	cp -r $(WXBASE_BUILD_DIR)/include/wx $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(WXBASE_BUILD_DIR)/lib/libwx_base-2.5.so.3.0.0 $(STAGING_DIR)/opt/lib
-	install -m 644 $(WXBASE_BUILD_DIR)/lib/libwx_base_net-2.5.so.3.0.0 $(STAGING_DIR)/opt/lib
-	install -m 644 $(WXBASE_BUILD_DIR)/lib/libwx_base_xml-2.5.so.3.0.0 $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libwx_base-2.5.so.3.0.0 libwx_base-2.5.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libwx_base-2.5.so.3.0.0 libwx_base-2.5.so
-	cd $(STAGING_DIR)/opt/lib && ln -fs libwx_base_net-2.5.so.3.0.0 libwx_base_net-2.5.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libwx_base_net-2.5.so.3.0.0 libwx_base_net-2.5.so
-	cd $(STAGING_DIR)/opt/lib && ln -fs libwx_base_xml-2.5.so.3.0.0 libwx_base_xml-2.5.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libwx_base_xml-2.5.so.3.0.0 libwx_base_xml-2.5.so.3
+$(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
+	rm -f $(WXBASE_BUILD_DIR)/.staged
+	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	install $(WXBASE_BUILD_DIR)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx/
+	touch $(WXBASE_BUILD_DIR)/.staged
 
-wxbase-stage: $(STAGING_DIR)/opt/lib/libwx_base-2.5.so.3.0.0
+wxbase-stage: $(WXBASE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
