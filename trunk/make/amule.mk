@@ -3,12 +3,6 @@
 # amule
 #
 ###########################################################
-
-# You must replace "amule" and "AMULE" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # AMULE_VERSION, AMULE_SITE and AMULE_SOURCE define
 # the upstream location of the source code for the package.
@@ -18,31 +12,49 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
-# AMULE_SITE=http://download.berlios.de/amule/
-# AMULE_VERSION=2.0.0rc8
-# AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
-# AMULE_DIR=aMule-$(AMULE_VERSION)
-
-AMULE_SITE=http://amule.hirnriss.net/cvs/
-AMULE_VERSION=cvs-20050125
-AMULE_PRD_VERSION=2.0.0rc8
+AMULE_SITE=http://download.berlios.de/amule
+AMULE_VERSION=2.1.3
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
-AMULE_DIR=amule-cvs
+AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
+AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd)
+AMULE_SECTION=net
+AMULE_PRIORITY=optional
+AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl
+AMULE_SUGGESTS=
+AMULE_CONFLICTS=
 
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
 AMULE_IPK_VERSION=1
 
+#
+# AMULE_CONFFILES should be a list of user-editable files
+## AMULE_CONFFILES=/opt/etc/amule.conf /opt/etc/init.d/SXXamule
+
+#
+# AMULE_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-AMULE_CPPFLAGS=-DDEBUG_SERVER_PROTOCOL
+AMULE_CPPFLAGS=
 AMULE_LDFLAGS=
+
 #
 # AMULE_BUILD_DIR is the directory in which the build is done.
 # AMULE_SOURCE_DIR is the directory which holds all the
@@ -54,20 +66,9 @@ AMULE_LDFLAGS=
 #
 AMULE_BUILD_DIR=$(BUILD_DIR)/amule
 AMULE_SOURCE_DIR=$(SOURCE_DIR)/amule
-AMULE_IPK_DIR=$(BUILD_DIR)/amule-$(AMULE_PRD_VERSION)-ipk
-AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_PRD_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
+AMULE_IPK_DIR=$(BUILD_DIR)/amule-$(AMULE_VERSION)-ipk
+AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-#
-# AMULE_PATCHES should list any patches, in the the order in
-# which they should be applied to the source code.
-#
-AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.patch \
-		$(AMULE_SOURCE_DIR)/arm_pragma_pack.patch \
-		$(AMULE_SOURCE_DIR)/arm_alignment.patch \
-		$(AMULE_SOURCE_DIR)/arm_int64_to_float_cast.patch \
-		$(AMULE_SOURCE_DIR)/emule_protocol.patch \
-		$(AMULE_SOURCE_DIR)/arm_big_endian.patch
-# AMULE_PATCHES=
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -87,50 +88,68 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
+#
 # This target also configures the build within the build directory.
 # Flags such as LDFLAGS and CPPFLAGS should be passed into configure
 # and NOT $(MAKE) below.  Passing it to configure causes configure to
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
 #
-$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) 
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(AMULE_PATCHES) | patch -d $(BUILD_DIR)/$(AMULE_DIR) -p1
-	mv $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR)
+	if test -n "$(AMULE_PATCHES)" ; \
+		then cat $(AMULE_PATCHES) | \
+		patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(AMULE_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) ; \
+	fi
 	(cd $(AMULE_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AMULE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AMULE_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
-		--with-wxbase-config=$(STAGING_DIR)/opt/bin/wx-config \
-		--with-wx-config=$(STAGING_DIR)/opt/bin/wx-config \
-		--with-zlib=yes \
 		--prefix=/opt \
-		--enable-amulecmd \
+		--disable-debug \
+		--enable-optimize \
+		--with-zlib=yes \
+		--enable-alcc \
 		--enable-amule-daemon \
 		--enable-webserver \
+		--enable-amulecmd \
 		--disable-monolithic \
 		--disable-alc \
-		--disable-wxcas \
-		--disable-alcc \
 		--disable-amulecmdgui \
 		--disable-cas \
 		--disable-wxcas \
 		--disable-systray \
+		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
+		--with-wxbase-config=$(STAGING_DIR)/opt/bin/wx-config \
+		--with-wx-config=$(STAGING_DIR)/opt/bin/wx-config \
+		--disable-nls \
+		--disable-static \
 	)
+##	$(PATCH_LIBTOOL) $(AMULE_BUILD_DIR)/libtool
 	touch $(AMULE_BUILD_DIR)/.configured
 
 amule-unpack: $(AMULE_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
 $(AMULE_BUILD_DIR)/.built: $(AMULE_BUILD_DIR)/.configured
 	rm -f $(AMULE_BUILD_DIR)/.built
@@ -138,28 +157,62 @@ $(AMULE_BUILD_DIR)/.built: $(AMULE_BUILD_DIR)/.configured
 	touch $(AMULE_BUILD_DIR)/.built
 
 #
-# These are the dependencies for the package.  Again, you should change
-# the final dependency to refer directly to the main binary which is built.
+# This is the build convenience target.
 #
 amule: $(AMULE_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
+$(AMULE_BUILD_DIR)/.staged: $(AMULE_BUILD_DIR)/.built
+	rm -f $(AMULE_BUILD_DIR)/.staged
+	$(MAKE) -C $(AMULE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(AMULE_BUILD_DIR)/.staged
+
+amule-stage: $(AMULE_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/amule
+#
+$(AMULE_IPK_DIR)/CONTROL/control:
+	@install -d $(AMULE_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: amule" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(AMULE_PRIORITY)" >>$@
+	@echo "Section: $(AMULE_SECTION)" >>$@
+	@echo "Version: $(AMULE_VERSION)-$(AMULE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(AMULE_MAINTAINER)" >>$@
+	@echo "Source: $(AMULE_SITE)/$(AMULE_SOURCE)" >>$@
+	@echo "Description: $(AMULE_DESCRIPTION)" >>$@
+	@echo "Depends: $(AMULE_DEPENDS)" >>$@
+	@echo "Suggests: $(AMULE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(AMULE_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
+# Binaries should be installed into $(AMULE_IPK_DIR)/opt/sbin or $(AMULE_IPK_DIR)/opt/bin
+# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Libraries and include files should be installed into $(AMULE_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(AMULE_IPK_DIR)/opt/etc/amule/...
+# Documentation files should be installed in $(AMULE_IPK_DIR)/opt/doc/amule/...
+# Daemon startup scripts should be installed in $(AMULE_IPK_DIR)/opt/etc/init.d/S??amule
+#
+# You may need to patch your application to make it use these locations.
+#
 $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
 	rm -rf $(AMULE_IPK_DIR) $(BUILD_DIR)/amule_*_$(TARGET_ARCH).ipk
-	install -d $(AMULE_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(AMULE_BUILD_DIR)/src/amuled -o $(AMULE_IPK_DIR)/opt/bin/amuled
-	$(STRIP_COMMAND) $(AMULE_BUILD_DIR)/src/amulecmd -o $(AMULE_IPK_DIR)/opt/bin/amulecmd
-	$(STRIP_COMMAND) $(AMULE_BUILD_DIR)/src/amuleweb -o $(AMULE_IPK_DIR)/opt/bin/amuleweb
-	install -d $(AMULE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(AMULE_SOURCE_DIR)/rc.amuled  $(AMULE_IPK_DIR)/opt/etc/init.d/S91amuled
-	install -m 755 $(AMULE_SOURCE_DIR)/rc.amuleweb $(AMULE_IPK_DIR)/opt/etc/init.d/S92amuleweb
-	install -d $(AMULE_IPK_DIR)/CONTROL
-	install -m 644 $(AMULE_SOURCE_DIR)/control $(AMULE_IPK_DIR)/CONTROL/control
+	$(MAKE) -C $(AMULE_BUILD_DIR) DESTDIR=$(AMULE_IPK_DIR) program_transform_name=s/^$(GNU_TARGET_NAME)-// install-strip
+#	install -d $(AMULE_IPK_DIR)/opt/etc/
+#	install -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE_IPK_DIR)/opt/etc/amule.conf
+#	install -d $(AMULE_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(AMULE_SOURCE_DIR)/rc.amule $(AMULE_IPK_DIR)/opt/etc/init.d/SXXamule
+	$(MAKE) $(AMULE_IPK_DIR)/CONTROL/control
+#	install -m 755 $(AMULE_SOURCE_DIR)/postinst $(AMULE_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(AMULE_SOURCE_DIR)/prerm $(AMULE_IPK_DIR)/CONTROL/prerm
+	echo $(AMULE_CONFFILES) | sed -e 's/ /\n/g' > $(AMULE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AMULE_IPK_DIR)
 
 #
@@ -171,11 +224,12 @@ amule-ipk: $(AMULE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 amule-clean:
+	rm -f $(AMULE_BUILD_DIR)/.built
 	-$(MAKE) -C $(AMULE_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-amule-dirclean: amule-clean
-	rm -rf $(AMULE_BUILD_DIR) $(AMULE_IPK_DIR) $(AMULE_IPK)
+amule-dirclean:
+	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) $(AMULE_IPK_DIR) $(AMULE_IPK)
