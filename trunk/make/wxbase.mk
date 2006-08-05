@@ -113,6 +113,7 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--with-zlib=sys \
 		--with-expat=builtin \
+		--with-regex=builtin \
 		--enable-largefile \
 		--without-sdl \
 		--prefix=/opt \
@@ -140,7 +141,8 @@ wxbase: $(WXBASE_BUILD_DIR)/.built
 $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -f $(WXBASE_BUILD_DIR)/.staged
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	install $(WXBASE_BUILD_DIR)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx/
+	install -d $(STAGING_INCLUDE_DIR)/wx/
+	cp $(WXBASE_BUILD_DIR)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx/
 	touch $(WXBASE_BUILD_DIR)/.staged
 
 wxbase-stage: $(WXBASE_BUILD_DIR)/.staged
@@ -177,19 +179,7 @@ $(WXBASE_IPK_DIR)/CONTROL/control:
 #
 $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 	rm -rf $(WXBASE_IPK_DIR) $(BUILD_DIR)/wxbase_*_$(TARGET_ARCH).ipk
-	install -d $(WXBASE_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(WXBASE_BUILD_DIR)/lib/libwx_base-2.5.so.3.0.0  \
-		-o $(WXBASE_IPK_DIR)/opt/lib/libwx_base-2.5.so.3.0.0
-	$(STRIP_COMMAND) $(WXBASE_BUILD_DIR)/lib/libwx_base_xml-2.5.so.3.0.0 \
-		-o $(WXBASE_IPK_DIR)/opt/lib/libwx_base_xml-2.5.so.3.0.0
-	$(STRIP_COMMAND) $(WXBASE_BUILD_DIR)/lib/libwx_base_net-2.5.so.3.0.0 \
-		-o $(WXBASE_IPK_DIR)/opt/lib/libwx_base_net-2.5.so.3.0.0
-	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base-2.5.so.3.0.0 libwx_base-2.5.so.3
-	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base-2.5.so.3.0.0 libwx_base-2.5.so
-	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_net-2.5.so.3.0.0 libwx_base_net-2.5.so.3
-	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_net-2.5.so.3.0.0 libwx_base_net-2.5.so
-	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_xml-2.5.so.3.0.0 libwx_base_xml-2.5.so.3
-	cd $(WXBASE_IPK_DIR)/opt/lib && ln -fs libwx_base_xml-2.5.so.3.0.0 libwx_base_xml-2.5.so.3
+	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(WXBASE_IPK_DIR) install
 	$(MAKE) $(WXBASE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WXBASE_IPK_DIR)
 
