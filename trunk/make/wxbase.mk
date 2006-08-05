@@ -142,7 +142,7 @@ $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -f $(WXBASE_BUILD_DIR)/.staged
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_INCLUDE_DIR)/wx/
-	cp $(WXBASE_BUILD_DIR)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx/
+	cp $(STAGING_LIB_DIR)/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx/
 	touch $(WXBASE_BUILD_DIR)/.staged
 
 wxbase-stage: $(WXBASE_BUILD_DIR)/.staged
@@ -179,8 +179,10 @@ $(WXBASE_IPK_DIR)/CONTROL/control:
 #
 $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 	rm -rf $(WXBASE_IPK_DIR) $(BUILD_DIR)/wxbase_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(WXBASE_IPK_DIR) install
+	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(WXBASE_IPK_DIR) install-strip
 	$(MAKE) $(WXBASE_IPK_DIR)/CONTROL/control
+	cd $(WXBASE_IPK_DIR)/opt/bin; rm -rf wx-config; \
+		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WXBASE_IPK_DIR)
 
 #
