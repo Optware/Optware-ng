@@ -140,6 +140,7 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
 		--with-wxbase-config=$(STAGING_DIR)/opt/bin/wx-config \
 		--with-wx-config=$(STAGING_DIR)/opt/bin/wx-config \
+		--with-wx-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -153,7 +154,7 @@ amule-unpack: $(AMULE_BUILD_DIR)/.configured
 #
 $(AMULE_BUILD_DIR)/.built: $(AMULE_BUILD_DIR)/.configured
 	rm -f $(AMULE_BUILD_DIR)/.built
-	$(MAKE) -C $(AMULE_BUILD_DIR)
+	$(MAKE) -C $(AMULE_BUILD_DIR) HOSTCC=$(HOSTCC)
 	touch $(AMULE_BUILD_DIR)/.built
 
 #
