@@ -38,7 +38,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 	perl-dbd-mysql \
 
 COMMON_CROSS_PACKAGES = \
-	abook adduser adns alac-decoder antinat appweb asterisk asterisk-sounds \
+	abook adduser adns alac-decoder amule antinat appweb asterisk asterisk-sounds \
 	apache apr apr-util atftp atk audiofile autoconf automake \
 	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
@@ -182,7 +182,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 asterisk atk bitlbee bsdmainutils bzflag dcraw dict \
+	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict \
 	 ecl elinks erlang ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gtk hnb ice \
 	 id3lib iperf iptables ivorbis-tools jabber jamvm jikes \
@@ -213,7 +213,7 @@ MSS_SPECIFIC_PACKAGES =
 
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
-	apache apr-util asterisk \
+	amule apache apr-util asterisk \
 	bitlbee \
 	clamav \
 	elinks erlang \
