@@ -235,7 +235,7 @@ DS101_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ds101.
 DS101_BROKEN_PACKAGES = \
-	adns apache appweb apr-util \
+	adns amule apache appweb apr-util \
 	atftp bash bitchx bzflag \
 	ctcs ctorrent cyrus-sasl eaccelerator \
 	enhanced-ctorrent freeradius hexcurse \
