@@ -191,7 +191,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
 	 sdl ser sm snownews sqsh sudo swi-prolog \
-	 tethereal transcode unrar vte w3m wget-ssl x11 \
+	 tethereal transcode unrar vte w3m wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst \
 
@@ -228,6 +228,7 @@ MSS_BROKEN_PACKAGES = \
 	sablevm svn \
 	transcode \
 	tethereal \
+	wxbase \
 
 # Packages that *only* work for ds101 - do not just put new packages here.
 DS101_SPECIFIC_PACKAGES = 
