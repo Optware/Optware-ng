@@ -40,7 +40,7 @@ BC_DEPENDS=
 #
 # BC_IPK_VERSION should be incremented when the ipk changes.
 #
-BC_IPK_VERSION=1
+BC_IPK_VERSION=2
 
 #
 # BC_CONFFILES should be a list of user-editable files
@@ -109,6 +109,7 @@ $(BC_BUILD_DIR)/.configured: $(DL_DIR)/$(BC_SOURCE) $(BC_PATCHES)
 	#cat $(BC_PATCHES) | patch -d $(BUILD_DIR)/$(BC_DIR) -p1
 	mv $(BUILD_DIR)/$(BC_DIR) $(BC_BUILD_DIR)
 	(cd $(BC_BUILD_DIR); \
+		sed -i -e 's/program.*save/static &/' bc/load.c; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BC_LDFLAGS)" \
