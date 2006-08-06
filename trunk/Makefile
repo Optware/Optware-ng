@@ -42,8 +42,8 @@ COMMON_CROSS_PACKAGES = \
 	apache apr apr-util atftp atk audiofile autoconf automake \
 	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
-	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clips \
-	cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
+	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clearsilver \
+	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
 	expat extract-xiso \
