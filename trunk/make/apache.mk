@@ -29,7 +29,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=2
+APACHE_IPK_VERSION=3
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
