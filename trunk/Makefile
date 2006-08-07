@@ -62,7 +62,7 @@ COMMON_CROSS_PACKAGES = \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
 	m4 mailman make mc miau minicom mktemp modutils monit mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
-	monotone mrtg mtr mutt \
+	monotone mpage mrtg mtr mutt \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	opencdk oww openssh openssl openvpn \
