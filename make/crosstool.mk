@@ -99,6 +99,8 @@ $(CROSSTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL_SOURCE) $(CROSSTOOL_PA
 	cp $(CROSSTOOL_SOURCE_DIR)/*.dat $(CROSSTOOL_BUILD_DIR)
 	cp $(CROSSTOOL_SOURCE_DIR)/powerpc-603e.config $(CROSSTOOL_BUILD_DIR)
 	mkdir -p $(CROSSTOOL_BUILD_DIR)/patches/$(CROSS_CONFIGURATION_GCC)
+	# gcc 4.1.1 patch: https://trac.nslu2-linux.org/optware/ticket/1
+	sed -i '/+/s/4.0\*/4.0\*\|4.1\*/' $(CROSSTOOL_BUILD_DIR)/patches/glibc-2.2.5/glibc-2.2.5-allow-gcc-4.0-configure.patch
 	# these patches are required for gcc-3.3.5 to work with optware/unslung
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.5
 	cp $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.4.3/fix-fixincl.patch $(CROSSTOOL_BUILD_DIR)/patches/gcc-3.3.4
