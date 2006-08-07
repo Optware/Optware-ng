@@ -36,7 +36,7 @@ CLEARSILVER_CONFLICTS=
 #
 # CLEARSILVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CLEARSILVER_IPK_VERSION=2
+CLEARSILVER_IPK_VERSION=3
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
@@ -124,7 +124,6 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 		echo "install_scripts=/opt/bin"; \
 	    ) > python/setup.cfg; \
 	)
-ifneq ($(OPTWARE_TARGET),ds101g)
 	(cd $(CLEARSILVER_BUILD_DIR); \
 		sed -i \
 		    -e 's/^LDSHARED.*/& @LDFLAGS@/' \
@@ -150,33 +149,6 @@ ifneq ($(OPTWARE_TARGET),ds101g)
 		--disable-static \
 		; \
 	)
-else
-	(cd $(CLEARSILVER_BUILD_DIR); \
-		sed -i \
-		    -e 's/^LDSHARED.*/& @LDFLAGS@/' \
-		    -e '/^LD/s/$$(CC) -o/$$(CC) @LDFLAGS@ -o/' \
-		    rules.mk.in; \
-		sed -i -e '/^TARGETS.* test$$/s/ test$$//' cs/Makefile; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLEARSILVER_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(CLEARSILVER_LDFLAGS)" \
-		PYTHON_SITE="/opt/lib/python2.4/site-packages" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-apache \
-		--disable-csharp \
-		--disable-java \
-		--disable-perl \
-		--disable-python \
-		--disable-ruby \
-		--disable-nls \
-		--disable-static \
-		; \
-	)
-endif
 #	$(PATCH_LIBTOOL) $(CLEARSILVER_BUILD_DIR)/libtool
 	touch $(CLEARSILVER_BUILD_DIR)/.configured
 
