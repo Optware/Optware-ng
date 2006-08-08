@@ -36,7 +36,7 @@ DSPAM_CONFLICTS=
 #
 # DSPAM_IPK_VERSION should be incremented when the ipk changes.
 #
-DSPAM_IPK_VERSION=1
+DSPAM_IPK_VERSION=2
 
 #
 # DSPAM_CONFFILES should be a list of user-editable files
@@ -238,9 +238,11 @@ $(DSPAM_IPK): $(DSPAM_BUILD_DIR)/.built
 	install -d $(DSPAM_PGSQL_IPK_DIR)/opt/lib
 	mv $(DSPAM_IPK_DIR)/opt/lib/libpgsql* $(DSPAM_PGSQL_IPK_DIR)/opt/lib
 	$(MAKE) $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_PGSQL_IPK_DIR)
 	install -d $(DSPAM_MYSQL_IPK_DIR)/opt/lib
 	mv $(DSPAM_IPK_DIR)/opt/lib/libmysql* $(DSPAM_MYSQL_IPK_DIR)/opt/lib
 	$(MAKE) $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_MYSQL_IPK_DIR)
 
 	$(MAKE) $(DSPAM_IPK_DIR)/CONTROL/control
 #	install -m 755 $(DSPAM_SOURCE_DIR)/postinst $(DSPAM_IPK_DIR)/CONTROL/postinst
