@@ -53,7 +53,7 @@ DSPAM_PATCHES=$(DSPAM_SOURCE_DIR)/dspam-configure-cross.patch
 # compilation or linking flags, then list them here.
 #
 DSPAM_CPPFLAGS=
-DSPAM_LDFLAGS=-lz -lssl -lcrypto
+DSPAM_LDFLAGS=
 
 #
 # DSPAM_BUILD_DIR is the directory in which the build is done.
