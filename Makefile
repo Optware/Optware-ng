@@ -91,7 +91,7 @@ COMMON_CROSS_PACKAGES = \
 	sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
-	tin torrent transcode tsocks \
+	tin torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
 	ufsd unfs3 units unrar \
 	unzip usbutils ushare \
