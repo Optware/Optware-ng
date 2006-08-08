@@ -29,7 +29,8 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	motion
+	dspam \
+	
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -60,7 +61,7 @@ COMMON_CROSS_PACKAGES = \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
-	m4 mailman make mc miau minicom mktemp modutils monit mt-daapd mysql \
+	m4 mailman make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
 	monotone mpage mrtg mtr mutt \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip net-tools netio nfs-server nfs-utils \
