@@ -242,7 +242,7 @@ DS101_BROKEN_PACKAGES = \
 	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
 	ldconfig lftp libstdc++ lighttpd \
-	mc mod-fastcgi mod-python monotone mysql \
+	mc mod-fastcgi mod-python monotone motion mysql \
 	net-tools nzbget \
 	php php-apache \
 	py-mysql \
