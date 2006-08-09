@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.15
+DNSMASQ_VERSION=2.33
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
@@ -16,7 +16,7 @@ DNSMASQ_PRIORITY=optional
 DNSMASQ_DEPENDS=
 DNSMASQ_CONFLICTS=
 
-DNSMASQ_IPK_VERSION=6
+DNSMASQ_IPK_VERSION=1
 
 DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch
 
@@ -71,7 +71,7 @@ $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/src/dnsmasq
 	install -m 644 $(DNSMASQ_SOURCE_DIR)/postinst $(DNSMASQ_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(DNSMASQ_SOURCE_DIR)/prerm $(DNSMASQ_IPK_DIR)/CONTROL/prerm
 	install -d $(DNSMASQ_IPK_DIR)/opt/man/man8 $(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq
-	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.8  $(DNSMASQ_IPK_DIR)/opt/man/man8/dnsmasq.8
+	install -m 644 $(DNSMASQ_BUILD_DIR)/man/dnsmasq.8  $(DNSMASQ_IPK_DIR)/opt/man/man8/dnsmasq.8
 	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example \
 		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/dnsmasq.conf.example
 	install -m 644 $(DNSMASQ_BUILD_DIR)/doc.html \
