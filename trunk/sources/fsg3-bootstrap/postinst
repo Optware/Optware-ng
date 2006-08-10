@@ -32,7 +32,7 @@ then
 fi
 
 
-if ! grep 'mount -o bind /home/opt /opt' /etc/rc.local >/dev/null 2>&1
+if ! grep 'mount -o bind /home/optware /opt' /etc/rc.local >/dev/null 2>&1
 then
   echo "Modifying /etc/rc.local"
   [ ! -e /etc/rc.local ] && echo "#!/bin/sh" >/etc/rc.local
@@ -40,7 +40,7 @@ then
 
 # Optware setup
 mkdir -p /opt
-[ -e /home/opt ] && mount -o bind /home/opt /opt
+[ -e /home/optware ] && mount -o bind /home/optware /opt
 [ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
 [ -e /bin/killall ] || ln -s /bin/busybox /bin/killall
 EOF
