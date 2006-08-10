@@ -2,7 +2,7 @@
 #
 # fsg3-bootstrap
 #
-# Creates an ipk for bootstrapping the DS-101. Also
+# Creates an ipk for bootstrapping the Freecom FSG-3. Also
 # includes missing GLIBC libraries
 #
 ###########################################################
@@ -26,9 +26,9 @@ FSG3_BOOTSTRAP_IPK=$(BUILD_DIR)/fsg3-bootstrap_$(FSG3_BOOTSTRAP_VERSION)-$(FSG3_
 FSG3_BOOTSTRAP_XSH=$(BUILD_DIR)/fsg3-bootstrap_$(FSG3_BOOTSTRAP_VERSION)-$(FSG3_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
 
 # Additional ipk's we require
-FSG3_IPKG_IPK=ipkg_0.99-148-?_$(TARGET_ARCH).ipk
+FSG3_IPKG_IPK=ipkg_0.99-163-?_$(TARGET_ARCH).ipk
 FSG3_OPENSSL_IPK=openssl_0.9.7d-?_$(TARGET_ARCH).ipk
-FSG3_WGET_SSL_IPK=wget-ssl_1.10-?_$(TARGET_ARCH).ipk
+FSG3_WGET_SSL_IPK=wget-ssl_1.10.2-?_$(TARGET_ARCH).ipk
 
 
 $(FSG3_BOOTSTRAP_BUILD_DIR)/.configured: $(FSG3_BOOTSTRAP_PATCHES)
@@ -111,11 +111,11 @@ $(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	cp $(BUILD_DIR)/$(FSG3_WGET_SSL_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	cp $(FSG3_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(FSG3_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
-	
+
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's bs= argument, otherwise the self-
 	# extracting archive will break! Using tail+n would be much simpler
-	# but the tail command available on the DS-101 doesn't support this.
+	# but the tail command available on the FSG-3 doesn't support this.
 	echo "#!/bin/sh" >$@
 	echo 'echo "FSG-3 Bootstrap extracting archive... please wait"' >>$@
 	echo 'dd if=$$0 bs=180 skip=1| tar xvz' >>$@

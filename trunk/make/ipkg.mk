@@ -175,7 +175,7 @@ $(IPKG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(IPKG_IPK): $(IPKG_BUILD_DIR)/.built
-	echo "This target may only be used for the uclibc, DS-101* or NAS100d boxen!"
+	echo "This target may only be used for the uclibc, FSG-3, DS-101* or NAS100d boxen!"
 	rm -rf $(IPKG_IPK_DIR) $(BUILD_DIR)/ipkg_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG_BUILD_DIR) DESTDIR=$(IPKG_IPK_DIR) install-strip
