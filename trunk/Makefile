@@ -20,7 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "ddwrt", "oleg", "ds101", "ds101j", "ds101g", "mss"  and "nas100d"
+# Options are "nslu2", "wl500g", "ddwrt", "oleg", "ds101", "ds101j", "ds101g", "mss", "nas100d" and "fsg3"
 OPTWARE_TARGET ?= nslu2
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	dspam \
-	
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -310,6 +309,25 @@ NAS100D_SPECIFIC_PACKAGES = ipkg
 # Packages that do not work for nas100d.
 NAS100D_BROKEN_PACKAGES = 
 
+# Packages that *only* work for fsg3 - do not just put new packages here.
+FSG3_SPECIFIC_PACKAGES = 
+
+# Packages that do not work for fsg3.
+FSG3_BROKEN_PACKAGES = \
+	adns amule apache appweb apr-util \
+	atftp bash bitchx bzflag \
+	ctcs ctorrent cyrus-sasl eaccelerator \
+	enhanced-ctorrent freeradius hexcurse \
+	imagemagick \
+	ldconfig lftp libstdc++ lighttpd \
+	mc mod-fastcgi mod-python monotone motion mysql \
+	net-tools nzbget \
+	php php-apache \
+	py-mysql \
+	qemu qemu-libc-i386 \
+	svn \
+	tcpwrappers tethereal textutils unrar
+
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
 # arguments to configure affect installation directories, not where
@@ -389,6 +407,13 @@ endif
 
 ifeq ($(OPTWARE_TARGET),nas100d)
 PACKAGES = $(filter-out $(NAS100D_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NAS100D_SPECIFIC_PACKAGES))
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+TARGET_ARCH=armeb
+TARGET_OS=linux
+endif
+
+ifeq ($(OPTWARE_TARGET),fsg3)
+PACKAGES = $(filter-out $(FSG3_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(FSG3_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
@@ -597,6 +622,23 @@ TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: crosstool
 endif
 
+ifeq ($(OPTWARE_TARGET),fsg3)
+CROSS_CONFIGURATION_GCC_VERSION=3.3.5
+CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
+CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
+CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
+CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
+HOSTCC = gcc
+GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
+GNU_TARGET_NAME = armv5b-softfloat-linux
+TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
+TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
+TARGET_LDFLAGS =
+TARGET_CUSTOM_FLAGS= -pipe
+TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
+toolchain: crosstool
+endif
+
 
 TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
@@ -727,7 +769,7 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 dirclean: $(PACKAGES_DIRCLEAN)
 
 distclean:
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss nas100d ds101 ds101j ds101g
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss nas100d ds101 ds101j ds101g fsg3
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
