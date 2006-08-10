@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 EACCELERATOR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/eaccelerator
-EACCELERATOR_VERSION=0.9.5-beta2
+EACCELERATOR_VERSION=0.9.5-rc1
 EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VERSION).tar.bz2
 EACCELERATOR_DIR=eaccelerator-$(EACCELERATOR_VERSION)
 EACCELERATOR_UNZIP=bzcat
