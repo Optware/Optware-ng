@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CURL_SITE=http://pycurl.sourceforge.net/download
-PY-CURL_VERSION=7.15.4.2
+PY-CURL_VERSION=7.15.5
 PY-CURL_SOURCE=pycurl-$(PY-CURL_VERSION).tar.gz
 PY-CURL_DIR=pycurl-$(PY-CURL_VERSION)
 PY-CURL_UNZIP=zcat
@@ -30,7 +30,7 @@ PY-CURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CURL_DESCRIPTION=PycURL is a Python interface to libcurl.
 PY-CURL_SECTION=misc
 PY-CURL_PRIORITY=optional
-PY-CURL_DEPENDS=python, libcurl
+PY-CURL_DEPENDS=python, libcurl (>=7.15.5)
 PY-CURL_CONFLICTS=
 
 #
