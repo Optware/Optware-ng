@@ -68,7 +68,7 @@ COMMON_CROSS_PACKAGES = \
 	opencdk oww openssh openssl openvpn \
 	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
-	python \
+	python pyrex \
 	py-4suite py-amara \
 	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-configobj py-constraint py-crypto py-curl py-django py-docutils py-elementtree \
