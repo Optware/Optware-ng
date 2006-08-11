@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://cheeseshop.python.org/packages/source/l/lxml
-PY-LXML_VERSION=1.0.3
+PY-LXML_VERSION=1.1beta
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
@@ -99,7 +99,7 @@ py-lxml-source: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
-	$(MAKE) python-stage py-setuptools-stage libxml2-stage libxslt-stage
+	$(MAKE) python-stage py-setuptools-stage libxml2-stage libxslt-stage pyrex-stage
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR) $(PY-LXML_BUILD_DIR)
 	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-LXML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
@@ -125,6 +125,7 @@ py-lxml-unpack: $(PY-LXML_BUILD_DIR)/.configured
 $(PY-LXML_BUILD_DIR)/.built: $(PY-LXML_BUILD_DIR)/.configured
 	rm -f $(PY-LXML_BUILD_DIR)/.built
 	(cd $(PY-LXML_BUILD_DIR); \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' python2.4 setup.py build; \
 	)
 	touch $(PY-LXML_BUILD_DIR)/.built
