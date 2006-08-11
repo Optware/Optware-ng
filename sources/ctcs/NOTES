@@ -4,7 +4,8 @@ plus a set of patches for the NSLU2.
 
 The current list of patches for version 1.0a is:
 
-socket.patch: fix for aborted connections and name resolution.
+socket.patch: fix for aborted connections, name resolution and
+              side effects of SO_REUSEADDR.
 
 
 CTCS has only been tested on the NSLU2, but since it is just a Perl
