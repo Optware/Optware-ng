@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
 #http://www.ibiblio.org/pub/Linux/system/network/file-transfer
-LFTP_VERSION=3.5.2
+LFTP_VERSION=3.5.4
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
