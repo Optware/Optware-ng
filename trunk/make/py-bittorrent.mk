@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
-PY-BITTORRENT_VERSION=4.20.4
+PY-BITTORRENT_VERSION=4.20.8
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -104,10 +104,10 @@ py-bittorrent-source: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-BITTORRENT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-BITTORRENT_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-twisted-stage
 	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
+#	cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
 	(cd $(PY-BITTORRENT_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
@@ -122,7 +122,9 @@ py-bittorrent-unpack: $(PY-BITTORRENT_BUILD_DIR)/.configured
 #
 $(PY-BITTORRENT_BUILD_DIR)/.built: $(PY-BITTORRENT_BUILD_DIR)/.configured
 	rm -f $(PY-BITTORRENT_BUILD_DIR)/.built
-	#$(MAKE) -C $(PY-BITTORRENT_BUILD_DIR)
+	(cd $(PY-BITTORRENT_BUILD_DIR); \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 setup.py build)
 	touch $(PY-BITTORRENT_BUILD_DIR)/.built
 
 #
@@ -174,6 +176,7 @@ $(PY-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
 	rm -rf $(PY-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-BITTORRENT_BUILD_DIR) DESTDIR=$(PY-BITTORRENT_IPK_DIR) install
 	(cd $(PY-BITTORRENT_BUILD_DIR); \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-BITTORRENT_IPK_DIR) --prefix=/opt)
 #	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/
 #	install -m 644 $(PY-BITTORRENT_SOURCE_DIR)/py-bittorrent.conf $(PY-BITTORRENT_IPK_DIR)/opt/etc/py-bittorrent.conf
