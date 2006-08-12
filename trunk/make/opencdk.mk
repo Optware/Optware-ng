@@ -26,13 +26,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OPENCDK_SITE=http://ftp.gnupg.org/GnuPG/alpha/gnutls/opencdk
-OPENCDK_VERSION=0.5.7
+OPENCDK_SITE=http://josefsson.org/gnutls/releases/opencdk
+# http://ftp.gnupg.org/GnuPG/alpha/gnutls/opencdk
+OPENCDK_VERSION=0.5.9
 OPENCDK_SOURCE=opencdk-$(OPENCDK_VERSION).tar.gz
 OPENCDK_DIR=opencdk-$(OPENCDK_VERSION)
 OPENCDK_UNZIP=zcat
 OPENCDK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-OPENCDK_DESCRIPTION=Describe opencdk here.
+OPENCDK_DESCRIPTION=GNU cryptographic library.
 OPENCDK_SECTION=libs
 OPENCDK_PRIORITY=optional
 OPENCDK_DEPENDS=libgcrypt
