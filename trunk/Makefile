@@ -182,7 +182,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict \
+	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
 	 ecl elinks erlang ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gtk hnb ice \
 	 id3lib iperf iptables ivorbis-tools jabber jamvm jikes \
