@@ -26,8 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNUTLS_SITE=ftp://ftp.gnutls.org/pub/gnutls
-GNUTLS_VERSION=1.4.0
+GNUTLS_SITE=http://josefsson.org/gnutls/releases
+# ftp://ftp.gnutls.org/pub/gnutls
+GNUTLS_VERSION=1.4.2
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
@@ -187,7 +188,7 @@ $(GNUTLS_IPK_DIR)/CONTROL/control:
 $(GNUTLS_IPK): $(GNUTLS_BUILD_DIR)/.built
 	rm -rf $(GNUTLS_IPK_DIR) $(BUILD_DIR)/gnutls_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) install-strip
-	rm -r $(GNUTLS_IPK_DIR)/opt/info
+	rm -rf $(GNUTLS_IPK_DIR)/opt/info
 	install -d $(GNUTLS_IPK_DIR)/opt/etc/
 	#install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
 	#install -d $(GNUTLS_IPK_DIR)/opt/etc/init.d
