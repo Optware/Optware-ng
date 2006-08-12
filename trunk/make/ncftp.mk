@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NCFTP_SITE=ftp://ftp.ncftp.com/ncftp
-NCFTP_VERSION=3.1.9
+NCFTP_VERSION=3.2.0
 NCFTP_SOURCE=ncftp-$(NCFTP_VERSION)-src.tar.gz
 NCFTP_DIR=ncftp-$(NCFTP_VERSION)
 NCFTP_UNZIP=zcat
@@ -33,7 +33,7 @@ NCFTP_DESCRIPTION=Nice command line FTP client
 #
 # NCFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NCFTP_IPK_VERSION=3
+NCFTP_IPK_VERSION=1
 
 #
 # NCFTP_CONFFILES should be a list of user-editable files
@@ -100,7 +100,7 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
 	$(NCFTP_UNZIP) $(DL_DIR)/$(NCFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NCFTP_PATCHES) | patch -d $(BUILD_DIR)/$(NCFTP_DIR) -p1
+	cat $(NCFTP_PATCHES) | patch -bd $(BUILD_DIR)/$(NCFTP_DIR) -p1
 	mv $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
 	(cd $(NCFTP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -183,9 +183,7 @@ $(NCFTP_IPK_DIR)/CONTROL/control:
 $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
 	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_$(TARGET_ARCH).ipk
 	install -d $(NCFTP_IPK_DIR)/opt/bin
-	$(MAKE) -C $(NCFTP_BUILD_DIR) BINDIR=$(NCFTP_IPK_DIR)/opt/bin \
-		mandir=$(NCFTP_IPK_DIR)/opt/man \
-		 prefix=$(NCFTP_IPK_DIR) install
+	$(MAKE) -C $(NCFTP_BUILD_DIR) DESTDIR=$(NCFTP_IPK_DIR) prefix=/opt install
 	install -d $(NCFTP_IPK_DIR)/opt/etc/init.d
 	install -d $(NCFTP_IPK_DIR)/CONTROL
 	$(MAKE) $(NCFTP_IPK_DIR)/CONTROL/control
