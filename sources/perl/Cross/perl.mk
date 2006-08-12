@@ -158,6 +158,7 @@ else
 		cp -f $(PERL_SOURCE_DIR)/Cross/{config.sh-*-linux,Makefile,Makefile.SH.patch} . ; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
+		PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) patch perl_Configure; \
 	)
 endif
