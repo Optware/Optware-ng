@@ -197,13 +197,13 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 amule bitlbee bzflag erlang ficy gambit-c \
+	 amule bitlbee bzflag elinks erlang ficy gambit-c \
 	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
 	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
-	 pango qemu qemu-libc-i386 rtorrent ser sm \
-	 transcode vte xauth xaw xchat \
-	 xmu xt xterm
+	 pango procps qemu qemu-libc-i386 rtorrent sdl ser sm \
+	 snownews transcode vte xauth xaw xchat xcursor xfixes xft \
+	 xmu xrender xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc ipkg
