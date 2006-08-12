@@ -36,7 +36,7 @@ PYREX_CONFLICTS=
 #
 # PYREX_IPK_VERSION should be incremented when the ipk changes.
 #
-PYREX_IPK_VERSION=1
+PYREX_IPK_VERSION=2
 
 #
 # PYREX_CONFFILES should be a list of user-editable files
@@ -184,7 +184,7 @@ $(PYREX_IPK): $(PYREX_BUILD_DIR)/.built
 	(cd $(PYREX_BUILD_DIR); \
 	    python2.4 setup.py install --root=$(PYREX_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) $(PYREX_IPK_DIR)/opt/lib/python2.4/site-packages/pyrex/*.so
+#	$(STRIP_COMMAND) $(PYREX_IPK_DIR)/opt/lib/python2.4/site-packages/pyrex/*.so
 	$(MAKE) $(PYREX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYREX_IPK_DIR)
 
