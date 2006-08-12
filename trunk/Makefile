@@ -326,7 +326,7 @@ FSG3_BROKEN_PACKAGES = \
 	py-mysql \
 	qemu qemu-libc-i386 \
 	svn \
-	tcpwrappers tethereal textutils unrar
+	tcpwrappers tethereal textutils transcode unrar
 
 # dump: is broken in several ways. It is using the host's e2fsprogs
 # includes.  It is also misconfigured: --includedir and --libdir as
