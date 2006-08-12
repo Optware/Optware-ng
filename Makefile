@@ -197,7 +197,7 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 bitlbee bzflag erlang gambit-c \
+	 amule bitlbee bzflag erlang ficy gambit-c \
 	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
 	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
