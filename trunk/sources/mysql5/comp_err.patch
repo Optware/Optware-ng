@@ -1,0 +1,13 @@
+--- mysql-5.1.11-beta.org/extra/Makefile.am	2006-06-02 20:01:33.000000000 +0200
++++ mysql5/extra/Makefile.am	2006-08-13 14:01:27.000000000 +0200
+@@ -26,8 +26,8 @@
+ SUBDIRS =		@yassl_dir@
+ 
+ # This will build mysqld_error.h and sql_state.h
+-$(top_builddir)/include/mysqld_error.h: comp_err$(EXEEXT)
+-	$(top_builddir)/extra/comp_err$(EXEEXT) \
++$(top_builddir)/include/mysqld_error.h:
++	$(MYSQL5_BUILD_DIR)-native/extra/comp_err \
+ 	--charset=$(top_srcdir)/sql/share/charsets \
+ 	--out-dir=$(top_builddir)/sql/share/ \
+ 	--header_file=$(top_builddir)/include/mysqld_error.h \
