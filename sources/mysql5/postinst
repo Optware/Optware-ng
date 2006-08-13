@@ -1,0 +1,20 @@
+#!/bin/sh
+#
+# postinstall - this script will be executed after the MySQL PKG
+# installation has been performed.
+#
+# This script will install the MySQL privilege tables using the
+# "mysql_install_db" script and will correct the ownerships of these files
+# afterwards.
+#
+# it also starts mysqld after install
+
+if [ ! -f /opt/var/lib/mysql/mysql/db.frm ] ; then
+	/opt/bin/mysql_install_db
+fi
+
+if [ -d /opt/var/lib/mysql ] ; then
+    chown -R root:root /opt/var/lib/mysql
+fi
+
+/opt/etc/init.d/S70mysqld start
