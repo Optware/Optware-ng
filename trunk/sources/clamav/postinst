@@ -7,13 +7,9 @@ adduser -s /dev/null -H -h /opt/share/clamav -D -G clamav clamav
 #my=`grep clamav /etc/passwd | awk -F: '{ print $4 }'`
 #sed -i "s/^$my/clamav/g" /etc/group
 
-
-chown clamav /opt/share/clamav
-chgrp clamav /opt/share/clamav
-chown clamav /opt/share/clamav/*
-chgrp clamav /opt/share/clamav/*
+chown clamav:clamav /opt/share/clamav
+chown clamav:clamav /opt/share/clamav/*
 
 touch /opt/var/log/freshclam.log
-chown clamav /opt/var/log/freshclam.log 
-chgrp clamav /opt/var/log/freshclam.log
+chown clamav:clamav /opt/var/log/freshclam.log 
 
