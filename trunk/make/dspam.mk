@@ -54,6 +54,9 @@ DSPAM_PATCHES=$(DSPAM_SOURCE_DIR)/dspam-configure-cross.patch
 #
 DSPAM_CPPFLAGS=
 DSPAM_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+DSPAM_LDFLAGS += -lpthread
+endif
 
 #
 # DSPAM_BUILD_DIR is the directory in which the build is done.
