@@ -16,7 +16,7 @@
 #
 ifeq ($(OPTWARE_TARGET),ds101g)
 # only Cross build for ds101g
-$(PERL_SOURCE_DIR)/Cross/perl.mk
+include $(SOURCE_DIR)/perl/Cross/perl.mk
 else
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
 PERL_VERSION=5.8.6
@@ -31,7 +31,7 @@ PERL_DESCRIPTION=perl language interpreter
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=3
+PERL_IPK_VERSION=7
 
 #
 # PERL_CONFFILES should be a list of user-editable files
