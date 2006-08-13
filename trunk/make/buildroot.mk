@@ -354,7 +354,7 @@ buildroot-clean uclibc-clean:
 # directories.
 #
 buildroot-dirclean uclibc-dirclean:
-	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK) $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)
+	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK)
 
 # Notes:
 #
