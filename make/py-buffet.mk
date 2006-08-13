@@ -22,10 +22,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BUFFET_SITE=http://cheeseshop.python.org/packages/source/B/Buffet
-PY-BUFFET_VERSION=0.9
-PY-BUFFET_SOURCE=Buffet-$(PY-BUFFET_VERSION).tar.gz
+PY-BUFFET_VERSION=1.0
+PY-BUFFET_SOURCE=Buffet-$(PY-BUFFET_VERSION).zip
 PY-BUFFET_DIR=Buffet-$(PY-BUFFET_VERSION)
-PY-BUFFET_UNZIP=zcat
+PY-BUFFET_UNZIP=unzip
 PY-BUFFET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BUFFET_DESCRIPTION=A universal templating system for CherryPy.
 PY-BUFFET_SECTION=misc
@@ -101,7 +101,7 @@ py-buffet-source: $(DL_DIR)/$(PY-BUFFET_SOURCE) $(PY-BUFFET_PATCHES)
 $(PY-BUFFET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BUFFET_SOURCE) $(PY-BUFFET_PATCHES) make/py-buffet.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-BUFFET_DIR) $(PY-BUFFET_BUILD_DIR)
-	$(PY-BUFFET_UNZIP) $(DL_DIR)/$(PY-BUFFET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cd $(BUILD_DIR) && $(PY-BUFFET_UNZIP) $(DL_DIR)/$(PY-BUFFET_SOURCE)
 #	cat $(PY-BUFFET_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BUFFET_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-BUFFET_DIR) $(PY-BUFFET_BUILD_DIR)
 	(cd $(PY-BUFFET_BUILD_DIR); \
@@ -117,6 +117,9 @@ py-buffet-unpack: $(PY-BUFFET_BUILD_DIR)/.configured
 #
 $(PY-BUFFET_BUILD_DIR)/.built: $(PY-BUFFET_BUILD_DIR)/.configured
 	rm -f $(PY-BUFFET_BUILD_DIR)/.built
+	(cd $(PY-BUFFET_BUILD_DIR); \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	python2.4 setup.py build)
 #	$(MAKE) -C $(PY-BUFFET_BUILD_DIR)
 	touch $(PY-BUFFET_BUILD_DIR)/.built
 
