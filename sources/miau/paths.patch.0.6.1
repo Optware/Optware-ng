@@ -1,0 +1,29 @@
+--- miau/src/miau.h.org	2006-01-18 18:40:57.000000000 +0100
++++ miau/src/miau.h	2006-06-17 19:46:59.000000000 +0200
+@@ -31,10 +31,10 @@
+ #include <time.h>
+ 
+ 
+-#define MIAURC		"miaurc"
+-#define MIAUDIR		".miau/"
+-#define FILE_PID	"pid"
+-#define FILE_LOG	"log"
++#define MIAURC		"/opt/etc/miau.conf"
++#define MIAUDIR		"miau/"
++#define FILE_PID	"/var/run/miau.pid"
++#define FILE_LOG	"/var/log/miau.log"
+ #define FILE_INBOX	"inbox"
+ 
+ #ifndef VERSION
+--- miau/src/miau.c.org	2006-04-29 11:59:54.000000000 +0200
++++ miau/src/miau.c	2006-06-17 19:53:48.000000000 +0200
+@@ -2557,8 +2557,7 @@
+ 		 */
+ 		s = getenv("HOME");
+ 		if (s == NULL) {
+-			error(MIAU_ERRNOHOME);
+-			exit(ERR_CODE_HOME);
++			s = "/opt/var/spool";	
+ 		}
+ 
+ 		hsize = strlen(s) + strlen(MIAUDIR) + 2;
