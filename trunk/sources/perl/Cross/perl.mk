@@ -63,6 +63,12 @@ PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/miniperl
+ifeq ($(TARGET_ARCH), armeb)
+PERL_ARCH=armv5b-linux
+endif
+ifeq ($(TARGET_ARCH), powerpc)
+PERL_ARCH=ppc-linux
+endif
 endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
@@ -97,7 +103,10 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR) ; \
 	(cd $(PERL_HOST_BUILD_DIR); \
 		rm -f config.sh Policy.sh; \
-		sh ./Configure -des -Dprefix=$(PERL_HOST_BUILD_DIR)/staging-install; \
+		sh ./Configure -des \
+			-Dinstallstyle='lib/perl5' \
+			-Darchname=$(PERL_ARCH) \
+			-Dprefix=$(PERL_HOST_BUILD_DIR)/staging-install; \
 		make install.perl; \
 	)
 	touch $(PERL_HOST_BUILD_DIR)/.hostbuilt

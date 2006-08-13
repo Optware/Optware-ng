@@ -14,6 +14,10 @@
 #
 # You should change all these variables to suit your package.
 #
+ifeq ($(OPTWARE_TARGET),ds101g)
+# only Cross build for ds101g
+$(PERL_SOURCE_DIR)/Cross/perl.mk
+else
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
 PERL_VERSION=5.8.6
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
@@ -27,7 +31,7 @@ PERL_DESCRIPTION=perl language interpreter
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=6
+PERL_IPK_VERSION=3
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -102,10 +106,9 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
 	cat $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL | \
-	sed -e 's:/usr/include/errno.h:$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/include/errno.h:g'\
+	sed -e 's:/usr/include/errno.h:/opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/include/errno.h:g'\
 	> $(PERL_BUILD_DIR)/ext/Errno/tmp
 	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
-ifneq ($(OPTWARE_TARGET),ds101g)
 	(cd $(PERL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
@@ -117,7 +120,6 @@ ifneq ($(OPTWARE_TARGET),ds101g)
 		-A clear:ignore_versioned_solibs \
 	)
 	cat $(PERL_PATCHES) | patch -d $(PERL_BUILD_DIR) -p0
-endif
 	touch $(PERL_BUILD_DIR)/.configured
 
 perl-unpack: $(PERL_BUILD_DIR)/.configured
@@ -137,45 +139,19 @@ microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured
 #
 $(PERL_BUILD_DIR)/.built: $(PERL_BUILD_DIR)/.configured
 	rm -f $(PERL_BUILD_DIR)/.built
-ifeq ($(OPTWARE_TARGET),ds101g)
-  ifneq ($(HOST_MACHINE),ppc)
-	export TARGET_CROSS=$(TARGET_CROSS); \
-	(cd $(PERL_BUILD_DIR); \
-		rm -f $(PERL_BUILD_DIR)/Cross/config; \
-		cp $(PERL_SOURCE_DIR)/Cross/config-ppc-linux $(PERL_BUILD_DIR)/Cross/config; \
-		rm -f $(PERL_BUILD_DIR)/Cross/Makefile.SH.patch; \
-		cp $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch $(PERL_BUILD_DIR)/Cross; \
-		rm -f $(PERL_BUILD_DIR)/Cross/Makefile; \
-		cp $(PERL_SOURCE_DIR)/Cross/Makefile $(PERL_BUILD_DIR)/Cross; \
-		sed -e 's:DESTDIR:$(PERL_IPK_DIR):g' \
-		<$(PERL_SOURCE_DIR)/Cross/config.sh-ppc-linux \
-		>$(PERL_BUILD_DIR)/Cross/config.sh-ppc-linux; \
-		(cd  $(PERL_BUILD_DIR)/Cross; \
-		 make patch; make perl) \
-	)
-  else
-	@echo "no native build, aborting."
-	@exit 2
-  endif
-else
 	$(MAKE) -C $(PERL_BUILD_DIR)
-endif
 	touch $(PERL_BUILD_DIR)/.built
 
-ifneq ($(OPTWARE_TARGET),ds101g)
 $(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
 	rm -f $(MICROPERL_BUILD_DIR)/.built
 	$(MAKE) -C $(MICROPERL_BUILD_DIR) -f Makefile.micro CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)"
 	touch $(MICROPERL_BUILD_DIR)/.built
-endif
 
 #
 # This is the build convenience target.
 #
 perl: $(PERL_BUILD_DIR)/.built
-ifneq ($(OPTWARE_TARGET),ds101g)
 microperl: $(MICROPERL_BUILD_DIR)/.built
-endif
 
 #
 # If you are building a library, then you need to stage it too.
@@ -205,7 +181,6 @@ $(PERL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PERL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
 
-ifneq ($(OPTWARE_TARGET),ds101g)
 $(MICROPERL_IPK_DIR)/CONTROL/control:
 	@install -d $(MICROPERL_IPK_DIR)/CONTROL
 	@rm -f $@
@@ -219,7 +194,7 @@ $(MICROPERL_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(PERL_DESCRIPTION)" >>$@
 	@echo "Depends: $(PERL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
-endif
+
 #
 # This builds the IPK file.
 #
@@ -232,27 +207,9 @@ endif
 #
 # You may need to patch your application to make it use these locations.
 #
-
-ifeq ($(OPTWARE_TARGET),ds101g)
-# temporary hack, don't touch
-#
-$(PERL_IPK): perl-dirclean $(PERL_BUILD_DIR)/.configured $(PERL_BUILD_DIR)/.built
-else
 $(PERL_IPK): $(PERL_BUILD_DIR)/.built
-endif
 	rm -rf $(PERL_IPK_DIR) $(BUILD_DIR)/perl_*_$(TARGET_ARCH).ipk
-ifeq ($(OPTWARE_TARGET),ds101g)
-  ifneq ($(HOST_MACHINE),ppc)
-	(cd $(PERL_BUILD_DIR); \
-		(cd  $(PERL_BUILD_DIR)/Cross; export TARGET_CROSS=$(TARGET_CROSS); make  DESTDIR=$(PERL_IPK_DIR) install) \
-	)
-  else
-	@echo "no native build, aborting."
-	@exit 2
-  endif
-else
 	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(PERL_IPK_DIR) install.perl
-endif
 	rm -f $(PERL_IPK_DIR)/opt/bin/perl
 	ln -s /opt/bin/perl$(PERL_VERSION) $(PERL_IPK_DIR)/opt/bin/perl
 	install -d $(PERL_IPK_DIR)/usr/bin
@@ -261,7 +218,6 @@ endif
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
 
-ifneq ($(OPTWARE_TARGET),ds101g)
 $(MICROPERL_IPK): $(MICROPERL_BUILD_DIR)/.built
 	rm -rf $(MICROPERL_IPK_DIR) $(BUILD_DIR)/microperl_*_$(TARGET_ARCH).ipk
 	install -d $(MICROPERL_IPK_DIR)/opt/bin
@@ -269,25 +225,23 @@ $(MICROPERL_IPK): $(MICROPERL_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(MICROPERL_IPK_DIR)/opt/bin/*
 	$(MAKE) $(MICROPERL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROPERL_IPK_DIR)
-endif
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
 perl-ipk: $(PERL_IPK)
 
-ifneq ($(OPTWARE_TARGET),ds101g)
 microperl-ipk: $(MICROPERL_IPK)
-endif
+
 #
 # This is called from the top level makefile to clean all of the built files.
 #
 perl-clean:
 	-$(MAKE) -C $(PERL_BUILD_DIR) clean
 
-ifneq ($(OPTWARE_TARGET),ds101g)
 microperl-clean:
 	-$(MAKE) -C $(MICROPERL_BUILD_DIR) clean
-endif
+
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
@@ -295,7 +249,6 @@ endif
 perl-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
 
-ifneq ($(OPTWARE_TARGET),ds101g)
 microperl-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR) $(MICROPERL_IPK_DIR) $(MICROPERL_IPK)
 endif
