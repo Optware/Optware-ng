@@ -237,7 +237,7 @@ DS101_SPECIFIC_PACKAGES =
 DS101_BROKEN_PACKAGES = \
 	adns amule apache appweb apr-util \
 	atftp bash bitchx bzflag \
-	ctcs ctorrent cyrus-sasl eaccelerator \
+	ctcs ctorrent cyrus-sasl dspam eaccelerator \
 	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
 	ldconfig lftp libstdc++ lighttpd \
