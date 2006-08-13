@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	dspam \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -44,7 +43,7 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clearsilver \
 	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
-	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear \
+	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
 	expat extract-xiso \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
@@ -183,7 +182,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
+	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq dspam \
 	 ecl elinks erlang ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gtk hnb ice \
 	 id3lib iperf iptables ivorbis-tools jabber jamvm jikes \
