@@ -14,8 +14,11 @@
 #
 # You should change all these variables to suit your package.
 #
-ifeq ($(OPTWARE_TARGET),ds101g)
-# only Cross build for ds101g
+ifneq ($(HOSTCC), $(TARGET_CC))
+PERL_CROSS_TARGETS=:ds101g:nslu2:
+endif
+
+ifneq (,$(findstring :$(OPTWARE_TARGET):,$(PERL_CROSS_TARGETS)))
 include $(SOURCE_DIR)/perl/Cross/perl.mk
 else
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
