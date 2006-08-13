@@ -6,7 +6,7 @@
 
 MIAU_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/miau
 #MIAU_VERSION=0.5.3
-MIAU_VERSION=0.6.0.2
+MIAU_VERSION=0.6.2
 MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
 MIAU_UNZIP=zcat
@@ -17,14 +17,14 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=15
+MIAU_IPK_VERSION=17
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
 		/opt/etc/logrotate.d/miau
 
 #MIAU_PATCHES=$(MIAU_SOURCE_DIR)/paths.patch
-MIAU_PATCHES=$(MIAU_SOURCE_DIR)/paths.patch.0.6
+MIAU_PATCHES=$(MIAU_SOURCE_DIR)/paths.patch.0.6.1
 
 MIAU_CPPFLAGS=
 MIAU_LDFLAGS=
