@@ -94,7 +94,7 @@ $(DL_DIR)/$(PERL_SOURCE):
 perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-$(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE)
+$(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
@@ -132,7 +132,7 @@ endif
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 else
-$(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) perl-hostperl
+$(PERL_BUILD_DIR)/.configured: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
 #	$(MAKE) <bar>-stage <baz>-stage # maybe add bdb here at some point
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
