@@ -14,10 +14,6 @@
 #
 # You should change all these variables to suit your package.
 #
-ifneq ($(HOSTCC), $(TARGET_CC))
-PERL_CROSS_TARGETS=:ds101g:nslu2:
-endif
-
 ifneq (,$(findstring :$(OPTWARE_TARGET):,$(PERL_CROSS_TARGETS)))
 include $(SOURCE_DIR)/perl/Cross/perl.mk
 else
