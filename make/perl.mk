@@ -30,7 +30,7 @@ PERL_DESCRIPTION=perl language interpreter
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=7
+PERL_IPK_VERSION=8
 
 #
 # PERL_CONFFILES should be a list of user-editable files

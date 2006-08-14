@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=1
+PERL_IPK_VERSION=2
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -48,7 +48,13 @@ PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 # compilation or linking flags, then list them here.
 #
 PERL_CPPFLAGS=
-PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/armv5b-softfloat-linux/CORE"
+ifeq ($(TARGET_ARCH), armeb)
+PERL_ARCH=armv5b-linux
+endif
+ifeq ($(TARGET_ARCH), powerpc)
+PERL_ARCH=ppc-linux
+endif
+PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
@@ -63,12 +69,6 @@ PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/miniperl
-ifeq ($(TARGET_ARCH), armeb)
-PERL_ARCH=armv5b-linux
-endif
-ifeq ($(TARGET_ARCH), powerpc)
-PERL_ARCH=ppc-linux
-endif
 endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
