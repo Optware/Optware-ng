@@ -692,6 +692,10 @@ PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_STAGE:=$(patsubst %,%-stage,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+PERL_CROSS_TARGETS=:ds101g:nslu2:
+endif
+
 $(PACKAGES) : directories toolchain
 $(PACKAGES_STAGE) %-stage : directories toolchain
 $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
