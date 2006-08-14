@@ -50,7 +50,7 @@ COMMON_CROSS_PACKAGES = \
 	fontconfig freeradius freetds freetype \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git-core glib gnupg gnutls gtk \
+	git-core glib gnupg gnuplot gnutls gtk \
 	hdparm hexcurse hnb hpijs \
 	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables ipython ircd-hybrid ivorbis-tools \
 	jabber jamvm jikes jove joe \
