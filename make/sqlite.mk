@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.3.5
+SQLITE_VERSION=3.3.7
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -109,9 +109,9 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1
 	mv $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR)
+	mkdir -p $(SQLITE_BUILD_DIR)
 	(cd $(SQLITE_BUILD_DIR); \
-	rm -rf config.cache; autoconf; \
-	    $(SQLITE_BUILD_DIR)/Makefile.in; \
+		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		config_BUILD_CC="$(HOSTCC)" \
 		config_TARGET_CC="$(TARGET_CC)" \
@@ -126,6 +126,8 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 		--disable-nls \
 		--disable-tcl \
 	)
+	$(PATCH_LIBTOOL) $(SQLITE_BUILD_DIR)/libtool
+	sed -i "/^shrext_cmds=/a shrext='.so'" $(SQLITE_BUILD_DIR)/libtool
 	touch $(SQLITE_BUILD_DIR)/.configured
 
 sqlite-unpack: $(SQLITE_BUILD_DIR)/.configured
