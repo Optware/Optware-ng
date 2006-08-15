@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SCGI_SITE=http://www.mems-exchange.org/software/scgi
-PY-SCGI_VERSION=1.10
+PY-SCGI_SITE=http://quixote.python.ca/releases
+PY-SCGI_VERSION=1.11
 PY-SCGI_SOURCE=scgi-$(PY-SCGI_VERSION).tar.gz
 PY-SCGI_DIR=scgi-$(PY-SCGI_VERSION)
 PY-SCGI_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-SCGI_CONFLICTS=
 #
 # PY-SCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SCGI_IPK_VERSION=3
+PY-SCGI_IPK_VERSION=1
 
 #
 # PY-SCGI_CONFFILES should be a list of user-editable files
