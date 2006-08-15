@@ -234,11 +234,12 @@ MSS_BROKEN_PACKAGES = \
 DS101_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for ds101.
+# gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
 DS101_BROKEN_PACKAGES = \
 	adns amule apache appweb apr-util \
 	atftp bash bitchx bzflag \
 	ctcs ctorrent cyrus-sasl dspam eaccelerator \
-	enhanced-ctorrent freeradius hexcurse \
+	enhanced-ctorrent freeradius gnuplot hexcurse \
 	imagemagick \
 	ldconfig lftp libstdc++ lighttpd \
 	mc mod-fastcgi mod-python monotone motion mysql \
