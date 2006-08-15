@@ -9,11 +9,3 @@
  ALL_LDFLAGS = $(LDFLAGS)
  STRIP ?= strip
  
-@@ -618,6 +618,7 @@
- 	$(INSTALL) -d -m755 '$(DESTDIR_SQ)$(gitexecdir_SQ)'
- 	$(INSTALL) $(ALL_PROGRAMS) '$(DESTDIR_SQ)$(gitexecdir_SQ)'
- 	$(INSTALL) git$X gitk '$(DESTDIR_SQ)$(bindir_SQ)'
-+	cd $(DESTDIR)$(bindir); $(STRIP) $(SIMPLE_PROGRAMS) $(PROGRAMS) git$X
- 	$(MAKE) -C templates install
- 	$(INSTALL) -d -m755 '$(DESTDIR_SQ)$(GIT_PYTHON_DIR_SQ)'
- 	$(INSTALL) $(PYMODULES) '$(DESTDIR_SQ)$(GIT_PYTHON_DIR_SQ)'
