@@ -1,5 +1,5 @@
---- perl-5.8.8/Makefile.SH.orig	2006-08-14 13:12:08.000000000 +0200
-+++ perl-5.8.8/Makefile.SH	2006-08-14 13:11:11.000000000 +0200
+--- perl-5.8.8/Makefile.SH.orig	2006-08-15 10:12:45.000000000 +0200
++++ perl-5.8.8/Makefile.SH	2006-08-15 10:16:58.000000000 +0200
 @@ -129,18 +129,7 @@
  	    # INSTALL file, under "Building a shared perl library".
  	    # If there is no pre-existing $libperl, we don't need
@@ -104,6 +104,49 @@
  	@sh ./makedir lib/auto
  	@echo "	AutoSplitting perl library"
  	$(LDLIBPTH) ./miniperl -Ilib -e 'use AutoSplit; \
+@@ -775,35 +777,35 @@
+ 		autosplit_lib_modules(@ARGV)' lib/*/*.pm
+ 	$(MAKE) lib/re.pm
+ 
+-lib/Config.pod: config.sh miniperl$(EXE_EXT) configpm Porting/Glossary
++lib/Config.pod: config.sh configpm Porting/Glossary
+ 	$(LDLIBPTH) ./miniperl -Ilib configpm --heavy=lib/Config_heavy.pl lib/Config.pm
+ 
+ $(CONFIGPM): lib/Config.pod
+ 
+-lib/ExtUtils/Miniperl.pm: miniperlmain.c miniperl$(EXE_EXT) minimod.pl $(CONFIGPM)
++lib/ExtUtils/Miniperl.pm: miniperlmain.c minimod.pl $(CONFIGPM)
+ 	$(LDLIBPTH) ./miniperl minimod.pl > lib/ExtUtils/Miniperl.pm
+ 
+ lib/re.pm: ext/re/re.pm
+ 	cp ext/re/re.pm lib/re.pm
+ 
+-$(plextract):	miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p
++$(plextract):	$(CONFIGPM) x2p/s2p
+ 	@-rm -f $@
+ 	$(LDLIBPTH) ./miniperl -I`pwd`/lib $@.PL
+ 
+-x2p/s2p: miniperl$(EXE_EXT) $(CONFIGPM) x2p/s2p.PL
++x2p/s2p: $(CONFIGPM) x2p/s2p.PL
+ 	cd x2p; $(LDLIBPTH) $(MAKE) s2p
+ 
+-lib/lib.pm:	miniperl$(EXE_EXT) $(CONFIGPM)
++lib/lib.pm:	$(CONFIGPM)
+ 	@-rm -f $@
+ 	$(LDLIBPTH) ./miniperl -Ilib lib/lib_pm.PL
+ 
+ unidatafiles $(unidatafiles): uni.data
+ 
+-uni.data: miniperl$(EXE_EXT) $(CONFIGPM) lib/unicore/mktables
++uni.data: $(CONFIGPM) lib/unicore/mktables
+ 	cd lib/unicore && $(LDLIBPTH) ../../miniperl -I../../lib mktables -w
+ 	touch uni.data
+ 
+-extra.pods: miniperl$(EXE_EXT)
++extra.pods: 
+ 	-@test -f extra.pods && rm -f `cat extra.pods`
+ 	-@rm -f extra.pods
+ 	-@for x in `grep -l '^=[a-z]' README.* | grep -v README.vms` ; do \
 @@ -850,18 +852,8 @@
  INSTALL_DEPENDENCE = all
  

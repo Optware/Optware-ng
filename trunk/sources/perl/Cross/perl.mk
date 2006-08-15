@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=2
+PERL_IPK_VERSION=3
 
 #
 # PERL_CONFFILES should be a list of user-editable files
