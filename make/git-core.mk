@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=1.4.1.1
+GIT-CORE_VERSION=1.4.2
 GIT-CORE_SOURCE=git-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -48,7 +48,6 @@ GIT-CORE_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 GIT-CORE_PATCHES=$(GIT-CORE_SOURCE_DIR)/Makefile.patch \
-		$(GIT-CORE_SOURCE_DIR)/template-Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -141,7 +140,7 @@ $(GIT-CORE_BUILD_DIR)/.built: $(GIT-CORE_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT-CORE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT-CORE_LDFLAGS)" \
-		prefix=/opt
+		prefix=/opt all strip
 	touch $(GIT-CORE_BUILD_DIR)/.built
 
 #
@@ -199,7 +198,7 @@ $(GIT-CORE_IPK): $(GIT-CORE_BUILD_DIR)/.built
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT-CORE_LDFLAGS)" \
 		prefix=/opt \
 		install
-	$(STRIP_COMMAND) $(GIT-CORE_IPK_DIR)/opt/bin/git-mail*
+	-$(STRIP_COMMAND) $(GIT-CORE_IPK_DIR)/opt/bin/git-daemon
 #	install -d $(GIT-CORE_IPK_DIR)/opt/etc/
 #	install -m 644 $(GIT-CORE_SOURCE_DIR)/git-core.conf $(GIT-CORE_IPK_DIR)/opt/etc/git-core.conf
 #	install -d $(GIT-CORE_IPK_DIR)/opt/etc/init.d
