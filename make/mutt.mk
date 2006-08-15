@@ -15,22 +15,26 @@
 # You should change all these variables to suit your package.
 #
 MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.5.7
-MUTT_SOURCE=mutt-$(MUTT_VERSION)i.tar.gz
+MUTT_VERSION=1.5.13
+MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
 MUTT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MUTT_DESCRIPTION=text mode mail client
 MUTT_SECTION=mail
 MUTT_PRIORITY=optional
+ifneq ($(OPTWARE_TARGET),wl500g)
+MUTT_DEPENDS=ncursesw, openssl, cyrus-sasl, libdb
+else
 MUTT_DEPENDS=ncurses, openssl, cyrus-sasl, libdb
+endif
 MUTT_SUGGESTS=
 MUTT_CONFLICTS=
 
 #
 # MUTT_IPK_VERSION should be incremented when the ipk changes.
 #
-MUTT_IPK_VERSION=3
+MUTT_IPK_VERSION=1
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
@@ -93,7 +97,11 @@ mutt-source: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
+ifneq ($(OPTWARE_TARGET),wl500g)
+	$(MAKE) ncursesw-stage openssl-stage cyrus-sasl-stage libdb-stage
+else
 	$(MAKE) ncurses-stage openssl-stage cyrus-sasl-stage libdb-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR)
 	$(MUTT_UNZIP) $(DL_DIR)/$(MUTT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MUTT_PATCHES) | patch -d $(BUILD_DIR)/$(MUTT_DIR) -p1
