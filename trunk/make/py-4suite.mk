@@ -21,10 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-4SUITE_SITE=http://cheeseshop.python.org/packages/source/4/4Suite
-PY-4SUITE_VERSION=1.0b6
-PY-4SUITE_SOURCE=4Suite-$(PY-4SUITE_VERSION).tar.gz
-PY-4SUITE_DIR=4Suite-$(PY-4SUITE_VERSION)
+PY-4SUITE_SITE=http://cheeseshop.python.org/packages/source/4/4Suite-XML
+PY-4SUITE_VERSION=1.0rc1
+PY-4SUITE_SOURCE=4Suite-XML-$(PY-4SUITE_VERSION).tar.gz
+PY-4SUITE_DIR=4Suite-XML-$(PY-4SUITE_VERSION)
 PY-4SUITE_UNZIP=zcat
 PY-4SUITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-4SUITE_DESCRIPTION=Python-based toolkit for XML and RDF application development.
@@ -112,11 +112,11 @@ $(PY-4SUITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PA
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
-		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg \
+	    ; \
+	    sed -i -e "s/return.*has_docs()/return False/" Ft/Lib/DistExt/Build.py; \
 	)
 	touch $(PY-4SUITE_BUILD_DIR)/.configured
 
@@ -127,9 +127,7 @@ py-4suite-unpack: $(PY-4SUITE_BUILD_DIR)/.configured
 #
 $(PY-4SUITE_BUILD_DIR)/.built: $(PY-4SUITE_BUILD_DIR)/.configured
 	rm -f $(PY-4SUITE_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-4SUITE_BUILD_DIR)
 	(cd $(PY-4SUITE_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	python2.4 setup.py build)
 	touch $(PY-4SUITE_BUILD_DIR)/.built
@@ -183,8 +181,9 @@ $(PY-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(PY-4SUITE_IPK_DIR) $(BUILD_DIR)/py-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-4SUITE_IPK_DIR) --prefix=/opt)
+	python2.4 setup.py install --root=$(PY-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
 	$(STRIP_COMMAND) `find $(PY-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
+	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python|' $(PY-4SUITE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(PY-4SUITE_IPK_DIR)/CONTROL/control
 #	echo $(PY-4SUITE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-4SUITE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-4SUITE_IPK_DIR)
