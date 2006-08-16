@@ -83,7 +83,7 @@ COMMON_CROSS_PACKAGES = \
 	py-urwid py-yaml py-xml py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 	qemu qemu-libc-i386 quagga  \
-	rcs rdate readline recordext renderext rrdtool \
+	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
 	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
 	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
