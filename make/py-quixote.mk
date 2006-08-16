@@ -37,7 +37,7 @@ PY-QUIXOTE_CONFLICTS=
 #
 # PY-QUIXOTE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-QUIXOTE_IPK_VERSION=1
+PY-QUIXOTE_IPK_VERSION=2
 
 #
 # PY-QUIXOTE_CONFFILES should be a list of user-editable files
@@ -182,7 +182,7 @@ $(PY-QUIXOTE_IPK): $(PY-QUIXOTE_BUILD_DIR)/.built
 	(cd $(PY-QUIXOTE_BUILD_DIR); \
 	    python2.4 setup.py install --root=$(PY-QUIXOTE_IPK_DIR) --prefix=/opt; \
 	)
-	-$(STRIP_COMMAND) $(PY-QUIXOTE_IPK_DIR)/opt/lib/python2.4/site-packages/quixote/*.so
+	-$(STRIP_COMMAND) `find $(PY-QUIXOTE_IPK_DIR)/opt/lib/python2.4/site-packages/quixote -name '*.so'`
 	$(MAKE) $(PY-QUIXOTE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-QUIXOTE_IPK_DIR)
 
