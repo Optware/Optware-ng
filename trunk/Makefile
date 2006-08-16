@@ -34,7 +34,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 # When they have been tested, they will be promoted and uploaded.
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
-	perl-dbd-mysql \
 
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb asterisk asterisk-sounds \
@@ -141,6 +140,7 @@ COMMON_NATIVE_PACKAGES = \
 	perl-clone \
 	perl-compress-zlib \
 	perl-date-manip \
+	perl-dbd-mysql \
 	perl-dbix-contextualfetch \
 	perl-digest-sha \
 	perl-extutils-cbuilder \
@@ -165,7 +165,6 @@ COMMON_NATIVE_PACKAGES = \
 	perl-universal-moniker \
 	perl-uri \
 	perl-version \
-	postfix \
 	rsnapshot \
 	squid \
 	stow \
