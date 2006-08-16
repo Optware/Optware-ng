@@ -35,14 +35,14 @@ CLAMAV_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CLAMAV_DESCRIPTION=Clam ANtivirus is a GPL anti-virus toolkit for UNIX
 CLAMAV_SECTION=misc
 CLAMAV_PRIORITY=optional
-CLAMAV_DEPENDS=adduser,zlib
+CLAMAV_DEPENDS=adduser,zlib,libgmp
 CLAMAV_SUGGESTS=
 CLAMAV_CONFLICTS=
 
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=1
+CLAMAV_IPK_VERSION=2
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
