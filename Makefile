@@ -140,7 +140,6 @@ COMMON_NATIVE_PACKAGES = \
 	perl-clone \
 	perl-compress-zlib \
 	perl-date-manip \
-	perl-dbd-mysql \
 	perl-dbix-contextualfetch \
 	perl-digest-sha \
 	perl-extutils-cbuilder \
@@ -174,7 +173,9 @@ COMMON_NATIVE_PACKAGES = \
 NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
 
 # Packages that do not work for nslu2.
-NSLU2_BROKEN_PACKAGES = 
+# perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
+NSLU2_BROKEN_PACKAGES = \
+	perl-dbd-mysql \
 
 # Packages that *only* work for wl500g - do not just put new packages here.
 WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ 
