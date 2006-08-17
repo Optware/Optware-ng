@@ -68,7 +68,10 @@ PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
 PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
-PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/miniperl
+PERL_HOST_MINIPERL=$(PERL_HOST_BUILD_DIR)/miniperl
+PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/perl
+else
+PERL_HOSTPERL=perl
 endif
 PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
@@ -159,7 +162,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		-A clear:ignore_versioned_solibs \
 	)
 else
-	ln -s $(PERL_HOSTPERL) $(PERL_BUILD_DIR)/hostperl
+	ln -s $(PERL_HOST_MINIPERL) $(PERL_BUILD_DIR)/hostperl
 	(cd $(PERL_BUILD_DIR)/Cross; \
 		rm -f config; \
 		printf "### Target Arch\nARCH = $(GNU_TARGET_NAME)\n" | sed 's/-linux$$//' > config; \
