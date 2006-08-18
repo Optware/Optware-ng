@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=3
+PERL_IPK_VERSION=4
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -109,6 +109,7 @@ $(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 		sh ./Configure -des \
 			-Dinstallstyle='lib/perl5' \
 			-Darchname=$(PERL_ARCH) \
+			-Dstartperl='#!/opt/bin/perl' \
 			-Dprefix=$(PERL_HOST_BUILD_DIR)/staging-install; \
 		make install.perl; \
 	)
