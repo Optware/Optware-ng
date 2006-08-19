@@ -3,7 +3,6 @@
 # perl-class-trigger
 #
 ###########################################################
-http://search.cpan.org/CPAN/authors/id/M/MI/MIYAGAWA/Class-Trigger-0.10.tar.gz
 	
 PERL-CLASS-TRIGGER_SITE=http://search.cpan.org/CPAN/authors/id/M/MI/MIYAGAWA
 PERL-CLASS-TRIGGER_VERSION=0.10
@@ -43,7 +42,7 @@ $(PERL-CLASS-TRIGGER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLASS-TRIGGER_SOUR
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-CLASS-TRIGGER_BUILD_DIR)/.configured
