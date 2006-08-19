@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-ARCHIVE-TAR_SITE=http://search.cpan.org/CPAN/authors/id/K/KA/KANE
-PERL-ARCHIVE-TAR_VERSION=1.29
+PERL-ARCHIVE-TAR_VERSION=1.30
 PERL-ARCHIVE-TAR_SOURCE=Archive-Tar-$(PERL-ARCHIVE-TAR_VERSION).tar.gz
 PERL-ARCHIVE-TAR_DIR=Archive-Tar-$(PERL-ARCHIVE-TAR_VERSION)
 PERL-ARCHIVE-TAR_UNZIP=zcat
@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE):
 perl-archive-tar-source: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) $(PERL-ARCHIVE-TAR_PATCHES)
 
 $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) $(PERL-ARCHIVE-TAR_PATCHES)
-	$(MAKE) perl-io-zlib-stage perl-io-string-stage perl-text-diff
+	$(MAKE) perl-io-zlib-stage perl-io-string-stage perl-text-diff-stage
 	rm -rf $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) $(PERL-ARCHIVE-TAR_BUILD_DIR)
 	$(PERL-ARCHIVE-TAR_UNZIP) $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-ARCHIVE-TAR_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) -p1
@@ -42,7 +42,7 @@ $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) 
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL -d\
+		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
 	touch $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured
