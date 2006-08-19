@@ -153,7 +153,7 @@ COMMON_NATIVE_PACKAGES = \
 	perl-io-zlib \
 	perl-libwww \
 	perl-mime-base64 perl-net-dns perl-net-ident \
-	perl-module-signature \
+	perl-module-build perl-module-signature \
 	perl-par-dist \
 	perl-pod-readme \
 	perl-spamassassin perl-storable perl-time-hires \
