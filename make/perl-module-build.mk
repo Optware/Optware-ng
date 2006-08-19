@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-MODULE-BUILD_SITE=http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS
-PERL-MODULE-BUILD_VERSION=0.28
+PERL-MODULE-BUILD_VERSION=0.2805
 PERL-MODULE-BUILD_SOURCE=Module-Build-$(PERL-MODULE-BUILD_VERSION).tar.gz
 PERL-MODULE-BUILD_DIR=Module-Build-$(PERL-MODULE-BUILD_VERSION)
 PERL-MODULE-BUILD_UNZIP=zcat
@@ -43,7 +43,7 @@ $(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Build.PL \
+		$(PERL_HOSTPERL) Build.PL \
 	)
 	touch $(PERL-MODULE-BUILD_BUILD_DIR)/.configured
 
