@@ -32,6 +32,7 @@ $(DL_DIR)/$(PERL-NET-IDENT_SOURCE):
 perl-net-ident-source: $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) $(PERL-NET-IDENT_PATCHES)
 
 $(PERL-NET-IDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) $(PERL-NET-IDENT_PATCHES)
+	make perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-NET-IDENT_DIR) $(PERL-NET-IDENT_BUILD_DIR)
 	$(PERL-NET-IDENT_UNZIP) $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-NET-IDENT_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-NET-IDENT_DIR) -p1
@@ -41,7 +42,7 @@ $(PERL-NET-IDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-IDENT_SOURCE) $(PE
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-NET-IDENT_BUILD_DIR)/.configured
