@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-PAR-DIST_SITE=http://search.cpan.org/CPAN/authors/id/S/SM/SMUELLER
-PERL-PAR-DIST_VERSION=0.09
+PERL-PAR-DIST_VERSION=0.16
 PERL-PAR-DIST_SOURCE=PAR-Dist-$(PERL-PAR-DIST_VERSION).tar.gz
 PERL-PAR-DIST_DIR=PAR-Dist-$(PERL-PAR-DIST_VERSION)
 PERL-PAR-DIST_UNZIP=zcat
@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-PAR-DIST_SOURCE):
 perl-par-dist-source: $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) $(PERL-PAR-DIST_PATCHES)
 
 $(PERL-PAR-DIST_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) $(PERL-PAR-DIST_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-PAR-DIST_DIR) $(PERL-PAR-DIST_BUILD_DIR)
 	$(PERL-PAR-DIST_UNZIP) $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-PAR-DIST_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-PAR-DIST_DIR) -p1
@@ -42,7 +42,7 @@ $(PERL-PAR-DIST_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-PAR-DIST_SOURCE) $(PERL
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-PAR-DIST_BUILD_DIR)/.configured
