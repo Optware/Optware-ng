@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE):
 perl-io-stringy-source: $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) $(PERL-IO-STRINGY_PATCHES)
 
 $(PERL-IO-STRINGY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) $(PERL-IO-STRINGY_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IO-STRINGY_DIR) $(PERL-IO-STRINGY_BUILD_DIR)
 	$(PERL-IO-STRINGY_UNZIP) $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-IO-STRINGY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IO-STRINGY_DIR) -p1
@@ -42,7 +42,7 @@ $(PERL-IO-STRINGY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-STRINGY_SOURCE) $(
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-IO-STRINGY_BUILD_DIR)/.configured
@@ -52,7 +52,10 @@ perl-io-stringy-unpack: $(PERL-IO-STRINGY_BUILD_DIR)/.configured
 $(PERL-IO-STRINGY_BUILD_DIR)/.built: $(PERL-IO-STRINGY_BUILD_DIR)/.configured
 	rm -f $(PERL-IO-STRINGY_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-IO-STRINGY_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-IO-STRINGY_BUILD_DIR)/.built
 
 perl-io-stringy: $(PERL-IO-STRINGY_BUILD_DIR)/.built
