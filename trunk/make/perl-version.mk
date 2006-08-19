@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-VERSION_SITE=http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK
-PERL-VERSION_VERSION=0.60
+PERL-VERSION_VERSION=0.6701
 PERL-VERSION_SOURCE=version-$(PERL-VERSION_VERSION).tar.gz
 PERL-VERSION_DIR=version-$(PERL-VERSION_VERSION)
 PERL-VERSION_UNZIP=zcat
@@ -42,7 +42,9 @@ $(PERL-VERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-VERSION_SOURCE) $(PERL-V
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Build.PL \
+		$(PERL_HOSTPERL) Build.PL \
+		--config cc=$(TARGET_CC) \
+		--config ld=$(TARGET_CC) \
 	)
 	touch $(PERL-VERSION_BUILD_DIR)/.configured
 
