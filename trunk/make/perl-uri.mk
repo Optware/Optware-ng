@@ -42,7 +42,7 @@ $(PERL-URI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-URI_SOURCE) $(PERL-URI_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-URI_BUILD_DIR)/.configured
