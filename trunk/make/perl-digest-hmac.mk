@@ -41,7 +41,7 @@ $(PERL-DIGEST-HMAC_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-HMAC_SOURCE) 
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-DIGEST-HMAC_BUILD_DIR)/.configured
