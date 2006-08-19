@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-CLONE_SOURCE):
 perl-clone-source: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE_PATCHES)
 
 $(PERL-CLONE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-CLONE_DIR) $(PERL-CLONE_BUILD_DIR)
 	$(PERL-CLONE_UNZIP) $(DL_DIR)/$(PERL-CLONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-CLONE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CLONE_DIR) -p1
@@ -42,7 +42,7 @@ $(PERL-CLONE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-CLONE_BUILD_DIR)/.configured
@@ -52,6 +52,10 @@ perl-clone-unpack: $(PERL-CLONE_BUILD_DIR)/.configured
 $(PERL-CLONE_BUILD_DIR)/.built: $(PERL-CLONE_BUILD_DIR)/.configured
 	rm -f $(PERL-CLONE_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-CLONE_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-CLONE_BUILD_DIR)/.built
 
