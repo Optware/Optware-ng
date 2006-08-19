@@ -7,7 +7,7 @@
 PERL-POD-README_SITE=http://search.cpan.org/CPAN/authors/id/R/RR/RRWO
 # Yes, there is a newer, but Module::Build requires only 0.04 and the newer
 # version of Pod::Readme requires Pod::Text 3.0 and version 2.21 is installed
-PERL-POD-README_VERSION=0.05
+PERL-POD-README_VERSION=0.081
 PERL-POD-README_SOURCE=Pod-Readme-$(PERL-POD-README_VERSION).tar.gz
 PERL-POD-README_DIR=Pod-Readme-$(PERL-POD-README_VERSION)
 PERL-POD-README_UNZIP=zcat
@@ -34,7 +34,7 @@ $(DL_DIR)/$(PERL-POD-README_SOURCE):
 perl-pod-readme-source: $(DL_DIR)/$(PERL-POD-README_SOURCE) $(PERL-POD-README_PATCHES)
 
 $(PERL-POD-README_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-POD-README_SOURCE) $(PERL-POD-README_PATCHES)
-#	$(MAKE) <bar>-stage
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-POD-README_DIR) $(PERL-POD-README_BUILD_DIR)
 	$(PERL-POD-README_UNZIP) $(DL_DIR)/$(PERL-POD-README_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-POD-README_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-POD-README_DIR) -p1
@@ -44,7 +44,7 @@ $(PERL-POD-README_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-POD-README_SOURCE) $(
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-POD-README_BUILD_DIR)/.configured
