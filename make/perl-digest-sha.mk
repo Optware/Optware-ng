@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DIGEST-SHA_SITE=http://search.cpan.org/CPAN/authors/id//M/MS/MSHELOR
-PERL-DIGEST-SHA_VERSION=5.37
+PERL-DIGEST-SHA_VERSION=5.43
 PERL-DIGEST-SHA_SOURCE=Digest-SHA-$(PERL-DIGEST-SHA_VERSION).tar.gz
 PERL-DIGEST-SHA_DIR=Digest-SHA-$(PERL-DIGEST-SHA_VERSION)
 PERL-DIGEST-SHA_UNZIP=zcat
@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE):
 perl-digest-sha-source: $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) $(PERL-DIGEST-SHA_PATCHES)
 
 $(PERL-DIGEST-SHA_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) $(PERL-DIGEST-SHA_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DIGEST-SHA_DIR) $(PERL-DIGEST-SHA_BUILD_DIR)
 	$(PERL-DIGEST-SHA_UNZIP) $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-DIGEST-SHA_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DIGEST-SHA_DIR) -p1
@@ -42,7 +42,7 @@ $(PERL-DIGEST-SHA_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) $(
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-DIGEST-SHA_BUILD_DIR)/.configured
@@ -52,6 +52,10 @@ perl-digest-sha-unpack: $(PERL-DIGEST-SHA_BUILD_DIR)/.configured
 $(PERL-DIGEST-SHA_BUILD_DIR)/.built: $(PERL-DIGEST-SHA_BUILD_DIR)/.configured
 	rm -f $(PERL-DIGEST-SHA_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-DIGEST-SHA_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		$(PERL_INC) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-DIGEST-SHA_BUILD_DIR)/.built
 
