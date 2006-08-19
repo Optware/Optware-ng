@@ -42,7 +42,7 @@ $(PERL-IO-ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-ZLIB_SOURCE) $(PERL-I
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-IO-ZLIB_BUILD_DIR)/.configured
@@ -52,7 +52,11 @@ perl-io-zlib-unpack: $(PERL-IO-ZLIB_BUILD_DIR)/.configured
 $(PERL-IO-ZLIB_BUILD_DIR)/.built: $(PERL-IO-ZLIB_BUILD_DIR)/.configured
 	rm -f $(PERL-IO-ZLIB_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-IO-ZLIB_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		$(PERL_INC) \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-IO-ZLIB_BUILD_DIR)/.built
 
 perl-io-zlib: $(PERL-IO-ZLIB_BUILD_DIR)/.built
