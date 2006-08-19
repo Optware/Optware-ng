@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TI/TIMB
-PERL-DBI_VERSION=1.47
+PERL-DBI_VERSION=1.52
 PERL-DBI_SOURCE=DBI-$(PERL-DBI_VERSION).tar.gz
 PERL-DBI_DIR=DBI-$(PERL-DBI_VERSION)
 PERL-DBI_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-DBI_DEPENDS=
 PERL-DBI_SUGGESTS=
 PERL-DBI_CONFLICTS=
 
-PERL-DBI_IPK_VERSION=2
+PERL-DBI_IPK_VERSION=1
 
 PERL-DBI_CONFFILES=
 
@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-DBI_SOURCE):
 perl-dbi-source: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)
 
 $(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DBI_DIR) $(PERL-DBI_BUILD_DIR)
 	$(PERL-DBI_UNZIP) $(DL_DIR)/$(PERL-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-DBI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DBI_DIR) -p1
@@ -42,7 +42,7 @@ $(PERL-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-DBI_BUILD_DIR)/.configured
@@ -52,7 +52,11 @@ perl-dbi-unpack: $(PERL-DBI_BUILD_DIR)/.configured
 $(PERL-DBI_BUILD_DIR)/.built: $(PERL-DBI_BUILD_DIR)/.configured
 	rm -f $(PERL-DBI_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-DBI_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		$(PERL_INC) \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-DBI_BUILD_DIR)/.built
 
 perl-dbi: $(PERL-DBI_BUILD_DIR)/.built
