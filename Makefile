@@ -101,6 +101,25 @@ COMMON_CROSS_PACKAGES = \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zip zlib \
 
+PERL_PACKAGES_CROSS_AND_NATIVE = \
+	perl-algorithm-diff perl-appconfig perl-archive-tar \
+	perl-business-isbn-data perl-business-isbn \
+	perl-cgi-application perl-class-accessor perl-class-data-inheritable perl-class-trigger \
+	perl-clone perl-compress-zlib \
+	perl-date-manip perl-db-file perl-dbi perl-dbix-contextualfetch \
+	perl-digest-hmac perl-digest-sha1 perl-digest-sha \
+	perl-extutils-cbuilder perl-extutils-parsexs \
+	perl-gd perl-gd-barcode \
+	perl-html-parser perl-html-tagset perl-html-template \
+	perl-ima-dbi perl-io-string perl-io-stringy perl-io-zlib \
+	perl-mime-base64 perl-module-build perl-module-signature \
+	perl-net-dns perl-net-ident \
+	perl-par-dist perl-pod-readme \
+	perl-storable \
+	perl-template-toolkit perl-term-readkey perl-text-diff perl-time-hires \
+	perl-universal-moniker perl-uri \
+	perl-version \
+
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # bogofilter's configure wants to run some small executables
@@ -127,42 +146,11 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         ocaml \
 	openldap \
-	perl perl-db-file perl-dbi perl-digest-hmac perl-digest-sha1 \
-	perl-algorithm-diff \
-	perl-appconfig perl-cgi-application \
-	perl-archive-tar \
-	perl-business-isbn \
-	perl-business-isbn-data \
-	perl-class-accessor \
-	perl-class-data-inheritable \
+	perl \
+	$(PERL_PACKAGES_CROSS_AND_NATIVE) \
 	perl-class-dbi \
-	perl-class-trigger \
-	perl-clone \
-	perl-compress-zlib \
-	perl-date-manip \
-	perl-dbix-contextualfetch \
-	perl-digest-sha \
-	perl-extutils-cbuilder \
-	perl-extutils-parsexs \
-	perl-gd \
-	perl-gd-barcode \
-	perl-html-parser perl-html-tagset perl-html-template \
-	perl-ima-dbi \
-	perl-io-string \
-	perl-io-stringy \
-	perl-io-zlib \
 	perl-libwww \
-	perl-mime-base64 perl-net-dns perl-net-ident \
-	perl-module-build perl-module-signature \
-	perl-par-dist \
-	perl-pod-readme \
-	perl-spamassassin perl-storable perl-time-hires \
-	perl-template-toolkit \
-	perl-term-readkey \
-	perl-text-diff \
-	perl-universal-moniker \
-	perl-uri \
-	perl-version \
+	perl-spamassassin \
 	rsnapshot \
 	squid \
 	stow \
@@ -267,7 +255,7 @@ DS101J_BROKEN_PACKAGES = \
 	atk bitlbee ctrlproxy giftcurs gkrellm irssi pango \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
-DS101G_SPECIFIC_PACKAGES = perl perl-mime-base64
+DS101G_SPECIFIC_PACKAGES = perl $(PERL_PACKAGES_CROSS_AND_NATIVE)
 
 # Packages that do not work for ds101g+.
 # elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
@@ -286,20 +274,6 @@ DS101G_BROKEN_PACKAGES = \
 	rsync \
 	ser \
 	bogofilter emacs xemacs hugs mzscheme ocaml \
-	perl-db-file perl-algorithm-diff perl-archive-tar \
-	perl-business-isbn perl-class-dbi \
-	perl-dbix-contextualfetch \
-	perl-digest-sha \
-	perl-gd \
-	perl-gd-barcode \
-	perl-ima-dbi \
-	perl-io-zlib \
-	perl-libwww \
-	perl-module-build \
-	perl-module-signature \
-	perl-spamassassin \
-	perl-text-diff \
-	perl-version \
 	rsnapshot \
 	squid \
 
