@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-MODULE-BUILD_SITE=http://search.cpan.org/CPAN/authors/id/K/KW/KWILLIAMS
-PERL-MODULE-BUILD_VERSION=0.2805
+PERL-MODULE-BUILD_VERSION=0.2801
 PERL-MODULE-BUILD_SOURCE=Module-Build-$(PERL-MODULE-BUILD_VERSION).tar.gz
 PERL-MODULE-BUILD_DIR=Module-Build-$(PERL-MODULE-BUILD_VERSION)
 PERL-MODULE-BUILD_UNZIP=zcat
@@ -44,6 +44,7 @@ $(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Build.PL \
+		--config CC=$(TARGET_CC) \
 	)
 	touch $(PERL-MODULE-BUILD_BUILD_DIR)/.configured
 
@@ -94,6 +95,7 @@ $(PERL-MODULE-BUILD_IPK): $(PERL-MODULE-BUILD_BUILD_DIR)/.built
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-MODULE-BUILD_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	sed -i -e 's|$(PERL_HOSTPERL)|/opt/bin/perl|g' $(PERL-MODULE-BUILD_IPK_DIR)/opt/bin/*
 	$(MAKE) $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL/control
 	echo $(PERL-MODULE-BUILD_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-MODULE-BUILD_IPK_DIR)
