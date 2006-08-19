@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DB-FILE_SITE=http://search.cpan.org/CPAN/authors/id/P/PM/PMQS
-PERL-DB-FILE_VERSION=1.810
+PERL-DB-FILE_VERSION=1.814
 PERL-DB-FILE_SOURCE=DB_File-$(PERL-DB-FILE_VERSION).tar.gz
 PERL-DB-FILE_DIR=DB_File-$(PERL-DB-FILE_VERSION)
 PERL-DB-FILE_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-DB-FILE_DEPENDS=perl, libdb
 PERL-DB-FILE_SUGGESTS=
 PERL-DB-FILE_CONFLICTS=
 
-PERL-DB-FILE_IPK_VERSION=2
+PERL-DB-FILE_IPK_VERSION=1
 
 PERL-DB-FILE_CONFFILES=
 
@@ -34,7 +34,7 @@ $(DL_DIR)/$(PERL-DB-FILE_SOURCE):
 perl-db-file-source: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-DB-FILE_PATCHES)
 
 $(PERL-DB-FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-DB-FILE_PATCHES)
-	$(MAKE) libdb-stage
+	$(MAKE) libdb-stage perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DB-FILE_DIR) $(PERL-DB-FILE_BUILD_DIR)
 	$(PERL-DB-FILE_UNZIP) $(DL_DIR)/$(PERL-DB-FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PERL-DB-FILE_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DB-FILE_DIR) -p1
@@ -43,8 +43,11 @@ $(PERL-DB-FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-D
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		DB_FILE_INCLUDE=$(STAGING_INCLUDE_DIR) \
+		DB_FILE_LIB=$(STAGING_LIB_DIR) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
+		LD_RUN_PATH=/opt/lib \
 		PREFIX=/opt \
 	)
 	touch $(PERL-DB-FILE_BUILD_DIR)/.configured
@@ -54,6 +57,11 @@ perl-db-file-unpack: $(PERL-DB-FILE_BUILD_DIR)/.configured
 $(PERL-DB-FILE_BUILD_DIR)/.built: $(PERL-DB-FILE_BUILD_DIR)/.configured
 	rm -f $(PERL-DB-FILE_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-DB-FILE_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LD_RUN_PATH=/opt/lib \
+		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-DB-FILE_BUILD_DIR)/.built
 
