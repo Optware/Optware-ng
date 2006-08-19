@@ -3,7 +3,7 @@
 # perl-cgi-application
 #
 ###########################################################
-http://search.cpan.org/CPAN/authors/id/M/MA/MARKSTOS/CGI-Application-3.31.tar.gz
+#http://search.cpan.org/CPAN/authors/id/M/MA/MARKSTOS/CGI-Application-3.31.tar.gz
 PERL-CGI-APPLICATION_SITE=http://search.cpan.org/CPAN/authors/id/M/MA/MARKSTOS
 PERL-CGI-APPLICATION_VERSION=3.31
 PERL-CGI-APPLICATION_SOURCE=CGI-Application-$(PERL-CGI-APPLICATION_VERSION).tar.gz
@@ -48,7 +48,7 @@ $(PERL-CGI-APPLICATION_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CGI-APPLICATION_
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-CGI-APPLICATION_BUILD_DIR)/.configured
