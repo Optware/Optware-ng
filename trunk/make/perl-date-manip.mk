@@ -38,7 +38,7 @@ $(DL_DIR)/$(PERL-DATE-MANIP_SOURCE):
 perl-date-manip-source: $(DL_DIR)/$(PERL-DATE-MANIP_SOURCE) $(PERL-DATE-MANIP_PATCHES)
 
 $(PERL-DATE-MANIP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DATE-MANIP_SOURCE) $(PERL-DATE-MANIP_PATCHES)
-#	$(MAKE) perl-XXX
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DATE-MANIP_DIR) $(PERL-DATE-MANIP_BUILD_DIR)
 	$(PERL-DATE-MANIP_UNZIP) $(DL_DIR)/$(PERL-DATE-MANIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-DATE-MANIP_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DATE-MANIP_DIR) -p1
@@ -48,7 +48,7 @@ $(PERL-DATE-MANIP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DATE-MANIP_SOURCE) $(
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
 	touch $(PERL-DATE-MANIP_BUILD_DIR)/.configured
@@ -58,6 +58,9 @@ perl-date-manip-unpack: $(PERL-DATE-MANIP_BUILD_DIR)/.configured
 $(PERL-DATE-MANIP_BUILD_DIR)/.built: $(PERL-DATE-MANIP_BUILD_DIR)/.configured
 	rm -f $(PERL-DATE-MANIP_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-DATE-MANIP_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-DATE-MANIP_BUILD_DIR)/.built
 
