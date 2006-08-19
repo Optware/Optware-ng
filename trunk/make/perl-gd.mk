@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-GD_SITE=http://search.cpan.org/CPAN/authors/id/L/LD/LDS
-PERL-GD_VERSION=2.32
+PERL-GD_VERSION=2.34
 PERL-GD_SOURCE=GD-$(PERL-GD_VERSION).tar.gz
 PERL-GD_DIR=GD-$(PERL-GD_VERSION)
 PERL-GD_UNZIP=zcat
@@ -33,7 +33,7 @@ $(DL_DIR)/$(PERL-GD_SOURCE):
 perl-gd-source: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 
 $(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
-	$(MAKE) libgd-stage zlib-stage
+	$(MAKE) perl-stage libgd-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PERL-GD_DIR) $(PERL-GD_BUILD_DIR)
 	$(PERL-GD_UNZIP) $(DL_DIR)/$(PERL-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-GD_DIR) -p1
@@ -43,13 +43,14 @@ $(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL \
 			-options "JPEG,FT,PNG,GIF,XPM,ANIMGIF,FONTCONFIG" \
 			-lib_gd_path $(STAGING_DIR)/opt \
 			-lib_ft_path $(STAGING_DIR)/opt \
 			-lib_png_path  $(STAGING_DIR)/opt \
 			-lib_jpeg_path $(STAGING_DIR)/opt \
 		     	-lib_zlib_path $(STAGING_DIR)/opt \
+			INC="$(STAGING_CPPFLAGS)" \
 		PREFIX=/opt \
 	)
 	touch $(PERL-GD_BUILD_DIR)/.configured
@@ -59,7 +60,12 @@ perl-gd-unpack: $(PERL-GD_BUILD_DIR)/.configured
 $(PERL-GD_BUILD_DIR)/.built: $(PERL-GD_BUILD_DIR)/.configured
 	rm -f $(PERL-GD_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-GD_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDLOADLIBS="" \
+		$(PERL_INC) \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	touch $(PERL-GD_BUILD_DIR)/.built
 
 perl-gd: $(PERL-GD_BUILD_DIR)/.built
