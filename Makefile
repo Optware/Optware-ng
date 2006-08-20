@@ -68,7 +68,7 @@ COMMON_CROSS_PACKAGES = \
 	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
 	python pyrex \
-	py-4suite py-amara \
+	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-configobj py-constraint py-crypto py-curl py-django py-docutils py-elementtree \
 	py-formencode py-gdchart2 py-gd py-kid py-lxml py-nose \
