@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-YAML_SITE=http://pyyaml.org/download/pyyaml
-PY-YAML_VERSION=3.03
+PY-YAML_VERSION=3.04
 PY-YAML_SOURCE=PyYAML-$(PY-YAML_VERSION).tar.gz
 PY-YAML_DIR=PyYAML-$(PY-YAML_VERSION)
 PY-YAML_UNZIP=zcat
