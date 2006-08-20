@@ -1,0 +1,44 @@
+--- libgphoto2-2.2.1.org/libgphoto2_port/libgphoto2_port/Makefile.am	2006-04-19 03:54:26.000000000 +0200
++++ libgphoto2/libgphoto2_port/libgphoto2_port/Makefile.am	2006-08-20 18:42:51.000000000 +0200
+@@ -47,7 +47,6 @@
+ 	gphoto2-port-result.c
+ 
+ libgphoto2_port_la_DEPENDENCIES = \
+-	$(LIBLTDL) \
+ 	$(srcdir)/libgphoto2_port.sym
+ 
+ # ship headers
+--- libgphoto2-2.2.1.org/libgphoto2_port/libgphoto2_port/Makefile.in	2006-06-19 21:16:50.000000000 +0200
++++ libgphoto2/libgphoto2_port/libgphoto2_port/Makefile.in	2006-08-20 18:42:38.000000000 +0200
+@@ -303,7 +303,6 @@
+ 	gphoto2-port-result.c
+ 
+ libgphoto2_port_la_DEPENDENCIES = \
+-	$(LIBLTDL) \
+ 	$(srcdir)/libgphoto2_port.sym
+ 
+ 
+--- libgphoto2-2.2.1.org/libgphoto2/Makefile.am	2006-04-19 03:54:07.000000000 +0200
++++ libgphoto2/libgphoto2/Makefile.am	2006-08-20 18:44:42.000000000 +0200
+@@ -49,8 +49,7 @@
+ #	"-dlopen" $(top_builddir)/camlibs/ptp2/....la
+ 
+ libgphoto2_la_DEPENDENCIES = \
+-	$(srcdir)/libgphoto2.sym \
+-	$(LIBLTDL)
++	$(srcdir)/libgphoto2.sym
+ 
+ libgphoto2includedir = $(includedir)/gphoto2
+ libgphoto2include_HEADERS =	\
+--- libgphoto2-2.2.1.org/libgphoto2/Makefile.in	2006-06-19 21:15:58.000000000 +0200
++++ libgphoto2/libgphoto2/Makefile.in	2006-08-20 18:44:50.000000000 +0200
+@@ -341,8 +341,7 @@
+ #	"-dlopen" $(top_builddir)/camlibs/canon/....la \
+ #	"-dlopen" $(top_builddir)/camlibs/ptp2/....la
+ libgphoto2_la_DEPENDENCIES = \
+-	$(srcdir)/libgphoto2.sym \
+-	$(LIBLTDL)
++	$(srcdir)/libgphoto2.sym
+ 
+ libgphoto2includedir = $(includedir)/gphoto2
+ libgphoto2include_HEADERS = \

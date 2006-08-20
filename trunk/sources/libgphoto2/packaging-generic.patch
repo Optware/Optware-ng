@@ -1,0 +1,13 @@
+--- libgphoto2-2.2.1.org/packaging/generic/print-camera-list.c	2006-04-19 03:54:05.000000000 +0200
++++ libgphoto2/packaging/generic/print-camera-list.c	2006-08-20 18:38:36.000000000 +0200
+@@ -48,8 +48,8 @@
+ #include <time.h>
+ #include <string.h>
+ 
+-#include <gphoto2/gphoto2-camera.h>
+-#include <gphoto2/gphoto2-port-log.h>
++#include <libgphoto2/gphoto2-camera.h>
++#include <libgphoto2_port/libgphoto2_port/gphoto2-port-log.h>
+ 
+ #ifndef TRUE
+ #define TRUE  (0==0)
