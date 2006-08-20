@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUA_SITE=http://www.lua.org/ftp
-LUA_VERSION=5.1
+LUA_VERSION=5.1.1
 LUA_SOURCE=lua-$(LUA_VERSION).tar.gz
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_UNZIP=zcat
@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=6
+LUA_IPK_VERSION=1
 
 #
 # LUA_CONFFILES should be a list of user-editable files
