@@ -230,7 +230,7 @@ DS101_BROKEN_PACKAGES = \
 	imagemagick \
 	ldconfig lftp libstdc++ lighttpd \
 	mc mod-fastcgi mod-python monotone motion mysql \
-	net-tools nzbget \
+	net-tools nmap nzbget \
 	php php-apache \
 	py-mysql \
 	qemu qemu-libc-i386 \
@@ -295,7 +295,7 @@ FSG3_BROKEN_PACKAGES = \
 	imagemagick \
 	ldconfig lftp libstdc++ lighttpd \
 	mc mod-fastcgi mod-python monotone motion mysql \
-	net-tools nzbget \
+	net-tools nmap nzbget \
 	php php-apache \
 	py-mysql \
 	qemu qemu-libc-i386 \
