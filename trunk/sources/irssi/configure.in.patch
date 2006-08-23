@@ -1,5 +1,5 @@
---- irssi/configure.in.orig	2006-08-22 16:38:26.000000000 -0700
-+++ irssi/configure.in	2006-08-22 16:39:51.000000000 -0700
+--- irssi/configure.in.orig	2005-12-11 14:45:07.000000000 -0800
++++ irssi/configure.in	2006-08-22 17:56:10.000000000 -0700
 @@ -281,21 +281,7 @@
  
  dnl * older autoconfs don't include sys/types.h, so do it manually
@@ -23,3 +23,17 @@
  AC_MSG_RESULT($sizeof_off_t)
  
  if test $sizeof_off_t = 8; then
+@@ -570,13 +556,8 @@
+   if test ! -s conftest; then
+     AC_MSG_RESULT([no, error compiling test program])
+   else
+-    status="`./conftest`"
+-    if test "x$status" = "xok"; then
+       DYNLIB_MODULES=yes
+       AC_MSG_RESULT([yes])
+-    else
+-      AC_MSG_RESULT([no, error running: $status])
+-    fi
+   fi
+ fi
+ rm -rf conftest conftest.* libconftest.* .libs
