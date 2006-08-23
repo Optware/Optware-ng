@@ -103,7 +103,7 @@ COMMON_CROSS_PACKAGES = \
 	zip zlib \
 
 PERL_PACKAGES_CROSS_AND_NATIVE = \
-	perl-algorithm-diff perl-appconfig perl-archive-tar \
+	perl-algorithm-diff perl-appconfig perl-archive-tar perl-archive-zip \
 	perl-business-isbn-data perl-business-isbn \
 	perl-cgi-application perl-class-accessor perl-class-data-inheritable perl-class-trigger \
 	perl-clone perl-compress-zlib \
