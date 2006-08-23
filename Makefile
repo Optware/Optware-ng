@@ -247,8 +247,8 @@ DS101J_BROKEN_PACKAGES = \
 	ctcs \
 	cyrus-sasl \
 	enhanced-ctorrent \
-	imagemagick \
 	glib \
+	imagemagick irssi \
 	mod-fastcgi mod-python monotone \
 	php-apache \
 	qemu qemu-libc-i386 \
