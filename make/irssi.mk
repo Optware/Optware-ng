@@ -52,7 +52,7 @@ IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-IRSSI_CPPFLAGS=
+IRSSI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
 IRSSI_LDFLAGS=
 
 #
@@ -107,7 +107,7 @@ $(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES) make/
 	$(IRSSI_UNZIP) $(DL_DIR)/$(IRSSI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IRSSI_PATCHES)" ; \
 		then cat $(IRSSI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IRSSI_DIR) -p1 ; \
+		patch -bd $(BUILD_DIR)/$(IRSSI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IRSSI_DIR)" != "$(IRSSI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR) ; \
@@ -124,8 +124,10 @@ $(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 		--without-perl \
-		--with-ncurses=/opt \
+		--with-ncurses=$(STAGING_PREFIX) \
 		--enable-ipv6 \
+		--disable-glibtest \
+		--with-glib-prefix=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(IRSSI_BUILD_DIR)/libtool
 	touch $(IRSSI_BUILD_DIR)/.configured
@@ -137,7 +139,7 @@ irssi-unpack: $(IRSSI_BUILD_DIR)/.configured
 #
 $(IRSSI_BUILD_DIR)/.built: $(IRSSI_BUILD_DIR)/.configured
 	rm -f $(IRSSI_BUILD_DIR)/.built
-	$(MAKE) -C $(IRSSI_BUILD_DIR)
+	$(MAKE) -C $(IRSSI_BUILD_DIR) GLIB_CFLAGS=""
 	touch $(IRSSI_BUILD_DIR)/.built
 
 #
