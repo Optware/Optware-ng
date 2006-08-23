@@ -120,6 +120,7 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-template-toolkit perl-term-readkey perl-text-diff perl-time-hires \
 	perl-universal-moniker perl-uri \
 	perl-version \
+	spamassassin \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
