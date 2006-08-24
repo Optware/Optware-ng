@@ -29,15 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	gphoto2 \
-	libgphoto2 \
-	perl-archive-zip \
- 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
-	perl-digest-perl-md5 \
-	perl-io-multiplex perl-io-socket-ssl \
-	perl-mailtools perl-mime-tools \
-	perl-net-server perl-net-ssleay \
-	perl-unicode-map perl-unicode-string perl-unix-syslog \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -59,6 +50,7 @@ COMMON_CROSS_PACKAGES = \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core glib gnupg gnuplot gnutls gtk \
+	gphoto2 libgphoto2 \
 	hdparm hexcurse hnb hpijs \
 	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables ipython \
 	ircd-hybrid irssi ivorbis-tools \
@@ -112,23 +104,38 @@ COMMON_CROSS_PACKAGES = \
 	zip zlib \
 
 PERL_PACKAGES_CROSS_AND_NATIVE = \
-	perl-algorithm-diff perl-appconfig perl-archive-tar \
+	perl-algorithm-diff \
+	perl-appconfig \
+	perl-archive-tar perl-archive-zip \
 	perl-business-isbn-data perl-business-isbn \
-	perl-cgi-application perl-class-accessor perl-class-data-inheritable perl-class-trigger \
-	perl-clone perl-compress-zlib \
-	perl-date-manip perl-db-file perl-dbi perl-dbix-contextualfetch \
-	perl-digest-hmac perl-digest-sha1 perl-digest-sha \
+	perl-cgi-application \
+	perl-class-accessor perl-class-data-inheritable perl-class-trigger \
+	perl-clone \
+	perl-compress-zlib \
+ 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
+	perl-date-manip \
+	perl-db-file perl-dbi perl-dbix-contextualfetch \
+	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-gd perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template \
-	perl-ima-dbi perl-io-string perl-io-stringy perl-io-zlib \
-	perl-mime-base64 perl-module-build \
-        perl-module-signature \
-	perl-net-dns perl-net-ident \
-	perl-par-dist perl-pod-readme \
+	perl-ima-dbi \
+	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
+	perl-mailtools \
+	perl-mime-base64 perl-mime-tools \
+	perl-module-build perl-module-signature \
+	perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
+	perl-par-dist \
+	perl-pod-readme \
 	perl-storable \
-	perl-template-toolkit perl-term-readkey perl-text-diff perl-time-hires \
-	perl-universal-moniker perl-uri \
+	perl-template-toolkit \
+	perl-term-readkey \
+	perl-text-diff \
+	perl-time-hires \
+	perl-unicode-map perl-unicode-string \
+	perl-universal-moniker \
+	perl-unix-syslog \
+	perl-uri \
 	perl-version \
 	spamassassin \
 
