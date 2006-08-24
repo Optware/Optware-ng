@@ -29,6 +29,8 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	gphoto2 \
+	libgphoto2 \
 	perl-archive-zip \
  	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-digest-perl-md5 \
