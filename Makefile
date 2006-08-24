@@ -152,14 +152,14 @@ COMMON_NATIVE_PACKAGES = \
 	$(PERL_PACKAGES_CROSS_AND_NATIVE) \
 	perl-class-dbi \
 	perl-libwww \
-	perl-spamassassin \
 	rsnapshot \
 	squid \
 	stow \
         xmail \
 
 # Packages that *only* work for nslu2 - do not just put new packages here.
-NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native
+NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native \
+	perl $(PERL_PACKAGES_CROSS_AND_NATIVE) \
 
 # Packages that do not work for nslu2.
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
@@ -324,7 +324,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumik
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog
+PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
