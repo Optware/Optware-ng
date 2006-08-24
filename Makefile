@@ -113,7 +113,7 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-gd perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template \
 	perl-ima-dbi perl-io-string perl-io-stringy perl-io-zlib \
-	perl-mime-base64 perl-mime-tools perl-module-build \
+	perl-mailtools perl-mime-base64 perl-mime-tools perl-module-build \
         perl-module-signature \
 	perl-net-dns perl-net-ident \
 	perl-par-dist perl-pod-readme \
