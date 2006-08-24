@@ -1,0 +1,101 @@
+###########################################################
+#
+# perl-convert-binhex
+#
+###########################################################
+
+PERL-CONVERT-BINHEX_SITE=http://search.cpan.org/CPAN/authors/id/E/ER/ERYQ
+PERL-CONVERT-BINHEX_VERSION=1.119
+PERL-CONVERT-BINHEX_SOURCE=Convert-BinHex-$(PERL-CONVERT-BINHEX_VERSION).tar.gz
+PERL-CONVERT-BINHEX_DIR=Convert-BinHex-$(PERL-CONVERT-BINHEX_VERSION)
+PERL-CONVERT-BINHEX_UNZIP=zcat
+PERL-CONVERT-BINHEX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-CONVERT-BINHEX_DESCRIPTION=Convert-BinHex - extract data from Macintosh BinHex files 
+PERL-CONVERT-BINHEX_SECTION=util
+PERL-CONVERT-BINHEX_PRIORITY=optional
+PERL-CONVERT-BINHEX_DEPENDS=perl
+PERL-CONVERT-BINHEX_SUGGESTS=
+PERL-CONVERT-BINHEX_CONFLICTS=
+
+PERL-CONVERT-BINHEX_IPK_VERSION=1
+
+PERL-CONVERT-BINHEX_CONFFILES=
+
+PERL-CONVERT-BINHEX_BUILD_DIR=$(BUILD_DIR)/perl-convert-binhex
+PERL-CONVERT-BINHEX_SOURCE_DIR=$(SOURCE_DIR)/perl-convert-binhex
+PERL-CONVERT-BINHEX_IPK_DIR=$(BUILD_DIR)/perl-convert-binhex-$(PERL-CONVERT-BINHEX_VERSION)-ipk
+PERL-CONVERT-BINHEX_IPK=$(BUILD_DIR)/perl-convert-binhex_$(PERL-CONVERT-BINHEX_VERSION)-$(PERL-CONVERT-BINHEX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+$(DL_DIR)/$(PERL-CONVERT-BINHEX_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PERL-CONVERT-BINHEX_SITE)/$(PERL-CONVERT-BINHEX_SOURCE)
+
+perl-convert-binhex-source: $(DL_DIR)/$(PERL-CONVERT-BINHEX_SOURCE) $(PERL-CONVERT-BINHEX_PATCHES)
+
+$(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CONVERT-BINHEX_SOURCE) $(PERL-CONVERT-BINHEX_PATCHES)
+	rm -rf $(BUILD_DIR)/$(PERL-CONVERT-BINHEX_DIR) $(PERL-CONVERT-BINHEX_BUILD_DIR)
+	$(PERL-CONVERT-BINHEX_UNZIP) $(DL_DIR)/$(PERL-CONVERT-BINHEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PERL-CONVERT-BINHEX_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CONVERT-BINHEX_DIR) -p1
+	mv $(BUILD_DIR)/$(PERL-CONVERT-BINHEX_DIR) $(PERL-CONVERT-BINHEX_BUILD_DIR)
+	(cd $(PERL-CONVERT-BINHEX_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		$(PERL_HOSTPERL) Makefile.PL -d\
+		PREFIX=/opt \
+	)
+	touch $(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured
+
+perl-convert-binhex-unpack: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured
+
+$(PERL-CONVERT-BINHEX_BUILD_DIR)/.built: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.configured
+	rm -f $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
+	$(MAKE) -C $(PERL-CONVERT-BINHEX_BUILD_DIR) \
+	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+	touch $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
+
+perl-convert-binhex: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
+
+$(PERL-CONVERT-BINHEX_BUILD_DIR)/.staged: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
+	rm -f $(PERL-CONVERT-BINHEX_BUILD_DIR)/.staged
+	$(MAKE) -C $(PERL-CONVERT-BINHEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(PERL-CONVERT-BINHEX_BUILD_DIR)/.staged
+
+perl-convert-binhex-stage: $(PERL-CONVERT-BINHEX_BUILD_DIR)/.staged
+
+$(PERL-CONVERT-BINHEX_IPK_DIR)/CONTROL/control:
+	@install -d $(PERL-CONVERT-BINHEX_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: perl-convert-binhex" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-CONVERT-BINHEX_PRIORITY)" >>$@
+	@echo "Section: $(PERL-CONVERT-BINHEX_SECTION)" >>$@
+	@echo "Version: $(PERL-CONVERT-BINHEX_VERSION)-$(PERL-CONVERT-BINHEX_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-CONVERT-BINHEX_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-CONVERT-BINHEX_SITE)/$(PERL-CONVERT-BINHEX_SOURCE)" >>$@
+	@echo "Description: $(PERL-CONVERT-BINHEX_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-CONVERT-BINHEX_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-CONVERT-BINHEX_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-CONVERT-BINHEX_CONFLICTS)" >>$@
+
+$(PERL-CONVERT-BINHEX_IPK): $(PERL-CONVERT-BINHEX_BUILD_DIR)/.built
+	rm -rf $(PERL-CONVERT-BINHEX_IPK_DIR) $(BUILD_DIR)/perl-convert-binhex_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(PERL-CONVERT-BINHEX_BUILD_DIR) DESTDIR=$(PERL-CONVERT-BINHEX_IPK_DIR) install
+	find $(PERL-CONVERT-BINHEX_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	(cd $(PERL-CONVERT-BINHEX_IPK_DIR)/opt/lib/perl5 ; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
+	find $(PERL-CONVERT-BINHEX_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	$(MAKE) $(PERL-CONVERT-BINHEX_IPK_DIR)/CONTROL/control
+	echo $(PERL-CONVERT-BINHEX_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-CONVERT-BINHEX_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-CONVERT-BINHEX_IPK_DIR)
+
+perl-convert-binhex-ipk: $(PERL-CONVERT-BINHEX_IPK)
+
+perl-convert-binhex-clean:
+	-$(MAKE) -C $(PERL-CONVERT-BINHEX_BUILD_DIR) clean
+
+perl-convert-binhex-dirclean:
+	rm -rf $(BUILD_DIR)/$(PERL-CONVERT-BINHEX_DIR) $(PERL-CONVERT-BINHEX_BUILD_DIR) $(PERL-CONVERT-BINHEX_IPK_DIR) $(PERL-CONVERT-BINHEX_IPK)
