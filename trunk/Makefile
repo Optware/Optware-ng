@@ -32,6 +32,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	perl-archive-zip \
  	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-digest-perl-md5 \
+	perl-io-multiplex \
 	perl-mailtools perl-mime-tools \
 	perl-unicode-map perl-unicode-string \
 
