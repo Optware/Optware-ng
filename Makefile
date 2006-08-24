@@ -29,6 +29,10 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	perl-archive-zip \
+ 	perl-convert-binhex perl-convert-tnef \
+	perl-mailtools perl-mime-tools \
+	perl-unicode-map perl-unicode-string \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -103,23 +107,23 @@ COMMON_CROSS_PACKAGES = \
 	zip zlib \
 
 PERL_PACKAGES_CROSS_AND_NATIVE = \
-	perl-algorithm-diff perl-appconfig perl-archive-tar perl-archive-zip \
+	perl-algorithm-diff perl-appconfig perl-archive-tar \
 	perl-business-isbn-data perl-business-isbn \
 	perl-cgi-application perl-class-accessor perl-class-data-inheritable perl-class-trigger \
-	perl-clone perl-convert-binhex perl-convert-tnef perl-compress-zlib \
+	perl-clone perl-compress-zlib \
 	perl-date-manip perl-db-file perl-dbi perl-dbix-contextualfetch \
 	perl-digest-hmac perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-gd perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template \
 	perl-ima-dbi perl-io-string perl-io-stringy perl-io-zlib \
-	perl-mailtools perl-mime-base64 perl-mime-tools perl-module-build \
+	perl-mime-base64 perl-module-build \
         perl-module-signature \
 	perl-net-dns perl-net-ident \
 	perl-par-dist perl-pod-readme \
 	perl-storable \
 	perl-template-toolkit perl-term-readkey perl-text-diff perl-time-hires \
-	perl-unicode-map perl-unicode-string perl-universal-moniker perl-uri \
+	perl-universal-moniker perl-uri \
 	perl-version \
 	spamassassin \
 
