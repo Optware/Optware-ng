@@ -20,7 +20,7 @@ SPAMASSASSIN_CONFLICTS=
 #
 # SPAMASSASSIN_IPK_VERSION should be incremented when the ipk changes.
 #
-SPAMASSASSIN_IPK_VERSION=1
+SPAMASSASSIN_IPK_VERSION=2
 
 #
 # SPAMASSASSIN_CONFFILES should be a list of user-editable files
