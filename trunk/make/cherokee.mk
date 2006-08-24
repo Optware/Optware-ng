@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -52,6 +52,7 @@ CHEROKEE_CONFFILES=\
 	/opt/etc/cherokee/mime.types \
 	/opt/etc/cherokee/mime.compression.types \
 	/opt/etc/init.d/S80cherokee \
+	/opt/share/www/cherokee/index.html \
 
 #
 # CHEROKEE_PATCHES should list any patches, in the the order in
