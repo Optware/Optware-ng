@@ -18,7 +18,7 @@ ifneq (,$(findstring :$(OPTWARE_TARGET):,$(PERL_CROSS_TARGETS)))
 include $(SOURCE_DIR)/perl/Cross/perl.mk
 else
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
-PERL_VERSION=5.8.6
+PERL_VERSION=5.8.8
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
 PERL_DIR=perl-$(PERL_VERSION)
 PERL_UNZIP=zcat
@@ -30,7 +30,7 @@ PERL_DESCRIPTION=perl language interpreter
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=9
+PERL_IPK_VERSION=1
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -159,7 +159,7 @@ microperl: $(MICROPERL_BUILD_DIR)/.built
 #
 $(PERL_BUILD_DIR)/.staged: $(PERL_BUILD_DIR)/.built
 	rm -f $(PERL_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install.perl
 	touch $(PERL_BUILD_DIR)/.staged
 
 perl-stage: $(PERL_BUILD_DIR)/.staged
