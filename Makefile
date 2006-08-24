@@ -35,7 +35,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	perl-io-multiplex \
 	perl-mailtools perl-mime-tools \
 	perl-net-server \
-	perl-unicode-map perl-unicode-string \
+	perl-unicode-map perl-unicode-string perl-unix-syslog \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
