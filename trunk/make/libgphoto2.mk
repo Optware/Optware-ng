@@ -11,7 +11,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libgphoto2
+LIBGPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto
 LIBGPHOTO2_VERSION=2.2.1
 LIBGPHOTO2_SOURCE=libgphoto2-$(LIBGPHOTO2_VERSION).tar.bz2
 LIBGPHOTO2_DIR=libgphoto2-$(LIBGPHOTO2_VERSION)

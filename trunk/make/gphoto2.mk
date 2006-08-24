@@ -14,7 +14,7 @@
 # TODO:
 #	Search a sollution for popt.
 #
-GPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto2
+GPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto
 GPHOTO2_VERSION=2.2.0
 GPHOTO2_SOURCE=gphoto2-$(GPHOTO2_VERSION).tar.bz2
 GPHOTO2_DIR=gphoto2-$(GPHOTO2_VERSION)
