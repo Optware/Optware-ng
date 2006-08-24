@@ -119,7 +119,7 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-par-dist perl-pod-readme \
 	perl-storable \
 	perl-template-toolkit perl-term-readkey perl-text-diff perl-time-hires \
-	perl-universal-moniker perl-uri \
+	perl-unicode-map perl-universal-moniker perl-uri \
 	perl-version \
 	spamassassin \
 
