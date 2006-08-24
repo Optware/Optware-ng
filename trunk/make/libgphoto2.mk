@@ -20,7 +20,7 @@ LIBGPHOTO2_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 LIBGPHOTO2_DESCRIPTION=Describe libgphoto2 here.
 LIBGPHOTO2_SECTION=libs
 LIBGPHOTO2_PRIORITY=optional
-LIBGPHOTO2_DEPENDS=libtool
+LIBGPHOTO2_DEPENDS=libtool popt libusb
 LIBGPHOTO2_SUGGESTS=gphoto2
 LIBGPHOTO2_CONFLICTS=
 
@@ -95,7 +95,7 @@ libgphoto2-source: $(DL_DIR)/$(LIBGPHOTO2_SOURCE) $(LIBGPHOTO2_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBGPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPHOTO2_SOURCE) $(LIBGPHOTO2_PATCHES) make/libgphoto2.mk
-	$(MAKE) libusb-stage
+	$(MAKE) libusb-stage popt-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(LIBGPHOTO2_DIR) $(LIBGPHOTO2_BUILD_DIR)
 	$(LIBGPHOTO2_UNZIP) $(DL_DIR)/$(LIBGPHOTO2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBGPHOTO2_PATCHES)" ; \
