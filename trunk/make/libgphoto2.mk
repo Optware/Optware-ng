@@ -20,7 +20,7 @@ LIBGPHOTO2_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 LIBGPHOTO2_DESCRIPTION=Describe libgphoto2 here.
 LIBGPHOTO2_SECTION=libs
 LIBGPHOTO2_PRIORITY=optional
-LIBGPHOTO2_DEPENDS=libtool popt libusb
+LIBGPHOTO2_DEPENDS=libtool, popt, libusb
 LIBGPHOTO2_SUGGESTS=gphoto2
 LIBGPHOTO2_CONFLICTS=
 
