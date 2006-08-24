@@ -30,7 +30,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	perl-archive-zip \
- 	perl-convert-binhex perl-convert-tnef \
+ 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-mailtools perl-mime-tools \
 	perl-unicode-map perl-unicode-string \
 
