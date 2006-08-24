@@ -34,6 +34,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	perl-digest-perl-md5 \
 	perl-io-multiplex \
 	perl-mailtools perl-mime-tools \
+	perl-net-server \
 	perl-unicode-map perl-unicode-string \
 
 # Add new native-only packages here
