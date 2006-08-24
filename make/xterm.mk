@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 XTERM_SITE=ftp://invisible-island.net/xterm
-XTERM_VERSION=216
+XTERM_VERSION=217
 XTERM_SOURCE=xterm-$(XTERM_VERSION).tgz
 XTERM_DIR=xterm-$(XTERM_VERSION)
 XTERM_UNZIP=zcat
