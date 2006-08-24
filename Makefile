@@ -148,8 +148,6 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         ocaml \
 	openldap \
-	perl \
-	$(PERL_PACKAGES_CROSS_AND_NATIVE) \
 	perl-class-dbi \
 	perl-libwww \
 	rsnapshot \
