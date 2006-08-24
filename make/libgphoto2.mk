@@ -146,7 +146,7 @@ $(LIBGPHOTO2_BUILD_DIR)/.staged: $(LIBGPHOTO2_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBGPHOTO2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(LIBGPHOTO2_BUILD_DIR)/.staged
 
-$(STAGING_DIR)/opt/lib/libgphoto2.so:
+$(STAGING_DIR)/opt/lib/libgphoto2.so: $(LIBGPHOTO2_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/bin
