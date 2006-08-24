@@ -34,9 +34,9 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 	perl-archive-zip \
  	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-digest-perl-md5 \
-	perl-io-multiplex \
+	perl-io-multiplex perl-io-socket-ssl \
 	perl-mailtools perl-mime-tools \
-	perl-net-server \
+	perl-net-server perl-net-ssleay \
 	perl-unicode-map perl-unicode-string perl-unix-syslog \
 
 # Add new native-only packages here
