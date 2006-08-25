@@ -121,6 +121,7 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-html-parser perl-html-tagset perl-html-template \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
+	perl-libwww \
 	perl-mailtools \
 	perl-mime-base64 perl-mime-tools \
 	perl-module-build perl-module-signature \
@@ -166,7 +167,6 @@ COMMON_NATIVE_PACKAGES = \
         ocaml \
 	openldap \
 	perl-class-dbi \
-	perl-libwww \
 	rsnapshot \
 	squid \
 	stow \
