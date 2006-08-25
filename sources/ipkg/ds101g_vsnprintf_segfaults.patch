@@ -1,0 +1,11 @@
+--- ipkg/user.c.orig	2006-08-25 22:06:40.000000000 +0200
++++ ipkg/user.c	2006-08-25 22:08:10.000000000 +0200
+@@ -36,7 +36,7 @@
+      char *response;
+      va_start(ap, format);
+ 
+-#ifndef IPKG_LIB
++#if !defined(IPKG_LIB) || defined(DS101G_VSNPRINTF_SEGFAULTS)
+      vprintf(format, ap);
+      do {
+ 	  response = file_read_line_alloc(stdin);
