@@ -30,7 +30,7 @@ LFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LFTP_DESCRIPTION=Sophisticated ftp/http client, file transfer program supporting a number of network protocols.
 LFTP_SECTION=net
 LFTP_PRIORITY=optional
-LFTP_DEPENDS=readline, ncurses, expat, libstdc++
+LFTP_DEPENDS=readline, ncurses, expat (>=2), libstdc++
 # LFTP_DEPENDS=readline, ncurses, expat, libstdc++, gnutls, libtasn1, zlib
 LFTP_SUGGESTS=
 LFTP_CONFLICTS=
@@ -38,7 +38,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=1
+LFTP_IPK_VERSION=2
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
