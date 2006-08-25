@@ -15,7 +15,7 @@ OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
 
-OPENSSL_IPK_VERSION=4
+OPENSSL_IPK_VERSION=5
 
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
@@ -39,7 +39,7 @@ OPENSSL_ARCH=linux-elf-$(TARGET_ARCH)
 endif
 endif
 
-$(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
+$(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
 	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR)
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
 	cat $(OPENSSL_PATCHES) | patch -d $(BUILD_DIR)/$(OPENSSL_DIR) -p1
@@ -72,6 +72,18 @@ $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/li
 	rm -rf $(STAGING_DIR)/opt/include/openssl
 	install -d $(STAGING_DIR)/opt/include/openssl
 	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(STAGING_DIR)/opt/include/openssl
+	install -d $(STAGING_PREFIX)/bin
+ifeq ($(HOSTCC), $(TARGET_CC))
+	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(STAGING_PREFIX)/bin/openssl
+else
+#	a fake /opt/bin/openssl in $STAGING_DIR)
+	( \
+		echo "#!/bin/sh"; \
+		sed -n '/#define OPENSSL_VERSION_TEXT/s/^[^"]*"/echo "/p' \
+			$(STAGING_INCLUDE_DIR)/openssl/opensslv.h; \
+	) > $(STAGING_PREFIX)/bin/openssl
+	chmod 755 $(STAGING_PREFIX)/bin/openssl
+endif
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.a $(STAGING_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.a $(STAGING_DIR)/opt/lib
