@@ -33,11 +33,6 @@ perl-net-ssleay-source: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(PERL-NET-SSLEAY_PA
 
 $(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(PERL-NET-SSLEAY_PATCHES)
 	$(MAKE) openssl-stage
-	echo "#!/bin/sh" \
-         >$(STAGING_DIR)/opt/bin/openssl
-	echo "echo \"OpenSSL $(OPENSSL_VERSION) 17 Mar 2004\"" \
-         >>$(STAGING_DIR)/opt/bin/openssl
-	chmod 755 $(STAGING_DIR)/opt/bin/openssl
 	rm -rf $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) $(PERL-NET-SSLEAY_BUILD_DIR)
 	$(PERL-NET-SSLEAY_UNZIP) $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-NET-SSLEAY_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-NET-SSLEAY_DIR) -p1
@@ -51,7 +46,6 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(
                 $(STAGING_DIR)/opt -- \
 		PREFIX=/opt \
 	)
-	rm -f $(STAGING_DIR)/opt/bin/openssl
 	touch $(PERL-NET-SSLEAY_BUILD_DIR)/.configured
 
 perl-net-ssleay-unpack: $(PERL-NET-SSLEAY_BUILD_DIR)/.configured
