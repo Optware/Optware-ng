@@ -23,7 +23,7 @@ PERL_PRIORITY=optional
 PERL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL_SECTION=interpreters
 PERL_DESCRIPTION=Practical Extraction and Report Language.
-PERL_DEPENDS=
+PERL_DEPENDS=libdb
 PERL_SUGGESTS=
 PERL_CONFLICTS=
 
