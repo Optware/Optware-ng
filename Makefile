@@ -266,6 +266,7 @@ DS101_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ds101.
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
+# tnef - malloc.c:30: error: conflicting types for 'malloc'
 DS101_BROKEN_PACKAGES = \
 	adns amule apache appweb apr-util \
 	atftp bash bitchx bzflag \
@@ -279,7 +280,7 @@ DS101_BROKEN_PACKAGES = \
 	py-mysql \
 	qemu qemu-libc-i386 \
 	svn \
-	tcpwrappers tethereal textutils unrar
+	tnef tcpwrappers tethereal textutils unrar
 
 # Packages that *only* work for ds101j - do not just put new packages here.
 DS101J_SPECIFIC_PACKAGES = bip
