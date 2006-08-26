@@ -212,7 +212,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
+	 amule asterisk atk bitlbee bsdmainutils bzflag cabextract dcraw dict dnsmasq \
 	 ecl elinks erlang ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
 	 id3lib iperf iptables irssi ivorbis-tools jabber jamvm jikes \
@@ -227,7 +227,7 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 amule bitlbee bzflag elinks erlang ficy gambit-c \
+	 amule bitlbee bzflag cabextract elinks erlang ficy gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
 	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
@@ -246,6 +246,7 @@ MSS_SPECIFIC_PACKAGES =
 MSS_BROKEN_PACKAGES = \
 	amule apache apr-util asterisk \
 	bitlbee \
+	cabextract \
 	clamav \
 	elinks erlang \
 	gambit-c gawk \
@@ -270,7 +271,7 @@ DS101_SPECIFIC_PACKAGES =
 DS101_BROKEN_PACKAGES = \
 	adns amule apache appweb apr-util \
 	atftp bash bitchx bzflag \
-	ctcs ctorrent cyrus-sasl dspam eaccelerator \
+	cabextract ctcs ctorrent cyrus-sasl dspam eaccelerator \
 	enhanced-ctorrent freeradius gnuplot hexcurse \
 	imagemagick \
 	ldconfig lftp libstdc++ lighttpd \
