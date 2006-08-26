@@ -29,11 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	perl-berkeleydb \
-	perl-mail-spf-query \
-	perl-net-cidr-lite \
-	perl-sys-hostname-long \
-	tnef \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -97,7 +92,7 @@ COMMON_CROSS_PACKAGES = \
 	sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
-	tin torrent transcode transmission tsocks \
+	tin tnef torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
 	ufsd unfs3 units unrar \
 	unzip usbutils ushare \
@@ -111,6 +106,7 @@ COMMON_CROSS_PACKAGES = \
 PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-algorithm-diff \
 	perl-appconfig \
+	perl-berkeleydb \
 	perl-archive-tar perl-archive-zip \
 	perl-business-isbn-data perl-business-isbn \
 	perl-cgi-application \
@@ -127,13 +123,14 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-libwww \
-	perl-mailtools \
+	perl-mail-spf-query perl-mailtools \
 	perl-mime-base64 perl-mime-tools \
 	perl-module-build perl-module-signature \
-	perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
+	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
 	perl-par-dist \
 	perl-pod-readme \
 	perl-storable \
+	perl-sys-hostname-long \
 	perl-template-toolkit \
 	perl-term-readkey \
 	perl-text-diff \
@@ -335,9 +332,6 @@ FSG3_BROKEN_PACKAGES = \
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
-# py-twisted - "twisted.python.dist module not found.  Make sure you have installed the Twisted core package before attempting to install any other Twisted projects. Error: Subprocess exited with result 1 for project conch"
-# py-epsilon - depends on py-twisted
-# py-axiom py-mantissa py-nevow - depend on py-epsilon
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	libextractor \
