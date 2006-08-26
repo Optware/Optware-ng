@@ -20,13 +20,13 @@ CABEXTRACT_CONFLICTS=
 #
 # CABEXTRACT_IPK_VERSION should be incremented when the ipk changes.
 #
-CABEXTRACT_IPK_VERSION=1
+CABEXTRACT_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CABEXTRACT_CPPFLAGS=-I$(TOOL_BUILD_DIR)/crosstool/build/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/gcc-$(CROSS_CONFIGURATION_GCC_VERSION)/include -Drpl_fnmatch=fnmatch
+CABEXTRACT_CPPFLAGS=
 CABEXTRACT_LDFLAGS=
 
 #
@@ -71,6 +71,7 @@ $(CABEXTRACT_BUILD_DIR)/.configured: $(DL_DIR)/$(CABEXTRACT_SOURCE) $(CABEXTRACT
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CABEXTRACT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CABEXTRACT_LDFLAGS)" \
+		ac_cv_func_fnmatch_works=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
