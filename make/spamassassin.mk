@@ -20,7 +20,7 @@ SPAMASSASSIN_CONFLICTS=
 #
 # SPAMASSASSIN_IPK_VERSION should be incremented when the ipk changes.
 #
-SPAMASSASSIN_IPK_VERSION=2
+SPAMASSASSIN_IPK_VERSION=3
 
 #
 # SPAMASSASSIN_CONFFILES should be a list of user-editable files
@@ -75,12 +75,14 @@ $(SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(SPAMASSASSIN_SOURCE) $(SPAMAS
                 $(PERL_HOSTPERL) Makefile.PL \
                 LD_RUN_PATH=/opt/lib \
                 PREFIX=/opt \
-		SYSCONFDIR=/opt/etc \
+ 		SYSCONFDIR=/opt/etc \
+		CONFDIR=/opt/etc/spamassassin \
+		CONTACT_ADDRESS="postmaster@local.domain" \
 		< /dev/null && \
 		(cd spamc; \
 		  $(TARGET_CONFIGURE_OPTS) \
                   ./configure --prefix=/opt \
-                    --sysconfdir=/opt/etc/mail/spamassassin \
+                    --sysconfdir=/opt/etc/spamassassin \
                     --datadir=/opt/share/spamassassin \
                     --enable-ssl=no \
                     --host=$(GNU_TARGET_NAME); \
@@ -154,6 +156,7 @@ $(SPAMASSASSIN_IPK_DIR)/CONTROL/control:
 $(SPAMASSASSIN_IPK): $(SPAMASSASSIN_BUILD_DIR)/.built
 	rm -rf $(SPAMASSASSIN_IPK_DIR) $(BUILD_DIR)/spamassassin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPAMASSASSIN_BUILD_DIR) DESTDIR=$(SPAMASSASSIN_IPK_DIR) install
+	perl -pi -e 's|$(PERL_HOSTPERL)|/opt/bin/perl|g' $(SPAMASSASSIN_IPK_DIR)/*
 	install -d $(SPAMASSASSIN_IPK_DIR)/opt/etc/
 	$(MAKE) $(SPAMASSASSIN_IPK_DIR)/CONTROL/control
 	echo $(SPAMASSASSIN_CONFFILES) | sed -e 's/ /\n/g' > $(SPAMASSASSIN_IPK_DIR)/CONTROL/conffiles
