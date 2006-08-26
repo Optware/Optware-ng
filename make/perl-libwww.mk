@@ -13,11 +13,11 @@ PERL-LIBWWW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-LIBWWW_DESCRIPTION=libwww-perl - The World-Wide Web library for Perl 
 PERL-LIBWWW_SECTION=util
 PERL-LIBWWW_PRIORITY=optional
-PERL-LIBWWW_DEPENDS=perl, perl-mime-base64, perl-uri, perl-compress-zlib, perl-html-parser
+PERL-LIBWWW_DEPENDS=perl, perl-uri, perl-compress-zlib, perl-html-parser
 PERL-LIBWWW_SUGGESTS=
 PERL-LIBWWW_CONFLICTS=
 
-PERL-LIBWWW_IPK_VERSION=3
+PERL-LIBWWW_IPK_VERSION=4
 
 PERL-LIBWWW_CONFFILES=
 
@@ -41,7 +41,7 @@ $(DL_DIR)/$(PERL-LIBWWW_SOURCE):
 perl-libwww-source: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIBWWW_PATCHES)
 
 $(PERL-LIBWWW_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIBWWW_PATCHES)
-	$(MAKE) perl-mime-base64-stage perl-uri-stage perl-compress-zlib-stage perl-html-parser-stage
+	$(MAKE) perl-uri-stage perl-compress-zlib-stage perl-html-parser-stage
 	rm -rf $(BUILD_DIR)/$(PERL-LIBWWW_DIR) $(PERL-LIBWWW_BUILD_DIR)
 	$(PERL-LIBWWW_UNZIP) $(DL_DIR)/$(PERL-LIBWWW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PERL-LIBWWW_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-LIBWWW_DIR) -p1
