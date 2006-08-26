@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=5
+PERL_IPK_VERSION=6
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -140,7 +140,7 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 else
 $(PERL_BUILD_DIR)/.configured: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
-#	$(MAKE) <bar>-stage <baz>-stage # maybe add bdb here at some point
+	$(MAKE) libdb-stage
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
@@ -206,7 +206,10 @@ else
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
 	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
-		$(MAKE) -C $(PERL_BUILD_DIR)/Cross perl
+		$(MAKE) -C $(PERL_BUILD_DIR)/Cross perl \
+	PASTHRU_INC="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
+	OTHERLDFLAGS="-L$(STAGING_LIB_DIR)" \
+
 endif
 	touch $(PERL_BUILD_DIR)/.built
 
