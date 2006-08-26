@@ -35,6 +35,29 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# dump: is broken in several ways. It is using the host's e2fsprogs
+# includes.  It is also misconfigured: --includedir and --libdir as
+# arguments to configure affect installation directories, not where
+# things get searched for.  I think it would be best to rewrite this
+# .mk from scratch, following template.mk.
+# 
+# lftp - segfault even with native build, upstream bug?
+# libao - has runtime trouble
+# parted - does not work on the slug, even when compiled natively
+# lumikki - does not install to /opt
+# doxygen - host binary, not stripped
+# perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
+PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
+	doxygen \
+	lftp \
+	libextractor \
+	perl-dbd-mysql \
+
+# libiconv - has been made obsolete by gconv-modules
+# git - has been made obsolete by git-core
+# Metalog - has been made obsolete by syslog-ng
+PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin
+
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk asterisk-sounds \
@@ -58,7 +81,7 @@ COMMON_CROSS_PACKAGES = \
 	ircd-hybrid irssi ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
-	lame ldconfig less lftp lha \
+	lame ldconfig less lha \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
@@ -182,9 +205,7 @@ NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native \
 	perl $(PERL_PACKAGES_CROSS_AND_NATIVE) \
 
 # Packages that do not work for nslu2.
-# perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 NSLU2_BROKEN_PACKAGES = \
-	perl-dbd-mysql \
 
 # Packages that *only* work for wl500g - do not just put new packages here.
 WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ 
@@ -324,25 +345,6 @@ FSG3_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	svn \
 	tcpwrappers tethereal textutils transcode unrar
-
-# dump: is broken in several ways. It is using the host's e2fsprogs
-# includes.  It is also misconfigured: --includedir and --libdir as
-# arguments to configure affect installation directories, not where
-# things get searched for.  I think it would be best to rewrite this
-# .mk from scratch, following template.mk.
-# 
-# libao - has runtime trouble
-# parted - does not work on the slug, even when compiled natively
-# lumikki - does not install to /opt
-# doxygen - host binary, not stripped
-PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
-	doxygen \
-	libextractor \
-
-# libiconv - has been made obsolete by gconv-modules
-# git - has been made obsolete by git-core
-# Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
