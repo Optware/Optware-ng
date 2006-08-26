@@ -29,12 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	arc \
-	cabextract \
-	freeze \
-	lha \
-	unarj \
-	zoo \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -42,17 +36,19 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 COMMON_CROSS_PACKAGES = \
-	abook adduser adns alac-decoder amule antinat appweb asterisk asterisk-sounds \
-	apache apr apr-util atftp atk audiofile autoconf automake \
+	abook adduser adns alac-decoder amule antinat appweb \
+	apache apr apr-util arc asterisk asterisk-sounds \
+	atftp atk audiofile autoconf automake \
 	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
-	ccxstream chillispot coreutils cpio cron cdargs cherokee chrpath classpath clamav clearsilver \
+	cabextract ccxstream chillispot coreutils cpio cron cdargs \
+	cherokee chrpath classpath clamav clearsilver \
 	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
 	expat extract-xiso \
 	fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
-	fontconfig freeradius freetds freetype \
+	fontconfig freeradius freetds freetype freeze \
 	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core glib gnupg gnuplot gnutls gtk \
@@ -62,7 +58,8 @@ COMMON_CROSS_PACKAGES = \
 	ircd-hybrid irssi ivorbis-tools \
 	jabber jamvm jikes jove joe \
 	knock \
-	lame ldconfig less lftp libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
+	lame ldconfig less lftp lha \
+	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
 	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
@@ -100,14 +97,14 @@ COMMON_CROSS_PACKAGES = \
 	tar tcpdump termcap textutils thttpd \
 	tin tnef torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
-	ufsd unfs3 units unrar \
+	ufsd unarj unfs3 units unrar \
 	unzip usbutils ushare \
 	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
 	w3cam w3m webalizer wget-ssl wizd \
 	wakelan which whois wpa-supplicant wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
-	zip zlib \
+	zip zlib zoo \
 
 PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-algorithm-diff \
