@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=6
+PERL_IPK_VERSION=7
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -147,6 +147,7 @@ endif
 		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
+	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(PERL_BUILD_DIR)/ext/*/Makefile.PL
 ifeq ($(HOSTCC), $(TARGET_CC))
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
@@ -208,7 +209,7 @@ else
 	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
 		$(MAKE) -C $(PERL_BUILD_DIR)/Cross perl \
 	PASTHRU_INC="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
-	OTHERLDFLAGS="-L$(STAGING_LIB_DIR)" \
+	OTHERLDFLAGS="-L$(STAGING_LIB_DIR) -rpath /opt/lib" \
 
 endif
 	touch $(PERL_BUILD_DIR)/.built
