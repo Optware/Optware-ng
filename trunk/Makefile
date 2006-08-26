@@ -56,7 +56,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumik
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin
+PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 \
 
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
@@ -150,7 +150,7 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-libwww \
 	perl-mail-spf-query perl-mailtools \
-	perl-mime-base64 perl-mime-tools \
+	perl-mime-tools \
 	perl-module-build perl-module-signature \
 	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
 	perl-par-dist \
