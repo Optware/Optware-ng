@@ -31,6 +31,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 CROSS_PACKAGES_READY_FOR_TESTING = \
 	arc \
 	lha \
+	unarj \
 	zoo \
 
 # Add new native-only packages here
