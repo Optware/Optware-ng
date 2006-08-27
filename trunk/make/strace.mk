@@ -28,13 +28,20 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=1
+STRACE_IPK_VERSION=2
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+#
+ifeq ($(OPTWARE_TARGET), nslu2)
+#http://www.fluff.org/ben/patches/strace/strace-fix-arm-bad-syscall.patch
+STRACE_PATCHES=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
+else
 STRACE_PATCHES=
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -88,6 +95,10 @@ strace-source: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
 $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
 	rm -rf $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
 	$(STRACE_UNZIP) $(DL_DIR)/$(STRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(STRACE_PATCHES)" ; \
+                then cat $(STRACE_PATCHES) | \
+                patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
+        fi
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
 	(cd $(STRACE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
