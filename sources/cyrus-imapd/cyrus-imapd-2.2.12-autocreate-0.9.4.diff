@@ -1,0 +1,2159 @@
+diff -Naur cyrus-imapd-2.2.12/README.autocreate cyrus-imapd-2.2.12.autocreate2/README.autocreate
+--- cyrus-imapd-2.2.12/README.autocreate	1970-01-01 02:00:00.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/README.autocreate	2005-10-19 14:48:57.930991000 +0300
+@@ -0,0 +1,181 @@
++Cyrus IMAP autocreate Inbox patch
++----------------------------------
++
++NOTE : This patch has been created at the University of Athens. For more info, as well 
++as more patches on Cyrus IMAPD server, please visit http://email.uoa.gr 
++
++The design of Cyrus IMAP server does not predict the automatic creation of users'
++INBOX folders. The creation of a user's INBOX is considered to be an external task,
++that has to be completed as part of the user e-mail account creation procedure. 
++Hence, to create a new e-mail account the site administrator has to 
++a) Include the new account in the user database for the authentication procedure
++   (e.g. sasldb, shadow, mysql, ldap).
++b) Create the corresponding INBOX folder. 
++
++Alternatively, the user, if succesfully authenticated, may create his own INBOX folder,
++as long as the configuration of the site allows it (see "autocreatequota" in imapd.conf).
++Unlike what uncareful readers may think, enabling the "autocreatequota" option, doesn't 
++lead to the automatic INBOX folder creation by Cyrus IMAP server.
++In fact, "autocreate" means that the IMAP clients are allowed to automatically create 
++the user INBOX. 
++
++This patch adds the functionality of automatic creation of the users' INBOX folders into
++the Cyrus IMAP server. It is implemented as two features, namely the  "create on login"
++and "create on post".
++ 
++
++
++Create on login
++===============
++This feauture provides automatic creation of a user's INBOX folder when all of the 
++following requirements are met:
++
++i)  The user has succesfully passed the authentication procedure.
++
++ii) The user's authorization ID (typically the same as the user's
++authentication ID)  doesn't belong to the imap_admins or admins
++accounts (see imapd.conf).
++
++iii) The "autocreatequota" option in the imap configuration file 
++has been set to a non zero value. 
++
++iv) The corresponding to the user's authorizationID INBOX folder
++does not exist.
++
++The user's first login is the most typical case when all four requirements are met. 
++Note that if the authenticatedID is allowed to proxy to another account for which 
++all of the above requirements are met, the corresponding INBOX folder for that account 
++will be created.
++
++
++
++Create on post
++==============
++This feauture provides automatic creation of a user's INBOX folder when all of the 
++following requirements are met. 
++
++i) An e-mail message addressed to the user has been received.  
++
++ii) The recipient is not any of the imap_admins or admins accounts. 
++Note that passing e-mails to admins or imap_admins accounts from 
++the MTA to LMTP should be avoided in any case.
++
++iii) The recipient's INBOX does not exist.
++
++iv) The "autocreatequota" option in the imap configuration file 
++has been set to a non zero value. 
++
++v) The "createonpost" option in the imap configuration file 
++has been switched on. 
++
++
++Besides the automatic creation of INBOX folder, additional functionalities are
++provided:
++
++A) Automatic creation of INBOX subfolders controlled by "autocreateinboxfolders"
++configuration option. eg 
++
++autocreateinboxfolders: sent|drafts|spam|templates
++
++B) Automatic subscription of INBOX subfolders controlled by "autosubscribeinboxfolders"
++configuration option. eg
++
++autosubscribeinboxfolders: sent|spam
++
++Obviously, only subscription to subfolders included in the "autocreateinboxfolder"
++list is meaningfull. 
++
++C) Automatic subscription to shared folders (bulletin boards). The user gets
++automatically subscribed to the shared folders declared in the "autosubscribesharedfolders"
++configuration option in imapd.conf.
++eg autosubscribesharedfolders: public_folder | public_folder.subfolder
++
++In order the above action to succeed, the shared folder has to pre-exist the INBOX creation
++and the user must have the apropriate permissions in order to be able to subscribe to the
++shared folder.
++
++* A new config option has been added. 'autosubscribe_all_sharedfolders' is a yes/no
++option. When set to yes, the user is automatically subscribed to all shared folders one 
++has permission to subscribe to. Please, note that when this option is set to yes, then
++'autosubscribesharedfolders' option is overriden.
++
++D) Automatic creation of a predefined default sieve script.
++
++This is very useful when a default sieve script is used for every user. Usually, a
++default anti-spam script may me be written in a file and copied to each user
++sieve scripts upon the INBOX creation. The imapd.conf options that have been added
++are 'autocreate_sieve_script', 'autocreate_sieve_compiledscript' and 
++'generate_compiled_sieve_script'. 
++
++autocreate_sieve_script configuration option refers to the full path of the file 
++that contains the sieve script. The default value is null and if no file is defined,
++then no default script is created upon INBOX creation. (The feature is disabled)
++eg autocreate_sieve_script: /etc/default_sieve_script
++
++autocreate_sieve_compiledscript configuration option refers to the full path of the
++file that contains the bytecode compiled sieve script. If this filename is defined
++in imapd.conf and the file exists, then it is automatically copied in the user's sieve
++directory. If it is not defined, then a bytecode sieve script gets on the fly compiled
++by the daemon. 
++eg autocreate_sieve_compiledscript: /etc/default_sieve_script.bc
++
++generate_compiled_sieve_script is a boolean option that triggers the compilation of the 
++source sieve script to bytecode sieve script. The file that the bytecode script will
++be saved is pointed by autocreate_sieve_compiledscript.
++
++Ways of compiling a sieve script : 
++1. Compile a sieve script using the standard sievec utility, distributed by CMU
++2. Compile a sieve script using the compile_sieve utility, released by UoA. This 
++   tool is almost identical to the sievec utility, with the difference that it 
++   reads the input and output file from autocreate_sieve_script and 
++   autocreate_sieve_compiledscript options in imapd.conf
++3. Let cyrus create a compiled sieve script using a source script. Cyrus can be
++   instructed to save the compiled script any time a compiled script does not exist.
++
++NOTES : 
++1. In order this functionality to work, the following requirements must have been met:
++   - 'sieveusehomedir' option must be 'no' in the configuration (default).
++   - 'sievedir' option must have a valid value.
++2. Currently, this patch checks the validity of the source script while generating a 
++   bytecode compiled script, but not the validity of the bytecode sieve script file.
++   The administrator should make sure that the provided files contain a valid sieve
++   script as well as the compiled script is updated every time the source script changes.
++
++
++
++Issues to be considered 
++=======================
++
++I) In order to use the create on post feauture one should be absolutely sure that: 
++a) The MTA checks the validity of the e-mail recipient before sending the e-mail to
++LMTP. This is an RFC821 requirement. This usually expands to "the mta should be 
++able to use the account database as user mailbox database". 
++b) Only authorized accounts/services can talk to LMTP.
++
++II) Especially in the case of imap logins, the current patch implementation checks
++for the INBOX folder existence upon login, causing an extra mailbox lookup in most 
++of the cases. 
++A better approach would be to chase the "IMAP_MAILBOX_NONEXISTENT" error code and
++check if the error is associated with an INBOX folder. However, this would mess up
++Cyrus code. The way it was implemented may not have been the most performance
++optimized, but it produces a much cleaner and simple patch.
++
++
++
++Virtual Domains Support
++=======================
++
++Virtual domains are supported by all versions of the patch for cyrus-imapd-2.2.1-BETA and 
++later. However, it is not possible to declare different INBOX subfolders to be created or 
++shared folders to be subscribed to for every domain.
++
++
++
++Things to be done
++=================
++
++1. Support MURDER architecture. 
++
++
++For more information and updates please visit http://email.uoa.gr/autocreate
++
+diff -Naur cyrus-imapd-2.2.12/imap/Makefile.in cyrus-imapd-2.2.12.autocreate2/imap/Makefile.in
+--- cyrus-imapd-2.2.12/imap/Makefile.in	2004-05-28 21:03:02.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/imap/Makefile.in	2005-10-19 14:48:57.935240000 +0300
+@@ -104,7 +104,7 @@
+ 	convert_code.o duplicate.o saslclient.o saslserver.o signals.o \
+ 	annotate.o search_engines.o squat.o squat_internal.o mbdump.o \
+ 	imapparse.o telemetry.o user.o notify.o protocol.o quota_db.o \
+-	$(SEEN) $(IDLE)
++	autosieve.o $(SEEN) $(IDLE)
+ 
+ IMAPDOBJS=pushstats.o backend.o imapd.o index.o tls.o version.o
+ 
+@@ -122,7 +122,7 @@
+ 	fud smmapd reconstruct quota mbpath ipurge \
+ 	cyrdump chk_cyrus cvt_cyrusdb deliver ctl_mboxlist \
+ 	ctl_deliver ctl_cyrusdb squatter mbexamine cyr_expire arbitron \
+-	@IMAP_PROGS@
++	compile_sieve @IMAP_PROGS@
+ 
+ BUILTSOURCES = imap_err.c imap_err.h pushstats.c pushstats.h \
+ 	lmtpstats.c lmtpstats.h xversion.h mupdate_err.c mupdate_err.h \
+@@ -188,7 +188,7 @@
+ ### Services
+ idled: idled.o mutex_fake.o libimap.a $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o idled \
+-	 idled.o mutex_fake.o libimap.a $(DEPLIBS) $(LIBS)
++	 idled.o mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+ lmtpd: lmtpd.o $(LMTPOBJS) $(SIEVE_OBJS) mutex_fake.o libimap.a $(SIEVE_LIBS) \
+ 	$(DEPLIBS) $(SERVICE)
+@@ -214,10 +214,10 @@
+ 	 $(SERVICE) lmtpproxyd.o backend.o $(LMTPOBJS) mutex_fake.o \
+ 	 libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+-imapd: xversion $(IMAPDOBJS) mutex_fake.o libimap.a $(DEPLIBS) $(SERVICE)
++imapd: xversion $(IMAPDOBJS) mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+ 	$(CC) $(LDFLAGS) -o imapd \
+ 	 $(SERVICE) $(IMAPDOBJS) mutex_fake.o \
+-	libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+ imapd.pure: $(IMAPDOBJS) mutex_fake.o libimap.a $(DEPLIBS) $(SERVICE)
+ 	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o imapd.pure \
+@@ -232,7 +232,7 @@
+ proxyd: $(PROXYDOBJS) mutex_fake.o libimap.a $(DEPLIBS) $(SERVICE)
+ 	$(CC) $(LDFLAGS) -o proxyd \
+ 	 $(SERVICE) $(PROXYDOBJS) mutex_fake.o libimap.a \
+-	 $(DEPLIBS) $(LIBS) $(LIB_WRAP)
++	 $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+ proxyd.pure: $(PROXYDOBJS) mutex_fake.o libimap.a $(DEPLIBS) $(SERVICE)
+ 	$(PURIFY) $(PUREOPT) $(CC) $(LDFLAGS) -o proxyd.pure \
+@@ -244,7 +244,7 @@
+ 	$(CC) $(LDFLAGS) -o mupdate \
+ 	 $(SERVICETHREAD) mupdate.o mupdate-slave.o mupdate-client.o \
+ 	 mutex_pthread.o tls.o libimap.a \
+-	 $(DEPLIBS) $(LIBS) $(LIB_WRAP) -lpthread
++	 $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP) -lpthread
+ 
+ mupdate.pure: mupdate.o mupdate-slave.o mupdate-client.o mutex_pthread.o \
+ 	libimap.a $(DEPLIBS)
+@@ -252,92 +252,96 @@
+ 	 $(SERVICETHREAD) mupdate.o mupdate-slave.o mupdate-client.o \
+ 	 mutex_pthread.o libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP) -lpthread
+ 
+-pop3d: pop3d.o backend.o tls.o mutex_fake.o libimap.a $(DEPLIBS) $(SERVICE)
++pop3d: pop3d.o backend.o tls.o mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+ 	$(CC) $(LDFLAGS) -o pop3d pop3d.o backend.o tls.o $(SERVICE) \
+-	 mutex_fake.o libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
++	 mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+ nntpd: nntpd.o backend.o index.o smtpclient.o spool.o tls.o \
+ 	 mutex_fake.o nntp_err.o libimap.a $(DEPLIBS) $(SERVICE)
+ 	$(CC) $(LDFLAGS) -o nntpd nntpd.o backend.o index.o spool.o \
+ 	 smtpclient.o tls.o $(SERVICE) mutex_fake.o nntp_err.o \
+-	 libimap.a $(DEPLIBS) $(LIBS) $(LIB_WRAP)
++	 libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+-fud: fud.o libimap.a mutex_fake.o $(DEPLIBS) $(SERVICE)
++fud: fud.o libimap.a mutex_fake.o $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+ 	$(CC) $(LDFLAGS) -o fud $(SERVICE) fud.o mutex_fake.o libimap.a \
+-	$(DEPLIBS) $(LIBS) $(LIB_WRAP)
++	$(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+-smmapd: smmapd.o libimap.a mutex_fake.o $(DEPLIBS) $(SERVICE)
++smmapd: smmapd.o libimap.a mutex_fake.o $(SIEVE_LIBS) $(DEPLIBS) $(SERVICE)
+ 	$(CC) $(LDFLAGS) -o smmapd $(SERVICE) smmapd.o mutex_fake.o libimap.a \
+-	$(DEPLIBS) $(LIBS) $(LIB_WRAP)
++	$(SIEVE_LIBS) $(DEPLIBS) $(LIBS) $(LIB_WRAP)
+ 
+ ### Command Line Utilities
+-arbitron: arbitron.o $(CLIOBJS) libimap.a $(DEPLIBS)
++arbitron: arbitron.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o arbitron arbitron.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
++
++compile_sieve: compile_sieve.o libimap.a $(SIEVE_LIBS) $(DEPLIBS)
++	$(CC) $(LDFLAGS) -o compile_sieve compile_sieve.o $(CLIOBJS) \
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-cvt_cyrusdb: cvt_cyrusdb.o mutex_fake.o libimap.a $(DEPLIBS)
++cvt_cyrusdb: cvt_cyrusdb.o mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o cvt_cyrusdb cvt_cyrusdb.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-chk_cyrus: chk_cyrus.o mutex_fake.o libimap.a $(DEPLIBS)
++chk_cyrus: chk_cyrus.o mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o chk_cyrus chk_cyrus.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-deliver: deliver.o backend.o $(LMTPOBJS) mutex_fake.o libimap.a $(DEPLIBS)
++deliver: deliver.o backend.o $(LMTPOBJS) mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o deliver deliver.o backend.o $(LMTPOBJS) \
+-	mutex_fake.o libimap.a $(DEPLIBS) $(LIBS)
++	mutex_fake.o libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-ctl_deliver: ctl_deliver.o $(CLIOBJS) libimap.a $(DEPLIBS)
++ctl_deliver: ctl_deliver.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o \
+-	 $@ ctl_deliver.o $(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	 $@ ctl_deliver.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-ctl_mboxlist: ctl_mboxlist.o mupdate-client.o $(CLIOBJS) libimap.a $(DEPLIBS)
++ctl_mboxlist: ctl_mboxlist.o mupdate-client.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o $@ ctl_mboxlist.o mupdate-client.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-ctl_cyrusdb: ctl_cyrusdb.o $(CLIOBJS) libimap.a $(DEPLIBS)
++ctl_cyrusdb: ctl_cyrusdb.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o \
+-	 $@ ctl_cyrusdb.o $(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	 $@ ctl_cyrusdb.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-cyr_expire: cyr_expire.o $(CLIOBJS) libimap.a $(DEPLIBS)
++cyr_expire: cyr_expire.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o $@ cyr_expire.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-fetchnews: fetchnews.o $(CLIOBJS) libimap.a $(DEPLIBS)
++fetchnews: fetchnews.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o \
+-	 $@ fetchnews.o $(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	 $@ fetchnews.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-squatter: squatter.o index.o squat_build.o $(CLIOBJS) libimap.a $(DEPLIBS)
++squatter: squatter.o index.o squat_build.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o squatter squatter.o index.o squat_build.o \
+-	$(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	$(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-mbpath: mbpath.o $(CLIOBJS) libimap.a $(DEPLIBS)
++mbpath: mbpath.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o mbpath mbpath.o $(CLIOBJS) libimap.a \
+-	$(DEPLIBS) $(LIBS)
++	$(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-ipurge: ipurge.o $(CLIOBJS) libimap.a $(DEPLIBS)
++ipurge: ipurge.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o ipurge ipurge.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-cyrdump: cyrdump.o index.o $(CLIOBJS) libimap.a $(DEPLIBS)
++cyrdump: cyrdump.o index.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o cyrdump cyrdump.o index.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-mbexamine: mbexamine.o $(CLIOBJS) libimap.a $(DEPLIBS)
++mbexamine: mbexamine.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o \
+-	 mbexamine mbexamine.o $(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	 mbexamine mbexamine.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-reconstruct: reconstruct.o $(CLIOBJS) libimap.a $(DEPLIBS)
++reconstruct: reconstruct.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o \
+-	 reconstruct reconstruct.o $(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	 reconstruct reconstruct.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-quota: quota.o $(CLIOBJS) libimap.a $(DEPLIBS)
++quota: quota.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o quota quota.o $(CLIOBJS) \
+-	libimap.a $(DEPLIBS) $(LIBS)
++	libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+-tls_prune: tls_prune.o tls.o $(CLIOBJS) libimap.a $(DEPLIBS)
++tls_prune: tls_prune.o tls.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS)
+ 	$(CC) $(LDFLAGS) -o \
+-	 $@ tls_prune.o tls.o $(CLIOBJS) libimap.a $(DEPLIBS) $(LIBS)
++	 $@ tls_prune.o tls.o $(CLIOBJS) libimap.a $(SIEVE_LIBS) $(DEPLIBS) $(LIBS)
+ 
+ ### Other Misc Targets
+ 
+diff -Naur cyrus-imapd-2.2.12/imap/autosieve.c cyrus-imapd-2.2.12.autocreate2/imap/autosieve.c
+--- cyrus-imapd-2.2.12/imap/autosieve.c	1970-01-01 02:00:00.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/imap/autosieve.c	2005-10-19 14:48:57.940098000 +0300
+@@ -0,0 +1,587 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++
++#ifdef HAVE_UNISTD_H
++#include <unistd.h>
++#endif
++
++#include <errno.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/uio.h>
++#include <fcntl.h>
++#include <ctype.h>
++#include <time.h>
++#include <syslog.h>
++#include <com_err.h>
++#include <config.h>
++
++#include "global.h"
++#include "util.h"
++#include "mailbox.h"
++#include "imap_err.h"
++#include "sieve_interface.h"
++#include "script.h"
++
++#define TIMSIEVE_FAIL 	-1
++#define TIMSIEVE_OK 	0
++#define MAX_FILENAME	1024
++
++static int get_script_name(char *sievename, size_t buflen, const char *filename);
++static int get_script_dir(char *sieve_script_dir, size_t buflen, char *userid, const char *sieve_dir);
++int autoadd_sieve(char *userid, const char *source_script);
++
++static void fatal(const char *s, int code);
++static void foo(void);
++static int sieve_notify(void *ac __attribute__((unused)),
++                        void *interp_context __attribute__((unused)),
++                        void *script_context __attribute__((unused)),
++                        void *message_context __attribute__((unused)),
++                        const char **errmsg __attribute__((unused)));
++static int mysieve_error(int lineno, const char *msg,
++                  void *i __attribute__((unused)), void *s);
++static int is_script_parsable(FILE *stream, char **errstr, sieve_script_t **ret);
++
++
++sieve_vacation_t vacation2 = {
++    0,                          /* min response */
++    0,                          /* max response */
++    (sieve_callback *) &foo,    /* autorespond() */
++    (sieve_callback *) &foo     /* send_response() */
++};
++
++
++/*
++ * Find the name of the sieve script
++ * given the source script and compiled script names
++ */
++static int get_script_name(char *sievename, size_t buflen, const char *filename)
++{
++  char *p;
++  int r;
++
++  p = strrchr(filename, '/');
++  if (p == NULL)
++      p = (char *) filename;
++  else
++      p++;
++
++  r = strlcpy(sievename, p, buflen) - buflen;
++  return (r >= 0 || r == -buflen ? 1 : 0);
++}
++
++
++/*
++ * Find the directory where the sieve scripts of the user
++ * reside
++ */
++static int get_script_dir(char *sieve_script_dir, size_t buflen, char *userid, const char *sieve_dir)
++{
++    char *user = NULL, *domain = NULL;
++
++    /* Setup the user and the domain */
++    if(config_virtdomains && (domain = strchr(userid, '@'))) {
++        user = (char *) xmalloc((domain - userid +1) * sizeof(char));
++        strlcpy(user, userid, domain - userid + 1);
++        domain++;
++    } else
++        user = userid;
++
++    /*  Find the dir path where the sieve scripts of the user will reside */   
++    if (config_virtdomains && domain) {
++         if(snprintf(sieve_script_dir, buflen, "%s%s%c/%s/%c/%s/",
++              sieve_dir, FNAME_DOMAINDIR, dir_hash_c(domain), domain, dir_hash_c(user), user) >= buflen) {
++                 free(user);
++                 return 1;
++ 	 }
++    } else {
++         if(snprintf(sieve_script_dir, buflen, "%s/%c/%s/", 
++     	      sieve_dir, dir_hash_c(user), user) >= buflen) 
++                 return 1;
++    }
++
++    /* Free the xmalloced user memory, reserved above */
++    if(user != userid)
++        free(user);
++
++    return 0;
++}
++
++int autoadd_sieve(char *userid, const char *source_script)
++{   
++    sieve_script_t *s = NULL;
++    bytecode_info_t *bc = NULL;
++    char *err = NULL;
++    FILE *in_stream, *out_fp;
++    int out_fd, in_fd, r, k;
++    int do_compile = 0;
++    const char *sieve_dir = NULL;
++    const char *compiled_source_script = NULL;
++    char sievename[MAX_FILENAME];
++    char sieve_script_name[MAX_FILENAME];
++    char sieve_script_dir[MAX_FILENAME];
++    char sieve_bcscript_name[MAX_FILENAME];
++    char sieve_default[MAX_FILENAME];
++    char sieve_tmpname[MAX_FILENAME];
++    char sieve_bctmpname[MAX_FILENAME];
++    char sieve_bclink_name[MAX_FILENAME];
++    char buf[4096];
++    mode_t oldmask;
++    struct stat statbuf;
++
++    /* We don't support using the homedirectory, like timsieved */
++    if (config_getswitch(IMAPOPT_SIEVEUSEHOMEDIR)) {
++        syslog(LOG_WARNING,"autocreate_sieve: autocreate_sieve does not work with sieveusehomedir option in imapd.conf");
++        return 1;
++    }
++
++    /* Check if sievedir is defined in imapd.conf */
++    if(!(sieve_dir = config_getstring(IMAPOPT_SIEVEDIR))) { 
++        syslog(LOG_WARNING, "autocreate_sieve: sievedir option is not defined. Check imapd.conf");
++        return 1;
++    }
++
++    /* Check if autocreate_sieve_compiledscript is defined in imapd.conf */
++    if(!(compiled_source_script  = config_getstring(IMAPOPT_AUTOCREATE_SIEVE_COMPILEDSCRIPT))) {
++        syslog(LOG_WARNING, "autocreate_sieve: autocreate_sieve_compiledscript option is not defined. Compiling it");
++        do_compile = 1;
++    }
++
++    if(get_script_dir(sieve_script_dir, sizeof(sieve_script_dir), userid, sieve_dir)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Cannot find sieve scripts directory");
++        return 1;
++    }
++
++    if (get_script_name(sievename, sizeof(sievename), source_script)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve script %s", source_script);
++        return 1;
++    }
++
++    if(snprintf(sieve_tmpname, sizeof(sieve_tmpname), "%s%s.script.NEW",sieve_script_dir, sievename) >= sizeof(sieve_tmpname)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve path %s, %s, %s", sieve_dir, sievename, userid);
++        return 1;
++    }
++    if(snprintf(sieve_bctmpname, sizeof(sieve_bctmpname), "%s%s.bc.NEW",sieve_script_dir, sievename) >= sizeof(sieve_bctmpname)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve path %s, %s, %s", sieve_dir, sievename, userid);
++        return 1;
++    }    
++    if(snprintf(sieve_script_name, sizeof(sieve_script_name), "%s%s.script",sieve_script_dir, sievename) >= sizeof(sieve_script_name)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve path %s, %s, %s", sieve_dir, sievename, userid);
++        return 1;
++    }
++    if(snprintf(sieve_bcscript_name, sizeof(sieve_bcscript_name), "%s%s.bc",sieve_script_dir, sievename) >= sizeof(sieve_bcscript_name)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve path %s, %s, %s", sieve_dir, sievename, userid);
++        return 1;
++    }
++    if(snprintf(sieve_default, sizeof(sieve_default), "%s%s",sieve_script_dir,"defaultbc") >= sizeof(sieve_default)) {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve path %s, %s, %s", sieve_dir, sievename, userid);
++        return 1;
++    }
++    if(snprintf(sieve_bclink_name, sizeof(sieve_bclink_name), "%s.bc", sievename) >= sizeof(sieve_bclink_name))  {
++        syslog(LOG_WARNING, "autocreate_sieve: Invalid sieve path %s, %s, %s", sieve_dir, sievename, userid);
++        return 1;
++    }
++
++    /* Check if a default sieve filter alrady exists */
++    if(!stat(sieve_default,&statbuf)) {
++        syslog(LOG_WARNING,"autocreate_sieve: Default sieve script already exists");
++        fclose(in_stream);
++        return 1;
++    }
++
++    /* Open the source script. if there is a problem with that exit */
++    in_stream = fopen(source_script, "r");
++    if(!in_stream) {
++        syslog(LOG_WARNING,"autocreate_sieve: Unable to open sieve script %s. Check permissions",source_script);
++        return 1;
++    }
++    
++    
++    /* 
++     * At this point we start the modifications of the filesystem 
++     */
++
++    /* Create the directory where the sieve scripts will reside */
++    r = cyrus_mkdir(sieve_script_dir, 0755);
++    if(r == -1) {
++        /* If this fails we just leave */
++        syslog(LOG_WARNING,"autocreate_sieve: Unable to create directory %s. Check permissions",sieve_script_name);
++        return 1;
++    }
++
++    /*
++     * We open the file that will be used as the bc file. If this file exists, overwrite it 
++     * since something bad has happened. We open the file here so that this error checking is
++     * done before we try to open the rest of the files to start copying etc. 
++     */
++    out_fd = open(sieve_bctmpname, O_CREAT|O_TRUNC|O_WRONLY, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
++    if(out_fd < 0) {
++        if(errno == EEXIST) {
++            syslog(LOG_WARNING,"autocreate_sieve: File %s already exists. Probaly left over. Ignoring",sieve_bctmpname);
++        } else if (errno == EACCES) {
++            syslog(LOG_WARNING,"autocreate_sieve: No access to create file %s. Check permissions",sieve_bctmpname);
++            fclose(in_stream);
++            return 1;
++        } else {
++            syslog(LOG_WARNING,"autocreate_sieve: Unable to create %s. Unknown error",sieve_bctmpname);
++            fclose(in_stream);
++            return 1;
++        }
++    }
++
++    if(!do_compile && compiled_source_script && (in_fd = open(compiled_source_script, O_RDONLY)) != -1) {
++        while((r = read(in_fd, buf, sizeof(buf))) > 0) {
++            if((k=write(out_fd, buf,r)) < 0) {
++                syslog(LOG_WARNING, "autocreate_sieve: Error writing to file: %s, error: %d", sieve_bctmpname, errno);
++                close(out_fd);
++                close(in_fd);
++                fclose(in_stream);
++                unlink(sieve_bctmpname);
++                return 1;
++           }
++        } 
++
++        if(r == 0) { /* EOF */
++            close(out_fd);
++            close(in_fd);
++        } else if (r < 0) {
++            syslog(LOG_WARNING, "autocreate_sieve: Error reading compiled script file: %s. Will try to compile it", 
++                           compiled_source_script);
++            close(in_fd);
++            do_compile = 1;
++            if(lseek(out_fd, 0, SEEK_SET)) {
++                syslog(LOG_WARNING, "autocreate_sieve: Major IO problem. Aborting");
++                return 1;
++            }
++        }
++        close(in_fd);
++    } else {
++        if(compiled_source_script)
++              syslog(LOG_WARNING,"autocreate_sieve: Problem opening compiled script file: %s. Compiling it", compiled_source_script);
++        do_compile = 1;
++    }
++
++
++    /* Because we failed to open a precompiled bc sieve script, we compile one */
++    if(do_compile) {
++       if(is_script_parsable(in_stream,&err, &s) == TIMSIEVE_FAIL) {
++            if(err && *err) {
++               syslog(LOG_WARNING,"autocreate_sieve: Error while parsing script %s.",err);
++               free(err);
++            } else
++                syslog(LOG_WARNING,"autocreate_sieve: Error while parsing script");
++    
++            unlink(sieve_bctmpname);
++            fclose(in_stream);
++            close(out_fd);
++            return 1;
++        }
++
++        /* generate the bytecode */
++        if(sieve_generate_bytecode(&bc, s) == TIMSIEVE_FAIL) {
++            syslog(LOG_WARNING,"autocreate_sieve: problem compiling sieve script");
++            /* removing the copied script and cleaning up memory */
++            unlink(sieve_bctmpname);
++            sieve_script_free(&s);
++            fclose(in_stream);
++            close(out_fd);
++            return 1;
++        }
++
++        if(sieve_emit_bytecode(out_fd, bc) == TIMSIEVE_FAIL) {
++            syslog(LOG_WARNING,"autocreate_sieve: problem emiting sieve script");
++            /* removing the copied script and cleaning up memory */
++            unlink(sieve_bctmpname);
++            sieve_free_bytecode(&bc);
++            sieve_script_free(&s);
++            fclose(in_stream);
++            close(out_fd);
++            return 1;
++        }
++
++        /* clean up the memory */
++        sieve_free_bytecode(&bc);
++        sieve_script_free(&s);
++    }
++
++    close(out_fd);
++    rewind(in_stream);
++
++    /* Copy the initial script */
++    oldmask = umask(077);
++    if((out_fp = fopen(sieve_tmpname, "w")) == NULL) {
++        syslog(LOG_WARNING,"autocreate_sieve: Unable to open %s destination sieve script", sieve_tmpname);
++        unlink(sieve_bctmpname);
++        umask(oldmask);
++        fclose(in_stream);
++        return 1;
++    }
++    umask(oldmask);
++
++    while((r = fread(buf,sizeof(char), sizeof(buf), in_stream))) {
++        if( fwrite(buf,sizeof(char), r, out_fp) != r) {
++            syslog(LOG_WARNING,"autocreate_sieve: Problem writing to sieve script file: %s",sieve_tmpname);
++            fclose(out_fp);
++            unlink(sieve_tmpname);
++            unlink(sieve_bctmpname);
++            fclose(in_stream);
++            return 1;
++        }
++    }
++    
++    if(feof(in_stream)) {
++        fclose(out_fp);
++    } else { /* ferror */
++        fclose(out_fp);
++        unlink(sieve_tmpname);
++        unlink(sieve_bctmpname);
++        fclose(in_stream);
++        return 1;
++    }
++
++    /* Renaming the necessary stuff */
++    if(rename(sieve_tmpname, sieve_script_name)) {
++        unlink(sieve_tmpname);
++        unlink(sieve_bctmpname);
++        return 1;
++    }
++
++    if(rename(sieve_bctmpname, sieve_bcscript_name)) {
++        unlink(sieve_bctmpname);
++        unlink(sieve_bcscript_name);
++        return 1;
++    }
++
++    /* end now with the symlink */
++    if(symlink(sieve_bclink_name, sieve_default)) {
++        if(errno != EEXIST) {
++            syslog(LOG_WARNING, "autocreate_sieve: problem making the default link.");
++            /* Lets delete the files */
++            unlink(sieve_script_name);
++            unlink(sieve_bcscript_name);
++        }
++    }
++
++    /* 
++     * If everything has succeeded AND we have compiled the script AND we have requested
++     * to generate the global script so that it is not compiled each time then we create it.
++     */
++    if(do_compile && 
++          config_getswitch(IMAPOPT_GENERATE_COMPILED_SIEVE_SCRIPT)) {
++
++        if(!compiled_source_script) {
++            syslog(LOG_WARNING, "autocreate_sieve: To save a compiled sieve script, autocreate_sieve_compiledscript must have been defined in imapd.conf");
++            return 0;
++        }
++
++        if(snprintf(sieve_tmpname, sizeof(sieve_tmpname), "%s.NEW", compiled_source_script) >= sizeof(sieve_tmpname))
++            return 0;
++
++        /*
++         * Copy everything from the newly created bc sieve sieve script.
++         */
++        if((in_fd = open(sieve_bcscript_name, O_RDONLY))<0) {
++            return 0;
++        }
++
++        if((out_fd = open(sieve_tmpname, O_CREAT|O_EXCL|O_WRONLY, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH)) < 0) {
++            if(errno == EEXIST) {
++               /* Someone is already doing this so just bail out. */
++               syslog(LOG_WARNING, "autocreate_sieve: %s already exists. Some other instance processing it, or it is left over", sieve_tmpname);
++                close(in_fd);
++                return 0; 
++            } else if (errno == EACCES) {
++                syslog(LOG_WARNING,"autocreate_sieve: No access to create file %s. Check permissions",sieve_tmpname);
++                close(in_fd);
++                return 0;
++            } else {
++                syslog(LOG_WARNING,"autocreate_sieve: Unable to create %s",sieve_tmpname);
++                close(in_fd);
++                return 0;
++            }
++        }
++
++        while((r = read(in_fd, buf, sizeof(buf))) > 0) {
++            if((k = write(out_fd,buf,r)) < 0) {
++                syslog(LOG_WARNING, "autocreate_sieve: Error writing to file: %s, error: %d", sieve_tmpname, errno);
++                close(out_fd);
++                close(in_fd);
++                unlink(sieve_tmpname);
++                return 0;
++           }
++        }
++
++        if(r == 0 ) { /*EOF */
++            close(out_fd);
++            close(in_fd);
++        } else if (r < 0) {
++                syslog(LOG_WARNING, "autocreate_sieve: Error writing to file: %s, error: %d", sieve_tmpname, errno);
++                close(out_fd);
++                close(in_fd);
++                unlink(sieve_tmpname);
++                return 0;
++        }
++
++        /* Rename the temporary created sieve script to its final name. */
++        if(rename(sieve_tmpname, compiled_source_script)) {
++            if(errno != EEXIST) {
++               unlink(sieve_tmpname);
++               unlink(compiled_source_script);
++        }
++            return 0;
++        }
++
++        syslog(LOG_NOTICE, "autocreate_sieve: Compiled sieve script was successfully saved in %s", compiled_source_script);
++    }
++
++    return 0;
++}
++
++static void fatal(const char *s, int code)
++{   
++    printf("Fatal error: %s (%d)\r\n", s, code);
++    exit(1);
++}
++
++/* to make larry's stupid functions happy :) */
++static void foo(void)
++{
++    fatal("stub function called", 0);
++}
++
++static int sieve_notify(void *ac __attribute__((unused)),
++                        void *interp_context __attribute__((unused)),
++                        void *script_context __attribute__((unused)),
++                        void *message_context __attribute__((unused)),
++                        const char **errmsg __attribute__((unused)))
++{
++    fatal("stub function called", 0);
++    return SIEVE_FAIL;
++}
++
++static int mysieve_error(int lineno, const char *msg,
++                  void *i __attribute__((unused)), void *s)
++{
++    char buf[1024];
++    char **errstr = (char **) s;
++
++    snprintf(buf, 80, "line %d: %s\r\n", lineno, msg);
++    *errstr = (char *) xrealloc(*errstr, strlen(*errstr) + strlen(buf) + 30);
++    syslog(LOG_DEBUG, "%s", buf);
++    strcat(*errstr, buf);
++
++    return SIEVE_OK;
++}
++
++/* end the boilerplate */
++
++/* returns TRUE or FALSE */
++int is_script_parsable(FILE *stream, char **errstr, sieve_script_t **ret)
++{
++    sieve_interp_t *i;
++    sieve_script_t *s;
++    int res;
++
++    res = sieve_interp_alloc(&i, NULL);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_interp_alloc() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_redirect(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_redirect() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_discard(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_discard() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_reject(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_reject() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_fileinto(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_fileinto() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_keep(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_keep() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_imapflags(i, NULL);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_imapflags() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_size(i, (sieve_get_size *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_size() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_header(i, (sieve_get_header *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_header() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_envelope(i, (sieve_get_envelope *) &foo);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_envelope() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_vacation(i, &vacation2);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_vacation() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_notify(i, &sieve_notify);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_notify() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_parse_error(i, &mysieve_error);
++    if (res != SIEVE_OK) {
++        syslog(LOG_WARNING, "sieve_register_parse_error() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    rewind(stream);
++
++    *errstr = (char *) xmalloc(20 * sizeof(char));
++    strcpy(*errstr, "script errors:\r\n");
++
++    res = sieve_script_parse(i, stream, errstr, &s);
++
++    if (res == SIEVE_OK) {
++        if(ret) {
++            *ret = s;
++        } else {
++            sieve_script_free(&s);
++        }
++        free(*errstr);
++        *errstr = NULL;
++    }
++
++    /* free interpreter */
++    sieve_interp_free(&i);
++
++    return (res == SIEVE_OK) ? TIMSIEVE_OK : TIMSIEVE_FAIL;
++}
++
++/*
++ * Btw the initial date of this patch is Sep, 02 2004 which is the birthday of
++ * Pavlos. Author of cyrusmaster. So consider this patch as his birthday present
++ */
++
+diff -Naur cyrus-imapd-2.2.12/imap/compile_sieve.c cyrus-imapd-2.2.12.autocreate2/imap/compile_sieve.c
+--- cyrus-imapd-2.2.12/imap/compile_sieve.c	1970-01-01 02:00:00.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/imap/compile_sieve.c	2005-10-19 14:48:57.943407000 +0300
+@@ -0,0 +1,364 @@
++/* This tool compiles the sieve script from a command
++line so that it can be used wby the autoadd patch */
++#include <stdio.h>
++#include <stdlib.h>
++
++#include <config.h>
++#include <string.h>
++#ifdef HAVE_UNISTD_H
++#include <unistd.h>
++#endif
++#include <errno.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <sys/uio.h>
++#include <fcntl.h>
++#include <ctype.h>
++#include <time.h>
++#include <com_err.h>
++
++#include "global.h"
++
++#include "util.h"
++#include "mailbox.h"
++#include "imap_err.h"
++#include "sieve_interface.h"
++#include "script.h"
++
++#include <pwd.h>
++
++#define TIMSIEVE_FAIL 		-1
++#define TIMSIEVE_OK 		0
++#define MAX_FILENAME_SIZE	100
++
++/* Needed by libconfig */
++const int config_need_data = 0;
++
++static int is_script_parsable(FILE *stream, char **errstr, sieve_script_t **ret);
++
++static void fatal(const char *s, int code)
++{   
++    printf("Fatal error: %s (%d)\r\n", s, code);
++
++    exit(1);
++}
++
++void usage(void)
++{
++    fprintf(stderr,
++            "Usage:\n\tcompile_sieve [-C <altconfig>] [-i <infile> -o <outfile>]\n");
++    exit(-1);
++}
++
++
++int main (int argc, char **argv)
++{   
++
++    sieve_script_t *s = NULL;
++    bytecode_info_t *bc = NULL;
++    char *err = NULL;
++    FILE *in_stream;
++    int  out_fd,r, k, opt;
++    char *source_script = NULL;
++    char *compiled_source_script = NULL;
++    mode_t oldmask;
++    struct stat statbuf;
++    char *alt_config = NULL;
++    extern char *optarg;
++    char sieve_tmpname[MAX_MAILBOX_NAME+1];
++
++    if (geteuid() == 0) fatal("must run as the Cyrus user", EC_USAGE);
++
++    while((opt = getopt(argc, argv, "C:i:o:")) != EOF) {
++        switch (opt) {
++            case 'C': /* alt config file */
++	        alt_config =  optarg;
++	        break;
++	    case 'i': /* input script file */
++		source_script = optarg;
++		break;
++	    case 'o': /* output script file */
++		compiled_source_script = optarg;
++		break;
++	    default:
++	        usage();
++		break;
++	}
++    }
++
++    if(source_script && !compiled_source_script) {
++	    fprintf(stderr, "No output file was defined\n");
++	    usage();
++    } else if (!source_script && compiled_source_script) {
++	    fprintf(stderr, "No input file was defined\n");
++	    usage();
++    }	
++
++    /*
++     * If no <infile> has been defined, then read them from
++     * the configuration file.
++     */
++    if (!source_script && !compiled_source_script) { 
++	    cyrus_init(alt_config, "compile_sieve", 0);
++
++	    /* Initially check if we want to have the sieve script created */
++	    if(!(source_script = (char *) config_getstring(IMAPOPT_AUTOCREATE_SIEVE_SCRIPT))) {
++        	fprintf(stderr,"autocreate_sieve_script option not defined. Check imapd.conf\n");
++	        return 1;
++	    }
++
++	    /* Check if we have an already compiled sieve script*/
++	    if(!(compiled_source_script = (char *) config_getstring(IMAPOPT_AUTOCREATE_SIEVE_COMPILEDSCRIPT))) {
++	        fprintf(stderr, "autocreate_sieve_compiledscript option not defined. Check imapd.conf\n");
++		return 1;
++	    }
++
++	    if(!strrchr(source_script,'/') || !strrchr(compiled_source_script,'/')) {
++       		/* 
++		 * At this point the only think that is inconsistent is the directory 
++		 * that was created. But if the user will have any sieve scripts then 
++		 * they will eventually go there, so no big deal 
++		 */
++	        fprintf(stderr, 
++			"In imapd.conf the full path of the filenames must be defined\n");
++	       	return 1;
++	    }
++    }
++
++    printf("input file : %s, output file : %s\n", source_script, compiled_source_script);
++
++
++    if(strlen(compiled_source_script) + sizeof(".NEW") + 1 > sizeof(sieve_tmpname)) {
++	    fprintf(stderr, "Filename %s is too big\n", compiled_source_script);
++	    return 1;
++    }
++    	
++    snprintf(sieve_tmpname, sizeof(sieve_tmpname), "%s.NEW", compiled_source_script);
++
++    in_stream = fopen(source_script,"r");
++
++    if(!in_stream) {
++        fprintf(stderr,"Unable to open %s source sieve script\n",source_script);
++        return;
++    }
++
++    /* 
++     * We open the file that will be used as the bc file. If this file exists, overwrite it 
++     * since something bad has happened. We open the file here so that this error checking is
++     * done before we try to open the rest of the files to start copying etc. 
++     */
++    out_fd = open(sieve_tmpname, O_CREAT|O_EXCL|O_WRONLY, S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH);
++    if(out_fd < 0) {
++        if(errno == EEXIST) {
++            fprintf(stderr, "File %s already exists\n", sieve_tmpname);
++        } else if (errno == EACCES) {
++            fprintf(stderr,"No access to create file %s. Please check that you have the correct permissions\n",
++			    sieve_tmpname);
++        } else {
++            fprintf(stderr,"Unable to create %s. Please check that you have the correct permissions\n", 
++			    sieve_tmpname);
++        }
++	
++	fclose(in_stream);
++	return 1;
++    }
++
++    if(is_script_parsable(in_stream,&err, &s) == TIMSIEVE_FAIL) {
++        if(err && *err) {
++           fprintf(stderr, "Error while parsing script %s\n",err);
++           free(err);
++        }
++        else
++            fprintf(stderr,"Error while parsing script\n");
++            unlink(sieve_tmpname);
++	    fclose(in_stream);
++	    close(out_fd);
++        return;
++   }
++
++
++    /* generate the bytecode */
++    if(sieve_generate_bytecode(&bc,s) == TIMSIEVE_FAIL) {
++        fprintf(stderr,"Error occured while compiling sieve script\n");
++        /* removing the copied script and cleaning up memory */
++        unlink(sieve_tmpname);
++        sieve_script_free(&s);
++        fclose(in_stream);
++        close(out_fd);
++        return;
++    }
++    if(sieve_emit_bytecode(out_fd,bc) == TIMSIEVE_FAIL) {
++        fprintf(stderr, "Error occured while emitting sieve script\n");
++        unlink(sieve_tmpname);
++        sieve_free_bytecode(&bc);
++        sieve_script_free(&s);
++        fclose(in_stream);
++        close(out_fd);
++        return;
++    }
++
++    /* clean up the memory */
++    sieve_free_bytecode(&bc);
++    sieve_script_free(&s);
++
++    close(out_fd);
++
++    if(rename(sieve_tmpname, compiled_source_script)) {
++        if(errno != EEXIST) {
++            unlink(sieve_tmpname);
++            unlink(compiled_source_script);
++            return 1;
++        }
++    }
++    return 0;
++}
++
++
++/* to make larry's stupid functions happy :) */
++static void foo(void)
++{
++    fatal("stub function called", 0);
++}
++
++extern sieve_vacation_t vacation2;/* = {
++    0,                          / min response /
++    0,                          / max response /
++    (sieve_callback *) &foo,    / autorespond() /
++    (sieve_callback *) &foo     / send_response() /
++}; */
++
++static int sieve_notify(void *ac __attribute__((unused)),
++                        void *interp_context __attribute__((unused)),
++                        void *script_context __attribute__((unused)),
++                        void *message_context __attribute__((unused)),
++                        const char **errmsg __attribute__((unused)))
++{
++    fatal("stub function called", 0);
++    return SIEVE_FAIL;
++}
++
++static int mysieve_error(int lineno, const char *msg,
++                  void *i __attribute__((unused)), void *s)
++{
++    char buf[1024];
++    char **errstr = (char **) s;
++
++    snprintf(buf, 80, "line %d: %s\r\n", lineno, msg);
++    *errstr = (char *) xrealloc(*errstr, strlen(*errstr) + strlen(buf) + 30);
++    fprintf(stderr, "%s\n", buf);
++    strcat(*errstr, buf);
++
++    return SIEVE_OK;
++}
++
++/* end the boilerplate */
++
++/* returns TRUE or FALSE */
++int is_script_parsable(FILE *stream, char **errstr, sieve_script_t **ret)
++{
++    sieve_interp_t *i;
++    sieve_script_t *s;
++    int res;
++
++    res = sieve_interp_alloc(&i, NULL);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_interp_alloc() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_redirect(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_redirect() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_discard(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_discard() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_reject(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_reject() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_fileinto(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_fileinto() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++    res = sieve_register_keep(i, (sieve_callback *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_keep() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_imapflags(i, NULL);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_imapflags() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_size(i, (sieve_get_size *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_size() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_header(i, (sieve_get_header *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_header() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_envelope(i, (sieve_get_envelope *) &foo);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_envelope() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_vacation(i, &vacation2);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_vacation() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_notify(i, &sieve_notify);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_notify() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    res = sieve_register_parse_error(i, &mysieve_error);
++    if (res != SIEVE_OK) {
++        fprintf(stderr, "sieve_register_parse_error() returns %d\n", res);
++        return TIMSIEVE_FAIL;
++    }
++
++    rewind(stream);
++
++    *errstr = (char *) xmalloc(20 * sizeof(char));
++    strcpy(*errstr, "script errors:\r\n");
++
++    res = sieve_script_parse(i, stream, errstr, &s);
++
++    if (res == SIEVE_OK) {
++        if(ret) {
++            *ret = s;
++        } else {
++            sieve_script_free(&s);
++        }
++        free(*errstr);
++        *errstr = NULL;
++    }
++
++    /* free interpreter */
++    sieve_interp_free(&i);
++
++    return (res == SIEVE_OK) ? TIMSIEVE_OK : TIMSIEVE_FAIL;
++}
++
++
++
++
++
++
+diff -Naur cyrus-imapd-2.2.12/imap/imapd.c cyrus-imapd-2.2.12.autocreate2/imap/imapd.c
+--- cyrus-imapd-2.2.12/imap/imapd.c	2005-02-14 08:39:55.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/imap/imapd.c	2005-10-19 14:48:57.966749000 +0300
+@@ -158,6 +158,7 @@
+ void motd_file(int fd);
+ void shut_down(int code);
+ void fatal(const char *s, int code);
++void autocreate_inbox(void);
+ 
+ void cmdloop(void);
+ void cmd_login(char *tag, char *user);
+@@ -1693,6 +1694,42 @@
+ }
+ 
+ /*
++ * Autocreate Inbox and subfolders upon login
++ */
++void autocreate_inbox()
++{
++    char inboxname[MAX_MAILBOX_NAME+1];
++    int autocreatequota;
++    int r;
++ 
++    /*
++     * Exlude admin's accounts
++     */
++    if (imapd_userisadmin || imapd_userisproxyadmin)
++        return;
++ 
++    /*
++     * Exclude anonymous
++     */
++    if (!strcmp(imapd_userid, "anonymous"))
++        return;
++ 
++    if ((autocreatequota = config_getint(IMAPOPT_AUTOCREATEQUOTA))) {
++        /* This is actyally not required
++           as long as the lenght of userid is ok */
++           r = (*imapd_namespace.mboxname_tointernal) (&imapd_namespace,
++                                      "INBOX", imapd_userid, inboxname);
++           if (!r)
++               r = mboxlist_lookup(inboxname, NULL, NULL, NULL);
++ 
++           if (r == IMAP_MAILBOX_NONEXISTENT)
++               mboxlist_autocreateinbox(&imapd_namespace, imapd_userid,
++                         imapd_authstate, inboxname, autocreatequota);
++     }
++}
++
++
++/*
+  * Perform a LOGIN command
+  */
+ void cmd_login(char *tag, char *user)
+@@ -1848,6 +1885,9 @@
+ 				strcspn(imapd_userid, "@") : 0);
+ 
+     freebuf(&passwdbuf);
++
++    autocreate_inbox();
++
+     return;
+ }
+ 
+@@ -1993,6 +2033,8 @@
+ 				config_virtdomains ?
+ 				strcspn(imapd_userid, "@") : 0);
+ 
++    autocreate_inbox();
++
+     return;
+ }
+ 
+diff -Naur cyrus-imapd-2.2.12/imap/lmtpd.c cyrus-imapd-2.2.12.autocreate2/imap/lmtpd.c
+--- cyrus-imapd-2.2.12/imap/lmtpd.c	2004-12-17 18:32:15.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/imap/lmtpd.c	2005-10-19 14:48:57.971145000 +0300
+@@ -106,6 +106,8 @@
+ static FILE *spoolfile(message_data_t *msgdata);
+ static void removespool(message_data_t *msgdata);
+ 
++static int autocreate_inbox(char *rcpt_userid);
++
+ /* current namespace */
+ static struct namespace lmtpd_namespace;
+ 
+@@ -504,10 +506,55 @@
+     exit(code);
+ }
+ 
++/*
++ * Autocreate Inbox and subfolders upon login
++ */
++int autocreate_inbox(char *rcpt_userid)
++{
++    struct auth_state *authstate;
++    char inboxname[MAX_MAILBOX_NAME+1];
++    int rcptisadmin;
++    int autocreatequota;
++    int r;
++
++    if(rcpt_userid == NULL)
++	    return IMAP_MAILBOX_NONEXISTENT;
++    
++    /*
++     * Exclude anonymous
++     */
++    if (!strcmp(rcpt_userid, "anonymous"))
++        return IMAP_MAILBOX_NONEXISTENT;
++
++    /*
++     * Check for autocreatequota and createonpost
++     */
++    if (!(autocreatequota = config_getint(IMAPOPT_AUTOCREATEQUOTA)) ||
++        !(config_getswitch(IMAPOPT_CREATEONPOST)))
++        return IMAP_MAILBOX_NONEXISTENT;
++
++    /*
++     * Exclude admin's accounts
++     */
++     authstate = auth_newstate(rcpt_userid);
++     rcptisadmin = global_authisa(authstate, IMAPOPT_ADMINS);
++     if (rcptisadmin)
++          return IMAP_MAILBOX_NONEXISTENT;
++
++     r = (*lmtpd_namespace.mboxname_tointernal) (&lmtpd_namespace,
++                                "INBOX", rcpt_userid, inboxname);
++     if (!r)
++     r = mboxlist_autocreateinbox(&lmtpd_namespace, rcpt_userid,
++                         authstate, inboxname, autocreatequota);
++     return r;
++}
++
++
+ static int verify_user(const char *user, const char *domain, const char *mailbox,
+ 		       long quotacheck, struct auth_state *authstate)
+ {
+     char namebuf[MAX_MAILBOX_NAME+1] = "";
++    char *userinbox = NULL;
+     int r = 0;
+ 
+     if ((!user && !mailbox) ||
+@@ -545,6 +592,28 @@
+ 	 */
+ 	r = append_check(namebuf, MAILBOX_FORMAT_NORMAL, authstate,
+ 			 !user ? ACL_POST : 0, quotacheck > 0 ? 0 : quotacheck);
++        if (r == IMAP_MAILBOX_NONEXISTENT && user) {
++	    if(domain) {
++		int k;
++		userinbox = (char *)xmalloc((strlen(user)+strlen(domain)+2)*sizeof(char));
++		k = strlcpy(userinbox, user, strlen(user)+1);
++		*(userinbox + k) = '@';
++		strlcpy(userinbox+k+1, domain, strlen(domain)+1);
++	    }
++	    else userinbox = user;
++            /* 
++	     * Try to create automatically the mailbox, if
++	     * autocreate inbox option is enabled.
++	     */
++	    r = autocreate_inbox(userinbox);
++	    
++	    if(userinbox != user)
++		free(userinbox);
++	    if (!r)
++                r = append_check(namebuf, MAILBOX_FORMAT_NORMAL, authstate,
++				0, quotacheck > 0 ? 0 : quotacheck);
++    	}
++
+     }
+ 
+     if (r) syslog(LOG_DEBUG, "verify_user(%s) failed: %s", namebuf,
+diff -Naur cyrus-imapd-2.2.12/imap/mboxlist.c cyrus-imapd-2.2.12.autocreate2/imap/mboxlist.c
+--- cyrus-imapd-2.2.12/imap/mboxlist.c	2004-07-26 21:08:03.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/imap/mboxlist.c	2005-10-19 14:49:25.972032000 +0300
+@@ -81,6 +81,12 @@
+ #include "mboxlist.h"
+ #include "quota.h"
+ 
++#ifdef USE_SIEVE
++extern int autoadd_sieve(char *userid, 
++		const char *source_script);
++#endif
++
++
+ #define DB config_mboxlist_db
+ #define SUBDB config_subscription_db
+ 
+@@ -98,11 +104,29 @@
+ static int mboxlist_changequota(const char *name, int matchlen, int maycreate,
+ 				void *rock);
+ 
++static int mboxlist_autochangesub(char *name, int matchlen, int maycreate,
++			      void *rock);
++
++static int mboxlist_autosubscribe_sharedfolders(struct namespace *namespace,
++                        char *userid, char *auth_userid,
++                        struct auth_state *auth_state);
++
+ struct change_rock {
+     struct quota *quota;
+     struct txn **tid;
+ };
+ 
++/*
++ * Struct needed to be passed as void *rock to
++ * mboxlist_autochangesub();
++ */
++struct changesub_rock_st {
++        char *userid;
++        char *auth_userid;
++        struct auth_state *auth_state;
++};
++
++
+ #define FNAME_SUBSSUFFIX ".sub"
+ 
+ /*
+@@ -3124,3 +3148,338 @@
+ 
+     return DB->abort(mbdb, tid);
+ }
++
++/*
++ * Automatically subscribe user to *ALL* shared folders,
++ * one has permissions to be subscribed to.
++ * INBOX subfolders are excluded.
++ */
++static int mboxlist_autochangesub(char *name, int matchlen, int maycreate,
++                        void *rock) {
++
++  struct changesub_rock_st *changesub_rock = (struct changesub_rock_st *) rock;
++  char *userid = changesub_rock->userid;
++  char *auth_userid = changesub_rock->auth_userid;
++  struct auth_state *auth_state = changesub_rock->auth_state;
++  int r;
++
++
++  if((strlen(name) == 5 && !strncmp(name, "INBOX", 5)) || /* Exclude INBOX */
++     (strlen(name) > 5  && !strncmp(name, "INBOX.",6)) || /* Exclude INBOX subfolders */
++     (strlen(name) > 4  && !strncmp(name, "user.", 5)))   /* Exclude other users' folders */
++	  return 0;
++
++     
++  r = mboxlist_changesub(name, userid, auth_state, 1, 0);
++
++  if (r) {
++      syslog(LOG_WARNING,
++             "autosubscribe: User %s to folder %s, subscription failed: %s",
++             auth_userid, name, error_message(r));
++  } else {
++      syslog(LOG_NOTICE,
++             "autosubscribe: User %s to folder %s, subscription succeeded",
++             auth_userid, name);
++  }
++
++  return 0;
++}
++
++#define SEP '|'
++
++/*
++ * Automatically subscribe user to a shared folder.
++ * Subscription is done successfully, if the shared
++ * folder exists and the user has the necessary 
++ * permissions.
++ */
++static int mboxlist_autosubscribe_sharedfolders(struct namespace *namespace,
++                        char *userid, char *auth_userid,
++                        struct auth_state *auth_state) {
++        
++    const char *sub ;
++    char *p, *q, *next_sub;
++    char folder[MAX_MAILBOX_NAME+1], name[MAX_MAILBOX_NAME+1], mailboxname[MAX_MAILBOX_NAME+1];
++    int len;
++    int r = 0;
++    int subscribe_all_sharedfolders = 0;
++
++    subscribe_all_sharedfolders = config_getswitch(IMAPOPT_AUTOSUBSCRIBE_ALL_SHAREDFOLDERS);
++
++    /*
++     * If subscribeallsharedfolders is set to yes in imapd.conf, then
++     * subscribe user to every shared folder one has the apropriate 
++     * permissions.
++     */
++    if(subscribe_all_sharedfolders) {
++       char pattern[MAX_MAILBOX_PATH+1];
++       struct changesub_rock_st changesub_rock;
++
++       strcpy(pattern, "*");
++       changesub_rock.userid = userid;
++       changesub_rock.auth_userid = auth_userid;
++       changesub_rock.auth_state = auth_state;
++
++       r = mboxlist_findall(namespace, pattern, 0, userid,
++                            auth_state, mboxlist_autochangesub, &changesub_rock);
++
++       return r;
++    }
++
++    if ((sub=config_getstring(IMAPOPT_AUTOSUBSCRIBESHAREDFOLDERS)) == NULL)
++       return r;
++
++    next_sub = (char *) sub;
++    while (*next_sub) {
++        for (p = next_sub ; isspace((int) *p) || *p == SEP ; p++);
++        for (next_sub = p ; *next_sub && *next_sub != SEP ; next_sub++);
++        for (q = next_sub ; q > p && (isspace((int) *q) || *q == SEP || !*q) ; q--);
++        if (!*p ) continue;
++
++        len = q - p + 1;
++        /* Check for folder length */
++        if (len  > sizeof(folder)-1)
++                continue;
++
++        if (!r) {
++                strncpy(folder, p, len);
++                folder[len] = '\0';
++
++               strlcpy(name, namespace->prefix[NAMESPACE_SHARED], sizeof(name));
++               len = strlcat(name, folder, sizeof(name));
++
++               r = (namespace->mboxname_tointernal) (namespace, name, userid,
++                                                                  mailboxname);
++       }
++                                                                  
++        if (!r)
++               r = mboxlist_changesub(mailboxname, userid, auth_state, 1, 0);
++
++        if (!r) {
++                syslog(LOG_NOTICE, "autosubscribe: User %s to %s succeeded", 
++                       userid, folder);
++        } else {
++                syslog(LOG_WARNING, "autosubscribe: User %s to %s failed: %s", 
++                       userid, folder, error_message(r));
++                r = 0;
++        }
++    }
++
++    return r;
++}
++
++
++
++int mboxlist_autocreateinbox(struct namespace *namespace,
++                        char *userid,
++                        struct auth_state *auth_state,
++                        char *mailboxname, int autocreatequota) {
++    char name [MAX_MAILBOX_NAME+1];
++    char folder [MAX_MAILBOX_NAME+1];
++    char *auth_userid = NULL;
++    char *partition = NULL;
++    const char *crt;
++    const char *sub;
++    char *p, *q, *next_crt, *next_sub;
++    int len;
++    int r = 0;
++    int numcrt = 0;
++    int numsub = 0;
++#ifdef USE_SIEVE
++    const char *source_script;
++#endif
++
++   /*
++    * While this is not needed for admins
++    * and imap_admins accounts, it would be
++    * better to separate *all* admins and
++    * proxyservers from normal accounts
++    * (accounts that have mailboxes).
++    * UOA Specific note(1): Even if we do not
++    * exclude these servers-classes here,
++    * UOA specific code, will neither return
++    * role, nor create INBOX, because none of these
++    * administrative accounts belong to  the
++    * mailRecipient objectclass, or have imapPartition.
++    * UOA Specific note(2): Another good reason for doing
++    * this, is to prevent the code, from getting into
++    * cyrus_ldap.c because of the continues MSA logins to LMTPd.
++    */
++
++   /*
++    * admins and the coresponding imap
++    * service, had already been excluded.
++    */
++
++   /*
++    * Do we really need group membership
++    * for admins or service_admins?
++    */
++    if (global_authisa(auth_state, IMAPOPT_ADMINS)) return 0;
++    if (global_authisa(auth_state, IMAPOPT_ADMINS)) return 0;
++
++   /*
++    * Do we really need group membership
++    * for proxyservers?
++    */
++    if (global_authisa(auth_state, IMAPOPT_PROXYSERVERS)) return 0;
++    if (global_authisa(auth_state, IMAPOPT_PROXYSERVERS)) return 0;
++
++    auth_userid = auth_canonuser(auth_state);
++
++    if (auth_userid == NULL) {
++         /*
++          * Couldn't get cannon userid
++          */
++          syslog(LOG_ERR,
++                 "Could not get cannon userid for user %s", userid);
++          return IMAP_PARTITION_UNKNOWN;
++    }
++
++#if 0
++        /*
++         * Get Partition info or return.
++         * (Here you should propably use
++         * you own "get_partition(char *userid)"
++         * function. Otherwise all new INBOXes will be
++         * created into whatever partition has been declared
++         * as default in your imapd.conf)
++         */
++
++        partition = get_partition(userid);
++
++        if (partition == NULL) {
++            /*
++             * Couldn't get partition info
++             */
++            syslog(LOG_ERR,
++                   "Could not get imapPartition info for user %s", userid);
++            return IMAP_PARTITION_UNKNOWN;
++        }
++#endif
++
++    r = mboxlist_createmailbox(mailboxname, MAILBOX_FORMAT_NORMAL, NULL,
++                                      1, userid, auth_state, 0, 0, 0);
++
++    if (!r && autocreatequota > 0)
++        r = mboxlist_setquota(mailboxname, autocreatequota, 0);
++
++    if (!r)
++        r = mboxlist_changesub(mailboxname, userid,
++                              auth_state, 1, 1);
++
++    if (!r) {
++       syslog(LOG_NOTICE, "autocreateinbox: User %s, INBOX was successfully created in partition %s", 
++               auth_userid, partition == NULL ? "default" : partition);
++    } else {
++       syslog(LOG_ERR, "autocreateinbox: User %s, INBOX failed. %s", 
++               auth_userid, error_message(r));
++    }
++
++
++#if 0
++    /* Allocated from get_partition, and not needed any more */
++    free_partition(partition);
++#endif
++
++    if (r) return r;
++
++
++    /* INBOX's subfolders */
++    if ((crt=config_getstring(IMAPOPT_AUTOCREATEINBOXFOLDERS)))
++        sub=config_getstring(IMAPOPT_AUTOSUBSCRIBEINBOXFOLDERS);
++
++    /* Roll through crt */
++    next_crt = (char *) crt;
++    while (next_crt!=NULL && *next_crt) {
++          for (p = next_crt ; isspace((int) *p) || *p == SEP ; p++);
++          for (next_crt = p ; *next_crt && *next_crt != SEP ; next_crt++);
++          for (q = next_crt ; q > p && (isspace((int) *q) || *q == SEP || !*q); q--);
++
++          if (!*p) continue;
++
++          len = q - p + 1;
++
++          /* First time we check for length */
++          if (len > sizeof(folder) - 5)
++              r = IMAP_MAILBOX_BADNAME;
++
++          if (!r) {
++                  strncpy(folder, p, len);
++                  folder[len] = '\0';
++
++                  strlcpy(name, namespace->prefix[NAMESPACE_INBOX], sizeof(name));
++                  len = strlcat(name, folder, sizeof(name));
++          }
++
++          if (!r)
++            r = (namespace->mboxname_tointernal) (namespace, name, userid,
++                                                 mailboxname);
++          if (!r)
++             r = mboxlist_createmailbox(mailboxname, MAILBOX_FORMAT_NORMAL, NULL,
++                                            1, userid, auth_state, 0, 0, 0);
++
++          if (!r) {
++            numcrt++;
++            syslog(LOG_NOTICE, "autocreateinbox: User %s, subfolder %s creation succeeded.", 
++               auth_userid, name);
++         } else {
++             syslog(LOG_WARNING, "autocreateinbox: User %s, subfolder %s creation failed. %s", 
++               auth_userid, name, error_message(r));
++             r=0;
++             continue;
++          }
++
++          /* Roll through sub */
++          next_sub = (char *) sub;
++          while (next_sub!=NULL && *next_sub) {
++                for (p = next_sub ; isspace((int) *p) || *p == SEP ; p++);
++                for (next_sub = p ; *next_sub && *next_sub != SEP ; next_sub++);
++                for (q = next_sub ; q > p && (isspace((int) *q) || *q == SEP || !*q) ; q--);
++                if (!*p ) continue;
++
++                len = q - p + 1;
++
++                if (len != strlen(folder) || strncmp(folder, p, len))
++                    continue;
++
++                r = mboxlist_changesub(mailboxname, userid, auth_state, 1, 1);
++
++               if (!r) {
++                   numsub++;
++                   syslog(LOG_NOTICE,"autocreateinbox: User %s, subscription to %s succeeded",
++                       auth_userid, name);
++               } else
++                    syslog(LOG_WARNING, "autocreateinbox: User %s, subscription to  %s failed. %s",
++                       auth_userid, name, error_message(r));
++
++                break;
++         }
++    }
++
++    if (crt!=NULL && *crt)
++       syslog(LOG_INFO, "User %s, Inbox subfolders, created %d, subscribed %d", 
++               auth_userid, numcrt, numsub);
++
++    /*
++     * Check if shared folders are available for subscription.
++     */
++    mboxlist_autosubscribe_sharedfolders(namespace, userid, auth_userid, auth_state);
++
++#ifdef USE_SIEVE
++    /*
++     * Here the autocreate sieve script feature is iniated from.
++     */
++    source_script = config_getstring(IMAPOPT_AUTOCREATE_SIEVE_SCRIPT);
++ 
++    if (source_script) {
++        if (!autoadd_sieve(userid, source_script))
++            syslog(LOG_NOTICE, "autocreate_sieve: User %s, default sieve script creation succeeded", auth_userid);
++        else
++            syslog(LOG_WARNING, "autocreate_sieve: User %s, default sieve script creation failed", auth_userid);
++    }
++#endif
++
++    return r;
++}
++
+diff -Naur cyrus-imapd-2.2.12/imap/mboxlist.h cyrus-imapd-2.2.12.autocreate2/imap/mboxlist.h
+--- cyrus-imapd-2.2.12/imap/mboxlist.h	2004-03-17 20:07:49.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/imap/mboxlist.h	2005-10-19 14:48:58.027033000 +0300
+@@ -197,4 +197,10 @@
+ int mboxlist_commit(struct txn *tid);
+ int mboxlist_abort(struct txn *tid);
+ 
++int mboxlist_autocreateinbox(struct namespace *namespace,
++                        char *userid,
++                        struct auth_state *auth_state,
++                        char *mailboxname, int autocreatequota);
++
++
+ #endif
+diff -Naur cyrus-imapd-2.2.12/imap/pop3d.c cyrus-imapd-2.2.12.autocreate2/imap/pop3d.c
+--- cyrus-imapd-2.2.12/imap/pop3d.c	2005-01-04 17:06:13.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/imap/pop3d.c	2005-10-19 14:48:58.033335000 +0300
+@@ -152,6 +152,8 @@
+ static char popd_apop_chal[45 + MAXHOSTNAMELEN + 1]; /* <rand.time@hostname> */
+ static void cmd_apop(char *response);
+ 
++static int autocreate_inbox(char *inboxname, char *userid);
++
+ static void cmd_auth(char *arg);
+ static void cmd_capa(void);
+ static void cmd_pass(char *pass);
+@@ -1084,6 +1086,7 @@
+ 	popd_userid = xstrdup(p);
+ 	prot_printf(popd_out, "+OK Name is a valid mailbox\r\n");
+     }
++
+ }
+ 
+ void cmd_pass(char *pass)
+@@ -1328,6 +1331,46 @@
+ }
+ 
+ /*
++ * Autocreate Inbox and subfolders upon login
++ */
++int autocreate_inbox(char *inboxname, char *auth_userid)
++{
++    struct auth_state *authstate;
++    int userisadmin;
++    int autocreatequota;
++    int r;
++
++    if(inboxname == NULL || auth_userid == NULL)
++	    return IMAP_MAILBOX_NONEXISTENT;
++    
++    /*
++     * Exclude anonymous
++     */
++    if (!strcmp(popd_userid, "anonymous"))
++        return IMAP_MAILBOX_NONEXISTENT;
++
++    /*
++     * Check for autocreatequota
++     */
++    if (!(autocreatequota = config_getint(IMAPOPT_AUTOCREATEQUOTA)))
++        return IMAP_MAILBOX_NONEXISTENT;
++
++    /*
++     * Exclude admin's accounts
++     */
++
++     authstate = auth_newstate(popd_userid);
++     userisadmin = global_authisa(authstate, IMAPOPT_ADMINS);
++     if (userisadmin)
++          return IMAP_MAILBOX_NONEXISTENT;
++
++     r = mboxlist_autocreateinbox(&popd_namespace, auth_userid,
++                         authstate, inboxname, autocreatequota);
++     return r;
++}
++
++
++/*
+  * Complete the login process by opening and locking the user's inbox
+  */
+ int openinbox(void)
+@@ -1349,6 +1392,10 @@
+ 					      userid, inboxname);
+ 
+     if (!r) r = mboxlist_detail(inboxname, &type, NULL, &server, &acl, NULL);
++    /* Try once again after autocreate_inbox */
++    if (r == IMAP_MAILBOX_NONEXISTENT && !(r = autocreate_inbox(inboxname, userid)))
++        r = mboxlist_detail(inboxname, &type, NULL, &server, &acl, NULL);
++
+     if (!r && (config_popuseacl = config_getswitch(IMAPOPT_POPUSEACL)) &&
+ 	(!acl ||
+ 	 !((myrights = cyrus_acl_myrights(popd_authstate, acl)) & ACL_READ))) {
+diff -Naur cyrus-imapd-2.2.12/lib/auth.h cyrus-imapd-2.2.12.autocreate2/lib/auth.h
+--- cyrus-imapd-2.2.12/lib/auth.h	2003-10-22 21:50:12.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/lib/auth.h	2005-10-19 14:48:58.035324000 +0300
+@@ -60,4 +60,6 @@
+ extern struct auth_state *auth_newstate(const char *identifier);
+ extern void auth_freestate(struct auth_state *auth_state);
+ 
++extern char *auth_canonuser(struct auth_state *auth_state);
++
+ #endif /* INCLUDED_AUTH_H */
+diff -Naur cyrus-imapd-2.2.12/lib/auth_krb.c cyrus-imapd-2.2.12.autocreate2/lib/auth_krb.c
+--- cyrus-imapd-2.2.12/lib/auth_krb.c	2003-11-11 05:26:00.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/lib/auth_krb.c	2005-10-19 14:48:58.038180000 +0300
+@@ -338,3 +338,11 @@
+     free((char *)auth_state);
+ }
+ 
++char *
++auth_canonuser(struct auth_state *auth_state)
++{
++    if (auth_state)
++       return auth_state->userid;
++    return NULL;
++}
++
+diff -Naur cyrus-imapd-2.2.12/lib/auth_krb5.c cyrus-imapd-2.2.12.autocreate2/lib/auth_krb5.c
+--- cyrus-imapd-2.2.12/lib/auth_krb5.c	2004-01-16 17:28:58.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/lib/auth_krb5.c	2005-10-19 14:48:58.040108000 +0300
+@@ -193,4 +193,11 @@
+     free(auth_state);
+ }
+ 
++char *
++auth_canonuser(struct auth_state *auth_state)
++{
++    if (auth_state)
++       return auth_state->userid;
++    return NULL;
++}
+ 
+diff -Naur cyrus-imapd-2.2.12/lib/auth_pts.c cyrus-imapd-2.2.12.autocreate2/lib/auth_pts.c
+--- cyrus-imapd-2.2.12/lib/auth_pts.c	2004-02-25 01:11:37.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/lib/auth_pts.c	2005-10-19 14:48:58.042343000 +0300
+@@ -349,3 +349,11 @@
+ {
+     free(auth_state);
+ }
++
++char *auth_canonuser(struct auth_state *auth_state)
++{
++    if (auth_state)
++       return auth_state->userid.id;
++    return NULL;
++}
++
+diff -Naur cyrus-imapd-2.2.12/lib/auth_unix.c cyrus-imapd-2.2.12.autocreate2/lib/auth_unix.c
+--- cyrus-imapd-2.2.12/lib/auth_unix.c	2004-09-14 01:49:29.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/lib/auth_unix.c	2005-10-19 14:48:58.044431000 +0300
+@@ -267,4 +267,11 @@
+     free((char *)auth_state);
+ }
+ 
++char *auth_canonuser(struct auth_state *auth_state)
++{
++    if (auth_state)
++         return auth_state->userid;
++    
++    return NULL;
++}
+ 
+diff -Naur cyrus-imapd-2.2.12/lib/imapoptions cyrus-imapd-2.2.12.autocreate2/lib/imapoptions
+--- cyrus-imapd-2.2.12/lib/imapoptions	2004-07-21 22:07:45.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/lib/imapoptions	2005-10-19 14:48:58.048748000 +0300
+@@ -169,6 +169,51 @@
+ /* Number of seconds to wait before returning a timeout failure when
+    performing a client connection (e.g. in a murder enviornment) */
+ 
++{ "createonpost", 0, SWITCH }
++/* If yes, when lmtpd receives an incoming mail for an INBOX that does not exist,
++   then the INBOX is automatically created by lmtpd. */
++
++{ "autocreateinboxfolders", NULL, STRING }
++/* If a user does not have an INBOX created then the INBOX as well as some INBOX subfolders are
++   created under two conditions.
++     1. The user logins via the IMAP or the POP3 protocol. (autocreatequota option must have a nonzero value)
++     2. A message arrives for the user through the LMTPD protocol.(createonpost option must yes)
++   autocreateinboxfolders is a list of INBOX's subfolders separated by a "|", that are automatically created by the server
++   under the previous two situations. */
++
++{ "autosubscribeinboxfolders", NULL, STRING }
++/* A list of folder names, separated by "|" that the users get automatically subscribed to, when their INBOX
++  is created.
++  These folder names must have been included in the autocreateinboxfolders option of the imapd.conf. */
++
++{ "autosubscribesharedfolders", NULL, STRING }
++/* A list of shared folders (bulletin boards), separated by "|" that the users get
++   automatically subscribed to, after their INBOX
++   is created. The shared folder must have been created and the user must have the
++   required permissions to get subscribed to the it. Otherwise the subscription fails. */
++
++{ "autosubscribe_all_sharedfolders", 0, SWITCH }
++/* If set to yes then the user is automatically subscribed to all shared folders, one has permission
++   to subscribe to. */
++
++{ "autocreate_sieve_script", NULL, STRING }
++/* The full path of a file that contains a sieve script. This script automatically becomes a
++   user's initial default sieve filter script. When this option is not defined, no default 
++   sieve filter is created. The file must be readable by the cyrus daemon. */
++
++{ "autocreate_sieve_compiledscript", NULL, STRING }
++/* The full path of a file that contains a compiled in bytecode sieve script. This script 
++   automatically becomes a user's initial default sieve filter script. 
++   If this option is not specified, or the filename doesn't exist then the script defined 
++   by autocreate_sieve_script is compiled on the fly and installed as the user's default
++   sieve script */
++
++{ "generate_compiled_sieve_script", 0, SWITCH }
++/* If set to yes and no compiled sieve script file exists then the sieve script that is 
++   compiled on the fly will be saved in the file name that autocreate_sieve_compiledscript 
++   option points. In order a compiled script to be generated, autocreate_sieve_script and 
++   autocreate_sieve_compiledscript must have valid values */
++
+ { "configdirectory", NULL, STRING }
+ /* The pathname of the IMAP configuration directory.  This field is
+    required. */
+diff -Naur cyrus-imapd-2.2.12/notifyd/Makefile.in cyrus-imapd-2.2.12.autocreate2/notifyd/Makefile.in
+--- cyrus-imapd-2.2.12/notifyd/Makefile.in	2004-05-28 21:03:06.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/notifyd/Makefile.in	2005-10-19 14:48:58.050575000 +0300
+@@ -69,10 +69,11 @@
+ SERVICE=../master/service.o
+ 
+ IMAP_LIBS = @IMAP_LIBS@ @LIB_RT@
++SIEVE_LIBS = @SIEVE_LIBS@
+ IMAP_COM_ERR_LIBS = @IMAP_COM_ERR_LIBS@
+ LIB_WRAP = @LIB_WRAP@
+ LIBS = @ZEPHYR_LIBS@ @LIBS@ $(IMAP_COM_ERR_LIBS)
+-DEPLIBS=../imap/mutex_fake.o ../imap/libimap.a ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
++DEPLIBS=../imap/mutex_fake.o ../imap/libimap.a $(SIEVE_LIBS) ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
+ 
+ PURIFY=/usr/local/bin/purify
+ PUREOPT=-best-effort
+diff -Naur cyrus-imapd-2.2.12/notifyd/notifyd.c cyrus-imapd-2.2.12.autocreate2/notifyd/notifyd.c
+--- cyrus-imapd-2.2.12/notifyd/notifyd.c	2004-12-17 18:32:25.000000000 +0200
++++ cyrus-imapd-2.2.12.autocreate2/notifyd/notifyd.c	2005-10-19 14:48:58.052220000 +0300
+@@ -97,7 +97,7 @@
+ 
+ #define NOTIFY_MAXSIZE 8192
+ 
+-int do_notify()
++static int do_notify()
+ {
+     struct sockaddr_un sun_data;
+     socklen_t sunlen = sizeof(sun_data);
+diff -Naur cyrus-imapd-2.2.12/ptclient/Makefile.in cyrus-imapd-2.2.12.autocreate2/ptclient/Makefile.in
+--- cyrus-imapd-2.2.12/ptclient/Makefile.in	2004-05-28 21:03:08.000000000 +0300
++++ cyrus-imapd-2.2.12.autocreate2/ptclient/Makefile.in	2005-10-19 14:48:58.053762000 +0300
+@@ -57,10 +57,11 @@
+ AFS_LDFLAGS = @AFS_LDFLAGS@ @COM_ERR_LDFLAGS@
+ AFS_LIBS = @AFS_LIBS@
+ IMAP_LIBS = @IMAP_LIBS@ @LIB_RT@
++SIEVE_LIBS = @SIEVE_LIBS@
+ LIBS = $(IMAP_LIBS) @COM_ERR_LIBS@
+ LIB_SASL = @LIB_SASL@
+ LIB_WRAP = @LIB_WRAP@
+-DEPLIBS = ../imap/libimap.a ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@
++DEPLIBS = ../imap/libimap.a $(SIEVE_LIBS) ../lib/libcyrus.a ../lib/libcyrus_min.a @DEPLIBS@ 
+ UTIL_LIBS = ../imap/mutex_fake.o ../imap/cli_fatal.o
+ 
+ LDAP_LIBS=@LDAP_LIBS@

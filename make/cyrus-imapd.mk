@@ -5,7 +5,7 @@
 ###########################################################
 
 CYRUS-IMAPD_SITE=ftp://ftp.andrew.cmu.edu/pub/cyrus-mail
-CYRUS-IMAPD_VERSION=2.2.10
+CYRUS-IMAPD_VERSION=2.2.12
 CYRUS-IMAPD_SOURCE=cyrus-imapd-$(CYRUS-IMAPD_VERSION).tar.gz
 CYRUS-IMAPD_DIR=cyrus-imapd-$(CYRUS-IMAPD_VERSION)
 CYRUS-IMAPD_UNZIP=zcat
@@ -17,11 +17,16 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=3
+CYRUS-IMAPD_IPK_VERSION=1
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
-CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/cyrus.cross.patch $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.in.patch $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.PL.patch
+CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/cyrus.cross.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.in.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/perl.Makefile.PL.patch \
+ $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-autosievefolder-0.6.diff \
+ $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-autocreate-0.9.4.diff \
+ $(CYRUS-IMAPD_SOURCE_DIR)/cyrus-imapd-2.2.12-rmquota+deletemailbox-0.2-1.diff \
 
 CYRUS-IMAPD_CPPFLAGS=
 CYRUS-IMAPD_LDFLAGS=
@@ -29,7 +34,11 @@ CYRUS-IMAPD_LDFLAGS=
 ifeq ($(HOST_MACHINE),armv5b)
   CYRUS-IMAPD_CONFIGURE_OPTS=
 else
+ifeq ($(HOST_MACHINE),ds101g)
+  CYRUS-IMAPD_CONFIGURE_OPTS=
+else
   CYRUS-IMAPD_CONFIGURE_OPTS=--without-perl
+endif
 endif
 
 CYRUS-IMAPD_BUILD_DIR=$(BUILD_DIR)/cyrus-imapd
@@ -75,6 +84,7 @@ $(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IM
 		--with-cyrus-group=mail \
 		--with-checkapop \
 		--disable-nls \
+		--with-com_err \
 		$(CYRUS-IMAPD_CONFIGURE_OPTS) \
 	)
 	touch $(CYRUS-IMAPD_BUILD_DIR)/.configured

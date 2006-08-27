@@ -1,0 +1,492 @@
+diff -Naur cyrus-imapd-2.2.12.orig/imap/ctl_cyrusdb.c cyrus-imapd-2.2.12/imap/ctl_cyrusdb.c
+--- cyrus-imapd-2.2.12.orig/imap/ctl_cyrusdb.c	Tue Jul 13 04:34:20 2004
++++ cyrus-imapd-2.2.12/imap/ctl_cyrusdb.c	Mon Mar  7 11:30:58 2005
+@@ -136,7 +136,7 @@
+     /* if it is MBTYPE_RESERVED, unset it & call mboxlist_delete */
+     if(!r && (mbtype & MBTYPE_RESERVE)) {
+ 	if(!r) {
+-	    r = mboxlist_deletemailbox(name, 1, NULL, NULL, 0, 0, 1);
++	    r = mboxlist_deletemailbox(name, 1, NULL, NULL, 0, 0, 1, 1);
+ 	    if(r) {
+ 		/* log the error */
+ 		syslog(LOG_ERR,
+diff -Naur cyrus-imapd-2.2.12.orig/imap/ctl_mboxlist.c cyrus-imapd-2.2.12/imap/ctl_mboxlist.c
+--- cyrus-imapd-2.2.12.orig/imap/ctl_mboxlist.c	Sat May 22 05:45:48 2004
++++ cyrus-imapd-2.2.12/imap/ctl_mboxlist.c	Mon Mar  7 11:30:58 2005
+@@ -456,7 +456,7 @@
+ 	    
+ 	    wipe_head = wipe_head->next;
+ 	    
+-	    ret = mboxlist_deletemailbox(me->mailbox, 1, "", NULL, 0, 1, 1);
++	    ret = mboxlist_deletemailbox(me->mailbox, 1, "", NULL, 0, 1, 1, 1);
+ 	    if(ret) {
+ 		fprintf(stderr, "couldn't delete defunct mailbox %s\n",
+ 			me->mailbox);
+diff -Naur cyrus-imapd-2.2.12.orig/imap/imapd.c cyrus-imapd-2.2.12/imap/imapd.c
+--- cyrus-imapd-2.2.12.orig/imap/imapd.c	Mon Feb 14 07:39:55 2005
++++ cyrus-imapd-2.2.12/imap/imapd.c	Mon Mar  7 11:30:58 2005
+@@ -3724,7 +3724,7 @@
+ 
+     r = mboxlist_deletemailbox(name, imapd_userisadmin,
+ 			       imapd_userid, imapd_authstate,
+-			       0, 0, 0);
++			       0, 0, 0, 1);
+     
+     if(r) {
+ 	prot_printf(imapd_out, "* NO delete %s: %s\r\n",
+@@ -3743,6 +3743,12 @@
+     char mailboxname[MAX_MAILBOX_NAME+1];
+     char *p;
+     int domainlen = 0;
++    int keepQuota = 1;
++
++    if(name && *name == '+') {
++        keepQuota = 0;
++        name++;
++    }
+ 
+     r = (*imapd_namespace.mboxname_tointernal)(&imapd_namespace, name,
+ 					       imapd_userid, mailboxname);
+@@ -3753,7 +3759,7 @@
+ 
+ 	r = mboxlist_deletemailbox(mailboxname, imapd_userisadmin,
+ 				   imapd_userid, imapd_authstate, 1,
+-				   localonly, 0);
++				   localonly, 0, keepQuota);
+     }
+ 
+     /* was it a top-level user mailbox? */
+@@ -4718,6 +4724,7 @@
+ {
+     int newquota = -1;
+     int badresource = 0;
++    int rmquota = 0;
+     int c;
+     int force = 0;
+     static struct buf arg;
+@@ -4732,7 +4739,8 @@
+     if (c != ')' || arg.s[0] != '\0') {
+ 	for (;;) {
+ 	    if (c != ' ') goto badlist;
+-	    if (strcasecmp(arg.s, "storage") != 0) badresource = 1;
++	    if (strcasecmp(arg.s, "remove") == 0) rmquota = 1;
++	    else if (strcasecmp(arg.s, "storage") != 0) badresource = 1;
+ 	    c = getword(imapd_in, &arg);
+ 	    if (c != ' ' && c != ')') goto badlist;
+ 	    if (arg.s[0] == '\0') goto badlist;
+@@ -4769,7 +4777,10 @@
+ 						   imapd_userid, mailboxname);
+ 
+ 	if (!r) {
+-	    r = mboxlist_setquota(mailboxname, newquota, force);
++            if(!rmquota)
++                r = mboxlist_setquota(mailboxname, newquota, force);
++            else
++                r = mboxlist_unsetquota(mailboxname);
+ 	}
+     }
+ 
+@@ -6416,7 +6427,7 @@
+ 	/* note also that we need to remember to let proxyadmins do this */
+ 	r = mboxlist_deletemailbox(mailboxname,
+ 				   imapd_userisadmin || imapd_userisproxyadmin,
+-				   imapd_userid, imapd_authstate, 0, 1, 0);
++				   imapd_userid, imapd_authstate, 0, 1, 0, 1);
+ 	if(r) syslog(LOG_ERR,
+ 		     "Could not delete local mailbox during move of %s",
+ 		     mailboxname);
+diff -Naur cyrus-imapd-2.2.12.orig/imap/mailbox.c cyrus-imapd-2.2.12/imap/mailbox.c
+--- cyrus-imapd-2.2.12.orig/imap/mailbox.c	Mon Feb 14 07:39:57 2005
++++ cyrus-imapd-2.2.12/imap/mailbox.c	Mon Mar  7 11:30:58 2005
+@@ -2117,27 +2117,7 @@
+ 
+     seen_delete_mailbox(mailbox);
+ 
+-    if (delete_quota_root && !rquota) {
+-	quota_delete(&mailbox->quota, &tid);
+-	free(mailbox->quota.root);
+-	mailbox->quota.root = NULL;
+-    } else if (!rquota) {
+-	/* Free any quota being used by this mailbox */
+-	if (mailbox->quota.used >= mailbox->quota_mailbox_used) {
+-	    mailbox->quota.used -= mailbox->quota_mailbox_used;
+-	}
+-	else {
+-	    mailbox->quota.used = 0;
+-	}
+-	r = quota_write(&mailbox->quota, &tid);
+-	if (r) {
+-	    syslog(LOG_ERR,
+-		   "LOSTQUOTA: unable to record free of %lu bytes in quota %s",
+-		   mailbox->quota_mailbox_used, mailbox->quota.root);
+-	}
+-	else
+-	    quota_commit(&tid);
+-    }
++    mailbox_updatequota(mailbox,NULL);
+ 
+     /* remove all files in directory */
+     strlcpy(buf, mailbox->path, sizeof(buf));
+@@ -2751,3 +2731,49 @@
+ 	if (*p == '.') *p = '/';
+     }
+ }
++
++
++/* This function is used to update the quota. Can be used to replace
++ * identical parts of the code, and can be quite handy some times 
++ * The tid is used in order to make possible to make the quota update
++ * being a part of a bigger transaction to the quota db */
++int mailbox_updatequota(struct mailbox *mailbox, struct txn **tid)
++{
++    int r = 0, havetid = 0;
++    struct txn **ltid = NULL;
++
++    if(tid) {
++        ltid = tid;
++        havetid = 1;
++    }
++    /* Ensure that we are locked */
++    if(!mailbox->header_lock_count) return IMAP_INTERNAL;
++
++
++    if(mailbox->quota.root) {
++        r = quota_read(&mailbox->quota, ltid, 1);
++        if( r == 0 ) {
++            if (mailbox->quota.used >= mailbox->quota_mailbox_used) {
++                mailbox->quota.used -= mailbox->quota_mailbox_used;
++            }
++            else {
++                mailbox->quota.used = 0;
++            }
++            r = quota_write(&mailbox->quota, ltid);
++            if (r) {
++                syslog(LOG_ERR,
++                   "LOSTQUOTA: unable to record free of %lu bytes in quota %s",
++                   mailbox->quota_mailbox_used, mailbox->quota.root);
++            }
++            else if(!havetid)
++                quota_commit(tid);
++        }
++        /* It is not a big mistake not to have quota .. just remove from the mailbox */
++        else if ( r == IMAP_QUOTAROOT_NONEXISTENT) {
++                free(mailbox->quota.root);
++                r = 0;
++        }
++    }
++    return r;
++}
++
+diff -Naur cyrus-imapd-2.2.12.orig/imap/mailbox.h cyrus-imapd-2.2.12/imap/mailbox.h
+--- cyrus-imapd-2.2.12.orig/imap/mailbox.h	Thu Jan 22 22:17:09 2004
++++ cyrus-imapd-2.2.12/imap/mailbox.h	Mon Mar  7 11:30:58 2005
+@@ -305,6 +305,8 @@
+ 			  struct mailbox *mailboxp);
+ extern int mailbox_delete(struct mailbox *mailbox, int delete_quota_root);
+ 
++extern int mailbox_updatequota(struct mailbox *mailbox, struct txn **tid);
++
+ extern int mailbox_rename_copy(struct mailbox *oldmailbox, 
+ 			       const char *newname, char *newpath,
+ 			       bit32 *olduidvalidityp, bit32 *newuidvalidityp,
+diff -Naur cyrus-imapd-2.2.12.orig/imap/mboxlist.c cyrus-imapd-2.2.12/imap/mboxlist.c
+--- cyrus-imapd-2.2.12.orig/imap/mboxlist.c	Mon Jul 26 20:08:03 2004
++++ cyrus-imapd-2.2.12/imap/mboxlist.c	Mon Mar  7 11:30:58 2005
+@@ -93,6 +93,11 @@
+ static int mboxlist_opensubs();
+ static void mboxlist_closesubs();
+ 
++static int child_cb(char *name,
++                    int matchlen __attribute__((unused)),
++                    int maycreate __attribute__((unused)),
++                    void *rock);
++
+ static int mboxlist_rmquota(const char *name, int matchlen, int maycreate,
+ 			    void *rock);
+ static int mboxlist_changequota(const char *name, int matchlen, int maycreate,
+@@ -100,6 +105,7 @@
+ 
+ struct change_rock {
+     struct quota *quota;
++    struct quota *oldquota;
+     struct txn **tid;
+ };
+ 
+@@ -893,9 +899,9 @@
+  */
+ int mboxlist_deletemailbox(const char *name, int isadmin, char *userid, 
+ 			   struct auth_state *auth_state, int checkacl,
+-			   int local_only, int force)
++			   int local_only, int force, int keepQuota)
+ {
+-    int r;
++    int r, has_children = 0;
+     char *acl;
+     long access;
+     struct mailbox mailbox;
+@@ -907,6 +913,7 @@
+     int deleteright = get_deleteright();
+     const char *p;
+     mupdate_handle *mupdate_h = NULL;
++    char *quotaroot = NULL;
+ 
+     if(!isadmin && force) return IMAP_PERMISSION_DENIED;
+ 
+@@ -1018,13 +1025,44 @@
+ 
+     if ((r && !force) || isremote) goto done;
+ 
+-    if (!r || force) r = mailbox_delete(&mailbox, deletequotaroot);
++    if (!r || force) {
++        /* first we have to keep the previous quota root in order to delete it */
++        if(mailbox.quota.root)
++                quotaroot = xstrdup(mailbox.quota.root);
++	r = mailbox_delete(&mailbox, deletequotaroot);
++    }
+ 
+     /*
+      * See if we have to remove mailbox's quota root
+      */
+-    if (!r && mailbox.quota.root != NULL) {
++    if (!r && quotaroot != NULL) {
+ 	/* xxx look for any other mailboxes in this quotaroot */
++        /* If we have not asked to remove the quota (default behaviour), we check 
++         * whether there are any subfolders beneeth the quota root. If there aren't
++         * any subfolders the reasonable thing is to delete the quota */
++        if(keepQuota) {
++            char pattern[MAX_MAILBOX_PATH+1];
++            strlcpy(pattern, quotaroot, sizeof(pattern));
++            if (config_virtdomains && name[strlen(name)-1] == '!') {
++                strlcat(pattern, "*", sizeof(pattern));
++            }
++            else {
++                strlcat(pattern, ".*", sizeof(pattern));
++            }
++		/* find if there are subfolders. Then we want to 
++		 * keep the existing quota */
++            mboxlist_findall(NULL, pattern, isadmin, userid,
++                    auth_state, child_cb, (void *) &has_children);
++
++	    if(!has_children)
++                if(!mboxlist_mylookup(quotaroot, NULL, NULL, NULL, NULL, NULL, 0 ))
++		    has_children = 1;
++        }
++        /* If we want to remove the quota explicitely or the quota root folder has no subfolders
++         * we execute the rmquota patch */
++        if(!keepQuota || !has_children )
++            mboxlist_unsetquota(quotaroot);
++        free(quotaroot);
+     }
+ 
+  done:
+@@ -2357,6 +2395,7 @@
+     if (r) return r;
+ 
+     crock.quota = &quota;
++    crock.oldquota = NULL;
+     crock.tid = &tid;
+     /* top level mailbox */
+     if(have_mailbox)
+@@ -2375,17 +2414,21 @@
+  */
+ int mboxlist_unsetquota(const char *root)
+ {
++    char newquota[MAX_MAILBOX_PATH+1];
+     char pattern[MAX_MAILBOX_PATH+1];
+     struct quota quota;
+-    int r=0;
++    struct change_rock crock;
++    int r=0, k=0;
+ 
+     if (!root[0] || root[0] == '.' || strchr(root, '/')
+ 	|| strchr(root, '*') || strchr(root, '%') || strchr(root, '?')) {
+ 	return IMAP_MAILBOX_BADNAME;
+     }
++	
++    crock.tid=NULL;
+     
+     quota.root = (char *) root;
+-    r = quota_read(&quota, NULL, 0);
++    r = quota_read(&quota, crock.tid, 0);
+     if (r == IMAP_QUOTAROOT_NONEXISTENT) {
+ 	/* already unset */
+ 	return 0;
+@@ -2402,13 +2445,45 @@
+     }
+     else
+ 	strlcat(pattern, ".*", sizeof(pattern));
+-    
+-    /* top level mailbox */
+-    mboxlist_rmquota(root, 0, 0, (void *)root);
+-    /* submailboxes - we're using internal names here */
+-    mboxlist_findall(NULL, pattern, 1, 0, 0, mboxlist_rmquota, (void *)root);
+ 
+-    r = quota_delete(&quota, NULL);
++    r = quota_delete(&quota, crock.tid);
++
++    /* If we cannot delete the quota then abort the operation */
++    if(!r) {
++       /* quota_findroot performs several checks that we can
++        * assume that are already done, and don't have to perform
++        * them again. One of them is that it returns 1 only if
++        * quotaroot exists.
++        */
++        if(quota_findroot(newquota, sizeof(newquota), root)) {
++            struct quota rootquota;
++            rootquota.root = newquota;
++            k = quota_read(&rootquota, crock.tid, 0);
++            if (!k) {
++                crock.quota = &rootquota;
++                crock.oldquota = &quota;
++                /* top level mailbox */
++                k = mboxlist_changequota(root, 0, 0, &crock);
++            }
++            /* submailboxes - we're using internal names here */
++            if (!k)
++                k = mboxlist_findall(NULL, pattern, 1, 0, 0, mboxlist_changequota, &crock);
++            if(!k)
++                k = quota_write(&rootquota, crock.tid);
++
++         }
++         else {
++           /* top level mailbox */
++           mboxlist_rmquota(root, 0, 0, (void *)root);
++           /* submailboxes - we're using internal names here */
++           mboxlist_findall(NULL, pattern, 1, 0, 0, mboxlist_rmquota, (void *)root);
++       }
++    }
++
++    if(!r && !k)
++        quota_commit(crock.tid);
++    else
++        quota_abort(crock.tid);
+ 
+     return r;
+ }
+@@ -2506,6 +2581,7 @@
+     struct mailbox mailbox;
+     struct change_rock *crock = (struct change_rock *) rock;
+     struct quota *mboxlist_newquota = crock->quota;
++    struct quota *mboxlist_oldquota = crock->oldquota;
+     struct txn **tid = crock->tid;
+ 
+     assert(rock != NULL);
+@@ -2523,27 +2599,24 @@
+     if (r) goto error;
+ 
+     if (mailbox.quota.root) {
+-	if (strlen(mailbox.quota.root) >= strlen(mboxlist_newquota->root)) {
+-	    /* Part of a child quota root */
+-	    mailbox_close(&mailbox);
+-	    return 0;
+-	}
+-
+-	r = quota_read(&mailbox.quota, tid, 1);
+-	if (r) goto error;
+-	if (mailbox.quota.used >= mailbox.quota_mailbox_used) {
+-	    mailbox.quota.used -= mailbox.quota_mailbox_used;
+-	}
+-	else {
+-	    mailbox.quota.used = 0;
+-	}
+-	r = quota_write(&mailbox.quota, tid);
+-	if (r) {
+-	    syslog(LOG_ERR,
+-		   "LOSTQUOTA: unable to record free of %lu bytes in quota %s",
+-		   mailbox.quota_mailbox_used, mailbox.quota.root);
+-	}
+-	free(mailbox.quota.root);
++        if(mboxlist_oldquota) {
++            if (strlen(mailbox.quota.root) > strlen(mboxlist_oldquota->root)) {
++                /* Part of a child quota root */
++                mailbox_close(&mailbox);
++                return 0;
++            }
++        }
++        else {
++            if (strlen(mailbox.quota.root) >= strlen(mboxlist_newquota->root)) {
++                /* Part of a child quota root */
++                mailbox_close(&mailbox);
++                return 0;
++            }
++        }
++
++        r = mailbox_updatequota(&mailbox,tid);
++        if (r)
++            goto error;
+     }
+ 
+     mailbox.quota.root = xstrdup(mboxlist_newquota->root);
+@@ -2553,18 +2626,24 @@
+     mboxlist_newquota->used += mailbox.quota_mailbox_used;
+     mailbox_close(&mailbox);
+     return 0;
+-
++ 
+  error:
+     mailbox_close(&mailbox);
++    syslog(LOG_ERR, "LOSTQUOTA: unable to change quota root for %s to %s: %s. \
++                        Command aborted. Run reconstruct to make sure mailboxes \
++                         are in consistent state",
++           name, mboxlist_newquota->root, error_message(r));
++    return 1;
+  error_noclose:
+     syslog(LOG_ERR, "LOSTQUOTA: unable to change quota root for %s to %s: %s",
+-	   name, mboxlist_newquota->root, error_message(r));
++           name, mboxlist_newquota->root, error_message(r));
+ 
+     /* Note, we're a callback, and it's not a huge tragedy if we
+      * fail, so we don't ever return a failure */
+     return 0;
+ }
+ 
++
+ /* must be called after cyrus_init */
+ void mboxlist_init(int myflags)
+ {
+diff -Naur cyrus-imapd-2.2.12.orig/imap/mboxlist.h cyrus-imapd-2.2.12/imap/mboxlist.h
+--- cyrus-imapd-2.2.12.orig/imap/mboxlist.h	Wed Mar 17 19:07:49 2004
++++ cyrus-imapd-2.2.12/imap/mboxlist.h	Mon Mar  7 11:30:58 2005
+@@ -122,7 +122,7 @@
+  * the planet */
+ int mboxlist_deletemailbox(const char *name, int isadmin, char *userid, 
+ 			   struct auth_state *auth_state, int checkacl,
+-			   int local_only, int force);
++			   int local_only, int force, int keepQuota);
+ 
+ /* Rename/move a mailbox (hierarchical) */
+ int mboxlist_renamemailbox(char *oldname, char *newname, char *partition, 
+diff -Naur cyrus-imapd-2.2.12.orig/imap/mupdate.c cyrus-imapd-2.2.12/imap/mupdate.c
+--- cyrus-imapd-2.2.12.orig/imap/mupdate.c	Fri Dec 17 17:32:16 2004
++++ cyrus-imapd-2.2.12/imap/mupdate.c	Mon Mar  7 11:30:58 2005
+@@ -2190,7 +2190,7 @@
+ 	    remote_boxes.head = r->next;
+ 	} else if (ret < 0) {
+ 	    /* Local without corresponding remote, delete it */
+-	    mboxlist_deletemailbox(l->mailbox, 1, "", NULL, 0, 0, 0);
++	    mboxlist_deletemailbox(l->mailbox, 1, "", NULL, 0, 0, 0, 1);
+ 	    local_boxes.head = l->next;
+ 	} else /* (ret > 0) */ {
+ 	    /* Remote without corresponding local, insert it */
+@@ -2205,7 +2205,7 @@
+     if(l && !r) {
+ 	/* we have more deletes to do */
+ 	while(l) {
+-	    mboxlist_deletemailbox(l->mailbox, 1, "", NULL, 0, 0, 0);
++	    mboxlist_deletemailbox(l->mailbox, 1, "", NULL, 0, 0, 0, 1);
+ 	    local_boxes.head = l->next;
+ 	    l = local_boxes.head;
+ 	}
+diff -Naur cyrus-imapd-2.2.12.orig/imap/nntpd.c cyrus-imapd-2.2.12/imap/nntpd.c
+--- cyrus-imapd-2.2.12.orig/imap/nntpd.c	Fri Jan  7 21:59:04 2005
++++ cyrus-imapd-2.2.12/imap/nntpd.c	Mon Mar  7 11:30:58 2005
+@@ -3298,7 +3298,7 @@
+     /* XXX should we delete right away, or wait until empty? */
+ 
+     r = mboxlist_deletemailbox(mailboxname, 0,
+-			       newsmaster, newsmaster_authstate, 1, 0, 0);
++			       newsmaster, newsmaster_authstate, 1, 0, 0, 1);
+ 
+     return r;
+ }
+
