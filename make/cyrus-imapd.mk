@@ -197,7 +197,7 @@ $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 # more work is needed to strip the following files
 #	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/*
 ifeq ($(HOST_MACHINE),armv5b)
-	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/5.8.6/armv5b-linux/auto/Cyrus ; \
+	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)/armv5b-linux/auto/Cyrus ; \
 		chmod +w IMAP/IMAP.so; \
 		chmod +w SIEVE/managesieve/managesieve.so; \
 		$(STRIP_COMMAND) IMAP/IMAP.so; \
@@ -206,7 +206,7 @@ ifeq ($(HOST_MACHINE),armv5b)
 		chmod -w SIEVE/managesieve/managesieve.so; \
 	)
 endif
-	rm -rf $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/5.8.6
+	rm -rf $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/lib -type d -exec chmod go+rx {} \;
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/man -type d -exec chmod go+rx {} \;
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d
