@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-RUBY_VERSION=1.8.4
+RUBY_VERSION=1.8.5
 RUBY_SOURCE=ruby-$(RUBY_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_VERSION)
 RUBY_UNZIP=zcat
@@ -40,7 +40,7 @@ RUBY_DEPENDS=
 #
 # RUBY_IPK_VERSION should be incremented when the ipk changes.
 #
-RUBY_IPK_VERSION=2
+RUBY_IPK_VERSION=1
 
 #
 # RUBY_CONFFILES should be a list of user-editable files
