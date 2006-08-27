@@ -96,6 +96,7 @@ cyrus-imapd-unpack: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 
 $(CYRUS-IMAPD_BUILD_DIR)/.built: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 	rm -f $(CYRUS-IMAPD_BUILD_DIR)/.built
+	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)
 	touch $(CYRUS-IMAPD_BUILD_DIR)/.built
 
