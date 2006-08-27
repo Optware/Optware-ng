@@ -17,7 +17,7 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=2
+CYRUS-IMAPD_IPK_VERSION=3
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
@@ -117,7 +117,7 @@ $(CYRUS-IMAPD_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(CYRUS-IMAPD_MAINTAINER)" >>$@
 	@echo "Source: $(CYRUS-IMAPD_SITE)/$(CYRUS-IMAPD_SOURCE)" >>$@
 	@echo "Description: $(CYRUS-IMAPD_DESCRIPTION)" >>$@
-	@echo "Depends: cyrus-imapd-devel (= $(CYRUS-IMAPD_VERSION)-$(CYRUS-IMAPD_IPK_VERSION))" >>$@
+	@echo "Depends: $(CYRUS-IMAPD_DEPENDS)" >>$@
 	@echo "Suggests: cyrus-imapd-doc, $(CYRUS-IMAPD_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CYRUS-IMAPD_CONFLICTS)" >>$@
 
@@ -248,4 +248,4 @@ cyrus-imapd-clean:
 	-$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) clean
 
 cyrus-imapd-dirclean:
-	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR) $(CYRUS-IMAPD_IPK_DIR) $(CYRUS-IMAPD_IPK)
+	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR) $(CYRUS-IMAPD_IPK_DIR) $(CYRUS-IMAPD_IPK_DIR)-doc $(CYRUS-IMAPD_IPK_DIR)-devel $(CYRUS-IMAPD_IPK)
