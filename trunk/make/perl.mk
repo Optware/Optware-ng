@@ -46,6 +46,12 @@ PERL_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(TARGET_ARCH), armeb)
+PERL_ARCH=armv5b-linux
+endif
+ifeq ($(TARGET_ARCH), powerpc)
+PERL_ARCH=ppc-linux
+endif
 PERL_CPPFLAGS=
 PERL_LDFLAGS=
 
