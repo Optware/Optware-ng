@@ -136,7 +136,7 @@ PERL_PACKAGES_CROSS_AND_NATIVE = \
 	perl-archive-tar perl-archive-zip \
 	perl-business-isbn-data perl-business-isbn \
 	perl-cgi-application \
-	perl-class-accessor perl-class-data-inheritable perl-class-trigger \
+	perl-class-accessor perl-class-data-inheritable perl-class-dbi perl-class-trigger \
 	perl-clone \
 	perl-compress-zlib \
  	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
@@ -194,7 +194,6 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         ocaml \
 	openldap \
-	perl-class-dbi \
 	rsnapshot \
 	squid \
 	stow \

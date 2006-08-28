@@ -1,0 +1,11 @@
+--- perl-class-dbi/lib/Class/DBI.pm.orig	2006-08-20 00:58:01.000000000 -0700
++++ perl-class-dbi/lib/Class/DBI.pm	2006-08-27 22:42:06.000000000 -0700
+@@ -7,7 +7,7 @@
+ 
+ package Class::DBI;
+ 
+-use version; $VERSION = qv('3.0.15');
++$VERSION = 'v3.0.15';
+ 
+ use strict;
+ use warnings;
