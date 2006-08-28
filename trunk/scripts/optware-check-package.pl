@@ -52,6 +52,7 @@ $binary_type="ARM" if $binary_type eq "nslu2";
 $binary_type="MIPS" if $binary_type eq "wl500g";
 $binary_type="ARM" if $binary_type =~ /^arm/;
 $binary_type="MIPS" if $binary_type =~ /^mips/;
+$binary_type="PowerPC or cisco 4500" if $binary_type eq "ds101g";
 
 $need_help=1 if $#ARGV<0;
 
