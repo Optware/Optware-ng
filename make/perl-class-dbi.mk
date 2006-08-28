@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-CLASS-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TM/TMTM
-PERL-CLASS-DBI_VERSION=v3.0.14
+PERL-CLASS-DBI_VERSION=v3.0.15
 PERL-CLASS-DBI_SOURCE=Class-DBI-$(PERL-CLASS-DBI_VERSION).tar.gz
 PERL-CLASS-DBI_DIR=Class-DBI-$(PERL-CLASS-DBI_VERSION)
 PERL-CLASS-DBI_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-CLASS-DBI_DEPENDS=perl, perl-class-accessor, perl-class-data-inheritable, p
 PERL-CLASS-DBI_SUGGESTS=
 PERL-CLASS-DBI_CONFLICTS=
 
-PERL-CLASS-DBI_IPK_VERSION=2
+PERL-CLASS-DBI_IPK_VERSION=1
 
 PERL-CLASS-DBI_CONFFILES=
 
@@ -25,6 +25,8 @@ PERL-CLASS-DBI_BUILD_DIR=$(BUILD_DIR)/perl-class-dbi
 PERL-CLASS-DBI_SOURCE_DIR=$(SOURCE_DIR)/perl-class-dbi
 PERL-CLASS-DBI_IPK_DIR=$(BUILD_DIR)/perl-class-dbi-$(PERL-CLASS-DBI_VERSION)-ipk
 PERL-CLASS-DBI_IPK=$(BUILD_DIR)/perl-class-dbi_$(PERL-CLASS-DBI_VERSION)-$(PERL-CLASS-DBI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PERL-CLASS-DBI_CROSS_PATCHES=$(PERL-CLASS-DBI_SOURCE_DIR)/lib-Class-DBI.pm.patch
 
 $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PERL-CLASS-DBI_SITE)/$(PERL-CLASS-DBI_SOURCE)
@@ -35,16 +37,24 @@ $(PERL-CLASS-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) $(PE
 	$(MAKE) perl-class-accessor-stage perl-class-data-inheritable-stage perl-class-trigger-stage perl-ima-dbi-stage perl-clone-stage perl-universal-moniker-stage perl-version-stage
 	rm -rf $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) $(PERL-CLASS-DBI_BUILD_DIR)
 	$(PERL-CLASS-DBI_UNZIP) $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-CLASS-DBI_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) -p1
+ifneq ($(TARGET_CC),$(HOSTCC))
+	cp -p $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR)/lib/Class/DBI.pm $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR)/DBI.pm.orig
+	if test -n "$(PERL-CLASS-DBI_CROSS_PATCHES)" ; then \
+		cat $(PERL-CLASS-DBI_CROSS_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) -p1; \
+	fi
+endif
 	mv $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) $(PERL-CLASS-DBI_BUILD_DIR)
 	(cd $(PERL-CLASS-DBI_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		$(PERL_HOSTPERL) Makefile.PL \
+		$(PERL_HOSTPERL) Makefile.PL -n \
 		PREFIX=/opt \
 	)
+ifneq ($(TARGET_CC),$(HOSTCC))
+	cp -pf $(PERL-CLASS-DBI_BUILD_DIR)/DBI.pm.orig $(PERL-CLASS-DBI_BUILD_DIR)/lib/Class/DBI.pm
+endif
 	touch $(PERL-CLASS-DBI_BUILD_DIR)/.configured
 
 perl-class-dbi-unpack: $(PERL-CLASS-DBI_BUILD_DIR)/.configured
