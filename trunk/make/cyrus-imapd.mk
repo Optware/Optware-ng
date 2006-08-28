@@ -31,11 +31,11 @@ CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/cyrus.cross.patch \
 CYRUS-IMAPD_CPPFLAGS=
 CYRUS-IMAPD_LDFLAGS=
 
-ifeq ($(HOST_MACHINE),nslu2)
-  CYRUS-IMAPD_CONFIGURE_OPTS=
+ifeq ($(OPTWARE_TARGET),nslu2)
+  CYRUS-IMAPD_CONFIGURE_OPTS=--with-perl
 else
-ifeq ($(HOST_MACHINE),ds101g)
-  CYRUS-IMAPD_CONFIGURE_OPTS=
+ifeq ($(OPTWARE_TARGET),ds101g)
+  CYRUS-IMAPD_CONFIGURE_OPTS=--with-perl
 else
   CYRUS-IMAPD_CONFIGURE_OPTS=--without-perl
 endif
@@ -67,6 +67,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CC_FOR_BUILD=$(HOSTCC) \
 		BUILD_CFLAGS="$(STAGING_CPPFLAGS) $(CYRUS-IMAPD_CPPFLAGS) -I.. -I../et" \
+		BUILD_LDFLAGS="$(STAGING_LDFLAGS) $(CYRUS-IMAPD_LDFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CYRUS-IMAPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CYRUS-IMAPD_LDFLAGS)" \
 		./configure \
@@ -196,8 +197,8 @@ $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a
 # more work is needed to strip the following files
 #	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/*
-ifeq ($(HOST_MACHINE),armv5b)
-	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)/armv5b-linux/auto/Cyrus ; \
+ifeq ($(CYRUS-IMAPD_CONFIGURE_OPTS),--with-perl)
+	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/Cyrus ; \
 		chmod +w IMAP/IMAP.so; \
 		chmod +w SIEVE/managesieve/managesieve.so; \
 		$(STRIP_COMMAND) IMAP/IMAP.so; \
