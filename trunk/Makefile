@@ -53,11 +53,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumik
 	libextractor \
 	perl-dbd-mysql \
 
-# libiconv - has been made obsolete by gconv-modules
-# git - has been made obsolete by git-core
-# Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 \
-
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk asterisk-sounds \
@@ -67,6 +62,7 @@ COMMON_CROSS_PACKAGES = \
 	cabextract ccxstream chillispot coreutils cpio cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
+	cyrus-imapd \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
 	expat extract-xiso \
@@ -129,7 +125,8 @@ COMMON_CROSS_PACKAGES = \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zip zlib zoo \
 
-PERL_PACKAGES_CROSS_AND_NATIVE = \
+PERL_PACKAGES = \
+	perl \
 	perl-algorithm-diff \
 	perl-appconfig \
 	perl-berkeleydb \
@@ -187,7 +184,6 @@ COMMON_NATIVE_PACKAGES = \
 	bison \
 	bogofilter \
 	cdrtools \
-	cyrus-imapd \
 	emacs \
 	xemacs \
 	hugs \
@@ -199,9 +195,13 @@ COMMON_NATIVE_PACKAGES = \
 	stow \
         xmail \
 
+# libiconv - has been made obsolete by gconv-modules
+# git - has been made obsolete by git-core
+# Metalog - has been made obsolete by syslog-ng
+PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 \
+
 # Packages that *only* work for nslu2 - do not just put new packages here.
 NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native \
-	perl $(PERL_PACKAGES_CROSS_AND_NATIVE) \
 
 # Packages that do not work for nslu2.
 NSLU2_BROKEN_PACKAGES = \
@@ -299,7 +299,7 @@ DS101J_BROKEN_PACKAGES = \
 	atk bitlbee ctrlproxy giftcurs gkrellm irssi pango \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
-DS101G_SPECIFIC_PACKAGES = perl $(PERL_PACKAGES_CROSS_AND_NATIVE)
+DS101G_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for ds101g+.
 # elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
@@ -354,7 +354,7 @@ PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 # in the path ahead of busybox's broken one.
 PATH=/opt/bin:/usr/bin:/bin
 else
-PACKAGES = $(filter-out $(NSLU2_NATIVE_PACKAGES) $(NSLU2_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES))
+PACKAGES = $(filter-out $(NSLU2_NATIVE_PACKAGES) $(NSLU2_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 TARGET_ARCH=armeb
@@ -394,7 +394,7 @@ ifeq ($(HOST_MACHINE),ppc)
 PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_NATIVE_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
 else
-PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101G_SPECIFIC_PACKAGES))
+PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(DS101G_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 TARGET_ARCH=powerpc
@@ -687,10 +687,6 @@ PACKAGES_SOURCE:=$(patsubst %,%-source,$(PACKAGES))
 PACKAGES_DIRCLEAN:=$(patsubst %,%-dirclean,$(PACKAGES))
 PACKAGES_STAGE:=$(patsubst %,%-stage,$(PACKAGES))
 PACKAGES_IPKG:=$(patsubst %,%-ipk,$(PACKAGES))
-
-ifneq ($(HOSTCC), $(TARGET_CC))
-PERL_CROSS_TARGETS=:ds101g:nslu2:
-endif
 
 $(PACKAGES) : directories toolchain
 $(PACKAGES_STAGE) %-stage : directories toolchain

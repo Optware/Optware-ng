@@ -1,4 +1,4 @@
-###########################################################
+#/#########################################################l
 #
 # cyrus-imapd
 #
@@ -17,7 +17,7 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=4
+CYRUS-IMAPD_IPK_VERSION=5
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
@@ -30,16 +30,6 @@ CYRUS-IMAPD_PATCHES=$(CYRUS-IMAPD_SOURCE_DIR)/cyrus.cross.patch \
 
 CYRUS-IMAPD_CPPFLAGS=
 CYRUS-IMAPD_LDFLAGS=
-
-ifeq ($(OPTWARE_TARGET),nslu2)
-  CYRUS-IMAPD_CONFIGURE_OPTS=--with-perl
-else
-ifeq ($(OPTWARE_TARGET),ds101g)
-  CYRUS-IMAPD_CONFIGURE_OPTS=--with-perl
-else
-  CYRUS-IMAPD_CONFIGURE_OPTS=--without-perl
-endif
-endif
 
 CYRUS-IMAPD_BUILD_DIR=$(BUILD_DIR)/cyrus-imapd
 CYRUS-IMAPD_SOURCE_DIR=$(SOURCE_DIR)/cyrus-imapd
@@ -55,6 +45,9 @@ $(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IM
 	$(MAKE) libdb-stage openssl-stage
 	$(MAKE) cyrus-sasl-stage
 	$(MAKE) e2fsprogs-stage # for libcom_err.a and friends
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	$(MAKE) perl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
 	$(CYRUS-IMAPD_UNZIP) $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CYRUS-IMAPD_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
@@ -70,6 +63,8 @@ endif
 		BUILD_LDFLAGS="$(STAGING_LDFLAGS) $(CYRUS-IMAPD_LDFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CYRUS-IMAPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CYRUS-IMAPD_LDFLAGS)" \
+		PERL=false \
+		cyrus_cv_func_mmap_shared=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -89,8 +84,20 @@ endif
 		--with-checkapop \
 		--disable-nls \
 		--with-com_err \
-		$(CYRUS-IMAPD_CONFIGURE_OPTS) \
+		--without-perl \
 	)
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	for i in perl/imap perl/sieve/managesieve; do \
+	(cd $(CYRUS-IMAPD_BUILD_DIR)/$$i; \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		$(PERL_HOSTPERL) Makefile.PL \
+		$(TARGET_CONFIGURE_OPTS) \
+		PREFIX=/opt \
+	) \
+	done
+endif
 	touch $(CYRUS-IMAPD_BUILD_DIR)/.configured
 
 cyrus-imapd-unpack: $(CYRUS-IMAPD_BUILD_DIR)/.configured
@@ -99,6 +106,16 @@ $(CYRUS-IMAPD_BUILD_DIR)/.built: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 	rm -f $(CYRUS-IMAPD_BUILD_DIR)/.built
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap \
+		$(PERL_INC) \
+		LD_RUN_PATH=/opt/lib \
+		LDFLAGS="$(STAGING_LDFLAGS)"
+	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve \
+		$(PERL_INC) \
+		LD_RUN_PATH=/opt/lib \
+		LDFLAGS="$(STAGING_LDFLAGS)" 
+endif
 	touch $(CYRUS-IMAPD_BUILD_DIR)/.built
 
 cyrus-imapd: $(CYRUS-IMAPD_BUILD_DIR)/.built
@@ -195,9 +212,10 @@ $(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin/*
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a
-# more work is needed to strip the following files
-#	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/*
-ifeq ($(CYRUS-IMAPD_CONFIGURE_OPTS),--with-perl)
+	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/imtest
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
+	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/Cyrus ; \
 		chmod +w IMAP/IMAP.so; \
 		chmod +w SIEVE/managesieve/managesieve.so; \
@@ -206,8 +224,8 @@ ifeq ($(CYRUS-IMAPD_CONFIGURE_OPTS),--with-perl)
 		chmod -w IMAP/IMAP.so; \
 		chmod -w SIEVE/managesieve/managesieve.so; \
 	)
-endif
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)
+endif
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/lib -type d -exec chmod go+rx {} \;
 	find $(CYRUS-IMAPD_IPK_DIR)/opt/man -type d -exec chmod go+rx {} \;
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc/init.d
