@@ -138,7 +138,7 @@ PERL_PACKAGES = \
 	perl-compress-zlib \
  	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-date-manip \
-	perl-db-file perl-dbi perl-dbix-contextualfetch \
+	perl-db-file perl-dbd-sqlite perl-dbi perl-dbix-contextualfetch \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-gd perl-gd-barcode \
