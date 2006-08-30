@@ -17,7 +17,7 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=5
+CYRUS-IMAPD_IPK_VERSION=6
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
@@ -91,6 +91,7 @@ ifeq (perl,$(filter perl, $(PACKAGES)))
 	(cd $(CYRUS-IMAPD_BUILD_DIR)/$$i; \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		BDB_LIB=-ldb-$(LIBDB_LIB_VERSION) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -246,8 +247,6 @@ endif
 	mv $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/idled.8 $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/cyrus_idled.8
 	mv $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/master.8 $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/cyrus_master.8
 	$(MAKE) $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL/control
-#	install -d $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL
-#	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/control-doc $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-IMAPD_IPK_DIR)-doc
 
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)-devel
@@ -255,14 +254,14 @@ endif
 	mv $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a $(CYRUS-IMAPD_IPK_DIR)-devel/opt/lib
 	mv $(CYRUS-IMAPD_IPK_DIR)/opt/include $(CYRUS-IMAPD_IPK_DIR)-devel/opt/include
 	$(MAKE) $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL/control
-#	install -d $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL
-#	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/control-devel $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-IMAPD_IPK_DIR)-devel
 
 	$(MAKE) $(CYRUS-IMAPD_IPK_DIR)/CONTROL/control
-#	install -d $(CYRUS-IMAPD_IPK_DIR)/CONTROL
-#	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/control $(CYRUS-IMAPD_IPK_DIR)/CONTROL/control
+ifeq ($(OPTWARE_TARGET),ds101g)
+	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/postinst.ds101g $(CYRUS-IMAPD_IPK_DIR)/CONTROL/postinst
+else
 	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/postinst $(CYRUS-IMAPD_IPK_DIR)/CONTROL/postinst
+endif
 #	install -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/prerm $(CYRUS-IMAPD_IPK_DIR)/CONTROL/prerm
 	echo $(CYRUS-IMAPD_CONFFILES) | sed -e 's/ /\n/g' > $(CYRUS-IMAPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-IMAPD_IPK_DIR)
