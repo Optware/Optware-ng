@@ -16,7 +16,7 @@ CYRUS-SASL_PRIORITY=optional
 CYRUS-SASL_DEPENDS=
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=8
+CYRUS-SASL_IPK_VERSION=9
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
@@ -129,7 +129,11 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/lib/sasl2/*.so
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
 	install -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
+ifeq ($(OPTWARE_TARGET),ds101g)
+	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd.ds101g $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+else
 	install -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+endif
 	### build cyrus-sasl-libs
 	$(MAKE) $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control
 	install -d $(CYRUS-SASL-LIBS_IPK_DIR)/opt
