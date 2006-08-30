@@ -3,27 +3,17 @@
 services_file=/etc/services
 
 /bin/echo -n "adding new service(s) ... "
-if [ -z "`/bin/grep \"^\(imsp\|acap\|sieve\|lmtp\|fud\)\" $services_file`" ] ; then
+if [ -z "`/bin/grep \"^\(imsp\|sieve\|lmtp\|fud\)\" $services_file`" ] ; then
     /bin/cp $services_file $services_file.cyrus-imap-save
     /bin/sed -i "s/^#\(pop3\)/\1/g" $services_file
     /bin/sed -i "s/^#\(imap2\)/\1/g" $services_file
-    /bin/echo -e "\n# start of cyrus-imapd services\nimsp\t\t406/tcp\nacap\t\t674/tcp\nsieve\t\t2000/tcp\nlmtp\t\t2003/tcp\nfud\t\t4201/udp\n# end of cyrus-imapd services" >> $services_file
+    /bin/echo -e "\n# start of cyrus-imapd services\nimsp\t\t406/tcp\nsieve\t\t2000/tcp\nlmtp\t\t2003/tcp\nfud\t\t4201/udp\n# end of cyrus-imapd services" >> $services_file
     /bin/echo "ok"
 else
     /bin/echo "failed"
 fi
 
-/bin/echo -n "set saslpasswd2 for user 'mail' ... "
-if [ -n "`/opt/sbin/sasldblistusers2 | /bin/grep \"^mail@\"`" ] ; then
-    /bin/echo
-    /opt/sbin/saslpasswd2 mail
-else
-    /bin/echo "failed"
-fi
-
 /bin/echo "changing permission ... "
-/bin/chown mail:root /opt/etc/sasl2
-/bin/chmod 640 /opt/etc/sasl2
 
 /bin/chown mail:mail /opt/var/lib/imap
 /bin/chown -R mail:root /opt/var/lib/imap/db
@@ -42,11 +32,6 @@ fi
 /bin/chown mail:mail /opt/var/spool/imap/user
 
 /bin/echo
-/bin/echo You may want to update your Perl modules first:
-/bin/echo -e "\t\$ cpan"
-/bin/echo -e "\t> install Bundle::CPAN"
-/bin/echo -e "\t> install HTTP::Date"
-/bin/echo
 /bin/echo Please read the man-pages and docs carefully,
 /bin/echo -e "\t\$ less /opt/share/docs/cyrus-imapd/README"
 /bin/echo -e "\t\$ man cyrus_master"
@@ -55,9 +40,7 @@ fi
 /bin/echo then configure cyrus-imapd,
 /bin/echo -e "\t\$ vi /opt/etc/cyrus.conf"
 /bin/echo -e "\t\$ vi /opt/etc/imapd.conf"
-/bin/echo
-/bin/echo create users with cyradm
-/bin/echo -e "\t\$ cyradm -u mail localhost"
+/bin/echo -e "\t\$ vi /opt/etc/init.d/S52saslauthd
 /bin/echo
 /bin/echo and start the server
 /bin/echo -e "\t\$ /opt/etc/init.d/S59cyrus-imapd"
