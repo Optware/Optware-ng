@@ -170,8 +170,8 @@ PERL_PACKAGES = \
 # bogofilter's configure wants to run some small executables
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
-# cyrus-imapd fails with "impossible constraint in `asm'" when cross-compiled
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
+# nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
@@ -188,6 +188,7 @@ COMMON_NATIVE_PACKAGES = \
 	xemacs \
 	hugs \
 	mzscheme \
+        nginx \
         ocaml \
 	openldap \
 	rsnapshot \
