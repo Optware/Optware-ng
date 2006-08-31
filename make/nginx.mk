@@ -1,0 +1,241 @@
+###########################################################
+#
+# nginx
+#
+###########################################################
+#
+# NGINX_VERSION, NGINX_SITE and NGINX_SOURCE define
+# the upstream location of the source code for the package.
+# NGINX_DIR is the directory which is created when the source
+# archive is unpacked.
+# NGINX_UNZIP is the command used to unzip the source.
+# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
+#
+# You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
+#
+NGINX_SITE=http://sysoev.ru/nginx
+NGINX_VERSION=0.4.0
+NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
+NGINX_DIR=nginx-$(NGINX_VERSION)
+NGINX_UNZIP=zcat
+NGINX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NGINX_DESCRIPTION=A high perfomance http and reverse proxy server, and IMAP/POP3 proxy server.
+NGINX_SECTION=net
+NGINX_PRIORITY=optional
+NGINX_DEPENDS=
+NGINX_SUGGESTS=
+NGINX_CONFLICTS=
+
+#
+# NGINX_IPK_VERSION should be incremented when the ipk changes.
+#
+NGINX_IPK_VERSION=1
+
+#
+# NGINX_CONFFILES should be a list of user-editable files
+NGINX_CONFFILES=\
+	/opt/etc/nginx/nginx.conf \
+	/opt/etc/nginx/mime.types \
+	/opt/share/www/nginx/index.html \
+	/opt/share/www/nginx/50x.html \
+
+#
+# NGINX_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+#NGINX_PATCHES=$(NGINX_SOURCE_DIR)/configure.patch
+
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+NGINX_CPPFLAGS=
+NGINX_LDFLAGS=
+
+#
+# NGINX_BUILD_DIR is the directory in which the build is done.
+# NGINX_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# NGINX_IPK_DIR is the directory in which the ipk is built.
+# NGINX_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+NGINX_BUILD_DIR=$(BUILD_DIR)/nginx
+NGINX_SOURCE_DIR=$(SOURCE_DIR)/nginx
+NGINX_IPK_DIR=$(BUILD_DIR)/nginx-$(NGINX_VERSION)-ipk
+NGINX_IPK=$(BUILD_DIR)/nginx_$(NGINX_VERSION)-$(NGINX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+NGINX_VAR=/opt/var/nginx
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(NGINX_SOURCE):
+	$(WGET) -P $(DL_DIR) $(NGINX_SITE)/$(NGINX_SOURCE)
+
+#
+# The source code depends on it existing within the download directory.
+# This target will be called by the top level Makefile to download the
+# source code's archive (.tar.gz, .bz2, etc.)
+#
+nginx-source: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
+
+#
+# This target unpacks the source code in the build directory.
+# If the source archive is not .tar.gz or .tar.bz2, then you will need
+# to change the commands here.  Patches to the source code are also
+# applied in this target as required.
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+#
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
+# make/nginx.mk
+	$(MAKE) openssl-stage pcre-stage zlib-stage
+	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR)
+	$(NGINX_UNZIP) $(DL_DIR)/$(NGINX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(NGINX_PATCHES)" ; \
+		then cat $(NGINX_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(NGINX_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(NGINX_DIR)" != "$(NGINX_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR) ; \
+	fi
+#		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--crossbuild=linux \
+                --with-threads \
+		--disable-nls \
+		--disable-static
+	(cd $(NGINX_BUILD_DIR); \
+	    ./configure \
+		--prefix=/opt \
+                --conf-path=/opt/etc/nginx/nginx.conf \
+                --error-log-path=$(NGINX_VAR)/log/error.log \
+                --pid-path=$(NGINX_VAR)/run/pid.txt \
+                --http-log-path=$(NGINX_VAR)/log/access.log \
+                --http-client-body-temp-path=$(NGINX_VAR)/tmp/client_body_temp \
+                --http-proxy-temp-path=$(NGINX_VAR)/tmp/proxy_temp \
+                --http-fastcgi-temp-path=$(NGINX_VAR)/tmp/fastcgi_temp \
+                --with-cc=$(TARGET_CC) \
+                --with-cpp=$(TARGET_CPP) \
+                --with-cc-opt="$(STAGING_CPPFLAGS) $(NGINX_CPPFLAGS)" \
+                --with-ld-opt="$(STAGING_LDFLAGS) $(NGINX_LDFLAGS)" \
+                --with-http_ssl_module \
+		; \
+            sed -i \
+                -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
+                -e '/opt\/html/d' \
+                objs/Makefile; \
+	)
+#	$(PATCH_LIBTOOL) $(NGINX_BUILD_DIR)/libtool
+	touch $(NGINX_BUILD_DIR)/.configured
+
+nginx-unpack: $(NGINX_BUILD_DIR)/.configured
+
+#
+# This builds the actual binary.
+#
+$(NGINX_BUILD_DIR)/.built: $(NGINX_BUILD_DIR)/.configured
+	rm -f $(NGINX_BUILD_DIR)/.built
+	$(MAKE) -C $(NGINX_BUILD_DIR)
+	touch $(NGINX_BUILD_DIR)/.built
+
+#
+# This is the build convenience target.
+#
+nginx: $(NGINX_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(NGINX_BUILD_DIR)/.staged: $(NGINX_BUILD_DIR)/.built
+	rm -f $(NGINX_BUILD_DIR)/.staged
+	$(MAKE) -C $(NGINX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $(NGINX_BUILD_DIR)/.staged
+
+nginx-stage: $(NGINX_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/nginx
+#
+$(NGINX_IPK_DIR)/CONTROL/control:
+	@install -d $(NGINX_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: nginx" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NGINX_PRIORITY)" >>$@
+	@echo "Section: $(NGINX_SECTION)" >>$@
+	@echo "Version: $(NGINX_VERSION)-$(NGINX_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NGINX_MAINTAINER)" >>$@
+	@echo "Source: $(NGINX_SITE)/$(NGINX_SOURCE)" >>$@
+	@echo "Description: $(NGINX_DESCRIPTION)" >>$@
+	@echo "Depends: $(NGINX_DEPENDS)" >>$@
+	@echo "Suggests: $(NGINX_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NGINX_CONFLICTS)" >>$@
+
+#
+# This builds the IPK file.
+#
+# Binaries should be installed into $(NGINX_IPK_DIR)/opt/sbin or $(NGINX_IPK_DIR)/opt/bin
+# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
+# Libraries and include files should be installed into $(NGINX_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(NGINX_IPK_DIR)/opt/etc/nginx/...
+# Documentation files should be installed in $(NGINX_IPK_DIR)/opt/doc/nginx/...
+# Daemon startup scripts should be installed in $(NGINX_IPK_DIR)/opt/etc/init.d/S??nginx
+#
+# You may need to patch your application to make it use these locations.
+#
+$(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
+	rm -rf $(NGINX_IPK_DIR) $(BUILD_DIR)/nginx_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
+	$(STRIP_COMMAND) $(NGINX_IPK_DIR)/opt/sbin/nginx
+	install -d $(NGINX_IPK_DIR)/opt/share/www/nginx
+	install $(NGINX_BUILD_DIR)/html/* $(NGINX_IPK_DIR)/opt/share/www/nginx/
+#	install -m 644 $(NGINX_SOURCE_DIR)/nginx.conf $(NGINX_IPK_DIR)/opt/etc/nginx.conf
+#	install -d $(NGINX_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/SXXnginx
+	$(MAKE) $(NGINX_IPK_DIR)/CONTROL/control
+#	install -m 755 $(NGINX_SOURCE_DIR)/postinst $(NGINX_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm
+	echo $(NGINX_CONFFILES) | sed -e 's/ /\n/g' > $(NGINX_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGINX_IPK_DIR)
+
+#
+# This is called from the top level makefile to create the IPK file.
+#
+nginx-ipk: $(NGINX_IPK)
+
+#
+# This is called from the top level makefile to clean all of the built files.
+#
+nginx-clean:
+	rm -f $(NGINX_BUILD_DIR)/.built
+	-$(MAKE) -C $(NGINX_BUILD_DIR) clean
+
+#
+# This is called from the top level makefile to clean all dynamically created
+# directories.
+#
+nginx-dirclean:
+	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR) $(NGINX_IPK_DIR) $(NGINX_IPK)
