@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PSYCOPG2_SITE=http://initd.org/pub/software/psycopg
-PY-PSYCOPG2_VERSION=2.0.2
+PY-PSYCOPG2_VERSION=2.0.5
 PY-PSYCOPG2_SOURCE=psycopg2-$(PY-PSYCOPG2_VERSION).tar.gz
 PY-PSYCOPG2_DIR=psycopg2-$(PY-PSYCOPG2_VERSION)
 PY-PSYCOPG2_UNZIP=zcat
@@ -75,7 +75,7 @@ PY-PSYCOPG2_IPK=$(BUILD_DIR)/py-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IP
 #
 $(DL_DIR)/$(PY-PSYCOPG2_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG2_SITE)/$(PY-PSYCOPG2_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG2_SITE)/PSYCOPG-2-1/$(PY-PSYCOPG2_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG2_SITE)/PSYCOPG-2-0/$(PY-PSYCOPG2_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
