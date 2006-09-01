@@ -42,7 +42,7 @@ fi
 /bin/echo -e "\t\$ vi /opt/etc/imapd.conf"
 /bin/echo
 /bin/echo and start saslauthd and the server
-/bin/echo -e "\t\$ /opt/etc/init.d/S52saslauthd
+/bin/echo -e "\t\$ /opt/etc/init.d/S52saslauthd"
 /bin/echo -e "\t\$ /opt/etc/init.d/S59cyrus-imapd"
 /bin/echo
  
