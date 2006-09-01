@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_TARBALL_VERSION=R11B-0
+ERLANG_TARBALL_VERSION=R11B-1
 ERLANG_VERSION=R11B0
 ERLANG_SOURCE=otp_src_$(ERLANG_TARBALL_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_TARBALL_VERSION)
