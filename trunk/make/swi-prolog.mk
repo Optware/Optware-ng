@@ -184,6 +184,9 @@ $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG
 	@echo "=============== target swi-prolog configure ============"
 	$(MAKE) libgmp-stage ncurses-stage openssl-stage readline-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
+ifeq ($(LIBC_STYLE), uclibc)
+	sed -i -e '/ac_pthread_cpuclocks=/s/yes/no/g' $(SWI-PROLOG_BUILD_DIR)/src/configure.in
+endif
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
 endif
 	(cd $(SWI-PROLOG_BUILD_DIR); \
