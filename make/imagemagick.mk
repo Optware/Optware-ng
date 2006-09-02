@@ -20,9 +20,9 @@
 # You should change all these variables to suit your package.
 #
 #http://$(SOURCEFORGE_MIRROR)/sourceforge/imagemagick/ImageMagick-6.1.7-5.tar.gz
-IMAGEMAGICK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/imagemagick
-IMAGEMAGICK_VERSION=6.1.7
-IMAGEMAGICK_REV=5
+IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
+IMAGEMAGICK_VERSION=6.2.9
+IMAGEMAGICK_REV=3
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
@@ -37,7 +37,7 @@ IMAGEMAGICK_CONFLICTS=
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=5
+IMAGEMAGICK_IPK_VERSION=1
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
@@ -49,7 +49,7 @@ IMAGEMAGICK_IPK_VERSION=5
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-IMAGEMAGICK_CPPFLAGS=-I$(STAGING_DIR)/opt/include
+IMAGEMAGICK_CPPFLAGS=
 IMAGEMAGICK_LDFLAGS=
 
 #
@@ -118,6 +118,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--with-tiff \
 		--without-gslib \
 	)
+	$(PATCH_LIBTOOL) $(IMAGEMAGICK_BUILD_DIR)/libtool
 	touch $(IMAGEMAGICK_BUILD_DIR)/.configured
 
 imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
@@ -189,21 +190,28 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/libltdl*
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*
-	$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.a
+	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+		-name '*.a' \
+		-exec rm -f {} \;
+	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+		-name '*.so' \
+		-exec chmod +w {} \; \
+		-exec $(STRIP_COMMAND) {} \; \
+		-exec chmod -w {} \;
+	for f in $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*; \
+		do \
+		exec chmod +w $$f; \
+		$(STRIP_COMMAND) $$f; \
+		exec chmod +w $$f; \
+		done
 	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
 	cp $(IMAGEMAGICK_BUILD_DIR)/magick/Magick-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
 	cp $(IMAGEMAGICK_BUILD_DIR)/wand/Wand-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/animate -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/animate
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/compare -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/compare
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/composite -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/composite
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/conjure -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/conjure
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/convert -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/convert
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/display -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/display
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/identify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/identify
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/import -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/import
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/mogrify -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/mogrify
-	$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/montage -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/montage
+	for f in `ls $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs`; \
+		do \
+		$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/$$f -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/$$f; \
+		$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/bin/$$f; \
+		done
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/www
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/images
 	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/man
