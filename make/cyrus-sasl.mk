@@ -16,11 +16,12 @@ CYRUS-SASL_PRIORITY=optional
 CYRUS-SASL_DEPENDS=
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=9
+CYRUS-SASL_IPK_VERSION=10
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
-CYRUS-SASL_PATCHES=$(CYRUS-SASL_SOURCE_DIR)/Makefile.in.patch
+CYRUS-SASL_PATCHES=$(CYRUS-SASL_SOURCE_DIR)/Makefile.in.patch \
+  $(CYRUS-SASL_SOURCE_DIR)/configure-powerpc.patch
 
 CYRUS-SASL_BUILD_DIR=$(BUILD_DIR)/cyrus-sasl
 CYRUS-SASL_SOURCE_DIR=$(SOURCE_DIR)/cyrus-sasl
@@ -58,7 +59,7 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 		--with-openssl="$(STAGING_PREFIX)" \
 		--enable-anon \
 		--enable-plain \
-		--disable-login \
+		--enable-login \
 		--disable-gssapi \
 		--disable-otp \
 		--disable-krb4 \
