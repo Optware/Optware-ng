@@ -124,3 +124,7 @@ ifmail    unix  -       n       n       -       -       pipe
   flags=F user=ftn argv=/opt/lib/ifmail/ifmail -r $nexthop ($recipient)
 bsmtp     unix  -       n       n       -       -       pipe
   flags=Fq. user=foo argv=/opt/sbin/bsmtp -f $sender $nexthop $recipient
+scache    unix  -       -       n       -       1       scache      
+discard   unix  -       -       n       -       -       discard
+tlsmgr    unix  -       -       n       1000?   1       tlsmgr
+
