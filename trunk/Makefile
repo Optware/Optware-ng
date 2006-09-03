@@ -314,7 +314,6 @@ DS101G_BROKEN_PACKAGES = \
 	ldconfig libvorbisidec lsof \
 	mod-python mtr ntop ntp \
 	qemu qemu-libc-i386 \
-	rsync \
 	ser \
 	bogofilter emacs xemacs hugs mzscheme ocaml \
 	rsnapshot \
