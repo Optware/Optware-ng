@@ -99,17 +99,13 @@ py-pyro-source: $(DL_DIR)/$(PY-PYRO_SOURCE) $(PY-PYRO_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-PYRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYRO_SOURCE) $(PY-PYRO_PATCHES)
-	$(MAKE) python-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-PYRO_DIR) $(PY-PYRO_BUILD_DIR)
 	$(PY-PYRO_UNZIP) $(DL_DIR)/$(PY-PYRO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-PYRO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PYRO_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-PYRO_DIR) $(PY-PYRO_BUILD_DIR)
 	(cd $(PY-PYRO_BUILD_DIR); \
 	    ( \
-		echo "[build_ext]"; \
-	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python"; \
 		echo "[install-options]"; \
@@ -129,7 +125,6 @@ py-pyro-unpack: $(PY-PYRO_BUILD_DIR)/.configured
 $(PY-PYRO_BUILD_DIR)/.built: $(PY-PYRO_BUILD_DIR)/.configured
 	rm -f $(PY-PYRO_BUILD_DIR)/.built
 	(cd $(PY-PYRO_BUILD_DIR); \
-	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    python2.4 setup.py build; \
 	)
 	touch $(PY-PYRO_BUILD_DIR)/.built
@@ -182,9 +177,10 @@ $(PY-PYRO_IPK_DIR)/CONTROL/control:
 $(PY-PYRO_IPK): $(PY-PYRO_BUILD_DIR)/.built
 	rm -rf $(PY-PYRO_IPK_DIR) $(BUILD_DIR)/py-pyro_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PYRO_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-PYRO_IPK_DIR) --prefix=/opt; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    python2.4 -c "import setuptools; execfile('setup.py')" \
+		install --root=$(PY-PYRO_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) $(PY-PYRO_IPK_DIR)/opt/lib/python2.4/site-packages/pyro/*.so
 	$(MAKE) $(PY-PYRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PYRO_IPK_DIR)
 
