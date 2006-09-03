@@ -36,15 +36,17 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION=1
+NGINX_IPK_VERSION=2
+
+NGINX_PREFIX=/opt/nginx
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
 NGINX_CONFFILES=\
-	/opt/etc/nginx/nginx.conf \
-	/opt/etc/nginx/mime.types \
-	/opt/share/www/nginx/index.html \
-	/opt/share/www/nginx/50x.html \
+	$(NGINX_PREFIX)/conf/nginx.conf \
+	$(NGINX_PREFIX)/conf/mime.types \
+	$(NGINX_PREFIX)/html/index.html \
+	$(NGINX_PREFIX)/html/50x.html \
 
 #
 # NGINX_PATCHES should list any patches, in the the order in
@@ -72,8 +74,6 @@ NGINX_BUILD_DIR=$(BUILD_DIR)/nginx
 NGINX_SOURCE_DIR=$(SOURCE_DIR)/nginx
 NGINX_IPK_DIR=$(BUILD_DIR)/nginx-$(NGINX_VERSION)-ipk
 NGINX_IPK=$(BUILD_DIR)/nginx_$(NGINX_VERSION)-$(NGINX_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-NGINX_VAR=/opt/var/nginx
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -128,14 +128,14 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 		--disable-static
 	(cd $(NGINX_BUILD_DIR); \
 	    ./configure \
-		--prefix=/opt \
-                --conf-path=/opt/etc/nginx/nginx.conf \
-                --error-log-path=$(NGINX_VAR)/log/error.log \
-                --pid-path=$(NGINX_VAR)/run/pid.txt \
-                --http-log-path=$(NGINX_VAR)/log/access.log \
-                --http-client-body-temp-path=$(NGINX_VAR)/tmp/client_body_temp \
-                --http-proxy-temp-path=$(NGINX_VAR)/tmp/proxy_temp \
-                --http-fastcgi-temp-path=$(NGINX_VAR)/tmp/fastcgi_temp \
+		--prefix=$(NGINX_PREFIX) \
+		--conf-path=conf/nginx.conf \
+		--error-log-path=logs/error.log \
+		--pid-path=/opt/var/run/nginx.pid \
+		--http-log-path=logs/access.log \
+		--http-client-body-temp-path=tmp/client_body_temp \
+		--http-proxy-temp-path=tmp/proxy_temp \
+		--http-fastcgi-temp-path=tmp/fastcgi_temp \
                 --with-cc=$(TARGET_CC) \
                 --with-cpp=$(TARGET_CPP) \
                 --with-cc-opt="$(STAGING_CPPFLAGS) $(NGINX_CPPFLAGS)" \
@@ -144,7 +144,6 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 		; \
             sed -i \
                 -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
-                -e '/opt\/html/d' \
                 objs/Makefile; \
 	)
 #	$(PATCH_LIBTOOL) $(NGINX_BUILD_DIR)/libtool
@@ -209,9 +208,17 @@ $(NGINX_IPK_DIR)/CONTROL/control:
 $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	rm -rf $(NGINX_IPK_DIR) $(BUILD_DIR)/nginx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
-	$(STRIP_COMMAND) $(NGINX_IPK_DIR)/opt/sbin/nginx
-	install -d $(NGINX_IPK_DIR)/opt/share/www/nginx
-	install $(NGINX_BUILD_DIR)/html/* $(NGINX_IPK_DIR)/opt/share/www/nginx/
+	$(STRIP_COMMAND) $(NGINX_IPK_DIR)$(NGINX_PREFIX)/sbin/nginx
+	install -d $(NGINX_IPK_DIR)/opt/sbin; \
+        	cd $(NGINX_IPK_DIR)/opt/sbin; \
+        	ln -s $(NGINX_PREFIX)/sbin/nginx .
+	install -d $(NGINX_IPK_DIR)/opt/share/www; \
+        	cd $(NGINX_IPK_DIR)/opt/share/www; \
+                ln -s $(NGINX_PREFIX)/html nginx
+	install -d $(NGINX_IPK_DIR)/opt/etc; \
+        	cd $(NGINX_IPK_DIR)/opt/etc; \
+                ln -s $(NGINX_PREFIX)/conf nginx
+	install -d $(NGINX_IPK_DIR)$(NGINX_PREFIX)/tmp
 #	install -m 644 $(NGINX_SOURCE_DIR)/nginx.conf $(NGINX_IPK_DIR)/opt/etc/nginx.conf
 #	install -d $(NGINX_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/SXXnginx
