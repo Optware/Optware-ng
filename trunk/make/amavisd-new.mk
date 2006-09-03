@@ -25,11 +25,11 @@ AMAVISD-NEW_CONFLICTS=
 #
 # AMAVISD-NEW_IPK_VERSION should be incremented when the ipk changes.
 #
-AMAVISD-NEW_IPK_VERSION=3
+AMAVISD-NEW_IPK_VERSION=4
 
 #
 # AMAVISD-NEW_CONFFILES should be a list of user-editable files
-AMAVISD-NEW_CONFFILES=/opt/etc/amavisd.conf /opt/etc/init.d/S79amavisd
+AMAVISD-NEW_CONFFILES=/opt/etc/amavisd.conf /opt/etc/init.d/S60amavisd
 
 #
 # AMAVISD-NEW_PATCHES should list any patches, in the the order in
