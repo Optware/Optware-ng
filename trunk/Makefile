@@ -311,7 +311,7 @@ DS101G_BROKEN_PACKAGES = \
 	eaccelerator \
 	flac freeradius \
 	ivorbis-tools \
-	ldconfig libvorbisidec lsof \
+	ldconfig libvorbisidec \
 	mod-python mtr ntop ntp \
 	qemu qemu-libc-i386 \
 	ser \
