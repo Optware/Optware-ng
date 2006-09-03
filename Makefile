@@ -313,7 +313,7 @@ DS101G_BROKEN_PACKAGES = \
 	flac freeradius \
 	gnutls \
 	ivorbis-tools \
-	ldconfig libgcrypt libvorbisidec lsof \
+	ldconfig libvorbisidec lsof \
 	mod-python mtr ntop ntp \
 	opencdk \
 	qemu qemu-libc-i386 \

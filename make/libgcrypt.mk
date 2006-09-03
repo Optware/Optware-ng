@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGCRYPT_SITE=http://ftp.gnupg.org/GnuPG/libgcrypt
-LIBGCRYPT_VERSION=1.2.2
+LIBGCRYPT_VERSION=1.2.3
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.gz
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_UNZIP=zcat
@@ -52,8 +52,9 @@ LIBGCRYPT_CONFFILES=#/opt/etc/libgcrypt.conf /opt/etc/init.d/SXXlibgcrypt
 # LIBGCRYPT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBGCRYPT_PATCHES= #$(LIBGCRYPT_SOURCE_DIR)/configure.patch
-
+ifeq ($(OPTWARE_TARGET),ds101g)
+LIBGCRYPT_PATCHES= $(LIBGCRYPT_SOURCE_DIR)/symbol-underscore.patch
+endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -108,12 +109,16 @@ $(LIBGCRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGCRYPT_SOURCE) $(LIBGCRYPT_PA
 	$(MAKE) libgpg-error-stage
 	rm -rf $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(LIBGCRYPT_BUILD_DIR)
 	$(LIBGCRYPT_UNZIP) $(DL_DIR)/$(LIBGCRYPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBGCRYPT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1
+	if test -n "$(LIBGCRYPT_PATCHES)" ; then \
+		cat $(LIBGCRYPT_PATCHES) | \
+        	 patch -d $(BUILD_DIR)/$(LIBGCRYPT_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(LIBGCRYPT_BUILD_DIR)
 	(cd $(LIBGCRYPT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGCRYPT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGCRYPT_LDFLAGS)" \
+		ac_cv_sys_symbol_underscore=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
