@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-  ipkg \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -303,6 +302,7 @@ DS101J_BROKEN_PACKAGES = \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = \
+  ipkg \
 
 # Packages that do not work for ds101g+.
 # elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
