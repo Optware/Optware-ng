@@ -28,7 +28,7 @@
 #ifneq ($(PY-PASTE_SVN_REV),)
 #PY-PASTE____VERSION=0.5dev_r4745
 #else
-PY-PASTE_VERSION=0.9.7
+PY-PASTE_VERSION=0.9.8
 PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
 PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).tar.gz
 #endif
