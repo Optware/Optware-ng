@@ -160,7 +160,7 @@ $(AMAVISD-NEW_IPK): $(AMAVISD-NEW_BUILD_DIR)/.built
 	install -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/db
 	install -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/virusmails
 
-	install -m 755 $(AMAVISD-NEW_SOURCE_DIR)/rc.amavisd $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d/S79amavisd
+	install -m 755 $(AMAVISD-NEW_SOURCE_DIR)/rc.amavisd $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d/S60amavisd
 	rm -rf $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
 	install -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
 	install -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/helper-prog
