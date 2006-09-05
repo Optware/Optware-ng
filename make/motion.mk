@@ -4,23 +4,6 @@
 #
 ###########################################################
 
-#
-# MOTION_VERSION, MOTION_SITE and MOTION_SOURCE define
-# the upstream location of the source code for the package.
-# MOTION_DIR is the directory which is created when the source
-# archive is unpacked.
-# MOTION_UNZIP is the command used to unzip the source.
-# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
-#
-# You should change all these variables to suit your package.
-# Please make sure that you add a description, and that you
-# list all your packages' dependencies, seperated by commas.
-# 
-# If you list yourself as MAINTAINER, please give a valid email
-# address, and indicate your irc nick if it cannot be easily deduced
-# from your name or email address.  If you leave MAINTAINER set to
-# "NSLU2 Linux" other developers will feel free to edit.
-#
 MOTION_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/motion
 MOTION_VERSION=3.2.6
 MOTION_SOURCE=motion-$(MOTION_VERSION).tar.gz
@@ -41,7 +24,7 @@ MOTION_CONFLICTS=
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=5
+MOTION_IPK_VERSION=6
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
@@ -57,7 +40,7 @@ MOTION_CONFFILES=/opt/etc/motion.conf /opt/etc/init.d/S99motion
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MOTION_CPPFLAGS=
+MOTION_CPPFLAGS=-DFFMPEG_AVWRITEFRAME_NEWAPI
 ifeq ($(OPTWARE_TARGET),ds101g)
 MOTION_LDFLAGS="-Wl,-rpath,/usr/syno/mysql/lib/mysql"
 else
@@ -92,24 +75,6 @@ $(DL_DIR)/$(MOTION_SOURCE):
 #
 motion-source: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES)
 
-#
-# This target unpacks the source code in the build directory.
-# If the source archive is not .tar.gz or .tar.bz2, then you will need
-# to change the commands here.  Patches to the source code are also
-# applied in this target as required.
-#
-# This target also configures the build within the build directory.
-# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
-# and NOT $(MAKE) below.  Passing it to configure causes configure to
-# correctly BUILD the Makefile with the right paths, where passing it
-# to Make causes it to override the default search paths of the compiler.
-#
-# If the compilation of the package requires other packages to be staged
-# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
-#
-# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
-# shown below to make various patches to it.
-#
 $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) make/motion.mk
 	$(MAKE) libjpeg-stage ffmpeg-stage mysql-stage
 	rm -rf $(BUILD_DIR)/$(MOTION_DIR) $(MOTION_BUILD_DIR)
@@ -134,6 +99,7 @@ $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) ma
 		--disable-static \
 		--with-mysql=$(STAGING_PREFIX) \
 		--without-pgsql \
+		--with-ffmpeg=$(STAGING_PREFIX) \
 	)
 #	$(PATCH_LIBTOOL) $(MOTION_BUILD_DIR)/libtool
 	touch $(MOTION_BUILD_DIR)/.configured
@@ -196,6 +162,7 @@ $(MOTION_IPK_DIR)/CONTROL/control:
 $(MOTION_IPK): $(MOTION_BUILD_DIR)/.built
 	rm -rf $(MOTION_IPK_DIR) $(BUILD_DIR)/motion_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOTION_BUILD_DIR) DESTDIR=$(MOTION_IPK_DIR) install
+	$(STRIP_COMMAND) $(MOTION_IPK_DIR)/opt/bin/motion
 	install -d $(MOTION_IPK_DIR)/opt/etc/
 	install -m 644 $(MOTION_SOURCE_DIR)/motion.conf $(MOTION_IPK_DIR)/opt/etc/motion.conf
 	install -d $(MOTION_IPK_DIR)/opt/etc/init.d
