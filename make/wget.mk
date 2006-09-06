@@ -93,6 +93,7 @@ $(DL_DIR)/$(WGET_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 wget-source: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
+wget-ssl-source: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -153,6 +154,7 @@ endif
 
 
 wget-unpack: $(WGET_BUILD_DIR)/.configured
+wget-ssl-unpack: $(WGET-SSL_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
