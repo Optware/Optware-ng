@@ -367,7 +367,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/os_mon-*/priv/bin/memsup \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/ssl-*/priv/bin/ssl_esock \
 	; do \
-		[ -f $$f ] && $(STRIP_COMMAND) $$f; \
+		[ -f $$f ] && $(STRIP_COMMAND) $$f || true; \
         done
 	for f in `find $(ERLANG_IPK_DIR)/opt/lib -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	# symlinks in /opt/bin
