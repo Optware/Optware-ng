@@ -1,0 +1,11 @@
+--- erlang/lib/ssl/c_src/Makefile.in.orig	2006-09-06 08:59:55.000000000 -0700
++++ erlang/lib/ssl/c_src/Makefile.in	2006-09-06 09:00:41.000000000 -0700
+@@ -115,7 +115,7 @@
+ ifeq ($(strip $(CC_R_FLAG)),)
+ CC_R_OPT =
+ else
+-CC_R_OPT = $(CC_R_FLAG)$(SSL_LIBDIR)
++CC_R_OPT = $(CC_R_FLAG)/opt/lib
+ endif
+ 
+ 

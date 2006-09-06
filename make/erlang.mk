@@ -41,7 +41,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -56,7 +56,8 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
-	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
+	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
+
 else
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
@@ -64,7 +65,10 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
-	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
+	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch \
+
 endif
 
 ifeq ($(ERLANG_WITH_SAE), yes)
@@ -343,23 +347,27 @@ endif
   endif
 	# strip binaries
 	for f in \
-		"lib/erlang/bin/erlc" \
-		"lib/erlang/bin/run_erl" \
-		"lib/erlang/bin/to_erl" \
-		"lib/erlang/bin/dialyzer" \
-		"lib/erlang/erts-*/bin/beam*" \
-		"lib/erlang/erts-*/bin/child_setup*" \
-		"lib/erlang/erts-*/bin/epmd" \
-		"lib/erlang/erts-*/bin/erlc" \
-		"lib/erlang/erts-*/bin/erlexec" \
-		"lib/erlang/erts-*/bin/heart" \
-		"lib/erlang/erts-*/bin/inet_gethost" \
-		"lib/erlang/erts-*/bin/run_erl" \
-		"lib/erlang/erts-*/bin/to_erl" \
-		"lib/erlang/erts-*/bin/dialyzer" \
-		"lib/erlang/lib/tools-*/bin/emem" \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/erlc \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/run_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/to_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/dialyzer \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/beam* \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/child_setup* \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/epmd \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlc \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlexec \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/heart \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/inet_gethost \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/run_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/to_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/dialyzer \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/tools-*/bin/emem \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/erl_interface-*/bin/erl_call \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/orber-*/priv/bin/obj_init_port \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/os_mon-*/priv/bin/memsup \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/ssl-*/priv/bin/ssl_esock \
 	; do \
-		$(STRIP_COMMAND) $(ERLANG_IPK_DIR)/opt/$$f; \
+		[ -f $$f ] && $(STRIP_COMMAND) $$f; \
         done
 	for f in `find $(ERLANG_IPK_DIR)/opt/lib -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	# symlinks in /opt/bin

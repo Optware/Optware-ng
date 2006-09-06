@@ -1,0 +1,16 @@
+--- erlang/lib/erl_interface/src/Makefile.in.orig	2006-08-29 02:47:48.000000000 -0700
++++ erlang/lib/erl_interface/src/Makefile.in	2006-09-06 12:58:07.000000000 -0700
+@@ -709,11 +709,11 @@
+ ifdef THR_DEFS
+ $(ERL_CALL): $(ERLCALL) ../include/ei.h $(MT_EILIB)
+ 	$(PURIFY) $(CC) $(PROG_CFLAGS) $(THR_DEFS) -o $@ $(ERLCALL) \
+-		-L$(OBJDIR) -lei $(THR_LIBS) $(LIBS)
++		-L$(OBJDIR) -lei $(THR_LIBS) $(LIBS) $(LDFLAGS)
+ else
+ $(ERL_CALL): $(ERLCALL) ../include/ei.h $(ST_EILIB)
+ 	$(PURIFY) $(CC) $(PROG_CFLAGS) -o $@ $(ERLCALL) \
+-		-L$(OBJDIR) -lei $(LIBS)
++		-L$(OBJDIR) -lei $(LIBS) $(LDFLAGS)
+ endif
+ endif
+ endif
