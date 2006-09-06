@@ -163,6 +163,7 @@ PERL_PACKAGES = \
 	perl-unix-syslog \
 	perl-uri \
 	perl-version \
+	perl-wakeonlan \
 	amavisd-new \
 	spamassassin \
 
