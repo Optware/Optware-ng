@@ -35,13 +35,14 @@ ERLANG_DEPENDS=ncurses openssl
 ERLANG_SUGGESTS=
 ERLANG_CONFLICTS=
 
-ERLANG_MAKE_OPTION="OTP_SMALL_BUILD=true"
+ERLANG_MAKE_OPTION=
+#"OTP_SMALL_BUILD=true"
 ERLANG_WITH_SAE=no
 
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=3
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -93,8 +94,12 @@ ERLANG_LDFLAGS=
 #
 ERLANG_BUILD_DIR=$(BUILD_DIR)/erlang
 ERLANG_SOURCE_DIR=$(SOURCE_DIR)/erlang
+
 ERLANG_IPK_DIR=$(BUILD_DIR)/erlang-$(ERLANG_VERSION)-ipk
 ERLANG_IPK=$(BUILD_DIR)/erlang_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ERLANG-LIBS_IPK_DIR=$(BUILD_DIR)/erlang-libs_$(ERLANG_VERSION)-ipk
+ERLANG-LIBS_IPK=$(BUILD_DIR)/erlang-libs_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -196,6 +201,9 @@ else
 		--disable-smp-support \
                 --disable-hipe \
 		--disable-nls \
+		; \
+	    sed -i -e 's|$$(ERL_TOP)/bin/dialyzer|$(ERLANG_BUILD_DIR)-host/opt/bin/dialyzer|' \
+		$(ERLANG_BUILD_DIR)/lib/*/src/Makefile; \
 	)
 endif
 	touch $(ERLANG_BUILD_DIR)/.configured
@@ -227,7 +235,7 @@ else
 	# build host erlang
 	CPPFLAGS="-I$(ERLANG_BUILD_DIR)-host/termcap" \
 	LDFLAGS="-L$(ERLANG_BUILD_DIR)-host/termcap" \
-	$(MAKE) -C $(ERLANG_BUILD_DIR)-host OTP_SMALL_BUILD=true
+	$(MAKE) -C $(ERLANG_BUILD_DIR)-host $(ERLANG_MAKE_OPTION)
   ifeq ($(ERLANG_WITH_SAE), yes)
 	# build host SAE (StandAlone Erlang)
 	ERL_TOP=$(ERLANG_BUILD_DIR)-host \
@@ -288,6 +296,21 @@ $(ERLANG_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(ERLANG_SUGGESTS)" >>$@
 	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
 
+$(ERLANG-LIBS_IPK_DIR)/CONTROL/control:
+	@install -d $(ERLANG-LIBS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: erlang-libs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ERLANG_PRIORITY)" >>$@
+	@echo "Section: $(ERLANG_SECTION)" >>$@
+	@echo "Version: $(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ERLANG_MAINTAINER)" >>$@
+	@echo "Source: $(ERLANG_SITE)/$(ERLANG_SOURCE)" >>$@
+	@echo "Description: full libs for erlang" >>$@
+	@echo "Depends: erlang" >>$@
+	@echo "Suggests: $(ERLANG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -302,6 +325,9 @@ $(ERLANG_IPK_DIR)/CONTROL/control:
 #
 $(ERLANG_IPK): $(ERLANG_BUILD_DIR)/.built
 	rm -rf $(ERLANG_IPK_DIR) $(BUILD_DIR)/erlang_*_$(TARGET_ARCH).ipk
+	rm -rf $(ERLANG-LIBS_IPK_DIR) $(BUILD_DIR)/erlang-libs_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(ERLANG_BUILD_DIR)-host \
+		INSTALL_PREFIX=$(ERLANG_BUILD_DIR)-host $(ERLANG_MAKE_OPTION) install
 	install -d $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
 ifeq ($(HOSTCC), $(TARGET_CC))
 	TARGET=$(GNU_TARGET_NAME)-gnu \
@@ -329,6 +355,10 @@ else
 	for f in erl start; do \
         	sed -i -e 's:ROOTDIR=.*:ROOTDIR=/opt/lib/erlang:' $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/$$f; \
         done
+	if test -z "$(ERLANG_MAKE_OPTION)" ; then \
+		cp -rp $(ERLANG_BUILD_DIR)-host/opt/lib/erlang/lib/dialyzer-*/{ebin,plt} \
+		       $(ERLANG_IPK_DIR)/opt/lib/erlang/lib/dialyzer-*/ ; \
+	fi
 endif
   ifeq ($(ERLANG_WITH_SAE), yes)
 	# SAE related scripts
@@ -381,10 +411,16 @@ endif
         	ln -s ../lib/erlang/bin/$$f .; \
         done
   endif
+
+	install -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib
+	for d in `ls $(ERLANG_IPK_DIR)/opt/lib/erlang/lib | egrep -v '^compiler-|^kernel-|^sasl-|^stdlib-|^tools-'`; \
+		do mv $(ERLANG_IPK_DIR)/opt/lib/erlang/lib/$$d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib; done
+
 	$(MAKE) $(ERLANG_IPK_DIR)/CONTROL/control
-	#install -m 755 $(ERLANG_SOURCE_DIR)/postinst $(ERLANG_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(ERLANG_SOURCE_DIR)/prerm $(ERLANG_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG_IPK_DIR)
+
+	$(MAKE) $(ERLANG-LIBS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-LIBS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -402,4 +438,6 @@ erlang-clean:
 # directories.
 #
 erlang-dirclean:
-	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR) $(ERLANG_BUILD_DIR)-host $(ERLANG_IPK_DIR) $(ERLANG_IPK)
+	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR) $(ERLANG_BUILD_DIR)-host \
+		$(ERLANG_IPK_DIR) $(ERLANG_IPK) \
+		$(ERLANG-LIBS_IPK_DIR) $(ERLANG-LIBS_IPK)
