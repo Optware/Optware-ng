@@ -3,32 +3,43 @@ http://www.rahul.net/dholmes/ctorrent/ctcs.html.  It will be much
 easier to read the sample display tables there than below.
 ______________________________________________________________________
 
-
                           CTorrent Control Server
 
    CTorrent Control Server (CTCS) is an interface for monitoring and
-   managing Enhanced CTorrent clients. It can manage allocation of
+   managing [1]Enhanced CTorrent clients. It can manage allocation of
    bandwidth, provide status information, and allow changes to the
    running configuration of each client. Communication with CTorrent is
    via a TCP connection, and the user interface is a web browser.
 
-   The current version is implemented in [1]Perl since that was used to
+   The current version is implemented in [2]Perl since that was used to
    develop the original prototype. It may be reimplemented in C at some
    later date, but the perl version is fully functional.
 
   Contents
 
-     * [2]Download
-     * [3]Usage
-     * [4]All Torrents screen
-     * [5]Torrent Details screen
-     * [6]Advanced Limits screen
-     * [7]Protocol (coming soon)
+     * [3]Download
+     * [4]Usage
+     * [5]All Torrents screen
+     * [6]Torrent Details screen
+     * [7]Advanced Limits screen
+     * [8]Protocol
      _________________________________________________________________
 
    Download
 
-   [8]ctcs-1.0.tar.gz: CTCS version 1.0
+   [9]ctcs-1.1.tar.gz: CTCS version 1.1. List of changes:
+     * Use "\r\n" as newline.
+     * Added a few client ID strings.
+     * Fixed data sending (user interaction) on Linux.
+     * Fixed error when all upload or download limits are zero.
+
+   [10]ctcs-1.0a.tar.gz: CTCS version 1.0a
+
+   [11]ctcs-1.0a.diff: Patch file for 1.0
+   There was a minor bug in the original release that prevented the
+   Messages feature from working (messages were discarded). If you
+   previously downloaded version 1.0, please apply this small patch to
+   enable the feature.
      _________________________________________________________________
 
    Usage
@@ -96,7 +107,7 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
              Current UL = 34 K/s      UL Limit: ____K/s
                                  Change interval: ___sec
 
-                             [9]Advanced Limits
+                            [12]Advanced Limits
                     ___________________________________
 
    The current aggregate download and upload rates are shown at the left
@@ -114,15 +125,15 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
    running.
                     ___________________________________
 
-   [10]Show peers
+   [13]Show peers
 
    Torrent Start Time
    Seed Leech Complete DL Rate UL Rate DL Total UL Total Limit D/U
-   [11]Example 1.torrent Tue Jan 3 21:24:27 2006
+   [14]Example 1.torrent Tue Jan 3 21:24:27 2006
    S: 0 L: 7 100% D= 0 B/s U= 11 K/s D= 393 M U= 1111 M 0 / 11 K/s
-   [12]Example 2.torrent Tue Jan 3 20:24:06 2006
+   [15]Example 2.torrent Tue Jan 3 20:24:06 2006
    S: 0 L: 44 100% D= 0 B/s U= 12 K/s D= 380 M U= 972 M 0 / 12 K/s
-   [13]Example 3.torrent Wed Jan 4 22:13:55 2006
+   [16]Example 3.torrent Wed Jan 4 22:13:55 2006
    S: 1 L: 1 20% (100% Avail) D= 7372 B/s U= 12 K/s D= 188 M U= 254 M 100
    / 12 K/s
                     ___________________________________
@@ -294,7 +305,7 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
 
    Torrent                                                       Start Time
    Seed Leech Complete  DL Rate     UL Rate DL Total  UL Total     Limit D/U
-   [14]Example 1.torrent                            Tue Jan 3 21:24:27 2006
+   [17]Example 1.torrent                            Tue Jan 3 21:24:27 2006
    S: 0 L: 8  100%     D= 0 B/s   U= 15 K/s D= 393 M U= 1113 M    0 / 17 K/s
    -BC0060-0x1B5809A843282B5EE23CEC0F       00.131.203.0       BitComet 0060
     Cn   Ci        77% D= 0 B/s    U= 0 B/s   D= 0 B     U= 0 B
@@ -377,17 +388,20 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
 
 References
 
-   1. http://www.perl.org/
-   2. http://www.rahul.net/dholmes/ctorrent/ctcs.html#download
-   3. http://www.rahul.net/dholmes/ctorrent/ctcs.html#usage
-   4. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alltorrents
-   5. http://www.rahul.net/dholmes/ctorrent/ctcs.html#details
-   6. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alimits
-   7. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
-   8. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0.tar.gz
-   9. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/alimits
-  10. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/peers
-  11. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-%7B0xD529E46881CF5DD4E37DF6
-  12. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-P0xE9C43CD51BA8C5B319601A
-  13. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-0xCCEFB5B7D53349B364737755
+   1. http://www.rahul.net/dholmes/ctorrent/
+   2. http://www.perl.org/
+   3. http://www.rahul.net/dholmes/ctorrent/ctcs.html#download
+   4. http://www.rahul.net/dholmes/ctorrent/ctcs.html#usage
+   5. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alltorrents
+   6. http://www.rahul.net/dholmes/ctorrent/ctcs.html#details
+   7. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alimits
+   8. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
+   9. http://www.rahul.net/dholmes/ctorrent/ctcs-1.1.tar.gz
+  10. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0a.tar.gz
+  11. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0a.diff
+  12. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/alimits
+  13. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/peers
   14. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-%7B0xD529E46881CF5DD4E37DF6
+  15. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-P0xE9C43CD51BA8C5B319601A
+  16. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-0xCCEFB5B7D53349B364737755
+  17. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-%7B0xD529E46881CF5DD4E37DF6

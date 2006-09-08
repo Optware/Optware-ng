@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CTCS_SITE=http://www.rahul.net/dholmes/ctorrent
-CTCS_VERSION=1.0a
+CTCS_VERSION=1.1
 CTCS_SOURCE=ctcs-$(CTCS_VERSION).tar.gz
 CTCS_DIR=ctcs-$(CTCS_VERSION)
 CTCS_UNZIP=zcat
@@ -27,7 +27,7 @@ CTCS_CONFLICTS=
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=4
+CTCS_IPK_VERSION=5
 
 #
 # CTCS_CONFFILES should be a list of user-editable files
