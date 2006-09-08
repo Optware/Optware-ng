@@ -100,7 +100,7 @@ COMMON_CROSS_PACKAGES = \
 	py-paste py-pastedeploy py-pastescript py-pil py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql py-pyro py-quixote \
 	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
-	py-scgi py-serial py-setuptools py-simplejson py-simpy py-soappy \
+	py-scgi py-selector py-serial py-setuptools py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
 	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-yaml py-xml py-zope-interface \
