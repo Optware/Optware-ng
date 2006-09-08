@@ -1,7 +1,7 @@
 diff -u ctcs.old/ctcs ctcs/ctcs
---- ctcs.old/ctcs	2006-01-28 04:11:46.000000000 -0200
-+++ ctcs/ctcs	2006-08-11 10:37:11.000000000 -0300
-@@ -99,8 +99,6 @@
+--- ctcs.old/ctcs	2006-09-03 20:21:16.000000000 -0300
++++ ctcs/ctcs	2006-09-08 12:42:54.000000000 -0300
+@@ -102,8 +102,6 @@
  }
  
  socket(Server, PF_INET, SOCK_STREAM, $proto)	|| die "socket: $!";
@@ -10,30 +10,3 @@ diff -u ctcs.old/ctcs ctcs/ctcs
  bind(Server, sockaddr_in($port, INADDR_ANY))	|| die "bind: $!";
  listen(Server,SOMAXCONN) 				|| die "listen: $!";
  
-@@ -286,7 +284,7 @@
- 				} while(defined($_ = &getline($client)));
- 			} else {
- 				# peer disconnected
--				close $cfh{$client};
-+				shutdown ($cfh{$client}, 1);
- 				delete $cfh{$client};
- 				delete $clients2{$client};
- 				if (defined $torrents{$client}) {
-@@ -334,7 +332,7 @@
- 	$client = *Client{IO};
- 
- 	($port,$iaddr) = sockaddr_in($paddr);
--	$name = gethostbyaddr($iaddr,AF_INET);
-+	$name = gethostbyaddr($iaddr,AF_INET) || inet_ntoa($iaddr);
- 
- 	&logmsg("connection from $name [", inet_ntoa($iaddr), "] at port $port");
- 
-@@ -1059,7 +1057,7 @@
- status.
- EOF
- 	}
--	close $cfh{$client};
-+	shutdown ($cfh{$client}, 1);
- 	delete $cfh{$client};
- 	delete $ctsentone{$client};
- 	delete $htclients{$client};
