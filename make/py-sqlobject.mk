@@ -28,7 +28,7 @@ PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
 #PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-PY-SQLOBJECT_VERSION=0.7.1b1
+PY-SQLOBJECT_VERSION=0.7.1rc1
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
@@ -41,7 +41,7 @@ PY-SQLOBJECT_DEPENDS=python, py-formencode
 PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-PY-SQLOBJECT_IPK_VERSION=2
+PY-SQLOBJECT_IPK_VERSION=1
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
