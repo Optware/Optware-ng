@@ -21,8 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOJSON_VERSION=0.9.3
-PY-TURBOJSON_SOURCE=$(PY-TURBOGEARS_SOURCE)
+PY-TURBOJSON_VERSION=0.9.9
+PY-TURBOJSON_SVN_TAG=$(PY-TURBOJSON_VERSION)
+PY-TURBOJSON_REPOSITORY=http://www.turbogears.org/svn/turbogears/projects/TurboJson/tags/$(PY-TURBOJSON_SVN_TAG)
 PY-TURBOJSON_DIR=TurboJson-$(PY-TURBOJSON_VERSION)
 PY-TURBOJSON_UNZIP=zcat
 PY-TURBOJSON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -35,7 +36,7 @@ PY-TURBOJSON_CONFLICTS=
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=3
+PY-TURBOJSON_IPK_VERSION=1
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
@@ -72,15 +73,17 @@ PY-TURBOJSON_IPK=$(BUILD_DIR)/py-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSO
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(PY-TURBOJSON_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(PY-TURBOJSON_SITE)/$(PY-TURBOJSON_SOURCE)
+ifeq ($(PY-TURBOJSON_SVN_TAG),)
+$(DL_DIR)/$(PY-TURBOJSON_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PY-TURBOJSON_SITE)/$(PY-TURBOJSON_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-turbojson-source: $(DL_DIR)/$(PY-TURBOJSON_SOURCE) $(PY-TURBOJSON_PATCHES)
+py-turbojson-source: $(PY-TURBOJSON_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -98,13 +101,18 @@ py-turbojson-source: $(DL_DIR)/$(PY-TURBOJSON_SOURCE) $(PY-TURBOJSON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-TURBOJSON_BUILD_DIR)/.configured: $(PY-TURBOJSON_PATCHES) make/py-turbojson.mk
-	$(MAKE) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) py-setuptools-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)
-	mkdir $(BUILD_DIR)/$(PY-TURBOJSON_DIR)
-	$(PY-TURBOJSON_UNZIP) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/json
+ifeq ($(PY-TURBOJSON_SVN_TAG),)
+	$(PY-TURBOJSON_UNZIP) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q $(PY-TURBOJSON_REPOSITORY) $(PY-TURBOJSON_DIR); \
+	)
+endif
 #	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)
-	(cd $(PY-TURBOJSON_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/kid; \
+	(cd $(PY-TURBOJSON_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python") >> setup.cfg \
 	)
@@ -167,7 +175,7 @@ $(PY-TURBOJSON_IPK_DIR)/CONTROL/control:
 #
 $(PY-TURBOJSON_IPK): $(PY-TURBOJSON_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py-turbojson_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOJSON_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/json; \
+	(cd $(PY-TURBOJSON_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-TURBOJSON_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TURBOJSON_IPK_DIR)/CONTROL/control
