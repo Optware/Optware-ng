@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYGHTY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/myghty
-PY-MYGHTY_VERSION=1.0.2
+PY-MYGHTY_VERSION=1.1
 PY-MYGHTY_SOURCE=Myghty-$(PY-MYGHTY_VERSION).tar.gz
 PY-MYGHTY_DIR=Myghty-$(PY-MYGHTY_VERSION)
 PY-MYGHTY_UNZIP=zcat
