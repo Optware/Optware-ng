@@ -42,7 +42,7 @@ ASTERISK_CONFLICTS=
 #
 # ASTERISK_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK_IPK_VERSION=1
+ASTERISK_IPK_VERSION=2
 
 #
 # ASTERISK_CONFFILES should be a list of user-editable files
@@ -56,7 +56,8 @@ ASTERISK_PATCHES=$(ASTERISK_SOURCE_DIR)/Makefile.patch \
 		$(ASTERISK_SOURCE_DIR)/editline.makelist.patch \
 		$(ASTERISK_SOURCE_DIR)/codecs.gsm.Makefile.patch \
 		$(ASTERISK_SOURCE_DIR)/asterisk.c.patch \
-		$(ASTERISK_SOURCE_DIR)/asterisk-1.2.10-dns.patch
+		$(ASTERISK_SOURCE_DIR)/asterisk-1.2.10-dns.patch \
+		$(ASTERISK_SOURCE_DIR)/chan_modem.patch
 
 #		http://bugs.digium.com/view.php?id=5549
 
