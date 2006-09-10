@@ -4,7 +4,7 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
 
 IPKG_WEB_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 IPKG_WEB_DESCRIPTION=A web frontend for ipkg
@@ -17,7 +17,7 @@ IPKG_WEB_CONFLICTS=
 #
 # IPKG_WEB_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_WEB_IPK_VERSION=4
+IPKG_WEB_IPK_VERSION=5
 #
 # There is no external version!
 #
