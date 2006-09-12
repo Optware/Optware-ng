@@ -8,8 +8,8 @@
    Overview
 
    [8]CTorrent is a [9]BitTorrent client implemented in C++ to be
-   lightweight and quick. It has fallen a little behind in updates and
-   bug fixes though.
+   lightweight and quick. The original has fallen a little behind in
+   updates and bug fixes though.
 
    The files here contain the good work of those who wrote the original
    CTorrent base code and a number of patches that provide fixes and
@@ -54,9 +54,9 @@
    D: Total number of peers in the swarm, as last reported by the
    tracker.
    E: Number of pieces of the torrent that you have completed.
-   F: Number of pieces currently available from you and your connected
+   F: Total number of pieces in the torrent.
+   G: Number of pieces currently available from you and your connected
    peers.
-   G: Total number of pieces in the torrent.
    H: Total amount of data you have downloaded.
    I: Total amount of data you have uploaded.
    J: Your current total download rate.
@@ -89,33 +89,71 @@
 
    News
 
+   2006-09-03
+          Version dnh2.1 is [12]released, along with [13]CTCS 1.1. Both
+          updates fix issues when using CTCS on Linux, among other
+          things.
+
+   2006-04-26
+          The [14]CTCS protocol is finally documented.
+
+   2006-04-25
+          A [15]patch is available to fix a bug in my solution for the
+          vfat filesystem issue. This bug can cause the client to crash
+          when creating a file on any filesystem type; the patch is
+          recommended for all users.
+
    2006-01-15
           Version dnh2 is released! This version includes a number of
-          significant [12]changes, including large file support, piece
+          significant [16]changes, including large file support, piece
           selection, tuned request queue depth, and support for
-          [13]CTorrent Control Server.
+          [17]CTorrent Control Server.
      _________________________________________________________________
 
    Changes
 
    For a list of changes in the current and previous versions, see the
-   [14]ChangeLog file.
+   [18]ChangeLog file.
      _________________________________________________________________
 
    Download
 
-   Release dnh2
-   The patch files for this version are significantly larger
-   than in previous releases. It will be faster and easier to just
-   download the patched source distribution below.
+   Release dnh2.1
 
-   [15]dnh1.2 to dnh2 patch file
+   [19]dnh2 to dnh2.1 patch file
+   A patch file of changes to release dnh2 to bring it up to dnh2.1.
+
+   [20]Source distribution
+   A complete source distribution for all platforms.
+                    ___________________________________
+
+   Patch for vfat bug
+
+   [21]btfiles patch
+   This fixes a coding bug in my solution for the vfat filesystem issue.
+   This bug can cause the client to crash when creating a file on any
+   filesystem type; the patch is recommended for all users of release
+   dnh2.
+
+   To apply the patch, download the file into the ctorrent source
+   directory and run the command:
+     patch < patch-btfiles.cpp.diff
+
+   in that directory. Then recompile the program.
+                    ___________________________________
+
+   Release dnh2
+   The patch files for this version are significantly larger than in
+   previous releases. It will be faster and easier to just download the
+   patched source distribution below.
+
+   [22]dnh1.2 to dnh2 patch file
    A patch file of changes to release dnh1.2 to bring it up to dnh2.
 
-   [16]Patch file
+   [23]Patch file
    A patch file of changes to the CTorrent 1.3.4 base.
 
-   [17]Patched source
+   [24]Patched source
    A complete source distribution for all platforms.
                     ___________________________________
 
@@ -124,46 +162,12 @@
    want to try the FreeBSD patch/version even if you are not using
    FreeBSD.
 
-   [18]dnh1.1 to dnh1.2 patch file
+   [25]dnh1.1 to dnh1.2 patch file
    A patch file of changes to release dnh1.1 to bring it up to dnh1.2.
-
-   [19]FreeBSD patch file
-   A patch file of changes to the CTorrent 1.3.4 base, including the
-   patches from the FreeBSD ports tree.
-
-   [20]Patch file
-   A patch file of changes to the CTorrent 1.3.4 base.
-
-   [21]FreeBSD patched source
-   This includes the patches from the FreeBSD ports tree.
-
-   [22]Linux/Windows/Other patched source
-   Please [23]let me know if you encounter any portability issues, as I
-   don't have a test environment set up for these platforms.
-                    ___________________________________
-
-   Bitfield::Invert patch
-
-   [24]Bitfield::Invert patch
-   See notes in the change log; this is needed if you are using dnh1.1,
-   dnh1, or ctorrent-1.3.4.
-                    ___________________________________
-
-   Release dnh1.1
-
-   [25]dnh1 to dnh1.1 patch file
-   A patch file of changes to release dnh1 to bring it up to dnh1.1.
-                    ___________________________________
-
-   Release dnh1
 
    [26]FreeBSD patch file
    A patch file of changes to the CTorrent 1.3.4 base, including the
    patches from the FreeBSD ports tree.
-   Note: Thanks to Florent Thoumie, as of 29 Jul 2005 this patchset is
-   included in the FreeBSD port. If you update your ports tree (or at
-   least net/ctorrent) and install from there, you will have these
-   updates without downloading the file and patching manually.
 
    [27]Patch file
    A patch file of changes to the CTorrent 1.3.4 base.
@@ -174,29 +178,63 @@
    [29]Linux/Windows/Other patched source
    Please [30]let me know if you encounter any portability issues, as I
    don't have a test environment set up for these platforms.
+                    ___________________________________
+
+   Bitfield::Invert patch
+
+   [31]Bitfield::Invert patch
+   See notes in the change log; this is needed if you are using dnh1.1,
+   dnh1, or ctorrent-1.3.4.
+                    ___________________________________
+
+   Release dnh1.1
+
+   [32]dnh1 to dnh1.1 patch file
+   A patch file of changes to release dnh1 to bring it up to dnh1.1.
+                    ___________________________________
+
+   Release dnh1
+
+   [33]FreeBSD patch file
+   A patch file of changes to the CTorrent 1.3.4 base, including the
+   patches from the FreeBSD ports tree.
+   Note: Thanks to Florent Thoumie, as of 29 Jul 2005 this patchset is
+   included in the FreeBSD port. If you update your ports tree (or at
+   least net/ctorrent) and install from there, you will have these
+   updates without downloading the file and patching manually.
+
+   [34]Patch file
+   A patch file of changes to the CTorrent 1.3.4 base.
+
+   [35]FreeBSD patched source
+   This includes the patches from the FreeBSD ports tree.
+
+   [36]Linux/Windows/Other patched source
+   Please [37]let me know if you encounter any portability issues, as I
+   don't have a test environment set up for these platforms.
      _________________________________________________________________
 
    Resources
 
-   [31]CTorrent Home Page 
+   [38]CTorrent Home Page 
    Outdated, but you may find some useful info (particularly the FAQ).
 
-   [32]CTorrent SourceForge Project 
-   Hosts the CTorrent codebase, bug reports, patches, and forum.
+   [39]CTorrent SourceForge Project 
+   Hosts the original CTorrent codebase, bug reports, patches, and forum.
 
-   [33]Custom CTorrent 
+   [40]Custom CTorrent 
    A page by the author of the "get1file" patch and other fixes. It
    contains a custom version and a GUI for CTorrent.
 
-   [34]BitTorrent 
+   [41]BitTorrent 
    The official BitTorrent home page.
 
-   [35]BitTorrent wiki 
+   [42]BitTorrent wiki 
    Various documentation.
 
-   [36]BitTorrent protocol specification (official version)
+   [43]BitTorrent protocol specification (official version)
 
-   [37]BitTorrent protocol specification (wiki version)
+   [44]BitTorrent protocol specification (wiki version)
 
 References
 
@@ -211,29 +249,36 @@ References
    9. http://www.bittorrent.com/
   10. http://sourceforge.net/projects/ctorrent/
   11. http://www.rahul.net/dholmes/ctorrent/ctcs.html
-  12. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  12. http://www.rahul.net/dholmes/ctorrent/index.html#download
   13. http://www.rahul.net/dholmes/ctorrent/ctcs.html
-  14. http://www.rahul.net/dholmes/ctorrent/changelog.html
-  15. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1.2-dnh2.diff
-  16. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh2.diff
-  17. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.tar.gz
-  18. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1.1-dnh1.2.diff
-  19. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1.2-fbsd.diff
-  20. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1.2.diff
-  21. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1.2-fbsd.tar.gz
-  22. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1.2.tar.gz
-  23. mailto:dholmes@ct.boxmail.com
-  24. http://www.rahul.net/dholmes/ctorrent/patch-invert.diff
-  25. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1-dnh1.1.diff
-  26. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1-fbsd.diff
-  27. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1.diff
-  28. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1-fbsd.tar.gz
-  29. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1.tar.gz
+  14. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
+  15. http://www.rahul.net/dholmes/ctorrent/index.html#download
+  16. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  17. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  18. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  19. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh2-dnh2.1.diff
+  20. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.1.tar.gz
+  21. http://www.rahul.net/dholmes/ctorrent/patch-btfiles.cpp.diff
+  22. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1.2-dnh2.diff
+  23. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh2.diff
+  24. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.tar.gz
+  25. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1.1-dnh1.2.diff
+  26. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1.2-fbsd.diff
+  27. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1.2.diff
+  28. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1.2-fbsd.tar.gz
+  29. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1.2.tar.gz
   30. mailto:dholmes@ct.boxmail.com
-  31. http://ctorrent.sourceforge.net/
-  32. http://sourceforge.net/projects/ctorrent/
-  33. http://customctorrent.ifreepages.com/
-  34. http://bittorrent.com/
-  35. http://wiki.theory.org/CategoryBitTorrent
-  36. http://www.bittorrent.com/protocol.html
-  37. http://wiki.theory.org/BitTorrentSpecification
+  31. http://www.rahul.net/dholmes/ctorrent/patch-invert.diff
+  32. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1-dnh1.1.diff
+  33. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1-fbsd.diff
+  34. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh1.diff
+  35. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1-fbsd.tar.gz
+  36. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh1.tar.gz
+  37. mailto:dholmes@ct.boxmail.com
+  38. http://ctorrent.sourceforge.net/
+  39. http://sourceforge.net/projects/ctorrent/
+  40. http://customctorrent.ifreepages.com/
+  41. http://bittorrent.com/
+  42. http://wiki.theory.org/CategoryBitTorrent
+  43. http://www.bittorrent.com/protocol.html
+  44. http://wiki.theory.org/BitTorrentSpecification

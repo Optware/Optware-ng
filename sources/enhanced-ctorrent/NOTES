@@ -1,10 +1,11 @@
 Enhanced CTorrent is built from the patched sources from Dennis Holmes
 (dholmes@ct.boxmail.com), available at http://www.rahul.net/dholmes/ctorrent.
 
-These are the additional patches that are applied to the source,
-also from dholmes:
+These are the additional patches that are applied to the current version
+(dnh2.1), for bugs discovered in the NSLU2 port:
 
-btfiles.patch: fix for vfat filesystem problems, released 2006-04-25
+peer.patch: fix for segmentation fault inside CancelPiece(), due to
+  the use of a pointer inside a struct that has just been freed
 
 
 Enhanced CTorrent has only been tested on the NSLU2, although it builds 

@@ -1,7 +1,7 @@
-diff -u ctorrent-dnh2.old/peer.cpp ctorrent-dnh2/peer.cpp
---- ctorrent-dnh2.old/peer.cpp	2006-01-02 20:40:24.000000000 -0200
-+++ ctorrent-dnh2/peer.cpp	2006-07-05 10:04:52.000000000 -0300
-@@ -525,12 +525,13 @@
+diff -u ctorrent-dnh2.1.old/peer.cpp ctorrent-dnh2.1/peer.cpp
+--- ctorrent-dnh2.1.old/peer.cpp	2006-08-16 02:02:00.000000000 -0300
++++ ctorrent-dnh2.1/peer.cpp	2006-09-08 12:30:59.000000000 -0300
+@@ -526,12 +526,13 @@
  int btPeer::CancelPiece()
  {
    PSLICE ps = request_q.GetHead();
@@ -16,7 +16,7 @@ diff -u ctorrent-dnh2.old/peer.cpp ctorrent-dnh2/peer.cpp
      if( ps->index != idx ) break;
      if( ps == request_q.NextSend() ) cancel = 0;
      if( cancel ){
-@@ -543,7 +544,9 @@
+@@ -544,7 +545,9 @@
          m_req_out = 0;
        }
      }
