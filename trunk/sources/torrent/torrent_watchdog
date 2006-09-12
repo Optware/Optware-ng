@@ -265,11 +265,11 @@ for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
 	    check_tracker_error
 	else # Not a valid PID
 		respawn_torrent
-	ACTIVE_TORRENTS=$((${ACTIVE_TORRENTS}+1))
-    fi   
-else
-    debug "${INFO} not found!"
-fi
+        fi   
+    else
+    	debug "${INFO} not found!"
+    fi
+    ACTIVE_TORRENTS=$((${ACTIVE_TORRENTS}+1))
 done
 
 # Check if any torrent file exists in run env.
