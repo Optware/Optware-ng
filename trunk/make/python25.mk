@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON25_VERSION=2.5c1
+PYTHON25_VERSION=2.5c2
 PYTHON25_VERSION_MAJOR=2.5
 PYTHON25_SITE=http://www.python.org/ftp/python/$(PYTHON25_VERSION_MAJOR)/
 PYTHON25_SOURCE=Python-$(PYTHON25_VERSION).tar.bz2
