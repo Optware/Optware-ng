@@ -29,14 +29,14 @@ AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd)
 AMULE_SECTION=net
 AMULE_PRIORITY=optional
-AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd
+AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, readline
 AMULE_SUGGESTS=
 AMULE_CONFLICTS=
 
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=1
+AMULE_IPK_VERSION=2
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -102,7 +102,7 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 # shown below to make various patches to it.
 #
 $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
-	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage libpng-stage libgd-stage
+	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage libpng-stage libgd-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AMULE_PATCHES)" ; \
