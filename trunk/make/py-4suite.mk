@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-4SUITE_SITE=http://cheeseshop.python.org/packages/source/4/4Suite-XML
-PY-4SUITE_VERSION=1.0rc3
+PY-4SUITE_VERSION=1.0rc4
 PY-4SUITE_SOURCE=4Suite-XML-$(PY-4SUITE_VERSION).tar.gz
 PY-4SUITE_DIR=4Suite-XML-$(PY-4SUITE_VERSION)
 PY-4SUITE_UNZIP=zcat
