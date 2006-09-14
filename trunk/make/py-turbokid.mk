@@ -21,8 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOKID_VERSION=0.9.6
-PY-TURBOKID_SOURCE=$(PY-TURBOGEARS_SOURCE)
+PY-TURBOKID_SITE=http://cheeseshop.python.org/packages/source/T/TurboKid
+PY-TURBOKID_VERSION=0.9.9
+PY-TURBOKID_SOURCE=TurboKid-$(PY-TURBOKID_VERSION).tar.gz
 PY-TURBOKID_DIR=TurboKid-$(PY-TURBOKID_VERSION)
 PY-TURBOKID_UNZIP=zcat
 PY-TURBOKID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -35,7 +36,7 @@ PY-TURBOKID_CONFLICTS=
 #
 # PY-TURBOKID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOKID_IPK_VERSION=2
+PY-TURBOKID_IPK_VERSION=1
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
@@ -72,8 +73,8 @@ PY-TURBOKID_IPK=$(BUILD_DIR)/py-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IP
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(PY-TURBOKID_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE)
+$(DL_DIR)/$(PY-TURBOKID_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -100,11 +101,10 @@ py-turbokid-source: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES)
 $(PY-TURBOKID_BUILD_DIR)/.configured: $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
 	$(MAKE) $(DL_DIR)/$(PY-TURBOKID_SOURCE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)
-	mkdir $(BUILD_DIR)/$(PY-TURBOKID_DIR)
-	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TURBOKID_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/kid
+	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)
-	(cd $(PY-TURBOKID_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/kid; \
+	(cd $(PY-TURBOKID_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python") >> setup.cfg \
 	)
@@ -167,7 +167,7 @@ $(PY-TURBOKID_IPK_DIR)/CONTROL/control:
 #
 $(PY-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOKID_IPK_DIR) $(BUILD_DIR)/py-turbokid_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOKID_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/kid; \
+	(cd $(PY-TURBOKID_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-TURBOKID_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TURBOKID_IPK_DIR)/CONTROL/control
