@@ -29,14 +29,14 @@ IRSSI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IRSSI_DESCRIPTION=A terminal based IRC client for UNIX systems.
 IRSSI_SECTION=net
 IRSSI_PRIORITY=optional
-IRSSI_DEPENDS=
+IRSSI_DEPENDS=glib, ncurses
 IRSSI_SUGGESTS=
 IRSSI_CONFLICTS=
 
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=1
+IRSSI_IPK_VERSION=2
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
