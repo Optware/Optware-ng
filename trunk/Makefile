@@ -303,10 +303,11 @@ DS101J_BROKEN_PACKAGES = \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = \
-  ipkg \
+	ipkg \
+	ds101g-kernel-modules \
 
 # Packages that do not work for ds101g+.
-# elinks, gawk, lsof, mtr and ntp need a .mk template update (they emit _armeb.ipks)
+# mtr needs a .mk template update (it emits an _armeb.ipk)
 DS101G_BROKEN_PACKAGES = \
 	bitlbee \
 	eaccelerator \
