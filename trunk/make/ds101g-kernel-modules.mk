@@ -16,12 +16,13 @@ DS101G-KERNEL-MODULES_PRIORITY=optional
 DS101G-KERNEL-MODULES_DEPENDS=
 DS101G-KERNEL-MODULES_SUGGESTS=
 DS101G-KERNEL-MODULES_CONFLICTS=
-DS101G-KERNEL-MODULES=videodev pwc nfsd soundcore audio
+DS101G-KERNEL-MODULES=videodev pwc nfsd soundcore audio rtl8150 hfc_usb \
+	isdn isdn_bsdcomp dss1_divert hisax slhc
 
 #
 # DS101G-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101G-KERNEL-MODULES_IPK_VERSION=1
+DS101G-KERNEL-MODULES_IPK_VERSION=2
 
 #
 # DS101G-KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -33,7 +34,8 @@ DS101G-KERNEL-MODULES_IPK_VERSION=1
 #
 DS101G-KERNEL-MODULES_PATCHES=\
   $(DS101G-KERNEL-MODULES_SOURCE_DIR)/pwc.patch \
-  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/pwc-fix_endianness.patch
+  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/pwc-fix_endianness.patch \
+  $(DS101G-KERNEL-MODULES_SOURCE_DIR)/hfc_usb.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +106,7 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  install -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
-	    echo "Package: kernel-modules-$$m"; \
+	    echo "Package: kernel-modules-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(DS101G-KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(DS101G-KERNEL-MODULES_SECTION)"; \
@@ -113,8 +115,8 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Source: $(DS101G-KERNEL-MODULES_SITE)/$(DS101G-KERNEL-MODULES_SOURCE)"; \
 	    echo "Description: $(DS101G-KERNEL-MODULES_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
-            DEPS=$(DS101G-KERNEL-MODULES_DEPENDS)"; \
-	    for i in `grep "^$$m:" $(DS101G-KERNEL-MODULES_SOURCE_DIR)/modules.dep | cut -d ":" -f 2`; do \
+            DEPS="$(DS101G-KERNEL-MODULES_DEPENDS)"; \
+	    for i in `grep "^$$m:" $(DS101G-KERNEL-MODULES_SOURCE_DIR)/modules.dep|cut -d ":" -f 2|sed -e 's/_/-/g'`; do \
 	      if test -n "$$DEPS"; \
 	      then DEPS="$$DEPS,"; \
 	      fi; \
@@ -170,4 +172,4 @@ ds101g-kernel-modules-clean:
 # directories.
 #
 ds101g-kernel-modules-dirclean:
-	rm -rf $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) $(DS101G-KERNEL-MODULES_BUILD_DIR) $(DS101G-KERNEL-MODULES_IPK_DIR) $(DS101G-KERNEL-MODULES_IPK)
+	rm -rf $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) $(DS101G-KERNEL-MODULES_BUILD_DIR) $(DS101G-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-modules-*_powerpc.ipk
