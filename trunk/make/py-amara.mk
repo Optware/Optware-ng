@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-AMARA_SITE=http://cheeseshop.python.org/packages/source/A/Amara
-PY-AMARA_VERSION=1.1.8b2
+PY-AMARA_VERSION=1.1.9
 PY-AMARA_SOURCE=Amara-$(PY-AMARA_VERSION).tar.gz
 PY-AMARA_DIR=Amara-$(PY-AMARA_VERSION)
 PY-AMARA_UNZIP=zcat
@@ -36,7 +36,7 @@ PY-AMARA_CONFLICTS=
 #
 # PY-AMARA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-AMARA_IPK_VERSION=2
+PY-AMARA_IPK_VERSION=1
 
 #
 # PY-AMARA_CONFFILES should be a list of user-editable files
