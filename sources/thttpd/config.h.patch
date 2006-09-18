@@ -5,7 +5,7 @@
  ** probably a really bad idea.
  */
 -#define CGI_TIMELIMIT 30
-+#define CGI_TIMELIMIT 300
++#define CGI_TIMELIMIT 600
  
  /* CONFIGURE: Maximum number of simultaneous CGI programs allowed.
  ** If this many are already running, then attempts to run more will
