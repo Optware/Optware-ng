@@ -41,7 +41,7 @@ THTTPD_CONFLICTS=
 #
 # THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-THTTPD_IPK_VERSION=2
+THTTPD_IPK_VERSION=3
 
 #
 # THTTPD_CONFFILES should be a list of user-editable files
