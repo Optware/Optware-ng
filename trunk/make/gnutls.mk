@@ -28,7 +28,7 @@
 #
 GNUTLS_SITE=http://josefsson.org/gnutls/releases
 # ftp://ftp.gnutls.org/pub/gnutls
-GNUTLS_VERSION=1.4.2
+GNUTLS_VERSION=1.4.4
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
