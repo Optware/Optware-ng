@@ -30,7 +30,7 @@ IPKG_CVS_OPTS=-r $(IPKG_CVS_TAG)
 #
 # IPKG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_IPK_VERSION=2
+IPKG_IPK_VERSION=3
 
 #
 # IPKG_CONFFILES should be a list of user-editable files
@@ -65,7 +65,7 @@ IPKG_IPK=$(BUILD_DIR)/ipkg_$(IPKG_VERSION)-$(IPKG_IPK_VERSION)_$(TARGET_ARCH).ip
 # IPKG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patch $(IPKG_SOURCE_DIR)/update-alternatives.patch $(IPKG_SOURCE_DIR)/ds101g_vsnprintf_segfaults.patch
+IPKG_PATCHES=$(IPKG_SOURCE_DIR)/args.h.patch $(IPKG_SOURCE_DIR)/ipkg_conf.c.patch $(IPKG_SOURCE_DIR)/update-alternatives.patch $(IPKG_SOURCE_DIR)/ds101g_vsnprintf_segfaults.patch $(IPKG_SOURCE_DIR)/ipkg-va_start_segfault.diff
 ifeq ($(LIBC_STYLE), uclibc)
 IPKG_PATCHES += $(IPKG_SOURCE_DIR)/ipkg_download.c.patch
 endif
