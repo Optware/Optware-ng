@@ -1,0 +1,20 @@
+--- ipkg/user.c.orig	2006-09-18 23:55:03.000000000 +0200
++++ ipkg/user.c	2006-09-18 23:55:56.000000000 +0200
+@@ -34,7 +34,6 @@
+      int len = question_len;
+      va_list ap;
+      char *response;
+-     va_start(ap, format);
+ 
+ #ifndef IPKG_LIB
+      vprintf(format, ap);
+@@ -47,7 +46,9 @@
+ 	       question = realloc(question, len + 1);
+ 	       question_len = len;
+ 	  }
++	  va_start(ap, format);
+ 	  len = vsnprintf(question,question_len,format,ap);
++	  va_end(ap);
+      } while (len > question_len);
+      response = strdup(ipkg_cb_response(question));
+ #endif
