@@ -110,6 +110,8 @@ ERLANG-MANPAGES_IPK=$(BUILD_DIR)/erlang-manpages_$(ERLANG_VERSION)-$(ERLANG_IPK_
 ERLANG-DOC-HTML_IPK_DIR=$(BUILD_DIR)/erlang-doc-html-$(ERLANG_VERSION)-ipk
 ERLANG-DOC-HTML_IPK=$(BUILD_DIR)/erlang-doc-html_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: erlang-source erlang-unpack erlang erlang-stage erlang-ipk erlang-clean erlang-dirclean
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -142,7 +144,11 @@ erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(D
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ERLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
+$(ERLANG_BUILD_DIR)/.configured: \
+		$(DL_DIR)/$(ERLANG_SOURCE) \
+		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
+		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
+		$(ERLANG_PATCHES)
 	$(MAKE) ncurses-stage openssl-stage termcap-source
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
