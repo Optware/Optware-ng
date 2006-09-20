@@ -24,7 +24,7 @@
 # PY-ROUTES_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-ROUTES_SITE=http://cheeseshop.python.org/packages/source/R/Routes
-PY-ROUTES_VERSION=1.4.1
+PY-ROUTES_VERSION=1.5
 #PY-ROUTES_SVN_REV=
 PY-ROUTES_IPK_VERSION=1
 #ifneq ($(PY-ROUTES_SVN_REV),)
