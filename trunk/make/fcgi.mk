@@ -137,7 +137,7 @@ $(FCGI_DEV_IPK_DIR)/CONTROL/control:
 #
 $(FCGI_IPK): $(FCGI_BUILD_DIR)/.built
 	rm -rf $(FCGI_IPK_DIR) $(BUILD_DIR)/fcgi_*_$(TARGET_ARCH).ipk
-	rm -rf $(FCGI_DEV_IPK_DIR) $(BUILD_DIR)/fcgi_dev_*_$(TARGET_ARCH).ipk
+	rm -rf $(FCGI_DEV_IPK_DIR) $(BUILD_DIR)/fcgi-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_DEV_IPK_DIR) install-strip
 	rm -rf $(FCGI_DEV_IPK_DIR)/{opt/bin,opt/lib/*.so.*} 
 	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_IPK_DIR) install-strip
@@ -165,4 +165,4 @@ fcgi-clean:
 # directories.
 #
 fcgi-dirclean:
-	rm -rf $(BUILD_DIR)/$(FCGI_DIR) $(FCGI_BUILD_DIR) $(FCGI_IPK_DIR) $(FCGI_IPK)
+	rm -rf $(BUILD_DIR)/$(FCGI_DIR) $(FCGI_BUILD_DIR) $(FCGI_IPK_DIR) $(FCGI_IPK) $(FCGI_DEV_IPK_DIR) $(FCGI_DEV_IPK)
