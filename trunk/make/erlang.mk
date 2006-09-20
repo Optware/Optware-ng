@@ -22,10 +22,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_TARBALL_VERSION=R11B-1
+ERLANG_UPSTREAM_VERSION=R11B-1
 ERLANG_VERSION=R11B1
-ERLANG_SOURCE=otp_src_$(ERLANG_TARBALL_VERSION).tar.gz
-ERLANG_DIR=otp_src_$(ERLANG_TARBALL_VERSION)
+ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
+ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
 ERLANG_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 ERLANG_DESCRIPTION=A dynamic programming language and runtime environment, with built-in support for concurrency, distribution and fault tolerance
@@ -35,6 +35,9 @@ ERLANG_DEPENDS=ncurses openssl
 ERLANG_SUGGESTS=
 ERLANG_CONFLICTS=
 
+ERLANG_DOC_MAN_SOURCE=otp_doc_man_$(ERLANG_UPSTREAM_VERSION).tar.gz
+ERLANG_DOC_HTML_SOURCE=otp_doc_html_$(ERLANG_UPSTREAM_VERSION).tar.gz
+
 ERLANG_MAKE_OPTION=
 #"OTP_SMALL_BUILD=true"
 ERLANG_WITH_SAE=no
@@ -42,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=4
+ERLANG_IPK_VERSION=5
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -101,19 +104,28 @@ ERLANG_IPK=$(BUILD_DIR)/erlang_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_
 ERLANG-LIBS_IPK_DIR=$(BUILD_DIR)/erlang-libs-$(ERLANG_VERSION)-ipk
 ERLANG-LIBS_IPK=$(BUILD_DIR)/erlang-libs_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ERLANG-MANPAGES_IPK_DIR=$(BUILD_DIR)/erlang-manpages-$(ERLANG_VERSION)-ipk
+ERLANG-MANPAGES_IPK=$(BUILD_DIR)/erlang-manpages_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ERLANG-DOC-HTML_IPK_DIR=$(BUILD_DIR)/erlang-doc-html-$(ERLANG_VERSION)-ipk
+ERLANG-DOC-HTML_IPK=$(BUILD_DIR)/erlang-doc-html_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(ERLANG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ERLANG_SITE)/$(ERLANG_SOURCE)
+$(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE):
+	$(WGET) -N -P $(DL_DIR) \
+		$(ERLANG_SITE)/$(ERLANG_SOURCE) \
+		$(ERLANG_SITE)/$(ERLANG_DOC_MAN_SOURCE) \
+		$(ERLANG_SITE)/$(ERLANG_DOC_HTML_SOURCE) \
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(ERLANG_PATCHES)
+erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) $(ERLANG_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -311,6 +323,36 @@ $(ERLANG-LIBS_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(ERLANG_SUGGESTS)" >>$@
 	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
 
+$(ERLANG-MANPAGES_IPK_DIR)/CONTROL/control:
+	@install -d $(ERLANG-MANPAGES_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: erlang-manpages" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ERLANG_PRIORITY)" >>$@
+	@echo "Section: $(ERLANG_SECTION)" >>$@
+	@echo "Version: $(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ERLANG_MAINTAINER)" >>$@
+	@echo "Source: $(ERLANG_SITE)/$(ERLANG_SOURCE)" >>$@
+	@echo "Description: man pages for erlang" >>$@
+	@echo "Depends: " >>$@
+	@echo "Suggests: $(ERLANG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
+
+$(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control:
+	@install -d $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: erlang-doc-html" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ERLANG_PRIORITY)" >>$@
+	@echo "Section: $(ERLANG_SECTION)" >>$@
+	@echo "Version: $(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ERLANG_MAINTAINER)" >>$@
+	@echo "Source: $(ERLANG_SITE)/$(ERLANG_SOURCE)" >>$@
+	@echo "Description: HTML doc for erlang" >>$@
+	@echo "Depends: " >>$@
+	@echo "Suggests: $(ERLANG_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ERLANG_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -422,6 +464,18 @@ endif
 	$(MAKE) $(ERLANG-LIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-LIBS_IPK_DIR)
 
+	install -d $(ERLANG-MANPAGES_IPK_DIR)/opt/share/
+	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) | \
+		tar -C $(ERLANG-MANPAGES_IPK_DIR)/opt/share/ -xvf -
+	$(MAKE) $(ERLANG-MANPAGES_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-MANPAGES_IPK_DIR)
+
+	install -d $(ERLANG-DOC-HTML_IPK_DIR)/opt/share/doc/erlang-doc-html
+	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) | \
+		tar -C $(ERLANG-DOC-HTML_IPK_DIR)/opt/share/doc/erlang-doc-html -xvf -
+	$(MAKE) $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(ERLANG-DOC-HTML_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
@@ -440,4 +494,7 @@ erlang-clean:
 erlang-dirclean:
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR) $(ERLANG_BUILD_DIR)-host \
 		$(ERLANG_IPK_DIR) $(ERLANG_IPK) \
-		$(ERLANG-LIBS_IPK_DIR) $(ERLANG-LIBS_IPK)
+		$(ERLANG-LIBS_IPK_DIR) $(ERLANG-LIBS_IPK) \
+		$(ERLANG-MANPAGES_IPK_DIR) $(ERLANG-MANPAGES_IPK) \
+		$(ERLANG-DOC-HTML_IPK_DIR) $(ERLANG-DOC-HTML_IPK) \
+
