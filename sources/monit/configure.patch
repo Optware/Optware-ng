@@ -1,13 +1,9 @@
---- configure	2005-04-13 22:35:02.000000000 +0200
-+++ configure.patched	2005-09-10 20:12:40.000000000 +0200
-@@ -9430,17 +9430,7 @@
- # ------------------------------------------------------------------------
- # Paths
- # ------------------------------------------------------------------------
--
--# Find the right directory to put the root-mode PID file in
--echo "$as_me:$LINENO: checking pid file location" >&5
--echo $ECHO_N "checking pid file location... $ECHO_C" >&6
+--- configure.orig	2006-09-20 20:18:52.000000000 -0700
++++ configure	2006-09-20 20:19:43.000000000 -0700
+@@ -10067,13 +10067,7 @@
+ # Find the right directory to put the root-mode PID file in
+ { echo "$as_me:$LINENO: checking pid file location" >&5
+ echo $ECHO_N "checking pid file location... $ECHO_C" >&6; }
 -if test -d "/var/run"
 -then
 -	piddir="/var/run"
