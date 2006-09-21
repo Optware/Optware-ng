@@ -141,7 +141,7 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DS101G-KERNEL-MODULES_IPK): $(DS101G-KERNEL-MODULES_BUILD_DIR)/.built
+$(DS101G-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.built
 	rm -rf $(DS101G-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/ds101g-kernel-modules_*_$(TARGET_ARCH).ipk
 	INSTALL_MOD_PATH=$(DS101G-KERNEL-MODULES_IPK_DIR)/opt \
 	$(MAKE) -C $(DS101G-KERNEL-MODULES_BUILD_DIR) modules_install
@@ -154,11 +154,12 @@ $(DS101G-KERNEL-MODULES_IPK): $(DS101G-KERNEL-MODULES_BUILD_DIR)/.built
 	for m in $(DS101G-KERNEL-MODULES); do \
 	  cd $(BUILD_DIR); $(IPKG_BUILD) $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m; \
 	done
+	touch $(DS101G-KERNEL-MODULES_BUILD_DIR)/.ipkdone
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-ds101g-kernel-modules-ipk: $(DS101G-KERNEL-MODULES_IPK)
+ds101g-kernel-modules-ipk: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.ipkdone
 
 #
 # This is called from the top level makefile to clean all of the built files.
