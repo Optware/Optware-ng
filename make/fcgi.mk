@@ -20,7 +20,7 @@ FCGI_CONFLICTS=
 #
 # FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-FCGI_IPK_VERSION=1
+FCGI_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -62,8 +62,8 @@ $(FCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(FCGI_SOURCE) $(FCGI_PATCHES) make/fcg
 	fi
 	(cd $(FCGI_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(FCGI_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(FCGI_LDFLAGS)" \
+		CPPFLAGS="$(FCGI_CPPFLAGS)" \
+		LDFLAGS="$(FCGI_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -138,12 +138,13 @@ $(FCGI_DEV_IPK_DIR)/CONTROL/control:
 $(FCGI_IPK): $(FCGI_BUILD_DIR)/.built
 	rm -rf $(FCGI_IPK_DIR) $(BUILD_DIR)/fcgi_*_$(TARGET_ARCH).ipk
 	rm -rf $(FCGI_DEV_IPK_DIR) $(BUILD_DIR)/fcgi-dev_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_DEV_IPK_DIR) install-strip
+	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_DEV_IPK_DIR) install
 	rm -rf $(FCGI_DEV_IPK_DIR)/{opt/bin,opt/lib/*.so.*} 
-	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_IPK_DIR) install-strip
+	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_IPK_DIR) install
 	rm -rf $(FCGI_IPK_DIR)/{opt/include,opt/lib/{*.a,*la,*.so}} 
 	$(MAKE) $(FCGI_DEV_IPK_DIR)/CONTROL/control
 	$(MAKE) $(FCGI_IPK_DIR)/CONTROL/control
+	-$(STRIP_COMMAND) $(FCGI_IPK_DIR)/opt/bin/*
 	-$(STRIP_COMMAND) $(FCGI_IPK_DIR)/opt/lib/*.so.*
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FCGI_DEV_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FCGI_IPK_DIR)
