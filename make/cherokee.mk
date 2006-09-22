@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
