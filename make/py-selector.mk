@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SELECTOR_SITE=http://cheeseshop.python.org/packages/source/s/selector
-PY-SELECTOR_VERSION=0.8.7
+PY-SELECTOR_VERSION=0.8.8
 PY-SELECTOR_SOURCE=selector-$(PY-SELECTOR_VERSION).tar.gz
 PY-SELECTOR_DIR=selector-$(PY-SELECTOR_VERSION)
 PY-SELECTOR_UNZIP=zcat
