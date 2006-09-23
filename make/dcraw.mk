@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DCRAW_SITE=http://www.cybercom.net/~dcoffin/dcraw
-DCRAW_VERSION=1.349
+DCRAW_VERSION=1.350
 DCRAW_SOURCE=dcraw.c,v
 DCRAW_DIR=dcraw-$(DCRAW_VERSION)
 DCRAW_UNZIP=zcat
