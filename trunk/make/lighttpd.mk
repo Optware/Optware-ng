@@ -27,11 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_V=1.4.12
-LIGHTTPD_SNAPSHOT_REVISION=r1332
-LIGHTD_VERSION=$(LIGHTD_V)$(LIGHTTPD_SNAPSHOT_REVISION)
-LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_V)-$(LIGHTTPD_SNAPSHOT_REVISION).tar.gz
-LIGHTTPD_DIR=lighttpd-$(LIGHTD_V)
+LIGHTD_VERSION=1.4.12
+LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.gz
+LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=zcat
 LIGHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
