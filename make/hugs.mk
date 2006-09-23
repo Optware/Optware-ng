@@ -26,9 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HUGS_SITE=http://cvs.haskell.org/Hugs/downloads/2006-05
-HUGS_UPSTREAM_VERSION=May2006
-HUGS_VERSION=Rel200605
+HUGS_SITE=http://cvs.haskell.org/Hugs/downloads/2006-09
+#http://cvs.haskell.org/Hugs/downloads/2006-09/hugs98-plus-Sep2006.tar.gz
+HUGS_UPSTREAM_VERSION=Sep2006
+HUGS_VERSION=Rel200609
 HUGS_SOURCE=hugs98-plus-$(HUGS_UPSTREAM_VERSION).tar.gz
 HUGS_DIR=hugs98-plus-$(HUGS_UPSTREAM_VERSION)
 HUGS_UNZIP=zcat
@@ -42,7 +43,7 @@ HUGS_CONFLICTS=
 #
 # HUGS_IPK_VERSION should be incremented when the ipk changes.
 #
-HUGS_IPK_VERSION=2
+HUGS_IPK_VERSION=1
 
 #
 # HUGS_CONFFILES should be a list of user-editable files
