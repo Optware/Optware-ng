@@ -23,7 +23,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.09
-OCAML_VERSION=3.09.2
+OCAML_VERSION=3.09.3
 OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.bz2
 OCAML_DIR=ocaml-$(OCAML_VERSION)
 OCAML_UNZIP=bzcat
