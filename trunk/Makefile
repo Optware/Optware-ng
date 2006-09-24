@@ -53,78 +53,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumik
 	libextractor \
 	perl-dbd-mysql \
 
-COMMON_CROSS_PACKAGES = \
-	abook adduser adns alac-decoder amule antinat appweb \
-	apache apr apr-util arc asterisk asterisk-sounds \
-	atftp atk audiofile autoconf automake \
-	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
-	bluez-libs bluez-utils bluez-hcidump \
-	cabextract ccxstream chillispot coreutils cpio cron cdargs \
-	cherokee chrpath classpath clamav clearsilver \
-	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
-	cyrus-imapd \
-	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
-	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
-	expat extract-xiso \
-	fcgi fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
-	fontconfig freeradius freetds freetype freeze \
-	gambit-c gawk gconv-modules getmail gettext gdchart ghostscript gdb gdbm grep groff gzip \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git-core glib gnupg gnuplot gnutls gtk \
-	gphoto2 libgphoto2 \
-	hdparm hexcurse hnb hpijs \
-	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables ipython \
-	ircd-hybrid irssi ivorbis-tools \
-	jabber jamvm jikes jove joe \
-	knock \
-	lame ldconfig less lha \
-	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
-	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
-	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
-	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
-	m4 mailman make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
-	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi mod-python \
-	monotone mpage mrtg mtr multitail mutt \
-	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
-	netcat net-tools netio nfs-server nfs-utils \
-	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
-	opencdk oww openssh openssl openvpn \
-	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
-	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
-	python pyrex \
-	py-4suite py-amara py-apsw \
-	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
-	py-clips py-configobj py-constraint py-crypto py-curl py-django py-docutils py-elementtree \
-	py-formencode py-gdchart2 py-gd py-kid py-lxml py-nose \
-	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
-	py-paste py-pastedeploy py-pastescript py-pil py-protocols \
-	py-pgsql py-psycopg py-psycopg2 py-pygresql py-pyro py-quixote \
-	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
-	py-scgi py-selector py-serial py-setuptools py-simplejson py-simpy py-soappy \
-	py-sqlalchemy py-sqlite py-sqlobject \
-	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
-	py-urwid py-yaml py-xml py-zope-interface \
-	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
-	qemu qemu-libc-i386 quagga  \
-	rcs rdate readline recode recordext renderext rrdtool \
-	rsync rtorrent ruby rubygems \
-	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
-	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
-	sqsh squeak stunnel streamripper sudo swi-prolog svn \
-	sysstat \
-	taged tcl tcpwrappers tethereal tftp-hpa \
-	tar tcpdump termcap textutils thttpd \
-	tin tnef torrent transcode transmission tsocks \
-	ttf-bitstream-vera \
-	ufsd unarj unfs3 units unrar \
-	unzip usbutils ushare \
-	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
-	w3cam w3m webalizer wget wget-ssl wizd \
-	wakelan which whois wpa-supplicant wxbase \
-	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
-	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
-	zip zlib zoo \
-
 PERL_PACKAGES = \
 	perl \
 	perl-algorithm-diff \
@@ -166,6 +94,81 @@ PERL_PACKAGES = \
 	perl-wakeonlan \
 	amavisd-new \
 	spamassassin \
+
+PYTHON_PACKAGES = \
+	getmail ipython mailman mod-python pyrex \
+	py-4suite py-amara py-apsw \
+	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
+	py-clips py-configobj py-constraint py-crypto py-curl py-django py-docutils py-elementtree \
+	py-formencode py-gdchart2 py-gd py-kid py-lxml py-nose \
+	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
+	py-paste py-pastedeploy py-pastescript py-pil py-protocols \
+	py-pgsql py-psycopg py-psycopg2 py-pygresql py-pyro py-quixote \
+	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
+	py-scgi py-selector py-serial py-setuptools py-simplejson py-simpy py-soappy \
+	py-sqlalchemy py-sqlite py-sqlobject \
+	py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
+	py-urwid py-yaml py-xml py-zope-interface \
+	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
+
+COMMON_CROSS_PACKAGES = \
+	abook adduser adns alac-decoder amule antinat appweb \
+	apache apr apr-util arc asterisk asterisk-sounds \
+	atftp atk audiofile autoconf automake \
+	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
+	bluez-libs bluez-utils bluez-hcidump \
+	cabextract ccxstream chillispot coreutils cpio cron cdargs \
+	cherokee chrpath classpath clamav clearsilver \
+	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
+	cyrus-imapd \
+	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
+	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp erlang esound eggdrop \
+	expat extract-xiso \
+	fcgi fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
+	fontconfig freeradius freetds freetype freeze \
+	gambit-c gawk gconv-modules gettext gdchart ghostscript gdb gdbm grep groff gzip \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	git-core glib gnupg gnuplot gnutls gtk \
+	gphoto2 libgphoto2 \
+	hdparm hexcurse hnb hpijs \
+	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables \
+	ircd-hybrid irssi ivorbis-tools \
+	jabber jamvm jikes jove joe \
+	knock \
+	lame ldconfig less lha \
+	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
+	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
+	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
+	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
+	m4 make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
+	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi \
+	monotone mpage mrtg mtr multitail mutt \
+	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
+	netcat net-tools netio nfs-server nfs-utils \
+	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
+	opencdk oww openssh openssl openvpn \
+	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
+	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
+	python python25 $(PYTHON_PACKAGES) \
+	qemu qemu-libc-i386 quagga  \
+	rcs rdate readline recode recordext renderext rrdtool \
+	rsync rtorrent ruby rubygems \
+	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
+	screen sed smartmontools sqlite sqlite2 strace syslog-ng \
+	sqsh squeak stunnel streamripper sudo swi-prolog svn \
+	sysstat \
+	taged tcl tcpwrappers tethereal tftp-hpa \
+	tar tcpdump termcap textutils thttpd \
+	tin tnef torrent transcode transmission tsocks \
+	ttf-bitstream-vera \
+	ufsd unarj unfs3 units unrar \
+	unzip usbutils ushare \
+	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
+	w3cam w3m webalizer wget wget-ssl wizd \
+	wakelan which whois wpa-supplicant wxbase \
+	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
+	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
+	zip zlib zoo \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
