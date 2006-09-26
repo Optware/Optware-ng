@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 OPENLDAP_SITE=ftp://ftp.openldap.org/pub/openldap/openldap-stable/
-OPENLDAP_VERSION=2.2.26
-OPENLDAP_SOURCE=openldap-stable-20050429.tgz
+OPENLDAP_VERSION=2.3.27
+OPENLDAP_SOURCE=openldap-stable-20060823.tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
 OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
@@ -34,7 +34,7 @@ OPENLDAP_CONFLICTS=
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=5
+OPENLDAP_IPK_VERSION=1
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
@@ -44,7 +44,8 @@ OPENLDAP_IPK_VERSION=5
 # OPENLDAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch $(OPENLDAP_SOURCE_DIR)/install.patch
+OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch 
+#$(OPENLDAP_SOURCE_DIR)/install.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,7 +110,7 @@ $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCH
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OPENLDAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OPENLDAP_LDFLAGS)" \
-		ac_cv_func_memcmp_clean=yes \
+		ac_cv_func_memcmp_working=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -196,7 +197,7 @@ $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control:
 $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_$(TARGET_ARCH).ipk
 	rm -rf $(OPENLDAP_LIBS_IPK_DIR) $(BUILD_DIR)/openldap-libs_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) install
+	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) STRIP="" install
 	install -d $(OPENLDAP_IPK_DIR)/opt/etc/
 #	install -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf
 	install -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d

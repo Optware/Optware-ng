@@ -1,13 +1,13 @@
---- openldap/libraries/liblunicode/Makefile.in~	2005-01-20 09:01:03.000000000 -0800
-+++ openldap/libraries/liblunicode/Makefile.in	2005-02-20 13:45:58.009795269 -0800
-@@ -29,8 +29,8 @@
- LDAP_INCDIR= ../../include       
- LDAP_LIBDIR= ../../libraries
+--- openldap-2.3.27/libraries/liblunicode/Makefile.in.orig	2006-09-26 22:13:34.000000000 +0200
++++ openldap-2.3.27/libraries/liblunicode/Makefile.in	2006-09-26 22:15:29.000000000 +0200
+@@ -35,8 +35,8 @@
+ 	$(MAKE) ucgendat
+ 	./ucgendat $(srcdir)/UnicodeData.txt -x $(srcdir)/CompositionExclusions.txt
  
 -ucgendat: $(XLIBS) ucgendat.o
 -	$(LTLINK) -o $@ ucgendat.o $(LIBS)
 +ucgendat: $(XLIBS) .links
 +	$(HOSTCC) -o $@ -I$(top_srcdir)/include ucgendat.c ../liblutil/utils.c
- 	./ucgendat $(srcdir)/UnicodeData.txt -x $(srcdir)/CompositionExclusions.txt
  
- DATFILES = case.dat cmbcl.dat comp.dat ctype.dat decomp.dat num.dat kdecomp.dat
+ .links :
+ 	@for i in $(XXSRCS) $(XXHEADERS); do \
