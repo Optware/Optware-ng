@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# bpalogin      This shell script takes care of starting and stopping
+#               bpalogin.
+#
+# chkconfig: 345 50 50
+# description: A daemon to connect to Big Pond Advance Cable
+#
+# processname: bpalogin
+# config: /etc/bpalogin.conf
+
+[ -f /opt/sbin/bpalogin ] || exit 0
+
+# See how we were called.
+case "$1" in
+  start)
+	# Start daemons.
+
+	echo -n "Starting bpalogin: "
+	/opt/sbin/bpalogin -c /etc/bpalogin.conf
+	echo
+#	touch /var/lock/subsys/bpalogin
+	;;
+  stop)
+	# Stop daemons.
+	echo -n "Shutting down bpalogin: "
+	killall bpalogin
+	echo
+#	rm -f /var/lock/subsys/bpalogin
+	;;
+  restart)
+	$0 stop
+	$0 start
+	;;
+  status)
+	status bpalogin
+	;;
+  *)
+	echo "Usage: bpalogin {start|stop|restart|status}"
+	exit 1
+esac
+
+exit 0
+
