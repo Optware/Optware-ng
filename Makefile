@@ -65,7 +65,7 @@ PERL_PACKAGES = \
 	perl-class-accessor perl-class-data-inheritable perl-class-dbi perl-class-trigger \
 	perl-clone \
 	perl-compress-zlib \
- 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
+	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-date-manip \
 	perl-db-file perl-dbd-sqlite perl-dbi perl-dbix-contextualfetch \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
@@ -116,7 +116,7 @@ COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk asterisk-sounds \
 	atftp atk audiofile autoconf automake \
-	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
+	bash bc bzip2 bind bip bitchx bitlbee bpalogin bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract ccxstream chillispot coreutils cpio cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
