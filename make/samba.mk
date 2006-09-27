@@ -22,8 +22,10 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.23c
+SAMBA_IPK_VERSION=2
 else
 SAMBA_VERSION=3.0.14a
+SAMBA_IPK_VERSION=1
 endif
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
@@ -39,11 +41,6 @@ SAMBA_DEPENDS=popt, readline
 endif
 SAMBA_SUGGESTS=
 SAMBA_CONFLICTS=
-
-#
-# SAMBA_IPK_VERSION should be incremented when the ipk changes.
-#
-SAMBA_IPK_VERSION=1
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
