@@ -150,7 +150,7 @@ COMMON_CROSS_PACKAGES = \
 	opencdk oww openssh openssl openvpn \
 	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
-	python python25 $(PYTHON_PACKAGES) \
+	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga  \
 	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
