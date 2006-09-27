@@ -22,7 +22,7 @@ DS101_BOOTSTRAP_PRIORITY=optional
 DS101_BOOTSTRAP_DEPENDS=
 DS101_BOOTSTRAP_CONFLICTS=
 
-DS101_BOOTSTRAP_IPK_VERSION=11
+DS101_BOOTSTRAP_IPK_VERSION=12
 
 DS101_BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/ds101-bootstrap
 DS101_BOOTSTRAP_SOURCE_DIR=$(SOURCE_DIR)/ds101-bootstrap
@@ -74,6 +74,7 @@ ifeq ($(OPTWARE_TARGET),ds101)
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/lib* $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/gconv/* $(STAGING_DIR)/opt/lib/gconv
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_DIR)/opt/lib/ldscripts	
+	rm -f $(STAGING_DIR)/opt/lib/libc* $(STAGING_DIR)/opt/lib/libpthread* $(STAGING_DIR)/opt/lib/libnss_files*
 else
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
@@ -113,6 +114,7 @@ ifeq ($(OPTWARE_TARGET),ds101)
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/lib* $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/gconv/* $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/gconv/
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/ldscripts/
+	rm -f $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/libc* $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/libpthread* $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib/libnss_files*
 else	
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_IPK_DIR)/opt/lib
