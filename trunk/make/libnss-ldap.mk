@@ -20,7 +20,7 @@ LIBNSS-LDAP_CONFLICTS=
 #
 # LIBNSS-LDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBNSS-LDAP_IPK_VERSION=1
+LIBNSS-LDAP_IPK_VERSION=2
 
 #
 # LIBNSS-LDAP_CONFFILES should be a list of user-editable files
