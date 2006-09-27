@@ -178,8 +178,6 @@ COMMON_CROSS_PACKAGES = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
-# perl's Configure is not cross-compile "friendly"
-# perl modules depend on perl
 # rsnapshot depends on perl
 # squid probably will build cross - may just need some configure work
 # stow depends on perl
@@ -197,7 +195,7 @@ COMMON_NATIVE_PACKAGES = \
 	rsnapshot \
 	squid \
 	stow \
-        xmail \
+	unison \
 
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
