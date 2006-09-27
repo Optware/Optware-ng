@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=2
+APR_UTIL_IPK_VERSION=3
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
