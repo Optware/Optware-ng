@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	openldap \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -147,7 +146,7 @@ COMMON_CROSS_PACKAGES = \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
 	netcat net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
-	opencdk oww openssh openssl openvpn \
+	opencdk openldap openssh openssl openvpn oww \
 	palantir pango patch pcre php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound procmail procps proftpd psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
@@ -179,7 +178,6 @@ COMMON_CROSS_PACKAGES = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
-# openldap runs its own binaries at compile-time and expects them to have same byte-order as target
 # perl's Configure is not cross-compile "friendly"
 # perl modules depend on perl
 # rsnapshot depends on perl
@@ -196,7 +194,6 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         nginx \
         ocaml \
-	openldap \
 	rsnapshot \
 	squid \
 	stow \
