@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you should check /opt/etc/bpalogin.conf,"
+echo "and then run /opt/etc/init.d/S05bpalogin to start bpalogin."
