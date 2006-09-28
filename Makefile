@@ -270,7 +270,7 @@ DS101_SPECIFIC_PACKAGES =
 # tnef - malloc.c:30: error: conflicting types for 'malloc'
 DS101_BROKEN_PACKAGES = \
 	adns amule apache appweb apr-util \
-	atftp bash bitchx bzflag \
+	atftp bash bitchx bpalogin bzflag \
 	ctcs ctorrent dspam eaccelerator \
 	enhanced-ctorrent freeradius gnuplot hexcurse \
 	imagemagick \
