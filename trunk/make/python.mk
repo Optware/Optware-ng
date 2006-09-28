@@ -23,7 +23,8 @@ python-unpack:
 
 python:
 
-python-stage: $(PYTHON24_BUILD_DIR)/.staged
+python-stage:
+	$(MAKE) python24-stage
 
 $(PYTHON_IPK_DIR)/CONTROL/control:
 	@install -d $(PYTHON_IPK_DIR)/CONTROL
