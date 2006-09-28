@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.2.2
+CUPS_VERSION=1.2.4
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -35,7 +35,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=4
+CUPS_IPK_VERSION=1
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -52,7 +52,8 @@ CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 # which they should be applied to the source code.
 #
 CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch \
-	$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch
+	$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch \
+	$(CUPS_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -74,7 +75,7 @@ CUPS_BUILD_DIR=$(BUILD_DIR)/cups
 CUPS_SOURCE_DIR=$(SOURCE_DIR)/cups
 CUPS_IPK_DIR=$(BUILD_DIR)/cups-$(CUPS_VERSION)-ipk
 CUPS_IPK=$(BUILD_DIR)/cups_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
-CUPS_DOC_IPK=$(BUILD_DIR)/cups-doc_$(CUPS_VERSION)-$(CUPS_DOC_IPK_VERSION)_$(TARGET_ARCH).ipk
+CUPS_DOC_IPK=$(BUILD_DIR)/cups-doc_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CUPS_DOC_FR_IPK=$(BUILD_DIR)/cups-doc-fr_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CUPS_DOC_ES_IPK=$(BUILD_DIR)/cups-doc-es_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CUPS_DOC_PL_IPK=$(BUILD_DIR)/cups-doc-pl_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -147,16 +148,9 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 #
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $(CUPS_BUILD_DIR)/.built
-	$(MAKE) -C $(CUPS_BUILD_DIR) $(RC_CFLAGS) \
-		LDFLAGS="-L../cups -L../filter $(STAGING_LDFLAGS) \
-		-Wl,-rpath,$(STAGING_DIR)/opt/lib \
-		-Wl,-rpath,/opt/lib $(OPTIM)"
+	$(MAKE) -C $(CUPS_BUILD_DIR)
 	$(MAKE) install -C $(CUPS_BUILD_DIR) \
 	BUILDROOT=$(CUPS_BUILD_DIR)/install/ INSTALL_BIN="install -m 755"
-# 	Remove cat files from man page areas
-#	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/cat?
-#	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/es/cat?
-#	rm -rf $(CUPS_BUILD_DIR)/install/opt/man/fr/cat?
 	touch $(CUPS_BUILD_DIR)/.built
 
 #
@@ -218,7 +212,7 @@ $(CUPS_IPK_DIR)-doc/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
-	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_IPK_VERSION)" >>$@
+	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_VERSION)" >>$@
 	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
 	@echo "Description: $(CUPS_DOC_DESCRIPTION)" >>$@
@@ -317,6 +311,9 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
 	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/*
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/cups/{backend,cgi-bin,daemon,filter,monitor,notifier}/*
+
 # Copy the configuration file
 	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)/opt/etc/cups
 	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)/opt/etc/cups
