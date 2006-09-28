@@ -29,7 +29,7 @@ EXPAT_CONFLICTS=
 #
 # EXPAT_IPK_VERSION should be incremented when the ipk changes.
 #
-EXPAT_IPK_VERSION=3
+EXPAT_IPK_VERSION=4
 
 #
 # EXPAT_CONFFILES should be a list of user-editable files
@@ -91,7 +91,7 @@ expat-source: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES)
+$(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES) make/expat.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(EXPAT_DIR) $(EXPAT_BUILD_DIR)
 	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
