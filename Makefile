@@ -282,7 +282,7 @@ DS101_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	svn \
 	tnef tcpwrappers tethereal textutils \
-	transmission unrar
+	transcode unrar
 
 # Packages that *only* work for ds101j - do not just put new packages here.
 DS101J_SPECIFIC_PACKAGES = bip
