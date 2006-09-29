@@ -21,15 +21,17 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
-TRANSMISSION_VERSION=0.6.1
-TRANSMISSION_SOURCE=Transmission-$(TRANSMISSION_VERSION).tar.gz
+TRANSMISSION_VERSION=0.6
+TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
+TRANSMISSION_SVN_REV=961
+TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
 TRANSMISSION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSMISSION_DESCRIPTION=lightweight BitTorrent client
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
-TRANSMISSION_DEPENDS=
+TRANSMISSION_DEPENDS=openssl
 TRANSMISSION_SUGGESTS=
 TRANSMISSION_CONFLICTS=
 
@@ -46,7 +48,10 @@ TRANSMISSION_IPK_VERSION=1
 # TRANSMISSION_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/configure.patch
+TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch
+
+# Additional sources to enhance transmission (like this daemon)
+TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
 
 #
 # If the compilation of the package requires additional
@@ -67,14 +72,24 @@ TRANSMISSION_LDFLAGS=
 TRANSMISSION_BUILD_DIR=$(BUILD_DIR)/transmission
 TRANSMISSION_SOURCE_DIR=$(SOURCE_DIR)/transmission
 TRANSMISSION_IPK_DIR=$(BUILD_DIR)/transmission-$(TRANSMISSION_VERSION)-ipk
-TRANSMISSION_IPK=$(BUILD_DIR)/transmission_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
+TRANSMISSION_IPK=$(BUILD_DIR)/transmission_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)+r$(TRANSMISSION_SVN_REV)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+#$(DL_DIR)/$(TRANSMISSION_SOURCE):
+#	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)
+
 $(DL_DIR)/$(TRANSMISSION_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(TRANSMISSION_DIR) && \
+		svn co -r $(TRANSMISSION_SVN_REV) $(TRANSMISSION_SVN) \
+			$(TRANSMISSION_DIR) && \
+		tar -czf $@ $(TRANSMISSION_DIR) && \
+		rm -rf $(TRANSMISSION_DIR) \
+	)
+
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,17 +119,18 @@ transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 # Note that openssl is used only for SHA1 hash calculation and that it looks 
 # better to use Transmission provided (built-in) SHA1 hash
 #
-$(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
-#	$(MAKE) openssl-stage
+$(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) 
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR)
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
+
 	(cd $(TRANSMISSION_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
@@ -125,20 +141,21 @@ $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSM
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-openssl \
 		--disable-gtk \
 	)
 #	$(PATCH_LIBTOOL) $(TRANSMISSION_BUILD_DIR)/libtool
 	touch $(TRANSMISSION_BUILD_DIR)/.configured
 #		--verbose \
+#		--disable-openssl \
 
 transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
-$(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured
+$(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION_SOURCES)
 	rm -f $(TRANSMISSION_BUILD_DIR)/.built
+	cp $(TRANSMISSION_SOURCES) $(TRANSMISSION_BUILD_DIR)/cli
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR)
 	touch $(TRANSMISSION_BUILD_DIR)/.built
 
@@ -158,8 +175,7 @@ $(TRANSMISSION_BUILD_DIR)/.staged: $(TRANSMISSION_BUILD_DIR)/.built
 transmission-stage: $(TRANSMISSION_BUILD_DIR)/.staged
 
 #
-# This rule creates a control file for ipkg.  It is no longer
-# necessary to create a seperate control file under sources/transmission
+# This rule creates a control file for ipkg.  
 #
 $(TRANSMISSION_IPK_DIR)/CONTROL/control:
 	@install -d $(TRANSMISSION_IPK_DIR)/CONTROL
@@ -168,7 +184,7 @@ $(TRANSMISSION_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(TRANSMISSION_PRIORITY)" >>$@
 	@echo "Section: $(TRANSMISSION_SECTION)" >>$@
-	@echo "Version: $(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)" >>$@
+	@echo "Version: $(TRANSMISSION_VERSION)+r$(TRANSMISSION_SVN_REV)-$(TRANSMISSION_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(TRANSMISSION_MAINTAINER)" >>$@
 	@echo "Source: $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)" >>$@
 	@echo "Description: $(TRANSMISSION_DESCRIPTION)" >>$@
@@ -193,6 +209,7 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	install -d $(TRANSMISSION_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) PREFIX=$(TRANSMISSION_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissioncli
+	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond
 #	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
 #	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/SXXtransmission
