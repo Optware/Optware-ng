@@ -32,7 +32,7 @@ NRPE_CONFLICTS=
 #
 # NRPE_IPK_VERSION should be incremented when the ipk changes.
 #
-NRPE_IPK_VERSION=1
+NRPE_IPK_VERSION=2
 
 #
 # NRPE_CONFFILES should be a list of user-editable files
