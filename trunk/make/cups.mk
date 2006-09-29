@@ -212,7 +212,7 @@ $(CUPS_IPK_DIR)-doc/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(CUPS_PRIORITY)" >>$@
 	@echo "Section: $(CUPS_SECTION)" >>$@
-	@echo "Version: $(CUPS_VERSION)-$(CUPS_DOC_VERSION)" >>$@
+	@echo "Version: $(CUPS_VERSION)-$(CUPS_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(CUPS_MAINTAINER)" >>$@
 	@echo "Source: $(CUPS_SITE)/$(CUPS_SOURCE)" >>$@
 	@echo "Description: $(CUPS_DOC_DESCRIPTION)" >>$@
