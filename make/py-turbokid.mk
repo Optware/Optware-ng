@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOKID_SITE=http://cheeseshop.python.org/packages/source/T/TurboKid
 PY-TURBOKID_VERSION=0.9.9
-PY-TURBOKID_SOURCE=TurboKid-$(PY-TURBOKID_VERSION).tar.gz
+PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
+PY-TURBOKID_REPOSITORY=http://www.turbogears.org/svn/turbogears/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
 PY-TURBOKID_DIR=TurboKid-$(PY-TURBOKID_VERSION)
 PY-TURBOKID_UNZIP=zcat
 PY-TURBOKID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -36,7 +36,7 @@ PY-TURBOKID_CONFLICTS=
 #
 # PY-TURBOKID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOKID_IPK_VERSION=1
+PY-TURBOKID_IPK_VERSION=2
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
@@ -73,15 +73,17 @@ PY-TURBOKID_IPK=$(BUILD_DIR)/py-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IP
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+ifeq ($(PY-TURBOKID_SVN_TAG),)
 $(DL_DIR)/$(PY-TURBOKID_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-turbokid-source: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES)
+py-turbokid-source: $(PY-TURBOKID_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -99,9 +101,15 @@ py-turbokid-source: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-TURBOKID_BUILD_DIR)/.configured: $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
-	$(MAKE) $(DL_DIR)/$(PY-TURBOKID_SOURCE) py-setuptools-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)
+ifeq ($(PY-TURBOKID_SVN_TAG),)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q $(PY-TURBOKID_REPOSITORY) $(PY-TURBOKID_DIR); \
+	)
+endif
 #	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)
 	(cd $(PY-TURBOKID_BUILD_DIR); \
