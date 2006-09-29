@@ -22,7 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOCHEETAH_VERSION=0.9.5
-PY-TURBOCHEETAH_SOURCE=$(PY-TURBOGEARS_SOURCE)
+PY-TURBOCHEETAH_SVN_TAG=$(PY-TURBOCHEETAH_VERSION)
+PY-TURBOCHEETAH_REPOSITORY=http://www.turbogears.org/svn/turbogears/projects/TurboCheetah/tags/$(PY-TURBOCHEETAH_SVN_TAG)
 PY-TURBOCHEETAH_DIR=TurboCheetah-$(PY-TURBOCHEETAH_VERSION)
 PY-TURBOCHEETAH_UNZIP=zcat
 PY-TURBOCHEETAH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -35,7 +36,7 @@ PY-TURBOCHEETAH_CONFLICTS=
 #
 # PY-TURBOCHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOCHEETAH_IPK_VERSION=2
+PY-TURBOCHEETAH_IPK_VERSION=3
 
 #
 # PY-TURBOCHEETAH_CONFFILES should be a list of user-editable files
@@ -72,15 +73,17 @@ PY-TURBOCHEETAH_IPK=$(BUILD_DIR)/py-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(PY-TURBOCHEETAH_SITE)/$(PY-TURBOCHEETAH_SOURCE)
+ifeq ($(PY-TURBOCHEETAH_SVN_TAG),)
+$(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PY-TURBOCHEETAH_SITE)/$(PY-TURBOCHEETAH_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-turbocheetah-source: $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) $(PY-TURBOCHEETAH_PATCHES)
+py-turbocheetah-source: $(PY-TURBOCHEETAH_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -98,13 +101,18 @@ py-turbocheetah-source: $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) $(PY-TURBOCHEETAH_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-TURBOCHEETAH_BUILD_DIR)/.configured: $(PY-TURBOCHEETAH_PATCHES) make/py-turbocheetah.mk
-	$(MAKE) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) py-setuptools-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)
-	mkdir $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR)
-	$(PY-TURBOCHEETAH_UNZIP) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) | tar -C $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -xvf - $(PY-TURBOGEARS_DIR)/plugins/cheetah
+ifeq ($(PY-TURBOCHEETAH_SVN_TAG),)
+	$(PY-TURBOCHEETAH_UNZIP) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q $(PY-TURBOCHEETAH_REPOSITORY) $(PY-TURBOCHEETAH_DIR); \
+	)
+endif
 #	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/kid; \
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python") >> setup.cfg \
 	)
@@ -167,7 +175,7 @@ $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
 #
 $(PY-TURBOCHEETAH_IPK): $(PY-TURBOCHEETAH_BUILD_DIR)/.built
 	rm -rf $(PY-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py-turbocheetah_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/$(PY-TURBOGEARS_DIR)/plugins/cheetah; \
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py install --root=$(PY-TURBOCHEETAH_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control
