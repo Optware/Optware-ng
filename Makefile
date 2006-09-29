@@ -281,7 +281,8 @@ DS101_BROKEN_PACKAGES = \
 	py-mysql \
 	qemu qemu-libc-i386 \
 	svn \
-	tnef tcpwrappers tethereal textutils unrar
+	tnef tcpwrappers tethereal textutils \
+	transmission unrar
 
 # Packages that *only* work for ds101j - do not just put new packages here.
 DS101J_SPECIFIC_PACKAGES = bip
