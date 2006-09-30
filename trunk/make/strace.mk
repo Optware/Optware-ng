@@ -28,14 +28,14 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=2
+STRACE_IPK_VERSION=3
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 #
-ifeq ($(OPTWARE_TARGET), nslu2)
+ifeq ($(TARGET_ARCH), armeb)
 #http://www.fluff.org/ben/patches/strace/strace-fix-arm-bad-syscall.patch
 STRACE_PATCHES=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
 else
