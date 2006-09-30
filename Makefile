@@ -222,7 +222,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
 	 sdl ser sm snownews sqsh sudo swi-prolog \
-	 tethereal transcode transmission unrar vte w3m wget wget-ssl wxbase x11 \
+	 tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst \
 
@@ -259,7 +259,6 @@ MSS_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	sablevm svn \
 	transcode \
-	transmission \
 	tethereal \
 	wxbase \
 
