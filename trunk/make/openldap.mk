@@ -34,7 +34,7 @@ OPENLDAP_CONFLICTS=
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=2
+OPENLDAP_IPK_VERSION=3
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
