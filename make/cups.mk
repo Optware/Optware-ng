@@ -311,7 +311,7 @@ $(CUPS_IPK): $(CUPS_BUILD_DIR)/.built
 	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
 	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/*
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/lib*.so.*
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/cups/{backend,cgi-bin,daemon,filter,monitor,notifier}/*
 
 # Copy the configuration file
