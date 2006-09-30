@@ -133,6 +133,7 @@ $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--exec_prefix=/opt \
+		--libdir=/opt/lib \
 		--disable-nls \
 		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
 		--with-openssl-includes=$(STAGING_DIR)/opt/include \
