@@ -13,10 +13,10 @@ endif
 ifeq ($(OPTWARE_TARGET),ds101g)
 DS101_GLIBC_VERSION=2.3.3
 endif
-DS101_BOOTSTRAP_VERSION=0.2
+DS101_BOOTSTRAP_VERSION=1.0
 DS101_BOOTSTRAP_DIR=ds101-bootstrap-$(DS101_BOOTSTRAP_VERSION)
 DS101_BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-DS101_BOOTSTRAP_DESCRIPTION=Bootstrap package for the DS-101(g)
+DS101_BOOTSTRAP_DESCRIPTION=Bootstrap package for the DS-10x
 DS101_BOOTSTRAP_SECTION=util
 DS101_BOOTSTRAP_PRIORITY=optional
 DS101_BOOTSTRAP_DEPENDS=
@@ -145,7 +145,7 @@ $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	# extracting archive will break! Using tail+n would be much simpler
 	# but the tail command available on the DS-101 doesn't support this.
 	echo "#!/bin/sh" >$@
-	echo 'echo "DS-101 Bootstrap extracting archive... please wait"' >>$@
+	echo 'echo "DS-10x Bootstrap extracting archive... please wait"' >>$@
 	echo 'dd if=$$0 bs=181 skip=1| tar xvz' >>$@
 	echo "cd bootstrap && sh bootstrap.sh && cd .. && rm -r bootstrap" >>$@
 	echo 'exec /bin/sh --login' >>$@
