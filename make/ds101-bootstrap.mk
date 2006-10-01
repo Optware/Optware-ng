@@ -48,7 +48,7 @@ $(DS101_BOOTSTRAP_BUILD_DIR)/.built: $(DS101_BOOTSTRAP_BUILD_DIR)/.configured
 ifeq ($(OPTWARE_TARGET),ds101)
 	cp -R $(TARGET_LIBDIR)/* $(DS101_BOOTSTRAP_BUILD_DIR)/
 	find $(DS101_BOOTSTRAP_BUILD_DIR)/ -type l |xargs rm
-	rm $(DS101_BOOTSTRAP_BUILD_DIR)/libc.so
+	rm -f $(DS101_BOOTSTRAP_BUILD_DIR)/libc\.* $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread* $(DS101_BOOTSTRAP_BUILD_DIR)/libnss_files*
 else
 	cp $(TARGET_LIBDIR)/libpthread-0.*.so $(DS101_BOOTSTRAP_BUILD_DIR)/
 	cp $(TARGET_LIBDIR)/librt-$(DS101_GLIBC_VERSION).so $(DS101_BOOTSTRAP_BUILD_DIR)/
@@ -74,7 +74,7 @@ ifeq ($(OPTWARE_TARGET),ds101)
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/lib* $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/gconv/* $(STAGING_DIR)/opt/lib/gconv
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_DIR)/opt/lib/ldscripts	
-	rm -f $(STAGING_DIR)/opt/lib/libc* $(STAGING_DIR)/opt/lib/libpthread* $(STAGING_DIR)/opt/lib/libnss_files*
+	rm -f $(STAGING_DIR)/opt/lib/libc\.* $(STAGING_DIR)/opt/lib/libpthread* $(STAGING_DIR)/opt/lib/libnss_files*
 else
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/libpthread-0.*.so $(STAGING_DIR)/opt/lib
 	install -m 755 $(DS101_BOOTSTRAP_BUILD_DIR)/librt-$(DS101_GLIBC_VERSION).so $(STAGING_DIR)/opt/lib
