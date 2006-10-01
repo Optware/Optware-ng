@@ -22,7 +22,7 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.23c
-SAMBA_IPK_VERSION=3
+SAMBA_IPK_VERSION=4
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=2
@@ -35,9 +35,9 @@ SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clien
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_DEPENDS=popt, openldap, readline
+SAMBA_DEPENDS=popt, openldap, readline, cups
 else
-SAMBA_DEPENDS=popt, readline
+SAMBA_DEPENDS=popt, readline, cups
 endif
 SAMBA_SUGGESTS=
 SAMBA_CONFLICTS=
@@ -290,8 +290,8 @@ ifeq ($(OPTWARE_TARGET),ds101)
 		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
 endif
 ifeq ($(OPTWARE_TARGET),ds101g)
-		install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
-		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
+		install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101g $(SAMBA_IPK_DIR)/CONTROL/postinst
+		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101g $(SAMBA_IPK_DIR)/CONTROL/preinst
 endif
 	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
