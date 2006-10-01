@@ -1,21 +1,23 @@
 #!/bin/sh
 BSDIR="/volume1/tmp/ipkg-bootstrap"
 
-echo "Creating temporary ipkg repository..."
+echo -n "Creating temporary ipkg repository..."
 rm -rf $BSDIR
-mkdir -p $BSDIR
+mkdir -p $BSDIR || exit 1
 ln -s $BSDIR /tmp/ipkg
 cat >>$BSDIR/ipkg.conf <<EOF
 dest root /
 lists_dir ext /$BSDIR/ipkg
 EOF
+echo " success"
 
 export IPKG_CONF_DIR=$BSDIR 
 export IPKG_DIR_PREFIX=$BSDIR 
 
-echo "Installing DS101(g)-bootstrap package..."
+echo -n "Installing DS101(g)-bootstrap package..."
 mkdir -p /usr/lib/ipkg/info/
-sh ./ipkg.sh install bootstrap.ipk
+sh ./ipkg.sh install bootstrap.ipk || exit 1
+echo " success"
 
 echo "Installing IPKG package... (Ignore missing md5sum warning)"
 sh ./ipkg.sh install ipkg.ipk
@@ -25,11 +27,13 @@ rm -rf $BSDIR
 rm /tmp/ipkg
 rm -rf /usr/lib/ipkg
 
-echo "Instaling OpenSSL.."
+echo -n "Installing OpenSSL.."
 /opt/bin/ipkg install openssl.ipk || exit 1
+echo " success"
 
-echo "Instaling wget-SSL..."
+echo -n "Installing wget-SSL..."
 /opt/bin/ipkg install wget-ssl.ipk || exit 1
+echo " success"
 
 [ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
@@ -44,3 +48,5 @@ then
 fi
 
 echo "Setup complete..."
+echo "If your network setup is correct, you should be able to do \"ipkg update\" to get the"
+echo "full list of installable packages"
