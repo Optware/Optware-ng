@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-GZIP_SITE=ftp://wuarchive.wustl.edu/mirrors/gnu/gzip
-GZIP_VERSION=1.2.4
+GZIP_SITE=http://ftp.gnu.org/pub/gnu/gzip
+GZIP_VERSION=1.2.4a
 GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.gz
 GZIP_DIR=gzip-$(GZIP_VERSION)
 GZIP_UNZIP=zcat
@@ -34,7 +34,7 @@ GZIP_CONFLICTS=
 #
 # GZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-GZIP_IPK_VERSION=2
+GZIP_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
