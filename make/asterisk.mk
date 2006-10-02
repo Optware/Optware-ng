@@ -103,18 +103,19 @@ ASTERISK_SYSCONF_SAMPLE_DIR=$(ASTERISK_INST_DIR)/etc/asterisk/sample
 ifeq ($(OPTWARE_TARGET),ts72xx)
 TARGET_PROC=arm
 TARGET_SUB_PROC=maverick
-ifeq ($(OPTWARE_TARGET),ds101g)
-TARGET_PROC=ppc
-TARGET_SUB_PROC=
 else
-ifeq ($(LIBC_STYLE),uclibc)
-TARGET_PROC=mips1
-TARGET_SUB_PROC=
-else
-TARGET_PROC=arm
-TARGET_SUB_PROC=xscale
-endif
-endif
+    ifeq ($(OPTWARE_TARGET),ds101g)
+    TARGET_PROC=ppc
+    TARGET_SUB_PROC=
+    else
+	ifeq ($(LIBC_STYLE),uclibc)
+	TARGET_PROC=mips1
+	TARGET_SUB_PROC=
+	else
+	TARGET_PROC=arm
+	TARGET_SUB_PROC=xscale
+	endif
+    endif
 endif
 
 ifeq ($(LIBC_STYLE),uclibc)
