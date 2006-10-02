@@ -12,6 +12,9 @@ endif
 ifeq ($(OPTWARE_TARGET),mss)
 LIBSTDC++_VERSION=5.0.3
 endif
+ifeq ($(OPTWARE_TARGET),ts72xx)
+LIBSTDC++_VERSION=5.0.6
+endif
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
 LIBSTDC++_LIBNAME=libstdc++.so
