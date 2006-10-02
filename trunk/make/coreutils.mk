@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=5.2.1
+COREUTILS_VERSION=5.97
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -34,14 +34,14 @@ COREUTILS_CONFLICTS=busybox-links
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=9
+COREUTILS_IPK_VERSION=2
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/Makefile.in.patch
-
+COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/mountlist.patch
+COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config.cache
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -92,21 +92,24 @@ coreutils-source: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES)
+$(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES) $(COREUTILS_AC_CACHE)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(COREUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
+	cp $(COREUTILS_AC_CACHE) $(COREUTILS_BUILD_DIR)/config.cache
 	(cd $(COREUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(COREUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(COREUTILS_LDFLAGS)" \
 		./configure \
+		--cache-file=config.cache \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--datarootdir=/opt \
 	)
 	touch $(COREUTILS_BUILD_DIR)/.configured
 
@@ -176,6 +179,8 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	# Install binaries
 	install -d $(COREUTILS_IPK_DIR)/opt/bin
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec
+	# copy su - can't install it as install only works for root
+	cp -p $(COREUTILS_BUILD_DIR)/src/su $(COREUTILS_IPK_DIR)/opt/bin/su
 	# Install makefiles
 	install -d $(COREUTILS_IPK_DIR)/opt/man/man1	
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
