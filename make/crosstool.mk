@@ -19,6 +19,9 @@ CROSSTOOL_SOURCE=crosstool-$(CROSSTOOL_VERSION).tar.gz
 CROSSTOOL_DIR=crosstool-$(CROSSTOOL_VERSION)
 CROSSTOOL_UNZIP=zcat
 
+ifeq ($(OPTWARE_TARGET),ts72xx)
+CROSSTOOL_SCRIPT = ts72xx-cross334.sh
+else
 ifeq ($(OPTWARE_TARGET),fsg3)
 CROSSTOOL_SCRIPT = fsg3-cross335.sh
 else
@@ -29,6 +32,7 @@ ifeq ($(OPTWARE_TARGET),ds101g)
 CROSSTOOL_SCRIPT = ds101g-cross334.sh
 else
 CROSSTOOL_SCRIPT = nslu2-cross335.sh
+endif
 endif
 endif
 endif
