@@ -350,7 +350,9 @@ FSG3_BROKEN_PACKAGES = \
 TS72XX_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for ts72xx.
-TS72XX_BROKEN_PACKAGES =
+TS72XX_BROKEN_PACKAGES = \
+	appweb asterisk asterisk-sounds \
+	bitlbee bsdmainutils
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
