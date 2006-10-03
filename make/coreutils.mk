@@ -46,7 +46,11 @@ COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config.cache
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-COREUTILS_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET),wl500g)
+  COREUTILS_CPPFLAGS=-DMB_CUR_MAX=1
+else
+  COREUTILS_CPPFLAGS=
+endif
 COREUTILS_LDFLAGS=
 
 #
