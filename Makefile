@@ -352,7 +352,16 @@ TS72XX_SPECIFIC_PACKAGES =
 # Packages that do not work for ts72xx.
 TS72XX_BROKEN_PACKAGES = \
 	appweb asterisk asterisk-sounds \
-	bitlbee bsdmainutils
+	bitlbee bsdmainutils \
+	classpath clearsilver dict dspam \
+	eaccelerator ecl erlang freeradius \
+	ldconfig lighttpd \
+	motion mysql nfs-server nrpe \
+	php php-apache py-mysql py-soappy \
+	qemu qemu-libc-i386 quagga rtorrent ruby rubygems \
+	sablevm transcode w3m xvid \
+	rdate sane-backends syslog-ng squeak tethereal webalizer
+# the above line is the stuff with missing sources.
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
