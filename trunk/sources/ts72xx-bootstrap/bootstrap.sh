@@ -13,7 +13,7 @@ EOF
 export IPKG_CONF_DIR=$BSDIR 
 export IPKG_DIR_PREFIX=$BSDIR 
 
-echo "Installing FSG-3 bootstrap package..."
+echo "Installing TS72XX bootstrap package..."
 mkdir -p /usr/lib/ipkg/info/
 sh ./ipkg.sh install bootstrap.ipk
 
