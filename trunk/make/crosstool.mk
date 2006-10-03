@@ -26,6 +26,7 @@ ifeq ($(OPTWARE_TARGET),fsg3)
 CROSSTOOL_SCRIPT = fsg3-cross335.sh
 else
 ifeq ($(OPTWARE_TARGET),ds101)
+CROSSTOOL_VERSION=0.42
 CROSSTOOL_SCRIPT = ds101-cross344.sh
 else
 ifeq ($(OPTWARE_TARGET),ds101g)
