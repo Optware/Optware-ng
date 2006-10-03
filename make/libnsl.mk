@@ -4,6 +4,9 @@
 #
 ###########################################################
 
+ifeq ($(OPTWARE_TARGET),ts72xx) 
+LIBNSL_VERSION=2.3.2
+else
 ifeq ($(OPTWARE_TARGET),wl500g) 
 LIBNSL_VERSION=0.9.19
 else
@@ -14,6 +17,7 @@ ifeq ($(OPTWARE_TARGET), ds101g)
 LIBNSL_VERSION=2.3.3
 else
 LIBNSL_VERSION=2.2.5
+endif
 endif
 endif
 endif
