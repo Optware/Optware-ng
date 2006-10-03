@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SCGI_SITE=http://quixote.python.ca/releases
-PY-SCGI_VERSION=1.11
+PY-SCGI_VERSION=1.12
 PY-SCGI_SOURCE=scgi-$(PY-SCGI_VERSION).tar.gz
 PY-SCGI_DIR=scgi-$(PY-SCGI_VERSION)
 PY-SCGI_UNZIP=zcat
