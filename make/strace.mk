@@ -28,7 +28,7 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=3
+STRACE_IPK_VERSION=4
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
