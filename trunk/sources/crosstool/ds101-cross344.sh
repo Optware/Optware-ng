@@ -11,6 +11,6 @@ mkdir -p $RESULT_TOP
 
 # Build the toolchain. Takes a couple hours and a couple gigabytes.
 
-eval `cat armv5b-softfloat-ds101.dat gcc-3.4.4-glibc-2.2.5.dat` BINUTILS_DIR=binutils-2.15.94.0.2 LINUX_DIR=linux-2.4.22 sh all.sh --notest
+eval `cat armv5b-softfloat-ds101.dat gcc-3.3.4-glibc-2.3.3.dat` BINUTILS_DIR=binutils-2.15.94.0.2 LINUX_DIR=linux-2.4.22 sh all.sh --notest
 
 echo Done.
