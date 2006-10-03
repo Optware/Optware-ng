@@ -35,7 +35,7 @@ echo "Installing wget-SSL..."
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
 then
 	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/ds101/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/ts72xx/cross/stable" >/opt/etc/ipkg/cross-feed.conf
 fi
 
 echo "Setup complete..."
