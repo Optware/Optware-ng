@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-IMAP_SITE=ftp://ftp.cac.washington.edu/imap/
+IMAP_SITE=ftp://ftp.cac.washington.edu/imap/old
 IMAP_VERSION=2004g
 IMAP_SOURCE=imap-$(IMAP_VERSION).tar.Z
 IMAP_DIR=imap-$(IMAP_VERSION)
