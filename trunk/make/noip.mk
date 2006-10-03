@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NOIP_SITE=http://www.no-ip.com/client/linux
-NOIP_VERSION=2.1.1
+NOIP_VERSION=2.1.3
 NOIP_SOURCE=noip-duc-linux.tar.gz
 NOIP_DIR=noip-$(NOIP_VERSION)
 NOIP_UNZIP=zcat
