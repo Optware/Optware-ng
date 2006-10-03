@@ -52,6 +52,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumik
 	lftp \
 	libextractor \
 	perl-dbd-mysql \
+	asterisk-sounds \
 
 PERL_PACKAGES = \
 	perl \
@@ -113,7 +114,7 @@ PYTHON_PACKAGES = \
 
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
-	apache apr apr-util arc asterisk asterisk-sounds \
+	apache apr apr-util arc asterisk \
 	atftp atk audiofile autoconf automake \
 	bash bc bzip2 bind bip bitchx bitlbee bpalogin bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
@@ -563,8 +564,8 @@ toolchain:
 endif
 
 ifeq ($(OPTWARE_TARGET),ds101)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.5
-CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
+CROSS_CONFIGURATION_GCC_VERSION=3.3.4
+CROSS_CONFIGURATION_GLIBC_VERSION=2.3.3
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
 CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
