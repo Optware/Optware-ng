@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-WEBALIZER_SITE=ftp://ftp.webalizer.mirror.camelnetwork.com/pub/webalizer/
+WEBALIZER_SITE=ftp://ftp.mrunix.net/pub/webalizer
 WEBALIZER_VERSION=2.01-10
 WEBALIZER_SOURCE=webalizer-$(WEBALIZER_VERSION)-src.tgz
 WEBALIZER_DIR=webalizer-$(WEBALIZER_VERSION)
