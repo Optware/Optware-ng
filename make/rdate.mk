@@ -9,7 +9,7 @@ RDATE_SOURCE_DIR=$(SOURCE_DIR)/rdate
 
 RDATE_VERSION=1.4
 RDATE=rdate-$(RDATE_VERSION)
-RDATE_SITE=http://freshmeat.net/redir/rdate/8862/url_tgz/
+RDATE_SITE=http://sources.nslu2-linux.org/sources/
 RDATE_SOURCE=$(RDATE).tar.gz
 RDATE_UNZIP=zcat
 RDATE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
