@@ -360,8 +360,8 @@ TS72XX_BROKEN_PACKAGES = \
 	motion mysql nfs-server nrpe \
 	php php-apache py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent ruby rubygems \
-	sablevm transcode w3m xvid \
-	rdate sane-backends syslog-ng squeak tethereal webalizer
+	sablevm tethereal transcode w3m xvid \
+	rdate sane-backends syslog-ng squeak webalizer
 # the above line is the stuff with missing sources.
 
 ifeq ($(OPTWARE_TARGET),nslu2)
