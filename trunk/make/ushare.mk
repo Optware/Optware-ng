@@ -20,7 +20,7 @@ USHARE_CONFLICTS=
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=2
+USHARE_IPK_VERSION=3
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
