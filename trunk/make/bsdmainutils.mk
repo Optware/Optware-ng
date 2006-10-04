@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BSDMAINUTILS_SITE=http://ftp.debian.org/debian/pool/main/b/bsdmainutils
-BSDMAINUTILS_VERSION=6.1.3
+BSDMAINUTILS_VERSION=6.1.4
 BSDMAINUTILS_SOURCE=bsdmainutils_$(BSDMAINUTILS_VERSION).tar.gz
 BSDMAINUTILS_DIR=bsdmainutils-$(BSDMAINUTILS_VERSION)
 BSDMAINUTILS_UNZIP=zcat
