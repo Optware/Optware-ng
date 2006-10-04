@@ -360,8 +360,6 @@ TS72XX_BROKEN_PACKAGES = \
 	php php-apache py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent \
 	sablevm tethereal transcode w3m xvid \
-	rdate sane-backends squeak
-# the above line is the stuff with missing sources.
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
