@@ -15,6 +15,6 @@ export GCC_HOST AR AS LD NM CC GCC CXX RANLIB PATH GPROF HOST
 
 # Build the toolchain. Takes a couple hours and a couple gigabytes.
 
-eval `cat arm-72xx.dat gcc-3.3.4-glibc-2.3.2.dat` BINUTILS_DIR=binutils-2.15.94.0.2 LINUX_DIR=linux-2.4.26 sh all.sh --notest
+eval `cat arm-ts72xx.dat gcc-3.3.4-glibc-2.3.2.dat` BINUTILS_DIR=binutils-2.15.94.0.2 LINUX_DIR=linux-2.4.26 sh all.sh --notest
 
 echo Done.
