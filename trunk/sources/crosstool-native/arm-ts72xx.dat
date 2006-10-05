@@ -1,0 +1,3 @@
+KERNELCONFIG=`pwd`/arm.config
+TARGET=arm-linux
+TARGET_CFLAGS="-O"
