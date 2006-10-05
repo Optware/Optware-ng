@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=3
+E2FSPROGS_IPK_VERSION=4
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -199,6 +199,9 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/dumpe2fs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/chattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/chattr
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/lsattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/lsattr
+ifeq ($(OPTWARE_TARGET),ts72xx)
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/mke2fs -o $(E2FSPROGS_IPK_DIR)/opt/bin/mke2fs
+endif
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/debugfs.8
