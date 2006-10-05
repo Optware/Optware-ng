@@ -58,6 +58,9 @@
 /* Define to 1 if you have the `chmod' function. */
 #define HAVE_CHMOD 1
 
+/* Define to 1 if you have the `clock_gettime' function. */
+#define HAVE_CLOCK_GETTIME 1
+
 /* Define to 1 if you have the `confstr' function. */
 #define HAVE_CONFSTR 1
 
@@ -168,10 +171,10 @@
 #define HAVE_LIBM 1
 
 /* Define to 1 if you have the `ncurses' library (-lncurses). */
-#define HAVE_LIBNCURSES 1
+/* #undef HAVE_LIBNCURSES */
 
 /* Define to 1 if you have the `ncursesw' library (-lncursesw). */
-/* #undef HAVE_LIBNCURSESW */
+#define HAVE_LIBNCURSESW 1
 
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #define HAVE_LIBPTHREAD 1
@@ -235,6 +238,9 @@
 
 /* Define to 1 if you have the `popen' function. */
 #define HAVE_POPEN 1
+
+/* Define to 1 if you have the `posix_openpt' function. */
+#define HAVE_POSIX_OPENPT 1
 
 /* Define to 1 if you have the `pthread_kill' function. */
 #define HAVE_PTHREAD_KILL 1
@@ -395,11 +401,17 @@
 /* Define to 1 if you have the `strlwr' function. */
 /* #undef HAVE_STRLWR */
 
+/* Define is struct tm has tm_gmtoff */
+#define HAVE_STRUCT_TIME_TM_GMTOFF 
+
 /* Define to 1 if you have the <SupportDefs.h> header file. */
 /* #undef HAVE_SUPPORTDEFS_H */
 
 /* Define if the ln command supports -s */
 #define HAVE_SYMLINKS 1
+
+/* Define to 1 if you have the `syscall' function. */
+#define HAVE_SYSCALL 1
 
 /* Define to 1 if you have the `sysconf' function. */
 #define HAVE_SYSCONF 1
@@ -432,6 +444,9 @@
 
 /* Define to 1 if you have the <sys/stropts.h> header file. */
 #define HAVE_SYS_STROPTS_H 1
+
+/* Define to 1 if you have the <sys/syscall.h> header file. */
+#define HAVE_SYS_SYSCALL_H 1
 
 /* Define to 1 if you have the <sys/termios.h> header file. */
 #define HAVE_SYS_TERMIOS_H 1
@@ -466,6 +481,9 @@
 /* Define to 1 if you have the `usleep' function. */
 #define HAVE_USLEEP 1
 
+/* Define if tzset sets timezone variable */
+#define HAVE_VAR_TIMEZONE 1
+
 /* Define to 1 if you have the `vfork' function. */
 #define HAVE_VFORK 1
 
@@ -492,6 +510,9 @@
 
 /* String used to prefix all symbols requested through dlsym() */
 /* #undef LD_SYMBOL_PREFIX */
+
+/* Define if you have Linux cpu clocks (2.6.12 and greater) */
+/* #undef LINUX_CPUCLOCKS */
 
 /* Define if you have Linux 2.6 compatible /proc */
 /* #undef LINUX_PROCFS */
@@ -531,7 +552,7 @@
 /* #undef O_RUNTIME */
 
 /* "Define if Prolog kernel is in shared object" */
-/* #undef O_SHARED_KERNEL */
+#define O_SHARED_KERNEL 1
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT ""
@@ -552,7 +573,10 @@
 #define PROG_CPP "/opt/armeb/bin/armv5b-softfloat-linux-gcc -E"
 
 /* Name of the SWI-Prolog executable (normally pl) */
-#define PROG_PL "pl"
+#define PROG_PL "swipl"
+
+/* Define if you have pthread cpu clocks (glibc 2.4 and greater) */
+/* #undef PTHREAD_CPUCLOCKS */
 
 /* Define to make use of standard (UNIX98) pthread recursive mutexes */
 #define RECURSIVE_MUTEXES 1

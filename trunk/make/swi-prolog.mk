@@ -23,7 +23,7 @@
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
 ifneq ($(OPTWARE_TARGET),wl500g)
-SWI-PROLOG_VERSION=5.6.20
+SWI-PROLOG_VERSION=5.6.21
 else
 # 5.6.x requires wchar
 SWI-PROLOG_VERSION=5.4.7
@@ -35,7 +35,7 @@ SWI-PROLOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SWI-PROLOG_DESCRIPTION=An LGPL comprehensive portable Prolog implementation.
 SWI-PROLOG_SECTION=lang
 SWI-PROLOG_PRIORITY=optional
-SWI-PROLOG_DEPENDS=libgmp, ncurses, readline
+SWI-PROLOG_DEPENDS=libgmp, ncursesw, readline
 SWI-PROLOG_SUGGESTS=
 SWI-PROLOG_CONFLICTS=
 
@@ -182,7 +182,7 @@ endif
 #
 $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt 
 	@echo "=============== target swi-prolog configure ============"
-	$(MAKE) libgmp-stage ncurses-stage openssl-stage readline-stage
+	$(MAKE) libgmp-stage ncursesw-stage openssl-stage readline-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(LIBC_STYLE), uclibc)
 	sed -i -e '/ac_pthread_cpuclocks=/s/yes/no/g' $(SWI-PROLOG_BUILD_DIR)/src/configure.in
