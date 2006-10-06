@@ -187,7 +187,8 @@ buildroot-source uclibc-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHE
 # shown below to make various patches to it.
 #
 $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
-	$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS)
+		$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
+		$(BUILDROOT_SOURCE_DIR)/buildroot.config
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR)
 	$(BUILDROOT_UNZIP) $(DL_DIR)/$(BUILDROOT_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
