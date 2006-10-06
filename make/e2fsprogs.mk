@@ -200,7 +200,7 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/chattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/chattr
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/lsattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/lsattr
 ifeq ($(OPTWARE_TARGET),ts72xx)
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/mke2fs -o $(E2FSPROGS_IPK_DIR)/opt/bin/mke2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/mke2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
 endif
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
