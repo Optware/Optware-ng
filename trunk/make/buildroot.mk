@@ -74,7 +74,7 @@ UCLIBC_CONFLICTS=buildroot
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=2
+BUILDROOT_IPK_VERSION=3
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -200,6 +200,9 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/buildroot.config $(BUILDROOT_BUILD_DIR)/.config
+ifeq ($(OPTWARE_TARGET), wl500g)
+	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
+endif
 #	change TARGET_ARCH in .config
 	sed  -i -e 's|.*\(BR2_[a-z0-9_]\{2,\}\).*|# \1 is not set|' \
 	 -e 's|# BR2_$(TARGET_ARCH) is not set|BR2_$(TARGET_ARCH)=y|' \
@@ -309,7 +312,9 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	install -d $(BUILDROOT_IPK_DIR)
 	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
 #	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
+ifeq ($(OPTWARE_TARGET), wl500g)
 	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
+endif
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
