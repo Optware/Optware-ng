@@ -28,7 +28,7 @@
 #
 #http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.2.8.tar.gz
 RRDTOOL_SITE=http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/
-RRDTOOL_VERSION=1.2.14
+RRDTOOL_VERSION=1.2.15
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
@@ -129,6 +129,13 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 		--disable-perl \
 		--disable-python \
 		--program-prefix="" \
+		--disable-rpath \
+		--enable-shared=yes \
+		--enable-static=yes \
+		--with-gnu-ld \
+		--enable-rrdcgi \
+		--disable-mmap \
+		--disable-x \
 	)
 	$(PATCH_LIBTOOL) $(RRDTOOL_BUILD_DIR)/libtool
 	touch $(RRDTOOL_BUILD_DIR)/.configured
