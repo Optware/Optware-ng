@@ -79,6 +79,8 @@
 <BAR>_IPK_DIR=$(BUILD_DIR)/<bar>-$(<BAR>_VERSION)-ipk
 <BAR>_IPK=$(BUILD_DIR)/<bar>_$(<BAR>_VERSION)-$(<BAR>_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: <bar>-source <bar>-unpack <bar> <bar>-stage <bar>-ipk <bar>-clean <bar>-dirclean
+
 #
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
@@ -157,7 +159,7 @@ $(<BAR>_BUILD_DIR)/.staged: $(<BAR>_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/<bar>
 #
 $(<BAR>_IPK_DIR)/CONTROL/control:
-	@install -d $(<BAR>_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: <bar>" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
