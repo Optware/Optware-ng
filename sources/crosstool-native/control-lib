@@ -1,7 +1,7 @@
 Package: crosstool-native-lib
 Priority: optional
 Version: 0.28-rc37-5
-Architecture: powerpc
+Architecture: armeb
 Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
 Section: base
 Source: http://kegel.com/crosstool/crosstool-0.28-rc37.tar.gz
