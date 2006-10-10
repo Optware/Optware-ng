@@ -1,8 +1,0 @@
-Package: crosstool-native-lib
-Priority: optional
-Version: 0.28-rc37-5
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: base
-Source: http://kegel.com/crosstool/crosstool-0.28-rc37.tar.gz
-Description: Bootstrap toolchain including GCC 3.3.5, GLIBC 2.2.5, BINUTILS 2.15.94.0.2, and LINUX 2.4.22 headers.
