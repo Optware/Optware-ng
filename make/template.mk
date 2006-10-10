@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 <FOO>_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/<foo>
-<FOO>_VERSION=3.2.3
+<FOO>_VERSION=3.2.1
 <FOO>_SOURCE=<foo>-$(<FOO>_VERSION).tar.gz
 <FOO>_DIR=<foo>-$(<FOO>_VERSION)
 <FOO>_UNZIP=zcat
@@ -74,6 +74,8 @@
 <FOO>_SOURCE_DIR=$(SOURCE_DIR)/<foo>
 <FOO>_IPK_DIR=$(BUILD_DIR)/<foo>-$(<FOO>_VERSION)-ipk
 <FOO>_IPK=$(BUILD_DIR)/<foo>_$(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: <foo>-source <foo>-unpack <foo> <foo>-stage <foo>-ipk <foo>-clean <foo>-dirclean
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -163,7 +165,7 @@ $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/<foo>
 #
 $(<FOO>_IPK_DIR)/CONTROL/control:
-	@install -d $(<FOO>_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: <foo>" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
