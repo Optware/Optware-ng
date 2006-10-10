@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.12
+LIGHTD_VERSION=1.4.13
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.gz
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=zcat
@@ -36,7 +36,7 @@ LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib
-LIGHTTPD_SUGGESTS=bzip2, libmemcache, lua, memcached, mysql, openldap, openssl
+LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap, openssl
 LIGHTTPD_CONFLICTS=
 
 #
@@ -62,7 +62,7 @@ LIGHTTPD_PATCHES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIGHTTPD_CPPFLAGS=
+LIGHTTPD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
 LIGHTTPD_LDFLAGS=
 
 #
@@ -112,7 +112,7 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
-	$(MAKE) bzip2-stage libmemcache-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
+	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
 ifneq ($(OPTWARE_TARGET), wl500g)
 	$(MAKE) openldap-stage
 endif
@@ -120,7 +120,7 @@ endif
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
 		then cat $(LIGHTTPD_PATCHES) | \
-		patch -bd $(BUILD_DIR)/$(LIGHTTPD_DIR) -p1 ; \
+		patch --ignore-whitespace -bd $(BUILD_DIR)/$(LIGHTTPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(LIGHTTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
@@ -146,6 +146,8 @@ endif
 		--with-mysql=$(STAGING_PREFIX)/bin/mysql_config \
 		--with-pcre \
 		--with-openssl \
+		--with-webdav-locks \
+		--with-webdav-props \
 		--disable-nls \
 		--disable-static \
 	)
