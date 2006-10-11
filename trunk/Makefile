@@ -155,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
 	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
-	screen sed smartmontools socat sqlite sqlite2 strace syslog-ng \
+	screen sdparm sed smartmontools socat sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
