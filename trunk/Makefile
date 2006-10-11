@@ -804,7 +804,7 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 dirclean: $(PACKAGES_DIRCLEAN)
 
 distclean:
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss nas100d ds101 ds101j ds101g fsg3
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 wl500g mss nas100d ds101 ds101j ds101g fsg3 ts72xx
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
