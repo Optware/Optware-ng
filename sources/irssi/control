@@ -1,9 +1,0 @@
-Package: irssi
-Priority: optional
-Version: 20050206-1
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: irc clients
-Depends: glib, ncurses, openssl
-Source: http://irssi.org/
-Description: text mode irc client
