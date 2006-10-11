@@ -30,13 +30,19 @@ IRSSI_DESCRIPTION=A terminal based IRC client for UNIX systems.
 IRSSI_SECTION=net
 IRSSI_PRIORITY=optional
 IRSSI_DEPENDS=glib, ncurses, gconv-modules
+ifeq (perl,$(filter perl, $(PACKAGES)))
+IRSSI_SUGGESTS=perl
+IRSSI_WITH_OR_WITHOUT_PERL=--with-perl
+else
 IRSSI_SUGGESTS=
+IRSSI_WITH_OR_WITHOUT_PERL=--without-perl
+endif
 IRSSI_CONFLICTS=
 
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=3
+IRSSI_IPK_VERSION=4
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -46,7 +52,8 @@ IRSSI_IPK_VERSION=3
 # IRSSI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch
+IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch \
+	$(IRSSI_SOURCE_DIR)/src-perl-Makefile.in.patch \
 
 #
 # If the compilation of the package requires additional
@@ -54,6 +61,12 @@ IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch
 #
 IRSSI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
 IRSSI_LDFLAGS=
+IRSSI_PERL_CFLAGS=-fomit-frame-pointer  -I$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
+IRSSI_PERL_LDFLAGS=-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
+	-L$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
+	$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a \
+	-L/opt/lib/perl5/$(PERL_VERSION)/armv5b-linux/CORE \
+	-lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s \
 
 #
 # IRSSI_BUILD_DIR is the directory in which the build is done.
@@ -101,8 +114,13 @@ irssi-source: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES) make/irssi.mk
+$(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
+# make/irssi.mk
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	$(MAKE) glib-stage ncurses-stage openssl-stage perl-stage
+else
 	$(MAKE) glib-stage ncurses-stage openssl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR)
 	$(IRSSI_UNZIP) $(DL_DIR)/$(IRSSI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IRSSI_PATCHES)" ; \
@@ -117,18 +135,33 @@ $(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES) make/
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IRSSI_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IRSSI_LDFLAGS)" \
+		ac_cv_path_perlpath=$(PERL_HOSTPERL) \
+		PERL_CFLAGS="$(STAGING_CPPFLAGS) $(IRSSI_CPPFLAGS) $(IRSSI_PERL_CFLAGS)" \
+		PERL_LDFLAGS="$(STAGING_LDFLAGS) $(IRSSI_LDFLAGS) $(IRSSI_PERL_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--without-perl \
+		$(IRSSI_WITH_OR_WITHOUT_PERL) \
 		--with-ncurses=$(STAGING_PREFIX) \
 		--enable-ipv6 \
 		--disable-glibtest \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 	)
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	for i in common irc ui textui; do \
+	    (cd $(IRSSI_BUILD_DIR)/src/perl/$$i; \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		$(PERL_HOSTPERL) Makefile.PL \
+		$(TARGET_CONFIGURE_OPTS) \
+		PREFIX=/opt \
+	    ) \
+	done
+endif
 	$(PATCH_LIBTOOL) $(IRSSI_BUILD_DIR)/libtool
 	touch $(IRSSI_BUILD_DIR)/.configured
 
@@ -139,6 +172,17 @@ irssi-unpack: $(IRSSI_BUILD_DIR)/.configured
 #
 $(IRSSI_BUILD_DIR)/.built: $(IRSSI_BUILD_DIR)/.configured
 	rm -f $(IRSSI_BUILD_DIR)/.built
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	for i in common irc ui textui; do \
+	    $(MAKE) -C $(IRSSI_BUILD_DIR)/src/perl/$$i \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		$(PERL_INC) \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+	    ; \
+	done
+endif
 	$(MAKE) -C $(IRSSI_BUILD_DIR) GLIB_CFLAGS=""
 	touch $(IRSSI_BUILD_DIR)/.built
 
@@ -196,6 +240,13 @@ $(IRSSI_IPK): $(IRSSI_BUILD_DIR)/.built
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(IRSSI_SOURCE_DIR)/rc.irssi $(IRSSI_IPK_DIR)/opt/etc/init.d/SXXirssi
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	(cd $(IRSSI_IPK_DIR)/opt/lib/perl5 ; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
+endif
 	$(MAKE) $(IRSSI_IPK_DIR)/CONTROL/control
 #	install -m 755 $(IRSSI_SOURCE_DIR)/postinst $(IRSSI_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(IRSSI_SOURCE_DIR)/prerm $(IRSSI_IPK_DIR)/CONTROL/prerm
