@@ -1,5 +1,5 @@
 --- irssi/configure.in.orig	2005-12-11 14:45:07.000000000 -0800
-+++ irssi/configure.in	2006-08-22 17:56:10.000000000 -0700
++++ irssi/configure.in	2006-10-10 12:46:34.000000000 -0700
 @@ -281,21 +281,7 @@
  
  dnl * older autoconfs don't include sys/types.h, so do it manually
@@ -37,3 +37,23 @@
    fi
  fi
  rm -rf conftest conftest.* libconftest.* .libs
+@@ -634,7 +615,9 @@
+ 	if test -z "$perlpath"; then
+        		perl_check_error="perl binary not found"
+ 	else
++            if test -z "$PERL_CFLAGS"; then
+ 		PERL_CFLAGS=`$perlpath -MExtUtils::Embed -e ccopts 2>/dev/null`
++            fi
+ 	fi
+ 
+ 	if test "x$ac_cv_prog_gcc" = "xyes" -a -z "`echo $host_os|grep 'bsd\|linux'`"; then
+@@ -657,7 +640,9 @@
+ 		AC_MSG_RESULT([not found, building without Perl])
+ 		want_perl=no
+ 	else
++            if test -z "$PERL_LDFLAGS"; then
+ 		PERL_LDFLAGS=`$perlpath -MExtUtils::Embed -e ldopts 2>/dev/null`
++            fi
+ 
+ 		dnl * Perl 5.004 and older use perl_xxx variables while
+ 		dnl * later use PL_perl_xxx variables ..
