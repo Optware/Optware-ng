@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.6
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=961
+TRANSMISSION_SVN_REV=993
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -32,7 +32,7 @@ TRANSMISSION_DESCRIPTION=lightweight BitTorrent client
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl
-TRANSMISSION_SUGGESTS=
+TRANSMISSION_SUGGESTS=gnuplot, libbt
 TRANSMISSION_CONFLICTS=
 
 #
@@ -42,7 +42,7 @@ TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
-#TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/SXXtransmission
+TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_httpd
 
 #
 # TRANSMISSION_PATCHES should list any patches, in the the order in
@@ -210,11 +210,18 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) PREFIX=$(TRANSMISSION_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissioncli
 	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond
-#	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
-#	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/SXXtransmission
+	install -d $(TRANSMISSION_IPK_DIR)/opt/etc
+	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
+	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(TRANSMISSION_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
+	install -d $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
+	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission.cgi $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
+	install -d $(TRANSMISSION_IPK_DIR)/opt/sbin
+	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
+	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+	install -m 666 $(TRANSMISSION_SOURCE_DIR)/README.daemon $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
-#	install -m 755 $(TRANSMISSION_SOURCE_DIR)/postinst $(TRANSMISSION_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(TRANSMISSION_SOURCE_DIR)/postinst $(TRANSMISSION_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(TRANSMISSION_SOURCE_DIR)/prerm $(TRANSMISSION_IPK_DIR)/CONTROL/prerm
 	echo $(TRANSMISSION_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_IPK_DIR)

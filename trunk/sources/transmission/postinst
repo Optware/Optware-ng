@@ -1,0 +1,14 @@
+#! /bin/sh
+
+# Add a rule to the crontab
+
+# grep -q torrent_watchdog /etc/crontab || echo "0-59/20 * * * * root /opt/sbin/torrent_watchdog &>/dev/null" >> /etc/crontab
+# m h dom mon dow user  command
+grep -q transmission_watchdog /opt/etc/crontab || echo "*/30 * * * * admin nice /opt/sbin/transmission_watchdog" >> /opt/etc/crontab
+
+
+# 
+echo "Please note that /opt/etc/init.d/S80busybox_httpd is installed for"
+echo "running CGI interface at http://localhost:8008/cgi-bin/transmission.cgi"
+echo "See instructions for daemon and WWW interface in /opt/share/doc/transmission"
+echo "Configure daemon with /opt/etc/transmission.conf"

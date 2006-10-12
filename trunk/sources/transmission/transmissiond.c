@@ -5,15 +5,16 @@
  * and http://transmission.m0k.org/forum/viewtopic.php?p=3757#3757
  *
  * Sample usage: export HOME=/tmp/harddisk/tmp
- * transmissiond -p 65534 -w 60 -u 10 -i /opt/var/run/transmission.pid  \
- *                /tmp/harddisk/tmp/files.txt
+ * transmissiond -p 65534 -w 1800 -u 40 -i /opt/var/run/transmission.pid  \
+ *                /tmp/harddisk/tmp/active-torrents.txt
  *
- * Always use full paths to facilitate reload.
+ * Always use full paths to facilitate reload_active.
  *
  * TODO: 
+ *  notification delay (autoseed time). Seeding expired status.
+ *  merge NAT traversal from transmissioncli
  *  config file 
- *  pidfile rewrite
- *  remove verbose
+ *  load in logfile
  *
  * Copyright (c) 2005-2006 Transmission authors and contributors
  *
@@ -57,12 +58,11 @@
 #  define UNUSED
 #endif
 
-
 #define USAGE \
-"Usage: %s [options] files.txt [options]\n\n" \
+"Usage: %s [options] active-torrents.txt [options]\n\n" \
 "Options:\n" \
 "  -h, --help           Print this help and exit\n" \
-"  -v, --verbose <int>  Verbose level (0 to 2, default = 0)\n" \
+"  -v, --verbose <int>  Verbose level implies foreground (0 to 2, default = 0)\n" \
 "  -p, --port <int>     Port we should listen on (default = %d)\n" \
 "  -u, --upload <int>   Maximum upload rate (-1 = no limit, default = 20)\n" \
 "  -d, --download <int> Maximum download rate (-1 = no limit, default = -1)\n" \
@@ -70,7 +70,7 @@
 "  -w, --watchdog <int> Watchdog interval in seconds (default = 600)\n" \
 "  -i, --pidfile <path> PID file path \n" \
 "Signals:\n"                                                            \
-"\tHUP\treload files.txt and start/stop torrents\n"\
+"\tHUP\treload active-torrents.txt and start/stop torrents\n"\
 "\tUSR1\twrite .status files into torrent directories\n"   \
 "\tUSR2\tlist active torrents\n"
 
@@ -82,6 +82,9 @@ static int           downloadLimit = -1;
 static char          * torrentPath = NULL;
 static int           watchdogInterval = 600;
 static volatile char mustDie       = 0;
+static volatile char got_hup       = 0;
+static volatile char got_usr1      = 0;
+static volatile char got_usr2      = 0;
 static char          * pidfile = NULL;
 
 static char          * finishCall   = NULL;
@@ -122,7 +125,6 @@ static void stop(tr_torrent_t *tor, void * data UNUSED )
       usleep( 500000 );
     }
   tr_torrentClose( h, tor );
-  syslog( LOG_NOTICE, "All torrents stopped");
 }
 
 struct active_torrents_s
@@ -156,7 +158,8 @@ static void is_active(tr_torrent_t *tor, void *data)
     }
 }
 
-static void reload()
+
+static void reload_active()
 {
   tr_torrent_t * tor;
   int error;
@@ -164,7 +167,7 @@ static void reload()
 
   struct active_torrents_s active_torrents;
 
-  syslog(LOG_DEBUG, "Reload called");
+  syslog(LOG_DEBUG, "Reload_Active called");
 
   /* open a file with a list of requested active torrents */
   if ( (stream = fopen(torrentPath, "r")) != NULL)
@@ -212,36 +215,52 @@ static void reload()
     syslog(LOG_ERR, "Active torrent file %s - %m", torrentPath);
 }
 
-/* Prepares status string up to 80 chars wide */
+/* Prepares status string up to STATUS_WIDTH chars width */
 static char * status(tr_torrent_t *tor)
 {
-  static char string[80];
+#define STATUS_WIDTH 90
+  static char string[STATUS_WIDTH];
   int  chars = 0;
 
   tr_stat_t    * s = tr_torrentStat( tor );
   
   if( s->status & TR_STATUS_CHECK )
     {
-      chars = snprintf( string, 80,
+      chars = snprintf( string, STATUS_WIDTH,
                         "Checking files... %.2f %%", 100.0 * s->progress );
     }
   else if( s->status & TR_STATUS_DOWNLOAD )
     {
-      chars = snprintf( string, 80,
-                        "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
-                        "ul to %d (%.2f KB/s)", 100.0 * s->progress,
-                        s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
-                        s->peersUploading, s->rateDownload,
-                        s->peersDownloading, s->rateUpload );
+      if (s->eta < 0 ) /* Without eta */
+        snprintf( string, STATUS_WIDTH,
+                  "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
+                  "ul to %d (%.2f KB/s)", 100.0 * s->progress,
+                  s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
+                  s->peersUploading, s->rateDownload,
+                  s->peersDownloading, s->rateUpload );
+      else
+        snprintf( string, STATUS_WIDTH,
+                  "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
+                  "ul to %d (%.2f KB/s) %d:%02d remaining",
+                  100.0 * s->progress,
+                  s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
+                  s->peersUploading, s->rateDownload,
+                  s->peersDownloading, s->rateUpload,
+                  s->eta / 3600, (s->eta / 60) % 60
+                  );
     }
   else if( s->status & TR_STATUS_SEED )
     {
-      chars = snprintf( string, 80,
+      chars = snprintf( string, STATUS_WIDTH,
                         "Seeding, uploading to %d of %d peer(s), %.2f KB/s",
                         s->peersDownloading, s->peersTotal,
                         s->rateUpload );
     }
-  else if( s->error & TR_ETRACKER )
+  else if (s->status & TR_STATUS_STOPPING)
+    snprintf( string, STATUS_WIDTH, "Stopping...");
+  else if (s->status & TR_STATUS_PAUSE )
+    snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->progress);
+  else if( s->error & TR_ETRACKER ) /*   */
     {
       snprintf( string, 80, "%s", s->trackerError );
     }
@@ -256,6 +275,7 @@ static void write_info(tr_torrent_t *tor, void * data UNUSED )
 {
   FILE *stream;
   char fn[MAX_PATH_LENGTH];
+  tr_stat_t    * s = tr_torrentStat( tor );
   
   snprintf(fn, MAX_PATH_LENGTH, "%s/.status", tr_torrentGetFolder(tor));
   stream = fopen(fn, "w");
@@ -263,7 +283,9 @@ static void write_info(tr_torrent_t *tor, void * data UNUSED )
     {
       fputs("STATUS='", stream);
       fputs(status(tor), stream);
-      fputs("'\n", stream );
+      fprintf(stream, "'\nDOWNLOADED='%.1f'\nUPLOADED='%.1f'\n",
+              (s->downloaded/1024)/1024.0f,
+              (s->uploaded/1024)/1024.0f);
       fclose(stream);
     }
   else
@@ -287,13 +309,13 @@ static void signalHandler( int signal )
       mustDie = 1;
       break;
     case SIGUSR1:
-      tr_torrentIterate( h, write_info, NULL );
+      got_usr1 = 1;
       break;
     case SIGUSR2:
-      tr_torrentIterate( h, list, NULL );
+      got_usr2 = 1;
       break;
     case SIGHUP:
-      reload();
+      got_hup = 1;
       break;
     default:
       break;
@@ -313,7 +335,7 @@ static void setupsighandlers(void) {
 
 
 
-static int writepidfile(int pid)
+static int write_pidfile(int pid)
 {
   FILE *f = fopen(pidfile, "w");
   if ( f != NULL)
@@ -326,6 +348,22 @@ static int writepidfile(int pid)
     syslog( LOG_CRIT, "%.80s - %m", pidfile );
   return -1;
 }
+
+#ifdef HAVE_SYSINFO
+void load(void)
+{
+  static const int FSHIFT = 16;              /* nr of bits of precision */
+  struct sysinfo info;
+  sysinfo(&info);
+#define FIXED_1         (1<<FSHIFT)     /* 1.0 as fixed-point */
+#define LOAD_INT(x) ((x) >> FSHIFT)
+#define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
+  syslog(LOG_INFO, "load average: %ld.%02ld, %ld.%02ld, %ld.%02ld\n",
+         LOAD_INT(info.loads[0]), LOAD_FRAC(info.loads[0]),
+         LOAD_INT(info.loads[1]), LOAD_FRAC(info.loads[1]),
+         LOAD_INT(info.loads[2]), LOAD_FRAC(info.loads[2]));
+}
+#endif
 
 
 int main( int argc, char ** argv )
@@ -369,35 +407,31 @@ int main( int argc, char ** argv )
       return 1;
     }
   
-
-  switch( fork())
+  if (verboseLevel == 0)
     {
-    case 0:
-      break;
-    case -1:
-      syslog( LOG_CRIT, "fork - %m" );
-      exit(1);
-    default:
-      exit(0);
+      switch( fork())
+        {
+        case 0:
+          break;
+        case -1:
+          syslog( LOG_CRIT, "fork - %m" );
+          exit(1);
+        default:
+          exit(0);
+        }
+  
+      /* child continues */
+  
+
+      /* We're not going to use stdin stdout or stderr from here on, so close
+      ** them to save file descriptors.  */
+     fclose( stdin );
+     fclose( stdout );
+     fclose( stderr );  
     }
-  
-  /* child continues */
-  
+
   setsid();    /* become session leader */
   pid = getpid();
-  if ( chdir( "/" ) < 0)
-    {
-      syslog( LOG_CRIT, "chdir - %m" );
-      exit( 1 );
-    }
-
-  /* We're not going to use stdin stdout or stderr from here on, so close
-  ** them to save file descriptors.
-  */
-
-  fclose( stdin );
-  fclose( stdout );
-  fclose( stderr );  
   
   cp = strrchr( argv[0], '/' );
   if ( cp != (char*) 0 )
@@ -408,28 +442,51 @@ int main( int argc, char ** argv )
   openlog(cp, LOG_NDELAY|LOG_PID, LOG_USER);
   
   syslog(LOG_INFO,
-         "Transmission daemon %s (%d) - http://transmission.m0k.org/\n\n",
+         "Transmission daemon %s (%d) started - http://transmission.m0k.org/",
          VERSION_STRING, VERSION_REVISION );
   
-  
+  /*  */
   if (pidfile != NULL)
-    writepidfile(pid);
+    write_pidfile(pid);
   
   
   /* Initialize libtransmission */
   h = tr_init();
+
+  /* Move  to writable directory to be able to save coredump there */
+  if ( chdir(tr_getPrefsDirectory())  < 0)
+    {
+      syslog( LOG_CRIT, "chdir - %m" );
+      exit( 1 );
+    }
+
   
   tr_setBindPort( h, bindPort );
   tr_setUploadLimit( h, uploadLimit );
   tr_setDownloadLimit( h, downloadLimit );
   
   setupsighandlers();
-  reload();
+  reload_active();
   
   while( !mustDie )
     {
       float upload, download;
       sleep( watchdogInterval );
+      if ( got_usr1 )
+        {
+          tr_torrentIterate( h, write_info, NULL );
+          got_usr1 = 0;
+        }
+      if ( got_usr2 )
+        {
+          tr_torrentIterate( h, list, NULL );
+          got_usr2 = 0;
+        }
+      if ( got_hup )
+        {
+          reload_active();
+          got_hup = 0;
+        }
       tr_torrentIterate( h, watchdog, NULL );
       tr_torrentRates(h, &download, &upload);
       syslog(LOG_INFO, "%ld %d dl %.2f ul %.2f", time(NULL),
@@ -437,6 +494,8 @@ int main( int argc, char ** argv )
     }
   
   tr_torrentIterate( h, stop, NULL );
+  syslog( LOG_NOTICE, "All torrents stopped");
+
   tr_close( h );
   
   if (pidfile != NULL)
