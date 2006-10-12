@@ -1,0 +1,106 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+# Uncomment path to busybox httpd to enable startup
+BUSYBOX_HTTPD=/usr/sbin/busybox_httpd
+
+HTTPD_CONFIG=${HOME}/httpd.conf
+LISTENING_PORT=8008
+
+
+check_config(){
+  if [ ! -e ${HTTPD_CONFIG} ]; then
+  echo "Creating default ${HTTPD_CONFIG}"
+  cat > ${HTTPD_CONFIG} << __EOF__
+# httpd.conf has the following format:
+#
+# A:172.20.         # Allow address from 172.20.0.0/16
+# A:10.0.0.0/25     # Allow any address from 10.0.0.0-10.0.0.127
+# A:10.0.0.0/255.255.255.128  # Allow any address that previous set
+# A:127.0.0.1       # Allow local loopback connections
+# D:*               # Deny from other IP connections
+# /cgi-bin:foo:bar  # Require user foo, pwd bar on urls starting with /cgi-bin/
+# /adm:admin:setup  # Require user admin, pwd setup on urls starting with /adm/
+# /adm:toor:PaSsWd  # or user toor, pwd PaSsWd on urls starting with /adm/
+# .au:audio/basic   # additional mime type for audio.au files
+#
+# A/D may be as a/d or allow/deny - first char case insensitive
+# Deny IP rules take precedence over allow rules.
+#
+#
+# The Deny/Allow IP logic:
+#
+#  - Default is to allow all.  No addresses are denied unless
+#         denied with a D: rule.
+#  - Order of Deny/Allow rules is significant
+#  - Deny rules take precedence over allow rules.
+#  - If a deny all rule (D:*) is used it acts as a catch-all for unmatched
+#       addresses.
+#  - Specification of Allow all (A:*) is a no-op
+#
+# Example:
+#   1. Allow only specified addresses
+#     A:172.20          # Allow any address that begins with 172.20.
+#     A:10.10.          # Allow any address that begins with 10.10.
+#     A:127.0.0.1       # Allow local loopback connections
+#     D:*               # Deny from other IP connections
+#
+#   2. Only deny specified addresses
+#   2. Only deny specified addresses
+#     D:1.2.3.        # deny from 1.2.3.0 - 1.2.3.255
+#     D:2.3.4.        # deny from 2.3.4.0 - 2.3.4.255
+#     A:*             # (optional line added for clarity)
+#
+# If a sub directory contains a config file it is parsed and merged with
+# any existing settings as if it was appended to the original configuration.
+#
+# subdir paths are relative to the containing subdir and thus cannot
+# affect the parent rules.
+#
+# Note that since the sub dir is parsed in the forked thread servicing the
+# subdir http request, any merge is discarded when the process exits.  As a
+# result, the subdir settings only have a lifetime of a single request.
+#
+A:*
+#/cgi-bin:${USER}:password
+.au:audio/basic
+.asp:text/html
+__EOF__
+  fi
+}
+
+start() {
+  if [ ! -x "${BUSYBOX_HTTPD}" ]; then
+	echo "busybox httpd ${BUSYBOX_HTTPD} not started."
+	exit 2
+  fi
+  check_config
+  echo -n "Starting busybox httpd at port ${LISTENING_PORT} ... "
+  ${BUSYBOX_HTTPD} -c ${HTTPD_CONFIG} -p ${LISTENING_PORT} -h /opt/share/www
+  echo "done"
+}
+
+stop() {
+	echo -n "Shutting down busybox httpd... "
+	killall busybox_httpd
+	echo "done"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart)"
+		exit 1
+		;;
+esac
