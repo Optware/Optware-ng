@@ -81,7 +81,18 @@ NOTE=\"${NOTE}\"
 TORRENTNAME=\"${TORRENTNAME}\"" > "${TORRENT%/*}/.info"
 }
 
-
+_clean_info()
+{
+	STARTTIME=""
+	ENDTIME=""
+	STATUS=""
+	SCRAPE=""
+	TORRENTNAME=""
+	UPLOADED=""
+	URL=""
+	NOTE=""
+}
+                                
 
 move_to_target ()
 {
@@ -100,10 +111,6 @@ move_to_target ()
     chown ${USER} *
     chmod ug+rw *
 
-    # Auto purge old logs
-    [ -e current.log ] && rm current.log
-    [ -e current_error.log ] && rm current_error.log
-    
     notice "Moving files to: ${DEST}"
     mv * .info .status "${DEST}"
     chmod 775 "${DEST}"
@@ -183,9 +190,9 @@ check_tracker_error ()
 {
     return
 
-    [ -f "${TORRENT%/*}/current.log" ] || return
+    [ -f "${TORRENT%/*}/.status" ] || return
 
-    tail -10 "${TORRENT%/*}/current.log" | grep -q "Error from tracker"  2>/dev/null
+    grep -q "Error from tracker"  "${TORRENT%/*}/.status" 2>/dev/null
 if [ $? -eq 0 ]; then   
     debug "Error from tracker"
     warning "Error from tracker"
