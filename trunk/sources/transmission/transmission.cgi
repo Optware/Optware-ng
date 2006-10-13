@@ -59,6 +59,7 @@ _clean_info()
     STATUS=""
     SCRAPE=""
     TORRENTNAME=""
+    UPLOADED=""
     URL=""
     NOTE=""
 }
@@ -85,6 +86,7 @@ _update_progress()
          _write_info
        fi
     done
+    UPLOADED=
 }
 
 # Can only start torrents in WORK or TARGET
@@ -101,6 +103,7 @@ _start_torrent()
     fi
     [ -z "${STARTTIME}" ] && STARTTIME=`date +"${DATE_FORMAT}"`
     STATUS="started"
+    UPLOADED=
     _write_info
     _update_active
 }
@@ -179,7 +182,7 @@ _purge ()
 	  if [ -f "${TORRENT}" ]; then
 		echo "<b>status $f not purged</b>"
 	  else
-          	echo "Puging $f"
+          	echo "Puging ${DUMMY}"
 		[ -f "${DUMMY}/.status" ] && rm "${DUMMY}/.status"
 		. "${f}"
 		STATUS=""
@@ -193,7 +196,7 @@ _purge ()
     if [ -n "${REMOVED}" ]; then
         echo "<pre>"
 	for f in $WORK/*/*.torrent.removed ; do
-		DIR=`dirname "$f"`
+		DIR="${f%/*}"
 		echo "Purging $DIR"
 		rm -fr "${DIR}"			
 	done
@@ -244,6 +247,7 @@ _scrape ()
 	. "${INFO}"
 	SCRAPE=`btlist -sq "${TORRENT}" | grep seeders`
 	_write_info
+	UPLOADED=
 	echo "."
     fi  
   done
@@ -497,7 +501,7 @@ _help ()
 This is quick explanation of the buttons:
 <dl>
 <dt><u>U</u>pdate<dd>updates active torrents status
-<dt>Log<dd>shows <u>c</u>urrent.log of active torrent
+<dt>Log<dd>shows <u>c</u>urrent transfer log graph
 <dt>Pau<u>s</u>e<dd>all active torrent processing should stop/resume imediately
 <dt><u>P</u>ush<dd> Push selected torrent to other queue
 <dt><u>L</u>ist<dd>lists queued, active, suspended and completed torrents
