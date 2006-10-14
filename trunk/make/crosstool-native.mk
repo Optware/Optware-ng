@@ -20,7 +20,7 @@ CROSSTOOL-NATIVE_DIR=crosstool-$(CROSSTOOL-NATIVE_VERSION)
 CROSSTOOL-NATIVE_UNZIP=zcat
 
 CROSSTOOL-NATIVE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-CROSSTOOL-NATIVE_DESCRIPTION=Bootstrap toolchain including GCC 3.3.5, GLIBC 2.2.5, BINUTILS 2.15.94.0.2, and LINUX 2.4.22 headers.
+CROSSTOOL-NATIVE_DESCRIPTION=Bootstrap toolchain including GCC $(CROSS_CONFIGURATION_GCC_VERSION), GLIBC $(CROSS_CONFIGURATION_GLIBC_VERSION), BINUTILS and LINUX headers.
 CROSSTOOL-NATIVE_SECTION=base
 CROSSTOOL-NATIVE_PRIORITY=optional
 CROSSTOOL-NATIVE_DEPENDS=\
@@ -285,7 +285,7 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 	( cd $(CROSSTOOL-NATIVE_PREFIX) ; tar cf - . ) | \
 		( cd $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX) ; tar xvf - )
 # For some reason, syslimits.h is missing; copy it from the toolchain
-	install -m 644 $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/lib/gcc-lib/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib\/$(GNU_TARGET_NAME)/3.3.5/include/syslimits.h
+	install -m 644 $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/lib/gcc-lib/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib\/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h
 # Install symlinks for common toolchain programs
 	install -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
 	for f in ar as c++ g++ gcc ld nm ranlib strip ; do \
