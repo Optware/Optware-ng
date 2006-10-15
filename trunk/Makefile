@@ -93,6 +93,7 @@ PERL_PACKAGES = \
 	perl-uri \
 	perl-version \
 	perl-wakeonlan \
+	perl-xml-parser \
 	amavisd-new \
 	spamassassin \
 
