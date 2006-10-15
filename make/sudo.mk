@@ -2,9 +2,9 @@
 # Make file for sudo
 #
 
-#SUDO_SITE=http://probsd.org/sudoftp
-SUDO_SITE=http://sources.nslu2-linux.org/sources/
-SUDO_VERSION=1.6.8p1
+SUDO_SITE=http://probsd.org/sudoftp
+#SUDO_SITE=http://sources.nslu2-linux.org/sources/
+SUDO_VERSION=1.6.8p12
 SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_VERSION)
 SUDO_UNZIP=zcat
@@ -16,7 +16,7 @@ SUDO_DEPENDS=
 SUDO_SUGGESTS=
 SUDO_CONFLICTS=
 
-SUDO_IPK_VERSION=5
+SUDO_IPK_VERSION=6
 
 SUDO_CONFFILES=/opt/etc/sudoers
 
