@@ -223,7 +223,7 @@ WL500G_BROKEN_PACKAGES = \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
-	 sdl ser sm snownews sqsh sudo swi-prolog \
+	 sdl ser sm snownews sqsh swi-prolog \
 	 tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst \
