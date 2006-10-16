@@ -1,6 +1,7 @@
 #
 # Make file for sudo
 #
+# $Id$
 
 SUDO_SITE=http://probsd.org/sudoftp
 #SUDO_SITE=http://sources.nslu2-linux.org/sources/
@@ -16,11 +17,15 @@ SUDO_DEPENDS=
 SUDO_SUGGESTS=
 SUDO_CONFLICTS=
 
-SUDO_IPK_VERSION=6
+SUDO_IPK_VERSION=7
 
 SUDO_CONFFILES=/opt/etc/sudoers
 
+ifeq ($(OPTWARE_TARGET),wl500g)
+SUDO_PATCHES=$(SUDO_SOURCE_DIR)/configure.patch $(SUDO_SOURCE_DIR)/configure_wl500g.patch
+else
 SUDO_PATCHES=$(SUDO_SOURCE_DIR)/configure.patch
+endif
 
 SUDO_BUILD_DIR:=$(BUILD_DIR)/sudo
 SUDO_SOURCE_DIR=$(SOURCE_DIR)/sudo
