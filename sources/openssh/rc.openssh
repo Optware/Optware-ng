@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/bin/killall sshd 2>/dev/null
+killall sshd 2>/dev/null
 
 umask 077
 
