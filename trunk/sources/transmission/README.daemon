@@ -71,4 +71,26 @@ libtransmissiom bug in scrape retrieval.
 Visit http://transmission.m0k.org/forum/viewtopic.php?p=4871#4871 for more
 info.
 
+
+Known bugs:
+* There is a problem with fork and pthreads in uclibc 0.9.19
+  See http://www.busybox.net/lists/uclibc/2003-March/005825.html
+  This affect only users of Oleg firmware on Asus routers with
+  http://ipkg.nslu2-linux.org/feeds/optware/wl500g/cross/stable/
+  package feed. Users are instructed to switch to
+  http://ipkg.nslu2-linux.org/feeds/optware/oleg/cross/stable/
+  which uses newer uClibc 0.9.28 and NLPT or change transmission_watchdog
+  daemon startup code to 
+
+  nohup transmissiond -v 1 -p ${LISTENING_PORT} \
+        -w ${WATCHDOG} \
+        -u ${UPLOAD_SPEED} \
+        -d ${DOWNLOAD_SPEED} \
+        -i ${PIDFILE}   ${ACTIVE} 2> /dev/null &
+
+  which will spawn daemon in foreground mode and trash error messages.
+
+  See http://wl500g.info/showpost.php?p=34579&postcount=68 how to upgrade
+  to alternative "Oleg"  package feed.
+  
 oleo
