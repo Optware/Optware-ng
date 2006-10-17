@@ -8,7 +8,7 @@
 ###########################################################
 
 ifeq ($(OPTWARE_TARGET),ds101)
-DS101_GLIBC_VERSION=2.2.5
+DS101_GLIBC_VERSION=2.3.3
 endif
 ifeq ($(OPTWARE_TARGET),ds101g)
 DS101_GLIBC_VERSION=2.3.3
