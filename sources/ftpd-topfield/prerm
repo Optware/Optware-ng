@@ -1,7 +1,5 @@
 #!/bin/sh
 
-if [ -n "`pidof ftpd-topfield`" ]; then
-    killall ftpd-topfield 2>/dev/null
-fi
+killall ftpd-topfield 2>/dev/null
 
 return 0
