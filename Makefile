@@ -737,7 +737,11 @@ $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
 index: $(PACKAGE_DIR)/Packages
 
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
-	rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(PACKAGE_DIR)/
+	if ls $(BUILD_DIR)/*_$(TARGET_ARCH).xsh > /dev/null 2>&1; then \
+		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(PACKAGE_DIR)/ ; \
+	else \
+		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(PACKAGE_DIR)/ ; \
+	fi
 	{ \
 		cd $(PACKAGE_DIR); \
 		$(IPKG_MAKE_INDEX) . > Packages; \
