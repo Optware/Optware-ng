@@ -1,5 +1,5 @@
 #!/bin/sh
-BSDIR="/home/tmp/ipkg-bootstrap"
+BSDIR="/home/.optware/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."
 rm -rf $BSDIR
@@ -7,7 +7,7 @@ mkdir -p $BSDIR
 ln -s $BSDIR /tmp/ipkg
 cat >>$BSDIR/ipkg.conf <<EOF
 dest root /
-lists_dir ext /$BSDIR/ipkg
+lists_dir ext $BSDIR/ipkg
 EOF
 
 export IPKG_CONF_DIR=$BSDIR 
