@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=2
+CLAMAV_IPK_VERSION=3
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -209,17 +209,17 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-sigtool $(CLAMAV_IPK_DIR)/opt/bin/sigtool
 	cd $(CLAMAV_IPK_DIR)/opt/sbin
 	mv $(CLAMAV_IPK_DIR)/opt/sbin/$(GNU_TARGET_NAME)-clamd $(CLAMAV_IPK_DIR)/opt/sbin/clamd
-	cd $(CLAMAV_IPK_DIR)/opt/man/man1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-clamdscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamdscan.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-clamscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamscan.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-freshclam.1 $(CLAMAV_IPK_DIR)/opt/man/man1/freshclam.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-sigtool.1 $(CLAMAV_IPK_DIR)/opt/man/man1/sigtool.1
-	cd $(CLAMAV_IPK_DIR)/opt/man/man5
-	mv $(CLAMAV_IPK_DIR)/opt/man/man5/$(GNU_TARGET_NAME)-clamd.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/clamd.conf.5
-	mv $(CLAMAV_IPK_DIR)/opt/man/man5/$(GNU_TARGET_NAME)-freshclam.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/freshclam.conf.5
-	cd $(CLAMAV_IPK_DIR)/opt/man/man8
-	rm $(CLAMAV_IPK_DIR)/opt/man/man8/$(GNU_TARGET_NAME)-clamav-milter.8
-	mv $(CLAMAV_IPK_DIR)/opt/man/man8/$(GNU_TARGET_NAME)-clamd.8 $(CLAMAV_IPK_DIR)/opt/man/man8/clamd.8
+	cd $(CLAMAV_IPK_DIR)/opt/share/man/man1
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man1/$(GNU_TARGET_NAME)-clamdscan.1 $(CLAMAV_IPK_DIR)/opt/share/man/man1/clamdscan.1
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man1/$(GNU_TARGET_NAME)-clamscan.1 $(CLAMAV_IPK_DIR)/opt/share/man/man1/clamscan.1
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man1/$(GNU_TARGET_NAME)-freshclam.1 $(CLAMAV_IPK_DIR)/opt/share/man/man1/freshclam.1
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man1/$(GNU_TARGET_NAME)-sigtool.1 $(CLAMAV_IPK_DIR)/opt/share/man/man1/sigtool.1
+	cd $(CLAMAV_IPK_DIR)/opt/share/man/man5
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man5/$(GNU_TARGET_NAME)-clamd.conf.5 $(CLAMAV_IPK_DIR)/opt/share/man/man5/clamd.conf.5
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man5/$(GNU_TARGET_NAME)-freshclam.conf.5 $(CLAMAV_IPK_DIR)/opt/share/man/man5/freshclam.conf.5
+	cd $(CLAMAV_IPK_DIR)/opt/share/man/man8
+	rm $(CLAMAV_IPK_DIR)/opt/share/man/man8/$(GNU_TARGET_NAME)-clamav-milter.8
+	mv $(CLAMAV_IPK_DIR)/opt/share/man/man8/$(GNU_TARGET_NAME)-clamd.8 $(CLAMAV_IPK_DIR)/opt/share/man/man8/clamd.8
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLAMAV_IPK_DIR)
 
 #
