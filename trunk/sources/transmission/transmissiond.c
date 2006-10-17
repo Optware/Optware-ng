@@ -15,6 +15,7 @@
  *  merge NAT traversal from transmissioncli
  *  config file 
  *  load in logfile
+ *  messageLevel for syslog in background mode
  *
  * Copyright (c) 2005-2006 Transmission authors and contributors
  *
@@ -350,7 +351,7 @@ static int write_pidfile(int pid)
 }
 
 #ifdef HAVE_SYSINFO
-void load(void)
+static void load(void)
 {
   static const int FSHIFT = 16;              /* nr of bits of precision */
   struct sysinfo info;
@@ -365,6 +366,57 @@ void load(void)
 }
 #endif
 
+
+static void flush_queued_messages( void )
+{
+  tr_msg_list_t * list;
+  tr_msg_list_t * prev;
+  int repeated;
+  list = tr_getQueuedMessages();
+
+  prev = NULL;
+  repeated = 0;
+  
+  while( NULL != list )
+    {
+      if (prev && (strcmp(prev->message, list->message) == 0))
+        {
+          repeated ++;
+        }
+      else
+        {
+          if (repeated)
+            {
+              syslog(LOG_NOTICE, "Previous message repeated %d times", repeated);
+              repeated = 0;
+            }
+          else
+            {
+              switch ( list->level )
+                {
+                case TR_MSG_ERR:
+                  syslog(LOG_ERR, "%s", list->message);
+                  break;
+                case TR_MSG_INF:
+                  syslog(LOG_INFO, "%s", list->message);
+                  break;
+                case TR_MSG_DBG:
+                  syslog(LOG_DEBUG, "%s", list->message);
+                  break;
+                default:
+                  syslog(LOG_CRIT, "%s", list->message);
+                }
+            }
+        }
+      prev = list;
+      list = list->next;
+    }
+  if (repeated)
+    {
+      syslog(LOG_NOTICE, "Previous message repeated %d times", repeated);
+    }
+  tr_freeMessageList( list );
+}
 
 int main( int argc, char ** argv )
 {
@@ -460,7 +512,11 @@ int main( int argc, char ** argv )
       exit( 1 );
     }
 
-  
+  if ( verboseLevel == 0)
+    {
+      tr_setMessageQueuing(TR_MSG_ERR);
+      tr_setMessageLevel(TR_MSG_ERR);
+    }
   tr_setBindPort( h, bindPort );
   tr_setUploadLimit( h, uploadLimit );
   tr_setDownloadLimit( h, downloadLimit );
@@ -472,6 +528,7 @@ int main( int argc, char ** argv )
     {
       float upload, download;
       sleep( watchdogInterval );
+      flush_queued_messages();
       if ( got_usr1 )
         {
           tr_torrentIterate( h, write_info, NULL );

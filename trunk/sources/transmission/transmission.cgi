@@ -246,7 +246,11 @@ _scrape ()
     if [ -f "${INFO}" ]; then
 	. "${INFO}"
 	SCRAPE=`btlist -sq "${TORRENT}" | grep seeders`
+	STATUS=$?
 	_write_info
+	if [ $STATUS != 0 ]; then
+	   echo "<p>${TORRENT} scrape failed</p>"
+	fi
 	UPLOADED=
 	echo "."
     fi  
@@ -337,7 +341,7 @@ __list ()
 	    fi
 	    TORRENT="$i"
 	    if [ -n "${SETURL}" -a "${idx}" = "${ID}" ]; then
-	       URL=`echo "${SETURL}" | sed -e 's|%3A|:|g;s|%2F|/|g;s|%3F|?|g;s|%3D|=|g'`
+	       URL=`echo "${SETURL}" | sed -e 's|%3A|:|g;s|%2F|/|g;s|%3F|?|g;s|%3D|=|g;s|%23|#|g;s|%26|\&|g'`
 	       _write_info
 	    fi
 	    if [ -n "${URL}" ]; then
