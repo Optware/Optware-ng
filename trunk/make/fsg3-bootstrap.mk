@@ -109,8 +109,7 @@ $(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	tar -C $(FSG3_BOOTSTRAP_BUILD_DIR) -czf - bootstrap >>$@
 	chmod 755 $@
 
-fsg3-bootstrap-ipk: $(FSG3_BOOTSTRAP_IPK)
-
+fsg3-bootstrap-ipk: $(FSG3_BOOTSTRAP_XSH)
 fsg3-bootstrap-xsh: $(FSG3_BOOTSTRAP_XSH)
 
 fsg3-bootstrap-clean:

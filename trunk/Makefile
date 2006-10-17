@@ -265,7 +265,7 @@ MSS_BROKEN_PACKAGES = \
 	wxbase \
 
 # Packages that *only* work for ds101 - do not just put new packages here.
-DS101_SPECIFIC_PACKAGES = 
+DS101_SPECIFIC_PACKAGES = ds101-bootstrap
 
 # Packages that do not work for ds101.
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
@@ -307,6 +307,7 @@ DS101J_BROKEN_PACKAGES = \
 DS101G_SPECIFIC_PACKAGES = \
 	ipkg \
 	ds101g-kernel-modules \
+	ds101-bootstrap
 
 # Packages that do not work for ds101g+.
 # mtr needs a .mk template update (it emits an _armeb.ipk)
@@ -330,7 +331,7 @@ NAS100D_SPECIFIC_PACKAGES = ipkg
 NAS100D_BROKEN_PACKAGES = 
 
 # Packages that *only* work for fsg3 - do not just put new packages here.
-FSG3_SPECIFIC_PACKAGES = 
+FSG3_SPECIFIC_PACKAGES = fsg3-bootstrap
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
@@ -736,7 +737,7 @@ $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
 index: $(PACKAGE_DIR)/Packages
 
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
-	rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(PACKAGE_DIR)/
+	rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(PACKAGE_DIR)/
 	{ \
 		cd $(PACKAGE_DIR); \
 		$(IPKG_MAKE_INDEX) . > Packages; \
