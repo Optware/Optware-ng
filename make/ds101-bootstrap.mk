@@ -139,7 +139,7 @@ $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	cp $(BUILD_DIR)/$(DS101_WGET_SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
-	
+
 	# If you should ever change the archive header (echo lines below), 
 	# make sure to recalculate dd's bs= argument, otherwise the self-
 	# extracting archive will break! Using tail+n would be much simpler
@@ -152,8 +152,7 @@ $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
 	tar -C $(DS101_BOOTSTRAP_BUILD_DIR) -czf - bootstrap >>$@
 	chmod 755 $@
 
-ds101-bootstrap-ipk: $(DS101_BOOTSTRAP_IPK)
-
+ds101-bootstrap-ipk: $(DS101_BOOTSTRAP_XSH)
 ds101-bootstrap-xsh: $(DS101_BOOTSTRAP_XSH)
 
 ds101-bootstrap-clean:
