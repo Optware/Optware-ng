@@ -95,6 +95,7 @@ $(FSG3_BOOTSTRAP_IPK): $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/ldscripts/
 	install -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/ldconfig $(FSG3_BOOTSTRAP_IPK_DIR)/opt/sbin
 	install -m 755 $(FSG3_BOOTSTRAP_BUILD_DIR)/rc.optware $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
+	install -m 755 $(FSG3_BOOTSTRAP_SOURCE_DIR)/optware $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d/optware
 
 	$(STRIP_COMMAND) $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/control
