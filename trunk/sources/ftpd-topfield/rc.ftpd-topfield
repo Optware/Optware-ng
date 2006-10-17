@@ -3,8 +3,6 @@
 # Startup script for ftpd-topfield
 #
 # Stop myself if running
-if [ -n "`pidof ftpd-topfield`" ]; then
-    killall ftpd-topfield 2>/dev/null
-fi
+killall ftpd-topfield 2>/dev/null
 
 /opt/sbin/ftpd-topfield -D -P 21
