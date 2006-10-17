@@ -1,8 +1,6 @@
 #!/bin/sh
 
-if [ -n "`pidof sshd`" ]; then 
-    /bin/killall sshd 2>/dev/null
-fi
+/bin/killall sshd 2>/dev/null
 
 umask 077
 
