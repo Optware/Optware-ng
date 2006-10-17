@@ -1,8 +1,8 @@
 #!/bin/sh
 
 [ -e /opt ] || mkdir /opt
-[ -e /home/optware ] || mkdir -p /home/optware
-mount -o bind /home/optware /opt
+[ -e /home/.optware ] || mkdir -p /home/.optware
+mount -o bind /home/.optware /opt
 [ -d /opt/etc/ipkg ] || mkdir -p /opt/etc/ipkg
 [ -d /opt/var ] || mkdir -p /opt/var/lib
 [ -d /opt/tmp ] || mkdir -p /opt/tmp
