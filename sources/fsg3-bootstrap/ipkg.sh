@@ -3,6 +3,8 @@
 #
 # Copyright (C) 2001 Carl D. Worth
 #
+# Modified by Rod Whitby to remove the sort and uniq calls for the fsg3.
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2, or (at your option)
@@ -591,7 +593,7 @@ s/ \+/ /g'`
 		done
 
 		new_deps=`echo $new_deps | sed -e 's/[[:space:]]\+/\\
-/g' | sort | uniq`
+/g'`
 
 		local maybe_new_pkgs=
 		for pkg in $new_deps; do

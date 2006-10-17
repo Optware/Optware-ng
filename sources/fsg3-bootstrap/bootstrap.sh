@@ -17,7 +17,7 @@ echo "Installing FSG-3 bootstrap package..."
 mkdir -p /usr/lib/ipkg/info/
 sh ./ipkg.sh install bootstrap.ipk
 
-echo "Installing IPKG package... (Ignore missing md5sum warning)"
+echo "Installing ipkg..."
 sh ./ipkg.sh install ipkg.ipk
 
 echo "Removing temporary ipkg repository..."
@@ -25,10 +25,10 @@ rm -rf $BSDIR
 rm /tmp/ipkg
 rm -rf /usr/lib/ipkg
 
-echo "Installing OpenSSL.."
+echo "Installing OpenSSL..."
 /opt/bin/ipkg install openssl.ipk || exit 1
 
-echo "Installing wget-SSL..."
+echo "Installing wget..."
 /opt/bin/ipkg install wget-ssl.ipk || exit 1
 
 [ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
@@ -38,4 +38,4 @@ then
 	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/fsg3/cross/stable" >/opt/etc/ipkg/cross-feed.conf
 fi
 
-echo "Setup complete..."
+echo "Setup complete."

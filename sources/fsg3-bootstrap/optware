@@ -3,7 +3,7 @@
 case "$1" in
     start)
         echo "Starting Optware."
-	if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 then
+	if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
 	    mkdir -p /opt
 	    mount -o bind /home/.optware /opt
 	fi	
