@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PYTHON_VERSION=2.4.3
+PYTHON_VERSION=2.4.4
 PYTHON_DIR=python-$(PYTHON_VERSION)
 PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PYTHON_DESCRIPTION=This is a package that sets up the default python.
@@ -14,7 +14,7 @@ PYTHON_DEPENDS=python24
 PYTHON_SUGGESTS=
 PYTHON_CONFLICTS=
 
-PYTHON_IPK_VERSION=3
+PYTHON_IPK_VERSION=1
 
 PYTHON_IPK_DIR=$(BUILD_DIR)/python-$(PYTHON_VERSION)-ipk
 PYTHON_IPK=$(BUILD_DIR)/python_$(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
