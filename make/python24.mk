@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON24_VERSION=2.4.3
+PYTHON24_VERSION=2.4.4
 PYTHON24_VERSION_MAJOR=2.4
 PYTHON24_SITE=http://www.python.org/ftp/python/$(PYTHON24_VERSION)
 PYTHON24_SOURCE=Python-$(PYTHON24_VERSION).tar.bz2

@@ -1,5 +1,5 @@
---- Python-2.4.2/configure.in.orig	2005-08-07 14:08:53.000000000 -0700
-+++ Python-2.4.2/configure.in	2006-03-04 10:08:03.000000000 -0800
+--- Python-2.4.4/configure.in.orig	2006-10-17 09:03:36.000000000 -0700
++++ Python-2.4.4/configure.in	2006-10-19 13:58:01.000000000 -0700
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -12,7 +12,16 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -604,9 +609,9 @@
+@@ -547,7 +552,7 @@
+               echo 'void foo(){}' > conftest_b.$ac_ext
+               $CC -c conftest_b.$ac_ext # 2>&5
+               if $CC -o conftest$ac_exeext conftest_a.$ac_objext conftest_b.$ac_objext 2>&5 \
+-                 && test -s conftest$ac_exeext && ./conftest$ac_exeext
++                 && test -s conftest$ac_exeext
+               then
+                  LINKCC="\$(PURIFY) \$(CC)"
+               else
+@@ -675,9 +680,9 @@
  
  AC_MSG_RESULT($LDLIBRARY)
  
@@ -25,7 +34,7 @@
  
  case $MACHDEP in
  bsdos*|hp*|HP*)
-@@ -3125,6 +3130,25 @@
+@@ -3252,6 +3257,25 @@
  done
  AC_MSG_RESULT(done)
  
