@@ -104,7 +104,7 @@ PYTHON_PACKAGES = \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl py-django py-docutils \
 	py-elementtree py-formencode py-gdchart2 py-gd py-genshi py-kid py-lxml py-nose \
 	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
-	py-paste py-pastedeploy py-pastescript py-pexpect py-pil py-protocols \
+	py-paste py-pastedeploy py-pastescript py-pexpect py-pil py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql py-pyro py-quixote \
 	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
 	py-scgi py-selector py-serial py-setuptools py-simplejson py-simpy py-soappy \
