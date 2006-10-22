@@ -24,7 +24,7 @@
 # PY-PASTEDEPLOY_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-PASTEDEPLOY_SITE=http://cheeseshop.python.org/packages/source/P/PasteDeploy
-PY-PASTEDEPLOY_VERSION=0.9.6
+PY-PASTEDEPLOY_VERSION=1.0
 #PY-PASTEDEPLOY_SVN_REV=
 PY-PASTEDEPLOY_IPK_VERSION=1
 #ifneq ($(PY-PASTEDEPLOY_SVN_REV),)
