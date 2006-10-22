@@ -24,7 +24,7 @@
 # PY-WAREWEB_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-WAREWEB_SITE=http://cheeseshop.python.org/packages/source/W/Wareweb
-PY-WAREWEB_VERSION=0.2
+PY-WAREWEB_VERSION=0.3
 #PY-WAREWEB_SVN_REV=
 PY-WAREWEB_IPK_VERSION=1
 #ifneq ($(PY-WAREWEB_SVN_REV),)
