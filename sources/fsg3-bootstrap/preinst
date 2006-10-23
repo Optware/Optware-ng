@@ -1,11 +1,17 @@
 #!/bin/sh
 
 [ -e /opt ] || mkdir /opt
+chmod 755 /opt
 [ -e /home/.optware ] || mkdir -p /home/.optware
+chmod 755 /home/.optware
 if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
     mount -o bind /home/.optware /opt
 fi
 [ -d /opt/etc/ipkg ] || mkdir -p /opt/etc/ipkg
-[ -d /opt/var ] || mkdir -p /opt/var/lib
+chmod 755 /opt/etc
+[ -d /opt/var/lib ] || mkdir -p /opt/var/lib
+chmod 755 /opt/var
 [ -d /opt/tmp ] || mkdir -p /opt/tmp
+chmod 1777 /opt/tmp
 [ -d /opt/lib/ipkg/info ] || mkdir -p /opt/lib/ipkg/info
+chmod 755 /opt/lib
