@@ -331,7 +331,7 @@ NAS100D_SPECIFIC_PACKAGES = ipkg
 NAS100D_BROKEN_PACKAGES = 
 
 # Packages that *only* work for fsg3 - do not just put new packages here.
-FSG3_SPECIFIC_PACKAGES = fsg3-bootstrap
+FSG3_SPECIFIC_PACKAGES = fsg3-bootstrap crosstool-native optware-devel
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
