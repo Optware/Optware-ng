@@ -4,11 +4,11 @@ addgroup clamav
 
 adduser -s /dev/null -H -h /opt/share/clamav -D -G clamav clamav
 
-#my=`grep clamav /etc/passwd | awk -F: '{ print $4 }'`
-#sed -i "s/^$my/clamav/g" /etc/group
-
 chown clamav:clamav /opt/share/clamav
 chown clamav:clamav /opt/share/clamav/*
+
+mkdir -p /opt/tmp
+chmod 1777 /opt/tmp
 
 mkdir -p /opt/var/log
 chmod 755 /opt/var/log
