@@ -13,6 +13,6 @@ chown clamav:clamav /opt/share/clamav/*
 mkdir -p /opt/var/log/clamav
 chown clamav:clamav /opt/var/log/clamav
 
-touch /opt/var/log/freshclam.log
+touch /opt/var/log/clamav/freshclam.log
 chown clamav:clamav /opt/var/log/clamav/freshclam.log 
 
