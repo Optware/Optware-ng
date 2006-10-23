@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=7
+CLAMAV_IPK_VERSION=8
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
