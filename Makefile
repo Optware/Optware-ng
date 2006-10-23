@@ -340,7 +340,7 @@ FSG3_BROKEN_PACKAGES = \
 	ctcs ctorrent cyrus-sasl eaccelerator \
 	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
-	ldconfig lftp libstdc++ lighttpd \
+	ldconfig lftp lighttpd \
 	mc mod-fastcgi mod-python monotone motion mysql \
 	net-tools nmap nzbget \
 	php php-apache \
