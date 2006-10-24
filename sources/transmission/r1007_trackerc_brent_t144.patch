@@ -1,0 +1,41 @@
+Index: libtransmission/tracker.c
+===================================================================
+--- Transmission-0.6/libtransmission/tracker.c	(revision 1007)
++++ transmission/libtransmission/tracker.c	(working copy)
+
+@@ -237,6 +246,7 @@
+     uint64_t       down;
+     uint64_t       up;
+     char         * start;
++    int numwant = 50;
+ 
+     down = tor->downloadedCur;
+     up = tor->uploadedCur;
+@@ -244,6 +254,7 @@
+     {
+         event = "&event=started";
+         down = up = 0;
++        numwant = 60;
+         
+         if( 0 < tc->newPort )
+         {
+@@ -258,6 +269,7 @@
+     else if( tc->stopped || 0 < tc->newPort )
+     {
+         event = "&event=stopped";
++        numwant = 0;
+     }
+     else
+     {
+@@ -285,11 +297,11 @@
+                           "downloaded=%"PRIu64"&"
+                           "left=%"PRIu64"&"
+                           "compact=1&"
+-                          "numwant=50&"
++                          "numwant=%d&"
+                           "key=%s"
+                           "%s",
+                           inf->trackerAnnounce, start, tor->hashString, tc->id,
+-                          tc->bindPort, up, down, left, tor->key, event );
++                          tc->bindPort, up, down, left, numwant, tor->key, event );
+ }

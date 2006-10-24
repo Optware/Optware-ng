@@ -1,0 +1,130 @@
+Index: libtransmission/tracker.c
+===================================================================
+--- Transmission-0.6/libtransmission/tracker.c	(revision 1007)
++++ transmission/libtransmission/tracker.c	(working copy)
+@@ -35,6 +35,7 @@
+     char           stopped;
+ 
+     int            interval;
++    int            min_interval;
+     int            seeders;
+     int            leechers;
+     int            hasManyPeers;
+@@ -67,6 +68,7 @@
+     tc->started  = 1;
+ 
+     tc->interval = 300;
++    tc->min_interval = 0;
+     tc->seeders  = -1;
+     tc->leechers = -1;
+ 
+@@ -81,10 +83,11 @@
+ static int shouldConnect( tr_tracker_t * tc )
+ {
+     uint64_t now = tr_date();
++    int randOffset = tr_rand(60000);
+ 
+-    /* Unreachable tracker, try 10 seconds before trying again */
++    /* Unreachable tracker, try 10 seconds + random within a minute before trying again */
+     if( tc->lastAttempt == TC_ATTEMPT_NOREACH &&
+-        now < tc->dateTry + 10000 )
++        now < tc->dateTry + randOffset + 10000)
+     {
+         return 0;
+     }
+@@ -105,27 +108,33 @@
+     }
+ 
+     /* Should we try and get more peers? */
+-    if( now > tc->dateOk + 1000 * tc->interval )
++    if( now > tc->dateOk + randOffset + 1000 * tc->interval )
+     {
+         return 1;
+     }
+ 
+     /* If there is quite a lot of people on this torrent, stress
+        the tracker a bit until we get a decent number of peers */
+-    if( tc->hasManyPeers )
++    if( tc->hasManyPeers && tc->tor->finished == 0)
+     {
+-        if( tc->tor->peerCount < 5 && now > tc->dateOk + 10000 )
+-        {
+-            return 1;
+-        }
+-        if( tc->tor->peerCount < 10 && now > tc->dateOk + 20000 )
+-        {
+-            return 1;
+-        }
+-        if( tc->tor->peerCount < 15 && now > tc->dateOk + 30000 )
+-        {
+-            return 1;
+-        }
++    	/* If there is a min interval specified, respect it */
++    	if( tc->min_interval > 0 )
++    	{
++			if( tc->tor->peerCount < 30 && now > tc->dateOk + randOffset + 1000 * tc->min_interval )
++			{
++				return 1;
++			}
++    	}
++    	else {
++			if( tc->tor->peerCount < 10 && now > tc->dateOk + randOffset + 60000 )
++			{
++				return 1;
++			}
++			if( tc->tor->peerCount < 20 && now > tc->dateOk + randOffset + 120000 )
++			{
++				return 1;
++			}	
++    	}
+     }
+ 
+     return 0;
+@@ -369,23 +381,32 @@
+     tor->error &= ~TR_ETRACKER;
+     tc->lastAttempt = TC_ATTEMPT_OK;
+ 
+-    if( !tc->interval )
+-    {
+-        /* Get the tracker interval, ignore it if it is not between
+-           10 sec and 5 mins */
+-        if( !( beFoo = tr_bencDictFind( &beAll, "interval" ) ) ||
+-            !( beFoo->type & TYPE_INT ) )
+-        {
+-            tr_err( "Tracker: no 'interval' field" );
+-            goto cleanup;
+-        }
++	/* Get the tracker interval, ignore it if it is under
++	   10 sec */
++	if( !( beFoo = tr_bencDictFind( &beAll, "interval" ) ) ||
++		!( beFoo->type & TYPE_INT ) )
++	{
++		tr_err( "Tracker: no 'interval' field" );
++		goto cleanup;
++	}
++	tc->interval = beFoo->val.i;
++	tc->interval = MAX( 10, tc->interval );
+ 
+-        tc->interval = beFoo->val.i;
+-        tc->interval = MIN( tc->interval, 300 );
+-        tc->interval = MAX( 10, tc->interval );
++    tr_inf( "Tracker: interval = %d seconds", tc->interval );
+ 
+-        tr_inf( "Tracker: interval = %d seconds", tc->interval );
+-    }
++	/* Get min interval */
++	if( ( beFoo = tr_bencDictFind( &beAll, "min interval" ) ) &&
++		( beFoo->type & TYPE_INT ) )
++	{
++		 tc->min_interval = beFoo->val.i;
++		 tr_inf( "Tracker: minimum interval = %d seconds", tc->min_interval );
++		 //interval should not be less than min_interval
++		 if( tc->interval < tc->min_interval )
++		 {
++		 	tc->interval = tc->min_interval;
++		 	tr_inf( "Tracker: interval = %d seconds, adjusted by minimum interval", tc->interval );
++		 }
++	}	    
+ 
+     if( ( beFoo = tr_bencDictFind( &beAll, "complete" ) ) &&
+         ( beFoo->type & TYPE_INT ) )

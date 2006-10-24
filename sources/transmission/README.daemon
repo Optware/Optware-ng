@@ -60,6 +60,21 @@ compress
 
 include /opt/etc/logrotate.d
 
+For syslog on Asus - Oleg firmware it is recommended that
+/opt/etc/init.d/S05syslogd is created with the following content:
+
+#!/bin/sh
+#
+# Startup script for syslogd
+#
+# Stop myself if running
+if [ -n "`pidof syslogd`" ]; then
+    /bin/killall syslogd 2>/dev/null
+fi
+
+/sbin/syslogd -m 0 -O /opt/var/log/messages -S -l 7
+
+
 
 There is a bug in libtransmission/ratecontrol.c which causes segmentation
 faults in daemon. To disable rate control set upload/download limit to -1
@@ -67,6 +82,11 @@ in transmission.conf
 
 At present libbt utilities are used for scrape and metainfo due to
 libtransmissiom bug in scrape retrieval.
+
+HOME variable is used for daemon to find its .transmission directory where
+cache data for each torrent is stored for fast resume. Proper restore
+requires that system time is functioning as file mtime is checked. Assure
+that time sync is retrieved with ntp or RTC.
 
 Visit http://transmission.m0k.org/forum/viewtopic.php?p=4871#4871 for more
 info.
