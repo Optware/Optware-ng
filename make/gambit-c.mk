@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~feeley
-GAMBIT-C_VERSION=40b17
-GAMBIT-C_SOURCE=gambc$(GAMBIT-C_VERSION).tar.gz
-GAMBIT-C_DIR=gambc$(GAMBIT-C_VERSION)
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/4.0/source
+GAMBIT-C_VERSION=4.0b20
+GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_VERSION).tar.gz
+GAMBIT-C_DIR=gambc-$(GAMBIT-C_VERSION)
 GAMBIT-C_UNZIP=zcat
 GAMBIT-C_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GAMBIT-C_DESCRIPTION=A portable implementation of Scheme.
@@ -128,6 +128,7 @@ $(GAMBIT-C_BUILD_DIR)/.configured: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-single-host \
+		--enable-gcc-opts \
 		--enable-shared \
 		--disable-nls \
 		--disable-static \
@@ -194,6 +195,7 @@ $(GAMBIT-C_IPK_DIR)/CONTROL/control:
 $(GAMBIT-C_IPK): $(GAMBIT-C_BUILD_DIR)/.built
 	rm -rf $(GAMBIT-C_IPK_DIR) $(BUILD_DIR)/gambit-c_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GAMBIT-C_BUILD_DIR) prefix=$(GAMBIT-C_IPK_DIR)/opt install
+	mv $(GAMBIT-C_IPK_DIR)/opt/$(GAMBIT-C_VERSION)/* $(GAMBIT-C_IPK_DIR)/opt/ && rm -rf $(GAMBIT-C_IPK_DIR)/opt/{current,$(GAMBIT-C_VERSION)}
 	$(STRIP_COMMAND) $(GAMBIT-C_IPK_DIR)/opt/bin/gs[ci] $(GAMBIT-C_IPK_DIR)/opt/lib/lib*.so
 	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o
 #	install -d $(GAMBIT-C_IPK_DIR)/opt/etc/
