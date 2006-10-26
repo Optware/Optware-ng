@@ -19,8 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-SCREEN_SITE=ftp://ftp.ibiblio.org/pub/mirrors/gnu/ftp/gnu/screen/
-SCREEN_VERSION=4.0.2
+SCREEN_SITE=ftp://ftp.uni-erlangen.de/pub/utilities/screen
+# ftp://ftp.ibiblio.org/pub/mirrors/gnu/ftp/gnu/screen/
+SCREEN_VERSION=4.0.3
 SCREEN_SOURCE=screen-$(SCREEN_VERSION).tar.gz
 SCREEN_DIR=screen-$(SCREEN_VERSION)
 SCREEN_UNZIP=zcat
@@ -35,7 +36,7 @@ SCREEN_CONFLICTS=
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
 #
-SCREEN_IPK_VERSION=4
+SCREEN_IPK_VERSION=1
 
 #
 # SCREEN_PATCHES should list any patches, in the the order in
@@ -176,12 +177,13 @@ $(SCREEN_IPK_DIR)/CONTROL/control:
 #
 $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	rm -rf $(SCREEN_IPK_DIR) $(BUILD_DIR)/screen_*_$(TARGET_ARCH).ipk
-	install -d $(SCREEN_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(SCREEN_BUILD_DIR)/screen -o $(SCREEN_IPK_DIR)/opt/bin/screen
-	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
+	$(MAKE) -C $(SCREEN_BUILD_DIR) DESTDIR=$(SCREEN_IPK_DIR) install
+	$(STRIP_COMMAND) $(SCREEN_IPK_DIR)/opt/bin/screen-$(SCREEN_VERSION)
+	rm -f $(SCREEN_IPK_DIR)/opt/info/dir{,.old}
+#	install -d $(SCREEN_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
 	$(MAKE) $(SCREEN_IPK_DIR)/CONTROL/control
-	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCREEN_IPK_DIR)
 
