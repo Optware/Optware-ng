@@ -5,8 +5,8 @@
 ###########################################################
 
 FSG3-KERNEL-MODULES_SITE=http://www.openfsg.com/download
-FSG3-KERNEL-MODULES_VERSION=3.1.15
-FSG3-KERNEL-MODULES_SOURCE=source-fcsnap-$(FSG3-KERNEL-MODULES_VERSION).tar.bz2
+FSG3-KERNEL-MODULES_VERSION=2.4.27
+FSG3-KERNEL-MODULES_SOURCE=source-fcsnap-3.1.15.tar.bz2
 FSG3-KERNEL-MODULES_DIR=fcsnap
 FSG3-KERNEL-MODULES_UNZIP=bzcat
 FSG3-KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -16,7 +16,7 @@ FSG3-KERNEL-MODULES_PRIORITY=optional
 FSG3-KERNEL-MODULES_DEPENDS=
 FSG3-KERNEL-MODULES_SUGGESTS=
 FSG3-KERNEL-MODULES_CONFLICTS=
-FSG3-KERNEL-MODULES=tun
+FSG3-KERNEL-MODULES=mii tun usbnet usbserial ftdio_sio pl2303 ip_conntrack_ftp ip_nat_ftp
 
 # videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
 
@@ -64,7 +64,7 @@ $(DL_DIR)/$(FSG3-KERNEL-MODULES_SOURCE):
 #
 fsg3-kernel-modules-source: $(DL_DIR)/$(FSG3-KERNEL-MODULES_SOURCE) $(FSG3-KERNEL-MODULES_PATCHES)
 
-$(FSG3-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(FSG3-KERNEL-MODULES_SOURCE) $(FSG3-KERNEL-MODULES_PATCHES) make/fsg3-kernel-modules.mk
+$(FSG3-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(FSG3-KERNEL-MODULES_SOURCE) $(FSG3-KERNEL-MODULES_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(FSG3-KERNEL-MODULES_DIR) $(FSG3-KERNEL-MODULES_BUILD_DIR)
 	$(FSG3-KERNEL-MODULES_UNZIP) $(DL_DIR)/$(FSG3-KERNEL-MODULES_SOURCE) | \
@@ -86,7 +86,7 @@ FSG3-KERNEL-MODULES-FLAGS = ARCH=arm ROOTDIR=$(FSG3-KERNEL-MODULES_BUILD_DIR) CR
 # This builds the actual binary.
 #
 $(FSG3-KERNEL-MODULES_BUILD_DIR)/.built: $(FSG3-KERNEL-MODULES_BUILD_DIR)/.configured \
-		$(FSG3-KERNEL-MODULES_SOURCE_DIR)/defconfig
+		$(FSG3-KERNEL-MODULES_SOURCE_DIR)/defconfig make/fsg3-kernel-modules.mk
 	rm -f $(FSG3-KERNEL-MODULES_BUILD_DIR)/.built
 #	$(MAKE) -C $(FSG3-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x $(FSG3-KERNEL-MODULES-FLAGS) clean
 	cp  $(FSG3-KERNEL-MODULES_SOURCE_DIR)/defconfig $(FSG3-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x/.config;
@@ -108,7 +108,7 @@ $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  install -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
-	    echo "Package: kernel-modules-`echo $$m|sed -e 's/_/-/g'`"; \
+	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(FSG3-KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(FSG3-KERNEL-MODULES_SECTION)"; \
@@ -145,9 +145,10 @@ $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 #
 $(FSG3-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3-KERNEL-MODULES_BUILD_DIR)/.built
 	rm -rf $(FSG3-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/fsg3-kernel-modules_*_$(TARGET_ARCH).ipk
-	INSTALL_MOD_PATH=$(FSG3-KERNEL-MODULES_IPK_DIR)/opt \
-	$(MAKE) -C $(FSG3-KERNEL-MODULES_BUILD_DIR) modules_install
-#	rm -rf $(FSG3-KERNEL-MODULES_IPK_DIR)/lib/modules/2.4.22-uc0/kernel/drivers/synobios
+	rm -rf $(FSG3-KERNEL-MODULES_IPK_DIR)/lib/modules
+	mkdir -p $(FSG3-KERNEL-MODULES_IPK_DIR)/lib/modules
+	$(MAKE) -C $(FSG3-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x $(FSG3-KERNEL-MODULES-FLAGS) \
+		INSTALL_MOD_PATH=$(FSG3-KERNEL-MODULES_IPK_DIR) DEPMOD=true modules_install
 	for m in $(FSG3-KERNEL-MODULES); do \
 	  install -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
 	  install -m 644 `find $(FSG3-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
