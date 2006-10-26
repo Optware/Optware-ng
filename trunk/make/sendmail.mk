@@ -159,7 +159,7 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	install -d $(SENDMAIL_IPK_DIR)/opt/bin
 	install -d $(SENDMAIL_IPK_DIR)/opt/sbin
 	install -d $(SENDMAIL_IPK_DIR)/opt/man/man{1,5,8}
-	install -d $(SENDMAIL_IPK_DIR)/var/spool/mqueue
+	install -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mqueue
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) DESTDIR=$(SENDMAIL_IPK_DIR) \
 		UBINGRP=$(USER) UBINOWN=$(USER) \
 		SBINGRP=$(USER) SBINOWN=$(USER) \
@@ -174,6 +174,7 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 		CFGRP=$(USER)   CFOWN=$(USER) \
 		MAILDIR=/opt/etc/mail \
 		CF=generic-linux install-sendmail-cf
+	for i in $(SENDMAIL_IPK_DIR)/opt/{bin/vacation,sbin/*}; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
 	( umask 022;\
 	echo "# local-host-names - include all aliases for your machine here."\
         > $(SENDMAIL_IPK_DIR)/opt/etc/mail/local-host-names;\
