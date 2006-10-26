@@ -340,7 +340,7 @@ FSG3_SPECIFIC_PACKAGES = \
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
 	adns amule apache appweb apr-util \
-	atftp bash bitchx bzflag \
+	atftp bitchx bzflag \
 	ctcs ctorrent cyrus-sasl eaccelerator \
 	enhanced-ctorrent freeradius hexcurse \
 	imagemagick \
