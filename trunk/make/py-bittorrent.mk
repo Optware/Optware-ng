@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
-PY-BITTORRENT_VERSION=4.20.9
+PY-BITTORRENT_VERSION=4.26.0
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
-PY-BITTORRENT_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-BITTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BITTORRENT_DESCRIPTION=BitTorrent is a scatter-gather network file transfer tool.
 PY-BITTORRENT_SECTION=misc
 PY-BITTORRENT_PRIORITY=optional
