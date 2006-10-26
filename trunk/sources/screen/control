@@ -1,9 +1,0 @@
-Package: screen
-Priority: optional
-Version: 4.0.2-2
-Architecture: armeb
-Depends: termcap
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: term
-Source: ftp://ftp.ibiblio.org/pub/mirrors/gnu/ftp/gnu/screen/screen-4.0.2.tar.gz
-Description: A screen manager that supports multiple logins on single terminal

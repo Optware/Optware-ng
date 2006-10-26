@@ -1,4 +1,0 @@
-#!/bin/sh
-
-chown 0:0 /opt/bin/screen
-chmod 4755 /opt/bin/screen
