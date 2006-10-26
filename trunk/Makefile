@@ -340,19 +340,8 @@ FSG3_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
-	adns amule apache appweb apr-util \
-	atftp bitchx bzflag \
-	ctcs ctorrent cyrus-sasl eaccelerator \
-	enhanced-ctorrent freeradius hexcurse \
-	imagemagick \
-	ldconfig lftp lighttpd \
-	mc mod-fastcgi mod-python monotone motion mysql \
-	net-tools nmap nzbget \
-	php php-apache \
-	py-mysql \
 	qemu qemu-libc-i386 \
-	svn \
-	tcpwrappers tethereal textutils transcode unrar
+	transcode
 
 # Packages that *only* work for ts72xx - do not just put new packages here.
 TS72XX_SPECIFIC_PACKAGES = 
