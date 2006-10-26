@@ -1,6 +1,6 @@
 --- devtools/Site/site.config.m4.orig	2006-08-19 10:24:47.000000000 +0200
 +++ devtools/Site/site.config.m4	2006-08-19 10:24:27.000000000 +0200
-@@ -0,0 +1,12 @@
+@@ -0,0 +1,13 @@
 +define(`confLIBSEARCH',`db resolv 44bsd')
 +define(`confSTDIR',`/opt/etc/mail')
 +define(`confHFDIR',`/opt/etc/mail')
@@ -9,6 +9,7 @@
 +define(`confSBINDIR',`/opt/sbin')
 +define(`confUBINDIR',`/opt/bin')
 +define(`confMANROOT',`/opt/man/man')
++define(`confMSP_QUEUE_DIR',`/opt/var/spool/clientmqueue')
 +dnl ### Changes for STARTTLS support
 +APPENDDEF(`confENVDEF',`-DSTARTTLS -DNEWDB -DNETINET6')
 +APPENDDEF(`confLIBS',`-lssl -lcrypto -ldb')
