@@ -4,23 +4,12 @@
 # /cgi-bin:admin:admin
 # For thttpd.conf add cgipat=/cgi-bin/* and user=admin
 # replace standard "admin" on wl500gx with "root" for other systems
+# /bin/sh can be BusyBox v1.1.3 applet
 
 . /opt/etc/transmission.conf
 
 PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin:/usr/sbin
 export PATH
-
-
-#################################################
-## Debug
-
-debug ()
-{
-    if [[ $DEBUG && $DEBUG -gt 0 ]]; then
-	echo $*
-    fi
-}
-
 
 
 #################################################
@@ -246,9 +235,9 @@ _scrape ()
     if [ -f "${INFO}" ]; then
 	. "${INFO}"
 	SCRAPE=`btlist -sq "${TORRENT}" | grep seeders`
-	STATUS=$?
+	DUMMY=$?
 	_write_info
-	if [ $STATUS != 0 ]; then
+	if [ $DUMMY != 0 ]; then
 	   echo "<p>${TORRENT} scrape failed</p>"
 	fi
 	UPLOADED=
@@ -282,6 +271,14 @@ _best_seed ()
    else                                                                
 	echo "<b>No torrents to suggest for seeding</b>"
    fi                                       
+}
+
+# Fetch torrent from URL location given with FETCH
+_fetch()
+{
+    TORRENT=$(echo "${FETCH}" | sed 's|%20| |g;s|%3A|:|g;s|%2F|/|g;s|%3F|?|g;s|%3D|=|g;s|%26|\&|g;s|%5B|\[|g;s|%5D|\]|g;s|%28|(|g;s|%29|)|g;s|%7B|{|g;s|%7D|}|g;s|%25|%|g')
+#    echo "<p>Fetching ${TORRENT}</p>"
+    wget --quiet -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
 
 # Sub for directory search
@@ -518,7 +515,8 @@ This is quick explanation of the buttons:
 <dt><u>B</u>est<dd>Search scrape for best done torrent and suggest seeding based on (leecees/seeds) ratio
 <dt>U<u>R</u>L<dd>Enter URL location for torrent
 <dt><u>N</u>ote<dd>Append your notes to torrent status
-<dt><u>H</u>elp<dd> Access keys <u>underlined</u>!
+<dt><u>F</u>etch<dd>Fetch torrent file from URL (link location)
+<dt><u>H</u>elp<dd> Access keys <u>underlined</u>! Use Alt-Key for access.
 </dl>
 __EOF__
 _root_check
@@ -565,6 +563,8 @@ Content-type: text/html
  onClick='value=prompt("Enter URL location to torrent page", "http://")'>
 <input type=submit accesskey=n name=SETNOTE value=Note
  onClick='value=prompt("Enter your notes for this torrent")'>
+<input type=submit accesskey=f name=FETCH value=Fetch
+onClick='value=prompt("Enter torrent link location for fetching")'>
 <input type=submit accesskey=h name=ACTION value=Help>
 <! img align=top alt="" src=pingvin.gif>
 <br>
@@ -577,6 +577,8 @@ eval ${QUERY_STRING}
 #export ACTION
 #/opt/bin/printenv
 #set
+
+[ -n "${FETCH}" ] && _fetch
 
 case "${ACTION}" in
     Update) _update_progress ; _list ;;
@@ -592,8 +594,6 @@ case "${ACTION}" in
     Best) _best_seed ; _list;;
     *) _list ;;
 esac
-	
-
 
 
 echo "<p>" ; uptime ; echo "</p>" 
