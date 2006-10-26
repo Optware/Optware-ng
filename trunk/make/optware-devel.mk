@@ -10,11 +10,12 @@ OPTWARE-DEVEL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OPTWARE-DEVEL_DESCRIPTION=This is a meta package that bundles all the packages required for optware native development.
 OPTWARE-DEVEL_SECTION=util
 OPTWARE-DEVEL_PRIORITY=optional
-OPTWARE-DEVEL_DEPENDS=autoconf, automake, bash, bison, bzip2, coreutils, crosstool-native, cvs, diffutils, file, findutils, flex, gawk, libstdc++, groff, libtool, make, m4, ncurses, openssl, patch, perl, pkgconfig, python, sed, tar, wget-ssl
+# Need to add bison, but it doesn't build on fsg3.
+OPTWARE-DEVEL_DEPENDS=autoconf, automake, bash, bzip2, coreutils, crosstool-native, cvs, diffutils, file, findutils, flex, gawk, libstdc++, groff, libtool, make, m4, ncurses, openssl, patch, perl, pkgconfig, python, sed, tar, wget-ssl
 OPTWARE-DEVEL_SUGGESTS=
 OPTWARE-DEVEL_CONFLICTS=
 
-OPTWARE-DEVEL_IPK_VERSION=1
+OPTWARE-DEVEL_IPK_VERSION=2
 
 OPTWARE-DEVEL_IPK_DIR=$(BUILD_DIR)/optware-devel-$(OPTWARE-DEVEL_VERSION)-ipk
 OPTWARE-DEVEL_IPK=$(BUILD_DIR)/optware-devel_$(OPTWARE-DEVEL_VERSION)-$(OPTWARE-DEVEL_IPK_VERSION)_$(TARGET_ARCH).ipk
