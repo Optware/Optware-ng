@@ -45,6 +45,19 @@ $(TCPWRAPPERS_DIR)/tcpd: $(TCPWRAPPERS_DIR)/.configured
 tcpwrappers: $(TCPWRAPPERS_DIR)/tcpd
 
 #
+# If you are building a library, then you need to stage it too.
+#
+$(TCPWRAPPERS_DIR)/.staged: $(TCPWRAPPERS_DIR)/tcpd
+	rm -f $(TCPWRAPPERS_DIR)/.staged
+	install -d $(STAGING_DIR)/opt/include
+	install -m 644 $(TCPWRAPPERS_DIR)/tcpd.h $(STAGING_DIR)/opt/include
+	install -d $(STAGING_DIR)/opt/lib
+	install -m 644 $(TCPWRAPPERS_DIR)/libwrap.a $(STAGING_DIR)/opt/lib
+	touch $(TCPWRAPPERS_DIR)/.staged
+
+tcpwrappers-stage: $(TCPWRAPPERS_DIR)/.staged
+
+#
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/tcpwrappers
 #
