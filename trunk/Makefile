@@ -103,7 +103,7 @@ PYTHON_PACKAGES = \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl py-django py-docutils \
-	py-elementtree py-formencode py-gdchart2 py-gd py-genshi py-kid py-lxml py-nose \
+	py-elementtree py-flup py-formencode py-gdchart2 py-gd py-genshi py-kid py-lxml py-nose \
 	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
 	py-paste py-pastedeploy py-pastescript py-pastewebkit py-pexpect py-pil py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql py-pyro py-quixote \
@@ -111,7 +111,7 @@ PYTHON_PACKAGES = \
 	py-scgi py-selector py-serial py-setuptools py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
 	py-tailor py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
-	py-urwid py-usb py-yaml py-xml py-zope-interface \
+	py-urwid py-usb py-wsgiref py-yaml py-xml py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 
 COMMON_CROSS_PACKAGES = \
