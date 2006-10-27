@@ -47,12 +47,17 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
+# sendmail - build broke on official build machine
+#	make[3]: Entering directory `/home/slug/optware/ds101g/builds/sendmail/obj.Linux.2.6.12.4-vs2.0.i686/smrsh'
+#	install -c -o  -g  -m 555 smrsh /home/slug/optware/ds101g/builds/sendmail-8.13.8-ipk/opt/sbin
+#	install: invalid user `-g'
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
 	libextractor \
 	perl-dbd-mysql \
 	asterisk-sounds \
+	sendmail \
 
 PERL_PACKAGES = \
 	perl \
@@ -155,7 +160,7 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga  \
 	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
-	sablevm samba sane-backends scons sdl sendmail ser setpwc siproxd sm snownews \
+	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
