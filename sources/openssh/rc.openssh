@@ -1,6 +1,9 @@
 #!/bin/sh
 
-killall sshd 2>/dev/null
+killall /opt/sbin/sshd 2>/dev/null
+
+# For the fsg3 target
+killall /usr/local/sbin/sshd 2>/dev/null
 
 umask 077
 
