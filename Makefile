@@ -340,6 +340,7 @@ FSG3_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
+	bison emacs xemacs hugs mzscheme nginx ocaml rsnapshot squid unison \
 	qemu qemu-libc-i386 \
 	transcode
 
