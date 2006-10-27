@@ -74,7 +74,7 @@ UCLIBC_CONFLICTS=buildroot
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=3
+BUILDROOT_IPK_VERSION=4
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -318,7 +318,7 @@ endif
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
-	echo $(BUILDROOT_CONFFILES) | sed -e 's/ /\n/g' > $(BUILDROOT_IPK_DIR)/CONTROL/conffiles
+#	echo $(BUILDROOT_CONFFILES) | sed -e 's/ /\n/g' > $(BUILDROOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILDROOT_IPK_DIR)
 
 
@@ -341,7 +341,7 @@ $(UCLIBC_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	$(MAKE) $(UCLIBC_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC_IPK_DIR)/CONTROL/prerm
-	echo $(UCLIBC_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBC_IPK_DIR)/CONTROL/conffiles
+#	echo $(UCLIBC_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBC_IPK_DIR)
 
 #
