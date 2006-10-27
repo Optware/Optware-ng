@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	sendmail
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -156,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga  \
 	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
-	sablevm samba sane-backends scons sdl ser setpwc siproxd sm snownews \
+	sablevm samba sane-backends scons sdl sendmail ser setpwc siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
