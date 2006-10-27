@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=3
+OPENSSH_IPK_VERSION=4
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
@@ -79,8 +79,8 @@ openssh-source: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
-	$(MAKE) zlib-stage openssl-stage
+$(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES) make/openssh.mk
+	$(MAKE) zlib-stage openssl-stage tcpwrappers-stage
 	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR)
 	$(OPENSSH_UNZIP) $(DL_DIR)/$(OPENSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENSSH_PATCHES)" ; \
@@ -111,6 +111,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--disable-lastlog --disable-utmp \
 		--disable-utmpx --disable-wtmp --disable-wtmpx \
 		--without-x \
+		--with-tcp-wrappers=$(STAGING_DIR)/opt \
 		--with-xauth=/opt/bin/xauth \
 	)
 	touch $(OPENSSH_BUILD_DIR)/.configured
