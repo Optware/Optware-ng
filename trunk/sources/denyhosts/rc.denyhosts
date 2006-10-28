@@ -1,10 +1,13 @@
 #!/bin/sh
 
-if [ -n "`pidof denyhosts`" ]; then 
-    /bin/killall denyhosts 2>/dev/null
-fi
+/bin/killall denyhosts 2>/dev/null
+
 umask 077
 
-rm -f /var/lock/subsys/denyhosts
+mkdir -p /opt/var/run
+rm -f /opt/var/run/denyhosts.pid
 
-/opt/var/lib/denyhosts/denyhosts.py --daemon  -c /opt/etc/denyhosts.cfg
+touch /opt/etc/hosts.allow
+touch /opt/etc/hosts.deny
+
+/opt/share/denyhosts/denyhosts.py --daemon  -c /opt/etc/denyhosts.cfg
