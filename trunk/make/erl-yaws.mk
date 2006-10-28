@@ -36,11 +36,11 @@ ERL-YAWS_CONFLICTS=
 #
 # ERL-YAWS_IPK_VERSION should be incremented when the ipk changes.
 #
-ERL-YAWS_IPK_VERSION=1
+ERL-YAWS_IPK_VERSION=2
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
-# ERL-YAWS_CONFFILES=/opt/etc/erl-yaws.conf /opt/etc/init.d/SXXerl-yaws
+ERL-YAWS_CONFFILES=/opt/etc/yaws.conf /opt/etc/yaws-cert.pem /opt/etc/yaws-key.pem
 
 #
 # ERL-YAWS_PATCHES should list any patches, in the the order in
@@ -104,7 +104,7 @@ erl-yaws-source: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCHES)
 # shown below to make various patches to it.
 #
 $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCHES) make/erl-yaws.mk
-	$(MAKE) $(ERLANG_BUILD_DIR)/.built
+	$(MAKE) erlang
 	rm -rf $(BUILD_DIR)/$(ERL-YAWS_DIR) $(ERL-YAWS_BUILD_DIR)
 	$(ERL-YAWS_UNZIP) $(DL_DIR)/$(ERL-YAWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL-YAWS_PATCHES)" ; \
@@ -195,11 +195,16 @@ $(ERL-YAWS_IPK): $(ERL-YAWS_BUILD_DIR)/.built
 	rm -rf $(ERL-YAWS_IPK_DIR) $(BUILD_DIR)/erl-yaws_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERL-YAWS_BUILD_DIR) DESTDIR=$(ERL-YAWS_IPK_DIR) install
 	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)/opt/lib/yaws/priv/setuid_drv.so
+	mv $(ERL-YAWS_IPK_DIR)/opt/etc/init.d/yaws $(ERL-YAWS_IPK_DIR)/opt/share/doc/$(ERL-YAWS_DIR)/sample-init.d-yaws
 	sed -i \
 	    -e 's|^erl=.*|erl="/opt/lib/erlang/bin/erl"|' \
-	    -e 's|^run_erl=.*|erl="/opt/lib/erlang/bin/run_erl"|' \
-	    -e 's|^to_erl=.*|erl="/opt/lib/erlang/bin/to_erl"|' \
+	    -e 's|^run_erl=.*|run_erl="/opt/lib/erlang/bin/run_erl"|' \
+	    -e 's|^to_erl=.*|to_erl="/opt/lib/erlang/bin/to_erl"|' \
 	    $(ERL-YAWS_IPK_DIR)/opt/bin/yaws
+	sed -i \
+	    -e '/^<server localhost/,$$s/^/#/' \
+	    -e 's/<server.*>/<server localhost>/' \
+	    $(ERL-YAWS_IPK_DIR)/opt/etc/yaws.conf
 #	install -d $(ERL-YAWS_IPK_DIR)/opt/etc/
 #	install -m 644 $(ERL-YAWS_SOURCE_DIR)/erl-yaws.conf $(ERL-YAWS_IPK_DIR)/opt/etc/erl-yaws.conf
 #	install -d $(ERL-YAWS_IPK_DIR)/opt/etc/init.d
