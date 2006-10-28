@@ -79,7 +79,7 @@
 <BAR>_IPK_DIR=$(BUILD_DIR)/<bar>-$(<BAR>_VERSION)-ipk
 <BAR>_IPK=$(BUILD_DIR)/<bar>_$(<BAR>_VERSION)-$(<BAR>_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: <bar>-source <bar>-unpack <bar> <bar>-stage <bar>-ipk <bar>-clean <bar>-dirclean
+.PHONY: <bar>-source <bar>-unpack <bar> <bar>-stage <bar>-ipk <bar>-clean <bar>-dirclean <bar>-check
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -216,3 +216,9 @@ $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 #
 <bar>-dirclean:
 	rm -rf $(BUILD_DIR)/$(<BAR>_DIR) $(<BAR>_BUILD_DIR) $(<BAR>_IPK_DIR) $(<BAR>_IPK)
+
+#
+# Some sanity check for the package.
+#
+<bar>-check:
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(<BAR>_IPK)

@@ -75,7 +75,7 @@
 <FOO>_IPK_DIR=$(BUILD_DIR)/<foo>-$(<FOO>_VERSION)-ipk
 <FOO>_IPK=$(BUILD_DIR)/<foo>_$(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: <foo>-source <foo>-unpack <foo> <foo>-stage <foo>-ipk <foo>-clean <foo>-dirclean
+.PHONY: <foo>-source <foo>-unpack <foo> <foo>-stage <foo>-ipk <foo>-clean <foo>-dirclean <foo>-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -222,3 +222,9 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 #
 <foo>-dirclean:
 	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR) $(<FOO>_IPK_DIR) $(<FOO>_IPK)
+#
+#
+# Some sanity check for the package.
+#
+<foo>-check:
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(<FOO>_IPK)
