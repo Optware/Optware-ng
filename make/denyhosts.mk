@@ -20,7 +20,7 @@ DENYHOSTS_CONFLICTS=
 #
 # DENYHOSTS_IPK_VERSION should be incremented when the ipk changes.
 #
-DENYHOSTS_IPK_VERSION=1
+DENYHOSTS_IPK_VERSION=2
 
 #
 # DENYHOSTS_CONFFILES should be a list of user-editable files
@@ -124,13 +124,13 @@ $(DENYHOSTS_IPK_DIR)/CONTROL/control:
 #
 $(DENYHOSTS_IPK): $(DENYHOSTS_BUILD_DIR)/.built
 	rm -rf $(DENYHOSTS_IPK_DIR) $(BUILD_DIR)/denyhosts_*_$(TARGET_ARCH).ipk
-	install -d $(DENYHOSTS_IPK_DIR)/var/lock/subsys
+	install -d $(DENYHOSTS_IPK_DIR)/var/run/
 	install -d $(DENYHOSTS_IPK_DIR)/opt/etc/
-	install -m 644 $(DENYHOSTS_BUILD_DIR)/denyhosts.cfg-dist $(DENYHOSTS_IPK_DIR)/opt/etc/denyhosts.cfg
+	install -m 644 $(DENYHOSTS_SOURCE_DIR)/denyhosts.cfg $(DENYHOSTS_IPK_DIR)/opt/etc/denyhosts.cfg
 	install -d $(DENYHOSTS_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(DENYHOSTS_SOURCE_DIR)/rc.denyhosts $(DENYHOSTS_IPK_DIR)/opt/etc/init.d/S01denyhosts
-	install -dv $(DENYHOSTS_IPK_DIR)/opt/var/lib/denyhosts
-	cp -r $(DENYHOSTS_BUILD_DIR)/* $(DENYHOSTS_IPK_DIR)/opt/var/lib/denyhosts
+	install -dv $(DENYHOSTS_IPK_DIR)/opt/share/denyhosts
+	cp -r $(DENYHOSTS_BUILD_DIR)/* $(DENYHOSTS_IPK_DIR)/opt/share/denyhosts
 	$(MAKE) $(DENYHOSTS_IPK_DIR)/CONTROL/control
 	echo $(DENYHOSTS_CONFFILES) | sed -e 's/ /\n/g' > $(DENYHOSTS_IPK_DIR)/CONTROL/conffiles
 	install -m 755 $(DENYHOSTS_SOURCE_DIR)/postinst $(DENYHOSTS_IPK_DIR)/CONTROL/postinst
