@@ -22,11 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOD_PYTHON_SITE=http://www.apache.org/dist/httpd/modpython
-MOD_PYTHON_VERSION=3.2.8
+MOD_PYTHON_VERSION=3.2.10
 MOD_PYTHON_SOURCE=mod_python-$(MOD_PYTHON_VERSION).tgz
 MOD_PYTHON_DIR=mod_python-$(MOD_PYTHON_VERSION)
 MOD_PYTHON_UNZIP=zcat
-MOD_PYTHON_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+MOD_PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MOD_PYTHON_DESCRIPTION=Mod_python is an Apache server module that integrates with the Python language.
 MOD_PYTHON_SECTION=net
 MOD_PYTHON_PRIORITY=optional
@@ -111,7 +111,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 	(cd $(MOD_PYTHON_BUILD_DIR); \
 		sed -i -e 's:@APACHE_VERSION@:$(MOD_PYTHON_APACHE_VERSION):' configure.in; \
 		sed -i -e 's:@CC_AND_LDSHARED@:CC=$(TARGET_CC) LDSHARED="$(TARGET_CC) -shared":' dist/Makefile.in; \
-		autoconf configure.in > configure; \
+		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOD_PYTHON_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MOD_PYTHON_LDFLAGS)" \
