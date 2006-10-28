@@ -727,7 +727,8 @@ STRIP_COMMAND=$(TARGET_STRIP) --remove-section=.comment --remove-section=.note -
 
 PATCH_LIBTOOL=sed -i \
 	-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
-	-e 's|^sys_lib_dlsearch_path_spec=.*"$$|sys_lib_dlsearch_path_spec=""|'
+	-e 's|^sys_lib_dlsearch_path_spec=.*"$$|sys_lib_dlsearch_path_spec=""|' \
+	-e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' \
 
 STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
 STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
