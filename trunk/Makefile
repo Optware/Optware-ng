@@ -222,7 +222,9 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
 	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
-	 ecl elinks erlang fcgi ficy freetds gambit-c gawk \
+	 ecl elinks \
+	 erlang erl-yaws \
+	 fcgi ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
 	 id3lib iperf iptables irssi ivorbis-tools jabber jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent libvorbisidec lsof \
@@ -236,7 +238,9 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 amule bitlbee bsdmainutils bzflag elinks erlang fcgi ficy gambit-c \
+	 amule bitlbee bsdmainutils bzflag elinks \
+	 erlang erl-yaws \
+	 fcgi ficy gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
 	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
@@ -256,7 +260,8 @@ MSS_BROKEN_PACKAGES = \
 	amule apache apr-util asterisk \
 	bitlbee \
 	clamav \
-	elinks erlang \
+	elinks \
+	erlang erl-yaws \
 	gambit-c gawk \
 	ivorbis-tools \
 	jamvm \
@@ -356,7 +361,9 @@ TS72XX_SPECIFIC_PACKAGES =
 TS72XX_BROKEN_PACKAGES = \
 	appweb asterisk asterisk-sounds \
 	bitlbee classpath clearsilver dict dspam \
-	eaccelerator ecl erlang freeradius \
+	eaccelerator ecl \
+	erlang erl-yaws \
+	freeradius \
 	ldconfig lighttpd \
 	motion mysql nfs-server nrpe \
 	php php-apache py-mysql py-soappy \
