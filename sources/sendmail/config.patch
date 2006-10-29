@@ -16,8 +16,8 @@
 +APPENDDEF(`confLIBS',`-lssl -lcrypto -ldb')
 +
 
---- cf/cf/generic-linux.cf.config	2006-10-29 21:27:04.000000000 +0100
-+++ cf/cf/generic-linux.cf	2006-10-29 21:27:35.000000000 +0100
+--- cf/cf/generic-linux.cf.config	2006-10-29 22:09:59.000000000 +0100
++++ cf/cf/generic-linux.cf	2006-10-29 22:10:26.000000000 +0100
 @@ -70,7 +70,7 @@
  
  Cwlocalhost
@@ -63,6 +63,15 @@
  
  # ignore dots as terminators in incoming messages?
  #O IgnoreDots=False
+@@ -271,7 +271,7 @@
+ #O FastSplit=1
+ 
+ # queue directory
+-O QueueDirectory=/var/spool/mqueue
++O QueueDirectory=/opt/var/spool/mqueue
+ 
+ # key for shared memory; 0 to turn off
+ #O SharedMemoryKey=0
 @@ -327,7 +327,7 @@
  O SuperSafe=True
  
