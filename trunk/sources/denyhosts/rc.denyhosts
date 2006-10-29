@@ -1,13 +1,12 @@
 #!/bin/sh
 
-if [ -f /opt/var/run/denyhosts.pid ] ; then
-  kill `cat /opt/var/run/denyhosts.pid`
+if [ -f /var/run/denyhosts.pid ] ; then
+  kill `cat /var/run/denyhosts.pid`
 fi
 
 umask 077
 
-mkdir -p /opt/var/run
-rm -f /opt/var/run/denyhosts.pid
+rm -f /var/run/denyhosts.pid
 
 touch /opt/etc/hosts.allow
 touch /opt/etc/hosts.deny
