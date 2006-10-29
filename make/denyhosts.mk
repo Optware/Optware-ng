@@ -20,7 +20,7 @@ DENYHOSTS_CONFLICTS=
 #
 # DENYHOSTS_IPK_VERSION should be incremented when the ipk changes.
 #
-DENYHOSTS_IPK_VERSION=4
+DENYHOSTS_IPK_VERSION=5
 
 #
 # DENYHOSTS_CONFFILES should be a list of user-editable files
