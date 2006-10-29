@@ -31,7 +31,7 @@ ERLANG_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 ERLANG_DESCRIPTION=A dynamic programming language and runtime environment, with built-in support for concurrency, distribution and fault tolerance
 ERLANG_SECTION=misc
 ERLANG_PRIORITY=optional
-ERLANG_DEPENDS=ncurses openssl
+ERLANG_DEPENDS=ncurses, openssl
 ERLANG_SUGGESTS=
 ERLANG_CONFLICTS=
 
@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=5
+ERLANG_IPK_VERSION=6
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -56,13 +56,14 @@ ERLANG_IPK_VERSION=5
 # which they should be applied to the source code.
 #
 ifeq ($(HOSTCC), $(TARGET_CC))
+ERLANG_HOST_BUILT=
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
-	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
-
+	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
 else
+ERLANG_HOST_BUILT=$(ERLANG_HOST_BUILD_DIR)/.built
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
@@ -71,8 +72,7 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch \
-
+	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
 endif
 
 ifeq ($(ERLANG_WITH_SAE), yes)
@@ -96,6 +96,7 @@ ERLANG_LDFLAGS=
 # You should not change any of these variables.
 #
 ERLANG_BUILD_DIR=$(BUILD_DIR)/erlang
+ERLANG_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/erlang
 ERLANG_SOURCE_DIR=$(SOURCE_DIR)/erlang
 
 ERLANG_IPK_DIR=$(BUILD_DIR)/erlang-$(ERLANG_VERSION)-ipk
@@ -129,6 +130,49 @@ $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(DL_DIR)/$(ERLANG
 #
 erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) $(ERLANG_PATCHES)
 
+$(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured make/erlang.mk \
+		$(DL_DIR)/$(ERLANG_SOURCE) \
+		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
+		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
+		$(ERLANG_PATCHES)
+	rm -rf $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_HOST_BUILD_DIR)
+	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(ERLANG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(ERLANG_DIR) -p1
+	mv $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_HOST_BUILD_DIR)
+#	hack to reduce build host dependency on ncurses-dev
+	$(TERMCAP_UNZIP) $(DL_DIR)/$(TERMCAP_SOURCE) | tar -C $(ERLANG_HOST_BUILD_DIR) -xvf -
+	mv $(ERLANG_HOST_BUILD_DIR)/termcap-$(TERMCAP_VERSION) $(ERLANG_HOST_BUILD_DIR)/termcap
+	(cd $(ERLANG_HOST_BUILD_DIR)/termcap; \
+		./configure; \
+		make; \
+	)
+#	configure erlang (host version)
+	(cd $(ERLANG_HOST_BUILD_DIR); \
+		ac_cv_prog_javac_ver_1_2=no \
+		CPPFLAGS="-I$(ERLANG_HOST_BUILD_DIR)/termcap" \
+		LDFLAGS="-L$(ERLANG_HOST_BUILD_DIR)/termcap" \
+		./configure \
+		--prefix=/opt \
+                --without-ssl \
+		--disable-smp-support \
+                --disable-hipe \
+		--disable-nls \
+	)
+	touch $(ERLANG_HOST_BUILD_DIR)/.configured
+
+$(ERLANG_HOST_BUILD_DIR)/.built: $(ERLANG_HOST_BUILD_DIR)/.configured
+	# build host erlang
+	CPPFLAGS="-I$(ERLANG_HOST_BUILD_DIR)/termcap" \
+	LDFLAGS="-L$(ERLANG_HOST_BUILD_DIR)/termcap" \
+	$(MAKE) -C $(ERLANG_HOST_BUILD_DIR) $(ERLANG_MAKE_OPTION)
+ifeq ($(ERLANG_WITH_SAE), yes)
+	# build host SAE (StandAlone Erlang)
+	ERL_TOP=$(ERLANG_HOST_BUILD_DIR) \
+	PATH="$(ERLANG_HOST_BUILD_DIR)/bin:$(ERLANG_HOST_BUILD_DIR)/erts/boot/src:$$PATH" \
+		$(MAKE) -C $(ERLANG_HOST_BUILD_DIR)/erts/boot/src
+endif
+	touch $(ERLANG_HOST_BUILD_DIR)/.built
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -144,7 +188,8 @@ erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(D
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ERLANG_BUILD_DIR)/.configured: \
+$(ERLANG_BUILD_DIR)/.configured: make/erlang.mk \
+		$(ERLANG_HOST_BUILT) \
 		$(DL_DIR)/$(ERLANG_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
@@ -171,29 +216,6 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--disable-nls \
 	)
 else
-	rm -rf $(ERLANG_BUILD_DIR)-host
-	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
-	mv $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR)-host
-#	hack to reduce build host dependency on ncurses-dev
-	$(TERMCAP_UNZIP) $(DL_DIR)/$(TERMCAP_SOURCE) | tar -C $(ERLANG_BUILD_DIR)-host -xvf -
-	mv $(ERLANG_BUILD_DIR)-host/termcap-$(TERMCAP_VERSION) $(ERLANG_BUILD_DIR)-host/termcap
-	(cd $(ERLANG_BUILD_DIR)-host/termcap; \
-		./configure; \
-		make; \
-	)
-#	configure erlang (host version)
-	(cd $(ERLANG_BUILD_DIR)-host; \
-		ac_cv_prog_javac_ver_1_2=no \
-		CPPFLAGS="-I$(ERLANG_BUILD_DIR)-host/termcap" \
-		LDFLAGS="-L$(ERLANG_BUILD_DIR)-host/termcap" \
-		./configure \
-		--prefix=/opt \
-                --without-ssl \
-		--disable-smp-support \
-                --disable-hipe \
-		--disable-nls \
-	)
 #	configure erlang (cross version)
 	(cd $(ERLANG_BUILD_DIR)/erts; \
 		autoconf configure.in > configure; \
@@ -220,7 +242,7 @@ else
                 --disable-hipe \
 		--disable-nls \
 		; \
-	    sed -i -e 's|$$(ERL_TOP)/bin/dialyzer|$(ERLANG_BUILD_DIR)-host/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin|' \
+	    sed -i -e 's|$$(ERL_TOP)/bin/dialyzer|$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin|' \
 		$(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
 	)
 endif
@@ -250,18 +272,8 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		$(MAKE) -C $(ERLANG_BUILD_DIR)/erts/boot/src $(ERLANG_MAKE_OPTION)
   endif
 else
-	# build host erlang
-	CPPFLAGS="-I$(ERLANG_BUILD_DIR)-host/termcap" \
-	LDFLAGS="-L$(ERLANG_BUILD_DIR)-host/termcap" \
-	$(MAKE) -C $(ERLANG_BUILD_DIR)-host $(ERLANG_MAKE_OPTION)
-  ifeq ($(ERLANG_WITH_SAE), yes)
-	# build host SAE (StandAlone Erlang)
-	ERL_TOP=$(ERLANG_BUILD_DIR)-host \
-	PATH="$(ERLANG_BUILD_DIR)-host/bin:$(ERLANG_BUILD_DIR)-host/erts/boot/src:$$PATH" \
-		$(MAKE) -C $(ERLANG_BUILD_DIR)-host/erts/boot/src
-  endif
 	# build target erlang
-	PATH="$(ERLANG_BUILD_DIR)-host/bin:$$PATH" \
+	PATH="$(ERLANG_HOST_BUILD_DIR)/bin:$$PATH" \
 		TARGET=$(GNU_TARGET_NAME)-gnu \
 		OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
@@ -270,7 +282,7 @@ else
   ifeq ($(ERLANG_WITH_SAE), yes)
 	# build target SAE (StandAlone Erlang)
 	ERL_TOP=$(ERLANG_BUILD_DIR) \
-	PATH="$(ERLANG_BUILD_DIR)-host/bin:$(ERLANG_BUILD_DIR)-host/erts/boot/src:$$PATH" \
+	PATH="$(ERLANG_HOST_BUILD_DIR)/bin:$(ERLANG_HOST_BUILD_DIR)/erts/boot/src:$$PATH" \
 		TARGET=$(GNU_TARGET_NAME)-gnu \
 		OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
@@ -374,8 +386,8 @@ $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control:
 $(ERLANG_IPK): $(ERLANG_BUILD_DIR)/.built
 	rm -rf $(ERLANG_IPK_DIR) $(BUILD_DIR)/erlang_*_$(TARGET_ARCH).ipk
 	rm -rf $(ERLANG-LIBS_IPK_DIR) $(BUILD_DIR)/erlang-libs_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ERLANG_BUILD_DIR)-host \
-		INSTALL_PREFIX=$(ERLANG_BUILD_DIR)-host $(ERLANG_MAKE_OPTION) install
+	$(MAKE) -C $(ERLANG_HOST_BUILD_DIR) \
+		INSTALL_PREFIX=$(ERLANG_HOST_BUILD_DIR) $(ERLANG_MAKE_OPTION) install
 	install -d $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
 ifeq ($(HOSTCC), $(TARGET_CC))
 	TARGET=$(GNU_TARGET_NAME)-gnu \
@@ -388,10 +400,10 @@ ifeq ($(HOSTCC), $(TARGET_CC))
         	sed -i -e 's:ROOTDIR=.*:ROOTDIR=/opt/lib/erlang:' $(ERLANG_IPK_DIR)/opt/lib/erlang/erts*/bin/$$f; \
         done
 else
-	cp -r `find $(ERLANG_BUILD_DIR)-host/bin -mindepth 1 -type d` $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
-	cp -p $(ERLANG_BUILD_DIR)-host/bin/erl $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/erl-host
+	cp -r `find $(ERLANG_HOST_BUILD_DIR)/bin -mindepth 1 -type d` $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
+	cp -p $(ERLANG_HOST_BUILD_DIR)/bin/erl $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/erl-host
 	sed -i -e 's:ROOTDIR=.*:ROOTDIR=$(ERLANG_IPK_DIR)/opt/lib/erlang:' $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/erl-host
-	PATH="$(ERLANG_BUILD_DIR)-host/bin:$$PATH" \
+	PATH="$(ERLANG_HOST_BUILD_DIR)/bin:$$PATH" \
 		TARGET=$(GNU_TARGET_NAME)-gnu \
 		OVERRIDE_TARGET=$(GNU_TARGET_NAME)-gnu \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
@@ -498,7 +510,7 @@ erlang-clean:
 # directories.
 #
 erlang-dirclean:
-	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR) $(ERLANG_BUILD_DIR)-host \
+	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_BUILD_DIR) \
 		$(ERLANG_IPK_DIR) $(ERLANG_IPK) \
 		$(ERLANG-LIBS_IPK_DIR) $(ERLANG-LIBS_IPK) \
 		$(ERLANG-MANPAGES_IPK_DIR) $(ERLANG-MANPAGES_IPK) \
