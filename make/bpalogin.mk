@@ -37,7 +37,7 @@ BPALOGIN_CONFLICTS=
 #
 # BPALOGIN_IPK_VERSION should be incremented when the ipk changes.
 #
-BPALOGIN_IPK_VERSION=1
+BPALOGIN_IPK_VERSION=2
 
 #
 # BPALOGIN_CONFFILES should be a list of user-editable files
