@@ -16,7 +16,10 @@ DNSMASQ_PRIORITY=optional
 DNSMASQ_DEPENDS=
 DNSMASQ_CONFLICTS=
 
-DNSMASQ_IPK_VERSION=2
+DNSMASQ_IPK_VERSION=3
+
+# DNSMASQ_CONFFILES should be a list of user-editable files
+DNSMASQ_CONFFILES=/opt/etc/dnsmasq.conf
 
 DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch
 
@@ -68,6 +71,7 @@ $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/src/dnsmasq
 	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example $(DNSMASQ_IPK_DIR)/opt/etc/dnsmasq.conf
 	install -m 755 $(DNSMASQ_SOURCE_DIR)/rc.dnsmasq $(DNSMASQ_IPK_DIR)/opt/etc/init.d/S56dnsmasq
 	$(MAKE) $(DNSMASQ_IPK_DIR)/CONTROL/control	
+	echo $(DNSMASQ_CONFFILES) | sed -e 's/ /\n/g' > $(DNSMASQ_IPK_DIR)/CONTROL/conffiles
 	install -m 644 $(DNSMASQ_SOURCE_DIR)/postinst $(DNSMASQ_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(DNSMASQ_SOURCE_DIR)/prerm $(DNSMASQ_IPK_DIR)/CONTROL/prerm
 	install -d $(DNSMASQ_IPK_DIR)/opt/man/man8 $(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq
