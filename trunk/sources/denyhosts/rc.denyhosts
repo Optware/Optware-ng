@@ -1,6 +1,8 @@
 #!/bin/sh
 
-/bin/killall denyhosts 2>/dev/null
+if [ -f /opt/var/run/denyhosts.pid ] ; then
+  kill `cat /opt/var/run/denyhosts.pid`
+fi
 
 umask 077
 
