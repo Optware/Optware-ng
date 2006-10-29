@@ -1,11 +1,12 @@
 #!/bin/sh
 
-killall /opt/sbin/sshd 2>/dev/null
-
 if [ -f /var/run/sshd.pid ] ; then
-  # For the fsg3 target
   kill `cat /var/run/sshd.pid`
+else
+  killall sshd
 fi
+
+rm -f /var/run/sshd.pid
 
 umask 077
 

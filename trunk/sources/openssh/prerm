@@ -1,8 +1,9 @@
 #!/bin/sh
 
-/bin/killall /opt/sbin/sshd
+if [ -f /var/run/sshd.pid ] ; then
+  kill `cat /var/run/sshd.pid`
+else
+  killall sshd
+fi
 
-/bin/rm -f /opt/etc/openssh/ssh_host_key
-/bin/rm -f /opt/etc/openssh/ssh_host_rsa_key
-/bin/rm -f /opt/etc/openssh/ssh_host_dsa_key
-
+rm -f /var/run/sshd.pid
