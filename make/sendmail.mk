@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=1
+SENDMAIL_IPK_VERSION=2
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files

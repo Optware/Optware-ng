@@ -1,6 +1,6 @@
---- devtools/Site/site.config.m4.orig	2006-08-19 10:24:47.000000000 +0200
+--- devtools/Site/site.config.m4.config	2006-08-19 10:24:47.000000000 +0200
 +++ devtools/Site/site.config.m4	2006-08-19 10:24:27.000000000 +0200
-@@ -0,0 +1,13 @@
+@@ -0,0 +1,14 @@
 +define(`confLIBSEARCH',`db resolv 44bsd')
 +define(`confSTDIR',`/opt/etc/mail')
 +define(`confHFDIR',`/opt/etc/mail')
@@ -9,14 +9,15 @@
 +define(`confSBINDIR',`/opt/sbin')
 +define(`confUBINDIR',`/opt/bin')
 +define(`confMANROOT',`/opt/man/man')
++define(`confQUEUE_DIR',`/opt/var/spool/mqueue')
 +define(`confMSP_QUEUE_DIR',`/opt/var/spool/clientmqueue')
 +dnl ### Changes for STARTTLS support
 +APPENDDEF(`confENVDEF',`-DSTARTTLS -DNEWDB -DNETINET6')
 +APPENDDEF(`confLIBS',`-lssl -lcrypto -ldb')
 +
 
---- cf/cf/generic-linux.cf~	2006-08-07 19:37:31.000000000 +0200
-+++ cf/cf/generic-linux.cf	2006-08-19 22:24:50.000000000 +0200
+--- cf/cf/generic-linux.cf.config	2006-10-29 21:27:04.000000000 +0100
++++ cf/cf/generic-linux.cf	2006-10-29 21:27:35.000000000 +0100
 @@ -70,7 +70,7 @@
  
  Cwlocalhost
@@ -89,6 +90,33 @@
  
  # hosts file (normally /etc/hosts)
  #O HostsFile=/etc/hosts
+@@ -437,7 +437,7 @@
+ #O DoubleBounceAddress=postmaster
+ 
+ # where to save bounces if all else fails
+-#O DeadLetterDrop=/var/tmp/dead.letter
++#O DeadLetterDrop=/opt/var/tmp/dead.letter
+ 
+ # what user id do we assume for the majority of the processing?
+ #O RunAsUser=sendmail
+@@ -462,7 +462,7 @@
+ #O TrustedUser=root
+ 
+ # Control socket for daemon management
+-#O ControlSocketName=/var/spool/mqueue/.control
++#O ControlSocketName=/opt/var/spool/mqueue/.control
+ 
+ # Maximum MIME header length to protect MUAs
+ #O MaxMimeHeaderLength=0/0
+@@ -474,7 +474,7 @@
+ #O MaxAliasRecursion=10
+ 
+ # location of pid file
+-#O PidFile=/var/run/sendmail.pid
++#O PidFile=/opt/var/run/sendmail.pid
+ 
+ # Prefix string for the process title shown on 'ps' listings
+ #O ProcessTitlePrefix=prefix
 @@ -498,7 +498,7 @@
  #O AuthRealm
  

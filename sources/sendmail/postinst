@@ -8,7 +8,7 @@ group_file=/etc/group
 
 if [ -z "`/bin/grep \"\(^$setgid_group\b\|:$setgid_group_id\):\" $group_file`" ] ; then
     /bin/echo -n "creating new user(s) and group(s) ... "
-    /bin/cp "$group_file" "$group_file".sendmail-save >& /dev/null || true
+    /bin/cp "$group_file" "$group_file".sendmail-save > /dev/null 2>&1 || true
     /bin/echo -e "\n\t -> backup $group_file.sendmail-save ceated"
     /bin/sed -i "s/^\(nobody\)/$setgid_group:x:$setgid_group_id:\n\1/g" $group_file
     /bin/echo -e "\t -> new group $setgid_group created"
@@ -25,4 +25,4 @@ chmod og-w /
 /opt/bin/newaliases
 echo "sendmail will run as a daemon now. Alternatively, execute:"
 echo "echo 'smtp    stream  tcp     nowait  root    /opt/sbin/sendmail -bs' >> /etc/inetd.conf"
-echo "echo '0-59/15 * * * * root /opt/sbin/sendmail -q  & >& /dev/null' >> /etc/crontab"
+echo "echo '0-59/15 * * * * root /opt/sbin/sendmail -q  & > /dev/null 2>&1' >> /etc/crontab"
