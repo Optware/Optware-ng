@@ -121,8 +121,8 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ERL-YAWS_LDFLAGS)" \
-		ac_cv_path_ERL=$(ERLANG_BUILD_DIR)-host/bin/erl \
-		ac_cv_path_ERLC=$(ERLANG_BUILD_DIR)-host/bin/erlc \
+		ac_cv_path_ERL=$(ERLANG_HOST_BUILD_DIR)/bin/erl \
+		ac_cv_path_ERLC=$(ERLANG_HOST_BUILD_DIR)/bin/erlc \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
