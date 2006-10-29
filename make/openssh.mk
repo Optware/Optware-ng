@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=5
+OPENSSH_IPK_VERSION=6
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
