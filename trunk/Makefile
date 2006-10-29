@@ -470,11 +470,18 @@ SOURCEFORGE_MIRROR=easynews.dl.sf.net
 BASE_DIR:=$(shell pwd)
 SOURCE_DIR=$(BASE_DIR)/sources
 DL_DIR=$(BASE_DIR)/downloads
+
 BUILD_DIR=$(BASE_DIR)/builds
 STAGING_DIR=$(BASE_DIR)/staging
 STAGING_PREFIX=$(STAGING_DIR)/opt
+
 TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
 PACKAGE_DIR=$(BASE_DIR)/packages
+
+HOST_BUILD_DIR=$(BASE_DIR)/host/builds
+HOST_STAGING_DIR=$(BASE_DIR)/host/staging
+HOST_STAGING_PREFIX=$(HOST_STAGING_DIR)/opt
+
 export TMPDIR=$(BASE_DIR)/tmp
 
 TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
@@ -839,6 +846,16 @@ distclean:
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
+
+host/.configured:
+	[ -d $(HOST_BUILD_DIR) ] || ( \
+		if [ "$(OPTWARE_TARGET)" = $(shell basename $(BASE_DIR)) ]; \
+			then mkdir -p ../host; ln -s ../host .; \
+			else mkdir -p host; \
+		fi; \
+		mkdir -p $(HOST_BUILD_DIR) $(HOST_STAGING_PREFIX); \
+	)
+	touch host/.configured
 
 make/%.mk:
 	PKG_UP=$$(echo $* | tr [a-z\-] [A-Z_]);			\
