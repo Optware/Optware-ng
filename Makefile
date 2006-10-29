@@ -51,6 +51,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 #	make[3]: Entering directory `/home/slug/optware/ds101g/builds/sendmail/obj.Linux.2.6.12.4-vs2.0.i686/smrsh'
 #	install -c -o  -g  -m 555 smrsh /home/slug/optware/ds101g/builds/sendmail-8.13.8-ipk/opt/sbin
 #	install: invalid user `-g'
+# bpalogin - for some reason it can't find 'sed' on the build machine
 PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
@@ -58,6 +59,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumik
 	perl-dbd-mysql \
 	asterisk-sounds \
 	sendmail \
+	bpalogin
 
 PERL_PACKAGES = \
 	perl \
@@ -122,7 +124,7 @@ COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk \
 	atftp atk audiofile autoconf automake \
-	bash bc bzip2 bind bip bitchx bitlbee bpalogin bsdmainutils busybox byrequest bzflag \
+	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract ccxstream chillispot coreutils cpio cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
