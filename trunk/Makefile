@@ -272,7 +272,7 @@ MSS_BROKEN_PACKAGES = \
 	ntp \
 	php-apache py-lxml \
 	qemu qemu-libc-i386 \
-	sablevm svn \
+	sablevm svn swi-prolog \
 	transcode \
 	tethereal \
 	wxbase \
@@ -370,7 +370,7 @@ TS72XX_BROKEN_PACKAGES = \
 	motion mysql nfs-server nrpe \
 	php php-apache py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent \
-	sablevm tethereal transcode w3m xvid \
+	sablevm swi-prolog tethereal transcode w3m xvid \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
