@@ -27,7 +27,7 @@ LIBFTDI_DIR=libftdi-$(LIBFTDI_VERSION)
 LIBFTDI_UNZIP=zcat
 LIBFTDI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBFTDI_DESCRIPTION=Library to access the FTDI (usb2serial) chip in userspace via libusb
-LIBFTDI_SECTION=libs,
+LIBFTDI_SECTION=libs
 LIBFTDI_PRIORITY=optional
 LIBFTDI_DEPENDS=libusb
 LIBFTDI_SUGGESTS=
@@ -36,7 +36,7 @@ LIBFTDI_CONFLICTS=
 #
 # LIBFTDI_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBFTDI_IPK_VERSION=1
+LIBFTDI_IPK_VERSION=2
 
 #
 # LIBFTDI_CONFFILES should be a list of user-editable files
