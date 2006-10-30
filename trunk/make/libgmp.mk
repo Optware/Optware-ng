@@ -66,9 +66,20 @@ LIBGMP_LDFLAGS=
 # You should not change any of these variables.
 #
 LIBGMP_BUILD_DIR=$(BUILD_DIR)/libgmp
+LIBGMP_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libgmp
 LIBGMP_SOURCE_DIR=$(SOURCE_DIR)/libgmp
 LIBGMP_IPK_DIR=$(BUILD_DIR)/libgmp-$(LIBGMP_VERSION)-ipk
 LIBGMP_IPK=$(BUILD_DIR)/libgmp_$(LIBGMP_VERSION)-$(LIBGMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifeq ($(HOST_MACHINE), x86_64)
+LIBGMP_HOST32="--host=i586-pc-linux-gnu"
+LIBGMP_M32=-m32
+else
+LIBGMP_HOST32=
+LIBGMP_M32=
+endif
+
+.PHONY: libgmp-source libgmp-unpack libgmp libgmp-stage libgmp-ipk libgmp-clean libgmp-dirclean libgmp-check libgmp-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -152,6 +163,24 @@ $(LIBGMP_BUILD_DIR)/.staged: $(LIBGMP_BUILD_DIR)/.built
 	touch $(LIBGMP_BUILD_DIR)/.staged
 
 libgmp-stage: $(LIBGMP_BUILD_DIR)/.staged
+
+$(LIBGMP_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(LIBGMP_SOURCE) make/libgmp.mk
+	rm -rf $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_HOST_BUILD_DIR)
+	$(LIBGMP_UNZIP) $(DL_DIR)/$(LIBGMP_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(LIBGMP_DIR)" != "$(LIBGMP_HOST_BUILD_DIR)" ; \
+		then mv $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_HOST_BUILD_DIR) ; \
+	fi
+	(cd $(LIBGMP_HOST_BUILD_DIR); \
+	    CPPFLAGS="$(LIBGMP_M32)" \
+	    ./configure \
+		--prefix=/opt $(LIBGMP_HOST32) \
+		--disable-nls \
+		--disable-shared; \
+	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \
+	)
+	touch $(LIBGMP_HOST_BUILD_DIR)/.staged
+
+libgmp-host-stage: $(LIBGMP_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
