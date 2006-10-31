@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=8
+PERL_IPK_VERSION=9
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -67,7 +67,7 @@ PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
 #
 PERL_BUILD_DIR=$(BUILD_DIR)/perl
 ifneq ($(HOSTCC), $(TARGET_CC))
-PERL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/perl
+PERL_HOST_BUILD_DIR=$(BUILD_DIR)/perl-host
 PERL_HOST_MINIPERL=$(PERL_HOST_BUILD_DIR)/miniperl
 PERL_HOSTPERL=$(PERL_HOST_BUILD_DIR)/perl
 PERL_INC=PERL_INC=$(STAGING_LIB_DIR)/perl5/5.8.8/$(PERL_ARCH)/CORE
@@ -91,8 +91,6 @@ MICROPERL_IPK=$(BUILD_DIR)/microperl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGE
 $(DL_DIR)/$(PERL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PERL_SITE)/$(PERL_SOURCE)
 
-.PHONY: perl-source perl-unpack perl perl-stage perl-ipk perl-clean perl-dirclean perl-host-stage
-
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -101,25 +99,25 @@ $(DL_DIR)/$(PERL_SOURCE):
 perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-$(PERL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) make/perl.mk
-	rm -rf $(HOST_BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
-	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+$(PERL_HOST_BUILD_DIR)/.hostbuilt: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
+	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
-		cat $(PERL_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(PERL_DIR) -p0 ; \
+		cat $(PERL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
 	fi
-	mv $(HOST_BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR) ; \
+	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR) ; \
 	(cd $(PERL_HOST_BUILD_DIR); \
 		rm -f config.sh Policy.sh; \
 		sh ./Configure -des \
 			-Dinstallstyle='lib/perl5' \
 			-Darchname=$(PERL_ARCH) \
 			-Dstartperl='#!/opt/bin/perl' \
-			-Dprefix=$(HOST_STAGING_PREFIX); \
+			-Dprefix=$(PERL_HOST_BUILD_DIR)/staging-install; \
 		make install.perl; \
 	)
-	touch $(PERL_HOST_BUILD_DIR)/.staged
+	touch $(PERL_HOST_BUILD_DIR)/.hostbuilt
 
-perl-host-stage: $(PERL_HOST_BUILD_DIR)/.staged
+perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
 
 #
@@ -140,7 +138,7 @@ endif
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 else
-$(PERL_BUILD_DIR)/.configured: $(PERL_HOST_BUILD_DIR)/.staged
+$(PERL_BUILD_DIR)/.configured: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
 	$(MAKE) libdb-stage
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
@@ -333,7 +331,11 @@ microperl-clean:
 # directories.
 #
 perl-dirclean:
+ifeq ($(HOSTCC), $(TARGET_CC))
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
+else
+	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_HOST_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
+endif
 
 microperl-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR) $(MICROPERL_IPK_DIR) $(MICROPERL_IPK)
