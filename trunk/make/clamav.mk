@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=2
+CLAMAV_IPK_VERSION=3
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -128,6 +128,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 		--sysconfdir=/opt/etc \
 		--with-zlib=$(STAGING_DIR)/opt \
 		--without-libcurl	\
+		--mandir=/opt/man	\
 	)
 	touch $(CLAMAV_BUILD_DIR)/.configured
 
