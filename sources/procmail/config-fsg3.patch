@@ -1,0 +1,13 @@
+--- procmail/config.h~	2006-10-30 16:08:16.969592944 +1030
++++ procmail/config.h	2006-10-30 17:10:25.646747856 +1030
+@@ -108,7 +108,9 @@
+ 	recipes will not work.	One reasonable candidate is "/etc/mta/send"
+ 	on systems that support the MTA configuration switch. */
+ 
+-#define DEFmaildir	"$HOME"	     /* default value for the MAILDIR variable;
++#define MAILSPOOLHOME "/mail/mbox"
++
++#define DEFmaildir	"$HOME/mail"	/* default value for the MAILDIR variable;
+ 					this must be an absolute path */
+ 
+ #define PROCMAILRC	"$HOME/.procmailrc"	/* default rcfile for every
