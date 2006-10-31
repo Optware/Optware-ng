@@ -1,0 +1,25 @@
+--- procmail/config.h~	2001-09-11 14:23:50.000000000 +0930
++++ procmail/config.h	2006-10-30 13:26:19.318900400 +1030
+@@ -116,11 +116,11 @@
+ 	is not found, maildelivery will proceed as normal to the default
+ 	system mailbox.	 This also must be an absolute path */
+ 
+-#define ETCRC	"/etc/procmailrc"	/* optional global procmailrc startup
++#define ETCRC	"/opt/etc/procmailrc"	/* optional global procmailrc startup
+ 					   file (will only be read if procmail
+ 	is started with no rcfile on the command line). */
+ 
+-#define ETCRCS	"/etc/procmailrcs/"	/* optional trusted path prefix for
++#define ETCRCS	"/opt/etc/procmailrcs/"	/* optional trusted path prefix for
+ 					   rcfiles which will be executed with
+ 	the uid of the owner of the rcfile (this only happens if procmail is
+ 	called with the -m option, without variable assignments on the command
+@@ -168,7 +168,7 @@
+ #define INEFFICIENTrealloc			  /* don't pussy-foot around */
+ #endif
+ #define MAXinMEM	(1024*1024)		 /* when to switch to mmap() */
+-#define MMAP_DIR	"/var/spool/procmail/"		     /* where to put */
++#define MMAP_DIR	"/opt/var/spool/procmail/"		     /* where to put */
+ #endif								/* the files */
+ #define MINlogbuf	81			       /* fit an entire line */
+ #define MAXlogbuf	1000		       /* in case someone abuses LOG */
