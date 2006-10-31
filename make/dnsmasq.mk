@@ -66,6 +66,7 @@ $(DNSMASQ_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DNSMASQ_CONFLICTS)" >>$@
 
 $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/src/dnsmasq
+	rm -rf $(DNSMASQ_IPK_DIR) $(BUILD_DIR)/dnsmasq_*_$(TARGET_ARCH).ipk
 	install -d $(DNSMASQ_IPK_DIR)/opt/sbin $(DNSMASQ_IPK_DIR)/opt/etc/init.d
 	$(STRIP_COMMAND) $(DNSMASQ_BUILD_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)/opt/sbin/dnsmasq
 	install -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example $(DNSMASQ_IPK_DIR)/opt/etc/dnsmasq.conf
