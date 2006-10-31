@@ -101,7 +101,7 @@ $(DL_DIR)/$(PERL_SOURCE):
 perl-source: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-$(PERL_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) make/perl.mk
+$(PERL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) make/perl.mk
 	rm -rf $(HOST_BUILD_DIR)/$(PERL_DIR) $(PERL_HOST_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \

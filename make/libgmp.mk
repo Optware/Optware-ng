@@ -164,7 +164,7 @@ $(LIBGMP_BUILD_DIR)/.staged: $(LIBGMP_BUILD_DIR)/.built
 
 libgmp-stage: $(LIBGMP_BUILD_DIR)/.staged
 
-$(LIBGMP_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(LIBGMP_SOURCE) make/libgmp.mk
+$(LIBGMP_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBGMP_SOURCE) make/libgmp.mk
 	rm -rf $(HOST_BUILD_DIR)/$(LIBGMP_DIR) $(LIBGMP_HOST_BUILD_DIR)
 	$(LIBGMP_UNZIP) $(DL_DIR)/$(LIBGMP_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test "$(HOST_BUILD_DIR)/$(LIBGMP_DIR)" != "$(LIBGMP_HOST_BUILD_DIR)" ; \
