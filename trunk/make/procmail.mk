@@ -36,7 +36,7 @@ PROCMAIL_CONFLICTS=
 #
 # PROCMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-PROCMAIL_IPK_VERSION=2
+PROCMAIL_IPK_VERSION=3
 
 #
 # PROCMAIL_CONFFILES should be a list of user-editable files
@@ -47,6 +47,9 @@ PROCMAIL_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 PROCMAIL_PATCHES=$(PROCMAIL_SOURCE_DIR)/src-Makefile.0.patch $(PROCMAIL_SOURCE_DIR)/src-autoconf.patch $(PROCMAIL_SOURCE_DIR)/config.patch
+ifeq ($(OPTWARE_TARGET),fsg3)
+PROCMAIL_PATCHES+= $(PROCMAIL_SOURCE_DIR)/config-fsg3.patch
+endif
 
 #
 # If the compilation of the package requires additional
