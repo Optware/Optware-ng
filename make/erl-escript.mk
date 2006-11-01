@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ERL-ESCRIPT_SITE=http://yhafri.club.fr/crux/escript
+ERL-ESCRIPT_SITE=http://sources.nslu2-linux.org/sources
 ERL-ESCRIPT_VERSION=4.0
 ERL-ESCRIPT_SOURCE=escript-$(ERL-ESCRIPT_VERSION).tgz
 ERL-ESCRIPT_DIR=escript-$(ERL-ESCRIPT_VERSION)
