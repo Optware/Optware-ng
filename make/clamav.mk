@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=3
+CLAMAV_IPK_VERSION=4
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -113,6 +113,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 	cat $(CLAMAV_PATCHES) | patch -d $(BUILD_DIR)/$(CLAMAV_DIR) -p1
 	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
 	(cd $(CLAMAV_BUILD_DIR); \
+		find . -name '*.[ch]' | xargs sed -i -e 's|P_tmpdir|CLAMAV_tmpdir|g'; \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS)" \
@@ -139,7 +140,8 @@ clamav-unpack: $(CLAMAV_BUILD_DIR)/.configured
 #
 $(CLAMAV_BUILD_DIR)/.built: $(CLAMAV_BUILD_DIR)/.configured
 	rm -f $(CLAMAV_BUILD_DIR)/.built
-	$(MAKE) -C $(CLAMAV_BUILD_DIR)
+	$(MAKE) -C $(CLAMAV_BUILD_DIR) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS) -DCLAMAV_tmpdir=\\\"/opt/tmp\\\""
 	touch $(CLAMAV_BUILD_DIR)/.built
 
 #
@@ -191,6 +193,7 @@ $(CLAMAV_IPK_DIR)/CONTROL/control:
 $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(CLAMAV_IPK_DIR) install-strip
+	install -d $(CLAMAV_IPK_DIR)/opt/tmp/
 	install -d $(CLAMAV_IPK_DIR)/opt/etc/
 	install -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
 	install -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
