@@ -1,9 +1,0 @@
-Package: mtr
-Priority: optional
-Version: 0.69-1
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: network tools
-Depends: ncurses
-Source: ftp://ftp.bitwizard.nl/mtr/mtr-0.69.tar.gz
-Description: mtr combines the functionality of the 'traceroute' and 'ping' programs in a single network diagnostic tool.
