@@ -120,6 +120,9 @@ PYTHON_PACKAGES = \
 	py-urwid py-usb py-wsgiref py-yaml py-xml py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 
+ERLANG_PACKAGES = \
+	erlang erl-escript erl-yaws \
+
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk \
@@ -132,7 +135,7 @@ COMMON_CROSS_PACKAGES = \
 	cyrus-imapd \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp \
-	erlang erl-yaws \
+	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
 	fcgi fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze \
@@ -225,7 +228,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 WL500G_BROKEN_PACKAGES = \
 	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
 	 ecl elinks \
-	 erlang erl-yaws \
+	$(ERLANG_PACKAGES) \
 	 fcgi ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
 	 id3lib iperf iptables irssi ivorbis-tools jabber jamvm jikes \
@@ -241,7 +244,7 @@ WL500G_BROKEN_PACKAGES = \
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
 	 amule bitlbee bsdmainutils bzflag elinks \
-	 erlang erl-yaws \
+	$(ERLANG_PACKAGES) \
 	 fcgi ficy gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
@@ -263,7 +266,7 @@ MSS_BROKEN_PACKAGES = \
 	bitlbee \
 	clamav \
 	elinks \
-	erlang erl-yaws \
+	$(ERLANG_PACKAGES) \
 	gambit-c gawk \
 	ivorbis-tools \
 	jamvm \
@@ -363,7 +366,7 @@ TS72XX_BROKEN_PACKAGES = \
 	appweb asterisk asterisk-sounds \
 	bitlbee classpath clearsilver dict dspam \
 	eaccelerator ecl \
-	erlang erl-yaws \
+	$(ERLANG_PACKAGES) \
 	freeradius \
 	ldconfig lighttpd \
 	motion mysql nfs-server nrpe \
