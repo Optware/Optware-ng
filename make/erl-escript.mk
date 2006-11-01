@@ -114,6 +114,10 @@ $(ERL-ESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-ESCRIPT_SOURCE) $(ERL-ESCR
 	if test "$(BUILD_DIR)/$(ERL-ESCRIPT_DIR)" != "$(ERL-ESCRIPT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ERL-ESCRIPT_DIR) $(ERL-ESCRIPT_BUILD_DIR) ; \
 	fi
+	sed -i \
+	    -e 's|{BEAM_FILES}|(BEAM_FILES)|' \
+	    -e 's|(MODS:=\(\..*\))|(addsuffix \1,$$(MODS))|' \
+	    $(ERL-ESCRIPT_BUILD_DIR)/Makefile
 	sed -i -e 's|$$CWD|/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)|' $(ERL-ESCRIPT_BUILD_DIR)/mk_escript.sh
 	touch $(ERL-ESCRIPT_BUILD_DIR)/.configured
 
