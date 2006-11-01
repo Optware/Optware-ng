@@ -268,7 +268,7 @@ MSS_BROKEN_PACKAGES = \
 	ivorbis-tools \
 	jamvm \
 	ldconfig libvorbisidec lsof \
-	mod-fastcgi mod-python monotone mtr \
+	mod-fastcgi mod-python monotone \
 	ntp \
 	php-apache py-lxml \
 	qemu qemu-libc-i386 \
@@ -323,14 +323,13 @@ DS101G_SPECIFIC_PACKAGES = \
 	ds101-bootstrap
 
 # Packages that do not work for ds101g+.
-# mtr needs a .mk template update (it emits an _armeb.ipk)
 DS101G_BROKEN_PACKAGES = \
 	bitlbee \
 	eaccelerator \
 	flac freeradius \
 	ivorbis-tools \
 	ldconfig libvorbisidec \
-	mod-python mtr ntop ntp \
+	mod-python ntop ntp \
 	qemu qemu-libc-i386 \
 	ser \
 	bogofilter emacs xemacs hugs mzscheme ocaml \
