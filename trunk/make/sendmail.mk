@@ -161,17 +161,17 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	install -d $(SENDMAIL_IPK_DIR)/opt/man/man{1,5,8}
 	install -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mqueue
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) DESTDIR=$(SENDMAIL_IPK_DIR) \
-		UBINGRP=$(USER) UBINOWN=$(USER) \
-		SBINGRP=$(USER) SBINOWN=$(USER) \
-		GBINGRP=$(USER) GBINOWN=$(USER) \
-		MBINGRP=$(USER) MBINOWN=$(USER) \
-		MANOWN=$(USER) MANGRP=$(USER) \
-		CFGRP=$(USER)   CFOWN=$(USER) \
-		MSPQOWN=$(USER) \
+		UBINGRP=$(LOGNAME) UBINOWN=$(LOGNAME) \
+		SBINGRP=$(LOGNAME) SBINOWN=$(LOGNAME) \
+		GBINGRP=$(LOGNAME) GBINOWN=$(LOGNAME) \
+		MBINGRP=$(LOGNAME) MBINOWN=$(LOGNAME) \
+		MANOWN=$(LOGNAME) MANGRP=$(LOGNAME) \
+		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
+		MSPQOWN=$(LOGNAME) \
 		MAILDIR=/opt/etc/mail \
 		install
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR)/cf/cf DESTDIR=$(SENDMAIL_IPK_DIR) \
-		CFGRP=$(USER)   CFOWN=$(USER) \
+		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
 		MAILDIR=/opt/etc/mail \
 		CF=generic-linux install-sendmail-cf
 	for i in $(SENDMAIL_IPK_DIR)/opt/{bin/vacation,sbin/*}; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
