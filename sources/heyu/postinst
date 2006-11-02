@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo
+echo "Please edit /opt/etc/heyu/x10.conf and /opt/etc/heyu/x10.sched"
+echo "(typically, set TTY to something like /dev/usb/tts/0)"
+echo "and start /opt/etc/init.d/S99heyu"
+echo

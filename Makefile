@@ -138,7 +138,7 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core glib gnupg gnuplot gnutls gtk \
 	gphoto2 libgphoto2 \
-	hdparm hexcurse hnb hpijs \
+	hdparm hexcurse heyu hnb hpijs \
 	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
 	jabber jamvm jikes jove joe \
@@ -161,7 +161,8 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga  \
 	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
-	sablevm samba sane-backends scons sdl sendmail ser setpwc siproxd sm snownews \
+	sablevm samba sane-backends scons sdl sendmail ser setserial \
+	setpwc siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 strace syslog-ng \
 	sqsh squeak stunnel streamripper sudo swi-prolog svn \
 	sysstat \
