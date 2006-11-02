@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=9
+PERL_IPK_VERSION=10
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -171,7 +171,9 @@ else
 		rm -f config; \
 		printf "### Target Arch\nARCH = $(GNU_TARGET_NAME)\n" | sed 's/-linux$$//' > config; \
 		printf "### Target OS\nOS = linux\n" >> config; \
-		cp -f $(PERL_SOURCE_DIR)/Cross/{config.sh-*-linux,Makefile,Makefile.SH.patch} . ; \
+		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-*-linux . ; \
+		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile . ; \
+		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch . ; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PERL_LDFLAGS)" \
 		PATH="`dirname $(TARGET_CC)`:$$PATH" \
