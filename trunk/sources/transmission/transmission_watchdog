@@ -2,6 +2,9 @@
 
 . /opt/etc/transmission.conf
 
+PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin:/usr/sbin
+export PATH
+
 DEBUG=
 
 ##
@@ -211,10 +214,10 @@ fi
 # writes active torrents listing into file and notifies daemon to reload it
 _update_active()
 {
-    if [ -n "`ls ${WORK}/*/*.torrent 2>/dev/null | head -1`" ] ; then
+    if [ -n "`ls ${WORK}/*/*.torrent 2>/dev/null | head -n 1`" ] ; then
        ls -1  ${WORK}/*/*.torrent > ${ACTIVE}   
     fi
-    if [ -n "`ls ${TARGET}/*/*.seeding 2>/dev/null | head -1`" ] ; then
+    if [ -n "`ls ${TARGET}/*/*.seeding 2>/dev/null | head -n 1`" ] ; then
         ls -1  ${TARGET}/*/*.seeding >> ${ACTIVE}
     fi
     [ -f ${PIDFILE} ] && kill -HUP `cat ${PIDFILE}` 
@@ -306,7 +309,7 @@ for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
 done
 
 # Check if any torrent file exists in run env.
-TORRENT=`ls -1 $WORK/*/*.torrent 2>/dev/null | head -1`
+TORRENT=`ls -1 $WORK/*/*.torrent 2>/dev/null | head -n 1`
 
 # Start up new  torrent if work is empty
 if [ -z "$TORRENT" ]; then
@@ -316,7 +319,7 @@ if [ -z "$TORRENT" ]; then
 	exit 4
     fi
     # check if there is a torrent to process
-    FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -1`
+    FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -n 1`
     if [ -z "$FILE" ]; then
         notice "No torrents to process"
         debug "Nothing to do"

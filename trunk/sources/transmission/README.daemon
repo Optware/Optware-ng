@@ -13,14 +13,14 @@ Features
    there is no delete provided.
 * Accelerator keys (ALT-key) for CGI interface. See help for underlined keys.
 * Per torrent and cumulative status
-* start/stop/push and other commands avalable in WWW interface
+* start/stop/push and other commands available in WWW interface
 * lightweight - low memory footprint
 * tracker scrape info. Suggest best seed torrent from target dir.
 * watchdog for auto restart/queue processing with cron
 * syslog watchdog events
 * mail notify when torrent finishes
-* no state database required. Directory tree is database (slow, but failsafe)
-* stable and portable. Deloped on Asus WL-500g Deluxe
+* no state database required. Directory tree is database (slow, but fail-safe)
+* stable and portable. Developed on Asus WL-500g Deluxe with Oleg firmware 
 
 Workflow
 
@@ -33,6 +33,22 @@ Typical file flow is source -> work -> target For every torrent file from
 source, directory with the same name is created. Then torrent file is moved
 into this directory and transmissiond is run in background and constantly
 supervised with transmission_watchdog.
+
+CGI interface to daemon after each command lists all torrents in database.
+This time consuming can be interrupted at any time by giving next command
+or pressing stop button in WWW browser. This can be done for all commands
+except URL, Note and Rename as the action on torrent is taken during
+listing. This means that listing should not be interrupted until torrent is
+listed. In general there is no problem of interrupting listing at any
+point. This will not invalidate database which is file system alone.
+
+Fetch command is useful only for fetching torrent files without passkey as
+there is no possibility to pass cookies to server. Use with care. 
+
+Troubles with tracker communication can be seen in syslog file. There is 
+no association of active thread and reported problem from tracker. User should
+resolve this alone.
+
 
 Before running transmission user should carefully inspect variables in
 transmission.conf and create SOURCE, WORK, and TARGET directories
