@@ -133,7 +133,7 @@ _seed ()
 # Purge log files in target and cleanup removed
 _purge ()
 {
-    LOG=`ls -1 $TARGET/*/*.log 2>/dev/null | head -1`
+    LOG=`ls -1 $TARGET/*/*.log 2>/dev/null | head -n 1`
     if [ -z "${LOG}" ] ; then
 	echo "No LOG to purge."
     else
@@ -151,7 +151,7 @@ _purge ()
       echo "</pre>"
     fi
     
-    REMOVED=`ls -1 $WORK/*/*.torrent.removed 2>/dev/null | head -1`
+    REMOVED=`ls -1 $WORK/*/*.torrent.removed 2>/dev/null | head -n 1`
     if [ -n "${REMOVED}" ]; then
         echo "<pre>"
 	for f in $WORK/*/*.torrent.removed ; do
@@ -202,7 +202,7 @@ _scrape ()
 _best_seed ()                     
 {                                
    BEST=0              
-    if [ -n "`ls ${TARGET}/*/*.torrent 2>/dev/null | head -1`" ] ; then
+    if [ -n "`ls ${TARGET}/*/*.torrent 2>/dev/null | head -n 1`" ] ; then
 	for TORRENT in ${TARGET}/*/*.torrent ; do
 	    INFO="${TORRENT%/*}/.info"
 	    if [ -f "${INFO}" ]; then
@@ -230,7 +230,7 @@ __find ()
     [ -n "${TORRENT}" ] && return
     
     FILEPAT="$1"
-    if [ -n "`ls ${FILEPAT} 2>/dev/null | head -1`" ] ; then
+    if [ -n "`ls ${FILEPAT} 2>/dev/null | head -n 1`" ] ; then
 	for i in $FILEPAT ; do
 	    if [ $ID = $idx ]; then
 		TORRENT="$i"
@@ -263,7 +263,7 @@ __list ()
     FILEPAT="$1"
     DESC="$2"
     
-    if [ -n "`ls ${FILEPAT} 2>/dev/null | head -1`" ]
+    if [ -n "`ls ${FILEPAT} 2>/dev/null | head -n 1`" ]
     then
 	echo "<table>"
 	echo "<thead><tr><td></td><td>${DESC}</td><td>status</td></tr>"

@@ -29,7 +29,7 @@ TORRENT_SUGGESTS=cron, coreutils
 #
 # TORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-TORRENT_IPK_VERSION=6
+TORRENT_IPK_VERSION=7
 
 # TORRENT_CONFFILES should be a list of user-editable files
 TORRENT_CONFFILES=/opt/etc/torrent.conf /opt/etc/init.d/S80busybox_httpd
