@@ -139,6 +139,7 @@ $(IMAP_BUILD_DIR)/.staged: $(IMAP_BUILD_DIR)/.built
 	rm -f $(IMAP_BUILD_DIR)/.staged
 	install -d $(STAGING_INCLUDE_DIR)/imap
 	cp $(IMAP_BUILD_DIR)/c-client/*.h $(STAGING_INCLUDE_DIR)/imap
+	rm -f $(STAGING_LIB_DIR)/libc-client.so*
 	cp -a $(IMAP_BUILD_DIR)/c-client/libc-client.so* $(STAGING_LIB_DIR)
 	touch $(IMAP_BUILD_DIR)/.staged
 
