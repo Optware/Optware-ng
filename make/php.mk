@@ -21,12 +21,16 @@ PHP_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
+ifneq ($(OPTWARE_TARGET),wl500g)
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, cyrus-sasl-libs, openldap-libs
+else
 PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
+endif
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=1
+PHP_IPK_VERSION=2
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -92,6 +96,20 @@ PHP_MYSQL_IPK=$(BUILD_DIR)/php-mysql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_
 
 PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
 PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+# We need this because openldap does not build on the wl500g.
+ifneq ($(OPTWARE_TARGET),wl500g)
+PHP_CONFIGURE_TARGET_ARGS= \
+		--with-ldap=shared,$(STAGING_PREFIX) \
+		--with-ldap-sasl=$(STAGING_PREFIX)
+PHP_CONFIGURE_ENV=LIBS=-lsasl2
+else
+PHP_CONFIGURE_TARGET_ARGS=
+PHP_CONFIGURE_ENV=
+endif
+
+PHP_CONFIGURE_THREAD_ARGS= \
+		--enable-maintainer-zts 
 
 
 #
@@ -228,18 +246,6 @@ $(DL_DIR)/$(PHP_SOURCE):
 #
 php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 
-# We need this because openldap does not build on the wl500g.
-ifneq ($(OPTWARE_TARGET),wl500g)
-PHP_CONFIGURE_TARGET_ARGS= \
-		--with-ldap=shared,$(STAGING_PREFIX) \
-		--with-ldap-sasl=$(STAGING_PREFIX)
-else
-PHP_CONFIGURE_TARGET_ARGS=
-endif
-
-PHP_CONFIGURE_THREAD_ARGS= \
-		--enable-maintainer-zts 
-
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -264,13 +270,11 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
 	$(MAKE) mysql-stage
-	$(MAKE) mysql-stage
 	$(MAKE) imap-stage
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
 ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openldap-stage
-else
 	$(MAKE) cyrus-sasl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
@@ -289,7 +293,7 @@ endif
 		ac_cv_func_memcmp_working=yes \
 		cv_php_mbstring_stdarg=yes \
 		STAGING_PREFIX="$(STAGING_PREFIX)" \
-		LIBS="-lsasl2" \
+		$(PHP_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
