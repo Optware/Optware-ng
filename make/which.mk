@@ -34,7 +34,7 @@ WHICH_CONFLICTS=
 #
 # WHICH_IPK_VERSION should be incremented when the ipk changes.
 #
-WHICH_IPK_VERSION=2
+WHICH_IPK_VERSION=3
 
 #
 # WHICH_PATCHES should list any patches, in the the order in
@@ -76,6 +76,7 @@ WHICH_INCLUDE_DIR=$(WHICH_INST_DIR)/include
 WHICH_INFO_DIR=$(WHICH_INST_DIR)/info
 WHICH_MAN_DIR=$(WHICH_INST_DIR)/man
 
+.PHONY: which-source which-unpack which which-stage which-ipk which-clean which-dirclean which-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -193,6 +194,7 @@ $(WHICH_IPK_DIR)/CONTROL/control:
 $(WHICH_IPK): $(WHICH_BUILD_DIR)/.built
 	rm -rf $(WHICH_IPK_DIR) $(BUILD_DIR)/which_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WHICH_BUILD_DIR) DESTDIR=$(WHICH_IPK_DIR) install
+	$(STRIP_COMMAND) $(WHICH_IPK_DIR)/opt/bin/which
 	$(MAKE) $(WHICH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHICH_IPK_DIR)
 
@@ -213,3 +215,6 @@ which-clean:
 #
 which-dirclean:
 	rm -rf $(BUILD_DIR)/$(WHICH_DIR) $(WHICH_BUILD_DIR) $(WHICH_IPK_DIR) $(WHICH_IPK)
+
+which-check: $(WHICH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WHICH_IPK)
