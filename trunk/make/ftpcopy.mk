@@ -36,7 +36,7 @@ FTPCOPY_CONFLICTS=
 #
 # FTPCOPY_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPCOPY_IPK_VERSION=1
+FTPCOPY_IPK_VERSION=2
 
 #
 # FTPCOPY_CONFFILES should be a list of user-editable files
