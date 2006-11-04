@@ -35,14 +35,18 @@ SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SVN_DESCRIPTION=a compelling replacement for CVS
 SVN_SECTION=net
 SVN_PRIORITY=optional
-SVN_DEPENDS=neon, apr, apr-util
+ifneq ($(OPTWARE_TARGET), wl500g)
+SVN_DEPENDS=neon, apr, apr-util, openldap-libs, zlib, expat, libxml2
+else
+SVN_DEPENDS=neon, apr, apr-util, zlib, expat, libxml2
+endif
 SVN_SUGGESTS=
 SVN_CONFLICTS=
 
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=2
+SVN_IPK_VERSION=3
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -108,7 +112,13 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 	$(MAKE) apr-stage
 	$(MAKE) apr-util-stage
 	$(MAKE) apache-stage
+	$(MAKE) expat-stage
+	$(MAKE) libxml2-stage
 	$(MAKE) neon-stage
+	$(MAKE) zlib-stage
+ifneq ($(OPTWARE_TARGET), wl500g)
+	$(MAKE) openldap-stage
+endif
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
 	$(SVN_UNZIP) $(DL_DIR)/$(SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(SVN_PATCHES) | patch -d $(BUILD_DIR)/$(SVN_DIR) -p1
