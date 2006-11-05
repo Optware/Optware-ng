@@ -1,0 +1,12 @@
+--- ftpcopy/src/have_func.sh.orig	2006-11-04 20:45:38.000000000 -0800
++++ ftpcopy/src/have_func.sh	2006-11-04 20:45:50.000000000 -0800
+@@ -39,9 +39,7 @@
+     # >&2 because we use the stdout of this script, and the MAC OS X linker
+     # thinks the error messages belong on stdout.
+     if ./auto-link.sh $FILE $FILE.o $extralink $l >&2 ; then
+-      if ./$FILE ; then
+ 	DEFINE=define
+-      fi
+     fi
+   done
+ fi

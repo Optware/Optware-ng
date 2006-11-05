@@ -36,7 +36,7 @@ FTPCOPY_CONFLICTS=
 #
 # FTPCOPY_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPCOPY_IPK_VERSION=2
+FTPCOPY_IPK_VERSION=3
 
 #
 # FTPCOPY_CONFFILES should be a list of user-editable files
@@ -46,7 +46,22 @@ FTPCOPY_IPK_VERSION=2
 # FTPCOPY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FTPCOPY_PATCHES=$(FTPCOPY_SOURCE_DIR)/configure.patch
+ifneq ($(TARGET_CC), $(HOSTCC))
+FTPCOPY_PATCHES=$(FTPCOPY_SOURCE_DIR)/src-have_func.sh.patch $(FTPCOPY_SOURCE_DIR)/src-iopause.sh.patch $(FTPCOPY_SOURCE_DIR)/src-typesize.sh.patch
+FTPCOPY_CROSS_ENV=env \
+	ac_cv_sizeof_short=2 \
+	ac_cv_sizeof_int=4 \
+	ac_cv_sizeof_long=4 \
+	ac_cv_sizeof_unsigned_short=2 \
+	ac_cv_sizeof_unsigned_int=4 \
+	ac_cv_sizeof_unsigned_long=4 \
+	ac_cv_sizeof_long_long=8 \
+	ac_cv_sizeof_unsigned_long_long=8 \
+	ftpcopy_iopause_use=poll
+else
+FTPCOPY_PATCHES=
+FTPCOPY_CROSS_ENV=
+endif
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +125,7 @@ $(FTPCOPY_BUILD_DIR)/.configured: $(DL_DIR)/$(FTPCOPY_SOURCE) $(FTPCOPY_PATCHES)
 	mv $(BUILD_DIR)/web/$(FTPCOPY_DIR) $(BUILD_DIR)/ && rmdir $(BUILD_DIR)/web
 	if test -n "$(FTPCOPY_PATCHES)" ; \
 		then cat $(FTPCOPY_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FTPCOPY_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(FTPCOPY_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FTPCOPY_DIR)" != "$(FTPCOPY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FTPCOPY_DIR) $(FTPCOPY_BUILD_DIR) ; \
@@ -151,6 +166,7 @@ ftpcopy-unpack: $(FTPCOPY_BUILD_DIR)/.configured
 #
 $(FTPCOPY_BUILD_DIR)/.built: $(FTPCOPY_BUILD_DIR)/.configured
 	rm -f $(FTPCOPY_BUILD_DIR)/.built
+	$(FTPCOPY_CROSS_ENV) \
 	$(MAKE) -C $(FTPCOPY_BUILD_DIR)
 	touch $(FTPCOPY_BUILD_DIR)/.built
 

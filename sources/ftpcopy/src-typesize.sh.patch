@@ -1,0 +1,23 @@
+--- ftpcopy/src/typesize.sh.orig	2004-07-27 04:24:17.000000000 -0700
++++ ftpcopy/src/typesize.sh	2006-11-04 22:34:40.000000000 -0800
+@@ -11,6 +11,12 @@
+ EOF
+ for i in "short" "int" "long " "unsigned short" "unsigned int" "unsigned long" \
+ 	"long long" "unsigned long long" ; do 
++varname="ac_cv_sizeof_`echo $i | sed 's/ /_/g'`"
++val=`eval echo '$'$varname`
++p=`echo $i | sed 's/ /_/g' | tr "[a-z]" "[A-Z]"`
++if test -n "$val"; then
++  echo "#define SIZEOF_$p $val /* systype-info */"
++else
+   rm -f $FILE.o
+   echo "typedef $i TYPE;" >$FILE.h
+   if ./auto-compile.sh -c $FILE.c >/dev/null 2>/dev/null ; 
+@@ -26,6 +32,7 @@
+       fi
+     fi
+   fi
++fi
+ done
+ rm -f $FILE.c $FILE.o $FILE $FILE.h
+ exit 0
