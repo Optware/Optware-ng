@@ -27,13 +27,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBPTH_SITE=ftp://ftp.gnu.org/gnu/pth
-LIBPTH_VERSION=2.0.4
+LIBPTH_VERSION=2.0.7
 LIBPTH_SOURCE=pth-$(LIBPTH_VERSION).tar.gz
 LIBPTH_DIR=pth-$(LIBPTH_VERSION)
 LIBPTH_UNZIP=zcat
 LIBPTH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBPTH_DESCRIPTION=Pth is a very portable POSIX/ANSI-C based library for Unix platforms which provides non-preemptive priority-based scheduling for multiple threads of execution (aka "multithreading") inside event-driven applications.
-LIBPTH_SECTION=misc
+LIBPTH_SECTION=lib
 LIBPTH_PRIORITY=optional
 LIBPTH_DEPENDS=
 LIBPTH_SUGGESTS=
@@ -75,6 +75,7 @@ LIBPTH_SOURCE_DIR=$(SOURCE_DIR)/libpth
 LIBPTH_IPK_DIR=$(BUILD_DIR)/libpth-$(LIBPTH_VERSION)-ipk
 LIBPTH_IPK=$(BUILD_DIR)/libpth_$(LIBPTH_VERSION)-$(LIBPTH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: libpth-source libpth-unpack libpth libpth-stage libpth-ipk libpth-clean libpth-dirclean libpth-check
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -105,10 +106,10 @@ libpth-source: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBPTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBPTH_DIR) $(LIBPTH_BUILD_DIR)
 	$(LIBPTH_UNZIP) $(DL_DIR)/$(LIBPTH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBPTH_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1
+#	cat $(LIBPTH_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPTH_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBPTH_DIR) $(LIBPTH_BUILD_DIR)
 	(cd $(LIBPTH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -121,6 +122,7 @@ $(LIBPTH_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPTH_SOURCE) $(LIBPTH_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(LIBIDN_BUILD_DIR)/libtool
 	touch $(LIBPTH_BUILD_DIR)/.configured
 
 libpth-unpack: $(LIBPTH_BUILD_DIR)/.configured
@@ -182,6 +184,8 @@ $(LIBPTH_IPK_DIR)/CONTROL/control:
 $(LIBPTH_IPK): $(LIBPTH_BUILD_DIR)/.built
 	rm -rf $(LIBPTH_IPK_DIR) $(BUILD_DIR)/libpth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBPTH_BUILD_DIR) DESTDIR=$(LIBPTH_IPK_DIR) install-strip
+	rm -f $(LIBPTH_IPK_DIR)/opt/lib/libpth.a
+	$(STRIP_COMMAND) $(LIBPTH_IPK_DIR)/opt/lib/libpth.so.*.*.*
 	$(MAKE) $(LIBPTH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPTH_IPK_DIR)
 
@@ -202,3 +206,6 @@ libpth-clean:
 #
 libpth-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBPTH_DIR) $(LIBPTH_BUILD_DIR) $(LIBPTH_IPK_DIR) $(LIBPTH_IPK)
+
+libpth-check: $(LIBPTH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBPTH_IPK)
