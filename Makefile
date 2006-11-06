@@ -141,7 +141,7 @@ COMMON_CROSS_PACKAGES = \
 	hdparm hexcurse heyu hnb hpijs \
 	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
-	jabber jamvm jikes jove joe \
+	jabberd jamvm jikes jove joe \
 	knock \
 	lame ldconfig less lha \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
@@ -211,7 +211,7 @@ COMMON_NATIVE_PACKAGES = \
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 \
+PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 jabber \
 
 # Packages that *only* work for nslu2 - do not just put new packages here.
 NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native \
@@ -229,7 +229,7 @@ WL500G_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
-	 id3lib iperf iptables irssi ivorbis-tools jabber jamvm jikes \
+	 id3lib iperf iptables irssi ivorbis-tools jabberd jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent libvorbisidec lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
@@ -245,7 +245,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy gambit-c \
 	 gphoto2 libgphoto2 \
-	 gtk ice id3lib iperf iptables ivorbis-tools jabber \
+	 gtk ice id3lib iperf iptables ivorbis-tools jabberd \
 	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango procps qemu qemu-libc-i386 rtorrent sdl ser sm \
