@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=1
+PYTHON24_IPK_VERSION=2
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -54,7 +54,7 @@ PYTHON24_IPK_VERSION=1
 #
 PYTHON24_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
-ifeq ($(OPTWARE_TARGET),wl500g)
+ifeq ($(LIBC_STYLE),uclibc)
 PYTHON24_LDFLAGS=-lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz
 else
 PYTHON24_LDFLAGS=
