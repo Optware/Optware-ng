@@ -24,11 +24,18 @@ LIBVORBISIDEC_VERSION=cvs-20050221
 LIBVORBISIDEC_SOURCE=libvorbisidec-$(LIBVORBISIDEC_VERSION).tar.gz
 LIBVORBISIDEC_DIR=libvorbisidec-$(LIBVORBISIDEC_VERSION)
 LIBVORBISIDEC_UNZIP=zcat
+LIBVORBISIDEC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+LIBVORBISIDEC_DESCRIPTION=libvorbisidec is the integer-only ogg decoder library, AKA "Tremor"
+LIBVORBISIDEC_SECTION=lib
+LIBVORBISIDEC_PRIORITY=optional
+LIBVORBISIDEC_DEPENDS=
+LIBVORBISIDEC_SUGGESTS=
+LIBVORBISIDEC_CONFLICTS=
 
 #
 # LIBVORBISIDEC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBISIDEC_IPK_VERSION=1
+LIBVORBISIDEC_IPK_VERSION=2
 
 #
 # LIBVORBISIDEC_CONFFILES should be a list of user-editable files
@@ -44,7 +51,11 @@ LIBVORBISIDEC_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(TARGET_ARCH), armeb)
 LIBVORBISIDEC_CPPFLAGS=-D_ARM_ASSEM_
+else
+LIBVORBISIDEC_CPPFLAGS=
+endif
 LIBVORBISIDEC_LDFLAGS=
 
 #
@@ -60,6 +71,8 @@ LIBVORBISIDEC_BUILD_DIR=$(BUILD_DIR)/libvorbisidec
 LIBVORBISIDEC_SOURCE_DIR=$(SOURCE_DIR)/libvorbisidec
 LIBVORBISIDEC_IPK_DIR=$(BUILD_DIR)/libvorbisidec-$(LIBVORBISIDEC_VERSION)-ipk
 LIBVORBISIDEC_IPK=$(BUILD_DIR)/libvorbisidec_$(LIBVORBISIDEC_VERSION)-$(LIBVORBISIDEC_IPK_VERSION)_${TARGET_ARCH}.ipk
+
+.PHONY: libvorbisidec-source libvorbisidec-unpack libvorbisidec libvorbisidec-stage libvorbisidec-ipk libvorbisidec-clean libvorbisidec-dirclean libvorbisidec-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -90,7 +103,7 @@ libvorbisidec-source: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBVORBISIDEC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBVORBISIDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBVORBISIDEC_PATCHES)
+$(LIBVORBISIDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBVORBISIDEC_PATCHES) make/libvorbisidec.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) $(LIBVORBISIDEC_BUILD_DIR)
 	$(LIBVORBISIDEC_UNZIP) $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -137,6 +150,25 @@ $(LIBVORBISIDEC_BUILD_DIR)/.staged: $(LIBVORBISIDEC_BUILD_DIR)/.built
 libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(LIBVORBISIDEC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: libvorbisidec" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBVORBISIDEC_PRIORITY)" >>$@
+	@echo "Section: $(LIBVORBISIDEC_SECTION)" >>$@
+	@echo "Version: $(LIBVORBISIDEC_VERSION)-$(LIBVORBISIDEC_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBVORBISIDEC_MAINTAINER)" >>$@
+	@echo "Source: $(LIBVORBISIDEC_SITE)/$(LIBVORBISIDEC_SOURCE)" >>$@
+	@echo "Description: $(LIBVORBISIDEC_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBVORBISIDEC_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBVORBISIDEC_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBVORBISIDEC_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(LIBVORBISIDEC_IPK_DIR)/opt/sbin or $(LIBVORBISIDEC_IPK_DIR)/opt/bin
@@ -151,8 +183,9 @@ libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
 $(LIBVORBISIDEC_IPK): $(LIBVORBISIDEC_BUILD_DIR)/.built
 	rm -rf $(LIBVORBISIDEC_IPK_DIR) $(BUILD_DIR)/libvorbisidec_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(LIBVORBISIDEC_BUILD_DIR) DESTDIR=$(LIBVORBISIDEC_IPK_DIR) install
-	install -d $(LIBVORBISIDEC_IPK_DIR)/CONTROL
-	install -m 644 $(LIBVORBISIDEC_SOURCE_DIR)/control $(LIBVORBISIDEC_IPK_DIR)/CONTROL/control
+	$(STRIP_COMMAND) $(LIBVORBISIDEC_IPK_DIR)/opt/lib/libvorbisidec.so.*.*.*
+	rm -f $(LIBVORBISIDEC_IPK_DIR)/opt/lib/libvorbisidec.a
+	$(MAKE) $(LIBVORBISIDEC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBISIDEC_IPK_DIR)
 
 #
@@ -172,3 +205,10 @@ libvorbisidec-clean:
 #
 libvorbisidec-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) $(LIBVORBISIDEC_BUILD_DIR) $(LIBVORBISIDEC_IPK_DIR) $(LIBVORBISIDEC_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+libvorbisidec-check: $(LIBVORBISIDEC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBVORBISIDEC_IPK)
