@@ -229,8 +229,8 @@ WL500G_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
-	 id3lib iperf iptables irssi ivorbis-tools jabberd jamvm jikes \
-	 ldconfig lftp libdvb libftdi liblcms libtorrent libvorbisidec lsof \
+	 id3lib iperf iptables irssi jabberd jamvm jikes \
+	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
@@ -245,8 +245,8 @@ UCLIBC_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy gambit-c \
 	 gphoto2 libgphoto2 \
-	 gtk ice id3lib iperf iptables ivorbis-tools jabberd \
-	 jamvm ldconfig libdvb libtorrent libvorbisidec monotone \
+	 gtk ice id3lib iperf iptables jabberd \
+	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango procps qemu qemu-libc-i386 rtorrent sdl ser sm \
 	 snownews transcode vte wxbase xauth xaw xchat xcursor xfixes xft \
@@ -266,9 +266,8 @@ MSS_BROKEN_PACKAGES = \
 	elinks \
 	$(ERLANG_PACKAGES) \
 	gambit-c gawk \
-	ivorbis-tools \
 	jamvm \
-	ldconfig libvorbisidec lsof \
+	ldconfig lsof \
 	mod-fastcgi mod-python monotone \
 	ntp \
 	php-apache py-lxml \
