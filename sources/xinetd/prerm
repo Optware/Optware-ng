@@ -1,9 +1,9 @@
 #!/bin/sh
 
-if [ -n "`pidof xinetd`" ]; then
-    /bin/killall xinetd 2>/dev/null
-fi
+killall xinetd 2>/dev/null
 
-/etc/rc.d/rc.xinetd
+if [ ${OPTWARE_TARGET} = "nslu2" ] ; then
+  /etc/rc.d/rc.xinetd
+fi
 
 return 0

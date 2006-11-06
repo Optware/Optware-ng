@@ -37,7 +37,7 @@ XINETD_DEPENDS=
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=5
+XINETD_IPK_VERSION=6
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
@@ -206,6 +206,7 @@ endif
 	install -m 755 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(XINETD_SOURCE_DIR)/prerm $(XINETD_IPK_DIR)/CONTROL/
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)
 
