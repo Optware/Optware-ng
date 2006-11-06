@@ -145,8 +145,10 @@ COMMON_CROSS_PACKAGES = \
 	knock \
 	lame ldconfig less lha \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
-	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libjpeg liblcms libmad libmemcache libnsl \
-	libol libogg libosip2 libpcap libpng librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
+	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
+	libjpeg liblcms libmad libmemcache libnsl \
+	libol libogg libosip2 libpcap libpng libpth \
+	librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi \
