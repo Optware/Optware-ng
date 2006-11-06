@@ -326,7 +326,7 @@ DS101G_SPECIFIC_PACKAGES = \
 DS101G_BROKEN_PACKAGES = \
 	bitlbee \
 	eaccelerator \
-	flac freeradius \
+	freeradius \
 	ldconfig \
 	mod-python ntop ntp \
 	qemu qemu-libc-i386 \

@@ -35,7 +35,7 @@ FLAC_CONFLICTS=
 #
 # FLAC_IPK_VERSION should be incremented when the ipk changes.
 #
-FLAC_IPK_VERSION=3
+FLAC_IPK_VERSION=4
 
 #
 # FLAC_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ FLAC_BUILD_DIR=$(BUILD_DIR)/flac
 FLAC_SOURCE_DIR=$(SOURCE_DIR)/flac
 FLAC_IPK_DIR=$(BUILD_DIR)/flac-$(FLAC_VERSION)-ipk
 FLAC_IPK=$(BUILD_DIR)/flac_$(FLAC_VERSION)-$(FLAC_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: flac-source flac-unpack flac flac-stage flac-ipk flac-clean flac-dirclean flac-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -105,6 +107,7 @@ $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
 	cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0
 	mv $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR)
 	(cd $(FLAC_BUILD_DIR); \
+		sed -i -e '/LOCAL_EXTRA_LDFLAGS.*read_only_relocs/d' src/libFLAC/Makefile.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FLAC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FLAC_LDFLAGS)" \
@@ -177,6 +180,9 @@ $(FLAC_IPK_DIR)/CONTROL/control:
 $(FLAC_IPK): $(FLAC_BUILD_DIR)/.built
 	rm -rf $(FLAC_IPK_DIR) $(BUILD_DIR)/flac_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FLAC_BUILD_DIR) DESTDIR=$(FLAC_IPK_DIR) install
+	rm -f $(FLAC_IPK_DIR)/opt/lib/lib*.a $(FLAC_IPK_DIR)/opt/lib/lib*.la
+	$(STRIP_COMMAND) $(FLAC_IPK_DIR)/opt/bin/*flac
+	$(STRIP_COMMAND) $(FLAC_IPK_DIR)/opt/lib/libFLAC*.so.*.*.*
 	#[JEC]install -d $(FLAC_IPK_DIR)/opt/etc/
 	#[JEC]install -m 644 $(FLAC_SOURCE_DIR)/flac.conf $(FLAC_IPK_DIR)/opt/etc/flac.conf
 	#[JEC]install -d $(FLAC_IPK_DIR)/opt/etc/init.d
@@ -204,3 +210,10 @@ flac-clean:
 #
 flac-dirclean:
 	rm -rf $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR) $(FLAC_IPK_DIR) $(FLAC_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+flac-check: $(FLAC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FLAC_IPK)
