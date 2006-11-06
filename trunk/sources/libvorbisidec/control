@@ -1,9 +1,0 @@
-Package: libvorbisidec
-Version: cvs-20050221-1
-Architecture: armeb
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Source: http://nslu.sourceforge.net/downloads/libvorbisidec-cvs-20050221.tar.gz
-Section: lib
-Priority: optional
-Depends: 
-Description: libvorbisidec is the integer-only ogg decoder library, AKA "Tremor"
