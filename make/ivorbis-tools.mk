@@ -24,11 +24,19 @@ IVORBIS_TOOLS_SITE=http://www.vorbis.com/files/$(IVORBIS_TOOLS_VERSION)/unix
 IVORBIS_TOOLS_SOURCE=vorbis-tools-$(IVORBIS_TOOLS_VERSION).tar.gz
 IVORBIS_TOOLS_DIR=vorbis-tools-$(IVORBIS_TOOLS_VERSION)
 IVORBIS_TOOLS_UNZIP=zcat
+IVORBIS_TOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+
+IVORBIS_TOOLS_DESCRIPTION=Tools to allow you to play, encode, and manage Ogg Vorbis files. This version is hacked to use the "Tremor" integer decoder.
+IVORBIS_TOOLS_SECTION=sound
+IVORBIS_TOOLS_PRIORITY=optional
+IVORBIS_TOOLS_DEPENDS=libvorbis, libogg, libao, libcurl, libvorbisidec
+IVORBIS_TOOLS_SUGGESTS=
+IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=1
+IVORBIS_TOOLS_IPK_VERSION=2
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -60,6 +68,8 @@ IVORBIS_TOOLS_BUILD_DIR=$(BUILD_DIR)/ivorbis-tools
 IVORBIS_TOOLS_SOURCE_DIR=$(SOURCE_DIR)/ivorbis-tools
 IVORBIS_TOOLS_IPK_DIR=$(BUILD_DIR)/ivorbis-tools-$(IVORBIS_TOOLS_VERSION)-ipk
 IVORBIS_TOOLS_IPK=$(BUILD_DIR)/ivorbis-tools_$(IVORBIS_TOOLS_VERSION)-$(IVORBIS_TOOLS_IPK_VERSION)_${TARGET_ARCH}.ipk
+
+.PHONY: ivorbis-tools-source ivorbis-tools-unpack ivorbis-tools ivorbis-tools-stage ivorbis-tools-ipk ivorbis-tools-clean ivorbis-tools-dirclean ivorbis-tools-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -138,6 +148,25 @@ ivorbis-tools: $(IVORBIS_TOOLS_BUILD_DIR)/.built
 #ivorbis-tools-stage: $(IVORBIS_TOOLS_BUILD_DIR)/.staged
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: ivorbis-tools" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(IVORBIS_TOOLS_PRIORITY)" >>$@
+	@echo "Section: $(IVORBIS_TOOLS_SECTION)" >>$@
+	@echo "Version: $(IVORBIS_TOOLS_VERSION)-$(IVORBIS_TOOLS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(IVORBIS_TOOLS_MAINTAINER)" >>$@
+	@echo "Source: $(IVORBIS_TOOLS_SITE)/$(IVORBIS_TOOLS_SOURCE)" >>$@
+	@echo "Description: $(IVORBIS_TOOLS_DESCRIPTION)" >>$@
+	@echo "Depends: $(IVORBIS_TOOLS_DEPENDS)" >>$@
+	@echo "Suggests: $(IVORBIS_TOOLS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(IVORBIS_TOOLS_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(IVORBIS_TOOLS_IPK_DIR)/opt/sbin or $(IVORBIS_TOOLS_IPK_DIR)/opt/bin
@@ -152,8 +181,8 @@ ivorbis-tools: $(IVORBIS_TOOLS_BUILD_DIR)/.built
 $(IVORBIS_TOOLS_IPK): $(IVORBIS_TOOLS_BUILD_DIR)/.built
 	rm -rf $(IVORBIS_TOOLS_IPK_DIR) $(BUILD_DIR)/ivorbis-tools_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(IVORBIS_TOOLS_BUILD_DIR) DESTDIR=$(IVORBIS_TOOLS_IPK_DIR) install
-	install -d $(IVORBIS_TOOLS_IPK_DIR)/CONTROL
-	install -m 644 $(IVORBIS_TOOLS_SOURCE_DIR)/control $(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control
+	$(STRIP_COMMAND) $(IVORBIS_TOOLS_IPK_DIR)/opt/bin/*
+	$(MAKE) $(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IVORBIS_TOOLS_IPK_DIR)
 
 #
@@ -173,3 +202,10 @@ ivorbis-tools-clean:
 #
 ivorbis-tools-dirclean:
 	rm -rf $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(IVORBIS_TOOLS_BUILD_DIR) $(IVORBIS_TOOLS_IPK_DIR) $(IVORBIS_TOOLS_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+ivorbis-tools-check: $(IVORBIS_TOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IVORBIS_TOOLS_IPK)
