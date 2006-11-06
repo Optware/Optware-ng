@@ -37,16 +37,18 @@ XINETD_DEPENDS=
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=4
+XINETD_IPK_VERSION=5
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
 # NOTE: telnetd and other xinetd conf files are defined as conf files
 #        in order not to overwrite possible changes, like 'disable=yes' 
 #        when upgrading.
-XINETD_CONFFILES=/opt/etc/xinetd.conf \
-	/opt/etc/xinetd.d/telnetd \
-	/opt/etc/xinetd.d/ftp-sensor
+XINETD_CONFFILES=/opt/etc/xinetd.conf
+
+ifeq ($(OPTWARE_TARGET),nslu2)
+XINETD_CONFFILES+=/opt/etc/xinetd.d/telnetd /opt/etc/xinetd.d/ftp-sensor
+endif
 
 #
 # XINETD_PATCHES should list any patches, in the the order in
@@ -188,17 +190,21 @@ $(XINETD_IPK): $(XINETD_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(XINETD_IPK_DIR)/opt/sbin/xinetd $(XINETD_IPK_DIR)/opt/sbin/itox
 	# Install reload utility
 	install -m 700 $(XINETD_SOURCE_DIR)/xinetd.reload  $(XINETD_IPK_DIR)/opt/sbin
-	# Install config file, create xinetd.d catalog, drop in the 
-	# telnet and sensor config
+	# Install config file and create the xinetd.d catalog
 	install -d $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 	install -m 755 $(XINETD_SOURCE_DIR)/xinetd.conf $(XINETD_IPK_DIR)/opt/etc
+ifeq ($(OPTWARE_TARGET),nslu2)
+	# Drop in the telnet and ftp-sensor config
 	install -m 644 $(XINETD_SOURCE_DIR)/telnetd $(XINETD_IPK_DIR)/opt/etc/xinetd.d
 	install -m 644 $(XINETD_BUILD_DIR)/contrib/xinetd.d/ftp-sensor $(XINETD_IPK_DIR)/opt/etc/xinetd.d
+endif
 	# Install daemon startup file
 	install -d $(XINETD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(XINETD_SOURCE_DIR)/rc.xinetd $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/S10xinetd
 	$(MAKE) $(XINETD_IPK_DIR)/CONTROL/control
 	install -m 755 $(XINETD_SOURCE_DIR)/postinst $(XINETD_IPK_DIR)/CONTROL/
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(XINETD_SOURCE_DIR)/prerm $(XINETD_IPK_DIR)/CONTROL/
 	echo $(XINETD_CONFFILES) | sed -e 's/ /\n/g' > $(XINETD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XINETD_IPK_DIR)
