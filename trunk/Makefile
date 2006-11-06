@@ -328,8 +328,7 @@ DS101G_BROKEN_PACKAGES = \
 	bitlbee \
 	eaccelerator \
 	flac freeradius \
-	ivorbis-tools \
-	ldconfig libvorbisidec \
+	ldconfig \
 	mod-python ntop ntp \
 	qemu qemu-libc-i386 \
 	ser \
