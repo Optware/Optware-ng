@@ -27,13 +27,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=ftp://alpha.gnu.org/pub/gnu/libidn
-LIBIDN_VERSION=0.5.9
+LIBIDN_VERSION=0.6.8
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
 LIBIDN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBIDN_DESCRIPTION=GNU Libidn is an implementation of the Stringprep, Punycode and IDNA specifications defined by the IETF Internationalized Domain Names (IDN) working group, used for internationalized domain names.
-LIBIDN_SECTION=misc
+LIBIDN_SECTION=lib
 LIBIDN_PRIORITY=optional
 LIBIDN_DEPENDS=
 LIBIDN_SUGGESTS=
@@ -75,6 +75,8 @@ LIBIDN_SOURCE_DIR=$(SOURCE_DIR)/libidn
 LIBIDN_IPK_DIR=$(BUILD_DIR)/libidn-$(LIBIDN_VERSION)-ipk
 LIBIDN_IPK=$(BUILD_DIR)/libidn_$(LIBIDN_VERSION)-$(LIBIDN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: libidn-source libidn-unpack libidn libidn-stage libidn-ipk libidn-clean libidn-dirclean libidn-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -105,10 +107,10 @@ libidn-source: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(LIBIDN_BUILD_DIR)
 	$(LIBIDN_UNZIP) $(DL_DIR)/$(LIBIDN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(LIBIDN_PATCHES) | patch -d $(BUILD_DIR)/$(LIBIDN_DIR) -p1
+#	cat $(LIBIDN_PATCHES) | patch -d $(BUILD_DIR)/$(LIBIDN_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBIDN_DIR) $(LIBIDN_BUILD_DIR)
 	(cd $(LIBIDN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -118,9 +120,12 @@ $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--disable-csharp \
+		--disable-java \
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(LIBIDN_BUILD_DIR)/libtool
 	touch $(LIBIDN_BUILD_DIR)/.configured
 
 libidn-unpack: $(LIBIDN_BUILD_DIR)/.configured
@@ -182,6 +187,7 @@ $(LIBIDN_IPK_DIR)/CONTROL/control:
 $(LIBIDN_IPK): $(LIBIDN_BUILD_DIR)/.built
 	rm -rf $(LIBIDN_IPK_DIR) $(BUILD_DIR)/libidn_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBIDN_BUILD_DIR) DESTDIR=$(LIBIDN_IPK_DIR) install-strip
+	rm -f $(LIBIDN_IPK_DIR)/opt/lib/libidn.a
 	$(MAKE) $(LIBIDN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBIDN_IPK_DIR)
 
@@ -202,3 +208,6 @@ libidn-clean:
 #
 libidn-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(LIBIDN_BUILD_DIR) $(LIBIDN_IPK_DIR) $(LIBIDN_IPK)
+
+libidn-check: $(LIBIDN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBIDN_IPK)
