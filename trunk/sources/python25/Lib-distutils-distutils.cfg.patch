@@ -5,4 +5,4 @@
 +prefix = /opt/local
 +
 +[easy_install]
-+site-dirs  = /opt/local/lib/python2.4/site-packages
++site-dirs  = /opt/local/lib/python2.5/site-packages
