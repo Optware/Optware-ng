@@ -117,6 +117,7 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(JABBERD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JABBERD_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -125,6 +126,8 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 		--sysconfdir=/opt/etc/jabber \
 		--enable-debug \
 		--enable-ssl \
+		--without-mysql \
+		--without-postgresql \
 		--disable-nls \
 		--disable-static \
 	)
