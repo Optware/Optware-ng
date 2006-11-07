@@ -38,7 +38,7 @@ SED=sed -ie
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
-BUSYBOX_IPK_VERSION=2
+BUSYBOX_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional
@@ -98,10 +98,12 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 	fi
 	cp $(BUSYBOX_CONFIG) $(BUSYBOX_BUILD_DIR)/.config
 ifeq ($(LIBC_STYLE),uclibc)
-	$(SED) "s/^.*CONFIG_FEATURE_SORT_BIG.*/# CONFIG_FEATURE_SORT_BIG is not set/" \
+	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/# CONFIG_FEATURE_SORT_BIG is not set/" \
+		-e "s/^.*CONFIG_MKSWAP.*/CONFIG_MKSWAP=y/" \
+		-e "s/^.*CONFIG_LOSETUP.*/CONFIG_LOSETUP=y/" \
 		$(BUSYBOX_BUILD_DIR)/.config
 else
-	$(SED) "s/^.*CONFIG_FEATURE_SORT_BIG.*/CONFIG_FEATURE_SORT_BIG=y/" \
+	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/CONFIG_FEATURE_SORT_BIG=y/" \
 		$(BUSYBOX_BUILD_DIR)/.config
 endif
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" \
