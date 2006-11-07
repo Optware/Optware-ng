@@ -33,8 +33,6 @@ BUSYBOX_PRIORITY=optional
 BUSYBOX_DEPENDS=
 BUSYBOX_CONFLICTS=
 
-SED=sed -ie
-
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
