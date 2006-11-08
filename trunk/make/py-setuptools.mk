@@ -104,6 +104,10 @@ py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES) make/py-setuptools.mk
+	$(MAKE) python24-host-stage
+	$(MAKE) python25-host-stage
+	$(MAKE) python24-stage
+	$(MAKE) python25-stage
 	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
 	mkdir -p $(PY-SETUPTOOLS_BUILD_DIR)/
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
@@ -139,9 +143,7 @@ py-setuptools-unpack: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.built: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.built
-	$(MAKE) python24-host-stage
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	$(MAKE) python25-host-stage
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.built
 
@@ -155,11 +157,9 @@ py-setuptools: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.staged: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.staged
-	$(MAKE) python24-stage
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/setuptools*
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
-	$(MAKE) python25-stage
 	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/setuptools*
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
