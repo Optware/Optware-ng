@@ -30,13 +30,14 @@ PY-CHEETAH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CHEETAH_DESCRIPTION=Cheetah - The Python-Powered Template Engine.
 PY-CHEETAH_SECTION=misc
 PY-CHEETAH_PRIORITY=optional
-PY-CHEETAH_DEPENDS=python
+PY24-CHEETAH_DEPENDS=python24
+PY25-CHEETAH_DEPENDS=python25
 PY-CHEETAH_CONFLICTS=
 
 #
 # PY-CHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHEETAH_IPK_VERSION=1
+PY-CHEETAH_IPK_VERSION=2
 
 #
 # PY-CHEETAH_CONFFILES should be a list of user-editable files
@@ -66,8 +67,12 @@ PY-CHEETAH_LDFLAGS=
 #
 PY-CHEETAH_BUILD_DIR=$(BUILD_DIR)/py-cheetah
 PY-CHEETAH_SOURCE_DIR=$(SOURCE_DIR)/py-cheetah
-PY-CHEETAH_IPK_DIR=$(BUILD_DIR)/py-cheetah-$(PY-CHEETAH_VERSION)-ipk
-PY-CHEETAH_IPK=$(BUILD_DIR)/py-cheetah_$(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-CHEETAH_IPK_DIR=$(BUILD_DIR)/py-cheetah-$(PY-CHEETAH_VERSION)-ipk
+PY24-CHEETAH_IPK=$(BUILD_DIR)/py-cheetah_$(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-CHEETAH_IPK_DIR=$(BUILD_DIR)/py25-cheetah-$(PY-CHEETAH_VERSION)-ipk
+PY25-CHEETAH_IPK=$(BUILD_DIR)/py25-cheetah_$(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -99,20 +104,34 @@ py-cheetah-source: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHEETAH_SOURCE) $(PY-CHEETAH_PATCHES) make/py-cheetah.mk
-	$(MAKE) python-stage py-setuptools-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)
+	mkdir -p $(PY-CHEETAH_BUILD_DIR)
 	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)
-	(cd $(PY-CHEETAH_BUILD_DIR); \
+#	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)/2.4
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
-	    ) > setup.cfg; \
+		echo "executable=/opt/bin/python2.4" \
+	    ) >> setup.cfg; \
+	)
+	$(PY-CHEETAH_UNZIP) $(DL_DIR)/$(PY-CHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHEETAH_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR)/2.5
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) >> setup.cfg; \
 	)
 	touch $(PY-CHEETAH_BUILD_DIR)/.configured
 
@@ -123,9 +142,13 @@ py-cheetah-unpack: $(PY-CHEETAH_BUILD_DIR)/.configured
 #
 $(PY-CHEETAH_BUILD_DIR)/.built: $(PY-CHEETAH_BUILD_DIR)/.configured
 	rm -f $(PY-CHEETAH_BUILD_DIR)/.built
-	(cd $(PY-CHEETAH_BUILD_DIR); \
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	)
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
 	touch $(PY-CHEETAH_BUILD_DIR)/.built
 
@@ -148,8 +171,8 @@ py-cheetah-stage: $(PY-CHEETAH_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-cheetah
 #
-$(PY-CHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-CHEETAH_IPK_DIR)/CONTROL
+$(PY24-CHEETAH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-cheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -159,7 +182,21 @@ $(PY-CHEETAH_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-CHEETAH_MAINTAINER)" >>$@
 	@echo "Source: $(PY-CHEETAH_SITE)/$(PY-CHEETAH_SOURCE)" >>$@
 	@echo "Description: $(PY-CHEETAH_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-CHEETAH_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-CHEETAH_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-CHEETAH_CONFLICTS)" >>$@
+
+$(PY25-CHEETAH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-cheetah" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CHEETAH_PRIORITY)" >>$@
+	@echo "Section: $(PY-CHEETAH_SECTION)" >>$@
+	@echo "Version: $(PY-CHEETAH_VERSION)-$(PY-CHEETAH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CHEETAH_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CHEETAH_SITE)/$(PY-CHEETAH_SOURCE)" >>$@
+	@echo "Description: $(PY-CHEETAH_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-CHEETAH_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-CHEETAH_CONFLICTS)" >>$@
 
 #
@@ -174,22 +211,40 @@ $(PY-CHEETAH_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
-	rm -rf $(PY-CHEETAH_IPK_DIR) $(BUILD_DIR)/py-cheetah_*_$(TARGET_ARCH).ipk
-	(cd $(PY-CHEETAH_BUILD_DIR); \
+$(PY24-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
+	rm -rf $(PY24-CHEETAH_IPK_DIR) $(BUILD_DIR)/py-cheetah_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	    python2.4 -c "import setuptools; execfile('setup.py')" \
-	    install --root=$(PY-CHEETAH_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY24-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY-CHEETAH_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
-	$(MAKE) $(PY-CHEETAH_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CHEETAH_IPK_DIR)
+	if test 2.4 != $(PYTHON_MAJOR); \
+		then ls $(PY24-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.4; \
+	fi
+	$(STRIP_COMMAND) `find $(PY24-CHEETAH_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+	$(MAKE) $(PY24-CHEETAH_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CHEETAH_IPK_DIR)
+
+$(PY25-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
+	rm -rf $(PY25-CHEETAH_IPK_DIR) $(BUILD_DIR)/py25-cheetah_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CHEETAH_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(PY25-CHEETAH_IPK_DIR) --prefix=/opt; \
+	)
+	if test 2.5 != $(PYTHON_MAJOR); \
+		then ls $(PY25-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.5; \
+	fi
+	$(STRIP_COMMAND) `find $(PY25-CHEETAH_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+	$(MAKE) $(PY25-CHEETAH_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHEETAH_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-cheetah-ipk: $(PY-CHEETAH_IPK)
+py-cheetah-ipk: $(PY24-CHEETAH_IPK) $(PY25-CHEETAH_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -202,4 +257,7 @@ py-cheetah-clean:
 # directories.
 #
 py-cheetah-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR) $(PY-CHEETAH_IPK_DIR) $(PY-CHEETAH_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-CHEETAH_DIR) $(PY-CHEETAH_BUILD_DIR) \
+	$(PY24-CHEETAH_IPK_DIR) $(PY24-CHEETAH_IPK) \
+	$(PY25-CHEETAH_IPK_DIR) $(PY25-CHEETAH_IPK) \
+
