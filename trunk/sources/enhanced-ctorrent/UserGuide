@@ -1,0 +1,290 @@
+
+                       Enhanced CTorrent User's Guide
+
+   This guide is presented to offer additional information related to
+   using [1]Enhanced CTorrent.
+
+   This document is not an introduction to BitTorrent--for that, try
+   [2]this, [3]this, or an Internet search.
+
+  Contents
+
+     * Options
+          + [4]General
+          + [5]Downloading
+          + [6]Create Torrent
+     * [7]Examples
+     * Usage Notes
+          + [8]Startup
+          + [9]Status Line
+          + [10]Stopping CTorrent
+     _________________________________________________________________
+
+   Options
+
+  General Options
+
+-x          Decode metainfo (torrent) file only, don't download.
+
+          Displays the torrent information and contents from the metainfo
+          (.torrent) file. No piece checking or downloading is performed.
+          This option is normally used alone.
+
+-c          Check pieces only, don't download.
+
+          Hash-checks all pieces of the torrent to verify completion
+          status and exits. Use this when you want to verify that you've
+          successfully downloaded the complete torrent, or to make sure
+          the files are intact after a system crash. This option is
+          normally used alone.
+
+-v          Verbose output (for debugging).
+
+          Generates [a lot of] extra output while CTorrrent is running.
+
+  Downloading Options
+
+-e int      Exit while seed  hours later. (default 72 hours)
+
+          Indicate how long (in hours) you want to "seed" (continue
+          uploading) after download has completed. It is considered
+          polite and fair (and required by some tracker sites) to seed
+          for some time after downloading.
+
+-E num      Exit after seeding to  ratio (UL:DL).
+
+          Specify a desired "seed ratio". After downloading completes,
+          the client will continue seeding (uploading) until your total
+          upload volume divided by your download volume equals this
+          number. Fractional values (such as 1.5) are allowed. It is
+          considered polite and fair (and required by some tracker sites)
+          to seed until your ratio is at least 1:1.
+
+-i ip       Listen for connections on ip. (default all IP's)
+
+          Specify the IP address on which you want to listen for incoming
+          connections. This is only useful if your system has multiple
+          network interfaces and you want to restrict access or run
+          multiple clients on different interfaces.
+
+-p port     Listen port. (default 2706 -> 2106)
+
+          Specify the TCP port number on which to listen for incoming
+          connections. By default, CTorrent starts at 2706 and searches
+          for an available port in decreasing order until it finds one or
+          exhausts all ports down through 2106.
+
+-s filename     Download ("save as") to a different file or directory.
+
+          Download to a different filename or top-level directory name
+          than what is given in the metainfo file.
+
+-C cache_size   Cache size, unit MB. (default 16MB)
+
+          Specify the amount of memory to use for caching downloaded
+          slices. You will probably need to use this option if running on
+          a memory-constrained system such as a router or SAN device. If
+          you use a value of 0, no memory cache will be used but the
+          process will be more disk-intensive. If cache is used, the size
+          will be set to a minimum of the size of 4 pieces.
+
+-f              Force seed mode (skip hash check at startup).
+
+          Perform a fast startup for seeding by skipping the initial hash
+          verification of the files. Use this option only if you have
+          completed downloading the entire torrent and are absolutely
+          certain that the files are intact.
+
+-b filename     Bitfield filename. (use it carefully)
+
+          Save piece completion status to a file on exit, and read this
+          file on startup. This can be used as a "fast restart" option,
+          but note that no validation of the initial status is performed.
+          Use this option only if you are absolutely certain that the
+          files have not been changed or corrupted since the bitfield
+          file was written.
+
+-M max_peers    Max peers count. (default 100)
+
+          Set the maximum allowable number of peer connections. If this
+          number is reached, no new connections will be initiated or
+          accepted. If memory or upload bandwidth are constrained, you
+          may want to use this option to specify a lower value.
+
+-m min_peers    Min peers count. (default 1)
+
+          Set the desired minimum number of peer connections. If the
+          number falls below this value, the client will contact the
+          tracker to request more peers.
+
+-z slice_size   Download slice/block size, unit KB. (default 16, max 128).
+
+          Sets the size of the basic unit of download. For greatest
+          compatibility with other peer clients, use the default. This
+          value can also affect the precision with which bandwidth is
+          managed.
+
+-n file_number  Specify file to download.
+
+          Specify a file in the torrent to download as a priority; the
+          file numbers can be seen with the -n option. Only pieces that
+          are part of this file will be downloaded until the file is
+          complete. At that point, the next file will be targeted. When
+          the last (highest-numbered) file in the torrent is completed,
+          this option is deactivated and the remaining pieces of the
+          torrent will be downloaded.
+
+-D rate         Max bandwidth down (unit KB/s)
+
+          Specify a download bandwidth limit for this torrent. The client
+          will maintain its short-term average download rate at or below
+          this value.
+
+-U rate         Max bandwidth up (unit KB/s)
+
+          Specify an upload bandwidth limit for this torrent. The client
+          will maintain its short-term average upload rate at or below
+          this value.
+
+-P peer_id      Set Peer ID prefix. (default "-CD0202-")
+
+          Specify an alternate peer ID prefix. This can be useful if a
+          tracker is set up to only allow client programs that it
+          recognizes. (The admin may not even realize it, so you may want
+          to try contacting them to request that they change their
+          configuration or add Enhanced CTorrent to the list.) If you
+          receive a tracker warning message that your client is out of
+          date, try using this option with the prefix of another
+          well-known client program (such as "-AZ2304-").
+
+-S host:port    Use CTCS server at host:port.
+
+          Maintain a connection to CTCS for status reporting, bandwidth
+          control, and client management. Using a colon at the end of the
+          parameter (as in "-S localhost:2780:") will cause the client to
+          prompt for a password to send to CTCS when connecting.
+
+  Options for Creating a New Torrent
+
+-t              Create a new torrent file.
+
+          Indicates that you want to create a new torrent.
+
+-s filename     Specify metainfo file name.
+
+          (Required) Give the name of the file to be created.
+
+-u url          Tracker's url.
+
+          (Required) Specify the tracker's announce URL. This usually
+          looks similar to "http://tracker.example.com:port/announce".
+
+-l piece_len    Piece length. (default 262144)
+
+          Specify the piece size for your torrent. This will also
+          determine the number of pieces in the torrent.
+     _________________________________________________________________
+
+   Examples
+
+   List the contents of a torrent:
+
+      ctorrent -x example.torrent
+
+   Verify download completion status (takes a little time):
+
+      ctorrent -c example.torrent
+
+   Download or seed a torrent using default options:
+
+      ctorrent example.torrent
+
+   Download with a limit of 100KB/s, upload limit of 10KB/s, and seed
+   until a ratio of 1.5:1 is achieved:
+
+      ctorrent -D 100 -U 10 -E 1.5 example.torrent
+
+   Create a torrent:
+
+      ctorrent -t -u "http://tracker.example.com:6969/announce"
+         -s example.torrent file_or_dir_to_upload
+     _________________________________________________________________
+
+   Usage Notes
+
+  Startup
+
+   If you have previously started the torrent, CTorrent will perform a
+   hash-check of all pieces at startup. This does not mean that it is
+   starting over--quite the opposite! This is how the client determines
+   which pieces it already has so that they will not be downloaded again
+   (and can be offered for uploading). This process confirms the pieces
+   that you have even if the files have been altered or recovered after a
+   system crash.
+
+  Status Line
+
+   The status line that is output by the client has changed since the
+   original and deserves some explanation.
+
+    / 0/33/110 [672/672/672] 0MB,1130MB | 0,20K/s | 0,0K E:0,31 P:4/10
+    - - -- ---  --- --- ---  --- ------   - --      - -    - --   ----
+    A B  C  D    E   F   G    H     I     J  K      L M    N  O     P
+
+   A: Ticker; this character changes to indicate that the client is
+   running.
+   B: Number of seeders (complete peers) to which you are connected.
+   C: Number of leechers (incomplete peers) to which you are connected.
+   D: Total number of peers in the swarm, as last reported by the
+   tracker.
+   E: Number of pieces of the torrent that you have completed.
+   F: Total number of pieces in the torrent.
+   G: Number of pieces currently available from you and your connected
+   peers.
+   H: Total amount of data you have downloaded.
+   I: Total amount of data you have uploaded.
+   J: Your current total download rate.
+   K: Your current total upload rate.
+   L: Amount of data downloaded since the last status line update.
+   M: Amount of data uploaded since the last status line update.
+   N: Number of tracker connection errors.
+   O: Number of successful tracker connections.
+   P: Completion ratio of current file (when -n is used).
+
+   Additional information such as tracker connection status may be
+   displayed at the end of the status line when appropriate.
+
+  Stopping CTorrent
+
+   CTorrent can be stopped before completing download or seeding by
+   pressing Ctrl-C or sending the TERM signal ("kill pid"). This will
+   tell the client to contact the tracker to send its final statistics
+   and advise that it is leaving the torrent. Note that this could take a
+   couple of minutes if the tracker is down or very busy. (Only one
+   attempt is made, so the client will exit even if the connection
+   fails.)
+
+   If Ctrl-C or kill is used a second time, the client closes all peer
+   connections and exits without waiting for the tracker connection. This
+   means that other peers may still attempt to contact you for a while,
+   and the tracker may not accept you back into the torrent until your
+   original session expires. (This could take up to a couple of hours,
+   depending on the tracker.)
+
+   In either case, this is a clean shutdown of CTorrent. All downloaded
+   data is written to disk before exiting. (Only complete pieces really
+   count though, as there is no way to know which blocks are missing from
+   partial pieces.)
+
+References
+
+   1. http://www.rahul.net/dholmes/ctorrent/
+   2. http://en.wikipedia.org/wiki/BitTorrent
+   3. http://btfaq.com/
+   4. http://www.rahul.net/dholmes/ctorrent/userguide.html#opt_general
+   5. http://www.rahul.net/dholmes/ctorrent/userguide.html#opt_download
+   6. http://www.rahul.net/dholmes/ctorrent/userguide.html#opt_create
+   7. http://www.rahul.net/dholmes/ctorrent/userguide.html#examples
+   8. http://www.rahul.net/dholmes/ctorrent/userguide.html#startup
+   9. http://www.rahul.net/dholmes/ctorrent/userguide.html#status
+  10. http://www.rahul.net/dholmes/ctorrent/userguide.html#stopping
