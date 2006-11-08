@@ -93,6 +93,8 @@ ifeq ($(OPTWARE_TARGET),wl500g)
 PYTHON25_PATCHES:=$(PYTHON25_PATCHES) $(PYTHON25_SOURCE_DIR)/disable-ncursesw.patch
 endif
 
+.PHONY: python25-source python25-unpack python25 python25-stage python25-ipk python25-clean python25-dirclean python25-check python25-host-stage
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -180,10 +182,17 @@ $(PYTHON25_BUILD_DIR)/.staged: $(PYTHON25_BUILD_DIR)/.built
 	rm -f $(PYTHON25_BUILD_DIR)/.staged
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	install $(PYTHON25_BUILD_DIR)/buildpython/python $(STAGING_DIR)/opt/bin/
 	touch $(PYTHON25_BUILD_DIR)/.staged
 
 python25-stage: $(PYTHON25_BUILD_DIR)/.staged
+
+$(PYTHON25_BUILD_DIR)/.hoststaged: host/.configured $(PYTHON25_BUILD_DIR)/.built
+	PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install
+	rm -f $(HOST_STAGING_PREFIX)/bin/python
+	touch $(PYTHON25_BUILD_DIR)/.hoststaged
+
+python25-host-stage: $(PYTHON25_BUILD_DIR)/.hoststaged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
