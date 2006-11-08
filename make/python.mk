@@ -4,6 +4,7 @@
 #
 ###########################################################
 
+PYTHON_MAJOR=2.4
 PYTHON_VERSION=2.4.4
 PYTHON_DIR=python-$(PYTHON_VERSION)
 PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
