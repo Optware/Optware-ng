@@ -195,5 +195,5 @@ enhanced-ctorrent-dirclean:
 #
 # Some sanity check for the package.
 #
-enhanced-ctorrent-check: $(<FOO>_IPK)
+enhanced-ctorrent-check: $(ENHANCED_CTORRENT_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ENHANCED_CTORRENT_IPK)
