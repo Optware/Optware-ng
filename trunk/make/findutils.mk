@@ -75,7 +75,7 @@ FINDUTILS_DOC_IPK=$(BUILD_DIR)/findutils-doc_$(FINDUTILS_VERSION)-$(FINDUTILS_IP
 $(FINDUTILS_IPK_DIR)/CONTROL/control:
 	@install -d $(FINDUTILS_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: $(FINDUTILS_NAME)" >>$@
+	@echo "Package: findutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(FINDUTILS_PRIORITY)" >>$@
 	@echo "Section: $(FINDUTILS_SECTION)" >>$@
@@ -92,7 +92,7 @@ $(FINDUTILS_IPK_DIR)/CONTROL/control:
 $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control:
 	@install -d $(FINDUTILS_DOC_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: $(FINDUTILS_DOC_NAME)" >>$@
+	@echo "Package: findutils-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(FINDUTILS_DOC_PRIORITY)" >>$@
 	@echo "Section: $(FINDUTILS_DOC_SECTION)" >>$@
