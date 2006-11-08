@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=2
+PYTHON24_IPK_VERSION=3
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -183,6 +183,14 @@ $(PYTHON24_BUILD_DIR)/.staged: $(PYTHON24_BUILD_DIR)/.built
 	touch $(PYTHON24_BUILD_DIR)/.staged
 
 python24-stage: $(PYTHON24_BUILD_DIR)/.staged
+
+$(PYTHON24_BUILD_DIR)/.hoststaged: host/.configured $(PYTHON24_BUILD_DIR)/.built
+	PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		$(MAKE) -C $(PYTHON24_BUILD_DIR)/buildpython DESTDIR=$(HOST_STAGING_DIR) install
+	rm -f $(HOST_STAGING_PREFIX)/bin/python
+	touch $(PYTHON25_BUILD_DIR)/.hoststaged
+
+python24-host-stage: $(PYTHON24_BUILD_DIR)/.hoststaged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
