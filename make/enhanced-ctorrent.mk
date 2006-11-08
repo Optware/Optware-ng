@@ -18,7 +18,7 @@
 #
 ENHANCED_CTORRENT_SITE=http://www.rahul.net/dholmes/ctorrent
 ENHANCED_CTORRENT_BASE_VERSION=1.3.4
-ENHANCED_CTORRENT_VERSION=dnh2.1
+ENHANCED_CTORRENT_VERSION=dnh2.2
 ENHANCED_CTORRENT_SOURCE=ctorrent-$(ENHANCED_CTORRENT_BASE_VERSION)-$(ENHANCED_CTORRENT_VERSION).tar.gz
 ENHANCED_CTORRENT_DIR=ctorrent-$(ENHANCED_CTORRENT_VERSION)
 ENHANCED_CTORRENT_UNZIP=zcat
@@ -33,7 +33,7 @@ ENHANCED_CTORRENT_CONFLICTS=
 #
 # ENHANCED_CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-ENHANCED_CTORRENT_IPK_VERSION=4
+ENHANCED_CTORRENT_IPK_VERSION=5
 
 #
 # ENHANCED_CTORRENT_PATCHES should list any patches, in the the order in
@@ -169,6 +169,7 @@ $(ENHANCED_CTORRENT_IPK): $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 	install -d $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent
 	install -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README.nslu2 $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/README.nslu2
 	install -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README-DNH.TXT $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/README-DNH.TXT
+	install -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/UserGuide $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/UserGuide
 	$(MAKE) $(ENHANCED_CTORRENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ENHANCED_CTORRENT_IPK_DIR)
 
@@ -190,3 +191,9 @@ enhanced-ctorrent-clean:
 #
 enhanced-ctorrent-dirclean:
 	rm -rf $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) $(ENHANCED_CTORRENT_BUILD_DIR) $(ENHANCED_CTORRENT_IPK_DIR) $(ENHANCED_CTORRENT_IPK)
+
+#
+# Some sanity check for the package.
+#
+enhanced-ctorrent-check: $(<FOO>_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ENHANCED_CTORRENT_IPK)
