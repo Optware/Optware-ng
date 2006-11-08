@@ -146,6 +146,8 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON24_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON24_LDFLAGS)" \
 		ac_cv_sizeof_off_t=8 \
+		ac_cv_header_bluetooth_bluetooth_h=no \
+		ac_cv_header_bluetooth_h=no \
 		../$(PYTHON24_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
