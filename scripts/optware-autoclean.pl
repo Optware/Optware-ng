@@ -123,9 +123,19 @@ sub parse_Packages
 	    $uploaded_maintainer{$p}=$1 if /^Maintainer: (.*)/;
 	    $pkg_fn="$optware_dir/builds/$1" if /^Filename: (.*)/;
 	}
-
+    
 	my $mk_fn="$optware_dir/make/$p.mk";
-	next unless -r $mk_fn;
+
+	if( ! -r $mk_fn) { # try to resolve package name by "CONTROL" record
+        	$mk_fn=`grep -l "Package: $p" $optware_dir/make/*.mk`;
+        	chomp $mk_fn;
+	}
+
+	if (! -r $mk_fn) {
+        	print STDERR "$p package lacks control file creation\n";
+        	next;
+	}
+
 	my $dot_mk=slurp($mk_fn);
 	my $mk_stat=stat($mk_fn);
 	my $pkg_stat=stat($pkg_fn);
@@ -157,7 +167,7 @@ sub parse_Packages
 	    unless($uploaded_version{$p} eq $v) {
 		my $ipk=`MAKEFLAGS="" make -C $optware_dir -s query-${P}_IPK`;
 		chomp $ipk;
-		$v=$1 if $ipk=~/${p_pattern}_(.*?)_\w+\.ipk$/i;
+		$v=$1 if $ipk=~/\L${p_pattern}_(.*?)_\w+\.ipk$/i;
 	    }
 
 	    $package_version{$p}=$v;
