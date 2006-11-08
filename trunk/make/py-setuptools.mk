@@ -30,13 +30,14 @@ PY-SETUPTOOLS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SETUPTOOLS_DESCRIPTION=Tool to build and distribute Python packages, enhancement to distutils.
 PY-SETUPTOOLS_SECTION=misc
 PY-SETUPTOOLS_PRIORITY=optional
-PY-SETUPTOOLS_DEPENDS=python
+PY24-SETUPTOOLS_DEPENDS=python24
+PY25-SETUPTOOLS_DEPENDS=python25
 PY-SETUPTOOLS_CONFLICTS=
 
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=1
+PY-SETUPTOOLS_IPK_VERSION=2
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -64,10 +65,14 @@ PY-SETUPTOOLS_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-PY-SETUPTOOLS_BUILD_DIR=$(BUILD_DIR)/py-setuptools
 PY-SETUPTOOLS_SOURCE_DIR=$(SOURCE_DIR)/py-setuptools
-PY-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
-PY-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-SETUPTOOLS_BUILD_DIR=$(BUILD_DIR)/py-setuptools
+
+PY24-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
+PY24-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py25-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
+PY25-SETUPTOOLS_IPK=$(BUILD_DIR)/py25-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -99,18 +104,30 @@ py-setuptools-source: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-SETUPTOOLS_PATCHES) make/py-setuptools.mk
-	$(MAKE) python-stage
 	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
+	mkdir -p $(PY-SETUPTOOLS_BUILD_DIR)/
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)
-	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)/2.4
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[install]"; \
 		echo "install_scripts = /opt/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
+	    ) >> setup.cfg \
+	)
+#	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)/2.5
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[install]"; \
+		echo "install_scripts = /opt/bin"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.configured
@@ -122,7 +139,10 @@ py-setuptools-unpack: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.built: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-SETUPTOOLS_BUILD_DIR)
+	$(MAKE) python24-host-stage
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	$(MAKE) python25-host-stage
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.built
 
 #
@@ -135,9 +155,14 @@ py-setuptools: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.staged: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.staged
+	$(MAKE) python24-stage
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/setuptools*
-	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
-	python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt --single-version-externally-managed)
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(MAKE) python25-stage
+	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/setuptools*
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $(PY-SETUPTOOLS_BUILD_DIR)/.staged
 
 py-setuptools-stage: $(PY-SETUPTOOLS_BUILD_DIR)/.staged
@@ -146,8 +171,8 @@ py-setuptools-stage: $(PY-SETUPTOOLS_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-setuptools
 #
-$(PY-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SETUPTOOLS_IPK_DIR)/CONTROL
+$(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control:
+	@install -d $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "Package: py-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -157,7 +182,21 @@ $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
 	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-SETUPTOOLS_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-SETUPTOOLS_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
+
+$(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control:
+	@install -d $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: py25-setuptools" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SETUPTOOLS_PRIORITY)" >>$@
+	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
+	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 #
@@ -172,20 +211,31 @@ $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
-	make py-setuptools-stage
-	rm -rf $(PY-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py-setuptools_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SETUPTOOLS_BUILD_DIR); \
+$(PY24-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY24-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py-setuptools_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-SETUPTOOLS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/control
-	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SETUPTOOLS_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-SETUPTOOLS_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control
+	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SETUPTOOLS_IPK_DIR)
+
+$(PY25-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY25-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py25-setuptools_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-SETUPTOOLS_IPK_DIR) --prefix=/opt)
+	rm -f $(PY25-SETUPTOOLS_IPK_DIR)/opt/bin/easy_install
+	$(MAKE) $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control
+	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SETUPTOOLS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-setuptools-ipk: $(PY-SETUPTOOLS_IPK)
+py-setuptools-ipk: $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -198,4 +248,7 @@ py-setuptools-clean:
 # directories.
 #
 py-setuptools-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR) $(PY-SETUPTOOLS_IPK_DIR) $(PY-SETUPTOOLS_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR) \
+	$(PY24-SETUPTOOLS_IPK_DIR) $(PY24-SETUPTOOLS_IPK) \
+	$(PY25-SETUPTOOLS_IPK_DIR) $(PY25-SETUPTOOLS_IPK) \
+
