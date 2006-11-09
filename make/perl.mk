@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=10
+PERL_IPK_VERSION=11
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -79,10 +79,7 @@ PERL_SOURCE_DIR=$(SOURCE_DIR)/perl
 PERL_IPK_DIR=$(BUILD_DIR)/perl-$(PERL_VERSION)-ipk
 PERL_IPK=$(BUILD_DIR)/perl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-MICROPERL_BUILD_DIR=$(BUILD_DIR)/microperl
-MICROPERL_SOURCE_DIR=$(SOURCE_DIR)/microperl
-MICROPERL_IPK_DIR=$(BUILD_DIR)/microperl-$(PERL_VERSION)-ipk
-MICROPERL_IPK=$(BUILD_DIR)/microperl_$(PERL_VERSION)-$(PERL_IPK_VERSION)_$(TARGET_ARCH).ipk
+.PHONY: perl-source perl-unpack perl perl-stage perl-ipk perl-clean perl-dirclean perl-check perl-hostperl
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -187,16 +184,6 @@ endif
 
 perl-unpack: $(PERL_BUILD_DIR)/.configured
 
-# the same for microperl
-
-$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(MICROPERL_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
-	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
-	touch $(MICROPERL_BUILD_DIR)/.configured
-
-microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured
-
 #
 # This builds the actual binary.
 #
@@ -216,16 +203,10 @@ else
 endif
 	touch $(PERL_BUILD_DIR)/.built
 
-$(MICROPERL_BUILD_DIR)/.built: $(MICROPERL_BUILD_DIR)/.configured
-	rm -f $(MICROPERL_BUILD_DIR)/.built
-	$(MAKE) -C $(MICROPERL_BUILD_DIR) -f Makefile.micro CC=$(TARGET_CC) OPTIMIZE="$(TARGET_CFLAGS)"
-	touch $(MICROPERL_BUILD_DIR)/.built
-
 #
 # This is the build convenience target.
 #
 perl: $(PERL_BUILD_DIR)/.built
-microperl: $(MICROPERL_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -254,20 +235,6 @@ $(PERL_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(PERL_DESCRIPTION)" >>$@
 	@echo "Depends: $(PERL_DEPENDS)" >>$@
 	@echo "Suggests: $(PERL_SUGGESTS)" >>$@
-	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
-
-$(MICROPERL_IPK_DIR)/CONTROL/control:
-	@install -d $(MICROPERL_IPK_DIR)/CONTROL
-	@rm -f $@
-	@echo "Package: microperl" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(PERL_PRIORITY)" >>$@
-	@echo "Section: $(PERL_SECTION)" >>$@
-	@echo "Version: $(PERL_VERSION)-$(PERL_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(PERL_MAINTAINER)" >>$@
-	@echo "Source: $(PERL_SITE)/$(PERL_SOURCE)" >>$@
-	@echo "Description: $(PERL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PERL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PERL_CONFLICTS)" >>$@
 
 #
@@ -302,20 +269,10 @@ endif
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
 
-$(MICROPERL_IPK): $(MICROPERL_BUILD_DIR)/.built
-	rm -rf $(MICROPERL_IPK_DIR) $(BUILD_DIR)/microperl_*_$(TARGET_ARCH).ipk
-	install -d $(MICROPERL_IPK_DIR)/opt/bin
-	install -m 755 $(MICROPERL_BUILD_DIR)/microperl $(MICROPERL_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(MICROPERL_IPK_DIR)/opt/bin/*
-	$(MAKE) $(MICROPERL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROPERL_IPK_DIR)
-
 #
 # This is called from the top level makefile to create the IPK file.
 #
 perl-ipk: $(PERL_IPK)
-
-microperl-ipk: $(MICROPERL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -323,10 +280,6 @@ microperl-ipk: $(MICROPERL_IPK)
 perl-clean:
 	rm -f $(PERL_BUILD_DIR)/.built
 	-$(MAKE) -C $(PERL_BUILD_DIR) clean
-
-microperl-clean:
-	rm -f $(MICROPERL_BUILD_DIR)/.built
-	-$(MAKE) -C $(MICROPERL_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
@@ -339,5 +292,9 @@ else
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR) $(PERL_HOST_BUILD_DIR) $(PERL_IPK_DIR) $(PERL_IPK)
 endif
 
-microperl-dirclean:
-	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR) $(MICROPERL_IPK_DIR) $(MICROPERL_IPK)
+#
+#
+# Some sanity check for the package.
+#
+perl-check: $(PERL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL_IPK)
