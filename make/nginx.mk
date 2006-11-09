@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.4.11
+NGINX_VERSION=0.4.12
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -74,6 +74,8 @@ NGINX_BUILD_DIR=$(BUILD_DIR)/nginx
 NGINX_SOURCE_DIR=$(SOURCE_DIR)/nginx
 NGINX_IPK_DIR=$(BUILD_DIR)/nginx-$(NGINX_VERSION)-ipk
 NGINX_IPK=$(BUILD_DIR)/nginx_$(NGINX_VERSION)-$(NGINX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: nginx-source nginx-unpack nginx nginx-stage nginx-ipk nginx-clean nginx-dirclean nginx-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -246,3 +248,8 @@ nginx-clean:
 #
 nginx-dirclean:
 	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR) $(NGINX_IPK_DIR) $(NGINX_IPK)
+
+# Some sanity check for the package.
+#
+nginx-check: $(NGINX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NGINX_IPK)
