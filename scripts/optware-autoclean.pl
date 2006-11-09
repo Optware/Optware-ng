@@ -157,7 +157,7 @@ sub parse_Packages
 	    unless($uploaded_version{$p} eq $v) {
 		my $ipk=`MAKEFLAGS="" make -C $optware_dir -s query-${P}_IPK`;
 		chomp $ipk;
-		$v=$1 if $ipk=~/${p_pattern}_(.*?)_\w+\.ipk$/i;
+		$v=$1 if $ipk=~/\L${p_pattern}_(.*?)_\w+\.ipk$/i;
 	    }
 
 	    $package_version{$p}=$v;
