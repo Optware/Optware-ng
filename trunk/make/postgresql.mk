@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.0.8
+POSTGRESQL_VERSION=8.0.9
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-base-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -72,6 +72,8 @@ POSTGRESQL_BUILD_DIR=$(BUILD_DIR)/postgresql
 POSTGRESQL_SOURCE_DIR=$(SOURCE_DIR)/postgresql
 POSTGRESQL_IPK_DIR=$(BUILD_DIR)/postgresql-$(POSTGRESQL_VERSION)-ipk
 POSTGRESQL_IPK=$(BUILD_DIR)/postgresql_$(POSTGRESQL_VERSION)-$(POSTGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: postgresql-source postgresql-unpack postgresql postgresql-stage postgresql-ipk postgresql-clean postgresql-dirclean postgresql-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -211,3 +213,9 @@ postgresql-clean:
 #
 postgresql-dirclean:
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR) $(POSTGRESQL_IPK_DIR) $(POSTGRESQL_IPK)
+
+#
+# Some sanity check for the package.
+#
+postgresql-check: $(POSTGRESQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POSTGRESQL_IPK)
