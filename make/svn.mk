@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.4.0
+SVN_VERSION=1.4.2
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -46,7 +46,7 @@ SVN_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=3
+SVN_IPK_VERSION=1
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -79,6 +79,7 @@ SVN_SOURCE_DIR=$(SOURCE_DIR)/svn
 SVN_IPK_DIR=$(BUILD_DIR)/svn-$(SVN_VERSION)-ipk
 SVN_IPK=$(BUILD_DIR)/svn_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: svn-source svn-unpack svn svn-stage svn-ipk svn-clean svn-dirclean svn-check
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -230,3 +231,9 @@ svn-clean:
 #
 svn-dirclean:
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR) $(SVN_IPK_DIR) $(SVN_IPK)
+
+#
+# Some sanity check for the package.
+#
+svn-check: $(SVN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SVN_IPK)
