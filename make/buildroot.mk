@@ -44,10 +44,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 # TODO: cp -fa instead tar copy
+#       include gdb 
 #
 BUILDROOT_GCC ?= 3.4.6
 BUILDROOT_BINUTILS ?= 2.16.1
-UCLIBC_VERSION ?= 0.9.28
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
@@ -63,18 +63,10 @@ BUILDROOT_DEPENDS=
 BUILDROOT_SUGGESTS=
 BUILDROOT_CONFLICTS=uclibc
 
-# uClibc library target provided by buildroot
-UCLIBC_DESCRIPTION=micro C library for embedded Linux systems
-UCLIBC_SECTION=base
-UCLIBC_PRIORITY=required
-UCLIBC_DEPENDS=
-UCLIBC_SUGGESTS=
-UCLIBC_CONFLICTS=buildroot
-
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=4
+BUILDROOT_IPK_VERSION=5
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -141,8 +133,6 @@ BUILDROOT_SOURCE_DIR=$(SOURCE_DIR)/buildroot
 BUILDROOT_IPK_DIR=$(BUILD_DIR)/buildroot-$(BUILDROOT_VERSION)-ipk
 BUILDROOT_IPK=$(BUILD_DIR)/buildroot_$(BUILDROOT_VERSION)-$(BUILDROOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-UCLIBC_IPK_DIR=$(BUILD_DIR)/uclibc-$(UCLIBC_VERSION)-ipk
-UCLIBC_IPK=$(BUILD_DIR)/uclibc_$(UCLIBC_VERSION)-$(BUILDROOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk 
 
@@ -200,9 +190,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/buildroot.config $(BUILDROOT_BUILD_DIR)/.config
-ifeq ($(OPTWARE_TARGET), wl500g)
-	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
-endif
+#	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
 #	change TARGET_ARCH in .config
 	sed  -i -e 's|.*\(BR2_[a-z0-9_]\{2,\}\).*|# \1 is not set|' \
 	 -e 's|# BR2_$(TARGET_ARCH) is not set|BR2_$(TARGET_ARCH)=y|' \
@@ -279,21 +267,6 @@ $(BUILDROOT_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(BUILDROOT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(BUILDROOT_CONFLICTS)" >>$@
 
-$(UCLIBC_IPK_DIR)/CONTROL/control:
-	@install -d $(UCLIBC_IPK_DIR)/CONTROL
-	@rm -f $@
-	@echo "Package: uclibc" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(UCLIBC_PRIORITY)" >>$@
-	@echo "Section: $(UCLIBC_SECTION)" >>$@
-	@echo "Version: $(UCLIBC_VERSION)-$(BUILDROOT_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(BUILDROOT_MAINTAINER)" >>$@
-	@echo "Source: $(BUILDROOT_SITE)/$(BUILDROOT_SOURCE)" >>$@
-	@echo "Description: $(UCLIBC_DESCRIPTION)" >>$@
-	@echo "Depends: $(UCLIBC_DEPENDS)" >>$@
-	@echo "Suggests: $(UCLIBC_SUGGESTS)" >>$@
-	@echo "Conflicts: $(UCLIBC_CONFLICTS)" >>$@
-
 #
 # This builds the IPK file.
 #
@@ -312,9 +285,7 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	install -d $(BUILDROOT_IPK_DIR)
 	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
 #	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
-ifeq ($(OPTWARE_TARGET), wl500g)
-	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
-endif
+#	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
@@ -322,34 +293,10 @@ endif
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILDROOT_IPK_DIR)
 
 
-UCLIBC_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
-	libresolv  librt libutil libuClibc
-UCLIBC_LIBS_PATTERN=$(patsubst %,\
-	$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib/%*so*,$(UCLIBC_LIBS))
-
-$(UCLIBC_IPK): $(BUILDROOT_BUILD_DIR)/.built
-	rm -rf $(UCLIBC_IPK_DIR) $(BUILD_DIR)/uclibc_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC_IPK_DIR) install-strip
-	install -d $(UCLIBC_IPK_DIR)
-#	tar -xv -C $(UCLIBC_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
-#		--wildcards $(UCLIBC_LIBS_PATTERN) ./opt/sbin/ldconfig
-	install -d $(UCLIBC_IPK_DIR)/opt/lib
-	cp -d $(UCLIBC_LIBS_PATTERN) $(UCLIBC_IPK_DIR)/opt/lib
-	install -d $(UCLIBC_IPK_DIR)/opt/sbin
-	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
-		$(UCLIBC_IPK_DIR)/opt/sbin
-	$(MAKE) $(UCLIBC_IPK_DIR)/CONTROL/control
-	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC_IPK_DIR)/CONTROL/prerm
-#	echo $(UCLIBC_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBC_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBC_IPK_DIR)
-
 #
 # This is called from the top level makefile to create the IPK file.
 #
 buildroot-ipk: $(BUILDROOT_IPK)
-
-uclibc-ipk: $(UCLIBC_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
