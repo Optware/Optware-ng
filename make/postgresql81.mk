@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL81_VERSION=8.1.4
+POSTGRESQL81_VERSION=8.1.5
 POSTGRESQL81_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL81_VERSION)
 POSTGRESQL81_SOURCE=postgresql-base-$(POSTGRESQL81_VERSION).tar.bz2
 POSTGRESQL81_DIR=postgresql-$(POSTGRESQL81_VERSION)
@@ -75,6 +75,8 @@ POSTGRESQL81_BUILD_DIR=$(BUILD_DIR)/postgresql81
 POSTGRESQL81_SOURCE_DIR=$(SOURCE_DIR)/postgresql81
 POSTGRESQL81_IPK_DIR=$(BUILD_DIR)/postgresql81-$(POSTGRESQL81_VERSION)-ipk
 POSTGRESQL81_IPK=$(BUILD_DIR)/postgresql81_$(POSTGRESQL81_VERSION)-$(POSTGRESQL81_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: postgresql81-source postgresql81-unpack postgresql81 postgresql81-stage postgresql81-ipk postgresql81-clean postgresql81-dirclean postgresql81-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -213,3 +215,9 @@ postgresql81-clean:
 #
 postgresql81-dirclean:
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL81_DIR) $(POSTGRESQL81_BUILD_DIR) $(POSTGRESQL81_IPK_DIR) $(POSTGRESQL81_IPK)
+
+#
+# Some sanity check for the package.
+#
+postgresql81-check: $(POSTGRESQL81_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POSTGRESQL81_IPK)
