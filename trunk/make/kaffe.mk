@@ -36,7 +36,7 @@ KAFFE_CONFLICTS=
 #
 # KAFFE_IPK_VERSION should be incremented when the ipk changes.
 #
-KAFFE_IPK_VERSION=1
+KAFFE_IPK_VERSION=2
 
 #
 # KAFFE_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ KAFFE_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 KAFFE_CPPFLAGS=
-KAFFE_LDFLAGS=
+KAFFE_LDFLAGS="-Wl,-rpath,/opt/jre/lib/$(TARGET_ARCH)"
 
 #
 # KAFFE_BUILD_DIR is the directory in which the build is done.
