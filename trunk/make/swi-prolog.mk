@@ -22,12 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
-ifneq ($(OPTWARE_TARGET),wl500g)
-SWI-PROLOG_VERSION=5.6.22
-else
-# 5.6.x requires wchar
-SWI-PROLOG_VERSION=5.4.7
-endif
+SWI-PROLOG_VERSION=5.6.23
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
 SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
 SWI-PROLOG_UNZIP=zcat
@@ -42,7 +37,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=4
+SWI-PROLOG_IPK_VERSION=1
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -53,9 +48,7 @@ SWI-PROLOG_IPK_VERSION=4
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-ifneq ($(OPTWARE_TARGET),wl500g)
 SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/src-configure.in.patch $(SWI-PROLOG_SOURCE_DIR)/packages-plld.sh.in.patch
-endif
 endif
 
 #
@@ -98,6 +91,8 @@ SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(STAGING_LIB_DIR)
 else
 SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib
 endif
+
+.PHONY: swi-prolog-source swi-prolog-unpack swi-prolog swi-prolog-stage swi-prolog-ipk swi-prolog-clean swi-prolog-dirclean swi-prolog-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -324,3 +319,9 @@ swi-prolog-clean:
 #
 swi-prolog-dirclean:
 	rm -rf $(BUILD_DIR)/$(SWI-PROLOG_DIR) $(SWI-PROLOG_BUILD_DIR) $(SWI-PROLOG_IPK_DIR) $(SWI-PROLOG_IPK)
+
+#
+# Some sanity check for the package.
+#
+swi-prolog-check: $(SWI-PROLOG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SWI-PROLOG_IPK)
