@@ -30,13 +30,14 @@ PY-DJANGO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-DJANGO_DESCRIPTION=A high-level Python Web framework that encourages rapid development and clean, pragmatic design.
 PY-DJANGO_SECTION=misc
 PY-DJANGO_PRIORITY=optional
-PY-DJANGO_DEPENDS=python
+PY24-DJANGO_DEPENDS=python24
+PY25-DJANGO_DEPENDS=python25
 PY-DJANGO_CONFLICTS=
 
 #
 # PY-DJANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DJANGO_IPK_VERSION=1
+PY-DJANGO_IPK_VERSION=2
 
 #
 # PY-DJANGO_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-DJANGO_LDFLAGS=
 #
 PY-DJANGO_BUILD_DIR=$(BUILD_DIR)/py-django
 PY-DJANGO_SOURCE_DIR=$(SOURCE_DIR)/py-django
-PY-DJANGO_IPK_DIR=$(BUILD_DIR)/py-django-$(PY-DJANGO_VERSION)-ipk
-PY-DJANGO_IPK=$(BUILD_DIR)/py-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-DJANGO_IPK_DIR=$(BUILD_DIR)/py-django-$(PY-DJANGO_VERSION)-ipk
+PY24-DJANGO_IPK=$(BUILD_DIR)/py-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-DJANGO_IPK_DIR=$(BUILD_DIR)/py25-django-$(PY-DJANGO_VERSION)-ipk
+PY25-DJANGO_IPK=$(BUILD_DIR)/py25-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-django-source py-django-unpack py-django py-django-stage py-django-ipk py-django-clean py-django-dirclean py-django-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,13 +108,25 @@ py-django-source: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PATCHES)
 $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)
+	mkdir -p $(PY-DJANGO_BUILD_DIR)
 	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-DJANGO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DJANGO_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)
-	(cd $(PY-DJANGO_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)/2.4
+	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
+	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-DJANGO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DJANGO_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR)/2.5
+	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
@@ -121,7 +140,12 @@ py-django-unpack: $(PY-DJANGO_BUILD_DIR)/.configured
 #
 $(PY-DJANGO_BUILD_DIR)/.built: $(PY-DJANGO_BUILD_DIR)/.configured
 	rm -f $(PY-DJANGO_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-DJANGO_BUILD_DIR)
+	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-DJANGO_BUILD_DIR)/.built
 
 #
@@ -143,8 +167,8 @@ py-django-stage: $(PY-DJANGO_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-django
 #
-$(PY-DJANGO_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-DJANGO_IPK_DIR)/CONTROL
+$(PY24-DJANGO_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-django" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -154,7 +178,21 @@ $(PY-DJANGO_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-DJANGO_MAINTAINER)" >>$@
 	@echo "Source: $(PY-DJANGO_SITE)/$(PY-DJANGO_SOURCE)" >>$@
 	@echo "Description: $(PY-DJANGO_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-DJANGO_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-DJANGO_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-DJANGO_CONFLICTS)" >>$@
+
+$(PY25-DJANGO_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-django" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-DJANGO_PRIORITY)" >>$@
+	@echo "Section: $(PY-DJANGO_SECTION)" >>$@
+	@echo "Version: $(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-DJANGO_MAINTAINER)" >>$@
+	@echo "Source: $(PY-DJANGO_SITE)/$(PY-DJANGO_SOURCE)" >>$@
+	@echo "Description: $(PY-DJANGO_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-DJANGO_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-DJANGO_CONFLICTS)" >>$@
 
 #
@@ -169,19 +207,30 @@ $(PY-DJANGO_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
-	rm -rf $(PY-DJANGO_IPK_DIR) $(BUILD_DIR)/py-django_*_$(TARGET_ARCH).ipk
-	(cd $(PY-DJANGO_BUILD_DIR); \
+$(PY24-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
+	rm -rf $(PY24-DJANGO_IPK_DIR) $(BUILD_DIR)/py-django_*_$(TARGET_ARCH).ipk
+	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-DJANGO_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-DJANGO_IPK_DIR)/CONTROL/control
-	echo $(PY-DJANGO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-DJANGO_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-DJANGO_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-DJANGO_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-DJANGO_IPK_DIR)/CONTROL/control
+	echo $(PY-DJANGO_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-DJANGO_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-DJANGO_IPK_DIR)
+
+$(PY25-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
+	rm -rf $(PY25-DJANGO_IPK_DIR) $(BUILD_DIR)/py25-django_*_$(TARGET_ARCH).ipk
+	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-DJANGO_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-DJANGO_IPK_DIR)/opt/*bin/*; \
+	    do mv $$f `echo $$f | sed 's|\.py|-2.5.py|'`; done
+	$(MAKE) $(PY25-DJANGO_IPK_DIR)/CONTROL/control
+	echo $(PY-DJANGO_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-DJANGO_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-DJANGO_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-django-ipk: $(PY-DJANGO_IPK)
+py-django-ipk: $(PY24-DJANGO_IPK) $(PY25-DJANGO_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -194,4 +243,12 @@ py-django-clean:
 # directories.
 #
 py-django-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR) $(PY-DJANGO_IPK_DIR) $(PY-DJANGO_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-DJANGO_DIR) $(PY-DJANGO_BUILD_DIR) \
+	$(PY24-DJANGO_IPK_DIR) $(PY24-DJANGO_IPK) \
+	$(PY25-DJANGO_IPK_DIR) $(PY25-DJANGO_IPK) \
+
+#
+# Some sanity check for the package.
+#
+py-django-check: $(PY-DJANGO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-DJANGO_IPK) $(PY25-DJANGO_IPK)
