@@ -35,13 +35,14 @@ PY-BITTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BITTORRENT_DESCRIPTION=BitTorrent is a scatter-gather network file transfer tool.
 PY-BITTORRENT_SECTION=misc
 PY-BITTORRENT_PRIORITY=optional
-PY-BITTORRENT_DEPENDS=py-twisted, py-crypto
+PY24-BITTORRENT_DEPENDS=py-twisted, py-crypto
+PY25-BITTORRENT_DEPENDS=py25-twisted, py25-crypto
 PY-BITTORRENT_CONFLICTS=
 
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=1
+PY-BITTORRENT_IPK_VERSION=2
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
@@ -71,8 +72,12 @@ PY-BITTORRENT_LDFLAGS=
 #
 PY-BITTORRENT_BUILD_DIR=$(BUILD_DIR)/py-bittorrent
 PY-BITTORRENT_SOURCE_DIR=$(SOURCE_DIR)/py-bittorrent
-PY-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
-PY-BITTORRENT_IPK=$(BUILD_DIR)/py-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
+PY24-BITTORRENT_IPK=$(BUILD_DIR)/py-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py25-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
+PY25-BITTORRENT_IPK=$(BUILD_DIR)/py25-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -106,12 +111,20 @@ py-bittorrent-source: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-BITTORRENT_PATCHES)
 $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-BITTORRENT_PATCHES)
 	$(MAKE) py-twisted-stage
 	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
+	mkdir -p $(PY-BITTORRENT_BUILD_DIR)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
-	(cd $(PY-BITTORRENT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)/2.4
+	(cd $(PY-BITTORRENT_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    echo "executable=/opt/bin/python2.4") > setup.cfg \
+	)
+	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)/2.5
+	(cd $(PY-BITTORRENT_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
 	touch $(PY-BITTORRENT_BUILD_DIR)/.configured
 
@@ -122,9 +135,12 @@ py-bittorrent-unpack: $(PY-BITTORRENT_BUILD_DIR)/.configured
 #
 $(PY-BITTORRENT_BUILD_DIR)/.built: $(PY-BITTORRENT_BUILD_DIR)/.configured
 	rm -f $(PY-BITTORRENT_BUILD_DIR)/.built
-	(cd $(PY-BITTORRENT_BUILD_DIR); \
+	(cd $(PY-BITTORRENT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-BITTORRENT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-BITTORRENT_BUILD_DIR)/.built
 
 #
@@ -146,8 +162,8 @@ py-bittorrent-stage: $(PY-BITTORRENT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-bittorrent
 #
-$(PY-BITTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-BITTORRENT_IPK_DIR)/CONTROL
+$(PY24-BITTORRENT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-bittorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -157,7 +173,21 @@ $(PY-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-BITTORRENT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-BITTORRENT_SITE)/$(PY-BITTORRENT_SOURCE)" >>$@
 	@echo "Description: $(PY-BITTORRENT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-BITTORRENT_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-BITTORRENT_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
+
+$(PY25-BITTORRENT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-bittorrent" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-BITTORRENT_PRIORITY)" >>$@
+	@echo "Section: $(PY-BITTORRENT_SECTION)" >>$@
+	@echo "Version: $(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-BITTORRENT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-BITTORRENT_SITE)/$(PY-BITTORRENT_SOURCE)" >>$@
+	@echo "Description: $(PY-BITTORRENT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-BITTORRENT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
 
 #
@@ -172,26 +202,30 @@ $(PY-BITTORRENT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
-	rm -rf $(PY-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-BITTORRENT_BUILD_DIR) DESTDIR=$(PY-BITTORRENT_IPK_DIR) install
-	(cd $(PY-BITTORRENT_BUILD_DIR); \
+$(PY24-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
+	rm -rf $(PY24-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BITTORRENT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-BITTORRENT_IPK_DIR) --prefix=/opt)
-#	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-BITTORRENT_SOURCE_DIR)/py-bittorrent.conf $(PY-BITTORRENT_IPK_DIR)/opt/etc/py-bittorrent.conf
-#	install -d $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/rc.py-bittorrent $(PY-BITTORRENT_IPK_DIR)/opt/etc/init.d/SXXpy-bittorrent
-	$(MAKE) $(PY-BITTORRENT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/postinst $(PY-BITTORRENT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-BITTORRENT_SOURCE_DIR)/prerm $(PY-BITTORRENT_IPK_DIR)/CONTROL/prerm
-#	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-BITTORRENT_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-BITTORRENT_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BITTORRENT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-BITTORRENT_IPK_DIR)/CONTROL/control
+#	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-BITTORRENT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BITTORRENT_IPK_DIR)
+
+$(PY25-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
+	rm -rf $(PY25-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py25-bittorrent_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BITTORRENT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BITTORRENT_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-BITTORRENT_IPK_DIR)/opt/*bin/*; \
+	    do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	$(MAKE) $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control
+#	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-BITTORRENT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BITTORRENT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-bittorrent-ipk: $(PY-BITTORRENT_IPK)
+py-bittorrent-ipk: $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -204,4 +238,7 @@ py-bittorrent-clean:
 # directories.
 #
 py-bittorrent-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR) $(PY-BITTORRENT_IPK_DIR) $(PY-BITTORRENT_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR) \
+	$(PY24-BITTORRENT_IPK_DIR) $(PY24-BITTORRENT_IPK) \
+	$(PY25-BITTORRENT_IPK_DIR) $(PY25-BITTORRENT_IPK) \
+
