@@ -160,7 +160,7 @@ COMMON_CROSS_PACKAGES = \
 	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
-	qemu qemu-libc-i386 quagga  \
+	qemu qemu-libc-i386 quagga quickie \
 	rcs rdate readline recode recordext renderext rrdtool \
 	rsync rtorrent ruby rubygems \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
@@ -233,8 +233,8 @@ WL500G_BROKEN_PACKAGES = \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
-	 nylon openldap pango postfix py-mssql qemu qemu-libc-i386 rtorrent sablevm \
-	 sdl ser sm snownews sqsh swi-prolog \
+	 nylon openldap pango postfix py-mssql qemu qemu-libc-i386 quickie rtorrent \
+	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst \
@@ -248,7 +248,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 gtk ice id3lib iperf iptables jabberd \
 	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
-	 pango procps qemu qemu-libc-i386 rtorrent sdl ser sm \
+	 pango procps qemu qemu-libc-i386 quickie rtorrent sdl ser sm \
 	 snownews transcode vte wxbase xauth xaw xchat xcursor xfixes xft \
 	 xmu xrender xt xterm
 
@@ -271,7 +271,7 @@ MSS_BROKEN_PACKAGES = \
 	mod-fastcgi mod-python monotone \
 	ntp \
 	php-apache py-lxml \
-	qemu qemu-libc-i386 \
+	qemu qemu-libc-i386 quickie \
 	sablevm svn \
 	transcode \
 	tethereal \
