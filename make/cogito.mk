@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 COGITO_SITE=http://www.kernel.org/pub/software/scm/cogito
-COGITO_VERSION=0.18
+COGITO_VERSION=0.18.1
 COGITO_SOURCE=cogito-$(COGITO_VERSION).tar.bz2
 COGITO_DIR=cogito-$(COGITO_VERSION)
 COGITO_UNZIP=bzcat
@@ -68,6 +68,8 @@ COGITO_BUILD_DIR=$(BUILD_DIR)/cogito
 COGITO_SOURCE_DIR=$(SOURCE_DIR)/cogito
 COGITO_IPK_DIR=$(BUILD_DIR)/cogito-$(COGITO_VERSION)-ipk
 COGITO_IPK=$(BUILD_DIR)/cogito_$(COGITO_VERSION)-$(COGITO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: cogito-source cogito-unpack cogito cogito-stage cogito-ipk cogito-clean cogito-dirclean cogito-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -187,3 +189,9 @@ cogito-clean:
 #
 cogito-dirclean:
 	rm -rf $(BUILD_DIR)/$(COGITO_DIR) $(COGITO_BUILD_DIR) $(COGITO_IPK_DIR) $(COGITO_IPK)
+
+#
+# Some sanity check for the package.
+#
+cogito-check: $(COGITO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(COGITO_IPK)
