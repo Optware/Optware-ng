@@ -5,7 +5,8 @@
 ###########################################################
 
 MICROPERL_DESCRIPTION=Microperl.
-MICROPERL_VERSION:=$(shell sed -n -e 's/^PERL_VERSION *=//p' make/perl.mk)
+MICROPERL_VERSION=5.8.8
+MICROPERL_SOURCE=perl-$(MICROPERL_VERSION).tar.gz
 
 #
 # MICROPERL_IPK_VERSION should be incremented when the ipk changes.
@@ -19,7 +20,7 @@ MICROPERL_IPK=$(BUILD_DIR)/microperl_$(MICROPERL_VERSION)-$(MICROPERL_IPK_VERSIO
 
 .PHONY: microperl-unpack microperl microperl-ipk microperl-clean microperl-dirclean microperl-check
 
-$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(MICROPERL_PATCHES)
+$(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PERL_DIR) $(MICROPERL_BUILD_DIR)
