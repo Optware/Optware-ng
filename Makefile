@@ -175,8 +175,8 @@ COMMON_CROSS_PACKAGES = \
 	ufsd unarj unfs3 units unrar \
 	unzip usbutils ushare \
 	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
-	w3cam w3m webalizer wget wget-ssl wizd \
-	wakelan which whois wpa-supplicant wxbase \
+	w3cam w3m wakelan webalizer wget wget-ssl \
+	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zip zlib zoo \
