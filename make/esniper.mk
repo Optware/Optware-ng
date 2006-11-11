@@ -28,14 +28,14 @@ ESNIPER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ESNIPER_DESCRIPTION=A lightweight eBay sniping tool
 ESNIPER_SECTION=net
 ESNIPER_PRIORITY=optional
-ESNIPER_DEPENDS=
+ESNIPER_DEPENDS=openssl, libcurl
 ESNIPER_SUGGESTS=
 ESNIPER_CONFLICTS=
 
 #
 # ESNIPER_IPK_VERSION should be incremented when the ipk changes.
 #
-ESNIPER_IPK_VERSION=1
+ESNIPER_IPK_VERSION=2
 
 #
 # ESNIPER_CONFFILES should be a list of user-editable files
@@ -45,7 +45,7 @@ ESNIPER_IPK_VERSION=1
 # ESNIPER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-### ESNIPER_PATCHES=$(ESNIPER_SOURCE_DIR)/configure.patch
+# ESNIPER_PATCHES=$(ESNIPER_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -126,7 +126,7 @@ $(ESNIPER_BUILD_DIR)/.configured: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	###$(PATCH_LIBTOOL) $(ESNIPER_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(ESNIPER_BUILD_DIR)/libtool
 	touch $(ESNIPER_BUILD_DIR)/.configured
 
 esniper-unpack: $(ESNIPER_BUILD_DIR)/.configured
