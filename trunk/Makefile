@@ -129,7 +129,7 @@ COMMON_CROSS_PACKAGES = \
 	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
 	cyrus-imapd \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
-	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp \
+	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
 	fcgi fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
