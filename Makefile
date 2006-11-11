@@ -320,7 +320,8 @@ DS101J_BROKEN_PACKAGES = \
 DS101G_SPECIFIC_PACKAGES = \
 	ipkg \
 	ds101g-kernel-modules \
-	ds101-bootstrap
+	ds101-bootstrap \
+	py-ctypes \
 
 # Packages that do not work for ds101g+.
 DS101G_BROKEN_PACKAGES = \
