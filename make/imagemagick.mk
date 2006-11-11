@@ -21,8 +21,8 @@
 #
 #http://$(SOURCEFORGE_MIRROR)/sourceforge/imagemagick/ImageMagick-6.1.7-5.tar.gz
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
-IMAGEMAGICK_VERSION=6.2.9
-IMAGEMAGICK_REV=8
+IMAGEMAGICK_VERSION=6.3.0
+IMAGEMAGICK_REV=4
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
@@ -37,7 +37,7 @@ IMAGEMAGICK_CONFLICTS=
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=2
+IMAGEMAGICK_IPK_VERSION=1
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
@@ -65,6 +65,8 @@ IMAGEMAGICK_BUILD_DIR=$(BUILD_DIR)/imagemagick
 IMAGEMAGICK_SOURCE_DIR=$(SOURCE_DIR)/imagemagick
 IMAGEMAGICK_IPK_DIR=$(BUILD_DIR)/imagemagick-$(IMAGEMAGICK_VERSION)-ipk
 IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: imagemagick-source imagemagick-unpack imagemagick imagemagick-stage imagemagick-ipk imagemagick-clean imagemagick-dirclean imagemagick-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -235,3 +237,9 @@ imagemagick-clean:
 #
 imagemagick-dirclean:
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR) $(IMAGEMAGICK_IPK_DIR) $(IMAGEMAGICK_IPK)
+
+#
+# Some sanity check for the package.
+#
+imagemagick-check: $(IMAGEMAGICK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IMAGEMAGICK_IPK)
