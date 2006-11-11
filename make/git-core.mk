@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=1.4.3.3
+GIT-CORE_VERSION=1.4.3.4
 GIT-CORE_SOURCE=git-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -69,6 +69,8 @@ GIT-CORE_BUILD_DIR=$(BUILD_DIR)/git-core
 GIT-CORE_SOURCE_DIR=$(SOURCE_DIR)/git-core
 GIT-CORE_IPK_DIR=$(BUILD_DIR)/git-core-$(GIT-CORE_VERSION)-ipk
 GIT-CORE_IPK=$(BUILD_DIR)/git-core_$(GIT-CORE_VERSION)-$(GIT-CORE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: git-core-source git-core-unpack git-core git-core-stage git-core-ipk git-core-clean git-core-dirclean git-core-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -227,3 +229,9 @@ git-core-clean:
 #
 git-core-dirclean:
 	rm -rf $(BUILD_DIR)/$(GIT-CORE_DIR) $(GIT-CORE_BUILD_DIR) $(GIT-CORE_IPK_DIR) $(GIT-CORE_IPK)
+
+#
+# Some sanity check for the package.
+#
+git-core-check: $(GIT-CORE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GIT-CORE_IPK)
