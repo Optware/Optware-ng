@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://cheeseshop.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.2.1
+PY-ROUNDUP_VERSION=1.3.1
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -68,6 +68,8 @@ PY-ROUNDUP_BUILD_DIR=$(BUILD_DIR)/py-roundup
 PY-ROUNDUP_SOURCE_DIR=$(SOURCE_DIR)/py-roundup
 PY-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py-roundup-$(PY-ROUNDUP_VERSION)-ipk
 PY-ROUNDUP_IPK=$(BUILD_DIR)/py-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-roundup-source py-roundup-unpack py-roundup py-roundup-stage py-roundup-ipk py-roundup-clean py-roundup-dirclean py-roundup-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -201,3 +203,9 @@ py-roundup-clean:
 #
 py-roundup-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(PY-ROUNDUP_BUILD_DIR) $(PY-ROUNDUP_IPK_DIR) $(PY-ROUNDUP_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-roundup-check: $(PY-ROUNDUP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY-ROUNDUP_IPK)
