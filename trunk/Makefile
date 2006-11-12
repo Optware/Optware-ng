@@ -122,7 +122,8 @@ COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk \
 	atftp atk audiofile autoconf automake \
-	bash bc bzip2 bind bip bitchx bitlbee bsdmainutils busybox byrequest bzflag \
+	bash bc bind bip bitchx bitlbee bogofilter \
+	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract ccxstream chillispot coreutils cpio cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
@@ -183,7 +184,6 @@ COMMON_CROSS_PACKAGES = \
 
 # autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
-# bogofilter's configure wants to run some small executables
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
@@ -194,7 +194,6 @@ COMMON_CROSS_PACKAGES = \
 COMMON_NATIVE_PACKAGES = \
 	autoconf \
 	bison \
-	bogofilter \
 	cdrtools \
 	emacs \
 	xemacs \
@@ -330,8 +329,7 @@ DS101G_BROKEN_PACKAGES = \
 	mod-python ntop ntp \
 	qemu qemu-libc-i386 \
 	ser \
-	bogofilter emacs xemacs hugs mzscheme ocaml \
-	rsnapshot \
+	emacs xemacs hugs mzscheme ocaml rsnapshot \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg

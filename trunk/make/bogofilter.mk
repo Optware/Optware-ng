@@ -16,11 +16,17 @@ BOGOFILTER_SECTION=net
 BOGOFILTER_PRIORITY=optional
 BOGOFILTER_DEPENDS=libdb
 
-BOGOFILTER_IPK_VERSION=1
+BOGOFILTER_IPK_VERSION=2
 
 BOGOFILTER_CONFFILES=/opt/etc/bogofilter.conf
 
+ifeq ($(HOSTCC), $(TARGET_CC))
 BOGOFILTER_PATCHES=
+BOGOFILTER_CONFIGURE_OPTIONS=
+else
+BOGOFILTER_PATCHES=$(BOGOFILTER_SOURCE_DIR)/configure.ac.patch
+BOGOFILTER_CONFIGURE_OPTIONS=--enable-rpath=no
+endif
 
 BOGOFILTER_CPPFLAGS=
 BOGOFILTER_LDFLAGS=
@@ -29,6 +35,8 @@ BOGOFILTER_BUILD_DIR=$(BUILD_DIR)/bogofilter
 BOGOFILTER_SOURCE_DIR=$(SOURCE_DIR)/bogofilter
 BOGOFILTER_IPK_DIR=$(BUILD_DIR)/bogofilter-$(BOGOFILTER_VERSION)-ipk
 BOGOFILTER_IPK=$(BUILD_DIR)/bogofilter_$(BOGOFILTER_VERSION)-$(BOGOFILTER_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: bogofilter-source bogofilter-unpack bogofilter bogofilter-stage bogofilter-ipk bogofilter-clean bogofilter-dirclean bogofilter-check
 
 $(BOGOFILTER_IPK_DIR)/CONTROL/control:
 	@install -d $(BOGOFILTER_IPK_DIR)/CONTROL
@@ -48,13 +56,16 @@ $(DL_DIR)/$(BOGOFILTER_SOURCE):
 
 bogofilter-source: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER_PATCHES)
 
-$(BOGOFILTER_BUILD_DIR)/.configured: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER_PATCHES)
+$(BOGOFILTER_BUILD_DIR)/.configured: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER_PATCHES) make/bogofilter.mk
 	$(MAKE) libdb-stage
 	rm -rf $(BUILD_DIR)/$(BOGOFILTER_DIR) $(BOGOFILTER_BUILD_DIR)
 	$(BOGOFILTER_UNZIP) $(DL_DIR)/$(BOGOFILTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(BOGOFILTER_PATCHES) | patch -d $(BUILD_DIR)/$(BOGOFILTER_DIR) -p1
+	if test -n "$(BOGOFILTER_PATCHES)"; \
+		then cat $(BOGOFILTER_PATCHES) | patch -d $(BUILD_DIR)/$(BOGOFILTER_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(BOGOFILTER_BUILD_DIR)
 	(cd $(BOGOFILTER_BUILD_DIR); \
+		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BOGOFILTER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BOGOFILTER_LDFLAGS)" \
@@ -65,6 +76,7 @@ $(BOGOFILTER_BUILD_DIR)/.configured: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER
 		--prefix=/opt \
 		--with-libdb-prefix=$(STAGING_PREFIX) \
 		--program-prefix= \
+		$(BOGOFILTER_CONFIGURE_OPTIONS) \
 		--disable-nls \
 	)
 	touch $(BOGOFILTER_BUILD_DIR)/.configured
@@ -124,3 +136,9 @@ bogofilter-clean:
 
 bogofilter-dirclean:
 	rm -rf $(BUILD_DIR)/$(BOGOFILTER_DIR) $(BOGOFILTER_BUILD_DIR) $(BOGOFILTER_IPK_DIR) $(BOGOFILTER_IPK)
+
+#
+# Some sanity check for the package.
+#
+bogofilter-check: $(BOGOFILTER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BOGOFILTER_IPK)

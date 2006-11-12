@@ -1,0 +1,86 @@
+--- bogofilter/configure.ac.orig	2006-11-12 08:40:18.000000000 -0800
++++ bogofilter/configure.ac	2006-11-12 08:53:30.000000000 -0800
+@@ -432,18 +432,6 @@
+ 	saveLIBS="$LIBS"
+ 	LIBS="$LIBS $LIBDB"
+ 	AC_MSG_CHECKING(if a program can be linked against Berkeley DB and run)
+-	AC_RUN_IFELSE(
+-	AC_LANG_PROGRAM([[
+-#ifdef HAVE_INTTYPES_H
+-#include <inttypes.h>
+-#endif
+-#include <db.h>
+-		   ]], [[
+-return 0;
+-		   ]]),,
+-		   [AC_MSG_RESULT(no)
+-	AC_MSG_ERROR([Cannot run a program linked against libdb.
+-Did you adjust your library search path to include your libdb?])],)
+ 	AC_MSG_RESULT(yes)
+ 
+ 	dnl check if header and library of DB library match
+@@ -451,25 +439,6 @@
+ 	AC_MSG_CHECKING(if Berkeley DB header and library versions match)
+ 	rm -r -f bfadtestdir
+ 	mkdir bfadtestdir
+-	AC_RUN_IFELSE(
+-	AC_LANG_PROGRAM([[
+-		   #include <stdlib.h>
+-		   #include <stdio.h>
+-#ifdef HAVE_INTTYPES_H
+-#include <inttypes.h>
+-#endif
+-		   #include <db.h>
+-		   ]], [[
+-			int maj, min;
+-			(void)db_version(&maj, &min, 0);
+-			(void)fprintf(stderr, "headers: %d.%d, library: %d.%d\n",
+-				DB_VERSION_MAJOR, DB_VERSION_MINOR, maj, min);
+-			if (maj != DB_VERSION_MAJOR) exit(1);
+-			if (min != DB_VERSION_MINOR) exit(1);
+-			exit(0);
+-		   ]]),,
+-		   [AC_MSG_RESULT(no)
+-		   AC_MSG_ERROR(db.h header file and db library version do not match.)],)
+ 	AC_MSG_RESULT(yes)
+ 	AC_CHECK_DECLS(db_create,,
+ 	       AC_MSG_ERROR([[Can not locate a suitable Berkeley DB db.h header file.
+@@ -482,38 +451,6 @@
+ 	)
+ 	AC_MSG_CHECKING(if Berkeley DB supports shared environments)
+ 	if test "x$enable_dbshared_test" != xno ; then
+-	AC_RUN_IFELSE(
+-	AC_LANG_PROGRAM([[
+-#ifdef HAVE_INTTYPES_H
+-#include <inttypes.h>
+-#endif
+-#include <db.h>
+-#include <stdio.h>
+-#include <stdlib.h>
+-#define TESTDIR "bfadtestdir"
+-#define barf(where, what) do { fprintf(stderr, "%s failed: %s\n", where, db_strerror(what)); exit(1); } while(0)
+-		   ]], [[
+-    DB_ENV *e;
+-    int r;
+-    if ((r = db_env_create(&e, 0))) barf("db_env_create", r);
+-    if ((r = e->open(e, TESTDIR, DB_INIT_LOCK|DB_INIT_MPOOL|DB_CREATE, 0664)))
+-	barf("DB_ENV->open", r);
+-    if ((r = e->close(e, 0)))
+-        barf("DB_ENV->close", r);
+-    if ((r = db_env_create(&e, 0))) barf("db_env_create", r);
+-    if ((r = e->remove(e, TESTDIR, 0))) barf("DB_ENV->remove", r);
+-    return 0;
+-		   ]]),,
+-		   [AC_MSG_RESULT(no)
+-	rm -r -f bfadtestdir
+-	AC_MSG_ERROR([
+-Cannot open a shared environment in Berkeley DB. This is a known problem
+-on Fedora Core Linux. Build your own Berkeley DB installation and use
+---with-libdb-prefix to point bogofilter to it. Alternatively, you can
+-use the unsafe non-transactional database by configuring with
+---disable-transactions.
+-Packagers, if you are absolutely sure that the target system supports
+-shared environments, you can use --disable-dbshared-test.])],)
+ 	rm -r -f bfadtestdir
+ 	AC_MSG_RESULT(yes)
+     else
