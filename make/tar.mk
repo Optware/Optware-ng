@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-TAR_VERSION=1.15.1
+TAR_VERSION=1.16
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=bzcat
@@ -63,6 +63,8 @@ TAR_IPK=$(BUILD_DIR)/tar_$(TAR_VERSION)-$(TAR_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 $(DL_DIR)/$(TAR_SOURCE):
 	$(WGET) -P $(DL_DIR) $(TAR_SITE)/$(TAR_SOURCE)
+
+.PHONY: tar-source tar-unpack tar tar-stage tar-ipk tar-clean tar-dirclean tar-check
 
 #
 # The source code depends on it existing within the download directory.
@@ -176,3 +178,9 @@ tar-clean:
 #
 tar-dirclean:
 	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(TAR_BUILD_DIR) $(TAR_IPK_DIR) $(TAR_IPK)
+
+#
+# Some sanity check for the package.
+#
+tar-check: $(TAR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TAR_IPK)
