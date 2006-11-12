@@ -1,6 +1,6 @@
---- bogofilter/configure.ac.orig	2006-11-12 08:40:18.000000000 -0800
-+++ bogofilter/configure.ac	2006-11-12 08:53:30.000000000 -0800
-@@ -432,18 +432,6 @@
+--- bogofilter-1.1.1/configure.ac.orig	2006-08-22 19:58:55.000000000 -0700
++++ bogofilter-1.1.1/configure.ac	2006-11-12 09:43:08.000000000 -0800
+@@ -514,18 +514,6 @@
  	saveLIBS="$LIBS"
  	LIBS="$LIBS $LIBDB"
  	AC_MSG_CHECKING(if a program can be linked against Berkeley DB and run)
@@ -19,7 +19,7 @@
  	AC_MSG_RESULT(yes)
  
  	dnl check if header and library of DB library match
-@@ -451,25 +439,6 @@
+@@ -533,25 +521,6 @@
  	AC_MSG_CHECKING(if Berkeley DB header and library versions match)
  	rm -r -f bfadtestdir
  	mkdir bfadtestdir
@@ -45,10 +45,10 @@
  	AC_MSG_RESULT(yes)
  	AC_CHECK_DECLS(db_create,,
  	       AC_MSG_ERROR([[Can not locate a suitable Berkeley DB db.h header file.
-@@ -482,38 +451,6 @@
+@@ -564,38 +533,6 @@
  	)
  	AC_MSG_CHECKING(if Berkeley DB supports shared environments)
- 	if test "x$enable_dbshared_test" != xno ; then
+ 	if test "x$enable_dbshared_test" != xno && test "x$USE_TRANSACTIONS" != xNO ; then
 -	AC_RUN_IFELSE(
 -	AC_LANG_PROGRAM([[
 -#ifdef HAVE_INTTYPES_H
@@ -63,7 +63,7 @@
 -    DB_ENV *e;
 -    int r;
 -    if ((r = db_env_create(&e, 0))) barf("db_env_create", r);
--    if ((r = e->open(e, TESTDIR, DB_INIT_LOCK|DB_INIT_MPOOL|DB_CREATE, 0664)))
+-    if ((r = e->open(e, TESTDIR, DB_INIT_LOG|DB_INIT_TXN|DB_INIT_MPOOL|DB_CREATE, 0664)))
 -	barf("DB_ENV->open", r);
 -    if ((r = e->close(e, 0)))
 -        barf("DB_ENV->close", r);
