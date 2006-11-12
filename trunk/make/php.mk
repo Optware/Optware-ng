@@ -476,6 +476,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
+ifneq ($(OPTWARE_TARGET),wl500g)
 php-ipk: $(PHP_IPK) \
 	$(PHP_DEV_IPK) \
 	$(PHP_EMBED_IPK) \
@@ -485,6 +486,16 @@ php-ipk: $(PHP_IPK) \
 	$(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK) \
 	$(PHP_PEAR_IPK)
+else
+php-ipk: $(PHP_IPK) \
+	$(PHP_DEV_IPK) \
+	$(PHP_EMBED_IPK) \
+	$(PHP_GD_IPK) \
+	$(PHP_IMAP_IPK) \
+	$(PHP_MBSTRING_IPK) \
+	$(PHP_MYSQL_IPK) \
+	$(PHP_PEAR_IPK)
+endif
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -503,10 +514,12 @@ php-dirclean:
 	$(PHP_EMBED_IPK_DIR) $(PHP_EMBED_IPK) \
 	$(PHP_GD_IPK_DIR) $(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) \
-	$(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) \
 	$(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
 	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
+ifneq ($(OPTWARE_TARGET),wl500g)
+	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) \
+endif
 
 #
 # Some sanity check for the package.
@@ -518,7 +531,9 @@ php-check: php-ipk
 	$(PHP_EMBED_IPK) \
 	$(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK) \
-	$(PHP_LDAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK) \
 	$(PHP_PEAR_IPK)
+ifneq ($(OPTWARE_TARGET),wl500g)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_LDAP_IPK)
+endif
