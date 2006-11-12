@@ -40,7 +40,11 @@ TAR_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TAR_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET),wl500g)
+  TAR_CPPFLAGS=-DMB_CUR_MAX=1
+else
+  TAR_CPPFLAGS=
+endif
 TAR_LDFLAGS=
 
 #
