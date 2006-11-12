@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.1.6
+PHP_VERSION=5.2.0
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -30,7 +30,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=1
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -283,7 +283,7 @@ endif
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	cat $(PHP_PATCHES) |patch -p0 -bd $(PHP_BUILD_DIR)
 	(cd $(PHP_BUILD_DIR); \
-		autoconf; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
