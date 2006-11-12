@@ -332,7 +332,6 @@ DS101G_BROKEN_PACKAGES = \
 	ser \
 	bogofilter emacs xemacs hugs mzscheme ocaml \
 	rsnapshot \
-	squid \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
@@ -349,7 +348,7 @@ FSG3_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
-	bison emacs xemacs hugs mzscheme nginx ocaml rsnapshot squid unison \
+	bison emacs xemacs hugs mzscheme nginx ocaml rsnapshot unison \
 	qemu qemu-libc-i386 \
 	transcode
 
