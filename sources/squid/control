@@ -1,8 +1,0 @@
-Package: squid
-Priority: optional
-Version: 2.5.STABLE7-2
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: util
-Source: http://http://www.squid-cache.org/Versions/v2/2.5/squid-2.5.STABLE7.tar.gz
-Description: full-featured Web proxy cache

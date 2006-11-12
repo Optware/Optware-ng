@@ -19,16 +19,24 @@
 #
 # You should change all these variables to suit your package.
 #
-SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.5/
-SQUID_VERSION=2.5.STABLE7
-SQUID_SOURCE=squid-2.5.STABLE7.tar.gz
-SQUID_DIR=squid-2.5.STABLE7
+SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6/
+SQUID_VERSION=2.6.STABLE5
+SQUID_SOURCE=squid-$(SQUID_VERSION).tar.gz
+SQUID_DIR=squid-$(SQUID_VERSION)
 SQUID_UNZIP=zcat
+
+SQUID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SQUID_DESCRIPTION=Full-featured Web proxy cache.
+SQUID_SECTION=web
+SQUID_PRIORITY=optional
+SQUID_DEPENDS=
+SQUID_SUGGESTS=
+SQUID_CONFLICTS=
 
 #
 # SQUID_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUID_IPK_VERSION=2
+SQUID_IPK_VERSION=1
 
 #
 # SQUID_PATCHES should list any patches, in the the order in
@@ -52,8 +60,11 @@ SQUID_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-SQUID_BUILD_DIR=$(BUILD_DIR)/squid
 SQUID_SOURCE_DIR=$(SOURCE_DIR)/squid
+
+SQUID_BUILD_DIR=$(BUILD_DIR)/squid
+SQUID_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/squid
+
 SQUID_IPK_DIR=$(BUILD_DIR)/squid-$(SQUID_VERSION)-ipk
 SQUID_IPK=$(BUILD_DIR)/squid_$(SQUID_VERSION)-$(SQUID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -70,6 +81,27 @@ SQUID_INCLUDE_DIR=$(SQUID_INST_DIR)/include
 SQUID_INFO_DIR=$(SQUID_INST_DIR)/info
 SQUID_MAN_DIR=$(SQUID_INST_DIR)/man
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+SQUID_CROSS_CONFIG_OPTIONS=\
+	ac_cv_sizeof_int8_t=1 \
+	ac_cv_sizeof_uint8_t=1 \
+	ac_cv_sizeof_u_int8_t=1 \
+	ac_cv_sizeof_int16_t=2 \
+	ac_cv_sizeof_uint16_t=2 \
+	ac_cv_sizeof_u_int16_t=2 \
+	ac_cv_sizeof_int32_t=4 \
+	ac_cv_sizeof_uint32_t=4 \
+	ac_cv_sizeof_u_int32_t=4 \
+	ac_cv_sizeof_int64_t=8 \
+	ac_cv_sizeof_uint64_t=8 \
+	ac_cv_sizeof_u_int64_t=8 \
+	ac_cv_sizeof___int64=0 \
+	ac_cv_func_setresuid=yes \
+	ac_cv_func_va_copy=yes \
+	ac_cv_func___va_copy=yes
+endif
+
+.PHONY: squid-source squid-unpack squid squid-stage squid-ipk squid-clean squid-dirclean squid-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -85,6 +117,19 @@ $(DL_DIR)/$(SQUID_SOURCE):
 #
 squid-source: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES)
 
+$(SQUID_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID_SOURCE) make/squid.mk
+#	$(MAKE) <bar>-stage <baz>-stage
+	rm -rf $(HOST_BUILD_DIR)/$(SQUID_DIR) $(SQUID_HOST_BUILD_DIR)
+	$(SQUID_UNZIP) $(DL_DIR)/$(SQUID_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(SQUID_DIR)" != "$(SQUID_HOST_BUILD_DIR)" ; \
+		then mv $(HOST_BUILD_DIR)/$(SQUID_DIR) $(SQUID_HOST_BUILD_DIR) ; \
+	fi
+	(cd $(SQUID_HOST_BUILD_DIR); \
+		./configure \
+		--prefix=/opt \
+	)
+	$(MAKE) -C $(SQUID_HOST_BUILD_DIR)
+	touch $(SQUID_HOST_BUILD_DIR)/.built
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -100,14 +145,26 @@ squid-source: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SQUID_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES)
+ifeq ($(HOSTCC), $(TARGET_CC))
+$(SQUID_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES) make/squid.mk
+else
+$(SQUID_BUILD_DIR)/.configured: $(SQUID_HOST_BUILD_DIR)/.built $(SQUID_PATCHES)
+endif
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR)
 	$(SQUID_UNZIP) $(DL_DIR)/$(SQUID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR)
+	if test -n "$(SQUID_PATCHES)" ; \
+		then cat $(SQUID_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SQUID_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(SQUID_DIR)" != "$(SQUID_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR) ; \
+	fi
 	(cd $(SQUID_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQUID_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQUID_LDFLAGS)" \
+		$(SQUID_CROSS_CONFIG_OPTIONS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,6 +184,9 @@ $(SQUID_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES)
 		--mandir=$(SQUID_MAN_DIR) \
 		--disable-nls \
 	)
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -i -e 's|./cf_gen |$(SQUID_HOST_BUILD_DIR)/src/cf_gen |g' $(SQUID_BUILD_DIR)/src/Makefile
+endif
 	touch $(SQUID_BUILD_DIR)/.configured
 
 squid-unpack: $(SQUID_BUILD_DIR)/.configured
@@ -154,6 +214,21 @@ $(SQUID_BUILD_DIR)/.staged: $(SQUID_BUILD_DIR)/.built
 
 squid-stage: $(SQUID_BUILD_DIR)/.staged
 
+$(SQUID_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: squid" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SQUID_PRIORITY)" >>$@
+	@echo "Section: $(SQUID_SECTION)" >>$@
+	@echo "Version: $(SQUID_VERSION)-$(SQUID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SQUID_MAINTAINER)" >>$@
+	@echo "Source: $(SQUID_SITE)/$(SQUID_SOURCE)" >>$@
+	@echo "Description: $(SQUID_DESCRIPTION)" >>$@
+	@echo "Depends: $(SQUID_DEPENDS)" >>$@
+	@echo "Suggests: $(SQUID_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SQUID_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -169,12 +244,14 @@ squid-stage: $(SQUID_BUILD_DIR)/.staged
 $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
 	rm -rf $(SQUID_IPK_DIR) $(BUILD_DIR)/squid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(SQUID_IPK_DIR) install
+	cd $(SQUID_IPK_DIR)/opt; \
+	$(STRIP_COMMAND) bin/squidclient libexec/cachemgr.cgi libexec/unlinkd sbin/squid
 	install -d $(SQUID_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid
 	ln -sf /opt/etc/init.d/S80squid $(SQUID_IPK_DIR)/opt/etc/init.d/K80squid 
 	install -m 755 $(SQUID_SOURCE_DIR)/squid.delay-start.sh $(SQUID_IPK_DIR)$(SQUID_SYSCONF_DIR)/squid.delay-start.sh
 	install -d $(SQUID_IPK_DIR)/CONTROL
-	install -m 644 $(SQUID_SOURCE_DIR)/control $(SQUID_IPK_DIR)/CONTROL/control
+	$(MAKE) $(SQUID_IPK_DIR)/CONTROL/control
 	install -m 644 $(SQUID_SOURCE_DIR)/postinst $(SQUID_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SQUID_SOURCE_DIR)/preinst $(SQUID_IPK_DIR)/CONTROL/preinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQUID_IPK_DIR)
@@ -196,3 +273,9 @@ squid-clean:
 #
 squid-dirclean:
 	rm -rf $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR) $(SQUID_IPK_DIR) $(SQUID_IPK)
+
+#
+# Some sanity check for the package.
+#
+squid-check: $(SQUID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQUID_IPK)
