@@ -82,7 +82,7 @@ SQUID_INFO_DIR=$(SQUID_INST_DIR)/info
 SQUID_MAN_DIR=$(SQUID_INST_DIR)/man
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-SQUID_CROSS_CONFIG_OPTIONS=\
+SQUID_CROSS_CONFIG_ENVS=\
 	ac_cv_sizeof_int8_t=1 \
 	ac_cv_sizeof_uint8_t=1 \
 	ac_cv_sizeof_u_int8_t=1 \
@@ -99,6 +99,8 @@ SQUID_CROSS_CONFIG_OPTIONS=\
 	ac_cv_func_setresuid=yes \
 	ac_cv_func_va_copy=yes \
 	ac_cv_func___va_copy=yes
+# FIXME this really is platform kernel dependent
+SQUID_CROSS_CONFIG_OPTIONS=--disable-epoll
 endif
 
 .PHONY: squid-source squid-unpack squid squid-stage squid-ipk squid-clean squid-dirclean squid-check
@@ -164,7 +166,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQUID_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQUID_LDFLAGS)" \
-		$(SQUID_CROSS_CONFIG_OPTIONS) \
+		$(SQUID_CROSS_CONFIG_ENVS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -182,6 +184,7 @@ endif
 		--oldincludedir=$(SQUID_INCLUDE_DIR) \
 		--infodir=$(SQUID_INFO_DIR) \
 		--mandir=$(SQUID_MAN_DIR) \
+		$(SQUID_CROSS_CONFIG_OPTIONS) \
 		--disable-nls \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
