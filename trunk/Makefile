@@ -165,9 +165,9 @@ COMMON_CROSS_PACKAGES = \
 	rsync rtorrent ruby rubygems \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc siproxd sm snownews \
-	screen sdparm sed smartmontools socat sqlite sqlite2 strace syslog-ng \
-	sqsh squeak stunnel streamripper sudo swi-prolog svn \
-	sysstat \
+	screen sdparm sed smartmontools socat sqlite sqlite2 \
+	sqsh squeak squid strace stunnel streamripper sudo swi-prolog svn \
+	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
 	tin tinyscheme tnef torrent transcode transmission tsocks \
@@ -190,7 +190,6 @@ COMMON_CROSS_PACKAGES = \
 # nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # rsnapshot depends on perl
-# squid probably will build cross - may just need some configure work
 # stow depends on perl
 COMMON_NATIVE_PACKAGES = \
 	autoconf \
@@ -204,7 +203,6 @@ COMMON_NATIVE_PACKAGES = \
         nginx \
         ocaml \
 	rsnapshot \
-	squid \
 	stow \
 	unison \
 
