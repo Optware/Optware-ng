@@ -111,12 +111,13 @@ endif
 PHP_CONFIGURE_THREAD_ARGS= \
 		--enable-maintainer-zts 
 
+.PHONY: php-source php-unpack php php-stage php-ipk php-clean php-dirclean php-check
 
 #
 # Automatically create a ipkg control file
 #
 $(PHP_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -129,7 +130,7 @@ $(PHP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(PHP_DEPENDS)" >>$@
 
 $(PHP_DEV_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_DEV_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-dev" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -142,7 +143,7 @@ $(PHP_DEV_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_EMBED_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_EMBED_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-embed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -155,7 +156,7 @@ $(PHP_EMBED_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_GD_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_GD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-gd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,7 +169,7 @@ $(PHP_GD_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, libgd" >>$@
 
 $(PHP_IMAP_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_IMAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-imap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -181,7 +182,7 @@ $(PHP_IMAP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, imap-libs" >>$@
 
 $(PHP_LDAP_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_LDAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-ldap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,7 +195,7 @@ $(PHP_LDAP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, openldap-libs" >>$@
 
 $(PHP_MBSTRING_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_MBSTRING_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-mbstring" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -207,7 +208,7 @@ $(PHP_MBSTRING_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php" >>$@
 
 $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_MYSQL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -220,7 +221,7 @@ $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: php, mysql" >>$@
 
 $(PHP_PEAR_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_PEAR_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-pear" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -475,7 +476,15 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-php-ipk: $(PHP_IPK)
+php-ipk: $(PHP_IPK) \
+	$(PHP_DEV_IPK) \
+	$(PHP_EMBED_IPK) \
+	$(PHP_GD_IPK) \
+	$(PHP_IMAP_IPK) \
+	$(PHP_LDAP_IPK) \
+	$(PHP_MBSTRING_IPK) \
+	$(PHP_MYSQL_IPK) \
+	$(PHP_PEAR_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -488,4 +497,28 @@ php-clean:
 # directories.
 #
 php-dirclean:
-	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) $(PHP_IPK_DIR) $(PHP_IPK) $(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) $(PHP_EMBED_IPK_DIR) $(PHP_EMBED_IPK) $(PHP_GD_IPK_DIR) $(PHP_GD_IPK) $(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) $(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) $(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) $(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR) \
+	$(PHP_IPK_DIR) $(PHP_IPK) \
+	$(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) \
+	$(PHP_EMBED_IPK_DIR) $(PHP_EMBED_IPK) \
+	$(PHP_GD_IPK_DIR) $(PHP_GD_IPK) \
+	$(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) \
+	$(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) \
+	$(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) \
+	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
+	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
+
+#
+# Some sanity check for the package.
+#
+php-check: php-ipk
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
+	$(PHP_IPK) \
+	$(PHP_DEV_IPK) \
+	$(PHP_EMBED_IPK) \
+	$(PHP_GD_IPK) \
+	$(PHP_IMAP_IPK) \
+	$(PHP_LDAP_IPK) \
+	$(PHP_MBSTRING_IPK) \
+	$(PHP_MYSQL_IPK) \
+	$(PHP_PEAR_IPK)
