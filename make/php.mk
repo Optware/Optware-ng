@@ -518,7 +518,7 @@ php-dirclean:
 	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
 	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
 ifneq ($(OPTWARE_TARGET),wl500g)
-	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK) \
+	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK)
 endif
 
 #
