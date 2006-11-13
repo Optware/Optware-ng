@@ -5,7 +5,7 @@
 ###########################################################
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=5.0
+PCRE_VERSION=6.7
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
@@ -22,7 +22,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=5
+PCRE_IPK_VERSION=1
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
