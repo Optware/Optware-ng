@@ -76,6 +76,8 @@ DSPAM_PGSQL_IPK=$(BUILD_DIR)/dspam-pgsql_$(DSPAM_VERSION)-$(DSPAM_IPK_VERSION)_$
 DSPAM_MYSQL_IPK_DIR=$(BUILD_DIR)/dspam-$(DSPAM_VERSION)-ipk-mysql
 DSPAM_MYSQL_IPK=$(BUILD_DIR)/dspam-mysql_$(DSPAM_VERSION)-$(DSPAM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: dspam-source dspam-unpack dspam dspam-stage dspam-ipk dspam-clean dspam-dirclean dspam-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -256,7 +258,7 @@ $(DSPAM_IPK): $(DSPAM_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-dspam-ipk: $(DSPAM_IPK)
+dspam-ipk: $(DSPAM_IPK) $(DSPAM_PGSQL_IPK) $(DSPAM_MYSQL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -273,3 +275,9 @@ dspam-dirclean:
 	rm -rf $(BUILD_DIR)/$(DSPAM_DIR) $(DSPAM_BUILD_DIR) $(DSPAM_IPK_DIR) $(DSPAM_IPK)
 	rm -rf $(DSPAM_PGSQL_IPK_DIR) $(DSPAM_PGSQL_IPK)
 	rm -rf $(DSPAM_MYSQL_IPK_DIR) $(DSPAM_MYSQL_IPK)
+
+#
+# Some sanity check for the package.
+#
+dspam-check: $(DSPAM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DSPAM_IPK) $(DSPAM_PGSQL_IPK) $(DSPAM_MYSQL_IPK)
