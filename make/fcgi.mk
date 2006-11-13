@@ -36,6 +36,8 @@ FCGI_IPK=$(BUILD_DIR)/fcgi_$(FCGI_VERSION)-$(FCGI_IPK_VERSION)_$(TARGET_ARCH).ip
 FCGI_DEV_IPK_DIR=$(BUILD_DIR)/fcgi-dev-$(FCGI_VERSION)-ipk
 FCGI_DEV_IPK=$(BUILD_DIR)/fcgi-dev_$(FCGI_VERSION)-$(FCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: fcgi-source fcgi-unpack fcgi fcgi-stage fcgi-ipk fcgi-clean fcgi-dirclean fcgi-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -135,7 +137,7 @@ $(FCGI_DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-$(FCGI_IPK): $(FCGI_BUILD_DIR)/.built
+$(FCGI_IPK) $(FCGI_DEV_IPK): $(FCGI_BUILD_DIR)/.built
 	rm -rf $(FCGI_IPK_DIR) $(BUILD_DIR)/fcgi_*_$(TARGET_ARCH).ipk
 	rm -rf $(FCGI_DEV_IPK_DIR) $(BUILD_DIR)/fcgi-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FCGI_BUILD_DIR) DESTDIR=$(FCGI_DEV_IPK_DIR) install
@@ -152,7 +154,7 @@ $(FCGI_IPK): $(FCGI_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-fcgi-ipk: $(FCGI_IPK)
+fcgi-ipk: $(FCGI_IPK) $(FCGI_DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -167,3 +169,9 @@ fcgi-clean:
 #
 fcgi-dirclean:
 	rm -rf $(BUILD_DIR)/$(FCGI_DIR) $(FCGI_BUILD_DIR) $(FCGI_IPK_DIR) $(FCGI_IPK) $(FCGI_DEV_IPK_DIR) $(FCGI_DEV_IPK)
+
+#
+# Some sanity check for the package.
+#
+fcgi-check: $(FCGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FCGI_IPK) $(FCGI_DEV_IPK)
