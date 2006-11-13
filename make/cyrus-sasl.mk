@@ -5,7 +5,7 @@
 ###########################################################
 
 CYRUS-SASL_SITE=ftp://ftp.andrew.cmu.edu/pub/cyrus-mail
-CYRUS-SASL_VERSION=2.1.20
+CYRUS-SASL_VERSION=2.1.22
 CYRUS-SASL_SOURCE=cyrus-sasl-$(CYRUS-SASL_VERSION).tar.gz
 CYRUS-SASL_DIR=cyrus-sasl-$(CYRUS-SASL_VERSION)
 CYRUS-SASL_UNZIP=zcat
@@ -16,7 +16,7 @@ CYRUS-SASL_PRIORITY=optional
 CYRUS-SASL_DEPENDS=
 CYRUS-SASL_CONFLICTS=
 
-CYRUS-SASL_IPK_VERSION=10
+CYRUS-SASL_IPK_VERSION=1
 
 CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
 
