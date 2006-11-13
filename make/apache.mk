@@ -85,6 +85,8 @@ APACHE_IPK=$(BUILD_DIR)/apache_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_$(TARGET_
 APACHE_MANUAL_IPK_DIR=$(BUILD_DIR)/apache-manual-$(APACHE_VERSION)-ipk
 APACHE_MANUAL_IPK=$(BUILD_DIR)/apache-manual_$(APACHE_VERSION)-$(APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: apache-source apache-unpack apache apache-stage apache-ipk apache-clean apache-dirclean apache-check
+
 #
 # Automatically create a ipkg control file
 #
@@ -261,7 +263,7 @@ $(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-apache-ipk: $(APACHE_IPK)
+apache-ipk: $(APACHE_IPK) $(APACHE_MANUAL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -275,3 +277,9 @@ apache-clean:
 #
 apache-dirclean:
 	rm -rf $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR) $(APACHE_IPK_DIR) $(APACHE_IPK) $(APACHE_MANUAL_IPK_DIR) $(APACHE_MANUAL_IPK)
+
+#
+# Some sanity check for the package.
+#
+apache-check: $(APACHE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APACHE_IPK) $(APACHE_MANUAL_IPK)
