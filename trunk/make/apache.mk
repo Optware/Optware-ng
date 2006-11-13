@@ -229,7 +229,7 @@ apache-stage: $(APACHE_BUILD_DIR)/.staged
 #
 # You may need to patch your application to make it use these locations.
 #
-$(APACHE_IPK): $(APACHE_BUILD_DIR)/.built
+$(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	rm -rf $(APACHE_IPK_DIR) $(BUILD_DIR)/apache_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=/opt/share/apache2/build install
 	rm -rf $(APACHE_IPK_DIR)/opt/share/apache2/manual
