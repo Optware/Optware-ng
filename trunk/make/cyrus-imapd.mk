@@ -33,8 +33,13 @@ CYRUS-IMAPD_LDFLAGS=
 
 CYRUS-IMAPD_BUILD_DIR=$(BUILD_DIR)/cyrus-imapd
 CYRUS-IMAPD_SOURCE_DIR=$(SOURCE_DIR)/cyrus-imapd
+
 CYRUS-IMAPD_IPK_DIR=$(BUILD_DIR)/cyrus-imapd-$(CYRUS-IMAPD_VERSION)-ipk
 CYRUS-IMAPD_IPK=$(BUILD_DIR)/cyrus-imapd_$(CYRUS-IMAPD_VERSION)-$(CYRUS-IMAPD_IPK_VERSION)_$(TARGET_ARCH).ipk
+CYRUS-IMAPD-DOC_IPK=$(BUILD_DIR)/cyrus-imapd-doc_$(CYRUS-IMAPD_VERSION)-$(CYRUS-IMAPD_IPK_VERSION)_$(TARGET_ARCH).ipk
+CYRUS-IMAPD-DEVEL_IPK=$(BUILD_DIR)/cyrus-imapd-devel_$(CYRUS-IMAPD_VERSION)-$(CYRUS-IMAPD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: cyrus-imapd-source cyrus-imapd-unpack cyrus-imapd cyrus-imapd-stage cyrus-imapd-ipk cyrus-imapd-clean cyrus-imapd-dirclean cyrus-imapd-check
 
 $(DL_DIR)/$(CYRUS-IMAPD_SOURCE):
 	$(WGET) -P $(DL_DIR) $(CYRUS-IMAPD_SITE)/$(CYRUS-IMAPD_SOURCE)
@@ -176,7 +181,7 @@ $(CYRUS-IMAPD_IPK_DIR)-devel/CONTROL/control:
 	@echo "Suggests: $(CYRUS-IMAPD_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CYRUS-IMAPD_CONFLICTS)" >>$@
 
-$(CYRUS-IMAPD_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
+$(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK): $(CYRUS-IMAPD_BUILD_DIR)/.built
 	rm -rf $(CYRUS-IMAPD_IPK_DIR)* $(BUILD_DIR)/cyrus-imapd_*_$(TARGET_ARCH).ipk
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/bin
 	install -d $(CYRUS-IMAPD_IPK_DIR)/opt/etc
@@ -266,10 +271,18 @@ endif
 	echo $(CYRUS-IMAPD_CONFFILES) | sed -e 's/ /\n/g' > $(CYRUS-IMAPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-IMAPD_IPK_DIR)
 
-cyrus-imapd-ipk: $(CYRUS-IMAPD_IPK)
+cyrus-imapd-ipk: $(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK)
 
 cyrus-imapd-clean:
 	-$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR) clean
 
 cyrus-imapd-dirclean:
-	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR) $(CYRUS-IMAPD_IPK_DIR) $(CYRUS-IMAPD_IPK_DIR)-doc $(CYRUS-IMAPD_IPK_DIR)-devel $(CYRUS-IMAPD_IPK)
+	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR) \
+	$(CYRUS-IMAPD_IPK_DIR) $(CYRUS-IMAPD_IPK_DIR)-doc $(CYRUS-IMAPD_IPK_DIR)-devel \
+	$(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK)
+
+#
+# Some sanity check for the package.
+#
+cyrus-imapd-check: $(CYRUS-IMAPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK)
