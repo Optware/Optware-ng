@@ -59,6 +59,8 @@ BUSYBOX_SOURCE_DIR=$(SOURCE_DIR)/busybox
 BUSYBOX_IPK_DIR=$(BUILD_DIR)/busybox-$(BUSYBOX_VERSION)-ipk
 BUSYBOX_IPK=$(BUILD_DIR)/busybox_$(BUSYBOX_VERSION)-$(BUSYBOX_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: busybox-source busybox-unpack busybox busybox-stage busybox-ipk busybox-clean busybox-dirclean busybox-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -240,3 +242,9 @@ busybox-clean:
 #
 busybox-dirclean:
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(BUSYBOX_BUILD_DIR) $(BUSYBOX_IPK_DIR) $(BUSYBOX_IPK)
+
+#
+# Some sanity check for the package.
+#
+busybox-check: $(BUSYBOX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BUSYBOX_IPK)
