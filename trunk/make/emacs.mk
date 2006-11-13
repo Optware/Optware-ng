@@ -5,11 +5,11 @@
 ###########################################################
 
 #
-# <FOO>_VERSION, <FOO>_SITE and <FOO>_SOURCE define
+# EMACS_VERSION, EMACS_SITE and EMACS_SOURCE define
 # the upstream location of the source code for the package.
-# <FOO>_DIR is the directory which is created when the source
+# EMACS_DIR is the directory which is created when the source
 # archive is unpacked.
-# <FOO>_UNZIP is the command used to unzip the source.
+# EMACS_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
@@ -75,6 +75,8 @@ EMACS_LISP_IPK=$(BUILD_DIR)/emacs-lisp_$(EMACS_VERSION)-$(EMACS_IPK_VERSION)_$(T
 
 EMACS_LISP_SRC_IPK_DIR=$(BUILD_DIR)/emacs-lisp-src-$(EMACS_VERSION)-ipk
 EMACS_LISP_SRC_IPK=$(BUILD_DIR)/emacs-lisp-src_$(EMACS_VERSION)-$(EMACS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: emacs-source emacs-unpack emacs emacs-stage emacs-ipk emacs-clean emacs-dirclean emacs-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -230,7 +232,8 @@ $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-emacs-ipk: $(EMACS_IPK)
+emacs-ipk: $(EMACS_IPK) $(EMACS_LISP_IPK) $(EMACS_LISP_SRC_IPK)
+
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -243,4 +246,13 @@ emacs-clean:
 # directories.
 #
 emacs-dirclean:
-	rm -rf $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR) $(EMACS_IPK_DIR) $(EMACS_IPK)
+	rm -rf $(BUILD_DIR)/$(EMACS_DIR) $(EMACS_BUILD_DIR)
+	rm -rf $(EMACS_IPK_DIR) $(EMACS_IPK)
+	rm -rf $(EMACS_LISP_IPK_DIR) $(EMACS_LISP_IPK)
+	rm -rf $(EMACS_LISP_SRC_IPK_DIR) $(EMACS_LISP_SRC_IPK)
+
+#
+# Some sanity check for the package.
+#
+emacs-check: $(EMACS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(EMACS_IPK) $(EMACS_LISP_IPK) $(EMACS_LISP_SRC_IPK)
