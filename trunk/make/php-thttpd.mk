@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=1
+PHP_THTTPD_IPK_VERSION=2
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -146,6 +146,9 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_
 
 $(PHP_THTTPD_BUILD_DIR)/.configured: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built $(PHP_THTTPD_PATCHES)
 	cat $(PHP_THTTPD_PATCHES) | patch -d $(PHP_THTTPD_BUILD_DIR) -p1
+ifeq ($(LIBC_STYLE), uclibc)
+	sed -i -e '/assert.*IOV_MAX/s|^|//|' $(PHP_THTTPD_BUILD_DIR)/php_thttpd.c
+endif
 	(cd $(PHP_THTTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
