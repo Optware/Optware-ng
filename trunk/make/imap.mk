@@ -78,6 +78,8 @@ IMAP_IPK=$(BUILD_DIR)/imap_$(IMAP_VERSION)-$(IMAP_IPK_VERSION)_$(TARGET_ARCH).ip
 IMAP_LIBS_IPK_DIR=$(BUILD_DIR)/imap-libs-$(IMAP_VERSION)-ipk
 IMAP_LIBS_IPK=$(BUILD_DIR)/imap-libs_$(IMAP_VERSION)-$(IMAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: imap-source imap-unpack imap imap-stage imap-ipk imap-clean imap-dirclean imap-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -215,7 +217,7 @@ $(IMAP_IPK): $(IMAP_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-imap-ipk: $(IMAP_IPK)
+imap-ipk: $(IMAP_IPK) $(IMAP_LIBS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -229,4 +231,13 @@ imap-clean:
 # directories.
 #
 imap-dirclean:
-	rm -rf $(BUILD_DIR)/$(IMAP_DIR) $(IMAP_BUILD_DIR) $(IMAP_IPK_DIR) $(IMAP_IPK)
+	rm -rf $(BUILD_DIR)/$(IMAP_DIR) $(IMAP_BUILD_DIR)
+	rm -rf $(IMAP_IPK_DIR) $(IMAP_IPK)
+	rm -rf $(IMAP_LIBS_IPK_DIR) $(IMAP_LIBS_IPK)
+
+
+#
+# Some sanity check for the package.
+#
+imap-check: $(IMAP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IMAP_IPK) $(IMAP_LIBS_IPK)
