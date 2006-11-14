@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.7.3
+LIBTORRENT_VERSION=0.10.4
 LIBTORRENT_SOURCE=libtorrent-$(LIBTORRENT_VERSION).tar.gz
 LIBTORRENT_DIR=libtorrent-$(LIBTORRENT_VERSION)
 LIBTORRENT_UNZIP=zcat
@@ -89,7 +89,7 @@ libtorrent-source: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES)
+$(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES) make/libtorrent.mk
 	$(MAKE) openssl-stage libsigc++-stage
 	rm -rf $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR)
 	$(LIBTORRENT_UNZIP) $(DL_DIR)/$(LIBTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -138,6 +138,7 @@ libtorrent: $(LIBTORRENT_BUILD_DIR)/.built
 $(LIBTORRENT_BUILD_DIR)/.staged: $(LIBTORRENT_BUILD_DIR)/.built
 	rm -f $(LIBTORRENT_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBTORRENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's| /opt/lib/lib\(sigc-[0-9.]*\)\.la| -l\1|' $(STAGING_LIB_DIR)/libtorrent.la
 	touch $(LIBTORRENT_BUILD_DIR)/.staged
 
 libtorrent-stage: $(LIBTORRENT_BUILD_DIR)/.staged
