@@ -129,7 +129,8 @@ COMMON_CROSS_PACKAGES = \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
 	cyrus-imapd \
-	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki dovecot dropbear dspam \
+	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki \
+	dovecot dropbear dspam dtach \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
