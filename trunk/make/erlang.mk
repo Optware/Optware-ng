@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R11B-1
-ERLANG_VERSION=R11B1
+ERLANG_UPSTREAM_VERSION=R11B-2
+ERLANG_VERSION=R11B2
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=6
+ERLANG_IPK_VERSION=1
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ ERLANG-MANPAGES_IPK=$(BUILD_DIR)/erlang-manpages_$(ERLANG_VERSION)-$(ERLANG_IPK_
 ERLANG-DOC-HTML_IPK_DIR=$(BUILD_DIR)/erlang-doc-html-$(ERLANG_VERSION)-ipk
 ERLANG-DOC-HTML_IPK=$(BUILD_DIR)/erlang-doc-html_$(ERLANG_VERSION)-$(ERLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: erlang-source erlang-unpack erlang erlang-stage erlang-ipk erlang-clean erlang-dirclean
+.PHONY: erlang-source erlang-unpack erlang erlang-stage erlang-ipk erlang-clean erlang-dirclean erlang-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -130,11 +130,11 @@ $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(DL_DIR)/$(ERLANG
 #
 erlang-source: $(DL_DIR)/$(ERLANG_SOURCE) $(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) $(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) $(ERLANG_PATCHES)
 
-$(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured make/erlang.mk \
+$(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured \
 		$(DL_DIR)/$(ERLANG_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
-		$(ERLANG_PATCHES)
+		$(ERLANG_PATCHES) make/erlang.mk 
 	rm -rf $(HOST_BUILD_DIR)/$(ERLANG_DIR) $(ERLANG_HOST_BUILD_DIR)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	cat $(ERLANG_PATCHES) | patch -d $(HOST_BUILD_DIR)/$(ERLANG_DIR) -p1
@@ -242,9 +242,9 @@ else
                 --disable-hipe \
 		--disable-nls \
 		; \
-	    sed -i -e 's|$$(ERL_TOP)/bin/dialyzer|$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin|' \
-		$(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
+	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s|$$(ERL_TOP).*|$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/mnesia/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin --include_libs "kernel,mnesia,stdlib" -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin|' $(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
 	)
+# /home/slug/optware/nslu2/host/builds/erlang/bin/dialyzer --output_plt /home/slug/optware/nslu2/builds/erlang/lib/dialyzer/plt/dialyzer_init_plt -pa /home/slug/optware/nslu2/builds/erlang/lib/kernel/ebin -pa /home/slug/optware/nslu2/builds/erlang/lib/stdlib/ebin --include_libs "kernel,stdlib" -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin
 endif
 	touch $(ERLANG_BUILD_DIR)/.configured
 
