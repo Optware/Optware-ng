@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.3.3
+RTORRENT_VERSION=0.6.4
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
@@ -60,6 +60,8 @@ RTORRENT_BUILD_DIR=$(BUILD_DIR)/rtorrent
 RTORRENT_SOURCE_DIR=$(SOURCE_DIR)/rtorrent
 RTORRENT_IPK_DIR=$(BUILD_DIR)/rtorrent-$(RTORRENT_VERSION)-ipk
 RTORRENT_IPK=$(BUILD_DIR)/rtorrent_$(RTORRENT_VERSION)-$(RTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: rtorrent-source rtorrent-unpack rtorrent rtorrent-stage rtorrent-ipk rtorrent-clean rtorrent-dirclean rtorrent-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -112,6 +114,7 @@ $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCH
 		--disable-nls \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(RTORRENT_BUILD_DIR)/libtool
 	touch $(RTORRENT_BUILD_DIR)/.configured
 
 rtorrent-unpack: $(RTORRENT_BUILD_DIR)/.configured
@@ -173,7 +176,6 @@ $(RTORRENT_IPK_DIR)/CONTROL/control:
 $(RTORRENT_IPK): $(RTORRENT_BUILD_DIR)/.built
 	rm -rf $(RTORRENT_IPK_DIR) $(BUILD_DIR)/rtorrent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RTORRENT_BUILD_DIR) DESTDIR=$(RTORRENT_IPK_DIR) install-strip
-	rm -rf $(RTORRENT_IPK_DIR)/opt/man
 	$(MAKE) $(RTORRENT_IPK_DIR)/CONTROL/control
 	echo $(RTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(RTORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RTORRENT_IPK_DIR)
@@ -196,3 +198,9 @@ rtorrent-clean:
 #
 rtorrent-dirclean:
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR) $(RTORRENT_IPK_DIR) $(RTORRENT_IPK)
+
+#
+# Some sanity check for the package.
+#
+rtorrent-check: $(RTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RTORRENT_IPK)
