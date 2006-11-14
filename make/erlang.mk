@@ -383,9 +383,11 @@ $(ERLANG-DOC-HTML_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(ERLANG_IPK): $(ERLANG_BUILD_DIR)/.built
+$(ERLANG_IPK) $(ERLANG-LIBS_IPK) $(ERLANG-MANPAGES_IPK) $(ERLANG-DOC-HTML_IPK): $(ERLANG_BUILD_DIR)/.built
 	rm -rf $(ERLANG_IPK_DIR) $(BUILD_DIR)/erlang_*_$(TARGET_ARCH).ipk
 	rm -rf $(ERLANG-LIBS_IPK_DIR) $(BUILD_DIR)/erlang-libs_*_$(TARGET_ARCH).ipk
+	rm -rf $(ERLANG-MANPAGES_IPK_DIR) $(BUILD_DIR)/erlang-manpages_*_$(TARGET_ARCH).ipk
+	rm -rf $(ERLANG-DOC-HTML_IPK_DIR) $(BUILD_DIR)/erlang-doc-html_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERLANG_HOST_BUILD_DIR) \
 		INSTALL_PREFIX=$(ERLANG_HOST_BUILD_DIR) $(ERLANG_MAKE_OPTION) install
 	install -d $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/
@@ -497,7 +499,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-erlang-ipk: $(ERLANG_IPK)
+erlang-ipk: $(ERLANG_IPK) $(ERLANG-LIBS_IPK) $(ERLANG-MANPAGES_IPK) $(ERLANG-DOC-HTML_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -516,3 +518,9 @@ erlang-dirclean:
 		$(ERLANG-MANPAGES_IPK_DIR) $(ERLANG-MANPAGES_IPK) \
 		$(ERLANG-DOC-HTML_IPK_DIR) $(ERLANG-DOC-HTML_IPK) \
 
+#
+# Some sanity check for the package.
+#
+erlang-check: $(ERLANG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
+		$(ERLANG_IPK) $(ERLANG-LIBS_IPK) $(ERLANG-MANPAGES_IPK) $(ERLANG-DOC-HTML_IPK)
