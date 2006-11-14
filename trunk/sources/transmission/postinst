@@ -6,7 +6,6 @@
 # m h dom mon dow user  command
 grep -q transmission_watchdog /opt/etc/crontab || echo "*/30 * * * * admin nice /opt/sbin/transmission_watchdog" >> /opt/etc/crontab
 
-
 # 
 echo "Please note that /opt/etc/init.d/S80busybox_httpd is installed for"
 echo "running CGI interface at http://localhost:8008/cgi-bin/transmission.cgi"

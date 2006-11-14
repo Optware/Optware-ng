@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.6
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1049
+TRANSMISSION_SVN_REV=1089
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -49,8 +49,7 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # which they should be applied to the source code.
 #
 TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch \
-	$(TRANSMISSION_SOURCE_DIR)/r1007_trackerc_brent_t108v4.patch \
-	$(TRANSMISSION_SOURCE_DIR)/r1007_trackerc_brent_t144.patch 
+	$(TRANSMISSION_SOURCE_DIR)/r1007_trackerc_brent_t108v4.patch
 
 # Additional sources to enhance transmission (like this daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
@@ -222,6 +221,7 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -m 666 $(TRANSMISSION_SOURCE_DIR)/README.daemon $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+	install -d $(TRANSMISSION_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/postinst $(TRANSMISSION_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(TRANSMISSION_SOURCE_DIR)/prerm $(TRANSMISSION_IPK_DIR)/CONTROL/prerm

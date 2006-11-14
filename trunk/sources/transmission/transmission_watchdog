@@ -158,6 +158,8 @@ Torrent       : ${TORRENT}
 Started       : ${STARTTIME}
 Completed     : ${ENDTIME}
 Stored in     : ${TARGET}
+URL           : ${URL}
+Note          : ${NOTE}
 Status        : ${STATUS}
 "  | ${MAILER:-mini_sendmail} ${MAILOPT}${MAILFROM} ${MAILTO}
         notice "Mail sent to : ${MAILTO}"
