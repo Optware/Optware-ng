@@ -48,11 +48,27 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
 	   "v" => \$verbose,
 	   "verbose" => \$verbose);
 
-$binary_type="ARM" if $binary_type eq "nslu2";
-$binary_type="MIPS" if $binary_type eq "wl500g";
-$binary_type="ARM" if $binary_type =~ /^arm/;
-$binary_type="MIPS" if $binary_type =~ /^mips/;
-$binary_type="PowerPC or cisco 4500" if $binary_type eq "ds101g";
+%target_to_bintype = (
+#       OPTWARE_TARGET => `file binary`
+        "nslu2" => "MSB .* ARM",
+        "fsg3" => "MSB .* ARM",
+        "wl500g" => "MIPS",
+        "ds101" => "MSB .* ARM",
+        "ds101g" => "PowerPC or cisco 4500",
+        "nas100d" => "MSB .* ARM",
+        "mss" => "MIPS",
+        "ddwrt" => "MIPS",
+        "oleg" => "MIPS",
+        "ts72xx" => "LSB .* ARM"
+);
+
+if (exists $target_to_bintype{$binary_type}) {
+	$binary_type = $target_to_bintype{$binary_type};
+}
+else {
+	$binary_type="ARM" if $binary_type =~ /^arm/;
+	$binary_type="MIPS" if $binary_type =~ /^mips/;
+}
 
 $need_help=1 if $#ARGV<0;
 
