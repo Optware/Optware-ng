@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLEARSILVER_SITE=http://www.clearsilver.net/downloads
-CLEARSILVER_VERSION=0.10.3
+CLEARSILVER_VERSION=0.10.4
 CLEARSILVER_SOURCE=clearsilver-$(CLEARSILVER_VERSION).tar.gz
 CLEARSILVER_DIR=clearsilver-$(CLEARSILVER_VERSION)
 CLEARSILVER_UNZIP=zcat
@@ -36,7 +36,7 @@ CLEARSILVER_CONFLICTS=
 #
 # CLEARSILVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CLEARSILVER_IPK_VERSION=3
+CLEARSILVER_IPK_VERSION=1
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
@@ -69,6 +69,7 @@ CLEARSILVER_SOURCE_DIR=$(SOURCE_DIR)/clearsilver
 CLEARSILVER_IPK_DIR=$(BUILD_DIR)/clearsilver-$(CLEARSILVER_VERSION)-ipk
 CLEARSILVER_IPK=$(BUILD_DIR)/clearsilver_$(CLEARSILVER_VERSION)-$(CLEARSILVER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: clearsilver-source clearsilver-unpack clearsilver clearsilver-stage clearsilver-ipk clearsilver-clean clearsilver-dirclean clearsilver-check
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -211,7 +212,7 @@ $(CLEARSILVER_IPK_DIR)/CONTROL/control:
 $(CLEARSILVER_IPK): $(CLEARSILVER_BUILD_DIR)/.built
 	rm -rf $(CLEARSILVER_IPK_DIR) $(BUILD_DIR)/clearsilver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR) DESTDIR=$(CLEARSILVER_IPK_DIR) install
-	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/{cstest,static.cgi}
+	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/{cs,cs_static.cgi,cstest,static.cgi}
 	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
 #	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/
 #	install -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
@@ -241,3 +242,10 @@ clearsilver-clean:
 #
 clearsilver-dirclean:
 	rm -rf $(BUILD_DIR)/$(CLEARSILVER_DIR) $(CLEARSILVER_BUILD_DIR) $(CLEARSILVER_IPK_DIR) $(CLEARSILVER_IPK)
+
+#
+# Some sanity check for the package.
+#
+clearsilver-check: $(CLEARSILVER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLEARSILVER_IPK)
+
