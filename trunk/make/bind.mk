@@ -4,8 +4,8 @@
 #
 #############################################################
 
-BIND_SITE=ftp://ftp.isc.org/isc/bind9/9.3.1/
-BIND_VERSION=9.3.1
+BIND_VERSION=9.3.2
+BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
 BIND_UNZIP=zcat
@@ -15,14 +15,16 @@ BIND_SECTION=net
 BIND_PRIORITY=optional
 BIND_DEPENDS=openssl
 
-BIND_IPK_VERSION=2
+BIND_IPK_VERSION=1
 
-BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
+# BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
 
 BIND_BUILD_DIR=$(BUILD_DIR)/bind
 BIND_SOURCE_DIR=$(SOURCE_DIR)/bind
 BIND_IPK_DIR:=$(BUILD_DIR)/bind-$(BIND_VERSION)-ipk
 BIND_IPK=$(BUILD_DIR)/bind_$(BIND_VERSION)-$(BIND_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: bind-source bind-unpack bind bind-stage bind-ipk bind-clean bind-dirclean bind-check
 
 $(DL_DIR)/$(BIND_SOURCE):
 	$(WGET) -P $(DL_DIR) $(BIND_SITE)/$(BIND_SOURCE)
@@ -33,7 +35,9 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE)
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
 	$(BIND_UNZIP) $(DL_DIR)/$(BIND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(BIND_PATCHES) | patch -d $(BUILD_DIR)/$(BIND_DIR) -p1
+	if test -n "$(BIND_PATCHES)"; then \
+		cat $(BIND_PATCHES) | patch -d $(BUILD_DIR)/$(BIND_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
 	{ cd $(BIND_BUILD_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -102,3 +106,9 @@ bind-clean:
 
 bind-dirclean:
 	rm -rf $(BUILD_DIR)/$(BIND_BUILD_DIR) $(BIND_BUILD_DIR) $(BIND_IPK_DIR) $(BIND_IPK)
+
+#
+# Some sanity check for the package.
+#
+bind-check: $(BIND_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BIND_IPK)
