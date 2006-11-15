@@ -36,7 +36,7 @@ CLEARSILVER_CONFLICTS=
 #
 # CLEARSILVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CLEARSILVER_IPK_VERSION=1
+CLEARSILVER_IPK_VERSION=2
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
@@ -212,7 +212,7 @@ $(CLEARSILVER_IPK_DIR)/CONTROL/control:
 $(CLEARSILVER_IPK): $(CLEARSILVER_BUILD_DIR)/.built
 	rm -rf $(CLEARSILVER_IPK_DIR) $(BUILD_DIR)/clearsilver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR) DESTDIR=$(CLEARSILVER_IPK_DIR) install
-	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/{cs,cs_static.cgi,cstest,static.cgi}
+	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
 #	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/
 #	install -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
