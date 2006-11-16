@@ -5,7 +5,7 @@
 ###########################################################
 
 MONIT_SITE=http://www.tildeslash.com/monit/dist/
-MONIT_VERSION=4.8.1
+MONIT_VERSION=4.8.2
 MONIT_SOURCE=monit-$(MONIT_VERSION).tar.gz
 MONIT_DIR=monit-$(MONIT_VERSION)
 MONIT_UNZIP=zcat
@@ -54,6 +54,8 @@ MONIT_BUILD_DIR=$(BUILD_DIR)/monit
 MONIT_SOURCE_DIR=$(SOURCE_DIR)/monit
 MONIT_IPK_DIR=$(BUILD_DIR)/monit-$(MONIT_VERSION)-ipk
 MONIT_IPK=$(BUILD_DIR)/monit_$(MONIT_VERSION)-$(MONIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: monit-source monit-unpack monit monit-stage monit-ipk monit-clean monit-dirclean monit-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -180,3 +182,9 @@ monit-clean:
 #
 monit-dirclean:
 	rm -rf $(BUILD_DIR)/$(MONIT_DIR) $(MONIT_BUILD_DIR) $(MONIT_IPK_DIR) $(MONIT_IPK)
+
+#
+# Some sanity check for the package.
+#
+monit-check: $(MONIT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MONIT_IPK)
