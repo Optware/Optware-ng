@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.4.12
+NGINX_VERSION=0.4.13
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -249,6 +249,7 @@ nginx-clean:
 nginx-dirclean:
 	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR) $(NGINX_IPK_DIR) $(NGINX_IPK)
 
+#
 # Some sanity check for the package.
 #
 nginx-check: $(NGINX_IPK)
