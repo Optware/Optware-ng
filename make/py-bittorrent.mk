@@ -42,7 +42,7 @@ PY-BITTORRENT_CONFLICTS=
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=2
+PY-BITTORRENT_IPK_VERSION=3
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
@@ -52,7 +52,9 @@ PY-BITTORRENT_IPK_VERSION=2
 # PY-BITTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PY-BITTORRENT_PATCHES=$(PY-BITTORRENT_SOURCE_DIR)/configure.patch
+PY-BITTORRENT_PATCHES=\
+$(PY-BITTORRENT_SOURCE_DIR)/bittorrent-curses.py.patch \
+$(PY-BITTORRENT_SOURCE_DIR)/BitTorrent-platform.py.patch \
 
 #
 # If the compilation of the package requires additional
@@ -78,6 +80,8 @@ PY24-BITTORRENT_IPK=$(BUILD_DIR)/py-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BIT
 
 PY25-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py25-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
 PY25-BITTORRENT_IPK=$(BUILD_DIR)/py25-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-bittorrent-source py-bittorrent-unpack py-bittorrent py-bittorrent-stage py-bittorrent-ipk py-bittorrent-clean py-bittorrent-dirclean py-bittorrent-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -113,14 +117,18 @@ $(PY-BITTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BITTORRENT_SOURCE) $(PY-B
 	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)
 	mkdir -p $(PY-BITTORRENT_BUILD_DIR)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
+	if test -n "$(PY-BITTORRENT_PATCHES)"; then \
+		cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)/2.4
 	(cd $(PY-BITTORRENT_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") > setup.cfg \
 	)
 	$(PY-BITTORRENT_UNZIP) $(DL_DIR)/$(PY-BITTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p1
+	if test -n "$(PY-BITTORRENT_PATCHES)"; then \
+		cat $(PY-BITTORRENT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BITTORRENT_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR)/2.5
 	(cd $(PY-BITTORRENT_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; \
@@ -242,3 +250,8 @@ py-bittorrent-dirclean:
 	$(PY24-BITTORRENT_IPK_DIR) $(PY24-BITTORRENT_IPK) \
 	$(PY25-BITTORRENT_IPK_DIR) $(PY25-BITTORRENT_IPK) \
 
+#
+# Some sanity check for the package.
+#
+py-bittorrent-check: $(PY-BITTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
