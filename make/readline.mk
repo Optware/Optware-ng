@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 READLINE_SITE=ftp://ftp.cwru.edu/pub/bash
-READLINE_VERSION=5.1
+READLINE_VERSION=5.2
 READLINE_SOURCE=readline-$(READLINE_VERSION).tar.gz
 READLINE_DIR=readline-$(READLINE_VERSION)
 READLINE_UNZIP=zcat
-READLINE_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+READLINE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 READLINE_DESCRIPTION=The GNU Readline library provides a set of functions for use by applications that allow users to edit command lines as they are typed in
 READLINE_SECTION=misc
 READLINE_PRIORITY=optional
@@ -73,6 +73,8 @@ READLINE_SOURCE_DIR=$(SOURCE_DIR)/readline
 READLINE_IPK_DIR=$(BUILD_DIR)/readline-$(READLINE_VERSION)-ipk
 READLINE_IPK=$(BUILD_DIR)/readline_$(READLINE_VERSION)-$(READLINE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: readline-source readline-unpack readline readline-stage readline-ipk readline-clean readline-dirclean readline-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -103,10 +105,10 @@ readline-source: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(READLINE_DIR) $(READLINE_BUILD_DIR)
 	$(READLINE_UNZIP) $(DL_DIR)/$(READLINE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(READLINE_PATCHES) | patch -d $(BUILD_DIR)/$(READLINE_DIR) -p1
+#	cat $(READLINE_PATCHES) | patch -d $(BUILD_DIR)/$(READLINE_DIR) -p1
 	mv $(BUILD_DIR)/$(READLINE_DIR) $(READLINE_BUILD_DIR)
 	(cd $(READLINE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -179,7 +181,11 @@ $(READLINE_IPK_DIR)/CONTROL/control:
 $(READLINE_IPK): $(READLINE_BUILD_DIR)/.built
 	rm -rf $(READLINE_IPK_DIR) $(BUILD_DIR)/readline_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(READLINE_IPK_DIR) install
-	$(STRIP_COMMAND) $(READLINE_IPK_DIR)/opt/lib/*.so
+	(cd $(READLINE_IPK_DIR)/opt/lib/ ; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
 	$(MAKE) $(READLINE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(READLINE_IPK_DIR)
 
@@ -200,3 +206,9 @@ readline-clean:
 #
 readline-dirclean:
 	rm -rf $(BUILD_DIR)/$(READLINE_DIR) $(READLINE_BUILD_DIR) $(READLINE_IPK_DIR) $(READLINE_IPK)
+
+#
+# Some sanity check for the package.
+#
+readline-check: $(READLINE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(READLINE_IPK)
