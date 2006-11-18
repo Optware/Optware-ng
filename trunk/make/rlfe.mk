@@ -129,6 +129,9 @@ $(RLFE_BUILD_DIR)/.configured: $(DL_DIR)/$(RLFE_SOURCE) $(RLFE_PATCHES) make/rlf
 		--disable-nls \
 		--disable-static \
 	)
+ifeq ($(LIBC_STYLE), uclibc)
+	sed -ie '/stropts.h/d' $(RLFE_BUILD_DIR)/examples/rlfe/pty.c
+endif
 #	$(PATCH_LIBTOOL) $(RLFE_BUILD_DIR)/libtool
 	touch $(RLFE_BUILD_DIR)/.configured
 

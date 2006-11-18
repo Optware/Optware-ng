@@ -232,7 +232,7 @@ WL500G_BROKEN_PACKAGES = \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap pango postfix py-mssql \
-	 qemu qemu-libc-i386 quickie rlfe rtorrent \
+	 qemu qemu-libc-i386 quickie rtorrent \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
@@ -248,7 +248,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango procps \
-	 qemu qemu-libc-i386 quickie rlfe rtorrent sdl ser sm \
+	 qemu qemu-libc-i386 quickie rtorrent sdl ser sm \
 	 snownews transcode vte wxbase xauth xaw xchat xcursor xfixes xft \
 	 xmu xrender xt xterm
 
