@@ -36,7 +36,7 @@ RLFE_CONFLICTS=
 #
 # RLFE_IPK_VERSION should be incremented when the ipk changes.
 #
-RLFE_IPK_VERSION=1
+RLFE_IPK_VERSION=2
 
 #
 # RLFE_CONFFILES should be a list of user-editable files
@@ -46,7 +46,10 @@ RLFE_IPK_VERSION=1
 # RLFE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RLFE_PATCHES=$(RLFE_SOURCE_DIR)/configure.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+RLFE_PATCHES=$(RLFE_SOURCE_DIR)/configure.in.patch
+endif
+
 
 #
 # If the compilation of the package requires additional
@@ -107,14 +110,14 @@ $(RLFE_BUILD_DIR)/.configured: $(DL_DIR)/$(RLFE_SOURCE) $(RLFE_PATCHES) make/rlf
 	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(RLFE_DIR) $(RLFE_BUILD_DIR)
 	$(RLFE_UNZIP) $(DL_DIR)/$(RLFE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(RLFE_PATCHES)" ; \
-		then cat $(RLFE_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(RLFE_DIR) -p0 ; \
+	if test -n "$(RLFE_PATCHES)"; then \
+		cat $(RLFE_PATCHES) | patch -bd $(BUILD_DIR)/$(RLFE_DIR)/examples/rlfe -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(RLFE_DIR)" != "$(RLFE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RLFE_DIR) $(RLFE_BUILD_DIR) ; \
 	fi
 	(cd $(RLFE_BUILD_DIR)/examples/rlfe; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RLFE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RLFE_LDFLAGS)" \

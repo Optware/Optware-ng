@@ -163,7 +163,7 @@ COMMON_CROSS_PACKAGES = \
 	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie \
-	rcs rdate readline recode recordext renderext rrdtool \
+	rcs rdate readline recode recordext renderext rlfe rrdtool \
 	rsync rtorrent ruby rubygems \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc siproxd sm snownews \
@@ -190,7 +190,6 @@ COMMON_CROSS_PACKAGES = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
-# rlfe needs some tweak to cross compile, build native first
 # rsnapshot depends on perl
 # stow depends on perl
 COMMON_NATIVE_PACKAGES = \
@@ -203,7 +202,6 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         nginx \
         ocaml \
-	rlfe \
 	rsnapshot \
 	stow \
 	unison \
