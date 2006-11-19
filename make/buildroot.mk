@@ -51,7 +51,11 @@ BUILDROOT_BINUTILS ?= 2.16.1
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
-BUILDROOT_SVN_REV=15597
+ifeq (($OPTWARE_TARGET),ts101)
+	BUILDROOT_SVN_REV=9690
+else
+	BUILDROOT_SVN_REV=15597
+endif
 BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
 BUILDROOT_DIR=buildroot
 BUILDROOT_UNZIP=zcat
@@ -91,8 +95,18 @@ HEADERS_DDWRT=LINUX_HEADERS_SOURCE=$(HEADERS_DDWRT_SOURCE) \
 $(DL_DIR)/$(HEADERS_DDWRT_SOURCE):
 	$(WGET) -P $(DL_DIR) $(HEADERS_DDWRT_SITE)/$(HEADERS_DDWRT_SOURCE)
 
+# TS-101 firmware for the QNap TS-101
+HEADERS_TS101_SITE=http://nas.kynisk.com/ts101
+HEADERS_TS101_SOURCE=linux-libc-headers-TS101.tar.bz2
+HEADERS_TS101_UNPACK_DIR=linux
+HEADERS_TS101=LINUX_HEADERS_SOURCE=$(HEADERS_TS101_SOURCE) \
+ LINUX_HEADERS_UNPACK_DIR=$(BUILDROOT_HEADERS_DIR)/$(HEADERS_TS101_UNPACK_DIR)
+$(DL_DIR)/$(HEADERS_TS101_SOURCE):
+	$(WGET) -P $(DL_DIR) $(HEADERS_TS101_SITE)/$(HEADERS_TS101_SOURCE)
+
 BUILDROOT_HEADERS=$(DL_DIR)/$(HEADERS_OLEG_SOURCE) \
-		$(DL_DIR)/$(HEADERS_DDWRT_SOURCE)
+		$(DL_DIR)/$(HEADERS_DDWRT_SOURCE) \
+		$(DL_DIR)/$(HEADERS_TS101_SOURCE)
 
 # Select appropriate headers or leave empty for default
 BUILDROOT_CUSTOM_HEADERS ?=
@@ -107,11 +121,15 @@ buildroot-headers:
 # BUILDROOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(OPTWARE_TARGET),ts101)
+BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk-ts101.patch \
+		$(BUILDROOT_SOURCE_DIR)/uClibc.config-ts101.patch \
+else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
 		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
 		$(BUILDROOT_SOURCE_DIR)/uClibc.config-locale.patch
 #		$(BUILDROOT_SOURCE_DIR)/uClibc.config.patch 
-
+endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -176,9 +194,15 @@ buildroot-source uclibc-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHE
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
+ifeq ($(OPTWARE_TARGET),ts101)
+BUILDROOT_CONFIG_FILE=buildroot.config-ts101
+else
+BUILDROOT_CONFIG_FILE=buildroot.config
+endif
+
 $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
-		$(BUILDROOT_SOURCE_DIR)/buildroot.config
+		$(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR)
 	$(BUILDROOT_UNZIP) $(DL_DIR)/$(BUILDROOT_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
@@ -189,7 +213,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	if test "$(TOOL_BUILD_DIR)/$(BUILDROOT_DIR)" != "$(BUILDROOT_BUILD_DIR)" ; \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
-	cp $(BUILDROOT_SOURCE_DIR)/buildroot.config $(BUILDROOT_BUILD_DIR)/.config
+	cp $(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) $(BUILDROOT_BUILD_DIR)/.config
 #	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
 #	change TARGET_ARCH in .config
 	sed  -i -e 's|.*\(BR2_[a-z0-9_]\{2,\}\).*|# \1 is not set|' \
