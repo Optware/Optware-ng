@@ -128,8 +128,8 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract ccxstream chillispot coreutils cpio cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
-	clips cogito ctags ctcs ctorrent cups cvs cyrus-sasl \
-	cyrus-imapd \
+	clips cogito connect ctags ctcs ctorrent cups cvs \
+	cyrus-imapd cyrus-sasl \
 	dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki \
 	dovecot dropbear dspam dtach \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
