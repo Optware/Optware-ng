@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BASH_SITE=http://ftp.gnu.org/gnu/bash/
-BASH_VERSION=3.1
+BASH_VERSION=3.2
 BASH_SOURCE=bash-$(BASH_VERSION).tar.gz
 BASH_DIR=bash-$(BASH_VERSION)
 BASH_UNZIP=zcat
@@ -42,7 +42,7 @@ BASH_IPK_VERSION=1
 # BASH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.1-patches/bash31-*
+#BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.1-patches/bash31-*
 
 #
 # If the compilation of the package requires additional
@@ -71,6 +71,8 @@ BASH_IPK=$(BUILD_DIR)/bash_$(BASH_VERSION)-$(BASH_IPK_VERSION)_$(TARGET_ARCH).ip
 #
 $(DL_DIR)/$(BASH_SOURCE):
 	$(WGET) -P $(DL_DIR) $(BASH_SITE)/$(BASH_SOURCE)
+
+.PHONY: bash-source bash-unpack bash bash-stage bash-ipk bash-clean bash-dirclean bash-check
 
 #
 # The source code depends on it existing within the download directory.
@@ -190,3 +192,9 @@ bash-clean:
 
 bash-dirclean:
 	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR) $(BASH_IPK_DIR) $(BASH_IPK)
+
+#
+# Some sanity check for the package.
+#
+bash-check: $(BASH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BASH_IPK)
