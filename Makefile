@@ -29,7 +29,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	mp3blaster \
 
 
 # Add new native-only packages here
@@ -156,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi \
-	monotone mpack mpage mrtg mtools mtr multitail mutt \
+	monotone mp3blaster mpack mpage mrtg mtools mtr multitail mutt \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
 	netcat net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
