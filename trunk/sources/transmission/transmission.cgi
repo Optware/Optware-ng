@@ -104,7 +104,7 @@ _stop_torrent ()
     if [ -f  "${INFO}"  ] ; then
 	. "${INFO}"
 	[ -z "${ENDTIME}" ] && ENDTIME=`date +"${DATE_FORMAT}"`
-	STATUS=""
+	STATUS=`echo "${STATUS}"|sed -e 's/Progress: \([0-9\.]\{2,6\} %\).*/\1/p;d'`
 	_write_info
 	_update_active
     fi
