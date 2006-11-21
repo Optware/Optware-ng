@@ -16,12 +16,14 @@ STOW_PRIORITY=optional
 STOW_DEPENDS=perl
 STOW_CONFLICTS=
 
-STOW_IPK_VERSION=1
+STOW_IPK_VERSION=2
 
 STOW_BUILD_DIR=$(BUILD_DIR)/stow
 STOW_SOURCE_DIR=$(SOURCE_DIR)/stow
 STOW_IPK_DIR=$(BUILD_DIR)/stow-$(STOW_VERSION)-ipk
 STOW_IPK=$(BUILD_DIR)/stow_$(STOW_VERSION)-$(STOW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: stow-source stow-unpack stow stow-stage stow-ipk stow-clean stow-dirclean stow-check
 
 $(DL_DIR)/$(STOW_SOURCE):
 	$(WGET) -P $(DL_DIR) $(STOW_SITE)/$(STOW_SOURCE)
@@ -84,6 +86,7 @@ $(STOW_IPK): $(STOW_BUILD_DIR)/.built
 	install -d $(STOW_IPK_DIR)/opt/man/man8
 	install -d $(STOW_IPK_DIR)/opt/local/stow
 	$(MAKE) -C $(STOW_BUILD_DIR) DESTDIR=$(STOW_IPK_DIR) install
+	rm -f $(STOW_IPK_DIR)/opt/info/dir.old
 	$(MAKE) $(STOW_IPK_DIR)/CONTROL/control
 #	install -m 755 $(STOW_SOURCE_DIR)/postinst $(STOW_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(STOW_SOURCE_DIR)/prerm $(STOW_IPK_DIR)/CONTROL/prerm
@@ -97,3 +100,6 @@ stow-clean:
 
 stow-dirclean:
 	rm -rf $(BUILD_DIR)/$(STOW_DIR) $(STOW_BUILD_DIR) $(STOW_IPK_DIR) $(STOW_IPK)
+
+stow-check: $(STOW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STOW_IPK)

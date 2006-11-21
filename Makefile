@@ -170,7 +170,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 \
-	sqsh squeak squid strace stunnel streamripper sudo swi-prolog svn \
+	sqsh squeak squid stow strace stunnel streamripper sudo swi-prolog svn \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
@@ -192,7 +192,6 @@ COMMON_CROSS_PACKAGES = \
 # nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # rsnapshot depends on perl
-# stow depends on perl
 COMMON_NATIVE_PACKAGES = \
 	bison \
 	cdrtools \
@@ -203,7 +202,6 @@ COMMON_NATIVE_PACKAGES = \
         nginx \
         ocaml \
 	rsnapshot \
-	stow \
 	unison \
 
 # libiconv - has been made obsolete by gconv-modules
