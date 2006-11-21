@@ -28,7 +28,7 @@
 #
 GNUTLS_SITE=http://josefsson.org/gnutls/releases
 # ftp://ftp.gnutls.org/pub/gnutls
-GNUTLS_VERSION=1.4.4
+GNUTLS_VERSION=1.6.0
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
@@ -75,6 +75,8 @@ GNUTLS_BUILD_DIR=$(BUILD_DIR)/gnutls
 GNUTLS_SOURCE_DIR=$(SOURCE_DIR)/gnutls
 GNUTLS_IPK_DIR=$(BUILD_DIR)/gnutls-$(GNUTLS_VERSION)-ipk
 GNUTLS_IPK=$(BUILD_DIR)/gnutls_$(GNUTLS_VERSION)-$(GNUTLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: gnutls-source gnutls-unpack gnutls gnutls-stage gnutls-ipk gnutls-clean gnutls-dirclean gnutls-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -216,3 +218,9 @@ gnutls-clean:
 #
 gnutls-dirclean:
 	rm -rf $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR) $(GNUTLS_IPK_DIR) $(GNUTLS_IPK)
+
+#
+# Some sanity check for the package.
+#
+gnutls-check: $(GNUTLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUTLS_IPK)
