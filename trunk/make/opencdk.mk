@@ -43,7 +43,7 @@ OPENCDK_CONFLICTS=
 #
 # OPENCDK_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENCDK_IPK_VERSION=1
+OPENCDK_IPK_VERSION=2
 
 #
 # OPENCDK_CONFFILES should be a list of user-editable files
@@ -75,6 +75,8 @@ OPENCDK_BUILD_DIR=$(BUILD_DIR)/opencdk
 OPENCDK_SOURCE_DIR=$(SOURCE_DIR)/opencdk
 OPENCDK_IPK_DIR=$(BUILD_DIR)/opencdk-$(OPENCDK_VERSION)-ipk
 OPENCDK_IPK=$(BUILD_DIR)/opencdk_$(OPENCDK_VERSION)-$(OPENCDK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: opencdk-source opencdk-unpack opencdk opencdk-stage opencdk-ipk opencdk-clean opencdk-dirclean opencdk-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -214,3 +216,9 @@ opencdk-clean:
 #
 opencdk-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPENCDK_DIR) $(OPENCDK_BUILD_DIR) $(OPENCDK_IPK_DIR) $(OPENCDK_IPK)
+
+#
+# Some sanity check for the package.
+#
+opencdk-check: $(OPENCDK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENCDK_IPK)
