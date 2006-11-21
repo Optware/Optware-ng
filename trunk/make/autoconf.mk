@@ -5,7 +5,7 @@
 ###########################################################
 
 AUTOCONF_SITE=http://ftp.gnu.org/gnu/autoconf
-AUTOCONF_VERSION=2.59
+AUTOCONF_VERSION=2.60
 AUTOCONF_SOURCE=autoconf-$(AUTOCONF_VERSION).tar.bz2
 AUTOCONF_DIR=autoconf-$(AUTOCONF_VERSION)
 AUTOCONF_UNZIP=bzcat
@@ -16,12 +16,14 @@ AUTOCONF_PRIORITY=optional
 AUTOCONF_DEPENDS=make, m4
 AUTOCONF_CONFLICTS=
 
-AUTOCONF_IPK_VERSION=2
+AUTOCONF_IPK_VERSION=1
 
 AUTOCONF_BUILD_DIR=$(BUILD_DIR)/autoconf
 AUTOCONF_SOURCE_DIR=$(SOURCE_DIR)/autoconf
 AUTOCONF_IPK_DIR=$(BUILD_DIR)/autoconf-$(AUTOCONF_VERSION)-ipk
 AUTOCONF_IPK=$(BUILD_DIR)/autoconf_$(AUTOCONF_VERSION)-$(AUTOCONF_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: autoconf-source autoconf-unpack autoconf autoconf-stage autoconf-ipk autoconf-clean autoconf-dirclean autoconf-check
 
 $(DL_DIR)/$(AUTOCONF_SOURCE):
 	$(WGET) -P $(DL_DIR) $(AUTOCONF_SITE)/$(AUTOCONF_SOURCE)
@@ -86,6 +88,7 @@ $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
 	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autotest
 	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/m4sugar
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(AUTOCONF_IPK_DIR) install
+	sed -i -e 's|/usr/bin/m4|/opt/bin/m4|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOCONF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOCONF_IPK_DIR)
 
@@ -96,3 +99,6 @@ autoconf-clean:
 
 autoconf-dirclean:
 	rm -rf $(BUILD_DIR)/$(AUTOCONF_DIR) $(AUTOCONF_BUILD_DIR) $(AUTOCONF_IPK_DIR) $(AUTOCONF_IPK)
+
+autoconf-check: $(AUTOCONF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AUTOCONF_IPK)
