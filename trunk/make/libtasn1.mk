@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://josefsson.org/gnutls/releases/libtasn1
-LIBTASN1_VERSION=0.3.6
+LIBTASN1_VERSION=0.3.8
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -74,6 +74,8 @@ LIBTASN1_BUILD_DIR=$(BUILD_DIR)/libtasn1
 LIBTASN1_SOURCE_DIR=$(SOURCE_DIR)/libtasn1
 LIBTASN1_IPK_DIR=$(BUILD_DIR)/libtasn1-$(LIBTASN1_VERSION)-ipk
 LIBTASN1_IPK=$(BUILD_DIR)/libtasn1_$(LIBTASN1_VERSION)-$(LIBTASN1_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libtasn1-source libtasn1-unpack libtasn1 libtasn1-stage libtasn1-ipk libtasn1-clean libtasn1-dirclean libtasn1-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -213,3 +215,9 @@ libtasn1-clean:
 #
 libtasn1-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBTASN1_DIR) $(LIBTASN1_BUILD_DIR) $(LIBTASN1_IPK_DIR) $(LIBTASN1_IPK)
+
+#
+# Some sanity check for the package.
+#
+libtasn1-check: $(LIBTASN1_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBTASN1_IPK)
