@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
-PY-BITTORRENT_VERSION=4.26.0
+PY-BITTORRENT_VERSION=5.0.1
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -42,7 +42,7 @@ PY-BITTORRENT_CONFLICTS=
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=3
+PY-BITTORRENT_IPK_VERSION=1
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
@@ -53,7 +53,6 @@ PY-BITTORRENT_IPK_VERSION=3
 # which they should be applied to the source code.
 #
 PY-BITTORRENT_PATCHES=\
-$(PY-BITTORRENT_SOURCE_DIR)/bittorrent-curses.py.patch \
 $(PY-BITTORRENT_SOURCE_DIR)/BitTorrent-platform.py.patch \
 
 #
@@ -253,5 +252,5 @@ py-bittorrent-dirclean:
 #
 # Some sanity check for the package.
 #
-py-bittorrent-check: $(PY-BITTORRENT_IPK)
+py-bittorrent-check: $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
