@@ -123,7 +123,7 @@ buildroot-headers:
 #
 ifeq ($(OPTWARE_TARGET),ts101)
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk-ts101.patch \
-		$(BUILDROOT_SOURCE_DIR)/uClibc.config-ts101.patch \
+		$(BUILDROOT_SOURCE_DIR)/uClibc.config-ts101.patch
 else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
 		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
