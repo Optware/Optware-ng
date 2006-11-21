@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 SED_SITE=http://ftp.gnu.org/gnu/sed
-SED_VERSION=4.1.4
+SED_VERSION=4.1.5
 SED_SOURCE=sed-$(SED_VERSION).tar.gz
 SED_DIR=sed-$(SED_VERSION)
 SED_UNZIP=zcat
@@ -30,7 +30,7 @@ SED_CONFLICTS=
 #
 # SED_IPK_VERSION should be incremented when the ipk changes.
 #
-SED_IPK_VERSION=2
+SED_IPK_VERSION=1
 
 #
 # SED_CONFFILES should be a list of user-editable files
@@ -62,6 +62,8 @@ SED_BUILD_DIR=$(BUILD_DIR)/sed
 SED_SOURCE_DIR=$(SOURCE_DIR)/sed
 SED_IPK_DIR=$(BUILD_DIR)/sed-$(SED_VERSION)-ipk
 SED_IPK=$(BUILD_DIR)/sed_$(SED_VERSION)-$(SED_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: sed-source sed-unpack sed sed-stage sed-ipk sed-clean sed-dirclean sed-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -138,7 +140,7 @@ sed-stage: $(SED_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
-# necessary to create a seperate control file under sources/<foo>
+# necessary to create a seperate control file under sources/sed
 #
 $(SED_IPK_DIR)/CONTROL/control:
 	@install -d $(SED_IPK_DIR)/CONTROL
@@ -190,3 +192,9 @@ sed-clean:
 #
 sed-dirclean:
 	rm -rf $(BUILD_DIR)/$(SED_DIR) $(SED_BUILD_DIR) $(SED_IPK_DIR) $(SED_IPK)
+
+#
+# Some sanity check for the package.
+#
+sed-check: $(SED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SED_IPK)
