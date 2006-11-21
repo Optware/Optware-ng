@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.6.4
+GETMAIL_VERSION=4.6.5
 GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 GETMAIL_UNZIP=zcat
@@ -69,6 +69,8 @@ GETMAIL_BUILD_DIR=$(BUILD_DIR)/getmail
 GETMAIL_SOURCE_DIR=$(SOURCE_DIR)/getmail
 GETMAIL_IPK_DIR=$(BUILD_DIR)/getmail-$(GETMAIL_VERSION)-ipk
 GETMAIL_IPK=$(BUILD_DIR)/getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: getmail-source getmail-unpack getmail getmail-stage getmail-ipk getmail-clean getmail-dirclean getmail-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -202,3 +204,9 @@ getmail-clean:
 #
 getmail-dirclean:
 	rm -rf $(BUILD_DIR)/$(GETMAIL_DIR) $(GETMAIL_BUILD_DIR) $(GETMAIL_IPK_DIR) $(GETMAIL_IPK)
+
+#
+# Some sanity check for the package.
+#
+getmail-check: $(GETMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GETMAIL_IPK)
