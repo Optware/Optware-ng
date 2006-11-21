@@ -107,24 +107,37 @@ that time sync is retrieved with ntp or RTC.
 Visit http://transmission.m0k.org/forum/viewtopic.php?p=4871#4871 for more
 info.
 
-Troubleshooting daemon
+Troubleshooting daemon & CGI interface
+
+Very helpful command for debugging shell script is "sh -x
+/opt/share/www/cgi-bin/transmission.cgi" This will print out every line and
+its content.
 
 I suggest to install procps package and then use
 /opt/bin/ps axf to see output like this:
 
-9179 ?        SNs    0:01 transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
-9180 ?        SN     0:00  \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  ...
-9181 ?        SN     0:00      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
-9184 ?        SN     0:03      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  .
-9185 ?        RN    17:43      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/..
-9186 ?        RN     0:38      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var..
-9187 ?        RN     0:40      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var/run/transmission.pid /tmp
+9179 ? SNs 0:01 transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
+9180 ? SN  0:00  \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  ...
+9181 ? SN  0:00      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
+9184 ? SN  0:03      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  .
+9185 ? RN 17:43      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/..
+9186 ? RN  0:38      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var..
+9187 ? RN  0:40      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var/run/transmission.pid /tmp
 
-Master thread in above example has PID=9179
-Sending "kill -USR1 9197" must write .status files. This should also be done by CGI.
+Master thread in above example has PID=9179 Sending "kill -USR1 9197" must
+write .status files. This should also be done by CGI.
 
-There is also -USR2 signal which writes active torrents into syslog. But syslog must be running 
-also for getting cumulative statistics! 
+There is also -USR2 signal which writes active torrents into syslog. But
+syslog must be running also for getting cumulative statistics!
+
+.status file is sourced. Filenames should not contain non ASCII characters
+and quote . Report that line 4 contains unterminated quote could mean that
+problem occured before line 4 as .status contains only 3 lines. This could
+also be a problem with SMB filesystem or maybe some network flush/locking
+problem with files.
+
+When one press "Update" button. Signal -USR1 is sent to daemon and after a
+second of waiting for it, all active .status files are sourced and printed.
 
 Known bugs:
 * There is a problem with fork and pthreads in uclibc 0.9.19
@@ -146,5 +159,9 @@ Known bugs:
 
   See http://wl500g.info/showpost.php?p=34579&postcount=68 how to upgrade
   to alternative "Oleg"  package feed.
+
+* Gnuplot log shows transfer in UTC and not in local timezone. See
+  http://wl500g.info/showpost.php?p=40860&postcount=16 how to replace
+  sed script with awk and adding time shift.
   
 oleo
