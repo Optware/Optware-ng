@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 M4_SITE=http://ftp.gnu.org/pub/gnu/m4/
-M4_VERSION=1.4.1
+M4_VERSION=1.4.7
 M4_SOURCE=m4-$(M4_VERSION).tar.gz
 M4_DIR=m4-$(M4_VERSION)
 M4_UNZIP=zcat
@@ -34,7 +34,7 @@ M4_CONFLICTS=
 #
 # M4_IPK_VERSION should be incremented when the ipk changes.
 #
-M4_IPK_VERSION=2
+M4_IPK_VERSION=1
 
 #
 # M4_PATCHES should list any patches, in the the order in
@@ -62,6 +62,8 @@ M4_BUILD_DIR=$(BUILD_DIR)/m4
 M4_SOURCE_DIR=$(SOURCE_DIR)/m4
 M4_IPK_DIR=$(BUILD_DIR)/m4-$(M4_VERSION)-ipk
 M4_IPK=$(BUILD_DIR)/m4_$(M4_VERSION)-$(M4_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: m4-source m4-unpack m4 m4-stage m4-ipk m4-clean m4-dirclean m4-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -185,3 +187,9 @@ m4-clean:
 #
 m4-dirclean:
 	rm -rf $(BUILD_DIR)/$(M4_DIR) $(M4_BUILD_DIR) $(M4_IPK_DIR) $(M4_IPK)
+
+#
+# Some sanity check for the package.
+#
+m4-check: $(M4_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(M4_IPK)
