@@ -185,7 +185,6 @@ COMMON_CROSS_PACKAGES = \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zip zlib zoo \
 
-# autoconf compiles in a path to m4, and also wants to run it at that path.
 # bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
@@ -195,7 +194,6 @@ COMMON_CROSS_PACKAGES = \
 # rsnapshot depends on perl
 # stow depends on perl
 COMMON_NATIVE_PACKAGES = \
-	autoconf \
 	bison \
 	cdrtools \
 	emacs \
