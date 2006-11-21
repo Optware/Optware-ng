@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.3.7
+SQLITE_VERSION=3.3.8
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
-SQLITE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+SQLITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQLITE_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
 SQLITE_SECTION=misc
 SQLITE_PRIORITY=optional
@@ -73,6 +73,8 @@ SQLITE_BUILD_DIR=$(BUILD_DIR)/sqlite
 SQLITE_SOURCE_DIR=$(SOURCE_DIR)/sqlite
 SQLITE_IPK_DIR=$(BUILD_DIR)/sqlite-$(SQLITE_VERSION)-ipk
 SQLITE_IPK=$(BUILD_DIR)/sqlite_$(SQLITE_VERSION)-$(SQLITE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: sqlite-source sqlite-unpack sqlite sqlite-stage sqlite-ipk sqlite-clean sqlite-dirclean sqlite-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -210,3 +212,9 @@ sqlite-clean:
 #
 sqlite-dirclean:
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR) $(SQLITE_IPK_DIR) $(SQLITE_IPK)
+
+#
+# Some sanity check for the package.
+#
+sqlite-check: $(SQLITE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQLITE_IPK)
