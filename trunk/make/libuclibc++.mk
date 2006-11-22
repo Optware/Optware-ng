@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=5
+LIBUCLIBC++_IPK_VERSION=6
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -167,7 +167,8 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built
+$(LIBUCLIBC++_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.staged \
+				$(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -f $(LIBUCLIBC++_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) \
 		DESTDIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION) install
