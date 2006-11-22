@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNITS_SITE=ftp://ftp.gnu.org/gnu/units/
-UNITS_VERSION=1.85
+UNITS_VERSION=1.86
 UNITS_SOURCE=units-$(UNITS_VERSION).tar.gz
 UNITS_DIR=units-$(UNITS_VERSION)
 UNITS_UNZIP=zcat
-UNITS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+UNITS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UNITS_DESCRIPTION=GNU units converts between different systems of units.
 UNITS_SECTION=misc
 UNITS_PRIORITY=optional
@@ -50,7 +50,7 @@ UNITS_IPK_VERSION=1
 # UNITS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UNITS_PATCHES=$(UNITS_SOURCE_DIR)/Makefile.in.patch
+#UNITS_PATCHES=$(UNITS_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -72,6 +72,8 @@ UNITS_BUILD_DIR=$(BUILD_DIR)/units
 UNITS_SOURCE_DIR=$(SOURCE_DIR)/units
 UNITS_IPK_DIR=$(BUILD_DIR)/units-$(UNITS_VERSION)-ipk
 UNITS_IPK=$(BUILD_DIR)/units_$(UNITS_VERSION)-$(UNITS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: units-source units-unpack units units-stage units-ipk units-clean units-dirclean units-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,11 +104,13 @@ units-source: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES)
+$(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/units.mk
 	$(MAKE) readline-stage
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
 	$(UNITS_UNZIP) $(DL_DIR)/$(UNITS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p1
+	if test -n "$(UNITS_PATCHES)"; \
+		then cat $(UNITS_PATCHES) | patch -d $(BUILD_DIR)/$(UNITS_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR)
 	(cd $(UNITS_BUILD_DIR); \
 		autoconf; \
@@ -178,8 +182,8 @@ $(UNITS_IPK_DIR)/CONTROL/control:
 #
 $(UNITS_IPK): $(UNITS_BUILD_DIR)/.built
 	rm -rf $(UNITS_IPK_DIR) $(BUILD_DIR)/units_*_$(TARGET_ARCH).ipk
-	STRIP=$(TARGET_STRIP) \
-	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(UNITS_IPK_DIR) prefix=$(UNITS_IPK_DIR)/opt install-strip
+	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(UNITS_IPK_DIR) install
+	$(STRIP_COMMAND) $(UNITS_IPK_DIR)/opt/bin/units
 #	install -d $(UNITS_IPK_DIR)/opt/etc/
 #	install -m 644 $(UNITS_SOURCE_DIR)/units.conf $(UNITS_IPK_DIR)/opt/etc/units.conf
 #	install -d $(UNITS_IPK_DIR)/opt/etc/init.d
@@ -207,3 +211,9 @@ units-clean:
 #
 units-dirclean:
 	rm -rf $(BUILD_DIR)/$(UNITS_DIR) $(UNITS_BUILD_DIR) $(UNITS_IPK_DIR) $(UNITS_IPK)
+
+#
+# Some sanity check for the package.
+#
+units-check: $(UNITS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNITS_IPK)
