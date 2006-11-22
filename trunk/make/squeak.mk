@@ -23,12 +23,12 @@
 #
 SQUEAK_SITE=http://www.squeakvm.org/unix/release/
 SQUEAK_VERSION_MAJOR_MINOR=3.9
-SQUEAK_VERSION=3.9.7
-SQUEAK_VM_VERSION=$(SQUEAK_VERSION_MAJOR_MINOR)-7
+SQUEAK_VERSION=3.9.9
+SQUEAK_VM_VERSION=$(SQUEAK_VERSION_MAJOR_MINOR)-9
 SQUEAK_VM_SRC=Squeak-$(SQUEAK_VM_VERSION).src.tar.gz
 SQUEAK_DIR=Squeak-$(SQUEAK_VM_VERSION)
 SQUEAK_UNZIP=zcat
-SQUEAK_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+SQUEAK_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 SQUEAK_DESCRIPTION=Squeak is a full-featured implementation of the Smalltalk programming language and environment.
 SQUEAK_SECTION=lang
 SQUEAK_PRIORITY=optional
@@ -39,7 +39,7 @@ SQUEAK_CONFLICTS=
 #
 # SQUEAK_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEAK_IPK_VERSION=2
+SQUEAK_IPK_VERSION=1
 
 #
 # SQUEAK_CONFFILES should be a list of user-editable files
@@ -83,6 +83,8 @@ SQUEAK_IPK=$(BUILD_DIR)/squeak_$(SQUEAK_VERSION)-$(SQUEAK_IPK_VERSION)_$(TARGET_
 
 SQUEAK_IMG_SRC_SITE=http://ftp.squeak.org/current_stable
 SQUEAK_IMG_SRC=SqueakV3.sources
+
+.PHONY: squeak-source squeak-unpack squeak squeak-stage squeak-ipk squeak-clean squeak-dirclean squeak-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -245,3 +247,9 @@ squeak-clean:
 #
 squeak-dirclean:
 	rm -rf $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR) $(SQUEAK_IPK_DIR) $(SQUEAK_IPK)
+
+#
+# Some sanity check for the package.
+#
+squeak-check: $(SQUEAK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQUEAK_IPK)
