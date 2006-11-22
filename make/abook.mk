@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ABOOK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/abook
-ABOOK_VERSION=0.5.5
+ABOOK_VERSION=0.5.6
 ABOOK_SOURCE=abook-$(ABOOK_VERSION).tar.gz
 ABOOK_DIR=abook-$(ABOOK_VERSION)
 ABOOK_UNZIP=zcat
@@ -46,7 +46,7 @@ ABOOK_IPK_VERSION=1
 # ABOOK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ABOOK_PATCHES=$(ABOOK_SOURCE_DIR)/configure.patch
+ABOOK_PATCHES=$(ABOOK_SOURCE_DIR)/0.5.6-01_editor
 
 #
 # If the compilation of the package requires additional
@@ -68,6 +68,8 @@ ABOOK_BUILD_DIR=$(BUILD_DIR)/abook
 ABOOK_SOURCE_DIR=$(SOURCE_DIR)/abook
 ABOOK_IPK_DIR=$(BUILD_DIR)/abook-$(ABOOK_VERSION)-ipk
 ABOOK_IPK=$(BUILD_DIR)/abook_$(ABOOK_VERSION)-$(ABOOK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: abook-source abook-unpack abook abook-stage abook-ipk abook-clean abook-dirclean abook-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,7 +104,9 @@ $(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES)
 	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR)
 	$(ABOOK_UNZIP) $(DL_DIR)/$(ABOOK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(ABOOK_PATCHES) | patch -d $(BUILD_DIR)/$(ABOOK_DIR) -p1
+	if test -n "$(ABOOK_PATCHES)"; \
+		then cat $(ABOOK_PATCHES) | patch -d $(BUILD_DIR)/$(ABOOK_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR)
 	(cd $(ABOOK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -175,14 +179,8 @@ $(ABOOK_IPK_DIR)/CONTROL/control:
 $(ABOOK_IPK): $(ABOOK_BUILD_DIR)/.built
 	rm -rf $(ABOOK_IPK_DIR) $(BUILD_DIR)/abook_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ABOOK_BUILD_DIR) DESTDIR=$(ABOOK_IPK_DIR) install-strip
-	#install -d $(ABOOK_IPK_DIR)/opt/etc/
-	#install -m 644 $(ABOOK_SOURCE_DIR)/abook.conf $(ABOOK_IPK_DIR)/opt/etc/abook.conf
-	#install -d $(ABOOK_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(ABOOK_SOURCE_DIR)/rc.abook $(ABOOK_IPK_DIR)/opt/etc/init.d/SXXabook
 	$(MAKE) $(ABOOK_IPK_DIR)/CONTROL/control
-	#install -m 755 $(ABOOK_SOURCE_DIR)/postinst $(ABOOK_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(ABOOK_SOURCE_DIR)/prerm $(ABOOK_IPK_DIR)/CONTROL/prerm
-	#echo $(ABOOK_CONFFILES) | sed -e 's/ /\n/g' > $(ABOOK_IPK_DIR)/CONTROL/conffiles
+#	echo $(ABOOK_CONFFILES) | sed -e 's/ /\n/g' > $(ABOOK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ABOOK_IPK_DIR)
 
 #
@@ -202,3 +200,9 @@ abook-clean:
 #
 abook-dirclean:
 	rm -rf $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR) $(ABOOK_IPK_DIR) $(ABOOK_IPK)
+
+#
+# Some sanity check for the package.
+#
+abook-check: $(ABOOK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ABOOK_IPK)
