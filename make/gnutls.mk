@@ -53,7 +53,15 @@ GNUTLS_CONFFILES=#/opt/etc/gnutls.conf /opt/etc/init.d/SXXgnutls
 # GNUTLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GNUTLS_PATCHES=#$(GNUTLS_SOURCE_DIR)/configure.patch
+ifeq ($(OPTWARE_TARGET), wl500g)
+GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/lib-libgnutlsxx.vers.patch
+else
+    ifeq ($(OPTWARE_TARGET), mss)
+GNUTLS_PATCHES=$(GNUTLS_SOURCE_DIR)/lib-libgnutlsxx.vers.patch
+    else
+GNUTLS_PATCHES=
+    endif
+endif
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +119,9 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 	$(MAKE) libtasn1-stage opencdk-stage
 	rm -rf $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	$(GNUTLS_UNZIP) $(DL_DIR)/$(GNUTLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(GNUTLS_PATCHES) | patch -d $(BUILD_DIR)/$(GNUTLS_DIR) -p1
+	if test -n "$(GNUTLS_PATCHES)"; \
+		then cat $(GNUTLS_PATCHES) | patch -d $(BUILD_DIR)/$(GNUTLS_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	(cd $(GNUTLS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -192,12 +202,12 @@ $(GNUTLS_IPK): $(GNUTLS_BUILD_DIR)/.built
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) install-strip
 	rm -rf $(GNUTLS_IPK_DIR)/opt/info
 	install -d $(GNUTLS_IPK_DIR)/opt/etc/
-	#install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
-	#install -d $(GNUTLS_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(GNUTLS_SOURCE_DIR)/rc.gnutls $(GNUTLS_IPK_DIR)/opt/etc/init.d/SXXgnutls
+#	install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
+#	install -d $(GNUTLS_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(GNUTLS_SOURCE_DIR)/rc.gnutls $(GNUTLS_IPK_DIR)/opt/etc/init.d/SXXgnutls
 	$(MAKE) $(GNUTLS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(GNUTLS_SOURCE_DIR)/postinst $(GNUTLS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(GNUTLS_SOURCE_DIR)/prerm $(GNUTLS_IPK_DIR)/CONTROL/prerm
+#	install -m 755 $(GNUTLS_SOURCE_DIR)/postinst $(GNUTLS_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(GNUTLS_SOURCE_DIR)/prerm $(GNUTLS_IPK_DIR)/CONTROL/prerm
 	echo $(GNUTLS_CONFFILES) | sed -e 's/ /\n/g' > $(GNUTLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUTLS_IPK_DIR)
 
