@@ -46,7 +46,11 @@ M4_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-M4_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET),wl500g)
+  M4_CPPFLAGS=-DMB_CUR_MAX=1
+else
+  M4_CPPFLAGS=
+endif
 M4_LDFLAGS=
 
 #
