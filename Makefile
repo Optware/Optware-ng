@@ -164,7 +164,7 @@ COMMON_CROSS_PACKAGES = \
 	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
-	qemu qemu-libc-i386 quagga quickie \
+	qemu qemu-libc-i386 quagga quickie quilt \
 	rcs rdate readline recode recordext renderext rlfe rrdtool \
 	rsync rtorrent ruby rubygems \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
