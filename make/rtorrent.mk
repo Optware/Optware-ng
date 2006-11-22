@@ -21,14 +21,18 @@ RTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RTORRENT_DESCRIPTION=rtorrent is a BitTorrent client for ncurses, using the libtorrent library.
 RTORRENT_SECTION= web
 RTORRENT_PRIORITY=optional
-RTORRENT_DEPENDS= libtorrent
+ifneq ($(OPTWARE_TARGET), wl500g)
+RTORRENT_DEPENDS=libtorrent, ncursesw, libcurl
+else
+RTORRENT_DEPENDS=libtorrent, ncurses, libcurl
+endif
 RTORRENT_SUGGESTS=
 RTORRENT_CONFLICTS=
 
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=1
+RTORRENT_IPK_VERSION=2
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -90,7 +94,11 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 #
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
+ifneq ($(OPTWARE_TARGET), wl500g)
+	$(MAKE) libtorrent-stage ncursesw-stage libcurl-stage
+else
 	$(MAKE) libtorrent-stage ncurses-stage libcurl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
 	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RTORRENT_PATCHES)" ; \
