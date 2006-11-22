@@ -1,0 +1,11 @@
+--- gnutls/lib/libgnutlsxx.vers.orig	2006-11-21 21:51:34.000000000 -0800
++++ gnutls/lib/libgnutlsxx.vers	2006-11-21 21:51:57.000000000 -0800
+@@ -24,7 +24,7 @@
+ {
+   global:
+     extern "C++" {
+-      gnutls*;
++      gnutls*
+   };
+   local: *;
+ };
