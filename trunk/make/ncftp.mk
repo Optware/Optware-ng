@@ -33,7 +33,7 @@ NCFTP_DESCRIPTION=Nice command line FTP client
 #
 # NCFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NCFTP_IPK_VERSION=1
+NCFTP_IPK_VERSION=2
 
 #
 # NCFTP_CONFFILES should be a list of user-editable files
@@ -66,6 +66,12 @@ NCFTP_BUILD_DIR=$(BUILD_DIR)/ncftp
 NCFTP_SOURCE_DIR=$(SOURCE_DIR)/ncftp
 NCFTP_IPK_DIR=$(BUILD_DIR)/ncftp-$(NCFTP_VERSION)-ipk
 NCFTP_IPK=$(BUILD_DIR)/ncftp_$(NCFTP_VERSION)-$(NCFTP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+NCFTP_CROSS_CONFIGURE_ENV=ac_cv_func_setpgrp_void=yes ac_cv_func_setvbuf_reversed=no
+endif
+
+.PHONY: ncftp-source ncftp-unpack ncftp ncftp-stage ncftp-ipk ncftp-clean ncftp-dirclean ncftp-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -106,8 +112,7 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NCFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NCFTP_LDFLAGS)" \
-                ac_cv_func_setpgrp_void=yes \
-                ac_cv_func_setvbuf_reversed=yes \
+		$(NCFTP_CROSS_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -207,3 +212,9 @@ ncftp-clean:
 #
 ncftp-dirclean:
 	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR) $(NCFTP_IPK_DIR) $(NCFTP_IPK)
+
+#
+# Some sanity check for the package.
+#
+ncftp-check: $(NCFTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCFTP_IPK)
