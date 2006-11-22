@@ -124,6 +124,14 @@ $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PA
 		--disable-nls \
 		--program-prefix= \
 	)
+ifeq ($(LIBC_STYLE), uclibc)
+ifneq ($(OPTWARE_TARGET), wl500g)
+	sed -i \
+	-e 's|#define HAVE_RESOLV_H 1|#undef HAVE_RESOLV_H|' \
+	-e 's|#define HAVE_RES_SEARCH 1|#undef HAVE_RES_SEARCH|' \
+		$(FETCHMAIL_BUILD_DIR)/config.h
+endif
+endif
 	touch $(FETCHMAIL_BUILD_DIR)/.configured
 
 fetchmail-unpack: $(FETCHMAIL_BUILD_DIR)/.configured
