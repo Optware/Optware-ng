@@ -30,7 +30,7 @@ LIBUCLIBC++_VERSION=0.1.12
 LIBUCLIBC++_SITE=http://cxx.uclibc.org/src
 LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
 else
-LIBUCLIBC++_VERSION=0.2.1
+LIBUCLIBC++_VERSION=0.2.2
 LIBUCLIBC++_SVN=svn://uclibc.org/trunk/uClibc++
 LIBUCLIBC++_SVN_REV=16395
 LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION)+r$(LIBUCLIBC++_SVN_REV).tbz2
@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=7
+LIBUCLIBC++_IPK_VERSION=1
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
