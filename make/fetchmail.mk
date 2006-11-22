@@ -19,12 +19,12 @@
 #
 # You should change all these variables to suit your package.
 #
-FETCHMAIL_SITE=http://catb.org/~esr/fetchmail
-FETCHMAIL_VERSION=6.2.5
-FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.gz
+FETCHMAIL_SITE=http://download.berlios.de/fetchmail
+FETCHMAIL_VERSION=6.3.5
+FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.bz2
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
-FETCHMAIL_UNZIP=zcat
-FETCHMAIL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
+FETCHMAIL_UNZIP=bzcat
+FETCHMAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FETCHMAIL_DESCRIPTION=A remote mail retrieval and forwarding utility
 FETCHMAIL_SECTION=util
 FETCHMAIL_PRIORITY=optional
@@ -34,7 +34,7 @@ FETCHMAIL_CONFLICTS=
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=6
+FETCHMAIL_IPK_VERSION=1
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ FETCHMAIL_BUILD_DIR=$(BUILD_DIR)/fetchmail
 FETCHMAIL_SOURCE_DIR=$(SOURCE_DIR)/fetchmail
 FETCHMAIL_IPK_DIR=$(BUILD_DIR)/fetchmail-$(FETCHMAIL_VERSION)-ipk
 FETCHMAIL_IPK=$(BUILD_DIR)/fetchmail_$(FETCHMAIL_VERSION)-$(FETCHMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: fetchmail-source fetchmail-unpack fetchmail fetchmail-stage fetchmail-ipk fetchmail-clean fetchmail-dirclean fetchmail-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -120,6 +122,7 @@ $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PA
 		--without-hesiod \
 		--prefix=/opt \
 		--disable-nls \
+		--program-prefix= \
 	)
 	touch $(FETCHMAIL_BUILD_DIR)/.configured
 
@@ -210,3 +213,11 @@ fetchmail-clean:
 #
 fetchmail-dirclean:
 	rm -rf $(BUILD_DIR)/$(FETCHMAIL_DIR) $(FETCHMAIL_BUILD_DIR) $(FETCHMAIL_IPK_DIR) $(FETCHMAIL_IPK)
+#
+#
+# Some sanity check for the package.
+# 
+#
+fetchmail-check: $(FETCHMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FETCHMAIL_IPK)
+
