@@ -69,6 +69,10 @@ CATDOC_SOURCE_DIR=$(SOURCE_DIR)/catdoc
 CATDOC_IPK_DIR=$(BUILD_DIR)/catdoc-$(CATDOC_VERSION)-ipk
 CATDOC_IPK=$(BUILD_DIR)/catdoc_$(CATDOC_VERSION)-$(CATDOC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ifneq ($(HOSTCC),$(TARGET_CC))
+CATDOC_CROSS_CONFIGURE_ENV=ac_cv_func_setvbuf_reversed=no
+endif
+
 .PHONY: catdoc-source catdoc-unpack catdoc catdoc-stage catdoc-ipk catdoc-clean catdoc-dirclean catdoc-check
 
 #
@@ -118,7 +122,7 @@ $(CATDOC_BUILD_DIR)/.configured: $(DL_DIR)/$(CATDOC_SOURCE) $(CATDOC_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CATDOC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CATDOC_LDFLAGS)" \
-		ac_cv_func_setvbuf_reversed=no \
+		$(CATDOC_CROSS_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
