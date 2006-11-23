@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WHOIS_SITE=http://ftp.debian.org/debian/pool/main/w/whois/
-WHOIS_VERSION=4.7.5
+WHOIS_VERSION=4.7.19
 WHOIS_SOURCE=whois_$(WHOIS_VERSION).tar.gz
 WHOIS_DIR=whois-$(WHOIS_VERSION)
 WHOIS_UNZIP=zcat
@@ -47,7 +47,7 @@ WHOIS_CONFFILES=
 # WHOIS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WHOIS_PATCHES=$(WHOIS_SOURCE_DIR)/config.patch $(WHOIS_SOURCE_DIR)/Makefile.patch
+WHOIS_PATCHES=$(WHOIS_SOURCE_DIR)/config.patch
 
 #
 # If the compilation of the package requires additional
@@ -69,6 +69,8 @@ WHOIS_BUILD_DIR=$(BUILD_DIR)/whois
 WHOIS_SOURCE_DIR=$(SOURCE_DIR)/whois
 WHOIS_IPK_DIR=$(BUILD_DIR)/whois-$(WHOIS_VERSION)-ipk
 WHOIS_IPK=$(BUILD_DIR)/whois_$(WHOIS_VERSION)-$(WHOIS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: whois-source whois-unpack whois whois-stage whois-ipk whois-clean whois-dirclean whois-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,13 +104,16 @@ whois-source: $(DL_DIR)/$(WHOIS_SOURCE) $(WHOIS_PATCHES)
 $(WHOIS_BUILD_DIR)/.configured: $(DL_DIR)/$(WHOIS_SOURCE) $(WHOIS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(WHOIS_DIR) $(WHOIS_BUILD_DIR)
 	$(WHOIS_UNZIP) $(DL_DIR)/$(WHOIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(WHOIS_PATCHES) | patch -d $(BUILD_DIR)/$(WHOIS_DIR) -p1
+	if test -n "$(WHOIS_PATCHES)"; \
+		then cat $(WHOIS_PATCHES) | patch -bd $(BUILD_DIR)/$(WHOIS_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(WHOIS_DIR) $(WHOIS_BUILD_DIR)
 	(cd $(WHOIS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WHOIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WHOIS_LDFLAGS)" \
 	)
+	sed -ie 's|$$(BASEDIR)/usr/share|$$(BASEDIR)/opt/share|' $(WHOIS_BUILD_DIR)/po/Makefile
 	touch $(WHOIS_BUILD_DIR)/.configured
 
 #		./configure \
@@ -125,7 +130,7 @@ whois-unpack: $(WHOIS_BUILD_DIR)/.configured
 #
 $(WHOIS_BUILD_DIR)/.built: $(WHOIS_BUILD_DIR)/.configured
 	rm -f $(WHOIS_BUILD_DIR)/.built
-	$(MAKE) CC=$(TARGET_CC) -C $(WHOIS_BUILD_DIR)
+	$(MAKE) CC=$(TARGET_CC) -C $(WHOIS_BUILD_DIR) prefix=/opt
 	touch $(WHOIS_BUILD_DIR)/.built
 
 #
@@ -148,7 +153,7 @@ whois-stage: $(WHOIS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/whois
 #
 $(WHOIS_IPK_DIR)/CONTROL/control:
-	@install -d $(WHOIS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: whois" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,8 +181,11 @@ $(WHOIS_IPK_DIR)/CONTROL/control:
 #
 $(WHOIS_IPK): $(WHOIS_BUILD_DIR)/.built
 	rm -rf $(WHOIS_IPK_DIR) $(BUILD_DIR)/whois_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(WHOIS_BUILD_DIR) BASEDIR=$(WHOIS_IPK_DIR) install
-	install -d $(WHOIS_IPK_DIR)/opt/etc/init.d
+	install -d $(WHOIS_IPK_DIR)/opt/bin/
+	install -d $(WHOIS_IPK_DIR)/opt/share/man/man1
+	$(MAKE) -C $(WHOIS_BUILD_DIR) BASEDIR=$(WHOIS_IPK_DIR) prefix=/opt install
+	$(STRIP_COMMAND) $(WHOIS_IPK_DIR)/opt/bin/whois
+#	install -d $(WHOIS_IPK_DIR)/opt/etc/init.d
 	$(MAKE) $(WHOIS_IPK_DIR)/CONTROL/control
 	echo $(WHOIS_CONFFILES) | sed -e 's/ /\n/g' > $(WHOIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHOIS_IPK_DIR)
@@ -199,3 +207,9 @@ whois-clean:
 #
 whois-dirclean:
 	rm -rf $(BUILD_DIR)/$(WHOIS_DIR) $(WHOIS_BUILD_DIR) $(WHOIS_IPK_DIR) $(WHOIS_IPK)
+
+#
+# Some sanity check for the package.
+#
+whois-check: $(WHOIS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WHOIS_IPK)
