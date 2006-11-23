@@ -67,7 +67,6 @@ NBD_LDFLAGS=
 NBD_BUILD_DIR=$(BUILD_DIR)/nbd
 NBD_SOURCE_DIR=$(SOURCE_DIR)/nbd
 
-NBD_IPK_DIR=$(BUILD_DIR)/nbd-$(NBD_VERSION)-ipk
 NBD_IPK=$(BUILD_DIR)/nbd_$(NBD_VERSION)-$(NBD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 NBD-CLIENT_IPK_DIR=$(BUILD_DIR)/nbd-client-$(NBD_VERSION)-ipk
@@ -165,21 +164,6 @@ nbd-stage: $(NBD_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/nbd
 #
-$(NBD_IPK_DIR)/CONTROL/control:
-	@install -d $(@D)
-	@rm -f $@
-	@echo "Package: nbd" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(NBD_PRIORITY)" >>$@
-	@echo "Section: $(NBD_SECTION)" >>$@
-	@echo "Version: $(NBD_VERSION)-$(NBD_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(NBD_MAINTAINER)" >>$@
-	@echo "Source: $(NBD_SITE)/$(NBD_SOURCE)" >>$@
-	@echo "Description: $(NBD_DESCRIPTION)" >>$@
-	@echo "Depends: nbd-client, nbd-server" >>$@
-	@echo "Suggests: $(NBD_SUGGESTS)" >>$@
-	@echo "Conflicts: $(NBD_CONFLICTS)" >>$@
-
 $(NBD-CLIENT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -222,12 +206,9 @@ $(NBD-SERVER_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(NBD_IPK): $(NBD_BUILD_DIR)/.built
-	rm -rf $(NBD_IPK_DIR) $(BUILD_DIR)/nbd_*_$(TARGET_ARCH).ipk \
+$(NBD-CLIENT_IPK) $(NBD-SERVER_IPK): $(NBD_BUILD_DIR)/.built
+	rm -rf $(NBD-CLIENT_IPK_DIR) $(NBD-SERVER_IPK_DIR) \
 		$(BUILD_DIR)/nbd-client_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/nbd-server_*_$(TARGET_ARCH).ipk
-	# nbd
-	$(MAKE) $(NBD_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(NBD_IPK_DIR)
 	# nbd-client
 	$(MAKE) -C $(NBD_BUILD_DIR) DESTDIR=$(NBD-CLIENT_IPK_DIR) install-strip
 	rm -rf `find $(NBD-CLIENT_IPK_DIR) -type f -name 'nbd-server*'`
@@ -242,7 +223,7 @@ $(NBD_IPK): $(NBD_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-nbd-ipk: $(NBD_IPK)
+nbd-ipk: $(NBD-CLIENT_IPK) $(NBD-SERVER_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -259,11 +240,10 @@ nbd-dirclean:
 	rm -rf $(BUILD_DIR)/$(NBD_DIR) $(NBD_BUILD_DIR) \
 	$(NBD-CLIENT_IPK_DIR) $(NBD-CLIENT_IPK) \
 	$(NBD-SERVER_IPK_DIR) $(NBD-SERVER_IPK) \
-	$(NBD_IPK_DIR) $(NBD_IPK)
 
 #
 #
 # Some sanity check for the package.
 #
-nbd-check: $(NBD_IPK)
+nbd-check: $(NBD-CLIENT_IPK) $(NBD-SERVER_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NBD-CLIENT_IPK) $(NBD-SERVER_IPK)
