@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GENSHI_SITE=http://ftp.edgewall.com/pub/genshi
-PY-GENSHI_VERSION=0.3.4
+PY-GENSHI_VERSION=0.3.5
 PY-GENSHI_SOURCE=Genshi-$(PY-GENSHI_VERSION).tar.bz2
 PY-GENSHI_DIR=Genshi-$(PY-GENSHI_VERSION)
 PY-GENSHI_UNZIP=bzcat
@@ -60,15 +60,21 @@ PY-GENSHI_LDFLAGS=
 # PY-GENSHI_BUILD_DIR is the directory in which the build is done.
 # PY-GENSHI_SOURCE_DIR is the directory which holds all the
 # patches and ipkg control files.
-# PY-GENSHI_IPK_DIR is the directory in which the ipk is built.
-# PY-GENSHI_IPK is the name of the resulting ipk files.
+# PY24-GENSHI_IPK_DIR is the directory in which the ipk is built.
+# PY24-GENSHI_IPK is the name of the resulting ipk files.
 #
 # You should not change any of these variables.
 #
 PY-GENSHI_BUILD_DIR=$(BUILD_DIR)/py-genshi
 PY-GENSHI_SOURCE_DIR=$(SOURCE_DIR)/py-genshi
-PY-GENSHI_IPK_DIR=$(BUILD_DIR)/py-genshi-$(PY-GENSHI_VERSION)-ipk
-PY-GENSHI_IPK=$(BUILD_DIR)/py-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-GENSHI_IPK_DIR=$(BUILD_DIR)/py-genshi-$(PY-GENSHI_VERSION)-ipk
+PY24-GENSHI_IPK=$(BUILD_DIR)/py-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-GENSHI_IPK_DIR=$(BUILD_DIR)/py25-genshi-$(PY-GENSHI_VERSION)-ipk
+PY25-GENSHI_IPK=$(BUILD_DIR)/py25-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-genshi-source py-genshi-unpack py-genshi py-genshi-stage py-genshi-ipk py-genshi-clean py-genshi-dirclean py-genshi-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,12 +108,26 @@ py-genshi-source: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PATCHES)
 $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PATCHES) make/py-genshi.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)
+	mkdir -p $(PY-GENSHI_BUILD_DIR)
+#	2.4
 	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)
-	(cd $(PY-GENSHI_BUILD_DIR); \
+	if test -n "$(PY-GENSHI_PATCHES)"; \
+		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)/2.4
+	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+#	2.5
+	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-GENSHI_PATCHES)"; \
+		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)/2.5
+	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-GENSHI_BUILD_DIR)/.configured
 
@@ -118,10 +138,12 @@ py-genshi-unpack: $(PY-GENSHI_BUILD_DIR)/.configured
 #
 $(PY-GENSHI_BUILD_DIR)/.built: $(PY-GENSHI_BUILD_DIR)/.configured
 	rm -f $(PY-GENSHI_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-GENSHI_BUILD_DIR)
-	(cd $(PY-GENSHI_BUILD_DIR); \
+	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-GENSHI_BUILD_DIR)/.built
 
 #
@@ -143,10 +165,24 @@ py-genshi-stage: $(PY-GENSHI_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-genshi
 #
-$(PY-GENSHI_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-GENSHI_IPK_DIR)/CONTROL
+$(PY24-GENSHI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-genshi" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-GENSHI_PRIORITY)" >>$@
+	@echo "Section: $(PY-GENSHI_SECTION)" >>$@
+	@echo "Version: $(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-GENSHI_MAINTAINER)" >>$@
+	@echo "Source: $(PY-GENSHI_SITE)/$(PY-GENSHI_SOURCE)" >>$@
+	@echo "Description: $(PY-GENSHI_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY-GENSHI_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-GENSHI_CONFLICTS)" >>$@
+
+$(PY25-GENSHI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-genshi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-GENSHI_PRIORITY)" >>$@
 	@echo "Section: $(PY-GENSHI_SECTION)" >>$@
@@ -160,28 +196,37 @@ $(PY-GENSHI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-GENSHI_IPK_DIR)/opt/sbin or $(PY-GENSHI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY24-GENSHI_IPK_DIR)/opt/sbin or $(PY24-GENSHI_IPK_DIR)/opt/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-GENSHI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-GENSHI_IPK_DIR)/opt/etc/py-genshi/...
-# Documentation files should be installed in $(PY-GENSHI_IPK_DIR)/opt/doc/py-genshi/...
-# Daemon startup scripts should be installed in $(PY-GENSHI_IPK_DIR)/opt/etc/init.d/S??py-genshi
+# Libraries and include files should be installed into $(PY24-GENSHI_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(PY24-GENSHI_IPK_DIR)/opt/etc/py-genshi/...
+# Documentation files should be installed in $(PY24-GENSHI_IPK_DIR)/opt/doc/py-genshi/...
+# Daemon startup scripts should be installed in $(PY24-GENSHI_IPK_DIR)/opt/etc/init.d/S??py-genshi
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
-	rm -rf $(PY-GENSHI_IPK_DIR) $(BUILD_DIR)/py-genshi_*_$(TARGET_ARCH).ipk
-	(cd $(PY-GENSHI_BUILD_DIR); \
+$(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
+	# 2.4
+	rm -rf $(PY24-GENSHI_IPK_DIR) $(BUILD_DIR)/py-genshi_*_$(TARGET_ARCH).ipk
+	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-GENSHI_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-GENSHI_IPK_DIR)/CONTROL/control
-	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY-GENSHI_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-GENSHI_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-GENSHI_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-GENSHI_IPK_DIR)/CONTROL/control
+#	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-GENSHI_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GENSHI_IPK_DIR)
+	# 2.5
+	rm -rf $(PY25-GENSHI_IPK_DIR) $(BUILD_DIR)/py25-genshi_*_$(TARGET_ARCH).ipk
+	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-GENSHI_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-GENSHI_IPK_DIR)/CONTROL/control
+#	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-GENSHI_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GENSHI_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-genshi-ipk: $(PY-GENSHI_IPK)
+py-genshi-ipk: $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -194,4 +239,12 @@ py-genshi-clean:
 # directories.
 #
 py-genshi-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR) $(PY-GENSHI_IPK_DIR) $(PY-GENSHI_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)
+	rm -rf $(PY24-GENSHI_IPK_DIR) $(PY24-GENSHI_IPK)
+	rm -rf $(PY25-GENSHI_IPK_DIR) $(PY25-GENSHI_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-genshi-check: $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK)
