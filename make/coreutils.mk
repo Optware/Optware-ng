@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=5.97
+COREUTILS_VERSION=6.6
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -34,7 +34,7 @@ COREUTILS_CONFLICTS=busybox-links
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=4
+COREUTILS_IPK_VERSION=1
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -67,6 +67,8 @@ COREUTILS_BUILD_DIR=$(BUILD_DIR)/coreutils
 COREUTILS_SOURCE_DIR=$(SOURCE_DIR)/coreutils
 COREUTILS_IPK_DIR=$(BUILD_DIR)/coreutils-$(COREUTILS_VERSION)-ipk
 COREUTILS_IPK=$(BUILD_DIR)/coreutils_$(COREUTILS_VERSION)-$(COREUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: coreutils-source coreutils-unpack coreutils coreutils-stage coreutils-ipk coreutils-clean coreutils-dirclean coreutils-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -227,3 +229,9 @@ coreutils-clean:
 #
 coreutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR) $(COREUTILS_IPK_DIR) $(COREUTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+coreutils-check: $(COREUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(COREUTILS_IPK)
