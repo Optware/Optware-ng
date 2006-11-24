@@ -42,7 +42,7 @@ PY-BITTORRENT_CONFLICTS=
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=1
+PY-BITTORRENT_IPK_VERSION=2
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
@@ -73,6 +73,9 @@ PY-BITTORRENT_LDFLAGS=
 #
 PY-BITTORRENT_BUILD_DIR=$(BUILD_DIR)/py-bittorrent
 PY-BITTORRENT_SOURCE_DIR=$(SOURCE_DIR)/py-bittorrent
+
+PY-BITTORRENT-COMMON_IPK_DIR=$(BUILD_DIR)/py-bittorrent-common-$(PY-BITTORRENT_VERSION)-ipk
+PY-BITTORRENT-COMMON_IPK=$(BUILD_DIR)/py-bittorrent-common_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY24-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
 PY24-BITTORRENT_IPK=$(BUILD_DIR)/py-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -169,6 +172,20 @@ py-bittorrent-stage: $(PY-BITTORRENT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-bittorrent
 #
+$(PY-BITTORRENT-COMMON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py-bittorrent-common" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-BITTORRENT_PRIORITY)" >>$@
+	@echo "Section: $(PY-BITTORRENT_SECTION)" >>$@
+	@echo "Version: $(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-BITTORRENT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-BITTORRENT_SITE)/$(PY-BITTORRENT_SOURCE)" >>$@
+	@echo "Description: $(PY-BITTORRENT_DESCRIPTION)" >>$@
+	@echo "Depends: " >>$@
+	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
+
 $(PY24-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
@@ -180,7 +197,7 @@ $(PY24-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-BITTORRENT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-BITTORRENT_SITE)/$(PY-BITTORRENT_SOURCE)" >>$@
 	@echo "Description: $(PY-BITTORRENT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY24-BITTORRENT_DEPENDS)" >>$@
+	@echo "Depends: py-bittorrent-common, $(PY24-BITTORRENT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
 
 $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control:
@@ -194,7 +211,7 @@ $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-BITTORRENT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-BITTORRENT_SITE)/$(PY-BITTORRENT_SOURCE)" >>$@
 	@echo "Description: $(PY-BITTORRENT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY25-BITTORRENT_DEPENDS)" >>$@
+	@echo "Depends: py-bittorrent-common, $(PY25-BITTORRENT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BITTORRENT_CONFLICTS)" >>$@
 
 #
@@ -214,25 +231,30 @@ $(PY24-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
 	(cd $(PY-BITTORRENT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BITTORRENT_IPK_DIR) --prefix=/opt)
+	rm -rf $(PY24-BITTORRENT_IPK_DIR)/opt/share
 	$(MAKE) $(PY24-BITTORRENT_IPK_DIR)/CONTROL/control
 #	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-BITTORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BITTORRENT_IPK_DIR)
 
-$(PY25-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
+$(PY25-BITTORRENT_IPK) $(PY-BITTORRENT-COMMON_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
 	rm -rf $(PY25-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py25-bittorrent_*_$(TARGET_ARCH).ipk
 	(cd $(PY-BITTORRENT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BITTORRENT_IPK_DIR) --prefix=/opt)
 	for f in $(PY25-BITTORRENT_IPK_DIR)/opt/*bin/*; \
 	    do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	install -d $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
+	mv $(PY25-BITTORRENT_IPK_DIR)/opt/share $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
 	$(MAKE) $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control
+	$(MAKE) $(PY-BITTORRENT-COMMON_IPK_DIR)/CONTROL/control
 #	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-BITTORRENT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-BITTORRENT-COMMON_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BITTORRENT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-bittorrent-ipk: $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
+py-bittorrent-ipk: $(PY-BITTORRENT-COMMON_IPK) $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -248,9 +270,11 @@ py-bittorrent-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-BITTORRENT_DIR) $(PY-BITTORRENT_BUILD_DIR) \
 	$(PY24-BITTORRENT_IPK_DIR) $(PY24-BITTORRENT_IPK) \
 	$(PY25-BITTORRENT_IPK_DIR) $(PY25-BITTORRENT_IPK) \
+	$(PY-BITTORRENT-COMMON_IPK_DIR) $(PY-BITTORRENT-COMMON_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-bittorrent-check: $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
+py-bittorrent-check: $(PY-BITTORRENT-COMMON_IPK) $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) \
+		$(PY-BITTORRENT-COMMON_IPK) $(PY24-BITTORRENT_IPK) $(PY25-BITTORRENT_IPK)
