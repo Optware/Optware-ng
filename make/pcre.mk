@@ -22,7 +22,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=1
+PCRE_IPK_VERSION=2
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
