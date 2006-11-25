@@ -143,7 +143,7 @@ COMMON_CROSS_PACKAGES = \
 	git-core glib gnupg gnuplot gnutls gtk \
 	gphoto2 libgphoto2 \
 	hdparm hexcurse heyu hnb hpijs \
-	ice id3lib iozone imagemagick imap inetutils iperf ipkg-web iptables \
+	ice id3lib indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
 	knock \
