@@ -69,6 +69,10 @@ INDENT_SOURCE_DIR=$(SOURCE_DIR)/indent
 INDENT_IPK_DIR=$(BUILD_DIR)/indent-$(INDENT_VERSION)-ipk
 INDENT_IPK=$(BUILD_DIR)/indent_$(INDENT_VERSION)-$(INDENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+INDENT_CROSS_CONFIGURE_ENV=ac_cv_func_mmap_fixed_mapped=yes gt_cv_int_divbyzero_sigfpe=yes
+endif
+
 .PHONY: indent-source indent-unpack indent indent-stage indent-ipk indent-clean indent-dirclean indent-check
 
 #
@@ -118,6 +122,7 @@ $(INDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(INDENT_SOURCE) $(INDENT_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INDENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(INDENT_LDFLAGS)" \
+		$(INDENT_CROSS_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -188,6 +193,7 @@ $(INDENT_IPK_DIR)/CONTROL/control:
 $(INDENT_IPK): $(INDENT_BUILD_DIR)/.built
 	rm -rf $(INDENT_IPK_DIR) $(BUILD_DIR)/indent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(INDENT_BUILD_DIR) DESTDIR=$(INDENT_IPK_DIR) install-strip
+	rm -f $(INDENT_IPK_DIR)/opt/info/dir $(INDENT_IPK_DIR)/opt/info/dir.old
 	$(MAKE) $(INDENT_IPK_DIR)/CONTROL/control
 #	echo $(INDENT_CONFFILES) | sed -e 's/ /\n/g' > $(INDENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INDENT_IPK_DIR)
