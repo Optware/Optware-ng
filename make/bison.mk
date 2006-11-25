@@ -10,14 +10,14 @@ BISON_SOURCE=bison-$(BISON_VERSION).tar.bz2
 BISON_DIR=bison-$(BISON_VERSION)
 BISON_UNZIP=bzcat
 BISON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-BISON_DESCRIPTION=A Free-Lexer implementation.
+BISON_DESCRIPTION=a general-purpose parser generator that converts an annotated context-free grammar into an LALR(1) or GLR parser for that grammar.
 BISON_SECTION=devel
 BISON_PRIORITY=optional
-BISON_DEPENDS=
+BISON_DEPENDS=m4
 BISON_SUGGESTS=
 BISON_CONFLICTS=
 
-BISON_IPK_VERSION=1
+BISON_IPK_VERSION=2
 
 BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
 BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
@@ -42,6 +42,12 @@ BISON_BUILD_DIR=$(BUILD_DIR)/bison
 BISON_SOURCE_DIR=$(SOURCE_DIR)/bison
 BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+BISON_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_strnlen_working=yes
+endif
+
+.PHONY: bison-source bison-unpack bison bison-stage bison-ipk bison-clean bison-dirclean bison-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -72,6 +78,7 @@ $(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/
 		LDFLAGS="$(STAGING_LDFLAGS) $(BISON_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		$(BISON_CROSS_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -79,6 +86,9 @@ $(BISON_BUILD_DIR)/.configured: $(DL_DIR)/$(BISON_SOURCE) $(BISON_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 	);
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -i -e '/^#define M4/s|^.*$$|#define M4 "/opt/bin/m4"|' $(BISON_BUILD_DIR)/config.h
+endif
 	touch $(BISON_BUILD_DIR)/.configured
 
 #
@@ -159,13 +169,11 @@ $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-
 bison-ipk: $(BISON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-
 bison-clean:
 	rm -f $(bison_BUILD_DIR)/.built
 	-$(MAKE) -C $(BISON_BUILD_DIR) clean
@@ -174,6 +182,11 @@ bison-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-
 bison-dirclean:
 	rm -rf $(BUILD_DIR)/$(BISON_DIR) $(BISON_BUILD_DIR) $(BISON_IPK_DIR) $(BISON_IPK)
+
+#
+# Some sanity check for the package.
+#
+bison-check: $(BISON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BISON_IPK)
