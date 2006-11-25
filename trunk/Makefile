@@ -124,7 +124,7 @@ COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk \
 	atftp atk audiofile autoconf automake \
-	bash bc bind bip bitchx bitlbee bogofilter \
+	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract catdoc ccxstream chillispot coreutils cpio cron cdargs \
@@ -185,7 +185,6 @@ COMMON_CROSS_PACKAGES = \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
 	zip zlib zoo \
 
-# bison cross-compiles, but can't build flex.  native-compiled bison is fine.
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
@@ -193,7 +192,6 @@ COMMON_CROSS_PACKAGES = \
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # rsnapshot depends on perl
 COMMON_NATIVE_PACKAGES = \
-	bison \
 	cdrtools \
 	emacs \
 	xemacs \
@@ -323,6 +321,7 @@ DS101G_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for ds101g+.
 DS101G_BROKEN_PACKAGES = \
+	$(COMMON_NATIVE_PACKAGES) \
 	bitlbee \
 	eaccelerator \
 	freeradius \
@@ -330,7 +329,6 @@ DS101G_BROKEN_PACKAGES = \
 	mod-python ntop ntp \
 	qemu qemu-libc-i386 \
 	ser \
-	emacs xemacs hugs mzscheme ocaml rsnapshot \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg
@@ -347,7 +345,7 @@ FSG3_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
-	bison emacs xemacs hugs mzscheme nginx ocaml rsnapshot unison \
+	$(COMMON_NATIVE_PACKAGES) \
 	qemu qemu-libc-i386 \
 	transcode
 
