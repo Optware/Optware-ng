@@ -21,12 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-KID_VERSION=0.9.3
-PY-KID_SITE=  http://www.kid-templating.org/dist/$(PY-KID_VERSION)
+PY-KID_VERSION=0.9.4
+PY-KID_SITE=http://www.kid-templating.org/dist/$(PY-KID_VERSION)
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
 PY-KID_UNZIP=zcat
-PY-KID_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-KID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-KID_DESCRIPTION=Pythonic XML-based Templating
 PY-KID_SECTION=misc
 PY-KID_PRIORITY=optional
@@ -66,8 +66,14 @@ PY-KID_LDFLAGS=
 #
 PY-KID_BUILD_DIR=$(BUILD_DIR)/py-kid
 PY-KID_SOURCE_DIR=$(SOURCE_DIR)/py-kid
-PY-KID_IPK_DIR=$(BUILD_DIR)/py-kid-$(PY-KID_VERSION)-ipk
-PY-KID_IPK=$(BUILD_DIR)/py-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-KID_IPK_DIR=$(BUILD_DIR)/py-kid-$(PY-KID_VERSION)-ipk
+PY24-KID_IPK=$(BUILD_DIR)/py-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-KID_IPK_DIR=$(BUILD_DIR)/py25-kid-$(PY-KID_VERSION)-ipk
+PY25-KID_IPK=$(BUILD_DIR)/py25-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-kid-source py-kid-unpack py-kid py-kid-stage py-kid-ipk py-kid-clean py-kid-dirclean py-kid-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,18 +107,34 @@ py-kid-source: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
+	mkdir $(PY-KID_BUILD_DIR)
+	# 2.4
 	$(PY-KID_UNZIP) $(DL_DIR)/$(PY-KID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-KID_PATCHES)"; then \
 	    cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
-	(cd $(PY-KID_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)/2.4
+	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg \
+	    ) >> setup.cfg \
+	)
+	# 2.5
+	$(PY-KID_UNZIP) $(DL_DIR)/$(PY-KID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-KID_PATCHES)"; then \
+	    cat $(PY-KID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-KID_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)/2.5
+	(cd $(PY-KID_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
 	)
 	touch $(PY-KID_BUILD_DIR)/.configured
 
@@ -123,7 +145,12 @@ py-kid-unpack: $(PY-KID_BUILD_DIR)/.configured
 #
 $(PY-KID_BUILD_DIR)/.built: $(PY-KID_BUILD_DIR)/.configured
 	rm -f $(PY-KID_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-KID_BUILD_DIR)
+	(cd $(PY-KID_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-KID_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-KID_BUILD_DIR)/.built
 
 #
@@ -145,8 +172,8 @@ py-kid-stage: $(PY-KID_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-kid
 #
-$(PY-KID_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-KID_IPK_DIR)/CONTROL
+$(PY24-KID_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-kid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -156,7 +183,21 @@ $(PY-KID_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-KID_MAINTAINER)" >>$@
 	@echo "Source: $(PY-KID_SITE)/$(PY-KID_SOURCE)" >>$@
 	@echo "Description: $(PY-KID_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-KID_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-KID_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-KID_CONFLICTS)" >>$@
+
+$(PY25-KID_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-kid" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-KID_PRIORITY)" >>$@
+	@echo "Section: $(PY-KID_SECTION)" >>$@
+	@echo "Version: $(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-KID_MAINTAINER)" >>$@
+	@echo "Source: $(PY-KID_SITE)/$(PY-KID_SOURCE)" >>$@
+	@echo "Description: $(PY-KID_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-KID_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-KID_CONFLICTS)" >>$@
 
 #
@@ -171,19 +212,31 @@ $(PY-KID_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-KID_IPK): $(PY-KID_BUILD_DIR)/.built
-	rm -rf $(PY-KID_IPK_DIR) $(BUILD_DIR)/py-kid_*_$(TARGET_ARCH).ipk
-	(cd $(PY-KID_BUILD_DIR); \
+$(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
+	rm -rf $(PY-KID_IPK_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/py-kid_*_$(TARGET_ARCH).ipk
+	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-KID_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-KID_IPK_DIR)/CONTROL/control
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-KID_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-KID_IPK_DIR)/CONTROL/control
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-KID_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-KID_IPK_DIR)
+	# 2.5
+	rm -rf $(BUILD_DIR)/py25-kid_*_$(TARGET_ARCH).ipk
+	(cd $(PY-KID_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-KID_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-KID_IPK_DIR)/opt/*bin/*; \
+            do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	$(MAKE) $(PY25-KID_IPK_DIR)/CONTROL/control
+#	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-KID_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-kid-ipk: $(PY-KID_IPK)
+py-kid-ipk: $(PY24-KID_IPK) $(PY25-KID_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -196,4 +249,12 @@ py-kid-clean:
 # directories.
 #
 py-kid-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR) $(PY-KID_IPK_DIR) $(PY-KID_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-KID_DIR) $(PY-KID_BUILD_DIR)
+	rm -rf $(PY24-KID_IPK_DIR) $(PY24-KID_IPK)
+	rm -rf $(PY25-KID_IPK_DIR) $(PY25-KID_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-kid-check: $(PY24-KID_IPK) $(PY25-KID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-KID_IPK) $(PY25-KID_IPK)
