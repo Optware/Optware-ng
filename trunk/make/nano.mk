@@ -4,8 +4,9 @@
 #
 ###########################################################
 
-NANO_SITE=http://www.nano-editor.org/dist/v1.2
-NANO_VERSION=1.2.5
+NANO_SITE=http://www.nano-editor.org/dist/v2.0
+#http://www.nano-editor.org/dist/v2.0/nano-2.0.1.tar.gz
+NANO_VERSION=2.0.1
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -16,11 +17,11 @@ NANO_PRIORITY=optional
 NANO_DEPENDS=ncurses
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=3
+NANO_IPK_VERSION=1
 
-NANO_CONFFILES=/opt/etc/nanorc
+#NANO_CONFFILES=/opt/etc/nanorc
 
-NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
+#NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
 
 NANO_CPPFLAGS=-I$(STAGING_PREFIX)/include/ncurses
 NANO_LDFLAGS=
@@ -30,16 +31,20 @@ NANO_SOURCE_DIR=$(SOURCE_DIR)/nano
 NANO_IPK_DIR=$(BUILD_DIR)/nano-$(NANO_VERSION)-ipk
 NANO_IPK=$(BUILD_DIR)/nano_$(NANO_VERSION)-$(NANO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: nano-source nano-unpack nano nano-stage nano-ipk nano-clean nano-dirclean nano-check
+
 $(DL_DIR)/$(NANO_SOURCE):
 	$(WGET) -P $(DL_DIR) $(NANO_SITE)/$(NANO_SOURCE)
 
 nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 
-$(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
+$(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nano.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NANO_PATCHES) | patch -d $(BUILD_DIR)/$(NANO_DIR)
+	if test -n "$(NANO_PATCHES)"; \
+		then cat $(NANO_PATCHES) | patch -d $(BUILD_DIR)/$(NANO_DIR); \
+	fi
 	mv $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR)
 	(cd $(NANO_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -88,14 +93,9 @@ $(NANO_IPK_DIR)/CONTROL/control:
 
 $(NANO_IPK): $(NANO_BUILD_DIR)/.built
 	rm -rf $(NANO_IPK_DIR) $(BUILD_DIR)/nano_*_$(TARGET_ARCH).ipk
-	install -d $(NANO_IPK_DIR)/opt/bin/
-	install -d $(NANO_IPK_DIR)/opt/info/
-	install -d $(NANO_IPK_DIR)/opt/man/man1/
-	install -d $(NANO_IPK_DIR)/opt/man/man5/
-	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(NANO_IPK_DIR) install
-	$(STRIP_COMMAND) $(NANO_IPK_DIR)/opt/bin/nano
+	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(NANO_IPK_DIR) program_transform_name="" install-strip
 	install -d $(NANO_IPK_DIR)/opt/etc/
-	install -m 644 $(NANO_BUILD_DIR)/nanorc.sample $(NANO_IPK_DIR)/opt/etc/nanorc
+	install -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)/opt/etc/nanorc
 	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
 	echo $(NANO_CONFFILES) | sed -e 's/ /\n/g' > $(NANO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)
@@ -107,3 +107,9 @@ nano-clean:
 
 nano-dirclean:
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(NANO_BUILD_DIR) $(NANO_IPK_DIR) $(NANO_IPK)
+
+#
+# Some sanity check for the package.
+#
+nano-check: $(NANO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NANO_IPK)
