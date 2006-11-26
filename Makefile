@@ -174,7 +174,7 @@ COMMON_CROSS_PACKAGES = \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
-	tin tinyscheme tnef torrent transcode transmission tsocks \
+	tin tinyscheme tnef tor torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
 	ufsd unarj unfs3 units unrar \
 	unzip usbutils ushare \
