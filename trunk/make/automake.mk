@@ -5,7 +5,7 @@
 ###########################################################
 
 AUTOMAKE_SITE=http://ftp.gnu.org/gnu/automake
-AUTOMAKE_VERSION=1.9.6
+AUTOMAKE_VERSION=1.10
 AUTOMAKE_SOURCE=automake-$(AUTOMAKE_VERSION).tar.bz2
 AUTOMAKE_DIR=automake-$(AUTOMAKE_VERSION)
 AUTOMAKE_UNZIP=bzcat
@@ -23,12 +23,14 @@ AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
 AUTOMAKE_IPK_DIR=$(BUILD_DIR)/automake-$(AUTOMAKE_VERSION)-ipk
 AUTOMAKE_IPK=$(BUILD_DIR)/automake_$(AUTOMAKE_VERSION)-$(AUTOMAKE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: automake-source automake-unpack automake automake-stage automake-ipk automake-clean automake-dirclean automake-check
+
 $(DL_DIR)/$(AUTOMAKE_SOURCE):
 	$(WGET) -P $(DL_DIR) $(AUTOMAKE_SITE)/$(AUTOMAKE_SOURCE)
 
 automake-source: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCHES)
 
-$(AUTOMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCHES)
+$(AUTOMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCHES) make/automake.mk
 	rm -rf $(BUILD_DIR)/$(AUTOMAKE_DIR) $(AUTOMAKE_BUILD_DIR)
 	$(AUTOMAKE_UNZIP) $(DL_DIR)/$(AUTOMAKE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(AUTOMAKE_DIR) $(AUTOMAKE_BUILD_DIR)
@@ -62,7 +64,7 @@ $(AUTOMAKE_BUILD_DIR)/.staged: $(AUTOMAKE_BUILD_DIR)/.built
 automake-stage: $(AUTOMAKE_BUILD_DIR)/.staged
 
 $(AUTOMAKE_IPK_DIR)/CONTROL/control:
-	@install -d $(AUTOMAKE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: automake" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,3 +101,9 @@ automake-clean:
 
 automake-dirclean:
 	rm -rf $(BUILD_DIR)/$(AUTOMAKE_DIR) $(AUTOMAKE_BUILD_DIR) $(AUTOMAKE_IPK_DIR) $(AUTOMAKE_IPK)
+
+#
+# Some sanity check for the package.
+#
+automake-check: $(AUTOMAKE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AUTOMAKE_IPK)
