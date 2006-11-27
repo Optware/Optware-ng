@@ -47,8 +47,8 @@ $(WEBMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBMIN_SOURCE) $(WEBMIN_PATCHES)
 		mandrake-linux msc-linux netbsd openbsd open-linux \
 		openserver osf1 osf redhat-linux slackware \
 		slackware-linux sol-linux solaris suse-linux \
-		trustix turbo-linux united-linux unixware windows; \
-	do \
+		trustix turbo-linux united-linux unixware windows \
+	; do \
 		find . -name "config-$$l*" -o -name "*$$l*-lib.pl" | xargs rm -f || true; \
 	done; \
 	)
@@ -89,24 +89,26 @@ $(WEBMIN_IPK): $(WEBMIN_BUILD_DIR)/.built
 	rm -rf $(WEBMIN_IPK_DIR) $(BUILD_DIR)/webmin_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(WEBMIN_BUILD_DIR) DESTDIR=$(WEBMIN_IPK_DIR) install
 	install -d $(WEBMIN_IPK_DIR)/opt/etc/webmin
-	install -d $(WEBMIN_IPK_DIR)/opt/libexec/webmin
 	install -d $(WEBMIN_IPK_DIR)/opt/etc/init.d
 	install -d $(WEBMIN_IPK_DIR)/opt/etc/pam.d
-	for d in acl servers webmin webminlog; \
-	do \
-		cp -rp $(WEBMIN_BUILD_DIR)/$$d $(WEBMIN_IPK_DIR)/opt/libexec/webmin/; \
+	install -d $(WEBMIN_IPK_DIR)/opt/share/webmin
+	#
+	cd $(WEBMIN_IPK_DIR)/opt; \
+	for d in acl servers webmin webminlog Webmin; do \
+		cp -rp $(WEBMIN_BUILD_DIR)/$$d share/webmin/; \
 	done
+	# core modules
 	cd $(WEBMIN_IPK_DIR)/opt; \
 	for d in \
 		at backup-config custom cron fdisk init inittab man mount \
-		net pam passwd proc raid shell syslog time useradmin; \
-	do \
-		cp -rp $(WEBMIN_BUILD_DIR)/$$d libexec/webmin/; \
-		for c in libexec/webmin/$$d/config libexec/webmin/$$d/'config-*-linux'; \
-		do \
+		net pam passwd proc raid shell syslog time useradmin \
+	; do \
+		cp -rp $(WEBMIN_BUILD_DIR)/$$d share/webmin/; \
+		for c in share/webmin/$$d/config share/webmin/$$d/'config-*-linux'; do \
 			install -d etc/webmin/$$d/; \
-			if test -f $$c; \
-				then mv $$c etc/webmin/$$d/config; touch etc/webmin/$$d/admin.acl; fi; \
+			if test -f $$c; then \
+				mv $$c etc/webmin/$$d/config; touch etc/webmin/$$d/admin.acl; \
+			fi; \
 		done; \
 	done
 #	install $(WEBMIN_SOURCE_DIR)/webmin.rc $(WEBMIN_IPK_DIR)/opt/etc/init.d/webmin
