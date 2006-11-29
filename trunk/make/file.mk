@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-FILE_SITE=http://downloads.planetmirror.com/pub/file
-FILE_VERSION=4.17
+FILE_SITE=ftp://ftp.astron.com/pub/file
+FILE_VERSION=4.18
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -34,7 +34,7 @@ FILE_CONFLICTS=
 #
 # FILE_IPK_VERSION should be incremented when the ipk changes.
 #
-FILE_IPK_VERSION=2
+FILE_IPK_VERSION=1
 
 #
 # FILE_PATCHES should list any patches, in the the order in
@@ -62,6 +62,8 @@ FILE_BUILD_DIR=$(BUILD_DIR)/file
 FILE_SOURCE_DIR=$(SOURCE_DIR)/file
 FILE_IPK_DIR=$(BUILD_DIR)/file-$(FILE_VERSION)-ipk
 FILE_IPK=$(BUILD_DIR)/file_$(FILE_VERSION)-$(FILE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: file-source file-unpack file file-stage file-ipk file-clean file-dirclean file-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -198,3 +200,9 @@ file-clean:
 #
 file-dirclean:
 	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(FILE_BUILD_DIR) $(FILE_IPK_DIR) $(FILE_IPK)
+
+#
+# Some sanity check for the package.
+#
+file-check: $(FILE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FILE_IPK)
