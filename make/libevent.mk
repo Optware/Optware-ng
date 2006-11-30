@@ -5,7 +5,7 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=1.1a
+LIBEVENT_VERSION=1.2
 LIBEVENT_SOURCE=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)
 LIBEVENT_UNZIP=zcat
@@ -24,6 +24,8 @@ LIBEVENT_BUILD_DIR=$(BUILD_DIR)/libevent
 LIBEVENT_SOURCE_DIR=$(SOURCE_DIR)/libevent
 LIBEVENT_IPK_DIR=$(BUILD_DIR)/libevent-$(LIBEVENT_VERSION)-ipk
 LIBEVENT_IPK=$(BUILD_DIR)/libevent_$(LIBEVENT_VERSION)-$(LIBEVENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libevent-source libevent-unpack libevent libevent-stage libevent-ipk libevent-clean libevent-dirclean libevent-check
 
 $(DL_DIR)/$(LIBEVENT_SOURCE):
 	$(WGET) -P $(DL_DIR) $(LIBEVENT_SITE)/$(LIBEVENT_SOURCE)
@@ -103,6 +105,7 @@ $(LIBEVENT_IPK_DIR)/CONTROL/control:
 $(LIBEVENT_IPK): $(LIBEVENT_BUILD_DIR)/.built
 	rm -rf $(LIBEVENT_IPK_DIR) $(BUILD_DIR)/libevent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEVENT_BUILD_DIR) DESTDIR=$(LIBEVENT_IPK_DIR) install-strip
+	rm -f $(LIBEVENT_IPK_DIR)/opt/lib/libevent*.la $(LIBEVENT_IPK_DIR)/opt/lib/libevent*.a
 	$(MAKE) $(LIBEVENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEVENT_IPK_DIR)
 
@@ -113,3 +116,6 @@ libevent-clean:
 
 libevent-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBEVENT_DIR) $(LIBEVENT_BUILD_DIR) $(LIBEVENT_IPK_DIR) $(LIBEVENT_IPK)
+
+libevent-check: $(LIBEVENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBEVENT_IPK)
