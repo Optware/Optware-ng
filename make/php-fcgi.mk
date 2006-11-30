@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=2
+PHP_FCGI_IPK_VERSION=3
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -61,6 +61,27 @@ PHP_FCGI_BUILD_DIR=$(BUILD_DIR)/php-fcgi
 PHP_FCGI_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_FCGI_IPK_DIR=$(BUILD_DIR)/php-fcgi-$(PHP_FCGI_VERSION)-ipk
 PHP_FCGI_IPK=$(BUILD_DIR)/php-fcgi_$(PHP_FCGI_VERSION)-$(PHP_FCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+# We need this because openldap does not build on the wl500g.
+ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq ($(OPTWARE_TARGET),ds101g)
+PHP_FCGI_CONFIGURE_TARGET_ARGS= \
+		--with-ldap=shared,$(STAGING_PREFIX) \
+		--with-ldap-sasl=$(STAGING_PREFIX) \
+		--with-gettext=$(STAGING_PREFIX)
+else
+PHP_FCGI_CONFIGURE_TARGET_ARGS= \
+		--with-ldap=shared,$(STAGING_PREFIX) \
+		--with-ldap-sasl=$(STAGING_PREFIX)
+endif
+PHP_FCGI_CONFIGURE_ENV=LIBS=-lsasl2
+else
+PHP_FCGI_CONFIGURE_TARGET_ARGS=
+PHP_FCGI_CONFIGURE_ENV=
+endif
+
+PHP_FCGI_CONFIGURE_THREAD_ARGS= \
+		--enable-maintainer-zts
 
 .PHONY: php-fcgi-source php-fcgi-unpack php-fcgi php-fcgi-stage php-fcgi-ipk php-fcgi-clean php-fcgi-dirclean php-fcgi-check
 
@@ -116,42 +137,72 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
 	cat $(PHP_FCGI_PATCHES) |patch -p0 -d $(PHP_FCGI_BUILD_DIR)
 	(cd $(PHP_FCGI_BUILD_DIR); \
-		autoconf; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_FCGI_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
-		CFLAGS="$(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
-		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
-		EXTENSION_DIR=/opt/lib/php/extensions \
-		ac_cv_func_memcmp_working=yes \
+          ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
+                $(TARGET_CONFIGURE_OPTS) \
+                CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_FCGI_CPPFLAGS)" \
+                LDFLAGS="$(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
+                CFLAGS="$(STAGING_CPPFLAGS) $(PHP_FCGI_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_FCGI_LDFLAGS)" \
+                PATH="$(STAGING_DIR)/bin:$$PATH" \
+                PHP_FCGI_LIBXML_DIR=$(STAGING_PREFIX) \
+                EXTENSION_DIR=/opt/lib/php/extensions \
+                ac_cv_func_memcmp_working=yes \
+                cv_php_mbstring_stdarg=yes \
+                STAGING_PREFIX="$(STAGING_PREFIX)" \
+                $(PHP_FCGI_CONFIGURE_ENV) \
 		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--with-config-file-scan-dir=/opt/etc/php.d \
-		--with-layout=GNU \
-		--disable-static \
-		$(PHP_CONFIGURE_THREAD_ARGS) \
-		--enable-libxml \
-		--with-libxml-dir=$(STAGING_PREFIX) \
-		--enable-spl \
-		--with-pcre-regex=$(STAGING_PREFIX) \
-		--with-regex=php \
-		--with-sqlite \
-		--without-iconv \
-		--enable-dom=shared \
-		--enable-xml=shared \
-		--enable-xmlreader=shared \
-		\
-		--enable-memory-limit \
+                --build=$(GNU_HOST_NAME) \
+                --host=$(GNU_TARGET_NAME) \
+                --target=$(GNU_TARGET_NAME) \
+                --prefix=/opt \
+                --with-config-file-scan-dir=/opt/etc/php.d \
+                --with-layout=GNU \
+                --disable-static \
+                --enable-bcmath=shared \
+                --enable-calendar=shared \
+                --enable-dba=shared \
+                --with-inifile \
+                --with-flatfile \
+                --enable-dom=shared \
+                --enable-exif=shared \
+                --enable-ftp=shared \
+                --enable-mbstring=shared \
+                --enable-pdo=shared \
+                --enable-shmop=shared \
+                --enable-sockets=shared \
+                --enable-sysvmsg=shared \
+                --enable-sysvshm=shared \
+                --enable-sysvsem=shared \
+                --enable-xml=shared \
+                --enable-xmlreader=shared \
+                --with-bz2=shared,$(STAGING_PREFIX) \
+                --with-db4=$(STAGING_PREFIX) \
+                --with-dom=shared,$(STAGING_PREFIX) \
+                --with-gdbm=$(STAGING_PREFIX) \
+                --with-gd=shared,$(STAGING_PREFIX) \
+                --with-imap=shared,$(STAGING_PREFIX) \
+                --with-mysql=shared,$(STAGING_PREFIX) \
+                --with-mysql-sock=/tmp/mysql.sock \
+                --with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
+                --with-openssl=shared,$(STAGING_PREFIX) \
+                --with-sqlite=shared \
+                --with-pdo-mysql=shared,$(STAGING_PREFIX) \
+                --with-pdo-sqlite=shared \
+                --with-xsl=shared,$(STAGING_PREFIX) \
+                --with-zlib=shared,$(STAGING_PREFIX) \
+                --with-libxml-dir=$(STAGING_PREFIX) \
+                --with-jpeg-dir=$(STAGING_PREFIX) \
+                --with-png-dir=$(STAGING_PREFIX) \
+                --with-freetype-dir=$(STAGING_PREFIX) \
+                --with-zlib-dir=$(STAGING_PREFIX) \
+                $(PHP_FCGI_CONFIGURE_TARGET_ARGS) \
+                $(PHP_FCGI_CONFIGURE_THREAD_ARGS) \
+                --without-iconv \
+		--without-pear \
+		--with-gettext \
 		--disable-cli \
 		--enable-cgi \
 		--enable-fastcgi \
 		--enable-force-cgi-redirect \
-		--with-gettext \
-		--with-pear=/opt/share/pear \
-		; \
 	)
 	$(PATCH_LIBTOOL) $(PHP_FCGI_BUILD_DIR)/libtool
 	touch $(PHP_FCGI_BUILD_DIR)/.configured
