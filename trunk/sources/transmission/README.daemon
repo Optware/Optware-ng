@@ -168,7 +168,8 @@ Known bugs:
   See http://wl500g.info/showpost.php?p=34579&postcount=68 how to upgrade
   to alternative "Oleg"  package feed.
 
-* Gnuplot log shows transfer in UTC and not in local timezone. See
+* Gnuplot log shows transfer in UTC and not in local timezone. 
+  There is no provision for changing the time zone or for daylight savings.
   http://wl500g.info/showpost.php?p=40860&postcount=16 how to replace
   sed script with awk and adding time shift.
   
