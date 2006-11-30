@@ -529,6 +529,11 @@ This is quick explanation of the buttons:
 <dt><u>H</u>elp<dd> Access keys <u>underlined</u>! Use Alt-Key for access.
 </dl>
 __EOF__
+if [ -r /opt/share/doc/transmission/README.daemon ]; then 
+	echo "<pre>" 
+	cat /opt/share/doc/transmission/README.daemon
+	echo "</pre>" 
+fi                                         
 _root_check
 }
 
