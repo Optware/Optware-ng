@@ -42,7 +42,7 @@ PY-BITTORRENT_CONFLICTS=
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=2
+PY-BITTORRENT_IPK_VERSION=3
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
