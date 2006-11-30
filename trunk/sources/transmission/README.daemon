@@ -131,13 +131,21 @@ There is also -USR2 signal which writes active torrents into syslog. But
 syslog must be running also for getting cumulative statistics!
 
 .status file is sourced. Filenames should not contain non ASCII characters
-and quote . Report that line 4 contains unterminated quote could mean that
-problem occured before line 4 as .status contains only 3 lines. This could
-also be a problem with SMB filesystem or maybe some network flush/locking
-problem with files.
+and quote. Spaces and characters like [](). are allowed in torrent filenames.
+Note that NO spaces is allowed for directories ${SOURCE}, ${WORK} and ${TARGET}.
 
 When one press "Update" button. Signal -USR1 is sent to daemon and after a
 second of waiting for it, all active .status files are sourced and printed.
+
+Problems with .status could be that transmisisond is not receiving USR1 signal.
+This may be due to invalid path to PIDFILE or something like that. 
+Pressing Update sends signal to daemon, waits one second and reads 
+.status files in active torrent directories. Take attention to syslog daemon.
+
+"torrent" package conflict is intentional. If you gonna use scrape or info, 
+then you need also libbt package. If you want transfer graph log then 
+gnuplot must be installed.
+
 
 Known bugs:
 * There is a problem with fork and pthreads in uclibc 0.9.19
