@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=1
+PHP_FCGI_IPK_VERSION=2
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -61,6 +61,8 @@ PHP_FCGI_BUILD_DIR=$(BUILD_DIR)/php-fcgi
 PHP_FCGI_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_FCGI_IPK_DIR=$(BUILD_DIR)/php-fcgi-$(PHP_FCGI_VERSION)-ipk
 PHP_FCGI_IPK=$(BUILD_DIR)/php-fcgi_$(PHP_FCGI_VERSION)-$(PHP_FCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: php-fcgi-source php-fcgi-unpack php-fcgi php-fcgi-stage php-fcgi-ipk php-fcgi-clean php-fcgi-dirclean php-fcgi-check
 
 #
 # Automatically create a ipkg control file
@@ -147,6 +149,8 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 		--enable-cgi \
 		--enable-fastcgi \
 		--enable-force-cgi-redirect \
+		--with-gettext \
+		--with-pear=/opt/share/pear \
 		; \
 	)
 	$(PATCH_LIBTOOL) $(PHP_FCGI_BUILD_DIR)/libtool
@@ -219,3 +223,10 @@ php-fcgi-clean:
 #
 php-fcgi-dirclean:
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR) $(PHP_FCGI_IPK_DIR) $(PHP_FCGI_IPK)
+#
+#
+# Some sanity check for the package.
+#
+#
+php-fcgi-check: $(PHP_FCGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_FCGI_IPK)
