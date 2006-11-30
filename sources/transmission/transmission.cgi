@@ -383,7 +383,7 @@ _list ()
     fi
     __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
-    SPEED=`tail ${SYSLOG}  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\)/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -1`
+    SPEED=`tail ${SYSLOG}  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\).*/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -1`
     eval "${SPEED}"
     if [ -n "${DOWNLOAD}"  ] ; then
 	echo "<table><tr><td>Total</td><td>Download ${DOWNLOAD}kB/s</td>"
@@ -473,11 +473,19 @@ set output '${GNUPLOT_OUTPUT}'
 set xdata time
 set timefmt "%s"
 set format x "%H:%M\n%m/%d"
-plot '${GNUPLOT_DATA}' using 1:2 title 'download' with impulses, '${GNUPLOT_DATA}' using 1:3 title 'upload' with impulses
+set ytics nomirror
+set y2tics nomirror
+set y2range [0:]
+set ylabel "Transmission transfer rate (kB/s)"
+set y2label "System load (5 min average)"
+set y2tics 1
+plot '${GNUPLOT_DATA}' using 1:2 title 'download' axis x1y1 with impulses, \
+     '${GNUPLOT_DATA}' using 1:3 title 'upload' with impulses, \
+     '${GNUPLOT_DATA}' using 1:4 axis x1y2 title 'load' with lines
 quit 
 __EOF__
 
-sed  -n '/transmissiond/s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\)/\1 \2 -\3/p' < ${SYSLOG} > ${GNUPLOT_DATA}
+sed  -n '/transmissiond/s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/p' < ${SYSLOG} > ${GNUPLOT_DATA}
 
 ${GNUPLOT} ${GNUPLOT_COMMAND}
 

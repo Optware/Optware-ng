@@ -58,6 +58,10 @@
 #else
 #  define UNUSED
 #endif
+#ifdef SYS_LINUX
+#include <sys/sysinfo.h>
+#define HAVE_SYSINFO
+#endif
 
 #define USAGE \
 "Usage: %s [options] active-torrents.txt [options]\n\n" \
@@ -350,22 +354,6 @@ static int write_pidfile(int pid)
   return -1;
 }
 
-#ifdef HAVE_SYSINFO
-static void load(void)
-{
-  static const int FSHIFT = 16;              /* nr of bits of precision */
-  struct sysinfo info;
-  sysinfo(&info);
-#define FIXED_1         (1<<FSHIFT)     /* 1.0 as fixed-point */
-#define LOAD_INT(x) ((x) >> FSHIFT)
-#define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
-  syslog(LOG_INFO, "load average: %ld.%02ld, %ld.%02ld, %ld.%02ld\n",
-         LOAD_INT(info.loads[0]), LOAD_FRAC(info.loads[0]),
-         LOAD_INT(info.loads[1]), LOAD_FRAC(info.loads[1]),
-         LOAD_INT(info.loads[2]), LOAD_FRAC(info.loads[2]));
-}
-#endif
-
 
 static void flush_queued_messages( void )
 {
@@ -546,8 +534,24 @@ int main( int argc, char ** argv )
         }
       tr_torrentIterate( h, watchdog, NULL );
       tr_torrentRates(h, &download, &upload);
-      syslog(LOG_INFO, "%ld %d dl %.2f ul %.2f", time(NULL),
+
+#ifdef HAVE_SYSINFO
+      {
+        static const int FSHIFT = 16;          /* nr of bits of precision */
+#       define FIXED_1         (1<<FSHIFT)     /* 1.0 as fixed-point */
+#       define LOAD_INT(x) ((x) >> FSHIFT)
+#       define LOAD_FRAC(x) LOAD_INT(((x) & (FIXED_1-1)) * 100)
+
+        struct sysinfo info;
+        sysinfo(&info);
+        syslog(LOG_INFO, "%ld %d dl %.2f ul %.2f ld %ld.%02ld", time(NULL),
+               tr_torrentCount( h ), download, upload,
+               LOAD_INT(info.loads[1]), LOAD_FRAC(info.loads[1]));
+      }
+#else
+      syslog(LOG_INFO, "%ld %d dl %.2f ul %.2f ld 0.0", time(NULL),
              tr_torrentCount( h ), download, upload);
+#endif
     }
   
   tr_torrentIterate( h, stop, NULL );
