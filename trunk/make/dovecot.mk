@@ -29,7 +29,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOVECOT_SITE=http://www.dovecot.org/releases
-DOVECOT_VERSION=1.0.rc2
+DOVECOT_VERSION=1.0.rc15
 DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
 DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
@@ -44,7 +44,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=9
+DOVECOT_IPK_VERSION=10
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -54,10 +54,12 @@ DOVECOT_CONFFILES=/opt/etc/dovecot.conf /opt/etc/init.d/S90dovecot
 # DOVECOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifneq ($(OPTWARE_TARGET),wl500g)
-DOVECOT_PATCHES=sources/dovecot/configure.in.patch
-else
+ifeq ($(OPTWARE_TARGET),wl500g)
 DOVECOT_PATCHES=sources/dovecot/configure.in.patch sources/dovecot/config.h.in_wl500g.patch
+DOVECOT_CONFIGURE=--disable-ipv6
+else
+DOVECOT_PATCHES=sources/dovecot/configure.in.patch
+DOVECOT_CONFIGURE=
 endif
 
 #
@@ -133,6 +135,8 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		PKG_CONFIG_LIBDIR=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
+		$(DOVECOT_CONFIGURE) \
+		--enable-debug \
 		--without-gssapi \
 		--with-notify=dnotify \
 		--build=$(GNU_HOST_NAME) \
