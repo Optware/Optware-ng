@@ -169,7 +169,12 @@ sub parse_Packages
 	}
 
 	if($doclean) {
-	    invoke("rm -rf $optware_dir/builds/${p} $optware_dir/builds/${p}_*.ipk $optware_dir/builds/${p}-*.ipk $optware_dir/packages/${p}_*.ipk $optware_dir/packages/${p}-*.ipk") unless $dry_run;
+            my @to_rm = ("builds/${p}", "builds/${p}_*.ipk", "builds/${p}-*.ipk", "packages/${p}_*.ipk", "packages/${p}-*.ipk");
+            foreach (`grep '"Package: *[a-zA-Z0-9_-]* *" *>>' make/$p.mk`) {
+                my $subp = (split)[2]; chop $subp;
+                push @to_rm, "builds/${subp}_*.ipk", "packages/${subp}_*.ipk" unless $subp eq $p;
+            }
+	    invoke("rm -rf " . join(" ", @to_rm), $optware_dir) unless $dry_run;
 	    push @out_of_date_packages,$p;
 	}
     }
