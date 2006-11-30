@@ -15,11 +15,13 @@ export PATH
 #################################################
 ## The functions
 
-# writes active torrents listing into file and notifies daemon to reload it
+# rewrites active torrents listing into file and notifies daemon to reload it
 _update_active()
 {
     if [ -n "`ls ${WORK}/*/*.torrent 2>/dev/null | head -n 1`" ] ; then
-       ls -1  ${WORK}/*/*.torrent > ${ACTIVE}	
+	ls -1  ${WORK}/*/*.torrent > ${ACTIVE}	
+    else
+    	rm -f ${ACTIVE}
     fi
     if [ -n "`ls ${TARGET}/*/*.seeding 2>/dev/null | head -n 1`" ] ; then
         ls -1  ${TARGET}/*/*.seeding >> ${ACTIVE}
