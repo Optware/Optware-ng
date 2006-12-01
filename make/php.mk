@@ -299,7 +299,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
-	if test -n "$(PHP_PATCHES"; \
+	if test -n "$(PHP_PATCHES)"; \
 	    then cat $(PHP_PATCHES) | patch -p0 -bd $(PHP_BUILD_DIR); \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
