@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.0.9
+POSTGRESQL_VERSION=8.1.5
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-base-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -50,7 +50,9 @@ POSTGRESQL_IPK_VERSION=1
 # POSTGRESQL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/configure.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +110,9 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 	$(MAKE) readline-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(POSTGRESQL_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1
+	if test -n "$(POSTGRESQL_PATCHES)" ; then \
+		cat $(POSTGRESQL_PATCHES) | patch -d $(BUILD_DIR)/$(POSTGRESQL_DIR) -p1 ; \
+        fi
 	mv $(BUILD_DIR)/$(POSTGRESQL_DIR) $(POSTGRESQL_BUILD_DIR)
 	(cd $(POSTGRESQL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -133,9 +137,6 @@ postgresql-unpack: $(POSTGRESQL_BUILD_DIR)/.configured
 $(POSTGRESQL_BUILD_DIR)/.built: $(POSTGRESQL_BUILD_DIR)/.configured
 	rm -f $(POSTGRESQL_BUILD_DIR)/.built
 	$(MAKE) -C $(POSTGRESQL_BUILD_DIR)
-ifneq ($(HOST_MACHINE),armv5b)
-	cd $(POSTGRESQL_BUILD_DIR)/src/timezone; $(HOSTCC) -o zic -I../include zic.c ialloc.c scheck.c localtime.c
-endif
 	touch $(POSTGRESQL_BUILD_DIR)/.built
 
 #
@@ -148,7 +149,7 @@ postgresql: $(POSTGRESQL_BUILD_DIR)/.built
 #
 $(POSTGRESQL_BUILD_DIR)/.staged: $(POSTGRESQL_BUILD_DIR)/.built
 	rm -f $(POSTGRESQL_BUILD_DIR)/.staged
-	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
+	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(POSTGRESQL_BUILD_DIR)/.staged
 
 postgresql-stage: $(POSTGRESQL_BUILD_DIR)/.staged
@@ -185,6 +186,7 @@ $(POSTGRESQL_IPK_DIR)/CONTROL/control:
 $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 	rm -rf $(POSTGRESQL_IPK_DIR) $(BUILD_DIR)/postgresql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(POSTGRESQL_IPK_DIR) install-strip
+	rm -f $(POSTGRESQL_IPK_DIR)/opt/lib/libpq.a $(POSTGRESQL_IPK_DIR)/opt/lib/libecpg*.a $(POSTGRESQL_IPK_DIR)/opt/lib/libpgtypes*.a
 	$(STRIP_COMMAND) $(POSTGRESQL_IPK_DIR)/opt/bin/pg_config
 #	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/
 #	install -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf

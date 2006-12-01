@@ -5,7 +5,7 @@ prefix="/opt"
 
 # Data directory
 PGDATA="$prefix/var/pgsql/data"
-PG_DUMP_DIR="$prefix/var/pgsql/8.0/dump"
+PG_DUMP_DIR="$prefix/var/pgsql/8.1/dump"
 
 # Who to run the postmaster as, usually "postgres".  (NOT "root")
 PGUSER=postgres
