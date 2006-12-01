@@ -100,6 +100,7 @@ PERL_PACKAGES = \
 	perl-xml-parser \
 	amavisd-new \
 	spamassassin \
+	stow \
 
 PYTHON_PACKAGES = \
 	getmail ipython mailman mod-python pyrex \
@@ -170,7 +171,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 \
-	sqsh squeak squid stow strace stunnel streamripper sudo swi-prolog svn \
+	sqsh squeak squid strace stunnel streamripper sudo swi-prolog svn \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump termcap textutils thttpd \
@@ -183,7 +184,7 @@ COMMON_CROSS_PACKAGES = \
 	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
 	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
-	zip zlib zoo \
+	zip zlib zoo zsh \
 
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
@@ -232,7 +233,7 @@ WL500G_BROKEN_PACKAGES = \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
-	 xft xmu xpm xrender xt xterm xtst \
+	 xft xmu xpm xrender xt xterm xtst zsh \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
