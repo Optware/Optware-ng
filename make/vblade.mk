@@ -15,8 +15,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VBLADE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aoetools
-VBLADE_VERSION=10
-VBLADE_SOURCE=vblade-$(VBLADE_VERSION).tar.gz
+VBLADE_VERSION=14
+VBLADE_SOURCE=vblade-$(VBLADE_VERSION).tgz
 VBLADE_DIR=vblade-$(VBLADE_VERSION)
 VBLADE_UNZIP=zcat
 VBLADE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
