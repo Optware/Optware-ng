@@ -198,7 +198,6 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
                 $(PHP_FCGI_CONFIGURE_THREAD_ARGS) \
                 --without-iconv \
 		--without-pear \
-		--with-gettext \
 		--disable-cli \
 		--enable-cgi \
 		--enable-fastcgi \
