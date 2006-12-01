@@ -174,7 +174,7 @@ COMMON_CROSS_PACKAGES = \
 	sqsh squeak squid strace stunnel streamripper sudo swi-prolog svn \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
-	tar tcpdump termcap textutils thttpd \
+	tar tcpdump tcsh termcap textutils thttpd \
 	tin tinyscheme tnef tor torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
 	ufsd unarj unfs3 units unrar \
@@ -231,7 +231,7 @@ WL500G_BROKEN_PACKAGES = \
 	 nylon openldap pango postfix py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
-	 tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
+	 tcsh tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 
