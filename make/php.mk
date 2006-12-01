@@ -22,15 +22,15 @@ PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
 ifneq ($(OPTWARE_TARGET),wl500g)
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, cyrus-sasl-libs, openldap-libs
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre, cyrus-sasl-libs, openldap-libs
 else
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre
 endif
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=1
+PHP_IPK_VERSION=2
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -93,6 +93,9 @@ PHP_MBSTRING_IPK=$(BUILD_DIR)/php-mbstring_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(T
 
 PHP_MYSQL_IPK_DIR=$(BUILD_DIR)/php-mysql-$(PHP_VERSION)-ipk
 PHP_MYSQL_IPK=$(BUILD_DIR)/php-mysql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PHP_PGSQL_IPK_DIR=$(BUILD_DIR)/php-pgsql-$(PHP_VERSION)-ipk
+PHP_PGSQL_IPK=$(BUILD_DIR)/php-pgsql_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
 PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -233,6 +236,19 @@ $(PHP_PEAR_IPK_DIR)/CONTROL/control:
 	@echo "Description: PHP Extension and Application Repository" >>$@
 	@echo "Depends: php" >>$@
 
+$(PHP_PGSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-pgsql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: pgsql extension for php" >>$@
+	@echo "Depends: php, postgresql" >>$@
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -271,9 +287,11 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
 	$(MAKE) mysql-stage
+	$(MAKE) postgresql-stage
 	$(MAKE) imap-stage
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
+	$(MAKE) pcre-stage
 ifneq ($(OPTWARE_TARGET),wl500g)
 	$(MAKE) openldap-stage
 	$(MAKE) cyrus-sasl-stage
@@ -281,7 +299,15 @@ endif
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
-	cat $(PHP_PATCHES) |patch -p0 -bd $(PHP_BUILD_DIR)
+	if test -n "$(PHP_PATCHES"; \
+	    then cat $(PHP_PATCHES) | patch -p0 -bd $(PHP_BUILD_DIR); \
+	fi
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -i \
+	    -e 's|`$$PG_CONFIG --includedir`|$(STAGING_INCLUDE_DIR)|' \
+	    -e 's|`$$PG_CONFIG --libdir`|$(STAGING_LIB_DIR)|' \
+	    $(PHP_BUILD_DIR)/ext/*pgsql/*.m4
+endif
 	(cd $(PHP_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -330,9 +356,11 @@ endif
 		--with-mysql=shared,$(STAGING_PREFIX) \
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
+		--with-pgsql=shared,$(STAGING_PREFIX) \
 		--with-openssl=shared,$(STAGING_PREFIX) \
 		--with-sqlite=shared \
 		--with-pdo-mysql=shared,$(STAGING_PREFIX) \
+		--with-pdo-pgsql=shared,$(STAGING_PREFIX) \
 		--with-pdo-sqlite=shared \
 		--with-xsl=shared,$(STAGING_PREFIX) \
 		--with-zlib=shared,$(STAGING_PREFIX) \
@@ -341,6 +369,7 @@ endif
 		--with-png-dir=$(STAGING_PREFIX) \
 		--with-freetype-dir=$(STAGING_PREFIX) \
 		--with-zlib-dir=$(STAGING_PREFIX) \
+		--with-pcre-regex=$(STAGING_PREFIX) \
 		$(PHP_CONFIGURE_TARGET_ARGS) \
 		$(PHP_CONFIGURE_THREAD_ARGS) \
 		--without-iconv \
@@ -456,7 +485,7 @@ endif
 	$(MAKE) $(PHP_MYSQL_IPK_DIR)/CONTROL/control
 	install -d $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions
 	install -d $(PHP_MYSQL_IPK_DIR)/opt/etc/php.d
-	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/mysql.so $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions/mysql.so
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/*mysql*.so $(PHP_MYSQL_IPK_DIR)/opt/lib/php/extensions/
 	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)/opt/etc/php.d/mysql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
@@ -468,6 +497,14 @@ endif
 	install -d $(PHP_PEAR_IPK_DIR)/tmp
 	cp -a $(PHP_BUILD_DIR)/pear $(PHP_PEAR_IPK_DIR)/tmp
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PEAR_IPK_DIR)
+	### now make php-pgsql
+	rm -rf $(PHP_PGSQL_IPK_DIR) $(BUILD_DIR)/php-pgsql_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_PGSQL_IPK_DIR)/CONTROL/control
+	install -d $(PHP_PGSQL_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_PGSQL_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/*pgsql*.so $(PHP_PGSQL_IPK_DIR)/opt/lib/php/extensions/
+	echo extension=pgsql.so >$(PHP_PGSQL_IPK_DIR)/opt/etc/php.d/pgsql.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_PGSQL_IPK_DIR)
 	### finally the main ipkg
 	$(MAKE) $(PHP_IPK_DIR)/CONTROL/control
 	echo $(PHP_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_IPK_DIR)/CONTROL/conffiles
@@ -485,6 +522,7 @@ php-ipk: $(PHP_IPK) \
 	$(PHP_LDAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK) \
+	$(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK)
 else
 php-ipk: $(PHP_IPK) \
@@ -494,6 +532,7 @@ php-ipk: $(PHP_IPK) \
 	$(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK) \
+	$(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK)
 endif
 
@@ -516,6 +555,7 @@ php-dirclean:
 	$(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
+	$(PHP_PGSQL_IPK_DIR) $(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
 ifneq ($(OPTWARE_TARGET),wl500g)
 	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK)
@@ -533,6 +573,7 @@ php-check: php-ipk
 	$(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK) \
+	$(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK)
 ifneq ($(OPTWARE_TARGET),wl500g)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_LDAP_IPK)
