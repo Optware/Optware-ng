@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=3
+PHP_FCGI_IPK_VERSION=4
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -62,24 +62,14 @@ PHP_FCGI_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_FCGI_IPK_DIR=$(BUILD_DIR)/php-fcgi-$(PHP_FCGI_VERSION)-ipk
 PHP_FCGI_IPK=$(BUILD_DIR)/php-fcgi_$(PHP_FCGI_VERSION)-$(PHP_FCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-# We need this because openldap does not build on the wl500g.
-ifneq ($(OPTWARE_TARGET),wl500g)
 ifeq ($(OPTWARE_TARGET),ds101g)
 PHP_FCGI_CONFIGURE_TARGET_ARGS= \
-		--with-ldap=shared,$(STAGING_PREFIX) \
-		--with-ldap-sasl=$(STAGING_PREFIX) \
 		--with-gettext=$(STAGING_PREFIX)
 else
-PHP_FCGI_CONFIGURE_TARGET_ARGS= \
-		--with-ldap=shared,$(STAGING_PREFIX) \
-		--with-ldap-sasl=$(STAGING_PREFIX)
-endif
-PHP_FCGI_CONFIGURE_ENV=LIBS=-lsasl2
-else
 PHP_FCGI_CONFIGURE_TARGET_ARGS=
-PHP_FCGI_CONFIGURE_ENV=
 endif
 
+PHP_FCGI_CONFIGURE_ENV=
 PHP_FCGI_CONFIGURE_THREAD_ARGS= \
 		--enable-maintainer-zts
 
@@ -89,7 +79,7 @@ PHP_FCGI_CONFIGURE_THREAD_ARGS= \
 # Automatically create a ipkg control file
 #
 $(PHP_FCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(PHP_FCGI_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: php-fcgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -131,7 +121,16 @@ php-fcgi-source: $(DL_DIR)/$(PHP_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
-	$(MAKE) $(DL_DIR)/$(PHP_SOURCE) libxml2-stage pcre-stage
+	$(MAKE) $(DL_DIR)/$(PHP_SOURCE)
+	$(MAKE) bzip2-stage 
+	$(MAKE) gdbm-stage 
+	$(MAKE) libdb-stage
+	$(MAKE) libxml2-stage 
+	$(MAKE) libxsl-stage 
+	$(MAKE) openssl-stage 
+	$(MAKE) libpng-stage
+	$(MAKE) libjpeg-stage
+	$(MAKE) pcre-stage
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_FCGI_BUILD_DIR)
@@ -157,15 +156,12 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
                 --with-config-file-scan-dir=/opt/etc/php.d \
                 --with-layout=GNU \
                 --disable-static \
-                --enable-bcmath=shared \
-                --enable-calendar=shared \
                 --enable-dba=shared \
                 --with-inifile \
                 --with-flatfile \
                 --enable-dom=shared \
                 --enable-exif=shared \
                 --enable-ftp=shared \
-                --enable-mbstring=shared \
                 --enable-pdo=shared \
                 --enable-shmop=shared \
                 --enable-sockets=shared \
@@ -178,14 +174,8 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
                 --with-db4=$(STAGING_PREFIX) \
                 --with-dom=shared,$(STAGING_PREFIX) \
                 --with-gdbm=$(STAGING_PREFIX) \
-                --with-gd=shared,$(STAGING_PREFIX) \
-                --with-imap=shared,$(STAGING_PREFIX) \
-                --with-mysql=shared,$(STAGING_PREFIX) \
-                --with-mysql-sock=/tmp/mysql.sock \
-                --with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
                 --with-openssl=shared,$(STAGING_PREFIX) \
                 --with-sqlite=shared \
-                --with-pdo-mysql=shared,$(STAGING_PREFIX) \
                 --with-pdo-sqlite=shared \
                 --with-xsl=shared,$(STAGING_PREFIX) \
                 --with-zlib=shared,$(STAGING_PREFIX) \
@@ -196,8 +186,12 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
                 --with-zlib-dir=$(STAGING_PREFIX) \
                 $(PHP_FCGI_CONFIGURE_TARGET_ARGS) \
                 $(PHP_FCGI_CONFIGURE_THREAD_ARGS) \
+		--with-pcre-regex=$(STAGING_PREFIX) \
+		--with-regex=php \
                 --without-iconv \
 		--without-pear \
+		--enable-spl \
+		--enable-memory-limit \
 		--disable-cli \
 		--enable-cgi \
 		--enable-fastcgi \
@@ -205,8 +199,6 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 	)
 	$(PATCH_LIBTOOL) $(PHP_FCGI_BUILD_DIR)/libtool
 	touch $(PHP_FCGI_BUILD_DIR)/.configured
-
-#		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 
 php-fcgi-unpack: $(PHP_FCGI_BUILD_DIR)/.configured
 
