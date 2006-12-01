@@ -124,7 +124,7 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
 	$(MAKE) gdbm-stage 
 	$(MAKE) libdb-stage
 	$(MAKE) libxml2-stage 
-	$(MAKE) libxsl-stage 
+	$(MAKE) libxslt-stage 
 	$(MAKE) openssl-stage 
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
