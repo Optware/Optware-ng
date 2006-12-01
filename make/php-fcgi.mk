@@ -62,16 +62,14 @@ PHP_FCGI_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_FCGI_IPK_DIR=$(BUILD_DIR)/php-fcgi-$(PHP_FCGI_VERSION)-ipk
 PHP_FCGI_IPK=$(BUILD_DIR)/php-fcgi_$(PHP_FCGI_VERSION)-$(PHP_FCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-ifeq ($(OPTWARE_TARGET),ds101g)
-PHP_FCGI_CONFIGURE_TARGET_ARGS= \
-		--with-gettext=$(STAGING_PREFIX)
+ifeq ($(OPTWARE_TARGET), $(filter ds101g ddwrt oleg, $(OPTWARE_TARGET)))
+PHP_FCGI_CONFIGURE_TARGET_ARGS=--with-gettext=$(STAGING_PREFIX)
 else
 PHP_FCGI_CONFIGURE_TARGET_ARGS=
 endif
 
 PHP_FCGI_CONFIGURE_ENV=
-PHP_FCGI_CONFIGURE_THREAD_ARGS= \
-		--enable-maintainer-zts
+PHP_FCGI_CONFIGURE_THREAD_ARGS=--enable-maintainer-zts
 
 .PHONY: php-fcgi-source php-fcgi-unpack php-fcgi php-fcgi-stage php-fcgi-ipk php-fcgi-clean php-fcgi-dirclean php-fcgi-check
 
