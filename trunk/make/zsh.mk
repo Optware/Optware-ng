@@ -36,7 +36,7 @@ ZSH_CONFLICTS=
 #
 # ZSH_IPK_VERSION should be incremented when the ipk changes.
 #
-ZSH_IPK_VERSION=1
+ZSH_IPK_VERSION=2
 
 #
 # ZSH_CONFFILES should be a list of user-editable files
