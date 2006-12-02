@@ -137,7 +137,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
-	fcgi fetchmail file findutils flex flip ftpd-topfield ffmpeg ficy fixesext flac \
+	fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
 	gambit-c gawk gconv-modules gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
@@ -222,7 +222,7 @@ WL500G_BROKEN_PACKAGES = \
 	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
-	 fcgi ficy freetds gambit-c gawk \
+	 fcgi ficy fish freetds gambit-c gawk \
 	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
@@ -239,7 +239,7 @@ WL500G_BROKEN_PACKAGES = \
 UCLIBC_BROKEN_PACKAGES = \
 	 amule bitlbee bsdmainutils bzflag elinks \
 	$(ERLANG_PACKAGES) \
-	 fcgi ficy gambit-c \
+	 fcgi ficy fish gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk ice id3lib iperf iptables jabberd \
 	 jamvm ldconfig libdvb libtorrent monotone \
