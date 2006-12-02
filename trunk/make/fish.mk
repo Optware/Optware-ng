@@ -29,7 +29,7 @@ FISH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FISH_DESCRIPTION=A user friendly command line shell for UNIX-like operating systems such as Linux.
 FISH_SECTION=shell
 FISH_PRIORITY=optional
-FISH_DEPENDS=
+FISH_DEPENDS=ncurses
 FISH_SUGGESTS=
 FISH_CONFLICTS=
 
@@ -113,7 +113,7 @@ fish-source: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES)
 # shown below to make various patches to it.
 #
 $(FISH_BUILD_DIR)/.configured: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES) make/fish.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(FISH_DIR) $(FISH_BUILD_DIR)
 	$(FISH_UNZIP) $(DL_DIR)/$(FISH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FISH_PATCHES)" ; \
@@ -149,7 +149,7 @@ fish-unpack: $(FISH_BUILD_DIR)/.configured
 #
 $(FISH_BUILD_DIR)/.built: $(FISH_BUILD_DIR)/.configured
 	rm -f $(FISH_BUILD_DIR)/.built
-	$(MAKE) -C $(FISH_BUILD_DIR) gen_hdr2 CC=$(HOSTCC)
+	$(MAKE) -C $(FISH_BUILD_DIR) gen_hdr2 CC=$(HOSTCC) LDFLAGS=""
 	$(MAKE) -C $(FISH_BUILD_DIR)
 	touch $(FISH_BUILD_DIR)/.built
 
