@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.12
+LIBPNG_VERSION=1.2.14
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
@@ -34,13 +34,13 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=2
+LIBPNG_IPK_VERSION=1
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBPNG_PATCHES=$(LIBPNG_SOURCE_DIR)/libpng-1.2.12-no-rpl_malloc.patch
+#LIBPNG_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -62,6 +62,8 @@ LIBPNG_BUILD_DIR=$(BUILD_DIR)/libpng
 LIBPNG_SOURCE_DIR=$(SOURCE_DIR)/libpng
 LIBPNG_IPK_DIR=$(BUILD_DIR)/libpng-$(LIBPNG_VERSION)-ipk
 LIBPNG_IPK=$(BUILD_DIR)/libpng_$(LIBPNG_VERSION)-$(LIBPNG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libpng-source libpng-unpack libpng libpng-stage libpng-ipk libpng-clean libpng-dirclean libpng-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -96,10 +98,13 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
 	$(LIBPNG_UNZIP) $(DL_DIR)/$(LIBPNG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1
+	if test -n "$(LIBPNG_PATCHES)"; \
+		then cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
+#	cd $(LIBPNG_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ;
 	(cd $(LIBPNG_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPNG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPNG_LDFLAGS)" \
@@ -198,3 +203,9 @@ libpng-clean:
 #
 libpng-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR) $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
+
+#
+# Some sanity check for the package.
+#
+libpng-check: $(LIBPNG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBPNG_IPK)
