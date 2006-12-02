@@ -149,7 +149,9 @@ fish-unpack: $(FISH_BUILD_DIR)/.configured
 #
 $(FISH_BUILD_DIR)/.built: $(FISH_BUILD_DIR)/.configured
 	rm -f $(FISH_BUILD_DIR)/.built
+ifneq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(FISH_BUILD_DIR) gen_hdr2 CC=$(HOSTCC) LDFLAGS=""
+endif
 	$(MAKE) -C $(FISH_BUILD_DIR)
 	touch $(FISH_BUILD_DIR)/.built
 
