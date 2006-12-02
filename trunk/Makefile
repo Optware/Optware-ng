@@ -161,7 +161,7 @@ COMMON_CROSS_PACKAGES = \
 	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
 	netcat net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
-	opencdk openldap openssh openssl openvpn optware-devel oww \
+	opencdk openldap openssh openssl openvpn optware-devel ossp-js oww \
 	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
