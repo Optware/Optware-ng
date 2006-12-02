@@ -67,7 +67,7 @@
 /* #undef DEBUG */
 
 /* The default path; used when running commands with command -p */
-#define DEFAULT_PATH "/bin:/usr/bin"
+#define DEFAULT_PATH "/bin:/usr/bin:/opt/bin"
 
 /* Define to 1 if an underscore has to be prepended to dlsym() argument. */
 /* #undef DLSYM_NEEDS_UNDERSCORE */
@@ -89,23 +89,23 @@
 
 /* The global file to source whenever zsh is run as a login shell; if
    undefined, don't source anything */
-#define GLOBAL_ZLOGIN "/etc/zlogin"
+#define GLOBAL_ZLOGIN "/opt/etc/zlogin"
 
 /* The global file to source whenever zsh was run as a login shell. This is
    sourced right before exiting. If undefined, don't source anything. */
-#define GLOBAL_ZLOGOUT "/etc/zlogout"
+#define GLOBAL_ZLOGOUT "/opt/etc/zlogout"
 
 /* The global file to source whenever zsh is run as a login shell, before
    zshrc is read; if undefined, don't source anything. */
-#define GLOBAL_ZPROFILE "/etc/zprofile"
+#define GLOBAL_ZPROFILE "/opt/etc/zprofile"
 
 /* The global file to source absolutely first whenever zsh is run; if
    undefined, don't source anything. */
-#define GLOBAL_ZSHENV "/etc/zshenv"
+#define GLOBAL_ZSHENV "/opt/etc/zshenv"
 
 /* The global file to source whenever zsh is run; if undefined, don't source
    anything */
-#define GLOBAL_ZSHRC "/etc/zshrc"
+#define GLOBAL_ZSHRC "/opt/etc/zshrc"
 
 /* Define if your system defines TIOCGWINSZ in sys/ioctl.h. */
 #define GWINSZ_IN_SYS_IOCTL 1
