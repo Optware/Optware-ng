@@ -55,6 +55,12 @@ TNFTP_IPK_VERSION=1
 TNFTP_CPPFLAGS=
 TNFTP_LDFLAGS=
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+TNFTP_CONFIGURE_ENV=ac_cv_func_getpgrp_void=yes
+else
+TNFTP_CONFIGURE_ENV=
+endif
+
 #
 # TNFTP_BUILD_DIR is the directory in which the build is done.
 # TNFTP_SOURCE_DIR is the directory which holds all the
@@ -118,7 +124,7 @@ $(TNFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES) make/
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TNFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TNFTP_LDFLAGS)" \
-		ac_cv_func_getpgrp_void=yes \
+                $(TNFTP_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
