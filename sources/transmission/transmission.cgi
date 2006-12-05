@@ -463,12 +463,18 @@ _push()
 _log ()
 {
 
+if [ ! -r ${SYSLOG} ]; then
+  echo "<p>${SYSLOG} not readable. Properly configure paths "
+  echo "in transmission.conf</p>"
+  return
+fi
+    
 echo "<pre>"
-sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/w ${GNUPLOT_DATA}" -e 't;p}' ${SYSLOG} 
+sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/;t data;p;b;}:data w ${GNUPLOT_DATA}" ${SYSLOG} 
 echo "</pre>"
 
 if [ ! -x ${GNUPLOT} ]; then
-  echo "<p>gnuplot: ${GNUPLOT} not found. Properly configure paths"
+  echo "<p>gnuplot: ${GNUPLOT} not found. Properly configure paths "
   echo "in transmission.conf for transfer graphing!</p>"
   return
 fi
