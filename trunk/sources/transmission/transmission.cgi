@@ -464,8 +464,8 @@ _log ()
 {
 
 if [ ! -r ${SYSLOG} ]; then
-  echo "<p>${SYSLOG} not readable. Properly configure paths "
-  echo "in transmission.conf</p>"
+  echo "<p>${SYSLOG} not readable. Properly configure syslogd at "
+  echo "system startup.</p>"
   return
 fi
     
@@ -493,7 +493,7 @@ set y2range [0:]
 set ylabel "Transmission transfer rate [kB/s]"
 set y2label "System load (5 min average)"
 set y2tics 1
-set xlabel "Time [UTC +${TZO} seconds]"
+set xlabel "Time [UTC ${TZO} seconds]"
 plot '${GNUPLOT_DATA}' using (\$1+${TZO}):2 title 'download' axis x1y1 with impulses, \
      '${GNUPLOT_DATA}' using (\$1+${TZO}):3 title 'upload' with impulses, \
      '${GNUPLOT_DATA}' using (\$1+${TZO}):4 axis x1y2 title 'load' with lines
