@@ -30,7 +30,7 @@ NFS-UTILS_CONFLICTS=
 #
 # NFS-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS-UTILS_IPK_VERSION=4
+NFS-UTILS_IPK_VERSION=5
 
 #
 # NFS-UTILS_PATCHES should list any patches, in the the order in
