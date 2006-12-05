@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=0.12
+PY-BAZAAR-NG_VERSION=0.13
 PY-BAZAAR-NG_SITE=http://bazaar-vcs.org/releases/src
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
@@ -30,7 +30,8 @@ PY-BAZAAR-NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BAZAAR-NG_DESCRIPTION=A decentralized revision control system designed to be easy for developers and end users alike.
 PY-BAZAAR-NG_SECTION=misc
 PY-BAZAAR-NG_PRIORITY=optional
-PY-BAZAAR-NG_DEPENDS=python, py-celementtree
+PY24-BAZAAR-NG_DEPENDS=python24, py-celementtree
+PY25-BAZAAR-NG_DEPENDS=python25, py25-celementtree
 PY-BAZAAR-NG_CONFLICTS=
 
 #
@@ -66,8 +67,14 @@ PY-BAZAAR-NG_LDFLAGS=
 #
 PY-BAZAAR-NG_BUILD_DIR=$(BUILD_DIR)/py-bazaar-ng
 PY-BAZAAR-NG_SOURCE_DIR=$(SOURCE_DIR)/py-bazaar-ng
-PY-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
-PY-BAZAAR-NG_IPK=$(BUILD_DIR)/py-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
+PY24-BAZAAR-NG_IPK=$(BUILD_DIR)/py-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py25-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
+PY25-BAZAAR-NG_IPK=$(BUILD_DIR)/py25-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-bazaar-ng-source py-bazaar-ng-unpack py-bazaar-ng py-bazaar-ng-stage py-bazaar-ng-ipk py-bazaar-ng-clean py-bazaar-ng-dirclean py-bazaar-ng-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,21 +107,41 @@ py-bazaar-ng-source: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES)
 #
 $(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES)
 	$(MAKE) python-stage
-	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)
+	rm -rf $(PY-BAZAAR-NG_BUILD_DIR)
+	mkdir -p $(PY-BAZAAR-NG_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR)
 	$(PY-BAZAAR-NG_UNZIP) $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-BAZAAR-NG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)
-	(cd $(PY-BAZAAR-NG_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)/2.4
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg; \
+	    ) >> setup.cfg; \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR)
+	$(PY-BAZAAR-NG_UNZIP) $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-BAZAAR-NG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)/2.5
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
 	)
 	touch $(PY-BAZAAR-NG_BUILD_DIR)/.configured
 
@@ -125,9 +152,13 @@ py-bazaar-ng-unpack: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
 #
 $(PY-BAZAAR-NG_BUILD_DIR)/.built: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
 	rm -f $(PY-BAZAAR-NG_BUILD_DIR)/.built
-	(cd $(PY-BAZAAR-NG_BUILD_DIR); \
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	)
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.5; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
 	touch $(PY-BAZAAR-NG_BUILD_DIR)/.built
 
@@ -150,8 +181,8 @@ py-bazaar-ng-stage: $(PY-BAZAAR-NG_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-bazaar-ng
 #
-$(PY-BAZAAR-NG_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-BAZAAR-NG_IPK_DIR)/CONTROL
+$(PY24-BAZAAR-NG_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-bazaar-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +192,21 @@ $(PY-BAZAAR-NG_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-BAZAAR-NG_MAINTAINER)" >>$@
 	@echo "Source: $(PY-BAZAAR-NG_SITE)/$(PY-BAZAAR-NG_SOURCE)" >>$@
 	@echo "Description: $(PY-BAZAAR-NG_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-BAZAAR-NG_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-BAZAAR-NG_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-BAZAAR-NG_CONFLICTS)" >>$@
+
+$(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-bazaar-ng" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-BAZAAR-NG_PRIORITY)" >>$@
+	@echo "Section: $(PY-BAZAAR-NG_SECTION)" >>$@
+	@echo "Version: $(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-BAZAAR-NG_MAINTAINER)" >>$@
+	@echo "Source: $(PY-BAZAAR-NG_SITE)/$(PY-BAZAAR-NG_SOURCE)" >>$@
+	@echo "Description: $(PY-BAZAAR-NG_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-BAZAAR-NG_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BAZAAR-NG_CONFLICTS)" >>$@
 
 #
@@ -176,19 +221,31 @@ $(PY-BAZAAR-NG_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
-	rm -rf $(PY-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py-bazaar-ng_*_$(TARGET_ARCH).ipk
-	(cd $(PY-BAZAAR-NG_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
+$(PY24-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
+	rm -rf $(PY24-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py-bazaar-ng_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
 	)
-#	$(STRIP_COMMAND) $(PY-BAZAAR-NG_IPK_DIR)/opt/lib/python2.4/site-packages/bazaar-ng/*.so
-	$(MAKE) $(PY-BAZAAR-NG_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-BAZAAR-NG_IPK_DIR)
+#	$(STRIP_COMMAND) $(PY24-BAZAAR-NG_IPK_DIR)/opt/lib/python2.4/site-packages/bazaar-ng/*.so
+	$(MAKE) $(PY24-BAZAAR-NG_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BAZAAR-NG_IPK_DIR)
+
+$(PY25-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
+	rm -rf $(PY25-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py25-bazaar-ng_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
+	)
+#	$(STRIP_COMMAND) $(PY25-BAZAAR-NG_IPK_DIR)/opt/lib/python2.5/site-packages/bazaar-ng/*.so
+	for f in $(PY25-BAZAAR-NG_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	rm -rf $(PY25-BAZAAR-NG_IPK_DIR)/opt/man
+	$(MAKE) $(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BAZAAR-NG_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-bazaar-ng-ipk: $(PY-BAZAAR-NG_IPK)
+py-bazaar-ng-ipk: $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,4 +258,12 @@ py-bazaar-ng-clean:
 # directories.
 #
 py-bazaar-ng-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR) $(PY-BAZAAR-NG_IPK_DIR) $(PY-BAZAAR-NG_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)
+	rm -rf $(PY24-BAZAAR-NG_IPK_DIR) $(PY24-BAZAAR-NG_IPK)
+	rm -rf $(PY25-BAZAAR-NG_IPK_DIR) $(PY25-BAZAAR-NG_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-bazaar-ng-check: $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BAZAAR-NG_IPK) $(PY25-BAZAAR-NG_IPK)
