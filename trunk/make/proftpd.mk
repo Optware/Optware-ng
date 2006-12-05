@@ -21,15 +21,15 @@
 #
 PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
-PROFTPD_VERSION=1.2.10
-PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.gz
+PROFTPD_VERSION=1.3.0a
+PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
-PROFTPD_UNZIP=zcat
+PROFTPD_UNZIP=bzcat
 
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=5
+PROFTPD_IPK_VERSION=1
 
 #
 # Control file info
@@ -72,11 +72,13 @@ PROFTPD_SOURCE_DIR=$(SOURCE_DIR)/proftpd
 PROFTPD_IPK_DIR=$(BUILD_DIR)/proftpd-$(PROFTPD_VERSION)-ipk
 PROFTPD_IPK=$(BUILD_DIR)/proftpd_$(PROFTPD_VERSION)-$(PROFTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: proftpd-source proftpd-unpack proftpd proftpd-stage proftpd-ipk proftpd-clean proftpd-dirclean proftpd-check
+
 #
 # Automatically create a ipkg control file
 #
 $(PROFTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(PROFTPD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: $(PROFTPD_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -121,9 +123,7 @@ proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
-ifneq ($(HOST_MACHINE),armv5b)
 	$(MAKE) openssl-stage
-endif
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PROFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1
@@ -248,3 +248,9 @@ proftpd-clean:
 #
 proftpd-dirclean:
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR) $(PROFTPD_IPK_DIR) $(PROFTPD_IPK)
+
+#
+# Some sanity check for the package.
+#
+proftpd-check: $(PROFTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PROFTPD_IPK)
