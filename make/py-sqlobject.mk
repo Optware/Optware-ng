@@ -28,7 +28,7 @@ PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
 #PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-PY-SQLOBJECT_VERSION=0.7.1
+PY-SQLOBJECT_VERSION=0.7.2
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
@@ -37,8 +37,10 @@ PY-SQLOBJECT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SQLOBJECT_DESCRIPTION=An object-relational mapper for python.
 PY-SQLOBJECT_SECTION=misc
 PY-SQLOBJECT_PRIORITY=optional
-PY-SQLOBJECT_DEPENDS=python, py-formencode
-PY-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg, py-mysql
+PY24-SQLOBJECT_DEPENDS=python24, py24-formencode
+PY25-SQLOBJECT_DEPENDS=python25, py25-formencode
+PY24-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg2, py-mysql
+PY25-SQLOBJECT_SUGGESTS=py25-psycopg2, py25-mysql
 PY-SQLOBJECT_CONFLICTS=
 
 PY-SQLOBJECT_IPK_VERSION=1
@@ -71,8 +73,14 @@ PY-SQLOBJECT_LDFLAGS=
 #
 PY-SQLOBJECT_BUILD_DIR=$(BUILD_DIR)/py-sqlobject
 PY-SQLOBJECT_SOURCE_DIR=$(SOURCE_DIR)/py-sqlobject
-PY-SQLOBJECT_IPK_DIR=$(BUILD_DIR)/py-sqlobject-$(PY-SQLOBJECT_VERSION)-ipk
-PY-SQLOBJECT_IPK=$(BUILD_DIR)/py-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-SQLOBJECT_IPK_DIR=$(BUILD_DIR)/py-sqlobject-$(PY-SQLOBJECT_VERSION)-ipk
+PY24-SQLOBJECT_IPK=$(BUILD_DIR)/py-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-SQLOBJECT_IPK_DIR=$(BUILD_DIR)/py25-sqlobject-$(PY-SQLOBJECT_VERSION)-ipk
+PY25-SQLOBJECT_IPK=$(BUILD_DIR)/py25-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-sqlobject-source py-sqlobject-unpack py-sqlobject py-sqlobject-stage py-sqlobject-ipk py-sqlobject-clean py-sqlobject-dirclean py-sqlobject-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -111,7 +119,10 @@ else
 $(PY-SQLOBJECT_BUILD_DIR)/.configured: $(PY-SQLOBJECT_PATCHES) make/py-sqlobject.mk
 endif
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
+	rm -rf $(PY-SQLOBJECT_BUILD_DIR)
+	mkdir -p $(PY-SQLOBJECT_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR)
 ifeq ($(PY-SQLOBJECT_SVN_REV),)
 	$(PY-SQLOBJECT_UNZIP) $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
@@ -122,10 +133,27 @@ endif
 	if test -n "$(PY-SQLOBJECT_PATCHES)" ; then \
 	    cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
+	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)/2.4
 	(cd $(PY-SQLOBJECT_BUILD_DIR); \
 	    sed -i -e '/use_setuptools/d' setup.py; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR)
+ifeq ($(PY-SQLOBJECT_SVN_REV),)
+	$(PY-SQLOBJECT_UNZIP) $(DL_DIR)/$(PY-SQLOBJECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-SQLOBJECT_SVN_REV) http://svn.colorstudy.com/SQLObject/trunk $(PY-SQLOBJECT_DIR); \
+	)
+endif
+	if test -n "$(PY-SQLOBJECT_PATCHES)" ; then \
+	    cat $(PY-SQLOBJECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)/2.5
+	(cd $(PY-SQLOBJECT_BUILD_DIR); \
+	    sed -i -e '/use_setuptools/d' setup.py; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-SQLOBJECT_BUILD_DIR)/.configured
 
@@ -136,7 +164,12 @@ py-sqlobject-unpack: $(PY-SQLOBJECT_BUILD_DIR)/.configured
 #
 $(PY-SQLOBJECT_BUILD_DIR)/.built: $(PY-SQLOBJECT_BUILD_DIR)/.configured
 	rm -f $(PY-SQLOBJECT_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-SQLOBJECT_BUILD_DIR)
+	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
+	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
 	touch $(PY-SQLOBJECT_BUILD_DIR)/.built
 
 #
@@ -158,8 +191,8 @@ py-sqlobject-stage: $(PY-SQLOBJECT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-sqlobject
 #
-$(PY-SQLOBJECT_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SQLOBJECT_IPK_DIR)/CONTROL
+$(PY24-SQLOBJECT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-sqlobject" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -169,7 +202,23 @@ $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-SQLOBJECT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-SQLOBJECT_SITE)/$(PY-SQLOBJECT_SOURCE)" >>$@
 	@echo "Description: $(PY-SQLOBJECT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-SQLOBJECT_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-SQLOBJECT_DEPENDS)" >>$@
+	@echo "Suggests: $(PY24-SQLOBJECT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PY-SQLOBJECT_CONFLICTS)" >>$@
+
+$(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-sqlobject" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SQLOBJECT_PRIORITY)" >>$@
+	@echo "Section: $(PY-SQLOBJECT_SECTION)" >>$@
+	@echo "Version: $(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SQLOBJECT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SQLOBJECT_SITE)/$(PY-SQLOBJECT_SOURCE)" >>$@
+	@echo "Description: $(PY-SQLOBJECT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-SQLOBJECT_DEPENDS)" >>$@
+	@echo "Suggests: $(PY25-SQLOBJECT_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-SQLOBJECT_CONFLICTS)" >>$@
 
 #
@@ -184,20 +233,30 @@ $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
-	rm -rf $(PY-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SQLOBJECT_BUILD_DIR); \
+$(PY24-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
+	rm -rf $(PY24-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY-SQLOBJECT_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-SQLOBJECT_IPK_DIR)/CONTROL/control
-#	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SQLOBJECT_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY24-SQLOBJECT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/control
+#	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SQLOBJECT_IPK_DIR)
+
+$(PY25-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
+	rm -rf $(PY25-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py25-sqlobject_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY25-SQLOBJECT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control
+#	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SQLOBJECT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-sqlobject-ipk: $(PY-SQLOBJECT_IPK)
+py-sqlobject-ipk: $(PY24-SQLOBJECT_IPK) $(PY25-SQLOBJECT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -210,4 +269,12 @@ py-sqlobject-clean:
 # directories.
 #
 py-sqlobject-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR) $(PY-SQLOBJECT_IPK_DIR) $(PY-SQLOBJECT_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-SQLOBJECT_DIR) $(PY-SQLOBJECT_BUILD_DIR)
+	rm -rf $(PY24-SQLOBJECT_IPK_DIR) $(PY24-SQLOBJECT_IPK)
+	rm -rf $(PY25-SQLOBJECT_IPK_DIR) $(PY25-SQLOBJECT_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-sqlobject-check: $(PY24-SQLOBJECT_IPK) $(PY25-SQLOBJECT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SQLOBJECT_IPK) $(PY25-SQLOBJECT_IPK)
