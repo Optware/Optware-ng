@@ -31,14 +31,14 @@ TRANSMISSION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
-TRANSMISSION_DEPENDS=openssl
+TRANSMISSION_DEPENDS=openssl, logrotate
 TRANSMISSION_SUGGESTS=gnuplot
 TRANSMISSION_CONFLICTS=torrent
 
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=3
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
