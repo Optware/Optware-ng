@@ -99,9 +99,6 @@ There is a bug in libtransmission/ratecontrol.c which causes segmentation
 faults in daemon. To disable rate control set upload/download limit to -1
 in transmission.conf
 
-At present libbt utilities are used for scrape and metainfo due to
-libtransmissiom bug in scrape retrieval.
-
 HOME variable is used for daemon to find its .transmission directory where
 cache data for each torrent is stored for fast resume. Proper restore
 requires that system time is functioning as file mtime is checked. Assure
@@ -137,7 +134,7 @@ syslog must be running also for getting cumulative statistics!
 and quote. Spaces and characters like [](). are allowed in torrent filenames.
 Note that NO spaces is allowed for directories ${SOURCE}, ${WORK} and ${TARGET}.
 
-When one press "Update" button. Signal -USR1 is sent to daemon and after a
+When one presses "Update" button signal -USR1 is sent to daemon and after a
 second of waiting for it, all active .status files are sourced and printed.
 
 Problems with .status could be that transmisisond is not receiving USR1 signal.
@@ -145,10 +142,11 @@ This may be due to invalid path to PIDFILE or something like that.
 Pressing Update sends signal to daemon, waits one second and reads 
 .status files in active torrent directories. Take attention to syslog daemon.
 
-"torrent" package conflict is intentional. If you gonna use scrape or info, 
-then you need also libbt package. If you want transfer graph log then 
-gnuplot must be installed.
+"torrent" package conflict is intentional.
+If you want transfer graph log then gnuplot must be installed.
 
+For using www browser on router itself package lynx or elink is recommended.
+lynx http://localhost:8008/cgi-bin/transmission.cgi
 
 Known bugs:
 * There is a problem with fork and pthreads in uclibc 0.9.19
@@ -186,4 +184,26 @@ Problems with .status could be that transmisisond is not receiving USR1 signal. 
 
 5. Do I need "torrent" ipkg installed too?
 No. torrent package conflict is intentional. 
+
+6. I am getting some errors cat: /opt/var/run/transmission.pid: No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]getting some errors cat: /opt/var/run/transmission.pid: No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
+This means that Transmisison daemon is not running. Use Watchdog button to start in manually.
+
+7. Tried manually pressing watchdog for nothing.  Im still having that text under the buttons on the script page : /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
+It looks like daemon died for some reason. Take a look into syslog messages.
+The recommended way for running is using "Oleg" feed and not default "wl500g".
+
+8. What directories need to be created by default?
+mkdir /tmp/harddisk/torrent
+mkdir /tmp/harddisk/torrent/source
+mkdir /tmp/harddisk/torrent/work
+mkdir /tmp/harddisk/torrent/target
+chmod a+rw /tmp/harddisk/torrent
+chmod a+rw /tmp/harddisk/torrent/source
+chmod a+rw /tmp/harddisk/torrent/target
+chmod a+rw /tmp/harddisk/torrent/work
+
+9. My daemon dies frequently.
+512 MB swap is recommended on 32MB routers.
+
+
 oleo
