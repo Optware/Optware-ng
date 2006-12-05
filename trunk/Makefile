@@ -342,7 +342,6 @@ FSG3_SPECIFIC_PACKAGES = \
 	fsg3-kernel-modules \
 	fsg3-bootstrap \
 	crosstool-native \
-	optware-devel
 
 # Packages that do not work for fsg3.
 FSG3_BROKEN_PACKAGES = \
