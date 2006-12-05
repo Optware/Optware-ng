@@ -37,13 +37,13 @@ PY-SQLOBJECT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SQLOBJECT_DESCRIPTION=An object-relational mapper for python.
 PY-SQLOBJECT_SECTION=misc
 PY-SQLOBJECT_PRIORITY=optional
-PY24-SQLOBJECT_DEPENDS=python24, py24-formencode
+PY24-SQLOBJECT_DEPENDS=python24, py-formencode
 PY25-SQLOBJECT_DEPENDS=python25, py25-formencode
 PY24-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg2, py-mysql
 PY25-SQLOBJECT_SUGGESTS=py25-psycopg2, py25-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-PY-SQLOBJECT_IPK_VERSION=1
+PY-SQLOBJECT_IPK_VERSION=2
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
