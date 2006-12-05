@@ -26,17 +26,18 @@ PY-ELEMENTTREE_VERSION=1.2.6-20050316
 PY-ELEMENTTREE_SOURCE=elementtree-$(PY-ELEMENTTREE_VERSION).tar.gz
 PY-ELEMENTTREE_DIR=elementtree-$(PY-ELEMENTTREE_VERSION)
 PY-ELEMENTTREE_UNZIP=zcat
-PY-ELEMENTTREE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-ELEMENTTREE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-ELEMENTTREE_DESCRIPTION=A toolkit that contains a number of light-weight components for working with XML.
 PY-ELEMENTTREE_SECTION=misc
 PY-ELEMENTTREE_PRIORITY=optional
-PY-ELEMENTTREE_DEPENDS=python
+PY24-ELEMENTTREE_DEPENDS=python24
+PY25-ELEMENTTREE_DEPENDS=python25
 PY-ELEMENTTREE_CONFLICTS=
 
 #
 # PY-ELEMENTTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ELEMENTTREE_IPK_VERSION=2
+PY-ELEMENTTREE_IPK_VERSION=3
 
 #
 # PY-ELEMENTTREE_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-ELEMENTTREE_LDFLAGS=
 #
 PY-ELEMENTTREE_BUILD_DIR=$(BUILD_DIR)/py-elementtree
 PY-ELEMENTTREE_SOURCE_DIR=$(SOURCE_DIR)/py-elementtree
-PY-ELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py-elementtree-$(PY-ELEMENTTREE_VERSION)-ipk
-PY-ELEMENTTREE_IPK=$(BUILD_DIR)/py-elementtree_$(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-ELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py-elementtree-$(PY-ELEMENTTREE_VERSION)-ipk
+PY24-ELEMENTTREE_IPK=$(BUILD_DIR)/py-elementtree_$(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-ELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py25-elementtree-$(PY-ELEMENTTREE_VERSION)-ipk
+PY25-ELEMENTTREE_IPK=$(BUILD_DIR)/py25-elementtree_$(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-elementtree-source py-elementtree-unpack py-elementtree py-elementtree-stage py-elementtree-ipk py-elementtree-clean py-elementtree-dirclean py-elementtree-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,13 +107,25 @@ py-elementtree-source: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY-ELEMENTTREE_PATCH
 #
 $(PY-ELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY-ELEMENTTREE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)
+	rm -rf $(PY-ELEMENTTREE_BUILD_DIR)
+	mkdir -p $(PY-ELEMENTTREE_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR)
 	$(PY-ELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-ELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)
-	(cd $(PY-ELEMENTTREE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)/2.4
+	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    echo "executable=/opt/bin/python2.4") > setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR)
+	$(PY-ELEMENTTREE_UNZIP) $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-ELEMENTTREE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)/2.5
+	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
 	touch $(PY-ELEMENTTREE_BUILD_DIR)/.configured
 
@@ -139,8 +158,8 @@ py-elementtree-stage: $(PY-ELEMENTTREE_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-elementtree
 #
-$(PY-ELEMENTTREE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-ELEMENTTREE_IPK_DIR)/CONTROL
+$(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-elementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -150,7 +169,21 @@ $(PY-ELEMENTTREE_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-ELEMENTTREE_MAINTAINER)" >>$@
 	@echo "Source: $(PY-ELEMENTTREE_SITE)/$(PY-ELEMENTTREE_SOURCE)" >>$@
 	@echo "Description: $(PY-ELEMENTTREE_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-ELEMENTTREE_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-ELEMENTTREE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-ELEMENTTREE_CONFLICTS)" >>$@
+
+$(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-elementtree" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-ELEMENTTREE_PRIORITY)" >>$@
+	@echo "Section: $(PY-ELEMENTTREE_SECTION)" >>$@
+	@echo "Version: $(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-ELEMENTTREE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-ELEMENTTREE_SITE)/$(PY-ELEMENTTREE_SOURCE)" >>$@
+	@echo "Description: $(PY-ELEMENTTREE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-ELEMENTTREE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-ELEMENTTREE_CONFLICTS)" >>$@
 
 #
@@ -165,27 +198,30 @@ $(PY-ELEMENTTREE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
-	rm -rf $(PY-ELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py-elementtree_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(PY-ELEMENTTREE_BUILD_DIR) DESTDIR=$(PY-ELEMENTTREE_IPK_DIR) install
-	(cd $(PY-ELEMENTTREE_BUILD_DIR); \
+$(PY24-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
+	rm -rf $(PY24-ELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py-elementtree_*_$(TARGET_ARCH).ipk
+	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY-ELEMENTTREE_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-#	install -d $(PY-ELEMENTTREE_IPK_DIR)/opt/etc/
-#	install -m 644 $(PY-ELEMENTTREE_SOURCE_DIR)/py-elementtree.conf $(PY-ELEMENTTREE_IPK_DIR)/opt/etc/py-elementtree.conf
-#	install -d $(PY-ELEMENTTREE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PY-ELEMENTTREE_SOURCE_DIR)/rc.py-elementtree $(PY-ELEMENTTREE_IPK_DIR)/opt/etc/init.d/SXXpy-elementtree
-	$(MAKE) $(PY-ELEMENTTREE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PY-ELEMENTTREE_SOURCE_DIR)/postinst $(PY-ELEMENTTREE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PY-ELEMENTTREE_SOURCE_DIR)/prerm $(PY-ELEMENTTREE_IPK_DIR)/CONTROL/prerm
-#	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-ELEMENTTREE_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+	install --root=$(PY24-ELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control
+#	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-ELEMENTTREE_IPK_DIR)
+
+$(PY25-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
+	rm -rf $(PY25-ELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py25-elementtree_*_$(TARGET_ARCH).ipk
+	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
+	install --root=$(PY25-ELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control
+#	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ELEMENTTREE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-elementtree-ipk: $(PY-ELEMENTTREE_IPK)
+py-elementtree-ipk: $(PY24-ELEMENTTREE_IPK) $(PY25-ELEMENTTREE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -198,4 +234,12 @@ py-elementtree-clean:
 # directories.
 #
 py-elementtree-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR) $(PY-ELEMENTTREE_IPK_DIR) $(PY-ELEMENTTREE_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)
+	rm -rf $(PY24-ELEMENTTREE_IPK_DIR) $(PY24-ELEMENTTREE_IPK)
+	rm -rf $(PY25-ELEMENTTREE_IPK_DIR) $(PY25-ELEMENTTREE_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-elementtree-check: $(PY24-ELEMENTTREE_IPK) $(PY25-ELEMENTTREE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-ELEMENTTREE_IPK) $(PY25-ELEMENTTREE_IPK)
