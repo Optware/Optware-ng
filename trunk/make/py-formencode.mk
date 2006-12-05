@@ -26,17 +26,18 @@ PY-FORMENCODE_VERSION=0.6
 PY-FORMENCODE_SOURCE=FormEncode-$(PY-FORMENCODE_VERSION).tar.gz
 PY-FORMENCODE_DIR=FormEncode-$(PY-FORMENCODE_VERSION)
 PY-FORMENCODE_UNZIP=zcat
-PY-FORMENCODE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-FORMENCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-FORMENCODE_DESCRIPTION=A form generation and validation package for python.
 PY-FORMENCODE_SECTION=web
 PY-FORMENCODE_PRIORITY=optional
-PY-FORMENCODE_DEPENDS=python
+PY24-FORMENCODE_DEPENDS=python24
+PY25-FORMENCODE_DEPENDS=python25
 PY-FORMENCODE_CONFLICTS=
 
 #
 # PY-FORMENCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-FORMENCODE_IPK_VERSION=1
+PY-FORMENCODE_IPK_VERSION=2
 
 #
 # PY-FORMENCODE_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-FORMENCODE_LDFLAGS=
 #
 PY-FORMENCODE_BUILD_DIR=$(BUILD_DIR)/py-formencode
 PY-FORMENCODE_SOURCE_DIR=$(SOURCE_DIR)/py-formencode
-PY-FORMENCODE_IPK_DIR=$(BUILD_DIR)/py-formencode-$(PY-FORMENCODE_VERSION)-ipk
-PY-FORMENCODE_IPK=$(BUILD_DIR)/py-formencode_$(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-FORMENCODE_IPK_DIR=$(BUILD_DIR)/py-formencode-$(PY-FORMENCODE_VERSION)-ipk
+PY24-FORMENCODE_IPK=$(BUILD_DIR)/py-formencode_$(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-FORMENCODE_IPK_DIR=$(BUILD_DIR)/py25-formencode-$(PY-FORMENCODE_VERSION)-ipk
+PY25-FORMENCODE_IPK=$(BUILD_DIR)/py25-formencode_$(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-formencode-source py-formencode-unpack py-formencode py-formencode-stage py-formencode-ipk py-formencode-clean py-formencode-dirclean py-formencode-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,13 +107,25 @@ py-formencode-source: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-FORMENCODE_PATCHES)
 #
 $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-FORMENCODE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)
+	rm -rf $(PY-FORMENCODE_BUILD_DIR)
+	mkdir -p $(PY-FORMENCODE_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)
-	(cd $(PY-FORMENCODE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)/2.4
+	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
+	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)/2.5
+	(cd $(PY-FORMENCODE_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-FORMENCODE_BUILD_DIR)/.configured
 
@@ -117,7 +136,12 @@ py-formencode-unpack: $(PY-FORMENCODE_BUILD_DIR)/.configured
 #
 $(PY-FORMENCODE_BUILD_DIR)/.built: $(PY-FORMENCODE_BUILD_DIR)/.configured
 	rm -f $(PY-FORMENCODE_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-FORMENCODE_BUILD_DIR)
+	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-FORMENCODE_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-FORMENCODE_BUILD_DIR)/.built
 
 #
@@ -139,8 +163,8 @@ py-formencode-stage: $(PY-FORMENCODE_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-formencode
 #
-$(PY-FORMENCODE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-FORMENCODE_IPK_DIR)/CONTROL
+$(PY24-FORMENCODE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-formencode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -150,7 +174,21 @@ $(PY-FORMENCODE_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-FORMENCODE_MAINTAINER)" >>$@
 	@echo "Source: $(PY-FORMENCODE_SITE)/$(PY-FORMENCODE_SOURCE)" >>$@
 	@echo "Description: $(PY-FORMENCODE_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-FORMENCODE_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-FORMENCODE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-FORMENCODE_CONFLICTS)" >>$@
+
+$(PY25-FORMENCODE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-formencode" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-FORMENCODE_PRIORITY)" >>$@
+	@echo "Section: $(PY-FORMENCODE_SECTION)" >>$@
+	@echo "Version: $(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-FORMENCODE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-FORMENCODE_SITE)/$(PY-FORMENCODE_SOURCE)" >>$@
+	@echo "Description: $(PY-FORMENCODE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-FORMENCODE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-FORMENCODE_CONFLICTS)" >>$@
 
 #
@@ -165,19 +203,28 @@ $(PY-FORMENCODE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-FORMENCODE_IPK): $(PY-FORMENCODE_BUILD_DIR)/.built
-	rm -rf $(PY-FORMENCODE_IPK_DIR) $(BUILD_DIR)/py-formencode_*_$(TARGET_ARCH).ipk
-	(cd $(PY-FORMENCODE_BUILD_DIR); \
+$(PY24-FORMENCODE_IPK): $(PY-FORMENCODE_BUILD_DIR)/.built
+	rm -rf $(PY24-FORMENCODE_IPK_DIR) $(BUILD_DIR)/py-formencode_*_$(TARGET_ARCH).ipk
+	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-FORMENCODE_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-FORMENCODE_IPK_DIR)/CONTROL/control
-#	echo $(PY-FORMENCODE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-FORMENCODE_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-FORMENCODE_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-FORMENCODE_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-FORMENCODE_IPK_DIR)/CONTROL/control
+#	echo $(PY-FORMENCODE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-FORMENCODE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-FORMENCODE_IPK_DIR)
+
+$(PY25-FORMENCODE_IPK): $(PY-FORMENCODE_BUILD_DIR)/.built
+	rm -rf $(PY25-FORMENCODE_IPK_DIR) $(BUILD_DIR)/py25-formencode_*_$(TARGET_ARCH).ipk
+	(cd $(PY-FORMENCODE_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-FORMENCODE_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-FORMENCODE_IPK_DIR)/CONTROL/control
+#	echo $(PY-FORMENCODE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-FORMENCODE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-FORMENCODE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-formencode-ipk: $(PY-FORMENCODE_IPK)
+py-formencode-ipk: $(PY24-FORMENCODE_IPK) $(PY25-FORMENCODE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -190,4 +237,12 @@ py-formencode-clean:
 # directories.
 #
 py-formencode-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR) $(PY-FORMENCODE_IPK_DIR) $(PY-FORMENCODE_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)
+	rm -rf $(PY24-FORMENCODE_IPK_DIR) $(PY24-FORMENCODE_IPK)
+	rm -rf $(PY25-FORMENCODE_IPK_DIR) $(PY25-FORMENCODE_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-formencode-check: $(PY24-FORMENCODE_IPK) $(PY25-FORMENCODE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-FORMENCODE_IPK) $(PY25-FORMENCODE_IPK)
