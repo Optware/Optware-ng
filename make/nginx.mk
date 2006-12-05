@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.4.14
+NGINX_VERSION=0.5.0
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -181,7 +181,7 @@ nginx-stage: $(NGINX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nginx
 #
 $(NGINX_IPK_DIR)/CONTROL/control:
-	@install -d $(NGINX_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nginx" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
