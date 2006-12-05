@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 M4_SITE=http://ftp.gnu.org/pub/gnu/m4/
-M4_VERSION=1.4.7
+M4_VERSION=1.4.8
 M4_SOURCE=m4-$(M4_VERSION).tar.gz
 M4_DIR=m4-$(M4_VERSION)
 M4_UNZIP=zcat
@@ -138,7 +138,7 @@ m4: $(M4_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/m4
 #
 $(M4_IPK_DIR)/CONTROL/control:
-	@install -d $(M4_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: m4" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
