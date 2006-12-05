@@ -236,7 +236,7 @@ _scrape ()
     INFO="${TORRENT%/*}/.info"
     if [ -f "${INFO}" ]; then
 	. "${INFO}"
-	SCRAPE=`btlist -sq "${TORRENT}" | grep seeders`
+	SCRAPE=`transmissioncli -s "${TORRENT}" | grep seeder`
 	DUMMY=$?
 	_write_info
 	if [ $DUMMY != 0 ]; then
@@ -250,6 +250,7 @@ _scrape ()
 }
 
 # Search for best done torrent and suggest seeding based on ratio
+# Not very clever at the moment
 _best_seed ()                     
 {                                
    BEST=0              
@@ -258,7 +259,7 @@ _best_seed ()
 	    INFO="${TORRENT%/*}/.info"
 	    if [ -f "${INFO}" ]; then
 		. "${INFO}"
-		QUOTIENT=`echo "${SCRAPE}" | sed '/seeders: [1-9]\{1,\}/s/seeders:.\([0-9]\{1,\}\) leechers: \([0-9]\{1,\}\).*/(\2000\/\1/;t;d'` 
+		QUOTIENT=`echo "${SCRAPE}" | sed -n -e '/seeder/s/\([0-9]\{1,\}\) seeder(s), \([0-9]\{1,\}\) leecher.*/(\2000\/(\1+1)/p;d'` 
 		RATIO=$((QUOTIENT))
 		if [ ${RATIO} -gt ${BEST} ]; then
 		    BESTTORRENT="${TORRENT}"
@@ -458,8 +459,13 @@ _push()
 }
 
 # Show transfer log from log file
+# Replace "transmissiond" with "transmission" if all logs are preferred
 _log ()
 {
+
+echo "<pre>"
+sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/w ${GNUPLOT_DATA}" -e 't;p}' ${SYSLOG} 
+echo "</pre>"
 
 if [ ! -x ${GNUPLOT} ]; then
   echo "<p>gnuplot: ${GNUPLOT} not found. Properly configure paths"
@@ -467,6 +473,8 @@ if [ ! -x ${GNUPLOT} ]; then
   return
 fi
 
+echo "<p>Creating graph...</p>"
+TZO=${TIMEZONE_OFFSET:-0}
 cat > ${GNUPLOT_COMMAND} << __EOF__
 set terminal png small size 800,320
 set output '${GNUPLOT_OUTPUT}'
@@ -476,20 +484,19 @@ set format x "%H:%M\n%m/%d"
 set ytics nomirror
 set y2tics nomirror
 set y2range [0:]
-set ylabel "Transmission transfer rate (kB/s)"
+set ylabel "Transmission transfer rate [kB/s]"
 set y2label "System load (5 min average)"
 set y2tics 1
-plot '${GNUPLOT_DATA}' using 1:2 title 'download' axis x1y1 with impulses, \
-     '${GNUPLOT_DATA}' using 1:3 title 'upload' with impulses, \
-     '${GNUPLOT_DATA}' using 1:4 axis x1y2 title 'load' with lines
+set xlabel "Time [UTC +${TZO} seconds]"
+plot '${GNUPLOT_DATA}' using (\$1+${TZO}):2 title 'download' axis x1y1 with impulses, \
+     '${GNUPLOT_DATA}' using (\$1+${TZO}):3 title 'upload' with impulses, \
+     '${GNUPLOT_DATA}' using (\$1+${TZO}):4 axis x1y2 title 'load' with lines
 quit 
 __EOF__
 
-sed  -n '/transmissiond/s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/p' < ${SYSLOG} > ${GNUPLOT_DATA}
-
 ${GNUPLOT} ${GNUPLOT_COMMAND}
 
-echo "<br><img src=\"${HTTP_IMG_LOCATION}\">"
+echo "<img src=\"${HTTP_IMG_LOCATION}\">"
 
 }
 
@@ -502,8 +509,10 @@ _info ()
     _find
     echo "<h3>Torrent file metainfo</h3>"
     echo "<pre>"
-    btlist -s "${TORRENT}"
-    echo "</pre>"
+    transmissioncli -i "${TORRENT}"
+    echo "<p>"
+    transmissioncli -s "${TORRENT}" | grep "seeder"
+    echo "</p></pre>"
 }
 
 _help ()

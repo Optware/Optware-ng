@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.6
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1142
+TRANSMISSION_SVN_REV=1152
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -32,13 +32,13 @@ TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl
-TRANSMISSION_SUGGESTS=gnuplot, libbt
+TRANSMISSION_SUGGESTS=gnuplot
 TRANSMISSION_CONFLICTS=torrent
 
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=4
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -49,7 +49,8 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # which they should be applied to the source code.
 #
 TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch \
-	$(TRANSMISSION_SOURCE_DIR)/r1007_trackerc_brent_t108v4.patch
+	$(TRANSMISSION_SOURCE_DIR)/r1152_peerc_t66.patch \
+	$(TRANSMISSION_SOURCE_DIR)/r1152_trackerc_t108v5.patch
 
 # Additional sources to enhance transmission (like this daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
@@ -246,3 +247,8 @@ transmission-clean:
 #
 transmission-dirclean:
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) $(TRANSMISSION_IPK_DIR) $(TRANSMISSION_IPK)
+
+#
+# Some sanity check for the package.
+transmission-check: $(TRANSMISSION_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TRANSMISSION_IPK)

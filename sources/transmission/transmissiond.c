@@ -209,6 +209,7 @@ static void reload_active()
                   free(folder);
                   tr_torrentStart( tor );
                   info->flags |= TR_FACTIVE; 
+                  syslog( LOG_NOTICE, "Starting torrent %s", info->torrent );
                 }
             }
         }
