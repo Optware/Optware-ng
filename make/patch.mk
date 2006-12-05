@@ -19,9 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-PATCH_SITE=ftp://ftp.gnu.org/gnu/patch
-PATCH_VERSION=2.5.4
-PATCH_SOURCE=patch-$(PATCH_VERSION).tar.gz
+PATCH_SITE=http://ftp.debian.org/debian/pool/main/p/patch
+PATCH_VERSION=2.5.9
+PATCH_SOURCE=patch_$(PATCH_VERSION).orig.tar.gz
 PATCH_DIR=patch-$(PATCH_VERSION)
 PATCH_UNZIP=zcat
 PATCH_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
@@ -34,7 +34,7 @@ PATCH_CONFLICTS=
 #
 # PATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-PATCH_IPK_VERSION=3
+PATCH_IPK_VERSION=1
 
 #
 # PATCH_PATCHES should list any patches, in the the order in
@@ -62,6 +62,8 @@ PATCH_BUILD_DIR=$(BUILD_DIR)/patch
 PATCH_SOURCE_DIR=$(SOURCE_DIR)/patch
 PATCH_IPK_DIR=$(BUILD_DIR)/patch-$(PATCH_VERSION)-ipk
 PATCH_IPK=$(BUILD_DIR)/patch_$(PATCH_VERSION)-$(PATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: patch-source patch-unpack patch patch-stage patch-ipk patch-clean patch-dirclean patch-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -92,7 +94,7 @@ patch-source: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES)
+$(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES) make/patch.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PATCH_DIR) $(PATCH_BUILD_DIR)
 	$(PATCH_UNZIP) $(DL_DIR)/$(PATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -167,7 +169,7 @@ $(PATCH_IPK_DIR)/CONTROL/control:
 #
 $(PATCH_IPK): $(PATCH_BUILD_DIR)/.built
 	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_$(TARGET_ARCH).ipk
-	install -d $(PATCH_IPK_DIR)/opt/bin
+	$(MAKE) -C $(PATCH_BUILD_DIR) prefix=$(PATCH_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(PATCH_BUILD_DIR)/patch -o $(PATCH_IPK_DIR)/opt/bin/patch
 #	install -d $(PATCH_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(PATCH_SOURCE_DIR)/rc.patch $(PATCH_IPK_DIR)/opt/etc/init.d/SXXpatch
@@ -193,3 +195,9 @@ patch-clean:
 #
 patch-dirclean:
 	rm -rf $(BUILD_DIR)/$(PATCH_DIR) $(PATCH_BUILD_DIR) $(PATCH_IPK_DIR) $(PATCH_IPK)
+
+#
+# Some sanity check for the package.
+#
+patch-check: $(PATCH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PATCH_IPK)
