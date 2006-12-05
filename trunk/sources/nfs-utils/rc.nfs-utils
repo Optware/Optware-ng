@@ -23,6 +23,6 @@ touch /var/lib/nfs/etab
 touch /var/lib/nfs/rmtab
 
 /opt/sbin/statd
-/opt/sbin/exportfs -a
+/opt/sbin/exportfs -r
 /opt/sbin/nfsd
 /opt/sbin/mountd
