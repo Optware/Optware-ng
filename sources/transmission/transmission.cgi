@@ -470,7 +470,7 @@ if [ ! -r ${SYSLOG} ]; then
 fi
     
 echo "<pre>"
-sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/;t data;p;b;}:data w ${GNUPLOT_DATA}" ${SYSLOG} 
+sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/;t data;p;b;:data w ${GNUPLOT_DATA}" -e "}" ${SYSLOG} 
 echo "</pre>"
 
 if [ ! -x ${GNUPLOT} ]; then

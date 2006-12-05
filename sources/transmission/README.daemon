@@ -64,7 +64,7 @@ transmission_watchdog cares for queue processing and should be run every
 
 For graphing to work properly, gnuplot and syslog is required. As log can
 accumulate it is recommended that logrotate is used for flushing old logs.
-logrotate.conf recommended config is:
+/opt/etc/logrotate.conf recommended config is:
 compress
 
 /opt/var/log/messages {
