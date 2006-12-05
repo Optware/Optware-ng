@@ -32,7 +32,8 @@ target - Place where finished torrents are put
 Typical file flow is source -> work -> target For every torrent file from
 source, directory with the same name is created. Then torrent file is moved
 into this directory and transmissiond is run in background and constantly
-supervised with transmission_watchdog.
+supervised with transmission_watchdog. The only way for moving finished 
+active torrent into target dir is with Watchdog and not with Push. 
 
 CGI interface to daemon after each command lists all torrents in database.
 This time consuming can be interrupted at any time by giving next command
@@ -43,7 +44,9 @@ listed. In general there is no problem of interrupting listing at any
 point. This will not invalidate database which is file system alone.
 
 Fetch command is useful only for fetching torrent files without passkey as
-there is no possibility to pass cookies to server. Use with care. 
+there is no possibility to pass cookies to server. Use with care. Proper 
+fetch would be "download in browser and then upload to server". 
+This can only be done by browser plugin.
 
 Troubles with tracker communication can be seen in syslog file. There is 
 no association of active thread and reported problem from tracker. User should
@@ -168,9 +171,19 @@ Known bugs:
   See http://wl500g.info/showpost.php?p=34579&postcount=68 how to upgrade
   to alternative "Oleg"  package feed.
 
-* Gnuplot log shows transfer in UTC and not in local timezone. 
-  There is no provision for changing the time zone or for daylight savings.
-  http://wl500g.info/showpost.php?p=40860&postcount=16 how to replace
-  sed script with awk and adding time shift.
-  
+FAQ
+1. Why wont the daemon start downloading after rebooting ? I need to push it to suspend and then again to make it work ? 
+It will restart after reboot if you properly configured cron to run transmisison_watchdog periodicly. For manual restart use Watchdog button.
+
+2. How do i make it download 5 torrents at the same time ?  Can this be done ?
+Sure it can. Use Push button. You can also queue torrents, manual administer and get some transfer graph.
+
+3. Is it possible to output a chart with no_UTC time (X-axis) ? 
+Just set TIMEZONE_OFFSET=seconds in transmission.conf 
+
+4. I just installed transmission package, pushed some torrent and it looks working.  But when I press Update button, I get this result: ".status not found for <torrent_path>"
+Problems with .status could be that transmisisond is not receiving USR1 signal. This may be due to invalid path to PIDFILE or something like that. Pressing Update sends signal to daemon, waits one second and reads .status files in active torrent directories. Take attention to syslog daemon.
+
+5. Do I need "torrent" ipkg installed too?
+No. torrent package conflict is intentional. 
 oleo

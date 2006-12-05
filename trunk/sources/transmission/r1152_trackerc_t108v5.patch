@@ -1,0 +1,85 @@
+--- transmission/libtransmission/tracker.c.orig	2006-12-05 12:22:41.000000000 +0100
++++ transmission/libtransmission/tracker.c	2006-12-05 12:37:14.000000000 +0100
+@@ -95,12 +95,15 @@
+ {
+     tr_torrent_t * tor = tc->tor;
+     uint64_t       now;
++    int            randOffset;
+ 
+     now = tr_date();
+-
+-    /* Unreachable tracker, try 10 seconds before trying again */
++    randOffset = tr_rand(60000); 
++    
++    /* Unreachable tracker, try 10 seconds + random within a minute
++       before trying again */
+     if( tc->lastAttempt == TC_ATTEMPT_NOREACH &&
+-        now < tc->dateTry + 10000 )
++        now < tc->dateTry + 10000 + randOffset )
+     {
+         return 0;
+     }
+@@ -109,7 +112,7 @@
+        don't hammer it - we'll probably get the same answer next time
+        anyway */
+     if( tc->lastAttempt == TC_ATTEMPT_ERROR &&
+-        now < tc->dateTry + 1000 * tc->interval )
++        now < tc->dateTry + 1000 * tc->interval + randOffset )
+     {
+         return 0;
+     }
+@@ -121,7 +124,7 @@
+     }
+ 
+     /* Should we try and get more peers? */
+-    if( now > tc->dateOk + 1000 * tc->interval )
++    if( now > tc->dateOk + 1000 * tc->interval + randOffset)
+     {
+         return 1;
+     }
+@@ -133,7 +136,8 @@
+         /* reannounce in 10 seconds if we have less than 5 peers */
+         if( tor->peerCount < 5 )
+         {
+-            if( now > tc->dateOk + 1000 * MAX( 10, tc->minInterval ) )
++          if( now > tc->dateOk + 1000 * MAX( 10, tc->minInterval )
++              +  randOffset )
+             {
+                 return 1;
+             }
+@@ -141,7 +145,8 @@
+         /* reannounce in 20 seconds if we have less than 10 peers */
+         else if( tor->peerCount < 10 )
+         {
+-            if( now > tc->dateOk + 1000 * MAX( 20, tc->minInterval ) )
++          if( now > tc->dateOk + 1000 * MAX( 20, tc->minInterval )
++              +  randOffset)
+             {
+                 return 1;
+             }
+@@ -149,7 +154,8 @@
+         /* reannounce in 30 seconds if we have less than 15 peers */
+         else if( tor->peerCount < 15 )
+         {
+-            if( now > tc->dateOk + 1000 * MAX( 30, tc->minInterval ) )
++          if( now > tc->dateOk + 1000 * MAX( 30, tc->minInterval ) 
++              + randOffset)
+             {
+                 return 1;
+             }
+@@ -472,7 +478,6 @@
+     tc->interval = beFoo->val.i;
+     tr_inf( "Tracker: interval = %d seconds", tc->interval );
+ 
+-    tc->interval = MIN( tc->interval, 300 );
+     tc->interval = MAX( 10, tc->interval );
+ 
+     /* Get the tracker minimum interval, force to between
+@@ -483,7 +488,6 @@
+         tc->minInterval = beFoo->val.i;
+         tr_inf( "Tracker: min interval = %d seconds", tc->minInterval );
+ 
+-        tc->minInterval = MIN( tc->minInterval, 300 );
+         tc->minInterval = MAX( 10, tc->minInterval );
+ 
+         if( tc->interval < tc->minInterval )
