@@ -2,7 +2,7 @@
 
 pghome="/opt/var/pgsql"
 pgdata="$pghome/data"
-pgver="$pghome/8.1"
+pgver="$pghome/8.2"
 pgdumpground="$pgver/dump"
 
 # create postgres user in /etc/passwd if it's not there
@@ -56,6 +56,6 @@ if [ "$dbinited." = "1." -a -n "`pidof postmaster`" ]; then
     echo "Now database server is ready, you can test the connection by:"
     echo "	# su - postgres"
     echo "	$ /opt/bin/psql template1"
-    echo "To allow access from other user, see http://www.postgresql.org/docs/8.1/interactive/sql-createuser.html"
+    echo "To allow access from other user, see http://www.postgresql.org/docs/8.2/interactive/sql-createuser.html"
     echo "To allow access from network, see http://developer.postgresql.org/docs/postgres/runtime-config.html#RUNTIME-CONFIG-CONNECTION"
 fi
