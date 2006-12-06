@@ -30,9 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	perl-crypt-openssl-random \
-	perl-crypt-openssl-rsa \
-	perl-ip-country
 
 
 # Add new native-only packages here
@@ -82,6 +79,7 @@ PERL_PACKAGES = \
 	perl-html-parser perl-html-tagset perl-html-template \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
+	perl-ip-country \
 	perl-libwww \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
