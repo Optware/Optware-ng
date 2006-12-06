@@ -5,7 +5,7 @@
 ###########################################################
 
 AMAVISD-NEW_SITE=http://www.ijs.si/software/amavisd
-AMAVISD-NEW_VERSION=2.4.3
+AMAVISD-NEW_VERSION=2.4.4
 AMAVISD-NEW_SOURCE=amavisd-new-$(AMAVISD-NEW_VERSION).tar.gz
 AMAVISD-NEW_DIR=amavisd-new-$(AMAVISD-NEW_VERSION)
 AMAVISD-NEW_UNZIP=zcat
@@ -57,6 +57,8 @@ AMAVISD-NEW_BUILD_DIR=$(BUILD_DIR)/amavisd-new
 AMAVISD-NEW_SOURCE_DIR=$(SOURCE_DIR)/amavisd-new
 AMAVISD-NEW_IPK_DIR=$(BUILD_DIR)/amavisd-new-$(AMAVISD-NEW_VERSION)-ipk
 AMAVISD-NEW_IPK=$(BUILD_DIR)/amavisd-new_$(AMAVISD-NEW_VERSION)-$(AMAVISD-NEW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: amavisd-new-source amavisd-new-unpack amavisd-new amavisd-new-stage amavisd-new-ipk amavisd-new-clean amavisd-new-dirclean amavisd-new-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -205,3 +207,12 @@ amavisd-new-clean:
 #
 amavisd-new-dirclean:
 	rm -rf $(BUILD_DIR)/$(AMAVISD-NEW_DIR) $(AMAVISD-NEW_BUILD_DIR) $(AMAVISD-NEW_IPK_DIR) $(AMAVISD-NEW_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+#
+amavisd-new-check: $(AMAVISD-NEW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AMAVISD-NEW_IPK)
+
