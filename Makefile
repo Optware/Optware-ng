@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = rtpproxy \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 
 # Add new native-only packages here
@@ -169,7 +169,7 @@ COMMON_CROSS_PACKAGES = \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
 	rc rcs rdate readline recode recordext renderext rlfe rrdtool \
-	rsync rtorrent ruby rubygems \
+	rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 \
@@ -231,7 +231,7 @@ WL500G_BROKEN_PACKAGES = \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap pango postfix py-mssql \
-	 qemu qemu-libc-i386 quickie rtorrent \
+	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tcsh tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
