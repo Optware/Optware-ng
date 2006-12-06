@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.1.5
-POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
+POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v8.2
+POSTGRESQL_VERSION=8.2.0
 POSTGRESQL_SOURCE=postgresql-base-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
 POSTGRESQL_UNZIP=bzcat
@@ -51,7 +51,8 @@ POSTGRESQL_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch
+POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch $(POSTGRESQL_SOURCE_DIR)/disable-buildtime-test.patch
+POSTGRESQL_CONFIG_ENV=pgac_cv_snprintf_long_long_int_format='%lld'
 endif
 
 #
@@ -118,6 +119,7 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POSTGRESQL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POSTGRESQL_LDFLAGS)" \
+		$(POSTGRESQL_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

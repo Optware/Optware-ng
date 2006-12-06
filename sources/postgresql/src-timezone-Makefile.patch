@@ -1,12 +1,12 @@
---- postgresql-8.1.2/src/timezone/Makefile	2005-07-06 14:40:09.000000000 -0700
-+++ postgresql81/src/timezone/Makefile	2006-01-10 23:32:23.000000000 -0800
+--- postgresql-8.2.0/src/timezone/Makefile.orig	2006-07-24 20:51:22.000000000 -0700
++++ postgresql-8.2.0/src/timezone/Makefile	2006-12-05 21:01:19.000000000 -0800
 @@ -34,7 +34,8 @@
  	$(CC) $(CFLAGS) $(ZICOBJS) $(LDFLAGS) $(LIBS) -o $@$(X)
  
  install: all installdirs
--	./zic -d $(DESTDIR)$(datadir)/timezone $(TZDATAFILES)
-+	gcc -o ./zic-cross  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c
+-	./zic -d '$(DESTDIR)$(datadir)/timezone' $(TZDATAFILES)
++	gcc -o ./zic-cross  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c ../port/qsort.c
 +	./zic-cross -d $(DESTDIR)$(datadir)/timezone $(TZDATAFILES)
+ 	$(MAKE) -C tznames $@
  
  installdirs:
- 	$(mkinstalldirs) $(DESTDIR)$(datadir)
