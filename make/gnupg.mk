@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=1.4.5
+GNUPG_VERSION=1.4.6
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -37,7 +37,7 @@ GNUPG_CONFLICTS=
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=3
+GNUPG_IPK_VERSION=1
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -79,6 +79,8 @@ endif
 ifeq ($(LIBC_STYLE), uclibc)
 GNUPG_CFG_OPTS= --disable-dns-pka --disable-dns-cert --disable-dns-srv
 endif
+
+.PHONY: gnupg-source gnupg-unpack gnupg gnupg-stage gnupg-ipk gnupg-clean gnupg-dirclean gnupg-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -212,3 +214,9 @@ gnupg-clean:
 #
 gnupg-dirclean:
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR) $(GNUPG_IPK_DIR) $(GNUPG_IPK)
+
+#
+# Some sanity check for the package.
+#
+gnupg-check: $(GNUPG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUPG_IPK)
