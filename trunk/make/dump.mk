@@ -124,8 +124,6 @@ $(DUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DUMP_SOURCE) $(DUMP_PATCHES) make/dum
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--includedir=$(STAGING_INCLUDE_DIR) \
-		--libdir=$(STAGING_LIB_DIR) \
 		--prefix=/opt \
 	);
 #	$(PATCH_LIBTOOL) $(DUMP_BUILD_DIR)/libtool

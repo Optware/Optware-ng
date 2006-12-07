@@ -37,12 +37,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
-# dump: is broken in several ways. It is using the host's e2fsprogs
-# includes.  It is also misconfigured: --includedir and --libdir as
-# arguments to configure affect installation directories, not where
-# things get searched for.  I think it would be best to rewrite this
-# .mk from scratch, following template.mk.
-# 
 # lftp - segfault even with native build, upstream bug?
 # libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
