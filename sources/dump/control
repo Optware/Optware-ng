@@ -1,9 +1,0 @@
-Package: dump
-Version: 0.4b37-2
-Architecture: armeb
-Maintainer: Christopher Blunck <christopher.blunck@gmail.com>
-Source: http://aleron.dl.sourceforge.net/sourceforge/dump/dump-0.4b37.tar.gz
-Section: lib
-Priority: optional
-Depends: zlib, bzip2
-Description: Utilities to dump and restore an ext2 partition
