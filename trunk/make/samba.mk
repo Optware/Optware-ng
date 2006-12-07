@@ -21,8 +21,8 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.23c
-SAMBA_IPK_VERSION=4
+SAMBA_VERSION=3.0.23d
+SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=2
@@ -136,6 +136,8 @@ SAMBA_CROSS_ENVS=\
 		samba_cv_HAVE_TRUNCATED_SALT=no \
 		fu_cv_sys_stat_statvfs64=yes
 endif
+
+.PHONY: samba-source samba-unpack samba samba-stage samba-ipk samba-clean samba-dirclean samba-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -314,3 +316,8 @@ samba-clean:
 samba-dirclean:
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR) $(SAMBA_IPK_DIR) $(SAMBA_IPK)
 
+#
+# Some sanity check for the package.
+#
+samba-check: $(SAMBA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SAMBA_IPK)
