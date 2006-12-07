@@ -50,7 +50,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # doxygen - host binary, not stripped
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
-PACKAGES_THAT_NEED_TO_BE_FIXED = dump libao nethack scponly gkrellm parted lumikki mini_httpd \
+PACKAGES_THAT_NEED_TO_BE_FIXED = libao nethack scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
 	libextractor \
@@ -135,7 +135,7 @@ COMMON_CROSS_PACKAGES = \
 	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
 	cyrus-imapd cyrus-sasl \
 	dash dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki \
-	dovecot dropbear dspam dtach \
+	dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
@@ -221,7 +221,8 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 amule asterisk atk bitlbee bsdmainutils bzflag dcraw dict dnsmasq \
+	 amule asterisk atk bitlbee bsdmainutils bzflag \
+	 dcraw dict dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
@@ -239,7 +240,7 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 amule bitlbee bsdmainutils bzflag elinks \
+	 amule bitlbee bsdmainutils bzflag dump elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish gambit-c \
 	 gphoto2 libgphoto2 \
