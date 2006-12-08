@@ -174,19 +174,21 @@ _update_progress()
     kill -USR1 `cat ${PIDFILE}`
     sleep 5
     for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
-       INFO="${TORRENT%/*}/.info"  
-       if [ -f "${INFO}" ]; then
-           . "${INFO}"
-           LOG="${TORRENT%/*}/.status"
-           if [ -f "${LOG}" ]; then
-               .  "${LOG}"
-           else
-               STATUS=".status not found for ${TORRENT}"
-           fi
-       else
-           _clean_info
-       fi
-       _write_info
+	if [ -f "${TORRENT}" ]; then
+ 	    INFO="${TORRENT%/*}/.info"  
+	    if [ -f "${INFO}" ]; then
+		. "${INFO}"
+		LOG="${TORRENT%/*}/.status"
+		if [ -f "${LOG}" ]; then
+		    .  "${LOG}"
+		else
+		    STATUS=".status not found for ${TORRENT}"
+		fi
+	    else
+		_clean_info
+	    fi
+	    _write_info
+	fi
     done
 }
 
@@ -302,15 +304,17 @@ ACTIVE_TORRENTS=0
 # We will check all torrents for running state
 _update_progress
 for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
-    INFO="${TORRENT%/*}/.info"
-    if [ -f "${INFO}" ]; then
-	. "${INFO}"
-	check_if_complete
-	check_tracker_error
-    else
-	debug "${INFO} not found!"
+    if [ -f "${TORRENT}" ]; then
+	INFO="${TORRENT%/*}/.info"
+	if [ -f "${INFO}" ]; then
+	    . "${INFO}"
+	    check_if_complete
+	    check_tracker_error
+	else
+	    debug "${INFO} not found!"
+	fi
+    	ACTIVE_TORRENTS=$((${ACTIVE_TORRENTS}+1))
     fi
-    ACTIVE_TORRENTS=$((${ACTIVE_TORRENTS}+1))
 done
 
 # Check if any torrent file exists in run env.

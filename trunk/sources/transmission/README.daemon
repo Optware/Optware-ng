@@ -206,4 +206,8 @@ chmod a+rw /tmp/harddisk/torrent/work
 512 MB swap is recommended on 32MB routers.
 
 
+10. How do I password protect transmission.cgi script?
+ Use appropriate web server and its protection. busybox_http uses 
+ IP access and password protection with httpd.conf 
+
 oleo
