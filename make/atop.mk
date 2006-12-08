@@ -19,7 +19,7 @@ ATOP_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 ATOP_DESCRIPTION=A better top with history monitoring
 ATOP_SECTION=util
 ATOP_PRIORITY=optional
-ATOP_DEPENDS=ncurses zlib
+ATOP_DEPENDS=ncurses, zlib
 ATOP_SUGGESTS=
 ATOP_CONFLICTS=
 
