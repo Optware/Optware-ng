@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	atop \
 
 
 # Add new native-only packages here
@@ -121,7 +120,7 @@ ERLANG_PACKAGES = \
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc asterisk \
-	atftp atk audiofile autoconf automake \
+	atftp atk atop audiofile autoconf automake \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
