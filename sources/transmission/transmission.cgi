@@ -205,18 +205,18 @@ _pause ()
 	export HOME
 	_update_active
 	if  false ; then
-	transmissiond -p ${LISTENING_PORT} \
-	    -w ${WATCHDOG} \
-	    -u ${UPLOAD_SPEED} \
-	    -d ${DOWNLOAD_SPEED} \
-	    -i ${PIDFILE}   ${ACTIVE}
-	sleep 5
-	if [ -f ${PIDFILE} ]; then
-	    PID=`cat ${PIDFILE}`
-	    echo "<p>Transmission daemon started with PID=${PID}</p>"
-	else
-	    echo "<p><b>Transmission daemon failed to start</b></p>" 
-	fi
+	    transmissiond -p ${LISTENING_PORT} \
+		-w ${WATCHDOG} \
+		-u ${UPLOAD_SPEED} \
+		-d ${DOWNLOAD_SPEED} \
+		-i ${PIDFILE}   ${ACTIVE}
+	    sleep 5
+	    if [ -f ${PIDFILE} ]; then
+		PID=`cat ${PIDFILE}`
+		echo "<p>Transmission daemon started with PID=${PID}</p>"
+	    else
+		echo "<p><b>Transmission daemon failed to start</b></p>" 
+	    fi
 	else
 	    echo "<p>transmission_watchdog will start Trasmission daemon</p>"
 	fi
