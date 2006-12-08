@@ -17,7 +17,7 @@ DS101G-KERNEL-MODULES_DEPENDS=
 DS101G-KERNEL-MODULES_SUGGESTS=
 DS101G-KERNEL-MODULES_CONFLICTS=
 DS101G-KERNEL-MODULES=videodev pwc nfsd soundcore audio rtl8150 hfc_usb \
-	isdn isdn_bsdcomp dss1_divert hisax slhc
+	isdn isdn_bsdcomp dss1_divert hisax slhc isofs sr_mod cdrom
 
 #
 # DS101G-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
