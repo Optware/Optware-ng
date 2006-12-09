@@ -7,7 +7,7 @@
 # $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
-NMAP_VERSION=4.11
+NMAP_VERSION=4.20
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
@@ -22,7 +22,7 @@ NMAP_CONFLICTS=
 #
 # NMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-NMAP_IPK_VERSION=2
+NMAP_IPK_VERSION=1
 
 #
 # NMAP_CONFFILES should be a list of user-editable files
@@ -54,6 +54,8 @@ NMAP_BUILD_DIR=$(BUILD_DIR)/nmap
 NMAP_SOURCE_DIR=$(SOURCE_DIR)/nmap
 NMAP_IPK_DIR=$(BUILD_DIR)/nmap-$(NMAP_VERSION)-ipk
 NMAP_IPK=$(BUILD_DIR)/nmap_$(NMAP_VERSION)-$(NMAP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: nmap-source nmap-unpack nmap nmap-stage nmap-ipk nmap-clean nmap-dirclean nmap-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -209,3 +211,9 @@ nmap-clean:
 #
 nmap-dirclean:
 	rm -rf $(BUILD_DIR)/$(NMAP_DIR) $(NMAP_BUILD_DIR) $(NMAP_IPK_DIR) $(NMAP_IPK)
+
+#
+# Some sanity check for the package.
+#
+nmap-check: $(NMAP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NMAP_IPK)
