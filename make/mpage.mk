@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPAGE_SITE=http://www.mesa.nl/pub/mpage
-MPAGE_VERSION=2.5.4
+MPAGE_VERSION=2.5.5
 MPAGE_SOURCE=mpage-$(MPAGE_VERSION).tgz
 MPAGE_DIR=mpage-$(MPAGE_VERSION)
 MPAGE_UNZIP=zcat
@@ -68,6 +68,8 @@ MPAGE_BUILD_DIR=$(BUILD_DIR)/mpage
 MPAGE_SOURCE_DIR=$(SOURCE_DIR)/mpage
 MPAGE_IPK_DIR=$(BUILD_DIR)/mpage-$(MPAGE_VERSION)-ipk
 MPAGE_IPK=$(BUILD_DIR)/mpage_$(MPAGE_VERSION)-$(MPAGE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: mpage-source mpage-unpack mpage mpage-stage mpage-ipk mpage-clean mpage-dirclean mpage-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -207,3 +209,9 @@ mpage-clean:
 #
 mpage-dirclean:
 	rm -rf $(BUILD_DIR)/$(MPAGE_DIR) $(MPAGE_BUILD_DIR) $(MPAGE_IPK_DIR) $(MPAGE_IPK)
+
+#
+# Some sanity check for the package.
+#
+mpage-check: $(MPAGE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MPAGE_IPK)
