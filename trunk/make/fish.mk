@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FISH_VERSION=1.22.1
+FISH_VERSION=1.22.2
 FISH_SITE=http://fishshell.org/files/$(FISH_VERSION)
 FISH_SOURCE=fish-$(FISH_VERSION).tar.bz2
 FISH_DIR=fish-$(FISH_VERSION)
@@ -139,6 +139,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
+	sed -ie '/^all:/s/user_doc //' $(FISH_BUILD_DIR)/Makefile
 #	$(PATCH_LIBTOOL) $(FISH_BUILD_DIR)/libtool
 	touch $(FISH_BUILD_DIR)/.configured
 
@@ -149,9 +150,6 @@ fish-unpack: $(FISH_BUILD_DIR)/.configured
 #
 $(FISH_BUILD_DIR)/.built: $(FISH_BUILD_DIR)/.configured
 	rm -f $(FISH_BUILD_DIR)/.built
-ifneq ($(HOSTCC), $(TARGET_CC))
-	$(MAKE) -C $(FISH_BUILD_DIR) gen_hdr2 CC=$(HOSTCC) LDFLAGS=""
-endif
 	$(MAKE) -C $(FISH_BUILD_DIR)
 	touch $(FISH_BUILD_DIR)/.built
 
