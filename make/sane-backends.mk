@@ -28,7 +28,7 @@
 #
 #SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
 #SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
-SANE_BACKENDS_VERSION=1.0.17
+SANE_BACKENDS_VERSION=1.0.18
 SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
 SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
@@ -54,8 +54,8 @@ SANE_BACKENDS_CONFFILES=/opt/etc/sane.d/saned.conf /opt/etc/init.d/S01sane-backe
 # SANE_BACKENDS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch
-# $(SANE_BACKENDS_SOURCE_DIR)/sane-plustek.patch
+SANE_BACKENDS_PATCHES=$(SANE_BACKENDS_SOURCE_DIR)/Makefile.in.patch \
+	$(SANE_BACKENDS_SOURCE_DIR)/tools-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +116,7 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 	(cd $(SANE_BACKENDS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(SANE_BACKENDS_LDFLAGS)" \
+		LDFLAGS="$(SANE_BACKENDS_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -221,3 +221,10 @@ sane-backends-clean:
 #
 sane-backends-dirclean:
 	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR) $(SANE_BACKENDS_IPK_DIR) $(SANE_BACKENDS_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+sane-backends-check: $(SANE_BACKENDS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SANE_BACKENDS_IPK)
