@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = kissdx \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 
 # Add new native-only packages here
@@ -143,7 +143,7 @@ COMMON_CROSS_PACKAGES = \
 	ice id3lib indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
-	knock \
+	kissdx knock \
 	lame ldconfig less lha \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
