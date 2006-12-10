@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you must edit /opt/etc/kissdx.conf,"
+echo "and then run /opt/etc/init.d/S83kissdx to start kissdx."
+echo

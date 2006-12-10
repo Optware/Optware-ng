@@ -1,0 +1,12 @@
+diff -ur piccache.c patched/piccache.c
+--- piccache.c	2006-12-07 01:13:50.229180700 +0100
++++ patched/piccache.c	2006-12-07 01:14:16.838555700 +0100
+@@ -17,7 +17,7 @@
+ 
+ // We use ftw() by default.
+ // On platforms that don't have it we must patch this file to remove the #define below.
+-#define USE_FTW
++//#define USE_FTW
+ 
+ #include <limits.h>
+ #include <time.h>

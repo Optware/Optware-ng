@@ -1,0 +1,12 @@
+diff -ur utils.c patched/utils.c
+--- utils.c	2006-12-09 23:40:31.812500000 +0100
++++ patched/utils.c	2006-12-09 23:45:28.578125000 +0100
+@@ -36,7 +36,7 @@
+ 
+ // We use iconv by default.
+ // On platforms that don't have it we must patch this file to remove the #define below.
+-#define USE_ICONV
++//#define USE_ICONV
+ 
+ #include <stdio.h>
+ #include <stdlib.h>
