@@ -29,7 +29,8 @@
 #SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
 #SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_VERSION=1.0.18
-SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
+SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
+SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
 SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_UNZIP=zcat
@@ -83,7 +84,8 @@ SANE_BACKENDS_IPK=$(BUILD_DIR)/sane-backends_$(SANE_BACKENDS_VERSION)-$(SANE_BAC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SANE_BACKENDS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE)/$(SANE_BACKENDS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE)/$(SANE_BACKENDS_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE_OLD)/$(SANE_BACKENDS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
