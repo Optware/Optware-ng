@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=0.9.1
+PY-MERCURIAL_VERSION=0.9.2
 PY-MERCURIAL_SITE=http://www.selenic.com/mercurial/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -37,7 +37,7 @@ PY-MERCURIAL_CONFLICTS=
 #
 # PY-MERCURIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MERCURIAL_IPK_VERSION=2
+PY-MERCURIAL_IPK_VERSION=1
 
 #
 # PY-MERCURIAL_CONFFILES should be a list of user-editable files
