@@ -22,10 +22,10 @@
 #
 PRIVOXY_SITE=http://surfnet.dl.sourceforge.net/sourceforge/ijbswa
 # http://dl.sourceforge.net/sourceforge/ijbswa/privoxy-3.0.5-beta-src.tar.gz
-PRIVOXY_VER=3.0.5
-PRIVOXY_VERSION=3.0.5b
-PRIVOXY_SOURCE=privoxy-$(PRIVOXY_VER)-beta-src.tar.gz
-PRIVOXY_DIR=privoxy-$(PRIVOXY_VER)-BETA
+PRIVOXY_VER=3.0.6
+PRIVOXY_VERSION=3.0.6
+PRIVOXY_SOURCE=privoxy-$(PRIVOXY_VER)-stable-src.tar.gz
+PRIVOXY_DIR=privoxy-$(PRIVOXY_VER)-stable
 PRIVOXY_UNZIP=zcat
 PRIVOXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PRIVOXY_DESCRIPTION=A Web proxy based on Internet Junkbuster.
@@ -236,3 +236,9 @@ privoxy-clean:
 #
 privoxy-dirclean:
 	rm -rf $(BUILD_DIR)/$(PRIVOXY_DIR) $(PRIVOXY_BUILD_DIR) $(PRIVOXY_IPK_DIR) $(PRIVOXY_IPK)
+
+#
+# Some sanity check for the package.
+#
+privoxy-check: $(PRIVOXY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PRIVOXY_IPK)
