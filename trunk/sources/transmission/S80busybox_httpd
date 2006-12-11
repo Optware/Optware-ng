@@ -10,6 +10,10 @@ LISTENING_PORT=8008
 
 
 check_config(){
+  if [ -z "${HOME}" ]; then
+    HTTPD_CONFIG=/opt/etc/httpd.conf
+    echo "Warning HOME variable not set. Using ${HTTPD_CONFIG}"
+  fi
   if [ ! -e ${HTTPD_CONFIG} ]; then
   echo "Creating default ${HTTPD_CONFIG}"
   cat > ${HTTPD_CONFIG} << __EOF__
