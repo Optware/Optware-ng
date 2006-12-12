@@ -3,7 +3,7 @@
 #
 
 OPENSSL_SITE=http://www.openssl.org/source
-OPENSSL_VERSION=0.9.7d
+OPENSSL_VERSION=0.9.7l
 OPENSSL_LIB_VERSION=0.9.7
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_DIR=openssl-$(OPENSSL_VERSION)
@@ -15,7 +15,7 @@ OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
 
-OPENSSL_IPK_VERSION=5
+OPENSSL_IPK_VERSION=1
 
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
@@ -23,6 +23,8 @@ OPENSSL_IPK_DIR=$(BUILD_DIR)/openssl-$(OPENSSL_VERSION)-ipk
 OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/Configure.patch
+
+.PHONY: openssl-source openssl-unpack openssl openssl-stage openssl-ipk openssl-clean openssl-dirclean openssl-check
 
 $(DL_DIR)/$(OPENSSL_SOURCE):
 	cd $(DL_DIR) && $(WGET) $(OPENSSL_SITE)/$(OPENSSL_SOURCE)
@@ -53,6 +55,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			--prefix=/opt \
 			$(OPENSSL_ARCH) \
 	)
+	sed -ie 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_BUILD_DIR)/apps/Makefile
 	touch $(OPENSSL_BUILD_DIR)/.configured
 
 openssl-unpack: $(OPENSSL_BUILD_DIR)/.configured
@@ -141,3 +144,6 @@ openssl-clean:
 
 openssl-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR) $(OPENSSL_IPK_DIR) $(OPENSSL_IPK)
+
+openssl-check: $(OPENSSL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSSL_IPK)

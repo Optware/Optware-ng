@@ -1,10 +1,10 @@
---- openssl/Configure~	2004-03-13 07:54:44.000000000 +1030
-+++ openssl/Configure	2004-10-26 19:41:53.000000000 +0930
-@@ -416,6 +416,7 @@
- 
- # Linux on ARM
- "linux-elf-arm","gcc:-DL_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT:::BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
-+"linux-elf-armeb","gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT:::BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
+--- openssl-0.9.7l/Configure.orig	2006-04-24 06:32:55.000000000 -0700
++++ openssl-0.9.7l/Configure	2006-12-11 17:12:02.000000000 -0800
+@@ -437,6 +437,7 @@
+ # ARM comes in both little- and big-endian flavors. The following line is
+ # endian neutral, but ./config is free to throw in -D[BL]_ENDIAN...
+ "linux-elf-arm","gcc:-DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
++"linux-elf-armeb","gcc:-DB_ENDIAN -DTERMIO -O3 -fomit-frame-pointer -Wall::-D_REENTRANT::-ldl:BN_LLONG::::::::::dlfcn:linux-shared:-fPIC::.so.\$(SHLIB_MAJOR).\$(SHLIB_MINOR)",
  
  # SCO/Caldera targets.
  #
