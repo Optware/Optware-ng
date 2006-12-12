@@ -17,7 +17,7 @@ NANO_PRIORITY=optional
 NANO_DEPENDS=ncurses
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=1
+NANO_IPK_VERSION=2
 
 #NANO_CONFFILES=/opt/etc/nanorc
 
@@ -50,6 +50,7 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NANO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NANO_LDFLAGS)" \
+		ac_cv_lib_ncursesw_get_wch=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -57,6 +58,7 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 		--prefix=/opt \
 		--enable-all \
 		--without-libiconv-prefix \
+		--disable-utf8 \
 		--disable-nls \
 	)
 	touch $(NANO_BUILD_DIR)/.configured
