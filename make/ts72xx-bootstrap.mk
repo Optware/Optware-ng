@@ -27,7 +27,7 @@ TS72XX_BOOTSTRAP_XSH=$(BUILD_DIR)/ts72xx-bootstrap_$(TS72XX_BOOTSTRAP_VERSION)-$
 
 # Additional ipk's we require
 TS72XX_IPKG_IPK=ipkg_0.99-163-?_$(TARGET_ARCH).ipk
-TS72XX_OPENSSL_IPK=openssl_0.9.7d-?_$(TARGET_ARCH).ipk
+TS72XX_OPENSSL_IPK=openssl_0.9.7?-?_$(TARGET_ARCH).ipk
 TS72XX_WGET_SSL_IPK=wget-ssl_1.10.2-?_$(TARGET_ARCH).ipk
 
 
