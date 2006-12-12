@@ -36,6 +36,7 @@ OPENSSL_ARCH=linux-$(TARGET_ARCH)
 else
 ifeq ($(TARGET_ARCH),powerpc)
 OPENSSL_ARCH=linux-ppc
+OPENSSL_ASFLAG=ASFLAG=""
 else
 OPENSSL_ARCH=linux-elf-$(TARGET_ARCH)
 endif
@@ -65,6 +66,7 @@ $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/.con
 	$(MAKE) -C $(OPENSSL_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		AR="${TARGET_AR} r" \
+		$(OPENSSL_ASFLAG) \
 		MANDIR=/opt/man \
 		EX_LIBS="$(STAGING_LDFLAGS) -ldl" \
 		DIRS="crypto ssl apps"
