@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GENSHI_SITE=http://ftp.edgewall.com/pub/genshi
-PY-GENSHI_VERSION=0.3.5
+PY-GENSHI_VERSION=0.3.6
 PY-GENSHI_SOURCE=Genshi-$(PY-GENSHI_VERSION).tar.bz2
 PY-GENSHI_DIR=Genshi-$(PY-GENSHI_VERSION)
 PY-GENSHI_UNZIP=bzcat
@@ -205,8 +205,7 @@ $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
-	# 2.4
+$(PY24-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	rm -rf $(PY24-GENSHI_IPK_DIR) $(BUILD_DIR)/py-genshi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
@@ -214,7 +213,8 @@ $(PY24-GENSHI_IPK) $(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	$(MAKE) $(PY24-GENSHI_IPK_DIR)/CONTROL/control
 #	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-GENSHI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GENSHI_IPK_DIR)
-	# 2.5
+
+$(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	rm -rf $(PY25-GENSHI_IPK_DIR) $(BUILD_DIR)/py25-genshi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
