@@ -147,7 +147,7 @@ COMMON_CROSS_PACKAGES = \
 	lame ldconfig less lha \
 	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
-	libjpeg liblcms libmad libmemcache libnsl \
+	libjpeg liblcms libmad libmemcache libmpeg2 libnsl \
 	libol libogg libosip2 libpcap libpng libpth \
 	librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
