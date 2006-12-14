@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.5.5
+CHEROKEE_VERSION=0.5.6
 CHEROKEE_SITE=http://www.0x50.org/download/0.5/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=2
+CHEROKEE_IPK_VERSION=1
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -83,6 +83,8 @@ CHEROKEE_BUILD_DIR=$(BUILD_DIR)/cherokee
 CHEROKEE_SOURCE_DIR=$(SOURCE_DIR)/cherokee
 CHEROKEE_IPK_DIR=$(BUILD_DIR)/cherokee-$(CHEROKEE_VERSION)-ipk
 CHEROKEE_IPK=$(BUILD_DIR)/cherokee_$(CHEROKEE_VERSION)-$(CHEROKEE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: cherokee-source cherokee-unpack cherokee cherokee-stage cherokee-ipk cherokee-clean cherokee-dirclean cherokee-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -238,3 +240,9 @@ cherokee-clean:
 #
 cherokee-dirclean:
 	rm -rf $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR) $(CHEROKEE_IPK_DIR) $(CHEROKEE_IPK)
+
+#
+# Some sanity check for the package.
+#
+cherokee-check: $(CHEROKEE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CHEROKEE_IPK)
