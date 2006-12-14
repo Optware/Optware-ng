@@ -37,7 +37,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -58,10 +58,18 @@ CHEROKEE_CONFFILES=\
 # CHEROKEE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifneq ($(OPTWARE_TARGET), wl500g)
+CHEROKEE_PATCHES=\
+	$(CHEROKEE_SOURCE_DIR)/configure.in.patch \
+	$(CHEROKEE_SOURCE_DIR)/cherokee-Makefile.in.patch \
+	$(CHEROKEE_SOURCE_DIR)/cget-Makefile.in.patch
+else
 CHEROKEE_PATCHES=\
 	$(CHEROKEE_SOURCE_DIR)/configure.in.patch \
 	$(CHEROKEE_SOURCE_DIR)/cherokee-Makefile.in.patch \
 	$(CHEROKEE_SOURCE_DIR)/cget-Makefile.in.patch \
+	$(CHEROKEE_SOURCE_DIR)/old_uclibc_tm_gmtoff.patch
+endif
 
 #
 # If the compilation of the package requires additional
