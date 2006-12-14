@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.10.4
+LIBTORRENT_VERSION=0.11.0
 LIBTORRENT_SOURCE=libtorrent-$(LIBTORRENT_VERSION).tar.gz
 LIBTORRENT_DIR=libtorrent-$(LIBTORRENT_VERSION)
 LIBTORRENT_UNZIP=zcat
@@ -59,6 +59,8 @@ LIBTORRENT_BUILD_DIR=$(BUILD_DIR)/libtorrent
 LIBTORRENT_SOURCE_DIR=$(SOURCE_DIR)/libtorrent
 LIBTORRENT_IPK_DIR=$(BUILD_DIR)/libtorrent-$(LIBTORRENT_VERSION)-ipk
 LIBTORRENT_IPK=$(BUILD_DIR)/libtorrent_$(LIBTORRENT_VERSION)-$(LIBTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libtorrent-source libtorrent-unpack libtorrent libtorrent-stage libtorrent-ipk libtorrent-clean libtorrent-dirclean libtorrent-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -202,3 +204,9 @@ libtorrent-clean:
 #
 libtorrent-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR) $(LIBTORRENT_IPK_DIR) $(LIBTORRENT_IPK)
+
+#
+# Some sanity check for the package.
+#
+libtorrent-check: $(LIBTORRENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBTORRENT_IPK)
