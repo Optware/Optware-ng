@@ -46,9 +46,7 @@ EACCELERATOR_CONFFILES=/opt/etc/php.d/eaccelerator.ini
 # EACCELERATOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(LIBC_STYLE),uclibc)
-EACCELERATOR_PATCHES=$(EACCELERATOR_SOURCE_DIR)/uclibc.patch
-endif
+# EACCELERATOR_PATCHES=$(EACCELERATOR_SOURCE_DIR)/uclibc.patch
 
 
 #
