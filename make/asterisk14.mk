@@ -125,7 +125,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		-localstatedir=/opt/var \
+		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
 	(cd $(ASTERISK14_BUILD_DIR); \
