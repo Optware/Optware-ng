@@ -146,6 +146,8 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--with-curl=$(STAGING_PREFIX) \
 		--without-popt \
 		--without-ogg \
+		--without-popt \
+		--without-tds \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
