@@ -5,8 +5,8 @@
 ###########################################################
 
 ARC_SITE=ftp://ftp.freebsd.org/pub/FreeBSD/distfiles/
-ARC_VERSION=5.21j
-ARC_SOURCE=arc-$(ARC_VERSION).tar.gz
+ARC_VERSION=5.21o
+ARC_SOURCE=arc-$(ARC_VERSION).tgz
 ARC_DIR=arc-$(ARC_VERSION)
 ARC_UNZIP=zcat
 ARC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
