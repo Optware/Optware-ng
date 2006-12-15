@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
-ASTERISK14_VERSION=1.4.0
-ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION)-beta3.tar.gz
-ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)-beta3
+ASTERISK14_VERSION=1.4.0-beta3
+ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION).tar.gz
+ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)
 ASTERISK14_UNZIP=zcat
 ASTERISK14_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
 ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
@@ -140,10 +140,12 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--disable-nls \
 		--disable-static \
 		--without-pwlib \
-		--with-ssl=$(STAGING_DIR)/opt \
-		--with-z=$(STAGING_DIR)/opt \
-		--with-termcap=$(STAGING_DIR)/opt \
-		--with-curl=$(STAGING_DIR)/opt \
+		--with-ssl=$(STAGING_PREFIX) \
+		--with-z=$(STAGING_PREFIX) \
+		--with-termcap=$(STAGING_PREFIX) \
+		--with-curl=$(STAGING_PREFIX) \
+		--without-popt \
+		--without-ogg \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
