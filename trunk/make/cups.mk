@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.2.4
+CUPS_VERSION=1.2.7
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -137,6 +137,9 @@ $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 		--disable-nls \
 		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
 		--with-openssl-includes=$(STAGING_DIR)/opt/include \
+		--without-perl \
+		--disable-slp \
+		--disable-gnutls \
 	)
 
 	touch $(CUPS_BUILD_DIR)/.configured
