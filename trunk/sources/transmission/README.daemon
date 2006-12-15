@@ -210,4 +210,11 @@ chmod a+rw /tmp/harddisk/torrent/work
  Use appropriate web server and its protection. busybox_http uses 
  IP access and password protection with httpd.conf 
 
+11. Can I set some cap on UPLOAD_SPEED or is this thing totally bugged ?
+ If bugged any workaround ?
+ This bug is a hard thing. Anyway ratecontrol is somehow useless as it
+ limits only good packets and not the whole transport. I recommend
+ to use some QOS router capabilities. Personally I use another OpenWRT router.
+
+
 oleo
