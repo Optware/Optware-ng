@@ -37,12 +37,12 @@ ASTERISK_SECTION=util
 ASTERISK_PRIORITY=optional
 ASTERISK_DEPENDS=openssl,ncurses,libcurl
 ASTERISK_SUGGESTS=
-ASTERISK_CONFLICTS=
+ASTERISK_CONFLICTS=asterisk14
 
 #
 # ASTERISK_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK_IPK_VERSION=1
+ASTERISK_IPK_VERSION=2
 
 #
 # ASTERISK_CONFFILES should be a list of user-editable files
