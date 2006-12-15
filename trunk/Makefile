@@ -154,7 +154,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi \
 	monotone mp3blaster mpack mpage mrtg mtools mtr multitail mutt mxml \
-	nagios-plugins nail nano nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
+	nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
 	netcat net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	opencdk openldap openssh openssl openvpn optware-devel ossp-js oww \
