@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = asterisk14 asterisk14-gui \
+CROSS_PACKAGES_READY_FOR_TESTING = asterisk14-gui \
 
 
 # Add new native-only packages here
@@ -119,7 +119,7 @@ ERLANG_PACKAGES = \
 
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
-	apache apr apr-util arc asterisk \
+	apache apr apr-util arc asterisk asterisk14 \
 	atftp atk atop audiofile autoconf automake \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
@@ -215,7 +215,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 amule asterisk atk bitlbee bsdmainutils bzflag \
+	 amule asterisk asterisk14 atk bitlbee bsdmainutils bzflag \
 	 dcraw dict dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
@@ -254,7 +254,7 @@ MSS_SPECIFIC_PACKAGES =
 
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
-	amule apache apr-util asterisk \
+	amule apache apr-util asterisk asterisk14 \
 	bitlbee \
 	clamav \
 	elinks \
@@ -351,7 +351,7 @@ TS72XX_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ts72xx.
 TS72XX_BROKEN_PACKAGES = \
-	appweb asterisk asterisk-sounds \
+	appweb asterisk asterisk-sounds asterisk14 \
 	bitlbee classpath clearsilver dict dspam \
 	eaccelerator ecl \
 	$(ERLANG_PACKAGES) \
