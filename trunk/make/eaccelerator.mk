@@ -36,7 +36,7 @@ EACCELERATOR_CONFLICTS=
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=2
+EACCELERATOR_IPK_VERSION=3
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
@@ -46,7 +46,10 @@ EACCELERATOR_CONFFILES=/opt/etc/php.d/eaccelerator.ini
 # EACCELERATOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#EACCELERATOR_PATCHES=$(EACCELERATOR_SOURCE_DIR)/configure.patch
+ifeq ($(LIBC_STYLE),uclibc)
+EACCELERATOR_PATCHES=$(EACCELERATOR_SOURCE_DIR)/uclibc.patch
+endif
+
 
 #
 # If the compilation of the package requires additional
@@ -102,7 +105,10 @@ $(EACCELERATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCEL
 	$(MAKE) php-stage
 	rm -rf $(BUILD_DIR)/$(EACCELERATOR_DIR) $(EACCELERATOR_BUILD_DIR)
 	$(EACCELERATOR_UNZIP) $(DL_DIR)/$(EACCELERATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(EACCELERATOR_PATCHES) | patch -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1
+	if test -n "$(EACCELERATOR_PATCHES)" ; \
+		then cat $(EACCELERATOR_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(EACCELERATOR_DIR) $(EACCELERATOR_BUILD_DIR)
 	(cd $(EACCELERATOR_BUILD_DIR); \
 		WANT_AUTOMAKE=1.6 $(STAGING_DIR)/bin/phpize; \
