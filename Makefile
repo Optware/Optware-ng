@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = asterisk14-gui \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 
 # Add new native-only packages here
@@ -119,7 +119,7 @@ ERLANG_PACKAGES = \
 
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
-	apache apr apr-util arc asterisk asterisk14 \
+	apache apr apr-util arc asterisk asterisk14 asterisk14-gui \
 	atftp atk atop audiofile autoconf automake \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
