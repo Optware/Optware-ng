@@ -1,5 +1,5 @@
---- http/utils/Makefile.original	2005-06-12 16:04:00.000000000 +0100
-+++ http/utils/Makefile	2005-08-11 23:42:16.000000000 +0100
+--- appweb-orig/http/utils/Makefile.original	2005-06-12 16:04:00.000000000 +0100
++++ appweb/http/utils/Makefile	2005-08-11 23:42:16.000000000 +0100
 @@ -4,7 +4,6 @@
  # Copyright (c) Mbedthis Software LLC, 2003-2005. All Rights Reserved.
  #

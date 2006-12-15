@@ -1,7 +1,7 @@
-diff -Naur ../appweb/appWeb/Makefile ./appWeb/Makefile
---- ../appweb/appWeb/Makefile	2005-11-19 07:42:22.000000000 +0100
-+++ ./appWeb/Makefile	2006-02-12 23:17:11.000000000 +0100
-@@ -129,7 +129,7 @@
+diff -Naur appWeb-2.1.0/appWeb/Makefile appweb/appWeb/Makefile
+--- appWeb-2.1.0/appWeb/Makefile	2006-07-17 17:59:02.000000000 +0200
++++ appweb/appWeb/Makefile	2006-12-15 20:13:07.000000000 +0100
+@@ -135,7 +135,7 @@
  $(BLD_BIN_DIR)/$(BLD_PRODUCT)$(BLD_EXE): \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB) $(FILES)
  	@bld --graphical --executable $(BLD_BIN_DIR)/$(BLD_PRODUCT)$(BLD_EXE) \
@@ -10,7 +10,7 @@ diff -Naur ../appweb/appWeb/Makefile ./appWeb/Makefile
  		$(MODE) --smartLibs "appWeb" --libs "$(LIBS)" $(RES) \
  		$(BLD_OBJ_DIR)/appWeb$(BLD_OBJ) \
  		$(BLD_OBJ_DIR)/romFiles$(BLD_OBJ) \
-@@ -147,7 +147,7 @@
+@@ -153,7 +153,7 @@
  		$(BLD_BIN_DIR)/libappWebStatic$(BLD_ARCHIVE) $(FILES)
  	@bld --graphical \
  		--executable $(BLD_BIN_DIR)/$(BLD_PRODUCT)Static$(BLD_EXE) \
@@ -19,7 +19,7 @@ diff -Naur ../appweb/appWeb/Makefile ./appWeb/Makefile
  		$(MODE) --smartLibs "appWebStatic" --libs "$(STATIC_LIBS)" \
  		$(BLD_OBJ_DIR)/appWeb$(BLD_OBJ) \
  		$(BLD_OBJ_DIR)/romFiles$(BLD_OBJ) \
-@@ -160,7 +160,7 @@
+@@ -166,7 +166,7 @@
  $(BLD_BIN_DIR)/testAppWeb$(BLD_EXE): $(BLD_BIN_DIR)/libappWeb$(BLD_LIB) \
  	$(FILES) $(TEST_OBJS)
  	@bld --graphical --executable $(BLD_BIN_DIR)/testAppWeb$(BLD_EXE) \
@@ -28,7 +28,7 @@ diff -Naur ../appweb/appWeb/Makefile ./appWeb/Makefile
  		$(MODE) --smartLibs "appWeb" --libs "$(LIBS)" $(RES) \
  		$(BLD_OBJ_DIR)/appWeb$(BLD_OBJ) \
  		test/testStaticLink$(BLD_OBJ) \
-@@ -190,7 +190,7 @@
+@@ -196,7 +196,7 @@
  
  $(BLD_PRODUCT).dsp: always
  	@makeProj --graphical --executable $(BLD_PRODUCT)$(BLD_EXE) \
@@ -37,9 +37,9 @@ diff -Naur ../appweb/appWeb/Makefile ./appWeb/Makefile
  		--libs "appWeb $(LIBS)" \
  		--resources appWeb.rc \
  		--sources "appWeb.cpp romFiles.cpp appWebStaticLink.cpp" \
-diff -Naur ../appweb/ejs/Makefile ./ejs/Makefile
---- ../appweb/ejs/Makefile	2005-11-19 07:41:38.000000000 +0100
-+++ ./ejs/Makefile	2006-02-12 23:34:33.000000000 +0100
+diff -Naur appWeb-2.1.0/ejs/Makefile appweb/ejs/Makefile
+--- appWeb-2.1.0/ejs/Makefile	2006-07-17 17:59:07.000000000 +0200
++++ appweb/ejs/Makefile	2006-12-15 20:13:07.000000000 +0100
 @@ -30,10 +30,12 @@
  
  $(BLD_BIN_DIR)/libejsStatic$(BLD_ARCHIVE): $(FILES)
@@ -53,10 +53,10 @@ diff -Naur ../appweb/ejs/Makefile ./ejs/Makefile
  		--objectsDir $(BLD_OBJ_DIR) --objectList files --libs mpr
  
  cleanExtra:
-diff -Naur ../appweb/http/Makefile ./http/Makefile
---- ../appweb/http/Makefile	2005-11-19 07:41:35.000000000 +0100
-+++ ./http/Makefile	2006-02-12 23:21:18.000000000 +0100
-@@ -176,7 +176,7 @@
+diff -Naur appWeb-2.1.0/http/Makefile appweb/http/Makefile
+--- appWeb-2.1.0/http/Makefile	2006-07-17 17:58:44.000000000 +0200
++++ appweb/http/Makefile	2006-12-15 20:13:07.000000000 +0100
+@@ -190,7 +190,7 @@
  		$(BLD_OBJ_DIR)/httpClient$(BLD_OBJ) $(BLD_OBJ_DIR)/client$(BLD_OBJ) \
  		$(BLD_OBJ_DIR)/url$(BLD_OBJ) $(BLD_OBJ_DIR)/crypt$(BLD_OBJ)
  	@bld --executable $(BLD_BIN_DIR)/httpClient$(BLD_EXE) \
@@ -65,9 +65,9 @@ diff -Naur ../appweb/http/Makefile ./http/Makefile
  		--preferStatic --smartLibs "mpr" \
  		--objectsDir $(BLD_OBJ_DIR) \
  		--objects "$(BLD_OBJ_DIR)/httpClient$(BLD_OBJ) \
-diff -Naur ../appweb/http/modules/gaCompat/Makefile ./http/modules/gaCompat/Makefile
---- ../appweb/http/modules/gaCompat/Makefile	2005-11-19 07:41:34.000000000 +0100
-+++ ./http/modules/gaCompat/Makefile	2006-02-12 23:22:43.000000000 +0100
+diff -Naur appWeb-2.1.0/http/modules/gaCompat/Makefile appweb/http/modules/gaCompat/Makefile
+--- appWeb-2.1.0/http/modules/gaCompat/Makefile	2006-07-17 17:58:44.000000000 +0200
++++ appweb/http/modules/gaCompat/Makefile	2006-12-15 20:13:07.000000000 +0100
 @@ -37,7 +37,7 @@
  		$(BLD_OBJ_DIR)/gaCompatModule$(BLD_OBJ) \
  		$(FILES)
@@ -77,10 +77,10 @@ diff -Naur ../appweb/http/modules/gaCompat/Makefile ./http/modules/gaCompat/Make
  		--preferShared --smartLibs "appWeb" --libs "$(ESP_LIB) $(EGI_LIB)" \
  		$(BLD_OBJ_DIR)/gaCompatModule$(BLD_OBJ) \
  		$(BLD_OBJ_DIR)/emfdb$(BLD_OBJ) \
-diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
---- ../appweb/http/modules/Makefile	2005-11-19 07:41:34.000000000 +0100
-+++ ./http/modules/Makefile	2006-02-12 23:22:16.000000000 +0100
-@@ -134,33 +134,33 @@
+diff -Naur appWeb-2.1.0/http/modules/Makefile appweb/http/modules/Makefile
+--- appWeb-2.1.0/http/modules/Makefile	2006-07-17 17:58:43.000000000 +0200
++++ appweb/http/modules/Makefile	2006-12-15 20:18:29.000000000 +0100
+@@ -146,39 +146,39 @@
  $(BLD_BIN_DIR)/$(AUTH_MODULE)$(BLD_SHOBJ): \
  		$(BLD_OBJ_DIR)/authHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
  	@bld --shared --library $(BLD_BIN_DIR)/$(AUTH_MODULE) \
@@ -111,6 +111,13 @@ diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
  		--smartLibs "appWeb" \
  		$(BLD_OBJ_DIR)/adminHandler$(BLD_OBJ)
  
+ $(BLD_BIN_DIR)/$(DIR_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/dirHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(DIR_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/dirHandler$(BLD_OBJ)
+ 
  $(BLD_BIN_DIR)/$(EGI_MODULE)$(BLD_SHOBJ): $(BLD_OBJ_DIR)/egiHandler$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
  	@bld --shared --library $(BLD_BIN_DIR)/$(EGI_MODULE) \
@@ -119,7 +126,7 @@ diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
  		--smartLibs "appWeb" $(BLD_OBJ_DIR)/egiHandler$(BLD_OBJ)
  
  $(BLD_BIN_DIR)/$(ESP_MODULE)$(BLD_SHOBJ): \
-@@ -174,7 +174,7 @@
+@@ -192,7 +192,7 @@
  		$(BLD_OBJ_DIR)/ejsCompat$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
  	@bld --shared --library $(BLD_BIN_DIR)/$(ESP_MODULE) \
@@ -128,7 +135,7 @@ diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
  		--smartLibs "appWeb" \
  		$(BLD_OBJ_DIR)/espHandler$(BLD_OBJ) \
  		$(BLD_OBJ_DIR)/esp$(BLD_OBJ) \
-@@ -189,27 +189,27 @@
+@@ -207,33 +207,33 @@
  		$(BLD_OBJ_DIR)/aspnetHandler$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
  	@bld --shared --library $(BLD_BIN_DIR)/$(ASPNET_MODULE) \
@@ -143,6 +150,13 @@ diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
 -		--rpath "$(BLD_PREFIX)/bin" --preferShared \
 +		--rpath "$(BLD_PREFIX)/lib" --preferShared \
  		--smartLibs "appWeb" $(BLD_OBJ_DIR)/copyHandler$(BLD_OBJ)
+ 
+ $(BLD_BIN_DIR)/$(PUT_MODULE)$(BLD_SHOBJ): \
+ 		$(BLD_OBJ_DIR)/putHandler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/$(PUT_MODULE) \
+-		--rpath "$(BLD_PREFIX)/bin" --preferShared \
++		--rpath "$(BLD_PREFIX)/lib" --preferShared \
+ 		--smartLibs "appWeb" $(BLD_OBJ_DIR)/putHandler$(BLD_OBJ)
  
  $(BLD_BIN_DIR)/$(SSL_MODULE)$(BLD_SHOBJ): $(BLD_OBJ_DIR)/sslModule$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
@@ -160,7 +174,7 @@ diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
  		--smartLibs "appWeb" \
  		$(BLD_OBJ_DIR)/uploadHandler$(BLD_OBJ)
  
-@@ -217,7 +217,7 @@
+@@ -241,7 +241,7 @@
  		$(BLD_OBJ_DIR)/xdbModule$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
  	@bld --shared --library $(BLD_BIN_DIR)/$(XDB_MODULE) \
@@ -169,9 +183,9 @@ diff -Naur ../appweb/http/modules/Makefile ./http/modules/Makefile
  		--smartLibs "appWeb" \
  		$(BLD_OBJ_DIR)/xdbModule$(BLD_OBJ)
  
-diff -Naur ../appweb/http/modules/matrixSsl/Makefile ./http/modules/matrixSsl/Makefile
---- ../appweb/http/modules/matrixSsl/Makefile	2005-11-21 20:01:39.000000000 +0100
-+++ ./http/modules/matrixSsl/Makefile	2006-02-12 23:22:53.000000000 +0100
+diff -Naur appWeb-2.1.0/http/modules/matrixSsl/Makefile appweb/http/modules/matrixSsl/Makefile
+--- appWeb-2.1.0/http/modules/matrixSsl/Makefile	2006-07-17 17:58:43.000000000 +0200
++++ appweb/http/modules/matrixSsl/Makefile	2006-12-15 20:13:07.000000000 +0100
 @@ -37,7 +37,7 @@
  		$(BLD_OBJ_DIR)/matrixSslModule$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
@@ -181,9 +195,9 @@ diff -Naur ../appweb/http/modules/matrixSsl/Makefile ./http/modules/matrixSsl/Ma
  		--libraryPath $(BLD_TOP)/$(BLD_MATRIXSSL_DIR) \
  		--libs "appWeb $(MODULE_LIBS) appWeb $(BLD_MATRIXSSL_LIBS)" \
  		--objectsDir "$(BLD_BIN_DIR)" \
-diff -Naur ../appweb/http/modules/openSsl/Makefile ./http/modules/openSsl/Makefile
---- ../appweb/http/modules/openSsl/Makefile	2005-11-21 20:01:39.000000000 +0100
-+++ ./http/modules/openSsl/Makefile	2006-02-12 23:23:01.000000000 +0100
+diff -Naur appWeb-2.1.0/http/modules/openSsl/Makefile appweb/http/modules/openSsl/Makefile
+--- appWeb-2.1.0/http/modules/openSsl/Makefile	2006-07-17 17:58:43.000000000 +0200
++++ appweb/http/modules/openSsl/Makefile	2006-12-15 20:13:07.000000000 +0100
 @@ -39,7 +39,7 @@
  		$(BLD_OBJ_DIR)/openSslModule$(BLD_OBJ) \
  		$(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
@@ -193,9 +207,9 @@ diff -Naur ../appweb/http/modules/openSsl/Makefile ./http/modules/openSsl/Makefi
  		--libraryPath $(BLD_TOP)/$(BLD_OPENSSL_DIR) \
  		--libs "appWeb $(MODULE_LIBS) appWeb $(BLD_OPENSSL_LIBS)" \
  		--objectsDir "$(BLD_BIN_DIR)" \
-diff -Naur ../appweb/http/modules/php4/Makefile ./http/modules/php4/Makefile
---- ../appweb/http/modules/php4/Makefile	2005-11-21 20:01:39.000000000 +0100
-+++ ./http/modules/php4/Makefile	2006-02-12 23:31:40.000000000 +0100
+diff -Naur appWeb-2.1.0/http/modules/php4/Makefile appweb/http/modules/php4/Makefile
+--- appWeb-2.1.0/http/modules/php4/Makefile	2006-07-17 17:58:44.000000000 +0200
++++ appweb/http/modules/php4/Makefile	2006-12-15 20:13:07.000000000 +0100
 @@ -24,7 +24,7 @@
  $(BLD_BIN_DIR)/libphp4Module$(BLD_SHOBJ): \
  		$(BLD_OBJ_DIR)/php4Handler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
@@ -205,9 +219,9 @@ diff -Naur ../appweb/http/modules/php4/Makefile ./http/modules/php4/Makefile
  		--libraryPath "$(BLD_TOP)/$(BLD_PHP4_DIR)/libs" \
  		--preferShared --smartLibs "appWeb" --libs "$(BLD_PHP4_LIBS)" \
  		$(BLD_OBJ_DIR)/php4Handler$(BLD_OBJ)
-diff -Naur ../appweb/http/modules/php5/Makefile ./http/modules/php5/Makefile
---- ../appweb/http/modules/php5/Makefile	2005-12-22 06:20:49.000000000 +0100
-+++ ./http/modules/php5/Makefile	2006-02-12 23:23:11.000000000 +0100
+diff -Naur appWeb-2.1.0/http/modules/php5/Makefile appweb/http/modules/php5/Makefile
+--- appWeb-2.1.0/http/modules/php5/Makefile	2006-07-17 17:58:44.000000000 +0200
++++ appweb/http/modules/php5/Makefile	2006-12-15 20:13:07.000000000 +0100
 @@ -28,7 +28,7 @@
  $(BLD_BIN_DIR)/libphp5Module$(BLD_SHOBJ): \
  		$(BLD_OBJ_DIR)/php5Handler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)

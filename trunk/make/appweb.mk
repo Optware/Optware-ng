@@ -22,8 +22,8 @@
 # You should change all these variables to suit your package.
 #
 APPWEB_SITE=http://www.appwebserver.org/software
-APPWEB_VERSION=2.0.5
-APPWEB_VERSION_EXTRA=4
+APPWEB_VERSION=2.1.0
+APPWEB_VERSION_EXTRA=2
 APPWEB_SOURCE=appWeb-src-$(APPWEB_VERSION)-$(APPWEB_VERSION_EXTRA).tar.gz
 APPWEB_DIR=appWeb-$(APPWEB_VERSION)
 APPWEB_UNZIP=zcat
@@ -37,13 +37,15 @@ APPWEB_CONFLICTS=
 #
 # APPWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-APPWEB_IPK_VERSION=7
+APPWEB_IPK_VERSION=1
 
 #
 # APPWEB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch $(APPWEB_SOURCE_DIR)/rpath.patch
+APPWEB_PATCHES=$(APPWEB_SOURCE_DIR)/buildutilsfortargetenv.patch \
+	$(APPWEB_SOURCE_DIR)/rpath.patch \
+	$(APPWEB_SOURCE_DIR)/http.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,7 +111,7 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 	rm -rf $(BUILD_DIR)/$(APPWEB_DIR) $(APPWEB_BUILD_DIR)
 	$(APPWEB_UNZIP) $(DL_DIR)/$(APPWEB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 
-	cat $(APPWEB_PATCHES) | patch -d $(BUILD_DIR)/$(APPWEB_DIR) -p0
+	cat $(APPWEB_PATCHES) | patch -d $(BUILD_DIR)/$(APPWEB_DIR) -p1
 
 	# need to remove the appweb samples directory which 
 	# can only be built statically
@@ -150,6 +152,7 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 		--with-php5-iflags="-I$(STAGING_PREFIX)/include/php/ -I$(STAGING_PREFIX)/include/php/Zend -I$(STAGING_PREFIX)/include/php/TSRM -I$(STAGING_PREFIX)/include/php/main -I$(STAGING_PREFIX)/include/php/regex" \
 		--with-php5-ldflags="$(STAGING_LDFLAGS)" \
 		--with-php5-libs="php5 dl crypt db m xml2 z c" \
+		--disable-test \
 	)
 	touch $(APPWEB_BUILD_DIR)/.configured
 
