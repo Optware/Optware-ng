@@ -135,7 +135,7 @@ COMMON_CROSS_PACKAGES = \
 	esound eggdrop expat extract-xiso \
 	fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
-	gambit-c gawk gconv-modules gettext gdchart ghostscript gdb gdbm grep groff gzip \
+	gambit-c gawk gcal gconv-modules gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core glib gnupg gnuplot gnutls gtk \
 	gphoto2 libgphoto2 \
