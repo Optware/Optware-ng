@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://archive.apache.org/dist/apr
-APR_VERSION=0.9.12
+APR_VERSION=0.9.13
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=2
+APR_IPK_VERSION=1
 
 #
 # APR_LOCALES defines which locales get installed
@@ -63,6 +63,8 @@ APR_BUILD_DIR=$(BUILD_DIR)/apr
 APR_SOURCE_DIR=$(SOURCE_DIR)/apr
 APR_IPK_DIR=$(BUILD_DIR)/apr-$(APR_VERSION)-ipk
 APR_IPK=$(BUILD_DIR)/apr_$(APR_VERSION)-$(APR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: apr-source apr-unpack apr apr-stage apr-ipk apr-clean apr-dirclean apr-check
 
 #
 # Automatically create a ipkg control file
@@ -124,6 +126,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) \
 		ac_cv_sizeof_off_t=4 \
 		ac_cv_sizeof_pid_t=4 \
 		apr_cv_process_shared_works=no \
+		ac_cv_file__dev_zero=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -203,3 +206,9 @@ apr-clean:
 #
 apr-dirclean:
 	rm -rf $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR) $(APR_IPK_DIR) $(APR_IPK)
+
+#
+# Some sanity check for the package.
+#
+apr-check: $(APR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APR_IPK)

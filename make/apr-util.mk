@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://archive.apache.org/dist/apr
-APR_UTIL_VERSION=0.9.7
+APR_UTIL_VERSION=0.9.13
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=3
+APR_UTIL_IPK_VERSION=1
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -75,6 +75,8 @@ APR_UTIL_BUILD_DIR=$(BUILD_DIR)/apr-util
 APR_UTIL_SOURCE_DIR=$(SOURCE_DIR)/apr-util
 APR_UTIL_IPK_DIR=$(BUILD_DIR)/apr-util-$(APR_UTIL_VERSION)-ipk
 APR_UTIL_IPK=$(BUILD_DIR)/apr-util_$(APR_UTIL_VERSION)-$(APR_UTIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: apr-util-source apr-util-unpack apr-util apr-util-stage apr-util-ipk apr-util-clean apr-util-dirclean apr-util-check
 
 #
 # Automatically create a ipkg control file
@@ -223,3 +225,9 @@ apr-util-clean:
 #
 apr-util-dirclean:
 	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR) $(APR_UTIL_IPK_DIR) $(APR_UTIL_IPK)
+
+#
+# Some sanity check for the package.
+#
+apr-util-check: $(APR_UTIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(APR_UTIL_IPK)
