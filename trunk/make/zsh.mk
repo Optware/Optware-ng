@@ -36,7 +36,7 @@ ZSH_CONFLICTS=
 #
 # ZSH_IPK_VERSION should be incremented when the ipk changes.
 #
-ZSH_IPK_VERSION=2
+ZSH_IPK_VERSION=3
 
 #
 # ZSH_CONFFILES should be a list of user-editable files
@@ -117,8 +117,10 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) # make/zsh.
 	fi
 	(cd $(ZSH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZSH_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(ZSH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZSH_LDFLAGS)" \
+		zsh_cv_sys_nis=no \
+		zsh_cv_sys_nis_plus=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,6 +129,7 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) # make/zsh.
 		--disable-nls \
 		--disable-static \
 	)
+
 ifneq ($(HOSTCC), $(TARGET_CC))
 	cp $(ZSH_SOURCE_DIR)/native-config.h $(ZSH_BUILD_DIR)
 endif
