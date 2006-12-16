@@ -4,7 +4,7 @@
 #
 #############################################################
 
-BIND_VERSION=9.3.2
+BIND_VERSION=9.3.3
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
@@ -43,6 +43,7 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
+		BUILD_CC=$(HOSTCC) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
