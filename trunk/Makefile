@@ -278,7 +278,7 @@ DS101_SPECIFIC_PACKAGES = ds101-bootstrap
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
 # tnef - malloc.c:30: error: conflicting types for 'malloc'
 DS101_BROKEN_PACKAGES = \
-	adns amule apache appweb apr-util asterisk14-gui \
+	adns amule apache appweb apr-util asterisk14 asterisk14-gui \
 	atftp bash bitchx bpalogin bzflag \
 	ctcs ctorrent dspam eaccelerator \
 	enhanced-ctorrent freeradius gnuplot hexcurse \
