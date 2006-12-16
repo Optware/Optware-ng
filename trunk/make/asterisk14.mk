@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
-ASTERISK14_VERSION=1.4.0-beta3
+ASTERISK14_VERSION=1.4.0-beta4
 ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION).tar.gz
 ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)
 ASTERISK14_UNZIP=zcat
@@ -46,13 +46,13 @@ ASTERISK14_IPK_VERSION=1
 # ASTERISK14_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/configure.patch
+ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ASTERISK14_CPPFLAGS=-fsigned-char
+ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_PREFIX)/include
 ASTERISK14_LDFLAGS=
 
 #
@@ -109,7 +109,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
 		then cat $(ASTERISK14_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK14_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(ASTERISK14_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
@@ -128,10 +128,12 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
+
 	(cd $(ASTERISK14_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK14_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK14_LDFLAGS)" \
+		PATH="$(STAGING_PREFIX)/bin:$(PATH)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -148,6 +150,8 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--without-ogg \
 		--without-popt \
 		--without-tds \
+		--without-sqlite \
+		--without-postgres \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
