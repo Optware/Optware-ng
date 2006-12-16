@@ -17,7 +17,7 @@
 #	The nagios plugins will follow. First get this working
 #
 NRPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nagios
-NRPE_VERSION=2.4
+NRPE_VERSION=2.6
 NRPE_SOURCE=nrpe-$(NRPE_VERSION).tar.gz
 NRPE_DIR=nrpe-$(NRPE_VERSION)
 NRPE_UNZIP=zcat
@@ -25,14 +25,14 @@ NRPE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 NRPE_DESCRIPTION=The Nagios Remote Plugin Executor
 NRPE_SECTION=net
 NRPE_PRIORITY=optional
-NRPE_DEPENDS=openssl
+NRPE_DEPENDS=openssl, tcpwrappers
 NRPE_SUGGESTS=
 NRPE_CONFLICTS=
 
 #
 # NRPE_IPK_VERSION should be incremented when the ipk changes.
 #
-NRPE_IPK_VERSION=2
+NRPE_IPK_VERSION=1
 
 #
 # NRPE_CONFFILES should be a list of user-editable files
@@ -98,7 +98,7 @@ nrpe-source: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 # shown below to make various patches to it.
 #
 $(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage tcpwrappers-stage
 	rm -rf $(BUILD_DIR)/$(NRPE_DIR) $(NRPE_BUILD_DIR)
 	$(NRPE_UNZIP) $(DL_DIR)/$(NRPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NRPE_PATCHES)" ; \
@@ -112,18 +112,20 @@ $(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 	# NOTE: Run a modern autoconf (2.59) to solve cross compile issues.
 	#
 	(cd $(NRPE_BUILD_DIR); \
-		autoconf; \
+		autoconf configure.in > configure; \
 		./configure \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(NRPE_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(NRPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NRPE_LDFLAGS)" \
-		--with-ssl-inc=$(STAGING_PREFIX) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--enable-ssl \
+		--with-ssl-inc=$(STAGING_PREFIX) \
+		--with-ssl-lib=$(STAGING_PREFIX)/lib \
 		--with-nrpe-user=nobody \
 		--with-nrpe-group=nobody \
 	)
