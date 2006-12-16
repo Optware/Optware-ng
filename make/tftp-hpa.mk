@@ -25,7 +25,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TFTP_HPA_SITE=http://www.kernel.org/pub/software/network/tftp
-TFTP_HPA_VERSION=0.40
+TFTP_HPA_VERSION=0.45
 TFTP_HPA_SOURCE=tftp-hpa-$(TFTP_HPA_VERSION).tar.bz2
 TFTP_HPA_DIR=tftp-hpa-$(TFTP_HPA_VERSION)
 TFTP_HPA_UNZIP=bzcat
@@ -40,7 +40,7 @@ TFTP_HPA_CONFLICTS=atftp
 #
 # TFTP_HPA_IPK_VERSION should be incremented when the ipk changes.
 #
-TFTP_HPA_IPK_VERSION=2
+TFTP_HPA_IPK_VERSION=1
 
 #
 # TFTP_HPA_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ $(TFTP_HPA_BUILD_DIR)/.configured: $(DL_DIR)/$(TFTP_HPA_SOURCE) $(TFTP_HPA_PATCH
 	mv $(BUILD_DIR)/$(TFTP_HPA_DIR) $(TFTP_HPA_BUILD_DIR)
 	(cd $(TFTP_HPA_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(TFTP_HPA_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(TFTP_HPA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TFTP_HPA_LDFLAGS)" \
 		./configure \
 		--without-readline \
