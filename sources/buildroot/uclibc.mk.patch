@@ -1,17 +1,17 @@
---- buildroot.r15597/toolchain/uClibc/uclibc.mk	2006-07-14 01:15:53.000000000 +0200
-+++ buildroot/toolchain/uClibc/uclibc.mk	2006-07-14 13:30:15.000000000 +0200
-@@ -65,6 +65,7 @@
+--- buildroot-r16948/toolchain/uClibc/uclibc.mk	2006-12-16 23:54:41.000000000 +0100
++++ buildroot/toolchain/uClibc/uclibc.mk	2006-12-17 00:12:53.000000000 +0100
+@@ -79,6 +79,7 @@
  	mkdir -p $(TOOL_BUILD_DIR)
- 	bzcat $(DL_DIR)/$(UCLIBC_SOURCE) | tar -C $(TOOL_BUILD_DIR) $(TAR_OPTIONS) -
- 	toolchain/patch-kernel.sh $(UCLIBC_DIR) toolchain/uClibc/ \*.patch
+ 	$(UCLIBC_CAT) $(DL_DIR)/$(UCLIBC_SOURCE) | tar -C $(TOOL_BUILD_DIR) $(TAR_OPTIONS) -
+ 	toolchain/patch-kernel.sh $(UCLIBC_DIR) toolchain/uClibc/ uClibc-$(UCLIBC_VER)\*.patch
 +	cat ../../sources/buildroot/uClibc-patches/*.patch | patch -d $(UCLIBC_DIR) -p1
- 	touch $(UCLIBC_DIR)/.unpacked
- 
- uclibc-configured: $(UCLIBC_DIR)/.configured
-@@ -74,9 +75,9 @@
- 		-e 's,# TARGET_$(UCLIBC_TARGET_ARCH) is not set,TARGET_$(UCLIBC_TARGET_ARCH)=y,g' \
+ ifneq ($(BR2_ENABLE_LOCALE),)
+ 	cp -dpf $(DL_DIR)/$(UCLIBC_SOURCE_LOCALE) $(UCLIBC_DIR)/extra/locale/
+ endif
+@@ -92,9 +93,9 @@
  		-e 's,^TARGET_ARCH="none",TARGET_ARCH=\"$(UCLIBC_TARGET_ARCH)\",g' \
  		-e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' \
+ 		-e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=\"$(LINUX_HEADERS_DIR)/include\",g' \
 -		-e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/\",g' \
 -		-e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/usr/\",g' \
 -		-e 's,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX=\"/lib\",g' \
@@ -21,7 +21,7 @@
  		$(UCLIBC_DIR)/.config
  ifeq ($(UCLIBC_TARGET_ARCH),arm)
  	$(SED) 's,^.*CONFIG_$(shell echo $(BR2_ARM_TYPE)).*,CONFIG_$(shell echo $(BR2_ARM_TYPE))=y,g' \
-@@ -150,25 +151,30 @@
+@@ -243,25 +244,30 @@
  	touch -c $(STAGING_DIR)/lib/libc.a
  
  ifneq ($(TARGET_DIR),)
@@ -59,8 +59,8 @@
 +UCLIBC_TARGETS=$(TARGET_DIR)/opt/lib/libc.so.0
  endif
  
- uclibc-configured: $(UCLIBC_DIR)/.configured
-@@ -187,7 +193,7 @@
+ uclibc-configured: dependencies kernel-headers $(UCLIBC_DIR)/.configured
+@@ -281,7 +287,7 @@
  uclibc-dirclean:
  	rm -rf $(UCLIBC_DIR)
  
@@ -69,7 +69,7 @@
  
  #############################################################
  #
-@@ -196,15 +202,15 @@
+@@ -290,24 +296,24 @@
  #
  #############################################################
  
@@ -82,6 +82,18 @@
 +		DEVEL_PREFIX=/opt/ \
 +		RUNTIME_PREFIX=/opt/ \
  		install_dev
+ 	# Install the kernel headers to the target dir if necessary
+ 	if [ ! -f $(TARGET_DIR)/usr/include/linux/version.h ] ; then \
+-		cp -pLR $(LINUX_HEADERS_DIR)/include/asm $(TARGET_DIR)/usr/include/ ; \
+-		cp -pLR $(LINUX_HEADERS_DIR)/include/linux $(TARGET_DIR)/usr/include/ ; \
++		cp -pLR $(LINUX_HEADERS_DIR)/include/asm $(TARGET_DIR)/opt/include/ ; \
++		cp -pLR $(LINUX_HEADERS_DIR)/include/linux $(TARGET_DIR)/opt/include/ ; \
+ 		if [ -d $(LINUX_HEADERS_DIR)/include/asm-generic ] ; then \
+ 			cp -pLR $(LINUX_HEADERS_DIR)/include/asm-generic \
+-				$(TARGET_DIR)/usr/include/ ; \
++				$(TARGET_DIR)/opt/include/ ; \
+ 		fi; \
+ 	fi;
 -	touch -c $(TARGET_DIR)/usr/lib/libc.a
 +	touch -c $(TARGET_DIR)/opt/lib/libc.a
  
