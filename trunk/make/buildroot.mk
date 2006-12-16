@@ -4,17 +4,17 @@
 #
 ###########################################################
 #
-# Provides  toolchain, native toolchain as buildroot.ipk or uclibc.ipk
+# Provides  toolchain, native toolchain as buildroot.ipk or uclibc-opt.ipk
 #
 # PATH for target cross toolchain is:
 # $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
 #		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/bin/
 #
 # TARGET_CROSS = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
-#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/\
+#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)/\
 #			bin/$(TARGET_ARCH)-$(TARGET_OS)-
 # TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
-#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/lib
+#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)/lib
 #
 # Some variables for higher level Makefile:
 # Note that GNU_TARGET_NAME is not $(TARGET_ARCH)-$(TARGET_OS) but
@@ -23,7 +23,7 @@
 # BUILDROOT_GCC = $(CROSS_CONFIGURATION_GCC_VERSION)
 # CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 # 
-# UCLIBC_VERSION = $(CROSS_CONFIGURATION_UCLIBC_VERSION)
+# UCLIBC-OPT_VERSION = $(CROSS_CONFIGURATION_UCLIBC_VERSION)
 # CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 # CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
 #
@@ -54,7 +54,7 @@ BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
 ifeq ($(OPTWARE_TARGET),ts101)
 	BUILDROOT_SVN_REV=9690
 else
-	BUILDROOT_SVN_REV=15597
+	BUILDROOT_SVN_REV=16948
 endif
 BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
 BUILDROOT_DIR=buildroot
@@ -65,12 +65,12 @@ BUILDROOT_SECTION=devel
 BUILDROOT_PRIORITY=optional
 BUILDROOT_DEPENDS=
 BUILDROOT_SUGGESTS=
-BUILDROOT_CONFLICTS=uclibc
+BUILDROOT_CONFLICTS=uclibc-opt
 
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=5
+BUILDROOT_IPK_VERSION=6
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -127,8 +127,7 @@ BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk-ts101.patch \
 else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
 		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
-		$(BUILDROOT_SOURCE_DIR)/uClibc.config-locale.patch
-#		$(BUILDROOT_SOURCE_DIR)/uClibc.config.patch 
+		$(BUILDROOT_SOURCE_DIR)/uClibc-$(UCLIBC-OPT_VERSION).config.patch
 endif
 #
 # If the compilation of the package requires additional
@@ -150,6 +149,8 @@ BUILDROOT_BUILD_DIR=$(TOOL_BUILD_DIR)/buildroot
 BUILDROOT_SOURCE_DIR=$(SOURCE_DIR)/buildroot
 BUILDROOT_IPK_DIR=$(BUILD_DIR)/buildroot-$(BUILDROOT_VERSION)-ipk
 BUILDROOT_IPK=$(BUILD_DIR)/buildroot_$(BUILDROOT_VERSION)-$(BUILDROOT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: buildroot-source buildroot-unpack buildroot buildroot-stage buildroot-ipk buildroot-clean buildroot-dirclean buildroot-check
 
 
 BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk 
@@ -174,7 +175,7 @@ $(DL_DIR)/$(BUILDROOT_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-buildroot-source uclibc-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHES)
+buildroot-source uclibc-opt-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -234,7 +235,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	 -e '/BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS)=y/s|\.|_|g' \
 	 -e 's|^BR2_BINUTILS_VERSION=.*|BR2_BINUTILS_VERSION="$(BUILDROOT_BINUTILS)"|' $(BUILDROOT_BUILD_DIR)/.config
 #	change toolchain staging dir
-	sed -i -e 's|^BR2_STAGING_DIR=*|BR2_STAGING_DIR="$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)"|' $(BUILDROOT_BUILD_DIR)/.config
+	sed -i -e 's|^BR2_STAGING_DIR=*|BR2_STAGING_DIR="$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)"|' $(BUILDROOT_BUILD_DIR)/.config
 	(cd $(BUILDROOT_BUILD_DIR); \
 		make oldconfig \
 	)
@@ -260,7 +261,7 @@ $(BUILDROOT_BUILD_DIR)/.built: $(BUILDROOT_BUILD_DIR)/.configured
 #
 # This is the build convenience target.
 #
-buildroot uclibc: $(BUILDROOT_BUILD_DIR)/.built
+buildroot uclibc-opt: $(BUILDROOT_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -270,7 +271,7 @@ $(BUILDROOT_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.built
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(BUILDROOT_BUILD_DIR)/.staged
 
-buildroot-stage uclibc-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.staged
+buildroot-stage uclibc-opt-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -309,7 +310,7 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	install -d $(BUILDROOT_IPK_DIR)
 	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
 #	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
-#	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
+	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	install -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm
@@ -325,7 +326,7 @@ buildroot-ipk: $(BUILDROOT_IPK)
 #
 # This is called from the top level makefile to clean all of the built files.
 #
-buildroot-clean uclibc-clean:
+buildroot-clean uclibc-opt-clean:
 	rm -f $(BUILDROOT_BUILD_DIR)/.built
 	-$(MAKE) -C $(BUILDROOT_BUILD_DIR) clean
 
@@ -333,8 +334,16 @@ buildroot-clean uclibc-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
-buildroot-dirclean uclibc-dirclean:
+buildroot-dirclean:
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) $(BUILDROOT_IPK_DIR) $(BUILDROOT_IPK)
+
+
+#
+#
+# Some sanity check for the package.
+#
+buildroot-check: $(BUILDROOT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BUILDROOT_IPK)
 
 # Notes:
 #
@@ -343,9 +352,10 @@ buildroot-dirclean uclibc-dirclean:
 # cp .config ../../sources/buildroot.config
 #
 # Create patches:
-# diff -u buildroot.r15597/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
-#  diff -u buildroot.r15597/toolchain/gcc/gcc-uclibc-3.x.mk buildroot/toolchain/gcc/gcc-uclibc-3.x.mk > ../sources/buildroot/gcc-uclibc-3.x.mk.patch 
+# diff -u buildroot-r16948/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
+#  diff -u buildroot-r16948/toolchain/gcc/gcc-uclibc-3.x.mk buildroot/toolchain/gcc/gcc-uclibc-3.x.mk > ../sources/buildroot/gcc-uclibc-3.x.mk.patch 
 # rebuilding uClibc by hand:
+# cd toolchain/buildroot
 # make uclibc-dirclean
 # make uclibc-configured 
 # make uclibc
@@ -358,5 +368,7 @@ buildroot-dirclean uclibc-dirclean:
 # manually add/change missing configs from buildroot/toolchain_build_mipsel/uClibc-0.9.28/.config
 # create diff to vanilla uClibc.conf-locale
 # diff -u buildroot.r15597/toolchain/uClibc/uClibc.config-locale buildroot/toolchain/uClibc/uClibc.config-locale > ../sources/buildroot/uClibc.config-locale.patch
-# diff -u ../builds/buildroot-vanilla/toolchain/uClibc/uClibc.config buildroot/toolchain/uClibc/uClibc.config > ../sources/buildroot/uClibc.config.patch
+# diff -u buildroot-r16948/toolchain/uClibc/uClibc-0.9.28.config buildroot/toolchain/uClibc/uClibc-0.9.28.config > ../sources/buildroot/uClibc-0.9.28.config.patch
 #
+# Building notes:
+# gcc 4.2 needs -fpermissive
