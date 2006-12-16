@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.0.54
+APACHE_VERSION=2.0.59
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -21,7 +21,7 @@ APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
-APACHE_DEPENDS=apr, apr-util (>= 0.9.6-2), openssl, expat, zlib $(APACHE_TARGET_DEPENDS)
+APACHE_DEPENDS=apr (>= 0.9.13), apr-util (>= 0.9.13), openssl, expat, zlib $(APACHE_TARGET_DEPENDS)
 
 APACHE_MPM=worker
 #APACHE_MPM=prefork
@@ -29,7 +29,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=4
+APACHE_IPK_VERSION=1
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -239,6 +239,7 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdbm
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdigest
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htpasswd
+	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httxt2dbm
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httpd
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/logresolve
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/rotatelogs
