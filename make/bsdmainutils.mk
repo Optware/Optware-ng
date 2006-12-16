@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BSDMAINUTILS_SITE=http://ftp.debian.org/debian/pool/main/b/bsdmainutils
-BSDMAINUTILS_VERSION=6.1.4
+BSDMAINUTILS_VERSION=6.1.5
 BSDMAINUTILS_SOURCE=bsdmainutils_$(BSDMAINUTILS_VERSION).tar.gz
 BSDMAINUTILS_DIR=bsdmainutils-$(BSDMAINUTILS_VERSION)
 BSDMAINUTILS_UNZIP=zcat
@@ -46,7 +46,7 @@ BSDMAINUTILS_IPK_VERSION=1
 # BSDMAINUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BSDMAINUTILS_PATCHES=$(BSDMAINUTILS_SOURCE_DIR)/configure.patch
+BSDMAINUTILS_PATCHES=$(BSDMAINUTILS_SOURCE_DIR)/cal-weekstart-on-sunday.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,6 +68,8 @@ BSDMAINUTILS_BUILD_DIR=$(BUILD_DIR)/bsdmainutils
 BSDMAINUTILS_SOURCE_DIR=$(SOURCE_DIR)/bsdmainutils
 BSDMAINUTILS_IPK_DIR=$(BUILD_DIR)/bsdmainutils-$(BSDMAINUTILS_VERSION)-ipk
 BSDMAINUTILS_IPK=$(BUILD_DIR)/bsdmainutils_$(BSDMAINUTILS_VERSION)-$(BSDMAINUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: bsdmainutils-source bsdmainutils-unpack bsdmainutils bsdmainutils-stage bsdmainutils-ipk bsdmainutils-clean bsdmainutils-dirclean bsdmainutils-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -227,3 +229,9 @@ bsdmainutils-clean:
 #
 bsdmainutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(BSDMAINUTILS_DIR) $(BSDMAINUTILS_BUILD_DIR) $(BSDMAINUTILS_IPK_DIR) $(BSDMAINUTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+bsdmainutils-check: $(BSDMAINUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BSDMAINUTILS_IPK)

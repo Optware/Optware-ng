@@ -1,0 +1,14 @@
+--- usr.bin/ncal/ncal.c.orig	2006-12-15 21:02:52.000000000 -0800
++++ usr.bin/ncal/ncal.c	2006-12-15 21:06:37.000000000 -0800
+@@ -249,10 +249,8 @@
+ 		nswitchb = ndaysj(&ukswitch);
+ 
+ 	/* Determine on what day the week starts. */
+-#ifdef __GLIBC__
+ 	if (flag_backward)
+-		weekstart = *nl_langinfo(_NL_TIME_FIRST_WEEKDAY) - 1;
+-#endif
++		weekstart = 0;
+ 
+ 	while ((ch = getopt(argc, argv, "3Jejmops:wy")) != -1)
+ 		switch (ch) {
