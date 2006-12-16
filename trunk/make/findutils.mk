@@ -8,7 +8,7 @@ FINDUTILS_NAME=findutils
 FINDUTILS_DOC_NAME=findutils-doc
 FINDUTILS_SITE=http://ftp.gnu.org/pub/gnu/findutils
 ifneq ($(OPTWARE_TARGET),wl500g)
-FINDUTILS_VERSION=4.2.27
+FINDUTILS_VERSION=4.2.29
 else
 FINDUTILS_VERSION=4.1.20
 endif
@@ -38,8 +38,6 @@ FINDUTILS_DOC_PRIORITY=optional
 FINDUTILS_DOC_CONFLICTS=
 FINDUTILS_DOC_DEPENDS=
 
-SED=sed -ie
-
 #
 # FINDUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
@@ -68,12 +66,13 @@ FINDUTILS_IPK=$(BUILD_DIR)/findutils_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSIO
 FINDUTILS_DOC_IPK_DIR=$(BUILD_DIR)/findutils-doc-$(FINDUTILS_VERSION)-ipk
 FINDUTILS_DOC_IPK=$(BUILD_DIR)/findutils-doc_$(FINDUTILS_VERSION)-$(FINDUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: findutils-source findutils-unpack findutils findutils-stage findutils-ipk findutils-clean findutils-dirclean findutils-check
 
 #
 # Automatically create a ipkg control file
 #
 $(FINDUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(FINDUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: findutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -90,7 +89,7 @@ $(FINDUTILS_IPK_DIR)/CONTROL/control:
 # Automatically create a ipkg control file
 #
 $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(FINDUTILS_DOC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: findutils-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,9 +181,9 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 # Binaries should be installed into $(FINDUTILS_IPK_DIR)/opt/sbin or $(FINDUTILS_IPK_DIR)/opt/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
 # Libraries and include files should be installed into $(FINDUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FINDUTILS_IPK_DIR)/opt/etc/<foo>/...
-# Documentation files should be installed in $(FINDUTILS_IPK_DIR)/opt/doc/<foo>/...
-# Daemon startup scripts should be installed in $(FINDUTILS_IPK_DIR)/opt/etc/init.d/S??<foo>
+# Configuration files should be installed in $(FINDUTILS_IPK_DIR)/opt/etc/findutils/...
+# Documentation files should be installed in $(FINDUTILS_IPK_DIR)/opt/doc/findutils/...
+# Daemon startup scripts should be installed in $(FINDUTILS_IPK_DIR)/opt/etc/init.d/S??findutils
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -224,3 +223,9 @@ findutils-clean:
 findutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(FINDUTILS_DIR) $(FINDUTILS_BUILD_DIR)
 	rm -rf $(FINDUTILS_IPK_DIR) $(FINDUTILS_IPK) $(FINDUTILS_DOC_IPK_DIR) $(FINDUTILS_DOC_IPK)
+
+#
+# Some sanity check for the package.
+#
+findutils-check: $(FINDUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FINDUTILS_IPK)
