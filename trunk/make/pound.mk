@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.1.3
+POUND_VERSION=2.2
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -69,6 +69,8 @@ POUND_SOURCE_DIR=$(SOURCE_DIR)/pound
 POUND_IPK_DIR=$(BUILD_DIR)/pound-$(POUND_VERSION)-ipk
 POUND_IPK=$(BUILD_DIR)/pound_$(POUND_VERSION)-$(POUND_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: pound-source pound-unpack pound pound-stage pound-ipk pound-clean pound-dirclean pound-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -113,7 +115,7 @@ $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/
 		then mv $(BUILD_DIR)/$(POUND_DIR) $(POUND_BUILD_DIR) ; \
 	fi
 	(cd $(POUND_BUILD_DIR); \
-	sed -i -e '/@INSTALL@/s/-s //' -e '/@INSTALL@/s/-o bin -g bin //' -e 's/-m 555 //' Makefile.in; \
+	sed -i -e '/@INSTALL@/s/-s //' -e '/@INSTALL@/s/-o.*-g [^ ]*//' -e 's/-m 555 //' Makefile.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POUND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POUND_LDFLAGS)" \
@@ -189,7 +191,7 @@ $(POUND_IPK): $(POUND_BUILD_DIR)/.built
 	rm -rf $(POUND_IPK_DIR) $(BUILD_DIR)/pound_*_$(TARGET_ARCH).ipk
 	install -d $(POUND_IPK_DIR)/opt
 	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(POUND_IPK_DIR) install
-	$(STRIP_COMMAND) $(POUND_IPK_DIR)/opt/sbin/pound
+	$(STRIP_COMMAND) $(POUND_IPK_DIR)/opt/sbin/pound*
 	chmod 555 $(POUND_IPK_DIR)/opt/sbin/pound
 #	install -d $(POUND_IPK_DIR)/opt/etc/
 #	install -m 644 $(POUND_SOURCE_DIR)/pound.conf $(POUND_IPK_DIR)/opt/etc/pound.conf
@@ -219,3 +221,9 @@ pound-clean:
 #
 pound-dirclean:
 	rm -rf $(BUILD_DIR)/$(POUND_DIR) $(POUND_BUILD_DIR) $(POUND_IPK_DIR) $(POUND_IPK)
+
+#
+# Some sanity check for the package.
+#
+pound-check: $(POUND_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POUND_IPK)
