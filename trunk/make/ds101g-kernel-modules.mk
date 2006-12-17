@@ -98,6 +98,17 @@ $(DS101G-KERNEL-MODULES_BUILD_DIR)/.built: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.c
 ds101g-kernel-modules: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.built
 
 #
+## If you are building a library, then you need to stage it too.
+#
+$(DS101G-KERNEL-MODULES_BUILD_DIR)/.staged: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.configured
+	rm -f $(DS101G-KERNEL-MODULES_BUILD_DIR)/.staged
+	mkdir -p $(STAGING_DIR)/src/linux
+	cp -a $(DS101G-KERNEL-MODULES_BUILD_DIR)/* $(STAGING_DIR)/src/linux
+	touch $(DS101G-KERNEL-MODULES_BUILD_DIR)/.staged
+
+ds101g-kernel-modules-stage: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.staged
+
+#
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/ds101g-kernel-modules
 #
