@@ -38,11 +38,12 @@ PY-RULEDISPATCH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-RULEDISPATCH_DESCRIPTION=Python module for rule-based dispatching and generic functions.
 PY-RULEDISPATCH_SECTION=misc
 PY-RULEDISPATCH_PRIORITY=optional
-PY-RULEDISPATCH_DEPENDS=python, py-protocols (>=1.0a0)
+PY24-RULEDISPATCH_DEPENDS=python24, py-protocols (>=1.0a0)
+PY25-RULEDISPATCH_DEPENDS=python25, py25-protocols (>=1.0a0)
 PY-RULEDISPATCH_SUGGESTS=
 PY-RULEDISPATCH_CONFLICTS=
 
-PY-RULEDISPATCH_IPK_VERSION=3
+PY-RULEDISPATCH_IPK_VERSION=4
 
 #
 # PY-RULEDISPATCH_CONFFILES should be a list of user-editable files
@@ -72,8 +73,14 @@ PY-RULEDISPATCH_LDFLAGS=
 #
 PY-RULEDISPATCH_BUILD_DIR=$(BUILD_DIR)/py-ruledispatch
 PY-RULEDISPATCH_SOURCE_DIR=$(SOURCE_DIR)/py-ruledispatch
-PY-RULEDISPATCH_IPK_DIR=$(BUILD_DIR)/py-ruledispatch-$(PY-RULEDISPATCH_VERSION)-ipk
-PY-RULEDISPATCH_IPK=$(BUILD_DIR)/py-ruledispatch_$(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-RULEDISPATCH_IPK_DIR=$(BUILD_DIR)/py-ruledispatch-$(PY-RULEDISPATCH_VERSION)-ipk
+PY24-RULEDISPATCH_IPK=$(BUILD_DIR)/py-ruledispatch_$(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-RULEDISPATCH_IPK_DIR=$(BUILD_DIR)/py25-ruledispatch-$(PY-RULEDISPATCH_VERSION)-ipk
+PY25-RULEDISPATCH_IPK=$(BUILD_DIR)/py25-ruledispatch_$(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-ruledispatch-source py-ruledispatch-unpack py-ruledispatch py-ruledispatch-stage py-ruledispatch-ipk py-ruledispatch-clean py-ruledispatch-dirclean py-ruledispatch-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -112,7 +119,10 @@ else
 $(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(PY-RULEDISPATCH_PATCHES)
 endif
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)
+	rm -rf $(PY-RULEDISPATCH_BUILD_DIR)
+	mkdir -p $(PY-RULEDISPATCH_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR)
 ifeq ($(PY-RULEDISPATCH_SVN_REV),)
 	$(PY-RULEDISPATCH_UNZIP) $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
@@ -123,9 +133,25 @@ endif
 	if test -n "$(PY-RULEDISPATCH_PATCHES)" ; then \
 	    cat $(PY-RULEDISPATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)
-	(cd $(PY-RULEDISPATCH_BUILD_DIR); \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
+	mv $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)/2.4
+	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.4; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR)
+ifeq ($(PY-RULEDISPATCH_SVN_REV),)
+	$(PY-RULEDISPATCH_UNZIP) $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-RULEDISPATCH_SVN_REV) $(PY-RULEDISPATCH_SVN) $(PY-RULEDISPATCH_DIR); \
+	)
+endif
+	if test -n "$(PY-RULEDISPATCH_PATCHES)" ; then \
+	    cat $(PY-RULEDISPATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)/2.5
+	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-RULEDISPATCH_BUILD_DIR)/.configured
 
@@ -136,7 +162,12 @@ py-ruledispatch-unpack: $(PY-RULEDISPATCH_BUILD_DIR)/.configured
 #
 $(PY-RULEDISPATCH_BUILD_DIR)/.built: $(PY-RULEDISPATCH_BUILD_DIR)/.configured
 	rm -f $(PY-RULEDISPATCH_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-RULEDISPATCH_BUILD_DIR)
+	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py --without-speedups build)
+	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py --without-speedups build)
 	touch $(PY-RULEDISPATCH_BUILD_DIR)/.built
 
 #
@@ -158,8 +189,8 @@ py-ruledispatch-stage: $(PY-RULEDISPATCH_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-ruledispatch
 #
-$(PY-RULEDISPATCH_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-RULEDISPATCH_IPK_DIR)/CONTROL
+$(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-ruledispatch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -169,7 +200,21 @@ $(PY-RULEDISPATCH_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-RULEDISPATCH_MAINTAINER)" >>$@
 	@echo "Source: $(PY-RULEDISPATCH_SITE)/$(PY-RULEDISPATCH_SOURCE)" >>$@
 	@echo "Description: $(PY-RULEDISPATCH_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-RULEDISPATCH_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-RULEDISPATCH_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-RULEDISPATCH_CONFLICTS)" >>$@
+
+$(PY25-RULEDISPATCH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-ruledispatch" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-RULEDISPATCH_PRIORITY)" >>$@
+	@echo "Section: $(PY-RULEDISPATCH_SECTION)" >>$@
+	@echo "Version: $(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-RULEDISPATCH_MAINTAINER)" >>$@
+	@echo "Source: $(PY-RULEDISPATCH_SITE)/$(PY-RULEDISPATCH_SOURCE)" >>$@
+	@echo "Description: $(PY-RULEDISPATCH_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-RULEDISPATCH_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-RULEDISPATCH_CONFLICTS)" >>$@
 
 #
@@ -184,20 +229,30 @@ $(PY-RULEDISPATCH_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-RULEDISPATCH_IPK): $(PY-RULEDISPATCH_BUILD_DIR)/.built
-	rm -rf $(PY-RULEDISPATCH_IPK_DIR) $(BUILD_DIR)/py-ruledispatch_*_$(TARGET_ARCH).ipk
-	(cd $(PY-RULEDISPATCH_BUILD_DIR); \
+$(PY24-RULEDISPATCH_IPK): $(PY-RULEDISPATCH_BUILD_DIR)/.built
+	rm -rf $(PY24-RULEDISPATCH_IPK_DIR) $(BUILD_DIR)/py-ruledispatch_*_$(TARGET_ARCH).ipk
+	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py --without-speedups install \
-		--root=$(PY-RULEDISPATCH_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-RULEDISPATCH_IPK_DIR)/CONTROL/control
-#	echo $(PY-RULEDISPATCH_CONFFILES) | sed -e 's/ /\n/g' > $(PY-RULEDISPATCH_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-RULEDISPATCH_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py --without-speedups install \
+		--root=$(PY24-RULEDISPATCH_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/control
+#	echo $(PY-RULEDISPATCH_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-RULEDISPATCH_IPK_DIR)
+
+$(PY25-RULEDISPATCH_IPK): $(PY-RULEDISPATCH_BUILD_DIR)/.built
+	rm -rf $(PY25-RULEDISPATCH_IPK_DIR) $(BUILD_DIR)/py25-ruledispatch_*_$(TARGET_ARCH).ipk
+	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py --without-speedups install \
+		--root=$(PY25-RULEDISPATCH_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-RULEDISPATCH_IPK_DIR)/CONTROL/control
+#	echo $(PY-RULEDISPATCH_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-RULEDISPATCH_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-RULEDISPATCH_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-ruledispatch-ipk: $(PY-RULEDISPATCH_IPK)
+py-ruledispatch-ipk: $(PY24-RULEDISPATCH_IPK) $(PY25-RULEDISPATCH_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -211,3 +266,9 @@ py-ruledispatch-clean:
 #
 py-ruledispatch-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR) $(PY-RULEDISPATCH_IPK_DIR) $(PY-RULEDISPATCH_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-ruledispatch-check: $(PY24-RULEDISPATCH_IPK) $(PY25-RULEDISPATCH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-RULEDISPATCH_IPK) $(PY25-RULEDISPATCH_IPK)
