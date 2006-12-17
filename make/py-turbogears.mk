@@ -31,7 +31,7 @@ PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
 
-PY-TURBOGEARS_DEPENDS=python, \
+PY24-TURBOGEARS_DEPENDS=python24, \
 	py-celementtree (>=1.0.5), \
 	py-cherrypy (>=2.2.1), \
 	py-configobj (>=4.3.2), \
@@ -47,12 +47,28 @@ PY-TURBOGEARS_DEPENDS=python, \
 	py-turbokid (>=0.9.8) \
 	findutils \
 
+PY24-TURBOGEARS_DEPENDS=python25, \
+	py25-celementtree (>=1.0.5), \
+	py25-cherrypy (>=2.2.1), \
+	py25-configobj (>=4.3.2), \
+	py25-elementtree (>=1.2.6), \
+	py25-formencode (>=0.5.1), \
+	py25-nose (>=0.9), \
+	py25-pastescript (>=0.9.7), \
+	py25-ruledispatch, \
+	py25-simplejson (>=1.3), \
+	py25-sqlobject (>=0.7.1), \
+	py25-turbocheetah (>=0.9.5), \
+	py25-turbojson (>=0.9.9), \
+	py25-turbokid (>=0.9.8) \
+	findutils \
+
 PY-TURBOGEARS_CONFLICTS=
 
 #
 # PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOGEARS_IPK_VERSION=1
+PY-TURBOGEARS_IPK_VERSION=2
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
@@ -82,8 +98,14 @@ PY-TURBOGEARS_LDFLAGS=
 #
 PY-TURBOGEARS_BUILD_DIR=$(BUILD_DIR)/py-turbogears
 PY-TURBOGEARS_SOURCE_DIR=$(SOURCE_DIR)/py-turbogears
-PY-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
-PY-TURBOGEARS_IPK=$(BUILD_DIR)/py-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
+PY24-TURBOGEARS_IPK=$(BUILD_DIR)/py-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py25-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
+PY25-TURBOGEARS_IPK=$(BUILD_DIR)/py25-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-turbogears-source py-turbogears-unpack py-turbogears py-turbogears-stage py-turbogears-ipk py-turbogears-clean py-turbogears-dirclean py-turbogears-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -116,13 +138,25 @@ py-turbogears-source: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES)
 #
 $(PY-TURBOGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-TURBOGEARS_PATCHES) make/py-turbogears.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)
+	rm -rf $(PY-TURBOGEARS_BUILD_DIR)
+	mkdir -p $(PY-TURBOGEARS_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR)
 	$(PY-TURBOGEARS_UNZIP) $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TURBOGEARS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)
-	(cd $(PY-TURBOGEARS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)/2.4
+	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR)
+	$(PY-TURBOGEARS_UNZIP) $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-TURBOGEARS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)/2.5
+	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-TURBOGEARS_BUILD_DIR)/.configured
 
@@ -133,7 +167,12 @@ py-turbogears-unpack: $(PY-TURBOGEARS_BUILD_DIR)/.configured
 #
 $(PY-TURBOGEARS_BUILD_DIR)/.built: $(PY-TURBOGEARS_BUILD_DIR)/.configured
 	rm -f $(PY-TURBOGEARS_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-TURBOGEARS_BUILD_DIR)
+	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-TURBOGEARS_BUILD_DIR)/.built
 
 #
@@ -155,8 +194,8 @@ py-turbogears-stage: $(PY-TURBOGEARS_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-turbogears
 #
-$(PY-TURBOGEARS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-TURBOGEARS_IPK_DIR)/CONTROL
+$(PY24-TURBOGEARS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-turbogears" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,7 +205,21 @@ $(PY-TURBOGEARS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-TURBOGEARS_MAINTAINER)" >>$@
 	@echo "Source: $(PY-TURBOGEARS_SITE)/$(PY-TURBOGEARS_SOURCE)" >>$@
 	@echo "Description: $(PY-TURBOGEARS_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-TURBOGEARS_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-TURBOGEARS_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-TURBOGEARS_CONFLICTS)" >>$@
+
+$(PY25-TURBOGEARS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-turbogears" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TURBOGEARS_PRIORITY)" >>$@
+	@echo "Section: $(PY-TURBOGEARS_SECTION)" >>$@
+	@echo "Version: $(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TURBOGEARS_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TURBOGEARS_SITE)/$(PY-TURBOGEARS_SOURCE)" >>$@
+	@echo "Description: $(PY-TURBOGEARS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-TURBOGEARS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TURBOGEARS_CONFLICTS)" >>$@
 
 #
@@ -181,22 +234,38 @@ $(PY-TURBOGEARS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
-	rm -rf $(PY-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py-turbogears_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOGEARS_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TURBOGEARS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-TURBOGEARS_IPK_DIR)/CONTROL/control
+$(PY24-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
+	rm -rf $(PY24-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py-turbogears_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-TURBOGEARS_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-TURBOGEARS_IPK_DIR)/CONTROL/control
 	(echo '#!/bin/sh'; \
 echo /opt/bin/find /opt/lib/python2.4/site-packages -maxdepth 1 -empty -type d -name \'*.egg-info\' -printf \"rmdir %p\\n\" -exec rmdir {} + ; \
-	) > $(PY-TURBOGEARS_IPK_DIR)/CONTROL/postinst
-	echo $(PY-TURBOGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOGEARS_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOGEARS_IPK_DIR)
+	) > $(PY24-TURBOGEARS_IPK_DIR)/CONTROL/postinst
+	echo $(PY-TURBOGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-TURBOGEARS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TURBOGEARS_IPK_DIR)
+
+$(PY25-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
+	rm -rf $(PY25-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py25-turbogears_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-TURBOGEARS_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-TURBOGEARS_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	$(MAKE) $(PY25-TURBOGEARS_IPK_DIR)/CONTROL/control
+	(echo '#!/bin/sh'; \
+echo /opt/bin/find /opt/lib/python2.5/site-packages -maxdepth 1 -empty -type d -name \'*.egg-info\' -printf \"rmdir %p\\n\" -exec rmdir {} + ; \
+	) > $(PY25-TURBOGEARS_IPK_DIR)/CONTROL/postinst
+	echo $(PY-TURBOGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TURBOGEARS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TURBOGEARS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-turbogears-ipk: $(PY-TURBOGEARS_IPK)
+py-turbogears-ipk: $(PY24-TURBOGEARS_IPK) $(PY25-TURBOGEARS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -209,4 +278,12 @@ py-turbogears-clean:
 # directories.
 #
 py-turbogears-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR) $(PY-TURBOGEARS_IPK_DIR) $(PY-TURBOGEARS_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-TURBOGEARS_DIR) $(PY-TURBOGEARS_BUILD_DIR)
+	rm -rf $(PY24-TURBOGEARS_IPK_DIR) $(PY24-TURBOGEARS_IPK)
+	rm -rf $(PY25-TURBOGEARS_IPK_DIR) $(PY25-TURBOGEARS_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-turbogears-check: $(PY24-TURBOGEARS_IPK) $(PY25-TURBOGEARS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TURBOGEARS_IPK) $(PY25-TURBOGEARS_IPK)
