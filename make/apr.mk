@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=1
+APR_IPK_VERSION=2
 
 #
 # APR_LOCALES defines which locales get installed
@@ -111,8 +111,7 @@ apr-source: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) \
-		$(APR_PATCHES)
+$(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 	rm -rf $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR)
 	$(APR_UNZIP) $(DL_DIR)/$(APR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR)
@@ -161,6 +160,7 @@ apr: $(APR_BUILD_DIR)/.built
 #
 $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(STAGING_INCLUDE_DIR)/apache2/apr*.h
 	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libapr.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-config

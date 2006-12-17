@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=1
+APR_UTIL_IPK_VERSION=2
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -123,8 +123,7 @@ apr-util-source: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) \
-		$(APR_UTIL_PATCHES)
+$(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCHES) make/apr-util.mk
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
@@ -180,6 +179,7 @@ apr-util: $(APR_UTIL_BUILD_DIR)/.built
 #
 $(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(STAGING_INCLUDE_DIR)/apache2/apu*.h
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libaprutil.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apu-config
