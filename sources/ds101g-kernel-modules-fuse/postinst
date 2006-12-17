@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if [ ! -e /dev/fuse ]; then
+  /bin/mknod /dev/fuse -m 0666 c 10 229
+fi

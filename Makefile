@@ -314,6 +314,7 @@ DS101J_BROKEN_PACKAGES = \
 DS101G_SPECIFIC_PACKAGES = \
 	ipkg \
 	ds101g-kernel-modules \
+	ds101g-kernel-modules-fuse \
 	ds101-bootstrap \
 	py-ctypes \
 
