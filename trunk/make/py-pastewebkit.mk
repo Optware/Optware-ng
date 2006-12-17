@@ -30,13 +30,14 @@ PY-PASTEWEBKIT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTEWEBKIT_DESCRIPTION=A port/reimplementation of Webware WebKit in WSGI and Paste.
 PY-PASTEWEBKIT_SECTION=misc
 PY-PASTEWEBKIT_PRIORITY=optional
-PY-PASTEWEBKIT_DEPENDS=py-paste, py-pastedeploy, py-pastescript
+PY24-PASTEWEBKIT_DEPENDS=python24, py-paste, py-pastedeploy, py-pastescript
+PY25-PASTEWEBKIT_DEPENDS=python25, py25-paste, py25-pastedeploy, py25-pastescript
 PY-PASTEWEBKIT_CONFLICTS=
 
 #
 # PY-PASTEWEBKIT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PASTEWEBKIT_IPK_VERSION=1
+PY-PASTEWEBKIT_IPK_VERSION=2
 
 #
 # PY-PASTEWEBKIT_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-PASTEWEBKIT_LDFLAGS=
 #
 PY-PASTEWEBKIT_BUILD_DIR=$(BUILD_DIR)/py-pastewebkit
 PY-PASTEWEBKIT_SOURCE_DIR=$(SOURCE_DIR)/py-pastewebkit
-PY-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
-PY-PASTEWEBKIT_IPK=$(BUILD_DIR)/py-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
+PY24-PASTEWEBKIT_IPK=$(BUILD_DIR)/py-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py25-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
+PY25-PASTEWEBKIT_IPK=$(BUILD_DIR)/py25-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-pastewebkit-source py-pastewebkit-unpack py-pastewebkit py-pastewebkit-stage py-pastewebkit-ipk py-pastewebkit-clean py-pastewebkit-dirclean py-pastewebkit-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,19 +107,37 @@ py-pastewebkit-source: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY-PASTEWEBKIT_PATCH
 #
 $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY-PASTEWEBKIT_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)
+	rm -rf $(PY-PASTEWEBKIT_BUILD_DIR)
+	mkdir -p $(PY-PASTEWEBKIT_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
 	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
 	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)
-	(cd $(PY-PASTEWEBKIT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.4
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg \
+	    ) >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR)
+	$(PY-PASTEWEBKIT_UNZIP) $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-PASTEWEBKIT_PATCHES)"; then \
+	    cat $(PY-PASTEWEBKIT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)/2.5
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
 	)
 	touch $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
 
@@ -123,10 +148,12 @@ py-pastewebkit-unpack: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
 #
 $(PY-PASTEWEBKIT_BUILD_DIR)/.built: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
 	rm -f $(PY-PASTEWEBKIT_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-PASTEWEBKIT_BUILD_DIR)
-	(cd $(PY-PASTEWEBKIT_BUILD_DIR); \
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 
 #
@@ -148,8 +175,8 @@ py-pastewebkit-stage: $(PY-PASTEWEBKIT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pastewebkit
 #
-$(PY-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PASTEWEBKIT_IPK_DIR)/CONTROL
+$(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pastewebkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -159,7 +186,21 @@ $(PY-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-PASTEWEBKIT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-PASTEWEBKIT_SITE)/$(PY-PASTEWEBKIT_SOURCE)" >>$@
 	@echo "Description: $(PY-PASTEWEBKIT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-PASTEWEBKIT_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PASTEWEBKIT_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
+
+$(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pastewebkit" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTEWEBKIT_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTEWEBKIT_SECTION)" >>$@
+	@echo "Version: $(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTEWEBKIT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTEWEBKIT_SITE)/$(PY-PASTEWEBKIT_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTEWEBKIT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PASTEWEBKIT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTEWEBKIT_CONFLICTS)" >>$@
 
 #
@@ -174,19 +215,30 @@ $(PY-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
-	rm -rf $(PY-PASTEWEBKIT_IPK_DIR) $(BUILD_DIR)/py-pastewebkit_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTEWEBKIT_BUILD_DIR); \
+$(PY24-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
+	rm -rf $(PY24-PASTEWEBKIT_IPK_DIR) $(BUILD_DIR)/py-pastewebkit_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" install --root=$(PY-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-PASTEWEBKIT_IPK_DIR)/CONTROL/control
-#	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PASTEWEBKIT_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY24-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PASTEWEBKIT_IPK_DIR)
+
+$(PY25-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
+	rm -rf $(PY25-PASTEWEBKIT_IPK_DIR) $(BUILD_DIR)/py25-pastewebkit_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY25-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTEWEBKIT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pastewebkit-ipk: $(PY-PASTEWEBKIT_IPK)
+py-pastewebkit-ipk: $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -199,4 +251,12 @@ py-pastewebkit-clean:
 # directories.
 #
 py-pastewebkit-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR) $(PY-PASTEWEBKIT_IPK_DIR) $(PY-PASTEWEBKIT_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PASTEWEBKIT_DIR) $(PY-PASTEWEBKIT_BUILD_DIR)
+	rm -rf $(PY24-PASTEWEBKIT_IPK_DIR) $(PY24-PASTEWEBKIT_IPK)
+	rm -rf $(PY25-PASTEWEBKIT_IPK_DIR) $(PY25-PASTEWEBKIT_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-pastewebkit-check: $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PASTEWEBKIT_IPK) $(PY25-PASTEWEBKIT_IPK)
