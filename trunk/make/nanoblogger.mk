@@ -29,14 +29,14 @@ NANOBLOGGER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NANOBLOGGER_DESCRIPTION=A small weblog engine written in Bash for the command line.
 NANOBLOGGER_SECTION=web
 NANOBLOGGER_PRIORITY=optional
-NANOBLOGGER_DEPENDS=bash, grep, sed, coreutils
+NANOBLOGGER_DEPENDS=bash, grep, sed, coreutils, bsdmainutils
 NANOBLOGGER_SUGGESTS=
 NANOBLOGGER_CONFLICTS=
 
 #
 # NANOBLOGGER_IPK_VERSION should be incremented when the ipk changes.
 #
-NANOBLOGGER_IPK_VERSION=1
+NANOBLOGGER_IPK_VERSION=2
 
 #
 # NANOBLOGGER_CONFFILES should be a list of user-editable files
