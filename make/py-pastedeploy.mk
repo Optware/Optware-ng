@@ -26,7 +26,7 @@
 PY-PASTEDEPLOY_SITE=http://cheeseshop.python.org/packages/source/P/PasteDeploy
 PY-PASTEDEPLOY_VERSION=1.0
 #PY-PASTEDEPLOY_SVN_REV=
-PY-PASTEDEPLOY_IPK_VERSION=1
+PY-PASTEDEPLOY_IPK_VERSION=2
 #ifneq ($(PY-PASTEDEPLOY_SVN_REV),)
 #PY-PASTEDEPLOY_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-PASTEDEPLOY_xxx_VERSION:=$(PY-PASTEDEPLOY_VERSION)dev_r$(PY-PASTEDEPLOY_SVN_REV)
@@ -39,7 +39,8 @@ PY-PASTEDEPLOY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTEDEPLOY_DESCRIPTION=Load, configure, and compose WSGI applications and servers.
 PY-PASTEDEPLOY_SECTION=misc
 PY-PASTEDEPLOY_PRIORITY=optional
-PY-PASTEDEPLOY_DEPENDS=python
+PY24-PASTEDEPLOY_DEPENDS=python24
+PY25-PASTEDEPLOY_DEPENDS=python25
 PY-PASTEDEPLOY_SUGGESTS=
 PY-PASTEDEPLOY_CONFLICTS=
 
@@ -72,8 +73,14 @@ PY-PASTEDEPLOY_LDFLAGS=
 #
 PY-PASTEDEPLOY_BUILD_DIR=$(BUILD_DIR)/py-pastedeploy
 PY-PASTEDEPLOY_SOURCE_DIR=$(SOURCE_DIR)/py-pastedeploy
-PY-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
-PY-PASTEDEPLOY_IPK=$(BUILD_DIR)/py-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
+PY24-PASTEDEPLOY_IPK=$(BUILD_DIR)/py-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py25-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
+PY25-PASTEDEPLOY_IPK=$(BUILD_DIR)/py25-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-pastedeploy-source py-pastedeploy-unpack py-pastedeploy py-pastedeploy-stage py-pastedeploy-ipk py-pastedeploy-clean py-pastedeploy-dirclean py-pastedeploy-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -108,7 +115,10 @@ py-pastedeploy-source: $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) $(PY-PASTEDEPLOY_PATCH
 #
 $(PY-PASTEDEPLOY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) $(PY-PASTEDEPLOY_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)
+	rm -rf $(PY-PASTEDEPLOY_BUILD_DIR)
+	mkdir -p $(PY-PASTEDEPLOY_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR)
 ifeq ($(PY-PASTEDEPLOY_SVN_REV),)
 	$(PY-PASTEDEPLOY_UNZIP) $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
@@ -119,9 +129,25 @@ endif
 	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
 	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)
-	(cd $(PY-PASTEDEPLOY_BUILD_DIR); \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
+	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)/2.4
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR)
+ifeq ($(PY-PASTEDEPLOY_SVN_REV),)
+	$(PY-PASTEDEPLOY_UNZIP) $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-PASTEDEPLOY_SVN_REV) $(PY-PASTEDEPLOY_SVN) $(PY-PASTEDEPLOY_DIR); \
+	)
+endif
+	if test -n "$(PY-PASTEDEPLOY_PATCHES)" ; then \
+	    cat $(PY-PASTEDEPLOY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)/2.5
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 
@@ -132,7 +158,12 @@ py-pastedeploy-unpack: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 #
 $(PY-PASTEDEPLOY_BUILD_DIR)/.built: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 	rm -f $(PY-PASTEDEPLOY_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-PASTEDEPLOY_BUILD_DIR)
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-PASTEDEPLOY_BUILD_DIR)/.built
 
 #
@@ -154,8 +185,8 @@ py-pastedeploy-stage: $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pastedeploy
 #
-$(PY-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PASTEDEPLOY_IPK_DIR)/CONTROL
+$(PY24-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pastedeploy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -165,7 +196,21 @@ $(PY-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-PASTEDEPLOY_MAINTAINER)" >>$@
 	@echo "Source: $(PY-PASTEDEPLOY_SITE)/$(PY-PASTEDEPLOY_SOURCE)" >>$@
 	@echo "Description: $(PY-PASTEDEPLOY_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-PASTEDEPLOY_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PASTEDEPLOY_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
+
+$(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pastedeploy" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTEDEPLOY_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTEDEPLOY_SECTION)" >>$@
+	@echo "Version: $(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTEDEPLOY_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTEDEPLOY_SITE)/$(PY-PASTEDEPLOY_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTEDEPLOY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PASTEDEPLOY_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTEDEPLOY_CONFLICTS)" >>$@
 
 #
@@ -180,20 +225,30 @@ $(PY-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
+$(PY24-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
 	rm -rf $(PY-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py-pastedeploy_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTEDEPLOY_BUILD_DIR); \
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install\
-		--root=$(PY-PASTEDEPLOY_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-PASTEDEPLOY_IPK_DIR)/CONTROL/control
-#	echo $(PY-PASTEDEPLOY_CONFFILES) | sed -e 's/ /\n/g' > $(PY-PASTEDEPLOY_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PASTEDEPLOY_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install\
+		--root=$(PY24-PASTEDEPLOY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-PASTEDEPLOY_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTEDEPLOY_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PASTEDEPLOY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PASTEDEPLOY_IPK_DIR)
+
+$(PY25-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
+	rm -rf $(PY-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py25-pastedeploy_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install\
+		--root=$(PY25-PASTEDEPLOY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTEDEPLOY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTEDEPLOY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pastedeploy-ipk: $(PY-PASTEDEPLOY_IPK)
+py-pastedeploy-ipk: $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -206,4 +261,12 @@ py-pastedeploy-clean:
 # directories.
 #
 py-pastedeploy-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR) $(PY-PASTEDEPLOY_IPK_DIR) $(PY-PASTEDEPLOY_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PASTEDEPLOY_DIR) $(PY-PASTEDEPLOY_BUILD_DIR)
+	rm -rf $(PY24-PASTEDEPLOY_IPK_DIR) $(PY24-PASTEDEPLOY_IPK)
+	rm -rf $(PY25-PASTEDEPLOY_IPK_DIR) $(PY25-PASTEDEPLOY_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-pastedeploy-check: $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PASTEDEPLOY_IPK) $(PY25-PASTEDEPLOY_IPK)

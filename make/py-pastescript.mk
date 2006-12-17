@@ -26,7 +26,7 @@
 PY-PASTESCRIPT_SITE=http://cheeseshop.python.org/packages/source/P/PasteScript
 PY-PASTESCRIPT_VERSION=1.0
 #PY-PASTESCRIPT_SVN_REV=
-PY-PASTESCRIPT_IPK_VERSION=1
+PY-PASTESCRIPT_IPK_VERSION=2
 #ifneq ($(PY-PASTESCRIPT_SVN_REV),)
 #PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-PASTESCRIPT_xxx_VERSION:=$(PY-PASTESCRIPT_VERSION)dev_r$(PY-PASTESCRIPT_SVN_REV)
@@ -39,10 +39,10 @@ PY-PASTESCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTESCRIPT_DESCRIPTION=A pluggable command-line frontend, including commands to setup package file layouts.
 PY-PASTESCRIPT_SECTION=misc
 PY-PASTESCRIPT_PRIORITY=optional
-PY-PASTESCRIPT_DEPENDS=python, py-cheetah, py-paste, py-pastedeploy
+PY24-PASTESCRIPT_DEPENDS=python24, py-cheetah, py-paste, py-pastedeploy
+PY25-PASTESCRIPT_DEPENDS=python25, py25-cheetah, py25-paste, py25-pastedeploy
 PY-PASTESCRIPT_SUGGESTS=
 PY-PASTESCRIPT_CONFLICTS=
-
 
 #
 # PY-PASTESCRIPT_CONFFILES should be a list of user-editable files
@@ -72,8 +72,14 @@ PY-PASTESCRIPT_LDFLAGS=
 #
 PY-PASTESCRIPT_BUILD_DIR=$(BUILD_DIR)/py-pastescript
 PY-PASTESCRIPT_SOURCE_DIR=$(SOURCE_DIR)/py-pastescript
-PY-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
-PY-PASTESCRIPT_IPK=$(BUILD_DIR)/py-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
+PY24-PASTESCRIPT_IPK=$(BUILD_DIR)/py-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py25-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
+PY25-PASTESCRIPT_IPK=$(BUILD_DIR)/py25-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-pastescript-source py-pastescript-unpack py-pastescript py-pastescript-stage py-pastescript-ipk py-pastescript-clean py-pastescript-dirclean py-pastescript-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -108,7 +114,10 @@ py-pastescript-source: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCH
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) $(PY-PASTESCRIPT_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)
+	rm -rf $(PY-PASTESCRIPT_BUILD_DIR)
+	mkdir -p $(PY-PASTESCRIPT_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR)
 ifeq ($(PY-PASTESCRIPT_SVN_REV),)
 	$(PY-PASTESCRIPT_UNZIP) $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
@@ -119,9 +128,25 @@ endif
 	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
 	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)
-	(cd $(PY-PASTESCRIPT_BUILD_DIR); \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
+	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)/2.4
+	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR)
+ifeq ($(PY-PASTESCRIPT_SVN_REV),)
+	$(PY-PASTESCRIPT_UNZIP) $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q -r $(PY-PASTESCRIPT_SVN_REV) $(PY-PASTESCRIPT_SVN) $(PY-PASTESCRIPT_DIR); \
+	)
+endif
+	if test -n "$(PY-PASTESCRIPT_PATCHES)" ; then \
+	    cat $(PY-PASTESCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) -p0 ; \
+        fi
+	mv $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)/2.5
+	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 
@@ -132,7 +157,12 @@ py-pastescript-unpack: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.built: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 	rm -f $(PY-PASTESCRIPT_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-PASTESCRIPT_BUILD_DIR)
+	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-PASTESCRIPT_BUILD_DIR)/.built
 
 #
@@ -154,8 +184,8 @@ py-pastescript-stage: $(PY-PASTESCRIPT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pastescript
 #
-$(PY-PASTESCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PASTESCRIPT_IPK_DIR)/CONTROL
+$(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pastescript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -165,7 +195,21 @@ $(PY-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-PASTESCRIPT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-PASTESCRIPT_SITE)/$(PY-PASTESCRIPT_SOURCE)" >>$@
 	@echo "Description: $(PY-PASTESCRIPT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-PASTESCRIPT_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PASTESCRIPT_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
+
+$(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pastescript" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PASTESCRIPT_PRIORITY)" >>$@
+	@echo "Section: $(PY-PASTESCRIPT_SECTION)" >>$@
+	@echo "Version: $(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PASTESCRIPT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PASTESCRIPT_SITE)/$(PY-PASTESCRIPT_SOURCE)" >>$@
+	@echo "Description: $(PY-PASTESCRIPT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PASTESCRIPT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PASTESCRIPT_CONFLICTS)" >>$@
 
 #
@@ -180,20 +224,32 @@ $(PY-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
-	rm -rf $(PY-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py-pastescript_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PASTESCRIPT_BUILD_DIR); \
+$(PY24-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
+	rm -rf $(PY24-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py-pastescript_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install\
-		--root=$(PY-PASTESCRIPT_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-PASTESCRIPT_IPK_DIR)/CONTROL/control
-#	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PASTESCRIPT_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-PASTESCRIPT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PASTESCRIPT_IPK_DIR)
+
+$(PY25-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
+	rm -rf $(PY25-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py25-pastescript_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-PASTESCRIPT_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-PASTESCRIPT_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	$(MAKE) $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PASTESCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTESCRIPT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pastescript-ipk: $(PY-PASTESCRIPT_IPK)
+py-pastescript-ipk: $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -206,4 +262,12 @@ py-pastescript-clean:
 # directories.
 #
 py-pastescript-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR) $(PY-PASTESCRIPT_IPK_DIR) $(PY-PASTESCRIPT_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PASTESCRIPT_DIR) $(PY-PASTESCRIPT_BUILD_DIR)
+	rm -rf $(PY24-PASTESCRIPT_IPK_DIR) $(PY24-PASTESCRIPT_IPK)
+	rm -rf $(PY25-PASTESCRIPT_IPK_DIR) $(PY25-PASTESCRIPT_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-pastescript-check: $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PASTESCRIPT_IPK) $(PY25-PASTESCRIPT_IPK)
