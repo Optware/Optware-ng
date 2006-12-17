@@ -30,13 +30,14 @@ PY-TURBOCHEETAH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOCHEETAH_DESCRIPTION=Python template plugin that supports use of Cheetah templates.
 PY-TURBOCHEETAH_SECTION=misc
 PY-TURBOCHEETAH_PRIORITY=optional
-PY-TURBOCHEETAH_DEPENDS=python, py-cheetah
+PY24-TURBOCHEETAH_DEPENDS=python24, py-cheetah
+PY25-TURBOCHEETAH_DEPENDS=python25, py25-cheetah
 PY-TURBOCHEETAH_CONFLICTS=
 
 #
 # PY-TURBOCHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOCHEETAH_IPK_VERSION=3
+PY-TURBOCHEETAH_IPK_VERSION=4
 
 #
 # PY-TURBOCHEETAH_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-TURBOCHEETAH_LDFLAGS=
 #
 PY-TURBOCHEETAH_BUILD_DIR=$(BUILD_DIR)/py-turbocheetah
 PY-TURBOCHEETAH_SOURCE_DIR=$(SOURCE_DIR)/py-turbocheetah
-PY-TURBOCHEETAH_IPK_DIR=$(BUILD_DIR)/py-turbocheetah-$(PY-TURBOCHEETAH_VERSION)-ipk
-PY-TURBOCHEETAH_IPK=$(BUILD_DIR)/py-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-TURBOCHEETAH_IPK_DIR=$(BUILD_DIR)/py-turbocheetah-$(PY-TURBOCHEETAH_VERSION)-ipk
+PY24-TURBOCHEETAH_IPK=$(BUILD_DIR)/py-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-TURBOCHEETAH_IPK_DIR=$(BUILD_DIR)/py25-turbocheetah-$(PY-TURBOCHEETAH_VERSION)-ipk
+PY25-TURBOCHEETAH_IPK=$(BUILD_DIR)/py25-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-turbocheetah-source py-turbocheetah-unpack py-turbocheetah py-turbocheetah-stage py-turbocheetah-ipk py-turbocheetah-clean py-turbocheetah-dirclean py-turbocheetah-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,7 +109,10 @@ py-turbocheetah-source: $(PY-TURBOCHEETAH_PATCHES)
 #
 $(PY-TURBOCHEETAH_BUILD_DIR)/.configured: $(PY-TURBOCHEETAH_PATCHES) make/py-turbocheetah.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)
+	rm -rf $(PY-TURBOCHEETAH_BUILD_DIR)
+	mkdir -p $(PY-TURBOCHEETAH_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR)
 ifeq ($(PY-TURBOCHEETAH_SVN_TAG),)
 	$(PY-TURBOCHEETAH_UNZIP) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
@@ -111,10 +121,25 @@ else
 	)
 endif
 #	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)/2.4
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR)
+ifeq ($(PY-TURBOCHEETAH_SVN_TAG),)
+	$(PY-TURBOCHEETAH_UNZIP) $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q $(PY-TURBOCHEETAH_REPOSITORY) $(PY-TURBOCHEETAH_DIR); \
+	)
+endif
+#	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)/2.5
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
 
@@ -125,7 +150,12 @@ py-turbocheetah-unpack: $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
 #
 $(PY-TURBOCHEETAH_BUILD_DIR)/.built: $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
 	rm -f $(PY-TURBOCHEETAH_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-TURBOCHEETAH_BUILD_DIR)
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-TURBOCHEETAH_BUILD_DIR)/.built
 
 #
@@ -147,8 +177,8 @@ py-turbocheetah-stage: $(PY-TURBOCHEETAH_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-turbocheetah
 #
-$(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL
+$(PY24-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-turbocheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -158,7 +188,21 @@ $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-TURBOCHEETAH_MAINTAINER)" >>$@
 	@echo "Source: $(PY-TURBOCHEETAH_SITE)/$(PY-TURBOCHEETAH_SOURCE)" >>$@
 	@echo "Description: $(PY-TURBOCHEETAH_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-TURBOCHEETAH_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-TURBOCHEETAH_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-TURBOCHEETAH_CONFLICTS)" >>$@
+
+$(PY25-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-turbocheetah" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TURBOCHEETAH_PRIORITY)" >>$@
+	@echo "Section: $(PY-TURBOCHEETAH_SECTION)" >>$@
+	@echo "Version: $(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TURBOCHEETAH_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TURBOCHEETAH_SITE)/$(PY-TURBOCHEETAH_SOURCE)" >>$@
+	@echo "Description: $(PY-TURBOCHEETAH_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-TURBOCHEETAH_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TURBOCHEETAH_CONFLICTS)" >>$@
 
 #
@@ -173,19 +217,30 @@ $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-TURBOCHEETAH_IPK): $(PY-TURBOCHEETAH_BUILD_DIR)/.built
-	rm -rf $(PY-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py-turbocheetah_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TURBOCHEETAH_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/control
-	echo $(PY-TURBOCHEETAH_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOCHEETAH_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOCHEETAH_IPK_DIR)
+$(PY24-TURBOCHEETAH_IPK): $(PY-TURBOCHEETAH_BUILD_DIR)/.built
+	rm -rf $(PY24-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py-turbocheetah_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-TURBOCHEETAH_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-TURBOCHEETAH_IPK_DIR)/CONTROL/control
+	echo $(PY-TURBOCHEETAH_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-TURBOCHEETAH_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TURBOCHEETAH_IPK_DIR)
+
+$(PY25-TURBOCHEETAH_IPK): $(PY-TURBOCHEETAH_BUILD_DIR)/.built
+	rm -rf $(PY25-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py25-turbocheetah_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-TURBOCHEETAH_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-TURBOCHEETAH_IPK_DIR)/CONTROL/control
+	echo $(PY-TURBOCHEETAH_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TURBOCHEETAH_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TURBOCHEETAH_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-turbocheetah-ipk: $(PY-TURBOCHEETAH_IPK)
+py-turbocheetah-ipk: $(PY24-TURBOCHEETAH_IPK) $(PY25-TURBOCHEETAH_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -198,4 +253,12 @@ py-turbocheetah-clean:
 # directories.
 #
 py-turbocheetah-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR) $(PY-TURBOCHEETAH_IPK_DIR) $(PY-TURBOCHEETAH_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)
+	rm -rf $(PY24-TURBOCHEETAH_IPK_DIR) $(PY24-TURBOCHEETAH_IPK)
+	rm -rf $(PY25-TURBOCHEETAH_IPK_DIR) $(PY25-TURBOCHEETAH_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-turbocheetah-check: $(PY24-TURBOCHEETAH_IPK) $(PY25-TURBOCHEETAH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TURBOCHEETAH_IPK) $(PY25-TURBOCHEETAH_IPK)
