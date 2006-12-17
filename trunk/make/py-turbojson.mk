@@ -30,13 +30,14 @@ PY-TURBOJSON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOJSON_DESCRIPTION=Python template plugin that supports JSON.
 PY-TURBOJSON_SECTION=misc
 PY-TURBOJSON_PRIORITY=optional
-PY-TURBOJSON_DEPENDS=python, py-simplejson
+PY24-TURBOJSON_DEPENDS=python24, py-simplejson
+PY25-TURBOJSON_DEPENDS=python25, py25-simplejson
 PY-TURBOJSON_CONFLICTS=
 
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=1
+PY-TURBOJSON_IPK_VERSION=2
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-TURBOJSON_LDFLAGS=
 #
 PY-TURBOJSON_BUILD_DIR=$(BUILD_DIR)/py-turbojson
 PY-TURBOJSON_SOURCE_DIR=$(SOURCE_DIR)/py-turbojson
-PY-TURBOJSON_IPK_DIR=$(BUILD_DIR)/py-turbojson-$(PY-TURBOJSON_VERSION)-ipk
-PY-TURBOJSON_IPK=$(BUILD_DIR)/py-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-TURBOJSON_IPK_DIR=$(BUILD_DIR)/py-turbojson-$(PY-TURBOJSON_VERSION)-ipk
+PY24-TURBOJSON_IPK=$(BUILD_DIR)/py-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-TURBOJSON_IPK_DIR=$(BUILD_DIR)/py25-turbojson-$(PY-TURBOJSON_VERSION)-ipk
+PY25-TURBOJSON_IPK=$(BUILD_DIR)/py25-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-turbojson-source py-turbojson-unpack py-turbojson py-turbojson-stage py-turbojson-ipk py-turbojson-clean py-turbojson-dirclean py-turbojson-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,7 +109,10 @@ py-turbojson-source: $(PY-TURBOJSON_PATCHES)
 #
 $(PY-TURBOJSON_BUILD_DIR)/.configured: $(PY-TURBOJSON_PATCHES) make/py-turbojson.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)
+	rm -rf $(PY-TURBOJSON_BUILD_DIR)
+	mkdir -p $(PY-TURBOJSON_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR)
 ifeq ($(PY-TURBOJSON_SVN_TAG),)
 	$(PY-TURBOJSON_UNZIP) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
@@ -111,10 +121,25 @@ else
 	)
 endif
 #	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)
-	(cd $(PY-TURBOJSON_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)/2.4
+	(cd $(PY-TURBOJSON_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR)
+ifeq ($(PY-TURBOJSON_SVN_TAG),)
+	$(PY-TURBOJSON_UNZIP) $(DL_DIR)/$(PY-TURBOJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	(cd $(BUILD_DIR); \
+	    svn co -q $(PY-TURBOJSON_REPOSITORY) $(PY-TURBOJSON_DIR); \
+	)
+endif
+#	cat $(PY-TURBOJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOJSON_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)/2.5
+	(cd $(PY-TURBOJSON_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-TURBOJSON_BUILD_DIR)/.configured
 
@@ -125,7 +150,12 @@ py-turbojson-unpack: $(PY-TURBOJSON_BUILD_DIR)/.configured
 #
 $(PY-TURBOJSON_BUILD_DIR)/.built: $(PY-TURBOJSON_BUILD_DIR)/.configured
 	rm -f $(PY-TURBOJSON_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-TURBOJSON_BUILD_DIR)
+	(cd $(PY-TURBOJSON_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-TURBOJSON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-TURBOJSON_BUILD_DIR)/.built
 
 #
@@ -147,8 +177,8 @@ py-turbojson-stage: $(PY-TURBOJSON_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-turbojson
 #
-$(PY-TURBOJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-TURBOJSON_IPK_DIR)/CONTROL
+$(PY24-TURBOJSON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-turbojson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -158,7 +188,21 @@ $(PY-TURBOJSON_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-TURBOJSON_MAINTAINER)" >>$@
 	@echo "Source: $(PY-TURBOJSON_SITE)/$(PY-TURBOJSON_SOURCE)" >>$@
 	@echo "Description: $(PY-TURBOJSON_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-TURBOJSON_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-TURBOJSON_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-TURBOJSON_CONFLICTS)" >>$@
+
+$(PY25-TURBOJSON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-turbojson" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TURBOJSON_PRIORITY)" >>$@
+	@echo "Section: $(PY-TURBOJSON_SECTION)" >>$@
+	@echo "Version: $(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TURBOJSON_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TURBOJSON_SITE)/$(PY-TURBOJSON_SOURCE)" >>$@
+	@echo "Description: $(PY-TURBOJSON_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-TURBOJSON_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TURBOJSON_CONFLICTS)" >>$@
 
 #
@@ -173,19 +217,30 @@ $(PY-TURBOJSON_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-TURBOJSON_IPK): $(PY-TURBOJSON_BUILD_DIR)/.built
-	rm -rf $(PY-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py-turbojson_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TURBOJSON_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TURBOJSON_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-TURBOJSON_IPK_DIR)/CONTROL/control
-	echo $(PY-TURBOJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TURBOJSON_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TURBOJSON_IPK_DIR)
+$(PY24-TURBOJSON_IPK): $(PY-TURBOJSON_BUILD_DIR)/.built
+	rm -rf $(PY24-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py-turbojson_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOJSON_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-TURBOJSON_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-TURBOJSON_IPK_DIR)/CONTROL/control
+	echo $(PY-TURBOJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-TURBOJSON_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TURBOJSON_IPK_DIR)
+
+$(PY25-TURBOJSON_IPK): $(PY-TURBOJSON_BUILD_DIR)/.built
+	rm -rf $(PY25-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py25-turbojson_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TURBOJSON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-TURBOJSON_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-TURBOJSON_IPK_DIR)/CONTROL/control
+	echo $(PY-TURBOJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TURBOJSON_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TURBOJSON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-turbojson-ipk: $(PY-TURBOJSON_IPK)
+py-turbojson-ipk: $(PY24-TURBOJSON_IPK) $(PY25-TURBOJSON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -198,4 +253,12 @@ py-turbojson-clean:
 # directories.
 #
 py-turbojson-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR) $(PY-TURBOJSON_IPK_DIR) $(PY-TURBOJSON_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-TURBOJSON_DIR) $(PY-TURBOJSON_BUILD_DIR)
+	rm -rf $(PY24-TURBOJSON_IPK_DIR) $(PY24-TURBOJSON_IPK)
+	rm -rf $(PY25-TURBOJSON_IPK_DIR) $(PY25-TURBOJSON_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-turbojson-check: $(PY24-TURBOJSON_IPK) $(PY25-TURBOJSON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TURBOJSON_IPK) $(PY25-TURBOJSON_IPK)
