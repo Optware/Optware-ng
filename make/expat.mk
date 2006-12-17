@@ -29,7 +29,7 @@ EXPAT_CONFLICTS=
 #
 # EXPAT_IPK_VERSION should be incremented when the ipk changes.
 #
-EXPAT_IPK_VERSION=4
+EXPAT_IPK_VERSION=5
 
 #
 # EXPAT_CONFFILES should be a list of user-editable files
@@ -61,6 +61,8 @@ EXPAT_BUILD_DIR=$(BUILD_DIR)/expat
 EXPAT_SOURCE_DIR=$(SOURCE_DIR)/expat
 EXPAT_IPK_DIR=$(BUILD_DIR)/expat-$(EXPAT_VERSION)-ipk
 EXPAT_IPK=$(BUILD_DIR)/expat_$(EXPAT_VERSION)-$(EXPAT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: expat-source expat-unpack expat expat-stage expat-ipk expat-clean expat-dirclean expat-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -182,7 +184,7 @@ $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	)
 	$(STRIP_COMMAND) $(EXPAT_IPK_DIR)/opt/lib/libexpat.so
 	# avoid problems with libtool later
-	rm -f $(STAGING_LIB_DIR)/libexpat.la
+	rm -f $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
 	$(MAKE) $(EXPAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EXPAT_IPK_DIR)
 
@@ -203,3 +205,9 @@ expat-clean:
 #
 expat-dirclean:
 	rm -rf $(BUILD_DIR)/$(EXPAT_DIR) $(EXPAT_BUILD_DIR) $(EXPAT_IPK_DIR) $(EXPAT_IPK)
+
+#
+# Some sanity check for the package.
+#
+expat-check: $(EXPAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(EXPAT_IPK)
