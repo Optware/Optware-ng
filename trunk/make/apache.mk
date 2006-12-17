@@ -144,8 +144,8 @@ apache-source: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) \
-		$(APACHE_PATCHES)
+$(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
+	cd $(STAGING_INCLUDE_DIR)/apache2/; rm -f `ls | egrep -v '^apr|^apu'`
 	$(MAKE) zlib-stage
 	$(MAKE) expat-stage
 	$(MAKE) openssl-stage
