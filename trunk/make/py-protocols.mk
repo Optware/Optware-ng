@@ -265,7 +265,9 @@ py-protocols-clean:
 # directories.
 #
 py-protocols-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR) $(PY-PROTOCOLS_IPK_DIR) $(PY-PROTOCOLS_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)
+	rm -rf $(PY24-PROTOCOLS_IPK_DIR) $(PY24-PROTOCOLS_IPK)
+	rm -rf $(PY25-PROTOCOLS_IPK_DIR) $(PY25-PROTOCOLS_IPK)
 
 #
 # Some sanity check for the package.

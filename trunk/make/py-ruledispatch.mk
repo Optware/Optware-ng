@@ -265,7 +265,9 @@ py-ruledispatch-clean:
 # directories.
 #
 py-ruledispatch-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR) $(PY-RULEDISPATCH_IPK_DIR) $(PY-RULEDISPATCH_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)
+	rm -rf $(PY24-RULEDISPATCH_IPK_DIR) $(PY24-RULEDISPATCH_IPK)
+	rm -rf $(PY25-RULEDISPATCH_IPK_DIR) $(PY25-RULEDISPATCH_IPK)
 
 #
 # Some sanity check for the package.
