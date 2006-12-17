@@ -30,13 +30,14 @@ PY-SIMPLEJSON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SIMPLEJSON_DESCRIPTION=Simple, fast, extensible JSON encoder/decoder for Python.
 PY-SIMPLEJSON_SECTION=misc
 PY-SIMPLEJSON_PRIORITY=optional
-PY-SIMPLEJSON_DEPENDS=python
+PY24-SIMPLEJSON_DEPENDS=python24
+PY25-SIMPLEJSON_DEPENDS=python25
 PY-SIMPLEJSON_CONFLICTS=
 
 #
 # PY-SIMPLEJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIMPLEJSON_IPK_VERSION=1
+PY-SIMPLEJSON_IPK_VERSION=2
 
 #
 # PY-SIMPLEJSON_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-SIMPLEJSON_LDFLAGS=
 #
 PY-SIMPLEJSON_BUILD_DIR=$(BUILD_DIR)/py-simplejson
 PY-SIMPLEJSON_SOURCE_DIR=$(SOURCE_DIR)/py-simplejson
-PY-SIMPLEJSON_IPK_DIR=$(BUILD_DIR)/py-simplejson-$(PY-SIMPLEJSON_VERSION)-ipk
-PY-SIMPLEJSON_IPK=$(BUILD_DIR)/py-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-SIMPLEJSON_IPK_DIR=$(BUILD_DIR)/py-simplejson-$(PY-SIMPLEJSON_VERSION)-ipk
+PY24-SIMPLEJSON_IPK=$(BUILD_DIR)/py-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-SIMPLEJSON_IPK_DIR=$(BUILD_DIR)/py25-simplejson-$(PY-SIMPLEJSON_VERSION)-ipk
+PY25-SIMPLEJSON_IPK=$(BUILD_DIR)/py25-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-simplejson-source py-simplejson-unpack py-simplejson py-simplejson-stage py-simplejson-ipk py-simplejson-clean py-simplejson-dirclean py-simplejson-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,14 +107,27 @@ py-simplejson-source: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-SIMPLEJSON_PATCHES)
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-SIMPLEJSON_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)
+	rm -rf $(PY-SIMPLEJSON_BUILD_DIR)
+	mkdir -p $(PY-SIMPLEJSON_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR)
 	$(PY-SIMPLEJSON_UNZIP) $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SIMPLEJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)
-	(cd $(PY-SIMPLEJSON_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)/2.4
+	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR)
+	$(PY-SIMPLEJSON_UNZIP) $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SIMPLEJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)/2.5
+	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	    sed -i -e '/use_setuptools/d' setup.py; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 
@@ -118,7 +138,12 @@ py-simplejson-unpack: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.built: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 	rm -f $(PY-SIMPLEJSON_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-SIMPLEJSON_BUILD_DIR)
+	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-SIMPLEJSON_BUILD_DIR)/.built
 
 #
@@ -140,8 +165,8 @@ py-simplejson-stage: $(PY-SIMPLEJSON_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-simplejson
 #
-$(PY-SIMPLEJSON_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SIMPLEJSON_IPK_DIR)/CONTROL
+$(PY24-SIMPLEJSON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-simplejson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -151,7 +176,21 @@ $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-SIMPLEJSON_MAINTAINER)" >>$@
 	@echo "Source: $(PY-SIMPLEJSON_SITE)/$(PY-SIMPLEJSON_SOURCE)" >>$@
 	@echo "Description: $(PY-SIMPLEJSON_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-SIMPLEJSON_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-SIMPLEJSON_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SIMPLEJSON_CONFLICTS)" >>$@
+
+$(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-simplejson" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SIMPLEJSON_PRIORITY)" >>$@
+	@echo "Section: $(PY-SIMPLEJSON_SECTION)" >>$@
+	@echo "Version: $(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SIMPLEJSON_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SIMPLEJSON_SITE)/$(PY-SIMPLEJSON_SOURCE)" >>$@
+	@echo "Description: $(PY-SIMPLEJSON_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-SIMPLEJSON_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SIMPLEJSON_CONFLICTS)" >>$@
 
 #
@@ -166,19 +205,30 @@ $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
-	rm -rf $(PY-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py-simplejson_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SIMPLEJSON_BUILD_DIR); \
+$(PY24-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
+	rm -rf $(PY24-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py-simplejson_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-SIMPLEJSON_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/control
-#	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SIMPLEJSON_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	--root=$(PY24-SIMPLEJSON_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-SIMPLEJSON_IPK_DIR)/CONTROL/control
+#	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SIMPLEJSON_IPK_DIR)
+
+$(PY25-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
+	rm -rf $(PY25-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py25-simplejson_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	--root=$(PY25-SIMPLEJSON_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/control
+#	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SIMPLEJSON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-simplejson-ipk: $(PY-SIMPLEJSON_IPK)
+py-simplejson-ipk: $(PY24-SIMPLEJSON_IPK) $(PY25-SIMPLEJSON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -191,4 +241,12 @@ py-simplejson-clean:
 # directories.
 #
 py-simplejson-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR) $(PY-SIMPLEJSON_IPK_DIR) $(PY-SIMPLEJSON_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)
+	rm -rf $(PY24-SIMPLEJSON_IPK_DIR) $(PY24-SIMPLEJSON_IPK)
+	rm -rf $(PY25-SIMPLEJSON_IPK_DIR) $(PY25-SIMPLEJSON_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-simplejson-check: $(PY24-SIMPLEJSON_IPK) $(PY25-SIMPLEJSON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SIMPLEJSON_IPK) $(PY25-SIMPLEJSON_IPK)
