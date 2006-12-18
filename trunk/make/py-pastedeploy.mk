@@ -226,7 +226,7 @@ $(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
-	rm -rf $(PY-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py-pastedeploy_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py-pastedeploy_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install\
