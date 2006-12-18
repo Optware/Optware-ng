@@ -249,7 +249,7 @@ $(PY25-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
 		--root=$(PY25-SQLOBJECT_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-SQLOBJECT_BUILD_DIR)/opt/bin/*; \
+	for f in $(PY25-SQLOBJECT_IPK_DIR)/opt/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
