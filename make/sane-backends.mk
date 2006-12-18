@@ -28,11 +28,12 @@
 #
 #SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
 #SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
-SANE_BACKENDS_VERSION=1.0.18
+SANE_BACKEND_RELEASE=1.0.18
+SANE_BACKENDS_VERSION=$(SANE_BACKEND_RELEASE)+cvs$(SANE_BACKENDS_CVS_DATE)
 SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SOURCE=sane-backends-$(SANE_BACKENDS_VERSION).tar.gz
-SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)
+SANE_BACKENDS_DIR=sane-backends
 SANE_BACKENDS_UNZIP=zcat
 SANE_BACKENDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SANE_BACKENDS_DESCRIPTION=SANE is a universal scanner interface
@@ -41,6 +42,12 @@ SANE_BACKENDS_PRIORITY=optional
 SANE_BACKENDS_DEPENDS=libjpeg, libusb
 SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
+
+# CVS info
+SANE_BACKENDS_CVS_DATE=20061127
+SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
+SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
+
 
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
@@ -83,9 +90,16 @@ SANE_BACKENDS_IPK=$(BUILD_DIR)/sane-backends_$(SANE_BACKENDS_VERSION)-$(SANE_BAC
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(SANE_BACKENDS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE)/$(SANE_BACKENDS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE_OLD)/$(SANE_BACKENDS_SOURCE)
+$(DL_DIR)/sane-backends-$(SANE_BACKENDS_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(SANE_BACKENDS_DIR) && \
+		cvs -d$(SANE_BACKENDS_REPOSITORY) -z3 co $(SANE_BACKENDS_CVS_OPTS) sane-backends && \
+		tar -czf $@ $(SANE_BACKENDS_DIR) && \
+		rm -rf $(SANE_BACKENDS_DIR) \
+	)
+
+#	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE)/$(SANE_BACKENDS_SOURCE) || \
+#	$(WGET) -P $(DL_DIR) $(SANE_BACKENDS_SITE_OLD)/$(SANE_BACKENDS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,11 +127,16 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 	$(MAKE) libusb-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR)
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SANE_BACKENDS_PATCHES) | patch -d $(BUILD_DIR)/$(SANE_BACKENDS_DIR) -p1
-	mv $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR)
+	if test -n "$(SANE_BACKENDS_PATCHES)" ; \
+		then cat $(SANE_BACKENDS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SANE_BACKENDS_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(SANE_BACKENDS_DIR)" != "$(SANE_BACKENDS_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR) ; \
+	fi
 	(cd $(SANE_BACKENDS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
 		LDFLAGS="$(SANE_BACKENDS_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -191,7 +210,7 @@ $(SANE_BACKENDS_IPK): $(SANE_BACKENDS_BUILD_DIR)/.built
 	rm -rf $(SANE_BACKENDS_IPK_DIR) $(BUILD_DIR)/sane-backends_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SANE_BACKENDS_BUILD_DIR) DESTDIR=$(SANE_BACKENDS_IPK_DIR) install
 	rm -rf $(SANE_BACKENDS_IPK_DIR)/opt/lib/libsane.la
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/libsane.so.$(SANE_BACKENDS_VERSION)
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/libsane.so.$(SANE_BACKEND_RELEASE)
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/gamma4scanimage
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/sane-find-scanner
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/scanimage
