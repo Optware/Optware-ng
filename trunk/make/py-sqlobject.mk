@@ -43,7 +43,7 @@ PY24-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg2, py-mysql
 PY25-SQLOBJECT_SUGGESTS=py25-psycopg2, py25-mysql
 PY-SQLOBJECT_CONFLICTS=
 
-PY-SQLOBJECT_IPK_VERSION=2
+PY-SQLOBJECT_IPK_VERSION=3
 
 #
 # PY-SQLOBJECT_CONFFILES should be a list of user-editable files
@@ -236,9 +236,9 @@ $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control:
 $(PY24-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 	rm -rf $(PY24-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY24-SQLOBJECT_IPK_DIR) --prefix=/opt)
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+		--root=$(PY24-SQLOBJECT_IPK_DIR) --prefix=/opt)
 	$(MAKE) $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SQLOBJECT_IPK_DIR)
@@ -246,9 +246,11 @@ $(PY24-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 $(PY25-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 	rm -rf $(PY25-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py25-sqlobject_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.5; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY25-SQLOBJECT_IPK_DIR) --prefix=/opt)
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
+		--root=$(PY25-SQLOBJECT_IPK_DIR) --prefix=/opt)
+	for f in $(PY-SQLOBJECT_BUILD_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SQLOBJECT_IPK_DIR)
