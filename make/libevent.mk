@@ -5,7 +5,7 @@
 #############################################################
 
 LIBEVENT_SITE=http://www.monkey.org/~provos/
-LIBEVENT_VERSION=1.2
+LIBEVENT_VERSION=1.2a
 LIBEVENT_SOURCE=libevent-$(LIBEVENT_VERSION).tar.gz
 LIBEVENT_DIR=libevent-$(LIBEVENT_VERSION)
 LIBEVENT_UNZIP=zcat
