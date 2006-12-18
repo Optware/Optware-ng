@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = \
+CROSS_PACKAGES_READY_FOR_TESTING = asterisk-sounds \
 
 
 # Add new native-only packages here
@@ -49,7 +49,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = libao nethack scponly gkrellm parted lumikki mi
 	lftp \
 	libextractor \
 	perl-dbd-mysql \
-	asterisk-sounds \
 	bpalogin
 
 PERL_PACKAGES = \
