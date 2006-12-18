@@ -86,6 +86,7 @@ static int           uploadLimit   = 20;
 static int           downloadLimit = -1;
 static char          * torrentPath = NULL;
 static int           watchdogInterval = 600;
+static int           natTraversal  = 0;
 static volatile char mustDie       = 0;
 static volatile char got_hup       = 0;
 static volatile char got_usr1      = 0;
@@ -509,6 +510,15 @@ int main( int argc, char ** argv )
   tr_setBindPort( h, bindPort );
   tr_setUploadLimit( h, uploadLimit );
   tr_setDownloadLimit( h, downloadLimit );
+
+  if( natTraversal )
+    {
+      tr_natTraversalEnable( h );
+    }
+  else
+    {
+      tr_natTraversalDisable( h );
+    }
   
   setupsighandlers();
   reload_active();
@@ -584,10 +594,11 @@ static int parseCommandLine( int argc, char ** argv )
             { "finish",   required_argument, NULL, 'f' },
             { "watchdog", required_argument, NULL, 'w' },
             { "pidfile",  required_argument, NULL, 'i' }, 
+            { "nat-traversal", no_argument,  NULL, 'n' },
             { 0, 0, 0, 0} };
 
         int c, optind = 0;
-        c = getopt_long( argc, argv, "hv:p:u:d:f:w:i:", long_options, &optind );
+        c = getopt_long( argc, argv, "hv:p:u:d:f:w:i:n", long_options, &optind );
         if( c < 0 )
         {
             break;
@@ -617,6 +628,9 @@ static int parseCommandLine( int argc, char ** argv )
             break;
           case 'i':
             pidfile = optarg;
+            break;
+          case 'n':
+            natTraversal = 1;
             break;
           default:
             return 1;
