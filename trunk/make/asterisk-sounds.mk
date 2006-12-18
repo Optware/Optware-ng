@@ -74,6 +74,8 @@ ASTERISK-SOUNDS_SOURCE_DIR=$(SOURCE_DIR)/asterisk-sounds
 ASTERISK-SOUNDS_IPK_DIR=$(BUILD_DIR)/asterisk-sounds-$(ASTERISK-SOUNDS_VERSION)-ipk
 ASTERISK-SOUNDS_IPK=$(BUILD_DIR)/asterisk-sounds_$(ASTERISK-SOUNDS_VERSION)-$(ASTERISK-SOUNDS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: asterisk-sounds-source asterisk-sounds-unpack asterisk-sounds asterisk-sounds-stage asterisk-sounds-ipk asterisk-sounds-clean asterisk-sounds-dirclean asterisk-sounds-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -208,3 +210,9 @@ asterisk-sounds-clean:
 #
 asterisk-sounds-dirclean:
 	rm -rf $(BUILD_DIR)/$(ASTERISK-SOUNDS_DIR) $(ASTERISK-SOUNDS_BUILD_DIR) $(ASTERISK-SOUNDS_IPK_DIR) $(ASTERISK-SOUNDS_IPK)
+
+#
+# Some sanity check for the package.
+#
+asterisk-sounds-check: $(ASTERISK-SOUNDS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ASTERISK-SOUNDS_IPK)
