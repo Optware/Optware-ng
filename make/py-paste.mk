@@ -28,7 +28,7 @@
 #ifneq ($(PY-PASTE_SVN_REV),)
 #PY-PASTE____VERSION=0.5dev_r4745
 #else
-PY-PASTE_VERSION=1.0
+PY-PASTE_VERSION=1.0.1
 PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
 PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).tar.gz
 #endif
@@ -43,7 +43,7 @@ PY25-PASTE_DEPENDS=python25
 PY-PASTE_SUGGESTS=
 PY-PASTE_CONFLICTS=
 
-PY-PASTE_IPK_VERSION=2
+PY-PASTE_IPK_VERSION=1
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
