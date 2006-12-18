@@ -74,8 +74,8 @@ PY-RULEDISPATCH_LDFLAGS=
 PY-RULEDISPATCH_BUILD_DIR=$(BUILD_DIR)/py-ruledispatch
 PY-RULEDISPATCH_SOURCE_DIR=$(SOURCE_DIR)/py-ruledispatch
 
-PY24-RULEDISPATCH_IPK_DIR=$(BUILD_DIR)/py-ruledispatch-$(PY-RULEDISPATCH_VERSION)-ipk
-PY24-RULEDISPATCH_IPK=$(BUILD_DIR)/py-ruledispatch_$(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-RULEDISPATCH_DIR=$(BUILD_DIR)/py-ruledispatch-$(PY-RULEDISPATCH_VERSION)-ipk
+PY-RULEDISPATCH=$(BUILD_DIR)/py-ruledispatch_$(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-RULEDISPATCH_IPK_DIR=$(BUILD_DIR)/py25-ruledispatch-$(PY-RULEDISPATCH_VERSION)-ipk
 PY25-RULEDISPATCH_IPK=$(BUILD_DIR)/py25-ruledispatch_$(PY-RULEDISPATCH_VERSION)-$(PY-RULEDISPATCH_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -189,7 +189,7 @@ py-ruledispatch-stage: $(PY-RULEDISPATCH_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-ruledispatch
 #
-$(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/control:
+$(PY-RULEDISPATCH_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-ruledispatch" >>$@
@@ -229,15 +229,15 @@ $(PY25-RULEDISPATCH_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-RULEDISPATCH_IPK): $(PY-RULEDISPATCH_BUILD_DIR)/.built
-	rm -rf $(PY24-RULEDISPATCH_IPK_DIR) $(BUILD_DIR)/py-ruledispatch_*_$(TARGET_ARCH).ipk
+$(PY-RULEDISPATCH): $(PY-RULEDISPATCH_BUILD_DIR)/.built
+	rm -rf $(PY-RULEDISPATCH_DIR) $(BUILD_DIR)/py-ruledispatch_*_$(TARGET_ARCH).ipk
 	(cd $(PY-RULEDISPATCH_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py --without-speedups install \
-		--root=$(PY24-RULEDISPATCH_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/control
-#	echo $(PY-RULEDISPATCH_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-RULEDISPATCH_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-RULEDISPATCH_IPK_DIR)
+		--root=$(PY-RULEDISPATCH_DIR) --prefix=/opt)
+	$(MAKE) $(PY-RULEDISPATCH_DIR)/CONTROL/control
+#	echo $(PY-RULEDISPATCH_CONFFILES) | sed -e 's/ /\n/g' > $(PY-RULEDISPATCH_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-RULEDISPATCH_DIR)
 
 $(PY25-RULEDISPATCH_IPK): $(PY-RULEDISPATCH_BUILD_DIR)/.built
 	rm -rf $(PY25-RULEDISPATCH_IPK_DIR) $(BUILD_DIR)/py25-ruledispatch_*_$(TARGET_ARCH).ipk
@@ -252,7 +252,7 @@ $(PY25-RULEDISPATCH_IPK): $(PY-RULEDISPATCH_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-ruledispatch-ipk: $(PY24-RULEDISPATCH_IPK) $(PY25-RULEDISPATCH_IPK)
+py-ruledispatch-ipk: $(PY-RULEDISPATCH) $(PY25-RULEDISPATCH_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -266,11 +266,11 @@ py-ruledispatch-clean:
 #
 py-ruledispatch-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH_BUILD_DIR)
-	rm -rf $(PY24-RULEDISPATCH_IPK_DIR) $(PY24-RULEDISPATCH_IPK)
+	rm -rf $(PY-RULEDISPATCH_DIR) $(PY-RULEDISPATCH)
 	rm -rf $(PY25-RULEDISPATCH_IPK_DIR) $(PY25-RULEDISPATCH_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-ruledispatch-check: $(PY24-RULEDISPATCH_IPK) $(PY25-RULEDISPATCH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-RULEDISPATCH_IPK) $(PY25-RULEDISPATCH_IPK)
+py-ruledispatch-check: $(PY-RULEDISPATCH) $(PY25-RULEDISPATCH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY-RULEDISPATCH) $(PY25-RULEDISPATCH_IPK)

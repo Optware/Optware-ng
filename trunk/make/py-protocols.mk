@@ -74,8 +74,8 @@ PY-PROTOCOLS_LDFLAGS=
 PY-PROTOCOLS_BUILD_DIR=$(BUILD_DIR)/py-protocols
 PY-PROTOCOLS_SOURCE_DIR=$(SOURCE_DIR)/py-protocols
 
-PY24-PROTOCOLS_IPK_DIR=$(BUILD_DIR)/py-protocols-$(PY-PROTOCOLS_VERSION)-ipk
-PY24-PROTOCOLS_IPK=$(BUILD_DIR)/py-protocols_$(PY-PROTOCOLS_VERSION)-$(PY-PROTOCOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-PROTOCOLS_IPK_DIR=$(BUILD_DIR)/py-protocols-$(PY-PROTOCOLS_VERSION)-ipk
+PY-PROTOCOLS_IPK=$(BUILD_DIR)/py-protocols_$(PY-PROTOCOLS_VERSION)-$(PY-PROTOCOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PROTOCOLS_IPK_DIR=$(BUILD_DIR)/py25-protocols-$(PY-PROTOCOLS_VERSION)-ipk
 PY25-PROTOCOLS_IPK=$(BUILD_DIR)/py25-protocols_$(PY-PROTOCOLS_VERSION)-$(PY-PROTOCOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -189,7 +189,7 @@ py-protocols-stage: $(PY-PROTOCOLS_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-protocols
 #
-$(PY24-PROTOCOLS_IPK_DIR)/CONTROL/control:
+$(PY-PROTOCOLS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-protocols" >>$@
@@ -229,15 +229,15 @@ $(PY25-PROTOCOLS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-PROTOCOLS_IPK): $(PY-PROTOCOLS_BUILD_DIR)/.built
-	rm -rf $(PY24-PROTOCOLS_IPK_DIR) $(BUILD_DIR)/py-protocols_*_$(TARGET_ARCH).ipk
+$(PY-PROTOCOLS_IPK): $(PY-PROTOCOLS_BUILD_DIR)/.built
+	rm -rf $(PY-PROTOCOLS_IPK_DIR) $(BUILD_DIR)/py-protocols_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py --without-speedups install \
-		--root=$(PY24-PROTOCOLS_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY24-PROTOCOLS_IPK_DIR)/CONTROL/control
-#	echo $(PY-PROTOCOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PROTOCOLS_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PROTOCOLS_IPK_DIR)
+		--root=$(PY-PROTOCOLS_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY-PROTOCOLS_IPK_DIR)/CONTROL/control
+#	echo $(PY-PROTOCOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-PROTOCOLS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PROTOCOLS_IPK_DIR)
 
 $(PY25-PROTOCOLS_IPK): $(PY-PROTOCOLS_BUILD_DIR)/.built
 	rm -rf $(PY25-PROTOCOLS_IPK_DIR) $(BUILD_DIR)/py25-protocols_*_$(TARGET_ARCH).ipk
@@ -252,7 +252,7 @@ $(PY25-PROTOCOLS_IPK): $(PY-PROTOCOLS_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-protocols-ipk: $(PY24-PROTOCOLS_IPK) $(PY25-PROTOCOLS_IPK)
+py-protocols-ipk: $(PY-PROTOCOLS_IPK) $(PY25-PROTOCOLS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -266,11 +266,11 @@ py-protocols-clean:
 #
 py-protocols-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)
-	rm -rf $(PY24-PROTOCOLS_IPK_DIR) $(PY24-PROTOCOLS_IPK)
+	rm -rf $(PY-PROTOCOLS_IPK_DIR) $(PY-PROTOCOLS_IPK)
 	rm -rf $(PY25-PROTOCOLS_IPK_DIR) $(PY25-PROTOCOLS_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-protocols-check: $(PY24-PROTOCOLS_IPK) $(PY25-PROTOCOLS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PROTOCOLS_IPK) $(PY25-PROTOCOLS_IPK)
+py-protocols-check: $(PY-PROTOCOLS_IPK) $(PY25-PROTOCOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY-PROTOCOLS_IPK) $(PY25-PROTOCOLS_IPK)
