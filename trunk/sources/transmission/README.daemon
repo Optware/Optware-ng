@@ -216,5 +216,24 @@ chmod a+rw /tmp/harddisk/torrent/work
  limits only good packets and not the whole transport. I recommend
  to use some QOS router capabilities. Personally I use another OpenWRT router.
 
+12. Does this daemon allow active port transfer? I mean do i have to open 
+ ports manually thru iptables to point the active port to router or similar?  
+ I believe program who use active connections boosts the transfers in 
+ seeding or receiving, allowing more connetions.
 
+ You need to open incoming TCP port on router (65534). It also recommended 
+ to allow ping responses (ICMP protocol). To check connectivity
+ with telneting to your listening port
+ 
+ telnet  your.outside.router.ip 65534
+ Connected to your.outside.router.ip
+ Escape character is '^]'.
+ help me
+ Nice try...
+ Connection closed by foreign host.
+
+ You should get "Nice try..." response.
+
+
+13
 oleo
