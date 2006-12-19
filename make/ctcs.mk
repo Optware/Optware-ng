@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CTCS_SITE=http://www.rahul.net/dholmes/ctorrent
-CTCS_VERSION=1.1
+CTCS_VERSION=1.2
 CTCS_SOURCE=ctcs-$(CTCS_VERSION).tar.gz
 CTCS_DIR=ctcs-$(CTCS_VERSION)
 CTCS_UNZIP=zcat
@@ -27,7 +27,7 @@ CTCS_CONFLICTS=
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=5
+CTCS_IPK_VERSION=6
 
 #
 # CTCS_CONFFILES should be a list of user-editable files
@@ -159,7 +159,7 @@ $(CTCS_IPK_DIR)/CONTROL/control:
 $(CTCS_IPK): $(CTCS_BUILD_DIR)/.built
 	rm -rf $(CTCS_IPK_DIR) $(BUILD_DIR)/ctcs_*_$(TARGET_ARCH).ipk
 	install -d $(CTCS_IPK_DIR)/opt/bin
-	install -m 755 $(CTCS_BUILD_DIR)/ctcs $(CTCS_IPK_DIR)/opt/bin/ctcs
+	install -m 755 $(CTCS_BUILD_DIR)/ctcs.new $(CTCS_IPK_DIR)/opt/bin/ctcs
 	install -d $(CTCS_IPK_DIR)/opt/doc/ctcs
 	install -m 755 $(CTCS_SOURCE_DIR)/README.nslu2 $(CTCS_IPK_DIR)/opt/doc/ctcs/README.nslu2
 	install -m 755 $(CTCS_SOURCE_DIR)/readme.txt $(CTCS_IPK_DIR)/opt/doc/ctcs/readme.txt
