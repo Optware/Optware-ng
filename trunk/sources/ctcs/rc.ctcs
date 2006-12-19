@@ -38,7 +38,7 @@ if [ -n "`pidof ctcs`" ]; then
     /bin/killall ctcs 2>/dev/null
 fi
 
-sleep 2
+sleep 5
 
 /opt/bin/ctcs ${ctcs_options} 2>${ctcs_logfile} >&2 &
 if [ "$?" -eq "0" ]; then echo $! > ${pid_file}; fi

@@ -27,15 +27,49 @@ ______________________________________________________________________
 
    Download
 
-   [9]ctcs-1.1.tar.gz: CTCS version 1.1. List of changes:
+   [9]ctcs-1.2.tar.gz: CTCS version 1.2. List of changes:
+     * Version number is now displayed at bottom of main page.
+     * Added a few client ID strings.
+     * The maximum limit "boost" value is now based on the global limit
+       and number of torrents. Previously it was always 1K; now it will
+       be less if bandwidth is constrained.
+     * Improved handling of minimum limits. Now a torrent's limit will
+       never be reduced below its minimum, but unused bandwidth will
+       still be borrowed for other torrents. This is more stable with the
+       new seeding algorithm.
+     * Eliminated the checkboxes to change current limits on the Advanced
+       Limits screen. Each limit is changed only if a new value is
+       entered for it.
+     * Added an option to limit a torrent's max upload rate based on
+       share ratio. (See the Advanced Limits screen.)
+     * In the Advanced Limits screen, options related to downloading are
+       now disabled for torrents that are seeding.
+     * Message indication: An exclamation point (!) is shown next to the
+       torrent title if messages are present. The torrent title is
+       highlighted based on message severity.
+     * Messages that include a severity (added in dnh2.2) will be
+       highlighted in red (sev 1) or yellow (sev 2). Sev 3 and
+       no-severity (pre-dnh2.2) messages are not highlighted.
+     * Enabled a Torrent Details page for terminated torrents.
+     * Avoid crashing if a user stops/reloads too quickly. Resolved with
+       a SIGPIPE handler, which may not work on all platforms. If you
+       know how to handle this situation on your platform, please let me
+       know. I found that checking the return code from print/printf was
+       not particularly reliable.
+     * If the hostname is unresolvable, the program will now fall back to
+       "localhost" or 127.0.0.1. Previously this could result in an
+       error.
+     * Cleaned up HTML print statements (code formatting).
+
+   [10]ctcs-1.1.tar.gz: CTCS version 1.1. List of changes:
      * Use "\r\n" as newline.
      * Added a few client ID strings.
      * Fixed data sending (user interaction) on Linux.
      * Fixed error when all upload or download limits are zero.
 
-   [10]ctcs-1.0a.tar.gz: CTCS version 1.0a
+   [11]ctcs-1.0a.tar.gz: CTCS version 1.0a
 
-   [11]ctcs-1.0a.diff: Patch file for 1.0
+   [12]ctcs-1.0a.diff: Patch file for 1.0
    There was a minor bug in the original release that prevented the
    Messages feature from working (messages were discarded). If you
    previously downloaded version 1.0, please apply this small patch to
@@ -107,7 +141,7 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
              Current UL = 34 K/s      UL Limit: ____K/s
                                  Change interval: ___sec
 
-                            [12]Advanced Limits
+                            [13]Advanced Limits
                     ___________________________________
 
    The current aggregate download and upload rates are shown at the left
@@ -125,15 +159,15 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
    running.
                     ___________________________________
 
-   [13]Show peers
+   [14]Show peers
 
    Torrent Start Time
    Seed Leech Complete DL Rate UL Rate DL Total UL Total Limit D/U
-   [14]Example 1.torrent Tue Jan 3 21:24:27 2006
+   [15]Example 1.torrent Tue Jan 3 21:24:27 2006
    S: 0 L: 7 100% D= 0 B/s U= 11 K/s D= 393 M U= 1111 M 0 / 11 K/s
-   [15]Example 2.torrent Tue Jan 3 20:24:06 2006
+   [16]Example 2.torrent Tue Jan 3 20:24:06 2006
    S: 0 L: 44 100% D= 0 B/s U= 12 K/s D= 380 M U= 972 M 0 / 12 K/s
-   [16]Example 3.torrent Wed Jan 4 22:13:55 2006
+   [17]Example 3.torrent Wed Jan 4 22:13:55 2006
    S: 1 L: 1 20% (100% Avail) D= 7372 B/s U= 12 K/s D= 188 M U= 254 M 100
    / 12 K/s
                     ___________________________________
@@ -154,10 +188,13 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
 
    Clicking a torrent title will take you to the Torrent Details screen
    for that torrent. If CTCS has received any status messages from a
-   client, the title will be highlighted in yellow. These messages can be
-   read on the Torrent Details screen. Bandwidth limits may also be
-   highlighted in yellow or green if they have been adjusted on the
-   Advanced Limits screen.
+   client, an exclamation point (!) will be shown next to the title. If
+   there are potentially severe messages, the title will be highlighted
+   in yellow or red. (If the client is an older version not supporting
+   severity, the title will be highlighted in yellow when any messages
+   are present.) These messages can be read on the Torrent Details
+   screen. Bandwidth limits may also be highlighted in yellow or green if
+   they have been adjusted on the Advanced Limits screen.
 
    The "Show peers" option will list each torrent's peers below the
    torrent's status information. For more information, see the Torrent
@@ -171,9 +208,9 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
 
    [Del] Torrent                                              End Time
    Seed Leech Complete  DL Rate   UL Rate DL Total  UL Total  Limit D/U
-   [_] Finished example 4.torrent             Sat Dec 24 19:09:55 2005
+   [_] [18]Finished example 4.torrent         Sat Dec 24 19:09:55 2005
    S: 0 L: 5  100%     D= 0 B/s U= 16 K/s D= 720 M  U= 136 M 0 / 15 K/s
-   [_] Dead example 5.torrent                  Sun Jan 1 23:37:15 2006
+   [_] [19]Dead example 5.torrent              Sun Jan 1 23:37:15 2006
    S: 0 L: 13 100%     D= 0 B/s U= 14 K/s D= 435 M U= 1937 M 0 / 13 K/s
 
    Delete Delete All
@@ -182,7 +219,9 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
    This is just like the list of active torrents except that the end time
    replaces the start time. The last known status information is shown,
    which is normally the final status unless the client terminated
-   abnormally.
+   abnormally (crashed). The Torrent Details screen (click the title) is
+   an abbreviated version, allowing you to see the share ratio and any
+   messages.
 
    To remove a torrent from the list, check the box next to it and click
    the Delete button at the bottom left of the list. To clear the entire
@@ -269,13 +308,15 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
   Messages
 
    If any status messages have been received from the client, they are
-   listed next.
+   listed next. Messages are color-coded according to severity (supported
+   with Enhanced CTorrent dnh2.2 and later).
                     ___________________________________
 
-                                    Messages
- Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
+                                                   Messages
+Tue Jan  3 23:24:47 2006 warn, connect to tracker failed. Operation timed out
+Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
 
-                                     Clear
+                                                     Clear
                     ___________________________________
 
    To acknowledge the messages (which clears the list from CTCS memory),
@@ -305,7 +346,7 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
 
    Torrent                                                       Start Time
    Seed Leech Complete  DL Rate     UL Rate DL Total  UL Total     Limit D/U
-   [17]Example 1.torrent                            Tue Jan 3 21:24:27 2006
+   [20]Example 1.torrent                            Tue Jan 3 21:24:27 2006
    S: 0 L: 8  100%     D= 0 B/s   U= 15 K/s D= 393 M U= 1113 M    0 / 17 K/s
    -BC0060-0x1B5809A843282B5EE23CEC0F       00.131.203.0       BitComet 0060
     Cn   Ci        77% D= 0 B/s    U= 0 B/s   D= 0 B     U= 0 B
@@ -346,10 +387,10 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
                     ___________________________________
 
    Torrent Current Rate Limit Minimum Maximum Shared
-   DL UL DL UL DL UL DL UL DL UL
-   Example 2.torrent 0 13 ____ [_] ____ [_] ____ ____ ____ ____ [_] [_]
-   Example 1.torrent 0 11 ____ [_] ____ [_] ____ ____ ____ ____ [_] [_]
-   Example 3.torrent 8 12 ____ [_] ____ [_] ____ ____ ____ ____ [_] [_]
+   DL UL DL UL DL UL DL UL SR DL UL
+   Example 2.torrent 0 13 ____ ____ ____ ____ ____ ____ [_] [_] [_]
+   Example 1.torrent 0 11 ____ ____ ____ ____ ____ ____ [_] [_] [_]
+   Example 3.torrent 8 12 ____ ____ ____ ____ ____ ____ [_] 0 [_] [_]
 
                                    Submit
                     ___________________________________
@@ -359,9 +400,10 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
 
    Notes
      * All values are in kilobytes per second (KB/s).
-     * Use caution when changing actual limits to below the current
-       rate--small increments are recommended. To change a current limit,
-       enter the desired value and check the adjacent box.
+     * Options related to downloading are disabled for torrents that are
+       seeding.
+     * Use caution when changing current limits to below the current
+       rate--small increments are recommended.
      * "Minimum" and "Maximum" are soft limits. They will be enforced
        when there is competition for bandwidth; otherwise the torrent is
        free to give or take unused bandwidth.
@@ -374,6 +416,14 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
             other torrents want bandwidth. Use to low-prioritize a
             torrent, or to limit the amount of bandwidth this torrent is
             allowed to consume at the expense of other torrents.
+          + SR: The maximum upload limit will be adjusted based on the
+            torrent's seed ratio ("-E" option, shown), current share
+            ratio, and current download rate. It will not be increased
+            above the Maxium or decreased below the Minimum, if
+            specified. This option does not apply when seeding, and has
+            no effect if the seed ratio is unset (zero). Use to avoid
+            giving away too much upload bandwidth when you have other
+            torrents running that could use it more fairly.
      * "Shared" indicates whether the torrent's bandwidth is counted
        against the shared pool represented by the global limit on the
        main CTCS page. CTCS will dynamically manage the client's
@@ -390,18 +440,21 @@ References
 
    1. http://www.rahul.net/dholmes/ctorrent/
    2. http://www.perl.org/
-   3. http://www.rahul.net/dholmes/ctorrent/ctcs.html#download
-   4. http://www.rahul.net/dholmes/ctorrent/ctcs.html#usage
-   5. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alltorrents
-   6. http://www.rahul.net/dholmes/ctorrent/ctcs.html#details
-   7. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alimits
-   8. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
-   9. http://www.rahul.net/dholmes/ctorrent/ctcs-1.1.tar.gz
-  10. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0a.tar.gz
-  11. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0a.diff
-  12. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/alimits
-  13. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/peers
-  14. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-%7B0xD529E46881CF5DD4E37DF6
-  15. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-P0xE9C43CD51BA8C5B319601A
-  16. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-0xCCEFB5B7D53349B364737755
-  17. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0200-%7B0xD529E46881CF5DD4E37DF6
+   3. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#download
+   4. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#usage
+   5. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#alltorrents
+   6. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#details
+   7. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#alimits
+   8. file://localhost/home/dholmes/public_html/ctorrent/ctcs-protocol.html
+   9. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.2.tar.gz
+  10. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.1.tar.gz
+  11. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.0a.tar.gz
+  12. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.0a.diff
+  13. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/alimits
+  14. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/peers
+  15. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-%7B0xD529E46881CF5DD4E37DF6
+  16. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-P0xE9C43CD51BA8C5B319601A
+  17. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-0xCCEFB5B7D53349B364737755
+  18. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-B0x98A9186CAB0D40611122D1
+  19. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-0x834894CA549155083E4635F1
+  20. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-%7B0xD529E46881CF5DD4E37DF6
