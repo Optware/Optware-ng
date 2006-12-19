@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-RUBY_VERSION=1.8.5
+RUBY_VERSION=1.8.5-p2
 RUBY_SOURCE=ruby-$(RUBY_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_VERSION)
 RUBY_UNZIP=zcat
@@ -72,6 +72,8 @@ RUBY_BUILD_DIR=$(BUILD_DIR)/ruby
 RUBY_SOURCE_DIR=$(SOURCE_DIR)/ruby
 RUBY_IPK_DIR=$(BUILD_DIR)/ruby-$(RUBY_VERSION)-ipk
 RUBY_IPK=$(BUILD_DIR)/ruby_$(RUBY_VERSION)-$(RUBY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: ruby-source ruby-unpack ruby ruby-stage ruby-ipk ruby-clean ruby-dirclean ruby-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -187,7 +189,7 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	rm -rf $(RUBY_IPK_DIR) $(BUILD_DIR)/ruby_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
 	for so in $(RUBY_IPK_DIR)/opt/bin/ruby \
-	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.$(RUBY_VERSION) \
+	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
 	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/1.8/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
@@ -212,3 +214,9 @@ ruby-clean:
 #
 ruby-dirclean:
 	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(RUBY_BUILD_DIR) $(RUBY_IPK_DIR) $(RUBY_IPK)
+
+#
+# Some sanity check for the package.
+#
+ruby-check: $(RUBY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RUBY_IPK)
