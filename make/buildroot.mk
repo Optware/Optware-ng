@@ -8,7 +8,7 @@
 #
 # PATH for target cross toolchain is:
 # $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
-#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC_VERSION)/bin/
+#		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)/bin/
 #
 # TARGET_CROSS = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/\
 #		gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)/\
@@ -70,7 +70,7 @@ BUILDROOT_CONFLICTS=uclibc-opt
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=6
+BUILDROOT_IPK_VERSION=7
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -123,11 +123,11 @@ buildroot-headers:
 #
 ifeq ($(OPTWARE_TARGET),ts101)
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk-ts101.patch \
+		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk-ts101.patch \
 		$(BUILDROOT_SOURCE_DIR)/uClibc.config-ts101.patch
 else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
-		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
-		$(BUILDROOT_SOURCE_DIR)/uClibc-$(UCLIBC-OPT_VERSION).config.patch
+		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch
 endif
 #
 # If the compilation of the package requires additional
@@ -192,19 +192,17 @@ buildroot-source uclibc-opt-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
-# shown below to make various patches to it.
-#
 ifeq ($(OPTWARE_TARGET),ts101)
 BUILDROOT_CONFIG_FILE=buildroot.config-ts101
+UCLIBC_CONFIG_FILE=uClibc-0.9.27-ts101.config
 else
 BUILDROOT_CONFIG_FILE=buildroot.config
+UCLIBC_CONFIG_FILE=uClibc-$(UCLIBC-OPT_VERSION).config
 endif
 
 $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
-		$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
-		$(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE)
-#	$(MAKE) <bar>-stage <baz>-stage
+			$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
+			$(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE)
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR)
 	$(BUILDROOT_UNZIP) $(DL_DIR)/$(BUILDROOT_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 	if test -n "$(BUILDROOT_PATCHES)" ; \
@@ -215,15 +213,15 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) $(BUILDROOT_BUILD_DIR)/.config
-#	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
+	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
 #	change TARGET_ARCH in .config
 	sed  -i -e 's|.*\(BR2_[a-z0-9_]\{2,\}\).*|# \1 is not set|' \
-	 -e 's|# BR2_$(TARGET_ARCH) is not set|BR2_$(TARGET_ARCH)=y|' \
-	 -e 's|^BR2_ARCH=.*|BR2_ARCH="$(TARGET_ARCH)"|' $(BUILDROOT_BUILD_DIR)/.config
+	 	-e 's|# BR2_$(TARGET_ARCH) is not set|BR2_$(TARGET_ARCH)=y|' \
+	 	-e 's|^BR2_ARCH=.*|BR2_ARCH="$(TARGET_ARCH)"|' $(BUILDROOT_BUILD_DIR)/.config
 #	change BR2_ENDIAN for armeb and mipsel only !
 	sed  -i -e 's|BR2_ENDIAN=.*|BR2_ENDIAN="$(TARGET_ARCH)"|' \
-	 -e '/BR2_ENDIAN=/s|armeb|BIG|;/BR2_ENDIAN=/s|mipsel|LITTLE|' \
-	$(BUILDROOT_BUILD_DIR)/.config
+	 	-e '/BR2_ENDIAN=/s|armeb|BIG|;/BR2_ENDIAN=/s|mipsel|LITTLE|' \
+		$(BUILDROOT_BUILD_DIR)/.config
 #	change GCC version in .config
 	sed  -i -e 's|.*\(BR2_GCC_VERSION_[0-9_]\{1,\}\).*|# \1 is not set|' \
 	 -e 's|# BR2_GCC_VERSION_$(BUILDROOT_GCC) is not set|BR2_GCC_VERSION_$(BUILDROOT_GCC)=y|' \
@@ -239,6 +237,9 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	(cd $(BUILDROOT_BUILD_DIR); \
 		make oldconfig \
 	)
+#	append uClibc config path to buildroot .config
+	echo "UCLIBC_CONFIG_FILE=$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE)" \
+		>> $(BUILDROOT_BUILD_DIR)/.config
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/100-uclibc-conf.patch
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/100-uclibc-conf.patch
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
@@ -350,25 +351,39 @@ buildroot-check: $(BUILDROOT_IPK)
 # Reconfiguring buildroot
 # cd buildroot ; make menuconfig
 # cp .config ../../sources/buildroot.config
+# Warning! UCLIBC_CONFIG_FILE is appended to buildroot .config when doing
+# make buildroot-unpack
+# After reconfuguring buildroot and .config copy always issue
+# make buildroot-dirclean buildroot-unpack
 #
 # Create patches:
-# diff -u buildroot-r16948/toolchain/uClibc/uclibc.mk buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
-#  diff -u buildroot-r16948/toolchain/gcc/gcc-uclibc-3.x.mk buildroot/toolchain/gcc/gcc-uclibc-3.x.mk > ../sources/buildroot/gcc-uclibc-3.x.mk.patch 
-# rebuilding uClibc by hand:
+# diff -u buildroot-r16948/toolchain/uClibc/uclibc.mk \
+#  buildroot/toolchain/uClibc/uclibc.mk > ../sources/buildroot/uclibc.mk.patch
+# diff -u buildroot-r16948/toolchain/gcc/gcc-uclibc-3.x.mk \
+#   buildroot/toolchain/gcc/gcc-uclibc-3.x.mk \
+#   > ../sources/buildroot/gcc-uclibc-3.x.mk.patch 
+#
+# Rebuilding uClibc by hand:
 # cd toolchain/buildroot
 # make uclibc-dirclean
+# make uclibc-unpacked
 # make uclibc-configured 
 # make uclibc
 # make uclibc_target
 # make
 # 
-# Creating uClibc.config patch
+# Creating uClibc.config
+# In case of inexistent custom uClibc.config copy the most similar
+# and then reconfigure
+# cd toolchain/buildroot
 # make uclibc-dirclean
 # make uclibc-configured
-# manually add/change missing configs from buildroot/toolchain_build_mipsel/uClibc-0.9.28/.config
-# create diff to vanilla uClibc.conf-locale
-# diff -u buildroot.r15597/toolchain/uClibc/uClibc.config-locale buildroot/toolchain/uClibc/uClibc.config-locale > ../sources/buildroot/uClibc.config-locale.patch
-# diff -u buildroot-r16948/toolchain/uClibc/uClibc-0.9.28.config buildroot/toolchain/uClibc/uClibc-0.9.28.config > ../sources/buildroot/uClibc-0.9.28.config.patch
+# To revise uClibc setings do
+# cd buildroot/toolchain_build_mipsel/uClibc-0.9.28
+# make menuconfig
+# cp .config ../../../../sources/buildroot/uClibc-0.9.28.config
+# Optionally clear .config paths to:
+#  KERNEL_SOURCE="" and CROSS_COMPILER_PREFIX=""
 #
 # Building notes:
 # gcc 4.2 needs -fpermissive
