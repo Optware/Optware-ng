@@ -202,7 +202,8 @@ endif
 
 $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 			$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
-			$(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE)
+			$(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) \
+			$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE)
 	rm -rf $(BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR)
 	$(BUILDROOT_UNZIP) $(DL_DIR)/$(BUILDROOT_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 	if test -n "$(BUILDROOT_PATCHES)" ; \
@@ -353,8 +354,7 @@ buildroot-check: $(BUILDROOT_IPK)
 # cp .config ../../sources/buildroot.config
 # Warning! UCLIBC_CONFIG_FILE is appended to buildroot .config when doing
 # make buildroot-unpack
-# After reconfuguring buildroot and .config copy always issue
-# make buildroot-dirclean buildroot-unpack
+# After reconfuguring buildroot and .config copy buildroot will unpack again
 #
 # Create patches:
 # diff -u buildroot-r16948/toolchain/uClibc/uclibc.mk \
