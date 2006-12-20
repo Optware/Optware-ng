@@ -1,8 +1,0 @@
---- ipkg-utils-1.7/ipkg-build~	2005-01-13 00:04:27.000000000 +1030
-+++ ipkg-utils-1.7/ipkg-build	2005-01-13 00:04:34.000000000 +1030
-@@ -1,4 +1,4 @@
--#!/bin/sh
-+#!/opt/bin/bash
- 
- # ipkg-build -- construct a .ipk from a directory
- # Carl Worth <cworth@east.isi.edu>
