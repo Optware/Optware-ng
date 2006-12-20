@@ -157,7 +157,7 @@ COMMON_CROSS_PACKAGES = \
 	netcat net-tools netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	opencdk openldap openssh openssl openvpn optware-devel ossp-js oww \
-	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin pkgconfig \
+	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
