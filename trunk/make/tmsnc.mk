@@ -29,7 +29,7 @@ TMSNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TMSNC_DESCRIPTION=Text-based MSN client.
 TMSNC_SECTION=net
 TMSNC_PRIORITY=optional
-TMSNC_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET)
+TMSNC_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET), openssl
 TMSNC_SUGGESTS=
 TMSNC_CONFLICTS=
 
@@ -105,6 +105,7 @@ tmsnc-source: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES)
 #
 $(TMSNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES) make/tmsnc.mk
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(TMSNC_DIR) $(TMSNC_BUILD_DIR)
 	$(TMSNC_UNZIP) $(DL_DIR)/$(TMSNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TMSNC_PATCHES)" ; \
@@ -124,6 +125,7 @@ $(TMSNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-$(NCURSES_FOR_OPTWARE_TARGET)=$(STAGING_PREFIX) \
+		--with-openssl=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
