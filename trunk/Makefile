@@ -166,7 +166,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 \
-	sqsh squeak squid strace stunnel streamripper sudo swi-prolog svn \
+	sqsh squeak squid srelay strace stunnel streamripper sudo swi-prolog svn \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump tcsh termcap textutils thttpd \

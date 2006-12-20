@@ -104,7 +104,7 @@ srelay-source: $(DL_DIR)/$(SRELAY_SOURCE) $(SRELAY_PATCHES)
 # shown below to make various patches to it.
 #
 $(SRELAY_BUILD_DIR)/.configured: $(DL_DIR)/$(SRELAY_SOURCE) $(SRELAY_PATCHES) make/srelay.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) tcpwrappers-stage
 	rm -rf $(BUILD_DIR)/$(SRELAY_DIR) $(SRELAY_BUILD_DIR)
 	$(SRELAY_UNZIP) $(DL_DIR)/$(SRELAY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRELAY_PATCHES)" ; \
@@ -124,6 +124,7 @@ $(SRELAY_BUILD_DIR)/.configured: $(DL_DIR)/$(SRELAY_SOURCE) $(SRELAY_PATCHES) ma
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-thread \
+		--with-libwrap=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
