@@ -13,17 +13,13 @@ LESS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LESS_DESCRIPTION=Less file browser
 LESS_SECTION=utilities
 LESS_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET),wl500g)
-LESS_DEPENDS=ncursesw
-else
-LESS_DEPENDS=ncurses
-endif
+LESS_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET)
 LESS_CONFLICTS=
 
 #
 # LESS_IPK_VERSION should be incremented when the ipk changes.
 #
-LESS_IPK_VERSION=2
+LESS_IPK_VERSION=3
 
 #
 # LESS_PATCHES should list any patches, in the the order in
@@ -51,6 +47,8 @@ LESS_BUILD_DIR=$(BUILD_DIR)/less
 LESS_SOURCE_DIR=$(SOURCE_DIR)/less
 LESS_IPK_DIR=$(BUILD_DIR)/less-$(LESS_VERSION)-ipk
 LESS_IPK=$(BUILD_DIR)/less_$(LESS_VERSION)-$(LESS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: less-source less-unpack less less-stage less-ipk less-clean less-dirclean less-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -82,12 +80,7 @@ less-source: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LESS_BUILD_DIR)/.configured: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
-ifneq ($(OPTWARE_TARGET),wl500g)
-	$(MAKE) ncursesw-stage
-else
-	$(MAKE) ncurses-stage
-endif
-	$(MAKE) ncurses-stage
+	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR)
 	$(LESS_UNZIP) $(DL_DIR)/$(LESS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR)
@@ -175,3 +168,9 @@ less-clean:
 #
 less-dirclean:
 	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR) $(LESS_IPK_DIR) $(LESS_IPK)
+
+#
+# Some sanity check for the package.
+#
+less-check: $(LESS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LESS_IPK)
