@@ -18,10 +18,12 @@ NCURSESW_PRIORITY=optional
 NCURSESW_DEPENDS=ncurses
 NCURSESW_CONFLICTS=
 
-NCURSESW_IPK_VERSION=1
+NCURSESW_IPK_VERSION=2
 
 NCURSESW_IPK=$(BUILD_DIR)/ncursesw_$(NCURSESW_VERSION)-$(NCURSESW_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSESW_IPK_DIR=$(BUILD_DIR)/ncursesw-$(NCURSESW_VERSION)-ipk
+
+.PHONY: ncursesw-source ncursesw-unpack ncursesw ncursesw-stage ncursesw-ipk ncursesw-clean ncursesw-dirclean ncursesw-check
 
 ncursesw-source: $(DL_DIR)/$(NCURSES_SOURCE)
 
@@ -48,6 +50,9 @@ $(NCURSESW_DIR)/.configured: $(NCURSESW_DIR)/.source
 		--enable-widec		\
 		--enable-safe-sprintf	\
 	);
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -ie '/^CPPFLAGS/s| -I$$(includedir)||' $(NCURSESW_DIR)/*/Makefile
+endif
 	touch $(NCURSESW_DIR)/.configured
 
 ncursesw-unpack: $(NCURSESW_DIR)/.configured
@@ -95,3 +100,6 @@ ncursesw-clean:
 
 ncursesw-dirclean:
 	rm -rf $(NCURSESW_DIR) $(NCURSESW_IPK_DIR) $(NCURSESW_IPK)
+
+ncursesw-check: $(NCURSESW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCURSESW_IPK)

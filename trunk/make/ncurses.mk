@@ -25,10 +25,12 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=1
+NCURSES_IPK_VERSION=2
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
+
+.PHONY: ncurses-source ncurses-unpack ncurses ncurses-stage ncurses-ipk ncurses-clean ncurses-dirclean ncurses-check
 
 $(DL_DIR)/$(NCURSES_SOURCE):
 	$(WGET) -P $(DL_DIR) $(NCURSES_SITE)/$(NCURSES_SOURCE)
@@ -56,6 +58,9 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 		--without-cxx-binding	\
 		--without-ada		\
 	);
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -ie '/^CPPFLAGS/s| -I$$(includedir)||' $(NCURSES_DIR)/*/Makefile
+endif
 	touch $(NCURSES_DIR)/.configured
 
 ncurses-unpack: $(NCURSES_DIR)/.configured
@@ -103,3 +108,6 @@ ncurses-clean:
 
 ncurses-dirclean:
 	rm -rf $(NCURSES_DIR) $(NCURSES_IPK_DIR) $(NCURSES_IPK)
+
+ncurses-check: $(NCURSES_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NCURSES_IPK)
