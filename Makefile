@@ -246,7 +246,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 xmu xrender xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
-UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc-opt ipkg
+UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc-opt ipkg-opt
 
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
@@ -311,7 +311,7 @@ DS101J_BROKEN_PACKAGES = \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = \
-	ipkg \
+	ipkg-opt \
 	ds101g-kernel-modules \
 	ds101g-kernel-modules-fuse \
 	ds101-bootstrap \
@@ -329,7 +329,7 @@ DS101G_BROKEN_PACKAGES = \
 	ser \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
-NAS100D_SPECIFIC_PACKAGES = ipkg
+NAS100D_SPECIFIC_PACKAGES = ipkg-opt
 
 # Packages that do not work for nas100d.
 NAS100D_BROKEN_PACKAGES = 
