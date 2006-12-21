@@ -51,6 +51,7 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
 %target_to_bintype = (
 #       OPTWARE_TARGET => `file binary`
         "nslu2" => "MSB .* ARM",
+        "slugosbe" => "MSB .* ARM",
         "fsg3" => "MSB .* ARM",
         "wl500g" => "MIPS",
         "ds101" => "MSB .* ARM",
