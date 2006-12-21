@@ -12,9 +12,7 @@
  *
  * TODO: 
  *  notification delay (autoseed time). Seeding expired status.
- *  merge NAT traversal from transmissioncli
  *  config file 
- *  load in logfile
  *  messageLevel for syslog in background mode
  *
  * Copyright (c) 2005-2006 Transmission authors and contributors
@@ -72,6 +70,7 @@
 "  -u, --upload <int>   Maximum upload rate (-1 = no limit, default = 20)\n" \
 "  -d, --download <int> Maximum download rate (-1 = no limit, default = -1)\n" \
 "  -f, --finish <shell script> Command you wish to run on completion\n" \
+"  -n  --nat-traversal  Attempt NAT traversal using NAT-PMP or UPnP IGD\n" \
 "  -w, --watchdog <int> Watchdog interval in seconds (default = 600)\n" \
 "  -i, --pidfile <path> PID file path \n" \
 "Signals:\n"                                                            \
