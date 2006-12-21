@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=5
+LIBXSLT_IPK_VERSION=6
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -44,7 +44,7 @@ LIBXSLT_PATCHES=$(LIBXSLT_SOURCE_DIR)/configure.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBXSLT_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
+LIBXSLT_CPPFLAGS=
 LIBXSLT_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
@@ -60,6 +60,8 @@ LIBXSLT_BUILD_DIR=$(BUILD_DIR)/libxslt
 LIBXSLT_SOURCE_DIR=$(SOURCE_DIR)/libxslt
 LIBXSLT_IPK_DIR=$(BUILD_DIR)/libxslt-$(LIBXSLT_VERSION)-ipk
 LIBXSLT_IPK=$(BUILD_DIR)/libxslt_$(LIBXSLT_VERSION)-$(LIBXSLT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libxslt-source libxslt-unpack libxslt libxslt-stage libxslt-ipk libxslt-clean libxslt-dirclean libxslt-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -137,6 +139,7 @@ libxslt: $(LIBXSLT_BUILD_DIR)/.built
 $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
 	rm -f $(LIBXSLT_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/xslt-config
 	# follow libxml's convention in putting -config bins in STAGING/bin
 	cp $(STAGING_DIR)/opt/bin/xslt-config $(STAGING_DIR)/bin
 	# remove .la to avoid libtool problems
@@ -201,3 +204,9 @@ libxslt-clean:
 #
 libxslt-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR) $(LIBXSLT_IPK_DIR) $(LIBXSLT_IPK)
+
+#
+# Some sanity check for the package.
+#
+libxslt-check: $(LIBXSLT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBXSLT_IPK)
