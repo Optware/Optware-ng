@@ -4,17 +4,11 @@
 #
 ###########################################################
 
-ifeq ($(OPTWARE_TARGET),ds101g)
-LIBSTDC++_VERSION=5.0.6
-else
-LIBSTDC++_VERSION=5.0.7
-endif
-ifeq ($(OPTWARE_TARGET),mss)
-LIBSTDC++_VERSION=5.0.3
-endif
-ifeq ($(OPTWARE_TARGET),ts72xx)
-LIBSTDC++_VERSION=5.0.6
-endif
+LIBSTDC++_VERSION=$(strip \
+	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
+	$(if $(filter ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
+	5.0.7))))
+LIBSTDC++_MAJOR=$(shell echo $(LIBSTDC++_VERSION) | sed 's/\..*//')
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
 LIBSTDC++_LIBNAME=libstdc++.so
@@ -32,7 +26,7 @@ LIBSTDC++_DESCRIPTION==Standard C++ library, wrapped for uClibc++
 LIBSTDC++_LIBNAME=
 endif
 
-LIBSTDC++_IPK_VERSION=4
+LIBSTDC++_IPK_VERSION=5
 
 LIBSTDC++_BUILD_DIR=$(BUILD_DIR)/libstdc++
 LIBSTDC++_SOURCE_DIR=$(SOURCE_DIR)/libstdc++
@@ -64,7 +58,7 @@ ifneq ($(LIBC_STYLE), uclibc)
 	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
 		$(LIBSTDC++_LIBNAME); \
 	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-		$(LIBSTDC++_LIBNAME).5 \
+		$(LIBSTDC++_LIBNAME).$(LIBSTDC++_MAJOR) \
 	)
 endif
 	touch $(LIBSTDC++_BUILD_DIR)/.staged
@@ -94,7 +88,7 @@ ifneq ($(LIBC_STYLE), uclibc)
 	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
                $(LIBSTDC++_LIBNAME); \
 	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-               $(LIBSTDC++_LIBNAME).5 \
+               $(LIBSTDC++_LIBNAME).$(LIBSTDC++_MAJOR) \
 	)
 	$(STRIP_COMMAND) $(LIBSTDC++_IPK_DIR)/opt/lib/*.so
 endif
