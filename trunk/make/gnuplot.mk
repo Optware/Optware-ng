@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPLOT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gnuplot
-GNUPLOT_VERSION=4.0.0
+GNUPLOT_VERSION=4.2.rc2
 GNUPLOT_SOURCE=gnuplot-$(GNUPLOT_VERSION).tar.gz
 GNUPLOT_DIR=gnuplot-$(GNUPLOT_VERSION)
 GNUPLOT_UNZIP=zcat
@@ -29,7 +29,7 @@ GNUPLOT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPLOT_DESCRIPTION=Command-line driven interactive data and function plotting utility
 GNUPLOT_SECTION=graphics
 GNUPLOT_PRIORITY=optional
-GNUPLOT_DEPENDS=readline, libpng, libgd
+GNUPLOT_DEPENDS=readline, libpng, libgd, ncurses
 GNUPLOT_SUGGESTS=
 GNUPLOT_CONFLICTS=
 
@@ -70,6 +70,8 @@ GNUPLOT_SOURCE_DIR=$(SOURCE_DIR)/gnuplot
 GNUPLOT_IPK_DIR=$(BUILD_DIR)/gnuplot-$(GNUPLOT_VERSION)-ipk
 GNUPLOT_IPK=$(BUILD_DIR)/gnuplot_$(GNUPLOT_VERSION)-$(GNUPLOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: gnuplot-source gnuplot-unpack gnuplot gnuplot-stage gnuplot-ipk gnuplot-clean gnuplot-dirclean gnuplot-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -103,7 +105,7 @@ gnuplot-source: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 # shown below to make various patches to it.
 #
 $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
-	$(MAKE) readline-stage libpng-stage libgd-stage
+	$(MAKE) readline-stage libpng-stage libgd-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(GNUPLOT_BUILD_DIR)
 	$(GNUPLOT_UNZIP) $(DL_DIR)/$(GNUPLOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUPLOT_PATCHES)" ; \
@@ -225,3 +227,10 @@ gnuplot-clean:
 #
 gnuplot-dirclean:
 	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(GNUPLOT_BUILD_DIR) $(GNUPLOT_IPK_DIR) $(GNUPLOT_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+gnuplot-check: $(GNUPLOT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNUPLOT_IPK)
