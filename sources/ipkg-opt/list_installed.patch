@@ -1,0 +1,14 @@
+# This patch allows listing of package descriptions in 0.99.163
+# Such finctionality was seen in 0.99.149 and lost since pigi patches
+# to libipkg.c
+--- ipkg-opt/libipkg.c.orig	2006-12-21 01:10:39.000000000 +0100
++++ ipkg-opt/libipkg.c	2006-12-21 01:11:02.000000000 +0100
+@@ -479,8 +479,6 @@
+              !strcmp(cmd_name,"search") ||
+              !strcmp(cmd_name,"compare_versions") ||
+              !strcmp(cmd_name,"compare-versions") ||
+-             !strcmp(cmd_name,"list_installed") ||
+-             !strcmp(cmd_name,"list-installed") ||
+              !strcmp(cmd_name,"status") )
+            args.noreadfeedsfile = 1;
+ 
