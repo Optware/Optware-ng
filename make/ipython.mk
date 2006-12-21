@@ -22,15 +22,16 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.7.2
+IPYTHON_VERSION=0.7.3
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
-IPYTHON_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+IPYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPYTHON_DESCRIPTION=An enhanced interactive Python shell
 IPYTHON_SECTION=misc
 IPYTHON_PRIORITY=optional
-IPYTHON_DEPENDS=python
+IPYTHON_PY24_DEPENDS=python24
+IPYTHON_PY25_DEPENDS=python25
 IPYTHON_CONFLICTS=
 
 #
@@ -66,8 +67,17 @@ IPYTHON_LDFLAGS=
 #
 IPYTHON_BUILD_DIR=$(BUILD_DIR)/ipython
 IPYTHON_SOURCE_DIR=$(SOURCE_DIR)/ipython
-IPYTHON_IPK_DIR=$(BUILD_DIR)/ipython-$(IPYTHON_VERSION)-ipk
-IPYTHON_IPK=$(BUILD_DIR)/ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+IPYTHON-COMMON_IPK_DIR=$(BUILD_DIR)/ipython-common-$(IPYTHON_VERSION)-ipk
+IPYTHON-COMMON_IPK=$(BUILD_DIR)/ipython-common_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+IPYTHON_PY24_IPK_DIR=$(BUILD_DIR)/ipython-$(IPYTHON_VERSION)-ipk
+IPYTHON_PY24_IPK=$(BUILD_DIR)/ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+IPYTHON_PY25_IPK_DIR=$(BUILD_DIR)/py25-ipython-$(IPYTHON_VERSION)-ipk
+IPYTHON_PY25_IPK=$(BUILD_DIR)/py25-ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: ipython-source ipython-unpack ipython ipython-stage ipython-ipk ipython-clean ipython-dirclean ipython-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,13 +111,25 @@ ipython-source: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
 #
 $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)
+	rm -rf $(IPYTHON_BUILD_DIR)
+	mkdir -p $(IPYTHON_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
-	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)
-	(cd $(IPYTHON_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)/2.4
+	(cd $(IPYTHON_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") > setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
+	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
+	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)/2.5
+	(cd $(IPYTHON_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(IPYTHON_BUILD_DIR)/.configured
 
@@ -118,7 +140,12 @@ ipython-unpack: $(IPYTHON_BUILD_DIR)/.configured
 #
 $(IPYTHON_BUILD_DIR)/.built: $(IPYTHON_BUILD_DIR)/.configured
 	rm -f $(IPYTHON_BUILD_DIR)/.built
-#	$(MAKE) -C $(IPYTHON_BUILD_DIR)
+	(cd $(IPYTHON_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
+	(cd $(IPYTHON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
 	touch $(IPYTHON_BUILD_DIR)/.built
 
 #
@@ -140,8 +167,22 @@ ipython-stage: $(IPYTHON_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/ipython
 #
-$(IPYTHON_IPK_DIR)/CONTROL/control:
-	@install -d $(IPYTHON_IPK_DIR)/CONTROL
+$(IPYTHON-COMMON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: ipython-common" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(IPYTHON_PRIORITY)" >>$@
+	@echo "Section: $(IPYTHON_SECTION)" >>$@
+	@echo "Version: $(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(IPYTHON_MAINTAINER)" >>$@
+	@echo "Source: $(IPYTHON_SITE)/$(IPYTHON_SOURCE)" >>$@
+	@echo "Description: $(IPYTHON_DESCRIPTION)" >>$@
+	@echo "Depends: " >>$@
+	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
+
+$(IPYTHON_PY24_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ipython" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -151,7 +192,21 @@ $(IPYTHON_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(IPYTHON_MAINTAINER)" >>$@
 	@echo "Source: $(IPYTHON_SITE)/$(IPYTHON_SOURCE)" >>$@
 	@echo "Description: $(IPYTHON_DESCRIPTION)" >>$@
-	@echo "Depends: $(IPYTHON_DEPENDS)" >>$@
+	@echo "Depends: $(IPYTHON_PY24_DEPENDS)" >>$@
+	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
+
+$(IPYTHON_PY25_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-ipython" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(IPYTHON_PRIORITY)" >>$@
+	@echo "Section: $(IPYTHON_SECTION)" >>$@
+	@echo "Version: $(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(IPYTHON_MAINTAINER)" >>$@
+	@echo "Source: $(IPYTHON_SITE)/$(IPYTHON_SOURCE)" >>$@
+	@echo "Description: $(IPYTHON_DESCRIPTION)" >>$@
+	@echo "Depends: $(IPYTHON_PY25_DEPENDS)" >>$@
 	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
 
 #
@@ -166,27 +221,35 @@ $(IPYTHON_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(IPYTHON_IPK): $(IPYTHON_BUILD_DIR)/.built
-	rm -rf $(IPYTHON_IPK_DIR) $(BUILD_DIR)/ipython_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(IPYTHON_BUILD_DIR) DESTDIR=$(IPYTHON_IPK_DIR) install
-	(cd $(IPYTHON_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(IPYTHON_IPK_DIR) --prefix=/opt)
-#	install -d $(IPYTHON_IPK_DIR)/opt/etc/
-#	install -m 644 $(IPYTHON_SOURCE_DIR)/ipython.conf $(IPYTHON_IPK_DIR)/opt/etc/ipython.conf
-#	install -d $(IPYTHON_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(IPYTHON_SOURCE_DIR)/rc.ipython $(IPYTHON_IPK_DIR)/opt/etc/init.d/SXXipython
-	$(MAKE) $(IPYTHON_IPK_DIR)/CONTROL/control
-#	install -m 755 $(IPYTHON_SOURCE_DIR)/postinst $(IPYTHON_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(IPYTHON_SOURCE_DIR)/prerm $(IPYTHON_IPK_DIR)/CONTROL/prerm
-#	echo $(IPYTHON_CONFFILES) | sed -e 's/ /\n/g' > $(IPYTHON_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_IPK_DIR)
+$(IPYTHON_PY24_IPK): $(IPYTHON_BUILD_DIR)/.built
+	rm -rf $(IPYTHON_PY24_IPK_DIR) $(BUILD_DIR)/ipython_*_$(TARGET_ARCH).ipk
+	(cd $(IPYTHON_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+		install --root=$(IPYTHON_PY24_IPK_DIR) --prefix=/opt)
+	rm -rf $(IPYTHON_PY24_IPK_DIR)/opt/share
+	$(MAKE) $(IPYTHON_PY24_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY24_IPK_DIR)
+
+$(IPYTHON_PY25_IPK) $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
+	rm -rf $(IPYTHON_PY25_IPK_DIR) $(BUILD_DIR)/py25-ipython_*_$(TARGET_ARCH).ipk
+	(cd $(IPYTHON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
+		install --root=$(IPYTHON_PY25_IPK_DIR) --prefix=/opt)
+	for f in $(IPYTHON_PY25_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	install -d $(IPYTHON-COMMON_IPK_DIR)/opt
+	mv $(IPYTHON_PY25_IPK_DIR)/opt/share $(IPYTHON-COMMON_IPK_DIR)/opt/
+	$(MAKE) $(IPYTHON_PY25_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY25_IPK_DIR)
+	$(MAKE) $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-ipython-ipk: $(IPYTHON_IPK)
+ipython-ipk: $(IPYTHON_PY24_IPK) $(IPYTHON_PY25_IPK) $(IPYTHON-COMMON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -199,4 +262,13 @@ ipython-clean:
 # directories.
 #
 ipython-dirclean:
-	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR) $(IPYTHON_IPK_DIR) $(IPYTHON_IPK)
+	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)
+	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(IPYTHON-COMMON_IPK)
+	rm -rf $(IPYTHON_PY24_IPK_DIR) $(IPYTHON_PY24_IPK)
+	rm -rf $(IPYTHON_PY25_IPK_DIR) $(IPYTHON_PY25_IPK)
+
+#
+# Some sanity check for the package.
+#
+ipython-check: $(IPYTHON_PY24_IPK) $(IPYTHON_PY25_IPK) $(IPYTHON-COMMON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IPYTHON_PY24_IPK) $(IPYTHON_PY25_IPK) $(IPYTHON-COMMON_IPK)
