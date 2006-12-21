@@ -7,7 +7,7 @@
 LIBSTDC++_VERSION=$(strip \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
 	$(if $(filter ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
-	5.0.7))))
+	5.0.7)))
 LIBSTDC++_MAJOR=$(shell echo $(LIBSTDC++_VERSION) | sed 's/\..*//')
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
