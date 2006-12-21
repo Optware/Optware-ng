@@ -16,7 +16,7 @@
 #
 
 LIBXML2_SITE=ftp://xmlsoft.org/libxml2
-LIBXML2_VERSION=2.6.26
+LIBXML2_VERSION=2.6.27
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
@@ -61,6 +61,8 @@ LIBXML2_BUILD_DIR=$(BUILD_DIR)/libxml2
 LIBXML2_SOURCE_DIR=$(SOURCE_DIR)/libxml2
 LIBXML2_IPK_DIR=$(BUILD_DIR)/libxml2-$(LIBXML2_VERSION)-ipk
 LIBXML2_IPK=$(BUILD_DIR)/libxml2_$(LIBXML2_VERSION)-$(LIBXML2_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libxml2-source libxml2-unpack libxml2 libxml2-stage libxml2-ipk libxml2-clean libxml2-dirclean libxml2-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -134,6 +136,8 @@ libxml2: $(LIBXML2_BUILD_DIR)/.built
 $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
 	rm -f $(LIBXML2_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' \
+		$(STAGING_PREFIX)/bin/xml2-config
 	rm $(STAGING_LIB_DIR)/libxml2.la
 	touch $(LIBXML2_BUILD_DIR)/.staged
 
@@ -141,7 +145,7 @@ libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
-# necessary to create a seperate control file under sources/<foo>
+# necessary to create a seperate control file under sources/libxml2
 #
 $(LIBXML2_IPK_DIR)/CONTROL/control:
 	@install -d $(LIBXML2_IPK_DIR)/CONTROL
@@ -193,3 +197,9 @@ libxml2-clean:
 #
 libxml2-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBXML2_DIR) $(LIBXML2_BUILD_DIR) $(LIBXML2_IPK_DIR) $(LIBXML2_IPK)
+
+#
+# Some sanity check for the package.
+#
+libxml2-check: $(LIBXML2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBXML2_IPK)
