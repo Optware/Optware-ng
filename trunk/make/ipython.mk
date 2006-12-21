@@ -30,14 +30,14 @@ IPYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPYTHON_DESCRIPTION=An enhanced interactive Python shell
 IPYTHON_SECTION=misc
 IPYTHON_PRIORITY=optional
-IPYTHON_PY24_DEPENDS=python24
-IPYTHON_PY25_DEPENDS=python25
+IPYTHON_PY24_DEPENDS=python24, ipython-common
+IPYTHON_PY25_DEPENDS=python25, ipython-common
 IPYTHON_CONFLICTS=
 
 #
 # IPYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-IPYTHON_IPK_VERSION=1
+IPYTHON_IPK_VERSION=2
 
 #
 # IPYTHON_CONFFILES should be a list of user-editable files
@@ -233,6 +233,7 @@ $(IPYTHON_PY24_IPK): $(IPYTHON_BUILD_DIR)/.built
 
 $(IPYTHON_PY25_IPK) $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY25_IPK_DIR) $(BUILD_DIR)/py25-ipython_*_$(TARGET_ARCH).ipk
+	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
