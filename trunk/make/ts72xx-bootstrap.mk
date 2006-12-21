@@ -44,7 +44,7 @@ $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.configured
 	find $(TS72XX_BOOTSTRAP_BUILD_DIR)/ -type l |xargs rm
 	rm $(TS72XX_BOOTSTRAP_BUILD_DIR)/libc.so
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(TS72XX_BOOTSTRAP_BUILD_DIR)/
-	cp $(SOURCE_DIR)/ipkg/rc.optware $(TS72XX_BOOTSTRAP_BUILD_DIR)/
+	cp $(IPKG-OPT_SOURCE_DIR)/rc.optware $(TS72XX_BOOTSTRAP_BUILD_DIR)/
 	touch $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
 
 ts72xx-bootstrap: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
