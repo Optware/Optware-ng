@@ -26,7 +26,7 @@ FSG3_BOOTSTRAP_IPK=$(BUILD_DIR)/fsg3-bootstrap_$(FSG3_BOOTSTRAP_VERSION)-$(FSG3_
 FSG3_BOOTSTRAP_XSH=$(BUILD_DIR)/fsg3-bootstrap_$(FSG3_BOOTSTRAP_VERSION)-$(FSG3_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
 
 # Additional ipk's we require
-FSG3_IPKG_IPK=ipkg_0.99-163-?_$(TARGET_ARCH).ipk
+FSG3_IPKG_IPK=ipkg-opt_0.99-163-?_$(TARGET_ARCH).ipk
 FSG3_OPENSSL_IPK=openssl_0.9.7?-?_$(TARGET_ARCH).ipk
 FSG3_WGET_SSL_IPK=wget-ssl_1.10.2-?_$(TARGET_ARCH).ipk
 
@@ -87,7 +87,7 @@ $(FSG3_BOOTSTRAP_IPK): $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/postinst $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3_BOOTSTRAP_IPK_DIR)
 
-$(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
+$(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-ssl-ipk
 	rm -rf $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(FSG3_BOOTSTRAP_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk

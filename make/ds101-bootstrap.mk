@@ -31,7 +31,7 @@ DS101_BOOTSTRAP_IPK=$(BUILD_DIR)/ds101-bootstrap_$(DS101_BOOTSTRAP_VERSION)-$(DS
 DS101_BOOTSTRAP_XSH=$(BUILD_DIR)/ds101-bootstrap_$(DS101_BOOTSTRAP_VERSION)-$(DS101_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
 
 # Additional ipk's we require
-DS101_IPKG_IPK=ipkg_0.99-163-?_$(TARGET_ARCH).ipk
+DS101_IPKG_IPK=ipkg-opt_0.99-163-?_$(TARGET_ARCH).ipk
 DS101_OPENSSL_IPK=openssl_0.9.7?-?_$(TARGET_ARCH).ipk
 DS101_WGET_SSL_IPK=wget-ssl_1.10.?-?_$(TARGET_ARCH).ipk
 
@@ -131,7 +131,7 @@ endif
 	install -m 644 $(DS101_BOOTSTRAP_SOURCE_DIR)/postinst $(DS101_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DS101_BOOTSTRAP_IPK_DIR)
 
-$(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-ipk openssl-ipk wget-ssl-ipk
+$(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-ssl-ipk
 	rm -rf $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
