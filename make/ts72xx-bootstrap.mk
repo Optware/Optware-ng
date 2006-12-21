@@ -109,7 +109,7 @@ $(TS72XX_BOOTSTRAP_XSH): $(TS72XX_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-s
 	rm -rf $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(TS72XX_BOOTSTRAP_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
-	cp $(BUILD_DIR)/$(TS72XX_IPKG_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
+	cp $(TS72XX_IPKG_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
 	cp $(BUILD_DIR)/$(TS72XX_OPENSSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(BUILD_DIR)/$(TS72XX_WGET_SSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	cp $(TS72XX_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap

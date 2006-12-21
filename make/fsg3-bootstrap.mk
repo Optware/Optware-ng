@@ -91,7 +91,7 @@ $(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-ssl-i
 	rm -rf $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(FSG3_BOOTSTRAP_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
-	cp $(BUILD_DIR)/$(FSG3_IPKG_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
+	cp $(FSG3_IPKG_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
 	cp $(BUILD_DIR)/$(FSG3_OPENSSL_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(BUILD_DIR)/$(FSG3_WGET_SSL_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	cp $(FSG3_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap

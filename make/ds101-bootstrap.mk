@@ -135,7 +135,7 @@ $(DS101_BOOTSTRAP_XSH): $(DS101_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-ssl
 	rm -rf $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(DS101_BOOTSTRAP_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
-	cp $(BUILD_DIR)/$(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
+	cp $(DS101_IPKG_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
 	cp $(BUILD_DIR)/$(DS101_OPENSSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(BUILD_DIR)/$(DS101_WGET_SSL_IPK) $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	cp $(DS101_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(DS101_BOOTSTRAP_BUILD_DIR)/bootstrap
