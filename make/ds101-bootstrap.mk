@@ -57,7 +57,7 @@ else
 	cp $(TARGET_LIBDIR)/libgcc_s.so.1 $(DS101_BOOTSTRAP_BUILD_DIR)/
 endif
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(DS101_BOOTSTRAP_BUILD_DIR)/
-	cp $(SOURCE_DIR)/ipkg/rc.optware $(DS101_BOOTSTRAP_BUILD_DIR)/
+	cp $(IPKG-OPT_SOURCE_DIR)/rc.optware $(DS101_BOOTSTRAP_BUILD_DIR)/
 	touch $(DS101_BOOTSTRAP_BUILD_DIR)/.built
 
 ds101-bootstrap: $(DS101_BOOTSTRAP_BUILD_DIR)/.built

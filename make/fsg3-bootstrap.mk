@@ -77,7 +77,7 @@ $(FSG3_BOOTSTRAP_IPK): $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 	cd $(FSG3_BOOTSTRAP_BUILD_DIR) ; cp -P `find . -type l -print` $(FSG3_BOOTSTRAP_IPK_DIR)/opt/lib/
 
 	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
-	install -m 755 $(SOURCE_DIR)/ipkg/rc.optware $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
+	install -m 755 $(IPKG-OPT_SOURCE_DIR)/rc.optware $(FSG3_BOOTSTRAP_IPK_DIR)/opt/etc
 	install -d $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d
 	install -m 755 $(FSG3_BOOTSTRAP_SOURCE_DIR)/optware $(FSG3_BOOTSTRAP_IPK_DIR)/etc/init.d/optware
 
