@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=1
+FREETYPE_IPK_VERSION=2
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
@@ -154,6 +154,7 @@ freetype: $(FREETYPE_BUILD_DIR)/.built
 $(STAGING_LIB_DIR)/libfreetype.so: $(FREETYPE_BUILD_DIR)/.built
 	rm -f $(FREETYPE_BUILD_DIR)/.staged
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/freetype-config
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/freetype-config $(STAGING_DIR)/bin/freetype-config
 	rm -f $(STAGING_LIB_DIR)/libfreetype.la
