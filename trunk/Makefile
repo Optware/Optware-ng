@@ -170,7 +170,7 @@ COMMON_CROSS_PACKAGES = \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump tcsh termcap textutils thttpd \
-	tin tinyscheme tmsnc tnef tnftp tor torrent transcode transmission tsocks \
+	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
 	ufsd unarj unfs3 units unrar \
 	unzip usbutils ushare \
@@ -227,7 +227,7 @@ WL500G_BROKEN_PACKAGES = \
 	 nylon openldap pango postfix py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
-	 tcsh tethereal transcode unrar vte w3m wget wget-ssl wxbase x11 \
+	 tcsh tethereal tnftpd transcode unrar vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 
