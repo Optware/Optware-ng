@@ -44,7 +44,6 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 # TODO: cp -fa instead tar copy
-#       include gdb 
 #
 BUILDROOT_GCC ?= 3.4.6
 BUILDROOT_BINUTILS ?= 2.16.1
@@ -63,14 +62,14 @@ BUILDROOT_MAINTAINER=Leon Kos <oleo@email.si>
 BUILDROOT_DESCRIPTION=uClibc compilation toolchain
 BUILDROOT_SECTION=devel
 BUILDROOT_PRIORITY=optional
-BUILDROOT_DEPENDS=
+BUILDROOT_DEPENDS=uclibc-opt (= $(UCLIBC-OPT_VERSION)-$(UCLIBC-OPT_IPK_VERSION))
 BUILDROOT_SUGGESTS=
-BUILDROOT_CONFLICTS=uclibc-opt
+BUILDROOT_CONFLICTS=
 
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=7
+BUILDROOT_IPK_VERSION=8
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -238,9 +237,6 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	(cd $(BUILDROOT_BUILD_DIR); \
 		make oldconfig \
 	)
-#	append uClibc config path to buildroot .config
-	echo "UCLIBC_CONFIG_FILE=$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE)" \
-		>> $(BUILDROOT_BUILD_DIR)/.config
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/100-uclibc-conf.patch
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/100-uclibc-conf.patch
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
@@ -257,7 +253,8 @@ buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
 #
 $(BUILDROOT_BUILD_DIR)/.built: $(BUILDROOT_BUILD_DIR)/.configured
 	rm -f $(BUILDROOT_BUILD_DIR)/.built
-	$(MAKE) -C $(BUILDROOT_BUILD_DIR) $(BUILDROOT_CUSTOM_HEADERS)
+	$(MAKE) -C $(BUILDROOT_BUILD_DIR) $(BUILDROOT_CUSTOM_HEADERS) \
+	UCLIBC_CONFIG_FILE=$(BUILDROOT_SOURCE_DIR)/$(UCLIBC_CONFIG_FILE)
 	touch $(BUILDROOT_BUILD_DIR)/.built
 
 #
@@ -310,7 +307,11 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(BUILDROOT_IPK_DIR) $(BUILD_DIR)/buildroot_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(BUILDROOT_IPK_DIR) install-strip
 	install -d $(BUILDROOT_IPK_DIR)
-	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
+#	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
+	cp -fa $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/ $(BUILDROOT_IPK_DIR)
+#	Remove files provided by uclibc-opt
+	rm -f $(patsubst %, $(BUILDROOT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
+	rm -f $(BUILDROOT_IPK_DIR)/opt/sbin/ldconfig
 #	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
 	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
@@ -355,6 +356,10 @@ buildroot-check: $(BUILDROOT_IPK)
 # Warning! UCLIBC_CONFIG_FILE is appended to buildroot .config when doing
 # make buildroot-unpack
 # After reconfuguring buildroot and .config copy buildroot will unpack again
+# Always issue make buildroot to run make with appropriate headers
+# and uClibc*.config
+# make query-BUILDROOT_CUSTOM_HEADERS
+# make  query-UCLIBC_CONFIG_FILE
 #
 # Create patches:
 # diff -u buildroot-r16948/toolchain/uClibc/uclibc.mk \

@@ -12,8 +12,8 @@ UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
 UCLIBC-OPT_DEPENDS=
-UCLIBC-OPT_SUGGESTS=
-UCLIBC-OPT_CONFLICTS=buildroot
+UCLIBC-OPT_SUGGESTS=ipkg-opt
+UCLIBC-OPT_CONFLICTS=
 
 #
 # UCLIBC-OPT_IPK_VERSION should be incremented when the ipk changes.
@@ -65,18 +65,19 @@ $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
-	libresolv  librt libutil libuClibc
+	libthread_db libresolv  librt libutil libuClibc
 UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,\
 	$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib/%*so*,$(UCLIBC-OPT_LIBS))
 
 $(UCLIBC-OPT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(UCLIBC-OPT_IPK_DIR) $(BUILD_DIR)/uclibc-opt_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC-OPT_IPK_DIR) install-strip
 	install -d $(UCLIBC-OPT_IPK_DIR)
+#	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC-OPT_IPK_DIR) install-strip
 #	tar -xv -C $(UCLIBC-OPT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
 #		--wildcards $(UCLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
-	cp -d $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
+	install -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
+	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	$(TARGET_STRIP) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/sbin
 	install -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
@@ -97,7 +98,7 @@ uclibc-opt-ipk: $(UCLIBC-OPT_IPK)
 # directories.
 #
 uclibc-opt-dirclean:
-	rm -rf (UCLIBC-OPT_IPK_DIR) $(UCLIBC-OPT_IPK)
+	rm -rf $(UCLIBC-OPT_IPK_DIR) $(UCLIBC-OPT_IPK)
 #
 #
 # Some sanity check for the package.
