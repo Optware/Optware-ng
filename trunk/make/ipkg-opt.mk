@@ -15,12 +15,12 @@ IPKG-OPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPKG-OPT_DESCRIPTION=The Itsy Package Manager
 IPKG-OPT_SECTION=base
 IPKG-OPT_PRIORITY=optional
-IPKG-OPT_DEPENDS=
 ifeq ($(LIBC_STYLE), uclibc)
-IPKG-OPT_SUGGESTS=uclibc-opt
+IPKG-OPT_DEPENDS=uclibc-opt
 else
-IPKG-OPT_SUGGESTS=
+IPKG-OPT_DEPENDS=
 endif
+IPKG-OPT_SUGGESTS=
 IPKG-OPT_CONFLICTS=
 
 #
@@ -34,7 +34,7 @@ IPKG-OPT_CVS_OPTS=-r $(IPKG-OPT_CVS_TAG)
 #
 # IPKG-OPT_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-OPT_IPK_VERSION=5
+IPKG-OPT_IPK_VERSION=7
 
 #
 # IPKG-OPT_CONFFILES should be a list of user-editable files
@@ -60,6 +60,7 @@ IPKG-OPT_BUILD_DIR=$(BUILD_DIR)/ipkg-opt
 IPKG-OPT_SOURCE_DIR=$(SOURCE_DIR)/ipkg-opt
 IPKG-OPT_IPK_DIR=$(BUILD_DIR)/ipkg-opt-$(IPKG-OPT_VERSION)-ipk
 IPKG-OPT_IPK=$(BUILD_DIR)/ipkg-opt_$(IPKG-OPT_VERSION)-$(IPKG-OPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+IPKG-OPT_FEEDS=http://ipkg.nslu2-linux.org/feeds/optware
 
 .PHONY: ipkg-opt-source ipkg-opt-unpack ipkg-opt ipkg-opt-stage ipkg-opt-ipk ipkg-opt-clean ipkg-opt-dirclean ipkg-opt-check
 
@@ -184,17 +185,29 @@ $(IPKG-OPT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
+
 $(IPKG-OPT_IPK): $(IPKG-OPT_BUILD_DIR)/.built
-	echo "This target may only be used for the uclibc, FSG-3, DS-101* or NAS100d boxen!"
 	rm -rf $(IPKG-OPT_IPK_DIR) $(BUILD_DIR)/ipkg-opt_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-OPT_BUILD_DIR) DESTDIR=$(IPKG-OPT_IPK_DIR) install-strip
 	install -d $(IPKG-OPT_IPK_DIR)/opt/etc/
-	install -m 644 $(IPKG-OPT_SOURCE_DIR)/ipkg.conf $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt ds101 ds101g fsg3 mss nas100d nslu2 oleg ts72xx wl500g, $(OPTWARE_TARGET)))
+	echo "#Uncomment the following line for native packages feed (if any)" \
+		> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+	echo "#src/gz native $(IPKG-OPT_FEEDS)/$(OPTWARE_TARGET)/native/stable"\
+			>> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+	echo "src/gz optware $(IPKG-OPT_FEEDS)/$(OPTWARE_TARGET)/cross/stable" \
+			>> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+	echo "dest /opt/ /" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+else
+	install -m 644 $(IPKG-OPT_SOURCE_DIR)/ipkg.conf \
+		$(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+endif
 	rm $(IPKG-OPT_IPK_DIR)/opt/lib/*.a
 	rm $(IPKG-OPT_IPK_DIR)/opt/lib/*.la
 	rm -rf $(IPKG-OPT_IPK_DIR)/opt/include
 	mv $(IPKG-OPT_IPK_DIR)/opt/bin/ipkg-cl $(IPKG-OPT_IPK_DIR)/opt/bin/ipkg
+	ln -s ipkg $(IPKG-OPT_IPK_DIR)/opt/bin/ipkg-opt
 	$(MAKE) $(IPKG-OPT_IPK_DIR)/CONTROL/control
 	echo $(IPKG-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(IPKG-OPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG-OPT_IPK_DIR)
