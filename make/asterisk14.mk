@@ -36,7 +36,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files

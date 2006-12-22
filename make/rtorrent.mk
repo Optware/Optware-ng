@@ -32,7 +32,7 @@ RTORRENT_CONFLICTS=
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=1
+RTORRENT_IPK_VERSION=2
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files

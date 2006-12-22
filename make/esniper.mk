@@ -35,7 +35,7 @@ ESNIPER_CONFLICTS=
 #
 # ESNIPER_IPK_VERSION should be incremented when the ipk changes.
 #
-ESNIPER_IPK_VERSION=2
+ESNIPER_IPK_VERSION=3
 
 #
 # ESNIPER_CONFFILES should be a list of user-editable files
