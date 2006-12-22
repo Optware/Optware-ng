@@ -138,7 +138,7 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	git-core glib gnupg gnuplot gnutls gtk \
 	gphoto2 libgphoto2 \
-	hdparm hexcurse heyu hnb hpijs \
+	hdparm hexcurse heyu hnb hpijs htop \
 	ice id3lib indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
@@ -219,7 +219,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
-	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb ice \
+	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
@@ -237,7 +237,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish gambit-c \
 	 gphoto2 libgphoto2 \
-	 gtk ice id3lib iperf iptables jabberd \
+	 gtk htop ice id3lib iperf iptables jabberd \
 	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango procps \
