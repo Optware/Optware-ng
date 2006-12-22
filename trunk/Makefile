@@ -49,6 +49,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = libao nethack scponly gkrellm parted lumikki mi
 	lftp \
 	libextractor \
 	perl-dbd-mysql \
+	vorbis-tools \
 	bpalogin
 
 PERL_PACKAGES = \
@@ -174,7 +175,7 @@ COMMON_CROSS_PACKAGES = \
 	ttf-bitstream-vera \
 	ufsd unarj unfs3 units unrar \
 	unzip usbutils ushare \
-	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
+	vblade vdr-mediamvp vim vsftpd vte \
 	w3cam w3m wakelan webalizer wget wget-ssl \
 	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
