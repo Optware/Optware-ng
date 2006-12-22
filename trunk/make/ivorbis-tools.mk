@@ -36,7 +36,7 @@ IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=2
+IVORBIS_TOOLS_IPK_VERSION=3
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files

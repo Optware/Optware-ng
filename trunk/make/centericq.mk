@@ -28,7 +28,7 @@ CENTERICQ_UNZIP=zcat
 #
 # CENTERICQ_IPK_VERSION should be incremented when the ipk changes.
 #
-CENTERICQ_IPK_VERSION=1
+CENTERICQ_IPK_VERSION=2
 
 #
 # CENTERICQ_CONFFILES should be a list of user-editable files

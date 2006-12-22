@@ -37,7 +37,7 @@ GIT-CORE_CONFLICTS=
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=1
+GIT-CORE_IPK_VERSION=2
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files

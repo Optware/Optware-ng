@@ -30,7 +30,7 @@ BZFLAG_CONFLICTS=
 #
 # BZFLAG_IPK_VERSION should be incremented when the ipk changes.
 #
-BZFLAG_IPK_VERSION=1
+BZFLAG_IPK_VERSION=2
 
 #
 # BZFLAG_CONFFILES should be a list of user-editable files
