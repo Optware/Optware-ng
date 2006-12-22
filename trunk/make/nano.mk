@@ -6,7 +6,7 @@
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.0
 #http://www.nano-editor.org/dist/v2.0/nano-2.0.1.tar.gz
-NANO_VERSION=2.0.1
+NANO_VERSION=2.0.2
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -17,7 +17,7 @@ NANO_PRIORITY=optional
 NANO_DEPENDS=ncurses
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=2
+NANO_IPK_VERSION=1
 
 #NANO_CONFFILES=/opt/etc/nanorc
 
