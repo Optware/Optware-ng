@@ -41,7 +41,7 @@ VORBIS-TOOLS_CONFLICTS=
 #
 # VORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-VORBIS-TOOLS_IPK_VERSION=4
+VORBIS-TOOLS_IPK_VERSION=5
 
 #
 # VORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -133,6 +133,7 @@ $(VORBIS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(VORBIS-TOOLS_SOURCE) $(VORBIS
 		--with-curl-libraries=$(STAGING_LIB_DIR) \
 	       	--with-curl-includes=$(STAGING_INCLUDE_DIR) \
 	)
+	sed -ie '/CURLOPT_MUTE/d' $(VORBIS-TOOLS_BUILD_DIR)/ogg123/http_transport.c
 #	cat $(VORBIS-TOOLS_PATCHES) | patch -d $(VORBIS-TOOLS_BUILD_DIR) -p1
 	touch $(VORBIS-TOOLS_BUILD_DIR)/.configured
 
