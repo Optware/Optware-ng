@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.65
+ERL-YAWS_VERSION=1.66
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
@@ -36,7 +36,7 @@ ERL-YAWS_CONFLICTS=
 #
 # ERL-YAWS_IPK_VERSION should be incremented when the ipk changes.
 #
-ERL-YAWS_IPK_VERSION=2
+ERL-YAWS_IPK_VERSION=1
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
@@ -69,7 +69,7 @@ ERL-YAWS_SOURCE_DIR=$(SOURCE_DIR)/erl-yaws
 ERL-YAWS_IPK_DIR=$(BUILD_DIR)/erl-yaws-$(ERL-YAWS_VERSION)-ipk
 ERL-YAWS_IPK=$(BUILD_DIR)/erl-yaws_$(ERL-YAWS_VERSION)-$(ERL-YAWS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: erl-yaws-source erl-yaws-unpack erl-yaws erl-yaws-stage erl-yaws-ipk erl-yaws-clean erl-yaws-dirclean
+.PHONY: erl-yaws-source erl-yaws-unpack erl-yaws erl-yaws-stage erl-yaws-ipk erl-yaws-clean erl-yaws-dirclean erl-yaws-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -233,3 +233,9 @@ erl-yaws-clean:
 #
 erl-yaws-dirclean:
 	rm -rf $(BUILD_DIR)/$(ERL-YAWS_DIR) $(ERL-YAWS_BUILD_DIR) $(ERL-YAWS_IPK_DIR) $(ERL-YAWS_IPK)
+
+#
+# Some sanity check for the package.
+#
+erl-yaws-check: $(ERL-YAWS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ERL-YAWS_IPK)
