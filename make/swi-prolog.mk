@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
-SWI-PROLOG_VERSION=5.6.24
+SWI-PROLOG_VERSION=5.6.25
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
 SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
 SWI-PROLOG_UNZIP=zcat
@@ -30,7 +30,7 @@ SWI-PROLOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SWI-PROLOG_DESCRIPTION=An LGPL comprehensive portable Prolog implementation.
 SWI-PROLOG_SECTION=lang
 SWI-PROLOG_PRIORITY=optional
-SWI-PROLOG_DEPENDS=libgmp, ncursesw, readline
+SWI-PROLOG_DEPENDS=libgmp, ncursesw, readline, zlib
 SWI-PROLOG_SUGGESTS=
 SWI-PROLOG_CONFLICTS=
 
@@ -65,7 +65,7 @@ endif
 SWI-PROLOG_PL=swipl
 
 ifeq ($(HOST_MACHINE), x86_64)
-SWI-PROLOG_HOST32="--host=i586-pc-linux-gnu"
+SWI-PROLOG_HOST32=--host=i586-pc-linux-gnu
 SWI-PROLOG_M32=-m32
 else
 SWI-PROLOG_HOST32=
@@ -167,7 +167,7 @@ endif
 #
 $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt 
 	@echo "=============== target swi-prolog configure ============"
-	$(MAKE) libgmp-stage ncurses-stage ncursesw-stage openssl-stage readline-stage
+	$(MAKE) libgmp-stage ncurses-stage ncursesw-stage openssl-stage readline-stage zlib-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(LIBC_STYLE), uclibc)
 	sed -i -e '/ac_pthread_cpuclocks=/s/yes/no/g' $(SWI-PROLOG_BUILD_DIR)/src/configure.in
