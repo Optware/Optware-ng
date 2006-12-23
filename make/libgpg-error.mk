@@ -42,7 +42,7 @@ LIBGPG-ERROR_CONFLICTS=
 #
 # LIBGPG-ERROR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGPG-ERROR_IPK_VERSION=1
+LIBGPG-ERROR_IPK_VERSION=2
 
 #
 # LIBGPG-ERROR_CONFFILES should be a list of user-editable files
@@ -146,6 +146,7 @@ libgpg-error: $(LIBGPG-ERROR_BUILD_DIR)/.built
 $(LIBGPG-ERROR_BUILD_DIR)/.staged: $(LIBGPG-ERROR_BUILD_DIR)/.built
 	rm -f $(LIBGPG-ERROR_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/gpg-error-config
 	rm -f $(STAGING_DIR)/opt/lib/libgpg-error.la
 	touch $(LIBGPG-ERROR_BUILD_DIR)/.staged
 

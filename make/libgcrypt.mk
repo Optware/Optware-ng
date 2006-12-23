@@ -76,6 +76,8 @@ LIBGCRYPT_SOURCE_DIR=$(SOURCE_DIR)/libgcrypt
 LIBGCRYPT_IPK_DIR=$(BUILD_DIR)/libgcrypt-$(LIBGCRYPT_VERSION)-ipk
 LIBGCRYPT_IPK=$(BUILD_DIR)/libgcrypt_$(LIBGCRYPT_VERSION)-$(LIBGCRYPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: libgcrypt-source libgcrypt-unpack libgcrypt libgcrypt-stage libgcrypt-ipk libgcrypt-clean libgcrypt-dirclean libgcrypt-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -152,6 +154,10 @@ libgcrypt: $(LIBGCRYPT_BUILD_DIR)/.built
 $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -f $(LIBGCRYPT_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e '/_cflags=/s|-I/opt/include||g' \
+	       -e '/_cflags=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
+	       -e 's|I$$includedir|I$(STAGING_INCLUDE_DIR)|' \
+		$(STAGING_PREFIX)/bin/*libgcrypt-config
 	rm -f $(STAGING_DIR)/opt/lib/libgcrypt.la
 	rm -f $(STAGING_DIR)/opt/bin/libgcrypt-config
 	ln -s $(GNU_TARGET_NAME)-libgcrypt-config $(STAGING_DIR)/opt/bin/libgcrypt-config
@@ -222,3 +228,9 @@ libgcrypt-clean:
 #
 libgcrypt-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBGCRYPT_DIR) $(LIBGCRYPT_BUILD_DIR) $(LIBGCRYPT_IPK_DIR) $(LIBGCRYPT_IPK)
+
+#
+# Some sanity check for the package.
+#
+libgcrypt-check: $(LIBGCRYPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGCRYPT_IPK)

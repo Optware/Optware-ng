@@ -43,7 +43,7 @@ OPENCDK_CONFLICTS=
 #
 # OPENCDK_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENCDK_IPK_VERSION=2
+OPENCDK_IPK_VERSION=3
 
 #
 # OPENCDK_CONFFILES should be a list of user-editable files
@@ -150,6 +150,10 @@ opencdk: $(OPENCDK_BUILD_DIR)/.built
 $(OPENCDK_BUILD_DIR)/.staged: $(OPENCDK_BUILD_DIR)/.built
 	rm -f $(OPENCDK_BUILD_DIR)/.staged
 	$(MAKE) -C $(OPENCDK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e '/^opencdk_cflags/s|-I/opt/include ||g' \
+	       -e '/^opencdk_cflags/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
+	       -e '/includes=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
+		$(STAGING_PREFIX)/bin/opencdk-config
 	rm -f $(STAGING_DIR)/opt/lib/libopencdk.la
 	touch $(OPENCDK_BUILD_DIR)/.staged
 
