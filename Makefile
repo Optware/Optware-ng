@@ -363,6 +363,12 @@ TS72XX_BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 quagga rtorrent \
 	sablevm tethereal transcode w3m xvid \
 
+# Packages that *only* work for slugosbe - do not just put new packages here.
+SLUGOSBE_SPECIFIC_PACKAGES = 
+
+# Packages that do not work for slugosbe.
+SLUGOSBE_BROKEN_PACKAGES = 
+
 ifeq ($(OPTWARE_TARGET),nslu2)
 ifeq ($(HOST_MACHINE),armv5b)
 PACKAGES = $(COMMON_NATIVE_PACKAGES)
@@ -448,6 +454,13 @@ ifeq ($(OPTWARE_TARGET),ts72xx)
 PACKAGES = $(filter-out $(TS72XX_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(TS72XX_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=arm
+TARGET_OS=linux
+endif
+
+ifeq ($(OPTWARE_TARGET),slugosbe)
+PACKAGES = $(filter-out $(SLUGOSBE_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(SLUGOSBE_SPECIFIC_PACKAGES))
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
