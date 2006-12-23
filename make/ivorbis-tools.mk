@@ -36,7 +36,7 @@ IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=3
+IVORBIS_TOOLS_IPK_VERSION=4
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -119,6 +119,7 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 		--disable-curltest \
 		--disable-nls \
 	)
+	sed -ie '/CURLOPT_MUTE/d' $(IVORBIS-TOOLS_BUILD_DIR)/ogg123/http_transport.c
 	$(PATCH_LIBTOOL) $(IVORBIS_TOOLS_BUILD_DIR)/libtool
 	touch $(IVORBIS_TOOLS_BUILD_DIR)/.configured
 
