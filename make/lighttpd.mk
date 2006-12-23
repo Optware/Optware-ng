@@ -42,7 +42,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=2
+LIGHTTPD_IPK_VERSION=3
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -78,6 +78,8 @@ LIGHTTPD_BUILD_DIR=$(BUILD_DIR)/lighttpd
 LIGHTTPD_SOURCE_DIR=$(SOURCE_DIR)/lighttpd
 LIGHTTPD_IPK_DIR=$(BUILD_DIR)/lighttpd-$(LIGHTD_VERSION)-ipk
 LIGHTTPD_IPK=$(BUILD_DIR)/lighttpd_$(LIGHTD_VERSION)-$(LIGHTTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: lighttpd-source lighttpd-unpack lighttpd lighttpd-stage lighttpd-ipk lighttpd-clean lighttpd-dirclean lighttpd-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -126,12 +128,15 @@ endif
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
 	fi
 	(cd $(LIGHTTPD_BUILD_DIR); \
+		sed -ie '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
 	autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
 		PCRE_LIB="-lpcre" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		XML_CFLAGS=`$(STAGING_PREFIX)/bin/xml2-config --cflags` \
+		SQLITE_CFLAGS="-I$(STAGING_INCLUDE_DIR)" \
 		ac_cv_lib_memcache_mc_new=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -246,3 +251,9 @@ lighttpd-clean:
 #
 lighttpd-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) $(LIGHTTPD_IPK_DIR) $(LIGHTTPD_IPK)
+
+#
+# Some sanity check for the package.
+#
+lighttpd-check: $(LIGHTTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIGHTTPD_IPK)
