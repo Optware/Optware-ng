@@ -20,11 +20,18 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=3
+SENDMAIL_IPK_VERSION=4
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
-SENDMAIL_CONFFILES=/opt/etc/mail/sendmail.cf /opt/etc/init.d/S69sendmail
+SENDMAIL_CONFFILES=\
+	/opt/etc/mail/aliases \
+	/opt/etc/mail/local-host-names \
+	/opt/etc/mail/helfile \
+	/opt/etc/mail/relay-domains \
+	/opt/etc/mail/sendmail.cf \
+	/opt/etc/mail/submit.cf \
+	/opt/etc/init.d/S69sendmail
 
 #
 # SENDMAIL_PATCHES should list any patches, in the the order in
