@@ -49,6 +49,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = libao nethack scponly gkrellm parted lumikki mi
 	lftp \
 	libextractor \
 	perl-dbd-mysql \
+	py-curl \
 	bpalogin
 
 PERL_PACKAGES = \
@@ -101,7 +102,7 @@ PYTHON_PACKAGES = \
 	getmail ipython mailman mod-python pyrex \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-bittorrent py-bluez py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
-	py-clips py-codeville py-configobj py-constraint py-crypto py-curl py-django py-docutils \
+	py-clips py-codeville py-configobj py-constraint py-crypto py-django py-docutils \
 	py-elementtree py-flup py-formencode py-gdchart2 py-gd py-genshi py-kid py-lxml py-nose \
 	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
 	py-paste py-pastedeploy py-pastescript py-pastewebkit py-pexpect py-pil py-ply py-protocols \
