@@ -43,7 +43,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=1
+GNUTLS_IPK_VERSION=2
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -124,6 +124,7 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 	fi
 	mv $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	(cd $(GNUTLS_BUILD_DIR); \
+		sed -ie '/_CFLAGS=/s|-I$${includedir}|-I$(STAGING_INCLUDE_DIR)|' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUTLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUTLS_LDFLAGS)" \
@@ -162,6 +163,7 @@ gnutls: $(GNUTLS_BUILD_DIR)/.built
 $(GNUTLS_BUILD_DIR)/.staged: $(GNUTLS_BUILD_DIR)/.built
 	rm -f $(GNUTLS_BUILD_DIR)/.staged
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|echo $$includes $$.*_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/*gnutls-config
 	touch $(GNUTLS_BUILD_DIR)/.staged
 
 gnutls-stage: $(GNUTLS_BUILD_DIR)/.staged

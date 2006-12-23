@@ -42,7 +42,7 @@ LIBTASN1_CONFLICTS=
 #
 # LIBTASN1_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTASN1_IPK_VERSION=1
+LIBTASN1_IPK_VERSION=2
 
 #
 # LIBTASN1_CONFFILES should be a list of user-editable files
@@ -148,6 +148,7 @@ libtasn1: $(LIBTASN1_BUILD_DIR)/.built
 $(LIBTASN1_BUILD_DIR)/.staged: $(LIBTASN1_BUILD_DIR)/.built
 	rm -f $(LIBTASN1_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBTASN1_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|echo $$includes $$tasn1_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/libtasn1-config
 	rm -f $(STAGING_DIR)/opt/lib/libtasn1.la
 	touch $(LIBTASN1_BUILD_DIR)/.staged
 
