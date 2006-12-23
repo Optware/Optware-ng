@@ -28,7 +28,7 @@ GLIB_CONFLICTS=
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=1
+GLIB_IPK_VERSION=2
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -104,6 +104,8 @@ $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(GLIB_BUILD_DIR)/configure
 	(cd $(GLIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(GLIB_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -113,6 +115,7 @@ $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
+	sed -ie '/#define _POSIX_SOURCE/a#include <bits/posix1_lim.h>' $(GLIB_BUILD_DIR)/glib/giounix.c
 	$(PATCH_LIBTOOL) $(GLIB_BUILD_DIR)/libtool
 	touch $(GLIB_BUILD_DIR)/.configured
 
