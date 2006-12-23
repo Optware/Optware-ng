@@ -119,7 +119,7 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 		--disable-curltest \
 		--disable-nls \
 	)
-	sed -ie '/CURLOPT_MUTE/d' $(IVORBIS-TOOLS_BUILD_DIR)/ogg123/http_transport.c
+	sed -ie '/CURLOPT_MUTE/d' $(IVORBIS_TOOLS_BUILD_DIR)/ogg123/http_transport.c
 	$(PATCH_LIBTOOL) $(IVORBIS_TOOLS_BUILD_DIR)/libtool
 	touch $(IVORBIS_TOOLS_BUILD_DIR)/.configured
 
