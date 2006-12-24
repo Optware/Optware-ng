@@ -43,7 +43,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=2
+GNUTLS_IPK_VERSION=3
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -140,7 +140,7 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(GNUTLS_BUILD_DIR)/libtool
-	touch $(GNUTLS_BUILD_DIR)/.configured
+	touch $@
 
 gnutls-unpack: $(GNUTLS_BUILD_DIR)/.configured
 
@@ -148,9 +148,9 @@ gnutls-unpack: $(GNUTLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GNUTLS_BUILD_DIR)/.built: $(GNUTLS_BUILD_DIR)/.configured
-	rm -f $(GNUTLS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GNUTLS_BUILD_DIR)
-	touch $(GNUTLS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -161,10 +161,11 @@ gnutls: $(GNUTLS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GNUTLS_BUILD_DIR)/.staged: $(GNUTLS_BUILD_DIR)/.built
-	rm -f $(GNUTLS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|echo $$includes $$.*_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/*gnutls-config
-	touch $(GNUTLS_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gnutls*.pc
+	touch $@
 
 gnutls-stage: $(GNUTLS_BUILD_DIR)/.staged
 
@@ -173,7 +174,7 @@ gnutls-stage: $(GNUTLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnutls
 #
 $(GNUTLS_IPK_DIR)/CONTROL/control:
-	@install -d $(GNUTLS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gnutls" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

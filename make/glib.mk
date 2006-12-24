@@ -28,7 +28,7 @@ GLIB_CONFLICTS=
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=2
+GLIB_IPK_VERSION=3
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -117,7 +117,7 @@ $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 	)
 	sed -ie '/#define _POSIX_SOURCE/a#include <bits/posix1_lim.h>' $(GLIB_BUILD_DIR)/glib/giounix.c
 	$(PATCH_LIBTOOL) $(GLIB_BUILD_DIR)/libtool
-	touch $(GLIB_BUILD_DIR)/.configured
+	touch $@
 
 glib-unpack: $(GLIB_BUILD_DIR)/.configured
 
@@ -126,9 +126,9 @@ glib-unpack: $(GLIB_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(GLIB_BUILD_DIR)/.built: $(GLIB_BUILD_DIR)/.configured
-	rm -f $(GLIB_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GLIB_BUILD_DIR)
-	touch $(GLIB_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -146,6 +146,11 @@ $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgthread-2.0.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/glib-*.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gmodule-*.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gobject-*.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/gthread-*.pc
 	touch $@
 
 glib-stage: $(GLIB_BUILD_DIR)/.staged
@@ -155,7 +160,7 @@ glib-stage: $(GLIB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/glib
 #
 $(GLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(GLIB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: glib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

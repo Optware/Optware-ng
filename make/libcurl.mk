@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=2
+LIBCURL_IPK_VERSION=3
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -122,7 +122,7 @@ $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 		--without-libidn \
 		--with-random="/dev/urandom" \
 	)
-	touch $(LIBCURL_BUILD_DIR)/.configured
+	touch $@
 
 libcurl-unpack: $(LIBCURL_BUILD_DIR)/.configured
 
@@ -130,9 +130,9 @@ libcurl-unpack: $(LIBCURL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBCURL_BUILD_DIR)/.built: $(LIBCURL_BUILD_DIR)/.configured
-	rm -f $(LIBCURL_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBCURL_BUILD_DIR)
-	touch $(LIBCURL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,11 +143,12 @@ libcurl: $(LIBCURL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
-	rm -f $(LIBCURL_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/curl-config $(STAGING_DIR)/bin/curl-config
-	touch $(LIBCURL_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcurl.pc
+	touch $@
 
 libcurl-stage: $(LIBCURL_BUILD_DIR)/.staged
 
@@ -156,7 +157,7 @@ libcurl-stage: $(LIBCURL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libcurl
 #
 $(LIBCURL_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBCURL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libcurl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

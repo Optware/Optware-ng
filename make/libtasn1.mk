@@ -42,7 +42,7 @@ LIBTASN1_CONFLICTS=
 #
 # LIBTASN1_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTASN1_IPK_VERSION=2
+LIBTASN1_IPK_VERSION=3
 
 #
 # LIBTASN1_CONFFILES should be a list of user-editable files
@@ -125,7 +125,7 @@ $(LIBTASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTASN1_SOURCE) $(LIBTASN1_PATCH
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(LIBTASN1_BUILD_DIR)/libtool
-	touch $(LIBTASN1_BUILD_DIR)/.configured
+	touch $@
 
 libtasn1-unpack: $(LIBTASN1_BUILD_DIR)/.configured
 
@@ -133,9 +133,9 @@ libtasn1-unpack: $(LIBTASN1_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBTASN1_BUILD_DIR)/.built: $(LIBTASN1_BUILD_DIR)/.configured
-	rm -f $(LIBTASN1_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBTASN1_BUILD_DIR)
-	touch $(LIBTASN1_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -146,11 +146,12 @@ libtasn1: $(LIBTASN1_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBTASN1_BUILD_DIR)/.staged: $(LIBTASN1_BUILD_DIR)/.built
-	rm -f $(LIBTASN1_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBTASN1_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|echo $$includes $$tasn1_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/libtasn1-config
 	rm -f $(STAGING_DIR)/opt/lib/libtasn1.la
-	touch $(LIBTASN1_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtasn1.pc
+	touch $@
 
 libtasn1-stage: $(LIBTASN1_BUILD_DIR)/.staged
 
@@ -159,7 +160,7 @@ libtasn1-stage: $(LIBTASN1_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtasn1
 #
 $(LIBTASN1_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBTASN1_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libtasn1" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

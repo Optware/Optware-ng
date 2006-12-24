@@ -29,7 +29,7 @@ LIBXML2_DEPENDS=zlib
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=1
+LIBXML2_IPK_VERSION=2
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files
@@ -113,7 +113,7 @@ $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 		--enable-shared \
 		--without-python \
 	)
-	touch $(LIBXML2_BUILD_DIR)/.configured
+	touch $@
 
 libxml2-unpack: $(LIBXML2_BUILD_DIR)/.configured
 
@@ -121,9 +121,9 @@ libxml2-unpack: $(LIBXML2_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBXML2_BUILD_DIR)/.built: $(LIBXML2_BUILD_DIR)/.configured
-	rm -f $(LIBXML2_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBXML2_BUILD_DIR)
-	touch $(LIBXML2_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -134,12 +134,13 @@ libxml2: $(LIBXML2_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
-	rm -f $(LIBXML2_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' \
 		$(STAGING_PREFIX)/bin/xml2-config
 	rm $(STAGING_LIB_DIR)/libxml2.la
-	touch $(LIBXML2_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libxml*.pc
+	touch $@
 
 libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 
@@ -148,7 +149,7 @@ libxml2-stage: $(LIBXML2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxml2
 #
 $(LIBXML2_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBXML2_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libxml2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

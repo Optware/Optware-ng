@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=6
+LIBXSLT_IPK_VERSION=7
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -116,7 +116,7 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 		--with-libxml-libs-prefix=$(STAGING_LIB_DIR) \
 		--with-libxml-include-prefix=$(STAGING_INCLUDE_DIR) \
 	)
-	touch $(LIBXSLT_BUILD_DIR)/.configured
+	touch $@
 
 libxslt-unpack: $(LIBXSLT_BUILD_DIR)/.configured
 
@@ -124,9 +124,9 @@ libxslt-unpack: $(LIBXSLT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBXSLT_BUILD_DIR)/.built: $(LIBXSLT_BUILD_DIR)/.configured
-	rm -f $(LIBXSLT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR)
-	touch $(LIBXSLT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,7 +137,7 @@ libxslt: $(LIBXSLT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
-	rm -f $(LIBXSLT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/xslt-config
 	# follow libxml's convention in putting -config bins in STAGING/bin
@@ -145,7 +145,9 @@ $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
 	# remove .la to avoid libtool problems
 	rm $(STAGING_LIB_DIR)/libxslt.la
 	rm $(STAGING_LIB_DIR)/libexslt.la
-	touch $(LIBXSLT_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/libxslt*.pc $(STAGING_LIB_DIR)/pkgconfig/libexslt*.pc
+	touch $@
 
 libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
 
@@ -154,7 +156,7 @@ libxslt-stage: $(LIBXSLT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libxslt
 #
 $(LIBXSLT_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBXSLT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libxslt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

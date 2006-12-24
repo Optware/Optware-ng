@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=2
+FREETYPE_IPK_VERSION=3
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
@@ -70,7 +70,7 @@ FREETYPE_IPK=$(BUILD_DIR)/freetype_$(FREETYPE_VERSION)-$(FREETYPE_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(FREETYPE_IPK_DIR)/CONTROL/control:
-	@install -d $(FREETYPE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: freetype" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -111,8 +111,7 @@ freetype-source: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) \
-		$(FREETYPE_PATCHES)
+$(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) $(FREETYPE_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(FREETYPE_DIR) $(FREETYPE_BUILD_DIR)
 	$(FREETYPE_UNZIP) $(DL_DIR)/$(FREETYPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -131,7 +130,7 @@ $(FREETYPE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETYPE_SOURCE) \
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(FREETYPE_BUILD_DIR)/builds/unix/libtool
-	touch $(FREETYPE_BUILD_DIR)/.configured
+	touch $@
 
 freetype-unpack: $(FREETYPE_BUILD_DIR)/.configured
 
@@ -139,9 +138,9 @@ freetype-unpack: $(FREETYPE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FREETYPE_BUILD_DIR)/.built: $(FREETYPE_BUILD_DIR)/.configured
-	rm -f $(FREETYPE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FREETYPE_BUILD_DIR)
-	touch $(FREETYPE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,15 +150,17 @@ freetype: $(FREETYPE_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libfreetype.so: $(FREETYPE_BUILD_DIR)/.built
-	rm -f $(FREETYPE_BUILD_DIR)/.staged
+$(FREETYPE_BUILD_DIR)/.staged: $(FREETYPE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/freetype-config
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/freetype-config $(STAGING_DIR)/bin/freetype-config
 	rm -f $(STAGING_LIB_DIR)/libfreetype.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/freetype2.pc
+	touch $@
 
-freetype-stage: $(STAGING_LIB_DIR)/libfreetype.so
+freetype-stage: $(FREETYPE_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

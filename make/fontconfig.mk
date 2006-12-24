@@ -25,7 +25,7 @@ FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=2
+FONTCONFIG_IPK_VERSION=3
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
@@ -62,7 +62,7 @@ FONTCONFIG_IPK=$(BUILD_DIR)/fontconfig_$(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VE
 # Automatically create a ipkg control file
 #
 $(FONTCONFIG_IPK_DIR)/CONTROL/control:
-	@install -d $(FONTCONFIG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: fontconfig" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -131,7 +131,7 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(FONTCONFIG_BUILD_DIR)/libtool
-	touch $(FONTCONFIG_BUILD_DIR)/.configured
+	touch $@
 
 fontconfig-unpack: $(FONTCONFIG_BUILD_DIR)/.configured
 
@@ -139,9 +139,9 @@ fontconfig-unpack: $(FONTCONFIG_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FONTCONFIG_BUILD_DIR)/.built: $(FONTCONFIG_BUILD_DIR)/.configured
-	rm -f $(FONTCONFIG_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FONTCONFIG_BUILD_DIR)
-	touch $(FONTCONFIG_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -152,8 +152,11 @@ fontconfig: $(FONTCONFIG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FONTCONFIG_BUILD_DIR)/.staged: $(FONTCONFIG_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FONTCONFIG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libfontconfig.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/fontconfig.pc
+	touch $@
 
 fontconfig-stage: $(FONTCONFIG_BUILD_DIR)/.staged
 

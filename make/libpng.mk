@@ -34,7 +34,7 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=1
+LIBPNG_IPK_VERSION=2
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
@@ -117,7 +117,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(LIBPNG_BUILD_DIR)/libtool
-	touch $(LIBPNG_BUILD_DIR)/.configured
+	touch $@
 
 libpng-unpack: $(LIBPNG_BUILD_DIR)/.configured
 
@@ -126,9 +126,9 @@ libpng-unpack: $(LIBPNG_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBPNG_BUILD_DIR)/.built: $(LIBPNG_BUILD_DIR)/.configured
-	rm -f $(LIBPNG_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBPNG_BUILD_DIR)
-	touch $(LIBPNG_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -144,6 +144,7 @@ $(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
 	rm -f $(STAGING_DIR)/opt/lib/libpng12.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpng*.pc
 	touch $@
 
 libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
@@ -153,7 +154,7 @@ libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libpng
 #
 $(LIBPNG_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBPNG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libpng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
