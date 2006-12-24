@@ -13,7 +13,7 @@ SENDMAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SENDMAIL_DESCRIPTION=The most classic SMTP server.
 SENDMAIL_SECTION=network
 SENDMAIL_PRIORITY=optional
-SENDMAIL_DEPENDS=procmail openssl libdb
+SENDMAIL_DEPENDS=procmail, openssl, libdb
 SENDMAIL_SUGGESTS=
 SENDMAIL_CONFLICTS=postfix
 
@@ -27,7 +27,7 @@ SENDMAIL_IPK_VERSION=4
 SENDMAIL_CONFFILES=\
 	/opt/etc/mail/aliases \
 	/opt/etc/mail/local-host-names \
-	/opt/etc/mail/helfile \
+	/opt/etc/mail/helpfile \
 	/opt/etc/mail/relay-domains \
 	/opt/etc/mail/sendmail.cf \
 	/opt/etc/mail/submit.cf \
