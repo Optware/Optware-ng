@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
-ASTERISK14_VERSION=1.4.0-beta4
+ASTERISK14_VERSION=1.4.0
 ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION).tar.gz
 ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)
 ASTERISK14_UNZIP=zcat
@@ -36,7 +36,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=2
+ASTERISK14_IPK_VERSION=1
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ ASTERISK14_IPK_VERSION=2
 # ASTERISK14_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch
+ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch $(ASTERISK14_SOURCE_DIR)/gsm.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +104,7 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -114,6 +114,9 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
 	fi
+	(cd $(ASTERISK14_BUILD_DIR)/menuselect; \
+		./configure \
+	)
 	(cd $(ASTERISK14_BUILD_DIR)/main/editline; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK14_CPPFLAGS)" \
@@ -150,7 +153,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--without-ogg \
 		--without-popt \
 		--without-tds \
-		--without-sqlite \
+		--with-sqlite=$(STAGING_PREFIX) \
 		--without-postgres \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
