@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=2
+APR_IPK_VERSION=3
 
 #
 # APR_LOCALES defines which locales get installed
@@ -47,7 +47,11 @@ APR_LOCALES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+APR_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2 -DPATH_MAX=4096
+else
 APR_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/apache2
+endif
 APR_LDFLAGS=-lpthread
 
 #
