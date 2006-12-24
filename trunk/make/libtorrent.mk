@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION=2
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -114,7 +114,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-openssl=$(STAGING_DIR)/opt \
+		--with-openssl=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(LIBTORRENT_BUILD_DIR)/libtool
 	touch $(LIBTORRENT_BUILD_DIR)/.configured
@@ -141,6 +141,7 @@ $(LIBTORRENT_BUILD_DIR)/.staged: $(LIBTORRENT_BUILD_DIR)/.built
 	rm -f $(LIBTORRENT_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBTORRENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's| /opt/lib/lib\(sigc-[0-9.]*\)\.la| -l\1|' $(STAGING_LIB_DIR)/libtorrent.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtorrent.pc
 	touch $(LIBTORRENT_BUILD_DIR)/.staged
 
 libtorrent-stage: $(LIBTORRENT_BUILD_DIR)/.staged

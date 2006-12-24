@@ -22,7 +22,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=2
+PCRE_IPK_VERSION=3
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
@@ -56,28 +56,29 @@ $(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(PCRE_BUILD_DIR)/libtool
-	touch $(PCRE_BUILD_DIR)/.configured
+	touch $@
 
 pcre-unpack: $(PCRE_BUILD_DIR)/.configured
 
 $(PCRE_BUILD_DIR)/.built: $(PCRE_BUILD_DIR)/.configured
-	rm -f $(PCRE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PCRE_BUILD_DIR) LIBTOOL_TAG=$(PCRE_LIBTOOL_TAG)
-	touch $(PCRE_BUILD_DIR)/.built
+	touch $@
 
 pcre: $(PCRE_BUILD_DIR)/.built
 
 $(PCRE_BUILD_DIR)/.staged: $(PCRE_BUILD_DIR)/.built
-	rm -f $(PCRE_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpcre.la
 	rm -f $(STAGING_LIB_DIR)/libpcreposix.la
-	touch $(PCRE_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpcre.pc
+	touch $@
 
 pcre-stage: $(PCRE_BUILD_DIR)/.staged
 
 $(PCRE_IPK_DIR)/CONTROL/control:
-	@install -d $(PCRE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: pcre" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

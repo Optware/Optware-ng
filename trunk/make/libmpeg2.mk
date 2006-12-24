@@ -38,7 +38,7 @@ LIBMPEG2_CONFLICTS=
 #
 # LIBMPEG2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMPEG2_IPK_VERSION=1
+LIBMPEG2_IPK_VERSION=2
 
 #
 # LIBMPEG2_CONFFILES should be a list of user-editable files
@@ -136,7 +136,7 @@ $(LIBMPEG2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPEG2_SOURCE) $(LIBMPEG2_PATCH
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(LIBMPEG2_BUILD_DIR)/libtool
-	touch $(LIBMPEG2_BUILD_DIR)/.configured
+	touch $@
 
 libmpeg2-unpack: $(LIBMPEG2_BUILD_DIR)/.configured
 
@@ -144,9 +144,9 @@ libmpeg2-unpack: $(LIBMPEG2_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBMPEG2_BUILD_DIR)/.built: $(LIBMPEG2_BUILD_DIR)/.configured
-	rm -f $(LIBMPEG2_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBMPEG2_BUILD_DIR)
-	touch $(LIBMPEG2_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -157,9 +157,10 @@ libmpeg2: $(LIBMPEG2_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBMPEG2_BUILD_DIR)/.staged: $(LIBMPEG2_BUILD_DIR)/.built
-	rm -f $(LIBMPEG2_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBMPEG2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBMPEG2_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libmpeg2*.pc
+	touch $@
 
 libmpeg2-stage: $(LIBMPEG2_BUILD_DIR)/.staged
 

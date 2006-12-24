@@ -41,7 +41,7 @@ SQLITE_CONFLICTS=
 #
 # SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE_IPK_VERSION=1
+SQLITE_IPK_VERSION=2
 
 #
 # SQLITE_CONFFILES should be a list of user-editable files
@@ -130,7 +130,7 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 	)
 	$(PATCH_LIBTOOL) $(SQLITE_BUILD_DIR)/libtool
 	sed -i "/^shrext_cmds=/a shrext='.so'" $(SQLITE_BUILD_DIR)/libtool
-	touch $(SQLITE_BUILD_DIR)/.configured
+	touch $@
 
 sqlite-unpack: $(SQLITE_BUILD_DIR)/.configured
 
@@ -138,9 +138,9 @@ sqlite-unpack: $(SQLITE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SQLITE_BUILD_DIR)/.built: $(SQLITE_BUILD_DIR)/.configured
-	rm -f $(SQLITE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SQLITE_BUILD_DIR)
-	touch $(SQLITE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,9 +151,10 @@ sqlite: $(SQLITE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SQLITE_BUILD_DIR)/.staged: $(SQLITE_BUILD_DIR)/.built
-	rm -f $(SQLITE_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SQLITE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SQLITE_BUILD_DIR)/.staged
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sqlite3.pc
+	touch $@
 
 sqlite-stage: $(SQLITE_BUILD_DIR)/.staged
 
@@ -162,7 +163,7 @@ sqlite-stage: $(SQLITE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sqlite
 #
 $(SQLITE_IPK_DIR)/CONTROL/control:
-	@install -d $(SQLITE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sqlite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
