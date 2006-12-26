@@ -30,13 +30,14 @@ PY-PYGRESQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PYGRESQL_DESCRIPTION=Python module that interfaces to a PostgreSQL database.
 PY-PYGRESQL_SECTION=misc
 PY-PYGRESQL_PRIORITY=optional
-PY-PYGRESQL_DEPENDS=python, py-mx-base
+PY24-PYGRESQL_DEPENDS=python24, py-mx-base
+PY25-PYGRESQL_DEPENDS=python25, py25-mx-base
 PY-PYGRESQL_CONFLICTS=
 
 #
 # PY-PYGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYGRESQL_IPK_VERSION=1
+PY-PYGRESQL_IPK_VERSION=2
 
 #
 # PY-PYGRESQL_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-PYGRESQL_LDFLAGS=
 #
 PY-PYGRESQL_BUILD_DIR=$(BUILD_DIR)/py-pygresql
 PY-PYGRESQL_SOURCE_DIR=$(SOURCE_DIR)/py-pygresql
-PY-PYGRESQL_IPK_DIR=$(BUILD_DIR)/py-pygresql-$(PY-PYGRESQL_VERSION)-ipk
-PY-PYGRESQL_IPK=$(BUILD_DIR)/py-pygresql_$(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-PYGRESQL_IPK_DIR=$(BUILD_DIR)/py-pygresql-$(PY-PYGRESQL_VERSION)-ipk
+PY24-PYGRESQL_IPK=$(BUILD_DIR)/py-pygresql_$(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-PYGRESQL_IPK_DIR=$(BUILD_DIR)/py25-pygresql-$(PY-PYGRESQL_VERSION)-ipk
+PY25-PYGRESQL_IPK=$(BUILD_DIR)/py25-pygresql_$(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-pygresql-source py-pygresql-unpack py-pygresql py-pygresql-stage py-pygresql-ipk py-pygresql-clean py-pygresql-dirclean py-pygresql-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,23 +107,43 @@ py-pygresql-source: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRESQL_PATCHES)
 #
 $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRESQL_PATCHES)
 	$(MAKE) postgresql-stage python-stage py-mx-base-stage
-	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)
+	rm -rf $(PY-PYGRESQL_BUILD_DIR)
+	mkdir -p $(PY-PYGRESQL_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR)
 	$(PY-PYGRESQL_UNZIP) $(DL_DIR)/$(PY-PYGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-PYGRESQL_PATCHES) | patch -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)
-	(cd $(PY-PYGRESQL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)/2.4
+	(cd $(PY-PYGRESQL_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4:$(STAGING_INCLUDE_DIR)/postgresql:$(STAGING_INCLUDE_DIR)/postgresql/server"; \
 	        echo "library_dirs=$(STAGING_DIR)/opt/lib"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-PYGRESQL_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR)
+	$(PY-PYGRESQL_UNZIP) $(DL_DIR)/$(PY-PYGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(PY-PYGRESQL_PATCHES) | patch -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)/2.5
+	(cd $(PY-PYGRESQL_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5:$(STAGING_INCLUDE_DIR)/postgresql:$(STAGING_INCLUDE_DIR)/postgresql/server"; \
+	        echo "library_dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 py-pygresql-unpack: $(PY-PYGRESQL_BUILD_DIR)/.configured
 
@@ -124,12 +151,16 @@ py-pygresql-unpack: $(PY-PYGRESQL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PYGRESQL_BUILD_DIR)/.built: $(PY-PYGRESQL_BUILD_DIR)/.configured
-	rm -f $(PY-PYGRESQL_BUILD_DIR)/.built
-	(cd $(PY-PYGRESQL_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-PYGRESQL_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-PYGRESQL_BUILD_DIR)/.built
+	(cd $(PY-PYGRESQL_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,8 +181,8 @@ py-pygresql-stage: $(PY-PYGRESQL_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pygresql
 #
-$(PY-PYGRESQL_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PYGRESQL_IPK_DIR)/CONTROL
+$(PY24-PYGRESQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pygresql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +192,21 @@ $(PY-PYGRESQL_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-PYGRESQL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-PYGRESQL_SITE)/$(PY-PYGRESQL_SOURCE)" >>$@
 	@echo "Description: $(PY-PYGRESQL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-PYGRESQL_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PYGRESQL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PYGRESQL_CONFLICTS)" >>$@
+
+$(PY25-PYGRESQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pygresql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PYGRESQL_PRIORITY)" >>$@
+	@echo "Section: $(PY-PYGRESQL_SECTION)" >>$@
+	@echo "Version: $(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PYGRESQL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PYGRESQL_SITE)/$(PY-PYGRESQL_SOURCE)" >>$@
+	@echo "Description: $(PY-PYGRESQL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PYGRESQL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PYGRESQL_CONFLICTS)" >>$@
 
 #
@@ -176,19 +221,30 @@ $(PY-PYGRESQL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-PYGRESQL_IPK): $(PY-PYGRESQL_BUILD_DIR)/.built
-	rm -rf $(PY-PYGRESQL_IPK_DIR) $(BUILD_DIR)/py-pygresql_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PYGRESQL_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-PYGRESQL_IPK_DIR) --prefix=/opt; \
+$(PY24-PYGRESQL_IPK): $(PY-PYGRESQL_BUILD_DIR)/.built
+	rm -rf $(PY24-PYGRESQL_IPK_DIR) $(BUILD_DIR)/py-pygresql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PYGRESQL_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-PYGRESQL_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY-PYGRESQL_IPK_DIR)/opt/lib -name '*.so'`
-	$(MAKE) $(PY-PYGRESQL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PYGRESQL_IPK_DIR)
+	$(STRIP_COMMAND) `find $(PY24-PYGRESQL_IPK_DIR)/opt/lib -name '*.so'`
+	$(MAKE) $(PY24-PYGRESQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PYGRESQL_IPK_DIR)
+
+$(PY25-PYGRESQL_IPK): $(PY-PYGRESQL_BUILD_DIR)/.built
+	rm -rf $(PY25-PYGRESQL_IPK_DIR) $(BUILD_DIR)/py25-pygresql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PYGRESQL_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-PYGRESQL_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) `find $(PY25-PYGRESQL_IPK_DIR)/opt/lib -name '*.so'`
+	$(MAKE) $(PY25-PYGRESQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PYGRESQL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pygresql-ipk: $(PY-PYGRESQL_IPK)
+py-pygresql-ipk: $(PY24-PYGRESQL_IPK) $(PY25-PYGRESQL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,4 +257,12 @@ py-pygresql-clean:
 # directories.
 #
 py-pygresql-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR) $(PY-PYGRESQL_IPK_DIR) $(PY-PYGRESQL_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)
+	rm -rf $(PY24-PYGRESQL_IPK_DIR) $(PY24-PYGRESQL_IPK)
+	rm -rf $(PY25-PYGRESQL_IPK_DIR) $(PY25-PYGRESQL_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-pygresql-check: $(PY24-PYGRESQL_IPK) $(PY25-PYGRESQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PYGRESQL_IPK) $(PY25-PYGRESQL_IPK)
