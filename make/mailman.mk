@@ -41,7 +41,7 @@ MAILMAN_CONFLICTS=
 #
 # MAILMAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MAILMAN_IPK_VERSION=1
+MAILMAN_IPK_VERSION=2
 
 #
 # MAILMAN_CONFFILES should be a list of user-editable files
@@ -75,6 +75,8 @@ MAILMAN_SOURCE_DIR=$(SOURCE_DIR)/mailman
 MAILMAN_IPK_DIR=$(BUILD_DIR)/mailman-$(MAILMAN_VERSION)-ipk
 MAILMAN_IPK=$(BUILD_DIR)/mailman_$(MAILMAN_VERSION)-$(MAILMAN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: mailman-source mailman-unpack mailman mailman-stage mailman-ipk mailman-clean mailman-dirclean mailman-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -105,7 +107,7 @@ mailman-source: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MAILMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(MAILMAN_DIR) $(MAILMAN_BUILD_DIR)
 	$(MAILMAN_UNZIP) $(DL_DIR)/$(MAILMAN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MAILMAN_PATCHES) | patch -d $(BUILD_DIR)/$(MAILMAN_DIR) -p1
@@ -121,7 +123,7 @@ $(MAILMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt/lib/mailman \
 		--with-var-prefix=/opt/var/mailman \
-		--with-python=`type -p python2.4` \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.4 \
 		--with-username=root \
 		--with-groupname=root \
 		--without-permcheck \
@@ -231,3 +233,9 @@ mailman-clean:
 #
 mailman-dirclean:
 	rm -rf $(BUILD_DIR)/$(MAILMAN_DIR) $(MAILMAN_BUILD_DIR) $(MAILMAN_IPK_DIR) $(MAILMAN_IPK)
+
+#
+# Some sanity check for the package.
+#
+mailman-check: $(MAILMAN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MAILMAN_IPK)
