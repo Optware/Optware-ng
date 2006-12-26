@@ -367,7 +367,37 @@ TS72XX_BROKEN_PACKAGES = \
 SLUGOSBE_SPECIFIC_PACKAGES = 
 
 # Packages that do not work for slugosbe.
-SLUGOSBE_BROKEN_PACKAGES = 
+SLUGOSBE_BROKEN_PACKAGES = \
+	amule antinat asterisk asterisk14 atftp \
+	bitlbee bluez-utils bsdmainutils bzflag \
+	chillispot clearsilver cyrus-imapd \
+	digitemp dovecot \
+	$(ERLANG_PACKAGES) \
+	e2tools eaccelerator esmtp esniper esound \
+	findutils flex freeradius ftpd-topfield \
+	gconv-modules gdb groff gtk \
+	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
+	heyu hpijs \
+	ice indent inetutils ircd-hybrid ivorbis-tools \
+	kissdx knock \
+	ldconfig libnsl libpcap libvorbis lsof \
+	madplay mc mdadm metalog minicom \
+	mod-fastcgi mod-python \
+	modutils monotone \
+	motion mp3blaster mpack mt-daapd mutt \
+	nagios-plugins net-tools nfs-utils nrpe ntop \
+	oww \
+	$(PERL_PACKAGES) \
+	pango php-apache php-fcgi picocom poptop postfix procps puppy \
+	py-apsw py-bluez py-gd py-gdchart2 py-pgsql py-psycopg py-pygresql py-scgi py-serial py-usb \
+	qemu quagga quickie \
+	rrdtool rtorrent rtpproxy \
+	samba sdl ser sm strace streamripper svn swi-prolog syslog-ng \
+	tcl tcpwrappers tethereal textutils thttpd tnef tnftpd transcode \
+	unfs3 ushare vorbis-tools vte \
+	w3cam \
+	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
+	xvid \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 
