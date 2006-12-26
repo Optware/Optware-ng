@@ -1,0 +1,10 @@
+#!/bin/sh
+#
+# $Id$
+#
+
+VERSION=4.0.3
+SCREEN=/opt/bin/screen-4.0.3
+
+chown root:root $SCREEN
+chmod 4711 $SCREEN
