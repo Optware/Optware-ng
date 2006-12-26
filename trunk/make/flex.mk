@@ -17,7 +17,7 @@ FLEX_PRIORITY=optional
 FLEX_DEPENDS=
 FLEX_CONFLICTS=
 
-FLEX_IPK_VERSION=1
+FLEX_IPK_VERSION=2
 
 FLEX_BUILD_DIR=$(BUILD_DIR)/flex
 FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
@@ -41,6 +41,7 @@ $(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
+	sed -i -e 's|/usr/bin|/opt/bin|'  $(FLEX_BUILD_DIR)/config.h
 	touch $(FLEX_BUILD_DIR)/.configured
 
 flex-unpack: $(FLEX_BUILD_DIR)/.configured
