@@ -37,7 +37,7 @@ PY-RDIFF-BACKUP_CONFLICTS=
 #
 # PY-RDIFF-BACKUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-RDIFF-BACKUP_IPK_VERSION=2
+PY-RDIFF-BACKUP_IPK_VERSION=3
 
 #
 # PY-RDIFF-BACKUP_CONFFILES should be a list of user-editable files
@@ -222,7 +222,7 @@ $(PY25-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
-	rm -rf $(PY-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py-rdiff-backup_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py-rdiff-backup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
@@ -233,7 +233,7 @@ $(PY24-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-RDIFF-BACKUP_IPK_DIR)
 
 $(PY25-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
-	rm -rf $(PY-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py25-rdiff-backup_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY25-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py25-rdiff-backup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
