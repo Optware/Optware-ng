@@ -28,14 +28,18 @@ CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-
+ifeq (openldap, $(filter $(PACKAGES), openldap))
+CUPS_DEPENDS=libjpeg, libpng, libtiff, openldap-libs, openssl, zlib
+else
+CUPS_DEPENDS=libjpeg, libpng, libtiff, openssl, zlib
+endif
 CUPS_SUGGESTS=
 CUPS_CONFLICTS=
 
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -81,6 +85,8 @@ CUPS_DOC_ES_IPK=$(BUILD_DIR)/cups-doc-es_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(T
 CUPS_DOC_PL_IPK=$(BUILD_DIR)/cups-doc-pl_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CUPS_DOC_DE_IPK=$(BUILD_DIR)/cups-doc-de_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: cups-source cups-unpack cups cups-stage cups-ipk cups-clean cups-dirclean cups-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -113,6 +119,9 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 	$(MAKE) openssl-stage zlib-stage libpng-stage
 	$(MAKE) libjpeg-stage libtiff-stage
+ifeq (openldap, $(filter $(PACKAGES), openldap))
+	$(MAKE) openldap-stage
+endif
 	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUPS_PATCHES)" ; \
@@ -439,3 +448,9 @@ cups-dirclean:
 		$(CUPS_IPK_DIR)-doc $(CUPS_IPK_DIR)-doc-de \
 		$(CUPS_IPK_DIR)-doc-fr $(CUPS_IPK_DIR)-doc-es \
 		$(CUPS_IPK_DIR)-doc-pl
+
+#
+# Some sanity check for the package.
+#
+cups-check: $(CUPS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CUPS_IPK)
