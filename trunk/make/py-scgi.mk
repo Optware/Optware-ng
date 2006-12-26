@@ -30,13 +30,14 @@ PY-SCGI_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SCGI_DESCRIPTION=Server-side implementation of the SCGI protocol.
 PY-SCGI_SECTION=misc
 PY-SCGI_PRIORITY=optional
-PY-SCGI_DEPENDS=python
+PY24-SCGI_DEPENDS=python24
+PY25-SCGI_DEPENDS=python25
 PY-SCGI_CONFLICTS=
 
 #
 # PY-SCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SCGI_IPK_VERSION=1
+PY-SCGI_IPK_VERSION=2
 
 #
 # PY-SCGI_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-SCGI_LDFLAGS=
 #
 PY-SCGI_BUILD_DIR=$(BUILD_DIR)/py-scgi
 PY-SCGI_SOURCE_DIR=$(SOURCE_DIR)/py-scgi
-PY-SCGI_IPK_DIR=$(BUILD_DIR)/py-scgi-$(PY-SCGI_VERSION)-ipk
-PY-SCGI_IPK=$(BUILD_DIR)/py-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-SCGI_IPK_DIR=$(BUILD_DIR)/py-scgi-$(PY-SCGI_VERSION)-ipk
+PY24-SCGI_IPK=$(BUILD_DIR)/py-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-SCGI_IPK_DIR=$(BUILD_DIR)/py25-scgi-$(PY-SCGI_VERSION)-ipk
+PY25-SCGI_IPK=$(BUILD_DIR)/py25-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-scgi-source py-scgi-unpack py-scgi py-scgi-stage py-scgi-ipk py-scgi-clean py-scgi-dirclean py-scgi-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,21 +107,39 @@ py-scgi-source: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
 #
 $(PY-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
 #	$(MAKE) somepkg-stage
-	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)
+	rm -rf $(PY-SCGI_BUILD_DIR)
+	mkdir -p $(PY-SCGI_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR)
 	$(PY-SCGI_UNZIP) $(DL_DIR)/$(PY-SCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SCGI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SCGI_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)
-	(cd $(PY-SCGI_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)/2.4
+	(cd $(PY-SCGI_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-SCGI_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR)
+	$(PY-SCGI_UNZIP) $(DL_DIR)/$(PY-SCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SCGI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SCGI_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)/2.5
+	(cd $(PY-SCGI_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 py-scgi-unpack: $(PY-SCGI_BUILD_DIR)/.configured
 
@@ -122,12 +147,12 @@ py-scgi-unpack: $(PY-SCGI_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SCGI_BUILD_DIR)/.built: $(PY-SCGI_BUILD_DIR)/.configured
-	rm -f $(PY-SCGI_BUILD_DIR)/.built
-	(cd $(PY-SCGI_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-SCGI_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-SCGI_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,8 +173,8 @@ py-scgi-stage: $(PY-SCGI_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-scgi
 #
-$(PY-SCGI_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SCGI_IPK_DIR)/CONTROL
+$(PY24-SCGI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-scgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -159,7 +184,21 @@ $(PY-SCGI_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-SCGI_MAINTAINER)" >>$@
 	@echo "Source: $(PY-SCGI_SITE)/$(PY-SCGI_SOURCE)" >>$@
 	@echo "Description: $(PY-SCGI_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-SCGI_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-SCGI_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SCGI_CONFLICTS)" >>$@
+
+$(PY25-SCGI_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-scgi" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SCGI_PRIORITY)" >>$@
+	@echo "Section: $(PY-SCGI_SECTION)" >>$@
+	@echo "Version: $(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SCGI_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SCGI_SITE)/$(PY-SCGI_SOURCE)" >>$@
+	@echo "Description: $(PY-SCGI_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-SCGI_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SCGI_CONFLICTS)" >>$@
 
 #
@@ -174,20 +213,32 @@ $(PY-SCGI_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-SCGI_IPK): $(PY-SCGI_BUILD_DIR)/.built
-	rm -rf $(PY-SCGI_IPK_DIR) $(BUILD_DIR)/py-scgi_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SCGI_BUILD_DIR); \
+$(PY24-SCGI_IPK): $(PY-SCGI_BUILD_DIR)/.built
+	rm -rf $(PY24-SCGI_IPK_DIR) $(BUILD_DIR)/py-scgi_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SCGI_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --root=$(PY-SCGI_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-SCGI_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) $(PY-SCGI_IPK_DIR)/opt/lib/python2.4/site-packages/scgi/*.so
-	$(MAKE) $(PY-SCGI_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SCGI_IPK_DIR)
+	$(STRIP_COMMAND) $(PY24-SCGI_IPK_DIR)/opt/lib/python2.4/site-packages/scgi/*.so
+	$(MAKE) $(PY24-SCGI_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SCGI_IPK_DIR)
+
+$(PY25-SCGI_IPK): $(PY-SCGI_BUILD_DIR)/.built
+	rm -rf $(PY25-SCGI_IPK_DIR) $(BUILD_DIR)/py25-scgi_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SCGI_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-SCGI_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY25-SCGI_IPK_DIR)/opt/lib/python2.5/site-packages/scgi/*.so
+	$(MAKE) $(PY25-SCGI_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SCGI_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-scgi-ipk: $(PY-SCGI_IPK)
+py-scgi-ipk: $(PY24-SCGI_IPK) $(PY25-SCGI_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -200,4 +251,12 @@ py-scgi-clean:
 # directories.
 #
 py-scgi-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR) $(PY-SCGI_IPK_DIR) $(PY-SCGI_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)
+	rm -rf $(PY24-SCGI_IPK_DIR) $(PY24-SCGI_IPK)
+	rm -rf $(PY25-SCGI_IPK_DIR) $(PY25-SCGI_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-scgi-check: $(PY24-SCGI_IPK) $(PY25-SCGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SCGI_IPK) $(PY25-SCGI_IPK)
