@@ -63,6 +63,9 @@ GAWK_BUILD_DIR=$(BUILD_DIR)/gawk
 GAWK_SOURCE_DIR=$(SOURCE_DIR)/gawk
 GAWK_IPK_DIR=$(BUILD_DIR)/gawk-$(GAWK_VERSION)-ipk
 GAWK_IPK=$(BUILD_DIR)/gawk_$(GAWK_VERSION)-$(GAWK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: gawk-source gawk-unpack gawk gawk-stage gawk-ipk gawk-clean gawk-dirclean gawk-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -111,6 +114,10 @@ $(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 	)
 ifeq ($(HOST_MACHINE),armv5b)
 	echo "#define NGROUPS_MAX 32" >> $(GAWK_BUILD_DIR)/config.h
+else
+ifeq ($(OPTWARE_TARGET),slugosbe)
+	echo "#define NGROUPS_MAX 32" >> $(GAWK_BUILD_DIR)/config.h
+endif
 endif
 	touch $(GAWK_BUILD_DIR)/.configured
 
@@ -205,3 +212,9 @@ gawk-clean:
 #
 gawk-dirclean:
 	rm -rf $(BUILD_DIR)/$(GAWK_DIR) $(GAWK_BUILD_DIR) $(GAWK_IPK_DIR) $(GAWK_IPK)
+
+#
+# Some sanity check for the package.
+#
+gawk-check: $(GAWK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GAWK_IPK)
