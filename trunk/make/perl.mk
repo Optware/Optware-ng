@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=11
+PERL_IPK_VERSION=12
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -263,8 +263,10 @@ endif
 		rm -f perl; \
 		ln -s perl$(PERL_VERSION) perl; \
 	)
+ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	install -d $(PERL_IPK_DIR)/usr/bin
 	ln -s /opt/bin/perl $(PERL_IPK_DIR)/usr/bin/perl
+endif
 	$(MAKE) $(PERL_IPK_DIR)/CONTROL/control
 	echo $(PERL_CONFFILES) | sed -e 's/ /\n/g' > $(PERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL_IPK_DIR)
