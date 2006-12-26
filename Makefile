@@ -389,7 +389,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	oww \
 	$(PERL_PACKAGES) \
 	pango php-apache php-fcgi picocom poptop postfix procps puppy \
-	py-apsw py-bluez py-gd py-gdchart2 py-pgsql py-psycopg py-pygresql py-scgi py-serial py-usb \
+	py-pgsql py-psycopg py-pygresql py-scgi py-serial py-usb \
 	qemu quagga quickie \
 	rrdtool rtorrent rtpproxy \
 	samba sdl ser sm strace streamripper svn swi-prolog syslog-ng \

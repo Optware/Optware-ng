@@ -30,13 +30,14 @@ PY-APSW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-APSW_DESCRIPTION=Another Python SQLite Wrapper.
 PY-APSW_SECTION=misc
 PY-APSW_PRIORITY=optional
-PY-APSW_DEPENDS=python
+PY24-APSW_DEPENDS=python24
+PY25-APSW_DEPENDS=python25
 PY-APSW_CONFLICTS=
 
 #
 # PY-APSW_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-APSW_IPK_VERSION=1
+PY-APSW_IPK_VERSION=2
 
 #
 # PY-APSW_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-APSW_LDFLAGS=
 #
 PY-APSW_BUILD_DIR=$(BUILD_DIR)/py-apsw
 PY-APSW_SOURCE_DIR=$(SOURCE_DIR)/py-apsw
-PY-APSW_IPK_DIR=$(BUILD_DIR)/py-apsw-$(PY-APSW_VERSION)-ipk
-PY-APSW_IPK=$(BUILD_DIR)/py-apsw_$(PY-APSW_VERSION)-$(PY-APSW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-APSW_IPK_DIR=$(BUILD_DIR)/py-apsw-$(PY-APSW_VERSION)-ipk
+PY24-APSW_IPK=$(BUILD_DIR)/py-apsw_$(PY-APSW_VERSION)-$(PY-APSW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-APSW_IPK_DIR=$(BUILD_DIR)/py25-apsw-$(PY-APSW_VERSION)-ipk
+PY25-APSW_IPK=$(BUILD_DIR)/py25-apsw_$(PY-APSW_VERSION)-$(PY-APSW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-apsw-source py-apsw-unpack py-apsw py-apsw-stage py-apsw-ipk py-apsw-clean py-apsw-dirclean py-apsw-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,18 +107,38 @@ py-apsw-source: $(DL_DIR)/$(PY-APSW_SOURCE) $(PY-APSW_PATCHES)
 #
 $(PY-APSW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-APSW_SOURCE) $(PY-APSW_PATCHES)
 	$(MAKE) python-stage sqlite-stage
-	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)
+	rm -rf $(PY-APSW_BUILD_DIR)
+	mkdir -p $(PY-APSW_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR)
 	$(PY-APSW_UNZIP) $(DL_DIR)/$(PY-APSW_SOURCE) -d $(BUILD_DIR)
 #	cat $(PY-APSW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-APSW_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)
-	(cd $(PY-APSW_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)/2.4
+	(cd $(PY-APSW_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg; \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR)
+	$(PY-APSW_UNZIP) $(DL_DIR)/$(PY-APSW_SOURCE) -d $(BUILD_DIR)
+#	cat $(PY-APSW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-APSW_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)/2.5
+	(cd $(PY-APSW_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg; \
@@ -124,12 +151,16 @@ py-apsw-unpack: $(PY-APSW_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-APSW_BUILD_DIR)/.built: $(PY-APSW_BUILD_DIR)/.configured
-	rm -f $(PY-APSW_BUILD_DIR)/.built
-	(cd $(PY-APSW_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-APSW_BUILD_DIR)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-APSW_BUILD_DIR)/.built
+	(cd $(PY-APSW_BUILD_DIR)/2.5; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,8 +181,8 @@ py-apsw-stage: $(PY-APSW_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-apsw
 #
-$(PY-APSW_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-APSW_IPK_DIR)/CONTROL
+$(PY24-APSW_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-apsw" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +192,21 @@ $(PY-APSW_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-APSW_MAINTAINER)" >>$@
 	@echo "Source: $(PY-APSW_SITE)/$(PY-APSW_SOURCE)" >>$@
 	@echo "Description: $(PY-APSW_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-APSW_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-APSW_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-APSW_CONFLICTS)" >>$@
+
+$(PY25-APSW_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-apsw" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-APSW_PRIORITY)" >>$@
+	@echo "Section: $(PY-APSW_SECTION)" >>$@
+	@echo "Version: $(PY-APSW_VERSION)-$(PY-APSW_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-APSW_MAINTAINER)" >>$@
+	@echo "Source: $(PY-APSW_SITE)/$(PY-APSW_SOURCE)" >>$@
+	@echo "Description: $(PY-APSW_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-APSW_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-APSW_CONFLICTS)" >>$@
 
 #
@@ -176,19 +221,30 @@ $(PY-APSW_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-APSW_IPK): $(PY-APSW_BUILD_DIR)/.built
-	rm -rf $(PY-APSW_IPK_DIR) $(BUILD_DIR)/py-apsw_*_$(TARGET_ARCH).ipk
-	(cd $(PY-APSW_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-APSW_IPK_DIR) --prefix=/opt; \
+$(PY24-APSW_IPK): $(PY-APSW_BUILD_DIR)/.built
+	rm -rf $(PY24-APSW_IPK_DIR) $(BUILD_DIR)/py-apsw_*_$(TARGET_ARCH).ipk
+	(cd $(PY-APSW_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-APSW_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) $(PY-APSW_IPK_DIR)/opt/lib/python2.4/site-packages/apsw.so
-	$(MAKE) $(PY-APSW_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-APSW_IPK_DIR)
+	$(STRIP_COMMAND) $(PY24-APSW_IPK_DIR)/opt/lib/python2.4/site-packages/apsw.so
+	$(MAKE) $(PY24-APSW_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-APSW_IPK_DIR)
+
+$(PY25-APSW_IPK): $(PY-APSW_BUILD_DIR)/.built
+	rm -rf $(PY25-APSW_IPK_DIR) $(BUILD_DIR)/py25-apsw_*_$(TARGET_ARCH).ipk
+	(cd $(PY-APSW_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-APSW_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) $(PY25-APSW_IPK_DIR)/opt/lib/python2.5/site-packages/apsw.so
+	$(MAKE) $(PY25-APSW_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-APSW_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-apsw-ipk: $(PY-APSW_IPK)
+py-apsw-ipk: $(PY24-APSW_IPK) $(PY25-APSW_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,4 +257,12 @@ py-apsw-clean:
 # directories.
 #
 py-apsw-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR) $(PY-APSW_IPK_DIR) $(PY-APSW_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-APSW_DIR) $(PY-APSW_BUILD_DIR)
+	rm -rf $(PY24-APSW_IPK_DIR) $(PY24-APSW_IPK)
+	rm -rf $(PY25-APSW_IPK_DIR) $(PY25-APSW_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-apsw-check: $(PY24-APSW_IPK) $(PY25-APSW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-APSW_IPK) $(PY25-APSW_IPK)
