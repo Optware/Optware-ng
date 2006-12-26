@@ -30,13 +30,14 @@ PY-4SUITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-4SUITE_DESCRIPTION=Python-based toolkit for XML and RDF application development.
 PY-4SUITE_SECTION=misc
 PY-4SUITE_PRIORITY=optional
-PY-4SUITE_DEPENDS=python
+PY24-4SUITE_DEPENDS=python24
+PY25-4SUITE_DEPENDS=python25
 PY-4SUITE_CONFLICTS=
 
 #
 # PY-4SUITE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-4SUITE_IPK_VERSION=1
+PY-4SUITE_IPK_VERSION=2
 
 #
 # PY-4SUITE_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-4SUITE_LDFLAGS=
 #
 PY-4SUITE_BUILD_DIR=$(BUILD_DIR)/py-4suite
 PY-4SUITE_SOURCE_DIR=$(SOURCE_DIR)/py-4suite
-PY-4SUITE_IPK_DIR=$(BUILD_DIR)/py-4suite-$(PY-4SUITE_VERSION)-ipk
-PY-4SUITE_IPK=$(BUILD_DIR)/py-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-4SUITE_IPK_DIR=$(BUILD_DIR)/py-4suite-$(PY-4SUITE_VERSION)-ipk
+PY24-4SUITE_IPK=$(BUILD_DIR)/py-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-4SUITE_IPK_DIR=$(BUILD_DIR)/py25-4suite-$(PY-4SUITE_VERSION)-ipk
+PY25-4SUITE_IPK=$(BUILD_DIR)/py25-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-4suite-source py-4suite-unpack py-4suite py-4suite-stage py-4suite-ipk py-4suite-clean py-4suite-dirclean py-4suite-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,13 +107,16 @@ py-4suite-source: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PATCHES)
 #
 $(PY-4SUITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)
+	rm -rf $(PY-4SUITE_BUILD_DIR)
+	mkdir -p $(PY-4SUITE_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-4SUITE_DIR)
 	$(PY-4SUITE_UNZIP) $(DL_DIR)/$(PY-4SUITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-4SUITE_PATCHES)"; then \
 	    cat $(PY-4SUITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-4SUITE_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)
-	(cd $(PY-4SUITE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)/2.4
+	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -118,7 +128,26 @@ $(PY-4SUITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PA
 	    ; \
 	    sed -i -e "s/return.*has_docs()/return False/" Ft/Lib/DistExt/Build.py; \
 	)
-	touch $(PY-4SUITE_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-4SUITE_DIR)
+	$(PY-4SUITE_UNZIP) $(DL_DIR)/$(PY-4SUITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-4SUITE_PATCHES)"; then \
+	    cat $(PY-4SUITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-4SUITE_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)/2.5
+	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
+		echo "rpath=/opt/lib"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg \
+	    ; \
+	    sed -i -e "s/return.*has_docs()/return False/" Ft/Lib/DistExt/Build.py; \
+	)
+	touch $@
 
 py-4suite-unpack: $(PY-4SUITE_BUILD_DIR)/.configured
 
@@ -126,11 +155,14 @@ py-4suite-unpack: $(PY-4SUITE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-4SUITE_BUILD_DIR)/.built: $(PY-4SUITE_BUILD_DIR)/.configured
-	rm -f $(PY-4SUITE_BUILD_DIR)/.built
-	(cd $(PY-4SUITE_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	python2.4 setup.py build)
-	touch $(PY-4SUITE_BUILD_DIR)/.built
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,8 +183,8 @@ py-4suite-stage: $(PY-4SUITE_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-4suite
 #
-$(PY-4SUITE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-4SUITE_IPK_DIR)/CONTROL
+$(PY24-4SUITE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-4suite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -162,7 +194,21 @@ $(PY-4SUITE_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-4SUITE_MAINTAINER)" >>$@
 	@echo "Source: $(PY-4SUITE_SITE)/$(PY-4SUITE_SOURCE)" >>$@
 	@echo "Description: $(PY-4SUITE_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-4SUITE_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-4SUITE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-4SUITE_CONFLICTS)" >>$@
+
+$(PY25-4SUITE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-4suite" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-4SUITE_PRIORITY)" >>$@
+	@echo "Section: $(PY-4SUITE_SECTION)" >>$@
+	@echo "Version: $(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-4SUITE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-4SUITE_SITE)/$(PY-4SUITE_SOURCE)" >>$@
+	@echo "Description: $(PY-4SUITE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-4SUITE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-4SUITE_CONFLICTS)" >>$@
 
 #
@@ -177,21 +223,34 @@ $(PY-4SUITE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
-	rm -rf $(PY-4SUITE_IPK_DIR) $(BUILD_DIR)/py-4suite_*_$(TARGET_ARCH).ipk
-	(cd $(PY-4SUITE_BUILD_DIR); \
+$(PY24-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
+	rm -rf $(PY24-4SUITE_IPK_DIR) $(BUILD_DIR)/py-4suite_*_$(TARGET_ARCH).ipk
+	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
-	$(STRIP_COMMAND) `find $(PY-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
-	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python|' $(PY-4SUITE_IPK_DIR)/opt/bin/*
-	$(MAKE) $(PY-4SUITE_IPK_DIR)/CONTROL/control
-#	echo $(PY-4SUITE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-4SUITE_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-4SUITE_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	--root=$(PY24-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
+	$(STRIP_COMMAND) `find $(PY24-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
+	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python2.4|' $(PY24-4SUITE_IPK_DIR)/opt/bin/*
+	$(MAKE) $(PY24-4SUITE_IPK_DIR)/CONTROL/control
+#	echo $(PY-4SUITE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-4SUITE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-4SUITE_IPK_DIR)
+
+$(PY25-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
+	rm -rf $(PY25-4SUITE_IPK_DIR) $(BUILD_DIR)/py25-4suite_*_$(TARGET_ARCH).ipk
+	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	--root=$(PY25-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
+	$(STRIP_COMMAND) `find $(PY25-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
+	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python2.5|' $(PY25-4SUITE_IPK_DIR)/opt/bin/*
+	$(MAKE) $(PY25-4SUITE_IPK_DIR)/CONTROL/control
+#	echo $(PY-4SUITE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-4SUITE_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-4SUITE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-4suite-ipk: $(PY-4SUITE_IPK)
+py-4suite-ipk: $(PY24-4SUITE_IPK) $(PY25-4SUITE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -204,4 +263,12 @@ py-4suite-clean:
 # directories.
 #
 py-4suite-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR) $(PY-4SUITE_IPK_DIR) $(PY-4SUITE_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)
+	rm -rf $(PY24-4SUITE_IPK_DIR) $(PY24-4SUITE_IPK)
+	rm -rf $(PY25-4SUITE_IPK_DIR) $(PY25-4SUITE_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-4suite-check: $(PY24-4SUITE_IPK) $(PY25-4SUITE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-4SUITE_IPK) $(PY25-4SUITE_IPK)

@@ -22,7 +22,6 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-QUIXOTE_VERSION=2.4
-#PY-QUIXOTE_SITE=http://quixote.python.ca/releases
 PY-QUIXOTE_SITE=http://www.mems-exchange.org/software/files/quixote
 PY-QUIXOTE_SOURCE=Quixote-$(PY-QUIXOTE_VERSION).tar.gz
 PY-QUIXOTE_DIR=Quixote-$(PY-QUIXOTE_VERSION)
@@ -37,7 +36,7 @@ PY-QUIXOTE_CONFLICTS=
 #
 # PY-QUIXOTE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-QUIXOTE_IPK_VERSION=2
+PY-QUIXOTE_IPK_VERSION=3
 
 #
 # PY-QUIXOTE_CONFFILES should be a list of user-editable files
@@ -67,8 +66,14 @@ PY-QUIXOTE_LDFLAGS=
 #
 PY-QUIXOTE_BUILD_DIR=$(BUILD_DIR)/py-quixote
 PY-QUIXOTE_SOURCE_DIR=$(SOURCE_DIR)/py-quixote
-PY-QUIXOTE_IPK_DIR=$(BUILD_DIR)/py-quixote-$(PY-QUIXOTE_VERSION)-ipk
-PY-QUIXOTE_IPK=$(BUILD_DIR)/py-quixote_$(PY-QUIXOTE_VERSION)-$(PY-QUIXOTE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-QUIXOTE_IPK_DIR=$(BUILD_DIR)/py-quixote-$(PY-QUIXOTE_VERSION)-ipk
+PY24-QUIXOTE_IPK=$(BUILD_DIR)/py-quixote_$(PY-QUIXOTE_VERSION)-$(PY-QUIXOTE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-QUIXOTE_IPK_DIR=$(BUILD_DIR)/py25-quixote-$(PY-QUIXOTE_VERSION)-ipk
+PY25-QUIXOTE_IPK=$(BUILD_DIR)/py25-quixote_$(PY-QUIXOTE_VERSION)-$(PY-QUIXOTE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-quixote-source py-quixote-unpack py-quixote py-quixote-stage py-quixote-ipk py-quixote-clean py-quixote-dirclean py-quixote-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,23 +106,43 @@ py-quixote-source: $(DL_DIR)/$(PY-QUIXOTE_SOURCE) $(PY-QUIXOTE_PATCHES)
 #
 $(PY-QUIXOTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-QUIXOTE_SOURCE) $(PY-QUIXOTE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR)
+	rm -rf $(PY-QUIXOTE_BUILD_DIR)
+	mkdir -p $(PY-QUIXOTE_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR)
 	$(PY-QUIXOTE_UNZIP) $(DL_DIR)/$(PY-QUIXOTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-QUIXOTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-QUIXOTE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR)
-	(cd $(PY-QUIXOTE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR)/2.4
+	(cd $(PY-QUIXOTE_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg; \
 	)
-	touch $(PY-QUIXOTE_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR)
+	$(PY-QUIXOTE_UNZIP) $(DL_DIR)/$(PY-QUIXOTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-QUIXOTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-QUIXOTE_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR)/2.5
+	(cd $(PY-QUIXOTE_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg; \
+	)
+	touch $@
 
 py-quixote-unpack: $(PY-QUIXOTE_BUILD_DIR)/.configured
 
@@ -125,12 +150,16 @@ py-quixote-unpack: $(PY-QUIXOTE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-QUIXOTE_BUILD_DIR)/.built: $(PY-QUIXOTE_BUILD_DIR)/.configured
-	rm -f $(PY-QUIXOTE_BUILD_DIR)/.built
-	(cd $(PY-QUIXOTE_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-QUIXOTE_BUILD_DIR)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-QUIXOTE_BUILD_DIR)/.built
+	(cd $(PY-QUIXOTE_BUILD_DIR)/2.5; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,8 +180,8 @@ py-quixote-stage: $(PY-QUIXOTE_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-quixote
 #
-$(PY-QUIXOTE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-QUIXOTE_IPK_DIR)/CONTROL
+$(PY24-QUIXOTE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-quixote" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -162,7 +191,21 @@ $(PY-QUIXOTE_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-QUIXOTE_MAINTAINER)" >>$@
 	@echo "Source: $(PY-QUIXOTE_SITE)/$(PY-QUIXOTE_SOURCE)" >>$@
 	@echo "Description: $(PY-QUIXOTE_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-QUIXOTE_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-QUIXOTE_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-QUIXOTE_CONFLICTS)" >>$@
+
+$(PY25-QUIXOTE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-quixote" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-QUIXOTE_PRIORITY)" >>$@
+	@echo "Section: $(PY-QUIXOTE_SECTION)" >>$@
+	@echo "Version: $(PY-QUIXOTE_VERSION)-$(PY-QUIXOTE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-QUIXOTE_MAINTAINER)" >>$@
+	@echo "Source: $(PY-QUIXOTE_SITE)/$(PY-QUIXOTE_SOURCE)" >>$@
+	@echo "Description: $(PY-QUIXOTE_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-QUIXOTE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-QUIXOTE_CONFLICTS)" >>$@
 
 #
@@ -177,19 +220,30 @@ $(PY-QUIXOTE_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-QUIXOTE_IPK): $(PY-QUIXOTE_BUILD_DIR)/.built
-	rm -rf $(PY-QUIXOTE_IPK_DIR) $(BUILD_DIR)/py-quixote_*_$(TARGET_ARCH).ipk
-	(cd $(PY-QUIXOTE_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-QUIXOTE_IPK_DIR) --prefix=/opt; \
+$(PY24-QUIXOTE_IPK): $(PY-QUIXOTE_BUILD_DIR)/.built
+	rm -rf $(PY24-QUIXOTE_IPK_DIR) $(BUILD_DIR)/py-quixote_*_$(TARGET_ARCH).ipk
+	(cd $(PY-QUIXOTE_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-QUIXOTE_IPK_DIR) --prefix=/opt; \
 	)
-	-$(STRIP_COMMAND) `find $(PY-QUIXOTE_IPK_DIR)/opt/lib/python2.4/site-packages/quixote -name '*.so'`
-	$(MAKE) $(PY-QUIXOTE_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-QUIXOTE_IPK_DIR)
+	-$(STRIP_COMMAND) `find $(PY24-QUIXOTE_IPK_DIR)/opt/lib/python2.4/site-packages/quixote -name '*.so'`
+	$(MAKE) $(PY24-QUIXOTE_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-QUIXOTE_IPK_DIR)
+
+$(PY25-QUIXOTE_IPK): $(PY-QUIXOTE_BUILD_DIR)/.built
+	rm -rf $(PY25-QUIXOTE_IPK_DIR) $(BUILD_DIR)/py25-quixote_*_$(TARGET_ARCH).ipk
+	(cd $(PY-QUIXOTE_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-QUIXOTE_IPK_DIR) --prefix=/opt; \
+	)
+	-$(STRIP_COMMAND) `find $(PY25-QUIXOTE_IPK_DIR)/opt/lib/python2.5/site-packages/quixote -name '*.so'`
+	$(MAKE) $(PY25-QUIXOTE_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-QUIXOTE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-quixote-ipk: $(PY-QUIXOTE_IPK)
+py-quixote-ipk: $(PY24-QUIXOTE_IPK) $(PY25-QUIXOTE_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -203,3 +257,9 @@ py-quixote-clean:
 #
 py-quixote-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR) $(PY-QUIXOTE_IPK_DIR) $(PY-QUIXOTE_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-quixote-check: $(PY24-QUIXOTE_IPK) $(PY25-QUIXOTE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-QUIXOTE_IPK) $(PY25-QUIXOTE_IPK)
