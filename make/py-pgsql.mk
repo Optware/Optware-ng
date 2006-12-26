@@ -30,13 +30,14 @@ PY-PGSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PGSQL_DESCRIPTION=A Python DB-API 2.0 compliant interface to PostgreSQL databases.
 PY-PGSQL_SECTION=misc
 PY-PGSQL_PRIORITY=optional
-PY-PGSQL_DEPENDS=python
+PY24-PGSQL_DEPENDS=python24
+PY25-PGSQL_DEPENDS=python25
 PY-PGSQL_CONFLICTS=
 
 #
 # PY-PGSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PGSQL_IPK_VERSION=1
+PY-PGSQL_IPK_VERSION=2
 
 #
 # PY-PGSQL_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-PGSQL_LDFLAGS=
 #
 PY-PGSQL_BUILD_DIR=$(BUILD_DIR)/py-pgsql
 PY-PGSQL_SOURCE_DIR=$(SOURCE_DIR)/py-pgsql
-PY-PGSQL_IPK_DIR=$(BUILD_DIR)/py-pgsql-$(PY-PGSQL_VERSION)-ipk
-PY-PGSQL_IPK=$(BUILD_DIR)/py-pgsql_$(PY-PGSQL_VERSION)-$(PY-PGSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-PGSQL_IPK_DIR=$(BUILD_DIR)/py-pgsql-$(PY-PGSQL_VERSION)-ipk
+PY24-PGSQL_IPK=$(BUILD_DIR)/py-pgsql_$(PY-PGSQL_VERSION)-$(PY-PGSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-PGSQL_IPK_DIR=$(BUILD_DIR)/py25-pgsql-$(PY-PGSQL_VERSION)-ipk
+PY25-PGSQL_IPK=$(BUILD_DIR)/py25-pgsql_$(PY-PGSQL_VERSION)-$(PY-PGSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-pgsql-source py-pgsql-unpack py-pgsql py-pgsql-stage py-pgsql-ipk py-pgsql-clean py-pgsql-dirclean py-pgsql-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,22 +107,41 @@ py-pgsql-source: $(DL_DIR)/$(PY-PGSQL_SOURCE) $(PY-PGSQL_PATCHES)
 #
 $(PY-PGSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PGSQL_SOURCE) $(PY-PGSQL_PATCHES)
 	$(MAKE) postgresql-stage python-stage
-	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)
+	rm -rf $(PY-PGSQL_BUILD_DIR)
+	mkdir -p $(PY-PGSQL_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR)
 	$(PY-PGSQL_UNZIP) $(DL_DIR)/$(PY-PGSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-PGSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PGSQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)
-	(cd $(PY-PGSQL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)/2.4
+	(cd $(PY-PGSQL_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 	    ) >> setup.cfg; \
 	    sed -i -e '/include_dirs/d' -e '/library_dirs/d' setup.py; \
 	)
-	touch $(PY-PGSQL_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR)
+	$(PY-PGSQL_UNZIP) $(DL_DIR)/$(PY-PGSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-PGSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PGSQL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)/2.5
+	(cd $(PY-PGSQL_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+	    ) >> setup.cfg; \
+	    sed -i -e '/include_dirs/d' -e '/library_dirs/d' setup.py; \
+	)
+	touch $@
 
 py-pgsql-unpack: $(PY-PGSQL_BUILD_DIR)/.configured
 
@@ -123,12 +149,16 @@ py-pgsql-unpack: $(PY-PGSQL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PGSQL_BUILD_DIR)/.built: $(PY-PGSQL_BUILD_DIR)/.configured
-	rm -f $(PY-PGSQL_BUILD_DIR)/.built
-	(cd $(PY-PGSQL_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-PGSQL_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-PGSQL_BUILD_DIR)/.built
+	(cd $(PY-PGSQL_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,8 +179,8 @@ py-pgsql-stage: $(PY-PGSQL_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pgsql
 #
-$(PY-PGSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PGSQL_IPK_DIR)/CONTROL
+$(PY24-PGSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-pgsql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -160,7 +190,21 @@ $(PY-PGSQL_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-PGSQL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-PGSQL_SITE)/$(PY-PGSQL_SOURCE)" >>$@
 	@echo "Description: $(PY-PGSQL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-PGSQL_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PGSQL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PGSQL_CONFLICTS)" >>$@
+
+$(PY25-PGSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pgsql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PGSQL_PRIORITY)" >>$@
+	@echo "Section: $(PY-PGSQL_SECTION)" >>$@
+	@echo "Version: $(PY-PGSQL_VERSION)-$(PY-PGSQL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PGSQL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PGSQL_SITE)/$(PY-PGSQL_SOURCE)" >>$@
+	@echo "Description: $(PY-PGSQL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PGSQL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PGSQL_CONFLICTS)" >>$@
 
 #
@@ -175,19 +219,30 @@ $(PY-PGSQL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-PGSQL_IPK): $(PY-PGSQL_BUILD_DIR)/.built
-	rm -rf $(PY-PGSQL_IPK_DIR) $(BUILD_DIR)/py-pgsql_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PGSQL_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-PGSQL_IPK_DIR) --prefix=/opt; \
+$(PY24-PGSQL_IPK): $(PY-PGSQL_BUILD_DIR)/.built
+	rm -rf $(PY24-PGSQL_IPK_DIR) $(BUILD_DIR)/py-pgsql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PGSQL_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-PGSQL_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY-PGSQL_IPK_DIR)/opt/lib -name '*.so'`
-	$(MAKE) $(PY-PGSQL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PGSQL_IPK_DIR)
+	$(STRIP_COMMAND) `find $(PY24-PGSQL_IPK_DIR)/opt/lib -name '*.so'`
+	$(MAKE) $(PY24-PGSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PGSQL_IPK_DIR)
+
+$(PY25-PGSQL_IPK): $(PY-PGSQL_BUILD_DIR)/.built
+	rm -rf $(PY25-PGSQL_IPK_DIR) $(BUILD_DIR)/py25-pgsql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PGSQL_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-PGSQL_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) `find $(PY25-PGSQL_IPK_DIR)/opt/lib -name '*.so'`
+	$(MAKE) $(PY25-PGSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PGSQL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pgsql-ipk: $(PY-PGSQL_IPK)
+py-pgsql-ipk: $(PY24-PGSQL_IPK) $(PY25-PGSQL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -200,4 +255,12 @@ py-pgsql-clean:
 # directories.
 #
 py-pgsql-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR) $(PY-PGSQL_IPK_DIR) $(PY-PGSQL_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PGSQL_DIR) $(PY-PGSQL_BUILD_DIR)
+	rm -rf $(PY24-PGSQL_IPK_DIR) $(PY24-PGSQL_IPK)
+	rm -rf $(PY25-PGSQL_IPK_DIR) $(PY25-PGSQL_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-pgsql-check: $(PY24-PGSQL_IPK) $(PY25-PGSQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PGSQL_IPK) $(PY25-PGSQL_IPK)
