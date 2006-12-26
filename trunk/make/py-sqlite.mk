@@ -36,7 +36,7 @@ PY-SQLITE_CONFLICTS=
 #
 # PY-SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SQLITE_IPK_VERSION=1
+PY-SQLITE_IPK_VERSION=2
 
 #
 # PY-SQLITE_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ py-sqlite-source: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PATCHES)
-	$(MAKE) python-stage py-setuptools-stage sqlite-stage
+	$(MAKE) py-setuptools-stage sqlite-stage
 	rm -rf $(BUILD_DIR)/$(PY-SQLITE_DIR) $(PY-SQLITE_BUILD_DIR)
 	$(PY-SQLITE_UNZIP) $(DL_DIR)/$(PY-SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLITE_DIR) -p1
@@ -127,7 +127,7 @@ $(PY-SQLITE_BUILD_DIR)/.built: $(PY-SQLITE_BUILD_DIR)/.configured
 	(cd $(PY-SQLITE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build; \
 	)
 	touch $(PY-SQLITE_BUILD_DIR)/.built
 
@@ -180,8 +180,8 @@ $(PY-SQLITE_IPK): $(PY-SQLITE_BUILD_DIR)/.built
 	rm -rf $(PY-SQLITE_IPK_DIR) $(BUILD_DIR)/py-sqlite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLITE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY-SQLITE_IPK_DIR) --prefix=/opt --single-version-externally-managed; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+	    --root=$(PY-SQLITE_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY-SQLITE_IPK_DIR)/opt/lib/python2.4/site-packages/pysqlite2/_sqlite.so
 	$(MAKE) $(PY-SQLITE_IPK_DIR)/CONTROL/control
