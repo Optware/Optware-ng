@@ -22,25 +22,26 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyclips
-PY-CLIPS_VERSION=1.0_R3
+PY-CLIPS_VERSION=1.0.4.320
 PY-CLIPS_SOURCE=pyclips-$(PY-CLIPS_VERSION).tar.gz
-#PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
-PY-CLIPS_CLIPS_SITE=http://jywiki.sf.net/clips
-PY-CLIPS_CLIPS_SOURCE=CLIPSSrc-6.23.zip
+PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
+PY-CLIPS_CLIPS_ZIP=CLIPSSrc.zip
+PY-CLIPS_CLIPS_SOURCE=CLIPSSrc-6.24.zip
 PY-CLIPS_DIR=pyclips
 PY-CLIPS_UNZIP=zcat
 PY-CLIPS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CLIPS_DESCRIPTION=PyCLIPS is an extension module that embeds full CLIPS functionality in Python applications.
 PY-CLIPS_SECTION=misc
 PY-CLIPS_PRIORITY=optional
-PY-CLIPS_DEPENDS=python
+PY24-CLIPS_DEPENDS=python24
+PY25-CLIPS_DEPENDS=python25
 PY-CLIPS_SUGGESTS=
 PY-CLIPS_CONFLICTS=
 
 #
 # PY-CLIPS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CLIPS_IPK_VERSION=3
+PY-CLIPS_IPK_VERSION=1
 
 #
 # PY-CLIPS_CONFFILES should be a list of user-editable files
@@ -70,8 +71,14 @@ PY-CLIPS_LDFLAGS=
 #
 PY-CLIPS_BUILD_DIR=$(BUILD_DIR)/py-clips
 PY-CLIPS_SOURCE_DIR=$(SOURCE_DIR)/py-clips
-PY-CLIPS_IPK_DIR=$(BUILD_DIR)/py-clips-$(PY-CLIPS_VERSION)-ipk
-PY-CLIPS_IPK=$(BUILD_DIR)/py-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-CLIPS_IPK_DIR=$(BUILD_DIR)/py-clips-$(PY-CLIPS_VERSION)-ipk
+PY24-CLIPS_IPK=$(BUILD_DIR)/py-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-CLIPS_IPK_DIR=$(BUILD_DIR)/py25-clips-$(PY-CLIPS_VERSION)-ipk
+PY25-CLIPS_IPK=$(BUILD_DIR)/py25-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-clips-source py-clips-unpack py-clips py-clips-stage py-clips-ipk py-clips-clean py-clips-dirclean py-clips-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -81,7 +88,7 @@ $(DL_DIR)/$(PY-CLIPS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PY-CLIPS_SITE)/$(PY-CLIPS_SOURCE)
 
 $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_SOURCE)
+	$(WGET) -O $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_ZIP)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,12 +113,15 @@ py-clips-source: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) $(PY-CLIPS_PATCHES)
-	$(MAKE) python-stage
-	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY-CLIPS_BUILD_DIR)
+	mkdir -p $(PY-CLIPS_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)
-	(cd $(PY-CLIPS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)/2.4
+	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
@@ -119,11 +129,28 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) >> setup.cfg; \
 	    cp $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) ./clipssrc.zip \
 	)
-	touch $(PY-CLIPS_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
+	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)/2.5
+	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
+	    ( \
+		echo ; \
+		echo "[build_ext]"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
+		echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) >> setup.cfg; \
+	    cp $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) ./clipssrc.zip \
+	)
+	touch $@
 
 py-clips-unpack: $(PY-CLIPS_BUILD_DIR)/.configured
 
@@ -132,9 +159,13 @@ py-clips-unpack: $(PY-CLIPS_BUILD_DIR)/.configured
 #
 $(PY-CLIPS_BUILD_DIR)/.built: $(PY-CLIPS_BUILD_DIR)/.configured
 	rm -f $(PY-CLIPS_BUILD_DIR)/.built
-	(cd $(PY-CLIPS_BUILD_DIR); \
+	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py build; \
+            $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+        )
+	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
         )
 	touch $(PY-CLIPS_BUILD_DIR)/.built
 
@@ -157,8 +188,8 @@ py-clips-stage: $(PY-CLIPS_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-clips
 #
-$(PY-CLIPS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-CLIPS_IPK_DIR)/CONTROL
+$(PY24-CLIPS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-clips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,7 +199,22 @@ $(PY-CLIPS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-CLIPS_MAINTAINER)" >>$@
 	@echo "Source: $(PY-CLIPS_SITE)/$(PY-CLIPS_SOURCE)" >>$@
 	@echo "Description: $(PY-CLIPS_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-CLIPS_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-CLIPS_DEPENDS)" >>$@
+	@echo "Suggests: $(PY-CLIPS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PY-CLIPS_CONFLICTS)" >>$@
+
+$(PY25-CLIPS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-clips" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-CLIPS_PRIORITY)" >>$@
+	@echo "Section: $(PY-CLIPS_SECTION)" >>$@
+	@echo "Version: $(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-CLIPS_MAINTAINER)" >>$@
+	@echo "Source: $(PY-CLIPS_SITE)/$(PY-CLIPS_SOURCE)" >>$@
+	@echo "Description: $(PY-CLIPS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-CLIPS_DEPENDS)" >>$@
 	@echo "Suggests: $(PY-CLIPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-CLIPS_CONFLICTS)" >>$@
 
@@ -184,23 +230,34 @@ $(PY-CLIPS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
-	rm -rf $(PY-CLIPS_IPK_DIR) $(BUILD_DIR)/py-clips_*_$(TARGET_ARCH).ipk
-	(cd $(PY-CLIPS_BUILD_DIR); \
+$(PY24-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
+	rm -rf $(PY24-CLIPS_IPK_DIR) $(BUILD_DIR)/py-clips_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py install --root=$(PY-CLIPS_IPK_DIR) --prefix=/opt; \
+            $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
+	    install --root=$(PY24-CLIPS_IPK_DIR) --prefix=/opt; \
         )
-	$(STRIP_COMMAND) $(PY-CLIPS_IPK_DIR)/opt/lib/python2.4/site-packages/clips/_clips.so
-	$(MAKE) $(PY-CLIPS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(PY-CLIPS_SOURCE_DIR)/postinst $(PY-CLIPS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(PY-CLIPS_SOURCE_DIR)/prerm $(PY-CLIPS_IPK_DIR)/CONTROL/prerm
-	#echo $(PY-CLIPS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CLIPS_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-CLIPS_IPK_DIR)
+	$(STRIP_COMMAND) $(PY24-CLIPS_IPK_DIR)/opt/lib/python2.4/site-packages/clips/_clips.so
+	$(MAKE) $(PY24-CLIPS_IPK_DIR)/CONTROL/control
+#	echo $(PY-CLIPS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CLIPS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CLIPS_IPK_DIR)
+
+$(PY25-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
+	rm -rf $(PY25-CLIPS_IPK_DIR) $(BUILD_DIR)/py25-clips_*_$(TARGET_ARCH).ipk
+	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
+	    install --root=$(PY25-CLIPS_IPK_DIR) --prefix=/opt; \
+        )
+	$(STRIP_COMMAND) $(PY25-CLIPS_IPK_DIR)/opt/lib/python2.5/site-packages/clips/_clips.so
+	$(MAKE) $(PY25-CLIPS_IPK_DIR)/CONTROL/control
+#	echo $(PY-CLIPS_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CLIPS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CLIPS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-clips-ipk: $(PY-CLIPS_IPK)
+py-clips-ipk: $(PY24-CLIPS_IPK) $(PY25-CLIPS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -213,4 +270,12 @@ py-clips-clean:
 # directories.
 #
 py-clips-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR) $(PY-CLIPS_IPK_DIR) $(PY-CLIPS_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)
+	rm -rf $(PY24-CLIPS_IPK_DIR) $(PY24-CLIPS_IPK)
+	rm -rf $(PY25-CLIPS_IPK_DIR) $(PY25-CLIPS_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-clips-check: $(PY24-CLIPS_IPK) $(PY25-CLIPS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-CLIPS_IPK) $(PY25-CLIPS_IPK)
