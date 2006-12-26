@@ -26,18 +26,19 @@ PY-XML_VERSION=0.8.4
 PY-XML_SOURCE=PyXML-$(PY-XML_VERSION).tar.gz
 PY-XML_DIR=PyXML-$(PY-XML_VERSION)
 PY-XML_UNZIP=zcat
-PY-XML_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-XML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-XML_DESCRIPTION=The PyXML package is a collection of libraries to process XML with Python.
 PY-XML_SECTION=misc
 PY-XML_PRIORITY=optional
-PY-XML_DEPENDS=python
+PY24-XML_DEPENDS=python24
+PY25-XML_DEPENDS=python25
 PY-XML_SUGGESTS=
 PY-XML_CONFLICTS=
 
 #
 # PY-XML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-XML_IPK_VERSION=3
+PY-XML_IPK_VERSION=4
 
 #
 # PY-XML_CONFFILES should be a list of user-editable files
@@ -67,8 +68,14 @@ PY-XML_LDFLAGS=
 #
 PY-XML_BUILD_DIR=$(BUILD_DIR)/py-xml
 PY-XML_SOURCE_DIR=$(SOURCE_DIR)/py-xml
-PY-XML_IPK_DIR=$(BUILD_DIR)/py-xml-$(PY-XML_VERSION)-ipk
-PY-XML_IPK=$(BUILD_DIR)/py-xml_$(PY-XML_VERSION)-$(PY-XML_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-XML_IPK_DIR=$(BUILD_DIR)/py-xml-$(PY-XML_VERSION)-ipk
+PY24-XML_IPK=$(BUILD_DIR)/py-xml_$(PY-XML_VERSION)-$(PY-XML_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-XML_IPK_DIR=$(BUILD_DIR)/py25-xml-$(PY-XML_VERSION)-ipk
+PY25-XML_IPK=$(BUILD_DIR)/py25-xml_$(PY-XML_VERSION)-$(PY-XML_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-xml-source py-xml-unpack py-xml py-xml-stage py-xml-ipk py-xml-clean py-xml-dirclean py-xml-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,12 +107,15 @@ py-xml-source: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-XML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
-	$(MAKE) python-stage
-	rm -rf $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY-XML_BUILD_DIR)
+	mkdir -p $(PY-XML_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-XML_DIR)
 	$(PY-XML_UNZIP) $(DL_DIR)/$(PY-XML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-XML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)
-	(cd $(PY-XML_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)/2.4
+	(cd $(PY-XML_BUILD_DIR)/2.4; \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
@@ -113,10 +123,26 @@ $(PY-XML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-XML_SOURCE) $(PY-XML_PATCHES)
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-XML_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-XML_DIR)
+	$(PY-XML_UNZIP) $(DL_DIR)/$(PY-XML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-XML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-XML_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)/2.5
+	(cd $(PY-XML_BUILD_DIR)/2.5; \
+	    ( \
+		echo ; \
+		echo "[build_ext]"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
+		echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 py-xml-unpack: $(PY-XML_BUILD_DIR)/.configured
 
@@ -124,12 +150,16 @@ py-xml-unpack: $(PY-XML_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-XML_BUILD_DIR)/.built: $(PY-XML_BUILD_DIR)/.configured
-	rm -f $(PY-XML_BUILD_DIR)/.built
-	(cd $(PY-XML_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-XML_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py build; \
+            $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
         )
-	touch $(PY-XML_BUILD_DIR)/.built
+	(cd $(PY-XML_BUILD_DIR)/2.5; \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+        )
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,8 +180,8 @@ py-xml-stage: $(PY-XML_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-xml
 #
-$(PY-XML_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-XML_IPK_DIR)/CONTROL
+$(PY24-XML_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-xml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +191,22 @@ $(PY-XML_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-XML_MAINTAINER)" >>$@
 	@echo "Source: $(PY-XML_SITE)/$(PY-XML_SOURCE)" >>$@
 	@echo "Description: $(PY-XML_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-XML_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-XML_DEPENDS)" >>$@
+	@echo "Suggests: $(PY-XML_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PY-XML_CONFLICTS)" >>$@
+
+$(PY25-XML_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-xml" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-XML_PRIORITY)" >>$@
+	@echo "Section: $(PY-XML_SECTION)" >>$@
+	@echo "Version: $(PY-XML_VERSION)-$(PY-XML_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-XML_MAINTAINER)" >>$@
+	@echo "Source: $(PY-XML_SITE)/$(PY-XML_SOURCE)" >>$@
+	@echo "Description: $(PY-XML_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-XML_DEPENDS)" >>$@
 	@echo "Suggests: $(PY-XML_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-XML_CONFLICTS)" >>$@
 
@@ -177,23 +222,36 @@ $(PY-XML_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-XML_IPK): $(PY-XML_BUILD_DIR)/.built
-	rm -rf $(PY-XML_IPK_DIR) $(BUILD_DIR)/py-xml_*_$(TARGET_ARCH).ipk
-	(cd $(PY-XML_BUILD_DIR); \
+$(PY24-XML_IPK): $(PY-XML_BUILD_DIR)/.built
+	rm -rf $(PY24-XML_IPK_DIR) $(BUILD_DIR)/py-xml_*_$(TARGET_ARCH).ipk
+	(cd $(PY-XML_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-            python2.4 setup.py install --root=$(PY-XML_IPK_DIR) --prefix=/opt; \
+            $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-XML_IPK_DIR) --prefix=/opt; \
         )
-	$(STRIP_COMMAND) `find $(PY-XML_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
-	$(MAKE) $(PY-XML_IPK_DIR)/CONTROL/control
-	#install -m 755 $(PY-XML_SOURCE_DIR)/postinst $(PY-XML_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(PY-XML_SOURCE_DIR)/prerm $(PY-XML_IPK_DIR)/CONTROL/prerm
-	#echo $(PY-XML_CONFFILES) | sed -e 's/ /\n/g' > $(PY-XML_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-XML_IPK_DIR)
+	$(STRIP_COMMAND) `find $(PY24-XML_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+	$(MAKE) $(PY24-XML_IPK_DIR)/CONTROL/control
+#	echo $(PY-XML_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-XML_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-XML_IPK_DIR)
+
+$(PY25-XML_IPK): $(PY-XML_BUILD_DIR)/.built
+	rm -rf $(PY25-XML_IPK_DIR) $(BUILD_DIR)/py25-xml_*_$(TARGET_ARCH).ipk
+	(cd $(PY-XML_BUILD_DIR)/2.5; \
+         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+            $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-XML_IPK_DIR) --prefix=/opt; \
+        )
+	$(STRIP_COMMAND) `find $(PY25-XML_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+	$(MAKE) $(PY25-XML_IPK_DIR)/CONTROL/control
+	for f in $(PY25-XML_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+#	echo $(PY-XML_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-XML_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-XML_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-xml-ipk: $(PY-XML_IPK)
+py-xml-ipk: $(PY24-XML_IPK) $(PY25-XML_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -206,4 +264,12 @@ py-xml-clean:
 # directories.
 #
 py-xml-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR) $(PY-XML_IPK_DIR) $(PY-XML_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-XML_DIR) $(PY-XML_BUILD_DIR)
+	rm -f $(PY24-XML_IPK_DIR) $(PY24-XML_IPK)
+	rm -f $(PY25-XML_IPK_DIR) $(PY25-XML_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-xml-check: $(PY24-XML_IPK) $(PY25-XML_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-XML_IPK) $(PY25-XML_IPK)
