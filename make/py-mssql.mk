@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MSSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pymssql
-PY-MSSQL_VERSION=0.7.4
+PY-MSSQL_VERSION=0.8.0
 PY-MSSQL_SOURCE=pymssql-$(PY-MSSQL_VERSION).tar.gz
 PY-MSSQL_DIR=pymssql-$(PY-MSSQL_VERSION)
 PY-MSSQL_UNZIP=zcat
@@ -30,13 +30,14 @@ PY-MSSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MSSQL_DESCRIPTION=Simple MSSQL Python extension module.
 PY-MSSQL_SECTION=misc
 PY-MSSQL_PRIORITY=optional
-PY-MSSQL_DEPENDS=python, freetds
+PY24-MSSQL_DEPENDS=python24, freetds
+PY25-MSSQL_DEPENDS=python25, freetds
 PY-MSSQL_CONFLICTS=
 
 #
 # PY-MSSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MSSQL_IPK_VERSION=2
+PY-MSSQL_IPK_VERSION=1
 
 #
 # PY-MSSQL_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-MSSQL_LDFLAGS=
 #
 PY-MSSQL_BUILD_DIR=$(BUILD_DIR)/py-mssql
 PY-MSSQL_SOURCE_DIR=$(SOURCE_DIR)/py-mssql
-PY-MSSQL_IPK_DIR=$(BUILD_DIR)/py-mssql-$(PY-MSSQL_VERSION)-ipk
-PY-MSSQL_IPK=$(BUILD_DIR)/py-mssql_$(PY-MSSQL_VERSION)-$(PY-MSSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-MSSQL_IPK_DIR=$(BUILD_DIR)/py-mssql-$(PY-MSSQL_VERSION)-ipk
+PY24-MSSQL_IPK=$(BUILD_DIR)/py-mssql_$(PY-MSSQL_VERSION)-$(PY-MSSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-MSSQL_IPK_DIR=$(BUILD_DIR)/py25-mssql-$(PY-MSSQL_VERSION)-ipk
+PY25-MSSQL_IPK=$(BUILD_DIR)/py25-mssql_$(PY-MSSQL_VERSION)-$(PY-MSSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-mssql-source py-mssql-unpack py-mssql py-mssql-stage py-mssql-ipk py-mssql-clean py-mssql-dirclean py-mssql-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,11 +107,14 @@ py-mssql-source: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCHES)
 #
 $(PY-MSSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCHES)
 	$(MAKE) python-stage freetds-stage
-	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR) $(PY-MSSQL_BUILD_DIR)
+	rm -rf $(PY-MSSQL_BUILD_DIR)
+	mkdir -p $(PY-MSSQL_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR)
 	$(PY-MSSQL_UNZIP) $(DL_DIR)/$(PY-MSSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(PY-MSSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MSSQL_DIR) $(PY-MSSQL_BUILD_DIR)
-	(cd $(PY-MSSQL_BUILD_DIR); \
+	cat $(PY-MSSQL_PATCHES) | patch --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MSSQL_DIR) $(PY-MSSQL_BUILD_DIR)/2.4
+	(cd $(PY-MSSQL_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -112,10 +122,26 @@ $(PY-MSSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MSSQL_SOURCE) $(PY-MSSQL_PATCH
 	        echo "libraries=sybdb"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) > setup.cfg; \
 	)
-	touch $(PY-MSSQL_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR)
+	$(PY-MSSQL_UNZIP) $(DL_DIR)/$(PY-MSSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(PY-MSSQL_PATCHES) | patch --ignore-whitespace -bd $(BUILD_DIR)/$(PY-MSSQL_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MSSQL_DIR) $(PY-MSSQL_BUILD_DIR)/2.5
+	(cd $(PY-MSSQL_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "libraries=sybdb"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) > setup.cfg; \
+	)
+	touch $@
 
 py-mssql-unpack: $(PY-MSSQL_BUILD_DIR)/.configured
 
@@ -123,12 +149,16 @@ py-mssql-unpack: $(PY-MSSQL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-MSSQL_BUILD_DIR)/.built: $(PY-MSSQL_BUILD_DIR)/.configured
-	rm -f $(PY-MSSQL_BUILD_DIR)/.built
-	(cd $(PY-MSSQL_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-MSSQL_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-MSSQL_BUILD_DIR)/.built
+	(cd $(PY-MSSQL_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,8 +179,8 @@ py-mssql-stage: $(PY-MSSQL_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-mssql
 #
-$(PY-MSSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-MSSQL_IPK_DIR)/CONTROL
+$(PY24-MSSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-mssql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -160,7 +190,21 @@ $(PY-MSSQL_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MSSQL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MSSQL_SITE)/$(PY-MSSQL_SOURCE)" >>$@
 	@echo "Description: $(PY-MSSQL_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-MSSQL_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-MSSQL_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MSSQL_CONFLICTS)" >>$@
+
+$(PY25-MSSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-mssql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MSSQL_PRIORITY)" >>$@
+	@echo "Section: $(PY-MSSQL_SECTION)" >>$@
+	@echo "Version: $(PY-MSSQL_VERSION)-$(PY-MSSQL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MSSQL_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MSSQL_SITE)/$(PY-MSSQL_SOURCE)" >>$@
+	@echo "Description: $(PY-MSSQL_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-MSSQL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MSSQL_CONFLICTS)" >>$@
 
 #
@@ -175,20 +219,32 @@ $(PY-MSSQL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-MSSQL_IPK): $(PY-MSSQL_BUILD_DIR)/.built
-	rm -rf $(PY-MSSQL_IPK_DIR) $(BUILD_DIR)/py-mssql_*_$(TARGET_ARCH).ipk
-	(cd $(PY-MSSQL_BUILD_DIR); \
+$(PY24-MSSQL_IPK): $(PY-MSSQL_BUILD_DIR)/.built
+	rm -rf $(PY24-MSSQL_IPK_DIR) $(BUILD_DIR)/py-mssql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MSSQL_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --root=$(PY-MSSQL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-MSSQL_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY-MSSQL_IPK_DIR)/opt/lib/python2.4/site-packages/ -name '*.so'`
-	$(MAKE) $(PY-MSSQL_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MSSQL_IPK_DIR)
+	$(STRIP_COMMAND) `find $(PY24-MSSQL_IPK_DIR)/opt/lib/python2.4/site-packages/ -name '*.so'`
+	$(MAKE) $(PY24-MSSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MSSQL_IPK_DIR)
+
+$(PY25-MSSQL_IPK): $(PY-MSSQL_BUILD_DIR)/.built
+	rm -rf $(PY25-MSSQL_IPK_DIR) $(BUILD_DIR)/py25-mssql_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MSSQL_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-MSSQL_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) `find $(PY25-MSSQL_IPK_DIR)/opt/lib/python2.5/site-packages/ -name '*.so'`
+	$(MAKE) $(PY25-MSSQL_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MSSQL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-mssql-ipk: $(PY-MSSQL_IPK)
+py-mssql-ipk: $(PY24-MSSQL_IPK) $(PY25-MSSQL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,4 +257,12 @@ py-mssql-clean:
 # directories.
 #
 py-mssql-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR) $(PY-MSSQL_BUILD_DIR) $(PY-MSSQL_IPK_DIR) $(PY-MSSQL_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-MSSQL_DIR) $(PY-MSSQL_BUILD_DIR)
+	rm -rf $(PY24-MSSQL_IPK_DIR) $(PY24-MSSQL_IPK)
+	rm -rf $(PY25-MSSQL_IPK_DIR) $(PY25-MSSQL_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-mssql-check: $(PY24-MSSQL_IPK) $(PY25-MSSQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MSSQL_IPK) $(PY25-MSSQL_IPK)
