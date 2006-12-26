@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=2
+PYTHON25_IPK_VERSION=3
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -240,7 +240,7 @@ $(PYTHON25_IPK): $(PYTHON25_BUILD_DIR)/.built
 	    do mv $(PYTHON25_IPK_DIR)/opt/$$f $(PYTHON25_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/2.5\1/'`; done
 	install -d $(PYTHON25_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON25_IPK_DIR)/opt/local/lib/python$(PYTHON25_VERSION_MAJOR)/site-packages
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 #	install -d $(PYTHON25_IPK_DIR)/usr/bin
 #	ln -s /opt/bin/python $(PYTHON25_IPK_DIR)/usr/bin/python
 endif

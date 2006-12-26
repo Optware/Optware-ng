@@ -15,7 +15,7 @@ PYTHON_DEPENDS=python24
 PYTHON_SUGGESTS=
 PYTHON_CONFLICTS=
 
-PYTHON_IPK_VERSION=1
+PYTHON_IPK_VERSION=2
 
 PYTHON_IPK_DIR=$(BUILD_DIR)/python-$(PYTHON_VERSION)-ipk
 PYTHON_IPK=$(BUILD_DIR)/python_$(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -52,7 +52,7 @@ $(PYTHON_IPK):
 		ln -s pydoc2.4 pydoc; \
 		ln -s smtpd2.4.py smtpd.py; \
 	)
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	install -d $(PYTHON_IPK_DIR)/usr/bin
 	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
 endif   

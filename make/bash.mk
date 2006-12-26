@@ -178,10 +178,12 @@ $(BASH_IPK): $(BASH_BUILD_DIR)/bash
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
 	install -d $(BASH_IPK_DIR)/opt/etc 
 	install -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
+ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	install -d $(BASH_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(BASH_SOURCE_DIR)/rc.bash $(BASH_IPK_DIR)/opt/etc/init.d/S05bash
 	install -d $(BASH_IPK_DIR)/bin
 	ln -s /opt/bin/bash $(BASH_IPK_DIR)/bin/bash
+endif
 	$(MAKE) $(BASH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BASH_IPK_DIR)
 
