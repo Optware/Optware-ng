@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BLUEZ_SITE=http://org.csail.mit.edu/pybluez/release
-PY-BLUEZ_VERSION=0.7
+PY-BLUEZ_VERSION=0.9.1
 PY-BLUEZ_SOURCE=pybluez-src-$(PY-BLUEZ_VERSION).tar.gz
 PY-BLUEZ_DIR=pybluez-$(PY-BLUEZ_VERSION)
 PY-BLUEZ_UNZIP=zcat
@@ -30,7 +30,8 @@ PY-BLUEZ_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BLUEZ_DESCRIPTION=Python wrappers around bluez.
 PY-BLUEZ_SECTION=misc
 PY-BLUEZ_PRIORITY=optional
-PY-BLUEZ_DEPENDS=python, bluez-libs
+PY24-BLUEZ_DEPENDS=python24, bluez-libs
+PY25-BLUEZ_DEPENDS=python25, bluez-libs
 PY-BLUEZ_CONFLICTS=
 
 #
@@ -66,8 +67,14 @@ PY-BLUEZ_LDFLAGS=
 #
 PY-BLUEZ_BUILD_DIR=$(BUILD_DIR)/py-bluez
 PY-BLUEZ_SOURCE_DIR=$(SOURCE_DIR)/py-bluez
-PY-BLUEZ_IPK_DIR=$(BUILD_DIR)/py-bluez-$(PY-BLUEZ_VERSION)-ipk
-PY-BLUEZ_IPK=$(BUILD_DIR)/py-bluez_$(PY-BLUEZ_VERSION)-$(PY-BLUEZ_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-BLUEZ_IPK_DIR=$(BUILD_DIR)/py-bluez-$(PY-BLUEZ_VERSION)-ipk
+PY24-BLUEZ_IPK=$(BUILD_DIR)/py-bluez_$(PY-BLUEZ_VERSION)-$(PY-BLUEZ_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-BLUEZ_IPK_DIR=$(BUILD_DIR)/py25-bluez-$(PY-BLUEZ_VERSION)-ipk
+PY25-BLUEZ_IPK=$(BUILD_DIR)/py25-bluez_$(PY-BLUEZ_VERSION)-$(PY-BLUEZ_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-bluez-source py-bluez-unpack py-bluez py-bluez-stage py-bluez-ipk py-bluez-clean py-bluez-dirclean py-bluez-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,23 +107,43 @@ py-bluez-source: $(DL_DIR)/$(PY-BLUEZ_SOURCE) $(PY-BLUEZ_PATCHES)
 #
 $(PY-BLUEZ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BLUEZ_SOURCE) $(PY-BLUEZ_PATCHES)
 	$(MAKE) python-stage bluez-libs-stage
-	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)
+	rm -rf $(PY-BLUEZ_BUILD_DIR)
+	mkdir -p $(PY-BLUEZ_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR)
 	$(PY-BLUEZ_UNZIP) $(DL_DIR)/$(PY-BLUEZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-BLUEZ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BLUEZ_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)
-	(cd $(PY-BLUEZ_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)/2.4
+	(cd $(PY-BLUEZ_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin" \
 	    ) > setup.cfg; \
 	)
-	touch $(PY-BLUEZ_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR)
+	$(PY-BLUEZ_UNZIP) $(DL_DIR)/$(PY-BLUEZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	#cat $(PY-BLUEZ_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BLUEZ_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)/2.5
+	(cd $(PY-BLUEZ_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin" \
+	    ) > setup.cfg; \
+	)
+	touch $@
 
 py-bluez-unpack: $(PY-BLUEZ_BUILD_DIR)/.configured
 
@@ -124,12 +151,16 @@ py-bluez-unpack: $(PY-BLUEZ_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-BLUEZ_BUILD_DIR)/.built: $(PY-BLUEZ_BUILD_DIR)/.configured
-	rm -f $(PY-BLUEZ_BUILD_DIR)/.built
-	(cd $(PY-BLUEZ_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-BLUEZ_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	touch $(PY-BLUEZ_BUILD_DIR)/.built
+	(cd $(PY-BLUEZ_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,8 +181,8 @@ py-bluez-stage: $(PY-BLUEZ_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-bluez
 #
-$(PY-BLUEZ_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-BLUEZ_IPK_DIR)/CONTROL
+$(PY24-BLUEZ_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-bluez" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +192,21 @@ $(PY-BLUEZ_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-BLUEZ_MAINTAINER)" >>$@
 	@echo "Source: $(PY-BLUEZ_SITE)/$(PY-BLUEZ_SOURCE)" >>$@
 	@echo "Description: $(PY-BLUEZ_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-BLUEZ_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-BLUEZ_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-BLUEZ_CONFLICTS)" >>$@
+
+$(PY25-BLUEZ_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-bluez" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-BLUEZ_PRIORITY)" >>$@
+	@echo "Section: $(PY-BLUEZ_SECTION)" >>$@
+	@echo "Version: $(PY-BLUEZ_VERSION)-$(PY-BLUEZ_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-BLUEZ_MAINTAINER)" >>$@
+	@echo "Source: $(PY-BLUEZ_SITE)/$(PY-BLUEZ_SOURCE)" >>$@
+	@echo "Description: $(PY-BLUEZ_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-BLUEZ_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-BLUEZ_CONFLICTS)" >>$@
 
 #
@@ -176,20 +221,32 @@ $(PY-BLUEZ_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-BLUEZ_IPK): $(PY-BLUEZ_BUILD_DIR)/.built
-	rm -rf $(PY-BLUEZ_IPK_DIR) $(BUILD_DIR)/py-bluez_*_$(TARGET_ARCH).ipk
-	(cd $(PY-BLUEZ_BUILD_DIR); \
+$(PY24-BLUEZ_IPK): $(PY-BLUEZ_BUILD_DIR)/.built
+	rm -rf $(PY24-BLUEZ_IPK_DIR) $(BUILD_DIR)/py-bluez_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BLUEZ_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --root=$(PY-BLUEZ_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-BLUEZ_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) `find $(PY-BLUEZ_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
-	$(MAKE) $(PY-BLUEZ_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-BLUEZ_IPK_DIR)
+	$(STRIP_COMMAND) `find $(PY24-BLUEZ_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+	$(MAKE) $(PY24-BLUEZ_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BLUEZ_IPK_DIR)
+
+$(PY25-BLUEZ_IPK): $(PY-BLUEZ_BUILD_DIR)/.built
+	rm -rf $(PY25-BLUEZ_IPK_DIR) $(BUILD_DIR)/py25-bluez_*_$(TARGET_ARCH).ipk
+	(cd $(PY-BLUEZ_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-BLUEZ_IPK_DIR) --prefix=/opt; \
+	)
+	$(STRIP_COMMAND) `find $(PY25-BLUEZ_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+	$(MAKE) $(PY25-BLUEZ_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BLUEZ_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-bluez-ipk: $(PY-BLUEZ_IPK)
+py-bluez-ipk: $(PY24-BLUEZ_IPK) $(PY25-BLUEZ_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -202,4 +259,12 @@ py-bluez-clean:
 # directories.
 #
 py-bluez-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR) $(PY-BLUEZ_IPK_DIR) $(PY-BLUEZ_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-BLUEZ_DIR) $(PY-BLUEZ_BUILD_DIR)
+	rm -rf $(PY24-BLUEZ_IPK_DIR) $(PY24-BLUEZ_IPK)
+	rm -rf $(PY25-BLUEZ_IPK_DIR) $(PY25-BLUEZ_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-bluez-check: $(PY24-BLUEZ_IPK) $(PY25-BLUEZ_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-BLUEZ_IPK) $(PY25-BLUEZ_IPK)

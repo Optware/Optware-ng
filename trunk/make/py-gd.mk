@@ -30,13 +30,14 @@ PY-GD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-GD_DESCRIPTION=GD module is an interface to the GD library.
 PY-GD_SECTION=misc
 PY-GD_PRIORITY=optional
-PY-GD_DEPENDS=python,libgd
+PY24-GD_DEPENDS=python24, libgd
+PY25-GD_DEPENDS=python25, libgd
 PY-GD_CONFLICTS=
 
 #
 # PY-GD_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GD_IPK_VERSION=3
+PY-GD_IPK_VERSION=4
 
 #
 # PY-GD_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-GD_LDFLAGS=
 #
 PY-GD_BUILD_DIR=$(BUILD_DIR)/py-gd
 PY-GD_SOURCE_DIR=$(SOURCE_DIR)/py-gd
-PY-GD_IPK_DIR=$(BUILD_DIR)/py-gd-$(PY-GD_VERSION)-ipk
-PY-GD_IPK=$(BUILD_DIR)/py-gd_$(PY-GD_VERSION)-$(PY-GD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-GD_IPK_DIR=$(BUILD_DIR)/py-gd-$(PY-GD_VERSION)-ipk
+PY24-GD_IPK=$(BUILD_DIR)/py-gd_$(PY-GD_VERSION)-$(PY-GD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-GD_IPK_DIR=$(BUILD_DIR)/py25-gd-$(PY-GD_VERSION)-ipk
+PY25-GD_IPK=$(BUILD_DIR)/py25-gd_$(PY-GD_VERSION)-$(PY-GD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-gd-source py-gd-unpack py-gd py-gd-stage py-gd-ipk py-gd-clean py-gd-dirclean py-gd-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,22 +107,41 @@ py-gd-source: $(DL_DIR)/$(PY-GD_SOURCE) $(PY-GD_PATCHES)
 #
 $(PY-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GD_SOURCE) $(PY-GD_PATCHES)
 	$(MAKE) python-stage libgd-stage
-	rm -rf $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)
+	rm -rf $(PY-GD_BUILD_DIR)
+	mkdir -p $(PY-GD_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-GD_DIR)
 	$(PY-GD_UNZIP) $(DL_DIR)/$(PY-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GD_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)
-	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(PY-GD_BUILD_DIR)/Setup.py
-	(cd $(PY-GD_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)/2.4
+	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(PY-GD_BUILD_DIR)/2.4/Setup.py
+	(cd $(PY-GD_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) > setup.cfg; \
 	)
-	touch $(PY-GD_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-GD_DIR)
+	$(PY-GD_UNZIP) $(DL_DIR)/$(PY-GD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	cat $(PY-GD_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GD_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)/2.5
+	sed -i -e 's:@STAGING_PREFIX@:$(STAGING_PREFIX):' $(PY-GD_BUILD_DIR)/2.5/Setup.py
+	(cd $(PY-GD_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) > setup.cfg; \
+	)
+	touch $@
 
 py-gd-unpack: $(PY-GD_BUILD_DIR)/.configured
 
@@ -123,12 +149,16 @@ py-gd-unpack: $(PY-GD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-GD_BUILD_DIR)/.built: $(PY-GD_BUILD_DIR)/.configured
-	rm -f $(PY-GD_BUILD_DIR)/.built
-	(cd $(PY-GD_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-GD_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 Setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 Setup.py build; \
 	)
-	touch $(PY-GD_BUILD_DIR)/.built
+	(cd $(PY-GD_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 Setup.py build; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,8 +179,8 @@ py-gd-stage: $(PY-GD_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-gd
 #
-$(PY-GD_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-GD_IPK_DIR)/CONTROL
+$(PY24-GD_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-gd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -160,7 +190,21 @@ $(PY-GD_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-GD_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GD_SITE)/$(PY-GD_SOURCE)" >>$@
 	@echo "Description: $(PY-GD_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-GD_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-GD_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-GD_CONFLICTS)" >>$@
+
+$(PY25-GD_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-gd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-GD_PRIORITY)" >>$@
+	@echo "Section: $(PY-GD_SECTION)" >>$@
+	@echo "Version: $(PY-GD_VERSION)-$(PY-GD_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-GD_MAINTAINER)" >>$@
+	@echo "Source: $(PY-GD_SITE)/$(PY-GD_SOURCE)" >>$@
+	@echo "Description: $(PY-GD_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-GD_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-GD_CONFLICTS)" >>$@
 
 #
@@ -175,22 +219,34 @@ $(PY-GD_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-GD_IPK): $(PY-GD_BUILD_DIR)/.built
-	rm -rf $(PY-GD_IPK_DIR) $(BUILD_DIR)/py-gd_*_$(TARGET_ARCH).ipk
-	(cd $(PY-GD_BUILD_DIR); \
+$(PY24-GD_IPK): $(PY-GD_BUILD_DIR)/.built
+	rm -rf $(PY24-GD_IPK_DIR) $(BUILD_DIR)/py-gd_*_$(TARGET_ARCH).ipk
+	(cd $(PY-GD_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 Setup.py install --root=$(PY-GD_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 Setup.py install \
+	    --root=$(PY24-GD_IPK_DIR) --prefix=/opt; \
 	)
-	for so in `find $(PY-GD_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`; do \
-	    $(STRIP_COMMAND) $$so; \
-	done
-	$(MAKE) $(PY-GD_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-GD_IPK_DIR)
+	for so in `find $(PY24-GD_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`; \
+		do $(STRIP_COMMAND) $$so; done
+	$(MAKE) $(PY24-GD_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GD_IPK_DIR)
+
+$(PY25-GD_IPK): $(PY-GD_BUILD_DIR)/.built
+	rm -rf $(PY25-GD_IPK_DIR) $(BUILD_DIR)/py25-gd_*_$(TARGET_ARCH).ipk
+	(cd $(PY-GD_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 Setup.py install \
+	    --root=$(PY25-GD_IPK_DIR) --prefix=/opt; \
+	)
+	for so in `find $(PY25-GD_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`; \
+		do $(STRIP_COMMAND) $$so; done
+	$(MAKE) $(PY25-GD_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GD_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-gd-ipk: $(PY-GD_IPK)
+py-gd-ipk: $(PY24-GD_IPK) $(PY25-GD_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -203,4 +259,12 @@ py-gd-clean:
 # directories.
 #
 py-gd-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR) $(PY-GD_IPK_DIR) $(PY-GD_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-GD_DIR) $(PY-GD_BUILD_DIR)
+	rm -rf $(PY24-GD_IPK_DIR) $(PY24-GD_IPK)
+	rm -rf $(PY25-GD_IPK_DIR) $(PY25-GD_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-gd-check: $(PY24-GD_IPK) $(PY25-GD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-GD_IPK) $(PY25-GD_IPK)
