@@ -375,7 +375,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	e2tools eaccelerator esniper esound \
 	freeradius ftpd-topfield \
-	gconv-modules gdb groff gtk \
+	gconv-modules gdb gtk \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu hpijs \
 	ice indent inetutils ircd-hybrid ivorbis-tools \
