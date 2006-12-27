@@ -375,7 +375,6 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu hpijs \
 	ice indent inetutils ircd-hybrid ivorbis-tools \
-	kissdx \
 	ldconfig libnsl libvorbis \
 	madplay mc mdadm metalog minicom modutils monotone motion mp3blaster mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
