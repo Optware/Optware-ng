@@ -36,7 +36,7 @@ TNFTPD_CONFLICTS=
 #
 # TNFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-TNFTPD_IPK_VERSION=1
+TNFTPD_IPK_VERSION=2
 
 #
 # TNFTPD_CONFFILES should be a list of user-editable files
@@ -52,7 +52,11 @@ TNFTPD_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+TNFTPD_CPPFLAGS=-DLINE_MAX=2048
+else
 TNFTPD_CPPFLAGS=
+endif
 TNFTPD_LDFLAGS=
 
 #
@@ -117,6 +121,7 @@ $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) ma
 	(cd $(TNFTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TNFTPD_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(TNFTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TNFTPD_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
