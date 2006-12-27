@@ -52,11 +52,7 @@ TNFTPD_IPK_VERSION=2
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
-TNFTPD_CPPFLAGS=-DLINE_MAX=2048
-else
 TNFTPD_CPPFLAGS=
-endif
 TNFTPD_LDFLAGS=
 
 #

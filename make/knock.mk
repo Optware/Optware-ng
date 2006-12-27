@@ -28,11 +28,7 @@ KNOCK_CONFFILES=/etc/knockd.conf /opt/etc/init.d/S05knockd
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
-KNOCK_CPPFLAGS=-DPATH_MAX=4096
-else
 KNOCK_CPPFLAGS=
-endif
 KNOCK_LDFLAGS=
 
 #
