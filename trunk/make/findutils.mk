@@ -47,11 +47,7 @@ FINDUTILS_DOC_DEPENDS=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
-FINDUTILS_CPPFLAGS=-DLINE_MAX=2048
-else
 FINDUTILS_CPPFLAGS=
-endif
 FINDUTILS_LDFLAGS=
 
 #
