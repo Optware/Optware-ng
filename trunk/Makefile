@@ -918,6 +918,19 @@ host/.configured:
 	)
 	touch host/.configured
 
+%-target %/.configured: 
+	[ -e $*/Makefile ] || ( \
+		mkdir -p $* ; \
+		echo "OPTWARE_TARGET=$*" > $*/Makefile ; \
+		echo "include ../Makefile" >> $*/Makefile ; \
+		ln -s ../../downloads $*/downloads ; \
+		ln -s ../make $*/make ; \
+		ln -s ../scripts $*/scripts ; \
+		ln -s ../sources $*/sources ; \
+	)
+	touch $*/.configured
+
+
 make/%.mk:
 	PKG_UP=$$(echo $* | tr [a-z\-] [A-Z_]);			\
 	sed -e "s/<foo>/$*/g" -e "s/<FOO>/$${PKG_UP}/g"		\
