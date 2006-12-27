@@ -37,7 +37,7 @@ E2TOOLS_CONFLICTS=
 #
 # E2TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2TOOLS_IPK_VERSION=1
+E2TOOLS_IPK_VERSION=2
 
 #
 # E2TOOLS_CONFFILES should be a list of user-editable files
@@ -125,6 +125,7 @@ $(E2TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2TOOLS_SOURCE) $(E2TOOLS_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
+	sed -ie '/^INCLUDES/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(E2TOOLS_BUILD_DIR)/Makefile
 	touch $(E2TOOLS_BUILD_DIR)/.configured
 
 e2tools-unpack: $(E2TOOLS_BUILD_DIR)/.configured

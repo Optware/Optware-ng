@@ -369,14 +369,14 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	chillispot clearsilver cyrus-imapd \
 	digitemp dovecot \
 	$(ERLANG_PACKAGES) \
-	e2tools eaccelerator esniper esound \
+	eaccelerator esniper esound \
 	freeradius ftpd-topfield \
 	gconv-modules gdb gtk \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu hpijs \
 	ice indent inetutils ircd-hybrid ivorbis-tools \
 	kissdx \
-	ldconfig libnsl libvorbis lsof \
+	ldconfig libnsl libvorbis \
 	madplay mc mdadm metalog minicom modutils monotone motion mp3blaster mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww \
@@ -385,8 +385,8 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	py-psycopg \
 	qemu quagga quickie \
 	rrdtool rtpproxy \
-	sdl sm streamripper swi-prolog syslog-ng \
-	tcl tcpwrappers thttpd tnef tnftpd transcode \
+	sdl sm streamripper syslog-ng \
+	tcl tcpwrappers thttpd tnef transcode \
 	unfs3 ushare vorbis-tools vte \
 	w3cam \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
