@@ -19,8 +19,10 @@
 #
 # You should change all these variables to suit your package.
 #
+# Check http://svn.mplayerhq.hu/ffmpeg/trunk/
+# Take care when upgrading for multiple targets
 FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
-FFMPEG_SVN_REV=5834
+FFMPEG_SVN_REV=6153
 FFMPEG_VERSION=0.4.9-pre1+r$(FFMPEG_SVN_REV)
 FFMPEG_SOURCE=ffmpeg-svn-$(FFMPEG_SVN_REV).tar.gz
 FFMPEG_DIR=ffmpeg
@@ -36,7 +38,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION=2
+FFMPEG_IPK_VERSION=1
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -146,6 +148,11 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 		--enable-pp \
 		--prefix=/opt \
 	)
+ifeq ($(LIBC_STYLE), uclibc)
+#	No lrintf() support in uClibc 0.9.28
+	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(FFMPEG_BUILD_DIR)/common.mak \
+		$(FFMPEG_BUILD_DIR)/Makefile $(FFMPEG_BUILD_DIR)/lib*/Makefile
+endif
 	touch $(FFMPEG_BUILD_DIR)/.configured
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
@@ -237,3 +244,9 @@ ffmpeg-clean:
 #
 ffmpeg-dirclean:
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR) $(FFMPEG_IPK_DIR) $(FFMPEG_IPK)
+
+#
+# Some sanity check for the package.
+#
+ffmpeg-check: $(FFMPEG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FFMPEG_IPK)
