@@ -1,0 +1,12 @@
+--- wizd/wizd_http.c.orig	2006-11-20 21:35:26.395031952 +1030
++++ wizd/wizd_http.c	2006-11-20 21:35:43.815383656 +1030
+@@ -23,7 +23,9 @@
+ #include <dirent.h>
+ #include <fcntl.h>
+ #include <libgen.h>
++# ifdef HAVE_W32API
+ #include <sys/cygwin.h>
++# endif
+ 
+ #include "wizd.h"
+ #include "wizd_skin.h"
