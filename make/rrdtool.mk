@@ -43,7 +43,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=1
+RRDTOOL_IPK_VERSION=2
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -111,6 +111,7 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 #	cat $(RRDTOOL_PATCHES) | patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1
 	mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
 	(cd $(RRDTOOL_BUILD_DIR); \
+		sed -i -e '/CPPFLAGS=/s|-I/usr/include/.*"|"|g' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RRDTOOL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RRDTOOL_LDFLAGS)" \

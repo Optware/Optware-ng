@@ -42,7 +42,7 @@ LIBART_CONFLICTS=
 #
 # LIBART_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBART_IPK_VERSION=1
+LIBART_IPK_VERSION=2
 
 #
 # LIBART_CONFFILES should be a list of user-editable files
@@ -149,6 +149,8 @@ libart: $(LIBART_BUILD_DIR)/.built
 $(LIBART_BUILD_DIR)/.staged: $(LIBART_BUILD_DIR)/.built
 	rm -f $(LIBART_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libart*-config
+	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libart*.pc
 	rm -f $(STAGING_LIB_DIR)/libart_lgpl_2.la
 	touch $(LIBART_BUILD_DIR)/.staged
 

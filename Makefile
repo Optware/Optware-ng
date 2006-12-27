@@ -366,8 +366,7 @@ SLUGOSBE_SPECIFIC_PACKAGES =
 SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat asterisk asterisk14 atftp \
 	bitlbee bluez-utils bzflag \
-	chillispot clearsilver cyrus-imapd \
-	digitemp dovecot \
+	chillispot clearsilver cyrus-imapd digitemp \
 	$(ERLANG_PACKAGES) \
 	eaccelerator esniper esound \
 	freeradius ftpd-topfield \
@@ -375,17 +374,17 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu hpijs \
 	ice indent inetutils ircd-hybrid ivorbis-tools \
-	ldconfig libnsl libvorbis lsof \
+	ldconfig libvorbis lsof \
 	madplay mc mdadm metalog minicom modutils monotone motion mp3blaster mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww \
 	$(PERL_PACKAGES) \
-	pango picocom poptop postfix procps puppy \
+	pango picocom poptop puppy \
 	py-psycopg \
 	qemu quagga quickie \
-	rrdtool rtpproxy \
+	rtpproxy \
 	sdl sm strace streamripper syslog-ng \
-	tcl tcpwrappers thttpd tnef transcode \
+	tcl tcpwrappers tnef transcode \
 	unfs3 ushare vorbis-tools vte \
 	w3cam \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
@@ -792,7 +791,11 @@ PATCH_LIBTOOL=sed -i \
 STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
 STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
 
+ifeq ($(OPTWARE_TARGET), slugosbe)
+STAGING_CPPFLAGS=$(TARGET_CFLAGS) -I$(STAGING_INCLUDE_DIR) -DPATH_MAX=4096 -DLINE_MAX=2048
+else
 STAGING_CPPFLAGS=$(TARGET_CFLAGS) -I$(STAGING_INCLUDE_DIR)
+endif
 STAGING_LDFLAGS=$(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)
 
 HOST_STAGING_INCLUDE_DIR=$(HOST_STAGING_PREFIX)/include

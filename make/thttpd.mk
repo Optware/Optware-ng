@@ -41,7 +41,7 @@ THTTPD_CONFLICTS=
 #
 # THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-THTTPD_IPK_VERSION=3
+THTTPD_IPK_VERSION=4
 
 #
 # THTTPD_CONFFILES should be a list of user-editable files
@@ -182,7 +182,9 @@ $(THTTPD_IPK_DIR)/CONTROL/control:
 $(THTTPD_IPK): $(THTTPD_BUILD_DIR)/.built
 	rm -rf $(THTTPD_IPK_DIR) $(BUILD_DIR)/thttpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(THTTPD_BUILD_DIR) DESTDIR=$(THTTPD_IPK_DIR) install
-	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/thttpd
+	chmod +w $(THTTPD_IPK_DIR)/opt/sbin/thttpd && \
+	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/thttpd && \
+	chmod -w $(THTTPD_IPK_DIR)/opt/sbin/thttpd && \
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/makeweb
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/htpasswd
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/share/www/cgi-bin/*
