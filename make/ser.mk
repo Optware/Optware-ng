@@ -35,7 +35,7 @@ SER_CONFLICTS=
 #
 # SER_IPK_VERSION should be incremented when the ipk changes.
 #
-SER_IPK_VERSION=2
+SER_IPK_VERSION=3
 
 #
 # SER_CONFFILES should be a list of user-editable files
@@ -55,11 +55,11 @@ SER_PATCHES=$(SER_SOURCE_DIR)/Makefile.defs.patch \
 SER_CPPFLAGS=-fsigned-char
 SER_LDFLAGS=
 
-ifeq ($(TARGET_ARCH),mipsel)
-SER_MAKEFLAGS=ARCH=mips OS=linux OSREL=2.4.20
-else
-SER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
-endif
+SER_MAKEFLAGS=$(strip \
+        $(if $(filter ds101g, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
+        $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux, \
+        $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
+        ARCH=arm OS=linux OSREL=2.4.22))))
 
 #
 # SER_BUILD_DIR is the directory in which the build is done.
@@ -74,6 +74,8 @@ SER_BUILD_DIR=$(BUILD_DIR)/ser
 SER_SOURCE_DIR=$(SOURCE_DIR)/ser
 SER_IPK_DIR=$(BUILD_DIR)/ser-$(SER_VERSION)-ipk
 SER_IPK=$(BUILD_DIR)/ser_$(SER_VERSION)-$(SER_IPK_VERSION)_${TARGET_ARCH}.ipk
+
+.PHONY: ser-source ser-unpack ser ser-stage ser-ipk ser-clean ser-dirclean ser-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -195,6 +197,8 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
 		BASEDIR=$(SER_IPK_DIR) LOCALBASE=$(SER_IPK_DIR) \
 		$(SER_MAKEFLAGS) install
+	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/sbin/ser $(SER_IPK_DIR)/opt/sbin/gen_ha1
+	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/lib/ser/modules/*.so
 #	install -d $(SER_IPK_DIR)/opt/etc/
 #	install -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
 #	install -d $(SER_IPK_DIR)/opt/etc/init.d
@@ -222,3 +226,9 @@ ser-clean:
 #
 ser-dirclean:
 	rm -rf $(BUILD_DIR)/$(SER_DIR) $(SER_BUILD_DIR) $(SER_IPK_DIR) $(SER_IPK)
+
+#
+# Some sanity check for the package.
+#
+ser-check: $(SER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SER_IPK)
