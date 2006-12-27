@@ -42,7 +42,7 @@ TETHEREAL_CONFLICTS=
 #
 # TETHEREAL_IPK_VERSION should be incremented when the ipk changes.
 #
-TETHEREAL_IPK_VERSION=2
+TETHEREAL_IPK_VERSION=3
 
 #
 # TETHEREAL_CONFFILES should be a list of user-editable files
@@ -135,6 +135,7 @@ $(TETHEREAL_BUILD_DIR)/.configured: $(DL_DIR)/$(TETHEREAL_SOURCE) $(TETHEREAL_PA
 		--disable-nls \
 		--disable-static \
 	)
+	sed -i -e '/^INCLUDES/s|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(TETHEREAL_BUILD_DIR)/plugins/docsis/Makefile
 	$(PATCH_LIBTOOL) $(TETHEREAL_BUILD_DIR)/libtool
 	touch $(TETHEREAL_BUILD_DIR)/.configured
 
