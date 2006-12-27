@@ -4,27 +4,14 @@
 #
 ###########################################################
 
-ifeq ($(OPTWARE_TARGET),ts72xx) 
-LIBNSL_VERSION=2.3.2
-else
-ifeq ($(OPTWARE_TARGET),wl500g) 
-LIBNSL_VERSION=0.9.19
-else
-ifeq ($(LIBC_STYLE), uclibc)
-LIBNSL_VERSION=$(UCLIBC-OPT_VERSION)
-else
-ifeq ($(OPTWARE_TARGET), ds101g)
-LIBNSL_VERSION=2.3.3
-else
-ifeq ($(OPTWARE_TARGET), ds101)
-LIBNSL_VERSION=2.3.3
-else
-LIBNSL_VERSION=2.2.5
-endif
-endif
-endif
-endif
-endif
+LIBNSL_VERSION=$(strip \
+        $(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), 2.3.3, \
+        $(if $(filter nslu2, $(OPTWARE_TARGET)), 2.2.5, \
+        $(if $(filter slugosbe, $(OPTWARE_TARGET)), 2.3.90, \
+        $(if $(filter ts72xx, $(OPTWARE_TARGET)), 2.3.2, \
+        $(if $(filter wl500g, $(OPTWARE_TARGET)), 0.9.19, \
+        $(if $(filter uclibc, $(LIBC_STYLE)), $(UCLIBC-OPT_VERSION), \
+        2.2.5)))))))
 
 LIBNSL_DIR=libnsl-$(LIBNSL_VERSION)
 LIBNSL_LIBNAME=libnsl
@@ -35,7 +22,7 @@ LIBNSL_PRIORITY=optional
 LIBNSL_DEPENDS=
 LIBNSL_CONFLICTS=uclibc
 
-LIBNSL_IPK_VERSION=3
+LIBNSL_IPK_VERSION=4
 
 LIBNSL_BUILD_DIR=$(BUILD_DIR)/libnsl
 LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
