@@ -1,6 +1,6 @@
---- wizd/wizd.h.orig	2005-05-15 13:07:23.380000000 +0000
-+++ wizd/wizd.h	2005-05-15 13:12:40.430000000 +0000
-@@ -60,15 +60,13 @@
+--- wizd_v24/wizd.h.orig	2006-11-02 11:45:38.000000000 +1030
++++ wizd_v24/wizd.h	2006-11-20 20:00:39.901510368 +1030
+@@ -61,9 +61,7 @@
  #ifdef NEED_CONFIG_FILE_DEFINITION
  char *config_file[] = {
  	"./wizd.conf",
@@ -11,14 +11,7 @@
  };
  #endif
  
- 
- #define	DEFAULT_FLAG_DEBUG_LOG_OUTPUT	FALSE
--#define	DEFAULT_DEBUG_LOG_FILENAME		"/tmp/wizd_debug.log"
-+#define	DEFAULT_DEBUG_LOG_FILENAME		"/opt/var/log/wizd_debug.log"
- 
- 
- #define	DEFAULT_FLAG_USE_SKIN		FALSE
-@@ -76,7 +74,7 @@
+@@ -77,7 +75,7 @@
  #define	DEFAULT_SKINDATA_NAME		"default"
  
  // execute path for CGI

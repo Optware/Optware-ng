@@ -1,0 +1,11 @@
+--- wizd/wizd_mp3.h.~1.1.1.1.~	2006-06-17 07:29:03.000000000 +0930
++++ wizd/wizd_mp3.h	2006-11-20 21:40:43.754785936 +1030
+@@ -33,7 +33,7 @@
+ #include <sys/stat.h>
+ #include <ctype.h>
+ #include <string.h>
+-#include <curses.h>
++#include <ncurses.h>
+ #include <signal.h>
+ #ifdef __CYGWIN32__
+ #include <getopt.h>

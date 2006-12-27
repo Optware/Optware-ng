@@ -1,0 +1,13 @@
+--- wizd/Makefile.orig	2006-11-20 21:33:06.327325480 +1030
++++ wizd/Makefile	2006-11-20 21:33:47.916003040 +1030
+@@ -16,8 +16,8 @@
+ LDFLAGS += -static -L/usr/local/lib -ljpeg -ldvdread
+ 
+ # keep the following lines only if you have the w32api library
+-LDFLAGS += -L/lib/w32api -lole32 -luuid
+-CFLAGS += -DHAVE_W32API
++# LDFLAGS += -L/lib/w32api -lole32 -luuid
++# CFLAGS += -DHAVE_W32API
+ 
+ ### --
+ LDFLAGS += -s	# strip symbols

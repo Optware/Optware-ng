@@ -27,10 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 #WIZD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wizd
-WIZD_VERSION=0_12h_pvb_21
+WIZD_VERSION=0_12h_pvb_24
 WIZD_SOURCE=wizd_$(WIZD_VERSION).tar.gz
 WIZD_REPOSITORY=:pserver:anonymous@wizd.cvs.sf.net:/cvsroot/wizd
-WIZD_TAG=-r v$(WIZD_VERSION)
+# WIZD_TAG=-r v$(WIZD_VERSION)
+WIZD_TAG=-D 20061110
 WIZD_MODULE=wizd
 WIZD_DIR=wizd_$(WIZD_VERSION)
 WIZD_UNZIP=zcat
@@ -55,7 +56,7 @@ WIZD_CONFFILES=/opt/etc/wizd.conf
 # WIZD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch
+WIZD_PATCHES=$(WIZD_SOURCE_DIR)/wizd.h.patch $(WIZD_SOURCE_DIR)/Makefile.patch $(WIZD_SOURCE_DIR)/wizd_http.c.patch $(WIZD_SOURCE_DIR)/wizd_menu.c.patch $(WIZD_SOURCE_DIR)/wizd_mp3.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +114,7 @@ wizd-source: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
-	$(MAKE) libdvdread-stage libjpeg-stage
+	$(MAKE) libdvdread-stage libjpeg-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	sed -i -e 's/\r//' $(BUILD_DIR)/$(WIZD_DIR)/wizd.conf
