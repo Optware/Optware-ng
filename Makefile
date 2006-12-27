@@ -923,7 +923,7 @@ host/.configured:
 		mkdir -p $* ; \
 		echo "OPTWARE_TARGET=$*" > $*/Makefile ; \
 		echo "include ../Makefile" >> $*/Makefile ; \
-		ln -s ../../downloads $*/downloads ; \
+		ln -s ../downloads $*/downloads ; \
 		ln -s ../make $*/make ; \
 		ln -s ../scripts $*/scripts ; \
 		ln -s ../sources $*/sources ; \
