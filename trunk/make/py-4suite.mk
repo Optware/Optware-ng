@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-4SUITE_SITE=http://cheeseshop.python.org/packages/source/4/4Suite-XML
-PY-4SUITE_VERSION=1.0
+PY-4SUITE_VERSION=1.0.2
 PY-4SUITE_SOURCE=4Suite-XML-$(PY-4SUITE_VERSION).tar.gz
 PY-4SUITE_DIR=4Suite-XML-$(PY-4SUITE_VERSION)
 PY-4SUITE_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-4SUITE_CONFLICTS=
 #
 # PY-4SUITE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-4SUITE_IPK_VERSION=2
+PY-4SUITE_IPK_VERSION=1
 
 #
 # PY-4SUITE_CONFFILES should be a list of user-editable files
