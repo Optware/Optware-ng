@@ -373,7 +373,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	chillispot clearsilver cyrus-imapd \
 	digitemp dovecot \
 	$(ERLANG_PACKAGES) \
-	e2tools eaccelerator esmtp esniper esound \
+	e2tools eaccelerator esniper esound \
 	findutils flex freeradius ftpd-topfield \
 	gconv-modules gdb groff gtk \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \

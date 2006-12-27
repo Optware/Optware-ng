@@ -37,7 +37,7 @@ LIBESMTP_CONFLICTS=
 #
 # LIBESMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBESMTP_IPK_VERSION=1
+LIBESMTP_IPK_VERSION=2
 
 #
 # LIBESMTP_CONFFILES should be a list of user-editable files
@@ -140,6 +140,7 @@ libesmtp: $(LIBESMTP_BUILD_DIR)/.built
 $(LIBESMTP_BUILD_DIR)/.staged: $(LIBESMTP_BUILD_DIR)/.built
 	rm -f $(LIBESMTP_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBESMTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libesmtp-config
 	touch $(LIBESMTP_BUILD_DIR)/.staged
 
 libesmtp-stage: $(LIBESMTP_BUILD_DIR)/.staged
