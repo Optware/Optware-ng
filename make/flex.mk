@@ -17,7 +17,7 @@ FLEX_PRIORITY=optional
 FLEX_DEPENDS=
 FLEX_CONFLICTS=
 
-FLEX_IPK_VERSION=2
+FLEX_IPK_VERSION=3
 
 FLEX_BUILD_DIR=$(BUILD_DIR)/flex
 FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
@@ -42,6 +42,7 @@ $(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE)
 		--prefix=/opt \
 	)
 	sed -i -e 's|/usr/bin|/opt/bin|'  $(FLEX_BUILD_DIR)/config.h
+	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)/include|' $(FLEX_BUILD_DIR)/Makefile
 	touch $(FLEX_BUILD_DIR)/.configured
 
 flex-unpack: $(FLEX_BUILD_DIR)/.configured

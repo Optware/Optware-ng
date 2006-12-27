@@ -374,7 +374,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	digitemp dovecot \
 	$(ERLANG_PACKAGES) \
 	e2tools eaccelerator esniper esound \
-	findutils flex freeradius ftpd-topfield \
+	freeradius ftpd-topfield \
 	gconv-modules gdb groff gtk \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu hpijs \
