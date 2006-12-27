@@ -382,7 +382,6 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	kissdx \
 	ldconfig libnsl libpcap libvorbis lsof \
 	madplay mc mdadm metalog minicom \
-	mod-fastcgi mod-python \
 	modutils monotone \
 	motion mp3blaster mpack mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
