@@ -392,7 +392,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	py-psycopg \
 	qemu quagga quickie \
 	rrdtool rtorrent rtpproxy \
-	samba sdl ser sm strace streamripper svn swi-prolog syslog-ng \
+	sdl ser sm strace streamripper svn swi-prolog syslog-ng \
 	tcl tcpwrappers tethereal textutils thttpd tnef tnftpd transcode \
 	unfs3 ushare vorbis-tools vte \
 	w3cam \
