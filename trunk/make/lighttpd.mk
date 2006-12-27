@@ -36,13 +36,17 @@ LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib
-LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap, openssl
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap-libs, openssl
+else
+LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openssl
+endif
 LIGHTTPD_CONFLICTS=
 
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=3
+LIGHTTPD_IPK_VERSION=5
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -115,7 +119,7 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
-ifneq ($(OPTWARE_TARGET), wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR)

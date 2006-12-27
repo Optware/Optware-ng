@@ -26,15 +26,14 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=2
+APR_UTIL_IPK_VERSION=4
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
 #
 APR_UTIL_LOCALES=
 
-# We need this because openldap does not build on the wl500g.
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 APR_UTIL_CONFIGURE_TARGET_ARGS= \
 		--with-ldap-library=$(STAGING_LIB_DIR) \
 		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
@@ -127,7 +126,7 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCH
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	$(MAKE) apr-stage

@@ -34,7 +34,7 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-ifeq (openldap, $(filter $(PACKAGES), openldap))
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS=popt, openldap-libs, readline, cups
 else
 SAMBA_DEPENDS=popt, readline, cups
@@ -173,7 +173,7 @@ samba-source: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
-ifeq (openldap, $(filter $(PACKAGES), openldap))
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
 	$(MAKE) cups-stage
