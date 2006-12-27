@@ -36,7 +36,7 @@ BSDMAINUTILS_CONFLICTS=
 #
 # BSDMAINUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDMAINUTILS_IPK_VERSION=1
+BSDMAINUTILS_IPK_VERSION=2
 
 #
 # BSDMAINUTILS_CONFFILES should be a list of user-editable files
@@ -52,7 +52,11 @@ BSDMAINUTILS_PATCHES=$(BSDMAINUTILS_SOURCE_DIR)/cal-weekstart-on-sunday.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+BSDMAINUTILS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses -DLINE_MAX=2048
+else
 BSDMAINUTILS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+endif
 BSDMAINUTILS_LDFLAGS=-lncurses
 
 #
