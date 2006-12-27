@@ -322,12 +322,8 @@ DS101G_SPECIFIC_PACKAGES = \
 DS101G_BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
 	bitlbee \
-	eaccelerator \
-	freeradius \
 	ldconfig \
-	mod-python ntop ntp \
 	qemu qemu-libc-i386 \
-	ser \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
 NAS100D_SPECIFIC_PACKAGES = ipkg-opt
@@ -389,7 +385,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	py-psycopg \
 	qemu quagga quickie \
 	rrdtool rtpproxy \
-	sdl ser sm streamripper swi-prolog syslog-ng \
+	sdl sm streamripper swi-prolog syslog-ng \
 	tcl tcpwrappers thttpd tnef tnftpd transcode \
 	unfs3 ushare vorbis-tools vte \
 	w3cam \
