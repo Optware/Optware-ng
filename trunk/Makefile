@@ -380,10 +380,8 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	heyu hpijs \
 	ice indent inetutils ircd-hybrid ivorbis-tools \
 	kissdx \
-	ldconfig libnsl libpcap libvorbis lsof \
-	madplay mc mdadm metalog minicom \
-	modutils monotone \
-	motion mp3blaster mpack mt-daapd mutt \
+	ldconfig libnsl libvorbis lsof \
+	madplay mc mdadm metalog minicom modutils monotone motion mp3blaster mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww \
 	$(PERL_PACKAGES) \
