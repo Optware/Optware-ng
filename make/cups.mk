@@ -28,7 +28,7 @@ CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-ifeq (openldap, $(filter $(PACKAGES), openldap))
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS=libjpeg, libpng, libtiff, openldap-libs, openssl, zlib
 else
 CUPS_DEPENDS=libjpeg, libpng, libtiff, openssl, zlib
@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=3
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -119,7 +119,7 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 	$(MAKE) openssl-stage zlib-stage libpng-stage
 	$(MAKE) libjpeg-stage libtiff-stage
-ifeq (openldap, $(filter $(PACKAGES), openldap))
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR)
