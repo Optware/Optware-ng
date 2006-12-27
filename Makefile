@@ -388,10 +388,10 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww \
 	$(PERL_PACKAGES) \
-	pango php-apache php-fcgi picocom poptop postfix procps puppy \
+	pango picocom poptop postfix procps puppy \
 	py-psycopg \
 	qemu quagga quickie \
-	rrdtool rtorrent rtpproxy \
+	rrdtool rtpproxy \
 	sdl ser sm strace streamripper svn swi-prolog syslog-ng \
 	tcl tcpwrappers tethereal textutils thttpd tnef tnftpd transcode \
 	unfs3 ushare vorbis-tools vte \
