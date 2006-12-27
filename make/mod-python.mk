@@ -37,7 +37,7 @@ MOD_PYTHON_CONFLICTS=
 #
 # MOD_PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_PYTHON_IPK_VERSION=1
+MOD_PYTHON_IPK_VERSION=2
 
 #
 # MOD_PYTHON_CONFFILES should be a list of user-editable files
@@ -121,7 +121,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-apxs=$(STAGING_DIR)/opt/sbin/apxs \
-		--with-python=python2.4 \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.4 \
 		--disable-nls \
 	    ; \
             ( \
@@ -130,7 +130,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
                 echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
                 echo "rpath=/opt/lib"; \
                 echo "[build_scripts]"; \
-                echo "executable=/opt/bin/python"; \
+                echo "executable=/opt/bin/python2.4"; \
                 echo "[install]"; \
                 echo "prefix=/opt"; \
             ) > $(MOD_PYTHON_BUILD_DIR)/dist/setup.cfg; \
