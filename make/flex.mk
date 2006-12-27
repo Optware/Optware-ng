@@ -14,10 +14,10 @@ FLEX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FLEX_DESCRIPTION=Generates programs that perform pattern-matching on text.
 FLEX_SECTION=devel
 FLEX_PRIORITY=optional
-FLEX_DEPENDS=
+FLEX_DEPENDS=m4
 FLEX_CONFLICTS=
 
-FLEX_IPK_VERSION=3
+FLEX_IPK_VERSION=4
 
 FLEX_BUILD_DIR=$(BUILD_DIR)/flex
 FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
