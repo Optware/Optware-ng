@@ -96,6 +96,7 @@ $(GROFF_BUILD_DIR)/.configured: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=\$$\(DESTDIR\)/opt \
+		--without-x \
 		--disable-nls \
 	)
 	touch $(GROFF_BUILD_DIR)/.configured
@@ -129,14 +130,8 @@ $(GROFF_IPK_DIR)/CONTROL/control:
 
 $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
 	rm -rf $(GROFF_IPK_DIR) $(BUILD_DIR)/groff_*_$(TARGET_ARCH).ipk
-	install -d $(GROFF_IPK_DIR)/opt/bin
+	install -d $(GROFF_IPK_DIR)/opt
 	install -d $(GROFF_IPK_DIR)/opt/info
-	install -d $(GROFF_IPK_DIR)/opt/lib/groff/site-tmac
-	install -d $(GROFF_IPK_DIR)/opt/man/man1
-	install -d $(GROFF_IPK_DIR)/opt/man/man5
-	install -d $(GROFF_IPK_DIR)/opt/man/man7
-	install -d $(GROFF_IPK_DIR)/opt/share/groff/1.19.1
-	install -d $(GROFF_IPK_DIR)/opt/share/doc/groff/1.19.1
 	$(MAKE) -C $(GROFF_BUILD_DIR) DESTDIR=$(GROFF_IPK_DIR) install
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/addftinfo
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/eqn
