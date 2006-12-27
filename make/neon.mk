@@ -42,7 +42,7 @@ NEON_CONFLICTS=
 #
 # NEON_IPK_VERSION should be incremented when the ipk changes.
 #
-NEON_IPK_VERSION=1
+NEON_IPK_VERSION=2
 
 #
 # NEON_CONFFILES should be a list of user-editable files
@@ -154,6 +154,8 @@ $(NEON_BUILD_DIR)/.staged: $(NEON_BUILD_DIR)/.built
 	rm -f $(NEON_BUILD_DIR)/.staged
 	$(MAKE) -C $(NEON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -e "s:echo \$${libdir}/libneon.la:echo $(STAGING_DIR)/\$${libdir}/libneon.la:" <$(NEON_BUILD_DIR)/neon-config >$(STAGING_DIR)/opt/bin/neon-config
+	sed -ie '/echo/s|-I$${includedir}/neon|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/neon-config
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/neon.pc
 	touch $(NEON_BUILD_DIR)/.staged
 
 neon-stage: $(NEON_BUILD_DIR)/.staged
