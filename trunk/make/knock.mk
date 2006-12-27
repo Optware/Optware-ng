@@ -17,7 +17,7 @@ KNOCK_PRIORITY=optional
 #
 # KNOCK_IPK_VERSION should be incremented when the ipk changes.
 #
-KNOCK_IPK_VERSION=1
+KNOCK_IPK_VERSION=2
 
 #
 # KNOCK_CONFFILES should be a list of user-editable files
@@ -28,9 +28,12 @@ KNOCK_CONFFILES=/etc/knockd.conf /opt/etc/init.d/S05knockd
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+KNOCK_CPPFLAGS=-DPATH_MAX=4096
+else
 KNOCK_CPPFLAGS=
+endif
 KNOCK_LDFLAGS=
-KNOCK_CFLAGS=$(TARGET_CFLAGS) 
 
 #
 # KNOCK_BUILD_DIR is the directory in which the build is done.
@@ -45,6 +48,8 @@ KNOCK_BUILD_DIR=$(BUILD_DIR)/knock
 KNOCK_SOURCE_DIR=$(SOURCE_DIR)/knock
 KNOCK_IPK_DIR=$(BUILD_DIR)/knock-$(KNOCK_VERSION)-ipk
 KNOCK_IPK=$(BUILD_DIR)/knock_$(KNOCK_VERSION)-$(KNOCK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: knock-source knock-unpack knock knock-stage knock-ipk knock-clean knock-dirclean knock-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -87,7 +92,7 @@ $(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE)
 	fi
 	(cd $(KNOCK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(KNOCK_CPPFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KNOCK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(KNOCK_LDFLAGS)" \
 		./configure \
@@ -188,3 +193,9 @@ knock-clean:
 #
 knock-dirclean:
 	rm -rf $(BUILD_DIR)/$(KNOCK_DIR) $(KNOCK_BUILD_DIR) $(KNOCK_IPK_DIR) $(KNOCK_IPK)
+
+#
+# Some sanity check for the package.
+#
+knock-check: $(KNOCK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(KNOCK_IPK)

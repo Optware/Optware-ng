@@ -379,7 +379,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu hpijs \
 	ice indent inetutils ircd-hybrid ivorbis-tools \
-	kissdx knock \
+	kissdx \
 	ldconfig libnsl libpcap libvorbis lsof \
 	madplay mc mdadm metalog minicom \
 	mod-fastcgi mod-python \
