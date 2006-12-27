@@ -57,7 +57,11 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+KISSDX_CPPFLAGS=-DPATH_MAX=4096
+else
 KISSDX_CPPFLAGS=
+endif
 KISSDX_LDFLAGS=-s
 
 #
