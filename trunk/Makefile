@@ -373,10 +373,10 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	freeradius ftpd-topfield \
 	gconv-modules gdb gtk \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
-	heyu hpijs \
-	ice indent inetutils ircd-hybrid ivorbis-tools \
+	heyu \
+	ice ircd-hybrid ivorbis-tools \
 	ldconfig libvorbis lsof \
-	madplay mc mdadm metalog minicom modutils monotone motion mp3blaster mt-daapd mutt \
+	madplay mc metalog modutils monotone motion mp3blaster mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww \
 	pango picocom poptop puppy \
