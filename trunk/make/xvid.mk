@@ -15,9 +15,9 @@
 # You should change all these variables to suit your package.
 #
 XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
-XVID_VERSION=20060306
+XVID_VERSION=20061226
 XVID_SOURCE=xvid-$(XVID_VERSION).tar.gz
-XVID_TAG=-D 2006-03-06
+XVID_TAG=-D 2006-12-26
 XVID_MODULE=xvidcore
 XVID_DIR=xvid-$(XVID_VERSION)
 XVID_UNZIP=zcat
@@ -37,7 +37,7 @@ XVID_IPK_VERSION=1
 # XVID_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#XVID_PATCHES=$(XVID_SOURCE_DIR)/patch.PATH
+XVID_PATCHES=$(XVID_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -70,6 +70,7 @@ $(DL_DIR)/$(XVID_SOURCE):
 	cd $(DL_DIR) ; tar zcvf $(XVID_SOURCE) $(XVID_DIR)
 	rm -rf $(DL_DIR)/$(XVID_DIR)
 
+.PHONY: xvid-source xvid-unpack xvid xvid-stage xvid-ipk xvid-clean xvid-dirclean xvid-check
 
 
 #
@@ -97,7 +98,7 @@ xvid-source: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES)
 $(XVID_BUILD_DIR)/.configured: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES)
 	rm -rf $(BUILD_DIR)/$(XVID_DIR) $(XVID_BUILD_DIR)
 	$(XVID_UNZIP) $(DL_DIR)/$(XVID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(XVID_PATCHES) | patch -d $(BUILD_DIR)/$(XVID_DIR) -p1
+	cat $(XVID_PATCHES) | patch -d $(BUILD_DIR)/$(XVID_DIR) -p1
 	mv $(BUILD_DIR)/$(XVID_DIR) $(XVID_BUILD_DIR)
 	(cd $(XVID_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
@@ -203,3 +204,9 @@ xvid-clean:
 #
 xvid-dirclean:
 	rm -rf $(BUILD_DIR)/$(XVID_DIR) $(XVID_BUILD_DIR) $(XVID_IPK_DIR) $(XVID_IPK)
+#
+#
+# Some sanity check for the package.
+#
+xvid-check: $(XVID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XVID_IPK)

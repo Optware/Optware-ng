@@ -1,0 +1,10 @@
+--- xvid/build/generic/configure.in.orig	2006-12-28 13:48:13.000000000 +0100
++++ xvid/build/generic/configure.in	2006-12-28 13:48:27.000000000 +0100
+@@ -25,7 +25,6 @@
+ our_cflags_defaults="$our_cflags_defaults -O2"
+ our_cflags_defaults="$our_cflags_defaults -fstrength-reduce"
+ our_cflags_defaults="$our_cflags_defaults -finline-functions"
+-our_cflags_defaults="$our_cflags_defaults -freduce-all-givs"
+ our_cflags_defaults="$our_cflags_defaults -ffast-math"
+ our_cflags_defaults="$our_cflags_defaults -fomit-frame-pointer"
+ 
