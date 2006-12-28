@@ -22,7 +22,7 @@
 #
 ASTERISK14_GUI_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/asterisk14-gui
 ASTERISK14_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/trunk
-ASTERISK14_GUI_SVN_REV=193
+ASTERISK14_GUI_SVN_REV=195
 ASTERISK14_GUI_VERSION=0.0.0svn-r$(ASTERISK14_GUI_SVN_REV)
 ASTERISK14_GUI_SOURCE=asterisk14-gui-$(ASTERISK14_GUI_VERSION).tar.gz
 ASTERISK14_GUI_DIR=asterisk14-gui
@@ -32,7 +32,7 @@ ASTERISK14_GUI_DESCRIPTION=Asterisk-GUI is a framework for the \
 creation of graphical interfaces for configuring Asterisk.
 ASTERISK14_GUI_SECTION=util
 ASTERISK14_GUI_PRIORITY=optional
-ASTERISK14_GUI_DEPENDS=asterisk14
+ASTERISK14_GUI_DEPENDS=asterisk14,procps,coreutils
 ASTERISK14_GUI_SUGGESTS=
 ASTERISK14_GUI_CONFLICTS=asterisk,asterisk-sounds
 
@@ -45,7 +45,7 @@ ASTERISK14_GUI_IPK_VERSION=1
 # ASTERISK14_GUI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ASTERISK14_GUI_PATCHES=$(ASTERISK14_GUI_SOURCE_DIR)/configure.patch
+ASTERISK14_GUI_PATCHES=$(ASTERISK14_GUI_SOURCE_DIR)/gui_sysinfo.patch $(ASTERISK14_GUI_SOURCE_DIR)/sysinfo.html.patch
 
 #
 # If the compilation of the package requires additional
@@ -115,7 +115,7 @@ $(ASTERISK14_GUI_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_GUI_SOURCE) $(AS
 	$(ASTERISK14_GUI_UNZIP) $(DL_DIR)/$(ASTERISK14_GUI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_GUI_PATCHES)" ; \
 		then cat $(ASTERISK14_GUI_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK14_GUI_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(ASTERISK14_GUI_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK14_GUI_DIR)" != "$(ASTERISK14_GUI_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_GUI_DIR) $(ASTERISK14_GUI_BUILD_DIR) ; \
