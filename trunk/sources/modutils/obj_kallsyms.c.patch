@@ -1,0 +1,24 @@
+--- modutils-2.4.27/obj/obj_kallsyms.c	2002-03-01 01:39:06.000000000 +0100
++++ modutils/obj/obj_kallsyms.c	2006-12-28 14:27:44.000000000 +0100
+@@ -200,8 +200,8 @@
+ 
+     /* Initial contents, header + one entry per input section.  No strings. */
+     osec->header.sh_size = sizeof(*a_hdr) + loaded*sizeof(*a_sec);
+-    a_hdr = (struct kallsyms_header *) osec->contents =
+-    	xmalloc(osec->header.sh_size);
++    a_hdr =  osec->contents =
++    	 (struct kallsyms_header *) xmalloc(osec->header.sh_size);
+     memset(osec->contents, 0, osec->header.sh_size);
+     a_hdr->size = sizeof(*a_hdr);
+     a_hdr->sections = loaded;
+@@ -275,8 +275,8 @@
+ 	a_hdr->symbol_off +
+ 	a_hdr->symbols*a_hdr->symbol_size +
+ 	strings_size - strings_left;
+-    a_hdr = (struct kallsyms_header *) osec->contents =
+-	xrealloc(a_hdr, a_hdr->total_size);
++    a_hdr =  osec->contents =
++     (struct kallsyms_header *) xrealloc(a_hdr, a_hdr->total_size);
+     p = (char *)a_hdr + a_hdr->symbol_off;
+     memcpy(p, symbols, a_hdr->symbols*a_hdr->symbol_size);
+     free(symbols);
