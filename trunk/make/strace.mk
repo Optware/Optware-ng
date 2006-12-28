@@ -28,7 +28,7 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=4
+STRACE_IPK_VERSION=5
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
@@ -100,6 +100,9 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
                 patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
         fi
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
+ifeq ($(OPTWARE_TARGET), slugosbe)
+	sed -i -e '/CTL_PROC/d' $(STRACE_BUILD_DIR)/system.c
+endif
 	(cd $(STRACE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STRACE_CPPFLAGS)" \
