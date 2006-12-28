@@ -35,7 +35,7 @@ LIBVORBIS_CONFLICTS=
 #
 # LIBVORBIS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBIS_IPK_VERSION=3
+LIBVORBIS_IPK_VERSION=4
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ LIBVORBIS_IPK_VERSION=3
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBVORBIS_CPPFLAGS=
+LIBVORBIS_CPPFLAGS=-D__USE_EXTERN_INLINES 
 LIBVORBIS_LDFLAGS=
 
 #
@@ -110,7 +110,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	fi
 	(cd $(LIBVORBIS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBIS_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBIS_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -121,6 +121,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(LIBVORBIS_BUILD_DIR)/libtool
+	sed -i -e 's/examples//g' $(LIBVORBIS_BUILD_DIR)/Makefile
 	touch $(LIBVORBIS_BUILD_DIR)/.configured
 
 libvorbis-unpack: $(LIBVORBIS_BUILD_DIR)/.configured
@@ -131,6 +132,8 @@ libvorbis-unpack: $(LIBVORBIS_BUILD_DIR)/.configured
 #
 $(LIBVORBIS_BUILD_DIR)/.built: $(LIBVORBIS_BUILD_DIR)/.configured
 	rm -f $(LIBVORBIS_BUILD_DIR)/.built
+	CFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBIS_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBIS_LDFLAGS)" \
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR)
 	touch $(LIBVORBIS_BUILD_DIR)/.built
 
@@ -206,3 +209,8 @@ libvorbis-clean:
 #
 libvorbis-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBVORBIS_DIR) $(LIBVORBIS_BUILD_DIR) $(LIBVORBIS_IPK_DIR) $(LIBVORBIS_IPK)
+#
+# Some sanity check for the package.
+#
+libvorbis-check: $(LIBVORBIS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBVORBIS_IPK)
