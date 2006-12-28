@@ -360,7 +360,8 @@ TS72XX_BROKEN_PACKAGES = \
 	sablevm tethereal transcode w3m xvid \
 
 # Packages that *only* work for slugosbe - do not just put new packages here.
-SLUGOSBE_SPECIFIC_PACKAGES = 
+SLUGOSBE_SPECIFIC_PACKAGES = \
+	slugosbe-bootstrap \
 
 # Packages that do not work for slugosbe.
 SLUGOSBE_BROKEN_PACKAGES = \
@@ -382,7 +383,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	py-psycopg \
 	qemu quagga quickie \
 	rtpproxy \
-	sdl sm strace streamripper syslog-ng \
+	sdl sm streamripper syslog-ng \
 	tcl tcpwrappers tnef transcode \
 	unfs3 ushare vorbis-tools vte \
 	w3cam \
