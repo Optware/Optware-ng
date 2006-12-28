@@ -361,7 +361,7 @@ TS72XX_BROKEN_PACKAGES = \
 
 # Packages that *only* work for slugosbe - do not just put new packages here.
 SLUGOSBE_SPECIFIC_PACKAGES = \
-	slugosbe-bootstrap \
+	ipkg-opt \
 
 # Packages that do not work for slugosbe.
 SLUGOSBE_BROKEN_PACKAGES = \
