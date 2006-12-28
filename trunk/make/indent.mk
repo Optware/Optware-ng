@@ -36,7 +36,7 @@ INDENT_CONFLICTS=
 #
 # INDENT_IPK_VERSION should be incremented when the ipk changes.
 #
-INDENT_IPK_VERSION=1
+INDENT_IPK_VERSION=2
 
 #
 # INDENT_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ INDENT_IPK_VERSION=1
 # INDENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#INDENT_PATCHES=$(INDENT_SOURCE_DIR)/configure.patch
+INDENT_PATCHES=$(INDENT_SOURCE_DIR)/output.c.path
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +113,7 @@ $(INDENT_BUILD_DIR)/.configured: $(DL_DIR)/$(INDENT_SOURCE) $(INDENT_PATCHES) ma
 	$(INDENT_UNZIP) $(DL_DIR)/$(INDENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(INDENT_PATCHES)" ; \
 		then cat $(INDENT_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(INDENT_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(INDENT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(INDENT_DIR)" != "$(INDENT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(INDENT_DIR) $(INDENT_BUILD_DIR) ; \
