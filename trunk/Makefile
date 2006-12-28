@@ -367,7 +367,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat asterisk asterisk14 atftp \
 	bitlbee bluez-utils bzflag \
-	chillispot clearsilver cyrus-imapd digitemp \
+	chillispot cyrus-imapd digitemp \
 	$(ERLANG_PACKAGES) \
 	eaccelerator esniper esound \
 	freeradius ftpd-topfield \

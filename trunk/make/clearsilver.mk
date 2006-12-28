@@ -36,7 +36,7 @@ CLEARSILVER_CONFLICTS=
 #
 # CLEARSILVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CLEARSILVER_IPK_VERSION=2
+CLEARSILVER_IPK_VERSION=3
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ clearsilver-source: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSILVER_PATCHES)
 # shown below to make various patches to it.
 #
 $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSILVER_PATCHES)
-	$(MAKE) zlib-stage
+	$(MAKE) python-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(CLEARSILVER_DIR) $(CLEARSILVER_BUILD_DIR)
 	$(CLEARSILVER_UNZIP) $(DL_DIR)/$(CLEARSILVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLEARSILVER_PATCHES)" ; \
@@ -120,7 +120,7 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > python/setup.cfg; \
@@ -145,6 +145,7 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 		--disable-java \
 		--disable-perl \
 		--enable-python \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.4 \
 		--disable-ruby \
 		--disable-nls \
 		--disable-static \
