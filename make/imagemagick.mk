@@ -21,8 +21,8 @@
 #
 #http://$(SOURCEFORGE_MIRROR)/sourceforge/imagemagick/ImageMagick-6.1.7-5.tar.gz
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
-IMAGEMAGICK_VERSION=6.3.0
-IMAGEMAGICK_REV=5
+IMAGEMAGICK_VERSION=6.3.1
+IMAGEMAGICK_REV=4
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
@@ -43,7 +43,9 @@ IMAGEMAGICK_IPK_VERSION=1
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#IMAGEMAGICK_PATCHES=$(IMAGEMAGICK_SOURCE_DIR)/configure.patch
+ifeq ($(LIBC_STYLE), uclibc)
+IMAGEMAGICK_PATCHES=$(IMAGEMAGICK_SOURCE_DIR)/uClibc-errno.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -101,8 +103,13 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 	make zlib-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(IMAGEMAGICK_PATCHES) | patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1
-	mv $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
+	if test -n "$(IMAGEMAGICK_PATCHES)" ; \
+		then cat $(IMAGEMAGICK_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(IMAGEMAGICK_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(IMAGEMAGICK_DIR)" != "$(IMAGEMAGICK_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR) ; \
+	fi
 	(cd $(IMAGEMAGICK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IMAGEMAGICK_CPPFLAGS)" \
