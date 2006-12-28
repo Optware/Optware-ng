@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 MDADM_SITE=http://www.cse.unsw.edu.au/~neilb/source/mdadm/
-MDADM_VERSION=1.8.0
+MDADM_VERSION=2.6
 MDADM_SOURCE=mdadm-$(MDADM_VERSION).tgz
 MDADM_DIR=mdadm-$(MDADM_VERSION)
 MDADM_UNZIP=zcat
@@ -63,6 +63,8 @@ MDADM_BUILD_DIR=$(BUILD_DIR)/mdadm
 MDADM_SOURCE_DIR=$(SOURCE_DIR)/mdadm
 MDADM_IPK_DIR=$(BUILD_DIR)/mdadm-$(MDADM_VERSION)-ipk
 MDADM_IPK=$(BUILD_DIR)/mdadm_$(MDADM_VERSION)-$(MDADM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: mdadm-source mdadm-unpack mdadm mdadm-stage mdadm-ipk mdadm-clean mdadm-dirclean mdadm-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -180,3 +182,9 @@ mdadm-clean:
 #
 mdadm-dirclean:
 	rm -rf $(BUILD_DIR)/$(MDADM_DIR) $(MDADM_BUILD_DIR) $(MDADM_IPK_DIR) $(MDADM_IPK)
+#
+#
+# Some sanity check for the package.
+#
+mdadm-check: $(MDADM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MDADM_IPK)
