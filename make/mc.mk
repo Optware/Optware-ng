@@ -19,7 +19,7 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=3
+MC_IPK_VERSION=4
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -28,7 +28,7 @@ MC_IPK_VERSION=3
 ifeq ($(OPTWARE_TARGET),wl500g)
 MC_PATCHES=$(MC_SOURCE_DIR)/stropts.patch
 else
-MC_PATCHES=
+MC_PATCHES=$(MC_SOURCE_DIR)/static-declaration.patch
 endif
 
 #
