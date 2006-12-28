@@ -5,7 +5,7 @@
 ###########################################################
 
 IRCD_HYBRID_DIR=$(BUILD_DIR)/ircd-hybrid
-IRCD_HYBRID_VERSION=7.0.3
+IRCD_HYBRID_VERSION=7.2.2
 IRCD_HYBRID=ircd-hybrid-$(IRCD_HYBRID_VERSION)
 IRCD_HYBRID_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ircd-hybrid
 IRCD_HYBRID_SOURCE_ARCHIVE=$(IRCD_HYBRID).tgz
@@ -18,10 +18,16 @@ IRCD_HYBRID_DEPENDS=zlib, flex
 IRCD_HYBRID_SUGGESTS=
 IRCD_HYBRID_CONFLICTS=
 
-IRCD_HYBRID_IPK_VERSION=3
+IRCD_HYBRID_IPK_VERSION=1
 
 IRCD_HYBRID_IPK=$(BUILD_DIR)/ircd-hybrid_$(IRCD_HYBRID_VERSION)-$(IRCD_HYBRID_IPK_VERSION)_$(TARGET_ARCH).ipk
 IRCD_HYBRID_IPK_DIR=$(BUILD_DIR)/ircd-hybrid-$(IRCD_HYBRID_VERSION)-ipk
+
+ifeq ($(LIBC_STYLE), uclibc)
+IRCD_HYBRID_CONFIGURE_OPTS=ac_cv_func_dlinfo=no
+else
+IRCD_HYBRID_CONFIGURE_OPTS=
+endif
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -59,6 +65,7 @@ $(IRCD_HYBRID_DIR)/.configured: $(IRCD_HYBRID_DIR)/.source
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="-L $(IRCD_HYBRID_DIR)/adns $(STAGING_LDFLAGS)" \
+		$(IRCD_HYBRID_CONFIGURE_OPTS) \
 		./configure \
 			--build=$(GNU_HOST_NAME) \
 			--host=$(GNU_TARGET_NAME) \
@@ -107,7 +114,7 @@ $(IRCD_HYBRID_IPK): $(IRCD_HYBRID_DIR)/src/ircd
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(IRCD_HYBRID_DIR)/src/ircd -o $(IRCD_HYBRID_IPK_DIR)/opt/bin/ircd
 	install -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
-	install -m 644 $(IRCD_HYBRID_DIR)/doc/simple.conf $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
+	install -m 644 $(IRCD_HYBRID_DIR)/etc/simple.conf $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
 	$(MAKE) $(IRCD_HYBRID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IRCD_HYBRID_IPK_DIR)
 
@@ -137,3 +144,9 @@ ircd-hybrid-distclean:
 #
 ircd-hybrid-dirclean:
 	rm -rf $(IRCD_HYBRID_DIR) $(IRCD_HYBRID_IPK_DIR) $(IRCD_HYBRID_IPK)
+#
+#
+# Some sanity check for the package.
+#
+ircd-hybrid-check: $(IRCD_HYBRID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IRCD_HYBRID_IPK)
