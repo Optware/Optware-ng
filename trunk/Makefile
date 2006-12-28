@@ -379,11 +379,10 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
 	sdl sm streamripper syslog-ng \
-	tcl tcpwrappers tnef transcode \
+	tcpwrappers tnef transcode \
 	unfs3 ushare vorbis-tools vte \
 	w3cam \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
-	xvid \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 
