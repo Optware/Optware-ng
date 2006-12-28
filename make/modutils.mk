@@ -25,7 +25,7 @@ MODUTILS_CONFLICTS=
 #
 # MODUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-MODUTILS_IPK_VERSION=1
+MODUTILS_IPK_VERSION=2
 
 #
 # MODUTILS_CONFFILES should be a list of user-editable files
@@ -37,7 +37,14 @@ MODUTILS_CONFFILES=/opt/etc/init.d/S01modutils
 #
 MODUTILS_PATCHES=\
 	$(MODUTILS_SOURCE_DIR)/fix-path.diff \
-	$(MODUTILS_SOURCE_DIR)/genksyms.diff
+	$(MODUTILS_SOURCE_DIR)/genksyms.diff \
+	$(MODUTILS_SOURCE_DIR)/logging.patch \
+	$(MODUTILS_SOURCE_DIR)/obj_kallsyms.c.patch \
+	$(MODUTILS_SOURCE_DIR)/obj_mips.c.patch \
+	$(MODUTILS_SOURCE_DIR)/insmod.c.patch \
+	$(MODUTILS_SOURCE_DIR)/genksyms.c.patch \
+	$(MODUTILS_SOURCE_DIR)/depmod.c.patch
+
 
 #
 # If the compilation of the package requires additional
@@ -209,3 +216,9 @@ modutils-clean:
 #
 modutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(MODUTILS_DIR) $(MODUTILS_BUILD_DIR) $(MODUTILS_IPK_DIR) $(MODUTILS_IPK)
+#
+#
+# Some sanity check for the package.
+#
+modutils-check: $(MODUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MODUTILS_IPK)
