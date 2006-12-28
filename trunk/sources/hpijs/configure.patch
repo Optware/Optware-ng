@@ -1,0 +1,25 @@
+--- hpijs/configure.orig	2006-12-28 14:05:47.000000000 +0100
++++ hpijs/configure	2006-12-28 14:08:24.000000000 +0100
+@@ -4850,11 +4850,11 @@
+       ;;
+ esac
+ 
+-CUPSSEARCHPATH="/usr/share /usr/local/share /usr/lib /usr/local/lib /usr/libexec /opt /usr/lib64"
++CUPSSEARCHPATH="/opt"
+ 
+ echo "$as_me:$LINENO: checking \"for cups ppd path\"" >&5
+ echo $ECHO_N "checking \"for cups ppd path\"... $ECHO_C" >&6
+-CUPS_PPD_PATH="/usr/share/cups/model"
++CUPS_PPD_PATH="/opt/share/cups/model"
+ for i in $CUPSSEARCHPATH; do
+    if test -d "$i/cups/model"; then
+       CUPS_PPD_PATH="$i/cups/model"
+@@ -4867,7 +4867,7 @@
+ 
+ echo "$as_me:$LINENO: checking \"for cups filter path\"" >&5
+ echo $ECHO_N "checking \"for cups filter path\"... $ECHO_C" >&6
+-CUPS_FILTER_PATH="/usr/lib/cups/filter"
++CUPS_FILTER_PATH="/opt/lib/cups/filter"
+ for i in $CUPSSEARCHPATH; do
+    if test -d "$i/cups/filter"; then
+       CUPS_FILTER_PATH="$i/cups/filter"
