@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPIJS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hpinkjet/
-HPIJS_VERSION=1.7.1
+HPIJS_VERSION=2.1.4
 HPIJS_SOURCE=hpijs-$(HPIJS_VERSION).tar.gz
 HPIJS_DIR=hpijs-$(HPIJS_VERSION)
 HPIJS_UNZIP=zcat
@@ -51,7 +51,7 @@ HPIJS_CONFFILES=
 # HPIJS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# HPIJS_PATCHES=$(HPIJS_SOURCE_DIR)/configure.patch
+HPIJS_PATCHES=$(HPIJS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -73,6 +73,8 @@ HPIJS_BUILD_DIR=$(BUILD_DIR)/hpijs
 HPIJS_SOURCE_DIR=$(SOURCE_DIR)/hpijs
 HPIJS_IPK_DIR=$(BUILD_DIR)/hpijs-$(HPIJS_VERSION)-ipk
 HPIJS_IPK=$(BUILD_DIR)/hpijs_$(HPIJS_VERSION)-$(HPIJS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: hpijs-source hpijs-unpack hpijs hpijs-stage hpijs-ipk hpijs-clean hpijs-dirclean hpijs-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -107,7 +109,7 @@ $(HPIJS_BUILD_DIR)/.configured: $(DL_DIR)/$(HPIJS_SOURCE) $(HPIJS_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(HPIJS_DIR) $(HPIJS_BUILD_DIR)
 	$(HPIJS_UNZIP) $(DL_DIR)/$(HPIJS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(HPIJS_PATCHES) | patch -d $(BUILD_DIR)/$(HPIJS_DIR) -p1
+	cat $(HPIJS_PATCHES) | patch -d $(BUILD_DIR)/$(HPIJS_DIR) -p1
 	mv $(BUILD_DIR)/$(HPIJS_DIR) $(HPIJS_BUILD_DIR)
 	(cd $(HPIJS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -209,3 +211,9 @@ hpijs-clean:
 hpijs-dirclean:
 	rm -rf $(BUILD_DIR)/$(HPIJS_DIR) $(HPIJS_BUILD_DIR) $(HPIJS_IPK_DIR) $(HPIJS_IPK)
 
+#
+#
+# Some sanity check for the package.
+#
+hpijs-check: $(HPIJS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HPIJS_IPK)
