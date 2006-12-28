@@ -378,7 +378,6 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	madplay mc mdadm metalog minicom modutils monotone motion mp3blaster mt-daapd mutt \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww \
-	$(PERL_PACKAGES) \
 	pango picocom poptop puppy \
 	py-psycopg \
 	qemu quagga quickie \
@@ -475,7 +474,7 @@ TARGET_OS=linux
 endif
 
 ifeq ($(OPTWARE_TARGET),slugosbe)
-PACKAGES = $(filter-out $(SLUGOSBE_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(SLUGOSBE_SPECIFIC_PACKAGES))
+PACKAGES = $(filter-out $(SLUGOSBE_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(SLUGOSBE_SPECIFIC_PACKAGES))
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 TARGET_ARCH=armeb
 TARGET_OS=linux
