@@ -41,7 +41,7 @@ MINICOM_CONFLICTS=
 #
 # MINICOM_IPK_VERSION should be incremented when the ipk changes.
 #
-MINICOM_IPK_VERSION=1
+MINICOM_IPK_VERSION=2
 
 #
 # MINICOM_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ MINICOM_CONFFILES=/opt/etc/minirc.dfl
 # MINICOM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/configure.patch
+MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/windowc.patch
 
 #
 # If the compilation of the package requires additional
@@ -74,6 +74,7 @@ MINICOM_SOURCE_DIR=$(SOURCE_DIR)/minicom
 MINICOM_IPK_DIR=$(BUILD_DIR)/minicom-$(MINICOM_VERSION)-ipk
 MINICOM_IPK=$(BUILD_DIR)/minicom_$(MINICOM_VERSION)-$(MINICOM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: minicom-source minicom-unpack minicom minicom-stage minicom-ipk minicom-clean minicom-dirclean minicom-check
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -107,7 +108,7 @@ $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1
+	cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1
 	mv $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
 	(cd $(MINICOM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -180,6 +181,9 @@ $(MINICOM_IPK_DIR)/CONTROL/control:
 $(MINICOM_IPK): $(MINICOM_BUILD_DIR)/.built
 	rm -rf $(MINICOM_IPK_DIR) $(BUILD_DIR)/minicom_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINICOM_BUILD_DIR) DESTDIR=$(MINICOM_IPK_DIR) install
+	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/ascii-xfr
+	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/minicom
+	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/runscript
 	install -d $(MINICOM_IPK_DIR)/opt/etc/
 	install -m 755 $(MINICOM_BUILD_DIR)/doc/minirc.dfl $(MINICOM_IPK_DIR)/opt/etc/minirc.dfl
 	$(MAKE) $(MINICOM_IPK_DIR)/CONTROL/control
@@ -203,3 +207,9 @@ minicom-clean:
 #
 minicom-dirclean:
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR) $(MINICOM_IPK_DIR) $(MINICOM_IPK)
+#
+#
+# Some sanity check for the package.
+#
+minicom-check: $(MINICOM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MINICOM_IPK)
