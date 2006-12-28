@@ -28,7 +28,7 @@
 #
 INETUTILS_NAME=inetutils
 INETUTILS_SITE=ftp://ftp.gnu.org/pub/gnu/inetutils
-INETUTILS_VERSION=1.4.2
+INETUTILS_VERSION=1.5
 INETUTILS_SOURCE=$(INETUTILS_NAME)-$(INETUTILS_VERSION).tar.gz
 INETUTILS_DIR=$(INETUTILS_NAME)-$(INETUTILS_VERSION)
 INETUTILS_UNZIP=zcat
@@ -41,7 +41,7 @@ INETUTILS_DEPENDS=ncurses, zlib
 #
 # INETUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-INETUTILS_IPK_VERSION=5
+INETUTILS_IPK_VERSION=1
 
 #
 # INETUTILS_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ INETUTILS_BUILD_DIR=$(BUILD_DIR)/inetutils
 INETUTILS_SOURCE_DIR=$(SOURCE_DIR)/inetutils
 INETUTILS_IPK_DIR=$(BUILD_DIR)/inetutils-$(INETUTILS_VERSION)-ipk
 INETUTILS_IPK=$(BUILD_DIR)/inetutils_$(INETUTILS_VERSION)-$(INETUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: inetutils-source inetutils-unpack inetutils inetutils-stage inetutils-ipk inetutils-clean inetutils-dirclean inetutils-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -213,3 +215,9 @@ inetutils-clean:
 #
 inetutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(INETUTILS_DIR) $(INETUTILS_BUILD_DIR) $(INETUTILS_IPK_DIR) $(INETUTILS_IPK)
+#
+#
+# Some sanity check for the package.
+#
+inetutils-check: $(INETUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(INETUTILS_IPK)
