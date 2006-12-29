@@ -36,7 +36,7 @@ IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=4
+IVORBIS_TOOLS_IPK_VERSION=5
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -115,7 +115,10 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-curl-libraries=$(STAGING_DIR)/opt/lib \
+		--with-ao=$(STAGING_PREFIX) \
+		--with-curl=$(STAGING_PREFIX) \
+		--with-ogg=$(STAGING_PREFIX) \
+		--with-vorbis=$(STAGING_PREFIX) \
 		--disable-curltest \
 		--disable-nls \
 	)
