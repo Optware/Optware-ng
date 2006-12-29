@@ -42,7 +42,7 @@ ESOUND_CONFLICTS=
 #
 # ESOUND_IPK_VERSION should be incremented when the ipk changes.
 #
-ESOUND_IPK_VERSION=3
+ESOUND_IPK_VERSION=4
 
 #
 # ESOUND_CONFFILES should be a list of user-editable files
@@ -112,16 +112,19 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 	mv $(BUILD_DIR)/$(ESOUND_DIR) $(ESOUND_BUILD_DIR)
 	ACLOCAL="aclocal-1.9 -I $(STAGING_DIR)/opt/share/aclocal" AUTOMAKE=automake-1.9 \
 		autoreconf -vif $(ESOUND_BUILD_DIR)
+	sed -ie 's/artsc-config --cflags |//' $(ESOUND_BUILD_DIR)/configure
 	(cd $(ESOUND_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESOUND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESOUND_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$(PATH)" \
+		ac_cv_path_ARTS_CONFIG=$(STAGING_PREFIX)/bin/libart2-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-audiofile-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-alsa \
 		--disable-static \
