@@ -33,7 +33,7 @@ GIFT_DESCRIPTION=gIFt is a multi-platform multi-networks peer-to-peer client. gI
 #
 # GIFT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFT_IPK_VERSION=4
+GIFT_IPK_VERSION=5
 
 #
 # GIFT_CONFFILES should be a list of user-editable files
@@ -110,6 +110,8 @@ $(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-ogg=$(STAGING_PREFIX) \
+		--with-vorbis=$(STAGING_PREFIX) \
 		--disable-nls \
 	)
 	touch $(GIFT_BUILD_DIR)/.configured
@@ -132,6 +134,7 @@ gift: $(GIFT_BUILD_DIR)/.built
 $(GIFT_BUILD_DIR)/.staged: $(GIFT_BUILD_DIR)/.built
 	rm -f $(GIFT_BUILD_DIR)/.staged
 	$(MAKE) -C $(GIFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libgift.pc
 	rm -f $(STAGING_DIR)/opt/lib/libgift.la $(STAGING_DIR)/opt/lib/libgiftproto.la
 	rm -f $(STAGING_DIR)/opt/bin/giftd $(STAGING_DIR)/opt/bin/gift-setup
 	touch $(GIFT_BUILD_DIR)/.staged
