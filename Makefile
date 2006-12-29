@@ -369,7 +369,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	bitlbee bluez-utils bzflag \
 	chillispot cyrus-imapd digitemp \
 	$(ERLANG_PACKAGES) \
-	eaccelerator esniper \
+	eaccelerator \
 	freeradius ftpd-topfield \
 	gconv-modules gdb gtk \
 	heyu ice \
