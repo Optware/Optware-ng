@@ -42,7 +42,7 @@ AUDIOFILE_CONFLICTS=
 #
 # AUDIOFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUDIOFILE_IPK_VERSION=4
+AUDIOFILE_IPK_VERSION=5
 
 #
 # AUDIOFILE_CONFFILES should be a list of user-editable files
@@ -150,6 +150,7 @@ audiofile: $(AUDIOFILE_BUILD_DIR)/.built
 $(AUDIOFILE_BUILD_DIR)/.staged: $(AUDIOFILE_BUILD_DIR)/.built
 	rm -f $(AUDIOFILE_BUILD_DIR)/.staged
 	$(MAKE) -C $(AUDIOFILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|echo $$includes|echo -I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/audiofile-config
 	cp $(STAGING_DIR)/opt/bin/audiofile-config $(STAGING_DIR)/bin/audiofile-config
 	rm -f $(STAGING_LIB_DIR)/libaudiofile.la
 	touch $(AUDIOFILE_BUILD_DIR)/.staged
