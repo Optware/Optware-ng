@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CLASSPATH_SITE=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_VERSION=0.91
+CLASSPATH_VERSION=0.93
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -67,6 +67,8 @@ CLASSPATH_SOURCE_DIR=$(SOURCE_DIR)/classpath
 CLASSPATH_IPK_DIR=$(BUILD_DIR)/classpath-$(CLASSPATH_VERSION)-ipk
 CLASSPATH_IPK=$(BUILD_DIR)/classpath_$(CLASSPATH_VERSION)-$(CLASSPATH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: classpath-source classpath-unpack classpath classpath-stage classpath-ipk classpath-clean classpath-dirclean classpath-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -105,11 +107,14 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLASSPATH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLASSPATH_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--with-jikes \
 		--with-glibj=zip \
 		--enable-jni \
 		--disable-gtk-peer \
+		--disable-gconf-peer \
+		--disable-plugin \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -201,3 +206,9 @@ classpath-clean:
 #
 classpath-dirclean:
 	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(CLASSPATH_BUILD_DIR) $(CLASSPATH_IPK_DIR) $(CLASSPATH_IPK)
+
+#
+# Some sanity check for the package.
+#
+classpath-check: $(CLASSPATH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLASSPATH_IPK)
