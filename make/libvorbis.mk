@@ -35,7 +35,7 @@ LIBVORBIS_CONFLICTS=
 #
 # LIBVORBIS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBIS_IPK_VERSION=4
+LIBVORBIS_IPK_VERSION=5
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files
@@ -117,6 +117,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-ogg=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -149,6 +150,10 @@ libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $(LIBVORBIS_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/vorbisenc.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/vorbisfile.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/vorbis.pc
 	rm -f $(STAGING_LIB_DIR)/libvorbisenc.la
 	rm -f $(STAGING_LIB_DIR)/libvorbisfile.la
 	rm -f $(STAGING_LIB_DIR)/libvorbis.la
