@@ -29,14 +29,14 @@ GNUPLOT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPLOT_DESCRIPTION=Command-line driven interactive data and function plotting utility
 GNUPLOT_SECTION=graphics
 GNUPLOT_PRIORITY=optional
-GNUPLOT_DEPENDS=readline, libpng, libgd, ncurses
+GNUPLOT_DEPENDS=readline, libpng, libgd, ncurses, libstdc++
 GNUPLOT_SUGGESTS=
 GNUPLOT_CONFLICTS=
 
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=1
+GNUPLOT_IPK_VERSION=2
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
