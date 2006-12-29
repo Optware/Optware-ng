@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=4
+SENDMAIL_IPK_VERSION=5
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -37,7 +37,13 @@ SENDMAIL_CONFFILES=\
 # SENDMAIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+# uClibc 0.9.28 is missing dn_skipname and other resolver functions
+# Alternatively this could be solved by using bind-stage
+ifeq ($(LIBC_STYLE), uclibc)
+SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/config-uClibc.patch
+else
 SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/config.patch
+endif
 #SENDMAIL_CPPFLAGS=
 #SENDMAIL_LDFLAGS=
 
@@ -215,3 +221,9 @@ sendmail-clean:
 #
 sendmail-dirclean:
 	rm -rf $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR) $(SENDMAIL_IPK_DIR) $(SENDMAIL_IPK)
+#
+#
+# Some sanity check for the package.
+#
+sendmail-check: $(SENDMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SENDMAIL_IPK)
