@@ -36,7 +36,7 @@ ERL-YAWS_CONFLICTS=
 #
 # ERL-YAWS_IPK_VERSION should be incremented when the ipk changes.
 #
-ERL-YAWS_IPK_VERSION=1
+ERL-YAWS_IPK_VERSION=2
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
@@ -116,7 +116,9 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 		then mv $(BUILD_DIR)/$(ERL-YAWS_DIR) $(ERL-YAWS_BUILD_DIR) ; \
 	fi
 	(cd $(ERL-YAWS_BUILD_DIR); \
-		sed -i -e '/LD_SHARED.*ld -shared/s|ld -shared|$(TARGET_LD) -shared|' configure; \
+		sed -i -e '/LD_SHARED.*ld -shared/s|ld -shared|$(TARGET_LD) -shared|' \
+		       -e 's|-I/usr/include/security||' \
+			configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(ERL-YAWS_CPPFLAGS)" \
@@ -131,6 +133,8 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 		--disable-pam \
 		--disable-nls \
 		--disable-static \
+		; \
+		sed -i -e 's|-I/usr/include/pam/||' c_src/Makefile; \
 	)
 #	$(PATCH_LIBTOOL) $(ERL-YAWS_BUILD_DIR)/libtool
 	touch $(ERL-YAWS_BUILD_DIR)/.configured

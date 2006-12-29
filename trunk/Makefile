@@ -368,7 +368,6 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat asterisk asterisk14 atftp \
 	bitlbee bluez-utils bzflag \
 	chillispot cyrus-imapd digitemp \
-	$(ERLANG_PACKAGES) \
 	eaccelerator \
 	freeradius ftpd-topfield \
 	gconv-modules gdb gtk \
