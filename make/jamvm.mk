@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
-JAMVM_VERSION=1.4.3
+JAMVM_VERSION=1.4.4
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
 JAMVM_UNZIP=zcat
@@ -67,6 +67,8 @@ JAMVM_BUILD_DIR=$(BUILD_DIR)/jamvm
 JAMVM_SOURCE_DIR=$(SOURCE_DIR)/jamvm
 JAMVM_IPK_DIR=$(BUILD_DIR)/jamvm-$(JAMVM_VERSION)-ipk
 JAMVM_IPK=$(BUILD_DIR)/jamvm_$(JAMVM_VERSION)-$(JAMVM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: jamvm-source jamvm-unpack jamvm jamvm-stage jamvm-ipk jamvm-clean jamvm-dirclean jamvm-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -180,6 +182,8 @@ $(JAMVM_IPK_DIR)/CONTROL/control:
 $(JAMVM_IPK): $(JAMVM_BUILD_DIR)/.built
 	rm -rf $(JAMVM_IPK_DIR) $(BUILD_DIR)/jamvm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(JAMVM_BUILD_DIR) install-strip prefix=$(JAMVM_IPK_DIR)/opt
+	install -d $(JAMVM_IPK_DIR)/opt/include/jamvm/
+	mv $(JAMVM_IPK_DIR)/opt/include/jni.h $(JAMVM_IPK_DIR)/opt/include/jamvm/jni.h
 	$(MAKE) $(JAMVM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JAMVM_IPK_DIR)
 
@@ -200,3 +204,9 @@ jamvm-clean:
 #
 jamvm-dirclean:
 	rm -rf $(BUILD_DIR)/$(JAMVM_DIR) $(JAMVM_BUILD_DIR) $(JAMVM_IPK_DIR) $(JAMVM_IPK)
+
+#
+# Some sanity check for the package.
+#
+jamvm-check: $(JAMVM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(JAMVM_IPK)
