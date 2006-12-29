@@ -369,18 +369,17 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	bitlbee bluez-utils bzflag \
 	chillispot cyrus-imapd digitemp \
 	$(ERLANG_PACKAGES) \
-	eaccelerator esniper esound \
+	eaccelerator esniper \
 	freeradius ftpd-topfield \
 	gconv-modules gdb gtk \
-	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
-	heyu ice ivorbis-tools \
-	ldconfig libvorbis lsof \
+	heyu ice \
+	ldconfig lsof \
 	madplay mc metalog modutils monotone motion mp3blaster mt-daapd \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
-	sdl sm streamripper syslog-ng \
+	sdl sm syslog-ng \
 	tcpwrappers tnef transcode \
-	unfs3 ushare vorbis-tools vte \
+	unfs3 ushare vte \
 	w3cam \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
 
