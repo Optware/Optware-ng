@@ -1,0 +1,155 @@
+--- devtools/Site/site.config.m4.config	2006-08-19 10:24:47.000000000 +0200
++++ devtools/Site/site.config.m4	2006-08-19 10:24:27.000000000 +0200
+@@ -0,0 +1,14 @@
++define(`confLIBSEARCH',`db resolv 44bsd')
++define(`confSTDIR',`/opt/etc/mail')
++define(`confHFDIR',`/opt/etc/mail')
++define(`confEBINDIR',`/opt/sbin')
++define(`confMBINDIR',`/opt/sbin')
++define(`confSBINDIR',`/opt/sbin')
++define(`confUBINDIR',`/opt/bin')
++define(`confMANROOT',`/opt/man/man')
++define(`confQUEUE_DIR',`/opt/var/spool/mqueue')
++define(`confMSP_QUEUE_DIR',`/opt/var/spool/clientmqueue')
++dnl ### Changes for STARTTLS support
++APPENDDEF(`confENVDEF',`-DSTARTTLS -DNEWDB -DNAMED_BIND=0')
++APPENDDEF(`confLIBS',`-lssl -lcrypto -ldb')
++
+
+--- cf/cf/generic-linux.cf.config	2006-10-29 22:09:59.000000000 +0100
++++ cf/cf/generic-linux.cf	2006-10-29 22:10:26.000000000 +0100
+@@ -70,7 +70,7 @@
+ 
+ Cwlocalhost
+ # file containing names of hosts for which we receive email
+-Fw/etc/mail/local-host-names
++Fw/opt/etc/mail/local-host-names
+ 
+ # my official domain name
+ # ... define this only if sendmail cannot automatically determine your domain
+@@ -99,7 +99,7 @@
+ 
+ 
+ # Hosts for which relaying is permitted ($=R)
+-FR-o /etc/mail/relay-domains
++FR-o /opt/etc/mail/relay-domains
+ 
+ # arithmetic map
+ Karith arith
+@@ -144,7 +144,7 @@
+ O AliasWait=10
+ 
+ # location of alias file
+-O AliasFile=/etc/mail/aliases
++O AliasFile=/opt/etc/mail/aliases
+ 
+ # minimum number of free blocks on filesystem
+ O MinFreeBlocks=100
+@@ -165,7 +165,7 @@
+ O DeliveryMode=background
+ 
+ # error message header/file
+-#O ErrorHeader=/etc/mail/error-header
++#O ErrorHeader=/opt/etc/mail/error-header
+ 
+ # error mode
+ #O ErrorMode=print
+@@ -186,7 +186,7 @@
+ #O MaxHopCount=25
+ 
+ # location of help file
+-O HelpFile=/etc/mail/helpfile
++O HelpFile=/opt/etc/mail/helpfile
+ 
+ # ignore dots as terminators in incoming messages?
+ #O IgnoreDots=False
+@@ -271,7 +271,7 @@
+ #O FastSplit=1
+ 
+ # queue directory
+-O QueueDirectory=/var/spool/mqueue
++O QueueDirectory=/opt/var/spool/mqueue
+ 
+ # key for shared memory; 0 to turn off
+ #O SharedMemoryKey=0
+@@ -327,7 +327,7 @@
+ O SuperSafe=True
+ 
+ # status file
+-O StatusFile=/etc/mail/statistics
++O StatusFile=/opt/etc/mail/statistics
+ 
+ # time zone handling:
+ #  if undefined, use system default
+@@ -339,7 +339,7 @@
+ #O DefaultUser=mailnull
+ 
+ # list of locations of user database file (null means no lookup)
+-#O UserDatabaseSpec=/etc/mail/userdb
++#O UserDatabaseSpec=/opt/etc/mail/userdb
+ 
+ # fallback MX host
+ #O FallbackMXhost=fall.back.host.net
+@@ -387,7 +387,7 @@
+ #O DefaultCharSet=unknown-8bit
+ 
+ # service switch file (name hardwired on Solaris, Ultrix, OSF/1, others)
+-#O ServiceSwitchFile=/etc/mail/service.switch
++#O ServiceSwitchFile=/opt/etc/mail/service.switch
+ 
+ # hosts file (normally /etc/hosts)
+ #O HostsFile=/etc/hosts
+@@ -437,7 +437,7 @@
+ #O DoubleBounceAddress=postmaster
+ 
+ # where to save bounces if all else fails
+-#O DeadLetterDrop=/var/tmp/dead.letter
++#O DeadLetterDrop=/opt/var/tmp/dead.letter
+ 
+ # what user id do we assume for the majority of the processing?
+ #O RunAsUser=sendmail
+@@ -462,7 +462,7 @@
+ #O TrustedUser=root
+ 
+ # Control socket for daemon management
+-#O ControlSocketName=/var/spool/mqueue/.control
++#O ControlSocketName=/opt/var/spool/mqueue/.control
+ 
+ # Maximum MIME header length to protect MUAs
+ #O MaxMimeHeaderLength=0/0
+@@ -474,7 +474,7 @@
+ #O MaxAliasRecursion=10
+ 
+ # location of pid file
+-#O PidFile=/var/run/sendmail.pid
++#O PidFile=/opt/var/run/sendmail.pid
+ 
+ # Prefix string for the process title shown on 'ps' listings
+ #O ProcessTitlePrefix=prefix
+@@ -498,7 +498,7 @@
+ #O AuthRealm
+ 
+ # default authentication information for outgoing connections
+-#O DefaultAuthInfo=/etc/mail/default-auth-info
++#O DefaultAuthInfo=/opt/etc/mail/default-auth-info
+ 
+ # SMTP AUTH flags
+ #O AuthOptions
+@@ -552,7 +552,7 @@
+ #####################
+ 
+ # this is equivalent to setting class "t"
+-#Ft/etc/mail/trusted-users
++#Ft/opt/etc/mail/trusted-users
+ Troot
+ Tdaemon
+ Tuucp
+@@ -1328,7 +1328,7 @@
+ #
+ SAddDomain
+ 
+-Mlocal,		P=/usr/bin/procmail, F=lsDFMAw5:/|@qSPfhn9, S=EnvFromL/HdrFromL, R=EnvToL/HdrToL,
++Mlocal,		P=/opt/bin/procmail, F=lsDFMAw5:/|@qSPfhn9, S=EnvFromL/HdrFromL, R=EnvToL/HdrToL,
+ 		T=DNS/RFC822/X-Unix,
+ 		A=procmail -Y -a $h -d $u
+ Mprog,		P=/bin/sh, F=lsDFMoqeu9, S=EnvFromL/HdrFromL, R=EnvToL/HdrToL, D=$z:/,
