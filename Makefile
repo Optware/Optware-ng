@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	gnokii
 
 
 # Add new native-only packages here
@@ -138,7 +137,7 @@ COMMON_CROSS_PACKAGES = \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
 	gambit-c gawk gcal gconv-modules gettext gdchart ghostscript gdb gdbm grep groff gzip \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git-core glib gnupg gnuplot gnutls gtk \
+	git-core glib gnokii gnupg gnuplot gnutls gtk \
 	gphoto2 libgphoto2 \
 	hdparm hexcurse heyu hnb hpijs htop \
 	ice id3lib indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
@@ -221,7 +220,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
-	 giftcurs git-core glib gnupg gphoto2 libgphoto2 gtk hnb htop ice \
+	 giftcurs git-core glib gnokii gnupg gphoto2 libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
