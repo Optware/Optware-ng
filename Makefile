@@ -375,7 +375,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gift gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap giftcurs \
 	heyu ice ivorbis-tools \
 	ldconfig libvorbis lsof \
-	madplay mc metalog modutils monotone motion mp3blaster mt-daapd mutt \
+	madplay mc metalog modutils monotone motion mp3blaster mt-daapd \
 	nagios-plugins net-tools nfs-utils nrpe ntop \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
 	sdl sm streamripper syslog-ng \
