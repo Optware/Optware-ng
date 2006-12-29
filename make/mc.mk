@@ -19,7 +19,7 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=4
+MC_IPK_VERSION=5
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -30,6 +30,8 @@ MC_PATCHES=$(MC_SOURCE_DIR)/stropts.patch
 else
 MC_PATCHES=$(MC_SOURCE_DIR)/static-declaration.patch
 endif
+
+MC_PATCHES += $(MC_SOURCE_DIR)/terminfo.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +118,7 @@ mc-unpack: $(MC_BUILD_DIR)/.configured
 #
 $(MC_BUILD_DIR)/src/mc: $(MC_BUILD_DIR)/.configured
 	rm -f $(MC_BUILD_DIR)/src/mc
-	$(TARGET_CONFIGURE_OPTS)\
+	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(MC_BUILD_DIR)
 
 #

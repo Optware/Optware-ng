@@ -1,0 +1,21 @@
+--- mc/slang/sltermin.c.orig	2006-12-29 23:48:57.000000000 +1030
++++ mc/slang/sltermin.c	2006-12-29 23:49:34.000000000 +1030
+@@ -218,16 +218,11 @@
+  * are implemented by multiple links to the same compiled file.
+  */
+ 
+-#define MAX_TI_DIRS 7
++#define MAX_TI_DIRS 2
+ static char *Terminfo_Dirs [MAX_TI_DIRS] = 
+ {
+    NULL,
+-   "/usr/lib/terminfo",
+-   "/usr/share/lib/terminfo",
+-   "/usr/local/lib/terminfo",
+-   "/lib/terminfo",
+-   "/usr/local/share/terminfo",
+-   "/usr/share/terminfo"
++   "/opt/lib/terminfo",
+ };
+ 
+ char *SLtt_tigetent (char *term)
