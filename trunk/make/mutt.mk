@@ -23,18 +23,14 @@ MUTT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MUTT_DESCRIPTION=text mode mail client
 MUTT_SECTION=mail
 MUTT_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET),wl500g)
-MUTT_DEPENDS=ncursesw, openssl, cyrus-sasl, libdb
-else
-MUTT_DEPENDS=ncurses, openssl, cyrus-sasl, libdb
-endif
+MUTT_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET), openssl, cyrus-sasl, libdb
 MUTT_SUGGESTS=
 MUTT_CONFLICTS=
 
 #
 # MUTT_IPK_VERSION should be incremented when the ipk changes.
 #
-MUTT_IPK_VERSION=1
+MUTT_IPK_VERSION=2
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
@@ -74,6 +70,8 @@ MUTT_IPK=$(BUILD_DIR)/mutt_$(MUTT_VERSION)-$(MUTT_IPK_VERSION)_$(TARGET_ARCH).ip
 $(DL_DIR)/$(MUTT_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MUTT_SITE)/$(MUTT_SOURCE)
 
+.PHONY: mutt-source mutt-unpack mutt mutt-stage mutt-ipk mutt-clean mutt-dirclean mutt-check
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -97,20 +95,14 @@ mutt-source: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES)
-ifneq ($(OPTWARE_TARGET),wl500g)
-	$(MAKE) ncursesw-stage openssl-stage cyrus-sasl-stage libdb-stage
-else
-	$(MAKE) ncurses-stage openssl-stage cyrus-sasl-stage libdb-stage
-endif
+	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage openssl-stage cyrus-sasl-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR)
 	$(MUTT_UNZIP) $(DL_DIR)/$(MUTT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MUTT_PATCHES) | patch -d $(BUILD_DIR)/$(MUTT_DIR) -p1
 	mv $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR)
 	# change mutt.h and lib.h to find posix1_lim.h in <bits/...>
-	sed -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(MUTT_BUILD_DIR)/mutt.h > $(MUTT_BUILD_DIR)/mutt.h.new
-	sed -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(MUTT_BUILD_DIR)/lib.h  > $(MUTT_BUILD_DIR)/lib.h.new
-	mv $(MUTT_BUILD_DIR)/mutt.h.new $(MUTT_BUILD_DIR)/mutt.h
-	mv $(MUTT_BUILD_DIR)/lib.h.new  $(MUTT_BUILD_DIR)/lib.h
+	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(MUTT_BUILD_DIR)/mutt.h
+	sed -i -e 's:posix1_lim.h:bits/posix1_lim.h:g' $(MUTT_BUILD_DIR)/lib.h
 	(cd $(MUTT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MUTT_CPPFLAGS)" \
@@ -128,6 +120,7 @@ endif
 		--with-sasl2 \
 		--with-bdb \
 	)
+	sed -i -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(MUTT_BUILD_DIR)/Makefile
 	touch $(MUTT_BUILD_DIR)/.configured
 
 mutt-unpack: $(MUTT_BUILD_DIR)/.configured
@@ -218,3 +211,9 @@ mutt-clean:
 #
 mutt-dirclean:
 	rm -rf $(BUILD_DIR)/$(MUTT_DIR) $(MUTT_BUILD_DIR) $(MUTT_IPK_DIR) $(MUTT_IPK)
+
+#
+# Some sanity check for the package.
+#
+mutt-check: $(MUTT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MUTT_IPK)
