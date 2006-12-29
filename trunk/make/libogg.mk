@@ -35,7 +35,7 @@ LIBOGG_CONFLICTS=
 #
 # LIBOGG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOGG_IPK_VERSION=2
+LIBOGG_IPK_VERSION=3
 
 #
 # LIBOGG_CONFFILES should be a list of user-editable files
@@ -139,6 +139,7 @@ libogg: $(LIBOGG_BUILD_DIR)/.built
 $(LIBOGG_BUILD_DIR)/.staged: $(LIBOGG_BUILD_DIR)/.built
 	rm -f $(LIBOGG_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ogg.pc
 	rm -f $(STAGING_DIR)/opt/lib/libogg.la
 	touch $(LIBOGG_BUILD_DIR)/.staged
 
