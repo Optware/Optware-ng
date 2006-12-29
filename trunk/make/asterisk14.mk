@@ -36,7 +36,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -46,7 +46,9 @@ ASTERISK14_IPK_VERSION=1
 # ASTERISK14_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch $(ASTERISK14_SOURCE_DIR)/gsm.patch
+ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch\
+			$(ASTERISK14_SOURCE_DIR)/gsm.patch\
+			$(ASTERISK14_SOURCE_DIR)/configs.patch
 
 #
 # If the compilation of the package requires additional
