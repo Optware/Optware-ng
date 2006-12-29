@@ -1,0 +1,18 @@
+--- uClibc-0.9.28/libm/float_wrappers.c.orig	2006-12-28 09:46:27.000000000 +0100
++++ uClibc-0.9.28/libm/float_wrappers.c	2006-12-28 09:46:55.000000000 +0100
+@@ -386,7 +386,6 @@
+ #endif
+ 
+ 
+-#if 0
+ #ifdef L_lrintf
+ long lrintf (float x)
+ {
+@@ -395,6 +394,7 @@
+ #endif
+ 
+ 
++#if 0
+ #ifdef L_lroundf
+ long lroundf (float x)
+ {

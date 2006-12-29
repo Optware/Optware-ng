@@ -243,7 +243,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango procps \
-	 qemu qemu-libc-i386 quickie rtorrent sdl ser sm \
+	 qemu qemu-libc-i386 quickie rtorrent sdl sendmail ser sm \
 	 snownews transcode vte wxbase xauth xaw xchat xcursor xfixes xft \
 	 xmu xrender xt xterm
 
@@ -575,7 +575,7 @@ HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME=$(TARGET_ARCH)-linux
 
-CROSS_CONFIGURATION_GCC_VERSION=3.4.6
+CROSS_CONFIGURATION_GCC_VERSION=4.1.1
 CROSS_CONFIGURATION_UCLIBC_VERSION=0.9.28
 BUILDROOT_GCC=$(CROSS_CONFIGURATION_GCC_VERSION)
 UCLIBC-OPT_VERSION=$(CROSS_CONFIGURATION_UCLIBC_VERSION)

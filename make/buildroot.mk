@@ -43,18 +43,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-# TODO: cp -fa instead tar copy
 #
 BUILDROOT_GCC ?= 3.4.6
-BUILDROOT_BINUTILS ?= 2.16.1
+BUILDROOT_BINUTILS ?= 2.17.50.0.8
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
-ifeq ($(OPTWARE_TARGET),ts101)
-	BUILDROOT_SVN_REV=9690
-else
-	BUILDROOT_SVN_REV=16948
-endif
+BUILDROOT_SVN_REV=16948
 BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
 BUILDROOT_DIR=buildroot
 BUILDROOT_UNZIP=zcat
@@ -69,7 +64,7 @@ BUILDROOT_CONFLICTS=
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=8
+BUILDROOT_IPK_VERSION=9
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -120,14 +115,8 @@ buildroot-headers:
 # BUILDROOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET),ts101)
-BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk-ts101.patch \
-		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk-ts101.patch \
-		$(BUILDROOT_SOURCE_DIR)/uClibc.config-ts101.patch
-else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
 		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch
-endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -191,13 +180,8 @@ buildroot-source uclibc-opt-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-ifeq ($(OPTWARE_TARGET),ts101)
-BUILDROOT_CONFIG_FILE=buildroot.config-ts101
-UCLIBC_CONFIG_FILE=uClibc-0.9.27-ts101.config
-else
 BUILDROOT_CONFIG_FILE=buildroot.config
 UCLIBC_CONFIG_FILE=uClibc-$(UCLIBC-OPT_VERSION).config
-endif
 
 $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 			$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
@@ -239,7 +223,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	)
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/100-uclibc-conf.patch
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/100-uclibc-conf.patch
-	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
+#	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
 	sed -i.orig.0 -e 's|(TARGET_DIR)/lib|(TARGET_DIR)/opt/lib|g' $(BUILDROOT_TOOLS_MK)
 	sed -i.orig.1 -e 's|(TARGET_DIR)/usr|(TARGET_DIR)/opt|g' $(BUILDROOT_TOOLS_MK)
 	sed -i.orig.2 -e 's|=/usr|=/opt|g;s|=\\"/lib|=\\"/opt/lib|g;s|=\\"/usr|=\\"/opt|g' $(BUILDROOT_TOOLS_MK)
@@ -390,5 +374,8 @@ buildroot-check: $(BUILDROOT_IPK)
 # Optionally clear .config paths to:
 #  KERNEL_SOURCE="" and CROSS_COMPILER_PREFIX=""
 #
-# Building notes:
+# notes:
 # gcc 4.2 needs -fpermissive
+# for missing math see http://busybox.net/bugs/view.php?id=144
+# http://www.gnu.org/software/binutils
+# http://developer.apple.com/releasenotes/DeveloperTools/GCC40PortingReleaseNotes/Articles/PortingToGCC.html
