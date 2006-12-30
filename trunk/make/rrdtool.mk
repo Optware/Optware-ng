@@ -43,7 +43,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=2
+RRDTOOL_IPK_VERSION=3
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -52,8 +52,10 @@ RRDTOOL_IPK_VERSION=2
 #
 # RRDTOOL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
-#
-#RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/rrd_gfx.c.wiley.patch
+# uClibc badly compiles with -std=gnu99
+ifeq ($(LIBC_STYLE), uclibc)
+RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/configure.patch
+endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -74,6 +76,8 @@ RRDTOOL_BUILD_DIR=$(BUILD_DIR)/rrdtool
 RRDTOOL_SOURCE_DIR=$(SOURCE_DIR)/rrdtool
 RRDTOOL_IPK_DIR=$(BUILD_DIR)/rrdtool-$(RRDTOOL_VERSION)-ipk
 RRDTOOL_IPK=$(BUILD_DIR)/rrdtool_$(RRDTOOL_VERSION)-$(RRDTOOL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: rrdtool-source rrdtool-unpack rrdtool rrdtool-stage rrdtool-ipk rrdtool-clean rrdtool-dirclean rrdtool-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -108,8 +112,13 @@ $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage
 	rm -rf $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
 	$(RRDTOOL_UNZIP) $(DL_DIR)/$(RRDTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(RRDTOOL_PATCHES) | patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1
-	mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
+	if test -n "$(RRDTOOL_PATCHES)" ; \
+		then cat $(RRDTOOL_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(RRDTOOL_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(RRDTOOL_DIR)" != "$(RRDTOOL_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR) ; \
+	fi
 	(cd $(RRDTOOL_BUILD_DIR); \
 		sed -i -e '/CPPFLAGS=/s|-I/usr/include/.*"|"|g' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -231,3 +240,9 @@ rrdtool-clean:
 #
 rrdtool-dirclean:
 	rm -rf $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR) $(RRDTOOL_IPK_DIR) $(RRDTOOL_IPK)
+#
+#
+# Some sanity check for the package.
+#
+rrdtool-check: $(RRDTOOL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RRDTOOL_IPK)
