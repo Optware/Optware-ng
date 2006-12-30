@@ -43,7 +43,7 @@ NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=1
+NTOP_IPK_VERSION=2
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -79,12 +79,13 @@ NTOP_SOURCE_DIR=$(SOURCE_DIR)/ntop
 NTOP_IPK_DIR=$(BUILD_DIR)/ntop-$(NTOP_VERSION)-ipk
 NTOP_IPK=$(BUILD_DIR)/ntop_$(NTOP_VERSION)-$(NTOP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: ntop-source ntop-unpack ntop ntop-stage ntop-ipk ntop-clean ntop-dirclean ntop-check
 
 #
 # Automatically create a ipkg control file
 #
 $(NTOP_IPK_DIR)/CONTROL/control:
-	@install -d $(NTOP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: $(NTOP_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -147,6 +148,7 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 		then mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR) ; \
 	fi
 	(cd $(NTOP_BUILD_DIR); \
+		sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' configure.in; \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTOP_CPPFLAGS)" \
@@ -210,6 +212,8 @@ $(NTOP_IPK): $(NTOP_BUILD_DIR)/.built
 	rm -rf $(NTOP_IPK_DIR) $(BUILD_DIR)/ntop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) install-strip
 	mv $(NTOP_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ntop $(NTOP_IPK_DIR)/opt/bin/ntop
+	rm -f $(NTOP_IPK_DIR)/opt/lib/lib*.a $(NTOP_IPK_DIR)/opt/lib/lib*.la
+	$(STRIP_COMMAND) $(NTOP_IPK_DIR)/opt/lib/ntop/plugins/*.so
 	install -d $(NTOP_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)/opt/etc/init.d/S01ntop
 	$(MAKE) $(NTOP_IPK_DIR)/CONTROL/control
@@ -249,3 +253,9 @@ ntop-dirclean:
 #		export CVSROOT ; \
 #		cvs login  ; \
 #		cvs checkout ntop ; \
+
+#
+# Some sanity check for the package.
+#
+ntop-check: $(NTOP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NTOP_IPK)
