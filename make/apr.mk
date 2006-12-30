@@ -12,7 +12,7 @@
 # APR_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-APR_SITE=http://archive.apache.org/dist/apr
+APR_SITE=http://www.apache.org/dist/apr
 APR_VERSION=0.9.13
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=3
+APR_IPK_VERSION=5
 
 #
 # APR_LOCALES defines which locales get installed
