@@ -40,7 +40,7 @@ SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules gettext
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=3
+SNOWNEWS_IPK_VERSION=4
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
@@ -76,6 +76,8 @@ SNOWNEWS_BUILD_DIR=$(BUILD_DIR)/snownews
 SNOWNEWS_SOURCE_DIR=$(SOURCE_DIR)/snownews
 SNOWNEWS_IPK_DIR=$(BUILD_DIR)/snownews-$(SNOWNEWS_VERSION)-ipk
 SNOWNEWS_IPK=$(BUILD_DIR)/snownews_$(SNOWNEWS_VERSION)-$(SNOWNEWS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: snownews-source snownews-unpack snownews snownews-stage snownews-ipk snownews-clean snownews-dirclean snownews-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -183,6 +185,7 @@ $(SNOWNEWS_IPK_DIR)/CONTROL/control:
 $(SNOWNEWS_IPK): $(SNOWNEWS_BUILD_DIR)/.built
 	rm -rf $(SNOWNEWS_IPK_DIR) $(BUILD_DIR)/snownews_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SNOWNEWS_BUILD_DIR) DESTDIR=$(SNOWNEWS_IPK_DIR) install
+	$(TARGET_STRIP) $(SNOWNEWS_IPK_DIR)/opt/bin/snownews
 	$(MAKE) $(SNOWNEWS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SNOWNEWS_IPK_DIR)
 
@@ -203,3 +206,9 @@ snownews-clean:
 #
 snownews-dirclean:
 	rm -rf $(BUILD_DIR)/$(SNOWNEWS_DIR) $(SNOWNEWS_BUILD_DIR) $(SNOWNEWS_IPK_DIR) $(SNOWNEWS_IPK)
+#
+#
+# Some sanity check for the package.
+#
+snownews-check: $(SNOWNEWS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SNOWNEWS_IPK)
