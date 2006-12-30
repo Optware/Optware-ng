@@ -115,11 +115,13 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		--disable-gtk-peer \
 		--disable-gconf-peer \
 		--disable-plugin \
+		--disable-Werror \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		; \
 	)
 	touch $(CLASSPATH_BUILD_DIR)/.configured
 
