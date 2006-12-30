@@ -12,7 +12,7 @@
 # APACHE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-APACHE_SITE=http://archive.apache.org/dist/httpd
+APACHE_SITE=http://www.apache.org/dist/httpd
 APACHE_VERSION=2.0.59
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
