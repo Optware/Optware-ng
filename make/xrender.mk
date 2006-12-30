@@ -25,7 +25,7 @@ XRENDER_DEPENDS=x11
 #
 # XRENDER_IPK_VERSION should be incremented when the ipk changes.
 #
-XRENDER_IPK_VERSION=1
+XRENDER_IPK_VERSION=2
 
 #
 # XRENDER_CONFFILES should be a list of user-editable files
