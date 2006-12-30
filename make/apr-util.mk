@@ -12,7 +12,7 @@
 # APR_UTIL_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-APR_UTIL_SITE=http://archive.apache.org/dist/apr
+APR_UTIL_SITE=http://www.apache.org/dist/apr
 APR_UTIL_VERSION=0.9.13
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=4
+APR_UTIL_IPK_VERSION=5
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
