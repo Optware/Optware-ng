@@ -101,7 +101,7 @@ xfixes-source: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz $(XFIXES_PATCHES)
 $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h \
 		$(STAGING_LIB_DIR)/libX11.so \
-		$(XFIXES_PATCHES)
+		$(XFIXES_PATCHES) make/xfixes.mk
 	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz
 	if test -n "$(XFIXES_PATCHES)" ; \

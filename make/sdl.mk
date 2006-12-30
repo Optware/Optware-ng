@@ -103,7 +103,7 @@ sdl-source: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(SDL_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES)
+$(SDL_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES) make/sdl.mk
 	$(MAKE) x11-stage
 	$(MAKE) xext-stage
 	rm -rf $(BUILD_DIR)/$(SDL_DIR) $(SDL_BUILD_DIR)

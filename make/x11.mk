@@ -104,7 +104,7 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
 		$(STAGING_LIB_DIR)/libXau.so \
 		$(STAGING_LIB_DIR)/libXdmcp.so \
-		$(X11_PATCHES)
+		$(X11_PATCHES) make/x11.mk
 	rm -rf $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/x11-$(X11_VERSION).tar.gz
 	if test -n "$(X11_PATCHES)" ; \

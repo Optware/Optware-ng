@@ -242,9 +242,9 @@ UCLIBC_BROKEN_PACKAGES = \
 	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango \
-	 qemu qemu-libc-i386 quickie rtorrent sdl sm \
+	 qemu qemu-libc-i386 quickie rtorrent sm \
 	 transcode vte wxbase xauth xaw xchat \
-	 xfixes xrender xmu xt xterm
+	 xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc-opt ipkg-opt
