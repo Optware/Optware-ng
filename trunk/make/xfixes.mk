@@ -25,7 +25,7 @@ XFIXES_DEPENDS=x11
 #
 # XFIXES_IPK_VERSION should be incremented when the ipk changes.
 #
-XFIXES_IPK_VERSION=1
+XFIXES_IPK_VERSION=2
 
 #
 # XFIXES_CONFFILES should be a list of user-editable files
