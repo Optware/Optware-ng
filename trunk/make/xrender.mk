@@ -101,7 +101,7 @@ xrender-source: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz $(XRENDER_PATCHES)
 $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h \
 		$(STAGING_LIB_DIR)/libX11.so \
-		$(XRENDER_PATCHES)
+		$(XRENDER_PATCHES) make/xrender.mk
 	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz
 	if test -n "$(XRENDER_PATCHES)" ; \
