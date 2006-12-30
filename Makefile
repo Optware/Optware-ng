@@ -261,6 +261,7 @@ MSS_BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	gambit-c gawk \
 	jamvm \
+	gnokii \
 	ldconfig lsof \
 	mod-fastcgi mod-python monotone \
 	ntp \
