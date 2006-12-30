@@ -242,7 +242,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 jamvm ldconfig libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango \
-	 qemu qemu-libc-i386 quickie rtorrent sm \
+	 qemu qemu-libc-i386 quickie rtorrent sdl sm \
 	 transcode vte wxbase xauth xaw xchat \
 	 xfixes xrender xmu xt xterm
 
