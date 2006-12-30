@@ -374,7 +374,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	heyu ice \
 	ldconfig lsof \
 	madplay mc metalog modutils monotone motion mp3blaster mt-daapd \
-	nagios-plugins net-tools nfs-utils nrpe ntop \
+	nagios-plugins net-tools nfs-utils nrpe \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
 	sdl sm syslog-ng \
 	tcpwrappers tnef transcode \
