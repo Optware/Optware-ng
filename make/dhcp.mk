@@ -6,7 +6,7 @@
 
 DHCP_DIR:=$(BUILD_DIR)/dhcp
 
-DHCP_VERSION=3.0.4
+DHCP_VERSION=3.0.5
 DHCP=dhcp-$(DHCP_VERSION)
 DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
 DHCP_SOURCE:=$(DHCP).tar.gz
@@ -26,6 +26,8 @@ DHCP_IPK_DIR:=$(BUILD_DIR)/dhcp-$(DHCP_VERSION)-ipk
 
 $(DL_DIR)/$(DHCP_SOURCE):
 	$(WGET) -P $(DL_DIR) $(DHCP_SITE)/$(DHCP_SOURCE)
+
+.PHONY: dhcp-source dhcp-unpack dhcp dhcp-stage dhcp-ipk dhcp-clean dhcp-dirclean dhcp-check
 
 dhcp-source: $(DL_DIR)/$(DHCP_SOURCE) $(DHCP_PATCH)
 
@@ -89,3 +91,9 @@ dhcp-clean:
 
 dhcp-dirclean:
 	rm -rf $(DHCP_DIR) $(DHCP_IPK_DIR) $(DHCP_IPK)
+
+#
+# Some sanity check for the package.
+#
+dhcp-check: $(DHCP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DHCP_IPK)
