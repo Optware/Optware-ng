@@ -25,7 +25,7 @@ XRENDER_DEPENDS=x11
 #
 # XRENDER_IPK_VERSION should be incremented when the ipk changes.
 #
-XRENDER_IPK_VERSION=2
+XRENDER_IPK_VERSION=3
 
 #
 # XRENDER_CONFFILES should be a list of user-editable files
@@ -102,6 +102,7 @@ $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XRENDER_PATCHES) make/xrender.mk
+	$(MAKE) renderext-stage
 	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz
 	if test -n "$(XRENDER_PATCHES)" ; \
