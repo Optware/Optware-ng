@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-AMARA_SITE=http://cheeseshop.python.org/packages/source/A/Amara
-PY-AMARA_VERSION=1.1.9
+PY-AMARA_VERSION=1.2
 PY-AMARA_SOURCE=Amara-$(PY-AMARA_VERSION).tar.gz
 PY-AMARA_DIR=Amara-$(PY-AMARA_VERSION)
 PY-AMARA_UNZIP=zcat
@@ -30,7 +30,8 @@ PY-AMARA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-AMARA_DESCRIPTION=A collection of Python/XML processing tools to complement 4Suite.
 PY-AMARA_SECTION=misc
 PY-AMARA_PRIORITY=optional
-PY-AMARA_DEPENDS=py-4suite
+PY24-AMARA_DEPENDS=py-4suite
+PY25-AMARA_DEPENDS=py25-4suite
 PY-AMARA_CONFLICTS=
 
 #
@@ -66,8 +67,14 @@ PY-AMARA_LDFLAGS=
 #
 PY-AMARA_BUILD_DIR=$(BUILD_DIR)/py-amara
 PY-AMARA_SOURCE_DIR=$(SOURCE_DIR)/py-amara
-PY-AMARA_IPK_DIR=$(BUILD_DIR)/py-amara-$(PY-AMARA_VERSION)-ipk
-PY-AMARA_IPK=$(BUILD_DIR)/py-amara_$(PY-AMARA_VERSION)-$(PY-AMARA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-AMARA_IPK_DIR=$(BUILD_DIR)/py-amara-$(PY-AMARA_VERSION)-ipk
+PY24-AMARA_IPK=$(BUILD_DIR)/py-amara_$(PY-AMARA_VERSION)-$(PY-AMARA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-AMARA_IPK_DIR=$(BUILD_DIR)/py25-amara-$(PY-AMARA_VERSION)-ipk
+PY25-AMARA_IPK=$(BUILD_DIR)/py25-amara_$(PY-AMARA_VERSION)-$(PY-AMARA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-amara-source py-amara-unpack py-amara py-amara-stage py-amara-ipk py-amara-clean py-amara-dirclean py-amara-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,25 +107,47 @@ py-amara-source: $(DL_DIR)/$(PY-AMARA_SOURCE) $(PY-AMARA_PATCHES)
 #
 $(PY-AMARA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AMARA_SOURCE) $(PY-AMARA_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR) $(PY-AMARA_BUILD_DIR)
+	rm -rf $(PY-AMARA_BUILD_DIR)
+	mkdir -p $(PY-AMARA_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR)
 	$(PY-AMARA_UNZIP) $(DL_DIR)/$(PY-AMARA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-AMARA_PATCHES)"; then \
 	    cat $(PY-AMARA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AMARA_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-AMARA_DIR) $(PY-AMARA_BUILD_DIR)
-	(cd $(PY-AMARA_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-AMARA_DIR) $(PY-AMARA_BUILD_DIR)/2.4
+	(cd $(PY-AMARA_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg \
 	)
-	touch $(PY-AMARA_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR)
+	$(PY-AMARA_UNZIP) $(DL_DIR)/$(PY-AMARA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-AMARA_PATCHES)"; then \
+	    cat $(PY-AMARA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AMARA_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-AMARA_DIR) $(PY-AMARA_BUILD_DIR)/2.5
+	(cd $(PY-AMARA_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+		echo "library-dirs=$(STAGING_LIB_DIR)"; \
+		echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg \
+	)
+	touch $@
 
 py-amara-unpack: $(PY-AMARA_BUILD_DIR)/.configured
 
@@ -126,13 +155,17 @@ py-amara-unpack: $(PY-AMARA_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-AMARA_BUILD_DIR)/.built: $(PY-AMARA_BUILD_DIR)/.configured
-	rm -f $(PY-AMARA_BUILD_DIR)/.built
+	rm -f $@
 #	$(MAKE) -C $(PY-AMARA_BUILD_DIR)
-	(cd $(PY-AMARA_BUILD_DIR); \
+	(cd $(PY-AMARA_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	python2.4 setup.py build)
-	touch $(PY-AMARA_BUILD_DIR)/.built
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-AMARA_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,8 +186,8 @@ py-amara-stage: $(PY-AMARA_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-amara
 #
-$(PY-AMARA_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-AMARA_IPK_DIR)/CONTROL
+$(PY24-AMARA_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-amara" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -164,7 +197,21 @@ $(PY-AMARA_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-AMARA_MAINTAINER)" >>$@
 	@echo "Source: $(PY-AMARA_SITE)/$(PY-AMARA_SOURCE)" >>$@
 	@echo "Description: $(PY-AMARA_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-AMARA_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-AMARA_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-AMARA_CONFLICTS)" >>$@
+
+$(PY25-AMARA_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-amara" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-AMARA_PRIORITY)" >>$@
+	@echo "Section: $(PY-AMARA_SECTION)" >>$@
+	@echo "Version: $(PY-AMARA_VERSION)-$(PY-AMARA_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-AMARA_MAINTAINER)" >>$@
+	@echo "Source: $(PY-AMARA_SITE)/$(PY-AMARA_SOURCE)" >>$@
+	@echo "Description: $(PY-AMARA_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-AMARA_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-AMARA_CONFLICTS)" >>$@
 
 #
@@ -179,20 +226,34 @@ $(PY-AMARA_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-AMARA_IPK): $(PY-AMARA_BUILD_DIR)/.built
-	rm -rf $(PY-AMARA_IPK_DIR) $(BUILD_DIR)/py-amara_*_$(TARGET_ARCH).ipk
-	(cd $(PY-AMARA_BUILD_DIR); \
+$(PY24-AMARA_IPK): $(PY-AMARA_BUILD_DIR)/.built
+	rm -rf $(PY24-AMARA_IPK_DIR) $(BUILD_DIR)/py-amara_*_$(TARGET_ARCH).ipk
+	(cd $(PY-AMARA_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-AMARA_IPK_DIR) --prefix=/opt)
-#	$(STRIP_COMMAND) `find $(PY-AMARA_IPK_DIR)/opt/lib/ -name '*.so'`
-	$(MAKE) $(PY-AMARA_IPK_DIR)/CONTROL/control
-#	echo $(PY-AMARA_CONFFILES) | sed -e 's/ /\n/g' > $(PY-AMARA_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-AMARA_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	--root=$(PY24-AMARA_IPK_DIR) --prefix=/opt)
+#	$(STRIP_COMMAND) `find $(PY24-AMARA_IPK_DIR)/opt/lib/ -name '*.so'`
+	$(MAKE) $(PY24-AMARA_IPK_DIR)/CONTROL/control
+#	echo $(PY-AMARA_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-AMARA_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-AMARA_IPK_DIR)
+
+$(PY25-AMARA_IPK): $(PY-AMARA_BUILD_DIR)/.built
+	rm -rf $(PY25-AMARA_IPK_DIR) $(BUILD_DIR)/py25-amara_*_$(TARGET_ARCH).ipk
+	(cd $(PY-AMARA_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	--root=$(PY25-AMARA_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-AMARA_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+#	$(STRIP_COMMAND) `find $(PY25-AMARA_IPK_DIR)/opt/lib/ -name '*.so'`
+	$(MAKE) $(PY25-AMARA_IPK_DIR)/CONTROL/control
+#	echo $(PY-AMARA_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-AMARA_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-AMARA_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-amara-ipk: $(PY-AMARA_IPK)
+py-amara-ipk: $(PY24-AMARA_IPK) $(PY25-AMARA_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -205,4 +266,12 @@ py-amara-clean:
 # directories.
 #
 py-amara-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR) $(PY-AMARA_BUILD_DIR) $(PY-AMARA_IPK_DIR) $(PY-AMARA_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-AMARA_DIR) $(PY-AMARA_BUILD_DIR)
+	rm -rf $(PY24-AMARA_IPK_DIR) $(PY24-AMARA_IPK)
+	rm -rf $(PY25-AMARA_IPK_DIR) $(PY25-AMARA_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-amara-check: $(PY24-AMARA_IPK) $(PY25-AMARA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-AMARA_IPK) $(PY25-AMARA_IPK)
