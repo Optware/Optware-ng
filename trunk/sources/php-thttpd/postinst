@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/opt/bin/update-alternatives --install /opt/sbin/htpasswd htpasswd /opt/sbin/php-thttpd-htpasswd 50
+update-alternatives --install /opt/sbin/htpasswd htpasswd /opt/sbin/php-thttpd-htpasswd 50
 
 echo ; echo
 echo "To complete the installation, you must edit /opt/etc/thttpd.conf,"
