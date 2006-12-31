@@ -25,7 +25,7 @@ XFIXES_DEPENDS=x11
 #
 # XFIXES_IPK_VERSION should be incremented when the ipk changes.
 #
-XFIXES_IPK_VERSION=2
+XFIXES_IPK_VERSION=3
 
 #
 # XFIXES_CONFFILES should be a list of user-editable files
@@ -102,6 +102,7 @@ $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
 		$(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h \
 		$(STAGING_LIB_DIR)/libX11.so \
 		$(XFIXES_PATCHES) make/xfixes.mk
+	$(MAKE) fixesext-stage
 	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz
 	if test -n "$(XFIXES_PATCHES)" ; \
