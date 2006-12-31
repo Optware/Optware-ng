@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=3
+FREETYPE_IPK_VERSION=4
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
