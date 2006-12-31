@@ -29,7 +29,7 @@ EXPAT_CONFLICTS=
 #
 # EXPAT_IPK_VERSION should be incremented when the ipk changes.
 #
-EXPAT_IPK_VERSION=5
+EXPAT_IPK_VERSION=6
 
 #
 # EXPAT_CONFFILES should be a list of user-editable files

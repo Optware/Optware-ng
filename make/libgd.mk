@@ -26,7 +26,7 @@ LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=2
+LIBGD_IPK_VERSION=3
 
 #
 # LIBGD_LOCALES defines which locales get installed

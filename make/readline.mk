@@ -40,7 +40,7 @@ READLINE_DEPENDS=
 #
 # READLINE_IPK_VERSION should be incremented when the ipk changes.
 #
-READLINE_IPK_VERSION=1
+READLINE_IPK_VERSION=2
 
 #
 # READLINE_CONFFILES should be a list of user-editable files

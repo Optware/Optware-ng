@@ -25,7 +25,7 @@ FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=3
+FONTCONFIG_IPK_VERSION=4
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
