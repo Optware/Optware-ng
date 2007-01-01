@@ -19,16 +19,23 @@
 #
 # You should change all these variables to suit your package.
 #
-NETHACK_SITE=ftp://dl.sourceforge.net/pub/sourceforge/n/ne/nethack/
+NETHACK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nethack
 NETHACK_VERSION=3.4.3
 NETHACK_SOURCE=nethack-343-src.tgz
 NETHACK_DIR=nethack-$(NETHACK_VERSION)
 NETHACK_UNZIP=zcat
+NETHACK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+NETHACK_DESCRIPTION=The best text based RPG of all time.
+NETHACK_SECTION=games
+NETHACK_PRIORITY=optional
+NETHACK_DEPENDS=ncurses
+NETHACK_SUGGESTS=
+NETHACK_CONFLICTS=
 
 #
 # NETHACK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETHACK_IPK_VERSION=1
+NETHACK_IPK_VERSION=2
 
 #
 # NETHACK_PATCHES should list any patches, in the the order in
@@ -39,8 +46,8 @@ NETHACK_PATCHES=$(NETHACK_SOURCE_DIR)/nethack_setup.patch $(NETHACK_SOURCE_DIR)/
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NETHACK_CPPFLAGS="-O $(STAGING_CPPFLAGS) -I../include"
-NETHACK_LDFLAGS="$(STAGING_LDFLAGS)"
+NETHACK_CPPFLAGS=-O -I../include
+NETHACK_LDFLAGS=
 
 #
 # NETHACK_BUILD_DIR is the directory in which the build is done.
@@ -55,6 +62,8 @@ NETHACK_BUILD_DIR=$(BUILD_DIR)/nethack
 NETHACK_SOURCE_DIR=$(SOURCE_DIR)/nethack
 NETHACK_IPK_DIR=$(BUILD_DIR)/nethack-$(NETHACK_VERSION)-ipk
 NETHACK_IPK=$(BUILD_DIR)/nethack_$(NETHACK_VERSION)-$(NETHACK_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: nethack-source nethack-unpack nethack nethack-stage nethack-ipk nethack-clean nethack-dirclean nethack-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -82,7 +91,7 @@ nethack-source: $(DL_DIR)/$(NETHACK_SOURCE) $(NETHACK_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 #
 $(NETHACK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETHACK_SOURCE) $(NETHACK_PATCHES)
-	$(MAKE) ncurses
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
 	$(NETHACK_UNZIP) $(DL_DIR)/$(NETHACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR)
@@ -99,13 +108,34 @@ nethack-unpack: $(NETHACK_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(NETHACK_BUILD_DIR)/src/nethack: $(NETHACK_BUILD_DIR)/.configured
-	make install -C $(NETHACK_BUILD_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB) LFLAGS=$(NETHACK_LDFLAGS) CFLAGS=$(NETHACK_CPPFLAGS) PREFIX=$(NETHACK_BUILD_DIR)/install 
+	make install -C $(NETHACK_BUILD_DIR) \
+		CC=$(TARGET_CC) \
+		AR=$(TARGET_AR) \
+		RANLIB=$(TARGET_RANLIB) \
+		CFLAGS="$(STAGING_CPPFLAGS) $(NETHACK_CPPFLAGS)" \
+		LFLAGS="$(STAGING_LDFLAGS) $(NETHACK_LDFLAGS)" \
+		PREFIX=$(NETHACK_BUILD_DIR)/install 
 
 #
 # You should change the dependency to refer directly to the main
 # binary which is built.
 #
 nethack: $(NETHACK_BUILD_DIR)/src/nethack
+
+$(NETHACK_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: nethack" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NETHACK_PRIORITY)" >>$@
+	@echo "Section: $(NETHACK_SECTION)" >>$@
+	@echo "Version: $(NETHACK_VERSION)-$(NETHACK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NETHACK_MAINTAINER)" >>$@
+	@echo "Source: $(NETHACK_SITE)/$(NETHACK_SOURCE)" >>$@
+	@echo "Description: $(NETHACK_DESCRIPTION)" >>$@
+	@echo "Depends: $(NETHACK_DEPENDS)" >>$@
+	@echo "Suggests: $(NETHACK_SUGGESTS)" >>$@
+	@echo "Conflicts: $(NETHACK_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -124,8 +154,11 @@ $(NETHACK_IPK): $(NETHACK_BUILD_DIR)/src/nethack
 	install -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
 	install -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
 	cp -r $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
-	install -d $(NETHACK_IPK_DIR)/CONTROL
-	install -m 755 $(NETHACK_SOURCE_DIR)/control $(NETHACK_IPK_DIR)/CONTROL/control
+	$(STRIP_COMMAND) \
+		$(NETHACK_IPK_DIR)/opt/share/nethackdir/nethack \
+		$(NETHACK_IPK_DIR)/opt/share/nethackdir/recover \
+		$(NETHACK_IPK_DIR)/opt/share/nethackdir/util/*
+	$(MAKE) $(NETHACK_IPK_DIR)/CONTROL/control
 	install -m 755 $(NETHACK_SOURCE_DIR)/postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETHACK_IPK_DIR)
 
@@ -146,3 +179,9 @@ nethack-clean:
 #
 nethack-dirclean:
 	rm -rf $(BUILD_DIR)/$(NETHACK_DIR) $(NETHACK_BUILD_DIR) $(NETHACK_IPK_DIR) $(NETHACK_IPK)
+
+#
+# Some sanity check for the package.
+#
+nethack-check: $(NETHACK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NETHACK_IPK)
