@@ -6,7 +6,7 @@
 
 NCURSES_DIR=$(BUILD_DIR)/ncurses
 
-NCURSES_VERSION=5.5
+NCURSES_VERSION=5.6
 NCURSES_SHLIBVERSION=5
 NCURSES=ncurses-$(NCURSES_VERSION)
 NCURSES_SITE=ftp://invisible-island.net/ncurses
@@ -25,7 +25,7 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=3
+NCURSES_IPK_VERSION=1
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
@@ -59,7 +59,7 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 		--without-ada		\
 	);
 ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -ie '/^CPPFLAGS/s| -I$$(includedir)||' $(NCURSES_DIR)/*/Makefile
+	sed -ie '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(NCURSES_DIR)/*/Makefile
 endif
 	touch $(NCURSES_DIR)/.configured
 
