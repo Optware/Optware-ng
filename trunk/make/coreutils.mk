@@ -34,14 +34,19 @@ COREUTILS_CONFLICTS=busybox-links
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=4
+COREUTILS_IPK_VERSION=5
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/mountlist.patch
+# Assume that all uclibc systems are the same
+ifeq ($(LIBC_STYLE), uclibc)
+COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config-uclibc.cache
+else
 COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config.cache
+endif
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
