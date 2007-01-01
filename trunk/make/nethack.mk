@@ -150,6 +150,7 @@ $(NETHACK_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(NETHACK_IPK): $(NETHACK_BUILD_DIR)/src/nethack
+	rm -rf $(NETHACK_IPK_DIR) $(BUILD_DIR)/nethack_*_$(TARGET_ARCH).ipk
 	install -d $(NETHACK_IPK_DIR)/opt/bin
 	install -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
 	install -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
