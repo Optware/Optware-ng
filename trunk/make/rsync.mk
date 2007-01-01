@@ -18,7 +18,7 @@ RSYNC_PRIORITY=optional
 RSYNC_DEPENDS=
 RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=1
+RSYNC_IPK_VERSION=2
 
 RSYNC_CONFFILES=/opt/etc/rsyncd.conf /opt/etc/init.d/S57rsyncd /opt/etc/rsyncd.secrets
 
@@ -26,6 +26,22 @@ RSYNC_PATCHES=$(RSYNC_SOURCE_DIR)/rsync.patch
 
 RSYNC_CPPFLAGS=
 RSYNC_LDFLAGS=
+
+ifeq ($(HOSTCC), $(TARGET_CC))
+RSYNC_CROSS_ENV=
+else
+RSYNC_CROSS_ENV=\
+	rsync_cv_can_hardlink_special=yes \
+	rsync_cv_can_hardlink_symlink=yes \
+	rsync_cv_HAVE_C99_VSNPRINTF=yes \
+	rsync_cv_HAVE_SECURE_MKSTEMP=yes \
+	rsync_cv_HAVE_SOCKETPAIR=yes \
+	ac_cv_func_utime_null=yes \
+	rsync_cv_MKNOD_CREATES_FIFOS=yes \
+	rsync_cv_MKNOD_CREATES_SOCKETS=yes \
+	ac_cv_func_lchmod=no \
+	ac_cv_func_lutimes=no
+endif
 
 RSYNC_BUILD_DIR=$(BUILD_DIR)/rsync
 RSYNC_SOURCE_DIR=$(SOURCE_DIR)/rsync
@@ -37,6 +53,8 @@ $(DL_DIR)/$(RSYNC_SOURCE):
 
 rsync-source: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 
+.PHONY: rsync-source rsync-unpack rsync rsync-stage rsync-ipk rsync-clean rsync-dirclean rsync-check
+
 $(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR)
@@ -47,6 +65,7 @@ $(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSYNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RSYNC_LDFLAGS)" \
+		$(RSYNC_CROSS_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -113,3 +132,6 @@ rsync-clean:
 
 rsync-dirclean:
 	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR) $(RSYNC_IPK_DIR) $(RSYNC_IPK)
+
+rsync-check: $(RSYNC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RSYNC_IPK)
