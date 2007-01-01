@@ -35,7 +35,7 @@ NETHACK_CONFLICTS=
 #
 # NETHACK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETHACK_IPK_VERSION=2
+NETHACK_IPK_VERSION=3
 
 #
 # NETHACK_PATCHES should list any patches, in the the order in
