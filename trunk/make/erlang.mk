@@ -47,11 +47,10 @@ ERLANG_WITH_SAE=no
 #
 ERLANG_IPK_VERSION=2
 
-ifeq ($(OPTWARE_TARGET), slugosbe)
-ERLANG_TARGET=armeb-unknown-linux-gnu
-else
-ERLANG_TARGET=$(GNU_TARGET_NAME)-gnu
-endif
+ERLANG_TARGET=$(strip \
+        $(if $(filter slugosbe, $(OPTWARE_TARGET)), armeb-unknown-linux-gnu, \
+        $(if $(filter ddwrt oleg, $(OPTWARE_TARGET)), mipsel-unknown-linux-gnu, \
+        $(GNU_TARGET_NAME)-gnu)))
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
