@@ -1,9 +1,0 @@
-Package: nethack
-Version: 3.4.3-1
-Architecture: armeb
-Maintainer: Chris Edmonds <edmondsc@onid.orst.edu>
-Source: ftp://umn.dl.sourceforge.net/pub/sourceforge/n/ne/nethack/nethack-343-src.tgz
-Section: games
-Priority: optional
-Depends: ncurses
-Description: The best text based RPG of all time, depends on ncurses

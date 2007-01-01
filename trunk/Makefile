@@ -44,7 +44,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # doxygen - host binary, not stripped
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
-PACKAGES_THAT_NEED_TO_BE_FIXED = libao nethack scponly gkrellm parted lumikki mini_httpd \
+PACKAGES_THAT_NEED_TO_BE_FIXED = libao scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
 	libextractor \
@@ -155,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi \
 	monotone mp3blaster mpack mpage mrtg mtools mtr multitail mutt mxml \
 	nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
-	netcat net-tools netio nfs-server nfs-utils \
+	net-tools netcat nethack netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	opencdk openldap openssh openssl openvpn optware-devel ossp-js oww \
 	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
