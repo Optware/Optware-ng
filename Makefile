@@ -235,7 +235,6 @@ WL500G_BROKEN_PACKAGES = \
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
 	 amule bitlbee bzflag dump \
-	$(ERLANG_PACKAGES) \
 	 fcgi fish gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
