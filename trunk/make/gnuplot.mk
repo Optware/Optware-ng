@@ -29,14 +29,14 @@ GNUPLOT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPLOT_DESCRIPTION=Command-line driven interactive data and function plotting utility
 GNUPLOT_SECTION=graphics
 GNUPLOT_PRIORITY=optional
-GNUPLOT_DEPENDS=readline, libgd, ncurses, libstdc++, expat
+GNUPLOT_DEPENDS=readline, libgd, ncurses, expat, libstdc++
 GNUPLOT_SUGGESTS=
 GNUPLOT_CONFLICTS=
 
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=3
+GNUPLOT_IPK_VERSION=4
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ gnuplot-source: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 # shown below to make various patches to it.
 #
 $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
-	$(MAKE) readline-stage libpng-stage libgd-stage ncurses-stage
+	$(MAKE) readline-stage libpng-stage libgd-stage ncurses-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(GNUPLOT_BUILD_DIR)
 	$(GNUPLOT_UNZIP) $(DL_DIR)/$(GNUPLOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUPLOT_PATCHES)" ; \
