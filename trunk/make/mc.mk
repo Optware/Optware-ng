@@ -19,7 +19,7 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=5
+MC_IPK_VERSION=6
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -166,6 +166,9 @@ $(MC_IPK): $(MC_BUILD_DIR)/src/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.lib  $(MC_IPK_DIR)/opt/lib/mc
 	install -m 644 $(MC_BUILD_DIR)/lib/mc.menu $(MC_IPK_DIR)/opt/lib/mc
 	$(STRIP_COMMAND) $(MC_BUILD_DIR)/src/mc -o $(MC_IPK_DIR)/opt/bin/mc
+	ln -s mc $(MC_IPK_DIR)/opt/bin/mcedit
+	install -d $(MC_IPK_DIR)/opt/lib/mc/syntax
+	install -m 644 $(MC_BUILD_DIR)/syntax/* $(MC_IPK_DIR)/opt/lib/mc/syntax
 	$(MAKE) $(MC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MC_IPK_DIR)
 
