@@ -16,14 +16,16 @@ UNRAR_PRIORITY=optional
 UNRAR_DEPENDS=libstdc++
 UNRAR_CONFLICTS=
 
-UNRAR_IPK_VERSION=1
+UNRAR_IPK_VERSION=2
 
-UNRAR_CFLAGS=$(TARGET_CFLAGS) -DBIG_ENDIAN
+UNRAR_CFLAGS=$(TARGET_CFLAGS)
 
 UNRAR_BUILD_DIR=$(BUILD_DIR)/unrar
 UNRAR_SOURCE_DIR=$(SOURCE_DIR)/unrar
 UNRAR_IPK_DIR=$(BUILD_DIR)/unrar-$(UNRAR_VERSION)-ipk
 UNRAR_IPK=$(BUILD_DIR)/unrar_$(UNRAR_VERSION)-$(UNRAR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: unrar-source unrar-unpack unrar unrar-stage unrar-ipk unrar-clean unrar-dirclean unrar-check
 
 $(DL_DIR)/$(UNRAR_SOURCE):
 	$(WGET) -P $(DL_DIR) $(UNRAR_SITE)/$(UNRAR_SOURCE)
@@ -80,3 +82,6 @@ unrar-clean:
 
 unrar-dirclean:
 	rm -rf $(BUILD_DIR)/$(UNRAR_DIR) $(UNRAR_BUILD_DIR) $(UNRAR_IPK_DIR) $(UNRAR_IPK)
+
+unrar-check: $(UNRAR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNRAR_IPK)
