@@ -91,12 +91,6 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-#
-# We need to know if we are cross compiling. For cross compiling configure
-# need an extra flag with the endianness. The package won't configure
-# native with this flag.
-# I guess that the wl500g is a little endian computer?
-#
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
@@ -104,7 +98,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 #	cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p1
 	mv $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
 	(cd $(NET_SNMP_BUILD_DIR); \
-	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+		if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 		then WITH_ENDIANNESS="--with-endianness=big"; \
 		else WITH_ENDIANNESS="--with-endianness=little"; fi; \
 		$(TARGET_CONFIGURE_OPTS) \
