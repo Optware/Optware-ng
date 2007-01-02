@@ -7,7 +7,7 @@
 # $Header$
 #
 NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
-NET_SNMP_VERSION=5.3.0.1
+NET_SNMP_VERSION=5.3.1
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=5
+NET_SNMP_IPK_VERSION=1
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -40,6 +40,11 @@ NET_SNMP_CONFFILES=/opt/etc/snmpd.conf /opt/etc/init.d/S70net-snmp
 #
 NET_SNMP_CPPFLAGS=
 NET_SNMP_LDFLAGS=
+ifeq ($(HOSTCC), $(TARGET_CC))
+NET_CROSS_CONFIG=
+else
+NET_CROSS_CONFIG=$$WITH_ENDIANNESS
+endif
 
 #
 # NET_SNMP_BUILD_DIR is the directory in which the build is done.
@@ -54,6 +59,8 @@ NET_SNMP_BUILD_DIR=$(BUILD_DIR)/net-snmp
 NET_SNMP_SOURCE_DIR=$(SOURCE_DIR)/net-snmp
 NET_SNMP_IPK_DIR=$(BUILD_DIR)/net-snmp-$(NET_SNMP_VERSION)-ipk
 NET_SNMP_IPK=$(BUILD_DIR)/net-snmp_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: net-snmp-source net-snmp-unpack net-snmp net-snmp-stage net-snmp-ipk net-snmp-clean net-snmp-dirclean net-snmp-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -90,15 +97,6 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # native with this flag.
 # I guess that the wl500g is a little endian computer?
 #
-ifeq ($(HOST_MACHINE),i386) 
-  NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=big"
-  ifeq ($(OPTWARE_TARGET),wl500g)
-    NET_SNMP_CROSS_CONFIG_FLAGS="--with-endianness=little"
-  endif
-else
-  NET_SNMP_CROSS_CONFIG_FLAGS=
-endif
-
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
@@ -106,6 +104,9 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 #	cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p1
 	mv $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
 	(cd $(NET_SNMP_BUILD_DIR); \
+	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+		then WITH_ENDIANNESS="--with-endianness=big"; \
+		else WITH_ENDIANNESS="--with-endianness=little"; fi; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NET_SNMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NET_SNMP_LDFLAGS)" \
@@ -118,7 +119,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		$(NET_SNMP_CROSS_CONFIG_FLAGS) \
+		$(NET_SNMP_CROSS_CONFIG) \
 		--with-default-snmp-version=3 \
 		--with-sys-contact=root@localhost \
 		--with-sys-location="(Unknown)" \
@@ -216,3 +217,9 @@ net-snmp-clean:
 #
 net-snmp-dirclean:
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR) $(NET_SNMP_IPK_DIR) $(NET_SNMP_IPK)
+
+#
+# Some sanity check for the package.
+#
+net-snmp-check: $(NET_SNMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NET_SNMP_IPK)
