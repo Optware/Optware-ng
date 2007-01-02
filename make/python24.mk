@@ -190,7 +190,7 @@ $(PYTHON24_BUILD_DIR)/.hoststaged: host/.configured $(PYTHON24_BUILD_DIR)/.built
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON24_BUILD_DIR)/buildpython DESTDIR=$(HOST_STAGING_DIR) install
 	rm -f $(HOST_STAGING_PREFIX)/bin/python
-	touch $(PYTHON25_BUILD_DIR)/.hoststaged
+	touch $(PYTHON24_BUILD_DIR)/.hoststaged
 
 python24-host-stage: $(PYTHON24_BUILD_DIR)/.hoststaged
 
