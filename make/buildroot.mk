@@ -64,7 +64,7 @@ BUILDROOT_CONFLICTS=
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=9
+BUILDROOT_IPK_VERSION=10
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
