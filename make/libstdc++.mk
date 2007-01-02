@@ -7,7 +7,7 @@
 LIBSTDC++_VERSION=$(strip \
 	$(if $(filter slugosbe, $(OPTWARE_TARGET)), 6.0.8, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
-	$(if $(filter ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
+	$(if $(filter ds101 ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
 	5.0.7))))
 LIBSTDC++_MAJOR=$(shell echo $(LIBSTDC++_VERSION) | sed 's/\..*//')
 
@@ -27,7 +27,7 @@ LIBSTDC++_DESCRIPTION==Standard C++ library, wrapped for uClibc++
 LIBSTDC++_LIBNAME=
 endif
 
-LIBSTDC++_IPK_VERSION=5
+LIBSTDC++_IPK_VERSION=6
 
 LIBSTDC++_BUILD_DIR=$(BUILD_DIR)/libstdc++
 LIBSTDC++_SOURCE_DIR=$(SOURCE_DIR)/libstdc++
