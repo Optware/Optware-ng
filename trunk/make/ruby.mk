@@ -27,9 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-RUBY_VERSION=1.8.5-p2
-RUBY_SOURCE=ruby-$(RUBY_VERSION).tar.gz
-RUBY_DIR=ruby-$(RUBY_VERSION)
+RUBY_UPSTREAM_VERSION=1.8.5-p12
+RUBY_VERSION=1.8.5.12
+RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
+RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
 RUBY_UNZIP=zcat
 RUBY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RUBY_DESCRIPTION=An interpreted scripting language for quick and easy object-oriented programming.
