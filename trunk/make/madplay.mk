@@ -35,7 +35,7 @@ MADPLAY_CONFLICTS=
 #
 # MADPLAY_IPK_VERSION should be incremented when the ipk changes.
 #
-MADPLAY_IPK_VERSION=2
+MADPLAY_IPK_VERSION=3
 
 #
 # MADPLAY_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ MADPLAY_BUILD_DIR=$(BUILD_DIR)/madplay
 MADPLAY_SOURCE_DIR=$(SOURCE_DIR)/madplay
 MADPLAY_IPK_DIR=$(BUILD_DIR)/madplay-$(MADPLAY_VERSION)-ipk
 MADPLAY_IPK=$(BUILD_DIR)/madplay_$(MADPLAY_VERSION)-$(MADPLAY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: madplay-source madplay-unpack madplay madplay-stage madplay-ipk madplay-clean madplay-dirclean madplay-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -114,6 +116,7 @@ $(MADPLAY_BUILD_DIR)/.configured: $(DL_DIR)/$(MADPLAY_SOURCE) $(MADPLAY_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(MADPLAY_BUILD_DIR)/libtool
 	touch $(MADPLAY_BUILD_DIR)/.configured
 
 madplay-unpack: $(MADPLAY_BUILD_DIR)/.configured
@@ -166,7 +169,7 @@ $(MADPLAY_IPK_DIR)/CONTROL/control:
 $(MADPLAY_IPK): $(MADPLAY_BUILD_DIR)/.built
 	rm -rf $(MADPLAY_IPK_DIR) $(BUILD_DIR)/madplay_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MADPLAY_BUILD_DIR) DESTDIR=$(MADPLAY_IPK_DIR) install
-	install -d $(MADPLAY_IPK_DIR)/CONTROL
+	$(STRIP_COMMAND) $(MADPLAY_IPK_DIR)/opt/bin/madplay
 	$(MAKE) $(MADPLAY_IPK_DIR)/CONTROL/control
 	echo $(MADPLAY_CONFFILES) | sed -e 's/ /\n/g' > $(MADPLAY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MADPLAY_IPK_DIR)
@@ -188,3 +191,9 @@ madplay-clean:
 #
 madplay-dirclean:
 	rm -rf $(BUILD_DIR)/$(MADPLAY_DIR) $(MADPLAY_BUILD_DIR) $(MADPLAY_IPK_DIR) $(MADPLAY_IPK)
+
+#
+# Some sanity check for the package.
+#
+madplay-check: $(MADPLAY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MADPLAY_IPK)
