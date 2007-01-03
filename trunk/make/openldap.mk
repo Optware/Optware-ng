@@ -19,9 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-OPENLDAP_SITE=ftp://ftp.openldap.org/pub/openldap/openldap-stable/
-OPENLDAP_VERSION=2.3.27
-OPENLDAP_SOURCE=openldap-stable-20060823.tgz
+OPENLDAP_SITE=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release
+OPENLDAP_VERSION=2.3.31
+OPENLDAP_SOURCE=openldap-$(OPENLDAP_VERSION).tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
 OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
@@ -34,7 +34,7 @@ OPENLDAP_CONFLICTS=
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=4
+OPENLDAP_IPK_VERSION=1
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
@@ -65,11 +65,14 @@ OPENLDAP_LDFLAGS=
 #
 OPENLDAP_BUILD_DIR=$(BUILD_DIR)/openldap
 OPENLDAP_SOURCE_DIR=$(SOURCE_DIR)/openldap
+
 OPENLDAP_IPK_DIR=$(BUILD_DIR)/openldap-$(OPENLDAP_VERSION)-ipk
 OPENLDAP_IPK=$(BUILD_DIR)/openldap_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 OPENLDAP_LIBS_IPK_DIR=$(BUILD_DIR)/openldap-libs-$(OPENLDAP_VERSION)-ipk
 OPENLDAP_LIBS_IPK=$(BUILD_DIR)/openldap-libs_$(OPENLDAP_VERSION)-$(OPENLDAP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: openldap-source openldap-unpack openldap openldap-stage openldap-ipk openldap-clean openldap-dirclean openldap-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -234,4 +237,12 @@ openldap-clean:
 # directories.
 #
 openldap-dirclean:
-	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR) $(OPENLDAP_IPK_DIR) $(OPENLDAP_IPK)
+	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(OPENLDAP_BUILD_DIR)
+	rm -rf $(OPENLDAP_IPK_DIR) $(OPENLDAP_IPK)
+	rm -rf $(OPENLDAP_LIBS_IPK_DIR) $(OPENLDAP_LIBS_IPK)
+
+#
+# Some sanity check for the package.
+#
+openldap-check: $(OPENLDAP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENLDAP_IPK) $(OPENLDAP_LIBS_IPK)
