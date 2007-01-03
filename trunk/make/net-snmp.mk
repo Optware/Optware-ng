@@ -7,7 +7,7 @@
 # $Header$
 #
 NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
-NET_SNMP_VERSION=5.3.1
+NET_SNMP_VERSION=5.4
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
@@ -114,6 +114,8 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--disable-nls \
 		--disable-static \
 		$(NET_SNMP_CROSS_CONFIG) \
+		--disable-embedded-perl \
+		--without-perl-modules \
 		--with-default-snmp-version=3 \
 		--with-sys-contact=root@localhost \
 		--with-sys-location="(Unknown)" \
