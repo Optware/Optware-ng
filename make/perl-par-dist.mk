@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-PAR-DIST_SITE=http://search.cpan.org/CPAN/authors/id/S/SM/SMUELLER
-PERL-PAR-DIST_VERSION=0.16
+PERL-PAR-DIST_VERSION=0.21
 PERL-PAR-DIST_SOURCE=PAR-Dist-$(PERL-PAR-DIST_VERSION).tar.gz
 PERL-PAR-DIST_DIR=PAR-Dist-$(PERL-PAR-DIST_VERSION)
 PERL-PAR-DIST_UNZIP=zcat
