@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=12
+PERL_IPK_VERSION=13
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -53,6 +53,9 @@ PERL_ARCH=armv5b-linux
 endif
 ifeq ($(TARGET_ARCH), powerpc)
 PERL_ARCH=ppc-linux
+endif
+ifeq ($(TARGET_ARCH), mipsel)
+PERL_ARCH=mipsel-linux
 endif
 PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
 
