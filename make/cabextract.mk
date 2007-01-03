@@ -5,7 +5,7 @@
 ###########################################################
 
 CABEXTRACT_SITE=http://www.kyz.uklinux.net/downloads
-CABEXTRACT_VERSION=1.1
+CABEXTRACT_VERSION=1.2
 CABEXTRACT_SOURCE=cabextract-$(CABEXTRACT_VERSION).tar.gz
 CABEXTRACT_DIR=cabextract-$(CABEXTRACT_VERSION)
 CABEXTRACT_UNZIP=zcat
@@ -20,7 +20,7 @@ CABEXTRACT_CONFLICTS=
 #
 # CABEXTRACT_IPK_VERSION should be incremented when the ipk changes.
 #
-CABEXTRACT_IPK_VERSION=2
+CABEXTRACT_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
@@ -42,6 +42,8 @@ CABEXTRACT_BUILD_DIR=$(BUILD_DIR)/cabextract
 CABEXTRACT_SOURCE_DIR=$(SOURCE_DIR)/cabextract
 CABEXTRACT_IPK_DIR=$(BUILD_DIR)/cabextract-$(CABEXTRACT_VERSION)-ipk
 CABEXTRACT_IPK=$(BUILD_DIR)/cabextract_$(CABEXTRACT_VERSION)-$(CABEXTRACT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: cabextract-source cabextract-unpack cabextract cabextract-stage cabextract-ipk cabextract-clean cabextract-dirclean cabextract-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -140,3 +142,9 @@ cabextract-clean:
 #
 cabextract-dirclean:
 	rm -rf $(BUILD_DIR)/$(CABEXTRACT_DIR) $(CABEXTRACT_BUILD_DIR) $(CABEXTRACT_IPK_DIR) $(CABEXTRACT_IPK)
+
+#
+# Some sanity check for the package.
+#
+cabextract-check: $(CABEXTRACT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CABEXTRACT_IPK)
