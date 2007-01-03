@@ -19,10 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-#http://$(SOURCEFORGE_MIRROR)/sourceforge/imagemagick/ImageMagick-6.1.7-5.tar.gz
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 IMAGEMAGICK_VERSION=6.3.1
-IMAGEMAGICK_REV=4
+IMAGEMAGICK_REV=5
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
