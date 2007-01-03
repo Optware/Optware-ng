@@ -28,7 +28,7 @@
 #
 OPENCDK_SITE=http://josefsson.org/gnutls/releases/opencdk
 # http://ftp.gnupg.org/GnuPG/alpha/gnutls/opencdk
-OPENCDK_VERSION=0.5.9
+OPENCDK_VERSION=0.5.11
 OPENCDK_SOURCE=opencdk-$(OPENCDK_VERSION).tar.gz
 OPENCDK_DIR=opencdk-$(OPENCDK_VERSION)
 OPENCDK_UNZIP=zcat
@@ -43,7 +43,7 @@ OPENCDK_CONFLICTS=
 #
 # OPENCDK_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENCDK_IPK_VERSION=3
+OPENCDK_IPK_VERSION=1
 
 #
 # OPENCDK_CONFFILES should be a list of user-editable files
