@@ -36,7 +36,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=2
+ASTERISK14_IPK_VERSION=3
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -54,7 +54,11 @@ ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_PREFIX)/include
+ifeq ($(OPTWARE_TARGET), slugosbe)
+ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR) -DPATH_MAX=4096
+else
+ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR)
+endif
 ASTERISK14_LDFLAGS=
 
 #
