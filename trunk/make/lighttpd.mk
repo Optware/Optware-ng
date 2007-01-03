@@ -37,16 +37,16 @@ LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap-libs, openssl
+LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap-libs, openssl, sqlite
 else
-LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openssl
+LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openssl, sqlite
 endif
 LIGHTTPD_CONFLICTS=
 
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=5
+LIGHTTPD_IPK_VERSION=6
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -118,7 +118,8 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
-	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage mysql-stage openssl-stage pcre-stage zlib-stage
+	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage
+	$(MAKE) mysql-stage openssl-stage pcre-stage sqlite-stage zlib-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
