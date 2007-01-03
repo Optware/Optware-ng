@@ -32,7 +32,7 @@ LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
 else
 LIBUCLIBC++_VERSION=0.2.2
 LIBUCLIBC++_SVN=svn://uclibc.org/trunk/uClibc++
-LIBUCLIBC++_SVN_REV=16395
+LIBUCLIBC++_SVN_REV=16938
 LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION)+r$(LIBUCLIBC++_SVN_REV).tbz2
 endif
 LIBUCLIBC++_DIR=uClibc++
@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=1
+LIBUCLIBC++_IPK_VERSION=2
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -196,6 +196,7 @@ $(LIBUCLIBC++_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(LIBUCLIBC++_MAINTAINER)" >>$@
 	@echo "Source: $(LIBUCLIBC++_SITE)/$(LIBUCLIBC++_SOURCE)" >>$@
 	@echo "Description: $(LIBUCLIBC++_DESCRIPTION)" >>$@
+	@echo "Provides: libstdc++" >>$@
 	@echo "Depends: $(LIBUCLIBC++_DEPENDS)" >>$@
 	@echo "Suggests: $(LIBUCLIBC++_SUGGESTS)" >>$@
 	@echo "Conflicts: $(LIBUCLIBC++_CONFLICTS)" >>$@
