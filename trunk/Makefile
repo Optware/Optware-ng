@@ -359,7 +359,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for slugosbe.
 SLUGOSBE_BROKEN_PACKAGES = \
-	amule antinat asterisk asterisk14 atftp \
+	amule antinat asterisk atftp \
 	bitlbee bluez-utils bzflag \
 	chillispot cyrus-imapd digitemp \
 	eaccelerator \
