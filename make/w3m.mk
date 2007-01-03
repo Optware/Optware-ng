@@ -41,7 +41,7 @@ W3M_CONFLICTS=
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=5
+W3M_IPK_VERSION=6
 
 #
 # W3M_CONFFILES should be a list of user-editable files
@@ -52,9 +52,9 @@ W3M_IPK_VERSION=5
 # which they should be applied to the source code.
 #
 ifeq ($(HOSTCC), $(TARGET_CC))
-W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch
+W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch $(W3M_SOURCE_DIR)/file.c.patch
 else
-W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch $(W3M_SOURCE_DIR)/configure.in.patch
+W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch $(W3M_SOURCE_DIR)/file.c.patch $(W3M_SOURCE_DIR)/configure.in.patch
 endif
 
 #
@@ -78,6 +78,8 @@ W3M_LIBGC_HOSTBUILD_DIR=$(W3M_BUILD_DIR)/libgc-hostbuild
 W3M_SOURCE_DIR=$(SOURCE_DIR)/w3m
 W3M_IPK_DIR=$(BUILD_DIR)/w3m-$(W3M_VERSION)-ipk
 W3M_IPK=$(BUILD_DIR)/w3m_$(W3M_VERSION)-$(W3M_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: w3m-source w3m-unpack w3m w3m-stage w3m-ipk w3m-clean w3m-dirclean w3m-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -266,3 +268,9 @@ w3m-clean:
 #
 w3m-dirclean:
 	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(W3M_BUILD_DIR) $(W3M_IPK_DIR) $(W3M_IPK)
+
+#
+# Some sanity check for the package.
+#
+w3m-check: $(W3M_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(W3M_IPK)
