@@ -367,7 +367,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gconv-modules gdb gtk \
 	heyu ice \
 	ldconfig lsof \
-	madplay mc metalog modutils monotone motion mp3blaster mt-daapd \
+	mc metalog modutils monotone motion mp3blaster mt-daapd \
 	net-tools nfs-utils nrpe \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
 	sdl sm syslog-ng \
