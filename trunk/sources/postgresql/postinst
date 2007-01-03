@@ -28,21 +28,17 @@ EOF
     echo ok
 fi
 
-if [ ! -d $pgdumpground ]; then
-    mkdir -p $pgdumpground
-    chown -R postgres:postgres $pgver
-fi
+mkdir -p $pghome
+chown postgres:postgres $pghome
+
+mkdir -p $pgdumpground
+chown -R postgres:postgres $pgver
 
 # initdb if not done before
 dbinited=0
 if [ -d $pgdata ]; then
     echo The $pgdata directory already exists
 else
-    if [ ! -d $pghome ]; then
-        echo "No $pghome directory found, mkdir $pghome"
-        mkdir -p $pghome
-        chown postgres:postgres $pghome
-    fi
     echo "Initialize database ... "
     su - postgres -c "/opt/bin/initdb -D $pgdata"
     [ -f $pgdata/PG_VERSION ] && echo "... database initialization done"

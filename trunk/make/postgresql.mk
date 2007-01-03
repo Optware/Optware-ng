@@ -40,7 +40,7 @@ POSTGRESQL_DEPENDS=readline
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=1
+POSTGRESQL_IPK_VERSION=2
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -196,6 +196,9 @@ $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 	install -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/S98postgresql
 	$(MAKE) $(POSTGRESQL_IPK_DIR)/CONTROL/control
 	install -m 755 $(POSTGRESQL_SOURCE_DIR)/postinst $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
+ifneq ($(OPTWARE_TARGET), nslu2)
+	sed -i -e '/cp.*\/share\/hdd/d' $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
+endif
 	install -m 755 $(POSTGRESQL_SOURCE_DIR)/prerm $(POSTGRESQL_IPK_DIR)/CONTROL/prerm
 	echo $(POSTGRESQL_CONFFILES) | sed -e 's/ /\n/g' > $(POSTGRESQL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTGRESQL_IPK_DIR)
