@@ -278,20 +278,14 @@ DS101_SPECIFIC_PACKAGES = ds101-bootstrap
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
 # tnef - malloc.c:30: error: conflicting types for 'malloc'
 DS101_BROKEN_PACKAGES = \
-	adns amule apache appweb apr-util asterisk14 asterisk14-gui \
-	atftp bash bitchx bpalogin bzflag \
-	ctcs ctorrent dspam eaccelerator \
-	enhanced-ctorrent freeradius gnuplot hexcurse \
+	bpalogin bzflag \
+	freeradius gnuplot \
 	imagemagick \
-	ldconfig lftp libstdc++ lighttpd \
-	mc mod-fastcgi mod-python monotone motion mysql \
-	net-tools nmap nzbget \
-	php php-apache \
-	py-mysql \
+	ldconfig lftp \
+	monotone motion \
 	qemu qemu-libc-i386 \
-	svn \
-	tnef tcpwrappers tethereal textutils \
-	transcode unrar
+	tnef \
+	transcode \
 
 # Packages that *only* work for ds101j - do not just put new packages here.
 DS101J_SPECIFIC_PACKAGES = bip
