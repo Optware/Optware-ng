@@ -238,7 +238,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 fcgi fish gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
-	 jamvm ldconfig libdvb libtorrent monotone \
+	 jamvm ldconfig libstdc++ libdvb libtorrent monotone \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango \
 	 qemu qemu-libc-i386 quickie rtorrent sm \
