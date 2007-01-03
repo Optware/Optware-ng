@@ -4,8 +4,9 @@
 #
 ###########################################################
 
-PERL-TIME-HIRES_SITE=http://search.cpan.org/CPAN/authors/id/J/JH/JHI
-PERL-TIME-HIRES_VERSION=1.76
+#PERL-TIME-HIRES_SITE=http://search.cpan.org/CPAN/authors/id/J/JH/JHI
+PERL-TIME-HIRES_SITE=http://backpan.cpan.org/modules/by-module/Time
+PERL-TIME-HIRES_VERSION=1.75
 PERL-TIME-HIRES_SOURCE=Time-HiRes-$(PERL-TIME-HIRES_VERSION).tar.gz
 PERL-TIME-HIRES_DIR=Time-HiRes-$(PERL-TIME-HIRES_VERSION)
 PERL-TIME-HIRES_UNZIP=zcat
