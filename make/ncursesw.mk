@@ -51,7 +51,7 @@ $(NCURSESW_DIR)/.configured: $(NCURSESW_DIR)/.source
 		--enable-safe-sprintf	\
 	);
 ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -ie '/^CPPFLAGS/s| -I$$(includedir)||' $(NCURSESW_DIR)/*/Makefile
+	sed -ie '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(NCURSESW_DIR)/*/Makefile
 endif
 	touch $(NCURSESW_DIR)/.configured
 
