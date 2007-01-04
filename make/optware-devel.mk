@@ -13,12 +13,12 @@ OPTWARE-DEVEL_PRIORITY=optional
 ifeq ($(LIBC_STYLE), glibc)
 OPTWARE-DEVEL_DEPENDS=autoconf, automake, bash, bison, bzip2, coreutils, crosstool-native, diffutils, file, findutils, flex, gawk, libstdc++, groff, libtool, make, m4, ncurses, openssl, patch, perl, pkgconfig, python, rsync, sed, svn, tar, wget-ssl
 else
-OPTWARE-DEVEL_DEPENDS=autoconf, automake, bash, bison, buildroot, bzip2, coreutils, diffutils, file, findutils, flex, gawk, libuclibc++, groff, libtool, make, m4, ncurses, openssl, patch, pkgconfig, python, rsync, sed, svn, tar, wget-ssl
+OPTWARE-DEVEL_DEPENDS=autoconf, automake, bash, bison, buildroot, bzip2, coreutils, diffutils, file, findutils, flex, gawk, libuclibc++, groff, libtool, make, m4, ncurses, openssl, patch, pkgconfig, perl, python, rsync, sed, svn, tar, wget-ssl
 endif
 OPTWARE-DEVEL_SUGGESTS=
 OPTWARE-DEVEL_CONFLICTS=
 
-OPTWARE-DEVEL_IPK_VERSION=5
+OPTWARE-DEVEL_IPK_VERSION=6
 
 OPTWARE-DEVEL_IPK_DIR=$(BUILD_DIR)/optware-devel-$(OPTWARE-DEVEL_VERSION)-ipk
 OPTWARE-DEVEL_IPK=$(BUILD_DIR)/optware-devel_$(OPTWARE-DEVEL_VERSION)-$(OPTWARE-DEVEL_IPK_VERSION)_$(TARGET_ARCH).ipk
