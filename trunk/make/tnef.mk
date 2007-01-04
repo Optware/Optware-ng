@@ -20,7 +20,7 @@ TNEF_CONFLICTS=
 #
 # TNEF_IPK_VERSION should be incremented when the ipk changes.
 #
-TNEF_IPK_VERSION=1
+TNEF_IPK_VERSION=2
 
 #
 # TNEF_PATCHES should list any patches, in the the order in
@@ -35,6 +35,10 @@ TNEF_IPK_VERSION=1
 TNEF_CPPFLAGS=
 TNEF_LDFLAGS=
 
+ifneq ($(HOSTCC), $(TARGET_CC))
+TNEF_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes
+endif
+
 #
 # TNEF_BUILD_DIR is the directory in which the build is done.
 # TNEF_SOURCE_DIR is the directory which holds all the
@@ -48,6 +52,8 @@ TNEF_BUILD_DIR=$(BUILD_DIR)/tnef
 TNEF_SOURCE_DIR=$(SOURCE_DIR)/tnef
 TNEF_IPK_DIR=$(BUILD_DIR)/tnef-$(TNEF_VERSION)-ipk
 TNEF_IPK=$(BUILD_DIR)/tnef_$(TNEF_VERSION)-$(TNEF_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: tnef-source tnef-unpack tnef tnef-stage tnef-ipk tnef-clean tnef-dirclean tnef-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -77,6 +83,7 @@ $(TNEF_BUILD_DIR)/.configured: $(DL_DIR)/$(TNEF_SOURCE) $(TNEF_PATCHES) make/tne
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TNEF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TNEF_LDFLAGS)" \
+		$(TNEF_CROSS_CONFIGURE_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -167,3 +174,9 @@ tnef-clean:
 #
 tnef-dirclean:
 	rm -rf $(BUILD_DIR)/$(TNEF_DIR) $(TNEF_BUILD_DIR) $(TNEF_IPK_DIR) $(TNEF_IPK)
+
+#
+# Some sanity check for the package.
+#
+tnef-check: $(TNEF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TNEF_IPK)
