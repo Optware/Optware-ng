@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-URWID_SITE=http://excess.org/urwid
-PY-URWID_VERSION=0.9.7.1
+PY-URWID_VERSION=0.9.7.2
 PY-URWID_SOURCE=urwid-$(PY-URWID_VERSION).tar.gz
 PY-URWID_DIR=urwid-$(PY-URWID_VERSION)
 PY-URWID_UNZIP=zcat
@@ -30,7 +30,9 @@ PY-URWID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-URWID_DESCRIPTION=Urwid is a console user interface library in Python.
 PY-URWID_SECTION=misc
 PY-URWID_PRIORITY=optional
-PY-URWID_DEPENDS=python
+PY-URWID_DEPENDS=
+PY24-URWID_DEPENDS=python24
+PY25-URWID_DEPENDS=python25
 PY-URWID_CONFLICTS=
 
 #
@@ -66,8 +68,17 @@ PY-URWID_LDFLAGS=
 #
 PY-URWID_BUILD_DIR=$(BUILD_DIR)/py-urwid
 PY-URWID_SOURCE_DIR=$(SOURCE_DIR)/py-urwid
-PY-URWID_IPK_DIR=$(BUILD_DIR)/py-urwid-$(PY-URWID_VERSION)-ipk
-PY-URWID_IPK=$(BUILD_DIR)/py-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY-URWID-COMMON_IPK_DIR=$(BUILD_DIR)/py-urwid-common-$(PY-URWID_VERSION)-ipk
+PY-URWID-COMMON_IPK=$(BUILD_DIR)/py-urwid-common_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-URWID_IPK_DIR=$(BUILD_DIR)/py-urwid-$(PY-URWID_VERSION)-ipk
+PY24-URWID_IPK=$(BUILD_DIR)/py-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-URWID_IPK_DIR=$(BUILD_DIR)/py25-urwid-$(PY-URWID_VERSION)-ipk
+PY25-URWID_IPK=$(BUILD_DIR)/py25-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-urwid-source py-urwid-unpack py-urwid py-urwid-stage py-urwid-ipk py-urwid-clean py-urwid-dirclean py-urwid-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -99,22 +110,40 @@ py-urwid-source: $(DL_DIR)/$(PY-URWID_SOURCE) $(PY-URWID_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-URWID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-URWID_SOURCE) $(PY-URWID_PATCHES)
-	$(MAKE) python-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY-URWID_BUILD_DIR)
+	mkdir -p $(PY-URWID_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR)
 	$(PY-URWID_UNZIP) $(DL_DIR)/$(PY-URWID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-URWID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)
-	(cd $(PY-URWID_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)/2.4
+	(cd $(PY-URWID_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-URWID_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR)
+	$(PY-URWID_UNZIP) $(DL_DIR)/$(PY-URWID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-URWID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)/2.5
+	(cd $(PY-URWID_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 py-urwid-unpack: $(PY-URWID_BUILD_DIR)/.configured
 
@@ -122,13 +151,18 @@ py-urwid-unpack: $(PY-URWID_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-URWID_BUILD_DIR)/.built: $(PY-URWID_BUILD_DIR)/.configured
-	rm -f $(PY-URWID_BUILD_DIR)/.built
-	(cd $(PY-URWID_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-URWID_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build \
 	    ; \
 	)
-	touch $(PY-URWID_BUILD_DIR)/.built
+	(cd $(PY-URWID_BUILD_DIR)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build \
+	    ; \
+	)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,9 +173,9 @@ py-urwid: $(PY-URWID_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-URWID_BUILD_DIR)/.staged: $(PY-URWID_BUILD_DIR)/.built
-	rm -f $(PY-URWID_BUILD_DIR)/.staged
+	rm -f $@
 	#$(MAKE) -C $(PY-URWID_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-URWID_BUILD_DIR)/.staged
+	touch $@
 
 py-urwid-stage: $(PY-URWID_BUILD_DIR)/.staged
 
@@ -149,8 +183,22 @@ py-urwid-stage: $(PY-URWID_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-urwid
 #
-$(PY-URWID_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-URWID_IPK_DIR)/CONTROL
+$(PY-URWID-COMMON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py-urwid-common" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-URWID_PRIORITY)" >>$@
+	@echo "Section: $(PY-URWID_SECTION)" >>$@
+	@echo "Version: $(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-URWID_MAINTAINER)" >>$@
+	@echo "Source: $(PY-URWID_SITE)/$(PY-URWID_SOURCE)" >>$@
+	@echo "Description: $(PY-URWID_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY-URWID_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-URWID_CONFLICTS)" >>$@
+
+$(PY24-URWID_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-urwid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -160,7 +208,21 @@ $(PY-URWID_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-URWID_MAINTAINER)" >>$@
 	@echo "Source: $(PY-URWID_SITE)/$(PY-URWID_SOURCE)" >>$@
 	@echo "Description: $(PY-URWID_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-URWID_DEPENDS)" >>$@
+	@echo "Depends: py-urwid-common, $(PY24-URWID_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-URWID_CONFLICTS)" >>$@
+
+$(PY25-URWID_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-urwid" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-URWID_PRIORITY)" >>$@
+	@echo "Section: $(PY-URWID_SECTION)" >>$@
+	@echo "Version: $(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-URWID_MAINTAINER)" >>$@
+	@echo "Source: $(PY-URWID_SITE)/$(PY-URWID_SOURCE)" >>$@
+	@echo "Description: $(PY-URWID_DESCRIPTION)" >>$@
+	@echo "Depends: py-urwid-common, $(PY25-URWID_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-URWID_CONFLICTS)" >>$@
 
 #
@@ -175,26 +237,42 @@ $(PY-URWID_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
-	rm -rf $(PY-URWID_IPK_DIR) $(BUILD_DIR)/py-urwid_*_$(TARGET_ARCH).ipk
-	(cd $(PY-URWID_BUILD_DIR); \
-	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py install --root=$(PY-URWID_IPK_DIR) --prefix=/opt; \
+$(PY24-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
+	rm -rf $(PY24-URWID_IPK_DIR) $(BUILD_DIR)/py-urwid_*_$(TARGET_ARCH).ipk
+	(cd $(PY-URWID_BUILD_DIR)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-URWID_IPK_DIR) --prefix=/opt; \
 	)
-	install -d $(PY-URWID_IPK_DIR)/opt/share/doc/py-urwid
-	echo "http://excess.org/urwid/" > $(PY-URWID_IPK_DIR)/opt/share/doc/py-urwid/url.txt
-	install -m 644 $(PY-URWID_BUILD_DIR)/*.html $(PY-URWID_IPK_DIR)/opt/share/doc/py-urwid
-	install -d $(PY-URWID_IPK_DIR)/opt/share/doc/py-urwid/examples
-	install -m 644 $(PY-URWID_BUILD_DIR)/*.py $(PY-URWID_IPK_DIR)/opt/share/doc/py-urwid/examples
-	rm $(PY-URWID_IPK_DIR)/opt/share/doc/py-urwid/examples/setup.py
 #	$(STRIP_COMMAND) `find $(PY-URWID_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
-	$(MAKE) $(PY-URWID_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-URWID_IPK_DIR)
+	$(MAKE) $(PY24-URWID_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-URWID_IPK_DIR)
+
+$(PY25-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
+	rm -rf $(PY25-URWID_IPK_DIR) $(BUILD_DIR)/py25-urwid_*_$(TARGET_ARCH).ipk
+	(cd $(PY-URWID_BUILD_DIR)/2.5; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-URWID_IPK_DIR) --prefix=/opt; \
+	)
+#	$(STRIP_COMMAND) `find $(PY-URWID_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+	$(MAKE) $(PY25-URWID_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-URWID_IPK_DIR)
+#
+	rm -rf $(PY-URWID-COMMON_IPK_DIR) $(BUILD_DIR)/py-urwid-common_*_$(TARGET_ARCH).ipk
+	install -d $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid
+	echo "http://excess.org/urwid/" > $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/url.txt
+	install -m 644 $(PY-URWID_BUILD_DIR)/2.5/*.html $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid
+	install -d $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples
+	install -m 644 $(PY-URWID_BUILD_DIR)/2.5/*.py $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples
+	rm -f $(PY-URWID-COMMON_IPK_DIR)/opt/share/doc/py-urwid/examples/setup.py
+	$(MAKE) $(PY-URWID-COMMON_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-URWID-COMMON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-urwid-ipk: $(PY-URWID_IPK)
+py-urwid-ipk: $(PY24-URWID_IPK) $(PY25-URWID_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -207,4 +285,12 @@ py-urwid-clean:
 # directories.
 #
 py-urwid-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR) $(PY-URWID_IPK_DIR) $(PY-URWID_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)
+	rm -rf $(PY24-URWID_IPK_DIR) $(PY24-URWID_IPK)
+	rm -rf $(PY25-URWID_IPK_DIR) $(PY25-URWID_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-urwid-check: $(PY24-URWID_IPK) $(PY25-URWID_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-URWID_IPK) $(PY25-URWID_IPK)
