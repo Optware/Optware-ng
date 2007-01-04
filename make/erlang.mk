@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=3
 
 ERLANG_TARGET=$(strip \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), armeb-unknown-linux-gnu, \
@@ -230,8 +230,6 @@ else
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
 		SHLIB_LD=$(TARGET_CC) \
-		ac_cv_prog_javac_ver_1_2=no \
-		ac_cv_c_bigendian=yes \
 		ac_cv_prog_javac_ver_1_2=no \
 		ac_cv_func_setvbuf_reversed=no \
 		ac_cv_func_mmap_fixed_mapped=yes \
