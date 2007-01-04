@@ -4,7 +4,11 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
+#
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 ZIP_SITE=http://ftp.info-zip.org/pub/infozip/src
 ZIP_VERSION_MAJOR=2

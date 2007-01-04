@@ -6,6 +6,9 @@
 #
 # $Id$
 #
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 # Warning:
 #	This is work in progress.
