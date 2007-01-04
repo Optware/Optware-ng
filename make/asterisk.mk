@@ -42,7 +42,7 @@ ASTERISK_CONFLICTS=asterisk14
 #
 # ASTERISK_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK_IPK_VERSION=1
+ASTERISK_IPK_VERSION=2
 
 #
 # ASTERISK_CONFFILES should be a list of user-editable files
@@ -101,19 +101,19 @@ ASTERISK_SYSCONF_SAMPLE_DIR=$(ASTERISK_INST_DIR)/etc/asterisk/sample
 
 
 ifeq ($(OPTWARE_TARGET),ts72xx)
-TARGET_PROC=arm
-TARGET_SUB_PROC=maverick
+ASTERISK_TARGET_PROC=arm
+ASTERISK_TARGET_SUB_PROC=maverick
 else
     ifeq ($(OPTWARE_TARGET),ds101g)
-    TARGET_PROC=ppc
-    TARGET_SUB_PROC=
+    ASTERISK_TARGET_PROC=ppc
+    ASTERISK_TARGET_SUB_PROC=
     else
 	ifeq ($(LIBC_STYLE),uclibc)
-	TARGET_PROC=mips1
-	TARGET_SUB_PROC=
+	ASTERISK_TARGET_PROC=mips1
+	ASTERISK_TARGET_SUB_PROC=
 	else
-	TARGET_PROC=arm
-	TARGET_SUB_PROC=xscale
+	ASTERISK_TARGET_PROC=arm
+	ASTERISK_TARGET_SUB_PROC=xscale
 	endif
     endif
 endif
@@ -121,8 +121,14 @@ endif
 ifeq ($(LIBC_STYLE),uclibc)
 ASTERISK_CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
 else
+  ifeq ($(OPTWARE_TARGET), slugosbe)
+ASTERISK_CROSS_COMPILE_TARGET=$(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)
+  else
 ASTERISK_CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)
+  endif
 endif
+
+.PHONY: asterisk-source asterisk-unpack asterisk asterisk-stage asterisk-ipk asterisk-clean asterisk-dirclean asterisk-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -184,8 +190,8 @@ $(ASTERISK_BUILD_DIR)/.built: $(ASTERISK_BUILD_DIR)/.configured
 	CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin/ \
 	CROSS_ARCH=Linux \
-	CROSS_PROC=$(TARGET_PROC) \
-	SUB_PROC=$(TARGET_SUB_PROC) \
+	CROSS_PROC=$(ASTERISK_TARGET_PROC) \
+	SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
 	$(TARGET_CONFIGURE_OPTS)
 	touch $(ASTERISK_BUILD_DIR)/.built
 
@@ -205,8 +211,8 @@ $(ASTERISK_BUILD_DIR)/.staged: $(ASTERISK_BUILD_DIR)/.built
 	CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
 	CROSS_ARCH=Linux \
-	CROSS_PROC=$(TARGET_PROC) \
-	SUB_PROC=$(TARGET_SUB_PROC) \
+	CROSS_PROC=$(ASTERISK_TARGET_PROC) \
+	SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
 	install
 	touch $(ASTERISK_BUILD_DIR)/.staged
 
@@ -256,8 +262,8 @@ $(ASTERISK_IPK): $(ASTERISK_BUILD_DIR)/.built
 		CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 		CROSS_COMPILE_BIN=$(STAGING_DIR)/bin/ \
 		CROSS_ARCH=Linux \
-		CROSS_PROC=$(TARGET_PROC) \
-		SUB_PROC=$(TARGET_SUB_PROC) \
+		CROSS_PROC=$(ASTERISK_TARGET_PROC) \
+		SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
 		install
 	install -d $(ASTERISK_IPK_DIR)/opt/etc/
 	$(MAKE) -C $(ASTERISK_BUILD_DIR) DESTDIR=$(ASTERISK_IPK_DIR) \
@@ -272,9 +278,14 @@ $(ASTERISK_IPK): $(ASTERISK_BUILD_DIR)/.built
 		CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)  \
 		CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
 		CROSS_ARCH=Linux \
-		CROSS_PROC=$(TARGET_PROC) \
-		SUB_PROC=$(TARGET_SUB_PROC) \
+		CROSS_PROC=$(ASTERISK_TARGET_PROC) \
+		SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
 		samples
+	$(STRIP_COMMAND) $(ASTERISK_IPK_DIR)/opt/sbin/asterisk \
+			 $(ASTERISK_IPK_DIR)/opt/sbin/stereorize \
+			 $(ASTERISK_IPK_DIR)/opt/sbin/streamplayer \
+			 $(ASTERISK_IPK_DIR)/opt/lib/asterisk/modules/*.so \
+			 $(ASTERISK_IPK_DIR)/opt/var/lib/asterisk/agi-bin/eagi*-test
 	$(MAKE) $(ASTERISK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK_IPK_DIR)
 
@@ -296,3 +307,9 @@ asterisk-clean:
 #
 asterisk-dirclean:
 	rm -rf $(BUILD_DIR)/$(ASTERISK_DIR) $(ASTERISK_BUILD_DIR) $(ASTERISK_IPK_DIR) $(ASTERISK_IPK)
+
+#
+# Some sanity check for the package.
+#
+asterisk-check: $(ASTERISK_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ASTERISK_IPK)
