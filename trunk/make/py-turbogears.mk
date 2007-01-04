@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
-PY-TURBOGEARS_VERSION=1.0b1
+PY-TURBOGEARS_VERSION=1.0
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -68,7 +68,7 @@ PY-TURBOGEARS_CONFLICTS=
 #
 # PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOGEARS_IPK_VERSION=2
+PY-TURBOGEARS_IPK_VERSION=1
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
