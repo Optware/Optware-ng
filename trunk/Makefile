@@ -364,7 +364,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	chillispot cyrus-imapd digitemp \
 	eaccelerator \
 	freeradius ftpd-topfield \
-	gconv-modules gdb gtk \
+	gdb gtk \
 	heyu ice \
 	ldconfig lsof \
 	mc metalog modutils monotone motion mp3blaster mt-daapd \
