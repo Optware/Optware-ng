@@ -159,7 +159,8 @@ COMMON_CROSS_PACKAGES = \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	opencdk openldap openssh openssl openvpn optware-devel ossp-js oww \
 	palantir pango patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
-	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psutils puppy pwgen \
+	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psmisc \
+	psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
 	rc rcs rdate readline recode recordext renderext rlfe rrdcollect rrdtool \
@@ -225,7 +226,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
-	 nylon openldap pango postfix py-mssql \
+	 nylon openldap pango postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tcsh tethereal tnftpd transcode unrar vte w3m wget wget-ssl wxbase x11 \
