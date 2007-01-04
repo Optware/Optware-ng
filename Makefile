@@ -276,7 +276,6 @@ DS101_SPECIFIC_PACKAGES = ds101-bootstrap
 
 # Packages that do not work for ds101.
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
-# tnef - malloc.c:30: error: conflicting types for 'malloc'
 DS101_BROKEN_PACKAGES = \
 	bpalogin bzflag \
 	freeradius gnuplot \
@@ -284,7 +283,6 @@ DS101_BROKEN_PACKAGES = \
 	ldconfig lftp \
 	monotone motion \
 	qemu qemu-libc-i386 \
-	tnef \
 	transcode \
 
 # Packages that *only* work for ds101j - do not just put new packages here.
@@ -371,7 +369,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	net-tools nfs-utils nrpe \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
 	sdl sm syslog-ng \
-	tnef transcode \
+	transcode \
 	unfs3 ushare vte \
 	w3cam \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
