@@ -78,6 +78,7 @@ else
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d/S05gconv-modules
+	install -d $(GCONV_MODULES_IPK_DIR)/CONTROL/
 	install -m 644 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/CONTROL/postinst
     endif
 endif
