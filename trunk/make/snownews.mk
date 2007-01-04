@@ -31,16 +31,16 @@ SNOWNEWS_VERSION=1.5.7
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
-SNOWNEWS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+SNOWNEWS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SNOWNEWS_DESCRIPTION=Text mode RSS newsreader for Linux and Unix
 SNOWNEWS_SECTION=misc
 SNOWNEWS_PRIORITY=optional
-SNOWNEWS_DEPENDS=libxml2 ncurses gconv-modules gettext
+SNOWNEWS_DEPENDS=libxml2, ncurses, gconv-modules, gettext
 
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=4
+SNOWNEWS_IPK_VERSION=5
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
