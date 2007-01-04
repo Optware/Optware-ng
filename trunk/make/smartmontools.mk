@@ -5,7 +5,7 @@
 ###########################################################
 
 SMARTMONTOOLS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/smartmontools
-SMARTMONTOOLS_VERSION=5.36
+SMARTMONTOOLS_VERSION=5.37
 SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
 SMARTMONTOOLS_DIR=smartmontools-$(SMARTMONTOOLS_VERSION)
 SMARTMONTOOLS_UNZIP=zcat
@@ -31,7 +31,7 @@ SMARTMONTOOLS_CONFFILES=/opt/etc/smartd.conf /opt/etc/init.d/S20smartmontools
 # SMARTMONTOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SMARTMONTOOLS_PATCHES=$(SMARTMONTOOLS_SOURCE_DIR)/configure.patch
+SMARTMONTOOLS_PATCHES=$(SMARTMONTOOLS_SOURCE_DIR)/configargs.patch
 
 #
 # If the compilation of the package requires additional
@@ -61,6 +61,8 @@ SMARTMONTOOLS_IPK=$(BUILD_DIR)/smartmontools_$(SMARTMONTOOLS_VERSION)-$(SMARTMON
 $(DL_DIR)/$(SMARTMONTOOLS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(SMARTMONTOOLS_SITE)/$(SMARTMONTOOLS_SOURCE)
 
+.PHONY: smartmontools-source smartmontools-unpack smartmontools smartmontools-stage smartmontools-ipk smartmontools-clean smartmontools-dirclean smartmontools-check
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -85,7 +87,7 @@ $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMAR
 	$(SMARTMONTOOLS_UNZIP) $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SMARTMONTOOLS_PATCHES)" ; \
 		then cat $(SMARTMONTOOLS_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SMARTMONTOOLS_DIR)" != "$(SMARTMONTOOLS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(SMARTMONTOOLS_BUILD_DIR) ; \
@@ -174,3 +176,9 @@ smartmontools-clean:
 #
 smartmontools-dirclean:
 	rm -rf $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(SMARTMONTOOLS_BUILD_DIR) $(SMARTMONTOOLS_IPK_DIR) $(SMARTMONTOOLS_IPK)
+#
+#
+# Some sanity check for the package.
+#
+smartmontools-check: $(SMARTMONTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SMARTMONTOOLS_IPK)
