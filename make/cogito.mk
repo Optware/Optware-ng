@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 COGITO_SITE=http://www.kernel.org/pub/software/scm/cogito
-COGITO_VERSION=0.18.1
+COGITO_VERSION=0.18.2
 COGITO_SOURCE=cogito-$(COGITO_VERSION).tar.bz2
 COGITO_DIR=cogito-$(COGITO_VERSION)
 COGITO_UNZIP=bzcat
@@ -36,7 +36,7 @@ COGITO_CONFLICTS=git
 #
 # COGITO_IPK_VERSION should be incremented when the ipk changes.
 #
-COGITO_IPK_VERSION=2
+COGITO_IPK_VERSION=1
 
 #
 # COGITO_CONFFILES should be a list of user-editable files
