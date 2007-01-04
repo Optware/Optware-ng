@@ -4,11 +4,15 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
 #
 # Warning: This package doesn't compile native!!!!
 #          The source is distributed in zip 2 format and busybox unzip
 #          will not work.
+#
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 NETIO_SITE=http://hobbes.nmsu.edu/pub/os2/util/network
 NETIO_VERSION=123

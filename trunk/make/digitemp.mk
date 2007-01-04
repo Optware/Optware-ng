@@ -4,13 +4,13 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
 #
-# If you list yourself as MAINTAINER, please give a valid email
-# address, and indicate your irc nick if it cannot be easily deduced
-# from your name or email address.  If you leave MAINTAINER set to
-# "NSLU2 Linux" other developers will feel free to edit.
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
+
 DIGITEMP_SITE=http://www.digitemp.com/software/linux
 DIGITEMP_VERSION=3.4.0
 DIGITEMP_SOURCE=digitemp-$(DIGITEMP_VERSION).tar.gz

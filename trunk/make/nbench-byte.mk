@@ -4,21 +4,11 @@
 #
 ###########################################################
 #
-# NBENCH_BYTE_VERSION, NBENCH_BYTE_SITE and NBENCH_BYTE_SOURCE define
-# the upstream location of the source code for the package.
-# NBENCH_BYTE_DIR is the directory which is created when the source
-# archive is unpacked.
-# NBENCH_BYTE_UNZIP is the command used to unzip the source.
-# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
+# $Id$
 #
-# You should change all these variables to suit your package.
-# Please make sure that you add a description, and that you
-# list all your packages' dependencies, seperated by commas.
-# 
-# If you list yourself as MAINTAINER, please give a valid email
-# address, and indicate your irc nick if it cannot be easily deduced
-# from your name or email address.  If you leave MAINTAINER set to
-# "NSLU2 Linux" other developers will feel free to edit.
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 NBENCH_BYTE_SITE=http://www.tux.org/~mayer/linux
 NBENCH_BYTE_VERSION=2.2.2

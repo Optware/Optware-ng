@@ -4,12 +4,11 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
 #
-# If you list yourself as MAINTAINER, please give a valid email
-# address, and indicate your irc nick if it cannot be easily deduced
-# from your name or email address.  If you leave MAINTAINER set to
-# "NSLU2 Linux" other developers will feel free to edit.
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 # NOTE 1:
 #	At this moment i will only use the nrpe daemon

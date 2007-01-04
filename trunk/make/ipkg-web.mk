@@ -5,6 +5,11 @@
 ###########################################################
 #
 # $Id$
+#
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
+#
 
 IPKG_WEB_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 IPKG_WEB_DESCRIPTION=A web frontend for ipkg

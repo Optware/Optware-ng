@@ -4,25 +4,11 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
 #
-
-#
-# TFTP_HPA_VERSION, TFTP_HPA_SITE and TFTP_HPA_SOURCE define
-# the upstream location of the source code for the package.
-# TFTP_HPA_DIR is the directory which is created when the source
-# archive is unpacked.
-# TFTP_HPA_UNZIP is the command used to unzip the source.
-# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
-#
-# You should change all these variables to suit your package.
-# Please make sure that you add a description, and that you
-# list all your packages' dependencies, seperated by commas.
-# 
-# If you list yourself as MAINTAINER, please give a valid email
-# address, and indicate your irc nick if it cannot be easily deduced
-# from your name or email address.  If you leave MAINTAINER set to
-# "NSLU2 Linux" other developers will feel free to edit.
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 TFTP_HPA_SITE=http://www.kernel.org/pub/software/network/tftp
 TFTP_HPA_VERSION=0.45

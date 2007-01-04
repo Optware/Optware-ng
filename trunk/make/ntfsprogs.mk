@@ -4,7 +4,11 @@
 #
 ###########################################################
 #
-# $Header$
+# $Id$
+#
+# I have placed my name as maintainer so that people can ask
+# questions. But feel free to update or change this package
+# if there are reasons.
 #
 NTFSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/linux-ntfs
 NTFSPROGS_VERSION=1.13.1
