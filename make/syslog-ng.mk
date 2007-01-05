@@ -34,7 +34,7 @@ SYSLOG-NG_CONFLICTS=
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=1
+SYSLOG-NG_IPK_VERSION=2
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ SYSLOG-NG_BUILD_DIR=$(BUILD_DIR)/syslog-ng
 SYSLOG-NG_SOURCE_DIR=$(SOURCE_DIR)/syslog-ng
 SYSLOG-NG_IPK_DIR=$(BUILD_DIR)/syslog-ng-$(SYSLOG-NG_VERSION)-ipk
 SYSLOG-NG_IPK=$(BUILD_DIR)/syslog-ng_$(SYSLOG-NG_VERSION)-$(SYSLOG-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: syslog-ng-source syslog-ng-unpack syslog-ng syslog-ng-stage syslog-ng-ipk syslog-ng-clean syslog-ng-dirclean syslog-ng-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -175,6 +177,7 @@ $(SYSLOG-NG_IPK_DIR)/CONTROL/control:
 $(SYSLOG-NG_IPK): $(SYSLOG-NG_BUILD_DIR)/.built
 	rm -rf $(SYSLOG-NG_IPK_DIR) $(BUILD_DIR)/syslog-ng_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR) DESTDIR=$(SYSLOG-NG_IPK_DIR) install
+	$(STRIP_COMMAND) $(SYSLOG-NG_IPK_DIR)/opt/sbin/syslog-ng
 	install -d $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
 	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/syslog-ng.conf $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
 	install -d $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
@@ -202,3 +205,9 @@ syslog-ng-clean:
 #
 syslog-ng-dirclean:
 	rm -rf $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(SYSLOG-NG_BUILD_DIR) $(SYSLOG-NG_IPK_DIR) $(SYSLOG-NG_IPK)
+
+#
+# Some sanity check for the package.
+#
+syslog-ng-check: $(SYSLOG-NG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SYSLOG-NG_IPK)

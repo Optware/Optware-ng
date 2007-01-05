@@ -369,10 +369,10 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gdb gtk \
 	heyu ice \
 	ldconfig \
-	mc metalog modutils monotone motion mp3blaster mt-daapd \
+	mc modutils monotone motion mp3blaster mt-daapd \
 	net-tools nfs-utils nrpe \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
-	sdl sm syslog-ng \
+	sdl sm \
 	transcode \
 	unfs3 ushare vte \
 	w3cam \
