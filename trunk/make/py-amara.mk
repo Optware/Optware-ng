@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-AMARA_SITE=http://cheeseshop.python.org/packages/source/A/Amara
-PY-AMARA_VERSION=1.2
+PY-AMARA_VERSION=1.2.0.1
 PY-AMARA_SOURCE=Amara-$(PY-AMARA_VERSION).tar.gz
 PY-AMARA_DIR=Amara-$(PY-AMARA_VERSION)
 PY-AMARA_UNZIP=zcat
