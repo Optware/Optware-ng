@@ -24,14 +24,20 @@ GNOKII_DEPENDS=libusb, bluez-libs
 GNOKII_SUGGESTS=
 GNOKII_CONFLICTS=
 
+GNOKII_SMSD_DESCRIPTION=A gnokii sms daemon
+GNOKII_SMSD_SECTION=daemon
+GNOKII_SMSD_DEPENDS=gnokii
+GNOKII_SMSD_SUGGESTS=
+GNOKII_SMSD_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=1
+GNOKII_IPK_VERSION=2
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
 # GNOKII_CONFFILES=/opt/etc/gnokii.conf /opt/etc/init.d/SXXgnokii
+# GNOKII_SMSD_CONFFILES=/opt/etc/gnokii.conf /opt/etc/init.d/SXXgnokii
 
 #
 # GNOKII_PATCHES should list any patches, in the the order in
@@ -60,7 +66,10 @@ GNOKII_SOURCE_DIR=$(SOURCE_DIR)/gnokii
 GNOKII_IPK_DIR=$(BUILD_DIR)/gnokii-$(GNOKII_VERSION)-ipk
 GNOKII_IPK=$(BUILD_DIR)/gnokii_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: gnokii-source gnokii-unpack gnokii gnokii-stage gnokii-ipk gnokii-clean gnokii-dirclean gnokii-check
+GNOKII_SMSD_IPK_DIR=$(BUILD_DIR)/gnokii-smsd-$(GNOKII_VERSION)-ipk
+GNOKII_SMSD_IPK=$(BUILD_DIR)/gnokii-smsd_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: gnokii-source gnokii-unpack gnokii gnokii-stage gnokii-ipk gnokii-clean gnokii-dirclean gnokii-check gnokii-smsd-ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -106,6 +115,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 		then mv $(BUILD_DIR)/$(GNOKII_DIR) $(GNOKII_BUILD_DIR) ; \
 	fi
 	(cd $(GNOKII_BUILD_DIR); \
+		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNOKII_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNOKII_LDFLAGS)" \
@@ -132,9 +142,21 @@ $(GNOKII_BUILD_DIR)/.built: $(GNOKII_BUILD_DIR)/.configured
 	touch $(GNOKII_BUILD_DIR)/.built
 
 #
+# This builds the smsd
+#
+$(GNOKII_BUILD_DIR)/smsd/.built: $(GNOKII_BUILD_DIR)/.configured
+	make gnokii-stage
+	rm -f $(GNOKII_BUILD_DIR)/smsd/.built
+	PKG_CONFIG_PATH=$(STAGING_PREFIX)/lib/pkgconfig \
+		$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd
+	touch $(GNOKII_BUILD_DIR)/smsd/.built
+
+#
 # This is the build convenience target.
 #
 gnokii: $(GNOKII_BUILD_DIR)/.built
+
+gnokii-smsd: $(GNOKII_BUILD_DIR)/smsd/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -164,6 +186,21 @@ $(GNOKII_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GNOKII_DEPENDS)" >>$@
 	@echo "Suggests: $(GNOKII_SUGGESTS)" >>$@
 	@echo "Conflicts: $(GNOKII_CONFLICTS)" >>$@
+
+$(GNOKII_SMSD_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: gnokii-smsd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GNOKII_PRIORITY)" >>$@
+	@echo "Section: $(GNOKII_SMSD_SECTION)" >>$@
+	@echo "Version: $(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GNOKII_MAINTAINER)" >>$@
+	@echo "Source: $(GNOKII_SITE)/$(GNOKII_SOURCE)" >>$@
+	@echo "Description: $(GNOKII_SMSD_DESCRIPTION)" >>$@
+	@echo "Depends: $(GNOKII_SMSD_DEPENDS)" >>$@
+	@echo "Suggests: $(GNOKII_SMSD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GNOKII_SMSD_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -213,10 +250,31 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 	echo $(GNOKII_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_IPK_DIR)
 
+$(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
+	rm -rf $(GNOKII_SMSD_IPK_DIR) $(BUILD_DIR)/gnokii-smsd_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_IPK_DIR) install
+	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libfile.la
+	$(TARGET_STRIP) $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libfile.so
+	$(TARGET_STRIP) $(GNOKII_SMSD_IPK_DIR)/opt/sbin/smsd
+	
+#	install -m 644 $(GNOKII_SOURCE_DIR)/gnokii.conf $(GNOKII_IPK_DIR)/opt/etc/gnokii.conf
+#	install -d $(GNOKII_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(GNOKII_SOURCE_DIR)/rc.gnokii $(GNOKII_IPK_DIR)/opt/etc/init.d/SXXgnokii
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXgnokii
+	$(MAKE) $(GNOKII_SMSD_IPK_DIR)/CONTROL/control
+#	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
+	echo $(GNOKII_SMSD_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_SMSD_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_SMSD_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
 gnokii-ipk: $(GNOKII_IPK)
+
+gnokii-smsd-ipk: $(GNOKII_SMSD_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
