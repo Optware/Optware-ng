@@ -30,13 +30,14 @@ PY-MYGHTY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MYGHTY_DESCRIPTION=A Python based web and templating framework.
 PY-MYGHTY_SECTION=misc
 PY-MYGHTY_PRIORITY=optional
-PY-MYGHTY_DEPENDS=py-paste, py-pastedeploy, py-pastescript, py-routes
+PY24-MYGHTY_DEPENDS=py-paste, py-pastedeploy, py-pastescript, py-routes
+PY25-MYGHTY_DEPENDS=py25-paste, py25-pastedeploy, py25-pastescript, py25-routes
 PY-MYGHTY_CONFLICTS=
 
 #
 # PY-MYGHTY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYGHTY_IPK_VERSION=1
+PY-MYGHTY_IPK_VERSION=2
 
 #
 # PY-MYGHTY_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-MYGHTY_LDFLAGS=
 #
 PY-MYGHTY_BUILD_DIR=$(BUILD_DIR)/py-myghty
 PY-MYGHTY_SOURCE_DIR=$(SOURCE_DIR)/py-myghty
-PY-MYGHTY_IPK_DIR=$(BUILD_DIR)/py-myghty-$(PY-MYGHTY_VERSION)-ipk
-PY-MYGHTY_IPK=$(BUILD_DIR)/py-myghty_$(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-MYGHTY_IPK_DIR=$(BUILD_DIR)/py-myghty-$(PY-MYGHTY_VERSION)-ipk
+PY24-MYGHTY_IPK=$(BUILD_DIR)/py-myghty_$(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-MYGHTY_IPK_DIR=$(BUILD_DIR)/py25-myghty-$(PY-MYGHTY_VERSION)-ipk
+PY25-MYGHTY_IPK=$(BUILD_DIR)/py25-myghty_$(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-myghty-source py-myghty-unpack py-myghty py-myghty-stage py-myghty-ipk py-myghty-clean py-myghty-dirclean py-myghty-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,15 +107,27 @@ py-myghty-source: $(DL_DIR)/$(PY-MYGHTY_SOURCE) $(PY-MYGHTY_PATCHES)
 #
 $(PY-MYGHTY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYGHTY_SOURCE) $(PY-MYGHTY_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(PY-MYGHTY_BUILD_DIR)
+	rm -rf $(PY-MYGHTY_BUILD_DIR)
+	mkdir -p $(PY-MYGHTY_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR)
 	$(PY-MYGHTY_UNZIP) $(DL_DIR)/$(PY-MYGHTY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MYGHTY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYGHTY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(PY-MYGHTY_BUILD_DIR)
-	(cd $(PY-MYGHTY_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(PY-MYGHTY_BUILD_DIR)/2.4
+	(cd $(PY-MYGHTY_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
-	touch $(PY-MYGHTY_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR)
+	$(PY-MYGHTY_UNZIP) $(DL_DIR)/$(PY-MYGHTY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-MYGHTY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYGHTY_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(PY-MYGHTY_BUILD_DIR)/2.5
+	(cd $(PY-MYGHTY_BUILD_DIR)/2.5; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	touch $@
 
 py-myghty-unpack: $(PY-MYGHTY_BUILD_DIR)/.configured
 
@@ -116,12 +135,14 @@ py-myghty-unpack: $(PY-MYGHTY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-MYGHTY_BUILD_DIR)/.built: $(PY-MYGHTY_BUILD_DIR)/.configured
-	rm -f $(PY-MYGHTY_BUILD_DIR)/.built
-	(cd $(PY-MYGHTY_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
-#	$(MAKE) -C $(PY-MYGHTY_BUILD_DIR)
-	touch $(PY-MYGHTY_BUILD_DIR)/.built
+	rm -f $@
+	(cd $(PY-MYGHTY_BUILD_DIR)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(PY-MYGHTY_BUILD_DIR)/2.5; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -132,9 +153,9 @@ py-myghty: $(PY-MYGHTY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-MYGHTY_BUILD_DIR)/.staged: $(PY-MYGHTY_BUILD_DIR)/.built
-	rm -f $(PY-MYGHTY_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-MYGHTY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-MYGHTY_BUILD_DIR)/.staged
+	touch $@
 
 py-myghty-stage: $(PY-MYGHTY_BUILD_DIR)/.staged
 
@@ -142,8 +163,8 @@ py-myghty-stage: $(PY-MYGHTY_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-myghty
 #
-$(PY-MYGHTY_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-MYGHTY_IPK_DIR)/CONTROL
+$(PY24-MYGHTY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-myghty" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -153,7 +174,21 @@ $(PY-MYGHTY_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MYGHTY_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MYGHTY_SITE)/$(PY-MYGHTY_SOURCE)" >>$@
 	@echo "Description: $(PY-MYGHTY_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-MYGHTY_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-MYGHTY_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MYGHTY_CONFLICTS)" >>$@
+
+$(PY25-MYGHTY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-myghty" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MYGHTY_PRIORITY)" >>$@
+	@echo "Section: $(PY-MYGHTY_SECTION)" >>$@
+	@echo "Version: $(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MYGHTY_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MYGHTY_SITE)/$(PY-MYGHTY_SOURCE)" >>$@
+	@echo "Description: $(PY-MYGHTY_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-MYGHTY_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MYGHTY_CONFLICTS)" >>$@
 
 #
@@ -168,19 +203,30 @@ $(PY-MYGHTY_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-MYGHTY_IPK): $(PY-MYGHTY_BUILD_DIR)/.built
-	rm -rf $(PY-MYGHTY_IPK_DIR) $(BUILD_DIR)/py-myghty_*_$(TARGET_ARCH).ipk
-	(cd $(PY-MYGHTY_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-MYGHTY_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-MYGHTY_IPK_DIR)/CONTROL/control
-#	echo $(PY-MYGHTY_CONFFILES) | sed -e 's/ /\n/g' > $(PY-MYGHTY_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MYGHTY_IPK_DIR)
+$(PY24-MYGHTY_IPK): $(PY-MYGHTY_BUILD_DIR)/.built
+	rm -rf $(PY24-MYGHTY_IPK_DIR) $(BUILD_DIR)/py-myghty_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MYGHTY_BUILD_DIR)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-MYGHTY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-MYGHTY_IPK_DIR)/CONTROL/control
+#	echo $(PY-MYGHTY_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-MYGHTY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MYGHTY_IPK_DIR)
+
+$(PY25-MYGHTY_IPK): $(PY-MYGHTY_BUILD_DIR)/.built
+	rm -rf $(PY25-MYGHTY_IPK_DIR) $(BUILD_DIR)/py25-myghty_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MYGHTY_BUILD_DIR)/2.5; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-MYGHTY_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-MYGHTY_IPK_DIR)/CONTROL/control
+#	echo $(PY-MYGHTY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-MYGHTY_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MYGHTY_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-myghty-ipk: $(PY-MYGHTY_IPK)
+py-myghty-ipk: $(PY24-MYGHTY_IPK) $(PY25-MYGHTY_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -193,4 +239,12 @@ py-myghty-clean:
 # directories.
 #
 py-myghty-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(PY-MYGHTY_BUILD_DIR) $(PY-MYGHTY_IPK_DIR) $(PY-MYGHTY_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(PY-MYGHTY_BUILD_DIR)
+	rm -rf $(PY24-MYGHTY_IPK_DIR) $(PY24-MYGHTY_IPK)
+	rm -rf $(PY25-MYGHTY_IPK_DIR) $(PY25-MYGHTY_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-myghty-check: $(PY24-MYGHTY_IPK) $(PY25-MYGHTY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MYGHTY_IPK) $(PY25-MYGHTY_IPK)
