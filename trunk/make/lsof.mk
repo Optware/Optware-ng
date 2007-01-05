@@ -41,7 +41,7 @@ LSOF_CONFLICTS=
 #
 # LSOF_IPK_VERSION should be incremented when the ipk changes.
 #
-LSOF_IPK_VERSION=1
+LSOF_IPK_VERSION=2
 
 #
 # LSOF_BUILD_DIR is the directory in which the build is done.
@@ -57,6 +57,7 @@ LSOF_IPK_DIR:=$(BUILD_DIR)/lsof-$(LSOF_VERSION)-ipk
 LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch
 LSOF_UNZIP:=gunzip
 
+.PHONY: lsof-source lsof-unpack lsof lsof-stage lsof-ipk lsof-clean lsof-dirclean lsof-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -104,7 +105,11 @@ $(LSOF_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(DL_DIR)/$(LSOF_DSC) $(LSOF_P
 			echo "md5sum verified." ; \
 		fi
 	cd $(BUILD_DIR) && tar zxf $(DL_DIR)/$(LSOF_SOURCE)	
-	cd $(BUILD_DIR)/$(LSOF) && echo "n\ny\ny\ny\nn\nn\ny\n" | ./Configure linux
+	cd $(BUILD_DIR)/$(LSOF) && echo "n\ny\ny\ny\nn\nn\ny\n" | env \
+		LSOF_CC=$(TARGET_CC) \
+		LSOF_INCLUDE=$(TARGET_LIBDIR)/../include \
+		LINUX_CLIB="-DGLIBCV=2" \
+		./Configure linux
 	cat $(LSOF_PATCH) | patch -d $(BUILD_DIR)/$(LSOF) -p1
 	mv $(BUILD_DIR)/$(LSOF) $(LSOF_DIR)
 	touch $(LSOF_DIR)/.configured
@@ -115,7 +120,7 @@ lsof-unpack: $(LSOF_DIR)/.configured
 # This builds the actual binary.
 #
 $(LSOF_DIR)/lsof: $(LSOF_DIR)/.configured
-	make -C $(LSOF_DIR) $(TARGET_CONFIGURE_OPTS) CFLAGS="$(TARGET_CFLAGS)"
+	make -C $(LSOF_DIR) $(TARGET_CONFIGURE_OPTS) CDEF="$(TARGET_CFLAGS)"
 
 #
 # This is the build convenience target.
@@ -178,3 +183,9 @@ lsof-clean:
 #
 lsof-dirclean:
 	rm -rf $(LSOF_DIR) $(LSOF_IPK_DIR) $(LSOF_IPK)
+
+#
+# Some sanity check for the package.
+#
+lsof-check: $(LSOF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LSOF_IPK)
