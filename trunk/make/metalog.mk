@@ -35,7 +35,7 @@ METALOG_CONFLICTS=
 #
 # METALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-METALOG_IPK_VERSION=3
+METALOG_IPK_VERSION=4
 
 #
 # METALOG_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ METALOG_BUILD_DIR=$(BUILD_DIR)/metalog
 METALOG_SOURCE_DIR=$(SOURCE_DIR)/metalog
 METALOG_IPK_DIR=$(BUILD_DIR)/metalog-$(METALOG_VERSION)-ipk
 METALOG_IPK=$(BUILD_DIR)/metalog_$(METALOG_VERSION)-$(METALOG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: metalog-source metalog-unpack metalog metalog-stage metalog-ipk metalog-clean metalog-dirclean metalog-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -175,6 +177,7 @@ $(METALOG_IPK_DIR)/CONTROL/control:
 $(METALOG_IPK): $(METALOG_BUILD_DIR)/.built
 	rm -rf $(METALOG_IPK_DIR) $(BUILD_DIR)/metalog_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install
+	$(STRIP_COMMAND) $(METALOG_IPK_DIR)/opt/sbin/metalog
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install-man
 	install -d $(METALOG_IPK_DIR)/opt/etc/
 	install -m 755 $(METALOG_SOURCE_DIR)/metalog.conf $(METALOG_IPK_DIR)/opt/etc/metalog.conf
@@ -205,3 +208,9 @@ metalog-clean:
 #
 metalog-dirclean:
 	rm -rf $(BUILD_DIR)/$(METALOG_DIR) $(METALOG_BUILD_DIR) $(METALOG_IPK_DIR) $(METALOG_IPK)
+
+#
+# Some sanity check for the package.
+#
+metalog-check: $(METALOG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(METALOG_IPK)
