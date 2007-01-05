@@ -288,10 +288,12 @@ gnokii-clean:
 # directories.
 #
 gnokii-dirclean:
-	rm -rf $(BUILD_DIR)/$(GNOKII_DIR) $(GNOKII_BUILD_DIR) $(GNOKII_IPK_DIR) $(GNOKII_IPK)
+	rm -rf $(BUILD_DIR)/$(GNOKII_DIR) $(GNOKII_BUILD_DIR)
+	rm -rf $(GNOKII_IPK_DIR) $(GNOKII_IPK)
+	rm -rf $(GNOKII_SMSD_IPK_DIR) $(GNOKII_SMSD_IPK)
 #
 #
 # Some sanity check for the package.
 #
-gnokii-check: $(GNOKII_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNOKII_IPK)
+gnokii-check: $(GNOKII_IPK) $(GNOKII_SMSD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNOKII_IPK) $(GNOKII_SMSD_IPK)
