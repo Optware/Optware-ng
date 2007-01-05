@@ -14,8 +14,8 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBXSLT_SITE=http://xmlsoft.org/sources/libxslt
-LIBXSLT_VERSION=1.1.15
+LIBXSLT_SITE=ftp://xmlsoft.org/libxslt
+LIBXSLT_VERSION=1.1.19
 LIBXSLT_SOURCE=libxslt-$(LIBXSLT_VERSION).tar.gz
 LIBXSLT_DIR=libxslt-$(LIBXSLT_VERSION)
 LIBXSLT_UNZIP=zcat
@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=7
+LIBXSLT_IPK_VERSION=1
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -38,7 +38,7 @@ LIBXSLT_IPK_VERSION=7
 # LIBXSLT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBXSLT_PATCHES=$(LIBXSLT_SOURCE_DIR)/configure.patch
+#LIBXSLT_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -96,7 +96,9 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
 	$(LIBXSLT_UNZIP) $(DL_DIR)/$(LIBXSLT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBXSLT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1
+	if test -n "$(LIBXSLT_PATCHES)"; \
+		then cat $(LIBXSLT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
 	(cd $(LIBXSLT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -116,6 +118,7 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 		--with-libxml-libs-prefix=$(STAGING_LIB_DIR) \
 		--with-libxml-include-prefix=$(STAGING_INCLUDE_DIR) \
 	)
+	$(PATCH_LIBTOOL) $(LIBXSLT_BUILD_DIR)/libtool
 	touch $@
 
 libxslt-unpack: $(LIBXSLT_BUILD_DIR)/.configured
