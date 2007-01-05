@@ -30,14 +30,14 @@ PY-GENSHI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-GENSHI_DESCRIPTION=A toolkit for stream-based generation of output for the web.
 PY-GENSHI_SECTION=web
 PY-GENSHI_PRIORITY=optional
-PY-GENSHI_DEPENDS=python
-
+PY24-GENSHI_DEPENDS=python24
+PY24-GENSHI_DEPENDS=python25
 PY-GENSHI_CONFLICTS=
 
 #
 # PY-GENSHI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GENSHI_IPK_VERSION=1
+PY-GENSHI_IPK_VERSION=2
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
@@ -176,7 +176,7 @@ $(PY24-GENSHI_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-GENSHI_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GENSHI_SITE)/$(PY-GENSHI_SOURCE)" >>$@
 	@echo "Description: $(PY-GENSHI_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-GENSHI_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-GENSHI_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-GENSHI_CONFLICTS)" >>$@
 
 $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
@@ -190,7 +190,7 @@ $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-GENSHI_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GENSHI_SITE)/$(PY-GENSHI_SOURCE)" >>$@
 	@echo "Description: $(PY-GENSHI_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-GENSHI_DEPENDS)" >>$@
+	@echo "Depends: $(PY25-GENSHI_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-GENSHI_CONFLICTS)" >>$@
 
 #
