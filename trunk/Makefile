@@ -265,7 +265,7 @@ MSS_BROKEN_PACKAGES = \
 	gambit-c gawk \
 	jamvm \
 	gnokii \
-	ldconfig lsof \
+	ldconfig \
 	mod-fastcgi mod-python monotone \
 	ntp \
 	php-apache py-lxml \
@@ -368,7 +368,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	freeradius ftpd-topfield \
 	gdb gtk \
 	heyu ice \
-	ldconfig lsof \
+	ldconfig \
 	mc metalog modutils monotone motion mp3blaster mt-daapd \
 	net-tools nfs-utils nrpe \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
