@@ -101,7 +101,7 @@ PERL_PACKAGES = \
 PYTHON_PACKAGES = \
 	getmail ipython mailman mod-python pyrex \
 	py-4suite py-amara py-apsw \
-	py-bazaar-ng py-beaker py-bittorrent py-bluez \
+	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-django py-docutils \
 	py-elementtree py-flup py-formencode py-gdchart2 py-gd py-genshi py-kid py-lxml py-nose \
