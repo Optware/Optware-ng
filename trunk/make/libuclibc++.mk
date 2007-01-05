@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=2
+LIBUCLIBC++_IPK_VERSION=3
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ LIBUCLIBC++_IPK_VERSION=2
 # LIBUCLIBC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch 
+# LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch 
 
 ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch \
@@ -85,6 +85,8 @@ LIBUCLIBC++_BUILD_DIR=$(BUILD_DIR)/libuclibc++
 LIBUCLIBC++_SOURCE_DIR=$(SOURCE_DIR)/libuclibc++
 LIBUCLIBC++_IPK_DIR=$(BUILD_DIR)/libuclibc++-$(LIBUCLIBC++_VERSION)-ipk
 LIBUCLIBC++_IPK=$(BUILD_DIR)/libuclibc++_$(LIBUCLIBC++_VERSION)-$(LIBUCLIBC++_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libuclibc++-source libuclibc++-unpack libuclibc++ libuclibc++-stage libuclibc++-ipk libuclibc++-clean libuclibc++-dirclean libuclibc++-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -167,11 +169,23 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
+LIBUCLIBC++_INSTALL_DIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
+
 $(LIBUCLIBC++_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.staged \
 				$(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -f $(LIBUCLIBC++_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) \
-		DESTDIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION) install
+		DESTDIR=$(LIBUCLIBC++_INSTALL_DIR)/uClibc++ install
+	if test ! -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap ; then \
+		install -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap ; \
+		mv $(TARGET_CXX) $(LIBUCLIBC++_INSTALL_DIR)/nowrap/ ; \
+	fi
+	sed -i -e 's|/bin/bash|/bin/sh|' \
+	  -e 's|^WRAPPER_INCLUDEDIR=.*|WRAPPER_INCLUDEDIR=-I$(LIBUCLIBC++_INSTALL_DIR)/uClibc++/include|' \
+	  -e 's|^WRAPPER_LIBDIR=.*|WRAPPER_LIBDIR=-L$(LIBUCLIBC++_INSTALL_DIR)/uClibc++/lib|' \
+	  -e 's|$(CROSS_CONFIGURATION)/bin|$(CROSS_CONFIGURATION)/nowrap|' \
+	   $(LIBUCLIBC++_INSTALL_DIR)/uClibc++/bin/g++-uc
+	mv $(LIBUCLIBC++_INSTALL_DIR)/uClibc++/bin/g++-uc $(TARGET_CXX)
 #	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install
 	touch $(LIBUCLIBC++_BUILD_DIR)/.staged
 
@@ -229,18 +243,6 @@ $(LIBUCLIBC++_IPK): $(LIBUCLIBC++_BUILD_DIR)/.built
 #	echo $(LIBUCLIBC++_CONFFILES) | sed -e 's/ /\n/g' > $(LIBUCLIBC++_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUCLIBC++_IPK_DIR)
 
-#        install -d $(LIBSTDC++_IPK_DIR)/opt/lib
-#        install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_IPK_DIR)/opt/lib
-#	(cd $(LIBSTDC++_IPK_DIR)/opt/lib; \
-#	ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-#	$(LIBSTDC++_LIBNAME); \
-#	ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-#		$(LIBSTDC++_LIBNAME).5 \
-#	)
-#	$(STRIP_COMMAND) $(LIBSTDC++_IPK_DIR)/opt/lib/*.so
-#	$(MAKE) $(LIBSTDC++_IPK_DIR)/CONTROL/control
-#	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBSTDC++_IPK_DIR)
-
 #
 # This is called from the top level makefile to create the IPK file.
 #
@@ -260,10 +262,17 @@ libuclibc++-clean:
 libuclibc++-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR) $(LIBUCLIBC++_IPK_DIR) $(LIBUCLIBC++_IPK)
 #
-# Toolchain instalation and deinstalation
+#
+# Toolchain instalation and deinstalation for wl500g only
 #
 libuclibc++-install:
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install	
 
 libuclibc++-deinstall:
 	ln -sf mipsel-uclibc-gcc $(TARGET_CROSS)g++
+#
+#
+# Some sanity check for the package.
+#
+libuclibc++-check: $(LIBUCLIBC++_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBUCLIBC++_IPK)
