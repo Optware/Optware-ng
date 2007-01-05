@@ -21,11 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-ZOPE-INTERFACE_VERSION=3.1.0c1
-PY-ZOPE-INTERFACE_SITE=http://www.zope.org/Products/ZopeInterface/$(PY-ZOPE-INTERFACE_VERSION)
-#http://www.zope.org/Products/ZopeInterface/3.1.0c1/ZopeInterface-3.1.0c1.tgz
-PY-ZOPE-INTERFACE_SOURCE=ZopeInterface-$(PY-ZOPE-INTERFACE_VERSION).tgz
-PY-ZOPE-INTERFACE_DIR=ZopeInterface-$(PY-ZOPE-INTERFACE_VERSION)
+PY-ZOPE-INTERFACE_VERSION=3.3.0b2
+PY-ZOPE-INTERFACE_SITE=http://cheeseshop.python.org/packages/source/z/zope.interface
+PY-ZOPE-INTERFACE_SOURCE=zope.interface-$(PY-ZOPE-INTERFACE_VERSION).tar.gz
+PY-ZOPE-INTERFACE_DIR=zope.interface-$(PY-ZOPE-INTERFACE_VERSION)
 PY-ZOPE-INTERFACE_UNZIP=zcat
 PY-ZOPE-INTERFACE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-ZOPE-INTERFACE_DESCRIPTION=A separate distribution of the zope.interface package used in Zope 3, along with the packages it depends on.
@@ -38,7 +37,7 @@ PY-ZOPE-INTERFACE_CONFLICTS=
 #
 # PY-ZOPE-INTERFACE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ZOPE-INTERFACE_IPK_VERSION=2
+PY-ZOPE-INTERFACE_IPK_VERSION=1
 
 #
 # PY-ZOPE-INTERFACE_CONFFILES should be a list of user-editable files
@@ -74,6 +73,8 @@ PY24-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py-zope-interface_$(PY-ZOPE-INTERFACE_VERSI
 
 PY25-ZOPE-INTERFACE_IPK_DIR=$(BUILD_DIR)/py25-zope-interface-$(PY-ZOPE-INTERFACE_VERSION)-ipk
 PY25-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py25-zope-interface_$(PY-ZOPE-INTERFACE_VERSION)-$(PY-ZOPE-INTERFACE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-zope-interface-source py-zope-interface-unpack py-zope-interface py-zope-interface-stage py-zope-interface-ipk py-zope-interface-clean py-zope-interface-dirclean py-zope-interface-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -167,12 +168,10 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 	rm -f $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
 
 py-zope-interface-stage: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
@@ -225,8 +224,7 @@ $(PY24-ZOPE-INTERFACE_IPK): $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 	rm -rf $(PY24-ZOPE-INTERFACE_IPK_DIR) $(BUILD_DIR)/py-zope-interface_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY24-ZOPE-INTERFACE_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-ZOPE-INTERFACE_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY24-ZOPE-INTERFACE_IPK_DIR)/opt/lib -name '*.so'`
 	$(MAKE) $(PY24-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control
 	echo $(PY-ZOPE-INTERFACE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-ZOPE-INTERFACE_IPK_DIR)/CONTROL/conffiles
@@ -236,8 +234,7 @@ $(PY25-ZOPE-INTERFACE_IPK): $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 	rm -rf $(PY25-ZOPE-INTERFACE_IPK_DIR) $(BUILD_DIR)/py25-zope-interface_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	install --root=$(PY25-ZOPE-INTERFACE_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-ZOPE-INTERFACE_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY25-ZOPE-INTERFACE_IPK_DIR)/opt/lib -name '*.so'`
 	$(MAKE) $(PY25-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control
 	echo $(PY-ZOPE-INTERFACE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ZOPE-INTERFACE_IPK_DIR)/CONTROL/conffiles
@@ -262,3 +259,9 @@ py-zope-interface-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-ZOPE-INTERFACE_DIR) $(PY-ZOPE-INTERFACE_BUILD_DIR) \
 	$(PY24-ZOPE-INTERFACE_IPK_DIR) $(PY24-ZOPE-INTERFACE_IPK) \
 	$(PY25-ZOPE-INTERFACE_IPK_DIR) $(PY25-ZOPE-INTERFACE_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-zope-interface-check: $(PY24-ZOPE-INTERFACE_IPK) $(PY25-ZOPE-INTERFACE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-ZOPE-INTERFACE_IPK) $(PY24-ZOPE-INTERFACE_IPK)
