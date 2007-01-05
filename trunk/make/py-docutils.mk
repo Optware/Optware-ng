@@ -30,13 +30,14 @@ PY-DOCUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-DOCUTILS_DESCRIPTION=An open-source text processing system for processing plaintext documentation into useful formats.
 PY-DOCUTILS_SECTION=misc
 PY-DOCUTILS_PRIORITY=optional
-PY-DOCUTILS_DEPENDS=python
+PY24-DOCUTILS_DEPENDS=python24
+PY25-DOCUTILS_DEPENDS=python25
 PY-DOCUTILS_CONFLICTS=
 
 #
 # PY-DOCUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DOCUTILS_IPK_VERSION=2
+PY-DOCUTILS_IPK_VERSION=3
 
 #
 # PY-DOCUTILS_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-DOCUTILS_LDFLAGS=
 #
 PY-DOCUTILS_BUILD_DIR=$(BUILD_DIR)/py-docutils
 PY-DOCUTILS_SOURCE_DIR=$(SOURCE_DIR)/py-docutils
-PY-DOCUTILS_IPK_DIR=$(BUILD_DIR)/py-docutils-$(PY-DOCUTILS_VERSION)-ipk
-PY-DOCUTILS_IPK=$(BUILD_DIR)/py-docutils_$(PY-DOCUTILS_VERSION)-$(PY-DOCUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-DOCUTILS_IPK_DIR=$(BUILD_DIR)/py-docutils-$(PY-DOCUTILS_VERSION)-ipk
+PY24-DOCUTILS_IPK=$(BUILD_DIR)/py-docutils_$(PY-DOCUTILS_VERSION)-$(PY-DOCUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-DOCUTILS_IPK_DIR=$(BUILD_DIR)/py25-docutils-$(PY-DOCUTILS_VERSION)-ipk
+PY25-DOCUTILS_IPK=$(BUILD_DIR)/py25-docutils_$(PY-DOCUTILS_VERSION)-$(PY-DOCUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-docutils-source py-docutils-unpack py-docutils py-docutils-stage py-docutils-ipk py-docutils-clean py-docutils-dirclean py-docutils-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -99,15 +106,29 @@ py-docutils-source: $(DL_DIR)/$(PY-DOCUTILS_SOURCE) $(PY-DOCUTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-DOCUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DOCUTILS_SOURCE) $(PY-DOCUTILS_PATCHES)
-#	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(PY-DOCUTILS_BUILD_DIR)
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PY-DOCUTILS_BUILD_DIR)
+	mkdir -p $(PY-DOCUTILS_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR)
 	$(PY-DOCUTILS_UNZIP) $(DL_DIR)/$(PY-DOCUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-DOCUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DOCUTILS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(PY-DOCUTILS_BUILD_DIR)
-	(cd $(PY-DOCUTILS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(PY-DOCUTILS_BUILD_DIR)/2.4
+	(cd $(PY-DOCUTILS_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
+	    ) >> setup.cfg; \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR)
+	$(PY-DOCUTILS_UNZIP) $(DL_DIR)/$(PY-DOCUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-DOCUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DOCUTILS_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(PY-DOCUTILS_BUILD_DIR)/2.5
+	(cd $(PY-DOCUTILS_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
 	touch $(PY-DOCUTILS_BUILD_DIR)/.configured
@@ -118,11 +139,12 @@ py-docutils-unpack: $(PY-DOCUTILS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-DOCUTILS_BUILD_DIR)/.built: $(PY-DOCUTILS_BUILD_DIR)/.configured
-	rm -f $(PY-DOCUTILS_BUILD_DIR)/.built
-	(cd $(PY-DOCUTILS_BUILD_DIR); \
-	    python2.4 setup.py build; \
-	)
-	touch $(PY-DOCUTILS_BUILD_DIR)/.built
+	rm -f $@
+	cd $(PY-DOCUTILS_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-DOCUTILS_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -133,9 +155,9 @@ py-docutils: $(PY-DOCUTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-DOCUTILS_BUILD_DIR)/.staged: $(PY-DOCUTILS_BUILD_DIR)/.built
-	rm -f $(PY-DOCUTILS_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-DOCUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-DOCUTILS_BUILD_DIR)/.staged
+	touch $@
 
 py-docutils-stage: $(PY-DOCUTILS_BUILD_DIR)/.staged
 
@@ -143,8 +165,8 @@ py-docutils-stage: $(PY-DOCUTILS_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-docutils
 #
-$(PY-DOCUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-DOCUTILS_IPK_DIR)/CONTROL
+$(PY24-DOCUTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-docutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -154,7 +176,21 @@ $(PY-DOCUTILS_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-DOCUTILS_MAINTAINER)" >>$@
 	@echo "Source: $(PY-DOCUTILS_SITE)/$(PY-DOCUTILS_SOURCE)" >>$@
 	@echo "Description: $(PY-DOCUTILS_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-DOCUTILS_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-DOCUTILS_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-DOCUTILS_CONFLICTS)" >>$@
+
+$(PY25-DOCUTILS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-docutils" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-DOCUTILS_PRIORITY)" >>$@
+	@echo "Section: $(PY-DOCUTILS_SECTION)" >>$@
+	@echo "Version: $(PY-DOCUTILS_VERSION)-$(PY-DOCUTILS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-DOCUTILS_MAINTAINER)" >>$@
+	@echo "Source: $(PY-DOCUTILS_SITE)/$(PY-DOCUTILS_SOURCE)" >>$@
+	@echo "Description: $(PY-DOCUTILS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-DOCUTILS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-DOCUTILS_CONFLICTS)" >>$@
 
 #
@@ -169,19 +205,30 @@ $(PY-DOCUTILS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-DOCUTILS_IPK): $(PY-DOCUTILS_BUILD_DIR)/.built
-	rm -rf $(PY-DOCUTILS_IPK_DIR) $(BUILD_DIR)/py-docutils_*_$(TARGET_ARCH).ipk
-	(cd $(PY-DOCUTILS_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-DOCUTILS_IPK_DIR) --prefix=/opt; \
-	)
-#	$(STRIP_COMMAND) $(PY-DOCUTILS_IPK_DIR)/opt/lib/python2.4/site-packages/pydocutils2/_docutils.so
-	$(MAKE) $(PY-DOCUTILS_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-DOCUTILS_IPK_DIR)
+$(PY24-DOCUTILS_IPK): $(PY-DOCUTILS_BUILD_DIR)/.built
+	rm -rf $(PY24-DOCUTILS_IPK_DIR) $(BUILD_DIR)/py-docutils_*_$(TARGET_ARCH).ipk
+	cd $(PY-DOCUTILS_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-DOCUTILS_IPK_DIR) --prefix=/opt
+#	$(STRIP_COMMAND) $(PY24-DOCUTILS_IPK_DIR)/opt/lib/python2.4/site-packages/pydocutils2/_docutils.so
+	$(MAKE) $(PY24-DOCUTILS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-DOCUTILS_IPK_DIR)
+
+$(PY25-DOCUTILS_IPK): $(PY-DOCUTILS_BUILD_DIR)/.built
+	rm -rf $(PY25-DOCUTILS_IPK_DIR) $(BUILD_DIR)/py25-docutils_*_$(TARGET_ARCH).ipk
+	cd $(PY-DOCUTILS_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-DOCUTILS_IPK_DIR) --prefix=/opt
+	for f in $(PY25-DOCUTILS_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|\.py|-2.5.py|'`; done
+#	$(STRIP_COMMAND) $(PY25-DOCUTILS_IPK_DIR)/opt/lib/python2.5/site-packages/pydocutils2/_docutils.so
+	$(MAKE) $(PY25-DOCUTILS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-DOCUTILS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-docutils-ipk: $(PY-DOCUTILS_IPK)
+py-docutils-ipk: $(PY24-DOCUTILS_IPK) $(PY25-DOCUTILS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -194,4 +241,12 @@ py-docutils-clean:
 # directories.
 #
 py-docutils-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(PY-DOCUTILS_BUILD_DIR) $(PY-DOCUTILS_IPK_DIR) $(PY-DOCUTILS_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-DOCUTILS_DIR) $(PY-DOCUTILS_BUILD_DIR)
+	rm -rf $(PY24-DOCUTILS_IPK_DIR) $(PY24-DOCUTILS_IPK)
+	rm -rf $(PY25-DOCUTILS_IPK_DIR) $(PY25-DOCUTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-docutils-check: $(PY24-DOCUTILS_IPK) $(PY25-DOCUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-DOCUTILS_IPK) $(PY25-DOCUTILS_IPK)
