@@ -4,9 +4,9 @@
 #
 ###########################################################
 
-BZIP2_SITE=http://www.bzip.org/1.0.3
-BZIP2_VERSION=1.0.3
-BZIP2_LIB_VERSION=1.0.3
+BZIP2_VERSION=1.0.4
+BZIP2_SITE=http://www.bzip.org/$(BZIP2_VERSION)
+BZIP2_LIB_VERSION=$(BZIP2_VERSION)
 BZIP2_SOURCE=bzip2-$(BZIP2_VERSION).tar.gz
 BZIP2_DIR=bzip2-$(BZIP2_VERSION)
 BZIP2_UNZIP=zcat
@@ -17,13 +17,14 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=6
+BZIP2_IPK_VERSION=1
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
 BZIP2_IPK=$(BUILD_DIR)/bzip2_$(BZIP2_VERSION)-$(BZIP2_IPK_VERSION)_$(TARGET_ARCH).ipk
 BZIP2_IPK_DIR=$(BUILD_DIR)/bzip2-$(BZIP2_VERSION)-ipk
 
+.PHONY: bzip2-source bzip2-unpack bzip2 bzip2-stage bzip2-ipk bzip2-clean bzip2-dirclean bzip2-check
 
 $(DL_DIR)/$(BZIP2_SOURCE):
 	$(WGET) -P $(DL_DIR) $(BZIP2_SITE)/$(BZIP2_SOURCE)
@@ -91,6 +92,7 @@ $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/bzip2
 	install -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(BZIP2_IPK_DIR)/opt/lib
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
 	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so
+	$(STRIP_COMMAND) $(BZIP2_IPK_DIR)/opt/lib/libbz2.so.$(BZIP2_LIB_VERSION)
 	install -d $(BZIP2_IPK_DIR)/opt/doc/bzip2
 	install -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)/opt/doc/bzip2
 	cd $(BZIP2_IPK_DIR)/opt/bin && ln -fs bzip2 bzcat
@@ -104,3 +106,6 @@ bzip2-clean:
 
 bzip2-dirclean:
 	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR) $(BZIP2_IPK_DIR) $(BZIP2_IPK)
+
+bzip2-check: $(BZIP2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BZIP2_IPK)
