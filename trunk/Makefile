@@ -105,7 +105,7 @@ PYTHON_PACKAGES = \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-django py-docutils \
 	py-elementtree py-flup py-formencode py-gdchart2 py-gd py-genshi py-kid py-lxml py-nose \
-	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty \
+	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty py-myghtyutils \
 	py-paste py-pastedeploy py-pastescript py-pastewebkit py-pexpect py-pil py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql py-pyro py-quixote \
 	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
