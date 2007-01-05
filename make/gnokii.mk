@@ -10,7 +10,6 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-http://www.gnokii.org/download/gnokii/gnokii-0.6.14.tar.gz
 GNOKII_SITE=http://www.gnokii.org/download/gnokii
 GNOKII_VERSION=0.6.14
 GNOKII_SOURCE=gnokii-$(GNOKII_VERSION).tar.bz2
@@ -32,7 +31,7 @@ GNOKII_SMSD_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=2
+GNOKII_IPK_VERSION=3
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
@@ -272,9 +271,7 @@ $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-gnokii-ipk: $(GNOKII_IPK)
-
-gnokii-smsd-ipk: $(GNOKII_SMSD_IPK)
+gnokii-ipk: $(GNOKII_IPK) $(GNOKII_SMSD_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
