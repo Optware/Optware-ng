@@ -28,7 +28,7 @@ FREERADIUS_UNZIP=zcat
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=2
+FREERADIUS_IPK_VERSION=3
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -59,6 +59,9 @@ FREERADIUS_DOC_IPK_DIR=$(BUILD_DIR)/freeradius-doc-$(FREERADIUS_VERSION)-ipk
 FREERADIUS_IPK=$(BUILD_DIR)/freeradius_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_$(TARGET_ARCH).ipk
 FREERADIUS_DOC_IPK=$(BUILD_DIR)/freeradius-doc_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_$(TARGET_ARCH).ipk
 FREERADIUS_RLMCFLAGS="${STAGING_CPPFLAGS} -I${FREERADIUS_BUILD_DIR}/src/include -I../rlm_eap_tls -I${FREERADIUS_BUILD_DIR}/src/modules/rlm_eap -I${FREERADIUS_BUILD_DIR}/src/modules/rlm_eap/libeap/ -DX99_MODULE_NAME=\"rlm_x99_token\"  -DFREERADIUS"
+
+.PHONY: freeradius-source freeradius-unpack freeradius freeradius-stage freeradius-ipk freeradius-clean freeradius-dirclean freeradius-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -182,6 +185,8 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radrelay -o $(FREERADIUS_IPK_DIR)/opt/bin/radrelay
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radclient -o $(FREERADIUS_IPK_DIR)/opt/bin/radclient
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt -o $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radeapclient $(FREERADIUS_IPK_DIR)/opt/bin/radwho
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/lib/lib*.so $(FREERADIUS_IPK_DIR)/opt/lib/rlm_*.so
 	install -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)/opt/etc/init.d/S55freeradius
 	install -d $(FREERADIUS_IPK_DIR)/CONTROL
 	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(FREERADIUS_VERSION)/" \
@@ -219,3 +224,9 @@ freeradius-clean:
 freeradius-dirclean:
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(FREERADIUS_BUILD_DIR) $(FREERADIUS_IPK_DIR) $(FREERADIUS_IPK)
 	rm -rf $(FREERADIUS_DOC_IPK_DIR) $(FREERADIUS_DOC_IPK)
+
+#
+# Some sanity check for the package.
+#
+freeradius-check: $(FREERADIUS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FREERADIUS_IPK)
