@@ -368,8 +368,8 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	freeradius ftpd-topfield \
 	gdb gtk \
 	heyu ice \
-	ldconfig \
-	mc modutils monotone motion mp3blaster mt-daapd \
+	ldconfig modutils \
+	monotone mp3blaster mt-daapd \
 	net-tools nfs-utils nrpe \
 	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
 	sdl sm \

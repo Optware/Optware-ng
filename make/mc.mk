@@ -40,8 +40,12 @@ MC_PATCHES += $(MC_SOURCE_DIR)/terminfo.patch
 #  When not cross compiling one should use pkg-config
 #  PKG_CONFIG_LIBDIR=staging/opt/lib/pkgconfig pkg-config --libs glib-2.0
 #
-MC_CPPFLAGS=-I$(STAGING_DIR)/opt/include/glib-2.0 \
-	-I$(STAGING_DIR)/opt/lib/glib-2.0/include
+
+ifeq ($(OPTWARE_TARGET),slugosbe)
+MC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -DNGROUPS_MAX=65536
+else
+MC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
+endif
 MC_LDFLAGS=-lglib-2.0
 #
 # MC_BUILD_DIR is the directory in which the build is done.
@@ -56,6 +60,8 @@ MC_BUILD_DIR=$(BUILD_DIR)/mc
 MC_SOURCE_DIR=$(SOURCE_DIR)/mc
 MC_IPK_DIR=$(BUILD_DIR)/mc-$(MC_VERSION)-ipk
 MC_IPK=$(BUILD_DIR)/mc_$(MC_VERSION)-$(MC_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: mc-source mc-unpack mc mc-stage mc-ipk mc-clean mc-dirclean mc-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -189,3 +195,9 @@ mc-clean:
 #
 mc-dirclean:
 	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR) $(MC_IPK_DIR) $(MC_IPK)
+
+#
+# Some sanity check for the package.
+#
+mc-check: $(MC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MC_IPK)
