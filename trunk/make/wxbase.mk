@@ -19,17 +19,16 @@
 #
 # You should change all these variables to suit your package.
 #
-# WXBASE_SITE=ftp://biolpc22.york.ac.uk/pub/2.5.3/
 WXBASE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wxwindows
-WXBASE_VERSION=2.6.3
-WXBASE_SOURCE=wxBase-$(WXBASE_VERSION).tar.bz2
-WXBASE_DIR=wxBase-$(WXBASE_VERSION)
+WXBASE_VERSION=2.8.0
+WXBASE_SOURCE=wxWidgets-$(WXBASE_VERSION).tar.bz2
+WXBASE_DIR=wxWidgets-$(WXBASE_VERSION)
 WXBASE_UNZIP=bzcat
-WXBASE_MAINTAINER=Michal Gorski <michal-gorski@o2.pl>
+WXBASE_MAINTAINER=Gorion <mail4tmp@gmail.com>
 WXBASE_DESCRIPTION=wxbase is a basic (non-windows) part of wxWidget toolkit
 WXBASE_SECTION=libs
 WXBASE_PRIORITY=optional
-WXBASE_DEPENDS=libstdc++, zlib
+WXBASE_DEPENDS=libstdc++, expat, zlib
 WXBASE_CONFLICTS=
 
 #
@@ -45,7 +44,7 @@ WXBASE_IPK_VERSION=1
 # WXBASE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-##WXBASE_PATCHES=$(WXBASE_SOURCE_DIR)/configure.patch
+WXBASE_PATCHES=$(WXBASE_SOURCE_DIR)/Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,6 +67,7 @@ WXBASE_SOURCE_DIR=$(SOURCE_DIR)/wxbase
 WXBASE_IPK_DIR=$(BUILD_DIR)/wxbase-$(WXBASE_VERSION)-ipk
 WXBASE_IPK=$(BUILD_DIR)/wxbase_$(WXBASE_VERSION)-$(WXBASE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: wxbase-source wxbase-unpack wxbase wxbase-stage wxbase-ipk wxbase-clean wxbase-dirclean wxbase-check
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -97,27 +97,37 @@ wxbase-source: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+
 $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
-	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(WXBASE_DIR) $(WXBASE_BUILD_DIR)
+	make libstdc++-stage expat-stage zlib-stage
+	rm -rf  $(WXBASE_BUILD_DIR) $(BUILD_DIR)/$(WXBASE_DIR)
 	$(WXBASE_UNZIP) $(DL_DIR)/$(WXBASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-##	cat $(WXBASE_PATCHES) | patch -d $(BUILD_DIR)/$(WXBASE_DIR) -p1
-	mv $(BUILD_DIR)/$(WXBASE_DIR) $(WXBASE_BUILD_DIR)
+	if test -n "$(WXBASE_PATCHES)" ; \
+		then cat $(WXBASE_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(WXBASE_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(WXBASE_DIR)" != "$(WXBASE_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(WXBASE_DIR) $(WXBASE_BUILD_DIR) ; \
+	fi
 	(cd $(WXBASE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WXBASE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WXBASE_LDFLAGS)" \
 		./configure \
+		--prefix=/opt \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-zlib=sys \
-		--with-expat=builtin \
+		--disable-precomp-headers \
+		--disable-gui \
+		--without-subdirs \
 		--with-regex=builtin \
+		--with-zlib=sys \
+		--with-expat=sys \
 		--enable-largefile \
 		--without-sdl \
-		--prefix=/opt \
-	)
+		--enable-unicode \
+		)
 	touch $(WXBASE_BUILD_DIR)/.configured
 
 wxbase-unpack: $(WXBASE_BUILD_DIR)/.configured
@@ -141,9 +151,13 @@ wxbase: $(WXBASE_BUILD_DIR)/.built
 $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -f $(WXBASE_BUILD_DIR)/.staged
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	install -d $(STAGING_INCLUDE_DIR)/wx/
-	cp $(STAGING_LIB_DIR)/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx/
+	install -d $(STAGING_INCLUDE_DIR)/wx-2.8
+	cp $(STAGING_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
+	cd $(STAGING_PREFIX)/bin; rm -rf wx-config; \
+		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
 	touch $(WXBASE_BUILD_DIR)/.staged
+
+
 
 wxbase-stage: $(WXBASE_BUILD_DIR)/.staged
 
@@ -183,6 +197,7 @@ $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 	$(MAKE) $(WXBASE_IPK_DIR)/CONTROL/control
 	cd $(WXBASE_IPK_DIR)/opt/bin; rm -rf wx-config; \
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
+	cp $(WXBASE_IPK_DIR)/opt/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(WXBASE_IPK_DIR)/opt/include/wx-2.8/wx/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WXBASE_IPK_DIR)
 
 #
@@ -194,6 +209,7 @@ wxbase-ipk: $(WXBASE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 wxbase-clean:
+	rm -f $(WXBASE_BUILD_DIR)/.built
 	-$(MAKE) -C $(WXBASE_BUILD_DIR) clean
 
 #
@@ -202,3 +218,11 @@ wxbase-clean:
 #
 wxbase-dirclean:
 	rm -rf $(BUILD_DIR)/$(WXBASE_DIR) $(WXBASE_BUILD_DIR) $(WXBASE_IPK_DIR) $(WXBASE_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+wxbase-check: $(WXBASE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WXBASE_IPK)
+
