@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://$(SOURCEFORGE_MIRROR)/clamav
-CLAMAV_VERSION=0.88.6
+CLAMAV_VERSION=0.88.7
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
@@ -74,6 +74,8 @@ CLAMAV_BUILD_DIR=$(BUILD_DIR)/clamav
 CLAMAV_SOURCE_DIR=$(SOURCE_DIR)/clamav
 CLAMAV_IPK_DIR=$(BUILD_DIR)/clamav-$(CLAMAV_VERSION)-ipk
 CLAMAV_IPK=$(BUILD_DIR)/clamav_$(CLAMAV_VERSION)-$(CLAMAV_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: clamav-source clamav-unpack clamav clamav-stage clamav-ipk clamav-clean clamav-dirclean clamav-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -244,4 +246,10 @@ clamav-clean:
 clamav-dirclean:
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR) $(CLAMAV_IPK_DIR) $(CLAMAV_IPK)
 
-
+#
+#
+# Some sanity check for the package.
+#
+#
+clamav-check: $(CLAMAV_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLAMAV_IPK)
