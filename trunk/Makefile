@@ -363,7 +363,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat atftp \
 	bitlbee bzflag \
-	chillispot cyrus-imapd digitemp \
+	chillispot digitemp \
 	gdb gtk \
 	heyu ice \
 	ldconfig modutils \
