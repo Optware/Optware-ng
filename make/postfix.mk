@@ -9,7 +9,7 @@
 # is libdb4.2, libdb4.2-dev, libpcre3, libpcre3-dev
 
 POSTFIX_SITE=ftp://netmirror.org/postfix.org/official
-POSTFIX_VERSION=2.3.4
+POSTFIX_VERSION=2.3.5
 POSTFIX_SOURCE=postfix-$(POSTFIX_VERSION).tar.gz
 POSTFIX_DIR=postfix-$(POSTFIX_VERSION)
 POSTFIX_UNZIP=zcat
