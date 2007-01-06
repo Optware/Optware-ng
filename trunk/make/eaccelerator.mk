@@ -36,7 +36,7 @@ EACCELERATOR_CONFLICTS=
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=1
+EACCELERATOR_IPK_VERSION=2
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
@@ -69,6 +69,8 @@ EACCELERATOR_BUILD_DIR=$(BUILD_DIR)/eaccelerator
 EACCELERATOR_SOURCE_DIR=$(SOURCE_DIR)/eaccelerator
 EACCELERATOR_IPK_DIR=$(BUILD_DIR)/eaccelerator-$(EACCELERATOR_VERSION)-ipk
 EACCELERATOR_IPK=$(BUILD_DIR)/eaccelerator_$(EACCELERATOR_VERSION)-$(EACCELERATOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: eaccelerator-source eaccelerator-unpack eaccelerator eaccelerator-stage eaccelerator-ipk eaccelerator-clean eaccelerator-dirclean eaccelerator-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -130,7 +132,7 @@ eaccelerator-unpack: $(EACCELERATOR_BUILD_DIR)/.configured
 #
 $(EACCELERATOR_BUILD_DIR)/.built: $(EACCELERATOR_BUILD_DIR)/.configured
 	rm -f $(EACCELERATOR_BUILD_DIR)/.built
-	$(MAKE) -C $(EACCELERATOR_BUILD_DIR)
+	$(MAKE) -C $(EACCELERATOR_BUILD_DIR) INCLUDES=""
 	touch $(EACCELERATOR_BUILD_DIR)/.built
 
 #
@@ -206,3 +208,9 @@ eaccelerator-clean:
 #
 eaccelerator-dirclean:
 	rm -rf $(BUILD_DIR)/$(EACCELERATOR_DIR) $(EACCELERATOR_BUILD_DIR) $(EACCELERATOR_IPK_DIR) $(EACCELERATOR_IPK)
+
+#
+# Some sanity check for the package.
+#
+eaccelerator-check: $(EACCELERATOR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(EACCELERATOR_IPK)
