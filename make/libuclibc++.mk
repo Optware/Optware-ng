@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=3
+LIBUCLIBC++_IPK_VERSION=4
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -186,7 +186,7 @@ $(LIBUCLIBC++_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.staged \
 	  -e 's|$(CROSS_CONFIGURATION)/bin|$(CROSS_CONFIGURATION)/nowrap|' \
 	   $(LIBUCLIBC++_INSTALL_DIR)/uClibc++/bin/g++-uc
 	mv $(LIBUCLIBC++_INSTALL_DIR)/uClibc++/bin/g++-uc $(TARGET_CXX)
-#	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install
+	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR)/src DESTDIR=$(STAGING_PREFIX) install
 	touch $(LIBUCLIBC++_BUILD_DIR)/.staged
 
 libuclibc++-stage: $(LIBUCLIBC++_BUILD_DIR)/.staged
@@ -229,13 +229,8 @@ $(LIBUCLIBC++_IPK_DIR)/CONTROL/control:
 #
 $(LIBUCLIBC++_IPK): $(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -rf $(LIBUCLIBC++_IPK_DIR) $(BUILD_DIR)/libuclibc++_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=$(LIBUCLIBC++_IPK_DIR) install-strip
-	install -d $(LIBUCLIBC++_IPK_DIR)/opt/lib
-	install -m 755 $(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++-$(LIBUCLIBC++_VERSION).so \
-		$(LIBUCLIBC++_IPK_DIR)/opt/lib
-	cp -fa $(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++.so.0 \
-		$(LIBUCLIBC++_BUILD_DIR)/src/libuClibc++.so \
-		$(LIBUCLIBC++_IPK_DIR)/opt/lib
+	install -d $(LIBUCLIBC++_IPK_DIR)/opt
+	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR)/src DESTDIR=$(LIBUCLIBC++_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(LIBUCLIBC++_IPK_DIR)/opt/lib/*.so
 	$(MAKE) $(LIBUCLIBC++_IPK_DIR)/CONTROL/control
 #	install -m 755 $(LIBUCLIBC++_SOURCE_DIR)/postinst $(LIBUCLIBC++_IPK_DIR)/CONTROL/postinst
