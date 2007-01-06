@@ -34,7 +34,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=1
+WXBASE_IPK_VERSION=2
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -128,6 +128,7 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		--without-sdl \
 		--enable-unicode \
 		)
+	sed -ie 's| -I/usr/include/[^ ]*||' $(WXBASE_BUILD_DIR)/Makefile
 	touch $(WXBASE_BUILD_DIR)/.configured
 
 wxbase-unpack: $(WXBASE_BUILD_DIR)/.configured
@@ -152,9 +153,9 @@ $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -f $(WXBASE_BUILD_DIR)/.staged
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_INCLUDE_DIR)/wx-2.8
-	cp $(STAGING_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
+	cp $(STAGING_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-base-unicode*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
 	cd $(STAGING_PREFIX)/bin; rm -rf wx-config; \
-		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
+		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)*-unicode-release-* wx-config
 	touch $(WXBASE_BUILD_DIR)/.staged
 
 
@@ -194,6 +195,7 @@ $(WXBASE_IPK_DIR)/CONTROL/control:
 $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 	rm -rf $(WXBASE_IPK_DIR) $(BUILD_DIR)/wxbase_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(WXBASE_IPK_DIR) install-strip
+	$(STRIP_COMMAND) $(WXBASE_IPK_DIR)/opt/lib/libwx_baseu_net-*.so.*.*.*
 	$(MAKE) $(WXBASE_IPK_DIR)/CONTROL/control
 	cd $(WXBASE_IPK_DIR)/opt/bin; rm -rf wx-config; \
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
