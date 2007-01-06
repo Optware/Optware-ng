@@ -371,7 +371,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	ldconfig modutils \
 	monotone mp3blaster mt-daapd \
 	net-tools nfs-utils nrpe \
-	oww pango poptop puppy py-psycopg qemu quagga quickie rtpproxy \
+	pango py-psycopg qemu quagga quickie \
 	sdl sm \
 	transcode \
 	unfs3 ushare vte \
