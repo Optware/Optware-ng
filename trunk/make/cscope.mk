@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CSCOPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cscope
-CSCOPE_VERSION=15.5
+CSCOPE_VERSION=15.6
 CSCOPE_SOURCE=cscope-$(CSCOPE_VERSION).tar.gz
 CSCOPE_DIR=cscope-$(CSCOPE_VERSION)
 CSCOPE_UNZIP=zcat
