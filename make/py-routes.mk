@@ -24,15 +24,9 @@
 # PY-ROUTES_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-ROUTES_SITE=http://cheeseshop.python.org/packages/source/R/Routes
-PY-ROUTES_VERSION=1.6.1
-#PY-ROUTES_SVN_REV=
+PY-ROUTES_VERSION=1.6.2
 PY-ROUTES_IPK_VERSION=1
-#ifneq ($(PY-ROUTES_SVN_REV),)
-#PY-ROUTES_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
-#PY-ROUTES_xxx_VERSION:=$(PY-ROUTES_VERSION)dev_r$(PY-ROUTES_SVN_REV)
-#else
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
-#endif
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
 PY-ROUTES_UNZIP=zcat
 PY-ROUTES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -43,7 +37,6 @@ PY24-ROUTES_DEPENDS=python24
 PY25-ROUTES_DEPENDS=python25
 PY-ROUTES_SUGGESTS=
 PY-ROUTES_CONFLICTS=
-
 
 #
 # PY-ROUTES_CONFFILES should be a list of user-editable files
@@ -86,10 +79,8 @@ PY25-ROUTES_IPK=$(BUILD_DIR)/py25-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VE
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifeq ($(PY-ROUTES_SVN_REV),)
 $(DL_DIR)/$(PY-ROUTES_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PY-ROUTES_SITE)/$(PY-ROUTES_SOURCE)
-endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -119,13 +110,7 @@ $(PY-ROUTES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PA
 	mkdir -p $(PY-ROUTES_BUILD_DIR)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR)
-ifeq ($(PY-ROUTES_SVN_REV),)
 	$(PY-ROUTES_UNZIP) $(DL_DIR)/$(PY-ROUTES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q -r $(PY-ROUTES_SVN_REV) $(PY-ROUTES_SVN) $(PY-ROUTES_DIR); \
-	)
-endif
 	if test -n "$(PY-ROUTES_PATCHES)" ; then \
 	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
         fi
@@ -135,13 +120,7 @@ endif
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR)
-ifeq ($(PY-ROUTES_SVN_REV),)
 	$(PY-ROUTES_UNZIP) $(DL_DIR)/$(PY-ROUTES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q -r $(PY-ROUTES_SVN_REV) $(PY-ROUTES_SVN) $(PY-ROUTES_DIR); \
-	)
-endif
 	if test -n "$(PY-ROUTES_PATCHES)" ; then \
 	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
         fi
@@ -149,7 +128,7 @@ endif
 	(cd $(PY-ROUTES_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-ROUTES_BUILD_DIR)/.configured
+	touch $@
 
 py-routes-unpack: $(PY-ROUTES_BUILD_DIR)/.configured
 
@@ -157,14 +136,14 @@ py-routes-unpack: $(PY-ROUTES_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-ROUTES_BUILD_DIR)/.built: $(PY-ROUTES_BUILD_DIR)/.configured
-	rm -f $(PY-ROUTES_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-ROUTES_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-ROUTES_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-ROUTES_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
