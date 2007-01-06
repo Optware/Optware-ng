@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=1
+POSTFIX_IPK_VERSION=2
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -43,6 +43,8 @@ POSTFIX_IPK_DIR=$(BUILD_DIR)/postfix-$(POSTFIX_VERSION)-ipk
 POSTFIX_IPK=$(BUILD_DIR)/postfix_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)_$(TARGET_ARCH).ipk
 POSTFIX_DOC_IPK_DIR=$(BUILD_DIR)/postfix-$(POSTFIX_VERSION)-ipk-doc
 POSTFIX_DOC_IPK=$(BUILD_DIR)/postfix-doc_$(POSTFIX_VERSION)-$(POSTFIX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: postfix-source postfix-unpack postfix postfix-stage postfix-ipk postfix-clean postfix-dirclean postfix-check
 
 $(DL_DIR)/$(POSTFIX_SOURCE):
 	$(WGET) -P $(DL_DIR) $(POSTFIX_SITE)/$(POSTFIX_SOURCE)
@@ -194,3 +196,10 @@ postfix-clean:
 postfix-dirclean:
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR) $(POSTFIX_IPK_DIR) $(POSTFIX_IPK)
 	rm -rf $(POSTFIX_DOC_IPK_DIR) $(POSTFIX_DOC_IPK)
+#
+#
+# Some sanity check for the package.
+#
+#
+postfix-check: $(POSTFIX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POSTFIX_IPK)
