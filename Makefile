@@ -45,6 +45,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
 PACKAGES_THAT_NEED_TO_BE_FIXED = libao scponly gkrellm parted lumikki mini_httpd \
+	amule \
 	doxygen \
 	lftp \
 	libextractor \
@@ -365,6 +366,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat atftp \
 	bitlbee bzflag \
 	chillispot digitemp \
+	ftpd-topfield \
 	gdb gtk \
 	heyu ice \
 	ldconfig modutils \
