@@ -362,9 +362,8 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 # Packages that do not work for slugosbe.
 SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat atftp \
-	bitlbee bluez-utils bzflag \
+	bitlbee bzflag \
 	chillispot cyrus-imapd digitemp \
-	ftpd-topfield \
 	gdb gtk \
 	heyu ice \
 	ldconfig modutils \
