@@ -360,6 +360,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 	ipkg-opt \
 
 # Packages that do not work for slugosbe.
+# puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
 SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat atftp \
 	bitlbee bzflag \
@@ -369,7 +370,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	ldconfig modutils \
 	monotone mp3blaster mt-daapd \
 	net-tools nfs-utils nrpe \
-	pango py-psycopg qemu quagga quickie \
+	pango puppy py-psycopg qemu quagga quickie \
 	sdl sm \
 	transcode \
 	unfs3 ushare vte \
