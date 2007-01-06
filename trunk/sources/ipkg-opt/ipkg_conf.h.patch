@@ -1,0 +1,11 @@
+--- ipkg-opt/ipkg_conf.h.orig	2007-01-06 20:39:48.000000000 +0100
++++ ipkg-opt/ipkg_conf.h	2007-01-06 21:03:29.000000000 +0100
+@@ -29,7 +29,7 @@
+ #include "pkg_dest_list.h"
+ #include "nv_pair_list.h"
+ 
+-#define IPKG_CONF_DEFAULT_TMP_DIR_BASE "/tmp"
++#define IPKG_CONF_DEFAULT_TMP_DIR_BASE "/opt"
+ #define IPKG_CONF_TMP_DIR_SUFFIX "ipkg-XXXXXX"
+ #define IPKG_CONF_LISTS_DIR  IPKG_STATE_DIR_PREFIX "/lists"
+ #define IPKG_CONF_PENDING_DIR IPKG_STATE_DIR_PREFIX "/pending"
