@@ -17,7 +17,7 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=10
+CYRUS-IMAPD_IPK_VERSION=11
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
@@ -71,6 +71,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(CYRUS-IMAPD_LDFLAGS)" \
 		PERL=false \
 		cyrus_cv_func_mmap_shared=yes \
+		andrew_runpath_switch=none \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -80,9 +81,9 @@ endif
 		--with-cyrus-prefix=/opt/libexec/cyrus \
 		--with-statedir=/opt/var \
 		--with-pidfile=/opt/var/run \
-		--with-openssl=/opt \
-		--with-sasl=/opt \
-		--with-bdb=/opt \
+		--with-openssl=$(STAGING_PREFIX) \
+		--with-sasl=$(STAGING_PREFIX) \
+		--with-bdb=$(STAGING_PREFIX) \
 		--with-auth=unix \
 		--without-krb \
 		--with-cyrus-user=mail \
