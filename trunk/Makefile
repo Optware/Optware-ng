@@ -364,7 +364,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	amule antinat atftp \
 	bitlbee bluez-utils bzflag \
 	chillispot cyrus-imapd digitemp \
-	freeradius ftpd-topfield \
+	ftpd-topfield \
 	gdb gtk \
 	heyu ice \
 	ldconfig modutils \
