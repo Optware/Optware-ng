@@ -238,7 +238,7 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 amule bitlbee bzflag dump \
+	 bitlbee bzflag dump \
 	 fcgi fish gambit-c \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
@@ -246,7 +246,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 mtr net-tools nfs-server nfs-utils nget \
 	 pango \
 	 qemu qemu-libc-i386 quickie rtorrent sm \
-	 transcode vte wxbase xauth xaw xchat xcursor \
+	 transcode vte xauth xaw xchat xcursor \
 	 xfixes xft xrender xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
@@ -592,6 +592,7 @@ TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: buildroot-toolchain libuclibc++-toolchain
 endif
+TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/nowrap/$(TARGET_ARCH)-$(TARGET_OS)-g++
 endif
 else
 LIBC_STYLE=glibc

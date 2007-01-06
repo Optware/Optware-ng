@@ -19,7 +19,7 @@
 # address, and indicate your irc nick if it cannot be easily deduced
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
-#
+# http://developer.berlios.de/projects/amule/
 AMULE_SITE=http://download.berlios.de/amule
 AMULE_VERSION=2.1.3
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
@@ -46,7 +46,8 @@ AMULE_IPK_VERSION=3
 # AMULE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch
+AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch \
+	$(AMULE_SOURCE_DIR)/MuleDebug-uclibc.patch
 
 #
 # If the compilation of the package requires additional
@@ -54,6 +55,15 @@ AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch
 #
 AMULE_CPPFLAGS=
 AMULE_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
+		CXX=$(TARGET_GXX)
+else
+AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes
+endif
+
 
 #
 # AMULE_BUILD_DIR is the directory in which the build is done.
@@ -68,6 +78,9 @@ AMULE_BUILD_DIR=$(BUILD_DIR)/amule
 AMULE_SOURCE_DIR=$(SOURCE_DIR)/amule
 AMULE_IPK_DIR=$(BUILD_DIR)/amule-$(AMULE_VERSION)-ipk
 AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+
+.PHONY: amule-source amule-unpack amule amule-stage amule-ipk amule-clean amule-dirclean amule-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,6 +114,7 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
+#
 $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage libpng-stage libgd-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR)
@@ -117,8 +131,7 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AMULE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AMULE_LDFLAGS)" \
-		ac_cv_func_malloc_0_nonnull=yes \
-		ac_cv_func_realloc_0_nonnull=yes \
+		$(AMULE_CONFIGURE_OPTS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -236,3 +249,9 @@ amule-clean:
 #
 amule-dirclean:
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) $(AMULE_IPK_DIR) $(AMULE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+amule-check: $(AMULE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AMULE_IPK)
