@@ -1,26 +1,9 @@
 #!/bin/sh
 
-# start scripts are now symlinks in /opt/etc/rc.d that point
-# to the scripts without the leading S?? in their names in
-# /opt/etc/init.d. Until not all ipks are fixed the scripts
-# gets fixed here automatically.
-
-for i in /opt/etc/init.d/S??* ;do
-
-        # Ignore dangling symlinks (if any).
-        [ ! -f "$i" ] && continue
-
-        # rename it
-        mv $i /opt/etc/init.d/${i#*S??}
-
-        # and symlink to it
-        ln -sf /opt/etc/init.d/${i#*S??} /opt/etc/rc.d/${i#/opt/etc/init.d/*}
-done
-
-# Start all init scripts in /opt/etc/rc.d
+# Start all init scripts in /opt/etc/init.d
 # executing them in numerical order.
 #
-for i in /opt/etc/rc.d/S??* ;do
+for i in /opt/etc/init.d/S??* ;do
 
 	# Ignore dangling symlinks (if any).
 	[ ! -f "$i" ] && continue
