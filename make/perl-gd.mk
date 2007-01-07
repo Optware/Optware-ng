@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-GD_SITE=http://search.cpan.org/CPAN/authors/id/L/LD/LDS
-PERL-GD_VERSION=2.34
+PERL-GD_VERSION=2.35
 PERL-GD_SOURCE=GD-$(PERL-GD_VERSION).tar.gz
 PERL-GD_DIR=GD-$(PERL-GD_VERSION)
 PERL-GD_UNZIP=zcat
@@ -18,7 +18,7 @@ PERL-GD_DEPENDS=perl, libgd, zlib
 PERL-GD_SUGGESTS=
 PERL-GD_CONFLICTS=
 
-PERL-GD_IPK_VERSION=3
+PERL-GD_IPK_VERSION=1
 
 PERL-GD_CONFFILES=
 
