@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DCRAW_SITE=http://www.cybercom.net/~dcoffin/dcraw
-DCRAW_VERSION=1.350
+DCRAW_VERSION=1.361
 DCRAW_SOURCE=dcraw.c,v
 DCRAW_DIR=dcraw-$(DCRAW_VERSION)
 DCRAW_UNZIP=zcat
@@ -69,6 +69,8 @@ DCRAW_BUILD_DIR=$(BUILD_DIR)/dcraw
 DCRAW_SOURCE_DIR=$(SOURCE_DIR)/dcraw
 DCRAW_IPK_DIR=$(BUILD_DIR)/dcraw-$(DCRAW_VERSION)-ipk
 DCRAW_IPK=$(BUILD_DIR)/dcraw_$(DCRAW_VERSION)-$(DCRAW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: dcraw-source dcraw-unpack dcraw dcraw-stage dcraw-ipk dcraw-clean dcraw-dirclean dcraw-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -216,3 +218,9 @@ dcraw-clean:
 #
 dcraw-dirclean:
 	rm -rf $(BUILD_DIR)/$(DCRAW_DIR) $(DCRAW_BUILD_DIR) $(DCRAW_IPK_DIR) $(DCRAW_IPK)
+
+#
+# Some sanity check for the package.
+#
+dcraw-check: $(DCRAW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DCRAW_IPK)
