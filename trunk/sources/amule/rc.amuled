@@ -1,0 +1,37 @@
+#!/bin/sh
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+start() {
+	set backup=$HOME
+	echo "Starting amuled..."
+	echo "Configuration's setting are located in /opt/share/amule"
+	export HOME=/opt/share/amule
+	/opt/bin/amuled -f --even-if-lfroen-complains-this-will-stay
+	export HOME=$backup
+	echo "done"
+}
+
+stop() {
+	echo -n "Shutting down amuled... "
+	killall amuled
+	killall amuleweb
+	echo "done"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart)"
+		exit 1
+		;;
+esac
