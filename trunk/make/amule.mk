@@ -36,7 +36,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=3
+AMULE_IPK_VERSION=4
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -47,6 +47,7 @@ AMULE_IPK_VERSION=3
 # which they should be applied to the source code.
 #
 AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch \
+	$(AMULE_SOURCE_DIR)/aMule-wx.patch \
 	$(AMULE_SOURCE_DIR)/MuleDebug-uclibc.patch
 
 #
