@@ -34,7 +34,7 @@ IPKG-OPT_CVS_OPTS=-r $(IPKG-OPT_CVS_TAG)
 #
 # IPKG-OPT_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-OPT_IPK_VERSION=8
+IPKG-OPT_IPK_VERSION=9
 
 #
 # IPKG-OPT_CONFFILES should be a list of user-editable files
