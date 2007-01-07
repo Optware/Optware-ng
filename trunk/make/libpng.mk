@@ -34,7 +34,7 @@ LIBPNG_CONFLICTS=
 #
 # LIBPNG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPNG_IPK_VERSION=1
+LIBPNG_IPK_VERSION=2
 
 #
 # LIBPNG_PATCHES should list any patches, in the the order in
@@ -145,6 +145,7 @@ $(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
 	rm -f $(STAGING_DIR)/opt/lib/libpng12.la
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpng*.pc
+	sed -ie 's|-I$${includedir}|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libpng12-config
 	touch $@
 
 libpng-stage: $(LIBPNG_BUILD_DIR)/.staged
