@@ -34,7 +34,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=3
+WXBASE_IPK_VERSION=4
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -113,6 +113,7 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WXBASE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WXBASE_LDFLAGS)" \
+		ac_cv_path_SDL_CONFIG=no \
 		./configure \
 		--prefix=/opt \
 		--build=$(GNU_HOST_NAME) \
@@ -126,9 +127,9 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		--with-expat=sys \
 		--enable-largefile \
 		--without-sdl \
+		--disable-sdltest \
 		--enable-unicode \
 		)
-	sed -ie 's| -I/usr/include/[^ ]*||' $(WXBASE_BUILD_DIR)/Makefile
 	touch $(WXBASE_BUILD_DIR)/.configured
 
 wxbase-unpack: $(WXBASE_BUILD_DIR)/.configured
