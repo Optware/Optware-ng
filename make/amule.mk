@@ -36,7 +36,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=4
+AMULE_IPK_VERSION=5
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -224,8 +224,8 @@ $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
 	$(MAKE) -C $(AMULE_BUILD_DIR) DESTDIR=$(AMULE_IPK_DIR) program_transform_name=s/^$(GNU_TARGET_NAME)-// install-strip
 #	install -d $(AMULE_IPK_DIR)/opt/etc/
 #	install -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE_IPK_DIR)/opt/etc/amule.conf
-#	install -d $(AMULE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(AMULE_SOURCE_DIR)/rc.amule $(AMULE_IPK_DIR)/opt/etc/init.d/SXXamule
+	install -d $(AMULE_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(AMULE_SOURCE_DIR)/rc.amuled $(AMULE_IPK_DIR)/opt/etc/init.d/S57amuled
 	$(MAKE) $(AMULE_IPK_DIR)/CONTROL/control
 #	install -m 755 $(AMULE_SOURCE_DIR)/postinst $(AMULE_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(AMULE_SOURCE_DIR)/prerm $(AMULE_IPK_DIR)/CONTROL/prerm
