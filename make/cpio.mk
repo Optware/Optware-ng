@@ -5,7 +5,7 @@
 ###########################################################
 
 CPIO_SITE=http://ftp.gnu.org/gnu/cpio
-CPIO_VERSION=2.6
+CPIO_VERSION=2.7
 CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.bz2
 CPIO_DIR=cpio-$(CPIO_VERSION)
 CPIO_UNZIP=bzcat
@@ -18,7 +18,7 @@ CPIO_DEPENDS=
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=3
+CPIO_IPK_VERSION=1
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
@@ -45,6 +45,8 @@ CPIO_BUILD_DIR=$(BUILD_DIR)/cpio
 CPIO_SOURCE_DIR=$(SOURCE_DIR)/cpio
 CPIO_IPK_DIR=$(BUILD_DIR)/cpio-$(CPIO_VERSION)-ipk
 CPIO_IPK=$(BUILD_DIR)/cpio_$(CPIO_VERSION)-$(CPIO_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: cpio-source cpio-unpack cpio cpio-stage cpio-ipk cpio-clean cpio-dirclean cpio-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -167,3 +169,9 @@ cpio-clean:
 #
 cpio-dirclean:
 	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR) $(CPIO_IPK_DIR) $(CPIO_IPK)
+
+#
+# Some sanity check for the package.
+#
+cpio-check: $(CPIO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CPIO_IPK)
