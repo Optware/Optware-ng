@@ -34,7 +34,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=2
+WXBASE_IPK_VERSION=3
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -151,6 +151,7 @@ wxbase: $(WXBASE_BUILD_DIR)/.built
 #
 $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
 	rm -f $(WXBASE_BUILD_DIR)/.staged
+	rm -rf $(STAGING_INCLUDE_DIR)/wx $(STAGING_INCLUDE_DIR)/wx-*
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_INCLUDE_DIR)/wx-2.8
 	cp $(STAGING_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-base-unicode*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
