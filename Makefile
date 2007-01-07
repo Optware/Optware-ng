@@ -362,7 +362,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 # Packages that do not work for slugosbe.
 # puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
 SLUGOSBE_BROKEN_PACKAGES = \
-	amule antinat atftp \
+	antinat atftp \
 	bitlbee bzflag \
 	chillispot digitemp \
 	ftpd-topfield \
