@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DICT_SITE=http://ftp.freedb.org/pub/dict/
-DICT_VERSION=1.9.15
+DICT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dict
+DICT_VERSION=1.10.7
 DICT_SOURCE=dictd-$(DICT_VERSION).tar.gz
 DICT_DIR=dictd-$(DICT_VERSION)
 DICT_UNZIP=zcat
