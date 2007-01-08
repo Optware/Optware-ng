@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=1
+APR_UTIL_IPK_VERSION=2
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -152,10 +152,15 @@ endif
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-expat=$(STAGING_DIR)/opt \
+		--without-mysql \
+		--without-pgsql \
+		--without-sqlite2 \
+		--without-sqlite3 \
 		$(APR_UTIL_CONFIGURE_TARGET_ARGS) \
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
 	cp $(STAGING_DIR)/opt/share/apache2/build-1/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
+#	sed -ie '/pgsql/d;' $(APR_UTIL_BUILD_DIR)/build-outputs.mk
 	touch $(APR_UTIL_BUILD_DIR)/.configured
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
