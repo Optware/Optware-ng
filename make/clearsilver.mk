@@ -214,7 +214,7 @@ $(CLEARSILVER_IPK): $(CLEARSILVER_BUILD_DIR)/.built
 	rm -rf $(CLEARSILVER_IPK_DIR) $(BUILD_DIR)/clearsilver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR) DESTDIR=$(CLEARSILVER_IPK_DIR) install
 	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/*
-	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
+#	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
 #	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/
 #	install -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
 #	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/init.d
