@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SYSSTAT_SITE=ftp://ibiblio.org/pub/linux/system/status
-SYSSTAT_VERSION=7.0.0
+SYSSTAT_VERSION=7.0.3
 SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.bz2
 SYSSTAT_DIR=sysstat-$(SYSSTAT_VERSION)
 SYSSTAT_UNZIP=bzcat
@@ -52,7 +52,7 @@ SYSSTAT_CONFFILES=
 # SYSSTAT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SYSSTAT_PATCHES=$(SYSSTAT_SOURCE_DIR)/common.c.patch
+#SYSSTAT_PATCHES=$(SYSSTAT_SOURCE_DIR)/common.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +108,7 @@ $(SYSSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(SYSSTAT_DIR) $(SYSSTAT_BUILD_DIR)
 	$(SYSSTAT_UNZIP) $(DL_DIR)/$(SYSSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SYSSTAT_PATCHES) | patch -d $(BUILD_DIR)/$(SYSSTAT_DIR) -p1
+#	cat $(SYSSTAT_PATCHES) | patch -d $(BUILD_DIR)/$(SYSSTAT_DIR) -p1
 	mv $(BUILD_DIR)/$(SYSSTAT_DIR) $(SYSSTAT_BUILD_DIR)
 	cp $(SYSSTAT_SOURCE_DIR)/CONFIG $(SYSSTAT_BUILD_DIR)/build
 	sed -i "s/\/etc\/sysconfig/\/opt\/etc\/sysconfig/g" $(SYSSTAT_BUILD_DIR)/Makefile
