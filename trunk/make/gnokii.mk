@@ -28,6 +28,11 @@ GNOKII_SMSD_SECTION=daemon
 GNOKII_SMSD_DEPENDS=gnokii
 GNOKII_SMSD_SUGGESTS=
 GNOKII_SMSD_CONFLICTS=
+
+GNOKII_SMSD_MYSQL_DESCRIPTION=A gnokii sms daemon
+GNOKII_SMSD_MYSQL_DEPENDS=gnokii-smsd, mysql
+GNOKII_SMSD_MYSQL_SUGGESTS=
+GNOKII_SMSD_MYSQL_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -68,7 +73,10 @@ GNOKII_IPK=$(BUILD_DIR)/gnokii_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_
 GNOKII_SMSD_IPK_DIR=$(BUILD_DIR)/gnokii-smsd-$(GNOKII_VERSION)-ipk
 GNOKII_SMSD_IPK=$(BUILD_DIR)/gnokii-smsd_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: gnokii-source gnokii-unpack gnokii gnokii-stage gnokii-ipk gnokii-clean gnokii-dirclean gnokii-check gnokii-smsd-ipk
+GNOKII_SMSD_MYSQL_IPK_DIR=$(BUILD_DIR)/gnokii-smsd-mysql-$(GNOKII_VERSION)-ipk
+GNOKII_SMSD_MYSQL_IPK=$(BUILD_DIR)/gnokii-smsd-mysql_$(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: gnokii-source gnokii-unpack gnokii gnokii-stage gnokii-ipk gnokii-clean gnokii-dirclean gnokii-check gnokii-smsd-ipk gnokii-smsd-mysql-ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -144,9 +152,14 @@ $(GNOKII_BUILD_DIR)/.built: $(GNOKII_BUILD_DIR)/.configured
 # This builds the smsd
 #
 $(GNOKII_BUILD_DIR)/smsd/.built: $(GNOKII_BUILD_DIR)/.configured
-	make gnokii-stage
+	make gnokii-stage mysql-stage postgresql-stage
 	rm -f $(GNOKII_BUILD_DIR)/smsd/.built
-	PKG_CONFIG_PATH=$(STAGING_PREFIX)/lib/pkgconfig \
+	sed -i \
+	   -e 's/^DB_OBJS = file.lo/DB_OBJS = file.lo mysql.lo/' \
+	   -e 's/^DB_LIBS := libfile.la/DB_LIBS = libfile.la libmysql.la/' \
+	   $(GNOKII_BUILD_DIR)/smsd/Makefile
+	PATH=$(STAGING_PREFIX)/bin:$$PATH \
+		PKG_CONFIG_PATH=$(STAGING_PREFIX)/lib/pkgconfig \
 		$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd
 	touch $(GNOKII_BUILD_DIR)/smsd/.built
 
@@ -201,6 +214,21 @@ $(GNOKII_SMSD_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(GNOKII_SMSD_SUGGESTS)" >>$@
 	@echo "Conflicts: $(GNOKII_SMSD_CONFLICTS)" >>$@
 
+$(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: gnokii-smsd-mysql" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(GNOKII_PRIORITY)" >>$@
+	@echo "Section: $(GNOKII_SMSD_SECTION)" >>$@
+	@echo "Version: $(GNOKII_VERSION)-$(GNOKII_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(GNOKII_MAINTAINER)" >>$@
+	@echo "Source: $(GNOKII_SITE)/$(GNOKII_SOURCE)" >>$@
+	@echo "Description: $(GNOKII_SMSD_MYSQL_DESCRIPTION)" >>$@
+	@echo "Depends: $(GNOKII_SMSD_MYSQL_DEPENDS)" >>$@
+	@echo "Suggests: $(GNOKII_SMSD_MYSQL_SUGGESTS)" >>$@
+	@echo "Conflicts: $(GNOKII_SMSD_MYSQL_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -253,6 +281,7 @@ $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
 	rm -rf $(GNOKII_SMSD_IPK_DIR) $(BUILD_DIR)/gnokii-smsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_IPK_DIR) install
 	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libfile.la
+	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libmysql.*
 	$(TARGET_STRIP) $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libfile.so
 	$(TARGET_STRIP) $(GNOKII_SMSD_IPK_DIR)/opt/sbin/smsd
 	
@@ -268,10 +297,34 @@ $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
 	echo $(GNOKII_SMSD_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_SMSD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_SMSD_IPK_DIR)
 
+$(GNOKII_SMSD_MYSQL_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
+	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR) $(BUILD_DIR)/gnokii-smsd-mysql_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_MYSQL_IPK_DIR) install
+	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/sbin/smsd
+	rmdir $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/sbin
+	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/man/man8/smsd.8
+	rmdir $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/man/man8
+	rmdir $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/man
+	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libfile.*
+	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libmysql.la
+	$(TARGET_STRIP) $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libmysql.so
+	
+#	install -m 644 $(GNOKII_SOURCE_DIR)/gnokii.conf $(GNOKII_IPK_DIR)/opt/etc/gnokii.conf
+#	install -d $(GNOKII_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(GNOKII_SOURCE_DIR)/rc.gnokii $(GNOKII_IPK_DIR)/opt/etc/init.d/SXXgnokii
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXgnokii
+	$(MAKE) $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control
+#	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(GNOKII_SOURCE_DIR)/prerm $(GNOKII_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
+	echo $(GNOKII_SMSD_MYSQL_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_SMSD_MYSQL_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-gnokii-ipk: $(GNOKII_IPK) $(GNOKII_SMSD_IPK)
+gnokii-ipk: $(GNOKII_IPK) $(GNOKII_SMSD_IPK) $(GNOKII_SMSD_MYSQL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -293,4 +346,4 @@ gnokii-dirclean:
 # Some sanity check for the package.
 #
 gnokii-check: $(GNOKII_IPK) $(GNOKII_SMSD_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNOKII_IPK) $(GNOKII_SMSD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GNOKII_IPK) $(GNOKII_SMSD_IPK) $(GNOKII_SMSD_MYSQL_IPK)
