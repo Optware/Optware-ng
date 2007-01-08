@@ -81,7 +81,7 @@ SQUEAK_SOURCE_DIR=$(SOURCE_DIR)/squeak
 SQUEAK_IPK_DIR=$(BUILD_DIR)/squeak-$(SQUEAK_VERSION)-ipk
 SQUEAK_IPK=$(BUILD_DIR)/squeak_$(SQUEAK_VERSION)-$(SQUEAK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-SQUEAK_IMG_SRC_SITE=http://ftp.squeak.org/current_stable
+SQUEAK_IMG_SRC_SITE=http://ftp.squeak.org/sources_files
 SQUEAK_IMG_SRC=SqueakV3.sources
 
 .PHONY: squeak-source squeak-unpack squeak squeak-stage squeak-ipk squeak-clean squeak-dirclean squeak-check
