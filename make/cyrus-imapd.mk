@@ -77,6 +77,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--mandir=/opt/man \
 		--sysconfdir=/opt/etc \
 		--with-cyrus-prefix=/opt/libexec/cyrus \
 		--with-statedir=/opt/var \
@@ -251,10 +252,7 @@ endif
 	install -m 644 $(CYRUS-IMAPD_BUILD_DIR)/doc/*.html $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html/
 	install -m 644 $(CYRUS-IMAPD_BUILD_DIR)/doc/murder.* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/share/doc/cyrus/html/
 	install -d install -d $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man
-	mv $(CYRUS-IMAPD_IPK_DIR)/opt/share/man/* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/
-	mv $(CYRUS-IMAPD_IPK_DIR)/opt/man/man1/* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man1/
-	mv $(CYRUS-IMAPD_IPK_DIR)/opt/man/man3/* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man3/
-	rm -rf $(CYRUS-IMAPD_IPK_DIR)/opt/man $(CYRUS-IMAPD_IPK_DIR)/opt/share/man
+	mv $(CYRUS-IMAPD_IPK_DIR)/opt/man/* $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/
 	mv $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/idled.8 $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/cyrus_idled.8
 	mv $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/master.8 $(CYRUS-IMAPD_IPK_DIR)-doc/opt/man/man8/cyrus_master.8
 	$(MAKE) $(CYRUS-IMAPD_IPK_DIR)-doc/CONTROL/control
