@@ -21,7 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UNZIP_SITE=ftp://ftp.info-zip.org/pub/infozip/src
+#UNZIP_SITE=ftp://ftp.info-zip.org/pub/infozip/src
+UNZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/infozip
 UNZIP_VERSION=5.52
 UNZIP_SOURCE=unzip552.tar.gz
 UNZIP_DIR=unzip-$(UNZIP_VERSION)
