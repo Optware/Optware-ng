@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://www.apache.org/dist/httpd
-APACHE_VERSION=2.0.59
+APACHE_VERSION=2.2.3
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -21,7 +21,8 @@ APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
-APACHE_DEPENDS=apr (>= 0.9.13), apr-util (>= 0.9.13), openssl, expat, zlib $(APACHE_TARGET_DEPENDS)
+APACHE_DEPENDS=apr (>= $(APR_VERSION)), apr-util (>= $(APR_UTIL_VERSION)), \
+	openssl, expat, zlib $(APACHE_TARGET_DEPENDS)
 
 APACHE_MPM=worker
 #APACHE_MPM=prefork
@@ -29,12 +30,14 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=3
+APACHE_IPK_VERSION=1
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
 #
-APACHE_CONFFILES=/opt/etc/apache2/httpd.conf /opt/etc/apache2/ssl.conf /opt/etc/init.d/S80apache
+APACHE_CONFFILES=/opt/etc/apache2/httpd.conf \
+		/opt/etc/apache2/extra/httpd-ssl.conf \
+		/opt/etc/init.d/S80apache
 
 #
 # APACHE_LOCALES defines which locales get installed
@@ -49,7 +52,10 @@ APACHE_LOCALES=
 # APACHE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch $(APACHE_SOURCE_DIR)/hostcc-pcre.patch $(APACHE_SOURCE_DIR)/apxs.patch $(APACHE_SOURCE_DIR)/ulimit.patch
+APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch \
+		$(APACHE_SOURCE_DIR)/hostcc-pcre.patch \
+		$(APACHE_SOURCE_DIR)/apxs.patch \
+		$(APACHE_SOURCE_DIR)/ulimit.patch
 
 #
 # If the compilation of the package requires additional
@@ -143,6 +149,7 @@ apache-source: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 #
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
+
 #
 $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 	if test -d $(STAGING_INCLUDE_DIR)/apache2; then \
@@ -156,8 +163,10 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 	$(APACHE_UNZIP) $(DL_DIR)/$(APACHE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(APACHE_BUILD_DIR)
 	cat $(APACHE_PATCHES) |patch -p0 -d $(APACHE_BUILD_DIR)
-	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_DIR)/opt/share/apache2/build%" $(APACHE_BUILD_DIR)/config.layout
-	sed -i -e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" $(APACHE_BUILD_DIR)/config.layout
+	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_DIR)/opt/share/apache2/build%" \
+		-e 's%[ \t]\{1,\}prefix: .*%    prefix: /opt%' \
+		-e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" \
+		$(APACHE_BUILD_DIR)/config.layout
 	cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
 	(cd $(APACHE_BUILD_DIR); \
 		autoconf ; \
@@ -166,6 +175,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(APACHE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		ap_void_ptr_lt_long=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -215,7 +225,7 @@ $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
 	rm -f $(APACHE_BUILD_DIR)/.staged
 	rm -f $(STAGING_PREFIX)/libexec/mod_*.so
 	$(MAKE) -C $(APACHE_BUILD_DIR) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
-	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
+	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build-1/config_vars.mk
 	touch $(APACHE_BUILD_DIR)/.staged
 
 apache-stage: $(APACHE_BUILD_DIR)/.staged
@@ -239,6 +249,7 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/libexec/*.so
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/ab
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/checkgid
+	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htcacheclean
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdbm
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdigest
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htpasswd
