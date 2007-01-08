@@ -160,7 +160,7 @@ endif
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
 	cp $(STAGING_DIR)/opt/share/apache2/build-1/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
-#	sed -ie '/pgsql/d;' $(APR_UTIL_BUILD_DIR)/build-outputs.mk
+	sed -ie '/pgsql/d; /sqlite2/d;' $(APR_UTIL_BUILD_DIR)/build-outputs.mk
 	touch $(APR_UTIL_BUILD_DIR)/.configured
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
