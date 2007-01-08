@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=0.9.13
+APR_VERSION=1.2.8
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -26,7 +26,7 @@ APR_DEPENDS=
 #
 # APR_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_IPK_VERSION=5
+APR_IPK_VERSION=1
 
 #
 # APR_LOCALES defines which locales get installed
@@ -126,6 +126,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 		ac_cv_sizeof_pid_t=4 \
 		apr_cv_process_shared_works=no \
 		ac_cv_file__dev_zero=yes \
+		apr_cv_tcp_nodelay_with_cork=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -146,6 +147,7 @@ apr-unpack: $(APR_BUILD_DIR)/.configured
 #
 $(APR_BUILD_DIR)/.built: $(APR_BUILD_DIR)/.configured
 	rm -f $(APR_BUILD_DIR)/.built
+	rm -f $(STAGING_INCLUDE_DIR)/apache2/apr*.h
 	$(MAKE) -C $(APR_BUILD_DIR)
 	touch $(APR_BUILD_DIR)/.built
 
@@ -160,10 +162,9 @@ apr: $(APR_BUILD_DIR)/.built
 #
 $(APR_BUILD_DIR)/.staged: $(APR_BUILD_DIR)/.built
 	rm -f $@
-	rm -f $(STAGING_INCLUDE_DIR)/apache2/apr*.h
 	$(MAKE) -C $(APR_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libapr.la
-	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-config
+	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apr-1-config
 	touch $@
 
 apr-stage: $(APR_BUILD_DIR)/.staged

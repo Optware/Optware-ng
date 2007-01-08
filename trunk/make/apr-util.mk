@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=0.9.13
+APR_UTIL_VERSION=1.2.8
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=5
+APR_UTIL_IPK_VERSION=1
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -52,7 +52,8 @@ endif
 # APR_UTIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-APR_UTIL_PATCHES=$(APR_UTIL_SOURCE_DIR)/hostcc.patch $(APR_UTIL_SOURCE_DIR)/dbm-detect.patch
+APR_UTIL_PATCHES=$(APR_UTIL_SOURCE_DIR)/dbm-detect.patch
+# $(APR_UTIL_SOURCE_DIR)/hostcc.patch 
 
 #
 # If the compilation of the package requires additional
@@ -139,6 +140,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_UTIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APR_UTIL_LDFLAGS)" \
+		ac_cv_file_dbd_apr_dbd_mysql_c=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -153,7 +155,7 @@ endif
 		$(APR_UTIL_CONFIGURE_TARGET_ARGS) \
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
-	cp $(STAGING_DIR)/opt/share/apache2/build/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
+	cp $(STAGING_DIR)/opt/share/apache2/build-1/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
 	touch $(APR_UTIL_BUILD_DIR)/.configured
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
@@ -181,7 +183,9 @@ $(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
 	rm -f $(STAGING_INCLUDE_DIR)/apache2/apu*.h
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libaprutil.la
-	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apu-config
+	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apu-1-config
+	rm -f $(STAGING_PREFIX)/bin/apu-config
+#	ln -s apu-1-config $(STAGING_PREFIX)/bin/apu-config
 	touch $@
 
 apr-util-stage: $(APR_UTIL_BUILD_DIR)/.staged
