@@ -31,7 +31,7 @@ HNB_VERSION=1.9.17
 HNB_SOURCE=hnb-$(HNB_VERSION).tar.gz
 HNB_DIR=hnb-$(HNB_VERSION)
 HNB_UNZIP=zcat
-HNB_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+HNB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HNB_DESCRIPTION=Hierarchical notebook(hnb) is a curses program to structure many kinds of data in one place.
 HNB_SECTION=misc
 HNB_PRIORITY=optional
@@ -41,7 +41,7 @@ HNB_CONFLICTS=
 #
 # HNB_IPK_VERSION should be incremented when the ipk changes.
 #
-HNB_IPK_VERSION=1
+HNB_IPK_VERSION=2
 
 #
 # HNB_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ HNB_BUILD_DIR=$(BUILD_DIR)/hnb
 HNB_SOURCE_DIR=$(SOURCE_DIR)/hnb
 HNB_IPK_DIR=$(BUILD_DIR)/hnb-$(HNB_VERSION)-ipk
 HNB_IPK=$(BUILD_DIR)/hnb_$(HNB_VERSION)-$(HNB_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: hnb-source hnb-unpack hnb hnb-stage hnb-ipk hnb-clean hnb-dirclean hnb-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -204,3 +206,9 @@ hnb-clean:
 #
 hnb-dirclean:
 	rm -rf $(BUILD_DIR)/$(HNB_DIR) $(HNB_BUILD_DIR) $(HNB_IPK_DIR) $(HNB_IPK)
+
+#
+# Some sanity check for the package.
+#
+hnb-check: $(HNB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HNB_IPK)
