@@ -37,7 +37,7 @@ MOD_FASTCGI_CONFLICTS=
 #
 # MOD_FASTCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_FASTCGI_IPK_VERSION=2
+MOD_FASTCGI_IPK_VERSION=3
 
 #
 # MOD_FASTCGI_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ MOD_FASTCGI_CONFFILES=/opt/etc/apache2/conf.d/mod_fastcgi.conf
 # MOD_FASTCGI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MOD_FASTCGI_PATCHES=$(MOD_FASTCGI_SOURCE_DIR)/configure.patch
+MOD_FASTCGI_PATCHES=$(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi-apache-2.x.patch
 
 #
 # If the compilation of the package requires additional
@@ -69,6 +69,9 @@ MOD_FASTCGI_BUILD_DIR=$(BUILD_DIR)/mod-fastcgi
 MOD_FASTCGI_SOURCE_DIR=$(SOURCE_DIR)/mod-fastcgi
 MOD_FASTCGI_IPK_DIR=$(BUILD_DIR)/mod-fastcgi-$(MOD_FASTCGI_VERSION)-ipk
 MOD_FASTCGI_IPK=$(BUILD_DIR)/mod-fastcgi_$(MOD_FASTCGI_VERSION)-$(MOD_FASTCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: mod-fastcgi-source mod-fastcgi-unpack mod-fastcgi mod-fastcgi-stage mod-fastcgi-ipk mod-fastcgi-clean mod-fastcgi-dirclean mod-fastcgi-check
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -103,7 +106,7 @@ $(MOD_FASTCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FAST
 	$(MAKE) apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
 	$(MOD_FASTCGI_UNZIP) $(DL_DIR)/$(MOD_FASTCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(MOD_FASTCGI_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_FASTCGI_DIR) -p1
+	cat $(MOD_FASTCGI_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_FASTCGI_DIR) -p1
 	mv $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
 	(cd $(MOD_FASTCGI_BUILD_DIR); \
 		cp Makefile.AP2 Makefile \
@@ -119,8 +122,8 @@ $(MOD_FASTCGI_BUILD_DIR)/.built: $(MOD_FASTCGI_BUILD_DIR)/.configured
 	rm -f $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    top_dir=$(STAGING_DIR)/opt/share/apache2 \
-	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build/libtool --silent" \
-	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build/libtool --silent"
+	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
+	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent"
 	touch $(MOD_FASTCGI_BUILD_DIR)/.built
 
 #
@@ -173,10 +176,10 @@ $(MOD_FASTCGI_IPK): $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    DESTDIR=$(MOD_FASTCGI_IPK_DIR) \
 	    top_dir=$(STAGING_DIR)/opt/share/apache2 \
-	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build/libtool --silent" \
-	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build/libtool --silent" \
+	    LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
+	    SH_LIBTOOL="/bin/sh $(STAGING_DIR)/opt/share/apache2/build-1/libtool --silent" \
 	    install
-	$(STRIP_COMMAND) $(STAGING_DIR)/opt/libexec/mod_fastcgi.so
+	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)/opt/libexec/mod_fastcgi.so
 	install -d $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/
 	install -m 644 $(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi.conf $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_fastcgi.conf
 	$(MAKE) $(MOD_FASTCGI_IPK_DIR)/CONTROL/control
@@ -200,3 +203,10 @@ mod-fastcgi-clean:
 #
 mod-fastcgi-dirclean:
 	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR) $(MOD_FASTCGI_IPK_DIR) $(MOD_FASTCGI_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+mod-fastcgi-check: $(MOD_FASTCGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOD_FASTCGI_IPK)
