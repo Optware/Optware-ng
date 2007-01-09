@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SETPWC_SITE=http://www.vanheusden.com/setpwc
-SETPWC_VERSION=1.1
+SETPWC_VERSION=1.2
 SETPWC_SOURCE=setpwc-$(SETPWC_VERSION).tgz
 SETPWC_DIR=setpwc-$(SETPWC_VERSION)
 SETPWC_UNZIP=zcat
