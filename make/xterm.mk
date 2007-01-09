@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 XTERM_SITE=ftp://invisible-island.net/xterm
-XTERM_VERSION=222
+XTERM_VERSION=223
 XTERM_SOURCE=xterm-$(XTERM_VERSION).tgz
 XTERM_DIR=xterm-$(XTERM_VERSION)
 XTERM_UNZIP=zcat
@@ -72,6 +72,8 @@ XTERM_BUILD_DIR=$(BUILD_DIR)/xterm
 XTERM_SOURCE_DIR=$(SOURCE_DIR)/xterm
 XTERM_IPK_DIR=$(BUILD_DIR)/xterm-$(XTERM_VERSION)-ipk
 XTERM_IPK=$(BUILD_DIR)/xterm_$(XTERM_VERSION)-$(XTERM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: xterm-source xterm-unpack xterm xterm-stage xterm-ipk xterm-clean xterm-dirclean xterm-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -201,3 +203,9 @@ xterm-clean:
 #
 xterm-dirclean:
 	rm -rf $(BUILD_DIR)/$(XTERM_DIR) $(XTERM_BUILD_DIR) $(XTERM_IPK_DIR) $(XTERM_IPK)
+
+#
+# Some sanity check for the package.
+#
+xterm-check: $(XTERM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XTERM_IPK)
