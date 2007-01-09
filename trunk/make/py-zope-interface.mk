@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-ZOPE-INTERFACE_VERSION=3.3.0b2
+PY-ZOPE-INTERFACE_VERSION=3.3.0
 PY-ZOPE-INTERFACE_SITE=http://cheeseshop.python.org/packages/source/z/zope.interface
 PY-ZOPE-INTERFACE_SOURCE=zope.interface-$(PY-ZOPE-INTERFACE_VERSION).tar.gz
 PY-ZOPE-INTERFACE_DIR=zope.interface-$(PY-ZOPE-INTERFACE_VERSION)
