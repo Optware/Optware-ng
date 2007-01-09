@@ -26,7 +26,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TAR
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=2
+APR_UTIL_IPK_VERSION=3
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -159,8 +159,11 @@ endif
 		$(APR_UTIL_CONFIGURE_TARGET_ARGS) \
 	)
 	mkdir -p $(APR_UTIL_BUILD_DIR)/build
-	cp $(STAGING_DIR)/opt/share/apache2/build-1/apr_rules.mk $(APR_UTIL_BUILD_DIR)/build/rules.mk
-	sed -ie '/pgsql/d; /sqlite2/d;' $(APR_UTIL_BUILD_DIR)/build-outputs.mk
+	cp $(STAGING_DIR)/opt/share/apache2/build-1/apr_rules.mk \
+		$(APR_UTIL_BUILD_DIR)/build/rules.mk
+	sed -i \
+	 -e '/^OBJECTS_all/{s/[^ \t]\{1,\}\(mysql\|sqlite.\|pgsql\).lo//g}' \
+		$(APR_UTIL_BUILD_DIR)/build-outputs.mk
 	touch $(APR_UTIL_BUILD_DIR)/.configured
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
