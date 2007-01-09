@@ -244,9 +244,10 @@ $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control:
 #
 $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 	rm -rf $(GNOKII_IPK_DIR) $(BUILD_DIR)/gnokii_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GNOKII_BUILD_DIR) DESTDIR=$(GNOKII_IPK_DIR) install-strip
+	$(MAKE) -C $(GNOKII_BUILD_DIR) DESTDIR=$(GNOKII_IPK_DIR) install
 	chmod 755 $(GNOKII_IPK_DIR)/opt/*bin/*
 	$(TARGET_STRIP) $(GNOKII_IPK_DIR)/opt/bin/gnokii
+	$(TARGET_STRIP) $(GNOKII_IPK_DIR)/opt/bin/waitcall
 	$(TARGET_STRIP) $(GNOKII_IPK_DIR)/opt/sbin/*iid*
 	$(TARGET_STRIP) $(GNOKII_IPK_DIR)/opt/lib/libgnokii.so.3.0.0
 #
