@@ -57,7 +57,7 @@ HNB_PATCHES=$(HNB_SOURCE_DIR)/Makefile.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-HNB_CPPFLAGS=
+HNB_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 HNB_LDFLAGS=
 
 #
@@ -133,7 +133,7 @@ $(HNB_BUILD_DIR)/.built: $(HNB_BUILD_DIR)/.configured
 	rm -f $(HNB_BUILD_DIR)/.built
 	cd $(HNB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(STAGING_CPPFLAGS)/ncurses $(HNB_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(HNB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HNB_LDFLAGS)" \
 		$(MAKE) -C $(HNB_BUILD_DIR)
 	touch $(HNB_BUILD_DIR)/.built
