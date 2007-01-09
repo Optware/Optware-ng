@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=4.3p2
+OPENSSH_VERSION=4.5p1
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=6
+OPENSSH_IPK_VERSION=1
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
@@ -46,6 +46,9 @@ OPENSSH_BUILD_DIR=$(BUILD_DIR)/openssh
 OPENSSH_SOURCE_DIR=$(SOURCE_DIR)/openssh
 OPENSSH_IPK_DIR=$(BUILD_DIR)/openssh-$(OPENSSH_VERSION)-ipk
 OPENSSH_IPK=$(BUILD_DIR)/openssh_$(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+
+.PHONY: openssh-source openssh-unpack openssh openssh-stage openssh-ipk openssh-clean openssh-dirclean openssh-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,10 +104,13 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-pid-dir=/opt/var/run \
+		--with-prngd-socket=/opt/var/run/egd-pool \
+		--with-privsep-path=/opt/var/empty \
 		--sysconfdir=/opt/etc/openssh \
 		--with-zlib=$(STAGING_DIR)/opt \
 		--with-ssl-dir=$(STAGING_DIR)/opt \
-		--with-md5-passwords=yes \
+		--with-md5-passwords \
 		--disable-etc-default-login \
 		--with-default-path="/opt/sbin:/opt/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
 		--with-privsep-user=nobody \
@@ -170,7 +176,7 @@ $(OPENSSH_IPK): $(OPENSSH_BUILD_DIR)/.built
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
 	rm -rf $(OPENSSH_IPK_DIR)/opt/man
 	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
-	install -d $(OPENSSH_IPK_DIR)/var/run/
+	install -d $(OPENSSH_IPK_DIR)/opt/var/run/
 	install -m 755 $(OPENSSH_SOURCE_DIR)/rc.openssh $(OPENSSH_IPK_DIR)/opt/etc/init.d/S40sshd
 	$(MAKE) $(OPENSSH_IPK_DIR)/CONTROL/control
 	install -m 755 $(OPENSSH_SOURCE_DIR)/postinst $(OPENSSH_IPK_DIR)/CONTROL/postinst
@@ -196,3 +202,9 @@ openssh-clean:
 #
 openssh-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) $(OPENSSH_IPK_DIR) $(OPENSSH_IPK)
+#
+#
+# Some sanity check for the package.
+#
+openssh-check: $(OPENSSH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSSH_IPK)
