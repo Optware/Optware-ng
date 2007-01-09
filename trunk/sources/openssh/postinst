@@ -20,7 +20,7 @@ if [ ! -f /opt/etc/openssh/ssh_host_dsa_key ]; then
     /opt/bin/ssh-keygen -t dsa -f /opt/etc/openssh/ssh_host_dsa_key -C '' -N ''
 fi
                 
-if [ ! -d /root ];  then
+if [ ! -d /root -a -w / ];  then
     mkdir /root
 fi
 
