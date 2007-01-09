@@ -36,7 +36,7 @@ GNOKII_SMSD_MYSQL_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=4
+GNOKII_IPK_VERSION=5
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
@@ -153,12 +153,15 @@ $(GNOKII_BUILD_DIR)/.built: $(GNOKII_BUILD_DIR)/.configured
 # This builds the smsd
 #
 $(GNOKII_BUILD_DIR)/smsd/.built: $(GNOKII_BUILD_DIR)/.configured
-	make gnokii-stage mysql-stage postgresql-stage glib-stage
+	make gnokii-stage mysql-stage glib-stage
 	rm -f $(GNOKII_BUILD_DIR)/smsd/.built
 	sed -i \
 	   -e 's/^DB_OBJS = file.lo/DB_OBJS = file.lo mysql.lo/' \
 	   -e 's/^DB_LIBS := libfile.la/DB_LIBS = libfile.la libmysql.la/' \
 	   $(GNOKII_BUILD_DIR)/smsd/Makefile
+	sed -i \
+	   -e '/smsdConfig.dbMod/s/pq/file/' \
+	   $(GNOKII_BUILD_DIR)/smsd/smsd.c
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		PKG_CONFIG_PATH=$(STAGING_PREFIX)/lib/pkgconfig \
 		$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd
@@ -303,6 +306,8 @@ $(GNOKII_SMSD_MYSQL_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
 	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libfile.*
 	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libmysql.la
 	$(TARGET_STRIP) $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libmysql.so
+	mkdir -p $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/share/doc/gnokii-smsd
+	cp $(GNOKII_BUILD_DIR)/smsd/sms.tables.mysql.sql $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/share/doc/gnokii-smsd
 	$(MAKE) $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control
 #	install -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
