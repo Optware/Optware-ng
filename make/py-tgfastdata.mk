@@ -23,7 +23,7 @@
 #
 PY-TGFASTDATA_VERSION=0.9a5
 PY-TGFASTDATA_SVN_TAG=$(PY-TGFASTDATA_VERSION)
-PY-TGFASTDATA_REPOSITORY=http://www.turbogears.org/svn/turbogears/projects/FastData/tags/$(PY-TGFASTDATA_SVN_TAG)
+PY-TGFASTDATA_REPOSITORY=http://svn.turbogears.org/projects/FastData/tags/$(PY-TGFASTDATA_SVN_TAG)
 PY-TGFASTDATA_DIR=TGFastData-$(PY-TGFASTDATA_VERSION)
 PY-TGFASTDATA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TGFASTDATA_DESCRIPTION=An TurboGears extension that provides automatic user interface generation based upon an application model objects.

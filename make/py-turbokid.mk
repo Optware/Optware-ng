@@ -23,7 +23,7 @@
 #
 PY-TURBOKID_VERSION=0.9.9
 PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
-PY-TURBOKID_REPOSITORY=http://www.turbogears.org/svn/turbogears/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
+PY-TURBOKID_REPOSITORY=http://svn.turbogears.org/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
 PY-TURBOKID_DIR=TurboKid-$(PY-TURBOKID_VERSION)
 PY-TURBOKID_UNZIP=zcat
 PY-TURBOKID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>

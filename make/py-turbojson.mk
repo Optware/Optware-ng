@@ -23,7 +23,7 @@
 #
 PY-TURBOJSON_VERSION=0.9.9
 PY-TURBOJSON_SVN_TAG=$(PY-TURBOJSON_VERSION)
-PY-TURBOJSON_REPOSITORY=http://www.turbogears.org/svn/turbogears/projects/TurboJson/tags/$(PY-TURBOJSON_SVN_TAG)
+PY-TURBOJSON_REPOSITORY=http://svn.turbogears.org/projects/TurboJson/tags/$(PY-TURBOJSON_SVN_TAG)
 PY-TURBOJSON_DIR=TurboJson-$(PY-TURBOJSON_VERSION)
 PY-TURBOJSON_UNZIP=zcat
 PY-TURBOJSON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
