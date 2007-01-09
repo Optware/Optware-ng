@@ -23,7 +23,7 @@ PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=1
+PHP_APACHE_IPK_VERSION=2
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -61,6 +61,8 @@ PHP_APACHE_BUILD_DIR=$(BUILD_DIR)/php-apache
 PHP_APACHE_SOURCE_DIR=$(SOURCE_DIR)/php
 PHP_APACHE_IPK_DIR=$(BUILD_DIR)/php-apache-$(PHP_APACHE_VERSION)-ipk
 PHP_APACHE_IPK=$(BUILD_DIR)/php-apache_$(PHP_APACHE_VERSION)-$(PHP_APACHE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: php-apache-source php-apache-unpack php-apache php-apache-stage php-apache-ipk php-apache-clean php-apache-dirclean php-apache-check
 
 #
 # Automatically create a ipkg control file
@@ -211,3 +213,9 @@ php-apache-clean:
 #
 php-apache-dirclean:
 	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_APACHE_BUILD_DIR) $(PHP_APACHE_IPK_DIR) $(PHP_APACHE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+php-apache-check: $(PHP-APACHE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_APACHE_IPK)
