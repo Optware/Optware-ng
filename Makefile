@@ -81,6 +81,7 @@ PERL_PACKAGES = \
 	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
 	perl-par-dist \
 	perl-pod-readme \
+	perl-scgi \
 	perl-storable \
 	perl-sys-hostname-long \
 	perl-template-toolkit \
