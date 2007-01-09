@@ -36,7 +36,7 @@ GNUPLOT_CONFLICTS=
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=4
+GNUPLOT_IPK_VERSION=5
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
@@ -121,6 +121,8 @@ $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPLOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUPLOT_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/opt/bin:${PATH}" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		HOSTCC=$(HOSTCC) \
 		--build=$(GNU_HOST_NAME) \
@@ -135,6 +137,7 @@ $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 		--with-gd=$(STAGING_DIR)/opt \
 		--without-lisp-files \
 		--without-tutorial \
+		--disable-wxwidgets \
 	)
 #	$(PATCH_LIBTOOL) $(GNUPLOT_BUILD_DIR)/libtool
 	touch $(GNUPLOT_BUILD_DIR)/.configured
