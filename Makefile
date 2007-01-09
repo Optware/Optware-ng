@@ -365,7 +365,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 SLUGOSBE_BROKEN_PACKAGES = \
 	antinat atftp \
 	bitlbee bzflag \
-	chillispot digitemp \
+	chillispot \
 	ftpd-topfield \
 	gdb gtk \
 	heyu ice \

@@ -27,7 +27,7 @@ DIGITEMP_CONFLICTS=
 #
 # DIGITEMP_IPK_VERSION should be incremented when the ipk changes.
 #
-DIGITEMP_IPK_VERSION=2
+DIGITEMP_IPK_VERSION=3
 
 #
 # DIGITEMP_CONFFILES should be a list of user-editable files
@@ -59,6 +59,8 @@ DIGITEMP_BUILD_DIR=$(BUILD_DIR)/digitemp
 DIGITEMP_SOURCE_DIR=$(SOURCE_DIR)/digitemp
 DIGITEMP_IPK_DIR=$(BUILD_DIR)/digitemp-$(DIGITEMP_VERSION)-ipk
 DIGITEMP_IPK=$(BUILD_DIR)/digitemp_$(DIGITEMP_VERSION)-$(DIGITEMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: digitemp-source digitemp-unpack digitemp digitemp-stage digitemp-ipk digitemp-clean digitemp-dirclean digitemp-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -116,7 +118,8 @@ $(DIGITEMP_BUILD_DIR)/.built: $(DIGITEMP_BUILD_DIR)/.configured
 	echo $(TARGET_CONFIGURE_OPTS)
 	echo
 	rm -f $(DIGITEMP_BUILD_DIR)/.built
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) ds9097 ds9097u 
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) \
+			STAGING_DIR=$(STAGING_DIR) ds9097 ds9097u 
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) \
 	                STAGING_DIR=$(STAGING_DIR) clean ds2490
 	touch $(DIGITEMP_BUILD_DIR)/.built
@@ -197,3 +200,9 @@ digitemp-clean:
 #
 digitemp-dirclean:
 	rm -rf $(BUILD_DIR)/$(DIGITEMP_DIR) $(DIGITEMP_BUILD_DIR) $(DIGITEMP_IPK_DIR) $(DIGITEMP_IPK)
+
+#
+# Some sanity check for the package.
+#
+digitemp-check: $(DIGITEMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DIGITEMP_IPK)
