@@ -21,16 +21,16 @@ PHP_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET),wl500g)
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre, cyrus-sasl-libs, openldap-libs
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+PHP_DEPENDS=bzip2, openssl, zlib, libcurl, libxml2, libxslt, gdbm, libdb, pcre, cyrus-sasl-libs, openldap-libs
 else
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre
+PHP_DEPENDS=bzip2, openssl, zlib, libcurl, libxml2, libxslt, gdbm, libdb, pcre
 endif
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -50,7 +50,13 @@ PHP_LOCALES=
 # PHP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHP_PATCHES=$(PHP_SOURCE_DIR)/aclocal.m4.patch $(PHP_SOURCE_DIR)/configure.in.patch $(PHP_SOURCE_DIR)/threads.m4.patch $(PHP_SOURCE_DIR)/endian-5.0.4.patch $(PHP_SOURCE_DIR)/zend_strtod.patch
+PHP_PATCHES=\
+	$(PHP_SOURCE_DIR)/aclocal.m4.patch \
+	$(PHP_SOURCE_DIR)/configure.in.patch \
+	$(PHP_SOURCE_DIR)/threads.m4.patch \
+	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
+	$(PHP_SOURCE_DIR)/zend_strtod.patch \
+	$(PHP_SOURCE_DIR)/php-5.2.0-and-curl-7.16.patch
 
 #
 # If the compilation of the package requires additional
@@ -281,6 +287,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) bzip2-stage 
 	$(MAKE) gdbm-stage 
+	$(MAKE) libcurl-stage
 	$(MAKE) libdb-stage
 	$(MAKE) libgd-stage 
 	$(MAKE) libxml2-stage 
@@ -348,6 +355,7 @@ endif
 		--enable-xml=shared \
 		--enable-xmlreader=shared \
 		--with-bz2=shared,$(STAGING_PREFIX) \
+		--with-curl=shared,$(STAGING_PREFIX) \
 		--with-db4=$(STAGING_PREFIX) \
 		--with-dom=shared,$(STAGING_PREFIX) \
 		--with-gdbm=$(STAGING_PREFIX) \
