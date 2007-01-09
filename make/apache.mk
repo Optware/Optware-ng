@@ -30,7 +30,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=1
+APACHE_IPK_VERSION=2
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -225,7 +225,7 @@ $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
 	rm -f $(APACHE_BUILD_DIR)/.staged
 	rm -f $(STAGING_PREFIX)/libexec/mod_*.so
 	$(MAKE) -C $(APACHE_BUILD_DIR) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
-	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build-1/config_vars.mk
+	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
 	touch $(APACHE_BUILD_DIR)/.staged
 
 apache-stage: $(APACHE_BUILD_DIR)/.staged
