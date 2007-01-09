@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SETUPTOOLS_SITE=http://cheeseshop.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=0.6c3
+PY-SETUPTOOLS_VERSION=0.6c4
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).tar.gz
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
 PY-SETUPTOOLS_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=2
+PY-SETUPTOOLS_IPK_VERSION=1
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ PY24-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SET
 
 PY25-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py25-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
 PY25-SETUPTOOLS_IPK=$(BUILD_DIR)/py25-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-setuptools-source py-setuptools-unpack py-setuptools py-setuptools-stage py-setuptools-ipk py-setuptools-clean py-setuptools-dirclean py-setuptools-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -252,3 +254,8 @@ py-setuptools-dirclean:
 	$(PY24-SETUPTOOLS_IPK_DIR) $(PY24-SETUPTOOLS_IPK) \
 	$(PY25-SETUPTOOLS_IPK_DIR) $(PY25-SETUPTOOLS_IPK) \
 
+#
+# Some sanity check for the package.
+#
+py-setuptools-check: $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SETUPTOOLS_IPK) $(PY25-SETUPTOOLS_IPK)
