@@ -25,7 +25,7 @@ GNOKII_CONFLICTS=
 
 GNOKII_SMSD_DESCRIPTION=A gnokii sms daemon
 GNOKII_SMSD_SECTION=daemon
-GNOKII_SMSD_DEPENDS=gnokii
+GNOKII_SMSD_DEPENDS=gnokii, glib
 GNOKII_SMSD_SUGGESTS=
 GNOKII_SMSD_CONFLICTS=
 
@@ -153,7 +153,7 @@ $(GNOKII_BUILD_DIR)/.built: $(GNOKII_BUILD_DIR)/.configured
 # This builds the smsd
 #
 $(GNOKII_BUILD_DIR)/smsd/.built: $(GNOKII_BUILD_DIR)/.configured
-	make gnokii-stage mysql-stage postgresql-stage
+	make gnokii-stage mysql-stage postgresql-stage glib-stage
 	rm -f $(GNOKII_BUILD_DIR)/smsd/.built
 	sed -i \
 	   -e 's/^DB_OBJS = file.lo/DB_OBJS = file.lo mysql.lo/' \
