@@ -109,17 +109,17 @@ $(HNB_BUILD_DIR)/.configured: $(DL_DIR)/$(HNB_SOURCE) $(HNB_PATCHES)
 	$(HNB_UNZIP) $(DL_DIR)/$(HNB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(HNB_PATCHES) | patch -d $(BUILD_DIR)/$(HNB_DIR) -p1
 	mv $(BUILD_DIR)/$(HNB_DIR) $(HNB_BUILD_DIR)
-	#(cd $(HNB_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(HNB_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(HNB_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
-	)
+#	(cd $(HNB_BUILD_DIR); \
+#		$(TARGET_CONFIGURE_OPTS) \
+#		CPPFLAGS="$(STAGING_CPPFLAGS) $(HNB_CPPFLAGS)" \
+#		LDFLAGS="$(STAGING_LDFLAGS) $(HNB_LDFLAGS)" \
+#		./configure \
+#		--build=$(GNU_HOST_NAME) \
+#		--host=$(GNU_TARGET_NAME) \
+#		--target=$(GNU_TARGET_NAME) \
+#		--prefix=/opt \
+#		--disable-nls \
+#	)
 	touch $(HNB_BUILD_DIR)/.configured
 
 hnb-unpack: $(HNB_BUILD_DIR)/.configured
