@@ -52,7 +52,7 @@ tcpwrappers: $(TCPWRAPPERS_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(TCPWRAPPERS_DIR)/.staged: $(TCPWRAPPERS_DIR)/tcpd
+$(TCPWRAPPERS_DIR)/.staged: $(TCPWRAPPERS_DIR)/.built
 	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(TCPWRAPPERS_DIR)/tcpd.h $(STAGING_DIR)/opt/include
