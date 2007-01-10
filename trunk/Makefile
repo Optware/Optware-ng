@@ -371,7 +371,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	heyu ice \
 	ldconfig modutils \
 	monotone mp3blaster \
-	net-tools nfs-utils nrpe \
+	net-tools nfs-utils \
 	pango puppy py-psycopg qemu quagga quickie \
 	sdl sm \
 	transcode \
