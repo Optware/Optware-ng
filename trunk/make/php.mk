@@ -22,15 +22,15 @@ PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-PHP_DEPENDS=bzip2, openssl, zlib, libcurl, libxml2, libxslt, gdbm, libdb, pcre, cyrus-sasl-libs, openldap-libs
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre, cyrus-sasl-libs, openldap-libs
 else
-PHP_DEPENDS=bzip2, openssl, zlib, libcurl, libxml2, libxslt, gdbm, libdb, pcre
+PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre
 endif
 
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=3
+PHP_IPK_VERSION=4
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -85,6 +85,9 @@ PHP_DEV_IPK=$(BUILD_DIR)/php-dev_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH
 PHP_EMBED_IPK_DIR=$(BUILD_DIR)/php-embed-$(PHP_VERSION)-ipk
 PHP_EMBED_IPK=$(BUILD_DIR)/php-embed_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PHP_CURL_IPK_DIR=$(BUILD_DIR)/php-curl-$(PHP_VERSION)-ipk
+PHP_CURL_IPK=$(BUILD_DIR)/php-curl_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 PHP_GD_IPK_DIR=$(BUILD_DIR)/php-gd-$(PHP_VERSION)-ipk
 PHP_GD_IPK=$(BUILD_DIR)/php-gd_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -107,7 +110,7 @@ PHP_PEAR_IPK_DIR=$(BUILD_DIR)/php-pear-$(PHP_VERSION)-ipk
 PHP_PEAR_IPK=$(BUILD_DIR)/php-pear_$(PHP_VERSION)-$(PHP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 # We need this because openldap does not build on the wl500g.
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 PHP_CONFIGURE_TARGET_ARGS= \
 		--with-ldap=shared,$(STAGING_PREFIX) \
 		--with-ldap-sasl=$(STAGING_PREFIX)
@@ -163,6 +166,19 @@ $(PHP_EMBED_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: php embedded library - the embed SAPI" >>$@
 	@echo "Depends: php" >>$@
+
+$(PHP_CURL_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: php-curl" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PHP_PRIORITY)" >>$@
+	@echo "Section: $(PHP_SECTION)" >>$@
+	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
+	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
+	@echo "Description: libcurl extension for php" >>$@
+	@echo "Depends: php, libcurl" >>$@
 
 $(PHP_GD_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -299,7 +315,7 @@ $(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
 	$(MAKE) pcre-stage
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 	$(MAKE) cyrus-sasl-stage
 endif
@@ -454,6 +470,14 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	install -d $(PHP_EMBED_IPK_DIR)/opt/lib/
 	mv $(PHP_IPK_DIR)/opt/lib/libphp5.so $(PHP_EMBED_IPK_DIR)/opt/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_EMBED_IPK_DIR)
+	### now make php-curl
+	rm -rf $(PHP_CURL_IPK_DIR) $(BUILD_DIR)/php-curl_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(PHP_CURL_IPK_DIR)/CONTROL/control
+	install -d $(PHP_CURL_IPK_DIR)/opt/lib/php/extensions
+	install -d $(PHP_CURL_IPK_DIR)/opt/etc/php.d
+	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/curl.so $(PHP_CURL_IPK_DIR)/opt/lib/php/extensions/curl.so
+	echo extension=curl.so >$(PHP_CURL_IPK_DIR)/opt/etc/php.d/curl.ini
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_CURL_IPK_DIR)
 	### now make php-gd
 	rm -rf $(PHP_GD_IPK_DIR) $(BUILD_DIR)/php-gd_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_GD_IPK_DIR)/CONTROL/control
@@ -470,7 +494,7 @@ $(PHP_IPK): $(PHP_BUILD_DIR)/.built
 	mv $(PHP_IPK_DIR)/opt/lib/php/extensions/imap.so $(PHP_IMAP_IPK_DIR)/opt/lib/php/extensions/imap.so
 	echo extension=imap.so >$(PHP_IMAP_IPK_DIR)/opt/etc/php.d/imap.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_IMAP_IPK_DIR)
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	### now make php-ldap
 	rm -rf $(PHP_LDAP_IPK_DIR) $(BUILD_DIR)/php-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PHP_LDAP_IPK_DIR)/CONTROL/control
@@ -521,10 +545,11 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 php-ipk: $(PHP_IPK) \
 	$(PHP_DEV_IPK) \
 	$(PHP_EMBED_IPK) \
+	$(PHP_CURL_IPK) \
 	$(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK) \
 	$(PHP_LDAP_IPK) \
@@ -536,6 +561,7 @@ else
 php-ipk: $(PHP_IPK) \
 	$(PHP_DEV_IPK) \
 	$(PHP_EMBED_IPK) \
+	$(PHP_CURL_IPK) \
 	$(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
@@ -559,13 +585,14 @@ php-dirclean:
 	$(PHP_IPK_DIR) $(PHP_IPK) \
 	$(PHP_DEV_IPK_DIR) $(PHP_DEV_IPK) \
 	$(PHP_EMBED_IPK_DIR) $(PHP_EMBED_IPK) \
+	$(PHP_CURL_IPK_DIR) $(PHP_CURL_IPK) \
 	$(PHP_GD_IPK_DIR) $(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK_DIR) $(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK_DIR) $(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK_DIR) $(PHP_MYSQL_IPK) \
 	$(PHP_PGSQL_IPK_DIR) $(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK_DIR) $(PHP_PEAR_IPK)
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	rm -rf $(PHP_LDAP_IPK_DIR) $(PHP_LDAP_IPK)
 endif
 
@@ -577,12 +604,13 @@ php-check: php-ipk
 	$(PHP_IPK) \
 	$(PHP_DEV_IPK) \
 	$(PHP_EMBED_IPK) \
+	$(PHP_CURL_IPK) \
 	$(PHP_GD_IPK) \
 	$(PHP_IMAP_IPK) \
 	$(PHP_MBSTRING_IPK) \
 	$(PHP_MYSQL_IPK) \
 	$(PHP_PGSQL_IPK) \
 	$(PHP_PEAR_IPK)
-ifneq ($(OPTWARE_TARGET),wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_LDAP_IPK)
 endif
