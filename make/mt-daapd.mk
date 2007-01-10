@@ -16,7 +16,7 @@ MT_DAAPD_PRIORITY=optional
 MT_DAAPD_DEPENDS=gdbm, libid3tag
 MT_DAAPD_CONFLICTS=
 
-MT_DAAPD_IPK_VERSION=1
+MT_DAAPD_IPK_VERSION=2
 
 MT_DAAPD_CPPFLAGS=-DSTRSEP
 MT_DAAPD_LDFLAGS=
@@ -27,6 +27,8 @@ MT_DAAPD_IPK_DIR=$(BUILD_DIR)/mt-daapd-$(MT_DAAPD_VERSION)-ipk
 MT_DAAPD_IPK=$(BUILD_DIR)/mt-daapd_$(MT_DAAPD_VERSION)-$(MT_DAAPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #MT_DAAPD_PATCHES=$(MT_DAAPD_SOURCE_DIR)/itunes5.patch
+
+.PHONY: mt-daapd-source mt-daapd-unpack mt-daapd mt-daapd-stage mt-daapd-ipk mt-daapd-clean mt-daapd-dirclean mt-daapd-check
 
 $(DL_DIR)/$(MT_DAAPD_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MT_DAAPD_SITE)/$(MT_DAAPD_SOURCE)
@@ -54,6 +56,11 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 		--with-gdbm-include=$(STAGING_DIR)/opt/include \
 		--enable-nslu2 \
 	)
+ifeq ($(OPTWARE_TARGET), slugosbe)
+	sed -ie '/#include <limits.h>/a#include <linux/limits.h>' \
+		$(MT_DAAPD_BUILD_DIR)/src/dynamic-art.c \
+		$(MT_DAAPD_BUILD_DIR)/src/restart.c
+endif
 	touch $(MT_DAAPD_BUILD_DIR)/.configured
 
 mt-daapd-unpack: $(MT_DAAPD_BUILD_DIR)/.configured
@@ -117,3 +124,5 @@ mt-daapd-clean:
 mt-daapd-dirclean:
 	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR) $(MT_DAAPD_IPK_DIR) $(MT_DAAPD_IPK)
 
+mt-daapd-check: $(MT_DAAPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MT_DAAPD_IPK)
