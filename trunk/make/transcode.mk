@@ -19,25 +19,26 @@
 #
 # You should change all these variables to suit your package.
 #
-TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
-TRANSCODE_VERSION=cvs20050223
+#TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
+TRANSCODE_SITE=http://fromani.exit1.org
+TRANSCODE_VERSION=1.0.2
 TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.gz
-TRANSCODE_TAG=-D 2005-02-13
-TRANSCODE_MODULE=transcode
+#TRANSCODE_TAG=-D 2005-02-13
+#TRANSCODE_MODULE=transcode
 TRANSCODE_DIR=transcode-$(TRANSCODE_VERSION)
 TRANSCODE_UNZIP=zcat
 TRANSCODE_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
 TRANSCODE_SECTION=tool
 TRANSCODE_PRIORITY=optional
-TRANSCODE_DEPENDS=ffmpeg, lame, libdvdread, freetype, libogg, libvorbis
+TRANSCODE_DEPENDS=ffmpeg, freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis
 TRANSCODE_SUGGESTS=
 TRANSCODE_CONFLICTS=
 
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=3
+TRANSCODE_IPK_VERSION=1
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files
@@ -47,14 +48,28 @@ TRANSCODE_CONFFILES=/opt/etc/transcode.conf /opt/etc/init.d/SXXtranscode
 ## TRANSCODE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifneq ($(HOSTCC), $(TARGET_CC))
 TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/patch
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSCODE_CPPFLAGS=-DO_LARGEFILE -DSYS_BSD -I$(STAGING_DIR)/opt/include/freetype2
+TRANSCODE_CPPFLAGS=-DO_LARGEFILE -DSYS_BSD -I$(STAGING_INCLUDE_DIR)/freetype2
 TRANSCODE_LDFLAGS=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+TRANSCODE_CONFIG_ENV=ac_cv_func_malloc_0_nonnull=yes
+else
+TRANSCODE_CONFIG_ENV=
+endif
+
+ifeq ($(OPTWARE_TARGET), ds101g)
+TRANSCODE_CONFIG_ARG=--enable-altivec
+else
+TRANSCODE_CONFIG_ARG=--disable-iconv
+endif
 
 #
 # TRANSCODE_BUILD_DIR is the directory in which the build is done.
@@ -70,15 +85,18 @@ TRANSCODE_SOURCE_DIR=$(SOURCE_DIR)/transcode
 TRANSCODE_IPK_DIR=$(BUILD_DIR)/transcode-$(TRANSCODE_VERSION)-ipk
 TRANSCODE_IPK=$(BUILD_DIR)/transcode_$(TRANSCODE_VERSION)-$(TRANSCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: transcode-source transcode-unpack transcode transcode-stage transcode-ipk transcode-clean transcode-dirclean transcode-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TRANSCODE_SOURCE):
-	cd $(DL_DIR) ; $(CVS) -z3 -d $(TRANSCODE_REPOSITORY) co $(TRANSCODE_TAG) $(TRANSCODE_MODULE)
-	mv $(DL_DIR)/$(TRANSCODE_MODULE) $(DL_DIR)/$(TRANSCODE_DIR)
-	cd $(DL_DIR) ; tar zcvf $(TRANSCODE_SOURCE) $(TRANSCODE_DIR)
-	rm -rf $(DL_DIR)/$(TRANSCODE_DIR)
+#	cd $(DL_DIR) ; $(CVS) -z3 -d $(TRANSCODE_REPOSITORY) co $(TRANSCODE_TAG) $(TRANSCODE_MODULE)
+#	mv $(DL_DIR)/$(TRANSCODE_MODULE) $(DL_DIR)/$(TRANSCODE_DIR)
+#	cd $(DL_DIR) ; tar zcvf $(TRANSCODE_SOURCE) $(TRANSCODE_DIR)
+#	rm -rf $(DL_DIR)/$(TRANSCODE_DIR)
+	$(WGET) -P $(DL_DIR) $(TRANSCODE_SITE)/$(TRANSCODE_SOURCE)
 
 
 #
@@ -104,64 +122,67 @@ transcode-source: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PATCHES)
-	$(MAKE) ffmpeg-stage lame-stage freetype-stage libdvdread-stage libogg-stage libvorbis-stage
+	$(MAKE) ffmpeg-stage
+	$(MAKE) freetype-stage
+	$(MAKE) lame-stage
+	$(MAKE) liba52-stage
+	$(MAKE) libdvdread-stage
+	$(MAKE) libjpeg-stage
+	$(MAKE) libmpeg2-stage
+	$(MAKE) libogg-stage
+	$(MAKE) libvorbis-stage
+	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
 	$(TRANSCODE_UNZIP) $(DL_DIR)/$(TRANSCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cd $(BUILD_DIR)/$(TRANSCODE_DIR); AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f
-	cat $(TRANSCODE_PATCHES) | patch -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1
+	if test -n "$(TRANSCODE_PATCHES)"; \
+		then cat $(TRANSCODE_PATCHES) | patch -d $(BUILD_DIR)/$(TRANSCODE_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR)
+#	sed -ie '/extern int verbose/d' $(TRANSCODE_BUILD_DIR)/src/transcode.h
+#	sed -ie '/static int verbose/d' $(TRANSCODE_BUILD_DIR)/import/dvd_reader.c
+#	sed -ie 's/static int verbose/extern int verbose/' $(TRANSCODE_BUILD_DIR)/import/tcextract.c
+ifneq ($(HOSTCC), $(TARGET_CC))
+	cd $(TRANSCODE_BUILD_DIR); \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f;
+endif
+	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure
 	(cd $(TRANSCODE_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
 		FT2_CONFIG="$(STAGING_DIR)/opt/bin/freetype-config";export FT2_CONFIG; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSCODE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSCODE_LDFLAGS)" \
+		$(TRANSCODE_CONFIG_ENV) \
 		./configure -C \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
 		--without-x \
-		--with-ffmpeg_libs-includes=$(STAGING_DIR)/opt \
-		--with-avifile-includes=$(STAGING_DIR)/opt \
-		--with-lame-includes=$(STAGING_DIR)/opt \
-		--with-ogg-includes=$(STAGING_DIR)/opt \
-		--with-vorbis-includes=$(STAGING_DIR)/opt \
-		--with-theora-includes=$(STAGING_DIR)/opt \
-		--with-libdvdread-includes=$(STAGING_DIR)/opt \
-		--with-libdv-includes=$(STAGING_DIR)/opt \
-		--with-libquicktime-includes=$(STAGING_DIR)/opt \
-		--with-lzo-includes=$(STAGING_DIR)/opt \
-		--with-a52-includes=$(STAGING_DIR)/opt \
-		--with-libmpeg3-includes=$(STAGING_DIR)/opt \
-		--with-libxml2-includes=$(STAGING_DIR)/opt \
-		--with-mjpegtools-includes=$(STAGING_DIR)/opt \
-		--with-gtk-includes=$(STAGING_DIR)/opt \
-		--with-imagemagick-includes=$(STAGING_DIR)/opt \
-		--with-ffmpeg_libs-libs=$(STAGING_DIR)/opt \
-		--with-avifile-libs=$(STAGING_DIR)/opt \
-		--with-lame-libs=$(STAGING_DIR)/opt \
-		--with-ogg-libs=$(STAGING_DIR)/opt \
-		--with-vorbis-libs=$(STAGING_DIR)/opt \
-		--with-theora-libs=$(STAGING_DIR)/opt \
-		--with-libdvdread-libs=$(STAGING_DIR)/opt \
-		--with-libdv-libs=$(STAGING_DIR)/opt \
-		--with-libquicktime-libs=$(STAGING_DIR)/opt \
-		--with-lzo-libs=$(STAGING_DIR)/opt \
-		--with-a52-libs=$(STAGING_DIR)/opt \
-		--with-libmpeg3-libs=$(STAGING_DIR)/opt \
-		--with-libxml2-libs=$(STAGING_DIR)/opt \
-		--with-mjpegtools-libs=$(STAGING_DIR)/opt \
-		--with-gtk-libs=$(STAGING_DIR)/opt \
-		--with-imagemagick-libs=$(STAGING_DIR)/opt \
-		--with-ft-exec-prefix=$(STAGING_DIR)/opt \
-		--with-ft-prefix=$(STAGING_DIR)/opt \
-		--disable-freetypetest \
+		--with-a52-prefix=$(STAGING_PREFIX) \
+		--with-avifile-prefix=$(STAGING_PREFIX) \
+		--with-freetype2-prefix=$(STAGING_PREFIX) \
+		--with-lame-prefix=$(STAGING_PREFIX) \
+		--with-libavcodec-prefix=$(STAGING_PREFIX) \
+		--with-libdv-prefix=$(STAGING_PREFIX) \
+		--with-libdvdread-prefix=$(STAGING_PREFIX) \
+		--with-libjpeg-prefix=$(STAGING_PREFIX) \
+		--with-libmpeg2-prefix=$(STAGING_PREFIX) \
+		--with-libxml2-prefix=$(STAGING_PREFIX) \
+		--with-ogg-prefix=$(STAGING_PREFIX) \
+		--with-vorbis-prefix=$(STAGING_PREFIX) \
+		\
+		--enable-a52 \
+		--enable-freetype2 \
+		--enable-libxml2 \
 		--enable-ogg \
 		--enable-vorbis \
-		--prefix=/opt \
 		--disable-nls \
-		; sed -i 's/#define malloc rpl_malloc/\/* #define malloc rpl_malloc *\//' $(TRANSCODE_BUILD_DIR)/config.h \
+		$(TRANSCODE_CONFIG_ARG) \
+		; \
 	)
+	sed -i -e "/#define TC_LAME_VERSION/s/$$/ `echo $(LAME_VERSION) | sed s:[.]::`/" $(TRANSCODE_BUILD_DIR)/config.h
+	$(PATCH_LIBTOOL) $(TRANSCODE_BUILD_DIR)/libtool
 	touch $(TRANSCODE_BUILD_DIR)/.configured
 
 transcode-unpack: $(TRANSCODE_BUILD_DIR)/.configured
@@ -223,44 +244,7 @@ $(TRANSCODE_IPK_DIR)/CONTROL/control:
 #
 $(TRANSCODE_IPK): $(TRANSCODE_BUILD_DIR)/.built
 	rm -rf $(TRANSCODE_IPK_DIR) $(BUILD_DIR)/transcode_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TRANSCODE_BUILD_DIR) DESTDIR=$(TRANSCODE_IPK_DIR) install-strip
-	cd $(TRANSCODE_IPK_DIR)/opt/bin; \
-	mv $(GNU_TARGET_NAME)-avifix avifix; \
-	mv $(GNU_TARGET_NAME)-aviindex aviindex; \
-	mv $(GNU_TARGET_NAME)-avimerge avimerge; \
-	mv $(GNU_TARGET_NAME)-avisplit avisplit; \
-	mv $(GNU_TARGET_NAME)-avisync avisync; \
-	mv $(GNU_TARGET_NAME)-tccat tccat; \
-	mv $(GNU_TARGET_NAME)-tcdecode tcdecode; \
-	mv $(GNU_TARGET_NAME)-tcdemux tcdemux; \
-	mv $(GNU_TARGET_NAME)-tcextract tcextract; \
-	mv $(GNU_TARGET_NAME)-tcmodinfo tcmodinfo; \
-	mv $(GNU_TARGET_NAME)-tcmp3cut tcmp3cut; \
-	mv $(GNU_TARGET_NAME)-tcprobe tcprobe; \
-	mv $(GNU_TARGET_NAME)-tcrequant tcrequant; \
-	mv $(GNU_TARGET_NAME)-tcscan tcscan; \
-	mv $(GNU_TARGET_NAME)-tcxmlcheck tcxmlcheck; \
-	mv $(GNU_TARGET_NAME)-tcxpm2rgb tcxpm2rpg; \
-	mv $(GNU_TARGET_NAME)-transcode transcode; 
-	cd $(TRANSCODE_IPK_DIR)/opt/man/man1; \
-	mv $(GNU_TARGET_NAME)-avifix.1 avifix.1; \
-	mv $(GNU_TARGET_NAME)-aviindex.1 aviindex.1; \
-	mv $(GNU_TARGET_NAME)-avimerge.1 avimerge.1; \
-	mv $(GNU_TARGET_NAME)-avisplit.1 avisplit.1; \
-	mv $(GNU_TARGET_NAME)-avisync.1 avisync.1; \
-	mv $(GNU_TARGET_NAME)-tccat.1 tccat.1; \
-	mv $(GNU_TARGET_NAME)-tcdecode.1 tcdecode.1; \
-	mv $(GNU_TARGET_NAME)-tcdemux.1 tcdemux.1; \
-	mv $(GNU_TARGET_NAME)-tcextract.1 tcextract; \
-	mv $(GNU_TARGET_NAME)-tcmodinfo.1 tcmodinfo.1; \
-	mv $(GNU_TARGET_NAME)-tcprobe.1 tcprobe.1; \
-	mv $(GNU_TARGET_NAME)-tcscan.1 tcscan.1; \
-	mv $(GNU_TARGET_NAME)-tcpvmexportd.1 tcpvmexportd.1; \
-	mv $(GNU_TARGET_NAME)-tcxmlcheck.1 tcxmlcheck.1; \
-	mv $(GNU_TARGET_NAME)-transcode.1 transcode.1; 
-	cd $(TRANSCODE_IPK_DIR)/opt/lib/transcode; \
-	mv $(GNU_TARGET_NAME)-filter_list.awk filter_list.awk; \
-	mv $(GNU_TARGET_NAME)-parse_csv.awk parse_csv.awk; 
+	$(MAKE) -C $(TRANSCODE_BUILD_DIR) DESTDIR=$(TRANSCODE_IPK_DIR) program_transform_name="" install-strip
 	$(MAKE) $(TRANSCODE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSCODE_IPK_DIR)
 
@@ -281,3 +265,9 @@ transcode-clean:
 #
 transcode-dirclean:
 	rm -rf $(BUILD_DIR)/$(TRANSCODE_DIR) $(TRANSCODE_BUILD_DIR) $(TRANSCODE_IPK_DIR) $(TRANSCODE_IPK)
+
+#
+# Some sanity check for the package.
+#
+transcode-check: $(TRANSCODE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TRANSCODE_IPK)

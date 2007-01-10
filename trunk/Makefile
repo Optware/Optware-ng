@@ -272,7 +272,6 @@ MSS_BROKEN_PACKAGES = \
 	php-apache py-lxml \
 	qemu qemu-libc-i386 quickie \
 	sablevm svn \
-	transcode \
 	tethereal \
 	wxbase \
 
@@ -288,7 +287,6 @@ DS101_BROKEN_PACKAGES = \
 	ldconfig lftp \
 	monotone motion \
 	qemu qemu-libc-i386 \
-	transcode \
 
 # Packages that *only* work for ds101j - do not just put new packages here.
 DS101J_SPECIFIC_PACKAGES = bip
@@ -374,7 +372,6 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	net-tools nfs-utils \
 	pango puppy py-psycopg qemu quagga quickie \
 	sdl sm \
-	transcode \
 	unfs3 ushare vte \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
 
