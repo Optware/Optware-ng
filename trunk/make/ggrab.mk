@@ -41,7 +41,7 @@ GGRAB_CONFFILES=
 # GGRAB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GGRAB_PATCHES=$(GGRAB_SOURCE_DIR)/Makefile.patch
+GGRAB_PATCHES=$(GGRAB_SOURCE_DIR)/g++4.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,6 +109,8 @@ $(GGRAB_BUILD_DIR)/.configured: $(DL_DIR)/$(GGRAB_SOURCE) $(GGRAB_PATCHES)
 	if test "$(BUILD_DIR)/$(GGRAB_DIR)" != "$(GGRAB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(GGRAB_DIR) $(GGRAB_BUILD_DIR) ; \
 	fi
+#	sed -ie 's/CBuffer::RemovePadding/RemovePadding/' $(GGRAB_BUILD_DIR)/cbuffer.h
+#	sed -ie 's/enum S_TYPE/S_TYPE/' $(GGRAB_BUILD_DIR)/pesstream.h
 #	(cd $(GGRAB_BUILD_DIR); \
 #		$(TARGET_CONFIGURE_OPTS) \
 #		CPPFLAGS="$(STAGING_CPPFLAGS) $(GGRAB_CPPFLAGS)" \
@@ -132,9 +134,9 @@ ggrab-unpack: $(GGRAB_BUILD_DIR)/.configured
 $(GGRAB_BUILD_DIR)/.built: $(GGRAB_BUILD_DIR)/.configured
 	rm -f $(GGRAB_BUILD_DIR)/.built
 		$(TARGET_CONFIGURE_OPTS) \
+	$(MAKE) -C $(GGRAB_BUILD_DIR) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GGRAB_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(GGRAB_LDFLAGS)" \
-	$(MAKE) -C $(GGRAB_BUILD_DIR)
+		LDFLAGS="$(STAGING_LDFLAGS) $(GGRAB_LDFLAGS)"
 	touch $(GGRAB_BUILD_DIR)/.built
 
 #
@@ -157,7 +159,7 @@ ggrab-stage: $(GGRAB_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ggrab
 #
 $(GGRAB_IPK_DIR)/CONTROL/control:
-	@install -d $(GGRAB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ggrab" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -222,4 +224,4 @@ ggrab-dirclean:
 # Some sanity check for the package.
 #
 ggrab-check: $(GGRAB_IPK)
-        perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GGRAB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GGRAB_IPK)

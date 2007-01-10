@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	ggrab
 
 
 # Add new native-only packages here
@@ -140,10 +139,10 @@ COMMON_CROSS_PACKAGES = \
 	esound eggdrop expat extract-xiso \
 	fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
-	gambit-c gawk gcal gconv-modules gettext gdchart ghostscript gdb gdbm grep groff gzip \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	git-core glib gnokii gnupg gnuplot gnutls gtk \
+	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext ggrab ghostscript \
+	git-core glib gnokii gnupg gnuplot gnutls grep groff gtk gzip \
 	gphoto2 libgphoto2 \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	hdparm hexcurse heyu hnb hpijs htop \
 	ice id3lib indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
