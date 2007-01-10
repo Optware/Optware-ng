@@ -376,7 +376,6 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	sdl sm \
 	transcode \
 	unfs3 ushare vte \
-	w3cam \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
