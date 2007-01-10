@@ -1,0 +1,22 @@
+--- cbuffer.h.orig	2007-01-10 15:02:20.000000000 -0800
++++ cbuffer.h	2007-01-10 15:03:01.000000000 -0800
+@@ -15,7 +15,7 @@ class CBuffer {
+ 		CBUFPTR		SearchStreamId(CBUFPTR ptr, int len, unsigned char pattern, unsigned char mask, unsigned char * p_id=0);
+ 		int		GetByteCount(void);
+ 		int             CopyBuffer(CBUFPTR ptr, unsigned char * pBuf, int len=16);
+-		int 		CBuffer::RemovePadding(CBUFPTR lptr, int len);
++		int 		RemovePadding(CBUFPTR lptr, int len);
+ 		
+ 
+ 	private:
+--- pesstream.h.orig	2007-01-10 15:02:36.000000000 -0800
++++ pesstream.h	2007-01-10 15:03:14.000000000 -0800
+@@ -25,7 +25,7 @@ class pesstream {
+ 	private:
+ 		static int		m_st_nr;
+ 		int			m_nr;
+-		enum S_TYPE		m_stype;
++		S_TYPE			m_stype;
+ 		class CBuffer *		mp_cbuf;
+ 		class xlist *		mp_list;
+ 
