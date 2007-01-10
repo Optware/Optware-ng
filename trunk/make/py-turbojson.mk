@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOJSON_VERSION=0.9.9
+PY-TURBOJSON_VERSION=1.0
 PY-TURBOJSON_SVN_TAG=$(PY-TURBOJSON_VERSION)
 PY-TURBOJSON_REPOSITORY=http://svn.turbogears.org/projects/TurboJson/tags/$(PY-TURBOJSON_SVN_TAG)
 PY-TURBOJSON_DIR=TurboJson-$(PY-TURBOJSON_VERSION)
@@ -37,7 +37,7 @@ PY-TURBOJSON_CONFLICTS=
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=2
+PY-TURBOJSON_IPK_VERSION=1
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
