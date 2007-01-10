@@ -35,7 +35,7 @@ W3CAM_DEPENDS=libjpeg
 #
 # W3CAM_IPK_VERSION should be incremented when the ipk changes.
 #
-W3CAM_IPK_VERSION=1
+W3CAM_IPK_VERSION=2
 
 #
 # W3CAM_CONFFILES should be a list of user-editable files
@@ -52,7 +52,6 @@ W3CAM_PATCHES=$(W3CAM_SOURCE_DIR)/staticpaths.patch
 # compilation or linking flags, then list them here.
 #
 W3CAM_CPPFLAGS=
-W3CAM_CFLAGS=-I$(STAGING_DIR)/opt/include
 W3CAM_LDFLAGS=
 
 #
@@ -68,6 +67,8 @@ W3CAM_BUILD_DIR=$(BUILD_DIR)/w3cam
 W3CAM_SOURCE_DIR=$(SOURCE_DIR)/w3cam
 W3CAM_IPK_DIR=$(BUILD_DIR)/w3cam-$(W3CAM_VERSION)-ipk
 W3CAM_IPK=$(BUILD_DIR)/w3cam_$(W3CAM_VERSION)-$(W3CAM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: w3cam-source w3cam-unpack w3cam w3cam-stage w3cam-ipk w3cam-clean w3cam-dirclean w3cam-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -107,7 +108,7 @@ $(W3CAM_BUILD_DIR)/.configured: $(DL_DIR)/$(W3CAM_SOURCE) $(W3CAM_PATCHES)
 	(cd $(W3CAM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(W3CAM_CPPFLAGS)" \
-		CFLAGS="$(STAGING_CFLAGS) $(W3CAM_CFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(W3CAM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(W3CAM_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -185,6 +186,10 @@ $(W3CAM_IPK): $(W3CAM_BUILD_DIR)/.built
 	install -m 755 $(W3CAM_BUILD_DIR)/vidcat $(W3CAM_IPK_DIR)/opt/bin/vidcat
 	install -m 644 $(W3CAM_BUILD_DIR)/vidcat.1 $(W3CAM_IPK_DIR)/opt/man/man1/vidcat.1
 	$(MAKE) $(W3CAM_IPK_DIR)/CONTROL/control
+	$(STRIP_COMMAND) \
+		$(W3CAM_IPK_DIR)/opt/bin/vidcat \
+		$(W3CAM_IPK_DIR)/opt/sbin/w3camd \
+		$(W3CAM_IPK_DIR)/opt/share/apache2/htdocs/cgi-bin/w3cam.cgi
 #	install -m 755 $(W3CAM_SOURCE_DIR)/postinst $(W3CAM_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(W3CAM_SOURCE_DIR)/prerm $(W3CAM_IPK_DIR)/CONTROL/prerm
 	echo $(W3CAM_CONFFILES) | sed -e 's/ /\n/g' > $(W3CAM_IPK_DIR)/CONTROL/conffiles
@@ -207,3 +212,9 @@ w3cam-clean:
 #
 w3cam-dirclean:
 	rm -rf $(BUILD_DIR)/$(W3CAM_DIR) $(W3CAM_BUILD_DIR) $(W3CAM_IPK_DIR) $(W3CAM_IPK)
+
+#
+# Some sanity check for the package.
+#
+w3cam-check: $(W3CAM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(W3CAM_IPK)
