@@ -1,73 +1,10 @@
-diff -Naur a/config.cache b/config.cache
---- a/config.cache	1970-01-01 00:00:00.000000000 +0000
-+++ b/config.cache	2005-02-22 05:29:06.000000000 +0000
-@@ -0,0 +1 @@
-+lame_version=396
-diff -Naur a/configure b/configure
---- a/configure	2005-02-13 07:20:10.000000000 +0000
-+++ b/configure	2005-02-22 05:34:29.000000000 +0000
-@@ -27899,18 +27899,18 @@
-         echo "*** correct values for --with-ft-prefix or --with-ft-exec-prefix"
-         echo "*** are used, or set the FT2_CONFIG environment variable to the"
-         echo "*** full path to freetype-config."
--      else
--        echo "*** The FreeType test program failed to run.  If your system uses"
--        echo "*** shared libraries and they are installed outside the normal"
--        echo "*** system library path, make sure the variable LD_LIBRARY_PATH"
--        echo "*** (or whatever is appropiate for your system) is correctly set."
-+#      else
-+#        echo "*** The FreeType test program failed to run.  If your system uses"
-+#        echo "*** shared libraries and they are installed outside the normal"
-+#        echo "*** system library path, make sure the variable LD_LIBRARY_PATH"
-+#        echo "*** (or whatever is appropiate for your system) is correctly set."
-       fi
-     fi
-     FT2_CFLAGS=""
-     FT2_LIBS=""
--    { { echo "$as_me:$LINENO: error: freetype2 support is requested, but not found" >&5
--echo "$as_me: error: freetype2 support is requested, but not found" >&2;}
--   { (exit 1); exit 1; }; }
-+#    { { echo "$as_me:$LINENO: error: freetype2 support is requested, but not found" >&5
-+#echo "$as_me: error: freetype2 support is requested, but not found" >&2;}
-+#   { (exit 1); exit 1; }; }
-     :
-   fi
- else
-@@ -27921,7 +27921,11 @@
- 
- 
- 
-+have_freetype2=yes
- 
-+cat >>confdefs.h <<\_ACEOF
-+#define HAVE_FREETYPE2 1
-+_ACEOF
- 
- if test x"$have_freetype2" = x"yes"; then
-   HAVE_FREETYPE2_TRUE=
-@@ -30183,66 +30187,6 @@
-   CPPFLAGS="$save_CPPFLAGS"
- 
-   echo "$as_me:$LINENO: checking lame version" >&5
--echo $ECHO_N "checking lame version... $ECHO_C" >&6
--  ac_save_CFLAGS="$CFLAGS"
--  ac_save_LIBS="$LIBS"
--  CFLAGS="$CFLAGS $LAME_CFLAGS"
--  LIBS="$LIBS $LAME_LIBS"
--  if test "$cross_compiling" = yes; then
--  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }
--else
--  cat >conftest.$ac_ext <<_ACEOF
--/* confdefs.h.  */
--_ACEOF
--cat confdefs.h >>conftest.$ac_ext
--cat >>conftest.$ac_ext <<_ACEOF
--/* end confdefs.h.  */
--
+--- transcode-1.0.2/configure.in.orig	2007-01-09 21:41:30.000000000 -0800
++++ transcode-1.0.2/configure.in	2007-01-09 21:41:58.000000000 -0800
+@@ -846,27 +846,7 @@
+   ac_save_LIBS="$LIBS"
+   CFLAGS="$CFLAGS $LAME_CFLAGS"
+   LIBS="$LIBS $LAME_LIBS"
+-  AC_TRY_RUN([
 -#include <stdio.h>
 -
 -#ifdef HAVE_LAME_INC
@@ -83,32 +20,12 @@ diff -Naur a/configure b/configure
 -  printf("%d%d\n", lv.major, lv.minor);
 -  return 0;
 -}
--
--_ACEOF
--rm -f conftest$ac_exeext
--if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
--  (eval $ac_link) 2>&5
--  ac_status=$?
--  echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
--  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
--  (eval $ac_try) 2>&5
--  ac_status=$?
--  echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); }; }; then
--  lame_version="`./conftest$ac_exeext`"
--else
--  echo "$as_me: program exited with status $ac_status" >&5
--echo "$as_me: failed program was:" >&5
--sed 's/^/| /' conftest.$ac_ext >&5
--
--( exit $ac_status )
--{ { echo "$as_me:$LINENO: error: lame requested, but cannot compile and run a test program" >&5
--echo "$as_me: error: lame requested, but cannot compile and run a test program" >&2;}
--   { (exit 1); exit 1; }; }
--fi
--rm -f core *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
--fi
+-],
+-    [lame_version="`./conftest$ac_exeext`"],
+-    [TC_PKG_ERROR(lame, lame.h, yes, lame, [http://www.mp3dev.org/],
+-      [cannot compile and run a test program])],,
+-    [echo $ac_n "cross compiling; assumed OK... $ac_c"])
++    [echo $ac_n "cross compiling; assumed OK... $ac_c"]
    CFLAGS="$ac_save_CFLAGS"
    LIBS="$ac_save_LIBS"
  
