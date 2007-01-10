@@ -30,6 +30,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	ggrab
 
 
 # Add new native-only packages here
@@ -225,7 +226,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
-	 giftcurs git-core glib gnokii gnupg gphoto2 libgphoto2 gtk hnb htop ice \
+	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
