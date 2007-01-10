@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LAME_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lame
-LAME_VERSION=3.96.1
+LAME_VERSION=3.97
 LAME_SOURCE=lame-$(LAME_VERSION).tar.gz
 LAME_DIR=lame-$(LAME_VERSION)
 LAME_UNZIP=zcat
@@ -34,7 +34,7 @@ LAME_CONFLICTS=
 #
 # LAME_IPK_VERSION should be incremented when the ipk changes.
 #
-LAME_IPK_VERSION=3
+LAME_IPK_VERSION=1
 
 #
 # LAME_CONFFILES should be a list of user-editable files
@@ -67,6 +67,8 @@ LAME_SOURCE_DIR=$(SOURCE_DIR)/lame
 LAME_IPK_DIR=$(BUILD_DIR)/lame-$(LAME_VERSION)-ipk
 LAME_IPK=$(BUILD_DIR)/lame_$(LAME_VERSION)-$(LAME_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: lame-source lame-unpack lame lame-stage lame-ipk lame-clean lame-dirclean lame-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -79,7 +81,7 @@ $(DL_DIR)/$(LAME_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-#lame-source: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES)
+lame-source: $(DL_DIR)/$(LAME_SOURCE)
 
 #
 # This target unpacks the source code in the build directory.
@@ -174,6 +176,7 @@ $(LAME_IPK_DIR)/CONTROL/control:
 $(LAME_IPK): $(LAME_BUILD_DIR)/.built
 	rm -rf $(LAME_IPK_DIR) $(BUILD_DIR)/lame_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LAME_BUILD_DIR) DESTDIR=$(LAME_IPK_DIR) install-strip
+	rm -f $(LAME_IPK_DIR)/opt/lib/libmp3lame.a
 	$(MAKE) $(LAME_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LAME_IPK_DIR)
 
@@ -194,3 +197,9 @@ lame-clean:
 #
 lame-dirclean:
 	rm -rf $(BUILD_DIR)/$(LAME_DIR) $(LAME_BUILD_DIR) $(LAME_IPK_DIR) $(LAME_IPK)
+
+#
+# Some sanity check for the package.
+#
+lame-check: $(LAME_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LAME_IPK)
