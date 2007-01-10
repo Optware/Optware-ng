@@ -149,7 +149,7 @@ COMMON_CROSS_PACKAGES = \
 	jabberd jamvm jikes jove joe \
 	kissdx knock \
 	lame ldconfig less lha \
-	libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
+	liba52 libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpeg2 libnsl \
 	libol libogg libosip2 libpcap libpng libpth \
