@@ -370,7 +370,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	gdb gtk \
 	heyu ice \
 	ldconfig modutils \
-	monotone mp3blaster mt-daapd \
+	monotone mp3blaster \
 	net-tools nfs-utils nrpe \
 	pango puppy py-psycopg qemu quagga quickie \
 	sdl sm \
