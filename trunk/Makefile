@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = asterisk14-core-sounds-en-ulaw asterisk14-extra-sounds-en-ulaw dircproxy\
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 
 # Add new native-only packages here
@@ -123,7 +123,9 @@ ERLANG_PACKAGES = \
 
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb apache apr apr-util arc \
-	asterisk asterisk-sounds asterisk14 asterisk14-extra-sounds-en-gsm asterisk14-gui \
+	asterisk asterisk-sounds \
+	asterisk14 asterisk14-extra-sounds-en-gsm asterisk14-gui \
+	asterisk14-core-sounds-en-ulaw asterisk14-extra-sounds-en-ulaw \
 	atftp atk atop audiofile autoconf automake \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
@@ -132,8 +134,8 @@ COMMON_CROSS_PACKAGES = \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
 	cyrus-imapd cyrus-sasl \
-	dash dcraw denyhosts dev-pts dict digitemp distcc dhcp diffutils dnsmasq dokuwiki \
-	dovecot dropbear dspam dtach dump \
+	dash dcraw denyhosts dev-pts dict digitemp dircproxy distcc dhcp diffutils \
+	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
