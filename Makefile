@@ -180,7 +180,7 @@ COMMON_CROSS_PACKAGES = \
 	ttf-bitstream-vera \
 	ufsd unarj unfs3 units unrar \
 	unzip usbutils ushare \
-	vblade vdr-mediamvp vim vorbis-tools vsftpd vte \
+	vblade vdr-mediamvp vim vlc vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer wget wget-ssl \
 	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
@@ -233,7 +233,7 @@ WL500G_BROKEN_PACKAGES = \
 	 nylon openldap pango postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
-	 tcsh tethereal tnftpd transcode unrar vte w3m wget wget-ssl wxbase x11 \
+	 tcsh tethereal tnftpd transcode unrar vlc vte w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 
