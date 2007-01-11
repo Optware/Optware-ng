@@ -240,7 +240,7 @@ WL500G_BROKEN_PACKAGES = \
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
 	 bitlbee bzflag dump \
-	 fcgi fish gambit-c \
+	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
 	 jamvm ldconfig libstdc++ libdvb libtorrent monotone \
