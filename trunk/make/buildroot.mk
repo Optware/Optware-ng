@@ -233,7 +233,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/
 	cp $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gdb/6.5/
-	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-4.1.1-opt.patch \
+	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-$(BUILDROOT_GCC)-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/
 	touch $(BUILDROOT_BUILD_DIR)/.configured
 
