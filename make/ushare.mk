@@ -5,7 +5,7 @@
 ###########################################################
 
 USHARE_SITE=http://ushare.geexbox.org/releases
-USHARE_VERSION=0.9.7
+USHARE_VERSION=0.9.8
 USHARE_SOURCE=ushare-$(USHARE_VERSION).tar.bz2
 USHARE_DIR=ushare-$(USHARE_VERSION)
 USHARE_UNZIP=bzcat
@@ -20,7 +20,7 @@ USHARE_CONFLICTS=
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=3
+USHARE_IPK_VERSION=1
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
