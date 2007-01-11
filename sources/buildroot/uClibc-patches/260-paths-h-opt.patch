@@ -1,0 +1,57 @@
+--- uClibc-0.9.28/include/paths.h.orig	2007-01-10 23:06:34.000000000 +0100
++++ uClibc-0.9.28/include/paths.h	2007-01-10 23:09:08.000000000 +0100
+@@ -33,10 +33,10 @@
+ #define	_PATHS_H_
+ 
+ /* Default search path. */
+-#define	_PATH_DEFPATH	"/usr/bin:/bin"
++#define	_PATH_DEFPATH	"/opt/bin:/usr/bin:/bin"
+ /* All standard utilities path. */
+ #define	_PATH_STDPATH \
+-	"/usr/bin:/bin:/usr/sbin:/sbin"
++	"/opt/bin:/opt/sbin:/usr/bin:/bin:/usr/sbin:/sbin"
+ 
+ #define	_PATH_BSHELL	"/bin/sh"
+ #define	_PATH_CONSOLE	"/dev/console"
+@@ -48,22 +48,22 @@
+ #define	_PATH_KMEM	"/dev/kmem"
+ #define	_PATH_LASTLOG	"/var/log/lastlog"
+ #define	_PATH_MAILDIR	"/var/mail"
+-#define	_PATH_MAN	"/usr/share/man"
++#define	_PATH_MAN	"/opt/share/man"
+ #define	_PATH_MEM	"/dev/mem"
+ #define	_PATH_MNTTAB	"/etc/fstab"
+ #define	_PATH_MOUNTED	"/etc/mtab"
+ #define	_PATH_NOLOGIN	"/etc/nologin"
+-#define	_PATH_PRESERVE	"/var/lib"
+-#define	_PATH_RWHODIR	"/var/spool/rwho"
+-#define	_PATH_SENDMAIL	"/usr/sbin/sendmail"
++#define	_PATH_PRESERVE	"/opt/var/lib"
++#define	_PATH_RWHODIR	"/opt/var/spool/rwho"
++#define	_PATH_SENDMAIL	"/opt/sbin/sendmail"
+ #define	_PATH_SHELLS	"/etc/shells"
+ #define	_PATH_TTY	"/dev/tty"
+ #define	_PATH_UNIX	"/boot/vmlinux"
+-#define	_PATH_UTMP	"/var/run/utmp"
+-#define	_PATH_VI	"/usr/bin/vi"
+-#define	_PATH_WTMP	"/var/log/wtmp"
+-#define	_PATH_LOCALE	"/usr/lib/locale"
+-#define	_PATH_LASTLOG	"/var/log/lastlog"
++#define	_PATH_UTMP	"/opt/var/run/utmp"
++#define	_PATH_VI	"/opt/bin/vi"
++#define	_PATH_WTMP	"/opt/var/log/wtmp"
++#define	_PATH_LOCALE	"/opt/lib/locale"
++#define	_PATH_LASTLOG	"/opt/log/lastlog"
+ #define	_PATH_SHADOW	"/etc/shadow"
+ #define	_PATH_PASSWD	"/etc/passwd"
+ #define	_PATH_GROUP	"/etc/group"
+@@ -72,7 +72,7 @@
+ #define	_PATH_DEV	"/dev/"
+ #define	_PATH_TMP	"/tmp/"
+ #define	_PATH_VARDB	"/var/lib/misc/"
+-#define	_PATH_VARRUN	"/var/run/"
+-#define	_PATH_VARTMP	"/var/tmp/"
++#define	_PATH_VARRUN	"/opt/var/run/"
++#define	_PATH_VARTMP	"/opt/var/tmp/"
+ 
+ #endif /* !_PATHS_H_ */
