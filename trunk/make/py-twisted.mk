@@ -152,10 +152,12 @@ py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
 #
 $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 	rm -f $(PY-TWISTED_BUILD_DIR)/.built
+	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/twisted
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
+	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/twisted
 	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
@@ -174,9 +176,11 @@ $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 	rm -f $(PY-TWISTED_BUILD_DIR)/.staged
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	touch $(PY-TWISTED_BUILD_DIR)/.staged
 
@@ -230,6 +234,7 @@ $(PY24-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	rm -rf $(PY24-TWISTED_IPK_DIR) $(BUILD_DIR)/py-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY24-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
 	$(MAKE) $(PY24-TWISTED_IPK_DIR)/CONTROL/control
@@ -240,6 +245,7 @@ $(PY25-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 	rm -rf $(PY25-TWISTED_IPK_DIR) $(BUILD_DIR)/py25-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY25-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
 	for f in $(PY25-TWISTED_IPK_DIR)/opt/*bin/*; \
