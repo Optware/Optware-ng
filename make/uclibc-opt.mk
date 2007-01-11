@@ -65,7 +65,10 @@ $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
-	libthread_db libresolv  librt libutil libuClibc libssp libstdc++
+	libthread_db libresolv  librt libutil libuClibc libstdc++
+ifeq ($(BUILRTOOT_GCC), 4.1.1)
+UCLIBC-OPT_LIBS+=libssp
+endif
 UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,\
 	$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib/%*so*,$(UCLIBC-OPT_LIBS))
 
