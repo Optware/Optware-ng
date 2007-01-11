@@ -1,14 +1,16 @@
---- src/cfgparser.h	2006-04-09 11:47:02.000000000 +1000
-+++ src/cfgparsernew.h	2006-04-23 16:28:14.000000000 +1000
-@@ -28,9 +28,9 @@
+--- src/cfgparser.h.orig	2006-11-12 13:40:35.000000000 +0100
++++ src/cfgparser.h	2007-01-11 22:32:23.000000000 +0100
+@@ -28,10 +28,10 @@
  #define USHARE_PORT "USHARE_PORT"
  #define USHARE_DIR "USHARE_DIR"
  
--#define USHARE_CONFIG_FILE "/etc/ushare.conf"
+-#define USHARE_CONFIG_FILE "ushare.conf"
 +#define USHARE_CONFIG_FILE "/opt/etc/ushare.conf"
  #define DEFAULT_USHARE_NAME "uShare"
 -#define DEFAULT_USHARE_IFACE "eth0"
+-#define DEFAULT_USHARE_LOGFILE "/var/log/ushare.log"
 +#define DEFAULT_USHARE_IFACE "ixp0"
- #define DEFAULT_USHARE_LOGFILE "/var/log/ushare.log"
++#define DEFAULT_USHARE_LOGFILE "/opt/var/log/ushare.log"
  
  int parse_config_file (struct ushare_t *ut)
+     __attribute__ ((nonnull));
