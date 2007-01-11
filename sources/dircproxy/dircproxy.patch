@@ -1,0 +1,46 @@
+diff -Naur dircproxy-1.1.0.orig/src/irc_server.c dircproxy-1.1.0/src/irc_server.c
+--- dircproxy-1.1.0.orig/src/irc_server.c	2006-10-29 11:16:22.000000000 -0500
++++ dircproxy-1.1.0/src/irc_server.c	2006-10-29 11:20:42.000000000 -0500
+@@ -699,7 +699,8 @@
+               free(s);
+ 
+               /* Was in the squelch list, so remove it and stop looking */
+-              s = (l ? l->next : p->squelch_modes) = n;
++	      if (l) l->next = n; else p->squelch_modes = n;
++	      s = n;
+               squelch = 1;
+               break;
+             } else {
+@@ -740,7 +741,8 @@
+               free(s);
+ 
+               /* Was in the squelch list, so remove it and stop looking */
+-              s = (l ? l->next : p->squelch_modes) = n;
++	      if (l) l->next = n; else p->squelch_modes = n;
++	      s = n;
+               squelch = 1;
+               break;
+             } else {
+--- dircproxy-1.1.0-orig/src/dcc_net.c	2006-10-29 23:39:17.000000000 -0500
++++ dircproxy-1.1.0/src/dcc_net.c	2006-10-29 23:42:27.000000000 -0500
+@@ -365,7 +365,8 @@
+       n = p->next;
+       _dccnet_free(p);
+ 
+-      p = (l ? l->next : proxies) = n;
++      if (l) l->next = n; else proxies = n;
++      p = n;
+     } else {
+       l = p;
+       p = p->next;
+--- dircproxy-1.1.0-orig/src/net.c	2006-10-29 23:52:04.000000000 -0500
++++ dircproxy-1.1.0/src/net.c	2006-10-29 23:52:23.000000000 -0500
+@@ -459,7 +459,7 @@
+     return 0;
+   }
+   
+-  l = &(buff == SB_IN ? s->in_buff_last : s->out_buff_last);
++  if (buff == SB_IN) l = &(s->in_buff_last); else l = &(s->out_buff_last);
+ 
+   /* Check whether we can just add to the existing buffer */
+   if ((mode == SM_RAW) && *l && ((*l)->mode == mode)) {
