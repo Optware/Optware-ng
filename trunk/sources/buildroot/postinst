@@ -1,6 +1,6 @@
 #!/bin/sh
 
-touch /opt/etc/ld-opt.so.conf
+touch /opt/etc/ld.so.conf
 
-echo "Updating /opt/etc/ld-opt.so.cache"
+echo "Updating /opt/etc/ld.so.cache"
 /opt/sbin/ldconfig

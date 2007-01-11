@@ -1,0 +1,11 @@
+--- binutils-2.17.50.0.8/ld/configure.tgt.orig	2007-01-10 20:57:11.000000000 +0100
++++ binutils-2.17.50.0.8/ld/configure.tgt	2007-01-10 20:57:55.000000000 +0100
+@@ -607,7 +607,7 @@
+ 
+ esac
+ 
+-NATIVE_LIB_DIRS='/usr/local/lib /lib /usr/lib'
++NATIVE_LIB_DIRS='/opt/lib /opt/usr/lib'
+ case "${target}" in
+ 
+ *-*-freebsd*)

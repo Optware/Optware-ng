@@ -44,7 +44,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 #
-BUILDROOT_GCC ?= 3.4.6
+BUILDROOT_GCC ?= 4.1.1
 BUILDROOT_BINUTILS ?= 2.17.50.0.8
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
@@ -64,7 +64,7 @@ BUILDROOT_CONFLICTS=
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=11
+BUILDROOT_IPK_VERSION=12
 
 # Custom linux headers
 # Headers should contain $(HEADERS_._UNPACK_DIR)/Makefile and 
@@ -227,6 +227,14 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	sed -i.orig.0 -e 's|(TARGET_DIR)/lib|(TARGET_DIR)/opt/lib|g' $(BUILDROOT_TOOLS_MK)
 	sed -i.orig.1 -e 's|(TARGET_DIR)/usr|(TARGET_DIR)/opt|g' $(BUILDROOT_TOOLS_MK)
 	sed -i.orig.2 -e 's|=/usr|=/opt|g;s|=\\"/lib|=\\"/opt/lib|g;s|=\\"/usr|=\\"/opt|g' $(BUILDROOT_TOOLS_MK)
+	cp $(BUILDROOT_SOURCE_DIR)/400-ld-native-search-path.patch \
+	  $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/
+	cp $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
+	  $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/
+	cp $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
+	  $(BUILDROOT_BUILD_DIR)/toolchain/gdb/6.5/
+	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-4.1.1-opt.patch \
+	  $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/
 	touch $(BUILDROOT_BUILD_DIR)/.configured
 
 buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
