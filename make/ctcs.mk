@@ -27,7 +27,7 @@ CTCS_CONFLICTS=
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=6
+CTCS_IPK_VERSION=7
 
 #
 # CTCS_CONFFILES should be a list of user-editable files
@@ -107,6 +107,8 @@ $(CTCS_BUILD_DIR)/.configured: $(DL_DIR)/$(CTCS_SOURCE) $(CTCS_PATCHES) make/ctc
 	if test "$(BUILD_DIR)/$(CTCS_DIR)" != "$(CTCS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CTCS_DIR) $(CTCS_BUILD_DIR) ; \
 	fi
+	sed -i -e 's|^#!/usr/bin/perl|#!/opt/bin/perl|' \
+		$(CTCS_BUILD_DIR)/ctcs.new
 	touch $(CTCS_BUILD_DIR)/.configured
 
 ctcs-unpack: $(CTCS_BUILD_DIR)/.configured
