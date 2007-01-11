@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TWISTED_VERSION=2.4.0
-PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/2.4
+PY-TWISTED_VERSION=2.5.0
+PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/2.5
 PY-TWISTED_SOURCE=Twisted-$(PY-TWISTED_VERSION).tar.bz2
 PY-TWISTED_DIR=Twisted-$(PY-TWISTED_VERSION)
 PY-TWISTED_UNZIP=bzcat
@@ -37,7 +37,7 @@ PY-TWISTED_CONFLICTS=
 #
 # PY-TWISTED_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TWISTED_IPK_VERSION=3
+PY-TWISTED_IPK_VERSION=1
 
 #
 # PY-TWISTED_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ PY24-TWISTED_IPK=$(BUILD_DIR)/py-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_
 
 PY25-TWISTED_IPK_DIR=$(BUILD_DIR)/py25-twisted-$(PY-TWISTED_VERSION)-ipk
 PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-twisted-source py-twisted-unpack py-twisted py-twisted-stage py-twisted-ipk py-twisted-clean py-twisted-dirclean py-twisted-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -266,3 +268,8 @@ py-twisted-dirclean:
 	$(PY24-TWISTED_IPK_DIR) $(PY24-TWISTED_IPK) \
 	$(PY25-TWISTED_IPK_DIR) $(PY25-TWISTED_IPK) \
 
+#
+# Some sanity check for the package.
+#
+py-twisted-check: $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TWISTED_IPK) $(PY25-TWISTED_IPK)
