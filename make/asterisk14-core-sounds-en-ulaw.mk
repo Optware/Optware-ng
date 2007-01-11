@@ -203,7 +203,7 @@ asterisk14-core-sounds-en-ulaw-clean:
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
-asterisk1-core-sounds-en-ulaw-dirclean:
+asterisk14-core-sounds-en-ulaw-dirclean:
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_CORE_SOUNDS_EN_ULAW_DIR) $(ASTERISK14_CORE_SOUNDS_EN_ULAW_BUILD_DIR) $(ASTERISK14_CORE_SOUNDS_EN_ULAW_IPK_DIR) $(ASTERISK14_CORE_SOUNDS_EN_ULAW_IPK)
 #
 #
