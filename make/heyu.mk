@@ -37,7 +37,7 @@ HEYU_CONFLICTS=
 #
 # HEYU_IPK_VERSION should be incremented when the ipk changes.
 #
-HEYU_IPK_VERSION=1
+HEYU_IPK_VERSION=2
 
 #
 # HEYU_CONFFILES should be a list of user-editable files
@@ -71,7 +71,7 @@ HEYU_SOURCE_DIR=$(SOURCE_DIR)/heyu
 HEYU_IPK_DIR=$(BUILD_DIR)/heyu-$(HEYU_VERSION)-ipk
 HEYU_IPK=$(BUILD_DIR)/heyu_$(HEYU_VERSION)-$(HEYU_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: heyu-source heyu-unpack heyu heyu-stage heyu-ipk heyu-clean heyu-dirclean
+.PHONY: heyu-source heyu-unpack heyu heyu-stage heyu-ipk heyu-clean heyu-dirclean heyu-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -138,7 +138,7 @@ $(HEYU_BUILD_DIR)/.built: $(HEYU_BUILD_DIR)/.configured
 	rm -f $(HEYU_BUILD_DIR)/.built
 	$(MAKE) -C $(HEYU_BUILD_DIR) \
 		CC=$(TARGET_CC) LD=$(TARGET_LD) \
-		CFLAGS="$(STAGING_CFLAGS) -I$(HEYU_BUILD_DIR) \$$(DFLAGS) -DLOCKDIR=\\\"/opt/var/run/heyu\\\" -DSYSBASEDIR=\\\"/opt/etc/heyu\\\" -DSPOOLDIR=\\\"/opt/var/spool/heyu\\\" " \
+		CFLAGS="$(STAGING_CPPFLAGS) -I$(HEYU_BUILD_DIR) \$$(DFLAGS) -DLOCKDIR=\\\"/opt/var/run/heyu\\\" -DSYSBASEDIR=\\\"/opt/etc/heyu\\\" -DSPOOLDIR=\\\"/opt/var/spool/heyu\\\" " \
 		LDFLAGS="$(STAGING_LDFLAGS)"
 	touch $(HEYU_BUILD_DIR)/.built
 
@@ -228,3 +228,9 @@ heyu-clean:
 #
 heyu-dirclean:
 	rm -rf $(BUILD_DIR)/$(HEYU_DIR) $(HEYU_BUILD_DIR) $(HEYU_IPK_DIR) $(HEYU_IPK)
+
+#
+# Some sanity check for the package.
+#
+heyu-check: $(HEYU_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HEYU_IPK)

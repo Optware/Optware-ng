@@ -366,7 +366,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	chillispot \
 	ftpd-topfield \
 	gdb gtk \
-	heyu ice \
+	ice \
 	ldconfig modutils \
 	monotone \
 	nfs-utils \
