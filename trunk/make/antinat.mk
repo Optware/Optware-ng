@@ -42,7 +42,7 @@ ANTINAT_CONFLICTS=
 #
 # ANTINAT_IPK_VERSION should be incremented when the ipk changes.
 #
-ANTINAT_IPK_VERSION=3
+ANTINAT_IPK_VERSION=4
 
 #
 # ANTINAT_CONFFILES should be a list of user-editable files
@@ -74,6 +74,8 @@ ANTINAT_BUILD_DIR=$(BUILD_DIR)/antinat
 ANTINAT_SOURCE_DIR=$(SOURCE_DIR)/antinat
 ANTINAT_IPK_DIR=$(BUILD_DIR)/antinat-$(ANTINAT_VERSION)-ipk
 ANTINAT_IPK=$(BUILD_DIR)/antinat_$(ANTINAT_VERSION)-$(ANTINAT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: antinat-source antinat-unpack antinat antinat-stage antinat-ipk antinat-clean antinat-dirclean antinat-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -120,6 +122,7 @@ $(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+	sed -ie 's|-I$$includedir|-I$(STAGING_INCLUDE_DIR)|' $(ANTINAT_BUILD_DIR)/client/antinat-config
 	$(PATCH_LIBTOOL) $(ANTINAT_BUILD_DIR)/libtool
 	touch $(ANTINAT_BUILD_DIR)/.configured
 
@@ -182,6 +185,7 @@ $(ANTINAT_IPK_DIR)/CONTROL/control:
 $(ANTINAT_IPK): $(ANTINAT_BUILD_DIR)/.built
 	rm -rf $(ANTINAT_IPK_DIR) $(BUILD_DIR)/antinat_*_$(TARGET_ARCH).ipk
 	( cd $(ANTINAT_BUILD_DIR) ; make install prefix=$(ANTINAT_IPK_DIR)/opt )
+	rm -f $(ANTINAT_IPK_DIR)/opt/lib/libantinat.a
 	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/lib/libantinat.so.0.0.0
 	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/bin/antinat
 	$(MAKE) $(ANTINAT_IPK_DIR)/CONTROL/control
@@ -207,3 +211,9 @@ antinat-clean:
 #
 antinat-dirclean:
 	rm -rf $(BUILD_DIR)/$(ANTINAT_DIR) $(ANTINAT_BUILD_DIR) $(ANTINAT_IPK_DIR) $(ANTINAT_IPK)
+
+#
+# Some sanity check for the package.
+#
+antinat-check: $(ANTINAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ANTINAT_IPK)
