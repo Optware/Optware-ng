@@ -282,7 +282,7 @@ DS101_SPECIFIC_PACKAGES = ds101-bootstrap
 # Packages that do not work for ds101.
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
 DS101_BROKEN_PACKAGES = \
-	bpalogin bzflag \
+	bpalogin \
 	freeradius gnuplot \
 	imagemagick \
 	ldconfig lftp \
@@ -360,11 +360,13 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 
 # Packages that do not work for slugosbe.
 # puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
+# heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
 SLUGOSBE_BROKEN_PACKAGES = \
 	atftp \
 	chillispot \
 	ftpd-topfield \
 	gdb gtk \
+	heyu \
 	ice \
 	ldconfig modutils \
 	monotone \
