@@ -37,7 +37,7 @@ NET-TOOLS_CONFLICTS=busybox-links
 #
 # NET-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-NET-TOOLS_IPK_VERSION=2
+NET-TOOLS_IPK_VERSION=3
 
 #
 # NET-TOOLS_CONFFILES should be a list of user-editable files
@@ -56,6 +56,7 @@ NET-TOOLS_CONFFILES=
 # config.h is treated as out of date
 #
 NET-TOOLS_PATCHES=sources/net-tools/net-tools-1.60-miitool-gcc33-1.patch \
+	sources/net-tools/gcc4.patch \
 	sources/net-tools/config-make.patch \
 	sources/net-tools/config.patch sources/net-tools/manMakefile.patch
 
@@ -79,6 +80,8 @@ NET-TOOLS_BUILD_DIR=$(BUILD_DIR)/net-tools
 NET-TOOLS_SOURCE_DIR=$(SOURCE_DIR)/net-tools
 NET-TOOLS_IPK_DIR=$(BUILD_DIR)/net-tools-$(NET-TOOLS_VERSION)-ipk
 NET-TOOLS_IPK=$(BUILD_DIR)/net-tools_$(NET-TOOLS_VERSION)-$(NET-TOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: net-tools-source net-tools-unpack net-tools net-tools-stage net-tools-ipk net-tools-clean net-tools-dirclean net-tools-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -205,3 +208,9 @@ net-tools-clean:
 #
 net-tools-dirclean:
 	rm -rf $(BUILD_DIR)/$(NET-TOOLS_DIR) $(NET-TOOLS_BUILD_DIR) $(NET-TOOLS_IPK_DIR) $(NET-TOOLS_IPK)
+
+#
+# Some sanity check for the package.
+#
+net-tools-check: $(NET-TOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NET-TOOLS_IPK)

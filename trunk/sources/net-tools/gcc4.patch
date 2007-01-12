@@ -1,0 +1,44 @@
+--- net-tools/hostname.c.orig	2007-01-11 22:02:53.000000000 -0800
++++ net-tools/hostname.c	2007-01-11 22:03:29.000000000 -0800
+@@ -78,6 +78,7 @@
+             fprintf(stderr, _("%s: name too long\n"), program_name);
+             break;
+         default:
++            break;
+         }
+ 	exit(1);
+     }
+@@ -98,6 +99,7 @@
+ 	    fprintf(stderr, _("%s: name too long\n"), program_name);
+ 	    break;
+ 	default:
++            break;
+ 	}
+ 	exit(1);
+     };
+@@ -117,6 +119,7 @@
+ 	    fprintf(stderr, _("%s: name too long\n"), program_name);
+ 	    break;
+ 	default:
++            break;
+ 	}
+ 	exit(1);
+     };
+@@ -174,6 +177,7 @@
+ 	printf("%s\n", hp->h_name);
+ 	break;
+     default:
++        break;
+     }
+ }
+ 
+--- net-tools/lib/inet_sr.c.orig	2007-01-11 22:04:06.000000000 -0800
++++ net-tools/lib/inet_sr.c	2007-01-11 22:03:50.000000000 -0800
+@@ -105,6 +105,7 @@
+     case 2:
+        isnet = 0; break;
+     default:
++       break;
+     }
+ 
+     /* Fill in the other fields. */
