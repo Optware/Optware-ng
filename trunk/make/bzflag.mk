@@ -30,7 +30,7 @@ BZFLAG_CONFLICTS=
 #
 # BZFLAG_IPK_VERSION should be incremented when the ipk changes.
 #
-BZFLAG_IPK_VERSION=2
+BZFLAG_IPK_VERSION=3
 
 #
 # BZFLAG_CONFFILES should be a list of user-editable files
@@ -62,6 +62,8 @@ BZFLAG_BUILD_DIR=$(BUILD_DIR)/bzflag
 BZFLAG_SOURCE_DIR=$(SOURCE_DIR)/bzflag
 BZFLAG_IPK_DIR=$(BUILD_DIR)/bzflag-$(BZFLAG_VERSION)-ipk
 BZFLAG_IPK=$(BUILD_DIR)/bzflag_$(BZFLAG_VERSION)-$(BZFLAG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: bzflag-source bzflag-unpack bzflag bzflag-stage bzflag-ipk bzflag-clean bzflag-dirclean bzflag-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -111,6 +113,7 @@ $(BZFLAG_BUILD_DIR)/.configured: $(DL_DIR)/$(BZFLAG_SOURCE) $(BZFLAG_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-x \
 		--disable-nls \
 		--disable-client \
 		--without-SDL \
@@ -207,3 +210,9 @@ bzflag-clean:
 #
 bzflag-dirclean:
 	rm -rf $(BUILD_DIR)/$(BZFLAG_DIR) $(BZFLAG_BUILD_DIR) $(BZFLAG_IPK_DIR) $(BZFLAG_IPK)
+
+#
+# Some sanity check for the package.
+#
+bzflag-check: $(BZFLAG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BZFLAG_IPK)
