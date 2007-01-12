@@ -1,0 +1,12 @@
+syslog-ng
+
+This is a port of syslog-ng for Optware. It can be used as a replacement
+for the original syslog provided by Unslung in the NSLU2, and should also
+work for the  platforms.
+
+Disabling the built-in syslog on Unslung 6.x
+
+Before using syslog-ng, you must disable the built-in syslog provided by
+Unslung 6.x. To do that, comment the two lines on /etc/inittab that mention
+syslogd and klog by adding '#' to the beginning of each line.
+

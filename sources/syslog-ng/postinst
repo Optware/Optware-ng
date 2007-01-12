@@ -1,9 +1,8 @@
-echo "Note that this is a disk only version of syslog-ng. If found to be stable,"
-echo "there will be a flash version started from inittab and with logs moved to /var"
-echo "Until then, the config file is kept in /opt/etc/syslog-ng/syslog-ng.conf"
 echo
-echo "To install this version of syslog-ng, comment out both lines in /etc/inittab and copy"
-echo "/opt/doc/syslog-ng/rc.rstimezone to /share/hdd/conf/unslung/rc.rstimezone if the"
-echo " destination file does not exist. Otherwise merge the two."
-echo "Log files will after this be located under /opt/var/log"
+echo "To use syslog-ng, comment out both lines in /etc/inittab before"
+echo "you start syslog-ng for the first time."
+echo "After commenting the lines, run /opt/etc/init.d/S01syslog-ng."
+echo "The program will be started automaticaly at the next reboot."
+echo
+echo "Log files will be created by default at /opt/var/log."
 return 0
