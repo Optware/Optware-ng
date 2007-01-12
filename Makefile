@@ -246,7 +246,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
 	 jamvm ldconfig libstdc++ libdvb libtorrent monotone \
-	 mtr net-tools nfs-server nfs-utils nget \
+	 mtr nfs-server nfs-utils nget \
 	 pango \
 	 qemu qemu-libc-i386 quickie rtorrent sm \
 	 transcode vte xauth xaw xchat xcursor \
@@ -369,7 +369,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	heyu ice \
 	ldconfig modutils \
 	monotone mp3blaster \
-	net-tools nfs-utils \
+	nfs-utils \
 	pango puppy py-psycopg qemu quagga quickie \
 	sdl sm \
 	unfs3 ushare vte \
