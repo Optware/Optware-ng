@@ -43,7 +43,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=1
+GNUTLS_IPK_VERSION=2
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -162,7 +162,8 @@ gnutls: $(GNUTLS_BUILD_DIR)/.built
 #
 $(GNUTLS_BUILD_DIR)/.staged: $(GNUTLS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_PREFIX)/bin/*gnutls*
+	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) program_transform_name="" install
 	sed -i -e 's|echo $$includes $$.*_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/*gnutls-config
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gnutls*.pc
 	touch $@
@@ -202,7 +203,7 @@ $(GNUTLS_IPK_DIR)/CONTROL/control:
 #
 $(GNUTLS_IPK): $(GNUTLS_BUILD_DIR)/.built
 	rm -rf $(GNUTLS_IPK_DIR) $(BUILD_DIR)/gnutls_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) install-strip
+	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) program_transform_name="" install-strip
 	rm -rf $(GNUTLS_IPK_DIR)/opt/info
 	install -d $(GNUTLS_IPK_DIR)/opt/etc/
 #	install -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
