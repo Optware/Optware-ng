@@ -1,45 +1,11 @@
---- bitlbee/configure	2005-02-23 22:26:53.000000000 +0000
-+++ ./configure	2005-07-01 23:43:03.925306305 +0100
-@@ -87,5 +87,5 @@
+--- bitlbee/configure.orig	2007-01-11 19:51:40.000000000 -0800
++++ bitlbee/configure	2007-01-11 19:51:59.000000000 -0800
+@@ -86,7 +86,7 @@
+ 
  DESTDIR=
  LFLAGS=
 -EFLAGS=
 +EFLAGS=$LDFLAGS
  EOF
  
-@@ -134,20 +134,8 @@
- fi
- 
--if type pkg-config > /dev/null 2>/dev/null && pkg-config glib-2.0; then
--	cat<<EOF>>Makefile.settings
--EFLAGS+=`pkg-config --libs glib-2.0`
--CFLAGS+=`pkg-config --cflags glib-2.0`
-+cat<<EOF>>Makefile.settings
-+EFLAGS+=-lglib-2.0
-+CFLAGS+=-I$STAGING_DIR/opt/include/glib-2.0 -I$STAGING_DIR/opt/lib/glib-2.0/include
- EOF
--	echo '#define GLIB2' >> config.h
--elif type glib-config > /dev/null 2> /dev/null; then
--	cat<<EOF>>Makefile.settings
--EFLAGS+=`glib-config --libs`
--CFLAGS+=`glib-config --cflags`
--EOF
--	echo '#define GLIB1' >> config.h
--else
--	echo 'Cannot find glib development libraries, aborting. (Install libglib-dev?)'
--	exit 1;
--fi
- 
- if [ -e /usr/include/iconv.h ]; then
-@@ -164,8 +152,8 @@
- detect_gnutls()
- {
--	if libgnutls-config --version > /dev/null 2> /dev/null; then
-+	if armv5b-softfloat-linux-libgnutls-config --version > /dev/null 2> /dev/null; then
- 		cat <<EOF>>Makefile.settings
--EFLAGS+=`libgnutls-config --libs`
--CFLAGS+=`libgnutls-config --cflags`
-+EFLAGS+=-lz -lgnutls -lgcrypt -lgpg-error
-+CFLAGS+=-I$STAGING_DIR/opt/include
- EOF
- 		
+ cat<<EOF>config.h
