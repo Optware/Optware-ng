@@ -25,7 +25,7 @@ XMU_DEPENDS=xext
 #
 # XMU_IPK_VERSION should be incremented when the ipk changes.
 #
-XMU_IPK_VERSION=1
+XMU_IPK_VERSION=2
 
 #
 # XMU_CONFFILES should be a list of user-editable files
@@ -150,6 +150,8 @@ xmu: $(XMU_BUILD_DIR)/.built
 $(XMU_BUILD_DIR)/.staged: $(XMU_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(XMU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/xmu.pc $(STAGING_LIB_DIR)/pkgconfig/xmuu.pc
 	rm -f $(STAGING_LIB_DIR)/libXmu.la
 	rm -f $(STAGING_LIB_DIR)/libXmuu.la
 	touch $@

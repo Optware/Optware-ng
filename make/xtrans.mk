@@ -24,7 +24,7 @@ XTRANS_PRIORITY=optional
 #
 # XTRANS_IPK_VERSION should be incremented when the ipk changes.
 #
-XTRANS_IPK_VERSION=1
+XTRANS_IPK_VERSION=2
 
 #
 # XTRANS_CONFFILES should be a list of user-editable files
@@ -97,7 +97,6 @@ xtrans-source: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz $(XTRANS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XTRANS_BUILD_DIR)/.configured: $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XTRANS_PATCHES)
 	rm -rf $(BUILD_DIR)/$(XTRANS_DIR) $(XTRANS_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xtrans-$(XTRANS_VERSION).tar.gz
@@ -130,9 +129,9 @@ xtrans-unpack: $(XTRANS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XTRANS_BUILD_DIR)/.built: $(XTRANS_BUILD_DIR)/.configured
-	rm -f $(XTRANS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XTRANS_BUILD_DIR)
-	touch $(XTRANS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,10 +141,13 @@ xtrans: $(XTRANS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h: $(XTRANS_BUILD_DIR)/.built
+$(XTRANS_BUILD_DIR)/.staged: $(XTRANS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xtrans.pc
+	touch $@
 
-xtrans-stage: $(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h
+xtrans-stage: $(XTRANS_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

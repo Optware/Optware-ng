@@ -24,7 +24,7 @@ XDMCP_PRIORITY=optional
 #
 # XDMCP_IPK_VERSION should be incremented when the ipk changes.
 #
-XDMCP_IPK_VERSION=1
+XDMCP_IPK_VERSION=2
 
 #
 # XDMCP_CONFFILES should be a list of user-editable files
@@ -97,8 +97,8 @@ xdmcp-source: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz $(XDMCP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XDMCP_PATCHES)
+	$(MAKE) xproto-stage
 	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz
 	if test -n "$(XDMCP_PATCHES)" ; \
@@ -130,9 +130,9 @@ xdmcp-unpack: $(XDMCP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XDMCP_BUILD_DIR)/.built: $(XDMCP_BUILD_DIR)/.configured
-	rm -f $(XDMCP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XDMCP_BUILD_DIR)
-	touch $(XDMCP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,11 +142,14 @@ xdmcp: $(XDMCP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXdmcp.so: $(XDMCP_BUILD_DIR)/.built
+$(XDMCP_BUILD_DIR)/.staged: $(XDMCP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XDMCP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xdmcp.pc
 	rm -f $(STAGING_LIB_DIR)/libXdmcp.la
+	touch $@
 
-xdmcp-stage: $(STAGING_LIB_DIR)/libXdmcp.so
+xdmcp-stage: $(XDMCP_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

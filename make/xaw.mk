@@ -25,7 +25,7 @@ XAW_DEPENDS=xt, xmu, xpm
 #
 # XAW_IPK_VERSION should be incremented when the ipk changes.
 #
-XAW_IPK_VERSION=1
+XAW_IPK_VERSION=2
 
 #
 # XAW_CONFFILES should be a list of user-editable files
@@ -151,6 +151,7 @@ xaw: $(XAW_BUILD_DIR)/.built
 $(XAW_BUILD_DIR)/.staged: $(XAW_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(XAW_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xaw.pc
 	rm -f $(STAGING_LIB_DIR)/libXaw.la
 	touch $@
 

@@ -25,7 +25,7 @@ XT_DEPENDS=x11, sm
 #
 # XT_IPK_VERSION should be incremented when the ipk changes.
 #
-XT_IPK_VERSION=1
+XT_IPK_VERSION=2
 
 #
 # XT_CONFFILES should be a list of user-editable files
@@ -151,6 +151,7 @@ xt: $(XT_BUILD_DIR)/.built
 $(XT_BUILD_DIR)/.staged: $(XT_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(XT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xt.pc
 	rm -f $(STAGING_LIB_DIR)/libXt.la
 	touch $@
 

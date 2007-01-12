@@ -25,7 +25,7 @@ SM_DEPENDS=ice
 #
 # SM_IPK_VERSION should be incremented when the ipk changes.
 #
-SM_IPK_VERSION=1
+SM_IPK_VERSION=2
 
 #
 # SM_CONFFILES should be a list of user-editable files
@@ -149,6 +149,7 @@ sm: $(SM_BUILD_DIR)/.built
 $(SM_BUILD_DIR)/.staged: $(SM_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(SM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sm.pc
 	rm -f $(STAGING_LIB_DIR)/libSM.la
 	touch $@
 

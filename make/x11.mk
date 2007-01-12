@@ -25,7 +25,7 @@ X11_DEPENDS=xau, xdmcp
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=1
+X11_IPK_VERSION=2
 
 #
 # X11_CONFFILES should be a list of user-editable files
@@ -98,13 +98,12 @@ x11-source: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
-		$(STAGING_INCLUDE_DIR)/X11/Xtrans/Xtrans.h \
-		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
-		$(STAGING_LIB_DIR)/libXau.so \
-		$(STAGING_LIB_DIR)/libXdmcp.so \
-		$(X11_PATCHES) make/x11.mk
+$(X11_BUILD_DIR)/.configured: $(DL_DIR)/x11-$(X11_VERSION).tar.gz $(X11_PATCHES) make/x11.mk
+	$(MAKE) xproto-stage
+	$(MAKE) xau-stage
+	$(MAKE) xextensions-stage
+	$(MAKE) xdmcp-stage
+	$(MAKE) xtrans-stage
 	rm -rf $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/x11-$(X11_VERSION).tar.gz
 	if test -n "$(X11_PATCHES)" ; \
@@ -136,9 +135,9 @@ x11-unpack: $(X11_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(X11_BUILD_DIR)/.built: $(X11_BUILD_DIR)/.configured
-	rm -f $(X11_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(X11_BUILD_DIR)
-	touch $(X11_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,11 +147,14 @@ x11: $(X11_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libX11.so: $(X11_BUILD_DIR)/.built
+$(X11_BUILD_DIR)/.staged: $(X11_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/x11.pc
 	rm -f $(STAGING_LIB_DIR)/libX11.la
+	touch $@
 
-x11-stage: $(STAGING_LIB_DIR)/libX11.so
+x11-stage: $(X11_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
