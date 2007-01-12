@@ -158,7 +158,7 @@ COMMON_CROSS_PACKAGES = \
 	librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit motion mt-daapd mysql \
-	madplay man man-pages mdadm mediawiki memcached metalog microperl mod-fastcgi \
+	madplay man man-pages mdadm mediawiki memcached metalog microcom microperl mod-fastcgi \
 	monotone mp3blaster mpack mpage mrtg mtools mtr multitail mutt mxml \
 	nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
 	net-tools netcat nethack netio nfs-server nfs-utils \
