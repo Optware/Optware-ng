@@ -241,7 +241,7 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 bitlbee bzflag dump \
+	 bzflag dump \
 	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
@@ -261,7 +261,6 @@ MSS_SPECIFIC_PACKAGES =
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
 	amule apache apr-util asterisk asterisk14 \
-	bitlbee \
 	clamav \
 	elinks \
 	$(ERLANG_PACKAGES) \
@@ -305,7 +304,7 @@ DS101J_BROKEN_PACKAGES = \
 	php-apache \
 	qemu qemu-libc-i386 \
 	svn \
-	atk bitlbee ctrlproxy giftcurs gkrellm irssi pango \
+	atk ctrlproxy giftcurs gkrellm pango \
 
 # Packages that *only* work for ds101g+ - do not just put new packages here.
 DS101G_SPECIFIC_PACKAGES = \
@@ -318,7 +317,6 @@ DS101G_SPECIFIC_PACKAGES = \
 # Packages that do not work for ds101g+.
 DS101G_BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
-	bitlbee \
 	ldconfig \
 	qemu qemu-libc-i386 \
 
@@ -346,7 +344,7 @@ TS72XX_SPECIFIC_PACKAGES =
 # Packages that do not work for ts72xx.
 TS72XX_BROKEN_PACKAGES = \
 	appweb asterisk asterisk-sounds asterisk14 \
-	bitlbee classpath clearsilver dict dspam \
+	classpath clearsilver dict dspam \
 	eaccelerator ecl \
 	$(ERLANG_PACKAGES) \
 	freeradius \
@@ -364,7 +362,7 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 # puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
 SLUGOSBE_BROKEN_PACKAGES = \
 	antinat atftp \
-	bitlbee bzflag \
+	bzflag \
 	chillispot \
 	ftpd-topfield \
 	gdb gtk \
