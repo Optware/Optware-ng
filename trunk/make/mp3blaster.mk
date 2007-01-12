@@ -37,7 +37,7 @@ MP3BLASTER_CONFLICTS=
 #
 # MP3BLASTER_IPK_VERSION should be incremented when the ipk changes.
 #
-MP3BLASTER_IPK_VERSION=1
+MP3BLASTER_IPK_VERSION=2
 
 #
 # MP3BLASTER_CONFFILES should be a list of user-editable files
@@ -116,6 +116,12 @@ $(MP3BLASTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MP3BLASTER_SOURCE) $(MP3BLASTER
 		then mv $(BUILD_DIR)/$(MP3BLASTER_DIR) $(MP3BLASTER_BUILD_DIR) ; \
 	fi
 	(cd $(MP3BLASTER_BUILD_DIR); \
+	sed -i \
+	    -e 's|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' \
+	    -e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|' \
+		mpegsound/Makefile.in \
+		nmixer/Makefile.in \
+		src/Makefile.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MP3BLASTER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MP3BLASTER_LDFLAGS)" \
