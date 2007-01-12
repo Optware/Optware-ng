@@ -230,7 +230,7 @@ WL500G_BROKEN_PACKAGES = \
 	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
-	 mc mdadm mod-fastcgi mod-python monotone mtr mutt \
+	 mc mdadm minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap pango postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
@@ -374,7 +374,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	pango puppy py-psycopg qemu quagga quickie \
 	sdl sm \
 	unfs3 ushare vte \
-	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
+	xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 
