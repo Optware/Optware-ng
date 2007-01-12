@@ -24,7 +24,7 @@ FIXESEXT_PRIORITY=optional
 #
 # FIXESEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-FIXESEXT_IPK_VERSION=1
+FIXESEXT_IPK_VERSION=2
 
 #
 # FIXESEXT_CONFFILES should be a list of user-editable files
@@ -96,10 +96,9 @@ fixesext-source: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz $(FIXESEXT_PATCHE
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
-		$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h \
-		$(FIXESEXT_PATCHES)
+$(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz $(FIXESEXT_PATCHES)
+	$(MAKE) x11-stage
+	$(MAKE) xext-stage
 	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
 	if test -n "$(FIXESEXT_PATCHES)" ; \
@@ -131,9 +130,9 @@ fixesext-unpack: $(FIXESEXT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FIXESEXT_BUILD_DIR)/.built: $(FIXESEXT_BUILD_DIR)/.configured
-	rm -f $(FIXESEXT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FIXESEXT_BUILD_DIR)
-	touch $(FIXESEXT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,10 +142,13 @@ fixesext: $(FIXESEXT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h: $(FIXESEXT_BUILD_DIR)/.built
+$(FIXESEXT_BUILD_DIR)/.staged: $(FIXESEXT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FIXESEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/fixesext.pc
+	touch $@
 
-fixesext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h
+fixesext-stage: $(FIXESEXT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
