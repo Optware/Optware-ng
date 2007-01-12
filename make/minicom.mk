@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MINICOM_SITE=http://alioth.debian.org/download.php/123
-MINICOM_VERSION=2.1
+MINICOM_SITE=http://alioth.debian.org/download.php/1806
+MINICOM_VERSION=2.2
 MINICOM_SOURCE=minicom-$(MINICOM_VERSION).tar.gz
 MINICOM_DIR=minicom-$(MINICOM_VERSION)
 MINICOM_UNZIP=zcat
@@ -41,7 +41,7 @@ MINICOM_CONFLICTS=
 #
 # MINICOM_IPK_VERSION should be incremented when the ipk changes.
 #
-MINICOM_IPK_VERSION=2
+MINICOM_IPK_VERSION=1
 
 #
 # MINICOM_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ MINICOM_CONFFILES=/opt/etc/minirc.dfl
 # MINICOM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/windowc.patch
+#MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/windowc.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +108,9 @@ $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1
+	if test -n "$(MINICOM_PATCHES)"; \
+		then cat $(MINICOM_PATCHES) | patch -d $(BUILD_DIR)/$(MINICOM_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
 	(cd $(MINICOM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
