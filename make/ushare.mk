@@ -20,7 +20,7 @@ USHARE_CONFLICTS=
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=1
+USHARE_IPK_VERSION=2
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
@@ -52,6 +52,10 @@ USHARE_BUILD_DIR=$(BUILD_DIR)/ushare
 USHARE_SOURCE_DIR=$(SOURCE_DIR)/ushare
 USHARE_IPK_DIR=$(BUILD_DIR)/ushare-$(USHARE_VERSION)-ipk
 USHARE_IPK=$(BUILD_DIR)/ushare_$(USHARE_VERSION)-$(USHARE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+
+.PHONY: ushare-source ushare-unpack ushare ushare-stage ushare-ipk ushare-clean ushare-dirclean ushare-check
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -188,3 +192,9 @@ ushare-clean:
 #
 ushare-dirclean:
 	rm -rf $(BUILD_DIR)/$(USHARE_DIR) $(USHARE_BUILD_DIR) $(USHARE_IPK_DIR) $(USHARE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+ushare-check: $(USHARE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(USHARE_IPK)
