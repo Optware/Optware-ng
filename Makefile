@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	libcapi20
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -151,7 +150,8 @@ COMMON_CROSS_PACKAGES = \
 	jabberd jamvm jikes jove joe \
 	kissdx knock \
 	lame ldconfig less lha \
-	liba52 libart libbt libcurl libdb libdvb libdvdread libesmtp libevent libexif libftdi \
+	liba52 libart libbt libcapi20 libcurl libdb libdvb libdvdread \
+	libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpeg2 libnsl \
 	libol libogg libosip2 libpcap libpng libpth \
@@ -367,14 +367,13 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	ftpd-topfield \
 	gdb gtk \
 	heyu \
-	ice \
 	ldconfig modutils \
 	monotone \
 	nfs-utils \
 	pango puppy py-psycopg qemu quagga quickie \
-	sdl sm \
+	sdl \
 	unfs3 ushare vte \
-	xauth xaw xchat xcursor xdpyinfo xext xfixes xft xmu xpm xrender xt xterm xtst \
+	xauth xchat xcursor xdpyinfo xfixes xft xrender xterm xtst \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 
