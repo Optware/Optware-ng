@@ -25,7 +25,7 @@ ICE_DEPENDS=
 #
 # ICE_IPK_VERSION should be incremented when the ipk changes.
 #
-ICE_IPK_VERSION=1
+ICE_IPK_VERSION=2
 
 #
 # ICE_CONFFILES should be a list of user-editable files
@@ -136,9 +136,9 @@ ice-unpack: $(ICE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ICE_BUILD_DIR)/.built: $(ICE_BUILD_DIR)/.configured
-	rm -f $(ICE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(ICE_BUILD_DIR)
-	touch $(ICE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,6 +151,8 @@ ice: $(ICE_BUILD_DIR)/.built
 $(ICE_BUILD_DIR)/.staged: $(ICE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(ICE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/ice.pc
 	rm -f $(STAGING_LIB_DIR)/libICE.la
 	touch $@
 

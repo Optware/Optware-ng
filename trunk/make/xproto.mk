@@ -28,7 +28,7 @@ XPROTO_PRIORITY=optional
 #
 # XPROTO_IPK_VERSION should be incremented when the ipk changes.
 #
-XPROTO_IPK_VERSION=1
+XPROTO_IPK_VERSION=2
 
 #
 # XPROTO_CONFFILES should be a list of user-editable files
@@ -132,9 +132,9 @@ xproto-unpack: $(XPROTO_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XPROTO_BUILD_DIR)/.built: $(XPROTO_BUILD_DIR)/.configured
-	rm -f $(XPROTO_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XPROTO_BUILD_DIR)
-	touch $(XPROTO_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,10 +144,14 @@ xproto: $(XPROTO_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_INCLUDE_DIR)/X11/X.h: $(XPROTO_BUILD_DIR)/.built
+$(XPROTO_BUILD_DIR)/.staged: $(XPROTO_BUILD_DIR)/.built
+	rm -f $@
+	rm -rf $(STAGING_INCLUDE_DIR)/X11
 	$(MAKE) -C $(XPROTO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xproto.pc
+	touch $@
 
-xproto-stage: $(STAGING_INCLUDE_DIR)/X11/X.h
+xproto-stage: $(XPROTO_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

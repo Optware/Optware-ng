@@ -24,7 +24,7 @@ XEXTENSIONS_PRIORITY=optional
 #
 # XEXTENSIONS_IPK_VERSION should be incremented when the ipk changes.
 #
-XEXTENSIONS_IPK_VERSION=1
+XEXTENSIONS_IPK_VERSION=2
 
 #
 # XEXTENSIONS_CONFFILES should be a list of user-editable files
@@ -97,8 +97,8 @@ xextensions-source: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz $(XEXTEN
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XEXTENSIONS_PATCHES)
+	$(MAKE) xproto-stage
 	rm -rf $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(XEXTENSIONS_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz
 	if test -n "$(XEXTENSIONS_PATCHES)" ; \
@@ -130,9 +130,9 @@ xextensions-unpack: $(XEXTENSIONS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XEXTENSIONS_BUILD_DIR)/.built: $(XEXTENSIONS_BUILD_DIR)/.configured
-	rm -f $(XEXTENSIONS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR)
-	touch $(XEXTENSIONS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,10 +142,13 @@ xextensions: $(XEXTENSIONS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h: $(XEXTENSIONS_BUILD_DIR)/.built
+$(XEXTENSIONS_BUILD_DIR)/.staged: $(XEXTENSIONS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xextensions.pc
+	touch $@
 
-xextensions-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/Xext.h
+xextensions-stage: $(XEXTENSIONS_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

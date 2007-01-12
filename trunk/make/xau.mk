@@ -24,7 +24,7 @@ XAU_PRIORITY=optional
 #
 # XAU_IPK_VERSION should be incremented when the ipk changes.
 #
-XAU_IPK_VERSION=1
+XAU_IPK_VERSION=2
 
 #
 # XAU_CONFFILES should be a list of user-editable files
@@ -97,8 +97,8 @@ xau-source: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz $(XAU_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XAU_BUILD_DIR)/.configured: $(DL_DIR)/xau-$(XAU_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(XAU_PATCHES)
+	$(MAKE) xproto-stage
 	rm -rf $(BUILD_DIR)/$(XAU_DIR) $(XAU_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xau-$(XAU_VERSION).tar.gz
 	if test -n "$(XAU_PATCHES)" ; \
@@ -130,9 +130,9 @@ xau-unpack: $(XAU_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XAU_BUILD_DIR)/.built: $(XAU_BUILD_DIR)/.configured
-	rm -f $(XAU_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XAU_BUILD_DIR)
-	touch $(XAU_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,11 +142,14 @@ xau: $(XAU_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXau.so: $(XAU_BUILD_DIR)/.built
+$(XAU_BUILD_DIR)/.staged: $(XAU_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libXau.la
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xau.pc
+	touch $@
 
-xau-stage: $(STAGING_LIB_DIR)/libXau.so
+xau-stage: $(XAU_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

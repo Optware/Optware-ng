@@ -25,7 +25,7 @@ XPM_DEPENDS=x11
 #
 # XPM_IPK_VERSION should be incremented when the ipk changes.
 #
-XPM_IPK_VERSION=1
+XPM_IPK_VERSION=2
 
 #
 # XPM_CONFFILES should be a list of user-editable files
@@ -132,9 +132,9 @@ xpm-unpack: $(XPM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(XPM_BUILD_DIR)/.built: $(XPM_BUILD_DIR)/.configured
-	rm -f $(XPM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XPM_BUILD_DIR)
-	touch $(XPM_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,11 +144,14 @@ xpm: $(XPM_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXpm.so: $(XPM_BUILD_DIR)/.built
+$(XPM_BUILD_DIR)/.staged:  $(XPM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XPM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xpm.pc
 	rm -f $(STAGING_LIB_DIR)/libXpm.la
+	touch $@
 
-xpm-stage: $(STAGING_LIB_DIR)/libXpm.so
+xpm-stage: $(XPM_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
