@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# Time to start syslog-ng - can't start it much sooner without moving it to flash
-# Note: We assume that syslogd has alreade been disabled in /etc/inittab
-/opt/sbin/syslog-ng
-
-return 0

@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# Startup script for syslog-ng
+#
+
+# Stop itself if running
+if [ -n "`pidof syslog-ng`" ]; then
+    /bin/killall syslog-ng 2>/dev/null
+fi
+
+sleep 2
+
+/opt/sbin/syslog-ng
