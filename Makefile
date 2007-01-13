@@ -377,8 +377,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	monotone \
 	nfs-utils \
 	puppy py-psycopg qemu \
-	sdl \
-	unfs3 ushare \
+	ushare \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 
