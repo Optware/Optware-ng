@@ -365,15 +365,14 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	atftp \
 	chillispot \
 	ftpd-topfield \
-	gdb gtk \
+	gdb \
 	heyu \
 	ldconfig modutils \
 	monotone \
 	nfs-utils \
-	pango puppy py-psycopg qemu quagga quickie \
+	puppy py-psycopg qemu quagga quickie \
 	sdl \
-	unfs3 ushare vte \
-	xauth xchat xcursor xdpyinfo xfixes xft xrender xterm xtst \
+	unfs3 ushare \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
 

@@ -26,7 +26,7 @@ ATK_DEPENDS=glib
 #
 # ATK_IPK_VERSION should be incremented when the ipk changes.
 #
-ATK_IPK_VERSION=1
+ATK_IPK_VERSION=2
 
 #
 # ATK_LOCALES defines which locales get installed
@@ -146,6 +146,7 @@ atk: $(ATK_BUILD_DIR)/.built
 $(ATK_BUILD_DIR)/.staged: $(ATK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(ATK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/atk.pc
 	rm -rf $(STAGING_DIR)/opt/lib/libatk-1.0.la
 	touch $@
 

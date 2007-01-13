@@ -25,7 +25,7 @@ XCURSOR_DEPENDS=x11, xrender, xfixes
 #
 # XCURSOR_IPK_VERSION should be incremented when the ipk changes.
 #
-XCURSOR_IPK_VERSION=1
+XCURSOR_IPK_VERSION=2
 
 #
 # XCURSOR_CONFFILES should be a list of user-editable files
@@ -146,11 +146,14 @@ xcursor: $(XCURSOR_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXcursor.so: $(XCURSOR_BUILD_DIR)/.built
+$(XCURSOR_BUILD_DIR)/.staged: $(XCURSOR_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XCURSOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xcursor.pc
 	rm -f $(STAGING_LIB_DIR)/libXcursor.la
+	touch $@
 
-xcursor-stage: $(STAGING_LIB_DIR)/libXcursor.so
+xcursor-stage: $(XCURSOR_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

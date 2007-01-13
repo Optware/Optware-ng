@@ -25,7 +25,7 @@ XFT_DEPENDS=x11, xrender, freetype, fontconfig
 #
 # XFT_IPK_VERSION should be incremented when the ipk changes.
 #
-XFT_IPK_VERSION=1
+XFT_IPK_VERSION=2
 
 #
 # XFT_CONFFILES should be a list of user-editable files
@@ -148,11 +148,14 @@ xft: $(XFT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXft.so: $(XFT_BUILD_DIR)/.built
+$(XFT_BUILD_DIR)/.staged: $(XFT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XFT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xft.pc
 	rm -f $(STAGING_LIB_DIR)/libXft.la
+	touch $@
 
-xft-stage: $(STAGING_LIB_DIR)/libXft.so
+xft-stage: $(XFT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

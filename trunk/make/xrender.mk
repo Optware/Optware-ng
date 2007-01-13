@@ -25,7 +25,7 @@ XRENDER_DEPENDS=x11
 #
 # XRENDER_IPK_VERSION should be incremented when the ipk changes.
 #
-XRENDER_IPK_VERSION=3
+XRENDER_IPK_VERSION=4
 
 #
 # XRENDER_CONFFILES should be a list of user-editable files
@@ -146,11 +146,14 @@ xrender: $(XRENDER_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXrender.so: $(XRENDER_BUILD_DIR)/.built
+$(XRENDER_BUILD_DIR)/.staged: $(XRENDER_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xrender.pc
 	rm -f $(STAGING_LIB_DIR)/libXrender.la
+	touch $@
 
-xrender-stage: $(STAGING_LIB_DIR)/libXrender.so
+xrender-stage: $(XRENDER_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

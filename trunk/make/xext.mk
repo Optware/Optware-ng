@@ -25,7 +25,7 @@ XEXT_DEPENDS=x11
 #
 # XEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-XEXT_IPK_VERSION=1
+XEXT_IPK_VERSION=2
 
 #
 # XEXT_CONFFILES should be a list of user-editable files
