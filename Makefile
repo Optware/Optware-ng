@@ -370,7 +370,6 @@ SLUGOSBE_SPECIFIC_PACKAGES = \
 # heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
 SLUGOSBE_BROKEN_PACKAGES = \
 	atftp \
-	chillispot \
 	ftpd-topfield \
 	gdb \
 	heyu \

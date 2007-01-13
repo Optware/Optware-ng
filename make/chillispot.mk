@@ -41,7 +41,7 @@ CHILLISPOT_CONFLICTS=
 #
 # CHILLISPOT_IPK_VERSION should be incremented when the ipk changes.
 #
-CHILLISPOT_IPK_VERSION=1
+CHILLISPOT_IPK_VERSION=2
 
 #
 # CHILLISPOT_CONFFILES should be a list of user-editable files
@@ -57,7 +57,13 @@ CHILLISPOT_PATCHES=$(CHILLISPOT_SOURCE_DIR)/configure.patch $(CHILLISPOT_SOURCE_
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+# ugly hack to get around kernel header linux/rtnetlink.h problem
+# see http://www.mail-archive.com/netdev@vger.kernel.org/msg28685.html
+CHILLISPOT_CPPFLAGS=-U__STRICT_ANSI__
+else
 CHILLISPOT_CPPFLAGS=
+endif
 CHILLISPOT_LDFLAGS=
 
 #
@@ -73,6 +79,8 @@ CHILLISPOT_BUILD_DIR=$(BUILD_DIR)/chillispot
 CHILLISPOT_SOURCE_DIR=$(SOURCE_DIR)/chillispot
 CHILLISPOT_IPK_DIR=$(BUILD_DIR)/chillispot-$(CHILLISPOT_VERSION)-ipk
 CHILLISPOT_IPK=$(BUILD_DIR)/chillispot_$(CHILLISPOT_VERSION)-$(CHILLISPOT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: chillispot-source chillispot-unpack chillispot chillispot-stage chillispot-ipk chillispot-clean chillispot-dirclean chillispot-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -104,10 +112,12 @@ chillispot-source: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(CHILLISPOT_DIR) $(CHILLISPOT_BUILD_DIR)
 	$(CHILLISPOT_UNZIP) $(DL_DIR)/$(CHILLISPOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CHILLISPOT_PATCHES) | patch -d $(BUILD_DIR)/$(CHILLISPOT_DIR) -p1
+	if test -n "$(CHILLISPOT_PATCHES)"; \
+		then cat $(CHILLISPOT_PATCHES) | patch -d $(BUILD_DIR)/$(CHILLISPOT_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(CHILLISPOT_DIR) $(CHILLISPOT_BUILD_DIR)
 	(cd $(CHILLISPOT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -120,6 +130,7 @@ $(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT
 		--prefix=/opt \
 		--disable-nls \
 	)
+	$(PATCH_LIBTOOL) $(CHILLISPOT_BUILD_DIR)/libtool
 	touch $(CHILLISPOT_BUILD_DIR)/.configured
 
 chillispot-unpack: $(CHILLISPOT_BUILD_DIR)/.configured
@@ -180,6 +191,7 @@ $(CHILLISPOT_IPK_DIR)/CONTROL/control:
 $(CHILLISPOT_IPK): $(CHILLISPOT_BUILD_DIR)/.built
 	rm -rf $(CHILLISPOT_IPK_DIR) $(BUILD_DIR)/chillispot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHILLISPOT_BUILD_DIR) DESTDIR=$(CHILLISPOT_IPK_DIR) install
+	$(STRIP_COMMAND) $(CHILLISPOT_IPK_DIR)/opt/sbin/chilli
 	install -d $(CHILLISPOT_IPK_DIR)/opt/etc/
 	install -m 644 $(CHILLISPOT_SOURCE_DIR)/chilli.conf $(CHILLISPOT_IPK_DIR)/opt/etc/chilli.conf
 	install -d $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot
@@ -214,3 +226,9 @@ chillispot-clean:
 #
 chillispot-dirclean:
 	rm -rf $(BUILD_DIR)/$(CHILLISPOT_DIR) $(CHILLISPOT_BUILD_DIR) $(CHILLISPOT_IPK_DIR) $(CHILLISPOT_IPK)
+
+#
+# Some sanity check for the package.
+#
+chillispot-check: $(CHILLISPOT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CHILLISPOT_IPK)
