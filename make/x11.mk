@@ -25,7 +25,7 @@ X11_DEPENDS=xau, xdmcp
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=2
+X11_IPK_VERSION=3
 
 #
 # X11_CONFFILES should be a list of user-editable files
@@ -41,7 +41,11 @@ X11_PATCHES=$(X11_SOURCE_DIR)/localedir.patch $(X11_SOURCE_DIR)/find-keysymdef.p
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifneq ($(OPTWARE_TARGET), wl500g)
 X11_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/X11/Xtrans
+else
+X11_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/X11/Xtrans -DMB_CUR_MAX=1
+endif
 X11_LDFLAGS=
 
 #
