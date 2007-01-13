@@ -97,8 +97,8 @@ renderext-source: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz $(RENDEREXT_PA
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(RENDEREXT_BUILD_DIR)/.configured: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/X.h \
 		$(RENDEREXT_PATCHES)
+	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz
 	if test -n "$(RENDEREXT_PATCHES)" ; \

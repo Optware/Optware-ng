@@ -101,7 +101,6 @@ xrender-source: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz $(XRENDER_PATCHES)
 $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
 		$(XRENDER_PATCHES) make/xrender.mk
 	$(MAKE) renderext-stage
-	$(MAKE) xrender-stage
 	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz
