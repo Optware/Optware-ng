@@ -26,7 +26,7 @@ GTK_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, x
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=1
+GTK_IPK_VERSION=2
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -130,6 +130,7 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GTK_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		ac_cv_path_PERL=/usr/bin/perl \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -167,6 +168,7 @@ gtk: $(GTK_BUILD_DIR)/.built
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $(GTK_BUILD_DIR)/.staged
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc
 	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
 	rm -f $(STAGING_DIR)/opt/lib/libgdk-x11-2.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf-2.0.la

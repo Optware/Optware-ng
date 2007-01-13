@@ -26,7 +26,7 @@ PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PANGO_IPK_VERSION=3
+PANGO_IPK_VERSION=4
 
 #
 # PANGO_LOCALES defines which locales get installed
@@ -159,6 +159,7 @@ pango: $(PANGO_BUILD_DIR)/.built
 $(PANGO_BUILD_DIR)/.staged: $(PANGO_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(PANGO_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/pango*.pc
 	rm -f $(STAGING_DIR)/opt/lib/libpango-1.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libpangox-1.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libpangoxft-1.0.la

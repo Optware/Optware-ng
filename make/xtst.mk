@@ -24,7 +24,7 @@ XTST_PRIORITY=optional
 #
 # XTST_IPK_VERSION should be incremented when the ipk changes.
 #
-XTST_IPK_VERSION=1
+XTST_IPK_VERSION=2
 
 #
 # XTST_CONFFILES should be a list of user-editable files
@@ -148,6 +148,7 @@ xtst: $(XTST_BUILD_DIR)/.built
 $(XTST_BUILD_DIR)/.staged: $(XTST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xtst.pc
 	rm -f $(STAGING_LIB_DIR)/libXtst.la
 	touch $@
 

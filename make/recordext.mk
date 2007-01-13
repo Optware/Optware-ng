@@ -24,7 +24,7 @@ RECORDEXT_PRIORITY=optional
 #
 # RECORDEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-RECORDEXT_IPK_VERSION=1
+RECORDEXT_IPK_VERSION=2
 
 #
 # RECORDEXT_CONFFILES should be a list of user-editable files
@@ -142,10 +142,13 @@ recordext: $(RECORDEXT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_INCLUDE_DIR)/X11/extensions/record.h: $(RECORDEXT_BUILD_DIR)/.built
+$(RECORDEXT_BUILD_DIR)/.staged: $(RECORDEXT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(RECORDEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/recordext.pc
+	touch $@
 
-recordext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/record.h
+recordext-stage: $(RECORDEXT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

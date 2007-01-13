@@ -24,7 +24,7 @@ RENDEREXT_PRIORITY=optional
 #
 # RENDEREXT_IPK_VERSION should be incremented when the ipk changes.
 #
-RENDEREXT_IPK_VERSION=1
+RENDEREXT_IPK_VERSION=2
 
 #
 # RENDEREXT_CONFFILES should be a list of user-editable files
@@ -130,9 +130,9 @@ renderext-unpack: $(RENDEREXT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RENDEREXT_BUILD_DIR)/.built: $(RENDEREXT_BUILD_DIR)/.configured
-	rm -f $(RENDEREXT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(RENDEREXT_BUILD_DIR)
-	touch $(RENDEREXT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,10 +142,13 @@ renderext: $(RENDEREXT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h: $(RENDEREXT_BUILD_DIR)/.built
+$(RENDEREXT_BUILD_DIR)/.staged: $(RENDEREXT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(RENDEREXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/render.pc
+	touch $@
 
-renderext-stage: $(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h
+renderext-stage: $(RENDEREXT_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.

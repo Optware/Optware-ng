@@ -25,7 +25,7 @@ XFIXES_DEPENDS=x11
 #
 # XFIXES_IPK_VERSION should be incremented when the ipk changes.
 #
-XFIXES_IPK_VERSION=3
+XFIXES_IPK_VERSION=4
 
 #
 # XFIXES_CONFFILES should be a list of user-editable files
@@ -146,11 +146,14 @@ xfixes: $(XFIXES_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libXfixes.so: $(XFIXES_BUILD_DIR)/.built
+$(XFIXES_BUILD_DIR)/.staged: $(XFIXES_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(XFIXES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xfixes.pc
 	rm -f $(STAGING_LIB_DIR)/libXfixes.la
+	touch $@
 
-xfixes-stage: $(STAGING_LIB_DIR)/libXfixes.so
+xfixes-stage: $(XFIXES_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
