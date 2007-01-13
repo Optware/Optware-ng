@@ -14,7 +14,7 @@
 # You should change all these variables to suit your package.
 #
 JOE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/joe-editor
-JOE_VERSION=3.1
+JOE_VERSION=3.5
 JOE_SOURCE=joe-$(JOE_VERSION).tar.gz
 JOE_DIR=joe-$(JOE_VERSION)
 JOE_UNZIP=zcat
@@ -28,7 +28,7 @@ JOE_CONFLICTS=
 #
 # JOE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOE_IPK_VERSION=3
+JOE_IPK_VERSION=1
 
 #
 # JOE_CONFFILES should be a list of user-editable files
@@ -60,6 +60,8 @@ JOE_BUILD_DIR=$(BUILD_DIR)/joe
 JOE_SOURCE_DIR=$(SOURCE_DIR)/joe
 JOE_IPK_DIR=$(BUILD_DIR)/joe-$(JOE_VERSION)-ipk
 JOE_IPK=$(BUILD_DIR)/joe_$(JOE_VERSION)-$(JOE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: joe-source joe-unpack joe joe-stage joe-ipk joe-clean joe-dirclean joe-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -186,3 +188,9 @@ joe-clean:
 #
 joe-dirclean:
 	rm -rf $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR) $(JOE_IPK_DIR) $(JOE_IPK)
+
+#
+# Some sanity check for the package.
+#
+joe-check: $(JOE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(JOE_IPK)
