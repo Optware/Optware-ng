@@ -99,10 +99,10 @@ xrender-source: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz $(XRENDER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/extensions/renderproto.h \
-		$(STAGING_LIB_DIR)/libX11.so \
 		$(XRENDER_PATCHES) make/xrender.mk
 	$(MAKE) renderext-stage
+	$(MAKE) xrender-stage
+	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(XRENDER_DIR) $(XRENDER_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xrender-$(XRENDER_VERSION).tar.gz
 	if test -n "$(XRENDER_PATCHES)" ; \
