@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	asterisk-chan-capi
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -121,11 +120,14 @@ PYTHON_PACKAGES = \
 ERLANG_PACKAGES = \
 	erlang erl-escript erl-yaws \
 
-COMMON_CROSS_PACKAGES = \
-	abook adduser adns alac-decoder amule antinat appweb apache apr apr-util arc \
-	asterisk asterisk-sounds \
+ASTERISK_PACKAGES = \
+	asterisk asterisk-chan-capi asterisk-sounds \
 	asterisk14 asterisk14-extra-sounds-en-gsm asterisk14-gui \
 	asterisk14-core-sounds-en-ulaw asterisk14-extra-sounds-en-ulaw \
+
+COMMON_CROSS_PACKAGES = \
+	abook adduser adns alac-decoder amule antinat appweb apache apr apr-util arc \
+	$(ASTERISK_PACKAGES) \
 	atftp atk atop audiofile autoconf automake \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
@@ -223,7 +225,9 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
-	 amule asterisk asterisk14 atk bitlbee bsdmainutils bzflag \
+	 amule \
+	$(ASTERISK_PACKAGES) \
+	 atk bitlbee bsdmainutils bzflag \
 	 coreutils dcraw dict dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
@@ -261,7 +265,8 @@ MSS_SPECIFIC_PACKAGES =
 
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
-	amule apache apr-util asterisk asterisk14 \
+	amule apache apr-util
+	$(ASTERISK_PACKAGES) \
 	clamav \
 	elinks \
 	$(ERLANG_PACKAGES) \
@@ -344,7 +349,8 @@ TS72XX_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ts72xx.
 TS72XX_BROKEN_PACKAGES = \
-	appweb asterisk asterisk-sounds asterisk14 \
+	appweb
+	$(ASTERISK_PACKAGES) \
 	classpath clearsilver dict dspam \
 	eaccelerator ecl \
 	$(ERLANG_PACKAGES) \

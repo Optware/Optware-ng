@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK-CHAN-CAPI_SITE=ftp://ftp.melware.net/asterisk-chan-capi
+ASTERISK-CHAN-CAPI_SITE=ftp://ftp.melware.net/chan-capi
 ASTERISK-CHAN-CAPI_VERSION=0.7.1
 ASTERISK-CHAN-CAPI_SOURCE=chan_capi-$(ASTERISK-CHAN-CAPI_VERSION).tar.gz
 ASTERISK-CHAN-CAPI_DIR=chan_capi-$(ASTERISK-CHAN-CAPI_VERSION)
@@ -35,7 +35,7 @@ ASTERISK-CHAN-CAPI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ASTERISK-CHAN-CAPI_DESCRIPTION=capi module for asterisk
 ASTERISK-CHAN-CAPI_SECTION=util
 ASTERISK-CHAN-CAPI_PRIORITY=optional
-ASTERISK-CHAN-CAPI_DEPENDS=asterisk libcapi20
+ASTERISK-CHAN-CAPI_DEPENDS=asterisk, libcapi20
 ASTERISK-CHAN-CAPI_SUGGESTS=
 ASTERISK-CHAN-CAPI_CONFLICTS=
 
