@@ -349,7 +349,7 @@ TS72XX_SPECIFIC_PACKAGES =
 
 # Packages that do not work for ts72xx.
 TS72XX_BROKEN_PACKAGES = \
-	appweb
+	appweb \
 	$(ASTERISK_PACKAGES) \
 	classpath clearsilver dict dspam \
 	eaccelerator ecl \
