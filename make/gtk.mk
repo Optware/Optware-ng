@@ -114,12 +114,13 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
 	$(MAKE) libtiff-stage
 	$(MAKE) libpng-stage
 	$(MAKE) libjpeg-stage
-	$(MAKE) atk-stage
-	$(MAKE) pango-stage
+	$(MAKE) x11-stage
 	$(MAKE) xcursor-stage
 	$(MAKE) xfixes-stage
 	$(MAKE) xext-stage
-	$(MAKE) x11-stage
+	$(MAKE) xft-stage
+	$(MAKE) pango-stage
+	$(MAKE) atk-stage
 	rm -rf $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
 	$(GTK_UNZIP) $(DL_DIR)/$(GTK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(GTK_DIR) $(GTK_BUILD_DIR)
