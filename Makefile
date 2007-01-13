@@ -265,7 +265,7 @@ MSS_SPECIFIC_PACKAGES =
 
 # Packages that do not work for mss.
 MSS_BROKEN_PACKAGES = \
-	amule apache apr-util
+	amule apache apr-util \
 	$(ASTERISK_PACKAGES) \
 	clamav \
 	elinks \
