@@ -1,0 +1,22 @@
+--- lib/output/html_quote.h.orig	2007-01-13 10:38:03.000000000 -0800
++++ lib/output/html_quote.h	2007-01-13 10:38:36.000000000 -0800
+@@ -49,7 +49,7 @@
+     output_html_quote(output &deeper);
+ 
+     // See base class for documentation.
+-    rcstring output_html_quote::name();
++    rcstring name();
+ 
+     // See base class for documentation.
+     void write_inner(const void *data, size_t nbytes);
+--- lib/input/uudecode.h.orig	2007-01-13 10:41:49.000000000 -0800
++++ lib/input/uudecode.h	2007-01-13 10:42:12.000000000 -0800
+@@ -45,7 +45,7 @@
+     input_uudecode(input *);
+ 
+     // See base class for documentation.
+-    size_t input_uudecode::read_inner(void *data, size_t nbytes);
++    size_t read_inner(void *data, size_t nbytes);
+ 
+     // See base class for documentation.
+     rcstring name();

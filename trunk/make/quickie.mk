@@ -36,7 +36,7 @@ QUICKIE_CONFLICTS=
 #
 # QUICKIE_IPK_VERSION should be incremented when the ipk changes.
 #
-QUICKIE_IPK_VERSION=1
+QUICKIE_IPK_VERSION=2
 
 #
 # QUICKIE_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ QUICKIE_IPK_VERSION=1
 # QUICKIE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#QUICKIE_PATCHES=$(QUICKIE_SOURCE_DIR)/configure.patch
+QUICKIE_PATCHES=$(QUICKIE_SOURCE_DIR)/gcc4.patch
 
 #
 # If the compilation of the package requires additional

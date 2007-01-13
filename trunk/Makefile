@@ -377,7 +377,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	ldconfig modutils \
 	monotone \
 	nfs-utils \
-	puppy py-psycopg qemu quagga quickie \
+	puppy py-psycopg qemu quagga \
 	sdl \
 	unfs3 ushare \
 
