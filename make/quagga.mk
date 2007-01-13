@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=1
+QUAGGA_IPK_VERSION=2
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -58,7 +58,11 @@ QUAGGA_PATCHES=$(QUAGGA_SOURCE_DIR)/configure.ac.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
+QUAGGA_CPPFLAGS=-U__STRICT_ANSI__
+else
 QUAGGA_CPPFLAGS=
+endif
 QUAGGA_LDFLAGS=-lreadline -ltermcap
 
 #
@@ -74,6 +78,8 @@ QUAGGA_BUILD_DIR=$(BUILD_DIR)/quagga
 QUAGGA_SOURCE_DIR=$(SOURCE_DIR)/quagga
 QUAGGA_IPK_DIR=$(BUILD_DIR)/quagga-$(QUAGGA_VERSION)-ipk
 QUAGGA_IPK=$(BUILD_DIR)/quagga_$(QUAGGA_VERSION)-$(QUAGGA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: quagga-source quagga-unpack quagga quagga-stage quagga-ipk quagga-clean quagga-dirclean quagga-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -219,3 +225,9 @@ quagga-clean:
 #
 quagga-dirclean:
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR) $(QUAGGA_IPK_DIR) $(QUAGGA_IPK)
+
+#
+# Some sanity check for the package.
+#
+quagga-check: $(QUAGGA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(QUAGGA_IPK)
