@@ -101,7 +101,7 @@ xcursor-source: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz $(XCURSOR_PATCHES)
 $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz \
 		$(XCURSOR_PATCHES)
 	$(MAKE) x11-stage
-	$(MAKE) xender-stage
+	$(MAKE) xrender-stage
 	$(MAKE) xfixes-stage
 	rm -rf $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz
