@@ -99,9 +99,8 @@ xfixes-source: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz $(XFIXES_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
-		$(STAGING_INCLUDE_DIR)/X11/extensions/xfixesproto.h \
-		$(STAGING_LIB_DIR)/libX11.so \
 		$(XFIXES_PATCHES) make/xfixes.mk
+	$(MAKE) x11-stage
 	$(MAKE) fixesext-stage
 	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz

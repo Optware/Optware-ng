@@ -99,10 +99,10 @@ xcursor-source: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz $(XCURSOR_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz \
-		$(STAGING_LIB_DIR)/libX11.so \
-		$(STAGING_LIB_DIR)/libXrender.so \
-		$(STAGING_LIB_DIR)/libXfixes.so \
 		$(XCURSOR_PATCHES)
+	$(MAKE) x11-stage
+	$(MAKE) xender-stage
+	$(MAKE) xfixes-stage
 	rm -rf $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xcursor-$(XCURSOR_VERSION).tar.gz
 	if test -n "$(XCURSOR_PATCHES)" ; \

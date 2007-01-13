@@ -98,8 +98,8 @@ xpm-source: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz $(XPM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
-		$(STAGING_LIB_DIR)/libX11.so \
 		$(XPM_PATCHES)
+	$(MAKE) x11-stage
 	rm -rf $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz
 	if test -n "$(XPM_PATCHES)" ; \
