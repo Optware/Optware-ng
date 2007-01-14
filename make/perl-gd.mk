@@ -18,7 +18,7 @@ PERL-GD_DEPENDS=perl, libgd, zlib
 PERL-GD_SUGGESTS=
 PERL-GD_CONFLICTS=
 
-PERL-GD_IPK_VERSION=1
+PERL-GD_IPK_VERSION=2
 
 PERL-GD_CONFFILES=
 
@@ -44,7 +44,7 @@ $(PERL-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-			-options "JPEG,FT,PNG,GIF,XPM,ANIMGIF,FONTCONFIG" \
+			-options "JPEG,FT,PNG,GIF,ANIMGIF,FONTCONFIG" \
 			-lib_gd_path $(STAGING_DIR)/opt \
 			-lib_ft_path $(STAGING_DIR)/opt \
 			-lib_png_path  $(STAGING_DIR)/opt \
@@ -62,8 +62,9 @@ $(PERL-GD_BUILD_DIR)/.built: $(PERL-GD_BUILD_DIR)/.configured
 	$(MAKE) -C $(PERL-GD_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -rpath /opt/lib -rpath-link $(STAGING_LIB_DIR)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		LDLOADLIBS="" \
+		LDLOADLIBS="`$(STAGING_PREFIX)/bin/gdlib-config --libs` -lgd" \
 		LD_RUN_PATH=/opt/lib \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
