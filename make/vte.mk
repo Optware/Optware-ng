@@ -12,8 +12,8 @@
 # VTE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/0.15/
-VTE_VERSION=0.15.1
+VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/0.11/
+VTE_VERSION=0.11.21
 VTE_SOURCE=vte-$(VTE_VERSION).tar.bz2
 VTE_DIR=vte-$(VTE_VERSION)
 VTE_UNZIP=bzcat
@@ -41,7 +41,7 @@ VTE_LOCALES=
 # VTE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VTE_PATCHES=$(VTE_SOURCE_DIR)/default-font.patch
+#VTE_PATCHES=$(VTE_SOURCE_DIR)/default-font.patch
 
 #
 # If the compilation of the package requires additional
@@ -117,7 +117,9 @@ $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) \
 	rm -rf $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR)
 	$(VTE_UNZIP) $(DL_DIR)/$(VTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR)
-	cat $(VTE_PATCHES) |patch -p0 -d$(VTE_BUILD_DIR)
+	if test -n "$(VTE_PATCHES)"; \
+		then cat $(VTE_PATCHES) |patch -p0 -d$(VTE_BUILD_DIR); \
+	fi
 	(cd $(VTE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
