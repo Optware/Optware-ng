@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NANOBLOGGER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nanoblogger
-NANOBLOGGER_VERSION=3.3-rc5
+NANOBLOGGER_VERSION=3.3
 NANOBLOGGER_SOURCE=nanoblogger-$(NANOBLOGGER_VERSION).tar.gz
 NANOBLOGGER_DIR=nanoblogger-$(NANOBLOGGER_VERSION)
 NANOBLOGGER_UNZIP=zcat
@@ -36,7 +36,7 @@ NANOBLOGGER_CONFLICTS=
 #
 # NANOBLOGGER_IPK_VERSION should be incremented when the ipk changes.
 #
-NANOBLOGGER_IPK_VERSION=2
+NANOBLOGGER_IPK_VERSION=1
 
 #
 # NANOBLOGGER_CONFFILES should be a list of user-editable files
