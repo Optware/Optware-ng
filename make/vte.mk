@@ -12,8 +12,8 @@
 # VTE_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/0.11/
-VTE_VERSION=0.11.11
+VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/0.15/
+VTE_VERSION=0.15.1
 VTE_SOURCE=vte-$(VTE_VERSION).tar.bz2
 VTE_DIR=vte-$(VTE_VERSION)
 VTE_UNZIP=bzcat
@@ -26,7 +26,7 @@ VTE_DEPENDS=gtk, ncurses, termcap, sm, dev-pts
 #
 # VTE_IPK_VERSION should be incremented when the ipk changes.
 #
-VTE_IPK_VERSION=2
+VTE_IPK_VERSION=1
 
 #
 # VTE_LOCALES defines which locales get installed
@@ -63,6 +63,8 @@ VTE_BUILD_DIR=$(BUILD_DIR)/vte
 VTE_SOURCE_DIR=$(SOURCE_DIR)/vte
 VTE_IPK_DIR=$(BUILD_DIR)/vte-$(VTE_VERSION)-ipk
 VTE_IPK=$(BUILD_DIR)/vte_$(VTE_VERSION)-$(VTE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: vte-source vte-unpack vte vte-stage vte-ipk vte-clean vte-dirclean vte-check
 
 #
 # Automatically create a ipkg control file
@@ -201,3 +203,9 @@ vte-clean:
 #
 vte-dirclean:
 	rm -rf $(BUILD_DIR)/$(VTE_DIR) $(VTE_BUILD_DIR) $(VTE_IPK_DIR) $(VTE_IPK)
+
+#
+# Some sanity check for the package.
+#
+vte-check: $(VTE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VTE_IPK)
