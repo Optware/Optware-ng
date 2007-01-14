@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FLUP_SITE=http://www.saddi.com/software/flup/dist
-PY-FLUP_SNAPSHOT_VERSION=r2030
+PY-FLUP_SNAPSHOT_VERSION=r2307
 PY-FLUP_VERSION=0.5+$(PY-FLUP_SNAPSHOT_VERSION)
 PY-FLUP_SOURCE=flup-$(PY-FLUP_SNAPSHOT_VERSION).tar.gz
 PY-FLUP_DIR=flup-$(PY-FLUP_SNAPSHOT_VERSION)
@@ -31,7 +31,8 @@ PY-FLUP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-FLUP_DESCRIPTION=A collection of python WSGI modules including those speaking AJP 1.3, FastCGI and SCGI.
 PY-FLUP_SECTION=misc
 PY-FLUP_PRIORITY=optional
-PY-FLUP_DEPENDS=python
+PY24-FLUP_DEPENDS=python24
+PY25-FLUP_DEPENDS=python25
 PY-FLUP_CONFLICTS=
 
 #
@@ -67,8 +68,14 @@ PY-FLUP_LDFLAGS=
 #
 PY-FLUP_BUILD_DIR=$(BUILD_DIR)/py-flup
 PY-FLUP_SOURCE_DIR=$(SOURCE_DIR)/py-flup
-PY-FLUP_IPK_DIR=$(BUILD_DIR)/py-flup-$(PY-FLUP_VERSION)-ipk
-PY-FLUP_IPK=$(BUILD_DIR)/py-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-FLUP_IPK_DIR=$(BUILD_DIR)/py-flup-$(PY-FLUP_VERSION)-ipk
+PY24-FLUP_IPK=$(BUILD_DIR)/py-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-FLUP_IPK_DIR=$(BUILD_DIR)/py25-flup-$(PY-FLUP_VERSION)-ipk
+PY25-FLUP_IPK=$(BUILD_DIR)/py25-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-flup-source py-flup-unpack py-flup py-flup-stage py-flup-ipk py-flup-clean py-flup-dirclean py-flup-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,21 +108,39 @@ py-flup-source: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 #
 $(PY-FLUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FLUP_SOURCE) $(PY-FLUP_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)
+	rm -rf $(PY-FLUP_BUILD_DIR)
+	mkdir -p $(PY-FLUP_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
 	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-FLUP_PATCHES)"; then \
 	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)
-	(cd $(PY-FLUP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)/2.4
+	(cd $(PY-FLUP_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg \
+	    ) >> setup.cfg \
 	)
-	touch $(PY-FLUP_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR)
+	$(PY-FLUP_UNZIP) $(DL_DIR)/$(PY-FLUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-FLUP_PATCHES)"; then \
+	    cat $(PY-FLUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FLUP_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)/2.5
+	(cd $(PY-FLUP_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
+	touch $@
 
 py-flup-unpack: $(PY-FLUP_BUILD_DIR)/.configured
 
@@ -123,12 +148,14 @@ py-flup-unpack: $(PY-FLUP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-FLUP_BUILD_DIR)/.built: $(PY-FLUP_BUILD_DIR)/.configured
-	rm -f $(PY-FLUP_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-FLUP_BUILD_DIR)
-	(cd $(PY-FLUP_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
-	touch $(PY-FLUP_BUILD_DIR)/.built
+	rm -f $@
+	cd $(PY-FLUP_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-FLUP_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,9 +166,9 @@ py-flup: $(PY-FLUP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-FLUP_BUILD_DIR)/.staged: $(PY-FLUP_BUILD_DIR)/.built
-	rm -f $(PY-FLUP_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-FLUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-FLUP_BUILD_DIR)/.staged
+	touch $@
 
 py-flup-stage: $(PY-FLUP_BUILD_DIR)/.staged
 
@@ -149,8 +176,8 @@ py-flup-stage: $(PY-FLUP_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-flup
 #
-$(PY-FLUP_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-FLUP_IPK_DIR)/CONTROL
+$(PY24-FLUP_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-flup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -160,7 +187,21 @@ $(PY-FLUP_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-FLUP_MAINTAINER)" >>$@
 	@echo "Source: $(PY-FLUP_SITE)/$(PY-FLUP_SOURCE)" >>$@
 	@echo "Description: $(PY-FLUP_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-FLUP_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-FLUP_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-FLUP_CONFLICTS)" >>$@
+
+$(PY25-FLUP_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-flup" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-FLUP_PRIORITY)" >>$@
+	@echo "Section: $(PY-FLUP_SECTION)" >>$@
+	@echo "Version: $(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-FLUP_MAINTAINER)" >>$@
+	@echo "Source: $(PY-FLUP_SITE)/$(PY-FLUP_SOURCE)" >>$@
+	@echo "Description: $(PY-FLUP_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-FLUP_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-FLUP_CONFLICTS)" >>$@
 
 #
@@ -175,20 +216,32 @@ $(PY-FLUP_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-FLUP_IPK): $(PY-FLUP_BUILD_DIR)/.built
-	rm -rf $(PY-FLUP_IPK_DIR) $(BUILD_DIR)/py-flup_*_$(TARGET_ARCH).ipk
-	(cd $(PY-FLUP_BUILD_DIR); \
+$(PY24-FLUP_IPK): $(PY-FLUP_BUILD_DIR)/.built
+	rm -rf $(PY24-FLUP_IPK_DIR) $(BUILD_DIR)/py-flup_*_$(TARGET_ARCH).ipk
+	(cd $(PY-FLUP_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-FLUP_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	--root=$(PY24-FLUP_IPK_DIR) --prefix=/opt)
 #	python2.4 -c "import setuptools; execfile('setup.py')" install --root=$(PY-FLUP_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-FLUP_IPK_DIR)/CONTROL/control
-#	echo $(PY-FLUP_CONFFILES) | sed -e 's/ /\n/g' > $(PY-FLUP_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-FLUP_IPK_DIR)
+	$(MAKE) $(PY24-FLUP_IPK_DIR)/CONTROL/control
+#	echo $(PY-FLUP_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-FLUP_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-FLUP_IPK_DIR)
+
+$(PY25-FLUP_IPK): $(PY-FLUP_BUILD_DIR)/.built
+	rm -rf $(PY25-FLUP_IPK_DIR) $(BUILD_DIR)/py25-flup_*_$(TARGET_ARCH).ipk
+	(cd $(PY-FLUP_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	--root=$(PY25-FLUP_IPK_DIR) --prefix=/opt)
+#	python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY-FLUP_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-FLUP_IPK_DIR)/CONTROL/control
+#	echo $(PY-FLUP_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-FLUP_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-FLUP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-flup-ipk: $(PY-FLUP_IPK)
+py-flup-ipk: $(PY24-FLUP_IPK) $(PY25-FLUP_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,4 +254,12 @@ py-flup-clean:
 # directories.
 #
 py-flup-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR) $(PY-FLUP_IPK_DIR) $(PY-FLUP_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-FLUP_DIR) $(PY-FLUP_BUILD_DIR)
+	rm -rf $(PY24-FLUP_IPK_DIR) $(PY24-FLUP_IPK)
+	rm -rf $(PY25-FLUP_IPK_DIR) $(PY25-FLUP_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-flup-check: $(PY24-FLUP_IPK) $(PY25-FLUP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-FLUP_IPK) $(PY25-FLUP_IPK)
