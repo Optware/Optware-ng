@@ -22,10 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FLUP_SITE=http://www.saddi.com/software/flup/dist
-PY-FLUP_SNAPSHOT_VERSION=r2307
-PY-FLUP_VERSION=0.5+$(PY-FLUP_SNAPSHOT_VERSION)
-PY-FLUP_SOURCE=flup-$(PY-FLUP_SNAPSHOT_VERSION).tar.gz
-PY-FLUP_DIR=flup-$(PY-FLUP_SNAPSHOT_VERSION)
+PY-FLUP_VERSION=0.5+r2307
+PY-FLUP_DIR=flup-r2307
+PY-FLUP_SOURCE=$(PY-FLUP_DIR).tar.gz
 PY-FLUP_UNZIP=zcat
 PY-FLUP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-FLUP_DESCRIPTION=A collection of python WSGI modules including those speaking AJP 1.3, FastCGI and SCGI.
