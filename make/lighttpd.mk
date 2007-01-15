@@ -35,7 +35,7 @@ LIGHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
-LIGHTTPD_DEPENDS=pcre, zlib
+LIGHTTPD_DEPENDS=pcre, zlib, libstdc++
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap-libs, openssl, sqlite
 else
@@ -46,7 +46,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=6
+LIGHTTPD_IPK_VERSION=7
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
