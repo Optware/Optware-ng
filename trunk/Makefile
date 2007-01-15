@@ -377,7 +377,10 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	ldconfig modutils \
 	monotone \
 	nfs-utils \
-	puppy py-psycopg qemu \
+	par2cmdline \
+	puppy \
+	py-psycopg \
+	qemu \
 	ushare \
 
 ifeq ($(OPTWARE_TARGET),nslu2)
