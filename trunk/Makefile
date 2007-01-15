@@ -253,7 +253,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 gtk htop ice id3lib iperf iptables jabberd \
 	 jamvm ldconfig libstdc++ libdvb libtorrent monotone \
 	 mtr nfs-server nfs-utils nget \
-	 pango \
+	 pango par2cmdline \
 	 qemu qemu-libc-i386 quickie rtorrent sm \
 	 transcode vte xauth xaw xchat xcursor \
 	 xfixes xft xrender xmu xt xterm
