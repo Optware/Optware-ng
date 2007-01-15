@@ -3,8 +3,6 @@
 # Startup script for cron
 #
 # Stop myself if running
-if [ -n "`pidof cron`" ]; then
-    /bin/killall cron 2>/dev/null
-fi
-
+PIDFILE=/opt/var/run/cron.pid
+[ -f ${PIDFILE} ] && kill `cat ${PIDFILE}`
 /opt/sbin/cron
