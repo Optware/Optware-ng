@@ -202,6 +202,7 @@ COMMON_NATIVE_PACKAGES = \
 	cdrtools \
 	emacs \
 	xemacs \
+	hping \
 	hugs \
 	mzscheme \
         nginx \
