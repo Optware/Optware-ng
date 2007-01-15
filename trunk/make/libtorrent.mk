@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION=2
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -45,6 +45,12 @@ LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
 #
 LIBTORRENT_CPPFLAGS=
 LIBTORRENT_LDFLAGS=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+ifeq ($(TARGET_ARCH), $(filter $(TARGET_ARCH), arm armeb))
+LIBTORRENT_CONFIG_ARGS=--enable-aligned=yes
+endif
+endif
 
 #
 # LIBTORRENT_BUILD_DIR is the directory in which the build is done.
@@ -112,6 +118,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(LIBTORRENT_CONFIG_ARGS) \
 		--disable-nls \
 		--disable-static \
 		--with-openssl=$(STAGING_PREFIX) \
