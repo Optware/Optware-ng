@@ -5,9 +5,9 @@
 #############################################################
 
 PAR2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/parchive
-PAR2_VERSION:=0.4
-PAR2_SOURCE=par2cmdline-$(PAR2_VERSION).tar.gz
-PAR2_DIR=par2cmdline-$(PAR2_VERSION)
+PAR2CMDLINE_VERSION:=0.4
+PAR2_SOURCE=par2cmdline-$(PAR2CMDLINE_VERSION).tar.gz
+PAR2_DIR=par2cmdline-$(PAR2CMDLINE_VERSION)
 PAR2_UNZIP=gunzip
 PAR2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PAR2_DESCRIPTION=tool to apply the data-recovery capability concepts of RAID-like systems to the posting & recovery of multi-part archives on Usenet
@@ -17,14 +17,14 @@ PAR2_DEPENDS=libstdc++
 PAR2_SUGGESTS=
 PAR2_CONFLICTS=
 
-PAR2_IPK_VERSION=1
+PAR2CMDLINE_IPK_VERSION=1
 
 PAR2_CFLAGS=$(TARGET_CFLAGS)
 
 PAR2_BUILD_DIR=$(BUILD_DIR)/par2cmdline
 PAR2_SOURCE_DIR=$(SOURCE_DIR)/par2cmdline
-PAR2_IPK_DIR=$(BUILD_DIR)/par2cmdline-$(PAR2_VERSION)-ipk
-PAR2_IPK=$(BUILD_DIR)/par2cmdline_$(PAR2_VERSION)-$(PAR2_IPK_VERSION)_$(TARGET_ARCH).ipk
+PAR2_IPK_DIR=$(BUILD_DIR)/par2cmdline-$(PAR2CMDLINE_VERSION)-ipk
+PAR2_IPK=$(BUILD_DIR)/par2cmdline_$(PAR2CMDLINE_VERSION)-$(PAR2CMDLINE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: par2cmdline-source par2cmdline-unpack par2cmdline par2cmdline-stage par2cmdline-ipk par2cmdline-clean par2cmdline-dirclean par2cmdline-check
 
@@ -83,7 +83,7 @@ $(PAR2_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PAR2_PRIORITY)" >>$@
 	@echo "Section: $(PAR2_SECTION)" >>$@
-	@echo "Version: $(PAR2_VERSION)-$(PAR2_IPK_VERSION)" >>$@
+	@echo "Version: $(PAR2CMDLINE_VERSION)-$(PAR2CMDLINE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PAR2_MAINTAINER)" >>$@
 	@echo "Source: $(PAR2_SITE)/$(PAR2_SOURCE)" >>$@
 	@echo "Description: $(PAR2_DESCRIPTION)" >>$@
