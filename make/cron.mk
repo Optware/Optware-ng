@@ -25,10 +25,12 @@ CRON_SECTION=sys
 CRON_PRIORITY=optional
 CRON_DEPENDS=
 
+.PHONY: cron-source cron-unpack cron cron-stage cron-ipk cron-clean cron-dirclean cron-check
+
 #
 # CRON_IPK_VERSION should be incremented when the ipk changes.
 #
-CRON_IPK_VERSION=4
+CRON_IPK_VERSION=5
 
 #
 # CRON_CONFFILES should be a list of user-editable files
@@ -155,24 +157,24 @@ $(CRON_IPK_DIR)/CONTROL/control:
 #
 $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	rm -rf $(CRON_IPK_DIR) $(BUILD_DIR)/cron_*_$(TARGET_ARCH).ipk
-	# Install and strip the two executables
+# 	Install and strip the two executables
 	install -d $(CRON_IPK_DIR)/opt/bin
 	install -m  755 $(CRON_BUILD_DIR)/crontab $(CRON_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/bin/crontab
 	install -d $(CRON_IPK_DIR)/opt/sbin
 	install -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/sbin/cron
-	# Install manuals
+# 	Install manuals
 	install -d $(CRON_IPK_DIR)/opt/man/man1
 	install -d $(CRON_IPK_DIR)/opt/man/man5
 	install -d $(CRON_IPK_DIR)/opt/man/man8
 	install -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)/opt/man/man1
 	install -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)/opt/man/man5
 	install -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
-	# Install default crontab
+#	Install default crontab
 	install -d $(CRON_IPK_DIR)/opt/etc
 	install -m 600 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
-	# Install daemon startup file
+#	Install daemon startup file
 	install -d $(CRON_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)/opt/etc/init.d/S10cron
 	$(MAKE) $(CRON_IPK_DIR)/CONTROL/control
@@ -198,3 +200,4 @@ cron-clean:
 #
 cron-dirclean:
 	rm -rf $(BUILD_DIR)/$(CRON_DIR) $(CRON_BUILD_DIR) $(CRON_IPK_DIR) $(CRON_IPK)
+leon@achilles:~/p/wl/wl500gx$ gx/
