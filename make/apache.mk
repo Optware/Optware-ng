@@ -30,7 +30,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=1
+APACHE_IPK_VERSION=2
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -52,10 +52,18 @@ APACHE_LOCALES=
 # APACHE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(OPTWARE_TARGET), slugosbe)
 APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch \
 		$(APACHE_SOURCE_DIR)/hostcc-pcre.patch \
 		$(APACHE_SOURCE_DIR)/apxs.patch \
 		$(APACHE_SOURCE_DIR)/ulimit.patch
+else
+APACHE_PATCHES=$(APACHE_SOURCE_DIR)/hostcc.patch \
+		$(APACHE_SOURCE_DIR)/hostcc-pcre.patch \
+		$(APACHE_SOURCE_DIR)/apxs.patch \
+		$(APACHE_SOURCE_DIR)/ulimit.patch \
+		$(APACHE_SOURCE_DIR)/httpd-conf-in.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -151,7 +159,7 @@ apache-source: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 
 #
-$(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
+$(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) make/apache.mk
 	if test -d $(STAGING_INCLUDE_DIR)/apache2; then \
 		cd $(STAGING_INCLUDE_DIR)/apache2/ && rm -f `ls | egrep -v '^apr|^apu'`; \
 	fi
@@ -167,7 +175,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES)
 		-e 's%[ \t]\{1,\}prefix: .*%    prefix: /opt%' \
 		-e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" \
 		$(APACHE_BUILD_DIR)/config.layout
-	cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
+	#cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(APACHE_BUILD_DIR)/docs/conf
 	(cd $(APACHE_BUILD_DIR); \
 		autoconf ; \
 		$(TARGET_CONFIGURE_OPTS) \
