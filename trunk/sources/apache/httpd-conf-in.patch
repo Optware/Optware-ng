@@ -1,0 +1,13 @@
+--- docs/conf/httpd.conf.in.orig	2007-01-16 12:22:08.000000000 -0200
++++ docs/conf/httpd.conf.in	2007-01-16 12:22:19.000000000 -0200
+@@ -62,8 +62,8 @@
+ # It is usually good practice to create a dedicated user and group for
+ # running httpd, as with most system services.
+ #
+-User daemon
+-Group daemon
++User nobody
++Group #-1
+ </IfModule>
+ 
+ # 'Main' server configuration
