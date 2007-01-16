@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
-PY-BITTORRENT_VERSION=5.0.1
+PY-BITTORRENT_VERSION=5.0.4
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -42,7 +42,7 @@ PY-BITTORRENT_CONFLICTS=
 #
 # PY-BITTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BITTORRENT_IPK_VERSION=3
+PY-BITTORRENT_IPK_VERSION=1
 
 #
 # PY-BITTORRENT_CONFFILES should be a list of user-editable files
