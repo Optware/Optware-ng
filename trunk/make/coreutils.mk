@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=6.6
+COREUTILS_VERSION=6.7
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -34,7 +34,7 @@ COREUTILS_CONFLICTS=busybox-links
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=5
+COREUTILS_IPK_VERSION=1
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
