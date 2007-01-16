@@ -438,8 +438,8 @@ CONFIG_NETDEVICES=y
 # CONFIG_DUMMY is not set
 # CONFIG_BONDING is not set
 # CONFIG_EQUALIZER is not set
-# CONFIG_TUN is not set
-# CONFIG_ETHERTAP is not set
+CONFIG_TUN=m
+CONFIG_ETHERTAP=m
 
 #
 # Ethernet (10 or 100Mbit)
