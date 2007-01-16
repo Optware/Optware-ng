@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.5.6
+NGINX_VERSION=0.5.7
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -29,7 +29,7 @@ NGINX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NGINX_DESCRIPTION=A high perfomance http and reverse proxy server, and IMAP/POP3 proxy server.
 NGINX_SECTION=net
 NGINX_PRIORITY=optional
-NGINX_DEPENDS=
+NGINX_DEPENDS=openssl, pcre, zlib
 NGINX_SUGGESTS=
 NGINX_CONFLICTS=
 
