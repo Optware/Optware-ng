@@ -266,10 +266,6 @@ static char * status(tr_torrent_t *tor)
     snprintf( string, STATUS_WIDTH, "Stopping...");
   else if (s->status & TR_STATUS_PAUSE )
     snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->progress);
-  else if( s->error & TR_ETRACKER ) /*   */
-    {
-      snprintf( string, 80, "%s", s->trackerError );
-    }
   else
     string[0] = '\0';
 
