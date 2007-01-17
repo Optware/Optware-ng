@@ -23,7 +23,7 @@ DS101G-KERNEL-MODULES=videodev pwc nfsd soundcore audio rtl8150 hfc_usb \
 #
 # DS101G-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101G-KERNEL-MODULES_IPK_VERSION=3
+DS101G-KERNEL-MODULES_IPK_VERSION=4
 
 #
 # DS101G-KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -118,11 +118,12 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  install -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
-	    echo "Package: kernel-modules-`echo $$m|sed -e 's/_/-/g'`"; \
+	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(DS101G-KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(DS101G-KERNEL-MODULES_SECTION)"; \
 	    echo "Version: $(DS101G-KERNEL-MODULES_VERSION)-$(DS101G-KERNEL-MODULES_IPK_VERSION)"; \
+	    echo "Replaces: kernel-modules-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Maintainer: $(DS101G-KERNEL-MODULES_MAINTAINER)"; \
 	    echo "Source: $(DS101G-KERNEL-MODULES_SITE)/$(DS101G-KERNEL-MODULES_SOURCE)"; \
 	    echo "Description: $(DS101G-KERNEL-MODULES_DESCRIPTION) $$m"; \
@@ -132,7 +133,7 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	      if test -n "$$DEPS"; \
 	      then DEPS="$$DEPS,"; \
 	      fi; \
-	      DEPS="$$DEPS kernel-modules-$$i"; \
+	      DEPS="$$DEPS kernel-module-$$i"; \
             done; \
             echo "$$DEPS";\
 	    echo "Suggests: $(DS101G-KERNEL-MODULES_SUGGESTS)"; \
@@ -185,4 +186,4 @@ ds101g-kernel-modules-clean:
 # directories.
 #
 ds101g-kernel-modules-dirclean:
-	rm -rf $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) $(DS101G-KERNEL-MODULES_BUILD_DIR) $(DS101G-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-modules-*_powerpc.ipk
+	rm -rf $(BUILD_DIR)/$(DS101G-KERNEL-MODULES_DIR) $(DS101G-KERNEL-MODULES_BUILD_DIR) $(DS101G-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-module-*_powerpc.ipk
