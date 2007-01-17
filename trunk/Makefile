@@ -173,7 +173,7 @@ COMMON_CROSS_PACKAGES = \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
 	rc rcs rdate readline recode recordext renderext rlfe rrdcollect rrdtool \
-	rsync rtorrent rtpproxy ruby rubygems \
+	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 \
