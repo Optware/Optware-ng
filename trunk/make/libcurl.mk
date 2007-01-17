@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=4
+LIBCURL_IPK_VERSION=5
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -149,6 +149,7 @@ $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/curl-config $(STAGING_DIR)/bin/curl-config
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcurl.pc
+	rm -f $(STAGING_LIB_DIR)/libcurl.la
 	touch $@
 
 libcurl-stage: $(LIBCURL_BUILD_DIR)/.staged
