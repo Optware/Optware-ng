@@ -266,6 +266,8 @@ static char * status(tr_torrent_t *tor)
     snprintf( string, STATUS_WIDTH, "Stopping...");
   else if (s->status & TR_STATUS_PAUSE )
     snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->progress);
+  else if (s->error)
+    snprintf( string, STATUS_WIDTH, "%s", s->errorString );
   else
     string[0] = '\0';
 
@@ -405,7 +407,7 @@ static void flush_queued_messages( void )
 
 int main( int argc, char ** argv )
 {
-
+  int i, nat;
   pid_t pid;
   char *cp;
   
@@ -563,6 +565,18 @@ int main( int argc, char ** argv )
   tr_torrentIterate( h, stop, NULL );
   syslog( LOG_NOTICE, "All torrents stopped");
 
+  /* Try for 5 seconds to delete any port mappings for nat traversal */
+  tr_natTraversalDisable( h );
+  for( i = 0; i < 10; i++ )
+    {
+      nat = tr_natTraversalStatus( h );
+      if( TR_NAT_TRAVERSAL_DISABLED == nat )
+        {
+          /* Port mappings were deleted */
+          break;
+        }
+      usleep( 500000 );
+    }
   tr_close( h );
   
   if (pidfile != NULL)
