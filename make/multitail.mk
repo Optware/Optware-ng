@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MULTITAIL_SITE=http://www.vanheusden.com/multitail
-MULTITAIL_VERSION=4.2.0
+MULTITAIL_VERSION=4.3.0
 MULTITAIL_SOURCE=multitail-$(MULTITAIL_VERSION).tgz
 MULTITAIL_DIR=multitail-$(MULTITAIL_VERSION)
 MULTITAIL_UNZIP=zcat
@@ -223,3 +223,9 @@ multitail-clean:
 #
 multitail-dirclean:
 	rm -rf $(BUILD_DIR)/$(MULTITAIL_DIR) $(MULTITAIL_BUILD_DIR) $(MULTITAIL_IPK_DIR) $(MULTITAIL_IPK)
+
+#
+# Some sanity check for the package.
+#
+multitail-check: $(MULTITAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MULTITAIL_IPK)
