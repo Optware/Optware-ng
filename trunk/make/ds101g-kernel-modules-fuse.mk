@@ -20,7 +20,7 @@ DS101G-KERNEL-MODULES-FUSE_CONFLICTS=
 #
 # DS101G-KERNEL-MODULES-FUSE_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101G-KERNEL-MODULES-FUSE_IPK_VERSION=1
+DS101G-KERNEL-MODULES-FUSE_IPK_VERSION=2
 
 #
 # DS101G-KERNEL-MODULES-FUSE_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ DS101G-KERNEL-MODULES-FUSE_LDFLAGS=
 DS101G-KERNEL-MODULES-FUSE_BUILD_DIR=$(BUILD_DIR)/ds101g-kernel-modules-fuse
 DS101G-KERNEL-MODULES-FUSE_SOURCE_DIR=$(SOURCE_DIR)/ds101g-kernel-modules-fuse
 DS101G-KERNEL-MODULES-FUSE_IPK_DIR=$(BUILD_DIR)/ds101g-kernel-modules-fuse-$(DS101G-KERNEL-MODULES-FUSE_VERSION)-ipk
-DS101G-KERNEL-MODULES-FUSE_IPK=$(BUILD_DIR)/ds101g-kernel-modules-fuse_$(DS101G-KERNEL-MODULES-FUSE_VERSION)-$(DS101G-KERNEL-MODULES-FUSE_IPK_VERSION)_$(TARGET_ARCH).ipk
+DS101G-KERNEL-MODULES-FUSE_IPK=$(BUILD_DIR)/kernel-module-fuse_$(DS101G-KERNEL-MODULES-FUSE_VERSION)-$(DS101G-KERNEL-MODULES-FUSE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: ds101g-kernel-modules-fuse-source ds101g-kernel-modules-fuse-unpack ds101g-kernel-modules-fuse ds101g-kernel-modules-fuse-stage ds101g-kernel-modules-fuse-ipk ds101g-kernel-modules-fuse-clean ds101g-kernel-modules-fuse-dirclean ds101g-kernel-modules-fuse-check
 
@@ -151,11 +151,12 @@ ds101g-kernel-modules-fuse-stage: $(DS101G-KERNEL-MODULES-FUSE_BUILD_DIR)/.stage
 $(DS101G-KERNEL-MODULES-FUSE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: ds101g-kernel-modules-fuse" >>$@
+	@echo "Package: kernel-module-fuse" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(DS101G-KERNEL-MODULES-FUSE_PRIORITY)" >>$@
 	@echo "Section: $(DS101G-KERNEL-MODULES-FUSE_SECTION)" >>$@
 	@echo "Version: $(DS101G-KERNEL-MODULES-FUSE_VERSION)-$(DS101G-KERNEL-MODULES-FUSE_IPK_VERSION)" >>$@
+	@echo "Replaces: ds101g-kernel-modules-fuse" >>$@
 	@echo "Maintainer: $(DS101G-KERNEL-MODULES-FUSE_MAINTAINER)" >>$@
 	@echo "Source: $(DS101G-KERNEL-MODULES-FUSE_SITE)/$(DS101G-KERNEL-MODULES-FUSE_SOURCE)" >>$@
 	@echo "Description: $(DS101G-KERNEL-MODULES-FUSE_DESCRIPTION)" >>$@
