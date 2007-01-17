@@ -21,7 +21,7 @@ SMARTMONTOOLS_CONFLICTS=
 #
 # SMARTMONTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-SMARTMONTOOLS_IPK_VERSION=1ds101j
+SMARTMONTOOLS_IPK_VERSION=1
 
 #
 # SMARTMONTOOLS_CONFFILES should be a list of user-editable files
@@ -37,7 +37,7 @@ SMARTMONTOOLS_PATCHES=$(SMARTMONTOOLS_SOURCE_DIR)/configargs.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SMARTMONTOOLS_CPPFLAGS=-malignment-traps
+SMARTMONTOOLS_CPPFLAGS=
 SMARTMONTOOLS_LDFLAGS=
 
 #
