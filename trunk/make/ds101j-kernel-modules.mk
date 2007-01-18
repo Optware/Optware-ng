@@ -20,12 +20,12 @@ DS101J-KERNEL-MODULES_PRIORITY=optional
 DS101J-KERNEL-MODULES_DEPENDS=
 DS101J-KERNEL-MODULES_SUGGESTS=
 DS101J-KERNEL-MODULES_CONFLICTS=
-DS101J-KERNEL-MODULES=nfsd isofs loop
+DS101J-KERNEL-MODULES=nfsd isofs loop tun ethertap
 
 #
 # DS101J-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101J-KERNEL-MODULES_IPK_VERSION=1
+DS101J-KERNEL-MODULES_IPK_VERSION=2
 
 #
 # DS101J-KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -133,11 +133,12 @@ $(DS101J-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  install -d $(DS101J-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(DS101J-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
-	    echo "Package: kernel-modules-`echo $$m|sed -e 's/_/-/g'`"; \
+	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(DS101J-KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(DS101J-KERNEL-MODULES_SECTION)"; \
 	    echo "Version: $(DS101J-KERNEL-MODULES_VERSION)-$(DS101J-KERNEL-MODULES_IPK_VERSION)"; \
+	    echo "Replaces: kernel-modules-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Maintainer: $(DS101J-KERNEL-MODULES_MAINTAINER)"; \
 	    echo "Source: $(DS101J-KERNEL-MODULES_SITE)/$(DS101J-KERNEL-MODULES_SOURCE)"; \
 	    echo "Description: $(DS101J-KERNEL-MODULES_DESCRIPTION) $$m"; \
@@ -147,7 +148,7 @@ $(DS101J-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	      if test -n "$$DEPS"; \
 	      then DEPS="$$DEPS,"; \
 	      fi; \
-	      DEPS="$$DEPS kernel-modules-$$i"; \
+	      DEPS="$$DEPS kernel-module-$$i"; \
             done; \
             echo "$$DEPS";\
 	    echo "Suggests: $(DS101J-KERNEL-MODULES_SUGGESTS)"; \
@@ -169,7 +170,7 @@ $(DS101J-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(DS101J-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101J-KERNEL-MODULES_BUILD_DIR)/.built
-	rm -rf $(DS101J-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/ds101j-kernel-modules_*_$(TARGET_ARCH).ipk
+	rm -rf $(DS101J-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-module_*_$(TARGET_ARCH).ipk
 	(cd $(DS101J-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x; \
 	  export ROOTDIR=$(DS101J-KERNEL-MODULES_BUILD_DIR); \
 	  INSTALL_MOD_PATH=$(DS101J-KERNEL-MODULES_IPK_DIR)/opt $(MAKE) modules_install \
@@ -202,4 +203,4 @@ ds101j-kernel-modules-clean:
 # directories.
 #
 ds101j-kernel-modules-dirclean:
-	rm -rf $(BUILD_DIR)/$(DS101J-KERNEL-MODULES_DIR) $(DS101J-KERNEL-MODULES_BUILD_DIR) $(DS101J-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-modules-*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/$(DS101J-KERNEL-MODULES_DIR) $(DS101J-KERNEL-MODULES_BUILD_DIR) $(DS101J-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
