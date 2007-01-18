@@ -5,8 +5,7 @@
 ###########################################################
 
 MIAU_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/miau
-#MIAU_VERSION=0.5.3
-MIAU_VERSION=0.6.2
+MIAU_VERSION=0.6.3
 MIAU_SOURCE=miau-$(MIAU_VERSION).tar.gz
 MIAU_DIR=miau-$(MIAU_VERSION)
 MIAU_UNZIP=zcat
@@ -17,7 +16,7 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=17
+MIAU_IPK_VERSION=1
 
 MIAU_CONFFILES= /opt/etc/miau.conf \
 		/opt/etc/init.d/S52miau \
@@ -33,6 +32,8 @@ MIAU_BUILD_DIR=$(BUILD_DIR)/miau
 MIAU_SOURCE_DIR=$(SOURCE_DIR)/miau
 MIAU_IPK_DIR=$(BUILD_DIR)/miau-$(MIAU_VERSION)-ipk
 MIAU_IPK=$(BUILD_DIR)/miau_$(MIAU_VERSION)-$(MIAU_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: miau-source miau-unpack miau miau-stage miau-ipk miau-clean miau-dirclean miau-check
 
 $(DL_DIR)/$(MIAU_SOURCE):
 	$(WGET) -P $(DL_DIR) $(MIAU_SITE)/$(MIAU_SOURCE)
@@ -130,3 +131,6 @@ miau-clean:
 
 miau-dirclean:
 	rm -rf $(BUILD_DIR)/$(MIAU_DIR) $(MIAU_BUILD_DIR) $(MIAU_IPK_DIR) $(MIAU_IPK)
+
+miau-check: $(MIAU_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MIAU_IPK)
