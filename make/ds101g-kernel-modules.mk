@@ -23,7 +23,7 @@ DS101G-KERNEL-MODULES=videodev pwc nfsd soundcore audio rtl8150 hfc_usb \
 #
 # DS101G-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101G-KERNEL-MODULES_IPK_VERSION=4
+DS101G-KERNEL-MODULES_IPK_VERSION=5
 
 #
 # DS101G-KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -155,7 +155,7 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(DS101G-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101G-KERNEL-MODULES_BUILD_DIR)/.built
-	rm -rf $(DS101G-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/ds101g-kernel-modules_*_$(TARGET_ARCH).ipk
+	rm -rf $(DS101G-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-module_*_$(TARGET_ARCH).ipk
 	INSTALL_MOD_PATH=$(DS101G-KERNEL-MODULES_IPK_DIR)/opt \
 	$(MAKE) -C $(DS101G-KERNEL-MODULES_BUILD_DIR) modules_install
 	rm -rf $(DS101G-KERNEL-MODULES_IPK_DIR)/lib/modules/2.4.22-uc0/kernel/drivers/synobios
