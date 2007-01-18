@@ -104,15 +104,15 @@ move_to_target ()
     DEST="${TARGET}/${DIRNAME##*/}"
 
     mkdir -p "${DEST}"
-    chmod 777 "${DEST}"
-    chgrp ${GROUP} "${DEST}"
-    chown ${USER} "${DEST}"
+    chmod 775 "${DEST}"
+    grep -q ${GROUP} /etc/group && chgrp ${GROUP} "${DEST}"
+    grep -q ${USER} /etc/passwd && chown ${USER} "${DEST}"
     
     cd "${TORRENT%/*}"
     
-    chgrp ${GROUP} *
-    chown ${USER} *
-    chmod ug+rw *
+    grep -q ${GROUP} /etc/group && chgrp ${GROUP} * .info .status
+    grep -q ${USER} /etc/passwd && chown ${USER} * .info .status
+    chmod 775 * .info .status
 
     notice "Moving files to: ${DEST}"
     mv * .info .status "${DEST}"

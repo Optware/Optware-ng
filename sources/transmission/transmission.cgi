@@ -58,26 +58,35 @@ _clean_info()
     
 _update_progress()
 {
-    kill -USR1 `cat ${PIDFILE}`
-    sleep 1
-    for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
-       if [ -d "${TORRENT%/*}" ]; then
-         INFO="${TORRENT%/*}/.info"  
-         if [ -f "${INFO}" ]; then
-	    . "${INFO}"
-	   LOG="${TORRENT%/*}/.status"
-	   if [ -f "${LOG}" ]; then
-	       .  "${LOG}"
-	   else
-	       STATUS=".status not found for ${TORRENT}"
-	   fi
-         else
-	   _clean_info
-         fi
-         _write_info
-       fi
-    done
-    UPLOADED=
+    if [ -f ${PIDFILE} ]; then
+        PID=`cat ${PIDFILE}`
+        if `grep -q transmissiond /proc/${PID}/cmdline 2> /dev/null` ; then
+            kill -USR1 ${PID}
+            sleep 1     
+            for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding
+                do if [ -d "${TORRENT%/*}" ]; then
+                    INFO="${TORRENT%/*}/.info"  
+                    if [ -f "${INFO}" ]; then
+	                . "${INFO}"
+	                LOG="${TORRENT%/*}/.status"
+	                if [ -f "${LOG}" ]; then
+	                    .  "${LOG}"
+	                else
+	                    STATUS=".status not found for ${TORRENT}"
+	                fi
+                    else
+	                _clean_info
+                    fi
+                    _write_info
+                fi
+            done
+            UPLOADED=
+            return      
+        fi      
+    else 
+        echo "<p>Transmission daemon is not running.</p>"
+        echo "<p>Status not updated!</p>
+    fi
 }
 
 # Can only start torrents in WORK or TARGET
@@ -200,12 +209,14 @@ _pause ()
 {
     if [ -f "$WORK/.paused" ] ; then
 	rm "$WORK/.paused"
-	echo "Starting transmission..."
+
 	[ -e ${PIDFILE} ] && rm ${PIDFILE}
 	export HOME
 	_update_active
 	if  false ; then
-	    transmissiond -p ${LISTENING_PORT} \
+	        echo "Starting transmission daemon ..." 
+                transmissiond -p ${LISTENING_PORT} \
+                ${NAT_TRAVERSAL} \
 		-w ${WATCHDOG} \
 		-u ${UPLOAD_SPEED} \
 		-d ${DOWNLOAD_SPEED} \
@@ -218,7 +229,8 @@ _pause ()
 		echo "<p><b>Transmission daemon failed to start</b></p>" 
 	    fi
 	else
-	    echo "<p>transmission_watchdog will start Trasmission daemon</p>"
+	  echo "<p>transmission_watchdog will start Transmission daemon</p>"
+          echo "<p>Press Watchdog button to force watchdog queue processing</p>"
 	fi
     else
 	touch "$WORK/.paused"
@@ -250,7 +262,8 @@ _scrape ()
 }
 
 # Search for best done torrent and suggest seeding based on ratio
-# Not very clever at the moment
+# Not very clever at the moment. Should also include size of torrent.
+# They should be sort listed.
 _best_seed ()                     
 {                                
    BEST=0              
@@ -279,7 +292,8 @@ _best_seed ()
 # Fetch torrent from URL location given with FETCH
 _fetch()
 {
-    TORRENT=$(echo "${FETCH}" | sed 's|%20| |g;s|%3A|:|g;s|%2F|/|g;s|%3F|?|g;s|%3D|=|g;s|%26|\&|g;s|%5B|\[|g;s|%5D|\]|g;s|%28|(|g;s|%29|)|g;s|%7B|{|g;s|%7D|}|g;s|%25|%|g')
+    DUMMY=$(echo "${FETCH}" |sed 's/%/\\\\x/g')
+    TORRENT=$(echo -e "${DUMMY}")
 #    echo "<p>Fetching ${TORRENT}</p>"
     wget --quiet -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
@@ -341,7 +355,8 @@ __list ()
 	    fi
 	    TORRENT="$i"
 	    if [ -n "${SETURL}" -a "${idx}" = "${ID}" ]; then
-	       URL=`echo "${SETURL}" | sed -e 's|%3A|:|g;s|%2F|/|g;s|%3F|?|g;s|%3D|=|g;s|%23|#|g;s|%26|\&|g'`
+	       DUMMY=$(echo "${SETURL}" | sed 's/%/\\\\x/g')
+               URL=$(echo -e ${DUMMY})
 	       _write_info
 	    fi
 	    if [ -n "${URL}" ]; then
@@ -355,7 +370,8 @@ __list ()
 		[ -n "${ENDTIME}" ] && echo " End: ${ENDTIME}"
 		[ -n "${SCRAPE}" ] && echo " ${SCRAPE}"
 		if [ -n "${SETNOTE}" -a "${idx}" = "${ID}" ]; then
-		   NOTE=`echo "${SETNOTE}" | sed -e 's|+| |g;s|%3F|?|g'`
+                   DUMMY=$(echo "${SETNOTE}" | sed 's/%/\\\\x/g')
+                   NOTE=$(echo -e "${DUMMY}")
 		   _write_info
 		fi
 		[ -n "${UPLOADED}" ] && echo " uploaded: ${UPLOADED} MB" 
