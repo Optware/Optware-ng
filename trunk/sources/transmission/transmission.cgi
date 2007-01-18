@@ -84,8 +84,8 @@ _update_progress()
             return      
         fi      
     else 
-        echo "<p>Transmission daemon is not running.</p>"
-        echo "<p>Status not updated!</p>
+	echo "<p>Transmission daemon is not running.</p>"
+	echo "<p>Status not updated!</p>
     fi
 }
 
@@ -262,8 +262,7 @@ _scrape ()
 }
 
 # Search for best done torrent and suggest seeding based on ratio
-# Not very clever at the moment. Should also include size of torrent.
-# They should be sort listed.
+# Not very clever at the moment
 _best_seed ()                     
 {                                
    BEST=0              
@@ -292,8 +291,8 @@ _best_seed ()
 # Fetch torrent from URL location given with FETCH
 _fetch()
 {
-    DUMMY=$(echo "${FETCH}" |sed 's/%/\\\\x/g')
-    TORRENT=$(echo -e "${DUMMY}")
+    TORRENT=$(echo "${FETCH}" |sed 's/%/\\x/g')
+    TORRENT=$(echo -e "${TORRENT}")
 #    echo "<p>Fetching ${TORRENT}</p>"
     wget --quiet -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
@@ -355,9 +354,10 @@ __list ()
 	    fi
 	    TORRENT="$i"
 	    if [ -n "${SETURL}" -a "${idx}" = "${ID}" ]; then
-	       DUMMY=$(echo "${SETURL}" | sed 's/%/\\\\x/g')
-               URL=$(echo -e ${DUMMY})
+	       URL=$(echo "${SETURL}" | sed 's/%/\\x/g')
+               URL=$(echo -e "${URL}")
 	       _write_info
+	       SETURL=
 	    fi
 	    if [ -n "${URL}" ]; then
 	       echo "<td><a href=\"${URL}\" target=_blank>${DUMMY}</a></td>"
@@ -370,9 +370,10 @@ __list ()
 		[ -n "${ENDTIME}" ] && echo " End: ${ENDTIME}"
 		[ -n "${SCRAPE}" ] && echo " ${SCRAPE}"
 		if [ -n "${SETNOTE}" -a "${idx}" = "${ID}" ]; then
-                   DUMMY=$(echo "${SETNOTE}" | sed 's/%/\\\\x/g')
-                   NOTE=$(echo -e "${DUMMY}")
+                   NOTE=$(echo "${SETNOTE}" | sed 's/%/\\x/g')
+                   NOTE=$(echo -e "${NOTE}")
 		   _write_info
+		   SETNOTE=
 		fi
 		[ -n "${UPLOADED}" ] && echo " uploaded: ${UPLOADED} MB" 
 		[ -n "${NOTE}" ] && echo " ${NOTE}"
