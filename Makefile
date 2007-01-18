@@ -138,7 +138,7 @@ COMMON_CROSS_PACKAGES = \
 	cyrus-imapd cyrus-sasl \
 	dash dcraw denyhosts dev-pts dict digitemp dircproxy distcc dhcp diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
-	e2fsprogs e2tools eaccelerator ed ecl elinks enhanced-ctorrent esmtp esniper \
+	e2fsprogs e2tools eaccelerator ed ecl elinks endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
 	fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
