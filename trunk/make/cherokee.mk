@@ -30,14 +30,18 @@ CHEROKEE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CHEROKEE_DESCRIPTION=A flexible, very fast, lightweight web server.
 CHEROKEE_SECTION=web
 CHEROKEE_PRIORITY=optional
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+CHEROKEE_DEPENDS=libstdc++, libtasn1, gnutls, libgcrypt, pcre
+else
 CHEROKEE_DEPENDS=libtasn1, gnutls, libgcrypt, pcre
+endif
 CHEROKEE_SUGGESTS=
 CHEROKEE_CONFLICTS=
 
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=2
+CHEROKEE_IPK_VERSION=3
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -127,6 +131,9 @@ cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
 # shown below to make various patches to it.
 #
 $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE) $(CHEROKEE_PATCHES)
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
+endif
 	$(MAKE) gnutls-stage libtasn1-stage libgcrypt-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(CHEROKEE_DIR) $(CHEROKEE_BUILD_DIR)
 	$(CHEROKEE_UNZIP) $(DL_DIR)/$(CHEROKEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
