@@ -85,7 +85,7 @@ _update_progress()
         fi      
     else 
 	echo "<p>Transmission daemon is not running.</p>"
-	echo "<p>Status not updated!</p>
+	echo "<p>Status not updated!</p>"
     fi
 }
 
