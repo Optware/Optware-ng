@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = par2cmdline ds101-kernel-modules \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -284,7 +284,9 @@ MSS_BROKEN_PACKAGES = \
 	wxbase \
 
 # Packages that *only* work for ds101 - do not just put new packages here.
-DS101_SPECIFIC_PACKAGES = ds101-bootstrap
+DS101_SPECIFIC_PACKAGES = \
+	ds101-bootstrap \
+	ds101-kernel-modules \
 
 # Packages that do not work for ds101.
 # gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
