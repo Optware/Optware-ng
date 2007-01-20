@@ -36,7 +36,7 @@ MULTITAIL_CONFLICTS=
 #
 # MULTITAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-MULTITAIL_IPK_VERSION=1
+MULTITAIL_IPK_VERSION=2
 
 #
 # MULTITAIL_CONFFILES should be a list of user-editable files
@@ -191,10 +191,13 @@ $(MULTITAIL_IPK_DIR)/CONTROL/control:
 #
 $(MULTITAIL_IPK): $(MULTITAIL_BUILD_DIR)/.built
 	rm -rf $(MULTITAIL_IPK_DIR) $(BUILD_DIR)/multitail_*_$(TARGET_ARCH).ipk
-	install -d $(MULTITAIL_IPK_DIR)/opt/{bin,etc}
+	install -d $(MULTITAIL_IPK_DIR)/opt/bin
 	install -m 755 $(MULTITAIL_BUILD_DIR)/multitail $(MULTITAIL_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(MULTITAIL_IPK_DIR)/opt/bin/multitail
+	install -d $(MULTITAIL_IPK_DIR)/opt/etc
 	install -m 644 $(MULTITAIL_BUILD_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/
+	install -d $(MULTITAIL_IPK_DIR)/opt/man/man1
+	install -m 644 $(MULTITAIL_BUILD_DIR)/multitail.1 $(MULTITAIL_IPK_DIR)/opt/man/man1/
 #	install -d $(MULTITAIL_IPK_DIR)/opt/etc/
 #	install -m 644 $(MULTITAIL_SOURCE_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/multitail.conf
 #	install -d $(MULTITAIL_IPK_DIR)/opt/etc/init.d
