@@ -294,7 +294,7 @@ _fetch()
     TORRENT=$(echo "${FETCH}" |sed 's/%/\\x/g')
     TORRENT=$(echo -e "${TORRENT}")
 #    echo "<p>Fetching ${TORRENT}</p>"
-    wget --quiet -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
+    wget -q -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
 
 # Sub for directory search
