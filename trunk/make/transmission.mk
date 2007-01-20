@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.6
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1378
+TRANSMISSION_SVN_REV=1417
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -38,7 +38,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=5
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -221,6 +221,7 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -m 666 $(TRANSMISSION_SOURCE_DIR)/README.daemon $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+	install -d $(TRANSMISSION_IPK_DIR)/opt/var/log
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/postinst $(TRANSMISSION_IPK_DIR)/CONTROL/postinst

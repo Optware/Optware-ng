@@ -68,45 +68,6 @@ A:*
 .asp:text/html
 __EOF__
   fi
-
-if [ ! -e /opt/share/www/index.html ]; then
-   cat > ${INDEX} << __EOF__
-<html>
- <head>
-   <title>Transmission</title>
-</head>
-<body>
-<h1><img align=center src=http://transmission.m0k.org/forum/templates/subSilver//images/logo_phpBB.gif>
-Transmission</h1>
-<a href=cgi-bin/transmission.cgi>Transmission daemon CGI interface</a>
-
-<h2>About Transmission</h2>
-
-<p>Transmission is a free, lightweight BitTorrent client. It features a
-simple, intuitive interface on top on an efficient, cross-platform
-back-end.</p>
-
-<p>Transmission is open source (MIT license) and runs on Mac OS X (Cocoa
-interface), Linux/NetBSD/FreeBSD/OpenBSD (GTK+ interface) and BeOS
-(native interface).</p>
-
-<h2>Support</h2>
-
-<p>Need help? Read <tt>/opt/share/doc/transmission/README.daemon</tt> notes.
-Try the <a href="forum/">forums</a> or the
-<a href="irc://irc.freenode.net/transmission">IRC channel</a>.</p>
-
-<hr>
-<br>
-<a href="http://hp15c.org">Bring Back The
-<img src="http://hp15c.org/hp15cBadge.jpg" ALT="HP 15C" align=absmiddle></a>
-<a href='http://www.nslu2-linux.org/wiki'>
-   <img src='http://www.nslu2-linux.org/wiki/pub/skins/nslu/nslu.gif'
-   alt='NSLU2-Linux' border='0' align=absmiddle></a>
-</body>
-</html>
-__EOF__
-fi
 }
 
 start() {
