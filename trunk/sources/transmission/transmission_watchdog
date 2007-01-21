@@ -226,6 +226,7 @@ _update_active()
     if [ -n "`ls ${TARGET}/*/*.seeding 2>/dev/null | head -n 1`" ] ; then
 	ls -1  ${TARGET}/*/*.seeding >> ${ACTIVE}
     fi
+    [ ! -e ${ACTIVE} ] && touch ${ACTIVE}
     [ -f ${PIDFILE} ] && kill -HUP `cat ${PIDFILE}` 
 }
 
