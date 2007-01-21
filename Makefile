@@ -54,7 +54,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = libao scponly gkrellm parted lumikki mini_httpd
 PERL_PACKAGES = \
 	perl \
 	perl-algorithm-diff \
-	perl-appconfig \
+	perl-appconfig perl-assp \
 	perl-berkeleydb \
 	perl-archive-tar perl-archive-zip \
 	perl-business-isbn-data perl-business-isbn \
