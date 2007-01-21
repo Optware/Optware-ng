@@ -36,7 +36,7 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=1
+VNSTAT_IPK_VERSION=2
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ VNSTAT_IPK_VERSION=1
 # VNSTAT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# VNSTAT_PATCHES=$(VNSTAT_SOURCE_DIR)/Makefile.patch
+VNSTAT_PATCHES=$(VNSTAT_SOURCE_DIR)/vnstat.h.patch
 
 #
 # If the compilation of the package requires additional

@@ -1,0 +1,11 @@
+--- vnstat/src/vnstat.h.orig	2007-01-21 20:09:06.000000000 +0100
++++ vnstat/src/vnstat.h	2007-01-21 20:09:33.000000000 +0100
+@@ -34,7 +34,7 @@
+ #define DEFQMODE "0"
+ 
+ /* how much the boot time can variate between updates (seconds) */
+-#define BVAR "15"
++#define BVAR "100"
+ 
+ /* database version */
+ /* 1 = 1.0, 2 = 1.1-1.2, 3 = 1.3*/
