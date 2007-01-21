@@ -1,0 +1,18 @@
+#!/bin/sh
+
+LOOP=/dev/loop
+#default number of loop devices
+LOOPMAX=8
+i=0
+echo checking for $LOOPMAX loopdevices
+while [ $i -lt $LOOPMAX ] ; do
+  if [ ! -e ${LOOP}$i ] ; then
+    echo creating ${LOOP}$i
+    mknod ${LOOP}$i b 7 $i
+  fi
+  i=` expr $i + 1` 
+done
+
+# insert all additional modules 
+
+insmod -f /opt/lib/modules/loop.o
