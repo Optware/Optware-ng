@@ -9,7 +9,7 @@
 # is libdb4.2, libdb4.2-dev, libpcre3, libpcre3-dev
 
 POSTFIX_SITE=ftp://netmirror.org/postfix.org/official
-POSTFIX_VERSION=2.3.5
+POSTFIX_VERSION=2.3.6
 POSTFIX_SOURCE=postfix-$(POSTFIX_VERSION).tar.gz
 POSTFIX_DIR=postfix-$(POSTFIX_VERSION)
 POSTFIX_UNZIP=zcat
@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=2
+POSTFIX_IPK_VERSION=1
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
