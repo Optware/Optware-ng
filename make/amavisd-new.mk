@@ -17,7 +17,7 @@ AMAVISD-NEW_DEPENDS=perl-archive-tar, perl-archive-zip, perl-compress-zlib, \
   perl-convert-tnef, perl-convert-uulib, perl-digest-perl-md5, \
   perl-io-multiplex, perl-io-socket-ssl, perl-io-stringy, perl-io-zlib, \
   perl-mailtools, perl-mime-tools, perl-net-server, perl-unix-syslog, \
-  perl-berkeleydb, perl-uri, spamassassin, bzip2, file
+  perl-berkeleydb, perl-uri, spamassassin, bzip2, file, net-tools
 AMAVISD-NEW_SUGGESTS=perl-net-cidr-lite, perl-net-dns, perl-sys-hostname-long, \
   perl-mail-spf-query, cpio, unrar, gzip, tnef, zoo, lha, arc, unarj
 AMAVISD-NEW_CONFLICTS=
@@ -25,7 +25,7 @@ AMAVISD-NEW_CONFLICTS=
 #
 # AMAVISD-NEW_IPK_VERSION should be incremented when the ipk changes.
 #
-AMAVISD-NEW_IPK_VERSION=1
+AMAVISD-NEW_IPK_VERSION=2
 
 #
 # AMAVISD-NEW_CONFFILES should be a list of user-editable files
