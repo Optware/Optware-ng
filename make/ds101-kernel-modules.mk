@@ -29,7 +29,7 @@ DS101-KERNEL-MODULES_IPK_VERSION=2
 
 #
 # DS101-KERNEL-MODULES_CONFFILES should be a list of user-editable files
-#DS101-KERNEL-MODULES_CONFFILES=/opt/etc/ds101-kernel-modules.conf /opt/etc/init.d/SXXds101j-kernel-modules
+#DS101-KERNEL-MODULES_CONFFILES=/opt/etc/ds101-kernel-modules.conf /opt/etc/init.d/SXXds101-kernel-modules
 
 #
 # DS101-KERNEL-MODULES_PATCHES should list any patches, in the the order in
@@ -48,6 +48,7 @@ DS101-KERNEL-MODULES_BUILD_DIR=$(BUILD_DIR)/ds101-kernel-modules
 DS101-KERNEL-MODULES_SOURCE_DIR=$(SOURCE_DIR)/ds101-kernel-modules
 DS101-KERNEL-MODULES_IPK_DIR=$(BUILD_DIR)/ds101-kernel-modules-$(DS101-KERNEL-MODULES_VERSION)-ipk
 DS101-KERNEL-MODULES_IPK=$(BUILD_DIR)/ds101-kernel-modules_$(DS101-KERNEL-MODULES_VERSION)-$(DS101-KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
+DS101-KERNEL-MODULES_SCRIPTS=$(shell ls $(DS101-KERNEL-MODULES_SOURCE_DIR)/S*mod_*)
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -63,16 +64,9 @@ $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE):
 #
 ds101-kernel-modules-source: $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) $(DS101-KERNEL-MODULES_PATCHES)
 
-$(DS101-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) $(DS101-KERNEL-MODULES_PATCHES) make/ds101-kernel-modules.mk
-	rm -rf $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) $(DS101-KERNEL-MODULES_BUILD_DIR)
-	$(DS101-KERNEL-MODULES_UNZIP) $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) | tar -C $(BUILD_DIR) -xvf - source/uclinux2422
-	if test -n "$(DS101-KERNEL-MODULES_PATCHES)" ; \
-		then cat $(DS101-KERNEL-MODULES_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) -p1 ; \
-	fi
-	if test "$(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR)" != "$(DS101-KERNEL-MODULES_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) $(DS101-KERNEL-MODULES_BUILD_DIR) ; \
-	fi
+$(DS101-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) $(DS101-KERNEL-MODULES_PATCHES) make/ds101-kernel-modules.mk \
+        $(DS101-KERNEL-MODULES_BUILD_DIR)/.unpacked \
+        $(DS101-KERNEL-MODULES_SOURCE_DIR)/armeb-config
 	(cd $(DS101-KERNEL-MODULES_BUILD_DIR); \
 	  rm -f IXP400lib; \
 	  ln -sf vendors/Intel/IXDP425/ixp400-1.3 IXP400lib; \
@@ -95,7 +89,19 @@ $(DS101-KERNEL-MODULES_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101-KERNEL-MODULES_
 	)
 	touch $(DS101-KERNEL-MODULES_BUILD_DIR)/.configured
 
-ds101-kernel-modules-unpack: $(DS101-KERNEL-MODULES_BUILD_DIR)/.configured
+$(DS101-KERNEL-MODULES_BUILD_DIR)/.unpacked: $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) $(DS101-KERNEL-MODULES_PATCHES)
+	rm -rf $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) $(DS101-KERNEL-MODULES_BUILD_DIR)
+	$(DS101-KERNEL-MODULES_UNZIP) $(DL_DIR)/$(DS101-KERNEL-MODULES_SOURCE) | tar -C $(BUILD_DIR) -xvf - source/uclinux2422
+	if test -n "$(DS101-KERNEL-MODULES_PATCHES)" ; \
+		then cat $(DS101-KERNEL-MODULES_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR)" != "$(DS101-KERNEL-MODULES_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(DS101-KERNEL-MODULES_DIR) $(DS101-KERNEL-MODULES_BUILD_DIR) ; \
+	fi
+	touch $(DS101-KERNEL-MODULES_BUILD_DIR)/.unpacked
+
+ds101-kernel-modules-unpack: $(DS101-KERNEL-MODULES_BUILD_DIR)/.unpacked
 
 #
 # This builds the actual binary.
@@ -154,6 +160,13 @@ $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Suggests: $(DS101-KERNEL-MODULES_SUGGESTS)"; \
 	    echo "Conflicts: $(DS101-KERNEL-MODULES_CONFLICTS)"; \
 	  ) >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
+	  echo "#! /bin/sh" > $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/postinst ;\
+	  echo "echo running /opt/etc/init.d/S01mod_$$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/postinst ;\
+	  echo "/opt/etc/init.d/S01mod_$$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/postinst ;\
+	  echo "#! /bin/sh" > $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
+	  echo "echo trying rmmod $$m" > $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
+	  echo "rmmod $$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
+	  echo "exit 0" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
 	done
 	install -d $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL; \
 	touch $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control
@@ -169,7 +182,7 @@ $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DS101-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101-KERNEL-MODULES_BUILD_DIR)/.built
+$(DS101-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101-KERNEL-MODULES_BUILD_DIR)/.built $(DS101-KERNEL-MODULES_SCRIPTS)
 	rm -rf $(DS101-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-module_*_$(TARGET_ARCH).ipk
 	(cd $(DS101-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x; \
 	  export ROOTDIR=$(DS101-KERNEL-MODULES_BUILD_DIR); \
@@ -179,6 +192,11 @@ $(DS101-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101-KERNEL-MODULES_BUILD_DIR)/.b
 	for m in $(DS101-KERNEL-MODULES); do \
 	  install -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
 	  install -m 644 `find $(DS101-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  install -d $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d; \
+	  if [ -f $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_$$m ] ; then \
+		install -m 755  $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_$$m $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d; \
+	  else 	install -m 755  $(DS101-KERNEL-MODULES_SOURCE_DIR)/S01mod_generic $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/opt/etc/init.d/S01mod_$$m; \
+	  fi;\
 	done
 	$(MAKE) $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(DS101-KERNEL-MODULES); do \
