@@ -36,7 +36,7 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=2
+VNSTAT_IPK_VERSION=3
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
