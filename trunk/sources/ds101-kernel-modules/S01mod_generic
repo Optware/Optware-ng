@@ -1,0 +1,5 @@
+#!/bin/sh
+#generic module loader
+#will load kernel module determined from name S01mod_<module>
+module=`echo $0 | sed 's/^[^_]*_//'`
+insmod -f /opt/lib/modules/$module.o
