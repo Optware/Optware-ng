@@ -1,6 +1,9 @@
 #!/bin/sh
 
-addgroup clamav 2>/dev/null
-adduser -s /dev/null -H -h /opt/share/clamav -D -G clamav clamav 2>/dev/null
+if [ ! -e /opt/var/log/freshclam.log ]; then
+  touch /opt/var/log/freshclam.log
+  chown clamav:clamav /opt/var/log/freshclam.log
+fi
 
+/opt/bin/freshclam --checks=24 --daemon --user=clamav --log=/opt/var/log/freshclam.log
 
