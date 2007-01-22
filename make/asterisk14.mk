@@ -30,13 +30,17 @@ ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK14_SECTION=util
 ASTERISK14_PRIORITY=optional
 ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++
-ASTERISK14_SUGGESTS=asterisk14-gui
+ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
+
+#ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/trunk
+#ASTERISK14_SVN_REV=51347
+#ASTERISK14_VERSION=1.4.0svn-r$(ASTERISK14_SVN_REV)
 
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=4
+ASTERISK14_IPK_VERSION=5
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -47,8 +51,7 @@ ASTERISK14_IPK_VERSION=4
 # which they should be applied to the source code.
 #
 ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch\
-			$(ASTERISK14_SOURCE_DIR)/gsm.patch\
-			$(ASTERISK14_SOURCE_DIR)/configs.patch
+			$(ASTERISK14_SOURCE_DIR)/gsm.patch
 
 #
 # If the compilation of the package requires additional
@@ -83,6 +86,13 @@ ASTERISK14_IPK=$(BUILD_DIR)/asterisk14_$(ASTERISK14_VERSION)-$(ASTERISK14_IPK_VE
 #
 $(DL_DIR)/$(ASTERISK14_SOURCE):
 	$(WGET) -P $(DL_DIR) $(ASTERISK14_SITE)/$(ASTERISK14_SOURCE)
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(ASTERISK14_DIR) && \
+#		svn co -r $(ASTERISK14_SVN_REV) $(ASTERISK14_SVN) \
+#			$(ASTERISK14_DIR) && \
+#		tar -czf $@ $(ASTERISK14_DIR) && \
+#		rm -rf $(ASTERISK14_DIR) \
+#	)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,7 +120,7 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -120,6 +130,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
 	fi
+
 	(cd $(ASTERISK14_BUILD_DIR)/menuselect; \
 		./configure \
 	)
@@ -161,6 +172,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--without-tds \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--without-postgres \
+		--with-iksemel=$(STAGING_PREFIX) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
@@ -234,10 +246,17 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(ASTERISK14_IPK_DIR) ASTSBINDIR=/opt/sbin install
 	NOISY_BUILD=yes \
 	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(ASTERISK14_IPK_DIR) samples
+
 	mv $(ASTERISK14_IPK_DIR)/opt/etc/asterisk $(ASTERISK14_IPK_DIR)/opt/etc/samples
 	install -d $(ASTERISK14_IPK_DIR)/opt/etc/asterisk
 	mv $(ASTERISK14_IPK_DIR)/opt/etc/samples $(ASTERISK14_IPK_DIR)/opt/etc/asterisk
+	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
+	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
+	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
+	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
+
 	$(MAKE) $(ASTERISK14_IPK_DIR)/CONTROL/control
+
 	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
