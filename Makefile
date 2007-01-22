@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = iksemel \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -148,7 +148,7 @@ COMMON_CROSS_PACKAGES = \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	hdparm hexcurse heyu hnb hpijs htop \
-	ice id3lib indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
+	ice id3lib iksemel indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
 	kissdx knock \

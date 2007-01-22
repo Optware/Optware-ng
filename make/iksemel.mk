@@ -190,10 +190,6 @@ $(IKSEMEL_IPK): $(IKSEMEL_BUILD_DIR)/.built
 	rm -rf $(IKSEMEL_IPK_DIR) $(BUILD_DIR)/iksemel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IKSEMEL_BUILD_DIR) DESTDIR=$(IKSEMEL_IPK_DIR) install
 	$(MAKE) $(IKSEMEL_IPK_DIR)/CONTROL/control
-	        for filetostrip in $(ASTERISK14_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
-		                $(STRIP_COMMAND) $$filetostrip; \
-				        done
-
 	for filetostrip in $(IKSEMEL_IPK_DIR)/opt/bin/ikslint \
 				$(IKSEMEL_IPK_DIR)/opt/bin/iksperf \
 				$(IKSEMEL_IPK_DIR)/opt/bin/iksroster \
