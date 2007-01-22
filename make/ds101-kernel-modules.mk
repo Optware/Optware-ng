@@ -25,7 +25,7 @@ DS101-KERNEL-MODULES=nfsd isofs loop tun ethertap
 #
 # DS101-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101-KERNEL-MODULES_IPK_VERSION=2
+DS101-KERNEL-MODULES_IPK_VERSION=3
 
 #
 # DS101-KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -164,7 +164,7 @@ $(DS101-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "echo running /opt/etc/init.d/S01mod_$$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/postinst ;\
 	  echo "/opt/etc/init.d/S01mod_$$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/postinst ;\
 	  echo "#! /bin/sh" > $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
-	  echo "echo trying rmmod $$m" > $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
+	  echo "echo trying rmmod $$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
 	  echo "rmmod $$m" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
 	  echo "exit 0" >> $(DS101-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/prerm ;\
 	done
