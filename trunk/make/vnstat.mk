@@ -36,11 +36,11 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=3
+VNSTAT_IPK_VERSION=4
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
-#VNSTAT_CONFFILES=/opt/etc/vnstat.conf /opt/etc/init.d/SXXvnstat
+VNSTAT_CONFFILES=/opt/etc/cron.d/vnstat
 
 #
 # VNSTAT_PATCHES should list any patches, in the the order in
@@ -184,6 +184,7 @@ $(VNSTAT_IPK): $(VNSTAT_BUILD_DIR)/.built
 	rm -rf $(VNSTAT_IPK_DIR) $(BUILD_DIR)/vnstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(VNSTAT_IPK_DIR) install
 	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)/opt/bin/vnstat
+	chmod 600 $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
 #	install -d $(VNSTAT_IPK_DIR)/opt/etc/
 #	install -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)/opt/etc/vnstat.conf
 #	install -d $(VNSTAT_IPK_DIR)/opt/etc/init.d
@@ -194,7 +195,7 @@ $(VNSTAT_IPK): $(VNSTAT_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(VNSTAT_SOURCE_DIR)/prerm $(VNSTAT_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
-#	echo $(VNSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(VNSTAT_IPK_DIR)/CONTROL/conffiles
+	echo $(VNSTAT_CONFFILES) | sed -e 's/ /\n/g' > $(VNSTAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VNSTAT_IPK_DIR)
 
 #
