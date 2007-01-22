@@ -1,0 +1,9 @@
+#!/bin/sh
+echo "Testing Electric Fence."
+if /opt/bin/eftest && /opt/bin/tstheap 3072 ; then
+  echo ""
+  echo "Electric Fence confidence test PASSED." 
+  echo ""
+else
+  echo "Electric Fence confidence test FAILED!"
+fi
