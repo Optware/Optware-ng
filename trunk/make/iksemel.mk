@@ -30,14 +30,14 @@ IKSEMEL_DESCRIPTION=iksemel is an XML (eXtensible Markup Language) \
 parser library designed for Jabber applications
 IKSEMEL_SECTION=lib
 IKSEMEL_PRIORITY=optional
-IKSEMEL_DEPENDS=
+IKSEMEL_DEPENDS=gnutls
 IKSEMEL_SUGGESTS=
 IKSEMEL_CONFLICTS=
 
 #
 # IKSEMEL_IPK_VERSION should be incremented when the ipk changes.
 #
-IKSEMEL_IPK_VERSION=1
+IKSEMEL_IPK_VERSION=2
 
 #
 # IKSEMEL_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ iksemel-source: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES)
 # shown below to make various patches to it.
 #
 $(IKSEMEL_BUILD_DIR)/.configured: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES) make/iksemel.mk
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) gnutls-stage
 	rm -rf $(BUILD_DIR)/$(IKSEMEL_DIR) $(IKSEMEL_BUILD_DIR)
 	$(IKSEMEL_UNZIP) $(DL_DIR)/$(IKSEMEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IKSEMEL_PATCHES)" ; \
@@ -126,6 +126,7 @@ $(IKSEMEL_BUILD_DIR)/.configured: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--with-libgnutls-prefix=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(IKSEMEL_BUILD_DIR)/libtool
 	touch $(IKSEMEL_BUILD_DIR)/.configured
