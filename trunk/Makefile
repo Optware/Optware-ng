@@ -37,13 +37,12 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # lftp - segfault even with native build, upstream bug?
-# libao - has runtime trouble
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
-PACKAGES_THAT_NEED_TO_BE_FIXED = libao scponly gkrellm parted lumikki mini_httpd \
+PACKAGES_THAT_NEED_TO_BE_FIXED = scponly gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
 	libextractor \
@@ -125,6 +124,7 @@ ASTERISK_PACKAGES = \
 	asterisk14 asterisk14-extra-sounds-en-gsm asterisk14-gui \
 	asterisk14-core-sounds-en-ulaw asterisk14-extra-sounds-en-ulaw \
 
+# libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb apache apr apr-util arc \
 	$(ASTERISK_PACKAGES) \
@@ -153,7 +153,7 @@ COMMON_CROSS_PACKAGES = \
 	jabberd jamvm jikes jove joe \
 	kissdx knock \
 	lame ldconfig less lha \
-	liba52 libart libbt libcapi20 libcurl libdb libdvb libdvbpsi libdvdread \
+	liba52 libao libart libbt libcapi20 libcurl libdb libdvb libdvbpsi libdvdread \
 	libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpeg2 libmrss libnsl libnxml \

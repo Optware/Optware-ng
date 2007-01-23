@@ -41,7 +41,7 @@ LIBAO_CONFLICTS=
 #
 # LIBAO_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBAO_IPK_VERSION=1
+LIBAO_IPK_VERSION=2
 
 #
 # LIBAO_CONFFILES should be a list of user-editable files
@@ -149,6 +149,7 @@ libao: $(LIBAO_BUILD_DIR)/.built
 $(LIBAO_BUILD_DIR)/.staged: $(LIBAO_BUILD_DIR)/.built
 	rm -f $(LIBAO_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBAO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ao.pc
 	touch $(LIBAO_BUILD_DIR)/.staged
 
 libao-stage: $(LIBAO_BUILD_DIR)/.staged
