@@ -6,7 +6,7 @@
 
 UNFS3_DIR:=$(BUILD_DIR)/unfs3
 
-UNFS3_VERSION=0.9.13
+UNFS3_VERSION=0.9.17
 UNFS3=unfs3-$(UNFS3_VERSION)
 UNFS3_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/unfs3
 UNFS3_SOURCE:=$(UNFS3).tar.gz
@@ -19,6 +19,8 @@ UNFS3_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
 UNFS3_SECTION=net
 UNFS3_PRIORITY=optional
 UNFS3_DESCRIPTION=Version 3 NFS server (not recommended, use nfs-utils instead)
+
+.PHONY: unfs3-source unfs3-unpack unfs3 unfs3-stage unfs3-ipk unfs3-clean unfs3-dirclean unfs3-check
 
 $(DL_DIR)/$(UNFS3_SOURCE):
 	$(WGET) -P $(DL_DIR) $(UNFS3_SITE)/$(UNFS3_SOURCE)
@@ -78,3 +80,6 @@ unfs3-clean:
 
 unfs3-dirclean:
 	rm -rf $(UNFS3_DIR) $(UNFS3_IPK_DIR) $(UNFS3_IPK)
+
+unfs3-check: $(UNFS3_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNFS3_IPK)
