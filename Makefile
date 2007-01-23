@@ -174,7 +174,7 @@ COMMON_CROSS_PACKAGES = \
 	qemu qemu-libc-i386 quagga quickie quilt \
 	rc rcs rdate readline recode recordext renderext rlfe rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
-	sablevm samba sane-backends scons sdl sendmail ser setserial \
+	sablevm samba samba2 sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
 	screen sdparm sed smartmontools socat sqlite sqlite2 \
 	sqsh squeak squid srelay strace stunnel streamripper sudo swi-prolog svn \

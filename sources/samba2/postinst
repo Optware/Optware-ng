@@ -1,0 +1,13 @@
+#!/bin/sh
+echo "Installing 'swat 901/tcp' to /etc/services ..."
+grep -q swat /etc/services 2> /dev/null || echo "swat 901/tcp" >> /etc/services
+
+echo "Please edit config (/opt/etc/samba/smb.conf)."
+echo "After verify your smb.conf file with command testparm, "
+echo "modify and execute /opt/etc/init.d/S80samba to activate the samba."
+echo "Test Samba daemons with smbclient -L localhost -N"
+echo ""
+echo "WWW admin and reading documentation is possible if xinetd is installed."
+grep -q '^admin:' /etc/passwd && echo "Change user to 'admin' in /opt/etc/xinetd.d/swat"
+echo "Point your browser to eg. http://192.168.1.1:901/ to access SWAT server."
+
