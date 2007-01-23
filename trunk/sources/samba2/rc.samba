@@ -1,0 +1,21 @@
+#!/bin/sh
+
+
+if [ -n "`pidof smbd`" ] ; then
+    echo "Stopping smbd:"
+    killall smbd
+fi
+
+if [ -n "`pidof nmbd`" ] ; then
+    echo "Stopping nmbd:"
+    killall nmbd
+fi
+
+#sleep 2
+
+echo "Starting smbd:"
+/opt/sbin/smbd -D;
+echo "Starting nmbd:"
+/opt/sbin/nmbd -D;
+
+
