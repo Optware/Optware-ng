@@ -1,0 +1,18 @@
+--- config.c	2007-01-23 23:22:30.937500000 +0100
++++ patched/config.c	2007-01-23 23:24:17.953125000 +0100
+@@ -91,12 +91,12 @@
+ 			snprintf(buffer, sizeof(buffer), "%s/.kissd.conf", home);
+ 			configpath = buffer;
+ 			if ((f = fopen(configpath, "r")) == NULL) {
+-				configpath = "/etc/kissdx.conf";
++				configpath = "/opt/etc/kissdx.conf";
+ 				if ((f = fopen(configpath, "r")) == NULL) {
+-					configpath = "/etc/kissd.conf";
++					configpath = "/opt/etc/kissd.conf";
+ 					if ((f = fopen(configpath, "r")) == NULL) {
+ 						log0("config file not found!");
+-						log0("searched $HOME/ and /etc/ for kissdx.conf and kissd.conf");
++						log0("searched $HOME/ and /opt/etc/ for kissdx.conf and kissd.conf");
+ 						return 1;
+ 					}
+ 				}

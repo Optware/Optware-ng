@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 KISSDX_SITE=http://kissdx.vidartysse.net
-KISSDX_VERSION=0.13-8b
+KISSDX_VERSION=0.13-10
 KISSDX_SOURCE=kissdx-$(KISSDX_VERSION).tar.gz
 KISSDX_DIR=kissdx-$(KISSDX_VERSION)
 KISSDX_UNZIP=zcat
@@ -31,7 +31,7 @@ KISSDX_DESCRIPTION=kissdx is a PC-Link clone for KiSS media players with added f
 KISSDX_SECTION=net
 KISSDX_PRIORITY=optional
 KISSDX_DEPENDS=libdvdread,libjpeg
-KISSDX_SUGGESTS=
+KISSDX_SUGGESTS=gconv-modules
 KISSDX_CONFLICTS=
 
 #
@@ -48,9 +48,9 @@ KISSDX_CONFFILES=/opt/etc/kissdx.conf /opt/etc/init.d/S83kissdx
 # which they should be applied to the source code.
 #
 ifeq ($(OPTWARE_TARGET),wl500g)
-KISSDX_PATCHES=${KISSDX_SOURCE_DIR}/kissdx.c.patch ${KISSDX_SOURCE_DIR}/kissdx.conf.patch ${KISSDX_SOURCE_DIR}/piccache.c_wl500g.patch ${KISSDX_SOURCE_DIR}/utils.c_wl500g.patch
+KISSDX_PATCHES=${KISSDX_SOURCE_DIR}/config.c.patch ${KISSDX_SOURCE_DIR}/kissdx.1.patch ${KISSDX_SOURCE_DIR}/kissdx.conf.patch ${KISSDX_SOURCE_DIR}/piccache.c_wl500g.patch ${KISSDX_SOURCE_DIR}/utils.c_wl500g.patch
 else
-KISSDX_PATCHES=${KISSDX_SOURCE_DIR}/kissdx.c.patch ${KISSDX_SOURCE_DIR}/kissdx.conf.patch
+KISSDX_PATCHES=${KISSDX_SOURCE_DIR}/config.c.patch ${KISSDX_SOURCE_DIR}/kissdx.1.patch ${KISSDX_SOURCE_DIR}/kissdx.conf.patch
 endif
 
 #
@@ -119,7 +119,7 @@ $(KISSDX_BUILD_DIR)/.configured: $(DL_DIR)/$(KISSDX_SOURCE) $(KISSDX_PATCHES) ma
 	if test "$(BUILD_DIR)/$(KISSDX_DIR)" != "$(KISSDX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KISSDX_DIR) $(KISSDX_BUILD_DIR) ; \
 	fi
-#	(cd $(KISSDX_BUILD_DIR); \
+	(cd $(KISSDX_BUILD_DIR); \
 #		$(TARGET_CONFIGURE_OPTS) \
 #		CPPFLAGS="$(STAGING_CPPFLAGS) $(KISSDX_CPPFLAGS)" \
 #		LDFLAGS="$(STAGING_LDFLAGS) $(KISSDX_LDFLAGS)" \
@@ -130,7 +130,7 @@ $(KISSDX_BUILD_DIR)/.configured: $(DL_DIR)/$(KISSDX_SOURCE) $(KISSDX_PATCHES) ma
 #		--prefix=/opt \
 #		--disable-nls \
 #		--disable-static \
-#	)
+	)
 	rm -f $(KISSDX_BUILD_DIR)/Makefile
 	mv $(KISSDX_BUILD_DIR)/Makefile-Unslung $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#CFLAGS = #CFLAGS = ${STAGING_CPPFLAGS} ${KISSDX_CPPFLAGS} #" $(KISSDX_BUILD_DIR)/Makefile
