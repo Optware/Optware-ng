@@ -1,0 +1,20 @@
+--- kissdx.1	2007-01-12 20:01:07.656000000 +0100
++++ patched/kissdx.1	2007-01-23 23:24:36.500000000 +0100
+@@ -32,7 +32,7 @@
+ .TP
+ .B \-c, --config=FILE
+ Use the specified configuration file instead of searching for
+-kissdx.conf or kissd.conf in $HOME/ and /etc/.
++kissdx.conf or kissd.conf in $HOME/ and /opt/etc/.
+ .TP
+ .B \-d, --daemon
+ Start in daemon mode (fork into background and redirect all logs
+@@ -50,7 +50,7 @@
+ .PP
+ .B $HOME/.kissdx.conf
+ .br
+-.B /etc/kissdx.conf
++.B /opt/etc/kissdx.conf
+ .br
+ configuration file for kissdx (searched in this order)
+ .SH AUTHOR

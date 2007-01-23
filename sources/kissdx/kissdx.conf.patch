@@ -1,6 +1,5 @@
-diff -ur kissdx.conf patched/kissdx.conf
---- kissdx.conf	2006-11-24 22:54:04.250000000 +0100
-+++ patched/kissdx.conf	2006-11-30 21:00:36.609375000 +0100
+--- kissdx.conf	2007-01-23 23:22:31.000000000 +0100
++++ patched/kissdx.conf	2007-01-23 23:26:19.390625000 +0100
 @@ -8,7 +8,7 @@
  # Path for persistent storage of info by kissdx.
  # The [Recently used] feature and the picture caching feature will store data here.
