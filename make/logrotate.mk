@@ -28,7 +28,7 @@ LOGROTATE_DEPENDS=popt
 #
 # LOGROTATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LOGROTATE_IPK_VERSION=3
+LOGROTATE_IPK_VERSION=4
 
 #
 # LOGROTATE_CONFFILES should be a list of user-editable files
@@ -60,6 +60,8 @@ LOGROTATE_BUILD_DIR=$(BUILD_DIR)/logrotate
 LOGROTATE_SOURCE_DIR=$(SOURCE_DIR)/logrotate
 LOGROTATE_IPK_DIR=$(BUILD_DIR)/logrotate-$(LOGROTATE_VERSION)-ipk
 LOGROTATE_IPK=$(BUILD_DIR)/logrotate_$(LOGROTATE_VERSION)-$(LOGROTATE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: logrotate-source logrotate-unpack logrotate logrotate-stage logrotate-ipk logrotate-clean logrotate-dirclean logrotate-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -153,6 +155,8 @@ $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
 	install -d $(LOGROTATE_IPK_DIR)/opt/etc
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.conf
+	install -d $(LOGROTATE_IPK_DIR)/opt/man/man8
+	install -m 644 $(LOGROTATE_BUILD_DIR)/logrotate.8 $(LOGROTATE_IPK_DIR)/opt/man/man8
 	$(MAKE) $(LOGROTATE_IPK_DIR)/CONTROL/control
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm
@@ -176,3 +180,9 @@ logrotate-clean:
 #
 logrotate-dirclean:
 	rm -rf $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR) $(LOGROTATE_IPK_DIR) $(LOGROTATE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+logrotate-check: $(LOGROTATE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LOGROTATE_IPK)
