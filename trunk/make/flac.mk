@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FLAC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flac
-FLAC_VERSION=1.1.2
+FLAC_VERSION=1.1.3
 FLAC_SOURCE=flac-$(FLAC_VERSION).tar.gz
 FLAC_DIR=flac-$(FLAC_VERSION)
 FLAC_UNZIP=zcat
@@ -28,14 +28,14 @@ FLAC_MAINTAINER=Josh Coalson <jcoalson@users.sourceforge.net>
 FLAC_DESCRIPTION=FLAC is a free lossless audio codec.  This package contains the codec libraries and the command-line tools flac and metaflac.
 FLAC_SECTION=compression
 FLAC_PRIORITY=optional
-FLAC_DEPENDS=
+FLAC_DEPENDS=libogg
 FLAC_SUGGESTS=
 FLAC_CONFLICTS=
 
 #
 # FLAC_IPK_VERSION should be incremented when the ipk changes.
 #
-FLAC_IPK_VERSION=4
+FLAC_IPK_VERSION=1
 
 #
 # FLAC_CONFFILES should be a list of user-editable files
@@ -45,7 +45,7 @@ FLAC_CONFFILES=
 # FLAC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FLAC_PATCHES=$(FLAC_SOURCE_DIR)/configure.patch
+#FLAC_PATCHES=$(FLAC_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -99,12 +99,14 @@ flac-source: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
-	#[JEC] we need libogg-1.1.2 but right now there's only libogg-1.0
-	#$(MAKE) libogg-stage
+$(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES) make/flac.mk
+	rm -rf $(STAGING_INCLUDE_DIR)/FLAC*
+	$(MAKE) libogg-stage
 	rm -rf $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR)
 	$(FLAC_UNZIP) $(DL_DIR)/$(FLAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0
+	if test -n "$(FLAC_PATCHES)"; \
+		then cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR)
 	(cd $(FLAC_BUILD_DIR); \
 		sed -i -e '/LOCAL_EXTRA_LDFLAGS.*read_only_relocs/d' src/libFLAC/Makefile.in; \
@@ -116,8 +118,9 @@ $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-ogg=$(STAGING_PREFIX) \
+		--without-xmms \
 		--disable-nls \
-		--without-ogg \
 	)
 	touch $(FLAC_BUILD_DIR)/.configured
 
