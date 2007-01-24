@@ -141,7 +141,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
-	fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
+	faad2 fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext ggrab ghostscript \
 	git-core glib gnokii gnupg gnuplot gnutls grep groff gtk gzip \
