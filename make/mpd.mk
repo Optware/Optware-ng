@@ -29,14 +29,14 @@ MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-MPD_DEPENDS=audiofile, libid3tag, libmad, libao, flac, libvorbisidec
+MPD_DEPENDS=audiofile, faad2, flac, libao, libid3tag, libmad, libvorbisidec
 MPD_SUGGESTS=
 MPD_CONFLICTS=
 
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION=2
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -105,6 +105,7 @@ mpd-source: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES)
 #
 $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 	$(MAKE) audiofile-stage
+	$(MAKE) faad2-stage
 	$(MAKE) flac-stage
 	$(MAKE) libao-stage
 	$(MAKE) libid3tag-stage
@@ -129,6 +130,7 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		\
+		--enable-aac \
 		--enable-ao \
 		--enable-audiofile \
 		--enable-flac \
@@ -138,6 +140,7 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		\
 		--with-ao=$(STAGING_PREFIX) \
 		--with-audiofile-prefix=$(STAGING_PREFIX) \
+		--with-faad=$(STAGING_PREFIX) \
 		--with-id3tag=$(STAGING_PREFIX) \
 		--with-libFLAC=$(STAGING_PREFIX) \
 		--with-mad=$(STAGING_PREFIX) \
