@@ -30,13 +30,13 @@ VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
 VLC_DEPENDS=ffmpeg, libmad, libmpeg2, libpng, libxml2, ncurses
-VLC_SUGGESTS=flac, freetype, liba52, libogg, libvorbis, libdvbpsi
+VLC_SUGGESTS=faad2, flac, freetype, liba52, libogg, libvorbis, libdvbpsi
 VLC_CONFLICTS=
 
 #
 # VLC_IPK_VERSION should be incremented when the ipk changes.
 #
-VLC_IPK_VERSION=2
+VLC_IPK_VERSION=3
 
 #
 # VLC_CONFFILES should be a list of user-editable files
@@ -104,6 +104,7 @@ vlc-source: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES)
 # shown below to make various patches to it.
 #
 $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
+	$(MAKE) faad2-stage
 	$(MAKE) ffmpeg-stage
 	$(MAKE) flac-stage
 	$(MAKE) freetype-stage
@@ -138,6 +139,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--prefix=/opt \
 		--enable-v4l \
 		--enable-a52 \
+		--enable-faad \
 		--enable-flac \
 		--disable-gnutls \
 		--enable-ncurses \
