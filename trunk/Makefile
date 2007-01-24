@@ -132,7 +132,7 @@ COMMON_CROSS_PACKAGES = \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	cabextract catdoc ccxstream chillispot coreutils cpio cron cdargs \
+	cabextract calcurse catdoc ccxstream chillispot coreutils cpio cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
 	cyrus-imapd cyrus-sasl \
