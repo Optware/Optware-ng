@@ -119,17 +119,17 @@ $(KISSDX_BUILD_DIR)/.configured: $(DL_DIR)/$(KISSDX_SOURCE) $(KISSDX_PATCHES) ma
 	if test "$(BUILD_DIR)/$(KISSDX_DIR)" != "$(KISSDX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(KISSDX_DIR) $(KISSDX_BUILD_DIR) ; \
 	fi
-	(cd $(KISSDX_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(KISSDX_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(KISSDX_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#		--disable-nls \
-#		--disable-static \
+#	(cd $(KISSDX_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(KISSDX_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(KISSDX_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
 	)
 	rm -f $(KISSDX_BUILD_DIR)/Makefile
 	mv $(KISSDX_BUILD_DIR)/Makefile-Unslung $(KISSDX_BUILD_DIR)/Makefile
