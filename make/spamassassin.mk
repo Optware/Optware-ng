@@ -13,14 +13,14 @@ SPAMASSASSIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SPAMASSASSIN_DESCRIPTION=a spam filter for email which can be invoked from mail delivery agents
 SPAMASSASSIN_SECTION=mail
 SPAMASSASSIN_PRIORITY=optional
-SPAMASSASSIN_DEPENDS=perl-digest-sha1, perl-html-parser
+SPAMASSASSIN_DEPENDS=perl-digest-sha1, perl-html-parser, perl-libwww, gnupg
 SPAMASSASSIN_SUGGESTS=
 SPAMASSASSIN_CONFLICTS=
 
 #
 # SPAMASSASSIN_IPK_VERSION should be incremented when the ipk changes.
 #
-SPAMASSASSIN_IPK_VERSION=1
+SPAMASSASSIN_IPK_VERSION=2
 
 #
 # SPAMASSASSIN_CONFFILES should be a list of user-editable files
