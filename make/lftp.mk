@@ -21,8 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-#http://www.ibiblio.org/pub/Linux/system/network/file-transfer
-LFTP_VERSION=3.5.4
+LFTP_VERSION=3.5.9
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -38,7 +37,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=3
+LFTP_IPK_VERSION=1
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
@@ -70,6 +69,8 @@ LFTP_BUILD_DIR=$(BUILD_DIR)/lftp
 LFTP_SOURCE_DIR=$(SOURCE_DIR)/lftp
 LFTP_IPK_DIR=$(BUILD_DIR)/lftp-$(LFTP_VERSION)-ipk
 LFTP_IPK=$(BUILD_DIR)/lftp_$(LFTP_VERSION)-$(LFTP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: lftp-source lftp-unpack lftp lftp-stage lftp-ipk lftp-clean lftp-dirclean lftp-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -220,3 +221,9 @@ lftp-clean:
 #
 lftp-dirclean:
 	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(LFTP_BUILD_DIR) $(LFTP_IPK_DIR) $(LFTP_IPK)
+
+#
+# Some sanity check for the package.
+#
+lftp-check: $(LFTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LFTP_IPK)
