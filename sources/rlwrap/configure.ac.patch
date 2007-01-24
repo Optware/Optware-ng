@@ -1,0 +1,38 @@
+--- configure.ac.orig	2006-11-25 07:43:28.000000000 -0800
++++ configure.ac	2007-01-23 22:37:18.000000000 -0800
+@@ -92,22 +92,9 @@
+ AC_MSG_RESULT($ac_term_h_compiles)
+ 
+ AC_MSG_CHECKING([whether your getopt() correctly understands double colons in option string]) 
+-AC_RUN_IFELSE(
+-    [AC_LANG_PROGRAM( [[ const char optstring[] = "+:a::b";
+-		         char  * myargv [] = {"progname", "-a", "-b"}; 
+-		         int myargc = 3;
+-			 extern char *optarg;
+-		      ]] , [[
+-		         int opt = getopt(myargc, myargv, optstring);
+-		         if (opt != 'a' || optarg) /* optarg != NULL means that -b is seen as argument of -a */ 
+-		           exit (-1);
+-		        else
+-		           exit(0); ]] )],
+-    [AC_DEFINE(GETOPT_GROKS_OPTIONAL_ARGS, 1, Define if your getopt() correctly understands double colons in the option string)
++     AC_DEFINE(GETOPT_GROKS_OPTIONAL_ARGS, 1, Define if your getopt() correctly understands double colons in the option string)
+      AC_SUBST(HAVE_OPTIONAL_ARGS,yes)
+-     ac_double_colons="yes"],
+-    [AC_SUBST(HAVE_OPTIONAL_ARGS,no)
+-     ac_double_colons="no"])
++     ac_double_colons="yes"
+ AC_MSG_RESULT($ac_double_colons)
+ 
+ # Checks for typedefs, structures, and compiler characteristics.
+@@ -263,10 +250,8 @@
+ 
+ # check for existence of myself under /proc/$$/cwd
+ echo "Will rlwrap find command's working directory under /proc/<commands pid>/cwd? let's see..."
+-AC_CHECK_FILES(/proc/$$/cwd/configure.ac,[
+                   AC_DEFINE(HAVE_PROC_PID_CWD,1 ,[Define to 1 if /proc/<pid>/cwd is a link to working directory of process <pid>])
+                   AC_SUBST(HAVE_PROC_PID_CWD,[yes])
+-               ],[AC_SUBST(HAVE_PROC_PID_CWD,[no])])
+ 
+ 
+ echo

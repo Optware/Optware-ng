@@ -172,7 +172,7 @@ COMMON_CROSS_PACKAGES = \
 	psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
-	rc rcs rdate readline recode recordext renderext rlfe rrdcollect rrdtool \
+	rc rcs rdate readline recode recordext renderext rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
