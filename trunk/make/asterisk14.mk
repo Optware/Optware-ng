@@ -30,7 +30,7 @@ ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK14_SECTION=util
 ASTERISK14_PRIORITY=optional
 ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++
-ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel
+ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel,radiusclient-ng
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 
 #ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/trunk
@@ -40,7 +40,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=6
+ASTERISK14_IPK_VERSION=7
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -120,7 +120,7 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage radiusclient-ng-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -174,6 +174,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--without-postgres \
 		--with-iksemel=$(STAGING_PREFIX) \
 		--with-gnutls=$(STAGING_PREFIX) \
+		--with-radius=$(STAGING_PREFIX) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
