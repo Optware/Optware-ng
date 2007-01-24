@@ -54,6 +54,11 @@ MPC_IPK_VERSION=1
 #
 MPC_CPPFLAGS=
 MPC_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), wl500g)
+MPC_CONFIG_ARGS=--disable-iconv
+else
+MPC_CONFIG_ARGS=
+endif
 
 #
 # MPC_BUILD_DIR is the directory in which the build is done.
@@ -123,6 +128,7 @@ $(MPC_BUILD_DIR)/.configured: $(DL_DIR)/$(MPC_SOURCE) $(MPC_PATCHES) make/mpc.mk
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(MPC_CONFIG_ARGS) \
 		--disable-nls \
 		--disable-static \
 	)
