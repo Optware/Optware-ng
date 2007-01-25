@@ -36,7 +36,7 @@ AT_CONFLICTS=
 #
 # AT_IPK_VERSION should be incremented when the ipk changes.
 #
-AT_IPK_VERSION=1
+AT_IPK_VERSION=2
 
 #
 # AT_CONFFILES should be a list of user-editable files
@@ -50,6 +50,12 @@ AT_PATCHES=$(AT_SOURCE_DIR)/Makefile.in.patch
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 AT_PATCHES+= $(AT_SOURCE_DIR)/configure.patch
+endif
+
+ifeq ($(OPTWARE_TARGET), slugosbe)
+AT_DAEMON=daemon
+else
+AT_DAEMON=nobody
 endif
 
 #
@@ -131,8 +137,8 @@ $(AT_BUILD_DIR)/.configured: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES) make/at.mk
 		--with-etcdir=/opt/etc \
 		--with-jobdir=/opt/var/spool/cron/atjobs \
 		--with-atspool=/opt/var/spool/cron/atspool \
-		--with-daemon_username=nobody \
-		--with-daemon_groupname=nobody \
+		--with-daemon_username=$(AT_DAEMON) \
+		--with-daemon_groupname=$(AT_DAEMON) \
 		\
 		--disable-nls \
 		--disable-static \
@@ -207,6 +213,7 @@ $(AT_IPK): $(AT_BUILD_DIR)/.built
 	install -m 755 $(AT_SOURCE_DIR)/rc.at $(AT_IPK_DIR)/opt/etc/init.d/S20at
 	$(MAKE) $(AT_IPK_DIR)/CONTROL/control
 	install -m 755 $(AT_SOURCE_DIR)/postinst $(AT_IPK_DIR)/CONTROL/postinst
+	sed -ie 's/nobody/$(AT_DAEMON)/g' $(AT_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(AT_SOURCE_DIR)/prerm $(AT_IPK_DIR)/CONTROL/prerm
 	echo $(AT_CONFFILES) | sed -e 's/ /\n/g' > $(AT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AT_IPK_DIR)
