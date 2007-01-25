@@ -128,7 +128,7 @@ ASTERISK_PACKAGES = \
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb apache apr apr-util arc \
 	$(ASTERISK_PACKAGES) \
-	atftp atk atop audiofile autoconf automake \
+	at atftp atk atop audiofile autoconf automake \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \

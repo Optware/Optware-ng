@@ -1,0 +1,31 @@
+--- configure.orig	2007-01-25 09:18:22.000000000 -0800
++++ configure	2007-01-25 09:18:55.000000000 -0800
+@@ -975,28 +975,6 @@
+     echo "$ac_t""no" 1>&6
+     ;;
+ esac
+-echo $ac_n "checking Trying to compile a trivial ANSI C program""... $ac_c" 1>&6
+-echo "configure:980: checking Trying to compile a trivial ANSI C program" >&5
+-if test "$cross_compiling" = yes; then
+-  { echo "configure: error: Could not compile and run even a trivial ANSI C program - check CC." 1>&2; exit 1; }
+-else
+-  cat > conftest.$ac_ext <<EOF
+-#line 985 "configure"
+-#include "confdefs.h"
+- main(int ac, char **av) { return 0; } 
+-EOF
+-if { (eval echo configure:989: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit) 2>/dev/null
+-then
+-  echo "$ac_t""yes" 1>&6
+-else
+-  echo "configure: failed program was:" >&5
+-  cat conftest.$ac_ext >&5
+-  rm -fr conftest*
+-  echo "$ac_t""no" 1>&6
+-    { echo "configure: error: Could not compile and run even a trivial ANSI C program - check CC." 1>&2; exit 1; }
+-fi
+-rm -fr conftest*
+-fi
+ 
+ 
+ echo $ac_n "checking __attribute__((noreturn))""... $ac_c" 1>&6
