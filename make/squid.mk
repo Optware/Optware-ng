@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6/
-SQUID_VERSION=2.6.STABLE5
+SQUID_VERSION=2.6.STABLE9
 SQUID_SOURCE=squid-$(SQUID_VERSION).tar.gz
 SQUID_DIR=squid-$(SQUID_VERSION)
 SQUID_UNZIP=zcat
@@ -99,8 +99,12 @@ SQUID_CROSS_CONFIG_ENVS=\
 	ac_cv_func_setresuid=yes \
 	ac_cv_func_va_copy=yes \
 	ac_cv_func___va_copy=yes
-# FIXME this really is platform kernel dependent
+ifeq ($(OPTWARE_TARGET), slugosbe)
+SQUID_CROSS_CONFIG_OPTIONS=--enable-epoll
+SQUID_CROSS_CONFIG_ENVS+= ac_cv_epoll_works=yes
+else
 SQUID_CROSS_CONFIG_OPTIONS=--disable-epoll
+endif
 endif
 
 .PHONY: squid-source squid-unpack squid squid-stage squid-ipk squid-clean squid-dirclean squid-check
