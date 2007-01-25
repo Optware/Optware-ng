@@ -20,7 +20,7 @@ SPAMASSASSIN_CONFLICTS=
 #
 # SPAMASSASSIN_IPK_VERSION should be incremented when the ipk changes.
 #
-SPAMASSASSIN_IPK_VERSION=2
+SPAMASSASSIN_IPK_VERSION=3
 
 #
 # SPAMASSASSIN_CONFFILES should be a list of user-editable files
@@ -78,6 +78,7 @@ $(SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(SPAMASSASSIN_SOURCE) $(SPAMAS
  		SYSCONFDIR=/opt/etc \
 		CONFDIR=/opt/etc/spamassassin \
 		CONTACT_ADDRESS="postmaster@local.domain" \
+		LOCALSTATEDIR=/opt/share \
 		< /dev/null && \
 		(cd spamc; \
 		  $(TARGET_CONFIGURE_OPTS) \
