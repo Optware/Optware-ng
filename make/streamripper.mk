@@ -27,9 +27,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 STREAMRIPPER_NAME=streamripper
-#STREAMRIPPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/streamripper
 STREAMRIPPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/streamripper/
-STREAMRIPPER_VERSION=1.61.10
+STREAMRIPPER_VERSION=1.61.27
 STREAMRIPPER_SOURCE=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION).tar.gz
 STREAMRIPPER_DIR=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION)
 STREAMRIPPER_UNZIP=zcat
@@ -43,7 +42,7 @@ STREAMRIPPER_CONFLICTS=
 #
 # STREAMRIPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-STREAMRIPPER_IPK_VERSION=2
+STREAMRIPPER_IPK_VERSION=1
 
 #
 # STREAMRIPPER_CONFFILES should be a list of user-editable files
@@ -77,6 +76,8 @@ STREAMRIPPER_BUILD_DIR=$(BUILD_DIR)/streamripper
 STREAMRIPPER_SOURCE_DIR=$(SOURCE_DIR)/streamripper
 STREAMRIPPER_IPK_DIR=$(BUILD_DIR)/streamripper-$(STREAMRIPPER_VERSION)-ipk
 STREAMRIPPER_IPK=$(BUILD_DIR)/streamripper_$(STREAMRIPPER_VERSION)-$(STREAMRIPPER_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: streamripper-source streamripper-unpack streamripper streamripper-stage streamripper-ipk streamripper-clean streamripper-dirclean streamripper-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -217,3 +218,9 @@ streamripper-clean:
 #
 streamripper-dirclean:
 	rm -rf $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(STREAMRIPPER_BUILD_DIR) $(STREAMRIPPER_IPK_DIR) $(STREAMRIPPER_IPK)
+
+#
+# Some sanity check for the package.
+#
+streamripper-check: $(STREAMRIPPER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STREAMRIPPER_IPK)
