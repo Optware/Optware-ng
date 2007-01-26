@@ -199,12 +199,12 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	install -m 644 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
 	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(<FOO>_SOURCE_DIR)/rc.<foo> $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXX<foo>
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
 	$(MAKE) $(<FOO>_IPK_DIR)/CONTROL/control
 	install -m 755 $(<FOO>_SOURCE_DIR)/postinst $(<FOO>_IPK_DIR)/CONTROL/postinst
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/prerm
 	echo $(<FOO>_CONFFILES) | sed -e 's/ /\n/g' > $(<FOO>_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(<FOO>_IPK_DIR)
 
