@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	asterisk14-chan-capi
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -123,8 +122,12 @@ ERLANG_PACKAGES = \
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \
 	asterisk asterisk-sounds \
-	asterisk14 asterisk14-extra-sounds-en-gsm asterisk14-gui \
-	asterisk14-core-sounds-en-ulaw asterisk14-extra-sounds-en-ulaw \
+	asterisk14 \
+	asterisk14-chan-capi \
+	asterisk14-core-sounds-en-ulaw \
+	asterisk14-extra-sounds-en-gsm \
+	asterisk14-extra-sounds-en-ulaw \
+	asterisk14-gui \
 
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
