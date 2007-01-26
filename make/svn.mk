@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.4.2
+SVN_VERSION=1.4.3
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -35,7 +35,7 @@ SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SVN_DESCRIPTION=a compelling replacement for CVS
 SVN_SECTION=net
 SVN_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET), wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SVN_DEPENDS=neon, apr, apr-util, openldap-libs, zlib, expat, libxml2
 else
 SVN_DEPENDS=neon, apr, apr-util, zlib, expat, libxml2
@@ -62,7 +62,7 @@ SVN_CONFFILES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SVN_CPPFLAGS=-I$(STAGING_PREFIX)/include/neon
+SVN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/neon
 SVN_LDFLAGS=
 
 #
@@ -117,7 +117,7 @@ $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 	$(MAKE) libxml2-stage
 	$(MAKE) neon-stage
 	$(MAKE) zlib-stage
-ifneq ($(OPTWARE_TARGET), wl500g)
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
