@@ -20,8 +20,13 @@
 # You should change all these variables to suit your package.
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
+ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 IMAGEMAGICK_VERSION=6.3.2
 IMAGEMAGICK_REV=1
+else
+IMAGEMAGICK_VERSION=6.3.1
+IMAGEMAGICK_REV=6
+endif
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
 IMAGEMAGICK_UNZIP=zcat
@@ -74,7 +79,8 @@ IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_RE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IMAGEMAGICK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IMAGEMAGICK_SITE)/$(IMAGEMAGICK_SOURCE)
+	$(WGET) -P $(DL_DIR) $(IMAGEMAGICK_SITE)/$(IMAGEMAGICK_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(IMAGEMAGICK_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
