@@ -1,0 +1,22 @@
+--- src/core/ngx_cycle.c.orig	2007-01-25 20:25:36.000000000 -0800
++++ src/core/ngx_cycle.c	2007-01-25 20:26:44.000000000 -0800
+@@ -901,7 +901,7 @@
+ #if !(NGX_HAVE_ATOMIC_OPS)
+     ngx_fd_t  fd;
+ 
+-    fd = ngx_open_file(file, NGX_FILE_RDWR, NGX_FILE_CREATE_OR_OPEN);
++    fd = ngx_open_file(file, NGX_FILE_RDWR, NGX_FILE_CREATE_OR_OPEN, 0);
+ 
+     if (fd == NGX_INVALID_FILE) {
+         ngx_log_error(NGX_LOG_EMERG, log, ngx_errno,
+--- src/core/ngx_shmtx.c.orig	2007-01-25 20:25:43.000000000 -0800
++++ src/core/ngx_shmtx.c	2007-01-25 20:29:23.000000000 -0800
+@@ -35,7 +35,7 @@
+         ngx_shmtx_destory(mtx);
+     }
+ 
+-    mtx->fd = ngx_open_file(name, NGX_FILE_RDWR, NGX_FILE_CREATE_OR_OPEN);
++    mtx->fd = ngx_open_file(name, NGX_FILE_RDWR, NGX_FILE_CREATE_OR_OPEN, 0);
+ 
+     if (mtx->fd == NGX_INVALID_FILE) {
+         ngx_log_error(NGX_LOG_EMERG, ngx_cycle->log, ngx_errno,
