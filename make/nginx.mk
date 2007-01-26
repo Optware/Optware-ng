@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.5.7
+NGINX_VERSION=0.5.9
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -52,7 +52,7 @@ NGINX_CONFFILES=\
 # NGINX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NGINX_PATCHES=$(NGINX_SOURCE_DIR)/configure.patch
+NGINX_PATCHES=$(NGINX_SOURCE_DIR)/ngx_open_file.patch
 
 #
 # If the compilation of the package requires additional
@@ -146,7 +146,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 		; \
             sed -i \
                 -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
-                -e '/^CFLAGS/s# -Werror##' \
+                -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
                 objs/Makefile; \
 	)
 #	$(PATCH_LIBTOOL) $(NGINX_BUILD_DIR)/libtool
