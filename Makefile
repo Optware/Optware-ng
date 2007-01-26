@@ -490,6 +490,7 @@ PERL=perl
 
 # The hostname or IP number of our local dl.sf.net mirror
 SOURCEFORGE_MIRROR=easynews.dl.sf.net
+SOURCES_NLO_SITE=http://sources.nslu2-linux.org/sources
 
 # Directory location definitions
 BASE_DIR:=$(shell pwd)
