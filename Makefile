@@ -30,6 +30,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
+	asterisk14-chan-capi
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -119,8 +120,9 @@ PYTHON_PACKAGES = \
 ERLANG_PACKAGES = \
 	erlang erl-escript erl-yaws \
 
+# removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \
-	asterisk asterisk-chan-capi asterisk-sounds \
+	asterisk asterisk-sounds \
 	asterisk14 asterisk14-extra-sounds-en-gsm asterisk14-gui \
 	asterisk14-core-sounds-en-ulaw asterisk14-extra-sounds-en-ulaw \
 
