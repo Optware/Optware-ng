@@ -1,0 +1,39 @@
+#!/bin/sh
+
+PROXY_BIN=/opt/sbin/in.imapproxyd
+
+case $1 in
+
+    'start')
+
+	# make sure the executable exists.
+
+	if [ ! -f $PROXY_BIN ]; then
+	    /bin/echo "$0: $PROXY_BIN does not exist.  Not starting IMAP proxy server." 1>&2
+	    exit 1
+	fi
+
+	/bin/echo "$0: Starting IMAP proxy server." 1>&2
+
+	$PROXY_BIN
+	;;
+
+
+
+    'stop')
+
+	/bin/echo "$0: Shutting down IMAP proxy server." 1>&2
+
+	killall in.imapproxyd
+
+	;;
+
+
+    *)
+	/bin/echo "usage: $0 {start|stop}" 1>&2
+
+	exit 0
+
+	;;
+
+esac
