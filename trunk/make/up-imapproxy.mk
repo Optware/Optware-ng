@@ -35,7 +35,7 @@ UP-IMAPPROXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UP-IMAPPROXY_DESCRIPTION=proxies IMAP transactions between an IMAP client and an IMAP server
 UP-IMAPPROXY_SECTION=mail
 UP-IMAPPROXY_PRIORITY=optional
-UP-IMAPPROXY_DEPENDS=ncurses openssl
+UP-IMAPPROXY_DEPENDS=ncurses, openssl
 UP-IMAPPROXY_SUGGESTS=cyrus-imapd
 UP-IMAPPROXY_CONFLICTS=
 
