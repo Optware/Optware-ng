@@ -82,7 +82,8 @@
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(<FOO>_SOURCE):
-	$(WGET) -P $(DL_DIR) $(<FOO>_SITE)/$(<FOO>_SOURCE)
+	$(WGET) -P $(DL_DIR) $(<FOO>_SITE)/$(<FOO>_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(<FOO>_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -133,7 +134,7 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES) make/
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(<FOO>_BUILD_DIR)/libtool
-	touch $(<FOO>_BUILD_DIR)/.configured
+	touch $@
 
 <foo>-unpack: $(<FOO>_BUILD_DIR)/.configured
 
@@ -141,9 +142,9 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES) make/
 # This builds the actual binary.
 #
 $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
-	rm -f $(<FOO>_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(<FOO>_BUILD_DIR)
-	touch $(<FOO>_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,9 +155,9 @@ $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 # If you are building a library, then you need to stage it too.
 #
 $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
-	rm -f $(<FOO>_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(<FOO>_BUILD_DIR)/.staged
+	touch $@
 
 <foo>-stage: $(<FOO>_BUILD_DIR)/.staged
 
