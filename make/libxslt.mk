@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LIBXSLT_SITE=ftp://xmlsoft.org/libxslt
-LIBXSLT_VERSION=1.1.19
+LIBXSLT_VERSION=1.1.20
 LIBXSLT_SOURCE=libxslt-$(LIBXSLT_VERSION).tar.gz
 LIBXSLT_DIR=libxslt-$(LIBXSLT_VERSION)
 LIBXSLT_UNZIP=zcat
