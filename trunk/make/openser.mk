@@ -234,5 +234,5 @@ openser-dirclean:
 #
 # Some sanity check for the package.
 #
-openser-check:
+openser-check: $(OPENSER_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSER_IPK)
