@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = openser \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -172,7 +172,7 @@ COMMON_CROSS_PACKAGES = \
 	nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
 	net-tools netcat nethack netio nfs-server nfs-utils \
 	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
-	opencdk openldap openssh openssl openvpn optware-devel ossp-js oww \
+	opencdk openldap openser openssh openssl openvpn optware-devel ossp-js oww \
 	palantir pango par2cmdline patch pcre pen php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psmisc \
 	psutils puppy pwgen \
