@@ -1,0 +1,128 @@
+diff -Naurp sip-server/scripts/openserctl openser/scripts/openserctl
+--- sip-server/scripts/openserctl	2006-09-15 08:41:42.000000000 -0400
++++ openser/scripts/openserctl	2007-01-17 09:39:09.000000000 -0500
+@@ -126,6 +126,8 @@ do
+ 	$f
+ done
+ 	echo
++	echo "Note: Use openser_dbtext_ctl for DBTEXT operations!"
++	echo
+ 
+ }
+ 
+@@ -1635,12 +1637,7 @@ usrloc() {
+ 				set_user $2
+ 				$CTLCMD ul_show_contact $USRLOC_TABLE "$OSERUSER@$OSERDOMAIN"
+ 			elif [ $# -eq 1 ] ; then
+-				printf "Dumping all contacts may take long: are you sure you \
+-want to proceed? [Y|N] " > /dev/stderr
+-				read answer
+-				if [ "$answer" = "y" -o "$answer" = "Y" ] ; then
+-					$CTLCMD ul_dump
+-				fi
++				$CTLCMD ul_dump
+ 			else
+ 				merr "wrong number of params"
+ 				usage_usrloc
+diff -Naurp sip-server/scripts/sc.dbtext openser/scripts/sc.dbtext
+--- sip-server/scripts/sc.dbtext	2006-07-03 05:46:40.000000000 -0400
++++ openser/scripts/sc.dbtext	2007-01-17 09:39:09.000000000 -0500
+@@ -437,17 +437,17 @@ lcr() {
+ 		show)
+ 			echo lcr routes
+ 			lines=`wc -l $LCR_FILE | cut -d " " -f 1`
+-			let "lines = $lines - 1"
++			let "lines=$lines-1"
+ 			tail -n $lines $LCR_FILE
+ 
+ 			echo lcr gateway groups
+ 			lines=`wc -l $GW_GRP_FILE | cut -d " " -f 1`
+-			let "lines = $lines - 1"
++			let "lines=$lines-1"
+ 			tail -n $lines $GW_GRP_FILE
+ 
+ 			echo lcr gateways
+ 			lines=`wc -l $GW_FILE | cut -d " " -f 1`
+-			let "lines = $lines - 1"
++			let "lines=$lines-1"
+ 			#tail -n $lines $GW_FILE
+ 
+ 			IFS=":"
+@@ -455,10 +455,10 @@ lcr() {
+ 				element_count=${#chunks[@]}
+ 				let "element_count_max_limit = $element_count - 1"
+ 				index="0"
+-				let "ip_4 = ${chunks[2]} / 16777216"
++				let "ip_4=chunks[2]/16777216"
+ 
+ 				let "ip_3 = $ip_4 * 16777216"
+-				let "ip_3_tmp = ${chunks[2]} - $ip_3"
++				let "ip_3_tmp = chunks[2] - $ip_3"
+ 				let "ip_3 = $ip_3_tmp / 65536"
+ 
+ 				let "ip_2_tmp = $ip_3_tmp - $ip_3 * 65536"
+@@ -468,7 +468,7 @@ lcr() {
+ 
+ 				#echo ip = $ip_1.$ip_2.$ip_3.$ip_4
+ 				while [ $index -lt $element_count ]; do
+-					field=${chunks[$index]}
++					field=chunks[$index]
+ 					if [ "$index" -eq "2" ]; then
+ 						echo -n $ip_1.$ip_2.$ip_3.$ip_4":"
+ 					elif [ "$index" -eq "$element_count_max_limit" ]; then
+diff -Naurp sip-server/socket_info.h openser/socket_info.h
+--- sip-server/socket_info.h	2005-12-13 08:38:30.000000000 -0500
++++ openser/socket_info.h	2007-01-17 09:39:09.000000000 -0500
+@@ -241,11 +241,6 @@ error_port:
+ 
+ static inline char* socket2str(struct socket_info *sock, char *s, int* len)
+ {
+-#define PROTOC2UINT(a, b, c, d) htonl((	(((unsigned int)(a))<<24)+ \
+-								(((unsigned int)(b))<<16)+  \
+-								(((unsigned int)(c))<<8)+  \
+-								((unsigned int)(d)) ) | 0x20202020)
+-
+ 	static char buf[MAX_SOCKET_STR];
+ 	char *p,*p1;
+ 
+@@ -262,26 +257,31 @@ static inline char* socket2str(struct so
+ 
+ 	switch (sock->proto) {
+ 		case PROTO_UDP:
+-			*((unsigned int*)p) = PROTOC2UINT('u', 'd', 'p', ':');
+-			p += 4;
++			*(p++) = 'u';
++			*(p++) = 'd';
++			*(p++) = 'p';
+ 			break;
+ 		case PROTO_TCP:
+-			*((unsigned int*)p) = PROTOC2UINT('t', 'c', 'p', ':');
+-			p += 4;
++			*(p++) = 't';
++			*(p++) = 'c';
++			*(p++) = 'p';
+ 			break;
+ 		case PROTO_TLS:
+-			*((unsigned int*)p) = PROTOC2UINT('t', 'l', 's', ':');
+-			p += 4;
++			*(p++) = 't';
++			*(p++) = 'l';
++			*(p++) = 's';
+ 			break;
+ 		case PROTO_SCTP:
+-			*((unsigned int*)p) = PROTOC2UINT('s', 'c', 't', 'p');
+-			p += 4;
+-			*(p++) = ':';
++			*(p++) = 's';
++			*(p++) = 'c';
++			*(p++) = 't';
++			*(p++) = 'p';
+ 			break;
+ 		default:
+ 			LOG(L_CRIT,"BUG:socket2str: unsupported proto %d\n", sock->proto);
+ 			return 0;
+ 	}
++	*(p++) = ':';
+ 	memcpy( p, sock->address_str.s, sock->address_str.len);
+ 	p += sock->address_str.len;
+ 	*(p++) = ':';
