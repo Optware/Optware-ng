@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
-PY-TURBOGEARS_VERSION=1.0
+PY-TURBOGEARS_VERSION=1.0.1
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -47,7 +47,7 @@ PY24-TURBOGEARS_DEPENDS=python24, \
 	py-turbokid (>=0.9.8) \
 	findutils \
 
-PY24-TURBOGEARS_DEPENDS=python25, \
+PY25-TURBOGEARS_DEPENDS=python25, \
 	py25-celementtree (>=1.0.5), \
 	py25-cherrypy (>=2.2.1), \
 	py25-configobj (>=4.3.2), \
