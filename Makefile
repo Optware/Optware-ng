@@ -244,7 +244,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
-	 nylon openldap pango postfix psmisc py-mssql \
+	 nylon openldap openser pango postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tcsh tethereal tnftpd transcode unrar vlc vte w3m wget wget-ssl wxbase x11 \
@@ -333,6 +333,7 @@ DS101G_SPECIFIC_PACKAGES = \
 DS101G_BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
 	ldconfig \
+	openser \
 	qemu qemu-libc-i386 \
 
 # Packages that *only* work for nas100d - do not just put new packages here.
