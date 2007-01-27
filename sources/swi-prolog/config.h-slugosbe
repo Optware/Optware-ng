@@ -515,7 +515,7 @@
 /* #undef LINUX_CPUCLOCKS */
 
 /* Define if you have Linux 2.6 compatible /proc */
-/* #undef LINUX_PROCFS */
+#define LINUX_PROCFS 26
 
 /* Define if mmap() can be used to allocate stacks */
 #define MMAP_STACK 1

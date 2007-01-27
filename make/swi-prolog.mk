@@ -37,7 +37,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=1
+SWI-PROLOG_IPK_VERSION=2
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
