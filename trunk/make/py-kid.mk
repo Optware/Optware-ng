@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-KID_VERSION=0.9.4
+PY-KID_VERSION=0.9.5
 PY-KID_SITE=http://www.kid-templating.org/dist/$(PY-KID_VERSION)
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
@@ -30,7 +30,8 @@ PY-KID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-KID_DESCRIPTION=Pythonic XML-based Templating
 PY-KID_SECTION=misc
 PY-KID_PRIORITY=optional
-PY-KID_DEPENDS=python, py-elementtree
+PY24-KID_DEPENDS=python24, py24-elementtree
+PY25-KID_DEPENDS=python25, py25-elementtree
 PY-KID_CONFLICTS=
 
 #
