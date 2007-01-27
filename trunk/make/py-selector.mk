@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SELECTOR_SITE=http://cheeseshop.python.org/packages/source/s/selector
-PY-SELECTOR_VERSION=0.8.10
+PY-SELECTOR_VERSION=0.8.11
 PY-SELECTOR_SOURCE=selector-$(PY-SELECTOR_VERSION).tar.gz
 PY-SELECTOR_DIR=selector-$(PY-SELECTOR_VERSION)
 PY-SELECTOR_UNZIP=zcat
@@ -30,7 +30,8 @@ PY-SELECTOR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SELECTOR_DESCRIPTION=WSGI delegation based on URL path and method.
 PY-SELECTOR_SECTION=misc
 PY-SELECTOR_PRIORITY=optional
-PY-SELECTOR_DEPENDS=python
+PY24-SELECTOR_DEPENDS=python24
+PY25-SELECTOR_DEPENDS=python25
 PY-SELECTOR_CONFLICTS=
 
 #
@@ -66,8 +67,14 @@ PY-SELECTOR_LDFLAGS=
 #
 PY-SELECTOR_BUILD_DIR=$(BUILD_DIR)/py-selector
 PY-SELECTOR_SOURCE_DIR=$(SOURCE_DIR)/py-selector
-PY-SELECTOR_IPK_DIR=$(BUILD_DIR)/py-selector-$(PY-SELECTOR_VERSION)-ipk
-PY-SELECTOR_IPK=$(BUILD_DIR)/py-selector_$(PY-SELECTOR_VERSION)-$(PY-SELECTOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-SELECTOR_IPK_DIR=$(BUILD_DIR)/py-selector-$(PY-SELECTOR_VERSION)-ipk
+PY24-SELECTOR_IPK=$(BUILD_DIR)/py-selector_$(PY-SELECTOR_VERSION)-$(PY-SELECTOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-SELECTOR_IPK_DIR=$(BUILD_DIR)/py25-selector-$(PY-SELECTOR_VERSION)-ipk
+PY25-SELECTOR_IPK=$(BUILD_DIR)/py25-selector_$(PY-SELECTOR_VERSION)-$(PY-SELECTOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-selector-source py-selector-unpack py-selector py-selector-stage py-selector-ipk py-selector-clean py-selector-dirclean py-selector-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,16 +107,29 @@ py-selector-source: $(DL_DIR)/$(PY-SELECTOR_SOURCE) $(PY-SELECTOR_PATCHES)
 #
 $(PY-SELECTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SELECTOR_SOURCE) $(PY-SELECTOR_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)
+	rm -rf $(PY-SELECTOR_BUILD_DIR)
+	mkdir -p $(PY-SELECTOR_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR)
 	$(PY-SELECTOR_UNZIP) $(DL_DIR)/$(PY-SELECTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SELECTOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SELECTOR_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)
-	(cd $(PY-SELECTOR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)/2.4
+	(cd $(PY-SELECTOR_BUILD_DIR)/2.4; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
-	touch $(PY-SELECTOR_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR)
+	$(PY-SELECTOR_UNZIP) $(DL_DIR)/$(PY-SELECTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-SELECTOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SELECTOR_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)/2.5
+	(cd $(PY-SELECTOR_BUILD_DIR)/2.5; \
+	    sed -i -e '/use_setuptools/d' setup.py; \
+	    (echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	)
+	touch $@
 
 py-selector-unpack: $(PY-SELECTOR_BUILD_DIR)/.configured
 
@@ -117,9 +137,14 @@ py-selector-unpack: $(PY-SELECTOR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SELECTOR_BUILD_DIR)/.built: $(PY-SELECTOR_BUILD_DIR)/.configured
-	rm -f $(PY-SELECTOR_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-SELECTOR_BUILD_DIR)
-	touch $(PY-SELECTOR_BUILD_DIR)/.built
+	rm -f $@
+	cd $(PY-SELECTOR_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-SELECTOR_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -130,9 +155,9 @@ py-selector: $(PY-SELECTOR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SELECTOR_BUILD_DIR)/.staged: $(PY-SELECTOR_BUILD_DIR)/.built
-	rm -f $(PY-SELECTOR_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-SELECTOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SELECTOR_BUILD_DIR)/.staged
+	touch $@
 
 py-selector-stage: $(PY-SELECTOR_BUILD_DIR)/.staged
 
@@ -140,8 +165,8 @@ py-selector-stage: $(PY-SELECTOR_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-selector
 #
-$(PY-SELECTOR_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SELECTOR_IPK_DIR)/CONTROL
+$(PY24-SELECTOR_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-selector" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -151,7 +176,21 @@ $(PY-SELECTOR_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-SELECTOR_MAINTAINER)" >>$@
 	@echo "Source: $(PY-SELECTOR_SITE)/$(PY-SELECTOR_SOURCE)" >>$@
 	@echo "Description: $(PY-SELECTOR_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-SELECTOR_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-SELECTOR_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-SELECTOR_CONFLICTS)" >>$@
+
+$(PY25-SELECTOR_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-selector" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-SELECTOR_PRIORITY)" >>$@
+	@echo "Section: $(PY-SELECTOR_SECTION)" >>$@
+	@echo "Version: $(PY-SELECTOR_VERSION)-$(PY-SELECTOR_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-SELECTOR_MAINTAINER)" >>$@
+	@echo "Source: $(PY-SELECTOR_SITE)/$(PY-SELECTOR_SOURCE)" >>$@
+	@echo "Description: $(PY-SELECTOR_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-SELECTOR_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SELECTOR_CONFLICTS)" >>$@
 
 #
@@ -166,19 +205,30 @@ $(PY-SELECTOR_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-SELECTOR_IPK): $(PY-SELECTOR_BUILD_DIR)/.built
-	rm -rf $(PY-SELECTOR_IPK_DIR) $(BUILD_DIR)/py-selector_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SELECTOR_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-SELECTOR_IPK_DIR) --prefix=/opt --single-version-externally-managed)
-	$(MAKE) $(PY-SELECTOR_IPK_DIR)/CONTROL/control
-#	echo $(PY-SELECTOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY-SELECTOR_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SELECTOR_IPK_DIR)
+$(PY24-SELECTOR_IPK): $(PY-SELECTOR_BUILD_DIR)/.built
+	rm -rf $(PY24-SELECTOR_IPK_DIR) $(BUILD_DIR)/py-selector_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SELECTOR_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-SELECTOR_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-SELECTOR_IPK_DIR)/CONTROL/control
+#	echo $(PY-SELECTOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SELECTOR_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SELECTOR_IPK_DIR)
+
+$(PY25-SELECTOR_IPK): $(PY-SELECTOR_BUILD_DIR)/.built
+	rm -rf $(PY25-SELECTOR_IPK_DIR) $(BUILD_DIR)/py25-selector_*_$(TARGET_ARCH).ipk
+	(cd $(PY-SELECTOR_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-SELECTOR_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-SELECTOR_IPK_DIR)/CONTROL/control
+#	echo $(PY-SELECTOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SELECTOR_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SELECTOR_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-selector-ipk: $(PY-SELECTOR_IPK)
+py-selector-ipk: $(PY24-SELECTOR_IPK) $(PY25-SELECTOR_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -191,4 +241,12 @@ py-selector-clean:
 # directories.
 #
 py-selector-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR) $(PY-SELECTOR_IPK_DIR) $(PY-SELECTOR_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR) $(PY-SELECTOR_BUILD_DIR)
+	rm -rf $(PY24-SELECTOR_IPK_DIR) $(PY24-SELECTOR_IPK)
+	rm -rf $(PY25-SELECTOR_IPK_DIR) $(PY25-SELECTOR_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-selector-check: $(PY24-SELECTOR_IPK) $(PY25-SELECTOR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-SELECTOR_IPK) $(PY25-SELECTOR_IPK)
