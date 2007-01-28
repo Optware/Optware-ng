@@ -214,8 +214,8 @@ $(PY25-KID_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
-	rm -rf $(PY-KID_IPK_DIR)
 	# 2.4
+	rm -rf $(PY24-KID_IPK_DIR)
 	rm -rf $(BUILD_DIR)/py-kid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
@@ -224,6 +224,7 @@ $(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-KID_IPK_DIR)
 	# 2.5
+	rm -rf $(PY25-KID_IPK_DIR)
 	rm -rf $(BUILD_DIR)/py25-kid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-KID_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
