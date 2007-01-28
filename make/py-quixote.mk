@@ -30,13 +30,14 @@ PY-QUIXOTE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-QUIXOTE_DESCRIPTION=A highly Pythonic Web application framework.
 PY-QUIXOTE_SECTION=web
 PY-QUIXOTE_PRIORITY=optional
-PY-QUIXOTE_DEPENDS=python
+PY24-QUIXOTE_DEPENDS=python24
+PY25-QUIXOTE_DEPENDS=python25
 PY-QUIXOTE_CONFLICTS=
 
 #
 # PY-QUIXOTE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-QUIXOTE_IPK_VERSION=3
+PY-QUIXOTE_IPK_VERSION=4
 
 #
 # PY-QUIXOTE_CONFFILES should be a list of user-editable files
