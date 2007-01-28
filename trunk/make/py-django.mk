@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DJANGO_VERSION=0.95
+PY-DJANGO_VERSION=0.95.1
 PY-DJANGO_SITE=http://www.djangoproject.com/download/$(PY-DJANGO_VERSION)/tarball/
 PY-DJANGO_SOURCE=Django-$(PY-DJANGO_VERSION).tar.gz
 PY-DJANGO_DIR=Django-$(PY-DJANGO_VERSION)
@@ -37,7 +37,7 @@ PY-DJANGO_CONFLICTS=
 #
 # PY-DJANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DJANGO_IPK_VERSION=2
+PY-DJANGO_IPK_VERSION=1
 
 #
 # PY-DJANGO_CONFFILES should be a list of user-editable files
@@ -250,5 +250,5 @@ py-django-dirclean:
 #
 # Some sanity check for the package.
 #
-py-django-check: $(PY-DJANGO_IPK)
+py-django-check: $(PY24-DJANGO_IPK) $(PY25-DJANGO_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-DJANGO_IPK) $(PY25-DJANGO_IPK)
