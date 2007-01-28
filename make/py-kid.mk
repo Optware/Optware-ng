@@ -30,14 +30,14 @@ PY-KID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-KID_DESCRIPTION=Pythonic XML-based Templating
 PY-KID_SECTION=misc
 PY-KID_PRIORITY=optional
-PY24-KID_DEPENDS=python24, py24-elementtree
+PY24-KID_DEPENDS=python24, py-elementtree
 PY25-KID_DEPENDS=python25, py25-elementtree
 PY-KID_CONFLICTS=
 
 #
 # PY-KID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-KID_IPK_VERSION=1
+PY-KID_IPK_VERSION=2
 
 #
 # PY-KID_CONFFILES should be a list of user-editable files
