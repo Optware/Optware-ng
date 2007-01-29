@@ -34,11 +34,17 @@ FETCHMAIL_CONFLICTS=
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=1
+FETCHMAIL_IPK_VERSION=2
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
 FETCHMAIL_CONFFILES=/opt/etc/fetchmailrc /opt/etc/init.d/S52fetchmail
+
+ifeq ($(OPTWARE_TARGET),ds101g)
+FETCHMAIL_LOGGING=--syslog
+else
+FETCHMAIL_LOGGING=-L /opt/var/log/fetchmail
+endif
 
 #
 # FETCHMAIL_PATCHES should list any patches, in the the order in
@@ -198,6 +204,7 @@ $(FETCHMAIL_IPK): $(FETCHMAIL_BUILD_DIR)/.built
 	install -m 600 $(FETCHMAIL_SOURCE_DIR)/fetchmailrc $(FETCHMAIL_IPK_DIR)/opt/etc/fetchmailrc
 	install -d $(FETCHMAIL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(FETCHMAIL_SOURCE_DIR)/rc.fetchmail $(FETCHMAIL_IPK_DIR)/opt/etc/init.d/S52fetchmail
+	sed -i -e 's|@LOGGING@|${FETCHMAIL_LOGGING}|' $(FETCHMAIL_IPK_DIR)/opt/etc/init.d/S52fetchmail
 	$(MAKE) $(FETCHMAIL_IPK_DIR)/CONTROL/control
 	install -m 644 $(FETCHMAIL_SOURCE_DIR)/postinst $(FETCHMAIL_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FETCHMAIL_SOURCE_DIR)/prerm $(FETCHMAIL_IPK_DIR)/CONTROL/prerm

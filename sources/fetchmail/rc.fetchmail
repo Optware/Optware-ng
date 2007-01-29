@@ -1,9 +1,38 @@
 #!/bin/sh
 
-echo "(re)starting service fetchmail"
+PROG=fetchmail
+ARGS="-d 300 -t 60 -a -e 50 --auth password -f /opt/etc/fetchmailrc @LOGGING@"
 
-if [ -n "`pidof fetchmail`" ]; then 
-    /bin/killall fetchmail 2>/dev/null
+if [ -z "$1" ] ; then
+    case `echo "$0" | /bin/sed 's/^.*\/\(.*\)/\1/g'` in
+	S??*) rc="start" ;;
+	K??*) rc="stop" ;;
+	*) rc="usage" ;;
+    esac
+else
+    rc="$1"
 fi
 
-/opt/bin/fetchmail -d 1800 -t 60 -a -e 50 --auth password -f /opt/etc/fetchmailrc -L /var/log/fetchmail 2>&1
+case "$rc" in
+    start)
+	echo "starting service $PROG"
+	
+	$PROG $ARGS 2>&1
+	;;
+    stop)
+	echo "stopping service $PROG"
+	
+	if [ -n "`pidof $PROG`" ]; then
+	    killall $PROG
+	fi
+	;;
+    restart)
+	"$0" stop
+	sleep 1
+	"$0" start
+	;;
+    *)
+	echo "Usage: $0 (start|stop|restart|usage)"
+	;;
+esac
+
