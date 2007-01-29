@@ -1,0 +1,31 @@
+--- scsi-start.c.orig	2007-01-29 10:02:33.000000000 -0800
++++ scsi-start.c	2007-01-29 10:02:57.000000000 -0800
+@@ -27,6 +27,12 @@
+ #include <linux/kdev_t.h>
+ #include <scsi/scsi_ioctl.h>
+ 
++#ifndef SCSI_DISK_MAJOR
++#define SCSI_DISK_MAJOR(M) ((M) == SCSI_DISK0_MAJOR || \
++  ((M) >= SCSI_DISK1_MAJOR && (M) <= SCSI_DISK7_MAJOR) || \
++  ((M) >= SCSI_DISK8_MAJOR && (M) <= SCSI_DISK15_MAJOR))
++#endif
++
+ #ifdef SCSI_DISK0_MAJOR
+ #define IS_SCSI_DISK(rdev)	SCSI_DISK_MAJOR(MAJOR(rdev))
+ #else
+--- scsi-idle.c.orig	2007-01-29 10:13:17.000000000 -0800
++++ scsi-idle.c	2007-01-29 10:13:51.000000000 -0800
+@@ -40,6 +40,13 @@
+ #include <linux/kdev_t.h>
+ #include <scsi/scsi_ioctl.h>
+ 
++#ifndef SCSI_DISK_MAJOR
++#define SCSI_DISK_MAJOR(M) ((M) == SCSI_DISK0_MAJOR || \
++  ((M) >= SCSI_DISK1_MAJOR && (M) <= SCSI_DISK7_MAJOR) || \
++  ((M) >= SCSI_DISK8_MAJOR && (M) <= SCSI_DISK15_MAJOR))
++#endif
++
++
+ /* Kernel 2.0 and 2.2 differ on how SCSI_DISK_MAJOR works */
+ #ifdef SCSI_DISK0_MAJOR
+ #define IS_SCSI_DISK(rdev)	SCSI_DISK_MAJOR(MAJOR(rdev))

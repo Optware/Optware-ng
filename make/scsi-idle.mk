@@ -36,7 +36,7 @@ SCSI_IDLE_CONFLICTS=
 #
 # SCSI_IDLE_IPK_VERSION should be incremented when the ipk changes.
 #
-SCSI_IDLE_IPK_VERSION=1
+SCSI_IDLE_IPK_VERSION=2
 
 #
 # SCSI_IDLE_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ SCSI_IDLE_CONFFILES=/opt/etc/scsi-idle.conf /opt/etc/init.d/SXXscsi-idle
 # SCSI_IDLE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# SCSI_IDLE_PATCHES=$(SCSI_IDLE_SOURCE_DIR)/configure.patch
+SCSI_IDLE_PATCHES=$(SCSI_IDLE_SOURCE_DIR)/SCSI_DISK_MAJOR-linux26.patch
 
 #
 # If the compilation of the package requires additional
