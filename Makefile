@@ -182,7 +182,7 @@ COMMON_CROSS_PACKAGES = \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
-	screen sdparm sed smartmontools socat sqlite sqlite2 \
+	scsi-idle screen sdparm sed smartmontools socat sqlite sqlite2 \
 	sqsh squeak squid srelay strace stunnel streamripper sudo swi-prolog svn \
 	syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
