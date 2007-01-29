@@ -25,28 +25,28 @@ OPENSER_VERSION=1.1.1
 OPENSER_SOURCE=openser-$(OPENSER_VERSION)-tls_src.tar.gz
 OPENSER_DIR=openser-$(OPENSER_VERSION)
 OPENSER_UNZIP=zcat
-OPENSER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+OPENSER_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
 OPENSER_DESCRIPTION=openSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
 OPENSER_DEPENDS=coreutils,flex,openssl
-OPENSER_SUGGESTS=
+OPENSER_SUGGESTS=radiusclient-ng,libxml2
 OPENSER_CONFLICTS=
 
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=1
+OPENSER_IPK_VERSION=2
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
-#OPENSER_CONFFILES=/opt/etc/openser.conf /opt/etc/init.d/SXXopenser
+OPENSER_CONFFILES=/opt/etc/openser/openser.cfg /opt/etc/openser/openserctlrc
 
 #
 # OPENSER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/openser-$(OPENSER_VERSION).patch
+OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/openser-1.1.1.patch
 
 #
 # If the compilation of the package requires additional
@@ -59,6 +59,11 @@ OPENSER_MAKEFLAGS=ARCH=mips OS=linux OSREL=2.4.20
 else
 OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
 endif
+
+#Excluded modules: jabber mysql osp pa unixodbc
+OPENSER_INCLUDE_MODULES=auth_radius avp_radius group_radius uri_radius cpl-c
+
+OPENSER_DEBUG_MODE=mode=debug
 
 #
 # OPENSER_BUILD_DIR is the directory in which the build is done.
@@ -109,7 +114,7 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
-	$(MAKE) flex-stage openssl-stage
+	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage libxml2-stage
 	rm -rf $(BUILD_DIR)/$(OPENSER_DIR) $(OPENSER_BUILD_DIR)
 	$(OPENSER_UNZIP) $(DL_DIR)/$(OPENSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENSER_PATCHES)" ; \
@@ -130,8 +135,9 @@ $(OPENSER_BUILD_DIR)/.built: $(OPENSER_BUILD_DIR)/.configured
 	rm -f $(OPENSER_BUILD_DIR)/.built
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	TLS=1 CC="$(TARGET_CC)" \
-	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) mode=debug prefix=/opt all
+	TLS=1 LOCALBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
+	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) $(OPENSER_DEBUG_MODE) \
+	include_modules="$(OPENSER_INCLUDE_MODULES)" prefix=/opt all
 	touch $(OPENSER_BUILD_DIR)/.built
 
 #
@@ -146,12 +152,16 @@ $(OPENSER_BUILD_DIR)/.staged: $(OPENSER_BUILD_DIR)/.built
 	rm -f $(OPENSER_BUILD_DIR)/.staged
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	TLS=1 CC="$(TARGET_CC)" \
-	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_DIR)/opt cfg-prefix=$(STAGING_DIR)/opt mode=debug prefix=/opt modules
+	TLS=1 LOCALBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
+	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(STAGING_DIR) \
+	prefix=$(STAGING_DIR)/opt cfg-prefix=$(STAGING_DIR)/opt $(OPENSER_DEBUG_MODE) \
+	include_modules="$(OPENSER_INCLUDE_MODULES)" prefix=/opt modules
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	TLS=1 CC="$(TARGET_CC)" \
-	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(STAGING_DIR) prefix=$(STAGING_DIR)/opt cfg-prefix=$(STAGING_DIR)/opt mode=debug prefix=/opt install
+	TLS=1 LOCALBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
+	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(STAGING_DIR) \
+	prefix=$(STAGING_DIR)/opt cfg-prefix=$(STAGING_DIR)/opt $(OPENSER_DEBUG_MODE) \
+	include_modules="$(OPENSER_INCLUDE_MODULES)" prefix=/opt install
 	touch $(OPENSER_BUILD_DIR)/.staged
 
 openser-stage: $(OPENSER_BUILD_DIR)/.staged
@@ -191,14 +201,19 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	rm -rf $(OPENSER_IPK_DIR) $(BUILD_DIR)/openser_*_$(TARGET_ARCH).ipk
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	TLS=1 CC="$(TARGET_CC)" \
-	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(OPENSER_IPK_DIR) prefix=$(OPENSER_IPK_DIR)/opt cfg-prefix=$(OPENSER_IPK_DIR)/opt mode=debug modules
+	TLS=1 LOCALBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
+	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(OPENSER_IPK_DIR) \
+	prefix=$(OPENSER_IPK_DIR)/opt cfg-prefix=$(OPENSER_IPK_DIR)/opt $(OPENSER_DEBUG_MODE) \
+	include_modules="$(OPENSER_INCLUDE_MODULES)" modules
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	TLS=1 CC="$(TARGET_CC)" \
-	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(OPENSER_IPK_DIR) prefix=$(OPENSER_IPK_DIR)/opt cfg-prefix=$(OPENSER_IPK_DIR)/opt mode=debug install
+	TLS=1 LOCALBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
+	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(OPENSER_IPK_DIR) \
+	prefix=$(OPENSER_IPK_DIR)/opt cfg-prefix=$(OPENSER_IPK_DIR)/opt $(OPENSER_DEBUG_MODE) \
+	include_modules="$(OPENSER_INCLUDE_MODULES)" install
 
 	$(MAKE) $(OPENSER_IPK_DIR)/CONTROL/control
+	echo $(OPENSER_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSER_IPK_DIR)/CONTROL/conffiles
 
 	for f in `find $(OPENSER_IPK_DIR)/opt/lib/openser/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
 	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)/opt/sbin/openser
@@ -209,7 +224,7 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	sed -i -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/sbin/openser_dbtext_ctl
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg
-	mv $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg.example
+	
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSER_IPK_DIR)
 
 #
