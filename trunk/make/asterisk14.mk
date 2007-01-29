@@ -40,11 +40,75 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=7
+ASTERISK14_IPK_VERSION=8
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
 #ASTERISK14_CONFFILES=/opt/etc/asterisk14.conf /opt/etc/init.d/SXXasterisk14
+ASTERISK14_CONFFILES=\
+/opt/etc/asterisk/adsi.conf \
+/opt/etc/asterisk/adtranvofr.conf \
+/opt/etc/asterisk/agents.conf \
+/opt/etc/asterisk/alarmreceiver.conf \
+/opt/etc/asterisk/alsa.conf \
+/opt/etc/asterisk/amd.conf \
+/opt/etc/asterisk/asterisk.adsi \
+/opt/etc/asterisk/asterisk.conf \
+/opt/etc/asterisk/cdr.conf \
+/opt/etc/asterisk/cdr_custom.conf \
+/opt/etc/asterisk/cdr_manager.conf \
+/opt/etc/asterisk/cdr_odbc.conf \
+/opt/etc/asterisk/cdr_pgsql.conf \
+/opt/etc/asterisk/cdr_tds.conf \
+/opt/etc/asterisk/codecs.conf \
+/opt/etc/asterisk/dnsmgr.conf \
+/opt/etc/asterisk/dundi.conf \
+/opt/etc/asterisk/enum.conf \
+/opt/etc/asterisk/extconfig.conf \
+/opt/etc/asterisk/extensions.ael \
+/opt/etc/asterisk/extensions.conf \
+/opt/etc/asterisk/features.conf \
+/opt/etc/asterisk/festival.conf \
+/opt/etc/asterisk/followme.conf \
+/opt/etc/asterisk/func_odbc.conf \
+/opt/etc/asterisk/gtalk.conf \
+/opt/etc/asterisk/h323.conf \
+/opt/etc/asterisk/http.conf \
+/opt/etc/asterisk/iax.conf \
+/opt/etc/asterisk/iaxprov.conf \
+/opt/etc/asterisk/indications.conf \
+/opt/etc/asterisk/jabber.conf \
+/opt/etc/asterisk/logger.conf \
+/opt/etc/asterisk/manager.conf \
+/opt/etc/asterisk/meetme.conf \
+/opt/etc/asterisk/mgcp.conf \
+/opt/etc/asterisk/misdn.conf \
+/opt/etc/asterisk/modem.conf \
+/opt/etc/asterisk/modules.conf \
+/opt/etc/asterisk/musiconhold.conf \
+/opt/etc/asterisk/muted.conf \
+/opt/etc/asterisk/osp.conf \
+/opt/etc/asterisk/oss.conf \
+/opt/etc/asterisk/phone.conf \
+/opt/etc/asterisk/privacy.conf \
+/opt/etc/asterisk/queues.conf \
+/opt/etc/asterisk/res_odbc.conf \
+/opt/etc/asterisk/res_snmp.conf \
+/opt/etc/asterisk/rpt.conf \
+/opt/etc/asterisk/rtp.conf \
+/opt/etc/asterisk/say.conf \
+/opt/etc/asterisk/sip.conf \
+/opt/etc/asterisk/sip_notify.conf \
+/opt/etc/asterisk/skinny.conf \
+/opt/etc/asterisk/sla.conf \
+/opt/etc/asterisk/smdi.conf \
+/opt/etc/asterisk/telcordia-1.adsi \
+/opt/etc/asterisk/udptl.conf \
+/opt/etc/asterisk/users.conf \
+/opt/etc/asterisk/voicemail.conf \
+/opt/etc/asterisk/vpb.conf \
+/opt/etc/asterisk/zapata.conf
+
 
 #
 # ASTERISK14_PATCHES should list any patches, in the the order in
@@ -249,15 +313,22 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	NOISY_BUILD=yes \
 	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(ASTERISK14_IPK_DIR) samples
 
-	mv $(ASTERISK14_IPK_DIR)/opt/etc/asterisk $(ASTERISK14_IPK_DIR)/opt/etc/samples
-	install -d $(ASTERISK14_IPK_DIR)/opt/etc/asterisk
+	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	echo "noload => chan_gtalk.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => codec_ilbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => codec_lpc10.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+
+	cp -r $(ASTERISK14_IPK_DIR)/opt/etc/asterisk $(ASTERISK14_IPK_DIR)/opt/etc/samples
 	mv $(ASTERISK14_IPK_DIR)/opt/etc/samples $(ASTERISK14_IPK_DIR)/opt/etc/asterisk
-	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
-	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
-	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
-	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/samples/*
 
 	$(MAKE) $(ASTERISK14_IPK_DIR)/CONTROL/control
+	echo $(ASTERISK14_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK14_IPK_DIR)/CONTROL/conffiles
 
 	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
