@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.11.1
+LIBTORRENT_VERSION=0.11.2
 LIBTORRENT_SOURCE=libtorrent-$(LIBTORRENT_VERSION).tar.gz
 LIBTORRENT_DIR=libtorrent-$(LIBTORRENT_VERSION)
 LIBTORRENT_UNZIP=zcat
@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=2
+LIBTORRENT_IPK_VERSION=1
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -37,7 +37,11 @@ LIBTORRENT_IPK_VERSION=2
 # LIBTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch $(LIBTORRENT_SOURCE_DIR)/src-data-socket_file.cc.patch
+else
+LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/src-data-socket_file.cc.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -45,6 +49,11 @@ LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
 #
 LIBTORRENT_CPPFLAGS=
 LIBTORRENT_LDFLAGS=
+
+#ifeq ($(OPTWARE_TARGET), $(filter ds101g ddwrt oleg, $(OPTWARE_TARGET)))
+#LIBTORRENT_CONFIG_ARGS=
+#else
+#endif
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(TARGET_ARCH), $(filter $(TARGET_ARCH), arm armeb))
