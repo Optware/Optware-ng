@@ -38,9 +38,9 @@ LIBTORRENT_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 ifneq ($(HOSTCC), $(TARGET_CC))
-LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch $(LIBTORRENT_SOURCE_DIR)/src-data-socket_file.cc.patch
+LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
 else
-LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/src-data-socket_file.cc.patch
+LIBTORRENT_PATCHES=
 endif
 
 #
