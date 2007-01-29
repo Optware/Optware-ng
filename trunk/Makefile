@@ -157,7 +157,7 @@ COMMON_CROSS_PACKAGES = \
 	ice id3lib iksemel indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
-	keychain kissdx knock \
+	keychain kismet kissdx knock \
 	lame ldconfig less lha \
 	liba52 libao libart libbt libcapi20 libcurl libdb libdvb libdvbpsi libdvdread \
 	libesmtp libevent libexif libftdi \
