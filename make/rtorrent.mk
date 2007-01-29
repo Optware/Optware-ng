@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.7.1
+RTORRENT_VERSION=0.7.2
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
