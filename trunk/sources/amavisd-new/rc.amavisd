@@ -5,6 +5,7 @@ PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=amavisd
 DAEMON=${prefix}/sbin/${NAME}
 DAEMON_OPTS="-c ${prefix}/etc/${NAME}.conf"
+PIDFILE=${prefix}/var/spool/amavis/${NAME}.pid
 
 test -x $DAEMON || exit 0
 
@@ -20,6 +21,15 @@ fi
 
 case "$rc" in
     start)
+    	if [ -e $PIDFILE ]; then
+    	  if [ -z "$(ps -p $(cat $PIDFILE)  -o comm=)" ]; then
+    	    rm -rf $PIDFILE
+    	  else
+    	    echo "$NAME already started!"
+    	    exit 0
+    	  fi
+    	fi
+    	
 	echo "Starting server: $NAME"
 	$DAEMON $DAEMON_OPTS
         ;;
