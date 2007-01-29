@@ -401,11 +401,17 @@ _list ()
     fi
     __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
-    SPEED=`tail ${SYSLOG}  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\).*/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -1`
-    eval "${SPEED}"
-    if [ -n "${DOWNLOAD}"  ] ; then
-	echo "<table><tr><td>Total</td><td>Download ${DOWNLOAD}kB/s</td>"
-	echo "<td>Upload ${UPLOAD} kB/s</td></tr></table>"
+    if [ -r "${SYSLOG}" ]; then
+        SPEED=`tail ${SYSLOG}  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\).*/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -1`
+        eval "${SPEED}"
+        if [ -n "${DOWNLOAD}"  ] ; then
+	    echo "<table><tr><td>Total</td><td>Download ${DOWNLOAD}kB/s</td>"
+	    echo "<td>Upload ${UPLOAD} kB/s</td></tr></table>"
+        else
+            echo "<p>Unable to find recent transfer stats in syslog</p>"
+        fi
+    else
+        echo "<p>syslog: ${SYSLOG} unavailable for transfer stats!</p>"
     fi
     [ "${ACTION}" = "Update" ] && return
     __list "$WORK/*/*.torrent.suspended" "Suspended" 
