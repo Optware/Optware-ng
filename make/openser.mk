@@ -40,7 +40,7 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=3
+OPENSER_IPK_VERSION=4
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -64,11 +64,15 @@ else
 OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
 endif
 
-#Excluded modules: jabber osp pa unixodbc (mysql)
+#
+# Excluded modules:
+# osp      - require "-losptk" or "-losp"
+# unixodbc - no unixodbc in optware 
+#
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
-OPENSER_INCLUDE_MODULES=auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql
+OPENSER_INCLUDE_MODULES=pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql
 else
-OPENSER_INCLUDE_MODULES=auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_MODULES=pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
 endif
 
 OPENSER_DEBUG_MODE=mode=debug
