@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.16.0
+LIBCURL_VERSION=7.16.1
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=6
+LIBCURL_IPK_VERSION=1
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ LIBCURL_BUILD_DIR=$(BUILD_DIR)/libcurl
 LIBCURL_SOURCE_DIR=$(SOURCE_DIR)/libcurl
 LIBCURL_IPK_DIR=$(BUILD_DIR)/libcurl-$(LIBCURL_VERSION)-ipk
 LIBCURL_IPK=$(BUILD_DIR)/libcurl_$(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libcurl-source libcurl-unpack libcurl libcurl-stage libcurl-ipk libcurl-clean libcurl-dirclean libcurl-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -187,6 +189,7 @@ $(LIBCURL_IPK_DIR)/CONTROL/control:
 $(LIBCURL_IPK): $(LIBCURL_BUILD_DIR)/.built
 	rm -rf $(LIBCURL_IPK_DIR) $(BUILD_DIR)/libcurl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install-strip
+	rm -f $(LIBCURL_IPK_DIR)/opt/lib/libcurl.a
 	#install -d $(LIBCURL_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBCURL_SOURCE_DIR)/libcurl.conf $(LIBCURL_IPK_DIR)/opt/etc/libcurl.conf
 	#install -d $(LIBCURL_IPK_DIR)/opt/etc/init.d
@@ -214,3 +217,9 @@ libcurl-clean:
 #
 libcurl-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(LIBCURL_BUILD_DIR) $(LIBCURL_IPK_DIR) $(LIBCURL_IPK)
+
+#
+# Some sanity check for the package.
+#
+libcurl-check: $(LIBCURL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBCURL_IPK)
