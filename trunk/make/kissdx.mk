@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 KISSDX_SITE=http://kissdx.vidartysse.net
-KISSDX_VERSION=0.13-10
+KISSDX_VERSION=0.13-10a
 KISSDX_SOURCE=kissdx-$(KISSDX_VERSION).tar.gz
 KISSDX_DIR=kissdx-$(KISSDX_VERSION)
 KISSDX_UNZIP=zcat
