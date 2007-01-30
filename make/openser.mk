@@ -30,13 +30,17 @@ OPENSER_DESCRIPTION=openSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
 OPENSER_DEPENDS=coreutils,flex,openssl
-OPENSER_SUGGESTS=radiusclient-ng,libxml2
+ifeq (mysql, $(filter mysql, $(PACKAGES)))
+OPENSER_SUGGESTS=radiusclient-ng,libxml2,postgresql,mysql
+else
+OPENSER_SUGGESTS=radiusclient-ng,libxml2,postgresql
+endif
 OPENSER_CONFLICTS=
 
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=2
+OPENSER_IPK_VERSION=3
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -60,8 +64,12 @@ else
 OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
 endif
 
-#Excluded modules: jabber mysql osp pa unixodbc
-OPENSER_INCLUDE_MODULES=auth_radius avp_radius group_radius uri_radius cpl-c
+#Excluded modules: jabber osp pa unixodbc (mysql)
+ifeq (mysql, $(filter mysql, $(PACKAGES)))
+OPENSER_INCLUDE_MODULES=auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql
+else
+OPENSER_INCLUDE_MODULES=auth_radius avp_radius group_radius uri_radius cpl-c postgres
+endif
 
 OPENSER_DEBUG_MODE=mode=debug
 
@@ -114,7 +122,10 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
-	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage libxml2-stage
+	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage libxml2-stage postgresql-stage
+ifeq (mysql, $(filter mysql, $(PACKAGES)))
+	$(MAKE) mysql-stage
+endif
 	rm -rf $(BUILD_DIR)/$(OPENSER_DIR) $(OPENSER_BUILD_DIR)
 	$(OPENSER_UNZIP) $(DL_DIR)/$(OPENSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENSER_PATCHES)" ; \
