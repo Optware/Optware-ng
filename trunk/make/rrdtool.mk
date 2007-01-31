@@ -28,7 +28,7 @@
 #
 #http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/rrdtool-1.2.8.tar.gz
 RRDTOOL_SITE=http://people.ee.ethz.ch/~oetiker/webtools/rrdtool/pub/
-RRDTOOL_VERSION=1.2.15
+RRDTOOL_VERSION=1.2.18
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
@@ -43,7 +43,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=3
+RRDTOOL_IPK_VERSION=1
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -211,8 +211,8 @@ $(RRDTOOL_IPK_DIR)/CONTROL/control:
 $(RRDTOOL_IPK): $(RRDTOOL_BUILD_DIR)/.built
 	rm -rf $(RRDTOOL_IPK_DIR) $(BUILD_DIR)/rrdtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip
-	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd.la
-	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd_th.la
+	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd.la $(RRDTOOL_IPK_DIR)/opt/lib/librrd_th.la
+	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd.a $(RRDTOOL_IPK_DIR)/opt/lib/librrd_th.a
 #	install -d $(RRDTOOL_IPK_DIR)/opt/etc/
 #	install -m 644 $(RRDTOOL_SOURCE_DIR)/rrdtool.conf $(RRDTOOL_IPK_DIR)/opt/etc/rrdtool.conf
 #	install -d $(RRDTOOL_IPK_DIR)/opt/etc/init.d
