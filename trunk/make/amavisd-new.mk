@@ -5,7 +5,7 @@
 ###########################################################
 
 AMAVISD-NEW_SITE=http://www.ijs.si/software/amavisd
-AMAVISD-NEW_VERSION=2.4.4
+AMAVISD-NEW_VERSION=2.4.5
 AMAVISD-NEW_SOURCE=amavisd-new-$(AMAVISD-NEW_VERSION).tar.gz
 AMAVISD-NEW_DIR=amavisd-new-$(AMAVISD-NEW_VERSION)
 AMAVISD-NEW_UNZIP=zcat
@@ -25,7 +25,7 @@ AMAVISD-NEW_CONFLICTS=
 #
 # AMAVISD-NEW_IPK_VERSION should be incremented when the ipk changes.
 #
-AMAVISD-NEW_IPK_VERSION=5
+AMAVISD-NEW_IPK_VERSION=1
 
 #
 # AMAVISD-NEW_CONFFILES should be a list of user-editable files
