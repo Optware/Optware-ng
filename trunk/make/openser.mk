@@ -40,11 +40,14 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=5
+OPENSER_IPK_VERSION=6
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
-OPENSER_CONFFILES=/opt/etc/openser/openser.cfg /opt/etc/openser/openserctlrc
+OPENSER_CONFFILES=\
+/opt/etc/openser/openser.cfg \
+/opt/etc/openser/openserctlrc \
+/opt/etc/openser/.openscdbtextrc
 
 #
 # OPENSER_PATCHES should list any patches, in the the order in
@@ -68,6 +71,7 @@ endif
 # Excluded modules:
 # osp      - require "-losptk" or "-losp"
 # unixodbc - no unixodbc in optware 
+# jabber   - has issues on openSlug - doesn't affect the overall build
 #
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSER_INCLUDE_MODULES=pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql

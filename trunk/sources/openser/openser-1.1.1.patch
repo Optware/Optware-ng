@@ -126,3 +126,58 @@ diff -Naurp sip-server/socket_info.h openser/socket_info.h
  	memcpy( p, sock->address_str.s, sock->address_str.len);
  	p += sock->address_str.len;
  	*(p++) = ':';
+--- openser-1.1.1-tls/modules/mysql/Makefile	2006-05-23 09:52:33.000000000 -0400
++++ openser/modules/mysql/Makefile	2007-01-31 10:17:27.000000000 -0500
+@@ -8,15 +8,13 @@
+ 
+ # mysql.h locations (freebsd,openbsd  solaris)
+ DEFS +=-I$(LOCALBASE)/include -I$(LOCALBASE)/include/mysql \
+-		-I$(LOCALBASE)/mysql/include/mysql -I$(LOCALBASE)/mysql/include \
+-		-I/usr/include/mysql
++		-I$(LOCALBASE)/mysql/include/mysql -I$(LOCALBASE)/mysql/include
+ 
+ # libmysqlclient locations on RH/Suse, Solaris /OpenBSD, FreeBSD
+ # (Debian does the right thing and puts it in /usr/lib)
+ LIBS=-L/usr/lib/mysql -L$(LOCALBASE)/lib -L$(LOCALBASE)/lib/mysql \
+ 		-L$(LOCALBASE)/mysql/lib/mysql/ \
+ 		-L$(LOCALBASE)/mysql/lib \
+-		-L/usr/lib64/mysql \
+ 		-lm -lmysqlclient -lz
+ 
+ include ../../Makefile.modules
+--- openser-1.1.1-tls/modules/postgres/Makefile	2005-07-01 10:52:34.000000000 -0400
++++ openser/modules/postgres/Makefile	2007-01-31 10:19:59.000000000 -0500
+@@ -7,8 +7,8 @@
+ NAME=postgres.so
+ 
+ # libpq-fe.h locations
+-DEFS +=-I$(LOCALBASE)/include -I$(LOCALBASE)/pgsql/include \
+-	 -I/usr/include/postgresql -I/usr/include/postgresql/8.0
++DEFS +=-I$(LOCALBASE)/include -I$(LOCALBASE)/pgsql/include
++
+ LIBS=-L$(LOCALBASE)/lib -L$(LOCALBASE)/pgsql/lib -L$(LOCALBASE)/lib/pgsql \
+ 	 -lpq
+ 
+--- openser-1.1.1-tls/modules/pa/Makefile	2005-10-25 12:23:28.000000000 -0400
++++ openser/modules/pa/Makefile	2007-01-31 10:37:21.000000000 -0500
+@@ -10,7 +10,7 @@
+ NAME=pa.so
+ LIBS=
+ 
+-DEFS+=-I/usr/include/libxml2 -I$(LOCALBASE)/include/libxml2 -I$(LOCALBASE)/include
+-LIBS+=-L/usr/include/lib  -L$(LOCALBASE)/lib -lxml2
++DEFS+=-I$(LOCALBASE)/include/libxml2 -I$(LOCALBASE)/include
++LIBS+=-L$(LOCALBASE)/lib -lxml2
+ 
+ include ../../Makefile.modules
+--- openser-1.1.1-tls/modules/cpl-c/Makefile	2006-02-09 12:28:25.000000000 -0500
++++ openser/modules/cpl-c/Makefile	2007-01-31 10:40:25.000000000 -0500
+@@ -6,7 +6,7 @@
+ auto_gen=
+ NAME=cpl-c.so
+ 
+-DEFS +=-I/usr/include/libxml2 -I$(LOCALBASE)/include/libxml2 \
++DEFS +=-I$(LOCALBASE)/include/libxml2 \
+ 		-I$(LOCALBASE)/include  # iconv.h
+ 
+ LIBS= -L$(LOCALBASE)/lib -lxml2
