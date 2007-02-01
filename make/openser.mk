@@ -31,16 +31,16 @@ OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
 OPENSER_DEPENDS=coreutils,flex,openssl
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
-OPENSER_SUGGESTS=radiusclient-ng,libxml2,postgresql,mysql
+OPENSER_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,mysql
 else
-OPENSER_SUGGESTS=radiusclient-ng,libxml2,postgresql
+OPENSER_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql
 endif
 OPENSER_CONFLICTS=
 
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=6
+OPENSER_IPK_VERSION=7
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -70,13 +70,12 @@ endif
 #
 # Excluded modules:
 # osp      - require "-losptk" or "-losp"
-# unixodbc - no unixodbc in optware 
 # jabber   - has issues on openSlug - doesn't affect the overall build
 #
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
-OPENSER_INCLUDE_MODULES=pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql
+OPENSER_INCLUDE_MODULES=unixodbc pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql
 else
-OPENSER_INCLUDE_MODULES=pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_MODULES=unixodbc pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
 endif
 
 OPENSER_DEBUG_MODE=mode=debug
@@ -130,7 +129,7 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
-	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage libxml2-stage postgresql-stage
+	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage libxml2-stage unixodbc-stage postgresql-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
