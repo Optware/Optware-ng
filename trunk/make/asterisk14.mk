@@ -29,7 +29,7 @@ ASTERISK14_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
 ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK14_SECTION=util
 ASTERISK14_PRIORITY=optional
-ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++
+ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt
 ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel,radiusclient-ng,unixodbc
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 
@@ -40,7 +40,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=9
+ASTERISK14_IPK_VERSION=10
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -149,14 +149,17 @@ ASTERISK14_IPK=$(BUILD_DIR)/asterisk14_$(ASTERISK14_VERSION)-$(ASTERISK14_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK14_SOURCE):
+ifeq (X$(ASTERISK14_SVN), X) 
 	$(WGET) -P $(DL_DIR) $(ASTERISK14_SITE)/$(ASTERISK14_SOURCE)
-#	( cd $(BUILD_DIR) ; \
-#		rm -rf $(ASTERISK14_DIR) && \
-#		svn co -r $(ASTERISK14_SVN_REV) $(ASTERISK14_SVN) \
-#			$(ASTERISK14_DIR) && \
-#		tar -czf $@ $(ASTERISK14_DIR) && \
-#		rm -rf $(ASTERISK14_DIR) \
-#	)
+else
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(ASTERISK14_DIR) && \
+		svn co -r $(ASTERISK14_SVN_REV) $(ASTERISK14_SVN) \
+			$(ASTERISK14_DIR) && \
+		tar -czf $@ $(ASTERISK14_DIR) && \
+		rm -rf $(ASTERISK14_DIR) \
+	)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -184,7 +187,7 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -230,16 +233,15 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--with-z=$(STAGING_PREFIX) \
 		--with-termcap=$(STAGING_PREFIX) \
 		--with-curl=$(STAGING_PREFIX) \
-		--without-popt \
 		--without-ogg \
-		--without-popt \
+		--with-popt=$(STAGING_PREFIX) \
 		--without-tds \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--without-postgres \
 		--with-iksemel=$(STAGING_PREFIX) \
 		--with-gnutls=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
-		--with-unixodbc=$(STAGING_PREFIX) \
+		--with-odbc=$(STAGING_PREFIX) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
@@ -341,6 +343,7 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 			$(ASTERISK14_IPK_DIR)/opt/sbin/asterisk \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/check_expr \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/muted \
+			$(ASTERISK14_IPK_DIR)/opt/sbin/smsq \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/stereorize \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/streamplayer ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
