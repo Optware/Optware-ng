@@ -28,7 +28,7 @@ LIBSIGC++_CONFLICTS=
 #
 # LIBSIGC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSIGC++_IPK_VERSION=1
+LIBSIGC++_IPK_VERSION=2
 
 #
 # LIBSIGC++_CONFFILES should be a list of user-editable files
@@ -46,6 +46,12 @@ LIBSIGC++_PATCHES=$(LIBSIGC++_SOURCE_DIR)/Makefile.in.patch
 #
 LIBSIGC++_CPPFLAGS=
 LIBSIGC++_LDFLAGS=
+#sigc++ does not link well against uClibc++
+ifeq ($(LIBC_STYLE), uclibc)
+LIBSIGC++_CONFIGURE = CXX=$(TARGET_GXX)
+else
+LIBSIGC++_CONFIGURE=
+endif
 
 #
 # LIBSIGC++_BUILD_DIR is the directory in which the build is done.
@@ -104,6 +110,7 @@ $(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSIGC++_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBSIGC++_LDFLAGS)" \
+		$(LIBSIGC++_CONFIGURE) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -137,7 +144,8 @@ $(LIBSIGC++_BUILD_DIR)/.staged: $(LIBSIGC++_BUILD_DIR)/.built
 	rm -f $(LIBSIGC++_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBSIGC++_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 		sed -e 's!{includedir}!/$(STAGING_DIR)/opt/include!' \
-		-e 's!{libdir}!/$(STAGING_DIR)/opt/lib!' $(LIBSIGC++_BUILD_DIR)/sigc++-2.0.pc \
+		    -e 's!{libdir}!/$(STAGING_DIR)/opt/lib!' \
+			$(LIBSIGC++_BUILD_DIR)/sigc++-2.0.pc \
 		> $(STAGING_DIR)/opt/lib/pkgconfig/sigc++-2.0.pc 
 
 	touch $(LIBSIGC++_BUILD_DIR)/.staged
