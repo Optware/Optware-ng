@@ -92,10 +92,11 @@ fi
 /sbin/syslogd -m 0 -O /opt/var/log/messages -S -l 7
 
 
-
-There is a bug in libtransmission/ratecontrol.c which causes segmentation
-faults in daemon. To disable rate control set upload/download limit to -1
-in transmission.conf
+To disable rate control set upload/download limit to -1 in transmission.conf
+Ratecontrol counts only good transferred packets. Handshaking and other
+non-data transfer does not count. This means that there are some packets
+in transfer that are not affected by ratecontrol ant that UPLOAD_SPEED should
+be set to lower value than max upload line capability.
 
 HOME variable is used for daemon to find its .transmission directory where
 cache data for each torrent is stored for fast resume. Proper restore

@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.6
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1449
+TRANSMISSION_SVN_REV=1450
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -58,7 +58,7 @@ TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSMISSION_CPPFLAGS=
+TRANSMISSION_CPPFLAGS= -O3
 TRANSMISSION_LDFLAGS=
 
 #
@@ -144,9 +144,10 @@ $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSM
 		--disable-nls \
 		--disable-gtk \
 	)
+	sed -i -e 's/ -g / /' $(TRANSMISSION_BUILD_DIR)/mk/common.mk
+#		--verbose \
 #	$(PATCH_LIBTOOL) $(TRANSMISSION_BUILD_DIR)/libtool
 	touch $(TRANSMISSION_BUILD_DIR)/.configured
-#		--verbose \
 #		--disable-openssl \
 
 transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured
