@@ -29,7 +29,7 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = unixodbc \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -189,7 +189,7 @@ COMMON_CROSS_PACKAGES = \
 	tar tcpdump tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
-	ufsd unarj unfs3 units unrar \
+	ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy usbutils ushare \
 	vblade vdr-mediamvp vim vlc vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer wget wget-ssl \
