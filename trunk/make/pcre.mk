@@ -13,7 +13,11 @@ PCRE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PCRE_DESCRIPTION=Perl-compatible regular expression library
 PCRE_SECTION=util
 PCRE_PRIORITY=optional
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+PCRE_DEPENDS=libstdc++
+else
 PCRE_DEPENDS=
+endif
 PCRE_CONFLICTS=
 
 ifeq ($(HOST_MACHINE),armv5b)
@@ -22,7 +26,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=3
+PCRE_IPK_VERSION=4
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
@@ -31,12 +35,17 @@ PCRE_SOURCE_DIR=$(SOURCE_DIR)/pcre
 PCRE_IPK_DIR=$(BUILD_DIR)/pcre-$(PCRE_VERSION)-ipk
 PCRE_IPK=$(BUILD_DIR)/pcre_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: pcre-source pcre-unpack pcre pcre-stage pcre-ipk pcre-clean pcre-dirclean pcre-check
+
 $(DL_DIR)/$(PCRE_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PCRE_SITE)/$(PCRE_SOURCE)
 
 pcre-source: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
 
 $(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
 	$(PCRE_UNZIP) $(DL_DIR)/$(PCRE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PCRE_PATCHES) | patch -d $(BUILD_DIR)/$(PCRE_DIR) -p1
@@ -109,3 +118,6 @@ pcre-clean:
 
 pcre-dirclean:
 	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR) $(PCRE_IPK_DIR) $(PCRE_IPK)
+
+pcre-check: $(PCRE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PCRE_IPK)
