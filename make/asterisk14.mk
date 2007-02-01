@@ -30,7 +30,7 @@ ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK14_SECTION=util
 ASTERISK14_PRIORITY=optional
 ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++
-ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel,radiusclient-ng
+ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel,radiusclient-ng,unixodbc
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 
 #ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/trunk
@@ -40,7 +40,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=8
+ASTERISK14_IPK_VERSION=9
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -184,7 +184,7 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage radiusclient-ng-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -239,6 +239,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--with-iksemel=$(STAGING_PREFIX) \
 		--with-gnutls=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
+		--with-unixodbc=$(STAGING_PREFIX) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
@@ -317,11 +318,14 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	echo "noload => func_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_gtalk.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_ilbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_lpc10.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_config_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 
 	cp -r $(ASTERISK14_IPK_DIR)/opt/etc/asterisk $(ASTERISK14_IPK_DIR)/opt/etc/samples
@@ -335,6 +339,7 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	done
 	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/sbin/aelparse \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/asterisk \
+			$(ASTERISK14_IPK_DIR)/opt/sbin/check_expr \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/muted \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/stereorize \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/streamplayer ; do \
