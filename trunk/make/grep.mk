@@ -6,17 +6,14 @@
 
 GREP_DIR=$(BUILD_DIR)/grep
 
-ifeq ($(OPTWARE_TARGET), wl500g)
-GREP_VERSION=2.4.2
-GREP_IPK_VERSION=6
-else
 ifeq ($(LIBC_STYLE),uclibc)
 GREP_VERSION=2.4.2
 GREP_IPK_VERSION=6
+GREP_DEPENDS=
 else
 GREP_VERSION=2.5.1a
-GREP_IPK_VERSION=1
-endif
+GREP_IPK_VERSION=2
+GREP_DEPENDS=pcre
 endif
 
 GREP=grep-$(GREP_VERSION)
@@ -27,7 +24,6 @@ GREP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GREP_DESCRIPTION=Global regular expression parser
 GREP_SECTION=util
 GREP_PRIORITY=optional
-GREP_DEPENDS=
 GREP_CONFLICTS=busybox-links
 
 #ifeq ($(OPTWARE_TARGET), wl500g)
