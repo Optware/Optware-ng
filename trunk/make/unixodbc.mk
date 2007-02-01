@@ -30,18 +30,18 @@ UNIXODBC_DESCRIPTION=ODBC is an open specification for providing \
 application developers with a predictable API with which to access Data Sources.
 UNIXODBC_SECTION=util
 UNIXODBC_PRIORITY=optional
-UNIXODBC_DEPENDS=
+UNIXODBC_DEPENDS=libtool
 UNIXODBC_SUGGESTS=
 UNIXODBC_CONFLICTS=
 
 #
 # UNIXODBC_IPK_VERSION should be incremented when the ipk changes.
 #
-UNIXODBC_IPK_VERSION=1
+UNIXODBC_IPK_VERSION=2
 
 #
 # UNIXODBC_CONFFILES should be a list of user-editable files
-#UNIXODBC_CONFFILES=/opt/etc/unixodbc.conf /opt/etc/init.d/SXXunixodbc
+UNIXODBC_CONFFILES=/opt/etc/odbc.ini /opt/etc/odbcinst.ini
 
 #
 # UNIXODBC_PATCHES should list any patches, in the the order in
@@ -106,7 +106,7 @@ unixodbc-source: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCHES)
 # shown below to make various patches to it.
 #
 $(UNIXODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCHES) make/unixodbc.mk
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libtool-stage
 	rm -rf $(BUILD_DIR)/$(UNIXODBC_DIR) $(UNIXODBC_BUILD_DIR)
 	$(UNIXODBC_UNZIP) $(DL_DIR)/$(UNIXODBC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNIXODBC_PATCHES)" ; \
@@ -192,7 +192,7 @@ $(UNIXODBC_IPK): $(UNIXODBC_BUILD_DIR)/.built
 	rm -rf $(UNIXODBC_IPK_DIR) $(BUILD_DIR)/unixodbc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNIXODBC_BUILD_DIR) DESTDIR=$(UNIXODBC_IPK_DIR) install-strip
 	$(MAKE) $(UNIXODBC_IPK_DIR)/CONTROL/control
-	#echo $(UNIXODBC_CONFFILES) | sed -e 's/ /\n/g' > $(UNIXODBC_IPK_DIR)/CONTROL/conffiles
+	echo $(UNIXODBC_CONFFILES) | sed -e 's/ /\n/g' > $(UNIXODBC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNIXODBC_IPK_DIR)
 
 #
