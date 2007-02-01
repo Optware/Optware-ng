@@ -28,7 +28,7 @@ RTORRENT_CONFLICTS=
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=2
+RTORRENT_IPK_VERSION=3
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -46,6 +46,12 @@ RTORRENT_IPK_VERSION=2
 #
 RTORRENT_CPPFLAGS=
 RTORRENT_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+RTORRENT_CONFIGURE = CXX=$(TARGET_GXX)
+else
+RTORRENT_CONFIGURE=
+endif
+
 
 #
 # RTORRENT_BUILD_DIR is the directory in which the build is done.
@@ -105,6 +111,7 @@ $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTORRENT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig/" \
+		$(RTORRENT_CONFIGURE) \
 		PATH="$(PATH):$(STAGING_DIR)/opt/bin" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
