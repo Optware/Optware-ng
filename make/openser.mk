@@ -30,17 +30,16 @@ OPENSER_DESCRIPTION=openSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
 OPENSER_DEPENDS=coreutils,flex,openssl
+OPENSER_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
-OPENSER_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,mysql
-else
-OPENSER_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql
+OPENSER_SUGGESTS=$(OPENSER_BASE_SUGGESTS),mysql
 endif
 OPENSER_CONFLICTS=
 
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=7
+OPENSER_IPK_VERSION=8
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -72,10 +71,9 @@ endif
 # osp      - require "-losptk" or "-losp"
 # jabber   - has issues on openSlug - doesn't affect the overall build
 #
+OPENSER_INCLUDE_BASE_MODULES=unixodbc pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
-OPENSER_INCLUDE_MODULES=unixodbc pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres mysql
-else
-OPENSER_INCLUDE_MODULES=unixodbc pa jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_MODULES=$(OPENSER_INCLUDE_BASE_MODULES) mysql
 endif
 
 OPENSER_DEBUG_MODE=mode=debug
@@ -241,6 +239,7 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	echo "DBTEXT_PATH=/opt/etc/openser/dbtext" > $(OPENSER_IPK_DIR)/opt/etc/openser/.openscdbtextrc
 	sed -i -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/sbin/openser_dbtext_ctl
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
+	sed -i -e 's#PATH=$PATH:/opt/sbin/#PATH=$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg
 	
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSER_IPK_DIR)
