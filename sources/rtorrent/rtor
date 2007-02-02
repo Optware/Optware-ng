@@ -1,0 +1,47 @@
+#!/bin/sh
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+RTORRENT_SOCKET=/tmp/rtorrent
+RTORRENT_CONF=/opt/etc/rtorrent.conf
+
+test -x /opt/bin/dtach || ipkg install dtor
+
+start() {
+	if [ -e ${RTORRENT_SOCKET} ]; then
+		echo "Socket ${RTORRENT_SOCKET} exist. rtorrent not started."
+		exit 1
+	fi
+	echo "Starting rtorrent with dtach on ${RTORRENT_SOKET} ..."
+	dtach -n ${RTORRENT_SOCKET} rtorrent -n -o import=${RTORRENT_CONF}
+        echo "Configuration's setting are located in ${RTORRENT_CONF}"
+	echo "done. Issue"
+	echo "$0 attach"
+	echo "  to attach to terminal and ^\ to dtach."
+}
+
+stop() {
+	echo -n "Shutting down rtorrent... "
+	killall rtorrent
+	echo "done"
+}
+
+case "$1" in
+	start)
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart)
+		stop
+		sleep 1
+		start
+		;;
+	attach)
+		dtach -a ${RTORRENT_SOCKET}
+		;;
+	*)
+		echo "Usage: $0 (start|stop|restart|attach)"
+		exit 1
+		;;
+esac

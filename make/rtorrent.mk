@@ -22,17 +22,18 @@ RTORRENT_DESCRIPTION=rtorrent is a BitTorrent client for ncurses, using the libt
 RTORRENT_SECTION= web
 RTORRENT_PRIORITY=optional
 RTORRENT_DEPENDS=libtorrent, $(NCURSES_FOR_OPTWARE_TARGET), libcurl, zlib
-RTORRENT_SUGGESTS=
+RTORRENT_SUGGESTS=dtach
 RTORRENT_CONFLICTS=
 
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=3
+RTORRENT_IPK_VERSION=4
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
-#RTORRENT_CONFFILES=/opt/etc/rtorrent.conf /opt/etc/init.d/SXXrtorrent
+RTORRENT_CONFFILES=/opt/etc/rtorrent.conf
+
 
 #
 # RTORRENT_PATCHES should list any patches, in the the order in
@@ -44,7 +45,7 @@ RTORRENT_IPK_VERSION=3
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-RTORRENT_CPPFLAGS=
+RTORRENT_CPPFLAGS=-O3
 RTORRENT_LDFLAGS=
 ifeq ($(LIBC_STYLE), uclibc)
 RTORRENT_CONFIGURE = CXX=$(TARGET_GXX)
@@ -94,7 +95,7 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # and NOT $(MAKE) below.  Passing it to configure causes configure to
 # correctly BUILD the Makefile with the right paths, where passing it
 # to Make causes it to override the default search paths of the compiler.
-#
+# 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
 	$(MAKE) libtorrent-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage libcurl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
@@ -184,6 +185,18 @@ $(RTORRENT_IPK): $(RTORRENT_BUILD_DIR)/.built
 	rm -rf $(RTORRENT_IPK_DIR) $(BUILD_DIR)/rtorrent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RTORRENT_BUILD_DIR) DESTDIR=$(RTORRENT_IPK_DIR) install-strip
 	$(MAKE) $(RTORRENT_IPK_DIR)/CONTROL/control
+	install -d $(RTORRENT_IPK_DIR)/opt/share/torrent
+	install -d $(RTORRENT_IPK_DIR)/opt/share/torrent/work
+	install -d $(RTORRENT_IPK_DIR)/opt/share/torrent/dl
+	install -d $(RTORRENT_IPK_DIR)/opt/etc
+	install -m 644 $(RTORRENT_SOURCE_DIR)/rtorrent.conf $(RTORRENT_IPK_DIR)/opt/etc/
+	install -m 755 $(RTORRENT_SOURCE_DIR)/rtor $(RTORRENT_IPK_DIR)/opt/bin
+
+	$(MAKE) $(RTORRENT_IPK_DIR)/CONTROL/control
+#	install -m 755 $(RTORRENT_SOURCE_DIR)/postinst $(RTORRENT_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTORRENT_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(RTORRENT_SOURCE_DIR)/prerm $(RTORRENT_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTORRENT_IPK_DIR)/CONTROL/prerm
 	echo $(RTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(RTORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RTORRENT_IPK_DIR)
 
