@@ -1,0 +1,24 @@
+--- lcd4linux/drv_generic_parport.c	2007-02-02 12:42:41.000000000 +0100
++++ lcd4linux-patched/drv_generic_parport.c	2007-02-02 14:07:00.000000000 +0100
+@@ -39,6 +39,7 @@
+ #include <sys/stat.h>
+ #include <sys/ioctl.h>
+ 
++#if 0
+ #ifdef HAVE_SYS_IO_H
+ #include <sys/io.h>
+ #define WITH_OUTB
+@@ -48,6 +49,13 @@
+ #define WITH_OUTB
+ #endif
+ #endif
++#else
++#define outb(foo, bar)
++#define inb(foo) 0
++#define ioperm(foo, bar, bar2) 0
++#define iopl(foo) 0
++#endif
++
+ 
+ #if defined (HAVE_LINUX_PARPORT_H) && defined (HAVE_LINUX_PPDEV_H)
+ #define WITH_PPDEV
