@@ -28,7 +28,7 @@
 #
 TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/v1.8
 TIN_SITE2=ftp://ftp.stikman.com/pub/tin/v1.8
-TIN_VERSION=1.8.2
+TIN_VERSION=1.8.3
 TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
 TIN_DIR=tin-$(TIN_VERSION)
 TIN_UNZIP=zcat
@@ -73,6 +73,8 @@ TIN_BUILD_DIR=$(BUILD_DIR)/tin
 TIN_SOURCE_DIR=$(SOURCE_DIR)/tin
 TIN_IPK_DIR=$(BUILD_DIR)/tin-$(TIN_VERSION)-ipk
 TIN_IPK=$(BUILD_DIR)/tin_$(TIN_VERSION)-$(TIN_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: tin-source tin-unpack tin tin-stage tin-ipk tin-clean tin-dirclean tin-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -208,3 +210,9 @@ tin-clean:
 #
 tin-dirclean:
 	rm -rf $(BUILD_DIR)/$(TIN_DIR) $(TIN_BUILD_DIR) $(TIN_IPK_DIR) $(TIN_IPK)
+
+#
+# Some sanity check for the package.
+#
+tin-check: $(TIN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TIN_IPK)
