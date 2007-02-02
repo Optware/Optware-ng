@@ -30,13 +30,13 @@ VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
 VLC_DEPENDS=ffmpeg, libmad, libmpeg2, libpng, libxml2, ncurses
-VLC_SUGGESTS=faad2, flac, freetype, liba52, libogg, libvorbis, libdvbpsi
+VLC_SUGGESTS=faad2, flac, freetype, liba52, libogg, libvorbis, libdvbpsi, speex
 VLC_CONFLICTS=
 
 #
 # VLC_IPK_VERSION should be incremented when the ipk changes.
 #
-VLC_IPK_VERSION=3
+VLC_IPK_VERSION=4
 
 #
 # VLC_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ VLC_IPK_VERSION=3
 # VLC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#VLC_PATCHES=$(VLC_SOURCE_DIR)/configure.patch
+VLC_PATCHES=$(VLC_SOURCE_DIR)/flac-1.1.3.patch
 
 #
 # If the compilation of the package requires additional
@@ -117,6 +117,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 	$(MAKE) libvorbis-stage
 	$(MAKE) libxml2-stage
 	$(MAKE) ncurses-stage
+	$(MAKE) speex-stage
 	rm -rf $(BUILD_DIR)/$(VLC_DIR) $(VLC_BUILD_DIR)
 	$(VLC_UNZIP) $(DL_DIR)/$(VLC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VLC_PATCHES)" ; \
@@ -139,14 +140,15 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--prefix=/opt \
 		--enable-v4l \
 		--enable-a52 \
+		--enable-dvbpsi \
 		--enable-faad \
 		--enable-flac \
 		--disable-gnutls \
 		--enable-ncurses \
 		--enable-ogg \
 		--enable-png \
+		--enable-speex \
 		--enable-vorbis \
-		--enable-dvbpsi \
 		--disable-dts \
 		--disable-dvdnav \
 		--disable-glx \
@@ -156,7 +158,6 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--disable-mpc \
 		--disable-screen \
 		--disable-sdl \
-		--disable-speex \
 		--disable-wxwidgets --disable-skins2 \
 		--disable-x11 \
 		--disable-x264 \
