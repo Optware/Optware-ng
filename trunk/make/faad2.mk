@@ -26,7 +26,7 @@ FAAD2_SOURCE=faad2-$(FAAD2_VERSION).tar.gz
 FAAD2_DIR=faad2
 FAAD2_UNZIP=zcat
 FAAD2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-FAAD2_DESCRIPTION=Describe faad2 here.
+FAAD2_DESCRIPTION=Freeware Advanced Audio Coder
 FAAD2_SECTION=audio
 FAAD2_PRIORITY=optional
 FAAD2_DEPENDS=
@@ -114,9 +114,9 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) # mak
 	if test "$(BUILD_DIR)/$(FAAD2_DIR)" != "$(FAAD2_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FAAD2_DIR) $(FAAD2_BUILD_DIR) ; \
 	fi
-	find $(FAAD2_BUILD_DIR) -name Makefile.am | xargs sed -ie 's/$$//'
+	find $(FAAD2_BUILD_DIR) -name \*.am -or -name \*.in | xargs sed -i -e 's/$$//'
 	(cd $(FAAD2_BUILD_DIR); \
-	autoreconf -vif; \
+		autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FAAD2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FAAD2_LDFLAGS)" \
@@ -127,6 +127,7 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) # mak
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--disable-xmms \
 	)
 	$(PATCH_LIBTOOL) $(FAAD2_BUILD_DIR)/libtool
 	sed -ie '/^SUBDIRS/s/ frontend / /' $(FAAD2_BUILD_DIR)/Makefile
