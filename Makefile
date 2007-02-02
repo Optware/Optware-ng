@@ -150,7 +150,7 @@ COMMON_CROSS_PACKAGES = \
 	faad2 fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext ggrab ghostscript \
-	git-core glib gnokii gnupg gnuplot gnutls grep groff gtk gzip \
+	git-core glib gnokii gnugo gnupg gnuplot gnutls grep groff gtk gzip \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	hdparm hexcurse heyu hnb hpijs htop \
