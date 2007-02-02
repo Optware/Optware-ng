@@ -158,7 +158,7 @@ COMMON_CROSS_PACKAGES = \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
 	keychain kismet kissdx knock \
-	lame ldconfig less lha \
+	lame lcd4linux ldconfig less lha \
 	liba52 libao libart libbt libcapi20 libcurl libdb libdvb libdvbpsi libdvdread \
 	libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
