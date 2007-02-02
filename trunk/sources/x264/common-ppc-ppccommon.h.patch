@@ -1,0 +1,13 @@
+--- common/ppc/ppccommon.h.orig	2007-02-02 11:05:44.000000000 -0800
++++ common/ppc/ppccommon.h	2007-02-02 11:05:48.000000000 -0800
+@@ -273,8 +273,8 @@
+ permPix2 = vec_lvsl(0, pix2);  \
+ 
+ #define VEC_DIFF_H_8BYTE_ALIGNED(p1,i1,p2,i2,n,d)     \
+-pix1v = vec_perm(vec_ld(0,p1), zero_u8v, permPix1);  \
+-pix2v = vec_perm(vec_ld(0, p2), zero_u8v, permPix2); \
++pix1v = (vec_s16_t) vec_perm(vec_ld(0,p1), zero_u8v, permPix1);  \
++pix2v = (vec_s16_t) vec_perm(vec_ld(0, p2), zero_u8v, permPix2); \
+ pix1v = vec_u8_to_s16( pix1v );                      \
+ pix2v = vec_u8_to_s16( pix2v );                      \
+ d = vec_sub( pix1v, pix2v);                          \
