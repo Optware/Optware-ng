@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PYREX_SITE=http://www.cosc.canterbury.ac.nz/greg.ewing/python/Pyrex
-PYREX_VERSION=0.9.4.1
+PYREX_VERSION=0.9.5.1a
 PYREX_SOURCE=Pyrex-$(PYREX_VERSION).tar.gz
 PYREX_DIR=Pyrex-$(PYREX_VERSION)
 PYREX_UNZIP=zcat
@@ -29,14 +29,15 @@ PYREX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PYREX_DESCRIPTION=A Language for Writing Python Extension Modules.
 PYREX_SECTION=lang
 PYREX_PRIORITY=optional
-PYREX_DEPENDS=python
+PY24-PYREX_DEPENDS=python24
+PY25-PYREX_DEPENDS=python25
 PYREX_SUGGESTS=
 PYREX_CONFLICTS=
 
 #
 # PYREX_IPK_VERSION should be incremented when the ipk changes.
 #
-PYREX_IPK_VERSION=2
+PYREX_IPK_VERSION=1
 
 #
 # PYREX_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PYREX_LDFLAGS=
 #
 PYREX_BUILD_DIR=$(BUILD_DIR)/pyrex
 PYREX_SOURCE_DIR=$(SOURCE_DIR)/pyrex
-PYREX_IPK_DIR=$(BUILD_DIR)/pyrex-$(PYREX_VERSION)-ipk
-PYREX_IPK=$(BUILD_DIR)/pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-PYREX_IPK_DIR=$(BUILD_DIR)/pyrex-$(PYREX_VERSION)-ipk
+PY24-PYREX_IPK=$(BUILD_DIR)/pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-PYREX_IPK_DIR=$(BUILD_DIR)/py25-pyrex-$(PYREX_VERSION)-ipk
+PY25-PYREX_IPK=$(BUILD_DIR)/py25-pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: pyrex-source pyrex-unpack pyrex pyrex-stage pyrex-ipk pyrex-clean pyrex-dirclean pyrex-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -99,24 +106,44 @@ pyrex-source: $(DL_DIR)/$(PYREX_SOURCE) $(PYREX_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PYREX_BUILD_DIR)/.configured: $(DL_DIR)/$(PYREX_SOURCE) $(PYREX_PATCHES)
-	$(MAKE) python-stage
-	rm -rf $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)
+	$(MAKE) py-setuptools-stage
+	rm -rf $(PYREX_BUILD_DIR)
+	mkdir -p $(PYREX_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PYREX_DIR)
 	$(PYREX_UNZIP) $(DL_DIR)/$(PYREX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PYREX_PATCHES) | patch -d $(BUILD_DIR)/$(PYREX_DIR) -p1
-	mv $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)
-	(cd $(PYREX_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)/2.4
+	(cd $(PYREX_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg; \
+	    ) >> setup.cfg; \
 	)
-	touch $(PYREX_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PYREX_DIR)
+	$(PYREX_UNZIP) $(DL_DIR)/$(PYREX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PYREX_PATCHES) | patch -d $(BUILD_DIR)/$(PYREX_DIR) -p1
+	mv $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)/2.5
+	(cd $(PYREX_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 pyrex-unpack: $(PYREX_BUILD_DIR)/.configured
 
@@ -124,12 +151,14 @@ pyrex-unpack: $(PYREX_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PYREX_BUILD_DIR)/.built: $(PYREX_BUILD_DIR)/.configured
-	rm -f $(PYREX_BUILD_DIR)/.built
-	(cd $(PYREX_BUILD_DIR); \
-	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
-	)
-	touch $(PYREX_BUILD_DIR)/.built
+	rm -f $@
+	cd $(PYREX_BUILD_DIR)/2.4; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
+	cd $(PYREX_BUILD_DIR)/2.5; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,10 +170,13 @@ pyrex: $(PYREX_BUILD_DIR)/.built
 #
 $(PYREX_BUILD_DIR)/.staged: $(PYREX_BUILD_DIR)/.built
 	rm -f $(PYREX_BUILD_DIR)/.staged
-	(cd $(PYREX_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
-	)
+	cd $(PYREX_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(STAGING_DIR) --prefix=/opt
 #	sed -i -e 's|#!/opt/bin/python|#!/usr/bin/env python2.4|' $(STAGING_PREFIX)/bin/pyrexc
+	cd $(PYREX_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(STAGING_DIR) --prefix=/opt
 	touch $(PYREX_BUILD_DIR)/.staged
 
 pyrex-stage: $(PYREX_BUILD_DIR)/.staged
@@ -153,8 +185,8 @@ pyrex-stage: $(PYREX_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/pyrex
 #
-$(PYREX_IPK_DIR)/CONTROL/control:
-	@install -d $(PYREX_IPK_DIR)/CONTROL
+$(PY24-PYREX_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: pyrex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -164,7 +196,21 @@ $(PYREX_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PYREX_MAINTAINER)" >>$@
 	@echo "Source: $(PYREX_SITE)/$(PYREX_SOURCE)" >>$@
 	@echo "Description: $(PYREX_DESCRIPTION)" >>$@
-	@echo "Depends: $(PYREX_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PYREX_DEPENDS)" >>$@
+	@echo "Conflicts: $(PYREX_CONFLICTS)" >>$@
+
+$(PY25-PYREX_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pyrex" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PYREX_PRIORITY)" >>$@
+	@echo "Section: $(PYREX_SECTION)" >>$@
+	@echo "Version: $(PYREX_VERSION)-$(PYREX_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PYREX_MAINTAINER)" >>$@
+	@echo "Source: $(PYREX_SITE)/$(PYREX_SOURCE)" >>$@
+	@echo "Description: $(PYREX_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PYREX_DEPENDS)" >>$@
 	@echo "Conflicts: $(PYREX_CONFLICTS)" >>$@
 
 #
@@ -179,19 +225,28 @@ $(PYREX_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PYREX_IPK): $(PYREX_BUILD_DIR)/.built
-	rm -rf $(PYREX_IPK_DIR) $(BUILD_DIR)/pyrex_*_$(TARGET_ARCH).ipk
-	(cd $(PYREX_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PYREX_IPK_DIR) --prefix=/opt; \
-	)
-#	$(STRIP_COMMAND) $(PYREX_IPK_DIR)/opt/lib/python2.4/site-packages/pyrex/*.so
-	$(MAKE) $(PYREX_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PYREX_IPK_DIR)
+$(PY24-PYREX_IPK): $(PYREX_BUILD_DIR)/.built
+	rm -rf $(PY24-PYREX_IPK_DIR) $(BUILD_DIR)/pyrex_*_$(TARGET_ARCH).ipk
+	cd $(PYREX_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-PYREX_IPK_DIR) --prefix=/opt
+	$(MAKE) $(PY24-PYREX_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PYREX_IPK_DIR)
+
+$(PY25-PYREX_IPK): $(PYREX_BUILD_DIR)/.built
+	rm -rf $(PY25-PYREX_IPK_DIR) $(BUILD_DIR)/py25-pyrex_*_$(TARGET_ARCH).ipk
+	cd $(PYREX_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-PYREX_IPK_DIR) --prefix=/opt
+	for f in $(PY25-PYREX_IPK_DIR)/opt/bin/*; \
+	    do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	$(MAKE) $(PY25-PYREX_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PYREX_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-pyrex-ipk: $(PYREX_IPK)
+pyrex-ipk: $(PY24-PYREX_IPK) $(PY25-PYREX_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -204,4 +259,12 @@ pyrex-clean:
 # directories.
 #
 pyrex-dirclean:
-	rm -rf $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR) $(PYREX_IPK_DIR) $(PYREX_IPK)
+	rm -rf $(BUILD_DIR)/$(PYREX_DIR) $(PYREX_BUILD_DIR)
+	rm -rf $(PY24-PYREX_IPK_DIR) $(PY24-PYREX_IPK)
+	rm -rf $(PY25-PYREX_IPK_DIR) $(PY25-PYREX_IPK)
+
+#
+# Some sanity check for the package.
+#
+pyrex-check: pyrex-ipk
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-PYREX_IPK) $(PY25-PYREX_IPK)
