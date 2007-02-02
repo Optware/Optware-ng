@@ -26,7 +26,7 @@ DUMP_SOURCE=dump-$(DUMP_VERSION).tar.gz
 DUMP_DIR=dump-$(DUMP_VERSION)
 DUMP_UNZIP=zcat
 DUMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-DUMP_DESCRIPTION=Utilities to dump and restore an ext2 partition.
+DUMP_DESCRIPTION=Dump/Restore ext2/ext3 filesystem backup
 DUMP_SECTION=misc
 DUMP_PRIORITY=optional
 DUMP_DEPENDS=zlib, bzip2, readline
@@ -46,7 +46,7 @@ DUMP_IPK_VERSION=1
 # DUMP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DUMP_PATCHES=$(DUMP_SOURCE_DIR)/configure.patch
+DUMP_PATCHES=$(DUMP_SOURCE_DIR)/mainc-uclibc.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,7 +109,7 @@ $(DUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DUMP_SOURCE) $(DUMP_PATCHES) make/dum
 	$(DUMP_UNZIP) $(DL_DIR)/$(DUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DUMP_PATCHES)" ; \
 		then cat $(DUMP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(DUMP_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(DUMP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(DUMP_DIR)" != "$(DUMP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DUMP_DIR) $(DUMP_BUILD_DIR) ; \
