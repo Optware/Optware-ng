@@ -196,7 +196,8 @@ COMMON_CROSS_PACKAGES = \
 	w3cam w3m wakelan webalizer wget wget-ssl \
 	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
-	xmail xmu xpdf xpm xproto xrender xt xterm xtrans xtst xvid \
+	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
+	x264 xmail xvid \
 	zip zlib zoo zsh \
 
 # cdrtools makes no provision in the build for cross-compilation.  It
