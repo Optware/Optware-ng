@@ -20,8 +20,17 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+ASTERISK14_SOURCE_TYPE=tarball
+#ASTERISK14_SOURCE_TYPE=svn
+
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
+ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
+ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/trunk
+ASTERISK14_SVN_REV=53113
+ASTERISK14_VERSION=1.4.0svn-r$(ASTERISK14_SVN_REV)
+else
 ASTERISK14_VERSION=1.4.0
+endif
 ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION).tar.gz
 ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)
 ASTERISK14_UNZIP=zcat
@@ -30,17 +39,25 @@ ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK14_SECTION=util
 ASTERISK14_PRIORITY=optional
 ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt
-ASTERISK14_SUGGESTS=asterisk14-gui,sqlite2,iksemel,radiusclient-ng,unixodbc
+ASTERISK14_SUGGESTS=\
+asterisk14-chan-capi,\
+asterisk14-core-sounds-en-ulaw,\
+asterisk14-extra-sounds-en-gsm,\
+asterisk14-extra-sounds-en-ulaw,\
+asterisk14-gui,\
+free-tds,\
+iksemel,\
+radiusclient-ng,\
+sqlite2,\
+unixodbc
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 
-#ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/trunk
-#ASTERISK14_SVN_REV=51347
-#ASTERISK14_VERSION=1.4.0svn-r$(ASTERISK14_SVN_REV)
+http://ipkg.nslu2-linux.org/feeds/optware/slugosbe/cross/unstable/asterisk14-chan-capi_0.7.1-1_armeb.ipk
 
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=10
+ASTERISK14_IPK_VERSION=11
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -149,9 +166,7 @@ ASTERISK14_IPK=$(BUILD_DIR)/asterisk14_$(ASTERISK14_VERSION)-$(ASTERISK14_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK14_SOURCE):
-ifeq (X$(ASTERISK14_SVN), X) 
-	$(WGET) -P $(DL_DIR) $(ASTERISK14_SITE)/$(ASTERISK14_SOURCE)
-else
+ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(ASTERISK14_DIR) && \
 		svn co -r $(ASTERISK14_SVN_REV) $(ASTERISK14_SVN) \
@@ -159,6 +174,8 @@ else
 		tar -czf $@ $(ASTERISK14_DIR) && \
 		rm -rf $(ASTERISK14_DIR) \
 	)
+else
+	$(WGET) -P $(DL_DIR) $(ASTERISK14_SITE)/$(ASTERISK14_SOURCE)
 endif
 
 #
@@ -187,7 +204,8 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage
+	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage freetds-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -197,7 +215,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
 	fi
-
+ifeq ($(ASTERISK14_SOURCE_TYPE), tarball)
 	(cd $(ASTERISK14_BUILD_DIR)/menuselect; \
 		./configure \
 	)
@@ -215,7 +233,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
-
+endif
 	(cd $(ASTERISK14_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK14_CPPFLAGS)" \
@@ -242,6 +260,7 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 		--with-gnutls=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
+		--without-imap \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
