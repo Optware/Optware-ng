@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(strip \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), armeb-unknown-linux-gnu, \
@@ -245,7 +245,7 @@ else
                 --disable-hipe \
 		--disable-nls \
 		; \
-	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s|$$(ERL_TOP).*|$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/mnesia/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin --include_libs "kernel,mnesia,stdlib" -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin|' $(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
+	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s|$$(ERL_TOP).*|$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/mnesia/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin|' $(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
 	)
 # /home/slug/optware/nslu2/host/builds/erlang/bin/dialyzer --output_plt /home/slug/optware/nslu2/builds/erlang/lib/dialyzer/plt/dialyzer_init_plt -pa /home/slug/optware/nslu2/builds/erlang/lib/kernel/ebin -pa /home/slug/optware/nslu2/builds/erlang/lib/stdlib/ebin --include_libs "kernel,stdlib" -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin
 endif
