@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R11B-2
-ERLANG_VERSION=R11B2
+ERLANG_UPSTREAM_VERSION=R11B-3
+ERLANG_VERSION=R11B3
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=3
+ERLANG_IPK_VERSION=1
 
 ERLANG_TARGET=$(strip \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), armeb-unknown-linux-gnu, \
@@ -451,6 +451,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/inet_gethost \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/run_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/to_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/typer \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/dialyzer \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/tools-*/bin/emem \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/erl_interface-*/bin/erl_call \
