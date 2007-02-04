@@ -159,7 +159,7 @@ COMMON_CROSS_PACKAGES = \
 	jabberd jamvm jikes jove joe \
 	keychain kismet kissdx knock \
 	lame lcd4linux ldconfig less lha \
-	liba52 libao libart libbt libcapi20 libcurl libdb libdvb libdvbpsi libdvdread \
+	liba52 libao libart libbt libcapi20 libcdio libcurl libdb libdvb libdvbpsi libdvdread \
 	libesmtp libevent libexif libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpeg2 libmrss libnsl libnxml \
@@ -243,7 +243,7 @@ WL500G_BROKEN_PACKAGES = \
 	 fcgi ficy fish freetds gambit-c gawk \
 	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
-	 ldconfig lftp libdvb libftdi liblcms libtorrent lsof \
+	 ldconfig lftp libcdio libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango postfix psmisc py-mssql \
