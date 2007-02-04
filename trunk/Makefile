@@ -191,7 +191,7 @@ COMMON_CROSS_PACKAGES = \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent transcode transmission tsocks \
 	ttf-bitstream-vera \
 	ufsd unarj unfs3 units unixodbc unrar \
-	unzip up-imapproxy usbutils ushare \
+	unzip upslug2 up-imapproxy usbutils ushare \
 	vblade vdr-mediamvp vim vlc vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer wget wget-ssl \
 	which whois wizd wpa-supplicant wput wxbase \
@@ -224,7 +224,7 @@ COMMON_NATIVE_PACKAGES = \
 PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 jabber \
 
 # Packages that *only* work for nslu2 - do not just put new packages here.
-NSLU2_SPECIFIC_PACKAGES = upslug2 unslung-feeds unslung-devel crosstool-native \
+NSLU2_SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native \
 
 # Packages that do not work for nslu2.
 NSLU2_BROKEN_PACKAGES = \
