@@ -15,43 +15,44 @@
 # this cvs module is checked out.
 #
 
-UPSLUG2_REPOSITORY=:pserver:anonymous@cvs.sf.net:/cvsroot/nslu
+UPSLUG2_SVN_REPO=http://svn.nslu2-linux.org/svnroot/upslug2/trunk
 UPSLUG2_DIR=upslug2
 UPSLUG2_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 UPSLUG2_DESCRIPTION=Slug upgrade server
 UPSLUG2_SECTION=net
 UPSLUG2_PRIORITY=optional
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 UPSLUG2_DEPENDS=libstdc++
+endif
 UPSLUG2_SUGGESTS=
 UPSLUG2_CONFLICTS=
 
 #
-# Software downloaded from CVS repositories must either use a tag or a
+# Software downloaded from SVN repositories must either use a tag or a
 # date to ensure that the same sources can be downloaded later.
 #
 
 #
 # If you want to use a date, uncomment the variables below and modify
-# UPSLUG2_CVS_DATE
+# UPSLUG2_SVN_DATE
 #
 
-#UPSLUG2_CVS_DATE=20050201
-#UPSLUG2_VERSION=cvs$(UPSLUG2_CVS_DATE)
-#UPSLUG2_CVS_OPTS=-D $(UPSLUG2_CVS_DATE)
+#UPSLUG2_SVN_DATE=20050201
+#UPSLUG2_VERSION=cvs$(UPSLUG2_SVN_DATE)
+#UPSLUG2_SVN_OPTS=-D $(UPSLUG2_SVN_DATE)
 
 #
 # If you want to use a tag, uncomment the variables below and modify
-# UPSLUG2_CVS_TAG and UPSLUG2_CVS_VERSION
+# UPSLUG2_SVN_TAG and UPSLUG2_SVN_VERSION
 #
 
-UPSLUG2_VERSION=3
-UPSLUG2_CVS_TAG=upslug2_$(UPSLUG2_VERSION)
-UPSLUG2_CVS_OPTS=-r $(UPSLUG2_CVS_TAG)
+UPSLUG2_SVN_REV=0039
+UPSLUG2_VERSION=0.0+svn$(UPSLUG2_SVN_REV)
 
 #
 # UPSLUG2_IPK_VERSION should be incremented when the ipk changes.
 #
-UPSLUG2_IPK_VERSION=2
+UPSLUG2_IPK_VERSION=1
 
 #
 # UPSLUG2_CONFFILES should be a list of user-editable files
@@ -84,19 +85,21 @@ UPSLUG2_SOURCE_DIR=$(SOURCE_DIR)/upslug2
 UPSLUG2_IPK_DIR=$(BUILD_DIR)/upslug2-$(UPSLUG2_VERSION)-ipk
 UPSLUG2_IPK=$(BUILD_DIR)/upslug2_$(UPSLUG2_VERSION)-$(UPSLUG2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: upslug2-source upslug2-unpack upslug2 upslug2-stage upslug2-ipk upslug2-clean upslug2-dirclean upslug2-check
+
 #
 # In this case there is no tarball, instead we fetch the sources
-# directly to the builddir with CVS
+# directly to the builddir with SVN
 #
-$(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz:
+$(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz:
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(UPSLUG2_DIR) && \
-		cvs -d $(UPSLUG2_REPOSITORY) -z3 co $(UPSLUG2_CVS_OPTS) $(UPSLUG2_DIR) && \
+		svn co -r$(UPSLUG2_SVN_REV) $(UPSLUG2_SVN_REPO) upslug2 && \
 		tar -czf $@ $(UPSLUG2_DIR) && \
 		rm -rf $(UPSLUG2_DIR) \
 	)
 
-upslug2-source: $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
+upslug2-source: $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
 
 #
 # This target also configures the build within the build directory.
@@ -106,12 +109,14 @@ upslug2-source: $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
 # to Make causes it to override the default search paths of the compiler.
 #
 # If the compilation of the package requires other packages to be staged
-# first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
+# first, then do that first (e.g. "$(MAKE) upslug2-stage <baz>-stage").
 #
-$(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
-#	$(MAKE) <foo>-stage <baz>-stage
+$(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
+endif
 	rm -rf $(BUILD_DIR)/$(UPSLUG2_DIR) $(UPSLUG2_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/cvs-$(UPSLUG2_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
 	if test -n "$(UPSLUG2_PATCHES)" ; \
 		then cat $(UPSLUG2_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UPSLUG2_DIR) -p0 ; \
@@ -171,7 +176,7 @@ $(UPSLUG2_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(UPSLUG2_SECTION)" >>$@
 	@echo "Version: $(UPSLUG2_VERSION)-$(UPSLUG2_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(UPSLUG2_MAINTAINER)" >>$@
-	@echo "Source: $(UPSLUG2_REPOSITORY)" >>$@
+	@echo "Source: $(UPSLUG2_SVN_REPO)" >>$@
 	@echo "Description: $(UPSLUG2_DESCRIPTION)" >>$@
 	@echo "Depends: $(UPSLUG2_DEPENDS)" >>$@
 	@echo "Suggests: $(UPSLUG2_SUGGESTS)" >>$@
@@ -192,7 +197,7 @@ $(UPSLUG2_IPK_DIR)/CONTROL/control:
 $(UPSLUG2_IPK): $(UPSLUG2_BUILD_DIR)/.built
 	rm -rf $(UPSLUG2_IPK_DIR) $(BUILD_DIR)/upslug2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UPSLUG2_BUILD_DIR) DESTDIR=$(UPSLUG2_IPK_DIR) install-strip
-	install -d $(UPSLUG2_IPK_DIR)/opt/etc/
+#	install -d $(UPSLUG2_IPK_DIR)/opt/etc/
 #	install -m 644 $(UPSLUG2_SOURCE_DIR)/upslug2.conf $(UPSLUG2_IPK_DIR)/opt/etc/upslug2.conf
 #	install -d $(UPSLUG2_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(UPSLUG2_SOURCE_DIR)/rc.upslug2 $(UPSLUG2_IPK_DIR)/opt/etc/init.d/SXXupslug2
@@ -211,7 +216,7 @@ upslug2-ipk: $(UPSLUG2_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 upslug2-clean:
-	rm -f $(<FOO>_BUILD_DIR)/.built
+	rm -f $(UPSLUG2_BUILD_DIR)/.built
 	-$(MAKE) -C $(UPSLUG2_BUILD_DIR) clean
 
 #
@@ -220,3 +225,9 @@ upslug2-clean:
 #
 upslug2-dirclean:
 	rm -rf $(BUILD_DIR)/$(UPSLUG2_DIR) $(UPSLUG2_BUILD_DIR) $(UPSLUG2_IPK_DIR) $(UPSLUG2_IPK)
+
+#
+# Some sanity check for the package.
+#
+upslug2-check: $(UPSLUG2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UPSLUG2_IPK)
