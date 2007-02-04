@@ -29,14 +29,29 @@ VLC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
-VLC_DEPENDS=ffmpeg, libmad, libmpeg2, libpng, libxml2, ncurses
-VLC_SUGGESTS=faad2, flac, freetype, liba52, libogg, libvorbis, libdvbpsi, speex, x264
+VLC_DEPENDS=ffmpeg, \
+libdvbpsi, \
+libmad, \
+libmpeg2, \
+libpng, \
+libxml2, \
+ncurses
+VLC_SUGGESTS=faad2, \
+flac, \
+freetype, \
+liba52, \
+libdvdnav, \
+libdvdread, \
+libogg, \
+libvorbis, \
+speex, \
+x264
 VLC_CONFLICTS=
 
 #
 # VLC_IPK_VERSION should be incremented when the ipk changes.
 #
-VLC_IPK_VERSION=5
+VLC_IPK_VERSION=6
 
 #
 # VLC_CONFFILES should be a list of user-editable files
@@ -110,6 +125,8 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 	$(MAKE) freetype-stage
 	$(MAKE) liba52-stage
 	$(MAKE) libdvbpsi-stage
+	$(MAKE) libdvdnav-stage
+	$(MAKE) libdvdread-stage
 	$(MAKE) libmad-stage
 	$(MAKE) libmpeg2-stage
 	$(MAKE) libogg-stage
@@ -142,6 +159,8 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--enable-v4l \
 		--enable-a52 \
 		--enable-dvbpsi \
+		--enable-dvdnav \
+		--with-dvdnav-config-path=$(STAGING_PREFIX)/bin \
 		--enable-faad \
 		--enable-flac \
 		--disable-gnutls \
@@ -152,7 +171,6 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--enable-vorbis \
 		--enable-x264 \
 		--disable-dts \
-		--disable-dvdnav \
 		--disable-glx \
 		--disable-gnomevfs \
 		--disable-libcdio \
@@ -170,7 +188,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 	       -e 's|-I/opt/include|-I$(STAGING_INCLUDE_DIR)|g' \
 	       $(VLC_BUILD_DIR)/vlc-config
 	$(PATCH_LIBTOOL) $(VLC_BUILD_DIR)/libtool
-	touch $(VLC_BUILD_DIR)/.configured
+	touch $@
 
 vlc-unpack: $(VLC_BUILD_DIR)/.configured
 
@@ -178,9 +196,9 @@ vlc-unpack: $(VLC_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(VLC_BUILD_DIR)/.built: $(VLC_BUILD_DIR)/.configured
-	rm -f $(VLC_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(VLC_BUILD_DIR)
-	touch $(VLC_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -191,9 +209,9 @@ vlc: $(VLC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(VLC_BUILD_DIR)/.staged: $(VLC_BUILD_DIR)/.built
-	rm -f $(VLC_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(VLC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(VLC_BUILD_DIR)/.staged
+	touch $@
 
 vlc-stage: $(VLC_BUILD_DIR)/.staged
 
