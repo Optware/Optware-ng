@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CONFIGOBJ_SITE=http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=
-PY-CONFIGOBJ_VERSION=4.3.2
+PY-CONFIGOBJ_VERSION=4.4.0
 PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).zip
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
 PY-CONFIGOBJ_UNZIP=unzip
@@ -37,7 +37,7 @@ PY-CONFIGOBJ_CONFLICTS=
 #
 # PY-CONFIGOBJ_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CONFIGOBJ_IPK_VERSION=2
+PY-CONFIGOBJ_IPK_VERSION=1
 
 #
 # PY-CONFIGOBJ_CONFFILES should be a list of user-editable files
