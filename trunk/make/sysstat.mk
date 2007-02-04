@@ -26,8 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SYSSTAT_SITE=ftp://ibiblio.org/pub/linux/system/status
-SYSSTAT_VERSION=7.0.3
+SYSSTAT_SITE=http://perso.orange.fr/sebastien.godard
+#ftp://ibiblio.org/pub/linux/system/status
+SYSSTAT_VERSION=7.0.4
 SYSSTAT_SOURCE=sysstat-$(SYSSTAT_VERSION).tar.bz2
 SYSSTAT_DIR=sysstat-$(SYSSTAT_VERSION)
 SYSSTAT_UNZIP=bzcat
@@ -74,6 +75,8 @@ SYSSTAT_BUILD_DIR=$(BUILD_DIR)/sysstat
 SYSSTAT_SOURCE_DIR=$(SOURCE_DIR)/sysstat
 SYSSTAT_IPK_DIR=$(BUILD_DIR)/sysstat-$(SYSSTAT_VERSION)-ipk
 SYSSTAT_IPK=$(BUILD_DIR)/sysstat_$(SYSSTAT_VERSION)-$(SYSSTAT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: sysstat-source sysstat-unpack sysstat sysstat-stage sysstat-ipk sysstat-clean sysstat-dirclean sysstat-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -208,3 +211,9 @@ sysstat-clean:
 #
 sysstat-dirclean:
 	rm -rf $(BUILD_DIR)/$(SYSSTAT_DIR) $(SYSSTAT_BUILD_DIR) $(SYSSTAT_IPK_DIR) $(SYSSTAT_IPK)
+
+#
+# Some sanity check for the package.
+#
+sysstat-check: $(SYSSTAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SYSSTAT_IPK)
