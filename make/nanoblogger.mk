@@ -36,11 +36,12 @@ NANOBLOGGER_CONFLICTS=
 #
 # NANOBLOGGER_IPK_VERSION should be incremented when the ipk changes.
 #
-NANOBLOGGER_IPK_VERSION=1
+NANOBLOGGER_IPK_VERSION=2
 
 #
 # NANOBLOGGER_CONFFILES should be a list of user-editable files
-NANOBLOGGER_CONFFILES=/opt/share/nanoblogger/nb.conf
+NANOBLOGGER_CONFFILES=/opt/share/nanoblogger/nb.conf \
+		/opt/share/nanoblogger/default/blog.conf
 
 #
 # NANOBLOGGER_PATCHES should list any patches, in the the order in
@@ -114,6 +115,11 @@ $(NANOBLOGGER_BUILD_DIR)/.configured: $(DL_DIR)/$(NANOBLOGGER_SOURCE) $(NANOBLOG
 	if test "$(BUILD_DIR)/$(NANOBLOGGER_DIR)" != "$(NANOBLOGGER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NANOBLOGGER_DIR) $(NANOBLOGGER_BUILD_DIR) ; \
 	fi
+	sed -i -e 's|/bin/bash|/opt/bin/bash|' \
+		-e '/^NB_BASE_DIR=/s|.*|NB_BASE_DIR=/opt/share/nanoblogger|' \
+		$(NANOBLOGGER_BUILD_DIR)/nb
+	sed -i -e '/BLOG_DIR/s|.*|BLOG_DIR=/opt/share/www/weblog|' \
+		$(NANOBLOGGER_BUILD_DIR)/nb.conf
 	touch $(NANOBLOGGER_BUILD_DIR)/.configured
 
 nanoblogger-unpack: $(NANOBLOGGER_BUILD_DIR)/.configured
@@ -180,6 +186,7 @@ $(NANOBLOGGER_IPK): $(NANOBLOGGER_BUILD_DIR)/.built
 	cd $(NANOBLOGGER_IPK_DIR)/opt/share/nanoblogger; \
 		rm -f .configured .built; \
 		mv nb $(NANOBLOGGER_IPK_DIR)/opt/bin/
+	install -d $(NANOBLOGGER_IPK_DIR)/opt/share/www/weblog
 #	install -m 644 $(NANOBLOGGER_SOURCE_DIR)/nanoblogger.conf $(NANOBLOGGER_IPK_DIR)/opt/etc/nanoblogger.conf
 #	install -d $(NANOBLOGGER_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(NANOBLOGGER_SOURCE_DIR)/rc.nanoblogger $(NANOBLOGGER_IPK_DIR)/opt/etc/init.d/SXXnanoblogger
