@@ -27,7 +27,7 @@ TZCODE_TZDATA_TARBALL=tzdata$(TZCODE_VERSION).tar.gz
 TZCODE_DIR=tzcode$(TZCODE_VERSION)
 TZCODE_UNZIP=zcat
 TZCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-TZCODE_DESCRIPTION=Describe tzcode here.
+TZCODE_DESCRIPTION=Timezone utilities.
 TZCODE_SECTION=sysadmin
 TZCODE_PRIORITY=optional
 TZCODE_DEPENDS=
@@ -37,7 +37,7 @@ TZCODE_CONFLICTS=
 #
 # TZCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TZCODE_IPK_VERSION=1
+TZCODE_IPK_VERSION=2
 
 #
 # TZCODE_CONFFILES should be a list of user-editable files
@@ -209,6 +209,7 @@ $(TZCODE_IPK): $(TZCODE_BUILD_DIR)/.built
 	   $(TZCODE_IPK_DIR)/opt/etc/zic \
 	   $(TZCODE_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(TZCODE_IPK_DIR)/opt/sbin/*
+	sed -i -e 's|/usr/local|/opt|g' $(TZCODE_IPK_DIR)/opt/man/man*/*
 #	install -d $(TZCODE_IPK_DIR)/opt/etc/
 #	install -m 644 $(TZCODE_SOURCE_DIR)/tzcode.conf $(TZCODE_IPK_DIR)/opt/etc/tzcode.conf
 #	install -d $(TZCODE_IPK_DIR)/opt/etc/init.d
