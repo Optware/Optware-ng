@@ -204,7 +204,7 @@ $(TZ_IPK_DIR)/CONTROL/control:
 $(TZ_IPK): $(TZ_BUILD_DIR)/.built
 	rm -rf $(TZ_IPK_DIR) $(BUILD_DIR)/tz_*_$(TARGET_ARCH).ipk
 	install -d $(TZ_IPK_DIR)/opt/sbin
-	$(MAKE) -C $(TZ_BUILD_DIR) TOPDIR=$(TZ_IPK_DIR)/opt install zic=zic
+	$(MAKE) -C $(TZ_BUILD_DIR) TOPDIR=$(TZ_IPK_DIR)/opt install zic=/usr/sbin/zic
 	rm -f $(TZ_IPK_DIR)/opt/etc/tzselect $(TZ_IPK_DIR)/opt/man/man8/tzselect.8
 	rm -rf $(TZ_IPK_DIR)/opt/lib
 	mv $(TZ_IPK_DIR)/opt/etc/zdump \
