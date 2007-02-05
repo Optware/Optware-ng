@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/11289
-RUBYGEMS_VERSION=0.9.0
+RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/16452
+RUBYGEMS_VERSION=0.9.1
 RUBYGEMS_SOURCE=rubygems-$(RUBYGEMS_VERSION).tgz
 RUBYGEMS_DIR=rubygems-$(RUBYGEMS_VERSION)
 RUBYGEMS_UNZIP=zcat
@@ -49,7 +49,6 @@ RUBYGEMS_IPK_VERSION=1
 #
 RUBYGEMS_PATCHES=\
 	$(RUBYGEMS_SOURCE_DIR)/lib-rubygems.rb.patch \
-	$(RUBYGEMS_SOURCE_DIR)/lib-rubygems-installer.rb.patch \
 
 #
 # If the compilation of the package requires additional
@@ -72,12 +71,15 @@ RUBYGEMS_SOURCE_DIR=$(SOURCE_DIR)/rubygems
 RUBYGEMS_IPK_DIR=$(BUILD_DIR)/rubygems-$(RUBYGEMS_VERSION)-ipk
 RUBYGEMS_IPK=$(BUILD_DIR)/rubygems_$(RUBYGEMS_VERSION)-$(RUBYGEMS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: rubygems-source rubygems-unpack rubygems rubygems-stage rubygems-ipk rubygems-clean rubygems-dirclean rubygems-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RUBYGEMS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RUBYGEMS_SITE)/$(RUBYGEMS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(RUBYGEMS_SITE)/$(RUBYGEMS_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(RUBYGEMS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -176,10 +178,11 @@ $(RUBYGEMS_IPK_DIR)/CONTROL/control:
 		-r $(RUBYGEMS_SOURCE_DIR)/destdir.rb \
 #
 $(RUBYGEMS_IPK): $(RUBYGEMS_BUILD_DIR)/.built
+	$(MAKE) ruby-host-stage
 	rm -rf $(RUBYGEMS_IPK_DIR) $(BUILD_DIR)/rubygems_*_$(TARGET_ARCH).ipk
 	DESTDIR=$(RUBYGEMS_IPK_DIR) \
 	GEM_HOME=$(RUBYGEMS_IPK_DIR)/opt/local/lib/ruby/gems/1.8 \
-	ruby -C $(RUBYGEMS_BUILD_DIR) setup.rb all \
+	$(RUBY_HOST_RUBY) -C $(RUBYGEMS_BUILD_DIR) setup.rb all \
 		--prefix=$(RUBYGEMS_IPK_DIR)/opt \
 		--siteruby='$$prefix/lib/ruby'
 	install -d $(RUBYGEMS_IPK_DIR)/opt/local/bin
@@ -211,3 +214,9 @@ rubygems-clean:
 #
 rubygems-dirclean:
 	rm -rf $(BUILD_DIR)/$(RUBYGEMS_DIR) $(RUBYGEMS_BUILD_DIR) $(RUBYGEMS_IPK_DIR) $(RUBYGEMS_IPK)
+
+#
+# Some sanity check for the package.
+#
+rubygems-check: $(RUBYGEMS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(RUBYGEMS_IPK)
