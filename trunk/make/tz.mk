@@ -27,7 +27,7 @@ TZ_DATA_SOURCE=tzdata$(TZ_VERSION).tar.gz
 TZ_DIR=tz-$(TZ_VERSION)
 TZ_UNZIP=zcat
 TZ_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-TZ_DESCRIPTION=Timezone utilities.
+TZ_DESCRIPTION=Timezone utilities and data.
 TZ_SECTION=sysadmin
 TZ_PRIORITY=optional
 TZ_DEPENDS=
@@ -37,7 +37,7 @@ TZ_CONFLICTS=
 #
 # TZ_IPK_VERSION should be incremented when the ipk changes.
 #
-TZ_IPK_VERSION=1
+TZ_IPK_VERSION=2
 
 #
 # TZ_CONFFILES should be a list of user-editable files
@@ -151,6 +151,7 @@ $(TZ_BUILD_DIR)/.built: $(TZ_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TZ_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TZ_LDFLAGS)" \
 		cc=$(TARGET_CC) \
+		CFLAGS="-DTZDIR=\\\"/opt/share/zoneinfo\\\"" \
 		TOPDIR=/opt \
 		;
 	touch $@
