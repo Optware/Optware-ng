@@ -234,7 +234,7 @@ COMMON_NATIVE_PACKAGES = \
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 jabber \
+PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 jabber tzcode \
 
 # Packages that *only* work for nslu2 - do not just put new packages here.
 NSLU2_SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native \
