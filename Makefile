@@ -248,7 +248,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ldconfig lftp libcdio libdvb libftdi liblcms libtorrent lsof \
 	 mc mdadm minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
-	 nylon openldap openser pango postfix psmisc py-mssql \
+	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
 	 tcsh tethereal tnftpd transcode unrar vlc vte w3m wget wget-ssl wxbase x11 \
