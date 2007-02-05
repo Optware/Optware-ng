@@ -1,0 +1,12 @@
+diff -Naur pcapsipdump.orig/Makefile pcapsipdump/Makefile
+--- pcapsipdump.orig/Makefile	2007-01-22 09:50:31.000000000 -0500
++++ pcapsipdump/Makefile	2007-01-22 11:56:09.000000000 -0500
+@@ -1,7 +1,7 @@
+ all: pcapsipdump
+ 
+ pcapsipdump: pcapsipdump.cpp calltable.cpp calltable.h
+-	c++ -s -Wall -O2 -fomit-frame-pointer pcapsipdump.cpp calltable.cpp -o pcapsipdump -lpcap
++	$(CC) $(CPPFLAGS) $(LDFLAGS) pcapsipdump.cpp calltable.cpp -o pcapsipdump -lpcap -lstdc++
+ 
+ pcapsipdump-debug: pcapsipdump.cpp calltable.cpp calltable.h
+ 	c++ -ggdb -Wall pcapsipdump.cpp calltable.cpp -o pcapsipdump-debug -lpcap
