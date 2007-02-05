@@ -138,24 +138,29 @@ COMMON_CROSS_PACKAGES = \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	cabextract calcurse catdoc ccxstream chillispot coreutils cpio cron cdargs \
+	cabextract calcurse catdoc ccxstream chillispot coreutils cpio \
+	cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
 	cyrus-imapd cyrus-sasl \
-	dash dcraw denyhosts dev-pts dict digitemp dircproxy distcc dhcp diffutils \
+	dash dcraw denyhosts dev-pts dict digitemp dircproxy distcc \
+	dhcp diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
-	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks endian enhanced-ctorrent esmtp esniper \
+	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
+	endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
-	faad2 fcgi fetchmail file findutils fish flex flip ftpd-topfield ffmpeg ficy fixesext flac \
+	faad2 fcgi fetchmail file findutils fish flex flip ftpd-topfield \
+	ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
-	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext ggrab ghostscript \
-	git-core glib gnokii gnugo gnupg gnuplot gnutls grep groff gtk gzip \
-	gphoto2 libgphoto2 \
-	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
+	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
+	ggrab ghostscript git-core glib gnokii gnugo gnupg gnuplot \
+	gnutls grep groff gtk gzip  gphoto2 libgphoto2 \
+	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
+	gift-openft gift-opennap \
 	hdparm hexcurse heyu hnb hpijs htop \
-	ice id3lib iksemel indent iozone imagemagick imap inetutils iperf ipkg-web iptables \
-	ircd-hybrid irssi ivorbis-tools \
+	ice id3lib iksemel indent iozone imagemagick imap inetutils \
+	iperf ipkg-web iptables ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
 	keychain kismet kissdx knock \
 	lame lcd4linux ldconfig less lha \
@@ -166,38 +171,44 @@ COMMON_CROSS_PACKAGES = \
 	libjpeg liblcms libmad libmemcache libmpeg2 libmrss libnsl libnxml \
 	libol libogg libosip2 libpcap libpng libpth \
 	librsync libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
-	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd logrotate lrzsz lsof lua lynx lzo \
+	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd \
+	logrotate lrzsz lsof lua lynx lzo \
 	m4 make mc miau minicom mktemp modutils monit motion mt-daapd \
-	madplay man man-pages mdadm mediawiki memcached metalog microcom microperl mod-fastcgi \
-	monotone mp3blaster mpack mpage mpc mpd mpg123 mrtg mtools mtr multitail mutt mxml \
-	mysql mysql-connector-odbc \
-	nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp ncftp ncurses ncursesw noip \
-	net-tools netcat nethack netio nfs-server nfs-utils \
-	nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
-	opencdk openldap openser openssh openssl openvpn optware-devel ossp-js oww \
+	madplay man man-pages mdadm mediawiki memcached metalog microcom \
+	microperl mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
+	mpg123 mrtg mtools mtr multitail mutt mxml  mysql \
+	mysql-connector-odbc \
+	nagg nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp \
+	ncftp ncurses ncursesw noip net-tools netcat nethack netio nfs-server \
+	nfs-utils nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
+	nzbget \
+	opencdk openldap openser openssh openssl openvpn \
+	optware-devel ossp-js oww \
 	palantir pango par2cmdline patch pcapsipdump pcre pen \
 	php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
-	popt poptop portmap postgresql postfix pound privoxy procmail procps proftpd psmisc \
-	psutils puppy pwgen \
+	popt poptop portmap postgresql postfix pound privoxy procmail \
+	procps proftpd psmisc psutils puppy pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
-	radiusclient-ng rc rcs rdate readline recode recordext renderext rlfe rlwrap rrdcollect rrdtool \
+	radiusclient-ng rc rcs rdate readline recode recordext \
+	renderext rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends scons sdl sendmail ser setserial \
 	setpwc simh siproxd sm snownews \
 	scsi-idle screen sdparm sed smartmontools socat speex sqlite sqlite2 \
-	sqsh squeak squid srelay strace stunnel streamripper sudo swi-prolog svn \
-	syslog-ng sysstat \
+	sqsh squeak squid srelay strace stunnel streamripper sudo \
+	swi-prolog svn syslog-ng sysstat \
 	taged tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump tcsh termcap textutils thttpd \
-	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent transcode transmission tsocks \
-	ttf-bitstream-vera tzcode \
+	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
+	transcode transmission tsocks ttf-bitstream-vera tzcode \
 	ufsd unarj unfs3 units unixodbc unrar \
 	unzip upslug2 up-imapproxy usbutils ushare \
 	vblade vdr-mediamvp vim vlc vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer wget wget-ssl \
 	which whois wizd wpa-supplicant wput wxbase \
-	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext xextensions xfixes xft xinetd \
+	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
+	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid \
 	zip zlib zoo zsh \
