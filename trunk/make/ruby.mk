@@ -41,7 +41,7 @@ RUBY_DEPENDS=
 #
 # RUBY_IPK_VERSION should be incremented when the ipk changes.
 #
-RUBY_IPK_VERSION=1
+RUBY_IPK_VERSION=2
 
 #
 # RUBY_CONFFILES should be a list of user-editable files
@@ -69,12 +69,19 @@ RUBY_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-RUBY_BUILD_DIR=$(BUILD_DIR)/ruby
 RUBY_SOURCE_DIR=$(SOURCE_DIR)/ruby
+RUBY_BUILD_DIR=$(BUILD_DIR)/ruby
+RUBY_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/ruby
+ifeq ($(HOSTCC), $(TARGET_CC))
+RUBY_HOST_RUBY=ruby
+else
+RUBY_HOST_RUBY=$(HOST_STAGING_PREFIX)/bin/ruby
+endif
+
 RUBY_IPK_DIR=$(BUILD_DIR)/ruby-$(RUBY_VERSION)-ipk
 RUBY_IPK=$(BUILD_DIR)/ruby_$(RUBY_VERSION)-$(RUBY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: ruby-source ruby-unpack ruby ruby-stage ruby-ipk ruby-clean ruby-dirclean ruby-check
+.PHONY: ruby-source ruby-unpack ruby ruby-stage ruby-ipk ruby-clean ruby-dirclean ruby-check ruby-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -138,7 +145,9 @@ ruby-unpack: $(RUBY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RUBY_BUILD_DIR)/.built: $(RUBY_BUILD_DIR)/.configured
+	$(MAKE) ruby-host-stage
 	rm -f $(RUBY_BUILD_DIR)/.built
+	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(RUBY_BUILD_DIR)
 	touch $(RUBY_BUILD_DIR)/.built
 
@@ -147,11 +156,34 @@ $(RUBY_BUILD_DIR)/.built: $(RUBY_BUILD_DIR)/.configured
 #
 ruby: $(RUBY_BUILD_DIR)/.built
 
+$(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
+	rm -rf $(HOST_BUILD_DIR)/$(RUBY_DIR) $(RUBY_HOST_BUILD_DIR)
+	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+#	cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
+	mv $(HOST_BUILD_DIR)/$(RUBY_DIR) $(RUBY_HOST_BUILD_DIR)
+	(cd $(RUBY_HOST_BUILD_DIR); \
+		./configure \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--disable-nls \
+		--enable-shared \
+		--disable-ipv6 \
+	)
+	$(MAKE) -C $(RUBY_HOST_BUILD_DIR)
+	$(MAKE) -C $(RUBY_HOST_BUILD_DIR) install
+	touch $@
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+ruby-host-stage: $(RUBY_HOST_BUILD_DIR)/.staged
+else
+ruby-host-stage:
+endif
+
 #
 # If you are building a library, then you need to stage it too.
 #
 $(RUBY_BUILD_DIR)/.staged: $(RUBY_BUILD_DIR)/.built
 	rm -f $(RUBY_BUILD_DIR)/.staged
+	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(RUBY_BUILD_DIR)/.staged
 
@@ -188,6 +220,7 @@ $(RUBY_IPK_DIR)/CONTROL/control:
 #
 $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	rm -rf $(RUBY_IPK_DIR) $(BUILD_DIR)/ruby_*_$(TARGET_ARCH).ipk
+	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
 	for so in $(RUBY_IPK_DIR)/opt/bin/ruby \
 	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
