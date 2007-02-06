@@ -109,7 +109,7 @@ tz-source: $(DL_DIR)/$(TZ_CODE_SOURCE) $(DL_DIR)/$(TZ_DATA_SOURCE) $(TZ_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(TZ_BUILD_DIR)/.configured: tz-source $(TZ_PATCHES) make/tz.mk
+$(TZ_BUILD_DIR)/.configured: $(DL_DIR)/$(TZ_CODE_SOURCE) $(DL_DIR)/$(TZ_DATA_SOURCE) $(TZ_PATCHES) make/tz.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TZ_DIR) $(TZ_BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/$(TZ_DIR)
