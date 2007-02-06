@@ -78,7 +78,7 @@ MPD_IPK=$(BUILD_DIR)/mpd_$(MPD_VERSION)-$(MPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPD_SOURCE):
-ifndef $(MPD_SVN_REV)
+ifndef MPD_SVN_REV
 	$(WGET) -P $(DL_DIR) $(MPD_SITE)/$(MPD_SOURCE)
 else
 	( cd $(BUILD_DIR) ; \
