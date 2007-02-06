@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ERL_EJABBERD_VERSION=1.1.2
-ERL_EJABBERD_SITE=http://www.process-one.net/en/projects/ejabberd/download/$(ERL_EJABBERD)
+ERL_EJABBERD_VERSION=1.1.3
+ERL_EJABBERD_SITE=http://www.process-one.net/downloads/ejabberd/$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tar.gz
 ERL_EJABBERD_DIR=ejabberd-$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_UNZIP=zcat
