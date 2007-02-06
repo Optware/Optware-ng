@@ -36,7 +36,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=2
+MPD_IPK_VERSION=3
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -133,7 +133,7 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		--enable-aac \
 		--enable-ao \
 		--enable-audiofile \
-		--enable-flac \
+		--disable-flac \
 		--enable-id3 \
 		--enable-mp3 \
 		--enable-oggvorbis \
