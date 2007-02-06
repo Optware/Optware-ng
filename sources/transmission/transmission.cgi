@@ -664,7 +664,7 @@ cat << __EOF__
 </ul>
 <hr>
 <address>
-&copy; 2005, 2006 oleo
+&copy; 2005-2007 oleo
 </address>
 </body>
 </html>
