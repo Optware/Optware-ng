@@ -15,7 +15,7 @@
  *  config file 
  *  messageLevel for syslog in background mode
  *
- * Copyright (c) 2005-2006 Transmission authors and contributors
+ * Copyright (c) 2005-2007 Transmission authors and contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -407,10 +407,10 @@ static void flush_queued_messages( void )
 
 int main( int argc, char ** argv )
 {
-  int i, nat;
+  int i;
   pid_t pid;
   char *cp;
-  
+  tr_handle_status_t * hstat;
   
   /* Get options */
   if( parseCommandLine( argc, argv ) )
@@ -562,8 +562,8 @@ int main( int argc, char ** argv )
   tr_natTraversalEnable( h , 0);
   for( i = 0; i < 10; i++ )
     {
-      nat = tr_natTraversalStatus( h );
-      if( TR_NAT_TRAVERSAL_DISABLED == nat )
+      hstat = tr_handleStatus( h );
+      if( TR_NAT_TRAVERSAL_DISABLED == hstat->natTraversalStatus )
         {
           /* Port mappings were deleted */
           break;
