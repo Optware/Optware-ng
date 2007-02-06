@@ -20,8 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MPD_SITE=http://www.musicpd.org/uploads/files
-MPD_VERSION=0.12.1
+#MPD_SITE=http://www.musicpd.org/uploads/files
+MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
+MPD_SVN_REV=5324
+MPD_VERSION=0.12.1+svn$(MPD_SVN_REV)
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -36,7 +38,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=3
+MPD_IPK_VERSION=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -46,7 +48,7 @@ MPD_IPK_VERSION=3
 # MPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MPD_PATCHES=$(MPD_SOURCE_DIR)/configure.patch
+# MPD_PATCHES=$(MPD_SOURCE_DIR)/flac-1.1.3.patch
 
 #
 # If the compilation of the package requires additional
@@ -76,7 +78,16 @@ MPD_IPK=$(BUILD_DIR)/mpd_$(MPD_VERSION)-$(MPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPD_SOURCE):
+ifndef $(MPD_SVN_REV)
 	$(WGET) -P $(DL_DIR) $(MPD_SITE)/$(MPD_SOURCE)
+else
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(MPD_DIR) && \
+		svn co -r$(MPD_SVN_REV) $(MPD_SVN_REPO) $(MPD_DIR) && \
+		tar -cjf $@ $(MPD_DIR) && \
+		rm -rf $(MPD_DIR) \
+	)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,6 +131,9 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(MPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR) ; \
 	fi
+	cd $(MPD_BUILD_DIR); \
+		ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif; \
+		sed -i -e 's|-lFLAC $$OGG_LIBS -lm|-lFLAC -logg -lm|' configure
 	(cd $(MPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
@@ -133,7 +147,7 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		--enable-aac \
 		--enable-ao \
 		--enable-audiofile \
-		--disable-flac \
+		--enable-flac \
 		--enable-id3 \
 		--enable-mp3 \
 		--enable-oggvorbis \
@@ -192,7 +206,7 @@ $(MPD_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(MPD_SECTION)" >>$@
 	@echo "Version: $(MPD_VERSION)-$(MPD_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MPD_MAINTAINER)" >>$@
-	@echo "Source: $(MPD_SITE)/$(MPD_SOURCE)" >>$@
+	@echo "Source: $(MPD_SVN_REPO)" >>$@
 	@echo "Description: $(MPD_DESCRIPTION)" >>$@
 	@echo "Depends: $(MPD_DEPENDS)" >>$@
 	@echo "Suggests: $(MPD_SUGGESTS)" >>$@
