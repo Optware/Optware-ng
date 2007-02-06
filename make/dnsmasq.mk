@@ -21,7 +21,8 @@ DNSMASQ_IPK_VERSION=1
 # DNSMASQ_CONFFILES should be a list of user-editable files
 DNSMASQ_CONFFILES=/opt/etc/dnsmasq.conf
 
-DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch
+DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch \
+$(DNSMASQ_SOURCE_DIR)/src-dnsmasq.h.patch
 
 DNSMASQ_BUILD_DIR=$(BUILD_DIR)/dnsmasq
 DNSMASQ_SOURCE_DIR=$(SOURCE_DIR)/dnsmasq
