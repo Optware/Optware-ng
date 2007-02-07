@@ -134,7 +134,7 @@ COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
 	apache apr apr-util arc arpwatch \
 	$(ASTERISK_PACKAGES) \
-	at atftp atk atop audiofile autoconf automake \
+	at atftp atk atop audiofile autoconf automake avahi \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
@@ -249,7 +249,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 WL500G_BROKEN_PACKAGES = \
 	 amule \
 	$(ASTERISK_PACKAGES) \
-	 atk bitlbee bsdmainutils bzflag \
+	 atk avahi bitlbee bsdmainutils bzflag \
 	 coreutils dcraw dict dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
