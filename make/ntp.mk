@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
-NTP_VERSION=4.2.2
+NTP_VERSION=4.2.4
 NTP_SOURCE=ntp-$(NTP_VERSION).tar.gz
 NTP_DIR=ntp-$(NTP_VERSION)
 NTP_UNZIP=zcat
@@ -64,6 +64,8 @@ NTP_BUILD_DIR=$(BUILD_DIR)/ntp
 NTP_SOURCE_DIR=$(SOURCE_DIR)/ntp
 NTP_IPK_DIR=$(BUILD_DIR)/ntp-$(NTP_VERSION)-ipk
 NTP_IPK=$(BUILD_DIR)/ntp_$(NTP_VERSION)-$(NTP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: ntp-source ntp-unpack ntp ntp-stage ntp-ipk ntp-clean ntp-dirclean ntp-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -194,3 +196,9 @@ ntp-clean:
 #
 ntp-dirclean:
 	rm -rf $(BUILD_DIR)/$(NTP_DIR) $(NTP_BUILD_DIR) $(NTP_IPK_DIR) $(NTP_IPK)
+
+#
+# Some sanity check for the package.
+#
+ntp-check: $(NTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NTP_IPK)
