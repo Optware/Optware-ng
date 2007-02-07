@@ -105,6 +105,7 @@ avahi-source: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES)
 # shown below to make various patches to it.
 #
 $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/avahi.mk
+	$(MAKE) dbus-stage
 	$(MAKE) expat-stage
 	$(MAKE) glib-stage
 	$(MAKE) libdaemon-stage
