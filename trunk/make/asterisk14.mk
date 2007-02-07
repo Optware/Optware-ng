@@ -348,6 +348,7 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	echo "noload => res_config_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_snmp.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 
