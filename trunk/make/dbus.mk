@@ -29,7 +29,7 @@ DBUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DBUS_DESCRIPTION=D-Bus is a message bus system, a simple way for applications to talk to one another.
 DBUS_SECTION=misc
 DBUS_PRIORITY=optional
-DBUS_DEPENDS=
+DBUS_DEPENDS=expat
 DBUS_SUGGESTS=
 DBUS_CONFLICTS=
 
@@ -109,7 +109,7 @@ dbus-source: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES)
 # shown below to make various patches to it.
 #
 $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbus.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) expat-stage
 	rm -rf $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR)
 	$(DBUS_UNZIP) $(DL_DIR)/$(DBUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS_PATCHES)" ; \
@@ -130,6 +130,7 @@ $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbu
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-abstract-sockets \
+		--with-xml=expat \
 		--without-x \
 		--disable-nls \
 		--disable-static \

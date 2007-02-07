@@ -143,8 +143,8 @@ COMMON_CROSS_PACKAGES = \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
 	cyrus-imapd cyrus-sasl \
-	dash dcraw denyhosts dev-pts dict digitemp dircproxy distcc \
-	dhcp diffutils \
+	dash dbus dcraw denyhosts dev-pts dict digitemp \
+	dircproxy distcc dhcp diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
 	endian enhanced-ctorrent esmtp esniper \
@@ -250,7 +250,7 @@ WL500G_BROKEN_PACKAGES = \
 	 amule \
 	$(ASTERISK_PACKAGES) \
 	 atk avahi bitlbee bsdmainutils bzflag \
-	 coreutils dcraw dict dnsmasq dump \
+	 coreutils dbus dcraw dict dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
