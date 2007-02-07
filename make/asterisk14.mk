@@ -47,6 +47,7 @@ asterisk14-extra-sounds-en-ulaw,\
 asterisk14-gui,\
 free-tds,\
 iksemel,\
+net-snmp,\
 radiusclient-ng,\
 sqlite2,\
 unixodbc
@@ -57,7 +58,7 @@ http://ipkg.nslu2-linux.org/feeds/optware/slugosbe/cross/unstable/asterisk14-cha
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=11
+ASTERISK14_IPK_VERSION=12
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -205,7 +206,7 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
 	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage
-	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage freetds-stage
+	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage freetds-stage net-snmp-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -260,6 +261,7 @@ endif
 		--with-gnutls=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
+		--with-netsnmp=$(STAGING_PREFIX) \
 		--without-imap \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
