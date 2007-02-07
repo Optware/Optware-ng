@@ -29,14 +29,14 @@ AVAHI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AVAHI_DESCRIPTION=A system for multicast DNS service discovery, an implementation of Zeroconf.
 AVAHI_SECTION=net
 AVAHI_PRIORITY=optional
-AVAHI_DEPENDS=expat, libdaemon
+AVAHI_DEPENDS=expat, libdaemon, dbus
 AVAHI_SUGGESTS=
 AVAHI_CONFLICTS=
 
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=1
+AVAHI_IPK_VERSION=2
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -132,8 +132,9 @@ $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/
 		\
 		--enable-libdaemon \
 		--with-distro=none \
-		--disable-dbus \
+		--enable-dbus \
 		--disable-gtk \
+		--disable-mono \
 		--disable-python \
 		--disable-qt3 \
 		--disable-qt4 \
