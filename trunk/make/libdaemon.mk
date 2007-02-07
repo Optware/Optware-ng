@@ -36,7 +36,7 @@ LIBDAEMON_CONFLICTS=
 #
 # LIBDAEMON_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDAEMON_IPK_VERSION=1
+LIBDAEMON_IPK_VERSION=2
 
 #
 # LIBDAEMON_CONFFILES should be a list of user-editable files
@@ -125,6 +125,7 @@ $(LIBDAEMON_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDAEMON_SOURCE) $(LIBDAEMON_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-lynx \
 		--disable-nls \
 		--disable-static \
 	)
