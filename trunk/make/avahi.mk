@@ -30,8 +30,6 @@ AVAHI_DESCRIPTION=A system for multicast DNS service discovery, an implementatio
 AVAHI_SECTION=net
 AVAHI_PRIORITY=optional
 AVAHI_DEPENDS=expat, libdaemon
-AVAHI_CONFIG_ARGS=--enable-libdaemon
-AVAHI_LIBDAEMON_STAGE=$(MAKE) libdaemon-stage
 AVAHI_SUGGESTS=
 AVAHI_CONFLICTS=
 
@@ -48,7 +46,7 @@ AVAHI_IPK_VERSION=1
 # AVAHI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#AVAHI_PATCHES=$(AVAHI_SOURCE_DIR)/configure.patch
+AVAHI_PATCHES=$(AVAHI_SOURCE_DIR)/avahi-core_socket.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -132,7 +130,7 @@ $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		\
-		$(AVAHI_CONFIG_ARGS) \
+		--enable-libdaemon \
 		--with-distro=none \
 		--disable-dbus \
 		--disable-gtk \

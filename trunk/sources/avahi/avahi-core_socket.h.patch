@@ -1,0 +1,12 @@
+--- avahi-core/socket.h.orig	2005-11-05 12:31:40.000000000 -0800
++++ avahi-core/socket.h	2007-02-07 09:46:34.000000000 -0800
+@@ -23,6 +23,9 @@
+ ***/
+ 
+ #include <inttypes.h>
++#ifndef IPV6_V6ONLY
++# define IPV6_V6ONLY 26
++#endif
+ 
+ #include "dns.h"
+ 
