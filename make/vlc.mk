@@ -43,6 +43,7 @@ liba52, \
 libdvdnav, \
 libdvdread, \
 libogg, \
+libshout, \
 libvorbis, \
 speex, \
 x264
@@ -51,7 +52,7 @@ VLC_CONFLICTS=
 #
 # VLC_IPK_VERSION should be incremented when the ipk changes.
 #
-VLC_IPK_VERSION=6
+VLC_IPK_VERSION=7
 
 #
 # VLC_CONFFILES should be a list of user-editable files
@@ -131,6 +132,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 	$(MAKE) libmpeg2-stage
 	$(MAKE) libogg-stage
 	$(MAKE) libpng-stage
+	$(MAKE) libshout-stage
 	$(MAKE) libvorbis-stage
 	$(MAKE) libxml2-stage
 	$(MAKE) ncurses-stage
@@ -167,6 +169,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--enable-ncurses \
 		--enable-ogg \
 		--enable-png \
+		--enable-shout \
 		--enable-speex \
 		--enable-vorbis \
 		--enable-x264 \
