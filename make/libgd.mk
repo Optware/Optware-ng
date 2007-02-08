@@ -12,11 +12,11 @@
 # LIBGD_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-LIBGD_SITE=http://www.boutell.com/gd/http
-LIBGD_VERSION=2.0.33
-LIBGD_SOURCE=gd-$(LIBGD_VERSION).tar.gz
+LIBGD_SITE=http://www.libgd.org/releases
+LIBGD_VERSION=2.0.34
+LIBGD_SOURCE=gd-$(LIBGD_VERSION).tar.bz2
 LIBGD_DIR=gd-$(LIBGD_VERSION)
-LIBGD_UNZIP=zcat
+LIBGD_UNZIP=bzcat
 LIBGD_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 LIBGD_DESCRIPTION=An ANSI C library for the dynamic creation of images
 LIBGD_SECTION=lib
@@ -26,7 +26,7 @@ LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=3
+LIBGD_IPK_VERSION=1
 
 #
 # LIBGD_LOCALES defines which locales get installed
@@ -63,6 +63,8 @@ LIBGD_BUILD_DIR=$(BUILD_DIR)/libgd
 LIBGD_SOURCE_DIR=$(SOURCE_DIR)/libgd
 LIBGD_IPK_DIR=$(BUILD_DIR)/libgd-$(LIBGD_VERSION)-ipk
 LIBGD_IPK=$(BUILD_DIR)/libgd_$(LIBGD_VERSION)-$(LIBGD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libgd-source libgd-unpack libgd libgd-stage libgd-ipk libgd-clean libgd-dirclean libgd-check
 
 #
 # Automatically create a ipkg control file
@@ -192,3 +194,9 @@ libgd-clean:
 #
 libgd-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBGD_DIR) $(LIBGD_BUILD_DIR) $(LIBGD_IPK_DIR) $(LIBGD_IPK)
+
+#
+# Some sanity check for the package.
+#
+libgd-check: $(LIBGD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGD_IPK)
