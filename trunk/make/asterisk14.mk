@@ -20,13 +20,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_SOURCE_TYPE=tarball
-#ASTERISK14_SOURCE_TYPE=svn
+#ASTERISK14_SOURCE_TYPE=tarball
+ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
-ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/trunk
-ASTERISK14_SVN_REV=53113
+ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
+ASTERISK14_SVN_REV=53528
 ASTERISK14_VERSION=1.4.0svn-r$(ASTERISK14_SVN_REV)
 else
 ASTERISK14_VERSION=1.4.0
@@ -45,7 +45,7 @@ asterisk14-core-sounds-en-ulaw,\
 asterisk14-extra-sounds-en-gsm,\
 asterisk14-extra-sounds-en-ulaw,\
 asterisk14-gui,\
-free-tds,\
+freetds,\
 iksemel,\
 net-snmp,\
 radiusclient-ng,\
@@ -53,12 +53,15 @@ sqlite2,\
 unixodbc
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
 
-http://ipkg.nslu2-linux.org/feeds/optware/slugosbe/cross/unstable/asterisk14-chan-capi_0.7.1-1_armeb.ipk
 
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=12
+ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
+ASTERISK14_IPK_VERSION=1
+else
+ASTERISK14_IPK_VERSION=13
+endif
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -132,8 +135,10 @@ ASTERISK14_CONFFILES=\
 # ASTERISK14_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(ASTERISK14_SOURCE_TYPE), tarball)
 ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch\
 			$(ASTERISK14_SOURCE_DIR)/gsm.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -205,8 +210,9 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage sqlite2-stage
-	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage freetds-stage net-snmp-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage 
+	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
+	$(MAKE) sqlite2-stage freetds-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
@@ -252,9 +258,9 @@ endif
 		--with-z=$(STAGING_PREFIX) \
 		--with-termcap=$(STAGING_PREFIX) \
 		--with-curl=$(STAGING_PREFIX) \
-		--without-ogg \
+		--with-ogg=$(STAGING_PREFIX) \
 		--with-popt=$(STAGING_PREFIX) \
-		--without-tds \
+		--with-tds=$(STAGING_PREFIX) \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--without-postgres \
 		--with-iksemel=$(STAGING_PREFIX) \
@@ -341,16 +347,29 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
 	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/opt/opt/#/opt/#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+
+	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => func_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_alsa.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_gtalk.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_oss.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_ilbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_lpc10.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => codec_speex.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_snmp.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_smdi.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_radius.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_tds.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 
 	cp -r $(ASTERISK14_IPK_DIR)/opt/etc/asterisk $(ASTERISK14_IPK_DIR)/opt/etc/samples
 	mv $(ASTERISK14_IPK_DIR)/opt/etc/samples $(ASTERISK14_IPK_DIR)/opt/etc/asterisk
