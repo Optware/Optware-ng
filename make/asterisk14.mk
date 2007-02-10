@@ -272,7 +272,7 @@ endif
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
-	sed -i -e '/GSM_SOURCES+=.*k6opt/s|^|#|' $(ASTERISK14_BUILD_DIR)/codecs/gsm/Makefile
+	sed -i -e '/GSM_.*+=.*k6opt/s|^|#|' $(ASTERISK14_BUILD_DIR)/codecs/gsm/Makefile
 	touch $(ASTERISK14_BUILD_DIR)/.configured
 
 asterisk14-unpack: $(ASTERISK14_BUILD_DIR)/.configured
