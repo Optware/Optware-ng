@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OSSP_JS_SITE=ftp://ftp.ossp.org/pkg/lib/js
-OSSP_JS_VERSION=1.6.20060820
+OSSP_JS_VERSION=1.6.20070208
 OSSP_JS_SOURCE=js-$(OSSP_JS_VERSION).tar.gz
 OSSP_JS_DIR=js-$(OSSP_JS_VERSION)
 OSSP_JS_UNZIP=zcat
@@ -131,7 +131,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	cp $(OSSP_JS_SOURCE_DIR)/prtypes.h $(OSSP_JS_BUILD_DIR)/
 endif
 	$(PATCH_LIBTOOL) $(OSSP_JS_BUILD_DIR)/libtool
-	touch $(OSSP_JS_BUILD_DIR)/.configured
+	touch $@
 
 ossp-js-unpack: $(OSSP_JS_BUILD_DIR)/.configured
 
@@ -140,7 +140,7 @@ ossp-js-unpack: $(OSSP_JS_BUILD_DIR)/.configured
 #		CPPFLAGS="-I. -DCROSS_COMPILE=1 -DIS_BIG_ENDIAN=1" \
 #
 $(OSSP_JS_BUILD_DIR)/.built: $(OSSP_JS_BUILD_DIR)/.configured
-	rm -f $(OSSP_JS_BUILD_DIR)/.built
+	rm -f $@
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) -C $(OSSP_JS_BUILD_DIR) jscpucfg \
 		CC=$(HOSTCC) \
@@ -148,7 +148,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 		LDFLAGS=""
 endif
 	$(MAKE) -C $(OSSP_JS_BUILD_DIR)
-	touch $(OSSP_JS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -159,9 +159,10 @@ ossp-js: $(OSSP_JS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(OSSP_JS_BUILD_DIR)/.staged: $(OSSP_JS_BUILD_DIR)/.built
-	rm -f $(OSSP_JS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(OSSP_JS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(OSSP_JS_BUILD_DIR)/.staged
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/js.pc
+	touch $@
 
 ossp-js-stage: $(OSSP_JS_BUILD_DIR)/.staged
 
