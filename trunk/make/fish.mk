@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FISH_VERSION=1.22.2
+FISH_VERSION=1.22.3
 FISH_SITE=http://fishshell.org/files/$(FISH_VERSION)
 FISH_SOURCE=fish-$(FISH_VERSION).tar.bz2
 FISH_DIR=fish-$(FISH_VERSION)
