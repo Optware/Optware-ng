@@ -30,13 +30,14 @@ PY-TAILOR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TAILOR_DESCRIPTION=A tool to migrate changesets between various SCMs.
 PY-TAILOR_SECTION=web
 PY-TAILOR_PRIORITY=optional
-PY-TAILOR_DEPENDS=python
+PY24-TAILOR_DEPENDS=python24
+PY25-TAILOR_DEPENDS=python25
 PY-TAILOR_CONFLICTS=
 
 #
 # PY-TAILOR_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TAILOR_IPK_VERSION=1
+PY-TAILOR_IPK_VERSION=2
 
 #
 # PY-TAILOR_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-TAILOR_LDFLAGS=
 #
 PY-TAILOR_BUILD_DIR=$(BUILD_DIR)/py-tailor
 PY-TAILOR_SOURCE_DIR=$(SOURCE_DIR)/py-tailor
-PY-TAILOR_IPK_DIR=$(BUILD_DIR)/py-tailor-$(PY-TAILOR_VERSION)-ipk
-PY-TAILOR_IPK=$(BUILD_DIR)/py-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-TAILOR_IPK_DIR=$(BUILD_DIR)/py-tailor-$(PY-TAILOR_VERSION)-ipk
+PY24-TAILOR_IPK=$(BUILD_DIR)/py-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-TAILOR_IPK_DIR=$(BUILD_DIR)/py25-tailor-$(PY-TAILOR_VERSION)-ipk
+PY25-TAILOR_IPK=$(BUILD_DIR)/py25-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-tailor-source py-tailor-unpack py-tailor py-tailor-stage py-tailor-ipk py-tailor-clean py-tailor-dirclean py-tailor-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,23 +107,43 @@ py-tailor-source: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES)
 #
 $(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)
+	rm -rf $(PY-TAILOR_BUILD_DIR)
+	mkdir -p $(PY-TAILOR_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR)
 	$(PY-TAILOR_UNZIP) $(DL_DIR)/$(PY-TAILOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TAILOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)
-	(cd $(PY-TAILOR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)/2.4
+	(cd $(PY-TAILOR_BUILD_DIR)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=/opt/bin/python2.4"; \
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg; \
+	    ) >> setup.cfg; \
 	)
-	touch $(PY-TAILOR_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR)
+	$(PY-TAILOR_UNZIP) $(DL_DIR)/$(PY-TAILOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-TAILOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)/2.5
+	(cd $(PY-TAILOR_BUILD_DIR)/2.5; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	        echo "rpath=/opt/lib"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg; \
+	)
+	touch $@
 
 py-tailor-unpack: $(PY-TAILOR_BUILD_DIR)/.configured
 
@@ -124,12 +151,14 @@ py-tailor-unpack: $(PY-TAILOR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-TAILOR_BUILD_DIR)/.built: $(PY-TAILOR_BUILD_DIR)/.configured
-	rm -f $(PY-TAILOR_BUILD_DIR)/.built
-	(cd $(PY-TAILOR_BUILD_DIR); \
-	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    python2.4 setup.py build; \
-	)
-	touch $(PY-TAILOR_BUILD_DIR)/.built
+	rm -f $@
+	cd $(PY-TAILOR_BUILD_DIR)/2.4; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	cd $(PY-TAILOR_BUILD_DIR)/2.5; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	touch $@
 
 #
 # This is the build convenience target.
@@ -140,9 +169,9 @@ py-tailor: $(PY-TAILOR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-TAILOR_BUILD_DIR)/.staged: $(PY-TAILOR_BUILD_DIR)/.built
-	rm -f $(PY-TAILOR_BUILD_DIR)/.staged
+	rm -f $@
 	#$(MAKE) -C $(PY-TAILOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-TAILOR_BUILD_DIR)/.staged
+	touch $@
 
 py-tailor-stage: $(PY-TAILOR_BUILD_DIR)/.staged
 
@@ -150,8 +179,8 @@ py-tailor-stage: $(PY-TAILOR_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-tailor
 #
-$(PY-TAILOR_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-TAILOR_IPK_DIR)/CONTROL
+$(PY24-TAILOR_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-tailor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,7 +190,21 @@ $(PY-TAILOR_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-TAILOR_MAINTAINER)" >>$@
 	@echo "Source: $(PY-TAILOR_SITE)/$(PY-TAILOR_SOURCE)" >>$@
 	@echo "Description: $(PY-TAILOR_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-TAILOR_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-TAILOR_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-TAILOR_CONFLICTS)" >>$@
+
+$(PY25-TAILOR_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-tailor" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-TAILOR_PRIORITY)" >>$@
+	@echo "Section: $(PY-TAILOR_SECTION)" >>$@
+	@echo "Version: $(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-TAILOR_MAINTAINER)" >>$@
+	@echo "Source: $(PY-TAILOR_SITE)/$(PY-TAILOR_SOURCE)" >>$@
+	@echo "Description: $(PY-TAILOR_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-TAILOR_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TAILOR_CONFLICTS)" >>$@
 
 #
@@ -176,19 +219,31 @@ $(PY-TAILOR_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-TAILOR_IPK): $(PY-TAILOR_BUILD_DIR)/.built
-	rm -rf $(PY-TAILOR_IPK_DIR) $(BUILD_DIR)/py-tailor_*_$(TARGET_ARCH).ipk
-	(cd $(PY-TAILOR_BUILD_DIR); \
-	    python2.4 setup.py install --root=$(PY-TAILOR_IPK_DIR) --prefix=/opt; \
+$(PY24-TAILOR_IPK): $(PY-TAILOR_BUILD_DIR)/.built
+	rm -rf $(PY24-TAILOR_IPK_DIR) $(BUILD_DIR)/py-tailor_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TAILOR_BUILD_DIR)/2.4; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-TAILOR_IPK_DIR) --prefix=/opt; \
 	)
-#	-$(STRIP_COMMAND) `find $(PY-TAILOR_IPK_DIR)/opt/lib/python2.4/site-packages/tailor -name '*.so'`
-	$(MAKE) $(PY-TAILOR_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TAILOR_IPK_DIR)
+#	-$(STRIP_COMMAND) `find $(PY24-TAILOR_IPK_DIR)/opt/lib/python2.4/site-packages/tailor -name '*.so'`
+	$(MAKE) $(PY24-TAILOR_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TAILOR_IPK_DIR)
+
+$(PY25-TAILOR_IPK): $(PY-TAILOR_BUILD_DIR)/.built
+	rm -rf $(PY25-TAILOR_IPK_DIR) $(BUILD_DIR)/py25-tailor_*_$(TARGET_ARCH).ipk
+	(cd $(PY-TAILOR_BUILD_DIR)/2.5; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-TAILOR_IPK_DIR) --prefix=/opt; \
+	)
+	mv $(PY25-TAILOR_IPK_DIR)/opt/bin/tailor $(PY25-TAILOR_IPK_DIR)/opt/bin/tailor-2.5
+#	-$(STRIP_COMMAND) `find $(PY25-TAILOR_IPK_DIR)/opt/lib/python2.5/site-packages/tailor -name '*.so'`
+	$(MAKE) $(PY25-TAILOR_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TAILOR_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-tailor-ipk: $(PY-TAILOR_IPK)
+py-tailor-ipk: $(PY24-TAILOR_IPK) $(PY25-TAILOR_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,4 +256,12 @@ py-tailor-clean:
 # directories.
 #
 py-tailor-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR) $(PY-TAILOR_IPK_DIR) $(PY-TAILOR_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)
+	rm -rf $(PY24-TAILOR_IPK_DIR) $(PY24-TAILOR_IPK)
+	rm -rf $(PY25-TAILOR_IPK_DIR) $(PY25-TAILOR_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-tailor-check: $(PY24-TAILOR_IPK) $(PY25-TAILOR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-TAILOR_IPK) $(PY25-TAILOR_IPK)
