@@ -25,7 +25,7 @@ AMAVISD-NEW_CONFLICTS=
 #
 # AMAVISD-NEW_IPK_VERSION should be incremented when the ipk changes.
 #
-AMAVISD-NEW_IPK_VERSION=1
+AMAVISD-NEW_IPK_VERSION=2
 
 #
 # AMAVISD-NEW_CONFFILES should be a list of user-editable files
