@@ -173,7 +173,7 @@ COMMON_CROSS_PACKAGES = \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd \
 	logrotate lrzsz lsof lua lynx lzo \
-	m4 madplay make man man-pages mc mdadm \
+	m4 madplay make man man-pages mc mcabber mdadm \
 	mediawiki memcached metalog memtester \
 	miau microcom microperl minicom \
 	mktemp modutils monit motion mt-daapd \
