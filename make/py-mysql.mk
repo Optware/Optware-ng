@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.2b2
+PY-MYSQL_VERSION=1.2.2b3
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-MYSQL_CONFLICTS=
 #
 # PY-MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYSQL_IPK_VERSION=2
+PY-MYSQL_IPK_VERSION=1
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files
@@ -115,7 +115,7 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 #	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)/2.4
 	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
-	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup.py; \
+	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup_posix.py; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -132,7 +132,7 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 #	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)/2.5
 	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
-	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup.py; \
+	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup_posix.py; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
