@@ -36,7 +36,7 @@ FAAD2_CONFLICTS=
 #
 # FAAD2_IPK_VERSION should be incremented when the ipk changes.
 #
-FAAD2_IPK_VERSION=1
+FAAD2_IPK_VERSION=2
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files
@@ -66,8 +66,15 @@ FAAD2_LDFLAGS=
 #
 FAAD2_BUILD_DIR=$(BUILD_DIR)/faad2
 FAAD2_SOURCE_DIR=$(SOURCE_DIR)/faad2
+
 FAAD2_IPK_DIR=$(BUILD_DIR)/faad2-$(FAAD2_VERSION)-ipk
 FAAD2_IPK=$(BUILD_DIR)/faad2_$(FAAD2_VERSION)-$(FAAD2_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifeq ($(HOSTCC), $(TARGET_CC))
+FAAD2_AUTOTOOLS=ACLOCAL=aclocal-$(AUTOMAKE_VERSION) AUTOMAKE=automake-$(AUTOMAKE_VERSION)
+else
+FAAD2_AUTOTOOLS=
+endif
 
 .PHONY: faad2-source faad2-unpack faad2 faad2-stage faad2-ipk faad2-clean faad2-dirclean faad2-check
 
@@ -116,7 +123,10 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) # mak
 	fi
 	find $(FAAD2_BUILD_DIR) -name \*.am -or -name \*.in | xargs sed -i -e 's/$$//'
 	(cd $(FAAD2_BUILD_DIR); \
-		autoreconf -vif; \
+        	echo > plugins/Makefile.am && \
+        	echo > plugins/xmms/src/Makefile.am && \
+                sed -i -e '/E_B/d' configure.in && \
+                $(FAAD2_AUTOTOOLS) autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FAAD2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FAAD2_LDFLAGS)" \
@@ -127,7 +137,10 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) # mak
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--disable-xmms \
+		--without-bmp \
+		--without-drm \
+		--without-mpeg4ip \
+		--without-xmms \
 	)
 	$(PATCH_LIBTOOL) $(FAAD2_BUILD_DIR)/libtool
 	sed -ie '/^SUBDIRS/s/ frontend / /' $(FAAD2_BUILD_DIR)/Makefile
