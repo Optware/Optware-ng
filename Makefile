@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	memtester
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -174,11 +173,13 @@ COMMON_CROSS_PACKAGES = \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd \
 	logrotate lrzsz lsof lua lynx lzo \
-	m4 make mc miau minicom mktemp modutils monit motion mt-daapd \
-	madplay man man-pages mdadm mediawiki memcached metalog microcom \
-	microperl mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
-	mpg123 mrtg mtools mtr multitail mutt mxml  mysql \
-	mysql-connector-odbc \
+	m4 madplay make man man-pages mc mdadm \
+	mediawiki memcached metalog memtester \
+	miau microcom microperl minicom \
+	mktemp modutils monit motion mt-daapd \
+	mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
+	mpg123 mrtg mtools mtr multitail mutt mxml \
+	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp \
 	ncftp ncurses ncursesw noip net-tools netcat nethack netio nfs-server \
 	nfs-utils nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
