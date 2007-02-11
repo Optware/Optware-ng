@@ -22,7 +22,7 @@ fi
 case "$rc" in
     start)
     	if [ -e $PIDFILE ]; then
-    	  if [ -z "$(ps -p $(cat $PIDFILE)  -o comm=)" ]; then
+    	  if [ -z "$(pidof $NAME| grep $(cat $PIDFILE))" ]; then
     	    rm -rf $PIDFILE
     	  else
     	    echo "$NAME already started!"
@@ -34,7 +34,7 @@ case "$rc" in
 	$DAEMON $DAEMON_OPTS
         ;;
     stop)
-        if [ -n "`pidof $NAME`" ]; then
+        if [ -n "$(pidof $NAME)" ]; then
             echo "Stopping server: $NAME"
             killall $NAME 2> /dev/null
         fi
