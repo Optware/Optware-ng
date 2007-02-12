@@ -30,13 +30,14 @@ PY-EPSILON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-EPSILON_DESCRIPTION=A small python utility package.
 PY-EPSILON_SECTION=misc
 PY-EPSILON_PRIORITY=optional
-PY-EPSILON_DEPENDS=python, py-twisted
+PY24-EPSILON_DEPENDS=python24, py-twisted
+PY25-EPSILON_DEPENDS=python25, py25-twisted
 PY-EPSILON_CONFLICTS=
 
 #
 # PY-EPSILON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-EPSILON_IPK_VERSION=1
+PY-EPSILON_IPK_VERSION=2
 
 #
 # PY-EPSILON_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-EPSILON_LDFLAGS=
 #
 PY-EPSILON_BUILD_DIR=$(BUILD_DIR)/py-epsilon
 PY-EPSILON_SOURCE_DIR=$(SOURCE_DIR)/py-epsilon
-PY-EPSILON_IPK_DIR=$(BUILD_DIR)/py-epsilon-$(PY-EPSILON_VERSION)-ipk
-PY-EPSILON_IPK=$(BUILD_DIR)/py-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-EPSILON_IPK_DIR=$(BUILD_DIR)/py-epsilon-$(PY-EPSILON_VERSION)-ipk
+PY24-EPSILON_IPK=$(BUILD_DIR)/py-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-EPSILON_IPK_DIR=$(BUILD_DIR)/py25-epsilon-$(PY-EPSILON_VERSION)-ipk
+PY25-EPSILON_IPK=$(BUILD_DIR)/py25-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-epsilon-source py-epsilon-unpack py-epsilon py-epsilon-stage py-epsilon-ipk py-epsilon-clean py-epsilon-dirclean py-epsilon-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,19 +107,35 @@ py-epsilon-source: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_PATCHES)
 #
 $(PY-EPSILON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_PATCHES)
 	$(MAKE) py-twisted-stage
-	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)
+	rm -rf $(PY-EPSILON_BUILD_DIR)
+	mkdir -p $(PY-EPSILON_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR)
 	$(PY-EPSILON_UNZIP) $(DL_DIR)/$(PY-EPSILON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-EPSILON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)
-	(cd $(PY-EPSILON_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)/2.4
+	(cd $(PY-EPSILON_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-EPSILON_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR)
+	$(PY-EPSILON_UNZIP) $(DL_DIR)/$(PY-EPSILON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-EPSILON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-EPSILON_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)/2.5
+	(cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
+	touch $@
 
 py-epsilon-unpack: $(PY-EPSILON_BUILD_DIR)/.configured
 
@@ -120,11 +143,14 @@ py-epsilon-unpack: $(PY-EPSILON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-EPSILON_BUILD_DIR)/.built: $(PY-EPSILON_BUILD_DIR)/.configured
-	rm -f $(PY-EPSILON_BUILD_DIR)/.built
-	(cd $(PY-EPSILON_BUILD_DIR); \
+	rm -f $@
+	cd $(PY-EPSILON_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-EPSILON_IPK_DIR) --prefix=/opt)
-	touch $(PY-EPSILON_BUILD_DIR)/.built
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,11 +161,16 @@ py-epsilon: $(PY-EPSILON_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-EPSILON_BUILD_DIR)/.staged: $(PY-EPSILON_BUILD_DIR)/.built
-	rm -f $(PY-EPSILON_BUILD_DIR)/.staged
-	(cd $(PY-EPSILON_BUILD_DIR); \
+	rm -f $@
+	(cd $(PY-EPSILON_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
-	touch $(PY-EPSILON_BUILD_DIR)/.staged
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
 
 py-epsilon-stage: $(PY-EPSILON_BUILD_DIR)/.staged
 
@@ -147,8 +178,8 @@ py-epsilon-stage: $(PY-EPSILON_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-epsilon
 #
-$(PY-EPSILON_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-EPSILON_IPK_DIR)/CONTROL
+$(PY24-EPSILON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-epsilon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -158,7 +189,21 @@ $(PY-EPSILON_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-EPSILON_MAINTAINER)" >>$@
 	@echo "Source: $(PY-EPSILON_SITE)/$(PY-EPSILON_SOURCE)" >>$@
 	@echo "Description: $(PY-EPSILON_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-EPSILON_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-EPSILON_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-EPSILON_CONFLICTS)" >>$@
+
+$(PY25-EPSILON_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-epsilon" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-EPSILON_PRIORITY)" >>$@
+	@echo "Section: $(PY-EPSILON_SECTION)" >>$@
+	@echo "Version: $(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-EPSILON_MAINTAINER)" >>$@
+	@echo "Source: $(PY-EPSILON_SITE)/$(PY-EPSILON_SOURCE)" >>$@
+	@echo "Description: $(PY-EPSILON_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-EPSILON_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-EPSILON_CONFLICTS)" >>$@
 
 #
@@ -173,19 +218,30 @@ $(PY-EPSILON_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
-	rm -rf $(PY-EPSILON_IPK_DIR) $(BUILD_DIR)/py-epsilon_*_$(TARGET_ARCH).ipk
-	(cd $(PY-EPSILON_BUILD_DIR); \
+$(PY24-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
+	rm -rf $(PY24-EPSILON_IPK_DIR) $(BUILD_DIR)/py-epsilon_*_$(TARGET_ARCH).ipk
+	(cd $(PY-EPSILON_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-EPSILON_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-EPSILON_IPK_DIR)/CONTROL/control
-	echo $(PY-EPSILON_CONFFILES) | sed -e 's/ /\n/g' > $(PY-EPSILON_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-EPSILON_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-EPSILON_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-EPSILON_IPK_DIR)/CONTROL/control
+	echo $(PY-EPSILON_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-EPSILON_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-EPSILON_IPK_DIR)
+
+$(PY25-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
+	rm -rf $(PY25-EPSILON_IPK_DIR) $(BUILD_DIR)/py25-epsilon_*_$(TARGET_ARCH).ipk
+	(cd $(PY-EPSILON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-EPSILON_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-EPSILON_IPK_DIR)/CONTROL/control
+	echo $(PY-EPSILON_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-EPSILON_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-EPSILON_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-epsilon-ipk: $(PY-EPSILON_IPK)
+py-epsilon-ipk: $(PY24-EPSILON_IPK) $(PY25-EPSILON_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -198,4 +254,12 @@ py-epsilon-clean:
 # directories.
 #
 py-epsilon-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR) $(PY-EPSILON_IPK_DIR) $(PY-EPSILON_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-EPSILON_DIR) $(PY-EPSILON_BUILD_DIR)
+	rm -rf $(PY24-EPSILON_IPK_DIR) $(PY24-EPSILON_IPK)
+	rm -rf $(PY25-EPSILON_IPK_DIR) $(PY25-EPSILON_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-epsilon-check: $(PY24-EPSILON_IPK) $(PY25-EPSILON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-EPSILON_IPK) $(PY25-EPSILON_IPK)
