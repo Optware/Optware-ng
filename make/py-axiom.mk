@@ -30,13 +30,14 @@ PY-AXIOM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-AXIOM_DESCRIPTION=An object database or object-relational mapper.
 PY-AXIOM_SECTION=misc
 PY-AXIOM_PRIORITY=optional
-PY-AXIOM_DEPENDS=python, py-sqlite
+PY24-AXIOM_DEPENDS=python24, py-sqlite, py-epsilon
+PY25-AXIOM_DEPENDS=python25, py25-epsilon
 PY-AXIOM_CONFLICTS=
 
 #
 # PY-AXIOM_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-AXIOM_IPK_VERSION=1
+PY-AXIOM_IPK_VERSION=2
 
 #
 # PY-AXIOM_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-AXIOM_LDFLAGS=
 #
 PY-AXIOM_BUILD_DIR=$(BUILD_DIR)/py-axiom
 PY-AXIOM_SOURCE_DIR=$(SOURCE_DIR)/py-axiom
-PY-AXIOM_IPK_DIR=$(BUILD_DIR)/py-axiom-$(PY-AXIOM_VERSION)-ipk
-PY-AXIOM_IPK=$(BUILD_DIR)/py-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-AXIOM_IPK_DIR=$(BUILD_DIR)/py-axiom-$(PY-AXIOM_VERSION)-ipk
+PY24-AXIOM_IPK=$(BUILD_DIR)/py-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-AXIOM_IPK_DIR=$(BUILD_DIR)/py25-axiom-$(PY-AXIOM_VERSION)-ipk
+PY25-AXIOM_IPK=$(BUILD_DIR)/py25-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-axiom-source py-axiom-unpack py-axiom py-axiom-stage py-axiom-ipk py-axiom-clean py-axiom-dirclean py-axiom-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,19 +107,35 @@ py-axiom-source: $(DL_DIR)/$(PY-AXIOM_SOURCE) $(PY-AXIOM_PATCHES)
 #
 $(PY-AXIOM_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AXIOM_SOURCE) $(PY-AXIOM_PATCHES)
 	$(MAKE) py-epsilon-stage
-	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR) $(PY-AXIOM_BUILD_DIR)
+	rm -rf $(PY-AXIOM_BUILD_DIR)
+	mkdir -p $(PY-AXIOM_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR)
 	$(PY-AXIOM_UNZIP) $(DL_DIR)/$(PY-AXIOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-AXIOM_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AXIOM_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-AXIOM_DIR) $(PY-AXIOM_BUILD_DIR)
-	(cd $(PY-AXIOM_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-AXIOM_DIR) $(PY-AXIOM_BUILD_DIR)/2.4
+	(cd $(PY-AXIOM_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-AXIOM_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR)
+	$(PY-AXIOM_UNZIP) $(DL_DIR)/$(PY-AXIOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-AXIOM_PATCHES) | patch -d $(BUILD_DIR)/$(PY-AXIOM_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-AXIOM_DIR) $(PY-AXIOM_BUILD_DIR)/2.5
+	(cd $(PY-AXIOM_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
+	touch $@
 
 py-axiom-unpack: $(PY-AXIOM_BUILD_DIR)/.configured
 
@@ -120,11 +143,14 @@ py-axiom-unpack: $(PY-AXIOM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-AXIOM_BUILD_DIR)/.built: $(PY-AXIOM_BUILD_DIR)/.configured
-	rm -f $(PY-AXIOM_BUILD_DIR)/.built
-	(cd $(PY-AXIOM_BUILD_DIR); \
+	rm -f $@
+	cd $(PY-AXIOM_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-AXIOM_IPK_DIR) --prefix=/opt)
-	touch $(PY-AXIOM_BUILD_DIR)/.built
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-AXIOM_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,9 +161,9 @@ py-axiom: $(PY-AXIOM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-AXIOM_BUILD_DIR)/.staged: $(PY-AXIOM_BUILD_DIR)/.built
-	rm -f $(PY-AXIOM_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-AXIOM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-AXIOM_BUILD_DIR)/.staged
+	touch $@
 
 py-axiom-stage: $(PY-AXIOM_BUILD_DIR)/.staged
 
@@ -145,8 +171,8 @@ py-axiom-stage: $(PY-AXIOM_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-axiom
 #
-$(PY-AXIOM_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-AXIOM_IPK_DIR)/CONTROL
+$(PY24-AXIOM_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-axiom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -156,7 +182,21 @@ $(PY-AXIOM_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-AXIOM_MAINTAINER)" >>$@
 	@echo "Source: $(PY-AXIOM_SITE)/$(PY-AXIOM_SOURCE)" >>$@
 	@echo "Description: $(PY-AXIOM_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-AXIOM_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-AXIOM_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-AXIOM_CONFLICTS)" >>$@
+
+$(PY25-AXIOM_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-axiom" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-AXIOM_PRIORITY)" >>$@
+	@echo "Section: $(PY-AXIOM_SECTION)" >>$@
+	@echo "Version: $(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-AXIOM_MAINTAINER)" >>$@
+	@echo "Source: $(PY-AXIOM_SITE)/$(PY-AXIOM_SOURCE)" >>$@
+	@echo "Description: $(PY-AXIOM_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-AXIOM_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-AXIOM_CONFLICTS)" >>$@
 
 #
@@ -171,19 +211,30 @@ $(PY-AXIOM_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-AXIOM_IPK): $(PY-AXIOM_BUILD_DIR)/.built
-	rm -rf $(PY-AXIOM_IPK_DIR) $(BUILD_DIR)/py-axiom_*_$(TARGET_ARCH).ipk
-	(cd $(PY-AXIOM_BUILD_DIR); \
+$(PY24-AXIOM_IPK): $(PY-AXIOM_BUILD_DIR)/.built
+	rm -rf $(PY24-AXIOM_IPK_DIR) $(BUILD_DIR)/py-axiom_*_$(TARGET_ARCH).ipk
+	(cd $(PY-AXIOM_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-AXIOM_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-AXIOM_IPK_DIR)/CONTROL/control
-	echo $(PY-AXIOM_CONFFILES) | sed -e 's/ /\n/g' > $(PY-AXIOM_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-AXIOM_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-AXIOM_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-AXIOM_IPK_DIR)/CONTROL/control
+	echo $(PY-AXIOM_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-AXIOM_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-AXIOM_IPK_DIR)
+
+$(PY25-AXIOM_IPK): $(PY-AXIOM_BUILD_DIR)/.built
+	rm -rf $(PY25-AXIOM_IPK_DIR) $(BUILD_DIR)/py25-axiom_*_$(TARGET_ARCH).ipk
+	(cd $(PY-AXIOM_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-AXIOM_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-AXIOM_IPK_DIR)/CONTROL/control
+	echo $(PY-AXIOM_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-AXIOM_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-AXIOM_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-axiom-ipk: $(PY-AXIOM_IPK)
+py-axiom-ipk: $(PY24-AXIOM_IPK) $(PY25-AXIOM_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -196,4 +247,12 @@ py-axiom-clean:
 # directories.
 #
 py-axiom-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR) $(PY-AXIOM_BUILD_DIR) $(PY-AXIOM_IPK_DIR) $(PY-AXIOM_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-AXIOM_DIR) $(PY-AXIOM_BUILD_DIR)
+	rm -rf $(PY24-AXIOM_IPK_DIR) $(PY24-AXIOM_IPK)
+	rm -rf $(PY25-AXIOM_IPK_DIR) $(PY25-AXIOM_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-axiom-check: $(PY24-AXIOM_IPK) $(PY25-AXIOM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-AXIOM_IPK) $(PY25-AXIOM_IPK)
