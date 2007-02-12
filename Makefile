@@ -184,6 +184,7 @@ COMMON_CROSS_PACKAGES = \
 	ncftp ncurses ncursesw noip net-tools netcat nethack netio nfs-server \
 	nfs-utils nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
 	nzbget \
+	openobex obexftp \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
 	palantir pango par2cmdline patch pcapsipdump pcre pen \
