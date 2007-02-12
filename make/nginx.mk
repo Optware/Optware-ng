@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.5.11
+NGINX_VERSION=0.5.12
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -52,7 +52,7 @@ NGINX_CONFFILES=\
 # NGINX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NGINX_PATCHES=$(NGINX_SOURCE_DIR)/ngx_open_file.patch
+#NGINX_PATCHES=$(NGINX_SOURCE_DIR)/ngx_open_file.patch
 
 #
 # If the compilation of the package requires additional
