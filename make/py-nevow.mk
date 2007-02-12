@@ -30,13 +30,14 @@ PY-NEVOW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-NEVOW_DESCRIPTION=A web application construction kit written in Python.
 PY-NEVOW_SECTION=misc
 PY-NEVOW_PRIORITY=optional
-PY-NEVOW_DEPENDS=python
+PY24-NEVOW_DEPENDS=python24
+PY25-NEVOW_DEPENDS=python25
 PY-NEVOW_CONFLICTS=
 
 #
 # PY-NEVOW_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NEVOW_IPK_VERSION=1
+PY-NEVOW_IPK_VERSION=2
 
 #
 # PY-NEVOW_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-NEVOW_LDFLAGS=
 #
 PY-NEVOW_BUILD_DIR=$(BUILD_DIR)/py-nevow
 PY-NEVOW_SOURCE_DIR=$(SOURCE_DIR)/py-nevow
-PY-NEVOW_IPK_DIR=$(BUILD_DIR)/py-nevow-$(PY-NEVOW_VERSION)-ipk
-PY-NEVOW_IPK=$(BUILD_DIR)/py-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-NEVOW_IPK_DIR=$(BUILD_DIR)/py-nevow-$(PY-NEVOW_VERSION)-ipk
+PY24-NEVOW_IPK=$(BUILD_DIR)/py-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-NEVOW_IPK_DIR=$(BUILD_DIR)/py25-nevow-$(PY-NEVOW_VERSION)-ipk
+PY25-NEVOW_IPK=$(BUILD_DIR)/py25-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-nevow-source py-nevow-unpack py-nevow py-nevow-stage py-nevow-ipk py-nevow-clean py-nevow-dirclean py-nevow-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,19 +107,35 @@ py-nevow-source: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCHES)
 #
 $(PY-NEVOW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NEVOW_SOURCE) $(PY-NEVOW_PATCHES)
 	$(MAKE) py-epsilon-stage
-	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)
+	rm -rf $(PY-NEVOW_BUILD_DIR)
+	mkdir -p $(PY-NEVOW_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR)
 	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)
-	(cd $(PY-NEVOW_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)/2.4
+	(cd $(PY-NEVOW_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-NEVOW_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR)
+	$(PY-NEVOW_UNZIP) $(DL_DIR)/$(PY-NEVOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-NEVOW_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NEVOW_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)/2.5
+	(cd $(PY-NEVOW_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
+	touch $@
 
 py-nevow-unpack: $(PY-NEVOW_BUILD_DIR)/.configured
 
@@ -120,11 +143,14 @@ py-nevow-unpack: $(PY-NEVOW_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-NEVOW_BUILD_DIR)/.built: $(PY-NEVOW_BUILD_DIR)/.configured
-	rm -f $(PY-NEVOW_BUILD_DIR)/.built
-	(cd $(PY-NEVOW_BUILD_DIR); \
+	rm -f $@
+	cd $(PY-NEVOW_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-NEVOW_IPK_DIR) --prefix=/opt)
-	touch $(PY-NEVOW_BUILD_DIR)/.built
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-NEVOW_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,9 +161,9 @@ py-nevow: $(PY-NEVOW_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-NEVOW_BUILD_DIR)/.staged: $(PY-NEVOW_BUILD_DIR)/.built
-	rm -f $(PY-NEVOW_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-NEVOW_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-NEVOW_BUILD_DIR)/.staged
+	touch $@
 
 py-nevow-stage: $(PY-NEVOW_BUILD_DIR)/.staged
 
@@ -145,8 +171,8 @@ py-nevow-stage: $(PY-NEVOW_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-nevow
 #
-$(PY-NEVOW_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-NEVOW_IPK_DIR)/CONTROL
+$(PY24-NEVOW_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-nevow" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -156,7 +182,21 @@ $(PY-NEVOW_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-NEVOW_MAINTAINER)" >>$@
 	@echo "Source: $(PY-NEVOW_SITE)/$(PY-NEVOW_SOURCE)" >>$@
 	@echo "Description: $(PY-NEVOW_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-NEVOW_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-NEVOW_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
+
+$(PY25-NEVOW_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-nevow" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-NEVOW_PRIORITY)" >>$@
+	@echo "Section: $(PY-NEVOW_SECTION)" >>$@
+	@echo "Version: $(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-NEVOW_MAINTAINER)" >>$@
+	@echo "Source: $(PY-NEVOW_SITE)/$(PY-NEVOW_SOURCE)" >>$@
+	@echo "Description: $(PY-NEVOW_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-NEVOW_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-NEVOW_CONFLICTS)" >>$@
 
 #
@@ -171,19 +211,32 @@ $(PY-NEVOW_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
-	rm -rf $(PY-NEVOW_IPK_DIR) $(BUILD_DIR)/py-nevow_*_$(TARGET_ARCH).ipk
-	(cd $(PY-NEVOW_BUILD_DIR); \
+$(PY24-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
+	rm -rf $(PY24-NEVOW_IPK_DIR) $(BUILD_DIR)/py-nevow_*_$(TARGET_ARCH).ipk
+	(cd $(PY-NEVOW_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-NEVOW_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-NEVOW_IPK_DIR)/CONTROL/control
-	echo $(PY-NEVOW_CONFFILES) | sed -e 's/ /\n/g' > $(PY-NEVOW_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-NEVOW_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-NEVOW_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-NEVOW_IPK_DIR)/CONTROL/control
+	echo $(PY-NEVOW_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-NEVOW_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-NEVOW_IPK_DIR)
+
+$(PY25-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
+	rm -rf $(PY25-NEVOW_IPK_DIR) $(BUILD_DIR)/py25-nevow_*_$(TARGET_ARCH).ipk
+	(cd $(PY-NEVOW_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-NEVOW_IPK_DIR) --prefix=/opt)
+	for f in $(PY25-NEVOW_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
+	$(MAKE) $(PY25-NEVOW_IPK_DIR)/CONTROL/control
+	echo $(PY-NEVOW_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-NEVOW_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-NEVOW_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-nevow-ipk: $(PY-NEVOW_IPK)
+py-nevow-ipk: $(PY24-NEVOW_IPK) $(PY25-NEVOW_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -196,4 +249,12 @@ py-nevow-clean:
 # directories.
 #
 py-nevow-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR) $(PY-NEVOW_IPK_DIR) $(PY-NEVOW_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-NEVOW_DIR) $(PY-NEVOW_BUILD_DIR)
+	rm -rf $(PY24-NEVOW_IPK_DIR) $(PY24-NEVOW_IPK)
+	rm -rf $(PY25-NEVOW_IPK_DIR) $(PY25-NEVOW_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-nevow-check: $(PY24-NEVOW_IPK) $(PY25-NEVOW_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-NEVOW_IPK) $(PY25-NEVOW_IPK)
