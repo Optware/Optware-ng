@@ -30,13 +30,14 @@ PY-MANTISSA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MANTISSA_DESCRIPTION=An extensible, multi-protocol, multi-user, interactive application server built on top of Axiom and Nevow.
 PY-MANTISSA_SECTION=misc
 PY-MANTISSA_PRIORITY=optional
-PY-MANTISSA_DEPENDS=python, py-epsilon, py-nevow
+PY24-MANTISSA_DEPENDS=python24, py-nevow
+PY25-MANTISSA_DEPENDS=python25, py25-nevow
 PY-MANTISSA_CONFLICTS=
 
 #
 # PY-MANTISSA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MANTISSA_IPK_VERSION=1
+PY-MANTISSA_IPK_VERSION=2
 
 #
 # PY-MANTISSA_CONFFILES should be a list of user-editable files
@@ -66,8 +67,14 @@ PY-MANTISSA_LDFLAGS=
 #
 PY-MANTISSA_BUILD_DIR=$(BUILD_DIR)/py-mantissa
 PY-MANTISSA_SOURCE_DIR=$(SOURCE_DIR)/py-mantissa
-PY-MANTISSA_IPK_DIR=$(BUILD_DIR)/py-mantissa-$(PY-MANTISSA_VERSION)-ipk
-PY-MANTISSA_IPK=$(BUILD_DIR)/py-mantissa_$(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-MANTISSA_IPK_DIR=$(BUILD_DIR)/py-mantissa-$(PY-MANTISSA_VERSION)-ipk
+PY24-MANTISSA_IPK=$(BUILD_DIR)/py-mantissa_$(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-MANTISSA_IPK_DIR=$(BUILD_DIR)/py25-mantissa-$(PY-MANTISSA_VERSION)-ipk
+PY25-MANTISSA_IPK=$(BUILD_DIR)/py25-mantissa_$(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: py-mantissa-source py-mantissa-unpack py-mantissa py-mantissa-stage py-mantissa-ipk py-mantissa-clean py-mantissa-dirclean py-mantissa-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,19 +107,35 @@ py-mantissa-source: $(DL_DIR)/$(PY-MANTISSA_SOURCE) $(PY-MANTISSA_PATCHES)
 #
 $(PY-MANTISSA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MANTISSA_SOURCE) $(PY-MANTISSA_PATCHES)
 	$(MAKE) py-epsilon-stage
-	rm -rf $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR)
+	rm -rf $(PY-MANTISSA_BUILD_DIR)
+	mkdir -p $(PY-MANTISSA_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-MANTISSA_DIR)
 	$(PY-MANTISSA_UNZIP) $(DL_DIR)/$(PY-MANTISSA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MANTISSA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MANTISSA_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR)
-	(cd $(PY-MANTISSA_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR)/2.4
+	(cd $(PY-MANTISSA_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-MANTISSA_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-MANTISSA_DIR)
+	$(PY-MANTISSA_UNZIP) $(DL_DIR)/$(PY-MANTISSA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-MANTISSA_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MANTISSA_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR)/2.5
+	(cd $(PY-MANTISSA_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
+	)
+	touch $@
 
 py-mantissa-unpack: $(PY-MANTISSA_BUILD_DIR)/.configured
 
@@ -120,11 +143,14 @@ py-mantissa-unpack: $(PY-MANTISSA_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-MANTISSA_BUILD_DIR)/.built: $(PY-MANTISSA_BUILD_DIR)/.configured
-	rm -f $(PY-MANTISSA_BUILD_DIR)/.built
-	(cd $(PY-MANTISSA_BUILD_DIR); \
+	rm -f $@
+	cd $(PY-MANTISSA_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-MANTISSA_IPK_DIR) --prefix=/opt)
-	touch $(PY-MANTISSA_BUILD_DIR)/.built
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-MANTISSA_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,9 +161,9 @@ py-mantissa: $(PY-MANTISSA_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-MANTISSA_BUILD_DIR)/.staged: $(PY-MANTISSA_BUILD_DIR)/.built
-	rm -f $(PY-MANTISSA_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-MANTISSA_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-MANTISSA_BUILD_DIR)/.staged
+	touch $@
 
 py-mantissa-stage: $(PY-MANTISSA_BUILD_DIR)/.staged
 
@@ -145,8 +171,8 @@ py-mantissa-stage: $(PY-MANTISSA_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-mantissa
 #
-$(PY-MANTISSA_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-MANTISSA_IPK_DIR)/CONTROL
+$(PY24-MANTISSA_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-mantissa" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -156,7 +182,21 @@ $(PY-MANTISSA_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MANTISSA_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MANTISSA_SITE)/$(PY-MANTISSA_SOURCE)" >>$@
 	@echo "Description: $(PY-MANTISSA_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-MANTISSA_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-MANTISSA_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-MANTISSA_CONFLICTS)" >>$@
+
+$(PY25-MANTISSA_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-mantissa" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-MANTISSA_PRIORITY)" >>$@
+	@echo "Section: $(PY-MANTISSA_SECTION)" >>$@
+	@echo "Version: $(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-MANTISSA_MAINTAINER)" >>$@
+	@echo "Source: $(PY-MANTISSA_SITE)/$(PY-MANTISSA_SOURCE)" >>$@
+	@echo "Description: $(PY-MANTISSA_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-MANTISSA_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MANTISSA_CONFLICTS)" >>$@
 
 #
@@ -171,19 +211,30 @@ $(PY-MANTISSA_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-MANTISSA_IPK): $(PY-MANTISSA_BUILD_DIR)/.built
-	rm -rf $(PY-MANTISSA_IPK_DIR) $(BUILD_DIR)/py-mantissa_*_$(TARGET_ARCH).ipk
-	(cd $(PY-MANTISSA_BUILD_DIR); \
+$(PY24-MANTISSA_IPK): $(PY-MANTISSA_BUILD_DIR)/.built
+	rm -rf $(PY24-MANTISSA_IPK_DIR) $(BUILD_DIR)/py-mantissa_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MANTISSA_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-		python2.4 setup.py install --root=$(PY-MANTISSA_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-MANTISSA_IPK_DIR)/CONTROL/control
-	echo $(PY-MANTISSA_CONFFILES) | sed -e 's/ /\n/g' > $(PY-MANTISSA_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MANTISSA_IPK_DIR)
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+		--root=$(PY24-MANTISSA_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-MANTISSA_IPK_DIR)/CONTROL/control
+	echo $(PY-MANTISSA_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-MANTISSA_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MANTISSA_IPK_DIR)
+
+$(PY25-MANTISSA_IPK): $(PY-MANTISSA_BUILD_DIR)/.built
+	rm -rf $(PY25-MANTISSA_IPK_DIR) $(BUILD_DIR)/py25-mantissa_*_$(TARGET_ARCH).ipk
+	(cd $(PY-MANTISSA_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+		--root=$(PY25-MANTISSA_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-MANTISSA_IPK_DIR)/CONTROL/control
+	echo $(PY-MANTISSA_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-MANTISSA_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MANTISSA_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-mantissa-ipk: $(PY-MANTISSA_IPK)
+py-mantissa-ipk: $(PY24-MANTISSA_IPK) $(PY25-MANTISSA_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -196,4 +247,12 @@ py-mantissa-clean:
 # directories.
 #
 py-mantissa-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR) $(PY-MANTISSA_IPK_DIR) $(PY-MANTISSA_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-MANTISSA_DIR) $(PY-MANTISSA_BUILD_DIR)
+	rm -rf $(PY24-MANTISSA_IPK_DIR) $(PY24-MANTISSA_IPK)
+	rm -rf $(PY25-MANTISSA_IPK_DIR) $(PY25-MANTISSA_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-mantissa-check: $(PY24-MANTISSA_IPK) $(PY25-MANTISSA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-MANTISSA_IPK) $(PY25-MANTISSA_IPK)
