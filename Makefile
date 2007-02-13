@@ -179,9 +179,10 @@ COMMON_CROSS_PACKAGES = \
 	m4 madplay make man man-pages mc mcabber mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	miau microcom microperl minicom \
-	mktemp modutils monit motion mt-daapd \
+	mktemp modutils monit motion \
 	mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
-	mpg123 mrtg mtools mtr multitail mutt mxml \
+	mpg123 mrtg msynctool mt-daapd mtools \
+	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp \
 	ncftp ncurses ncursesw noip net-tools netcat nethack netio nfs-server \
@@ -264,7 +265,8 @@ WL500G_BROKEN_PACKAGES = \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
 	 lsof loudmouth \
-	 mc mcabber mdadm mediatomb minicom mod-fastcgi mod-python monotone mtr mutt \
+	 mc mcabber mdadm mediatomb minicom mod-fastcgi mod-python \
+	 monotone msynctool mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
