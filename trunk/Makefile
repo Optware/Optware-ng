@@ -268,7 +268,8 @@ WL500G_BROKEN_PACKAGES = \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm sdl ser sm snownews sqsh swi-prolog \
-	 tcsh tethereal tnftpd transcode unrar vlc vte w3m wget wget-ssl wxbase x11 \
+	 taglib tcsh tethereal tnftpd transcode unrar vlc vte \
+	 w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 
