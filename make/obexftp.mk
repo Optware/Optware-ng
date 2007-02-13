@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OBEXFTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/openobex
-OBEXFTP_VERSION=0.10.3
+OBEXFTP_VERSION=0.20
 OBEXFTP_SOURCE=obexftp-$(OBEXFTP_VERSION).tar.gz
 OBEXFTP_DIR=obexftp-$(OBEXFTP_VERSION)
 OBEXFTP_UNZIP=zcat
@@ -29,7 +29,7 @@ OBEXFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OBEXFTP_DESCRIPTION=Transfer files to/from any OBEX enabled device (most likely mobiles).
 OBEXFTP_SECTION=net
 OBEXFTP_PRIORITY=optional
-OBEXFTP_DEPENDS=openobex
+OBEXFTP_DEPENDS=bluez-libs, openobex
 OBEXFTP_SUGGESTS=
 OBEXFTP_CONFLICTS=
 
@@ -53,7 +53,7 @@ OBEXFTP_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 OBEXFTP_CPPFLAGS=
-OBEXFTP_LDFLAGS=
+OBEXFTP_LDFLAGS=-lbluetooth
 
 #
 # OBEXFTP_BUILD_DIR is the directory in which the build is done.
@@ -103,8 +103,10 @@ obexftp-source: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES)
 #
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
+#		ac_cv_path_OPENOBEX_CONFIG=$(STAGING_PREFIX)/bin/openobex-config \
 #
 $(OBEXFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES) make/obexftp.mk
+	$(MAKE) bluez-libs-stage
 	$(MAKE) openobex-stage
 	rm -rf $(BUILD_DIR)/$(OBEXFTP_DIR) $(OBEXFTP_BUILD_DIR)
 	$(OBEXFTP_UNZIP) $(DL_DIR)/$(OBEXFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -119,12 +121,17 @@ $(OBEXFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OBEXFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OBEXFTP_LDFLAGS)" \
-		ac_cv_path_OPENOBEX_CONFIG=$(STAGING_PREFIX)/bin/openobex-config \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-perl \
+		--disable-python \
+		--disable-ruby \
+		--disable-swig \
+		--disable-tcl \
 		--disable-nls \
 		--disable-static \
 	)
