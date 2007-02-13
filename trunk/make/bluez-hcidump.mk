@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BLUEZ-HCIDUMP_SITE=http://bluez.sf.net/download
-BLUEZ-HCIDUMP_VERSION=1.30
+BLUEZ-HCIDUMP_VERSION=1.33
 BLUEZ-HCIDUMP_SOURCE=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION).tar.gz
 BLUEZ-HCIDUMP_DIR=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION)
 BLUEZ-HCIDUMP_UNZIP=zcat
@@ -70,6 +70,8 @@ BLUEZ-HCIDUMP_SOURCE_DIR=$(SOURCE_DIR)/bluez-hcidump
 BLUEZ-HCIDUMP_IPK_DIR=$(BUILD_DIR)/bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION)-ipk
 BLUEZ-HCIDUMP_IPK=$(BUILD_DIR)/bluez-hcidump_$(BLUEZ-HCIDUMP_VERSION)-$(BLUEZ-HCIDUMP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: bluez-hcidump-source bluez-hcidump-unpack bluez-hcidump bluez-hcidump-stage bluez-hcidump-ipk bluez-hcidump-clean bluez-hcidump-dirclean bluez-hcidump-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
@@ -109,6 +111,7 @@ $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) $(BLUE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BLUEZ-HCIDUMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BLUEZ-HCIDUMP_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -197,3 +200,9 @@ bluez-hcidump-clean:
 #
 bluez-hcidump-dirclean:
 	rm -rf $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(BLUEZ-HCIDUMP_BUILD_DIR) $(BLUEZ-HCIDUMP_IPK_DIR) $(BLUEZ-HCIDUMP_IPK)
+
+#
+# Some sanity check for the package.
+#
+bluez-hcidump-check: $(BLUEZ-HCIDUMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BLUEZ-HCIDUMP_IPK)
