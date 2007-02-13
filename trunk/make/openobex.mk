@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OPENOBEX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/openobex
-OPENOBEX_VERSION=1.0.1
+OPENOBEX_VERSION=1.3
 OPENOBEX_SOURCE=openobex-$(OPENOBEX_VERSION).tar.gz
 OPENOBEX_DIR=openobex-$(OPENOBEX_VERSION)
 OPENOBEX_UNZIP=zcat
@@ -154,6 +154,7 @@ $(OPENOBEX_BUILD_DIR)/.staged: $(OPENOBEX_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(OPENOBEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|-I$$includedir|-I$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/openobex-config
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openobex.pc
 	rm -f $(STAGING_LIB_DIR)/libopenobex.la
 	touch $@
 
@@ -192,8 +193,7 @@ $(OPENOBEX_IPK_DIR)/CONTROL/control:
 #
 $(OPENOBEX_IPK): $(OPENOBEX_BUILD_DIR)/.built
 	rm -rf $(OPENOBEX_IPK_DIR) $(BUILD_DIR)/openobex_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(OPENOBEX_BUILD_DIR) DESTDIR=$(OPENOBEX_IPK_DIR) install
-	$(STRIP_COMMAND) $(OPENOBEX_IPK_DIR)/opt/lib/libopenobex-[0-9]*.[0-9]*.so.[0-9]*.[0-9]*.[0-9]*
+	$(MAKE) -C $(OPENOBEX_BUILD_DIR) DESTDIR=$(OPENOBEX_IPK_DIR) install-strip
 	rm -f $(OPENOBEX_IPK_DIR)/opt/lib/libopenobex.la
 #	install -d $(OPENOBEX_IPK_DIR)/opt/etc/
 #	install -m 644 $(OPENOBEX_SOURCE_DIR)/openobex.conf $(OPENOBEX_IPK_DIR)/opt/etc/openobex.conf
