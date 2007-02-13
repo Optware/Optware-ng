@@ -283,7 +283,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 mtr nfs-server nfs-utils nget \
 	 pango par2cmdline \
 	 qemu qemu-libc-i386 quickie sm \
-	 transcode vte xauth xaw xchat xcursor \
+	 taglib transcode vte xauth xaw xchat xcursor \
 	 xfixes xft xrender xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
