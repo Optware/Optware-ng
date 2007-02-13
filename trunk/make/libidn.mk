@@ -42,7 +42,7 @@ LIBIDN_CONFLICTS=
 #
 # LIBIDN_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBIDN_IPK_VERSION=1
+LIBIDN_IPK_VERSION=2
 
 #
 # LIBIDN_CONFFILES should be a list of user-editable files
@@ -126,7 +126,7 @@ $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 		--disable-nls \
 	)
 	$(PATCH_LIBTOOL) $(LIBIDN_BUILD_DIR)/libtool
-	touch $(LIBIDN_BUILD_DIR)/.configured
+	touch $@
 
 libidn-unpack: $(LIBIDN_BUILD_DIR)/.configured
 
@@ -134,9 +134,9 @@ libidn-unpack: $(LIBIDN_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBIDN_BUILD_DIR)/.built: $(LIBIDN_BUILD_DIR)/.configured
-	rm -f $(LIBIDN_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBIDN_BUILD_DIR)
-	touch $(LIBIDN_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,9 +147,11 @@ libidn: $(LIBIDN_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBIDN_BUILD_DIR)/.staged: $(LIBIDN_BUILD_DIR)/.built
-	rm -f $(LIBIDN_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBIDN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	touch $(LIBIDN_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libidn.la
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libidn.pc
+	touch $@
 
 libidn-stage: $(LIBIDN_BUILD_DIR)/.staged
 
