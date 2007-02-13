@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BLUEZ-UTILS_SITE=http://bluez.sf.net/download
-BLUEZ-UTILS_VERSION=2.25
+BLUEZ-UTILS_VERSION=3.9
 BLUEZ-UTILS_SOURCE=bluez-utils-$(BLUEZ-UTILS_VERSION).tar.gz
 BLUEZ-UTILS_DIR=bluez-utils-$(BLUEZ-UTILS_VERSION)
 BLUEZ-UTILS_UNZIP=zcat
@@ -30,7 +30,7 @@ BLUEZ-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BLUEZ-UTILS_DESCRIPTION=Bluetooth utilities.
 BLUEZ-UTILS_SECTION=misc
 BLUEZ-UTILS_PRIORITY=optional
-BLUEZ-UTILS_DEPENDS=bluez-libs
+BLUEZ-UTILS_DEPENDS=bluez-libs, dbus, expat
 BLUEZ-UTILS_SUGGESTS=
 BLUEZ-UTILS_CONFLICTS=
 
@@ -41,7 +41,16 @@ BLUEZ-UTILS_IPK_VERSION=1
 
 #
 # BLUEZ-UTILS_CONFFILES should be a list of user-editable files
-#BLUEZ-UTILS_CONFFILES=/opt/etc/bluez-utils.conf /opt/etc/init.d/SXXbluez-utils
+BLUEZ-UTILS_CONFFILES=\
+/opt/etc/bluetooth/hcid.conf \
+/opt/etc/bluetooth/echo.service \
+/opt/etc/bluetooth/input.service \
+/opt/etc/bluetooth/rfcomm.conf \
+/opt/etc/dbus-1/system.d/bluetooth.conf \
+/opt/etc/init.d/bluetooth \
+/opt/etc/default/bluetooth \
+/opt/etc/udev/bluetooth.rules \
+
 
 #
 # BLUEZ-UTILS_PATCHES should list any patches, in the the order in
@@ -69,6 +78,8 @@ BLUEZ-UTILS_BUILD_DIR=$(BUILD_DIR)/bluez-utils
 BLUEZ-UTILS_SOURCE_DIR=$(SOURCE_DIR)/bluez-utils
 BLUEZ-UTILS_IPK_DIR=$(BUILD_DIR)/bluez-utils-$(BLUEZ-UTILS_VERSION)-ipk
 BLUEZ-UTILS_IPK=$(BUILD_DIR)/bluez-utils_$(BLUEZ-UTILS_VERSION)-$(BLUEZ-UTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: bluez-utils-source bluez-utils-unpack bluez-utils bluez-utils-stage bluez-utils-ipk bluez-utils-clean bluez-utils-dirclean bluez-utils-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -101,6 +112,10 @@ bluez-utils-source: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES)
 #
 $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES)
 	$(MAKE) bluez-libs-stage
+	$(MAKE) dbus-stage
+	$(MAKE) expat-stage
+	$(MAKE) libusb-stage
+	$(MAKE) openobex-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(BLUEZ-UTILS_BUILD_DIR)
 	$(BLUEZ-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(BLUEZ-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) -p1
@@ -109,11 +124,13 @@ $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UT
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BLUEZ-UTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BLUEZ-UTILS_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-all \
 		--disable-nls \
 	)
 	$(PATCH_LIBTOOL) $(BLUEZ-UTILS_BUILD_DIR)/libtool
@@ -178,6 +195,7 @@ $(BLUEZ-UTILS_IPK_DIR)/CONTROL/control:
 $(BLUEZ-UTILS_IPK): $(BLUEZ-UTILS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ-UTILS_IPK_DIR) $(BUILD_DIR)/bluez-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ-UTILS_BUILD_DIR) DESTDIR=$(BLUEZ-UTILS_IPK_DIR) install-strip
+	sed -i -e 's|"/etc|"/opt/etc|' $(BLUEZ-UTILS_IPK_DIR)/opt/etc/*/bluetooth
 	$(MAKE) $(BLUEZ-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ-UTILS_IPK_DIR)
 
@@ -198,3 +216,9 @@ bluez-utils-clean:
 #
 bluez-utils-dirclean:
 	rm -rf $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(BLUEZ-UTILS_BUILD_DIR) $(BLUEZ-UTILS_IPK_DIR) $(BLUEZ-UTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+bluez-utils-check: $(BLUEZ-UTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BLUEZ-UTILS_IPK)
