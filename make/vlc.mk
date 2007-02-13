@@ -42,17 +42,21 @@ freetype, \
 liba52, \
 libdvdnav, \
 libdvdread, \
+libmpcdec, \
 libogg, \
 libshout, \
 libvorbis, \
 speex, \
 x264
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+VLC_SUGGESTS+=, avahi
+endif
 VLC_CONFLICTS=
 
 #
 # VLC_IPK_VERSION should be incremented when the ipk changes.
 #
-VLC_IPK_VERSION=7
+VLC_IPK_VERSION=8
 
 #
 # VLC_CONFFILES should be a list of user-editable files
@@ -70,6 +74,12 @@ VLC_PATCHES=$(VLC_SOURCE_DIR)/flac-1.1.3.patch
 #
 VLC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 VLC_LDFLAGS=
+
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+VLC_CONFIG_BONJOUR=--enable-bonjour
+else
+VLC_CONFIG_BONJOUR=--disable-bonjour
+endif
 
 #
 # VLC_BUILD_DIR is the directory in which the build is done.
@@ -120,6 +130,9 @@ vlc-source: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES)
 # shown below to make various patches to it.
 #
 $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+	$(MAKE) avahi-stage
+endif
 	$(MAKE) faad2-stage
 	$(MAKE) ffmpeg-stage
 	$(MAKE) flac-stage
@@ -129,6 +142,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 	$(MAKE) libdvdnav-stage
 	$(MAKE) libdvdread-stage
 	$(MAKE) libmad-stage
+	$(MAKE) libmpcdec-stage
 	$(MAKE) libmpeg2-stage
 	$(MAKE) libogg-stage
 	$(MAKE) libpng-stage
@@ -159,6 +173,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-v4l \
+		$(VLC_CONFIG_BONJOUR) \
 		--enable-a52 \
 		--enable-dvbpsi \
 		--enable-dvdnav \
@@ -166,6 +181,7 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--enable-faad \
 		--enable-flac \
 		--disable-gnutls \
+		--enable-mpc \
 		--enable-ncurses \
 		--enable-ogg \
 		--enable-png \
@@ -178,7 +194,6 @@ $(VLC_BUILD_DIR)/.configured: $(DL_DIR)/$(VLC_SOURCE) $(VLC_PATCHES) make/vlc.mk
 		--disable-gnomevfs \
 		--disable-libcdio \
 		--disable-libcddb \
-		--disable-mpc \
 		--disable-screen \
 		--disable-sdl \
 		--disable-wxwidgets --disable-skins2 \
