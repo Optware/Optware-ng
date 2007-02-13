@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TZ_SITE=ftp://elsie.nci.nih.gov/pub
-TZ_VERSION=2007a
+TZ_VERSION=2007b
 TZ_CODE_SOURCE=tzcode$(TZ_VERSION).tar.gz
 TZ_DATA_SOURCE=tzdata$(TZ_VERSION).tar.gz
 TZ_DIR=tz-$(TZ_VERSION)
@@ -37,7 +37,7 @@ TZ_CONFLICTS=
 #
 # TZ_IPK_VERSION should be incremented when the ipk changes.
 #
-TZ_IPK_VERSION=2
+TZ_IPK_VERSION=1
 
 #
 # TZ_CONFFILES should be a list of user-editable files
