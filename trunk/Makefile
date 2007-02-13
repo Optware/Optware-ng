@@ -799,7 +799,7 @@ else
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = armeb-linux
-TARGET_CROSS_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/openslug/tmp/cross
+TARGET_CROSS_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/slugosbe/tmp/cross
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
 TARGET_LDFLAGS = 
