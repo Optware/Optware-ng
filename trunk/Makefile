@@ -177,7 +177,7 @@ COMMON_CROSS_PACKAGES = \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd \
 	logrotate loudmouth lrzsz lsof lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber mdadm \
-	mediawiki memcached metalog memtester \
+	mediatomb mediawiki memcached metalog memtester \
 	miau microcom microperl minicom \
 	mktemp modutils monit motion mt-daapd \
 	mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
@@ -263,7 +263,7 @@ WL500G_BROKEN_PACKAGES = \
 	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libtorrent lsof loudmouth \
-	 mc mcabber mdadm minicom mod-fastcgi mod-python monotone mtr mutt \
+	 mc mcabber mdadm mediatomb minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
@@ -279,7 +279,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
-	 jamvm ldconfig libstdc++ libdvb monotone \
+	 jamvm ldconfig libstdc++ libdvb mediatomb monotone \
 	 mtr nfs-server nfs-utils nget \
 	 pango par2cmdline \
 	 qemu qemu-libc-i386 quickie sm \
