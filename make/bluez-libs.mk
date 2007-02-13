@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BLUEZ-LIBS_SITE=http://bluez.sf.net/download
-BLUEZ-LIBS_VERSION=2.25
+BLUEZ-LIBS_VERSION=3.9
 BLUEZ-LIBS_SOURCE=bluez-libs-$(BLUEZ-LIBS_VERSION).tar.gz
 BLUEZ-LIBS_DIR=bluez-libs-$(BLUEZ-LIBS_VERSION)
 BLUEZ-LIBS_UNZIP=zcat
@@ -69,6 +69,8 @@ BLUEZ-LIBS_BUILD_DIR=$(BUILD_DIR)/bluez-libs
 BLUEZ-LIBS_SOURCE_DIR=$(SOURCE_DIR)/bluez-libs
 BLUEZ-LIBS_IPK_DIR=$(BUILD_DIR)/bluez-libs-$(BLUEZ-LIBS_VERSION)-ipk
 BLUEZ-LIBS_IPK=$(BUILD_DIR)/bluez-libs_$(BLUEZ-LIBS_VERSION)-$(BLUEZ-LIBS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: bluez-libs-source bluez-libs-unpack bluez-libs bluez-libs-stage bluez-libs-ipk bluez-libs-clean bluez-libs-dirclean bluez-libs-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -118,7 +120,7 @@ $(BLUEZ-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-LIBS_SOURCE) $(BLUEZ-LIBS
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(BLUEZ-LIBS_BUILD_DIR)/libtool
-	touch $(BLUEZ-LIBS_BUILD_DIR)/.configured
+	touch $@
 
 bluez-libs-unpack: $(BLUEZ-LIBS_BUILD_DIR)/.configured
 
@@ -126,9 +128,9 @@ bluez-libs-unpack: $(BLUEZ-LIBS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BLUEZ-LIBS_BUILD_DIR)/.built: $(BLUEZ-LIBS_BUILD_DIR)/.configured
-	rm -f $(BLUEZ-LIBS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(BLUEZ-LIBS_BUILD_DIR)
-	touch $(BLUEZ-LIBS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,10 +141,11 @@ bluez-libs: $(BLUEZ-LIBS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BLUEZ-LIBS_BUILD_DIR)/.staged: $(BLUEZ-LIBS_BUILD_DIR)/.built
-	rm -f $(BLUEZ-LIBS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(BLUEZ-LIBS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
 	rm -f $(STAGING_LIB_DIR)/libbluetooth.la
-	touch $(BLUEZ-LIBS_BUILD_DIR)/.staged
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/bluez.pc
+	touch $@
 
 bluez-libs-stage: $(BLUEZ-LIBS_BUILD_DIR)/.staged
 
@@ -201,3 +204,9 @@ bluez-libs-clean:
 #
 bluez-libs-dirclean:
 	rm -rf $(BUILD_DIR)/$(BLUEZ-LIBS_DIR) $(BLUEZ-LIBS_BUILD_DIR) $(BLUEZ-LIBS_IPK_DIR) $(BLUEZ-LIBS_IPK)
+
+#
+# Some sanity check for the package.
+#
+bluez-libs-check: $(BLUEZ-LIBS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BLUEZ-LIBS_IPK)
