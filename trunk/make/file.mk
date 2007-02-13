@@ -34,7 +34,7 @@ FILE_CONFLICTS=
 #
 # FILE_IPK_VERSION should be incremented when the ipk changes.
 #
-FILE_IPK_VERSION=1
+FILE_IPK_VERSION=2
 
 #
 # FILE_PATCHES should list any patches, in the the order in
@@ -113,7 +113,7 @@ $(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(FILE_BUILD_DIR)/libtool
-	touch $(FILE_BUILD_DIR)/.configured
+	touch $@
 
 file-unpack: $(FILE_BUILD_DIR)/.configured
 
@@ -122,10 +122,10 @@ file-unpack: $(FILE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(FILE_BUILD_DIR)/.built: $(FILE_BUILD_DIR)/.configured
-	rm -f $(FILE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FILE_BUILD_DIR) SUBDIRS=src
 	$(MAKE) -C $(FILE_BUILD_DIR)/magic pkgdata_DATA="magic magic.mime"
-	touch $(FILE_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -137,9 +137,10 @@ file: $(FILE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FILE_BUILD_DIR)/.staged: $(FILE_BUILD_DIR)/.built
-	rm -f $(FILE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) SUBDIRS=src install
 	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(STAGING_DIR) pkgdata_DATA="magic magic.mime" install
-	touch $(FILE_BUILD_DIR)/.staged
+	touch $@
 
 file-stage: $(FILE_BUILD_DIR)/.staged
 
@@ -148,7 +149,7 @@ file-stage: $(FILE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/file
 #
 $(FILE_IPK_DIR)/CONTROL/control:
-	@install -d $(FILE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: file" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
