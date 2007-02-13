@@ -262,7 +262,7 @@ WL500G_BROKEN_PACKAGES = \
 	 fcgi ficy fish freetds gambit-c gawk \
 	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
-	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libtorrent lsof \
+	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libtorrent lsof loudmouth \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
