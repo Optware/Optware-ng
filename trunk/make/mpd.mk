@@ -31,14 +31,18 @@ MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-MPD_DEPENDS=audiofile, faad2, flac, libao, libid3tag, libmad, libvorbisidec
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+MPD_DEPENDS=audiofile, avahi, faad2, flac, libao, libid3tag, libmad, libmpcdec, libvorbisidec
+else
+MPD_DEPENDS=audiofile, faad2, flac, libao, libid3tag, libmad, libmpcdec, libvorbisidec
+endif
 MPD_SUGGESTS=
 MPD_CONFLICTS=
 
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION=2
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -56,6 +60,12 @@ MPD_IPK_VERSION=1
 #
 MPD_CPPFLAGS=
 MPD_LDFLAGS=
+
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+MPD_ZEROCONF_CONFIG=--with-zeroconf=avahi
+else
+MPD_ZEROCONF_CONFIG=--without-zeroconf
+endif
 
 #
 # MPD_BUILD_DIR is the directory in which the build is done.
@@ -116,11 +126,15 @@ mpd-source: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES)
 #
 $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 	$(MAKE) audiofile-stage
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+	$(MAKE) avahi-stage
+endif
 	$(MAKE) faad2-stage
 	$(MAKE) flac-stage
 	$(MAKE) libao-stage
 	$(MAKE) libid3tag-stage
 	$(MAKE) libmad-stage
+	$(MAKE) libmpcdec-stage
 	$(MAKE) libvorbisidec-stage
 	rm -rf $(BUILD_DIR)/$(MPD_DIR) $(MPD_BUILD_DIR)
 	$(MPD_UNZIP) $(DL_DIR)/$(MPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -138,6 +152,7 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPD_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -150,7 +165,9 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		--enable-flac \
 		--enable-id3 \
 		--enable-mp3 \
+		--enable-mpc \
 		--enable-oggvorbis \
+		$(MPD_ZEROCONF_CONFIG) \
 		\
 		--with-ao=$(STAGING_PREFIX) \
 		--with-audiofile-prefix=$(STAGING_PREFIX) \
@@ -164,7 +181,9 @@ $(MPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MPD_SOURCE) $(MPD_PATCHES) make/mpd.mk
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/^MPD_CFLAGS/s| -I$${prefix}/include||;' $(MPD_BUILD_DIR)/src/Makefile
+	sed -i -e '/^MPD_CFLAGS/s| -I$${prefix}/include||g;' \
+		$(MPD_BUILD_DIR)/src/Makefile \
+		$(MPD_BUILD_DIR)/src/*/Makefile
 	$(PATCH_LIBTOOL) $(MPD_BUILD_DIR)/libtool
 	touch $@
 
