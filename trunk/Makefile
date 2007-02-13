@@ -172,7 +172,7 @@ COMMON_CROSS_PACKAGES = \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss \
 	libnsl libnxml \
-	libol libogg libosip2 libpcap libpng libpth librsync \
+	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd \
 	logrotate loudmouth lrzsz lsof lua lynx lzo \
@@ -262,7 +262,8 @@ WL500G_BROKEN_PACKAGES = \
 	 fcgi ficy fish freetds gambit-c gawk \
 	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
-	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libtorrent lsof loudmouth \
+	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
+	 lsof loudmouth \
 	 mc mcabber mdadm mediatomb minicom mod-fastcgi mod-python monotone mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
