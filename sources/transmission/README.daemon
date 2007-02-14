@@ -173,7 +173,9 @@ OpenWRT and Xwrt(OpenWRT for mere mortals) notes:
    With whiterussian OpenWRT and Xwrt is fully operational. 
    I recommend to create disk partitions (opt, swap and data) with
    some linux system as the OpenWRT lacks some fdisk and
-   busybox (mkswap, swapon, swapof) packages. 
+   busybox (mkswap, swapon, swapof) packages which can be found on
+   rc5-backports.
+   
    Install the following USB and ext2/3 packages:
     - kmod-usb-core - 2.4.30-brcm-5 - Kernel Support for USB
     - kmod-usb-storage - 2.4.30-brcm-5 - Kernel modules for USB storage support
@@ -182,58 +184,11 @@ OpenWRT and Xwrt(OpenWRT for mere mortals) notes:
     - kmod-ext3 - 2.4.30-brcm-5 - Kernel modules for EXT3 filesystem support
 
 But after that you will be able to mount disk partitions.
+See http://www.nslu2-linux.org/wiki/FAQ/Optware-uClibcBuild
+for aditional X-wrt notes.
 
-Installing packages with ipkg-opt:
-   cd /opt
-   mkdir /opt/tmp
-   cd tmp
-   http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/uclibc-opt_0.9.28-6_mipsel.ipk
-   ipkg install uclibc-opt_0.9.28-6_mipsel.ipk 
- wget http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/ipkg-opt_0.99.163-5_mipsel.ipk
- ipkg install ipkg-opt_0.99.163-5_mipsel.ipk
- 
-contents of /opt/etc/ipkg.conf file:
- src optware http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable
- dest opt /
-
-root@OpenWrt:/opt/tmp$ /opt/bin/ipkg update
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/Packages
-Updated list of available packages in /opt/lib/ipkg/lists/optware
-Successfully terminated.
-
-Installing gnuplot will resolve all kinds of dependent packages:
-root@OpenWrt:/opt/tmp$ /opt/bin/ipkg install gnuplot
-Installing gnuplot (4.0.0-1) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/gnuplot_4.0.0-1_mipsel.ipk
-Installing readline (5.2-1) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/readline_5.2-1_mipsel.ipk
-Installing libpng (1.2.14-1) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/libpng_1.2.14-1_mipsel.ipk
-Installing zlib (1.2.3-1) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/zlib_1.2.3-1_mipsel.ipk
-Installing libgd (2.0.33-2) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/libgd_2.0.33-2_mipsel.ipk
-Installing libjpeg (6b-2) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/libjpeg_6b-2_mipsel.ipk
-Installing freetype (2.1.10-1) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/freetype_2.1.10-1_mipsel.ipk
-Installing fontconfig (2.3.2-2) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/fontconfig_2.3.2-2_mipsel.ipk
-Installing expat (2.0.0-5) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/expat_2.0.0-5_mipsel.ipk
-Installing gconv-modules (2.2.5-5) to opt...
-Downloading http://ipkg.nslu2-linux.org/feeds/optware/ddwrt/cross/stable/gconv-modules_2.2.5-5_mipsel.ipk
-Configuring expat
-Configuring fontconfig
-Configuring freetype
-Configuring gconv-modules
-Configuring gnuplot
-Configuring libgd
-Configuring libjpeg
-Configuring libpng
-Configuring readline
-Configuring zlib
-Successfully terminated.
+Follow dd-wrt guidelines for installing Optware packages to X-wrt
+http://www.dd-wrt.com/wiki/index.php/Optware
 
    logrotate is not necessary as the OpenWRT cron and log daemon (circular Local LOG)
    can be used. Recommended size for /var/log/messages is 100kB. If using

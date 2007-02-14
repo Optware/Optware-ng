@@ -78,22 +78,22 @@
 "\tUSR1\twrite .status files into torrent directories\n"   \
 "\tUSR2\tlist active torrents\n"
 
-static int           showHelp      = 0;
-static int           verboseLevel  = 0;
-static int           bindPort      = TR_DEFAULT_PORT;
-static int           uploadLimit   = 20;
-static int           downloadLimit = -1;
-static char          * torrentPath = NULL;
-static int           watchdogInterval = 600;
-static int           natTraversal  = 0;
-static volatile char mustDie       = 0;
-static volatile char got_hup       = 0;
-static volatile char got_usr1      = 0;
-static volatile char got_usr2      = 0;
-static char          * pidfile = NULL;
+static int          showHelp      = 0;
+static int          verboseLevel  = 0;
+static int          bindPort      = TR_DEFAULT_PORT;
+static int          uploadLimit   = 20;
+static int          downloadLimit = -1;
+static char         * torrentPath = NULL;
+static int          watchdogInterval = 600;
+static int          natTraversal  = 0;
+static sig_atomic_t mustDie       = 0;
+static sig_atomic_t got_hup       = 0;
+static sig_atomic_t got_usr1      = 0;
+static sig_atomic_t got_usr2      = 0;
+static char         * pidfile = NULL;
 
-static char          * finishCall   = NULL;
-static tr_handle_t   * h;
+static char         * finishCall   = NULL;
+static tr_handle_t  * h;
 
 static int  parseCommandLine ( int argc, char ** argv );
 
