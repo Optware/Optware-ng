@@ -229,15 +229,15 @@ _pause ()
 		echo "<p><b>Transmission daemon failed to start</b></p>" 
 	    fi
 	else
-	  echo "<p>transmission_watchdog will start Transmission daemon</p>"
+	  echo "<p>transmission_watchdog will start Transmission daemon.</p>"
           echo "<p>Press Watchdog button to force watchdog queue processing</p>"
 	fi
     else
 	touch "$WORK/.paused"
 	kill -TERM `cat ${PIDFILE}`
 	echo "<b>Stopping transmissison!</b>"
-	echo "<p>Transmission will eventuallty stop. "
-	echo " Depending of its current state. Be patient.<p>"
+	echo "<p>Transmission will eventually stop. "
+	echo "Last Log line should report transmissiond exiting.<p>"
     fi
 }
 
