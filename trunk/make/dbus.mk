@@ -57,6 +57,9 @@ DBUS_LDFLAGS=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 DBUS_CROSS_CONFIG_ENVS=ac_cv_have_abstract_sockets=yes
+ifeq ($(OPTWARE_TARGET), wl500g)
+DBUS_CROSS_CONFIG_ENVS+= ac_cv_func_posix_getpwnam_r=no ac_cv_func_nonposix_getpwnam_r=no
+endif
 endif
 
 #
