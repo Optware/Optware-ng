@@ -62,7 +62,13 @@ BLUEZ-UTILS_CONFFILES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-BLUEZ-UTILS_CPPFLAGS=
+ifeq ($(TARGET_ARCH), mipsel)
+BLUEZ-UTILS_CPPFLAGS=-DENOKEY=161
+else
+ifneq ($(OPTWARE_TARGET), slugosbe)
+BLUEZ-UTILS_CPPFLAGS=-DENOKEY=126
+endif
+endif
 BLUEZ-UTILS_LDFLAGS=
 
 #
