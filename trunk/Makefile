@@ -256,7 +256,7 @@ WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++
 WL500G_BROKEN_PACKAGES = \
 	 amule \
 	$(ASTERISK_PACKAGES) \
-	 atk avahi bitlbee bsdmainutils bzflag \
+	 atk avahi bitlbee bluez-utils bsdmainutils bzflag \
 	 coreutils dbus dcraw dict dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
