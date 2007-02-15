@@ -193,27 +193,6 @@ _update_progress()
 }
 
 
-check_tracker_error ()
-{
-    return
-
-    [ -f "${TORRENT%/*}/.status" ] || return
-
-    grep -q "Error from tracker"  "${TORRENT%/*}/.status" 2>/dev/null
-if [ $? -eq 0 ]; then   
-    debug "Error from tracker"
-    warning "Error from tracker"
-    . "${TORRENT%/*}/.info"
-    sleep 2
-    mv "${TORRENT}" "${TORRENT}.suspended"
-    notice "Torrent ${TORRENT}suspended"
-    STATUS="Error from tracker"
-    _write_info
-    
-    exit 1
-fi
-}
-
 
 # rewrites active torrents listing into file and notifies daemon to reload it
 _update_active()
@@ -227,6 +206,7 @@ _update_active()
 	ls -1  ${TARGET}/*/*.seeding >> ${ACTIVE}
     fi
     [ ! -e ${ACTIVE} ] && touch ${ACTIVE}
+    cat  ${ACTIVE} > /dev/null
     [ -f ${PIDFILE} ] && kill -HUP `cat ${PIDFILE}` 
 }
 
@@ -240,7 +220,7 @@ _stop_torrent()
 
 
 # Torrent exists and runs 
-check_if_complete()
+_check_if_complete()
 {
 
     debug "check_if_complete  TORRENT:${TORRENT}"
@@ -259,6 +239,25 @@ check_if_complete()
 	cleanup_work
 	send_report
 	auto_seed_completed 
+    fi
+}
+
+# Check for error message
+_check_tracker_error ()
+{
+    if [ -f "${TORRENT%/*}/.status" ] ; then
+	. "${TORRENT%/*}/.status"
+	echo "${STATUS}" | grep -q "Error:"  "${TORRENT%/*}/.status" 2>/dev/null
+	if [ $? -eq 0 ]; then   
+	    debug "Error from tracker"
+	    warning "Error from tracker"
+	    . "${TORRENT%/*}/.info"
+    	    mv "${TORRENT}" "${TORRENT}.suspended"
+    	    notice "Torrent ${TORRENT} suspended"
+    	    _write_info
+    	    _update_active
+    	    TOTAL_ACTIVE=$((TOTAL_ACTIVE-1))
+    	fi
     fi
 }
 
@@ -301,45 +300,47 @@ if [ ${is_running} = "no" ]; then
     exit 1
 fi
 
-
-ACTIVE_TORRENTS=0
-# We will check all torrents for running state
 _update_progress
+
+TOTAL_ACTIVE=0
+BYPASS=0
+HEARTBEAT=0
+# We will check all torrents for running state
 for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
     if [ -f "${TORRENT}" ]; then
-	INFO="${TORRENT%/*}/.info"
-	if [ -f "${INFO}" ]; then
-	    . "${INFO}"
-	    check_if_complete
-	    check_tracker_error
-	else
-	    debug "${INFO} not found!"
-	fi
-    	ACTIVE_TORRENTS=$((${ACTIVE_TORRENTS}+1))
+    	TOTAL_ACTIVE=$((TOTAL_ACTIVE+1))
+        if [ -f "${WORK}/${TORRENT#${WORK}}" ]; then 
+	    _check_if_complete
+    	    if [ -f "${TORRENT%/*}/.bypass" ] ; then
+		BYPASS=$((BYPASS+1))
+	    else
+		HEARTBEAT=$((HEARTBEAT+1))
+	    fi
+	fi # work
+        _check_tracker_error
     fi
 done
 
-# Check if any torrent file exists in run env.
-TORRENT=`ls -1 $WORK/*/*.torrent 2>/dev/null | head -n 1`
 
-# Start up new  torrent if work is empty
-if [ -z "$TORRENT" ]; then
-    max_active_torrents=10
-    if [ ${ACTIVE_TORRENTS} = ${max_active_torrents} ]; then
-	notice "Max active torrents (${max_active_torrents}) reached."
+# check if there is a torrent to process
+FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -n 1`
+if [ -z "$FILE" ]; then
+	notice "No torrents to process"
+	debug "Nothing to do"
+	exit 2
+fi
+
+[ -z "${MAX_ACTIVE_TORRENTS}" ] &&  MAX_ACTIVE_TORRENTS=10
+if [ ${TOTAL_ACTIVE} -gt ${MAX_ACTIVE_TORRENTS} ]; then
+	notice "Max active torrents (${MAX_ACTIVE_TORRENTS}) reached."
 	exit 4
-    fi
-    # check if there is a torrent to process
-    FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -n 1`
-    if [ -z "$FILE" ]; then
-        notice "No torrents to process"
-        debug "Nothing to do"
-        exit 2
-    fi
+fi
+
+# Start new torrent if workload is small
+if [ ${HEARTBEAT} = 0 ]; then
     
     TORRENTNAME="${FILE%%.torrent*}"
     TORRENTNAME="${TORRENTNAME##*/}"
-
     
     mkdir -p "$WORK/$TORRENTNAME"
     chmod 777 "$WORK/$TORRENTNAME"
@@ -349,7 +350,6 @@ if [ -z "$TORRENT" ]; then
     
     TORRENT="$WORK/$TORRENTNAME/$TORRENTNAME.torrent"
     debug "Torrent: $TORRENT"
-
 
     _update_active
     
@@ -369,10 +369,4 @@ if [ -z "$TORRENT" ]; then
 
     exit 0
 fi
-
-
-
-
-
-
 

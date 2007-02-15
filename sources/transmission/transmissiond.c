@@ -229,8 +229,10 @@ static char * status(tr_torrent_t *tor)
   int  chars = 0;
 
   tr_stat_t    * s = tr_torrentStat( tor );
-  
-  if( s->status & TR_STATUS_CHECK )
+
+  if (s->error)
+    snprintf( string, STATUS_WIDTH, "Error: %s", s->errorString );
+  else if( s->status & TR_STATUS_CHECK )
     {
       chars = snprintf( string, STATUS_WIDTH,
                         "Checking files... %.2f %%", 100.0 * s->progress );
@@ -266,8 +268,6 @@ static char * status(tr_torrent_t *tor)
     snprintf( string, STATUS_WIDTH, "Stopping...");
   else if (s->status & TR_STATUS_PAUSE )
     snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->progress);
-  else if (s->error)
-    snprintf( string, STATUS_WIDTH, "%s", s->errorString );
   else
     string[0] = '\0';
 

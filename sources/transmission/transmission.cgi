@@ -293,9 +293,10 @@ _fetch()
 {
     TORRENT=$(echo "${FETCH}" |sed 's/%/\\x/g')
     TORRENT=$(echo -e "${TORRENT}")
-#    echo "<p>Fetching ${TORRENT}</p>"
+    echo "<p>Fetching ${TORRENT}</p>"
     wget -q -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
+
 
 # Sub for directory search
 __find ()
@@ -359,10 +360,15 @@ __list ()
 	       _write_info
 	       SETURL=
 	    fi
-	    if [ -n "${URL}" ]; then
-	       echo "<td><a href=\"${URL}\" target=_blank>${DUMMY}</a></td>"
+	    if 	[ -f "${P}/.bypass" ] ; then
+	   	echo -n "<td bgcolor=#a2b5cd>"
 	    else
-	       echo "<td>${DUMMY}</td>"
+	    	echo -n "<td>"
+	    fi
+	    if [ -n "${URL}" ]; then
+	       echo "<a href=\"${URL}\" target=_blank>${DUMMY}</a></td>"
+	    else
+	       echo "${DUMMY}</td>"
 	    fi
 	    if [ -f "$P/.info" ] ; then
 		echo "<td>${STATUS}"
@@ -377,6 +383,7 @@ __list ()
 		fi
 		[ -n "${UPLOADED}" ] && echo " uploaded: ${UPLOADED} MB" 
 		[ -n "${NOTE}" ] && echo " ${NOTE}"
+		[ -f "${P}/.bypass" ] && echo ", bypassed"
 		echo "</td></tr>"
 	    fi
 	    STARTTIME=
@@ -481,6 +488,28 @@ _push()
     echo "<p><em>Nothing to push!</em></p>" 
 }
 
+# Toggle bypass flag
+_bypass()
+{
+    if [ -z "$ID" ] ; then
+	echo "<b>Please select active torrent first!</b>"
+	return
+    fi
+    _find
+
+    if [ -f "${WORK}${TORRENT#${WORK}}" ]; then
+	DUMMY="${TORRENT%/*}/.bypass"
+     	if [ -f "${DUMMY}" ]; then 
+	    rm -f "${DUMMY}"
+	else
+	    echo "This torrent is bypassed by watchdog" > "${DUMMY}"
+	fi
+	return
+    else
+    	echo "<p> Can only bypass active torrent!</p>"
+    fi
+}
+
 # Show transfer log from log file
 # Replace "transmissiond" with "transmission" if all logs are preferred
 _log ()
@@ -493,7 +522,7 @@ if [ ! -r ${SYSLOG} ]; then
 fi
     
 echo "<pre>"
-sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/;t data;p;b;:data w ${GNUPLOT_DATA}" -e "}" ${SYSLOG} 
+sed  -n -e "/ transmission.*:/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/;t data;p;b;:data w ${GNUPLOT_DATA}" -e "}" ${SYSLOG} 
 echo "</pre>"
 
 if [ ! -x ${GNUPLOT} ]; then
@@ -550,22 +579,27 @@ _help ()
 This is quick explanation of the buttons:
 <dl>
 <dt><u>U</u>pdate<dd>updates active torrents status
-<dt>Log<dd>shows <u>c</u>urrent transfer log graph
-<dt>Pau<u>s</u>e<dd>all active torrent processing should stop/resume imediately
 <dt><u>P</u>ush<dd> Push selected torrent to other queue
+<dt>Log<dd>shows <u>c</u>urrent transfer log graph
 <dt><u>L</u>ist<dd>lists queued, active, suspended and completed torrents
-<dt><u>R</u>emove<dd>mark torrent for purging
-<dt>Pur<u>g</u>e<dd>removes all logs from completed torrents and clean removed torrents
-<dt><u>W</u>atchdog<dd>forces transmission_watchdog processing
-<dt><u>I</u>nfo<dd>shows selected torrent info ((file content and size)
-<dt>Scr<u>a</u>pe<dd>Update scrape info (seeders, leechers, downloaded)
-     from tracker for downloaded torrents
-<dt><u>B</u>est<dd>Search scrape for best done torrent and suggest seeding based on (leecees/seeds) ratio
 <dt>U<u>R</u>L<dd>Enter URL location for torrent
 <dt><u>N</u>ote<dd>Append your notes to torrent status
+<dt>B<u>y</u>pass<dd>Bypass active torrent watchdog processing
+<dt>Pur<u>g</u>e<dd>removes all logs from completed torrents and clean removed torrents
+<dt><u>W</u>atchdog<dd>forces transmission_watchdog processing
+<dt>Pau<u>s</u>e<dd>all active torrent processing should stop/resume imediately
+<dt><u>R</u>emove<dd>mark torrent for purging
+<dt><u>I</u>nfo<dd>shows selected torrent info (file content and size)
+<dt>Scr<u>a</u>pe<dd>Update scrape info (seeders, leechers, downloaded)
+     from tracker for downloaded torrents
+<dt><u>B</u>est<dd>Search scrape for best done torrent and suggest seeding based on (leeches/seeds) ratio
 <dt><u>F</u>etch<dd>Fetch torrent file from URL (link location)
-<dt><u>H</u>elp<dd> Access keys <u>underlined</u>! Use Alt-Key for access.
+<dt><u>H</u>elp<dd> Access keys <u>underlined</u>! Use Alt-Key for access. Button listing in descending importance.
 </dl>
+
+<p>Explanation of usage is available at NSLU2 Optware <a href=http://www.nslu2-linux.org/wiki/Optware/Transmission>
+Transmission daemon wiki page</a>.</p>
+
 __EOF__
 if [ -r /opt/share/doc/transmission/README.daemon ]; then 
 	echo "<pre>" 
@@ -602,20 +636,21 @@ Content-type: text/html
 <body>
 <form action=transmission.cgi method=get>
 <input type=submit accesskey=u name=ACTION value=Update>
-<input type=submit accesskey=c name=ACTION value=Log>
-<input type=submit accesskey=s name=ACTION value=Pause>
 <input type=submit accesskey=p name=ACTION value=Push>
 <input type=submit accesskey=l name=ACTION value=List>
-<input type=submit accesskey=r name=ACTION value=Remove>
-<input type=submit accesskey=g name=ACTION value=Purge>
-<input type=submit accesskey=w name=ACTION value=Watchdog>
-<input type=submit accesskey=i name=ACTION value=Info>
-<input type=submit accesskey=a name=ACTION value=Scrape>
-<input type=submit accesskey=b name=ACTION value=Best>
+<input type=submit accesskey=c name=ACTION value=Log>
 <input type=submit accesskey=r name=SETURL value=URL 
  onClick='value=prompt("Enter URL location to torrent page", "http://")'>
 <input type=submit accesskey=n name=SETNOTE value=Note
  onClick='value=prompt("Enter your notes for this torrent")'>
+<input type=submit accesskey=y name=ACTION value=Bypass>
+<input type=submit accesskey=s name=ACTION value=Pause>
+<input type=submit accesskey=w name=ACTION value=Watchdog>
+<input type=submit accesskey=r name=ACTION value=Remove>
+<input type=submit accesskey=g name=ACTION value=Purge>
+<input type=submit accesskey=i name=ACTION value=Info>
+<input type=submit accesskey=a name=ACTION value=Scrape>
+<input type=submit accesskey=b name=ACTION value=Best>
 <input type=submit accesskey=f name=FETCH value=Fetch
 onClick='value=prompt("Enter torrent link location for fetching")'>
 <input type=submit accesskey=h name=ACTION value=Help>
@@ -634,20 +669,20 @@ eval ${QUERY_STRING}
 [ -n "${FETCH}" ] && _fetch
 
 case "${ACTION}" in
-    Update) _update_progress ; _list ;;
-    Log) _log ;;
+    Update)	_update_progress ; _list ;;
+    Log)	_log ;;
     Push)	_push ; _list ;;
-    Pause) _pause ; _list ;;
-    Remove) _remove; _list ;;
-    Purge) _purge ;;
-    Watchdog) transmission_watchdog ;;
-    Info) _info ;;
-    Help) _help ;;
-    Scrape) _scrape ; _list;;
-    Best) _best_seed ; _list;;
+    Pause)	_pause ; _list ;;
+    Remove)	_remove; _list ;;
+    Purge)	_purge ;;
+    Watchdog)	transmission_watchdog ;;
+    Info)	_info ;;
+    Help)	_help ;;
+    Scrape)	_scrape ; _list;;
+    Best)	_best_seed ; _list;;
+    Bypass)	_bypass; _list ;;
     *) _list ;;
 esac
-
 
 echo "<p>" ; uptime ; echo "</p>" 
 
