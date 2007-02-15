@@ -32,6 +32,9 @@ MEDIATOMB_DESCRIPTION=UPnP AV Mediaserver for Linux.
 MEDIATOMB_SECTION=multimedia
 MEDIATOMB_PRIORITY=optional
 MEDIATOMB_DEPENDS=file, ossp-js, libexif, sqlite, zlib
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MEDIATOMB_DEPENDS+=, libiconv
+endif
 ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, id3lib
 endif
@@ -134,10 +137,13 @@ $(MEDIATOMB_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIATOMB_SOURCE) $(MEDIATOMB_PA
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-	$(MAKE) file-stage
 ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
 	$(MAKE) id3lib-stage
 endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+	$(MAKE) file-stage
 	$(MAKE) ossp-js-stage
 	$(MAKE) libexif-stage
 	$(MAKE) sqlite-stage
@@ -151,8 +157,17 @@ endif
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	sed -i -e 's/defined(__FreeBSD__) || defined(__APPLE__) || defined(SOLARIS) || defined(__CYGWIN__)/1/' \
+		$(MEDIATOMB_BUILD_DIR)/mediatomb/src/string_converter.cc
+endif
+	cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
+ifeq ($(OPTWARE_TARGET), wl500g)
+	cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
+		sed -i -e 's/-lsqlite3 -lrt/-lsqlite3/' configure
+endif
 	(cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MEDIATOMB_LDFLAGS)" \
