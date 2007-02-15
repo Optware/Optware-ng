@@ -257,7 +257,7 @@ WL500G_BROKEN_PACKAGES = \
 	 amule \
 	$(ASTERISK_PACKAGES) \
 	 atk avahi bitlbee bsdmainutils bzflag \
-	 coreutils dcraw dict dnsmasq dump \
+	 coreutils dcraw dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
