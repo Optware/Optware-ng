@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PCAPSIPDUMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/psipdump
-PCAPSIPDUMP_VERSION=0.1.1
+PCAPSIPDUMP_VERSION=0.1.2
 PCAPSIPDUMP_SOURCE=pcapsipdump-$(PCAPSIPDUMP_VERSION).tar.gz
 PCAPSIPDUMP_DIR=pcapsipdump-$(PCAPSIPDUMP_VERSION)
 PCAPSIPDUMP_UNZIP=zcat
@@ -52,7 +52,7 @@ PCAPSIPDUMP_PATCHES=$(PCAPSIPDUMP_SOURCE_DIR)/Makefile.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PCAPSIPDUMP_CPPFLAGS=
+PCAPSIPDUMP_CPPFLAGS=-fsigned-char
 PCAPSIPDUMP_LDFLAGS=
 
 #
