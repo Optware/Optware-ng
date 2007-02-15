@@ -250,7 +250,7 @@ NSLU2_SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native \
 NSLU2_BROKEN_PACKAGES = \
 
 # Packages that *only* work for wl500g - do not just put new packages here.
-WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ 
+WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ libiconv
 
 # Packages that do not work for wl500g.
 WL500G_BROKEN_PACKAGES = \
