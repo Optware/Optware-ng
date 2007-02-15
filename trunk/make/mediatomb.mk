@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
-MEDIATOMB_SVN_REV=1094
+MEDIATOMB_SVN_REV=1096
 MEDIATOMB_VERSION=0.8.1+svn$(MEDIATOMB_SVN_REV)
 MEDIATOMB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mediatomb
 MEDIATOMB_SOURCE=mediatomb-$(MEDIATOMB_VERSION).tar.gz
@@ -44,7 +44,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=2
+MEDIATOMB_IPK_VERSION=1
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -151,7 +151,6 @@ endif
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
-	sed -i -e '/LDFLAGS.*-ljs/s|LDFLAGS="|LDFLAGS="$$LDFLAGS |' $(MEDIATOMB_BUILD_DIR)/mediatomb/configure.ac
 	(cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
