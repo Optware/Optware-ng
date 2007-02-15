@@ -265,7 +265,7 @@ WL500G_BROKEN_PACKAGES = \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
 	 lsof loudmouth \
-	 mc mcabber mdadm mediatomb minicom mod-fastcgi mod-python \
+	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
