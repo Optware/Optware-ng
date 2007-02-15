@@ -13,7 +13,7 @@ Features
    there is no delete provided.
 * Accelerator keys (ALT-key) for CGI interface. See help for underlined keys.
 * Per torrent and cumulative status
-* start/stop/push and other commands available in WWW interface
+* start/stop/push/bypass and other commands available in WWW interface
 * lightweight - low memory footprint
 * tracker scrape info. Suggest best seed torrent from target dir.
 * watchdog for auto restart/queue processing with cron
@@ -48,10 +48,9 @@ there is no possibility to pass cookies to server. Use with care. Proper
 fetch would be "download in browser and then upload to server". 
 This can only be done by browser plugin.
 
-Troubles with tracker communication can be seen in syslog file. There is 
-no association of active thread and reported problem from tracker. User should
-resolve this alone.
-
+Troubles with tracker communication can be seen in syslog file.
+transmission_watchdog moves torrent to Suspended queue if Error: is
+reported by tracker.
 
 Before running transmission user should carefully inspect variables in
 transmission.conf and create SOURCE, WORK, and TARGET directories
@@ -72,6 +71,7 @@ compress
         weekly
         rotate 9
         postrotate
+                /bin/killall -HUP syslogd
         endscript
 }
 
@@ -90,7 +90,6 @@ if [ -n "`pidof syslogd`" ]; then
 fi
 
 /sbin/syslogd -m 0 -O /opt/var/log/messages -S -l 7
-
 
 To disable rate control set upload/download limit to -1 in transmission.conf
 Ratecontrol counts only good transferred packets. Handshaking and other
