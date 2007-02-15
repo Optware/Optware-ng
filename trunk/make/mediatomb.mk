@@ -31,9 +31,12 @@ MEDIATOMB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEDIATOMB_DESCRIPTION=UPnP AV Mediaserver for Linux.
 MEDIATOMB_SECTION=multimedia
 MEDIATOMB_PRIORITY=optional
-MEDIATOMB_DEPENDS=file, id3lib, ossp-js, libexif, sqlite, zlib
+MEDIATOMB_DEPENDS=file, ossp-js, libexif, sqlite, zlib
+ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
+MEDIATOMB_DEPENDS+=, id3lib
+endif
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
-MEDIATOMB_DEPENDS+=libstdc++
+MEDIATOMB_DEPENDS+=, libstdc++
 endif
 MEDIATOMB_SUGGESTS=
 MEDIATOMB_CONFLICTS=
@@ -41,7 +44,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=1
+MEDIATOMB_IPK_VERSION=2
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -58,7 +61,15 @@ MEDIATOMB_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MEDIATOMB_CPPFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+MEDIATOMB_LDFLAGS=-lm
+MEDIATOMB_CONFIG_ARGS=--disable-id3lib --disable-taglib
+else
 MEDIATOMB_LDFLAGS=
+MEDIATOMB_CONFIG_ARGS=--enable-id3lib \
+		--with-id3lib-h=$(STAGING_INCLUDE_DIR) \
+		--with-id3lib-libs=$(STAGING_LIB_DIR)
+endif
 
 #
 # MEDIATOMB_BUILD_DIR is the directory in which the build is done.
@@ -117,13 +128,16 @@ mediatomb-source: $(DL_DIR)/$(MEDIATOMB_SOURCE) $(MEDIATOMB_PATCHES)
 #
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
+#		--with-js-libs=$(STAGING_LIB_DIR) \
 #
 $(MEDIATOMB_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIATOMB_SOURCE) $(MEDIATOMB_PATCHES) make/mediatomb.mk
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) file-stage
+ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
 	$(MAKE) id3lib-stage
+endif
 	$(MAKE) ossp-js-stage
 	$(MAKE) libexif-stage
 	$(MAKE) sqlite-stage
@@ -137,6 +151,7 @@ endif
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
+	sed -i -e '/LDFLAGS.*-ljs/s|LDFLAGS="|LDFLAGS="$$LDFLAGS |' $(MEDIATOMB_BUILD_DIR)/mediatomb/configure.ac
 	(cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -147,7 +162,6 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--enable-id3lib \
 		--enable-libjs \
 		--enable-libexif \
 		--enable-libmagic \
@@ -155,8 +169,7 @@ endif
 		--disable-rpl-malloc \
 		--disable-large-file \
 		--enable-sqlite3 \
-		--with-id3lib-h=$(STAGING_INCLUDE_DIR) \
-		--with-id3lib-libs=$(STAGING_LIB_DIR) \
+		$(MEDIATOMB_CONFIG_ARGS) \
 		--with-js-h=$(STAGING_INCLUDE_DIR)/js \
 		--with-js-libs=$(STAGING_LIB_DIR) \
 		--with-libexif-h=$(STAGING_INCLUDE_DIR) \
