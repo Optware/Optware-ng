@@ -290,7 +290,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 xfixes xft xrender xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
-UCLIBC_SPECIFIC_PACKAGES = $(WL500G_SPECIFIC_PACKAGES) buildroot uclibc-opt ipkg-opt
+UCLIBC_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ buildroot uclibc-opt ipkg-opt
 
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
