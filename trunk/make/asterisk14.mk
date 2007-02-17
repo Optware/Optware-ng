@@ -24,13 +24,16 @@
 ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
+ASTERISK14_BASE_VERSION=1.4.0
+
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
-ASTERISK14_SVN_REV=53528
-ASTERISK14_VERSION=1.4.0svn-r$(ASTERISK14_SVN_REV)
+ASTERISK14_SVN_REV=55097
+ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)svn-r$(ASTERISK14_SVN_REV)
 else
-ASTERISK14_VERSION=1.4.0
+ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)
 endif
+
 ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION).tar.gz
 ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)
 ASTERISK14_UNZIP=zcat
@@ -47,21 +50,18 @@ asterisk14-extra-sounds-en-ulaw,\
 asterisk14-gui,\
 freetds,\
 iksemel,\
+libogg,\
 net-snmp,\
 radiusclient-ng,\
 sqlite2,\
 unixodbc
-ASTERISK14_CONFLICTS=asterisk,asterisk-sounds
+ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
 
 
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_IPK_VERSION=1
-else
-ASTERISK14_IPK_VERSION=13
-endif
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -135,10 +135,7 @@ ASTERISK14_CONFFILES=\
 # ASTERISK14_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(ASTERISK14_SOURCE_TYPE), tarball)
-ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch\
-			$(ASTERISK14_SOURCE_DIR)/gsm.patch
-endif
+#ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch $(ASTERISK14_SOURCE_DIR)/gsm.patch
 
 #
 # If the compilation of the package requires additional
@@ -222,25 +219,6 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
 	fi
-ifeq ($(ASTERISK14_SOURCE_TYPE), tarball)
-	(cd $(ASTERISK14_BUILD_DIR)/menuselect; \
-		./configure \
-	)
-	(cd $(ASTERISK14_BUILD_DIR)/main/editline; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK14_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK14_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
-		--disable-static \
-		--localstatedir=/opt/var \
-		--sysconfdir=/opt/etc \
-	)
-endif
 	(cd $(ASTERISK14_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK14_CPPFLAGS)" \
@@ -272,7 +250,7 @@ endif
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
-	sed -i -e '/GSM_.*+=.*k6opt/s|^|#|' $(ASTERISK14_BUILD_DIR)/codecs/gsm/Makefile
+	#sed -i -e '/GSM_.*+=.*k6opt/s|^|#|' $(ASTERISK14_BUILD_DIR)/codecs/gsm/Makefile
 	touch $(ASTERISK14_BUILD_DIR)/.configured
 
 asterisk14-unpack: $(ASTERISK14_BUILD_DIR)/.configured
