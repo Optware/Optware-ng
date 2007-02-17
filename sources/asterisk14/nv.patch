@@ -27,8 +27,10 @@ diff -Naur asterisk-1.4.0/apps/app_nv_backgrounddetect.c asterisk-1.4.0-nv/apps/
 + * the GNU General Public License
 + */
 + 
-+#include <asterisk/lock.h>
 +#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <asterisk/lock.h>
 +#include <asterisk/file.h>
 +#include <asterisk/logger.h>
 +#include <asterisk/channel.h>
@@ -37,8 +39,6 @@ diff -Naur asterisk-1.4.0/apps/app_nv_backgrounddetect.c asterisk-1.4.0-nv/apps/
 +#include <asterisk/translate.h>
 +#include <asterisk/utils.h>
 +#include <asterisk/dsp.h>
-+#include <string.h>
-+#include <stdlib.h>
 +
 +static char *app = "NVBackgroundDetect";
 +
@@ -360,8 +360,10 @@ diff -Naur asterisk-1.4.0/apps/app_nv_faxdetect.c asterisk-1.4.0-nv/apps/app_nv_
 + * the GNU General Public License
 + */
 + 
-+#include <asterisk/lock.h>
 +#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <asterisk/lock.h>
 +#include <asterisk/file.h>
 +#include <asterisk/logger.h>
 +#include <asterisk/channel.h>
@@ -370,8 +372,6 @@ diff -Naur asterisk-1.4.0/apps/app_nv_faxdetect.c asterisk-1.4.0-nv/apps/app_nv_
 +#include <asterisk/translate.h>
 +#include <asterisk/dsp.h>
 +#include <asterisk/utils.h>
-+#include <string.h>
-+#include <stdlib.h>
 +
 +
 +static char *app = "NVFaxDetect";
@@ -684,8 +684,10 @@ diff -Naur asterisk-1.4.0/apps/app_nv_faxemail.c asterisk-1.4.0-nv/apps/app_nv_f
 + */
 + 
 +#include <errno.h>
-+#include <asterisk/lock.h>
 +#include <stdio.h>
++#include <string.h>
++#include <stdlib.h>
++#include <asterisk/lock.h>
 +#include <asterisk/file.h>
 +#include <asterisk/logger.h>
 +#include <asterisk/channel.h>
@@ -698,8 +700,6 @@ diff -Naur asterisk-1.4.0/apps/app_nv_faxemail.c asterisk-1.4.0-nv/apps/app_nv_f
 +//#include <asterisk/config_old.h>
 +#include <asterisk/app.h>
 +#include <asterisk/localtime.h>
-+#include <string.h>
-+#include <stdlib.h>
 +
 +#define VOICEMAIL_CONFIG "voicemail.conf"
 +#define SENDMAIL "/usr/sbin/sendmail -t"
