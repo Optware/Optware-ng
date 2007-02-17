@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 TFTP_HPA_SITE=http://www.kernel.org/pub/software/network/tftp
-TFTP_HPA_VERSION=0.45
+TFTP_HPA_VERSION=0.48
 TFTP_HPA_SOURCE=tftp-hpa-$(TFTP_HPA_VERSION).tar.bz2
 TFTP_HPA_DIR=tftp-hpa-$(TFTP_HPA_VERSION)
 TFTP_HPA_UNZIP=bzcat
