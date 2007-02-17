@@ -175,7 +175,7 @@ ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 		rm -rf $(ASTERISK14_DIR) && \
 		svn co -r $(ASTERISK14_SVN_REV) $(ASTERISK14_SVN) \
 			$(ASTERISK14_DIR) && \
-		tar -czf $@ $(ASTERISK14_DIR) && \
+		tar -czf $@ --exclude=.svn $(ASTERISK14_DIR) && \
 		rm -rf $(ASTERISK14_DIR) \
 	)
 else
