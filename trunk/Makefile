@@ -42,7 +42,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # doxygen - host binary, not stripped
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
-PACKAGES_THAT_NEED_TO_BE_FIXED = scponly gkrellm parted lumikki mini_httpd \
+PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
 	libextractor \
@@ -270,7 +270,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
-	 sablevm sdl ser sm snownews sqsh swi-prolog \
+	 sablevm scponly sdl ser sm snownews sqsh swi-prolog \
 	 taglib tcsh tethereal tnftpd transcode unrar vlc vte \
 	 w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
