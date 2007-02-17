@@ -3,27 +3,21 @@
 # scponly
 #
 ###########################################################
-
-# You must replace "scponly" and "SCPONLY" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
-# SCPONLY_VERSION, SCPONLY_SITE and SCPONLY_SOURCE define
-# the upstream location of the source code for the package.
-# SCPONLY_DIR is the directory which is created when the source
-# archive is unpacked.
-# SCPONLY_UNZIP is the command used to unzip the source.
-# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
+# $Id$
 #
-# You should change all these variables to suit your package.
-#
-SCPONLY_SITE=http://www.sublimation.org/scponly
-SCPONLY_VERSION=3.11
+SCPONLY_SITE=http://sublimation.org/scponly
+SCPONLY_VERSION=4.6
 SCPONLY_SOURCE=scponly-$(SCPONLY_VERSION).tgz
 SCPONLY_DIR=scponly-$(SCPONLY_VERSION)
 SCPONLY_UNZIP=zcat
+SCPONLY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+SCPONLY_DESCRIPTION=A shell for users with scp/sftp only access
+SCPONLY_SECTION=shell
+SCPONLY_PRIORITY=optional
+SCPONLY_DEPENDS=
+SCPONLY_SUGGESTS=
+SCPONLY_CONFLICTS=
 
 #
 # SCPONLY_IPK_VERSION should be incremented when the ipk changes.
@@ -31,10 +25,14 @@ SCPONLY_UNZIP=zcat
 SCPONLY_IPK_VERSION=1
 
 #
+# SCPONLY_CONFFILES should be a list of user-editable files
+# SCPONLY_CONFFILES=/opt/etc/scponly.conf /opt/etc/init.d/SXXscponly
+
+#
 # SCPONLY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SCPONLY_PATCHES=
+# SCPONLY_PATCHES=$(SCPONLY_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -57,12 +55,15 @@ SCPONLY_SOURCE_DIR=$(SOURCE_DIR)/scponly
 SCPONLY_IPK_DIR=$(BUILD_DIR)/scponly-$(SCPONLY_VERSION)-ipk
 SCPONLY_IPK=$(BUILD_DIR)/scponly_$(SCPONLY_VERSION)-$(SCPONLY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: scponly-source scponly-unpack scponly scponly-stage scponly-ipk scponly-clean scponly-dirclean scponly-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SCPONLY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SCPONLY_SITE)/$(SCPONLY_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SCPONLY_SITE)/$(SCPONLY_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SCPONLY_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -86,10 +87,24 @@ scponly-source: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES) make/scponly.mk
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR)
 	$(SCPONLY_UNZIP) $(DL_DIR)/$(SCPONLY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR)
+	if test -n "$(SCPONLY_PATCHES)" ; \
+		then cat $(SCPONLY_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(SCPONLY_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(SCPONLY_DIR)" != "$(SCPONLY_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR) ; \
+	fi
+#
+# Rsync isn't working yet!
+#		--enable-rsync-compat \
+#
 	(cd $(SCPONLY_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCPONLY_CPPFLAGS)" \
@@ -99,24 +114,60 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+		--enable-winscp-compat \
+		--enable-sftp-logging-compat \
+		--enable-scp-compat \
+		--enable-chrooted-binary \
+		-with-sftp-server=/opt/libexec/sftp-server \
 	)
-	touch $(SCPONLY_BUILD_DIR)/.configured
+	# $(PATCH_LIBTOOL) $(SCPONLY_BUILD_DIR)/libtool
+	touch $@
 
 scponly-unpack: $(SCPONLY_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(SCPONLY_BUILD_DIR)/scponly: $(SCPONLY_BUILD_DIR)/.configured
-	$(MAKE) -C $(SCPONLY_BUILD_DIR) PROG_SCP="/opt/bin/scp"
+$(SCPONLY_BUILD_DIR)/.built: $(SCPONLY_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(SCPONLY_BUILD_DIR)
+	touch $@
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
-scponly: $(SCPONLY_BUILD_DIR)/scponly
+scponly: $(SCPONLY_BUILD_DIR)/.built
 
+#
+# If you are building a library, then you need to stage it too.
+#
+$(SCPONLY_BUILD_DIR)/.staged: $(SCPONLY_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(SCPONLY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
+
+scponly-stage: $(SCPONLY_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/scponly
+#
+$(SCPONLY_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: scponly" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(SCPONLY_PRIORITY)" >>$@
+	@echo "Section: $(SCPONLY_SECTION)" >>$@
+	@echo "Version: $(SCPONLY_VERSION)-$(SCPONLY_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(SCPONLY_MAINTAINER)" >>$@
+	@echo "Source: $(SCPONLY_SITE)/$(SCPONLY_SOURCE)" >>$@
+	@echo "Description: $(SCPONLY_DESCRIPTION)" >>$@
+	@echo "Depends: $(SCPONLY_DEPENDS)" >>$@
+	@echo "Suggests: $(SCPONLY_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SCPONLY_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -130,13 +181,22 @@ scponly: $(SCPONLY_BUILD_DIR)/scponly
 #
 # You may need to patch your application to make it use these locations.
 #
-$(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/scponly
-	rm -rf $(SCPONLY_IPK_DIR) $(SCPONLY_IPK)
-	install -d $(SCPONLY_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(SCPONLY_BUILD_DIR)/scponly -o $(SCPONLY_IPK_DIR)/opt/bin/scponly
-	$(STRIP_COMMAND) $(SCPONLY_BUILD_DIR)/groups -o $(SCPONLY_IPK_DIR)/opt/bin/groups
-	install -d $(SCPONLY_IPK_DIR)/CONTROL
-	install -m 644 $(SCPONLY_SOURCE_DIR)/control $(SCPONLY_IPK_DIR)/CONTROL/control
+$(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/.built
+	rm -rf $(SCPONLY_IPK_DIR) $(BUILD_DIR)/scponly_*_$(TARGET_ARCH).ipk
+	sed -i '/INSTALL/s/ -o 0 -g 0 / /' $(SCPONLY_BUILD_DIR)/Makefile
+	$(MAKE) -C $(SCPONLY_BUILD_DIR) DESTDIR=$(SCPONLY_IPK_DIR) install
+	$(STRIP_COMMAND) $(SCPONLY_IPK_DIR)/opt/*bin/*
+	install -d $(SCPONLY_IPK_DIR)/opt/etc/
+#	install -m 644 $(SCPONLY_SOURCE_DIR)/scponly.conf $(SCPONLY_IPK_DIR)/opt/etc/scponly.conf
+#	install -d $(SCPONLY_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
+	$(MAKE) $(SCPONLY_IPK_DIR)/CONTROL/control
+#	install -m 755 $(SCPONLY_SOURCE_DIR)/postinst $(SCPONLY_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(SCPONLY_SOURCE_DIR)/prerm $(SCPONLY_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/prerm
+	echo $(SCPONLY_CONFFILES) | sed -e 's/ /\n/g' > $(SCPONLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCPONLY_IPK_DIR)
 
 #
@@ -148,6 +208,7 @@ scponly-ipk: $(SCPONLY_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 scponly-clean:
+	rm -f $(SCPONLY_BUILD_DIR)/.built
 	-$(MAKE) -C $(SCPONLY_BUILD_DIR) clean
 
 #
@@ -156,3 +217,9 @@ scponly-clean:
 #
 scponly-dirclean:
 	rm -rf $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR) $(SCPONLY_IPK_DIR) $(SCPONLY_IPK)
+#
+#
+# Some sanity check for the package.
+#
+scponly-check: $(SCPONLY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCPONLY_IPK)
