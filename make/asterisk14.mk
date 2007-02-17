@@ -28,7 +28,7 @@ ASTERISK14_BASE_VERSION=1.4.0
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
-ASTERISK14_SVN_REV=55097
+ASTERISK14_SVN_REV=55196
 ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)svn-r$(ASTERISK14_SVN_REV)
 else
 ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)
@@ -136,6 +136,7 @@ ASTERISK14_CONFFILES=\
 # which they should be applied to the source code.
 #
 #ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch $(ASTERISK14_SOURCE_DIR)/gsm.patch
+ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch
 
 #
 # If the compilation of the package requires additional
@@ -361,7 +362,6 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	done
 	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/sbin/aelparse \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/asterisk \
-			$(ASTERISK14_IPK_DIR)/opt/sbin/check_expr \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/muted \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/smsq \
 			$(ASTERISK14_IPK_DIR)/opt/sbin/stereorize \
