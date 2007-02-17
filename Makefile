@@ -30,7 +30,6 @@ HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	scponly
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -201,9 +200,11 @@ COMMON_CROSS_PACKAGES = \
 	radiusclient-ng rc rcs rdate readline recode recordext \
 	renderext rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
-	sablevm samba samba2 sane-backends scons sdl sendmail ser setserial \
-	setpwc simh siproxd sm snownews \
-	scsi-idle screen sdparm sed smartmontools socat speex sqlite sqlite2 \
+	sablevm samba samba2 sane-backends \
+	scons scponly screen scsi-idle sdl sdparm \
+	sed sendmail ser setserial setpwc \
+	simh siproxd sm smartmontools snownews \
+	socat speex sqlite sqlite2 \
 	sqsh squeak squid srelay strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat \
 	taged taglib tcl tcpwrappers tethereal tftp-hpa \
