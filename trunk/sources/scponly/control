@@ -1,9 +1,0 @@
-Package: scponly
-Version: 3.11-1
-Architecture: armeb
-Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: http://www.sublimation.org/scponly/scponly-3.11.tgz
-Section: Shell
-Priority: optional
-Depends:
-Description: A shell for users that you want to only be able to scp.
