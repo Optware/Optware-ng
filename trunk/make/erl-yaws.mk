@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.66
+ERL-YAWS_VERSION=1.68
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
@@ -36,7 +36,7 @@ ERL-YAWS_CONFLICTS=
 #
 # ERL-YAWS_IPK_VERSION should be incremented when the ipk changes.
 #
-ERL-YAWS_IPK_VERSION=2
+ERL-YAWS_IPK_VERSION=1
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
@@ -117,6 +117,7 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 	fi
 	(cd $(ERL-YAWS_BUILD_DIR); \
 		sed -i -e '/LD_SHARED.*ld -shared/s|ld -shared|$(TARGET_LD) -shared|' \
+		       -e '/LD_SHARED.*gcc -shared/s|gcc -shared|$(TARGET_CC) -shared|' \
 		       -e 's|-I/usr/include/security||' \
 			configure; \
 		$(TARGET_CONFIGURE_OPTS) \
