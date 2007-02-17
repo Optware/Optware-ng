@@ -1,0 +1,1171 @@
+diff -Naur asterisk-1.4.0/apps/app_nv_backgrounddetect.c asterisk-1.4.0-nv/apps/app_nv_backgrounddetect.c
+--- asterisk-1.4.0/apps/app_nv_backgrounddetect.c	1969-12-31 19:00:00.000000000 -0500
++++ asterisk-1.4.0-nv/apps/app_nv_backgrounddetect.c	2007-01-15 04:24:38.000000000 -0500
+@@ -0,0 +1,329 @@
++/*
++ * Asterisk -- A telephony toolkit for Linux.
++ *
++ * Playback a file with audio detect
++ * 
++ * Copyright (C) 2004-2005, Newman Telecom, Inc. and Newman Ventures, Inc.
++ *
++ * Justin Newman <jnewman@newmantelecom.com>
++ *
++ * We would like to thank Newman Ventures, Inc. for funding this
++ * Asterisk project.
++ *
++ * Newman Ventures <info@newmanventures.com>
++ *
++ * Portions Copyright:
++ * Copyright (C) 2001, Linux Support Services, Inc.
++ * Copyright (C) 2004, Digium, Inc.
++ *
++ * Matthew Fredrickson <creslin@linux-support.net>
++ * Mark Spencer <markster@digium.com>
++ *
++ * This program is free software, distributed under the terms of
++ * the GNU General Public License
++ */
++ 
++#include <asterisk/lock.h>
++#include <stdio.h>
++#include <asterisk/file.h>
++#include <asterisk/logger.h>
++#include <asterisk/channel.h>
++#include <asterisk/pbx.h>
++#include <asterisk/module.h>
++#include <asterisk/translate.h>
++#include <asterisk/utils.h>
++#include <asterisk/dsp.h>
++#include <string.h>
++#include <stdlib.h>
++
++static char *app = "NVBackgroundDetect";
++
++static char *synopsis = "Background a file with talk and fax detect (IAX and SIP too)";
++
++static char *descrip = 
++"  NVBackgroundDetect(filename[|options[|sildur[|mindur|[maxdur]]]]):\n"
++"Plays filename, waiting for interruption from fax tones (on IAX and SIP too),\n"
++"a digit, or non-silence. Audio is monitored in the receive direction. If\n"
++"digits interrupt, they must be the start of a valid extension unless the\n"
++"option is included to ignore. If fax is detected, it will jump to the\n"
++"'fax' extension. If a period of non-silence is greater than 'mindur' ms,\n"
++"yet less than 'maxdur' ms is followed by silence at least 'sildur' ms\n"
++"then the app is aborted and processing jumps to the 'talk' extension.\n"
++"If all undetected, control will continue at the next priority.\n"
++"      options:\n"
++"        'n':  Attempt on-hook if unanswered (default=no)\n"
++"        'x':  DTMF digits terminate without extension (default=no)\n"
++"        'd':  Ignore DTMF digit detection (default=no)\n"
++"        'f':  Ignore fax detection (default=no)\n"
++"        't':  Ignore talk detection (default=no)\n"
++"      sildur:  Silence ms after mindur/maxdur before aborting (default=1000)\n"
++"      mindur:  Minimum non-silence ms needed (default=100)\n"
++"      maxdur:  Maximum non-silence ms allowed (default=0/forever)\n"
++"Returns -1 on hangup, and 0 on successful completion with no exit conditions.\n\n"
++"For questions or comments, please e-mail support@newmantelecom.com.\n";
++
++// Use the second one for recent Asterisk releases
++#define CALLERID_FIELD cid.cid_num
++//#define CALLERID_FIELD callerid
++
++
++static int nv_background_detect_exec(struct ast_channel *chan, void *data)
++{
++	int res = 0;
++	struct ast_module_user *u;
++	char tmp[256] = "\0";
++	char *p = NULL;
++	char *filename = NULL;
++	char *options = NULL;
++	char *silstr = NULL;
++	char *minstr = NULL;
++	char *maxstr = NULL;
++	struct ast_frame *fr = NULL;
++	struct ast_frame *fr2 = NULL;
++	int notsilent = 0;
++	struct timeval start = {0, 0}, end = {0, 0};
++	int sildur = 1000;
++	int mindur = 100;
++	int maxdur = -1;
++	int skipanswer = 0;
++	int noextneeded = 0;
++	int ignoredtmf = 0;
++	int ignorefax = 0;
++	int ignoretalk = 0;
++	int x = 0;
++	int origrformat = 0;
++	int features = 0;
++	struct ast_dsp *dsp = NULL;
++	
++	pbx_builtin_setvar_helper(chan, "FAX_DETECTED", "");
++	pbx_builtin_setvar_helper(chan, "FAXEXTEN", "");
++	pbx_builtin_setvar_helper(chan, "DTMF_DETECTED", "");
++	pbx_builtin_setvar_helper(chan, "TALK_DETECTED", "");
++	
++	if (!data || ast_strlen_zero((char *)data)) {
++		ast_log(LOG_WARNING, "NVBackgroundDetect requires an argument (filename)\n");
++		return -1;
++	}	
++	
++	strncpy(tmp, (char *)data, sizeof(tmp)-1);
++	p = tmp;
++	
++	filename = strsep(&p, "|");
++	options = strsep(&p, "|");
++	silstr = strsep(&p, "|");
++	minstr = strsep(&p, "|");	
++	maxstr = strsep(&p, "|");	
++	
++	if (options) {
++		if (strchr(options, 'n'))
++			skipanswer = 1;
++		if (strchr(options, 'x'))
++			noextneeded = 1;
++		if (strchr(options, 'd'))
++			ignoredtmf = 1;
++		if (strchr(options, 'f'))
++			ignorefax = 1;
++		if (strchr(options, 't'))
++			ignoretalk = 1;
++	}
++	
++	if (silstr) {
++		if ((sscanf(silstr, "%d", &x) == 1) && (x > 0))
++			sildur = x;
++	}
++	
++	if (minstr) {
++		if ((sscanf(minstr, "%d", &x) == 1) && (x > 0))
++			mindur = x;
++	}
++	
++	if (maxstr) {
++		if ((sscanf(maxstr, "%d", &x) == 1) && (x > 0))
++			maxdur = x;
++	}
++	
++	ast_log(LOG_DEBUG, "Preparing detect of '%s' (sildur=%dms, mindur=%dms, maxdur=%dms)\n", 
++						tmp, sildur, mindur, maxdur);
++						
++	u = ast_module_user_add(chan);
++	if (chan->_state != AST_STATE_UP && !skipanswer) {
++		/* Otherwise answer unless we're supposed to send this while on-hook */
++		res = ast_answer(chan);
++	}
++	if (!res) {
++		origrformat = chan->readformat;
++		if ((res = ast_set_read_format(chan, AST_FORMAT_SLINEAR))) 
++			ast_log(LOG_WARNING, "Unable to set read format to linear!\n");
++	}
++	if (!(dsp = ast_dsp_new())) {
++		ast_log(LOG_WARNING, "Unable to allocate DSP!\n");
++		res = -1;
++	}
++
++	if (dsp) {	
++		if (!ignoretalk)
++			; /* features |= DSP_FEATURE_SILENCE_SUPPRESS; */
++		if (!ignorefax)
++			features |= DSP_FEATURE_FAX_DETECT;
++		//if (!ignoredtmf)
++			features |= DSP_FEATURE_DTMF_DETECT;
++			
++		ast_dsp_set_threshold(dsp, 256);
++		ast_dsp_set_features(dsp, features | DSP_DIGITMODE_RELAXDTMF);
++		ast_dsp_digitmode(dsp, DSP_DIGITMODE_DTMF);
++	}
++	
++	if (!res) {
++		ast_stopstream(chan);
++		res = ast_streamfile(chan, tmp, chan->language);
++		if (!res) {
++			while(chan->stream) {
++				res = ast_sched_wait(chan->sched);
++				if ((res < 0) && !chan->timingfunc) {
++					res = 0;
++					break;
++				}
++				if (res < 0)
++					res = 1000;
++				res = ast_waitfor(chan, res);
++				if (res < 0) {
++					ast_log(LOG_WARNING, "Waitfor failed on %s\n", chan->name);
++					break;
++				} else if (res > 0) {
++					fr = ast_read(chan);
++					if (!fr) {
++						ast_log(LOG_DEBUG, "Got hangup\n");
++						res = -1;
++						break;
++					}
++					
++					fr2 = ast_dsp_process(chan, dsp, fr);
++					if (!fr2) {
++						ast_log(LOG_WARNING, "Bad DSP received (what happened?)\n");
++						fr2 = fr;
++					} 
++					
++					if (fr2->frametype == AST_FRAME_DTMF) {
++						if (fr2->subclass == 'f' && !ignorefax) {
++							/* Fax tone -- Handle and return NULL */
++							ast_log(LOG_DEBUG, "Fax detected on %s\n", chan->name);
++							if (strcmp(chan->exten, "fax")) {
++								ast_log(LOG_NOTICE, "Redirecting %s to fax extension\n", chan->name);
++								pbx_builtin_setvar_helper(chan, "FAX_DETECTED", "1");
++								pbx_builtin_setvar_helper(chan,"FAXEXTEN",chan->exten);								
++								if (ast_exists_extension(chan, chan->context, "fax", 1, chan->CALLERID_FIELD)) {
++									/* Save the DID/DNIS when we transfer the fax call to a "fax" extension */
++									strncpy(chan->exten, "fax", sizeof(chan->exten)-1);
++									chan->priority = 0;									
++								} else
++									ast_log(LOG_WARNING, "Fax detected, but no fax extension\n");
++							} else
++								ast_log(LOG_WARNING, "Already in a fax extension, not redirecting\n");
++
++							res = 0;
++							ast_frfree(fr);
++							break;
++						} else if (!ignoredtmf) {
++							ast_log(LOG_DEBUG, "DTMF detected on %s\n", chan->name);
++							char t[2];
++							t[0] = fr2->subclass;
++							t[1] = '\0';
++							if (noextneeded || ast_canmatch_extension(chan, chan->context, t, 1, chan->CALLERID_FIELD)) {
++								pbx_builtin_setvar_helper(chan, "DTMF_DETECTED", "1");
++								/* They entered a valid extension, or might be anyhow */
++								if (noextneeded) {
++									ast_log(LOG_NOTICE, "DTMF received (not matching to exten)\n");
++									res = 0;
++								} else {
++									ast_log(LOG_NOTICE, "DTMF received (matching to exten)\n");
++									res = fr2->subclass;
++								}
++								ast_frfree(fr);
++								break;
++							} else
++								ast_log(LOG_DEBUG, "Valid extension requested and DTMF did not match\n");
++						}
++					} else if ((fr->frametype == AST_FRAME_VOICE) && (fr->subclass == AST_FORMAT_SLINEAR) && !ignoretalk) {
++						int totalsilence;
++						int ms;
++						res = ast_dsp_silence(dsp, fr, &totalsilence);
++						if (res && (totalsilence > sildur)) {
++							/* We've been quiet a little while */
++							if (notsilent) {
++								/* We had heard some talking */
++								gettimeofday(&end, NULL);
++								ms = (end.tv_sec - start.tv_sec) * 1000;
++								ms += (end.tv_usec - start.tv_usec) / 1000;
++								ms -= sildur;
++								if (ms < 0)
++									ms = 0;
++								if ((ms > mindur) && ((maxdur < 0) || (ms < maxdur))) {
++									char ms_str[10];
++									ast_log(LOG_DEBUG, "Found qualified token of %d ms\n", ms);
++									ast_log(LOG_NOTICE, "Redirecting %s to talk extension\n", chan->name);
++
++									/* Save detected talk time (in milliseconds) */ 
++									sprintf(ms_str, "%d", ms);	
++									pbx_builtin_setvar_helper(chan, "TALK_DETECTED", ms_str);
++									
++									if (ast_exists_extension(chan, chan->context, "talk", 1, chan->CALLERID_FIELD)) {
++										strncpy(chan->exten, "talk", sizeof(chan->exten) - 1);
++										chan->priority = 0;
++									} else
++										ast_log(LOG_WARNING, "Talk detected, but no talk extension\n");
++									res = 0;
++									ast_frfree(fr);
++									break;
++								} else
++									ast_log(LOG_DEBUG, "Found unqualified token of %d ms\n", ms);
++								notsilent = 0;
++							}
++						} else {
++							if (!notsilent) {
++								/* Heard some audio, mark the begining of the token */
++								gettimeofday(&start, NULL);
++								ast_log(LOG_DEBUG, "Start of voice token!\n");
++								notsilent = 1;
++							}
++						}						
++					}
++					ast_frfree(fr);
++				}
++				ast_sched_runq(chan->sched);
++			}
++			ast_stopstream(chan);
++		} else {
++			ast_log(LOG_WARNING, "ast_streamfile failed on %s for %s\n", chan->name, (char *)data);
++			res = 0;
++		}
++	} else
++		ast_log(LOG_WARNING, "Could not answer channel '%s'\n", chan->name);
++	
++	if (res > -1) {
++		if (origrformat && ast_set_read_format(chan, origrformat)) {
++			ast_log(LOG_WARNING, "Failed to restore read format for %s to %s\n", 
++				chan->name, ast_getformatname(origrformat));
++		}
++	}
++	
++	if (dsp)
++		ast_dsp_free(dsp);
++	
++	ast_module_user_remove(u);
++	 
++	
++	return res;
++}
++
++static int unload_module(void)
++{
++	ast_module_user_hangup_all();
++	
++	return ast_unregister_application(app);
++}
++
++static int load_module(void)
++{
++	return ast_register_application(app, nv_background_detect_exec, synopsis, descrip);
++}
++AST_MODULE_INFO_STANDARD(ASTERISK_GPL_KEY, "Newman's playback with talk and fax detection");
+diff -Naur asterisk-1.4.0/apps/app_nv_faxdetect.c asterisk-1.4.0-nv/apps/app_nv_faxdetect.c
+--- asterisk-1.4.0/apps/app_nv_faxdetect.c	1969-12-31 19:00:00.000000000 -0500
++++ asterisk-1.4.0-nv/apps/app_nv_faxdetect.c	2007-01-15 04:12:36.000000000 -0500
+@@ -0,0 +1,321 @@
++/*
++ * Asterisk -- A telephony toolkit for Linux.
++ *
++ * Fax detection application for all channel types.
++ * 
++ * Copyright (C) 2004-2005, Newman Telecom, Inc. and Newman Ventures, Inc.
++ *
++ * Justin Newman <jnewman@newmantelecom.com>
++ *
++ * We would like to thank Newman Ventures, Inc. for funding this
++ * Asterisk project.
++ *
++ * Newman Ventures <info@newmanventures.com>
++ *
++ * Portions Copyright:
++ * Copyright (C) 2001, Linux Support Services, Inc.
++ * Copyright (C) 2004, Digium, Inc.
++ *
++ * Matthew Fredrickson <creslin@linux-support.net>
++ * Mark Spencer <markster@digium.com>
++ *
++ * This program is free software, distributed under the terms of
++ * the GNU General Public License
++ */
++ 
++#include <asterisk/lock.h>
++#include <stdio.h>
++#include <asterisk/file.h>
++#include <asterisk/logger.h>
++#include <asterisk/channel.h>
++#include <asterisk/pbx.h>
++#include <asterisk/module.h>
++#include <asterisk/translate.h>
++#include <asterisk/dsp.h>
++#include <asterisk/utils.h>
++#include <string.h>
++#include <stdlib.h>
++
++
++static char *app = "NVFaxDetect";
++
++static char *synopsis = "Detects fax sounds on all channel types (IAX and SIP too)";
++
++static char *descrip = 
++"  NVFaxDetect([waitdur[|options[|sildur[|mindur[|maxdur]]]]]):\n"
++"This application listens for fax tones (on IAX and SIP channels too)\n"
++"for waitdur seconds of time. In addition, it can be interrupted by digits,\n"
++"or non-silence. Audio is only monitored in the receive direction. If\n"
++"digits interrupt, they must be the start of a valid extension unless the\n"
++"option is included to ignore. If fax is detected, it will jump to the\n"
++"'fax' extension. If a period of non-silence greater than 'mindur' ms,\n"
++"yet less than 'maxdur' ms is followed by silence at least 'sildur' ms\n"
++"then the app is aborted and processing jumps to the 'talk' extension.\n"
++"If all undetected, control will continue at the next priority.\n"
++"      waitdur:  Maximum number of seconds to wait (default=4)\n"
++"      options:\n"
++"        'n':  Attempt on-hook if unanswered (default=no)\n"
++"        'x':  DTMF digits terminate without extension (default=no)\n"
++"        'd':  Ignore DTMF digit detection (default=no)\n"
++"        'f':  Ignore fax detection (default=no)\n"
++"        't':  Ignore talk detection (default=no)\n"
++"      sildur:  Silence ms after mindur/maxdur before aborting (default=1000)\n"
++"      mindur:  Minimum non-silence ms needed (default=100)\n"
++"      maxdur:  Maximum non-silence ms allowed (default=0/forever)\n"
++"Returns -1 on hangup, and 0 on successful completion with no exit conditions.\n\n"
++"For questions or comments, please e-mail support@newmantelecom.com.\n";
++
++// Use the second one for recent Asterisk releases
++#define CALLERID_FIELD cid.cid_num
++//#define CALLERID_FIELD callerid
++
++
++static int nv_detectfax_exec(struct ast_channel *chan, void *data)
++{
++	int res = 0;
++	struct ast_module_user *u;
++	char tmp[256] = "\0";
++	char *p = NULL;
++	char *waitstr = NULL;
++	char *options = NULL;
++	char *silstr = NULL;
++	char *minstr = NULL;
++	char *maxstr = NULL;
++	struct ast_frame *fr = NULL;
++	struct ast_frame *fr2 = NULL;
++	int notsilent = 0;
++	struct timeval start = {0, 0}, end = {0, 0};
++	int waitdur = 4;
++	int sildur = 1000;
++	int mindur = 100;
++	int maxdur = -1;
++	int skipanswer = 0;
++	int noextneeded = 0;
++	int ignoredtmf = 0;
++	int ignorefax = 0;
++	int ignoretalk = 0;
++	int x = 0;
++	int origrformat = 0;
++	int features = 0;
++	time_t timeout = 0;
++	struct ast_dsp *dsp = NULL;
++	
++	pbx_builtin_setvar_helper(chan, "FAX_DETECTED", "");
++	pbx_builtin_setvar_helper(chan, "FAXEXTEN", "");
++	pbx_builtin_setvar_helper(chan, "DTMF_DETECTED", "");
++	pbx_builtin_setvar_helper(chan, "TALK_DETECTED", "");
++	
++	if (data || !ast_strlen_zero((char *)data)) {
++		strncpy(tmp, (char *)data, sizeof(tmp)-1);
++	}	
++	
++	p = tmp;
++	
++	waitstr = strsep(&p, "|");
++	options = strsep(&p, "|");
++	silstr = strsep(&p, "|");
++	minstr = strsep(&p, "|");	
++	maxstr = strsep(&p, "|");	
++	
++	if (waitstr) {
++		if ((sscanf(waitstr, "%d", &x) == 1) && (x > 0))
++			waitdur = x;
++	}
++	
++	if (options) {
++		if (strchr(options, 'n'))
++			skipanswer = 1;
++		if (strchr(options, 'x'))
++			noextneeded = 1;
++		if (strchr(options, 'd'))
++			ignoredtmf = 1;
++		if (strchr(options, 'f'))
++			ignorefax = 1;
++		if (strchr(options, 't'))
++			ignoretalk = 1;
++	}
++	
++	if (silstr) {
++		if ((sscanf(silstr, "%d", &x) == 1) && (x > 0))
++			sildur = x;
++	}
++	
++	if (minstr) {
++		if ((sscanf(minstr, "%d", &x) == 1) && (x > 0))
++			mindur = x;
++	}
++	
++	if (maxstr) {
++		if ((sscanf(maxstr, "%d", &x) == 1) && (x > 0))
++			maxdur = x;
++	}
++	
++	ast_log(LOG_DEBUG, "Preparing detect of fax (waitdur=%dms, sildur=%dms, mindur=%dms, maxdur=%dms)\n", 
++						waitdur, sildur, mindur, maxdur);
++						
++	u = ast_module_user_add(chan);
++	if (chan->_state != AST_STATE_UP && !skipanswer) {
++		/* Otherwise answer unless we're supposed to send this while on-hook */
++		res = ast_answer(chan);
++	}
++	if (!res) {
++		origrformat = chan->readformat;
++		if ((res = ast_set_read_format(chan, AST_FORMAT_SLINEAR))) 
++			ast_log(LOG_WARNING, "Unable to set read format to linear!\n");
++	}
++	if (!(dsp = ast_dsp_new())) {
++		ast_log(LOG_WARNING, "Unable to allocate DSP!\n");
++		res = -1;
++	}
++	
++	if (dsp) {	
++		if (!ignoretalk)
++			; /* features |= DSP_FEATURE_SILENCE_SUPPRESS; */
++		if (!ignorefax)
++			features |= DSP_FEATURE_FAX_DETECT;
++		//if (!ignoredtmf)
++			features |= DSP_FEATURE_DTMF_DETECT;
++			
++		ast_dsp_set_threshold(dsp, 256); 
++		ast_dsp_set_features(dsp, features | DSP_DIGITMODE_RELAXDTMF);
++		ast_dsp_digitmode(dsp, DSP_DIGITMODE_DTMF);
++	}
++
++	if (!res) {
++		if (waitdur > 0)
++			timeout = time(NULL) + (time_t)waitdur;
++
++		while(ast_waitfor(chan, -1) > -1) {
++			if (waitdur > 0 && time(NULL) > timeout) {
++				res = 0;
++				break;
++			}
++
++			fr = ast_read(chan);
++			if (!fr) {
++				ast_log(LOG_DEBUG, "Got hangup\n");
++				res = -1;
++				break;
++			}
++
++			fr2 = ast_dsp_process(chan, dsp, fr);
++			if (!fr2) {
++				ast_log(LOG_WARNING, "Bad DSP received (what happened?)\n");
++				fr2 = fr;
++			} 
++
++			if (fr2->frametype == AST_FRAME_DTMF) {
++				if (fr2->subclass == 'f' && !ignorefax) {
++					/* Fax tone -- Handle and return NULL */
++					ast_log(LOG_DEBUG, "Fax detected on %s\n", chan->name);
++					if (strcmp(chan->exten, "fax")) {
++						ast_log(LOG_NOTICE, "Redirecting %s to fax extension\n", chan->name);
++						pbx_builtin_setvar_helper(chan, "FAX_DETECTED", "1");
++						pbx_builtin_setvar_helper(chan,"FAXEXTEN",chan->exten);								
++						if (ast_exists_extension(chan, chan->context, "fax", 1, chan->CALLERID_FIELD)) {
++							/* Save the DID/DNIS when we transfer the fax call to a "fax" extension */
++							strncpy(chan->exten, "fax", sizeof(chan->exten)-1);
++							chan->priority = 0;									
++						} else
++							ast_log(LOG_WARNING, "Fax detected, but no fax extension\n");
++					} else
++						ast_log(LOG_WARNING, "Already in a fax extension, not redirecting\n");
++
++					res = 0;
++					ast_frfree(fr);
++					break;
++				} else if (!ignoredtmf) {
++					ast_log(LOG_DEBUG, "DTMF detected on %s\n", chan->name);
++					char t[2];
++					t[0] = fr2->subclass;
++					t[1] = '\0';
++					if (noextneeded || ast_canmatch_extension(chan, chan->context, t, 1, chan->CALLERID_FIELD)) {
++						pbx_builtin_setvar_helper(chan, "DTMF_DETECTED", "1");
++						/* They entered a valid extension, or might be anyhow */
++						if (noextneeded) {
++							ast_log(LOG_NOTICE, "DTMF received (not matching to exten)\n");
++							res = 0;
++						} else {
++							ast_log(LOG_NOTICE, "DTMF received (matching to exten)\n");
++							res = fr2->subclass;
++						}
++						ast_frfree(fr);
++						break;
++					} else
++						ast_log(LOG_DEBUG, "Valid extension requested and DTMF did not match\n");
++				}
++			} else if ((fr->frametype == AST_FRAME_VOICE) && (fr->subclass == AST_FORMAT_SLINEAR) && !ignoretalk) {
++				int totalsilence;
++				int ms;
++				res = ast_dsp_silence(dsp, fr, &totalsilence);
++				if (res && (totalsilence > sildur)) {
++					/* We've been quiet a little while */
++					if (notsilent) {
++						/* We had heard some talking */
++						gettimeofday(&end, NULL);
++						ms = (end.tv_sec - start.tv_sec) * 1000;
++						ms += (end.tv_usec - start.tv_usec) / 1000;
++						ms -= sildur;
++						if (ms < 0)
++							ms = 0;
++						if ((ms > mindur) && ((maxdur < 0) || (ms < maxdur))) {
++							char ms_str[10];
++							ast_log(LOG_DEBUG, "Found qualified token of %d ms\n", ms);
++							ast_log(LOG_NOTICE, "Redirecting %s to talk extension\n", chan->name);
++
++							/* Save detected talk time (in milliseconds) */ 
++							sprintf(ms_str, "%d", ms);	
++							pbx_builtin_setvar_helper(chan, "TALK_DETECTED", ms_str);
++
++							if (ast_exists_extension(chan, chan->context, "talk", 1, chan->CALLERID_FIELD)) {
++								strncpy(chan->exten, "talk", sizeof(chan->exten) - 1);
++								chan->priority = 0;
++							} else
++								ast_log(LOG_WARNING, "Talk detected, but no talk extension\n");
++							res = 0;
++							ast_frfree(fr);
++							break;
++						} else
++							ast_log(LOG_DEBUG, "Found unqualified token of %d ms\n", ms);
++						notsilent = 0;
++					}
++				} else {
++					if (!notsilent) {
++						/* Heard some audio, mark the begining of the token */
++						gettimeofday(&start, NULL);
++						ast_log(LOG_DEBUG, "Start of voice token!\n");
++						notsilent = 1;
++					}
++				}						
++			}
++			ast_frfree(fr);
++		}
++	} else
++		ast_log(LOG_WARNING, "Could not answer channel '%s'\n", chan->name);
++	
++	if (res > -1) {
++		if (origrformat && ast_set_read_format(chan, origrformat)) {
++			ast_log(LOG_WARNING, "Failed to restore read format for %s to %s\n", 
++				chan->name, ast_getformatname(origrformat));
++		}
++	}
++	
++	if (dsp)
++		ast_dsp_free(dsp);
++	
++	ast_module_user_remove(u);
++	
++	return res;
++}
++
++static int unload_module(void)
++{
++	ast_module_user_hangup_all();
++	return ast_unregister_application(app);
++}
++
++static int load_module(void)
++{
++	return ast_register_application(app, nv_detectfax_exec, synopsis, descrip);
++}
++AST_MODULE_INFO_STANDARD(ASTERISK_GPL_KEY, "Newman's fax detection application");
+diff -Naur asterisk-1.4.0/apps/app_nv_faxemail.c asterisk-1.4.0-nv/apps/app_nv_faxemail.c
+--- asterisk-1.4.0/apps/app_nv_faxemail.c	1969-12-31 19:00:00.000000000 -0500
++++ asterisk-1.4.0-nv/apps/app_nv_faxemail.c	2007-01-15 04:37:48.000000000 -0500
+@@ -0,0 +1,509 @@
++/*
++ * Asterisk -- A telephony toolkit for Linux.
++ *
++ * Fax to Email Application
++ * 
++ * Copyright (C) 2004-2005, Newman Telecom, Inc.
++ * Copyright (C) 2004-2005, Newman Ventures, Inc.
++ * 
++ * Justin Newman <jnewman@newmantelecom.com>
++ * 
++ * Portions Copyright:
++ * Copyright (C) 2001, Linux Support Services, Inc.
++ * Copyright (C) 2004, Digium, Inc.
++ *
++ * Mark Spencer <markster@digium.com>
++ *
++ * Financial Contributions:
++ * Newman Ventures, Inc.
++ * 
++ * This program is free software, distributed under the terms of
++ * the GNU General Public License
++ */
++ 
++#include <errno.h>
++#include <asterisk/lock.h>
++#include <stdio.h>
++#include <asterisk/file.h>
++#include <asterisk/logger.h>
++#include <asterisk/channel.h>
++#include <asterisk/pbx.h>
++#include <asterisk/module.h>
++#include <asterisk/translate.h>
++#include <asterisk/utils.h>
++#include <asterisk/dsp.h>
++#include <asterisk/config.h>
++//#include <asterisk/config_old.h>
++#include <asterisk/app.h>
++#include <asterisk/localtime.h>
++#include <string.h>
++#include <stdlib.h>
++
++#define VOICEMAIL_CONFIG "voicemail.conf"
++#define SENDMAIL "/usr/sbin/sendmail -t"
++#define TIFF2PDF "/usr/bin/tiff2ps -2eaz -w 8.5 -h 11 %s | /usr/bin/ps2pdf /dev/stdin /dev/stdout > %s"
++#define BASEMAXINLINE 256
++#define BASELINELEN 72
++#define BASEMAXINLINE 256
++#define eol "\r\n"
++#define CALLERID_FIELD cid.cid_num
++
++static char *app = "NVFaxEmail";
++
++static char *synopsis = "Receives a fax and e-mails it";
++
++static char *descrip = 
++"  NVFaxEmail(emailto|emailfrom[|options|nameto|namefrom|emailbcc])\n"
++"This application receives a fax using RxFax and e-mails it to the specified\n"
++"recipient. The fax may be e-mailed in the standard TIFF (.tif) or PDF (.pdf)\n"
++"formats. TIFF is used by default. Control will continue at the next priority.\n"
++"      emailfrom: E-mail address this is from (required)\n"
++"      emailto:   Recipient's e-mail address or username with option 'u' (required)\n"
++"      options:\n"
++"        'n':  Attempt on-hook if unanswered (default=no)\n"
++"        'p':  Use PDF format instead of TIFF (default=no)\n"
++"        'u':  Emailto/name in voicemail.conf; emailto is user (default=no)\n"
++"      namefrom:  Name of the user sending the e-mail\n"
++"      nameto:    Name of the user receiving the e-mail\n"
++"      emailbcc:  E-mail address to send a copy of e-mail to\n"
++"Returns -1 on hangup or severe error and 0 on successful completion with no\n"
++"exit conditions.\n\n"
++"REQUIRES: SpanDSP, Tifflib, Sendmail, Ghostscript (only if PDF is used).\n\n"
++"For questions or comments, please e-mail support@newmantelecom.com.\n";
++
++struct vm_info {
++	char fullname[80];
++	char email[80];
++};
++
++static char charset[32] = "ISO-8859-1";
++
++struct baseio {
++	int iocp;
++	int iolen;
++	int linelength;
++	int ateof;
++	unsigned char iobuf[BASEMAXINLINE];
++};
++
++static int
++inbuf(struct baseio *bio, FILE *fi)
++{
++	int l;
++
++	if (bio->ateof)
++		return 0;
++
++	if ((l = fread(bio->iobuf,1,BASEMAXINLINE,fi)) <= 0) {
++		if (ferror(fi))
++			return -1;
++
++		bio->ateof = 1;
++		return 0;
++	}
++
++	bio->iolen= l;
++	bio->iocp= 0;
++
++	return 1;
++}
++
++static int 
++inchar(struct baseio *bio, FILE *fi)
++{
++	if (bio->iocp>=bio->iolen) {
++		if (!inbuf(bio, fi))
++			return EOF;
++	}
++
++	return bio->iobuf[bio->iocp++];
++}
++
++static int
++ochar(struct baseio *bio, int c, FILE *so)
++{
++	if (bio->linelength>=BASELINELEN) {
++		if (fputs(eol,so)==EOF)
++			return -1;
++
++		bio->linelength= 0;
++	}
++
++	if (putc(((unsigned char)c),so)==EOF)
++		return -1;
++
++	bio->linelength++;
++
++	return 1;
++}
++
++static int base_encode(char *filename, FILE *so)
++{
++	unsigned char dtable[BASEMAXINLINE];
++	int i,hiteof= 0;
++	FILE *fi;
++	struct baseio bio;
++
++	memset(&bio, 0, sizeof(bio));
++	bio.iocp = BASEMAXINLINE;
++
++	if (!(fi = fopen(filename, "rb"))) {
++		ast_log(LOG_ERROR, "Failed to open file: %s: %s\n", filename, strerror(errno));
++		return -1;
++	}
++
++	for (i= 0;i<9;i++) {
++		dtable[i]= 'A'+i;
++		dtable[i+9]= 'J'+i;
++		dtable[26+i]= 'a'+i;
++		dtable[26+i+9]= 'j'+i;
++	}
++	for (i= 0;i<8;i++) {
++		dtable[i+18]= 'S'+i;
++		dtable[26+i+18]= 's'+i;
++	}
++	for (i= 0;i<10;i++) {
++		dtable[52+i]= '0'+i;
++	}
++	dtable[62]= '+';
++	dtable[63]= '/';
++
++	while (!hiteof){
++		unsigned char igroup[3],ogroup[4];
++		int c,n;
++
++		igroup[0]= igroup[1]= igroup[2]= 0;
++
++		for (n= 0;n<3;n++) {
++			if ((c = inchar(&bio, fi)) == EOF) {
++				hiteof= 1;
++				break;
++			}
++
++			igroup[n]= (unsigned char)c;
++		}
++
++		if (n> 0) {
++			ogroup[0]= dtable[igroup[0]>>2];
++			ogroup[1]= dtable[((igroup[0]&3)<<4)|(igroup[1]>>4)];
++			ogroup[2]= dtable[((igroup[1]&0xF)<<2)|(igroup[2]>>6)];
++			ogroup[3]= dtable[igroup[2]&0x3F];
++
++			if (n<3) {
++				ogroup[3]= '=';
++
++				if (n<2)
++					ogroup[2]= '=';
++			}
++
++			for (i= 0;i<4;i++)
++				ochar(&bio, ogroup[i], so);
++		}
++	}
++
++	if (fputs(eol,so)==EOF)
++		return 0;
++
++	fclose(fi);
++
++	return 1;
++}
++
++static struct vm_info *find_user(struct vm_info *vmi, char *context, char *mailbox)
++{
++	struct ast_config *cfg = NULL;
++	char *cat = NULL;
++	char *tmp = NULL;
++	char *s = NULL;
++	struct ast_variable *var = NULL;	
++
++	cfg = ast_config_load(VOICEMAIL_CONFIG);
++	
++	if (cfg) {
++		cat = ast_category_browse(cfg, NULL);
++		while(cat) {
++			if (strcasecmp(cat, "general")) {
++				var = ast_variable_browse(cfg, cat);
++				/* Process mailboxes in this context */
++				while(var) {
++					if ((!context || !strcasecmp(context, cat)) &&
++						(!strcasecmp(mailbox, var->name)))
++					{
++						memset(vmi->fullname, 0, sizeof(vmi->fullname));
++						memset(vmi->email, 0, sizeof(vmi->email));
++						
++						tmp = var->value;
++						s = strsep(&tmp, ",");
++						s = strsep(&tmp, ",");
++						if (s) {
++							strncpy(vmi->fullname, s, sizeof(vmi->fullname) - 1);
++						}
++						s = strsep(&tmp, ",");
++						if (s) {
++							strncpy(vmi->email, s, sizeof(vmi->email) - 1);
++						}
++						ast_config_destroy(cfg);
++						return vmi;
++					}					
++					var = var->next;
++				}
++			}
++			cat = ast_category_browse(cfg, cat);
++		}
++		ast_config_destroy(cfg);
++		return NULL;
++	} else {
++		ast_log(LOG_WARNING, "Error reading voicemail config\n");
++		return NULL;
++	}
++}
++
++static int nv_faxemail_exec(struct ast_channel *chan, void *data)
++{
++	FILE *f = NULL;
++	int tifffd = -1;
++	int mailfd = -1;
++	int pdffd = -1;
++	char tifftmp[128] = "/tmp/astfax-XXXXXX";
++	char mailtmp[128] = "/tmp/astmail-XXXXXX";
++	char pdftmp[128] = "/tmp/astpdf-XXXXXX";
++	char filetmp[128] = "\0";
++	char cmdtmp[256] = "\0";
++	char tmp[256] = "\0";
++	char date[256] = "\0";
++	char bound[256] = "\0";
++	char *p = NULL;
++	char *emailto = NULL;
++	char *emailfrom = NULL;
++	char *options = NULL;
++	char *nameto = NULL;
++	char *namefrom = NULL;
++	char *emailbcc = NULL;
++	char *strpages = NULL;
++	int pages = 0;
++	int skipanswer = 0;
++	int usepdf = 0;
++	int lookup = 0;
++	time_t t;
++	struct ast_module_user *u;
++	struct ast_app* app;
++	struct tm tm;
++	struct vm_info vmi;
++	int res = 0;	
++	
++	if (data || !ast_strlen_zero((char *)data)) {
++		strncpy(tmp, (char *)data, sizeof(tmp)-1);
++	}   
++
++	p = tmp;
++	
++	emailfrom = strsep(&p, "|");
++	emailto = strsep(&p, "|");
++	options = strsep(&p, "|");
++	namefrom = strsep(&p, "|");
++	nameto = strsep(&p, "|");
++	emailbcc = strsep(&p, "|");
++	
++	if (options) {
++		if (strchr(options, 'n')) {
++			skipanswer = 1;
++		}
++		if (strchr(options, 'p')) {
++			usepdf = 1;
++		}
++		if (strchr(options, 'u')) {
++			lookup = 1;
++		}
++	}
++	
++	if (emailto == NULL || emailfrom == NULL) {
++		ast_log(LOG_ERROR, "Unable to receive fax; emailto or emailfrom not specified\n");
++		return -1;
++	}
++	
++	if (lookup) {
++		if (find_user(&vmi, NULL, emailto) == NULL) {
++			ast_log(LOG_ERROR, "Unable to find user '%s' in voicemail.conf\n", emailto);
++			return -1;
++		}
++		nameto = vmi.fullname;
++		emailto = vmi.email;
++	}
++	
++	tifffd = mkstemp(tifftmp);
++	if (tifffd < 0) {
++		ast_log(LOG_ERROR, "Unable to create temporary fax file for TIFF output\n");
++		return -1;
++	}
++	
++	mailfd = mkstemp(mailtmp);
++	if (mailfd > -1) {
++		f = fdopen(mailfd, "w");
++		if (f == NULL) {
++			ast_log(LOG_ERROR, "Unable to create temporary fax file for mime output\n");
++			close(mailfd);
++			close(tifffd);
++			return -1;
++		}
++	}
++
++	if (usepdf) {	
++		pdffd = mkstemp(pdftmp);
++		if (pdffd < 0) {
++			ast_log(LOG_WARNING, "Unable to create temporary fax file for pdf output; using TIFF\n");
++			usepdf = 0;
++		}
++	}
++	
++	u = ast_module_user_add(chan);
++	
++	if (p && chan->_state != AST_STATE_UP && !skipanswer) {
++		/* Otherwise answer unless we're supposed to send this while on-hook */
++		res = ast_answer(chan);
++	}
++	
++	ast_log(LOG_NOTICE, "Attempting to receive fax with RxFax\n");
++	
++	//pbx_builtin_setvar_helper(chan, "FAXPAGES", "0");
++	
++	if (f != NULL && res > -1) {
++		ast_log(LOG_DEBUG, "Calling application RxFax\n");
++		app = pbx_findapp("RxFax");
++		if (app) {
++			char *s = ast_strdupa(tifftmp);
++			res = pbx_exec(chan, app, s);
++			
++			if (res > -1) {
++				strpages = pbx_builtin_getvar_helper(chan, "FAXPAGES");
++				if (strpages) {
++					sscanf(strpages, "%d", &pages);
++				}
++				ast_log(LOG_DEBUG, "Finished receiving fax with %d pages\n", pages);
++			}
++		} else {
++			ast_log(LOG_ERROR, "Could not find application RxFax\n");
++			res = -1;
++		}
++		if (res < 0) {
++			ast_log(LOG_ERROR, "Could not receive fax with RxFax\n");
++		}	
++	}
++	
++	if (usepdf && res > -1) {
++		strcpy(filetmp, pdftmp);
++		snprintf(cmdtmp, sizeof(cmdtmp), TIFF2PDF, tifftmp, pdftmp);
++		ast_log(LOG_DEBUG, "Running PDF conversion cmd '%s'\n", cmdtmp);
++		ast_safe_system(cmdtmp);
++	} else {
++		strcpy(filetmp, tifftmp);
++	}
++	
++//	if (res > -1 && pages > 0) {	
++	if (res > -1) {	
++
++		ast_log(LOG_NOTICE, "Sending fax file '%s' as %s with %d pages (possibly incorrect)\n", filetmp, usepdf ? "PDF" : "TIFF", pages);
++	
++		time(&t);
++		ast_localtime(&t, &tm, NULL);
++			
++		strftime(date, sizeof(date), "%a, %d %b %Y %H:%M:%S %z", &tm);
++		fprintf(f, "Date: %s\n", date);
++
++		if (namefrom) {
++			fprintf(f, "From: %s <%s>\n", namefrom, emailfrom);
++		} else {
++			fprintf(f, "From: %s\n", emailfrom);
++		}
++		
++		if (nameto) {
++			fprintf(f, "To: %s <%s>\n", nameto, emailto);
++		} else {
++			fprintf(f, "To: %s\n", emailto);
++		}
++			
++		if (emailbcc) {
++			fprintf(f, "Bcc: %s\n", emailbcc);
++		}
++		
++		if (pages > 0)	{
++			fprintf(f, "Subject: You have a new fax from %s (%d pages)\n", (chan->CALLERID_FIELD == NULL) ? 
++"unknown" : chan->CALLERID_FIELD, pages);
++		} else {
++			fprintf(f, "Subject: You have a new fax from %s\n", (chan->CALLERID_FIELD == NULL) ? "unknown" 
++: chan->CALLERID_FIELD);
++		}
++
++		fprintf(f, "Message-ID: <Asterisk-%d-%d-%d-%d@faxemail>\n", 0, (unsigned int)rand(), 0, getpid());
++		fprintf(f, "MIME-Version: 1.0\n");
++		
++		snprintf(bound, sizeof(bound), "nvfaxemail_%d%d", getpid(), (unsigned int)rand());
++		fprintf(f, "Content-Type: multipart/mixed; boundary=\"%s\"\n\n\n", bound);
++		fprintf(f, "--%s\n", bound);
++		
++		fprintf(f, "Content-Type: text/plain; charset=%s\nContent-Transfer-Encoding: 8bit\n\n", charset);
++		
++		if (nameto) {
++			fprintf(f, "Dear %s:\n", nameto);
++		}
++		
++		fprintf(f, "\n\tYou have received a new fax, which is attached in %s format.\n\n", usepdf ? "PDF" : "TIFF");
++		
++		if (namefrom) {
++			fprintf(f, "%s\n", namefrom);
++		}
++		
++		fprintf(f, "--%s\n", bound);
++		fprintf(f, "Content-Type: %s; name=\"newfax.%s\"\n", usepdf ? "application/pdf" : "image/tiff", usepdf ? "pdf" : "tif");
++		fprintf(f, "Content-Transfer-Encoding: base64\n");
++		fprintf(f, "Content-Description: NVFaxEmail Attachment\n");
++		fprintf(f, "Content-Disposition: attachment; filename=\"newfax.%s\"\n\n", usepdf ? "pdf" : "tif");
++		
++		base_encode(filetmp, f);
++		
++		fprintf(f, "\n\n--%s--\n.\n", bound);
++		
++		fclose(f);
++		f = NULL;
++		
++		snprintf(cmdtmp, sizeof(cmdtmp), "%s < %s", SENDMAIL, mailtmp);
++		ast_log(LOG_DEBUG, "Running Sendmail cmd '%s'\n", cmdtmp);
++		ast_safe_system(cmdtmp);
++	} else {
++		ast_log(LOG_ERROR, "Could not receive fax for unknown reason\n");
++		return -1;
++	}
++	
++	if (f != NULL) {
++		fclose(f);
++	}
++		
++	close(mailfd);
++	close(tifffd);
++	
++	snprintf(cmdtmp, sizeof(cmdtmp), "( rm -f %s ; rm -f %s ) &", tifftmp, mailtmp);
++	ast_log(LOG_DEBUG, "Running remove TIFF and mail files '%s'\n", cmdtmp);
++	ast_safe_system(cmdtmp);
++	
++	if (usepdf) {
++		close(pdffd);
++		snprintf(cmdtmp, sizeof(cmdtmp), "rm -f %s &", pdftmp);
++		ast_log(LOG_DEBUG, "Running remove PDF and PS files '%s'\n", cmdtmp);
++		ast_safe_system(cmdtmp);
++	}
++	
++	ast_module_user_remove(u);
++	
++	return 0;
++}
++
++static int unload_module(void)
++{
++	ast_module_user_hangup_all();
++	return ast_unregister_application(app);
++}
++
++static int load_module(void)
++{
++	return ast_register_application(app, nv_faxemail_exec, synopsis, descrip);
++}
++AST_MODULE_INFO_STANDARD(ASTERISK_GPL_KEY, "Receives a fax and e-mails it to the recipient");
