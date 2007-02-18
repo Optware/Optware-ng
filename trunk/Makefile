@@ -204,7 +204,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba samba2 sane-backends \
 	scons scponly screen scsi-idle sdl sdparm \
 	sed sendmail ser setserial setpwc \
-	simh siproxd sm smartmontools snownews \
+	simh siproxd sm smartmontools snort snownews \
 	socat speex sqlite sqlite2 \
 	sqsh squeak squid srelay strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat \
@@ -273,7 +273,7 @@ WL500G_BROKEN_PACKAGES = \
 	 ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
-	 sablevm scponly sdl ser sm snownews sqsh swi-prolog \
+	 sablevm scponly sdl ser sm snort snownews sqsh swi-prolog \
 	 taglib tcsh tethereal tnftpd transcode unrar vlc vte \
 	 w3m wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
