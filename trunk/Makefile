@@ -184,10 +184,11 @@ COMMON_CROSS_PACKAGES = \
 	mpg123 mrtg msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
-	nagg nagios-plugins nail nano nanoblogger nbench-byte neon net-snmp \
-	ncftp ncurses ncursesw noip net-tools netcat nethack netio nfs-server \
-	nfs-utils nget nmap nload nrpe ntfsprogs ntop ntp ntpclient nvi nylon \
-	nzbget \
+	nagg nagios-plugins nail nano nanoblogger nbench-byte \
+	ncftp ncurses ncursesw \
+	neon net-snmp net-tools netatalk netcat nethack netio \
+	nfs-server nfs-utils nget nmap nload noip nrpe \
+	ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	openobex obexftp \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
@@ -269,7 +270,7 @@ WL500G_BROKEN_PACKAGES = \
 	 lsof loudmouth \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \
-	 ncursesw nfs-server nfs-utils nget ntfsprogs ntp nvi \
+	 ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm scponly sdl ser sm snownews sqsh swi-prolog \
@@ -412,6 +413,7 @@ SLUGOSBE_BROKEN_PACKAGES = \
 	heyu \
 	ldconfig modutils \
 	monotone \
+	netatalk \
 	nfs-utils \
 	par2cmdline \
 	puppy \
