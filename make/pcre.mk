@@ -26,7 +26,7 @@ else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
 endif
 
-PCRE_IPK_VERSION=4
+PCRE_IPK_VERSION=5
 
 PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 
@@ -81,7 +81,9 @@ $(PCRE_BUILD_DIR)/.staged: $(PCRE_BUILD_DIR)/.built
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpcre.la
 	rm -f $(STAGING_LIB_DIR)/libpcreposix.la
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpcre.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_PREFIX)/bin/pcre-config \
+		$(STAGING_LIB_DIR)/pkgconfig/libpcre.pc
 	touch $@
 
 pcre-stage: $(PCRE_BUILD_DIR)/.staged
