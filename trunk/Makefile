@@ -145,7 +145,7 @@ COMMON_CROSS_PACKAGES = \
 	cherokee chrpath classpath clamav clearsilver \
 	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
 	cyrus-imapd cyrus-sasl \
-	dash dbus dcraw denyhosts dev-pts dict digitemp \
+	dansguardian dash dbus dcraw denyhosts dev-pts dict digitemp \
 	dircproxy distcc dhcp diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
@@ -260,7 +260,7 @@ WL500G_BROKEN_PACKAGES = \
 	 amule \
 	$(ASTERISK_PACKAGES) \
 	 atk avahi bitlbee bsdmainutils bzflag \
-	 coreutils dcraw dnsmasq dump \
+	 coreutils dansguardian dcraw dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
@@ -281,7 +281,7 @@ WL500G_BROKEN_PACKAGES = \
 
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 bzflag \
+	 bzflag dansguardian \
 	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
 	 gtk htop ice id3lib iperf iptables jabberd \
