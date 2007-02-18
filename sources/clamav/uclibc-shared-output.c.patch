@@ -1,0 +1,11 @@
+--- clamav/shared/output.c.orig	2007-02-18 15:14:27.000000000 -0800
++++ clamav/shared/output.c	2007-02-18 15:15:04.000000000 -0800
+@@ -53,7 +53,7 @@
+ pthread_mutex_t logg_mutex = PTHREAD_MUTEX_INITIALIZER;
+ #endif
+ 
+-#ifdef  C_LINUX
++#if defined  C_LINUX && defined _LIBC
+ #include <libintl.h>
+ #include <locale.h>
+ 

@@ -53,6 +53,9 @@ CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf /opt/etc/init.d/S98
 # which they should be applied to the source code.
 #
 CLAMAV_PATCHES=$(CLAMAV_SOURCE_DIR)/configure.patch
+ifeq ($(LIBC_STYLE), uclibc)
+CLAMAV_PATCHES+=$(CLAMAV_SOURCE_DIR)/uclibc-shared-output.c.patch
+endif
 
 #
 # If the compilation of the package requires additional
