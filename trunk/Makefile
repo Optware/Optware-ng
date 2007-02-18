@@ -228,6 +228,7 @@ COMMON_CROSS_PACKAGES = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
+# pure-ftpd too many AC_RUN_IF_ELSE
 # rsnapshot depends on perl
 COMMON_NATIVE_PACKAGES = \
 	cdrtools \
@@ -238,6 +239,7 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         nginx \
         ocaml \
+        pure-ftpd \
 	rsnapshot \
 	unison \
 
