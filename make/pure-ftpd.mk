@@ -46,7 +46,7 @@ PURE-FTPD_IPK_VERSION=1
 # PURE-FTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PURE-FTPD_PATCHES=$(PURE-FTPD_SOURCE_DIR)/configure.patch
+PURE-FTPD_PATCHES=$(PURE-FTPD_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,11 +110,16 @@ $(PURE-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PA
 	$(PURE-FTPD_UNZIP) $(DL_DIR)/$(PURE-FTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PURE-FTPD_PATCHES)" ; \
 		then cat $(PURE-FTPD_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(PURE-FTPD_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(PURE-FTPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PURE-FTPD_DIR)" != "$(PURE-FTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PURE-FTPD_DIR) $(PURE-FTPD_BUILD_DIR) ; \
 	fi
+ifeq ($(LIBC_STYLE), uclibc)
+	cp $(PURE-FTPD_SOURCE_DIR)/config-uclibc.cache $(PURE-FTPD_BUILD_DIR)/config.cache
+	sed -i -e '/^ac_cv_path/d;/^ac_cv_env/d;/^ac_cv_prog/d;' \
+		$(PURE-FTPD_BUILD_DIR)/config.cache
+endif
 	(cd $(PURE-FTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PURE-FTPD_CPPFLAGS)" \
@@ -126,6 +131,7 @@ $(PURE-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PA
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--config-cache \
 	)
 #	$(PATCH_LIBTOOL) $(PURE-FTPD_BUILD_DIR)/libtool
 	touch $@
