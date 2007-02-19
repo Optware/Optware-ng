@@ -174,7 +174,7 @@ COMMON_CROSS_PACKAGES = \
 	libnsl libnxml \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
-	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd \
+	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd lirc \
 	logrotate loudmouth lrzsz lsof lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber mdadm \
 	mediatomb mediawiki memcached metalog memtester \
@@ -283,7 +283,7 @@ WL500G_BROKEN_PACKAGES = \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 
 # Packages that do not work for uclibc
-UCLIBC_BROKEN_PACKAGES = \
+UCLIBC_BROKEN_PACKAGES = rrdtool bluez-utils openobex obexftp \
 	 bzflag dansguardian \
 	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
@@ -296,7 +296,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 xfixes xft xrender xmu xt xterm
 
 # Packages that *only* work for uclibc - do not just put new packages here.
-UCLIBC_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ buildroot uclibc-opt ipkg-opt
+UCLIBC_SPECIFIC_PACKAGES = firmware-oleg libuclibc++ buildroot uclibc-opt ipkg-opt
 
 # Packages that *only* work for mss - do not just put new packages here.
 MSS_SPECIFIC_PACKAGES = 
