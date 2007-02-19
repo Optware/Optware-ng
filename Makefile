@@ -266,7 +266,8 @@ WL500G_BROKEN_PACKAGES = \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
 	 fcgi ficy fish freetds gambit-c gawk \
-	 giftcurs git-core glib gnokii gnupg gphoto2 ggrab libgphoto2 gtk hnb htop ice \
+	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb htop ice \
+	 glib gtk gnet gsnmp \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
 	 lsof loudmouth \
