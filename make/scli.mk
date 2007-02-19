@@ -29,14 +29,14 @@ SCLI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SCLI_DESCRIPTION=SNMP Command Line Interface.
 SCLI_SECTION=net
 SCLI_PRIORITY=optional
-SCLI_DEPENDS=gsnmp, libxml2
+SCLI_DEPENDS=gsnmp, libxml2, ncurses, readline, zlib
 SCLI_SUGGESTS=
 SCLI_CONFLICTS=
 
 #
 # SCLI_IPK_VERSION should be incremented when the ipk changes.
 #
-SCLI_IPK_VERSION=1
+SCLI_IPK_VERSION=2
 
 #
 # SCLI_CONFFILES should be a list of user-editable files
@@ -105,7 +105,11 @@ scli-source: $(DL_DIR)/$(SCLI_SOURCE) $(SCLI_PATCHES)
 # shown below to make various patches to it.
 #
 $(SCLI_BUILD_DIR)/.configured: $(DL_DIR)/$(SCLI_SOURCE) $(SCLI_PATCHES) make/scli.mk
-	$(MAKE) gsnmp-stage libxml2-stage
+	$(MAKE) gsnmp-stage
+	$(MAKE) libxml2-stage
+	$(MAKE) ncurses-stage
+	$(MAKE) readline-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(SCLI_DIR) $(SCLI_BUILD_DIR)
 	$(SCLI_UNZIP) $(DL_DIR)/$(SCLI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SCLI_PATCHES)" ; \
