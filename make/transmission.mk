@@ -38,7 +38,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=3
+TRANSMISSION_IPK_VERSION=4
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -50,6 +50,7 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 #
 TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch \
 	$(TRANSMISSION_SOURCE_DIR)/r1152_peerc_t66.patch \
+	$(TRANSMISSION_SOURCE_DIR)/trackerc-interval.patch \
 
 # Additional sources to enhance transmission (like this daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
