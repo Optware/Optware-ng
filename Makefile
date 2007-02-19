@@ -157,7 +157,7 @@ COMMON_CROSS_PACKAGES = \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
 	ggrab ghostscript git-core glib gnet gnokii gnugo gnupg gnuplot \
-	gnutls grep groff gtk gzip  gphoto2 libgphoto2 \
+	gnutls grep groff gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	hdparm hexcurse heyu hnb hpijs htop \
