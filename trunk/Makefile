@@ -156,7 +156,7 @@ COMMON_CROSS_PACKAGES = \
 	ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
-	ggrab ghostscript git-core glib gnokii gnugo gnupg gnuplot \
+	ggrab ghostscript git-core glib gnet gnokii gnugo gnupg gnuplot \
 	gnutls grep groff gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
