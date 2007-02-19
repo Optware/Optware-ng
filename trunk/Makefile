@@ -283,7 +283,7 @@ WL500G_BROKEN_PACKAGES = \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 
 # Packages that do not work for uclibc
-UCLIBC_BROKEN_PACKAGES = rrdtool bluez-utils openobex obexftp \
+UCLIBC_BROKEN_PACKAGES = \
 	 bzflag dansguardian \
 	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
