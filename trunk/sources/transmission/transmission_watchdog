@@ -325,7 +325,7 @@ done
 # check if there is a torrent to process
 FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -n 1`
 if [ -z "$FILE" ]; then
-	notice "No torrents to process"
+#	notice "No torrents to process"
 	debug "Nothing to do"
 	exit 2
 fi
