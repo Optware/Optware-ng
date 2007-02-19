@@ -1,0 +1,154 @@
+--- pure-ftpd-1.0.21/configure	2006-02-19 15:33:05.000000000 +0100
++++ pure-ftpd/configure	2007-02-20 01:11:37.000000000 +0100
+@@ -21375,11 +21375,17 @@
+ echo "$as_me:$LINENO: checking whether snprintf is C99 conformant" >&5
+ echo $ECHO_N "checking whether snprintf is C99 conformant... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
++
++CONF_SNPRINTF_TYPE=8
++cat >>confdefs.h <<_ACEOF
++#define CONF_SNPRINTF_TYPE $CONF_SNPRINTF_TYPE
++_ACEOF
++
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -21449,11 +21455,12 @@
+ echo "$as_me:$LINENO: checking whether getgroups 0 is sane" >&5
+ echo $ECHO_N "checking whether getgroups 0 is sane... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++  :
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -21517,11 +21524,15 @@
+ echo "$as_me:$LINENO: checking whether realpath likes unreadable directories" >&5
+ echo $ECHO_N "checking whether realpath likes unreadable directories... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
++cat >>confdefs.h <<\_ACEOF
++#define REALPATH_WORKS_WITH_UNREADABLE_DIRECTORIES
++_ACEOF
++
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -21623,11 +21634,12 @@
+ echo "$as_me:$LINENO: checking whether you already have a standard MD5 implementation" >&5
+ echo $ECHO_N "checking whether you already have a standard MD5 implementation... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++ :
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -21692,11 +21704,12 @@
+ echo "$as_me:$LINENO: checking whether you already have a standard SHA1 implementation" >&5
+ echo $ECHO_N "checking whether you already have a standard SHA1 implementation... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++  :
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -21775,7 +21788,7 @@
+ echo "$as_me:$LINENO: checking default TCP send buffer size" >&5
+ echo $ECHO_N "checking default TCP send buffer size... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  CONF_TCP_SO_SNDBUF=65536
++  CONF_TCP_SO_SNDBUF=16384
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -21844,7 +21857,7 @@
+ echo "$as_me:$LINENO: checking default TCP receive buffer size" >&5
+ echo $ECHO_N "checking default TCP receive buffer size... $ECHO_C" >&6
+ if test "$cross_compiling" = yes; then
+-  CONF_TCP_SO_RCVBUF=65536
++  CONF_TCP_SO_RCVBUF=43689
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -22479,11 +22492,12 @@
+     echo "$as_me:$LINENO: checking whether mysql clients can run" >&5
+ echo $ECHO_N "checking whether mysql clients can run... $ECHO_C" >&6
+     if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++       :
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+@@ -22882,11 +22896,12 @@
+     echo "$as_me:$LINENO: checking whether postgresql clients can run" >&5
+ echo $ECHO_N "checking whether postgresql clients can run... $ECHO_C" >&6
+     if test "$cross_compiling" = yes; then
+-  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&5
+-echo "$as_me: error: cannot run test program while cross compiling
+-See \`config.log' for more details." >&2;}
+-   { (exit 1); exit 1; }; }
++      :
++#  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&5
++#echo "$as_me: error: cannot run test program while cross compiling
++#See \`config.log' for more details." >&2;}
++#   { (exit 1); exit 1; }; }
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
