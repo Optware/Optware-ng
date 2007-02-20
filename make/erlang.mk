@@ -47,10 +47,7 @@ ERLANG_WITH_SAE=no
 #
 ERLANG_IPK_VERSION=2
 
-ERLANG_TARGET=$(strip \
-        $(if $(filter slugosbe, $(OPTWARE_TARGET)), armeb-unknown-linux-gnu, \
-        $(if $(filter ddwrt oleg, $(OPTWARE_TARGET)), mipsel-unknown-linux-gnu, \
-        $(GNU_TARGET_NAME)-gnu)))
+ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|'))-gnu
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
