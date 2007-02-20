@@ -258,8 +258,8 @@ ifneq ($(OPTWARE_TARGET), ts101)
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gdb/6.5/
 	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-$(BUILDROOT_GCC)-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/
-	touch $(BUILDROOT_BUILD_DIR)/.configured
 endif
+	touch $(BUILDROOT_BUILD_DIR)/.configured
 
 buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
 
