@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MYSQL_SITE=ftp://ftp.orst.edu/pub/mysql/Downloads/MySQL-4.1
+MYSQL_SITE=http://downloads.mysql.com/archives/mysql-4.1
 MYSQL_VERSION=4.1.20
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
