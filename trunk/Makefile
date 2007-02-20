@@ -919,6 +919,7 @@ packages: $(PACKAGES_IPKG)
 	$(MAKE) index
 
 .PHONY: all clean dirclean distclean directories packages source toolchain \
+	buildroot-toolchain libuclibc++-toolchain \
 	autoclean \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
 	$(PACKAGES_STAGE) $(PACKAGES_IPKG) \
