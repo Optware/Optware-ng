@@ -1,0 +1,8 @@
+SPECIFIC_PACKAGES = \
+	libiconv \
+	py-ctypes \
+	$(UCLIBC_SPECIFIC_PACKAGES) \
+
+BROKEN_PACKAGES = \
+	$(UCLIBC_BROKEN_PACKAGES) \
+
