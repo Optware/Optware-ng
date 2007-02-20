@@ -138,6 +138,7 @@ $(FIRMWARE_OLEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FIRMWARE_OLEG_GPL) \
 	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION) \
 		$(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc
 	install -d $(FIRMWARE_OLEG_BUILD_DIR)/toolchain
+	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
 	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc all install CROSS=mipsel-linux- \
 		PREFIX=$(FIRMWARE_OLEG_BUILD_DIR)/toolchain
 	rm -f $(FIRMWARE_OLEG_BUILD_DIR)/toolchain/opt/brcm/hndtools-mipsel-uclibc
