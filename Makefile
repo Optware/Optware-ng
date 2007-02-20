@@ -195,7 +195,7 @@ COMMON_CROSS_PACKAGES = \
 	palantir pango par2cmdline patch pcapsipdump pcre pen \
 	php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
-	procps proftpd psmisc psutils puppy pwgen \
+	procps proftpd psmisc psutils puppy pure-ftpd pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemu qemu-libc-i386 quagga quickie quilt \
 	radiusclient-ng rc rcs rdate readline recode recordext \
@@ -398,7 +398,7 @@ TS72XX_BROKEN_PACKAGES = \
 	freeradius \
 	ldconfig lighttpd \
 	motion mysql nfs-server nrpe \
-	php php-apache py-mysql py-soappy \
+	php php-apache pure-ftpd py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent \
 	sablevm tethereal transcode w3m xvid \
 
