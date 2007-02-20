@@ -44,6 +44,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 #
+ifeq ($(OPTWARE_TARGET), ts101)
+BUILDROOT_GCC = 3.4.3
+BUILDROOT_BINUTILS = 2.15.91.0.2
+BUILDROOT_VERSION = $(BUILDROOT_GCC)
+BUILDROOT_SOURCE = buildroot-0.9.27.tar.gz
+BUILDROOT_SITE = http://mirror.kynisk.com/ts
+else
 BUILDROOT_GCC ?= 4.1.1
 BUILDROOT_BINUTILS ?= 2.17.50.0.8
 
@@ -51,6 +58,7 @@ BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
 BUILDROOT_SVN_REV=17310
 BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
+endif
 BUILDROOT_DIR=buildroot
 BUILDROOT_UNZIP=zcat
 BUILDROOT_MAINTAINER=Leon Kos <oleo@email.si>
@@ -115,8 +123,13 @@ buildroot-headers:
 # BUILDROOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(OPTWARE_TARGET), ts101)
+BUILDROOT_PATCHES=
+else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
 		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -147,9 +160,10 @@ BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(BUILDROOT_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(BUILDROOT_SITE)/$(BUILDROOT_SOURCE)
-
+ifeq ($(OPTWARE_TARGET), ts101)
+$(DL_DIR)/$(BUILDROOT_SOURCE):
+	$(WGET) -P $(DL_DIR) $(BUILDROOT_SITE)/$(BUILDROOT_SOURCE)
+else
 $(DL_DIR)/$(BUILDROOT_SOURCE):
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(BUILDROOT_DIR) && \
@@ -157,6 +171,7 @@ $(DL_DIR)/$(BUILDROOT_SOURCE):
 		tar -czf $@ $(BUILDROOT_DIR) && \
 		rm -rf $(BUILDROOT_DIR) \
 	)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -180,8 +195,13 @@ buildroot-source uclibc-opt-source: $(DL_DIR)/$(BUILDROOT_SOURCE) $(BUILDROOT_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
+ifeq ($(OPTWARE_TARGET), ts101)
+BUILDROOT_CONFIG_FILE=buildroot.ts101
+UCLIBC_CONFIG_FILE=uclibc.ts101
+else
 BUILDROOT_CONFIG_FILE=buildroot.config
 UCLIBC_CONFIG_FILE=uClibc-$(UCLIBC-OPT_VERSION).config
+endif
 
 $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 			$(BUILDROOT_PATCHES) $(BUILDROOT_HEADERS) \
@@ -197,6 +217,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) $(BUILDROOT_BUILD_DIR)/.config
+ifneq ($(OPTWARE_TARGET), ts101)
 	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
 #	change TARGET_ARCH in .config
 	sed  -i -e 's|.*\(BR2_[a-z0-9_]\{2,\}\).*|# \1 is not set|' \
@@ -216,11 +237,13 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	 -e 's|# BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS) is not set|BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS)=y|' \
 	 -e '/BR2_BINUTILS_VERSION_$(BUILDROOT_BINUTILS)=y/s|\.|_|g' \
 	 -e 's|^BR2_BINUTILS_VERSION=.*|BR2_BINUTILS_VERSION="$(BUILDROOT_BINUTILS)"|' $(BUILDROOT_BUILD_DIR)/.config
+endif
 #	change toolchain staging dir
 	sed -i -e 's|^BR2_STAGING_DIR=*|BR2_STAGING_DIR="$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/gcc-$(BUILDROOT_GCC)-uclibc-$(UCLIBC-OPT_VERSION)"|' $(BUILDROOT_BUILD_DIR)/.config
 	(cd $(BUILDROOT_BUILD_DIR); \
 		make oldconfig \
 	)
+ifneq ($(OPTWARE_TARGET), ts101)
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/100-uclibc-conf.patch
 	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/100-uclibc-conf.patch
 #	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
@@ -236,6 +259,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-$(BUILDROOT_GCC)-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/
 	touch $(BUILDROOT_BUILD_DIR)/.configured
+endif
 
 buildroot-unpack uclibc-unpack: $(BUILDROOT_BUILD_DIR)/.configured
 
