@@ -546,9 +546,9 @@ set ylabel "Transmission transfer rate [kB/s]"
 set y2label "System load (5 min average)"
 set y2tics 1
 set xlabel "Time [UTC ${TZO} seconds]"
-plot '${GNUPLOT_DATA}' using (\$1+${TZO}):2 title 'download' axis x1y1 with impulses, \
-     '${GNUPLOT_DATA}' using (\$1+${TZO}):3 title 'upload' with impulses, \
-     '${GNUPLOT_DATA}' using (\$1+${TZO}):4 axis x1y2 title 'load' with lines
+plot '${GNUPLOT_DATA}' using (\$1+86400+${TZO}):2 title 'download' axis x1y1 with impulses, \
+     '${GNUPLOT_DATA}' using (\$1+86400+${TZO}):3 title 'upload' with impulses, \
+     '${GNUPLOT_DATA}' using (\$1+86400+${TZO}):4 axis x1y2 title 'load' with lines
 quit 
 __EOF__
 

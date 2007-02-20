@@ -289,7 +289,7 @@ chmod a+rw /tmp/harddisk/torrent/work
 
  You should get "Nice try..." response.
 
- 13. How can I interpret load average and uptime values in graph and CGI?
+13. How can I interpret load average and uptime values in graph and CGI?
    We can assume (by looking at procps top) that CPU is mostly idling
    and that most uninterruptable state is waiting for some I/O access,
    eg waiting for disk access. So load average over 1 means that external
@@ -297,8 +297,24 @@ chmod a+rw /tmp/harddisk/torrent/work
    without waiting for disk. In such cases I recommend to lower the number
    of active torrents. Mostly downloading gives much burden.
 
- 14. Is there an easy way to open ports for transmission?
+14. Is there an easy way to open ports for transmission?
     Yes. If your router soupports traversal using NAT-PMP or UPnP IGD services
     just uncomment NAT_TRAVERSAL line in /opt/etc/transmission.conf
+
+15. I'm trying to get the graph to work for transmission the cron is running and 
+   everything is logging to syslog but the only thing that is showing up is load.
+   Edit : I got it working but is there a way to have it form a line like load does.
+
+   I do not recommend anything else than spikes for Transmission graphing. SysLog 
+   rotation should be tailored in such way that it acumulates approx one week. 
+   Then spikes will show in high density and you will see if there was any 
+   interruption without hearbeat. Lines like load could be changed in 
+   transmission.cgi but then you will loose interval display. 
+   Maybe linespoints is middleway? 
+
+16. I am getting "Could not open ....nfo in /tmp/harddisk/torrent/work/... (0, -2147483640)"
+  This bug is harmless. It tries to check nonexistent file at startup. libtransmission 
+  developer should eventually add empty file creation or skip this check.
+
 
 oleo
