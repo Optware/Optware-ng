@@ -105,7 +105,7 @@ libiconv-source: $(DL_DIR)/$(LIBICONV_SOURCE) $(LIBICONV_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBICONV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBICONV_SOURCE) $(LIBICONV_PATCHES) make/libiconv.mk
-ifneq ($(OPTWARE_TARGET), wl500g)
+ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
 	@echo "Use of libiconv is deprecated. Use gconv-modules instead" ; false
 endif
 #	$(MAKE) <bar>-stage <baz>-stage
