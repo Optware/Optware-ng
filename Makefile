@@ -20,11 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
-# Options are "nslu2", "wl500g", "ddwrt", "oleg", "ds101", "ds101j", 
-#  "ds101g", "mss", "nas100d", "fsg3", "ts72xx", "slugosbe" and "ts101"
+# one of `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
 OPTWARE_TARGET ?= nslu2
 
-HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
@@ -248,287 +246,64 @@ COMMON_NATIVE_PACKAGES = \
 # Metalog - has been made obsolete by syslog-ng
 PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 jabber tzcode \
 
-# Packages that *only* work for nslu2 - do not just put new packages here.
-NSLU2_SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native \
+##############
 
-# Packages that do not work for nslu2.
-NSLU2_BROKEN_PACKAGES = \
+HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
 
-# Packages that *only* work for wl500g - do not just put new packages here.
-WL500G_SPECIFIC_PACKAGES = wiley-feeds libuclibc++ libiconv
+# Directory location definitions
 
-# Packages that do not work for wl500g.
-WL500G_BROKEN_PACKAGES = \
-	 amule \
-	$(ASTERISK_PACKAGES) \
-	 atk avahi bitlbee bsdmainutils bzflag \
-	 coreutils dansguardian dcraw dnsmasq dump \
-	 ecl elinks \
-	$(ERLANG_PACKAGES) \
-	 fcgi ficy fish freetds gambit-c gawk \
-	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb htop ice \
-	 glib gtk gnet gsnmp \
-	 id3lib iperf iptables irssi jabberd jamvm jikes \
-	 ldconfig lftp libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
-	 lsof loudmouth \
-	 mc mcabber mdadm minicom mod-fastcgi mod-python \
-	 monotone msynctool mtr mutt \
-	 ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
-	 nylon openldap openser pango pcapsipdump postfix psmisc py-mssql \
-	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
-	 sablevm scli scponly sdl ser sm snort snownews sqsh swi-prolog \
-	 taglib tcsh tethereal tnftpd transcode unrar vlc vte \
-	 w3m wget wget-ssl wxbase x11 \
-	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
-	 xft xmu xpm xrender xt xterm xtst zsh \
+OPTWARE_TOP=$(shell if ! grep -q ^OPTWARE_TOP= ./Makefile; then cd ..; fi; pwd)
+BASE_DIR:=$(shell pwd)
 
-# Packages that do not work for uclibc
-UCLIBC_BROKEN_PACKAGES = \
-	 bzflag dansguardian \
-	 fcgi fish gambit-c ggrab \
-	 gphoto2 libgphoto2 \
-	 gtk htop ice id3lib iperf iptables jabberd \
-	 jamvm ldconfig libstdc++ libdvb monotone \
-	 mtr nfs-server nfs-utils nget \
-	 pango par2cmdline \
-	 qemu qemu-libc-i386 quickie sm \
-	 taglib transcode vte xauth xaw xchat xcursor \
-	 xfixes xft xrender xmu xt xterm
+SOURCE_DIR=$(BASE_DIR)/sources
+DL_DIR=$(BASE_DIR)/downloads
+TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
+PACKAGE_DIR=$(BASE_DIR)/packages
 
-# Packages that *only* work for uclibc - do not just put new packages here.
-UCLIBC_SPECIFIC_PACKAGES = firmware-oleg libuclibc++ buildroot uclibc-opt ipkg-opt
+BUILD_DIR=$(BASE_DIR)/builds
+STAGING_DIR=$(BASE_DIR)/staging
 
-# Packages that *only* work for mss - do not just put new packages here.
-MSS_SPECIFIC_PACKAGES = 
+STAGING_PREFIX=$(STAGING_DIR)/opt
+STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
+STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
+STAGING_CPPFLAGS=$(TARGET_CFLAGS) -I$(STAGING_INCLUDE_DIR)
+STAGING_LDFLAGS=$(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)
 
-# Packages that do not work for mss.
-MSS_BROKEN_PACKAGES = \
-	amule apache apr-util \
-	$(ASTERISK_PACKAGES) \
-	clamav \
-	elinks \
-	$(ERLANG_PACKAGES) \
-	gambit-c gawk \
-	jamvm \
-	gnokii \
-	ldconfig \
-	mod-fastcgi mod-python monotone \
-	ntp \
-	php-apache py-lxml \
-	qemu qemu-libc-i386 quickie \
-	sablevm svn \
-	tethereal \
-	wxbase \
+HOST_BUILD_DIR=$(BASE_DIR)/host/builds
+HOST_STAGING_DIR=$(BASE_DIR)/host/staging
 
-# Packages that *only* work for ds101 - do not just put new packages here.
-DS101_SPECIFIC_PACKAGES = \
-	ds101-bootstrap \
-	ds101-kernel-modules \
+HOST_STAGING_PREFIX=$(HOST_STAGING_DIR)/opt
+HOST_STAGING_INCLUDE_DIR=$(HOST_STAGING_PREFIX)/include
+HOST_STAGING_LIB_DIR=$(HOST_STAGING_PREFIX)/lib
+HOST_STAGING_CPPFLAGS=-I$(HOST_STAGING_INCLUDE_DIR)
+HOST_STAGING_LDFLAGS=-L$(HOST_STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(HOST_STAGING_LIB_DIR)
 
-# Packages that do not work for ds101.
-# gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
-DS101_BROKEN_PACKAGES = \
-	bpalogin \
-	freeradius gnuplot \
-	imagemagick \
-	ldconfig lftp \
-	monotone motion \
-	qemu qemu-libc-i386 \
+export TMPDIR=$(BASE_DIR)/tmp
 
-# Packages that *only* work for ds101j - do not just put new packages here.
-DS101J_SPECIFIC_PACKAGES = bip
-
-# Packages that do not work for ds101j.
-DS101J_BROKEN_PACKAGES = \
-	apache apr-util \
-	ctcs \
-	cyrus-sasl \
-	enhanced-ctorrent \
-	glib \
-	imagemagick irssi \
-	mod-fastcgi mod-python monotone \
-	php-apache \
-	qemu qemu-libc-i386 \
-	svn \
-	atk ctrlproxy giftcurs gkrellm pango \
-
-# Packages that *only* work for ds101g+ - do not just put new packages here.
-DS101G_SPECIFIC_PACKAGES = \
-	ipkg-opt \
-	ds101g-kernel-modules \
-	ds101g-kernel-modules-fuse \
-	ds101-bootstrap \
-	py-ctypes \
-
-# Packages that do not work for ds101g+.
-DS101G_BROKEN_PACKAGES = \
-	$(COMMON_NATIVE_PACKAGES) \
-	ldconfig \
-	openser \
-	qemu qemu-libc-i386 \
-
-# Packages that *only* work for nas100d - do not just put new packages here.
-NAS100D_SPECIFIC_PACKAGES = ipkg-opt
-
-# Packages that do not work for nas100d.
-NAS100D_BROKEN_PACKAGES = 
-
-# Packages that *only* work for fsg3 - do not just put new packages here.
-FSG3_SPECIFIC_PACKAGES = \
-	fsg3-kernel-modules \
-	fsg3-bootstrap \
-	crosstool-native \
-
-# Packages that do not work for fsg3.
-FSG3_BROKEN_PACKAGES = \
-	$(COMMON_NATIVE_PACKAGES) \
-	qemu qemu-libc-i386 \
-	transcode
-
-# Packages that *only* work for ts72xx - do not just put new packages here.
-TS72XX_SPECIFIC_PACKAGES = 
-
-# Packages that do not work for ts72xx.
-TS72XX_BROKEN_PACKAGES = \
-	appweb \
-	$(ASTERISK_PACKAGES) \
-	classpath clearsilver dict dspam \
-	eaccelerator ecl \
-	$(ERLANG_PACKAGES) \
-	freeradius \
-	ldconfig lighttpd \
-	motion mysql nfs-server nrpe \
-	php php-apache pure-ftpd py-mysql py-soappy \
-	qemu qemu-libc-i386 quagga rtorrent \
-	sablevm tethereal transcode w3m xvid \
-
-# Packages that *only* work for slugosbe - do not just put new packages here.
-SLUGOSBE_SPECIFIC_PACKAGES = \
-	ipkg-opt \
-
-# Packages that do not work for slugosbe.
-# puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
-# heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
-SLUGOSBE_BROKEN_PACKAGES = \
-	atftp \
-	ftpd-topfield \
-	gdb \
-	heyu \
-	ldconfig modutils \
-	monotone \
-	netatalk \
-	nfs-utils \
-	par2cmdline \
-	puppy \
-	py-psycopg \
-	qemu \
-	ushare \
-
-TS101_SPECIFIC_PACKAGES = \
-	libiconv \
-	py-ctypes \
-
-TS101_BROKEN_PACKAGES = \
-
-ifeq ($(OPTWARE_TARGET),nslu2)
-
-OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED = true
-
-ifeq ($(HOST_MACHINE),armv5b)
-PACKAGES = $(COMMON_NATIVE_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
-# when native building on unslung, it's important to have a working awk 
-# in the path ahead of busybox's broken one.
-PATH=/opt/bin:/usr/bin:/bin
-else
-PACKAGES = $(filter-out $(NSLU2_NATIVE_PACKAGES) $(NSLU2_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(NSLU2_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-endif
-TARGET_ARCH=armeb
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),wl500g)
-PACKAGES = $(filter-out $(WL500G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(WL500G_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=mipsel
-TARGET_OS=linux-uclibc
-endif
-
-ifeq ($(OPTWARE_TARGET),mss)
-PACKAGES = $(filter-out $(MSS_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(MSS_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=mipsel
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),ds101)
-PACKAGES = $(filter-out $(DS101_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=armeb
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),ds101j)
-PACKAGES = $(filter-out $(DS101J_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(DS101J_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=armeb
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),ds101g)
-ifeq ($(HOST_MACHINE),ppc)
-PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_NATIVE_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
-else
-PACKAGES = $(filter-out $(DS101G_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(DS101G_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-endif
-TARGET_ARCH=powerpc
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),nas100d)
-PACKAGES = $(filter-out $(NAS100D_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(NAS100D_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=armeb
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),fsg3)
-ifeq ($(HOST_MACHINE),armv5b)
-PACKAGES = $(filter-out $(FSG3_BROKEN_PACKAGES), $(COMMON_NATIVE_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
-else
-PACKAGES = $(filter-out $(FSG3_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(FSG3_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-endif
-TARGET_ARCH=armeb
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),ts72xx)
-PACKAGES = $(filter-out $(TS72XX_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(TS72XX_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=arm
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),slugosbe)
-PACKAGES = $(filter-out $(SLUGOSBE_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(SLUGOSBE_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=armeb
-TARGET_OS=linux
-endif
-
-ifeq ($(OPTWARE_TARGET),ts101)
-PACKAGES = $(filter-out $(TS101_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(TS101_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_ARCH=powerpc
-TARGET_OS=linux-uclibc
-endif
+##############
 
 all: directories toolchain packages
+
+TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
+TARGET_DEBUGGING= #-g
+
+include $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+
+ifeq ($(LIBC_STYLE), uclibc)
+include $(OPTWARE_TOP)/platforms/packages-uclibc.mk
+else
+LIBC_STYLE=glibc
+endif
+
+include $(OPTWARE_TOP)/platforms/packages-$(OPTWARE_TARGET).mk
+
+ifeq ($(HOSTCC), $(TARGET_CC))
+PACKAGES = $(COMMON_NATIVE_PACKAGES)
+PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
+else
+PACKAGES = $(filter-out $(NATIVE_PACKAGES) $(BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(SPECIFIC_PACKAGES))
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+endif
 
 testing:
 	$(MAKE) PACKAGES="$(PACKAGES_READY_FOR_TESTING)" all
@@ -543,324 +318,6 @@ PERL=perl
 # The hostname or IP number of our local dl.sf.net mirror
 SOURCEFORGE_MIRROR=easynews.dl.sf.net
 SOURCES_NLO_SITE=http://sources.nslu2-linux.org/sources
-
-# Directory location definitions
-BASE_DIR:=$(shell pwd)
-SOURCE_DIR=$(BASE_DIR)/sources
-DL_DIR=$(BASE_DIR)/downloads
-
-BUILD_DIR=$(BASE_DIR)/builds
-STAGING_DIR=$(BASE_DIR)/staging
-STAGING_PREFIX=$(STAGING_DIR)/opt
-
-TOOL_BUILD_DIR=$(BASE_DIR)/toolchain
-PACKAGE_DIR=$(BASE_DIR)/packages
-
-HOST_BUILD_DIR=$(BASE_DIR)/host/builds
-HOST_STAGING_DIR=$(BASE_DIR)/host/staging
-HOST_STAGING_PREFIX=$(HOST_STAGING_DIR)/opt
-
-export TMPDIR=$(BASE_DIR)/tmp
-
-TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
-TARGET_DEBUGGING= #-g
-
-ifeq ($(OPTWARE_TARGET),nslu2)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.5
-CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-ifeq ($(HOST_MACHINE),armv5b)
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = armv5b-softfloat-linux
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = /opt/$(TARGET_ARCH)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = /opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = -L/opt/lib
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-else
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = 
-TARGET_CUSTOM_FLAGS= -pipe 
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-endif
-
-ifeq ($(OPTWARE_TARGET),wl500g)
-LIBC_STYLE=uclibc
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = mipsel-linux
-CROSS_CONFIGURATION = hndtools-mipsel-uclibc
-TARGET_CROSS = /opt/brcm/$(CROSS_CONFIGURATION)/bin/mipsel-uclibc-
-TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/lib
-TARGET_LDFLAGS = 
-TARGET_CUSTOM_FLAGS= -pipe 
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-endif
-
-ifeq ($(OPTWARE_TARGET), oleg)
-LIBC_STYLE=uclibc
-TARGET_ARCH=mipsel
-BUILDROOT_CUSTOM_HEADERS = $(HEADERS_OLEG)
-endif
-
-ifeq ($(OPTWARE_TARGET), ddwrt)
-LIBC_STYLE=uclibc
-TARGET_ARCH=mipsel
-BUILDROOT_CUSTOM_HEADERS = $(HEADERS_DDWRT)
-endif
-
-ifeq ($(LIBC_STYLE), uclibc)
-ifneq ($(OPTWARE_TARGET), wl500g)
-PACKAGES = $(filter-out $(UCLIBC_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(PERL_PACKAGES) $(UCLIBC_SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-TARGET_OS=linux-uclibc
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME=$(TARGET_ARCH)-linux
-
-CROSS_CONFIGURATION_GCC_VERSION=4.1.1
-CROSS_CONFIGURATION_UCLIBC_VERSION=0.9.28
-BUILDROOT_GCC=$(CROSS_CONFIGURATION_GCC_VERSION)
-UCLIBC-OPT_VERSION=$(CROSS_CONFIGURATION_UCLIBC_VERSION)
-ifeq ($(HOST_MACHINE),mips)
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = $(HOST_MACHINE)-linux-gnu
-GNU_TARGET_NAME=$(TARGET_ARCH)-linux 
-TARGET_CROSS=/opt/bin/
-TARGET_LIBDIR=/opt/lib
-TARGET_LDFLAGS = -L/opt/lib
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-else
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
-CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/bin/$(TARGET_ARCH)-$(TARGET_OS)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/lib
-TARGET_LDFLAGS = 
-TARGET_CUSTOM_FLAGS= -pipe 
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: buildroot-toolchain libuclibc++-toolchain
-endif
-TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/nowrap/$(TARGET_ARCH)-$(TARGET_OS)-g++
-endif
-else
-LIBC_STYLE=glibc
-endif
-
-ifeq ($(OPTWARE_TARGET),mss)
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = mipsel-linux
-CROSS_CONFIGURATION = hndtools-mipsel-linux
-TARGET_CROSS = /opt/brcm/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = /opt/brcm/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = 
-TARGET_CUSTOM_FLAGS= -pipe 
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-endif
-
-ifeq ($(OPTWARE_TARGET),ds101)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.4
-CROSS_CONFIGURATION_GLIBC_VERSION=2.3.3
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-
-ifeq ($(OPTWARE_TARGET),ds101j)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.4
-CROSS_CONFIGURATION_GLIBC_VERSION=2.3.3
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-
-ifeq ($(OPTWARE_TARGET),ds101g)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.4
-CROSS_CONFIGURATION_GLIBC_VERSION=2.3.3
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-ifeq ($(HOST_MACHINE),ppc)
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = powerpc-603e-linux
-GNU_TARGET_NAME = powerpc-603e-linux
-TARGET_CROSS = /opt/$(TARGET_ARCH)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = /opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = -L/opt/lib
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-else
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = powerpc-603e-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-endif
-
-ifeq ($(OPTWARE_TARGET),nas100d)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.5
-CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-
-ifeq ($(OPTWARE_TARGET),fsg3)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.5
-CROSS_CONFIGURATION_GLIBC_VERSION=2.2.5
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-ifeq ($(HOST_MACHINE),armv5b)
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = armv5b-softfloat-linux
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = /opt/$(TARGET_ARCH)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = /opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = -L/opt/lib
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-else
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = armv5b-softfloat-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-endif
-
-ifeq ($(OPTWARE_TARGET),ts72xx)
-CROSS_CONFIGURATION_GCC_VERSION=3.3.4
-CROSS_CONFIGURATION_GLIBC_VERSION=2.3.2
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = arm-linux
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: crosstool
-endif
-
-ifeq ($(OPTWARE_TARGET),slugosbe)
-TARGET_ARCH=armeb
-TARGET_OS=linux
-CROSS_CONFIGURATION_GCC_VERSION=4.1.1
-CROSS_CONFIGURATION_GLIBC_VERSION=2.3.5
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
-LIBC_STYLE=glibc
-ifeq ($(HOST_MACHINE),armv5teb)
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = armeb-linux
-GNU_TARGET_NAME = armeb-linux
-TARGET_CROSS = /usr/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = /usr/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-else
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-GNU_TARGET_NAME = armeb-linux
-TARGET_CROSS_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/slugosbe/tmp/cross
-TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = 
-TARGET_CUSTOM_FLAGS= -pipe 
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-endif
-endif
-
-ifeq ($(OPTWARE_TARGET), ts101)
-LIBC_STYLE=uclibc
-TARGET_ARCH=powerpc
-CROSS_CONFIGURATION_GCC_VERSION=3.4.3
-CROSS_CONFIGURATION_LIBC_VERSION=0.9.28
-CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
-CROSS_CONFIGURATION_LIBC=uclibc-$(CROSS_CONFIGURATION_LIBC_VERSION)
-CROSS_CONFIGURATION = $(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_LIBC)
-GNU_TARGET_NAME = $(TARGET_ARCH)-linux
-ifeq ($(HOST_MACHINE),ppc)
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = $(TARGET_ARCH)-linux
-TARGET_CROSS = /opt/$(TARGET_ARCH)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = /opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS = -L/opt/lib
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS=-I/opt/include $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
-else
-HOSTCC = gcc
-GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
-TARGET_CROSS = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)-uclibc/$(CROSS_CONFIGURATION)/bin/$(GNU_TARGET_NAME)-
-TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)-uclibc/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/lib
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS= -pipe
-TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: buildroot-toolchain 
-endif
-endif
 
 TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
@@ -890,22 +347,6 @@ PATCH_LIBTOOL=sed -i \
 	-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
 	-e 's|^sys_lib_dlsearch_path_spec=.*"$$|sys_lib_dlsearch_path_spec=""|' \
 	-e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' \
-
-STAGING_INCLUDE_DIR=$(STAGING_PREFIX)/include
-STAGING_LIB_DIR=$(STAGING_PREFIX)/lib
-
-ifeq ($(OPTWARE_TARGET), slugosbe)
-STAGING_CPPFLAGS=$(TARGET_CFLAGS) -I$(STAGING_INCLUDE_DIR) -DPATH_MAX=4096 -DLINE_MAX=2048
-else
-STAGING_CPPFLAGS=$(TARGET_CFLAGS) -I$(STAGING_INCLUDE_DIR)
-endif
-STAGING_LDFLAGS=$(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)
-
-HOST_STAGING_INCLUDE_DIR=$(HOST_STAGING_PREFIX)/include
-HOST_STAGING_LIB_DIR=$(HOST_STAGING_PREFIX)/lib
-
-HOST_STAGING_CPPFLAGS=-I$(HOST_STAGING_INCLUDE_DIR)
-HOST_STAGING_LDFLAGS=-L$(HOST_STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(HOST_STAGING_LIB_DIR)
 
 # Clear these variables to remove assumptions
 AR=
@@ -1007,7 +448,10 @@ clean: $(TARGETS_CLEAN) $(PACKAGES_CLEAN)
 dirclean: $(PACKAGES_DIRCLEAN)
 
 distclean:
-	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR) nslu2 slugosbe wl500g mss nas100d ds101 ds101j ds101g fsg3 ts72xx
+	cd $(OPTWARE_TOP)
+	rm -rf $(BUILD_DIR) $(STAGING_DIR) $(PACKAGE_DIR)
+	rm -rf host
+	rm -rf `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
 
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
