@@ -21,7 +21,7 @@
 #
 
 # Options are "nslu2", "wl500g", "ddwrt", "oleg", "ds101", "ds101j", 
-#  "ds101g", "mss", "nas100d", "fsg3", "ts72xx" and "slugosbe"
+#  "ds101g", "mss", "nas100d", "fsg3", "ts72xx", "slugosbe" and "ts101"
 OPTWARE_TARGET ?= nslu2
 
 HOST_MACHINE:=$(shell uname -m | sed -e 's/i[3-9]86/i386/' )
@@ -515,6 +515,13 @@ TARGET_ARCH=armeb
 TARGET_OS=linux
 endif
 
+ifeq ($(OPTWARE_TARGET),ts101)
+PACKAGES = $(filter-out $(TS101_BROKEN_PACKAGES), $(COMMON_CROSS_PACKAGES) $(TS101_SPECIFIC_PACKAGES))
+PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
+TARGET_ARCH=powerpc
+TARGET_OS=linux-uclibc
+endif
+
 all: directories toolchain packages
 
 testing:
@@ -817,6 +824,12 @@ TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain:
 endif
+endif
+
+ifeq ($(OPTWARE_TARGET), ts101)
+LIBC_STYLE=uclibc
+TARGET_ARCH=powerpc
+toolchain: buildroot-toolchain 
 endif
 
 TARGET_CXX=$(TARGET_CROSS)g++
