@@ -36,7 +36,7 @@ PURE-FTPD_CONFLICTS=
 #
 # PURE-FTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PURE-FTPD_IPK_VERSION=1
+PURE-FTPD_IPK_VERSION=2
 
 #
 # PURE-FTPD_CONFFILES should be a list of user-editable files
@@ -132,6 +132,7 @@ endif
 		--disable-nls \
 		--disable-static \
 		--config-cache \
+		--with-everything \
 	)
 #	$(PATCH_LIBTOOL) $(PURE-FTPD_BUILD_DIR)/libtool
 	touch $@
