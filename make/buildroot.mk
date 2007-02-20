@@ -107,8 +107,12 @@ $(DL_DIR)/$(HEADERS_XWRT_SOURCE):
 	$(WGET) -P $(DL_DIR) $(HEADERS_XWRT_SITE)/$(HEADERS_XWRT_SOURCE)
 
 
+ifeq ($(OPTWARE_TARGET), ts101)
+BUILDROOT_HEADERS=
+else
 BUILDROOT_HEADERS=$(DL_DIR)/$(HEADERS_OLEG_SOURCE) \
-		$(DL_DIR)/$(HEADERS_DDWRT_SOURCE) \
+		$(DL_DIR)/$(HEADERS_DDWRT_SOURCE)
+endif
 
 # Select appropriate headers or leave empty for default
 BUILDROOT_CUSTOM_HEADERS ?=
@@ -151,7 +155,10 @@ BUILDROOT_SOURCE_DIR=$(SOURCE_DIR)/buildroot
 BUILDROOT_IPK_DIR=$(BUILD_DIR)/buildroot-$(BUILDROOT_VERSION)-ipk
 BUILDROOT_IPK=$(BUILD_DIR)/buildroot_$(BUILDROOT_VERSION)-$(BUILDROOT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: buildroot-source buildroot-unpack buildroot buildroot-stage buildroot-ipk buildroot-clean buildroot-dirclean buildroot-check
+.PHONY: buildroot-source \
+buildroot-unpack buildroot buildroot-stage buildroot-toolchain \
+uclibc-unpack uclibc-opt uclibc-opt-stage \
+buildroot-ipk buildroot-clean buildroot-dirclean buildroot-check
 
 
 BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk 
