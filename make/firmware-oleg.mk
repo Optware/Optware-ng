@@ -131,7 +131,7 @@ $(FIRMWARE_OLEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FIRMWARE_OLEG_GPL) \
 	$(FIRMWARE_OLEG_UNZIP) $(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) | tar -C $(FIRMWARE_OLEG_BUILD_DIR)/src -xvf -
 	if ! test -d /opt/brcm/hndtools-mipsel-uclibc/bin ; \
 		then echo "Required wl500g toolchain missing!"; \
-		echo "Use mv $(FIRMWARE_OLEG_BUILD_DIR)/src /opt"; \
+		echo "Use mv $(FIRMWARE_OLEG_BUILD_DIR)/opt/brcm /opt"; \
 		exit 1; \
 	fi
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
