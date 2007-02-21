@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NYLON_SITE=http://monkey.org/~marius/nylon
-NYLON_VERSION=1.2
+NYLON_VERSION=1.21
 NYLON_SOURCE=nylon-$(NYLON_VERSION).tar.gz
 NYLON_DIR=nylon-$(NYLON_VERSION)
 NYLON_UNZIP=zcat
@@ -41,7 +41,7 @@ NYLON_CONFLICTS=
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=5
+NYLON_IPK_VERSION=1
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
@@ -73,6 +73,8 @@ NYLON_BUILD_DIR=$(BUILD_DIR)/nylon
 NYLON_SOURCE_DIR=$(SOURCE_DIR)/nylon
 NYLON_IPK_DIR=$(BUILD_DIR)/nylon-$(NYLON_VERSION)-ipk
 NYLON_IPK=$(BUILD_DIR)/nylon_$(NYLON_VERSION)-$(NYLON_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: nylon-source nylon-unpack nylon nylon-stage nylon-ipk nylon-clean nylon-dirclean nylon-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -209,3 +211,9 @@ nylon-clean:
 #
 nylon-dirclean:
 	rm -rf $(BUILD_DIR)/$(NYLON_DIR) $(NYLON_BUILD_DIR) $(NYLON_IPK_DIR) $(NYLON_IPK)
+
+#
+# Some sanity check for the package.
+#
+nylon-check: $(NYLON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NYLON_IPK)
