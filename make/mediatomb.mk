@@ -47,7 +47,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=1
+MEDIATOMB_IPK_VERSION=2
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -66,9 +66,11 @@ MEDIATOMB_IPK_VERSION=1
 MEDIATOMB_CPPFLAGS=
 ifeq ($(LIBC_STYLE), uclibc)
 MEDIATOMB_LDFLAGS=-lm
+endif
+
+ifneq (id3lib, $(filter id3lib, $(PACKAGES)))
 MEDIATOMB_CONFIG_ARGS=--disable-id3lib --disable-taglib
 else
-MEDIATOMB_LDFLAGS=
 MEDIATOMB_CONFIG_ARGS=--enable-id3lib \
 		--with-id3lib-h=$(STAGING_INCLUDE_DIR) \
 		--with-id3lib-libs=$(STAGING_LIB_DIR)
@@ -102,7 +104,7 @@ else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(MEDIATOMB_DIR) && \
 		svn co -r$(MEDIATOMB_SVN_REV) $(MEDIATOMB_SVN_REPO) $(MEDIATOMB_DIR) && \
-		tar -czf $@ $(MEDIATOMB_DIR) && \
+		tar -czf $@ --exclude=.svn $(MEDIATOMB_DIR) && \
 		rm -rf $(MEDIATOMB_DIR) \
 	)
 endif
