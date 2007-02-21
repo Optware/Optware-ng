@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.37
+DNSMASQ_VERSION=2.38
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
