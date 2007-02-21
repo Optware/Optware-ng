@@ -1,0 +1,10 @@
+--- include/id3/id3lib_strings.h.orig	2007-02-21 14:47:28.000000000 -0800
++++ include/id3/id3lib_strings.h	2007-02-21 14:47:46.000000000 -0800
+@@ -29,6 +29,7 @@
+ #ifndef _ID3LIB_STRINGS_H_
+ #define _ID3LIB_STRINGS_H_
+ 
++#include <wchar.h>
+ #include <string>
+ 
+ #if (defined(__GNUC__) && (__GNUC__ >= 3) || (defined(_MSC_VER) && _MSC_VER > 1000))
