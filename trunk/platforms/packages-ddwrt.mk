@@ -1,4 +1,5 @@
 SPECIFIC_PACKAGES = \
+	firmware-oleg \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 BROKEN_PACKAGES = \
