@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://cheeseshop.python.org/packages/source/l/lxml
-PY-LXML_VERSION=1.1.2
+PY-LXML_VERSION=1.2
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-LXML_CONFLICTS=
 #
 # PY-LXML_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-LXML_IPK_VERSION=2
+PY-LXML_IPK_VERSION=1
 
 #
 # PY-LXML_CONFFILES should be a list of user-editable files
@@ -226,7 +226,7 @@ $(PY24-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 	(cd $(PY-LXML_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
 		install --root=$(PY24-LXML_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY24-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
 	$(MAKE) $(PY24-LXML_IPK_DIR)/CONTROL/control
@@ -238,7 +238,7 @@ $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 	(cd $(PY-LXML_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
 		install --root=$(PY25-LXML_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY25-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
 	$(MAKE) $(PY25-LXML_IPK_DIR)/CONTROL/control
