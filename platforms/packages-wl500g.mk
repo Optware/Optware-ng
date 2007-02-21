@@ -1,5 +1,5 @@
 # Packages that *only* work for wl500g - do not just put new packages here.
-SPECIFIC_PACKAGES = wiley-feeds libuclibc++ libiconv
+SPECIFIC_PACKAGES = wiley-feeds libuclibc++ libiconv firmware-oleg
 
 # Packages that do not work for wl500g.
 BROKEN_PACKAGES = \
