@@ -3,7 +3,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 bzflag dansguardian \
 	 fcgi fish gambit-c ggrab \
 	 gphoto2 libgphoto2 \
-	 gtk htop ice id3lib iperf iptables jabberd \
+	 gtk htop ice iperf iptables jabberd \
 	 jamvm ldconfig libstdc++ libdvb monotone \
 	 mtr nfs-server nfs-utils nget \
 	 pango par2cmdline \

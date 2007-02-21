@@ -42,7 +42,7 @@ ID3LIB_CONFLICTS=
 #
 # ID3LIB_IPK_VERSION should be incremented when the ipk changes.
 #
-ID3LIB_IPK_VERSION=1
+ID3LIB_IPK_VERSION=2
 
 #
 # ID3LIB_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ ID3LIB_IPK_VERSION=1
 # ID3LIB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ID3LIB_PATCHES=$(ID3LIB_SOURCE_DIR)/configure.patch
+ID3LIB_PATCHES=$(ID3LIB_SOURCE_DIR)/wchar.patch
 
 #
 # If the compilation of the package requires additional
@@ -60,6 +60,10 @@ ID3LIB_IPK_VERSION=1
 #
 ID3LIB_CPPFLAGS=
 ID3LIB_LDFLAGS=
+
+ifeq ($(LIBC_STYLE), uclibc)
+ID3LIB_CONFIG_ENV=CXX=$(TARGET_GXX)
+endif
 
 #
 # ID3LIB_BUILD_DIR is the directory in which the build is done.
@@ -74,6 +78,8 @@ ID3LIB_BUILD_DIR=$(BUILD_DIR)/id3lib
 ID3LIB_SOURCE_DIR=$(SOURCE_DIR)/id3lib
 ID3LIB_IPK_DIR=$(BUILD_DIR)/id3lib-$(ID3LIB_VERSION)-ipk
 ID3LIB_IPK=$(BUILD_DIR)/id3lib_$(ID3LIB_VERSION)-$(ID3LIB_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: id3lib-source id3lib-unpack id3lib id3lib-stage id3lib-ipk id3lib-clean id3lib-dirclean id3lib-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -118,10 +124,14 @@ $(ID3LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ID3LIB_SOURCE) $(ID3LIB_PATCHES) ma
 	if test "$(BUILD_DIR)/$(ID3LIB_DIR)" != "$(ID3LIB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ID3LIB_DIR) $(ID3LIB_BUILD_DIR) ; \
 	fi
+	sed -i -e '/iomanip.h/d' $(ID3LIB_BUILD_DIR)/configure.in
 	(cd $(ID3LIB_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
+			autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ID3LIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ID3LIB_LDFLAGS)" \
+		$(ID3LIB_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -220,3 +230,9 @@ id3lib-clean:
 #
 id3lib-dirclean:
 	rm -rf $(BUILD_DIR)/$(ID3LIB_DIR) $(ID3LIB_BUILD_DIR) $(ID3LIB_IPK_DIR) $(ID3LIB_IPK)
+
+#
+# Some sanity check for the package.
+#
+id3lib-check: $(ID3LIB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ID3LIB_IPK)
