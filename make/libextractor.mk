@@ -36,6 +36,9 @@ LIBEXTRACTOR_DESCRIPTION=Library to extract meta-data from files of arbitrary ty
 LIBEXTRACTOR_SECTION=lib
 LIBEXTRACTOR_PRIORITY=optional
 LIBEXTRACTOR_DEPENDS=libtool, zlib, bzip2
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+LIBEXTRACTOR_DEPENDS+=, libiconv
+endif
 LIBEXTRACTOR_SUGGESTS=
 LIBEXTRACTOR_CONFLICTS=
 
@@ -130,6 +133,9 @@ endif
 	$(MAKE) libtool-stage zlib-stage bzip2-stage
 	$(MAKE) libvorbis-stage libexif-stage
 	$(MAKE) libmpeg2-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_BUILD_DIR)
 	$(LIBEXTRACTOR_UNZIP) $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXTRACTOR_PATCHES)" ; \

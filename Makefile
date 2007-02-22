@@ -43,7 +43,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
-	libextractor \
 	perl-dbd-mysql \
 	py-curl \
 	bpalogin
@@ -166,7 +165,7 @@ COMMON_CROSS_PACKAGES = \
 	lame lcd4linux ldconfig less lha \
 	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
 	libdvb libdvbpsi libdvdnav libdvdread \
-	libesmtp libevent libexif libftdi \
+	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss \
 	libnsl libnxml \
