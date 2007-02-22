@@ -36,7 +36,7 @@ NETATALK_CONFLICTS=
 #
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=1
+NETATALK_IPK_VERSION=2
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
@@ -126,6 +126,7 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		--prefix=/opt \
 		--with-bdb=$(STAGING_INCLUDE_DIR) \
 		--with-ssl-dir=$(STAGING_PREFIX) \
+		--without-shadow \
 		--disable-nls \
 		--disable-static \
 	)
