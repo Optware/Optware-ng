@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEXTRACTOR_SITE=http://gnunet.org/libextractor/download
-LIBEXTRACTOR_VERSION=0.5.13
+LIBEXTRACTOR_VERSION=0.5.17
 LIBEXTRACTOR_SOURCE=libextractor-$(LIBEXTRACTOR_VERSION).tar.gz
 LIBEXTRACTOR_DIR=libextractor-$(LIBEXTRACTOR_VERSION)
 LIBEXTRACTOR_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBEXTRACTOR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBEXTRACTOR_DESCRIPTION=Library to extract meta-data from files of arbitrary type.
 LIBEXTRACTOR_SECTION=lib
 LIBEXTRACTOR_PRIORITY=optional
-LIBEXTRACTOR_DEPENDS=
+LIBEXTRACTOR_DEPENDS=libtool, zlib, bzip2
 LIBEXTRACTOR_SUGGESTS=
 LIBEXTRACTOR_CONFLICTS=
 
@@ -59,7 +59,17 @@ LIBEXTRACTOR_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 LIBEXTRACTOR_CPPFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+LIBEXTRACTOR_LDFLAGS=-liconv
+else
 LIBEXTRACTOR_LDFLAGS=
+endif
+
+ifeq ($(LIBC_STYLE), uclibc)
+LIBEXTRACTOR_CONFIG_OPTS=--disable-exiv2
+else
+LIBEXTRACTOR_CONFIG_OPTS=--enable-exiv2
+endif
 
 #
 # LIBEXTRACTOR_BUILD_DIR is the directory in which the build is done.
@@ -70,10 +80,15 @@ LIBEXTRACTOR_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-LIBEXTRACTOR_BUILD_DIR=$(BUILD_DIR)/libextractor
 LIBEXTRACTOR_SOURCE_DIR=$(SOURCE_DIR)/libextractor
+
+LIBEXTRACTOR_BUILD_DIR=$(BUILD_DIR)/libextractor
+LIBEXTRACTOR_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libextractor
+
 LIBEXTRACTOR_IPK_DIR=$(BUILD_DIR)/libextractor-$(LIBEXTRACTOR_VERSION)-ipk
 LIBEXTRACTOR_IPK=$(BUILD_DIR)/libextractor_$(LIBEXTRACTOR_VERSION)-$(LIBEXTRACTOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libextractor-source libextractor-unpack libextractor libextractor-stage libextractor-ipk libextractor-clean libextractor-dirclean libextractor-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -107,8 +122,14 @@ libextractor-source: $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) $(LIBEXTRACTOR_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
+ifeq ($(HOSTCC), $(TARGET_CC))
 $(LIBEXTRACTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) $(LIBEXTRACTOR_PATCHES) make/libextractor.mk
+else
+$(LIBEXTRACTOR_BUILD_DIR)/.configured: $(LIBEXTRACTOR_HOST_BUILD_DIR)/.built
+endif
+	$(MAKE) libtool-stage zlib-stage bzip2-stage
 	$(MAKE) libvorbis-stage libexif-stage
+	$(MAKE) libmpeg2-stage
 	rm -rf $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_BUILD_DIR)
 	$(LIBEXTRACTOR_UNZIP) $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBEXTRACTOR_PATCHES)" ; \
@@ -118,6 +139,11 @@ $(LIBEXTRACTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) $(LIBEXT
 	if test "$(BUILD_DIR)/$(LIBEXTRACTOR_DIR)" != "$(LIBEXTRACTOR_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_BUILD_DIR) ; \
 	fi
+ifneq ($(HOSTCC), $(TARGET_CC))
+	sed -i -e 's|./dictionary-builder |$(LIBEXTRACTOR_HOST_BUILD_DIR)/src/plugins/printable/dictionary-builder |g' \
+		$(LIBEXTRACTOR_BUILD_DIR)/src/plugins/printable/Makefile.in
+endif
+	sed -i -e '/$$(MAKE) .* install-exec-am install-data-am/s/^/#/'  $(LIBEXTRACTOR_BUILD_DIR)/libltdl/Makefile.in
 	(cd $(LIBEXTRACTOR_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEXTRACTOR_CPPFLAGS)" \
@@ -127,11 +153,17 @@ $(LIBEXTRACTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) $(LIBEXT
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-ltdl-install \
+		$(LIBEXTRACTOR_CONFIG_OPTS) \
+		--disable-glib \
+		--disable-gnome \
+		--disable-gsf \
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBEXTRACTOR_BUILD_DIR)/libtool
-	touch $(LIBEXTRACTOR_BUILD_DIR)/.configured
+	sed -i -e '/^#define error_t int/d' $(LIBEXTRACTOR_BUILD_DIR)/src/include/config.h
+	$(PATCH_LIBTOOL) $(LIBEXTRACTOR_BUILD_DIR)/libtool $(LIBEXTRACTOR_BUILD_DIR)/libltdl/libtool
+	touch $@
 
 libextractor-unpack: $(LIBEXTRACTOR_BUILD_DIR)/.configured
 
@@ -139,22 +171,44 @@ libextractor-unpack: $(LIBEXTRACTOR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBEXTRACTOR_BUILD_DIR)/.built: $(LIBEXTRACTOR_BUILD_DIR)/.configured
-	rm -f $(LIBEXTRACTOR_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBEXTRACTOR_BUILD_DIR)
-	touch $(LIBEXTRACTOR_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
 #
 libextractor: $(LIBEXTRACTOR_BUILD_DIR)/.built
 
+$(LIBEXTRACTOR_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) $(LIBEXTRACTOR_PATCHES) make/libextractor.mk
+	rm -f $@
+	rm -rf $(HOST_BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_HOST_BUILD_DIR)
+	$(LIBEXTRACTOR_UNZIP) $(DL_DIR)/$(LIBEXTRACTOR_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_HOST_BUILD_DIR)
+	(cd $(LIBEXTRACTOR_HOST_BUILD_DIR); \
+		./configure \
+		--prefix=/opt \
+		--enable-ltdl-install \
+		--disable-glib \
+		--disable-exiv2 \
+		--disable-gnome \
+		--disable-gsf \
+		--disable-nls \
+		--disable-static \
+	)
+	cd $(LIBEXTRACTOR_HOST_BUILD_DIR)/src/plugins/printable; \
+	    $(HOSTCC) -o dictionary-builder -I../../include dictionary-builder.c
+	touch $@
+
 #
 # If you are building a library, then you need to stage it too.
 #
 $(LIBEXTRACTOR_BUILD_DIR)/.staged: $(LIBEXTRACTOR_BUILD_DIR)/.built
-	rm -f $(LIBEXTRACTOR_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBEXTRACTOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBEXTRACTOR_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libextractor.la $(STAGING_LIB_DIR)/libextractor/*.la
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libextractor.pc
+	touch $@
 
 libextractor-stage: $(LIBEXTRACTOR_BUILD_DIR)/.staged
 
@@ -192,6 +246,7 @@ $(LIBEXTRACTOR_IPK_DIR)/CONTROL/control:
 $(LIBEXTRACTOR_IPK): $(LIBEXTRACTOR_BUILD_DIR)/.built
 	rm -rf $(LIBEXTRACTOR_IPK_DIR) $(BUILD_DIR)/libextractor_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEXTRACTOR_BUILD_DIR) DESTDIR=$(LIBEXTRACTOR_IPK_DIR) install-strip
+	rm -f $(LIBEXTRACTOR_IPK_DIR)/opt/lib/libextractor.la $(LIBEXTRACTOR_IPK_DIR)/opt/lib/libextractor/*.la
 #	install -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBEXTRACTOR_SOURCE_DIR)/libextractor.conf $(LIBEXTRACTOR_IPK_DIR)/opt/etc/libextractor.conf
 #	install -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d
@@ -220,3 +275,9 @@ libextractor-clean:
 #
 libextractor-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(LIBEXTRACTOR_BUILD_DIR) $(LIBEXTRACTOR_IPK_DIR) $(LIBEXTRACTOR_IPK)
+
+#
+# Some sanity check for the package.
+#
+libextractor-check: $(LIBEXTRACTOR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBEXTRACTOR_IPK)
