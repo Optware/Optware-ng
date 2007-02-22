@@ -1,0 +1,24 @@
+--- uClibc-0.9.28/utils/ldd.c.orig	2007-01-10 23:10:58.000000000 +0100
++++ uClibc-0.9.28/utils/ldd.c	2007-01-10 23:12:52.000000000 +0100
+@@ -437,10 +437,9 @@
+ 
+ 	/* Lastly, search the standard list of paths for the library.
+ 	   This list must exactly match the list in uClibc/ldso/ldso/dl-elf.c */
+-	path =	UCLIBC_RUNTIME_PREFIX "lib:"
+-		UCLIBC_RUNTIME_PREFIX "usr/lib"
++	path =	"/opt/lib"
+ #ifndef __LDSO_CACHE_SUPPORT__
+-		":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib"
++		"/opt/X11R6/lib"
+ #endif
+ 		;
+ 	search_for_named_library(lib->name, buf, path);
+@@ -672,7 +671,7 @@
+ 			pid_t pid;
+ 			int status;
+ 			static const char * const environment[] = {
+-				"PATH=/usr/bin:/bin:/usr/sbin:/sbin",
++				"PATH=/opt/bin:/opt/sbin:/usr/bin:/bin:/usr/sbin:/sbin",
+ 				"SHELL=/bin/sh",
+ 				"LD_TRACE_LOADED_OBJECTS=1",
+ 				NULL

@@ -1,0 +1,104 @@
+--- buildroot-r16948/toolchain/uClibc/uclibc.mk	2006-12-16 23:54:41.000000000 +0100
++++ buildroot/toolchain/uClibc/uclibc.mk	2006-12-17 00:12:53.000000000 +0100
+@@ -84,6 +84,7 @@
+	[ -d $(TOOL_BUILD_DIR) ] || $(INSTALL) -d $(TOOL_BUILD_DIR)
+	$(UCLIBC_CAT) $(DL_DIR)/$(UCLIBC_SOURCE) | tar -C $(TOOL_BUILD_DIR) $(TAR_OPTIONS) -
+	toolchain/patch-kernel.sh $(UCLIBC_DIR) toolchain/uClibc/ uClibc-$(UCLIBC_VER)-\*.patch
++	cat ../../sources/buildroot/uClibc-patches/ts101/*.patch | patch -d $(UCLIBC_DIR) -p1
+ ifneq ($(BR2_ENABLE_LOCALE),)
+	cp -dpf $(DL_DIR)/$(UCLIBC_SOURCE_LOCALE) $(UCLIBC_DIR)/extra/locale/
+ endif
+@@ -92,9 +93,9 @@
+ 		-e 's,^TARGET_ARCH="none",TARGET_ARCH=\"$(UCLIBC_TARGET_ARCH)\",g' \
+ 		-e 's,^KERNEL_SOURCE=.*,KERNEL_SOURCE=\"$(LINUX_HEADERS_DIR)\",g' \
+ 		-e 's,^KERNEL_HEADERS=.*,KERNEL_HEADERS=\"$(LINUX_HEADERS_DIR)/include\",g' \
+-		-e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/\",g' \
+-		-e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/usr/\",g' \
+-		-e 's,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX=\"/lib\",g' \
++		-e 's,^RUNTIME_PREFIX=.*,RUNTIME_PREFIX=\"/opt/\",g' \
++		-e 's,^DEVEL_PREFIX=.*,DEVEL_PREFIX=\"/opt/\",g' \
++		-e 's,^SHARED_LIB_LOADER_PREFIX=.*,SHARED_LIB_LOADER_PREFIX=\"/opt/lib\",g' \
+ 		$(UCLIBC_DIR)/.config
+ ifeq ($(UCLIBC_TARGET_ARCH),arm)
+ 	$(SED) 's,^.*CONFIG_$(shell echo $(BR2_ARM_TYPE)).*,CONFIG_$(shell echo $(BR2_ARM_TYPE))=y,g' \
+@@ -243,25 +244,30 @@
+ 	touch -c $(STAGING_DIR)/lib/libc.a
+ 
+ ifneq ($(TARGET_DIR),)
+-$(TARGET_DIR)/lib/libc.so.0: $(STAGING_DIR)/lib/libc.a
++$(TARGET_DIR)/opt/lib/libc.so.0: $(STAGING_DIR)/lib/libc.a
+ 	$(MAKE1) -C $(UCLIBC_DIR) \
+ 		PREFIX=$(TARGET_DIR) \
+-		DEVEL_PREFIX=/usr/ \
+-		RUNTIME_PREFIX=/ \
++		DEVEL_PREFIX=/opt/ \
++		RUNTIME_PREFIX=/opt/ \
+ 		install_runtime
+-	touch -c $(TARGET_DIR)/lib/libc.so.0
++	touch -c $(TARGET_DIR)/opt/lib/libc.so.0
+ 
+-$(TARGET_DIR)/usr/bin/ldd:
++# utils are installed into $(PREFIX)/usr/bin
++# and must be moved into $(PREFIX)/bin
++$(TARGET_DIR)/opt/bin/ldd:
+ 	$(MAKE1) -C $(UCLIBC_DIR) $(TARGET_CONFIGURE_OPTS) \
+ 		PREFIX=$(TARGET_DIR) utils install_utils
++	mkdir -p $(TARGET_DIR)/opt/bin
++	install -c $(TARGET_DIR)/opt/usr/bin/ldd  $(TARGET_DIR)/opt/bin
++	rm -rf $(TARGET_DIR)/opt/usr
+ ifeq ($(strip $(BR2_CROSS_TOOLCHAIN_TARGET_UTILS)),y)
+ 	mkdir -p $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils
+-	install -c $(TARGET_DIR)/usr/bin/ldd \
++	install -c $(TARGET_DIR)/opt/bin/ldd \
+ 		$(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/target_utils/ldd
+ endif
+-	touch -c $(TARGET_DIR)/usr/bin/ldd
++	touch -c $(TARGET_DIR)/opt/bin/ldd
+ 
+-UCLIBC_TARGETS=$(TARGET_DIR)/lib/libc.so.0
++UCLIBC_TARGETS=$(TARGET_DIR)/opt/lib/libc.so.0
+ endif
+ 
+ uclibc-configured: dependencies kernel-headers $(UCLIBC_DIR)/.configured
+@@ -281,7 +287,7 @@
+ uclibc-dirclean:
+ 	rm -rf $(UCLIBC_DIR)
+ 
+-uclibc-target-utils: $(TARGET_DIR)/usr/bin/ldd
++uclibc-target-utils: $(TARGET_DIR)/opt/bin/ldd
+ 
+ #############################################################
+ #
+@@ -290,24 +296,24 @@
+ #
+ #############################################################
+ 
+-$(TARGET_DIR)/usr/lib/libc.a: $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libc.a
++$(TARGET_DIR)/opt/lib/libc.a: $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libc.a
+ 	$(MAKE1) -C $(UCLIBC_DIR) \
+ 		PREFIX=$(TARGET_DIR) \
+-		DEVEL_PREFIX=/usr/ \
+-		RUNTIME_PREFIX=/ \
++		DEVEL_PREFIX=/opt/ \
++		RUNTIME_PREFIX=/opt/ \
+ 		install_dev
+ 	# Install the kernel headers to the target dir if necessary
+ 	if [ ! -f $(TARGET_DIR)/usr/include/linux/version.h ] ; then \
+-		cp -pLR $(LINUX_HEADERS_DIR)/include/asm $(TARGET_DIR)/usr/include/ ; \
+-		cp -pLR $(LINUX_HEADERS_DIR)/include/linux $(TARGET_DIR)/usr/include/ ; \
++		cp -pLR $(LINUX_HEADERS_DIR)/include/asm $(TARGET_DIR)/opt/include/ ; \
++		cp -pLR $(LINUX_HEADERS_DIR)/include/linux $(TARGET_DIR)/opt/include/ ; \
+ 		if [ -d $(LINUX_HEADERS_DIR)/include/asm-generic ] ; then \
+ 			cp -pLR $(LINUX_HEADERS_DIR)/include/asm-generic \
+-				$(TARGET_DIR)/usr/include/ ; \
++				$(TARGET_DIR)/opt/include/ ; \
+ 		fi; \
+ 	fi;
+-	touch -c $(TARGET_DIR)/usr/lib/libc.a
++	touch -c $(TARGET_DIR)/opt/lib/libc.a
+ 
+-uclibc_target: gcc uclibc $(TARGET_DIR)/usr/lib/libc.a $(TARGET_DIR)/usr/bin/ldd
++uclibc_target: gcc uclibc $(TARGET_DIR)/opt/lib/libc.a $(TARGET_DIR)/opt/bin/ldd
+ 
+ uclibc_target-clean:
+ 	rm -f $(TARGET_DIR)/include

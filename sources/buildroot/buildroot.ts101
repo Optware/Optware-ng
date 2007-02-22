@@ -2,28 +2,44 @@
 # Automatically generated make config: don't edit
 #
 BR2_HAVE_DOT_CONFIG=y
+# BR2_alpha is not set
 # BR2_arm is not set
 # BR2_armeb is not set
+# BR2_avr32 is not set
 # BR2_cris is not set
 # BR2_i386 is not set
 # BR2_m68k is not set
 # BR2_mips is not set
 # BR2_mipsel is not set
+# BR2_nios2 is not set
 BR2_powerpc=y
-# BR2_sh3 is not set
-# BR2_sh3eb is not set
-# BR2_sh4 is not set
-# BR2_sh4eb is not set
+# BR2_sh is not set
+# BR2_sh64 is not set
 # BR2_sparc is not set
+# BR2_x86_64 is not set
 BR2_ARCH="powerpc"
+BR2_ENDIAN="BIG"
 
 #
 # Build options
 #
-BR2_WGET="wget --passive-ftp -nd"
-# BR2_TAR_VERBOSITY is not set
+BR2_WGET="wget --passive-ftp"
+BR2_SVN="svn co"
+BR2_ZCAT="zcat"
+BR2_BZCAT="bzcat"
+BR2_TAR_OPTIONS=""
+BR2_DL_DIR="$(BASE_DIR)/dl"
+BR2_SOURCEFORGE_MIRROR="easynews"
 BR2_STAGING_DIR="$(BUILD_DIR)/staging_dir"
+BR2_TOPDIR_PREFIX=""
+BR2_TOPDIR_SUFFIX=""
+BR2_GNU_BUILD_SUFFIX="pc-linux-gnu"
+BR2_GNU_TARGET_SUFFIX="linux-uclibc"
 BR2_JLEVEL=1
+# BR2_PREFER_IMA is not set
+# BR2_DEPRECATED is not set
+BR2_TOOLCHAIN_BUILDROOT=y
+# BR2_TOOLCHAIN_EXTERNAL is not set
 
 #
 # Toolchain Options
@@ -34,69 +50,109 @@ BR2_JLEVEL=1
 #
 # BR2_KERNEL_HEADERS_2_4_25 is not set
 # BR2_KERNEL_HEADERS_2_4_27 is not set
-# BR2_KERNEL_HEADERS_2_6_8 is not set
-BR2_KERNEL_HEADERS_2_6_9=y
-BR2_DEFAULT_KERNEL_HEADERS="2.6.9"
+# BR2_KERNEL_HEADERS_2_4_29 is not set
+# BR2_KERNEL_HEADERS_2_4_31 is not set
+# BR2_KERNEL_HEADERS_2_6_9 is not set
+# BR2_KERNEL_HEADERS_2_6_11 is not set
+BR2_KERNEL_HEADERS_2_6_12=y
+# BR2_KERNEL_HEADERS_2_6_19_2 is not set
+# BR2_KERNEL_HEADERS_2_6_20 is not set
+BR2_DEFAULT_KERNEL_HEADERS="2.6.12"
 
 #
 # uClibc Options
 #
+# BR2_UCLIBC_VERSION_0_9_28 is not set
+BR2_UCLIBC_VERSION_0_9_28_1=y
 # BR2_UCLIBC_VERSION_SNAPSHOT is not set
-# BR2_ENABLE_LOCALE is not set
+BR2_ENABLE_LOCALE=y
+# BR2_PTHREADS_NONE is not set
+# BR2_PTHREADS is not set
+# BR2_PTHREADS_OLD is not set
+BR2_PTHREADS_NATIVE=y
+# BR2_PTHREAD_DEBUG is not set
 
 #
 # Binutils Options
 #
-# BR2_BINUTILS_VERSION_2_14_90_0_6 is not set
-# BR2_BINUTILS_VERSION_2_14_90_0_7 is not set
 # BR2_BINUTILS_VERSION_2_14_90_0_8 is not set
 # BR2_BINUTILS_VERSION_2_15 is not set
-# BR2_BINUTILS_VERSION_2_15_90_0_1 is not set
-# BR2_BINUTILS_VERSION_2_15_90_0_1_1 is not set
-# BR2_BINUTILS_VERSION_2_15_90_0_2 is not set
-# BR2_BINUTILS_VERSION_2_15_90_0_3 is not set
-# BR2_BINUTILS_VERSION_2_15_91_0_1 is not set
-BR2_BINUTILS_VERSION_2_15_91_0_2=y
-# BR2_BINUTILS_VERSION_2_15_92_0_2 is not set
-# BR2_BINUTILS_VERSION_2_15_94_0_1 is not set
-# BR2_BINUTILS_VERSION_2_15_94_0_2 is not set
-BR2_BINUTILS_VERSION="2.15.91.0.2"
+# BR2_BINUTILS_VERSION_2_15_94_0_2_2 is not set
+# BR2_BINUTILS_VERSION_2_16_1 is not set
+# BR2_BINUTILS_VERSION_2_16_90_0_3 is not set
+# BR2_BINUTILS_VERSION_2_16_91_0_5 is not set
+# BR2_BINUTILS_VERSION_2_16_91_0_6 is not set
+# BR2_BINUTILS_VERSION_2_16_91_0_7 is not set
+# BR2_BINUTILS_VERSION_2_17 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_2 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_3 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_4 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_5 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_6 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_7 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_8 is not set
+# BR2_BINUTILS_VERSION_2_17_50_0_9 is not set
+BR2_BINUTILS_VERSION_2_17_50_0_10=y
+BR2_BINUTILS_VERSION="2.17.50.0.10"
+BR2_EXTRA_BINUTILS_CONFIG_OPTIONS=""
 
 #
 # Gcc Options
 #
-# BR2_GCC_VERSION_2_95 is not set
-# BR2_GCC_VERSION_3_3_3 is not set
-# BR2_GCC_VERSION_3_3_4 is not set
 # BR2_GCC_VERSION_3_3_5 is not set
-# BR2_GCC_VERSION_3_4_0 is not set
-# BR2_GCC_VERSION_3_4_1 is not set
+# BR2_GCC_VERSION_3_3_6 is not set
 # BR2_GCC_VERSION_3_4_2 is not set
-BR2_GCC_VERSION_3_4_3=y
-BR2_GCC_VERSION="3.4.3"
-BR2_GCC_USE_SJLJ_EXCEPTIONS="--enable-sjlj-exceptions"
+# BR2_GCC_VERSION_3_4_3 is not set
+# BR2_GCC_VERSION_3_4_4 is not set
+# BR2_GCC_VERSION_3_4_5 is not set
+BR2_GCC_VERSION_3_4_6=y
+# BR2_GCC_VERSION_4_0_0 is not set
+# BR2_GCC_VERSION_4_0_1 is not set
+# BR2_GCC_VERSION_4_0_2 is not set
+# BR2_GCC_VERSION_4_0_3 is not set
+# BR2_GCC_VERSION_4_0_4 is not set
+# BR2_GCC_VERSION_4_1_0 is not set
+# BR2_GCC_VERSION_4_1_1 is not set
+# BR2_GCC_VERSION_4_1_2 is not set
+# BR2_GCC_VERSION_4_2 is not set
+# BR2_GCC_IS_SNAP is not set
+BR2_GCC_VERSION="3.4.6"
+# BR2_GCC_USE_SJLJ_EXCEPTIONS is not set
 BR2_EXTRA_GCC_CONFIG_OPTIONS=""
 BR2_INSTALL_LIBSTDCPP=y
 # BR2_INSTALL_LIBGCJ is not set
+# BR2_INSTALL_OBJC is not set
+# BR2_INSTALL_FORTRAN is not set
+BR2_GCC_SHARED_LIBGCC=y
 
 #
 # Ccache Options
 #
-BR2_CCACHE=y
+# BR2_CCACHE is not set
 
 #
 # Gdb Options
 #
 # BR2_PACKAGE_GDB is not set
 # BR2_PACKAGE_GDB_SERVER is not set
+# BR2_PACKAGE_GDB_HOST is not set
+
+#
+# elf2flt
+#
+# BR2_ELF2FLT is not set
+# BR2_MKLIBS is not set
 
 #
 # Common Toolchain Options
 #
-BR2_ENABLE_MULTILIB=y
+# BR2_PACKAGE_SSTRIP_TARGET is not set
+# BR2_PACKAGE_SSTRIP_HOST is not set
+# BR2_ENABLE_MULTILIB is not set
 BR2_LARGEFILE=y
 # BR2_SOFT_FLOAT is not set
 BR2_TARGET_OPTIMIZATION="-Os -pipe"
+BR2_CROSS_TOOLCHAIN_TARGET_UTILS=y
 
 #
 # Package Selection for the target
@@ -119,7 +175,7 @@ BR2_TARGET_OPTIMIZATION="-Os -pipe"
 # BR2_PACKAGE_FLEX is not set
 # BR2_PACKAGE_GAWK is not set
 # BR2_PACKAGE_GCC_TARGET is not set
-# BR2_PACKAGE_CCACHE_TARGET is not set
+BR2_EXTRA_TARGET_GCC_CONFIG_OPTIONS=""
 # BR2_PACKAGE_GREP is not set
 # BR2_PACKAGE_MAKE is not set
 # BR2_PACKAGE_PATCH is not set
@@ -127,89 +183,105 @@ BR2_TARGET_OPTIMIZATION="-Os -pipe"
 # BR2_PACKAGE_TAR is not set
 
 #
-# Other stuff
+# Other development stuff
 #
 # BR2_PACKAGE_AUTOCONF is not set
 # BR2_PACKAGE_AUTOMAKE is not set
-# BR2_PACKAGE_BERKELEYDB is not set
 # BR2_PACKAGE_BISON is not set
-# BR2_PACKAGE_BOA is not set
-# BR2_PACKAGE_BRIDGE is not set
-# BR2_PACKAGE_CONFIG is not set
-# BR2_PACKAGE_CUSTOMIZE is not set
-# BR2_PACKAGE_DHCP_RELAY is not set
+# BR2_PACKAGE_CCACHE_TARGET is not set
+# BR2_PACKAGE_CVS is not set
 # BR2_PACKAGE_DISTCC is not set
-# BR2_PACKAGE_DNSMASQ is not set
-# BR2_PACKAGE_DROPBEAR_SSHD is not set
+# BR2_PACKAGE_DMALLOC is not set
+# BR2_PACKAGE_EXPAT is not set
 # BR2_PACKAGE_FAKEROOT is not set
-# BR2_PACKAGE_FILE is not set
 # BR2_PACKAGE_GETTEXT is not set
-# BR2_PACKAGE_GZIP is not set
-# BR2_PACKAGE_HOSTAP is not set
-# BR2_PACKAGE_HOTPLUG is not set
-# BR2_PACKAGE_IPROUTE2 is not set
-# BR2_PACKAGE_IPTABLES is not set
-# BR2_PACKAGE_JPEG is not set
-# BR2_PACKAGE_LESS is not set
-# BR2_PACKAGE_LIBFLOAT is not set
-# BR2_PACKAGE_LIBGLIB12 is not set
-# BR2_PACKAGE_LIBMAD is not set
-# BR2_PACKAGE_LIBPNG is not set
+# BR2_PACKAGE_LIBINTL is not set
+# BR2_PACKAGE_LIBGMP is not set
+# BR2_PACKAGE_LIBMPFR is not set
 # BR2_PACKAGE_LIBTOOL is not set
-# BR2_PACKAGE_LINKS is not set
-# BR2_PACKAGE_LINUX is not set
-# BR2_PACKAGE_LRZSZ is not set
-# BR2_PACKAGE_LTP-TESTSUITE is not set
-# BR2_PACKAGE_LTRACE is not set
-# BR2_PACKAGE_LZO is not set
 # BR2_PACKAGE_M4 is not set
-# BR2_PACKAGE_MICROCOM is not set
-# BR2_PACKAGE_MICROWIN is not set
-# BR2_PACKAGE_MKDOSFS is not set
-# BR2_PACKAGE_MKE2FS is not set
-# BR2_PACKAGE_MPG123 is not set
-# BR2_PACKAGE_MROUTED is not set
-# BR2_PACKAGE_NANO is not set
-# BR2_PACKAGE_NCURSES is not set
-# BR2_PACKAGE_NETKITBASE is not set
-# BR2_PACKAGE_NETKITTELNET is not set
-# BR2_PACKAGE_NETSNMP is not set
-# BR2_PACKAGE_NEWT is not set
-# BR2_PACKAGE_NTP is not set
-# BR2_PACKAGE_OPENSSH is not set
-# BR2_PACKAGE_OPENSSL is not set
-# BR2_PACKAGE_OPENVPN is not set
-# BR2_PACKAGE_PCIUTILS is not set
-# BR2_PACKAGE_PCMCIA is not set
-# BR2_PACKAGE_PORTAGE is not set
-# BR2_PACKAGE_PORTMAP is not set
-# BR2_PACKAGE_PPPD is not set
-# BR2_PACKAGE_PROCPS is not set
-# BR2_PACKAGE_PYTHON is not set
-# BR2_PACKAGE_RAIDTOOLS is not set
-# BR2_PACKAGE_RSYNC is not set
-# BR2_PACKAGE_RXVT is not set
-# BR2_PACKAGE_SFDISK is not set
-# BR2_PACKAGE_SLANG is not set
-# BR2_PACKAGE_SOCAT is not set
-# BR2_PACKAGE_STRACE is not set
-# BR2_PACKAGE_TINYLOGIN is not set
-# BR2_PACKAGE_TINYX is not set
-# BR2_PACKAGE_TN5250 is not set
-# BR2_PACKAGE_TTCP is not set
-# BR2_PACKAGE_UDHCP is not set
-# BR2_PACKAGE_UTIL-LINUX is not set
+# BR2_PACKAGE_MPATROL is not set
+# BR2_PACKAGE_PKGCONFIG is not set
+# BR2_READLINE is not set
 # BR2_PACKAGE_VALGRIND is not set
-# BR2_PACKAGE_VTUN is not set
-# BR2_PACKAGE_WGET is not set
+
+#
+# Other stuff
+#
+# BR2_PACKAGE_AT is not set
+# BR2_PACKAGE_BERKELEYDB is not set
+# BR2_PACKAGE_BSDIFF is not set
+# BR2_PACKAGE_CUSTOMIZE is not set
+# BR2_PACKAGE_DASH is not set
+# BR2_PACKAGE_FILE is not set
+# BR2_PACKAGE_KEXEC is not set
+# BR2_PACKAGE_LESS is not set
+# BR2_PACKAGE_LIBELF is not set
+# BR2_PACKAGE_LIBEVENT is not set
+# BR2_PACKAGE_LIBFLOAT is not set
+# BR2_PACKAGE_LIBSYSFS is not set
+# BR2_PACKAGE_LSOF is not set
+# BR2_PACKAGE_LTP-TESTSUITE is not set
+# BR2_PACKAGE_LTT is not set
+# BR2_PACKAGE_MICROCOM is not set
+# BR2_PACKAGE_MODULE_INIT_TOOLS is not set
+# BR2_PACKAGE_MODUTILS is not set
+# BR2_PACKAGE_NANO is not set
+# BR2_PACKAGE_PORTAGE is not set
+# BR2_PACKAGE_PROCPS is not set
+# BR2_PACKAGE_PSMISC is not set
+# BR2_PACKAGE_SQLITE is not set
+# BR2_PACKAGE_STRACE is not set
+# BR2_PACKAGE_SUDO is not set
+# BR2_PACKAGE_SYSKLOGD is not set
+# BR2_PACKAGE_SYSVINIT is not set
+# BR2_PACKAGE_TINYLOGIN is not set
+# BR2_PACKAGE_UEMACS is not set
+# BR2_PACKAGE_UTIL-LINUX is not set
 # BR2_PACKAGE_WHICH is not set
-# BR2_PACKAGE_WTOOLS is not set
-# BR2_PACKAGE_ZLIB is not set
+# BR2_NETWORK_SUPPORT is not set
+# BR2_BLOCKDEV_SUPPORT is not set
+# BR2_AUDIO_SUPPORT is not set
+# BR2_GRAPHIC_SUPPORT is not set
+# BR2_COMPRESSOR_SUPPORT is not set
+# BR2_SCRIPTING_SUPPORT is not set
 
 #
 # Target Options
 #
+
+#
+# filesystem for target device
+#
 # BR2_TARGET_ROOTFS_CRAMFS is not set
+# BR2_TARGET_ROOTFS_CLOOP is not set
 # BR2_TARGET_ROOTFS_EXT2 is not set
 # BR2_TARGET_ROOTFS_JFFS2 is not set
 # BR2_TARGET_ROOTFS_SQUASHFS is not set
+# BR2_TARGET_ROOTFS_TAR is not set
+# BR2_TARGET_ROOTFS_CPIO is not set
+
+#
+# bootloader for target device
+#
+# BR2_TARGET_YABOOT is not set
+
+#
+# Board Support Options
+#
+# BR2_PACKAGE_LINUX is not set
+
+#
+# Atmel Target
+#
+
+#
+# Add Atmel Target here
+#
+
+#
+# Generic System Support
+#
+# BR2_TARGET_GENERIC_ACCESS_POINT is not set
+# BR2_TARGET_GENERIC_FIREWALL is not set
+# BR2_TARGET_GENERIC_DEV_SYSTEM is not set
