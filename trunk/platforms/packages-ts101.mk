@@ -3,16 +3,6 @@ SPECIFIC_PACKAGES = \
 	py-ctypes \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
-# Most of these broken packages are caused by either this:
-#
-# checking host system type... Invalid configuration `powerpc-linux-uclibc': system `uclibc' not recognized
-# configure: error: /bin/bash ./support/config.sub powerpc-linux-uclibc failed
-#
-# or this:
-#
-# *** You must have either have gettext support in your C library, or use the
-# *** GNU gettext library. (http://www.gnu.org/software/gettext/gettext.html
-
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          appweb asterisk14 asterisk14-chan-capi bitlbee \
