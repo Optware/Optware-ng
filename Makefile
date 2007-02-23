@@ -168,7 +168,7 @@ COMMON_CROSS_PACKAGES = \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
 	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss \
-	libnsl libnxml \
+	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd lirc \
@@ -176,7 +176,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 madplay make man man-pages mc mcabber mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	miau microcom microperl minicom \
-	mktemp modutils monit motion \
+	mktemp moblock modutils monit motion \
 	mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
 	mpg123 mrtg msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
