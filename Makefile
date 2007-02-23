@@ -463,7 +463,7 @@ host/.configured:
 		fi; \
 		mkdir -p $(HOST_BUILD_DIR) $(HOST_STAGING_PREFIX); \
 	)
-	touch host/.configured
+	[ -e $@ ] || touch $@
 
 %-target %/.configured: 
 	[ -e $*/Makefile ] || ( \
