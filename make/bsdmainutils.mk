@@ -29,14 +29,18 @@ BSDMAINUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BSDMAINUTILS_DESCRIPTION=Small programs many people expect to find when they use a BSD-style Unix system.
 BSDMAINUTILS_SECTION=misc
 BSDMAINUTILS_PRIORITY=optional
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BSDMAINUTILS_DEPENDS=libiconv
+else
 BSDMAINUTILS_DEPENDS=
+endif
 BSDMAINUTILS_SUGGESTS=
 BSDMAINUTILS_CONFLICTS=
 
 #
 # BSDMAINUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDMAINUTILS_IPK_VERSION=2
+BSDMAINUTILS_IPK_VERSION=3
 
 #
 # BSDMAINUTILS_CONFFILES should be a list of user-editable files
@@ -54,6 +58,9 @@ BSDMAINUTILS_PATCHES=$(BSDMAINUTILS_SOURCE_DIR)/cal-weekstart-on-sunday.patch
 #
 BSDMAINUTILS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 BSDMAINUTILS_LDFLAGS=-lncurses
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BSDMAINUTILS_LDFLAGS+=-liconv
+endif
 
 #
 # BSDMAINUTILS_BUILD_DIR is the directory in which the build is done.
@@ -104,6 +111,9 @@ bsdmainutils-source: $(DL_DIR)/$(BSDMAINUTILS_SOURCE) $(BSDMAINUTILS_PATCHES)
 # shown below to make various patches to it.
 #
 $(BSDMAINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDMAINUTILS_SOURCE) $(BSDMAINUTILS_PATCHES) make/bsdmainutils.mk
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BSDMAINUTILS_DIR) $(BSDMAINUTILS_BUILD_DIR)
 	$(BSDMAINUTILS_UNZIP) $(DL_DIR)/$(BSDMAINUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -

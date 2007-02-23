@@ -15,7 +15,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
-         appweb asterisk14 asterisk14-chan-capi at bind bitlbee bsdmainutils \
+         appweb asterisk14 asterisk14-chan-capi at bind bitlbee \
          bzflag bluez-utils chillispot cdargs cherokee cups cyrus-imapd \
          dansguardian dcraw eaccelerator ecl erl-escript erl-yaws fcgi \
          fish flip ficy flac gnupg gnutls gtk \
