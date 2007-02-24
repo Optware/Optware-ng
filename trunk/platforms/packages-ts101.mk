@@ -1,6 +1,7 @@
 SPECIFIC_PACKAGES = \
 	libiconv \
 	py-ctypes \
+	ts101-kernel-modules \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 BROKEN_PACKAGES = \
