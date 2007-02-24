@@ -7,7 +7,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          appweb asterisk14 asterisk14-chan-capi atop bitlbee \
          bzflag bluez-utils chillispot cdargs cherokee \
-	 coreutils cups cyrus-imapd dansguardian dcraw eaccelerator \
+	 cups cyrus-imapd dansguardian dcraw eaccelerator \
 	 ecl fcgi fish ficy flac freeze ftpcopy git-core gnupg \
 	 gnutls gtk gphoto2 libgphoto2 hexcurse ice iksemel \
 	 jabberd jamvm kismet kissdx ldconfig libdvb libgcrypt \

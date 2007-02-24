@@ -28,13 +28,17 @@ COREUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 COREUTILS_DESCRIPTION=Bunch of heavyweight *nix core utilities
 COREUTILS_SECTION=core
 COREUTILS_PRIORITY=optional
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+COREUTILS_DEPENDS=-liconv
+else
 COREUTILS_DEPENDS=
+endif
 COREUTILS_CONFLICTS=busybox-links
 
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=1
+COREUTILS_IPK_VERSION=2
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -57,6 +61,9 @@ ifeq ($(OPTWARE_TARGET),wl500g)
 else
   COREUTILS_CPPFLAGS=
   COREUTILS_LDFLAGS=
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+COREUTILS_LDFLAGS+= -liconv
 endif
 
 #
@@ -105,7 +112,9 @@ coreutils-source: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES) $(COREUTILS_AC_CACHE)
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(COREUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
