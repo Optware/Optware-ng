@@ -19,9 +19,8 @@ BROKEN_PACKAGES = \
          rrdcollect rrdtool sablevm screen sendmail \
          ser sm snort squeak taglib \
          tethereal ushare vsftpd vte \
-	 tethereal transcode ushare vlc vsftpd vte \
          wput xauth xaw xchat xmu xt \
-         xterm zip perl-spamassassin spamassassin \
+         xterm perl-spamassassin spamassassin \
 	 Mail-SpamAssassin microcom \
 	 mod-python perl-dbd-sqlite uclibc-opt \
 	 buildroot
