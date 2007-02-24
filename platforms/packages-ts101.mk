@@ -8,14 +8,14 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          appweb atop bitlbee \
          bzflag bluez-utils chillispot cdargs \
-	 cups cyrus-imapd dansguardian dcraw eaccelerator \
+	 cups cyrus-imapd dansguardian eaccelerator \
 	 ecl fcgi fish ficy freeze ftpcopy gnupg \
 	 gtk gphoto2 libgphoto2 ice \
 	 jabberd jamvm kismet kissdx ldconfig libdvb \
- 	 mediatomb metalog memtester monotone mpd mrtg \
+ 	 mediatomb metalog memtester monotone mrtg \
          mtr mysql-connector-odbc nfs-server nfs-utils nget \
-         nload noip nzbget obexftp openser \
-         pango par2cmdline pcre postfix \
+         nload noip obexftp openser \
+         pango par2cmdline \
          pound qemu qemu-libc-i386 quagga quickie \
          rrdcollect rrdtool sablevm screen sendmail \
          ser sm snort squeak taglib \
