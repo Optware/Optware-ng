@@ -6,7 +6,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          appweb asterisk14 asterisk14-chan-capi atop bitlbee \
-         bzflag bluez-utils bsdmainutils chillispot cdargs cherokee \
+         bzflag bluez-utils chillispot cdargs cherokee \
 	 coreutils cups cyrus-imapd dansguardian dcraw eaccelerator ed \
 	 ecl fcgi fish flip ficy flac freeze ftpcopy git-core gnupg \
 	 gnutls gtk gphoto2 gzip libgphoto2 hexcurse ice id3lib iksemel \
@@ -17,10 +17,10 @@ BROKEN_PACKAGES = \
          pango par2cmdline pcre php php-apache php-fcgi postfix \
          pound python25 py-simpy qemu qemu-libc-i386 quagga quickie \
          rc rrdcollect rrdtool ruby sablevm screen sendmail \
-         ser sm snort snownews squeak swi-prolog taglib \
+         ser sm snort snownews squeak taglib \
          tethereal transcode upslug2 ushare vlc vsftpd vte \
          w3m wput xauth xaw xchat xmu xt \
          xterm zip perl-spamassassin spamassassin \
-	 libnetfilter-queue libnfnetlink lsof Mail-SpamAssassin man microcom \
-	 moblock mod-python perl-dbd-sqlite rcs vim uclibc-opt \
-	 buildroot lha \
+	 lsof Mail-SpamAssassin microcom \
+	 mod-python perl-dbd-sqlite rcs vim uclibc-opt \
+	 buildroot lha
