@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
          appweb asterisk14 asterisk14-chan-capi atop bitlbee \
          bzflag bluez-utils chillispot cdargs cherokee \
 	 cups cyrus-imapd dansguardian dcraw eaccelerator \
-	 ecl fcgi fish ficy flac freeze ftpcopy git-core gnupg \
+	 ecl fcgi fish ficy flac freeze ftpcopy gnupg \
 	 gnutls gtk gphoto2 libgphoto2 hexcurse ice iksemel \
 	 jabberd jamvm kismet kissdx ldconfig libdvb libgcrypt \
  	 lighttpd loudmouth mediatomb metalog memtester monotone mpd mrtg \

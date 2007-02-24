@@ -31,13 +31,16 @@ GIT-CORE_DESCRIPTION=GIT is a "directory tree content manager" that can be used 
 GIT-CORE_SECTION=net
 GIT-CORE_PRIORITY=optional
 GIT-CORE_DEPENDS=zlib, openssl, libcurl, diffutils, rcs, expat
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GIT-CORE_DEPENDS+=, libiconv
+endif
 GIT-CORE_SUGGESTS=
 GIT-CORE_CONFLICTS=
 
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=1
+GIT-CORE_IPK_VERSION=2
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
@@ -55,7 +58,11 @@ GIT-CORE_PATCHES=$(GIT-CORE_SOURCE_DIR)/Makefile.patch \
 # compilation or linking flags, then list them here.
 #
 GIT-CORE_CPPFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GIT-CORE_LDFLAGS=-liconv
+else
 GIT-CORE_LDFLAGS=
+endif
 
 #
 # GIT-CORE_BUILD_DIR is the directory in which the build is done.
@@ -107,6 +114,9 @@ git-core-source: $(DL_DIR)/$(GIT-CORE_SOURCE) $(GIT-CORE_PATCHES)
 #
 $(GIT-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT-CORE_SOURCE) $(GIT-CORE_PATCHES)
 	$(MAKE) zlib-stage openssl-stage libcurl-stage expat-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GIT-CORE_DIR) $(GIT-CORE_BUILD_DIR)
 	$(GIT-CORE_UNZIP) $(DL_DIR)/$(GIT-CORE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GIT-CORE_PATCHES)" ; \
