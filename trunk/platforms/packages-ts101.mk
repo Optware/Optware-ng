@@ -23,3 +23,4 @@ BROKEN_PACKAGES = \
          xterm zip perl-spamassassin spamassassin \
 	 libnetfilter-queue libnfnetlink lsof Mail-SpamAssassin man microcom \
 	 moblock mod-python perl-dbd-sqlite rcs vim uclibc-opt \
+	 buildroot \
