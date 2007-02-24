@@ -52,7 +52,7 @@ LIBGCRYPT_CONFFILES=#/opt/etc/libgcrypt.conf /opt/etc/init.d/SXXlibgcrypt
 # LIBGCRYPT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET),ds101g)
+ifeq ($(TARGET_ARCH),powerpc)
 LIBGCRYPT_PATCHES= $(LIBGCRYPT_SOURCE_DIR)/symbol-underscore.patch
 endif
 #
