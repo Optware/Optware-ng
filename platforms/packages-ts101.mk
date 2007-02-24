@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
          rc rrdcollect rrdtool ruby sablevm screen sendmail \
          ser sm snort snownews squeak taglib \
          tethereal transcode upslug2 ushare vlc vsftpd vte \
-         w3m wput xauth xaw xchat xmu xt \
+         wput xauth xaw xchat xmu xt \
          xterm zip perl-spamassassin spamassassin \
 	 lsof Mail-SpamAssassin microcom \
 	 mod-python perl-dbd-sqlite rcs vim uclibc-opt \
