@@ -20,4 +20,4 @@ BROKEN_PACKAGES = \
          ser sm snort snownews squeak swi-prolog taglib \
          tethereal transcode upslug2 ushare vlc vsftpd vte \
          w3m wput xauth xaw xchat xmu xt \
-         xterm zip
+         xterm zip perl-spamassassin spamassassin \
