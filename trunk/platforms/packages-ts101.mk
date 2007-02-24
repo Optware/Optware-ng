@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
          nload noip ntop nzbget obexftp opencdk openser \
          pango par2cmdline pcre php php-apache php-fcgi postfix \
          pound qemu qemu-libc-i386 quagga quickie \
-         rc rrdcollect rrdtool ruby sablevm screen sendmail \
+         rc rrdcollect rrdtool sablevm screen sendmail \
          ser sm snort squeak taglib \
          tethereal transcode upslug2 ushare vlc vsftpd vte \
          wput xauth xaw xchat xmu xt \
