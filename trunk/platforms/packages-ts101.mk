@@ -17,7 +17,7 @@ BROKEN_PACKAGES = \
          pango par2cmdline pcre php php-apache php-fcgi postfix \
          pound python25 py-simpy qemu qemu-libc-i386 quagga quickie \
          rc rrdcollect rrdtool ruby sablevm screen sendmail \
-         ser sm snort snownews squeak taglib \
+         ser sm snort squeak taglib \
          tethereal transcode upslug2 ushare vlc vsftpd vte \
          wput xauth xaw xchat xmu xt \
          xterm zip perl-spamassassin spamassassin \
