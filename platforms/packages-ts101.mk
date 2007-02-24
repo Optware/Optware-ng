@@ -22,4 +22,4 @@ BROKEN_PACKAGES = \
          w3m wput xauth xaw xchat xmu xt \
          xterm zip perl-spamassassin spamassassin \
 	 libnetfilter-queue libnfnetlink lsof Mail-SpamAssassin man microcom \
-	 moblock mod-python perl-dbd-sqlite rcs vim \
+	 moblock mod-python perl-dbd-sqlite rcs vim uclibc-opt \
