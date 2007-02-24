@@ -35,12 +35,17 @@ SNOWNEWS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SNOWNEWS_DESCRIPTION=Text mode RSS newsreader for Linux and Unix
 SNOWNEWS_SECTION=misc
 SNOWNEWS_PRIORITY=optional
-SNOWNEWS_DEPENDS=libxml2, ncurses, gconv-modules, gettext
+SNOWNEWS_DEPENDS=libxml2, ncurses, gettext
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+SNOWNEWS_DEPENDS+=, gconv-modules
+else
+SNOWNEWS_DEPENDS+=, libiconv
+endif
 
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=5
+SNOWNEWS_IPK_VERSION=6
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
@@ -61,6 +66,9 @@ ifeq ($(LIBC_STYLE), uclibc)
 SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lintl
 else
 SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+SNOWNEWS_LDFLAGS+= -liconv
 endif
 
 #
@@ -110,7 +118,12 @@ snownews-source: $(DL_DIR)/$(SNOWNEWS_SOURCE) $(SNOWNEWS_PATCHES)
 #
 $(SNOWNEWS_BUILD_DIR)/.configured: $(DL_DIR)/$(SNOWNEWS_SOURCE) \
 		$(SNOWNEWS_PATCHES) make/snownews.mk
-	$(MAKE) libxml2-stage ncurses-stage gconv-modules-stage
+	$(MAKE) libxml2-stage ncurses-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+else
+	$(MAKE) gconv-modules-stage
+endif
 	rm -rf $(BUILD_DIR)/$(SNOWNEWS_DIR) $(SNOWNEWS_BUILD_DIR)
 	$(SNOWNEWS_UNZIP) $(DL_DIR)/$(SNOWNEWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SNOWNEWS_PATCHES) | patch -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p1
