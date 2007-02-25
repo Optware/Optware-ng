@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          atop bitlbee \
          chillispot \
-	 ecl freeze ftpcopy gnupg \
+	 ecl freeze ftpcopy \
          openser \
          ser squeak \
          tethereal ushare vsftpd \
