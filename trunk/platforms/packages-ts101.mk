@@ -9,10 +9,7 @@ BROKEN_PACKAGES = \
          atop bitlbee \
          chillispot \
 	 ecl freeze ftpcopy gnupg \
-	 gtk ice \
          openser \
-         pango \
-         screen \
          ser squeak \
          tethereal ushare vsftpd \
 	 uclibc-opt \
