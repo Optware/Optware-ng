@@ -153,7 +153,6 @@ openobex: $(OPENOBEX_BUILD_DIR)/.built
 $(OPENOBEX_BUILD_DIR)/.staged: $(OPENOBEX_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(OPENOBEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's|-I$$includedir|-I$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/openobex-config
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openobex.pc
 	rm -f $(STAGING_LIB_DIR)/libopenobex.la
 	touch $@
