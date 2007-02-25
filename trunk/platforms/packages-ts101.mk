@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
          bluez-utils chillispot \
 	 ecl freeze ftpcopy gnupg \
 	 gtk ice \
- 	 mediatomb \
          obexftp openobex openser \
          pango \
          screen \
