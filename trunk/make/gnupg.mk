@@ -37,7 +37,7 @@ GNUPG_CONFLICTS=
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=2
+GNUPG_IPK_VERSION=3
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -70,14 +70,12 @@ GNUPG_SOURCE_DIR=$(SOURCE_DIR)/gnupg
 GNUPG_IPK_DIR=$(BUILD_DIR)/gnupg-$(GNUPG_VERSION)-ipk
 GNUPG_IPK=$(BUILD_DIR)/gnupg_$(GNUPG_VERSION)-$(GNUPG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-# Disable assembly for the ds101g
-ifeq ($(OPTWARE_TARGET), ds101g) 
-GNUPG_CFG_OPTS = --disable-asm
-endif
-
 # uclibc 0.9.28 is missing dn_skipname() impleemtation
 ifeq ($(LIBC_STYLE), uclibc)
 GNUPG_CFG_OPTS= --disable-dns-pka --disable-dns-cert --disable-dns-srv
+endif
+ifeq ($(TARGET_ARCH), powerpc)
+GNUPG_CFG_ENV=ac_cv_sys_symbol_underscore=no
 endif
 
 .PHONY: gnupg-source gnupg-unpack gnupg gnupg-stage gnupg-ipk gnupg-clean gnupg-dirclean gnupg-check
@@ -121,6 +119,7 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNUPG_LDFLAGS)" \
+		$(GNUPG_CFG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
