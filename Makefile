@@ -140,7 +140,8 @@ COMMON_CROSS_PACKAGES = \
 	cabextract calcurse catdoc ccxstream chillispot coreutils cpio \
 	cron cdargs \
 	cherokee chrpath classpath clamav clearsilver \
-	clips cogito connect cscope ctags ctcs ctorrent cups cvs \
+	clips cogito connect cscope ctags ctcs ctorrent ctrlproxy \
+	cups cvs \
 	cyrus-imapd cyrus-sasl \
 	dansguardian dash dbus dcraw denyhosts dev-pts dict digitemp \
 	dircproxy distcc dhcp diffutils \
