@@ -43,6 +43,7 @@ SCREEN_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 SCREEN_PATCHES=$(SCREEN_SOURCE_DIR)/configure.patch 
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -63,6 +64,8 @@ SCREEN_BUILD_DIR=$(BUILD_DIR)/screen
 SCREEN_SOURCE_DIR=$(SOURCE_DIR)/screen
 SCREEN_IPK_DIR=$(BUILD_DIR)/screen-$(SCREEN_VERSION)-ipk
 SCREEN_IPK=$(BUILD_DIR)/screen_$(SCREEN_VERSION)-$(SCREEN_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: screen-source screen-unpack screen screen-stage screen-ipk screen-clean screen-dirclean screen-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -111,7 +114,13 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 		--prefix=/opt \
 	)
 ifeq ($(LIBC_STYLE),uclibc)
-		sed -ie '/stropts.h/d' $(SCREEN_BUILD_DIR)/pty.c
+		sed -i -e '/stropts.h/d' $(SCREEN_BUILD_DIR)/pty.c
+endif
+ifeq ($(OPTWARE_TARGET), ts101)
+	sed -i -e 's/sched.h/screen_sched.h/g' \
+		$(SCREEN_BUILD_DIR)/Makefile \
+		$(SCREEN_BUILD_DIR)/screen.h
+	mv $(SCREEN_BUILD_DIR)/sched.h $(SCREEN_BUILD_DIR)/screen_sched.h
 endif
 	touch $(SCREEN_BUILD_DIR)/.configured
 
@@ -204,3 +213,9 @@ screen-clean:
 #
 screen-dirclean:
 	rm -rf $(BUILD_DIR)/$(SCREEN_DIR) $(SCREEN_BUILD_DIR) $(SCREEN_IPK_DIR) $(SCREEN_IPK)
+
+#
+# Some sanity check for the package.
+#
+screen-check: $(SCREEN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SCREEN_IPK)
