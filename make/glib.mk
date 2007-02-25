@@ -21,14 +21,18 @@ GLIB_MAINTAINER=giel <giel@caffeinetrip.com>
 GLIB_DESCRIPTION=The GLib library of C routines.
 GLIB_SECTION=lib
 GLIB_PRIORITY=optional
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GLIB_DEPENDS=libiconv
+else
 GLIB_DEPENDS=
+endif
 GLIB_SUGGESTS=
 GLIB_CONFLICTS=
 
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=3
+GLIB_IPK_VERSION=4
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -51,6 +55,9 @@ GLIB_LOCALES=
 #
 GLIB_CPPFLAGS=
 GLIB_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GLIB_CONFIG_OPT=--with-libiconv=gnu
+endif
 
 #
 # GLIB_BUILD_DIR is the directory in which the build is done.
@@ -96,6 +103,9 @@ glib-source: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(GLIB_PATCHES) | patch -d $(BUILD_DIR)/$(GLIB_DIR) -p1
@@ -112,6 +122,7 @@ $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--cache-file=arm.cache \
 		--prefix=/opt \
+		$(GLIB_CONFIG_OPT) \
 		--disable-nls \
 		--disable-static \
 	)
