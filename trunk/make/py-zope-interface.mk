@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-ZOPE-INTERFACE_VERSION=3.3.0
+PY-ZOPE-INTERFACE_VERSION=3.3.0.1
 PY-ZOPE-INTERFACE_SITE=http://cheeseshop.python.org/packages/source/z/zope.interface
 PY-ZOPE-INTERFACE_SOURCE=zope.interface-$(PY-ZOPE-INTERFACE_VERSION).tar.gz
 PY-ZOPE-INTERFACE_DIR=zope.interface-$(PY-ZOPE-INTERFACE_VERSION)
@@ -150,9 +150,11 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configure
 	rm -f $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.4; \
 	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.5; \
 	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 
