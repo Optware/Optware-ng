@@ -31,13 +31,18 @@ KISSDX_DESCRIPTION=kissdx is a PC-Link clone for KiSS media players with added f
 KISSDX_SECTION=net
 KISSDX_PRIORITY=optional
 KISSDX_DEPENDS=libdvdread,libjpeg
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ifneq ($(OPTWARE_TARGET),wl500g)
+KISSDX_DEPENDS+=, libiconv
+endif
+endif
 KISSDX_SUGGESTS=gconv-modules
 KISSDX_CONFLICTS=
 
 #
 # KISSDX_IPK_VERSION should be incremented when the ipk changes.
 #
-KISSDX_IPK_VERSION=1
+KISSDX_IPK_VERSION=2
 
 #
 # KISSDX_CONFFILES should be a list of user-editable files
@@ -59,6 +64,11 @@ endif
 #
 KISSDX_CPPFLAGS=
 KISSDX_LDFLAGS=-s
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ifneq ($(OPTWARE_TARGET),wl500g)
+KISSDX_LDFLAGS+= -liconv
+endif
+endif
 
 #
 # KISSDX_BUILD_DIR is the directory in which the build is done.
@@ -110,6 +120,11 @@ kissdx-source: $(DL_DIR)/$(KISSDX_SOURCE) $(KISSDX_PATCHES)
 #
 $(KISSDX_BUILD_DIR)/.configured: $(DL_DIR)/$(KISSDX_SOURCE) $(KISSDX_PATCHES) make/kissdx.mk
 	$(MAKE) libdvdread-stage libjpeg-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ifneq ($(OPTWARE_TARGET),wl500g)
+	$(MAKE) libiconv-stage
+endif
+endif
 	rm -rf $(BUILD_DIR)/$(KISSDX_DIR) $(KISSDX_BUILD_DIR)
 	$(KISSDX_UNZIP) $(DL_DIR)/$(KISSDX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(KISSDX_PATCHES)" ; \
