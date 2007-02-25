@@ -30,13 +30,16 @@ OBEXFTP_DESCRIPTION=Transfer files to/from any OBEX enabled device (most likely 
 OBEXFTP_SECTION=net
 OBEXFTP_PRIORITY=optional
 OBEXFTP_DEPENDS=bluez-libs, openobex
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+OBEXFTP_DEPENDS+=, libiconv
+endif
 OBEXFTP_SUGGESTS=
 OBEXFTP_CONFLICTS=
 
 #
 # OBEXFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-OBEXFTP_IPK_VERSION=1
+OBEXFTP_IPK_VERSION=2
 
 #
 # OBEXFTP_CONFFILES should be a list of user-editable files
@@ -54,6 +57,9 @@ OBEXFTP_IPK_VERSION=1
 #
 OBEXFTP_CPPFLAGS=
 OBEXFTP_LDFLAGS=-lbluetooth
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+OBEXFTP_LDFLAGS+= -liconv
+endif
 
 #
 # OBEXFTP_BUILD_DIR is the directory in which the build is done.
@@ -107,7 +113,11 @@ obexftp-source: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES)
 #
 $(OBEXFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES) make/obexftp.mk
 	$(MAKE) bluez-libs-stage
+	$(MAKE) libopensync-stage
 	$(MAKE) openobex-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(OBEXFTP_DIR) $(OBEXFTP_BUILD_DIR)
 	$(OBEXFTP_UNZIP) $(DL_DIR)/$(OBEXFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OBEXFTP_PATCHES)" ; \

@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
          chillispot \
 	 ecl freeze ftpcopy gnupg \
 	 gtk ice \
-         obexftp openser \
+         openser \
          pango \
          screen \
          ser squeak \
