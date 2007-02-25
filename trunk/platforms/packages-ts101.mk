@@ -6,11 +6,15 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
-         atop bitlbee \
+         atop \
          chillispot \
-	 ecl freeze ftpcopy \
+	 ecl \
+	 freeze \
+	 ftpcopy \
          openser \
-         ser squeak \
-         tethereal ushare vsftpd \
+         ser \
+	 squeak \
+         ushare \
+	 vsftpd \
 	 uclibc-opt \
 	 buildroot
