@@ -7,10 +7,10 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          atop bitlbee \
-         bluez-utils chillispot \
+         chillispot \
 	 ecl freeze ftpcopy gnupg \
 	 gtk ice \
-         obexftp openobex openser \
+         obexftp openser \
          pango \
          screen \
          ser squeak \
