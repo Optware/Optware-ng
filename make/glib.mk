@@ -32,7 +32,7 @@ GLIB_CONFLICTS=
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=4
+GLIB_IPK_VERSION=5
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -153,6 +153,7 @@ glib: $(GLIB_BUILD_DIR)/.built
 $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
+	install $(GLIB_BUILD_DIR)/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
 	rm -rf $(STAGING_DIR)/opt/lib/libglib-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
