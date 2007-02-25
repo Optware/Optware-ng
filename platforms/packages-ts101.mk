@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	 gtk ice \
 	 kissdx \
  	 mediatomb \
-         obexftp openser \
+         obexftp openobex openser \
          pango \
          screen \
          ser squeak \
