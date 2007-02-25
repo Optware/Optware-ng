@@ -37,15 +37,15 @@ SNOWNEWS_SECTION=misc
 SNOWNEWS_PRIORITY=optional
 SNOWNEWS_DEPENDS=libxml2, ncurses, gettext
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-SNOWNEWS_DEPENDS+=, gconv-modules
-else
 SNOWNEWS_DEPENDS+=, libiconv
+else
+SNOWNEWS_DEPENDS+=, gconv-modules
 endif
 
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=6
+SNOWNEWS_IPK_VERSION=7
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
