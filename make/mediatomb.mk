@@ -47,7 +47,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=2
+MEDIATOMB_IPK_VERSION=3
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -66,6 +66,9 @@ MEDIATOMB_IPK_VERSION=2
 MEDIATOMB_CPPFLAGS=
 ifeq ($(LIBC_STYLE), uclibc)
 MEDIATOMB_LDFLAGS=-lm
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MEDIATOMB_LDFLAGS+= -liconv
 endif
 
 ifneq (id3lib, $(filter id3lib, $(PACKAGES)))
@@ -159,7 +162,7 @@ endif
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
-ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ifeq ($(OPTWARE_TARGET), wl500g)
 	sed -i -e 's/defined(__FreeBSD__) || defined(__APPLE__) || defined(SOLARIS) || defined(__CYGWIN__)/1/' \
 		$(MEDIATOMB_BUILD_DIR)/mediatomb/src/string_converter.cc
 endif
