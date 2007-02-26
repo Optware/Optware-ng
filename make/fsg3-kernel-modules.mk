@@ -16,14 +16,20 @@ FSG3-KERNEL-MODULES_PRIORITY=optional
 FSG3-KERNEL-MODULES_DEPENDS=
 FSG3-KERNEL-MODULES_SUGGESTS=
 FSG3-KERNEL-MODULES_CONFLICTS=
-FSG3-KERNEL-MODULES=mii tun usbnet usbserial ftdio_sio pl2303 ip_conntrack_ftp ip_nat_ftp
+FSG3-KERNEL-MODULES= \
+	mii \
+	tun \
+	usbnet \
+	usbserial ftdio_sio pl2303 mct_u232 \
+	ip_conntrack_ftp ip_nat_ftp \
+	bluetooth hci_usb
 
 # videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
 
 #
 # FSG3-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-FSG3-KERNEL-MODULES_IPK_VERSION=1
+FSG3-KERNEL-MODULES_IPK_VERSION=2
 
 #
 # FSG3-KERNEL-MODULES_CONFFILES should be a list of user-editable files
