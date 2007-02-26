@@ -1195,7 +1195,10 @@ CONFIG_USB_OHCI=y
 #
 # CONFIG_USB_AUDIO is not set
 # CONFIG_USB_EMI26 is not set
-# CONFIG_USB_BLUETOOTH is not set
+
+#
+#   USB Bluetooth can only be used with disabled Bluetooth subsystem
+#
 # CONFIG_USB_MIDI is not set
 CONFIG_USB_STORAGE=y
 # CONFIG_USB_STORAGE_DEBUG is not set
@@ -1302,7 +1305,27 @@ CONFIG_USB_SERIAL_OMNINET=m
 #
 # Bluetooth support
 #
-# CONFIG_BLUEZ is not set
+CONFIG_BLUEZ=y
+CONFIG_BLUEZ_L2CAP=m
+CONFIG_BLUEZ_SCO=m
+CONFIG_BLUEZ_RFCOMM=m
+CONFIG_BLUEZ_RFCOMM_TTY=y
+CONFIG_BLUEZ_BNEP=m
+CONFIG_BLUEZ_BNEP_MC_FILTER=y
+CONFIG_BLUEZ_BNEP_PROTO_FILTER=y
+
+#
+# Bluetooth device drivers
+#
+CONFIG_BLUEZ_HCIUSB=m
+CONFIG_BLUEZ_HCIUSB_SCO=y
+# CONFIG_BLUEZ_HCIUART is not set
+# CONFIG_BLUEZ_HCIBFUSB is not set
+# CONFIG_BLUEZ_HCIDTL1 is not set
+# CONFIG_BLUEZ_HCIBT3C is not set
+# CONFIG_BLUEZ_HCIBLUECARD is not set
+# CONFIG_BLUEZ_HCIBTUART is not set
+# CONFIG_BLUEZ_HCIVHCI is not set
 
 #
 # Kernel hacking
