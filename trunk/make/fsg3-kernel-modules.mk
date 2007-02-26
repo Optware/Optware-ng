@@ -21,15 +21,14 @@ FSG3-KERNEL-MODULES= \
 	tun \
 	usbnet \
 	usbserial ftdi_sio pl2303 mct_u232 \
-	ip_conntrack_ftp ip_nat_ftp \
-	hci_usb bnep rfcomm l2cap sco
+	ip_conntrack_ftp ip_nat_ftp
 
 # videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
 
 #
 # FSG3-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-FSG3-KERNEL-MODULES_IPK_VERSION=3
+FSG3-KERNEL-MODULES_IPK_VERSION=4
 
 #
 # FSG3-KERNEL-MODULES_CONFFILES should be a list of user-editable files
