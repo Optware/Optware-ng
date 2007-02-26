@@ -83,7 +83,7 @@ NOIP_IPK=$(BUILD_DIR)/noip_$(NOIP_VERSION)-$(NOIP_IPK_VERSION)_$(TARGET_ARCH).ip
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(NOIP_SOURCE): make/noip.mk
+$(DL_DIR)/$(NOIP_SOURCE):
 	rm -f $(DL_DIR)/$(NOIP_TARBALL) $(DL_DIR)/$(NOIP_SOURCE)
 	$(WGET) -P $(DL_DIR) $(NOIP_SITE)/$(NOIP_TARBALL) && \
 	[ `md5sum $(DL_DIR)/$(NOIP_TARBALL) | cut -f1 -d" "` = $(NOIP_TARBALL_MD5) ] && \
