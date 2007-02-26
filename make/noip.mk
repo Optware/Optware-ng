@@ -27,8 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NOIP_SITE=http://www.no-ip.com/client/linux
-NOIP_VERSION=2.1.3
-NOIP_SOURCE=noip-duc-linux.tar.gz
+NOIP_VERSION=2.1.4
+NOIP_TARBALL=noip-duc-linux.tar.gz
+NOIP_TARBALL_MD5=d65e221016a61cd4e412242c34c71ff1
+NOIP_SOURCE=noip-$(NOIP_VERSION).tar.gz
 NOIP_DIR=noip-$(NOIP_VERSION)
 NOIP_UNZIP=zcat
 NOIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -75,14 +77,18 @@ NOIP_SOURCE_DIR=$(SOURCE_DIR)/noip
 NOIP_IPK_DIR=$(BUILD_DIR)/noip-$(NOIP_VERSION)-ipk
 NOIP_IPK=$(BUILD_DIR)/noip_$(NOIP_VERSION)-$(NOIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: noip-source noip-unpack noip noip-stage noip-ipk noip-clean noip-dirclean noip-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NOIP_SOURCE): make/noip.mk
-	rm -f $(DL_DIR)/$(NOIP_SOURCE)
-	$(WGET) -P $(DL_DIR) $(NOIP_SITE)/$(NOIP_SOURCE)
-	touch $(DL_DIR)/$(NOIP_SOURCE)
+	rm -f $(DL_DIR)/$(NOIP_TARBALL) $(DL_DIR)/$(NOIP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(NOIP_SITE)/$(NOIP_TARBALL) && \
+	[ `md5sum $(DL_DIR)/$(NOIP_TARBALL) | cut -f1 -d" "` = $(NOIP_TARBALL_MD5) ] && \
+	mv $(DL_DIR)/$(NOIP_TARBALL) $(DL_DIR)/$(NOIP_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NOIP_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,7 +115,7 @@ noip-source: $(DL_DIR)/$(NOIP_SOURCE) $(NOIP_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NOIP_BUILD_DIR)/.configured: $(DL_DIR)/$(NOIP_SOURCE) $(NOIP_PATCHES)
+$(NOIP_BUILD_DIR)/.configured: $(DL_DIR)/$(NOIP_SOURCE) $(NOIP_PATCHES) make/noip.mk
 	rm -rf $(BUILD_DIR)/$(NOIP_DIR) $(NOIP_BUILD_DIR)
 	$(NOIP_UNZIP) $(DL_DIR)/$(NOIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NOIP_PATCHES)" ; \
@@ -172,6 +178,7 @@ $(NOIP_IPK): $(NOIP_BUILD_DIR)/.built
 	install -d $(NOIP_IPK_DIR)/opt/bin
 	install -m 755 $(NOIP_BUILD_DIR)/noip2 $(NOIP_IPK_DIR)/opt/bin
 	install -d $(NOIP_IPK_DIR)/opt/etc/init.d
+	$(STRIP_COMMAND) $(NOIP_IPK_DIR)/opt/bin/noip2
 #	install -m 755 $(NOIP_SOURCE_DIR)/rc.noip $(NOIP_IPK_DIR)/opt/etc/init.d/SXXnoip
 	$(MAKE) $(NOIP_IPK_DIR)/CONTROL/control
 #	install -m 755 $(NOIP_SOURCE_DIR)/postinst $(NOIP_IPK_DIR)/CONTROL/postinst
@@ -196,3 +203,9 @@ noip-clean:
 #
 noip-dirclean:
 	rm -rf $(BUILD_DIR)/$(NOIP_DIR) $(NOIP_BUILD_DIR) $(NOIP_IPK_DIR) $(NOIP_IPK)
+
+#
+# Some sanity check for the package.
+#
+noip-check: $(NOIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NOIP_IPK)
