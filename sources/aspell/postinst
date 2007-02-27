@@ -1,0 +1,14 @@
+#!/bin/sh
+
+
+echo "Available dictionaries at ftp://ftp.gnu.org/gnu/aspell/dict/0index.html"
+echo "Sample English dictionary install for aspell:"
+echo "     cd /opt/tmp"
+echo "     ipkg install make"
+echo "     wget ftp://ftp.gnu.org/gnu/aspell/dict/en/aspell6-en-6.0-0.tar.bz2"
+echo "     tar xvjf aspell6-en-6.0-0.tar.bz2"
+echo "     cd aspell6-en-6.0-0"
+echo "     ./configure"
+echo "     make"
+echo "     make install"
+echo "Note that some dictionaries require lot of memory for word compression."

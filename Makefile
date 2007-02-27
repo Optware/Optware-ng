@@ -131,7 +131,7 @@ ASTERISK_PACKAGES = \
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule antinat appweb \
-	apache apr apr-util arc arpwatch \
+	apache apr apr-util arc arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake avahi \
 	bash bc bind bip bison bitchx bitlbee bogofilter \
