@@ -183,7 +183,7 @@ COMMON_CROSS_PACKAGES = \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
-	ncftp ncurses ncursesw \
+	ncftp ncurses ncursesw nemesis \
 	neon net-snmp net-tools netatalk netcat nethack netio \
 	nfs-server nfs-utils nget nmap nload noip nrpe \
 	ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
