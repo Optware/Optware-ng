@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MULTITAIL_SITE=http://www.vanheusden.com/multitail
-MULTITAIL_VERSION=4.3.0
+MULTITAIL_VERSION=4.3.1
 MULTITAIL_SOURCE=multitail-$(MULTITAIL_VERSION).tgz
 MULTITAIL_DIR=multitail-$(MULTITAIL_VERSION)
 MULTITAIL_UNZIP=zcat
@@ -36,7 +36,7 @@ MULTITAIL_CONFLICTS=
 #
 # MULTITAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-MULTITAIL_IPK_VERSION=2
+MULTITAIL_IPK_VERSION=1
 
 #
 # MULTITAIL_CONFFILES should be a list of user-editable files
