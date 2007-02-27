@@ -114,6 +114,10 @@ $(MULTITAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(MULTITAIL_SOURCE) $(MULTITAIL_PA
 	if test "$(BUILD_DIR)/$(MULTITAIL_DIR)" != "$(MULTITAIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MULTITAIL_DIR) $(MULTITAIL_BUILD_DIR) ; \
 	fi
+ifeq ($(LIBC_STYLE), uclibc)
+# defined(__GLIBC__) should be 0 for uclibc toolchains, but it is not?
+	sed -i -e 's|defined(__GLIBC__)|0|' $(MULTITAIL_BUILD_DIR)/error.c
+endif
 #	(cd $(MULTITAIL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MULTITAIL_CPPFLAGS)" \
