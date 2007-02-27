@@ -35,12 +35,12 @@ fi
 case "$rc" in
     start)
 	echo -n "Starting PostgreSQL: "
-	su - $PGUSER -c "$DAEMON -D '$PGDATA' &" >>$PGLOG 2>&1
+	/opt/bin/coreutils-su - $PGUSER -c "$DAEMON -D '$PGDATA' &" >>$PGLOG 2>&1
 	echo ok
         ;;
     stop)
 	echo -n "Stopping PostgreSQL: "
-	su - $PGUSER -c "$PGCTL stop -D '$PGDATA' -s -m fast"
+	/opt/bin/coreutils-su - $PGUSER -c "$PGCTL stop -D '$PGDATA' -s -m fast"
 	echo ok
         ;;
     restart)
@@ -53,10 +53,10 @@ case "$rc" in
         if [ -x $prefix/bin/gzip ]; then
             PG_DUMP_FILE=$PG_DUMP_FILE.gz
             echo -n "PostgreSQL pg_dumpall and gzip to $PG_DUMP_FILE "
-            su - $PGUSER -c "$prefix/bin/pg_dumpall | $prefix/bin/gzip -c > $PG_DUMP_FILE"
+            /opt/bin/coreutils-su - $PGUSER -c "$prefix/bin/pg_dumpall | $prefix/bin/gzip -c > $PG_DUMP_FILE"
         else
             echo -n "PostgreSQL pg_dumpall to $PG_DUMP_FILE "
-            su - $PGUSER -c "$prefix/bin/pg_dumpall > $PG_DUMP_FILE"
+            /opt/bin/coreutils-su - $PGUSER -c "$prefix/bin/pg_dumpall > $PG_DUMP_FILE"
         fi
 	echo ok
         ;;
