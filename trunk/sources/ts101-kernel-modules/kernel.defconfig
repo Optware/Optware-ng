@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.12.3
-# Mon Jan 16 17:20:50 2006
+# Wed Feb 28 16:45:14 2007
 #
 CONFIG_MMU=y
 CONFIG_GENERIC_HARDIRQS=y
@@ -125,6 +125,7 @@ CONFIG_MPC10X_OPENPIC=y
 # CONFIG_HIGHMEM is not set
 CONFIG_BINFMT_ELF=y
 CONFIG_BINFMT_MISC=m
+# CONFIG_QNAP_UART_CLK_100 is not set
 CONFIG_CMDLINE_BOOL=y
 CONFIG_CMDLINE="console=ttyS0,115200n8 root=/dev/ram"
 CONFIG_ISA_DMA_API=y
@@ -706,6 +707,7 @@ CONFIG_I2C_MPC=y
 # CONFIG_SENSORS_RTC8564 is not set
 # CONFIG_SENSORS_M41T00 is not set
 CONFIG_SENSORS_RS5C372A=y
+# CONFIG_SENSORS_S35390A is not set
 # CONFIG_I2C_DEBUG_CORE is not set
 # CONFIG_I2C_DEBUG_ALGO is not set
 # CONFIG_I2C_DEBUG_BUS is not set
