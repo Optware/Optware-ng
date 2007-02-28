@@ -34,7 +34,7 @@ NTOP_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 NTOP_DESCRIPTION=Network monitoring software
 NTOP_SECTION=net
 NTOP_PRIORITY=optional
-NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool
+NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre
 
 # CVS info
 NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
@@ -43,7 +43,7 @@ NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=2
+NTOP_IPK_VERSION=3
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -134,7 +134,7 @@ ntop-source: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 # 
 $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
-	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage libgd-stage rrdtool-stage
+	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage libgd-stage rrdtool-stage pcre-stage
 #	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
 #	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(NTOP_PATCHES) | patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1
