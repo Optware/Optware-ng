@@ -32,17 +32,17 @@ PYTHON25_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON25_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON25_SECTION=misc
 PYTHON25_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET),wl500g)
-PYTHON25_DEPENDS=libstdc++, readline, ncursesw, bzip2, openssl, libdb, zlib, sqlite
-else
-PYTHON25_DEPENDS=libstdc++, readline, ncurses, bzip2, openssl, libdb, zlib, sqlite
+PYTHON25_DEPENDS=readline, bzip2, openssl, libdb, zlib, sqlite
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+PYTHON25_DEPENDS+=, libstdc++
 endif
+PYTHON25_DEPENDS+=, $(NCURSES_FOR_OPTWARE_TARGET)
 PYTHON25_SUGGESTS=
 
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=3
+PYTHON25_IPK_VERSION=4
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -89,8 +89,8 @@ PYTHON25_PATCHES=\
 	$(PYTHON25_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON25_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 
-ifeq ($(OPTWARE_TARGET),wl500g)
-PYTHON25_PATCHES:=$(PYTHON25_PATCHES) $(PYTHON25_SOURCE_DIR)/disable-ncursesw.patch
+ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
+PYTHON25_PATCHES+= $(PYTHON25_SOURCE_DIR)/disable-ncursesw.patch
 endif
 
 .PHONY: python25-source python25-unpack python25 python25-stage python25-ipk python25-clean python25-dirclean python25-check python25-host-stage
@@ -124,12 +124,12 @@ python25-source: $(DL_DIR)/$(PYTHON25_SOURCE) $(PYTHON25_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PYTHON25_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON25_SOURCE) $(PYTHON25_PATCHES) # make/python25.mk
-ifneq ($(OPTWARE_TARGET),wl500g)
-	make bzip2-stage readline-stage ncursesw-stage openssl-stage libdb-stage sqlite-stage zlib-stage
-else
-	make bzip2-stage readline-stage ncurses-stage openssl-stage libdb-stage sqlite-stage zlib-stage
+$(PYTHON25_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON25_SOURCE) $(PYTHON25_PATCHES) make/python25.mk
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
 endif
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage
+	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON25_DIR) $(PYTHON25_BUILD_DIR)
 	$(PYTHON25_UNZIP) $(DL_DIR)/$(PYTHON25_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON25_DIR); \
@@ -188,20 +188,20 @@ $(PYTHON25_BUILD_DIR)/.staged: $(PYTHON25_BUILD_DIR)/.built
 
 python25-stage: $(PYTHON25_BUILD_DIR)/.staged
 
-$(PYTHON25_BUILD_DIR)/.hoststaged: host/.configured $(PYTHON25_BUILD_DIR)/.built
+$(HOST_STAGING_PREFIX)/bin/python2.5: host/.configured make/python25.mk
+	$(MAKE) $(PYTHON25_BUILD_DIR)/.built
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install
 	rm -f $(HOST_STAGING_PREFIX)/bin/python
-	touch $(PYTHON25_BUILD_DIR)/.hoststaged
 
-python25-host-stage: $(PYTHON25_BUILD_DIR)/.hoststaged
+python25-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.5
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON25_IPK_DIR)/CONTROL/control:
-	@install -d $(PYTHON25_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: python25" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -266,3 +266,9 @@ python25-clean:
 #
 python25-dirclean:
 	rm -rf $(BUILD_DIR)/$(PYTHON25_DIR) $(PYTHON25_BUILD_DIR) $(PYTHON25_IPK_DIR) $(PYTHON25_IPK)
+
+#
+# Some sanity check for the package.
+#
+python25-check: $(PYTHON25_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PYTHON25_IPK)
