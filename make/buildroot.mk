@@ -48,8 +48,8 @@ ifeq ($(OPTWARE_TARGET), ts101)
 BUILDROOT_GCC = 3.4.3
 BUILDROOT_BINUTILS = 2.15.91.0.2
 BUILDROOT_VERSION = $(BUILDROOT_GCC)
-BUILDROOT_SOURCE = buildroot-0.9.27.tar.gz
-BUILDROOT_SITE = http://mirror.kynisk.com/ts
+BUILDROOT_SOURCE = buildroot-0.9.27-1.tar.gz
+BUILDROOT_SITE = http://mirror.kynisk.com/ts/br
 else
 BUILDROOT_GCC ?= 4.1.1
 BUILDROOT_BINUTILS ?= 2.17.50.0.8
