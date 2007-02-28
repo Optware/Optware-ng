@@ -163,7 +163,7 @@ COMMON_CROSS_PACKAGES = \
 	iperf ipkg-web iptables ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
 	keychain kismet kissdx knock \
-	lame lcd4linux ldconfig less lha \
+	lame launchtool lcd4linux ldconfig less lha \
 	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \

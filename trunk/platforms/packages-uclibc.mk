@@ -4,7 +4,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 fcgi fish ggrab \
 	 gphoto2 libgphoto2 \
 	 gtk ice iperf iptables jabberd \
-	 jamvm ldconfig libstdc++ libdvb monotone \
+	 jamvm launchtool ldconfig libstdc++ libdvb monotone \
 	 mtr nfs-server nfs-utils nget \
 	 pango \
 	 qemu qemu-libc-i386 quickie sm \
