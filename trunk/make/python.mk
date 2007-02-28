@@ -15,7 +15,7 @@ PYTHON_DEPENDS=python24
 PYTHON_SUGGESTS=
 PYTHON_CONFLICTS=
 
-PYTHON_IPK_VERSION=2
+PYTHON_IPK_VERSION=3
 
 PYTHON_IPK_DIR=$(BUILD_DIR)/python-$(PYTHON_VERSION)-ipk
 PYTHON_IPK=$(BUILD_DIR)/python_$(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -25,7 +25,8 @@ python-unpack:
 python:
 
 python-stage:
-	$(MAKE) python24-stage
+	$(MAKE) python24-stage python24-host-stage
+	$(MAKE) python25-stage python25-host-stage
 
 $(PYTHON_IPK_DIR)/CONTROL/control:
 	@install -d $(PYTHON_IPK_DIR)/CONTROL
