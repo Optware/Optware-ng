@@ -32,17 +32,17 @@ PYTHON24_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON24_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON24_SECTION=misc
 PYTHON24_PRIORITY=optional
-ifneq ($(OPTWARE_TARGET),wl500g)
-PYTHON24_DEPENDS=libstdc++, readline, ncursesw, bzip2, openssl, libdb, zlib
-else
-PYTHON24_DEPENDS=libstdc++, readline, ncurses, bzip2, openssl, libdb, zlib
+PYTHON24_DEPENDS=readline, bzip2, openssl, libdb, zlib
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+PYTHON24_DEPENDS+=, libstdc++
 endif
+PYTHON24_DEPENDS+=, $(NCURSES_FOR_OPTWARE_TARGET)
 PYTHON24_SUGGESTS=
 
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=3
+PYTHON24_IPK_VERSION=4
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -89,9 +89,11 @@ PYTHON24_PATCHES=\
 	$(PYTHON24_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON24_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 
-ifeq ($(OPTWARE_TARGET),wl500g)
-PYTHON24_PATCHES:=$(PYTHON24_PATCHES) $(PYTHON24_SOURCE_DIR)/disable-ncursesw.patch
+ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
+PYTHON24_PATCHES+= $(PYTHON24_SOURCE_DIR)/disable-ncursesw.patch
 endif
+
+.PHONY: python24-source python24-unpack python24 python24-stage python24-ipk python24-clean python24-dirclean python24-check python24-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -122,13 +124,12 @@ python24-source: $(DL_DIR)/$(PYTHON24_SOURCE) $(PYTHON24_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PYTHON24_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON24_SOURCE) $(PYTHON24_PATCHES)
-# make/python24.mk
-ifneq ($(OPTWARE_TARGET),wl500g)
-	make bzip2-stage readline-stage ncursesw-stage openssl-stage libdb-stage zlib-stage
-else
-	make bzip2-stage readline-stage ncurses-stage openssl-stage libdb-stage zlib-stage
+$(PYTHON24_BUILD_DIR)/.configured: $(DL_DIR)/$(PYTHON24_SOURCE) $(PYTHON24_PATCHES) make/python24.mk
+ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+	$(MAKE) libstdc++-stage
 endif
+	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage
+	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(PYTHON24_BUILD_DIR)
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON24_DIR); \
@@ -186,20 +187,20 @@ $(PYTHON24_BUILD_DIR)/.staged: $(PYTHON24_BUILD_DIR)/.built
 
 python24-stage: $(PYTHON24_BUILD_DIR)/.staged
 
-$(PYTHON24_BUILD_DIR)/.hoststaged: host/.configured $(PYTHON24_BUILD_DIR)/.built
+$(HOST_STAGING_PREFIX)/bin/python2.4: host/.configured make/python24.mk
+	$(MAKE) $(PYTHON24_BUILD_DIR)/.built
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 		$(MAKE) -C $(PYTHON24_BUILD_DIR)/buildpython DESTDIR=$(HOST_STAGING_DIR) install
 	rm -f $(HOST_STAGING_PREFIX)/bin/python
-	touch $(PYTHON24_BUILD_DIR)/.hoststaged
 
-python24-host-stage: $(PYTHON24_BUILD_DIR)/.hoststaged
+python24-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.4
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/python
 #
 $(PYTHON24_IPK_DIR)/CONTROL/control:
-	@install -d $(PYTHON24_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: python24" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -262,3 +263,9 @@ python24-clean:
 #
 python24-dirclean:
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(PYTHON24_BUILD_DIR) $(PYTHON24_IPK_DIR) $(PYTHON24_IPK)
+
+#
+# Some sanity check for the package.
+#
+python24-check: $(PYTHON24_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PYTHON24_IPK)
