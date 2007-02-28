@@ -3,7 +3,12 @@
 # at the end will output broken packages in Makefile format
 # Example batch usage: nohup sh scripts/report-broken.sh &
 
-PACKAGES=`make query-COMMON_CROSS_PACKAGES`
+PKGS_VAR=$1
+if test -z "$PKGS_VAR"; then
+	PKGS_VAR=COMMON_CROSS_PACKAGES
+fi
+
+PACKAGES=`make query-${PKGS_VAR}`
 
 i=0
 NL="\\\\\\n"
