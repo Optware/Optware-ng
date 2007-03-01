@@ -1,11 +1,11 @@
 # Packages that do not work for uclibc
 UCLIBC_BROKEN_PACKAGES = \
-	 bzflag dansguardian \
-	 fcgi fish ggrab \
+	 bzflag \
+	 fcgi fish \
 	 gphoto2 libgphoto2 \
-	 gtk ice iperf iptables jabberd \
-	 jamvm launchtool ldconfig libstdc++ libdvb monotone \
-	 mtr nfs-server nfs-utils nget \
+	 gtk ice iptables jabberd \
+	 jamvm launchtool ldconfig libstdc++ monotone \
+	 mtr nfs-server nfs-utils \
 	 pango \
 	 qemu qemu-libc-i386 quickie sm \
 	 taglib vte xauth xaw xchat xcursor \
