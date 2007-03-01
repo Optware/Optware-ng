@@ -36,7 +36,7 @@ FIRMWARE_OLEG_CONFLICTS=
 #
 # FIRMWARE_OLEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FIRMWARE_OLEG_IPK_VERSION=1
+FIRMWARE_OLEG_IPK_VERSION=2
 
 #
 # FIRMWARE_OLEG_CONFFILES should be a list of user-editable files
@@ -129,6 +129,7 @@ $(FIRMWARE_OLEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FIRMWARE_OLEG_GPL) \
 		then mv $(BUILD_DIR)/$(FIRMWARE_OLEG_DIR) $(FIRMWARE_OLEG_BUILD_DIR) ; \
 	fi
 	$(FIRMWARE_OLEG_UNZIP) $(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) | tar -C $(FIRMWARE_OLEG_BUILD_DIR)/src -xvf -
+	sed -i -e 's/# CONFIG_USB_SERIAL_FTDI_SIO is not set/CONFIG_USB_SERIAL_FTDI_SIO=m/' $(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION)/kernel.config 
 	if ! test -d /opt/brcm/hndtools-mipsel-uclibc/bin ; \
 		then echo "Required wl500g toolchain missing!"; \
 		echo "Use mv $(FIRMWARE_OLEG_BUILD_DIR)/opt/brcm /opt"; \
