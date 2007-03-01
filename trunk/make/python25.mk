@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=4
+PYTHON25_IPK_VERSION=5
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -156,6 +156,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--mandir=/opt/man \
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
