@@ -6,7 +6,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
-         amule at atk avahi bitlbee bzflag \
+         amule at atk avahi bitlbee bogofilter bzflag \
          buildroot chillispot coreutils ctrlproxy cups ecl \
          erl-escript erl-yaws esound fcgi fish ffmpeg ficy \
          fontconfig glib gnet gnokii gsnmp \
