@@ -5,13 +5,8 @@
 ###########################################################
 
 BOGOFILTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bogofilter
-ifneq ($(OPTWARE_TARGET), wl500g)
 BOGOFILTER_VERSION=1.1.5
-BOGOFILTER_IPK_VERSION=1
-else
-BOGOFILTER_VERSION=0.93.5
 BOGOFILTER_IPK_VERSION=2
-endif
 BOGOFILTER_SOURCE=bogofilter-$(BOGOFILTER_VERSION).tar.bz2
 BOGOFILTER_DIR=bogofilter-$(BOGOFILTER_VERSION)
 BOGOFILTER_UNZIP=bzcat
@@ -21,6 +16,9 @@ BOGOFILTER_DESCRIPTION=A fast Bayesian spam filter
 BOGOFILTER_SECTION=net
 BOGOFILTER_PRIORITY=optional
 BOGOFILTER_DEPENDS=libdb
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BOGOFILTER_DEPENDS+=, libiconv
+endif
 
 
 BOGOFILTER_CONFFILES=/opt/etc/bogofilter.conf
@@ -29,16 +27,16 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 BOGOFILTER_PATCHES=
 BOGOFILTER_CONFIGURE_OPTIONS=
 else
-ifneq ($(OPTWARE_TARGET), wl500g)
 BOGOFILTER_PATCHES=$(BOGOFILTER_SOURCE_DIR)/configure.ac.patch
-else
-BOGOFILTER_PATCHES=$(BOGOFILTER_SOURCE_DIR)/pre1-configure.ac.patch
-endif
 BOGOFILTER_CONFIGURE_OPTIONS=--enable-rpath=no
 endif
 
 BOGOFILTER_CPPFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BOGOFILTER_LDFLAGS=-liconv
+else
 BOGOFILTER_LDFLAGS=
+endif
 
 BOGOFILTER_BUILD_DIR=$(BUILD_DIR)/bogofilter
 BOGOFILTER_SOURCE_DIR=$(SOURCE_DIR)/bogofilter
@@ -67,6 +65,9 @@ bogofilter-source: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER_PATCHES)
 
 $(BOGOFILTER_BUILD_DIR)/.configured: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER_PATCHES) make/bogofilter.mk
 	$(MAKE) libdb-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(BOGOFILTER_DIR) $(BOGOFILTER_BUILD_DIR)
 	$(BOGOFILTER_UNZIP) $(DL_DIR)/$(BOGOFILTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOGOFILTER_PATCHES)"; \
