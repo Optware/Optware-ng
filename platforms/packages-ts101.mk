@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
          pango postfix psmisc qemu qemu-libc-i386 \
          quagga quickie rc rrdcollect rrdtool rtorrent \
          samba sendmail ser sm snownews \
-         speex squeak streamripper transcode \
+         squeak streamripper transcode \
          ushare uclibc-opt vlc vorbis-tools vsftpd vte wget wget-ssl \
          xauth xaw xchat xmu xt xterm \
          zip zsh \
