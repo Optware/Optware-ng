@@ -71,7 +71,7 @@ compress
         weekly
         rotate 9
         postrotate
-                /bin/killall -HUP syslogd
+                killall -HUP syslogd
         endscript
 }
 
@@ -86,7 +86,7 @@ For syslog on Asus - Oleg firmware it is recommended that
 #
 # Stop myself if running
 if [ -n "`pidof syslogd`" ]; then
-    /bin/killall syslogd 2>/dev/null
+    /usr/bin/killall syslogd 2>/dev/null
 fi
 
 /sbin/syslogd -m 0 -O /opt/var/log/messages -S -l 7

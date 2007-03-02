@@ -58,6 +58,8 @@ if [  -n "$DEBUG"  ]; then
 fi
 
 if [ -f $WORK/.watchdog ]; then
+    rm -f $WORK/.watchdog
+    warning "Removing .watchdog protection"
     exit 0
 fi
 
