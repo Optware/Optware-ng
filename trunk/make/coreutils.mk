@@ -120,6 +120,9 @@ endif
 	cat $(COREUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	cp $(COREUTILS_AC_CACHE) $(COREUTILS_BUILD_DIR)/config.cache
+ifeq ($(OPTWARE_TARGET), ts101)
+	sed -i -e "/ac_cv_func_clock_settime=/s|'yes'|'no'|" $(COREUTILS_BUILD_DIR)/config.cache
+endif
 	(cd $(COREUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(COREUTILS_CPPFLAGS)" \
