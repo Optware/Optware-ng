@@ -59,6 +59,9 @@ ESOUND_PATCHES=#$(ESOUND_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 ESOUND_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), ts101)
+ESOUND_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin
+endif
 ESOUND_LDFLAGS=
 
 #
