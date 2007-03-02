@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RC_SITE=ftp://rc.quanstro.net/pub
+RC_SITE=http://osiris.tfh-berlin.de/mirror/t2-source/6.0/r/
 RC_VERSION=1.7.1
 RC_SOURCE=rc-$(RC_VERSION).tar.bz2
 RC_DIR=rc-$(RC_VERSION)
