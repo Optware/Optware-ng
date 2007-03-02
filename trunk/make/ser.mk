@@ -57,9 +57,10 @@ SER_LDFLAGS=
 
 SER_MAKEFLAGS=$(strip \
         $(if $(filter ds101g, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
+	$(if $(filter ts101, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux, \
         $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
-        ARCH=arm OS=linux OSREL=2.4.22))))
+        ARCH=arm OS=linux OSREL=2.4.22)))))
 
 #
 # SER_BUILD_DIR is the directory in which the build is done.
