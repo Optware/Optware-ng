@@ -466,7 +466,7 @@ host/.configured:
 	)
 	[ -e $@ ] || touch $@
 
-%-target %/.configured: 
+%-target %/.configured: $(DL_DIR)
 	[ -e $*/Makefile ] || ( \
 		mkdir -p $* ; \
 		echo "OPTWARE_TARGET=$*" > $*/Makefile ; \
