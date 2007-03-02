@@ -7,8 +7,8 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          amule at atk avahi bitlbee bzflag \
-         buildroot chillispot coreutils ctrlproxy cups ecl \
-         erl-escript erl-yaws esound fcgi fish ffmpeg ficy \
+         buildroot chillispot ctrlproxy cups ecl \
+         erl-escript erl-yaws fcgi fish ffmpeg ficy \
          fontconfig gdb glib gnet gnokii gsnmp \
          gtk gphoto2 libgphoto2 gift giftcurs gift-ares gift-fasttrack \
          gift-gnutella gift-openft gift-opennap htop ice icecast \
