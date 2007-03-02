@@ -10,7 +10,7 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-ZIP_SITE=http://ftp.info-zip.org/pub/infozip/src
+ZIP_SITE=ftp://ctan.unik.no/tex-archive/tools/zip/info-zip/src
 ZIP_VERSION_MAJOR=2
 ZIP_VERSION_MINOR=32
 ZIP_VERSION=$(ZIP_VERSION_MAJOR).$(ZIP_VERSION_MINOR)
