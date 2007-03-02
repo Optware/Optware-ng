@@ -53,6 +53,9 @@ SPEEX_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 SPEEX_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), ts101)
+SPEEX_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin -fno-builtin-log
+endif
 SPEEX_LDFLAGS=
 
 ifeq ($(TARGET_ARCH), armeb)
