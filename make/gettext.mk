@@ -30,7 +30,7 @@ GETTEXT_CONFLICTS=
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-GETTEXT_IPK_VERSION=1
+GETTEXT_IPK_VERSION=2
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
@@ -62,6 +62,12 @@ GETTEXT_BUILD_DIR=$(BUILD_DIR)/gettext
 GETTEXT_SOURCE_DIR=$(SOURCE_DIR)/gettext
 GETTEXT_IPK_DIR=$(BUILD_DIR)/gettext-$(GETTEXT_VERSION)-ipk
 GETTEXT_IPK=$(BUILD_DIR)/gettext_$(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+ifeq ($(OPTWARE_TARGET), ts101)
+GETTEXT_NLS=enable
+else
+GETTEXT_NLS=disable
+endif
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -102,12 +108,14 @@ $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GETTEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GETTEXT_LDFLAGS)" \
+		ac_cv_func_getline=yes \
+		am_cv_func_working_getline=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
+		--$(GETTEXT_NLS)-nls \
 	)
 	touch $(GETTEXT_BUILD_DIR)/.configured
 
@@ -132,6 +140,9 @@ gettext: $(GETTEXT_BUILD_DIR)/.built
 $(GETTEXT_BUILD_DIR)/.staged: $(GETTEXT_BUILD_DIR)/.built
 	rm -f $(GETTEXT_BUILD_DIR)/.staged
 	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libgettext*.la \
+	      $(STAGING_LIB_DIR)/libintl.la \
+	      $(STAGING_LIB_DIR)/libasprintf.la
 	touch $(GETTEXT_BUILD_DIR)/.staged
 
 gettext-stage: $(GETTEXT_BUILD_DIR)/.staged
