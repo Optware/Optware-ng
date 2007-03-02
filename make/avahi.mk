@@ -107,6 +107,7 @@ avahi-source: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES)
 $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/avahi.mk
 	$(MAKE) dbus-stage
 	$(MAKE) expat-stage
+	$(MAKE) gdbm-stage
 	$(MAKE) glib-stage
 	$(MAKE) libdaemon-stage
 	rm -rf $(BUILD_DIR)/$(AVAHI_DIR) $(AVAHI_BUILD_DIR)
