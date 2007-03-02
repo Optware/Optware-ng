@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HEXCURSE_SITE=http://www.jewfish.net/description.php?title=HexCurse
-HEXCURSE_URL=http://www.jewfish.net/download.php?file=hexcurse.tar.gz
+HEXCURSE_URL=http://ftp.debian.org/debian/pool/main/h/hexcurse/hexcurse_1.55.orig.tar.gz
 HEXCURSE_VERSION=1.55
-HEXCURSE_SOURCE=hexcurse-$(HEXCURSE_VERSION).tar.gz
+HEXCURSE_SOURCE=hexcurse_$(HEXCURSE_VERSION).orig.tar.gz
 HEXCURSE_DIR=hexcurse-$(HEXCURSE_VERSION)
 HEXCURSE_UNZIP=zcat
 HEXCURSE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
