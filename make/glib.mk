@@ -26,13 +26,17 @@ GLIB_DEPENDS=libiconv
 else
 GLIB_DEPENDS=
 endif
+ifeq ($(GETTEXT_NLS), enable)
+# assume standalone libiconv
+GLIB_DEPENDS+=, gettext
+endif
 GLIB_SUGGESTS=
 GLIB_CONFLICTS=
 
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=5
+GLIB_IPK_VERSION=6
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -105,6 +109,9 @@ glib-source: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 $(GLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(GLIB_SOURCE) $(GLIB_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
+endif
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
 endif
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
