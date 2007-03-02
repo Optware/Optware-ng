@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CUPS_VERSION=1.2.7
-CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
+CUPS_SITE=ftp://ftp3.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
 CUPS_UNZIP=bzcat
@@ -28,10 +28,10 @@ CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-CUPS_DEPENDS=libjpeg, libpng, libtiff, openldap-libs, openssl, zlib
-else
 CUPS_DEPENDS=libjpeg, libpng, libtiff, openssl, zlib
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+CUPS_DEPENDS+=, openldap-libs
+else
 endif
 CUPS_SUGGESTS=
 CUPS_CONFLICTS=
@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=3
+CUPS_IPK_VERSION=4
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -56,8 +56,13 @@ CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 # which they should be applied to the source code.
 #
 CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch \
-	$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch \
 	$(CUPS_SOURCE_DIR)/Makefile.patch
+
+ifeq ($(LIBC_STYLE), uclibc)
+ifneq ($(OPTWARE_TARGET), ts101)
+CUPS_PATCHES+=$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch
+endif
+endif
 
 #
 # If the compilation of the package requires additional
@@ -92,7 +97,8 @@ CUPS_DOC_DE_IPK=$(BUILD_DIR)/cups-doc-de_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CUPS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CUPS_SITE)/$(CUPS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(CUPS_SITE)/$(CUPS_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(CUPS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -144,9 +150,13 @@ endif
 		--exec_prefix=/opt \
 		--libdir=/opt/lib \
 		--disable-nls \
+		--disable-dbus \
 		--with-openssl-libs=$(STAGING_DIR)/opt/lib \
 		--with-openssl-includes=$(STAGING_DIR)/opt/include \
+		--without-java \
 		--without-perl \
+		--without-php \
+		--without-python \
 		--disable-slp \
 		--disable-gnutls \
 	)
