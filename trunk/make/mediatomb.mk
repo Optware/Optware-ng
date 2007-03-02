@@ -162,7 +162,7 @@ endif
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), wl500g)
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	sed -i -e 's/defined(__FreeBSD__) || defined(__APPLE__) || defined(SOLARIS) || defined(__CYGWIN__)/1/' \
 		$(MEDIATOMB_BUILD_DIR)/mediatomb/src/string_converter.cc
 endif
