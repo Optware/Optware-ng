@@ -36,7 +36,7 @@ LIBICONV_CONFLICTS=
 #
 # LIBICONV_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBICONV_IPK_VERSION=1
+LIBICONV_IPK_VERSION=2
 
 #
 # LIBICONV_CONFFILES should be a list of user-editable files
@@ -108,7 +108,6 @@ $(LIBICONV_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBICONV_SOURCE) $(LIBICONV_PATCH
 ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
 	@echo "Use of libiconv is deprecated. Use gconv-modules instead" ; false
 endif
-#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBICONV_DIR) $(LIBICONV_BUILD_DIR)
 	$(LIBICONV_UNZIP) $(DL_DIR)/$(LIBICONV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBICONV_PATCHES)" ; \
@@ -154,6 +153,7 @@ libiconv: $(LIBICONV_BUILD_DIR)/.built
 $(LIBICONV_BUILD_DIR)/.staged: $(LIBICONV_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBICONV_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libiconv.la
 	touch $@
 
 libiconv-stage: $(LIBICONV_BUILD_DIR)/.staged
