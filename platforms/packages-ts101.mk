@@ -12,6 +12,6 @@ BROKEN_PACKAGES = \
 	gift-gnutella gift-openft gift-opennap htop icecast id3lib \
 	ivorbis-tools libcdio libopensync libshout libsigc++ libtorrent \
 	mediatomb motion msynctool mysql-connector-odbc obexftp openser \
-	quagga rtorrent ruby sablevm squeak streamripper swi-prolog svn \
+	quagga rtorrent ruby sablevm squeak streamripper svn \
 	transcode ushare vlc vorbis-tools vsftpd wget wget-ssl \
 	buildroot uclibc-opt ipkg-opt perl-business-isbn \
