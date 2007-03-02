@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
          amule at bzflag \
-         buildroot chillispot cups ecl \
+         buildroot chillispot ecl \
          erl-escript erl-yaws fcgi fish ffmpeg ficy \
          fontconfig gdb \
          gtk gphoto2 libgphoto2 gift giftcurs gift-ares gift-fasttrack \
@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
          nfs-server nfs-utils ntop obexftp openser \
          pango psmisc qemu qemu-libc-i386 \
          quagga quickie rrdcollect rrdtool rtorrent \
-         samba sendmail ser sm \
+         sendmail ser sm \
          squeak streamripper transcode \
          ushare uclibc-opt vlc vorbis-tools vsftpd vte wget wget-ssl \
          xauth xaw xchat xmu xt xterm \
