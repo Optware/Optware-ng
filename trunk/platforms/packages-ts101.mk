@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
          amule at atk avahi bitlbee bzflag \
          buildroot chillispot coreutils ctrlproxy cups ecl \
          erl-escript erl-yaws esound fcgi fish ffmpeg ficy \
-         fontconfig glib gnet gnokii gsnmp \
+         fontconfig gdb glib gnet gnokii gsnmp \
          gtk gphoto2 libgphoto2 gift giftcurs gift-ares gift-fasttrack \
          gift-gnutella gift-openft gift-opennap htop ice icecast \
          id3lib irssi ivorbis-tools jabberd jamvm ldconfig \
