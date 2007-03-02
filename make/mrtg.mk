@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MRTG_SITE=http://people.ee.ethz.ch/~oetiker/webtools/mrtg/pub/
+MRTG_SITE=http://oss.oetiker.ch/mrtg/pub/
 MRTG_VERSION=2.14.5
 MRTG_SOURCE=mrtg-$(MRTG_VERSION).tar.gz
 MRTG_DIR=mrtg-$(MRTG_VERSION)
