@@ -71,14 +71,18 @@ LIBGMP_SOURCE_DIR=$(SOURCE_DIR)/libgmp
 LIBGMP_IPK_DIR=$(BUILD_DIR)/libgmp-$(LIBGMP_VERSION)-ipk
 LIBGMP_IPK=$(BUILD_DIR)/libgmp_$(LIBGMP_VERSION)-$(LIBGMP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-ifeq ($(HOST_MACHINE), x86_64)
-LIBGMP_HOST32="--host=i586-pc-linux-gnu"
-LIBGMP_M32=-m32
-else
-LIBGMP_HOST32=
-LIBGMP_M32=
+ifeq ($(OPTWARE_TARGET), ts101)
+	LIBGMP_HOST32="--host=powerpc-linux"
+	LIBGMP_M32=-m32
+	else
+	ifeq ($(HOST_MACHINE), x86_64)
+		LIBGMP_HOST32="--host=i586-pc-linux-gnu"
+		LIBGMP_M32=-m32
+	else
+		LIBGMP_HOST32=
+		LIBGMP_M32=
+	endif
 endif
-
 .PHONY: libgmp-source libgmp-unpack libgmp libgmp-stage libgmp-ipk libgmp-clean libgmp-dirclean libgmp-check libgmp-host-stage
 
 #
