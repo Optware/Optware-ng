@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	ficy freeradius gdb gift giftcurs gift-ares gift-fasttrack \
 	gift-gnutella gift-openft gift-opennap htop icecast id3lib \
 	ivorbis-tools libcdio libopensync libshout libsigc++ libtorrent \
-	mediatomb motion msynctool mysql-connector-odbc nfs-server nfs-utils \
-	obexftp openser quagga rtorrent ruby sablevm squeak streamripper svn \
+	motion msynctool mysql-connector-odbc nfs-server nfs-utils \
+	obexftp openser quagga rtorrent ruby sablevm squeak streamripper \
 	transcode ushare vlc vorbis-tools vsftpd wget wget-ssl \
 	buildroot uclibc-opt ipkg-opt perl-business-isbn \
