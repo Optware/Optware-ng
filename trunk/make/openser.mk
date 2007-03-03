@@ -60,10 +60,14 @@ OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/openser-1.1.1.patch
 #
 OPENSER_CPPFLAGS=-fsigned-char
 
+ifneq ($(OPTWARE_TARGET),ts101)
 ifeq ($(TARGET_ARCH),mipsel)
 OPENSER_MAKEFLAGS=ARCH=mips OS=linux OSREL=2.4.20
 else
 OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
+endif
+else
+OPENSER_MAKEFLAGS=ARCH=ppc OS=linux OSREL=2.6.12
 endif
 
 #
