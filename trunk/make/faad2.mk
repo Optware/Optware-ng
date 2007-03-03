@@ -36,7 +36,7 @@ FAAD2_CONFLICTS=
 #
 # FAAD2_IPK_VERSION should be incremented when the ipk changes.
 #
-FAAD2_IPK_VERSION=2
+FAAD2_IPK_VERSION=3
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files
@@ -53,6 +53,9 @@ FAAD2_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 FAAD2_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), ts101)
+FAAD2_CPPFLAGS+=-fno-builtin-cos -fno-builtin-sin -fno-builtin-log
+endif
 FAAD2_LDFLAGS=
 
 #
