@@ -36,7 +36,7 @@ AT_CONFLICTS=
 #
 # AT_IPK_VERSION should be incremented when the ipk changes.
 #
-AT_IPK_VERSION=2
+AT_IPK_VERSION=3
 
 #
 # AT_CONFFILES should be a list of user-editable files
@@ -128,6 +128,7 @@ $(AT_BUILD_DIR)/.configured: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES) make/at.mk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AT_LDFLAGS)" \
+		ac_cv_path_SENDMAIL=/opt/sbin/sendmail \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
