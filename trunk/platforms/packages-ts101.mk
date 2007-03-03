@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	amule chillispot ecl erl-escript erl-yaws ffmpeg \
 	ficy gdb gift giftcurs gift-ares gift-fasttrack \
-	gift-gnutella gift-openft gift-opennap htop icecast id3lib \
+	gift-gnutella gift-openft gift-opennap htop icecast \
 	ivorbis-tools libcdio libopensync libshout libsigc++ libtorrent \
 	motion msynctool nfs-server nfs-utils \
 	obexftp quagga rtorrent squeak streamripper \
