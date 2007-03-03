@@ -40,13 +40,16 @@ SVN_DEPENDS=neon, apr, apr-util, openldap-libs, zlib, expat, libxml2
 else
 SVN_DEPENDS=neon, apr, apr-util, zlib, expat, libxml2
 endif
+ifeq ($(OPTWARE_TARGET),ts101)
+SVN_DEPENDS +=, gettext
+endif
 SVN_SUGGESTS=
 SVN_CONFLICTS=
 
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=1
+SVN_IPK_VERSION=2
 
 #
 # SVN_CONFFILES should be a list of user-editable files
