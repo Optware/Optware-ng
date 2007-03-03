@@ -35,14 +35,16 @@ ID3LIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ID3LIB_DESCRIPTION=Library for reading, writing, and manipulating ID3v1  and ID3v2 tags.
 ID3LIB_SECTION=lib
 ID3LIB_PRIORITY=optional
-ID3LIB_DEPENDS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ID3LIB_DEPENDS=libiconv
+endif
 ID3LIB_SUGGESTS=
 ID3LIB_CONFLICTS=
 
 #
 # ID3LIB_IPK_VERSION should be incremented when the ipk changes.
 #
-ID3LIB_IPK_VERSION=2
+ID3LIB_IPK_VERSION=3
 
 #
 # ID3LIB_CONFFILES should be a list of user-editable files
@@ -62,7 +64,9 @@ ID3LIB_CPPFLAGS=
 ID3LIB_LDFLAGS=
 
 ifeq ($(LIBC_STYLE), uclibc)
+ifdef TARGET_GXX
 ID3LIB_CONFIG_ENV=CXX=$(TARGET_GXX)
+endif
 endif
 
 #
@@ -114,7 +118,9 @@ id3lib-source: $(DL_DIR)/$(ID3LIB_SOURCE) $(ID3LIB_PATCHES)
 # shown below to make various patches to it.
 #
 $(ID3LIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ID3LIB_SOURCE) $(ID3LIB_PATCHES) make/id3lib.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(ID3LIB_DIR) $(ID3LIB_BUILD_DIR)
 	$(ID3LIB_UNZIP) $(DL_DIR)/$(ID3LIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ID3LIB_PATCHES)" ; \
