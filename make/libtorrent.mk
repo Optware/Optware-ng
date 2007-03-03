@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=2
+LIBTORRENT_IPK_VERSION=3
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -49,10 +49,11 @@ endif
 #
 LIBTORRENT_CPPFLAGS=
 LIBTORRENT_LDFLAGS=
-ifeq ($(LIBC_STYLE), uclibc)
-LIBTORRENT_CONFIGURE = CXX=$(TARGET_GXX)
-else
 LIBTORRENT_CONFIGURE=
+ifeq ($(LIBC_STYLE), uclibc)
+ifdef TARGET_GXX
+LIBTORRENT_CONFIGURE += CXX=$(TARGET_GXX)
+endif
 endif
 
 #ifeq ($(OPTWARE_TARGET), $(filter ds101g ddwrt oleg, $(OPTWARE_TARGET)))
@@ -162,8 +163,8 @@ libtorrent: $(LIBTORRENT_BUILD_DIR)/.built
 $(LIBTORRENT_BUILD_DIR)/.staged: $(LIBTORRENT_BUILD_DIR)/.built
 	rm -f $(LIBTORRENT_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBTORRENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's| /opt/lib/lib\(sigc-[0-9.]*\)\.la| -l\1|' $(STAGING_LIB_DIR)/libtorrent.la
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtorrent.pc
+	rm -f $(STAGING_LIB_DIR)/libtorrent.la
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtorrent.pc
 	touch $(LIBTORRENT_BUILD_DIR)/.staged
 
 libtorrent-stage: $(LIBTORRENT_BUILD_DIR)/.staged
