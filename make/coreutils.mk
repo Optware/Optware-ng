@@ -29,7 +29,7 @@ COREUTILS_DESCRIPTION=Bunch of heavyweight *nix core utilities
 COREUTILS_SECTION=core
 COREUTILS_PRIORITY=optional
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-COREUTILS_DEPENDS=-liconv
+COREUTILS_DEPENDS=-libiconv
 else
 COREUTILS_DEPENDS=
 endif
@@ -38,7 +38,7 @@ COREUTILS_CONFLICTS=busybox-links
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=2
+COREUTILS_IPK_VERSION=3
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
