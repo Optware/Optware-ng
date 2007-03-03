@@ -11,6 +11,6 @@ BROKEN_PACKAGES = \
 	gift-gnutella gift-openft gift-opennap htop icecast id3lib \
 	ivorbis-tools libcdio libopensync libshout libsigc++ libtorrent \
 	motion msynctool nfs-server nfs-utils \
-	obexftp quagga rtorrent ruby sablevm squeak streamripper \
+	obexftp quagga rtorrent sablevm squeak streamripper \
 	transcode ushare vlc vorbis-tools vsftpd wget wget-ssl \
 	buildroot uclibc-opt ipkg-opt perl-business-isbn \
