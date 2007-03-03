@@ -34,7 +34,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=4
+WXBASE_IPK_VERSION=5
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -45,6 +45,9 @@ WXBASE_IPK_VERSION=4
 # which they should be applied to the source code.
 #
 WXBASE_PATCHES=$(WXBASE_SOURCE_DIR)/Makefile.in.patch
+ifeq ($(OPTWARE_TARGET), ts101)
+WXBASE_PATCHES+=$(WXBASE_SOURCE_DIR)/filename.h.patch
+endif
 
 #
 # If the compilation of the package requires additional
