@@ -6,9 +6,9 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	amule chillispot ecl erl-escript erl-yaws ffmpeg \
+	amule chillispot ecl erl-escript erl-yaws \
 	ficy gdb gift giftcurs gift-ares gift-fasttrack \
-	gift-gnutella gift-openft gift-opennap htop icecast \
+	gift-gnutella gift-openft gift-opennap htop \
 	ivorbis-tools libopensync libshout \
 	motion msynctool nfs-server nfs-utils \
 	obexftp quagga squeak streamripper \
