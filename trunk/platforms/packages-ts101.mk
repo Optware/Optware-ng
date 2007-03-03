@@ -13,4 +13,4 @@ BROKEN_PACKAGES = \
 	motion msynctool nfs-server nfs-utils \
 	obexftp quagga squeak streamripper \
 	transcode ushare vlc vorbis-tools vsftpd wget wget-ssl \
-	buildroot uclibc-opt ipkg-opt perl-business-isbn \
+	buildroot uclibc-opt ipkg-opt \
