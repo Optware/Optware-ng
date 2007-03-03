@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SABLEVM_VERSION=1.13
-SABLEVM_SITE=http://sablevm.org/download/release/$(SABLEVM_VERSION)
+SABLEVM_SITE=http://sources.nslu2-linux.org/sources/
 SABLEVM_SOURCE=sablevm-sdk-$(SABLEVM_VERSION).tar.gz
 SABLEVM_DIR=sablevm-sdk-$(SABLEVM_VERSION)
 SABLEVM_UNZIP=zcat
