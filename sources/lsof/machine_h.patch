@@ -1,0 +1,17 @@
+--- lsof/machine.h-org	2007-03-03 14:37:26.000000000 +0100
++++ lsof/machine.h	2007-03-03 14:37:59.000000000 +0100
+@@ -433,9 +433,11 @@
+  * mblen() and mbtowc() functions.
+  */
+ 
+-#define	HASSETLOCALE	1
+-#define	HASWIDECHAR	1
+-#define	WIDECHARINCL	<wctype.h>
++/*
++** #define	HASSETLOCALE	1
++** #define	HASWIDECHAR	1
++** #define	WIDECHARINCL	<wctype.h>
++*/
+ 
+ 
+ /*

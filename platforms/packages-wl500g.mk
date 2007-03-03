@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 launchtool ldconfig lftp \
 	 libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
-	 lsof loudmouth \
+	 loudmouth \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \
 	 ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
