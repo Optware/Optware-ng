@@ -20,6 +20,9 @@ MLOCATE_DESCRIPTION=A merginging locate program to find files fast
 MLOCATE_SECTION=admin
 MLOCATE_PRIORITY=optional
 MLOCATE_DEPENDS=
+ifeq ($(GETTEXT_NLS), enable)
+MLOCATE_DEPENDS+=gettext
+endif
 MLOCATE_SUGGESTS=
 MLOCATE_CONFLICTS=
 
@@ -43,7 +46,14 @@ MLOCATE_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MLOCATE_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), slugosbe)
+MLOCATE_CPPFLAGS+=-DSSIZE_MAX=2147483647L
+endif
+
 MLOCATE_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+MLOCATE_LDFLAGS+=-lintl
+endif
 
 #
 # MLOCATE_BUILD_DIR is the directory in which the build is done.
@@ -95,7 +105,9 @@ mlocate-source: $(DL_DIR)/$(MLOCATE_SOURCE) $(MLOCATE_PATCHES)
 # shown below to make various patches to it.
 #
 $(MLOCATE_BUILD_DIR)/.configured: $(DL_DIR)/$(MLOCATE_SOURCE) $(MLOCATE_PATCHES) make/mlocate.mk
-	# $(MAKE) <bar>-stage <baz>-stage
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MLOCATE_DIR) $(MLOCATE_BUILD_DIR)
 	$(MLOCATE_UNZIP) $(DL_DIR)/$(MLOCATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MLOCATE_PATCHES)" ; \
