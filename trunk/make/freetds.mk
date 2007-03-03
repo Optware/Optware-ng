@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=2
+FREETDS_IPK_VERSION=3
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ freetds-source: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 # shown below to make various patches to it.
 #
 $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(FREETDS_DIR) $(FREETDS_BUILD_DIR)
 	$(FREETDS_UNZIP) $(DL_DIR)/$(FREETDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(FREETDS_PATCHES) | patch -d $(BUILD_DIR)/$(FREETDS_DIR) -p1
@@ -120,6 +120,7 @@ $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 		--prefix=/opt \
 		--sysconfdir=/opt/etc/freetds \
 		--enable-msdblib \
+		--enable-odbc \
 		--disable-nls \
 		--disable-static \
 	)
