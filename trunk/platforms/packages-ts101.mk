@@ -9,8 +9,8 @@ BROKEN_PACKAGES = \
 	amule chillispot ecl erl-escript erl-yaws ffmpeg \
 	ficy gdb gift giftcurs gift-ares gift-fasttrack \
 	gift-gnutella gift-openft gift-opennap htop icecast \
-	ivorbis-tools libcdio libopensync libshout libsigc++ libtorrent \
+	ivorbis-tools libcdio libopensync libshout \
 	motion msynctool nfs-server nfs-utils \
-	obexftp quagga rtorrent squeak streamripper \
+	obexftp quagga squeak streamripper \
 	transcode ushare vlc vorbis-tools vsftpd wget wget-ssl \
 	buildroot uclibc-opt ipkg-opt perl-business-isbn \
