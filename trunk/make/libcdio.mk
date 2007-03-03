@@ -55,6 +55,9 @@ endif
 # compilation or linking flags, then list them here.
 #
 LIBCDIO_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), ts101)
+LIBCDIO_CPPFLAGS+=-fno-builtin-cos -fno-builtin-sin
+endif
 LIBCDIO_LDFLAGS=
 
 #
