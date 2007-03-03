@@ -153,6 +153,9 @@ ifeq ($(LIBC_STYLE), uclibc)
 	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(FFMPEG_BUILD_DIR)/common.mak \
 		$(FFMPEG_BUILD_DIR)/Makefile $(FFMPEG_BUILD_DIR)/lib*/Makefile
 endif
+ifeq ($(OPTWARE_TARGET), ts101)
+	sed -i -e '/^OPTFLAGS/s|$$| -fno-builtin-cos -fno-builtin-sin|' $(FFMPEG_BUILD_DIR)/config.mak
+endif
 	touch $(FFMPEG_BUILD_DIR)/.configured
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
