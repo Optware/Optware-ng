@@ -49,20 +49,24 @@ AMULE_IPK_VERSION=5
 AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch \
 	$(AMULE_SOURCE_DIR)/aMule-wx.patch \
 	$(AMULE_SOURCE_DIR)/MuleDebug-uclibc.patch
+ifeq ($(OPTWARE_TARGET), ts101)
+AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 AMULE_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), ts101)
+AMULE_CPPFLAGS+= -fno-builtin-log -fno-builtin-exp
+endif
 AMULE_LDFLAGS=
+AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes
 ifeq ($(LIBC_STYLE), uclibc)
-AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes \
-		ac_cv_func_realloc_0_nonnull=yes \
-		CXX=$(TARGET_GXX)
-else
-AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes \
-		ac_cv_func_realloc_0_nonnull=yes
+ifdef TARGET_GXX
+AMULE_CONFIGURE_OPTS += CXX=$(TARGET_GXX)
+endif
 endif
 
 
