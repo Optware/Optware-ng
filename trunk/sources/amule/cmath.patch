@@ -1,0 +1,20 @@
+--- amule/src/DownloadClient.cpp.orig	2006-01-24 14:23:31.000000000 -0800
++++ amule/src/DownloadClient.cpp	2007-03-03 12:22:56.000000000 -0800
+@@ -25,7 +25,7 @@
+ 
+ 
+ #include <zlib.h>
+-#include <cmath>		// Needed for std:exp
++#include <math.h>
+ 
+ #include "ClientCredits.h"	// Needed for CClientCredits
+ #include "OtherFunctions.h"	// Needed for md4cmp
+@@ -952,7 +952,7 @@
+ 	
+ 	const	float fInit  = tcLoop/tcInit;		// initial averaging factor
+ 	const	float fFinal = tcLoop/tcFinal;		// final averaging factor
+-	const	float fReduce = std::exp(std::log(fFinal/fInit) / (tcReduce/tcLoop)) * 0.99999;
++	const	float fReduce = ::exp(::log(fFinal/fInit) / (tcReduce/tcLoop)) * 0.99999;
+ 	
+ 	uint32	msCur = ::GetTickCount();
+ 
