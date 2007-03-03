@@ -47,7 +47,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=3
+MEDIATOMB_IPK_VERSION=4
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
