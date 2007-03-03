@@ -54,7 +54,11 @@ LSOF_IPK_VERSION=2
 #
 LSOF_IPK:=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-$(LSOF_IPK_VERSION)_$(TARGET_ARCH).ipk
 LSOF_IPK_DIR:=$(BUILD_DIR)/lsof-$(LSOF_VERSION)-ipk
+ifeq ($(OPTWARE_TARGET),wl500g)
+LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch $(LSOF_SOURCE_DIR)/machine_h.patch $(LSOF_SOURCE_DIR)/print_c.patch
+else
 LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch
+endif
 LSOF_UNZIP:=gunzip
 
 .PHONY: lsof-source lsof-unpack lsof lsof-stage lsof-ipk lsof-clean lsof-dirclean lsof-check
