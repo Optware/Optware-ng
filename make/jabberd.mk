@@ -27,15 +27,15 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 JABBERD_SITE=http://download.jabberd.org/jabberd14
-JABBERD_VERSION=1.4.4
-JABBERD_SOURCE=jabberd-$(JABBERD_VERSION).tar.gz
-JABBERD_DIR=jabberd-$(JABBERD_VERSION)
+JABBERD_VERSION=1.6.0
+JABBERD_SOURCE=jabberd14-$(JABBERD_VERSION).tar.gz
+JABBERD_DIR=jabberd14-$(JABBERD_VERSION)
 JABBERD_UNZIP=zcat
 JABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 JABBERD_DESCRIPTION=Jabber is an open-source IM platform designed to be open, fast, and easy to use and extend.
 JABBERD_SECTION=misc
 JABBERD_PRIORITY=optional
-JABBERD_DEPENDS=coreutils, libidn, libpth, openssl
+JABBERD_DEPENDS=coreutils, libidn, libpth, openssl, popt
 JABBERD_CONFLICTS=
 
 #
@@ -106,7 +106,7 @@ jabberd-source: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
-	$(MAKE) libidn-stage libpth-stage openssl-stage
+	$(MAKE) libidn-stage libpth-stage openssl-stage popt-stage
 	rm -rf $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	$(JABBERD_UNZIP) $(DL_DIR)/$(JABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JABBERD_PATCHES)"; then \
@@ -115,7 +115,7 @@ $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 	mv $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	(cd $(JABBERD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(JABBERD_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(JABBERD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JABBERD_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
