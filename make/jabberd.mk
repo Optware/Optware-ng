@@ -41,7 +41,7 @@ JABBERD_CONFLICTS=
 #
 # JABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBERD_IPK_VERSION=1
+JABBERD_IPK_VERSION=2
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files
@@ -198,6 +198,9 @@ $(JABBERD_IPK): $(JABBERD_BUILD_DIR)/.built
 	$(MAKE) $(JABBERD_IPK_DIR)/CONTROL/control
 	install -m 755 $(JABBERD_SOURCE_DIR)/postinst $(JABBERD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(JABBERD_SOURCE_DIR)/prerm $(JABBERD_IPK_DIR)/CONTROL/prerm
+ifneq ($(OPTWARE_TARGET), nslu2)
+	sed -i -e '/share.hdd.conf/d' $(JABBERD_IPK_DIR)/CONTROL/postinst
+endif
 	echo $(JABBERD_CONFFILES) | sed -e 's/ /\n/g' > $(JABBERD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JABBERD_IPK_DIR)
 
