@@ -25,7 +25,7 @@ BROKEN_PACKAGES = \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm scli scponly sdl ser sm snort snownews sqsh swi-prolog \
 	 taglib tcsh tethereal tnftpd transcode unrar vlc vte \
-	 w3m wget wget-ssl wxbase x11 \
+	 w3m weechat wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst zsh \
 

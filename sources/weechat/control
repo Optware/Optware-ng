@@ -1,9 +1,0 @@
-Package: weechat
-Priority: optional
-Version: 0.1.0-1
-Architecture: armeb
-Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Section: irc clients
-Depends: ncurses
-Source: http://weechat.flashtux.org/download/weechat-0.1.0.tar.gz
-Description: text mode irc client
