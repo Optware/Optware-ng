@@ -11,6 +11,7 @@ EOF
     echo ok
 fi
 
+mkdir -p /opt/var/lib/jabber
 chown -R jabber:root /opt/var/lib/jabber /opt/var/log/jabberd /opt/var/run/jabberd
 
 /opt/etc/init.d/S80jabber restart
