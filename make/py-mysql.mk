@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MYSQL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mysql-python
-PY-MYSQL_VERSION=1.2.2b3
+PY-MYSQL_VERSION=1.2.2
 PY-MYSQL_SOURCE=MySQL-python-$(PY-MYSQL_VERSION).tar.gz
 PY-MYSQL_DIR=MySQL-python-$(PY-MYSQL_VERSION)
 PY-MYSQL_UNZIP=zcat
@@ -115,7 +115,7 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 #	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)/2.4
 	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
-	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup_posix.py; \
+	    sed -i -e 's|# *mysql_config *=.*|mysql_config = $(STAGING_PREFIX)/bin/mysql_config|' site.cfg; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -132,7 +132,7 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 #	cat $(PY-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MYSQL_DIR) $(PY-MYSQL_BUILD_DIR)/2.5
 	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
-	    sed -i -e 's|popen("mysql_config|popen("$(STAGING_PREFIX)/bin/mysql_config|' setup_posix.py; \
+	    sed -i -e 's|# *mysql_config *=.*|mysql_config = $(STAGING_PREFIX)/bin/mysql_config|' site.cfg; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -155,12 +155,12 @@ $(PY-MYSQL_BUILD_DIR)/.built: $(PY-MYSQL_BUILD_DIR)/.configured
 	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
 	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
 	touch $(PY-MYSQL_BUILD_DIR)/.built
 
@@ -228,7 +228,7 @@ $(PY24-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	(cd $(PY-MYSQL_BUILD_DIR)/2.4; \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
 	    install --root=$(PY24-MYSQL_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY24-MYSQL_IPK_DIR)/opt/lib/python2.4/site-packages/_mysql.so
@@ -240,7 +240,7 @@ $(PY25-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	(cd $(PY-MYSQL_BUILD_DIR)/2.5; \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
 	    install --root=$(PY25-MYSQL_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY25-MYSQL_IPK_DIR)/opt/lib/python2.5/site-packages/_mysql.so
