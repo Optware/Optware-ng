@@ -44,7 +44,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
 	lftp \
 	perl-dbd-mysql \
-	py-curl \
 	bpalogin
 
 PERL_PACKAGES = \
@@ -99,7 +98,8 @@ PYTHON_PACKAGES = \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
-	py-clips py-codeville py-configobj py-constraint py-crypto py-django py-docutils \
+	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
+	py-django py-docutils \
 	py-elementtree py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils \
 	py-kid py-lxml py-nose \
