@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=3
+LIBTORRENT_IPK_VERSION=4
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -41,6 +41,12 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
 else
 LIBTORRENT_PATCHES=
+endif
+ifeq ($(TARGET_ARCH), armeb)
+ifeq ($(LIBC_STYLE), glibc)
+# http://tech.groups.yahoo.com/group/nslu2-developers/message/1503
+LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/src-data-socket_file.cc.patch
+endif
 endif
 
 #
