@@ -20,9 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
-MEDIATOMB_SVN_REV=1096
-MEDIATOMB_VERSION=0.8.1+svn$(MEDIATOMB_SVN_REV)
+#MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
+#MEDIATOMB_SVN_REV=1096
+MEDIATOMB_VERSION=0.9.0-pre
 MEDIATOMB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mediatomb
 MEDIATOMB_SOURCE=mediatomb-$(MEDIATOMB_VERSION).tar.gz
 MEDIATOMB_DIR=mediatomb-$(MEDIATOMB_VERSION)
@@ -47,7 +47,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=4
+MEDIATOMB_IPK_VERSION=1
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -164,15 +164,15 @@ endif
 	fi
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	sed -i -e 's/defined(__FreeBSD__) || defined(__APPLE__) || defined(SOLARIS) || defined(__CYGWIN__)/1/' \
-		$(MEDIATOMB_BUILD_DIR)/mediatomb/src/string_converter.cc
+		$(MEDIATOMB_BUILD_DIR)/src/string_converter.cc
 endif
-	cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
+	cd $(MEDIATOMB_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
 ifeq ($(OPTWARE_TARGET), wl500g)
-	cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
+	cd $(MEDIATOMB_BUILD_DIR); \
 		sed -i -e 's/-lsqlite3 -lrt/-lsqlite3/' configure
 endif
-	(cd $(MEDIATOMB_BUILD_DIR)/mediatomb; \
+	(cd $(MEDIATOMB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MEDIATOMB_LDFLAGS)" \
@@ -210,7 +210,7 @@ mediatomb-unpack: $(MEDIATOMB_BUILD_DIR)/.configured
 #
 $(MEDIATOMB_BUILD_DIR)/.built: $(MEDIATOMB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MEDIATOMB_BUILD_DIR)/mediatomb
+	$(MAKE) -C $(MEDIATOMB_BUILD_DIR)
 	touch $@
 
 #
@@ -261,7 +261,7 @@ $(MEDIATOMB_IPK_DIR)/CONTROL/control:
 #
 $(MEDIATOMB_IPK): $(MEDIATOMB_BUILD_DIR)/.built
 	rm -rf $(MEDIATOMB_IPK_DIR) $(BUILD_DIR)/mediatomb_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MEDIATOMB_BUILD_DIR)/mediatomb DESTDIR=$(MEDIATOMB_IPK_DIR) install-strip
+	$(MAKE) -C $(MEDIATOMB_BUILD_DIR) DESTDIR=$(MEDIATOMB_IPK_DIR) install-strip
 #	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/
 #	install -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb.conf $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb.conf
 #	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/init.d
