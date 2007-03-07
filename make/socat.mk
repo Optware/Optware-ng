@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SOCAT_SITE=http://www.dest-unreach.org/socat/download
-SOCAT_VERSION=1.5.0.0
+SOCAT_VERSION=1.6.0.0
 SOCAT_SOURCE=socat-$(SOCAT_VERSION).tar.bz2
 SOCAT_DIR=socat-$(SOCAT_VERSION)
 SOCAT_UNZIP=bzcat
@@ -69,7 +69,7 @@ SOCAT_SOURCE_DIR=$(SOURCE_DIR)/socat
 SOCAT_IPK_DIR=$(BUILD_DIR)/socat-$(SOCAT_VERSION)-ipk
 SOCAT_IPK=$(BUILD_DIR)/socat_$(SOCAT_VERSION)-$(SOCAT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: socat-source socat-unpack socat socat-stage socat-ipk socat-clean socat-dirclean
+.PHONY: socat-source socat-unpack socat socat-stage socat-ipk socat-clean socat-dirclean socat-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -224,3 +224,9 @@ socat-clean:
 #
 socat-dirclean:
 	rm -rf $(BUILD_DIR)/$(SOCAT_DIR) $(SOCAT_BUILD_DIR) $(SOCAT_IPK_DIR) $(SOCAT_IPK)
+
+#
+# Some sanity check for the package.
+#
+socat-check: $(SOCAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SOCAT_IPK)
