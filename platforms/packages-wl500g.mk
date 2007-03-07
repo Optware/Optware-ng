@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
 	 loudmouth \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \
-	 ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
+	 ncmpc ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
 	 pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
