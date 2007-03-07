@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BLUEZ_SITE=http://org.csail.mit.edu/pybluez/release
-PY-BLUEZ_VERSION=0.9.1
+PY-BLUEZ_VERSION=0.9.2
 PY-BLUEZ_SOURCE=pybluez-src-$(PY-BLUEZ_VERSION).tar.gz
 PY-BLUEZ_DIR=pybluez-$(PY-BLUEZ_VERSION)
 PY-BLUEZ_UNZIP=zcat
