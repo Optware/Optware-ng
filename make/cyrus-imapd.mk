@@ -13,11 +13,11 @@ CYRUS-IMAPD_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 CYRUS-IMAPD_DESCRIPTION=The Carnegie Mellon University Cyrus IMAP Server
 CYRUS-IMAPD_SECTION=util
 CYRUS-IMAPD_PRIORITY=optional
-CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, perl
+CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, e2fsprogs, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=12
+CYRUS-IMAPD_IPK_VERSION=13
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
