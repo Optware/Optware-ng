@@ -29,14 +29,14 @@ DUMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DUMP_DESCRIPTION=Dump/Restore ext2/ext3 filesystem backup
 DUMP_SECTION=misc
 DUMP_PRIORITY=optional
-DUMP_DEPENDS=zlib, bzip2, readline
+DUMP_DEPENDS=zlib, bzip2, readline, e2fsprogs
 DUMP_SUGGESTS=
 DUMP_CONFLICTS=
 
 #
 # DUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-DUMP_IPK_VERSION=1
+DUMP_IPK_VERSION=2
 
 #
 # DUMP_CONFFILES should be a list of user-editable files
