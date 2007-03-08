@@ -30,14 +30,14 @@ E2TOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 E2TOOLS_DESCRIPTION=Ext2 tools
 E2TOOLS_SECTION=admin
 E2TOOLS_PRIORITY=optional
-E2TOOLS_DEPENDS=
+E2TOOLS_DEPENDS=e2fsprogs
 E2TOOLS_SUGGESTS=
 E2TOOLS_CONFLICTS=
 
 #
 # E2TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2TOOLS_IPK_VERSION=2
+E2TOOLS_IPK_VERSION=3
 
 #
 # E2TOOLS_CONFFILES should be a list of user-editable files
