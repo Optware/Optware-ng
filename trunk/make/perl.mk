@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=13
+PERL_IPK_VERSION=14
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -216,7 +216,18 @@ perl: $(PERL_BUILD_DIR)/.built
 #
 $(PERL_BUILD_DIR)/.staged: $(PERL_BUILD_DIR)/.built
 	rm -f $(PERL_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+ifeq ($(HOSTCC), $(TARGET_CC))
+	$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install.perl
+else
+	PATH="`dirname $(TARGET_CC)`:$(PERL_BUILD_DIR):$$PATH" \
+		$(MAKE) -C $(PERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) INSTALL_DEPENDENCE="" install-strip
+	for so in `find $(STAGING_DIR)/opt/lib/perl5/ -name '*.so'`; do \
+		chmod u+w $$so; $(STRIP_COMMAND) $$so; done
+endif
+	(cd $(STAGING_DIR)/opt/bin; \
+		rm -f perl; \
+		ln -s perl$(PERL_VERSION) perl; \
+	)
 	touch $(PERL_BUILD_DIR)/.staged
 
 perl-stage: $(PERL_BUILD_DIR)/.staged
