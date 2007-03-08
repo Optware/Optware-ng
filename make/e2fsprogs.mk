@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-E2FSPROGS_VERSION=1.38
+E2FSPROGS_VERSION=1.39
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=4
+E2FSPROGS_IPK_VERSION=1
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -66,6 +66,8 @@ E2FSPROGS_BUILD_DIR=$(BUILD_DIR)/e2fsprogs
 E2FSPROGS_SOURCE_DIR=$(SOURCE_DIR)/e2fsprogs
 E2FSPROGS_IPK_DIR=$(BUILD_DIR)/e2fsprogs-$(E2FSPROGS_VERSION)-ipk
 E2FSPROGS_IPK=$(BUILD_DIR)/e2fsprogs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: e2fsprogs-source e2fsprogs-unpack e2fsprogs e2fsprogs-stage e2fsprogs-ipk e2fsprogs-clean e2fsprogs-dirclean e2fsprogs-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -111,7 +113,13 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--with-ldopts="$(STAGING_LDFLAGS) $(E2FSPROGS_LDFLAGS)" \
+		--enable-elf-shlibs \
+		--enable-rpath \
 	)
+	sed -i -e '/LN_S/s|-f $$(ELF_INSTALL_DIR)/$$(ELF_SONAME)|-f $$(ELF_SONAME)|' \
+		$(E2FSPROGS_BUILD_DIR)/lib/Makefile* \
+		$(E2FSPROGS_BUILD_DIR)/lib/*/Makefile
 	touch $(E2FSPROGS_BUILD_DIR)/.configured
 
 e2fsprogs-unpack: $(E2FSPROGS_BUILD_DIR)/.configured
@@ -134,21 +142,10 @@ e2fsprogs: $(E2FSPROGS_BUILD_DIR)/.built
 #
 $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
 	rm -f $(E2FSPROGS_BUILD_DIR)/.staged
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) DESTDIR=$(STAGING_DIR) LDCONFIG=true install
 	touch $(E2FSPROGS_BUILD_DIR)/.staged
 
 e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
-	mkdir -p $(STAGING_INCLUDE_DIR)/blkid
-	mkdir -p $(STAGING_INCLUDE_DIR)/ext2fs
-	mkdir -p $(STAGING_INCLUDE_DIR)/et
-	mkdir -p $(STAGING_INCLUDE_DIR)/uuid
-	mkdir -p $(STAGING_LIB_DIR)/
-	install -m 755 $(E2FSPROGS_BUILD_DIR)/lib/*.a $(STAGING_LIB_DIR)
-	install -m 644 $(E2FSPROGS_BUILD_DIR)/lib/uuid/uuid.h $(STAGING_INCLUDE_DIR)/uuid
-	install -m 644 $(E2FSPROGS_BUILD_DIR)/lib/uuid/uuid_types.h $(STAGING_INCLUDE_DIR)/uuid
-	install -m 644 $(E2FSPROGS_BUILD_DIR)/lib/blkid/*.h $(STAGING_INCLUDE_DIR)/blkid
-	install -m 644 $(E2FSPROGS_BUILD_DIR)/lib/ext2fs/*.h $(STAGING_INCLUDE_DIR)/ext2fs
-	install -m 644 $(E2FSPROGS_BUILD_DIR)/lib/et/*.h $(STAGING_INCLUDE_DIR)/et
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -182,15 +179,13 @@ $(E2FSPROGS_IPK_DIR)/CONTROL/control:
 #
 $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) DESTDIR=$(E2FSPROGS_IPK_DIR) install
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) DESTDIR=$(E2FSPROGS_IPK_DIR) LDCONFIG=true install-strip
 	# We place files in /opt/lib and /opt/sbin only
 	install -d $(E2FSPROGS_IPK_DIR)/opt/lib
 	install -d $(E2FSPROGS_IPK_DIR)/opt/sbin
 	install -d $(E2FSPROGS_IPK_DIR)/opt/bin
 	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man8
 	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
-	# Install libs
-	install -m 755 $(E2FSPROGS_BUILD_DIR)/lib/*.a $(E2FSPROGS_IPK_DIR)/opt/lib
 	# Strip in the 3 executables - take both e2fsck versions for now
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/debugfs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
@@ -199,8 +194,11 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/dumpe2fs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/chattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/chattr
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/lsattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/lsattr
+	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)/opt/bin/uuidgen $(E2FSPROGS_IPK_DIR)/opt/lib/e2initrd_helper
 ifeq ($(OPTWARE_TARGET),ts72xx)
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/mke2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
+else
+	rm -f $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
 endif
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
@@ -233,3 +231,9 @@ e2fsprogs-clean:
 #
 e2fsprogs-dirclean:
 	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(E2FSPROGS_BUILD_DIR) $(E2FSPROGS_IPK_DIR) $(E2FSPROGS_IPK)
+
+#
+# Some sanity check for the package.
+#
+e2fsprogs-check: $(E2FSPROGS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(E2FSPROGS_IPK)
