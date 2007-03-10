@@ -149,8 +149,8 @@ sub parse_Packages
 	    # try to extract version quickly
 	    my $v1="";
 	    my $v2="";
-	    $v1=$1 if $dot_mk=~/${p_pattern}_VERSION\s*:?=\s*(\S*)/m;
-	    $v2=$1 if $dot_mk=~/${p_pattern}_IPK_VERSION\s*:?=\s*(\S*)/m;
+	    $v1=$1 if $dot_mk=~/^\s*${p_pattern}_VERSION\s*:?=\s*(\S*)/m;
+	    $v2=$1 if $dot_mk=~/^\s*${p_pattern}_IPK_VERSION\s*:?=\s*(\S*)/m;
 	    my $v="$v1-$v2";
 	    
 	    # if it seems to have failed, slow check with make query
