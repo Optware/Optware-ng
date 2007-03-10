@@ -36,7 +36,7 @@ CLEARSILVER_CONFLICTS=
 #
 # CLEARSILVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CLEARSILVER_IPK_VERSION=3
+CLEARSILVER_IPK_VERSION=4
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
@@ -113,6 +113,7 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 	if test "$(BUILD_DIR)/$(CLEARSILVER_DIR)" != "$(CLEARSILVER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CLEARSILVER_DIR) $(CLEARSILVER_BUILD_DIR) ; \
 	fi
+	cp -a $(CLEARSILVER_BUILD_DIR)/python $(CLEARSILVER_BUILD_DIR)/python2.5
 #	        echo "rpath=/opt/lib";
 	(cd $(CLEARSILVER_BUILD_DIR); \
 	    ( \
@@ -124,6 +125,15 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 		echo "[install]"; \
 		echo "install_scripts=/opt/bin"; \
 	    ) > python/setup.cfg; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
+		echo "[build_scripts]"; \
+		echo "executable=/opt/bin/python2.5"; \
+		echo "[install]"; \
+		echo "install_scripts=/opt/bin"; \
+	    ) > python2.5/setup.cfg; \
 	)
 	(cd $(CLEARSILVER_BUILD_DIR); \
 		sed -i \
@@ -162,6 +172,8 @@ clearsilver-unpack: $(CLEARSILVER_BUILD_DIR)/.configured
 $(CLEARSILVER_BUILD_DIR)/.built: $(CLEARSILVER_BUILD_DIR)/.configured
 	rm -f $(CLEARSILVER_BUILD_DIR)/.built
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)
+	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)/python2.5 \
+		PYTHON_SITE=/opt/lib/python2.5/site-packages
 	touch $(CLEARSILVER_BUILD_DIR)/.built
 
 #
@@ -184,7 +196,7 @@ clearsilver-stage: $(CLEARSILVER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clearsilver
 #
 $(CLEARSILVER_IPK_DIR)/CONTROL/control:
-	@install -d $(CLEARSILVER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: clearsilver" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,7 +226,9 @@ $(CLEARSILVER_IPK): $(CLEARSILVER_BUILD_DIR)/.built
 	rm -rf $(CLEARSILVER_IPK_DIR) $(BUILD_DIR)/clearsilver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR) DESTDIR=$(CLEARSILVER_IPK_DIR) install
 	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/*
-#	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
+	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)/python2.5 DESTDIR=$(CLEARSILVER_IPK_DIR) install \
+		PYTHON_SITE=/opt/lib/python2.5/site-packages
+	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
 #	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/
 #	install -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
 #	install -d $(CLEARSILVER_IPK_DIR)/opt/etc/init.d
