@@ -224,7 +224,7 @@ $(PY24-SILVERCITY_IPK) $(PY25-SILVERCITY_IPK): $(PY-SILVERCITY_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-SILVERCITY_IPK_DIR) --prefix=/opt
 	$(STRIP_COMMAND) $(PY24-SILVERCITY_IPK_DIR)/opt/lib/python2.4/site-packages/SilverCity/*.so
-	for f in $(PY25-SILVERCITY_IPK_DIR)/opt/*bin/*; \
+	for f in $(PY24-SILVERCITY_IPK_DIR)/opt/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-SILVERCITY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SILVERCITY_IPK_DIR)
