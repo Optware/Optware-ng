@@ -108,7 +108,8 @@ PYTHON_PACKAGES = \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql \
 	py-pudge py-pylons py-pyro py-quixote \
 	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
-	py-scgi py-selector py-serial py-setuptools py-simplejson py-simpy py-soappy \
+	py-scgi py-selector py-serial py-setuptools \
+	py-silvercity py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
 	py-tailor py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-usb py-weatherget py-webpy py-wsgiref py-webhelpers \
