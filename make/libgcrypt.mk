@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGCRYPT_SITE=http://ftp.gnupg.org/GnuPG/libgcrypt
-LIBGCRYPT_VERSION=1.2.3
+LIBGCRYPT_VERSION=1.2.4
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.gz
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
 LIBGCRYPT_UNZIP=zcat
@@ -153,14 +153,12 @@ libgcrypt: $(LIBGCRYPT_BUILD_DIR)/.built
 #
 $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -f $(LIBGCRYPT_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) transform='' install
 	sed -i -e '/_cflags=/s|-I/opt/include||g' \
 	       -e '/_cflags=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
 	       -e 's|I$$includedir|I$(STAGING_INCLUDE_DIR)|' \
 		$(STAGING_PREFIX)/bin/*libgcrypt-config
 	rm -f $(STAGING_DIR)/opt/lib/libgcrypt.la
-	rm -f $(STAGING_DIR)/opt/bin/libgcrypt-config
-	ln -s $(GNU_TARGET_NAME)-libgcrypt-config $(STAGING_DIR)/opt/bin/libgcrypt-config
 	touch $(LIBGCRYPT_BUILD_DIR)/.staged
 
 libgcrypt-stage: $(LIBGCRYPT_BUILD_DIR)/.staged
@@ -198,9 +196,7 @@ $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
 #
 $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -rf $(LIBGCRYPT_IPK_DIR) $(BUILD_DIR)/libgcrypt_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) install-strip
-	ln -s $(GNU_TARGET_NAME)-libgcrypt-config $(LIBGCRYPT_IPK_DIR)/opt/bin/libgcrypt-config
-	rm -r $(LIBGCRYPT_IPK_DIR)/opt/info
+	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) transform='' install-strip
 	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt.conf
 	#install -d $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d
