@@ -28,7 +28,7 @@
 #
 OPENCDK_SITE=http://josefsson.org/gnutls/releases/opencdk
 # http://ftp.gnupg.org/GnuPG/alpha/gnutls/opencdk
-OPENCDK_VERSION=0.5.11
+OPENCDK_VERSION=0.5.13
 OPENCDK_SOURCE=opencdk-$(OPENCDK_VERSION).tar.gz
 OPENCDK_DIR=opencdk-$(OPENCDK_VERSION)
 OPENCDK_UNZIP=zcat
