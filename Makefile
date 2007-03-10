@@ -111,7 +111,8 @@ PYTHON_PACKAGES = \
 	py-scgi py-selector py-serial py-setuptools \
 	py-silvercity py-simplejson py-simpy py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject \
-	py-tailor py-tgfastdata py-turbocheetah py-turbogears py-turbojson py-turbokid \
+	py-tailor py-tgfastdata py-trac \
+	py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-usb py-weatherget py-webpy py-wsgiref py-webhelpers \
 	py-xml py-yaml py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
