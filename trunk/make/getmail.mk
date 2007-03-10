@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-PY-GETMAIL_VERSION=4.7.2
-PY-GETMAIL_SOURCE=getmail-$(PY-GETMAIL_VERSION).tar.gz
-PY-GETMAIL_DIR=getmail-$(PY-GETMAIL_VERSION)
+GETMAIL_VERSION=4.7.2
+PY-GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
+PY-GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 PY-GETMAIL_UNZIP=zcat
 PY-GETMAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-GETMAIL_DESCRIPTION=getmail is a mail retriever designed to allow you to get your mail from one or more mail accounts on various mail servers to your local machine.
@@ -38,7 +38,7 @@ PY-GETMAIL_CONFLICTS=
 #
 # PY-GETMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GETMAIL_IPK_VERSION=1
+GETMAIL_IPK_VERSION=1
 
 #
 # PY-GETMAIL_CONFFILES should be a list of user-editable files
@@ -69,14 +69,14 @@ PY-GETMAIL_LDFLAGS=
 PY-GETMAIL_BUILD_DIR=$(BUILD_DIR)/getmail
 PY-GETMAIL_SOURCE_DIR=$(SOURCE_DIR)/getmail
 
-PY-GETMAIL-COMMON_IPK_DIR=$(BUILD_DIR)/py-getmail-common-$(PY-GETMAIL_VERSION)-ipk
-PY-GETMAIL-COMMON_IPK=$(BUILD_DIR)/py-getmail-common_$(PY-GETMAIL_VERSION)-$(PY-GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-GETMAIL-COMMON_IPK_DIR=$(BUILD_DIR)/py-getmail-common-$(GETMAIL_VERSION)-ipk
+PY-GETMAIL-COMMON_IPK=$(BUILD_DIR)/py-getmail-common_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-GETMAIL_IPK_DIR=$(BUILD_DIR)/getmail-$(PY-GETMAIL_VERSION)-ipk
-PY24-GETMAIL_IPK=$(BUILD_DIR)/getmail_$(PY-GETMAIL_VERSION)-$(PY-GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-GETMAIL_IPK_DIR=$(BUILD_DIR)/getmail-$(GETMAIL_VERSION)-ipk
+PY24-GETMAIL_IPK=$(BUILD_DIR)/getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY25-GETMAIL_IPK_DIR=$(BUILD_DIR)/py25-getmail-$(PY-GETMAIL_VERSION)-ipk
-PY25-GETMAIL_IPK=$(BUILD_DIR)/py25-getmail_$(PY-GETMAIL_VERSION)-$(PY-GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-GETMAIL_IPK_DIR=$(BUILD_DIR)/py25-getmail-$(GETMAIL_VERSION)-ipk
+PY25-GETMAIL_IPK=$(BUILD_DIR)/py25-getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: getmail-source getmail-unpack getmail getmail-stage getmail-ipk getmail-clean getmail-dirclean getmail-check
 
@@ -178,7 +178,7 @@ $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-GETMAIL_PRIORITY)" >>$@
 	@echo "Section: $(PY-GETMAIL_SECTION)" >>$@
-	@echo "Version: $(PY-GETMAIL_VERSION)-$(PY-GETMAIL_IPK_VERSION)" >>$@
+	@echo "Version: $(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-GETMAIL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GETMAIL_SITE)/$(PY-GETMAIL_SOURCE)" >>$@
 	@echo "Description: $(PY-GETMAIL_DESCRIPTION)" >>$@
@@ -193,7 +193,7 @@ $(PY24-GETMAIL_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-GETMAIL_PRIORITY)" >>$@
 	@echo "Section: $(PY-GETMAIL_SECTION)" >>$@
-	@echo "Version: $(PY-GETMAIL_VERSION)-$(PY-GETMAIL_IPK_VERSION)" >>$@
+	@echo "Version: $(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-GETMAIL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GETMAIL_SITE)/$(PY-GETMAIL_SOURCE)" >>$@
 	@echo "Description: $(PY-GETMAIL_DESCRIPTION)" >>$@
@@ -208,7 +208,7 @@ $(PY25-GETMAIL_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-GETMAIL_PRIORITY)" >>$@
 	@echo "Section: $(PY-GETMAIL_SECTION)" >>$@
-	@echo "Version: $(PY-GETMAIL_VERSION)-$(PY-GETMAIL_IPK_VERSION)" >>$@
+	@echo "Version: $(GETMAIL_VERSION)-$(GETMAIL_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-GETMAIL_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GETMAIL_SITE)/$(PY-GETMAIL_SOURCE)" >>$@
 	@echo "Description: $(PY-GETMAIL_DESCRIPTION)" >>$@
