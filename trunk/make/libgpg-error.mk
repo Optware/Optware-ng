@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGPG-ERROR_SITE=http://ftp.gnupg.org/GnuPG/libgpg-error
-LIBGPG-ERROR_VERSION=1.1
+LIBGPG-ERROR_VERSION=1.4
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
 LIBGPG-ERROR_UNZIP=zcat
@@ -42,7 +42,7 @@ LIBGPG-ERROR_CONFLICTS=
 #
 # LIBGPG-ERROR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGPG-ERROR_IPK_VERSION=2
+LIBGPG-ERROR_IPK_VERSION=1
 
 #
 # LIBGPG-ERROR_CONFFILES should be a list of user-editable files
@@ -74,6 +74,8 @@ LIBGPG-ERROR_BUILD_DIR=$(BUILD_DIR)/libgpg-error
 LIBGPG-ERROR_SOURCE_DIR=$(SOURCE_DIR)/libgpg-error
 LIBGPG-ERROR_IPK_DIR=$(BUILD_DIR)/libgpg-error-$(LIBGPG-ERROR_VERSION)-ipk
 LIBGPG-ERROR_IPK=$(BUILD_DIR)/libgpg-error_$(LIBGPG-ERROR_VERSION)-$(LIBGPG-ERROR_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libgpg-error-source libgpg-error-unpack libgpg-error libgpg-error-stage libgpg-error-ipk libgpg-error-clean libgpg-error-dirclean libgpg-error-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -213,3 +215,9 @@ libgpg-error-clean:
 #
 libgpg-error-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(LIBGPG-ERROR_BUILD_DIR) $(LIBGPG-ERROR_IPK_DIR) $(LIBGPG-ERROR_IPK)
+
+#
+# Some sanity check for the package.
+#
+libgpg-error-check: $(LIBGPG-ERROR_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGPG-ERROR_IPK)
