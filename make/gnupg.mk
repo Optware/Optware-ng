@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=1.4.6
+GNUPG_VERSION=1.4.7
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -30,14 +30,14 @@ GNUPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUPG_DESCRIPTION=GNU privacy guard - a free PGP replacement.
 GNUPG_SECTION=misc
 GNUPG_PRIORITY=optional
-GNUPG_DEPENDS=libusb, zlib, readline, libcurl, openldap-libs
+GNUPG_DEPENDS=libusb, zlib, bzip2, readline, libcurl, openldap-libs
 GNUPG_SUGGESTS=
 GNUPG_CONFLICTS=
 
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=3
+GNUPG_IPK_VERSION=1
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ gnupg-source: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
-	$(MAKE) libusb-stage zlib-stage readline-stage libcurl-stage openldap-stage
+	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
