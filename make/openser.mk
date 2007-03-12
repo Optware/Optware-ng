@@ -54,7 +54,7 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=1
+OPENSER_IPK_VERSION=2
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -73,11 +73,11 @@ OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/lcr.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-OPENSER_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -DSTATS
-#OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath-link,$(STAGING_DIR)/opt/lib -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
-OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+# OPENSER_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -DSTATS
+# #OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath-link,$(STAGING_DIR)/opt/lib -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+# OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+# OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
+# OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
 
 
 ifneq ($(OPTWARE_TARGET),ts101)
@@ -96,8 +96,9 @@ endif
 # osp       - require "-losptk" or "-losp"
 # mi_xmlrpc - requite xmlrpc
 # seas      - it is not quite free ...
+# perl      - issues on some platforms
 #
-OPENSER_INCLUDE_BASE_MODULES=perl snmpstats presence pua pua_mi pua_usrloc xmpp unixodbc jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_BASE_MODULES=snmpstats presence pua pua_mi pua_usrloc xmpp unixodbc jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSER_INCLUDE_MODULES=$(OPENSER_INCLUDE_BASE_MODULES) mysql
