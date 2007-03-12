@@ -54,7 +54,7 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=2
+OPENSER_IPK_VERSION=3
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -73,18 +73,23 @@ OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/lcr.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-# OPENSER_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -DSTATS
-# #OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath-link,$(STAGING_DIR)/opt/lib -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-# OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-# OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
-# OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+OPENSER_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -DSTATS
 
+ifeq ($(OPTWARE_TARGET),slugosbe)
+OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
+OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+endif
 
 ifneq ($(OPTWARE_TARGET),ts101)
 ifeq ($(TARGET_ARCH),mipsel)
 OPENSER_MAKEFLAGS=ARCH=mips OS=linux OSREL=2.4.20
 else
+ifeq ($(OPTWARE_TARGET),slugosbe)
 OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.6.16
+else
+OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
+endif
 endif
 else
 OPENSER_MAKEFLAGS=ARCH=ppc OS=linux OSREL=2.6.12
@@ -98,7 +103,11 @@ endif
 # seas      - it is not quite free ...
 # perl      - issues on some platforms
 #
+ifeq ($(OPTWARE_TARGET),slugosbe)
+OPENSER_INCLUDE_BASE_MODULES= perl snmpstats presence pua pua_mi pua_usrloc xmpp unixodbc jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+else
 OPENSER_INCLUDE_BASE_MODULES=snmpstats presence pua pua_mi pua_usrloc xmpp unixodbc jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+endif
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSER_INCLUDE_MODULES=$(OPENSER_INCLUDE_BASE_MODULES) mysql
