@@ -1,0 +1,12 @@
+--- openser/modules/lcr/lcr_mod.c.orig	2007-03-12 15:33:10.000000000 -0400
++++ openser/modules/lcr/lcr_mod.c	2007-03-12 15:34:17.000000000 -0400
+@@ -726,8 +726,7 @@ int reload_gws ( void )
+     
+     for (i = 0; i < RES_ROW_N(res); i++) {
+ 	row = RES_ROWS(res) + i;
+-	if (!((VAL_TYPE(ROW_VALUES(row)) == DB_STRING) &&
+-	      !VAL_NULL(ROW_VALUES(row)) &&
++	if (!(!VAL_NULL(ROW_VALUES(row)) &&
+ 	      inet_aton((char *)VAL_STRING(ROW_VALUES(row)), &ip_addr) != 0)) {
+ 	    LOG(L_ERR, "reload_gws(): Invalid IP address of GW\n");
+ 	    lcr_dbf.free_result(dbh, res);
