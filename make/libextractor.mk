@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEXTRACTOR_SITE=http://gnunet.org/libextractor/download
-LIBEXTRACTOR_VERSION=0.5.17
+LIBEXTRACTOR_VERSION=0.5.18
 LIBEXTRACTOR_SOURCE=libextractor-$(LIBEXTRACTOR_VERSION).tar.gz
 LIBEXTRACTOR_DIR=libextractor-$(LIBEXTRACTOR_VERSION)
 LIBEXTRACTOR_UNZIP=zcat
