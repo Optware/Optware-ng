@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	mod-fastcgi mod-python monotone \
 	ntp \
+	openser \
 	php-apache py-lxml \
 	qemu qemu-libc-i386 quickie \
 	sablevm svn \
