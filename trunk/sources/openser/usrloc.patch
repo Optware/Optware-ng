@@ -1,0 +1,11 @@
+--- openser/modules/usrloc/hslot.h.orig	2007-03-13 11:06:59.979950992 -0400
++++ openser/modules/usrloc/hslot.h	2007-03-13 11:07:50.865215256 -0400
+@@ -41,7 +41,7 @@ typedef struct hslot {
+ 	struct urecord* first;  /* First element in the list */
+ 	struct urecord* last;   /* Last element in the list */
+ 	struct udomain* d;      /* Domain we belong to */
+-	gen_lock_t *lock;       /* Lock for hash entry */
++	gen_lock_t* lock;       /* Lock for hash entry */
+ } hslot_t;
+ 
+ 
