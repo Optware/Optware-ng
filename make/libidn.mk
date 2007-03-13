@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=ftp://alpha.gnu.org/pub/gnu/libidn
-LIBIDN_VERSION=0.6.8
+LIBIDN_VERSION=0.6.11
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
@@ -42,7 +42,7 @@ LIBIDN_CONFLICTS=
 #
 # LIBIDN_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBIDN_IPK_VERSION=2
+LIBIDN_IPK_VERSION=1
 
 #
 # LIBIDN_CONFFILES should be a list of user-editable files
