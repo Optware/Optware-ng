@@ -54,7 +54,7 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=5
+OPENSER_IPK_VERSION=6
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -67,7 +67,7 @@ OPENSER_CONFFILES=\
 # OPENSER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/lcr.patch
+OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/usrloc.patch $(OPENSER_SOURCE_DIR)/lcr.patch
 
 #
 # If the compilation of the package requires additional
@@ -179,7 +179,7 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
-#	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage postgresql-stage net-snmp-stage
+	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage postgresql-stage net-snmp-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
