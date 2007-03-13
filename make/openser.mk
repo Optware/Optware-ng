@@ -54,7 +54,7 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=3
+OPENSER_IPK_VERSION=4
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -102,11 +102,13 @@ endif
 # mi_xmlrpc - requite xmlrpc
 # seas      - it is not quite free ...
 # perl      - issues on some platforms
+# jabber    - moved to jabberd ???
+# snmpstats - issues on tx72xx
 #
 ifeq ($(OPTWARE_TARGET),slugosbe)
-OPENSER_INCLUDE_BASE_MODULES= perl snmpstats presence pua pua_mi pua_usrloc xmpp unixodbc jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_BASE_MODULES=perl presence pua pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
 else
-OPENSER_INCLUDE_BASE_MODULES=snmpstats presence pua pua_mi pua_usrloc xmpp unixodbc jabber auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_BASE_MODULES=presence pua pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
 endif
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
