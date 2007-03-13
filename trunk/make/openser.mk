@@ -54,7 +54,7 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=4
+OPENSER_IPK_VERSION=5
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -104,11 +104,12 @@ endif
 # perl      - issues on some platforms
 # jabber    - moved to jabberd ???
 # snmpstats - issues on tx72xx
+# pua       - issues on mss, ddwrt, oleg (uclibc issues)
 #
 ifeq ($(OPTWARE_TARGET),slugosbe)
-OPENSER_INCLUDE_BASE_MODULES=perl presence pua pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres perl pua
 else
-OPENSER_INCLUDE_BASE_MODULES=presence pua pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
 endif
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
@@ -295,8 +296,10 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	echo "DBTEXT_PATH=/opt/etc/openser/dbtext" > $(OPENSER_IPK_DIR)/opt/etc/openser/.openscdbtextrc
 	sed -i -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/sbin/openser_dbtext_ctl
 
+ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openser_mysql.sh
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openser_mysql.sh
+endif
 
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openser_postgresql.sh
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openser_postgresql.sh
