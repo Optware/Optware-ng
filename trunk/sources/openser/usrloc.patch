@@ -1,11 +1,144 @@
---- openser/modules/usrloc/hslot.h.orig	2007-03-13 11:06:59.979950992 -0400
-+++ openser/modules/usrloc/hslot.h	2007-03-13 11:07:50.865215256 -0400
-@@ -41,7 +41,7 @@ typedef struct hslot {
+--- openser-1.2.0-tls/modules/usrloc/hslot.h.orig	2007-03-15 10:19:39.000000000 -0400
++++ openser-1.2.0-tls/modules/usrloc/hslot.h	2007-03-15 10:20:12.000000000 -0400
+@@ -1,5 +1,5 @@
+ /* 
+- * $Id: hslot.h 1827 2007-03-12 15:22:53Z bogdan_iancu $ 
++ * $Id: hslot.h 1847 2007-03-15 12:18:59Z miconda $ 
+  *
+  * Usrloc hash table collision slot
+  *
+@@ -41,10 +41,13 @@ typedef struct hslot {
  	struct urecord* first;  /* First element in the list */
  	struct urecord* last;   /* Last element in the list */
  	struct udomain* d;      /* Domain we belong to */
 -	gen_lock_t *lock;       /* Lock for hash entry */
-+	gen_lock_t* lock;       /* Lock for hash entry */
++#ifdef GEN_LOCK_T_PREFERED
++	gen_lock_t *lock;       /* Lock for hash entry - fastlock */
++#else
++	int lockidx;            /* Lock index for hash entry - the rest*/
++#endif
  } hslot_t;
+ 
+-
+ /*
+  * Initialize slot structure
+  */
+@@ -71,4 +74,9 @@ void slot_rem(hslot_t* _s, struct urecor
+ int ul_init_locks();
+ void ul_destroy_locks();
+ 
++#ifndef GEN_LOCK_T_PREFERED
++void ul_lock_idx(int idx);
++void ul_release_idx(int idx);
++#endif
++
+ #endif /* HSLOT_H */
+--- openser-1.2.0-tls/modules/usrloc/hslot.c.orig	2007-03-15 10:19:32.000000000 -0400
++++ openser-1.2.0-tls/modules/usrloc/hslot.c	2007-03-15 10:20:18.000000000 -0400
+@@ -1,5 +1,5 @@
+ /* 
+- * $Id: hslot.c 1827 2007-03-12 15:22:53Z bogdan_iancu $ 
++ * $Id: hslot.c 1847 2007-03-15 12:18:59Z miconda $ 
+  *
+  * Hash table collision slot related functions
+  *
+@@ -40,7 +40,8 @@ int ul_init_locks()
+ 				(lock_set_init(ul_locks)!=0))
+ 		{
+ 			ul_locks_no = i;
+-			LOG(L_INFO, "INFO:ul_init_locks: locks array size %d\n", ul_locks_no);
++			LOG(L_INFO, "INFO:ul_init_locks: locks array size %d\n",
++					ul_locks_no);
+ 			return 0;
+ 
+ 		}
+@@ -65,6 +66,18 @@ void ul_destroy_locks()
+ 	};
+ }
+ 
++#ifndef GEN_LOCK_T_PREFERED
++void ul_lock_idx(int idx)
++{
++	lock_set_get(ul_locks, idx);
++}
++
++void ul_release_idx(int idx)
++{
++	lock_set_release(ul_locks, idx);
++}
++#endif
++
+ /*
+  * Initialize cache slot structure
+  */
+@@ -74,7 +87,12 @@ int init_slot(struct udomain* _d, hslot_
+ 	_s->first = 0;
+ 	_s->last = 0;
+ 	_s->d = _d;
++
++#ifdef GEN_LOCK_T_PREFERED
+ 	_s->lock = &ul_locks->locks[n%ul_locks_no];
++#else
++	_s->lockidx = n%ul_locks_no;
++#endif
+ 	return 0;
+ }
+ 
+--- openser-1.2.0-tls/modules/usrloc/udomain.c.orig	2007-03-15 10:28:10.000000000 -0400
++++ openser-1.2.0-tls/modules/usrloc/udomain.c	2007-03-15 10:28:14.000000000 -0400
+@@ -1,5 +1,5 @@
+ /* 
+- * $Id: udomain.c 1827 2007-03-12 15:22:53Z bogdan_iancu $ 
++ * $Id: udomain.c 1847 2007-03-15 12:18:59Z miconda $ 
+  *
+  * Copyright (C) 2001-2003 FhG Fokus
+  *
+@@ -729,7 +729,12 @@ void lock_udomain(udomain_t* _d, str* _a
+ 	if (db_mode!=DB_ONLY)
+ 	{
+ 		sl = core_hash(_aor, 0, _d->size);
++
++#ifdef GEN_LOCK_T_PREFERED
+ 		lock_get(_d->table[sl].lock);
++#else
++		ul_lock_idx(_d->table[sl].lockidx);
++#endif
+ 	}
+ }
+ 
+@@ -743,7 +748,11 @@ void unlock_udomain(udomain_t* _d, str* 
+ 	if (db_mode!=DB_ONLY)
+ 	{
+ 		sl = core_hash(_aor, 0, _d->size);
++#ifdef GEN_LOCK_T_PREFERED
+ 		lock_release(_d->table[sl].lock);
++#else
++		ul_release_idx(_d->table[sl].lockidx);
++#endif
+ 	}
+ }
+ 
+@@ -753,7 +762,11 @@ void unlock_udomain(udomain_t* _d, str* 
+ void lock_ulslot(udomain_t* _d, int i)
+ {
+ 	if (db_mode!=DB_ONLY)
++#ifdef GEN_LOCK_T_PREFERED
+ 		lock_get(_d->table[i].lock);
++#else
++		ul_lock_idx(_d->table[i].lockidx);
++#endif
+ }
+ 
+ 
+@@ -763,7 +776,11 @@ void lock_ulslot(udomain_t* _d, int i)
+ void unlock_ulslot(udomain_t* _d, int i)
+ {
+ 	if (db_mode!=DB_ONLY)
++#ifdef GEN_LOCK_T_PREFERED
+ 		lock_release(_d->table[i].lock);
++#else
++		ul_release_idx(_d->table[i].lockidx);
++#endif
+ }
  
  
