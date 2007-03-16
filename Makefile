@@ -170,7 +170,7 @@ COMMON_CROSS_PACKAGES = \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
-	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss \
+	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
