@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	 glib gtk gnet gsnmp \
 	 id3lib iperf iptables irssi jabberd jamvm jikes \
 	 launchtool ldconfig lftp \
-	 libcdio libdaemon libdvb libftdi liblcms libopensync libtorrent \
+	 libcdio libdaemon libdvb libftdi liblcms libmtp libopensync libtorrent \
 	 loudmouth \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \

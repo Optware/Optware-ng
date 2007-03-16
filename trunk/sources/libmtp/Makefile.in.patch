@@ -1,0 +1,20 @@
+--- libmtp/Makefile.in.orig	2007-03-16 14:13:56.000000000 +0100
++++ libmtp/Makefile.in	2007-03-16 14:15:11.000000000 +0100
+@@ -69,7 +69,7 @@
+ am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
+ am__installdirs = "$(DESTDIR)$(pkgconfigdir)"
+ pkgconfigDATA_INSTALL = $(INSTALL_DATA)
+-DATA = $(noinst_DATA) $(pkgconfig_DATA)
++DATA = $(pkgconfig_DATA)
+ ETAGS = etags
+ CTAGS = ctags
+ DIST_SUBDIRS = $(SUBDIRS)
+@@ -194,7 +194,7 @@
+ sharedstatedir = @sharedstatedir@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+-SUBDIRS = src examples doc
++SUBDIRS = src doc
+ ACLOCAL_AMFLAGS = -I m4
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = libmtp.pc
