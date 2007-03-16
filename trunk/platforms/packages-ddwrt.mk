@@ -11,6 +11,5 @@ BROKEN_PACKAGES = \
 	iperf \
 	libdvb \
 	nget \
-	openser \
 	par2cmdline \
 
