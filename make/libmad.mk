@@ -35,7 +35,7 @@ LIBMAD_CONFLICTS=
 #
 # LIBMAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMAD_IPK_VERSION=2
+LIBMAD_IPK_VERSION=3
 
 #
 # LIBMAD_CONFFILES should be a list of user-editable files
@@ -45,7 +45,7 @@ LIBMAD_CONFFILES=
 # LIBMAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBMAD_PATCHES=/dev/null
+#LIBMAD_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -67,6 +67,8 @@ LIBMAD_BUILD_DIR=$(BUILD_DIR)/libmad
 LIBMAD_SOURCE_DIR=$(SOURCE_DIR)/libmad
 LIBMAD_IPK_DIR=$(BUILD_DIR)/libmad-$(LIBMAD_VERSION)-ipk
 LIBMAD_IPK=$(BUILD_DIR)/libmad_$(LIBMAD_VERSION)-$(LIBMAD_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: libmad-source libmad-unpack libmad libmad-stage libmad-ipk libmad-clean libmad-dirclean libmad-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -97,11 +99,17 @@ libmad-source: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES)
+$(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) \
+		$(LIBMAD_PATCHES) make/libmad.mk
 	rm -rf $(BUILD_DIR)/$(LIBMAD_DIR) $(LIBMAD_BUILD_DIR)
 	$(LIBMAD_UNZIP) $(DL_DIR)/$(LIBMAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(LIBMAD_PATCHES) | patch -d $(BUILD_DIR)/$(LIBMAD_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBMAD_DIR) $(LIBMAD_BUILD_DIR)
+	if test -n "$(LIBMAD_PATCHES)" ; \
+		then cat $(LIBMAD_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(LIBMAD_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(LIBMAD_DIR)" != "$(LIBMAD_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(LIBMAD_DIR) $(LIBMAD_BUILD_DIR) ; \
+	fi
 	(cd $(LIBMAD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMAD_CPPFLAGS)" \
@@ -114,6 +122,7 @@ $(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
+	$(PATCH_LIBTOOL) $(LIBMAD_BUILD_DIR)/libtool
 	touch $(LIBMAD_BUILD_DIR)/.configured
 
 libmad-unpack: $(LIBMAD_BUILD_DIR)/.configured
@@ -189,3 +198,10 @@ libmad-clean:
 #
 libmad-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBMAD_DIR) $(LIBMAD_BUILD_DIR) $(LIBMAD_IPK_DIR) $(LIBMAD_IPK)
+#
+#
+# Some sanity check for the package.
+#
+libmad-check: $(LIBMAD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBMAD_IPK)
+
