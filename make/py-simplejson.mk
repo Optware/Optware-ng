@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPLEJSON_SITE=http://cheeseshop.python.org/packages/source/s/simplejson
-PY-SIMPLEJSON_VERSION=1.6
+PY-SIMPLEJSON_VERSION=1.7
 PY-SIMPLEJSON_SOURCE=simplejson-$(PY-SIMPLEJSON_VERSION).tar.gz
 PY-SIMPLEJSON_DIR=simplejson-$(PY-SIMPLEJSON_VERSION)
 PY-SIMPLEJSON_UNZIP=zcat
@@ -138,12 +138,14 @@ py-simplejson-unpack: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.built: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 	rm -f $(PY-SIMPLEJSON_BUILD_DIR)/.built
-	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
 	touch $(PY-SIMPLEJSON_BUILD_DIR)/.built
 
 #
@@ -207,20 +209,22 @@ $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 #
 $(PY24-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
 	rm -rf $(PY24-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py-simplejson_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	--root=$(PY24-SIMPLEJSON_IPK_DIR) --prefix=/opt)
+	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+	    --root=$(PY24-SIMPLEJSON_IPK_DIR) --prefix=/opt
+	$(STRIP_COMMAND) $(PY24-SIMPLEJSON_IPK_DIR)/opt/lib/python2.4/site-packages/simplejson/*.so
 	$(MAKE) $(PY24-SIMPLEJSON_IPK_DIR)/CONTROL/control
 #	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SIMPLEJSON_IPK_DIR)
 
 $(PY25-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
 	rm -rf $(PY25-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py25-simplejson_*_$(TARGET_ARCH).ipk
-	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	--root=$(PY25-SIMPLEJSON_IPK_DIR) --prefix=/opt)
+	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
+	    --root=$(PY25-SIMPLEJSON_IPK_DIR) --prefix=/opt
+	$(STRIP_COMMAND) $(PY25-SIMPLEJSON_IPK_DIR)/opt/lib/python2.5/site-packages/simplejson/*.so
 	$(MAKE) $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/control
 #	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SIMPLEJSON_IPK_DIR)
