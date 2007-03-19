@@ -15,7 +15,7 @@
 #	Search a sollution for popt.
 #
 GPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto
-GPHOTO2_VERSION=2.2.0
+GPHOTO2_VERSION=2.3.1
 GPHOTO2_SOURCE=gphoto2-$(GPHOTO2_VERSION).tar.bz2
 GPHOTO2_DIR=gphoto2-$(GPHOTO2_VERSION)
 GPHOTO2_UNZIP=bzcat
@@ -63,13 +63,15 @@ GPHOTO2_SOURCE_DIR=$(SOURCE_DIR)/gphoto2
 GPHOTO2_IPK_DIR=$(BUILD_DIR)/gphoto2-$(GPHOTO2_VERSION)-ipk
 GPHOTO2_IPK=$(BUILD_DIR)/gphoto2_$(GPHOTO2_VERSION)-$(GPHOTO2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: gphoto2-source gphoto2-unpack gphoto2 gphoto2-stage gphoto2-ipk gphoto2-clean gphoto2-dirclean gphoto2-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GPHOTO2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GPHOTO2_SITE)/$(GPHOTO2_SOURCE)
-
+	$(WGET) -P $(DL_DIR) $(GPHOTO2_SITE)/$(GPHOTO2_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(GPHOTO2_SOURCE)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -211,3 +213,9 @@ gphoto2-clean:
 #
 gphoto2-dirclean:
 	rm -rf $(BUILD_DIR)/$(GPHOTO2_DIR) $(GPHOTO2_BUILD_DIR) $(GPHOTO2_IPK_DIR) $(GPHOTO2_IPK)
+#
+#
+# Some sanity check for the package.
+#
+gphoto2-check: $(GPHOTO2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GPHOTO2_IPK)

@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 LIBGPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto
-LIBGPHOTO2_VERSION=2.2.1
+LIBGPHOTO2_VERSION=2.3.1
 LIBGPHOTO2_SOURCE=libgphoto2-$(LIBGPHOTO2_VERSION).tar.bz2
 LIBGPHOTO2_DIR=libgphoto2-$(LIBGPHOTO2_VERSION)
 LIBGPHOTO2_UNZIP=bzcat
@@ -37,7 +37,6 @@ LIBGPHOTO2_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 LIBGPHOTO2_PATCHES=$(LIBGPHOTO2_SOURCE_DIR)/Makefile_am_in.patch \
-	$(LIBGPHOTO2_SOURCE_DIR)/camlibs-sonix.patch \
 	$(LIBGPHOTO2_SOURCE_DIR)/packaging-generic.patch
 
 #
@@ -61,12 +60,15 @@ LIBGPHOTO2_SOURCE_DIR=$(SOURCE_DIR)/libgphoto2
 LIBGPHOTO2_IPK_DIR=$(BUILD_DIR)/libgphoto2-$(LIBGPHOTO2_VERSION)-ipk
 LIBGPHOTO2_IPK=$(BUILD_DIR)/libgphoto2_$(LIBGPHOTO2_VERSION)-$(LIBGPHOTO2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: libgphoto2-source libgphoto2-unpack libgphoto2 libgphoto2-stage libgphoto2-ipk libgphoto2-clean libgphoto2-dirclean libgphoto2-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGPHOTO2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGPHOTO2_SITE)/$(LIBGPHOTO2_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBGPHOTO2_SITE)/$(LIBGPHOTO2_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBGPHOTO2_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -216,3 +218,9 @@ libgphoto2-clean:
 #
 libgphoto2-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBGPHOTO2_DIR) $(LIBGPHOTO2_BUILD_DIR) $(LIBGPHOTO2_IPK_DIR) $(LIBGPHOTO2_IPK)
+#
+#
+# Some sanity check for the package.
+#
+libgphoto2-check: $(LIBGPHOTO2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBGPHOTO2_IPK)

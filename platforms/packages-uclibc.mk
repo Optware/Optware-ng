@@ -2,7 +2,6 @@
 UCLIBC_BROKEN_PACKAGES = \
 	 bzflag \
 	 fcgi fish \
-	 gphoto2 libgphoto2 \
 	 gtk ice iptables jabberd \
 	 jamvm launchtool ldconfig libstdc++ monotone \
 	 mtr nfs-server nfs-utils \
