@@ -113,6 +113,8 @@ $(LIBGPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPHOTO2_SOURCE) $(LIBGPHOTO2
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGPHOTO2_LDFLAGS)" 	\
 		PKG_CONFIG="$(STAGING_DIR)/opt/bin"			\
 		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig"	\
+		LIBUSB_CFLAGS=-I$(STAGING_INCLUDE_DIR) \
+		LIBUSB_LIBS="-L$(STAGING_LIB_DIR) -lusb" \
 		./configure						\
 		--build=$(GNU_HOST_NAME)				\
 		--host=$(GNU_TARGET_NAME)				\
