@@ -37,7 +37,7 @@ PY-SIMPLEJSON_CONFLICTS=
 #
 # PY-SIMPLEJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIMPLEJSON_IPK_VERSION=1
+PY-SIMPLEJSON_IPK_VERSION=2
 
 #
 # PY-SIMPLEJSON_CONFFILES should be a list of user-editable files
@@ -116,7 +116,12 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-S
 	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)/2.4
 	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
-	    (echo "[build_scripts]"; \
+	    ( \
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -126,7 +131,12 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-S
 	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)/2.5
 	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
-	    (echo "[build_scripts]"; \
+	    ( \
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $(PY-SIMPLEJSON_BUILD_DIR)/.configured
