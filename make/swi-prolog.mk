@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
-SWI-PROLOG_VERSION=5.6.30
+SWI-PROLOG_VERSION=5.6.31
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
 SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
 SWI-PROLOG_UNZIP=zcat
