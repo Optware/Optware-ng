@@ -29,7 +29,7 @@ WEECHAT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WEECHAT_DESCRIPTION=(Wee Enhanced Environment for Chat) is a fast and light IRC client.
 WEECHAT_SECTION=irc
 WEECHAT_PRIORITY=optional
-WEECHAT_DEPENDS=$(NCURSES_FOR_OPTWARE_TARGET)
+WEECHAT_DEPENDS=gnutls, $(NCURSES_FOR_OPTWARE_TARGET)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 WEECHAT_DEPENDS+=, libiconv
 endif
@@ -39,7 +39,7 @@ WEECHAT_CONFLICTS=
 #
 # WEECHAT_IPK_VERSION should be incremented when the ipk changes.
 #
-WEECHAT_IPK_VERSION=1
+WEECHAT_IPK_VERSION=2
 
 #
 # WEECHAT_CONFFILES should be a list of user-editable files
