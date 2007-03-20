@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.2.7
+CUPS_VERSION=1.2.10
 CUPS_SITE=ftp://ftp3.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=4
+CUPS_IPK_VERSION=1
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
