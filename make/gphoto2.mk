@@ -111,7 +111,7 @@ $(GPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(GPHOTO2_SOURCE) $(GPHOTO2_PATCHES)
 	(cd $(GPHOTO2_BUILD_DIR);					\
 		PATH=$(STAGING_DIR)/opt/bin:$${PATH}			\
 		$(TARGET_CONFIGURE_OPTS)				\
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(GPHOTO2_CPPFLAGS) -I$(STAGING_DIR)/opt/include/gphoto2"	\
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(GPHOTO2_CPPFLAGS)"	\
 		LDFLAGS="$(STAGING_LDFLAGS) $(GPHOTO2_LDFLAGS)"		\
 		POPT_CFLAGS=-I$(STAGING_DIR)/opt/include		\
 		POPT_LIBS="-I$(STAGING_DIR)/opt/lib -lpopt"		\
@@ -120,6 +120,7 @@ $(GPHOTO2_BUILD_DIR)/.configured: $(DL_DIR)/$(GPHOTO2_SOURCE) $(GPHOTO2_PATCHES)
 		--host=$(GNU_TARGET_NAME)				\
 		--target=$(GNU_TARGET_NAME)				\
 		--prefix=/opt						\
+		--with-libgphoto2=$(STAGING_PREFIX)			\
 		--disable-nls						\
 		--disable-static					\
 	)
