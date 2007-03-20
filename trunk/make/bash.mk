@@ -30,6 +30,9 @@ BASH_DESCRIPTION=A bourne style shell
 BASH_SECTION=shell
 BASH_PRIORITY=optional
 BASH_DEPENDS=readline
+ifeq ($(GETTEXT_NLS), enable)
+BASH_DEPENDS+=, gettext
+endif
 BASH_CONFLICTS=
 BASH_SUGGESTS=
 BASH_CONFLICTS=
@@ -37,7 +40,7 @@ BASH_CONFLICTS=
 #
 # BASH_IPK_VERSION should be incremented when the ipk changes.
 #
-BASH_IPK_VERSION=1
+BASH_IPK_VERSION=2
 #
 # BASH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
@@ -99,6 +102,9 @@ bash-source: $(DL_DIR)/$(BASH_SOURCE)
 # shown below to make various patches to it.
 #
 $(BASH_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_SOURCE)
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(BASH_DIR) $(BASH_BUILD_DIR)
 	$(BASH_UNZIP) $(DL_DIR)/$(BASH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
