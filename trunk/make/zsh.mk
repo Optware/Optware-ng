@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
-ZSH_VERSION=4.2.6
+ZSH_VERSION=4.3.2
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -36,7 +36,7 @@ ZSH_CONFLICTS=
 #
 # ZSH_IPK_VERSION should be incremented when the ipk changes.
 #
-ZSH_IPK_VERSION=3
+ZSH_IPK_VERSION=1
 
 #
 # ZSH_CONFFILES should be a list of user-editable files
