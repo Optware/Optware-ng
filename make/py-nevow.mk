@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-NEVOW_VERSION=0.9.0
+PY-NEVOW_VERSION=0.9.18
 PY-NEVOW_SOURCE=Nevow-$(PY-NEVOW_VERSION).tar.gz
 PY-NEVOW_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-NEVOW_SOURCE)?format=raw
 PY-NEVOW_DIR=Nevow-$(PY-NEVOW_VERSION)
@@ -37,7 +37,7 @@ PY-NEVOW_CONFLICTS=
 #
 # PY-NEVOW_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NEVOW_IPK_VERSION=2
+PY-NEVOW_IPK_VERSION=1
 
 #
 # PY-NEVOW_CONFFILES should be a list of user-editable files
