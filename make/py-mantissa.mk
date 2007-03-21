@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MANTISSA_VERSION=0.5.0
+PY-MANTISSA_VERSION=0.6.1
 PY-MANTISSA_SOURCE=Mantissa-$(PY-MANTISSA_VERSION).tar.gz
 PY-MANTISSA_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-MANTISSA_SOURCE)?format=raw
 PY-MANTISSA_DIR=Mantissa-$(PY-MANTISSA_VERSION)
@@ -37,7 +37,7 @@ PY-MANTISSA_CONFLICTS=
 #
 # PY-MANTISSA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MANTISSA_IPK_VERSION=2
+PY-MANTISSA_IPK_VERSION=1
 
 #
 # PY-MANTISSA_CONFFILES should be a list of user-editable files
