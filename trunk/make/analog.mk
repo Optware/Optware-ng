@@ -38,7 +38,7 @@ ANALOG_CONFLICTS=
 #
 # ANALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-ANALOG_IPK_VERSION=1
+ANALOG_IPK_VERSION=2
 
 #
 # ANALOG_CONFFILES should be a list of user-editable files
@@ -55,7 +55,11 @@ ANALOG_CONFFILES=/opt/etc/analog.cfg
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ANALOG_CPPFLAGS=
+ANALOG_CPPFLAGS=-DCONFIGDIR=\\\"/opt/etc/\\\" \
+		-DLANGDIR=\\\"/opt/share/analog/lang/\\\" \
+		-DLOGFILE=\\\"/var/log/thttpd.log\\\" \
+		-DIMAGEDIR=\\\"/images/\\\" \
+		-DDNSDIR=\\\"/tmp/\\\" 
 ANALOG_LDFLAGS=
 
 #
@@ -145,7 +149,7 @@ $(ANALOG_BUILD_DIR)/.built: $(ANALOG_BUILD_DIR)/.configured
 	$(TARGET_CONFIGURE_OPTS) \
 	CFLAGS="$(STAGING_CPPFLAGS) $(ANALOG_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(ANALOG_LDFLAGS)" \
-	$(MAKE) -C $(ANALOG_BUILD_DIR)
+	$(MAKE) -C $(ANALOG_BUILD_DIR)/src
 	touch $@
 
 #
