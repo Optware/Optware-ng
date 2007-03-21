@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-EPSILON_VERSION=0.5.0
+PY-EPSILON_VERSION=0.5.6
 PY-EPSILON_SOURCE=Epsilon-$(PY-EPSILON_VERSION).tar.gz
 PY-EPSILON_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-EPSILON_SOURCE)?format=raw
 PY-EPSILON_DIR=Epsilon-$(PY-EPSILON_VERSION)
@@ -37,7 +37,7 @@ PY-EPSILON_CONFLICTS=
 #
 # PY-EPSILON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-EPSILON_IPK_VERSION=2
+PY-EPSILON_IPK_VERSION=1
 
 #
 # PY-EPSILON_CONFFILES should be a list of user-editable files
