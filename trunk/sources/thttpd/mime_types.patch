@@ -1,0 +1,13 @@
+--- thttpd/mime_types.txt.orig	2007-03-21 16:11:20.000000000 +0100
++++ thttpd/mime_types.txt	2007-03-21 16:12:03.000000000 +0100
+@@ -52,8 +52,8 @@
+ gtar	application/x-gtar
+ hdf	application/x-hdf
+ hqx	application/mac-binhex40
+-htm	text/html; charset=%s
+-html	text/html; charset=%s
++htm	text/html
++html	text/html
+ ice	x-conference/x-cooltalk
+ ief	image/ief
+ iges	model/iges
