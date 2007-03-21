@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RC_SITE=http://osiris.tfh-berlin.de/mirror/t2-source/6.0/r/
+RC_SITE=ftp://rc.quanstro.net/pub
 RC_VERSION=1.7.1
 RC_SOURCE=rc-$(RC_VERSION).tar.bz2
 RC_DIR=rc-$(RC_VERSION)
@@ -82,7 +82,8 @@ RC_IPK=$(BUILD_DIR)/rc_$(RC_VERSION)-$(RC_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RC_SITE)/$(RC_SOURCE)
+	$(WGET) -P $(DL_DIR) $(RC_SITE)/$(RC_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(RC_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
