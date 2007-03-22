@@ -209,7 +209,10 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage jabberd-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
+ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
+	$(MAKE) jabberd-stage
+endif
 	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite2-stage freetds-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
