@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=4.19
+FILE_VERSION=4.20
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -34,7 +34,7 @@ FILE_CONFLICTS=
 #
 # FILE_IPK_VERSION should be incremented when the ipk changes.
 #
-FILE_IPK_VERSION=2
+FILE_IPK_VERSION=1
 
 #
 # FILE_PATCHES should list any patches, in the the order in
