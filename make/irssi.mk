@@ -42,7 +42,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=4
+IRSSI_IPK_VERSION=5
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -65,7 +65,7 @@ IRSSI_PERL_CFLAGS=-fomit-frame-pointer  -I$(STAGING_LIB_DIR)/perl5/$(PERL_VERSIO
 IRSSI_PERL_LDFLAGS=-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
 	-L$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
 	$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/auto/DynaLoader/DynaLoader.a \
-	-L/opt/lib/perl5/$(PERL_VERSION)/armv5b-linux/CORE \
+	-L/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
 	-lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s \
 
 #
@@ -116,10 +116,9 @@ irssi-source: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
 #
 $(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
 # make/irssi.mk
-ifeq (perl,$(filter perl, $(PACKAGES)))
-	$(MAKE) glib-stage ncurses-stage openssl-stage perl-stage
-else
 	$(MAKE) glib-stage ncurses-stage openssl-stage
+ifeq (perl,$(filter perl, $(PACKAGES)))
+	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR)
 	$(IRSSI_UNZIP) $(DL_DIR)/$(IRSSI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -138,6 +137,7 @@ endif
 		ac_cv_path_perlpath=$(PERL_HOSTPERL) \
 		PERL_CFLAGS="$(STAGING_CPPFLAGS) $(IRSSI_CPPFLAGS) $(IRSSI_PERL_CFLAGS)" \
 		PERL_LDFLAGS="$(STAGING_LDFLAGS) $(IRSSI_LDFLAGS) $(IRSSI_PERL_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -145,6 +145,7 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 		$(IRSSI_WITH_OR_WITHOUT_PERL) \
+		--with-glib-prefix=$(STAGING_PREFIX) \
 		--with-ncurses=$(STAGING_PREFIX) \
 		--enable-ipv6 \
 		--disable-glibtest \
@@ -271,3 +272,9 @@ irssi-clean:
 #
 irssi-dirclean:
 	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR) $(IRSSI_IPK_DIR) $(IRSSI_IPK)
+
+#
+# Some sanity check for the package.
+#
+irssi-check: $(IRSSI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IRSSI_IPK)
