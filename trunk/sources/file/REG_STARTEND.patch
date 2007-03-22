@@ -1,0 +1,25 @@
+--- src/softmagic.c.orig	2007-03-22 14:09:26.000000000 -0700
++++ src/softmagic.c	2007-03-22 14:15:10.000000000 -0700
+@@ -1523,10 +1523,22 @@
+ 		}
+ 		else {
+ 			regmatch_t pmatch[1];
++#ifdef REG_STARTEND
+ 			pmatch[0].rm_so = 0;
+ 			pmatch[0].rm_eo = ms->search.s_len;
+ 			rc = regexec(&rx, (const char *)ms->search.s,
+ 			    1, pmatch, REG_STARTEND);
++#else
++			char *search;
++			if (ms->search.s[ms->search.s_len] == '\0')
++				rc = regexec(&rx, (const char *)ms->search.s, 1, pmatch, 0);
++			else {
++				search = strdup(ms->search.s);
++				search[ms->search.s_len] = '\0';
++				rc = regexec(&rx, (const char *)search, 1, pmatch, 0);
++				free(search);
++			}
++#endif
+ 			switch (rc) {
+ 			case 0:
+ 				ms->search.s += (int)pmatch[0].rm_so;

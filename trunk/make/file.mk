@@ -40,7 +40,7 @@ FILE_IPK_VERSION=1
 # FILE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FILE_PATCHES=$(FILE_SOURCE_DIR)/configure.patch
+FILE_PATCHES=$(FILE_SOURCE_DIR)/REG_STARTEND.patch
 
 #
 # If the compilation of the package requires additional
@@ -98,7 +98,9 @@ $(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(FILE_BUILD_DIR)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p1
+	if test -n "$(FILE_PATCHES)"; \
+		then cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(FILE_DIR) $(FILE_BUILD_DIR)
 	(cd $(FILE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
