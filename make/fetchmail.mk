@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FETCHMAIL_SITE=http://download.berlios.de/fetchmail
-FETCHMAIL_VERSION=6.3.6
+FETCHMAIL_VERSION=6.3.7
 FETCHMAIL_SOURCE=fetchmail-$(FETCHMAIL_VERSION).tar.bz2
 FETCHMAIL_DIR=fetchmail-$(FETCHMAIL_VERSION)
 FETCHMAIL_UNZIP=bzcat
@@ -34,7 +34,7 @@ FETCHMAIL_CONFLICTS=
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=2
+FETCHMAIL_IPK_VERSION=1
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files
