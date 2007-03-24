@@ -6,7 +6,7 @@ start() {
 	echo "Starting amuled..."
 	echo "Configuration's setting are located in /opt/share/amule"
 	export HOME=/opt/share/amule
-	/opt/bin/amuled -f --even-if-lfroen-complains-this-will-stay
+	/opt/bin/amuled -f
 	export HOME=$backup
 	echo "done"
 }
