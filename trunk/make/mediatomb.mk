@@ -41,13 +41,16 @@ endif
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, libstdc++
 endif
+ifeq (libstdc++, $(filter libuclibc++, $(PACKAGES)))
+MEDIATOMB_DEPENDS+=, libuclibc++
+endif
 MEDIATOMB_SUGGESTS=
 MEDIATOMB_CONFLICTS=
 
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=1
+MEDIATOMB_IPK_VERSION=2
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
