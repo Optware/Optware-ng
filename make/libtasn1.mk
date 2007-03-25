@@ -27,12 +27,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://josefsson.org/gnutls/releases/libtasn1
-LIBTASN1_VERSION=0.3.8
+LIBTASN1_VERSION=0.3.9
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
 LIBTASN1_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-LIBTASN1_DESCRIPTION=Describe libtasn1 here.
+LIBTASN1_DESCRIPTION=ASN.1 structure parser library.
 LIBTASN1_SECTION=libs
 LIBTASN1_PRIORITY=optional
 LIBTASN1_DEPENDS=
@@ -42,7 +42,7 @@ LIBTASN1_CONFLICTS=
 #
 # LIBTASN1_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTASN1_IPK_VERSION=3
+LIBTASN1_IPK_VERSION=1
 
 #
 # LIBTASN1_CONFFILES should be a list of user-editable files
