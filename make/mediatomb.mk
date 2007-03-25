@@ -41,7 +41,7 @@ endif
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, libstdc++
 endif
-ifeq (libstdc++, $(filter libuclibc++, $(PACKAGES)))
+ifeq (libuclibc++, $(filter libuclibc++, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, libuclibc++
 endif
 MEDIATOMB_SUGGESTS=
