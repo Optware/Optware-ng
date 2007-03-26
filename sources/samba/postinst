@@ -2,5 +2,5 @@
 echo "The original samba version 2 config (/etc/samba/smb.conf) is no longer"
 echo "working with this version of samba."
 echo "Please create a new samba version 3 config (/opt/etc/samba/smb.conf)."
-echo "After verify your smb.conf file, modify and execute /opt/etc/init.d/S80samba"
+echo "After verify your smb.conf file, modify and execute /opt/etc/init.d/S08samba"
 echo "to activate the samba version 3."
