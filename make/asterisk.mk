@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK_SITE=http://ftp.digium.com/pub/asterisk/releases/
-ASTERISK_VERSION=1.2.14
+ASTERISK_VERSION=1.2.17
 ASTERISK_SOURCE=asterisk-$(ASTERISK_VERSION).tar.gz
 ASTERISK_DIR=asterisk-$(ASTERISK_VERSION)
 ASTERISK_UNZIP=zcat
@@ -42,7 +42,7 @@ ASTERISK_CONFLICTS=asterisk14
 #
 # ASTERISK_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK_IPK_VERSION=3
+ASTERISK_IPK_VERSION=1
 
 #
 # ASTERISK_CONFFILES should be a list of user-editable files
