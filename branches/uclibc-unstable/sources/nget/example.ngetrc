@@ -1,0 +1,134 @@
+// example .ngetrc
+// cp example.ngetrc ~/.nget5/.ngetrc
+// and edit to your liking.
+
+#lines that start with either '#' or '//' are considered comments and ignored.
+#Before running nget you must configure at least one host in the halias section
+#See the "CONFIGURATION" section of the nget manpage for full details.
+
+//global settings - (defaults, merely listed for your convenience)
+#tries=20
+#delay=1
+#case=0
+#complete=1
+#dupeidcheck=1
+#dupefilecheck=1
+#dupefilemark=0
+#limit=0
+#quiet=0
+#debug=0
+#tempshortnames=0
+#curservmult=2.0
+#makedirs=no
+#usegz=-1
+#timeout=180
+#unequal_line_error=0
+#//cachedir=/home/user/.nget5
+#test_multiserver=no
+#fullxover=0
+#maxstreaming=64
+#idletimeout=300
+#maxconnections=-1
+#penaltystrikes=3
+#initialpenalty=180
+#penaltymultiplier=2.0
+#fatal_user_errors=0
+#text=files
+#save_binary_info=0
+#autopar=1
+#autopar_optimistic=0
+
+//hostname aliases
+{halias
+ {<yourhostalias>
+  addr=<yourhostaddress>
+  id=1
+#optional host config settings:
+#  user=<name>
+#  pass=<password>
+#  fullxover=1
+#  shortname=<y>
+#  maxstreaming=64
+#  idletimeout=300
+#  linelenience=0
+ }
+#Examples:
+# {host1
+#  addr=news.host1.com
+#  fullxover=1
+#  id=384845
+#  linelenience=0,2
+# }
+# {goodhost
+#  addr=nntp.goodhost.net
+#  user=yourname
+#  pass=hahahahah
+#  id=384846
+# }
+# {badhost
+#  addr=hah.bad.host.org:3876
+#  id=384847
+#  linelenience=3
+# }
+}
+
+//multi-server priorities
+{hpriority
+#The "default" hpriority section will be used for all groups that don't
+#specify their own prio= setting in the galias section.
+# {default
+#  host1=1.9
+#  goodhost=2.0
+#  badhost=0.9
+# }
+#The "trustsizes" specifies how much we trust each server's reports of article
+#bytes/lines count.
+# {trustsizes
+#  goodhost=5.0
+#  badhost=0.1
+# }
+#The "_grouplist" specifies which groups -a updates automatically. 
+#(if _grouplist section doesn't exist, "default" is used instead)
+# {_grouplist
+#  _glevel=2
+#  goodhost=2
+#  host1=2
+# }
+#Any number of additional hpriority sections may be specified here, and then
+#referenced from prio= settings in the galias section.
+# {chocoboprios
+#  _level=0.94
+#  _glevel=1.5
+#  host1=1.8
+#  badhost=1.2
+#  goodhost=0.9
+# }
+}
+
+//newsgroup aliases
+{galias
+# ayg=alt.your.group
+# mygroup=rec.my.group
+# {chocobo
+#  group=alt.chocobo
+#  prio=chocoboprios
+# }
+# {wark
+#  group=alt.chocobo.wark.wark.wark
+#  prio=chocoboprios
+# }
+# chocobos=chocobo,wark
+# {idunno
+#  group=alt.idunno.why.but.this.one.isnt.compressed
+#  usegz=0
+# }
+# {less
+#  group=alt.this.one.is.compressed.less.but.it.should.be.faster
+#  usegz=3
+# }
+# {more
+#  group=alt.slower.but.more.compression
+#  usegz=9
+# }
+}
+

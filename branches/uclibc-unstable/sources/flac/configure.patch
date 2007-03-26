@@ -1,0 +1,93 @@
+--- configure.orig	2005-02-23 17:20:29.000000000 -0800
++++ configure	2005-02-23 17:23:15.000000000 -0800
+@@ -9159,10 +9159,13 @@
+ 
+   rm -f conf.oggtest
+ 
+ 
+ 
++# when cross-compiling, the libogg check 'assumes OK' even when given --without-ogg, so we force it to no until libogg-1.1.2 is part of unslung
++have_ogg=no
++OGG_LIBS=
+ if test x$have_ogg = xyes; then
+   FLaC__HAS_OGG_TRUE=
+   FLaC__HAS_OGG_FALSE='#'
+ else
+   FLaC__HAS_OGG_TRUE='#'
+@@ -9399,10 +9402,12 @@
+ 
+ 
+ 
+ 
+ 
++# XMMS detection doesn't seem to work either when cross-compiling, force it off
++XMMS_INPUT_PLUGIN_DIR=
+ if test x$XMMS_INPUT_PLUGIN_DIR != x; then
+   FLaC__HAS_XMMS_TRUE=
+   FLaC__HAS_XMMS_FALSE='#'
+ else
+   FLaC__HAS_XMMS_TRUE='#'
+--- configure.in.orig	2005-02-23 17:23:44.000000000 -0800
++++ configure.in	2005-02-23 17:23:31.000000000 -0800
+@@ -150,16 +150,21 @@
+ AC_DEFINE(FLAC__VALGRIND_TESTING)
+ fi
+ 
+ dnl check for ogg library
+ XIPH_PATH_OGG(have_ogg=yes, AC_MSG_WARN([*** Ogg development enviroment not installed - Ogg support will not be built]))
++dnl when cross-compiling, the above 'assumes OK' even when given --without-ogg, so we force it to no until libogg-1.1.2 is part of unslung
++have_ogg=no
++OGG_LIBS=
+ AM_CONDITIONAL(FLaC__HAS_OGG, [test x$have_ogg = xyes])
+ if test x$have_ogg = xyes ; then
+ AC_DEFINE(FLAC__HAS_OGG)
+ fi
+ 
+ AM_PATH_XMMS(0.9.5.1, , AC_MSG_WARN([*** XMMS >= 0.9.5.1 not installed - xmms support will not be built]))
++dnl XMMS detection doesn't seem to work either when cross-compiling, force it off
++XMMS_INPUT_PLUGIN_DIR=
+ AM_CONDITIONAL(FLaC__HAS_XMMS, test x$XMMS_INPUT_PLUGIN_DIR != x)
+ 
+ dnl check for i18n(internationalization); these are from libiconv/gettext
+ AM_ICONV
+ AM_LANGINFO_CODESET
+--- doc/html/Makefile.am.orig	2005-01-24 21:36:04.000000000 -0800
++++ doc/html/Makefile.am	2005-02-23 18:50:33.000000000 -0800
+@@ -46,13 +46,15 @@
+ endif
+ 
+ if FLaC__HAS_DOXYGEN
+ # The install targets don't copy whole directories so we have to
+ # handle 'api/' specially:
++#[JEC] either ipkg or the unslung version of tar can't handle long filenames,
++#[JEC] which the api directory has in spades, so we don't include it
+ install-data-local:
+-	$(mkinstalldirs) $(DESTDIR)$(docdir)/api
+-	(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api)
++	echo not doing '$(mkinstalldirs) $(DESTDIR)$(docdir)/api'
++	echo not doing '(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api)'
+ uninstall-local:
+ 	rm -rf $(DESTDIR)$(docdir)/api
+ maintainer-clean-local:
+ 	rm -rf api
+ endif
+--- doc/html/Makefile.in.orig	2005-02-23 18:52:00.000000000 -0800
++++ doc/html/Makefile.in	2005-02-23 18:50:46.000000000 -0800
+@@ -575,13 +575,15 @@
+ 	uninstall-info-am uninstall-local
+ 
+ 
+ # The install targets don't copy whole directories so we have to
+ # handle 'api/' specially:
++#[JEC] either ipkg or the unslung version of tar can't handle long filenames,
++#[JEC] which the api directory has in spades, so we don't include it
+ @FLaC__HAS_DOXYGEN_TRUE@install-data-local:
+-@FLaC__HAS_DOXYGEN_TRUE@	$(mkinstalldirs) $(DESTDIR)$(docdir)/api
+-@FLaC__HAS_DOXYGEN_TRUE@	(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api)
++@FLaC__HAS_DOXYGEN_TRUE@	echo not doing '$(mkinstalldirs) $(DESTDIR)$(docdir)/api'
++@FLaC__HAS_DOXYGEN_TRUE@	echo not doing '(cd api && $(INSTALL_DATA) * $(DESTDIR)$(docdir)/api)'
+ @FLaC__HAS_DOXYGEN_TRUE@uninstall-local:
+ @FLaC__HAS_DOXYGEN_TRUE@	rm -rf $(DESTDIR)$(docdir)/api
+ @FLaC__HAS_DOXYGEN_TRUE@maintainer-clean-local:
+ @FLaC__HAS_DOXYGEN_TRUE@	rm -rf api
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.

@@ -1,0 +1,11 @@
+--- eggdrop/Makefile.in	2004-07-25 07:17:33.000000000 -0400
++++ eggdrop-patched/Makefile.in	2005-05-01 04:33:56.890000000 -0400
+@@ -71,7 +71,7 @@
+ 
+ modconf = $(top_srcdir)/misc/modconfig --top_srcdir=$(top_srcdir)
+ 
+-egg_test_run = EGG_LANGDIR=$(top_srcdir)/language ./$(EGGEXEC) -v
++egg_test_run = EGG_LANGDIR=$(top_srcdir)/language #./$(EGGEXEC) -v
+ 
+ post_config  =  echo "" && \
+ 		echo "You can now compile the bot, using \"make\"." && \

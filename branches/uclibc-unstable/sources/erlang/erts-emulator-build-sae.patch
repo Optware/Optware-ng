@@ -1,0 +1,11 @@
+--- otp_src_R11B-0/erts/emulator/Makefile.in.orig	2006-05-15 06:06:30.000000000 -0700
++++ otp_src_R11B-0/erts/emulator/Makefile.in	2006-05-17 07:56:16.000000000 -0700
+@@ -305,7 +305,7 @@
+ all:
+ 	@echo '*** Omitted build of emulator with smp support'
+ else
+-all: generate erts_lib zlib $(BINDIR)/$(EMULATOR_EXECUTABLE) $(UNIX_ONLY_BUILDS)
++all: generate erts_lib zlib $(BINDIR)/$(EMULATOR_EXECUTABLE) $(BINDIR)/$(EMULATOR_EXECUTABLE_SAE) $(UNIX_ONLY_BUILDS)
+ endif
+ 
+ zlib:

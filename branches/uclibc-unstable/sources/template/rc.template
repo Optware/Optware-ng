@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -f /var/run/templated.pid ] ; then
+  kill `cat /var/run/templated.pid`
+else
+  killall templated
+fi
+
+rm -f /var/run/templated.pid
+
+/opt/sbin/templated

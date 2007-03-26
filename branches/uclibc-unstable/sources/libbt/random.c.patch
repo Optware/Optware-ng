@@ -1,0 +1,31 @@
+--- src/random.c	Thu Dec  8 08:20:25 2005
++++ src/random.c	Sun Dec 11 13:14:29 2005
+@@ -37,7 +37,7 @@
+ void seed_rnd( char *buf, int len) {
+     char dg[SHA_DIGEST_LENGTH];
+     SHA1( buf, len, dg);
+-    seed48( (unsigned short*)dg);
++    srand( (unsigned short*)dg);
+ }
+ #endif
+ 
+@@ -76,7 +76,7 @@
+ 
+ #if !WIN32
+ int rnd(int randmax) {
+-    double r = drand48();
++    double r = rand();
+     int rval = r*randmax;
+     if (rval >= randmax || rval < 0) rval=randmax-1;
+     return rval;
+@@ -88,8 +88,8 @@
+     double v1=0, v2=0;
+     double s, x1;
+     do {
+-	v1 = drand48() * 2 - 1;
+-	v2 = drand48() * 2 - 1;
++	v1 = rand() * 2 - 1;
++	v2 = rand() * 2 - 1;
+ 	s = v1+v2;
+     } while (s >= 1.0);
+     x1 = v1 * sqrt( (-2 * log(s)) / s);

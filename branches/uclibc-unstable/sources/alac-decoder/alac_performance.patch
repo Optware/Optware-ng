@@ -1,0 +1,87 @@
+diff -Naur alac_decoder.orig/alac.c alac_decoder/alac.c
+--- alac_decoder.orig/alac.c	2005-03-05 13:29:56.000000000 +0000
++++ alac_decoder/alac.c	2005-12-13 04:24:08.000000000 +0000
+@@ -225,17 +225,33 @@
+         alac->input_buffer_bitaccumulator *= -1;
+ }
+ 
+-/* hideously inefficient. could use a bitmask search,
+- * alternatively bsr on x86,
+- */
++extern char leading_zero_cache[];
++
++/* using a 16-bit cache to speed
++   things up.  (This *IS* faster than
++   using a bitmask binary search)
++   with 16K of overhead, this is worth it */
+ static int count_leading_zeros(int32_t input)
+ {
+-    int i = 0;
++    int i=0,j;
++	int lookup=input;
++
++	if(!(input >> 16))
++	{
++		i += 16;
++		input <<= 16;
++	}
++	else
++		lookup >>= 16;
++	if((j = leading_zero_cache[lookup]))
++		return j;
++
+     while (!(0x80000000 & input) && i < 32)
+     {
+         i++;
+         input = input << 1;
+     }
++	leading_zero_cache[lookup] = i;
+     return i;
+ }
+ 
+diff -Naur alac_decoder.orig/main.c alac_decoder/main.c
+--- alac_decoder.orig/main.c	2005-03-05 13:30:51.000000000 +0000
++++ alac_decoder/main.c	2005-12-13 04:23:57.000000000 +0000
+@@ -38,12 +38,16 @@
+ #include <stdlib.h>
+ #include <errno.h>
+ #include <string.h>
++#include <strings.h>
+ 
+ #include "demux.h"
+ #include "decomp.h"
+ #include "stream.h"
+ #include "wavwriter.h"
+ 
++//global
++unsigned char leading_zero_cache[1 << 16];
++
+ int host_bigendian = 0;
+ 
+ alac_file *alac = NULL;
+@@ -143,7 +147,14 @@
+         if (verbose)
+             fprintf(stderr, "read %i bytes. total: %i\n", outputBytes, bytes_read);
+ 
+-        fwrite(pDestBuffer, outputBytes, 1, output_file);
++		/* North */
++		if(fwrite(pDestBuffer, outputBytes, 1, output_file) != 1)
++		{
++			//kill program if pipe has closed
++			if(errno == EPIPE && output_file == stdout)
++				exit(1);
++		}
++        //fwrite(pDestBuffer, outputBytes, 1, output_file);
+     }
+     if (verbose)
+         fprintf(stderr, "done reading, read %i frames\n", i);
+@@ -275,6 +286,9 @@
+     demux_res_t demux_res;
+     unsigned int output_size, i;
+ 
++	/* North */
++	bzero(leading_zero_cache,1<<16);
++
+     set_endian();
+ 
+     setup_environment(argc, argv);

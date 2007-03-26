@@ -1,0 +1,23 @@
+--- Configure.orig	2006-02-11 21:40:14.000000000 -0800
++++ Configure	2006-02-11 21:41:48.000000000 -0800
+@@ -4775,20 +4775,6 @@
+ 		else
+ 			echo "Nope, it doesn't, but that's ok." 2>&1
+ 		fi
+-
+-		echo "Checking if your compiler accepts -Wdeclaration-after-statement" 2>&1
+-		echo 'int main(void) { return 0; }' > gcctest.c
+-		if $cc -Wdeclaration-after-statement -o gcctest gcctest.c; then
+-			echo "Yes, it does." 2>&1
+-			case "$ccflags" in
+-			*-Wdeclaration-after-statement*)
+-				echo "Leaving current flags $ccflags alone." 2>&1
+-				;;
+-			*) dflt="$dflt -Wdeclaration-after-statement" ;;
+-			esac
+-		else
+-			echo "Nope, it doesn't, but that's ok." 2>&1
+-		fi
+ 		;;
+ 	esac
+ 	;;

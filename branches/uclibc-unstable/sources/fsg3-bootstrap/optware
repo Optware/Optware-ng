@@ -1,0 +1,24 @@
+#! /bin/sh
+
+case "$1" in
+    start)
+        echo "Starting Optware."
+	if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
+	    mkdir -p /opt
+	    mount -o bind /home/.optware /opt
+	fi	
+	[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
+    ;;
+    reconfig)
+	true
+    ;;
+    stop)
+        echo "Shutting down Optware."
+	true
+    ;;
+    *)
+        echo "Usage: $0 {start|stop|reconfig}"
+        exit 1
+esac
+
+exit 0

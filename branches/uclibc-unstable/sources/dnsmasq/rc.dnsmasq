@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -f /var/run/dnsmasq.pid ] ; then
+  kill `cat /var/run/dnsmasq.pid`
+fi
+
+rm -f /var/run/dnsmasq.pid
+
+sleep 2
+/opt/sbin/dnsmasq

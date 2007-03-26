@@ -1,0 +1,77 @@
+diff -Nur lha.orig/src/header.c lha/src/header.c
+--- lha.orig/src/header.c	2000-10-05 19:36:03.000000000 +0200
++++ lha/src/header.c	2006-08-26 12:42:26.000000000 +0200
+@@ -538,6 +538,10 @@
+ 				/*
+ 				 * filename
+ 				 */
++				if (header_size >= 256) {
++				  fprintf(stderr, "Possible buffer overflow hack attack, type #1\n");
++				  exit(109);
++				}
+ 				for (i = 0; i < header_size - 3; i++)
+ 					hdr->name[i] = (char) get_byte();
+ 				hdr->name[header_size - 3] = '\0';
+@@ -547,6 +551,10 @@
+ 				/*
+ 				 * directory
+ 				 */
++				if (header_size >= FILENAME_LENGTH) {
++				  fprintf(stderr, "Possible buffer overflow hack attack, type #2\n");
++				  exit(110);
++				}
+ 				for (i = 0; i < header_size - 3; i++)
+ 					dirname[i] = (char) get_byte();
+ 				dirname[header_size - 3] = '\0';
+diff -Nur lha.orig/src/lhext.c lha/src/lhext.c
+--- lha.orig/src/lhext.c	2006-08-26 12:41:49.000000000 +0200
++++ lha/src/lhext.c	2006-08-26 12:42:26.000000000 +0200
+@@ -190,8 +190,13 @@
+ 		q = (char *) rindex(hdr->name, '/') + 1;
+ 	}
+ 	else {
++		if (is_directory_traversal(q)) {
++		  fprintf(stderr, "Possible directory traversal hack attempt in %s\n", q);
++		  exit(111);
++		}
++
+ 		if (*q == '/') {
+-			q++;
++			while (*q == '/') { q++; }
+ 			/*
+ 			 * if OSK then strip device name
+ 			 */
+@@ -420,6 +425,33 @@
+ 	return;
+ }
+ 
++int
++is_directory_traversal(char *string)
++{
++  unsigned int type = 0; /* 0 = new, 1 = only dots, 2 = other chars than dots */
++  char *temp;
++
++  temp = string;
++
++  while (*temp != 0) {
++    if (temp[0] == '/') {
++      if (type == 1) { return 1; }
++      type = 0;
++      temp++;
++      continue;
++    }
++
++    if ((temp[0] == '.') && (type < 2))
++      type = 1;
++    if (temp[0] != '.')
++      type = 2;
++
++    temp++;
++  } /* while */
++
++  return (type == 1);
++}
++
+ /* Local Variables: */
+ /* mode:c */
+ /* tab-width:4 */

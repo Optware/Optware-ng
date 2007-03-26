@@ -1,0 +1,6 @@
+#!/bin/sh
+
+if [ -e /dev/fuse ]; then
+  /bin/rm -f /dev/fuse
+fi
+

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/bin/killall fetchmail 2>&1
+

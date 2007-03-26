@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# Startup script for metalog
+#
+
+# We assume that syslogd has alreade been disabled in /etc/inittab
+/opt/sbin/metalog --daemonize
+
+return 0

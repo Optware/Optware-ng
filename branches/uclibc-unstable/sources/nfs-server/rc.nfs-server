@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -n "`pidof rpc.nfsd`" ] ; then
+    killall rpc.nfsd 2>/dev/null
+fi
+if [ -n "`pidof rpc.mountd`" ] ; then
+    killall  rpc.mountd 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/rpc.nfsd  -f /opt/etc/exports
+/opt/sbin/rpc.mountd  -f /opt/etc/exports

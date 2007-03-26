@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [ -n "`pidof mpd`" ]; then 
+    /bin/killall mpd 2>/dev/null
+fi
+
+umask 077
+
+/opt/bin/mpd /opt/etc/mpd.conf &

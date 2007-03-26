@@ -1,0 +1,30 @@
+--- Makefile.good	2005-01-23 00:42:46.000000000 -0800
++++ Makefile	2005-01-23 01:43:17.000000000 -0800
+@@ -96,6 +96,8 @@
+ 
+ OPTIMIZE = -O2
+ 
++OPTIMIZE1= -O1
++
+ EXTRAS = 
+ 
+ INSTALLPREFIXEXP = /opt
+@@ -103,6 +105,8 @@
+ 
+ CCCMD    = `sh $(shellflags) cflags "optimize='$(OPTIMIZE)'" $@`
+ 
++CCCMD1   = `sh $(shellflags) cflags "optimize='$(OPTIMIZE1)'" $@`
++
+ CCCMDSRC = `sh $(shellflags) cflags "optimize='$(OPTIMIZE)'" $<`
+ 
+ private = preplibrary lib/Config.pm lib/ExtUtils/Miniperl.pm
+@@ -198,6 +202,9 @@
+ # if we have a symlink forest to another disk (it complains about too many
+ # levels of symbolic links, even if we have only two)
+ 
++pp_hot.o: pp_hot.c
++	$(CCCMD1) $(PLDLFLAGS) $*.c
++
+ opmini.c: op.c
+ 	$(CPS) op.c opmini.tmp
+ 	sh mv-if-diff opmini.tmp opmini.c

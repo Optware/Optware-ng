@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ -f /var/run/denyhosts.pid ] ; then
+  kill `cat /var/run/denyhosts.pid`
+fi
+
+umask 077
+
+rm -f /var/run/denyhosts.pid
+
+touch /opt/etc/hosts.allow
+touch /opt/etc/hosts.deny
+
+/opt/share/denyhosts/denyhosts.py --daemon  -c /opt/etc/denyhosts.cfg

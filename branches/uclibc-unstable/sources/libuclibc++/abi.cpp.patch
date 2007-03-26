@@ -1,0 +1,32 @@
+--- uClibc++/src/abi/abi.cpp	2005-12-11 01:37:01.000000000 +0100
++++ libuclibc++/src/abi/abi.cpp	2006-02-28 14:01:14.000000000 +0100
+@@ -37,3 +37,29 @@
+ 	}
+ 
+ }
++
++/* This missing object was taken from uClibc source 0.9.28 and
++ * adapted for uClibc 0.9.19 */
++
++#include <link.h>
++
++extern int __attribute__((__weak__))
++__dl_iterate_phdr (int (*callback) (struct dl_phdr_info *info,
++				    size_t size, void *data),
++		   void *data);
++
++/* Define it as a pointer, such that we get a pointer to the global
++   function descriptor, that won't be optimized away by the
++   linker.  */
++static int (*ptr) (int (*callback) (struct dl_phdr_info *info,
++				    size_t size, void *data),
++		   void *data) = __dl_iterate_phdr;
++int
++dl_iterate_phdr (int (*callback) (struct dl_phdr_info *info,
++				  size_t size, void *data),
++		 void *data) __THROW
++{
++  if (ptr)
++    return ptr (callback, data);
++  return 0;
++}

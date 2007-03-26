@@ -1,0 +1,11 @@
+--- configure.in.orig	2006-01-11 06:19:13.000000000 -0800
++++ configure.in	2006-04-01 20:51:44.000000000 -0800
+@@ -572,7 +572,7 @@
+   freeaddrinfo(ai);
+   exit(0);
+ }
+-  ],ac_cv_func_getaddrinfo=yes, ac_cv_func_getaddrinfo=no, ac_cv_func_getaddrinfo=no),
++  ],ac_cv_func_getaddrinfo=yes, ac_cv_func_getaddrinfo=no, ac_cv_func_getaddrinfo=yes),
+ ac_cv_func_getaddrinfo=no)])
+ if test "$ac_cv_func_getaddrinfo" = yes; then
+   AC_DEFINE(HAVE_GETADDRINFO,1,[Define if you have the getaddrinfo function])

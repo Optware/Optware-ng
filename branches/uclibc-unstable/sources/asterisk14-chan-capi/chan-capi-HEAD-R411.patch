@@ -1,0 +1,1053 @@
+diff -Nur chan_capi-0.7.1/capi.conf chan-capi-HEAD/capi.conf
+--- chan_capi-0.7.1/capi.conf	2006-07-09 00:13:47.000000000 +0200
++++ chan-capi-HEAD/capi.conf	2006-12-02 11:08:50.000000000 +0100
+@@ -8,8 +8,8 @@
+ [general]
+ nationalprefix=0
+ internationalprefix=00
+-rxgain=0.8
+-txgain=0.8
++rxgain=1.0       ;linear receive gain (1.0 = no change)
++txgain=1.0       ;linear transmit gain (1.0 = no change)
+ language=de      ;set default language
+ ;ulaw=yes        ;set this, if you live in u-law world instead of a-law
+ 
+diff -Nur chan_capi-0.7.1/chan_capi.c chan-capi-HEAD/chan_capi.c
+--- chan_capi-0.7.1/chan_capi.c	2006-10-08 15:38:27.000000000 +0200
++++ chan-capi-HEAD/chan_capi.c	2007-01-23 20:27:01.000000000 +0100
+@@ -36,7 +36,7 @@
+ #ifdef PBX_IS_OPBX
+ #include "openpbx.h"
+ 
+-OPENPBX_FILE_VERSION("$HeadURL$", "$Revision: 392 $")
++OPENPBX_FILE_VERSION("$HeadURL$", "$Revision: 411 $")
+ 
+ #include "openpbx/lock.h"
+ #include "openpbx/frame.h" 
+@@ -61,6 +61,10 @@
+ #else
+ #include "config.h"
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++#include <asterisk.h>
++#endif
++
+ #include <asterisk/lock.h>
+ #include <asterisk/frame.h> 
+ #include <asterisk/channel.h>
+@@ -86,8 +90,8 @@
+ #ifdef PBX_IS_OPBX
+ #define CC_VERSION "cm-opbx-0.7"
+ #else
+-#define CC_VERSION "0.7.1"
+-/* #define CC_VERSION "$Revision: 392 $" */
++/* #define CC_VERSION "cm-x.y.z" */
++#define CC_VERSION "$Revision: 411 $"
+ #endif
+ 
+ /*
+@@ -98,14 +102,18 @@
+ unsigned capi_ApplID = CAPI_APPLID_UNUSED;
+ 
+ static _cword capi_MessageNumber;
++static const char tdesc[] = "Common ISDN API Driver (" CC_VERSION ")";
++static const char channeltype[] = "CAPI";
++static const struct ast_channel_tech capi_tech;
++#ifdef CC_AST_HAS_VERSION_1_4
++#define AST_MODULE "chan_capi"
++#else
+ #ifdef PBX_IS_OPBX
+ static char *ccdesc = "Common ISDN API for OpenPBX";
+ #else
+ static char *ccdesc = "Common ISDN API for Asterisk";
+ #endif
+-static const char tdesc[] = "Common ISDN API Driver (" CC_VERSION ")";
+-static const char channeltype[] = "CAPI";
+-static const struct ast_channel_tech capi_tech;
++#endif
+ 
+ static char *commandtdesc = "CAPI command interface.\n"
+ "The dial command:\n"
+@@ -143,8 +151,10 @@
+ 
+ static char *commandapp = "capiCommand";
+ static char *commandsynopsis = "Execute special CAPI commands";
++#ifndef CC_AST_HAS_VERSION_1_4
+ STANDARD_LOCAL_USER;
+ LOCAL_USER_DECL;
++#endif
+ 
+ static int usecnt;
+ 
+@@ -177,7 +187,9 @@
+  */
+ 
+ AST_MUTEX_DEFINE_STATIC(messagenumber_lock);
++#ifndef CC_AST_HAS_VERSION_1_4
+ AST_MUTEX_DEFINE_STATIC(usecnt_lock);
++#endif
+ AST_MUTEX_DEFINE_STATIC(iflock);
+ AST_MUTEX_DEFINE_STATIC(capi_put_lock);
+ AST_MUTEX_DEFINE_STATIC(verbose_lock);
+@@ -514,29 +526,17 @@
+ }
+ 
+ /*
+- * wait until fax activity has finished
++ * function to tell if fax activity has finished
+  */
+-static void capi_wait_for_fax_finish(struct capi_pvt *i)
++static int capi_tell_fax_finish(void *data)
+ {
+-	struct timespec abstime;
+-	unsigned int timeout = 600; /* 10 minutes, to be sure */
++	struct capi_pvt *i = (struct capi_pvt *)data;
+ 
+-	cc_mutex_lock(&i->lock);
+ 	if (i->FaxState & CAPI_FAX_STATE_ACTIVE) {
+-		i->waitevent = CAPI_WAITEVENT_FAX_FINISH;
+-		abstime.tv_sec = time(NULL) + timeout;
+-		abstime.tv_nsec = 0;
+-		cc_verbose(4, 1, "%s: wait for finish fax (timeout %d seconds).\n",
+-			i->vname, timeout);
+-		if (ast_cond_timedwait(&i->event_trigger, &i->lock, &abstime) != 0) {
+-			cc_log(LOG_WARNING, "%s: timed out waiting for finish fax.\n",
+-				i->vname);
+-		} else {
+-			cc_verbose(4, 1, "%s: cond signal received for finish fax.\n",
+-				i->vname);
+-		}
++		return 1;
+ 	}
+-	cc_mutex_unlock(&i->lock);
++
++	return 0;
+ }
+ 
+ /*
+@@ -752,6 +752,7 @@
+ 	struct capi_pvt *i = CC_CHANNEL_PVT(c);
+ 	_cmsg CMSG;
+ 	char buf[10];
++	int ecAvail = 0;
+ 
+ 	if ((i->isdnstate & CAPI_ISDN_STATE_DISCONNECT))
+ 		return;
+@@ -764,8 +765,18 @@
+ 		return;
+ 	}
+ 
++	/* check for old echo-cancel configuration */
++	if ((i->ecSelector != FACILITYSELECTOR_ECHO_CANCEL) &&
++	    (capi_controllers[i->controller]->broadband)) {
++		ecAvail = 1;
++	}
++	if ((i->ecSelector == FACILITYSELECTOR_ECHO_CANCEL) &&
++	    (capi_controllers[i->controller]->echocancel)) {
++		ecAvail = 1;
++	}
++
+ 	/* If echo cancellation is not requested or supported, don't attempt to enable it */
+-	if (!capi_controllers[i->controller]->echocancel || !i->doEC) {
++	if (!ecAvail || !i->doEC) {
+ 		return;
+ 	}
+ 
+@@ -967,10 +978,24 @@
+ 	return 0;
+ }
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++/*
++ *  begin send DMTF
++ */
++static int pbx_capi_send_digit_begin(struct ast_channel *c, char digit)
++{
++	/* Not needed */
++	return 0;
++}
++#endif
+ /*
+  * send a DTMF digit
+  */
++#ifdef CC_AST_HAS_VERSION_1_4
++static int pbx_capi_send_digit(struct ast_channel *c, char digit, unsigned int duration)
++#else
+ static int pbx_capi_send_digit(struct ast_channel *c, char digit)
++#endif
+ {
+ 	struct capi_pvt *i = CC_CHANNEL_PVT(c);
+ 	_cmsg CMSG;
+@@ -1018,6 +1043,7 @@
+ 	        FACILITY_REQ_FACILITYSELECTOR(&CMSG) = FACILITYSELECTOR_DTMF;
+         	buf[0] = 8;
+ 	        write_capi_word(&buf[1], 3); /* send DTMF digit */
++		/* XXX: duration comes from asterisk in 1.4 */
+ 	        write_capi_word(&buf[3], CAPI_DTMF_DURATION);
+ 	        write_capi_word(&buf[5], CAPI_DTMF_DURATION);
+ 	        buf[7] = 1;
+@@ -1090,6 +1116,7 @@
+ 	i->MessageNumber = 0;
+ 	i->NCCI = 0;
+ 	i->onholdPLCI = 0;
++	i->doEC = i->doEC_global;
+ 
+ 	memset(i->cid, 0, sizeof(i->cid));
+ 	memset(i->dnid, 0, sizeof(i->dnid));
+@@ -1116,16 +1143,17 @@
+ 	if (!(i->isdnstate & (CAPI_ISDN_STATE_B3_UP | CAPI_ISDN_STATE_B3_PEND)))
+ 		return;
+ 
+-	cc_mutex_lock(&i->lock);
+ 	DISCONNECT_B3_REQ_HEADER(&CMSG, capi_ApplID, get_capi_MessageNumber(), 0);
+ 	DISCONNECT_B3_REQ_NCCI(&CMSG) = i->NCCI;
+-	_capi_put_cmsg_wait_conf(i, &CMSG);
+ 
+-	if (!wait) {
+-		cc_mutex_unlock(&i->lock);
++	if (wait) {
++		cc_mutex_lock(&i->lock);
++		_capi_put_cmsg_wait_conf(i, &CMSG);
++	} else {
++		_capi_put_cmsg(&CMSG);
+ 		return;
+ 	}
+-	
++
+ 	/* wait for the B3 layer to go down */
+ 	if ((i->isdnstate & (CAPI_ISDN_STATE_B3_UP | CAPI_ISDN_STATE_B3_PEND))) {
+ 		i->waitevent = CAPI_WAITEVENT_B3_DOWN;
+@@ -1197,6 +1225,7 @@
+ 
+ /*
+  * hangup a line (CAPI messages)
++ * (this must be called with i->lock held)
+  */
+ static void capi_activehangup(struct ast_channel *c, int state)
+ {
+@@ -1237,7 +1266,6 @@
+ 	
+ 	if ((state == CAPI_STATE_CONNECTED) || (state == CAPI_STATE_CONNECTPENDING) ||
+ 	    (state == CAPI_STATE_ANSWERING) || (state == CAPI_STATE_ONHOLD)) {
+-		cc_mutex_lock(&i->lock);
+ 		if (i->PLCI == 0) {
+ 			/* CONNECT_CONF not received yet? */
+ 			capi_wait_conf(i, CAPI_CONNECT_CONF);
+@@ -1245,7 +1273,6 @@
+ 		DISCONNECT_REQ_HEADER(&CMSG, capi_ApplID, get_capi_MessageNumber(), 0);
+ 		DISCONNECT_REQ_PLCI(&CMSG) = i->PLCI;
+ 		_capi_put_cmsg_wait_conf(i, &CMSG);
+-		cc_mutex_unlock(&i->lock);
+ 	}
+ 	return;
+ }
+@@ -1284,8 +1311,6 @@
+ 		cleanup = 1;
+ 	}
+ 	
+-	ast_update_use_count();
+-	
+ 	if ((i->doDTMF > 0) && (i->vad != NULL)) {
+ 		ast_dsp_free(i->vad);
+ 		i->vad = NULL;
+@@ -1294,20 +1319,23 @@
+ 	if (cleanup) {
+ 		/* disconnect already done, so cleanup */
+ 		interface_cleanup(i);
+-	}
+-	cc_mutex_unlock(&i->lock);
+-
+-	if (!cleanup) {
++	} else {
+ 		/* not disconnected yet, we must actively do it */
+ 		capi_activehangup(c, state);
+ 	}
++	cc_mutex_unlock(&i->lock);
+ 
+ 	CC_CHANNEL_PVT(c) = NULL;
+ 	ast_setstate(c, AST_STATE_DOWN);
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++	ast_atomic_fetchadd_int(&usecnt, -1);
++#else
+ 	cc_mutex_lock(&usecnt_lock);
+ 	usecnt--;
+ 	cc_mutex_unlock(&usecnt_lock);
++#endif
++	ast_update_use_count();
+ 	
+ 	return 0;
+ }
+@@ -1770,7 +1798,7 @@
+ 			}
+ 			i->txavg[ECHO_TX_COUNT - 1] = txavg;
+ 		} else {
+-			if ((i->txgain == 1.0) || (!tcap_is_digital(c->transfercapability))) {
++			if ((i->txgain == 1.0) || (tcap_is_digital(c->transfercapability))) {
+ 				for (j = 0; j < fsmooth->datalen; j++) {
+ 					buf[j] = reversebits[((unsigned char *)fsmooth->data)[j]];
+ 				}
+@@ -2066,13 +2094,19 @@
+ 	int fds[2];
+ 	int flags;
+ 
++#ifdef CC_AST_HAS_EXT_CHAN_ALLOC
++	tmp = ast_channel_alloc(0, state, i->cid, NULL,
++		"CAPI/%s/%s-%x", i->name, i->dnid, capi_counter++);
++#else
+ 	tmp = ast_channel_alloc(0);
++#endif
+ 	
+ 	if (tmp == NULL) {
+ 		cc_log(LOG_ERROR,"Unable to allocate channel!\n");
+ 		return(NULL);
+ 	}
+ 
++#ifndef CC_AST_HAS_EXT_CHAN_ALLOC
+ #ifdef CC_AST_HAS_STRINGFIELD_IN_CHANNEL
+ 	ast_string_field_build(tmp, name, "CAPI/%s/%s-%x",
+ 		i->name, i->dnid, capi_counter++);
+@@ -2080,7 +2114,10 @@
+ 	snprintf(tmp->name, sizeof(tmp->name) - 1, "CAPI/%s/%s-%x",
+ 		i->name, i->dnid, capi_counter++);
+ #endif
++#endif
++#ifndef CC_AST_HAS_VERSION_1_4
+ 	tmp->type = channeltype;
++#endif
+ 
+ 	if (pipe(fds) != 0) {
+ 		cc_log(LOG_ERROR, "%s: unable to create pipe.\n",
+@@ -2176,12 +2213,19 @@
+ 	cc_copy_string(tmp->language, i->language, sizeof(tmp->language));
+ #endif
+ 	i->owner = tmp;
++
++#ifdef CC_AST_HAS_VERSION_1_4
++	ast_atomic_fetchadd_int(&usecnt, 1);
++#else
+ 	cc_mutex_lock(&usecnt_lock);
+ 	usecnt++;
+ 	cc_mutex_unlock(&usecnt_lock);
++#endif
+ 	ast_update_use_count();
+ 	
++#ifndef CC_AST_HAS_EXT_CHAN_ALLOC
+ 	ast_setstate(tmp, state);
++#endif
+ 
+ 	return tmp;
+ }
+@@ -2331,6 +2375,7 @@
+ 
+ 	capi_wait_for_answered(i);
+ 
++	i->FaxState &= ~CAPI_FAX_STATE_CONN;
+ 	if ((i->fFax = fopen(filename, "wb")) == NULL) {
+ 		cc_log(LOG_WARNING, "can't create fax output file (%s)\n", strerror(errno));
+ 		return -1;
+@@ -2356,7 +2401,17 @@
+ 			i->state);
+ 		return -1;
+ 	}
+-	capi_wait_for_fax_finish(i);
++
++	while (capi_tell_fax_finish(i)) {
++		if (ast_safe_sleep_conditional(c, 1000, capi_tell_fax_finish, i) != 0) {
++			/* we got a hangup */
++			cc_verbose(3, 1,
++				VERBOSE_PREFIX_3 "capi receivefax: hangup.\n");
++			break;
++		}
++	}
++
++	cc_mutex_lock(&i->lock);
+ 
+ 	res = (i->FaxState & CAPI_FAX_STATE_ERROR) ? 1 : 0;
+ 	i->FaxState &= ~(CAPI_FAX_STATE_ACTIVE | CAPI_FAX_STATE_ERROR);
+@@ -2370,6 +2425,8 @@
+ 	fclose(i->fFax);
+ 	i->fFax = NULL;
+ 
++	cc_mutex_unlock(&i->lock);
++
+ 	if (res != 0) {
+ 		cc_verbose(2, 0,
+ 			VERBOSE_PREFIX_1 "capi receivefax: fax receive failed reason=0x%04x reasonB3=0x%04x\n",
+@@ -2437,20 +2494,26 @@
+ 			i->state);
+ 		return -1;
+ 	}
+-	capi_wait_for_fax_finish(i);
++	while (capi_tell_fax_finish(i)) {
++		if (ast_safe_sleep_conditional(c, 1000, capi_tell_fax_finish, i) != 0) {
++			/* we got a hangup */
++			cc_verbose(3, 1,
++				VERBOSE_PREFIX_3 "capi sendfax: hangup.\n");
++			break;
++		}
++	}
++
++	cc_mutex_lock(&i->lock);
+ 
+ 	res = (i->FaxState & CAPI_FAX_STATE_ERROR) ? 1 : 0;
+ 	i->FaxState &= ~(CAPI_FAX_STATE_ACTIVE | CAPI_FAX_STATE_ERROR);
+ 
+-	/* if the file has zero length */
+-	if (ftell(i->fFax) == 0L) {
+-		res = 1;
+-	}
+-			
+ 	cc_verbose(2, 1, VERBOSE_PREFIX_3 "Closing fax file...\n");
+ 	fclose(i->fFax);
+ 	i->fFax = NULL;
+ 
++	cc_mutex_unlock(&i->lock);
++
+ 	if (res != 0) {
+ 		cc_verbose(2, 0,
+ 			VERBOSE_PREFIX_1 "capi sendfax: fax send failed reason=0x%04x reasonB3=0x%04x\n",
+@@ -3166,6 +3229,16 @@
+ 			show_capi_info(i, read_capi_word(&FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[4]));
+ 		}
+ 
++		/* 3PTY */
++		if ( (FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[1] == 0x7) &&
++		     (FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[3] == 0x2) ) {
++			cc_verbose(1, 1, VERBOSE_PREFIX_3 "%s: PLCI=%#x 3PTY  Reason=0x%02x%02x\n",
++				i->vname, PLCI,
++				FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[5],
++				FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[4]);
++			show_capi_info(i, read_capi_word(&FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[4]));
++		}
++
+ 		/* RETRIEVE */
+ 		if ( (FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[1] == 0x3) &&
+ 		     (FACILITY_IND_FACILITYINDICATIONPARAMETER(CMSG)[3] == 0x2) ) {
+@@ -3216,6 +3289,7 @@
+ static void capidev_handle_data_b3_indication(_cmsg *CMSG, unsigned int PLCI, unsigned int NCCI, struct capi_pvt *i)
+ {
+ 	_cmsg CMSG2;
++	struct ast_channel *chan;
+ 	struct ast_frame fr = { AST_FRAME_NULL, };
+ 	unsigned char *b3buf = NULL;
+ 	int b3len = 0;
+@@ -3239,15 +3313,23 @@
+ 
+ 	return_on_no_interface("DATA_B3_IND");
+ 
++	chan = i->owner;
++
+ 	if (i->fFax) {
+ 		/* we are in fax mode and have a file open */
+ 		cc_verbose(6, 1, VERBOSE_PREFIX_3 "%s: DATA_B3_IND (len=%d) Fax\n",
+ 			i->vname, b3len);
+-		if (!(i->FaxState & CAPI_FAX_STATE_SENDMODE)) {
++		if ((!(i->FaxState & CAPI_FAX_STATE_SENDMODE)) &&
++			(i->FaxState & CAPI_FAX_STATE_CONN)) {
+ 			if (fwrite(b3buf, 1, b3len, i->fFax) != b3len)
+ 				cc_log(LOG_WARNING, "%s : error writing output file (%s)\n",
+ 					i->vname, strerror(errno));
+ 		}
++#ifndef CC_AST_HAS_VERSION_1_4
++		fr.frametype = AST_FRAME_CONTROL;
++		fr.subclass = AST_CONTROL_PROGRESS;
++		local_queue_frame(i, &fr);
++#endif
+ 		return;
+ 	}
+ 
+@@ -3269,7 +3351,7 @@
+ 		i->B3q += b3len;
+ 	}
+ 
+-	if ((i->doES == 1)) {
++	if ((i->doES == 1) && (!tcap_is_digital(chan->transfercapability))) {
+ 		for (j = 0; j < b3len; j++) {
+ 			*(b3buf + j) = reversebits[*(b3buf + j)]; 
+ 			if (capi_capability == AST_FORMAT_ULAW) {
+@@ -3294,7 +3376,7 @@
+ 					i->vname, rxavg, txavg);
+ 		}
+ 	} else {
+-		if (i->rxgain == 1.0) {
++		if ((i->rxgain == 1.0) || (tcap_is_digital(chan->transfercapability))) {
+ 			for (j = 0; j < b3len; j++) {
+ 				*(b3buf + j) = reversebits[*(b3buf + j)];
+ 			}
+@@ -3337,10 +3419,19 @@
+  */
+ static void capidev_send_faxdata(struct capi_pvt *i)
+ {
++#ifndef CC_AST_HAS_VERSION_1_4
++	struct ast_frame fr = { AST_FRAME_CONTROL, AST_CONTROL_PROGRESS, };
++#endif
+ 	unsigned char faxdata[CAPI_MAX_B3_BLOCK_SIZE];
+ 	size_t len;
+ 	_cmsg CMSG;
+ 
++	if (i->state == CAPI_STATE_DISCONNECTING) {
++		cc_verbose(3, 1, VERBOSE_PREFIX_3 "%s: send_faxdata in DISCONNECTING.\n",
++			i->vname);
++		return;
++	}
++
+ 	if ((i->fFax) && (!(feof(i->fFax)))) {
+ 		len = fread(faxdata, 1, CAPI_MAX_B3_BLOCK_SIZE, i->fFax);
+ 		if (len > 0) {
+@@ -3354,6 +3445,9 @@
+ 			cc_verbose(5, 1, VERBOSE_PREFIX_3 "%s: send %d fax bytes.\n",
+ 				i->vname, len);
+ 			_capi_put_cmsg(&CMSG);
++#ifndef CC_AST_HAS_VERSION_1_4
++			local_queue_frame(i, &fr);
++#endif
+ 			return;
+ 		}
+ 	}
+@@ -3487,6 +3581,7 @@
+ 	}
+ 
+ 	if (i->FaxState & CAPI_FAX_STATE_ACTIVE) {
++		i->FaxState |= CAPI_FAX_STATE_CONN;
+ 		cc_verbose(3, 1, VERBOSE_PREFIX_3 "%s: Fax connection, no EC/DTMF\n",
+ 			i->vname);
+ 	} else {
+@@ -3935,14 +4030,6 @@
+ 			i->vname);
+ 		return;
+ 	}
+-	if ((i->waitevent == CAPI_WAITEVENT_FAX_FINISH) &&
+-	    (!(i->FaxState & CAPI_FAX_STATE_ACTIVE))) {
+-		i->waitevent = 0;
+-		ast_cond_signal(&i->event_trigger);
+-		cc_verbose(4, 1, "%s: found and signal for finished fax state.\n",
+-			i->vname);
+-		return;
+-	}
+ 	if ((i->waitevent == CAPI_WAITEVENT_ANSWER_FINISH) &&
+ 	    (i->state != CAPI_STATE_ANSWERING)) {
+ 		i->waitevent = 0;
+@@ -4222,7 +4309,7 @@
+ 	char	fac[4];
+ 	unsigned int plci = 0;
+ 
+-	if (c->tech->type == channeltype) {
++	if (c->tech == &capi_tech) {
+ 		plci = i->onholdPLCI;
+ 	} else {
+ 		i = NULL;
+@@ -4572,6 +4659,91 @@
+ }
+ 
+ /*
++ * Initiate a Three-Party-Conference (3PTY) with one active and one
++ * held call
++ */
++static int pbx_capi_3pty_begin(struct ast_channel *c, char *param)
++{
++	struct capi_pvt *i = CC_CHANNEL_PVT(c);
++	struct capi_pvt *ii = NULL;
++	_cmsg		CMSG;
++	char		fac[8];
++	const char	*id;
++	unsigned int	plci = 0;
++
++	if ((id = pbx_builtin_getvar_helper(c, "CALLERHOLDID"))) {
++		plci = (unsigned int)strtoul(id, NULL, 0);
++	}
++	
++	if (param) {
++		plci = (unsigned int)strtoul(param, NULL, 0);
++	}
++
++	if (!plci) {
++		cc_log(LOG_WARNING, "%s: No id for 3PTY !\n", i->vname);
++		return -1;
++	}
++
++	cc_mutex_lock(&iflock);
++	for (ii = iflist; ii; ii = ii->next) {
++		if (ii->onholdPLCI == plci)
++			break;
++	}
++	cc_mutex_unlock(&iflock);
++
++	if (!ii) {
++		cc_log(LOG_WARNING, "%s: 0x%x is not on hold !\n",
++			i->vname, plci);
++		return -1;
++	}
++
++	cc_verbose(2, 1, VERBOSE_PREFIX_4 "%s: using PLCI=%#x for 3PTY\n",
++		i->vname, plci);
++
++	if (!(ii->isdnstate & CAPI_ISDN_STATE_HOLD)) {
++		cc_log(LOG_WARNING, "%s: PLCI %#x (%s) is not on hold for 3PTY\n",
++			i->vname, plci, ii->vname);
++		return -1;
++	}
++	if (!(i->isdnstate & CAPI_ISDN_STATE_B3_UP)) {
++		cc_log(LOG_NOTICE,"%s: Cannot initiate conference %s while not connected.\n",
++			i->vname, c->name);
++		return 0;
++	}
++	if (!(capi_controllers[i->controller]->threePTY)) {
++	        cc_log(LOG_NOTICE,"%s: 3PTY for %s not supported by controller.\n",
++			i->vname, c->name);
++		return 0;
++	}
++
++	fac[0] = 7;	/* len */
++	fac[1] = 0x07;	/* this is a 3PTY Begin */
++	fac[2] = 0x00;
++	fac[3] = 4;	/* length of PLCI parameter (DWORD) */
++	write_capi_dword(&(fac[4]), plci);
++
++	FACILITY_REQ_HEADER(&CMSG, capi_ApplID, get_capi_MessageNumber(), 0);
++	FACILITY_REQ_CONTROLLER(&CMSG) = i->controller;
++	FACILITY_REQ_PLCI(&CMSG) = plci; /* implicit 3PTY */
++	FACILITY_REQ_FACILITYSELECTOR(&CMSG) = FACILITYSELECTOR_SUPPLEMENTARY;
++	FACILITY_REQ_FACILITYREQUESTPARAMETER(&CMSG) = (_cstruct)&fac;
++
++	cc_mutex_lock(&ii->lock);
++	_capi_put_cmsg_wait_conf(ii, &CMSG);
++
++	ii->isdnstate &= ~CAPI_ISDN_STATE_HOLD;
++	ii->isdnstate |= CAPI_ISDN_STATE_3PTY;
++	i->isdnstate |= CAPI_ISDN_STATE_3PTY;
++
++	cc_mutex_unlock(&ii->lock);
++
++	cc_verbose(2, 1, VERBOSE_PREFIX_4 "%s: sent 3PTY for PLCI=%#x to PLCI=%#x\n",
++		i->vname, plci, i->PLCI);
++
++	return 0;
++}
++
++/*
+  * struct of capi commands
+  */
+ static struct capicommands_s {
+@@ -4590,6 +4762,7 @@
+ 	{ "holdtype",     pbx_capi_holdtype,        1 },
+ 	{ "retrieve",     pbx_capi_retrieve,        0 },
+ 	{ "ect",          pbx_capi_ect,             1 },
++	{ "3pty_begin",	  pbx_capi_3pty_begin,	    1 },
+ 	{ NULL, NULL, 0 }
+ };
+ 
+@@ -4599,7 +4772,11 @@
+ static int pbx_capicommand_exec(struct ast_channel *chan, void *data)
+ {
+ 	int res = 0;
++#ifdef CC_AST_HAS_VERSION_1_4
++	struct ast_module_user *u;
++#else
+ 	struct localuser *u;
++#endif
+ 	char *s;
+ 	char *stringp;
+ 	char *command, *params;
+@@ -4610,7 +4787,11 @@
+ 		return -1;
+ 	}
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++	u = ast_module_user_add(chan);
++#else
+ 	LOCAL_USER_ADD(u);
++#endif
+ 
+ 	s = ast_strdupa(data);
+ 	stringp = s;
+@@ -4625,21 +4806,33 @@
+ 		capicmd++;
+ 	}
+ 	if (!capicmd->cmd) {
++#ifdef CC_AST_HAS_VERSION_1_4
++	ast_module_user_remove(u);
++#else
+ 		LOCAL_USER_REMOVE(u);
++#endif
+ 		cc_log(LOG_WARNING, "Unknown command '%s' for capiCommand\n",
+ 			command);
+ 		return -1;
+ 	}
+ 
+-	if ((capicmd->capionly) && (chan->tech->type != channeltype)) {
++	if ((capicmd->capionly) && (chan->tech != &capi_tech)) {
++#ifdef CC_AST_HAS_VERSION_1_4
++	ast_module_user_remove(u);
++#else
+ 		LOCAL_USER_REMOVE(u);
++#endif
+ 		cc_log(LOG_WARNING, "capiCommand works on CAPI channels only, check your extensions.conf!\n");
+ 		return -1;
+ 	}
+ 
+ 	res = (capicmd->cmd)(chan, params);
+ 	
++#ifdef CC_AST_HAS_VERSION_1_4
++	ast_module_user_remove(u);
++#else
+ 	LOCAL_USER_REMOVE(u);
++#endif
+ 	return(res);
+ }
+ 
+@@ -4928,6 +5121,13 @@
+ 				unit = capi_num_controllers;
+ 			}
+ 
++		if (unit > capi_num_controllers){
++			free(tmp);
++			cc_verbose(2, 0, VERBOSE_PREFIX_3 "controller %d invalid, ignoring interface.\n",
++				unit);
++			return 0;
++		}
++
+ 		/* always range check user input */
+ 		if (unit > CAPI_MAX_CONTROLLERS)
+ 			unit = CAPI_MAX_CONTROLLERS;
+@@ -4935,6 +5135,7 @@
+ 		tmp->controller = unit;
+ 		capi_used_controllers |= (1 << unit);
+ 		tmp->doEC = conf->echocancel;
++		tmp->doEC_global = conf->echocancel;
+ 		tmp->ecOption = conf->ecoption;
+ 		if (conf->ecnlp) tmp->ecOption |= 0x01; /* bit 0 of ec-option is NLP */
+ 		tmp->ecTail = conf->ectail;
+@@ -5127,6 +5328,8 @@
+ 		strcat(str, "H");
+ 	if (isdnstate & CAPI_ISDN_STATE_ECT)
+ 		strcat(str, "T");
++	if (isdnstate & CAPI_ISDN_STATE_3PTY)
++	        strcat(str, "3");
+ 	if (isdnstate & (CAPI_ISDN_STATE_SETUP | CAPI_ISDN_STATE_SETUP_ACK))
+ 		strcat(str, "S");
+ 
+@@ -5272,7 +5475,12 @@
+ 	.description = tdesc,
+ 	.capabilities = AST_FORMAT_ALAW,
+ 	.requester = pbx_capi_request,
++#ifdef CC_AST_HAS_VERSION_1_4
++	.send_digit_begin = pbx_capi_send_digit_begin,
++	.send_digit_end = pbx_capi_send_digit,
++#else
+ 	.send_digit = pbx_capi_send_digit,
++#endif
+ 	.send_text = NULL,
+ 	.call = pbx_capi_call,
+ 	.hangup = pbx_capi_hangup,
+@@ -5389,6 +5597,17 @@
+ 			cp->dtmf = 1;
+ 		}
+ 		
++	
++#if (CAPI_OS_HINT == 1)
++		if (profile.dwGlobalOptions & 0x01) {
++#else
++		if (profile.globaloptions2 & 0x01) {
++#endif
++			cc_verbose(3, 0, VERBOSE_PREFIX_3 "CAPI/contr%d supports broadband (or old echo-cancel)\n",
++				controller);
++			cp->broadband = 1;
++		}
++
+ #if (CAPI_OS_HINT == 1)
+ 		if (profile.dwGlobalOptions & CAPI_PROFILE_ECHO_CANCELLATION) {
+ #else
+@@ -5715,10 +5934,21 @@
+ 	return 0;
+ }
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++static int reload(void)
++{
++	cc_log(LOG_WARNING, "config reload is not supported yet.\n");
++
++	return 0;
++}
++#endif
+ /*
+  * unload the module
+  */
+-int unload_module()
++#ifdef CC_AST_HAS_VERSION_1_4
++static
++#endif
++int unload_module(void)
+ {
+ 	struct capi_pvt *i, *itmp;
+ 	int controller;
+@@ -5730,6 +5960,10 @@
+ 	ast_cli_unregister(&cli_debug);
+ 	ast_cli_unregister(&cli_no_debug);
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++	ast_module_user_hangup_all();
++#endif
++
+ 	if (monitor_thread != (pthread_t)(0-1)) {
+ 		pthread_cancel(monitor_thread);
+ 		pthread_kill(monitor_thread, SIGURG);
+@@ -5773,6 +6007,9 @@
+ /*
+  * main: load the module
+  */
++#ifdef CC_AST_HAS_VERSION_1_4
++static
++#endif
+ int load_module(void)
+ {
+ 	struct ast_config *cfg;
+@@ -5835,6 +6072,13 @@
+ 	return 0;
+ }
+ 
++#ifdef CC_AST_HAS_VERSION_1_4
++AST_MODULE_INFO(ASTERISK_GPL_KEY, AST_MODFLAG_DEFAULT, tdesc,
++		.load = load_module,
++		.unload = unload_module,
++		.reload = reload,
++	       );
++#else
+ int usecount()
+ {
+ 	int res;
+@@ -5857,3 +6101,4 @@
+ 	return ASTERISK_GPL_KEY;
+ }
+ #endif
++#endif /* CC_AST_HAS_VERSION_1_4 */
+diff -Nur chan_capi-0.7.1/chan_capi.h chan-capi-HEAD/chan_capi.h
+--- chan_capi-0.7.1/chan_capi.h	2006-07-09 16:18:53.000000000 +0200
++++ chan-capi-HEAD/chan_capi.h	2007-01-21 18:04:39.000000000 +0100
+@@ -193,6 +193,7 @@
+ #define CAPI_FAX_STATE_ACTIVE         0x00020000
+ #define CAPI_FAX_STATE_ERROR          0x00040000
+ #define CAPI_FAX_STATE_SENDMODE       0x00080000
++#define CAPI_FAX_STATE_CONN           0x00100000
+ #define CAPI_FAX_STATE_MASK           0xffff0000
+ 
+ struct cc_capi_gains {
+@@ -216,6 +217,7 @@
+ #define CAPI_ISDN_STATE_EC            0x00002000
+ #define CAPI_ISDN_STATE_DTMF          0x00004000
+ #define CAPI_ISDN_STATE_B3_SELECT     0x00008000
++#define CAPI_ISDN_STATE_3PTY	      0x10000000
+ #define CAPI_ISDN_STATE_PBX_DONT      0x40000000
+ #define CAPI_ISDN_STATE_PBX           0x80000000
+ 
+@@ -226,8 +228,7 @@
+ /* the lower word is reserved for capi commands */
+ #define CAPI_WAITEVENT_B3_UP          0x00010000
+ #define CAPI_WAITEVENT_B3_DOWN        0x00020000
+-#define CAPI_WAITEVENT_FAX_FINISH     0x00030000
+-#define CAPI_WAITEVENT_ANSWER_FINISH  0x00040000
++#define CAPI_WAITEVENT_ANSWER_FINISH  0x00030000
+ 
+ /* ! Private data for a capi device */
+ struct capi_pvt {
+@@ -313,6 +314,7 @@
+ 	int doDTMF;
+ 	/* CAPI echo cancellation */
+ 	int doEC;
++	int doEC_global;
+ 	int ecOption;
+ 	int ecTail;
+ 	int ecSelector;
+@@ -426,6 +428,7 @@
+ 	/* free bchans */
+ 	int nfreebchannels;
+ 	/* features: */
++	int broadband;
+ 	int dtmf;
+ 	int echocancel;
+ 	int sservices;	/* supplementray services */
+diff -Nur chan_capi-0.7.1/chan_capi_rtp.c chan-capi-HEAD/chan_capi_rtp.c
+--- chan_capi-0.7.1/chan_capi_rtp.c	2006-06-25 19:59:17.000000000 +0200
++++ chan-capi-HEAD/chan_capi_rtp.c	2006-11-11 21:07:19.000000000 +0100
+@@ -197,7 +197,9 @@
+ 	struct hostent *hp;
+ 	struct in_addr addr;
+ 	struct sockaddr_in us;
++#ifndef CC_AST_HAS_VERSION_1_4
+ 	char temp[MAXHOSTNAMELEN];
++#endif
+ 
+ 	hp = ast_gethostbyname("localhost", &ahp);
+ 	memcpy(&addr, hp->h_addr, sizeof(addr));
+@@ -210,7 +212,11 @@
+ 	ast_rtp_set_peer(i->rtp, &us);
+ 	cc_verbose(2, 1, VERBOSE_PREFIX_4 "%s: alloc rtp socket on %s:%d\n",
+ 		i->vname,
++#ifdef CC_AST_HAS_VERSION_1_4
++		ast_inet_ntoa(us.sin_addr),
++#else
+ 		ast_inet_ntoa(temp, sizeof(temp), us.sin_addr),
++#endif
+ 		ntohs(us.sin_port));
+ 	i->timestamp = 0;
+ 	return 0;
+@@ -224,7 +230,8 @@
+ 	struct capi_pvt *i = CC_CHANNEL_PVT(c);
+ 	_cmsg CMSG;
+ 	struct sockaddr_in us;
+-	int len, uslen;
++	int len;
++	socklen_t uslen;
+ 	unsigned int *rtpheader;
+ 	unsigned char buf[256];
+ 
+diff -Nur chan_capi-0.7.1/create_config.sh chan-capi-HEAD/create_config.sh
+--- chan_capi-0.7.1/create_config.sh	2006-07-09 15:24:56.000000000 +0200
++++ chan-capi-HEAD/create_config.sh	2006-11-26 18:20:23.000000000 +0100
+@@ -12,6 +12,8 @@
+ CONFIGFILE="config.h"
+ rm -f "$CONFIGFILE"
+ 
++VER=1_2
++
+ if [ $# -lt 1 ]; then
+ 	echo >&2 "Missing argument"
+ 	exit 1
+@@ -37,6 +39,20 @@
+ echo "#define CHAN_CAPI_CONFIG_H" >>$CONFIGFILE
+ echo >>$CONFIGFILE
+ 
++if grep -q "ASTERISK_VERSION_NUM 0104" $INCLUDEDIR/version.h; then
++	echo "#define CC_AST_HAS_VERSION_1_4" >>$CONFIGFILE
++	echo " * found Asterisk version 1.4"
++	VER=1_4
++else
++	if grep -q "ASTERISK_VERSION_NUM 99999" $INCLUDEDIR/version.h; then
++		echo "#define CC_AST_HAS_VERSION_1_4" >>$CONFIGFILE
++		echo " * assuming Asterisk version 1.4"
++		VER=1_4
++	else
++		echo "#undef CC_AST_HAS_VERSION_1_4" >>$CONFIGFILE
++	fi
++fi
++
+ if grep -q "AST_STRING_FIELD(name)" $INCLUDEDIR/channel.h; then
+ 	echo "#define CC_AST_HAS_STRINGFIELD_IN_CHANNEL" >>$CONFIGFILE
+ 	echo " * found stringfield in ast_channel"
+@@ -53,6 +69,36 @@
+ 	echo " * no data on 'indicate'"
+ fi
+ 
++if grep -q "ast_channel_alloc.*name_fmt" $INCLUDEDIR/channel.h; then
++	echo "#define CC_AST_HAS_EXT_CHAN_ALLOC" >>$CONFIGFILE
++	echo " * found extended ast_channel_alloc"
++else
++	echo "#undef CC_AST_HAS_EXT_CHAN_ALLOC" >>$CONFIGFILE
++	echo " * no extended ast_channel_alloc"
++fi
++
++if [ "$VER" = "1_2" ]; then
++if grep -q "AST_JB" $INCLUDEDIR/channel.h; then
++	if [ ! -f "$INCLUDEDIR/../../lib/asterisk/modules/chan_sip.so" ]; then
++		echo "/* AST_JB */" >>$CONFIGFILE
++		echo "#define CC_AST_HAS_JB_PATCH" >>$CONFIGFILE
++		echo " * assuming generic jitter-buffer patch"
++	else
++		if grep -q "ast_jb" "$INCLUDEDIR/../../lib/asterisk/modules/chan_sip.so"; then
++			echo "/* AST_JB */" >>$CONFIGFILE
++			echo "#define CC_AST_HAS_JB_PATCH" >>$CONFIGFILE
++			echo " * found generic jitter-buffer patch"
++		else
++			echo "#undef CC_AST_HAS_JB_PATCH" >>$CONFIGFILE
++			echo " * found DISABLED generic jitter-buffer patch"
++		fi
++	fi
++else
++	echo "#undef CC_AST_HAS_JB_PATCH" >>$CONFIGFILE
++	echo " * without generic jitter-buffer patch"
++fi
++fi
++
+ echo "" >>$CONFIGFILE
+ echo "#endif /* CHAN_CAPI_CONFIG_H */" >>$CONFIGFILE
+ echo "" >>$CONFIGFILE
+diff -Nur chan_capi-0.7.1/Makefile chan-capi-HEAD/Makefile
+--- chan_capi-0.7.1/Makefile	2006-04-01 14:17:32.000000000 +0200
++++ chan-capi-HEAD/Makefile	2006-11-11 21:07:19.000000000 +0100
+@@ -59,6 +59,8 @@
+ 
+ PROC=$(shell uname -m)
+ 
++AVERSION=$(shell if grep -q "VERSION_NUM 0104" $(ASTERISK_HEADER_DIR)/asterisk/version.h; then echo V1_4; fi)
++
+ LIBLINUX=
+ DEBUG=-g #-pg
+ INCLUDE=-I$(ASTERISK_HEADER_DIR)
+@@ -95,6 +97,10 @@
+ 
+ CFLAGS+=-DCRYPTO
+ 
++ifneq (${AVERSION},V1_4)
++CFLAGS+=`if grep -q AST_JB config.h; then echo -DAST_JB; fi`
++endif
++
+ all: config.h $(SHAREDOS)
+ 
+ clean:
+diff -Nur chan_capi-0.7.1/README chan-capi-HEAD/README
+--- chan_capi-0.7.1/README	2006-06-27 16:54:03.000000000 +0200
++++ chan-capi-HEAD/README	2006-12-18 23:18:16.000000000 +0100
+@@ -24,6 +24,7 @@
+ Jan Stocker
+ Frank Sautter, levigo group
+ Hans Petter Selasky
++Simon Peter <dn.tlp@gmx.net>
+ 
+ (...and all the others that have been forgotten...) :-)
+ 
+@@ -38,7 +39,7 @@
+ - Multiple controller support
+ - CID,DNID (callling party, called party)
+ - CLIR/CLIP
+-- Supplementary services: CD (deflect/reroute),HOLD,RETRIEVE,ECT
++- Supplementary services: CD (deflect/reroute),HOLD,RETRIEVE,ECT,3PTY
+ - DTMF (dependend on card) + software DTMF support
+ - Early B3 connects (always,success,never)
+ - Digital audio (what did you think?)
+@@ -51,7 +52,7 @@
+ - Eicon CAPI echo cancelation (echocancel=1)
+ - Reject call waiting (ACO)
+ - DID for Point to Point mode (a.k.a overlap receiving)
+-- Rx/Tx gains (rxgain=1.0)
++- Rx/Tx gains using positive linar value (rxgain=1.0, txgain=1.0 means no change) 
+ - (Inter)national dialing prefix (for callerid) configurable in capi.conf
+ - CLI command "capi info" shows B channel status of chan_capi
+ - Catch all MSN (incomingmsn=*)
+@@ -145,7 +146,8 @@
+ Enable/Disable echocancel:
+     Enable or disable echo-cancel provided by CAPI driver/hardware.
+     You may need to disable echo-cancel when e.g. data/fax transmission handled
+-    by non-CAPI application.
++    by non-CAPI application. After hangup, this setting is restored to value
++    set in capi.conf.
+         Example:
+         exten => s,1,capicommand(echocancel|yes)
+           or
+@@ -198,6 +200,17 @@
+         exten => s,2,Wait(1)
+         exten => s,3,Dial(CAPI/contr1/1234,60,M(capiect))
+ 
++3PTY:
++    Initiate a Three-Party Conference (must have one call on hold and one active call!).
++        Example:
++        exten => s,1,capicommand(3pty_begin|${MYHOLDVAR})
++         or
++        [macro-capi3pty]
++        exten => s,1,capicommand(3pty_begin)
++        [default]
++        exten => s,1,capicommand(hold)
++        exten => s,2,Dial(CAPI/contr1/1234,,M(capi3pty))
++
+ 
+ Using CLIR
+ ==========

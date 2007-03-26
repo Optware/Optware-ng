@@ -1,0 +1,12 @@
+--- gc6.7/include/gc.h	2006-02-18 02:03:40.000000000 +0100
++++ libgc/include/gc.h	2006-03-13 08:28:47.000000000 +0100
+@@ -482,6 +482,9 @@
+ # endif
+ #endif
+ 
++/* uClibc is missing backtrace on wl500g */
++#undef GC_HAVE_BUILTIN_BACKTRACE
++
+ #if defined(GC_HAVE_BUILTIN_BACKTRACE) && !defined(GC_CAN_SAVE_CALL_STACKS)
+ # define GC_CAN_SAVE_CALL_STACKS
+ #endif

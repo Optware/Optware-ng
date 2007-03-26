@@ -1,0 +1,18 @@
+--- build/dbm.m4~	2005-01-16 09:27:07.000000000 -0800
++++ build/dbm.m4	2005-02-20 01:53:39.453437133 -0800
+@@ -214,6 +214,7 @@
+     apu_try_berkeley_db_libname=$5
+ 
+     LIBS="$LIBS -l$apu_try_berkeley_db_libname"
++    AC_CHECK_LIB($apu_try_berkeley_db_libname, db_version,[
+     AC_TRY_RUN(
+       [
+ #include <stdio.h>
+@@ -257,6 +258,7 @@
+       [apu_try_berkeley_db=no],
+       [apu_try_berkeley_db=yes]
+     )
++    ],[apu_try_berkeley_db=no])
+ 
+     LIBS="$apu_try_berkeley_db_save_libs"
+   ]

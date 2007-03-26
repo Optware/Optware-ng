@@ -1,0 +1,76 @@
+--- src/ftpd.c.00	Wed Jan 29 12:00:12 2003
++++ src/ftpd.c	Wed Jan 29 12:20:53 2003
+@@ -4753,6 +4753,7 @@
+     FILE *file;
+     int retry = 0;
+     int on = 1;
++    int cval, serrno;
+ #ifdef IPTOS_LOWDELAY
+     int tos;
+ #endif
+@@ -4873,32 +4874,41 @@
+ 	return (NULL);
+     }
+     usedefault = 1;
+-    file = getdatasock(mode);
+-    if (file == NULL) {
+-	reply(425, "Can't create data socket (%s,%d): %s.",
+-	      inet_ntoa(data_source.sin_addr),
+-	      ntohs(data_source.sin_port), strerror(errno));
+-	return (NULL);
+-    }
+-    data = fileno(file);
+-    (void) signal(SIGALRM, alarm_signal);
+-    alarm(timeout_connect);
+-    while (connect(data, (struct sockaddr *) &data_dest,
+-		   sizeof(data_dest)) < 0) {
++    do {
++	file = getdatasock(mode);
++	if (file == NULL) {
++	    reply(425, "Can't create data socket (%s,%d): %s.",
++		  inet_ntoa(data_source.sin_addr),
++		  ntohs(data_source.sin_port), strerror(errno));
++	    return (NULL);
++	}
++	data = fileno(file);
++	(void) signal(SIGALRM, alarm_signal);
++	alarm(timeout_connect);
++	cval = connect(data, (struct sockaddr *) &data_dest, sizeof(data_dest));
++	serrno = errno;
+ 	alarm(0);
+-	if ((errno == EADDRINUSE || errno == EINTR) && retry < swaitmax) {
+-	    sleep((unsigned) swaitint);
+-	    retry += swaitint;
+-	    (void) signal(SIGALRM, alarm_signal);
+-	    alarm(timeout_connect);
+-	    continue;
++	if (cval == -1) {
++	    /*
++	     * When connect fails, the state of the socket is unspecified so
++	     * it should be closed and a new socket created for each connection
++	     * attempt. This also prevents denial of service problems when
++	     * running on operating systems that only allow one non-connected
++	     * socket bound to the same local address.
++	     */
++	    (void) fclose(file);
++	    data = -1;
++	    errno = serrno;
++	    if ((errno == EADDRINUSE || errno == EINTR) && retry < swaitmax) {
++		sleep((unsigned) swaitint);
++		retry += swaitint;
++	    }
++	    else {
++		perror_reply(425, "Can't build data connection");
++		return (NULL);
++	    }
+ 	}
+-	perror_reply(425, "Can't build data connection");
+-	(void) fclose(file);
+-	data = -1;
+-	return (NULL);
+-    }
+-    alarm(0);
++    } while (cval == -1);
+     if (keepalive)
+ 	(void) setsockopt(pdata, SOL_SOCKET, SO_KEEPALIVE, (char *) &on, sizeof(on));
+     if (TCPwindowsize)

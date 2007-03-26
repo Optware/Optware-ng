@@ -1,0 +1,320 @@
+README.daemon
+
+CGI interface to daemon is for managing and preview of the daemon state.
+There is also torrent_watchdog script for automatic torrent
+queue processing and mail notification.
+
+Features
+
+* batch multiprocessing (eg. 10 torrents simultaneously with nice priority)
+* automatic seeding when torrent finishes (configurable)
+* configurable ports
+* WWW interface transmission.cgi can be public (no password) as
+   there is no delete provided.
+* Accelerator keys (ALT-key) for CGI interface. See help for underlined keys.
+* Per torrent and cumulative status
+* start/stop/push/bypass and other commands available in WWW interface
+* lightweight - low memory footprint
+* tracker scrape info. Suggest best seed torrent from target dir.
+* watchdog for auto restart/queue processing with cron
+* syslog watchdog events
+* mail notify when torrent finishes
+* no state database required. Directory tree is database (slow, but fail-safe)
+* stable and portable. Developed on Asus WL-500g Deluxe with Oleg firmware 
+
+Workflow
+
+For queue torrent file processing there should exist tree directories:
+source - User should copy .torrent files here
+work   - Used for torrent processing
+target - Place where finished torrents are put
+
+Typical file flow is source -> work -> target For every torrent file from
+source, directory with the same name is created. Then torrent file is moved
+into this directory and transmissiond is run in background and constantly
+supervised with transmission_watchdog. The only way for moving finished 
+active torrent into target dir is with Watchdog and not with Push. 
+
+CGI interface to daemon after each command lists all torrents in database.
+This time consuming can be interrupted at any time by giving next command
+or pressing stop button in WWW browser. This can be done for all commands
+except URL, Note and Rename as the action on torrent is taken during
+listing. This means that listing should not be interrupted until torrent is
+listed. In general there is no problem of interrupting listing at any
+point. This will not invalidate database which is file system alone.
+
+Fetch command is useful only for fetching torrent files without passkey as
+there is no possibility to pass cookies to server. Use with care. Proper 
+fetch would be "download in browser and then upload to server". 
+This can only be done by browser plugin.
+
+Troubles with tracker communication can be seen in syslog file.
+transmission_watchdog moves torrent to Suspended queue if Error: is
+reported by tracker.
+
+Before running transmission user should carefully inspect variables in
+transmission.conf and create SOURCE, WORK, and TARGET directories
+
+transmission_watchdog cares for queue processing and should be run every
+30 minutes with cron. /opt/etc/crontab entry should look like:
+
+# m  h dom mon dow user command
+*/30 *    * * *   admin nice transmission_watchdog 
+
+For graphing to work properly, gnuplot and syslog is required. As log can
+accumulate it is recommended that logrotate is used for flushing old logs.
+/opt/etc/logrotate.conf recommended config is:
+compress
+
+/opt/var/log/messages {
+        size 1024k
+        weekly
+        rotate 9
+        postrotate
+                killall -HUP syslogd
+        endscript
+}
+
+include /opt/etc/logrotate.d
+
+For syslog on Asus - Oleg firmware it is recommended that
+/opt/etc/init.d/S05syslogd is created with the following content:
+
+#!/bin/sh
+#
+# Startup script for syslogd
+#
+# Stop myself if running
+if [ -n "`pidof syslogd`" ]; then
+    /usr/bin/killall syslogd 2>/dev/null
+fi
+
+/sbin/syslogd -m 0 -O /opt/var/log/messages -S -l 7
+
+To disable rate control set upload/download limit to -1 in transmission.conf
+Ratecontrol counts only good transferred packets. Handshaking and other
+non-data transfer does not count. This means that there are some packets
+in transfer that are not affected by ratecontrol ant that UPLOAD_SPEED should
+be set to lower value than max upload line capability.
+
+HOME variable is used for daemon to find its .transmission directory where
+cache data for each torrent is stored for fast resume. Proper restore
+requires that system time is functioning as file mtime is checked. Assure
+that time sync is retrieved with ntp or RTC.
+
+Visit http://transmission.m0k.org/forum/viewtopic.php?p=4871#4871 for more
+info.
+
+Troubleshooting daemon & CGI interface
+
+Very helpful command for debugging shell script is "sh -x
+/opt/share/www/cgi-bin/transmission.cgi" This will print out every line and
+its content.
+
+I suggest to install procps package and then use
+/opt/bin/ps axf to see output like this:
+
+9179 ? SNs 0:01 transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
+9180 ? SN  0:00  \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  ...
+9181 ? SN  0:00      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
+9184 ? SN  0:03      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  .
+9185 ? RN 17:43      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/..
+9186 ? RN  0:38      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var..
+9187 ? RN  0:40      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var/run/transmission.pid /tmp
+
+Master thread in above example has PID=9179 Sending "kill -USR1 9197" must
+write .status files. This should also be done by CGI.
+
+There is also -USR2 signal which writes active torrents into syslog. But
+syslog must be running also for getting cumulative statistics!
+
+.status file is sourced. Filenames should not contain non ASCII characters
+and quote. Spaces and characters like [](). are allowed in torrent filenames.
+Note that NO spaces is allowed for directories ${SOURCE}, ${WORK} and ${TARGET}.
+
+When one presses "Update" button signal -USR1 is sent to daemon and after a
+second of waiting for it, all active .status files are sourced and printed.
+
+Problems with .status could be that transmisisond is not receiving USR1 signal.
+This may be due to invalid path to PIDFILE or something like that. 
+Pressing Update sends signal to daemon, waits one second and reads 
+.status files in active torrent directories. Take attention to syslog daemon.
+
+"torrent" package conflict is intentional.
+If you want transfer graph log then gnuplot must be installed.
+
+For using www browser on router itself package lynx or elink is recommended.
+lynx http://localhost:8008/cgi-bin/transmission.cgi
+
+Known bugs:
+* There is a problem with fork and pthreads in uclibc 0.9.19
+  See http://www.busybox.net/lists/uclibc/2003-March/005825.html
+  This affect only users of Oleg firmware on Asus routers with
+  http://ipkg.nslu2-linux.org/feeds/optware/wl500g/cross/stable/
+  package feed. Users are instructed to switch to
+  http://ipkg.nslu2-linux.org/feeds/optware/oleg/cross/stable/
+  which uses newer uClibc 0.9.28 and NLPT or change transmission_watchdog
+  daemon startup code to 
+
+  nohup transmissiond -v 1 -p ${LISTENING_PORT} \
+        -w ${WATCHDOG} \
+        -u ${UPLOAD_SPEED} \
+        -d ${DOWNLOAD_SPEED} \
+        -i ${PIDFILE}   ${ACTIVE} 2> /dev/null &
+
+  which will spawn daemon in foreground mode and trash error messages.
+
+  See http://wl500g.info/showpost.php?p=34579&postcount=68 how to upgrade
+  to alternative "Oleg"  package feed.
+
+OpenWRT and Xwrt(OpenWRT for mere mortals) notes:
+
+   With whiterussian OpenWRT and Xwrt is fully operational. 
+   I recommend to create disk partitions (opt, swap and data) with
+   some linux system as the OpenWRT lacks some fdisk and
+   busybox (mkswap, swapon, swapof) packages which can be found on
+   rc5-backports.
+   
+   Install the following USB and ext2/3 packages:
+    - kmod-usb-core - 2.4.30-brcm-5 - Kernel Support for USB
+    - kmod-usb-storage - 2.4.30-brcm-5 - Kernel modules for USB storage support
+    - kmod-usb2 - 2.4.30-brcm-5 - Kernel driver for USB2 controllers
+    - kmod-ext2 - 2.4.30-brcm-5 - Kernel modules for EXT2 filesystem support
+    - kmod-ext3 - 2.4.30-brcm-5 - Kernel modules for EXT3 filesystem support
+
+But after that you will be able to mount disk partitions.
+See http://www.nslu2-linux.org/wiki/FAQ/Optware-uClibcBuild
+for aditional X-wrt notes.
+
+Follow dd-wrt guidelines for installing Optware packages to X-wrt
+http://www.dd-wrt.com/wiki/index.php/Optware
+
+   logrotate is not necessary as the OpenWRT cron and log daemon (circular Local LOG)
+   can be used. Recommended size for /var/log/messages is 100kB. If using
+   circular buffer then logread should be used to read its data.
+   If using logread then transmission.cgi must be updated at some lines
+   where ${SYSLOG} occurs:
+
+   SPEED=`logread | tail  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\).*/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -1`
+
+#if [ ! -r ${SYSLOG} ]; then
+#  echo "<p>${SYSLOG} not readable. Properly configure syslogd at "
+#  echo "system startup.</p>"
+#  return                                                                                                                                           
+#fi
+echo "<pre>"
+logread |sed  -n -e "/transmissiond/{s/.*: \([0-9]\{1,10\}\) [0-9]\{1,\} dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\) ld \([0-9.]\{1,\}\)/\1 \2 -\3 \4/;t
+echo "</pre>"
+
+
+   
+   /opt/etc/transmission.conf changes:
+   SYSLOG=/var/log/messages
+
+   Using OpenWRT cron daemon for watchdog purposes
+   Create the following /etc/crontab contents:
+   SHELL=/bin/sh
+   PATH=/sbin:/bin:/usr/sbin:/usr/bin:/opt/bin:/opt/sbin
+   MAILTO=""
+   HOME=/
+   # ---------- ---------- Default is Empty ---------- ---------- #
+   # m h dom mon dow user  command
+   30 *    * * *   root nice transmission_watchdog
+
+   then run "crontab /etc/crontab"
+   and edit with crontab -e root
+  
+FAQ
+1. Why wont the daemon start downloading after rebooting ? I need to push it to suspend and then again to make it work ? 
+It will restart after reboot if you properly configured cron to run transmisison_watchdog periodicly. For manual restart use Watchdog button.
+
+2. How do i make it download 5 torrents at the same time ?  Can this be done ?
+Sure it can. Use Push button. You can also queue torrents, manual administer and get some transfer graph.
+
+3. Is it possible to output a chart with no_UTC time (X-axis) ? 
+Just set TIMEZONE_OFFSET=seconds in transmission.conf 
+
+4. I just installed transmission package, pushed some torrent and it looks working.  But when I press Update button, I get this result: ".status not found for <torrent_path>"
+Problems with .status could be that transmisisond is not receiving USR1 signal. This may be due to invalid path to PIDFILE or something like that. Pressing Update sends signal to daemon, waits one second and reads .status files in active torrent directories. Take attention to syslog daemon.
+
+5. Do I need "torrent" ipkg installed too?
+No. torrent package conflict is intentional. 
+
+6. I am getting some errors cat: /opt/var/run/transmission.pid: No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]getting some errors cat: /opt/var/run/transmission.pid: No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
+This means that Transmisison daemon is not running. Use Watchdog button to start in manually.
+
+7. Tried manually pressing watchdog for nothing.  Im still having that text under the buttons on the script page : /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
+It looks like daemon died for some reason. Take a look into syslog messages.
+The recommended way for running is using "Oleg" feed and not default "wl500g".
+
+8. What directories need to be created by default?
+mkdir /tmp/harddisk/torrent
+mkdir /tmp/harddisk/torrent/source
+mkdir /tmp/harddisk/torrent/work
+mkdir /tmp/harddisk/torrent/target
+chmod a+rw /tmp/harddisk/torrent
+chmod a+rw /tmp/harddisk/torrent/source
+chmod a+rw /tmp/harddisk/torrent/target
+chmod a+rw /tmp/harddisk/torrent/work
+
+9. My daemon dies frequently.
+512 MB swap is recommended on 32MB routers.
+
+
+10. How do I password protect transmission.cgi script?
+ Use appropriate web server and its protection. busybox_http uses 
+ IP access and password protection with httpd.conf 
+
+11. Can I set some cap on UPLOAD_SPEED or is this thing totally bugged ?
+ If bugged any workaround ?
+ This bug is a hard thing. Anyway ratecontrol is somehow useless as it
+ limits only good packets and not the whole transport. I recommend
+ to use some QOS router capabilities. Personally I use another OpenWRT router.
+
+12. Does this daemon allow active port transfer? I mean do i have to open 
+ ports manually thru iptables to point the active port to router or similar?  
+ I believe program who use active connections boosts the transfers in 
+ seeding or receiving, allowing more connetions.
+
+ You need to open incoming TCP port on router (65534). It also recommended 
+ to allow ping responses (ICMP protocol). To check connectivity
+ with telneting to your listening port
+ 
+ telnet  your.outside.router.ip 65534
+ Connected to your.outside.router.ip
+ Escape character is '^]'.
+ help me
+ Nice try...
+ Connection closed by foreign host.
+
+ You should get "Nice try..." response.
+
+13. How can I interpret load average and uptime values in graph and CGI?
+   We can assume (by looking at procps top) that CPU is mostly idling
+   and that most uninterruptable state is waiting for some I/O access,
+   eg waiting for disk access. So load average over 1 means that external
+   USB disk is doing operations for more processes and it cannot handle
+   without waiting for disk. In such cases I recommend to lower the number
+   of active torrents. Mostly downloading gives much burden.
+
+14. Is there an easy way to open ports for transmission?
+    Yes. If your router soupports traversal using NAT-PMP or UPnP IGD services
+    just uncomment NAT_TRAVERSAL line in /opt/etc/transmission.conf
+
+15. I'm trying to get the graph to work for transmission the cron is running and 
+   everything is logging to syslog but the only thing that is showing up is load.
+   Edit : I got it working but is there a way to have it form a line like load does.
+
+   I do not recommend anything else than spikes for Transmission graphing. SysLog 
+   rotation should be tailored in such way that it acumulates approx one week. 
+   Then spikes will show in high density and you will see if there was any 
+   interruption without hearbeat. Lines like load could be changed in 
+   transmission.cgi but then you will loose interval display. 
+   Maybe linespoints is middleway? 
+
+16. I am getting "Could not open ....nfo in /tmp/harddisk/torrent/work/... (0, -2147483640)"
+  This bug is harmless. It tries to check nonexistent file at startup. libtransmission 
+  developer should eventually add empty file creation or skip this check.
+
+
+oleo

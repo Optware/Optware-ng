@@ -1,0 +1,11 @@
+--- TSRM/threads.m4.orig	2005-04-27 05:29:15.000000000 -0700
++++ TSRM/threads.m4	2006-03-25 10:35:51.000000000 -0800
+@@ -86,7 +86,7 @@
+   pthreads_working=no
+   ], [
+   dnl For cross compiling running this test is of no use. NetWare supports pthreads
+-  pthreads_working=no
++  pthreads_working=yes
+   case $host_alias in
+   *netware*)
+     pthreads_working=yes

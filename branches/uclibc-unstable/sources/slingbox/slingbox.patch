@@ -1,0 +1,38 @@
+--- busybox-1.00-rc3/applets/install.sh	2001-03-09 08:12:11.000000000 +1030
++++ slingbox/applets/install.sh	2004-08-31 11:27:23.000000000 +0930
+@@ -16,28 +16,28 @@
+ h=`sort busybox.links | uniq`
+ 
+ 
+-rm -f $prefix/bin/busybox || exit 1
++rm -f $prefix/bin/slingbox || exit 1
+ mkdir -p $prefix/bin || exit 1
+-install -m 755 busybox $prefix/bin/busybox || exit 1
++install -m 755 busybox $prefix/bin/slingbox || exit 1
+ 
+ for i in $h ; do
+ 	appdir=`dirname $i`
+ 	mkdir -p $prefix/$appdir || exit 1
+ 	if [ "$2" = "--hardlinks" ]; then
+-	    bb_path="$prefix/bin/busybox"
++	    bb_path="$prefix/bin/slingbox"
+ 	else
+ 	    case "$appdir" in
+ 		/)
+-		    bb_path="bin/busybox"
++		    bb_path="bin/slingbox"
+ 		;;
+ 		/bin)
+-		    bb_path="busybox"
++		    bb_path="slingbox"
+ 		;;
+ 		/sbin)
+-		    bb_path="../bin/busybox"
++		    bb_path="../bin/slingbox"
+ 		;;
+ 		/usr/bin|/usr/sbin)
+-		    bb_path="../../bin/busybox"
++		    bb_path="../../bin/slingbox"
+ 		;;
+ 		*)
+ 		echo "Unknown installation directory: $appdir"

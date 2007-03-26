@@ -1,0 +1,24 @@
+--- tightvnc-1.2.9-orig/vncviewer/Imakefile	2002-06-27 22:53:19.000000000 -0700
++++ tightvnc/vncviewer/Imakefile	2005-06-12 15:08:15.094321000 -0700
+@@ -10,16 +10,16 @@
+ DEFINES = -DMITSHM
+ #endif
+ 
+-ZLIB_INC = -I/usr/local/include
+-JPEG_INC = -I/usr/local/include
+-INCLUDES = -I../include -I. $(ZLIB_INC) $(JPEG_INC) -I/usr/include
++ZLIB_INC =
++JPEG_INC =
++INCLUDES = -I../include -I. $(ZLIB_INC) $(JPEG_INC)
+ VNCAUTH_LIB = ../libvncauth/libvncauth.a
+-ZLIB_LIB = -L/usr/local/lib -lz
++ZLIB_LIB = -lz
+ #ifdef OSF1Architecture
+ XCOMM Avoid linking with different libjpeg in /usr/shlib under Tru64.
+ JPEG_LIB = /usr/local/lib/libjpeg.a
+ #else
+-JPEG_LIB = -L/usr/local/lib -ljpeg
++JPEG_LIB = -ljpeg
+ #endif
+ 
+ DEPLIBS = XawClientDepLibs $(VNCAUTH_LIB)

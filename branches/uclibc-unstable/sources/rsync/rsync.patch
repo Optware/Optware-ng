@@ -1,0 +1,8 @@
+diff -urN rsync-2.6.6/lib/dummy rsync/lib/dummy
+--- rsync-2.6.6/lib/dummy	1970-01-01 01:00:00.000000000 +0100
++++ rsync/lib/dummy	2004-10-01 08:07:01.000000000 +0200
+@@ -0,0 +1,2 @@
++This is a dummy file to ensure that the lib directory gets created
++by configure when a VPATH is used.
+
+

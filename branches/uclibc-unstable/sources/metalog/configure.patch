@@ -1,0 +1,32 @@
+*** metalog/configure.org	Wed Feb  2 21:17:42 2005
+--- metalog/configure	Wed Feb  2 21:18:39 2005
+***************
+*** 7631,7635 ****
+  
+  
+! 
+  echo "$as_me:$LINENO: checking whether snprintf is C99 conformant" >&5
+  echo $ECHO_N "checking whether snprintf is C99 conformant... $ECHO_C" >&6
+--- 7631,7635 ----
+  
+  
+! if false ; then
+  echo "$as_me:$LINENO: checking whether snprintf is C99 conformant" >&5
+  echo $ECHO_N "checking whether snprintf is C99 conformant... $ECHO_C" >&6
+***************
+*** 7705,7709 ****
+  
+  fi
+! 
+  
+  echo "$as_me:$LINENO: checking if malloc debugging is wanted" >&5
+--- 7705,7713 ----
+  
+  fi
+! else
+! cat >>confdefs.h <<_ACEOF
+! #define CONF_SNPRINTF_TYPE 2
+! _ACEOF
+! fi
+  
+  echo "$as_me:$LINENO: checking if malloc debugging is wanted" >&5

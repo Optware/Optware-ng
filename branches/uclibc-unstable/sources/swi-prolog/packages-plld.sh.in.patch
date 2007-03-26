@@ -1,0 +1,14 @@
+--- swi-prolog/packages/plld.sh.in.orig	2006-03-20 23:12:06.000000000 -0800
++++ swi-prolog/packages/plld.sh.in	2006-03-20 23:12:46.000000000 -0800
+@@ -14,11 +14,4 @@
+ bdir=$srcdir/../$BUILDDIR
+ ldir=$srcdir/../lib/$ARCH
+ 
+-if [ "x$@DLLIBVAR@" = "x" ]; then
+-  @DLLIBVAR@=$ldir
+-else
+-  @DLLIBVAR@="$ldir:$@DLLIBVAR@"
+-fi
+-export @DLLIBVAR@
+-
+ $bdir/plld -pl $bdir/$PL "$@"

@@ -1,0 +1,49 @@
+#!/bin/sh
+
+
+if ! grep '^/opt/lib' /etc/ld.so.conf >/dev/null 2>&1
+then
+	echo
+	echo "Adding /opt/lib to dynamic linker configuration..."
+	echo "/opt/lib" >> /etc/ld.so.conf
+fi
+
+if [ `uname -m` = armv5b ]; then
+echo "Setting up ipkg arch-file"
+cat >> /opt/etc/ipkg/arch.conf << EOF
+arch all 1
+arch any 6
+arch noarch 11
+arch armeb 16
+arch all 21
+arch armeb 26
+arch nslu2 31
+arch nslu2 36
+EOF
+fi
+
+echo "Regenerating dynamic linker cache..."
+/opt/sbin/ldconfig
+
+if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1
+then
+  echo "Modifying /etc/profile..."
+  sed 's!^PATH="\(.*$\)!PATH="/opt/bin:/opt/sbin:\1!' /etc/profile > /tmp/$$ && mv /tmp/$$ /etc/profile
+fi
+
+
+if ! grep 'mount -o bind /volume1/opt /opt' /etc/rc.local >/dev/null 2>&1
+then
+  echo "Modifying /etc/rc.local"
+  [ ! -e /etc/rc.local ] && echo "#!/bin/sh" >/etc/rc.local
+  cat >>/etc/rc.local <<EOF
+
+# Optware setup
+mkdir -p /opt
+[ -e /volume1/opt ] && mount -o bind /volume1/opt /opt
+[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
+[ -e /bin/killall ] || ln -s /bin/busybox /bin/killall
+EOF
+  chmod 755 /etc/rc.local
+fi
+

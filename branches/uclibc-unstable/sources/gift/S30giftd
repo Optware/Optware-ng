@@ -1,0 +1,55 @@
+#!/bin/sh
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+grep -q 'setup = 1' /opt/share/giFT/giftd.conf
+setup=$?
+
+if [ ${setup} = 1 ]; then
+	echo "Please edit /opt/sbin/giftd_wrapper and"
+	echo "/opt/share/giFT/giftd.conf from template provided"
+	exit 1
+fi
+
+if [ ! -f /tmp/giftfw ]; then
+        iptables -A INPUT -i eth1 -p tcp --syn --dport 1214 -j ACCEPT
+        iptables -A INPUT -i eth1 -p tcp --syn --dport 1666 -j ACCEPT
+        iptables -A INPUT -i eth1 -p tcp --syn --dport 2555 -j ACCEPT
+        iptables -A INPUT -i eth1 -p tcp --syn --dport 3444 -j ACCEPT
+        iptables -A INPUT -i eth1 -p tcp --syn --dport 59049 -j ACCEPT
+        iptables -A INPUT -i eth1 -p udp --dport 59049 -j ACCEPT
+        iptables -A INPUT -i eth1 -p tcp --syn --dport 6699 -j ACCEPT
+        touch /tmp/giftfw
+fi
+
+start() {
+        echo -n "Starting giFTd... "
+	/opt/sbin/giftd_wrapper &
+        echo "done"
+}
+
+stop() {
+        echo -n "Shutting down giFTd... "
+        killall giftd_wrapper
+        killall -HUP giftd
+        echo "done"
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                sleep 1
+                start
+                ;;
+        *)
+                echo "Usage: $0 (start|stop|restart)"
+                exit 1
+                ;;
+esac
+
+

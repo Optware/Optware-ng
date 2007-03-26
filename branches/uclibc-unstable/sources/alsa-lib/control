@@ -1,0 +1,10 @@
+Package: alsa-lib
+Priority: optional
+Version: 1.0.8
+Architecture: armeb
+Maintainer:  NSLU2 Linux <nslu2-linux@yahoogroups.com>
+Section: libs
+Source: ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.8.tar.bz2
+Depends: 
+Description: ALSA sound library
+

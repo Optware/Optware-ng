@@ -1,0 +1,45 @@
+#!/bin/sh
+
+MOVED=0
+
+movefile() {
+    if [ -f $1 ]; then
+	echo Moving $1 to /opt/etc/mt-daapd/mt-daapd$2
+	mv $1 /opt/etc/mt-daapd/mt-daapd$2
+	MOVED=1
+    fi
+}
+
+mkdir -p /opt/etc/mt-daapd
+
+echo; echo
+movefile /etc/mt-daapd.conf .conf.etc.old
+movefile /etc/mt-daapd.playlist .playlist.etc.old
+movefile /opt/etc/mt-daapd.conf .conf.opt.etc.old
+movefile /opt/etc/mt-daapd.playlist .playlist.opt.etc.old
+
+if [ $MOVED -eq 1 ] ; then
+    # upgrade from 0.2.0 package, or a manual installation
+    cp /opt/doc/mt-daapd/mt-daapd.conf /opt/etc/mt-daapd/mt-daapd.conf
+
+    # db update from 0.2.0 to 0.2.1
+    if [ -f /opt/var/mt-daapd/songs.gdb ]; then
+	rm /opt/var/mt-daapd/songs.gdb
+    fi
+    echo
+    echo "Your existing configuration has been replaced with the"
+    echo "configuration file /opt/etc/mt-daapd/mt-daapd.conf"
+    echo
+    echo "You should review the configuration of this file, make"
+    echo "any necessary changes, and complete the install by running"
+    echo "/opt/etc/init.d/S60mt-daapd"
+    echo
+else
+    echo
+    echo "To complete this installation, make any necessary changes"
+    echo "to the config file in  /opt/etc/mt-daapd/mt-daapd.conf, and"
+    echo "start the daemon by running /opt/etc/init.d/S60mt-daapd"
+    echo
+fi
+
+

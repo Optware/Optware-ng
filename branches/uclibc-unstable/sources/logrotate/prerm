@@ -1,0 +1,3 @@
+#!/bin/sh
+
+rm -f /opt/etc/cron.d/logrotate

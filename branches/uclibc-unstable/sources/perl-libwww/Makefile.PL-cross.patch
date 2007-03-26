@@ -1,0 +1,11 @@
+--- perl-libwww/Makefile.PL.orig	2005-11-03 09:26:39.000000000 -0800
++++ perl-libwww/Makefile.PL	2006-08-24 18:20:50.000000000 -0700
+@@ -167,7 +170,7 @@
+     require HTML::HeadParser;
+     HTML::Parser->VERSION(3.33);
+ };
+-if ($@) {
++if (0) {
+     print " failed\n";
+     $missing_modules++;
+     print <<EOT;

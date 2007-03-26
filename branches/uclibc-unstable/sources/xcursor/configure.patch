@@ -1,0 +1,20 @@
+Index: configure.ac
+===================================================================
+RCS file: /cvs/xlibs/Xcursor/configure.ac,v
+retrieving revision 1.14
+diff -u -r1.14 configure.ac
+--- configure.ac	12 Apr 2004 14:11:12 -0000	1.14
++++ configure.ac	2 Feb 2005 01:14:33 -0000
+@@ -31,11 +31,11 @@
+ dnl not possible to extract the version number here from Xcursor.h
+ dnl
+ AC_INIT([libXcursor],1.1.3,[keithp@keithp.com],[libXcursor])
++AC_CONFIG_AUX_DIR(.)
+ AM_INIT_AUTOMAKE([dist-bzip2])
+ AC_CONFIG_SRCDIR([Makefile.am])
+ AM_MAINTAINER_MODE
+ AM_CONFIG_HEADER(config.h)
+-AC_CONFIG_AUX_DIR(.)
+ 
+ dnl libtool versioning
+ 

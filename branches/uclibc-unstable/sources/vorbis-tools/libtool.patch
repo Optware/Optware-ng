@@ -1,0 +1,15 @@
+--- vorbis-tools/libtool~	2005-04-06 01:57:37.451100870 -1000
++++ vorbis-tools/libtool	2005-04-06 01:58:28.788609810 -1000
+@@ -262,10 +262,10 @@
+ link_all_deplibs=unknown
+ 
+ # Compile-time system search path for libraries
+-sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
++sys_lib_search_path_spec=""
+ 
+ # Run-time system search path for libraries
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec=""
+ 
+ # Fix the shell variable $srcfile for the compiler.
+ fix_srcfile_path=""

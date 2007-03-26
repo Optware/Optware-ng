@@ -1,0 +1,23 @@
+--- Mail-SpamAssassin/Makefile.PL.orig	2006-08-22 21:49:53.000000000 +0200
++++ Mail-SpamAssassin/Makefile.PL	2006-08-22 21:50:27.000000000 +0200
+@@ -341,13 +341,13 @@
+ 
+ ';
+ 
+-# check optional module versions
+-use lib 'lib';
+-use Mail::SpamAssassin::Util::DependencyInfo;
+-if (Mail::SpamAssassin::Util::DependencyInfo::long_diagnostics() != 0) {
+-  # missing required module?  die!
+-  exit 1;
+-}
++## check optional module versions
++#use lib 'lib';
++#use Mail::SpamAssassin::Util::DependencyInfo;
++#if (Mail::SpamAssassin::Util::DependencyInfo::long_diagnostics() != 0) {
++#  # missing required module?  die!
++#  exit 1;
++#}
+ 
+ 
+ #######################################################################

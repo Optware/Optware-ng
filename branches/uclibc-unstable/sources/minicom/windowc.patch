@@ -1,0 +1,25 @@
+--- minicom/src/window.c.orig	2006-12-28 13:31:37.000000000 +0100
++++ minicom/src/window.c	2006-12-28 13:32:14.000000000 +0100
+@@ -55,14 +55,14 @@
+ #define swap(x, y) { int d = (x); (x) = (y); (y) = d; }
+ 
+ /* Terminal capabilities */
+-static char *CM, *IS, *RS, *AC, *EA;
+-static char *ME, *SE, *UE, *AE;
+-static char *AS, *MB, *MD, *MR, *SO, *US;
+-static char *CE, *Al, *Dl, *AL, *DL;
+-static char *CS, *SF, *SR, *VB, *BL;
+-static char *VE, *VI, *KS, *KE;
+-static char *CD, *CL, *IC, *DC;
+-static char *BC, *CR, *NL;
++char *CM, *IS, *RS, *AC, *EA;
++char *ME, *SE, *UE, *AE;
++char *AS, *MB, *MD, *MR, *SO, *US;
++char *CE, *Al, *Dl, *AL, *DL;
++char *CS, *SF, *SR, *VB, *BL;
++char *VE, *VI, *KS, *KE;
++char *CD, *CL, *IC, *DC;
++char *BC, *CR, *NL;
+ #if ST_LINE
+ static char *TS, *FS, *DS;
+ #endif

@@ -1,0 +1,12 @@
+--- wizd/wizd_menu.c.orig	2006-11-20 21:38:34.898375088 +1030
++++ wizd/wizd_menu.c	2006-11-20 21:38:50.740966648 +1030
+@@ -27,7 +27,9 @@
+ #include <errno.h>
+ #include <libgen.h>
+ #include <regex.h>
++# ifdef HAVE_W32API
+ #include <sys/cygwin.h>
++# endif
+ 
+ #include <dvdread/dvd_reader.h>
+ #include <dvdread/ifo_types.h>

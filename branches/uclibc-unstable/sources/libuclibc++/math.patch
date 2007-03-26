@@ -1,0 +1,30 @@
+--- uClibc++/include/cmath	2005-12-11 01:37:02.000000000 +0100
++++ libuclibc++/include/cmath	2006-03-01 12:42:43.000000000 +0100
+@@ -125,6 +126,27 @@
+   }
+ }
+ 
++/* This declarations are missing from mipsel-uclibc-3.2.3 toolchain */
++extern "C" long double (acosl)(long double);
++extern "C" long double (asinl)(long double);
++extern "C" long double (atanl)(long double);
++extern "C" long double (atan2l)(long double, long double);
++extern "C" long double (ceill)(long double);
++extern "C" long double (coshl)(long double);
++extern "C" long double (expl)(long double);
++extern "C" long double (floorl)(long double);
++extern "C" long double (fmodl)(long double, long double);
++extern "C" long double (frexpl)(long double, int *);
++extern "C" long double (ldexpl)(long double, int);
++extern "C" long double (logl)(long double);
++extern "C" long double (log10l)(long double);
++extern "C" long double (modfl)(long double, long double *);
++extern "C" long double (powl)(long double, long double);
++extern "C" long double (sinhl)(long double);
++extern "C" long double (tanl)(long double);
++extern "C" long double (tanhl)(long double);
++
++
+ namespace std 
+ {
+   // Forward declaration of a helper function.  This really should be

@@ -1,0 +1,56 @@
+--- atop-1.17.org/Makefile	2006-11-29 09:41:13.000000000 +0100
++++ atop-1.17/Makefile	2006-12-07 22:49:26.000000000 +0100
+@@ -3,16 +3,16 @@
+ # Gerlof Langeveld - AT Computing - Nijmegen, The Netherlands
+ # (gerlof@ATComputing.nl)
+ #
+-DESTDIR =
++BINPATH = /opt/bin
++SCRPATH = /opt/etc/atop
++LOGPATH = /opt/var/log/atop
++MANPATH = /opt/man/man1
++INIPATH = /opt/etc/init.d
+ 
+-BINPATH = /usr/bin
+-SCRPATH = /etc/atop
+-LOGPATH = /var/log/atop
+-MANPATH = /usr/share/man/man1
+-INIPATH = /etc/rc.d/init.d
++include Makefile.optware
+ 
+-CFLAGS  = -O -I. -Wall
+-LDFLAGS = -lncurses -lm -lz
++CFLAGS  = -O -I. $(OPTWARE_CFLAGS) -Wall
++LDFLAGS = $(OPTWARE_LDFLAGS) -lncurses -lm -lz
+ OBJMOD0 = version.o
+ OBJMOD1 = various.o  deviate.o   procdbase.o
+ OBJMOD2 = acctproc.o photoproc.o photosyst.o  rawlog.o
+@@ -22,27 +22,16 @@
+ all: 		atop
+ 
+ atop:		atop.o    $(ALLMODS) Makefile
+-		cc atop.o $(ALLMODS) -o atop $(LDFLAGS)
++		$(LD) atop.o $(ALLMODS) -o atop $(LDFLAGS)
+ 
+ clean:
+ 		rm -f *.o
+ 
+ install:	atop
+-		if [ ! -d $(DESTDIR)$(LOGPATH) ]; then mkdir -p $(DESTDIR)$(LOGPATH); fi
+ 		if [ ! -d $(DESTDIR)$(BINPATH) ]; then mkdir -p $(DESTDIR)$(BINPATH); fi
+-		if [ ! -d $(DESTDIR)$(SCRPATH) ]; then mkdir -p $(DESTDIR)$(SCRPATH); fi
+ 		if [ ! -d $(DESTDIR)$(MANPATH) ]; then mkdir -p $(DESTDIR)$(MANPATH); fi
+-		if [ ! -d $(DESTDIR)$(INIPATH) ]; then mkdir -p $(DESTDIR)$(INIPATH); fi
+ 		cp atop   	 $(DESTDIR)$(BINPATH)/atop
+-		chown root	 $(DESTDIR)$(BINPATH)/atop
+-		chmod 04711 	 $(DESTDIR)$(BINPATH)/atop
+-		cp atop.daily    $(DESTDIR)$(SCRPATH)
+-		chmod 0711 	 $(DESTDIR)$(SCRPATH)/atop.daily
+-		cp atop.24hours  $(DESTDIR)$(SCRPATH)
+-		chmod 0711 	 $(DESTDIR)$(SCRPATH)/atop.24hours
+ 		cp man/atop.1    $(DESTDIR)$(MANPATH)
+-		cp atop.init     $(DESTDIR)$(INIPATH)/atop
+-		if [ -z "$(DESTDIR)" ]; then /sbin/chkconfig --add atop; fi
+ 
+ 
+ distr:

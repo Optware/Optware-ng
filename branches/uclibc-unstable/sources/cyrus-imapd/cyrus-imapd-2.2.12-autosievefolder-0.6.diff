@@ -1,0 +1,193 @@
+diff -Naur cyrus-imapd-2.2.12/README.autosievefolder cyrus-imapd-2.2.12-autosieve.uncompiled/README.autosievefolder
+--- cyrus-imapd-2.2.12/README.autosievefolder	1970-01-01 02:00:00 +0200
++++ cyrus-imapd-2.2.12-autosieve.uncompiled/README.autosievefolder	2005-02-15 13:59:51 +0200
+@@ -0,0 +1,42 @@
++Cyrus IMAP autosievefolder patch
++----------------------------------
++
++NOTE : This patch has been created at the University of Athens. For more info, as well 
++as more patches on Cyrus IMAPD server, please visit http://email.uoa.gr 
++
++
++  When the lmtpd daemon receives an email message prior to delivering it to the 
++INBOX folder of the user, checks if the user has specified sieve filters. If the
++user has specified sieve filters the filters are evaluated. If the message matches
++any of the filters the action that is specified in the filter is executed. If the action 
++is FileInto it is stored in the subfolder specified in the filter. If the 
++subfolder doesn't exist then the message is sent to the INBOX folder of the user.
++
++  With this patch if the folder doesn't exist AND the name of the subfolder is 
++specified in the autosievefolders option, OR the anysievefolder is set to 
++yes in the cyrus-imap configuration file then the subfolder is created and the mail 
++is stored there.
++
++
++Check the following options of the imapd.conf file
++==================================================
++
++* anysievefolder : It must be "yes" in order to permit the autocreation of any 
++INBOX subfolder requested by a sieve filter, through the "fileinto" action. (default = no)
++* autosievefolders : It is a "|" separated list of subfolders of INBOX that will be 
++automatically created, if requested by a sieve filter, through the "fileinto" 
++action. (default = null)
++	i.e. autosievefolders: Junk | Spam
++
++WARNING: anysievefolder, takes precedence over autosievefolders . Which means that if 
++anysievefolder is set to "yes", cyrus will create any INBOX subfolder requested, no-matter what the value of autosievefolders is.
++
++
++Things to be done
++=================
++
++1. Support cyrus wildcards in the autosievefolders option. 
++
++
++For more information and updates please visit http://email.uoa.gr/projects/cyrus/autosievefolder
++
+diff -Naur cyrus-imapd-2.2.12/imap/lmtp_sieve.c cyrus-imapd-2.2.12-autosieve.uncompiled/imap/lmtp_sieve.c
+--- cyrus-imapd-2.2.12/imap/lmtp_sieve.c	2004-06-01 16:47:16 +0300
++++ cyrus-imapd-2.2.12-autosieve.uncompiled/imap/lmtp_sieve.c	2005-02-15 13:59:51 +0200
+@@ -72,6 +72,8 @@
+ #include "util.h"
+ #include "version.h"
+ #include "xmalloc.h"
++#include "imap_err.h"
++
+ 
+ static int sieve_usehomedir = 0;
+ static const char *sieve_dir = NULL;
+@@ -98,6 +100,9 @@
+ 			   int quotaoverride,
+ 			   int acloverride);
+ 
++static int autosieve_subfolder(char *userid, struct auth_state *auth_state,
++                               char *subfolder, struct namespace *namespace);
++
+ static char *make_sieve_db(const char *user)
+ {
+     static char buf[MAX_MAILBOX_PATH+1];
+@@ -312,6 +317,7 @@
+ }
+ 
+ 
++
+ static int sieve_redirect(void *ac, 
+ 			  void *ic __attribute__((unused)), 
+ 			  void *sc, void *mc, const char **errmsg)
+@@ -444,7 +450,18 @@
+ 			      sd->username, mdata->notifyheader,
+ 			      namebuf, quotaoverride, 0);
+     }
+-
++    if (ret == IMAP_MAILBOX_NONEXISTENT) {
++        /* if "plus" folder under INBOX, then try to create it */
++        syslog(LOG_DEBUG, "calling autosieve folder for : %s", namebuf);
++        ret = autosieve_subfolder((char *) sd->username, sd->authstate, namebuf, mdata->namespace);
++
++        if (!ret)
++            ret = deliver_mailbox(md->data, mdata->stage, md->size,
++                                  fc->imapflags->flag, fc->imapflags->nflags,
++                                  (char *) sd->username, sd->authstate, md->id,
++                                  sd->username, mdata->notifyheader,
++                                  namebuf, quotaoverride, 0);
++    }
+     if (!ret) {
+ 	snmp_increment(SIEVE_FILEINTO, 1);
+ 	return SIEVE_OK;
+@@ -882,3 +899,77 @@
+ 
+     return r;
+ }
++
++
++#define SEP '|'
++
++static int autosieve_subfolder(char *userid, struct auth_state *auth_state,
++                               char *subfolder, struct namespace *namespace)
++{
++     char option_name_external[MAX_MAILBOX_NAME + 1];
++     char option_name_internal[MAX_MAILBOX_NAME + 1];
++     const char *subf ;
++     char *p, *q, *next_subf;
++     int len, r = 0;
++     int createsievefolder = 0;
++
++    /* Check if subfolder or userid are NULL */
++    if(subfolder == NULL || userid == NULL)
++         return IMAP_MAILBOX_NONEXISTENT;
++
++    if (config_getswitch(IMAPOPT_ANYSIEVEFOLDER))
++         createsievefolder = 1;
++    else if ((subf = config_getstring(IMAPOPT_AUTOSIEVEFOLDERS)) != NULL) {
++         /* Roll through subf */
++         next_subf = (char *) subf;
++         while (*next_subf) {
++              for (p = next_subf ; isspace((int) *p) || *p == SEP ; p++);
++              for (next_subf = p ; *next_subf && *next_subf != SEP ; next_subf++);
++              for (q = next_subf ; q > p && (isspace((int) *q) || *q == SEP || !*q); q--);
++
++              if (!*p) continue;
++                    
++              len = q - p + 1;
++             /*
++              * This is a preliminary length check based on the assumption
++              * that the *final* internal format will be something
++              * like user.userid.subfolder(s).
++              */
++              if (len > sizeof(option_name_external) - strlen(userid) - 5)
++                   return IMAP_MAILBOX_BADNAME;
++
++              strlcpy(option_name_external, namespace->prefix[NAMESPACE_INBOX], sizeof(option_name_external));
++	      strncat(option_name_external, p, len);
++                    
++              /* 
++               * Transform the option folder name to internal namespace and compare it
++	       * with what must be created.
++               */
++              r = namespace->mboxname_tointernal(namespace, option_name_external, userid, option_name_internal);
++              if (r) continue;
++
++              if (!strcmp(option_name_internal, subfolder)) {
++                  createsievefolder = 1;
++                  break;
++              }
++         }
++    }
++
++    if (createsievefolder) {
++        /* Folder is already in internal namespace format */
++        r = mboxlist_createmailbox(subfolder, MAILBOX_FORMAT_NORMAL, NULL,
++                                           1, userid, auth_state, 0, 0, 0);
++        if (!r) {
++            mboxlist_changesub(subfolder, userid, auth_state, 1, 1);
++            syslog(LOG_DEBUG, "autosievefolder: User %s, folder %s creation succeeded.",
++                                                   userid, subfolder);
++            return 0;
++        } else {
++            syslog(LOG_ERR, "autosievefolder: User %s, folder %s creation failed. %s",
++                                                  userid, subfolder,error_message(r));
++            return r;
++        }
++    } else
++        return IMAP_MAILBOX_NONEXISTENT;
++}
++
+diff -Naur cyrus-imapd-2.2.12/lib/imapoptions cyrus-imapd-2.2.12-autosieve.uncompiled/lib/imapoptions
+--- cyrus-imapd-2.2.12/lib/imapoptions	2004-07-21 22:07:45 +0300
++++ cyrus-imapd-2.2.12-autosieve.uncompiled/lib/imapoptions	2005-02-15 13:59:51 +0200
+@@ -752,6 +752,15 @@
+ /* If enabled, lmtpd will look for Sieve scripts in user's home
+    directories: ~user/.sieve. */
+ 
++{ "anysievefolder", 0, SWITCH }
++/* It must be "yes" in order to permit the autocreation of any INBOX subfolder 
++   requested by a sieve filter, through the "fileinto" action. (default = no) */
++
++{ "autosievefolders", NULL, STRING }
++/* It is a "|" separated list of subfolders of INBOX that will be automatically created, 
++   if requested by a sieve filter, through the "fileinto" action. (default = null)
++   i.e. autosievefolders: Junk | Spam */
++
+ { "singleinstancestore", 1, SWITCH }
+ /* If enabled, lmtpd and nntpd attempt to only write one copy of a message per
+    partition and create hard links, resulting in a potentially large

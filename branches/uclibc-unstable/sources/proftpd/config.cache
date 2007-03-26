@@ -1,0 +1,2 @@
+ac_cv_func_setpgrp_void=${ac_cv_func_setpgrp_void=yes}
+ac_cv_func_setgrent_void=${ac_cv_func_setgrent_void=yes}

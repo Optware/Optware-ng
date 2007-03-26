@@ -1,0 +1,15 @@
+--- w3m/configure.in.orig	2006-03-11 22:51:34.000000000 -0800
++++ w3m/configure.in	2006-03-11 22:58:31.000000000 -0800
+@@ -82,12 +82,6 @@
+ AC_W3M_MAILER
+ AC_W3M_EXT_BROWSER
+ 
+-dnl Checks for ext libs
+-for lib in bsd BSD 44bsd socket nsl dld dl
+-do
+- AC_W3M_EXTLIBS($lib)
+-done
+-
+ AC_W3M_IPv6
+ AC_W3M_SSL
+ 

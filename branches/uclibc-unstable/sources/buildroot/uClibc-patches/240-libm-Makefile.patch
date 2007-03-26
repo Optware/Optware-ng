@@ -1,0 +1,11 @@
+--- uClibc-0.9.28/libm/Makefile.orig	2006-12-28 08:54:07.000000000 +0100
++++ uClibc-0.9.28/libm/Makefile	2006-12-28 08:55:23.000000000 +0100
+@@ -59,7 +59,7 @@
+          e_sqrt.c k_cos.c k_rem_pio2.c k_sin.c k_standard.c k_tan.c\
+          s_asinh.c s_atan.c s_cbrt.c s_ceil.c s_copysign.c s_cos.c\
+          s_erf.c s_expm1.c s_fabs.c s_finite.c s_floor.c s_frexp.c\
+-         s_ilogb.c s_ldexp.c s_lib_version.c s_log1p.c s_logb.c\
++         s_ilogb.c s_ldexp.c s_lib_version.c s_lrint.c s_log1p.c s_logb.c\
+          s_matherr.c s_modf.c s_nextafter.c s_rint.c s_scalbn.c\
+          s_signgam.c s_significand.c s_sin.c s_tan.c s_tanh.c\
+          w_acos.c w_acosh.c w_asin.c w_atan2.c w_atanh.c w_cabs.c\

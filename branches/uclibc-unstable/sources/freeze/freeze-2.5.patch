@@ -1,0 +1,54 @@
+--- ./statist.1.orig	Thu May 20 11:05:34 1999
++++ ./statist.1	Sat Apr 14 22:32:26 2001
+@@ -102,11 +102,8 @@
+ percentiles and sigma) are FYI only.
+ .PP
+ You may create the 
+-.IR /etc/default/freeze
+-file (if you don't like
+-.IR /etc/default/
+-directory, choose another - in MS-DOS it is FREEZE.CNF in
+-the directory of FREEZE.EXE), which has the following format:
++.IR /opt/etc/freeze.cnf
++file, which has the following format:
+ .in +8
+ .I name
+ =
+--- ./freeze.1.orig	Thu May 20 11:05:34 1999
++++ ./freeze.1	Sat Apr 14 22:32:26 2001
+@@ -109,7 +109,7 @@
+ of following files in the command string. An explicite definition
+ of the file's type can give up to 2% of additional compression.
+ The list of types is stored in file
+-.IR /usr/local/lib/freeze.cnf .
++.IR /opt/etc/freeze.cnf .
+ Types may be abbreviated while not ambigious. You can also determine
+ values for the static Huffman table by using a list of 8 numbers
+ separated by commas instead of
+--- Makefile.in.orig	2006-08-26 15:08:25.000000000 +0200
++++ Makefile.in	2006-08-26 15:12:12.000000000 +0200
+@@ -18,9 +18,9 @@
+ default:        prog
+ 
+ # Added the prefix macro, so that it was easier to change installation place.
+-prefix        = /usr/local
++prefix        = /opt
+ DEST          = $(prefix)/bin
+-MANDEST       = $(prefix)/man/man1
++MANDEST       = $(prefix)/share/man/man1
+ SEC           = 1
+ 
+ HDRS          = bitio.h\
+@@ -31,10 +31,10 @@
+ 		patchlevel.h
+ 
+ # define DEFFILE as a filename with freeze's default Huffman values
+-# e.g. -DDEFFILE=\"/etc/default/freeze\"
++# e.g. -DDEFFILE=\"/opt/etc/default/freeze\"
+ # !!!! NOTE !!!! default is now $(prefix)/lib/freeze.cnf !!!!!
+ 
+-OPTIONS       = -DDEFFILE=\"$(prefix)/lib/freeze.cnf\"
++OPTIONS       = -DDEFFILE=\"/opt/etc/freeze.cnf\"
+ 
+ LINTFLAGS     = -DDEBUG -DGATHER_STAT -x -h
+ 

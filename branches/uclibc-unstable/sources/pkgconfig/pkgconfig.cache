@@ -1,0 +1,103 @@
+# This file is a shell script that caches the results of configure
+# tests run on this system so they can be shared between configure
+# scripts and configure runs.  It is not useful on other systems.
+# If it contains results you don't want to keep, you may remove or edit it.
+#
+# By default, configure uses ./config.cache as the cache file,
+# creating it if it does not exist already.  You can give configure
+# the --cache-file=FILE option to use a different cache file; that is
+# what configure does when it calls configure scripts in
+# subdirectories, so they share the cache.
+# Giving --cache-file=/dev/null disables caching, for debugging configure.
+# config.status only pays attention to the cache file if you give it the
+# --recheck option to rerun configure.
+#
+ac_cv_sizeof_int=${ac_cv_sizeof_int='4'}
+ac_cv_prog_cc_works=${ac_cv_prog_cc_works='yes'}
+ac_cv_header_sys_times_h=${ac_cv_header_sys_times_h='yes'}
+ac_cv_c_bigendian=${ac_cv_c_bigendian='yes'}
+lt_cv_file_magic_cmd=${lt_cv_file_magic_cmd='$MAGIC_CMD'}
+ac_cv_func_strncasecmp=${ac_cv_func_strncasecmp='yes'}
+ac_cv_func_memmove=${ac_cv_func_memmove='yes'}
+ac_cv_header_sys_time_h=${ac_cv_header_sys_time_h='yes'}
+ac_cv_header_pwd_h=${ac_cv_header_pwd_h='yes'}
+ac_cv_sizeof_long_long=${ac_cv_sizeof_long_long='8'}
+ac_cv_func_on_exit=${ac_cv_func_on_exit='yes'}
+ac_cv_cygwin=${ac_cv_cygwin='no'}
+ac_cv_func_dlopen=${ac_cv_func_dlopen='no'}
+ac_cv_sizeof_char=${ac_cv_sizeof_char='1'}
+ac_cv_prog_cc_g=${ac_cv_prog_cc_g='yes'}
+glib_cv_uscore=${glib_cv_uscore='no'}
+ac_cv_exeext=${ac_cv_exeext='no'}
+lt_cv_prog_cc_can_build_shared=${lt_cv_prog_cc_can_build_shared='yes'}
+ac_cv_header_dirent_h=${ac_cv_header_dirent_h='yes'}
+ac_cv_func_dlerror=${ac_cv_func_dlerror='yes'}
+ac_cv_prog_gnu_ld=${ac_cv_prog_gnu_ld='yes'}
+ac_cv_func_iswalnum=${ac_cv_func_iswalnum='yes'}
+ac_cv_header_sys_wait_h=${ac_cv_header_sys_wait_h='yes'}
+ac_cv_func_strcasecmp=${ac_cv_func_strcasecmp='yes'}
+lt_cv_prog_cc_no_builtin=${lt_cv_prog_cc_no_builtin=}
+lt_cv_prog_cc_static_works=${lt_cv_prog_cc_static_works='yes'}
+ac_cv_header_sys_poll_h=${ac_cv_header_sys_poll_h='yes'}
+ac_cv_header_float_h=${ac_cv_header_float_h='yes'}
+lt_cv_prog_cc_shlib=${lt_cv_prog_cc_shlib=}
+glib_cv_va_val_copy=${glib_cv_va_val_copy='yes'}
+lt_cv_prog_cc_static=${lt_cv_prog_cc_static='-static'}
+ac_cv_func_vsnprintf=${ac_cv_func_vsnprintf='yes'}
+ac_cv_c_const=${ac_cv_c_const='yes'}
+lt_cv_ld_reload_flag=${lt_cv_ld_reload_flag='-r'}
+ac_cv_func_getpwuid_r=${ac_cv_func_getpwuid_r='yes'}
+lt_cv_sys_path_separator=${lt_cv_sys_path_separator=':'}
+ac_cv_header_values_h=${ac_cv_header_values_h='yes'}
+lt_cv_prog_gnu_ld=${lt_cv_prog_gnu_ld='yes'}
+lt_cv_archive_cmds_need_lc=${lt_cv_archive_cmds_need_lc='no'}
+ac_cv_header_sys_select_h=${ac_cv_header_sys_select_h='yes'}
+ac_cv_func_atexit=${ac_cv_func_atexit='yes'}
+ac_cv_func_localtime_r=${ac_cv_func_localtime_r='yes'}
+glib_cv___va_copy=${glib_cv___va_copy='yes'}
+ac_cv_header_limits_h=${ac_cv_header_limits_h='yes'}
+ac_cv_prog_LN_S=${ac_cv_prog_LN_S='ln -s'}
+glib_cv_sane_realloc=${glib_cv_sane_realloc='yes'}
+ac_cv_header_alloca_h=${ac_cv_header_alloca_h='yes'}
+ac_cv_func_alloca_works=${ac_cv_func_alloca_works='yes'}
+glib_cv_has__inline__=${glib_cv_has__inline__='yes'}
+ac_cv_header_stdc=${ac_cv_header_stdc='yes'}
+lt_cv_prog_cc_wl=${lt_cv_prog_cc_wl='-Wl,'}
+ac_cv_sizeof_long=${ac_cv_sizeof_long='4'}
+ac_cv_func_vprintf=${ac_cv_func_vprintf='yes'}
+ac_cv_prog_make_make_set=${ac_cv_prog_make_make_set='yes'}
+ac_cv_lib_dl_dlsym=${ac_cv_lib_dl_dlsym='yes'}
+glib_cv_va_copy=${glib_cv_va_copy='yes'}
+ac_cv_header_sys_param_h=${ac_cv_header_sys_param_h='yes'}
+lt_cv_global_symbol_to_cdecl=${lt_cv_global_symbol_to_cdecl='sed -n -e '\''s/^. .* \(.*\)$/extern char \1;/p'\'}
+ac_cv_header_unistd_h=${ac_cv_header_unistd_h='yes'}
+glib_cv_sizeof_gmutex=${glib_cv_sizeof_gmutex='24'}
+ac_cv_lib_pthread_pthread_attr_init=${ac_cv_lib_pthread_pthread_attr_init='yes'}
+glib_cv_has__inline=${glib_cv_has__inline='yes'}
+ac_cv_header_pthread_h=${ac_cv_header_pthread_h='yes'}
+ac_cv_prog_cc_cross=${ac_cv_prog_cc_cross='no'}
+ac_cv_prog_gcc=${ac_cv_prog_gcc='yes'}
+ac_cv_func_strerror=${ac_cv_func_strerror='yes'}
+lt_cv_global_symbol_to_c_name_address=${lt_cv_global_symbol_to_c_name_address='sed -n -e '\''s/^: \([^ ]*\) $/  {\"\1\", (lt_ptr) 0},/p'\'' -e '\''s/^[BCDEGRST] \([^ ]*\) \([^ ]*\)$/  {"\2", (lt_ptr) \&\2},/p'\'}
+am_cv_prog_cc_stdc=${am_cv_prog_cc_stdc=}
+lt_cv_file_magic_test_file=${lt_cv_file_magic_test_file='/lib/libc.so.6 /lib/libc-*.so'}
+lt_cv_prog_cc_pic_works=${lt_cv_prog_cc_pic_works='yes'}
+lt_cv_compiler_c_o=${lt_cv_compiler_c_o='yes'}
+glib_cv_hasinline=${glib_cv_hasinline='yes'}
+ac_cv_func_rand_r=${ac_cv_func_rand_r='yes'}
+ac_cv_func_lstat=${ac_cv_func_lstat='yes'}
+lt_cv_deplibs_check_method=${lt_cv_deplibs_check_method='file_magic ELF [0-9][0-9]*-bit [LM]SB (shared object|dynamic lib )'}
+lt_cv_sys_global_symbol_pipe=${lt_cv_sys_global_symbol_pipe='sed -n -e '\''s/^.*[ 	]\([ABCDGISTW][ABCDGISTW]*\)[ 	][ 	]*\(\)\([_A-Za-z][_A-Za-z0-9]*\)$/\1 \2\3 \3/p'\'}
+lt_cv_prog_cc_pic=${lt_cv_prog_cc_pic=' -fPIC'}
+ac_cv_mingw32=${ac_cv_mingw32='no'}
+lt_cv_path_MAGIC_CMD=${lt_cv_path_MAGIC_CMD='/opt/bin/file'}
+lt_cv_compiler_o_lo=${lt_cv_compiler_o_lo='yes'}
+ac_cv_func_strsignal=${ac_cv_func_strsignal='yes'}
+ac_cv_sizeof_short=${ac_cv_sizeof_short='2'}
+ac_cv_lib_dl_dlopen=${ac_cv_lib_dl_dlopen='yes'}
+ac_cv_func_setresuid=${ac_cv_func_setresuid='yes'}
+ac_cv_func_poll=${ac_cv_func_poll='yes'}
+ac_cv_header_dlfcn_h=${ac_cv_header_dlfcn_h='yes'}
+glib_cv_byte_contents_gmutex=${glib_cv_byte_contents_gmutex='0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0'}
+ac_cv_sizeof_void_p=${ac_cv_sizeof_void_p='4'}
+ac_cv_objext=${ac_cv_objext='o'}

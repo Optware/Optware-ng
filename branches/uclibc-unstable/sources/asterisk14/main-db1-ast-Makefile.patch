@@ -1,0 +1,11 @@
+--- asterisk-1.4.0-beta3/main/db1-ast/Makefile	2006-10-11 18:57:06.000000000 +0200
++++ asterisk14/main/db1-ast/Makefile	2006-12-16 22:46:57.000000000 +0100
+@@ -48,7 +48,7 @@
+ clean:
+ 	rm -f $(LIBDB) $(LIBDBSO) $(OBJS) $(SHOBJS)
+ 
+-ASTCFLAGS+=-Wall -D__DBINTERFACE_PRIVATE -I. -I.. -Iinclude -Ihash -Ibtree -Irecno
++ASTCFLAGS=-Wall -D__DBINTERFACE_PRIVATE -I. -I.. -Iinclude -Ihash -Ibtree -Irecno $(CFLAGS)
+ 
+ OSTYPE=$(shell uname -s)
+ ifeq ($(OSTYPE),SunOS)

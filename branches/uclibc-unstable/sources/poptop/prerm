@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+killall pptpd

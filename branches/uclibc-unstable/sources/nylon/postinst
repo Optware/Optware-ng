@@ -1,0 +1,9 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+echo ; echo
+echo "A template configuration file has been installed in /opt/etc/nylon.conf"
+echo "Don't forget to edit it according to your needs then run /opt/etc/init.d/S10nylon"
+echo
+

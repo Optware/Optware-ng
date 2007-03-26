@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ ! -f /opt/etc/nail.rc ] ;  then
+    cp /opt/doc/nail/nail.rc /opt/etc/nail.rc
+fi
+
+echo ; echo
+echo "Usage of sendmail is disabled in this version of nail due to missing"
+echo "sendmail-package. nail is capable of using SMTP, read"
+echo "http://nail.sourceforge.net/man/nail.1.html"
+echo "to learn more about its usage."
+echo

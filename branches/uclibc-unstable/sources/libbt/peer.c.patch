@@ -1,0 +1,35 @@
+--- src/peer.c	2005-12-09 09:02:57.000000000 +0100
++++ src/peer.c	2006-02-23 08:30:29.000000000 +0100
+@@ -339,11 +339,11 @@
+     {
+ 	/* bad flags */
+ 	int i;
+-	printf("Unknown flags in handshake: ");
++	fprintf(stderr, "Unknown flags in handshake: ");
+ 	for (i=0; i<8; i++) {
+-	    printf("%02x", flags[i]);
++	    fprintf(stderr, "%02x", flags[i]);
+ 	}
+-	printf("\n");
++	fprintf(stderr, "\n");
+     }
+     if (len >= PROTO_LENGTH + FLAGS_LENGTH + SHA_DIGEST_LENGTH)
+     {
+@@ -756,7 +756,7 @@
+ 		    time(&now);
+ 		    send_choke( peer, 1);
+ 		    stop_rate_timer( &peer->local, now);
+-		    printf("%d: Choked by invalid request for block %d (%s have it)\n", peer->ios.fd, piece,
++		    fprintf(stderr, "%d: Choked by invalid request for block %d (%s have it)\n", peer->ios.fd, piece,
+ 			bs_isSet(&peer->blocks, piece)?"they":"we don't");
+ 		}
+ 	    }
+@@ -781,7 +781,7 @@
+ 		/* check requests with ones we've sent */
+ 		time(&peer->lastreceived);
+ 		if (!pp || !remove_queued_request( &peer->inqueue, piece, offs, len-9)) {
+-		    printf("%d: Unneeded data: piece %d %d+%d\n", peer->ios.fd, piece, offs, len-9);
++		    fprintf(stderr, "%d: Unneeded data: piece %d %d+%d\n", peer->ios.fd, piece, offs, len-9);
+ 		} else {
+ 		    int done = seg_writebuf( &dl->fileset, piece, offs, nmsg+13, len-9);
+ 		    if (done < 0) {

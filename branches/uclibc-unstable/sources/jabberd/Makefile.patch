@@ -1,0 +1,40 @@
+--- jabber-1.4.2-orig/Makefile	2001-01-20 21:32:48.000000000 -0800
++++ jabber/Makefile	2005-04-17 11:06:10.712376000 -0700
+@@ -14,7 +14,18 @@
+ single: single-recursive
+ 
+ install:
+-	printf "\n\nNo actual make install, you just run it out of the directory!\n"
++	install -d $(DESTDIR)/sbin $(DESTDIR)/etc/jabber $(DESTDIR)/etc/init.d
++	for d in lib log run; do \
++	    install -d $(DESTDIR)/var/$$d/jabber; \
++	done
++	install jabberd/jabberd $(DESTDIR)/sbin/
++	$(STRIP_COMMAND) $(DESTDIR)/sbin/jabberd
++	install jabber.xml $(DESTDIR)/etc/jabber/
++	for d in pthsock jsm xdb_file dnsrv dialback; do \
++	    install -d $(DESTDIR)/lib/jabber/$$d; \
++	    install $$d/*.so $(DESTDIR)/lib/jabber/$$d; \
++	    $(STRIP_COMMAND) $(DESTDIR)/lib/jabber/$$d/*.so; \
++	done
+ 
+ all-local:
+ 
+--- jabber-1.4.2-orig/jabberd/Makefile	2001-12-17 12:09:12.000000000 -0800
++++ jabber/jabberd/Makefile	2005-04-17 13:00:10.562376000 -0700
+@@ -4,12 +4,12 @@
+ include ../platform-settings
+ 
+ ifeq ($(ISSINGLE),1)
+-	DEFINES=-DHOME="\"$(JHOME)\"" -DSINGLE -DSTATIC
++	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DSINGLE -DSTATIC
+ else
+-	DEFINES=-DHOME="\"$(JHOME)\"" -DCONFIGXML="\"jabber.xml\""
++	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DCONFIGXML="\"/opt/etc/jabber/jabber.xml\""
+ endif
+ ifeq ($(ISSTATIC),1)
+-	DEFINES=-DHOME="\"$(JHOME)\"" -DSTATIC
++	DEFINES=-DHOME="\"/opt/lib/jabber\"" -DSTATIC
+ endif
+ 
+ CFLAGS=$(CCFLAGS) $(DEFINES)

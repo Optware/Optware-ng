@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# clean out any uninstalled configuration that was left over 
+# from a previous install
+rm -f /opt/share/www/mediawiki/config/LocalSettings.php

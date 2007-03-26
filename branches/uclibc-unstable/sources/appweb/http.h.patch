@@ -1,0 +1,11 @@
+--- appweb/http/http.h.orig	2006-12-15 21:02:21.000000000 +0100
++++ appweb/http/http.h	2006-12-15 21:02:40.000000000 +0100
+@@ -398,7 +398,7 @@
+ 	MaHttp			*http;		
+ 	MprLogModule	*tMod;
+ 	MprFileSystem	*fileSystem;
+-	static MaServer	*MaServer::defaultServer;
++	static MaServer	*defaultServer;
+ 
+   private:
+ 	MprFileSystem	*defaultFileSystem;

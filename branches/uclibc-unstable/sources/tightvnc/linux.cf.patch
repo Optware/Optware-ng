@@ -1,0 +1,31 @@
+--- tightvnc-1.2.9-orig/Xvnc/config/cf/linux.cf	2002-03-20 02:49:23.000000000 -0800
++++ tightvnc/Xvnc/config/cf/linux.cf	2005-06-12 12:52:04.254321000 -0700
+@@ -160,7 +160,9 @@
+ #define MkdirHierCmd		mkdir -p
+ #if LinuxElfDefault
+ #if UseElfFormat
++#ifndef CcCmd
+ #define CcCmd			gcc
++#endif
+ #define AsCmd			as
+ #define LdCmd			ld
+ #define AsmDefines		-D__ELF__
+@@ -232,7 +234,9 @@
+ #define BuildDynamicLoading	YES
+ #endif
+ #endif
++#ifndef CppCmd
+ #define CppCmd			/lib/cpp
++#endif
+ #ifdef USE_BYACC
+ #define YaccCmd			byacc
+ #else
+@@ -249,7 +253,7 @@
+ 
+ #ifdef i386Architecture
+ #define OptimizedCDebugFlags	DefaultGcc2i386Opt
+-#define LinuxMachineDefines	-D__i386__
++#define LinuxMachineDefines	-D__arm__
+ #define ServerOSDefines		XFree86ServerOSDefines -DDDXTIME -DPART_NET
+ #define ServerExtraDefines	-DGCCUSESGAS XFree86ServerDefines
+ #endif /* i386Architecture */

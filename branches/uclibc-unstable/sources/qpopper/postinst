@@ -1,0 +1,11 @@
+#!/bin/sh
+
+cat << _END_
+Read the manual pages and the documentation in /opt/doc/qpopper/GUIDE.pdf
+
+Then start the server with:
+/opt/etc/init.d/S70qpopper
+
+_END_
+
+

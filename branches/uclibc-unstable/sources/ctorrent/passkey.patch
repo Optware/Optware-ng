@@ -1,0 +1,16 @@
+*** ctorrent/httpencode.cpp.orig	Thu Sep  9 01:10:51 2004
+--- ctorrent/httpencode.cpp	Thu Aug  4 15:00:45 2005
+***************
+*** 88,94 ****
+--- 88,98 ----
+  
+    /* path */
+    if( *p != '/' ) return -1;
++ #if 1  /* The passkey patch */
++   for( ; *p; p++,path++) *path = *p;
++ #else
+    for( ; *p && *p != '?'; p++,path++) *path = *p;
++ #endif
+    *path = '\0';
+    return 0;
+  }

@@ -1,0 +1,13 @@
+--- gnuplot-4.0.0/docs/Makefile.in	2004-03-11 23:20:55.000000000 +0100
++++ gnuplot/docs/Makefile.in	2006-08-14 10:04:16.000000000 +0200
+@@ -66,8 +66,8 @@
+ 
+ INFO_DEPS = $(srcdir)/gnuplot.info
+ 
+-CC     = @CC@
+-CPP    = @CPP@
++CC     = $(HOSTCC)
++CPP    = $(CC) -E 
+ DEFS   = @DEFS@
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I.. -I$(top_builddir)
+ CPPFLAGS = @CPPFLAGS@

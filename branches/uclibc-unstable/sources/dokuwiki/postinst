@@ -1,0 +1,5 @@
+#!/bin/sh
+
+touch /opt/share/www/dokuwiki/changes.log
+chown nobody /opt/share/www/dokuwiki/changes.log
+chown -R nobody /opt/share/www/dokuwiki/data

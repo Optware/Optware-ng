@@ -1,0 +1,11 @@
+--- Makefile.in	2005-03-26 08:38:17.000000000 +0100
++++ Makefile.in.patched	2005-09-10 20:22:20.000000000 +0200
+@@ -40,7 +40,7 @@
+ MODE_DIRS       = 755
+ 
+ INSTALL         = @INSTALL@ 
+-INSTALL_PROG    = $(INSTALL) -m $(MODE_PROGS) -s
++INSTALL_PROG    = $(INSTALL) -m $(MODE_PROGS)
+ INSTALL_FILE    = $(INSTALL) -m $(MODE_FILES)
+ INSTALL_DIR     = $(INSTALL) -m $(MODE_DIRS) -d
+ 

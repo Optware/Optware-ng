@@ -1,0 +1,21 @@
+diff -ur ccxstream-1.0.15.dist/Makefile ccxstream-1.0.15/Makefile
+--- ccxstream-1.0.15.dist/Makefile	2003-03-17 08:29:15.000000000 -0600
++++ ccxstream-1.0.15/Makefile	2004-10-28 00:28:14.000000000 -0500
+@@ -22,15 +22,12 @@
+ #
+ 
+ CFLAGS+=-I. -g
+-LDFLAGS+=-lreadline -ltermcap
+ 
+-all: ccxstream ccxtest
++all: ccxstream
+ 
+ ccxstream: ccxstream.o ccxfile.o ccutil.o ccbuffer.o ccdebug.o ccxmltrans.o ccxencode.o
+ 
+-ccxtest: ccxtest.o ccxclient.o ccxclientconn.o ccutil.o ccbuffer.o ccdebug.o ccxmltrans.o ccxencode.o ccxdiscover.o
+-
+ clean:
+-	rm -f ccxstream ccxtest *.o core *~
++	rm -f ccxstream *.o core *~
+ 
+ # eof (Makefile)

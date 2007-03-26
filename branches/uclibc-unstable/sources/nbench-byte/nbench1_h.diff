@@ -1,0 +1,11 @@
+--- nbench1.h.org	2006-05-20 11:28:05.000000000 +0200
++++ nbench1.h	2006-05-20 11:29:08.000000000 +0200
+@@ -355,7 +355,7 @@
+ ** The Neural Net test requires an input data file.
+ ** The name is specified here.
+ */
+-char *inpath="NNET.DAT";
++char *inpath="/opt/share/nbench-byte.dat";
+ 
+ /*
+ ** PROTOTYPES

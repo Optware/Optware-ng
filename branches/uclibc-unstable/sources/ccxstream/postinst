@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you should check /opt/etc/init.d/S75ccxstream,"
+echo "to verify proper paths, then run S75ccxstream to start it"
+echo

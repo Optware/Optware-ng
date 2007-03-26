@@ -1,0 +1,25 @@
+--- ../postfix/master.cf	2005-02-14 20:45:22.000000000 +0100
++++ master.cf	2005-03-10 11:58:59.000000000 +0100
+@@ -77,7 +77,8 @@
+ # service type  private unpriv  chroot  wakeup  maxproc command + args
+ #               (yes)   (yes)   (yes)   (never) (100)
+ # ==========================================================================
+-smtp      inet  n       -       n       -       -       smtpd
++#smtp      inet  n       -       n       -       -       smtpd
++smtp      inet  n       -       n       -       -       smtpd -o content_filter=bogofilter
+ #submission inet n      -       n       -       -       smtpd
+ #	-o smtpd_etrn_restrictions=reject
+ #628      inet  n       -       n       -       -       qmqpd
+@@ -105,6 +106,12 @@
+ # Interfaces to non-Postfix software. Be sure to examine the manual
+ # pages of the non-Postfix software to find out what options it wants.
+ #
++# bogofilter. Read /opt/doc/bogofilter/integrating-with-postfix
++#
++bogofilter
++          unix  -       n       n       -       -       pipe
++  flags=R user=bogo argv=/opt/sbin/postfix-bogofilter.sh -f ${sender} -- ${recipient}
++#
+ # maildrop. See the Postfix MAILDROP_README file for details.
+ #
+ maildrop  unix  -       n       n       -       -       pipe

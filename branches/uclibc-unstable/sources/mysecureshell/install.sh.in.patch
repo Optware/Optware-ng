@@ -1,0 +1,239 @@
+*** mysecureshell/install.sh.in.orig	2006-03-01 14:00:24.000000000 +0100
+--- mysecureshell/install.sh.in	2006-03-25 22:35:42.000000000 +0100
+***************
+*** 5,15 ****
+  
+  ## Language local initialising
+  
+! BINDIR=@BINDIR@
+! ETCDIR=@ETCDIR@
+! MSS_CONF=@MSS_CONF@
+! MSS_LOG=@MSS_LOG@
+! LANG=
+  
+  ## Functions Looking for available languages
+  
+--- 5,15 ----
+  
+  ## Language local initialising
+  
+! BINDIR=$DESTDIR@BINDIR@
+! ETCDIR=$DESTDIR@ETCDIR@
+! MSS_CONF=$DESTDIR@MSS_CONF@
+! MSS_LOG=$DESTDIR@MSS_LOG@
+! LANG=en
+  
+  ## Functions Looking for available languages
+  
+***************
+*** 51,68 ****
+  	fi
+  fi
+  
+- ## Root detection
+- 
+- if [ `whoami` == "root" ] ; then
+- 	echo ""
+- else
+- 	echo -e "\n###################################################################"
+- 	tmp=`MyGetLocale 'sorry'`
+- 	echo -e "\t\t\t"$tmp `whoami`
+- 	MyGetLocale 'Warning root ask'
+- 	echo -e "###################################################################\n"
+- 	exit 1
+- fi
+  
+  ## Functions
+  detecfiles() {
+--- 51,56 ----
+***************
+*** 148,184 ****
+   	detecfiles
+  fi
+  
+- ## Test system
+- 
+- echo -e "\n"
+- tmp=`MyGetLocale 'TestSystem?'`
+- echo -n $tmp
+- if [ $fyesall = "1" ] ; then
+- 	rep7="y"
+- else
+- 	read rep7
+- fi
+- 
+- if [ $rep7 = "y" ] ; then
+-     MyGetLocale 'LaunchMSS'
+-     ./MySecureShell --configtest > /dev/null
+-     MyGetLocale 'LaunchSftpMSS'
+-     ./sftp-server_MSS < /dev/null
+-     MyGetLocale 'Testsuccess'
+- fi
+- 
+- ## Introduction text
+- 
+- echo -e "\n"
+- MyGetLocale 'text1'
+- MyGetLocale 'text2'
+- MyGetLocale 'text3'
+- MyGetLocale 'text4'
+- MyGetLocale 'text5'
+- MyGetLocale 'text6'
+- echo ""
+- MyGetLocale 'statestopquest'
+- MyGetLocale 'text7'
+  
+  ## Starting or ending installation
+  
+--- 136,141 ----
+***************
+*** 275,361 ****
+  
+  ## Updating Detection
+  
+! if [ -f /bin/MySecureShell ] ; then
+  	sftpinst=$sftpinst`MyGetLocale 'upconffile'`"\t\t\t"`MyGetLocale 'ok'`"\t\n"
+  else
+  	sftpinst=$sftpinst`MyGetLocale 'mkconffile'`"\t\t\t\t"`MyGetLocale 'ok'`"\t\n"
+  fi
+! cp -f ./MySecureShell /bin
+! chmod 755 /bin/MySecureShell
+! 
+! ## /shells detection
+  
+- if [ -f /etc/shells ] ; then
+- 	shellfunc
+- else
+- 	MyGetLocale 'mkshells'
+- 	if [ $fyesall = "1" ] ; then
+- 		repshells="y"
+- 	else
+- 		read repshells
+- 	fi
+- 	if [ $repshells = 'y' ] ; then
+- 		touch /etc/shells
+- 		chmod 644 /etc/shells
+- 		shellfunc
+- 	else
+- 		clear  	    
+- 		instend=`MyGetLocale 'installation'`"\t\t\t"`MyGetLocale 'failed'`"\t\n"
+- 		echo -e "$instend"
+- 		MyGetLocale 'answers'
+- 	fi
+- fi
+  
+  ## sftp-server_MSS Installation
+  
+! sftpservernum="0"
+! for sftp_server_detect in "/usr/libexec" "/usr/lib" "/usr/lib/ssh" "/usr/lib/openssh" "/usr/libexec/openssh" ; do
+! 	if [ -f $sftp_server_detect/sftp-server ] ; then
+! 		sftpsrv=$sftp_server_detect
+! 		sftpfunc
+! 		sftpservernum="1"
+! 	fi
+! done
+! if [ $sftpservernum = "0" ] ; then
+! 	sftploctmp=`/usr/bin/locate sftp-server`
+! 	if [ $? == 1 ] ; then
+! 		clear
+! 		MyGetLocale 'nosftpfund'
+! 		instend=`MyGetLocale 'installation'`"\t\t\t"`MyGetLocale 'failed'`"\t\n"
+! 		echo -e "$instend"
+! 		exit 1
+! 	else
+! 		MyGetLocale 'sftpsrvloc1'
+! 		MyGetLocale 'sftpsrvloc2'
+! 		if [ $fyesall = "1" ] ; then
+! 			rep4="y"
+! 		else
+! 			read rep4
+! 		fi
+! 		if [ $rep4 = 'y' ] ; then
+! 			MyGetLocale 'locfund1'
+! 			MyGetLocale 'locfund2'
+! 			echo -e ""
+! 			for file in `locate sftp-server` ; do
+! 				if [ -x $file ] ; then
+! 					echo "[$file]"
+! 				fi
+! 			done
+! 			echo -e "\n"
+! 			MyGetLocale 'locfund3'
+! 			MyGetLocale 'locfund4'
+! 			sftpsrv=$rep5
+! 			sftpfunc
+! 			echo -e "\n"
+! 		else
+! 			clear
+! 			MyGetLocale 'sftp-s_unlocated'
+! 			tmp=`MyGetLocale 'installation'`"\t\t\t\t"`MyGetLocale 'failed'`"\n"
+! 			echo -e $tmp
+! 			exit 1
+! 		fi
+! 	fi
+! fi
+  
+  ## Utilities installation
+  
+--- 232,251 ----
+  
+  ## Updating Detection
+  
+! if [ -f $DESTDIR/opt/bin/MySecureShell ] ; then
+  	sftpinst=$sftpinst`MyGetLocale 'upconffile'`"\t\t\t"`MyGetLocale 'ok'`"\t\n"
+  else
+  	sftpinst=$sftpinst`MyGetLocale 'mkconffile'`"\t\t\t\t"`MyGetLocale 'ok'`"\t\n"
+  fi
+! cp -f ./MySecureShell $DESTDIR/opt/bin
+! chmod 755 $DESTDIR/opt/bin/MySecureShell
+  
+  
+  ## sftp-server_MSS Installation
+  
+! sftpsrv="$DESTDIR/opt/libexec"
+! sftpfunc
+! sftpservernum="1"
+  
+  ## Utilities installation
+  
+***************
+*** 373,410 ****
+  	sftpinst=$sftpinst`MyGetLocale 'noutilities'`"\t"`MyGetLocale 'ok'`"\n"
+  fi
+  
+- ## Logrotate
+- 
+- MyGetLocale 'logrot?'
+- if [ $fyesall = "1" ] ; then
+- 	rep8="y"
+- else
+- 	read rep8
+- fi
+- if [ $rep8 = 'y' ] ; then
+- 	# Using for Debian like systems
+- 	if [ -d /etc/logrotate.d ] ; then
+- 		echo -e "$MSS_LOG {\n\tweekly\n\tsize=500k\n\trotate 10\n\tcompress\n\tdelaycompress\n\tmissingok\n\tnotifempty\n}" > /etc/logrotate.d/mysecureshell
+- 		chmod 644 /etc/logrotate.d/mysecureshell
+- 		sftpinst=$sftpinst`MyGetLocale 'logrot'`"\t"`MyGetLocale 'ok'`"\n"
+- 	else
+- 		# Others BSD systems
+- 		if [ -f /etc/weekly ] ; then
+- 		        logstat=1
+- 			grep -e '^for' < /etc/weekly | grep -ve sftp-server.log > /dev/null
+- 		        if [ "$?" = "0" ] ; then
+- 		                sed -e 's/^\(for i in.*\)\(; do\)$/\1 sftp-server.log\2/' /etc/weekly > /tmp/weekly.tmp && mv /tmp/weekly.tmp /etc/weekly
+- 		        fi
+- 		fi
+- 		test "$logstat" = "1" && sftpinst=$sftpinst`MyGetLocale 'logrot'`"\t"`MyGetLocale 'ok'`"\n" || sftpinst=$sftpinst`MyGetLocale 'logrot'`"\t"`MyGetLocale 'failed'`"\n"
+- 	fi
+- fi
+  
+  # End of Installation
+  
+- # Only for version < 0.6 --> 0.8 & +
+- $BINDIR/sftp-state fullshutdown > /dev/null
+- $BINDIR/sftp-state start > /dev/null
+  
+  sftpinst=$sftpinst"\n"`MyGetLocale 'finishedinst'`"\n\n"`MyGetLocale 'osxreminder'`
+  
+--- 263,271 ----

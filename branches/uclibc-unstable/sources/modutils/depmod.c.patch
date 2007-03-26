@@ -1,0 +1,12 @@
+diff -ur modutils-2.4.27/depmod/depmod.c modutils/depmod/depmod.c
+--- modutils-2.4.27/depmod/depmod.c	2003-03-23 03:34:28.000000000 +0100
++++ modutils/depmod/depmod.c	2006-12-28 14:53:32.000000000 +0100
+@@ -1133,7 +1133,7 @@
+ 
+ 		for (ksym = ksyms; so_far < nksyms; ++so_far, ksym++) {
+ 			if (strncmp((char *)ksym->name, "GPLONLY_", 8) == 0)
+-				((char *)ksym->name) += 8;
++				ksym->name += 8;
+ 			assert(n_syms < MAX_MAP_SYM);
+ 			symtab[n_syms++] = addsym((char *)ksym->name, mod, SYM_DEFINED, 0);
+ 		}

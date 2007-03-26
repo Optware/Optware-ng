@@ -1,0 +1,16 @@
+--- cups-1.2.2/man/Makefile	2006-07-12 22:45:13.000000000 +0200
++++ cups/man/Makefile	2006-07-21 08:28:31.000000000 +0200
+@@ -179,8 +179,12 @@
+ 		./mantohtml `basename $$file .$(MAN8EXT)`.man >../doc/help/man-`basename $$file .$(MAN8EXT)`.html; \
+ 	done
+ 
++HOSTCC := gcc
++mantohtml.o: mantohtml.c
++	$(HOSTCC) -c -I.. $^ 
++
+ mantohtml:	mantohtml.o
+-	$(CC) $(LDFLAGS) -o $@ mantohtml.o
++	$(HOSTCC)  -o $@ mantohtml.o
+ 
+ 
+ #

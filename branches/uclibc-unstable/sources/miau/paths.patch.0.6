@@ -1,0 +1,39 @@
+--- miau/src/miau.h~	2004-04-21 01:14:55.000000000 +0930
++++ miau/src/miau.h	2004-11-08 23:45:01.000000000 +1030
+@@ -22,11 +22,11 @@
+ 
+ 
+ 
+-#define MIAURC		"miaurc"
+-#define MIAUDIR		".miau/"
++#define MIAURC		"/opt/etc/miau.conf"
++#define MIAUDIR		"miau/"
+ #define LOGDIR		"logs"
+-#define FILE_PID	"pid"
+-#define FILE_LOG	"log"
++#define FILE_PID	"/var/run/miau.pid"
++#define FILE_LOG	"/var/log/miau.log"
+ #define FILE_INBOX	"inbox"
+ 
+ #define MIAU_URL	"http://miau.sourceforge.net/"
+--- miau/src/miau.c.orig	2005-12-29 20:55:06.000000000 +0100
++++ miau/src/miau.c	2006-04-12 20:56:07.000000000 +0200
+@@ -2409,8 +2409,7 @@
+ 		 */
+ 		s = getenv("HOME");
+ 		if (s == NULL) {
+-			error(MIAU_ERRNOHOME);
+-			exit(ERR_CODE_HOME);
++		    s = "/opt/var/spool";
+ 		}
+ 
+ 		hsize = strlen(s) + strlen(MIAUDIR) + 2;
+@@ -2434,7 +2433,7 @@
+ 			exit(ERR_CODE_HOME);
+ 		}
+ 	} else {
+-		if (mkdir(LOGDIR, 0700) == -1) {
++		if (mkdir(LOGDIR, 0755) == -1) {
+ 			error(MIAU_ERRCREATELOGDIR, LOGDIR);
+ 			exit(ERR_CODE_HOME);
+ 		}

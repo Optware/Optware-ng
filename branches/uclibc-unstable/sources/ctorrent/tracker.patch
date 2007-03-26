@@ -1,0 +1,175 @@
+diff -ur ctorrent-1.3.4/ctorrent.cpp new/ctorrent.cpp
+--- ctorrent-1.3.4/ctorrent.cpp	2005-01-26 00:40:07.747876016 +0000
++++ new/ctorrent.cpp	2005-01-25 01:34:16.000000000 +0000
+@@ -87,9 +87,13 @@
+ 	Tracker.Initial();
+ 
+ 	signal(SIGPIPE,SIG_IGN);
+-    signal(SIGINT,sigint_catch);
++    signal(SIGINT,sig_catch);
++    signal(SIGTERM,sig_catch);
+     Downloader();
+   }
++  if( cfg_cache_size ) BTCONTENT.FlushCache();
++  if( arg_bitfield_file ) BTCONTENT.pBF->WriteToFile(arg_bitfield_file);
++  WORLD.CloseAll();
+ 
+   exit(0);
+ }
+diff -ur ctorrent-1.3.4/downloader.cpp new/downloader.cpp
+--- ctorrent-1.3.4/downloader.cpp	2005-01-26 00:40:07.748875864 +0000
++++ new/downloader.cpp	2005-01-24 19:29:18.000000000 +0000
+@@ -30,9 +30,9 @@
+   fd_set rfd;
+   fd_set wfd;
+ 
+-  for(;;){
++  do{
+     time(&now);
+-    if( BTCONTENT.SeedTimeout(&now) ) break;
++    if( BTCONTENT.SeedTimeout(&now) ) Tracker.SetStoped();
+     
+     FD_ZERO(&rfd); FD_ZERO(&wfd);
+     maxfd = Tracker.IntervalCheck(&now,&rfd, &wfd);
+@@ -48,5 +48,5 @@
+       if(T_FREE != Tracker.GetStatus()) Tracker.SocketReady(&rfd,&wfd,&nfds);
+ 	  if( nfds ) WORLD.AnyPeerReady(&rfd,&wfd,&nfds);
+ 	}
+-  }/* end for(;;) */
++  } while(Tracker.GetStatus() != T_FINISHED);
+ }
+diff -ur ctorrent-1.3.4/sigint.cpp new/sigint.cpp
+--- ctorrent-1.3.4/sigint.cpp	2005-01-26 00:40:07.749875712 +0000
++++ new/sigint.cpp	2005-01-26 00:39:48.175851416 +0000
+@@ -4,17 +4,27 @@
+ #include <signal.h>
+ 
+ #include "btcontent.h"
++#include "tracker.h"
+ #include "peerlist.h"
+ #include "btconfig.h"
++#include "sigint.h"
+ 
+-void sigint_catch(int sig_no)
++void sig_catch(int sig_no)
+ {
+-  if(SIGINT == sig_no){
++  if(SIGINT == sig_no || SIGTERM == sig_no){
++    Tracker.SetStoped();
++    signal(sig_no,sig_catch2);
++  }
++}
++
++static void sig_catch2(int sig_no)
++{
++  if(SIGINT == sig_no || SIGTERM == sig_no){
+     if( cfg_cache_size ) BTCONTENT.FlushCache();
+     if( arg_bitfield_file ) BTCONTENT.pBF->WriteToFile(arg_bitfield_file);
+     WORLD.CloseAll();
+-    signal(SIGINT,SIG_DFL);
+-    raise(SIGINT);
++    signal(sig_no,SIG_DFL);
++    raise(sig_no);
+   }
+ }
+ 
+diff -ur ctorrent-1.3.4/sigint.h new/sigint.h
+--- ctorrent-1.3.4/sigint.h	2005-01-26 00:40:07.749875712 +0000
++++ new/sigint.h	2005-01-25 01:30:11.000000000 +0000
+@@ -2,7 +2,8 @@
+ #define SIGINT_H
+ 
+ #ifndef WINDOWS
+-void sigint_catch(int sig_no);
++void sig_catch(int sig_no);
++static void sig_catch2(int sig_no);
+ #endif
+ 
+ #endif
+diff -ur ctorrent-1.3.4/tracker.cpp new/tracker.cpp
+--- ctorrent-1.3.4/tracker.cpp	2005-01-26 00:40:07.751875408 +0000
++++ new/tracker.cpp	2005-01-26 00:38:52.828265528 +0000
+@@ -31,7 +31,7 @@
+   m_sock = INVALID_SOCKET;
+   m_port = 80;
+   m_status = T_FREE;
+-  m_f_started = m_f_stoped = m_f_pause = 0;
++  m_f_started = m_f_stoped = m_f_pause = m_f_completed = 0;
+   m_interval = 15;
+ 
+   m_connect_refuse_click = 0;
+@@ -54,7 +54,8 @@
+   
+   m_reponse_buffer.Reset();
+   time(&m_last_timestamp);
+-  m_status = T_FREE;
++  if (m_f_stoped) m_status = T_FINISHED;
++  else m_status = T_FREE;
+ }
+ 
+ int btTracker:: _IPsin(char *h, int p, struct sockaddr_in *psin)
+@@ -329,14 +332,15 @@
+ //  fprintf(stdout,"Old Set Self:");
+ //  fprintf(stdout,"%s\n", inet_ntoa(Self.m_sin.sin_addr));
+ 
+-  if( m_f_stoped )	/* stopped */
+-    event = str_event[1];
+-  else if( BTCONTENT.pBF->IsFull())	/* download complete */
+-    event = str_event[2];
+-  else if( m_f_started ) 	/* interval */
+-    event = (char*) 0;
+-  else
++  if( m_f_stoped )
++    event = str_event[1];	/* stopped */
++  else if( m_f_started == 0 )
+     event = str_event[0];	/* started */
++  else if( BTCONTENT.pBF->IsFull() && !m_f_completed){
++    event = str_event[2];	/* download complete */
++    m_f_completed = 1;		/* only send download complete once */
++  } else
++    event = (char*) 0;  /* interval */
+ 
+   if(event){
+     if(MAXPATHLEN < snprintf(REQ_BUFFER,MAXPATHLEN,REQ_URL_P2_FMT,
+@@ -380,8 +390,7 @@
+ {
+   /* tracker communication */
+   if( T_FREE == m_status ){
+-    if((*pnow - m_last_timestamp >= m_interval) &&
+-       (cfg_min_peers > WORLD.TotalPeers())){
++    if(*pnow - m_last_timestamp >= m_interval){
+    
+       if(Connect() < 0){ Reset(15); return -1; }
+     
+diff -ur ctorrent-1.3.4/tracker.h new/tracker.h
+--- ctorrent-1.3.4/tracker.h	2005-01-26 00:40:07.752875256 +0000
++++ new/tracker.h	2005-01-26 00:38:21.003103688 +0000
+@@ -21,6 +21,7 @@
+ #define T_FREE 		0
+ #define T_CONNECTING	1
+ #define T_READY		2
++#define T_FINISHED	3
+ 
+ class btTracker
+ {
+@@ -34,9 +35,10 @@
+   unsigned char m_status:2;
+   unsigned char m_f_started:1;
+   unsigned char m_f_stoped:1;
++  unsigned char m_f_completed:1;
+ 
+   unsigned char m_f_pause:1;
+-  unsigned char m_f_reserved:3;
++  unsigned char m_f_reserved:2;
+ 
+ 
+   time_t m_interval;		// 与Tracker通信的时间间隔
+@@ -66,6 +68,8 @@
+   void SetPause() { m_f_pause = 1; }
+   void ClearPause() { m_f_pause = 0; }
+ 
++  void SetStoped() { Reset(15); m_f_stoped = 1;}
++
+   int Connect();
+   int SendRequest();
+   int CheckReponse();

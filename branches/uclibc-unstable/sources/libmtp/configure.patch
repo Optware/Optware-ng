@@ -1,0 +1,11 @@
+--- libmtp/configure.orig	2007-03-16 14:09:18.000000000 +0100
++++ libmtp/configure	2007-03-16 14:11:27.000000000 +0100
+@@ -21591,7 +21591,7 @@
+ #endif /*__BYTEORDER_H*/
+ EOF
+ 
+-                                                                                          ac_config_files="$ac_config_files src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile examples/Makefile libmtp.sh hotplug.sh libmtp.pc"
++                                                                                          ac_config_files="$ac_config_files src/libmtp.h doc/Doxyfile Makefile doc/Makefile src/Makefile libmtp.sh hotplug.sh libmtp.pc"
+ 
+ cat >confcache <<\_ACEOF
+ # This file is a shell script that caches the results of configure

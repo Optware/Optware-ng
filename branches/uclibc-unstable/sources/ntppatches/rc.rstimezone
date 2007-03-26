@@ -1,0 +1,22 @@
+#! /bin/ash
+# Diversion script to get control of time
+#
+# Extract the GUI timezone from the .conf file
+# Copy the corresponding /usr/zoneinfo file over /usr/local/localtime
+/usr/sbin/Set_TimeZone >/dev/null
+#
+# Adjust the harware clock for accumulated drift
+#
+/usr/sbin/hwclock --adjust
+#
+# Initialize the kernel with the corrected time
+#
+/usr/sbin/hwclock --hctosys >/dev/null
+#
+# ntpclient will (shortly) start correcting the system clock
+#
+# The hwclock drift will be computed & recorded once an hour (crontab)
+#
+# Do not execute the linksys script
+#  
+return 0  

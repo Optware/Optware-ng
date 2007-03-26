@@ -1,0 +1,32 @@
+diff -burN configure.orig configure
+--- configure.orig	2004-12-10 21:26:40.610724664 +0100
++++ configure	2004-12-10 21:27:48.053471808 +0100
+@@ -1855,7 +1855,7 @@
+ GCC=`test $ac_compiler_gnu = yes && echo yes`
+ ac_test_CFLAGS=${CFLAGS+set}
+ ac_save_CFLAGS=$CFLAGS
+-CFLAGS="-g"
++CFLAGS="${CFLAGS} -g"
+ echo "$as_me:$LINENO: checking whether $CC accepts -g" >&5
+ echo $ECHO_N "checking whether $CC accepts -g... $ECHO_C" >&6
+ if test "${ac_cv_prog_cc_g+set}" = set; then
+@@ -1904,15 +1904,15 @@
+   CFLAGS=$ac_save_CFLAGS
+ elif test $ac_cv_prog_cc_g = yes; then
+   if test "$GCC" = yes; then
+-    CFLAGS="-g -O2"
++    CFLAGS="${CFLAGS} -g -O2"
+   else
+-    CFLAGS="-g"
++    CFLAGS="${CFLAGS} -g"
+   fi
+ else
+   if test "$GCC" = yes; then
+-    CFLAGS="-O2"
++    CFLAGS="${CFLAGS} -O2"
+   else
+-    CFLAGS=
++    CFLAGS="${CFLAGS}"
+   fi
+ fi
+ echo "$as_me:$LINENO: checking for $CC option to accept ANSI C" >&5

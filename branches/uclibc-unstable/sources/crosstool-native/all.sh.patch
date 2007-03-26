@@ -1,0 +1,11 @@
+--- crosstool-native/all.sh~	2004-07-28 09:12:30.000000000 +0930
++++ crosstool-native/all.sh	2005-01-09 22:55:49.000000000 +1030
+@@ -103,7 +103,7 @@
+ 
+ if test "$opt_no_build" = ""; then
+     # Build
+-    rm  -rf  $PREFIX
++#    rm  -rf  $PREFIX
+     mkdir -p $PREFIX
+     mkdir -p $BUILD_DIR
+     cd $BUILD_DIR

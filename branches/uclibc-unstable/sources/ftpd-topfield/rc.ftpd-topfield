@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Startup script for ftpd-topfield
+#
+# Stop myself if running
+killall ftpd-topfield 2>/dev/null
+
+/opt/sbin/ftpd-topfield -D -P 21

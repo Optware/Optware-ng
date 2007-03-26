@@ -1,0 +1,11 @@
+--- squeak/platforms/unix/config/Makefile.in.orig	2006-04-14 16:17:13.000000000 -0700
++++ squeak/platforms/unix/config/Makefile.in	2006-04-29 09:57:38.000000000 -0700
+@@ -56,8 +56,6 @@
+ 	@echo
+ 	@size $(squeak)
+ 	@echo
+-	@./$(squeak) -version
+-	@echo
+ 
+ version.o : version.c
+ 	$(COMPILE) version.o version.c

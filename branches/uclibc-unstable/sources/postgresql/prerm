@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/opt/etc/init.d/S98postgresql dumpall
+/opt/etc/init.d/S98postgresql stop

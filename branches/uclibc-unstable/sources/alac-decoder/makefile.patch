@@ -1,0 +1,10 @@
+--- alac_decoder/Makefile.dist	2005-04-13 02:37:11.000000000 -0500
++++ alac_decoder/Makefile	2005-04-13 02:37:21.000000000 -0500
+@@ -1,7 +1,3 @@
+-CC=gcc
+-RM=rm -f
+-CFLAGS=-ggdb -O3 -W -Wall
+-
+ C_SOURCES=alac.c \
+           demux.c \
+           main.c \

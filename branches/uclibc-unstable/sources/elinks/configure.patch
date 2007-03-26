@@ -1,0 +1,32 @@
+--- elinks-0.11.1/configure	2006-01-29 14:10:47.000000000 +0100
++++ elinks/configure	2006-07-20 21:45:47.000000000 +0200
+@@ -1578,10 +1578,10 @@
+ if eval "test \"\${$as_ac_File+set}\" = set"; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+-  test "$cross_compiling" = yes &&
+-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+-   { (exit 1); exit 1; }; }
++#  test "$cross_compiling" = yes &&
++#  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
++#echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
++#   { (exit 1); exit 1; }; }
+ if test -r ""$srcdir/$features""; then
+   eval "$as_ac_File=yes"
+ else
+@@ -1600,10 +1600,10 @@
+ if eval "test \"\${$as_ac_File+set}\" = set"; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+-  test "$cross_compiling" = yes &&
+-  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
+-echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
+-   { (exit 1); exit 1; }; }
++#  test "$cross_compiling" = yes &&
++#  { { echo "$as_me:$LINENO: error: cannot check for file existence when cross compiling" >&5
++#echo "$as_me: error: cannot check for file existence when cross compiling" >&2;}
++#   { (exit 1); exit 1; }; }
+ if test -r ""$builddir/$features""; then
+   eval "$as_ac_File=yes"
+ else

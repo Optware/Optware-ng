@@ -1,0 +1,7 @@
+#!/bin/sh
+chown nobody /opt/var/bitlbee
+echo bitlbee is configured to run as user nobody
+echo to change this change the ownership of /opt/var/bitlbee and change
+echo the user in /opt/etc/xinetd.d/bitlbee
+echo
+echo The configuration  file is /opt/etc/bitlbee/bitlbee.conf

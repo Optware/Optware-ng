@@ -1,0 +1,20 @@
+--- ftpcopy/src/iopause.sh.orig	2006-11-04 20:57:54.000000000 -0800
++++ ftpcopy/src/iopause.sh	2006-11-04 21:08:27.000000000 -0800
+@@ -26,6 +26,9 @@
+ EOF
+ use=
+ 
++if "$ftpcopy_iopause_use" != ""; then
++    use=$ftpcopy_iopause_use
++else
+ if ./auto-compile.sh -c $FILE.c  2>/dev/null >/dev/null ; then
+   if ./auto-link.sh $FILE $FILE.o ; then
+     if ./$FILE ; then
+@@ -39,6 +42,7 @@
+ else
+   use=select
+ fi
++fi
+ 
+ cat <<EOF
+ #ifndef AUTO_IOPAUSE_H

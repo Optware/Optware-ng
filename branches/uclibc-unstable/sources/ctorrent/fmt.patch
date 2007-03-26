@@ -1,0 +1,42 @@
+diff -ur new.x86/httpencode.h new/httpencode.h
+--- new.x86/httpencode.h	2004-09-09 00:10:51.000000000 +0100
++++ new/httpencode.h	2005-02-01 18:13:59.936139832 +0000
+@@ -2,8 +2,8 @@
+ #define HTTPENCODE_H
+ 
+ #define REQ_URL_P1_FMT "GET %s?info_hash=%s&peer_id=%s&port=%d"
+-#define REQ_URL_P2_FMT "%s&uploaded=%d&downloaded=%d&left=%d&event=%s&compact=1 HTTP/1.0"
+-#define REQ_URL_P3_FMT "%s&uploaded=%d&downloaded=%d&left=%d&compact=1 HTTP/1.0"
++#define REQ_URL_P2_FMT "%s&uploaded=%llu&downloaded=%llu&left=%llu&event=%s&compact=1 HTTP/1.0"
++#define REQ_URL_P3_FMT "%s&uploaded=%llu&downloaded=%llu&left=%llu&compact=1 HTTP/1.0"
+ 
+ char* Http_url_encode(char *s,char *b,size_t n);
+ int Http_url_analyse(char *url,char *host,int *port,char *path);
+diff -ur new.x86/tracker.cpp new/tracker.cpp
+--- new.x86/tracker.cpp	2005-02-01 17:34:43.588359144 +0000
++++ new/tracker.cpp	2005-02-01 18:14:58.632216672 +0000
+@@ -360,18 +345,18 @@
+   if(event){
+     if(MAXPATHLEN < snprintf(REQ_BUFFER,MAXPATHLEN,REQ_URL_P2_FMT,
+ 			     m_path,
+-			     (size_t)Self.TotalUL(),
+-			     (size_t)Self.TotalDL(),
+-			     (size_t)BTCONTENT.GetLeftBytes(),
++			     Self.TotalUL(),
++			     Self.TotalDL(),
++			     BTCONTENT.GetLeftBytes(),
+ 			     event)){
+       return -1;
+     }
+   }else{
+     if(MAXPATHLEN < snprintf(REQ_BUFFER,MAXPATHLEN,REQ_URL_P3_FMT,
+ 			     m_path,
+-			     (size_t)Self.TotalUL(),
+-			     (size_t)Self.TotalDL(),
+-			     (size_t)BTCONTENT.GetLeftBytes()
++			     Self.TotalUL(),
++			     Self.TotalDL(),
++			     BTCONTENT.GetLeftBytes()
+ 			     )){
+       return -1;
+     }

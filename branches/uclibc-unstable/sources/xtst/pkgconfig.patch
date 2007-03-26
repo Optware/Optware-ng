@@ -1,0 +1,13 @@
+Index: xtst.pc.in
+===================================================================
+RCS file: /cvs/xlibs/Xtst/xtst.pc.in,v
+retrieving revision 1.1
+diff -u -r1.1 xtst.pc.in
+--- xtst.pc.in	18 Mar 2004 10:25:53 -0000	1.1
++++ xtst.pc.in	1 Feb 2005 07:58:52 -0000
+@@ -1,4 +1,4 @@
+-prefix=/usr/local/kx
++prefix=@prefix@
+ exec_prefix=${prefix}
+ libdir=${exec_prefix}/lib
+ includedir=${prefix}/include

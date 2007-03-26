@@ -1,0 +1,50 @@
+--- ./man/Makefile.in~	2005-01-28 23:09:42.000000000 +0100
++++ ./man/Makefile.in	2005-01-28 23:11:44.000000000 +0100
+@@ -291,7 +291,7 @@
+ 	  esac; \
+ 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+ 	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
+-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  inst=$$inst.$$ext; \
+ 	  echo " $(INSTALL_DATA) $$file $(DESTDIR)$(man3dir)/$$inst"; \
+ 	  $(INSTALL_DATA) $$file $(DESTDIR)$(man3dir)/$$inst; \
+ 	done
+@@ -312,7 +312,7 @@
+ 	  esac; \
+ 	  inst=`echo $$i | sed -e 's/\\.[0-9a-z]*$$//'`; \
+ 	  inst=`echo $$inst | sed -e 's/^.*\///'`; \
+-	  inst=`echo $$inst | sed '$(transform)'`.$$ext; \
++	  inst=$$inst.$$ext; \
+ 	  echo " rm -f $(DESTDIR)$(man3dir)/$$inst"; \
+ 	  rm -f $(DESTDIR)$(man3dir)/$$inst; \
+ 	done
+--- ./include/Makefile.in~	2005-02-01 22:09:37.000000000 +0100
++++ ./include/Makefile.in	2005-02-01 22:17:55.000000000 +0100
+@@ -258,11 +258,11 @@
+ depcomp = $(SHELL) $(top_srcdir)/config/depcomp
+ am__depfiles_maybe = depfiles
+ @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/makemd5.Po
+-COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
++COMPILE = $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+ 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+-LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
++LTCOMPILE = $(LIBTOOL) --mode=compile $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) \
+ 	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+-CCLD = $(CC)
++CCLD = $(HOSTCC)
+ LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+ 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+ DIST_SOURCES = $(makemd5_SOURCES)
+--- ./utils/Makefile.in~	2005-02-10 19:54:55.000000000 +0100
++++ ./utils/Makefile.in	2005-02-10 19:59:31.000000000 +0100
+@@ -389,8 +389,8 @@
+ 	     || test -f $$p1 \
+ 	  ; then \
+ 	    f=`echo "$$p1" | sed 's,^.*/,,;$(transform);s/$$/$(EXEEXT)/'`; \
+-	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(sbinPROGRAMS_INSTALL) $$p $(DESTDIR)$(sbindir)/$$f"; \
+-	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(sbinPROGRAMS_INSTALL) $$p $(DESTDIR)$(sbindir)/$$f || exit 1; \
++	   echo " $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(sbinPROGRAMS_INSTALL) $$p $(DESTDIR)$(sbindir)/$$p"; \
++	   $(INSTALL_PROGRAM_ENV) $(LIBTOOL) --mode=install $(sbinPROGRAMS_INSTALL) $$p $(DESTDIR)$(sbindir)/$$p || exit 1; \
+ 	  else :; fi; \
+ 	done
+ 

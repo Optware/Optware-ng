@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "`pidof dhcpd`" ] ; then
+    killall dhcpd 2>/dev/null
+fi
+
+sleep 2
+/opt/sbin/dhcpd

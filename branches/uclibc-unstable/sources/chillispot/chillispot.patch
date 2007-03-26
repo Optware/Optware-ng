@@ -1,0 +1,43 @@
+--- chillispot-1.0RC3/src/cmdline.c	Sun Apr  3 05:36:27 2005
++++ chillispot-1.0RC3-patched/src/cmdline.c	Wed Apr 13 17:26:12 2005
+@@ -92,10 +92,10 @@
+   args_info->fg_flag = 0;
+   args_info->debug_flag = 0;
+   args_info->debugfacility_arg = 1 ;
+-  args_info->conf_arg = gengetopt_strdup ("/etc/chilli.conf");
++  args_info->conf_arg = gengetopt_strdup ("/opt/etc/chilli.conf");
+   args_info->interval_arg = 3600 ;
+   args_info->pidfile_arg = gengetopt_strdup ("/var/run/chilli.pid");
+-  args_info->statedir_arg = gengetopt_strdup ("/var/lib/chilli/");
++  args_info->statedir_arg = gengetopt_strdup ("/opt/var/lib/chilli/");
+   args_info->net_arg = gengetopt_strdup ("192.168.182.0/24");
+   args_info->dynip_arg = NULL;
+   args_info->statip_arg = NULL;
+@@ -153,10 +153,10 @@
+   printf("%s\n","  -f, --fg                      Run in foreground  (default=off)");
+   printf("%s\n","  -d, --debug                   Run in debug mode  (default=off)");
+   printf("%s\n","      --debugfacility=INT       Which modules to print debug messages for  \n                                  (default=`1')");
+-  printf("%s\n","  -c, --conf=STRING             Read configuration file  \n                                  (default=`/etc/chilli.conf')");
++  printf("%s\n","  -c, --conf=STRING             Read configuration file  \n                                  (default=`/opt/etc/chilli.conf')");
+   printf("%s\n","      --interval=INT            Re-read configuration file at this interval  \n                                  (default=`3600')");
+   printf("%s\n","      --pidfile=STRING          Filename of process id file  \n                                  (default=`/var/run/chilli.pid')");
+-  printf("%s\n","      --statedir=STRING         Directory of nonvolatile data  \n                                  (default=`/var/lib/chilli/')");
++  printf("%s\n","      --statedir=STRING         Directory of nonvolatile data  \n                                  (default=`/opt/var/lib/chilli/')");
+   printf("%s\n","  -n, --net=STRING              Network  (default=`192.168.182.0/24')");
+   printf("%s\n","      --dynip=STRING            Dynamic IP address pool");
+   printf("%s\n","      --statip=STRING           Static IP address pool");
+--- chillispot-1.0RC3/src/cmdline.ggo	Sun Apr  3 05:36:27 2005
++++ chillispot-1.0RC3-patched/src/cmdline.ggo	Wed Apr 13 15:34:24 2005
+@@ -15,10 +15,10 @@
+ option  "debug"       d "Run in debug mode"             flag   off
+ option  "debugfacility" - "Which modules to print debug messages for" int default="1" no
+ 
+-option  "conf"        c "Read configuration file"       string default="/etc/chilli.conf" no
++option  "conf"        c "Read configuration file"       string default="/opt/etc/chilli.conf" no
+ option  "interval"    - "Re-read configuration file at this interval"  int default="3600" no
+ option  "pidfile"     - "Filename of process id file"   string default="/var/run/chilli.pid" no
+-option  "statedir"    - "Directory of nonvolatile data" string default="/var/lib/chilli/" no
++option  "statedir"    - "Directory of nonvolatile data" string default="/opt/var/lib/chilli/" no
+ 
+ #TUN parameters
+ option "net"         n "Network"           string default="192.168.182.0/24" no

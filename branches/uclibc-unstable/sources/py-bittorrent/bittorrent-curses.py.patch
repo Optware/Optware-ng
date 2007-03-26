@@ -1,0 +1,12 @@
+--- bittorrent-curses.py.orig	2006-11-15 20:58:33.000000000 -0800
++++ bittorrent-curses.py	2006-11-15 20:59:44.000000000 -0800
+@@ -42,7 +42,8 @@
+ from BitTorrent import BTFailure, UserFailure
+ from BitTorrent import version
+ from BTL import GetTorrent
+-from BitTorrent.RawServer_twisted import RawServer, task
++from BitTorrent.RawServer_twisted import RawServer
++from twisted.internet import task
+ from BTL.ConvertedMetainfo import ConvertedMetainfo
+ from BTL.yielddefer import launch_coroutine, _wrap_task
+ from BitTorrent import inject_main_logfile

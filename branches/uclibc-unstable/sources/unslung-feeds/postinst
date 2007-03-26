@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -f /etc/ipkg/unslung-feed.conf ] ;  then
+    mv /etc/ipkg/unslung-feed.conf /etc/ipkg/unslung-feed.old-conf
+fi
+if [ -f /usr/lib/ipkg/lists/unslung ] ;  then
+    rm /usr/lib/ipkg/lists/unslung
+fi

@@ -1,0 +1,50 @@
+--- cogito-0.12.1/Makefile	2005-07-11 17:49:04.000000000 -0700
++++ cogito/Makefile	2005-07-17 22:19:34.382267000 -0700
+@@ -29,6 +29,9 @@
+ 
+ # DEFINES += -DUSE_STDEV
+ 
++CPPFLAGS=
++LDFLAGS=
++
+ CFLAGS?=-g -O2
+ CFLAGS+=-Wall $(DEFINES)
+ 
+@@ -126,7 +129,7 @@
+ endif
+ endif
+ 
+-CFLAGS += '-DSHA1_HEADER=$(SHA1_HEADER)'
++CFLAGS += $(CPPFLAGS) '-DSHA1_HEADER=$(SHA1_HEADER)'
+ 
+ .PHONY: all git cogito
+ all: git cogito
+@@ -143,7 +146,7 @@
+ 	$(CC) $(CFLAGS) -o $@ test-date.c date.o
+ 
+ git-%: %.o $(LIB_FILE)
+-	$(CC) $(CFLAGS) -o $@ $(filter %.o,$^) $(LIBS)
++	$(CC) $(CFLAGS) -o $@ $(filter %.o,$^) $(LDFLAGS) $(LIBS)
+ 
+ git-rev-list: LIBS += -lssl
+ git-http-pull: LIBS += -lcurl
+@@ -190,7 +193,7 @@
+ doc:
+ 	$(MAKE) -C Documentation/ all
+ 
+-sedlibdir=$(shell echo $(libdir) | sed 's/\//\\\//g')
++sedlibdir=$(shell echo "/opt/lib/cogito" | sed 's/\//\\\//g')
+ 
+ .PHONY: install install-git install-cogito
+ install: install-git install-cogito
+@@ -217,6 +220,10 @@
+ 		cat $$file.new > $$file; rm $$file.new; \
+ 	done
+ 
++install-strip: install
++	for p in $(PROG); do $(STRIP) $(DESTDIR)$(bindir)/$$p; done
++
++
+ uninstall:
+ 	cd $(DESTDIR)$(bindir) && rm -f $(PROG) $(SCRIPTS) $(SCRIPT) $(GEN_SCRIPT)
+ 	cd $(DESTDIR)$(libdir) && rm -f $(LIB_SCRIPT)

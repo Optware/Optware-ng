@@ -1,0 +1,11 @@
+--- Mail-SpamAssassin-3.0.2/Makefile.PL.orig	2005-02-25 21:05:31.000000000 +0100
++++ Mail-SpamAssassin-3.0.2/Makefile.PL	2005-02-25 21:05:54.000000000 +0100
+@@ -8,7 +8,7 @@
+ use ExtUtils::MakeMaker 5.45;
+ 
+ use constant RUNNING_ON_WINDOWS => ($^O =~ /^(mswin|dos|os2)/oi);
+-use constant HAS_DBI => eval { require DBI; };
++use constant HAS_DBI => 0 ;
+ 
+ my @ATT_KEYS = (
+   # PLEASE READ THE FILE 'PACKAGING' FOR INFORMATION ON THESE VARIABLES.

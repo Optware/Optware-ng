@@ -1,0 +1,19 @@
+--- ser-0.8.14/utils/gen_ha1/Makefile~	2005-03-28 14:12:20.076238304 -0800
++++ ser-0.8.14/utils/gen_ha1/Makefile	2005-03-28 14:09:55.180265840 -0800
+@@ -2,13 +2,13 @@
+ all: gen_ha1
+ 
+ gen_ha1: gen_ha1.o calc.o ../../md5.o
+-	gcc -o gen_ha1 gen_ha1.o calc.o ../../md5.o
++	$(CC) -o gen_ha1 gen_ha1.o calc.o ../../md5.o
+ 
+ gen_ha1.o: gen_ha1.c
+-	gcc -c gen_ha1.c
++	$(CC) -c gen_ha1.c
+ 
+ calc.o: calc.c calc.h
+-	gcc -c calc.c
++	$(CC) -c calc.c
+ 
+ 
+ clean:

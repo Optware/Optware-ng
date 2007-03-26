@@ -1,0 +1,46 @@
+--- palantir-2.6/server/Makefile	2005-09-02 14:33:50.000000000 +0200
++++ palantir/server/Makefile	2006-06-30 22:05:29.000000000 +0200
+@@ -8,20 +8,20 @@
+ 
+ # most installation directories are relative to this one.
+ # Some might want to choose "/usr" instead.
+-BASE_DIR=	/usr/local
++BASE_DIR=	/opt
+ 
+ # the owner of the system directory and of the named pipe contained therein.
+ # Note that since pipe has permission 600, all processes which interface to
+ # it must be run by the same user (or root).
+ # This has no effect on compilation, just on installation.
+-OWNER=		palantir
++OWNER=		root
+ 
+ # system directory (for named pipe, config file, and "Video is offline"
+ # picture)
+ SYS_DIR=	$(BASE_DIR)/share/palantir
+ 
+ # location of default config file
+-CONFIG_FILE=	$(SYS_DIR)/palantir.conf
++CONFIG_FILE=	$(BASE_DIR)/etc/palantir.conf
+ 
+ # named pipe used as a supplementary I/O channel.
+ # For Palantir to use it, its correct path must be specified as a
+@@ -35,7 +35,7 @@
+ MAN_DIR=	$(BASE_DIR)/man
+ 
+ # location of default log file
+-LOG_FILE=	/var/log/palantir
++LOG_FILE=	$(BASE_DIR)/var/log/palantir
+ 
+ # set to 1 to enable capture monitoring in a stand-alone window
+ # (requires Imlib)
+@@ -47,8 +47,8 @@
+ .PHONY : tools man
+ 
+ 
+-CFLAGS= -Wall -D_REENTRANT -O3 -g
+-CC= gcc
++CFLAGS= $(CPPFLAGS) -Wall -D_REENTRANT -O3 -g
++#CC= gcc
+ libjpeg= -ljpeg
+ 
+ ifeq ($(TARGET),mips)

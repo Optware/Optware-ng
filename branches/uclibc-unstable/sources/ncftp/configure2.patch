@@ -1,0 +1,18 @@
+--- ncftp-3.2.0/configure.orig	2006-08-05 14:49:54.000000000 -0700
++++ ncftp-3.2.0/configure	2006-08-11 21:34:26.000000000 -0700
+@@ -4298,6 +4298,7 @@
+   
+ 	# action if cross compiling
+ 	:
++	wi_cv_printf_long_long="%lld"
+ 
+ else
+   cat > conftest.$ac_ext <<EOF
+@@ -4430,6 +4431,7 @@
+   
+ 	# action if cross compiling
+ 	:
++	wi_cv_scanf_long_long="%lld"
+ 
+ else
+   cat > conftest.$ac_ext <<EOF

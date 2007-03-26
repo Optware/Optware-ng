@@ -1,0 +1,5 @@
+KERNELCONFIG=`pwd`/arm.config
+TARGET=armv5b-softfloat-linux
+TARGET_CFLAGS="-O"
+GCC_EXTRA_CONFIG="--with-float=soft --with-cpu=xscale --enable-cxx-flags=-mcpu=xscale --disable-libunwind-exceptions --nfp"
+GLIBC_EXTRA_CONFIG="--with-fp=no"

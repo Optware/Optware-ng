@@ -1,0 +1,42 @@
+--- cyrus-imapd-2.2.10/perl/Makefile.in.orig	2005-02-23 00:20:36.000000000 +0100
++++ cyrus-imapd-2.2.10/perl/Makefile.in	2005-02-23 15:12:06.000000000 +0100
+@@ -71,6 +71,9 @@
+ cyrus_prefix = @cyrus_prefix@
+ 
+ CC = @CC@
++CPPFLAGS=@CPPFLAGS@
++LDFLAGS=@LDFLAGS@
++
+ PLMAKE = imap/Makefile
+ 
+ all::
+@@ -78,6 +81,8 @@
+ 	do \
+ 		(cd $$d; echo "### Making" all "in" `pwd`;	\
+ 			if [ -f Makefile.PL ]; then \
++			   CPPFLAGS="$(CPPFLAGS)" \
++			   LDFLAGS="$(LDFLAGS)" \
+ 			   LIB_RT="$(LIB_RT)" \
+ 			   BDB_LIB="$(BDB_LIB)" BDB_INC="$(BDB_INC)" \
+ 			   OPENSSL_LIB="$(OPENSSL_LIB)" OPENSSL_INC="$(OPENSSL_INC)" \
+--- cyrus-imapd-2.2.10/perl/sieve/Makefile.in.orig	2005-02-23 16:37:29.000000000 +0100
++++ cyrus-imapd-2.2.10/perl/sieve/Makefile.in	2005-02-23 16:24:07.000000000 +0100
+@@ -73,6 +73,9 @@
+ LIB_RT=@LIB_RT@
+ 
+ CC=@CC@
++CPPFLAGS=@CPPFLAGS@
++LDFLAGS=@LDFLAGS@
++
+ PERL=@PERL@
+ 
+ all::
+@@ -80,6 +83,8 @@
+ 	do \
+ 		(cd $$d; echo "### Making" all "in" `pwd`;	\
+ 			if [ -f Makefile.PL ]; then \
++			   CPPFLAGS="$(CPPFLAGS)" \
++			   LDFLAGS="$(LDFLAGS)" \
+ 			   LIB_RT="$(LIB_RT)" \
+ 			   BDB_LIB="$(BDB_LIB)" BDB_INC="$(BDB_INC)" \
+ 			   OPENSSL_LIB="$(OPENSSL_LIB)" OPENSSL_INC="$(OPENSSL_INC)" \

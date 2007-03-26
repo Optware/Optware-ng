@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "`pidof xinetd`" ]; then
+   /bin/killall -HUP xinetd 2>/dev/null
+fi
+
+exit 0

@@ -1,0 +1,8 @@
+pwc: videodev
+audio: soundcore
+hfc_usb: hisax
+hisax: isdn
+isdn: slhc
+dss1_divert: isdn
+isdn_bsdcomp: isdn
+sr_mod:	cdrom

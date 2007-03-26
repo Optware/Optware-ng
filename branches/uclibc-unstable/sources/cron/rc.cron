@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Startup script for cron
+#
+# Stop myself if running
+PIDFILE=/opt/var/run/cron.pid
+[ -f ${PIDFILE} ] && kill `cat ${PIDFILE}`
+/opt/sbin/cron

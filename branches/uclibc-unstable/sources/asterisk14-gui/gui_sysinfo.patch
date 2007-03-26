@@ -1,0 +1,66 @@
+--- asterisk14-gui.orig/gui_configs/gui_sysinfo	2006-12-28 01:15:56.000000000 -0500
++++ asterisk14-gui/gui_configs/gui_sysinfo	2006-12-28 01:19:36.000000000 -0500
+@@ -1,40 +1,40 @@
+ #!/bin/sh
+-/bin/echo "[uname]" > /etc/asterisk/gui_sysinfo.conf
+-UNAME="`/bin/uname -srmpio`"
+-/bin/echo "output =  $UNAME "  >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "[uname]" > /opt/etc/asterisk/gui_sysinfo.conf
++UNAME="`/opt/bin/uname -srmpio`"
++/opt/bin/echo "output =  $UNAME "  >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+ 
+-/bin/echo "[uptime]" >> /etc/asterisk/gui_sysinfo.conf
+-UPTIME="`/usr/bin/uptime`"
+-/bin/echo "output = $UPTIME" >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "[uptime]" >> /opt/etc/asterisk/gui_sysinfo.conf
++UPTIME="`/opt/bin/uptime`"
++/opt/bin/echo "output = $UPTIME" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+-/bin/echo "[asterisk]" >> /etc/asterisk/gui_sysinfo.conf
+-ASTERISK="`/usr/sbin/asterisk -V`"
+-/bin/echo "output = $ASTERISK" >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "[asterisk]" >> /opt/etc/asterisk/gui_sysinfo.conf
++ASTERISK="`/opt/sbin/asterisk -V`"
++/opt/bin/echo "output = $ASTERISK" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+ 
+-/bin/echo "[today]" >> /etc/asterisk/gui_sysinfo.conf
+-TODAY="`/bin/date`"
+-/bin/echo "output = $TODAY" >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "[today]" >> /opt/etc/asterisk/gui_sysinfo.conf
++TODAY="`/opt/bin/date`"
++/opt/bin/echo "output = $TODAY" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+ 
+-/bin/echo "[hostname]" >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "[hostname]" >> /opt/etc/asterisk/gui_sysinfo.conf
+ HOSTNAME="`/bin/hostname -f`"
+-/bin/echo "output = $HOSTNAME" >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "output = $HOSTNAME" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+-/bin/echo "[ifconfig]" >> /etc/asterisk/gui_sysinfo.conf
++/opt/bin/echo "[ifconfig]" >> /opt/etc/asterisk/gui_sysinfo.conf
+ IFCONFIG=`/sbin/ifconfig | sed -e "s/^/output = /g"`
+-/bin/echo "$IFCONFIG" >> /etc/asterisk/gui_sysinfo.conf 
++/opt/bin/echo "$IFCONFIG" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+ 
+-/bin/echo "[du]" >> /etc/asterisk/gui_sysinfo.conf
+-DISKUSAGE=`/bin/df -h | sed -e "s/^/output = /g"`
+-/bin/echo "$DISKUSAGE" >> /etc/asterisk/gui_sysinfo.conf 
++/opt/bin/echo "[du]" >> /opt/etc/asterisk/gui_sysinfo.conf
++DISKUSAGE=`/opt/bin/df -h | sed -e "s/^/output = /g"`
++/opt/bin/echo "$DISKUSAGE" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+-/bin/echo "[free]" >> /etc/asterisk/gui_sysinfo.conf
+-MEMORYUSAGE=`/bin/free | sed -e "s/^/output = /g"`
+-/bin/echo "$MEMORYUSAGE" >> /etc/asterisk/gui_sysinfo.conf 
++/opt/bin/echo "[free]" >> /opt/etc/asterisk/gui_sysinfo.conf
++MEMORYUSAGE=`/opt/bin/free | sed -e "s/^/output = /g"`
++/opt/bin/echo "$MEMORYUSAGE" >> /opt/etc/asterisk/gui_sysinfo.conf
+ 
+ THISMONTH=`/bin/date +%b`
+ THISDAY=`/bin/date +%d`
+-/bin/grep /var/log/asterisk/messages -e "$THISMONTH $THISDAY" > /var/lib/asterisk/static-http/config/bkps/today_log.html
++/bin/grep /opt/var/log/asterisk/messages -e "$THISMONTH $THISDAY" > /opt/var/lib/asterisk/static-http/config/bkps/today_log.html

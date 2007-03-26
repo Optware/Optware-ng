@@ -1,0 +1,24 @@
+--- xmail-1.22/xmail	2005-10-12 23:35:22.000000000 +0200
++++ xmail/xmail	2006-04-14 12:41:43.000000000 +0200
+@@ -9,17 +9,17 @@
+ # Version:	@(#)skeleton  1.8  03-Mar-1998  miquels@cistron.nl
+ #
+ 
+-XMAIL_ROOT=/var/MailRoot
+-XMAIL_CMD_LINE=""
++XMAIL_ROOT=/opt/var/MailRoot
++XMAIL_CMD_LINE="-SX 1 -Qn 1 -Yt 1 -Ln 1 -PX 1 -CX 1"
+ PATH=$XMAIL_ROOT/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+-DAEMON=$XMAIL_ROOT/bin/XMail
++DAEMON=/opt/bin/XMail
+ NAME=XMail
+ DESC="XMail server"
+ 
+ test -f $DAEMON || exit 0
+ 
+ set -e
+-ulimit -c 20000
++ulimit -c 10000
+ 
+ start_xmail()
+ {

@@ -1,0 +1,18 @@
+Index: src/lcFile.c
+===================================================================
+RCS file: /cvs/xlibs/X11/src/lcFile.c,v
+retrieving revision 3.35
+diff -u -r3.35 lcFile.c
+--- src/lcFile.c	28 Jan 2005 18:48:08 -0000	3.35
++++ src/lcFile.c	2 Feb 2005 06:39:50 -0000
+@@ -217,6 +217,10 @@
+     return n;
+ }
+ 
++#ifdef X11_DATADIR
++#define XLOCALEDIR X11_DATADIR "/locale"
++#endif
++
+ #ifndef XLOCALEDIR
+ #define XLOCALEDIR "/usr/lib/X11/locale"
+ #endif

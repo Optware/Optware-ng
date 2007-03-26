@@ -1,0 +1,12 @@
+--- src/auth_url.c.orig	2007-02-18 13:32:57.000000000 -0800
++++ src/auth_url.c	2007-02-18 13:33:22.000000000 -0800
+@@ -518,7 +518,9 @@
+     curl_easy_setopt (url_info->handle, CURLOPT_WRITEDATA, url_info->handle);
+     curl_easy_setopt (url_info->handle, CURLOPT_NOSIGNAL, 1L);
+     curl_easy_setopt (url_info->handle, CURLOPT_TIMEOUT, 15L);
++#if LIBCURL_VERSION_NUM < 0x070a08
+     curl_easy_setopt (url_info->handle, CURLOPT_PASSWDFUNCTION, my_getpass);
++#endif
+     curl_easy_setopt (url_info->handle, CURLOPT_ERRORBUFFER, &url_info->errormsg[0]);
+ 
+     if (url_info->username && url_info->password)

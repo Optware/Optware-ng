@@ -1,0 +1,17 @@
+--- ./config.h	2005-05-18 14:59:10.000000000 +0100
++++ ./config.h	2005-06-11 12:14:44.390893708 +0100
+@@ -12,13 +12,10 @@
+ 
+ /* Configuration file */
+ /*
+-#define CONFIG_FILE "/etc/whois.conf"
++#define CONFIG_FILE "/opt/etc/whois.conf"
+ */
+ 
+ /* autoconf in cpp macros */
+-#ifdef linux
+-# define ENABLE_NLS
+-#endif
+ 
+ #ifdef __FreeBSD__
+ /* which versions? */

@@ -1,0 +1,12 @@
+*** coreutils/lib/mountlist.c.orig	2006-09-29 23:42:22.000000000 +0100
+--- coreutils/lib/mountlist.c	2006-09-29 23:44:00.000000000 +0100
+***************
+*** 64,69 ****
+--- 64,70 ----
+  
+  #ifdef MOUNTED_GETMNTENT1	/* 4.3BSD, SunOS, HP-UX, Dynix, Irix.  */
+  # include <mntent.h>
++ # define MOUNTED "/proc/mounts"
+  # if !defined MOUNTED
+  #  if defined _PATH_MOUNTED	/* GNU libc  */
+  #   define MOUNTED _PATH_MOUNTED

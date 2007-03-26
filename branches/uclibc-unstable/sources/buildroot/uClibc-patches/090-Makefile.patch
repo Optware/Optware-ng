@@ -1,0 +1,11 @@
+--- uClibc-0.9.28.vanilla/Makefile	2005-08-18 00:49:49.000000000 +0200
++++ uClibc-0.9.28/Makefile	2005-12-23 09:56:35.961883520 +0100
+@@ -163,7 +163,7 @@
+ 	else \
+ 		extra_exclude="" ; \
+ 	fi ; \
+-	tar -chf - include --exclude .svn --exclude CVS $$extra_exclude \
++	tar -ch --exclude .svn --exclude CVS $$extra_exclude -f - include \
+ 		| tar -xf - -C $(PREFIX)$(DEVEL_PREFIX)
+ ifneq ($(strip $(UCLIBC_HAS_FLOATS)),y)
+ 	# Remove floating point related headers since float support is disabled.

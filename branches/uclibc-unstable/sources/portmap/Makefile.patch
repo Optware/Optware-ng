@@ -1,0 +1,44 @@
+diff -uB portmap_4.orig/Makefile portmap_4/Makefile
+--- portmap_4.orig/Makefile	1996-05-31 09:50:40.000000000 -0400
++++ portmap_4/Makefile	2004-09-09 16:27:15.000000000 -0400
+@@ -16,7 +16,7 @@
+ # tables. The local system, since it runs the portmap daemon, is always
+ # treated as an authorized host.
+ 
+-HOSTS_ACCESS= -DHOSTS_ACCESS
++#HOSTS_ACCESS= -DHOSTS_ACCESS
+ 
+ # Comment out if your RPC library does not allocate privileged ports for
+ # requests from processes with root privilege, or the new portmap will
+@@ -46,7 +46,7 @@
+ # libwrap.a object library. WRAP_DIR should specify the directory with
+ # that library.
+ 
+-WRAP_DIR= ../tcp_wrappers
++#WRAP_DIR= ../tcp_wrappers
+ 
+ # Auxiliary object files that may be missing from your C library.
+ #
+@@ -74,8 +80,8 @@
+ 
+ all:	portmap pmap_dump pmap_set
+ 
+-portmap: $(OBJECTS) $(WRAP_DIR)/libwrap.a
+-	$(CC) $(CFLAGS) -o $@ $(OBJECTS) $(WRAP_DIR)/libwrap.a $(LIBS)
++portmap: $(OBJECTS) 
++	$(CC) $(CFLAGS) -o $@ $(OBJECTS)
+ 
+ pmap_dump: pmap_dump.c
+ 	$(CC) $(CFLAGS) -o $@ $? $(LIBS)
+diff -uB portmap_4.orig/portmap.c portmap_4/portmap.c
+--- portmap_4.orig/portmap.c	1996-05-31 09:52:59.000000000 -0400
++++ portmap_4/portmap.c	2004-09-09 16:25:06.000000000 -0400
+@@ -235,7 +235,7 @@
+ /* need to override perror calls in rpc library */
+ void
+ perror(what)
+-	const char *what;
++	__const char *what;
+ {
+ 
+ 	syslog(LOG_ERR, "%s: %m", what);

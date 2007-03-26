@@ -1,0 +1,15 @@
+--- nrpe/configure.in.orig	2006-02-22 15:51:57.000000000 -0800
++++ nrpe/configure.in	2006-09-28 17:19:48.000000000 -0700
+@@ -215,11 +215,7 @@
+ 		dnl Generate DH parameters
+ 		echo ""
+ 		echo "*** Generating DH Parameters for SSL/TLS ***"
+-		if test -f "$ssldir/sbin/openssl"; then
+-			sslbin=$ssldir/sbin/openssl
+-		else
+-			sslbin=$ssldir/bin/openssl
+-		fi
++			sslbin=openssl
+ 		# awk to strip off meta data at bottom of dhparam output
+ 		$sslbin dhparam -C 512 | awk '/^-----/ {exit} {print}' > include/dh.h
+ 	fi

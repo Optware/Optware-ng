@@ -1,0 +1,45 @@
+--- ion-3ds-20050607-orig/utils/ion-completefile/Makefile	2005-06-07 06:06:00.000000000 -0700
++++ ion/utils/ion-completefile/Makefile	2005-06-14 21:17:14.834321000 -0700
+@@ -27,4 +27,5 @@
+ 
+ _install:
+ 	$(INSTALLDIR) $(EXTRABINDIR)
+-	$(INSTALL) -s -m $(BIN_MODE) ion-completefile $(EXTRABINDIR)
++	$(INSTALL) -m $(BIN_MODE) ion-completefile $(EXTRABINDIR)
++	$(STRIP) $(EXTRABINDIR)/ion-completefile
+--- ion-3ds-20050607-orig/mod_statusbar/ion-statusd/Makefile	2005-06-07 06:06:02.000000000 -0700
++++ ion/mod_statusbar/ion-statusd/Makefile	2005-06-14 21:19:05.764321000 -0700
+@@ -37,4 +37,5 @@
+ 
+ _install: lc_install
+ 	$(INSTALLDIR) $(EXTRABINDIR)
+-	$(INSTALL) -s -m $(BIN_MODE) ion-statusd $(EXTRABINDIR)
++	$(INSTALL) -m $(BIN_MODE) ion-statusd $(EXTRABINDIR)
++	$(STRIP) $(EXTRABINDIR)/ion-statusd
+--- ion-3ds-20050607-orig/rules.mk	2005-06-07 06:06:02.000000000 -0700
++++ ion/rules.mk	2005-06-14 21:21:49.664321000 -0700
+@@ -90,6 +90,7 @@
+ module_install: module_stub_install
+ 	$(INSTALLDIR) $(MODULEDIR)
+ 	$(INSTALL) -m $(BIN_MODE) $(MODULE).so $(MODULEDIR)
++	$(STRIP) $(MODULEDIR)/$(MODULE).so
+ 
+ else # PRELOAD_MODULES
+ 
+--- ion-3ds-20050607-orig/ion/Makefile	2005-06-07 06:06:01.000000000 -0700
++++ ion/ion/Makefile	2005-06-14 21:26:11.374321000 -0700
+@@ -57,3 +57,4 @@
+ _install:
+ 	$(INSTALLDIR) $(BINDIR)
+ 	$(INSTALL) -m $(BIN_MODE) ion3 $(BINDIR)
++	$(STRIP) $(BINDIR)/ion3
+--- ion-3ds-20050607-orig/pwm/Makefile	2005-06-07 06:06:01.000000000 -0700
++++ ion/pwm/Makefile	2005-06-14 21:28:00.374321000 -0700
+@@ -64,6 +64,7 @@
+ _install:
+ 	$(INSTALLDIR) $(BINDIR)
+ 	$(INSTALL) -m $(BIN_MODE) pwm3 $(BINDIR)
++	$(STRIP) $(BINDIR)/pwm3
+ 	$(INSTALLDIR) $(PWM_ETCDIR)
+ 	for i in $(ETC); do \
+ 		$(INSTALL) -m $(DATA_MODE) $$i $(PWM_ETCDIR); \

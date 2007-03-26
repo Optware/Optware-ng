@@ -1,0 +1,11 @@
+--- src/Common/Common.cpp.orig	2007-03-07 14:28:19.000000000 -0800
++++ src/Common/Common.cpp	2007-03-07 14:28:59.000000000 -0800
+@@ -426,7 +426,7 @@
+   #ifdef WIN32
+   iconv(icv, (const char**)&szInBuf, &nInbytes, &pOutBuf, &nOutbytes);
+   #else
+-  iconv(icv, &szInBuf, &nInbytes, &pOutBuf, &nOutbytes);  
++  iconv(icv, (const char**)&szInBuf, &nInbytes, &pOutBuf, &nOutbytes);
+   #endif
+   p_sValue = szOutBuf;  
+     

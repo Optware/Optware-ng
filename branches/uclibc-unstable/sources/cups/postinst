@@ -1,0 +1,7 @@
+#!/bin/sh
+cat /opt/doc/cups/cups-install.doc
+return 0
+
+
+
+

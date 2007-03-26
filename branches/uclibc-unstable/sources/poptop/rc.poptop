@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# Start the PoPToP (PPTP server) daemon
+#  
+
+start() {
+    echo -n "Starting PoPToP server: "
+    if [ -n "`pidof pptpd`" ]; then
+	echo "Already running"
+	return
+    fi
+    /opt/sbin/pptpd -b `nvram get lan_ifname` -c /opt/etc/pptpd.conf -o /opt/etc/ppp/options.pptpd -p /opt/var/run/pptpd.pid
+    echo "Done!"
+    return
+}
+stop() {
+    echo -n "Shutting down PoPToP server: "
+    /bin/kill `cat /opt/var/run/pptpd.pid` 2>/dev/null
+    sleep 1
+    if [ -n "`pidof pptpd`" ]; then
+        echo "Failed to stop pptpd"
+    fi
+    echo "Done!"
+    return
+}
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart|reload)
+	restart
+	;;
+  condrestart)
+	[ -r /opt/var/run/pptpd.pid ] && restart
+	;;
+  *)
+	echo "Usage: $0 {start|stop|restart|condrestart}"
+	exit 1
+esac
+exit $?

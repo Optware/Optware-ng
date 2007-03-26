@@ -1,0 +1,40 @@
+--- libmemcache/configure.ac.orig	2006-03-14 19:51:13.000000000 -0800
++++ libmemcache/configure.ac	2006-03-14 19:55:09.000000000 -0800
+@@ -225,36 +225,7 @@
+ 
+ AC_DEFUN([MCM_CHECK_SETSOCKOPT], [
+ AC_MSG_CHECKING(whether to use $1 with setsockopt())
+-AC_TRY_RUN([
+-#include <sys/types.h>
+-#include <sys/socket.h>
+-#include <sys/time.h>
+-
+-int
+-main(void) {
+-  int s;
+-  struct timeval tv;
+-  tv.tv_sec  = 3;
+-  tv.tv_usec = 0;
+-
+-#ifndef $1
+-  exit(3);
+-#else
+-  if ((s = socket(AF_INET, SOCK_STREAM, 0)) == -1)
+-    exit(2);
+-
+-  /* fails on Solaris 2.6,8,9,10 and some Linuxes because
+-     SO_RCVTIMEO|SO_SNDTIMEO are defined but not implemented */
+-  if (setsockopt(s, SOL_SOCKET, $1, (const void *)&tv, sizeof(tv)) == -1)
+-    exit(1);
+-
+-  exit(0);
+-#endif
+-}
+-]
+-, [ AC_MSG_RESULT([yes]) AC_DEFINE(USE_$1, 1, [Define to use $1 with setsockopt()]) ]
+-, [ AC_MSG_RESULT([no]) ]
+-)
++  AC_MSG_RESULT([yes]) AC_DEFINE(USE_$1, 1, [Define to use $1 with setsockopt()])
+ ])
+ 
+ dnl check for SO_RCVTIMEO and SO_SNDTIMEO

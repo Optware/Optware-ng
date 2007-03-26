@@ -1,0 +1,59 @@
+#!/bin/sh
+
+PATH=/opt/bin:/opt/sbin:/usr/sbin:/usr/bin:/sbin:/bin
+DAEMON=/opt/bin/ushare
+NAME=ushare
+DESC="uShare UPnP A/V Media Server"
+PIDFILE=/var/run/ushare.pid
+CONFFILE=/opt/etc/ushare.conf
+
+[ -r "$CONFFILE" ] && . $CONFFILE
+
+# abort if no executable exists
+[ -x $DAEMON ] || exit 0
+
+# abort if no shared directory is defined
+if [ -z "$USHARE_DIR" ]; then
+	echo "Stop : No media directory specified. Edit $CONFFILE."
+	exit 0
+fi
+
+set -e
+
+start() {
+        if [ -f $PIDFILE ]; then
+                echo "Warning : $PIDFILE still present. Unclean shutdown ?"
+                kill -s 9 `cat $PIDFILE` 2>/dev/null
+                rm -f $PIDFILE 2>/dev/null
+        fi
+        echo -n "Starting $DESC... "
+        $DAEMON -D
+        echo "done"
+}
+
+stop() {
+        echo -n "Stopping $DESC... "
+        if [ -f $PIDFILE ]; then
+                kill -9 `cat $PIDFILE` 2>/dev/null
+                rm -f $PIDFILE 2>/dev/null
+        fi
+        echo "done"
+}
+
+case "$1" in
+        start)
+                start
+                ;;
+        stop)
+                stop
+                ;;
+        restart)
+                stop
+                sleep 1
+                start
+                ;;
+        *)
+                echo "Usage: $0 (start|stop|restart)"
+                exit 1
+                ;;
+esac

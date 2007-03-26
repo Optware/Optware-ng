@@ -1,0 +1,19 @@
+*** php-apache/sapi/thttpd/thttpd.c~	Thu Jan  8 08:18:18 2004
+--- php-apache/sapi/thttpd/thttpd.c	Fri Apr 29 13:30:32 2005
+***************
+*** 292,297 ****
+--- 292,305 ----
+  	ADD_STRING_EX("REMOTE_ADDR", p);
+  	ADD_STRING_EX("REMOTE_HOST", p);
+  
++ 	if (TG(hc)->hs->vhost && TG(hc)->hostname != (char*) 0)
++ 		p = TG(hc)->hostname;
++ 	else
++ 		p = TG(hc)->hs->server_hostname;
++ 
++ 	if (p != (char*) 0)
++ 		ADD_STRING_EX("SERVER_NAME", p);
++ 
+  	ADD_STRING_EX("SERVER_PORT",
+  			smart_str_print_long(buf + sizeof(buf) - 1,
+  				TG(hc)->hs->port));

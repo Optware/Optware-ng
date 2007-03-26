@@ -1,0 +1,5 @@
+SHELL=/bin/sh
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=""
+HOME=/
+# ---------- ---------- Default is Empty ---------- ---------- #

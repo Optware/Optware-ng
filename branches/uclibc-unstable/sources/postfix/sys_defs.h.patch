@@ -1,0 +1,32 @@
+--- postfix-2.3.0/src/util/sys_defs.h	2006-07-03 14:37:32.000000000 +0200
++++ postfix/src/util/sys_defs.h	2006-07-26 09:10:04.000000000 +0200
+@@ -658,20 +658,22 @@
+ #define HAS_DB
+ #define DEF_DB_TYPE	"hash"
+ #define ALIAS_DB_MAP	"hash:/etc/aliases"
+-#define HAS_NIS
++#ifndef __UCLIBC__
++#  define HAS_NIS
++#endif
+ #define GETTIMEOFDAY(t)	gettimeofday(t,(struct timezone *) 0)
+-#define ROOT_PATH	"/bin:/usr/bin:/sbin:/usr/sbin"
++#define ROOT_PATH	"/opt/bin:/opt/sbin:/bin:/usr/bin:/sbin:/usr/sbin"
+ #define FIONREAD_IN_TERMIOS_H
+ #define USE_STATFS
+ #define STATFS_IN_SYS_VFS_H
+ #define UNIX_DOMAIN_CONNECT_BLOCKS_FOR_ACCEPT
+ #define PREPEND_PLUS_TO_OPTSTRING
+ #define HAS_POSIX_REGEXP
+-#define NATIVE_SENDMAIL_PATH "/usr/sbin/sendmail"
+-#define NATIVE_MAILQ_PATH "/usr/bin/mailq"
+-#define NATIVE_NEWALIAS_PATH "/usr/bin/newaliases"
+-#define NATIVE_COMMAND_DIR "/usr/sbin"
+-#define NATIVE_DAEMON_DIR "/usr/libexec/postfix"
++#define NATIVE_SENDMAIL_PATH "/opt/sbin/sendmail"
++#define NATIVE_MAILQ_PATH "/opt/bin/mailq"
++#define NATIVE_NEWALIAS_PATH "/opt/bin/newaliases"
++#define NATIVE_COMMAND_DIR "/opt/sbin"
++#define NATIVE_DAEMON_DIR "/opt/libexec/postfix"
+ #if __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 1
+ #define SOCKADDR_SIZE	socklen_t
+ #define SOCKOPT_SIZE	socklen_t

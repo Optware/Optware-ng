@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -n "`pidof miau`" ]; then 
+    /bin/killall miau 2>/dev/null
+fi
+
+if [ ! -d /opt/var/spool/miau ] ;  then
+    mkdir -p /opt/var/spool/miau
+fi
+
+/opt/bin/miau -d /opt/var/spool/miau
+

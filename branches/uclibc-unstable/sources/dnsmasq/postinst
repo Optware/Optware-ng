@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you should check /opt/etc/dnsmasq.conf,"
+echo "and then run /opt/etc/init.d/S56dnsmasq to start dnsmasq."

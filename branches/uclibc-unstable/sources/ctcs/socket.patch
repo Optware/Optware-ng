@@ -1,0 +1,12 @@
+diff -u ctcs.old/ctcs.new ctcs-1.2/ctcs.new
+--- ctcs.old/ctcs.new	2006-12-09 19:02:20.000000000 -0200
++++ ctcs-1.2/ctcs.new	2006-12-18 19:29:17.000000000 -0200
+@@ -111,8 +111,6 @@
+ }
+ 
+ socket(Server, PF_INET, SOCK_STREAM, $proto)	|| die "socket: $!";
+-setsockopt(Server, SOL_SOCKET, SO_REUSEADDR,
+-	pack("l", 1)) 	|| die "setsockopt: $!";
+ bind(Server, sockaddr_in($port, INADDR_ANY))	|| die "bind: $!";
+ listen(Server,SOMAXCONN) 				|| die "listen: $!";
+ 

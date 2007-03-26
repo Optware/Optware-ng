@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "`pidof owwnogui`" ] ; then
+    killall owwnogui 2>/dev/null
+fi
+
+sleep 2
+/opt/bin/owwnogui -d

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you can edit /opt/etc/chilli.conf,"
+echo "and then run /opt/etc/init.d/S80chillispot to start chillispot."
+echo "You can also have a look in /opt/doc/chillispot/ for some usefull third party scripts."
+echo
+

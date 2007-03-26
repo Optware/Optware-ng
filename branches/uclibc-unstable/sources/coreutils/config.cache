@@ -1,0 +1,2 @@
+# This test should be true on all Linux systems
+fu_cv_sys_stat_statfs2_bsize=${fu_cv_sys_stat_statfs2_bsize=yes}

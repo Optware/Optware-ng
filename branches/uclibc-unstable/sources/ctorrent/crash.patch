@@ -1,0 +1,24 @@
+diff -ur ctorrent/btcontent.cpp ctorrent.new/btcontent.cpp
+--- ctorrent/btcontent.cpp	2004-09-09 00:10:51.000000000 +0100
++++ ctorrent.new/btcontent.cpp	2005-02-03 01:32:24.000000000 +0000
+@@ -226,6 +226,7 @@
+   if( m_btfiles.BuildFromMI(b, flen, saveas) < 0) ERR_RETURN();
+ 
+   delete []b;
++  b = (char *)0;
+   PrintOut();
+   
+   if( arg_flg_exam_only ) return 0;
+diff -ur ctorrent/iplist.cpp ctorrent.new/iplist.cpp
+--- ctorrent/iplist.cpp	2004-09-09 00:10:51.000000000 +0100
++++ ctorrent.new/iplist.cpp	2005-02-08 13:02:45.000000000 +0000
+@@ -8,8 +8,8 @@
+   IPLIST *node = ipl_head;
+   for(; ipl_head;){
+     node = ipl_head;
+-    delete ipl_head;
+     ipl_head = node->next;
++    delete node;
+   }
+   count = 0;
+ }

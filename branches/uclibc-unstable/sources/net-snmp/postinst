@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# $Header$
+
+/opt/etc/init.d/S70net-snmp

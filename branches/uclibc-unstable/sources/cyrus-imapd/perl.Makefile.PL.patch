@@ -1,0 +1,45 @@
+--- cyrus-imapd-2.2.10/perl/imap/Makefile.PL.orig	2003-10-22 20:50:18.000000000 +0200
++++ cyrus-imapd-2.2.10/perl/imap/Makefile.PL	2005-02-23 15:05:39.000000000 +0100
+@@ -53,6 +53,9 @@
+ 
+ my $LIB_RT = $ENV{LIB_RT};
+ 
++my $CPPFLAGS = $ENV{CPPFLAGS};
++my $LDFLAGS = $ENV{LDFLAGS};
++
+ # See lib/ExtUtils/MakeMaker.pm for details of how to influence
+ # the contents of the Makefile that is written.
+ $libs = "-lcyrus";
+@@ -65,8 +68,8 @@
+     'clean'	=> {'FILES' => 'libcyrperl.a cyradm'},
+     'OBJECT'    => 'IMAP.o',
+     'MYEXTLIB'  => '../../lib/libcyrus.a ../../lib/libcyrus_min.a',
+-    'LIBS'	=> ["$BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"],
++    'LIBS'	=> ["$LDFLAGS $BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"],
+     'DEFINE'	=> '-DPERL_POLLUTE',     # e.g., '-DHAVE_SOMETHING' 
+-    'INC'	=> "-I../../lib $SASL_INC $OPENSSL_INC", 
++    'INC'	=> "-I../../lib $CPPFLAGS $SASL_INC $OPENSSL_INC", 
+     'EXE_FILES' => [cyradm],
+ );
+--- cyrus-imapd-2.2.10/perl/sieve/managesieve/Makefile.PL.orig	2005-02-23 15:06:42.000000000 +0100
++++ cyrus-imapd-2.2.10/perl/sieve/managesieve/Makefile.PL	2005-02-23 15:08:16.000000000 +0100
+@@ -51,6 +51,9 @@
+ 
+ my $LIB_RT = $ENV{LIB_RT};
+ 
++my $CPPFLAGS = $ENV{CPPFLAGS};
++my $LDFLAGS = $ENV{LDFLAGS};
++
+ $libs = "-lcyrus";
+ 
+ # See lib/ExtUtils/MakeMaker.pm for details of how to influence
+@@ -60,7 +63,7 @@
+     'ABSTRACT'  => 'Cyurs Sieve management interface',
+     'VERSION_FROM' => 'managesieve.pm', # finds $VERSION
+     'MYEXTLIB'  => '../lib/isieve.o ../lib/lex.o ../lib/mystring.o ../lib/request.o ../../../lib/libcyrus.a ../../../lib/libcyrus_min.a',
+-    'LIBS'	=> ["$BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"], 
++    'LIBS'	=> ["$LDFLAGS $BDB_LIB $SASL_LIB $OPENSSL_LIB $LIB_RT -lssl -lcrypto"], 
+     'DEFINE'	=> '-DPERL_POLLUTE',     # e.g., '-DHAVE_SOMETHING' 
+-    'INC'	=> "-I../lib/ -I../../../lib/ $SASL_INC $OPENSSL_INC",
++    'INC'	=> "-I../lib/ -I../../../lib/ $CPPFLAGS $SASL_INC $OPENSSL_INC",
+ );

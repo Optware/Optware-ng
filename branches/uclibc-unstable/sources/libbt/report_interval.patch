@@ -1,0 +1,50 @@
+--- src/btget.c	Sat Dec 10 00:50:12 2005
++++ src/btget.c	Sun Dec 11 13:14:29 2005
+@@ -273,6 +273,7 @@
+     int optquiettmo = 0;
+     int opturl = 0;
+     int dl;
++    int opttime = 0;
+ 
+     /* initialize */
+     time(&choke_timer);
+@@ -284,7 +285,7 @@
+     signal( SIGINT, sigint_handler);
+     signal( SIGTERM, sigint_handler);
+     /* main */
+-    while ((opt = getopt( argc, argv, "bvhse:f:q:u")) != -1) {
++    while ((opt = getopt( argc, argv, "bvhse:f:q:ut:")) != -1) {
+ 	switch (opt) {
+ 	    case 'b':
+ 		optsnub = 0;
+@@ -309,8 +310,11 @@
+ 		break;
+ 	    case 'u':
+ 	    	opturl = 1;
+-		break;
+-	    default:
++        break;
++        case 't':
++           opttime = atoi(optarg);
++        break;
++        default:
+ 		printf("Unknown option '%c'\n", opt);
+ 		opthelp = 1;
+ 		break;
+@@ -329,6 +333,7 @@
+ 	printf("  -e<ratio>     Exaggerate upload speed [1.0]\n");
+ 	printf("  -s            Seed the file (assume all blocks ok)\n");
+ 	printf("  -v            Verbose (show all peers and transfer rates)\n");
++    printf("  -t<interval>  Time between report intervals\n");
+ 	exit(1);
+     }
+ 
+@@ -556,7 +561,7 @@
+ 	  }
+ 	}
+ 
+-	if (now - report_timer > 0) {
++	if (now - report_timer > opttime) {
+ 	    /* show connection status */
+ 	    report_timer=now;
+ 	    printf( "Time %ld\n", (long)now);

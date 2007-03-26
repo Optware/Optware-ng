@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you should check /opt/etc/tinyproxy/tinyproxy.conf,"
+echo "and then run /opt/etc/init.d/S53tinyproxy to start tinyproxy."
+echo

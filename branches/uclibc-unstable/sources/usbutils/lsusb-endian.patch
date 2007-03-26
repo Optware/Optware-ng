@@ -1,0 +1,45 @@
+--- usbutils-0.11/lsusb.c.orig	2005-02-19 19:37:51.000000000 -0800
++++ usbutils-0.11/lsusb.c	2005-02-19 19:38:38.000000000 -0800
+@@ -69,6 +69,14 @@
+ 
+ #define VERBLEVEL_DEFAULT 0	/* 0 gives lspci behaviour; 1, lsusb-0.9 */
+ 
++/* Handle endian-ness */
++#if __BYTE_ORDER == __BIG_ENDIAN || BYTE_ORDER == BIG_ENDIAN
++//#define SWAP(n) ((n << 24) | ((n&65280)<<8) | ((n&16711680)>>8) | (n>>24))
++#define SWAP(n) (((n) & 0x00ff) << 8 | ((n) & 0xff00) >> 8)
++#else
++#define SWAP(n) (n)
++#endif
++
+ static const char *procbususb = "/proc/bus/usb";
+ static unsigned int verblevel = VERBLEVEL_DEFAULT;
+ static int do_report_desc = 1;
+@@ -293,7 +301,8 @@
+ 	       "  iSerial             %5u %s\n"
+ 	       "  bNumConfigurations  %5u\n",
+ 	       buf[0], buf[1], buf[3], buf[2], buf[4], cls, buf[5], subcls, buf[6], proto, buf[7],
+-	       vid, vendor, pid, product, buf[13], buf[12], buf[14], mfg, buf[15], prod, buf[16], serial, buf[17]);
++	       SWAP(vid), vendor, SWAP(pid), product, buf[13], buf[12], buf[14], mfg, buf[15],
++	       prod, buf[16], serial, buf[17]);
+ 	dump_junk(buf, "  ", 18);
+ }
+ 
+@@ -1374,7 +1383,7 @@
+ 	pid = buf[10] | (buf[11] << 8);
+ 	get_vendor_string(vendor, sizeof(vendor), vid);
+ 	get_product_string(product, sizeof(product), vid, pid);
+-	printf("Device: ID %04x:%04x %s %s\n", vid, pid, vendor, product);
++	printf("Device: ID %04x:%04x %s %s\n", SWAP(vid), SWAP(pid), vendor, product);
+ 	dumpdev(buf, fd, flags);
+ 	status=0;
+  err:
+@@ -1432,7 +1441,7 @@
+ 			get_product_string(product, sizeof(product), vid, pid);
+ 			if (verblevel > 0)
+ 				printf("\n");
+-			printf("Bus %s Device %s: ID %04x:%04x %s %s\n", de->d_name, de2->d_name, vid, pid, vendor, product);
++			printf("Bus %s Device %s: ID %04x:%04x %s %s\n", de->d_name, de2->d_name, SWAP(vid), SWAP(pid), vendor, product);
+ 			if (verblevel > 0)
+ 				dumpdev(buf, fd, flags);
+ 		err:

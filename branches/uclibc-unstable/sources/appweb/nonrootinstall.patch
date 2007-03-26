@@ -1,0 +1,52 @@
+--- Makefile.orig	2004-12-12 16:39:16.734935728 +0100
++++ Makefile	2004-12-12 16:40:28.655002216 +0100
+@@ -127,40 +127,33 @@
+ #
+ #	Installation targets
+ #
+-install: install-rootCheck install-binary
++install: install-binary
+ 
+-install-rootCheck:
+-	@if [ $(BLD_OS) != WIN -a `id -u` -ne 0 ] ; \
+-	then \
+-		echo "Must be root to install" ; \
+-		exit 255 ; \
+-	fi
+-
+-install-release: install-rootCheck
++install-release:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall release
+ 
+-install-binary: install-rootCheck
++install-binary:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall binary
+ 	@echo -e "    #\n    # To start ${BLD_NAME}, run as root:\n    #"
+ 	@echo -e "        service ${BLD_PRODUCT} start\n"
+ 
+-install-dev: install-rootCheck
++install-dev:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall dev
+ 
+-install-doc: install-rootCheck
++install-doc:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall doc
+ 
+-install-samples: install-rootCheck
++install-samples:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall samples
+ 
+-install-source: install-rootCheck
++install-source:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall source
+ 
+-install-all: install-rootCheck
++install-all:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeInstall \
+ 		"release binary dev doc samples source"
+ 
+-uninstall: install-rootCheck
++uninstall:
+ 	@$(BLD_PRODUCT)/package/$(BLD_OS)/makeUninstall
+ 
+ #

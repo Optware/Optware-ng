@@ -1,0 +1,11 @@
+--- ipkg-0.99-163/ipkg_download.c	2006-04-20 22:31:00.000000000 +0200
++++ ipkg/ipkg_download.c	2006-08-01 22:35:12.000000000 +0200
+@@ -69,7 +69,7 @@
+     }
+ 
+     /* XXX: BUG rewrite to use execvp or else busybox's internal wget -Jamey 7/23/2002 */ 
+-    sprintf_alloc(&cmd, "wget --passive-ftp %s %s%s %s%s %s -P %s %s",
++    sprintf_alloc(&cmd, "wget %s %s%s %s%s %s -P %s %s",
+ 		  (conf->http_proxy || conf->ftp_proxy) ? "--proxy=on" : "",
+ 		  conf->proxy_user ? "--proxy-user=" : "",
+ 		  conf->proxy_user ? conf->proxy_user : "",

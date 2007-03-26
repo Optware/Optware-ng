@@ -1,0 +1,33 @@
+--- xemacs/src/editfns.c~	2002-08-20 21:06:52.000000000 +0930
++++ xemacs/src/editfns.c	2005-01-22 21:52:20.000000000 +1030
+@@ -629,10 +629,10 @@
+     {
+       struct stat st;
+       int myuid = getuid();
+-      static char path[5 /* strlen ("/tmp/") */ + 1 + _POSIX_PATH_MAX];
++      static char path[5 /* strlen ("/tmp/") */ + 1 + PATH_MAX];
+ 
+       strcpy (path, "/tmp/");
+-      strncat (path, user_login_name (NULL), _POSIX_PATH_MAX);
++      strncat (path, user_login_name (NULL), PATH_MAX);
+       if (lstat(path, &st) < 0 && errno == ENOENT)
+ 	{
+ 	  mkdir(path, 0700);	/* ignore retval -- checked next anyway. */
+@@ -644,14 +644,14 @@
+ 	}
+       else
+ 	{
+-	  strcpy(path, getenv("HOME")); strncat(path, "/tmp/", _POSIX_PATH_MAX);
++	  strcpy(path, getenv("HOME")); strncat(path, "/tmp/", PATH_MAX);
+ 	  if (stat(path, &st) < 0 && errno == ENOENT)
+ 	    {
+ 	      int fd;
+-	      char warnpath[1+_POSIX_PATH_MAX];
++	      char warnpath[1+PATH_MAX];
+ 	      mkdir(path, 0700);	/* ignore retvals */
+ 	      strcpy(warnpath, path);
+-	      strncat(warnpath, ".created_by_xemacs", _POSIX_PATH_MAX);
++	      strncat(warnpath, ".created_by_xemacs", PATH_MAX);
+ 	      if ((fd = open(warnpath, O_WRONLY|O_CREAT, 0644)) > 0)
+ 		{
+ 		  write(fd, "XEmacs created this directory because /tmp/<yourname> was unavailable -- \nPlease check !\n", 89);

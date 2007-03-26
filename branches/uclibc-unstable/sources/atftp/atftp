@@ -1,0 +1,17 @@
+#
+# atftp
+#
+service tftp
+{
+       flags            = REUSE
+       socket_type      = dgram
+       protocol         = udp
+       instances        = 30
+       wait             = yes
+       user             = root
+       server           = /opt/sbin/atftpd
+       server_args	= /opt/tftpboot
+       log_on_success   = HOST PID
+       log_on_failure   = HOST
+       disable          = no
+}

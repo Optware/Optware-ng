@@ -1,0 +1,777 @@
+--- zoo-2.10.orig/ar.h
++++ zoo-2.10/ar.h
+@@ -7,6 +7,7 @@
+ ***********************************************************/
+ 
+ #include <stdio.h>
++#include <sys/types.h>
+ 
+ #ifdef ANSI_HDRS
+ # include <limits.h>
+@@ -15,9 +16,11 @@
+ /* uchar should be 8 bits or more */
+ /* typedef unsigned char  uchar;   -- already in zoo.h */
+ 
++#ifndef _SYS_TYPES_H
+ typedef unsigned int   uint;    /* 16 bits or more */
+ typedef unsigned short ushort;  /* 16 bits or more */
+ typedef unsigned long  ulong;   /* 32 bits or more */
++#endif
+ 
+ /* T_UINT16 must be #defined in options.h to be 
+ a 16-bit unsigned integer type */
+--- zoo-2.10.orig/basename.c
++++ zoo-2.10/basename.c
+@@ -18,7 +18,7 @@
+ 
+ /* This function strips device/directory information from
+ a pathname and returns just the plain filename */
+-void basename (pathname, fname)
++void zoo_basename (pathname, fname)
+ char *pathname;
+ char fname[];
+ {
+--- zoo-2.10.orig/machine.c
++++ zoo-2.10/machine.c
+@@ -48,6 +48,10 @@
+ /* PART 2.  FOR EACH SPECIFIC SYSTEM, INCLUDE A C FILE HERE.           */
+ /***********************************************************************/
+ 
++#ifdef LINUX
++#include "linux.c"
++#endif
++
+ #ifdef SYS_V
+ #include "sysv.c"
+ #endif
+--- zoo-2.10.orig/makefile
++++ zoo-2.10/makefile
+@@ -23,7 +23,7 @@
+ MODEL =
+ EXTRA = -DBIG_MEM -DNDEBUG
+ LINTFLAGS = -DLINT
+-OPTIM = -O
++OPTIM = -O -Wall
+ DESTDIR = /usr/local/bin
+ 
+ #List of all object files created for Zoo
+@@ -53,6 +53,7 @@
+ 	@echo "ultrix:       ULTRIX 4.1"
+ 	@echo "convex:       Convex C200 series"
+ 	@echo "sysv:         System V Release 2 or 3; or SCO Xenix"
++	@echo "linux:        Linux"
+ 	@echo "scodos:       Cross-compiler under SCO Xenix/UNIX for MS-DOS"
+ 	@echo "xenix286:     Older Xenix/286 (not tested)"
+ 	@echo "xenix68k:     Xenix/68000 (not tested)"
+@@ -94,6 +95,10 @@
+ bsd:
+ 	$(MAKE) CFLAGS="-c $(OPTIM) -DBSD4_3" $(TARGETS)
+ 
++# Linux
++linux:
++	$(MAKE) CC="gcc" CFLAGS="-c $(OPTIM) $(LINTFLAGS) -DLINUX -DANSI_HDRS" $(TARGETS)
++
+ # ULTRIX 4.1
+ ultrix:
+ 	$(MAKE) CFLAGS="-c $(OPTIM) -DULTRIX" $(TARGETS)
+@@ -235,7 +240,11 @@
+ parse.o: zoofns.h zooio.h
+ portable.o: /usr/include/stdio.h assert.h debug.h machine.h options.h
+ portable.o: portable.h various.h zoo.h zoofns.h zooio.h
+-prterror.o: /usr/include/stdio.h /usr/include/varargs.h options.h various.h
++
++# I deleted varags.h dependancy from prterror.o since that is a
++# dependancy covered by a #ifdef, and in Debian's case #undef'ed
++
++prterror.o: /usr/include/stdio.h options.h various.h
+ prterror.o: zoofns.h zooio.h
+ sysv.o: /usr/include/sys/stat.h /usr/include/sys/types.h /usr/include/time.h
+ sysv.o: nixmode.i nixtime.i
+--- zoo-2.10.orig/makelist.c
++++ zoo-2.10/makelist.c
+@@ -21,6 +21,8 @@
+ 
+ char *nameptr PARMS((char *));
+ void modpath PARMS((char *));
++int isadir PARMS((ZOOFILE));
++int isfdir PARMS((char *));
+ 
+ /*******************/
+ /*
+--- zoo-2.10.orig/misc.c
++++ zoo-2.10/misc.c
+@@ -8,6 +8,7 @@
+ Copyright (C) 1986, 1987 Rahul Dhesi -- All rights reserved
+ (C) Copyright 1988 Rahul Dhesi -- All rights reserved
+ */
++#include <signal.h>
+ #include "options.h"
+ /* Miscellaneous functions needed by Zoo but not by Ooz */
+ 
+@@ -135,7 +136,7 @@
+ char *fullpath (direntry)
+ struct direntry *direntry;
+ {
+-	static char result[PATHSIZE];
++	static char result[PATHSIZE + PATHSIZE + 12];
+ 	combine (result,
+ 				direntry->dirlen != 0 ? direntry->dirname : "", 
+ 				(direntry->namlen != 0) ? direntry->lfname : direntry->fname
+@@ -201,7 +202,7 @@
+ ZOOFILE zoo_file;
+ {
+ #ifndef NOSIGNAL  
+-   T_SIGNAL (*oldsignal)();
++   T_SIGNAL (*oldsignal)(int);
+    oldsignal = signal (SIGINT, SIG_IGN);
+ #endif
+    if (fwr_dir (direntry, zoo_file) == -1)
+--- zoo-2.10.orig/misc2.c
++++ zoo-2.10/misc2.c
+@@ -7,6 +7,10 @@
+ Copyright (C) 1986, 1987 Rahul Dhesi -- All rights reserved
+ (C) Copyright 1988 Rahul Dhesi -- All rights reserved
+ */
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <fcntl.h>
++#include <unistd.h>
+ #include "options.h"
+ /* Miscellaneous routines */
+ #include "portable.h"
+--- zoo-2.10.orig/nixtime.i
++++ zoo-2.10/nixtime.i
+@@ -10,6 +10,9 @@
+ 
+                                     -- Rahul Dhesi  1986/12/31
+ */
++#include <sys/types.h>
++#include <time.h>
++#include <utime.h>
+ 
+ struct tm *localtime();
+ 
+@@ -51,9 +54,10 @@
+ {
+ 	long mstonix();
+ 	long gettz();
+-	long utimbuf[2];
+-	utimbuf[0] = utimbuf[1] = gettz() + mstonix (date, time);
+-	return (utime (path, utimbuf));
++        struct utimbuf utbf;
++
++	utbf.actime = utbf.modtime = gettz() + mstonix (date, time);
++	return (utime (path, &utbf));
+ }
+ 
+ /****************
+--- zoo-2.10.orig/options.h
++++ zoo-2.10/options.h
+@@ -13,6 +13,32 @@
+ 
+ 
+ /***********************************************************************/
++/* Linux                                                               */
++/***********************************************************************/
++
++#ifdef LINUX
++#define FILTER
++#define IO_MACROS
++#define EXISTS(f)		(access(f, 00) == 0)
++#define FNLIMIT 1023
++#define CHEKDIR
++#define NIXTIME
++#define NIXFNAME
++#define NEEDCTYP
++#define NOENUM
++#define REN_STDC
++#define SETBUF
++#define GETTZ
++#define FATTR
++#define T_SIGNAL        void
++#define STDARG
++#define HAVE_ISATTY          /* undocumented #define option */
++#define ANSI_PROTO
++#define VOIDPTR  void * 
++#define NO_STDIO_FN          /* Do we need this? RUARI QUINN */
++#endif /* Linux */
++
++/***********************************************************************/
+ /* SYSTEM V (should be compatible with most releases)                  */
+ /***********************************************************************/
+ 
+--- zoo-2.10.orig/portable.h
++++ zoo-2.10/portable.h
+@@ -90,6 +90,12 @@
+ #define  MKDIR(x)       mkdir(x, 0777)
+ #endif
+ 
++/* Linux */
++#ifdef LINUX
++#define NIX_IO       /* standard **IX I/O */
++#define  MKDIR(x)       mkdir(x, 0777)
++#endif
++
+ /* Amiga */
+ #ifdef MCH_AMIGA
+ # include "MCH_AMIGA NEEDS REVISION"
+--- zoo-2.10.orig/zoo.1
++++ zoo-2.10/zoo.1
+@@ -1472,17 +1472,6 @@
+ versions up to 2.01.  Version 2.1 adds the incompatibility
+ that if high-performance compression is used, earlier
+ versions cannot extract files compressed with version 2.1.
+-This is the only incompatibility that is permissible.
+-You are forbidden, with the force of
+-copyright law, to create from the
+-.I zoo
+-source code any derivative work
+-that violates this compatibility goal,
+-whether knowingly or through negligence.
+-If any violation of this
+-compatibility goal is observed,
+-this should be
+-considered a serious problem and reported to me.
+ .SH CHANGES
+ Here is a list of changes occurring from version 1.50 to
+ version 2.01.  In parentheses is given the version in which each
+--- zoo-2.10.orig/zoo.c
++++ zoo-2.10/zoo.c
+@@ -15,6 +15,7 @@
+ (C) Copyright 1988 Rahul Dhesi -- All rights reserved
+ (C) Copyright 1991 Rahul Dhesi -- All rights reserved
+ */
++#include <unistd.h>
+ #include "options.h"
+ #include "zooio.h"
+ #include "various.h"
+--- zoo-2.10.orig/zoo.h
++++ zoo-2.10/zoo.h
+@@ -1,5 +1,6 @@
+ /* derived from: zoo.h 2.16 88/01/27 23:21:36 */
+-
++#ifndef ZOO_H
++#define ZOO_H
+ /*
+ The contents of this file are hereby released to the public domain.
+ 
+@@ -240,3 +241,4 @@
+ #define	MAXGEN				0x0f
+ /* version mask to prune down to correct size on large-word machines */
+ #define VER_MASK				0xffff
++#endif
+--- zoo-2.10.orig/zooadd.c
++++ zoo-2.10/zooadd.c
+@@ -9,11 +9,13 @@
+ (C) Copyright 1988 Rahul Dhesi -- All rights reserved
+ (C) Copyright 1991 Rahul Dhesi -- All rights reserved
+ */
++#include <unistd.h>
+ #include "options.h"
+ /* Adds files specified in parameter-list to archive zoo_path. */
+ 
+ #define LONGEST	20					/* assumed length of longest filename */
+ #include "zoomem.h"             /* to define MAXADD */
++#undef PORTABLE
+ #include "zoo.h"
+ #include "zooio.h"
+ #include "various.h"
+@@ -37,6 +39,7 @@
+ void copyfields PARMS ((struct direntry *, struct tiny_header *));
+ void storefname PARMS ((struct direntry *, char *, int));
+ char *choosefname PARMS ((struct direntry *));
++int isadir PARMS((ZOOFILE));
+ 
+ extern struct zoo_header zoo_header;
+ 
+@@ -132,7 +135,7 @@
+ 
+ if (zoo_file == NOFILE)
+    prterror ('f', could_not_open, zoo_path);
+-basename(zoo_path, zoo_fname);      /* get basename of archive */
++zoo_basename(zoo_path, zoo_fname);  /* get basename of archive */
+ rootname (zoo_path, zoo_bak);       /* name without extension */
+ strcat (zoo_bak, BACKUP_EXT);       /* name of backup of this archive */
+ 
+@@ -222,7 +225,7 @@
+ 		break;
+ 	}
+ 
+-   basename (this_path, this_fname);   /* get just filename for later */
++   zoo_basename (this_path, this_fname);   /* get just filename for later */
+ 
+    this_file = zooopen(this_path, Z_READ);
+    if (this_file == NOFILE) {
+--- zoo-2.10.orig/zooadd2.c
++++ zoo-2.10/zooadd2.c
+@@ -7,7 +7,9 @@
+ Copyright (C) 1986, 1987 Rahul Dhesi -- All rights reserved
+ (C) Copyright 1988 Rahul Dhesi -- All rights reserved
+ */
++#include <unistd.h>
+ #include "options.h"
++#undef PORTABLE
+ #include "zoo.h"
+ #ifndef	OK_STDIO
+ #include <stdio.h>
+@@ -20,7 +22,7 @@
+ #include "assert.h"
+ #include "debug.h"
+ #include "parse.h"
+-
++int isfdir PARMS((char *));
+ /*
+ Miscellaneous routines to support zooadd().
+ */
+--- zoo-2.10.orig/zooext.c
++++ zoo-2.10/zooext.c
+@@ -14,7 +14,8 @@
+ /* Extract file from archive.  Extracts files specified in parameter-list
+    from archive zoo_path.  If none specified, extracts all files from
+    archive. */
+-
++#include <unistd.h>
++#include <signal.h>
+ #include "options.h"
+ #include "zoo.h"
+ #include "parse.h"      /* defines struct for parse() */
+@@ -62,7 +63,7 @@
+ char *whichname;                          /* which name to extract */
+ char matchname[PATHSIZE];                 /* for pattern matching only */
+ #ifndef NOSIGNAL
+-T_SIGNAL (*oldsignal)();        /* to save previous SIGINT handler */
++T_SIGNAL (*oldsignal)(int);        /* to save previous SIGINT handler */
+ #endif
+ ZOOFILE zoo_file;                         /* open archive */
+ long next_ptr;                            /* pointer to within archive */
+@@ -626,7 +627,7 @@
+ 
+ /* Ctrl_c() is called if ^C is hit while a file is being extracted.
+    It closes the files, deletes it, and exits. */
+-T_SIGNAL ctrl_c()
++T_SIGNAL ctrl_c(int dummy)
+ {
+ #ifndef NOSIGNAL
+    signal (SIGINT, SIG_IGN);     /* ignore any more */
+--- zoo-2.10.orig/zoofns.h
++++ zoo-2.10/zoofns.h
+@@ -42,12 +42,12 @@
+ int cfactor PARMS ((long, long));
+ int chname PARMS ((char *, char *));
+ int cmpnum PARMS ((unsigned int, unsigned int, unsigned int, unsigned int));
+-T_SIGNAL ctrl_c PARMS ((void));
++T_SIGNAL ctrl_c PARMS ((int));
+ int exists PARMS ((char *));
+ int getfile PARMS ((ZOOFILE, ZOOFILE, long, int));
+ int getutime PARMS ((char *, unsigned *, unsigned *));
+ int gettime PARMS ((ZOOFILE, unsigned *, unsigned *));
+-T_SIGNAL handle_break PARMS ((void));
++T_SIGNAL handle_break PARMS ((int));
+ 
+ #ifdef USE_ASCII
+ int isupper PARMS ((int));
+@@ -85,7 +85,7 @@
+ void addfname PARMS ((char *, long, unsigned int, unsigned int, 
+ 							unsigned, unsigned));
+ void add_version PARMS ((char *, struct direntry *));
+-void basename PARMS ((char *, char []));
++void zoo_basename PARMS ((char *, char []));
+ void break_off PARMS ((void));
+ void close_file PARMS ((ZOOFILE));
+ void comment PARMS ((char *, char *));
+--- zoo-2.10.orig/zooio.h
++++ zoo-2.10/zooio.h
+@@ -7,6 +7,7 @@
+ 
+ 											-- Rahul Dhesi 1988/01/24
+ */
++#include "zoo.h"
+ #ifndef	OK_STDIO
+ #include <stdio.h>
+ #define	OK_STDIO
+--- zoo-2.10.orig/zoolist.c
++++ zoo-2.10/zoolist.c
+@@ -47,6 +47,7 @@
+ int ver_too_high PARMS((struct zoo_header *));
+ int needed PARMS((char *, struct direntry *, struct zoo_header *));
+ void printtz PARMS((int));
++int fputchar PARMS ((int));
+ 
+ void zoolist (argv, option, argc)
+ char **argv, *option;
+@@ -414,7 +415,7 @@
+ 					if (direntry.fattr == 0)
+ 						printf ("--- ");
+ 					else if ((direntry.fattr >> 22) == 1)
+-						printf ("%03o ", direntry.fattr & 0x1ff);
++						printf ("%03lo ", direntry.fattr & 0x1ff);
+ 					else
+ 						printf ("??? ");
+ 				}
+--- zoo-2.10.orig/zoopack.c
++++ zoo-2.10/zoopack.c
+@@ -10,6 +10,7 @@
+ Copyright (C) 1986, 1987 Rahul Dhesi -- All rights reserved
+ (C) Copyright 1988 Rahul Dhesi -- All rights reserved
+ */
++#include <unistd.h>
+ #include "options.h"
+ /* Packs an archive.  The sequence is:
+    1. Copy all files from current archive to new one.
+@@ -388,7 +389,7 @@
+ 
+ /* handle_break() */
+ /* Sets break_hit to 1 when called */
+-T_SIGNAL handle_break()
++T_SIGNAL handle_break(int dummy)
+ {
+ #ifndef NOSIGNAL
+    signal (SIGINT, SIG_IGN);     /* ignore future control ^Cs for now */
+--- zoo-2.10.orig/linux.c
++++ zoo-2.10/linux.c
+@@ -0,0 +1,74 @@
++/* machine.c for Linux. */
++
++/* Basically code stolen from bsd.c, and adjusted for Linux. */
++
++#include <sys/stat.h>
++#include <sys/time.h>
++#include <unistd.h>
++
++/* Function isadir() returns 1 if the supplied handle is a directory,
++ * else it returns 0. */
++
++int isadir (ZOOFILE f)
++{
++  struct stat buffer;           /* buffer to hold file information */
++
++  if (fstat (fileno (f), &buffer) == -1) 
++    return (0);                 /* inaccessible -- assume not dir */
++  else
++    {
++      if (buffer.st_mode & S_IFDIR)
++	return (1);
++      else
++	return (0);
++    }
++}
++
++
++/* Standard UNIX-compatible time routines */
++#include "nixtime.i"
++
++/* Standard UNIX-specific file attribute routines */
++#include "nixmode.i"
++
++/* Function gettz() returns the offset from GMT in seconds */
++long gettz()
++{
++#define SEC_IN_DAY      (24L * 60L * 60L)
++#define INV_VALUE       (SEC_IN_DAY + 1L)
++
++  static long retval = INV_VALUE;    /* cache, init to impossible value */
++  struct timeval tp;
++  struct timezone tzp;
++
++  if (retval != INV_VALUE)           /* if have cached value, return it */
++    return retval;
++  
++   gettimeofday (&tp, &tzp);            
++
++   retval = tzp.tz_minuteswest * 60 - tzp.tz_dsttime * 3600L;
++   return retval;
++}
++
++/* Function fixfname() converts the supplied filename to a syntax
++ * legal for the host system.  It is used during extraction.
++ * Undocumented */
++
++char *fixfname(char *fname)
++{
++  return fname; /* default is no-op */
++}
++
++/* Function zootrunc() truncates the file passed to it.
++ * Undocumented. */
++
++int zootrunc(FILE *f)
++{
++  extern long lseek();
++  long seekpos;
++  int fd = fileno(f);
++
++  seekpos = lseek(fd, 0L, SEEK_CUR);
++  if (seekpos >= 0)
++    return ftruncate(fd, seekpos);
++}
+--- zoo-2.10.orig/debian/changelog
++++ zoo-2.10/debian/changelog
+@@ -0,0 +1,80 @@
++zoo (2.10-11sarge0) stable-security; urgency=high
++
++  * Non-maintainer upload by The Security Team.
++  * Fix a buffer overflow in the handling of directory entry names.
++    [CVE-2006-0855]
++
++ -- Steve Kemp <skx@debian.org>  Mon, 1 Mar 2006 22:32:21 +0000
++
++zoo (2.10-11) unstable; urgency=low
++
++  * New maintainer (closes: #258470)
++  * Move to main from non-free (zoo is now in public domain).
++    * Updated copyright file
++    * Updated zoo.1 file
++  * Removed unnecessary, compile related files from the binary package.
++  * Standards-Version: 3.6.1.0
++
++ -- Niklas Vainio <nvainio+deb@iki.fi>  Sat, 10 Jul 2004 21:29:26 +0300
++
++zoo (2.10-10) unstable; urgency=low
++
++  * Recompile to allow prelinking (closes: #231547).
++
++ -- Petr Cech <cech@debian.org>  Mon,  9 Feb 2004 12:02:32 +0100
++
++zoo (2.10-9) unstable; urgency=low
++
++  * Fix build with new glibc-2.2 (closes: #94865)
++
++ -- Petr Cech <cech@debian.org>  Sun, 22 Apr 2001 22:17:14 +0200
++
++zoo (2.10-8) unstable; urgency=low
++
++  * Added README.compilers.
++  * Standards-version: 3.2.1.
++  * Glibc-2.2 build.
++  * Fix long utibuf[2] to struct utimbuf.
++
++ -- Petr Cech <cech@debian.org>  Tue, 17 Oct 2000 15:07:50 +0200
++
++zoo (2.10-7) unstable; urgency=low
++
++  * Don't know how, but the copyright was gone
++  * Added documentation from source package
++
++ -- Petr Cech <cech@debian.org>  Sat, 16 May 1998 11:32:30 +0200
++
++zoo (2.10-6) frozen unstable; urgency=low
++
++  * Use debhelper.
++  * Added some includes and prototypes to have less warnings
++  * New maintainer.
++  * updated to 2.4.1
++
++ -- Petr CECH <Petr.Cech@st.mff.cuni.cz>  Fri,  8 May 1998 01:06:39 +0200
++
++zoo (2.10-5) unstable; urgency=low
++
++  * Orphaned the package.
++  * debian/control (Standards-Version): updated to 2.4.0.0 [#16772].
++  * debian/control (Section): changed to non-free/utils [fails #3 of DFSG].
++  * debian/control (Maintainer): set to debian-qa list.
++  * debian/rules: rewritten.
++
++ -- James Troup <jjtroup@comp.brad.ac.uk>  Wed,  4 Mar 1998 02:17:57 +0000
++
++zoo (2.10-4) unstable; urgency=low
++
++  * Rebuilt for libc6.
++
++ -- James Troup <jjtroup@comp.brad.ac.uk>  Wed, 25 Jun 1997 17:04:23 +0000
++
++zoo (2.10-3) unstable; urgency=low
++
++  * New maintainer.
++  * Updated package to standards version 2.1.1.2.
++  * Removed executables from source package.
++  * Added better linux support, fixes bug #3961 and #4904.
++
++ -- James Troup <jjtroup@comp.brad.ac.uk>  Wed, 22 Jan 1997 02:18:51 +0000
+--- zoo-2.10.orig/debian/dirs
++++ zoo-2.10/debian/dirs
+@@ -0,0 +1 @@
++usr/bin
+--- zoo-2.10.orig/debian/docs
++++ zoo-2.10/debian/docs
+@@ -0,0 +1 @@
++
+--- zoo-2.10.orig/debian/control
++++ zoo-2.10/debian/control
+@@ -0,0 +1,19 @@
++Source: zoo
++Section: utils
++Priority: optional
++Build-Depends: debhelper (>= 3.0.5)
++Maintainer: Niklas Vainio <nvainio+deb@iki.fi>
++Standards-Version: 3.6.1.0
++
++Package: zoo
++Architecture: any
++Depends: ${shlibs:Depends}
++Description: manipulate zoo archives
++ Zoo is used to create and maintain collections of files in compressed
++ form.  It uses a Lempel-Ziv compression algorithm that gives space
++ savings in the range of 20% to 80% depending on the type of file data.
++ Zoo can store and selectively extract multiple generations of the same
++ file.
++ .
++ This package exists for its historical value. If you are looking for
++ a compression tool for serious use, check tar and gzip.
+--- zoo-2.10.orig/debian/README.compilers
++++ zoo-2.10/debian/README.compilers
+@@ -0,0 +1,11 @@
++The linux target I created was based on the bsd 4.3 target, with the
++following differences :-
++
++     Linux has strchr().
++     Linux signal handler returns void data type.
++     (Debian GNU/)Linux uses stdarg.h in preference to varags.h.
++     Linux has memmove().
++     (Debian GNU/)Linux uses ansi C compilers (required for stdarg.h).
++     Linux malloc() returns a void pointer.
++     Linux has vprintf().
++     
+--- zoo-2.10.orig/debian/rules
++++ zoo-2.10/debian/rules
+@@ -0,0 +1,74 @@
++#!/usr/bin/make -f
++# debian/rules file - for zoo (2.1).
++# Based on sample debian.rules file - for GNU Hello (1.3).
++# Copyright 1994,1995 by Ian Jackson.
++# Copyright 1997,1998 by James Troup.
++# Copyright 1998,1999,2000 by Petr Èech.
++# I hereby give you perpetual unlimited permission to copy,
++# modify and relicense this file, provided that you do not remove
++# my name from the file itself.  (I assert my moral right of
++# paternity under the Copyright, Designs and Patents Act 1988.)
++# Uncomment this to turn on verbose mode.
++#export DH_VERBOSE=1
++
++# This is the debhelper compatability version to use.
++export DH_COMPAT=3
++
++# This has to be exported to make some magic below work.
++#export DH_OPTIONS
++
++CFLAGS = -O2 -Wall
++INSTALL = install
++
++ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
++	CFLAGS += -g
++endif
++ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
++	INSTALL += -s
++endif
++
++
++build:
++	dh_testdir
++	$(MAKE) OPTIM="$(CFLAGS)" linux
++	touch build
++
++clean:
++	dh_testdir
++	dh_testroot
++	-rm -f build
++	-$(MAKE) -i clean
++	-rm -f zoo fiz
++	dh_clean
++
++binary-indep: build
++# Nothing
++
++binary-arch: build
++	dh_testdir
++	dh_testroot
++	dh_clean -k
++	dh_installdirs
++
++	install -m 755 -s zoo fiz debian/zoo/usr/bin
++
++	dh_installdocs
++	dh_installmanpages
++	dh_installchangelogs
++	dh_strip
++	dh_compress
++	dh_fixperms
++	dh_installdeb
++	dh_shlibdeps
++	dh_gencontrol
++	dh_md5sums
++	dh_builddeb
++
++# Below here is fairly generic really
++
++binary:		binary-indep binary-arch
++
++source diff:
++	@echo >&2 'source and diff are obsolete - use dpkg-source -b'; false
++
++.PHONY: binary binary-arch binary-indep clean checkroot
+--- zoo-2.10.orig/debian/copyright
++++ zoo-2.10/debian/copyright
+@@ -0,0 +1,64 @@
++This is Debian GNU/Linux's prepackaged version of the zoo archiver.
++
++This package was put together by James Troup from the original 
++source obtained from: 
++ sunsite.doc.ic.ac.uk:/unix/unix-c/arc-progs/zoo210.tar.gz
++ 
++From May 1998 to July 2004 it was maintained by Petr Èech and
++currently it is maintained by Niklas Vainio <nvainio+deb@iki.fi>
++
++Copyright and license:
++
++Zoo was written by Rahul Dhesi. He has now released it into the public
++domain:
++
++
++Return-Path: <dhesi@rahul.net>
++Date: Sat, 19 Jun 2004 13:50:26 -0700 (PDT)
++From: dhesi@rahul.net
++To: Niklas Vainio <nvainio@iki.fi>
++Subject: Re: License of Zoo
++
++Hi, the last release of the zoo archive program was marked entirely
++public domain, with no restrictions.  I'm sure this statement will be
++found somewhere in the files in the sources.  If not, I hope this email
++will suffice:  everything in the zoo package is entirely public domain,
++with no restrictions whatsoever.
++
++Rahul
++
++
++On Sat, 19 Jun 2004, Niklas Vainio wrote:
++
++> Dear Rahul Dhesi,
++> 
++> The Zoo archiving program you wrote, is part of the Debian GNU/Linux system,
++> in its unofficial section called "non-free". I'm asking you to relax licence
++> conditions of Zoo a bit to make it free software and allow it to move into
++> the official Debian distribution.
++> 
++> Zoo licensing conditions have two clauses that make it non-free software.
++> Those clauses are the following:
++> 
++> "(b) do not create, whether deliberately or through negligence, any 
++> derivative work that violates the compatibility goals describe in the
++> reference manual for zoo 2.1,"
++> 	       
++> "(d) make the fully commented source code of the derivative work available
++> to me at no cost if I so request, and make no attempt to restrict the
++> distribution or use of this source code."
++> 
++> Of course this is more of historical interest than any actual need, but
++> would you please consider licensing Zoo under a free license?
++> 
++> Best regards,
++>     - Nikke, a Debian volunteer
++> 
++> -- 
++> Niklas Vainio <niklas.vainio@iki.fi>
++> 
++
++
++
++
++

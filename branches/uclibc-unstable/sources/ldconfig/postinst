@@ -1,0 +1,17 @@
+#!/bin/sh
+
+if ! test -e /opt/etc/ld.so.conf
+then rm -f /opt/etc/ld.so.conf ; echo "/opt/lib" >/opt/etc/ld.so.conf
+fi
+
+if ! test -e /etc/ld.so.conf
+then rm -f /etc/ld.so.conf ; ln -s /opt/etc/ld.so.conf /etc
+fi
+
+if ! test -h /etc/ld.so.cache
+then rm -f /etc/ld.so.cache ; ln -s /opt/etc/ld.so.cache /etc
+fi
+
+if ! test -e /etc/ld.so.cache
+then /opt/sbin/ldconfig
+fi

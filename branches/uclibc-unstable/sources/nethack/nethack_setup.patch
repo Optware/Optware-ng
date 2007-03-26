@@ -1,0 +1,16 @@
+--- unix/setup.sh	2004-10-22 13:45:33.000000000 -0700
++++ unix/setup.sh	2003-12-07 15:39:13.000000000 -0800
+@@ -34,8 +34,8 @@
+ 
+ echo "Copying Makefiles."
+ 
+-cp Makefile.top ../../Makefile
+-cp Makefile.dat ../../dat/Makefile
+-cp Makefile.doc ../../doc/Makefile
+-cp Makefile.src ../../src/Makefile
+-cp Makefile.utl ../../util/Makefile
++cp builds/nethack/sys/unix/Makefile.top builds/nethack/Makefile
++cp builds/nethack/sys/unix/Makefile.dat builds/nethack/dat/Makefile
++cp builds/nethack/sys/unix/Makefile.doc builds/nethack/doc/Makefile
++cp builds/nethack/sys/unix/Makefile.src builds/nethack/src/Makefile
++cp builds/nethack/sys/unix/Makefile.utl builds/nethack/util/Makefile

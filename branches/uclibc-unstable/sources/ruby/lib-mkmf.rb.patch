@@ -1,0 +1,11 @@
+--- ruby-1.8.4-orig/lib/mkmf.rb	2005-11-27 16:22:53.000000000 -0800
++++ ruby/lib/mkmf.rb	2006-01-14 20:44:16.000000000 -0800
+@@ -1061,7 +1061,7 @@
+     end
+   end
+ 
+-  libpath = libpathflag(libpath)
++  libpath = "-L $(topdir)"
+ 
+   dllib = target ? "$(TARGET).#{CONFIG['DLEXT']}" : ""
+   staticlib = target ? "$(TARGET).#$LIBEXT" : ""

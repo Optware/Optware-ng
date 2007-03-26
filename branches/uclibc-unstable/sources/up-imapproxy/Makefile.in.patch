@@ -1,0 +1,11 @@
+--- up-imapproxy/Makefile.in.orig	2007-01-26 22:24:20.000000000 +0100
++++ up-imapproxy/Makefile.in	2007-01-26 22:24:46.000000000 +0100
+@@ -69,7 +69,7 @@
+ 	$(CC) -o $@ $(XYD_OBJ) $(LDFLAGS) $(XYD_LIB)
+ 
+ $(TAT_BIN): $(TAT_OBJ)
+-	$(CC) -o $@ $(TAT_OBJ) $(TAT_LIB)
++	$(CC) -o $@ $(TAT_OBJ) $(LDFLAGS) $(TAT_LIB)
+ 
+ clean:
+ 	rm -f ./src/core  $(XYD_OBJ) $(TAT_OBJ) $(XYD_BIN) $(TAT_BIN)

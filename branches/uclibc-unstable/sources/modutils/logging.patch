@@ -1,0 +1,60 @@
+diff -urN modutils-2.4.27/include/util.h modutils/include/util.h
+--- modutils-2.4.27/include/util.h	2003-03-29 00:45:50.000000000 +0100
++++ modutils/include/util.h	2006-12-28 14:15:03.000000000 +0100
+@@ -39,7 +39,7 @@
+ extern int xftw(const char *directory, xftw_func_t);
+ 
+ /* Error logging */
+-extern int log;
++extern int logging;
+ extern int errors;
+ extern const char *error_file;
+ 
+diff -urN modutils-2.4.27/util/logger.c modutils/util/logger.c
+--- modutils-2.4.27/util/logger.c	2002-03-24 06:01:03.000000000 +0100
++++ modutils/util/logger.c	2006-12-28 14:15:53.000000000 +0100
+@@ -31,7 +31,7 @@
+ 
+ /*======================================================================*/
+ 
+-int log;
++int logging;
+ static int silent;
+ 
+ int errors;
+@@ -75,7 +75,7 @@
+ 
+ 	if (silent)
+ 		;
+-	else if (log) {
++	else if (logging) {
+ 		char buf[2*PATH_MAX];
+ 		int n;
+ 
+@@ -108,7 +108,7 @@
+ 	va_list args;
+ 
+ 	if (silent);
+-	else if (log) {
++	else if (logging) {
+ 		char buf[2*PATH_MAX];
+ 		va_start(args, fmt);
+ 		vsnprintf(buf, sizeof(buf), fmt, args);
+@@ -132,5 +132,5 @@
+ #ifdef STOREMSG
+ 	atexit(dumpmsg);
+ #endif
+-	log = 1;
++	logging = 1;
+ }
+--- modutils-2.4.27/insmod/modprobe.c	2004-02-22 08:32:35.000000000 +0100
++++ modutils/insmod/modprobe.c	2006-12-28 14:47:47.000000000 +0100
+@@ -1023,7 +1023,7 @@
+ 		if (quiet)
+ 			my_argv[my_argc++] = "-q";
+ 
+-		if (log)
++		if (logging)
+ 			my_argv[my_argc++] = "-s";
+ 
+ 		if (insmod_opt) {

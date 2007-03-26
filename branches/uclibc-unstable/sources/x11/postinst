@@ -1,0 +1,4 @@
+#!/bin/sh
+
+### fix missing nsswitch.conf, so "localhost" will resolve correctly
+test -e /etc/nsswitch.conf || ( echo "hosts: files dns" >/etc/nsswitch.conf ; chmod a+r /etc/nsswitch.conf )

@@ -1,0 +1,374 @@
+#!/bin/sh 
+
+. /opt/etc/transmission.conf
+
+PATH=/bin:/sbin:/usr/bin:/opt/sbin:/opt/bin:/usr/sbin
+export PATH
+
+DEBUG=
+
+##
+##############################################
+
+##########################
+## Support functions
+warning ()
+{
+    logger -t transmission_watchdog -p warning $*
+}
+
+notice ()
+{
+    logger -t transmission_watchdog -p notice $*
+}
+
+debug ()
+{
+    if [ -n "$DEBUG"  ]; then
+        echo $*
+    fi
+}
+
+##########################
+#
+# Checks
+#
+
+# check the configuration items
+if [ ! -d $SOURCE ]; then
+    warning "$SOURCE does not exist."
+    exit 1
+fi
+
+if [ ! -d $TARGET ]; then
+    warning "$TARGET does not exist."
+    exit 1
+fi
+
+if [ ! -d $WORK ]; then
+    warning "$WORK does not exist."
+    exit 1
+fi
+
+if [  -n "$DEBUG"  ]; then
+    echo "SOURCE: $SOURCE"
+    echo "WORK: $WORK"
+    echo "TARGET: $TARGET"
+    echo "USER: $USER"
+fi
+
+if [ -f $WORK/.watchdog ]; then
+    rm -f $WORK/.watchdog
+    warning "Removing .watchdog protection"
+    exit 0
+fi
+
+touch $WORK/.watchdog
+
+
+
+_exit ()
+{
+    rm $WORK/.watchdog
+}
+
+trap _exit EXIT
+
+_write_info ()
+{
+    echo "STARTTIME=\"${STARTTIME}\"
+ENDTIME=\"${ENDTIME}\"
+STATUS=\"${STATUS}\"
+SCRAPE=\"${SCRAPE}\"
+UPLOADED=\"${UPLOADED}\"
+URL=\"${URL}\"
+NOTE=\"${NOTE}\"
+TORRENTNAME=\"${TORRENTNAME}\"" > "${TORRENT%/*}/.info"
+}
+
+_clean_info()
+{
+	STARTTIME=""
+	ENDTIME=""
+	STATUS=""
+	SCRAPE=""
+	TORRENTNAME=""
+	UPLOADED=""
+	URL=""
+	NOTE=""
+}
+                                
+
+move_to_target ()
+{
+    debug "Move to target"
+    DIRNAME="${TORRENT%/*}"
+    DEST="${TARGET}/${DIRNAME##*/}"
+
+    mkdir -p "${DEST}"
+    chmod 775 "${DEST}"
+    grep -q ${GROUP} /etc/group && chgrp ${GROUP} "${DEST}"
+    grep -q ${USER} /etc/passwd && chown ${USER} "${DEST}"
+    
+    cd "${TORRENT%/*}"
+    
+    grep -q ${GROUP} /etc/group && chgrp ${GROUP} * .info .status
+    grep -q ${USER} /etc/passwd && chown ${USER} * .info .status
+    chmod 775 * .info .status
+
+    notice "Moving files to: ${DEST}"
+    mv * .info .status "${DEST}"
+    chmod 775 "${DEST}"
+
+    STATUS="Ok"
+}
+
+cleanup_work ()
+{
+    debug "Clean up"
+    # cleanup
+    debug "Removing work dir: ${TORRENT%/*}"
+    rm -rf "${TORRENT%/*}"
+}
+
+# Seed recently completed torrent
+auto_seed_completed()
+{
+    if [ "${AUTOSEED}" = "YES" ]; then
+	DIRNAME="${TORRENT%/*}"
+	DEST="${TARGET}/${DIRNAME##*/}"
+	NEWNAME="${DEST}/${TORRENT##*/}"
+	notice "Auto seeding ${NEWNAME}.seeding"
+	mv "${NEWNAME}" "${NEWNAME}.seeding"
+	TORRENT="${NEWNAME}.seeding"
+	_update_active
+    fi
+}
+
+send_report ()
+{
+    debug "Mail from: $MAILFROM"
+    debug "Mail to: $MAILTO"
+
+    if [  -n "${MAILFROM}" -a -n "${MAILTO}" ]; then
+	echo "From: <${MAILFROM}>
+To: <${MAILTO}>
+Subject: ${TORRENTNAME} torrent finished ($STATUS)
+------------------
+Name          : ${TORRENTNAME}
+Torrent       : ${TORRENT}
+Started       : ${STARTTIME}
+Completed     : ${ENDTIME}
+Stored in     : ${TARGET}
+URL           : ${URL}
+Note          : ${NOTE}
+Status        : ${STATUS}
+"  | ${MAILER:-mini_sendmail} ${MAILOPT}${MAILFROM} ${MAILTO}
+        notice "Mail sent to : ${MAILTO}"
+    fi
+}
+
+
+# Update progress
+_update_progress()
+{
+    [ -f ${PIDFILE} ] || return
+    kill -USR1 `cat ${PIDFILE}`
+    sleep 5
+    for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
+	if [ -f "${TORRENT}" ]; then
+ 	    INFO="${TORRENT%/*}/.info"  
+	    if [ -f "${INFO}" ]; then
+		. "${INFO}"
+		LOG="${TORRENT%/*}/.status"
+		if [ -f "${LOG}" ]; then
+		    .  "${LOG}"
+		else
+		    STATUS=".status not found for ${TORRENT}"
+		fi
+	    else
+		_clean_info
+	    fi
+	    _write_info
+	fi
+    done
+}
+
+
+
+# rewrites active torrents listing into file and notifies daemon to reload it
+_update_active()
+{
+    if [ -n "`ls ${WORK}/*/*.torrent 2>/dev/null | head -n 1`" ] ; then
+	ls -1  ${WORK}/*/*.torrent > ${ACTIVE}   
+    else
+	rm -f ${ACTIVE}
+    fi
+    if [ -n "`ls ${TARGET}/*/*.seeding 2>/dev/null | head -n 1`" ] ; then
+	ls -1  ${TARGET}/*/*.seeding >> ${ACTIVE}
+    fi
+    [ ! -e ${ACTIVE} ] && touch ${ACTIVE}
+    cat  ${ACTIVE} > /dev/null
+    [ -f ${PIDFILE} ] && kill -HUP `cat ${PIDFILE}` 
+}
+
+_stop_torrent()
+{
+    grep -v "${TORRENT}"  ${ACTIVE} > ${ACTIVE}.tmp
+    mv ${ACTIVE}.tmp ${ACTIVE}
+    kill -HUP `cat ${PIDFILE}`
+    sleep 20
+}
+
+
+# Torrent exists and runs 
+_check_if_complete()
+{
+
+    debug "check_if_complete  TORRENT:${TORRENT}"
+    [ -f "${TORRENT%.seeding}.seeding" ] &&  return
+
+
+# Kill btget when torrent is complete
+    grep -q "Seeding" "${TORRENT%/*}/.status"
+    if [ $? -eq 0 ]; then
+	_stop_torrent
+	. "${TORRENT%/*}/.info"
+	STATUS="completed"
+	ENDTIME=`date +"${DATE_FORMAT}"`
+	_write_info
+	move_to_target
+	cleanup_work
+	send_report
+	auto_seed_completed 
+    fi
+}
+
+# Check for error message
+_check_tracker_error ()
+{
+    if [ -f "${TORRENT%/*}/.status" ] ; then
+	. "${TORRENT%/*}/.status"
+	echo "${STATUS}" | grep -q "Error:"  "${TORRENT%/*}/.status" 2>/dev/null
+	if [ $? -eq 0 ]; then   
+	    debug "Error from tracker"
+	    warning "Error from tracker"
+	    . "${TORRENT%/*}/.info"
+    	    mv "${TORRENT}" "${TORRENT}.suspended"
+    	    notice "Torrent ${TORRENT} suspended"
+    	    _write_info
+    	    _update_active
+    	    TOTAL_ACTIVE=$((TOTAL_ACTIVE-1))
+    	fi
+    fi
+}
+
+##############################################################
+# MAIN PROGRAM
+#
+
+if [ -f "${WORK}/.paused" ]; then
+    notice "Torrents paused"
+    debug "Torrents paused"
+    exit 3
+fi
+
+#check if Transmission daemon is running
+if [ -f ${PIDFILE} ] ; then
+   PID=`cat ${PIDFILE}`
+   grep -q transmissiond /proc/${PID}/cmdline 2> /dev/null
+   if [ $? != 0 ]; then
+      is_running=no
+   else
+      is_running=yes
+   fi
+else
+   is_running=no
+fi
+
+if [ ${is_running} = "no" ]; then
+    [ -f ${PIDFILE} ] && rm ${PIDFILE}
+    export HOME
+    _update_active
+    ulimit -c 60000
+    transmissiond -p ${LISTENING_PORT} \
+    	${NAT_TRAVERSAL} \
+	-w ${WATCHDOG} \
+	-u ${UPLOAD_SPEED} \
+	-d ${DOWNLOAD_SPEED} \
+	-i ${PIDFILE}   ${ACTIVE}
+    warning "Transmission daemon restarted!"
+    sleep 5
+    exit 1
+fi
+
+_update_progress
+
+TOTAL_ACTIVE=0
+BYPASS=0
+HEARTBEAT=0
+# We will check all torrents for running state
+for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
+    if [ -f "${TORRENT}" ]; then
+    	TOTAL_ACTIVE=$((TOTAL_ACTIVE+1))
+        if [ -f "${WORK}/${TORRENT#${WORK}}" ]; then 
+	    _check_if_complete
+    	    if [ -f "${TORRENT%/*}/.bypass" ] ; then
+		BYPASS=$((BYPASS+1))
+	    else
+		HEARTBEAT=$((HEARTBEAT+1))
+	    fi
+	fi # work
+        _check_tracker_error
+    fi
+done
+
+
+# check if there is a torrent to process
+FILE=`ls -1 $SOURCE/*.torrent 2>/dev/null | head -n 1`
+if [ -z "$FILE" ]; then
+#	notice "No torrents to process"
+	debug "Nothing to do"
+	exit 2
+fi
+
+[ -z "${MAX_ACTIVE_TORRENTS}" ] &&  MAX_ACTIVE_TORRENTS=10
+if [ ${TOTAL_ACTIVE} -gt ${MAX_ACTIVE_TORRENTS} ]; then
+	notice "Max active torrents (${MAX_ACTIVE_TORRENTS}) reached."
+	exit 4
+fi
+
+# Start new torrent if workload is small
+if [ ${HEARTBEAT} = 0 ]; then
+    
+    TORRENTNAME="${FILE%%.torrent*}"
+    TORRENTNAME="${TORRENTNAME##*/}"
+    
+    mkdir -p "$WORK/$TORRENTNAME"
+    chmod 777 "$WORK/$TORRENTNAME"
+    
+    debug "Moving [$FILE] to [$WORK/$TORRENTNAME]"
+    mv "$FILE" "$WORK/$TORRENTNAME"
+    
+    TORRENT="$WORK/$TORRENTNAME/$TORRENTNAME.torrent"
+    debug "Torrent: $TORRENT"
+
+    _update_active
+    
+    STARTTIME=`date +"${DATE_FORMAT}"`
+    DONE=0
+    
+    notice "Starting torrent $TORRENT"
+    
+    STATUS="started" 
+    ENDTIME=
+    SCRAPE=
+    UPLOADED=
+    URL=
+    NOTE=
+    _write_info
+
+
+    exit 0
+fi
+

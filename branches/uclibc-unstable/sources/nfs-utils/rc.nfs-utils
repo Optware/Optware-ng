@@ -1,0 +1,28 @@
+#!/bin/sh
+
+if [ -n "`pidof statd`" ]; then 
+    /bin/killall statd 2>/dev/null
+fi
+
+if [ -n "`pidof nfsd`" ]; then 
+    /bin/killall nfsd 2>/dev/null
+fi
+
+if [ -n "`pidof mountd`" ]; then 
+    /bin/killall mountd 2>/dev/null
+fi
+
+if [ ! -d /var/lib/nfs ] ;  then
+    mkdir -p /var/lib/nfs
+fi
+
+/bin/rm -f /etc/exports
+/bin/ln -s /opt/etc/exports /etc/exports
+
+touch /var/lib/nfs/etab
+touch /var/lib/nfs/rmtab
+
+/opt/sbin/statd
+/opt/sbin/exportfs -r
+/opt/sbin/nfsd
+/opt/sbin/mountd

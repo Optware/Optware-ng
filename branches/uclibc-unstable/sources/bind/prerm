@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+echo "Running bind pre-remove"
+#
+if [ -n "`pidof named`" ]; then
+    /bin/killall named 2>/dev/null
+fi
+
+rm -f /opt/etc/init.d/K91named 

@@ -1,0 +1,9 @@
+#!/bin/sh
+while true ; do
+       nice /opt/bin/giftd --quiet --home-dir=/tmp/harddisk/gift \
+			--local-dir=/opt/share/giFT \
+			--log-file=/tmp/harddisk/gift/giftd.log
+	logger "GIFT restarted due to error #$?"
+	sleep 20
+done
+

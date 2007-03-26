@@ -1,0 +1,11 @@
+--- otp_src_R10B-9/erts/etc/unix/Install.src	2005-12-02 07:07:40.000000000 -0800
++++ erlang/erts/etc/unix/Install.src	2005-12-24 11:44:51.000000000 -0800
+@@ -84,7 +84,7 @@
+   /bin/rm -f epmd
+ fi
+ 
+-ln -s $ERL_ROOT/erts-%I_VSN%/bin/epmd epmd
++ln -s ../erts-%I_VSN%/bin/epmd epmd
+ 
+ cp -p $ERL_ROOT/erts-%I_VSN%/bin/run_erl .
+ cp -p $ERL_ROOT/erts-%I_VSN%/bin/to_erl .

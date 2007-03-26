@@ -1,0 +1,16 @@
+With this patch we want to configure gettext, but we do not want to include 
+MJN3 warnings as they may produce errors in some packege configure scripts. 
+Example of this is: Not properly detecting HAVE_GETHOSTBYNAME_R_GLIBC2_STYLE
+in mysql when searching for gethostbyname_r
+
+--- uClibc-0.9.28.orig/extra/Configs/Config.in	2005-08-18 00:49:41.000000000 +0200
++++ uClibc-0.9.28/extra/Configs/Config.in	2006-07-19 10:34:36.000000000 +0200
+@@ -987,7 +987,7 @@
+ 
+ config UCLIBC_HAS_GETTEXT_AWARENESS
+ 	bool "Include gettext awareness"
+-	depends on UCLIBC_HAS_LOCALE && UCLIBC_MJN3_ONLY
++	depends on UCLIBC_HAS_LOCALE
+ 	default n
+ 	help
+ 	  NOTE!!!  Not yet integrated with strerror and strsignal.  NOTE!!!

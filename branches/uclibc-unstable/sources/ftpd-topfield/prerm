@@ -1,0 +1,5 @@
+#!/bin/sh
+
+killall ftpd-topfield 2>/dev/null
+
+return 0

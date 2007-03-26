@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ ! -d /var/lib ] ;  then
+    mkdir /var/lib
+fi
+
+if [ ! -d /var/lib/nfs ] ;  then
+    mkdir /var/lib/nfs
+fi
+
+if [ ! -f /opt/etc/exports ] ;  then
+    cp /opt/doc/nfs-utils/exports /opt/etc/exports
+    echo ; echo
+    echo "To complete the installation, you must edit /opt/etc/exports,"
+    echo "and then run /opt/etc/init.d/S56nfs-utils to start the nfs server."
+    echo
+else
+    /opt/etc/init.d/S56nfs-utils
+fi

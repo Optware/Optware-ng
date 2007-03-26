@@ -1,0 +1,15 @@
+--- rb-rubygems/lib/rubygems/installer.rb.orig	2006-03-05 14:20:25.000000000 -0800
++++ rb-rubygems/lib/rubygems/installer.rb	2006-03-05 14:30:03.000000000 -0800
+@@ -172,10 +172,10 @@
+         if defined? RUBY_FRAMEWORK_VERSION
+           File.join(File.dirname(Config::CONFIG["sitedir"]), File.basename(Config::CONFIG["bindir"]))
+         else # generic install
+-          Config::CONFIG['bindir']
++          File.join(Config::CONFIG['prefix'], 'local', 'bin')
+         end
+       else
+-        File.join(install_dir, "bin")
++        File.join(Config::CONFIG['prefix'], 'local', 'bin')
+       end
+     end
+ 

@@ -1,0 +1,62 @@
+--- ion-3ds-20060524/configure.ac.orig	2006-05-24 09:23:47.000000000 -0700
++++ ion-3ds-20060524/configure.ac	2006-05-28 12:27:39.000000000 -0700
+@@ -260,25 +260,7 @@
+ save_LIBS="$LIBS"
+ CFLAGS="$CFLAGS $LUA_INCLUDES"
+ LIBS="$LIBS $LUA_LIBS"
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-
+-#include <lua.h>
+-#include <stdlib.h>
+-#include <string.h>
+-#include <stdio.h>
+-
+-int main()
+-{
+-    printf("(found %s, %d)... ", LUA_VERSION, LUA_VERSION_NUM);
+-    if(LUA_VERSION_NUM >= 501)
+-        exit(EXIT_SUCCESS);
+-    exit(EXIT_FAILURE);
+-}
+-
+-]])],
+-              [AC_MSG_RESULT([yes])],
+-              [AC_MSG_RESULT([no])
+-               exit 1])
++              AC_MSG_RESULT([yes])
+ CFLAGS="$save_CFLAGS"
+ LIBS="$save_LIBS"
+ dnl }}}
+@@ -349,30 +331,8 @@
+ AC_MSG_CHECKING([for va_copy])
+ save_CFLAGS="$CFLAGS"
+ CFLAGS="$CFLAGS $C99_SOURCE"
+-AC_RUN_IFELSE([AC_LANG_SOURCE([[
+-
+-#include <stdarg.h>
+-#include <stdlib.h>
+-
+-void f(void *last, ...)
+-{
+-    va_list ap, aq;
+-    va_start(ap, last);
+-    va_copy(aq, ap);
+-    va_end(ap);
+-    exit(va_arg(aq, int));
+-}
+-
+-int main()
+-{
+-    f(NULL, EXIT_SUCCESS);
+-    exit(EXIT_FAILURE);
+-}
+-
+-]])],
+-                  [AC_MSG_RESULT([yes])
+-                   _DCF_HAS_VA_COPY="-DCF_HAVE_VA_COPY"],
+-                  [AC_MSG_RESULT([no])])
++                  AC_MSG_RESULT([yes])
++                   _DCF_HAS_VA_COPY="-DCF_HAVE_VA_COPY"
+ CFLAGS="$save_CFLAGS"
+ 
+ dnl }}}

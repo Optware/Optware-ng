@@ -1,0 +1,70 @@
+#! /bin/sh
+#
+# rrdcollect	Start/Stop Round-Robin Database Collecting Daemon
+#
+# chkconfig: - 05 95
+# description:	RRDcollect is a daemon which polls ceratin files in /proc/ \
+#		directory, gathering data and storing it inside RRDtool's \
+#		database files.
+# processname: rrdcollect
+# pidfile: /opt/var/run/rrdcollect.pid
+# config: /etc/rrdcollect.conf
+
+# Source function library.
+# . /etc/init.d/functions
+
+# Get identd config
+
+# [ -f /etc/sysconfig/rrdcollect ] && . /etc/sysconfig/rrdcollect
+
+[ -x /opt/sbin/rrdcollect ] || exit 0
+
+RETVAL=0
+prog="rrdcollect"
+
+start() {
+        echo -n $"Starting $prog: "
+        /opt/sbin/rrdcollect $RRDCOLLECTOPTS
+        RETVAL=$?
+        echo
+#        [ $RETVAL -eq 0 ] && touch /var/lock/subsys/rrdcollect
+	return $RETVAL
+}
+
+stop() {
+        echo -n $"Stopping $prog: " 
+        killall rrdcollect
+        RETVAL=$?
+        echo
+#        [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/rrdcollect
+	return $RETVAL
+}
+
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  status)
+	status rrdcollect
+	;;
+  restart|reload)
+	stop
+	sleep 2
+	start
+	;;
+#  condrestart)
+#	if [ -f /var/lock/subsys/rrdcollect ]; then
+#           stop
+#            start
+#        fi
+#	;;
+  *)
+	echo  $"Usage: $0 {start|stop|status|restart|reload}"
+	exit 1
+esac
+
+exit $RETVAL

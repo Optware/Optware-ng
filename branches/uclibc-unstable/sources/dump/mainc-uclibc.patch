@@ -1,0 +1,13 @@
+--- dump/dump/main.c.orig	2007-02-02 10:28:36.000000000 +0100
++++ dump/dump/main.c	2007-02-02 10:29:39.000000000 +0100
+@@ -45,7 +45,9 @@
+ #include <ctype.h>
+ #include <compaterr.h>
+ #include <fcntl.h>
+-#include <fstab.h>
++#ifndef __UCLIBC__
++#  include <fstab.h>
++#endif
+ #include <signal.h>
+ #include <stdio.h>
+ #include <stdlib.h>

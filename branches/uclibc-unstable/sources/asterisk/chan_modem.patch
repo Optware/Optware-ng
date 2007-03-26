@@ -1,0 +1,31 @@
+--- asterisk/channels/Makefile.orig	2006-09-09 00:08:15.000000000 +0200
++++ asterisk/channels/Makefile	2006-09-09 00:09:08.000000000 +0200
+@@ -18,7 +18,7 @@
+ 
+ ifneq (${OSARCH},CYGWIN)
+ # if you really, really want to use these drivers, uncomment the line below
+-#CHANNEL_LIBS+=chan_modem.so chan_modem_aopen.so chan_modem_bestdata.so
++CHANNEL_LIBS+=chan_modem.so chan_modem_aopen.so chan_modem_bestdata.so
+ endif
+ 
+ ifeq ($(findstring BSD,${OSARCH}),BSD)
+@@ -63,7 +63,7 @@
+     ifneq (${OSARCH},CYGWIN)
+ # the ISDN4Linux channel driver is probably broken on all modern kernels,
+ # but if you wish to try to use it, uncomment the line below
+-#      CHANNEL_LIBS+=chan_modem_i4l.so
++      CHANNEL_LIBS+=chan_modem_i4l.so
+        CHANNEL_LIBS+=chan_oss.so
+     endif
+   endif
+@@ -240,8 +240,8 @@
+ chan_misdn.o: chan_misdn.c
+ 	$(CC) $(CFLAGS) -DCHAN_MISDN_VERSION=\"0.2.1\" -c $< -o $@
+ 
+-#chan_modem.so : chan_modem.o
+-#	$(CC) -rdynamic -shared -Xlinker -x -o $@ $<
++chan_modem.so : chan_modem.o
++	$(CC) -rdynamic -shared -Xlinker -x -o $@ $<
+ 
+ install: all
+ 	for x in $(CHANNEL_LIBS); do $(INSTALL) -m 755 $$x $(DESTDIR)$(MODULES_DIR) ; done

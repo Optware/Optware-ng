@@ -1,0 +1,23 @@
+--- snownews-1.5.7/platform_settings	2005-06-05 02:50:22.000000000 -0700
++++ snownews/platform_settings	2005-07-08 21:20:52.365415000 -0700
+@@ -1,3 +1,5 @@
+-PREFIX=  /usr/local
+-CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" `xml2-config --cflags` $(EXTRA_CFLAGS)  -DSTATIC_CONST_ICONV -I/usr/local/include
+-LDFLAGS= -lncurses `xml2-config --libs` $(EXTRA_LDFLAGS)  -lintl -liconv
++PREFIX=/opt
++CC=@CC@
++CFLAGS=  -Wall -Wno-format-y2k -O2 -DLOCALEPATH="\"$(LOCALEPATH)\"" -DOS=\"$(shell uname)\" -pipe @CPPFLAGS@ $(EXTRA_CFLAGS) -DSTATIC_CONST_ICONV
++LDFLAGS= @LDFLAGS@ $(EXTRA_LDFLAGS)
++STRIP=@STRIP@
+--- snownews-1.5.7/Makefile	2005-06-05 02:50:22.000000000 -0700
++++ snownews/Makefile	2005-07-08 21:28:03.965415000 -0700
+@@ -59,7 +59,8 @@
+ 	if [ ! -d "$(DESTDIR)$(PREFIX)/bin" ]; then \
+ 		mkdir -p $(DESTDIR)$(PREFIX)/bin; \
+ 	fi
+-	$(INSTALL) -s snownews $(DESTDIR)$(PREFIX)/bin
++	$(INSTALL) snownews $(DESTDIR)$(PREFIX)/bin
++	$(STRIP) -s snownews
+ 	$(INSTALL) opml2snow $(DESTDIR)$(PREFIX)/bin
+ 	if [ ! -f "$(DESTDIR)$(PREFIX)/bin/snow2opml" ]; then \
+ 		ln -sf $(DESTDIR)$(PREFIX)/bin/opml2snow $(DESTDIR)$(PREFIX)/bin/snow2opml; \

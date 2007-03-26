@@ -1,0 +1,11 @@
+--- jabber-1.4.2-orig/jabberd/config.c	2002-02-07 23:39:26.000000000 -0800
++++ jabber/jabberd/config.c	2005-04-17 17:31:28.182376000 -0700
+@@ -174,7 +174,7 @@
+ 
+ int configurate(char *file)
+ {
+-    char def[] = "jabber.xml";
++    char def[] = CONFIGXML;
+     char *realfile = (char *)def;
+     xmlnode incl;
+     char *c;

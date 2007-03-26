@@ -1,0 +1,12 @@
+--- configure.org	2005-11-19 11:50:16.000000000 +0100
++++ configure	2005-11-19 11:54:41.000000000 +0100
+@@ -23297,7 +23297,8 @@
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+   if test "$cross_compiling" = yes; then
+-  fu_cv_sys_stat_statfs2_bsize=no
++  # Hack!!!
++  fu_cv_sys_stat_statfs2_bsize=yes
+ else
+   cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */

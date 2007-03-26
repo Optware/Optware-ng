@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "`pidof rsync`" ] ; then
+    killall rsync 2>/dev/null
+fi
+
+sleep 2
+/opt/bin/rsync --daemon

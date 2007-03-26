@@ -1,0 +1,29 @@
+--- sed/lib/regex_internal.h~	2005-01-28 01:07:57.000000000 -0800
++++ sed/lib/regex_internal.h	2005-05-30 11:09:06.000000000 -0700
+@@ -705,7 +705,11 @@
+   {
+     unsigned char ch;
+     unsigned char *name;
++#ifdef RE_ENABLE_I18N
+     wchar_t wch;
++#else
++    char wch;
++#endif
+   } opr;
+ } bracket_elem_t;
+ 
+--- sed/lib/regcomp.c~	2005-01-28 01:07:52.000000000 -0800
++++ sed/lib/regcomp.c	2005-05-30 11:08:45.000000000 -0700
+@@ -863,7 +863,12 @@
+   dfa->state_table = calloc (sizeof (struct re_state_table_entry), table_size);
+   dfa->state_hash_mask = table_size - 1;
+ 
++#ifdef RE_ENABLE_I18N
+   dfa->mb_cur_max = MB_CUR_MAX;
++#else
++  dfa->mb_cur_max = 1;
++#endif
++
+ #ifdef _LIBC
+   if (dfa->mb_cur_max == 6
+       && strcmp (_NL_CURRENT (LC_CTYPE, _NL_CTYPE_CODESET_NAME), "UTF-8") == 0)

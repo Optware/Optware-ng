@@ -1,0 +1,20 @@
+diff -ur indent-2.2.9/src/output.c indent/src/output.c
+--- indent-2.2.9/src/output.c	2002-12-12 18:36:49.000000000 +0100
++++ indent/src/output.c	2006-12-28 15:00:44.000000000 +0100
+@@ -15,6 +15,7 @@
+ #include <sys/types.h>
+ #include <utime.h>
+ #include <sys/stat.h>
++#include <stdlib.h>
+ 
+ #include "indent.h"
+ #include "sys.h"
+@@ -23,7 +24,7 @@
+ 
+ RCSTAG_CC ("$Id: output.c,v 1.5 2002/12/12 17:36:49 david Exp $");
+ 
+-static FILE            * output       = NULL;
++FILE            * output       = NULL;
+ static BOOLEAN           inhibited    = 0;
+ static buf_break_st_ty * buf_break_list = NULL;
+ 

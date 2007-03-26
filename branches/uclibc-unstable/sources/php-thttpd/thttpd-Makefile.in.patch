@@ -1,0 +1,128 @@
+--- thttpdphp/Makefile.in	Fri Apr  8 19:57:34 2005
++++ thttpdphp-patched/Makefile.in	Fri Apr  8 20:06:13 2005
+@@ -34,7 +34,7 @@
+ # Pathname of directory to install the man page.
+ MANDIR = @mandir@
+ # Pathname of directory to install the CGI programs.
+-WEBDIR = $(prefix)/www
++WEBDIR = $(prefix)/share/www
+ 
+ # CONFIGURE: The group that the web directory belongs to.  This is so that
+ # the makeweb program can be installed set-group-id to that group, and make
+@@ -101,31 +101,39 @@
+ 	    cd $$i ; \
+ 	    pwd ; \
+ 	    $(MAKE) $(MFLAGS) \
+-		WEBDIR=$(WEBDIR) \
+-		CGIBINDIR=$(CGIBINDIR) \
+-		MANDIR=$(MANDIR) \
++		WEBDIR=$(DESTDIR)$(WEBDIR) \
++		CGIBINDIR=$(DESTDIR)$(CGIBINDIR) \
++		MANDIR=$(DESTDIR)$(MANDIR) \
++		BINDIR=$(DESTDIR)$(BINDIR) \
+ 		WEBGROUP=$(WEBGROUP) \
+ 	) ; done
+ 
+ 
+-install:	installthis install-man installsubdirs
++install:	installdir installthis install-man installsubdirs
++
++installdir:
++	-mkdir -p $(DESTDIR)$(BINDIR)
++	-mkdir -p $(DESTDIR)$(MANDIR)/man8
++	-mkdir -p $(DESTDIR)$(MANDIR)/man1
++	-mkdir -p $(DESTDIR)$(WEBDIR)
++	-mkdir -p $(DESTDIR)$(CGIBINDIR)
+ 
+ installthis:
+ 	-mkdir -p $(DESTDIR)$(BINDIR)
+-	$(INSTALL) -m 555 -o bin -g bin thttpd $(DESTDIR)$(BINDIR)
++	$(INSTALL) -m 555 thttpd $(DESTDIR)$(BINDIR)
+ 
+ install-man:
+-	-mkdir -p $(DESTDIR)$(MANDIR)/man8
+-	$(INSTALL) -m 444 -o bin -g bin thttpd.8 $(DESTDIR)$(MANDIR)/man8
++	$(INSTALL) -m 444 thttpd.8 $(DESTDIR)$(MANDIR)/man8
+ 
+ installsubdirs:
+ 	for i in $(SUBDIRS) ; do ( \
+ 	    cd $$i ; \
+ 	    pwd ; \
+ 	    $(MAKE) $(MFLAGS) \
+-		WEBDIR=$(WEBDIR) \
+-		CGIBINDIR=$(CGIBINDIR) \
+-		MANDIR=$(MANDIR) \
++		WEBDIR=$(DESTDIR)$(WEBDIR) \
++		CGIBINDIR=$(DESTDIR)$(CGIBINDIR) \
++		MANDIR=$(DESTDIR)$(MANDIR) \
++		BINDIR=$(DESTDIR)$(BINDIR) \
+ 		WEBGROUP=$(WEBGROUP) \
+ 		install \
+ 	) ; done
+--- thttpdphp/cgi-src/Makefile.in	Mon Nov 12 16:52:00 2001
++++ thttpdphp-patched/cgi-src/Makefile.in	Fri Apr  8 20:07:01 2005
+@@ -26,9 +26,9 @@
+ 
+ prefix =	@prefix@
+ exec_prefix =	@exec_prefix@
+-WEBDIR =	$(prefix)/www
+-CGIBINDIR =	$(WEBDIR)/cgi-bin
+-MANDIR =	@mandir@
++#WEBDIR =	$(prefix)/www
++#CGIBINDIR =	$(WEBDIR)/cgi-bin
++#MANDIR =	@mandir@
+ 
+ CC =		@CC@
+ CCOPT =		@V_CCOPT@
+@@ -67,16 +67,10 @@
+ 	cd .. ; $(MAKE) $(MFLAGS) strerror.o
+ 
+ install:	all
+-	-mkdir -p $(CGIBINDIR)
+-	rm -f $(CGIBINDIR)/redirect
+ 	cp redirect $(CGIBINDIR)/redirect
+-	rm -f $(MANDIR)/man8/redirect.8
+ 	cp redirect.8 $(MANDIR)/man8/redirect.8
+-	rm -f $(CGIBINDIR)/ssi
+ 	cp ssi $(CGIBINDIR)/ssi
+-	rm -f $(MANDIR)/man8/ssi.8
+ 	cp ssi.8 $(MANDIR)/man8/ssi.8
+-	rm -f $(CGIBINDIR)/phf
+ 	cp phf $(CGIBINDIR)/phf
+ 
+ clean:
+--- thttpdphp/extras/Makefile.in	Mon Nov 12 16:52:55 2001
++++ thttpdphp-patched/extras/Makefile.in	Fri Apr  8 20:07:53 2005
+@@ -26,10 +26,10 @@
+ 
+ prefix =	@prefix@
+ exec_prefix =	@exec_prefix@
+-BINDIR =	@sbindir@
+-WEBDIR =	$(prefix)/www
+-CGIBINDIR =	$(WEBDIR)/cgi-bin
+-MANDIR =	@mandir@
++#BINDIR =	@sbindir@
++#WEBDIR =	$(prefix)/www
++#CGIBINDIR =	$(WEBDIR)/cgi-bin
++#MANDIR =	@mandir@
+ 
+ CC =		@CC@
+ CCOPT =		@V_CCOPT@
+@@ -66,17 +66,12 @@
+ 
+ 
+ install:	all
+-	rm -f $(BINDIR)/makeweb $(BINDIR)/htpasswd $(BINDIR)/syslogtocern
+ 	cp makeweb $(BINDIR)/makeweb
+-	chgrp $(WEBGROUP) $(BINDIR)/makeweb
+ 	chmod 2755 $(BINDIR)/makeweb
+ 	cp htpasswd $(BINDIR)/htpasswd
+ 	cp syslogtocern $(BINDIR)/syslogtocern
+-	rm -f $(MANDIR)/man1/makeweb.1
+ 	cp makeweb.1 $(MANDIR)/man1/makeweb.1
+-	rm -f $(MANDIR)/man1/htpasswd.1
+ 	cp htpasswd.1 $(MANDIR)/man1/htpasswd.1
+-	rm -f $(MANDIR)/man8/syslogtocern.8
+ 	cp syslogtocern.8 $(MANDIR)/man8/syslogtocern.8
+ 
+ clean:

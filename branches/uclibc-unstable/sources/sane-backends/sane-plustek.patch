@@ -1,0 +1,52 @@
+--- sane-backends/backend/plustek-usb.h.orig	2005-07-06 00:45:43.000000000 +0200
++++ sane-backends/backend/plustek-usb.h	2005-07-06 00:47:36.000000000 +0200
+@@ -106,17 +106,20 @@
+ #define _PHILO2WORD(x)  ((u_short)x->bHi * 256U + x->bLo)
+ 
+ /* useful for RGB-values */
++#define PACKED8  __attribute__ ((packed,aligned(1)))
++#define PACKED16 __attribute__ ((packed,aligned(2)))
++
+ typedef struct {
+ 	u_char Red;
+ 	u_char Green;
+ 	u_char Blue;
+-} RGBByteDef, *pRGBByteDef;
++} PACKED8 RGBByteDef, *pRGBByteDef;
+ 
+ typedef struct {
+ 	u_short Red;
+ 	u_short Green;
+ 	u_short Blue;
+-} RGBUShortDef, *pRGBUShortDef;
++} PACKED16 RGBUShortDef, *pRGBUShortDef;
+ 
+ typedef struct {
+ 	u_long Red;
+@@ -126,22 +129,22 @@
+ 
+ typedef struct {
+ 	u_char a_bColor[3];
+-} ColorByteDef, *pColorByteDef;
++} PACKED8 ColorByteDef, *pColorByteDef;
+ 
+ typedef struct {
+ 	u_char bHi;
+ 	u_char bLo;
+-} HiLoDef, *pHiLoDef;
++} PACKED8 HiLoDef, *pHiLoDef;
+ 
+ typedef union {
+ 	HiLoDef HiLo[3];
+ 	u_short	Colors[3];
+-} ColorWordDef, *pColorWordDef;
++} PACKED16 ColorWordDef, *pColorWordDef;
+ 
+ typedef union {
+ 	HiLoDef	HiLo;
+ 	u_short	Mono;
+-} MonoWordDef, *pMonoWordDef;
++} PACKED16 MonoWordDef, *pMonoWordDef;
+ 
+ typedef union {
+ 

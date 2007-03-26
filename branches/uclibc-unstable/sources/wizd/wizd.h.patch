@@ -1,0 +1,22 @@
+--- wizd_v24/wizd.h.orig	2006-11-02 11:45:38.000000000 +1030
++++ wizd_v24/wizd.h	2006-11-20 20:00:39.901510368 +1030
+@@ -61,9 +61,7 @@
+ #ifdef NEED_CONFIG_FILE_DEFINITION
+ char *config_file[] = {
+ 	"./wizd.conf",
+-	"/usr/local/wizd/wizd.conf",
+-	"/usr/local/etc/wizd.conf",
+-	"/etc/wizd.conf",
++	"/opt/etc/wizd.conf",
+ };
+ #endif
+ 
+@@ -77,7 +75,7 @@
+ #define	DEFAULT_SKINDATA_NAME		"default"
+ 
+ // execute path for CGI
+-#define	DEFAULT_PATH	"/usr/bin:/bin:/usr/sbin:/usr/bin"
++#define	DEFAULT_PATH	"/opt/bin:/usr/bin:/bin:/opt/sbin:/usr/sbin:/sbin"
+ 
+ #define	DEFAULT_FLAG_HIDE_SAME_SVI_NAME_DIRECTORY	FALSE
+ 

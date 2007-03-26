@@ -1,0 +1,189 @@
+diff -ur ctorrent-1.3.4/btstream.cpp new/btstream.cpp
+--- ctorrent-1.3.4/btstream.cpp	2004-09-09 00:10:51.000000000 +0100
++++ new/btstream.cpp	2005-01-25 01:25:31.000000000 +0000
+@@ -1,5 +1,6 @@
+ #include <arpa/inet.h>
+ #include "btstream.h"
++#include "peer.h"
+ #include "msgencode.h"
+ #include "btconfig.h"
+ 
+@@ -11,7 +12,7 @@
+ ssize_t btStream::Send_State(unsigned char state)
+ {
+   char msg[H_BASE_LEN + 4];
+-  *(size_t*)msg = htonl(H_BASE_LEN);
++  set_nl(msg, H_BASE_LEN);
+   msg[4] = (char)state;
+   return out_buffer.PutFlush(sock,msg,H_BASE_LEN + 4);
+ }
+@@ -19,12 +20,9 @@
+ ssize_t btStream::Send_Have(size_t idx)
+ {
+   char msg[H_HAVE_LEN + 4];
+-  size_t *p = (size_t*)msg;
+-
+-  *p = htonl(H_HAVE_LEN);
++  set_nl(msg, H_HAVE_LEN);
+   msg[4] = (char)M_HAVE;
+-  p = (size_t*)(msg + 5);
+-  *p = htonl(idx);
++  set_nl(msg + 5, idx);
+ 
+   return out_buffer.PutFlush(sock,msg,H_HAVE_LEN + 4);
+ }
+@@ -43,14 +41,12 @@
+ ssize_t btStream::Send_Cancel(size_t idx,size_t off,size_t len)
+ {
+   char msg[H_CANCEL_LEN + 4];
+-  size_t *p = (size_t*)msg;
+ 
+-  *p = htonl(H_CANCEL_LEN);
++  set_nl(msg, H_CANCEL_LEN);
+   msg[4] = M_CANCEL;
+-  p = (size_t*)(msg + 5);
+-  *p = htonl(idx); p++;
+-  *p = htonl(off); p++;
+-  *p = htonl(len);
++  set_nl(msg + 5, idx);
++  set_nl(msg + 9, off);
++  set_nl(msg + 13, len);
+   return out_buffer.Put(sock,msg,H_CANCEL_LEN + 4);
+ }
+ 
+@@ -72,14 +68,12 @@
+ ssize_t btStream::Send_Request(size_t idx, size_t off,size_t len)
+ {
+   char msg[H_REQUEST_LEN + 4];
+-  size_t *p = (size_t*) msg;
+ 
+-  *p = htonl(H_REQUEST_LEN);
++  set_nl(msg, H_REQUEST_LEN);
+   msg[4] = (char)M_REQUEST;
+-  p = (size_t*)(msg + 5);
+-  *p = htonl(idx); p++;
+-  *p = htonl(off); p++;
+-  *p = htonl(len);
++  set_nl(msg + 5, idx);
++  set_nl(msg + 9, off);
++  set_nl(msg + 13, len);
+   return out_buffer.Put(sock,msg,H_REQUEST_LEN + 4);
+ }
+ 
+@@ -94,7 +88,7 @@
+   // if message arrived.
+   size_t r;
+   if( 4 <= in_buffer.Count() ){
+-    r = ntohl(*(size_t*)in_buffer.BasePointer());
++    r = get_nl(in_buffer.BasePointer());
+     if( (cfg_max_slice_size + H_PIECE_LEN + 4) < r) return -1; //message too long
+     if( (r + 4) <= in_buffer.Count() ) return 1;
+   }
+diff -ur ctorrent-1.3.4/peer.cpp new/peer.cpp
+--- ctorrent-1.3.4/peer.cpp	2004-09-09 00:10:51.000000000 +0100
++++ new/peer.cpp	2005-01-25 01:23:51.000000000 +0000
+@@ -3,11 +3,32 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++#include "btstream.h"
+ #include "./btcontent.h"
+ #include "./msgencode.h"
+ #include "./peerlist.h"
+ #include "./btconfig.h"
+ 
++size_t get_nl(char *sfrom)
++{
++  unsigned char *from = (unsigned char *)sfrom;
++  size_t t;
++  t = (*from++) << 24; 
++  t |= (*from++) << 16; 
++  t |= (*from++) << 8; 
++  t |= *from; 
++  return t;
++}
++
++void set_nl(char *sto, size_t from)
++{
++  unsigned char *to = (unsigned char *)sto;
++  *to++ = (from >> 24) & 0xff;
++  *to++ = (from >> 16) & 0xff;
++  *to++ = (from >> 8) & 0xff;
++  *to = from & 0xff;
++}
++
+ btBasic Self;
+ 
+ void btBasic::SetIp(struct sockaddr_in addr)
+@@ -152,7 +173,8 @@
+ 
+   char *msgbuf = stream.in_buffer.BasePointer();
+ 
+-  r = ntohl(*(size_t*) msgbuf);
++  r = get_nl(msgbuf);
++
+ 
+   if( 0 == r ){
+     time(&m_last_timestamp);
+@@ -193,7 +215,7 @@
+     case M_HAVE:
+       if(H_HAVE_LEN != r){return -1;}
+ 
+-      idx = ntohl(*(size_t*) (msgbuf + 5));
++      idx = get_nl(msgbuf + 5);
+ 
+       if( idx >= BTCONTENT.GetNPieces() || bitfield.IsSet(idx)) return -1;
+ 
+@@ -208,12 +230,12 @@
+     case M_REQUEST:
+       if(H_REQUEST_LEN != r || !m_state.remote_interested){ return -1; }
+ 
+-      idx = ntohl(*(size_t*)(msgbuf + 5));
++      idx = get_nl(msgbuf + 5);
+       
+       if( !BTCONTENT.pBF->IsSet(idx) ) return -1;
+       
+-      off = ntohl(*(size_t*)(msgbuf + 9));
+-      len = ntohl(*(size_t*)(msgbuf + 13));
++      off = get_nl(msgbuf + 9);
++      len = get_nl(msgbuf + 13);
+ 
+       if( !reponse_q.IsValidRequest(idx, off, len) ) return -1;
+       
+@@ -235,9 +257,9 @@
+     case M_CANCEL:
+       if(r != H_CANCEL_LEN || !m_state.remote_interested) return -1;
+ 
+-      idx = ntohl(*(size_t*)(msgbuf + 5));
+-      off = ntohl(*(size_t*)(msgbuf + 9));
+-      len = ntohl(*(size_t*)(msgbuf + 13));
++      idx = get_nl(msgbuf + 5);
++      off = get_nl(msgbuf + 9);
++      len = get_nl(msgbuf + 13);
+       if( reponse_q.Remove(idx,off,len) < 0 ){
+ 	m_err_count++;
+ 	return 0;
+@@ -312,8 +334,8 @@
+   size_t idx,off,len;
+   char *msgbuf = stream.in_buffer.BasePointer();
+ 
+-  idx = ntohl(*(size_t*) (msgbuf + 5));
+-  off = ntohl(*(size_t*) (msgbuf + 9));
++  idx = get_nl(msgbuf + 5);
++  off = get_nl(msgbuf + 9);
+   len = mlen - 9;
+ 
+   if( request_q.Remove(idx,off,len) < 0 ){
+diff -ur ctorrent-1.3.4/peer.h new/peer.h
+--- ctorrent-1.3.4/peer.h	2004-09-09 00:10:51.000000000 +0100
++++ new/peer.h	2005-01-25 01:23:01.000000000 +0000
+@@ -34,6 +34,9 @@
+   unsigned char reserved:4;		/* unused */
+ }BTSTATUS;
+ 
++size_t get_nl(char *from);
++void set_nl(char *to, size_t from);
++
+ class btBasic
+ {
+ private:

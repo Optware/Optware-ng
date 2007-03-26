@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "`pidof ctcs`" ]; then
+    /bin/killall ctcs 2>/dev/null
+fi
+
+return 0

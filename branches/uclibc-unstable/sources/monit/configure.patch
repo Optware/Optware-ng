@@ -1,0 +1,17 @@
+--- configure.orig	2006-09-20 20:18:52.000000000 -0700
++++ configure	2006-09-20 20:19:43.000000000 -0700
+@@ -10067,13 +10067,7 @@
+ # Find the right directory to put the root-mode PID file in
+ { echo "$as_me:$LINENO: checking pid file location" >&5
+ echo $ECHO_N "checking pid file location... $ECHO_C" >&6; }
+-if test -d "/var/run"
+-then
+-	piddir="/var/run"
+-elif test -d "/etc"
+-then
+-	piddir="/etc"
+-fi
++piddir=/opt/var/run
+ 
+ 
+ cat >>confdefs.h <<_ACEOF

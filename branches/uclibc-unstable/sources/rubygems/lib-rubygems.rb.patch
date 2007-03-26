@@ -1,0 +1,11 @@
+--- rb-rubygems/lib/rubygems.rb.orig	2006-03-05 11:24:58.000000000 -0800
++++ rb-rubygems/lib/rubygems.rb	2006-03-05 11:26:07.000000000 -0800
+@@ -370,7 +370,7 @@
+       if defined? RUBY_FRAMEWORK_VERSION
+         return File.join(File.dirname(Config::CONFIG["sitedir"]), "Gems")
+       else
+-        File.join(Config::CONFIG['libdir'], 'ruby', 'gems', Config::CONFIG['ruby_version'])
++        File.join(Config::CONFIG['prefix'], 'local', 'lib', 'ruby', 'gems', Config::CONFIG['ruby_version'])
+       end
+     end
+ 

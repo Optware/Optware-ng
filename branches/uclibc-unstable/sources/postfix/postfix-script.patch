@@ -1,0 +1,10 @@
+--- postfix/conf/postfix-script.orig	2006-07-07 00:24:39.000000000 +0200
++++ postfix/conf/postfix-script	2006-07-07 00:25:50.000000000 +0200
+@@ -35,6 +35,7 @@
+     exit 1
+ esac
+ 
++PATH=/opt/bin:/opt/sbin:$PATH
+ LOGGER="$command_directory/postlog -t $MAIL_LOGTAG/postfix-script"
+ INFO="$LOGGER -p info"
+ WARN="$LOGGER -p warn"

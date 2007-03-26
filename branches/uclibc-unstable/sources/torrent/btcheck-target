@@ -1,0 +1,26 @@
+#!/bin/sh
+# Check all finished torrents for block consistency. 
+# This is more or less CPU&DISK toture test
+# recommended usage: nohup nice btcheck-target > /opt/tmp/btcheck-report.log &
+# progress check with: cat /opt/tmp/btcheck-report.log
+
+. /opt/etc/torrent.conf
+
+echo "##########################"
+echo "## Target btcheck report"
+
+for FILE in ${TARGET}/*/*torrent* ; do
+	TORRENT="${FILE##*/}"
+	DIRNAME="${FILE%/*}"
+	DATE=`date +"${DATE_FORMAT}"`
+	echo -n "${DATE} ${TORRENT} "
+	cd "${DIRNAME}"
+	btcheck "${TORRENT}" 2> /dev/null > /opt/tmp/btcheck.log
+	STATUS=$?
+	if [ $STATUS = 0 ]; then
+		echo -e "${GOOD}OK${NORMAL}"
+	else
+		echo -e "${BAD}Failed!${NORMAL}"
+	fi
+	rm /opt/tmp/btcheck.log
+done

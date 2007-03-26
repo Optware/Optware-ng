@@ -1,0 +1,17 @@
+--- pygdchart2/setup.py	2004-11-18 16:41:35.000000000 -0800
++++ py-gdchart2/setup.py	2005-06-12 20:37:13.264321000 -0700
+@@ -14,14 +14,6 @@
+                             Extension(
+                                         "_gdchartc",
+                                         ["_gdchartc.c"],
+-                                        include_dirs=[GDCHART_PATH],
+-                                        library_dirs=[
+-                                                            GD_PATH,
+-                                                            GDCHART_PATH,
+-                                                            "/usr/local/lib",
+-                                                            "/usr/X11R6/lib",
+-                                                            "/usr/lib"
+-                                                    ],
+                                         define_macros=[
+                                                             ("HAVE_LIBFREETYPE", 1),
+                                                             ("HAVE_JPEG", 1),

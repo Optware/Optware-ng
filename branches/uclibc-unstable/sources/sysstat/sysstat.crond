@@ -1,0 +1,6 @@
+# Run system activity accounting tool every 10 minutes
+*/10 * * * * root /opt/lib/sa/sa1 -d 1 1
+# 0 * * * * root /opt/lib/sa/sa1 -d 600 6 &
+# Generate a daily summary of process accounting at 23:53
+53 23 * * * root /opt/lib/sa/sa2 -A
+

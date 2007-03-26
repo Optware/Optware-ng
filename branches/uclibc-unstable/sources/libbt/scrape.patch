@@ -1,0 +1,163 @@
+--- src/btlist.c	2005-12-10 00:50:12.000000000 +0100
++++ src/btlist.c	2006-02-15 01:30:36.000000000 +0100
+@@ -23,6 +23,76 @@
+ 
+ #define V(vers) #vers
+ 
++#include <curl/curl.h>
++#include <curl/easy.h>
++#define V(vers) #vers
++
++/* Retrieve number of seeders, leechers and downloaded torrents from tracker */
++int scrape(const char *announce, unsigned char digest[SHA_DIGEST_LENGTH])
++{
++
++  btStream *io;
++  btObject *result;
++  int curlret;
++  char *p;
++
++  CURL *hdl;
++  char url[1024];
++  hdl = curl_easy_init();
++  p = strstr(announce, "announce");
++  if (p == NULL)
++    return -1;
++  strncpy(url, announce, p-announce);
++  strcpy(&url[p-announce], "scrape");
++  strcpy(&url[p-announce+6], &announce[p-announce+8]);
++  curl_easy_setopt( hdl, CURLOPT_URL, url);
++  io = bts_create_strstream( BTS_OUTPUT);
++  curl_easy_setopt( hdl, CURLOPT_FILE, io);
++  curl_easy_setopt( hdl, CURLOPT_WRITEFUNCTION, writebts);
++  if ((curlret = curl_easy_perform( hdl)) != CURLE_OK)
++    {
++      switch (curlret)
++        {
++        case CURLE_COULDNT_CONNECT:
++          fprintf(stderr, "Failed to transfer URL: could not connect (%d)\n",
++                  curlret);
++        default:
++          fprintf(stderr,
++                  "Failed to transfer URL for reason %d (see curl.h)\n",
++                  curlret);
++        }
++      result=NULL;
++    }
++  else
++    { /* parse the response */
++      btInteger *downloaded, *complete, *incomplete;
++      btDict *files;
++      btString *k;
++      int idx;
++      if (bts_rewind( io, BTS_INPUT)) DIE("bts_rewind");
++      if (benc_get_object( io, &result)) DIE("bad response");
++      files=BTDICT( btObject_val( result, "files"));
++      k = btString_create(NULL);
++      btString_setbuf(k, digest, SHA_DIGEST_LENGTH);
++      for (idx=0; idx<files->len; idx++) {
++        if (btString_cmp(k, &files->key[idx]) == 0) {
++          complete = BTINTEGER( btObject_val(files->value[idx], "complete"));
++          incomplete = BTINTEGER( btObject_val(files->value[idx], "incomplete"));
++          downloaded = BTINTEGER( btObject_val(files->value[idx], "downloaded"));
++          printf ("seeders: %d leechers: %d downloaded: %d\n",
++                  (int)complete->ival, (int)incomplete->ival,
++                  (int)downloaded->ival);
++        }
++      }   
++    }
++
++  bts_destroy (io);
++  curl_easy_cleanup( hdl);
++
++  return 0;
++}
++
++
+ int main( int argc, char **argv) {
+     char *fname;
+     btStream *in;
+@@ -34,13 +104,21 @@
+     int idx;
+     int optdebug = 0;
+     int opthelp = 0;
++    int optscrape = 0;
++    int optquiet = 0;
+     int opt;
+ 
+-    while ((opt = getopt( argc, argv, "d")) != -1) {
++    while ((opt = getopt( argc, argv, "dsq")) != -1) {
+ 	switch (opt) {
+-	    case 'd':
++        case 'd':
+ 	    	optdebug = 1;
+-		break;
++            break;
++        case 'q':
++            optquiet = 1;
++            break;
++        case 's':
++          optscrape = 1;
++          break;
+ 	    default:
+ 		printf("Unknown option '%c'\n", opt);
+ 		opthelp = 1;
+@@ -53,6 +131,8 @@
+ 	printf("Version: %.2f\n", VERSION);
+ 	printf("Options:\n");
+ 	printf("  -d            Debug dump\n");
++    printf("  -s            Retrieve scrape from tracker\n");
++    printf("  -q            Quiet. No file list\n");
+ 	exit(1);
+     }
+ 
+@@ -93,10 +173,11 @@
+ 	btObject_dump(0,o);
+     }
+ 
++    unsigned char digest[SHA_DIGEST_LENGTH];
++    
+     {
+        /* SHA1 */ 
+        btStream *tmpbts; 
+-       unsigned char digest[SHA_DIGEST_LENGTH];
+        struct btstrbuf out;
+ 
+        d=BTDICT( btObject_val( o, "info"));
+@@ -112,6 +193,7 @@
+        printf("\n");
+     }
+ 
++    if (optquiet != 1) {
+     i=BTINTEGER( btObject_val(o, "info/length"));
+     if (i) {
+        /* file mode */
+@@ -150,12 +232,16 @@
+        printf("archive size..: %lld (%lld * %lld + %lld)\n",
+ 	   tsize, tsize/i->ival, i->ival, tsize%i->ival);
+     }
+-
++    }
++    
+     s=BTSTRING( btObject_val( o, "announce"));
+     printf("announce url..: %s\n", s->buf);
+ 
+     printf("\n");
+ 
++    if (optscrape)
++      scrape(s->buf, digest);
++    
+     btObject_destroy( o);
+     bts_destroy( in);
+     return 0;
+--- src/types.c	2005-12-08 08:20:26.000000000 +0100
++++ src/types.c	2006-02-15 01:32:18.000000000 +0100
+@@ -111,7 +111,7 @@
+        else along=0;
+    }
+ 
+-   res = strncmp(a->buf, b->buf, n);
++   res = memcmp(a->buf, b->buf, n);
+    if (res == 0) {
+       return along;
+    }

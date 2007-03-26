@@ -1,0 +1,33 @@
+--- amuled.o/configure	2005-01-11 20:20:36.481581832 +0100
++++ amuled/configure	2005-01-11 20:30:16.160457248 +0100
+@@ -12724,14 +12724,10 @@
+ 
+ else
+   cat >>confdefs.h <<\_ACEOF
+-#define HAVE_MALLOC 0
++#define HAVE_MALLOC 1
+ _ACEOF
+ 
+-   LIBOBJS="$LIBOBJS malloc.$ac_objext"
+ 
+-cat >>confdefs.h <<\_ACEOF
+-#define malloc rpl_malloc
+-_ACEOF
+ 
+ fi
+ 
+@@ -13419,13 +13415,7 @@
+ 
+ else
+   cat >>confdefs.h <<\_ACEOF
+-#define HAVE_REALLOC 0
+-_ACEOF
+-
+-   LIBOBJS="$LIBOBJS realloc.$ac_objext"
+-
+-cat >>confdefs.h <<\_ACEOF
+-#define realloc rpl_realloc
++#define HAVE_REALLOC 1
+ _ACEOF
+ 
+ fi

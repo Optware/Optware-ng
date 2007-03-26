@@ -1,0 +1,11 @@
+--- BitTorrent/platform.py.orig	2006-11-15 21:25:40.000000000 -0800
++++ BitTorrent/platform.py	2006-11-15 21:26:08.000000000 -0800
+@@ -22,7 +22,7 @@
+ import tarfile
+ import traceback
+ 
+-from BTL.platform import efs, efs2, get_filesystem_encoding
++from BTL.platform import efs, efs2, get_filesystem_encoding, encode_for_filesystem, decode_from_filesystem
+ 
+ # NOTE: intentionally appears in the file before importing anything
+ # from BitTorrent because it is called when setting --use_factory_defaults.

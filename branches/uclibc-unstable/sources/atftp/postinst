@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p /opt/tftpboot
+
+killall -HUP xinetd 2>/dev/null

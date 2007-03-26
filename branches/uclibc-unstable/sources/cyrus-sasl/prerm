@@ -1,0 +1,7 @@
+#!/bin/sh
+
+/bin/killall saslauthd > /dev/null 2>&1
+
+/bin/rm -rf /opt/etc/sasl2
+/bin/rm -rf /opt/lib/sasl2
+/bin/rm -rf /var/state/saslauthd

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/opt/sbin/httpd -k stop
+
+update-alternatives --remove htpasswd /opt/sbin/apache-htpasswd

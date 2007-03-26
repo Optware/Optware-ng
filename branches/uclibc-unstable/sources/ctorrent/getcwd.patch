@@ -1,0 +1,21 @@
+diff --exclude '*Po' -ur ctorrent/btfiles.cpp ctorrent.new/btfiles.cpp
+--- ctorrent/btfiles.cpp	2004-09-09 00:10:51.000000000 +0100
++++ ctorrent.new/btfiles.cpp	2005-02-03 17:51:52.000000000 +0000
+@@ -169,7 +172,7 @@
+   DIR *dp;
+   BTFILE *pbf;
+ 
+-  if( !getwd(full_cur) ) return -1;
++  if( !getcwd(full_cur, MAXPATHLEN) ) return -1;
+ 
+   if( cur_path ){
+     strcpy(fn, full_cur);
+@@ -293,7 +296,7 @@
+     m_btfhead = pbf;
+   }else if( S_IFDIR & sb.st_mode ){
+     char wd[MAXPATHLEN];
+-    if( !getwd(wd) ) return -1;
++    if( !getcwd(wd, MAXPATHLEN) ) return -1;
+     m_directory = new char[strlen(pathname) + 1];
+ #ifndef WINDOWS
+     if( !m_directory ) return -1;

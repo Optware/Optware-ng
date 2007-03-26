@@ -1,0 +1,32 @@
+--- http/modules/php5/Makefile.original	2005-06-12 16:03:59.000000000 +0100
++++ http/modules/php5/Makefile	2005-08-11 12:19:35.000000000 +0100
+@@ -25,7 +25,7 @@
+ 		$(BLD_OBJ_DIR)/php5Handler$(BLD_OBJ) $(BLD_BIN_DIR)/libappWeb$(BLD_LIB)
+ 	@bld --shared --library $(BLD_BIN_DIR)/libphp5Module \
+ 		--rpath "$(BLD_PREFIX)/bin" \
+-		--libraryPath "$(BLD_TOP)/$(BLD_PHP5_DIR)/libs" \
++		--libraryPath "$(BLD_TOP)/$(BLD_PHP5_DIR)/lib" \
+ 		--preferShared --smartLibs "appWeb" --libs "$(BLD_PHP5_LIBS)" \
+ 		$(BLD_OBJ_DIR)/php5Handler$(BLD_OBJ)
+ 
+@@ -36,9 +36,9 @@
+  			$(BLDOUT) ; \
+ 		cp $(BLD_TOP)/$(BLD_PHP5_DIR)/libs/php5ts.dll $(BLD_BIN_DIR) ; \
+ 	else \
+-		echo "cp $(BLD_TOP)/$(BLD_PHP5_DIR)/libs/libphp5.so $(BLD_BIN_DIR)" | \
++		echo "cp $(BLD_TOP)/$(BLD_PHP5_DIR)/lib/libphp5.so $(BLD_BIN_DIR)" | \
+ 			$(BLDOUT) ; \
+-		cp $(BLD_TOP)/$(BLD_PHP5_DIR)/libs/libphp5.so $(BLD_BIN_DIR) ; \
++		cp $(BLD_TOP)/$(BLD_PHP5_DIR)/lib/libphp5.so $(BLD_BIN_DIR) ; \
+ 	fi
+ 
+ cleanExtra:
+@@ -50,7 +50,7 @@
+ #
+ projects: always
+ 	@makeProj --shared --library libphp5Module \
+-		--libraryPath "$(BLD_TOP)/$(BLD_PHP5_DIR)/libs" \
++		--libraryPath "$(BLD_TOP)/$(BLD_PHP5_DIR)/lib" \
+ 		--libs "appWeb $(BLD_PHP5_LIBS)" \
+ 		--sources "php5Handler.cpp" --headers "php5Handler.h"
+ 

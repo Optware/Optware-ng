@@ -1,0 +1,11 @@
+--- bitlbee/configure.orig	2007-01-11 19:51:40.000000000 -0800
++++ bitlbee/configure	2007-01-11 19:51:59.000000000 -0800
+@@ -86,7 +86,7 @@
+ 
+ DESTDIR=
+ LFLAGS=
+-EFLAGS=
++EFLAGS=$LDFLAGS
+ EOF
+ 
+ cat<<EOF>config.h

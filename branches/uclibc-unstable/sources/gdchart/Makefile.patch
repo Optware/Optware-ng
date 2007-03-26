@@ -1,0 +1,53 @@
+--- gdchart0.11.5dev/Makefile	2004-12-17 09:53:47.000000000 -0800
++++ gdchart/Makefile	2005-06-12 20:21:36.044321000 -0700
+@@ -1,4 +1,7 @@
+ CC=gcc
++AR=ar
++RANLIB=ranlib
++
+ # gcc 2.7.1 or better is required
+ # CFLAGS=
+ # CFLAGS=-g -ansi -pedantic
+@@ -83,6 +86,7 @@
+ 	$(CC) -o gdc_samp1 \
+ 			 gdc_samp1.o \
+ 			 $(LIB_PATHS) \
++			 $(LDFLAGS) \
+ 			 -lgdc -lgd -lz -lpng $(LIBS) -lm
+ 
+ gdc_samp2: $(GDC_LD)libgdc.a gdc_samp2.o $(GD_LD)/$(GD_LIB) $(GDC_LD)/$(GDC_LIB)
+@@ -90,6 +94,7 @@
+ 			 gdc.o gdchart.o price_conv.o \
+ 			 gdc_samp2.o \
+ 			 $(LIB_PATHS) \
++			 $(LDFLAGS) \
+ 			 -lgdc -lgd -lz -lpng $(LIBS) -lm
+ 
+ gdc_pie_samp: $(GDC_LD)libgdc.a gdc_pie_samp.o $(GD_LD)/$(GD_LIB) $(GDC_LD)/$(GDC_LIB)
+@@ -97,6 +102,7 @@
+ 			 gdc.o gdc_pie.o price_conv.o \
+ 			 gdc_pie_samp.o \
+ 			 $(LIB_PATHS) \
++			 $(LDFLAGS) \
+ 			 -lgdc -lgd -lz -lpng $(LIBS) -lm
+ 
+ ft_samp: $(GDC_LD)libgdc.a ft_samp.o $(GD_LD)/$(GD_LIB) $(GDC_LD)/$(GDC_LIB)
+@@ -104,6 +110,7 @@
+ 			 gdc.o gdchart.o price_conv.o \
+ 			 ft_samp.o \
+ 			 $(LIB_PATHS) \
++			 $(LDFLAGS) \
+ 			 -lgdc -lgd -lz -lpng $(LIBS) -lm
+ 
+ # --- compile the lib ---
+@@ -125,8 +132,8 @@
+ 	$(CC) $(CFLAGS) -c array_alloc.c
+ 
+ libgdc.a: price_conv.o gdc.o gdc_pie.o gdchart.o array_alloc.o
+-	ar cr libgdc.a gdc.o gdchart.o gdc_pie.o price_conv.o array_alloc.o
+-	ranlib libgdc.a
++	$(AR) cr libgdc.a gdc.o gdchart.o gdc_pie.o price_conv.o array_alloc.o
++	$(RANLIB) libgdc.a
+ 
+ # --- supporting libraries ---
+ # should be compile & installed separately

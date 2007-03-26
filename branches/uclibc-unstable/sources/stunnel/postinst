@@ -1,0 +1,22 @@
+#!/bin/sh
+
+mkdir -p /opt/var/stunnel
+
+chmod 777 /opt/var/stunnel
+
+if [ ! -f /opt/etc/stunnel/stunnel.pem ] ;  then
+
+    echo
+    echo "Creating /opt/etc/stunnel/stunnel.pem (server certificate) ..."
+
+    mkdir -p /opt/etc/stunnel
+
+    /opt/bin/openssl req -new -x509 -days 365 -nodes -rand /dev/urandom \
+	-config /opt/etc/stunnel/stunnel-cert.cnf \
+	-out /opt/etc/stunnel/stunnel.pem -keyout /opt/etc/stunnel/stunnel.pem
+
+    /opt/bin/openssl x509 -subject -dates -fingerprint -noout -in /opt/etc/stunnel/stunnel.pem
+
+fi
+
+/opt/etc/init.d/S68stunnel

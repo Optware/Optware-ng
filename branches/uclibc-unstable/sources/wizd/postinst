@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you must edit /opt/etc/wizd.conf,"
+echo "and then run /opt/etc/init.d/S84wizd to start wizd."
+echo
+

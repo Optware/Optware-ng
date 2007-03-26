@@ -1,0 +1,27 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+if grep -q ^sane-port /etc/services; then
+	echo
+	echo -n "Removing sane-port from /etc/services..."
+	sed -i -e "/^sane-port/d" /etc/services
+	echo "done."
+fi
+
+if [ -f /opt/etc/inetd.conf ]; then
+	if grep -q ^sane-port /opt/etc/inetd.conf; then
+		sed -i -e "/^sane-port/d" /opt/etc/inetd.conf
+		echo
+		echo "/opt/etc/inetd.conf has been updated to remove saned"
+		echo "Please restart inetd."
+	fi
+fi
+
+if [ -f /opt/etc/xinet.d/saned ]; then
+	rm -f /opt/etc/xinet.d/saned
+	echo
+	echo "xinetd has been updated to remove saned"
+	echo "Please restart xinetd."
+fi
+

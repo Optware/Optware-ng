@@ -1,0 +1,87 @@
+--- environ.c
++++ environ.c
+@@ -431,6 +431,8 @@
+ #define SUBS_DEFINED
+ 
+ #include <time.h>
++#include <sys/types.h>
++#include <utime.h>
+ 
+ #ifndef time_t
+ #define time_t long
+@@ -558,12 +560,10 @@
+ mstonix(tstamp)
+ ulong tstamp;
+ {
++    time_t tt;
++    struct tm tm;
+     uint date, time;
+-    int year, month, day, hour, min, sec, daycount;
+-    long longtime;
+-    /* no. of days to beginning of month for each month */
+-    static int dsboy[12] =
+-        { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334};
++    int year, month, day, hour, min, sec;
+ 
+     date = (uint) ((tstamp >> 16) & 0xffff);
+     time = (uint) (tstamp & 0xffff);
+@@ -577,18 +577,16 @@
+     min   = (time >> 5) & 0x3f;
+     sec   = (time & 0x1f) * 2;
+ 
+-    daycount = 365 * (year - 1970) +   /* days due to whole years */
+-               (year - 1969) / 4 +     /* days due to leap years */
+-               dsboy[month-1] +        /* days since beginning of this year */
+-               day-1;                  /* days since beginning of month */
+-
+-    if (year % 4 == 0 &&
+-        year % 400 != 0 && month >= 3)  /* if this is a leap year and month */
+-        daycount++;                     /* is March or later, add a day */
+-
+-    longtime = daycount * 24L * 60L * 60L +
+-               hour * 60L * 60L + min * 60 + sec;
+-    return longtime;
++    tm.tm_sec = sec;
++    tm.tm_min = min;
++    tm.tm_hour = hour;
++    tm.tm_mday = day;
++    tm.tm_mon = month - 1;
++    tm.tm_year = year - 1900;
++    tm.tm_isdst = -1;
++    
++    tt = mktime (&tm);
++    return tt;
+ }
+ 
+ int
+@@ -599,20 +597,21 @@
+ uint  host;
+ {
+     time_t m_time;
+-    struct utimbuf
+-    {
+-       time_t atime;             /* New access time */
+-       time_t mtime;             /* New modification time */
+-    } tb;
++    struct utimbuf tb;
+ 
+     (char *) name;
+     (uint) attribute;
+     (uint) host;
+ 
+-    m_time = mstonix(tstamp) + gettz();
+-
+-    tb.mtime = m_time;                  /* Set modification time */
+-    tb.atime = m_time;                  /* Set access time */
++    m_time = mstonix(tstamp); /* + gettz(); */
++    if (m_time < 0)
++    {
++      printf ("Invalid time, set to current time!");
++      m_time = time ((time_t *) NULL);
++    }
++    
++    tb.actime = m_time;                  /* Set modification time */
++    tb.modtime = m_time;                 /* Set access time */
+ 
+     /* set the time stamp on the file */
+     return utime(name, &tb);

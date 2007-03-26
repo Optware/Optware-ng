@@ -1,0 +1,13 @@
+--- openldap-2.3.27/libraries/liblunicode/Makefile.in.orig	2006-09-26 22:13:34.000000000 +0200
++++ openldap-2.3.27/libraries/liblunicode/Makefile.in	2006-09-26 22:15:29.000000000 +0200
+@@ -35,8 +35,8 @@
+ 	$(MAKE) ucgendat
+ 	./ucgendat $(srcdir)/UnicodeData.txt -x $(srcdir)/CompositionExclusions.txt
+ 
+-ucgendat: $(XLIBS) ucgendat.o
+-	$(LTLINK) -o $@ ucgendat.o $(LIBS)
++ucgendat: $(XLIBS) .links
++	$(HOSTCC) -o $@ -I$(top_srcdir)/include ucgendat.c ../liblutil/utils.c
+ 
+ .links :
+ 	@for i in $(XXSRCS) $(XXHEADERS); do \

@@ -1,0 +1,16 @@
+#
+# ProFTPd FTP daemon - http://www.proftpd.org
+#
+service ftp
+{
+       flags            = REUSE
+       socket_type      = stream
+       instances        = 30
+       wait             = no
+       user             = root
+       server           = /opt/sbin/proftpd
+       server_args	= --config /opt/etc/proftpd.conf
+       log_on_success   = HOST PID
+       log_on_failure   = HOST
+       disable          = no
+}

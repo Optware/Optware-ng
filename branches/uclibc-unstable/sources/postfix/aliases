@@ -1,0 +1,59 @@
+#
+# Sample aliases file. Install in the location as specified by the
+# output from the command "postconf alias_maps". Typical path names
+# are /opt/etc/aliases, /etc/aliases or /etc/mail/aliases.
+#
+#	>>>>>>>>>>      The program "newaliases" must be run after
+#	>> NOTE >>      this file is updated for any changes to
+#	>>>>>>>>>>      show through to Postfix.
+#
+
+# Person who should get root's mail. Don't receive mail as root!
+#root:			you
+
+# Basic system aliases -- these MUST be present
+MAILER-DAEMON:		postmaster
+postmaster:		root
+
+# General redirections for pseudo accounts
+bin:			root
+daemon:			root
+named:			root
+nobody:			root
+uucp:			root
+www:			root
+ftp-bugs:		root
+postfix:		root
+
+# Put your local aliases here.
+admin:			root
+lp:			root
+ftp:			root
+guest:			root
+ourtelnetrescueuser:	root
+mail:			postmaster
+
+# Well-known aliases
+manager:		root
+dumper:			root
+operator:		root
+abuse:			postmaster
+spam:			postmaster
+
+# Further well-known aliases for mail/news/ftp/web.
+hostmaster:		root
+webmaster:		root
+news:			root
+newsadm:		news
+newsadmin:		news
+usenet:			news
+ftpadm:			ftp
+ftpadmin:		ftp
+ftp-adm:		ftp
+ftp-admin:		ftp
+postman:		postmaster
+post_office:		postmaster
+
+# trap decode to catch security attacks
+decode:			root
+

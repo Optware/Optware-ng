@@ -1,0 +1,22 @@
+--- libgcrypt/mpi/config.links.orig	2006-09-03 17:50:55.000000000 +0200
++++ libgcrypt/mpi/config.links	2006-09-03 17:51:27.000000000 +0200
+@@ -286,19 +286,9 @@
+ 
+ # Make sysdep.h
+ echo '/* created by config.links - do not edit */' >./mpi/sysdep.h
+-if test x$ac_cv_sys_symbol_underscore = xyes; then
+-    cat <<EOF >>./mpi/sysdep.h
+-#if __STDC__
+-#define C_SYMBOL_NAME(name) _##name
+-#else
+-#define C_SYMBOL_NAME(name) _/**/name
+-#endif
+-EOF
+-else
+     cat <<EOF >>./mpi/sysdep.h
+ #define C_SYMBOL_NAME(name) name
+ EOF
+-fi
+ 
+ 
+ # Figure the required modules out

@@ -1,0 +1,20 @@
+--- Makefile.in.orig	2006-12-11 00:13:10.000000000 -0500
++++ Makefile.in	2006-12-11 00:13:27.000000000 -0500
+@@ -67,7 +67,7 @@
+ # Install commands...
+ #
+ 
+-INSTALL_BIN	=	$(LIBTOOL) $(INSTALL) -m 755 -s
++INSTALL_BIN	=	$(LIBTOOL) $(INSTALL) -m 755
+ INSTALL_DATA	=	$(INSTALL) -m 644
+ INSTALL_DIR	=	$(INSTALL) -d
+ INSTALL_LIB	=	$(LIBTOOL) $(INSTALL) -m 755
+@@ -98,7 +98,7 @@
+ LIBOBJS		=	$(PUBLIBOBJS) mxml-private.o mxml-string.o
+ OBJS		=	mxmldoc.o testmxml.o $(LIBOBJS)
+ TARGETS		=	$(LIBMXML) mxmldoc doc/mxml.$(CAT3EXT) \
+-			doc/mxmldoc.$(CAT1EXT) testmxml mxml.xml
++			doc/mxmldoc.$(CAT1EXT)
+ 
+ 
+ #

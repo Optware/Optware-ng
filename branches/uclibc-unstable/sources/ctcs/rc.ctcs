@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Startup script for ctcs
+#
+
+# 
+# Get command line options from configration file (/opt/etc/ctcs.conf)
+# Please read /opt/doc/ctcs/README.nslu2 and readme.txt
+#
+if [ -f /opt/etc/ctcs.conf ] ; then
+  . /opt/etc/ctcs.conf
+fi
+
+# Builds the complete command line based on the options provided
+if [ -n "${ctcs_port}" ] ; then
+  ctcs_options="${ctcs_options} -p ${ctcs_port}"
+fi
+
+if [ -n "${ctcs_download_bw}" ] ; then
+  ctcs_options="${ctcs_options} -d ${ctcs_download_bw}"
+fi
+
+if [ -n "${ctcs_upload_bw}" ] ; then
+  ctcs_options="${ctcs_options} -u ${ctcs_upload_bw}"
+fi
+
+if [ -n "${ctcs_interval}" ] ; then
+  ctcs_options="${ctcs_options} -i ${ctcs_interval}"
+fi
+
+#
+# pid_file stores the pid of the running server, this usually should
+# not be changed
+pid_file=/var/run/ctcs.pid
+
+# Stop itself if running
+if [ -n "`pidof ctcs`" ]; then
+    /bin/killall ctcs 2>/dev/null
+fi
+
+sleep 5
+
+/opt/bin/ctcs ${ctcs_options} 2>${ctcs_logfile} >&2 &
+if [ "$?" -eq "0" ]; then echo $! > ${pid_file}; fi

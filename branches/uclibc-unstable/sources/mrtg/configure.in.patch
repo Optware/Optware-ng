@@ -1,0 +1,27 @@
+--- ../configure.in	2004-11-10 19:16:06.000000000 +0000
++++ ./configure.in	2005-11-06 22:44:07.000000000 +0000
+@@ -26,22 +26,8 @@
+ 
+ # Taken from libIDL-0.8.2
+ AC_MSG_CHECKING([for printf long long format specifier])
+-AC_CACHE_VAL(long_long_format_specifier,[
+-    for format in ll l q I64; do
+-        AC_TRY_RUN([#include <stdio.h>  
+-            int main()
+-            {
+-                long long b, a = -0x3AFAFAFAFAFAFAFALL;
+-                char buffer[1000];
+-                sprintf (buffer, "%${format}u", a);
+-                sscanf (buffer, "%${format}u", &b);
+-                exit (b!=a);
+-            }
+-            ],
+-            long_long_format_specifier="%${format}d"
+-            long_long_format="${format}d"
+-            break)
+-        done])
++long_long_format_specifier="%lld"
++long_long_format="lld"
+ AC_MSG_RESULT($long_long_format_specifier)
+ AC_DEFINE_UNQUOTED(LLD, "$long_long_format_specifier",
+     [How to print a long long])

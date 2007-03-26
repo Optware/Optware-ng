@@ -1,0 +1,21 @@
+--- configure.ac.orig	2006-05-08 12:29:17.000000000 +1000
++++ configure.ac	2006-05-08 12:30:00.000000000 +1000
+@@ -6,15 +6,15 @@
+ 
+ AC_INIT(oggenc/encode.c)
+ 
+-AC_CANONICAL_HOST
+-AC_CANONICAL_TARGET
++#AC_CANONICAL_HOST
++#AC_CANONICAL_TARGET
+ 
+ AC_PREREQ(2.53)
+ 
+ AM_INIT_AUTOMAKE([vorbis-tools],[1.1.1])
+ AM_MAINTAINER_MODE
+ 
+-AC_CONFIG_HEADER(config.h)
++AM_CONFIG_HEADER(config.h)
+ 
+ dnl --------------------------------------------------  
+ dnl Check for programs

@@ -1,0 +1,11 @@
+--- piccache.c	2007-01-23 23:32:38.484375000 +0100
++++ patched/piccache.c	2007-01-23 23:32:55.203125000 +0100
+@@ -17,7 +17,7 @@
+ 
+ // We use ftw() by default.
+ // On platforms that don't have it we must patch this file to remove the #define below.
+-#define USE_FTW
++//#define USE_FTW
+ 
+ #include <limits.h>
+ #include <time.h>

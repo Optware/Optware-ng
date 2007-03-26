@@ -1,0 +1,7 @@
+#!/bin/sh
+
+echo ; echo
+echo "To complete the installation, you must edit /opt/etc/thttpd.conf,"
+echo "and then run /opt/etc/init.d/S80thttpd to start thttpd."
+echo
+

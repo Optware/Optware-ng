@@ -1,0 +1,18 @@
+--- src/data/socket_file.cc.orig	2007-01-12 05:46:04.000000000 -0800
++++ src/data/socket_file.cc	2007-03-05 09:54:19.000000000 -0800
+@@ -160,7 +160,14 @@
+ 
+   uint64_t align = offset % MemoryChunk::page_size();
+ 
+-  char* ptr = (char*)mmap(NULL, length + align, prot, flags, m_fd, offset - align);
++  offset = offset - align;
++
++#if __GLIBC__ == 2 && __GLIBC_MINOR__ < 3
++#warning "swap word of 64-bit offset to work around mmap64 bug of glibc"
++  offset = (offset >> 32) | (offset << 32);
++#endif
++
++  char* ptr = (char*)mmap(NULL, length + align, prot, flags, m_fd, offset);
+   
+   if (ptr == MAP_FAILED)
+     return MemoryChunk();

@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Startup script for proftpd as standalone server
+#
+
+if [ -n "`pidof proftpd`" ]; then
+    /bin/killall proftpd 2>/dev/null
+fi
+
+/opt/sbin/proftpd --config /opt/etc/proftpd.conf
+
+

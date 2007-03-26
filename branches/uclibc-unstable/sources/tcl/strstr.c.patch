@@ -1,0 +1,13 @@
+--- tcl8.4.12/compat/strstr.c	2005-04-12 20:28:56.000000000 +0200
++++ tcl/compat/strstr.c	2005-12-19 13:35:52.087181048 +0100
+@@ -37,7 +37,9 @@
+  *
+  *----------------------------------------------------------------------
+  */
+-
++#ifndef NULL
++#define NULL
++#endif
+ char *
+ strstr(string, substring)
+     register char *string;	/* String to search. */

@@ -1,0 +1,28 @@
+--- a/src/CryptoPP.h	2005-01-11 21:03:50.806184544 +0100
++++ amuled/src/CryptoPP.h	2005-01-11 21:12:32.753836440 +0100
+@@ -90,6 +90,14 @@
+ #define CRYPTOPP_CONFIG_H
+ 
+ // ***************** Important Settings ********************
++#ifdef wxBYTE_ORDER
++#if wxBYTE_ORDER == wxLITTLE_ENDIAN
++#	define IS_LITTLE_ENDIAN
++#else
++#	define IS_BIG_ENDIAN
++#endif
++#endif
++
+ 
+ // define this if running on a big-endian CPU
+ #if !defined(IS_LITTLE_ENDIAN) && (defined(__BIG_ENDIAN__) || defined(__sparc) || defined(__sparc__) || defined(__hppa__) || defined(__mips__) || (defined(__MWERKS__) && !defined(__INTEL__)))
+--- a/src/CryptoPP.cpp	2005-01-11 21:29:23.843127504 +0100
++++ amuled/src/CryptoPP.cpp	2005-01-11 21:39:47.196363408 +0100
+@@ -81,7 +81,7 @@
+ // to Wei Dai is not required but would also be appreciated.
+ // 
+ ////////////////////////////////////////////////////////////////////////////////
+-
++#include <wx/defs.h>   /* needed for endian setup */
+ #include "CryptoPP.h"
+ 
+ ////////////////////////////////////////////////////////////////////////////////

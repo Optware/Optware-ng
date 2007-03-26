@@ -1,0 +1,172 @@
+diff -ur vorbis-tools-1.0.dist/ogg123/Makefile.in vorbis-tools-1.0/ogg123/Makefile.in
+--- vorbis-tools-1.0.dist/ogg123/Makefile.in	2002-07-19 09:19:14.000000000 -0500
++++ vorbis-tools-1.0/ogg123/Makefile.in	2005-04-13 01:23:38.000000000 -0500
+@@ -109,7 +109,7 @@
+ USE_NLS = @USE_NLS@
+ VERSION = @VERSION@
+ VORBISENC_LIBS = @VORBISENC_LIBS@
+-VORBISFILE_LIBS = @VORBISFILE_LIBS@
++VORBISFILE_LIBS = -lvorbisidec
+ VORBIS_CFLAGS = @VORBIS_CFLAGS@
+ VORBIS_LIBS = @VORBIS_LIBS@
+ 
+@@ -130,7 +130,7 @@
+ 
+ @BUILD_OGG123_TRUE@INCLUDES = @OGG_CFLAGS@ @VORBIS_CFLAGS@ @AO_CFLAGS@ @CURL_CFLAGS@            @PTHREAD_CFLAGS@ @SHARE_CFLAGS@ @I18N_CFLAGS@
+ 
+-@BUILD_OGG123_TRUE@ogg123_LDADD = @SHARE_LIBS@ 	       @VORBISFILE_LIBS@ @VORBIS_LIBS@ @OGG_LIBS@ @AO_LIBS@                @SOCKET_LIBS@ @LIBICONV@ @CURL_LIBS@ @PTHREAD_CFLAGS@                @PTHREAD_LIBS@ @I18N_LIBS@
++@BUILD_OGG123_TRUE@ogg123_LDADD = @SHARE_LIBS@ 	       -lvorbisidec  @VORBIS_LIBS@ @OGG_LIBS@ @AO_LIBS@                @SOCKET_LIBS@ @LIBICONV@ @CURL_LIBS@ @PTHREAD_CFLAGS@                @PTHREAD_LIBS@ @I18N_LIBS@
+ @BUILD_OGG123_TRUE@ogg123_DEPENDENCIES = @SHARE_LIBS@
+ @BUILD_OGG123_TRUE@ogg123_SOURCES = $(ogg123sources)
+ 
+diff -ur vorbis-tools-1.0.dist/ogg123/cmdline_options.c vorbis-tools-1.0/ogg123/cmdline_options.c
+--- vorbis-tools-1.0.dist/ogg123/cmdline_options.c	2002-07-10 21:44:39.000000000 -0500
++++ vorbis-tools-1.0/ogg123/cmdline_options.c	2005-04-13 01:19:02.000000000 -0500
+@@ -176,7 +176,7 @@
+ 	break;
+ 	
+       case 'V':
+-	status_error(_("ogg123 from %s %s\n"), PACKAGE, VERSION);
++	status_error(_("ogg123 (w/Tremor hack) from %s %s\n"), PACKAGE, VERSION);
+ 	exit(0);
+ 	break;
+ 
+diff -ur vorbis-tools-1.0.dist/ogg123/oggvorbis_format.c vorbis-tools-1.0/ogg123/oggvorbis_format.c
+--- vorbis-tools-1.0.dist/ogg123/oggvorbis_format.c	2002-07-19 05:31:53.000000000 -0500
++++ vorbis-tools-1.0/ogg123/oggvorbis_format.c	2005-04-13 01:20:33.000000000 -0500
+@@ -20,7 +20,7 @@
+ #include <ctype.h>
+ #include <ogg/ogg.h>
+ #include <vorbis/codec.h>
+-#include <vorbis/vorbisfile.h>
++#include <tremor/ivorbisfile.h>
+ #include "transport.h"
+ #include "format.h"
+ #include "utf8.h"
+@@ -150,9 +150,7 @@
+   while (nbytes > 0) {
+ 
+     old_section = priv->current_section;
+-    ret = ov_read(&priv->vf, ptr, nbytes, audio_fmt->big_endian,
+-		  audio_fmt->word_size, audio_fmt->signed_sample,
+-		  &priv->current_section);
++    ret = ov_read(&priv->vf, ptr, nbytes, &priv->current_section);
+ 
+     if (ret == 0) {
+ 
+Only in vorbis-tools-1.0/oggdec: #oggdec.c#
+diff -ur vorbis-tools-1.0.dist/oggdec/Makefile.in vorbis-tools-1.0/oggdec/Makefile.in
+--- vorbis-tools-1.0.dist/oggdec/Makefile.in	2002-07-19 09:19:17.000000000 -0500
++++ vorbis-tools-1.0/oggdec/Makefile.in	2005-04-13 01:12:18.000000000 -0500
+@@ -109,7 +109,7 @@
+ USE_NLS = @USE_NLS@
+ VERSION = @VERSION@
+ VORBISENC_LIBS = @VORBISENC_LIBS@
+-VORBISFILE_LIBS = @VORBISFILE_LIBS@
++VORBISFILE_LIBS = -lvorbisidec
+ VORBIS_CFLAGS = @VORBIS_CFLAGS@
+ VORBIS_LIBS = @VORBIS_LIBS@
+ 
+@@ -126,7 +126,7 @@
+ 
+ @BUILD_OGGDEC_TRUE@INCLUDES = @OGG_CFLAGS@ @VORBIS_CFLAGS@ @SHARE_CFLAGS@
+ 
+-@BUILD_OGGDEC_TRUE@oggdec_LDADD = @LIBICONV@ @SHARE_LIBS@ @VORBISFILE_LIBS@ @VORBIS_LIBS@ @OGG_LIBS@
++@BUILD_OGGDEC_TRUE@oggdec_LDADD = @LIBICONV@ @SHARE_LIBS@ -lvorbisidec @VORBIS_LIBS@ @OGG_LIBS@
+ @BUILD_OGGDEC_TRUE@oggdec_DEPENDENCIES = @SHARE_LIBS@
+ 
+ @BUILD_OGGDEC_TRUE@oggdec_SOURCES = $(oggdecsources)
+diff -ur vorbis-tools-1.0.dist/oggdec/oggdec.c vorbis-tools-1.0/oggdec/oggdec.c
+--- vorbis-tools-1.0.dist/oggdec/oggdec.c	2002-07-19 01:25:58.000000000 -0500
++++ vorbis-tools-1.0/oggdec/oggdec.c	2005-04-13 01:12:18.000000000 -0500
+@@ -18,21 +18,18 @@
+ #include <io.h>
+ #endif
+ 
+-#include <vorbis/vorbisfile.h>
++#include <tremor/ivorbisfile.h>
+ 
+ struct option long_options[] = {
+     {"quiet", 0,0,'Q'},
+     {"help",0,0,'h'},
+     {"version", 0, 0, 'v'},
+-    {"bits", 1, 0, 'b'},
+-    {"endianness", 1, 0, 'e'},
+     {"raw", 1, 0, 'R'},
+-    {"sign", 1, 0, 's'},
+     {"output", 1, 0, 'o'},
+     {NULL,0,0,0}
+ };
+ 
+-#define VERSIONSTRING "OggDec 1.0\n"
++#define VERSIONSTRING "OggDec 1.0 (Tremor)\n"
+ 
+ static int quiet = 0;
+ static int bits = 16;
+@@ -49,11 +46,6 @@
+                     " --quiet, -Q      Quiet mode. No console output.\n"
+                     " --help,  -h      Produce this help message.\n"
+                     " --version, -v    Print out version number.\n"
+-                    " --bits, -b       Bit depth for output (8 and 16 supported)\n"
+-                    " --endianness, -e Output endianness for 16 bit output. 0 for\n"
+-                    "                  little endian (default), 1 for big endian\n"
+-                    " --sign, -s       Sign for output PCM, 0 for unsigned, 1 for\n"
+-                    "                  signed (default 1)\n"
+                     " --raw, -R        Raw (headerless) output.\n"
+                     " --output, -o     Output to given filename. May only be used\n"
+                     "                  if there is only one input file\n"
+@@ -68,7 +60,7 @@
+     int option_index = 1;
+     int ret;
+ 
+-    while((ret = getopt_long(argc, argv, "Qhvb:e:R:s:o:", 
++    while((ret = getopt_long(argc, argv, "QhvR:o:", 
+                     long_options, &option_index)) != -1)
+     {
+         switch(ret)
+@@ -84,19 +76,6 @@
+                 fprintf(stderr, VERSIONSTRING);
+                 exit(0);
+                 break;
+-            case 's':
+-                sign = atoi(optarg);
+-                break;
+-            case 'b':
+-                bits = atoi(optarg);
+-                if(bits <= 8)
+-                    bits = 8;
+-                else
+-                    bits = 16;
+-                break;
+-            case 'e':
+-                endian = atoi(optarg);
+-                break;
+             case 'o':
+                 outfilename = strdup(optarg);
+             case 'R':
+@@ -243,7 +222,7 @@
+         }
+     }
+ 
+-    while((ret = ov_read(&vf, buf, buflen, endian, bits/8, sign, &bs)) != 0) {
++    while((ret = ov_read(&vf, buf, buflen, &bs)) != 0) {
+         if(bs != 0) {
+             fprintf(stderr, "Only one logical bitstream currently supported\n");
+             break;
+@@ -254,6 +233,16 @@
+             continue;
+         }
+ 
++	{ /* byteswap */
++	    int i;
++	    char tmp_char;
++	    for(i=0;i<ret;i+=2) {
++		tmp_char = buf[i];
++		buf[i] = buf[i+1];
++		buf[i+1] = tmp_char;
++	    }
++	}
++
+         if(fwrite(buf, 1, ret, out) != ret) {
+             fprintf(stderr, "Error writing to file: %s\n", strerror(errno));
+             ov_clear(&vf);

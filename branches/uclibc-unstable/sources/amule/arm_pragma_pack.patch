@@ -1,0 +1,95 @@
+--- amuled/src/ClientCredits.h	2004-10-30 00:13:50.000000000 +0200
++++ a/src/ClientCredits.h	2005-01-06 21:25:31.000000000 +0100
+@@ -46,7 +46,7 @@
+ 	uint16		nReserved3;
+ 	uint8		nKeySize;
+ 	uchar		abySecureIdent[MAXPUBKEYSIZE];
+-};
++}__attribute__ ((packed)) ;
+ #pragma pack()
+ 
+ enum EIdentState{
+--- amuled/src/otherstructs.h	2004-04-22 05:17:00.000000000 +0200
++++ a/src/otherstructs.h	2005-01-06 20:39:52.000000000 +0100
+@@ -81,20 +81,20 @@
+ 	int8	eDonkeyID;
+ 	int32	packetlength;
+ 	int8	command;
+-};
++} __attribute__ ((packed));
+ #pragma pack()
+ 
+ #pragma pack(1)
+ struct UDP_Header_Struct{
+ 	int8	eDonkeyID;
+ 	int8	command;
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ #pragma pack(1)
+ struct LoginAnswer_Struct {
+ 	uint32	clientid;
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ #pragma pack(1)
+@@ -104,7 +104,7 @@
+ 	uint32	packedsize;
+ 	unsigned char	FileID[16];
+ 	uint32  transferred; // Barry - This counts bytes completed
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ #pragma pack(1)
+@@ -112,7 +112,7 @@
+ 	unsigned char	  fileid[16];
+ 	uint32	  lastasked;
+ 	uint8	  badrequests;
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ struct Pending_Block_Struct{
+@@ -132,7 +132,7 @@
+ 	uint32	ip;
+ 	uint16	port;
+ 	uint32	tagcount;
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ struct TransferredData {
+ 	uint32	datalen;
+@@ -149,7 +149,7 @@
+ 			uint16 frequency; // Availability of the chunk
+ 			uint16 rank;      // Download priority factor (highest = 0, lowest = 0xffff)
+ 	};
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ #endif // OTHERSTRUCTS_H
+--- amuled/src/Preferences.h	2004-12-11 01:26:40.000000000 +0100
++++ a/src/Preferences.h	2005-01-06 21:23:42.000000000 +0100
+@@ -57,7 +57,7 @@
+ 	int8	version;
+ 	unsigned char	userhash[16];
+ 	WINDOWPLACEMENT EmuleWindowPlacement;
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ 
+--- a/src/ClientUDPSocket.h	2005-01-08 17:07:22.509622968 +0100
++++ amuled/src/ClientUDPSocket.h	2005-01-08 17:00:44.807082944 +0100
+@@ -33,7 +33,7 @@
+ 	uint32 dwIP;
+ 	uint16 nPort;
+ 	int    trial;
+-};
++}__attribute__ ((packed));
+ #pragma pack()
+ 
+ // CClientUDPSocket command target

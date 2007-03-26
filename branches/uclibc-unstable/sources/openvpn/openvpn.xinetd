@@ -1,0 +1,22 @@
+# An xinetd configuration file for OpenVPN.
+#
+# This file should be renamed to openvpn or something suitably
+# descriptive and copied to the /etc/xinetd.d directory.
+# xinetd can then be made aware of this file by restarting
+# it or sending it a SIGHUP signal.
+#
+# For each potential incoming client, create a separate version
+# of this configuration file on a unique port number and change
+# server args to point to another config file.
+
+service openvpn_1
+{
+        type            = UNLISTED
+        port            = 1194
+        socket_type     = dgram
+        protocol        = udp
+        wait            = yes
+        user            = root
+        server          = /opt/sbin/openvpn
+        server_args     = --cd /opt/etc/openvpn --config openvpn.conf
+}

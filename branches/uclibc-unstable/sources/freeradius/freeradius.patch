@@ -1,0 +1,113 @@
+diff -Nur freeradius-1.0.1/src/modules/rlm_eap/Makefile.in freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in
+--- freeradius-1.0.1/src/modules/rlm_eap/Makefile.in	2004-01-28 07:38:40.000000000 -0800
++++ freeradius-1.0.1-new/src/modules/rlm_eap/Makefile.in	2004-11-30 17:38:35.000000000 -0800
+@@ -1,5 +1,5 @@
+ TARGET      = @targetname@
+-SRCS        = rlm_eap.c eap.c mem.c state.c
++SRCS        = rlm_eap.c eap.c mem.c state.c libeap/eapcommon.c
+ HEADERS     = eap.h rlm_eap.h
+ RLM_CFLAGS  = $(INCLTDL) -I@srcdir@/libeap
+ CLIENTLIBS  = -Llibeap -leap -L../../lib -lradius
+diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_log.c
+--- freeradius-1.0.1/src/modules/rlm_x99_token/x99_log.c	2002-07-11 23:45:53.000000000 -0700
++++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_log.c	2004-11-29 21:53:49.000000000 -0800
+@@ -41,12 +41,12 @@
+     char *fmt;
+ 
+     va_start(ap, format);
+-    fmt = malloc(strlen(X99_MODULE_NAME) + strlen(format) + 3);
++    fmt = malloc(strlen("rlm_x99_token\0") + strlen(format) + 3);
+     if (!fmt) {
+ 	va_end(ap);
+ 	return;
+     }
+-    (void) sprintf(fmt, "%s: %s", X99_MODULE_NAME, format);
++    (void) sprintf(fmt, "%s: %s", "rlm_x99_token\0", format);
+ 
+ #ifdef FREERADIUS
+     (void) vradlog(level, fmt, ap);
+diff -Nur freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c
+--- freeradius-1.0.1/src/modules/rlm_x99_token/x99_rlm.c	2004-02-26 11:04:37.000000000 -0800
++++ freeradius-1.0.1-new/src/modules/rlm_x99_token/x99_rlm.c	2004-12-08 14:07:05.996229848 -0800
+@@ -37,7 +37,6 @@
+  * TODO: support other than ILP32 (for State)
+  */
+ 
+-
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/types.h>
+@@ -109,6 +108,33 @@
+     { NULL, -1, 0, NULL, NULL }		/* end the list */
+ };
+ 
++static int x99_token_init(void);
++static int x99_token_instantiate(CONF_SECTION *conf, void **instance);
++static int x99_token_authorize(void *instance, REQUEST *request);
++static int x99_token_authenticate(void *instance, REQUEST *request);
++static int x99_token_detach(void *instance);
++static int x99_token_destroy(void);
++
++module_t rlm_x99_token = {
++	"x99_token",
++	RLM_TYPE_THREAD_SAFE,		/* type */
++	x99_token_init,			/* initialization */
++	x99_token_instantiate,		/* instantiation */
++	{
++		x99_token_authenticate,	/* authentication */
++		x99_token_authorize,	/* authorization */
++		NULL,			/* preaccounting */
++		NULL,			/* accounting */
++		NULL,			/* checksimul */
++		NULL,			/* pre-proxy */
++		NULL,			/* post-proxy */
++		NULL			/* post-auth */
++	},
++	x99_token_detach,		/* detach */
++	x99_token_destroy,		/* destroy */
++};
++
++module_t rlm_x99_token;
+ 
+ /* per-module initialization */
+ static int
+@@ -484,9 +510,9 @@
+ 
+     /* Add a message to the auth log. */
+     pairadd(&request->packet->vps, pairmake("Module-Failure-Message",
+-					    X99_MODULE_NAME, T_OP_EQ));
++					    "rlm_x99_token\0", T_OP_EQ));
+     pairadd(&request->packet->vps, pairmake("Module-Success-Message",
+-					    X99_MODULE_NAME, T_OP_EQ));
++					    "rlm_x99_token\0", T_OP_EQ));
+ 
+     /* Look up the user's info. */
+     if (x99_get_user_info(inst->pwdfile, username, &user_info) != 0) {
+@@ -844,27 +870,3 @@
+     return 0;
+ }
+ 
+-/*
+- *	If the module needs to temporarily modify it's instantiation
+- *	data, the type should be changed to RLM_TYPE_THREAD_UNSAFE.
+- *	The server will then take care of ensuring that the module
+- *	is single-threaded.
+- */
+-module_t rlm_x99_token = {
+-	"x99_token",
+-	RLM_TYPE_THREAD_SAFE,		/* type */
+-	x99_token_init,			/* initialization */
+-	x99_token_instantiate,		/* instantiation */
+-	{
+-		x99_token_authenticate,	/* authentication */
+-		x99_token_authorize,	/* authorization */
+-		NULL,			/* preaccounting */
+-		NULL,			/* accounting */
+-		NULL,			/* checksimul */
+-		NULL,			/* pre-proxy */
+-		NULL,			/* post-proxy */
+-		NULL			/* post-auth */
+-	},
+-	x99_token_detach,		/* detach */
+-	x99_token_destroy,		/* destroy */
+-};

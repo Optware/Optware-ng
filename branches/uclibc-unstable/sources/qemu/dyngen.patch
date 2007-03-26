@@ -1,0 +1,15 @@
+--- qemu-0.7.0/dyngen.c	2005-04-27 13:52:05.000000000 -0700
++++ qemu/dyngen.c	2005-07-21 13:19:30.000000000 -0700
+@@ -1656,7 +1656,11 @@
+ #ifdef CONFIG_FORMAT_MACH
+                     offset -= section_hdr[sym->n_sect-1].addr;
+ #endif
+-                    val = *(unsigned long *)(ptr + offset);
++		    /* the line below formerly read
++		       val = *(unsigned long)(ptr+offset);
++		       which breaks when cross compiling for
++		       a host with different byte order */
++                    val = get32((uint32_t *)(ptr + offset)); 
+ #ifdef ELF_USES_RELOCA
+                     {
+                         int reloc_shndx, nb_relocs1, j;
