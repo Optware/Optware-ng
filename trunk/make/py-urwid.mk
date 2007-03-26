@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-URWID_SITE=http://excess.org/urwid
-PY-URWID_VERSION=0.9.7.2
+PY-URWID_VERSION=0.9.8
 PY-URWID_SOURCE=urwid-$(PY-URWID_VERSION).tar.gz
 PY-URWID_DIR=urwid-$(PY-URWID_VERSION)
 PY-URWID_UNZIP=zcat
@@ -244,7 +244,7 @@ $(PY24-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-URWID_IPK_DIR) --prefix=/opt; \
 	)
-#	$(STRIP_COMMAND) `find $(PY-URWID_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY24-URWID_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY24-URWID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-URWID_IPK_DIR)
 
@@ -255,7 +255,7 @@ $(PY25-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-URWID_IPK_DIR) --prefix=/opt; \
 	)
-#	$(STRIP_COMMAND) `find $(PY-URWID_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY25-URWID_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	$(MAKE) $(PY25-URWID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-URWID_IPK_DIR)
 #
