@@ -22,7 +22,7 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.24
-SAMBA_IPK_VERSION=1
+SAMBA_IPK_VERSION=2
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=3
@@ -44,7 +44,7 @@ SAMBA_CONFLICTS=
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
-SAMBA_CONFFILES=/opt/etc/init.d/S80samba
+SAMBA_CONFFILES=/opt/etc/init.d/S08samba
 
 
 #
@@ -287,7 +287,7 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S80samba
+	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst

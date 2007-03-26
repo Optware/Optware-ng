@@ -1,22 +1,23 @@
 #!/bin/sh
 
-# please remove '#' to activate the start script.
+# set samba_active=1 to activate samba
+samba_active=0
+
+[ 1 = $samba_active ] || exit 0
 
 if [ -n "`pidof smbd`" ] ; then
     echo "Stopping smbd:"
-#    killall smbd
+    killall smbd
 fi
 
 if [ -n "`pidof nmbd`" ] ; then
     echo "Stopping nmbd:"
-#    killall nmbd
+    killall nmbd
 fi
 
-#sleep 2
+sleep 2
 
-echo "Starting smbd:"
-# /opt/sbin/smbd -D;
 echo "Starting nmbd:"
-# /opt/sbin/nmbd -D;
-
-
+/opt/sbin/nmbd -D
+echo "Starting smbd:"
+/opt/sbin/smbd -D
