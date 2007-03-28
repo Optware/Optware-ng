@@ -28,13 +28,14 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=7
+VSFTPD_IPK_VERSION=8
 
 #
 # VSFTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VSFTPD_PATCHES=$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch
+VSFTPD_PATCHES=$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch \
+		$(VSFTPD_SOURCE_DIR)/sysutil.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -57,12 +58,16 @@ VSFTPD_SOURCE_DIR=$(SOURCE_DIR)/vsftpd
 VSFTPD_IPK_DIR=$(BUILD_DIR)/vsftpd-$(VSFTPD_VERSION)-ipk
 VSFTPD_IPK=$(BUILD_DIR)/vsftpd_$(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: vsftpd-source vsftpd-unpack vsftpd vsftpd-stage vsftpd-ipk vsftpd-clean vsftpd-dirclean vsftpd-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VSFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(VSFTPD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(VSFTPD_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(VSFTPD_SOURCE)
+
 
 #
 # The source code depends on it existing within the download directory.
@@ -174,3 +179,9 @@ vsftpd-clean:
 #
 vsftpd-dirclean:
 	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR) $(VSFTPD_IPK_DIR) $(VSFTPD_IPK)
+#
+#
+# Some sanity check for the package.
+#
+vsftpd-check: $(VSFTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VSFTPD_IPK)

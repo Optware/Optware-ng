@@ -1,0 +1,24 @@
+--- vsftpd-2.0.1/sysutil.c	2004-07-02 15:20:29.000000000 +0200
++++ vsftpd/sysutil.c	2007-03-28 16:02:46.000000000 +0200
+@@ -596,17 +596,19 @@
+ vsf_sysutil_wait_exited_normally(
+   const struct vsf_sysutil_wait_retval* p_waitret)
+ {
+-  return WIFEXITED(p_waitret->exit_status);
++  int status = p_waitret->exit_status;
++  return WIFEXITED(status);
+ }
+ 
+ int
+ vsf_sysutil_wait_get_exitcode(const struct vsf_sysutil_wait_retval* p_waitret)
+ {
++  int status = p_waitret->exit_status;
+   if (!vsf_sysutil_wait_exited_normally(p_waitret))
+   {
+     bug("not a normal exit in vsf_sysutil_wait_get_exitcode");
+   }
+-  return WEXITSTATUS(p_waitret->exit_status);
++  return WEXITSTATUS(status);
+ }
+ 
+ void
