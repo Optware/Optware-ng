@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R11B-3
-ERLANG_VERSION=R11B3
+ERLANG_UPSTREAM_VERSION=R11B-4
+ERLANG_VERSION=R11B4
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=1
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|'))-gnu
 
@@ -242,9 +242,8 @@ else
                 --disable-hipe \
 		--disable-nls \
 		; \
-	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s|$$(ERL_TOP).*|$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/mnesia/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin|' $(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
+	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s!$$(ERL_TOP).*!-$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/mnesia/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin!' $(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \
 	)
-# /home/slug/optware/nslu2/host/builds/erlang/bin/dialyzer --output_plt /home/slug/optware/nslu2/builds/erlang/lib/dialyzer/plt/dialyzer_init_plt -pa /home/slug/optware/nslu2/builds/erlang/lib/kernel/ebin -pa /home/slug/optware/nslu2/builds/erlang/lib/stdlib/ebin --include_libs "kernel,stdlib" -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin
 endif
 	touch $(ERLANG_BUILD_DIR)/.configured
 
@@ -436,14 +435,17 @@ endif
 	# strip binaries
 	for f in \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/erlc \
-		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/run_erl \
-		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/to_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/escript \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/dialyzer \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/run_erl \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/typer \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/bin/to_erl \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/beam* \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/child_setup* \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/epmd \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlc \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/erlexec \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/escript \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/heart \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/inet_gethost \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/erts-*/bin/run_erl \
