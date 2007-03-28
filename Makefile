@@ -118,7 +118,7 @@ PYTHON_PACKAGES = \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 
 ERLANG_PACKAGES = \
-	erlang erl-escript erl-yaws \
+	erlang erl-yaws \
 
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
 ASTERISK_PACKAGES = \
@@ -246,7 +246,8 @@ COMMON_NATIVE_PACKAGES = \
 # libiconv - has been made obsolete by gconv-modules
 # git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = libiconv git metalog perl-spamassassin perl-mime-base64 jabber tzcode \
+PACKAGES_OBSOLETED = erl-escript libiconv git metalog \
+	perl-spamassassin perl-mime-base64 jabber tzcode \
 
 ##############
 
