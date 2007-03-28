@@ -1,0 +1,91 @@
+--- gcc-4.1.1/gcc/gcc.c.orig	2007-01-11 00:37:00.000000000 +0100
++++ gcc-4.1.1/gcc/gcc.c	2007-01-11 00:39:27.000000000 +0100
+@@ -1435,10 +1435,10 @@
+ /* Default prefixes to attach to command names.  */
+ 
+ #ifndef STANDARD_STARTFILE_PREFIX_1
+-#define STANDARD_STARTFILE_PREFIX_1 "/lib/"
++#define STANDARD_STARTFILE_PREFIX_1 "/opt/lib/"
+ #endif
+ #ifndef STANDARD_STARTFILE_PREFIX_2
+-#define STANDARD_STARTFILE_PREFIX_2 "/usr/lib/"
++#define STANDARD_STARTFILE_PREFIX_2 "/opt/usr/lib/"
+ #endif
+ 
+ #ifdef CROSS_COMPILE  /* Don't use these prefixes for a cross compiler.  */
+@@ -1459,8 +1459,8 @@
+ #endif
+ 
+ static const char *const standard_exec_prefix = STANDARD_EXEC_PREFIX;
+-static const char *const standard_exec_prefix_1 = "/usr/libexec/gcc/";
+-static const char *const standard_exec_prefix_2 = "/usr/lib/gcc/";
++static const char *const standard_exec_prefix_1 = "/opt/libexec/gcc/";
++static const char *const standard_exec_prefix_2 = "/opt/lib/gcc/";
+ static const char *md_exec_prefix = MD_EXEC_PREFIX;
+ 
+ static const char *md_startfile_prefix = MD_STARTFILE_PREFIX;
+@@ -3264,15 +3264,15 @@
+     {
+       int len = strlen (gcc_exec_prefix);
+ 
+-      if (len > (int) sizeof ("/lib/gcc/") - 1
++      if (len > (int) sizeof ("/opt/lib/gcc/") - 1
+ 	  && (IS_DIR_SEPARATOR (gcc_exec_prefix[len-1])))
+ 	{
+-	  temp = gcc_exec_prefix + len - sizeof ("/lib/gcc/") + 1;
++	  temp = gcc_exec_prefix + len - sizeof ("/opt/lib/gcc/") + 1;
+ 	  if (IS_DIR_SEPARATOR (*temp)
+ 	      && strncmp (temp + 1, "lib", 3) == 0
+ 	      && IS_DIR_SEPARATOR (temp[4])
+ 	      && strncmp (temp + 5, "gcc", 3) == 0)
+-	    len -= sizeof ("/lib/gcc/") - 1;
++	    len -= sizeof ("/opt/lib/gcc/") - 1;
+ 	}
+ 
+       set_std_prefix (gcc_exec_prefix, len);
+--- gcc-4.1.1/gcc/collect2.c.orig	2007-01-11 00:39:41.000000000 +0100
++++ gcc-4.1.1/gcc/collect2.c	2007-01-11 00:43:13.000000000 +0100
+@@ -996,8 +996,8 @@
+   prefix_from_env ("LIBPATH", &libpath_lib_dirs);
+   /* Add to this list also two standard directories where
+      AIX loader always searches for libraries.  */
+-  add_prefix (&libpath_lib_dirs, "/lib");
+-  add_prefix (&libpath_lib_dirs, "/usr/lib");
++  add_prefix (&libpath_lib_dirs, "/opt/lib");
++  add_prefix (&libpath_lib_dirs, "/opt/usr/lib");
+ #endif
+ 
+   /* Get any options that the upper GCC wants to pass to the sub-GCC.
+@@ -2334,19 +2334,19 @@
+    be scanned for ctors/dtors.  */
+ static const char *const aix_std_libs[] = {
+   "/unix",
+-  "/lib/libc.a",
+-  "/lib/libm.a",
+-  "/lib/libc_r.a",
+-  "/lib/libm_r.a",
+-  "/usr/lib/libc.a",
+-  "/usr/lib/libm.a",
+-  "/usr/lib/libc_r.a",
+-  "/usr/lib/libm_r.a",
+-  "/usr/lib/threads/libc.a",
+-  "/usr/ccs/lib/libc.a",
+-  "/usr/ccs/lib/libm.a",
+-  "/usr/ccs/lib/libc_r.a",
+-  "/usr/ccs/lib/libm_r.a",
++  "/opt/lib/libc.a",
++  "/opt/lib/libm.a",
++  "/opt/lib/libc_r.a",
++  "/opt/lib/libm_r.a",
++  "/opt/usr/lib/libc.a",
++  "/opt/usr/lib/libm.a",
++  "/opt/usr/lib/libc_r.a",
++  "/opt/usr/lib/libm_r.a",
++  "/opt/lib/threads/libc.a",
++  "/opt/ccs/lib/libc.a",
++  "/opt/ccs/lib/libm.a",
++  "/opt/ccs/lib/libc_r.a",
++  "/opt/ccs/lib/libm_r.a",
+   NULL
+ };
+ 

@@ -1,0 +1,61 @@
+--- buildroot/package/gmp/gmp.mk.orig	2007-03-27 23:32:32.000000000 +0200
++++ buildroot/package/gmp/gmp.mk	2007-03-28 00:26:16.000000000 +0200
+@@ -40,18 +40,18 @@
+ 		--target=$(GNU_TARGET_NAME) \
+ 		--host=$(GNU_TARGET_NAME) \
+ 		--build=$(GNU_HOST_NAME) \
+-		--prefix=/usr \
+-		--exec-prefix=/usr \
+-		--bindir=/usr/bin \
+-		--sbindir=/usr/sbin \
+-		--libdir=/lib \
+-		--libexecdir=/usr/lib \
+-		--sysconfdir=/etc \
+-		--datadir=/usr/share \
+-		--localstatedir=/var \
+-		--includedir=/include \
+-		--mandir=/usr/man \
+-		--infodir=/usr/info \
++		--prefix=/opt \
++		--exec-prefix=/opt \
++		--bindir=/opt/bin \
++		--sbindir=/opt/sbin \
++		--libdir=/opt/lib \
++		--libexecdir=/opt/lib \
++		--sysconfdir=/opt/etc \
++		--datadir=/opt/share \
++		--localstatedir=/opt/var \
++		--includedir=/opt/include \
++		--mandir=/opt/man \
++		--infodir=/opt/info \
+ 		--enable-shared \
+ 		$(DISABLE_NLS) \
+ 	);
+@@ -78,20 +78,20 @@
+             -C $(GMP_TARGET_DIR) install
+ 	$(STRIP) --strip-unneeded $(STAGING_DIR)/lib/libgmp.{so*,a}
+ 
+-$(TARGET_DIR)/lib/libgmp.so $(TARGET_DIR)/lib/libgmp.so.$(GMP_LIBVERSION) $(TARGET_DIR)/lib/libgmp.a: $(STAGING_DIR)/lib/$(GMP_BINARY)
++$(TARGET_DIR)/opt/lib/libgmp.so $(TARGET_DIR)/opt/lib/libgmp.so.$(GMP_LIBVERSION) $(TARGET_DIR)/opt/lib/libgmp.a: $(STAGING_DIR)/lib/$(GMP_BINARY)
+ 	cp -dpf $(STAGING_DIR)/lib/libgmp.so* $(STAGING_DIR)/lib/libgmp.a \
+-		 $(TARGET_DIR)/lib/
++		 $(TARGET_DIR)/opt/lib/
+ ifeq ($(BR2_PACKAGE_LIBGMP_HEADERS),y)
+-	test -d $(TARGET_DIR)/usr/include || mkdir -p $(TARGET_DIR)/usr/include
+-	cp -dpf $(STAGING_DIR)/include/gmp.h $(TARGET_DIR)/usr/include/
++	test -d $(TARGET_DIR)/opt/include || mkdir -p $(TARGET_DIR)/opt/include
++	cp -dpf $(STAGING_DIR)/include/gmp.h $(TARGET_DIR)/opt/include/
+ endif
+ 
+-libgmp: uclibc $(TARGET_DIR)/lib/libgmp.so.$(GMP_LIBVERSION)
++libgmp: uclibc $(TARGET_DIR)/opt/lib/libgmp.so.$(GMP_LIBVERSION)
+ stage-libgmp: uclibc $(STAGING_DIR)/lib/$(GMP_BINARY)
+ 
+ libgmp-clean:
+-	rm -f $(TARGET_DIR)/lib/$(GMP_BINARY) $(TARGET_DIR)/lib/libgmp.so* \
+-		$(TARGET_DIR)/usr/include/gmp.h
++	rm -f $(TARGET_DIR)/opt/lib/$(GMP_BINARY) $(TARGET_DIR)/opt/lib/libgmp.so* \
++		$(TARGET_DIR)/opt/include/gmp.h
+ 	-$(MAKE) -C $(GMP_TARGET_DIR) clean
+ 
+ libgmp-dirclean:

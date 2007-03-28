@@ -1,51 +1,53 @@
---- buildroot-r16897/toolchain/gcc/gcc-uclibc-3.x.mk	2006-12-13 17:02:51.000000000 +0100
-+++ buildroot/toolchain/gcc/gcc-uclibc-3.x.mk	2006-12-14 08:52:15.000000000 +0100
-@@ -255,19 +255,19 @@
- gcc-target-libs: $(GCC_BUILD_DIR2)/.installed
+--- buildroot/toolchain/gcc/gcc-uclibc-3.x.mk.orig	2007-03-26 14:33:56.000000000 +0200
++++ buildroot/toolchain/gcc/gcc-uclibc-3.x.mk	2007-03-27 20:36:26.000000000 +0200
+@@ -287,20 +287,20 @@
+ 
+ $(GCC_BUILD_DIR2)/.libs_installed: $(GCC_BUILD_DIR2)/.installed
  ifeq ($(BR2_GCC_SHARED_LIBGCC),y)
- 	# These are in /lib, so...
+-	# These are in /lib, so...
 -	rm -rf $(TARGET_DIR)/usr/lib/libgcc_s*.so*
--	-cp -a $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(TARGET_DIR)/lib/
+-	-cp -dpf $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(TARGET_DIR)/lib/
++	# These are in /opt/lib, so...
 +	rm -rf $(TARGET_DIR)/opt/lib/libgcc_s*.so*
-+	-cp -a $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(TARGET_DIR)/opt/lib/
++	-cp -dpf $(STAGING_DIR)/$(REAL_GNU_TARGET_NAME)/lib/libgcc_s* $(TARGET_DIR)/opt/lib/
  endif
  ifeq ($(BR2_INSTALL_LIBSTDCPP),y)
--	-cp -a $(STAGING_DIR)/lib/libstdc++.so* $(TARGET_DIR)/lib/
-+	-cp -a $(STAGING_DIR)/lib/libstdc++.so* $(TARGET_DIR)/opt/lib/
+-	-cp -dpf $(STAGING_DIR)/lib/libstdc++.so* $(TARGET_DIR)/lib/
++	-cp -dpf $(STAGING_DIR)/lib/libstdc++.so* $(TARGET_DIR)/opt/lib/
  endif
  ifeq ($(BR2_INSTALL_LIBGCJ),y)
--	-cp -a $(STAGING_DIR)/lib/libgcj.so* $(TARGET_DIR)/lib/
--	-cp -a $(STAGING_DIR)/lib/lib-org-w3c-dom.so* $(TARGET_DIR)/lib/
--	-cp -a $(STAGING_DIR)/lib/lib-org-xml-sax.so* $(TARGET_DIR)/lib/
+-	-cp -dpf $(STAGING_DIR)/lib/libgcj.so* $(TARGET_DIR)/lib/
+-	-cp -dpf $(STAGING_DIR)/lib/lib-org-w3c-dom.so* $(TARGET_DIR)/lib/
+-	-cp -dpf $(STAGING_DIR)/lib/lib-org-xml-sax.so* $(TARGET_DIR)/lib/
 -	-mkdir -p $(TARGET_DIR)/usr/lib/security
--	-cp -a $(STAGING_DIR)/usr/lib/security/libgcj.security $(TARGET_DIR)/usr/lib/security/
--	-cp -a $(STAGING_DIR)/usr/lib/security/classpath.security $(TARGET_DIR)/usr/lib/security/
-+	-cp -a $(STAGING_DIR)/lib/libgcj.so* $(TARGET_DIR)/opt/lib/
-+	-cp -a $(STAGING_DIR)/lib/lib-org-w3c-dom.so* $(TARGET_DIR)/opt/lib/
-+	-cp -a $(STAGING_DIR)/lib/lib-org-xml-sax.so* $(TARGET_DIR)/opt/lib/
+-	-cp -dpf $(STAGING_DIR)/usr/lib/security/libgcj.security $(TARGET_DIR)/usr/lib/security/
+-	-cp -dpf $(STAGING_DIR)/usr/lib/security/classpath.security $(TARGET_DIR)/usr/lib/security/
++	-cp -dpf $(STAGING_DIR)/lib/libgcj.so* $(TARGET_DIR)/opt/lib/
++	-cp -dpf $(STAGING_DIR)/lib/lib-org-w3c-dom.so* $(TARGET_DIR)/opt/lib/
++	-cp -dpf $(STAGING_DIR)/lib/lib-org-xml-sax.so* $(TARGET_DIR)/opt/lib/
 +	-mkdir -p $(TARGET_DIR)/opt/lib/security
-+	-cp -a $(STAGING_DIR)/usr/lib/security/libgcj.security $(TARGET_DIR)/opt/lib/security/
-+	-cp -a $(STAGING_DIR)/usr/lib/security/classpath.security $(TARGET_DIR)/opt/lib/security/
++	-cp -dpf $(STAGING_DIR)/usr/lib/security/libgcj.security $(TARGET_DIR)/opt/lib/security/
++	-cp -dpf $(STAGING_DIR)/usr/lib/security/classpath.security $(TARGET_DIR)/opt/lib/security/
  endif
+ 	touch $@
  
- gcc: uclibc-configured binutils gcc_initial $(LIBFLOAT_TARGET) uclibc \
-@@ -296,12 +296,12 @@
- 	mkdir -p $(GCC_BUILD_DIR3)
- 	(cd $(GCC_BUILD_DIR3); PATH=$(TARGET_PATH) \
+@@ -338,12 +338,12 @@
+ 		CFLAGS_FOR_BUILD="-g -O2" \
+ 		$(TARGET_GCC_FLAGS) \
  		$(GCC_DIR)/configure \
 -		--prefix=/usr \
 +		--prefix=/opt \
  		--build=$(GNU_HOST_NAME) \
  		--host=$(REAL_GNU_TARGET_NAME) \
  		--target=$(REAL_GNU_TARGET_NAME) \
- 		--enable-languages=$(TARGET_LANGUAGES) \
+ 		--enable-languages=$(GCC_TARGET_LANGUAGES) \
 -		--with-gxx-include-dir=/usr/include/c++ \
 +		--with-gxx-include-dir=/opt/include/c++ \
  		--disable-__cxa_atexit \
- 		--enable-target-optspace \
  		--with-gnu-ld \
-@@ -344,53 +344,53 @@
- endif
+ 		$(GCC_SHARED_LIBGCC) \
+@@ -393,53 +393,53 @@
+ #GCC_WITH_CPU=--with-cpu=$(BR2_ARCH)
  endif
  
 -$(TARGET_DIR)/usr/bin/gcc: $(GCC_BUILD_DIR3)/.compiled
@@ -71,16 +73,15 @@
  	#
  	# Ok... that's enough of that.
  	#
--	-(cd $(TARGET_DIR)/bin; find -type f | xargs $(STRIP) > /dev/null 2>&1)
--	-(cd $(TARGET_DIR)/usr/bin; find -type f | xargs $(STRIP) > /dev/null 2>&1)
--	-(cd $(TARGET_DIR)/usr/$(GCC_LIB_SUBDIR); $(STRIP) cc1 cc1plus collect2 > /dev/null 2>&1)
--	-(cd $(TARGET_DIR)/usr/lib; $(STRIP) libstdc++.so.*.*.* > /dev/null 2>&1)
--	-(cd $(TARGET_DIR)/lib; $(STRIP) libgcc_s*.so.*.*.* > /dev/null 2>&1)
-+	-(cd $(TARGET_DIR)/opt/bin; find -type f | xargs $(STRIP) > /dev/null 2>&1)
-+	-(cd $(TARGET_DIR)/opt/bin; find -type f | xargs $(STRIP) > /dev/null 2>&1)
-+	-(cd $(TARGET_DIR)/opt/$(GCC_LIB_SUBDIR); $(STRIP) cc1 cc1plus collect2 > /dev/null 2>&1)
-+	-(cd $(TARGET_DIR)/opt/lib; $(STRIP) libstdc++.so.*.*.* > /dev/null 2>&1)
-+	-(cd $(TARGET_DIR)/opt/lib; $(STRIP) libgcc_s*.so.*.*.* > /dev/null 2>&1)
+ 	-(cd $(TARGET_DIR)/bin && find -type f | xargs $(STRIP) > /dev/null 2>&1)
+-	-(cd $(TARGET_DIR)/usr/bin && find -type f | xargs $(STRIP) > /dev/null 2>&1)
+-	-(cd $(TARGET_DIR)/usr/$(GCC_LIB_SUBDIR) && $(STRIP) cc1 cc1plus collect2 > /dev/null 2>&1)
+-	-(cd $(TARGET_DIR)/usr/lib && $(STRIP) libstdc++.so.*.*.* > /dev/null 2>&1)
+-	-(cd $(TARGET_DIR)/lib && $(STRIP) libgcc_s*.so.*.*.* > /dev/null 2>&1)
++	-(cd $(TARGET_DIR)/opt/bin && find -type f | xargs $(STRIP) > /dev/null 2>&1)
++	-(cd $(TARGET_DIR)/opt/$(GCC_LIB_SUBDIR) && $(STRIP) cc1 cc1plus collect2 > /dev/null 2>&1)
++	-(cd $(TARGET_DIR)/opt/lib && $(STRIP) libstdc++.so.*.*.* > /dev/null 2>&1)
++	-(cd $(TARGET_DIR)/opt/lib && $(STRIP) libgcc_s*.so.*.*.* > /dev/null 2>&1)
  	#
 -	rm -f $(TARGET_DIR)/usr/lib/*.la*
 -	#rm -rf $(TARGET_DIR)/share/locale $(TARGET_DIR)/usr/info \

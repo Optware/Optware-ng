@@ -1,0 +1,62 @@
+--- buildroot/package/mpfr/mpfr.mk.orig	2007-03-27 23:46:53.000000000 +0200
++++ buildroot/package/mpfr/mpfr.mk	2007-03-27 23:53:04.000000000 +0200
+@@ -62,18 +62,18 @@
+ 		--target=$(GNU_TARGET_NAME) \
+ 		--host=$(GNU_TARGET_NAME) \
+ 		--build=$(GNU_HOST_NAME) \
+-		--prefix=/usr \
+-		--exec-prefix=/usr \
+-		--bindir=/usr/bin \
+-		--sbindir=/usr/sbin \
+-		--libdir=/lib \
+-		--libexecdir=/usr/lib \
+-		--sysconfdir=/etc \
+-		--datadir=/usr/share \
+-		--localstatedir=/var \
+-		--includedir=/include \
+-		--mandir=/usr/man \
+-		--infodir=/usr/info \
++		--prefix=/opt \
++		--exec-prefix=/opt \
++		--bindir=/opt/bin \
++		--sbindir=/opt/sbin \
++		--libdir=/opt/lib \
++		--libexecdir=/opt/lib \
++		--sysconfdir=/opt/etc \
++		--datadir=/opt/share \
++		--localstatedir=/opt/var \
++		--includedir=/opt/include \
++		--mandir=/opt/man \
++		--infodir=/opt/info \
+ 		--enable-shared \
+ 		--with-gmp=$(STAGING_DIR) \
+ 		$(DISABLE_NLS) \
+@@ -101,21 +101,21 @@
+ 	    -C $(MPFR_TARGET_DIR) install;
+ 	$(STRIP) --strip-unneeded $(STAGING_DIR)/lib/libmpfr.{so*,a}
+ 
+-$(TARGET_DIR)/lib/libmpfr.so $(TARGET_DIR)/lib/libmpfr.so.$(MPFR_LIBVERSION) $(TARGET_DIR)/lib/libmpfr.a: $(STAGING_DIR)/lib/$(MPFR_BINARY)
++$(TARGET_DIR)/opt/lib/libmpfr.so $(TARGET_DIR)/opt/lib/libmpfr.so.$(MPFR_LIBVERSION) $(TARGET_DIR)/opt/lib/libmpfr.a: $(STAGING_DIR)/lib/$(MPFR_BINARY)
+ 	cp -dpf $(STAGING_DIR)/lib/libmpfr.so* $(STAGING_DIR)/lib/libmpfr.a \
+-		$(TARGET_DIR)/lib/
++		$(TARGET_DIR)/opt/lib/
+ ifeq ($(BR2_PACKAGE_LIBMPFR_HEADERS),y)
+ 	cp -dpf $(STAGING_DIR)/include/mpfr.h $(STAGING_DIR)/include/mpf2mpfr.h \
+-		$(TARGET_DIR)/usr/include/
++		$(TARGET_DIR)/opt/include/
+ endif
+ 
+-libmpfr: uclibc $(TARGET_DIR)/lib/libmpfr.so.$(MPFR_LIBVERSION)
++libmpfr: uclibc $(TARGET_DIR)/opt/lib/libmpfr.so.$(MPFR_LIBVERSION)
+ stage-libmpfr: uclibc $(STAGING_DIR)/lib/$(MPFR_BINARY)
+ 
+ libmpfr-clean:
+-	rm -f $(TARGET_DIR)/lib/$(MPFR_BINARY) $(TARGET_DIR)/lib/libmpfr.so* \
+-		$(TARGET_DIR)/usr/include/mpfr.h \
+-		$(TARGET_DIR)/usr/include/mpf2mpfr.h
++	rm -f $(TARGET_DIR)/opt/lib/$(MPFR_BINARY) $(TARGET_DIR)/opt/lib/libmpfr.so* \
++		$(TARGET_DIR)/opt/include/mpfr.h \
++		$(TARGET_DIR)/opt/include/mpf2mpfr.h
+ 	-$(MAKE) -C $(MPFR_TARGET_DIR) clean
+ 
+ libmpfr-dirclean:

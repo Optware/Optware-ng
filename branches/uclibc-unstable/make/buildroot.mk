@@ -52,11 +52,11 @@ BUILDROOT_SOURCE = buildroot-0.9.27-3.tar.gz
 BUILDROOT_SITE = http://mirror.kynisk.com/ts/br
 else
 BUILDROOT_GCC ?= 4.1.1
-BUILDROOT_BINUTILS ?= 2.17.50.0.8
+BUILDROOT_BINUTILS ?= 2.17.50.0.14
 
 BUILDROOT_VERSION=$(BUILDROOT_GCC)
 BUILDROOT_SVN=svn://uclibc.org/trunk/buildroot
-BUILDROOT_SVN_REV=17310
+BUILDROOT_SVN_REV=18238
 BUILDROOT_SOURCE=buildroot-svn-$(BUILDROOT_SVN_REV).tar.gz
 endif
 BUILDROOT_DIR=buildroot
@@ -131,7 +131,9 @@ ifeq ($(OPTWARE_TARGET), ts101)
 BUILDROOT_PATCHES=
 else
 BUILDROOT_PATCHES=$(BUILDROOT_SOURCE_DIR)/uclibc.mk.patch \
-		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch
+		$(BUILDROOT_SOURCE_DIR)/gcc-uclibc-3.x.mk.patch \
+		$(BUILDROOT_SOURCE_DIR)/package-gmp.mk.patch \
+		$(BUILDROOT_SOURCE_DIR)/package-mpfr.mk.patch
 endif
 
 #
@@ -224,6 +226,7 @@ $(BUILDROOT_BUILD_DIR)/.configured: $(DL_DIR)/$(BUILDROOT_SOURCE) \
 		then mv $(TOOL_BUILD_DIR)/$(BUILDROOT_DIR) $(BUILDROOT_BUILD_DIR) ; \
 	fi
 	cp $(BUILDROOT_SOURCE_DIR)/$(BUILDROOT_CONFIG_FILE) $(BUILDROOT_BUILD_DIR)/.config
+	sed -i -e 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT_BUILD_DIR)/.config
 ifneq ($(OPTWARE_TARGET), ts101)
 	sed  -i -e 's|^# BR2_PACKAGE_GDB is not set|BR2_PACKAGE_GDB=yes|' $(BUILDROOT_BUILD_DIR)/.config
 #	change TARGET_ARCH in .config
