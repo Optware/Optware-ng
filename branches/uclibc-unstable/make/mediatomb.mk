@@ -179,17 +179,22 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MEDIATOMB_LDFLAGS)" \
+		ac_cv_sizeof_off_t=4 \
+		ac_cv_sizeof_size_t=4 \
+		ac_cv_sizeof_time_t=4 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--enable-pthread-lib \
 		--enable-libjs \
 		--enable-libexif \
 		--enable-libmagic \
 		--disable-mysql \
 		--disable-rpl-malloc \
 		--disable-large-file \
+		--disable-fseeko-check \
 		--enable-sqlite3 \
 		$(MEDIATOMB_CONFIG_ARGS) \
 		--with-js-h=$(STAGING_INCLUDE_DIR)/js \
