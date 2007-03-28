@@ -38,7 +38,7 @@ ADDUSER_VERSION:=$(shell sed -n -e 's/^BUSYBOX_VERSION *=\([0-9]\)/\1/p' make/bu
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #
-ADDUSER_IPK_VERSION=9
+ADDUSER_IPK_VERSION=1
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
@@ -107,6 +107,7 @@ $(ADDUSER_BUILD_DIR)/.configured:
 	cat $(ADDUSER_PATCHES) | patch -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
 	mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	cp $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
+	sed -i -e 's/-strip /-$$(STRIP) /' $(ADDUSER_BUILD_DIR)/scripts/Makefile.IMA
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS=$(TARGET_CROSS) \
 		-C $(ADDUSER_BUILD_DIR) oldconfig
 	touch $(ADDUSER_BUILD_DIR)/.configured
@@ -118,7 +119,10 @@ adduser-unpack: $(ADDUSER_BUILD_DIR)/.configured
 #
 $(ADDUSER_BUILD_DIR)/.built: $(ADDUSER_BUILD_DIR)/.configured
 	rm -f $(ADDUSER_BUILD_DIR)/.built
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(ADDUSER_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(ADDUSER_LDFLAGS)" \
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="/opt" \
+		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		-C $(ADDUSER_BUILD_DIR)
 	touch $(ADDUSER_BUILD_DIR)/.built
@@ -188,3 +192,9 @@ adduser-clean:
 #
 adduser-dirclean:
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR) $(ADDUSER_IPK_DIR) $(ADDUSER_IPK)
+
+#
+# Some sanity check for the package.
+#
+adduser-check: $(ADDUSER_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ADDUSER_IPK)
