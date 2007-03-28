@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPLEJSON_SITE=http://cheeseshop.python.org/packages/source/s/simplejson
-PY-SIMPLEJSON_VERSION=1.7
+PY-SIMPLEJSON_VERSION=1.7.1
 PY-SIMPLEJSON_SOURCE=simplejson-$(PY-SIMPLEJSON_VERSION).tar.gz
 PY-SIMPLEJSON_DIR=simplejson-$(PY-SIMPLEJSON_VERSION)
 PY-SIMPLEJSON_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-SIMPLEJSON_CONFLICTS=
 #
 # PY-SIMPLEJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIMPLEJSON_IPK_VERSION=2
+PY-SIMPLEJSON_IPK_VERSION=1
 
 #
 # PY-SIMPLEJSON_CONFFILES should be a list of user-editable files
