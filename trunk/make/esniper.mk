@@ -20,7 +20,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
-ESNIPER_VERSION=2-15-0
+ESNIPER_VERSION=2-16-0
 ESNIPER_SOURCE=esniper-$(ESNIPER_VERSION).tgz
 ESNIPER_DIR=esniper-$(ESNIPER_VERSION)
 ESNIPER_UNZIP=zcat
@@ -35,7 +35,7 @@ ESNIPER_CONFLICTS=
 #
 # ESNIPER_IPK_VERSION should be incremented when the ipk changes.
 #
-ESNIPER_IPK_VERSION=3
+ESNIPER_IPK_VERSION=1
 
 #
 # ESNIPER_CONFFILES should be a list of user-editable files
@@ -75,7 +75,8 @@ ESNIPER_IPK=$(BUILD_DIR)/esniper_$(ESNIPER_VERSION)-$(ESNIPER_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ESNIPER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ESNIPER_SITE)/$(ESNIPER_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ESNIPER_SITE)/$(ESNIPER_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ESNIPER_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
