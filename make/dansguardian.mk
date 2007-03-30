@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DANSGUARDIAN_SITE=http://dansguardian.org/downloads/2/Beta
-DANSGUARDIAN_VERSION=2.9.8.2
+DANSGUARDIAN_VERSION=2.9.8.5
 DANSGUARDIAN_SOURCE=dansguardian-$(DANSGUARDIAN_VERSION).tar.gz
 DANSGUARDIAN_DIR=dansguardian-$(DANSGUARDIAN_VERSION)
 DANSGUARDIAN_UNZIP=zcat
@@ -56,7 +56,7 @@ DANSGUARDIAN_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 DANSGUARDIAN_CPPFLAGS=
-DANSGUARDIAN_LDFLAGS=
+DANSGUARDIAN_LDFLAGS=-lm
 
 #
 # DANSGUARDIAN_BUILD_DIR is the directory in which the build is done.
