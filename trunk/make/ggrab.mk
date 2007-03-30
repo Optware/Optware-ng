@@ -15,13 +15,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GGRAB_SITE=http://webmail.mw-itcon.de/ggrab
+GGRAB_SITE=http://www.menzebach.de/ggrab
 GGRAB_VERSION=0.22a
 GGRAB_SOURCE=ggrab-$(GGRAB_VERSION)-linux.tgz
 GGRAB_DIR=ggrab-$(GGRAB_VERSION)
 GGRAB_UNZIP=zcat
 GGRAB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-GGRAB_DESCRIPTION=Grabbing and streaming of mpeg2 streams to/from NSLU2. Good with dreambox.
+GGRAB_DESCRIPTION=Grabbing and streaming of mpeg2 streams to/from. Good with dreambox.
 GGRAB_SECTION=misc
 GGRAB_PRIORITY=optional
 GGRAB_DEPENDS=libstdc++
@@ -31,7 +31,7 @@ GGRAB_CONFLICTS=
 #
 # GGRAB_IPK_VERSION should be incremented when the ipk changes.
 #
-GGRAB_IPK_VERSION=1
+GGRAB_IPK_VERSION=2
 
 #
 # GGRAB_CONFFILES should be a list of user-editable files
@@ -48,7 +48,7 @@ GGRAB_PATCHES=$(GGRAB_SOURCE_DIR)/g++4.patch
 # compilation or linking flags, then list them here.
 #
 GGRAB_CPPFLAGS=-DREENTRANT -D_LARGEFILE64_SOURCE
-GGRAB_LDFLAGS=-s
+GGRAB_LDFLAGS=-s -lm
 
 #
 # GGRAB_BUILD_DIR is the directory in which the build is done.
