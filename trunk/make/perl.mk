@@ -23,14 +23,14 @@ PERL_PRIORITY=optional
 PERL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL_SECTION=interpreters
 PERL_DESCRIPTION=Practical Extraction and Report Language.
-PERL_DEPENDS=libdb
+PERL_DEPENDS=libdb, gdbm
 PERL_SUGGESTS=
 PERL_CONFLICTS=
 
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=14
+PERL_IPK_VERSION=15
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -140,7 +140,7 @@ $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES)
 else
 $(PERL_BUILD_DIR)/.configured: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 endif
-	$(MAKE) libdb-stage
+	$(MAKE) libdb-stage gdbm-stage
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
