@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.2.0
+PHP_VERSION=5.2.1
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -30,7 +30,7 @@ endif
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=4
+PHP_IPK_VERSION=1
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -56,14 +56,14 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
 	$(PHP_SOURCE_DIR)/zend_strtod.patch \
-	$(PHP_SOURCE_DIR)/php-5.2.0-and-curl-7.16.patch
+	$(PHP_SOURCE_DIR)/php-5.2.1-and-curl-7.16.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt 
-PHP_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath=/opt/lib/mysql -ldl -lpthread
+PHP_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath=/opt/lib/mysql -ldl 
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
@@ -336,8 +336,8 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
-		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
-		PATH="$(STAGING_DIR)/bin:$$PATH" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
+		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
 		EXTENSION_DIR=/opt/lib/php/extensions \
 		ac_cv_func_memcmp_working=yes \
@@ -352,6 +352,7 @@ endif
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
+		--disable-posix \
 		--enable-bcmath=shared \
 		--enable-calendar=shared \
 		--enable-dba=shared \
@@ -399,6 +400,9 @@ endif
 		--without-iconv \
 		--without-pear \
 	)
+	sed -i -e '/^EXTRA_LIBS =/aEXTRA_LIBS+=-lpthread' \
+	  -e '/^EXTRA_LDFLAGS =/aEXTRA_LDFLAGS+=-L$(STAGING_LIB_DIR)/mysql'\
+	  $(PHP_BUILD_DIR)/Makefile
 	$(PATCH_LIBTOOL) $(PHP_BUILD_DIR)/libtool
 	touch $(PHP_BUILD_DIR)/.configured
 

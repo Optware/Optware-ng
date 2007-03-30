@@ -135,6 +135,7 @@ $(PHP_APACHE_BUILD_DIR)/.configured: \
 		--with-config-file-scan-dir=/opt/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
+		--disable-posix \
 		$(PHP_CONFIGURE_THREAD_ARGS) \
 		--disable-dom \
 		--disable-xml \

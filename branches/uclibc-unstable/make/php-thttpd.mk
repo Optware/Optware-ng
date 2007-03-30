@@ -134,6 +134,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_THTTPD_SOURCE) $(DL_
 		--with-layout=GNU \
 		$(PHP_CONFIGURE_THREAD_ARGS) \
 		--disable-static \
+		--disable-posix \
 		--disable-dom \
 		--disable-xml \
 		--enable-libxml \

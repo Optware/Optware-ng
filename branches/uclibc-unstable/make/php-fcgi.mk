@@ -46,7 +46,7 @@ PHP_FCGI_PATCHES=$(PHP_PATCHES)
 # compilation or linking flags, then list them here.
 #
 PHP_FCGI_CPPFLAGS=$(PHP_CPPFLAGS)
-PHP_FCGI_LDFLAGS=$(PHP_LDFLAGS)
+PHP_FCGI_LDFLAGS=$(PHP_LDFLAGS) -lpthread
 
 #
 # PHP_FCGI_BUILD_DIR is the directory in which the build is done.
@@ -154,6 +154,7 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
                 --with-config-file-scan-dir=/opt/etc/php.d \
                 --with-layout=GNU \
                 --disable-static \
+		--disable-posix \
                 --enable-dba=shared \
                 --with-inifile \
                 --with-flatfile \
