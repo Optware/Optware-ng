@@ -36,7 +36,7 @@ FIRMWARE_OLEG_CONFLICTS=
 #
 # FIRMWARE_OLEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FIRMWARE_OLEG_IPK_VERSION=2
+FIRMWARE_OLEG_IPK_VERSION=3
 
 #
 # FIRMWARE_OLEG_CONFFILES should be a list of user-editable files
@@ -69,7 +69,8 @@ FIRMWARE_OLEG_SOURCE_DIR=$(SOURCE_DIR)/firmware-oleg
 FIRMWARE_OLEG_IPK_DIR=$(BUILD_DIR)/firmware-oleg-$(FIRMWARE_OLEG_VERSION)-ipk
 FIRMWARE_OLEG_IPK=$(BUILD_DIR)/firmware-oleg_$(FIRMWARE_OLEG_VERSION)-$(FIRMWARE_OLEG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-FIRMWARE_OLEG_TOOLPATH=$(FIRMWARE_OLEG_BUILD_DIR)/toolchain/opt/brcm/hndtools-mipsel-uclibc/bin:/opt/brcm/hndtools-mipsel-linux/bin:${PATH}
+FIRMWARE_OLEG_TOOLCHAIN=$(FIRMWARE_OLEG_BUILD_DIR)/toolchain/opt/brcm/hndtools-mipsel-uclibc
+FIRMWARE_OLEG_TOOLPATH=$(FIRMWARE_OLEG_TOOLCHAIN)/bin:/opt/brcm/hndtools-mipsel-linux/bin:${PATH}
 
 FIRMWARE_OLEG_KERNELDIR=$(FIRMWARE_OLEG_BUILD_DIR)/src/linux/linux
 
@@ -120,6 +121,9 @@ firmware-oleg-source: $(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) $(DL_DIR)/$(FIRMWARE_OLE
 $(FIRMWARE_OLEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FIRMWARE_OLEG_GPL) \
 	$(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) $(FIRMWARE_OLEG_PATCHES)  make/firmware-oleg.mk
 	rm -rf $(BUILD_DIR)/$(FIRMWARE_OLEG_DIR) $(FIRMWARE_OLEG_BUILD_DIR)
+ifeq ($(MAKE_VERSION), 3.81)
+	$(error make version 3.81 not supported by uClibc 0.9.19. Use 3.80 instead)
+endif
 	zcat $(DL_DIR)/$(FIRMWARE_OLEG_GPL) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FIRMWARE_OLEG_PATCHES)" ; \
 		then cat $(FIRMWARE_OLEG_PATCHES) | \
@@ -128,8 +132,13 @@ $(FIRMWARE_OLEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FIRMWARE_OLEG_GPL) \
 	if test "$(BUILD_DIR)/$(FIRMWARE_OLEG_DIR)" != "$(FIRMWARE_OLEG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FIRMWARE_OLEG_DIR) $(FIRMWARE_OLEG_BUILD_DIR) ; \
 	fi
-	$(FIRMWARE_OLEG_UNZIP) $(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) | tar -C $(FIRMWARE_OLEG_BUILD_DIR)/src -xvf -
-	sed -i -e 's/# CONFIG_USB_SERIAL_FTDI_SIO is not set/CONFIG_USB_SERIAL_FTDI_SIO=m/' $(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION)/kernel.config 
+	$(FIRMWARE_OLEG_UNZIP) $(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) | \
+		tar -C $(FIRMWARE_OLEG_BUILD_DIR)/src -xvf -
+	sed -i -e 's/# CONFIG_USB_SERIAL_FTDI_SIO is not set/CONFIG_USB_SERIAL_FTDI_SIO=m/'\
+		$(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION)/kernel.config
+	sed -i  -e 's|^DEVEL_PREFIX.*|DEVEL_PREFIX="$(FIRMWARE_OLEG_TOOLCHAIN)"|' \
+		-e 's|^RUNTIME_PREFIX.*|RUNTIME_PREFIX="$(FIRMWARE_OLEG_TOOLCHAIN)"|' \
+		$(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION)/uClibc*.config
 	if ! test -d /opt/brcm/hndtools-mipsel-uclibc/bin ; \
 		then echo "Required wl500g toolchain missing!"; \
 		echo "Use mv $(FIRMWARE_OLEG_BUILD_DIR)/opt/brcm /opt"; \
@@ -140,11 +149,7 @@ $(FIRMWARE_OLEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FIRMWARE_OLEG_GPL) \
 		$(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc
 	install -d $(FIRMWARE_OLEG_BUILD_DIR)/toolchain
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
-	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc all install CROSS=mipsel-linux- \
-		PREFIX=$(FIRMWARE_OLEG_BUILD_DIR)/toolchain
-	rm -f $(FIRMWARE_OLEG_BUILD_DIR)/toolchain/opt/brcm/hndtools-mipsel-uclibc
-	ln -s $(FIRMWARE_OLEG_BUILD_DIR)/toolchain/opt/brcm/hndtools-mipsel-uclibc-3.2.3-full \
-		$(FIRMWARE_OLEG_BUILD_DIR)/toolchain/opt/brcm/hndtools-mipsel-uclibc
+	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/uClibc all install CROSS=mipsel-linux-
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
 	$(MAKE) -C $(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION) kernel
 	PATH=$(FIRMWARE_OLEG_TOOLPATH) \
