@@ -39,7 +39,7 @@ SQUEAK_CONFLICTS=
 #
 # SQUEAK_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEAK_IPK_VERSION=1
+SQUEAK_IPK_VERSION=2
 
 #
 # SQUEAK_CONFFILES should be a list of user-editable files
@@ -155,6 +155,11 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 		--without-npsqueak \
 	)
 	$(PATCH_LIBTOOL) $(SQUEAK_BUILD_DIR)/bld/libtool
+	sed -i -e 's/clone/_clone_/g' \
+		$(SQUEAK_BUILD_DIR)/platforms/unix/src/vm/interp.c \
+		$(SQUEAK_BUILD_DIR)/platforms/Cross/vm/sqVirtualMachine.* \
+		$(SQUEAK_BUILD_DIR)/platforms/unix/src/vm/intplugins/CroquetPlugin/CroquetPlugin.c \
+		$(SQUEAK_BUILD_DIR)/platforms/unix/src/plugins/Squeak3D/Squeak3D.c
 	touch $(SQUEAK_BUILD_DIR)/.configured
 
 squeak-unpack: $(SQUEAK_BUILD_DIR)/.configured
