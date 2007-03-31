@@ -37,7 +37,7 @@ IPERF_CONFLICTS=
 #
 # IPERF_IPK_VERSION should be incremented when the ipk changes.
 #
-IPERF_IPK_VERSION=1
+IPERF_IPK_VERSION=2
 
 #
 # IPERF_CONFFILES should be a list of user-editable files
@@ -54,7 +54,7 @@ IPERF_PATCHES=
 # compilation or linking flags, then list them here.
 #
 IPERF_CPPFLAGS=
-IPERF_LDFLAGS=
+IPERF_LDFLAGS=-lpthread
 
 #
 # IPERF_BUILD_DIR is the directory in which the build is done.
@@ -110,6 +110,7 @@ $(IPERF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPERF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IPERF_LDFLAGS)" \
 		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_pthread_cancel=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
