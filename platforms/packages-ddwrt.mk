@@ -4,6 +4,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	dansguardian \
 	gambit-c \
 	htop \
 	libdvb \
