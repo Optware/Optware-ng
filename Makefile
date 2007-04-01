@@ -160,7 +160,7 @@ COMMON_CROSS_PACKAGES = \
 	gnutls grep groff gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
-	hdparm hexcurse heyu hnb hpijs htop \
+	haproxy hdparm hexcurse heyu hnb hpijs htop \
 	ice icecast id3lib iksemel indent iozone imagemagick imap inetutils \
 	iperf ipkg-web iptables ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
