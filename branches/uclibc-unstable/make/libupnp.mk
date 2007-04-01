@@ -27,10 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBUPNP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pupnp
-LIBUPNP_VERSION=1.4.1
-LIBUPNP_SOURCE=libupnp-$(LIBUPNP_VERSION).tar.gz
+LIBUPNP_VERSION=1.4.3
+LIBUPNP_SOURCE=libupnp-$(LIBUPNP_VERSION).tar.bz2
 LIBUPNP_DIR=libupnp-$(LIBUPNP_VERSION)
-LIBUPNP_UNZIP=zcat
+LIBUPNP_UNZIP=bzcat
 LIBUPNP_MAINTAINER=Peter Enzerink <nslu2-libupnp@enzerink.net>
 LIBUPNP_DESCRIPTION=The Universal Plug and Play (UPnP) SDK for Linux provides support for building UPnP-compliant control points, devices, and bridges on Linux.
 LIBUPNP_SECTION=libs
@@ -75,12 +75,15 @@ LIBUPNP_SOURCE_DIR=$(SOURCE_DIR)/libupnp
 LIBUPNP_IPK_DIR=$(BUILD_DIR)/libupnp-$(LIBUPNP_VERSION)-ipk
 LIBUPNP_IPK=$(BUILD_DIR)/libupnp_$(LIBUPNP_VERSION)-$(LIBUPNP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: libupnp-source libupnp-unpack libupnp libupnp-stage libupnp-ipk libupnp-clean libupnp-dirclean libupnp-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBUPNP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBUPNP_SITE)/$(LIBUPNP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBUPNP_SITE)/$(LIBUPNP_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBUPNP_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -220,3 +223,9 @@ libupnp-clean:
 #
 libupnp-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBUPNP_DIR) $(LIBUPNP_BUILD_DIR) $(LIBUPNP_IPK_DIR) $(LIBUPNP_IPK)
+#
+#
+# Some sanity check for the package.
+#
+libupnp-check: $(LIBUPNP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBUPNP_IPK)
