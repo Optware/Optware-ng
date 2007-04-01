@@ -36,7 +36,7 @@ FIRMWARE_OLEG_CONFLICTS=
 #
 # FIRMWARE_OLEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FIRMWARE_OLEG_IPK_VERSION=3
+FIRMWARE_OLEG_IPK_VERSION=4
 
 #
 # FIRMWARE_OLEG_CONFFILES should be a list of user-editable files
@@ -134,7 +134,8 @@ endif
 	fi
 	$(FIRMWARE_OLEG_UNZIP) $(DL_DIR)/$(FIRMWARE_OLEG_SOURCE) | \
 		tar -C $(FIRMWARE_OLEG_BUILD_DIR)/src -xvf -
-	sed -i -e 's/# CONFIG_USB_SERIAL_FTDI_SIO is not set/CONFIG_USB_SERIAL_FTDI_SIO=m/'\
+	sed -i  -e 's/# CONFIG_USB_SERIAL_FTDI_SIO is not set/CONFIG_USB_SERIAL_FTDI_SIO=m/'\
+	  	-e 's/# CONFIG_EXT2_FS is not set/CONFIG_EXT2_FS=y/' \
 		$(FIRMWARE_OLEG_BUILD_DIR)/src/wl500g-$(FIRMWARE_OLEG_VERSION)/kernel.config
 	sed -i  -e 's|^DEVEL_PREFIX.*|DEVEL_PREFIX="$(FIRMWARE_OLEG_TOOLCHAIN)"|' \
 		-e 's|^RUNTIME_PREFIX.*|RUNTIME_PREFIX="$(FIRMWARE_OLEG_TOOLCHAIN)"|' \
