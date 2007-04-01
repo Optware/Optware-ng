@@ -50,8 +50,9 @@ PERL_PACKAGES = \
 	perl \
 	perl-algorithm-diff \
 	perl-appconfig perl-assp \
-	perl-berkeleydb \
 	perl-archive-tar perl-archive-zip \
+	perl-berkeleydb \
+	perl-bsd-resource \
 	perl-business-isbn-data perl-business-isbn \
 	perl-cgi-application \
 	perl-class-accessor perl-class-data-inheritable perl-class-dbi perl-class-trigger \
@@ -59,6 +60,7 @@ PERL_PACKAGES = \
 	perl-compress-zlib \
 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-crypt-openssl-random perl-crypt-openssl-rsa \
+	perl-danga-socket \
 	perl-date-manip \
 	perl-db-file perl-dbd-sqlite perl-dbi perl-dbix-contextualfetch \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
@@ -78,6 +80,7 @@ PERL_PACKAGES = \
 	perl-scgi \
 	perl-storable \
 	perl-sys-hostname-long \
+	perl-sys-syscall \
 	perl-template-toolkit \
 	perl-term-readkey \
 	perl-text-diff \
