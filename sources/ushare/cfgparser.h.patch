@@ -1,13 +1,15 @@
---- src/cfgparser.h	2006-11-12 13:40:35.000000000 +0100
-+++ src/cfgparser.h	2007-01-12 09:03:16.000000000 +0100
-@@ -30,8 +30,8 @@
- 
- #define USHARE_CONFIG_FILE "ushare.conf"
- #define DEFAULT_USHARE_NAME "uShare"
+--- src/cfgparser.h.orig	2007-02-26 21:09:16.000000000 +0100
++++ src/cfgparser.h	2007-04-01 22:32:02.000000000 +0200
+@@ -35,7 +35,11 @@
+ #if (defined(BSD) || defined(__FreeBSD__))
+ #define DEFAULT_USHARE_IFACE "lnc0"
+ #else /* Linux */
 -#define DEFAULT_USHARE_IFACE "eth0"
--#define DEFAULT_USHARE_LOGFILE "/var/log/ushare.log"
++#ifdef __UCLIBC__
++#define DEFAULT_USHARE_IFACE "br0"
++#else
 +#define DEFAULT_USHARE_IFACE "ixp0"
-+#define DEFAULT_USHARE_LOGFILE "/opt/var/log/ushare.log"
++#endif
+ #endif
  
  int parse_config_file (struct ushare_t *ut)
-     __attribute__ ((nonnull));
