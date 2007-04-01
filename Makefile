@@ -148,7 +148,7 @@ COMMON_CROSS_PACKAGES = \
 	clips cogito connect cscope ctags ctcs ctorrent ctrlproxy \
 	cups cvs \
 	cyrus-imapd cyrus-sasl \
-	dansguardian dash dbus dcraw denyhosts dev-pts dict digitemp \
+	dansguardian dash davtools dbus dcraw denyhosts dev-pts dict digitemp \
 	dircproxy distcc dhcp diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
