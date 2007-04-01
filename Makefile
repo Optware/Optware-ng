@@ -93,6 +93,7 @@ PERL_PACKAGES = \
 	perl-wakeonlan \
 	perl-xml-parser \
 	amavisd-new \
+	perlbal \
 	spamassassin \
 	stow \
 
