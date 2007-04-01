@@ -5,7 +5,7 @@
 ###########################################################
 
 USHARE_SITE=http://ushare.geexbox.org/releases
-USHARE_VERSION=0.9.8
+USHARE_VERSION=0.9.10
 USHARE_SOURCE=ushare-$(USHARE_VERSION).tar.bz2
 USHARE_DIR=ushare-$(USHARE_VERSION)
 USHARE_UNZIP=bzcat
