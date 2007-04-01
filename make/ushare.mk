@@ -14,13 +14,16 @@ USHARE_DESCRIPTION= A free UPnP A/V Media Server for Linux.
 USHARE_SECTION=net
 USHARE_PRIORITY=optional
 USHARE_DEPENDS=libupnp
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+USHARE_DEPENDS+=, libiconv
+endif
 USHARE_SUGGESTS=
 USHARE_CONFLICTS=
 
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=2
+USHARE_IPK_VERSION=3
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
@@ -38,6 +41,9 @@ USHARE_PATCHES=$(USHARE_SOURCE_DIR)/ushare.conf.patch $(USHARE_SOURCE_DIR)/cfgpa
 #
 USHARE_CPPFLAGS=
 USHARE_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+USHARE_LDFLAGS+=-liconv
+endif
 
 #
 # USHARE_BUILD_DIR is the directory in which the build is done.
@@ -76,6 +82,9 @@ ushare-source: $(DL_DIR)/$(USHARE_SOURCE) $(USHARE_PATCHES)
 # http://wiki.buici.com/wiki/Autoconf_and_RPL_MALLOC
 
 $(USHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(USHARE_SOURCE) $(USHARE_PATCHES) make/ushare.mk
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) libupnp-stage
 	rm -rf $(BUILD_DIR)/$(USHARE_DIR) $(USHARE_BUILD_DIR)
 	$(USHARE_UNZIP) $(DL_DIR)/$(USHARE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
