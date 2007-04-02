@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	varnish \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -219,7 +218,8 @@ COMMON_CROSS_PACKAGES = \
 	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
 	ufsd unarj unfs3 units unixodbc unrar \
 	unzip upslug2 up-imapproxy usbutils ushare \
-	vblade vdr-mediamvp vim vlc vnstat vorbis-tools vsftpd vte \
+	varnish vblade vdr-mediamvp vim vlc \
+	vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer weechat wget wget-ssl \
 	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
