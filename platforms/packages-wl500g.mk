@@ -25,7 +25,8 @@ BROKEN_PACKAGES = \
 	 pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm scli scponly sdl ser sm snort snownews sqsh swi-prolog \
-	 taglib tcsh tethereal tnftpd transcode unrar vlc vte \
+	 taglib tcsh tethereal tnftpd transcode unrar \
+	 varnish vlc vte \
 	 w3m weechat wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
 	 xft xmu xpm xrender xt xterm xtst zsh \

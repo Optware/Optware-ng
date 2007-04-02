@@ -13,5 +13,5 @@ BROKEN_PACKAGES = \
 	motion mysql nfs-server nrpe \
 	php php-apache pure-ftpd py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent \
-	sablevm tethereal transcode w3m xvid \
+	sablevm tethereal transcode varnish w3m xvid \
 
