@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUA_SITE=http://www.lua.org/ftp
-LUA_VERSION=5.1.1
+LUA_VERSION=5.1.2
 LUA_SOURCE=lua-$(LUA_VERSION).tar.gz
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_UNZIP=zcat
@@ -206,3 +206,9 @@ lua-clean:
 #
 lua-dirclean:
 	rm -rf $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR) $(LUA_HOST_BUILD_DIR) $(LUA_IPK_DIR) $(LUA_IPK)
+
+#
+# Some sanity check for the package.
+#
+lua-check: $(LUA_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LUA_IPK)
