@@ -165,7 +165,8 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	haproxy hdparm hexcurse heyu hnb hpijs htop \
-	ice icecast id3lib iksemel indent iozone imagemagick imap inetutils \
+	ice icecast id3lib iksemel imagemagick imap \
+	inadyn indent inetutils iozone \
 	iperf ipkg-web iptables ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jikes jove joe \
 	keychain kismet kissdx knock \
