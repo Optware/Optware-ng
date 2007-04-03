@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TZ_SITE=ftp://elsie.nci.nih.gov/pub
-TZ_VERSION=2007d
+TZ_VERSION=2007e
 TZ_CODE_SOURCE=tzcode$(TZ_VERSION).tar.gz
 TZ_DATA_SOURCE=tzdata$(TZ_VERSION).tar.gz
 TZ_DIR=tz-$(TZ_VERSION)
