@@ -150,7 +150,7 @@ COMMON_CROSS_PACKAGES = \
 	cups cvs \
 	cyrus-imapd cyrus-sasl \
 	dansguardian dash davtools dbus dcraw denyhosts dev-pts dict digitemp \
-	dircproxy distcc dhcp diffutils \
+	dircproxy distcc dhcp diffstat diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
 	endian enhanced-ctorrent esmtp esniper \
