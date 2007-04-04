@@ -197,7 +197,8 @@ COMMON_CROSS_PACKAGES = \
 	openobex obexftp \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
-	palantir pango par2cmdline patch pcapsipdump pcre pen \
+	palantir pango par2cmdline patch patchutils \
+	pcapsipdump pcre pen \
 	php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
 	procps proftpd psmisc psutils puppy pure-ftpd pwgen \
