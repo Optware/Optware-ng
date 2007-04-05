@@ -197,7 +197,7 @@ static void reload_active()
           tr_torrentIterate(h, is_active, &active_torrents);
           if ( !active_torrents.found ) /* add new torrent */
             {
-              if( !( tor = tr_torrentInit( h, fn, 0, &error ) ) )
+              if( !( tor = tr_torrentInit( h, fn, NULL, 0, &error ) ) )
                 {
                   syslog(LOG_CRIT, "%.80s - %m", fn );
                 }
@@ -490,7 +490,7 @@ int main( int argc, char ** argv )
   
   
   /* Initialize libtransmission */
-  h = tr_init();
+  h = tr_init("cgi");
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir(tr_getPrefsDirectory())  < 0)
