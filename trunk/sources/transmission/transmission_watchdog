@@ -316,7 +316,9 @@ for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
     	    if [ -f "${TORRENT%/*}/.bypass" ] ; then
 		BYPASS=$((BYPASS+1))
 	    else
-		HEARTBEAT=$((HEARTBEAT+1))
+	    	if [ -f "${TORRENT%.seeding}" ] ; then
+		    HEARTBEAT=$((HEARTBEAT+1))
+		fi
 	    fi
 	fi # work
         _check_tracker_error

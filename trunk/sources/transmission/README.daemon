@@ -316,5 +316,19 @@ chmod a+rw /tmp/harddisk/torrent/work
   This bug is harmless. It tries to check nonexistent file at startup. libtransmission 
   developer should eventually add empty file creation or skip this check.
 
+17. I also implemented transmission and I am very much excited. But shame on me, 
+   I am not able to purge these damned completed torrents. I tried everything.
+
+   This is the feature of the Transmission. You cannot remove torrents with WWW interface!
+   Use simple file removal like:
+	cd /tmp/harddisk/torrent/target 
+	ls -lt */*.torrent
+	rm -rf My.Torrent.directory
+   Or just use simple samba share and delete it under Windows explorer.
+   For active and suspended torrents use: Push them with the 'push' button from 
+   Seeding state to Suspend. Then select the torrent en click Remove. 
+   After that you can Purge them into oblivion.
+
+
 
 oleo

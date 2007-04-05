@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.6
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1555
+TRANSMISSION_SVN_REV=1664
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -48,9 +48,9 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # TRANSMISSION_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch \
-	$(TRANSMISSION_SOURCE_DIR)/r1152_peerc_t66.patch \
-	$(TRANSMISSION_SOURCE_DIR)/trackerc-interval.patch \
+TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch 
+#	$(TRANSMISSION_SOURCE_DIR)/r1152_peerc_t66.patch 
+#	$(TRANSMISSION_SOURCE_DIR)/trackerc-interval.patch \
 
 # Additional sources to enhance transmission (like this daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
