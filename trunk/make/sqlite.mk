@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.3.13
+SQLITE_VERSION=3.3.14
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -51,7 +51,7 @@ SQLITE_IPK_VERSION=1
 # SQLITE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SQLITE_PATCHES=$(SQLITE_SOURCE_DIR)/configure.patch
+#SQLITE_PATCHES=$(SQLITE_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -109,22 +109,25 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1
+	if test -n "$(SQLITE_PATCHES)"; \
+		then cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR)
 	mkdir -p $(SQLITE_BUILD_DIR)
+	if test -n "$(SQLITE_PATCHES)"; \
+		then cd $(SQLITE_BUILD_DIR); autoreconf; \
+	fi
 	(cd $(SQLITE_BUILD_DIR); \
-		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		config_BUILD_CC="$(HOSTCC)" \
 		config_TARGET_CC="$(TARGET_CC)" \
-		config_TARGET_READLINE_INC=`echo $(STAGING_CPPFLAGS) $(SQLITE_CPPFLAGS)` \
-		config_TARGET_READLINE_LIBS=`echo $(STAGING_LDFLAGS) $(SQLITE_LDFLAGS)` \
-		ac_cv_header_readline_h=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-readline-inc="$(STAGING_CPPFLAGS) $(SQLITE_CPPFLAGS)" \
+		--with-readline-lib="$(STAGING_LDFLAGS) $(SQLITE_LDFLAGS)" \
 		--disable-nls \
 		--disable-tcl \
 	)
@@ -153,7 +156,7 @@ sqlite: $(SQLITE_BUILD_DIR)/.built
 $(SQLITE_BUILD_DIR)/.staged: $(SQLITE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(SQLITE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sqlite3.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sqlite3.pc
 	touch $@
 
 sqlite-stage: $(SQLITE_BUILD_DIR)/.staged
