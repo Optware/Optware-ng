@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.5.13
+MUTT_VERSION=1.5.15
 MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
@@ -30,7 +30,7 @@ MUTT_CONFLICTS=
 #
 # MUTT_IPK_VERSION should be incremented when the ipk changes.
 #
-MUTT_IPK_VERSION=2
+MUTT_IPK_VERSION=1
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
@@ -130,6 +130,7 @@ mutt-unpack: $(MUTT_BUILD_DIR)/.configured
 #
 $(MUTT_BUILD_DIR)/.built: $(MUTT_BUILD_DIR)/.configured
 	rm -f $(MUTT_BUILD_DIR)/.built
+	$(MAKE) -C $(MUTT_BUILD_DIR) makedoc CC=$(HOSTCC) LDFLAGS="" LIBS=""
 	$(MAKE) -C $(MUTT_BUILD_DIR)
 	touch $(MUTT_BUILD_DIR)/.built
 
