@@ -41,7 +41,7 @@ NYLON_CONFLICTS=
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=1
+NYLON_IPK_VERSION=2
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
