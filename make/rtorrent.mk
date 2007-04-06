@@ -13,13 +13,13 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.7.2
+RTORRENT_VERSION=0.7.4
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
 RTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RTORRENT_DESCRIPTION=rtorrent is a BitTorrent client for ncurses, using the libtorrent library.
-RTORRENT_SECTION= web
+RTORRENT_SECTION=net
 RTORRENT_PRIORITY=optional
 RTORRENT_DEPENDS=libtorrent, $(NCURSES_FOR_OPTWARE_TARGET), libcurl, zlib
 RTORRENT_SUGGESTS=dtach
@@ -28,7 +28,7 @@ RTORRENT_CONFLICTS=
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=4
+RTORRENT_IPK_VERSION=1
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
