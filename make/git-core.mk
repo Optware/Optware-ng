@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=1.4.4.4
+GIT-CORE_VERSION=1.5.0.7
 GIT-CORE_SOURCE=git-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -40,7 +40,7 @@ GIT-CORE_CONFLICTS=
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=2
+GIT-CORE_IPK_VERSION=1
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
@@ -64,6 +64,9 @@ else
 GIT-CORE_LDFLAGS=
 endif
 
+ifeq (perl, $(filter perl, $(PACKAGES)))
+GIT-CORE_PERL_PATH=PERL_PATH=$(PERL_HOSTPERL)
+endif
 #
 # GIT-CORE_BUILD_DIR is the directory in which the build is done.
 # GIT-CORE_SOURCE_DIR is the directory which holds all the
@@ -117,6 +120,9 @@ $(GIT-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT-CORE_SOURCE) $(GIT-CORE_PATCH
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
+ifeq (perl, $(filter perl, $(PACKAGES)))
+	$(MAKE) perl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GIT-CORE_DIR) $(GIT-CORE_BUILD_DIR)
 	$(GIT-CORE_UNZIP) $(DL_DIR)/$(GIT-CORE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GIT-CORE_PATCHES)" ; \
@@ -149,6 +155,7 @@ git-core-unpack: $(GIT-CORE_BUILD_DIR)/.configured
 $(GIT-CORE_BUILD_DIR)/.built: $(GIT-CORE_BUILD_DIR)/.configured
 	rm -f $(GIT-CORE_BUILD_DIR)/.built
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
+	$(GIT-CORE_PERL_PATH) \
 	$(MAKE) -C $(GIT-CORE_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT-CORE_CPPFLAGS)" \
