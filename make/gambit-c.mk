@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/4.0/source
-GAMBIT-C_VERSION=4.0b20
+GAMBIT-C_VERSION=4.0b22
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_VERSION).tar.gz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_VERSION)
 GAMBIT-C_UNZIP=zcat
@@ -226,3 +226,9 @@ gambit-c-clean:
 #
 gambit-c-dirclean:
 	rm -rf $(BUILD_DIR)/$(GAMBIT-C_DIR) $(GAMBIT-C_BUILD_DIR) $(GAMBIT-C_IPK_DIR) $(GAMBIT-C_IPK)
+
+#
+# Some sanity check for the package.
+#
+gambit-c-check: $(GAMBIT-C_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GAMBIT-C_IPK)
