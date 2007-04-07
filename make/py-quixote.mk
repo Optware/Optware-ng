@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-QUIXOTE_VERSION=2.4
-PY-QUIXOTE_SITE=http://www.mems-exchange.org/software/files/quixote
+PY-QUIXOTE_VERSION=2.5b1
+PY-QUIXOTE_SITE=http://quixote.ca/releases
 PY-QUIXOTE_SOURCE=Quixote-$(PY-QUIXOTE_VERSION).tar.gz
 PY-QUIXOTE_DIR=Quixote-$(PY-QUIXOTE_VERSION)
 PY-QUIXOTE_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-QUIXOTE_CONFLICTS=
 #
 # PY-QUIXOTE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-QUIXOTE_IPK_VERSION=4
+PY-QUIXOTE_IPK_VERSION=1
 
 #
 # PY-QUIXOTE_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ PY25-QUIXOTE_IPK=$(BUILD_DIR)/py25-quixote_$(PY-QUIXOTE_VERSION)-$(PY-QUIXOTE_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-QUIXOTE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-QUIXOTE_SITE)/$(PY-QUIXOTE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-QUIXOTE_SITE)/$(PY-QUIXOTE_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PY-QUIXOTE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
