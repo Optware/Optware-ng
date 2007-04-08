@@ -1,0 +1,17 @@
+--- amule.old/src/amule.cpp	2007-04-08 21:08:57.000000000 +0400
++++ amule/src/amule.cpp	2007-04-08 21:45:06.000000000 +0400
+@@ -120,9 +120,12 @@
+ {
+ #if defined(HAVE_GETRLIMIT) && defined(HAVE_SETRLIMIT)
+ 	struct rlimit rl;
++//The following line is kept to allow checking the values of rl using strace.
+ 	getrlimit(resType, &rl);
+-	rl.rlim_cur = rl.rlim_max;
+-	setrlimit(resType, &rl);
++//	rl.rlim_cur = rl.rlim_max;
++//setrlimit is buggy in uClibc-0.9.28 for mips.
++//Its usage leads to a crash while downloading files above 1Gb.
++//	setrlimit(resType, &rl);
+ #endif
+ }
+ 
