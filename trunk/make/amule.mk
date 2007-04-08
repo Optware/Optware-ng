@@ -36,7 +36,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=6
+AMULE_IPK_VERSION=7
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -51,6 +51,9 @@ AMULE_PATCHES=$(AMULE_SOURCE_DIR)/configure.in.patch \
 	$(AMULE_SOURCE_DIR)/MuleDebug-uclibc.patch
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
+endif
+ifeq ($(LIBC_STYLE), uclibc)
+AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/amule-1gb-uclibc-mipsel.patch
 endif
 
 #
