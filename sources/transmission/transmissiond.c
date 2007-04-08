@@ -300,7 +300,7 @@ static void write_info(tr_torrent_t *tor, void * data UNUSED )
 static void list(tr_torrent_t *tor, void * data UNUSED)
 {
   tr_info_t * info =  tr_torrentInfo( tor );
-  syslog(LOG_INFO, "'%s':%s", info->torrent, status(tor));
+  syslog(LOG_INFO, "'%s':%s", info->name, status(tor));
 }
 
 
