@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-IMAP_SITE=ftp://ftp.cac.washington.edu/imap/old
-IMAP_VERSION=2004g
+IMAP_SITE=ftp://ftp.cac.washington.edu/imap
+IMAP_VERSION=2006g
 IMAP_SOURCE=imap-$(IMAP_VERSION).tar.Z
 IMAP_DIR=imap-$(IMAP_VERSION)
 IMAP_UNZIP=zcat
@@ -201,6 +201,9 @@ $(IMAP_IPK): $(IMAP_BUILD_DIR)/.built
 	# make main ipk
 	rm -rf $(IMAP_IPK_DIR) $(BUILD_DIR)/imap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(IMAP_IPK_DIR)/CONTROL/control
+	install -d $(IMAP_IPK_DIR)/opt/bin
+	install -m 755 $(IMAP_BUILD_DIR)/tmail/tmail $(IMAP_IPK_DIR)/opt/bin
+	install -m 755 $(IMAP_BUILD_DIR)/dmail/dmail $(IMAP_IPK_DIR)/opt/bin
 	install -d $(IMAP_IPK_DIR)/opt/sbin
 	install -m 755 $(IMAP_BUILD_DIR)/imapd/imapd $(IMAP_IPK_DIR)/opt/sbin
 	install -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop2d $(IMAP_IPK_DIR)/opt/sbin

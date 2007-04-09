@@ -70,12 +70,3 @@
  
  osdep.c: osdepbas.c osdepckp.c osdeplog.c osdepssl.c
  	$(CAT) osdepbas.c osdepckp.c osdeplog.c osdepssl.c > osdep.c
-@@ -934,7 +951,7 @@
- 	$(LN) sig_$(SIGTYPE).c siglocal.c
- 	$(LN) crx_$(CRXTYPE).c crexcl.c
- 	$(LN) ip$(IP)_unix.c ip_unix.c
--	sh -c '(test -f /usr/include/sys/statvfs.h -a $(OS) != sc5 -a $(OS) != sco) && $(LN) nfstnew.c nfstest.c || $(LN) nfstold.c nfstest.c'
-+	sh -c '(test -f /opt/include/sys/statvfs.h -a $(OS) != sc5 -a $(OS) != sco) && $(LN) nfstnew.c nfstest.c || $(LN) nfstold.c nfstest.c'
- 
- 
- # Password checkers
