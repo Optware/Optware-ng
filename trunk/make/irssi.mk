@@ -42,7 +42,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=5
+IRSSI_IPK_VERSION=6
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -247,6 +247,8 @@ ifeq (perl,$(filter perl, $(PACKAGES)))
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
+	mv $(IRSSI_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
+	   $(IRSSI_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.irssi
 endif
 	$(MAKE) $(IRSSI_IPK_DIR)/CONTROL/control
 #	install -m 755 $(IRSSI_SOURCE_DIR)/postinst $(IRSSI_IPK_DIR)/CONTROL/postinst
