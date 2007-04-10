@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SIMH_SITE=http://simh.trailing-edge.com/sources
-SIMH_UPSTREAM_VERSION=36-1
-SIMH_VERSION=36.1
+SIMH_UPSTREAM_VERSION=37-0
+SIMH_VERSION=37.0
 SIMH_SOURCE=simhv$(SIMH_UPSTREAM_VERSION).zip
 SIMH_DIR=simh-$(SIMH_VERSION)
 SIMH_UNZIP=unzip
