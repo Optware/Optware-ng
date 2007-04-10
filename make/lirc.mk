@@ -20,14 +20,18 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+# Only one driver can be specified at a time! This means that there
+# should be multiple lirc subpackages or maybe using libirman 
+# http://lirc.sourceforge.net/software/snapshots/
+#
 LIRC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lirc
 LIRC_VERSION=0.8.1
 LIRC_SOURCE=lirc-$(LIRC_VERSION).tar.bz2
 LIRC_DIR=lirc-$(LIRC_VERSION)
 LIRC_UNZIP=bzcat
 LIRC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-LIRC_DESCRIPTION=Linux Infrared Remote Control ($(LIRC_DRIVERS))
-LIRC_SECTION=kernel
+LIRC_DESCRIPTION=Linux Infrared Remote Control ($(LIRC_DRIVER))
+LIRC_SECTION=comm
 LIRC_PRIORITY=optional
 LIRC_DEPENDS=
 LIRC_SUGGESTS=
@@ -36,7 +40,7 @@ LIRC_CONFLICTS=
 #
 # LIRC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIRC_IPK_VERSION=1
+LIRC_IPK_VERSION=2
 
 #
 # LIRC_CONFFILES should be a list of user-editable files
@@ -56,14 +60,17 @@ LIRC_CPPFLAGS=
 LIRC_LDFLAGS=
 
 
-ifeq ($(LIBC_STYLE), uclibc)
-LIRC_KERNELDIR=$(BUILDROOT_HEADERS_DIR)/linux
+# http://www.lirc.org/html/table.html
+ifeq ($(OPTWARE_TARGET), oleg)
+LIRC_KERNELDIR=$(FIRMWARE_OLEG_KERNELDIR)
+LIRC_DRIVER=igorplugusb
 else
 LIRC_KERNELDIR=/nonexistent
+LIRC_DRIVER=tira
 endif
 
-# http://www.lirc.org/html/table.html
-LIRC_DRIVERS=tira
+
+
 
 #
 # LIRC_BUILD_DIR is the directory in which the build is done.
@@ -113,9 +120,11 @@ lirc-source: $(DL_DIR)/$(LIRC_SOURCE) $(LIRC_PATCHES)
 #
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
-#
+# 
 $(LIRC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIRC_SOURCE) $(LIRC_PATCHES) make/lirc.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq ($(OPTWARE_TARGET), oleg)
+	$(MAKE) firmware-oleg-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LIRC_DIR) $(LIRC_BUILD_DIR)
 	$(LIRC_UNZIP) $(DL_DIR)/$(LIRC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIRC_PATCHES)" ; \
@@ -137,11 +146,17 @@ $(LIRC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIRC_SOURCE) $(LIRC_PATCHES) make/lir
 		--disable-nls \
 		--disable-static \
 		--with-kerneldir=$(LIRC_KERNELDIR) \
-		--with-driver=$(LIRC_DRIVERS) \
+		--with-moduledir=/opt/lib/modules \
+		--with-driver="$(LIRC_DRIVER)" \
 		--without-x \
 		--with-pic \
 		--with-gnu-ld \
+		--with-igor \
+		--enable-sandboxed \
 	)
+#	add missing headers for module compilation
+	sed -i -e '/#include <linux\/module.h>/a#include <linux/init.h>' \
+		$(LIRC_BUILD_DIR)/drivers/lirc_igorplugusb/lirc_igorplugusb.c
 	$(PATCH_LIBTOOL) $(LIRC_BUILD_DIR)/libtool
 	touch $@
 
@@ -149,9 +164,14 @@ lirc-unpack: $(LIRC_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
-#
+# kernel modules building requires .config file available
+# for proper module building CFLAGS
+# PATH should also contain path to appropriate compiler,
+# while userspace driver is built with configure specified
+# toolchain.
 $(LIRC_BUILD_DIR)/.built: $(LIRC_BUILD_DIR)/.configured
 	rm -f $@
+	PATH=/opt/brcm/hndtools-mipsel-linux/bin:$$PATH \
 	$(MAKE) -C $(LIRC_BUILD_DIR)
 	touch $@
 
@@ -201,6 +221,7 @@ $(LIRC_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
+# /bin/mknod builds/lirc-0.8.1-ipk/dev/lirc c 61 0
 $(LIRC_IPK): $(LIRC_BUILD_DIR)/.built
 	rm -rf $(LIRC_IPK_DIR) $(BUILD_DIR)/lirc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIRC_BUILD_DIR) DESTDIR=$(LIRC_IPK_DIR) install-strip
