@@ -129,6 +129,10 @@ $(SIMH_BUILD_DIR)/.configured: $(DL_DIR)/$(SIMH_SOURCE) $(SIMH_PATCHES) make/sim
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(SIMH_BUILD_DIR)/libtool
+ifeq ($(OPTWARE_TARGET), $(filter ts101 wl500g, $(OPTWARE_TARGET)))
+	sed -i -e 's/-lrt//' $(SIMH_BUILD_DIR)/makefile
+	sed -i -e 's/#if defined (_POSIX_SOURCE)/#if 0/' $(SIMH_BUILD_DIR)/sim_timer.c
+endif
 	touch $(SIMH_BUILD_DIR)/.configured
 
 simh-unpack: $(SIMH_BUILD_DIR)/.configured
