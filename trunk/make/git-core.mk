@@ -40,7 +40,7 @@ GIT-CORE_CONFLICTS=
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=1
+GIT-CORE_IPK_VERSION=2
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
@@ -219,6 +219,10 @@ $(GIT-CORE_IPK): $(GIT-CORE_BUILD_DIR)/.built
 		prefix=/opt \
 		install
 	-$(STRIP_COMMAND) $(GIT-CORE_IPK_DIR)/opt/bin/git-daemon
+ifeq (perl, $(filter perl, $(PACKAGES)))
+	mv $(GIT-CORE_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
+	   $(GIT-CORE_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.git 
+endif
 #	install -d $(GIT-CORE_IPK_DIR)/opt/etc/
 #	install -m 644 $(GIT-CORE_SOURCE_DIR)/git-core.conf $(GIT-CORE_IPK_DIR)/opt/etc/git-core.conf
 #	install -d $(GIT-CORE_IPK_DIR)/opt/etc/init.d
