@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.7.3
+IPYTHON_VERSION=0.8.0
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
@@ -37,7 +37,7 @@ IPYTHON_CONFLICTS=
 #
 # IPYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-IPYTHON_IPK_VERSION=2
+IPYTHON_IPK_VERSION=1
 
 #
 # IPYTHON_CONFFILES should be a list of user-editable files
