@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FIRMWARE_OLEG_SITE=http://wl500g.dyndns.org/$(FIRMWARE_OLEG_VERSION)
-FIRMWARE_OLEG_VERSION=1.9.2.7-7f
-FIRMWARE_OLEG_SOURCE=wl500g-$(FIRMWARE_OLEG_VERSION)-gcc4.tar.bz2
+FIRMWARE_OLEG_VERSION=1.9.2.7-7g
+FIRMWARE_OLEG_SOURCE=wl500g-$(FIRMWARE_OLEG_VERSION).tar.bz2
 FIRMWARE_OLEG_DIR=broadcom
 FIRMWARE_OLEG_UNZIP=bzcat
 FIRMWARE_OLEG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -36,7 +36,7 @@ FIRMWARE_OLEG_CONFLICTS=
 #
 # FIRMWARE_OLEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FIRMWARE_OLEG_IPK_VERSION=4
+FIRMWARE_OLEG_IPK_VERSION=1
 
 #
 # FIRMWARE_OLEG_CONFFILES should be a list of user-editable files
