@@ -24,7 +24,7 @@
 # PY-WEBHELPERS_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-WEBHELPERS_SITE=http://cheeseshop.python.org/packages/source/W/WebHelpers
-PY-WEBHELPERS_VERSION=0.2.2
+PY-WEBHELPERS_VERSION=0.3
 PY-WEBHELPERS_IPK_VERSION=1
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
