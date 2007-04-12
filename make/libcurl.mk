@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.16.1
+LIBCURL_VERSION=7.16.2
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBCURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBCURL_DESCRIPTION=Curl is a command line tool for transferring files with URL syntax, supporting FTP, FTPS, HTTP, HTTPS, GOPHER, TELNET, DICT, FILE and LDAP. Curl supports HTTPS certificates, HTTP POST, HTTP PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies, user+password authentication, file transfer resume, http proxy tunneling and a busload of other useful tricks.
 LIBCURL_SECTION=libs
 LIBCURL_PRIORITY=optional
-LIBCURL_DEPENDS=
+LIBCURL_DEPENDS=openssl
 LIBCURL_CONFLICTS=
 
 #
@@ -58,7 +58,7 @@ LIBCURL_PATCHES=#$(LIBCURL_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 LIBCURL_CPPFLAGS=
-LIBCURL_LDFLAGS=
+LIBCURL_LDFLAGS=-lssl
 
 #
 # LIBCURL_BUILD_DIR is the directory in which the build is done.
