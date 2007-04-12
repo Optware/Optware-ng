@@ -249,6 +249,7 @@ $(PY24-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 
 $(PY25-CURL_IPK) $(PY-CURL-DOC_IPK): $(PY-CURL_BUILD_DIR)/.built
 	rm -rf $(PY25-CURL_IPK_DIR) $(BUILD_DIR)/py25-curl_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-CURL-DOC_IPK_DIR) $(BUILD_DIR)/py-curl-doc_*_$(TARGET_ARCH).ipk
 	cd $(PY-CURL_BUILD_DIR)/2.5; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
