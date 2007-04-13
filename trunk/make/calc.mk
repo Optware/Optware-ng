@@ -117,6 +117,9 @@ $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/cal
 	fi
 	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_LIBDIR)/../include|' $(CALC_BUILD_DIR)/Makefile $(CALC_BUILD_DIR)/*/Makefile
 	sed -i -e 's|/usr/lib/|/opt/lib|' $(CALC_BUILD_DIR)/hist.h
+	touch $(CALC_BUILD_DIR)/longbits.o
+	touch $(CALC_BUILD_DIR)/longbits
+	cp $(CALC_SOURCE_DIR)/longbits.h $(CALC_BUILD_DIR)/
 #	(cd $(CALC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
