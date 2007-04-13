@@ -36,7 +36,9 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=1
+NTP_IPK_VERSION=2
+
+NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 
 #
 # NTP_PATCHES should list any patches, in the the order in
@@ -177,6 +179,7 @@ $(NTP_IPK): $(NTP_BUILD_DIR)/ntpd/ntpd
 	install -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp
 	$(MAKE) $(NTP_IPK_DIR)/CONTROL/control
 	install -m 644 $(NTP_SOURCE_DIR)/postinst $(NTP_IPK_DIR)/CONTROL/postinst
+	echo $(NTP_CONFFILES) | sed -e 's/ /\n/g' > $(NTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTP_IPK_DIR)
 
 #
