@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OPENSER_SOURCE_TYPE=tarball
-#OPENSER_SOURCE_TYPE=svn
+#OPENSER_SOURCE_TYPE=tarball
+OPENSER_SOURCE_TYPE=svn
 
 OPENSER_BASE_VERSION=1.2.0
 
@@ -31,8 +31,8 @@ OPENSER_VERSION=1.2.0
 OPENSER_SITE=http://openser.org/pub/openser/$(OPENSER_VERSION)/src/
 OPENSER_DIR=openser-$(OPENSER_VERSION)
 else
-OPENSER_SVN=http://openser.svn.sourceforge.net/svnroot/openser/trunk
-OPENSER_SVN_REV=1787
+OPENSER_SVN=http://openser.svn.sourceforge.net/svnroot/openser/branches/1.2
+OPENSER_SVN_REV=2000
 OPENSER_VERSION=$(OPENSER_BASE_VERSION)svn-r$(OPENSER_SVN_REV)
 OPENSER_DIR=openser
 endif
@@ -54,7 +54,11 @@ OPENSER_CONFLICTS=
 #
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENSER_IPK_VERSION=6
+ifeq ($(OPENSER_SOURCE_TYPE), tarball)
+OPENSER_IPK_VERSION=7
+else
+OPENSER_IPK_VERSION=1
+endif
 
 #
 # OPENSER_CONFFILES should be a list of user-editable files
@@ -67,7 +71,7 @@ OPENSER_CONFFILES=\
 # OPENSER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/usrloc.patch $(OPENSER_SOURCE_DIR)/lcr.patch
+#OPENSER_PATCHES=$(OPENSER_SOURCE_DIR)/
 
 #
 # If the compilation of the package requires additional
@@ -179,7 +183,8 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
-	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage postgresql-stage net-snmp-stage
+	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
+	$(MAKE) postgresql-stage net-snmp-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
