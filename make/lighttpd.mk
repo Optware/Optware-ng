@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.13
+LIGHTD_VERSION=1.4.15
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.gz
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=zcat
@@ -36,17 +36,16 @@ LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib, libstdc++
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openldap-libs, openssl, sqlite
-else
 LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openssl, sqlite
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+LIGHTTPD_SUGGESTS+=, openldap-libs
 endif
 LIGHTTPD_CONFLICTS=
 
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=7
+LIGHTTPD_IPK_VERSION=1
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
