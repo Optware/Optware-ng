@@ -45,7 +45,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=1
+LIGHTTPD_IPK_VERSION=2
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -133,7 +133,7 @@ endif
 	fi
 	(cd $(LIGHTTPD_BUILD_DIR); \
 		sed -ie '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
-	autoconf; \
+	autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
