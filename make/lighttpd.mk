@@ -133,13 +133,12 @@ endif
 	fi
 	(cd $(LIGHTTPD_BUILD_DIR); \
 		sed -ie '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
-	autoreconf; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
 		PCRE_LIB="-lpcre" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-		XML_CFLAGS=`$(STAGING_PREFIX)/bin/xml2-config --cflags` \
 		SQLITE_CFLAGS="-I$(STAGING_INCLUDE_DIR)" \
 		ac_cv_lib_memcache_mc_new=yes \
 		./configure \
