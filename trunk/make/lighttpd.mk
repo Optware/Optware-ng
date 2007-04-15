@@ -58,14 +58,13 @@ LIGHTTPD_CONFFILES=\
 # which they should be applied to the source code.
 #
 LIGHTTPD_PATCHES=\
-	$(LIGHTTPD_SOURCE_DIR)/configure.in.patch \
 	$(LIGHTTPD_SOURCE_DIR)/src-server.c.patch \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIGHTTPD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
+LIGHTTPD_CPPFLAGS=
 LIGHTTPD_LDFLAGS=
 
 #
@@ -132,15 +131,15 @@ endif
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
 	fi
 	(cd $(LIGHTTPD_BUILD_DIR); \
-		sed -ie '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
+		sed -i '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
+		sed -i '/cross_compiling.*WITH_PCRE/s/"x$$cross_compiling" = xno -a //' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIGHTTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIGHTTPD_LDFLAGS)" \
-		PCRE_LIB="-lpcre" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		SQLITE_CFLAGS="-I$(STAGING_INCLUDE_DIR)" \
 		ac_cv_lib_memcache_mc_new=yes \
+		ac_cv_path_PCRECONFIG=$(STAGING_PREFIX)/bin/pcre-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
