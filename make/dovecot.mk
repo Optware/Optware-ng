@@ -32,7 +32,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOVECOT_SITE=http://www.dovecot.org/releases
-DOVECOT_VERSION=1.0.rc15
+DOVECOT_VERSION=1.0.0
 DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
 DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
@@ -47,7 +47,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=10
+DOVECOT_IPK_VERSION=12
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ DOVECOT_CONFFILES=/opt/etc/dovecot.conf /opt/etc/init.d/S90dovecot
 # which they should be applied to the source code.
 #
 ifeq ($(OPTWARE_TARGET),wl500g)
-DOVECOT_PATCHES=sources/dovecot/configure.in.patch sources/dovecot/config.h.in_wl500g.patch
+#DOVECOT_PATCHES=sources/dovecot/configure.in.patch sources/dovecot/config.h.in_wl500g.patch
 DOVECOT_CONFIGURE=--disable-ipv6
 else
 DOVECOT_PATCHES=sources/dovecot/configure.in.patch
@@ -131,7 +131,9 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 	fi
 	(cd $(DOVECOT_BUILD_DIR); \
 		rm -rf config.cache; \
+		aclocal; \
 		autoconf; \
+		automake; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
@@ -148,6 +150,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--without-sql-drivers; \
 	)
 	#$(PATCH_LIBTOOL) $(DOVECOT_BUILD_DIR)/libtool
 	touch $(DOVECOT_BUILD_DIR)/.configured
