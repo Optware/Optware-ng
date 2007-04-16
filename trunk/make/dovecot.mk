@@ -47,7 +47,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=12
+DOVECOT_IPK_VERSION=1
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -131,9 +131,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 	fi
 	(cd $(DOVECOT_BUILD_DIR); \
 		rm -rf config.cache; \
-		aclocal; \
-		autoconf; \
-		automake; \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOVECOT_LDFLAGS)" \
@@ -243,3 +241,9 @@ dovecot-clean:
 #
 dovecot-dirclean:
 	rm -rf $(BUILD_DIR)/$(DOVECOT_DIR) $(DOVECOT_BUILD_DIR) $(DOVECOT_IPK_DIR) $(DOVECOT_IPK)
+
+#
+# Some sanity check for the package.
+#
+dovecot-check: $(DOVECOT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DOVECOT_IPK)
