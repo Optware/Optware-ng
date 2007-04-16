@@ -9,6 +9,5 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
 	qemu qemu-libc-i386 \
-	transcode \
 	varnish \
 
