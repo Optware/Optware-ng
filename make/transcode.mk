@@ -21,13 +21,13 @@
 #
 #TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
 TRANSCODE_SITE=http://fromani.exit1.org
-TRANSCODE_VERSION=1.0.2
-TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.gz
+TRANSCODE_VERSION=1.0.3
+TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.bz2
 #TRANSCODE_TAG=-D 2005-02-13
 #TRANSCODE_MODULE=transcode
 TRANSCODE_DIR=transcode-$(TRANSCODE_VERSION)
-TRANSCODE_UNZIP=zcat
-TRANSCODE_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+TRANSCODE_UNZIP=bzcat
+TRANSCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
 TRANSCODE_SECTION=tool
 TRANSCODE_PRIORITY=optional
