@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ELINKS_SITE=http://elinks.or.cz/download
-ELINKS_VERSION=0.11.2
+ELINKS_VERSION=0.11.3
 ELINKS_SOURCE=elinks-$(ELINKS_VERSION).tar.gz
 ELINKS_DIR=elinks-$(ELINKS_VERSION)
 ELINKS_UNZIP=zcat
@@ -35,7 +35,7 @@ ELINKS_CONFLICTS=
 #
 # ELINKS_IPK_VERSION should be incremented when the ipk changes.
 #
-ELINKS_IPK_VERSION=2
+ELINKS_IPK_VERSION=1
 
 #
 # ELINKS_PATCHES should list any patches, in the the order in
@@ -150,7 +150,7 @@ $(ELINKS_BUILD_DIR)/.staged: $(ELINKS_BUILD_DIR)/.built
 elinks-stage: $(ELINKS_BUILD_DIR)/.staged
 
 # This rule creates a control file for ipkg.  It is no longer
-# necessary to create a seperate control file under sources/<foo>
+# necessary to create a seperate control file under sources/elinks
 #
 $(ELINKS_IPK_DIR)/CONTROL/control:
 	@install -d $(ELINKS_IPK_DIR)/CONTROL
@@ -184,6 +184,7 @@ $(ELINKS_IPK): $(ELINKS_BUILD_DIR)/.built
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(ELINKS_IPK_DIR) \
 		$(ELINKS_VERBOSE) install
+	$(STRIP_COMMAND) $(ELINKS_IPK_DIR)/opt/bin/elinks
 	$(MAKE) $(ELINKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ELINKS_IPK_DIR)
 
@@ -204,3 +205,9 @@ elinks-clean:
 #
 elinks-dirclean:
 	rm -rf $(BUILD_DIR)/$(ELINKS_DIR) $(ELINKS_BUILD_DIR) $(ELINKS_IPK_DIR) $(ELINKS_IPK)
+
+#
+# Some sanity check for the package.
+#
+elinks-check: $(ELINKS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ELINKS_IPK)
