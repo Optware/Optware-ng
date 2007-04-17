@@ -22,7 +22,7 @@ BROKEN_PACKAGES = \
 	 monotone msynctool mtr mutt \
 	 ncmpc ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
-	 pango pcapsipdump postfix psmisc py-mssql \
+	 p7zip pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm scli scponly sdl ser sm snort snownews sqsh swi-prolog \
 	 taglib tcsh tethereal tnftpd transcode unrar \
