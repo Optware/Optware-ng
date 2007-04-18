@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT-CORE_SITE=http://www.kernel.org/pub/software/scm/git
-GIT-CORE_VERSION=1.5.0.7
+GIT-CORE_VERSION=1.5.1.1
 GIT-CORE_SOURCE=git-$(GIT-CORE_VERSION).tar.gz
 GIT-CORE_DIR=git-$(GIT-CORE_VERSION)
 GIT-CORE_UNZIP=zcat
@@ -40,7 +40,7 @@ GIT-CORE_CONFLICTS=
 #
 # GIT-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT-CORE_IPK_VERSION=2
+GIT-CORE_IPK_VERSION=1
 
 #
 # GIT-CORE_CONFFILES should be a list of user-editable files
