@@ -22,7 +22,7 @@
 #
 SNORT_SITE=http://www.snort.org/dl/current
 SNORT_SITE2=http://www.snort.org/dl/old
-SNORT_VERSION=2.6.1.2
+SNORT_VERSION=2.6.1.4
 SNORT_SOURCE=snort-$(SNORT_VERSION).tar.gz
 SNORT_DIR=snort-$(SNORT_VERSION)
 SNORT_UNZIP=zcat
