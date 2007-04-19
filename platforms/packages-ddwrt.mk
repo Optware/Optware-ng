@@ -10,4 +10,5 @@ BROKEN_PACKAGES = \
 	libdvb \
 	nget \
 	par2cmdline \
+	zsh \
 
