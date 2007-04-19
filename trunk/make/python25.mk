@@ -21,9 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON25_VERSION=2.5
+PYTHON25_VERSION=2.5.1
 PYTHON25_VERSION_MAJOR=2.5
-PYTHON25_SITE=http://www.python.org/ftp/python/$(PYTHON25_VERSION_MAJOR)/
+PYTHON25_SITE=http://www.python.org/ftp/python/$(PYTHON25_VERSION)/
 PYTHON25_SOURCE=Python-$(PYTHON25_VERSION).tar.bz2
 PYTHON25_DIR=Python-$(PYTHON25_VERSION)
 PYTHON25_UNZIP=bzcat
@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=6
+PYTHON25_IPK_VERSION=1
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -100,7 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON25_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON25_SITE)/$(PYTHON25_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PYTHON25_SITE)/$(PYTHON25_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PYTHON25_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
