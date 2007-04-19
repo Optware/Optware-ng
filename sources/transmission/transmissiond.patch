@@ -1,6 +1,6 @@
-diff -urN -x '.*' Transmission-0.6.1/mk/daemon.mk transmission/mk/daemon.mk
---- Transmission-0.6.1/mk/daemon.mk	1970-01-01 01:00:00.000000000 +0100
-+++ transmission/mk/daemon.mk	2006-08-10 11:40:14.000000000 +0200
+diff -urN -x '.*' Transmission-0.7/mk/transmissiond.mk transmission/mk/transmissiond.mk
+--- Transmission-0.6.1/mk/transmissiond.mk	1970-01-01 01:00:00.000000000 +0100
++++ transmission/mk/transmissiond.mk	2006-08-10 11:40:14.000000000 +0200
 @@ -0,0 +1,35 @@
 +# $Id: d.mk 265 2006-05-31 12:54:53Z titer $
 +
@@ -16,7 +16,7 @@ diff -urN -x '.*' Transmission-0.6.1/mk/daemon.mk transmission/mk/daemon.mk
 +transmissiond: $(OBJS) ../libtransmission/libtransmission.a
 +	$(LINK_RULE)
 +
-+%.o: %.c ../mk/config.mk ../mk/common.mk ../mk/daemon.mk
++%.o: %.c ../mk/config.mk ../mk/common.mk ../mk/transmissiond.mk
 +	$(CC_RULE)
 +
 +clean:
@@ -25,7 +25,7 @@ diff -urN -x '.*' Transmission-0.6.1/mk/daemon.mk transmission/mk/daemon.mk
 +	@echo "Clean $(OBJS)"
 +	@$(RM) $(OBJS)
 +
-+.depend: $(SRCS) ../mk/config.mk ../mk/common.mk ../mk/daemon.mk
++.depend: $(SRCS) ../mk/config.mk ../mk/common.mk ../mk/transmissiond.mk
 +	$(DEP_RULE)
 +
 +install: install-bin install-man
@@ -45,7 +45,7 @@ diff -urN -x '.*' Transmission-0.6.1/mk/default.mk transmission/mk/default.mk
  include mk/common.mk
  
 -TARGETS = .cli
-+TARGETS = .cli .daemon
++TARGETS = .cli .transmissiond
  ifeq ($(GTK),yes)
  TARGETS += .gtk
  endif
@@ -53,9 +53,9 @@ diff -urN -x '.*' Transmission-0.6.1/mk/default.mk transmission/mk/default.mk
  	@echo "* Building Transmission CLI client"
  	@$(MAKE) -C cli -f ../mk/cli.mk
  
-+.daemon: .lib
-+	@echo "* Building Transmission daemon"
-+	@$(MAKE) -C cli -f ../mk/daemon.mk
++.transmissiond: .lib
++	@echo "* Building Transmission daemon for CGI interface"
++	@$(MAKE) -C cli -f ../mk/transmissiond.mk
 +
  .gtk: .lib
  	@echo "* Building Transmission GTK+ client"
@@ -64,9 +64,9 @@ diff -urN -x '.*' Transmission-0.6.1/mk/default.mk transmission/mk/default.mk
  	@echo "* Installing Transmission CLI client"
  	@$(MAKE) -C cli -f ../mk/cli.mk install
  
-+.install.daemon: .daemon
-+	@echo "* Installing Transmission daemon"
-+	@$(MAKE) -C cli -f ../mk/daemon.mk install
++.install.transmissiond: .transmissiond
++	@echo "* Installing Transmission daemon for CGI interface"
++	@$(MAKE) -C cli -f ../mk/transmissiond.mk install
 +
 +
  .install.gtk: .gtk

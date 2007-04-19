@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
-TRANSMISSION_VERSION=0.6
+TRANSMISSION_VERSION=0.7
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1692
+TRANSMISSION_SVN_REV=1757
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -31,7 +31,7 @@ TRANSMISSION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon with WWW interface
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
-TRANSMISSION_DEPENDS=openssl
+TRANSMISSION_DEPENDS=openssl, libevent
 TRANSMISSION_SUGGESTS=gnuplot, logrotate
 TRANSMISSION_CONFLICTS=torrent
 
@@ -48,11 +48,9 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # TRANSMISSION_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/daemon.patch 
-#	$(TRANSMISSION_SOURCE_DIR)/r1152_peerc_t66.patch 
-#	$(TRANSMISSION_SOURCE_DIR)/trackerc-interval.patch \
+TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.patch 
 
-# Additional sources to enhance transmission (like this daemon)
+# Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
 
 #
@@ -122,7 +120,7 @@ transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 # better to use Transmission provided (built-in) SHA1 hash
 #
 $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) 
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libevent-stage
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR)
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
