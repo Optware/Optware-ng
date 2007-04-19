@@ -28,7 +28,7 @@
 #
 GNUTLS_SITE=http://josefsson.org/gnutls/releases
 # ftp://ftp.gnutls.org/pub/gnutls
-GNUTLS_VERSION=1.6.1
+GNUTLS_VERSION=1.6.2
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.bz2
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=bzcat
@@ -43,7 +43,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=3
+GNUTLS_IPK_VERSION=1
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
