@@ -1,5 +1,5 @@
---- Python-2.5b1/configure.in.orig	2006-06-19 01:14:09.000000000 -0700
-+++ Python-2.5b1/configure.in	2006-06-22 22:20:57.000000000 -0700
+--- Python-2.5.1c1/configure.in.orig	2007-03-12 03:50:51.000000000 -0700
++++ Python-2.5.1c1/configure.in	2007-04-10 09:32:32.000000000 -0700
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -12,20 +12,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -676,9 +681,9 @@
- 
- AC_MSG_RESULT($LDLIBRARY)
- 
--AC_PROG_RANLIB
--AC_SUBST(AR)
--AC_CHECK_PROGS(AR, ar aal, ar)
-+# find tools while respecting --host setting
-+AC_CHECK_TOOL(RANLIB,ranlib)
-+AC_CHECK_TOOLS(AR,ar aal,ar)
- 
- AC_SUBST(SVNVERSION)
- AC_CHECK_PROG(SVNVERSION, svnversion, found, not-found)
-@@ -3339,25 +3344,8 @@
+@@ -3368,39 +3373,8 @@
  fi
  
  AC_MSG_CHECKING(for %zd printf() format support)
@@ -35,14 +22,28 @@
 -
 -int main()
 -{
--    char buffer[4];
+-    char buffer[256];
+-
+-#ifdef HAVE_SSIZE_T
+-typedef ssize_t Py_ssize_t;
+-#elif SIZEOF_VOID_P == SIZEOF_LONG
+-typedef long Py_ssize_t;
+-#else
+-typedef int Py_ssize_t;
+-#endif
 -
 -    if(sprintf(buffer, "%zd", (size_t)123) < 0)
 -       	return 1;
 -
--    if (strncmp(buffer, "123", 3))
+-    if (strcmp(buffer, "123"))
 -	return 1;
--    
+-
+-    if (sprintf(buffer, "%zd", (Py_ssize_t)-123) < 0)
+-       	return 1;
+-
+-    if (strcmp(buffer, "-123"))
+-	return 1;
+-
 -    return 0;
 -}],
 -[AC_MSG_RESULT(yes)
@@ -53,7 +54,7 @@
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3387,6 +3375,25 @@
+@@ -3430,6 +3404,25 @@
  done
  AC_MSG_RESULT(done)
  
