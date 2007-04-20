@@ -1,0 +1,96 @@
+--- configure.orig	2007-04-20 04:59:51.000000000 +0000
++++ configure	2007-04-20 05:02:39.000000000 +0000
+@@ -78,7 +78,7 @@
+     for TRY in egcs gcc g++ CC c++ cc; do
+        (
+            $TRY __conftest.c -o __conftest || exit 1;
+-           ./__conftest || exit 1;
++#           #./__conftest || exit 1;
+        ) >/dev/null 2>&1 || continue;
+        CC=$TRY
+        break;
+@@ -94,7 +94,7 @@
+     echo -n 'Checking if C compiler works... '
+     if (
+           $CC __conftest.c -o __conftest || exit 1
+-          ./__conftest || exit 1
++#          ./__conftest || exit 1
+        ) >/dev/null 2>&1; then
+          echo 'yes'
+      else
+@@ -125,7 +125,7 @@
+     for TRY in egcs gcc g++ CC c++ cc; do
+        (
+            $TRY __conftest.cc -o __conftest || exit 1;
+-           ./__conftest || exit 1;
++#           ./__conftest || exit 1;
+        ) >/dev/null 2>&1 || continue;
+        CXX=$TRY
+        break;
+@@ -141,7 +141,7 @@
+     echo -n 'Checking if C++ compiler works... '
+     if (
+           $CXX __conftest.cc -o __conftest || exit 1
+-          ./__conftest || exit 1
++#          ./__conftest || exit 1
+        ) >/dev/null 2>&1; then
+          echo 'yes'
+      else
+@@ -278,13 +278,13 @@
+ EOF
+ if (
+       $CXX $CXXFLAGS  __conftest.cc  -o __conftest || exit 1
+-      ./__conftest || exit 1
++#      ./__conftest || exit 1
+    ) >/dev/null 2>&1; then
+     echo 'yes'
+ else
+     if (
+           $CXX $CXXFLAGS -D__USE_BSD_SIGNAL __conftest.cc  -o __conftest || exit 1
+-          ./__conftest || exit 1
++#          ./__conftest || exit 1
+        ) >/dev/null 2>&1; then
+         echo '-D__USE_BSD_SIGNAL'
+         CFLAGS="$CFLAGS -D__USE_BSD_SIGNAL"
+@@ -330,6 +330,8 @@
+         echo 'no'
+     fi
+ fi
++    
++NCURSES=1
+ 
+ if [ x$NCURSES != x ]; then
+     LIBTERMCAP=-lncurses
+@@ -468,7 +470,7 @@
+ else
+     if (
+           $CXX $CXXFLAGS -D_GNU_SOURCE __conftest.cc  -o __conftest || exit 1
+-          ./__conftest || exit 1
++#          ./__conftest || exit 1
+        ) >/dev/null 2>&1; then
+         echo '-D_GNU_SOURCE'
+         CFLAGS="$CFLAGS -D_GNU_SOURCE"
+@@ -501,20 +503,20 @@
+ EOF
+ if (
+       $CXX $CXXFLAGS  __conftest.cc $LIBBSD -o __conftest || exit 1
+-      ./__conftest || exit 1
++#      ./__conftest || exit 1
+    ) >/dev/null 2>&1; then
+     echo 'ok'
+ else
+     if (
+           $CXX $CXXFLAGS  __conftest.cc -lsnprintf $LIBBSD -o __conftest || exit 1
+-          ./__conftest || exit 1
++#          ./__conftest || exit 1
+        ) >/dev/null 2>&1; then
+         echo '-lsnprintf'
+         LIBS="$LIBS -lsnprintf"
+     else
+         if (
+               $CXX $CXXFLAGS  __conftest.cc -ldb $LIBBSD -o __conftest || exit 1
+-              ./__conftest || exit 1
++#              ./__conftest || exit 1
+            ) >/dev/null 2>&1; then
+             echo '-ldb'
+             LIBS="$LIBS -ldb"

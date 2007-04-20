@@ -52,7 +52,7 @@ NETKIT-TELNET_CONFFILES=/opt/etc/netkit-telnet.conf /opt/etc/init.d/SXXnetkit-te
 # NETKIT-TELNET_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NETKIT-TELNET_PATCHES=$(NETKIT-TELNET_SOURCE_DIR)/configure.patch
+NETKIT-TELNET_PATCHES=$(NETKIT-TELNET_SOURCE_DIR)/configure.patch $(NETKIT-TELNET_SOURCE_DIR)/missing-includes.patch
 
 #
 # If the compilation of the package requires additional
@@ -124,6 +124,7 @@ $(NETKIT-TELNET_BUILD_DIR)/.configured: $(DL_DIR)/$(NETKIT-TELNET_SOURCE) $(NETK
 	(cd $(NETKIT-TELNET_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-TELNET_CPPFLAGS)" \
+		CXXFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-TELNET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NETKIT-TELNET_LDFLAGS)" \
 		./configure \
 		--prefix=/opt \
