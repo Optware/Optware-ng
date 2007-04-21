@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPC_SITE=http://www.musicpd.org/uploads/files
-MPC_VERSION=0.12.0
+MPC_VERSION=0.12.1
 MPC_SOURCE=mpc-$(MPC_VERSION).tar.bz2
 MPC_DIR=mpc-$(MPC_VERSION)
 MPC_UNZIP=bzcat
