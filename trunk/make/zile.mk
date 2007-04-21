@@ -29,7 +29,7 @@ ZILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZILE_DESCRIPTION=Zile is Lossy Emacs, a small, fast, and powerful Emacs clone.
 ZILE_SECTION=editor
 ZILE_PRIORITY=optional
-ZILE_DEPENDS=
+ZILE_DEPENDS=ncurses
 ZILE_SUGGESTS=
 ZILE_CONFLICTS=
 
