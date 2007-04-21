@@ -199,7 +199,8 @@ COMMON_CROSS_PACKAGES = \
 	optware-devel ossp-js oww \
 	p7zip palantir pango par2cmdline patch patchutils \
 	pcapsipdump pcre pen \
-	php php-apache php-fcgi php-thttpd phpmyadmin picocom pkgconfig \
+	php php-apache php-fcgi php-thttpd phpmyadmin \
+	picocom picolisp pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
 	procps proftpd psmisc psutils puppy pure-ftpd pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
