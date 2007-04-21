@@ -228,7 +228,7 @@ COMMON_CROSS_PACKAGES = \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
 	x264 xmail xvid \
-	zip zlib zoo zsh \
+	zile zip zlib zoo zsh \
 
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
