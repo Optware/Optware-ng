@@ -37,7 +37,7 @@ PY-NOSE_CONFLICTS=
 #
 # PY-NOSE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NOSE_IPK_VERSION=1
+PY-NOSE_IPK_VERSION=2
 
 #
 # PY-NOSE_CONFFILES should be a list of user-editable files
@@ -209,7 +209,7 @@ $(PY24-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
 	(cd $(PY-NOSE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-NOSE_IPK_DIR) --prefix=/opt)
-	rm -f $(PY24-NOSE_IPK_DIR)/opt/man/man2/nosetests.1
+	rm -rf $(PY24-NOSE_IPK_DIR)/opt/man/
 	$(MAKE) $(PY24-NOSE_IPK_DIR)/CONTROL/control
 #	echo $(PY-NOSE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-NOSE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-NOSE_IPK_DIR)
