@@ -156,7 +156,7 @@ COMMON_CROSS_PACKAGES = \
 	endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
-	faad2 fcgi fetchmail file findutils fish flex flip ftpd-topfield \
+	faad2 fann fcgi fetchmail file findutils fish flex flip ftpd-topfield \
 	ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
