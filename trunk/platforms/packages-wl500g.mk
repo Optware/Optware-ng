@@ -6,7 +6,7 @@ BROKEN_PACKAGES = \
 	 amule \
 	$(ASTERISK_PACKAGES) \
 	 atk avahi bitlbee bsdmainutils bzflag \
-	 calc coreutils ctrlproxy \
+	 calc chicken coreutils ctrlproxy \
 	 dansguardian dcraw dnsmasq dump \
 	 ecl elinks \
 	$(ERLANG_PACKAGES) \
