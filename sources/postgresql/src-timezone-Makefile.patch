@@ -4,7 +4,7 @@
  	$(CC) $(CFLAGS) $(ZICOBJS) $(LDFLAGS) $(LIBS) -o $@$(X)
  
  install: all installdirs
--	./zic -d '$(DESTDIR)$(datadir)/timezone' $(TZDATAFILES)
+-	./zic -d '$(DESTDIR)$(datadir)/timezone' -p '$(POSIXRULES)' $(TZDATAFILES)
 +	gcc -o ./zic-cross  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c ../port/qsort.c
 +	./zic-cross -d $(DESTDIR)$(datadir)/timezone $(TZDATAFILES)
  	$(MAKE) -C tznames $@
