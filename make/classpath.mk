@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CLASSPATH_SITE=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_VERSION=0.93
+CLASSPATH_VERSION=0.95
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -123,6 +123,7 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		--disable-nls \
 		; \
 	)
+	$(PATCH_LIBTOOL) $(CLASSPATH_BUILD_DIR)/libtool
 	touch $(CLASSPATH_BUILD_DIR)/.configured
 
 classpath-unpack: $(CLASSPATH_BUILD_DIR)/.configured
@@ -186,8 +187,7 @@ $(CLASSPATH_IPK_DIR)/CONTROL/control:
 #
 $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
 	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install prefix=$(CLASSPATH_IPK_DIR)/opt
-	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip prefix=$(CLASSPATH_IPK_DIR)/opt
+	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip transform="" prefix=$(CLASSPATH_IPK_DIR)/opt
 	$(MAKE) $(CLASSPATH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLASSPATH_IPK_DIR)
 
