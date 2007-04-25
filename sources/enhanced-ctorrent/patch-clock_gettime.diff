@@ -1,0 +1,326 @@
+--- btstream.cpp.orig	Mon Apr  9 18:51:07 2007
++++ btstream.cpp	Tue Apr 17 19:48:45 2007
+@@ -7,6 +7,10 @@
+ #include "msgencode.h"
+ #include "btconfig.h"
+ 
++#ifndef HAVE_CLOCK_GETTIME
++#include "compat.h"
++#endif
++
+ size_t get_nl(char *from)
+ {
+   // assumes H_INT_LEN==H_LEN==4
+--- ctorrent.cpp.orig	Tue Apr 10 19:58:36 2007
++++ ctorrent.cpp	Tue Apr 17 19:56:39 2007
+@@ -44,9 +44,14 @@
+ 
+ void Random_init()
+ {
++  unsigned long seed;
++#ifdef HAVE_GETTIMEOFDAY
+   struct timeval tv; 
+   gettimeofday(&tv,(struct timezone*) 0);
+-  unsigned long seed = tv.tv_usec + tv.tv_sec + getpid();
++  seed = tv.tv_usec + tv.tv_sec + getpid();
++#else
++  seed = (unsigned long)time((time_t *)0);
++#endif
+   srandom(seed);
+ }
+ 
+--- downloader.cpp.orig	Tue Apr 10 19:58:50 2007
++++ downloader.cpp	Tue Apr 17 18:39:05 2007
+@@ -61,6 +61,7 @@
+ 
+     if( 0==prevnfds && prevsleep > 0 && prevsleep < MAX_SLEEP ){
+       FD_ZERO(&rfd); FD_ZERO(&wfd);
++      maxfd = 0;
+       maxsleep = 0;  // waited for bandwidth--poll now
+     }
+     else if( WORLD.IsIdle() ){
+--- peer.cpp.orig	Tue Apr 10 20:14:35 2007
++++ peer.cpp	Tue Apr 17 19:49:16 2007
+@@ -13,6 +13,10 @@
+ #include "bttime.h"
+ #include "console.h"
+ 
++#ifndef HAVE_CLOCK_GETTIME
++#include "compat.h"
++#endif
++
+ // Convert a peer ID to a printable string.
+ int TextPeerID(unsigned char *peerid, char *txtid)
+ {
+--- peerlist.cpp.orig	Tue Apr 10 20:18:51 2007
++++ peerlist.cpp	Tue Apr 17 19:49:29 2007
+@@ -23,6 +23,10 @@
+ #include "bttime.h"
+ #include "console.h"
+ 
++#ifndef HAVE_CLOCK_GETTIME
++#include "compat.h"
++#endif
++
+ #define MIN_UNCHOKES 3
+ #define MIN_OPT_CYCLE 3
+ #define MIN_UNCHOKE_INTERVAL 10
+--- rate.cpp.orig	Tue Apr 10 20:23:34 2007
++++ rate.cpp	Tue Apr 17 19:49:38 2007
+@@ -5,6 +5,10 @@
+ #include "bttime.h"
+ #include "console.h"
+ 
++#ifndef HAVE_CLOCK_GETTIME
++#include "compat.h"
++#endif
++
+ #define RATE_INTERVAL 20
+ #define SHORT_INTERVAL 5
+ 
+--- compat.h.orig	Tue Apr 17 20:27:34 2007
++++ compat.h	Tue Apr 17 19:59:44 2007
+@@ -0,0 +1,32 @@
++#ifndef COMPAT_H
++#define COMPAT_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++#if !defined(HAVE_SYS_TIME_H) || defined(TIME_WITH_SYS_TIME)
++#include <time.h>
++#endif
++#ifdef HAVE_SYS_TIME_H
++#include <sys/time.h>
++#endif
++
++#ifndef CLOCK_REALTIME
++#define CLOCK_REALTIME 0
++#endif
++
++#ifndef HAVE_CLOCKID_T
++typedef int clockid_t;
++#endif
++
++#ifndef HAVE_CLOCK_GETTIME
++int clock_gettime(clockid_t clock_id, struct timespec *tp);
++#endif
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif
++
+--- compat.c.orig	Tue Apr 17 20:27:34 2007
++++ compat.c	Tue Apr 17 20:05:39 2007
+@@ -0,0 +1,23 @@
++#include "def.h"
++#include "compat.h"
++
++#ifndef HAVE_CLOCK_GETTIME
++int clock_gettime(clockid_t clock_id, struct timespec *tp)
++{
++  int r = 0;
++
++#if defined(HAVE_GETTIMEOFDAY)
++  struct timeval tv;
++  if( (r = gettimeofday(&tv, (struct timezone *)0)) == 0 ){
++    tp->tv_sec = tv.tv_sec;
++    tp->tv_nsec = tv.tv_usec * 1000;
++  }
++#else
++#error No suitable precision timing functions appear to be available!
++#error Please report this problem and identify your system platform.
++#endif
++
++  return r;
++}
++#endif
++
+--- configure.ac.orig	Tue Apr 10 16:55:52 2007
++++ configure.ac	Tue Apr 17 19:51:40 2007
+@@ -15,8 +15,7 @@
+ AC_LANG([C++])
+
+ # Checks for libaries.
+-AC_SEARCH_LIBS([clock_gettime],[c rt posix4],,
+-	[AC_MSG_ERROR([cannot find library for clock_gettime()])])
++AC_SEARCH_LIBS([clock_gettime],[c rt posix4])
+
+ # Checks for header files.
+ AC_HEADER_DIRENT
+@@ -39,13 +38,16 @@
+ AC_TYPE_UINT16_T
+ AC_TYPE_UINT32_T
+ AC_TYPE_UINT64_T
++AC_CHECK_TYPE([clockid_t],
++	[AC_DEFINE([HAVE_CLOCKID_T],,
++		[Define to 1 if you have the clockid_t type.])])
+ 
+ # Checks for library functions.
+ AC_FUNC_MEMCMP
+ AC_TYPE_SIGNAL
+ AC_FUNC_STAT
+ AC_FUNC_STRTOD
+-AC_CHECK_FUNCS([ftruncate gethostbyname gettimeofday getwd inet_ntoa memchr memmove memset mkdir select socket strchr strerror strncasecmp strstr strtol strtoll strnstr])
++AC_CHECK_FUNCS([clock_gettime ftruncate gethostbyname gettimeofday getwd inet_ntoa memchr memmove memset mkdir select socket strchr strerror strncasecmp strstr strtol strtoll strnstr])
+ 
+ # Enable/check large file support
+ AC_SYS_LARGEFILE
+--- aclocal.m4.orig	Tue Apr 10 16:55:52 2007
++++ aclocal.m4	Tue Apr 17 19:51:41 2007
+@@ -1018,3 +1018,4 @@
+ AC_SUBST([am__untar])
+ ]) # _AM_PROG_TAR
+ 
++
+--- config.h.in.orig	Tue Apr 10 21:02:41 2007
++++ config.h.in	Tue Apr 17 19:51:51 2007
+@@ -6,6 +6,12 @@
+ /* Define to 1 if you have the <arpa/inet.h> header file. */
+ #undef HAVE_ARPA_INET_H
+ 
++/* Define to 1 if you have the clockid_t type. */
++#undef HAVE_CLOCKID_T
++
++/* Define to 1 if you have the `clock_gettime' function. */
++#undef HAVE_CLOCK_GETTIME
++
+ /* Define to 1 if you have the <dirent.h> header file, and it defines `DIR'.
+    */
+ #undef HAVE_DIRENT_H
+--- configure.orig	Tue Apr 10 21:02:54 2007
++++ configure	Tue Apr 17 19:51:59 2007
+@@ -3871,10 +3871,6 @@
+ if test "$ac_res" != no; then
+   test "$ac_res" = "none required" || LIBS="$ac_res $LIBS"
+
+-else
+-  { { echo "$as_me:$LINENO: error: cannot find library for clock_gettime()" >&5
+-echo "$as_me: error: cannot find library for clock_gettime()" >&2;}
+-   { (exit 1); exit 1; }; }
+ fi
+
+
+@@ -6225,6 +6221,67 @@
+ ;;
+   esac
+ 
++{ echo "$as_me:$LINENO: checking for clockid_t" >&5
++echo $ECHO_N "checking for clockid_t... $ECHO_C" >&6; }
++if test "${ac_cv_type_clockid_t+set}" = set; then
++  echo $ECHO_N "(cached) $ECHO_C" >&6
++else
++  cat >conftest.$ac_ext <<_ACEOF
++/* confdefs.h.  */
++_ACEOF
++cat confdefs.h >>conftest.$ac_ext
++cat >>conftest.$ac_ext <<_ACEOF
++/* end confdefs.h.  */
++$ac_includes_default
++typedef clockid_t ac__type_new_;
++int
++main ()
++{
++if ((ac__type_new_ *) 0)
++  return 0;
++if (sizeof (ac__type_new_))
++  return 0;
++  ;
++  return 0;
++}
++_ACEOF
++rm -f conftest.$ac_objext
++if { (ac_try="$ac_compile"
++case "(($ac_try" in
++  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
++  *) ac_try_echo=$ac_try;;
++esac
++eval "echo \"\$as_me:$LINENO: $ac_try_echo\"") >&5
++  (eval "$ac_compile") 2>conftest.er1
++  ac_status=$?
++  grep -v '^ *+' conftest.er1 >conftest.err
++  rm -f conftest.er1
++  cat conftest.err >&5
++  echo "$as_me:$LINENO: \$? = $ac_status" >&5
++  (exit $ac_status); } && {
++	 test -z "$ac_cxx_werror_flag" ||
++	 test ! -s conftest.err
++       } && test -s conftest.$ac_objext; then
++  ac_cv_type_clockid_t=yes
++else
++  echo "$as_me: failed program was:" >&5
++sed 's/^/| /' conftest.$ac_ext >&5
++
++	ac_cv_type_clockid_t=no
++fi
++
++rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
++fi
++{ echo "$as_me:$LINENO: result: $ac_cv_type_clockid_t" >&5
++echo "${ECHO_T}$ac_cv_type_clockid_t" >&6; }
++if test $ac_cv_type_clockid_t = yes; then
++
++cat >>confdefs.h <<\_ACEOF
++#define HAVE_CLOCKID_T
++_ACEOF
++
++fi
++
+ 
+ # Checks for library functions.
+ { echo "$as_me:$LINENO: checking for working memcmp" >&5
+@@ -6799,7 +6856,8 @@
+ 
+ 
+ 
+-for ac_func in ftruncate gethostbyname gettimeofday getwd inet_ntoa memchr memmove memset mkdir select socket strchr strerror strncasecmp strstr strtol strtoll strnstr
++
++for ac_func in clock_gettime ftruncate gethostbyname gettimeofday getwd inet_ntoa memchr memmove memset mkdir select socket strchr strerror strncasecmp strstr strtol strtoll strnstr
+ do
+ as_ac_var=`echo "ac_cv_func_$ac_func" | $as_tr_sh`
+ { echo "$as_me:$LINENO: checking for $ac_func" >&5
+--- Makefile.am.orig	Sat Dec  2 15:22:00 2006
++++ Makefile.am	Tue Apr 17 19:58:38 2007
+@@ -1,2 +1,2 @@
+ bin_PROGRAMS = ctorrent
+-ctorrent_SOURCES = bencode.cpp bitfield.cpp btconfig.cpp btcontent.cpp btfiles.cpp btrequest.cpp btstream.cpp bufio.cpp connect_nonb.cpp console.cpp ctcs.cpp ctorrent.cpp downloader.cpp httpencode.cpp iplist.cpp peer.cpp peerlist.cpp rate.cpp setnonblock.cpp sigint.cpp tracker.cpp sha1.c bencode.h bitfield.h btconfig.h btcontent.h btfiles.h btrequest.h btstream.h bttime.h bufio.h connect_nonb.h console.h ctcs.h def.h downloader.h httpencode.h iplist.h msgencode.h peer.h peerlist.h rate.h setnonblock.h sigint.h tracker.h sha1.h
++ctorrent_SOURCES = bencode.cpp bitfield.cpp btconfig.cpp btcontent.cpp btfiles.cpp btrequest.cpp btstream.cpp bufio.cpp compat.c connect_nonb.cpp console.cpp ctcs.cpp ctorrent.cpp downloader.cpp httpencode.cpp iplist.cpp peer.cpp peerlist.cpp rate.cpp setnonblock.cpp sigint.cpp tracker.cpp sha1.c bencode.h bitfield.h btconfig.h btcontent.h btfiles.h btrequest.h btstream.h bttime.h bufio.h compat.h connect_nonb.h console.h ctcs.h def.h downloader.h httpencode.h iplist.h msgencode.h peer.h peerlist.h rate.h setnonblock.h sigint.h tracker.h sha1.h
+--- Makefile.in.orig	Tue Apr 10 21:02:48 2007
++++ Makefile.in	Tue Apr 17 19:58:55 2007
+@@ -58,11 +58,11 @@
+ am_ctorrent_OBJECTS = bencode.$(OBJEXT) bitfield.$(OBJEXT) \
+ 	btconfig.$(OBJEXT) btcontent.$(OBJEXT) btfiles.$(OBJEXT) \
+ 	btrequest.$(OBJEXT) btstream.$(OBJEXT) bufio.$(OBJEXT) \
+-	connect_nonb.$(OBJEXT) console.$(OBJEXT) ctcs.$(OBJEXT) \
+-	ctorrent.$(OBJEXT) downloader.$(OBJEXT) httpencode.$(OBJEXT) \
+-	iplist.$(OBJEXT) peer.$(OBJEXT) peerlist.$(OBJEXT) \
+-	rate.$(OBJEXT) setnonblock.$(OBJEXT) sigint.$(OBJEXT) \
+-	tracker.$(OBJEXT) sha1.$(OBJEXT)
++	compat.$(OBJEXT) connect_nonb.$(OBJEXT) console.$(OBJEXT) \
++	ctcs.$(OBJEXT) ctorrent.$(OBJEXT) downloader.$(OBJEXT) \
++	httpencode.$(OBJEXT) iplist.$(OBJEXT) peer.$(OBJEXT) \
++	peerlist.$(OBJEXT) rate.$(OBJEXT) setnonblock.$(OBJEXT) \
++	sigint.$(OBJEXT) tracker.$(OBJEXT) sha1.$(OBJEXT)
+ ctorrent_OBJECTS = $(am_ctorrent_OBJECTS)
+ ctorrent_LDADD = $(LDADD)
+ DEFAULT_INCLUDES = -I. -I$(srcdir) -I.
+@@ -170,7 +170,7 @@
+ sharedstatedir = @sharedstatedir@
+ sysconfdir = @sysconfdir@
+ target_alias = @target_alias@
+-ctorrent_SOURCES = bencode.cpp bitfield.cpp btconfig.cpp btcontent.cpp btfiles.cpp btrequest.cpp btstream.cpp bufio.cpp connect_nonb.cpp console.cpp ctcs.cpp ctorrent.cpp downloader.cpp httpencode.cpp iplist.cpp peer.cpp peerlist.cpp rate.cpp setnonblock.cpp sigint.cpp tracker.cpp sha1.c bencode.h bitfield.h btconfig.h btcontent.h btfiles.h btrequest.h btstream.h bttime.h bufio.h connect_nonb.h console.h ctcs.h def.h downloader.h httpencode.h iplist.h msgencode.h peer.h peerlist.h rate.h setnonblock.h sigint.h tracker.h sha1.h
++ctorrent_SOURCES = bencode.cpp bitfield.cpp btconfig.cpp btcontent.cpp btfiles.cpp btrequest.cpp btstream.cpp bufio.cpp compat.c connect_nonb.cpp console.cpp ctcs.cpp ctorrent.cpp downloader.cpp httpencode.cpp iplist.cpp peer.cpp peerlist.cpp rate.cpp setnonblock.cpp sigint.cpp tracker.cpp sha1.c bencode.h bitfield.h btconfig.h btcontent.h btfiles.h btrequest.h btstream.h bttime.h bufio.h compat.h connect_nonb.h console.h ctcs.h def.h downloader.h httpencode.h iplist.h msgencode.h peer.h peerlist.h rate.h setnonblock.h sigint.h tracker.h sha1.h
+ all: config.h
+ 	$(MAKE) $(AM_MAKEFLAGS) all-am
+ 
+@@ -267,6 +267,7 @@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/btrequest.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/btstream.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bufio.Po@am__quote@
++@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/compat.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/connect_nonb.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/console.Po@am__quote@
+ @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ctcs.Po@am__quote@

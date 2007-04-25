@@ -18,7 +18,7 @@
 #
 ENHANCED_CTORRENT_SITE=http://www.rahul.net/dholmes/ctorrent
 ENHANCED_CTORRENT_BASE_VERSION=1.3.4
-ENHANCED_CTORRENT_VERSION=dnh2.2
+ENHANCED_CTORRENT_VERSION=dnh3
 ENHANCED_CTORRENT_SOURCE=ctorrent-$(ENHANCED_CTORRENT_BASE_VERSION)-$(ENHANCED_CTORRENT_VERSION).tar.gz
 ENHANCED_CTORRENT_DIR=ctorrent-$(ENHANCED_CTORRENT_VERSION)
 ENHANCED_CTORRENT_UNZIP=zcat
@@ -33,14 +33,14 @@ ENHANCED_CTORRENT_CONFLICTS=
 #
 # ENHANCED_CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-ENHANCED_CTORRENT_IPK_VERSION=6
+ENHANCED_CTORRENT_IPK_VERSION=7
 
 #
 # ENHANCED_CTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 ENHANCED_CTORRENT_PATCHES= \
-	$(ENHANCED_CTORRENT_SOURCE_DIR)/peer.patch
+	$(ENHANCED_CTORRENT_SOURCE_DIR)/patch-clock_gettime.diff
 
 #
 # If the compilation of the package requires additional
@@ -98,7 +98,7 @@ $(ENHANCED_CTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(ENHANCED_CTORRENT_SOURCE
 	$(ENHANCED_CTORRENT_UNZIP) $(DL_DIR)/$(ENHANCED_CTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ENHANCED_CTORRENT_PATCHES)" ; \
                 then cat $(ENHANCED_CTORRENT_PATCHES) | \
-                patch -d $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) -p1 ; \
+                patch -d $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) -p0 ; \
         fi
 	if test "$(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR)" != "$(ENHANCED_CTORRENT_BUILD_DIR)" ; \
                 then mv $(BUILD_DIR)/$(ENHANCED_CTORRENT_DIR) $(ENHANCED_CTORRENT_BUILD_DIR) ; \
