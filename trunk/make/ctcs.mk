@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 CTCS_SITE=http://www.rahul.net/dholmes/ctorrent
-CTCS_VERSION=1.2
+CTCS_VERSION=1.3
 CTCS_SOURCE=ctcs-$(CTCS_VERSION).tar.gz
 CTCS_DIR=ctcs-$(CTCS_VERSION)
 CTCS_UNZIP=zcat
@@ -27,7 +27,7 @@ CTCS_CONFLICTS=
 #
 # CTCS_IPK_VERSION should be incremented when the ipk changes.
 #
-CTCS_IPK_VERSION=7
+CTCS_IPK_VERSION=8
 
 #
 # CTCS_CONFFILES should be a list of user-editable files
@@ -40,7 +40,8 @@ CTCS_CONFFILES=/opt/etc/ctcs.conf /opt/etc/init.d/S90ctcs
 # CTCS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CTCS_PATCHES=$(CTCS_SOURCE_DIR)/socket.patch
+CTCS_PATCHES=$(CTCS_SOURCE_DIR)/socket.patch \
+	$(CTCS_SOURCE_DIR)/perl.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,8 +108,6 @@ $(CTCS_BUILD_DIR)/.configured: $(DL_DIR)/$(CTCS_SOURCE) $(CTCS_PATCHES) make/ctc
 	if test "$(BUILD_DIR)/$(CTCS_DIR)" != "$(CTCS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CTCS_DIR) $(CTCS_BUILD_DIR) ; \
 	fi
-	sed -i -e 's|^#!/usr/bin/perl|#!/opt/bin/perl|' \
-		$(CTCS_BUILD_DIR)/ctcs.new
 	touch $(CTCS_BUILD_DIR)/.configured
 
 ctcs-unpack: $(CTCS_BUILD_DIR)/.configured
@@ -161,7 +160,7 @@ $(CTCS_IPK_DIR)/CONTROL/control:
 $(CTCS_IPK): $(CTCS_BUILD_DIR)/.built
 	rm -rf $(CTCS_IPK_DIR) $(BUILD_DIR)/ctcs_*_$(TARGET_ARCH).ipk
 	install -d $(CTCS_IPK_DIR)/opt/bin
-	install -m 755 $(CTCS_BUILD_DIR)/ctcs.new $(CTCS_IPK_DIR)/opt/bin/ctcs
+	install -m 755 $(CTCS_BUILD_DIR)/ctcs $(CTCS_IPK_DIR)/opt/bin/ctcs
 	install -d $(CTCS_IPK_DIR)/opt/doc/ctcs
 	install -m 755 $(CTCS_SOURCE_DIR)/README.nslu2 $(CTCS_IPK_DIR)/opt/doc/ctcs/README.nslu2
 	install -m 755 $(CTCS_SOURCE_DIR)/readme.txt $(CTCS_IPK_DIR)/opt/doc/ctcs/readme.txt
@@ -193,3 +192,10 @@ ctcs-clean:
 #
 ctcs-dirclean:
 	rm -rf $(BUILD_DIR)/$(CTCS_DIR) $(CTCS_BUILD_DIR) $(CTCS_IPK_DIR) $(CTCS_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+ctcs-check: $(CTCS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CTCS_IPK)
