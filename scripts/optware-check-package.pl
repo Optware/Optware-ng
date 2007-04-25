@@ -1,4 +1,4 @@
-
+#!/usr/bin/env perl
 #
 # for usage information, run "perl optware-check-package.pl --help"
 #
