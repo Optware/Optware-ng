@@ -1,29 +1,6 @@
---- irssi/configure.in.orig	2005-12-11 14:45:07.000000000 -0800
-+++ irssi/configure.in	2006-10-10 12:46:34.000000000 -0700
-@@ -281,21 +281,7 @@
- 
- dnl * older autoconfs don't include sys/types.h, so do it manually
- AC_MSG_CHECKING([size of off_t])
--AC_TRY_RUN([
--  #include <stdio.h>
--  #include <sys/types.h>
--  int main() {
--    FILE *f=fopen("conftestval", "w");
--    if (!f) exit(1);
--    fprintf(f, "%d\n", sizeof(off_t));
--    return 0;
--  }
--], [
--  sizeof_off_t=`cat conftestval`
--  rm -f conftestval
--], [
--  AC_ERROR([Unsupported off_t size])
--])
-+sizeof_off_t=4
- AC_MSG_RESULT($sizeof_off_t)
- 
- if test $sizeof_off_t = 8; then
-@@ -570,13 +556,8 @@
+--- irssi/configure.in.orig	2007-04-25 11:13:56.000000000 -0700
++++ irssi/configure.in	2007-04-26 16:34:17.000000000 -0700
+@@ -483,13 +483,8 @@
    if test ! -s conftest; then
      AC_MSG_RESULT([no, error compiling test program])
    else
@@ -37,7 +14,7 @@
    fi
  fi
  rm -rf conftest conftest.* libconftest.* .libs
-@@ -634,7 +615,9 @@
+@@ -549,7 +544,9 @@
  	if test -z "$perlpath"; then
         		perl_check_error="perl binary not found"
  	else
@@ -47,7 +24,7 @@
  	fi
  
  	if test "x$ac_cv_prog_gcc" = "xyes" -a -z "`echo $host_os|grep 'bsd\|linux'`"; then
-@@ -657,7 +640,9 @@
+@@ -572,7 +569,9 @@
  		AC_MSG_RESULT([not found, building without Perl])
  		want_perl=no
  	else

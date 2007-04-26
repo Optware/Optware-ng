@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IRSSI_SITE=http://www.irssi.org/files
-IRSSI_VERSION=0.8.10a
+IRSSI_VERSION=0.8.11
 IRSSI_SOURCE=irssi-$(IRSSI_VERSION).tar.gz
-IRSSI_DIR=irssi-0.8.10
+IRSSI_DIR=irssi-$(IRSSI_VERSION)
 IRSSI_UNZIP=zcat
 IRSSI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IRSSI_DESCRIPTION=A terminal based IRC client for UNIX systems.
@@ -42,7 +42,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=6
+IRSSI_IPK_VERSION=1
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
