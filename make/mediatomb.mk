@@ -22,7 +22,7 @@
 #
 #MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
 #MEDIATOMB_SVN_REV=1096
-MEDIATOMB_VERSION=0.9.0-pre
+MEDIATOMB_VERSION=0.9.0
 MEDIATOMB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mediatomb
 MEDIATOMB_SOURCE=mediatomb-$(MEDIATOMB_VERSION).tar.gz
 MEDIATOMB_DIR=mediatomb-$(MEDIATOMB_VERSION)
@@ -50,7 +50,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=2
+MEDIATOMB_IPK_VERSION=1
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -165,16 +165,8 @@ endif
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
-ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-	sed -i -e 's/defined(__FreeBSD__) || defined(__APPLE__) || defined(SOLARIS) || defined(__CYGWIN__)/1/' \
-		$(MEDIATOMB_BUILD_DIR)/src/string_converter.cc
-endif
 	cd $(MEDIATOMB_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
-ifeq ($(OPTWARE_TARGET), wl500g)
-	cd $(MEDIATOMB_BUILD_DIR); \
-		sed -i -e 's/-lsqlite3 -lrt/-lsqlite3/' configure
-endif
 	(cd $(MEDIATOMB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
@@ -191,6 +183,7 @@ endif
 		--disable-rpl-malloc \
 		--disable-large-file \
 		--enable-sqlite3 \
+		--disable-fseeko-check \
 		$(MEDIATOMB_CONFIG_ARGS) \
 		--with-js-h=$(STAGING_INCLUDE_DIR)/js \
 		--with-js-libs=$(STAGING_LIB_DIR) \
