@@ -68,7 +68,7 @@ MEDIATOMB_IPK_VERSION=1
 #
 MEDIATOMB_CPPFLAGS=
 ifeq ($(LIBC_STYLE), uclibc)
-MEDIATOMB_LDFLAGS=-lm
+MEDIATOMB_LDFLAGS=-lm -lpthread
 endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MEDIATOMB_LDFLAGS+= -liconv
