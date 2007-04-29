@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE=http://ftp1.digium.com/pub/telephony/sounds
-ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.4
+ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
+ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.5
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_SOURCE=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_DIR=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_UNZIP=zcat
@@ -219,18 +219,6 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DI
 	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/z.gsm
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/phonetic/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/silence/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/10.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/1.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/2.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/3.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/4.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/5.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/6.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/7.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/8.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/9.gsm
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/wx/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)
