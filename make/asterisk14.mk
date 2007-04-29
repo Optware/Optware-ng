@@ -44,6 +44,7 @@ ASTERISK14_PRIORITY=optional
 ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt
 ASTERISK14_SUGGESTS=\
 asterisk14-chan-capi,\
+asterisk14-core-sounds-en-gsm,\
 asterisk14-core-sounds-en-ulaw,\
 asterisk14-extra-sounds-en-gsm,\
 asterisk14-extra-sounds-en-ulaw,\
@@ -62,7 +63,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -344,6 +345,8 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	echo "noload => codec_lpc10.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_speex.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -375,6 +378,10 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/var/lib/asterisk/agi-bin/*test ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
+
+	# Removing the sound files
+	# Install them using the asterisk14-core-sounds-en-gsm package
+	rm -rf $(ASTERISK14_IPK_DIR)/opt/var/lib/asterisk/sounds
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_IPK_DIR)
 
 #
