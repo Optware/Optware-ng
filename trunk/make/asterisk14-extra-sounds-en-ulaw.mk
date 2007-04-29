@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds
-ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.4
+ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
+ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.5
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SOURCE=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_DIR=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_UNZIP=zcat
@@ -219,18 +219,6 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_
 	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/z.ulaw
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/phonetic/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/silence/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/10.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/1.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/2.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/3.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/4.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/5.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/6.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/7.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/8.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/silence/9.ulaw
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/wx/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)
