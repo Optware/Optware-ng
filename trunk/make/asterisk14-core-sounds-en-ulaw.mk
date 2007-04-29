@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_CORE_SOUNDS_EN_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds
-ASTERISK14_CORE_SOUNDS_EN_ULAW_VERSION=1.4.5
+ASTERISK14_CORE_SOUNDS_EN_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
+ASTERISK14_CORE_SOUNDS_EN_ULAW_VERSION=1.4.6
 ASTERISK14_CORE_SOUNDS_EN_ULAW_SOURCE=asterisk-core-sounds-en-ulaw-$(ASTERISK14_CORE_SOUNDS_EN_ULAW_VERSION).tar.gz
 ASTERISK14_CORE_SOUNDS_EN_ULAW_DIR=asterisk-core-sounds-en-ulaw-$(ASTERISK14_CORE_SOUNDS_EN_ULAW_VERSION)
 ASTERISK14_CORE_SOUNDS_EN_ULAW_UNZIP=zcat
