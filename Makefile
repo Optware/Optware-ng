@@ -129,6 +129,7 @@ ASTERISK_PACKAGES = \
 	asterisk asterisk-sounds \
 	asterisk14 \
 	asterisk14-chan-capi \
+	asterisk14-core-sounds-en-gsm \
 	asterisk14-core-sounds-en-ulaw \
 	asterisk14-extra-sounds-en-gsm \
 	asterisk14-extra-sounds-en-ulaw \
