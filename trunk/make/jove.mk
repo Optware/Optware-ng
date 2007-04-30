@@ -5,7 +5,7 @@
 ###########################################################
 
 JOVE_SITE=ftp://ftp.cs.toronto.edu/cs/ftp/pub/hugh/jove-dev
-JOVE_VERSION=4.16.0.65
+JOVE_VERSION=4.16.0.70
 JOVE_SOURCE=jove$(JOVE_VERSION).tgz
 JOVE_DIR=jove$(JOVE_VERSION)
 JOVE_UNZIP=zcat
@@ -20,7 +20,7 @@ JOVE_CONFLICTS=
 #
 # JOVE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOVE_IPK_VERSION=2
+JOVE_IPK_VERSION=1
 
 #
 # JOVE_PATCHES should list any patches, in the the order in
@@ -156,3 +156,9 @@ jove-clean:
 #
 jove-dirclean:
 	rm -rf $(BUILD_DIR)/$(JOVE_DIR) $(JOVE_BUILD_DIR) $(JOVE_IPK_DIR) $(JOVE_IPK)
+
+#
+# Some sanity check for the package.
+#
+jove-check: $(JOVE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(JOVE_IPK)
