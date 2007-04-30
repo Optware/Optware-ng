@@ -42,7 +42,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=1
+IRSSI_IPK_VERSION=2
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -147,6 +147,7 @@ endif
 		$(IRSSI_WITH_OR_WITHOUT_PERL) \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 		--with-ncurses=$(STAGING_PREFIX) \
+		--with-proxy \
 		--enable-ipv6 \
 		--disable-glibtest \
 		--with-glib-prefix=$(STAGING_PREFIX) \
@@ -237,6 +238,8 @@ $(IRSSI_IPK): $(IRSSI_BUILD_DIR)/.built
 	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install
 	$(STRIP_COMMAND) $(IRSSI_IPK_DIR)/opt/bin/irssi
+	$(STRIP_COMMAND) $(IRSSI_IPK_DIR)/opt/lib/irssi/modules/libirc_proxy.so.[0-9]*.[0-9]*.[0-9]*
+	rm -f $(IRSSI_IPK_DIR)/opt/lib/irssi/modules/libirc_proxy.a
 	install -d $(IRSSI_IPK_DIR)/opt/etc/
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/init.d
