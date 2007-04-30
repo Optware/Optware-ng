@@ -5,7 +5,7 @@
 ###########################################################
 
 MONIT_SITE=http://www.tildeslash.com/monit/dist/
-MONIT_VERSION=4.8.2
+MONIT_VERSION=4.9
 MONIT_SOURCE=monit-$(MONIT_VERSION).tar.gz
 MONIT_DIR=monit-$(MONIT_VERSION)
 MONIT_UNZIP=zcat
