@@ -205,7 +205,7 @@ COMMON_CROSS_PACKAGES = \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
 	procps proftpd psmisc psutils puppy pure-ftpd pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
-	qemu qemu-libc-i386 quagga quickie quilt \
+	qemacs qemu qemu-libc-i386 quagga quickie quilt \
 	radiusclient-ng rc rcs rdate readline recode recordext \
 	renderext rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
