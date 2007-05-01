@@ -124,6 +124,7 @@ $(QEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMACS_SOURCE) $(QEMACS_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--cpu=$(TARGET_ARCH) \
 		--prefix=/opt \
 		--disable-x11 \
 		--disable-xv \
