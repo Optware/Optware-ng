@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://$(SOURCEFORGE_MIRROR)/clamav
-CLAMAV_VERSION=0.90.1
+CLAMAV_VERSION=0.90.2
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=1
+CLAMAV_IPK_VERSION=2
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
-	$(MAKE) zlib-stage
+	$(MAKE) zlib-stage libgmp-stage
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
 #	if [ ! -e /opt/bin/adduser ]; then ipkg update; ipkg install unslung-feeds; ipkg update; ipkg install adduser; fi 
 #	if (! (grep clamav /etc/passwd)) then addgroup clamav; adduser -s /dev/null -H -D -G clamav clamav; fi     
