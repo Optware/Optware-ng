@@ -5,7 +5,7 @@
 ###########################################################
 
 SPAMASSASSIN_SITE=http://www.artfiles.org/apache.org/spamassassin/source
-SPAMASSASSIN_VERSION=3.1.7
+SPAMASSASSIN_VERSION=3.1.8
 SPAMASSASSIN_SOURCE=Mail-SpamAssassin-$(SPAMASSASSIN_VERSION).tar.bz2
 SPAMASSASSIN_DIR=Mail-SpamAssassin-$(SPAMASSASSIN_VERSION)
 SPAMASSASSIN_UNZIP=bzcat
@@ -20,7 +20,7 @@ SPAMASSASSIN_CONFLICTS=
 #
 # SPAMASSASSIN_IPK_VERSION should be incremented when the ipk changes.
 #
-SPAMASSASSIN_IPK_VERSION=4
+SPAMASSASSIN_IPK_VERSION=1
 
 #
 # SPAMASSASSIN_CONFFILES should be a list of user-editable files
