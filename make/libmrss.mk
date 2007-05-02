@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMRSS_SITE=http://www2.autistici.org/bakunin/libmrss
-LIBMRSS_VERSION=0.17.1
+LIBMRSS_VERSION=0.17.2
 LIBMRSS_SOURCE=libmrss-$(LIBMRSS_VERSION).tar.gz
 LIBMRSS_DIR=libmrss-$(LIBMRSS_VERSION)
 LIBMRSS_UNZIP=zcat
