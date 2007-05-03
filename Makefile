@@ -103,7 +103,7 @@ PYTHON_PACKAGES = \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
-	py-django py-docutils \
+	py-django py-docutils py-duplicity \
 	py-elementtree py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils \
 	py-kid py-lxml py-nose \
