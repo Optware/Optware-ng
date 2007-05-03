@@ -25,11 +25,11 @@
 #
 PY-RULEDISPATCH_SITE=http://turbogears.org/download/eggs
 PY-RULEDISPATCH_SVN=svn://svn.eby-sarna.com/svnroot/RuleDispatch
-PY-RULEDISPATCH_SVN_REV=2115
+PY-RULEDISPATCH_SVN_REV=2303
+PY-RULEDISPATCH_VERSION=0.5a0.dev-r$(PY-RULEDISPATCH_SVN_REV)
 ifneq ($(PY-RULEDISPATCH_SVN_REV),)
-PY-RULEDISPATCH_VERSION=0.5adev-r$(PY-RULEDISPATCH_SVN_REV)
+PY-RULEDISPATCH_SOURCE=RuleDispatch-$(PY-RULEDISPATCH_VERSION).tar.gz
 else
-# PY-RULEDISPATCH_ ###VERSION### =0.5a
 PY-RULEDISPATCH_SOURCE=RuleDispatch-$(PY-RULEDISPATCH_VERSION).zip
 endif
 PY-RULEDISPATCH_DIR=RuleDispatch-$(PY-RULEDISPATCH_VERSION)
@@ -43,7 +43,7 @@ PY25-RULEDISPATCH_DEPENDS=python25, py25-protocols (>=1.0a0)
 PY-RULEDISPATCH_SUGGESTS=
 PY-RULEDISPATCH_CONFLICTS=
 
-PY-RULEDISPATCH_IPK_VERSION=4
+PY-RULEDISPATCH_IPK_VERSION=1
 
 #
 # PY-RULEDISPATCH_CONFFILES should be a list of user-editable files
@@ -86,10 +86,14 @@ PY25-RULEDISPATCH_IPK=$(BUILD_DIR)/py25-ruledispatch_$(PY-RULEDISPATCH_VERSION)-
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifeq ($(PY-RULEDISPATCH_SVN_REV),)
 $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-RULEDISPATCH_SITE)/$(PY-RULEDISPATCH_SOURCE)
-endif
+#	$(WGET) -P $(DL_DIR) $(PY-RULEDISPATCH_SITE)/$(PY-RULEDISPATCH_SOURCE)
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(PY-RULEDISPATCH_DIR) && \
+		svn co -q -r $(PY-RULEDISPATCH_SVN_REV) $(PY-RULEDISPATCH_SVN) $(PY-RULEDISPATCH_DIR) && \
+		tar -czf $@ $(PY-RULEDISPATCH_DIR) && \
+		rm -rf $(PY-RULEDISPATCH_DIR) \
+	)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,23 +117,13 @@ py-ruledispatch-source: $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) $(PY-RULEDISPATCH_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-ifeq ($(PY-RULEDISPATCH_SVN_REV),)
 $(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) $(PY-RULEDISPATCH_PATCHES)
-else
-$(PY-RULEDISPATCH_BUILD_DIR)/.configured: $(PY-RULEDISPATCH_PATCHES)
-endif
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-RULEDISPATCH_BUILD_DIR)
 	mkdir -p $(PY-RULEDISPATCH_BUILD_DIR)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR)
-ifeq ($(PY-RULEDISPATCH_SVN_REV),)
 	$(PY-RULEDISPATCH_UNZIP) $(DL_DIR)/$(PY-RULEDISPATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q -r $(PY-RULEDISPATCH_SVN_REV) $(PY-RULEDISPATCH_SVN) $(PY-RULEDISPATCH_DIR); \
-	)
-endif
 	if test -n "$(PY-RULEDISPATCH_PATCHES)" ; then \
 	    cat $(PY-RULEDISPATCH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RULEDISPATCH_DIR) -p0 ; \
         fi
