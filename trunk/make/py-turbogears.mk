@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
-PY-TURBOGEARS_VERSION=1.0.1
+PY-TURBOGEARS_VERSION=1.0.2.2
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -35,32 +35,34 @@ PY24-TURBOGEARS_DEPENDS=python24, \
 	py-celementtree (>=1.0.5), \
 	py-cherrypy (>=2.2.1), \
 	py-configobj (>=4.3.2), \
+	py-decoratortools (>=1.4), \
 	py-elementtree (>=1.2.6), \
-	py-formencode (>=0.5.1), \
-	py-nose (>=0.9), \
+	py-formencode (>=0.7.1), \
+	py-nose (>=0.9.1), \
 	py-pastescript (>=0.9.7), \
 	py-ruledispatch, \
 	py-simplejson (>=1.3), \
-	py-sqlobject (>=0.7.1), \
+	py-sqlobject (>=0.8), \
 	py-turbocheetah (>=0.9.5), \
 	py-turbojson (>=0.9.9), \
-	py-turbokid (>=0.9.8) \
+	py-turbokid (>=1.0.1) \
 	findutils \
 
 PY25-TURBOGEARS_DEPENDS=python25, \
 	py25-celementtree (>=1.0.5), \
 	py25-cherrypy (>=2.2.1), \
 	py25-configobj (>=4.3.2), \
+	py25-decoratortools (>=1.4), \
 	py25-elementtree (>=1.2.6), \
-	py25-formencode (>=0.5.1), \
-	py25-nose (>=0.9), \
+	py25-formencode (>=0.7.1), \
+	py25-nose (>=0.9.1), \
 	py25-pastescript (>=0.9.7), \
 	py25-ruledispatch, \
 	py25-simplejson (>=1.3), \
-	py25-sqlobject (>=0.7.1), \
+	py25-sqlobject (>=0.8), \
 	py25-turbocheetah (>=0.9.5), \
 	py25-turbojson (>=0.9.9), \
-	py25-turbokid (>=0.9.8) \
+	py25-turbokid (>=1.0.1) \
 	findutils \
 
 PY-TURBOGEARS_CONFLICTS=
