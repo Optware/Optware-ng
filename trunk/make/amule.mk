@@ -20,13 +20,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 # http://developer.berlios.de/projects/amule/
+
 AMULE_SITE=http://download.berlios.de/amule
 AMULE_VERSION=2.1.3
 AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
 AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd)
+AMULE_DESCRIPTION=non-gui part of aMule adunanza ed2k client (amuled,amulweb,amulecmd) 
 AMULE_SECTION=net
 AMULE_PRIORITY=optional
 AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, readline
@@ -36,7 +37,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=7
+AMULE_IPK_VERSION=8
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -97,12 +98,25 @@ AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH
 $(DL_DIR)/$(AMULE_SOURCE):
 	$(WGET) -P $(DL_DIR) $(AMULE_SITE)/$(AMULE_SOURCE)
 
+
+#  For AdunanzA patches visit http://www.adunanza.net/download.php?list.6
+AMULE_ADUNANZA_SITE=http://www.adunanza.net/request.php?75
+AMULE_ADUNANZA_VERSION=3.11b1
+AMULE_ADUNANZA_SOURCE=amuleadunanza.$(AMULE_ADUNANZA_VERSION).patch.gz
+AMULE_ADUNANZA_UNZIP=zcat
+
+$(DL_DIR)/$(AMULE_ADUNANZA_SOURCE):
+	$(WGET)  $(AMULE_ADUNANZA_SITE) -O $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(AMULE_ADUNANZA_SOURCE)
+
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
+amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) \
+	$(AMULE_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -123,7 +137,7 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 # shown below to make various patches to it.
 #
 #
-$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
+$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) $(AMULE_PATCHES)
 	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage libpng-stage libgd-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -131,6 +145,8 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 		then cat $(AMULE_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p1 ; \
 	fi
+	$(AMULE_ADUNANZA_UNZIP) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) | \
+	patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p0
 	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(AMULE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) ; \
 	fi
