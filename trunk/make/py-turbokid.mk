@@ -21,10 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOKID_VERSION=0.9.9
-PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
-PY-TURBOKID_REPOSITORY=http://svn.turbogears.org/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
+PY-TURBOKID_VERSION=1.0.1
+#PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
+#PY-TURBOKID_REPOSITORY=http://svn.turbogears.org/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
+PY-TURBOKID_SITE=http://cheeseshop.python.org/packages/source/T/TurboKid
 PY-TURBOKID_DIR=TurboKid-$(PY-TURBOKID_VERSION)
+PY-TURBOKID_SOURCE=TurboKid-$(PY-TURBOKID_VERSION).tar.gz
 PY-TURBOKID_UNZIP=zcat
 PY-TURBOKID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOKID_DESCRIPTION=Python template plugin that supports Kid templates.
@@ -37,7 +39,7 @@ PY-TURBOKID_CONFLICTS=
 #
 # PY-TURBOKID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOKID_IPK_VERSION=3
+PY-TURBOKID_IPK_VERSION=1
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
@@ -80,10 +82,12 @@ PY25-TURBOKID_IPK=$(BUILD_DIR)/py25-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKI
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifeq ($(PY-TURBOKID_SVN_TAG),)
 $(DL_DIR)/$(PY-TURBOKID_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE)
-endif
+	$(WGET) -P $(DL_DIR) $(PY-TURBOKID_SITE)/$(PY-TURBOKID_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PY-TURBOKID_SOURCE)
+#	(cd $(BUILD_DIR); \
+	    svn co -q $(PY-TURBOKID_REPOSITORY) $(PY-TURBOKID_DIR); \
+	)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,19 +111,13 @@ py-turbokid-source: $(PY-TURBOKID_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TURBOKID_BUILD_DIR)/.configured: $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
+$(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-TURBOKID_BUILD_DIR)
 	mkdir -p $(PY-TURBOKID_BUILD_DIR)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
-ifeq ($(PY-TURBOKID_SVN_TAG),)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q $(PY-TURBOKID_REPOSITORY) $(PY-TURBOKID_DIR); \
-	)
-endif
 #	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)/2.4
 	(cd $(PY-TURBOKID_BUILD_DIR)/2.4; \
@@ -128,13 +126,7 @@ endif
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
-ifeq ($(PY-TURBOKID_SVN_TAG),)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	(cd $(BUILD_DIR); \
-	    svn co -q $(PY-TURBOKID_REPOSITORY) $(PY-TURBOKID_DIR); \
-	)
-endif
 #	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)/2.5
 	(cd $(PY-TURBOKID_BUILD_DIR)/2.5; \
