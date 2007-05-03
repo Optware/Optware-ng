@@ -13,10 +13,10 @@ ATFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ATFTP_DESCRIPTION=Advanced TFTP server and client
 ATFTP_SECTION=net
 ATFTP_PRIORITY=optional
-ATFTP_DEPENDS=xinetd
+ATFTP_DEPENDS=xinetd,pcre
 ATFTP_CONFLICTS=
 
-ATFTP_IPK_VERSION=6
+ATFTP_IPK_VERSION=7
 
 ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
@@ -31,7 +31,7 @@ $(DL_DIR)/$(ATFTP_SOURCE):
 atftp-source: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
 
 $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
 	$(ATFTP_UNZIP) $(DL_DIR)/$(ATFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
