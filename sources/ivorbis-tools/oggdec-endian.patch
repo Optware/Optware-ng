@@ -1,0 +1,26 @@
+--- ivorbis-tools/oggdec/oggdec.c.orig	2007-05-07 22:26:02.000000000 +0200
++++ ivorbis-tools/oggdec/oggdec.c	2007-05-07 22:27:11.000000000 +0200
+@@ -12,6 +12,7 @@
+ #include <getopt.h>
+ #include <errno.h>
+ #include <string.h>
++#include <endian.h>
+ 
+ #if defined(_WIN32) || defined(__EMX__) || defined(__WATCOMC__)
+ #include <fcntl.h>
+@@ -233,6 +234,7 @@
+             continue;
+         }
+ 
++#ifdef BIG_ENDIAN
+ 	{ /* byteswap */
+ 	    int i;
+ 	    char tmp_char;
+@@ -242,6 +244,7 @@
+ 		buf[i+1] = tmp_char;
+ 	    }
+ 	}
++#endif
+ 
+         if(fwrite(buf, 1, ret, out) != ret) {
+             fprintf(stderr, "Error writing to file: %s\n", strerror(errno));
