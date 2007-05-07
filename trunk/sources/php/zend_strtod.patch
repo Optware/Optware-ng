@@ -1,11 +1,11 @@
---- Zend/zend_strtod.c~	2005-02-16 20:45:14.000000000 -0800
-+++ Zend/zend_strtod.c	2005-06-02 18:33:05.000000000 -0700
-@@ -258,7 +258,7 @@
-  * An alternative that might be better on some machines is
-  * #define Storeinc(a,b,c) (*a++ = b << 16 | c & 0xffff)
-  */
+--- Zend/zend_strtod.c.orig	2007-04-26 16:13:25.000000000 -0700
++++ Zend/zend_strtod.c	2007-05-06 21:21:27.000000000 -0700
+@@ -276,7 +276,7 @@
+  *  * An alternative that might be better on some machines is
+  *   * #define Storeinc(a,b,c) (*a++ = b << 16 | c & 0xffff)
+  *    */
 -#if defined(IEEE_LITTLE_ENDIAN) + defined(VAX) + defined(__arm__)
 +#if defined(IEEE_LITTLE_ENDIAN) + defined(VAX)
  #define Storeinc(a,b,c) (((unsigned short *)a)[1] = (unsigned short)b, \
- ((unsigned short *)a)[0] = (unsigned short)c, a++)
+ 		((unsigned short *)a)[0] = (unsigned short)c, a++)
  #else
