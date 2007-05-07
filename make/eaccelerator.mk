@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-EACCELERATOR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/eaccelerator
-EACCELERATOR_VERSION=0.9.5
+EACCELERATOR_VERSION=0.9.5.1
+EACCELERATOR_SITE=http://bart.eaccelerator.net/source/$(EACCELERATOR_VERSION)
 EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VERSION).tar.bz2
 EACCELERATOR_DIR=eaccelerator-$(EACCELERATOR_VERSION)
 EACCELERATOR_UNZIP=bzcat
@@ -36,7 +36,7 @@ EACCELERATOR_CONFLICTS=
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=2
+EACCELERATOR_IPK_VERSION=1
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
