@@ -1,0 +1,18 @@
+Index: avahi-daemon/main.c
+===================================================================
+--- avahi-daemon/main.c   (revision 1450)
++++ avahi-daemon/main.c   (working copy)
+@@ -42,11 +42,13 @@
+ #include <sys/resource.h>
+ #include <sys/socket.h>
+ 
++#ifdef HAVE_INOTIFY
+ #ifdef HAVE_SYS_INOTIFY_H
+ #include <sys/inotify.h>
+ #else
+ #include "inotify-nosys.h"
+ #endif
++#endif
+ 
+ #include <libdaemon/dfork.h>
+ #include <libdaemon/dsignal.h>
