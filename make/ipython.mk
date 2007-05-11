@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.8.0
+IPYTHON_VERSION=0.8.1
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
