@@ -6,7 +6,7 @@
  install: all installdirs
 -	./zic -d '$(DESTDIR)$(datadir)/timezone' -p '$(POSIXRULES)' $(TZDATAFILES)
 +	gcc -o ./zic-cross  -I../include zic.c ialloc.c scheck.c localtime.c ../port/snprintf.c ../port/qsort.c
-+	./zic-cross -d $(DESTDIR)$(datadir)/timezone $(TZDATAFILES)
++	./zic-cross -d '$(DESTDIR)$(datadir)/timezone' -p '$(POSIXRULES)' $(TZDATAFILES)
  	$(MAKE) -C tznames $@
  
  installdirs:
