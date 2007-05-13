@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/moin
-PY-MOIN_VERSION=1.5.7
+PY-MOIN_VERSION=1.5.8
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
