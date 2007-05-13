@@ -21,7 +21,7 @@
 #
 VIM_SITE=http://ftp.vim.org/pub/vim/unix
 VIM_VERSION_MAJOR=7
-VIM_VERSION_MINOR=0
+VIM_VERSION_MINOR=1
 VIM_VERSION=$(VIM_VERSION_MAJOR).$(VIM_VERSION_MINOR)
 VIM_SOURCE=vim-$(VIM_VERSION).tar.bz2
 VIM_DIR=vim$(VIM_VERSION_MAJOR)$(VIM_VERSION_MINOR)
@@ -35,12 +35,12 @@ VIM_DEPENDS=ncurses
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=2
+VIM_IPK_VERSION=1
 
 #
 # VIM_CONFFILES should be a list of user-editable files
 #VIM_CONFFILES=/opt/etc/vim.conf /opt/etc/init.d/SXXvim
-VIM_CONFFILES=""
+VIM_CONFFILES=
 
 #
 # VIM_PATCHES should list any patches, in the the order in
@@ -214,3 +214,9 @@ vim-clean:
 #
 vim-dirclean:
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(VIM_BUILD_DIR) $(VIM_IPK_DIR) $(VIM_IPK)
+
+#
+# Some sanity check for the package.
+#
+vim-check: $(VIM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VIM_IPK)
