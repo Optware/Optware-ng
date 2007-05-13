@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-YAML_SITE=http://pyyaml.org/download/pyyaml
-PY-YAML_VERSION=3.04
+PY-YAML_VERSION=3.05
 PY-YAML_SOURCE=PyYAML-$(PY-YAML_VERSION).tar.gz
 PY-YAML_DIR=PyYAML-$(PY-YAML_VERSION)
 PY-YAML_UNZIP=zcat
@@ -30,7 +30,8 @@ PY-YAML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-YAML_DESCRIPTION=YAML parser and emitter for Python.
 PY-YAML_SECTION=misc
 PY-YAML_PRIORITY=optional
-PY-YAML_DEPENDS=python
+PY24-YAML_DEPENDS=python24
+PY25-YAML_DEPENDS=python25
 PY-YAML_CONFLICTS=
 
 #
@@ -66,8 +67,10 @@ PY-YAML_LDFLAGS=
 #
 PY-YAML_BUILD_DIR=$(BUILD_DIR)/py-yaml
 PY-YAML_SOURCE_DIR=$(SOURCE_DIR)/py-yaml
-PY-YAML_IPK_DIR=$(BUILD_DIR)/py-yaml-$(PY-YAML_VERSION)-ipk
-PY-YAML_IPK=$(BUILD_DIR)/py-yaml_$(PY-YAML_VERSION)-$(PY-YAML_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-YAML_IPK_DIR=$(BUILD_DIR)/py-yaml-$(PY-YAML_VERSION)-ipk
+PY24-YAML_IPK=$(BUILD_DIR)/py-yaml_$(PY-YAML_VERSION)-$(PY-YAML_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-YAML_IPK_DIR=$(BUILD_DIR)/py25-yaml-$(PY-YAML_VERSION)-ipk
+PY25-YAML_IPK=$(BUILD_DIR)/py25-yaml_$(PY-YAML_VERSION)-$(PY-YAML_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -100,19 +103,37 @@ py-yaml-source: $(DL_DIR)/$(PY-YAML_SOURCE) $(PY-YAML_PATCHES)
 #
 $(PY-YAML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-YAML_SOURCE) $(PY-YAML_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-YAML_DIR) $(PY-YAML_BUILD_DIR)
+	rm -rf $(PY-YAML_BUILD_DIR)
+	mkdir -p $(PY-YAML_BUILD_DIR)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-YAML_DIR)
 	$(PY-YAML_UNZIP) $(DL_DIR)/$(PY-YAML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-YAML_PATCHES)"; then \
 	    cat $(PY-YAML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-YAML_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-YAML_DIR) $(PY-YAML_BUILD_DIR)
-	(cd $(PY-YAML_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-YAML_DIR) $(PY-YAML_BUILD_DIR)/2.4
+	(cd $(PY-YAML_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
-	    ) > setup.cfg \
+	    ) >> setup.cfg \
+	)
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-YAML_DIR)
+	$(PY-YAML_UNZIP) $(DL_DIR)/$(PY-YAML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-YAML_PATCHES)"; then \
+	    cat $(PY-YAML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-YAML_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-YAML_DIR) $(PY-YAML_BUILD_DIR)/2.5
+	(cd $(PY-YAML_BUILD_DIR)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) >> setup.cfg \
 	)
 	touch $(PY-YAML_BUILD_DIR)/.configured
 
@@ -123,10 +144,14 @@ py-yaml-unpack: $(PY-YAML_BUILD_DIR)/.configured
 #
 $(PY-YAML_BUILD_DIR)/.built: $(PY-YAML_BUILD_DIR)/.configured
 	rm -f $(PY-YAML_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-YAML_BUILD_DIR)
-	(cd $(PY-YAML_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
+	# 2.4
+	cd $(PY-YAML_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	# 2.5
+	cd $(PY-YAML_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
 	touch $(PY-YAML_BUILD_DIR)/.built
 
 #
@@ -148,8 +173,8 @@ py-yaml-stage: $(PY-YAML_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-yaml
 #
-$(PY-YAML_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-YAML_IPK_DIR)/CONTROL
+$(PY24-YAML_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-yaml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -159,7 +184,21 @@ $(PY-YAML_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-YAML_MAINTAINER)" >>$@
 	@echo "Source: $(PY-YAML_SITE)/$(PY-YAML_SOURCE)" >>$@
 	@echo "Description: $(PY-YAML_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-YAML_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-YAML_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-YAML_CONFLICTS)" >>$@
+
+$(PY25-YAML_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-yaml" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-YAML_PRIORITY)" >>$@
+	@echo "Section: $(PY-YAML_SECTION)" >>$@
+	@echo "Version: $(PY-YAML_VERSION)-$(PY-YAML_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-YAML_MAINTAINER)" >>$@
+	@echo "Source: $(PY-YAML_SITE)/$(PY-YAML_SOURCE)" >>$@
+	@echo "Description: $(PY-YAML_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-YAML_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-YAML_CONFLICTS)" >>$@
 
 #
@@ -174,19 +213,32 @@ $(PY-YAML_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-YAML_IPK): $(PY-YAML_BUILD_DIR)/.built
-	rm -rf $(PY-YAML_IPK_DIR) $(BUILD_DIR)/py-yaml_*_$(TARGET_ARCH).ipk
-	(cd $(PY-YAML_BUILD_DIR); \
-	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" install --root=$(PY-YAML_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-YAML_IPK_DIR)/CONTROL/control
-#	echo $(PY-YAML_CONFFILES) | sed -e 's/ /\n/g' > $(PY-YAML_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-YAML_IPK_DIR)
+$(PY24-YAML_IPK): $(PY-YAML_BUILD_DIR)/.built
+	rm -rf $(PY24-YAML_IPK_DIR) $(BUILD_DIR)/py-yaml_*_$(TARGET_ARCH).ipk
+	cd $(PY-YAML_BUILD_DIR)/2.4; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 \
+		-c "import setuptools; execfile('setup.py')" install \
+		--root=$(PY24-YAML_IPK_DIR) --prefix=/opt
+	$(MAKE) $(PY24-YAML_IPK_DIR)/CONTROL/control
+#	echo $(PY-YAML_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-YAML_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-YAML_IPK_DIR)
+
+$(PY25-YAML_IPK): $(PY-YAML_BUILD_DIR)/.built
+	rm -rf $(PY25-YAML_IPK_DIR) $(BUILD_DIR)/py25-yaml_*_$(TARGET_ARCH).ipk
+	cd $(PY-YAML_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 \
+		-c "import setuptools; execfile('setup.py')" install \
+		--root=$(PY25-YAML_IPK_DIR) --prefix=/opt
+	$(MAKE) $(PY25-YAML_IPK_DIR)/CONTROL/control
+#	echo $(PY-YAML_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-YAML_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-YAML_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-yaml-ipk: $(PY-YAML_IPK)
+py-yaml-ipk: $(PY24-YAML_IPK) $(PY25-YAML_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -199,4 +251,6 @@ py-yaml-clean:
 # directories.
 #
 py-yaml-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-YAML_DIR) $(PY-YAML_BUILD_DIR) $(PY-YAML_IPK_DIR) $(PY-YAML_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-YAML_DIR) $(PY-YAML_BUILD_DIR)
+	rm -rf $(PY24-YAML_IPK_DIR) $(PY24-YAML_IPK)
+	rm -rf $(PY25-YAML_IPK_DIR) $(PY25-YAML_IPK)
