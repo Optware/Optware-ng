@@ -30,7 +30,7 @@ PERL_CONFLICTS=
 #
 # PERL_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_IPK_VERSION=16
+PERL_IPK_VERSION=17
 
 #
 # PERL_CONFFILES should be a list of user-editable files
@@ -148,13 +148,13 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(PERL_DIR) $(PERL_BUILD_DIR)
 	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(PERL_BUILD_DIR)/ext/*/Makefile.PL
-ifeq ($(HOSTCC), $(TARGET_CC))
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
-	cp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL.bak
-	cat $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL | \
-	sed -e 's:/usr/include/errno.h:/opt/$(TARGET_ARCH)/$(GNU_TARGET_NAME)/include/errno.h:g'\
-	> $(PERL_BUILD_DIR)/ext/Errno/tmp
-	mv -f $(PERL_BUILD_DIR)/ext/Errno/tmp $(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
+	sed -i.orig \
+		-e 's:/usr/include/errno.h:$(TARGET_LIBDIR)/../include/errno.h:g' \
+		-e '/^# *warn/s:^#::' \
+		-e 's:= $$Config{cppstdin}:= $(TARGET_CPP):' \
+		$(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
+ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(PERL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
