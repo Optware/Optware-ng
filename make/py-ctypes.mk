@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CTYPES_VERSION=1.0.1
+PY-CTYPES_VERSION=1.0.2
 PY-CTYPES_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ctypes
 PY-CTYPES_SOURCE=ctypes-$(PY-CTYPES_VERSION).tar.gz
 PY-CTYPES_DIR=ctypes-$(PY-CTYPES_VERSION)
