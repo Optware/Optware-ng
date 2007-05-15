@@ -21,8 +21,8 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.24
-SAMBA_IPK_VERSION=2
+SAMBA_VERSION=3.0.25
+SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=3
@@ -102,6 +102,7 @@ SAMBA_SWAT_DIR=$(SAMBA_INST_DIR)/share/swat
 ifneq ($(HOSTCC), $(TARGET_CC))
 SAMBA_CROSS_ENVS=\
 		LOOK_DIRS=$(STAGING_PREFIX) \
+		SMB_BUILD_CC_NEGATIVE_ENUM_VALUES=yes \
 		linux_getgrouplist_ok=no \
 		samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 		samba_cv_have_setresuid=yes \
@@ -182,7 +183,10 @@ endif
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
 	(cd $(SAMBA_BUILD_DIR)/source; \
-		autoconf configure.in > configure; \
+		ACLOCAL=aclocal-1.9 \
+		AUTOMAKE=automake-1.9 \
+		M4PATH=$(SAMBA_BUILD_DIR)/source/lib/replace \
+		autoreconf -i -f -v; \
 	)
 	(cd $(SAMBA_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
