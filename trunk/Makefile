@@ -59,7 +59,7 @@ PERL_PACKAGES = \
 	perl-clone \
 	perl-compress-zlib \
 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
-	perl-crypt-openssl-random perl-crypt-openssl-rsa \
+	perl-crypt-openssl-random perl-crypt-openssl-rsa perl-crypt-ssleay \
 	perl-danga-socket \
 	perl-date-manip \
 	perl-db-file perl-dbd-sqlite perl-dbi perl-dbix-contextualfetch \
