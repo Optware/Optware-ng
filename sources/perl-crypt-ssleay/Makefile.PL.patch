@@ -1,0 +1,31 @@
+--- Makefile.PL.orig	2007-03-28 10:45:44.000000000 -0700
++++ Makefile.PL	2007-05-17 14:00:42.000000000 -0700
+@@ -164,7 +164,8 @@
+     push @LIB_FLAGS, qw(-lRSAglue -lrsaref) if $pkg_config->{type} ne 'OpenSSL';
+ }
+ else {
+-    push @INC_FLAGS, "-I$pkg_config->{inc}";
++    my $parent_inc = dirname($pkg_config->{inc});
++    push @INC_FLAGS, "-I$pkg_config->{inc} -I$parent_inc";
+ 
+     push @LIB_FLAGS, "-L$SSL_DIR/lib", qw(-lssl -lcrypto -lgcc);
+     push @LIB_FLAGS, qw(-lRSAglue -lrsaref) if $pkg_config->{type} ne 'OpenSSL';
+@@ -237,7 +238,6 @@
+     AUTHOR        => 'David Landgren',
+     ABSTRACT_FROM => 'SSLeay.pm',
+     VERSION_FROM  => 'SSLeay.pm',
+-    LICENSE       => 'perl',
+     LIBS          => ["@LIB_FLAGS"],
+     INC           => "@INC_FLAGS",
+     NEEDS_LINKING => 1,
+@@ -261,9 +261,7 @@
+ these tests may fail (through no fault of the code).
+ 
+ INFO
+-    my $network_tests = prompt
+-        "Do you want to run the live tests (y/N) ?",
+-        'N';
++    my $network_tests = 'N';
+     print OUT "network_tests ", ($network_tests =~ /y/i) ? 1 : 0, "\n";
+     close OUT;
+ }
