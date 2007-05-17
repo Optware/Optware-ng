@@ -1,0 +1,28 @@
+--- main.c.orig	1994-05-21 03:41:03.000000000 -0700
++++ main.c	2007-05-17 10:14:48.000000000 -0700
+@@ -84,6 +84,12 @@
+ #include <signal.h>
+ #endif
+ 
++#if UNIX
++	static void emergencyexit();
++#ifdef SIGWINCH
++	extern void sizesignal();
++#endif
++
+ #if	CALLED
+ emacs(argc, argv)
+ #else
+@@ -121,12 +127,6 @@
+ 	int (*getbind())();
+ 	int (*execfunc)();		/* ptr to function to execute */
+ #endif
+-
+-#if UNIX
+-	static void emergencyexit();
+-#ifdef SIGWINCH
+-	extern void sizesignal();
+-#endif
+ #endif
+ 
+ #if	PKCODE & VMS
