@@ -1,0 +1,22 @@
+--- epath.h.orig	1994-05-21 03:41:01.000000000 -0700
++++ epath.h	2007-05-16 22:32:40.000000000 -0700
+@@ -24,15 +24,15 @@
+ 
+ #if	V7 | BSD | USG
+ {
+-	".emacsrc",
+-	"emacs.hlp",
++	".uemacsrc",
++	"uemacs.hlp",
+ #if	PKCODE
+ 	"/usr/global/lib/",
+ 	"/usr/local/bin/",
+ 	"/usr/local/lib/",
+ #endif
+-	"/usr/local/",
+-	"/usr/lib/",
++	"/opt/etc/",
++	"/opt/lib/",
+ 	""
+ };
+ #endif
