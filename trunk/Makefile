@@ -185,7 +185,7 @@ COMMON_CROSS_PACKAGES = \
 	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber mdadm \
 	mediatomb mediawiki memcached metalog memtester \
-	miau microcom microperl minicom \
+	mg miau microcom microperl minicom \
 	mktemp moblock modutils monit motion \
 	mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
 	mpg123 mrtg msynctool mt-daapd mtools \
