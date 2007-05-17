@@ -12,6 +12,7 @@ BROKEN_PACKAGES = \
 	jamvm \
 	gnokii \
 	ldconfig \
+	ltrace \
 	mod-fastcgi mod-python monotone \
 	ntp \
 	php-apache py-lxml \

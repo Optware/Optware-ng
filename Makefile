@@ -182,7 +182,7 @@ COMMON_CROSS_PACKAGES = \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
 	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd lirc \
-	logrotate lookat loudmouth lrzsz lsof lua lynx lzo \
+	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	miau microcom microperl minicom \
