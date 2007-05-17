@@ -1,0 +1,64 @@
+--- main.c.orig	2007-03-19 10:16:59.000000000 -0700
++++ main.c	2007-05-17 11:37:38.000000000 -0700
+@@ -14,6 +14,9 @@
+ #include "macro.h"
+ #endif	/* NO_MACRO */
+ 
++#define errx2(e, s1) fprintf(stderr, s1); exit(e)
++#define errx3(e, s1, s2) fprintf(stderr, s1, s2); exit(e)
++
+ #include <err.h>
+ 
+ int		 thisflag;			/* flags, this command	*/
+@@ -27,15 +30,13 @@
+ char		 pat[NPAT];			/* pattern		*/
+ 
+ static void	 edinit(PF);
+-static void usage(void);
+-
+-extern char	*__progname;
++static void usage(char* argv0);
+ 
+ static void
+-usage()
++usage(char* argv0)
+ {
+ 	fprintf(stderr, "usage: %s [+line] [-n] [-f mode] [file ...]\n",
+-	    __progname);
++	    argv0);
+ 	exit(1);
+ }
+ 
+@@ -54,12 +55,12 @@
+ 			break;
+ 		case 'f':
+ 			if (init_fcn_name != NULL)
+-				errx(1, "cannot specify more than one "
++				errx2(1, "cannot specify more than one "
+ 				    "initial function");
+ 			init_fcn_name = optarg;
+ 			break;
+ 		default:
+-			usage();
++			usage(argv[0]);
+ 		}
+ 	argc -= optind;
+ 	argv += optind;
+@@ -85,7 +86,7 @@
+ 
+ 	if (init_fcn_name &&
+ 	    (init_fcn = name_function(init_fcn_name)) == NULL)
+-		errx(1, "Unknown function `%s'", init_fcn_name);
++		errx3(1, "Unknown function `%s'", init_fcn_name);
+ 
+ 	vtinit();		/* Virtual terminal.		*/
+ 	dirinit();		/* Get current directory.	*/
+@@ -126,7 +127,7 @@
+ 
+ 				if ((curbp = findbuffer(cp)) == NULL) {
+ 					vttidy();
+-					errx(1, "Can't find current buffer!");
++					errx2(1, "Can't find current buffer!");
+ 				}
+ 				(void)showbuffer(curbp, curwp, 0);
+ 				if (readin(cp) != TRUE)
