@@ -8,6 +8,7 @@ BROKEN_PACKAGES = \
 	gambit-c \
 	htop \
 	libdvb \
+	ltrace \
 	nget \
 	par2cmdline \
 	zsh \

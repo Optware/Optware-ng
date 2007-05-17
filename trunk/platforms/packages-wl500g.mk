@@ -18,6 +18,7 @@ BROKEN_PACKAGES = \
 	 libcdio libdaemon libdvb libftdi libidn liblcms \
 	 libmtp libopensync libtorrent \
 	 loudmouth \
+	 ltrace \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \
 	 ncmpc ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
