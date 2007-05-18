@@ -20,6 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 # http://developer.berlios.de/projects/amule/
+# This .mk builds two amule IPK packages:
+# o regular
+# o adunanza - Adunanza patches are valid only for italian ISP Fastweb.
 
 AMULE_SITE=http://download.berlios.de/amule
 AMULE_VERSION=2.1.3
@@ -27,7 +30,7 @@ AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
 AMULE_DIR=aMule-$(AMULE_VERSION)
 AMULE_UNZIP=bzcat
 AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-AMULE_DESCRIPTION=non-gui part of aMule adunanza ed2k client (amuled,amulweb,amulecmd) 
+AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd) 
 AMULE_SECTION=net
 AMULE_PRIORITY=optional
 AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, readline
@@ -37,7 +40,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=8
+AMULE_IPK_VERSION=9
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -73,6 +76,32 @@ AMULE_CONFIGURE_OPTS += CXX=$(TARGET_GXX)
 endif
 endif
 
+AMULE_CONFIGURE_ARGS = \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-debug \
+		--enable-optimize \
+		--enable-alcc \
+		--enable-amule-daemon \
+		--enable-webserver \
+		--enable-amulecmd \
+		--disable-monolithic \
+		--disable-alc \
+		--disable-amulecmdgui \
+		--disable-cas \
+		--disable-wxcas \
+		--disable-systray \
+		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
+		--with-gdlib-prefix=$(STAGING_PREFIX) \
+		--with-libpng-prefix=$(STAGING_PREFIX) \
+		--with-wxbase-config=$(STAGING_DIR)/opt/bin/wx-config \
+		--with-wx-config=$(STAGING_DIR)/opt/bin/wx-config \
+		--with-wx-prefix=$(STAGING_PREFIX) \
+		--with-zlib=$(STAGING_PREFIX) \
+		--disable-nls \
+		--disable-static
 
 #
 # AMULE_BUILD_DIR is the directory in which the build is done.
@@ -87,6 +116,10 @@ AMULE_BUILD_DIR=$(BUILD_DIR)/amule
 AMULE_SOURCE_DIR=$(SOURCE_DIR)/amule
 AMULE_IPK_DIR=$(BUILD_DIR)/amule-$(AMULE_VERSION)-ipk
 AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+AMULE-ADUNANZA_BUILD_DIR=$(BUILD_DIR)/amule-adunanza
+AMULE-ADUNANZA_IPK_DIR=$(BUILD_DIR)/amule-adunanza-$(AMULE_VERSION)-ipk
+AMULE-ADUNANZA_IPK=$(BUILD_DIR)/amule-adunanza_$(AMULE_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 
 .PHONY: amule-source amule-unpack amule amule-stage amule-ipk amule-clean amule-dirclean amule-check
@@ -137,7 +170,7 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) \
 # shown below to make various patches to it.
 #
 #
-$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) $(AMULE_PATCHES)
+$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage libpng-stage libgd-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -145,8 +178,6 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUN
 		then cat $(AMULE_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p1 ; \
 	fi
-	$(AMULE_ADUNANZA_UNZIP) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) | \
-	patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p0
 	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(AMULE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) ; \
 	fi
@@ -157,36 +188,39 @@ $(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUN
 		LDFLAGS="$(STAGING_LDFLAGS) $(AMULE_LDFLAGS)" \
 		$(AMULE_CONFIGURE_OPTS) \
 		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-debug \
-		--enable-optimize \
-		--enable-alcc \
-		--enable-amule-daemon \
-		--enable-webserver \
-		--enable-amulecmd \
-		--disable-monolithic \
-		--disable-alc \
-		--disable-amulecmdgui \
-		--disable-cas \
-		--disable-wxcas \
-		--disable-systray \
-		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
-		--with-gdlib-prefix=$(STAGING_PREFIX) \
-		--with-libpng-prefix=$(STAGING_PREFIX) \
-		--with-wxbase-config=$(STAGING_DIR)/opt/bin/wx-config \
-		--with-wx-config=$(STAGING_DIR)/opt/bin/wx-config \
-		--with-wx-prefix=$(STAGING_PREFIX) \
-		--with-zlib=$(STAGING_PREFIX) \
-		--disable-nls \
-		--disable-static \
+		$(AMULE_CONFIGURE_ARGS) \
 	)
 ##	$(PATCH_LIBTOOL) $(AMULE_BUILD_DIR)/libtool
 	touch $(AMULE_BUILD_DIR)/.configured
 
-amule-unpack: $(AMULE_BUILD_DIR)/.configured
+$(AMULE-ADUNANZA_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) $(AMULE_PATCHES)
+	$(MAKE) wxbase-stage libstdc++-stage libcurl-stage zlib-stage libpng-stage libgd-stage readline-stage
+	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE-ADUNANZA_BUILD_DIR)
+	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(AMULE_PATCHES)" ; \
+		then cat $(AMULE_PATCHES) | \
+		patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p1 ; \
+	fi
+	$(AMULE_ADUNANZA_UNZIP) $(DL_DIR)/$(AMULE_ADUNANZA_SOURCE) | \
+	patch -bd $(BUILD_DIR)/$(AMULE_DIR) -p0
+	if test "$(BUILD_DIR)/$(AMULE_DIR)" != "$(AMULE-ADUNANZA_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(AMULE_DIR) $(AMULE-ADUNANZA_BUILD_DIR) ; \
+	fi
+	(cd $(AMULE-ADUNANZA_BUILD_DIR); \
+		autoconf; \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(AMULE_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(AMULE_LDFLAGS)" \
+		$(AMULE_CONFIGURE_OPTS) \
+		./configure \
+		$(AMULE_CONFIGURE_ARGS) \
+	)
+##	$(PATCH_LIBTOOL) $(AMULE_BUILD_DIR)/libtool
+	touch $(AMULE-ADUNANZA_BUILD_DIR)/.configured
+
+
+amule-unpack: $(AMULE_BUILD_DIR)/.configured $(AMULE-ADUNANZA_BUILD_DIR)/.configured
+
 
 #
 # This builds the actual binary.
@@ -196,10 +230,16 @@ $(AMULE_BUILD_DIR)/.built: $(AMULE_BUILD_DIR)/.configured
 	$(MAKE) -C $(AMULE_BUILD_DIR) HOSTCC=$(HOSTCC)
 	touch $(AMULE_BUILD_DIR)/.built
 
+$(AMULE-ADUNANZA_BUILD_DIR)/.built: $(AMULE-ADUNANZA_BUILD_DIR)/.configured
+	rm -f $(AMULE-ADUNANZA_BUILD_DIR)/.built
+	$(MAKE) -C $(AMULE-ADUNANZA_BUILD_DIR) HOSTCC=$(HOSTCC)
+	touch $(AMULE-ADUNANZA_BUILD_DIR)/.built
+
+
 #
 # This is the build convenience target.
 #
-amule: $(AMULE_BUILD_DIR)/.built
+amule: $(AMULE_BUILD_DIR)/.built  $(AMULE-ADUNANZA_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -228,7 +268,24 @@ $(AMULE_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(AMULE_DESCRIPTION)" >>$@
 	@echo "Depends: $(AMULE_DEPENDS)" >>$@
 	@echo "Suggests: $(AMULE_SUGGESTS)" >>$@
-	@echo "Conflicts: $(AMULE_CONFLICTS)" >>$@
+	@echo "Conflicts: amule-adunanza $(AMULE_CONFLICTS)" >>$@
+
+
+$(AMULE-ADUNANZA_IPK_DIR)/CONTROL/control:
+	@install -d $(AMULE-ADUNANZA_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: amule-adunanza" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(AMULE_PRIORITY)" >>$@
+	@echo "Section: $(AMULE_SECTION)" >>$@
+	@echo "Version: $(AMULE_VERSION)-$(AMULE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(AMULE_MAINTAINER)" >>$@
+	@echo "Source: $(AMULE_SITE)/$(AMULE_SOURCE)" >>$@
+	@echo "Description: $(AMULE_DESCRIPTION) Adunanza - valid only for italian ISP Fastweb" >>$@
+	@echo "Depends: $(AMULE_DEPENDS)" >>$@
+	@echo "Suggests: $(AMULE_SUGGESTS)" >>$@
+	@echo "Conflicts: amule $(AMULE_CONFLICTS)" >>$@
+
 
 #
 # This builds the IPK file.
@@ -255,27 +312,45 @@ $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
 	echo $(AMULE_CONFFILES) | sed -e 's/ /\n/g' > $(AMULE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AMULE_IPK_DIR)
 
+
+$(AMULE-ADUNANZA_IPK): $(AMULE-ADUNANZA_BUILD_DIR)/.built
+	rm -rf $(AMULE-ADUNANZA_IPK_DIR) $(BUILD_DIR)/amule_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(AMULE-ADUNANZA_BUILD_DIR) DESTDIR=$(AMULE-ADUNANZA_IPK_DIR) program_transform_name=s/^$(GNU_TARGET_NAME)-// install-strip
+#	install -d $(AMULE-ADUNANZA_IPK_DIR)/opt/etc/
+#	install -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE-ADUNANZA_IPK_DIR)/opt/etc/amule.conf
+	install -d $(AMULE-ADUNANZA_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(AMULE_SOURCE_DIR)/rc.amuled $(AMULE-ADUNANZA_IPK_DIR)/opt/etc/init.d/S57amuled
+	$(MAKE) $(AMULE-ADUNANZA_IPK_DIR)/CONTROL/control
+#	install -m 755 $(AMULE_SOURCE_DIR)/postinst $(AMULE-ADUNANZA_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(AMULE_SOURCE_DIR)/prerm $(AMULE-ADUNANZA_IPK_DIR)/CONTROL/prerm
+	echo $(AMULE_CONFFILES) | sed -e 's/ /\n/g' > $(AMULE-ADUNANZA_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(AMULE-ADUNANZA_IPK_DIR)
+
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-amule-ipk: $(AMULE_IPK)
+amule-ipk: $(AMULE_IPK) $(AMULE-ADUNANZA_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
 #
 amule-clean:
-	rm -f $(AMULE_BUILD_DIR)/.built
+	rm -f $(AMULE_BUILD_DIR)/.built $(AMULE-ADUNANZA_BUILD_DIR)/.built 
 	-$(MAKE) -C $(AMULE_BUILD_DIR) clean
+	-$(MAKE) -C $(AMULE-ADUNANZA_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
 amule-dirclean:
-	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) $(AMULE_IPK_DIR) $(AMULE_IPK)
+	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(AMULE_BUILD_DIR) $(AMULE-ADUNANZA_BUILD_DIR) \
+	$(AMULE_IPK_DIR) $(AMULE-ADUNANZA_IPK_DIR) $(AMULE_IPK) $(AMULE-ADUNANZA_IPK)
 #
 #
 # Some sanity check for the package.
 #
-amule-check: $(AMULE_IPK)
+amule-check: $(AMULE_IPK) $(AMULE-ADUNANZA_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AMULE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AMULE-ADUNANZA_IPK)
