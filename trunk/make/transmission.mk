@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.7
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=1865
+TRANSMISSION_SVN_REV=1874
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -211,6 +211,9 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) PREFIX=$(TRANSMISSION_IPK_DIR)/opt install
 	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissioncli
 	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond
+	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-daemon
+	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-proxy
+	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-remote
 	install -d $(TRANSMISSION_IPK_DIR)/opt/etc
 	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
 	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
