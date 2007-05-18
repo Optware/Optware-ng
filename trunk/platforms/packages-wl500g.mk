@@ -19,14 +19,15 @@ BROKEN_PACKAGES = \
 	 libmtp libopensync libtorrent \
 	 loudmouth \
 	 ltrace \
-	 mc mcabber mdadm mg minicom mod-fastcgi mod-python \
+	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 monotone msynctool mtr mutt \
 	 ncmpc ncursesw netatalk nfs-server nfs-utils nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
 	 p7zip pango pcapsipdump postfix psmisc py-mssql \
 	 qemu qemu-libc-i386 quickie rtorrent rtpproxy \
 	 sablevm scli scponly sdl ser sm snort snownews sqsh swi-prolog \
-	 taglib tcsh tethereal tnftpd transcode unrar \
+	 taglib tcsh tethereal tnftpd transcode \
+	 uemacs unrar \
 	 varnish vlc vte \
 	 w3m weechat wget wget-ssl wxbase x11 \
 	 xauth xaw xchat xcursor xdpyinfo xext xfixes \
