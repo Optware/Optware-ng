@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MX-BASE_SITE=http://www.egenix.com/files/python
-PY-MX-BASE_VERSION=2.0.6
+PY-MX-BASE_VERSION=3.0.0
 PY-MX-BASE_SOURCE=egenix-mx-base-$(PY-MX-BASE_VERSION).tar.gz
 PY-MX-BASE_DIR=egenix-mx-base-$(PY-MX-BASE_VERSION)
 PY-MX-BASE_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-MX-BASE_CONFLICTS=
 #
 # PY-MX-BASE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MX-BASE_IPK_VERSION=5
+PY-MX-BASE_IPK_VERSION=1
 
 #
 # PY-MX-BASE_CONFFILES should be a list of user-editable files
@@ -263,7 +263,9 @@ py-mx-base-clean:
 # directories.
 #
 py-mx-base-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR) $(PY-MX-BASE_IPK_DIR) $(PY-MX-BASE_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR)
+	rm -rf $(PY24-MX-BASE_IPK_DIR) $(PY24-MX-BASE_IPK)
+	rm -rf $(PY25-MX-BASE_IPK_DIR) $(PY25-MX-BASE_IPK)
 
 #
 # Some sanity check for the package.
