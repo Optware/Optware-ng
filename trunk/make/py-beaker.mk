@@ -24,7 +24,7 @@
 # PY-BEAKER_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-BEAKER_SITE=http://cheeseshop.python.org/packages/source/B/Beaker
-PY-BEAKER_VERSION=0.6.3
+PY-BEAKER_VERSION=0.7
 PY-BEAKER_IPK_VERSION=1
 PY-BEAKER_SOURCE=Beaker-$(PY-BEAKER_VERSION).tar.gz
 PY-BEAKER_DIR=Beaker-$(PY-BEAKER_VERSION)
