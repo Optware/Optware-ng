@@ -24,13 +24,13 @@
 # PY-BEAKER_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-BEAKER_SITE=http://cheeseshop.python.org/packages/source/B/Beaker
-PY-BEAKER_VERSION=0.7
+PY-BEAKER_VERSION=0.7.2
 PY-BEAKER_IPK_VERSION=1
 PY-BEAKER_SOURCE=Beaker-$(PY-BEAKER_VERSION).tar.gz
 PY-BEAKER_DIR=Beaker-$(PY-BEAKER_VERSION)
 PY-BEAKER_UNZIP=zcat
 PY-BEAKER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-PY-BEAKER_DESCRIPTION=A simple WSGI middleware to use the Myghty Container API.
+PY-BEAKER_DESCRIPTION=A Session and Caching library with WSGI Middleware.
 PY-BEAKER_SECTION=misc
 PY-BEAKER_PRIORITY=optional
 PY24-BEAKER_DEPENDS=python24, py-myghtyutils
