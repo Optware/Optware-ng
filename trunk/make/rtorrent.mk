@@ -22,13 +22,13 @@ RTORRENT_DESCRIPTION=rtorrent is a BitTorrent client for ncurses, using the libt
 RTORRENT_SECTION=net
 RTORRENT_PRIORITY=optional
 RTORRENT_DEPENDS=libtorrent, $(NCURSES_FOR_OPTWARE_TARGET), libcurl, zlib
-RTORRENT_SUGGESTS=dtach
+RTORRENT_SUGGESTS=dtach, screen
 RTORRENT_CONFLICTS=
 
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=1
+RTORRENT_IPK_VERSION=2
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -194,7 +194,8 @@ $(RTORRENT_IPK): $(RTORRENT_BUILD_DIR)/.built
 	install -d $(RTORRENT_IPK_DIR)/opt/etc
 	install -m 644 $(RTORRENT_SOURCE_DIR)/rtorrent.conf $(RTORRENT_IPK_DIR)/opt/etc/
 	install -m 755 $(RTORRENT_SOURCE_DIR)/rtor $(RTORRENT_IPK_DIR)/opt/bin
-
+	install -d $(RTORRENT_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(RTORRENT_SOURCE_DIR)/rc.rtorrent $(RTORRENT_IPK_DIR)/opt/etc/init.d/S99rtorrent
 	$(MAKE) $(RTORRENT_IPK_DIR)/CONTROL/control
 #	install -m 755 $(RTORRENT_SOURCE_DIR)/postinst $(RTORRENT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTORRENT_IPK_DIR)/CONTROL/postinst

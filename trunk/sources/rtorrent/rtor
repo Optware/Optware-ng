@@ -4,7 +4,7 @@ PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
 RTORRENT_SOCKET=/tmp/rtorrent
 RTORRENT_CONF=/opt/etc/rtorrent.conf
 
-test -x /opt/bin/dtach || ipkg install dtor
+test -x /opt/bin/dtach || ipkg install dtach
 
 start() {
 	if [ -e ${RTORRENT_SOCKET} ]; then
