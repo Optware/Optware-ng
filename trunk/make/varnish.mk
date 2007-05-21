@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VARNISH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/varnish
-VARNISH_VERSION=1.0.3
+VARNISH_VERSION=1.0.4
 VARNISH_SOURCE=varnish-$(VARNISH_VERSION).tar.gz
 VARNISH_DIR=varnish-$(VARNISH_VERSION)
 VARNISH_UNZIP=zcat
