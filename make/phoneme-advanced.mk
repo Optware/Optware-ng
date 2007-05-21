@@ -57,7 +57,14 @@ endif
 PHONEME_ADVANCED_CPPFLAGS=
 PHONEME_ADVANCED_LDFLAGS=
 
-PHONEME_ADVANCED_ARCH=arm
+PHONEME_ADVANCED_ARCH=$(strip \
+	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
+	$(if $(filter mipsel, $(TARGET_ARCH)), mips, \
+	$(TARGET_ARCH))))
+PHONEME_ADVANCED_MAKE_OPTIONS=$(strip \
+	$(if $(filter arm, $(PHONEME_ADVANCED_ARCH)), \
+		CVM_FORCE_HARD_FLOAT=true USE_AAPCS=false, \
+		))
 
 #
 # PHONEME_ADVANCED_BUILD_DIR is the directory in which the build is done.
@@ -69,7 +76,7 @@ PHONEME_ADVANCED_ARCH=arm
 # You should not change any of these variables.
 #
 PHONEME_ADVANCED_BUILD_DIR=$(BUILD_DIR)/phoneme-advanced
-PHONEME_ADVANCED_CDC_BUILD_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/cdc/build/linux-$(PHONEME_ADVANCED_ARCH)-generic
+PHONEME_ADVANCED_CDC_BUILD_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/cdc/build/linux-$(PHONEME_ADVANCED_ARCH)-$(OPTWARE_TARGET)
 PHONEME_ADVANCED_SOURCE_DIR=$(SOURCE_DIR)/phoneme-advanced
 PHONEME_ADVANCED_IPK_DIR=$(BUILD_DIR)/phoneme-advanced-$(PHONEME_ADVANCED_VERSION)-ipk
 PHONEME_ADVANCED_IPK=$(BUILD_DIR)/phoneme-advanced_$(PHONEME_ADVANCED_VERSION)-$(PHONEME_ADVANCED_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -120,6 +127,16 @@ $(PHONEME_ADVANCED_BUILD_DIR)/.configured: $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE) 
 	if test "$(BUILD_DIR)/$(PHONEME_ADVANCED_DIR)" != "$(PHONEME_ADVANCED_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PHONEME_ADVANCED_DIR) $(PHONEME_ADVANCED_BUILD_DIR) ; \
 	fi
+	mkdir -p $(PHONEME_ADVANCED_CDC_BUILD_DIR)
+ifeq ($(PHONEME_ADVANCED_ARCH), $(filter mips powerpc, $(PHONEME_ADVANCED_ARCH)))
+	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/linux-$(PHONEME_ADVANCED_ARCH).tar.gz
+endif
+ifeq ($(OPTWARE_TARGET),slugosbe)
+	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc/src/linux-arm -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/slugosbe-missing-asm-ucontext-h.tar.gz
+endif
+	[ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) ] && \
+	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile || \
+	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile $(PHONEME_ADVANCED_CDC_BUILD_DIR)
 	touch $@
 
 phoneme-advanced-unpack: $(PHONEME_ADVANCED_BUILD_DIR)/.configured
@@ -135,11 +152,10 @@ $(PHONEME_ADVANCED_BUILD_DIR)/.built: $(PHONEME_ADVANCED_BUILD_DIR)/.configured
 		J2ME_CLASSLIB=foundation \
 		CVM_TARGET_TOOLS_PREFIX=$(TARGET_CROSS) \
 		JDK_HOME=/usr/lib/jvm/java-1.5.0-sun-1.5.0.11 \
+		$(PHONEME_ADVANCED_MAKE_OPTIONS) \
 		JAVAME_LEGAL_REPOSITORY="`sed -n '/JAVAME_LEGAL_REPOSITORY *=/s/^.*= *//p' $(PHONEME_ADVANCED_CDC_BUILD_DIR)/../share/defs.mk` --username guest --password ''" \
 		BINARY_BUNDLE_NAME=phoneme-advanced \
 		BINARY_BUNDLE_APPEND_REVISION=false \
-		CVM_FORCE_HARD_FLOAT=true \
-		USE_AAPCS=false \
 		;
 	touch $@
 
@@ -191,10 +207,12 @@ $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control:
 #
 $(PHONEME_ADVANCED_IPK): $(PHONEME_ADVANCED_BUILD_DIR)/.built
 	rm -rf $(PHONEME_ADVANCED_IPK_DIR) $(BUILD_DIR)/phoneme-advanced_*_$(TARGET_ARCH).ipk
-	mkdir -p $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java
+	install -d $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java
 	cd $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java && \
 	unzip $(PHONEME_ADVANCED_BUILD_DIR)/cdc/install/phoneme-advanced.zip
 	$(STRIP_COMMAND) $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java/phoneme-advanced/bin/cvm
+	install -d $(PHONEME_ADVANCED_IPK_DIR)/opt/bin
+	cd $(PHONEME_ADVANCED_IPK_DIR)/opt/bin; ln -s ../lib/java/phoneme-advanced/bin/cvm .
 	$(MAKE) $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control
 	echo $(PHONEME_ADVANCED_CONFFILES) | sed -e 's/ /\n/g' > $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHONEME_ADVANCED_IPK_DIR)
