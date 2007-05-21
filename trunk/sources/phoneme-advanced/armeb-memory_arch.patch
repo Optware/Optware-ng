@@ -1,0 +1,29 @@
+--- cdc/src/linux-arm/javavm/include/memory_arch.h.orig	2007-05-20 21:58:13.000000000 -0700
++++ cdc/src/linux-arm/javavm/include/memory_arch.h	2007-05-20 22:00:42.000000000 -0700
+@@ -32,6 +32,7 @@
+ #ifndef _LINUX_ARM_MEMORY_ARCH_H
+ #define _LINUX_ARM_MEMORY_ARCH_H
+ 
++#ifndef __ARMEB__
+ extern void
+ CVMARMmemmove8Bit(void *s1, const void *s2, size_t n);
+ 
+@@ -50,9 +51,11 @@
+ #define CVMmemmoveRef		CVMARMmemmove32Bit
+ #define CVMmemmoveLong		CVMARMmemmove32Bit
+ #define CVMmemmoveDouble	CVMARMmemmove32Bit
++#endif  /* __ARMEB__ */
+ 
+ #include <malloc.h>
+ 
++#ifndef __ARMEB__
+ #include "javavm/include/iai_opt_config.h"
+ #ifdef IAI_GC_WMMX_MEMCOPY
+ #define CVMmemmoveForGC(s, d, n)                \
+@@ -65,5 +68,6 @@
+         } while (--(n) != 0);                   \
+     }
+ #endif
++#endif  /* __ARMEB__ */
+ 
+ #endif /* _LINUX_ARM_MEMORY_ARCH_H */
