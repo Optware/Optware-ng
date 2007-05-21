@@ -1,0 +1,17 @@
+#
+# platform specific architecture flags
+#
+ASM_ARCH_FLAGS		= -mips2
+CC_ARCH_FLAGS   	= -mips2
+# Fix gcc fp extra precision bug on mips 
+CC_ARCH_FLAGS_FDLIB	= -ffloat-store
+CC_ARCH_FLAGS_LOOP 	=
+LINK_ARCH_FLAGS 	=
+LINK_ARCH_LIBS		= -lm
+
+# assume the JIT is enabled for this device unless told otherwise
+CVM_JIT ?= true
+# assume floating point hardware on this device unless told otherwise
+CVM_JIT_USE_FP_HARDWARE ?= true
+
+include ../share/top.mk
