@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALCURSE_SITE=http://culot.org/cgi-bin/get.cgi?
-CALCURSE_VERSION=1.7
+CALCURSE_VERSION=1.8
 CALCURSE_SOURCE=calcurse-$(CALCURSE_VERSION).tar.gz
 CALCURSE_DIR=calcurse-$(CALCURSE_VERSION)
 CALCURSE_UNZIP=zcat
@@ -29,7 +29,7 @@ CALCURSE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CALCURSE_DESCRIPTION=Calcurse is a text-based personal organizer which helps keeping track of events and everyday tasks.
 CALCURSE_SECTION=misc
 CALCURSE_PRIORITY=optional
-CALCURSE_DEPENDS=
+CALCURSE_DEPENDS=ncurses
 CALCURSE_SUGGESTS=
 CALCURSE_CONFLICTS=
 
