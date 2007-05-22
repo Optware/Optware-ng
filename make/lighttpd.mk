@@ -36,7 +36,7 @@ LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib, libstdc++
-LIGHTTPD_SUGGESTS=bzip2, libmemcache, libxml2, lua, memcached, mysql, openssl, sqlite
+LIGHTTPD_SUGGESTS=bzip2, e2fsprogs, libmemcache, libxml2, lua, memcached, mysql, openssl, sqlite
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 LIGHTTPD_SUGGESTS+=, openldap-libs
 endif
@@ -45,7 +45,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=2
+LIGHTTPD_IPK_VERSION=3
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
