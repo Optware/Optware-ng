@@ -1,0 +1,31 @@
+--- rate.h~	2007-05-23 18:55:49.000000000 -0300
++++ rate.h	2007-05-23 18:55:53.000000000 -0300
+@@ -8,7 +8,7 @@
+ 
+ typedef struct _bwsample{
+   double timestamp;
+-  uint64_t bytes;
++  unsigned long bytes;
+   struct _bwsample *next;
+ }BWSAMPLE;
+ 
+--- rate.cpp~	2007-05-23 18:55:51.000000000 -0300
++++ rate.cpp	2007-05-23 18:55:53.000000000 -0300
+@@ -213,7 +213,7 @@
+ {
+   // calculate rate based on bandwidth history data
+   time_t timestamp = now;
+-  uint64_t countbytes = 0;
++  unsigned long countbytes = 0;
+   double timeused = 0;
+   BWSAMPLE *p;
+ 
+@@ -249,7 +249,7 @@
+             m_prev_size / (m_recent_realtime - m_prev_realtime) ){
+     // "tone down" the most recent to match the previous addition's rate
+     countbytes -= m_recent_size;
+-    countbytes += (uint64_t)(
++    countbytes += (unsigned long)(
+       m_prev_size / (m_recent_realtime - m_prev_realtime) *
+       (now - (time_t)m_recent_realtime) );
+   }

@@ -78,6 +78,245 @@
  #define RATE_INTERVAL 20
  #define SHORT_INTERVAL 5
  
+--- console.cpp.orig	Tue Apr 10 19:55:53 2007
++++ console.cpp	Wed Apr 25 20:42:20 2007
+@@ -791,20 +791,21 @@
+ void Console::Print(const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
+   if( K_LINES != m_streams[O_INPUT]->GetInputMode() ||
+       (!m_streams[O_NORMAL]->SameDev(m_streams[O_INTERACT]) &&
+        !m_streams[O_NORMAL]->SameDev(m_streams[O_INPUT])) ){
++    va_start(ap, message);
+     if( m_streams[O_NORMAL]->Output(message, ap) )
+       SyncNewlines(O_NORMAL);
++    va_end(ap);
+   }
+   if( arg_verbose && !m_streams[O_DEBUG]->SameDev(m_streams[O_NORMAL]) ){
++    va_start(ap, message);
+     if( m_streams[O_DEBUG]->Output(message, ap) )
+       SyncNewlines(O_DEBUG);
++    va_end(ap);
+   }
+-
+-  va_end(ap);
+ }
+ 
+ 
+@@ -814,7 +815,6 @@
+ void Console::Print_n(const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
+   if( m_status_last && *message ) Print_n("");
+   m_status_last = 0;
+@@ -822,15 +822,17 @@
+   if( K_LINES != m_streams[O_INPUT]->GetInputMode() ||
+       (!m_streams[O_NORMAL]->SameDev(m_streams[O_INTERACT]) &&
+        !m_streams[O_NORMAL]->SameDev(m_streams[O_INPUT])) ){
++    va_start(ap, message);
+     if( m_streams[O_NORMAL]->Output_n(message, ap) )
+       SyncNewlines(O_NORMAL);
++    va_end(ap);
+   }
+   if( arg_verbose && !m_streams[O_DEBUG]->SameDev(m_streams[O_NORMAL]) ){
++    va_start(ap, message);
+     if( m_streams[O_DEBUG]->Output_n(message, ap) )
+       SyncNewlines(O_DEBUG);
++    va_end(ap);
+   }
+-
+-  va_end(ap);
+ }
+ 
+ 
+@@ -839,22 +841,23 @@
+ void Console::Update(const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
+   m_status_last = 0;
+ 
+   if( K_LINES != m_streams[O_INPUT]->GetInputMode() ||
+       (!m_streams[O_NORMAL]->SameDev(m_streams[O_INTERACT]) &&
+        !m_streams[O_NORMAL]->SameDev(m_streams[O_INPUT])) ){
++    va_start(ap, message);
+     if( m_streams[O_NORMAL]->Update(message, ap) )
+       SyncNewlines(O_NORMAL);
++    va_end(ap);
+   }
+   if( arg_verbose && !m_streams[O_DEBUG]->SameDev(m_streams[O_NORMAL]) ){
++    va_start(ap, message);
+     if( m_streams[O_DEBUG]->Update(message, ap) )
+       SyncNewlines(O_DEBUG);
++    va_end(ap);
+   }
+-
+-  va_end(ap);
+ }
+ 
+ 
+@@ -867,22 +870,25 @@
+ void Console::Warning(int sev, const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
++  va_start(ap, message);
+   if( m_streams[O_WARNING]->Output(message, ap) )
+     SyncNewlines(O_WARNING);
++  va_end(ap);
+   if( arg_verbose && !m_streams[O_DEBUG]->SameDev(m_streams[O_WARNING]) ){
++    va_start(ap, message);
+     if( m_streams[O_DEBUG]->Output(message, ap) )
+       SyncNewlines(O_DEBUG);
++    va_end(ap);
+   }
+ 
+   if(sev && arg_ctcs){
+     char cmsg[CTCS_BUFSIZE];
++    va_start(ap, message);
+     vsnprintf(cmsg, CTCS_BUFSIZE, message, ap);
++    va_end(ap);
+     CTCS.Send_Info(sev, cmsg);
+   }
+-
+-  va_end(ap);
+ }
+ 
+ 
+@@ -894,7 +900,6 @@
+   char *format = (char *)0;
+   size_t buflen;
+   va_list ap;
+-  va_start(ap, message);
+ 
+   if( K_LINES != m_streams[O_INPUT]->GetInputMode() ||
+       (!m_streams[O_DEBUG]->SameDev(m_streams[O_INTERACT]) &&
+@@ -905,12 +910,13 @@
+ 
+     snprintf(format, buflen, "%lu %s", (unsigned long)now, message);
+ 
++    va_start(ap, message);
+     if( m_streams[O_DEBUG]->Output(format, ap) )
+       SyncNewlines(O_DEBUG);
++    va_end(ap);
+ 
+     if( format && format != buffer ) delete []format;
+   }
+-  va_end(ap);
+ }
+ 
+ 
+@@ -924,7 +930,6 @@
+   if( !arg_verbose ) return;
+ 
+   va_list ap;
+-  va_start(ap, message);
+ 
+   if( K_LINES != m_streams[O_INPUT]->GetInputMode() ||
+       (!m_streams[O_DEBUG]->SameDev(m_streams[O_INTERACT]) &&
+@@ -942,28 +947,31 @@
+ 
+       snprintf(format, buflen, "%lu %s", (unsigned long)now, message);
+ 
++      va_start(ap, message);
+       if( m_streams[O_DEBUG]->Output_n(format, ap) )
+         SyncNewlines(O_DEBUG);
++      va_end(ap);
+       if( format && format != buffer ) delete []format;
++    }else{
++      va_start(ap, message);
++      if( m_streams[O_DEBUG]->Output_n(message, ap) )
++        SyncNewlines(O_DEBUG);
++      va_end(ap);
+     }
+-    else if( m_streams[O_DEBUG]->Output_n(message, ap) )
+-      SyncNewlines(O_DEBUG);
+ 
+     if( *message ) f_new_line = 0;
+     else f_new_line = 1;
+   }
+-  va_end(ap);
+ }
+ 
+ 
+ void Console::Interact(const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
++  va_start(ap, message);
+   if( m_streams[O_INTERACT]->Output(message, ap) )
+     SyncNewlines(O_INTERACT);
+-
+   va_end(ap);
+ }
+ 
+@@ -974,15 +982,14 @@
+ void Console::Interact_n(const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
+   if( m_streams[O_INTERACT]->SameDev(m_streams[O_NORMAL]) ){
+     if( m_status_last && *message ) Interact_n("");
+     m_status_last = 0;
+   }
++  va_start(ap, message);
+   if( m_streams[O_INTERACT]->Output_n(message, ap) )
+     SyncNewlines(O_INTERACT);
+-
+   va_end(ap);
+ }
+ 
+@@ -992,15 +999,14 @@
+ void Console::InteractU(const char *message, ...)
+ {
+   va_list ap;
+-  va_start(ap, message);
+ 
+   if( m_streams[O_INTERACT]->SameDev(m_streams[O_NORMAL]) ){
+     if( m_status_last ) Interact_n("");
+     m_status_last = 0;
+   }
++  va_start(ap, message);
+   if( m_streams[O_INTERACT]->Update(message, ap) )
+     SyncNewlines(O_INTERACT);
+-
+   va_end(ap);
+ }
+ 
+--- btcontent.cpp.orig	Tue Apr 10 19:52:45 2007
++++ btcontent.cpp	Fri Apr 27 19:53:31 2007
+@@ -617,11 +617,12 @@
+ 
+ void btContent::FlushCache(size_t idx)
+ {
+-  BTCACHE *p;
++  BTCACHE *p, *pnext;
+ 
+   p = m_cache[idx];
+   if( idx == m_npieces ) p = m_cache_oldest;
+-  for( ; p; p = (idx < m_npieces) ? p->bc_next : p->age_next ){
++  for( ; p; p = pnext ){
++    pnext = (idx < m_npieces) ? p->bc_next : p->age_next;
+     if( idx == p->bc_off / m_piece_length ||
+         (p->bc_f_flush && idx == m_npieces) ||
+         idx == (p->bc_off+p->bc_len-1) / m_piece_length ){
+@@ -662,7 +663,7 @@
+           }
+         }
+       }
+-    }else if( idx < p->bc_off / m_piece_length ) break;
++    }
+   }
+ }
+ 
 --- compat.h.orig	Tue Apr 17 20:27:34 2007
 +++ compat.h	Tue Apr 17 19:59:44 2007
 @@ -0,0 +1,32 @@
