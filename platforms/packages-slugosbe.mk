@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	netatalk \
 	nfs-utils \
 	par2cmdline \
+	phoneme-advanced \
 	puppy \
 	py-psycopg \
 	qemu \
