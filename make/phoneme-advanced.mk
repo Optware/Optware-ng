@@ -21,8 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PHONEME_ADVANCED_SITE=http://download.java.net/mobileembedded/phoneme/advanced
-PHONEME_ADVANCED_VERSION=0.0~mr2-b21
+PHONEME_ADVANCED_VERSION=0.0.mr.2.b.21
 PHONEME_ADVANCED_SOURCE=phoneme_advanced-mr2-dev-src-b21-04_may_2007.zip
+PHONEME_ADVANCED_LEGAL=phoneme_advanced-legal.tar.gz
+PHONEME_ADVANCED_REPO=https://phoneme.dev.java.net/svn/phoneme
 PHONEME_ADVANCED_DIR=phoneme_advanced_mr2
 PHONEME_ADVANCED_UNZIP=unzip
 PHONEME_ADVANCED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -65,6 +67,10 @@ PHONEME_ADVANCED_MAKE_OPTIONS=$(strip \
 	$(if $(filter arm, $(PHONEME_ADVANCED_ARCH)), \
 		CVM_FORCE_HARD_FLOAT=true USE_AAPCS=false, \
 		))
+# JDK_HOME e.g. /usr/lib/jvm/java-1.5.0-sun-1.5.0.11
+ifdef JDK_HOME
+PHONEME_ADVANCED_MAKE_OPTIONS+= JDK_HOME=$(JDK_HOME)
+endif
 
 #
 # PHONEME_ADVANCED_BUILD_DIR is the directory in which the build is done.
@@ -91,6 +97,14 @@ $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PHONEME_ADVANCED_SITE)/$(PHONEME_ADVANCED_SOURCE) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PHONEME_ADVANCED_SOURCE)
 
+$(DL_DIR)/$(PHONEME_ADVANCED_LEGAL): make/phoneme-advanced.mk
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(PHONEME_ADVANCED_DIR)-legal && \
+		svn co $(PHONEME_ADVANCED_REPO)/legal $(PHONEME_ADVANCED_DIR)-legal/legal --username guest --password '' && \
+		tar -C $(PHONEME_ADVANCED_DIR)-legal -czf $@ legal --exclude .svn && \
+		rm -rf $(PHONEME_ADVANCED_DIR)-legal \
+	)
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -116,7 +130,10 @@ phoneme-advanced-source: $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE) $(PHONEME_ADVANCED
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(PHONEME_ADVANCED_BUILD_DIR)/.configured: $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE) $(PHONEME_ADVANCED_PATCHES) # make/phoneme-advanced.mk
+$(PHONEME_ADVANCED_BUILD_DIR)/.configured: make/phoneme-advanced.mk \
+$(DL_DIR)/$(PHONEME_ADVANCED_SOURCE) \
+$(DL_DIR)/$(PHONEME_ADVANCED_LEGAL) \
+$(PHONEME_ADVANCED_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(PHONEME_ADVANCED_DIR) $(PHONEME_ADVANCED_BUILD_DIR)
 	cd $(BUILD_DIR) && $(PHONEME_ADVANCED_UNZIP) $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE)
@@ -127,6 +144,7 @@ $(PHONEME_ADVANCED_BUILD_DIR)/.configured: $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE) 
 	if test "$(BUILD_DIR)/$(PHONEME_ADVANCED_DIR)" != "$(PHONEME_ADVANCED_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PHONEME_ADVANCED_DIR) $(PHONEME_ADVANCED_BUILD_DIR) ; \
 	fi
+	tar -C $(PHONEME_ADVANCED_BUILD_DIR) -xvzf $(DL_DIR)/$(PHONEME_ADVANCED_LEGAL)
 	mkdir -p $(PHONEME_ADVANCED_CDC_BUILD_DIR)
 ifeq ($(PHONEME_ADVANCED_ARCH), $(filter mips powerpc, $(PHONEME_ADVANCED_ARCH)))
 	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/linux-$(PHONEME_ADVANCED_ARCH).tar.gz
@@ -151,9 +169,8 @@ $(PHONEME_ADVANCED_BUILD_DIR)/.built: $(PHONEME_ADVANCED_BUILD_DIR)/.configured
 		TOOLS_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/tools \
 		J2ME_CLASSLIB=foundation \
 		CVM_TARGET_TOOLS_PREFIX=$(TARGET_CROSS) \
-		JDK_HOME=/usr/lib/jvm/java-1.5.0-sun-1.5.0.11 \
 		$(PHONEME_ADVANCED_MAKE_OPTIONS) \
-		JAVAME_LEGAL_REPOSITORY="`sed -n '/JAVAME_LEGAL_REPOSITORY *=/s/^.*= *//p' $(PHONEME_ADVANCED_CDC_BUILD_DIR)/../share/defs.mk` --username guest --password ''" \
+		JAVAME_LEGAL_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/legal \
 		BINARY_BUNDLE_NAME=phoneme-advanced \
 		BINARY_BUNDLE_APPEND_REVISION=false \
 		;
