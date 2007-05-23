@@ -33,20 +33,21 @@ ENHANCED_CTORRENT_CONFLICTS=
 #
 # ENHANCED_CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-ENHANCED_CTORRENT_IPK_VERSION=7
+ENHANCED_CTORRENT_IPK_VERSION=8
 
 #
 # ENHANCED_CTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 ENHANCED_CTORRENT_PATCHES= \
-	$(ENHANCED_CTORRENT_SOURCE_DIR)/patch-clock_gettime.diff
+	$(ENHANCED_CTORRENT_SOURCE_DIR)/patch-dnh3_update.diff \
+	$(ENHANCED_CTORRENT_SOURCE_DIR)/patch-uint64.diff \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ENHANCED_CTORRENT_CPPFLAGS=
+ENHANCED_CTORRENT_CPPFLAGS=-fgcse
 ENHANCED_CTORRENT_LDFLAGS=
 
 #
