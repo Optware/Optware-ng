@@ -201,6 +201,7 @@ COMMON_CROSS_PACKAGES = \
 	optware-devel ossp-js oww \
 	p7zip palantir pango par2cmdline patch patchutils \
 	pcapsipdump pcre pen \
+	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
