@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|'))-gnu
 
@@ -87,6 +87,12 @@ endif
 #
 ERLANG_CPPFLAGS=
 ERLANG_LDFLAGS=
+ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
+ifeq ($(TARGET_ARCH), $(filter arm armeb powerpc, $(TARGET_ARCH)))
+ERLANG_CONFIG_ARGS+=--enable-hipe
+else
+ERLANG_CONFIG_ARGS+=--disable-hipe
+endif
 
 #
 # ERLANG_BUILD_DIR is the directory in which the build is done.
@@ -213,8 +219,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
                 --with-ssl=$(STAGING_DIR)/opt \
-		--disable-smp-support \
-                --disable-hipe \
+		$(ERLANG_CONFIG_ARGS) \
 		--disable-nls \
 	)
 else
@@ -227,6 +232,7 @@ else
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERLANG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ERLANG_LDFLAGS)" \
 		SHLIB_LD=$(TARGET_CC) \
+		TARGET_ARCH=$(TARGET_ARCH) \
 		ac_cv_prog_javac_ver_1_2=no \
 		ac_cv_func_setvbuf_reversed=no \
 		ac_cv_func_mmap_fixed_mapped=yes \
@@ -238,8 +244,7 @@ else
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
                 --with-ssl=$(STAGING_DIR)/opt \
-		--disable-smp-support \
-                --disable-hipe \
+		$(ERLANG_CONFIG_ARGS) \
 		--disable-nls \
 		; \
 	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s!$$(ERL_TOP).*!-$(ERLANG_HOST_BUILD_DIR)/bin/dialyzer --output_plt $$@ -pa $(ERLANG_BUILD_DIR)/lib/kernel/ebin -pa $(ERLANG_BUILD_DIR)/lib/mnesia/ebin -pa $(ERLANG_BUILD_DIR)/lib/stdlib/ebin -I /home/slug/optware/nslu2/builds/erlang/lib/hipe/icode --command-line ../ebin!' $(ERLANG_BUILD_DIR)/lib/dialyzer/src/Makefile; \

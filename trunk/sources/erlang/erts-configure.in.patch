@@ -1,6 +1,30 @@
---- otp_src_R10B-6-orig/erts/configure.in	2005-06-21 09:37:14.000000000 -0700
-+++ erlang/erts/configure.in	2005-06-23 22:09:58.055415000 -0700
-@@ -1277,7 +1277,7 @@
+--- erlang/erts/configure.in.orig	2007-03-27 06:28:23.000000000 -0700
++++ erlang/erts/configure.in	2007-05-23 19:31:36.000000000 -0700
+@@ -323,7 +323,8 @@
+ FreeBSD) OPSYS=freebsd;;
+ esac
+ ARCH=noarch
+-case `uname -m` in
++test "x$TARGET_ARCH" != x && TEST_ARCH=$TARGET_ARCH || TEST_ARCH=`uname -m`
++case $TEST_ARCH in
+ sun4u)	ARCH=ultrasparc;;
+ sparc64)	ARCH=sparc64;;
+ sun4v)	ARCH=ultrasparc;;
+@@ -334,10 +335,13 @@
+ i686)	ARCH=x86;;
+ x86_64) ARCH=amd64;;
+ amd64)	ARCH=amd64;;
++powerpc)	ARCH=ppc;;
+ macppc)	ARCH=ppc;;
+ ppc)	ARCH=ppc;;
+ ppc64)	ARCH=ppc64;;
+ "Power Macintosh")	ARCH=ppc;;
++arm)	ARCH=arm;;
++armeb)	ARCH=arm;;
+ armv5b)	ARCH=arm;;
+ armv5teb)	ARCH=arm;;
+ esac
+@@ -2202,7 +2206,7 @@
    exit(0);
  #endif
  }
@@ -8,9 +32,9 @@
 +], poll_works=true, poll_works=false, poll_works=true)
  case $poll_works in
  true)
- 	AC_MSG_RESULT(ok)
-@@ -1325,7 +1325,11 @@
- 	DED_CFLAGS="$ETHR_DEFS $DED_CFLAGS"
+ 	AC_DEFINE(ERTS_USE_POLL, 1, [Define if poll() should be used instead of select()])
+@@ -2369,7 +2373,11 @@
+     DED_CFLAGS="$DED_CFLAGS -fPIC"
  fi
  
 +if test "x$LD" = x; then
