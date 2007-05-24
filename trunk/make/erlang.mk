@@ -49,6 +49,11 @@ ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|'))-gnu
 
+ERLANG_HIPE=$(strip \
+	$(if $(filter slugosbe, $(OPTWARE_TARGET)), --disable-hipe, \
+	$(if $(filter arm armeb powerpc, $(TARGET_ARCH)), --enable-hipe, \
+	--disable-hipe)))
+
 #
 # ERLANG_CONFFILES should be a list of user-editable files
 #ERLANG_CONFFILES=/opt/etc/erlang.conf /opt/etc/init.d/SXXerlang
@@ -70,15 +75,20 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
-	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
 endif
 
+ifeq ($(ERLANG_HIPE),--enable-hipe)
+ERLANG_PATCHES+=$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch
+else
+ERLANG_PATCHES+=$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in-no-hipe.patch
+endif
+
 ifeq ($(ERLANG_WITH_SAE), yes)
-ERLANG_PATCHES:=$(ERLANG_PATCHES) $(ERLANG_SOURCE_DIR)/erts-emulator-build-sae.patch
+ERLANG_PATCHES+=$(ERLANG_SOURCE_DIR)/erts-emulator-build-sae.patch
 endif
 
 #
@@ -88,11 +98,7 @@ endif
 ERLANG_CPPFLAGS=
 ERLANG_LDFLAGS=
 ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
-ifeq ($(TARGET_ARCH), $(filter arm armeb powerpc, $(TARGET_ARCH)))
-ERLANG_CONFIG_ARGS+=--enable-hipe
-else
-ERLANG_CONFIG_ARGS+=--disable-hipe
-endif
+ERLANG_CONFIG_ARGS+=$(ERLANG_HIPE)
 
 #
 # ERLANG_BUILD_DIR is the directory in which the build is done.
