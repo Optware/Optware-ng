@@ -5,10 +5,10 @@
  
  $(BINDIR)/hipe_mkliterals$(TF_MARKER):	$(OBJDIR)/hipe_mkliterals.o
 -	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $<
-+	gcc $(CFLAGS) $(INCLUDES) -o $@ hipe/hipe_mkliterals.c
++	$(CC) -E $(CFLAGS) $(INCLUDES) hipe/hipe_mkliterals.c | gcc -xc $(CFLAGS) -o $@ -
  
  $(OBJDIR)/hipe_mkliterals.o:	$(TTF_DIR)/hipe_x86_asm.h $(TTF_DIR)/hipe_ppc_asm.h
-+	gcc $(CFLAGS) $(INCLUDES) -c hipe/hipe_mkliterals.c
++	$(CC) -E $(CFLAGS) $(INCLUDES) hipe/hipe_mkliterals.c | gcc -xc $(CFLAGS) -c -o hipe/hipe_mkliterals.o -
  
  $(TTF_DIR)/hipe_literals.h:	$(BINDIR)/hipe_mkliterals$(TF_MARKER)
  	$(BINDIR)/hipe_mkliterals$(TF_MARKER) -c > $@
