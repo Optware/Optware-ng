@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBEXIF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libexif
-LIBEXIF_VERSION=0.6.13
+LIBEXIF_VERSION=0.6.14
 LIBEXIF_SOURCE=libexif-$(LIBEXIF_VERSION).tar.bz2
 LIBEXIF_DIR=libexif-$(LIBEXIF_VERSION)
 LIBEXIF_UNZIP=bzcat
@@ -42,7 +42,7 @@ LIBEXIF_CONFLICTS=
 #
 # LIBEXIF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEXIF_IPK_VERSION=4
+LIBEXIF_IPK_VERSION=1
 
 #
 # LIBEXIF_CONFFILES should be a list of user-editable files
@@ -223,3 +223,9 @@ libexif-clean:
 #
 libexif-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBEXIF_DIR) $(LIBEXIF_BUILD_DIR) $(LIBEXIF_IPK_DIR) $(LIBEXIF_IPK)
+
+#
+# Some sanity check for the package.
+#
+libexif-check: $(LIBEXIF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBEXIF_IPK)
