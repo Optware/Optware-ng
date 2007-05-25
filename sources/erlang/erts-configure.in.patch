@@ -1,5 +1,5 @@
 --- erlang/erts/configure.in.orig	2007-03-27 06:28:23.000000000 -0700
-+++ erlang/erts/configure.in	2007-05-23 19:31:36.000000000 -0700
++++ erlang/erts/configure.in	2007-05-24 13:53:28.000000000 -0700
 @@ -323,7 +323,8 @@
  FreeBSD) OPSYS=freebsd;;
  esac
@@ -44,4 +44,13 @@
 +fi
  DED_LD_FLAG_RUNTIME_LIBRARY_PATH="-R"
  STATIC_CFLAGS=""
+ 
+@@ -2405,7 +2413,7 @@
+ 	;;
+ 	*)
+ 		# assume GNU linker and ELF
+-		DED_LDFLAGS="-shared"
++		DED_LDFLAGS="-shared $LDFLAGS"
+ 	;;
+ esac
  

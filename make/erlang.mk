@@ -45,14 +45,13 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=3
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|'))-gnu
 
 ERLANG_HIPE=$(strip \
-	$(if $(filter slugosbe, $(OPTWARE_TARGET)), --disable-hipe, \
 	$(if $(filter arm armeb powerpc, $(TARGET_ARCH)), --enable-hipe, \
-	--disable-hipe)))
+	--disable-hipe))
 
 #
 # ERLANG_CONFFILES should be a list of user-editable files
@@ -62,29 +61,22 @@ ERLANG_HIPE=$(strip \
 # ERLANG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(HOSTCC), $(TARGET_CC))
-ERLANG_HOST_BUILT=
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
-	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch
-else
-ERLANG_HOST_BUILT=$(ERLANG_HOST_BUILD_DIR)/.built
-ERLANG_PATCHES=\
-	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
-	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
-	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/lib-orber-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
-endif
 
-ifeq ($(ERLANG_HIPE),--enable-hipe)
-ERLANG_PATCHES+=$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in.patch
+ifeq ($(HOSTCC), $(TARGET_CC))
+ERLANG_HOST_BUILT=
 else
-ERLANG_PATCHES+=$(ERLANG_SOURCE_DIR)/erts-emulator-Makefile.in-no-hipe.patch
+ERLANG_HOST_BUILT=$(ERLANG_HOST_BUILD_DIR)/.built
+ERLANG_PATCHES+=\
+	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
+	$(ERLANG_SOURCE_DIR)/cross-hipe_mkliterals.patch
 endif
 
 ifeq ($(ERLANG_WITH_SAE), yes)
@@ -485,7 +477,7 @@ endif
   endif
 
 	install -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib
-	for d in `ls $(ERLANG_IPK_DIR)/opt/lib/erlang/lib | egrep -v '^compiler-|^kernel-|^sasl-|^stdlib-|^tools-'`; \
+	for d in `ls $(ERLANG_IPK_DIR)/opt/lib/erlang/lib | egrep -v '^compiler-|^kernel-|^sasl-|^stdlib-|^tools-|^hipe-'`; \
 		do mv $(ERLANG_IPK_DIR)/opt/lib/erlang/lib/$$d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/lib; done
 	install -d $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/bin
 	mv $(ERLANG_IPK_DIR)/opt/lib/erlang/bin/dialyzer $(ERLANG-LIBS_IPK_DIR)/opt/lib/erlang/bin/dialyzer
