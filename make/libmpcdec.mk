@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMPCDEC_SITE=http://files.musepack.net/source
-LIBMPCDEC_VERSION=1.2.5
+LIBMPCDEC_VERSION=1.2.6
 LIBMPCDEC_SOURCE=libmpcdec-$(LIBMPCDEC_VERSION).tar.bz2
 LIBMPCDEC_DIR=libmpcdec-$(LIBMPCDEC_VERSION)
 LIBMPCDEC_UNZIP=bzcat
