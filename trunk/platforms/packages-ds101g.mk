@@ -11,5 +11,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
 	ldconfig \
+	oleo \
 	openser \
 	qemu qemu-libc-i386 \
