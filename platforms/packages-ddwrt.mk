@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	libdvb \
 	ltrace \
 	nget \
+	oleo \
 	par2cmdline \
 	zsh \
 

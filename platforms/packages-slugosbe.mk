@@ -15,6 +15,7 @@ BROKEN_PACKAGES = \
 	monotone \
 	netatalk \
 	nfs-utils \
+	oleo \
 	par2cmdline \
 	phoneme-advanced \
 	puppy \

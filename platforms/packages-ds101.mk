@@ -11,4 +11,5 @@ BROKEN_PACKAGES = \
 	imagemagick \
 	ldconfig lftp \
 	monotone motion \
+	oleo \
 	qemu qemu-libc-i386 \
