@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	freeradius \
 	ldconfig lighttpd \
 	motion mysql nfs-server nrpe \
+	oleo \
 	php php-apache pure-ftpd py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent \
 	sablevm tethereal transcode varnish w3m xvid \
