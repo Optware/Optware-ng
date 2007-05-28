@@ -11,6 +11,8 @@ CROSS_CONFIGURATION_UCLIBC_VERSION=0.9.28
 BUILDROOT_GCC=$(CROSS_CONFIGURATION_GCC_VERSION)
 UCLIBC-OPT_VERSION=$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 
+IPV6=no
+
 ifeq ($(HOST_MACHINE),arm)
 HOSTCC = $(TARGET_CC)
 GNU_HOST_NAME = $(HOST_MACHINE)-linux-gnu
@@ -31,5 +33,12 @@ TARGET_LIBDIR = $(TARGET_CROSS_TOP)/lib
 TARGET_LDFLAGS = 
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain:
+toolchain: $(TARGET_CROSS)gcc
+$(TARGET_CROSS)gcc:
+	cd toolchain; \
+	rm -rf gumstix-buildroot; \
+	svn co -r1151 http://svn.gumstix.com/gumstix-buildroot/trunk gumstix-buildroot
+	$(MAKE) -C toolchain/gumstix-buildroot defconfig
+	sed -i -e '/BR2_INSTALL_LIBSTDCPP/s/^.*/BR2_INSTALL_LIBSTDCPP=y/' toolchain/gumstix-buildroot/.config
+	$(MAKE) -C toolchain/gumstix-buildroot
 endif
