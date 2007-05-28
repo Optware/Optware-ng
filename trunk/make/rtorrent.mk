@@ -39,7 +39,7 @@ RTORRENT_CONFFILES=/opt/etc/rtorrent.conf
 # RTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET), ts101)
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 ts101, $(OPTWARE_TARGET)))
 RTORRENT_PATCHES=$(RTORRENT_SOURCE_DIR)/old-uclibc-iswspace.patch
 endif
 
