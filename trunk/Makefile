@@ -170,7 +170,7 @@ COMMON_CROSS_PACKAGES = \
 	ice icecast id3lib iksemel imagemagick imap \
 	inadyn indent inetutils iozone \
 	iperf ipkg-web iptables ircd-hybrid irssi ivorbis-tools \
-	jabberd jamvm jikes jove joe \
+	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig less lha \
 	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
