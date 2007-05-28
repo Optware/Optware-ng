@@ -215,7 +215,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba samba2 sane-backends \
 	scli scons scponly screen scsi-idle sdl sdparm \
 	sed sendmail ser setserial setpwc \
-	simh siproxd sm smartmontools snort snownews \
+	simh siproxd slang sm smartmontools snort snownews \
 	socat speex sqlite sqlite2 \
 	sqsh squeak squid srelay strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat \
