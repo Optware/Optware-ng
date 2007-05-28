@@ -1,0 +1,11 @@
+--- src/slcommon.c.orig	2007-05-27 17:25:22.000000000 -0700
++++ src/slcommon.c	2007-05-27 17:25:45.000000000 -0700
+@@ -191,7 +191,7 @@
+    return p;
+ }
+ 
+-#if !defined(HAVE_ISSETUGID) && defined(__GLIBC__) && (__GLIBC__ >= 2)
++#if 0
+ extern int __libc_enable_secure;
+ # define HAVE___LIBC_ENABLE_SECURE 1
+ #endif
