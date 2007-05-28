@@ -30,13 +30,13 @@ SLANG_DESCRIPTION=S-Lang is a multi-platform library designed to allow a develop
 SLANG_SECTION=lib
 SLANG_PRIORITY=optional
 SLANG_DEPENDS=
-SLANG_SUGGESTS=
+SLANG_SUGGESTS=pcre, libpng
 SLANG_CONFLICTS=
 
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION=1
+SLANG_IPK_VERSION=2
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
@@ -107,7 +107,7 @@ slang-source: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES)
 # shown below to make various patches to it.
 #
 $(SLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES) make/slang.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libpng-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(SLANG_DIR) $(SLANG_BUILD_DIR)
 	$(SLANG_UNZIP) $(DL_DIR)/$(SLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLANG_PATCHES)" ; \
