@@ -1,4 +1,5 @@
 SPECIFIC_PACKAGES = \
+	libiconv \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 # openldap: daemon.o: In function `slapd_daemon_task':
