@@ -48,15 +48,10 @@ PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 # compilation or linking flags, then list them here.
 #
 PERL_CPPFLAGS=
-ifeq ($(TARGET_ARCH), armeb)
-PERL_ARCH=armv5b-linux
-endif
-ifeq ($(TARGET_ARCH), powerpc)
-PERL_ARCH=ppc-linux
-endif
-ifeq ($(TARGET_ARCH), mipsel)
-PERL_ARCH=mipsel-linux
-endif
+PERL_ARCH=$(strip \
+    $(if $(filter armeb, $(TARGET_ARCH)), armv5b-linux, \
+    $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
+    $(TARGET_ARCH)-linux)))
 PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
 
 #
