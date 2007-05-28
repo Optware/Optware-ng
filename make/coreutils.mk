@@ -29,16 +29,19 @@ COREUTILS_DESCRIPTION=Bunch of heavyweight *nix core utilities
 COREUTILS_SECTION=core
 COREUTILS_PRIORITY=optional
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-COREUTILS_DEPENDS=-libiconv
+COREUTILS_DEPENDS=libiconv
 else
 COREUTILS_DEPENDS=
+endif
+ifeq (enable, $(GETTEXT_NLS))
+COREUTILS_DEPENDS+=, gettext
 endif
 COREUTILS_CONFLICTS=busybox-links
 
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=3
+COREUTILS_IPK_VERSION=4
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -112,6 +115,9 @@ coreutils-source: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES) $(COREUTILS_AC_CACHE)
+ifeq (enable, $(GETTEXT_NLS))
+	$(MAKE) gettext-stage
+endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
