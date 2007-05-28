@@ -22,7 +22,7 @@
 #
 #MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
 #MEDIATOMB_SVN_REV=1096
-MEDIATOMB_VERSION=0.9.0
+MEDIATOMB_VERSION=0.9.1
 MEDIATOMB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mediatomb
 MEDIATOMB_SOURCE=mediatomb-$(MEDIATOMB_VERSION).tar.gz
 MEDIATOMB_DIR=mediatomb-$(MEDIATOMB_VERSION)
