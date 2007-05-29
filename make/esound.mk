@@ -64,6 +64,12 @@ ESOUND_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin
 endif
 ESOUND_LDFLAGS=
 
+ifeq (no,$(IPV6))
+ESOUND_CONFIGURE_OPTIONS+=--disable-ipv6
+else
+ESOUND_CONFIGURE_OPTIONS+=--enable-ipv6
+endif
+
 #
 # ESOUND_BUILD_DIR is the directory in which the build is done.
 # ESOUND_SOURCE_DIR is the directory which holds all the
@@ -127,6 +133,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(ESOUND_CONFIGURE_OPTIONS) \
 		--with-audiofile-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-alsa \
