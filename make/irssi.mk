@@ -30,12 +30,18 @@ IRSSI_DESCRIPTION=A terminal based IRC client for UNIX systems.
 IRSSI_SECTION=net
 IRSSI_PRIORITY=optional
 IRSSI_DEPENDS=glib, ncurses, gconv-modules
+IRSSI_CONFIGURE_OPTIONS=
 ifeq (perl,$(filter perl, $(PACKAGES)))
 IRSSI_SUGGESTS=perl
-IRSSI_WITH_OR_WITHOUT_PERL=--with-perl
+IRSSI_CONFIGURE_OPTIONS+=--with-perl
 else
 IRSSI_SUGGESTS=
-IRSSI_WITH_OR_WITHOUT_PERL=--without-perl
+IRSSI_CONFIGURE_OPTIONS+=--without-perl
+endif
+ifeq (no,$(IPV6))
+IRSSI_CONFIGURE_OPTIONS+=--disable-ipv6
+else
+IRSSI_CONFIGURE_OPTIONS+=--enable-ipv6
 endif
 IRSSI_CONFLICTS=
 
@@ -144,11 +150,10 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		$(IRSSI_WITH_OR_WITHOUT_PERL) \
+		$(IRSSI_CONFIGURE_OPTIONS) \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 		--with-ncurses=$(STAGING_PREFIX) \
 		--with-proxy \
-		--enable-ipv6 \
 		--disable-glibtest \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 	)
