@@ -62,9 +62,15 @@ MPD_CPPFLAGS=
 MPD_LDFLAGS=
 
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
-MPD_ZEROCONF_CONFIG=--with-zeroconf=avahi
+MPD_CONFIGURE_OPTIONS=--with-zeroconf=avahi
 else
-MPD_ZEROCONF_CONFIG=--without-zeroconf
+MPD_CONFIGURE_OPTIONS=--without-zeroconf
+endif
+
+ifeq (no, $(IPV6))
+MPD_CONFIGURE_OPTIONS+=--disable-ipv6
+else
+MPD_CONFIGURE_OPTIONS+=--enable-ipv6
 endif
 
 #
@@ -167,7 +173,7 @@ endif
 		--enable-mp3 \
 		--enable-mpc \
 		--enable-oggvorbis \
-		$(MPD_ZEROCONF_CONFIG) \
+		$(MPD_CONFIGURE_OPTIONS) \
 		\
 		--with-ao=$(STAGING_PREFIX) \
 		--with-audiofile-prefix=$(STAGING_PREFIX) \
