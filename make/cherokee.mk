@@ -82,6 +82,10 @@ endif
 CHEROKEE_CPPFLAGS=
 CHEROKEE_LDFLAGS=
 
+ifeq (no, $(IPV6))
+CHEROKEE_CONFIGURE_OPTIONS+=--disable-ipv6
+endif
+
 #
 # CHEROKEE_BUILD_DIR is the directory in which the build is done.
 # CHEROKEE_SOURCE_DIR is the directory which holds all the
@@ -156,6 +160,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-wwwroot=/opt/share/www/cherokee \
+		$(CHEROKEE_CONFIGURE_OPTIONS) \
 		--disable-nls \
 		--disable-static \
 	)

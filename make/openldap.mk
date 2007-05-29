@@ -54,6 +54,11 @@ OPENLDAP_PATCHES=$(OPENLDAP_SOURCE_DIR)/hostcc.patch
 OPENLDAP_CPPFLAGS=
 OPENLDAP_LDFLAGS=
 
+OPENLDAP_CONFIGURE_OPTIONS=--with-yielding-select=yes
+ifeq ($(IPV6), no)
+OPENLDAP_CONFIGURE_OPTIONS+=--disable-ipv6
+endif
+
 #
 # OPENLDAP_BUILD_DIR is the directory in which the build is done.
 # OPENLDAP_SOURCE_DIR is the directory which holds all the
@@ -119,7 +124,7 @@ $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-yielding-select=yes \
+		$(OPENLDAP_CONFIGURE_OPTIONS) \
 		--disable-nls \
 	)
 	touch $(OPENLDAP_BUILD_DIR)/.configured

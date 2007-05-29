@@ -4,8 +4,6 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
-# openldap: daemon.o: In function `slapd_daemon_task':
-# 	servers/slapd/daemon.c:1973: undefined reference to `in6addr_any'
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	dansguardian \
@@ -14,7 +12,6 @@ BROKEN_PACKAGES = \
 	ltrace \
 	nget \
 	oleo \
-	openldap \
 	par2cmdline \
 	zsh \
 
