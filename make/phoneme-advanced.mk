@@ -48,8 +48,12 @@ PHONEME_ADVANCED_IPK_VERSION=1
 # PHONEME_ADVANCED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+PHONEME_ADVANCED_PATCHES=
 ifeq (armeb, $(TARGET_ARCH))
-PHONEME_ADVANCED_PATCHES=$(PHONEME_ADVANCED_SOURCE_DIR)/armeb-memory_arch.patch
+PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/armeb-memory_arch.patch
+endif
+ifeq (gumstix1151, $(OPTWARE_TARGET))
+PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/asm-types.patch
 endif
 
 #
@@ -63,10 +67,8 @@ PHONEME_ADVANCED_ARCH=$(strip \
 	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
 	$(if $(filter mipsel, $(TARGET_ARCH)), mips, \
 	$(TARGET_ARCH))))
-PHONEME_ADVANCED_MAKE_OPTIONS=$(strip \
-	$(if $(filter arm, $(PHONEME_ADVANCED_ARCH)), \
-		CVM_FORCE_HARD_FLOAT=true USE_AAPCS=false, \
-		))
+
+PHONEME_ADVANCED_MAKE_OPTIONS=
 # JDK_HOME e.g. /usr/lib/jvm/java-1.5.0-sun-1.5.0.11
 ifdef JDK_HOME
 PHONEME_ADVANCED_MAKE_OPTIONS+= JDK_HOME=$(JDK_HOME)
@@ -97,7 +99,7 @@ $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE):
 	$(WGET) -P $(DL_DIR) $(PHONEME_ADVANCED_SITE)/$(PHONEME_ADVANCED_SOURCE) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PHONEME_ADVANCED_SOURCE)
 
-$(DL_DIR)/$(PHONEME_ADVANCED_LEGAL): make/phoneme-advanced.mk
+$(DL_DIR)/$(PHONEME_ADVANCED_LEGAL): # make/phoneme-advanced.mk
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(PHONEME_ADVANCED_DIR)-legal && \
 		svn co $(PHONEME_ADVANCED_REPO)/legal $(PHONEME_ADVANCED_DIR)-legal/legal --username guest --password '' && \
@@ -152,8 +154,10 @@ endif
 ifeq ($(OPTWARE_TARGET),slugosbe)
 	tar -C $(PHONEME_ADVANCED_BUILD_DIR)/cdc/src/linux-arm -xvzf $(PHONEME_ADVANCED_SOURCE_DIR)/slugosbe-missing-asm-ucontext-h.tar.gz
 endif
-	[ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) ] && \
-	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile || \
+	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) ] && \
+	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(OPTWARE_TARGET) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
+	( [ -e $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) ] && \
+	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile.$(PHONEME_ADVANCED_ARCH) $(PHONEME_ADVANCED_CDC_BUILD_DIR)/GNUmakefile ) || \
 	cp $(PHONEME_ADVANCED_SOURCE_DIR)/GNUmakefile $(PHONEME_ADVANCED_CDC_BUILD_DIR)
 	touch $@
 
