@@ -103,6 +103,8 @@ CVM_JIT ?= true
 #    CVM_TARGET_TOOLS_PREFIX=/opt/arm-linux/bin/arm-linux-
 CVM_TARGET_TOOLS_PREFIX=/opt/arm-linux/bin/arm-linux-
 
+CVM_FORCE_HARD_FLOAT=true
+
 #
 # Here are a number of common settings you may need or want to use on ARM.
 #

@@ -1,0 +1,10 @@
+--- cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c.orig	2007-05-28 21:00:54.000000000 -0700
++++ cdc/src/linux-arm/javavm/runtime/segvhandler_arch.c	2007-05-28 21:01:27.000000000 -0700
+@@ -42,6 +42,7 @@
+ #include <stddef.h>
+ /* avoid conflicting ucontext definitions */
+ #define ucontext asm_ucontext
++#include <asm/types.h>
+ #include <asm/ucontext.h>
+ #include <unistd.h>
+ 
