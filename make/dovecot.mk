@@ -61,12 +61,14 @@ DOVECOT_CONFFILES=/opt/etc/dovecot.conf /opt/etc/init.d/S90dovecot
 # DOVECOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET),wl500g)
-DOVECOT_PATCHES=sources/dovecot/configure.in.patch sources/dovecot/config.h.in_wl500g.patch
-DOVECOT_CONFIGURE=--disable-ipv6
-else
 DOVECOT_PATCHES=sources/dovecot/configure.in.patch
 DOVECOT_CONFIGURE=
+ifeq ($(OPTWARE_TARGET),wl500g)
+DOVECOT_PATCHES+=sources/dovecot/config.h.in_wl500g.patch
+DOVECOT_CONFIGURE+=--disable-ipv6
+endif
+ifeq ($(IPV6),no)
+DOVECOT_CONFIGURE+=--disable-ipv6
 endif
 
 #
