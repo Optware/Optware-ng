@@ -100,7 +100,7 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
                 patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
         fi
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 slugosbe, $(OPTWARE_TARGET)))
 	sed -i -e '/CTL_PROC/d' $(STRACE_BUILD_DIR)/system.c
 endif
 	(cd $(STRACE_BUILD_DIR); \
@@ -173,3 +173,9 @@ strace-clean:
 #
 strace-dirclean:
 	rm -rf $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR) $(STRACE_IPK_DIR) $(STRACE_IPK)
+
+#
+# Some sanity check for the package.
+#
+strace-check: $(STRACE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STRACE_IPK)
