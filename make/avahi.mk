@@ -36,7 +36,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=1
+AVAHI_IPK_VERSION=2
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -170,6 +170,7 @@ avahi: $(AVAHI_BUILD_DIR)/.built
 $(AVAHI_BUILD_DIR)/.staged: $(AVAHI_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libavahi*.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/avahi-*.pc
 	touch $@
 
@@ -209,6 +210,7 @@ $(AVAHI_IPK_DIR)/CONTROL/control:
 $(AVAHI_IPK): $(AVAHI_BUILD_DIR)/.built
 	rm -rf $(AVAHI_IPK_DIR) $(BUILD_DIR)/avahi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(AVAHI_IPK_DIR) install-strip
+	rm -f $(AVAHI_IPK_DIR)/opt/lib/libavahi*.la
 #	install -d $(AVAHI_IPK_DIR)/opt/etc/
 #	install -m 644 $(AVAHI_SOURCE_DIR)/avahi.conf $(AVAHI_IPK_DIR)/opt/etc/avahi.conf
 #	install -d $(AVAHI_IPK_DIR)/opt/etc/init.d
