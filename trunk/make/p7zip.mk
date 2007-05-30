@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 P7ZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/p7zip
-P7ZIP_VERSION=4.45
+P7ZIP_VERSION=4.47
 P7ZIP_SOURCE=p7zip_$(P7ZIP_VERSION)_src_all.tar.bz2
 P7ZIP_DIR=p7zip_$(P7ZIP_VERSION)
 P7ZIP_UNZIP=bzcat
@@ -202,6 +202,7 @@ $(P7ZIP_IPK): $(P7ZIP_BUILD_DIR)/.built
 	rm -rf $(P7ZIP_IPK_DIR) $(BUILD_DIR)/p7zip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(P7ZIP_BUILD_DIR) install \
 		DEST_DIR=$(P7ZIP_IPK_DIR) \
+		DEST_HOME=/opt \
 		DEST_BIN=/opt/bin \
 		DEST_BIN=/opt/bin \
 		DEST_SHARE=/opt/lib/p7zip \
