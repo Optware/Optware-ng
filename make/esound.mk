@@ -126,6 +126,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESOUND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESOUND_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$(PATH)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_path_ARTS_CONFIG=$(STAGING_PREFIX)/bin/libart2-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
