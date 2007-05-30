@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	bluez-hcidump chillispot \
 	dovecot dump ficy gdb \
 	gnuplot htop inetutils \
-	ircd-hybrid kissdx \
+	ircd-hybrid \
 	libopensync lsof mdadm \
 	msynctool netatalk obexftp \
 	portmap puppy quagga sendmail \

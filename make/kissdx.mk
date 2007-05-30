@@ -52,10 +52,9 @@ KISSDX_CONFFILES=/opt/etc/kissdx.conf /opt/etc/init.d/S83kissdx
 # KISSDX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET),wl500g)
-KISSDX_PATCHES=${KISSDX_SOURCE_DIR}/config.c.patch ${KISSDX_SOURCE_DIR}/kissdx.1.patch ${KISSDX_SOURCE_DIR}/kissdx.conf.patch ${KISSDX_SOURCE_DIR}/piccache.c_wl500g.patch ${KISSDX_SOURCE_DIR}/utils.c_wl500g.patch
-else
 KISSDX_PATCHES=${KISSDX_SOURCE_DIR}/config.c.patch ${KISSDX_SOURCE_DIR}/kissdx.1.patch ${KISSDX_SOURCE_DIR}/kissdx.conf.patch
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 wl500g, $(OPTWARE_TARGET)))
+KISSDX_PATCHES+=${KISSDX_SOURCE_DIR}/piccache.c_wl500g.patch ${KISSDX_SOURCE_DIR}/utils.c_wl500g.patch
 endif
 
 #
