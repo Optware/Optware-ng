@@ -81,7 +81,7 @@ endif
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/ipkg-$(IPKG-OPT_VERSION).tar.gz:
+$(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz:
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(IPKG-OPT_DIR) && \
 		echo  "/1 $(IPKG-OPT_REPOSITORY):2401/cvs Ay=0=h<Z" \
@@ -93,7 +93,7 @@ $(DL_DIR)/ipkg-$(IPKG-OPT_VERSION).tar.gz:
 		rm -rf $(IPKG-OPT_DIR) \
 	)
 
-ipkg-opt-source: $(DL_DIR)/ipkg-$(IPKG-OPT_VERSION).tar.gz
+ipkg-opt-source: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 
 #
 # This target also configures the build within the build directory.
@@ -105,9 +105,9 @@ ipkg-opt-source: $(DL_DIR)/ipkg-$(IPKG-OPT_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) ipkg-opt-stage <baz>-stage").
 #
-$(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-$(IPKG-OPT_VERSION).tar.gz
+$(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	rm -rf $(BUILD_DIR)/$(IPKG-OPT_DIR) $(IPKG-OPT_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-$(IPKG-OPT_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	if test -n "$(IPKG-OPT_PATCHES)" ; \
 		then cat $(IPKG-OPT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(IPKG-OPT_DIR) -p1 ; \
