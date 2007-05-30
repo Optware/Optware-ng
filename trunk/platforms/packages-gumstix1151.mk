@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 BROKEN_PACKAGES = \
+	buildroot uclibc-opt \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	amule asterisk asterisk14-chan-capi \
 	bluez-hcidump chillispot \
