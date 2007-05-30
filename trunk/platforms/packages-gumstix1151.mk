@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	amule asterisk asterisk14-chan-capi \
 	bluez-hcidump chillispot \
-	dovecot dump ficy gdb \
+	dump ficy gdb \
 	gnuplot htop inetutils \
 	ircd-hybrid \
 	libopensync lsof mdadm \
