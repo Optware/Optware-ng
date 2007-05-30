@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	dump ficy gdb \
 	gnuplot htop inetutils \
 	ircd-hybrid \
-	libopensync lsof mdadm \
+	libopensync lsof mc mdadm \
 	msynctool netatalk obexftp \
 	portmap puppy quagga sendmail \
 	unfs3 usbutils xinetd
