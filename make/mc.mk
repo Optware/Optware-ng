@@ -19,7 +19,7 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=6
+MC_IPK_VERSION=7
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -41,12 +41,12 @@ MC_PATCHES += $(MC_SOURCE_DIR)/terminfo.patch
 #  PKG_CONFIG_LIBDIR=staging/opt/lib/pkgconfig pkg-config --libs glib-2.0
 #
 
+MC_CPPFLAGS=`PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig pkg-config glib-2.0 --cflags`
 ifeq ($(OPTWARE_TARGET),slugosbe)
-MC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include -DNGROUPS_MAX=65536
-else
-MC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
+MC_CPPFLAGS+=-DNGROUPS_MAX=65536
 endif
-MC_LDFLAGS=-lglib-2.0
+MC_LDFLAGS=`PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig pkg-config glib-2.0 --libs`
+
 #
 # MC_BUILD_DIR is the directory in which the build is done.
 # MC_SOURCE_DIR is the directory which holds all the
@@ -103,15 +103,16 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 	mv $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
 	(cd $(MC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
+		CPPFLAGS="-I../slang $(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MC_LDFLAGS)" \
-		ac_cv_path_GLIB_CONFIG=y\
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-included-slang \
 		--disable-nls \
+		--with-glib-prefix=$(STAGING_PREFIX) \
 		--disable-glibtest \
 	)
 	touch $(MC_BUILD_DIR)/.configured
