@@ -1,0 +1,11 @@
+--- mc/doc/Makefile.in.orig	2007-05-31 16:00:38.000000000 -0700
++++ mc/doc/Makefile.in	2007-05-31 16:01:26.000000000 -0700
+@@ -230,7 +230,7 @@
+ SUBDIRS = $(DOC_LINGUAS)
+ @USE_MCFS_FALSE@man_MANS = mc.1 mcedit.1 mcview.1
+ @USE_MCFS_TRUE@man_MANS = mc.1 mcedit.1 mcview.1 mcserv.8
+-pkgdata_DATA = mc.hlp
++pkgdata_DATA =
+ EXTRA_DIST = xnc.hlp
+ CLEANFILES = $(pkgdata_DATA)
+ all: all-recursive

@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-MC_SITE=http://ftp.gnu.org/pub/gnu/mc
-MC_VERSION=4.5.55
+MC_SITE=http://www.ibiblio.org/pub/Linux/utils/file/managers/mc
+MC_VERSION=4.6.1
 MC_SOURCE=mc-$(MC_VERSION).tar.gz
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=zcat
@@ -13,25 +13,19 @@ MC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MC_DESCRIPTION=Midnight Commander File Manager
 MC_SECTION=utilities
 MC_PRIORITY=optional
-MC_DEPENDS=ncurses, glib
+MC_DEPENDS=glib, slang
 MC_CONFLICTS=
 
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=7
+MC_IPK_VERSION=1
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET),wl500g)
-MC_PATCHES=$(MC_SOURCE_DIR)/stropts.patch
-else
-MC_PATCHES=$(MC_SOURCE_DIR)/static-declaration.patch
-endif
-
-MC_PATCHES += $(MC_SOURCE_DIR)/terminfo.patch
+MC_PATCHES=$(MC_SOURCE_DIR)/doc-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -41,11 +35,8 @@ MC_PATCHES += $(MC_SOURCE_DIR)/terminfo.patch
 #  PKG_CONFIG_LIBDIR=staging/opt/lib/pkgconfig pkg-config --libs glib-2.0
 #
 
-MC_CPPFLAGS=`PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig pkg-config glib-2.0 --cflags`
-ifeq ($(OPTWARE_TARGET),slugosbe)
-MC_CPPFLAGS+=-DNGROUPS_MAX=65536
-endif
-MC_LDFLAGS=`PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig pkg-config glib-2.0 --libs`
+MC_CPPFLAGS=
+MC_LDFLAGS=
 
 #
 # MC_BUILD_DIR is the directory in which the build is done.
@@ -94,7 +85,7 @@ mc-source: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 #
 $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
-	$(MAKE) glib-stage
+	$(MAKE) glib-stage slang-stage
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MC_PATCHES)" ; \
 		then cat $(MC_PATCHES) | \
@@ -103,17 +94,21 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 	mv $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
 	(cd $(MC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="-I../slang $(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MC_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-included-slang \
+		--with-screen=slang \
 		--disable-nls \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 		--disable-glibtest \
+		--enable-charset \
+		--without-gpm-mouse \
+		--without-x \
 	)
 	touch $(MC_BUILD_DIR)/.configured
 
@@ -166,16 +161,7 @@ $(MC_IPK_DIR)/CONTROL/control:
 #
 $(MC_IPK): $(MC_BUILD_DIR)/src/mc
 	rm -rf $(MC_IPK_DIR) $(MC_IPK)
-	install -d $(MC_IPK_DIR)/opt/bin
-	install -d $(MC_IPK_DIR)/opt/lib/mc
-	install -m 644 $(MC_BUILD_DIR)/lib/mc.ext  $(MC_IPK_DIR)/opt/lib/mc
-	install -m 644 $(MC_BUILD_DIR)/lib/mc.hint $(MC_IPK_DIR)/opt/lib/mc
-	install -m 644 $(MC_BUILD_DIR)/lib/mc.lib  $(MC_IPK_DIR)/opt/lib/mc
-	install -m 644 $(MC_BUILD_DIR)/lib/mc.menu $(MC_IPK_DIR)/opt/lib/mc
-	$(STRIP_COMMAND) $(MC_BUILD_DIR)/src/mc -o $(MC_IPK_DIR)/opt/bin/mc
-	ln -s mc $(MC_IPK_DIR)/opt/bin/mcedit
-	install -d $(MC_IPK_DIR)/opt/lib/mc/syntax
-	install -m 644 $(MC_BUILD_DIR)/syntax/* $(MC_IPK_DIR)/opt/lib/mc/syntax
+	$(MAKE) -C $(MC_BUILD_DIR) DESTDIR=$(MC_IPK_DIR) install-strip
 	$(MAKE) $(MC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MC_IPK_DIR)
 
