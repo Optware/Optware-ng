@@ -20,10 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#MPD_SITE=http://www.musicpd.org/uploads/files
-MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
-MPD_SVN_REV=5324
-MPD_VERSION=0.12.1+svn$(MPD_SVN_REV)
+MPD_SITE=http://www.musicpd.org/uploads/files
+#MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
+#MPD_SVN_REV=5324
+MPD_VERSION=0.13.0
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -31,10 +31,9 @@ MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-ifeq (avahi, $(filter avahi, $(PACKAGES)))
-MPD_DEPENDS=audiofile, avahi, faad2, flac, libao, libid3tag, libmad, libmpcdec, libvorbisidec
-else
 MPD_DEPENDS=audiofile, faad2, flac, libao, libid3tag, libmad, libmpcdec, libvorbisidec
+ifeq (avahi, $(filter avahi, $(PACKAGES)))
+MPD_DEPENDS+=, avahi
 endif
 MPD_SUGGESTS=
 MPD_CONFLICTS=
@@ -42,7 +41,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=2
+MPD_IPK_VERSION=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -153,7 +152,7 @@ endif
 	fi
 	cd $(MPD_BUILD_DIR); \
 		ACLOCAL="aclocal-1.9 -I m4" AUTOMAKE=automake-1.9 autoreconf -vif; \
-		sed -i -e 's|-lFLAC $$OGG_LIBS -lm|-lFLAC -logg -lm|' configure
+		sed -i -e '/LIBFLAC_LIBS="$$LIBFLAC_LIBS/s|-lFLAC|-lFLAC -logg|' configure
 	(cd $(MPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \
@@ -231,7 +230,11 @@ $(MPD_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(MPD_SECTION)" >>$@
 	@echo "Version: $(MPD_VERSION)-$(MPD_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(MPD_MAINTAINER)" >>$@
+ifdef MPD_SVN_REV
 	@echo "Source: $(MPD_SVN_REPO)" >>$@
+else
+	@echo "Source: $(MPD_SITE)" >>$@
+endif
 	@echo "Description: $(MPD_DESCRIPTION)" >>$@
 	@echo "Depends: $(MPD_DEPENDS)" >>$@
 	@echo "Suggests: $(MPD_SUGGESTS)" >>$@
