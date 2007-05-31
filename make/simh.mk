@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SIMH_SITE=http://simh.trailing-edge.com/sources
-SIMH_UPSTREAM_VERSION=37-0
-SIMH_VERSION=37.0
+SIMH_UPSTREAM_VERSION=37-1
+SIMH_VERSION=37.1
 SIMH_SOURCE=simhv$(SIMH_UPSTREAM_VERSION).zip
 SIMH_DIR=simh-$(SIMH_VERSION)
 SIMH_UNZIP=unzip
@@ -54,7 +54,7 @@ SIMH_PATCHES=$(SIMH_SOURCE_DIR)/makefile.patch
 # compilation or linking flags, then list them here.
 #
 SIMH_CPPFLAGS=
-SIMH_LDFLAGS=
+SIMH_LDFLAGS=-lrt
 
 #
 # SIMH_BUILD_DIR is the directory in which the build is done.
