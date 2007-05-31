@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FLAC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flac
-FLAC_VERSION=1.1.3
+FLAC_VERSION=1.1.4
 FLAC_SOURCE=flac-$(FLAC_VERSION).tar.gz
 FLAC_DIR=flac-$(FLAC_VERSION)
 FLAC_UNZIP=zcat
