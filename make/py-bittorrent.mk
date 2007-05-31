@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
-PY-BITTORRENT_VERSION=5.0.4
+PY-BITTORRENT_VERSION=5.0.7
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
