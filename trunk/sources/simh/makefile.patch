@@ -1,11 +1,12 @@
---- makefile.orig	2007-02-02 07:12:20.000000000 -0800
-+++ makefile	2007-04-09 18:50:16.000000000 -0700
-@@ -10,15 +10,15 @@
+--- makefile.orig	2007-02-06 19:24:54.000000000 -0800
++++ makefile	2007-05-29 22:58:32.000000000 -0700
+@@ -13,16 +13,16 @@
+ ifeq ($(OSTYPE),macos)
+ CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm -lrt $(OS_CCDEFS) -I .
  else
- OS_CCDEFS = -D_GNU_SOURCE
+-CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm $(OS_CCDEFS) -I .
++CC = $(TARGET_CC) -std=c99 -O2 -U__STRICT_ANSI__ -g -lm $(OS_CCDEFS) -I .
  endif
--CC = gcc -std=c99 -O2 -U__STRICT_ANSI__ -g -lm -lrt $(OS_CCDEFS) -I .
-+CC = $(TARGET_CC) -std=c99 -O2 -U__STRICT_ANSI__ -g -lm -lrt $(OS_CCDEFS) -I .
  ifeq ($(USE_NETWORK),)
  else
 -NETWORK_OPT = -DUSE_NETWORK -isystem /usr/local/include /usr/local/lib/libpcap.a
