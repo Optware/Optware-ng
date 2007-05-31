@@ -54,7 +54,10 @@ SIMH_PATCHES=$(SIMH_SOURCE_DIR)/makefile.patch
 # compilation or linking flags, then list them here.
 #
 SIMH_CPPFLAGS=
-SIMH_LDFLAGS=-lrt
+SIMH_LDFLAGS=
+ifneq ($(LIBC_STYLE), uclibc)
+SIMH_LDFLAGS+=-lrt
+endif
 
 #
 # SIMH_BUILD_DIR is the directory in which the build is done.
