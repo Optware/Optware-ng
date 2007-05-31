@@ -166,7 +166,10 @@ else
 		rm -f config; \
 		printf "### Target Arch\nARCH = $(GNU_TARGET_NAME)\n" | sed 's/-linux$$//' > config; \
 		printf "### Target OS\nOS = linux\n" >> config; \
-		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-*-linux . ; \
+		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) ] && \
+		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
+		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) ] && \
+		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) . ) ; \
 		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile . ; \
 		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch . ; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
