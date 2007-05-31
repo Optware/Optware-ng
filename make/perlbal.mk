@@ -5,7 +5,7 @@
 ###########################################################
 
 PERLBAL_SITE=http://search.cpan.org/CPAN/authors/id/B/BR/BRADFITZ
-PERLBAL_VERSION=1.57
+PERLBAL_VERSION=1.59
 PERLBAL_SOURCE=Perlbal-$(PERLBAL_VERSION).tar.gz
 PERLBAL_DIR=Perlbal-$(PERLBAL_VERSION)
 PERLBAL_UNZIP=zcat
