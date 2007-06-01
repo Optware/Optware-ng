@@ -52,8 +52,8 @@ LIBVORBIS_IPK_VERSION=5
 # compilation or linking flags, then list them here.
 #
 LIBVORBIS_CPPFLAGS=-D__USE_EXTERN_INLINES 
-ifeq ($(OPTWARE_TARGET), ts101)
-LIBVORBIS_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin
+ifdef NO_BUILTIN_MATH
+LIBVORBIS_CPPFLAGS+= -fno-builtin-cos -fno-builtin-acos -fno-builtin-rint -fno-builtin-lrint -fno-builtin-sin
 endif
 LIBVORBIS_LDFLAGS=
 

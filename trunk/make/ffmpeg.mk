@@ -55,6 +55,9 @@ FFMPEG_PATCHES=
 # compilation or linking flags, then list them here.
 #
 FFMPEG_CPPFLAGS=
+ifdef NO_BUILTIN_MATH
+FFMPEG_CPPFLAGS=-fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-builtin-rint
+endif
 FFMPEG_LDFLAGS=
 
 #
@@ -153,8 +156,8 @@ ifeq ($(LIBC_STYLE), uclibc)
 	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(FFMPEG_BUILD_DIR)/common.mak \
 		$(FFMPEG_BUILD_DIR)/Makefile $(FFMPEG_BUILD_DIR)/lib*/Makefile
 endif
-ifeq ($(OPTWARE_TARGET), ts101)
-	sed -i -e '/^OPTFLAGS/s|$$| -fno-builtin-cos -fno-builtin-sin|' $(FFMPEG_BUILD_DIR)/config.mak
+ifdef NO_BUILTIN_MATH
+	sed -i -e '/^OPTFLAGS/s|$$| $(FFMPEG_CPPFLAGS)|' $(FFMPEG_BUILD_DIR)/config.mak
 endif
 	touch $(FFMPEG_BUILD_DIR)/.configured
 #		--host=$(GNU_TARGET_NAME) \
