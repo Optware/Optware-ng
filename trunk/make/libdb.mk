@@ -36,7 +36,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBDB_SITE=ftp://sleepycat1.inetu.net/releases
+LIBDB_SITE=http://download.oracle.com/berkeley-db
 LIBDB_VERSION=4.2.52
 LIBDB_LIB_VERSION=4.2
 LIBDB_SOURCE=db-$(LIBDB_VERSION).tar.gz
@@ -86,7 +86,8 @@ LIBDB_IPK=$(BUILD_DIR)/libdb_$(LIBDB_VERSION)-$(LIBDB_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBDB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBDB_SITE)/$(LIBDB_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBDB_SITE)/$(LIBDB_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBDB_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
