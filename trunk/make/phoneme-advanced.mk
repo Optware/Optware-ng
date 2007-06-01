@@ -44,6 +44,11 @@ PHONEME_ADVANCED_IPK_VERSION=1
 # PHONEME_ADVANCED_CONFFILES should be a list of user-editable files
 #PHONEME_ADVANCED_CONFFILES=/opt/etc/phoneme-advanced.conf /opt/etc/init.d/SXXphoneme-advanced
 
+PHONEME_ADVANCED_ARCH=$(strip \
+	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
+	$(if $(filter mipsel, $(TARGET_ARCH)), mips, \
+	$(TARGET_ARCH))))
+
 #
 # PHONEME_ADVANCED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
@@ -52,8 +57,10 @@ PHONEME_ADVANCED_PATCHES=
 ifeq (armeb, $(TARGET_ARCH))
 PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/armeb-memory_arch.patch
 endif
-ifeq (gumstix1151, $(OPTWARE_TARGET))
+ifeq ($(LIBC_STYLE), uclibc)
+ifeq ($(PHONEME_ADVANCED_ARCH), arm)
 PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/asm-types.patch
+endif
 endif
 
 #
@@ -62,11 +69,6 @@ endif
 #
 PHONEME_ADVANCED_CPPFLAGS=
 PHONEME_ADVANCED_LDFLAGS=
-
-PHONEME_ADVANCED_ARCH=$(strip \
-	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
-	$(if $(filter mipsel, $(TARGET_ARCH)), mips, \
-	$(TARGET_ARCH))))
 
 PHONEME_ADVANCED_MAKE_OPTIONS=
 # JDK_HOME e.g. /usr/lib/jvm/java-1.5.0-sun-1.5.0.11
