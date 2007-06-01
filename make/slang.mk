@@ -55,8 +55,12 @@ endif
 # compilation or linking flags, then list them here.
 #
 SLANG_CPPFLAGS=
-ifeq (ts101, $(OPTWARE_TARGET))
-SLANG_CPPFLAGS+=-fno-builtin-cos -fno-builtin-sin -fno-builtin-exp -fno-builtin-log
+ifdef NO_BUILTIN_MATH
+SLANG_CPPFLAGS+=-fno-builtin-exp -fno-builtin-ceil \
+-fno-builtin-log -fno-builtin-log10 \
+-fno-builtin-cos -fno-builtin-cosh -fno-builtin-acos \
+-fno-builtin-sin -fno-builtin-sinh -fno-builtin-asin \
+-fno-builtin-tan -fno-builtin-tanh -fno-builtin-atan
 endif
 SLANG_LDFLAGS=
 

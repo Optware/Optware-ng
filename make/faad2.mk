@@ -53,7 +53,7 @@ FAAD2_IPK_VERSION=3
 # compilation or linking flags, then list them here.
 #
 FAAD2_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), ts101)
+ifdef NO_BUILTIN_MATH
 FAAD2_CPPFLAGS+=-fno-builtin-cos -fno-builtin-sin -fno-builtin-log
 endif
 FAAD2_LDFLAGS=
