@@ -22,7 +22,7 @@ APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional
 APACHE_DEPENDS=apr (>= $(APR_VERSION)), apr-util (>= $(APR_UTIL_VERSION)), \
-	openssl, expat, zlib $(APACHE_TARGET_DEPENDS)
+	e2fsprogs, expat, openssl, zlib $(APACHE_TARGET_DEPENDS)
 
 APACHE_MPM=worker
 #APACHE_MPM=prefork
@@ -30,7 +30,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=2
+APACHE_IPK_VERSION=3
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -164,6 +164,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		cd $(STAGING_INCLUDE_DIR)/apache2/ && rm -f `ls | egrep -v '^apr|^apu'`; \
 	fi
 	$(MAKE) zlib-stage
+	$(MAKE) e2fsprogs-stage
 	$(MAKE) expat-stage
 	$(MAKE) openssl-stage
 	$(MAKE) apr-util-stage
