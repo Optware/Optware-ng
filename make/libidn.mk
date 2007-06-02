@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=ftp://alpha.gnu.org/pub/gnu/libidn
-LIBIDN_VERSION=0.6.12
+LIBIDN_VERSION=0.6.14
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
