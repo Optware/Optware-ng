@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MTOOLS_SITE=http://mtools.linux.lu
-MTOOLS_VERSION=3.9.10
+MTOOLS_VERSION=3.9.11
 MTOOLS_SOURCE=mtools-$(MTOOLS_VERSION).tar.bz2
 MTOOLS_DIR=mtools-$(MTOOLS_VERSION)
 MTOOLS_UNZIP=bzcat
@@ -189,7 +189,7 @@ $(MTOOLS_IPK_DIR)/CONTROL/control:
 #
 $(MTOOLS_IPK): $(MTOOLS_BUILD_DIR)/.built
 	rm -rf $(MTOOLS_IPK_DIR) $(BUILD_DIR)/mtools_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MTOOLS_BUILD_DIR) prefix=$(MTOOLS_IPK_DIR)/opt install
+	$(MAKE) -C $(MTOOLS_BUILD_DIR) prefix=$(MTOOLS_IPK_DIR)/opt install INSTALL_INFO=:
 	$(STRIP_COMMAND) $(MTOOLS_IPK_DIR)/opt/bin/mtools $(MTOOLS_IPK_DIR)/opt/bin/mkmanifest
 #	install -d $(MTOOLS_IPK_DIR)/opt/etc/
 #	install -m 644 $(MTOOLS_SOURCE_DIR)/mtools.conf $(MTOOLS_IPK_DIR)/opt/etc/mtools.conf
