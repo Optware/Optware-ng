@@ -9,6 +9,7 @@ BROKEN_PACKAGES = \
 	elinks \
 	$(ERLANG_PACKAGES) \
 	gambit-c gawk \
+	gnu-smalltalk \
 	jamvm \
 	gnokii \
 	ldconfig \
