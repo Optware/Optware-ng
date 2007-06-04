@@ -1,0 +1,11 @@
+--- libgst/save.c.orig	2007-06-03 17:17:02.000000000 -0700
++++ libgst/save.c	2007-06-03 17:21:14.000000000 -0700
+@@ -748,7 +748,7 @@
+       if (buf)
+ 	_gst_osmem_free (buf, buf_size);
+ 
+-      buf = mmap (NULL, buf_size, PROT_READ, MAP_SHARED, imageFd, file_pos);
++      buf = mmap (NULL, buf_size, PROT_READ, MAP_SHARED, imageFd, (file_pos >> 32) | (file_pos << 32));
+ 
+       if (buf != (PTR) -1)
+ 	{

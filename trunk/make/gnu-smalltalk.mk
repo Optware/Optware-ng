@@ -51,11 +51,26 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 GNU_SMALLTALK_PATCHES+=$(GNU_SMALLTALK_SOURCE_DIR)/hostbuilddir.patch
 endif
 
+ifeq ($(TARGET_ARCH), armeb)
+ifeq ($(LIBC_STYLE), glibc)
+ifneq ($(OPTWARE_TARGET), slugosbe)
+GNU_SMALLTALK_PATCHES+=$(GNU_SMALLTALK_SOURCE_DIR)/mmap.patch
+endif
+endif
+endif
+
+ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt, $(OPTWARE_TARGET)))
+GNU_SMALLTALK_PATCHES+=$(GNU_SMALLTALK_SOURCE_DIR)/static-def.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 GNU_SMALLTALK_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt, $(OPTWARE_TARGET)))
+GNU_SMALLTALK_CPPFLAGS+=-D__error_t_defined=1
+endif
 GNU_SMALLTALK_LDFLAGS=
 
 #
@@ -230,7 +245,7 @@ $(GNU_SMALLTALK_IPK): $(GNU_SMALLTALK_BUILD_DIR)/.built
 	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/smalltalk/*.la
 #	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/libsigsegv*
 #	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/include/sigsegv*
-#	chmod go+w $(GNU_SMALLTALK_IPK_DIR)/opt/share/smalltalk/gst.im
+	chmod go+w $(GNU_SMALLTALK_IPK_DIR)/opt/share/smalltalk/gst.im
 	$(MAKE) $(GNU_SMALLTALK_IPK_DIR)/CONTROL/control
 #	install -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/postinst $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
