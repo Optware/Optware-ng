@@ -35,13 +35,13 @@ JABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 JABBERD_DESCRIPTION=Jabber is an open-source IM platform designed to be open, fast, and easy to use and extend.
 JABBERD_SECTION=misc
 JABBERD_PRIORITY=optional
-JABBERD_DEPENDS=coreutils, libidn, libpth, openssl, popt
+JABBERD_DEPENDS=coreutils, libidn, libpth, openssl, popt, expat
 JABBERD_CONFLICTS=
 
 #
 # JABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBERD_IPK_VERSION=2
+JABBERD_IPK_VERSION=3
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ jabberd-source: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
-	$(MAKE) libidn-stage libpth-stage openssl-stage popt-stage
+	$(MAKE) libidn-stage libpth-stage openssl-stage popt-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	$(JABBERD_UNZIP) $(DL_DIR)/$(JABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JABBERD_PATCHES)"; then \
