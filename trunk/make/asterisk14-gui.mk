@@ -22,7 +22,7 @@
 #
 ASTERISK14_GUI_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/asterisk14-gui
 ASTERISK14_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/trunk
-ASTERISK14_GUI_SVN_REV=195
+ASTERISK14_GUI_SVN_REV=395
 ASTERISK14_GUI_VERSION=0.0.0svn-r$(ASTERISK14_GUI_SVN_REV)
 ASTERISK14_GUI_SOURCE=asterisk14-gui-$(ASTERISK14_GUI_VERSION).tar.gz
 ASTERISK14_GUI_DIR=asterisk14-gui
@@ -32,20 +32,20 @@ ASTERISK14_GUI_DESCRIPTION=Asterisk-GUI is a framework for the \
 creation of graphical interfaces for configuring Asterisk.
 ASTERISK14_GUI_SECTION=util
 ASTERISK14_GUI_PRIORITY=optional
-ASTERISK14_GUI_DEPENDS=asterisk14,procps,coreutils
+ASTERISK14_GUI_DEPENDS=asterisk14,procps,coreutils,grep,tar
 ASTERISK14_GUI_SUGGESTS=
 ASTERISK14_GUI_CONFLICTS=asterisk,asterisk-sounds
 
 #
 # ASTERISK14_GUI_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_GUI_IPK_VERSION=1
+ASTERISK14_GUI_IPK_VERSION=3
 
 #
 # ASTERISK14_GUI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK14_GUI_PATCHES=$(ASTERISK14_GUI_SOURCE_DIR)/gui_sysinfo.patch $(ASTERISK14_GUI_SOURCE_DIR)/sysinfo.html.patch
+#ASTERISK14_GUI_PATCHES=$(ASTERISK14_GUI_SOURCE_DIR)/gui_sysinfo.patch $(ASTERISK14_GUI_SOURCE_DIR)/sysinfo.html.patch
 
 #
 # If the compilation of the package requires additional
@@ -195,6 +195,36 @@ $(ASTERISK14_GUI_IPK_DIR)/CONTROL/control:
 $(ASTERISK14_GUI_IPK): $(ASTERISK14_GUI_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_GUI_IPK_DIR) $(BUILD_DIR)/asterisk14-gui_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ASTERISK14_GUI_BUILD_DIR) DESTDIR=$(ASTERISK14_GUI_IPK_DIR) install
+
+	# FIX gui_sysinfo
+	sed -i -e 's#`uname -a`#`/opt/bin/uname -a`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`uptime`#`/opt/bin/uptime`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`/usr/sbin/asterisk -V`#`/opt/sbin/asterisk -V`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`date`#`/opt/bin/date`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`hostname -f`#`/bin/hostname -f`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`ifconfig`#`/sbin/ifconfig`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`df -h`#`/opt/bin/df -h`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`free`#`/opt/bin/free`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`/bin/date +%b`#`/opt/bin/date +%b`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`/bin/date +%d`#`/opt/bin/date +%d`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`/bin/date +%_d`#`/opt/bin/date +%_d`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#/bin/grep /var/log/asterisk/messages#/opt/bin/grep /var/log/asterisk/messages#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+
+	# FIX asterisk config directory location
+	sed -i -e 's#/etc/asterisk/#/opt/etc/asterisk/#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	# FIX rm
+	sed -i -e 's#/bin/rm#/opt/bin/rm#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	# FIX tar
+	sed -i -e 's#/bin/tar#/opt/bin/tar#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	# FIX grep
+	sed -i -e 's#/bin/grep#/opt/bin/grep#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	# FIX touch
+	sed -i -e 's#/bin/touch#/opt/bin/touch#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	# FIX reboot
+	sed -i -e 's#/bin/reboot#/sbin/reboot#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	# FIX reset_config
+	# sed -i -e 's#/bin/reset_config#/sbin/reset_config#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+
 	$(MAKE) $(ASTERISK14_GUI_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_GUI_IPK_DIR)
 

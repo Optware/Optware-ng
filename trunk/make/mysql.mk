@@ -41,7 +41,7 @@ MYSQL_CONFLICTS=
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=1
+MYSQL_IPK_VERSION=2
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ MYSQL_PATCHES=$(MYSQL_SOURCE_DIR)/configure.patch $(MYSQL_SOURCE_DIR)/lex_hash.p
 # compilation or linking flags, then list them here.
 #
 MYSQL_CPPFLAGS=
-MYSQL_LDFLAGS=
+MYSQL_LDFLAGS="-Wl,-rpath,/opt/lib/mysql"
 
 #
 # MYSQL_BUILD_DIR is the directory in which the build is done.
