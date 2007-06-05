@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	 atk avahi bitlbee bsdmainutils \
 	 calc chicken coreutils ctrlproxy \
 	 dansguardian dcraw dnsmasq dump \
-	 ecl elinks \
+	 ecl elinks emacs22 \
 	$(ERLANG_PACKAGES) \
 	 ficy freetds gambit-c gawk \
 	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb htop ice \
