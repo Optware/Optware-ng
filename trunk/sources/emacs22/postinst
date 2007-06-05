@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cd /opt/share/emacs/${EMACS_VERSION}/lisp
+
+rm -f emacs emacs-${EMACS_VERSION}* buildobj.lst
+touch buildobj.lst
+LC_ALL=C ./temacs -batch -l loadup dump
+rm -f emacs buildobj.lst
+
+mv emacs-${EMACS_VERSION}.* emacs-${EMACS_VERSION}
+rm -f /opt/bin/emacs-${EMACS_VERSION} /opt/bin/emacs
+mv emacs-${EMACS_VERSION} /opt/bin/
+ln -sf /opt/bin/emacs-${EMACS_VERSION} /opt/bin/emacs

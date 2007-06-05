@@ -1,0 +1,35 @@
+--- configure.orig	2007-05-25 05:43:29.000000000 -0700
++++ configure	2007-06-04 21:06:07.000000000 -0700
+@@ -3117,6 +3117,7 @@
+       *-esix* )			opsys=esix ;;
+       *-xenix* )		opsys=xenix ;;
+       *-linux-gnu* )		opsys=gnu-linux ;;
++      *-linux-uclibc* )		opsys=gnu-linux ;;
+       *-sco3.2v4* )		opsys=sco4 ; NON_GNU_CPP=/lib/cpp  ;;
+       *-sco3.2v5* )		opsys=sco5
+ 				NON_GNU_CPP=/lib/cpp
+--- src/s/gnu-linux.h.orig	2007-01-13 19:38:22.000000000 -0800
++++ src/s/gnu-linux.h	2007-06-04 21:06:07.000000000 -0700
+@@ -181,7 +181,7 @@
+ #else /* !_IO_STDIO_H */
+ /* old C++ iostream names */
+ #define GNU_LIBRARY_PENDING_OUTPUT_COUNT(FILE) \
+-  ((FILE)->_pptr - (FILE)->_pbase)
++  ((FILE)->__bufpos - (FILE)->__bufstart)
+ #endif /* !_IO_STDIO_H */
+ #endif /* emacs */
+ 
+--- src/gmalloc.c.orig	2007-03-28 08:09:12.000000000 -0700
++++ src/gmalloc.c	2007-06-04 21:06:07.000000000 -0700
+@@ -1607,9 +1607,9 @@
+ #include <malloc.h>
+ #endif
+ 
+-#ifndef	__GNU_LIBRARY__
++/*#ifndef	__GNU_LIBRARY__*/
+ #define	__sbrk	sbrk
+-#endif
++/*#endif*/
+ 
+ #ifdef __GNU_LIBRARY__
+ /* It is best not to declare this and cast its result on foreign operating

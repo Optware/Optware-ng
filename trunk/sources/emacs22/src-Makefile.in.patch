@@ -1,0 +1,49 @@
+--- src/Makefile.in.orig	2007-03-21 07:31:24.000000000 -0700
++++ src/Makefile.in	2007-06-04 14:40:09.000000000 -0700
+@@ -236,7 +236,7 @@
+ #define START_FILES ecrt0.o
+ #endif /* ! defined (NO_REMAP) */
+ #endif /* START_FILES */
+-STARTFILES = START_FILES
++STARTFILES = pre-crt0.o $(TARGET_LIBDIR)/crt1.o $(TARGET_LIBDIR)/crti.o
+ 
+ #else /* ORDINARY_LINK */
+ 
+@@ -496,7 +496,7 @@
+    this with the shell''s ``for'' construct.
+    Note that some people do not have '.'  in their paths, so we must
+    use ./prefix-args.  */
+-#define YMF_PASS_LDFLAGS(flags) `./prefix-args -Xlinker flags`
++#define YMF_PASS_LDFLAGS(flags) `$(EMACS22_HOST_BUILD_DIR)/src/prefix-args -Xlinker flags`
+ #else
+ #define YMF_PASS_LDFLAGS(flags) flags
+ #endif
+@@ -935,7 +935,7 @@
+    with GCC, we might need gnulib again after them.  */
+ LIBES = $(LOADLIBES) $(LIBS) $(LIBX) $(LIBSOUND) \
+    LIBS_SYSTEM LIBS_MACHINE LIBS_TERMCAP \
+-   LIBS_DEBUG $(GETLOADAVG_LIBS) $(GNULIB_VAR) LIB_MATH LIB_STANDARD \
++   LIBS_DEBUG $(GETLOADAVG_LIBS) $(GNULIB_VAR) LIB_MATH -lgcc -lc -lgcc $(TARGET_LIBDIR)/crtn.o \
+    $(GNULIB_VAR)
+ 
+ /* Enable recompilation of certain other files depending on system type.  */
+@@ -953,7 +953,7 @@
+ all: emacs${EXEEXT} OTHER_FILES
+ 
+ emacs${EXEEXT}: temacs${EXEEXT} ${etc}DOC ${lisp}
+-#ifdef CANNOT_DUMP
++#if 1
+ 	rm -f emacs${EXEEXT}
+ 	ln temacs${EXEEXT} emacs${EXEEXT}
+ #else
+@@ -975,8 +975,8 @@
+    Likewise for ${SOME_MACHINE_LISP}.  */
+ ${etc}DOC: ${libsrc}make-docfile${EXEEXT} ${obj} ${shortlisp} ${SOME_MACHINE_LISP}
+ 	-rm -f ${etc}DOC
+-	${libsrc}make-docfile -d ${srcdir} ${SOME_MACHINE_OBJECTS} ${obj} > ${etc}DOC
+-	${libsrc}make-docfile -a ${etc}DOC -d ${srcdir} ${SOME_MACHINE_LISP} ${shortlisp}
++	$(EMACS22_HOST_BUILD_DIR)/lib-src/make-docfile -d ${srcdir} ${SOME_MACHINE_OBJECTS} ${obj} > ${etc}DOC
++	$(EMACS22_HOST_BUILD_DIR)/lib-src/make-docfile -a ${etc}DOC -d ${srcdir} ${SOME_MACHINE_LISP} ${shortlisp}
+ 
+ ${libsrc}make-docfile${EXEEXT}:
+ 	cd ${libsrc}; ${MAKE} ${MFLAGS} make-docfile${EXEEXT}
