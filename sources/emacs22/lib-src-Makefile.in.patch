@@ -1,0 +1,11 @@
+--- lib-src/Makefile.in.orig	2007-06-03 21:09:52.000000000 -0700
++++ lib-src/Makefile.in	2007-06-03 21:13:30.000000000 -0700
+@@ -385,7 +385,7 @@
+    clobbered too.  */
+ test-distrib${EXEEXT}: ${srcdir}/test-distrib.c
+ 	$(CC) ${ALL_CFLAGS} -o test-distrib ${srcdir}/test-distrib.c
+-	./test-distrib ${srcdir}/testfile
++	$(EMACS22_HOST_BUILD_DIR)/lib-src/test-distrib ${srcdir}/testfile
+ 
+ /* We need the following in order to create a <getopt.h> when the system
+    doesn't have one that works with the given compiler.  */
