@@ -155,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	dircproxy distcc dhcp diffstat diffutils \
 	dnsmasq dokuwiki dovecot dropbear dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
-	endian enhanced-ctorrent esmtp esniper \
+	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
 	faad2 fann fcgi fetchmail file findutils fish flex flip ftpd-topfield \
