@@ -13,13 +13,13 @@ MC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MC_DESCRIPTION=Midnight Commander File Manager
 MC_SECTION=utilities
 MC_PRIORITY=optional
-MC_DEPENDS=glib, slang
+MC_DEPENDS=glib, slang, e2fsprogs
 MC_CONFLICTS=
 
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=1
+MC_IPK_VERSION=2
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -85,7 +85,7 @@ mc-source: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 #
 $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
-	$(MAKE) glib-stage slang-stage
+	$(MAKE) e2fsprogs-stage glib-stage slang-stage
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MC_PATCHES)" ; \
 		then cat $(MC_PATCHES) | \
