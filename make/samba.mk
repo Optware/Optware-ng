@@ -21,7 +21,7 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.25
+SAMBA_VERSION=3.0.25a
 SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
@@ -141,6 +141,9 @@ SAMBA_CROSS_ENVS=\
 		samba_cv_HAVE_TRUNCATED_SALT=no \
 		fu_cv_sys_stat_statvfs64=yes
 endif
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+SAMBA_CONFIG_ARGS=--with-ldap
+endif
 
 .PHONY: samba-source samba-unpack samba samba-stage samba-ipk samba-clean samba-dirclean samba-check
 
@@ -222,6 +225,7 @@ endif
 		--with-smbmount \
 		--with-quotas \
 		--with-krb5=no \
+		$(SAMBA_CONFIG_ARGS) \
 		--disable-nls \
 	)
 #	Remove Kerberos libs produced by broken configure
