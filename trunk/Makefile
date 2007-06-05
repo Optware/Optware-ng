@@ -134,6 +134,8 @@ ASTERISK_PACKAGES = \
 	asterisk14-core-sounds-en-ulaw \
 	asterisk14-extra-sounds-en-gsm \
 	asterisk14-extra-sounds-en-ulaw \
+	asterisk14-moh-freeplay-gsm \
+	asterisk14-moh-freeplay-ulaw \
 	asterisk14-gui \
 
 # libao - has runtime trouble?
