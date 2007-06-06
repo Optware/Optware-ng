@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 W3M_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/w3m
-W3M_VERSION=0.5.1
+W3M_VERSION=0.5.2
 W3M_SOURCE=w3m-$(W3M_VERSION).tar.gz
 W3M_DIR=w3m-$(W3M_VERSION)
 W3M_UNZIP=zcat
@@ -41,7 +41,7 @@ W3M_CONFLICTS=
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=6
+W3M_IPK_VERSION=1
 
 #
 # W3M_CONFFILES should be a list of user-editable files
@@ -51,10 +51,9 @@ W3M_IPK_VERSION=6
 # W3M_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(HOSTCC), $(TARGET_CC))
-W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch $(W3M_SOURCE_DIR)/file.c.patch
-else
-W3M_PATCHES=$(W3M_SOURCE_DIR)/configure.patch $(W3M_SOURCE_DIR)/file.c.patch $(W3M_SOURCE_DIR)/configure.in.patch
+W3M_PATCHES=$(W3M_SOURCE_DIR)/Makefile.in.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+W3M_PATCHES+=$(W3M_SOURCE_DIR)/configure.in.patch
 endif
 
 #
