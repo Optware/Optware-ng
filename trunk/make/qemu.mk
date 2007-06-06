@@ -33,22 +33,19 @@ QEMU_DEPENDS=zlib
 QEMU_SUGGESTS=kernel-module-binfmt-misc
 QEMU_CONFLICTS=
 
-ifeq ($(OPTWARE_TARGET),nslu2)
-QEMU_CPU=armv4b
-endif
-ifeq ($(OPTWARE_TARGET),nas100d)
-QEMU_CPU=armv4b
-endif
-ifeq ($(OPTWARE_TARGET),wl500g)
-QEMU_CPU=mips
-endif
+QEMU_CPU=$(strip \
+	$(if $(filter armeb, $(TARGET_ARCH)), armv4b, \
+	$(if $(filter arm, $(TARGET_ARCH)), armv4l, \
+	$(if $(filter mips mipsel, $(TARGET_ARCH)), mips, \
+	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
+	unknown)))))
 
 QEMU_TARGET_LIST=i386-user i386-softmmu
 
 #
 # QEMU_IPK_VERSION should be incremented when the ipk changes.
 #
-QEMU_IPK_VERSION=2
+QEMU_IPK_VERSION=3
 
 #
 # QEMU_CONFFILES should be a list of user-editable files
@@ -176,7 +173,7 @@ $(QEMU_USER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-$(QEMU_IPK): $(QEMU_BUILD_DIR)/.built
+$(QEMU_IPK) $(QEMU_USER_IPK): $(QEMU_BUILD_DIR)/.built
 	rm -rf $(QEMU_IPK_DIR) $(BUILD_DIR)/qemu_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QEMU_BUILD_DIR) \
 		prefix=$(QEMU_IPK_DIR)/opt \
@@ -207,7 +204,7 @@ $(QEMU_IPK): $(QEMU_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-qemu-ipk: $(QEMU_IPK)
+qemu-ipk: $(QEMU_IPK) $(QEMU_USER_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -221,4 +218,6 @@ qemu-clean:
 # directories.
 #
 qemu-dirclean:
-	rm -rf $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR) $(QEMU_IPK_DIR) $(QEMU_IPK)
+	rm -rf $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR)
+	rm -rf $(QEMU_IPK_DIR) $(QEMU_IPK)
+	rm -rf $(QEMU_USER_IPK_DIR) $(QEMU_USER_IPK)
