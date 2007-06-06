@@ -1,0 +1,11 @@
+--- configure.orig	2007-06-05 22:49:19.000000000 -0700
++++ configure	2007-06-05 22:52:12.000000000 -0700
+@@ -22,7 +22,7 @@
+ if [ "$INSTALL_MANPATH" = "" ]; then
+ 	INSTALL_MANPATH="/usr/local/man"
+ fi
+-BYTEORDER=`./byteorder -m`
++[ -z "$BYTEORDER" ] && BYTEORDER=`./byteorder -m`
+ 
+ echo create byteorder.h...
+ cat > byteorder.h <<EOF
