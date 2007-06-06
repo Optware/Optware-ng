@@ -20,15 +20,15 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_SOURCE_TYPE=tarball
-#ASTERISK14_SOURCE_TYPE=svn
+#ASTERISK14_SOURCE_TYPE=tarball
+ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
 ASTERISK14_BASE_VERSION=1.4.4
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
-ASTERISK14_SVN_REV=55870
+ASTERISK14_SVN_REV=67398
 ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)svn-r$(ASTERISK14_SVN_REV)
 else
 ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)
@@ -48,6 +48,8 @@ asterisk14-core-sounds-en-gsm,\
 asterisk14-core-sounds-en-ulaw,\
 asterisk14-extra-sounds-en-gsm,\
 asterisk14-extra-sounds-en-ulaw,\
+asterisk14-moh-freeplay-gsm,\
+asterisk14-moh-freeplay-ulaw,\
 asterisk14-gui,\
 freetds,\
 iksemel,\
@@ -138,7 +140,7 @@ ASTERISK14_CONFFILES=\
 # which they should be applied to the source code.
 #
 #ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch $(ASTERISK14_SOURCE_DIR)/gsm.patch
-ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch
+ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch $(ASTERISK14_SOURCE_DIR)/sounds.xml.patch
 
 #
 # If the compilation of the package requires additional
@@ -256,7 +258,6 @@ endif
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
-	#sed -i -e '/GSM_.*+=.*k6opt/s|^|#|' $(ASTERISK14_BUILD_DIR)/codecs/gsm/Makefile
 	touch $(ASTERISK14_BUILD_DIR)/.configured
 
 asterisk14-unpack: $(ASTERISK14_BUILD_DIR)/.configured
@@ -379,9 +380,6 @@ $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
 
-	# Removing the sound files
-	# Install them using the asterisk14-core-sounds-en-gsm package
-	rm -rf $(ASTERISK14_IPK_DIR)/opt/var/lib/asterisk/sounds
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_IPK_DIR)
 
 #

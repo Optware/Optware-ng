@@ -1,0 +1,18 @@
+--- asterisk-1.4.4/sounds/sounds.xml	2007-05-24 17:00:45.000000000 -0400
++++ asterisk-1.4.4/sounds/sounds.xml.new	2007-05-25 13:23:41.000000000 -0400
+@@ -6,7 +6,6 @@
+ 		<member name="CORE-SOUNDS-EN-ALAW" displayname="English, a-Law format">
+ 		</member>
+ 		<member name="CORE-SOUNDS-EN-GSM" displayname="English, GSM format" >
+-			<defaultenabled>yes</defaultenabled>
+ 		</member>
+ 		<member name="CORE-SOUNDS-EN-G729" displayname="English, G.729 format">
+ 		</member>
+@@ -39,7 +38,6 @@
+ 	</category>
+ 	<category name="MENUSELECT_MOH" displayname="Music On Hold File Packages" positive_output="yes">
+ 		<member name="MOH-FREEPLAY-WAV" displayname="FreePlay Music On Hold Files, WAV format" >
+-			<defaultenabled>yes</defaultenabled>
+ 		</member>
+ 		<member name="MOH-FREEPLAY-ULAW" displayname="FreePlay Music On Hold Files, mu-Law format" >
+ 		</member>
