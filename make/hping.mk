@@ -36,7 +36,7 @@ HPING_CONFLICTS=
 #
 # HPING_IPK_VERSION should be incremented when the ipk changes.
 #
-HPING_IPK_VERSION=1
+HPING_IPK_VERSION=2
 
 #
 # HPING_CONFFILES should be a list of user-editable files
@@ -46,7 +46,9 @@ HPING_IPK_VERSION=1
 # HPING_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HPING_PATCHES=$(HPING_SOURCE_DIR)/configure.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+HPING_PATCHES=$(HPING_SOURCE_DIR)/configure.patch $(HPING_SOURCE_DIR)/Makefile.in.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -120,9 +122,16 @@ $(HPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HPING_SOURCE) $(HPING_PATCHES) make/
         	-e 's|/usr/sbin|$(HPING_IPK_DIR)/opt/sbin|g' \
         	-e '/ln -s/d' \
         	Makefile.in; \
-	sed -ie '/# error/s|^.*$$|#define BYTE_ORDER_BIG_ENDIAN|' bytesex.h; \
-	sed -ie 's|<net/bpf.h>|<pcap-bpf.h>|' libpcap_stuff.c script.c;
+	sed -i -e 's|<net/bpf.h>|<pcap-bpf.h>|' libpcap_stuff.c script.c; \
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+	then sed -i -e '/# error/s|^.*$$|#define BYTE_ORDER_BIG_ENDIAN|' bytesex.h; \
+	else sed -i -e '/# error/s|^.*$$|#define BYTE_ORDER_LITTLE_ENDIAN|' bytesex.h; \
+	fi
 	(cd $(HPING_BUILD_DIR); \
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+	then export BYTEORDER=__BIG_ENDIAN_BITFIELD; \
+	else export BYTEORDER=__LITTLE_ENDIAN_BITFIELD; \
+	fi; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HPING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HPING_LDFLAGS)" \

@@ -169,7 +169,7 @@ COMMON_CROSS_PACKAGES = \
 	grep groff gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
-	haproxy hdparm hexcurse heyu hnb hpijs htop \
+	haproxy hdparm hexcurse heyu hnb hpijs hping htop \
 	ice icecast id3lib iksemel imagemagick imap \
 	inadyn indent inetutils iozone \
 	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
@@ -250,7 +250,6 @@ COMMON_NATIVE_PACKAGES = \
 	cdrtools \
 	emacs \
 	xemacs \
-	hping \
 	hugs \
 	mzscheme \
         nginx \
