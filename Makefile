@@ -172,7 +172,7 @@ COMMON_CROSS_PACKAGES = \
 	haproxy hdparm hexcurse heyu hnb hpijs htop \
 	ice icecast id3lib iksemel imagemagick imap \
 	inadyn indent inetutils iozone \
-	iperf ipkg-web iptables ircd-hybrid irssi ivorbis-tools \
+	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig less lha \
