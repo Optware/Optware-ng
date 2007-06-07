@@ -15,4 +15,4 @@ BROKEN_PACKAGES = \
 	libopensync lsof mdadm \
 	msynctool netatalk obexftp \
 	portmap puppy quagga sendmail \
-	unfs3 usbutils xinetd
+	unfs3 usbutils util-linux xinetd
