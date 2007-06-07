@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 QEMU_SITE=http://fabrice.bellard.free.fr/qemu
-QEMU_VERSION=0.7.1
+QEMU_VERSION=0.8.0
 QEMU_SOURCE=qemu-$(QEMU_VERSION).tar.gz
 QEMU_DIR=qemu-$(QEMU_VERSION)
 QEMU_UNZIP=zcat
@@ -37,15 +37,14 @@ QEMU_CPU=$(strip \
 	$(if $(filter armeb, $(TARGET_ARCH)), armv4b, \
 	$(if $(filter arm, $(TARGET_ARCH)), armv4l, \
 	$(if $(filter mips mipsel, $(TARGET_ARCH)), mips, \
-	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
-	unknown)))))
+	$(TARGET_ARCH)))))
 
 QEMU_TARGET_LIST=i386-user i386-softmmu
 
 #
 # QEMU_IPK_VERSION should be incremented when the ipk changes.
 #
-QEMU_IPK_VERSION=3
+QEMU_IPK_VERSION=1
 
 #
 # QEMU_CONFFILES should be a list of user-editable files
@@ -221,3 +220,9 @@ qemu-dirclean:
 	rm -rf $(BUILD_DIR)/$(QEMU_DIR) $(QEMU_BUILD_DIR)
 	rm -rf $(QEMU_IPK_DIR) $(QEMU_IPK)
 	rm -rf $(QEMU_USER_IPK_DIR) $(QEMU_USER_IPK)
+
+#
+# Some sanity check for the package.
+#
+qemu-check: $(QEMU_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(QEMU_IPK) $(QEMU_USER_IPK)
