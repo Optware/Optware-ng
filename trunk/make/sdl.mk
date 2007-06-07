@@ -165,7 +165,7 @@ $(SDL_BUILD_DIR)/.staged: $(SDL_BUILD_DIR)/.built
 	rm -f $(SDL_BUILD_DIR)/.staged
 	$(MAKE) -C $(SDL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libSDL.la
-	cp $(STAGING_DIR)/opt/bin/$(GNU_TARGET_NAME)-sdl-config $(STAGING_DIR)/bin/sdl-config
+	cp $(STAGING_PREFIX)/bin/sdl-config $(STAGING_DIR)/bin/
 	touch $(SDL_BUILD_DIR)/.staged
 
 sdl-stage: $(SDL_BUILD_DIR)/.staged
