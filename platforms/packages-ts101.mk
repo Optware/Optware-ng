@@ -10,5 +10,5 @@ BROKEN_PACKAGES = \
 	giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft \
 	gift-opennap htop libopensync motion msynctool nfs-server \
 	nfs-utils obexftp quagga squeak transcode \
-	varnish vsftpd \
+	util-linux varnish vsftpd \
 	wget wget-ssl buildroot uclibc-opt ipkg-opt \
