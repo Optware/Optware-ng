@@ -8,6 +8,6 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for fsg3.
 BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
-	qemu qemu-libc-i386 \
+	qemu-libc-i386 \
 	varnish \
 
