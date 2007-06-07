@@ -30,13 +30,13 @@ UTIL_LINUX_DESCRIPTION=A suite of essential utilities for any Linux system.
 UTIL_LINUX_SECTION=misc
 UTIL_LINUX_PRIORITY=optional
 UTIL_LINUX_DEPENDS=
-UTIL_LINUX_SUGGESTS=ncurese, zlib
+UTIL_LINUX_SUGGESTS=ncurses, zlib
 UTIL_LINUX_CONFLICTS=
 
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=1
+UTIL_LINUX_IPK_VERSION=2
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
