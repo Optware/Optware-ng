@@ -13,4 +13,4 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	oleo \
 	openser \
-	qemu qemu-libc-i386 \
+	qemu-libc-i386 \
