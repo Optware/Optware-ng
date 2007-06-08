@@ -15,10 +15,12 @@ OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
 
-OPENSSL_IPK_VERSION=1
+OPENSSL_IPK_VERSION=2
 
-OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
+OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
+OPENSSL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/openssl
+
 OPENSSL_IPK_DIR=$(BUILD_DIR)/openssl-$(OPENSSL_VERSION)-ipk
 OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -42,6 +44,32 @@ OPENSSL_ARCH=linux-elf-$(TARGET_ARCH)
 endif
 endif
 
+$(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
+	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
+	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf - 
+	mv $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
+	(cd $(OPENSSL_HOST_BUILD_DIR) && \
+		./Configure \
+			shared no-zlib \
+			--openssldir=/opt/share/openssl \
+			--prefix=/opt \
+			linux-$(HOST_MACHINE) \
+	)
+	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_HOST_BUILD_DIR)/apps/Makefile
+	$(MAKE) -C $(OPENSSL_HOST_BUILD_DIR) \
+		MANDIR=/opt/man \
+		DIRS="crypto ssl apps"
+	touch $@
+
+$(OPENSSL_HOST_BUILD_DIR)/.staged: $(OPENSSL_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(OPENSSL_HOST_BUILD_DIR) \
+		INSTALL_PREFIX=$(HOST_STAGING_DIR) install_sw
+	touch $@
+
+openssl-host: $(OPENSSL_HOST_BUILD_DIR)/.built
+openssl-host-stage: $(OPENSSL_HOST_BUILD_DIR)/.staged
+
 $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
 	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR)
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
@@ -56,7 +84,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			--prefix=/opt \
 			$(OPENSSL_ARCH) \
 	)
-	sed -ie 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_BUILD_DIR)/apps/Makefile
+	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_BUILD_DIR)/apps/Makefile
 	touch $(OPENSSL_BUILD_DIR)/.configured
 
 openssl-unpack: $(OPENSSL_BUILD_DIR)/.configured
@@ -100,7 +128,7 @@ endif
 	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
 	install -d $(STAGING_DIR)/opt/lib/pkgconfig
 	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(STAGING_DIR)/opt/lib/pkgconfig
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
 
 openssl-stage: $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION)
 
