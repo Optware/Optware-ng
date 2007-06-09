@@ -20,7 +20,13 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
+ifneq ($(OPTWARE_TARGET), wl500g)
 TAR_VERSION=1.17
+TAR_IPK_VERSION=1
+else
+TAR_VERSION=1.16.1
+TAR_IPK_VERSION=1
+endif
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=bzcat
@@ -31,19 +37,14 @@ TAR_PRIORITY=optional
 TAR_DEPENDS=bzip2
 TAR_CONFLICTS=busybox-links
 
-#
-# TAR_IPK_VERSION should be incremented when the ipk changes.
-#
-TAR_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
+TAR_CPPFLAGS=
 ifeq ($(OPTWARE_TARGET),wl500g)
-  TAR_CPPFLAGS=-DMB_CUR_MAX=1
-else
-  TAR_CPPFLAGS=
+TAR_CPPFLAGS+=-DMB_CUR_MAX=1
 endif
 TAR_LDFLAGS=
 
