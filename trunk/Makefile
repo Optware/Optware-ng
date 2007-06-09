@@ -65,6 +65,7 @@ PERL_PACKAGES = \
 	perl-db-file perl-dbd-sqlite perl-dbi perl-dbix-contextualfetch \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
+	perl-file-rename \
 	perl-gd perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template \
 	perl-ima-dbi \
