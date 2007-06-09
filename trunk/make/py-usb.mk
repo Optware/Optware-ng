@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-USB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyusb
-PY-USB_VERSION=0.3.5
+PY-USB_VERSION=0.4.0
 PY-USB_SOURCE=pyusb-$(PY-USB_VERSION).tar.gz
 PY-USB_DIR=pyusb-$(PY-USB_VERSION)
 PY-USB_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-USB_CONFLICTS=
 #
 # PY-USB_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-USB_IPK_VERSION=2
+PY-USB_IPK_VERSION=1
 
 #
 # PY-USB_CONFFILES should be a list of user-editable files
