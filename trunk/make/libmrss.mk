@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMRSS_SITE=http://www2.autistici.org/bakunin/libmrss
-LIBMRSS_VERSION=0.17.2
+LIBMRSS_VERSION=0.17.3
 LIBMRSS_SOURCE=libmrss-$(LIBMRSS_VERSION).tar.gz
 LIBMRSS_DIR=libmrss-$(LIBMRSS_VERSION)
 LIBMRSS_UNZIP=zcat
@@ -46,9 +46,7 @@ LIBMRSS_IPK_VERSION=1
 # LIBMRSS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifneq ($(OPTWARE_TARGET), $(filter ds101 ds101g slugosbe ddwrt oleg, $(OPTWARE_TARGET)))
-LIBMRSS_PATCHES=$(LIBMRSS_SOURCE_DIR)/no-newlocale.patch
-endif
+LIBMRSS_PATCHES=
 
 #
 # If the compilation of the package requires additional
