@@ -165,7 +165,7 @@ COMMON_CROSS_PACKAGES = \
 	ffmpeg ficy fixesext flac \
 	fontconfig freeradius freetds freetype freeze ftpcopy fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
-	ggrab ghostscript git-core glib gnet gnokii \
+	ggrab ghostscript git glib gnet gnokii \
 	gnu-smalltalk gnugo gnupg gnuplot gnutls \
 	grep groff gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
@@ -260,9 +260,8 @@ COMMON_NATIVE_PACKAGES = \
 	unison \
 
 # libiconv - has been made obsolete by gconv-modules
-# git - has been made obsolete by git-core
 # Metalog - has been made obsolete by syslog-ng
-PACKAGES_OBSOLETED = erl-escript libiconv git metalog \
+PACKAGES_OBSOLETED = erl-escript libiconv metalog \
 	perl-spamassassin perl-mime-base64 jabber tzcode \
 
 ##############
