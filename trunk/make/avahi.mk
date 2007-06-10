@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AVAHI_SITE=http://avahi.org/download
-AVAHI_VERSION=0.6.18
+AVAHI_VERSION=0.6.19
 AVAHI_SOURCE=avahi-$(AVAHI_VERSION).tar.gz
 AVAHI_DIR=avahi-$(AVAHI_VERSION)
 AVAHI_UNZIP=zcat
@@ -36,7 +36,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=2
+AVAHI_IPK_VERSION=1
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -48,7 +48,6 @@ AVAHI_IPK_VERSION=2
 #
 AVAHI_PATCHES=\
 $(AVAHI_SOURCE_DIR)/avahi-core_socket.h.patch \
-$(AVAHI_SOURCE_DIR)/inotify-ifdef.patch \
 
 #
 # If the compilation of the package requires additional
