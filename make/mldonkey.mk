@@ -29,14 +29,14 @@ MLDONKEY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MLDONKEY_DESCRIPTION=A multi-platform, multi-network peer-to-peer client.
 MLDONKEY_SECTION=net
 MLDONKEY_PRIORITY=optional
-MLDONKEY_DEPENDS=ocaml, zlib, bzip2, file
+MLDONKEY_DEPENDS=zlib, bzip2, file
 MLDONKEY_SUGGESTS=
 MLDONKEY_CONFLICTS=
 
 #
 # MLDONKEY_IPK_VERSION should be incremented when the ipk changes.
 #
-MLDONKEY_IPK_VERSION=1
+MLDONKEY_IPK_VERSION=2
 
 #
 # MLDONKEY_CONFFILES should be a list of user-editable files
