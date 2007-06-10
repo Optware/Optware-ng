@@ -252,6 +252,7 @@ COMMON_NATIVE_PACKAGES = \
 	emacs \
 	xemacs \
 	hugs \
+	mldonkey \
 	mzscheme \
         nginx \
         ocaml \
