@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.0
-SLANG_VERSION=2.0.7
+SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.1
+SLANG_VERSION=2.1.0
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
@@ -36,7 +36,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION=2
+SLANG_IPK_VERSION=1
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
@@ -116,6 +116,8 @@ slang-source: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES)
 $(SLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES) make/slang.mk
 	$(MAKE) libpng-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(SLANG_DIR) $(SLANG_BUILD_DIR)
+	rm -f $(STAGING_INCLUDE_DIR)/slang.h $(STAGING_INCLUDE_DIR)/slcurses.h
+	rm -rf $(STAGING_LIB_DIR)/libslang.so* $(STAGING_LIB_DIR)/slang/v2
 	$(SLANG_UNZIP) $(DL_DIR)/$(SLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SLANG_PATCHES)" ; \
 		then cat $(SLANG_PATCHES) | \
