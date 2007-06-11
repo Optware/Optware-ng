@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zile
-ZILE_VERSION=2.2.33
+ZILE_VERSION=2.2.34
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
