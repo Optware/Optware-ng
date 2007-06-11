@@ -1,8 +1,8 @@
 Enhanced CTorrent is built from the patched sources from Dennis Holmes
 (dholmes@ct.boxmail.com), available at http://www.rahul.net/dholmes/ctorrent.
 
-The current version is dnh3, with the dnh3-update patch from April 27, 2007.
-There is an additional patch for a problem with the division of uint64_t
+The current version is dnh3.1, which contains all previuos patches issued
+for version dnh3 and the patch for a problem with the division of uint64_t
 by double, that lead to incorrect report of download and upload rates.
 
 Enhanced CTorrent has only been tested on the NSLU2, although it builds 
