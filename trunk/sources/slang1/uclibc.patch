@@ -1,0 +1,11 @@
+--- src/slmisc.c.orig	2003-03-22 23:06:40.000000000 -0800
++++ src/slmisc.c	2007-06-10 21:09:34.000000000 -0700
+@@ -565,7 +565,7 @@
+    return (int) SLatol (s);
+ }
+ 
+-#if !defined(HAVE_ISSETUGID) && defined(__GLIBC__) && (__GLIBC__ >= 2)
++#if 0
+ extern int __libc_enable_secure;
+ # define HAVE___LIBC_ENABLE_SECURE 1
+ #endif
