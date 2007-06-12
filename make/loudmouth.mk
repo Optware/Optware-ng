@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LOUDMOUTH_SITE=http://ftp.imendio.com/pub/imendio/loudmouth/src
-LOUDMOUTH_VERSION=1.2.1
+LOUDMOUTH_VERSION=1.2.3
 LOUDMOUTH_SOURCE=loudmouth-$(LOUDMOUTH_VERSION).tar.gz
 LOUDMOUTH_DIR=loudmouth-$(LOUDMOUTH_VERSION)
 LOUDMOUTH_UNZIP=zcat
