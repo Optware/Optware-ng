@@ -161,9 +161,10 @@ COMMON_CROSS_PACKAGES = \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop expat extract-xiso \
-	faad2 fann fcgi fetchmail file findutils fish flex flip ftpd-topfield \
-	ffmpeg ficy fixesext flac \
-	fontconfig freeradius freetds freetype freeze ftpcopy fuppes \
+	faad2 fann fcgi fetchmail ffmpeg \
+	ficy file finch findutils fish fixesext flac flex flip \
+	fontconfig freeradius freetds freetype freeze \
+	ftpcopy ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
 	ggrab ghostscript git glib gnet gnokii \
 	gnu-smalltalk gnugo gnupg gnuplot gnutls \

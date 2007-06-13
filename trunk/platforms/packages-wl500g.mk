@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	 dansguardian dcraw dnsmasq dump \
 	 ecl elinks emacs22 \
 	$(ERLANG_PACKAGES) \
-	 ficy freetds gambit-c gawk \
+	 ficy finch freetds gambit-c gawk \
 	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb htop ice \
 	 glib gnet gsnmp \
 	 id3lib iperf irssi jikes \
