@@ -26,10 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-RUBY_VERSION=1.8.6
-RUBY_SOURCE=ruby-$(RUBY_VERSION).tar.gz
-RUBY_DIR=ruby-$(RUBY_VERSION)
+RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.8
+RUBY_UPSTREAM_VERSION=1.8.6-p36
+RUBY_VERSION=1.8.6.36
+RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
+RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
 RUBY_UNZIP=zcat
 RUBY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RUBY_DESCRIPTION=An interpreted scripting language for quick and easy object-oriented programming.
