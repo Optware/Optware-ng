@@ -1,6 +1,6 @@
---- erlang/erts/configure.in.orig	2007-03-27 06:28:23.000000000 -0700
-+++ erlang/erts/configure.in	2007-05-24 13:53:28.000000000 -0700
-@@ -323,7 +323,8 @@
+--- erlang/erts/configure.in.orig	2007-06-11 05:53:45.000000000 -0700
++++ erlang/erts/configure.in	2007-06-14 14:31:49.000000000 -0700
+@@ -331,7 +331,8 @@
  FreeBSD) OPSYS=freebsd;;
  esac
  ARCH=noarch
@@ -10,7 +10,7 @@
  sun4u)	ARCH=ultrasparc;;
  sparc64)	ARCH=sparc64;;
  sun4v)	ARCH=ultrasparc;;
-@@ -334,10 +335,13 @@
+@@ -342,10 +343,13 @@
  i686)	ARCH=x86;;
  x86_64) ARCH=amd64;;
  amd64)	ARCH=amd64;;
@@ -24,7 +24,7 @@
  armv5b)	ARCH=arm;;
  armv5teb)	ARCH=arm;;
  esac
-@@ -2202,7 +2206,7 @@
+@@ -2232,7 +2236,7 @@
    exit(0);
  #endif
  }
@@ -33,7 +33,7 @@
  case $poll_works in
  true)
  	AC_DEFINE(ERTS_USE_POLL, 1, [Define if poll() should be used instead of select()])
-@@ -2369,7 +2373,11 @@
+@@ -2399,7 +2403,11 @@
      DED_CFLAGS="$DED_CFLAGS -fPIC"
  fi
  
@@ -45,7 +45,16 @@
  DED_LD_FLAG_RUNTIME_LIBRARY_PATH="-R"
  STATIC_CFLAGS=""
  
-@@ -2405,7 +2413,7 @@
+@@ -2430,7 +2438,7 @@
+ 	;;
+ 	linux*)
+ 		DED_LD="$CC"
+-		DED_LDFLAGS="-shared"
++		DED_LDFLAGS="-shared $LDFLAGS"
+ 	;;	
+ 	osf*)
+ 		# NOTE! Whitespace after -rpath is important.
+@@ -2439,7 +2447,7 @@
  	;;
  	*)
  		# assume GNU linker and ELF
@@ -54,3 +63,11 @@
  	;;
  esac
  
+@@ -2716,6 +2724,7 @@
+     SSL_APP=ssl
+     CRYPTO_APP=crypto
+     SSH_APP=ssh
++    SSL_DYNAMIC_ONLY="yes" 
+ fi
+ 
+ if test "x$SSL_APP" != "x" ; then

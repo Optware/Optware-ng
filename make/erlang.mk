@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R11B-4
-ERLANG_VERSION=R11B4
+ERLANG_UPSTREAM_VERSION=R11B-5
+ERLANG_VERSION=R11B5
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=3
+ERLANG_IPK_VERSION=1
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|'))-gnu
 
@@ -65,7 +65,6 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/erts-etc-unix-Install.src.patch \
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
-	$(ERLANG_SOURCE_DIR)/lib-crypto-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-orber-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
@@ -75,7 +74,6 @@ ERLANG_HOST_BUILT=
 else
 ERLANG_HOST_BUILT=$(ERLANG_HOST_BUILD_DIR)/.built
 ERLANG_PATCHES+=\
-	$(ERLANG_SOURCE_DIR)/erts-boot-src-Makefile.patch \
 	$(ERLANG_SOURCE_DIR)/cross-hipe_mkliterals.patch
 endif
 
@@ -241,7 +239,7 @@ else
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-                --with-ssl=$(STAGING_DIR)/opt \
+                --with-ssl=$(STAGING_PREFIX) \
 		$(ERLANG_CONFIG_ARGS) \
 		--disable-nls \
 		; \
