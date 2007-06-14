@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IMAP_SITE=ftp://ftp.cac.washington.edu/imap
-IMAP_VERSION=2006h
+IMAP_VERSION=2006i
 IMAP_SOURCE=imap-$(IMAP_VERSION).tar.Z
 IMAP_DIR=imap-$(IMAP_VERSION)
 IMAP_UNZIP=zcat
