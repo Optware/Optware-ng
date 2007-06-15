@@ -51,9 +51,7 @@ PLAYER_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 PLAYER_PATCHES=$(PLAYER_SOURCE_DIR)/server-Makefile.in.patch
-ifeq ($(OPTWARE_TARGET), slugosbe)
 PLAYER_PATCHES+=$(PLAYER_SOURCE_DIR)/uint.patch
-endif
 
 #
 # If the compilation of the package requires additional
