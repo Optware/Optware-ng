@@ -9,6 +9,6 @@ BROKEN_PACKAGES = \
 	amule chillispot ecl erl-escript erl-yaws ficy gdb gift \
 	giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft \
 	gift-opennap htop libopensync motion msynctool nfs-server \
-	nfs-utils obexftp quagga squeak transcode \
+	nfs-utils obexftp player quagga squeak transcode \
 	util-linux varnish vsftpd \
 	wget wget-ssl buildroot uclibc-opt ipkg-opt \
