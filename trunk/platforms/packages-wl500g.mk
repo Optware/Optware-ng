@@ -24,7 +24,7 @@ BROKEN_PACKAGES = \
 	 msynctool mutt \
 	 ncmpc ncursesw netatalk nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
-	 p7zip pcapsipdump postfix psmisc py-mssql \
+	 p7zip pcapsipdump postfix player psmisc py-mssql \
 	 rtorrent rtpproxy \
 	 sablevm scli scponly sdl ser snort snownews sqsh swi-prolog \
 	 tcsh tethereal tnftpd transcode \

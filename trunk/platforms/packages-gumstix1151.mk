@@ -14,5 +14,5 @@ BROKEN_PACKAGES = \
 	ircd-hybrid \
 	libopensync lsof mdadm \
 	msynctool netatalk obexftp \
-	portmap puppy quagga sendmail \
+	portmap player puppy quagga sendmail \
 	unfs3 usbutils util-linux xinetd

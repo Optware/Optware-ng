@@ -1,0 +1,10 @@
+--- client_libs/libplayerc/playerc.h.orig	2007-06-14 21:06:36.000000000 -0700
++++ client_libs/libplayerc/playerc.h	2007-06-14 21:06:01.000000000 -0700
+@@ -50,6 +50,7 @@
+ #include <stdio.h>
+ #include <sys/types.h>
+ #include <netinet/in.h>
++typedef unsigned int uint;
+ 
+ // Get the message structures from Player
+ #include <libplayercore/player.h>

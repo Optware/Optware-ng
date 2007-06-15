@@ -12,5 +12,6 @@ BROKEN_PACKAGES = \
 	nget \
 	oleo \
 	par2cmdline \
+	player \
 	zsh \
 
