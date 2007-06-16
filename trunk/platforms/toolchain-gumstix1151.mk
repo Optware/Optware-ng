@@ -35,11 +35,19 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: $(TARGET_CROSS)gcc
-$(TARGET_CROSS)gcc:
+$(TARGET_CROSS)gcc: $(OPTWARE_TOP)/platforms/toolchain-gumstix1151.mk
 	cd toolchain; \
 	rm -rf gumstix-buildroot; \
 	svn co -r1151 http://svn.gumstix.com/gumstix-buildroot/trunk gumstix-buildroot
-	$(MAKE) -C toolchain/gumstix-buildroot defconfig
-	sed -i -e '/BR2_INSTALL_LIBSTDCPP/s/^.*/BR2_INSTALL_LIBSTDCPP=y/' toolchain/gumstix-buildroot/.config
-	$(MAKE) -C toolchain/gumstix-buildroot
+	$(MAKE) -C toolchain/gumstix-buildroot defconfig DL_DIR=$(DL_DIR)
+	sed -i.orig \
+	    -e '/BR2_INSTALL_LIBSTDCPP/s/^.*/BR2_INSTALL_LIBSTDCPP=y/' \
+	    toolchain/gumstix-buildroot/.config
+	sed -i.orig \
+	    -e '/UCLIBC_HAS_FULL_RPC/d' \
+	    -e '/UCLIBC_HAS_RPC/s/^.*/UCLIBC_HAS_RPC=y/' \
+	    -e '/UCLIBC_HAS_RPC/aUCLIBC_HAS_FULL_RPC=y' \
+	    toolchain/gumstix-buildroot/toolchain/uClibc/uClibc.config \
+	    toolchain/gumstix-buildroot/target/device/Gumstix/basix-connex/uClibc.config
+	$(MAKE) -C toolchain/gumstix-buildroot DL_DIR=$(DL_DIR)
 endif
