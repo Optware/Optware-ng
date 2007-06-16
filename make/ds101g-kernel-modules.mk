@@ -18,12 +18,12 @@ DS101G-KERNEL-MODULES_SUGGESTS=
 DS101G-KERNEL-MODULES_CONFLICTS=
 DS101G-KERNEL-MODULES=videodev pwc nfsd soundcore audio rtl8150 hfc_usb \
 	isdn isdn_bsdcomp dss1_divert hisax slhc isofs sr_mod cdrom \
-	ethertap tun
+	ethertap tun loop
 
 #
 # DS101G-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-DS101G-KERNEL-MODULES_IPK_VERSION=5
+DS101G-KERNEL-MODULES_IPK_VERSION=6
 
 #
 # DS101G-KERNEL-MODULES_CONFFILES should be a list of user-editable files
