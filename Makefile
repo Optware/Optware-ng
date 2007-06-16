@@ -199,7 +199,7 @@ COMMON_CROSS_PACKAGES = \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
 	ncftp ncmpc ncurses ncursesw nemesis \
 	neon net-snmp net-tools netatalk netcat nethack netio \
-	nfs-server nfs-utils nget nmap nload noip nrpe \
+	nfs-server nfs-utils nget nginx nmap nload noip nrpe \
 	ntfsprogs ntop ntp ntpclient nvi nylon nzbget \
 	oleo \
 	openobex obexftp \
@@ -256,7 +256,6 @@ COMMON_NATIVE_PACKAGES = \
 	hugs \
 	mldonkey \
 	mzscheme \
-        nginx \
         ocaml \
         pure-ftpd \
 	rsnapshot \

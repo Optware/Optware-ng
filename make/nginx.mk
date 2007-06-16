@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.5.25
+NGINX_VERSION=0.6.0
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -52,13 +52,32 @@ NGINX_CONFFILES=\
 # NGINX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NGINX_PATCHES=$(NGINX_SOURCE_DIR)/ngx_open_file.patch
+NGINX_PATCHES=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure.patch
+NGINX_CONFIGURE_ENV=\
+NGX_SYSTEM=Linux NGX_RELEASE=2.4 NGX_MACHINE=$(TARGET_ARCH) \
+cross_compiling=yes \
+ngx_cache_NGX_HAVE_STRERROR_R=no \
+ngx_cache_sizeof_int=4 \
+ngx_cache_sizeof_long=4 \
+ngx_cache_sizeof_long_long=8 \
+ngx_cache_sizeof_void__=4 \
+ngx_cache_sizeof_sig_atomic_t=4 \
+ngx_cache_sizeof_size_t=4 \
+ngx_cache_sizeof_off_t=8 \
+ngx_cache_sizeof_time_t=4
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 NGINX_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), slugosbe)
+NGINX_CPPFLAGS+=-DIOV_MAX=1024
+endif
 NGINX_LDFLAGS=
 
 #
@@ -116,7 +135,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 	$(NGINX_UNZIP) $(DL_DIR)/$(NGINX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGINX_PATCHES)" ; \
 		then cat $(NGINX_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(NGINX_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(NGINX_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NGINX_DIR)" != "$(NGINX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR) ; \
@@ -130,6 +149,10 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 		--disable-static
 	sed -i -e 's|/usr/include/|$(TARGET_LIBDIR)/../include/|' $(NGINX_BUILD_DIR)/auto/os/linux
 	(cd $(NGINX_BUILD_DIR); \
+	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*LITTLE_ENDIAN; \
+		then export ngx_cache_ENDIAN=LITTLE; \
+	    fi; \
+	    $(NGINX_CONFIGURE_ENV) \
 	    ./configure \
 		--prefix=$(NGINX_PREFIX) \
 		--conf-path=conf/nginx.conf \
@@ -145,12 +168,14 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
                 --with-ld-opt="$(STAGING_LDFLAGS) $(NGINX_LDFLAGS)" \
                 --with-http_ssl_module \
 		; \
-            sed -i \
+	)
+	sed -i.orig \
                 -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
                 -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
-                objs/Makefile; \
-	)
-#	$(PATCH_LIBTOOL) $(NGINX_BUILD_DIR)/libtool
+                $(NGINX_BUILD_DIR)/objs/Makefile
+ifeq ($(OPTWARE_TARGET), nslu2)
+	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(NGINX_BUILD_DIR)/objs/ngx_auto_config.h
+endif
 	touch $(NGINX_BUILD_DIR)/.configured
 
 nginx-unpack: $(NGINX_BUILD_DIR)/.configured

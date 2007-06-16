@@ -1,0 +1,70 @@
+--- configure.orig	2007-06-15 21:19:16.000000000 -0700
++++ configure	2007-06-15 21:21:38.000000000 -0700
+@@ -25,9 +25,9 @@
+ if test -z "$NGX_PLATFORM"; then
+     echo "checking for OS"
+ 
+-    NGX_SYSTEM=`uname -s 2>/dev/null`
+-    NGX_RELEASE=`uname -r 2>/dev/null`
+-    NGX_MACHINE=`uname -m 2>/dev/null`
++    test -n "$NGX_SYSTEM" || NGX_SYSTEM=`uname -s 2>/dev/null`
++    test -n "$NGX_RELEASE" || NGX_RELEASE=`uname -r 2>/dev/null`
++    test -n "$NGX_MACHINE" || NGX_MACHINE=`uname -m 2>/dev/null`
+ 
+     echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
+ 
+--- auto/feature.orig	2006-12-23 12:31:14.000000000 -0800
++++ auto/feature	2007-06-15 22:01:55.000000000 -0700
+@@ -46,11 +46,14 @@
+ 
+ if [ -x $NGX_AUTOTEST ]; then
+ 
++ngx_feature_cache_var=`echo "ngx_cache_$ngx_feature_name" | tr ' ' '_'`; ngx_feature_cache_value=`eval echo '$'"$ngx_feature_cache_var"`
++
+     case "$ngx_feature_run" in
+ 
+         yes)
+             # /bin/sh is used to intercept "Killed" or "Abort trap" messages
+-            if /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
++            if (test "$cross_compiling" =  "yes" && test "$ngx_feature_cache_value" != "no") \
++            || (test "$cross_compiling" != "yes" && /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1); then
+                 echo " found"
+                 ngx_found=yes
+ 
+@@ -65,7 +68,8 @@
+ 
+         bug)
+             # /bin/sh is used to intercept "Killed" or "Abort trap" messages
+-            if /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1; then
++            if (test "$cross_compiling" =  "yes" && test "$ngx_feature_cache_value" != "yes") \
++            || (test "$cross_compiling" != "yes" && test /bin/sh -c $NGX_AUTOTEST >/dev/null 2>&1); then
+                 echo " not found"
+ 
+             else
+--- auto/types/sizeof.orig	2006-08-30 03:39:17.000000000 -0700
++++ auto/types/sizeof	2007-06-15 16:36:05.000000000 -0700
+@@ -38,7 +38,12 @@
+ 
+ 
+ if [ -x $NGX_AUTOTEST ]; then
+-    ngx_size=`$NGX_AUTOTEST`
++    varname=`echo "ngx_cache_sizeof_$ngx_type" | tr ' *' '__'`
++    if test -n `eval echo '$'"$varname"`; then
++        ngx_size=`eval echo '$'"$varname"`
++    else
++        ngx_size=`$NGX_AUTOTEST`
++    fi
+     echo " $ngx_size bytes"
+ fi
+ 
+--- auto/endianess.orig	2007-06-15 17:16:01.000000000 -0700
++++ auto/endianess	2007-06-15 17:18:33.000000000 -0700
+@@ -26,7 +26,7 @@
+ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
+ 
+ if [ -x $NGX_AUTOTEST ]; then
+-    if $NGX_AUTOTEST >/dev/null 2>&1; then
++    if test "$ngx_cache_ENDIAN" = "LITTLE" || $NGX_AUTOTEST >/dev/null 2>&1; then
+         echo " little endianess"
+         have=NGX_HAVE_LITTLE_ENDIAN . auto/have
+     else
