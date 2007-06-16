@@ -3,6 +3,7 @@ TARGET_ARCH=arm
 TARGET_OS=linux-uclibc
 
 GETTEXT_NLS=enable
+NO_BUILTIN_MATH=true
 IPV6=no
 
 HOSTCC = gcc
@@ -35,7 +36,7 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe 
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: $(TARGET_CROSS)gcc
-$(TARGET_CROSS)gcc: $(OPTWARE_TOP)/platforms/toolchain-gumstix1151.mk
+$(TARGET_CROSS)gcc: # $(OPTWARE_TOP)/platforms/toolchain-gumstix1151.mk
 	cd toolchain; \
 	rm -rf gumstix-buildroot; \
 	svn co -r1151 http://svn.gumstix.com/gumstix-buildroot/trunk gumstix-buildroot
