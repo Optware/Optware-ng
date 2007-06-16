@@ -245,7 +245,6 @@ COMMON_CROSS_PACKAGES = \
 # cdrtools makes no provision in the build for cross-compilation.  It
 #   *always* uses shell calls to uname to determine the target arch.
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
-# nginx does not use gnu configure, cross build may work by alot more tweaking, build native first
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # pure-ftpd too many AC_RUN_IF_ELSE
 # rsnapshot depends on perl
