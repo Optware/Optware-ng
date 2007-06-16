@@ -58,6 +58,9 @@ PLAYER_PATCHES+=$(PLAYER_SOURCE_DIR)/uint.patch
 # compilation or linking flags, then list them here.
 #
 PLAYER_CPPFLAGS=
+ifdeq NO_BUILTIN_MATH
+PLAYER_CPPFLAGS+=-fno-builtin-round
+endif
 PLAYER_LDFLAGS=
 
 #
