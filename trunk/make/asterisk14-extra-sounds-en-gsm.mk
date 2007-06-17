@@ -175,6 +175,8 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DI
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/CONTROL/control
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
+	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-thereare.gsm
+	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/invalid.gsm
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/ha/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
