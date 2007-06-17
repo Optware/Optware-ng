@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 VSFTPD_SITE=ftp://vsftpd.beasts.org/users/cevans
-VSFTPD_VERSION=2.0.1
+VSFTPD_VERSION=2.0.5
 VSFTPD_SOURCE=vsftpd-$(VSFTPD_VERSION).tar.gz
 VSFTPD_DIR=vsftpd-$(VSFTPD_VERSION)
 VSFTPD_UNZIP=zcat
@@ -28,7 +28,11 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=7
+VSFTPD_IPK_VERSION=1
+
+
+# VSFTPD_CONFFILES should be a list of user-editable files
+VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
 
 #
 # VSFTPD_PATCHES should list any patches, in the the order in
@@ -57,13 +61,15 @@ VSFTPD_SOURCE_DIR=$(SOURCE_DIR)/vsftpd
 VSFTPD_IPK_DIR=$(BUILD_DIR)/vsftpd-$(VSFTPD_VERSION)-ipk
 VSFTPD_IPK=$(BUILD_DIR)/vsftpd_$(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: vsftpd-source vsftpd-unpack vsftpd vsftpd-stage vsftpd-ipk vsftpd-clean vsftpd-dirclean vsftpd-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VSFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(VSFTPD_SOURCE)
-
+	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(VSFTPD_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(VSFTPD_SOURCE)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -155,6 +161,7 @@ $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/vsftpd
 	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(VSFTPD_VERSION)/" \
 		-e "s/@RELEASE@/$(VSFTPD_IPK_VERSION)/" $(VSFTPD_SOURCE_DIR)/control > $(VSFTPD_IPK_DIR)/CONTROL/control
 	install -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
+	echo $(VSFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(VSFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VSFTPD_IPK_DIR)
 
 #
@@ -174,3 +181,10 @@ vsftpd-clean:
 #
 vsftpd-dirclean:
 	rm -rf $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR) $(VSFTPD_IPK_DIR) $(VSFTPD_IPK)
+
+#
+## Some sanity check for the package.
+#
+vsftpd-check: $(VSFTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(VSFTPD_IPK)
+
