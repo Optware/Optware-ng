@@ -229,8 +229,8 @@ COMMON_CROSS_PACKAGES = \
 	tar tcpdump tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
 	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
-	uemacs ufsd unarj unfs3 units unixodbc unrar \
-	unzip upslug2 up-imapproxy usbutils ushare util-linux \
+	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
+	unzip up-imapproxy upslug2 upx usbutils ushare util-linux \
 	varnish vblade vdr-mediamvp vim vlc \
 	vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer weechat wget wget-ssl \
