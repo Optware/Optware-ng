@@ -22,7 +22,7 @@ IPKG_WEB_CONFLICTS=
 #
 # IPKG_WEB_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG_WEB_IPK_VERSION=5
+IPKG_WEB_IPK_VERSION=6
 #
 # There is no external version!
 #
