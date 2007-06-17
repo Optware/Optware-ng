@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
-ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.5
+ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.6
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SOURCE=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_DIR=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_UNZIP=zcat
@@ -175,48 +175,8 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/CONTROL/control
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-hasleft.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-leaderhasleft.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-placeintoconf.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-thereare.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-userswilljoin.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-userwilljoin.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-waitforleader.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/hours.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/invalid.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/minutes.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/seconds.ulaw
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/ha/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/letters/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/a.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/b.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/c.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/d.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/e.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/f.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/g.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/h.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/i.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/j.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/k.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/l.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/m.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/n.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/o.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/p.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/q.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/r.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/s.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/t.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/u.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/v.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/w.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/x.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/y.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/zed.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/z.ulaw
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/phonetic/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
