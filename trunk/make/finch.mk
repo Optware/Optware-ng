@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.0.1
+FINCH_VERSION=2.0.2
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -102,7 +102,7 @@ $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) # mak
 	if test "$(BUILD_DIR)/$(FINCH_DIR)" != "$(FINCH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FINCH_DIR) $(FINCH_BUILD_DIR) ; \
 	fi
-	sed -i -e '/^SUBDIRS/s/ plugins//' $(FINCH_BUILD_DIR)/finch/Makefile.in
+	sed -i.orig -e '/^SUBDIRS/s/ plugins//' $(FINCH_BUILD_DIR)/finch/Makefile.in
 	(cd $(FINCH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FINCH_CPPFLAGS)" \
