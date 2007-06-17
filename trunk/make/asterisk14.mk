@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#ASTERISK14_SOURCE_TYPE=tarball
-ASTERISK14_SOURCE_TYPE=svn
+ASTERISK14_SOURCE_TYPE=tarball
+#ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
-ASTERISK14_BASE_VERSION=1.4.4
+ASTERISK14_BASE_VERSION=1.4.5
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
