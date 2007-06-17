@@ -175,6 +175,8 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/CONTROL/control
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds
+	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-thereare.ulaw
+	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/invalid.ulaw
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/ha/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
