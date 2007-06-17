@@ -112,21 +112,21 @@ if [ "${TASK}" = update ]
 then
 	echo "<h2>Update ${PACKAGE}</h2>"
 	echo '<pre>'
-	ipkg upgrade "${PACKAGE}" </dev/null
+	ipkg -force-defaults upgrade "${PACKAGE}" </dev/null
 	echo '</pre>'
 fi
 if [ "${TASK}" = delete ]
 then
 	echo "<h2>Delete ${PACKAGE}</h2>"
 	echo '<pre>'
-	ipkg remove "${PACKAGE}" </dev/null
+	ipkg -force-defaults remove "${PACKAGE}" </dev/null
 	echo '</pre>'
 fi
 if [ "${TASK}" = updatedb ]
 then
 	echo "<h2>Upgrading package list</h2>"
 	echo '<pre>'
-	ipkg update </dev/null
+	ipkg -force-defaults update </dev/null
 	echo '</pre>'
 else
 	cat <<EOF2
