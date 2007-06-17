@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
-ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.5
+ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.6
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_SOURCE=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_DIR=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_UNZIP=zcat
@@ -175,48 +175,8 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DI
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/CONTROL/control
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-hasleft.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-leaderhasleft.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-placeintoconf.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-thereare.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-userswilljoin.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-userwilljoin.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-waitforleader.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/hours.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/invalid.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/minutes.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/seconds.gsm
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/ha/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/letters/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/a.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/b.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/c.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/d.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/e.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/f.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/g.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/h.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/i.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/j.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/k.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/l.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/m.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/n.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/o.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/p.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/q.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/r.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/s.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/t.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/u.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/v.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/w.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/x.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/y.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/zed.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters/z.gsm
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/phonetic/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
