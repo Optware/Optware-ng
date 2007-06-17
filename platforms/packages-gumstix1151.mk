@@ -13,6 +13,6 @@ BROKEN_PACKAGES = \
 	gnuplot htop inetutils \
 	ircd-hybrid \
 	libopensync mdadm \
-	msynctool netatalk obexftp \
+	msynctool obexftp \
 	puppy quagga sendmail \
-	unfs3 usbutils util-linux
+	usbutils util-linux
