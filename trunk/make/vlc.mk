@@ -20,7 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.8.6b
+VLC_VERSION=0.8.6c
+VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -54,11 +55,6 @@ endif
 VLC_CONFLICTS=
 
 #
-# VLC_IPK_VERSION should be incremented when the ipk changes.
-#
-VLC_IPK_VERSION=8
-
-#
 # VLC_CONFFILES should be a list of user-editable files
 #VLC_CONFFILES=/opt/etc/vlc.conf /opt/etc/init.d/SXXvlc
 
@@ -66,7 +62,7 @@ VLC_IPK_VERSION=8
 # VLC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VLC_PATCHES=$(VLC_SOURCE_DIR)/flac-1.1.3.patch
+#VLC_PATCHES=
 
 #
 # If the compilation of the package requires additional
