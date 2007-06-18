@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.3
+POUND_VERSION=2.3.2
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -115,7 +115,7 @@ $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/
 		then mv $(BUILD_DIR)/$(POUND_DIR) $(POUND_BUILD_DIR) ; \
 	fi
 	(cd $(POUND_BUILD_DIR); \
-	sed -i -e '/@INSTALL@/s/-s //' -e '/@INSTALL@/s/-o.*-g [^ ]*//' -e 's/-m 555 //' Makefile.in; \
+	sed -i.orig -e '/@INSTALL@/s/-s //' -e '/@INSTALL@/s/-o.*-g [^ ]*//' -e 's/-m 555 //' Makefile.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POUND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POUND_LDFLAGS)" \
