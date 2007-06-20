@@ -233,7 +233,7 @@ COMMON_CROSS_PACKAGES = \
 	unzip up-imapproxy upslug2 upx usbutils ushare util-linux \
 	varnish vblade vdr-mediamvp vim vlc \
 	vnstat vorbis-tools vsftpd vte \
-	w3cam w3m wakelan webalizer weechat wget wget-ssl \
+	w3cam w3m wakelan webalizer weechat wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xft xinetd \
