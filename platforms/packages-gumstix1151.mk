@@ -1,7 +1,6 @@
 SPECIFIC_PACKAGES = \
 	ipkg-opt \
 	libiconv \
-	$(PERL_PACKAGES) \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 BROKEN_PACKAGES = \
@@ -10,7 +9,7 @@ BROKEN_PACKAGES = \
 	amule asterisk asterisk14-chan-capi \
 	bluez-hcidump chillispot \
 	dump ficy gdb \
-	gnuplot htop inetutils \
+	gnuplot htop \
 	ircd-hybrid \
 	libopensync mdadm \
 	msynctool obexftp \
