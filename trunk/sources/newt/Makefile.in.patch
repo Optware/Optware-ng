@@ -1,0 +1,42 @@
+--- Makefile.in.orig	2007-03-02 04:00:51.000000000 -0800
++++ Makefile.in	2007-06-19 15:10:36.000000000 -0700
+@@ -1,10 +1,10 @@
+-LIBS = -lslang
++LIBS = -lslang @LDFLAGS@
+ LIBTCL = -ltcl8.4
+ 
+ CC = @CC@
+ CPP = @CPP@
+ CFLAGS = @CFLAGS@
+-CPPFLAGS = -D_GNU_SOURCE -I/usr/include/slang @CPPFLAGS@ 
++CPPFLAGS = -D_GNU_SOURCE @CPPFLAGS@ 
+ 
+ SHLIBFLAGS= -Wl,--version-script,newt.0.52.ver
+ VERSION = @VERSION@
+@@ -12,7 +12,7 @@
+ CVSROOT = $(shell cat CVS/Root)
+ SONAME = @SONAME@
+ 
+-PYTHONVERS = @PYTHONVERS@
++PYTHONVERS = python2.4 python2.5
+ WHIPTCLSO = @WHIPTCLSO@
+ 
+ PROGS = test whiptail $(WHIPTCLSO) testgrid testtree showchars showkey
+@@ -26,7 +26,7 @@
+           scrollbar.o textbox.o scale.o grid.o windows.o buttonbar.o \
+ 	  checkboxtree.o
+ 
+-SHCFLAGS = -fPIC
++SHCFLAGS = -fPIC @LDFLAGS@
+ 
+ prefix = @prefix@
+ includedir = @includedir@
+@@ -70,7 +70,7 @@
+ _snackmodule.so:   snackmodule.c $(LIBNEWTSH)
+ 	for ver in $(PYTHONVERS) ; do \
+ 	    	mkdir -p $$ver ;\
+-	        $(CC) $(CFLAGS) -I/usr/include/$$ver $(SHCFLAGS) -c -o $$ver/snackmodule.o snackmodule.c ;\
++	        $(CC) $(CFLAGS) $(CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/$$ver $(SHCFLAGS) -c -o $$ver/snackmodule.o snackmodule.c ;\
+ 		$(CC) --shared $(SHCFLAGS) -o $$ver/_snackmodule.so $$ver/snackmodule.o -L .  -lnewt -lslang ;\
+ 	done
+ 	touch $@
