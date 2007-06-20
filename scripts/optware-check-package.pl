@@ -61,6 +61,7 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
         "mss" => "MIPS",
         "ddwrt" => "MIPS",
         "oleg" => "MIPS",
+        "brcm24" => "MIPS",
         "ts101" => "PowerPC or cisco 4500",
         "ts72xx" => "LSB .* ARM"
 );

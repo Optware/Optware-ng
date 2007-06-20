@@ -15,7 +15,7 @@ IPKG-OPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPKG-OPT_DESCRIPTION=The Itsy Package Manager
 IPKG-OPT_SECTION=base
 IPKG-OPT_PRIORITY=optional
-ifeq ($(LIBC_STYLE), uclibc)
+ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt, $(OPTWARE_TARGET)))
 IPKG-OPT_DEPENDS=uclibc-opt
 else
 IPKG-OPT_DEPENDS=
