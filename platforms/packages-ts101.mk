@@ -11,4 +11,4 @@ BROKEN_PACKAGES = \
 	gift-opennap htop libopensync motion msynctool nfs-server \
 	nfs-utils obexftp player quagga squeak transcode \
 	util-linux varnish vsftpd \
-	wget wget-ssl buildroot uclibc-opt ipkg-opt \
+	wget buildroot uclibc-opt ipkg-opt \

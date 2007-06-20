@@ -30,7 +30,7 @@ BROKEN_PACKAGES = \
 	 tcsh tethereal tnftpd transcode \
 	 unrar \
 	 varnish vlc \
-	 w3m weechat wget wget-ssl wxbase x11 \
+	 w3m weechat wget wxbase x11 \
 	 xdpyinfo xext \
 	 xpm xtst zsh \
 

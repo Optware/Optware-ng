@@ -32,7 +32,7 @@ WGET-SSL_CONFLICTS=wget
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=3
+WGET_IPK_VERSION=4
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -251,15 +251,16 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-wget-ipk: $(WGET_IPK)
-wget-ssl-ipk: $(WGET-SSL_IPK)
+wget-ipk: $(WGET_IPK) $(WGET-SSL_IPK)
+
+wget-only-ipk: $(WGET_IPK)
+wget-ssl-only-ipk: $(WGET-SSL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
 #
 wget-clean:
 	-$(MAKE) -C $(WGET_BUILD_DIR) clean
-wget-ssl-clean:
 	-$(MAKE) -C $(WGET-SSL_BUILD_DIR) clean
 
 #
@@ -268,5 +269,10 @@ wget-ssl-clean:
 #
 wget-dirclean:
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(WGET_BUILD_DIR) $(WGET_IPK_DIR) $(WGET_IPK)
-wget-ssl-dirclean:
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(WGET-SSL_BUILD_DIR) $(WGET-SSL_IPK_DIR) $(WGET-SSL_IPK)
+
+#
+# Some sanity check for the package.
+#
+wget-check: $(WGET_IPK) $(WGET-SSL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WGET_IPK) $(WGET-SSL_IPK)
