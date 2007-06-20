@@ -116,7 +116,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES)
 ifeq ($(LIBC_STYLE),uclibc)
 		sed -i -e '/stropts.h/d' $(SCREEN_BUILD_DIR)/pty.c
 endif
-ifeq ($(OPTWARE_TARGET), ts101)
+ifeq ($(OPTWARE_TARGET), $(filter brcm24 ts101, $(OPTWARE_TARGET)))
 	sed -i -e 's/sched.h/screen_sched.h/g' \
 		$(SCREEN_BUILD_DIR)/Makefile \
 		$(SCREEN_BUILD_DIR)/screen.h
