@@ -1,0 +1,67 @@
+--- gnuplot-4.2.0/src/eval.c	2006-08-22 05:08:12.000000000 +0200
++++ gnuplot/src/eval.c	2007-06-20 15:02:07.000000000 +0200
+@@ -152,26 +152,15 @@
+     {"besj1",  f_besj1},
+     {"besy0",  f_besy0},
+     {"besy1",  f_besy1},
+-    {"erf",  f_erf},
+-    {"erfc",  f_erfc},
+-    {"gamma",  f_gamma},
+-    {"lgamma",  f_lgamma},
+-    {"ibeta",  f_ibeta},
+-    {"igamma",  f_igamma},
+-    {"rand",  f_rand},
+     {"floor",  f_floor},
+     {"ceil",  f_ceil},
+ #ifdef BACKWARDS_COMPATIBLE
+     {"defined",  f_exists},       /* deprecated syntax defined(foo) */
+ #endif
+ 
+-    {"norm",  f_normal},	/* XXX-JG */
+-    {"inverf",  f_inverse_erf},	/* XXX-JG */
+-    {"invnorm",  f_inverse_normal},	/* XXX-JG */
+     {"asinh",  f_asinh},
+     {"acosh",  f_acosh},
+     {"atanh",  f_atanh},
+-    {"lambertw",  f_lambertw}, /* HBB, from G.Kuhnle 20001107 */
+ 
+     {"column",  f_column},	/* for using */
+     {"valid",  f_valid},	/* for using */
+--- gnuplot-4.2.0/src/Makefile.in	2007-03-04 19:08:40.000000000 +0100
++++ gnuplot/src/Makefile.in	2007-06-20 15:03:59.000000000 +0200
+@@ -78,7 +78,7 @@
+ 	mouse.h mousecmn.h national.h parse.c parse.h plot.c plot.h \
+ 	plot2d.c plot2d.h plot3d.c plot3d.h pm3d.c pm3d.h readline.c \
+ 	readline.h save.c save.h scanner.c scanner.h set.c setshow.h \
+-	show.c specfun.c specfun.h standard.c standard.h stdfn.c \
++	show.c  standard.c standard.h stdfn.c \
+ 	stdfn.h syscfg.h tables.c tables.h template.h term_api.h \
+ 	term.c term.h time.c unset.c util.c util.h util3d.c util3d.h \
+ 	variable.c variable.h version.c version.h binary.c \
+@@ -97,7 +97,7 @@
+ 	parse$U.$(OBJEXT) plot$U.$(OBJEXT) plot2d$U.$(OBJEXT) \
+ 	plot3d$U.$(OBJEXT) pm3d$U.$(OBJEXT) readline$U.$(OBJEXT) \
+ 	save$U.$(OBJEXT) scanner$U.$(OBJEXT) set$U.$(OBJEXT) \
+-	show$U.$(OBJEXT) specfun$U.$(OBJEXT) standard$U.$(OBJEXT) \
++	show$U.$(OBJEXT)  standard$U.$(OBJEXT) \
+ 	stdfn$U.$(OBJEXT) tables$U.$(OBJEXT) term$U.$(OBJEXT) \
+ 	time$U.$(OBJEXT) unset$U.$(OBJEXT) util$U.$(OBJEXT) \
+ 	util3d$U.$(OBJEXT) variable$U.$(OBJEXT) version$U.$(OBJEXT) \
+@@ -286,7 +286,7 @@
+ 	mouse.h mousecmn.h national.h parse.c parse.h plot.c plot.h \
+ 	plot2d.c plot2d.h plot3d.c plot3d.h pm3d.c pm3d.h readline.c \
+ 	readline.h save.c save.h scanner.c scanner.h set.c setshow.h \
+-	show.c specfun.c specfun.h standard.c standard.h stdfn.c \
++	show.c  standard.c standard.h stdfn.c \
+ 	stdfn.h syscfg.h tables.c tables.h template.h term_api.h \
+ 	term.c term.h time.c unset.c util.c util.h util3d.c util3d.h \
+ 	variable.c variable.h version.c version.h $(am__append_1) \
+@@ -314,7 +314,7 @@
+ hidden3d.$(O) history.$(O) internal.$(O) interpol.$(O) matrix.$(O) \
+ misc.$(O) mouse.$(O) parse.$(O) plot.$(O) plot2d.$(O) plot3d.$(O) \
+ pm3d.$(O) readline.$(O) save.$(O) scanner.$(O) set.$(O) show.$(O) \
+-specfun.$(O) standard.$(O) stdfn.$(O) tables.$(O) term.$(O) time.$(O) \
++ standard.$(O) stdfn.$(O) tables.$(O) term.$(O) time.$(O) \
+ unset.$(O) util.$(O) util3d.$(O) variable.$(O)
+ 
+ 

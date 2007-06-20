@@ -1,6 +1,6 @@
---- gnuplot-4.0.0/docs/Makefile.in	2004-03-11 23:20:55.000000000 +0100
-+++ gnuplot/docs/Makefile.in	2006-08-14 10:04:16.000000000 +0200
-@@ -66,8 +66,8 @@
+--- gnuplot-4.2.0/docs/Makefile.in	2006-08-09 23:09:48.000000000 +0200
++++ gnuplot/docs/Makefile.in	2007-06-20 15:59:32.000000000 +0200
+@@ -70,8 +70,8 @@
  
  INFO_DEPS = $(srcdir)/gnuplot.info
  
@@ -11,3 +11,28 @@
  DEFS   = @DEFS@
  DEFAULT_INCLUDES = -I. -I$(srcdir) -I.. -I$(top_builddir)
  CPPFLAGS = @CPPFLAGS@
+@@ -327,16 +327,20 @@
+ 	@rm -f alldoc2gih
+ 	./doc2gih $(srcdir)/gnuplot.doc gnuplot.gih
+ 
+-doc2gih: doc2gih.o termdoc.o
+-	$(LINK) doc2gih.o termdoc.o $(LIBS)
++doc2gih: doc2gih.c termdoc.c
++	$(HOSTCC)   -I../src -I../term \
++	-DHAVE_STRERROR -DHAVE_STDLIB_H -DHAVE_STDBOOL_H  \
++	-DHAVE_STRING_H -DHAVE_MEMCPY doc2gih.c termdoc.c -o $@
+ 
+ # To include all terminals in the .gih file
+ allgih: alldoc2gih $(srcdir)/gnuplot.doc
+ 	@rm -f doc2gih
+ 	./alldoc2gih $(srcdir)/gnuplot.doc gnuplot.gih
+ 
+-alldoc2gih: alldoc2gih.o termdoc.o
+-	$(LINK) alldoc2gih.o termdoc.o $(LIBS)
++alldoc2gih: alldoc2gih.c termdoc.c
++	$(HOSTCC)   -I../src -I../term \
++	-DHAVE_STRERROR -DHAVE_STDLIB_H -DHAVE_STDBOOL_H  \
++	-DHAVE_STRING_H -DHAVE_MEMCPY  alldoc2gih.c termdoc.c -o $@
+ 
+ alldoc2gih.o: doc2gih.c $(BUILT_SOURCES)
+ 	$(COMPILE) -DALL_TERM_DOC -c $(srcdir)/doc2gih.c
