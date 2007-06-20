@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# This script will
+#	rm -rf builds/$p/* builds/$p_*.ipk
+# if both builds/$p/.staged and builds/$p_*.ipk exist
+
+if test "x$1" = "x-d"
+then shift; dry_run=1
+fi
+
+PKGS_VAR=$1
+if test -z "$PKGS_VAR"; then
+        echo Usage1:    $0 [-d] pkgname1 pkgname2 ...
+        echo Usage2:    $0 [-d] PACKAGES
+        echo	-d	dry run
+	exit
+fi
+
+if test `echo $PKGS_VAR | tr [a-z] [A-Z]` = "$PKGS_VAR"
+then packages=`make query-${PKGS_VAR}`
+else packages=$*
+fi
+
+for p in ${packages}
+do
+	echo -n $p
+        P=`echo $p | tr [a-z] [A-Z]`
+	ipk=`make query-${P}_IPK`
+	ipk_dir=`make query-${P}_IPK_DIR`
+	build_dir=`make query-${P}_BUILD_DIR`
+        if test -d "$build_dir" && test -f "$build_dir/.staged" && test -f "$ipk"; then
+        	if ! ls $build_dir/* > /dev/null 2>&1; then
+                	echo " already clean"
+        	elif test -n "$dry_run"; then
+                	echo " dry run"
+                else
+                	echo " clean"; echo $build_dir/* $ipk_dir | xargs rm -rf
+        	fi
+        else echo
+        fi
+done
