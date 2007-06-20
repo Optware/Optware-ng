@@ -29,7 +29,7 @@ do
 	ipk=`make query-${P}_IPK`
 	ipk_dir=`make query-${P}_IPK_DIR`
 	build_dir=`make query-${P}_BUILD_DIR`
-        staging_count=`grep -l ${p}-stage make/*.mk | wc -l`
+        staging_count=`grep -l ' ${p}-stage' make/*.mk | wc -l`
         todo=""
         if test -d "$build_dir" -a -f "$ipk"; then
             if test $staging_count -le 1 -o -f "$build_dir/.staged"; then
