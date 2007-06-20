@@ -26,7 +26,7 @@ for p in ${packages}
 do
 	echo -n $p
         P=`echo $p | tr [a-z] [A-Z]`
-        IPK=`sed -n '/_IPK=/s/=.*//p' make/${p}.mk | head -1`
+        IPK=`sed -n '/_IPK[: ]*=/s/[: ]*=.*//p' make/${p}.mk | head -1`
 	ipk=`make query-${IPK}`
 	ipk_dir=`make query-${P}_IPK_DIR`
 	build_dir=`make query-${P}_BUILD_DIR`
