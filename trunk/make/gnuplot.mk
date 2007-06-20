@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPLOT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gnuplot
-GNUPLOT_VERSION=4.2.rc2
+GNUPLOT_VERSION=4.2.0
 GNUPLOT_SOURCE=gnuplot-$(GNUPLOT_VERSION).tar.gz
 GNUPLOT_DIR=gnuplot-$(GNUPLOT_VERSION)
 GNUPLOT_UNZIP=zcat
@@ -47,7 +47,11 @@ GNUPLOT_IPK_VERSION=5
 # which they should be applied to the source code.
 #
 GNUPLOT_PATCHES=$(GNUPLOT_SOURCE_DIR)/Makefile.in.patch \
-		$(GNUPLOT_SOURCE_DIR)/docs-Makefile.in.patch
+		$(GNUPLOT_SOURCE_DIR)/docs-Makefile.in.patch \
+
+ifeq ($(OPTWARE_TARGET), brcm24)
+GNUPLOT_PATCHES += $(GNUPLOT_SOURCE_DIR)/no-specfun.patch
+endif
 
 #
 # If the compilation of the package requires additional
