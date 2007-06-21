@@ -13,7 +13,7 @@ LIBC_STYLE=uclibc
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 
-GETTEXT_NLS=
+GETTEXT_NLS=disable
 NO_BUILTIN_MATH=true
 
 
@@ -45,7 +45,8 @@ CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
 TARGET_CROSS = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/bin/$(TARGET_ARCH)-$(TARGET_OS)-
 TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/lib
 TARGET_LDFLAGS = -luclibcnotimpl
-TARGET_CUSTOM_FLAGS= -Os -pipe -mips32 -mtune=mips32 -funit-at-a-time
+#TARGET_CUSTOM_FLAGS= -Os -pipe -mips32 -mtune=mips32 -funit-at-a-time
+TARGET_CUSTOM_FLAGS= -Os -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: openwrt-brcm24-toolchain
 endif
@@ -54,7 +55,7 @@ TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/
 
 
 #
-# While it is rather simple to create toolchain with OpenWER buildroot system,
+# While it is rather simple to create toolchain with OpenWRT buildroot system,
 # it is not provided for i686 but rather for x86_64 architecture
 # That's why SDK is provided by alternate source
 #
