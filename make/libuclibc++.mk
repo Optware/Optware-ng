@@ -170,9 +170,13 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 LIBUCLIBC++_INSTALL_DIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
-
-$(LIBUCLIBC++_BUILD_DIR)/.staged: $(BUILDROOT_BUILD_DIR)/.staged \
-				$(LIBUCLIBC++_BUILD_DIR)/.built
+ifeq ($(OPTWARE_TARGET), brcm24)
+$(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built \
+  $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged
+else
+$(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built \
+	$(BUILDROOT_BUILD_DIR)/.staged
+endif
 	rm -f $(LIBUCLIBC++_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) \
 		DESTDIR=$(LIBUCLIBC++_INSTALL_DIR)/uClibc++ install

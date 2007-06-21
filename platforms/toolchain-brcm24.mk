@@ -46,8 +46,14 @@ TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 toolchain: brcm24-toolchain
 endif
 
-# TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/nowrap/$(TARGET_ARCH)-$(TARGET_OS)-g++
+TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/nowrap/$(TARGET_ARCH)-$(TARGET_OS)-g++
 
+
+#
+# While it is rather simple to create toolchain with OpenWER buildroot system,
+# it is not provided for i686 but rather for x86_64 architecture
+# That's why SDK is provided by alternate source
+#
 BRCM24_SDK=OpenWrt-SDK-brcm-2.4-for-Linux-i686
 BRCM24_SOURCE=$(BRCM24_SDK).tar.bz2
 BRCM24_SITE=http://www.wlan-sat.com/boleo/optware
@@ -60,14 +66,14 @@ $(DL_DIR)/$(BRCM24_SOURCE):
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(BRCM24_SOURCE)
 
 
-$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.unpacked : $(DL_DIR)/$(BRCM24_SOURCE)
+$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged: $(DL_DIR)/$(BRCM24_SOURCE)
 	rm -rf $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
 	rm -rf $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(BRCM24_SDK)
 	install -d  $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)
 	tar -xvj -C $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS) -f $(DL_DIR)/$(BRCM24_SOURCE)
 	ln -s $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(BRCM24_SDK)/staging_dir_$(TARGET_ARCH) \
 		$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
-	touch $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.unpacked
+	touch $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged
 
-brcm24-toolchain:  $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.unpacked uclibcnotimpl-toolchain
+brcm24-toolchain: directories $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged uclibcnotimpl-toolchain libuclibc++-toolchain
 brcm24-source:  $(DL_DIR)/$(BRCM24_SOURCE)

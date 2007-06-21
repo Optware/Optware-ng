@@ -1,11 +1,12 @@
 SPECIFIC_PACKAGES = \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
-	uclibcnotimpl \
+	uclibcnotimpl libuclibc++ \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	amule apache openldap aspell asterisk bash \
 	bluez-utils ctrlproxy cups fuppes mediatomb netatalk newt openobex \
-	obexftp ffmpeg transcode uclibc-opt buildroot libuclibc++ \
+	obexftp ffmpeg transcode uclibc-opt buildroot  \
 	appweb asterisk14-chan-capi atk avahi bitlbee bogofilter bsdmainutils \
 	eaccelerator ecl erlang erl-yaws esound ffmpeg ficy finch \
 	fixesext gambit-c git glib gnet gnokii gnugo gsnmp gphoto2 libgphoto2 giftcurs\
