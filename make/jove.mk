@@ -20,13 +20,13 @@ JOVE_CONFLICTS=
 #
 # JOVE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOVE_IPK_VERSION=1
+JOVE_IPK_VERSION=2
 
 #
 # JOVE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-JOVE_PATCHES=$(JOVE_SOURCE_DIR)/jove.patch
+JOVE_PATCHES=$(JOVE_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
