@@ -254,7 +254,7 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 wget-ipk: $(WGET_IPK) $(WGET-SSL_IPK)
 
 wget-only-ipk: $(WGET_IPK)
-wget-ssl-only-ipk: $(WGET-SSL_IPK)
+wget-ssl-ipk: $(WGET-SSL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
