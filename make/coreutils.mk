@@ -51,9 +51,9 @@ COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/mountlist.patch
 # Assume that all uclibc systems are the same
 ifeq ($(LIBC_STYLE), uclibc)
 ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
-COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config-uclibc.cache
-else
 COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config-brcm24.cache
+else
+COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config-uclibc.cache
 endif
 else
 COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config.cache
@@ -118,7 +118,7 @@ coreutils-source: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES) $(COREUTILS_AC_CACHE)
+$(COREUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(COREUTILS_SOURCE) $(COREUTILS_PATCHES) $(COREUTILS_AC_CACHE) make/coreutils.mk
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif
