@@ -110,6 +110,7 @@ py-duplicity-source: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
 #
 $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
 	$(MAKE) py-setuptools-stage
+	$(MAKE) librsync-stage
 	rm -rf $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(PY-DUPLICITY_BUILD_DIR)
 	mkdir -p $(PY-DUPLICITY_BUILD_DIR)
 	# 2.4
