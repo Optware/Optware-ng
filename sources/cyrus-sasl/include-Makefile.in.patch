@@ -1,0 +1,13 @@
+--- cyrus-sasl/include/Makefile.in.orig	2007-06-21 15:18:29.000000000 +0200
++++ cyrus-sasl/include/Makefile.in	2007-06-21 15:21:52.000000000 +0200
+@@ -268,8 +268,8 @@
+ LTCOMPILE = $(LIBTOOL) --mode=compile $(HOSTCC) $(DEFS) $(DEFAULT_INCLUDES) \
+ 	$(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+ CCLD = $(HOSTCC)
+-LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+-	$(AM_LDFLAGS) $(LDFLAGS) -o $@
++LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) \
++	$(AM_LDFLAGS) -o $@
+ DIST_SOURCES = $(makemd5_SOURCES)
+ DATA = $(frameheader_DATA)
+ 
