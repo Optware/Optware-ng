@@ -52,6 +52,7 @@ GetOptions("tmp-dir=s" => \$tmp_dir,
 #       OPTWARE_TARGET => `file binary`
         "nslu2" => "MSB .* ARM",
         "slugosbe" => "MSB .* ARM",
+        "openwrt-ixp4xx" => "MSB .* ARM",
         "fsg3" => "MSB .* ARM",
         "wl500g" => "MIPS",
         "ds101" => "MSB .* ARM",
