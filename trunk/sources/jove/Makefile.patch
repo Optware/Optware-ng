@@ -1,6 +1,5 @@
-diff -ur jove4.16.0.64.dist/Makefile jove4.16.0.64/Makefile
---- jove4.16.0.64.dist/Makefile	2004-02-01 13:32:39.000000000 -0600
-+++ jove4.16.0.64/Makefile	2004-10-29 00:33:55.000000000 -0500
+--- jove4.16.0.70/Makefile	2005-10-01 00:14:41.000000000 +0200
++++ jove/Makefile	2007-06-21 16:34:59.000000000 +0200
 @@ -160,7 +160,7 @@
  #	SCO UNIX: TERMCAPLIB = -lcurses
  #	AIX on the R6000s: TERMCAPLIB = -lcurses -ltermcap -ls
@@ -10,13 +9,17 @@ diff -ur jove4.16.0.64.dist/Makefile jove4.16.0.64/Makefile
  
  # Extra libraries flags needed by oddball systems.
  # Modern BSD systems using openpty need its library.
-@@ -209,7 +209,6 @@
+@@ -209,9 +209,8 @@
  # Set LOCALCFLAGS and LOCALLDFLAGS appropriately too. For Xenix, note
  # that LOCALCFLAGS must be set to $(MEMFLAGS)
  
 -LOCALCC = $(CC)
- LOCALCFLAGS = $(CFLAGS)	# $(MEMFLAGS)
- LOCALLDFLAGS = $(LDFLAGS)
+-LOCALCFLAGS = $(CFLAGS)	# $(MEMFLAGS)
+-LOCALLDFLAGS = $(LDFLAGS)
++#LOCALCFLAGS = $(CFLAGS)	# $(MEMFLAGS)
++#LOCALLDFLAGS = $(LDFLAGS)
+ 
+ # Objects are grouped into overlays for the benefit of (at least) 2.xBSD.
  
 @@ -281,9 +280,11 @@
  
@@ -33,4 +36,3 @@ diff -ur jove4.16.0.64.dist/Makefile jove4.16.0.64/Makefile
  
  jjove$(XEXT):	$(OBJECTS)
  	$(LDCC) $(LDFLAGS) $(OPTFLAGS) -o jjove$(XEXT) $(OBJECTS) $(TERMCAPLIB) $(EXTRALIBS)
-Only in jove4.16.0.64: Makefile~
