@@ -50,7 +50,7 @@ COREUTILS_IPK_VERSION=4
 COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/mountlist.patch
 # Assume that all uclibc systems are the same
 ifeq ($(LIBC_STYLE), uclibc)
-ifeq ($(OPTWARE_TARGET), brcm)
+ifeq ($(OPTWARE_TARGET), openwrt-brcm)
 COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config-uclibc.cache
 else
 COREUTILS_AC_CACHE=$(COREUTILS_SOURCE_DIR)/config-brcm24.cache

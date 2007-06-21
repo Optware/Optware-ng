@@ -4,7 +4,7 @@
 # LOCALE_SUPPORT is not available
 # some math functions (eg. C99) are missing
 #
-# Visit http://www.nslu2-linux.org/wiki/FAQ/Optware-brcm24Build
+# Visit http://www.nslu2-linux.org/wiki/Optware/OpenWRT-brcm24Build
 # for more info
 #
 
@@ -12,6 +12,10 @@
 LIBC_STYLE=uclibc
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
+
+GETTEXT_NLS=
+NO_BUILTIN_MATH=true
+
 
 # TODO BUILDROOT_CUSTOM_HEADERS = $(HEADERS_OLEG)
 
@@ -43,7 +47,7 @@ TARGET_LIBDIR = $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURAT
 TARGET_LDFLAGS = -luclibcnotimpl
 TARGET_CUSTOM_FLAGS= -Os -pipe -mips32 -mtune=mips32 -funit-at-a-time
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-toolchain: brcm24-toolchain
+toolchain: openwrt-brcm24-toolchain
 endif
 
 TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/nowrap/$(TARGET_ARCH)-$(TARGET_OS)-g++
@@ -54,26 +58,26 @@ TARGET_GXX=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/
 # it is not provided for i686 but rather for x86_64 architecture
 # That's why SDK is provided by alternate source
 #
-BRCM24_SDK=OpenWrt-SDK-brcm-2.4-for-Linux-i686
-BRCM24_SOURCE=$(BRCM24_SDK).tar.bz2
-BRCM24_SITE=http://www.wlan-sat.com/boleo/optware
+OPENWRT-BRCM24_SDK=OpenWrt-SDK-brcm-2.4-for-Linux-i686
+OPENWRT-BRCM24_SOURCE=$(OPENWRT-BRCM24_SDK).tar.bz2
+OPENWRT-BRCM24_SITE=http://www.wlan-sat.com/boleo/optware
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-$(DL_DIR)/$(BRCM24_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BRCM24_SITE)/$(BRCM24_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(BRCM24_SOURCE)
+$(DL_DIR)/$(OPENWRT-BRCM24_SOURCE):
+	$(WGET) -P $(DL_DIR) $(OPENWRT-BRCM24_SITE)/$(OPENWRT-BRCM24_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(OPENWRT-BRCM24_SOURCE)
 
 
-$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged: $(DL_DIR)/$(BRCM24_SOURCE)
+$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged: $(DL_DIR)/$(OPENWRT-BRCM24_SOURCE)
 	rm -rf $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
-	rm -rf $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(BRCM24_SDK)
+	rm -rf $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(OPENWRT-BRCM24_SDK)
 	install -d  $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)
-	tar -xvj -C $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS) -f $(DL_DIR)/$(BRCM24_SOURCE)
-	ln -s $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(BRCM24_SDK)/staging_dir_$(TARGET_ARCH) \
+	tar -xvj -C $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS) -f $(DL_DIR)/$(OPENWRT-BRCM24_SOURCE)
+	ln -s $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(OPENWRT-BRCM24_SDK)/staging_dir_$(TARGET_ARCH) \
 		$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
 	touch $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged
 
-brcm24-toolchain: directories $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged uclibcnotimpl-toolchain libuclibc++-toolchain
-brcm24-source:  $(DL_DIR)/$(BRCM24_SOURCE)
+openwrt-brcm24-toolchain: directories $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged uclibcnotimpl-toolchain libuclibc++-toolchain
+openwrt-brcm24-source:  $(DL_DIR)/$(OPENWRT-BRCM24_SOURCE)

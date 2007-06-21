@@ -49,7 +49,7 @@ GNUPLOT_IPK_VERSION=5
 GNUPLOT_PATCHES=$(GNUPLOT_SOURCE_DIR)/Makefile.in.patch \
 		$(GNUPLOT_SOURCE_DIR)/docs-Makefile.in.patch \
 
-ifeq ($(OPTWARE_TARGET), brcm24)
+ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
 GNUPLOT_PATCHES += $(GNUPLOT_SOURCE_DIR)/no-specfun.patch
 endif
 
