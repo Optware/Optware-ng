@@ -170,7 +170,7 @@ libuclibc++: $(LIBUCLIBC++_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 LIBUCLIBC++_INSTALL_DIR=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
-ifeq ($(OPTWARE_TARGET), brcm24)
+ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
 $(LIBUCLIBC++_BUILD_DIR)/.staged: $(LIBUCLIBC++_BUILD_DIR)/.built \
   $(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)/.staged
 else
