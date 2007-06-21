@@ -40,12 +40,13 @@ BASH_CONFLICTS=
 #
 # BASH_IPK_VERSION should be incremented when the ipk changes.
 #
-BASH_IPK_VERSION=2
+BASH_IPK_VERSION=3
 #
 # BASH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.1-patches/bash31-*
+BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.2-patches/bash32-* \
+	$(BASH_SOURCE_DIR)/builtins-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
