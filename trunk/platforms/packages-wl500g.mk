@@ -22,7 +22,7 @@ BROKEN_PACKAGES = \
 	 ltrace \
 	 mc mcabber mdadm minicom mod-fastcgi mod-python \
 	 msynctool mutt \
-	 ncmpc ncursesw netatalk nget ntfsprogs ntp nvi \
+	 ncmpc ncursesw netatalk newt nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
 	 p7zip pcapsipdump postfix player psmisc py-mssql \
 	 rhtvision rtorrent rtpproxy \
