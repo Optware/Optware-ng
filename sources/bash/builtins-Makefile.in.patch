@@ -1,0 +1,14 @@
+When using build compiler, cross compiled flags should not pass
+through.
+
+--- builtins/Makefile.in.orig	2007-06-21 14:08:48.000000000 +0200
++++ builtins/Makefile.in	2007-06-21 14:09:46.000000000 +0200
+@@ -63,7 +63,7 @@
+ 
+ LIBS = @LIBS@
+ LDFLAGS = @LDFLAGS@ $(LOCAL_LDFLAGS) $(CFLAGS)
+-LDFLAGS_FOR_BUILD = $(LDFLAGS)
++LDFLAGS_FOR_BUILD = $(LOCAL_LDFLAGS)
+ LOCAL_LDFLAGS = @LOCAL_LDFLAGS@
+ #LIBS_FOR_BUILD = @LIBS_FOR_BUILD@
+ LIBS_FOR_BUILD = $(LIBS)
