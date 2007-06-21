@@ -25,7 +25,7 @@ BROKEN_PACKAGES = \
 	 ncmpc ncursesw netatalk nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
 	 p7zip pcapsipdump postfix player psmisc py-mssql \
-	 rtorrent rtpproxy \
+	 rhtvision rtorrent rtpproxy \
 	 sablevm scli scponly sdl ser snort snownews sqsh swi-prolog \
 	 tcsh tethereal tnftpd transcode \
 	 unrar \

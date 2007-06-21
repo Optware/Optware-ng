@@ -1,0 +1,51 @@
+--- config.pl.orig	2004-11-02 08:45:21.000000000 -0800
++++ config.pl	2007-06-20 11:46:06.000000000 -0700
+@@ -491,14 +491,16 @@
+ 
+  print 'Checking endianess: ';
+ 
+- if (@conf{'TV_BIG_ENDIAN'} eq 'yes')
++ if ($ENV{'TV_BIG_ENDIAN'} eq 'yes')
+    {
+     print "big endian (cached)\n";
++    $conf{'TV_BIG_ENDIAN'}='yes';
+     return;
+    }
+- if (@conf{'TV_BIG_ENDIAN'} eq 'no')
++ if ($ENV{'TV_BIG_ENDIAN'} eq 'no')
+    {
+     print "little endian (cached)\n";
++    $conf{'TV_BIG_ENDIAN'}='no';
+     return;
+    }
+  $test='
+@@ -776,6 +778,9 @@
+  my ($result,$test);
+ 
+  print 'Looking for ncurses library: ';
++ $conf{'ncurses'} = 'yes';
++ $conf{'NameCurses'} = 'ncurses';
++ $conf{'HAVE_DEFINE_KEY'} = 1;
+  if (@conf{'ncurses'})
+    {
+     print "@conf{'ncurses'} (cached) OK\n";
+@@ -1034,8 +1039,8 @@
+       }
+     # Note: -sf should work for Solaris 9 but at least in the machines at S.F.
+     # it doesn't. So we just delete the file and do the link.
+-    $rep.="\t-cd $makeDir; rm $nameSO; ln -s $nameSOV $nameSO\n";
+-    $rep.="\t-cd $makeDir; rm $nameSOM; ln -s $nameSOV $nameSOM\n";
++    $rep.="\t-cd $makeDir; rm -f $nameSO; ln -s $nameSOV $nameSO\n";
++    $rep.="\t-cd $makeDir; rm -f $nameSOM; ln -s $nameSOV $nameSOM\n";
+    }
+  if ($internac)
+    {
+@@ -1129,7 +1134,7 @@
+     # Darwin: doesn't have ldconfig.
+     if ($OSf ne 'Darwin')
+       {
+-       $rep.=($OSf eq 'FreeBSD') ? "\t-ldconfig -m \$(libdir)\n" : "\t-ldconfig\n";
++       # $rep.=($OSf eq 'FreeBSD') ? "\t-ldconfig -m \$(libdir)\n" : "\t-ldconfig\n";
+       }
+    }
+  if ($internac)
