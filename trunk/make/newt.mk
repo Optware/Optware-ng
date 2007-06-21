@@ -129,6 +129,7 @@ endif
 		then mv $(BUILD_DIR)/$(NEWT_DIR) $(NEWT_BUILD_DIR) ; \
 	fi
 	(cd $(NEWT_BUILD_DIR); \
+		sed -i -e 's/automake /automake-1.9 /' ./autogen.sh; \
 		./autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEWT_CPPFLAGS)" \
