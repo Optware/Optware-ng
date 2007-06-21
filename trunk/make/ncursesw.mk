@@ -36,6 +36,7 @@ $(NCURSESW_DIR)/.configured: $(NCURSESW_DIR)/.source
 	$(MAKE) zlib-stage
 	(cd $(NCURSESW_DIR); \
 	export CC=$(TARGET_CC) ; \
+	export CXX=$(TARGET_CXX) ; \
 	export CPPFLAGS="$(STAGING_CPPFLAGS)"; \
 	export LDFLAGS="$(STAGING_LDFLAGS)"; \
 		./configure \
