@@ -25,7 +25,7 @@ FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=4
+FONTCONFIG_IPK_VERSION=5
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
@@ -57,6 +57,9 @@ FONTCONFIG_BUILD_DIR=$(BUILD_DIR)/fontconfig
 FONTCONFIG_SOURCE_DIR=$(SOURCE_DIR)/fontconfig
 FONTCONFIG_IPK_DIR=$(BUILD_DIR)/fontconfig-$(FONTCONFIG_VERSION)-ipk
 FONTCONFIG_IPK=$(BUILD_DIR)/fontconfig_$(FONTCONFIG_VERSION)-$(FONTCONFIG_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: fontconfig-source fontconfig-unpack fontconfig fontconfig-stage fontconfig-ipk fontconfig-clean fontconfig-dirclean fontconfig-check
+
 
 #
 # Automatically create a ipkg control file
@@ -111,6 +114,10 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).
 	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(FONTCONFIG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \
 	fi
+	sed -i -e '/^LINK/s/$$(LDFLAGS)\|$$(CFLAGS)//g' \
+		$(FONTCONFIG_BUILD_DIR)/fc-case/Makefile.am \
+		$(FONTCONFIG_BUILD_DIR)/fc-lang/Makefile.am \
+		$(FONTCONFIG_BUILD_DIR)/fc-glyphname/Makefile.am
 	(cd $(FONTCONFIG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \
@@ -196,3 +203,8 @@ fontconfig-clean:
 #
 fontconfig-dirclean:
 	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) $(FONTCONFIG_IPK_DIR) $(FONTCONFIG_IPK)
+#
+# Some sanity check for the package.
+#
+fontconfig-check: $(FONTCONFIG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FONTCONFIG_IPK)
