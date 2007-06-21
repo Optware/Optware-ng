@@ -1,0 +1,40 @@
+--- include/compatlayer.h.orig	2004-10-08 14:04:50.000000000 -0700
++++ include/compatlayer.h	2007-06-20 13:48:15.000000000 -0700
+@@ -324,7 +324,7 @@
+     library. GCC implemented it in version 3.0. BC++ implemented some
+     stuff in versions like BC++ 5.5. So that's a real mess. */
+  #if __GNUC__>=3
+-  #if __GNUC_MINOR__>=4
++  #if __GNUC__>=4 || __GNUC_MINOR__>=4
+    // gcc 3.4. It have __gnu_cxx::stdio_filebuf class.
+    #define CLY_filebuf       __gnu_cxx::stdio_filebuf<char>
+    #define CLY_int_filebuf   CLY_filebuf
+--- include/tv/inputln.h
++++ include/tv/inputln.h
+@@ -201,7 +201,7 @@
+      { return name; }
+ 
+ protected:
+- TInputLine::TInputLine(StreamableInit) :
++ TInputLine(StreamableInit) :
+    TInputLineBaseT<char,TDrawBuffer>(streamableInit) {}
+ 
+ public:
+--- classes/tinputli.cc
++++ classes/tinputli.cc
+@@ -75,9 +75,6 @@
+  modeOptions=defaultModeOptions;
+ }
+ 
+-template class TInputLineBaseT<char,TDrawBuffer>;
+-template class TInputLineBaseT<uint16,TDrawBufferU16>;
+-
+ template <typename T, typename D>
+ TInputLineBaseT<T,D>::TInputLineBaseT(const TRect& bounds, int aMaxLen, TValidator *aValid) :
+   TInputLineBase(bounds,aMaxLen,aValid)
+@@ -656,3 +653,5 @@
+  return True;
+ }
+ 
++template class TInputLineBaseT<char,TDrawBuffer>;
++template class TInputLineBaseT<uint16,TDrawBufferU16>;

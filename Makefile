@@ -215,7 +215,7 @@ COMMON_CROSS_PACKAGES = \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 quagga quickie quilt \
 	radiusclient-ng rc rcs rdate readline recode recordext \
-	renderext rlfe rlwrap rrdcollect rrdtool \
+	renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends \
 	scli scons scponly screen scsi-idle sdl sdparm \
