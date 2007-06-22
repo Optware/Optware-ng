@@ -22,7 +22,7 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.25a
-SAMBA_IPK_VERSION=1
+SAMBA_IPK_VERSION=2
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=3
@@ -35,9 +35,9 @@ SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clien
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-SAMBA_DEPENDS=popt, openldap-libs, readline, cups
+SAMBA_DEPENDS=popt, openldap-libs, readline, cups, gnutls
 else
-SAMBA_DEPENDS=popt, readline, cups
+SAMBA_DEPENDS=popt, readline, cups, gnutls
 endif
 SAMBA_SUGGESTS=
 SAMBA_CONFLICTS=
@@ -180,7 +180,7 @@ $(SAMBA_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA_SOURCE) $(SAMBA_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
-	$(MAKE) cups-stage
+	$(MAKE) cups-stage gnutls-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
@@ -214,6 +214,7 @@ endif
 		--oldincludedir=$(SAMBA_INCLUDE_DIR) \
 		--infodir=$(SAMBA_INFO_DIR) \
 		--mandir=$(SAMBA_MAN_DIR) \
+		--disable-pie \
 		--with-privatedir=$(SAMBA_SYSCONF_DIR) \
 		--with-lockdir=$(SAMBA_LOCALSTATE_DIR) \
 		--with-piddir=$(SAMBA_LOCALSTATE_DIR) \
