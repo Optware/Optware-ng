@@ -28,7 +28,7 @@ STUNNEL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 STUNNEL_DESCRIPTION=SSL encryption wrapper for all kinds of servers
 STUNNEL_SECTION=net
 STUNNEL_PRIORITY=optional
-STUNNEL_DEPENDS=openssl
+STUNNEL_DEPENDS=openssl, zlib
 STUNNEL_CONFLICTS=
 
 #
@@ -102,7 +102,7 @@ stunnel-source: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
-	$(MAKE) openssl-stage 
+	$(MAKE) openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(STUNNEL_DIR) $(STUNNEL_BUILD_DIR)
 	$(STUNNEL_UNZIP) $(DL_DIR)/$(STUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(STUNNEL_PATCHES) | patch -d $(BUILD_DIR)/$(STUNNEL_DIR) -p1
