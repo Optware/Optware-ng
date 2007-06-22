@@ -237,7 +237,7 @@ $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY24-DUPLICITY_IPK) $(PY25-DUPLICITY_IPK): $(PY-DUPLICITY_BUILD_DIR)/.built
+$(PY24-DUPLICITY_IPK) $(PY25-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLICITY_BUILD_DIR)/.built
 	# 2.4
 	rm -rf $(PY24-DUPLICITY_IPK_DIR) $(BUILD_DIR)/py-duplicity_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DUPLICITY_BUILD_DIR)/2.4; \
