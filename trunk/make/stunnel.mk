@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 STUNNEL_SITE=http://www.stunnel.org/download/stunnel/src
-STUNNEL_VERSION=4.07
+STUNNEL_VERSION=4.20
 STUNNEL_SOURCE=stunnel-$(STUNNEL_VERSION).tar.gz
 STUNNEL_DIR=stunnel-$(STUNNEL_VERSION)
 STUNNEL_UNZIP=zcat
@@ -34,7 +34,7 @@ STUNNEL_CONFLICTS=
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=7
+STUNNEL_IPK_VERSION=1
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
@@ -47,8 +47,7 @@ STUNNEL_CONFFILES=/opt/etc/stunnel/stunnel.conf \
 # STUNNEL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-STUNNEL_PATCHES=$(STUNNEL_SOURCE_DIR)/configure.patch \
-		$(STUNNEL_SOURCE_DIR)/Makefile.in.patch
+STUNNEL_PATCHES=$(STUNNEL_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -70,6 +69,8 @@ STUNNEL_BUILD_DIR=$(BUILD_DIR)/stunnel
 STUNNEL_SOURCE_DIR=$(SOURCE_DIR)/stunnel
 STUNNEL_IPK_DIR=$(BUILD_DIR)/stunnel-$(STUNNEL_VERSION)-ipk
 STUNNEL_IPK=$(BUILD_DIR)/stunnel_$(STUNNEL_VERSION)-$(STUNNEL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+.PHONY: stunnel-source stunnel-unpack stunnel stunnel-stage stunnel-ipk stunnel-clean stunnel-dirclean stunnel-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -139,7 +140,8 @@ stunnel: $(STUNNEL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION): $(STUNNEL_BUILD_DIR)/.built
+$(STUNNEL_BUILD_DIR)/.staged: $(STUNNEL_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(STUNNEL_BUILD_DIR)/stunnel.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
@@ -147,8 +149,9 @@ $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION): $(STUNNEL_BUILD_DIR)/.b
 	install -m 644 $(STUNNEL_BUILD_DIR)/libstunnel.so.$(STUNNEL_VERSION) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libstunnel.so.$(STUNNEL_VERSION) libstunnel.so
+	touch $@
 
-stunnel-stage: $(STAGING_DIR)/opt/lib/libstunnel.so.$(STUNNEL_VERSION)
+stunnel-stage: $(STUNNEL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -215,3 +218,9 @@ stunnel-clean:
 #
 stunnel-dirclean:
 	rm -rf $(BUILD_DIR)/$(STUNNEL_DIR) $(STUNNEL_BUILD_DIR) $(STUNNEL_IPK_DIR) $(STUNNEL_IPK)
+
+#
+# Some sanity check for the package.
+#
+stunnel-check: $(STUNNEL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(STUNNEL_IPK)
