@@ -257,6 +257,7 @@ $(PY24-DUPLICITY_IPK) $(PY25-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control
 	# doc
+	rm -rf $(PY-DUPLICITY-DOC_IPK_DIR) $(BUILD_DIR)/py-duplicity-doc_*_$(TARGET_ARCH).ipk
 	install -d $(PY-DUPLICITY-DOC_IPK_DIR)/opt
 	mv $(PY25-DUPLICITY_IPK_DIR)/opt/share $(PY-DUPLICITY-DOC_IPK_DIR)/opt
 	$(MAKE) $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control
