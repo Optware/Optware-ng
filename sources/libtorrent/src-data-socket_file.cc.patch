@@ -1,5 +1,5 @@
---- src/data/socket_file.cc.orig	2007-01-12 05:46:04.000000000 -0800
-+++ src/data/socket_file.cc	2007-03-05 09:54:19.000000000 -0800
+--- src/data/socket_file.cc.orig	2007-02-02 03:09:56.000000000 -0800
++++ src/data/socket_file.cc	2007-06-21 20:49:52.000000000 -0700
 @@ -160,7 +160,14 @@
  
    uint64_t align = offset % MemoryChunk::page_size();

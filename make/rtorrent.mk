@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.7.4
+RTORRENT_VERSION=0.7.5
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
@@ -28,7 +28,7 @@ RTORRENT_CONFLICTS=
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=2
+RTORRENT_IPK_VERSION=1
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
