@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBGD_SITE=http://www.libgd.org/releases
-LIBGD_VERSION=2.0.34
+LIBGD_VERSION=2.0.35
 LIBGD_SOURCE=gd-$(LIBGD_VERSION).tar.bz2
 LIBGD_DIR=gd-$(LIBGD_VERSION)
 LIBGD_UNZIP=bzcat
@@ -47,7 +47,10 @@ LIBGD_LOCALES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBGD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2 -DLIBICONV_PLUG
+LIBGD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
+ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
+LIBGD_CPPFLAGS+= -DLIBICONV_PLUG
+endif
 LIBGD_LDFLAGS=-Wl,-rpath-link=$(STAGING_LIB_DIR)
 
 #
@@ -140,6 +143,12 @@ libgd-unpack: $(LIBGD_BUILD_DIR)/.configured
 #
 $(LIBGD_BUILD_DIR)/.built: $(LIBGD_BUILD_DIR)/.configured
 	rm -f $(LIBGD_BUILD_DIR)/.built
+		$(TARGET_CONFIGURE_OPTS) \
+		PATH="$(STAGING_DIR)/opt/bin:$$PATH" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGD_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGD_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 	$(MAKE) -C $(LIBGD_BUILD_DIR)
 	touch $(LIBGD_BUILD_DIR)/.built
 
@@ -152,11 +161,13 @@ libgd: $(LIBGD_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libgd.so: $(LIBGD_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBGD_BUILD_DIR) install-strip DESTDIR=$(STAGING_DIR)
+$(LIBGD_BUILD_DIR)/.staged: $(LIBGD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(LIBGD_BUILD_DIR) install DESTDIR=$(STAGING_DIR)
 	rm -rf $(STAGING_DIR)/opt/lib/libgd.la
+	touch $@
 
-libgd-stage: $(STAGING_DIR)/opt/lib/libgd.so
+libgd-stage: $(LIBGD_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -172,7 +183,7 @@ libgd-stage: $(STAGING_DIR)/opt/lib/libgd.so
 #
 $(LIBGD_IPK): $(LIBGD_BUILD_DIR)/.built
 	rm -rf $(LIBGD_IPK_DIR) $(BUILD_DIR)/libgd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBGD_BUILD_DIR) DESTDIR=$(LIBGD_IPK_DIR) install-strip
+	$(MAKE) -C $(LIBGD_BUILD_DIR) DESTDIR=$(LIBGD_IPK_DIR) install-strip transform=''
 	rm -f $(LIBGD_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBGD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGD_IPK_DIR)
