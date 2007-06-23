@@ -22,7 +22,7 @@ SCPONLY_CONFLICTS=
 #
 # SCPONLY_IPK_VERSION should be incremented when the ipk changes.
 #
-SCPONLY_IPK_VERSION=1
+SCPONLY_IPK_VERSION=2
 
 #
 # SCPONLY_CONFFILES should be a list of user-editable files
@@ -187,6 +187,7 @@ $(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/.built
 	$(MAKE) -C $(SCPONLY_BUILD_DIR) DESTDIR=$(SCPONLY_IPK_DIR) install
 	$(STRIP_COMMAND) $(SCPONLY_IPK_DIR)/opt/*bin/*
 	install -d $(SCPONLY_IPK_DIR)/opt/etc/
+	install -m 755 $(SCPONLY_SOURCE_DIR)/mkscproot $(SCPONLY_IPK_DIR)/opt/sbin/mkscproot
 #	install -m 644 $(SCPONLY_SOURCE_DIR)/scponly.conf $(SCPONLY_IPK_DIR)/opt/etc/scponly.conf
 #	install -d $(SCPONLY_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
