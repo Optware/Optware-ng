@@ -40,7 +40,7 @@ POSTGRESQL_DEPENDS=readline, coreutils
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=2
+POSTGRESQL_IPK_VERSION=3
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -54,12 +54,18 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 POSTGRESQL_PATCHES=$(POSTGRESQL_SOURCE_DIR)/src-timezone-Makefile.patch $(POSTGRESQL_SOURCE_DIR)/disable-buildtime-test.patch
 POSTGRESQL_CONFIG_ENV=pgac_cv_snprintf_long_long_int_format='%lld'
 endif
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+POSTGRESQL_PATCHES+=$(POSTGRESQL_SOURCE_DIR)/uclibc_no_cbrt.patch
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-POSTGRESQL_CPPFLAGS=
+POSTGRESQL_CPPFLAGS=-D_GNU_SOURCE
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+POSTGRESQL_CPPFLAGS+=-fno-builtin-rint
+endif
 POSTGRESQL_LDFLAGS=
 
 #
@@ -138,7 +144,9 @@ postgresql-unpack: $(POSTGRESQL_BUILD_DIR)/.configured
 #
 $(POSTGRESQL_BUILD_DIR)/.built: $(POSTGRESQL_BUILD_DIR)/.configured
 	rm -f $(POSTGRESQL_BUILD_DIR)/.built
-	$(MAKE) -C $(POSTGRESQL_BUILD_DIR)
+	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(POSTGRESQL_CPPFLAGS)" \
+		;
 	touch $(POSTGRESQL_BUILD_DIR)/.built
 
 #
