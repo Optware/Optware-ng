@@ -1,0 +1,169 @@
+#!/bin/sh
+#
+# $Id$
+#
+
+#
+# NOTE:
+#	This script works with the standard busybox tools.
+#
+PATH=/bin:/usr/bin
+
+PROG=${0##*/}
+ERROR=""
+USER=""
+HOME=""
+ROOT=""
+CREATE=""
+PASSWD=""
+
+if [ $(id -u) != 0 ]
+then
+	echo "This program needs to run as root" >&2
+	exit 1
+fi
+
+#
+# This script is not supported or tested with dropbear.
+#
+if [ ! -f /opt/libexec/sftp-server ]
+then
+	echo "Scponly is only supported with openssh"
+	exit 2
+fi
+
+while [ $# -ge 1 ]
+do
+	case "$1" in
+		-h)
+			HOME=$2
+			shift 2
+			;;
+		-u)
+			USER=$2
+			shift 2
+			;;
+		-r)
+			ROOT=$2
+			shift 2
+			;;
+		-n)
+			CREATE=1
+			shift
+			;;
+		-e)
+			PASSWD=1
+			shift
+			;;
+		*)
+			ERROR=1
+			shift
+			;;
+	esac
+done
+
+if [ -z "${USER}" -o "${ERROR}" ]
+then
+	echo "
+${PROG} [-n] [-r root] [-h <home>] -u <user>
+
+Example:
+	${PROG} -u scponly
+
+Don't use other options unless you know what you do!!
+
+" >&2
+	exit 3
+fi
+
+if [ -z "${ROOT}" ]
+then
+	ROOT="/home/${USER}_root"
+fi
+
+if [ -z "${HOME}" ]
+then
+	HOME="${ROOT}//${USER}"
+fi
+
+if [ -z "${CREATE}" ]
+then
+	if grep -q "^${USER}:" /etc/passwd
+	then
+		echo "User exists: Choose a other user name"
+		exit 4
+	fi
+	ID=2000
+	while grep -q :${ID}: /etc/passwd
+	do
+		ID=$((${ID}+1))
+	done
+	echo "${USER}:x:${ID}:100:${USER} (scponly):${HOME}:/opt/sbin/scponlyc" >>/etc/passwd
+fi
+
+mkdir -p "${HOME}"
+
+for d in bin etc lib usr usr/bin usr/lib usr/libexec usr/libexec/openssh dev
+do
+	mkdir "${ROOT}/${d}"
+done
+
+chown -R root:root "${ROOT}"
+chmod -R 755 "${ROOT}" "${HOME}"
+
+cd "${ROOT}"
+ln -s usr opt
+
+cd "${ROOT}/bin"
+cp /bin/busybox chgrp
+
+for f in chmod chown ln ls mkdir mv rm rmdir
+do
+	ln chgrp "${f}"
+done
+
+cd "${ROOT}/lib"
+
+for f in ld-linux.so.2 libc.so.6 libcrypt.so.1 libdl.so.2 libm.so.6 libnsl.so.1 libnss_files.so.2 libresolv.so.2 libutil.so.1
+do
+	cp "/lib/${f}" .
+done
+
+cd "${ROOT}/etc"
+
+echo "root:x:0:" > group
+echo "users:x:100:" >> group
+
+echo "root::0:0:::" > passwd
+echo "bin::1:1:::" >> passwd
+echo "${USER}::${ID}:100::/${USER}:" >> passwd
+
+for f in ld.so.conf ld.so.cache
+do
+	cp "/etc/${f}" .
+done
+
+cd "${ROOT}/dev"
+mknod null c 1 3
+chmod 777 null
+
+cd "${ROOT}/usr/bin"
+cp /opt/bin/scp .
+
+cd "${ROOT}/usr/libexec/openssh"
+cp /opt/libexec/sftp-server .
+
+cd "${ROOT}/usr/lib"
+cp /opt/lib/libcrypto.so.0.9.7 .
+cp /opt/lib/libz.so.1.2.3 .
+ln -s libz.so.1.2.3 libz.so
+
+if [ -z "${PASSWD}" ]
+then
+	passwd "${USER}"
+fi
+
+#
+# This doesn't work if we do it to fast after adding the account (bug?)
+#
+chown "${USER}":100 "${HOME}"
