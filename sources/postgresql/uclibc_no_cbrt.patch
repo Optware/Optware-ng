@@ -1,0 +1,23 @@
+diff -ruN postgresql-8.2.3-old/src/backend/utils/adt/float.c postgresql-8.2.3-new/src/backend/utils/adt/float.c
+--- postgresql-8.2.3-old/src/backend/utils/adt/float.c	2006-10-05 03:40:45.000000000 +0200
++++ postgresql-8.2.3-new/src/backend/utils/adt/float.c	2007-04-10 23:13:16.000000000 +0200
+@@ -110,7 +110,9 @@
+ static int	float8_cmp_internal(float8 a, float8 b);
+ 
+ #ifndef HAVE_CBRT
+-static double cbrt(double x);
++#undef cbrt
++#define cbrt(x) pg_cbrt(x)
++static double pg_cbrt(double x);
+ #endif   /* HAVE_CBRT */
+ 
+ 
+@@ -2831,7 +2833,7 @@
+ #ifndef HAVE_CBRT
+ 
+ static double
+-cbrt(double x)
++pg_cbrt(double x)
+ {
+ 	int			isneg = (x < 0.0);
+ 	double		absx = fabs(x);
