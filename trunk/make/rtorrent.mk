@@ -39,7 +39,7 @@ RTORRENT_CONFFILES=/opt/etc/rtorrent.conf
 # RTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RTORRENT_PATCHES=
+RTORRENT_PATCHES=$(RTORRENT_SOURCE_DIR)/symlink_unlink.patch
 
 #
 # If the compilation of the package requires additional
