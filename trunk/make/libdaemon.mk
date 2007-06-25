@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDAEMON_SITE=http://0pointer.de/lennart/projects/libdaemon
-LIBDAEMON_VERSION=0.10
+LIBDAEMON_VERSION=0.11
 LIBDAEMON_SOURCE=libdaemon-$(LIBDAEMON_VERSION).tar.gz
 LIBDAEMON_DIR=libdaemon-$(LIBDAEMON_VERSION)
 LIBDAEMON_UNZIP=zcat
@@ -36,7 +36,7 @@ LIBDAEMON_CONFLICTS=
 #
 # LIBDAEMON_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDAEMON_IPK_VERSION=2
+LIBDAEMON_IPK_VERSION=1
 
 #
 # LIBDAEMON_CONFFILES should be a list of user-editable files
