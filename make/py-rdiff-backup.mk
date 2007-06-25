@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-RDIFF-BACKUP_VERSION=1.1.7
+PY-RDIFF-BACKUP_VERSION=1.1.11
 PY-RDIFF-BACKUP_SITE=http://savannah.nongnu.org/download/rdiff-backup
 PY-RDIFF-BACKUP_SOURCE=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION).tar.gz
 PY-RDIFF-BACKUP_DIR=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)
@@ -37,7 +37,7 @@ PY-RDIFF-BACKUP_CONFLICTS=
 #
 # PY-RDIFF-BACKUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-RDIFF-BACKUP_IPK_VERSION=3
+PY-RDIFF-BACKUP_IPK_VERSION=1
 
 #
 # PY-RDIFF-BACKUP_CONFFILES should be a list of user-editable files
