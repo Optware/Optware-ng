@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-SYSLOG-NG_SITE=http://www.balabit.hu/downloads/syslog-ng/1.6/src
-SYSLOG-NG_VERSION=1.6.11
+SYSLOG-NG_SITE=http://www.balabit.com/downloads/files/syslog-ng/sources/stable/src
+SYSLOG-NG_VERSION=2.0.4
 SYSLOG-NG_SOURCE=syslog-ng-$(SYSLOG-NG_VERSION).tar.gz
 SYSLOG-NG_DIR=syslog-ng-$(SYSLOG-NG_VERSION)
 SYSLOG-NG_UNZIP=zcat
@@ -28,13 +28,13 @@ SYSLOG-NG_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 SYSLOG-NG_DESCRIPTION=Syslog replacement logging on behalf of remote hosts
 SYSLOG-NG_SECTION=sys
 SYSLOG-NG_PRIORITY=optional
-SYSLOG-NG_DEPENDS=libol, flex
+SYSLOG-NG_DEPENDS=glib, eventlog
 SYSLOG-NG_CONFLICTS=
 
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=3
+SYSLOG-NG_IPK_VERSION=1
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
@@ -100,7 +100,7 @@ syslog-ng-source: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PATCHES) make/syslog-ng.mk
-	$(MAKE) libol-stage flex-stage
+	$(MAKE) glib-stage eventlog-stage libnet10-stage flex-stage
 	rm -rf $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(SYSLOG-NG_BUILD_DIR)
 	$(SYSLOG-NG_UNZIP) $(DL_DIR)/$(SYSLOG-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SYSLOG-NG_PATCHES) | patch -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p1
@@ -109,13 +109,17 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYSLOG-NG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYSLOG-NG_LDFLAGS)" \
+                PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+                PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		EVTLOG_CFLAGS="-I$(STAGING_INCLUDE_DIR)/eventlog" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-libol=$(STAGING_DIR)/opt/bin \
 		--prefix=/opt \
+		--enable-dynamic-linking \
 		--disable-nls \
+		--disable-spoof-source \
 	)
 	touch $(SYSLOG-NG_BUILD_DIR)/.configured
 
