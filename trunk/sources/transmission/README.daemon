@@ -329,6 +329,9 @@ chmod a+rw /tmp/harddisk/torrent/work
    Seeding state to Suspend. Then select the torrent en click Remove. 
    After that you can Purge them into oblivion.
 
+18. My links: "source" "work" and "target" are not valid.
+ This depends on your http daemon. If you are using busybox_httpd then there is no autodir feature and links are preaty useless. If thttpd is used the you can create symlinks to directories and enable follow symlinks in config. Same goes to other servers. Anyway this links are not regarded as a feature but rather useless convenience.
+
 
 
 oleo

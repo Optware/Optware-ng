@@ -104,7 +104,7 @@ static void watchdog(tr_torrent_t *tor, void * data UNUSED)
 {
   int result;
 
-  if( tr_getFinished( tor ) )
+  if( tr_getDone(tor) || tr_getComplete(tor) )
     {
       result = system(finishCall);
     }  
@@ -129,7 +129,7 @@ static void stop(tr_torrent_t *tor, void * data UNUSED )
         }
       usleep( 500000 );
     }
-  tr_torrentClose( h, tor );
+  tr_torrentClose( tor );
 }
 
 struct active_torrents_s
@@ -232,17 +232,23 @@ static char * status(tr_torrent_t *tor)
 
   if (s->error)
     snprintf( string, STATUS_WIDTH, "Error: %s", s->errorString );
+  else if( s->status & TR_STATUS_CHECK_WAIT ) 
+    { 
+      chars = snprintf( string, sizeof string, 
+                        "Waiting to check files... %.2f %%",
+                        100.0 * s->percentDone ); 
+    }
   else if( s->status & TR_STATUS_CHECK )
     {
       chars = snprintf( string, STATUS_WIDTH,
-                        "Checking files... %.2f %%", 100.0 * s->progress );
+                        "Checking files... %.2f %%", 100.0 * s->percentDone );
     }
   else if( s->status & TR_STATUS_DOWNLOAD )
     {
       if (s->eta < 0 ) /* Without eta */
         snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
-                  "ul to %d (%.2f KB/s)", 100.0 * s->progress,
+                  "ul to %d (%.2f KB/s)", 100.0 * s->percentDone,
                   s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
                   s->peersUploading, s->rateDownload,
                   s->peersDownloading, s->rateUpload );
@@ -250,7 +256,7 @@ static char * status(tr_torrent_t *tor)
         snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s) %d:%02d remaining",
-                  100.0 * s->progress,
+                  100.0 * s->percentDone,
                   s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
                   s->peersUploading, s->rateDownload,
                   s->peersDownloading, s->rateUpload,
@@ -267,7 +273,7 @@ static char * status(tr_torrent_t *tor)
   else if (s->status & TR_STATUS_STOPPING)
     snprintf( string, STATUS_WIDTH, "Stopping...");
   else if (s->status & TR_STATUS_PAUSE )
-    snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->progress);
+    snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->percentDone);
   else
     string[0] = '\0';
 
