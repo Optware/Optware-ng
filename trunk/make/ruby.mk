@@ -148,6 +148,7 @@ $(RUBY_BUILD_DIR)/.built: $(RUBY_BUILD_DIR)/.configured
 	$(MAKE) ruby-host-stage
 	rm -f $(RUBY_BUILD_DIR)/.built
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
+	LD_LIBRARY_PATH=$(HOST_STAGING_LIB_DIR) \
 	$(MAKE) -C $(RUBY_BUILD_DIR)
 	touch $(RUBY_BUILD_DIR)/.built
 
