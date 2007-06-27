@@ -36,7 +36,7 @@ GNOKII_SMSD_MYSQL_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=5
+GNOKII_IPK_VERSION=6
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
@@ -152,9 +152,9 @@ $(GNOKII_BUILD_DIR)/.built: $(GNOKII_BUILD_DIR)/.configured
 #
 # This builds the smsd
 #
-$(GNOKII_BUILD_DIR)/smsd/.built: $(GNOKII_BUILD_DIR)/.configured
+$(GNOKII_BUILD_DIR)/.smsd-built: $(GNOKII_BUILD_DIR)/.configured
 	make gnokii-stage mysql-stage glib-stage
-	rm -f $(GNOKII_BUILD_DIR)/smsd/.built
+	rm -f $(GNOKII_BUILD_DIR)/.smsd-built
 	sed -i \
 	   -e 's/^DB_OBJS = file.lo/DB_OBJS = file.lo mysql.lo/' \
 	   -e 's/^DB_LIBS := libfile.la/DB_LIBS = libfile.la libmysql.la/' \
@@ -165,14 +165,14 @@ $(GNOKII_BUILD_DIR)/smsd/.built: $(GNOKII_BUILD_DIR)/.configured
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		PKG_CONFIG_PATH=$(STAGING_PREFIX)/lib/pkgconfig \
 		$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd
-	touch $(GNOKII_BUILD_DIR)/smsd/.built
+	touch $(GNOKII_BUILD_DIR)/.smsd-built
 
 #
 # This is the build convenience target.
 #
 gnokii: $(GNOKII_BUILD_DIR)/.built
 
-gnokii-smsd: $(GNOKII_BUILD_DIR)/smsd/.built
+gnokii-smsd: $(GNOKII_BUILD_DIR)/.smsd-built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -282,7 +282,7 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 	echo $(GNOKII_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_IPK_DIR)
 
-$(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
+$(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -rf $(GNOKII_SMSD_IPK_DIR) $(BUILD_DIR)/gnokii-smsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_IPK_DIR) install
 	rm $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libfile.la
@@ -297,7 +297,7 @@ $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
 	echo $(GNOKII_SMSD_CONFFILES) | sed -e 's/ /\n/g' > $(GNOKII_SMSD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNOKII_SMSD_IPK_DIR)
 
-$(GNOKII_SMSD_MYSQL_IPK): $(GNOKII_BUILD_DIR)/smsd/.built
+$(GNOKII_SMSD_MYSQL_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR) $(BUILD_DIR)/gnokii-smsd-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_MYSQL_IPK_DIR) install
 	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/sbin/smsd
