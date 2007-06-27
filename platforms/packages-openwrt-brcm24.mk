@@ -12,10 +12,10 @@ BROKEN_PACKAGES = \
 	fixesext fuppes gambit-c gdb \
 	gnugo gsnmp gphoto2 libgphoto2 joe libcdio \
 	libdvb libextractor libmtp libnsl libopensync loudmouth ltrace \
-	mediatomb msynctool multitail netatalk nget \
+	msynctool multitail netatalk nget \
 	openobex obexftp phoneme-advanced php php-apache php-fcgi \
 	php-thttpd player psmisc \
 	quagga \
 	recordext renderext \
-	rhtvision samba scli sdl ser squeak \
+	rhtvision samba scli sdl ser slsc squeak \
 	tcsh tethereal vlc x11 xdpyinfo xext xpm xtst zile
