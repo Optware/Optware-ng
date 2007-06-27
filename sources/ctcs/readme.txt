@@ -27,7 +27,48 @@ ______________________________________________________________________
 
    Download
 
-   [9]ctcs-1.2.tar.gz: CTCS version 1.2. List of changes:
+   [9]ctcs-1.4.tar.gz: CTCS version 1.4. List of changes:
+     * Protocol 3 support
+          + Auto-configuration of client configuration options
+          + File download priority
+          + Updated block start messages for consistency
+     * New client configuration options as provided by client version 3.1
+       and later.
+     * Each file's download priority is shown in the list and can be set
+       as an alternative method to changning the "-n" option value.
+
+   [10]ctcs-1.3.tar.gz: CTCS version 1.3. List of changes:
+     * Protocol 2 support
+          + Cache size configuration option
+          + Removal of option to exit when peers=0
+          + Total seeders & leechers in the swarm, and connecting peers,
+            are shown.
+          + File availability is shown.
+     * Bandwidth management changes
+          + Works correctly with Enhanced CTorrent dnh3
+          + Adjusted the threshold for increasing a limit
+          + Wait a few minutes after a client becomes seed to reduce the
+            download limit. This allows duplicate slices still "in
+            flight" to be received and thus cleared from the connection.
+          + The average bandwidth available per client is now regarded as
+            an implied minimum. A client limit will generally not be
+            reduced below this value, though unused bandwidth will be
+            allocated to other clients. This avoids a slow and difficult
+            ramp-up period when an idle client suddenly acquires an
+            active peer.
+     * Cosmetic updates
+          + Configuration values are highlighted at certain times for
+            visibility or attention.
+          + Zero peer rates and transfer amounts are not shown, for
+            clarity.
+          + Peer completeness is shaded red by value (0%=red,
+            100%=white).
+          + Uninterested states are indicated in gray.
+          + Peer IP address is centered in the cell.
+          + Peer transfer rates and totals are shaded purple by scale
+            (B/K/M).
+
+   [11]ctcs-1.2.tar.gz: CTCS version 1.2. List of changes:
      * Version number is now displayed at bottom of main page.
      * Added a few client ID strings.
      * The maximum limit "boost" value is now based on the global limit
@@ -61,15 +102,15 @@ ______________________________________________________________________
        error.
      * Cleaned up HTML print statements (code formatting).
 
-   [10]ctcs-1.1.tar.gz: CTCS version 1.1. List of changes:
+   [12]ctcs-1.1.tar.gz: CTCS version 1.1. List of changes:
      * Use "\r\n" as newline.
      * Added a few client ID strings.
      * Fixed data sending (user interaction) on Linux.
      * Fixed error when all upload or download limits are zero.
 
-   [11]ctcs-1.0a.tar.gz: CTCS version 1.0a
+   [13]ctcs-1.0a.tar.gz: CTCS version 1.0a
 
-   [12]ctcs-1.0a.diff: Patch file for 1.0
+   [14]ctcs-1.0a.diff: Patch file for 1.0
    There was a minor bug in the original release that prevented the
    Messages feature from working (messages were discarded). If you
    previously downloaded version 1.0, please apply this small patch to
@@ -141,7 +182,7 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
              Current UL = 34 K/s      UL Limit: ____K/s
                                  Change interval: ___sec
 
-                            [13]Advanced Limits
+                            [15]Advanced Limits
                     ___________________________________
 
    The current aggregate download and upload rates are shown at the left
@@ -159,24 +200,26 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
    running.
                     ___________________________________
 
-   [14]Show peers
+   [16]Show peers
 
    Torrent Start Time
    Seed Leech Complete DL Rate UL Rate DL Total UL Total Limit D/U
-   [15]Example 1.torrent Tue Jan 3 21:24:27 2006
-   S: 0 L: 7 100% D= 0 B/s U= 11 K/s D= 393 M U= 1111 M 0 / 11 K/s
-   [16]Example 2.torrent Tue Jan 3 20:24:06 2006
-   S: 0 L: 44 100% D= 0 B/s U= 12 K/s D= 380 M U= 972 M 0 / 12 K/s
-   [17]Example 3.torrent Wed Jan 4 22:13:55 2006
-   S: 1 L: 1 20% (100% Avail) D= 7372 B/s U= 12 K/s D= 188 M U= 254 M 100
-   / 12 K/s
+   [17]Example 1.torrent Tue Jan 3 21:24:27 2006
+   S: 0/3 L: 7/7 100% D= 0 B/s U= 11 K/s D= 393 M U= 1111 M 0 / 11 K/s
+   [18]Example 2.torrent Tue Jan 3 20:24:06 2006
+   S: 0/25 L: 44/52 +2 100% D= 0 B/s U= 12 K/s D= 380 M U= 972 M 0 / 12
+   K/s
+   [19]Example 3.torrent Wed Jan 4 22:13:55 2006
+   S: 1/2 L: 1/2 20% (100% Avail) D= 7372 B/s U= 12 K/s D= 188 M U= 254 M
+   100 / 12 K/s
                     ___________________________________
 
    Each torrent is listed in blue along with the time the client was
    started, with its status information shown below it in white. The
-   first two fields are the number of seeders and leechers connected.
-   This is followed by the percentage of the torrent that you have; if it
-   is not complete then the amount that is currently available from all
+   first two fields are the number of seeders and leechers connected (out
+   of the tracker's totals), plus connections in progress if any. This is
+   followed by the percentage of the torrent that you have; if it is not
+   complete then the amount that is currently available from all
    connected peers is shown in parentheses. The current download and
    upload rates are shown in bytes, kilobytes, or megabytes per second,
    as are the total amounts downloaded and uploaded by the client. The
@@ -206,12 +249,12 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
    are listed in the lower portion of the display.
                     ___________________________________
 
-   [Del] Torrent                                              End Time
-   Seed Leech Complete  DL Rate   UL Rate DL Total  UL Total  Limit D/U
-   [_] [18]Finished example 4.torrent         Sat Dec 24 19:09:55 2005
-   S: 0 L: 5  100%     D= 0 B/s U= 16 K/s D= 720 M  U= 136 M 0 / 15 K/s
-   [_] [19]Dead example 5.torrent              Sun Jan 1 23:37:15 2006
-   S: 0 L: 13 100%     D= 0 B/s U= 14 K/s D= 435 M U= 1937 M 0 / 13 K/s
+   [Del] Torrent                                                   End Time
+   Seed   Leech    Complete  DL Rate   UL Rate DL Total  UL Total  Limit D/U
+   [_] [20]Finished example 4.torrent              Sat Dec 24 19:09:55 2005
+   S: 0/1 L: 5/5   100%     D= 0 B/s U= 16 K/s D= 720 M  U= 136 M 0 / 15 K/s
+   [_] [21]Dead example 5.torrent                   Sun Jan 1 23:37:15 2006
+   S: 0/2 L: 13/14 100%     D= 0 B/s U= 14 K/s D= 435 M U= 1937 M 0 / 13 K/s
 
    Delete Delete All
                     ___________________________________
@@ -251,34 +294,50 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
                     ___________________________________
 
                                Configuration
-       Verbose output [-v]  [_]  disabled
-       Seed time [-e]        ___ ~hours remaining (-e 72)
-       Seed ratio [-E]     _____
-       Max peers [-M]        ___ Current peers: 8
-       Min peers [-m]        ___ Current peers: 8
-       Pause torrent        [_]  Refuse new peers & wait
-       Stop when peers=0    [_]  Terminate torrent if I have no peers
-                                  Submit
+           Verbose output [-v]      [_]  Disabled
+           Seed time [-e]          _____ ~hours remaining (-e 72)
+           Seed ratio [-E]         _____ Upload:Download
+           Max peers [-M]          _____ Current peers: 5
+           Min peers [-m]          _____ Current peers: 5
+           Download files [-n]     ______________________________
+           Cache size [-C]         _____ MB; 3552KB now in use
+           Pause torrent            [_]  Stop upload/download
+           Completion command [-X] ______________________________
+           Normal/status output    ______________________________
+           Interactive output      ______________________________
+           Error/warning output    ______________________________
+           Debug/verbose output    ______________________________
+           Console input           ______________________________
+                                   Submit
                     ___________________________________
 
+   Note that the available options and their descriptions are now
+   determined by the client and are only presented by CTCS. For details,
+   see the Enhanced CTorrent User's Guide (command-line options and
+   operator menu).
+
    For parameters that have a corresponding command-line option, the
-   option letter is shown in brackets next to the parameter name. Note
-   that for "Seed time" an approximation of the number of hours remaining
-   is shown, and a new value entered will be interpreted the same way.
-   The total number of seed hours (as it would have been given on the
-   command line when starting the program), of dubious usefulness, is
-   given in parentheses.
+   option letter is shown in brackets next to the parameter name. Certain
+   items may be highlighted when active or to draw attention; this does
+   not indicate a problem.
+
+   Note that for "Seed time" an approximation of the number of hours
+   remaining is shown, and a new value entered will be interpreted the
+   same way. While a decimal value may be shown, the current client will
+   use only the integer portion of any new value entered. The total
+   number of seed hours (as it would have been given on the command line
+   when starting the program), of dubious usefulness, is given in
+   parentheses.
 
    Other features are:
 
    Pause torrent
-          This will cause the client to refuse connections from new
-          peers, and deregister with the tracker once it has no peers. It
-          will continue interacting with the peers that are already
-          connected.
+          This will cause the client to temporarily stop transferring
+          data (uploading and downloading torrent content).
 
-   Stop when peers=0
-          The client will exit when no more peers are connected.
+   I/O channel redirection
+          The targets for the console input and output channels can be
+          changed.
 
   Actions
 
@@ -313,10 +372,10 @@ ctcs [-d <dlimit>] [-u <ulimit>] [-i <interval>] [-p <port>] [-P]
                     ___________________________________
 
                                                    Messages
-Tue Jan  3 23:24:47 2006 warn, connect to tracker failed. Operation timed out
-Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
+Tue Jan  3 23:24:47 2006 warn, connect to tracker failed:  Operation timed out
+Tue Jan  3 23:19:04 2006 warn, received nothing from tracker!
 
-                                                     Clear
+                                                    Clear
                     ___________________________________
 
    To acknowledge the messages (which clears the list from CTCS memory),
@@ -327,16 +386,27 @@ Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
    The component files of the torrent are listed next.
                     ___________________________________
 
-                      File Name        Size Complete
-                          1 Main.dat   393 M      100%
-                          2 readme.txt   2 K      100%
-                      Total           393 M
+             File Name        Size Complete Available Priority
+                 1 Main.dat   393 M       90%     100%  _____
+                 2 readme.txt   2 K      100%     100%  _____
+             Total           393 M                      Set
                     ___________________________________
 
    The file number, name, size (scaled to bytes, kilobytes, or
-   megabytes), and percentage complete are shown. Files which are
-   complete are tinted green. If operating in "get1file" mode, the
-   current file in progress is tinted blue.
+   megabytes), percentage complete, and percentage available are shown.
+   Files which are complete (all available pieces have been downloaded)
+   are tinted green. Partial availability is indicated by yellow tint;
+   zero availability is indicated by red. If using the "-n" option to
+   download specific files, the current files in progress are tinted
+   blue.
+
+   If the "-n" option is in use, the prority of each file is indicated in
+   the rightmost column. Files with priority "1" are included in the
+   first group to be downloaded; files of the same priority will be
+   downloaded together. The priorities can be altered by changing the
+   values and clicking the "Set" button. This is equivalent to changing
+   the "-n" configuration option, and the changes will be reflected in
+   that value as well.
 
   Status and Peers
 
@@ -344,41 +414,49 @@ Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
    screen.
                     ___________________________________
 
-   Torrent                                                       Start Time
-   Seed Leech Complete  DL Rate     UL Rate DL Total  UL Total     Limit D/U
-   [20]Example 1.torrent                            Tue Jan 3 21:24:27 2006
-   S: 0 L: 8  100%     D= 0 B/s   U= 15 K/s D= 393 M U= 1113 M    0 / 17 K/s
-   -BC0060-0x1B5809A843282B5EE23CEC0F       00.131.203.0       BitComet 0060
-    Cn   Ci        77% D= 0 B/s    U= 0 B/s   D= 0 B     U= 0 B
-   -BC0060-5)0x9881006F56E31AA742F8         0.255.161.000      BitComet 0060
-    Cn   Ci        20% D= 0 B/s    U= 0 B/s   D= 0 B   U= 192 K
-   -BC0060-0x09645C51208ADDB8D53E29F7       00.171.219.0       BitComet 0060
-    Cn   Ui         2% D= 0 B/s U= 2457 B/s   D= 0 B   U= 496 K
-   -BC0060-0x01DE4ED5BB6797CC6C58EF1E       0.48.201.000       BitComet 0060
-    Cn   Ui        10% D= 0 B/s U= 7372 B/s   D= 0 B  U= 4320 K
-   -BC0059-0xE507A66333F2A020E7DBFC42       00.245.89.00       BitComet 0059
-    Cn   Ci        65% D= 0 B/s  U= 819 B/s   D= 0 B  U= 1072 K
-   exbc0x01014C4F524497240602B5B8E07B3AA3   0.95.210.00        BitLord 1.1
-    Cn   Ui        23% D= 0 B/s U= 1638 B/s   D= 0 B  U= 8592 K
-   -BC0059-0x9F1995D00E3BA5EF9ABEE4F8       0.74.215.00        BitComet 0059
-    Cn   Ci        49% D= 0 B/s    U= 0 B/s   D= 0 B    U= 11 M
-   -AZ2306-kW66DYIl3XoE                     00.183.31.0        Azureus 2306
-    Cn   Ui        93% D= 0 B/s U= 5734 B/s   D= 0 B    U= 38 M
+   Torrent                                                          Start Time
+   Seed   Leech  Complete  DL Rate     UL Rate DL Total  UL Total     Limit D/U
+   [22]Example 1.torrent                               Tue Jan 3 21:24:27 2006
+   S: 0/4 L: 8/9 100%     D= 0 B/s   U= 15 K/s D= 393 M U= 1113 M    0 / 17 K/s
+   -BC0060-0x1B5809A843282B5EE23CEC0F          00.131.203.0       BitComet 0060
+     Cn    Ci         77%        -           -        -         -
+   -BC0060-5)0x9881006F56E31AA742F8              0.255.161.000    BitComet 0060
+     Cn    Ci         20%        -           -        -   U= 192 K
+   -BC0060-0x09645C51208ADDB8D53E29F7             00.171.219.0    BitComet 0060
+     Cn    Ui          2%        - U= 2457 B/s        -   U= 496 K
+   -BC0060-0x01DE4ED5BB6797CC6C58EF1E             0.48.201.000    BitComet 0060
+     Cn    Ui         10%        - U= 7372 B/s        -  U= 4320 K
+   -BC0059-0xE507A66333F2A020E7DBFC42             00.245.89.00    BitComet 0059
+     Cn    Ci         65%        -           -        -  U= 1072 K
+   exbc0x01014C4F524497240602B5B8E07B3AA3         0.95.210.00     BitLord 1.1
+     Cn    Ui         23%        - U= 1638 B/s        -  U= 8592 K
+   -BC0059-0x9F1995D00E3BA5EF9ABEE4F8             0.74.215.00     BitComet 0059
+     Cn    Ci         49%        -           -        -    U= 11 M
+   -AZ2306-kW66DYIl3XoE                           00.183.31.0     Azureus 2306
+     Cn    Ui         93%        - U= 5734 B/s        -    U= 38 M
                     ___________________________________
 
    The currently connected peers are listed below the client status
    information. The peer ID, IP address, and software name and version
-   (if identified) are tinted green. Below this (in white) is status
-   information for that peer. The first field shows "C" or "U" to
+   (if identified) are tinted green. Below this (mostly in white) is
+   status information for that peer. The first field shows "C" or "U" to
    indicate whether the connection is choked or unchoked for downloading,
    followed by "i" or "n" to indicate whether your client is interested
    (or not) in downloading from the peer. The second field shows the same
-   information for uploading to the peer. The third field is the
-   percentage of pieces that the peer has available. The next two fields
-   are your client's current download and upload rates to the peer, and
-   the last two are the total amount your client has downloaded from and
-   uploaded to the peer. (Note that the totals are not maintained if the
-   peer connection is broken and later reestablished.)
+   information for uploading to the peer (whether you have choked the
+   peer and whether he is interested in your data). The third field is
+   the percentage of pieces that the peer has. The next two fields are
+   your client's current download and upload rates to the peer, and the
+   last two are the total amount your client has downloaded from and
+   uploaded to the peer.
+
+   Some information is color-coded to make it easier to interpret.
+   Uninterested ("n") connections are shaded light gray. The percentage
+   complete is shaded red according to its value, with 0% being pure red
+   and 100% being white. The transfer rates and totals are shaded purple
+   according to scale: white for a blank (zero) entry, light for M,
+   medium for K, and dark for B. This should make it easier to visually
+   compare numbers of similar magnitude.
      _________________________________________________________________
 
    Advanced Limits
@@ -419,7 +497,7 @@ Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
           + SR: The maximum upload limit will be adjusted based on the
             torrent's seed ratio ("-E" option, shown), current share
             ratio, and current download rate. It will not be increased
-            above the Maxium or decreased below the Minimum, if
+            above the Maximum or decreased below the Minimum, if
             specified. This option does not apply when seeding, and has
             no effect if the seed ratio is unset (zero). Use to avoid
             giving away too much upload bandwidth when you have other
@@ -435,26 +513,29 @@ Tue Jan  3 23:19:04 2006 warn, received nothing from tracker! Unknown error: 0
        refresh before making changes.
      * After submitting changes, you may need to refresh the page after a
        second or two in order to see the resulting updates.
+     _________________________________________________________________
 
 References
 
    1. http://www.rahul.net/dholmes/ctorrent/
    2. http://www.perl.org/
-   3. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#download
-   4. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#usage
-   5. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#alltorrents
-   6. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#details
-   7. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#alimits
-   8. file://localhost/home/dholmes/public_html/ctorrent/ctcs-protocol.html
-   9. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.2.tar.gz
-  10. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.1.tar.gz
-  11. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.0a.tar.gz
-  12. file://localhost/home/dholmes/public_html/ctorrent/ctcs-1.0a.diff
-  13. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/alimits
-  14. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/peers
-  15. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-%7B0xD529E46881CF5DD4E37DF6
-  16. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-P0xE9C43CD51BA8C5B319601A
-  17. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-0xCCEFB5B7D53349B364737755
-  18. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-B0x98A9186CAB0D40611122D1
-  19. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-0x834894CA549155083E4635F1
-  20. file://localhost/home/dholmes/public_html/ctorrent/ctcs.html#/torrent/-CD0202-%7B0xD529E46881CF5DD4E37DF6
+   3. http://www.rahul.net/dholmes/ctorrent/ctcs.html#download
+   4. http://www.rahul.net/dholmes/ctorrent/ctcs.html#usage
+   5. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alltorrents
+   6. http://www.rahul.net/dholmes/ctorrent/ctcs.html#details
+   7. http://www.rahul.net/dholmes/ctorrent/ctcs.html#alimits
+   8. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
+   9. http://www.rahul.net/dholmes/ctorrent/ctcs-1.4.tar.gz
+  10. http://www.rahul.net/dholmes/ctorrent/ctcs-1.3.tar.gz
+  11. http://www.rahul.net/dholmes/ctorrent/ctcs-1.2.tar.gz
+  12. http://www.rahul.net/dholmes/ctorrent/ctcs-1.1.tar.gz
+  13. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0a.tar.gz
+  14. http://www.rahul.net/dholmes/ctorrent/ctcs-1.0a.diff
+  15. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/alimits
+  16. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/peers
+  17. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0301-%7B0xD529E46881CF5DD4E37DF6
+  18. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0301-P0xE9C43CD51BA8C5B319601A
+  19. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0301-0xCCEFB5B7D53349B364737755
+  20. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0301-B0x98A9186CAB0D40611122D1
+  21. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0301-0x834894CA549155083E4635F1
+  22. http://www.rahul.net/dholmes/ctorrent/ctcs.html#/torrent/-CD0301-%7B0xD529E46881CF5DD4E37DF6

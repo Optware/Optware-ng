@@ -1,8 +1,9 @@
---- ctcs.old/ctcs	2007-04-25 18:11:04.000000000 -0300
-+++ ctcs/ctcs	2007-04-25 18:09:13.000000000 -0300
+diff -u ctcs.old/ctcs ctcs/ctcs
+--- ctcs.old/ctcs	2007-06-27 10:13:13.000000000 -0300
++++ ctcs/ctcs	2007-06-27 10:14:23.000000000 -0300
 @@ -1,4 +1,4 @@
 -#!/usr/bin/perl -Tw
 +#!/opt/bin/perl -Tw
  ###############################################################################
  #
- # CTorrent Control Server (CTCS) version 1.3
+ # CTorrent Control Server (CTCS) version 1.4
