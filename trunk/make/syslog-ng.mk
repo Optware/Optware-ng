@@ -34,7 +34,7 @@ SYSLOG-NG_CONFLICTS=
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=1
+SYSLOG-NG_IPK_VERSION=2
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
@@ -111,7 +111,6 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYSLOG-NG_LDFLAGS)" \
                 PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
                 PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		EVTLOG_CFLAGS="-I$(STAGING_INCLUDE_DIR)/eventlog" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
