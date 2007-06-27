@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 XPDF_SITE=ftp://ftp.foolabs.com/pub/xpdf/
-XPDF_VERSION=3.01
+XPDF_VERSION=3.02
 XPDF_SOURCE=xpdf-$(XPDF_VERSION).tar.gz
 XPDF_DIR=xpdf-$(XPDF_VERSION)
 XPDF_UNZIP=zcat
