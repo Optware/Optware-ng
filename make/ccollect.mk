@@ -30,13 +30,13 @@ CCOLLECT_DESCRIPTION=(pseudo) incremental (parallel) backup.
 CCOLLECT_SECTION=net
 CCOLLECT_PRIORITY=optional
 CCOLLECT_DEPENDS=rsync, mktemp
-CCOLLECT_SUGGESTS=coreutils, cwrsync
+CCOLLECT_SUGGESTS=cron, coreutils, cwrsync
 CCOLLECT_CONFLICTS=
 
 #
 # CCOLLECT_IPK_VERSION should be incremented when the ipk changes.
 #
-CCOLLECT_IPK_VERSION=1
+CCOLLECT_IPK_VERSION=3
 
 #
 # CCOLLECT_CONFFILES should be a list of user-editable files
@@ -122,7 +122,8 @@ $(CCOLLECT_BUILD_DIR)/.configured: $(DL_DIR)/$(CCOLLECT_SOURCE) $(CCOLLECT_PATCH
 		then mv $(BUILD_DIR)/$(CCOLLECT_DIR) $(CCOLLECT_BUILD_DIR) ; \
 	fi
 	(cd $(CCOLLECT_BUILD_DIR); \
-		sed -i -e 's|/etc/ccollect|/opt/etc/ccollect|' \
+		sed -i -e '1aexport PATH=/opt/bin:/opt/sbin:$$PATH' \
+			-e 's|/etc/ccollect|/opt/etc/ccollect|' \
 			-e 's|mktemp|/opt/bin/mktemp|' ccollect.sh \
 	)
 	touch $@
