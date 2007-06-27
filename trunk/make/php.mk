@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.2.2
+PHP_VERSION=5.2.3
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -55,7 +55,7 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/configure.in.patch \
 	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
-	$(PHP_SOURCE_DIR)/zend_strtod.patch \
+	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
 
 #
 # If the compilation of the package requires additional
