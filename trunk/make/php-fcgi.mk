@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=5
+PHP_FCGI_IPK_VERSION=1
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
@@ -240,7 +240,7 @@ php-fcgi-stage: $(PHP_FCGI_BUILD_DIR)/.staged
 $(PHP_FCGI_IPK): $(PHP_FCGI_BUILD_DIR)/.built
 	rm -rf $(PHP_FCGI_IPK_DIR) $(BUILD_DIR)/php-fcgi_*_$(TARGET_ARCH).ipk
 	install -d $(PHP_FCGI_IPK_DIR)/opt/bin
-	install -m 755 $(PHP_FCGI_BUILD_DIR)/sapi/cgi/php $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
+	install -m 755 $(PHP_FCGI_BUILD_DIR)/sapi/cgi/php-cgi $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
 	$(STRIP_COMMAND) $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
 	$(MAKE) $(PHP_FCGI_IPK_DIR)/CONTROL/control
 	echo $(PHP_FCGI_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_FCGI_IPK_DIR)/CONTROL/conffiles
