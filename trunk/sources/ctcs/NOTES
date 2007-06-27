@@ -2,7 +2,7 @@ CTorrent Control Server (CTCS) is built from the sources by Daniel
 Holmes, available at http://www.rahul.net/dholmes/ctorrent/ctcs.html,
 plus a set of patches for the NSLU2.
 
-The current list of patches for version 1.3 is:
+The current list of patches for version 1.4 is:
 
   socket.patch: fix for side effects of SO_REUSEADDR.
   perl.patch: correct path for perl executable
