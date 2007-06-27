@@ -56,13 +56,22 @@ CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf
 # which they should be applied to the source code.
 #
 CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch \
-	$(CUPS_SOURCE_DIR)/Makefile.patch
+	$(CUPS_SOURCE_DIR)/Makefile.patch \
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifneq ($(OPTWARE_TARGET), ts101)
 CUPS_PATCHES+=$(CUPS_SOURCE_DIR)/uclibc-backend-lpd.c.patch
 endif
 endif
+
+ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
+CUPS_LIBS=-luclibcnotimpl
+CUPS_PATCHES+=	$(CUPS_SOURCE_DIR)/filter-image-colorspace-c-cbrt.patch
+else
+CUPS_LIBS=
+endif
+
+#
 
 #
 # If the compilation of the package requires additional
@@ -107,7 +116,8 @@ $(DL_DIR)/$(CUPS_SOURCE):
 #
 cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 
-#
+
+
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
 # to change the commands here.  Patches to the source code are also
@@ -141,6 +151,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(CUPS_LDFLAGS) $(STAGING_LDFLAGS)" \
+		LIBS="$(CUPS_LIBS)" \
 		./configure \
 		--verbose \
 		--build=$(GNU_HOST_NAME) \

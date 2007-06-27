@@ -1,0 +1,20 @@
+--- cups/filter/image-colorspace.c.orig	2007-06-27 11:00:47.000000000 +0200
++++ cups/filter/image-colorspace.c	2007-06-27 11:03:22.000000000 +0200
+@@ -1143,7 +1143,7 @@
+   x_xn = x / xn;
+ 
+   if (x_xn > 0.008856)
+-    return (cbrt(x_xn));
++    return (pow(x_xn, 1.0/3.0));
+   else
+     return (7.787 * x_xn + 16.0 / 116.0);
+ }
+@@ -1314,7 +1314,7 @@
+   ciey_yn = ciey / D65_Y;
+ 
+   if (ciey_yn > 0.008856)
+-    ciel = 116 * cbrt(ciey_yn) - 16;
++    ciel = 116 * pow(ciey_yn, 1.0/3.0) - 16;
+   else
+     ciel = 903.3 * ciey_yn;
+ 
