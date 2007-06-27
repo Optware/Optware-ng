@@ -7,7 +7,7 @@ BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
 	appweb aspell asterisk14-chan-capi bogofilter \
-	bluez-utils cups eaccelerator \
+	bluez-utils eaccelerator \
 	ecl erlang erl-yaws \
 	fixesext fuppes gambit-c gdb \
 	gnugo gsnmp gphoto2 libgphoto2 joe libcdio \
@@ -17,5 +17,5 @@ BROKEN_PACKAGES = \
 	php-thttpd player psmisc \
 	quagga \
 	recordext renderext \
-	rhtvision samba scli sdl ser slsc squeak \
+	rhtvision scli sdl ser slsc squeak \
 	tcsh tethereal vlc x11 xdpyinfo xext xpm xtst zile
