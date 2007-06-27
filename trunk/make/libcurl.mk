@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.16.2
+LIBCURL_VERSION=7.16.3
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
