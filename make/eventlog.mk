@@ -20,7 +20,7 @@ EVENTLOG_CONFLICTS=
 #
 # EVENTLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-EVENTLOG_IPK_VERSION=1
+EVENTLOG_IPK_VERSION=2
 
 #
 # EVENTLOG_CONFFILES should be a list of user-editable files
@@ -135,6 +135,7 @@ eventlog: $(EVENTLOG_BUILD_DIR)/.built
 $(EVENTLOG_BUILD_DIR)/.staged: $(EVENTLOG_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(EVENTLOG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/eventlog.pc
 	touch $@
 
 eventlog-stage: $(EVENTLOG_BUILD_DIR)/.staged

@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	eventlog \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -164,7 +163,7 @@ COMMON_CROSS_PACKAGES = \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
-	esound eggdrop expat extract-xiso \
+	esound eggdrop eventlog expat extract-xiso \
 	faad2 fann fcgi fetchmail ffmpeg \
 	ficy file finch findutils fish fixesext flac flex flip \
 	fontconfig freeradius freetds freetype freeze \
