@@ -35,6 +35,7 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 #
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
+# iftop - depends on curses and cannot find curses on some platform
 # lftp - segfault even with native build, upstream bug?
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
@@ -43,6 +44,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # bpalogin - for some reason it can't find 'sed' on the build machine
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
+	iftop \
 	lftp \
 	perl-dbd-mysql \
 	bpalogin
@@ -174,7 +176,7 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	haproxy hdparm hexcurse heyu hnb hpijs hping htop \
-	ice icecast id3lib iftop iksemel imagemagick imap \
+	ice icecast id3lib iksemel imagemagick imap \
 	inadyn indent inetutils iozone \
 	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
