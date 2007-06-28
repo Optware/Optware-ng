@@ -117,6 +117,7 @@ $(IFTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IFTOP_SOURCE) $(IFTOP_PATCHES) make/
 	if test "$(BUILD_DIR)/$(IFTOP_DIR)" != "$(IFTOP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IFTOP_DIR) $(IFTOP_BUILD_DIR) ; \
 	fi
+	sed -i -e 's/curses ncurses/ncurses/' $(IFTOP_BUILD_DIR)/configure
 	(cd $(IFTOP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IFTOP_CPPFLAGS)" \
