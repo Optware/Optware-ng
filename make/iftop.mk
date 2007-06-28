@@ -29,7 +29,7 @@ IFTOP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IFTOP_DESCRIPTION=Display bandwidth usage on an interface by host
 IFTOP_SECTION=net
 IFTOP_PRIORITY=optional
-IFTOP_DEPENDS=libpcap
+IFTOP_DEPENDS=libpcap, ncurses
 IFTOP_SUGGESTS=
 IFTOP_CONFLICTS=
 
@@ -52,7 +52,7 @@ IFTOP_CONFFILES=/opt/etc/iftop.conf /opt/etc/init.d/SXXiftop
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-IFTOP_CPPFLAGS=
+IFTOP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 IFTOP_LDFLAGS=
 
 #
@@ -105,7 +105,7 @@ iftop-source: $(DL_DIR)/$(IFTOP_SOURCE) $(IFTOP_PATCHES)
 # shown below to make various patches to it.
 #
 $(IFTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IFTOP_SOURCE) $(IFTOP_PATCHES) make/iftop.mk
-	$(MAKE) libpcap-stage
+	$(MAKE) libpcap-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(IFTOP_DIR) $(IFTOP_BUILD_DIR)
 	$(IFTOP_UNZIP) $(DL_DIR)/$(IFTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IFTOP_PATCHES)" ; \
