@@ -3,7 +3,7 @@ SPECIFIC_PACKAGES = \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	uclibcnotimpl libuclibc++ \
 
-BROKEN_PACKAGES = \
+BBROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
 	aspell asterisk14-chan-capi bogofilter \
@@ -13,8 +13,8 @@ BROKEN_PACKAGES = \
 	gnugo gsnmp gphoto2 libgphoto2 joe libcdio \
 	libdvb libextractor libmtp libnsl libopensync loudmouth ltrace \
 	msynctool multitail netatalk nget \
-	openobex obexftp phoneme-advanced \
-	php-fcgi player psmisc \
+	obexftp phoneme-advanced \
+	player psmisc \
 	quagga \
 	recordext renderext \
 	rhtvision scli sdl ser slsc squeak \
