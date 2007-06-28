@@ -3,14 +3,14 @@ SPECIFIC_PACKAGES = \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	uclibcnotimpl libuclibc++ \
 
-BBROKEN_PACKAGES = \
+BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
 	aspell asterisk14-chan-capi bogofilter \
 	bluez-utils \
 	ecl erlang erl-yaws \
 	fixesext fuppes gambit-c gdb \
-	gnugo gsnmp gphoto2 libgphoto2 joe libcdio \
+	gnugo gsnmp gphoto2 libgphoto2 libcdio \
 	libdvb libextractor libmtp libnsl libopensync loudmouth ltrace \
 	msynctool multitail netatalk nget \
 	obexftp phoneme-advanced \

@@ -38,7 +38,7 @@ JOE_IPK_VERSION=1
 # JOE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#JOE_PATCHES=$(JOE_SOURCE_DIR)/configure.patch
+JOE_PATCHES=$(JOE_SOURCE_DIR)/umath-c99.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,7 +68,8 @@ JOE_IPK=$(BUILD_DIR)/joe_$(JOE_VERSION)-$(JOE_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(JOE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(JOE_SITE)/$(JOE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(JOE_SITE)/$(JOE_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(JOE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -96,7 +97,13 @@ $(JOE_BUILD_DIR)/.configured: $(DL_DIR)/$(JOE_SOURCE) $(JOE_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR)
 	$(JOE_UNZIP) $(DL_DIR)/$(JOE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR)
+	if test -n "$(JOE_PATCHES)" ; \
+		then cat $(JOE_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(JOE_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(JOE_DIR)" != "$(JOE_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(JOE_DIR) $(JOE_BUILD_DIR) ; \
+	fi
 	(cd $(JOE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JOE_CPPFLAGS)" \
