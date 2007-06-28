@@ -46,7 +46,9 @@ IFTOP_CONFFILES=/opt/etc/iftop.conf /opt/etc/init.d/SXXiftop
 # IFTOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq ($(TARGET_ARCH), $(filter armeb powerpc, $(TARGET_ARCH)))
 IFTOP_PATCHES=$(IFTOP_SOURCE_DIR)/big-endian.patch
+endif
 
 #
 # If the compilation of the package requires additional
