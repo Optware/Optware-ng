@@ -14,12 +14,12 @@ DEBUG=
 ## Support functions
 warning ()
 {
-    logger -t transmission_watchdog -p warning $*
+    logger -t transmission_watchdog -p warning "$*"
 }
 
 notice ()
 {
-    logger -t transmission_watchdog -p notice $*
+    logger -t transmission_watchdog -p notice "$*"
 }
 
 debug ()
