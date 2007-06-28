@@ -466,6 +466,16 @@ _push()
        _resume
        return
     fi
+    
+    if [ -f "${TORRENT%/*}/.status" ]; then
+	. "${TORRENT%/*}/.status"
+	echo "${STATUS}" | grep -qi check 
+	if [ "$?" = '0' ] ; then
+		echo "Cannot push while checking ${TORRENT##*/}."
+		echo "Update status before pushing again!"
+		return
+	fi
+    fi
    
     if [ -f "${WORK}${TORRENT#${WORK}}" ]; then
        if [ -f "${TORRENT%.torrent}.torrent" ]; then
@@ -594,7 +604,8 @@ This is quick explanation of the buttons:
      from tracker for downloaded torrents
 <dt><u>B</u>est<dd>Search scrape for best done torrent and suggest seeding based on (leeches/seeds) ratio
 <dt><u>F</u>etch<dd>Fetch torrent file from URL (link location)
-<dt><u>H</u>elp<dd> Access keys <u>underlined</u>! Use Alt-Key for access. Button listing in descending importance.
+<dt><u>H</u>elp<dd> Access keys <u>underlined</u>! Use Alt-Shift-Key or Alt-Key for button access. 
+	Button listing in descending importance.
 </dl>
 
 <p>Explanation of usage is available at NSLU2 Optware <a href=http://www.nslu2-linux.org/wiki/Optware/Transmission>

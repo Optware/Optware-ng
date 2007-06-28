@@ -122,13 +122,16 @@ static void stop(tr_torrent_t *tor, void * data UNUSED )
   for( i = 0; i < 10; i++ )
     {
       s = tr_torrentStat( tor );
-      if( s->status & TR_STATUS_PAUSE )
+      if( s->status & TR_STATUS_STOPPED )
         {
           /* The 'stopped' message was sent */
           break;
         }
       usleep( 500000 );
     }
+  if ( i == 10 )
+    syslog( LOG_NOTICE, "Waited 5 seconds for %s without response",
+            info->torrent );
   tr_torrentClose( tor );
 }
 
@@ -172,7 +175,7 @@ static void reload_active()
 
   struct active_torrents_s active_torrents;
 
-  syslog(LOG_DEBUG, "Reload_Active called");
+  // syslog(LOG_DEBUG, "Reload_Active called");
 
   /* open a file with a list of requested active torrents */
   if ( (stream = fopen(torrentPath, "r")) != NULL)
@@ -197,20 +200,19 @@ static void reload_active()
           tr_torrentIterate(h, is_active, &active_torrents);
           if ( !active_torrents.found ) /* add new torrent */
             {
-              if( !( tor = tr_torrentInit( h, fn, NULL, 0, &error ) ) )
+              char *folder = strdup(fn);
+              if( !(tor = tr_torrentInit( h, fn, dirname(folder), 0, &error )))
                 {
                   syslog(LOG_CRIT, "%.80s - %m", fn );
                 }
               else
                 {
                   tr_info_t * info =  tr_torrentInfo( tor );
-                  char *folder = strdup(fn);
-                  tr_torrentSetFolder( tor, dirname(folder));
-                  free(folder);
                   tr_torrentStart( tor );
                   info->flags |= TR_FACTIVE; 
                   syslog( LOG_NOTICE, "Starting torrent %s", info->torrent );
                 }
+              free(folder);
             }
         }
       fclose(stream);
@@ -272,8 +274,8 @@ static char * status(tr_torrent_t *tor)
     }
   else if (s->status & TR_STATUS_STOPPING)
     snprintf( string, STATUS_WIDTH, "Stopping...");
-  else if (s->status & TR_STATUS_PAUSE )
-    snprintf( string, STATUS_WIDTH, "Paused (%.2f %%)", 100 * s->percentDone);
+  else if (s->status & TR_STATUS_STOPPED )
+    snprintf( string, STATUS_WIDTH, "Stopped (%.2f %%)", 100 * s->percentDone);
   else
     string[0] = '\0';
 
