@@ -20,7 +20,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
-ESNIPER_VERSION=2-16-0
+ESNIPER_VERSION=2-16-1
 ESNIPER_SOURCE=esniper-$(ESNIPER_VERSION).tgz
 ESNIPER_DIR=esniper-$(ESNIPER_VERSION)
 ESNIPER_UNZIP=zcat
