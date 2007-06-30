@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.1
-SLANG_VERSION=2.1.0
+SLANG_VERSION=2.1.1
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
