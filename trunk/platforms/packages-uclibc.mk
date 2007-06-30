@@ -3,8 +3,9 @@ UCLIBC_BROKEN_PACKAGES = \
 	 bzflag \
 	 fcgi fish \
 	 gnu-smalltalk gtk ice iptables jabberd \
-	 jamvm launchtool ldconfig libstdc++ monotone \
-	 mtr nfs-server nfs-utils nginx \
+	 jamvm launchtool ldconfig libstdc++ \
+	 moe monotone mtr \
+	 nfs-server nfs-utils nginx \
 	 pango \
 	 qemu qemu-libc-i386 quickie sm \
 	 taglib uemacs vte \

@@ -193,7 +193,7 @@ COMMON_CROSS_PACKAGES = \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microperl minicom \
 	mktemp moblock modutils monit most motion \
-	mod-fastcgi monotone mp3blaster mpack mpage mpc mpd \
+	mod-fastcgi moe monotone mp3blaster mpack mpage mpc mpd \
 	mpg123 mrtg msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
