@@ -1,214 +1,150 @@
-*** libxml2/configure.orig	Sun Mar 13 17:18:18 2005
---- libxml2/configure	Sun Mar 13 17:23:36 2005
-***************
-*** 8343,8347 ****
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec="/lib /usr/lib"
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
---- 8343,8347 ----
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec=""
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-***************
-*** 8356,8360 ****
-    fi
-  else
-!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
-  fi
-  need_lib_prefix=unknown
---- 8356,8360 ----
-    fi
-  else
-!   sys_lib_search_path_spec=""
-  fi
-  need_lib_prefix=unknown
-***************
-*** 8665,8670 ****
-    shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
-    shlibpath_overrides_runpath=no
-!   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
-!   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
-    hardcode_into_libs=yes
-    ;;
---- 8665,8670 ----
-    shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
-    shlibpath_overrides_runpath=no
-!   sys_lib_search_path_spec=""
-!   sys_lib_dlsearch_path_spec=""
-    hardcode_into_libs=yes
-    ;;
-***************
-*** 8714,8718 ****
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-    fi
-  
---- 8714,8718 ----
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec=""
-    fi
-  
-***************
-*** 12062,12066 ****
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec="/lib /usr/lib"
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
---- 12062,12066 ----
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec=""
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-***************
-*** 12075,12079 ****
-    fi
-  else
-!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
-  fi
-  need_lib_prefix=unknown
---- 12075,12079 ----
-    fi
-  else
-!   sys_lib_search_path_spec=""
-  fi
-  need_lib_prefix=unknown
-***************
-*** 12384,12389 ****
-    shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
-    shlibpath_overrides_runpath=no
-!   sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
-!   sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
-    hardcode_into_libs=yes
-    ;;
---- 12384,12389 ----
-    shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
-    shlibpath_overrides_runpath=no
-!   sys_lib_search_path_spec=""
-!   sys_lib_dlsearch_path_spec=""
-    hardcode_into_libs=yes
-    ;;
-***************
-*** 12433,12437 ****
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-    fi
-  
---- 12433,12437 ----
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec=""
-    fi
-  
-***************
-*** 15232,15236 ****
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec="/lib /usr/lib"
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
---- 15232,15236 ----
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec=""
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-***************
-*** 15245,15249 ****
-    fi
-  else
-!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
-  fi
-  need_lib_prefix=unknown
---- 15245,15249 ----
-    fi
-  else
-!   sys_lib_search_path_spec=""
-  fi
-  need_lib_prefix=unknown
-***************
-*** 15592,15596 ****
-        *64-bit*)
-          libsuff=64
-!         sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
-          ;;
-        esac
---- 15592,15596 ----
-        *64-bit*)
-          libsuff=64
-!         sys_lib_search_path_spec=""
-          ;;
-        esac
-***************
-*** 15603,15607 ****
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-    fi
-  
---- 15603,15607 ----
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec=""
-    fi
-  
-***************
-*** 17600,17604 ****
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec="/lib /usr/lib"
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
---- 17600,17604 ----
-  version_type=none
-  dynamic_linker="$host_os ld.so"
-! sys_lib_dlsearch_path_spec=""
-  if test "$GCC" = yes; then
-    sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-***************
-*** 17613,17617 ****
-    fi
-  else
-!   sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
-  fi
-  need_lib_prefix=unknown
---- 17613,17617 ----
-    fi
-  else
-!   sys_lib_search_path_spec=""
-  fi
-  need_lib_prefix=unknown
-***************
-*** 17960,17964 ****
-        *64-bit*)
-          libsuff=64
-!         sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
-          ;;
-        esac
---- 17960,17964 ----
-        *64-bit*)
-          libsuff=64
-!         sys_lib_search_path_spec=""
-          ;;
-        esac
-***************
-*** 17971,17975 ****
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-    fi
-  
---- 17971,17975 ----
-    if test -f /etc/ld.so.conf; then
-      lt_ld_extra=`$SED -e 's/:,\t/ /g;s/=^=*$//;s/=^= * / /g' /etc/ld.so.conf | tr '\n' ' '`
-!     sys_lib_dlsearch_path_spec=""
-    fi
-  
+--- libxml2/configure.orig	2007-06-12 09:10:36.000000000 -0700
++++ libxml2/configure	2007-06-30 14:04:16.000000000 -0700
+@@ -8648,7 +8648,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec=""
+ if test "$GCC" = yes; then
+   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
+@@ -8661,7 +8661,7 @@
+     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
+   fi
+ else
+-  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
++  sys_lib_search_path_spec=""
+ fi
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+@@ -8997,8 +8997,8 @@
+   esac
+   shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
+   shlibpath_overrides_runpath=no
+-  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
+-  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
++  sys_lib_search_path_spec=""
++  sys_lib_dlsearch_path_spec=""
+   hardcode_into_libs=yes
+   ;;
+ 
+@@ -9046,7 +9046,7 @@
+   # Append ld.so.conf contents to the search path
+   if test -f /etc/ld.so.conf; then
+     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+-    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
++    sys_lib_dlsearch_path_spec=""
+   fi
+ 
+   # We used to test for /lib/ld.so.1 and disable shared libraries on
+@@ -12628,7 +12628,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec=""
+ if test "$GCC" = yes; then
+   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
+@@ -12641,7 +12641,7 @@
+     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
+   fi
+ else
+-  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
++  sys_lib_search_path_spec=""
+ fi
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+@@ -12977,8 +12977,8 @@
+   esac
+   shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
+   shlibpath_overrides_runpath=no
+-  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
+-  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
++  sys_lib_search_path_spec=""
++  sys_lib_dlsearch_path_spec=""
+   hardcode_into_libs=yes
+   ;;
+ 
+@@ -13026,7 +13026,7 @@
+   # Append ld.so.conf contents to the search path
+   if test -f /etc/ld.so.conf; then
+     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+-    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
++    sys_lib_dlsearch_path_spec=""
+   fi
+ 
+   # We used to test for /lib/ld.so.1 and disable shared libraries on
+@@ -15239,7 +15239,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec=""
+ if test "$GCC" = yes; then
+   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
+@@ -15252,7 +15252,7 @@
+     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
+   fi
+ else
+-  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
++  sys_lib_search_path_spec=""
+ fi
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+@@ -15626,7 +15626,7 @@
+       case `/usr/bin/file conftest.$ac_objext` in
+       *64-bit*)
+         libsuff=64
+-        sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
++        sys_lib_search_path_spec=""
+         ;;
+       esac
+     fi
+@@ -15637,7 +15637,7 @@
+   # Append ld.so.conf contents to the search path
+   if test -f /etc/ld.so.conf; then
+     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+-    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
++    sys_lib_dlsearch_path_spec=""
+   fi
+ 
+   # We used to test for /lib/ld.so.1 and disable shared libraries on
+@@ -17858,7 +17858,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec=""
+ if test "$GCC" = yes; then
+   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
+   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
+@@ -17871,7 +17871,7 @@
+     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
+   fi
+ else
+-  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
++  sys_lib_search_path_spec=""
+ fi
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+@@ -18245,7 +18245,7 @@
+       case `/usr/bin/file conftest.$ac_objext` in
+       *64-bit*)
+         libsuff=64
+-        sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
++        sys_lib_search_path_spec=""
+         ;;
+       esac
+     fi
+@@ -18256,7 +18256,7 @@
+   # Append ld.so.conf contents to the search path
+   if test -f /etc/ld.so.conf; then
+     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
+-    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
++    sys_lib_dlsearch_path_spec=""
+   fi
+ 
+   # We used to test for /lib/ld.so.1 and disable shared libraries on

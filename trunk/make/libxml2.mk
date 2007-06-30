@@ -16,7 +16,7 @@
 #
 
 LIBXML2_SITE=ftp://xmlsoft.org/libxml2
-LIBXML2_VERSION=2.6.27
+LIBXML2_VERSION=2.6.29
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
@@ -29,7 +29,7 @@ LIBXML2_DEPENDS=zlib
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=2
+LIBXML2_IPK_VERSION=1
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files
@@ -39,7 +39,7 @@ LIBXML2_IPK_VERSION=2
 # LIBXML2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBXML2_PATCHES=$(LIBXML2_SOURCE_DIR)/libxml2-testModule.c.patch $(LIBXML2_SOURCE_DIR)/configure.patch
+LIBXML2_PATCHES=$(LIBXML2_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -93,7 +93,7 @@ libxml2-source: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
+$(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES) make/libxml.mk
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(LIBXML2_DIR) $(LIBXML2_BUILD_DIR)
 	$(LIBXML2_UNZIP) $(DL_DIR)/$(LIBXML2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
