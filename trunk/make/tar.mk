@@ -21,7 +21,7 @@
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
 ifneq ($(OPTWARE_TARGET), wl500g)
-TAR_VERSION=1.17
+TAR_VERSION=1.18
 TAR_IPK_VERSION=1
 else
 TAR_VERSION=1.16.1
