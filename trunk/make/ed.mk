@@ -19,11 +19,11 @@
 #
 # You should change all these variables to suit your package.
 #
-ED_SITE=ftp://ftp.gnu.org/gnu/ed
-ED_VERSION=0.2
-ED_SOURCE=ed-$(ED_VERSION).tar.gz
+ED_SITE=http://ftp.gnu.org/gnu/ed
+ED_VERSION=0.6
+ED_SOURCE=ed-$(ED_VERSION).tar.bz2
 ED_DIR=ed-$(ED_VERSION)
-ED_UNZIP=zcat
+ED_UNZIP=bzcat
 ED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ED_DESCRIPTION=Line editor
 ED_SECTION=util
@@ -35,7 +35,7 @@ ED_CONFLICTS=
 #
 # ED_IPK_VERSION should be incremented when the ipk changes.
 #
-ED_IPK_VERSION=2
+ED_IPK_VERSION=1
 
 #
 # ED_PATCHES should list any patches, in the the order in
@@ -107,7 +107,9 @@ $(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ED_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ED_LDFLAGS)" \
 	)
 	touch $(ED_BUILD_DIR)/.configured
 
@@ -158,7 +160,9 @@ $(ED_IPK_DIR)/CONTROL/control:
 #
 $(ED_IPK): $(ED_BUILD_DIR)/.built
 	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install
+	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install INSTALL_DATA=:
+	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install-man
+	$(STRIP_COMMAND) $(ED_IPK_DIR)/opt/bin/ed $(ED_IPK_DIR)/opt/bin/red
 	$(MAKE) $(ED_IPK_DIR)/CONTROL/control
 #	echo $(ED_CONFFILES) | sed -e 's/ /\n/g' > $(ED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ED_IPK_DIR)
@@ -180,3 +184,9 @@ ed-clean:
 #
 ed-dirclean:
 	rm -rf $(BUILD_DIR)/$(ED_DIR) $(ED_BUILD_DIR) $(ED_IPK_DIR) $(ED_IPK)
+
+#
+# Some sanity check for the package.
+#
+ed-check: $(ED_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ED_IPK)
