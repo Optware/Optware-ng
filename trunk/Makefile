@@ -128,10 +128,10 @@ ERLANG_PACKAGES = \
 	erlang erl-yaws \
 
 # removed asterisk-chan-capi, doesn't build because of asterisk-stage problems
-# removed asterisk14-chan-capi, doesn't build because: make[2]: *** No rule to make target `install'.
 ASTERISK_PACKAGES = \
 	asterisk asterisk-sounds \
 	asterisk14 \
+	asterisk14-chan-capi \
 	asterisk14-core-sounds-en-gsm \
 	asterisk14-core-sounds-en-ulaw \
 	asterisk14-extra-sounds-en-gsm \
