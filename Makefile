@@ -68,7 +68,7 @@ PERL_PACKAGES = \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-file-rename \
 	perl-gd perl-gd-barcode \
-	perl-html-parser perl-html-tagset perl-html-template \
+	perl-html-parser perl-html-tagset perl-html-template perl-hottproxy \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-ip-country \
