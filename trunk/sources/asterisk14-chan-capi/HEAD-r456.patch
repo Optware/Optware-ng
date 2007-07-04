@@ -1,0 +1,66 @@
+--- asterisk14-chan-capi/chan_capi.c.orig	2007-04-14 15:44:50.000000000 -0700
++++ asterisk14-chan-capi/chan_capi.c	2007-07-04 12:56:54.000000000 -0700
+@@ -2179,6 +2179,9 @@
+ 
+ #ifdef CC_AST_HAS_EXT_CHAN_ALLOC
+ 	tmp = ast_channel_alloc(0, state, i->cid, NULL,
++#ifdef CC_AST_HAS_EXT2_CHAN_ALLOC
++		i->accountcode, i->dnid, i->context, i->amaflags,
++#endif
+ 		"CAPI/%s/%s-%x", i->vname, i->dnid, capi_counter++);
+ #else
+ 	tmp = ast_channel_alloc(0);
+@@ -2270,7 +2273,6 @@
+ 		ast_getformatname_multiple(alloca(80), 80,
+ 		tmp->nativeformats),
+ 		(i->rtp) ? " (RTP)" : "");
+-	cc_copy_string(tmp->context, i->context, sizeof(tmp->context));
+ 
+ 	if (!ast_strlen_zero(i->cid)) {
+ 		if (tmp->cid.cid_num) {
+@@ -2285,9 +2287,12 @@
+ 		tmp->cid.cid_dnid = strdup(i->dnid);
+ 	}
+ 	tmp->cid.cid_ton = i->cid_ton;
++
++#ifndef CC_AST_HAS_EXT2_CHAN_ALLOC
+ 	if (i->amaflags)
+ 		tmp->amaflags = i->amaflags;
+ 	
++	cc_copy_string(tmp->context, i->context, sizeof(tmp->context));
+ 	cc_copy_string(tmp->exten, i->dnid, sizeof(tmp->exten));
+ #ifdef CC_AST_HAS_STRINGFIELD_IN_CHANNEL
+ 	ast_string_field_set(tmp, accountcode, i->accountcode);
+@@ -2296,6 +2301,14 @@
+ 	cc_copy_string(tmp->accountcode, i->accountcode, sizeof(tmp->accountcode));
+ 	cc_copy_string(tmp->language, i->language, sizeof(tmp->language));
+ #endif
++#endif
++
++#ifdef CC_AST_HAS_STRINGFIELD_IN_CHANNEL
++	ast_string_field_set(tmp, language, i->language);
++#else
++	cc_copy_string(tmp->language, i->language, sizeof(tmp->language));
++#endif
++
+ 	i->owner = tmp;
+ 
+ #ifdef CC_AST_HAS_VERSION_1_4
+--- asterisk14-chan-capi/create_config.sh.orig	2007-04-14 15:39:59.000000000 -0700
++++ asterisk14-chan-capi/create_config.sh	2007-07-04 12:56:54.000000000 -0700
+@@ -83,6 +83,15 @@
+ 	echo " * no extended ast_channel_alloc"
+ fi
+ 
++if grep -q "ast_channel_alloc.*amaflag" $INCLUDEDIR/channel.h; then
++	echo "#define CC_AST_HAS_EXT2_CHAN_ALLOC" >>$CONFIGFILE
++	echo " * found second extended ast_channel_alloc"
++else
++	echo "#undef CC_AST_HAS_EXT2_CHAN_ALLOC" >>$CONFIGFILE
++	echo " * no second extended ast_channel_alloc"
++fi
++
++
+ if grep -q "send_digit_end.*duration" $INCLUDEDIR/channel.h; then
+ 	echo "#define CC_AST_HAS_SEND_DIGIT_END_DURATION" >>$CONFIGFILE
+ 	echo " * found send_digit_end with duration"
