@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IOZONE_SITE=http://www.iozone.org/src/current
-IOZONE_VERSION=3_259
+IOZONE_VERSION=3_283
 IOZONE_SOURCE=iozone$(IOZONE_VERSION).tar
 IOZONE_DIR=iozone$(IOZONE_VERSION)
 IOZONE_UNZIP=cat
@@ -75,12 +75,15 @@ IOZONE_SOURCE_DIR=$(SOURCE_DIR)/iozone
 IOZONE_IPK_DIR=$(BUILD_DIR)/iozone-$(IOZONE_VERSION)-ipk
 IOZONE_IPK=$(BUILD_DIR)/iozone_$(IOZONE_VERSION)-$(IOZONE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: iozone-source iozone-unpack iozone iozone-stage iozone-ipk iozone-clean iozone-dirclean iozone-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IOZONE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IOZONE_SITE)/$(IOZONE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(IOZONE_SITE)/$(IOZONE_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(IOZONE_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -195,3 +198,9 @@ iozone-clean:
 #
 iozone-dirclean:
 	rm -rf $(BUILD_DIR)/$(IOZONE_DIR) $(IOZONE_BUILD_DIR) $(IOZONE_IPK_DIR) $(IOZONE_IPK)
+#
+#
+# Some sanity check for the package.
+#
+iozone-check: $(IOZONE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IOZONE_IPK)
