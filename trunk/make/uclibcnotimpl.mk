@@ -21,48 +21,48 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-uclibcnotimpl_VERSION=0.9.28
-uclibcnotimpl_SOURCE=uclibcnotimpl-$(uclibcnotimpl_VERSION).tar.gz
-uclibcnotimpl_DIR=uclibcnotimpl-$(uclibcnotimpl_VERSION)
-uclibcnotimpl_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-uclibcnotimpl_DESCRIPTION=Not implemented uClibc routines.
-uclibcnotimpl_SECTION=libs
-uclibcnotimpl_PRIORITY=optional
-uclibcnotimpl_DEPENDS=
-uclibcnotimpl_SUGGESTS=
-uclibcnotimpl_CONFLICTS=
+UCLIBCNOTIMPL_VERSION=0.9.28
+UCLIBCNOTIMPL_SOURCE=uclibcnotimpl-$(UCLIBCNOTIMPL_VERSION).tar.gz
+UCLIBCNOTIMPL_DIR=uclibcnotimpl-$(UCLIBCNOTIMPL_VERSION)
+UCLIBCNOTIMPL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+UCLIBCNOTIMPL_DESCRIPTION=Not implemented uClibc routines.
+UCLIBCNOTIMPL_SECTION=libs
+UCLIBCNOTIMPL_PRIORITY=optional
+UCLIBCNOTIMPL_DEPENDS=
+UCLIBCNOTIMPL_SUGGESTS=
+UCLIBCNOTIMPL_CONFLICTS=
 
 #
-# uclibcnotimpl_IPK_VERSION should be incremented when the ipk changes.
+# UCLIBCNOTIMPL_IPK_VERSION should be incremented when the ipk changes.
 #
-uclibcnotimpl_IPK_VERSION=1
+UCLIBCNOTIMPL_IPK_VERSION=1
 
 #
-# uclibcnotimpl_PATCHES should list any patches, in the the order in
+# UCLIBCNOTIMPL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-uclibcnotimpl_PATCHES=$(uclibcnotimpl_SOURCE_DIR)/math.c
+UCLIBCNOTIMPL_PATCHES=$(UCLIBCNOTIMPL_SOURCE_DIR)/math.c
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-uclibcnotimpl_CPPFLAGS=
-uclibcnotimpl_LDFLAGS=
+UCLIBCNOTIMPL_CPPFLAGS=
+UCLIBCNOTIMPL_LDFLAGS=
 
 #
-# uclibcnotimpl_BUILD_DIR is the directory in which the build is done.
-# uclibcnotimpl_SOURCE_DIR is the directory which holds all the
+# UCLIBCNOTIMPL_BUILD_DIR is the directory in which the build is done.
+# UCLIBCNOTIMPL_SOURCE_DIR is the directory which holds all the
 # patches and ipkg control files.
-# uclibcnotimpl_IPK_DIR is the directory in which the ipk is built.
-# uclibcnotimpl_IPK is the name of the resulting ipk files.
+# UCLIBCNOTIMPL_IPK_DIR is the directory in which the ipk is built.
+# UCLIBCNOTIMPL_IPK is the name of the resulting ipk files.
 #
 # You should not change any of these variables.
 #
-uclibcnotimpl_BUILD_DIR=$(BUILD_DIR)/uclibcnotimpl
-uclibcnotimpl_SOURCE_DIR=$(SOURCE_DIR)/uclibcnotimpl
-uclibcnotimpl_IPK_DIR=$(BUILD_DIR)/uclibcnotimpl-$(uclibcnotimpl_VERSION)-ipk
-uclibcnotimpl_IPK=$(BUILD_DIR)/uclibcnotimpl_$(uclibcnotimpl_VERSION)-$(uclibcnotimpl_IPK_VERSION)_$(TARGET_ARCH).ipk
+UCLIBCNOTIMPL_BUILD_DIR=$(BUILD_DIR)/uclibcnotimpl
+UCLIBCNOTIMPL_SOURCE_DIR=$(SOURCE_DIR)/uclibcnotimpl
+UCLIBCNOTIMPL_IPK_DIR=$(BUILD_DIR)/uclibcnotimpl-$(UCLIBCNOTIMPL_VERSION)-ipk
+UCLIBCNOTIMPL_IPK=$(BUILD_DIR)/UCLIBCNOTIMPL_$(UCLIBCNOTIMPL_VERSION)-$(UCLIBCNOTIMPL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: uclibcnotimpl-source uclibcnotimpl-unpack uclibcnotimpl uclibcnotimpl-stage uclibcnotimpl-ipk uclibcnotimpl-clean uclibcnotimpl-dirclean uclibcnotimpl-check
 
@@ -71,7 +71,7 @@ uclibcnotimpl_IPK=$(BUILD_DIR)/uclibcnotimpl_$(uclibcnotimpl_VERSION)-$(uclibcno
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-uclibcnotimpl-source: $(uclibcnotimpl_PATCHES)
+uclibcnotimpl-source: $(UCLIBCNOTIMPL_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -91,118 +91,118 @@ uclibcnotimpl-source: $(uclibcnotimpl_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(uclibcnotimpl_BUILD_DIR)/.configured: $(uclibcnotimpl_PATCHES) make/uclibcnotimpl.mk
+$(UCLIBCNOTIMPL_BUILD_DIR)/.configured: $(UCLIBCNOTIMPL_PATCHES) make/uclibcnotimpl.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(uclibcnotimpl_DIR) $(uclibcnotimpl_BUILD_DIR)
-	install -d  $(uclibcnotimpl_BUILD_DIR)
-	if test -n "$(uclibcnotimpl_PATCHES)" ; \
-	   then cp $(uclibcnotimpl_PATCHES) $(uclibcnotimpl_BUILD_DIR) ; \
+	rm -rf $(BUILD_DIR)/$(UCLIBCNOTIMPL_DIR) $(UCLIBCNOTIMPL_BUILD_DIR)
+	install -d  $(UCLIBCNOTIMPL_BUILD_DIR)
+	if test -n "$(UCLIBCNOTIMPL_PATCHES)" ; \
+	   then cp $(UCLIBCNOTIMPL_PATCHES) $(UCLIBCNOTIMPL_BUILD_DIR) ; \
 	fi
 	touch $@
 
-uclibcnotimpl-unpack: $(uclibcnotimpl_BUILD_DIR)/.configured
+uclibcnotimpl-unpack: $(UCLIBCNOTIMPL_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
-$(uclibcnotimpl_BUILD_DIR)/.built: $(uclibcnotimpl_BUILD_DIR)/.configured
+$(UCLIBCNOTIMPL_BUILD_DIR)/.built: $(UCLIBCNOTIMPL_BUILD_DIR)/.configured
 	rm -f $@
 	$(TARGET_CC) $(TARGET_CFLAGS) -Wall \
-		-c $(uclibcnotimpl_BUILD_DIR)/math.c -o \
-		$(uclibcnotimpl_BUILD_DIR)/math.o
+		-c $(UCLIBCNOTIMPL_BUILD_DIR)/math.c -o \
+		$(UCLIBCNOTIMPL_BUILD_DIR)/math.o
 
-	$(TARGET_CROSS)ar rc $(uclibcnotimpl_BUILD_DIR)/libuclibcnotimpl.a \
-		$(uclibcnotimpl_BUILD_DIR)/*.o
-#	$(MAKE) -C $(uclibcnotimpl_BUILD_DIR)
+	$(TARGET_CROSS)ar rc $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
+		$(UCLIBCNOTIMPL_BUILD_DIR)/*.o
+#	$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR)
 	touch $@
 
 #
 # This is the build convenience target.
 #
-uclibcnotimpl: $(uclibcnotimpl_BUILD_DIR)/.built
+uclibcnotimpl: $(UCLIBCNOTIMPL_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(uclibcnotimpl_BUILD_DIR)/.staged: $(uclibcnotimpl_BUILD_DIR)/.built
+$(UCLIBCNOTIMPL_BUILD_DIR)/.staged: $(UCLIBCNOTIMPL_BUILD_DIR)/.built
 	rm -f $@
-	install -m 644 $(uclibcnotimpl_BUILD_DIR)/libuclibcnotimpl.a \
+	install -m 644 $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
 		$(STAGING_LIB_DIR)
 	touch $@
 
-uclibcnotimpl-stage: $(uclibcnotimpl_BUILD_DIR)/.staged
-uclibcnotimpl-toolchain: $(uclibcnotimpl_BUILD_DIR)/.staged
+uclibcnotimpl-stage: $(UCLIBCNOTIMPL_BUILD_DIR)/.staged
+uclibcnotimpl-toolchain: $(UCLIBCNOTIMPL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/uclibcnotimpl
 #
-$(uclibcnotimpl_IPK_DIR)/CONTROL/control:
+$(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: uclibcnotimpl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(uclibcnotimpl_PRIORITY)" >>$@
-	@echo "Section: $(uclibcnotimpl_SECTION)" >>$@
-	@echo "Version: $(uclibcnotimpl_VERSION)-$(uclibcnotimpl_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(uclibcnotimpl_MAINTAINER)" >>$@
-	@echo "Source: $(uclibcnotimpl_SITE)/$(uclibcnotimpl_SOURCE)" >>$@
-	@echo "Description: $(uclibcnotimpl_DESCRIPTION)" >>$@
-	@echo "Depends: $(uclibcnotimpl_DEPENDS)" >>$@
-	@echo "Suggests: $(uclibcnotimpl_SUGGESTS)" >>$@
-	@echo "Conflicts: $(uclibcnotimpl_CONFLICTS)" >>$@
+	@echo "Priority: $(UCLIBCNOTIMPL_PRIORITY)" >>$@
+	@echo "Section: $(UCLIBCNOTIMPL_SECTION)" >>$@
+	@echo "Version: $(UCLIBCNOTIMPL_VERSION)-$(UCLIBCNOTIMPL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(UCLIBCNOTIMPL_MAINTAINER)" >>$@
+	@echo "Source: $(UCLIBCNOTIMPL_SITE)/$(UCLIBCNOTIMPL_SOURCE)" >>$@
+	@echo "Description: $(UCLIBCNOTIMPL_DESCRIPTION)" >>$@
+	@echo "Depends: $(UCLIBCNOTIMPL_DEPENDS)" >>$@
+	@echo "Suggests: $(UCLIBCNOTIMPL_SUGGESTS)" >>$@
+	@echo "Conflicts: $(UCLIBCNOTIMPL_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(uclibcnotimpl_IPK_DIR)/opt/sbin or $(uclibcnotimpl_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UCLIBCNOTIMPL_IPK_DIR)/opt/sbin or $(UCLIBCNOTIMPL_IPK_DIR)/opt/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(uclibcnotimpl_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(uclibcnotimpl_IPK_DIR)/opt/etc/uclibcnotimpl/...
-# Documentation files should be installed in $(uclibcnotimpl_IPK_DIR)/opt/doc/uclibcnotimpl/...
-# Daemon startup scripts should be installed in $(uclibcnotimpl_IPK_DIR)/opt/etc/init.d/S??uclibcnotimpl
+# Libraries and include files should be installed into $(UCLIBCNOTIMPL_IPK_DIR)/opt/{lib,include}
+# Configuration files should be installed in $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/uclibcnotimpl/...
+# Documentation files should be installed in $(UCLIBCNOTIMPL_IPK_DIR)/opt/doc/uclibcnotimpl/...
+# Daemon startup scripts should be installed in $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/S??uclibcnotimpl
 #
 # You may need to patch your application to make it use these locations.
 #
-$(uclibcnotimpl_IPK): $(uclibcnotimpl_BUILD_DIR)/.built
-	rm -rf $(uclibcnotimpl_IPK_DIR) $(BUILD_DIR)/uclibcnotimpl_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(uclibcnotimpl_BUILD_DIR) DESTDIR=$(uclibcnotimpl_IPK_DIR) install-strip
-	install -d $(uclibcnotimpl_IPK_DIR)/opt/lib
-	install -m 644  $(uclibcnotimpl_BUILD_DIR)/libuclibcnotimpl.a \
-		$(uclibcnotimpl_IPK_DIR)/opt/lib/
-#	install -m 644 $(uclibcnotimpl_SOURCE_DIR)/uclibcnotimpl.conf $(uclibcnotimpl_IPK_DIR)/opt/etc/uclibcnotimpl.conf
-#	install -d $(uclibcnotimpl_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(uclibcnotimpl_SOURCE_DIR)/rc.uclibcnotimpl $(uclibcnotimpl_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(uclibcnotimpl_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
-	$(MAKE) $(uclibcnotimpl_IPK_DIR)/CONTROL/control
-#	install -m 755 $(uclibcnotimpl_SOURCE_DIR)/postinst $(uclibcnotimpl_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(uclibcnotimpl_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(uclibcnotimpl_SOURCE_DIR)/prerm $(uclibcnotimpl_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(uclibcnotimpl_IPK_DIR)/CONTROL/prerm
-#	echo $(uclibcnotimpl_CONFFILES) | sed -e 's/ /\n/g' > $(uclibcnotimpl_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(uclibcnotimpl_IPK_DIR)
+$(UCLIBCNOTIMPL_IPK): $(UCLIBCNOTIMPL_BUILD_DIR)/.built
+	rm -rf $(UCLIBCNOTIMPL_IPK_DIR) $(BUILD_DIR)/UCLIBCNOTIMPL_*_$(TARGET_ARCH).ipk
+#	$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR) DESTDIR=$(UCLIBCNOTIMPL_IPK_DIR) install-strip
+	install -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/lib
+	install -m 644  $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
+		$(UCLIBCNOTIMPL_IPK_DIR)/opt/lib/
+#	install -m 644 $(UCLIBCNOTIMPL_SOURCE_DIR)/uclibcnotimpl.conf $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/uclibcnotimpl.conf
+#	install -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/rc.uclibcnotimpl $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
+	$(MAKE) $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control
+#	install -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/postinst $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/prerm $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/prerm
+#	echo $(UCLIBCNOTIMPL_CONFFILES) | sed -e 's/ /\n/g' > $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(UCLIBCNOTIMPL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-uclibcnotimpl-ipk: $(uclibcnotimpl_IPK)
+uclibcnotimpl-ipk: $(UCLIBCNOTIMPL_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
 #
 uclibcnotimpl-clean:
-	rm -f $(uclibcnotimpl_BUILD_DIR)/.built
-	-$(MAKE) -C $(uclibcnotimpl_BUILD_DIR) clean
+	rm -f $(UCLIBCNOTIMPL_BUILD_DIR)/.built
+	-$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
 uclibcnotimpl-dirclean:
-	rm -rf $(BUILD_DIR)/$(uclibcnotimpl_DIR) $(uclibcnotimpl_BUILD_DIR) $(uclibcnotimpl_IPK_DIR) $(uclibcnotimpl_IPK)
+	rm -rf $(BUILD_DIR)/$(UCLIBCNOTIMPL_DIR) $(UCLIBCNOTIMPL_BUILD_DIR) $(UCLIBCNOTIMPL_IPK_DIR) $(UCLIBCNOTIMPL_IPK)
 #
 #
 # Some sanity check for the package.
 #
-uclibcnotimpl-check: $(uclibcnotimpl_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(uclibcnotimpl_IPK)
+uclibcnotimpl-check: $(UCLIBCNOTIMPL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UCLIBCNOTIMPL_IPK)
