@@ -167,6 +167,11 @@ Known bugs:
   See http://wl500g.info/showpost.php?p=34579&postcount=68 how to upgrade
   to alternative "Oleg"  package feed.
 
+* With upgrade to r2220 and later one must take care, that there will
+not be unfinished torrentnt otherwise Transmission will report "hash FAILED".
+Erase such torrents and start over.
+
+
 OpenWRT and Xwrt(OpenWRT for mere mortals) notes:
 
    With whiterussian OpenWRT and Xwrt is fully operational. 
