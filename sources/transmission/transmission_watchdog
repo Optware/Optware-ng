@@ -209,6 +209,7 @@ _update_active()
     fi
     [ ! -e ${ACTIVE} ] && touch ${ACTIVE}
     cat  ${ACTIVE} > /dev/null
+    sleep 5
     [ -f ${PIDFILE} ] && kill -HUP `cat ${PIDFILE}` 
 }
 
