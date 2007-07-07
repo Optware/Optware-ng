@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOKUWIKI_SITE=http://www.splitbrain.org/_media/projects/dokuwiki
-DOKUWIKI_VERSION=2006-03-09e
+DOKUWIKI_VERSION=2007-06-26
 DOKUWIKI_SOURCE=dokuwiki-$(DOKUWIKI_VERSION).tgz
 DOKUWIKI_DIR=dokuwiki-$(DOKUWIKI_VERSION)
 DOKUWIKI_UNZIP=zcat
