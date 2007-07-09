@@ -32,7 +32,7 @@ $(DL_DIR)/$(PERL-SCGI_SOURCE):
 perl-scgi-source: $(DL_DIR)/$(PERL-SCGI_SOURCE) $(PERL-SCGI_PATCHES)
 
 $(PERL-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SCGI_SOURCE) $(PERL-SCGI_PATCHES)
-	make perl-stage
+	make perl-module-build-stage
 	rm -rf $(BUILD_DIR)/$(PERL-SCGI_DIR) $(PERL-SCGI_BUILD_DIR)
 	$(PERL-SCGI_UNZIP) $(DL_DIR)/$(PERL-SCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PERL-SCGI_DIR) $(PERL-SCGI_BUILD_DIR)
