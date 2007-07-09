@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MULTITAIL_SITE=http://www.vanheusden.com/multitail
-MULTITAIL_VERSION=5.0.5
+MULTITAIL_VERSION=5.2.0
 MULTITAIL_SOURCE=multitail-$(MULTITAIL_VERSION).tgz
 MULTITAIL_DIR=multitail-$(MULTITAIL_VERSION)
 MULTITAIL_UNZIP=zcat
