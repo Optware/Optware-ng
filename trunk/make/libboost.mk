@@ -152,7 +152,7 @@ $(LIBBOOST_BUILD_DIR)/.staged: $(LIBBOOST_BUILD_DIR)/.built
 	install -d $(STAGING_INCLUDE_DIR)/boost
 	install $(LIBBOOST_BUILD_DIR)/libs/libboost_* $(STAGING_LIB_DIR)
 	cp -rp $(LIBBOOST_BUILD_DIR)/boost $(STAGING_INCLUDE_DIR)
-	#(cd $(LIBBOOST_BUILD_DIR); \
+#	(cd $(LIBBOOST_BUILD_DIR); \
 		PATH=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)/bin:$$PATH; \
 		BJAM=`find tools/build/jam_src/ -name bjam -a -type f`; \
 		$$BJAM \
