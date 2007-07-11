@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NTP_SITE=http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2
-NTP_VERSION=4.2.4
+NTP_VERSION=4.2.4p3
 NTP_SOURCE=ntp-$(NTP_VERSION).tar.gz
 NTP_DIR=ntp-$(NTP_VERSION)
 NTP_UNZIP=zcat
@@ -36,7 +36,7 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=2
+NTP_IPK_VERSION=1
 
 NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 
