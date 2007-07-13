@@ -27,7 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OWW_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/oww
-OWW_VERSION=0.81.9
+OWW_VERSION=0.82.0
+#OWW_SITE=http://192.168.1.6/~sjm/oww
+#OWW_VERSION=0.82.0
 OWW_SOURCE=oww-$(OWW_VERSION).tar.gz
 OWW_DIR=oww-$(OWW_VERSION)
 OWW_UNZIP=zcat
@@ -42,7 +44,7 @@ OWW_CONFLICTS=
 #
 # OWW_IPK_VERSION should be incremented when the ipk changes.
 #
-OWW_IPK_VERSION=3
+OWW_IPK_VERSION=1
 
 #
 # OWW_CONFFILES should be a list of user-editable files
