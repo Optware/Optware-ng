@@ -36,7 +36,7 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=1
+NTP_IPK_VERSION=2
 
 NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 
@@ -44,7 +44,7 @@ NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
 # NTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpdc-Makefile.in.patch
+NTP_PATCHES=$(NTP_SOURCE_DIR)/ntpdc-Makefile.in.patch $(NTP_SOURCE_DIR)/ntpd-ifupdate2.patch
 
 #
 # If the compilation of the package requires additional
