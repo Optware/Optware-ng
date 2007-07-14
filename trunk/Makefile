@@ -217,7 +217,7 @@ COMMON_CROSS_PACKAGES = \
 	procps proftpd psmisc psutils puppy pure-ftpd pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 quagga quickie quilt \
-	radiusclient-ng rc rcs rdate readline recode recordext \
+	radiusclient-ng rc rcs rdate readline re2c recode recordext \
 	renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends \
