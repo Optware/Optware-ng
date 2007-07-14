@@ -1,0 +1,14 @@
+--- ntp/ntpd/ntp_io.c.orig	2007-05-10 13:06:25.000000000 +0200
++++ ntp/ntpd/ntp_io.c	2007-05-17 15:24:53.000000000 +0200
+@@ -1248,7 +1248,10 @@
+ 		 * with the appropriate socket (our name space is
+ 		 * (ip-address) - NOT (interface name, ip-address))
+ 		 */
+-		iface = getinterface(&interface.sin, INT_WILDCARD);
++		iface = find_addr_in_list(&interface.sin);
++
++		if (iface && iface->flags & INT_WILDCARD)
++			iface = NULL;
+ 		
+ 		if (iface && refresh_interface(iface)) 
+ 		{
