@@ -195,7 +195,7 @@ COMMON_CROSS_PACKAGES = \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microperl minicom \
-	mktemp moblock modutils monit most motion \
+	mktemp moblock moc modutils monit most motion \
 	mod-fastcgi moe monotone mp3blaster mpack mpage mpc mpd \
 	mpg123 mrtg msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
