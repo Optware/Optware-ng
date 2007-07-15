@@ -1,10 +1,11 @@
 # Packages that do not work for uclibc
+# moc - conflicting types for '__glibc_strerror_r'
 UCLIBC_BROKEN_PACKAGES = \
 	 bzflag \
 	 fcgi fish \
 	 gnu-smalltalk gtk ice iptables jabberd \
 	 jamvm launchtool ldconfig libstdc++ \
-	 moe monotone mtr \
+	 moc moe monotone mtr \
 	 nfs-server nfs-utils nginx \
 	 pango \
 	 qemu qemu-libc-i386 quickie sm \
