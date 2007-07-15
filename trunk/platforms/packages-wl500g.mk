@@ -20,7 +20,8 @@ BROKEN_PACKAGES = \
 	 libmtp libopensync libtorrent \
 	 loudmouth \
 	 ltrace \
-	 mc mcabber mdadm minicom mod-fastcgi mod-python \
+	 mc mcabber mdadm minicom moc \
+	 mod-fastcgi mod-python \
 	 msynctool mutt \
 	 ncmpc ncursesw netatalk newt nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
