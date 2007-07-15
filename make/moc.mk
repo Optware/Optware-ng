@@ -57,6 +57,7 @@ MOC_LDFLAGS=
 
 ifneq ($(TARGET_CC), $(HOSTCC))
 MOC_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes \
+ac_cv_func_strerror_r=yes \
 PATH=$(STAGING_PREFIX)/bin:$$PATH
 #ac_cv_prog_CURL_CONFIG=$(STAGING_PREFIX)/bin/curl-config
 endif
