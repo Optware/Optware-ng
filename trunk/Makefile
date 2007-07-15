@@ -188,8 +188,9 @@ COMMON_CROSS_PACKAGES = \
 	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
-	libshout libsigc++ libstdc++ libtasn1 libtiff libtool libtorrent \
-	libupnp libusb libvorbis libvorbisidec libxml2 libxslt lighttpd lirc \
+	libshout libsigc++ libsndfile libstdc++ libtasn1 libtiff libtool \
+	libtorrent libupnp libusb libvorbis libvorbisidec libxml2 libxslt \
+	lighttpd lirc \
 	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
