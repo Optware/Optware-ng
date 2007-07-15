@@ -5,7 +5,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 fcgi fish \
 	 gnu-smalltalk gtk ice iptables jabberd \
 	 jamvm launchtool ldconfig libstdc++ \
-	 moc moe monotone mtr \
+	 moe monotone mtr \
 	 nfs-server nfs-utils nginx \
 	 pango \
 	 qemu qemu-libc-i386 quickie sm \
