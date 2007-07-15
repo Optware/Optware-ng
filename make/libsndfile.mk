@@ -154,6 +154,7 @@ libsndfile: $(LIBSNDFILE_BUILD_DIR)/.built
 $(LIBSNDFILE_BUILD_DIR)/.staged: $(LIBSNDFILE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBSNDFILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sndfile.pc
 	touch $@
 
 libsndfile-stage: $(LIBSNDFILE_BUILD_DIR)/.staged
