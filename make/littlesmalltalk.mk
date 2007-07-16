@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LITTLESMALLTALK_SVN_REPO=https://littlesmalltalk.svn.sourceforge.net/svnroot/littlesmalltalk/lst5
-LITTLESMALLTALK_SVN_REV=0074
+LITTLESMALLTALK_SVN_REV=0075
 #LITTLESMALLTALK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/littlesmalltalk
 LITTLESMALLTALK_VERSION=5.0a08+svn$(LITTLESMALLTALK_SVN_REV)
 LITTLESMALLTALK_SOURCE=littlesmalltalk-$(LITTLESMALLTALK_VERSION).tar.gz
@@ -48,7 +48,7 @@ LITTLESMALLTALK_CONFFILES=/opt/share/littlesmalltalk/LittleSmalltalk.image
 # LITTLESMALLTALK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LITTLESMALLTALK_PATCHES=
+#LITTLESMALLTALK_PATCHES=$(LITTLESMALLTALK_SOURCE_DIR)/endianness.patch
 
 #
 # If the compilation of the package requires additional
@@ -125,9 +125,13 @@ littlesmalltalk-source: $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) $(LITTLESMALLTALK_PA
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LITTLESMALLTALK_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) # make/littlesmalltalk.mk
+$(LITTLESMALLTALK_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) $(LITTLESMALLTALK_PATCHES) make/littlesmalltalk.mk
 	rm -rf $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_HOST_BUILD_DIR)
 	$(LITTLESMALLTALK_UNZIP) $(DL_DIR)/$(LITTLESMALLTALK_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(LITTLESMALLTALK_PATCHES)" ; \
+		then cat $(LITTLESMALLTALK_PATCHES) | \
+		patch -d $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) -p0 ; \
+	fi
 	if test "$(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(LITTLESMALLTALK_HOST_BUILD_DIR)" ; \
 		then mv $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_HOST_BUILD_DIR) ; \
 	fi
