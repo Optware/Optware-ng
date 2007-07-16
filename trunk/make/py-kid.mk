@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-KID_VERSION=0.9.5
-PY-KID_SITE=http://www.kid-templating.org/dist/$(PY-KID_VERSION)
+PY-KID_VERSION=0.9.6
+PY-KID_SITE=http://cheeseshop.python.org/packages/source/k/kid
 PY-KID_SOURCE=kid-$(PY-KID_VERSION).tar.gz
 PY-KID_DIR=kid-$(PY-KID_VERSION)
 PY-KID_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-KID_CONFLICTS=
 #
 # PY-KID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-KID_IPK_VERSION=2
+PY-KID_IPK_VERSION=1
 
 #
 # PY-KID_CONFFILES should be a list of user-editable files
