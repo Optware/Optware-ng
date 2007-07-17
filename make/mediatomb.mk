@@ -22,7 +22,7 @@
 #
 #MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
 #MEDIATOMB_SVN_REV=1096
-MEDIATOMB_VERSION=0.9.1
+MEDIATOMB_VERSION=0.10.0
 MEDIATOMB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mediatomb
 MEDIATOMB_SOURCE=mediatomb-$(MEDIATOMB_VERSION).tar.gz
 MEDIATOMB_DIR=mediatomb-$(MEDIATOMB_VERSION)
@@ -193,6 +193,7 @@ endif
 		--with-magic-libs=$(STAGING_LIB_DIR) \
 		--with-sqlite3-h=$(STAGING_INCLUDE_DIR) \
 		--with-sqlite3-libs=$(STAGING_LIB_DIR) \
+		--disable-inotify \
 		--disable-nls \
 		--disable-static \
 	)
