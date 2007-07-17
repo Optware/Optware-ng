@@ -19,13 +19,14 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=2
+MC_IPK_VERSION=3
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MC_PATCHES=$(MC_SOURCE_DIR)/doc-Makefile.in.patch
+MC_PATCHES=$(MC_SOURCE_DIR)/doc-Makefile.in.patch \
+$(MC_SOURCE_DIR)/src-man2hlp.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -118,16 +119,18 @@ mc-unpack: $(MC_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(MC_BUILD_DIR)/src/mc: $(MC_BUILD_DIR)/.configured
-	rm -f $(MC_BUILD_DIR)/src/mc
-	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(MC_BUILD_DIR)
+$(MC_BUILD_DIR)/.built: $(MC_BUILD_DIR)/.configured
+	rm -f $@
+	cd $(MC_BUILD_DIR)/src && \
+		$(HOSTCC) -o man2hlp.host man2hlp.c
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(MC_BUILD_DIR)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-mc: $(MC_BUILD_DIR)/src/mc
+mc: $(MC_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer

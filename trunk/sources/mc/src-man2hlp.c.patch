@@ -1,0 +1,64 @@
+--- mc/src/man2hlp.c.orig	2007-07-17 15:35:45.000000000 -0700
++++ mc/src/man2hlp.c	2007-07-17 15:38:09.000000000 -0700
+@@ -17,15 +17,13 @@
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.  */
+ 
+-#include <config.h>
++// #include <config.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <stdarg.h>
+ #include <string.h>
+ 
+-#include <glib.h>
+ #include "help.h"
+-#include "glibcompat.h"
+ 
+ #define BUFFER_SIZE 256
+ 
+@@ -143,7 +141,7 @@
+ 
+     f = fopen (filename, flags);
+     if (f == NULL) {
+-	g_snprintf (tmp, sizeof (tmp), "man2hlp: Cannot open file \"%s\"",
++	snprintf (tmp, sizeof (tmp), "man2hlp: Cannot open file \"%s\"",
+ 		    filename);
+ 	perror (tmp);
+ 	exit (3);
+@@ -287,7 +285,7 @@
+     char buffer[BUFFER_SIZE];
+ 
+     va_start (args, format);
+-    g_vsnprintf (buffer, sizeof (buffer), format, args);
++    vsnprintf (buffer, sizeof (buffer), format, args);
+     va_end (args);
+     print_string (buffer);
+ }
+@@ -581,7 +579,7 @@
+     } else {
+ 	/* Other commands are ignored */
+ 	char warn_str[BUFFER_SIZE];
+-	g_snprintf (warn_str, sizeof (warn_str),
++	snprintf (warn_str, sizeof (warn_str),
+ 		    "Warning: unsupported command %s", buffer);
+ 	print_error (warn_str);
+ 	return;
+@@ -612,7 +610,7 @@
+ 	/* Bold text or italics text */
+ 	if (buffer[0] == '.' && (buffer[1] == 'I' || buffer[1] == 'B'))
+ 	    for (buffer += 2; *buffer == ' ' || *buffer == '\t'; buffer++);
+-	g_strlcpy (old, buffer, sizeof (old));
++	strncpy (old, buffer, sizeof (old));
+ 	link_flag = 3;
+ 	break;
+     case 3:
+@@ -810,7 +808,7 @@
+ 	    }
+ 	}
+ 	if (!found) {
+-	    g_snprintf (buffer, sizeof (buffer), "Stale link \"%s\"",
++	    snprintf (buffer, sizeof (buffer), "Stale link \"%s\"",
+ 			current_link->linkname);
+ 	    c_in = current_link->filename;
+ 	    in_row = current_link->line;
