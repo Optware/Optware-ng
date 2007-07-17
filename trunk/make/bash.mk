@@ -21,11 +21,14 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BASH_SITE=http://ftp.gnu.org/gnu/bash/
-BASH_VERSION=3.2
-BASH_SOURCE=bash-$(BASH_VERSION).tar.gz
-BASH_DIR=bash-$(BASH_VERSION)
+BASH_VER=3.2
+# must match patch files
+BASH_PATCH_LEVEL=17
+BASH_VERSION=$(BASH_VER).$(BASH_PATCH_LEVEL)
+BASH_SOURCE=bash-$(BASH_VER).tar.gz
+BASH_DIR=bash-$(BASH_VER)
 BASH_UNZIP=zcat
-BASH_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
+BASH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BASH_DESCRIPTION=A bourne style shell
 BASH_SECTION=shell
 BASH_PRIORITY=optional
@@ -40,13 +43,13 @@ BASH_CONFLICTS=
 #
 # BASH_IPK_VERSION should be incremented when the ipk changes.
 #
-BASH_IPK_VERSION=3
+BASH_IPK_VERSION=1
 #
 # BASH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.2-patches/bash32-* \
-	$(BASH_SOURCE_DIR)/builtins-Makefile.in.patch
+#						001 - $(BASH_PATCH_LEVEL)
+BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.2-patches/bash32-*
 
 #
 # If the compilation of the package requires additional
@@ -131,6 +134,7 @@ endif
 		bash_cv_unusable_rtsigs=no \
 		bash_cv_sys_siglist=yes \
 		bash_cv_under_sys_siglist=yes \
+		bash_cv_getcwd_malloc=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
