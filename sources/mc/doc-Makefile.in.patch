@@ -1,11 +1,11 @@
---- mc/doc/Makefile.in.orig	2007-05-31 16:00:38.000000000 -0700
-+++ mc/doc/Makefile.in	2007-05-31 16:01:26.000000000 -0700
-@@ -230,7 +230,7 @@
- SUBDIRS = $(DOC_LINGUAS)
- @USE_MCFS_FALSE@man_MANS = mc.1 mcedit.1 mcview.1
- @USE_MCFS_TRUE@man_MANS = mc.1 mcedit.1 mcview.1 mcserv.8
--pkgdata_DATA = mc.hlp
-+pkgdata_DATA =
- EXTRA_DIST = xnc.hlp
- CLEANFILES = $(pkgdata_DATA)
- all: all-recursive
+--- mc/doc/Makefile.in.orig	2007-07-17 15:50:54.000000000 -0700
++++ mc/doc/Makefile.in	2007-07-17 15:51:23.000000000 -0700
+@@ -637,7 +637,7 @@
+ 
+ 
+ mc.hlp: mc.1 $(srcdir)/xnc.hlp $(top_builddir)/src/man2hlp
+-	- $(top_builddir)/src/man2hlp mc.1 $(srcdir)/xnc.hlp mc.hlp
++	- $(top_builddir)/src/man2hlp.host mc.1 $(srcdir)/xnc.hlp mc.hlp
+ # Tell versions [3.59,3.63) of GNU make to not export all variables.
+ # Otherwise a system limit (for SysV at least) may be exceeded.
+ .NOEXPORT:
