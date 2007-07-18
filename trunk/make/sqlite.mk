@@ -41,7 +41,7 @@ SQLITE_CONFLICTS=
 #
 # SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE_IPK_VERSION=1
+SQLITE_IPK_VERSION=2
 
 #
 # SQLITE_CONFFILES should be a list of user-editable files
@@ -59,6 +59,9 @@ SQLITE_IPK_VERSION=1
 #
 SQLITE_CPPFLAGS=
 SQLITE_LDFLAGS=-lreadline -lncurses
+ifeq ($(LIBC_STYLE), uclibc)
+SQLITE_LDFLAGS+=-lm
+endif
 
 #
 # SQLITE_BUILD_DIR is the directory in which the build is done.
