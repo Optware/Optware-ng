@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLITE_VERSION=2.3.3
+PY-SQLITE_VERSION=2.3.5
 PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.3/$(PY-SQLITE_VERSION)
 PY-SQLITE_SOURCE=pysqlite-$(PY-SQLITE_VERSION).tar.gz
 PY-SQLITE_DIR=pysqlite-$(PY-SQLITE_VERSION)
@@ -204,3 +204,9 @@ py-sqlite-clean:
 #
 py-sqlite-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-SQLITE_DIR) $(PY-SQLITE_BUILD_DIR) $(PY-SQLITE_IPK_DIR) $(PY-SQLITE_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-sqlite-check: $(PY-SQLITE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY-SQLITE_IPK)
