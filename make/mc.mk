@@ -162,7 +162,7 @@ $(MC_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(MC_IPK): $(MC_BUILD_DIR)/src/mc
+$(MC_IPK): $(MC_BUILD_DIR)/.built
 	rm -rf $(MC_IPK_DIR) $(MC_IPK)
 	$(MAKE) -C $(MC_BUILD_DIR) DESTDIR=$(MC_IPK_DIR) install-strip
 	$(MAKE) $(MC_IPK_DIR)/CONTROL/control
