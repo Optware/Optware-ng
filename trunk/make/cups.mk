@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS

@@ -7,7 +7,7 @@
   - If using inetutils inetd, do:
     echo "printer stream tcp nowait lp /opt/lib/cups/daemon/cups-lpd cups-lpd" >> /opt/etc/inetd.conf"
   - If wanting to run lpd as standalone server (not recommended), copy
-    /opt/doc/cups/S89lpd to /opt/etc/init.d
+    /opt/doc/cups/S89lpd to /opt/etc/init.d/S89lpd
 (This text can be found in /opt/doc/cups/cups-install.doc)
 [EOF]
 
