@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VARNISH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/varnish
-VARNISH_VERSION=1.0.4
+VARNISH_VERSION=1.1
 VARNISH_SOURCE=varnish-$(VARNISH_VERSION).tar.gz
 VARNISH_DIR=varnish-$(VARNISH_VERSION)
 VARNISH_UNZIP=zcat
@@ -116,6 +116,7 @@ $(VARNISH_BUILD_DIR)/.configured: $(DL_DIR)/$(VARNISH_SOURCE) $(VARNISH_PATCHES)
 		then mv $(BUILD_DIR)/$(VARNISH_DIR) $(VARNISH_BUILD_DIR) ; \
 	fi
 	sed -i -e 's|-lcurses|-lncurses|' $(VARNISH_BUILD_DIR)/bin/*/Makefile.in
+	sed -i -e 's|$$(localstatedir)|$$(DESTDIR)/$$(localstatedir)|' $(VARNISH_BUILD_DIR)/Makefile.in
 	(cd $(VARNISH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VARNISH_CPPFLAGS)" \
