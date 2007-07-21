@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 OPENLDAP_SITE=ftp://ftp.openldap.org/pub/OpenLDAP/openldap-release
-OPENLDAP_VERSION=2.3.35
+OPENLDAP_VERSION=2.3.37
 OPENLDAP_SOURCE=openldap-$(OPENLDAP_VERSION).tgz
 OPENLDAP_DIR=openldap-$(OPENLDAP_VERSION)
 OPENLDAP_UNZIP=zcat
