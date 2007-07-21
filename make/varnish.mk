@@ -54,6 +54,9 @@ VARNISH_IPK_VERSION=1
 #
 VARNISH_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 VARNISH_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+VARNISH_LDFLAGS+=-lm
+endif
 
 #
 # VARNISH_BUILD_DIR is the directory in which the build is done.
