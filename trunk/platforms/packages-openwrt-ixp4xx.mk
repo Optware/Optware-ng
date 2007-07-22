@@ -25,6 +25,5 @@ BROKEN_PACKAGES = \
 	transcode tzwatch \
 	uemacs usbutils util-linux \
 	vsftpd vte \
-	xt xmu xauth xaw xchat xterm \
-	$(PERL_PACKAGES) \
+	xt xmu xauth xaw xchat xterm
 
