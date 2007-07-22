@@ -49,9 +49,10 @@ PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 #
 PERL_CPPFLAGS=
 PERL_ARCH=$(strip \
+    $(if $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)), armv5teb-linux, \
     $(if $(filter armeb, $(TARGET_ARCH)), armv5b-linux, \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
-    $(TARGET_ARCH)-linux)))
+    $(TARGET_ARCH)-linux))))
 PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
 
 #
