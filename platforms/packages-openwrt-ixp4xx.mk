@@ -14,11 +14,11 @@ BROKEN_PACKAGES = \
 	ice imagemagick \
 	jamvm \
 	kismet \
-	lame launchtool ldconfig libnsl libopensync \
+	lame launchtool ldconfig libopensync \
 	moc monotone msynctool mtr multitail \
 	nfs-server nfs-utils nginx ntop \
 	oleo obexftp \
-	pango par2cmdline phoneme-advanced player postfix puppy \
+	pango par2cmdline phoneme-advanced player puppy \
 	qemu qemu-libc-i386 quagga quickie \
 	rrdcollect rrdtool \
 	sm squeak strace \

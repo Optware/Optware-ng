@@ -10,8 +10,9 @@ LIBNSL_VERSION=$(strip \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), 2.3.90, \
         $(if $(filter ts72xx, $(OPTWARE_TARGET)), 2.3.2, \
         $(if $(filter wl500g, $(OPTWARE_TARGET)), 0.9.19, \
+        $(if $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)), 0.9.28, \
         $(if $(filter uclibc, $(LIBC_STYLE)), $(UCLIBC-OPT_VERSION), \
-        2.2.5)))))))
+        2.2.5))))))))
 
 LIBNSL_DIR=libnsl-$(LIBNSL_VERSION)
 LIBNSL_LIBNAME=libnsl
