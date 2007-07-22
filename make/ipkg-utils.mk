@@ -128,5 +128,5 @@ ipkg-utils-dirclean:
 
 IPKG_BUILDPACKAGE := PATH=$(TARGET_PATH) ipkg-buildpackage -c -o root -g root
 IPKG_BUILD := PATH=$(TARGET_PATH) TAR_OPTIONS=--format=ustar ipkg-build -c -o root -g root
-IPKG_MAKE_INDEX := PATH=$(TARGET_PATH) ipkg-make-index
+IPKG_MAKE_INDEX := PATH=$(TARGET_PATH) TAR_OPTIONS=--wildcards ipkg-make-index
 
