@@ -78,7 +78,14 @@ endif
 # compilation or linking flags, then list them here.
 #
 CUPS_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+CUPS_PATCHES+=$(CUPS_SOURCE_DIR)/filter-image-colorspace-c-cbrt.patch
+CUPS_CPPFLAGS+=-fno-builtin-ceil -fno-builtin-cbrt
+endif
 CUPS_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+CUPS_LDFLAGS+=-lm
+endif
 
 #
 # CUPS_BUILD_DIR is the directory in which the build is done.
@@ -147,6 +154,9 @@ endif
 	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(CUPS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+	sed -i -e 's/cbrt(/cbrtf(/' $(CUPS_BUILD_DIR)/filter/image-colorspace.c
+endif
 	(cd $(CUPS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \

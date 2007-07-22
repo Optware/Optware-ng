@@ -6,7 +6,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	asterisk \
-	chillispot cups \
+	chillispot \
 	ecl erlang erl-yaws \
 	fcgi ficy fish ftpd-topfield \
 	gdb gnu-smalltalk gnugo gnuplot gtk \
