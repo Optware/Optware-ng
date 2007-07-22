@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	pango par2cmdline phoneme-advanced player postfix puppy \
 	qemu qemu-libc-i386 quagga quickie \
 	rrdcollect rrdtool \
-	samba screen sm squeak strace \
+	samba sm squeak strace \
 	transcode tzwatch \
 	uemacs usbutils util-linux \
 	vsftpd vte \
