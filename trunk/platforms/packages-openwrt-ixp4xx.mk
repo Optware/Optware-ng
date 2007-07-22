@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	pango par2cmdline phoneme-advanced player puppy \
 	qemu qemu-libc-i386 quagga quickie \
 	rrdcollect rrdtool \
-	sm squeak \
+	sm \
 	transcode \
 	uemacs usbutils util-linux \
 	vsftpd vte \

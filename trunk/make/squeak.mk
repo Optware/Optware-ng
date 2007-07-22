@@ -65,6 +65,9 @@ endif
 # compilation or linking flags, then list them here.
 #
 SQUEAK_CPPFLAGS=-O3
+ifeq ($(NO_BUILTIN_MATH), true)
+SQUEAK_CPPFLAGS+= -fno-builtin-cos -fno-builtin-exp -fno-builtin-sin
+endif
 SQUEAK_LDFLAGS=
 
 #
