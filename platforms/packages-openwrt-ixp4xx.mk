@@ -20,7 +20,6 @@ BROKEN_PACKAGES = \
 	oleo obexftp \
 	pango par2cmdline phoneme-advanced puppy \
 	qemu qemu-libc-i386 quagga quickie \
-	rrdcollect rrdtool \
 	sm \
 	transcode \
 	uemacs usbutils util-linux \

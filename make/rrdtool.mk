@@ -48,7 +48,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=1
+RRDTOOL_IPK_VERSION=2
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -67,6 +67,10 @@ endif
 #
 RRDTOOL_CPPFLAGS= -I$(STAGING_INCLUDE_DIR)/libart-2.0 -I$(STAGING_INCLUDE_DIR)/freetype2
 RRDTOOL_LDFLAGS=
+ifdef NO_BUILTIN_MATH
+RRDTOOL_CPPFLAGS+=-fno-builtin-ceil
+RRDTOOL_LDFLAGS+=-lm
+endif
 
 #
 # RRDTOOL_BUILD_DIR is the directory in which the build is done.
