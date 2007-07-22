@@ -110,7 +110,7 @@ tzwatch-source: $(DL_DIR)/$(TZWATCH_SOURCE) $(TZWATCH_PATCHES)
 $(TZWATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(TZWATCH_SOURCE) $(TZWATCH_PATCHES) make/tzwatch.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TZWATCH_DIR) $(TZWATCH_BUILD_DIR)
-	$(TZWATCH_UNZIP) $(DL_DIR)/$(TZWATCH_SOURCE) | tar -C $(BUILD_DIR) -xvf - $(TZWATCH_DIR)/tzwatch*
+	$(TZWATCH_UNZIP) $(DL_DIR)/$(TZWATCH_SOURCE) | tar -C $(BUILD_DIR) --wildcards -xvf - $(TZWATCH_DIR)/tzwatch*
 	if test -n "$(TZWATCH_PATCHES)" ; \
 		then cat $(TZWATCH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TZWATCH_DIR) -p0 ; \

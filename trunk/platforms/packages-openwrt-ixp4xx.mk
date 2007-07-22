@@ -22,7 +22,7 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 quagga quickie \
 	rrdcollect rrdtool \
 	sm squeak \
-	transcode tzwatch \
+	transcode \
 	uemacs usbutils util-linux \
 	vsftpd vte \
 	xt xmu xauth xaw xchat xterm
