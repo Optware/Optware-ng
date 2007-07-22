@@ -40,7 +40,7 @@ PLAYER_CONFLICTS=
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION=1
+PLAYER_IPK_VERSION=2
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -59,7 +59,7 @@ PLAYER_PATCHES+=$(PLAYER_SOURCE_DIR)/uint.patch
 #
 PLAYER_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
-PLAYER_CPPFLAGS+=-fno-builtin-round
+PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint
 endif
 PLAYER_LDFLAGS=
 
