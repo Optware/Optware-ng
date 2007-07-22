@@ -100,7 +100,7 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
                 patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
         fi
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
-ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 slugosbe, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 slugosbe openwrt-ixp4xx, $(OPTWARE_TARGET)))
 	sed -i -e '/CTL_PROC/d' $(STRACE_BUILD_DIR)/system.c
 endif
 	(cd $(STRACE_BUILD_DIR); \
