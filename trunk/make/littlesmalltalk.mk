@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LITTLESMALLTALK_SVN_REPO=https://littlesmalltalk.svn.sourceforge.net/svnroot/littlesmalltalk/lst5
-LITTLESMALLTALK_SVN_REV=0075
+LITTLESMALLTALK_SVN_REV=0086
 #LITTLESMALLTALK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/littlesmalltalk
 LITTLESMALLTALK_VERSION=5.0a08+svn$(LITTLESMALLTALK_SVN_REV)
 LITTLESMALLTALK_SOURCE=littlesmalltalk-$(LITTLESMALLTALK_VERSION).tar.gz
@@ -54,7 +54,7 @@ LITTLESMALLTALK_CONFFILES=/opt/share/littlesmalltalk/LittleSmalltalk.image
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LITTLESMALLTALK_CPPFLAGS=
+LITTLESMALLTALK_CPPFLAGS=-DNETWORK_BYTE_ORDER
 LITTLESMALLTALK_LDFLAGS=
 
 #
@@ -135,7 +135,7 @@ $(LITTLESMALLTALK_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LITTLESMA
 	if test "$(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR)" != "$(LITTLESMALLTALK_HOST_BUILD_DIR)" ; \
 		then mv $(HOST_BUILD_DIR)/$(LITTLESMALLTALK_DIR) $(LITTLESMALLTALK_HOST_BUILD_DIR) ; \
 	fi
-	$(MAKE) -C $(LITTLESMALLTALK_HOST_BUILD_DIR)
+	$(MAKE) -C $(LITTLESMALLTALK_HOST_BUILD_DIR) CPPFLAGS=-DNETWORK_BYTE_ORDER
 	touch $@
 
 ifeq ($(TARGET_CC), $(HOSTCC))
@@ -166,7 +166,8 @@ $(LITTLESMALLTALK_BUILD_DIR)/.built: $(LITTLESMALLTALK_BUILD_DIR)/.configured
 		UNAME_O=Linux \
 		UNAME_M=$(TARGET_ARCH) \
 		CC=$(TARGET_CC) \
-		CPPFLAGS='-DDefaultImageFile=\"/opt/share/littlesmalltalk/LittleSmalltalk.image\"' \
+		CPPFLAGS='-DNETWORK_BYTE_ORDER -DDefaultImageFile=\"/opt/share/littlesmalltalk/LittleSmalltalk.image\"' \
+		LDFLAGS_EXTRA="$(STAGING_LDFLAGS) $(LITTLESMALLTALK_LDFLAGS)" \
 		;
 	touch $@
 
