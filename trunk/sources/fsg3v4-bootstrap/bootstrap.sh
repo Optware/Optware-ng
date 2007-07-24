@@ -28,7 +28,14 @@ ipkg install openssl.ipk || exit 1
 echo "Installing wget..."
 ipkg install wget-ssl.ipk || exit 1
 
-echo "Overwriting /etc/ipkg.conf..."
-echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/fsg3v4/cross/stable" >/etc/ipkg.conf
+[ ! -d /etc/ipkg ] && mkdir -p /etc/ipkg
+if [ ! -e /etc/ipkg/cross-feed.conf ]
+then
+	echo "Removing /etc/ipkg.conf..."
+	rm -f /etc/ipkg.conf
+	echo "Creating /etc/ipkg/cross-feed.conf..."
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/fsg3v4/cross/stable" \
+		>/etc/ipkg/cross-feed.conf
+fi
 
 echo "Setup complete."
