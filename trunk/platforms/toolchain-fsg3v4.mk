@@ -24,6 +24,6 @@ TOOLCHAIN_SOURCE = arm-eabi-lebe.tar.bz2
 
 # Install /usr/local/arm-linux/sys-include from this one into
 # /opt/crosstool/gcc-2005q3-glibc-2.3.5/armeb-none-linux-gnueabi/include
-TOOLCHAIN_SOURCE = arm-arm-linux-tools-20031127.tar.gz
+TOOLCHAIN_SOURCE2 = arm-linux-tools-20031127.tar.gz
 
 toolchain:
