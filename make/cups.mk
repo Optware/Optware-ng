@@ -139,7 +139,7 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
+$(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage
 	$(MAKE) libjpeg-stage libtiff-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
@@ -154,9 +154,6 @@ endif
 	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(CUPS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
-	sed -i -e 's/cbrt(/cbrtf(/' $(CUPS_BUILD_DIR)/filter/image-colorspace.c
-endif
 	(cd $(CUPS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
