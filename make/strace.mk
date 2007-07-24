@@ -28,18 +28,17 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=5
+STRACE_IPK_VERSION=6
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 #
+STRACE_PATCHES=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
 ifeq ($(TARGET_ARCH), armeb)
 #http://www.fluff.org/ben/patches/strace/strace-fix-arm-bad-syscall.patch
-STRACE_PATCHES=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
-else
-STRACE_PATCHES=
+STRACE_PATCHES+=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
 endif
 
 #
@@ -100,9 +99,6 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
                 patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
         fi
 	mv $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
-ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 slugosbe openwrt-ixp4xx, $(OPTWARE_TARGET)))
-	sed -i -e '/CTL_PROC/d' $(STRACE_BUILD_DIR)/system.c
-endif
 	(cd $(STRACE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STRACE_CPPFLAGS)" \
