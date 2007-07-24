@@ -112,7 +112,7 @@ sub parse_Packages
     while(<IN>) {
 	my $doclean=0;
 	my $pkg_fn;
-	my $v;
+	my $v='';
 
 	chomp;
 	next unless /^Package: (.*)/;
