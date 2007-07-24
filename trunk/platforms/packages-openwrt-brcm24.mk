@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	aspell bogofilter \
 	bluez-utils \
-	ecl erlang erl-yaws \
+	ecl erl-yaws \
 	fixesext fuppes gambit-c gdb \
 	gnugo gsnmp gphoto2 libgphoto2 libcdio \
 	libdvb libextractor libmtp libnsl libopensync loudmouth ltrace \

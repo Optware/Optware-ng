@@ -86,6 +86,11 @@ endif
 # compilation or linking flags, then list them here.
 #
 ERLANG_CPPFLAGS=
+ifdef NO_BUILTIN_MATH
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-ixp4xx, $(OPTWARE_TARGET)))
+ERLANG_CPPFLAGS+=-DNO_ACOSH -DNO_ASINH -DNO_ATANH -DNO_ERF -DNO_ERFC
+endif
+endif
 ERLANG_LDFLAGS=
 ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
 ERLANG_CONFIG_ARGS+=$(ERLANG_HIPE)
