@@ -165,8 +165,8 @@ else
 	ln -s $(PERL_HOST_MINIPERL) $(PERL_BUILD_DIR)/hostperl
 	(cd $(PERL_BUILD_DIR)/Cross; \
 		rm -f config; \
-		printf "### Target Arch\nARCH = $(GNU_TARGET_NAME)\n" | sed 's/-linux$$//' > config; \
-		printf "### Target OS\nOS = linux\n" >> config; \
+		printf "### Target Arch\nARCH = `echo $(GNU_TARGET_NAME) | sed s/-linux.*//`\n" > config; \
+		printf "### Target OS\nOS = `echo $(GNU_TARGET_NAME) | sed s/.*-linux/linux/`\n" >> config; \
 		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) ] && \
 		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
 		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) ] && \
