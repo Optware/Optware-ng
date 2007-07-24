@@ -9,7 +9,7 @@ TARGET_CROSS_TOP = /opt/crosstool/gcc-2005q3-glibc-2.3.5
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
 TARGET_LDFLAGS = 
-TARGET_CUSTOM_FLAGS= -pipe -I$(TARGET_CROSS_TOP)/sys-include
+TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 #
@@ -23,7 +23,7 @@ TOOLCHAIN_SITE = http://www.openfsg.com/download/
 TOOLCHAIN_SOURCE = arm-eabi-lebe.tar.bz2
 
 # Install /usr/local/arm-linux/sys-include from this one into
-# /opt/crosstool/gcc-2005q3-glibc-2.3.5/sys-include
+# /opt/crosstool/gcc-2005q3-glibc-2.3.5/armeb-none-linux-gnueabi/include
 TOOLCHAIN_SOURCE = arm-arm-linux-tools-20031127.tar.gz
 
 toolchain:
