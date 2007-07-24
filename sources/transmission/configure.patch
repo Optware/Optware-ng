@@ -1,0 +1,46 @@
+--- Transmission-0.7/configure	2007-07-24 08:58:51.000000000 +0200
++++ transmission/configure	2007-07-24 10:14:06.000000000 +0200
+@@ -80,6 +80,12 @@
+     echo "Could not find a working compiler"
+     exit 1
+   fi
++  if runcmd ./testconf
++  then
++    cross_compiling=no
++  else
++    cross_compiling=yes
++  fi
+   rm -f testconf*
+ }
+ 
+@@ -499,15 +505,25 @@
+ # Math functions
+ #
+ lm_test
+-lrintf_test
++if test "$cross_compiling" = yes
++then
++  echo "Cross compiling: consider addding -DHAVE_LRINTF to CFLAGS"
++else
++  lrintf_test
++fi
+ 
+ #
+ # String functions
+ #
+-strlcpy_test
+-strlcat_test
+-asprintf_test
+-snprintf_test
++if test "$cross_compiling" = yes
++then
++  echo "Cross compiling: consider addding -DHAVE_STRLCPY -DHAVE_STRLCAT -DHAVE_ASPRINTF to CFLAGS"
++else
++  strlcpy_test
++  strlcat_test
++  asprintf_test
++  snprintf_test
++fi
+ libgen_test
+ 
+ #

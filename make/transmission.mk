@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.7
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=2295
+TRANSMISSION_SVN_REV=2474
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -38,7 +38,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -48,7 +48,8 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # TRANSMISSION_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.patch 
+TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.patch \
+	$(TRANSMISSION_SOURCE_DIR)/configure.patch \
 
 # Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
@@ -57,7 +58,10 @@ TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSMISSION_CPPFLAGS= -O3
+TRANSMISSION_CPPFLAGS= -O3 -DHAVE_ASPRINTF
+ifeq ($(LIBC_STYLE), uclibc)
+TRANSMISSION_CPPFLAGS+= -DHAVE_STRLCAT -DHAVE_STRLCPY
+endif
 TRANSMISSION_LDFLAGS=
 
 #
