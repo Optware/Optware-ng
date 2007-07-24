@@ -1,0 +1,12 @@
+--- strace/system.c.orig	2007-07-23 20:50:58.000000000 -0700
++++ strace/system.c	2007-07-23 20:51:45.000000000 -0700
+@@ -1578,7 +1578,9 @@
+ 	{ CTL_KERN, "CTL_KERN" },
+ 	{ CTL_VM, "CTL_VM" },
+ 	{ CTL_NET, "CTL_NET" },
++#ifdef CTL_PROC
+ 	{ CTL_PROC, "CTL_PROC" },
++#endif
+ 	{ CTL_FS, "CTL_FS" },
+ 	{ CTL_DEBUG, "CTL_DEBUG" },
+ 	{ CTL_DEV, "CTL_DEV" },
