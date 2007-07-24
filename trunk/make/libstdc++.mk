@@ -6,9 +6,10 @@
 
 LIBSTDC++_VERSION=$(strip \
 	$(if $(filter slugosbe, $(OPTWARE_TARGET)), 6.0.8, \
+	$(if $(filter fsg3v4, $(OPTWARE_TARGET)), 6.0.3, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
 	$(if $(filter ds101 ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
-	5.0.7))))
+	5.0.7)))))
 LIBSTDC++_MAJOR=$(shell echo $(LIBSTDC++_VERSION) | sed 's/\..*//')
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
