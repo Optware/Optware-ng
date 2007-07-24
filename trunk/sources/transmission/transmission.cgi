@@ -598,7 +598,7 @@ This is quick explanation of the buttons:
 <dt>Pur<u>g</u>e<dd>removes all logs from completed torrents and clean removed torrents
 <dt><u>W</u>atchdog<dd>forces transmission_watchdog processing
 <dt>Pau<u>s</u>e<dd>all active torrent processing should stop/resume imediately
-<dt><u>R</u>emove<dd>mark torrent for purging
+<dt>Remo<u>v</u>e<dd>mark torrent for purging
 <dt><u>I</u>nfo<dd>shows selected torrent info (file content and size)
 <dt>Scr<u>a</u>pe<dd>Update scrape info (seeders, leechers, downloaded)
      from tracker for downloaded torrents
@@ -657,7 +657,7 @@ Content-type: text/html
 <input type=submit accesskey=y name=ACTION value=Bypass>
 <input type=submit accesskey=s name=ACTION value=Pause>
 <input type=submit accesskey=w name=ACTION value=Watchdog>
-<input type=submit accesskey=r name=ACTION value=Remove>
+<input type=submit accesskey=v name=ACTION value=Remove>
 <input type=submit accesskey=g name=ACTION value=Purge>
 <input type=submit accesskey=i name=ACTION value=Info>
 <input type=submit accesskey=a name=ACTION value=Scrape>

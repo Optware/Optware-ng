@@ -251,17 +251,17 @@ static char * status(tr_torrent_t *tor)
         snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s)", 100.0 * s->percentDone,
-                  s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
-                  s->peersUploading, s->rateDownload,
-                  s->peersDownloading, s->rateUpload );
+                  s->peersConnected, ( s->peersConnected == 1 ) ? "" : "s",
+                  s->peersSendingToUs, s->rateDownload,
+                  s->peersGettingFromUs, s->rateUpload );
       else
         snprintf( string, STATUS_WIDTH,
                   "Progress: %.2f %%, %d peer%s, dl from %d (%.2f KB/s), "
                   "ul to %d (%.2f KB/s) %d:%02d remaining",
                   100.0 * s->percentDone,
-                  s->peersTotal, ( s->peersTotal == 1 ) ? "" : "s",
-                  s->peersUploading, s->rateDownload,
-                  s->peersDownloading, s->rateUpload,
+                  s->peersConnected, ( s->peersConnected == 1 ) ? "" : "s",
+                  s->peersSendingToUs, s->rateDownload,
+                  s->peersGettingFromUs, s->rateUpload,
                   s->eta / 3600, (s->eta / 60) % 60
                   );
     }
@@ -269,13 +269,15 @@ static char * status(tr_torrent_t *tor)
     {
       chars = snprintf( string, STATUS_WIDTH,
                         "Seeding, uploading to %d of %d peer(s), %.2f KB/s",
-                        s->peersDownloading, s->peersTotal,
+                        s->peersGettingFromUs, s->peersTotal,
                         s->rateUpload );
     }
   else if (s->status & TR_STATUS_STOPPING)
     snprintf( string, STATUS_WIDTH, "Stopping...");
   else if (s->status & TR_STATUS_STOPPED )
     snprintf( string, STATUS_WIDTH, "Stopped (%.2f %%)", 100 * s->percentDone);
+  else if( s->status & TR_STATUS_INACTIVE )
+    snprintf( string, STATUS_WIDTH, "Inactive");
   else
     string[0] = '\0';
 
@@ -489,8 +491,8 @@ int main( int argc, char ** argv )
   openlog(cp, LOG_NDELAY|LOG_PID, LOG_USER);
   
   syslog(LOG_INFO,
-         "Transmission daemon %s (%d) started - http://transmission.m0k.org/",
-         VERSION_STRING, VERSION_REVISION );
+         "Transmission daemon %s started - http://transmission.m0k.org/",
+         LONG_VERSION_STRING );
   
   /*  */
   if (pidfile != NULL)
@@ -513,8 +515,10 @@ int main( int argc, char ** argv )
       tr_setMessageLevel(TR_MSG_ERR);
     }
   tr_setBindPort( h, bindPort );
-  tr_setGlobalUploadLimit( h, uploadLimit );
-  tr_setGlobalDownloadLimit( h, downloadLimit );
+  tr_setGlobalSpeedLimit   ( h, TR_UP,   uploadLimit );
+  tr_setUseGlobalSpeedLimit( h, TR_UP,   uploadLimit > 0 );
+  tr_setGlobalSpeedLimit   ( h, TR_DOWN, downloadLimit );
+  tr_setUseGlobalSpeedLimit( h, TR_DOWN, downloadLimit > 0 );
 
   tr_natTraversalEnable( h, natTraversal);
   
