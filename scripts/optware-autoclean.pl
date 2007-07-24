@@ -112,6 +112,7 @@ sub parse_Packages
     while(<IN>) {
 	my $doclean=0;
 	my $pkg_fn;
+	my $v;
 
 	chomp;
 	next unless /^Package: (.*)/;
@@ -151,7 +152,7 @@ sub parse_Packages
 	    my $v2="";
 	    $v1=$1 if $dot_mk=~/^\s*${p_pattern}_VERSION\s*:?=\s*(\S*)/m;
 	    $v2=$1 if $dot_mk=~/^\s*${p_pattern}_IPK_VERSION\s*:?=\s*(\S*)/m;
-	    my $v="$v1-$v2";
+	    $v="$v1-$v2";
 	    
 	    # if it seems to have failed, slow check with make query
 	    unless($uploaded_version{$p} eq $v) {
@@ -169,7 +170,12 @@ sub parse_Packages
 	}
 
 	if($doclean) {
-            my @to_rm = ("builds/${p}", "builds/${p}_*.ipk", "builds/${p}-*.ipk", "packages/${p}_*.ipk", "packages/${p}-*.ipk");
+            my @to_rm = ("builds/${p}");
+            my $vglob = '*';
+            # rm only necessary .ipk if version string is simple
+            if ($v =~ /^[\d\.-]*$/) { $vglob = '[0-9.-]*'; }
+            push @to_rm, "builds/${p}_${vglob}.ipk", "builds/${p}-${vglob}.ipk";
+            push @to_rm, "packages/${p}_${vglob}.ipk", "packages/${p}-${vglob}.ipk";
             foreach (`grep '"Package: *[a-zA-Z0-9_-]* *" *>>' make/$p.mk`) {
                 my $subp = (split)[2]; chop $subp;
                 push @to_rm, "builds/${subp}_*.ipk", "packages/${subp}_*.ipk" unless $subp eq $p;
