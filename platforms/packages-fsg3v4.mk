@@ -25,6 +25,10 @@ BROKEN_PACKAGES = \
 	perl phoneme-advanced popt postfix python24 \
 	py-duplicity py-rdiff-backup \
 	qemu qemu-libc-i386 quagga quickie \
-	speex \
-	tcl \
+	samba samba2 scponly snort speex sqsh strace streamripper swi-prolog \
+	tcl textutils \
+	uemacs \
+	vlc vorbis-tools \
+	w3m weechat wput \
+	xinetd \
 	$(PERL_PACKAGES) \
