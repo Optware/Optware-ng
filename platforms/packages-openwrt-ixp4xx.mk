@@ -7,7 +7,7 @@ BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	asterisk \
 	chillispot \
-	ecl erlang erl-yaws \
+	ecl erl-yaws \
 	fcgi ficy fish ftpd-topfield \
 	gdb gnu-smalltalk gnugo gnuplot gtk \
 	hpijs \
