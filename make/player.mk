@@ -112,7 +112,7 @@ player-source: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) # make/player.mk
+$(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) make/player.mk
 	$(MAKE) libjpeg-stage
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
