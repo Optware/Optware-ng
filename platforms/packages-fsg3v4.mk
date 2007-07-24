@@ -4,4 +4,4 @@ SPECIFIC_PACKAGES = \
 
 # Packages that do not work for fsg3v4.
 BROKEN_PACKAGES = \
-
+	abook adns \
