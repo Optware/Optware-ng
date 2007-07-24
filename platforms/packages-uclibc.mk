@@ -6,7 +6,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 gnu-smalltalk gtk ice iptables jabberd \
 	 jamvm launchtool ldconfig libstdc++ \
 	 moe monotone mtr \
-	 nfs-server nfs-utils nginx \
+	 nfs-server nfs-utils \
 	 pango \
 	 qemu qemu-libc-i386 quickie sm \
 	 taglib uemacs vte \

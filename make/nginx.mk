@@ -128,8 +128,7 @@ nginx-source: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
-# make/nginx.mk
+$(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/nginx.mk
 	$(MAKE) openssl-stage pcre-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NGINX_DIR) $(NGINX_BUILD_DIR)
 	$(NGINX_UNZIP) $(DL_DIR)/$(NGINX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -175,6 +174,9 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES)
                 $(NGINX_BUILD_DIR)/objs/Makefile
 ifeq ($(OPTWARE_TARGET), nslu2)
 	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(NGINX_BUILD_DIR)/objs/ngx_auto_config.h
+endif
+ifeq ($(LIBC_STYLE), uclibc)
+	sed -i -e 's/#ifndef NGX_HAVE_GNU_CRYPT_R/#if 0/' $(NGINX_BUILD_DIR)/src/os/unix/ngx_linux_config.h
 endif
 	touch $(NGINX_BUILD_DIR)/.configured
 
