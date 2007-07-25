@@ -16,7 +16,6 @@ BROKEN_PACKAGES = \
 	gnupg gnuplot gnutls gphoto2 grep \
 	hexcurse \
 	icecast iksemel irssi ivorbis-tools \
-	jabberd \
 	launchtool ldconfig libao libgc libgcrypt libgphoto2 libgpg-error \
 	libnsl libpcap librsync libshout logrotate loudmouth ltrace \
 	madplay	mktemp moc monotone most mpack mpd mutt \
