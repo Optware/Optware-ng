@@ -10,23 +10,20 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi atftp \
-	bitlbee busybox \
+	busybox \
 	chillispot \
-	cyrus-imapd \
 	dhcp \
 	ecl eggdrop \
-	fcgi ffmpeg freeradius \
+	fcgi freeradius \
 	gconv-modules gdb \
 	gnuplot \
 	ldconfig \
-	libpcap libshout loudmouth \
-	madplay	mktemp moc monotone mpd \
+	libpcap loudmouth \
+	mktemp monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
 	qemu qemu-libc-i386 quagga quickie \
-	\
 	nzbget snort streamripper \
-	\
 	oleo \
 	openser \
 	strace \
