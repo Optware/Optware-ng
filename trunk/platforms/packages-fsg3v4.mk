@@ -8,6 +8,8 @@ SPECIFIC_PACKAGES = \
 # Second group is config.sub related.
 # Third group are sorted dependency trees.
 BROKEN_PACKAGES = \
+	crosstool-native optware-devel \
+	\
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi atftp \
 	busybox \
