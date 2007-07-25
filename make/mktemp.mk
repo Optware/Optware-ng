@@ -103,12 +103,13 @@ mktemp-source: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MKTEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES)
+$(MKTEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES) make/mktemp.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(MKTEMP_DIR) $(MKTEMP_BUILD_DIR)
 	$(MKTEMP_UNZIP) $(DL_DIR)/$(MKTEMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MKTEMP_PATCHES) | patch -d $(BUILD_DIR)/$(MKTEMP_DIR) -p1
 	mv $(BUILD_DIR)/$(MKTEMP_DIR) $(MKTEMP_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(MKTEMP_BUILD_DIR)/
 	(cd $(MKTEMP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MKTEMP_CPPFLAGS)" \

@@ -108,13 +108,14 @@ streamripper-source: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES)
+$(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES) make/streamripper.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	$(MAKE) libvorbis-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(STREAMRIPPER_BUILD_DIR)
 	$(STREAMRIPPER_UNZIP) $(DL_DIR)/$(STREAMRIPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(STREAMRIPPER_PATCHES) | patch -d $(BUILD_DIR)/$(STREAMRIPPER_DIR) -p1
 	mv $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(STREAMRIPPER_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(STREAMRIPPER_BUILD_DIR)/
 	(cd $(STREAMRIPPER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STREAMRIPPER_CPPFLAGS)" \

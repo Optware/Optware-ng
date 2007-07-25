@@ -19,13 +19,14 @@ BROKEN_PACKAGES = \
 	gnuplot \
 	ldconfig \
 	libpcap loudmouth \
-	mktemp monotone \
+	monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
 	qemu qemu-libc-i386 quagga quickie \
-	nzbget snort streamripper \
+	\
 	oleo \
 	openser \
+	snort
 	strace \
 	swi-prolog \
 	uemacs \
