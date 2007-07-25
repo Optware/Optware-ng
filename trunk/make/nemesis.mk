@@ -115,6 +115,7 @@ $(NEMESIS_BUILD_DIR)/.configured: $(DL_DIR)/$(NEMESIS_SOURCE) $(NEMESIS_PATCHES)
 	if test "$(BUILD_DIR)/$(NEMESIS_DIR)" != "$(NEMESIS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NEMESIS_DIR) $(NEMESIS_BUILD_DIR) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(NEMESIS_BUILD_DIR)/
 	sed -i -e 's| -I/usr/local/include -I/sw/include||' $(NEMESIS_BUILD_DIR)/configure
 	(cd $(NEMESIS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
