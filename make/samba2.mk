@@ -225,6 +225,7 @@ $(SAMBA2_BUILD_DIR)/.configured: $(SAMBA2_HOST_BUILD_DIR)/.built $(DL_DIR)/$(SAM
 	(cd $(SAMBA2_BUILD_DIR)/source; \
 		autoconf configure.in > configure; \
 	)
+	cp -f $(SOURCE_DIR)/common/config.* $(SAMBA2_BUILD_DIR)/source
 	(cd $(SAMBA2_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA2_CPPFLAGS)" \
