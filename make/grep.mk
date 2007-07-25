@@ -50,13 +50,14 @@ $(DL_DIR)/$(GREP_SOURCE):
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
-$(GREP_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE)
+$(GREP_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE) make/grep.mk
 ifneq ($(GREP_VERSION), 2.4.2)
 	$(MAKE) pcre-stage
 endif
 	rm -rf $(BUILD_DIR)/$(GREP_DIR) $(GREP_BUILD_DIR)
 	$(GREP_UNZIP) $(DL_DIR)/$(GREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(GREP_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(GREP_BUILD_DIR)/
 	(cd $(GREP_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GREP_CPPFLAGS)" \
