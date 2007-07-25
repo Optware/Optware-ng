@@ -115,7 +115,7 @@ $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/cal
 	if test "$(BUILD_DIR)/$(CALC_DIR)" != "$(CALC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CALC_DIR) $(CALC_BUILD_DIR) ; \
 	fi
-	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_LIBDIR)/../include|' $(CALC_BUILD_DIR)/Makefile $(CALC_BUILD_DIR)/*/Makefile
+	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_INCDIR)|' $(CALC_BUILD_DIR)/Makefile $(CALC_BUILD_DIR)/*/Makefile
 	sed -i -e 's|/usr/lib/|/opt/lib|' $(CALC_BUILD_DIR)/hist.h
 	touch $(CALC_BUILD_DIR)/longbits.o
 	touch $(CALC_BUILD_DIR)/longbits
@@ -148,7 +148,7 @@ $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(CALC_LDFLAGS)" \
 		CALC_SHAREDIR=/opt/share/calc \
 		BINDIR=/opt/bin \
-		INCDIR=$(TARGET_LIBDIR)/../include \
+		INCDIR=$(TARGET_INCDIR) \
 		MANDIR=/opt/man \
 		LIBDIR=/opt/lib \
 		;
