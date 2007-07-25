@@ -5,7 +5,7 @@ if [ -e /home/.optware ] ; then
     echo "  rm -rf /home/.optware"
     echo "  rm -rf /usr/lib/ipkg"
     echo
-    echo "Then you must restart the bootstrap script."
+    echo "Then you must *reboot* and then restart the bootstrap script."
     exit 1
 fi
 
