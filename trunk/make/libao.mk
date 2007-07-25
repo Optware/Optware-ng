@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBAO_SITE=http://downloads.xiph.org/releases/ao
-LIBAO_VERSION=0.8.6
+LIBAO_VERSION=0.8.8
 LIBAO_SOURCE=libao-$(LIBAO_VERSION).tar.gz
 LIBAO_DIR=libao-$(LIBAO_VERSION)
 LIBAO_UNZIP=zcat
@@ -41,7 +41,7 @@ LIBAO_CONFLICTS=
 #
 # LIBAO_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBAO_IPK_VERSION=2
+LIBAO_IPK_VERSION=1
 
 #
 # LIBAO_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ libao-source: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBAO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES)
+$(LIBAO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBAO_SOURCE) $(LIBAO_PATCHES) make/libao.mk
 	$(MAKE) audiofile-stage esound-stage
 	rm -rf $(BUILD_DIR)/$(LIBAO_DIR) $(LIBAO_BUILD_DIR)
 	$(LIBAO_UNZIP) $(DL_DIR)/$(LIBAO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -187,6 +187,8 @@ $(LIBAO_IPK_DIR)/CONTROL/control:
 $(LIBAO_IPK): $(LIBAO_BUILD_DIR)/.built
 	rm -rf $(LIBAO_IPK_DIR) $(BUILD_DIR)/libao_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBAO_BUILD_DIR) DESTDIR=$(LIBAO_IPK_DIR) install
+	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)/opt/lib/libao.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)/opt/lib/ao/plugins-2/*.so
 	#install -d $(LIBAO_IPK_DIR)/opt/etc/
 	#install -m 644 $(LIBAO_SOURCE_DIR)/libao.conf $(LIBAO_IPK_DIR)/opt/etc/libao.conf
 	#install -d $(LIBAO_IPK_DIR)/opt/etc/init.d
@@ -214,3 +216,9 @@ libao-clean:
 #
 libao-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBAO_DIR) $(LIBAO_BUILD_DIR) $(LIBAO_IPK_DIR) $(LIBAO_IPK)
+
+#
+# Some sanity check for the package.
+#
+libao-check: $(LIBAO_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBAO_IPK)
