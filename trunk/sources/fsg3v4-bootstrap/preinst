@@ -2,10 +2,11 @@
 
 [ -e /opt ] || mkdir /opt
 chmod 755 /opt
-[ -e /home/.optware ] || mkdir -p /home/.optware
-chmod 755 /home/.optware
+[ -e /home/.optware ] && mv /home/.optware /home/.optware-old
+[ -e /home/.optware-fsg3v4 ] || mkdir -p /home/.optware-fsg3v4
+chmod 755 /home/.optware-fsg3v4
 if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
-    mount -o bind /home/.optware /opt
+    mount -o bind /home/.optware-fsg3v4 /opt
 fi
 [ -d /opt/etc ] || mkdir -p /opt/etc
 chmod 755 /opt/etc
