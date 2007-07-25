@@ -186,7 +186,7 @@ $(PHP_FCGI_BUILD_DIR)/.configured: $(PHP_FCGI_PATCHES)
                 $(PHP_FCGI_CONFIGURE_THREAD_ARGS) \
 		--with-pcre-regex=$(STAGING_PREFIX) \
 		--with-regex=php \
-                --with-iconv=shared,$(TARGET_INCDIR) \
+                --without-iconv \
 		--without-pear \
 		--enable-spl \
 		--enable-memory-limit \
