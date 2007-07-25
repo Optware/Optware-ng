@@ -26,7 +26,7 @@ BROKEN_PACKAGES = \
 	\
 	oleo \
 	openser \
-	snort
+	snort \
 	strace \
 	swi-prolog \
 	uemacs \
