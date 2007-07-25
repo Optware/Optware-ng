@@ -47,7 +47,7 @@ $(DL_DIR)/$(CYRUS-IMAPD_SOURCE):
 
 cyrus-imapd-source: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IMAPD_PATCHES)
 
-$(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IMAPD_PATCHES)
+$(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IMAPD_PATCHES) make/cyrus-imapd.mk
 	$(MAKE) libdb-stage openssl-stage
 	$(MAKE) cyrus-sasl-stage
 	$(MAKE) e2fsprogs-stage # for libcom_err.a and friends
@@ -58,9 +58,7 @@ endif
 	$(CYRUS-IMAPD_UNZIP) $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CYRUS-IMAPD_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
-ifeq ($(HOST_MACHINE), x86_64)
-	cp -f $(CYRUS-IMAPD_SOURCE_DIR)/config.{guess,sub} $(CYRUS-IMAPD_BUILD_DIR)
-endif
+	cp -f $(CYRUS-IMAPD_SOURCE_DIR)/config.* $(CYRUS-IMAPD_BUILD_DIR)
 	(cd $(CYRUS-IMAPD_BUILD_DIR); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
