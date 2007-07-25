@@ -101,6 +101,7 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 	if test "$(BUILD_DIR)/$(SCPONLY_DIR)" != "$(SCPONLY_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SCPONLY_DIR) $(SCPONLY_BUILD_DIR) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(SCPONLY_BUILD_DIR)/
 #
 # Rsync isn't working yet!
 #		--enable-rsync-compat \
