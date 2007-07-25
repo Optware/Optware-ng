@@ -107,7 +107,7 @@ libgc-source: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
+$(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/libgc.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -116,6 +116,7 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES)
 		patch -d $(BUILD_DIR)/$(LIBGC_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(LIBGC_DIR) $(LIBGC_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(LIBGC_BUILD_DIR)/
 	(cd $(LIBGC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGC_CPPFLAGS)" \
