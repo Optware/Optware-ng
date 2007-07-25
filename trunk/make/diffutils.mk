@@ -86,10 +86,11 @@ diffutils-source: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PATCHES)
+$(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PATCHES) make/diffutils.mk
 	rm -rf $(BUILD_DIR)/$(DIFFUTILS_DIR) $(DIFFUTILS_BUILD_DIR)
 	$(DIFFUTILS_UNZIP) $(DL_DIR)/$(DIFFUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DIFFUTILS_DIR) $(DIFFUTILS_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(DIFFUTILS_BUILD_DIR)/config/
 	(cd $(DIFFUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DIFFUTILS_CPPFLAGS)" \
