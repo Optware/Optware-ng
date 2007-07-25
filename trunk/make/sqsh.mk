@@ -22,11 +22,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sqsh
-SQSH_VERSION=2.1.3
+SQSH_VERSION=2.1.4
 SQSH_SOURCE=sqsh-$(SQSH_VERSION).tar.gz
 SQSH_DIR=sqsh-$(SQSH_VERSION)
 SQSH_UNZIP=zcat
-SQSH_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+SQSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQSH_DESCRIPTION=Command line SQL client for MS SQL and Sybase servers.
 SQSH_SECTION=misc
 SQSH_PRIORITY=optional
@@ -232,3 +232,9 @@ sqsh-clean:
 #
 sqsh-dirclean:
 	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR) $(SQSH_IPK_DIR) $(SQSH_IPK)
+
+#
+# Some sanity check for the package.
+#
+sqsh-check: $(SQSH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQSH_IPK)
