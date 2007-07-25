@@ -36,7 +36,7 @@ MPACK_CONFLICTS=
 #
 # MPACK_IPK_VERSION should be incremented when the ipk changes.
 #
-MPACK_IPK_VERSION=2
+MPACK_IPK_VERSION=3
 
 #
 # MPACK_CONFFILES should be a list of user-editable files
@@ -126,10 +126,8 @@ $(MPACK_BUILD_DIR)/.configured: $(DL_DIR)/$(MPACK_SOURCE) $(MPACK_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-ifeq ($(OPTWARE_TARGET), slugosbe)
-	sed -ie '/\*malloc()/d; /\*getenv()/d' \
+	sed -i -e '/\*malloc()/d; /\*getenv()/d' \
 		$(MPACK_BUILD_DIR)/unixos.c $(MPACK_BUILD_DIR)/xmalloc.c
-endif
 #	$(PATCH_LIBTOOL) $(MPACK_BUILD_DIR)/libtool
 	touch $(MPACK_BUILD_DIR)/.configured
 

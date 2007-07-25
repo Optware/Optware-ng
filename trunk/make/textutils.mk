@@ -41,7 +41,7 @@ TEXTUTILS_CONFLICTS=busybox-links
 #
 # TEXTUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-TEXTUTILS_IPK_VERSION=4
+TEXTUTILS_IPK_VERSION=5
 
 #
 # TEXTUTILS_CONFFILES should be a list of user-editable files
@@ -103,15 +103,13 @@ textutils-source: $(DL_DIR)/$(TEXTUTILS_SOURCE) $(TEXTUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TEXTUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(TEXTUTILS_SOURCE) $(TEXTUTILS_PATCHES)
+$(TEXTUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(TEXTUTILS_SOURCE) $(TEXTUTILS_PATCHES) make/textutils.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TEXTUTILS_DIR) $(TEXTUTILS_BUILD_DIR)
 	$(TEXTUTILS_UNZIP) $(DL_DIR)/$(TEXTUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(TEXTUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(TEXTUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(TEXTUTILS_DIR) $(TEXTUTILS_BUILD_DIR)
-ifeq ($(OPTWARE_TARGET), slugosbe)
-	sed -ie '/\*malloc *()/d' $(TEXTUTILS_BUILD_DIR)/lib/putenv.c
-endif
+	sed -i -e '/\*malloc *()/d' $(TEXTUTILS_BUILD_DIR)/lib/putenv.c
 	(cd $(TEXTUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TEXTUTILS_CPPFLAGS)" \
