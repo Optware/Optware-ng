@@ -144,7 +144,7 @@ ltrace-unpack: $(LTRACE_BUILD_DIR)/.configured
 #
 $(LTRACE_BUILD_DIR)/.built: $(LTRACE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LTRACE_BUILD_DIR) ARCH=$(LTRACE_ARCH)
+	$(MAKE) -C $(LTRACE_BUILD_DIR) ARCH=$(LTRACE_ARCH) OS=linux-gnu
 	touch $@
 
 #
@@ -157,7 +157,7 @@ ltrace: $(LTRACE_BUILD_DIR)/.built
 #
 $(LTRACE_BUILD_DIR)/.staged: $(LTRACE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LTRACE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(LTRACE_BUILD_DIR) OS=linux-gnu DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ltrace-stage: $(LTRACE_BUILD_DIR)/.staged
@@ -196,7 +196,7 @@ $(LTRACE_IPK_DIR)/CONTROL/control:
 $(LTRACE_IPK): $(LTRACE_BUILD_DIR)/.built
 	rm -rf $(LTRACE_IPK_DIR) $(BUILD_DIR)/ltrace_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LTRACE_BUILD_DIR) \
-		DESTDIR=$(LTRACE_IPK_DIR) ARCH=$(LTRACE_ARCH) \
+		DESTDIR=$(LTRACE_IPK_DIR) ARCH=$(LTRACE_ARCH) OS=linux-gnu \
 		install
 	$(STRIP_COMMAND) $(LTRACE_IPK_DIR)/opt/bin/ltrace
 #	install -d $(LTRACE_IPK_DIR)/opt/etc/
