@@ -7,25 +7,25 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi atftp audiofile \
-	bitlbee busybox bzflag \
-	cherokee chillispot chrpath clearsilver \
+	bitlbee busybox \
+	chillispot chrpath clearsilver \
 	ctrlproxy cups cyrus-imapd \
 	diffutils dspam dtach dhcp digitemp dnsmasq dump \
-	eaccelerator ecl eggdrop elinks emacs22 erlang erl-yaws esound extract-xiso \
+	eaccelerator ecl eggdrop elinks erlang erl-yaws esound extract-xiso \
 	fcgi ffmpeg ficy finch freeradius \
 	gconv-modules gdb \
-	gnupg gnuplot gnutls grep \
+	gnupg gnuplot grep \
 	hexcurse \
-	icecast iksemel irssi ivorbis-tools \
-	ldconfig libao libgc libgcrypt libgpg-error \
+	icecast iksemel ivorbis-tools \
+	ldconfig libao libgc \
 	libnsl libpcap libshout loudmouth ltrace \
 	madplay	mktemp moc monotone most mpack mpd mutt \
 	nemesis net-snmp net-tools netatalk newt nmap nzbget \
-	oleo opencdk openldap openser \
-	phoneme-advanced postfix python24 \
+	oleo openldap openser \
+	phoneme-advanced postfix \
 	py-duplicity py-rdiff-backup \
 	qemu qemu-libc-i386 quagga quickie \
-	samba scponly snort speex sqsh strace streamripper swi-prolog \
+	scponly snort speex sqsh strace streamripper swi-prolog \
 	tcl textutils \
 	uemacs \
 	vlc vorbis-tools \
