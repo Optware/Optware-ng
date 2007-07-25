@@ -102,12 +102,13 @@ sqsh-source: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES)
+$(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqsh.mk
 	$(MAKE) freetds-stage readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
 	$(SQSH_UNZIP) $(DL_DIR)/$(SQSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p1
 	mv $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(SQSH_BUILD_DIR)/autoconf/
 	(cd $(SQSH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQSH_CPPFLAGS)" \
