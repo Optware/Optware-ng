@@ -1,5 +1,14 @@
 #!/bin/sh
 
+if [ -e /home/.optware ] ; then
+    echo "Backup your configuration settings, then type:"
+    echo "  rm -rf /home/.optware"
+    echo "  rm -rf /usr/lib/ipkg"
+    echo
+    echo "Then you must restart the bootstrap script."
+    exit 1
+fi
+
 echo "Installing FSG-3 V4 bootstrap package..."
 ipkg install bootstrap.ipk
 

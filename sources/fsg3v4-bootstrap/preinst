@@ -2,14 +2,7 @@
 
 [ -e /opt ] || mkdir /opt
 chmod 755 /opt
-if [ -e /home/.optware ] ; then
-    echo "Backup your configuration settings, then type:"
-    echo "  rm -rf /home/.optware"
-    echo "  rm -rf /usr/lib/ipkg"
-    echo
-    echo "Then you must restart the bootstrap script."
-    exit 1
-fi
+[ -e /home/.optware ] || mkdir -p /home/.optware
 chmod 755 /home/.optware
 if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
     mount -o bind /home/.optware /opt
