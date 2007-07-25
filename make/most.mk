@@ -115,6 +115,7 @@ $(MOST_BUILD_DIR)/.configured: $(DL_DIR)/$(MOST_SOURCE) $(MOST_PATCHES) make/mos
 	if test "$(BUILD_DIR)/$(MOST_DIR)" != "$(MOST_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MOST_DIR) $(MOST_BUILD_DIR) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(MOST_BUILD_DIR)/autoconf/
 	sed -i -e '/\/chkslang.*EXEC/s/^/#/' \
 	       -e 's/@RPATH@//' \
 	       -e 's/$$(INSTALL) -s/$$(INSTALL)/' \
