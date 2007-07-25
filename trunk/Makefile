@@ -311,6 +311,9 @@ TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
 include $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+ifndef TARGET_USRLIBDIR
+TARGET_USRLIBDIR = $(TARGET_LIBDIR)
+endif
 
 ifeq ($(LIBC_STYLE), uclibc)
 include $(OPTWARE_TOP)/platforms/packages-uclibc.mk
