@@ -93,12 +93,13 @@ popt-source: $(DL_DIR)/$(POPT_SOURCE) $(POPT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(POPT_BUILD_DIR)/.configured: $(DL_DIR)/$(POPT_SOURCE) $(POPT_PATCHES)
+$(POPT_BUILD_DIR)/.configured: $(DL_DIR)/$(POPT_SOURCE) $(POPT_PATCHES) make/popt.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(POPT_DIR) $(POPT_BUILD_DIR)
 	$(POPT_UNZIP) $(DL_DIR)/$(POPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(POPT_PATCHES) | patch -d $(BUILD_DIR)/$(POPT_DIR) -p1
 	mv $(BUILD_DIR)/$(POPT_DIR) $(POPT_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(POPT_BUILD_DIR)/
 	(cd $(POPT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POPT_CPPFLAGS)" \
