@@ -108,12 +108,13 @@ xinetd-source: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES)
+$(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES) make/xinetd.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR)
 	$(XINETD_UNZIP) $(DL_DIR)/$(XINETD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(XINETD_PATCHES) | patch -d $(BUILD_DIR)/$(XINETD_DIR) -p1
 	mv $(BUILD_DIR)/$(XINETD_DIR) $(XINETD_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(XINETD_BUILD_DIR)/
 	(cd $(XINETD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XINETD_CPPFLAGS)" \
