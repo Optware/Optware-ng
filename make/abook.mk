@@ -100,7 +100,7 @@ abook-source: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES)
+$(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES) make/abook.mk
 	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR)
 	$(ABOOK_UNZIP) $(DL_DIR)/$(ABOOK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -108,6 +108,7 @@ $(ABOOK_BUILD_DIR)/.configured: $(DL_DIR)/$(ABOOK_SOURCE) $(ABOOK_PATCHES)
 		then cat $(ABOOK_PATCHES) | patch -d $(BUILD_DIR)/$(ABOOK_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(ABOOK_DIR) $(ABOOK_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(ABOOK_BUILD_DIR)/
 	(cd $(ABOOK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ABOOK_CPPFLAGS)" \
