@@ -6,13 +6,14 @@
 
 LIBNSL_VERSION=$(strip \
         $(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), 2.3.3, \
+        $(if $(filter fsg3v4, $(OPTWARE_TARGET)), 2.3.6, \
         $(if $(filter nslu2, $(OPTWARE_TARGET)), 2.2.5, \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), 2.3.90, \
         $(if $(filter ts72xx, $(OPTWARE_TARGET)), 2.3.2, \
         $(if $(filter wl500g, $(OPTWARE_TARGET)), 0.9.19, \
         $(if $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)), 0.9.28, \
         $(if $(filter uclibc, $(LIBC_STYLE)), $(UCLIBC-OPT_VERSION), \
-        2.2.5))))))))
+        2.2.5)))))))))
 
 LIBNSL_DIR=libnsl-$(LIBNSL_VERSION)
 LIBNSL_LIBNAME=libnsl
@@ -30,7 +31,7 @@ LIBNSL_SOURCE_DIR=$(SOURCE_DIR)/libnsl
 LIBNSL_IPK_DIR=$(BUILD_DIR)/libnsl-$(LIBNSL_VERSION)-ipk
 LIBNSL_IPK=$(BUILD_DIR)/libnsl_$(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-$(LIBNSL_BUILD_DIR)/.configured: 
+$(LIBNSL_BUILD_DIR)/.configured: make/libnsl.mk
 	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR)
 	mkdir -p $(LIBNSL_BUILD_DIR)
 	touch $(LIBNSL_BUILD_DIR)/.configured
