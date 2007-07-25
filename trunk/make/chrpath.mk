@@ -100,12 +100,13 @@ chrpath-source: $(DL_DIR)/$(CHRPATH_SOURCE) $(CHRPATH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CHRPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CHRPATH_SOURCE) $(CHRPATH_PATCHES)
+$(CHRPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CHRPATH_SOURCE) $(CHRPATH_PATCHES) make/chrpath.mk
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(CHRPATH_DIR) $(CHRPATH_BUILD_DIR)
 	$(CHRPATH_UNZIP) $(DL_DIR)/$(CHRPATH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(CHRPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CHRPATH_DIR) -p1
 	mv $(BUILD_DIR)/$(CHRPATH_DIR) $(CHRPATH_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(CHRPATH_BUILD_DIR)/
 	(cd $(CHRPATH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHRPATH_CPPFLAGS)" \
