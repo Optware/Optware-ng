@@ -11,26 +11,24 @@ BROKEN_PACKAGES = \
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi atftp \
 	bitlbee busybox \
-	chillispot chrpath \
+	chillispot \
 	cyrus-imapd \
 	dhcp \
-	ecl eggdrop erlang erl-yaws \
+	ecl eggdrop \
 	fcgi ffmpeg freeradius \
 	gconv-modules gdb \
 	gnuplot \
 	ldconfig \
 	libpcap libshout loudmouth \
-	madplay	mktemp moc monotone most mpack mpd \
+	madplay	mktemp moc monotone mpd \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
 	qemu qemu-libc-i386 quagga quickie \
 	\
-	hexcurse nemesis nzbget snort sqsh streamripper \
+	nzbget snort streamripper \
 	\
-	ltrace \
 	oleo \
 	openser \
 	strace \
 	swi-prolog \
-	textutils \
 	uemacs \
