@@ -11,30 +11,26 @@ BROKEN_PACKAGES = \
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi atftp \
 	bitlbee busybox \
-	chillispot chrpath clearsilver \
+	chillispot chrpath \
 	cyrus-imapd \
 	dhcp \
-	ecl erlang erl-yaws esound \
+	ecl erlang erl-yaws \
 	fcgi ffmpeg freeradius \
 	gconv-modules gdb \
 	gnuplot \
 	ldconfig \
 	libnsl libpcap libshout loudmouth \
-	madplay	mktemp moc monotone most mpack mpd mutt \
-	net-snmp net-tools netatalk newt nmap nzbget \
+	madplay	mktemp moc monotone most mpack mpd \
+	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
-	py-duplicity py-rdiff-backup \
 	qemu qemu-libc-i386 quagga quickie \
 	\
-	diffutils hexcurse nemesis scponly snort sqsh streamripper xinetd \
+	hexcurse nemesis nzbget snort sqsh streamripper \
 	\
-	audiofile libao ivorbis-tools vorbis-tools \
-	libgc w3m \
 	ltrace \
 	oleo \
 	openser \
 	postfix \
-	speex icecast vlc \
 	strace \
 	swi-prolog \
 	textutils \
