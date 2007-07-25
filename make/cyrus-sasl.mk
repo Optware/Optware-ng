@@ -90,12 +90,13 @@ cyrus-sasl-source: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL_PATCHES)
+$(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL_PATCHES) make/cyrus-sasl.mk
 	$(MAKE) libdb-stage openssl-stage 
 	rm -rf $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(CYRUS-SASL_BUILD_DIR)
 	$(CYRUS-SASL_UNZIP) $(DL_DIR)/$(CYRUS-SASL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(CYRUS-SASL_PATCHES) | patch -d $(BUILD_DIR)/$(CYRUS-SASL_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-SASL_DIR) $(CYRUS-SASL_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(CYRUS-SASL_BUILD_DIR)/config/
 # We have to remove double blanks. Otherwise configure of saslauthd fails.
 	(cd $(CYRUS-SASL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
