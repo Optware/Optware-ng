@@ -5,7 +5,7 @@ case "$1" in
         echo "Starting Optware."
 	if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
 	    mkdir -p /opt
-	    mount -o bind /home/.optware-fsg3v4 /opt
+	    mount -o bind /home/.optware /opt
 	fi	
 	[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
     ;;
