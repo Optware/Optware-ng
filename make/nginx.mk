@@ -146,7 +146,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
                 --with-threads \
 		--disable-nls \
 		--disable-static
-	sed -i -e 's|/usr/include/|$(TARGET_LIBDIR)/../include/|' $(NGINX_BUILD_DIR)/auto/os/linux
+	sed -i -e 's|/usr/include/|$(TARGET_INCDIR)/|' $(NGINX_BUILD_DIR)/auto/os/linux
 	(cd $(NGINX_BUILD_DIR); \
 	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*LITTLE_ENDIAN; \
 		then export ngx_cache_ENDIAN=LITTLE; \

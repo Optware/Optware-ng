@@ -55,7 +55,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-UEMACS_CPPFLAGS=-include $(TARGET_LIBDIR)/../include/errno.h
+UEMACS_CPPFLAGS=-include $(TARGET_INCDIR)/errno.h
 UEMACS_LDFLAGS=
 
 #

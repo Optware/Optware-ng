@@ -146,7 +146,7 @@ endif
 	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(PERL_BUILD_DIR)/ext/*/Makefile.PL
 	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
 	sed -i.orig \
-		-e 's:/usr/include/errno.h:$(TARGET_LIBDIR)/../include/errno.h:g' \
+		-e 's:/usr/include/errno.h:$(TARGET_INCDIR)/errno.h:g' \
 		-e '/^# *warn/s:^#::' \
 		-e 's:= $$Config{cppstdin}:= $(TARGET_CPP):' \
 		$(PERL_BUILD_DIR)/ext/Errno/Errno_pm.PL
