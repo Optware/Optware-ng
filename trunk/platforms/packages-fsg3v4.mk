@@ -14,12 +14,12 @@ BROKEN_PACKAGES = \
 	chillispot chrpath \
 	cyrus-imapd \
 	dhcp \
-	ecl erlang erl-yaws \
+	ecl eggdrop erlang erl-yaws \
 	fcgi ffmpeg freeradius \
 	gconv-modules gdb \
 	gnuplot \
 	ldconfig \
-	libnsl libpcap libshout loudmouth \
+	libpcap libshout loudmouth \
 	madplay	mktemp moc monotone most mpack mpd \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
@@ -30,7 +30,6 @@ BROKEN_PACKAGES = \
 	ltrace \
 	oleo \
 	openser \
-	postfix \
 	strace \
 	swi-prolog \
 	textutils \
