@@ -117,7 +117,7 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 	cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1
 	mv $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
 	# Cross compilation requires checks for include files to point to target include dirictory
-	sed -i -e 's!/usr/include/!$(TARGET_LIBDIR)/../include/!g' $(QUAGGA_BUILD_DIR)/configure.ac
+	sed -i -e 's!/usr/include/!$(TARGET_INCDIR)/!g' $(QUAGGA_BUILD_DIR)/configure.ac
 	# Some gdb header defines struct user, so let's patch the definition in quagga vtysh_user
 	sed -i -e 's!struct user!struct vtysh_user!g' $(QUAGGA_BUILD_DIR)/vtysh/vtysh_user.c
 	(cd $(QUAGGA_BUILD_DIR); \

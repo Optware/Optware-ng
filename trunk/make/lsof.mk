@@ -111,7 +111,7 @@ $(LSOF_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(DL_DIR)/$(LSOF_DSC) $(LSOF_P
 	cd $(BUILD_DIR) && tar zxf $(DL_DIR)/$(LSOF_SOURCE)	
 	cd $(BUILD_DIR)/$(LSOF) && echo "n\ny\ny\ny\nn\nn\ny\n" | env \
 		LSOF_CC=$(TARGET_CC) \
-		LSOF_INCLUDE=$(TARGET_LIBDIR)/../include \
+		LSOF_INCLUDE=$(TARGET_INCDIR) \
 		LINUX_CLIB="-DGLIBCV=2" \
 		./Configure linux
 	cat $(LSOF_PATCH) | patch -d $(BUILD_DIR)/$(LSOF) -p1
