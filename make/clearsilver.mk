@@ -102,7 +102,7 @@ clearsilver-source: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSILVER_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSILVER_PATCHES)
+$(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSILVER_PATCHES) make/clearsilver.mk
 	$(MAKE) python-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(CLEARSILVER_DIR) $(CLEARSILVER_BUILD_DIR)
 	$(CLEARSILVER_UNZIP) $(DL_DIR)/$(CLEARSILVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -113,6 +113,7 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 	if test "$(BUILD_DIR)/$(CLEARSILVER_DIR)" != "$(CLEARSILVER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CLEARSILVER_DIR) $(CLEARSILVER_BUILD_DIR) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(CLEARSILVER_BUILD_DIR)/
 	cp -a $(CLEARSILVER_BUILD_DIR)/python $(CLEARSILVER_BUILD_DIR)/python2.5
 #	        echo "rpath=/opt/lib";
 	(cd $(CLEARSILVER_BUILD_DIR); \
