@@ -104,7 +104,7 @@ audiofile-source: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES)
+$(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PATCHES) make/audiofile.mk
 	rm -rf $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
 	$(AUDIOFILE_UNZIP) $(DL_DIR)/$(AUDIOFILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AUDIOFILE_PATCHES)" ; \
@@ -112,6 +112,7 @@ $(AUDIOFILE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUDIOFILE_SOURCE) $(AUDIOFILE_PA
 		patch -d $(BUILD_DIR)/$(AUDIOFILE_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(AUDIOFILE_DIR) $(AUDIOFILE_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(AUDIOFILE_BUILD_DIR)/
 #	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
 #		autoreconf -vif $(AUDIOFILE_BUILD_DIR)
 	(cd $(AUDIOFILE_BUILD_DIR); \
