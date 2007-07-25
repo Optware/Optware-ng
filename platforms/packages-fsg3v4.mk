@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	asterisk14 asterisk14-chan-capi atftp audiofile \
 	bitlbee busybox \
 	chillispot chrpath clearsilver \
-	ctrlproxy cups cyrus-imapd \
+	cyrus-imapd \
 	diffutils dspam dtach dhcp digitemp dnsmasq dump \
 	eaccelerator ecl eggdrop elinks erlang erl-yaws esound extract-xiso \
 	fcgi ffmpeg ficy finch freeradius \
@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	libnsl libpcap libshout loudmouth ltrace \
 	madplay	mktemp moc monotone most mpack mpd mutt \
 	nemesis net-snmp net-tools netatalk newt nmap nzbget \
-	oleo openldap openser \
+	oleo openser \
 	phoneme-advanced postfix \
 	py-duplicity py-rdiff-backup \
 	qemu qemu-libc-i386 quagga quickie \
