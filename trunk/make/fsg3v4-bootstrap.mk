@@ -58,7 +58,9 @@ $(FSG3V4_BOOTSTRAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(FSG3V4_BOOTSTRAP_CONFLICTS)" >>$@
 
 $(FSG3V4_BOOTSTRAP_IPK): $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built
-	rm -rf $(FSG3V4_BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/fsg3v4-bootstrap_*_$(TARGET_ARCH).ipk
+	rm -rf $(FSG3V4_BOOTSTRAP_IPK_DIR)
+	rm -f $(BUILD_DIR)/fsg3v4-bootstrap_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/fsg3v4-bootstrap_*_$(TARGET_ARCH).xsh
 #	install -d $(FSG3V4_BOOTSTRAP_IPK_DIR)/opt/lib
 #	install -m 755 $(FSG3V4_BOOTSTRAP_BUILD_DIR)/*.so* $(FSG3V4_BOOTSTRAP_IPK_DIR)/opt/lib/
 #	install -m 644 $(FSG3V4_BOOTSTRAP_BUILD_DIR)/*.a $(FSG3V4_BOOTSTRAP_IPK_DIR)/opt/lib/
