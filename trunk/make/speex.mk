@@ -59,7 +59,10 @@ endif
 SPEEX_LDFLAGS=
 
 ifeq ($(TARGET_ARCH), armeb)
-SPEEX_CONFIG_ARGS=--enable-fixed-point --enable-arm5e-asm
+SPEEX_CONFIG_ARGS=--enable-fixed-point
+ifneq ($(OPTWARE_TARGET), fsg3v4)
+SPEEX_CONFIG_ARGS+=--enable-arm5e-asm
+endif
 endif
 
 #
