@@ -100,12 +100,13 @@ hexcurse-source: $(DL_DIR)/$(HEXCURSE_SOURCE) $(HEXCURSE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(HEXCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(HEXCURSE_SOURCE) $(HEXCURSE_PATCHES)
+$(HEXCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(HEXCURSE_SOURCE) $(HEXCURSE_PATCHES) make/hexcurse.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR)
 	$(HEXCURSE_UNZIP) $(DL_DIR)/$(HEXCURSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(HEXCURSE_PATCHES) | patch -d $(BUILD_DIR)/$(HEXCURSE_DIR) -p1
 	mv $(BUILD_DIR)/$(HEXCURSE_DIR) $(HEXCURSE_BUILD_DIR)
+	cp -f $(SOURCE_DIR)/common/config.* $(HEXCURSE_BUILD_DIR)/
 	(cd $(HEXCURSE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HEXCURSE_CPPFLAGS)" \
