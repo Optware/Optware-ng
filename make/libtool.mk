@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBTOOL_SITE=http://ftp.gnu.org/gnu/libtool
-LIBTOOL_VERSION=1.5.10
+LIBTOOL_VERSION=1.5.24
 LIBTOOL_SOURCE=libtool-$(LIBTOOL_VERSION).tar.gz
 LIBTOOL_DIR=libtool-$(LIBTOOL_VERSION)
 LIBTOOL_UNZIP=zcat
@@ -28,7 +28,7 @@ LIBTOOL_UNZIP=zcat
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=2
+LIBTOOL_IPK_VERSION=1
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
@@ -86,7 +86,7 @@ libtool-source: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
+$(LIBTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES) make/libtool.mk
 	rm -rf $(BUILD_DIR)/$(LIBTOOL_DIR) $(LIBTOOL_BUILD_DIR)
 	$(LIBTOOL_UNZIP) $(DL_DIR)/$(LIBTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBTOOL_DIR) $(LIBTOOL_BUILD_DIR)
@@ -108,28 +108,37 @@ libtool-unpack: $(LIBTOOL_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0: $(LIBTOOL_BUILD_DIR)/.configured
+$(LIBTOOL_BUILD_DIR)/.built: $(LIBTOOL_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-libtool: $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
+libtool: $(LIBTOOL_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libltdl.so.3.1.0: $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
+$(LIBTOOL_BUILD_DIR)/.staged: $(LIBTOOL_BUILD_DIR)/.built
+	rm -f $@
+	rm -f $(STAGING_PREFIX)/bin/libtool
+	rm -f $(STAGING_LIB_DIR)/libltdl.so*
+	rm -rf $(STAGING_INCLUDE_DIR)/libltdl
+	install -d $(STAGING_DIR)/opt/bin
+	install -m 755 $(LIBTOOL_BUILD_DIR)/libtool $(STAGING_PREFIX)/bin/
 	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/ltdl.h $(STAGING_DIR)/opt/include
+	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/ltdl.h $(STAGING_INCLUDE_DIR)/
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0 $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libltdl.so.3.1.0 libltdl.so.3
-	cd $(STAGING_DIR)/opt/lib && ln -fs libltdl.so.3.1.0 libltdl.so
+	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.a $(STAGING_LIB_DIR)/
+	install -m 644 $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.5 $(STAGING_LIB_DIR)/
+	cd $(STAGING_DIR)/opt/lib && ln -fs libltdl.so.3.1.5 libltdl.so.3
+	cd $(STAGING_DIR)/opt/lib && ln -fs libltdl.so.3 libltdl.so
+	touch $@
 
-libtool-stage: $(STAGING_DIR)/opt/lib/libltdl.so.3.1.0
+libtool-stage: $(LIBTOOL_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -143,7 +152,7 @@ libtool-stage: $(STAGING_DIR)/opt/lib/libltdl.so.3.1.0
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/libltdl/.libs/libltdl.so.3.1.0
+$(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/.built
 	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
 	rm -f $(LIBTOOL_IPK_DIR)/opt/info/dir
