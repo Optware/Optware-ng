@@ -8,7 +8,7 @@
 ###########################################################
 
 FSG3V4_GLIBC_VERSION=2.3.5
-FSG3V4_BOOTSTRAP_VERSION=3.0
+FSG3V4_BOOTSTRAP_VERSION=4.0
 FSG3V4_BOOTSTRAP_DIR=fsg3v4-bootstrap-$(FSG3V4_BOOTSTRAP_VERSION)
 FSG3V4_BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FSG3V4_BOOTSTRAP_DESCRIPTION=Bootstrap package for the Freecom FSG-3 with V4 firmware
@@ -27,6 +27,7 @@ FSG3V4_BOOTSTRAP_XSH=$(BUILD_DIR)/fsg3v4-bootstrap_$(FSG3V4_BOOTSTRAP_VERSION)-$
 
 # Additional ipk's we require
 FSG3V4_IPKG_IPK=$(IPKG-OPT_IPK)
+FSG3V4_DIFFUTILS_IPK=diffutils_2.8.1-?_$(TARGET_ARCH).ipk
 
 $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.configured: $(FSG3V4_BOOTSTRAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(FSG3V4_BOOTSTRAP_DIR) $(FSG3V4_BOOTSTRAP_BUILD_DIR)
@@ -86,11 +87,12 @@ $(FSG3V4_BOOTSTRAP_IPK): $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(FSG3V4_BOOTSTRAP_SOURCE_DIR)/postinst $(FSG3V4_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4_BOOTSTRAP_IPK_DIR)
 
-$(FSG3V4_BOOTSTRAP_XSH): $(FSG3V4_BOOTSTRAP_IPK) ipkg-opt-ipk
+$(FSG3V4_BOOTSTRAP_XSH): $(FSG3V4_BOOTSTRAP_IPK) ipkg-opt-ipk diffutils-ipk
 	rm -rf $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(FSG3V4_BOOTSTRAP_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
 	cp $(FSG3V4_IPKG_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
+	cp $(BUILD_DIR)/$(FSG3V4_DIFFUTILS_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/diffutils.ipk
 	cp $(FSG3V4_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 
 	# If you should ever change the archive header (echo lines below), 
