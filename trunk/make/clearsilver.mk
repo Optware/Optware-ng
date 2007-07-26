@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLEARSILVER_SITE=http://www.clearsilver.net/downloads
-CLEARSILVER_VERSION=0.10.4
+CLEARSILVER_VERSION=0.10.5
 CLEARSILVER_SOURCE=clearsilver-$(CLEARSILVER_VERSION).tar.gz
 CLEARSILVER_DIR=clearsilver-$(CLEARSILVER_VERSION)
 CLEARSILVER_UNZIP=zcat
@@ -36,7 +36,7 @@ CLEARSILVER_CONFLICTS=
 #
 # CLEARSILVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CLEARSILVER_IPK_VERSION=4
+CLEARSILVER_IPK_VERSION=1
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
