@@ -8,7 +8,6 @@ SPECIFIC_PACKAGES = \
 # heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
 BROKEN_PACKAGES = \
 	atftp \
-	ftpd-topfield \
 	gdb \
 	heyu \
 	ldconfig modutils \
