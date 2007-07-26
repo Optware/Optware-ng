@@ -27,10 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.15
-LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.gz
+LIGHTD_VERSION=1.4.16
+LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
-LIGHTTPD_UNZIP=zcat
+LIGHTTPD_UNZIP=bzcat
 LIGHTTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
@@ -45,7 +45,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=3
+LIGHTTPD_IPK_VERSION=1
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
