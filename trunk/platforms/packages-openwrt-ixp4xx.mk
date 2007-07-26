@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	asterisk \
 	chillispot \
 	ecl \
-	fcgi ficy fish ftpd-topfield \
+	fcgi ficy fish \
 	gdb gnu-smalltalk gnugo gnuplot gtk \
 	hpijs \
 	ice imagemagick \
