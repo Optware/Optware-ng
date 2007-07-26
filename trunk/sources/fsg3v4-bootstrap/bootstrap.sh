@@ -13,9 +13,6 @@ fi
 echo "Installing FSG-3 V4 bootstrap package..."
 ipkg install bootstrap.ipk
 
-echo "Installing full-featured ipkg..."
-ipkg install ipkg.ipk
-
 echo "Installing diffutils..."
 ipkg install diffutils.ipk
 
