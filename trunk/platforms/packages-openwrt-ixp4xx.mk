@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
 	nfs-server nfs-utils ntop \
 	oleo obexftp \
 	pango par2cmdline phoneme-advanced puppy \
-	qemu qemu-libc-i386 quagga quickie \
+	qemu qemu-libc-i386 quagga \
 	sm \
 	transcode \
 	uemacs usbutils util-linux \

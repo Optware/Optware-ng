@@ -24,7 +24,7 @@ BROKEN_PACKAGES = \
 	monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
-	qemu qemu-libc-i386 quagga quickie \
+	qemu qemu-libc-i386 quagga \
 	\
 	oleo \
 	openser \
