@@ -43,7 +43,7 @@ GNUTLS_CONFLICTS=
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=1
+GNUTLS_IPK_VERSION=2
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -115,7 +115,7 @@ gnutls-source: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
+$(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) make/gnutls.mk
 	$(MAKE) libtasn1-stage opencdk-stage
 	rm -rf $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	$(GNUTLS_UNZIP) $(DL_DIR)/$(GNUTLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -165,7 +165,8 @@ $(GNUTLS_BUILD_DIR)/.staged: $(GNUTLS_BUILD_DIR)/.built
 	rm -f $(STAGING_PREFIX)/bin/*gnutls*
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) program_transform_name="" install
 	sed -i -e 's|echo $$includes $$.*_cflags|echo "-I$(STAGING_INCLUDE_DIR)"|' $(STAGING_PREFIX)/bin/*gnutls-config
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gnutls*.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gnutls*.pc
+	rm -f $(STAGING_LIB_DIR)/libgnutls*.la
 	touch $@
 
 gnutls-stage: $(GNUTLS_BUILD_DIR)/.staged
