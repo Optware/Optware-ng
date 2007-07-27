@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DICT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dict
-DICT_VERSION=1.10.7
+DICT_VERSION=1.10.9
 DICT_SOURCE=dictd-$(DICT_VERSION).tar.gz
 DICT_DIR=dictd-$(DICT_VERSION)
 DICT_UNZIP=zcat
-DICT_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+DICT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DICT_DESCRIPTION=DICT Protocol (RFC 2229) Client.
 DICT_SECTION=text
 DICT_PRIORITY=optional
@@ -102,10 +102,15 @@ dict-source: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES)
+$(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES) make/dict.mk
+	$(MAKE) libtool-stage
 	rm -rf $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
 	$(DICT_UNZIP) $(DL_DIR)/$(DICT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
+	sed -i.orig \
+		-e 's|libtool|$(STAGING_PREFIX)/bin/libtool|' \
+		$(DICT_BUILD_DIR)/Makefile.in \
+		$(DICT_BUILD_DIR)/libmaa/Makefile.in
 	(cd $(DICT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DICT_CPPFLAGS)" \
@@ -118,6 +123,7 @@ $(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
+#	$(PATCH_LIBTOOL) $(DICT_BUILD_DIR)/libtool
 	touch $(DICT_BUILD_DIR)/.configured
 
 dict-unpack: $(DICT_BUILD_DIR)/.configured
@@ -200,3 +206,9 @@ dict-clean:
 #
 dict-dirclean:
 	rm -rf $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR) $(DICT_IPK_DIR) $(DICT_IPK)
+
+#
+# Some sanity check for the package.
+#
+dict-check: $(DICT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DICT_IPK)
