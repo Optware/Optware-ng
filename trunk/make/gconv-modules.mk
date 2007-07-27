@@ -14,7 +14,7 @@ GCONV_MODULES_PRIORITY=optional
 GCONV_MODULES_DEPENDS=
 GCONV_MODULES_CONFLICTS=
 
-GCONV_MODULES_IPK_VERSION=6
+GCONV_MODULES_IPK_VERSION=7
 
 GCONV_MODULES_BUILD_DIR=$(BUILD_DIR)/gconv-modules
 GCONV_MODULES_SOURCE_DIR=$(SOURCE_DIR)/gconv-modules
@@ -67,15 +67,17 @@ else
     ifeq ($(OPTWARE_TARGET), slugosbe)
     else
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
-	cp $(TARGET_LIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
+	cp $(TARGET_USRLIBDIR)/gconv/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/EUC-*.so
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/ISO-2022-*.so
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/JOHAB.so
 	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/UHC.so
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
+    ifneq ($(OPTWARE_TARGET), fsg3v4)
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
 	cp $(TARGET_LIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
+    endif
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d/S05gconv-modules
 	install -d $(GCONV_MODULES_IPK_DIR)/CONTROL/
