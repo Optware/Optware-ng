@@ -314,7 +314,7 @@ $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
 
 
 $(AMULE-ADUNANZA_IPK): $(AMULE-ADUNANZA_BUILD_DIR)/.built
-	rm -rf $(AMULE-ADUNANZA_IPK_DIR) $(BUILD_DIR)/amule_*_$(TARGET_ARCH).ipk
+	rm -rf $(AMULE-ADUNANZA_IPK_DIR) $(BUILD_DIR)/amule-adunanza_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AMULE-ADUNANZA_BUILD_DIR) DESTDIR=$(AMULE-ADUNANZA_IPK_DIR) program_transform_name=s/^$(GNU_TARGET_NAME)-// install-strip
 #	install -d $(AMULE-ADUNANZA_IPK_DIR)/opt/etc/
 #	install -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE-ADUNANZA_IPK_DIR)/opt/etc/amule.conf
