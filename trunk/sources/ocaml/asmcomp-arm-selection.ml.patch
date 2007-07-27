@@ -1,0 +1,11 @@
+--- ocaml/asmcomp/arm/selection.ml.orig	2007-07-26 13:22:04.000000000 -0700
++++ ocaml/asmcomp/arm/selection.ml	2007-07-26 13:22:34.000000000 -0700
+@@ -106,7 +106,7 @@
+       | _ ->
+           (Iextcall("__modsi3", false), args)
+       end
+-  | Ccheckbound ->
++  | Ccheckbound _ ->
+       begin match args with
+         [Cop(Clsr, [arg1; Cconst_int n]); arg2]
+         when n > 0 && n < 32 && not(is_intconst arg2) ->

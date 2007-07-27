@@ -22,11 +22,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.09
-OCAML_VERSION=3.09.3
-OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.bz2
+OCAML_SITE=http://caml.inria.fr/pub/distrib/ocaml-3.10
+OCAML_VERSION=3.10.0
+OCAML_SOURCE=ocaml-$(OCAML_VERSION).tar.gz
 OCAML_DIR=ocaml-$(OCAML_VERSION)
-OCAML_UNZIP=bzcat
+OCAML_UNZIP=zcat
 OCAML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OCAML_DESCRIPTION=Objective Caml system is the main implementation of the Caml language.
 OCAML_SECTION=misc
@@ -48,8 +48,10 @@ OCAML_IPK_VERSION=1
 # OCAML_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(OPTWARE_TARGET),nslu2)
-OCAML_PATCHES=$(OCAML_SOURCE_DIR)/asmcomp-arm-emit.mlp.patch
+ifeq ($(TARGET_ARCH), armeb)
+OCAML_PATCHES=\
+$(OCAML_SOURCE_DIR)/asmcomp-arm-emit.mlp.patch \
+$(OCAML_SOURCE_DIR)/asmcomp-arm-selection.ml.patch
 endif
 
 #
@@ -104,19 +106,19 @@ ocaml-source: $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES)
 #
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
-		#--build=$(GNU_HOST_NAME) \
-		#--host=$(GNU_TARGET_NAME) \
-		#--target=$(GNU_TARGET_NAME) \
-		#--disable-nls \
-		#--disable-static \
-#
+#		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--disable-nls \
+		--disable-static \
+
 $(OCAML_BUILD_DIR)/.configured: $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(OCAML_DIR) $(OCAML_BUILD_DIR)
 	$(OCAML_UNZIP) $(DL_DIR)/$(OCAML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-ifneq ($(OCAML_PATCHES),)
-	cat $(OCAML_PATCHES) | patch -d $(BUILD_DIR)/$(OCAML_DIR) -p1
-endif
+	if test -n "$(OCAML_PATCHES)"; then \
+		cat $(OCAML_PATCHES) | patch -d $(BUILD_DIR)/$(OCAML_DIR) -p1; \
+        fi
 	mv $(BUILD_DIR)/$(OCAML_DIR) $(OCAML_BUILD_DIR)
 	(cd $(OCAML_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
