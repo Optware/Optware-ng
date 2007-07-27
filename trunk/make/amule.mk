@@ -33,14 +33,14 @@ AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd) 
 AMULE_SECTION=net
 AMULE_PRIORITY=optional
-AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, readline
+AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, readline, ncurses
 AMULE_SUGGESTS=
 AMULE_CONFLICTS=
 
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=9
+AMULE_IPK_VERSION=10
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
