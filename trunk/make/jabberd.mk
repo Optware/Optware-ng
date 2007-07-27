@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 JABBERD_SITE=http://download.jabberd.org/jabberd14
-JABBERD_VERSION=1.6.0
+JABBERD_VERSION=1.6.1.1
 JABBERD_SOURCE=jabberd14-$(JABBERD_VERSION).tar.gz
 JABBERD_DIR=jabberd14-$(JABBERD_VERSION)
 JABBERD_UNZIP=zcat
@@ -35,13 +35,13 @@ JABBERD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 JABBERD_DESCRIPTION=Jabber is an open-source IM platform designed to be open, fast, and easy to use and extend.
 JABBERD_SECTION=misc
 JABBERD_PRIORITY=optional
-JABBERD_DEPENDS=coreutils, libidn, libpth, openssl, popt, expat
+JABBERD_DEPENDS=coreutils, libidn, libpth, gnutls, popt, expat
 JABBERD_CONFLICTS=
 
 #
 # JABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBERD_IPK_VERSION=3
+JABBERD_IPK_VERSION=1
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ JABBERD_IPK=$(BUILD_DIR)/jabberd_$(JABBERD_VERSION)-$(JABBERD_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(JABBERD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(JABBERD_SITE)/$(JABBERD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(JABBERD_SITE)/$(JABBERD_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(JABBERD_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,14 +106,15 @@ jabberd-source: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES)
-	$(MAKE) libidn-stage libpth-stage openssl-stage popt-stage expat-stage
+$(JABBERD_BUILD_DIR)/.configured: $(DL_DIR)/$(JABBERD_SOURCE) $(JABBERD_PATCHES) make/jabberd.mk
+	$(MAKE) libidn-stage libpth-stage gnutls-stage popt-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
 	$(JABBERD_UNZIP) $(DL_DIR)/$(JABBERD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(JABBERD_PATCHES)"; then \
 		cat $(JABBERD_PATCHES) | patch -d $(BUILD_DIR)/$(JABBERD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(JABBERD_DIR) $(JABBERD_BUILD_DIR)
+	sed -i -e '/^localedir =/s|= @localedir@|= $$(DESTDIR)/@localedir@|' $(JABBERD_BUILD_DIR)/po/Makefile.in
 	(cd $(JABBERD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JABBERD_CPPFLAGS)" \
