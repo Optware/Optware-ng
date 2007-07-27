@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	dhcp \
 	ecl eggdrop \
 	fcgi freeradius \
-	gconv-modules gdb \
+	gdb \
 	gnuplot \
 	ldconfig \
 	libpcap loudmouth \
