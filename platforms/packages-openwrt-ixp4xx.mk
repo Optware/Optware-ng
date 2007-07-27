@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	fcgi ficy fish \
 	gdb gnu-smalltalk gnugo gnuplot gtk \
 	hpijs \
-	ice imagemagick \
+	ice \
 	jamvm \
 	kismet \
 	lame launchtool ldconfig libopensync \
