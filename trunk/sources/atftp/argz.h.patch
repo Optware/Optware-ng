@@ -1,0 +1,20 @@
+--- argz.h.orig	2003-01-20 17:38:35.000000000 -0800
++++ argz.h	2007-07-27 13:55:39.000000000 -0700
+@@ -180,7 +180,7 @@
+ #ifdef __USE_EXTERN_INLINES
+ extern inline char *
+ __argz_next (__const char *__argz, size_t __argz_len,
+-	     __const char *__entry) __THROW
++	     __const char *__entry)
+ {
+   if (__entry)
+     {
+@@ -194,7 +194,7 @@
+ }
+ extern inline char *
+ argz_next (__const char *__argz, size_t __argz_len,
+-	   __const char *__entry) __THROW
++	   __const char *__entry)
+ {
+   return __argz_next (__argz, __argz_len, __entry);
+ }

@@ -7,7 +7,6 @@ SPECIFIC_PACKAGES = \
 # puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory
 # heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
 BROKEN_PACKAGES = \
-	atftp \
 	gdb \
 	heyu \
 	ldconfig modutils \
