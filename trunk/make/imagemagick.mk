@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VERSION=6.3.4
-IMAGEMAGICK_REV=0
+IMAGEMAGICK_VERSION=6.3.5
+IMAGEMAGICK_REV=3
 else
 IMAGEMAGICK_VERSION=6.3.1
 IMAGEMAGICK_REV=6
@@ -56,6 +56,9 @@ endif
 # compilation or linking flags, then list them here.
 #
 IMAGEMAGICK_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+IMAGEMAGICK_CPPFLAGS+=-D__error_t_defined
+endif
 IMAGEMAGICK_LDFLAGS=
 
 #
@@ -104,7 +107,7 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
+$(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES) make/imagemagick.mk
 	make zlib-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
