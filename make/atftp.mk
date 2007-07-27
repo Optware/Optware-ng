@@ -20,6 +20,10 @@ ATFTP_IPK_VERSION=7
 
 ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe fsg3v4, $(OPTWARE_TARGET)))
+ATFTP_PATCHES=$(ATFTP_SOURCE_DIR)/argz.h.patch
+endif
+
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
 ATFTP_IPK_DIR=$(BUILD_DIR)/atftp-$(ATFTP_VERSION)-ipk
@@ -30,10 +34,13 @@ $(DL_DIR)/$(ATFTP_SOURCE):
 
 atftp-source: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
 
-$(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
+$(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/atftp.mk
 	$(MAKE) ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
 	$(ATFTP_UNZIP) $(DL_DIR)/$(ATFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n $(ATFTP_PATCHES); then \
+		cat $(ATFTP_PATCHES) | patch -d $(BUILD_DIR)/$(ATFTP_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
 	(cd $(ATFTP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -88,3 +95,6 @@ atftp-clean:
 
 atftp-dirclean:
 	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR) $(ATFTP_IPK_DIR) $(ATFTP_IPK)
+
+atftp-check: $(ATFTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ATFTP_IPK)
