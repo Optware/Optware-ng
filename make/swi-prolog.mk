@@ -37,7 +37,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=1
+SWI-PROLOG_IPK_VERSION=2
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -55,7 +55,8 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SWI-PROLOG_TARGET=$(shell $(TARGET_CC) -dumpmachine | sed 's/-.*//')-linux
+SWI-PROLOG_TARGET_NAME=$(shell $(SOURCE_DIR)/common/config.sub `$(TARGET_CC) -dumpmachine`)
+SWI-PROLOG_TARGET=$(shell echo $(SWI-PROLOG_TARGET_NAME) | sed s/-.*-linux/-linux/)
 SWI-PROLOG_CPPFLAGS=
 SWI-PROLOG_LDFLAGS=-L$(SWI-PROLOG_BUILD_DIR)/lib/$(SWI-PROLOG_TARGET)
 ifeq ($(LIBC_STYLE), uclibc)
@@ -108,7 +109,7 @@ $(DL_DIR)/$(SWI-PROLOG_SOURCE):
 #
 swi-prolog-source: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES)
 
-$(SWI-PROLOG_BUILD_DIR)/.unpacked: $(DL_DIR)/$(LIBGMP_SOURCE) $(DL_DIR)/$(SWI-PROLOG_SOURCE)
+$(SWI-PROLOG_BUILD_DIR)/.unpacked: $(DL_DIR)/$(LIBGMP_SOURCE) $(DL_DIR)/$(SWI-PROLOG_SOURCE) make/swi-prolog.mk
 	rm -rf $(BUILD_DIR)/$(SWI-PROLOG_DIR) $(SWI-PROLOG_BUILD_DIR)
 	$(SWI-PROLOG_UNZIP) $(DL_DIR)/$(SWI-PROLOG_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test "$(BUILD_DIR)/$(SWI-PROLOG_DIR)" != "$(SWI-PROLOG_BUILD_DIR)" ; \
@@ -174,6 +175,7 @@ ifeq ($(LIBC_STYLE), uclibc)
 endif
 	(cd $(SWI-PROLOG_BUILD_DIR)/src; autoconf)
 endif
+	cp -f $(SOURCE_DIR)/common/config.* $(SWI-PROLOG_BUILD_DIR)/src/
 	(cd $(SWI-PROLOG_BUILD_DIR); \
 		PL=$(SWI-PROLOG_PL) \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -182,8 +184,8 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
+		--host=$(SWI-PROLOG_TARGET_NAME) \
+		--target=$(SWI-PROLOG_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-shared \
 		--disable-nls \
@@ -212,9 +214,10 @@ $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.configured
 $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -f $(SWI-PROLOG_BUILD_DIR)/.packages-built
 	@echo "=============== target swi-prolog packages ============"
+#	cp -f $(SOURCE_DIR)/common/config.* $(SWI-PROLOG_BUILD_DIR)/packages/
 	(cd $(SWI-PROLOG_BUILD_DIR)/packages; \
 		sed -i -e "s|bdir/plld -pl|bdir/plld -cc $(TARGET_CC) -ld $(TARGET_CC) -pl|" plld.sh; \
-		sed -i -e '/cd.*configure)/s|)$$| --build=$(GNU_HOST_NAME) --host=$(GNU_TARGET_NAME) --target=$(GNU_TARGET_NAME))|' clib/configure; \
+		sed -i -e '/cd.*configure)/s|)$$| --build=$(GNU_HOST_NAME) --host=$(SWI-PROLOG_TARGET_NAME) --target=$(SWI-PROLOG_TARGET_NAME))|' clib/configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
 		CIFLAGS="$(STAGING_CPPFLAGS) $(SWI-PROLOG_CPPFLAGS)" \
@@ -223,8 +226,8 @@ $(SWI-PROLOG_BUILD_DIR)/.packages-built: $(SWI-PROLOG_BUILD_DIR)/.built
 		ac_cv_lib_crypto_main=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
+		--host=$(SWI-PROLOG_TARGET_NAME) \
+		--target=$(SWI-PROLOG_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
