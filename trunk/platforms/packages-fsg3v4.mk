@@ -36,5 +36,4 @@ BROKEN_PACKAGES = \
 	openser \
 	snort \
 	strace \
-	swi-prolog \
 	uemacs \
