@@ -42,7 +42,7 @@ WEBALIZER_CONFLICTS=
 #
 # WEBALIZER_IPK_VERSION should be incremented when the ipk changes.
 #
-WEBALIZER_IPK_VERSION=1
+WEBALIZER_IPK_VERSION=2
 
 #
 # WEBALIZER_CONFFILES should be a list of user-editable files
@@ -186,8 +186,8 @@ $(WEBALIZER_IPK): $(WEBALIZER_BUILD_DIR)/.built
 	install -d $(WEBALIZER_IPK_DIR)/opt/etc/
 	install -d $(WEBALIZER_IPK_DIR)/opt/bin/
 	install -m 644 $(WEBALIZER_BUILD_DIR)/sample.conf $(WEBALIZER_IPK_DIR)/opt/etc/webalizer.conf.sample
-	install -m 644 $(WEBALIZER_BUILD_DIR)/webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
-	ln -s $(WEBALIZER_IPK_DIR)/opt/bin/webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webazolver
+	install -m 755 $(WEBALIZER_BUILD_DIR)/webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webalizer
+	ln -s ./webalizer $(WEBALIZER_IPK_DIR)/opt/bin/webazolver
 	$(MAKE) $(WEBALIZER_IPK_DIR)/CONTROL/control
 	install -m 755 $(WEBALIZER_SOURCE_DIR)/postinst $(WEBALIZER_IPK_DIR)/CONTROL/postinst
 	echo $(WEBALIZER_CONFFILES) | sed -e 's/ /\n/g' > $(WEBALIZER_IPK_DIR)/CONTROL/conffiles
