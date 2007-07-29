@@ -103,7 +103,7 @@ PERL_PACKAGES = \
 	stow \
 
 PYTHON_PACKAGES = \
-	getmail ipython mailman mod-python pyrex \
+	getmail ipython mailman mod-python mod-wsgi pyrex \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
