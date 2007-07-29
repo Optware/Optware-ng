@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOD_PYTHON_SITE=http://www.apache.org/dist/httpd/modpython
-MOD_PYTHON_VERSION=3.2.10
+MOD_PYTHON_VERSION=3.3.1
 MOD_PYTHON_SOURCE=mod_python-$(MOD_PYTHON_VERSION).tgz
 MOD_PYTHON_DIR=mod_python-$(MOD_PYTHON_VERSION)
 MOD_PYTHON_UNZIP=zcat
@@ -30,14 +30,14 @@ MOD_PYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MOD_PYTHON_DESCRIPTION=Mod_python is an Apache server module that integrates with the Python language.
 MOD_PYTHON_SECTION=net
 MOD_PYTHON_PRIORITY=optional
-MOD_PYTHON_DEPENDS=apache, python
+MOD_PYTHON_DEPENDS=apache, python25
 MOD_PYTHON_SUGGESTS=
 MOD_PYTHON_CONFLICTS=
 
 #
 # MOD_PYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_PYTHON_IPK_VERSION=2
+MOD_PYTHON_IPK_VERSION=1
 
 #
 # MOD_PYTHON_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ mod-python-source: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES)
 #
 # Note: configure breaks if bash 3.1 is installed!
 $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON_PATCHES)
-	$(MAKE) python-stage apache-stage
+	$(MAKE) python25-stage apache-stage
 	rm -rf $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(MOD_PYTHON_BUILD_DIR)
 	$(MOD_PYTHON_UNZIP) $(DL_DIR)/$(MOD_PYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MOD_PYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(MOD_PYTHON_DIR) -p1
@@ -121,7 +121,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-apxs=$(STAGING_DIR)/opt/sbin/apxs \
-		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.4 \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.5 \
 		--disable-nls \
 	    ; \
             ( \
@@ -130,7 +130,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
                 echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
                 echo "rpath=/opt/lib"; \
                 echo "[build_scripts]"; \
-                echo "executable=/opt/bin/python2.4"; \
+                echo "executable=/opt/bin/python2.5"; \
                 echo "[install]"; \
                 echo "prefix=/opt"; \
             ) > $(MOD_PYTHON_BUILD_DIR)/dist/setup.cfg; \
@@ -199,7 +199,7 @@ $(MOD_PYTHON_IPK): $(MOD_PYTHON_BUILD_DIR)/.built
 	rm -rf $(MOD_PYTHON_IPK_DIR) $(BUILD_DIR)/mod-python_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOD_PYTHON_BUILD_DIR) DESTDIR=$(MOD_PYTHON_IPK_DIR) install
 	$(STRIP_COMMAND) $(MOD_PYTHON_IPK_DIR)/opt/libexec/mod_python.so
-	$(STRIP_COMMAND) $(MOD_PYTHON_IPK_DIR)/opt/lib/python2.4/site-packages/mod_python/_psp.so
+	$(STRIP_COMMAND) $(MOD_PYTHON_IPK_DIR)/opt/lib/python2.5/site-packages/mod_python/_psp.so
 	install -d $(MOD_PYTHON_IPK_DIR)/opt/etc/apache2/conf.d/
 	install -m 644 $(MOD_PYTHON_SOURCE_DIR)/mod_python.conf $(MOD_PYTHON_IPK_DIR)/opt/etc/apache2/conf.d/mod_python.conf
 	$(MAKE) $(MOD_PYTHON_IPK_DIR)/CONTROL/control
@@ -223,3 +223,9 @@ mod-python-clean:
 #
 mod-python-dirclean:
 	rm -rf $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(MOD_PYTHON_BUILD_DIR) $(MOD_PYTHON_IPK_DIR) $(MOD_PYTHON_IPK)
+
+#
+# Some sanity check for the package.
+#
+mod-python-check: $(MOD_PYTHON_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOD_PYTHON_IPK)
