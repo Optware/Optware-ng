@@ -1,6 +1,6 @@
---- mod_python-3.1.4/configure.in	2005-01-29 13:25:27.000000000 -0800
-+++ mod-python/configure.in	2005-04-21 22:41:54.572376000 -0700
-@@ -98,7 +98,7 @@
+--- mod-python/configure.in.orig	2006-03-10 19:46:52.000000000 -0800
++++ mod-python/configure.in	2007-07-28 18:31:47.000000000 -0700
+@@ -109,7 +109,7 @@
    # check Apache version
    AC_MSG_CHECKING(Apache version)
    HTTPD="`${APXS} -q SBINDIR`/`${APXS} -q TARGET`"
@@ -9,18 +9,18 @@
    AC_MSG_RESULT($ver)
  
    # make sure version begins with 2
-@@ -188,8 +188,8 @@
+@@ -199,8 +199,8 @@
  
  # find out python version
  AC_MSG_CHECKING(Python version)
 -PyVERSION=`$PYTHON_BIN -c ['import sys; print sys.version[:3]'`]
 -PyMAJVERSION=`$PYTHON_BIN -c ['import sys; print sys.version[:1]'`]
-+PyVERSION=2.4
++PyVERSION=2.5
 +PyMAJVERSION=2
  AC_MSG_RESULT($PyVERSION)
  
  # make sure Python is version 2
-@@ -199,7 +199,7 @@
+@@ -210,7 +210,7 @@
  
  # find out compiled in install prefix
  AC_MSG_CHECKING(Python install prefix)
