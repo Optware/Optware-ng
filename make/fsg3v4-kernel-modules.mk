@@ -4,15 +4,14 @@
 #
 ###########################################################
 
-#FSG3V4-KERNEL-MODULES_SITE=http://www.openfsg.com/download
-#FSG3V4-KERNEL-MODULES_SOURCE=source-fcsnap-3.1.15.tar.bz2
-FSG3V4-KERNEL-MODULES_SITE=http://sources.nslu2-linux.org/sources
-FSG3V4-KERNEL-MODULES_SOURCE=fsgkern-1.2.tar.bz2
+FSG3V4-KERNEL-MODULES_SITE=http://www.kernel.org/pub/linux/kernel/v2.6/
+FSG3V4-KERNEL-MODULES_SOURCE=linux-2.6.18.tar.bz2
 FSG3V4-KERNEL-MODULES_VERSION=2.6.18
-FSG3V4-KERNEL-MODULES_DIR=linux-ixp425
+FSG3V4-KERNEL-MODULES_DIR=linux-2.6.18
 FSG3V4-KERNEL-MODULES_UNZIP=bzcat
 FSG3V4-KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FSG3V4-KERNEL-MODULES_DESCRIPTION=FSG-3 V4 kernel modules
+FSG3V4-KERNEL-IMAGE_DESCRIPTION=FSG-3 V4 kernel
 FSG3V4-KERNEL-MODULES_SECTION=kernel
 FSG3V4-KERNEL-MODULES_PRIORITY=optional
 FSG3V4-KERNEL-MODULES_DEPENDS=
@@ -23,10 +22,8 @@ FSG3V4-KERNEL-MODULES= \
 	usbnet asix cdc_ether kaweth net1080 pegasus zaurus \
 	usbserial ftdi_sio mct_u232 pl2303 \
 	firmware_class \
-	hci_usb bluetooth bnep l2cap rfcomm sco
-
-# Possibly in the future when Freecom enables NFS in the kernel:
-#	exportfs lockd nfs nfsd sunrpc
+	hci_usb bluetooth bnep l2cap rfcomm sco \
+	exportfs lockd nfs nfsd sunrpc
 
 # videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
 
@@ -44,6 +41,7 @@ FSG3V4-KERNEL-MODULES_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 FSG3V4-KERNEL-MODULES_PATCHES = \
+	$(FSG3V4-KERNEL-MODULES_SOURCE_DIR)/linux-2.6.18-fsg3.patch \
 	$(FSG3V4-KERNEL-MODULES_SOURCE_DIR)/10-remove-ixp4xx-drivers.patch
 
 #
@@ -57,6 +55,9 @@ FSG3V4-KERNEL-MODULES_BUILD_DIR=$(BUILD_DIR)/fsg3v4-kernel-modules
 FSG3V4-KERNEL-MODULES_SOURCE_DIR=$(SOURCE_DIR)/fsg3v4-kernel-modules
 FSG3V4-KERNEL-MODULES_IPK_DIR=$(BUILD_DIR)/fsg3v4-kernel-modules-$(FSG3V4-KERNEL-MODULES_VERSION)-ipk
 FSG3V4-KERNEL-MODULES_IPK=$(BUILD_DIR)/fsg3v4-kernel-modules_$(FSG3V4-KERNEL-MODULES_VERSION)-$(FSG3V4-KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+FSG3V4-KERNEL-IMAGE_IPK_DIR=$(BUILD_DIR)/fsg3v4-kernel-image-$(FSG3V4-KERNEL-MODULES_VERSION)-ipk
+FSG3V4-KERNEL-IMAG_IPK=$(BUILD_DIR)/fsg3v4-kernel-image_$(FSG3V4-KERNEL-MODULES_VERSION)-$(FSG3V4-KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -112,10 +113,23 @@ fsg3v4-kernel-modules: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/fsg3v4-kernel-modules
 #
 $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
+	install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL
+	( \
+	  echo "Package: kernel-modules"; \
+	  echo "Architecture: $(TARGET_ARCH)"; \
+	  echo "Priority: $(FSG3V4-KERNEL-MODULES_PRIORITY)"; \
+	  echo "Section: $(FSG3V4-KERNEL-MODULES_SECTION)"; \
+	  echo "Version: $(FSG3V4-KERNEL-MODULES_VERSION)-$(FSG3V4-KERNEL-MODULES_IPK_VERSION)"; \
+	  echo "Maintainer: $(FSG3V4-KERNEL-MODULES_MAINTAINER)"; \
+	  echo "Source: $(FSG3V4-KERNEL-MODULES_SITE)/$(FSG3V4-KERNEL-MODULES_SOURCE)"; \
+	  echo "Description: $(FSG3V4-KERNEL-MODULES_DESCRIPTION)"; \
+	  echo -n "Depends: kernel-image"; \
+	) >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
 	for m in $(FSG3V4-KERNEL-MODULES); do \
 	  install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
 	  rm -f $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
           ( \
+	    echo -n ", kernel-module-`echo $$m|sed -e 's/_/-/g'`" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
 	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(FSG3V4-KERNEL-MODULES_PRIORITY)"; \
@@ -137,8 +151,22 @@ $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Conflicts: $(FSG3V4-KERNEL-MODULES_CONFLICTS)"; \
 	  ) >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
 	done
-	install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL; \
-	touch $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
+	echo "" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
+
+$(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
+	install -d $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL
+	rm -f $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
+	( \
+	  echo "Package: kernel-image"; \
+	  echo "Architecture: $(TARGET_ARCH)"; \
+	  echo "Priority: $(FSG3V4-KERNEL-MODULES_PRIORITY)"; \
+	  echo "Section: $(FSG3V4-KERNEL-MODULES_SECTION)"; \
+	  echo "Version: $(FSG3V4-KERNEL-MODULES_VERSION)-$(FSG3V4-KERNEL-MODULES_IPK_VERSION)"; \
+	  echo "Maintainer: $(FSG3V4-KERNEL-MODULES_MAINTAINER)"; \
+	  echo "Source: $(FSG3V4-KERNEL-MODULES_SITE)/$(FSG3V4-KERNEL-MODULES_SOURCE)"; \
+	  echo "Description: $(FSG3V4-KERNEL-IMAGE_DESCRIPTION)"; \
+	) >> $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
+
 #
 # This builds the IPK file.
 #
@@ -152,19 +180,26 @@ $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.built
+	# Package the kernel image first
+	rm -rf $(FSG3V4-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/fsg3v4-kernel-image_*_$(TARGET_ARCH).ipk
+	$(MAKE) $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
+	install -m 644 $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/arch/arm/boot/zImage $(FSG3V4-KERNEL-IMAGE_IPK_DIR)
+	( cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4-KERNEL-IMAGE_IPK_DIR) )
+	# Now package the kernel modules
 	rm -rf $(FSG3V4-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/fsg3v4-kernel-modules_*_$(TARGET_ARCH).ipk
 	rm -rf $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib/modules
 	mkdir -p $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib/modules
 	$(MAKE) -C $(FSG3V4-KERNEL-MODULES_BUILD_DIR) $(FSG3V4-KERNEL-MODULES-FLAGS) \
 		INSTALL_MOD_PATH=$(FSG3V4-KERNEL-MODULES_IPK_DIR) modules_install
 	for m in $(FSG3V4-KERNEL-MODULES); do \
-	  install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  install -m 644 `find $(FSG3V4-KERNEL-MODULES_IPK_DIR) -name $$m.ko` $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  ( cd $(FSG3V4-KERNEL-MODULES_IPK_DIR) ; install -D -m 644 `find . -name $$m.ko` $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/`find . -name $$m.ko` ); \
 	done
 	$(MAKE) $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(FSG3V4-KERNEL-MODULES); do \
 	  cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m; \
 	done
+	rm -rf $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib
+	( cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4-KERNEL-MODULES_IPK_DIR) )
 	touch $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.ipkdone
 
 #
@@ -184,6 +219,10 @@ fsg3v4-kernel-modules-clean:
 # directories.
 #
 fsg3v4-kernel-modules-dirclean:
-	rm -rf $(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR) $(FSG3V4-KERNEL-MODULES_BUILD_DIR) $(FSG3V4-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-modules-*_armeb.ipk
+	rm -rf $(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR) $(FSG3V4-KERNEL-MODULES_BUILD_DIR)
+	rm -rf $(FSG3V4-KERNEL-MODULES_IPK_DIR)* $(FSG3V4-KERNEL-IMAGE_IPK_DIR)* 
+	rm -f $(BUILD_DIR)/kernel-modules_*_armeb.ipk
+	rm -f $(BUILD_DIR)/kernel-modules-*_armeb.ipk
+	rm -f $(BUILD_DIR)/kernel-image-*_armeb.ipk
 
 # LocalWords:  fsg
