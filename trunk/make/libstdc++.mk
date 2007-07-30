@@ -5,8 +5,8 @@
 ###########################################################
 
 LIBSTDC++_VERSION=$(strip \
-	$(if $(filter slugosbe, $(OPTWARE_TARGET)), 6.0.8, \
-	$(if $(filter fsg3v4 ts101, $(OPTWARE_TARGET)), 6.0.3, \
+	$(if $(filter slugosbe openwrt-ixp4xx, $(OPTWARE_TARGET)), 6.0.8, \
+	$(if $(filter fsg3v4 gumstix1151 ts101, $(OPTWARE_TARGET)), 6.0.3, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
 	$(if $(filter ds101 ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
 	5.0.7)))))
@@ -21,8 +21,11 @@ LIBSTDC++_PRIORITY=optional
 LIBSTDC++_DEPENDS=
 LIBSTDC++_CONFLICTS=
 
-# by default uclibc platforms use libuclibc++
-# but ts101 seems to be the exception, libuclibc++ wrapper is not ready
+# most uclibc platforms use libuclibc++
+# but for the following uclibc platforms, libuclibc++ wrapper is not ready:
+# 	ts101
+# 	openwrt-ixp4xx
+# 	gumstix1151
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 LIBSTDC++_USED=yes
 endif
@@ -50,7 +53,7 @@ $(LIBSTDC++_BUILD_DIR)/.configured: $(LIBSTDC++_PATCHES)
 
 libstdc++-unpack: $(LIBSTDC++_BUILD_DIR)/.configured
 
-$(LIBSTDC++_BUILD_DIR)/.built: $(LIBSTDC++_BUILD_DIR)/.configured
+$(LIBSTDC++_BUILD_DIR)/.built: $(LIBSTDC++_BUILD_DIR)/.configured make/libstdc++.mk
 	rm -f $(LIBSTDC++_BUILD_DIR)/.built
 ifdef LIBSTDC++_USED
 	cp $(TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_BUILD_DIR)/
