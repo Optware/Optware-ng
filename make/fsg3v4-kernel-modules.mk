@@ -26,7 +26,8 @@ FSG3V4-KERNEL-MODULES= \
 	exportfs lockd nfs nfsd sunrpc \
 	soundcore snd snd-hwdep snd-page-alloc snd-pcm snd-rawmidi snd-timer \
 	snd-usb-audio snd-usb-lib \
-	evdev usbhid usbkbd yealink
+	evdev usbhid usbkbd yealink \
+	iptable-mangle
 
 # videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
 
