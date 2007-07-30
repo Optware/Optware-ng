@@ -1,0 +1,32 @@
+diff -BurN -X linux-2.6.18/Documentation/dontdiff linux-2.6.18/arch/arm/mach-ixp4xx/common-pci.c linux-ixp425/arch/arm/mach-ixp4xx/common-pci.c
+--- linux-2.6.18/arch/arm/mach-ixp4xx/common-pci.c	2006-09-20 13:12:06.000000000 +0930
++++ linux-ixp425/arch/arm/mach-ixp4xx/common-pci.c	2006-11-08 21:52:37.000000000 +1030
+@@ -532,7 +532,6 @@
+ 	return -EIO;
+ }
+ 
+-EXPORT_SYMBOL(pci_set_dma_mask);
+ EXPORT_SYMBOL(ixp4xx_pci_read);
+ EXPORT_SYMBOL(ixp4xx_pci_write);
+ 
+diff -BurN -X linux-2.6.18/Documentation/dontdiff linux-2.6.18/drivers/pci/pci.c linux-ixp425/drivers/pci/pci.c
+--- linux-2.6.18/drivers/pci/pci.c	2006-09-20 13:12:06.000000000 +0930
++++ linux-ixp425/drivers/pci/pci.c	2006-09-22 06:30:55.000000000 +0930
+@@ -925,8 +925,6 @@
+ 
+ 	return 0;
+ }
+-EXPORT_SYMBOL(pci_set_dma_mask);
+-EXPORT_SYMBOL(pci_set_consistent_dma_mask);
+ #endif
+      
+ static int __devinit pci_init(void)
+@@ -980,6 +982,8 @@
+ EXPORT_SYMBOL(pci_set_mwi);
+ EXPORT_SYMBOL(pci_clear_mwi);
+ EXPORT_SYMBOL_GPL(pci_intx);
++EXPORT_SYMBOL(pci_set_dma_mask);
++EXPORT_SYMBOL(pci_set_consistent_dma_mask);
+ EXPORT_SYMBOL(pci_assign_resource);
+ EXPORT_SYMBOL(pci_find_parent_resource);
+ 

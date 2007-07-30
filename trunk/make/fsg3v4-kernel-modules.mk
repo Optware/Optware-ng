@@ -22,8 +22,11 @@ FSG3V4-KERNEL-MODULES= \
 	usbnet asix cdc_ether kaweth net1080 pegasus zaurus \
 	usbserial ftdi_sio mct_u232 pl2303 \
 	firmware_class \
-	hci_usb bluetooth bnep l2cap rfcomm sco \
-	exportfs lockd nfs nfsd sunrpc
+	bcm203x hci_usb bluetooth bnep l2cap rfcomm sco hidp \
+	exportfs lockd nfs nfsd sunrpc \
+	soundcore snd snd-hwdep snd-page-alloc snd-pcm snd-rawmidi snd-timer \
+	snd-usb-audio snd-usb-lib \
+	evdev usbhid usbkbd yealink
 
 # videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
 
@@ -42,7 +45,8 @@ FSG3V4-KERNEL-MODULES_IPK_VERSION=2
 #
 FSG3V4-KERNEL-MODULES_PATCHES = \
 	$(FSG3V4-KERNEL-MODULES_SOURCE_DIR)/linux-2.6.18-fsg3.patch \
-	$(FSG3V4-KERNEL-MODULES_SOURCE_DIR)/10-remove-ixp4xx-drivers.patch
+	$(FSG3V4-KERNEL-MODULES_SOURCE_DIR)/10-remove-ixp4xx-drivers.patch \
+	$(FSG3V4-KERNEL-MODULES_SOURCE_DIR)/11-fix-pci-symbols.patch
 
 #
 # If the compilation of the package requires additional
