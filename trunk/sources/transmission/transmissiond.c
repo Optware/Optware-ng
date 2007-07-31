@@ -46,7 +46,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <syslog.h>
-#include <transmission.h>
+#include <libtransmission/transmission.h>
 #ifdef SYS_BEOS
 #include <kernel/OS.h>
 #define usleep snooze
@@ -56,7 +56,7 @@
 #else
 #  define UNUSED
 #endif
-#ifdef SYS_LINUX
+#if defined( linux ) || defined( __linux ) || defined( __linux__ )
 #include <sys/sysinfo.h>
 #define HAVE_SYSINFO
 #endif

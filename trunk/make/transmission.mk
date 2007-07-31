@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.7
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=2474
+TRANSMISSION_SVN_REV=2555
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
@@ -49,7 +49,7 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # which they should be applied to the source code.
 #
 TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.patch \
-	$(TRANSMISSION_SOURCE_DIR)/configure.patch \
+	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
 
 # Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
@@ -58,10 +58,7 @@ TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSMISSION_CPPFLAGS= -O3 -DHAVE_ASPRINTF
-ifeq ($(LIBC_STYLE), uclibc)
-TRANSMISSION_CPPFLAGS+= -DHAVE_STRLCAT -DHAVE_STRLCPY
-endif
+TRANSMISSION_CPPFLAGS= -O3 
 TRANSMISSION_LDFLAGS=
 
 #
@@ -136,16 +133,19 @@ $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSM
 	fi
 
 	(cd $(TRANSMISSION_BUILD_DIR); \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
-		--disable-gtk \
+		--without-gtk \
 	)
 	sed -i -e 's/ -g / /' $(TRANSMISSION_BUILD_DIR)/mk/common.mk
 #		--verbose \
@@ -212,12 +212,7 @@ $(TRANSMISSION_IPK_DIR)/CONTROL/control:
 $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSION_IPK_DIR)/opt
-	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) PREFIX=$(TRANSMISSION_IPK_DIR)/opt install
-	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissioncli
-	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond
-	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-daemon
-	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-proxy
-	$(STRIP_COMMAND) $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-remote
+	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
 	install -d $(TRANSMISSION_IPK_DIR)/opt/etc
 	install -m 644 $(TRANSMISSION_SOURCE_DIR)/transmission.conf $(TRANSMISSION_IPK_DIR)/opt/etc/transmission.conf
 	install -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
