@@ -168,8 +168,10 @@ Known bugs:
   to alternative "Oleg"  package feed.
 
 * With upgrade to r2220 and later one must take care, that there will
-not be unfinished torrentnt otherwise Transmission will report "hash FAILED".
-Erase such torrents and start over.
+not be unfinished torrents otherwise Transmission will report "hash FAILED".
+Erase such torrents and start over. Same instruction goes to problem with 
+high loads (over 20) causing system freeze. In such cases is recommended
+to erase cache files with rm -rf ${WORK}/.transmission
 
 
 OpenWRT and Xwrt(OpenWRT for mere mortals) notes:

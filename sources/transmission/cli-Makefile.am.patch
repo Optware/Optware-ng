@@ -1,0 +1,14 @@
+--- Transmission-0.7/cli/Makefile.am	2007-07-30 20:07:44.000000000 +0200
++++ transmission/cli/Makefile.am	2007-07-30 20:54:30.000000000 +0200
+@@ -2,7 +2,10 @@
+ AM_CFLAGS = $(PTHREAD_CFLAGS)
+ 
+ 
+-bin_PROGRAMS = transmission-cli
++bin_PROGRAMS = transmission-cli transmissiond
+ 
+ transmission_cli_SOURCES = transmissioncli.c
+ transmission_cli_LDADD = ../libtransmission/libtransmission.a $(PTHREAD_LIBS) -lm
++
++transmissiond_SOURCES = transmissiond.c
++transmissiond_LDADD = ../libtransmission/libtransmission.a $(PTHREAD_LIBS) -lm
