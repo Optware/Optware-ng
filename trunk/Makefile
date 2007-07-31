@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = hello \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -41,7 +41,11 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # doxygen - host binary, not stripped
 # perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
+# transmission
+#	configure.ac:67: error: possibly undefined macro: AM_PATH_GTK_2_0
+#	configure: error: cannot find install-sh or install.sh in . ./.. ./../..
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
+	transmission \
 	doxygen \
 	iozone \
 	lftp \
@@ -174,7 +178,7 @@ COMMON_CROSS_PACKAGES = \
 	grep groff gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
-	haproxy hdparm hexcurse heyu hnb hpijs hping htop httping \
+	haproxy hdparm hello hexcurse heyu hnb hpijs hping htop httping \
 	ice icecast id3lib iftop iksemel imagemagick imap \
 	inadyn indent inetutils \
 	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
@@ -232,7 +236,7 @@ COMMON_CROSS_PACKAGES = \
 	taged taglib tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
-	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
+	transcode tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy upslug2 upx usbutils ushare util-linux \
 	varnish vblade vdr-mediamvp vim vlc \
