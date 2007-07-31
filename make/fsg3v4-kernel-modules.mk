@@ -185,6 +185,9 @@ $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.built
+	rm -f $(BUILD_DIR)/kernel-modules_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-modules-*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-image-*_$(TARGET_ARCH).ipk
 	# Package the kernel image first
 	rm -rf $(FSG3V4-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/fsg3v4-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
