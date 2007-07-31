@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-FSG3V4-KERNEL-MODULES_SITE=http://www.kernel.org/pub/linux/kernel/v2.6/
+FSG3V4-KERNEL-MODULES_SITE=http://www.kernel.org/pub/linux/kernel/v2.6
 FSG3V4-KERNEL-MODULES_SOURCE=linux-2.6.18.tar.bz2
 FSG3V4-KERNEL-MODULES_VERSION=2.6.18
 FSG3V4-KERNEL-MODULES_DIR=linux-2.6.18
@@ -17,24 +17,12 @@ FSG3V4-KERNEL-MODULES_PRIORITY=optional
 FSG3V4-KERNEL-MODULES_DEPENDS=
 FSG3V4-KERNEL-MODULES_SUGGESTS=
 FSG3V4-KERNEL-MODULES_CONFLICTS=
-FSG3V4-KERNEL-MODULES= \
-	tun \
-	usbnet asix cdc_ether kaweth net1080 pegasus zaurus \
-	usbserial ftdi_sio mct_u232 pl2303 \
-	firmware_class \
-	bcm203x hci_usb bluetooth bnep l2cap rfcomm sco hidp \
-	exportfs lockd nfs nfsd sunrpc \
-	soundcore snd snd-hwdep snd-page-alloc snd-pcm snd-rawmidi snd-timer \
-	snd-usb-audio snd-usb-lib \
-	evdev usbhid usbkbd yealink \
-	iptable_mangle
-
-# videodev pwc nfsd soundcore audio rtl8150 hfc_usb isdn isdn_bsdcomp dss1_divert hisax slhc
+FSG3V4-KERNEL-MODULES=`find $(FSG3V4-KERNEL-MODULES_IPK_DIR) -name *.ko`
 
 #
 # FSG3V4-KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-FSG3V4-KERNEL-MODULES_IPK_VERSION=2
+FSG3V4-KERNEL-MODULES_IPK_VERSION=3
 
 #
 # FSG3V4-KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -131,11 +119,13 @@ $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo -n "Depends: kernel-image"; \
 	) >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
 	for m in $(FSG3V4-KERNEL-MODULES); do \
-	  install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL; \
-	  rm -f $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
+	  m=`basename $$m .ko`; \
+	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
+	  install -d $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
+	  rm -f $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
-	    echo -n ", kernel-module-`echo $$m|sed -e 's/_/-/g'`" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
-	    echo "Package: kernel-module-`echo $$m|sed -e 's/_/-/g'`"; \
+	    echo -n ", kernel-module-$$n" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
+	    echo "Package: kernel-module-$$n"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(FSG3V4-KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(FSG3V4-KERNEL-MODULES_SECTION)"; \
@@ -145,16 +135,17 @@ $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	    echo "Description: $(FSG3V4-KERNEL-MODULES_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(FSG3V4-KERNEL-MODULES_DEPENDS)"; \
-	    for i in `grep "$$m.ko:" $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib/modules/$(FSG3V4-KERNEL-MODULES_VERSION)/modules.dep|cut -d ":" -f 2|sed -e 's/_/-/g'`; do \
+	    for i in `grep "$$m.ko:" $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib/modules/$(FSG3V4-KERNEL-MODULES_VERSION)/modules.dep|cut -d ":" -f 2`; do \
 	      if test -n "$$DEPS"; \
 	      then DEPS="$$DEPS,"; \
 	      fi; \
-	      DEPS="$$DEPS kernel-module-$$i"; \
+	      j=`basename $$i .ko | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
+	      DEPS="$$DEPS kernel-module-$$j"; \
             done; \
-            echo "$$DEPS" | sed -e 's|/.*/||g' -e 's|\.ko||g';\
+            echo "$$DEPS";\
 	    echo "Suggests: $(FSG3V4-KERNEL-MODULES_SUGGESTS)"; \
 	    echo "Conflicts: $(FSG3V4-KERNEL-MODULES_CONFLICTS)"; \
-	  ) >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/CONTROL/control; \
+	  ) >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
 	done
 	echo "" >> $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 
@@ -200,11 +191,15 @@ $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/
 	$(MAKE) -C $(FSG3V4-KERNEL-MODULES_BUILD_DIR) $(FSG3V4-KERNEL-MODULES-FLAGS) \
 		INSTALL_MOD_PATH=$(FSG3V4-KERNEL-MODULES_IPK_DIR) modules_install
 	for m in $(FSG3V4-KERNEL-MODULES); do \
-	  ( cd $(FSG3V4-KERNEL-MODULES_IPK_DIR) ; install -D -m 644 `find . -name $$m.ko` $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m/`find . -name $$m.ko` ); \
+	  m=`basename $$m .ko`; \
+	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
+	  ( cd $(FSG3V4-KERNEL-MODULES_IPK_DIR) ; install -D -m 644 `find . -iname $$m.ko` $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n/`find . -iname $$m.ko` ); \
 	done
 	$(MAKE) $(FSG3V4-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(FSG3V4-KERNEL-MODULES); do \
-	  cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$m; \
+	  m=`basename $$m .ko`; \
+	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
+	  cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4-KERNEL-MODULES_IPK_DIR)-$$n; \
 	done
 	rm -f $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib/modules/$(FSG3V4-KERNEL-MODULES_VERSION)/build
 	rm -f $(FSG3V4-KERNEL-MODULES_IPK_DIR)/lib/modules/$(FSG3V4-KERNEL-MODULES_VERSION)/source
