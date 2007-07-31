@@ -56,7 +56,11 @@ libstdc++-unpack: $(LIBSTDC++_BUILD_DIR)/.configured
 $(LIBSTDC++_BUILD_DIR)/.built: $(LIBSTDC++_BUILD_DIR)/.configured make/libstdc++.mk
 	rm -f $(LIBSTDC++_BUILD_DIR)/.built
 ifdef LIBSTDC++_USED
+ifeq ($(OPTWARE_TARGET),fsg3v4)
+	cp $(TARGET_LIBDIR)/../../lib/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_BUILD_DIR)/
+else
 	cp $(TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_BUILD_DIR)/
+endif
 endif
 	touch $(LIBSTDC++_BUILD_DIR)/.built
 
