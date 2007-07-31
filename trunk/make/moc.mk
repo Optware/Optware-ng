@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOC_SITE=ftp://ftp.daper.net/pub/soft/moc/stable
-MOC_VERSION=2.4.2
+MOC_VERSION=2.4.3
 MOC_SOURCE=moc-$(MOC_VERSION).tar.bz2
 MOC_DIR=moc-$(MOC_VERSION)
 MOC_UNZIP=bzcat
