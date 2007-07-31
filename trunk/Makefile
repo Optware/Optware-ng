@@ -168,7 +168,7 @@ COMMON_CROSS_PACKAGES = \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog expat extract-xiso \
-	faad2 fann fcgi fetchmail ffmpeg \
+	faad2 fann fcgi fconfig fetchmail ffmpeg \
 	ficy file finch findutils fish fixesext flac flex flip \
 	fontconfig freeradius freetds freetype freeze \
 	ftpcopy ftpd-topfield fuppes \
