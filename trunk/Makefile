@@ -231,7 +231,7 @@ COMMON_CROSS_PACKAGES = \
 	sharutils simh siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
 	socat speex sqlite sqlite2 \
-	sqsh squeak squid srelay strace stunnel streamripper sudo \
+	sqsh squeak squid srelay sslwrap strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat \
 	taged taglib tcl tcpwrappers tethereal tftp-hpa \
 	tar tcpdump tcsh termcap textutils thttpd \
