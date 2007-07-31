@@ -1,0 +1,12 @@
+--- drraw.cgi~	2007-05-31 10:18:00.000000000 +0930
++++ drraw.cgi	2007-07-31 14:08:34.000000000 +0930
+@@ -49,7 +49,8 @@
+ 
+ # The configuration file is expected to be found in the same directory
+ # as drraw itself.  You may customize this to be elsewhere.
+-my $config = (dirname($0) =~ /(.*)/)[0] . "/drraw.conf"; # Untaint
++# my $config = (dirname($0) =~ /(.*)/)[0] . "/drraw.conf"; # Untaint
++my $config = "/opt/etc/drraw.conf";
+ 
+ # This needs to be manually set for stupid stupid File::Find to work
+ # in tainted mode.
