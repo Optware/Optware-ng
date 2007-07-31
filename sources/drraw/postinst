@@ -1,0 +1,6 @@
+#!/bin/sh
+
+mkdir -p /opt/var/lib/rrd
+
+mkdir -p /opt/tmp/drraw/saved
+mkdir -p /opt/tmp/drraw/tmp
