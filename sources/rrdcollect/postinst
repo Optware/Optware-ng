@@ -1,7 +1,9 @@
 #!/bin/sh
 
-if [ ! -f /opt/var/log/memory.rrd ]; then
-   rrdtool create /opt/var/log/memory.rrd \
+mkdir -p /opt/var/lib/rrd
+
+if [ ! -f /opt/var/lib/rrd/memory.rrd ]; then
+   rrdtool create /opt/var/lib/rrd/memory.rrd \
            DS:mem_used:GAUGE:60:U:U \
            DS:mem_free:GAUGE:60:U:U \
            DS:mem_shared:GAUGE:60:U:U \
@@ -13,8 +15,8 @@ if [ ! -f /opt/var/log/memory.rrd ]; then
            RRA:AVERAGE:0.001:720:730 RRA:MAX:0.001:720:730
 fi
 
-if [ ! -f /opt/var/log/stat.rrd ]; then
-   rrdtool create /opt/var/log/stat.rrd \
+if [ ! -f /opt/var/lib/rrd/stat.rrd ]; then
+   rrdtool create /opt/var/lib/rrd/stat.rrd \
            DS:cpu_user:GAUGE:60:U:U \
            DS:cpu_nice:GAUGE:60:U:U \
            DS:cpu_system:GAUGE:60:U:U \
