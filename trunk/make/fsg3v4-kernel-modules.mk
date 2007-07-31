@@ -186,7 +186,7 @@ $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 #
 $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3V4-KERNEL-MODULES_BUILD_DIR)/.built
 	rm -f $(BUILD_DIR)/kernel-modules_*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/kernel-modules-*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
 	rm -f $(BUILD_DIR)/kernel-image-*_$(TARGET_ARCH).ipk
 	# Package the kernel image first
 	rm -rf $(FSG3V4-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/fsg3v4-kernel-image_*_$(TARGET_ARCH).ipk
@@ -232,7 +232,7 @@ fsg3v4-kernel-modules-dirclean:
 	rm -rf $(BUILD_DIR)/$(FSG3V4-KERNEL-MODULES_DIR) $(FSG3V4-KERNEL-MODULES_BUILD_DIR)
 	rm -rf $(FSG3V4-KERNEL-MODULES_IPK_DIR)* $(FSG3V4-KERNEL-IMAGE_IPK_DIR)* 
 	rm -f $(BUILD_DIR)/kernel-modules_*_armeb.ipk
-	rm -f $(BUILD_DIR)/kernel-modules-*_armeb.ipk
+	rm -f $(BUILD_DIR)/kernel-module-*_armeb.ipk
 	rm -f $(BUILD_DIR)/kernel-image-*_armeb.ipk
 
 # LocalWords:  fsg
