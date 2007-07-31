@@ -149,9 +149,10 @@ $(DRRAW_IPK_DIR)/CONTROL/control:
 #
 $(DRRAW_IPK): $(DRRAW_BUILD_DIR)/.built
 	rm -rf $(DRRAW_IPK_DIR) $(BUILD_DIR)/drraw_*_$(TARGET_ARCH).ipk
-	install -d $(DRRAW_IPK_DIR)/opt/share/www/cgi-bin/
+	install -d $(DRRAW_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 644 $(DRRAW_BUILD_DIR)/drraw.cgi $(DRRAW_IPK_DIR)/opt/share/www/cgi-bin/drraw.cgi
 ifeq ($(OPTWARE_TARGET), fsg3v4)
+	install -d $(DRRAW_IPK_DIR)/var/www/cgi-bin
 	ln -s /opt/share/www/cgi-bin/drraw.cgi $(DRRAW_IPK_DIR)/var/www/cgi-bin/drraw.cgi
 endif
 	install -d $(DRRAW_IPK_DIR)/opt/etc/
