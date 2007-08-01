@@ -14,7 +14,7 @@ IPAC-NG_DESCRIPTION=iptables/ipchains based IP accounting package for Linux.
 IPAC-NG_SECTION=net
 IPAC-NG_PRIORITY=optional
 IPAC-NG_DEPENDS=gdbm, sqlite2, iptables
-IPAC-NG_SUGGESTS=rrdtool, drraw
+IPAC-NG_SUGGESTS=rrdtool, drraw, cron
 IPAC-NG_CONFLICTS=
 
 #
