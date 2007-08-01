@@ -1,0 +1,10 @@
+--- agents/ipchains/libipfwc.c~	2003-07-06 20:03:13.000000000 +0930
++++ agents/ipchains/libipfwc.c	2007-08-01 15:57:29.000000000 +0930
+@@ -501,6 +501,7 @@
+ 					       " transparent proxying?)");
+ 					break;
+ 				default:
++					break;
+ 				}
+ 			return message;
+ 		}

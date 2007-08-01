@@ -34,7 +34,8 @@ IPAC-NG_CONFFILES= \
 #
 IPAC-NG_PATCHES= \
 	$(IPAC-NG_SOURCE_DIR)/subst-hostcc.patch \
-	$(IPAC-NG_SOURCE_DIR)/ipt-lib-dir.patch
+	$(IPAC-NG_SOURCE_DIR)/ipt-lib-dir.patch \
+	$(IPAC-NG_SOURCE_DIR)/ipchains-compile-error.patch
 
 #
 # If the compilation of the package requires additional
