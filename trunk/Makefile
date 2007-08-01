@@ -180,7 +180,7 @@ COMMON_CROSS_PACKAGES = \
 	gift-openft gift-opennap \
 	haproxy hdparm hello hexcurse heyu hnb hpijs hping htop httping \
 	ice icecast id3lib iftop iksemel imagemagick imap \
-	inadyn indent inetutils \
+	inadyn indent inetutils ipac-ng \
 	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
