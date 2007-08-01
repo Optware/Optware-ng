@@ -1,0 +1,11 @@
+--- Makefile.in~	2004-06-15 09:07:57.000000000 +0930
++++ Makefile.in	2007-08-01 12:02:28.000000000 +0930
+@@ -93,7 +93,7 @@
+ 	
+ 
+ subst: subst.c
+-	$(CC) $(CFLAGS) -o subst subst.c
++	$(HOSTCC) $(CFLAGS) -o subst subst.c
+ 
+ fetchipac: fetchipac.o storagetable.o billtable.o agenttable.o batch.tab.o libipac.a batch.yy.o\
+ 		     conffile.tab.o conffile.yy.o\

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p /opt/var/lib/ipac
+mkdir -p /opt/var/run
+mkdir -p /opt/var/lock

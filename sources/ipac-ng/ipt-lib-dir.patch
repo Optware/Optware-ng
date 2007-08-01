@@ -1,0 +1,29 @@
+--- configure~	2004-08-25 08:03:23.000000000 +0930
++++ configure	2007-08-01 15:10:23.000000000 +0930
+@@ -5350,25 +5350,7 @@
+ fi
+ 
+ if test $DEFAULT_AGENT = iptables; then
+-	# test for the 64 bit libs first (18.04.2004 - Thomas Zehetbauer <thomasz@hostmaster.org>)
+-	if test -d /usr/lib64/iptables; then
+-		IPT_LIB_DIR=/usr/lib64/iptables
+-	elif test -d /lib64/iptables; then
+-		IPT_LIB_DIR=/lib64/iptables
+-	elif test -d /usr/local/lib64/iptables; then
+-		IPT_LIB_DIR=/usr/local/lib64/iptables
+-	elif test -d /usr/lib/iptables; then
+-		IPT_LIB_DIR=/usr/lib/iptables
+-	elif test -d /lib/iptables; then
+-		IPT_LIB_DIR=/lib/iptables
+-	elif test -d /usr/local/lib/iptables; then
+-		IPT_LIB_DIR=/usr/local/lib/iptables
+-	else
+-		{ echo "$as_me:$LINENO: WARNING: iptables library directory not found, define
+-				it at config.h" >&5
+-echo "$as_me: WARNING: iptables library directory not found, define
+-				it at config.h" >&2;}
+-	fi
++	IPT_LIB_DIR=/opt/lib/iptables
+ fi
+ 
+ 
