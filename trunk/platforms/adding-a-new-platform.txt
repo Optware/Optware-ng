@@ -1,0 +1,42 @@
+* create a toolchain for the new platform <P>
+
+* create a platforms/toolchain-<P>.mk
+  GNU_TARGET_NAME will be used in almost all package configuration
+  it usually should match the output of
+    `make query-TARGET_CC` -dumpmachine
+
+* [optional but recommended] automate toolchain creation
+
+* create a platforms/packages-<P>.mk
+
+* make <P>-target
+  cd <P>
+  make directories ipkg-utils
+  make toolchain
+
+* make hello-ipk
+
+* add an entry to %target_to_bintype in scripts/optware-check-package.pl
+  with `file binary` regex pattern, after than you can run
+  make hello-check
+
+* set NO_BUILTIN_MATH correctly in platforms/toolchain-<P>.mk
+  set GETTEXT_NLS correctly in platforms/toolchain-<P>.mk
+
+* provide LIBNSL_VERSION in make/libnsl.mk
+
+* if libstdc++, fill-in libstdc++ version in make/libstdc++.mk
+  if exclusively libuclibc++, work out the libstdc++ wrapper
+
+* to test the build of a C++ program, you can try
+  make re2c-check
+  `make query-TARGET_CROSS`objdump -p builds/re2c-*-ipk/opt/bin/re2c | grep NEED
+
+* it's a good idea to get perl working early by providing a config.sh
+  under sources/perl/Cross/
+    either a config.sh-<P>
+    or config.sh-$(GNU_TARGET_NAME)
+  the following packages conditionally depends on the presence of perl:
+    grep -l ifeq.*filter.*perl make/*.mk
+  so enable the feed after getting perl working, or rebuild these packages.
+
