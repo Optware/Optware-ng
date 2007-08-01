@@ -122,17 +122,18 @@ static void stop(tr_torrent_t *tor, void * data UNUSED )
   for( i = 0; i < 10; i++ )
     {
       s = tr_torrentStat( tor );
-      if( s->status & TR_STATUS_STOPPED )
+      if( s->status & TR_STATUS_STOPPED || s->status & TR_STATUS_INACTIVE )
         {
           /* The 'stopped' message was sent */
           break;
         }
       usleep( 500000 );
     }
-  if ( i == 10 )
+  if ( s->status & TR_STATUS_INACTIVE)
+    tr_torrentClose( tor );
+  else if ( i == 10 )
     syslog( LOG_NOTICE, "Waited 5 seconds for %s without response",
             info->torrent );
-  tr_torrentClose( tor );
 }
 
 struct active_torrents_s
