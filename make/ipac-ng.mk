@@ -13,20 +13,22 @@ IPAC-NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPAC-NG_DESCRIPTION=iptables/ipchains based IP accounting package for Linux.
 IPAC-NG_SECTION=net
 IPAC-NG_PRIORITY=optional
-IPAC-NG_DEPENDS=gdbm, sqlite2, iptables
-IPAC-NG_SUGGESTS=rrdtool, drraw, cron
+IPAC-NG_DEPENDS=gdbm, sqlite2, iptables, perl, cron
+IPAC-NG_SUGGESTS=rrdtool, drraw
 IPAC-NG_CONFLICTS=
 
 #
 # IPAC-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPAC-NG_IPK_VERSION=1
+IPAC-NG_IPK_VERSION=2
 
 #
 # IPAC-NG_CONFFILES should be a list of user-editable files
 IPAC-NG_CONFFILES= \
 	/opt/etc/ipac-ng/ipac.conf \
-	/opt/etc/ipac-ng/rules.conf
+	/opt/etc/ipac-ng/rules.conf \
+	/opt/etc/init.d/S25ipac-ng \
+	/opt/etc/cron.d/ipac-ng
 
 #
 # IPAC-NG_PATCHES should list any patches, in the the order in
@@ -185,6 +187,10 @@ $(IPAC-NG_IPK): $(IPAC-NG_BUILD_DIR)/.built
 	install -d $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng
 	install -m 644 $(IPAC-NG_SOURCE_DIR)/ipac.conf $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng/
 	install -m 644 $(IPAC-NG_SOURCE_DIR)/rules.conf $(IPAC-NG_IPK_DIR)/opt/etc/ipac-ng/
+	install -d $(IPAC-NG_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(IPAC-NG_SOURCE_DIR)/init $(IPAC-NG_IPK_DIR)/opt/etc/init.d/S25ipac-ng
+	install -d $(IPAC-NG_IPK_DIR)/opt/etc/cron.d
+	install -m 600 $(IPAC-NG_SOURCE_DIR)/crontab $(IPAC-NG_IPK_DIR)/opt/etc/cron.d/ipac-ng
 	$(MAKE) $(IPAC-NG_IPK_DIR)/CONTROL/control
 	install -m 755 $(IPAC-NG_SOURCE_DIR)/postinst $(IPAC-NG_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IPAC-NG_IPK_DIR)/CONTROL/postinst

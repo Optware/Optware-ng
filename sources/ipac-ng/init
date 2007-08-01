@@ -1,0 +1,11 @@
+#!/bin/sh
+#
+# Startup script for ipac-ng
+#
+# Stop myself if running
+PIDFILE=/opt/var/run/ipac.pid
+[ -f ${PIDFILE} ] && kill `cat ${PIDFILE}`
+echo -n "Starting ipac-ng: "
+/opt/sbin/fetchipac -S
+echo
+
