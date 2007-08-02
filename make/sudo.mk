@@ -4,8 +4,7 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-#SUDO_SITE=http://sources.nslu2-linux.org/sources/
-SUDO_VERSION=1.6.9p2
+SUDO_VERSION=1.6.9p3
 SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_VERSION)
 SUDO_UNZIP=zcat
