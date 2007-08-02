@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.11.5
+LIBTORRENT_VERSION=0.11.6
 LIBTORRENT_SOURCE=libtorrent-$(LIBTORRENT_VERSION).tar.gz
 LIBTORRENT_DIR=libtorrent-$(LIBTORRENT_VERSION)
 LIBTORRENT_UNZIP=zcat
