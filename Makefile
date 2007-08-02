@@ -55,7 +55,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 PERL_PACKAGES = \
 	perl \
 	perl-algorithm-diff \
-	perl-appconfig perl-assp \
+	perl-app-ack perl-appconfig perl-assp \
 	perl-archive-tar perl-archive-zip \
 	perl-berkeleydb \
 	perl-bsd-resource \
@@ -72,7 +72,7 @@ PERL_PACKAGES = \
 	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
-	perl-file-rename \
+	perl-file-next perl-file-rename \
 	perl-gd perl-gd-barcode \
 	perl-html-parser perl-html-tagset perl-html-template perl-hottproxy \
 	perl-ima-dbi \
