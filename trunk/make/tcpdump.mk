@@ -28,7 +28,7 @@ TCPDUMP_UNZIP=zcat
 #
 # TCPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPDUMP_IPK_VERSION=1
+TCPDUMP_IPK_VERSION=2
 
 #
 # TCPDUMP_PATCHES should list any patches, in the the order in
