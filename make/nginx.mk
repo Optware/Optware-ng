@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.5
+NGINX_VERSION=0.6.6
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -43,8 +43,9 @@ NGINX_PREFIX=/opt/nginx
 #
 # NGINX_CONFFILES should be a list of user-editable files
 NGINX_CONFFILES=\
-	$(NGINX_PREFIX)/conf/nginx.conf \
+	$(NGINX_PREFIX)/conf/fastcgi_params \
 	$(NGINX_PREFIX)/conf/mime.types \
+	$(NGINX_PREFIX)/conf/nginx.conf \
 	$(NGINX_PREFIX)/html/index.html \
 	$(NGINX_PREFIX)/html/50x.html \
 
@@ -154,7 +155,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	    $(NGINX_CONFIGURE_ENV) \
 	    ./configure \
 		--prefix=$(NGINX_PREFIX) \
-		--conf-path=conf/nginx.conf \
+		--sysconfdir=/opt/nginx/conf \
 		--error-log-path=logs/error.log \
 		--pid-path=/opt/var/run/nginx.pid \
 		--http-log-path=logs/access.log \
@@ -169,6 +170,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 		; \
 	)
 	sed -i.orig \
+                -e 's#conf/conf/nginx.conf#conf#g' \
                 -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
                 -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
                 $(NGINX_BUILD_DIR)/objs/Makefile
