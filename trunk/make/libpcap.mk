@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPCAP_SITE=http://www.tcpdump.org/release
-LIBPCAP_VERSION=0.9.5
+LIBPCAP_VERSION=0.9.6
 LIBPCAP_SOURCE=libpcap-$(LIBPCAP_VERSION).tar.gz
 LIBPCAP_DIR=libpcap-$(LIBPCAP_VERSION)
 LIBPCAP_UNZIP=zcat
