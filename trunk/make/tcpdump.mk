@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TCPDUMP_SITE=http://www.tcpdump.org/release
-TCPDUMP_VERSION=3.9.5
+TCPDUMP_VERSION=3.9.6
 TCPDUMP_SOURCE=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_DIR=tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_UNZIP=zcat
@@ -96,6 +96,7 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCPDUMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TCPDUMP_LDFLAGS)" \
+		ac_cv_linux_vers=2 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -103,7 +104,6 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 		--prefix=/opt \
 		--disable-smb \
 		--without-crypto \
-		ac_cv_linux_vers=2.4.22 \
 	)
 	touch $(TCPDUMP_BUILD_DIR)/.configured
 
@@ -174,3 +174,9 @@ tcpdump-clean:
 #
 tcpdump-dirclean:
 	rm -rf $(BUILD_DIR)/$(TCPDUMP_DIR) $(TCPDUMP_BUILD_DIR) $(TCPDUMP_IPK_DIR) $(TCPDUMP_IPK)
+
+#
+# Some sanity check for the package.
+#
+tcpdump-check: $(TCPDUMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TCPDUMP_IPK)
