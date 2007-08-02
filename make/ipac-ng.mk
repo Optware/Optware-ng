@@ -45,6 +45,9 @@ IPAC-NG_PATCHES= \
 #
 IPAC-NG_CPPFLAGS=
 IPAC-NG_LDFLAGS=
+ifeq ($(OPTWARE_TARGET), slugosbe)
+IPAC-NG_LDFLAGS+=-ldl
+endif
 
 #
 # IPAC-NG_BUILD_DIR is the directory in which the build is done.
