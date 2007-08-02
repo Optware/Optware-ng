@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBIDN_SITE=ftp://alpha.gnu.org/pub/gnu/libidn
-LIBIDN_VERSION=0.6.14
+LIBIDN_SITE=http://josefsson.org/libidn/releases
+LIBIDN_VERSION=1.0
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
