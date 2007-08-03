@@ -30,6 +30,12 @@ NEWSBEUTER_DESCRIPTION=An RSS feed reader for the text console.
 NEWSBEUTER_SECTION=net
 NEWSBEUTER_PRIORITY=optional
 NEWSBEUTER_DEPENDS=libmrss, libstdc++, ncursesw, sqlite
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+NEWSBEUTER_DEPENDS+=, libiconv
+endif
+ifeq (enable, $(GETTEXT_NLS))
+NEWSBEUTER_DEPENDS+=, gettext
+endif
 NEWSBEUTER_SUGGESTS=
 NEWSBEUTER_CONFLICTS=
 
@@ -54,6 +60,12 @@ NEWSBEUTER_IPK_VERSION=1
 #
 NEWSBEUTER_CPPFLAGS=-ggdb -I./include -I./stfl -I./filter -I.
 NEWSBEUTER_LDFLAGS=-L.
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+NEWSBEUTER_LDFLAGS+=-liconv
+endif
+ifeq (uclibc, $(LIBC_STYLE))
+NEWSBEUTER_LDFLAGS+=-lintl
+endif
 
 #
 # NEWSBEUTER_BUILD_DIR is the directory in which the build is done.
@@ -104,10 +116,16 @@ newsbeuter-source: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NEWSBEUTER_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES) # make/newsbeuter.mk
+$(NEWSBEUTER_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES) make/newsbeuter.mk
 	$(MAKE) libstdc++-stage
 	$(MAKE) sqlite-stage libmrss-stage
 	$(MAKE) stfl-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
+ifeq (enable, $(GETTEXT_NLS))
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(NEWSBEUTER_BUILD_DIR)
 	$(NEWSBEUTER_UNZIP) $(DL_DIR)/$(NEWSBEUTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NEWSBEUTER_PATCHES)" ; \
@@ -118,6 +136,9 @@ $(NEWSBEUTER_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER
 		then mv $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(NEWSBEUTER_BUILD_DIR) ; \
 	fi
 	sed -i -e '/^[ 	]*stfl_/s/stfl_/struct stfl_/' $(NEWSBEUTER_BUILD_DIR)/include/stflpp.h
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	sed -i -e '/::iconv(/s/, /, (const char**) /' $(NEWSBEUTER_BUILD_DIR)/src/utils.cpp
+endif
 #	(cd $(NEWSBEUTER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEWSBEUTER_CPPFLAGS)" \

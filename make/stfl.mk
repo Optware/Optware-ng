@@ -29,7 +29,11 @@ STFL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 STFL_DESCRIPTION=Structured Terminal Forms Language/Library, a library which implements a curses-based widget set for text terminals.
 STFL_SECTION=console
 STFL_PRIORITY=optional
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+STFL_DEPENDS=, libiconv
+else
 STFL_DEPENDS=
+endif
 STFL_SUGGESTS=
 STFL_CONFLICTS=
 
@@ -55,6 +59,9 @@ STFL_IPK_VERSION=1
 #STFL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 STFL_CPPFLAGS=
 STFL_LDFLAGS=-L.
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+STFL_LDFLAGS+=-liconv
+endif
 
 #
 # STFL_BUILD_DIR is the directory in which the build is done.
@@ -106,6 +113,9 @@ stfl-source: $(DL_DIR)/$(STFL_SOURCE) $(STFL_PATCHES)
 # shown below to make various patches to it.
 #
 $(STFL_BUILD_DIR)/.configured: $(DL_DIR)/$(STFL_SOURCE) $(STFL_PATCHES) make/stfl.mk
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(STFL_DIR) $(STFL_BUILD_DIR)
 	$(STFL_UNZIP) $(DL_DIR)/$(STFL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
