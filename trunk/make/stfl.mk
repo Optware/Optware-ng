@@ -126,6 +126,7 @@ endif
 	if test "$(BUILD_DIR)/$(STFL_DIR)" != "$(STFL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(STFL_DIR) $(STFL_BUILD_DIR) ; \
 	fi
+	sed -i -e '/$$(CC)/s/-MM/-MM $$(CPPFLAGS)/' $(STFL_BUILD_DIR)/Makefile
 #	(cd $(STFL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STFL_CPPFLAGS)" \
