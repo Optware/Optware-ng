@@ -98,6 +98,7 @@ $(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DFU-UTIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DFU-UTIL_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
