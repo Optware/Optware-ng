@@ -20,11 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FIS_SITE=http://www.angstrom-distribution.org/unstable/sources
-FIS_VERSION=1.0
-FIS_SOURCE=fis.c
-FIS_DIR=fis-$(FIS_VERSION)
-FIS_UNZIP=zcat
+FIS_REPOSITORY=http://svn.nslu2-linux.org/svnroot/fis/trunk
+FIS_DIR=fis
 FIS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FIS_DESCRIPTION=Tool to edit the Redboot FIS partition layout from userspace.
 FIS_SECTION=utils
@@ -32,6 +29,10 @@ FIS_PRIORITY=optional
 FIS_DEPENDS=
 FIS_SUGGESTS=
 FIS_CONFLICTS=
+
+FIS_SVN_TAG=4
+FIS_VERSION=r${FIS_SVN_TAG}
+FIS_SVN_OPTS=-r $(FIS_SVN_TAG)
 
 #
 # FIS_IPK_VERSION should be incremented when the ipk changes.
@@ -72,19 +73,18 @@ FIS_IPK=$(BUILD_DIR)/fis_$(FIS_VERSION)-$(FIS_IPK_VERSION)_$(TARGET_ARCH).ipk
 .PHONY: fis-source fis-unpack fis fis-stage fis-ipk fis-clean fis-dirclean fis-check
 
 #
-# This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
+# In this case there is no tarball, instead we fetch the sources
+# directly to the builddir with SVN
 #
-$(DL_DIR)/$(FIS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FIS_SITE)/$(FIS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(FIS_SOURCE)
+$(DL_DIR)/fis-$(FIS_VERSION).tar.gz:
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(FIS_DIR) && \
+		svn co $(FIS_REPOSITORY) $(FIS_SVN_OPTS) $(FIS_DIR) && \
+		tar -czf $@ $(FIS_DIR) && \
+		rm -rf $(FIS_DIR) \
+	)
 
-#
-# The source code depends on it existing within the download directory.
-# This target will be called by the top level Makefile to download the
-# source code's archive (.tar.gz, .bz2, etc.)
-#
-fis-source: $(DL_DIR)/$(FIS_SOURCE) $(FIS_PATCHES)
+fis-source: $(DL_DIR)/fis-$(FIS_VERSION).tar.gz
 
 #
 # This target unpacks the source code in the build directory.
@@ -104,32 +104,16 @@ fis-source: $(DL_DIR)/$(FIS_SOURCE) $(FIS_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(FIS_BUILD_DIR)/.configured: $(DL_DIR)/$(FIS_SOURCE) $(FIS_PATCHES) make/fis.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+$(FIS_BUILD_DIR)/.configured: $(DL_DIR)/fis-$(FIS_VERSION).tar.gz make/fis.mk
 	rm -rf $(BUILD_DIR)/$(FIS_DIR) $(FIS_BUILD_DIR)
-#	$(FIS_UNZIP) $(DL_DIR)/$(FIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mkdir -p $(FIS_BUILD_DIR)
-	cp -f $(DL_DIR)/$(FIS_SOURCE) $(FIS_BUILD_DIR)/
+	tar -C $(BUILD_DIR) -xvf $(DL_DIR)/fis-$(FIS_VERSION).tar.gz
 	if test -n "$(FIS_PATCHES)" ; \
 		then cat $(FIS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(FIS_DIR) -p0 ; \
 	fi
-#	if test "$(BUILD_DIR)/$(FIS_DIR)" != "$(FIS_BUILD_DIR)" ; \
+	if test "$(BUILD_DIR)/$(FIS_DIR)" != "$(FIS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FIS_DIR) $(FIS_BUILD_DIR) ; \
 	fi
-#	(cd $(FIS_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(FIS_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(FIS_LDFLAGS)" \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--disable-nls \
-		--disable-static \
-	)
-#	$(PATCH_LIBTOOL) $(FIS_BUILD_DIR)/libtool
 	touch $@
 
 fis-unpack: $(FIS_BUILD_DIR)/.configured
@@ -139,8 +123,7 @@ fis-unpack: $(FIS_BUILD_DIR)/.configured
 #
 $(FIS_BUILD_DIR)/.built: $(FIS_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(FIS_BUILD_DIR) && \
-		$(TARGET_CC) --std=c99 -Os -W -o fis fis.c
+	$(MAKE) -C $(FIS_BUILD_DIR) CC=${TARGET_CC}
 	touch $@
 
 #
@@ -148,15 +131,7 @@ $(FIS_BUILD_DIR)/.built: $(FIS_BUILD_DIR)/.configured
 #
 fis: $(FIS_BUILD_DIR)/.built
 
-#
-# If you are building a library, then you need to stage it too.
-#
-$(FIS_BUILD_DIR)/.staged: $(FIS_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(FIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
-
-fis-stage: $(FIS_BUILD_DIR)/.staged
+fis-stage:
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -191,12 +166,10 @@ $(FIS_IPK_DIR)/CONTROL/control:
 #
 $(FIS_IPK): $(FIS_BUILD_DIR)/.built
 	rm -rf $(FIS_IPK_DIR) $(BUILD_DIR)/fis_*_$(TARGET_ARCH).ipk
-#	$(MAKE) -C $(FIS_BUILD_DIR) DESTDIR=$(FIS_IPK_DIR) install-strip
 	install -d $(FIS_IPK_DIR)/opt/sbin/
 	install -m 755 $(FIS_BUILD_DIR)/fis $(FIS_IPK_DIR)/opt/sbin/
 	$(STRIP_COMMAND) $(FIS_IPK_DIR)/opt/sbin/fis
 	$(MAKE) $(FIS_IPK_DIR)/CONTROL/control
-	echo $(FIS_CONFFILES) | sed -e 's/ /\n/g' > $(FIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIS_IPK_DIR)
 
 #
