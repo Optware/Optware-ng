@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
-SWI-PROLOG_VERSION=5.6.37
+SWI-PROLOG_VERSION=5.6.38
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
 SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
 SWI-PROLOG_UNZIP=zcat
@@ -37,7 +37,7 @@ SWI-PROLOG_CONFLICTS=
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=2
+SWI-PROLOG_IPK_VERSION=1
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -127,6 +127,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	@echo "=============== host swi-prolog ============"
 	mkdir -p $(SWI-PROLOG_BUILD_DIR)/hostbuild
 	$(SWI-PROLOG_UNZIP) $(DL_DIR)/$(SWI-PROLOG_SOURCE) | tar -C $(SWI-PROLOG_BUILD_DIR)/hostbuild -xf -
+	sed -i -e 's/256/512/' $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR)/src/plld.c
 	( \
 	    cd $(SWI-PROLOG_BUILD_DIR)/hostbuild/$(SWI-PROLOG_DIR); \
 	    cp $(SWI-PROLOG_BUILD_DIR)/packages/plld.sh.in packages/; \
