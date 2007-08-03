@@ -82,7 +82,7 @@ dfu-util-source: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
+$(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz make/dfu-util.mk
 	$(MAKE) libusb-stage
 	rm -rf $(BUILD_DIR)/$(DFU-UTIL_DIR) $(DFU-UTIL_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
