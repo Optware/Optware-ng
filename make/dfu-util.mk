@@ -93,6 +93,7 @@ $(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 	if test "$(BUILD_DIR)/$(DFU-UTIL_DIR)" != "$(DFU-UTIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DFU-UTIL_DIR) $(DFU-UTIL_BUILD_DIR) ; \
 	fi
+	sed -i -e 's|\[config.h\]|config.h|g' $(DFU-UTIL_BUILD_DIR)/configure.ac
 	(cd $(DFU-UTIL_BUILD_DIR); ./autogen.sh )
 	(cd $(DFU-UTIL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
