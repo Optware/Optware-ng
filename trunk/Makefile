@@ -206,7 +206,8 @@ COMMON_CROSS_PACKAGES = \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
 	ncftp ncmpc ncurses ncursesw nemesis \
-	neon net-snmp net-tools netatalk netcat nethack netio newt \
+	neon net-snmp net-tools netatalk netcat nethack netio \
+	newsbeuter newt \
 	nfs-server nfs-utils nget nginx nmap nload noip nrpe \
 	ntfsprogs ntop ntp ntpclient nttcp nvi nylon nzbget \
 	oleo \
