@@ -1,15 +1,6 @@
---- swi-prolog/src/configure.in.orig	2007-07-05 05:16:57.000000000 -0700
-+++ swi-prolog/src/configure.in	2007-07-11 07:06:45.000000000 -0700
-@@ -351,7 +351,7 @@
- 	    ],
- 	    pthread_ok=true
- 	    CMFLAGS="$CMFLAGS -pthread"
--	    LDFLAGS="$LDFLAGS -pthread"
-+	    LDFLAGS="$LDFLAGS -lpthread"
- 	    AC_MSG_RESULT(yes),
- 	    CFLAGS="$ocflags"
- 	    AC_MSG_RESULT(no))
-@@ -379,16 +379,9 @@
+--- swi-prolog/src/configure.in.orig	2007-07-27 02:54:33.000000000 -0700
++++ swi-prolog/src/configure.in	2007-08-02 19:55:03.000000000 -0700
+@@ -383,16 +383,9 @@
    AC_CHECK_FUNCS(pthread_mutexattr_setkind_np pthread_mutexattr_settype)
    AC_CHECK_FUNCS(pthread_kill)
    AC_MSG_CHECKING("whether mutex support recursive locking")
@@ -26,7 +17,7 @@
    AC_CHECK_FUNCS(pthread_sigmask pthread_setconcurrency)
  
  dnl ATOMIC inc/dec for reference counts
-@@ -613,20 +606,7 @@
+@@ -617,20 +610,7 @@
  AC_CHECK_FUNCS(clock_gettime)
  
  AC_MSG_CHECKING(for pthread support for cpu clocks)
@@ -48,7 +39,7 @@
  
  if test "x$ac_pthread_cpuclocks" = "xyes"; then
     AC_DEFINE(PTHREAD_CPUCLOCKS, 1,
-@@ -641,18 +621,7 @@
+@@ -645,18 +625,7 @@
     AC_MSG_RESULT(no))
  
  AC_MSG_CHECKING(for syscall support for cpu clocks)
@@ -68,7 +59,7 @@
  
  if test "x$ac_linux_cpuclocks" = "xyes"; then
     AC_DEFINE(LINUX_CPUCLOCKS, 1,
-@@ -660,16 +629,9 @@
+@@ -664,16 +633,9 @@
  else
  
  AC_MSG_CHECKING(linux 2.6 /proc)
@@ -83,9 +74,9 @@
  fi
 -fi
  
- AC_MSG_CHECKING(linux /proc/cpuinfo)
- if grep 'processor[	 ]*: 0' /proc/cpuinfo 2>&1 > /dev/null; then
-@@ -1156,15 +1118,9 @@
+ AC_MSG_CHECKING(for sysconf support for _SC_NPROCESSORS_CONF)
+ AC_TRY_COMPILE(
+@@ -1174,15 +1136,9 @@
  dnl ****************************************************************
  
  AC_MSG_CHECKING("memory model");
@@ -102,7 +93,7 @@
  rm -fr conftest*
  
  dnl ****************************************************************
-@@ -1173,16 +1129,7 @@
+@@ -1191,16 +1147,7 @@
  dnl ****************************************************************
  
  AC_MSG_CHECKING("for nop");
@@ -119,7 +110,7 @@
  rm -fr conftest*
  
  
-@@ -1271,13 +1218,11 @@
+@@ -1289,13 +1236,11 @@
  mmap_tried=nosegv;
  mmap_test=mmap.c
  AC_MSG_CHECKING("if we can use mmap for stack allocation")
@@ -136,7 +127,7 @@
  	if test "$MMAP_STACK" = "1"; then
  	    if test "$HAVE_MAP_ANON" = "1"; then
  		AC_DEFINE(HAVE_MAP_ANON, 1,
-@@ -1302,11 +1247,6 @@
+@@ -1320,11 +1265,6 @@
  	else
  	    AC_MSG_RESULT("mmap is not good enough")
  	fi
@@ -148,7 +139,7 @@
  if test ! "$MMAP_STACK" = "1"; then
    if test "$mmap_tried" = "sgi"; then
      mmap_tried=segv
-@@ -1320,7 +1260,7 @@
+@@ -1338,7 +1278,7 @@
  else
      mmap_tried=stop
  fi
