@@ -106,7 +106,7 @@ fis-source: $(DL_DIR)/fis-$(FIS_VERSION).tar.gz
 #
 $(FIS_BUILD_DIR)/.configured: $(DL_DIR)/fis-$(FIS_VERSION).tar.gz make/fis.mk
 	rm -rf $(BUILD_DIR)/$(FIS_DIR) $(FIS_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xvf $(DL_DIR)/fis-$(FIS_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/fis-$(FIS_VERSION).tar.gz
 	if test -n "$(FIS_PATCHES)" ; \
 		then cat $(FIS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(FIS_DIR) -p0 ; \
