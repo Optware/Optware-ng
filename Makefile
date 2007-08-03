@@ -161,7 +161,7 @@ COMMON_CROSS_PACKAGES = \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cvs \
 	cyrus-imapd cyrus-sasl \
-	dansguardian dash davtools dbus dcraw denyhosts dev-pts \
+	dansguardian dash davtools dbus dcraw denyhosts dev-pts dfu-util \
 	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
 	dnsmasq dokuwiki dovecot dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
