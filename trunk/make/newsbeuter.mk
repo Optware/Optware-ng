@@ -136,6 +136,7 @@ endif
 		then mv $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(NEWSBEUTER_BUILD_DIR) ; \
 	fi
 	sed -i -e '/^[ 	]*stfl_/s/stfl_/struct stfl_/' $(NEWSBEUTER_BUILD_DIR)/include/stflpp.h
+	sed -i -e '/#include <set>/a#include <unistd.h>' $(NEWSBEUTER_BUILD_DIR)/include/configparser.h
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	sed -i -e '/::iconv(/s/, /, (const char**) /' $(NEWSBEUTER_BUILD_DIR)/src/utils.cpp
 endif

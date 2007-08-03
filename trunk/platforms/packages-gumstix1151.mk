@@ -5,7 +5,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
-	$(filter-out libstdc++, $(UCLIBC_BROKEN_PACKAGES)) \
+	$(filter-out libstdc++ newsbeuter, $(UCLIBC_BROKEN_PACKAGES)) \
 	amule asterisk \
 	bluez-hcidump chillispot \
 	dump ficy gdb \
