@@ -6,31 +6,17 @@
 #
 # Released under GPL
 #
-#
-#   WARNING  WARNING  WARNING  WARNING  WARNING
-#
-#   This version of libusb suffers from some serious
-#   portability issues and does not work on big-endian
-#   systems (like the NSLU2). It may appear
-#   to work, but there are issues with structure alignment
-#   and byte ordering. These issues require a non-trivial
-#   amount of effort to fix correctly. Contributions are
-#   welcome.
-#
-#   WARNING  WARNING  WARNING  WARNING  WARNING
-#
-#
-#
 #   #######################################################
 #   
 #   2005-07-01 - Updated to 0.1.10a, with debian patchset
 #                Should work alot better.         - daka
-#
+#   2007-08-03 - Updated to 0.1.12, debian patchset
+#   		 already in upstream.		  - bzhou
 #
 ###########################################################
 
 LIBUSB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libusb/
-LIBUSB_VERSION:=0.1.10a
+LIBUSB_VERSION:=0.1.12
 LIBUSB_SOURCE=libusb-$(LIBUSB_VERSION).tar.gz
 LIBUSB_DIR=libusb-$(LIBUSB_VERSION)
 LIBUSB_UNZIP=zcat
@@ -44,12 +30,13 @@ LIBUSB_CONFLICTS=
 #
 # LIBUSB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUSB_IPK_VERSION=6
+LIBUSB_IPK_VERSION=1
 #
 # LIBUSB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUSB_PATCHES=$(LIBUSB_SOURCE_DIR)/debian-changes.patch
+LIBUSB_PATCHES=
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -101,13 +88,14 @@ libusb-source: $(DL_DIR)/$(LIBUSB_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES)
+$(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES) make/libusb.mk
 	rm -rf $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	$(LIBUSB_UNZIP) $(DL_DIR)/$(LIBUSB_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cat $(LIBUSB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB_DIR) -p1
+	if test -n "$(LIBUSB_PATCHES)"; then \
+		cat $(LIBUSB_PATCHES) | patch -d $(BUILD_DIR)/$(LIBUSB_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR)
 	(cd $(LIBUSB_BUILD_DIR); \
-		autoconf ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBUSB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBUSB_LDFLAGS)" \
@@ -127,20 +115,25 @@ libusb-unpack: $(LIBUSB_BUILD_DIR)/.configured
 
 libusb-configure: $(LIBUSB_BUILD_DIR)/.configured
 
-$(LIBUSB_BUILD_DIR)/libusb.la: $(LIBUSB_BUILD_DIR)/.configured
+$(LIBUSB_BUILD_DIR)/.built: $(LIBUSB_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) \
 		SUBDIRS=. lib_LTLIBRARIES=libusb.la
+	touch $@
 
 libusb: $(LIBUSB_BUILD_DIR)/libusb.la
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_LIB_DIR)/libusb.la: $(LIBUSB_BUILD_DIR)/libusb.la
+$(LIBUSB_BUILD_DIR)/.staged: $(LIBUSB_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
 		SUBDIRS=. lib_LTLIBRARIES=libusb.la install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libusb.pc
+	touch $@
 
-libusb-stage: $(STAGING_LIB_DIR)/libusb.la
+libusb-stage: $(LIBUSB_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -172,7 +165,7 @@ $(LIBUSB_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la $(STAGING_LIB_DIR)/libusb.la
+$(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/.built
 	rm -rf $(LIBUSB_IPK_DIR) $(LIBUSB_IPK)
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(LIBUSB_IPK_DIR) \
 		SUBDIRS=. lib_LTLIBRARIES=libusb.la install-strip
@@ -180,8 +173,9 @@ $(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/libusb.la $(STAGING_LIB_DIR)/libusb.la
 		$(TARGET_CC) -o $(LIBUSB_IPK_DIR)/opt/bin/testlibusb testlibusb.c \
 			-I$(STAGING_INCLUDE_DIR) -L$(STAGING_LIB_DIR) -lusb \
 			-Wl,--rpath -Wl,/opt/lib )
-	rm -rf $(LIBUSB_IPK_DIR)/opt/include
-	rm -rf $(LIBUSB_IPK_DIR)/opt/bin/libusb-config
+	$(STRIP_COMMAND) $(LIBUSB_IPK_DIR)/opt/bin/testlibusb
+#	rm -rf $(LIBUSB_IPK_DIR)/opt/include
+#	rm -rf $(LIBUSB_IPK_DIR)/opt/bin/libusb-config
 	rm -rf $(LIBUSB_IPK_DIR)/opt/lib/libusb.{a,la}
 	$(MAKE) $(LIBUSB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUSB_IPK_DIR)
@@ -203,3 +197,9 @@ libusb-clean:
 #
 libusb-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBUSB_DIR) $(LIBUSB_BUILD_DIR) $(LIBUSB_IPK_DIR) $(LIBUSB_IPK)
+
+#
+# Some sanity check for the package.
+#
+libusb-check: $(LIBUSB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBUSB_IPK)
