@@ -16,7 +16,7 @@ LIBEVENT_PRIORITY=optional
 LIBEVENT_DEPENDS=
 LIBEVENT_CONFLICTS=
 
-LIBEVENT_IPK_VERSION=1
+LIBEVENT_IPK_VERSION=2
 
 ifeq ($(LIBC_STYLE), uclibc)
 LIBEVENT_CPPFLAGS= -fPIC -DCLOCK_MONOTONIC=1 -DCLOCK_REALTIME=0
@@ -67,6 +67,8 @@ $(LIBEVENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEVENT_SOURCE)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	);
+	$(PATCH_LIBTOOL) $(LIBEVENT_BUILD_DIR)/libtool
+	sed -i.orig -e '/^library_names_spec=/s|\\$${shared_ext}|.so|g' $(LIBEVENT_BUILD_DIR)/libtool
 	touch $(LIBEVENT_BUILD_DIR)/.configured
 
 libevent-unpack: $(LIBEVENT_BUILD_DIR)/.configured
@@ -83,6 +85,7 @@ libevent: $(LIBEVENT_BUILD_DIR)/.built
 #
 $(LIBEVENT_BUILD_DIR)/.staged: $(LIBEVENT_BUILD_DIR)/.built
 	rm -f $(LIBEVENT_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libevent*
 	$(MAKE) -C $(LIBEVENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(LIBEVENT_BUILD_DIR)/.staged
 
