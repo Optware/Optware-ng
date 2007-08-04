@@ -214,7 +214,7 @@ COMMON_CROSS_PACKAGES = \
 	openobex obexftp \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
-	p7zip palantir pango par2cmdline patch patchutils \
+	pal p7zip palantir pango par2cmdline patch patchutils \
 	pcapsipdump pciutils pcre pen \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
