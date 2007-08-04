@@ -27,13 +27,13 @@ DFU-UTIL_SVN_OPTS=-r $(DFU-UTIL_SVN_TAG)
 #
 # DFU-UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-DFU-UTIL_IPK_VERSION=1
+DFU-UTIL_IPK_VERSION=2
 
 #
 # DFU-UTIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-DFU-UTIL_PATCHES=
+DFU-UTIL_PATCHES=$(DFU-UTIL_SOURCE_DIR)/fix-endianess.patch
 
 #
 # If the compilation of the package requires additional
@@ -82,7 +82,7 @@ dfu-util-source: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz make/dfu-util.mk
+$(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz $(DFU-UTIL_PATCHES) make/dfu-util.mk
 	$(MAKE) libusb-stage
 	rm -rf $(BUILD_DIR)/$(DFU-UTIL_DIR) $(DFU-UTIL_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
