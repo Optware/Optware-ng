@@ -40,7 +40,7 @@ GIT_CONFLICTS=
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=1
+GIT_IPK_VERSION=2
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
