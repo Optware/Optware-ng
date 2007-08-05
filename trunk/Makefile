@@ -201,7 +201,7 @@ COMMON_CROSS_PACKAGES = \
 	mg miau microcom microperl minicom \
 	mktemp moblock moc modutils monit most motion \
 	mod-fastcgi moe monotone mp3blaster mpack mpage mpc mpd \
-	mpg123 mrtg msmtp msynctool mt-daapd mtools \
+	mpg123 mpop mrtg msmtp msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
