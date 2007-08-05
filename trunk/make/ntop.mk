@@ -19,13 +19,12 @@
 #
 # You should change all these variables to suit your package.
 #
-NTOP_NAME=ntop
-NTOP_VERSION=3.2.3
-NTOP_CVS_OPTS=-D 20060617
-NTOP_DIR=$(NTOP_NAME)
+NTOP_VERSION=3.3
+#NTOP_CVS_OPTS=-D 20060617
+NTOP_DIR=ntop-$(NTOP_VERSION)
 # Tarball info
-NTOP_SITE=# none - available from CVS only
-NTOP_SOURCE=# none - available from CVS only
+NTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ntop
+NTOP_SOURCE=ntop-$(NTOP_VERSION).tar.gz
 
 # Util info
 NTOP_UNZIP=zcat
@@ -37,13 +36,13 @@ NTOP_PRIORITY=optional
 NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre
 
 # CVS info
-NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
+#NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
 
 
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=3
+NTOP_IPK_VERSION=1
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -76,6 +75,7 @@ NTOP_LDFLAGS=-ljpeg -lfreetype -lfontconfig -lexpat -lpng12 -lz
 #
 NTOP_BUILD_DIR=$(BUILD_DIR)/ntop
 NTOP_SOURCE_DIR=$(SOURCE_DIR)/ntop
+
 NTOP_IPK_DIR=$(BUILD_DIR)/ntop-$(NTOP_VERSION)-ipk
 NTOP_IPK=$(BUILD_DIR)/ntop_$(NTOP_VERSION)-$(NTOP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -87,7 +87,7 @@ NTOP_IPK=$(BUILD_DIR)/ntop_$(NTOP_VERSION)-$(NTOP_IPK_VERSION)_$(TARGET_ARCH).ip
 $(NTOP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: $(NTOP_NAME)" >>$@
+	@echo "Package: ntop" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(NTOP_PRIORITY)" >>$@
 	@echo "Section: $(NTOP_SECTION)" >>$@
@@ -102,13 +102,9 @@ $(NTOP_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(NTOP_DIR) && \
-		cvs -d $(NTOP_REPOSITORY) -z3 co $(NTOP_CVS_OPTS) $(NTOP_DIR) && \
-		tar -czf $@ $(NTOP_DIR) && \
-		rm -rf $(NTOP_DIR) \
-	)
+$(DL_DIR)/$(NTOP_SOURCE):
+	$(WGET) -P $(DL_DIR) $(NTOP_SITE)/$(NTOP_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NTOP_SOURCE)
 
 
 #
@@ -147,6 +143,10 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 	if test "$(BUILD_DIR)/$(NTOP_DIR)" != "$(NTOP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR) ; \
 	fi
+	(cd $(NTOP_BUILD_DIR); \
+		sed -i -e 's/config="y"/config="n"/' autogen.sh; \
+		./autogen.sh; \
+	)
 	(cd $(NTOP_BUILD_DIR); \
 		sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' configure.in; \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
@@ -210,8 +210,7 @@ ntop-stage: $(NTOP_BUILD_DIR)/.staged
 #
 $(NTOP_IPK): $(NTOP_BUILD_DIR)/.built
 	rm -rf $(NTOP_IPK_DIR) $(BUILD_DIR)/ntop_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) install-strip
-	mv $(NTOP_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-ntop $(NTOP_IPK_DIR)/opt/bin/ntop
+	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) transform='' install-strip
 	rm -f $(NTOP_IPK_DIR)/opt/lib/lib*.a $(NTOP_IPK_DIR)/opt/lib/lib*.la
 	$(STRIP_COMMAND) $(NTOP_IPK_DIR)/opt/lib/ntop/plugins/*.so
 	install -d $(NTOP_IPK_DIR)/opt/etc/init.d
