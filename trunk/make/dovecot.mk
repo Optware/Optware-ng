@@ -31,14 +31,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DOVECOT_SITE=http://www.dovecot.org/releases
-#
-# Fix for the rc versions 1.0.0 < 1.0.rc < 1.0.z0
-#
-DOVECOT_VERSION=1.0.z0
-DOVECOT_VERSION_TAR=1.0.0
-DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION_TAR).tar.gz
-DOVECOT_DIR=dovecot-$(DOVECOT_VERSION_TAR)
+DOVECOT_SITE=http://www.dovecot.org/releases/1.0
+DOVECOT_VERSION=1.0.3
+DOVECOT_SOURCE=dovecot-$(DOVECOT_VERSION).tar.gz
+DOVECOT_DIR=dovecot-$(DOVECOT_VERSION)
 DOVECOT_UNZIP=zcat
 DOVECOT_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 DOVECOT_DESCRIPTION=Dovecot secure IMAP server
