@@ -38,7 +38,7 @@ $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/
 	$(MAKE) ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
 	$(ATFTP_UNZIP) $(DL_DIR)/$(ATFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n $(ATFTP_PATCHES); then \
+	if test -n "$(ATFTP_PATCHES)" ; then \
 		cat $(ATFTP_PATCHES) | patch -d $(BUILD_DIR)/$(ATFTP_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
