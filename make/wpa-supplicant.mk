@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WPA_SUPPLICANT_SITE=http://hostap.epitest.fi/releases
-WPA_SUPPLICANT_VERSION=0.3.8
+WPA_SUPPLICANT_VERSION=0.5.8
 WPA_SUPPLICANT_SOURCE=wpa_supplicant-$(WPA_SUPPLICANT_VERSION).tar.gz
 WPA_SUPPLICANT_DIR=wpa_supplicant-$(WPA_SUPPLICANT_VERSION)
 WPA_SUPPLICANT_UNZIP=zcat
@@ -52,7 +52,7 @@ WPA_SUPPLICANT_CONFFILES=/opt/etc/wpa-supplicant.conf
 # WPA_SUPPLICANT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WPA_SUPPLICANT_PATCHES=$(WPA_SUPPLICANT_SOURCE_DIR)/Makefile.patch
+# WPA_SUPPLICANT_PATCHES=$(WPA_SUPPLICANT_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +108,9 @@ $(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WP
 	$(MAKE) openssl-stage readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(WPA_SUPPLICANT_BUILD_DIR)
 	$(WPA_SUPPLICANT_UNZIP) $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(WPA_SUPPLICANT_PATCHES) | patch -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1
+	if test -n "$(WPA_SUPPLICANT_PATCHES)" ; \
+		then cat $(WPA_SUPPLICANT_PATCHES) | patch -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
+	fi
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/.config
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/typedefs.h
 	cp $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wlioctl.h
