@@ -52,7 +52,7 @@ CSCOPE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CSCOPE_CPPFLAGS=
+CSCOPE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 CSCOPE_LDFLAGS=
 
 #
@@ -116,7 +116,7 @@ $(CSCOPE_BUILD_DIR)/.configured: $(DL_DIR)/$(CSCOPE_SOURCE) $(CSCOPE_PATCHES) ma
 	fi
 	(cd $(CSCOPE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(STAGING_CPPFLAGS)/ncurses $(CSCOPE_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CSCOPE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CSCOPE_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
