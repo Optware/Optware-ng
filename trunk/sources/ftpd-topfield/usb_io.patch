@@ -1,0 +1,20 @@
+--- ftpd-topfield/libtopfield/usb_io.h~	2007-02-25 17:06:06.000000000 -0800
++++ ftpd-topfield/libtopfield/usb_io.h	2007-08-06 20:06:00.000000000 -0700
+@@ -34,12 +34,17 @@
+ #include <linux/types.h>
+ #include <linux/version.h>
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,20)
++/* linux/usb_ch9.h was moved to linux/usb/ch9.h in 2.6.20 */
++#include <linux/usb/ch9.h>
++#else
+ /* linux/usb_ch9.h wasn't separated out until 2.4.23 */
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,4,23)
+ #include <linux/usb_ch9.h>
+ #else
+ #include <linux/usb.h>
+ #endif
++#endif
+ #include <linux/usbdevice_fs.h>
+ 
+ struct usb_dev_handle {
