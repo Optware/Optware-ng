@@ -49,7 +49,8 @@ BASH_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #						001 - $(BASH_PATCH_LEVEL)
-BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.2-patches/bash32-*
+BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.2-patches/bash32-* \
+	     $(BASH_SOURCE_DIR)/builtins-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
