@@ -52,7 +52,7 @@ FTPD-TOPFIELD_IPK_VERSION=0
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FTPD-TOPFIELD_PATCHES=
+FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/usb_io.patch
 
 #
 # If the compilation of the package requires additional
@@ -111,11 +111,8 @@ ftpd-topfield-source: $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) $(FTPD-TOPFIELD_PATCHES)
 $(FTPD-TOPFIELD_BUILD_DIR)/.configured: $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) $(FTPD-TOPFIELD_PATCHES) make/ftpd-topfield.mk
 	rm -rf $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) $(FTPD-TOPFIELD_BUILD_DIR)
 	$(FTPD-TOPFIELD_UNZIP) $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(FTPD-TOPFIELD_PATCHES) | patch -d $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) -p1
+	cat $(FTPD-TOPFIELD_PATCHES) | patch -d $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) -p1
 	mv $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) $(FTPD-TOPFIELD_BUILD_DIR)
-ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
-	sed -i -e 's|<linux/usb_ch9.h>|<linux/usb/ch9.h>|' $(FTPD-TOPFIELD_BUILD_DIR)/libtopfield/usb_io.h
-endif
 	touch $(FTPD-TOPFIELD_BUILD_DIR)/.configured
 
 ftpd-topfield-unpack: $(FTPD-TOPFIELD_BUILD_DIR)/.configured
