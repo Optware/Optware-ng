@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.7.5
+GETMAIL_VERSION=4.7.6
 PY-GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 PY-GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 PY-GETMAIL_UNZIP=zcat
