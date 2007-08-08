@@ -23,8 +23,8 @@
 ASTERISK14_SOURCE_TYPE=tarball
 #ASTERISK14_SOURCE_TYPE=svn
 
-ASTERISK14_SITE=http://ftp.digium.com/pub/asterisk/releases
-ASTERISK14_BASE_VERSION=1.4.9
+ASTERISK14_SITE=http://downloads.digium.com/pub/asterisk/releases
+ASTERISK14_BASE_VERSION=1.4.10
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
