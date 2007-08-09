@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TAILOR_VERSION=0.9.27
+PY-TAILOR_VERSION=0.9.29
 PY-TAILOR_SITE=http://darcs.arstecnica.it/
 PY-TAILOR_SOURCE=tailor-$(PY-TAILOR_VERSION).tar.gz
 PY-TAILOR_DIR=tailor-$(PY-TAILOR_VERSION)
