@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	fcgi ficy fish \
 	gdb gnu-smalltalk gnugo gnuplot gtk \
 	hpijs \
-	ice \
+	ice iptables \
 	jamvm \
 	kismet \
 	lame launchtool ldconfig libopensync \
@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	nfs-server nfs-utils ntop \
 	oleo obexftp \
 	pango par2cmdline phoneme-advanced puppy \
-	qemu qemu-libc-i386 quagga \
+	qemu qemu-libc-i386 quagga quickie \
 	sm \
 	transcode \
 	uemacs usbutils util-linux \
