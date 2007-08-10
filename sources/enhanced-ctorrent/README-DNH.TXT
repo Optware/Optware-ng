@@ -20,6 +20,13 @@
    visit the [10]CTorrent project page on SourceForge for further
    information.
 
+  Platform
+
+   Enhanced CTorrent is intended to run on any Unix-like system,
+   including FreeBSD, Linux, Mac OS X, Solaris, Cygwin, etc. If it
+   doesn't build or run properly without modification on your system,
+   please [11]send details.
+
   Features
 
    The purpose of the Enhanced CTorrent effort is to fix problems that
@@ -44,10 +51,10 @@
   Documentation
 
    For documentation that provides a little more than the help screen,
-   please see the [11]User's Guide.
+   please see the [12]User's Guide.
 
    For a list of changes in the current and previous versions, see the
-   [12]ChangeLog file.
+   [13]ChangeLog file.
 
   Peer ID
 
@@ -63,7 +70,7 @@
 
   CTCS
 
-   [13]CTorrent Control Server (CTCS) is an interface for monitoring and
+   [14]CTorrent Control Server (CTCS) is an interface for monitoring and
    managing Enhanced CTorrent clients. It can manage allocation of
    bandwidth, provide status information, and allow changes to the
    running configuration of each client. Support for this interface was
@@ -72,10 +79,26 @@
 
    News
 
+   2007-07-23
+          Version dnh3.2 is [15]released. This release includes a number
+          of bug fixes and some optimizations; details are in the
+          [16]change log.
+
+   2007-06-13
+          The timestamp on one of the autoconf files was incorrect, which
+          may have caused build problems for some people. The dnh3.1
+          release package has been updated to correct this.
+
+   2007-06-10
+          A possible crash when exiting the program has been corrected.
+          The bug is essentially harmless except that you might have a
+          core file created as a result. The dnh3.1 release package has
+          been updated below to correct this.
+
    2007-06-05
-          Version dnh3.1 is [14]released. There are several new features
-          and bug fixes; details can be found in the [15]change log. If
-          you're using [16]CTCS, you should also upgrade it to version
+          Version dnh3.1 is [17]released. There are several new features
+          and bug fixes; details can be found in the [18]change log. If
+          you're using [19]CTCS, you should also upgrade it to version
           1.4 in order to use new client configuration options.
 
    2007-05-23
@@ -87,62 +110,70 @@
           and fixed. To reduce any confusion or inconvenience in the
           tracking and application of patches, all such fixes will now be
           distributed in a single patch file that will be updated as
-          necessary, while its name will not change. See the [17]Download
+          necessary, while its name will not change. See the [20]Download
           section for more details.
 
    2007-04-18
-          Two [18]patches are available for dnh3; one corrects a general
+          Two [21]patches are available for dnh3; one corrects a general
           problem and the other provides support for Mac OSX.
 
    2007-04-11
-          Version dnh3 is [19]released. There are several significant new
-          features; release notes can be found in the [20]change log. If
-          you're using [21]CTCS, you should also upgrade it to version
+          Version dnh3 is [22]released. There are several significant new
+          features; release notes can be found in the [23]change log. If
+          you're using [24]CTCS, you should also upgrade it to version
           1.3 so that bandwidth management will work correctly.
 
    2007-02-25
-          A [22]patch is available to fix a bug that can cause a crash
+          A [25]patch is available to fix a bug that can cause a crash
           when reassigning a piece for download.
 
    2006-11-05
-          Version dnh2.2 is [23]released, mostly for bug fixes. Thanks to
+          Version dnh2.2 is [26]released, mostly for bug fixes. Thanks to
           those who have reported them and helped with debugging!
-          A simple [24]user's guide is also available.
+          A simple [27]user's guide is also available.
 
    2006-09-03
-          Version dnh2.1 is [25]released, along with [26]CTCS 1.1. Both
+          Version dnh2.1 is [28]released, along with [29]CTCS 1.1. Both
           updates fix issues when using CTCS on Linux, among other
           things.
 
    2006-04-26
-          The [27]CTCS protocol is finally documented.
+          The [30]CTCS protocol is finally documented.
 
    2006-04-25
-          A [28]patch is available to fix a bug in my solution for the
+          A [31]patch is available to fix a bug in my solution for the
           vfat filesystem issue. This bug can cause the client to crash
           when creating a file on any filesystem type; the patch is
           recommended for all users.
 
    2006-01-15
           Version dnh2 is released! This version includes a number of
-          significant [29]changes, including large file support, piece
+          significant [32]changes, including large file support, piece
           selection, tuned request queue depth, and support for
-          [30]CTorrent Control Server.
+          [33]CTorrent Control Server.
      _________________________________________________________________
 
-   Download Newer files appear first in the list. Note that patches are
-   generally intended for the version below (older than) the patch.
+   Download
+
+   Newer files appear first in the list. Note that patches are generally
+   intended for the version below (older than) the patch.
+                    ___________________________________
+
+   Release dnh3.2
+
+   [34]Source distribution
+   A complete source distribution for all platforms.
                     ___________________________________
 
    Release dnh3.1
 
-   [31]Source distribution
+   [35]Source distribution
    A complete source distribution for all platforms.
                     ___________________________________
 
    Release dnh3 Update Patch
 
-   [32]dnh3_update patch (23 May 2007)
+   [36]dnh3_update patch (23 May 2007)
    This patch provides critical updates to release dnh3. The patch file
    will be updated here as necessary if additional such issues are found.
 
@@ -200,13 +231,13 @@
 
    Release dnh3
 
-   [33]Source distribution
+   [37]Source distribution
    A complete source distribution for all platforms.
                     ___________________________________
 
    Patch for reassign bug
 
-   [34]reassign patch
+   [38]reassign patch
    This fixes a potential crash when reassigning a piece for download to
    a faster peer. It likely only shows itself on memory-constrained
    systems or particular OSs. With verbose output on, you would see
@@ -223,25 +254,25 @@
 
    Release dnh2.2
 
-   [35]dnh2.1 to dnh2.2 patch file
+   [39]dnh2.1 to dnh2.2 patch file
    A patch file of changes to release dnh2.1 to bring it up to dnh2.2.
 
-   [36]Source distribution
+   [40]Source distribution
    A complete source distribution for all platforms.
                     ___________________________________
 
    Release dnh2.1
 
-   [37]dnh2 to dnh2.1 patch file
+   [41]dnh2 to dnh2.1 patch file
    A patch file of changes to release dnh2 to bring it up to dnh2.1.
 
-   [38]Source distribution
+   [42]Source distribution
    A complete source distribution for all platforms.
                     ___________________________________
 
    Patch for vfat bug
 
-   [39]btfiles patch
+   [43]btfiles patch
    This fixes a coding bug in my solution for the vfat filesystem issue.
    This bug can cause the client to crash when creating a file on any
    filesystem type; the patch is recommended for all users of release
@@ -259,42 +290,42 @@
    previous releases. It will be faster and easier to just download the
    patched source distribution below.
 
-   [40]dnh1.2 to dnh2 patch file
+   [44]dnh1.2 to dnh2 patch file
    A patch file of changes to release dnh1.2 to bring it up to dnh2.
 
-   [41]Patch file
+   [45]Patch file
    A patch file of changes to the CTorrent 1.3.4 base.
 
-   [42]Patched source
+   [46]Patched source
    A complete source distribution for all platforms.
                     ___________________________________
 
    Older Versions
-   Please see the [43]Old Versions page for previous releases and
+   Please see the [47]Old Versions page for previous releases and
    patches.
      _________________________________________________________________
 
    Resources
 
-   [44]CTorrent Home Page 
+   [48]CTorrent Home Page 
    Outdated, but you may find some useful info (particularly the FAQ).
 
-   [45]CTorrent SourceForge Project 
+   [49]CTorrent SourceForge Project 
    Hosts the original CTorrent codebase, bug reports, patches, and forum.
 
-   [46]Custom CTorrent 
+   [50]Custom CTorrent 
    A page by the author of the "get1file" patch and other fixes. It
    contains a custom version and a GUI for CTorrent.
 
-   [47]BitTorrent 
+   [51]BitTorrent 
    The official BitTorrent home page.
 
-   [48]BitTorrent wiki 
+   [52]BitTorrent wiki 
    Various documentation.
 
-   [49]BitTorrent protocol specification (official version)
+   [53]BitTorrent protocol specification (official version)
 
-   [50]BitTorrent protocol specification (wiki version)
+   [54]BitTorrent protocol specification (wiki version)
 
 References
 
@@ -308,43 +339,47 @@ References
    8. http://ctorrent.sourceforge.net/
    9. http://www.bittorrent.com/
   10. http://sourceforge.net/projects/ctorrent/
-  11. http://www.rahul.net/dholmes/ctorrent/userguide.html
-  12. http://www.rahul.net/dholmes/ctorrent/changelog.html
-  13. http://www.rahul.net/dholmes/ctorrent/ctcs.html
-  14. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  15. http://www.rahul.net/dholmes/ctorrent/changelog.html
-  16. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  11. mailto:dholmes@ct.boxmail.com
+  12. http://www.rahul.net/dholmes/ctorrent/userguide.html
+  13. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  14. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  15. http://www.rahul.net/dholmes/ctorrent/index.html#download
+  16. http://www.rahul.net/dholmes/ctorrent/changelog.html
   17. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  18. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  19. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  20. http://www.rahul.net/dholmes/ctorrent/changelog.html
-  21. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  18. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  19. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  20. http://www.rahul.net/dholmes/ctorrent/index.html#download
+  21. http://www.rahul.net/dholmes/ctorrent/index.html#download
   22. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  23. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  24. http://www.rahul.net/dholmes/ctorrent/userguide.html
+  23. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  24. http://www.rahul.net/dholmes/ctorrent/ctcs.html
   25. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  26. http://www.rahul.net/dholmes/ctorrent/ctcs.html
-  27. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
+  26. http://www.rahul.net/dholmes/ctorrent/index.html#download
+  27. http://www.rahul.net/dholmes/ctorrent/userguide.html
   28. http://www.rahul.net/dholmes/ctorrent/index.html#download
-  29. http://www.rahul.net/dholmes/ctorrent/changelog.html
-  30. http://www.rahul.net/dholmes/ctorrent/ctcs.html
-  31. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh3.1.tar.gz
-  32. http://www.rahul.net/dholmes/ctorrent/patch-dnh3_update.diff
-  33. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh3.tar.gz
-  34. http://www.rahul.net/dholmes/ctorrent/patch-reassign.diff
-  35. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh2.1-dnh2.2.diff
-  36. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.2.tar.gz
-  37. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh2-dnh2.1.diff
-  38. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.1.tar.gz
-  39. http://www.rahul.net/dholmes/ctorrent/patch-btfiles.cpp.diff
-  40. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1.2-dnh2.diff
-  41. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh2.diff
-  42. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.tar.gz
-  43. http://www.rahul.net/dholmes/ctorrent/oldversion.html
-  44. http://ctorrent.sourceforge.net/
-  45. http://sourceforge.net/projects/ctorrent/
-  46. http://customctorrent.ifreepages.com/
-  47. http://bittorrent.com/
-  48. http://wiki.theory.org/CategoryBitTorrent
-  49. http://www.bittorrent.org/protocol.html
-  50. http://wiki.theory.org/BitTorrentSpecification
+  29. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  30. http://www.rahul.net/dholmes/ctorrent/ctcs-protocol.html
+  31. http://www.rahul.net/dholmes/ctorrent/index.html#download
+  32. http://www.rahul.net/dholmes/ctorrent/changelog.html
+  33. http://www.rahul.net/dholmes/ctorrent/ctcs.html
+  34. http://www.rahul.net/dholmes/ctorrent/ctorrent-dnh3.2.tar.gz
+  35. http://www.rahul.net/dholmes/ctorrent/ctorrent-dnh3.1.tar.gz
+  36. http://www.rahul.net/dholmes/ctorrent/patch-dnh3_update.diff
+  37. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh3.tar.gz
+  38. http://www.rahul.net/dholmes/ctorrent/patch-reassign.diff
+  39. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh2.1-dnh2.2.diff
+  40. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.2.tar.gz
+  41. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh2-dnh2.1.diff
+  42. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.1.tar.gz
+  43. http://www.rahul.net/dholmes/ctorrent/patch-btfiles.cpp.diff
+  44. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-dnh1.2-dnh2.diff
+  45. http://www.rahul.net/dholmes/ctorrent/patchset-ctorrent-1.3.4-dnh2.diff
+  46. http://www.rahul.net/dholmes/ctorrent/ctorrent-1.3.4-dnh2.tar.gz
+  47. http://www.rahul.net/dholmes/ctorrent/oldversion.html
+  48. http://ctorrent.sourceforge.net/
+  49. http://sourceforge.net/projects/ctorrent/
+  50. http://customctorrent.ifreepages.com/
+  51. http://bittorrent.com/
+  52. http://wiki.theory.org/CategoryBitTorrent
+  53. http://www.bittorrent.org/protocol.html
+  54. http://wiki.theory.org/BitTorrentSpecification

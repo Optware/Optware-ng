@@ -21,17 +21,25 @@
           + [11]Startup
           + [12]Status Line
           + [13]Stopping CTorrent
+
+   Options Index
+   [14]-a [15]-A [16]-b [17]-c [18]-C [19]-d [20]-D [21]-e [22]-E [23]-f
+   [24]-i [25]-l [26]-m [27]-M [28]-n [29]-p [30]-P [31]-s [32]-s [33]-S
+   [34]-t [35]-T [36]-u [37]-U [38]-v [39]-x [40]-X [41]-z
      _________________________________________________________________
 
    Options
+   ___________________________________
 
   General Options
+
 
 -x          Decode metainfo (torrent) file only, don't download.
 
           Displays the torrent information and contents from the metainfo
           (.torrent) file. No piece checking or downloading is performed.
           This option is normally used alone.
+
 
 -c          Check pieces only, don't download.
 
@@ -41,11 +49,14 @@
           the files are intact after a system crash. This option is
           normally used alone.
 
+
 -v          Verbose output (for debugging).
 
           Generates [a lot of] extra output while CTorrrent is running.
+   ___________________________________
 
   Downloading Options
+
 
 -e int      Exit while seed <int> hours later. (default 72 hours)
 
@@ -53,6 +64,7 @@
           uploading) after download has completed. It is considered
           polite and fair (and required by some tracker sites) to seed
           for some time after downloading.
+
 
 -E num      Exit after seeding to <num> ratio (UL:DL).
 
@@ -63,6 +75,7 @@
           considered polite and fair (and required by some tracker sites)
           to seed until your ratio is at least 1:1.
 
+
 -i ip       Listen for connections on ip. (default all IP's)
 
           Specify the IP address on which you want to listen for incoming
@@ -70,17 +83,21 @@
           network interfaces and you want to restrict access or run
           multiple clients on different interfaces.
 
+
 -p port     Listen port. (default 2706 -> 2106)
 
           Specify the TCP port number on which to listen for incoming
           connections. By default, CTorrent starts at 2706 and searches
           for an available port in decreasing order until it finds one or
-          exhausts all ports down through 2106.
+          exhausts all ports down through 2106. The behavior with this
+          option is similar, but starting at the specified port number.
+
 
 -s filename     Download ("save as") to a different file or directory.
 
           Download to a different filename or top-level directory name
           than what is given in the metainfo file.
+
 
 -C cache_size   Cache size, unit MB. (default 16MB)
 
@@ -91,6 +108,7 @@
           memory-constrained system such as a router or SAN device. If
           you use a value of 0, no memory cache will be used but the
           process will be more disk-intensive.
+
 
 -f              Force saved bitfield or seed mode (skip hash check at startup).
 
@@ -104,6 +122,7 @@
           old behavior of hash-checking all pieces before beginning
           download or seeding, use -f along with the -c option.
 
+
 -b filename     Specify bitfield save file (default is torrent+".bf")
 
           Piece completion status is saved to a bitfield file on exit if
@@ -113,6 +132,7 @@
           consistent and careful with this option; it is generally not
           needed.
 
+
 -M max_peers    Max peers count. (default 100)
 
           Set the maximum allowable number of peer connections. If this
@@ -120,11 +140,13 @@
           accepted. If memory or upload bandwidth are constrained, you
           may want to use this option to specify a lower value.
 
+
 -m min_peers    Min peers count. (default 1)
 
           Set the desired minimum number of peer connections. If the
           number falls below this value, the client will contact the
           tracker to request more peers.
+
 
 -z slice_size   Download slice/block size, unit KB. (default 16, max 128).
 
@@ -133,15 +155,43 @@
           value can also affect the precision with which bandwidth is
           managed.
 
--n file_number  Specify file to download.
 
-          Specify a file in the torrent to download as a priority; the
-          file numbers can be seen with the -x option. Only pieces that
-          are part of this file will be downloaded until the file is
-          complete. At that point, the next file will be targeted. When
-          the last (highest-numbered) file in the torrent is completed,
-          this option is deactivated and the remaining pieces of the
-          torrent will be downloaded.
+-n file_list    Specify file number(s) to download.
+
+          Specify a priority order for downloading files in the torrent.
+          A comma-separated list of file numbers and groups can be
+          specified; the file numbers can be seen with the -x option. The
+          client will preferentially request pieces of the
+          highest-priority files, requesting a piece from a
+          lower-priority group if a peer has no such pieces.
+          A group may consist of:
+
+          + a file number
+          + a range of file numbers (x-y)
+          + a combination of file numbers and ranges separated with plus
+            (+) signs
+          + an asterisk (*) or 3-dot ellipsis (...)
+
+          If an asterisk (remember to quote it on the command line!) or
+          ellipsis is used, the client will download and seed the
+          remainder of the torrent once the prioritized files are
+          completed; this is similar to the previous behavior of the
+          option. If no such specification is given, the client will
+          download and seed only the indicated files.
+          Examples:
+
+        -n 3
+                Download and seed only file 3.
+
+        -n 3+5+7,8-11
+                Download files 3, 5, and 7 simultaneously, then download
+                files 8 through 11 simultaneously, then stop downloading
+                and seed all downloaded files.
+
+        -n 3-4,...
+                Download files 3 and 4 simultaneously, then download and
+                seed all remaining content.
+
 
 -D rate         Max bandwidth down (unit KB/s)
 
@@ -149,13 +199,15 @@
           will maintain its short-term average download rate at or below
           this value.
 
+
 -U rate         Max bandwidth up (unit KB/s)
 
           Specify an upload bandwidth limit for this torrent. The client
           will maintain its short-term average upload rate at or below
           this value.
 
--P peer_id      Set Peer ID prefix. (default "-CD0300-")
+
+-P peer_id      Set Peer ID prefix. (default "-CD0301-")
 
           Specify an alternate peer ID prefix. This can be useful if a
           tracker is set up to only allow client programs that it
@@ -166,11 +218,13 @@
           date, try using this option with the prefix of another
           well-known client program (such as "-AZ2304-").
 
--A user_agent   Set User-Agent header. (default "Enhanced-CTorrent/dnh3")
+
+-A user_agent   Set User-Agent header. (default "Enhanced-CTorrent/dnh3.1")
 
           Specify an alternate user-agent header. This can be useful if a
           tracker is set up to only allow client programs that it
           recognizes.
+
 
 -S host:port    Use CTCS server at host:port.
 
@@ -178,6 +232,7 @@
           control, and client management. Using a colon at the end of the
           parameter (as in "-S localhost:2780:") will cause the client to
           prompt for a password to send to CTCS when connecting.
+
 
 -a              Preallocate files on disk
 
@@ -189,20 +244,69 @@
           preallocated even if the "-n" option is used to download a
           particular file.
 
+
+-T              Convert foreign filenames to printable text
+
+          Substitutes a hex representation of any non-printable
+          characters in filenames; an underscore will be inserted between
+          any such sequences and regular text. This applies to printing
+          the name of the file as well as accessing it on disk, so you
+          need to use it (or not) consistently across multiple runs of
+          the same torrent. It does not apply to names specified with the
+          "-s" option.
+
+
+-X command      Run command upon download completion ("user exit")
+
+          Specifies a "user exit" command to run upon download
+          completion. The string parameter will be passed to the sh shell
+          for execution; see the system() man page for further
+          clarification. You will need to quote this string on the
+          command line in order to identify it as a single parameter and
+          prevent special characters from being interpreted. Some
+          substitution sequences beginning with ampersand (&) are
+          available; note that it's a good idea to quote the sequence
+          within the string so that the substituted names will be quoted
+          in the final command.
+
+          + &d will be replaced by the name of the directory or filename
+            that contains the downloaded data.
+          + &t will be replaced by the name of the torrent metainfo file
+            (with path, if it was specified that way to ctorrent).
+          + &w will be replaced by the client's working directory.
+
+          Note that the fork() and system() system/library functions are
+          used for best portability. As a result, significant extra
+          memory may be used while the specified command is running. Be
+          advised to use this feature as a trigger mechanism to update a
+          file or run a short script that kicks off a background task
+          rather than for executing a longer task directly.
+
+
+-d              Daemon mode (fork to background)
+
+          The client will detach itself from the terminal session and
+          become a background process.
+   ___________________________________
+
   Options for Creating a New Torrent
+
 
 -t              Create a new torrent file.
 
           Indicates that you want to create a new torrent.
 
+
 -s filename     Specify metainfo file name.
 
           (Required) Give the name of the file to be created.
+
 
 -u url          Tracker's url.
 
           (Required) Specify the tracker's announce URL. This usually
           looks similar to "http://tracker.example.com:port/announce".
+
 
 -l piece_len    Piece length. (default 262144)
 
@@ -244,6 +348,7 @@ Available commands:
  n        Download specific file         S        Set/change CTCS server
  e[+/-]   Adjust seed exit time          v        Toggle verbose mode
  E[+/-]   Adjust seed exit ratio         Q        Quit
+ X        Completion command
 
    Command keys are case-sensitive. When a command key is pressed, a
    prompt or current value is displayed. Prompts will suspend display of
@@ -272,18 +377,21 @@ Operator Menu
   2) Interactive:    stdout
   3) Error/warning:  stderr
   4) Debug/verbose:  stderr
+  5) Input:          stdin
  Status Line Formats:
-  5) \ 0/6/18 [700/700/700] 0MB,11127MB | 0,15K/s | 0,0K E:0,405
- *6) | S:0/10 L:6/7 C:0  R=15.92 D=0 U=16 K/s  seeding 48:57
+  6) \ 0/6/18 [700/700/700] 0MB,11127MB | 0,15K/s | 0,0K E:0,405
+ *7) | S:0/10 L:6/7 C:0  R=15.92 D=0 U=16 K/s  seeding 48:57
  Other options:
-  7) View detailed status
-  8) Pause (suspend upload/download)
+  8) View detailed status
+  9) Pause (suspend upload/download)
+ 10) Become daemon (fork to background)
 Enter selection:
 
    The first set of options allow redirection of the client's various
-   types of console output. Of particular use is the debug/verbose
-   channel, which can be directed to a file to create a debug log (be
-   sure to also enable verbose output with the v command key or CTCS).
+   types of console output (or even input--use carefully!). Of particular
+   use is the debug/verbose channel, which can be directed to a file to
+   create a debug log (be sure to also enable verbose output with the "v"
+   command key or CTCS).
 
    The second set of options is used to select the status line format.
    Since the actual client status is used to generate the menu options,
@@ -294,6 +402,10 @@ Enter selection:
    The other options provide a means to view more detailed current status
    or to pause uploading and downloading (more or less immediately,
    unlike the previous CTCS pause function).
+
+   Note that there is no "recovery" from daemon mode. Use CTCS or screen
+   if you want the client to run in the background but need to manage or
+   monitor it.
      _________________________________________________________________
 
    Usage Notes
@@ -357,7 +469,7 @@ Enter selection:
    M: Amount of data uploaded since the last status line update.
    N: Number of tracker connection errors.
    O: Number of successful tracker connections.
-   P: Completion ratio of current file (when -n is used).
+   P: Completion ratio of current fileset (when -n is used).
 
    Additional information such as tracker connection status may be
    displayed at the end of the status line when appropriate.
@@ -366,9 +478,9 @@ Enter selection:
 
    A new status line format is also available via the operator menu.
 
-    / S:4/8 L:4/5 C:1  R=5.85 D=42 U=16 K/s  79/100% 49:47  P:4/10
-    -   - -   - -   -    ----   --   --      -- ---- -----    ----
-    A   B C   D E   F      G     H    I       J   K    L        M
+    / S:4/8 L:4/5 C:1  R=5.85 D=42 U=16 K/s  79/100% 49:47  P:40/100% 2:41
+    -   - -   - -   -    ----   --   --      -- ---- -----    ------- ----
+    A   B C   D E   F      G     H    I       J   K    L         M      N
 
    A: Ticker; this character changes to indicate that the client is
    running.
@@ -388,7 +500,8 @@ Enter selection:
        If you have the complete torrent, "seeding" is displayed instead
    of these percentages.
    L: Estimated download or seed time remaining, in hours and minutes.
-   M: Completion ratio of current file (when -n is used).
+   M: Completion and availability of current fileset (when -n is used).
+   N: Time remaining to complete the current fileset (when -n is used).
 
    Additional information such as tracker connection status may be
    displayed at the end of the status line when appropriate.
@@ -412,9 +525,10 @@ Enter selection:
    depending on the tracker.)
 
    In either case, this is a clean shutdown of CTorrent. All downloaded
-   data is written to disk before exiting. (Only complete pieces really
-   count though, as there is no way to know which blocks are missing from
-   partial pieces.)
+   data is written to disk before exiting. (Though only complete pieces
+   really count if the torrent is restarted, as there is no way to know
+   which blocks are missing from partial pieces.)
+     _________________________________________________________________
 
 References
 
@@ -431,3 +545,31 @@ References
   11. http://www.rahul.net/dholmes/ctorrent/userguide.html#startup
   12. http://www.rahul.net/dholmes/ctorrent/userguide.html#status
   13. http://www.rahul.net/dholmes/ctorrent/userguide.html#stopping
+  14. http://www.rahul.net/dholmes/ctorrent/userguide.html#-a
+  15. http://www.rahul.net/dholmes/ctorrent/userguide.html#-A
+  16. http://www.rahul.net/dholmes/ctorrent/userguide.html#-b
+  17. http://www.rahul.net/dholmes/ctorrent/userguide.html#-c
+  18. http://www.rahul.net/dholmes/ctorrent/userguide.html#-C
+  19. http://www.rahul.net/dholmes/ctorrent/userguide.html#-d
+  20. http://www.rahul.net/dholmes/ctorrent/userguide.html#-D
+  21. http://www.rahul.net/dholmes/ctorrent/userguide.html#-e
+  22. http://www.rahul.net/dholmes/ctorrent/userguide.html#-E
+  23. http://www.rahul.net/dholmes/ctorrent/userguide.html#-f
+  24. http://www.rahul.net/dholmes/ctorrent/userguide.html#-i
+  25. http://www.rahul.net/dholmes/ctorrent/userguide.html#-l
+  26. http://www.rahul.net/dholmes/ctorrent/userguide.html#-m
+  27. http://www.rahul.net/dholmes/ctorrent/userguide.html#-M
+  28. http://www.rahul.net/dholmes/ctorrent/userguide.html#-n
+  29. http://www.rahul.net/dholmes/ctorrent/userguide.html#-p
+  30. http://www.rahul.net/dholmes/ctorrent/userguide.html#-P
+  31. http://www.rahul.net/dholmes/ctorrent/userguide.html#-s
+  32. http://www.rahul.net/dholmes/ctorrent/userguide.html#-s2
+  33. http://www.rahul.net/dholmes/ctorrent/userguide.html#-S
+  34. http://www.rahul.net/dholmes/ctorrent/userguide.html#-t
+  35. http://www.rahul.net/dholmes/ctorrent/userguide.html#-T
+  36. http://www.rahul.net/dholmes/ctorrent/userguide.html#-u
+  37. http://www.rahul.net/dholmes/ctorrent/userguide.html#-U
+  38. http://www.rahul.net/dholmes/ctorrent/userguide.html#-v
+  39. http://www.rahul.net/dholmes/ctorrent/userguide.html#-x
+  40. http://www.rahul.net/dholmes/ctorrent/userguide.html#-X
+  41. http://www.rahul.net/dholmes/ctorrent/userguide.html#-z
