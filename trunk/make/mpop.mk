@@ -29,7 +29,7 @@ MPOP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPOP_DESCRIPTION=mpop is an SMTP client.
 MPOP_SECTION=mail
 MPOP_PRIORITY=optional
-MPOP_DEPENDS=gnutls
+MPOP_DEPENDS=gnutls, libgsasl
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 MPOP_DEPENDS+=, libidn
 endif
@@ -39,7 +39,7 @@ MPOP_CONFLICTS=
 #
 # MPOP_IPK_VERSION should be incremented when the ipk changes.
 #
-MPOP_IPK_VERSION=1
+MPOP_IPK_VERSION=2
 
 #
 # MPOP_CONFFILES should be a list of user-editable files
@@ -56,7 +56,7 @@ MPOP_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MPOP_CPPFLAGS=
-MPOP_LDFLAGS=-lgnutls
+MPOP_LDFLAGS=-lgnutls -lgsasl
 MPOP_CONFIG_OPTS=
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 MPOP_LDFLAGS+=-lidn
@@ -115,6 +115,7 @@ mpop-source: $(DL_DIR)/$(MPOP_SOURCE) $(MPOP_PATCHES)
 #
 $(MPOP_BUILD_DIR)/.configured: $(DL_DIR)/$(MPOP_SOURCE) $(MPOP_PATCHES) make/mpop.mk
 	$(MAKE) gnutls-stage
+	$(MAKE) gsasl-stage
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
@@ -136,7 +137,6 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--without-libgsasl \
 		$(MPOP_CONFIG_OPTS) \
 		--disable-nls \
 		--disable-static \

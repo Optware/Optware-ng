@@ -29,7 +29,7 @@ MSMTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MSMTP_DESCRIPTION=msmtp is an SMTP client.
 MSMTP_SECTION=mail
 MSMTP_PRIORITY=optional
-MSMTP_DEPENDS=gnutls
+MSMTP_DEPENDS=gnutls, libgsasl
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 MSMTP_DEPENDS+=, libidn
 endif
@@ -39,7 +39,7 @@ MSMTP_CONFLICTS=
 #
 # MSMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-MSMTP_IPK_VERSION=1
+MSMTP_IPK_VERSION=2
 
 #
 # MSMTP_CONFFILES should be a list of user-editable files
@@ -56,7 +56,7 @@ MSMTP_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MSMTP_CPPFLAGS=
-MSMTP_LDFLAGS=-lgnutls
+MSMTP_LDFLAGS=-lgnutls -lgsasl
 MSMTP_CONFIG_OPTS=
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 MSMTP_LDFLAGS+=-lidn
@@ -115,6 +115,7 @@ msmtp-source: $(DL_DIR)/$(MSMTP_SOURCE) $(MSMTP_PATCHES)
 #
 $(MSMTP_BUILD_DIR)/.configured: $(DL_DIR)/$(MSMTP_SOURCE) $(MSMTP_PATCHES) make/msmtp.mk
 	$(MAKE) gnutls-stage
+	$(MAKE) gsasl-stage
 ifeq (libidn, $(filter libidn, $(PACKAGES)))
 	$(MAKE) libidn-stage
 endif
@@ -136,7 +137,6 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--without-libgsasl \
 		$(MSMTP_CONFIG_OPTS) \
 		--disable-nls \
 		--disable-static \
