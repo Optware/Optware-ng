@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TCPDUMP_SITE=http://www.tcpdump.org/release
-TCPDUMP_VERSION=3.9.6
+TCPDUMP_VERSION=3.9.7
 TCPDUMP_SOURCE=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_DIR=tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_UNZIP=zcat
@@ -28,7 +28,7 @@ TCPDUMP_UNZIP=zcat
 #
 # TCPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-TCPDUMP_IPK_VERSION=2
+TCPDUMP_IPK_VERSION=1
 
 #
 # TCPDUMP_PATCHES should list any patches, in the the order in
