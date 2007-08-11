@@ -6,4 +6,4 @@ fi
 
 mkdir -p /opt/var/ntop/log
 
-/opt/bin/ntop -a /opt/var/ntop/log/access_log -d -L -M --skip-version-check -u root -w 3000 -W 3001
+/opt/bin/ntop -a /opt/var/ntop/log/access_log -d -L -M --skip-version-check -u0 -w 3000 -W 3001
