@@ -24,6 +24,11 @@ then
 fi
 
 #
+# To make sure that files are created with the correct permissions.
+#
+umask 022
+
+#
 # This script is not supported or tested with dropbear.
 #
 if [ ! -f /opt/libexec/sftp-server ]
