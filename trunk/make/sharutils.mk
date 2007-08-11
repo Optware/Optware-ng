@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SHARUTILS_VERSION=4.6.3
+SHARUTILS_VERSION=4.7
 SHARUTILS_SITE=ftp://ftp.gnu.org/gnu/sharutils/REL-$(SHARUTILS_VERSION)
 SHARUTILS_SOURCE=sharutils-$(SHARUTILS_VERSION).tar.bz2
 SHARUTILS_DIR=sharutils-$(SHARUTILS_VERSION)
