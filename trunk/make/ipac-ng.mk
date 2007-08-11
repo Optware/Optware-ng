@@ -20,7 +20,7 @@ IPAC-NG_CONFLICTS=
 #
 # IPAC-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-IPAC-NG_IPK_VERSION=2
+IPAC-NG_IPK_VERSION=3
 
 #
 # IPAC-NG_CONFFILES should be a list of user-editable files
@@ -122,6 +122,9 @@ $(IPAC-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(IPAC-NG_SOURCE) $(IPAC-NG_PATCHES)
 		LOCKFILE=/opt/var/lock/ipac.lck \
 		IPTABLES=/opt/sbin/iptables \
 		PERL=/opt/sbin/perl \
+		ac_cv_lib_pq_PQexec=no \
+		ac_cv_lib_mysqlclient_mysql_query=no \
+		ac_cv_lib_sqlite_sqlite_get_table=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
