@@ -173,7 +173,7 @@ sub parse_Packages
             my @to_rm = ("builds/${p}");
             my $vglob = '*';
             # rm only necessary .ipk if version string is simple
-            if ($v =~ /^[\d\.-]*$/) { $vglob = '[0-9.-]*'; }
+            if ($v =~ /^[\d\.-]+$/) { $vglob = '[0-9.-]*'; }
             push @to_rm, "builds/${p}_${vglob}.ipk", "builds/${p}-${vglob}.ipk";
             push @to_rm, "packages/${p}_${vglob}.ipk", "packages/${p}-${vglob}.ipk";
             foreach (`grep '"Package: *[a-zA-Z0-9_-]* *" *>>' make/$p.mk`) {
