@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
-DBUS_VERSION=1.0.2
+DBUS_VERSION=1.1.1
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
