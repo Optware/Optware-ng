@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AVAHI_SITE=http://avahi.org/download
-AVAHI_VERSION=0.6.20
+AVAHI_VERSION=0.6.21
 AVAHI_SOURCE=avahi-$(AVAHI_VERSION).tar.gz
 AVAHI_DIR=avahi-$(AVAHI_VERSION)
 AVAHI_UNZIP=zcat
