@@ -1,14 +1,15 @@
---- asterisk/dns.c.orig	2005-11-29 19:24:39.000000000 +0100
-+++ asterisk/dns.c	2006-07-20 16:13:06.000000000 +0200
-@@ -175,7 +175,13 @@
- 
- #if defined(res_ninit)
- #define HAS_RES_NINIT
+--- asterisk/dns.c.orig	2007-08-12 12:50:23.000000000 -0700
++++ asterisk/dns.c	2007-08-12 12:55:46.000000000 -0700
+@@ -237,7 +237,14 @@
+ #if defined(res_ndestroy)
+ #define HAS_RES_NDESTROY
+ #endif
 -#else
 +#endif
 +
 +#ifdef __UCLIBC__
 +#undef HAS_RES_NINIT
++#undef HAS_RES_NDESTROY
 +#endif
 +
 +#ifndef HAS_RES_NINIT
