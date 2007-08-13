@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
 	php-apache player py-lxml \
 	qemu qemu-libc-i386 quickie \
 	sablevm svn \
-	tethereal \
+	tshark \
 	varnish \
 	wxbase \
 

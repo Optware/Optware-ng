@@ -1,0 +1,29 @@
+--- wireshark-0.99.6/configure.in.orig	2007-07-05 12:25:24.000000000 -0700
++++ wireshark-0.99.6/configure.in	2007-07-07 08:14:32.000000000 -0700
+@@ -582,6 +582,7 @@
+ # We can't just check for <inttypes.h> - some systems have one that
+ # doesn't define all the PRI[doxu]64 macros.
+ #
++if test -z "$ac_wireshark_inttypes_h_defines_formats" ; then
+ AC_CHECK_HEADERS(inttypes.h,
+   [
+     #
+@@ -623,6 +624,7 @@
+     #
+     ac_wireshark_inttypes_h_defines_formats=no
+   ])
++fi
+ if test "$ac_wireshark_inttypes_h_defines_formats" = yes; then
+   AC_DEFINE(INTTYPES_H_DEFINES_FORMATS,,[Define if <inttypes.h> defines PRI[doxu]64 macros])
+ else
+@@ -1334,8 +1336,8 @@
+ #endif
+ }], [AC_MSG_RESULT(ok);
+ have_inet_pton=yes], [AC_MSG_RESULT(broken);
+-have_inet_pton=no], [AC_MSG_RESULT(cross compiling, assume it is broken);
+-have_inet_pton=no])],
++have_inet_pton=no], [AC_MSG_RESULT(cross compiling, assume it is ok);
++have_inet_pton=yes])],
+ have_inet_pton=no)
+ if test "$have_inet_pton" = no; then
+   INET_PTON_C="inet_pton.c"
