@@ -2,32 +2,36 @@
 
 mkdir -p /opt/var/lib/rrd
 
-if [ ! -f /opt/var/lib/rrd/memory.rrd ]; then
-   rrdtool create /opt/var/lib/rrd/memory.rrd \
-           DS:mem_used:GAUGE:60:U:U \
-           DS:mem_free:GAUGE:60:U:U \
-           DS:mem_shared:GAUGE:60:U:U \
-           DS:mem_buffers:GAUGE:60:U:U \
-           DS:mem_cached:GAUGE:60:U:U \
-           DS:swap_used:GAUGE:60:U:U \
-           RRA:AVERAGE:0.5:1:1440 \
-           RRA:AVERAGE:0.01:60:744 RRA:MAX:0.01:60:744 \
-           RRA:AVERAGE:0.001:720:730 RRA:MAX:0.001:720:730
-fi
-
 if [ ! -f /opt/var/lib/rrd/stat.rrd ]; then
    rrdtool create /opt/var/lib/rrd/stat.rrd \
-           DS:cpu_user:GAUGE:60:U:U \
-           DS:cpu_nice:GAUGE:60:U:U \
-           DS:cpu_system:GAUGE:60:U:U \
-           DS:cpu_idle:GAUGE:60:U:U \
-           DS:ctxt:GAUGE:60:U:U \
-           DS:page_in:GAUGE:60:U:U \
-           DS:page_out:GAUGE:60:U:U \
-           DS:processes:GAUGE:60:U:U \
-           DS:swap_in:GAUGE:60:U:U \
-           DS:swap_out:GAUGE:60:U:U \
-           RRA:AVERAGE:0.5:1:1440 \
-           RRA:AVERAGE:0.01:60:744 RRA:MAX:0.01:60:744 \
-           RRA:AVERAGE:0.001:720:730 RRA:MAX:0.001:720:730
+	   DS:cpu_user:GAUGE:60:U:U \
+	   DS:cpu_nice:GAUGE:60:U:U \
+	   DS:cpu_system:GAUGE:60:U:U \
+	   DS:cpu_idle:GAUGE:60:U:U \
+	   DS:cpu_iowait:GAUGE:60:U:U \
+	   DS:cpu_irq:GAUGE:60:U:U \
+	   DS:cpu_softirq:GAUGE:60:U:U \
+	   DS:ctxt:GAUGE:60:U:U \
+	   DS:processes:GAUGE:60:U:U \
+	   DS:procs_running:GAUGE:60:U:U \
+	   DS:procs_blocked:GAUGE:60:U:U \
+	   RRA:AVERAGE:0.5:1:1440 \
+	   RRA:AVERAGE:0.01:60:744 RRA:MAX:0.01:60:744 \
+	   RRA:AVERAGE:0.001:720:730 RRA:MAX:0.001:720:730
+fi
+
+if [ ! -f /opt/var/lib/rrd/memory.rrd ]; then
+   rrdtool create /opt/var/lib/rrd/memory.rrd \
+	   DS:mem_total:GAUGE:60:U:U \
+	   DS:mem_free:GAUGE:60:U:U \
+	   DS:mem_buffers:GAUGE:60:U:U \
+	   DS:mem_cached:GAUGE:60:U:U \
+	   DS:swap_cached:GAUGE:60:U:U \
+	   DS:mem_active:GAUGE:60:U:U \
+	   DS:mem_inactive:GAUGE:60:U:U \
+	   DS:swap_total:GAUGE:60:U:U \
+	   DS:swap_free:GAUGE:60:U:U \
+	   RRA:AVERAGE:0.5:1:1440 \
+	   RRA:AVERAGE:0.01:60:744 RRA:MAX:0.01:60:744 \
+	   RRA:AVERAGE:0.001:720:730 RRA:MAX:0.001:720:730
 fi

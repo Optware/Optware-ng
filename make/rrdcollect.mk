@@ -36,7 +36,7 @@ RRDCOLLECT_CONFLICTS=
 #
 # RRDCOLLECT_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDCOLLECT_IPK_VERSION=2
+RRDCOLLECT_IPK_VERSION=3
 
 #
 # RRDCOLLECT_CONFFILES should be a list of user-editable files
