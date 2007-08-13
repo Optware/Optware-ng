@@ -29,7 +29,7 @@ BROKEN_PACKAGES = \
 	 rhtvision rtorrent rtpproxy \
 	 sablevm scli sdl ser snort \
 	 snownews sqsh swi-prolog syslog-ng \
-	 tcsh tethereal tnftpd transcode \
+	 tcsh tshark tnftpd transcode \
 	 unrar \
 	 varnish vlc \
 	 w3m weechat wget wxbase x11 \
