@@ -156,7 +156,8 @@ COMMON_CROSS_PACKAGES = \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract calc calcurse catdoc ccollect ccxstream cdargs \
-	cherokee chicken chillispot chrpath classpath clamav clearsilver clips \
+	cherokee chicken chillispot chrpath cksfv \
+	classpath clamav clearsilver clips \
 	cogito connect coreutils cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cvs \
