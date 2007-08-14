@@ -22,7 +22,7 @@
 #
 SNORT_SITE=http://www.snort.org/dl/current
 SNORT_SITE2=http://www.snort.org/dl/old
-SNORT_VERSION=2.6.1.4
+SNORT_VERSION=2.7.0.1
 SNORT_SOURCE=snort-$(SNORT_VERSION).tar.gz
 SNORT_DIR=snort-$(SNORT_VERSION)
 SNORT_UNZIP=zcat
@@ -117,6 +117,7 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 	if test "$(BUILD_DIR)/$(SNORT_DIR)" != "$(SNORT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SNORT_DIR) $(SNORT_BUILD_DIR) ; \
 	fi
+	cp -f $(SOURCE_DIR)/common/config.* $(SNORT_BUILD_DIR)/
 	sed -i -e '/extra_incl/s|=-I/usr/include/pcap|=|' $(SNORT_BUILD_DIR)/configure
 	(cd $(SNORT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
