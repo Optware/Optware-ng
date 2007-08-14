@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DBD-MYSQL_SITE=http://search.cpan.org/CPAN/authors/id/C/CA/CAPTTOFU
-PERL-DBD-MYSQL_VERSION=3.0003
+PERL-DBD-MYSQL_VERSION=4.005
 PERL-DBD-MYSQL_SOURCE=DBD-mysql-$(PERL-DBD-MYSQL_VERSION).tar.gz
 PERL-DBD-MYSQL_DIR=DBD-mysql-$(PERL-DBD-MYSQL_VERSION)
 PERL-DBD-MYSQL_UNZIP=zcat
@@ -13,13 +13,17 @@ PERL-DBD-MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-DBD-MYSQL_DESCRIPTION=DBD-mysql - The Perl Database Driver for MySQL.
 PERL-DBD-MYSQL_SECTION=util
 PERL-DBD-MYSQL_PRIORITY=optional
-PERL-DBD-MYSQL_DEPENDS=mysql, perl, perl-dbi
+PERL-DBD-MYSQL_DEPENDS=mysql, perl-dbi
 PERL-DBD-MYSQL_SUGGESTS=
 PERL-DBD-MYSQL_CONFLICTS=
 
 PERL-DBD-MYSQL_IPK_VERSION=1
 
+PERL-DBD-MYSQL_CPPFLAGS=-I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI -I$(STAGING_INCLUDE_DIR)/mysql
+PERL-DBD-MYSQL_LDFLAGS=-L$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE -lperl -L$(STAGING_LIB_DIR)/mysql -lmysqlclient_r -Wl,-rpath=/opt/lib/mysql
+
 PERL-DBD-MYSQL_CONFFILES=
+PERL-DBD-MYSQL_PATCHES=$(PERL-DBD-MYSQL_SOURCE_DIR)/Makefile.PL.patch
 
 PERL-DBD-MYSQL_BUILD_DIR=$(BUILD_DIR)/perl-dbd-mysql
 PERL-DBD-MYSQL_SOURCE_DIR=$(SOURCE_DIR)/perl-dbd-mysql
@@ -32,18 +36,24 @@ $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE):
 perl-dbd-mysql-source: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PERL-DBD-MYSQL_PATCHES)
 
 $(PERL-DBD-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) $(PERL-DBD-MYSQL_PATCHES)
-	$(MAKE) perl-dbi-stage zlib-stage
+	$(MAKE) mysql-stage
+	$(MAKE) perl-dbi-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR)
 	$(PERL-DBD-MYSQL_UNZIP) $(DL_DIR)/$(PERL-DBD-MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PERL-DBD-MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) -p1
+	if test -n "$(PERL-DBD-MYSQL_PATCHES)"; then \
+		cat $(PERL-DBD-MYSQL_PATCHES) | patch -bd $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR)
+	sed -i -e '/require.*DBI::DBD/s/^/#/' $(PERL-DBD-MYSQL_BUILD_DIR)/Makefile.PL
 	(cd $(PERL-DBD-MYSQL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
-		perl Makefile.PL  \
+		$(PERL_HOSTPERL) Makefile.PL  \
 		PREFIX=/opt \
+		"--cflags=$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
+		"--libs=$(STAGING_LDFLAGS)" \
 	)
 	touch $(PERL-DBD-MYSQL_BUILD_DIR)/.configured
 
@@ -52,7 +62,14 @@ perl-dbd-mysql-unpack: $(PERL-DBD-MYSQL_BUILD_DIR)/.configured
 $(PERL-DBD-MYSQL_BUILD_DIR)/.built: $(PERL-DBD-MYSQL_BUILD_DIR)/.configured
 	rm -f $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 	$(MAKE) -C $(PERL-DBD-MYSQL_BUILD_DIR) \
-	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
+		$(TARGET_CONFIGURE_OPTS) \
+		LD=$(TARGET_CC) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL-DBD-MYSQL_CPPFLAGS)" \
+		LDDLFLAGS="-shared $(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(PERL-DBD-MYSQL_LDFLAGS)" \
+		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
+		DBI_DRIVER_XST="$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI/Driver.xst" \
+		;
 	touch $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 
 perl-dbd-mysql: $(PERL-DBD-MYSQL_BUILD_DIR)/.built
@@ -85,7 +102,10 @@ $(PERL-DBD-MYSQL_IPK_DIR)/CONTROL/control:
 
 $(PERL-DBD-MYSQL_IPK): $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 	rm -rf $(PERL-DBD-MYSQL_IPK_DIR) $(BUILD_DIR)/perl-dbd-mysql_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PERL-DBD-MYSQL_BUILD_DIR) DESTDIR=$(PERL-DBD-MYSQL_IPK_DIR) install
+	$(MAKE) -C $(PERL-DBD-MYSQL_BUILD_DIR) install \
+		DESTDIR=$(PERL-DBD-MYSQL_IPK_DIR) \
+		DBI_DRIVER_XST="$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI/Driver.xst" \
+		;
 	find $(PERL-DBD-MYSQL_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DBD-MYSQL_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
@@ -104,3 +124,6 @@ perl-dbd-mysql-clean:
 
 perl-dbd-mysql-dirclean:
 	rm -rf $(BUILD_DIR)/$(PERL-DBD-MYSQL_DIR) $(PERL-DBD-MYSQL_BUILD_DIR) $(PERL-DBD-MYSQL_IPK_DIR) $(PERL-DBD-MYSQL_IPK)
+
+perl-dbd-mysql-check: $(PERL-DBD-MYSQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PERL-DBD-MYSQL_IPK)

@@ -39,7 +39,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
-# perl-dbd-mysql: Can't exec "mysql_config": No such file or directory at Makefile.PL line 76.
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # transmission
 #	configure.ac:67: error: possibly undefined macro: AM_PATH_GTK_2_0
@@ -49,7 +48,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
 	iozone \
 	lftp \
-	perl-dbd-mysql \
 	bpalogin
 
 PERL_PACKAGES = \
@@ -68,7 +66,9 @@ PERL_PACKAGES = \
 	perl-crypt-openssl-random perl-crypt-openssl-rsa perl-crypt-ssleay \
 	perl-danga-socket \
 	perl-date-manip \
-	perl-db-file perl-dbd-sqlite perl-dbi perl-dbix-contextualfetch \
+	perl-db-file \
+	perl-dbd-mysql perl-dbd-sqlite perl-dbi \
+	perl-dbix-contextualfetch \
 	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
