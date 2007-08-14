@@ -1,0 +1,13 @@
+--- rrdcollect/src/rrdcollect.c~	2005-05-12 23:49:56.000000000 +0930
++++ rrdcollect/src/rrdcollect.c	2007-08-14 15:03:08.000000000 +0930
+@@ -58,9 +58,7 @@
+ const char *workdir = NULL;
+ int step = 60;
+ int debugoutput = OUTPUT_SYSLOG;
+-int debuglevel = LOG_DEBUG;  /* from syslog.h */
+-/* FIXME - it should be default LOG_NOTICE or LOG_WARNING, but first
+-   option for change it should be added */
++int debuglevel = LOG_NOTICE;  /* from syslog.h */
+ 
+ /* signals */
+ volatile int action_request = 0;

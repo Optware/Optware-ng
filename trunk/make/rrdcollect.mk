@@ -36,7 +36,7 @@ RRDCOLLECT_CONFLICTS=
 #
 # RRDCOLLECT_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDCOLLECT_IPK_VERSION=3
+RRDCOLLECT_IPK_VERSION=4
 
 #
 # RRDCOLLECT_CONFFILES should be a list of user-editable files
@@ -46,7 +46,9 @@ RRDCOLLECT_CONFFILES=/opt/etc/rrdcollect.conf /opt/etc/init.d/S95rrdcollect
 # RRDCOLLECT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-RRDCOLLECT_PATCHES=$(RRDCOLLECT_SOURCE_DIR)/rrdcollect-scan.patch
+RRDCOLLECT_PATCHES= \
+	$(RRDCOLLECT_SOURCE_DIR)/rrdcollect-scan.patch \
+	$(RRDCOLLECT_SOURCE_DIR)/loglevel.patch
 
 #
 # If the compilation of the package requires additional
