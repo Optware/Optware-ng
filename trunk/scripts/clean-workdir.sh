@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # This script will
-#	rm -rf builds/$p/* builds/$p_*.ipk
+#	rm -rf builds/$p/* builds/$p_*-ipk
 # if P_IPK built, and
 # either $p-stage is not used, or $p staged already
 
@@ -25,8 +25,8 @@ fi
 for p in ${packages}
 do
 	echo -n $p
-        P=`echo $p | tr [a-z] [A-Z]`
         IPK=`sed -n '/_IPK[: ]*=/s/[: ]*=.*//p' make/${p}.mk | head -1`
+        P=`echo $IPK | sed 's/_IPK$//'`
 	ipk=`make query-${IPK}`
 	ipk_dir=`make query-${P}_IPK_DIR`
 	build_dir=`make query-${P}_BUILD_DIR`
