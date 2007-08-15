@@ -26,12 +26,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BITCHX_SITE=http://bitchx.org/files/source/
-BITCHX_VERSION=1.1-final
+BITCHX_SITE=ftp://bitchx.org/pub/BitchX/source/
+BITCHX_VERSION=1.1a-final
 BITCHX_SOURCE=ircii-pana-$(BITCHX_VERSION).tar.gz
 BITCHX_DIR=BitchX
 BITCHX_UNZIP=zcat
-BITCHX_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+BITCHX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BITCHX_DESCRIPTION=Text mode IRC client
 BITCHX_SECTION=misc
 BITCHX_PRIORITY=optional
@@ -40,7 +40,7 @@ BITCHX_DEPENDS=ncurses
 #
 # BITCHX_IPK_VERSION should be incremented when the ipk changes.
 #
-BITCHX_IPK_VERSION=2
+BITCHX_IPK_VERSION=1
 
 #
 # BITCHX_CONFFILES should be a list of user-editable files
@@ -50,8 +50,7 @@ BITCHX_IPK_VERSION=2
 # BITCHX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-BITCHX_PATCHES=$(BITCHX_SOURCE_DIR)/configure.patch \
-		$(BITCHX_SOURCE_DIR)/static-clash.patch
+BITCHX_PATCHES=$(BITCHX_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -200,3 +199,9 @@ bitchx-clean:
 #
 bitchx-dirclean:
 	rm -rf $(BUILD_DIR)/$(BITCHX_DIR) $(BITCHX_BUILD_DIR) $(BITCHX_IPK_DIR) $(BITCHX_IPK)
+
+#
+# Some sanity check for the package.
+#
+bitchx-check: $(BITCHX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BITCHX_IPK)
