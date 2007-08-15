@@ -17,7 +17,9 @@ PAR2_DEPENDS=libstdc++
 PAR2_SUGGESTS=
 PAR2_CONFLICTS=
 
-PAR2CMDLINE_IPK_VERSION=1
+PAR2CMDLINE_IPK_VERSION=2
+
+PAR2CMDLINE_PATCHES=$(PAR2_SOURCE_DIR)/main-packet-fix.patch
 
 PAR2_CFLAGS=$(TARGET_CFLAGS)
 
@@ -37,6 +39,10 @@ $(PAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(PAR2_SOURCE)
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(PAR2_DIR) $(PAR2_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/$(PAR2_SOURCE)
+	if test -n "$(PAR2CMDLINE_PATCHES)" ; \
+		then cat $(PAR2CMDLINE_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(PAR2_DIR) -p1 ; \
+	fi
 	if test "$(BUILD_DIR)/$(PAR2_DIR)" != "$(PAR2_BUILD_DIR)" ; \
                 then mv $(BUILD_DIR)/$(PAR2_DIR) $(PAR2_BUILD_DIR) ; \
         fi
