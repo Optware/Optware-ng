@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GENSHI_SITE=http://ftp.edgewall.com/pub/genshi
-PY-GENSHI_VERSION=0.4.3
+PY-GENSHI_VERSION=0.4.4
 PY-GENSHI_SOURCE=Genshi-$(PY-GENSHI_VERSION).tar.bz2
 PY-GENSHI_DIR=Genshi-$(PY-GENSHI_VERSION)
 PY-GENSHI_UNZIP=bzcat
