@@ -5,7 +5,7 @@
  use File::Path;
  use File::Copy;
 -require DBI::DBD;
-+####require DBI::DBD;
++#require DBI::DBD;
  
  my $TESTDB = "test";
  
