@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MRTG_SITE=http://oss.oetiker.ch/mrtg/pub/
-MRTG_VERSION=2.14.5
+MRTG_VERSION=2.15.2
 MRTG_SOURCE=mrtg-$(MRTG_VERSION).tar.gz
 MRTG_DIR=mrtg-$(MRTG_VERSION)
 MRTG_UNZIP=zcat
@@ -217,3 +217,9 @@ mrtg-clean:
 #
 mrtg-dirclean:
 	rm -rf $(BUILD_DIR)/$(MRTG_DIR) $(MRTG_BUILD_DIR) $(MRTG_IPK_DIR) $(MRTG_IPK)
+
+#
+# Some sanity check for the package.
+#
+mrtg-check: $(MRTG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MRTG_IPK)
