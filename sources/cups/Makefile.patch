@@ -1,36 +1,6 @@
---- cups-1.2.4/Makefile.orig	2006-09-29 00:14:44.000000000 +0200
-+++ cups-1.2.4/Makefile	2006-09-29 00:15:19.000000000 +0200
-@@ -139,18 +139,18 @@
- 		$(INSTALL_DIR) -m 755 $(BUILDROOT)$(XINETD); \
- 		$(INSTALL_DATA) init/cups-lpd $(BUILDROOT)$(XINETD)/cups-lpd; \
- 	fi
--	if test -d /usr/share/applications; then \
-+	if test -d $(prefix)/share/applications; then \
- 		echo Installing desktop icons...; \
--		$(INSTALL_DIR) -m 755 $(BUILDROOT)/usr/share/applications; \
--		$(INSTALL_DATA) desktop/cups.desktop $(BUILDROOT)/usr/share/applications; \
--		$(INSTALL_DIR) -m 755 $(BUILDROOT)/usr/share/icons/hicolor/16x16/apps; \
--		$(INSTALL_DATA) desktop/cups-16.png $(BUILDROOT)/usr/share/icons/hicolor/16x16/apps/cups.png; \
--		$(INSTALL_DIR) -m 755 $(BUILDROOT)/usr/share/icons/hicolor/32x32/apps; \
--		$(INSTALL_DATA) desktop/cups-32.png $(BUILDROOT)/usr/share/icons/hicolor/32x32/apps/cups.png; \
--		$(INSTALL_DIR) -m 755 $(BUILDROOT)/usr/share/icons/hicolor/64x64/apps; \
--		$(INSTALL_DATA) desktop/cups-64.png $(BUILDROOT)/usr/share/icons/hicolor/64x64/apps/cups.png; \
--		$(INSTALL_DIR) -m 755 $(BUILDROOT)/usr/share/icons/hicolor/128x128/apps; \
--		$(INSTALL_DATA) desktop/cups-128.png $(BUILDROOT)/usr/share/icons/hicolor/128x128/apps/cups.png; \
-+		$(INSTALL_DIR) -m 755 $(BUILDROOT)$(prefix)/share/applications; \
-+		$(INSTALL_DATA) desktop/cups.desktop $(BUILDROOT)$(prefix)/share/applications; \
-+		$(INSTALL_DIR) -m 755 $(BUILDROOT)$(prefix)/share/icons/hicolor/16x16/apps; \
-+		$(INSTALL_DATA) desktop/cups-16.png $(BUILDROOT)$(prefix)/share/icons/hicolor/16x16/apps/cups.png; \
-+		$(INSTALL_DIR) -m 755 $(BUILDROOT)$(prefix)/share/icons/hicolor/32x32/apps; \
-+		$(INSTALL_DATA) desktop/cups-32.png $(BUILDROOT)$(prefix)/share/icons/hicolor/32x32/apps/cups.png; \
-+		$(INSTALL_DIR) -m 755 $(BUILDROOT)$(prefix)/share/icons/hicolor/64x64/apps; \
-+		$(INSTALL_DATA) desktop/cups-64.png $(BUILDROOT)$(prefix)/share/icons/hicolor/64x64/apps/cups.png; \
-+		$(INSTALL_DIR) -m 755 $(BUILDROOT)$(prefix)/share/icons/hicolor/128x128/apps; \
-+		$(INSTALL_DATA) desktop/cups-128.png $(BUILDROOT)$(prefix)/share/icons/hicolor/128x128/apps/cups.png; \
- 	fi
- 
- 
-@@ -210,11 +210,11 @@
+--- cups-1.3.0/Makefile.orig	2007-07-11 14:46:42.000000000 -0700
++++ cups-1.3.0/Makefile	2007-08-17 14:18:13.000000000 -0700
+@@ -229,11 +229,11 @@
  		$(RMDIR) $(BUILDROOT)$(DBUSDIR); \
  	fi
  	$(RM) $(BUILDROOT)/etc/xinetd.d/cups-lpd
