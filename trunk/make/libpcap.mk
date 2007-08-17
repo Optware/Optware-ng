@@ -28,7 +28,7 @@ LIBPCAP_UNZIP=zcat
 #
 # LIBPCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPCAP_IPK_VERSION=1
+LIBPCAP_IPK_VERSION=2
 
 #
 # LIBPCAP_PATCHES should list any patches, in the the order in
@@ -42,6 +42,9 @@ LIBPCAP_IPK_VERSION=1
 #
 LIBPCAP_CPPFLAGS=
 LIBPCAP_LDFLAGS=
+ifneq (no, $(IPV6))
+LIBPCAP_CONFIGURE_OPTS=--enable-ipv6
+endif
 
 #
 # LIBPCAP_BUILD_DIR is the directory in which the build is done.
@@ -102,6 +105,7 @@ $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--with-pcap=linux \
 		--prefix=/opt \
+		$(LIBPCAP_CONFIGURE_OPTS) \
 		ac_cv_linux_vers=2.4.22 \
 	)
 	touch $(LIBPCAP_BUILD_DIR)/.configured
