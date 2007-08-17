@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.2.12
+CUPS_VERSION=1.3.0
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=1
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -166,6 +166,8 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--exec_prefix=/opt \
+		--with-icondir=/opt/share/icons \
+		--with-menudir=/opt/share/applications \
 		--libdir=/opt/lib \
 		--disable-nls \
 		--disable-dbus \
