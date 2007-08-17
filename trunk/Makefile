@@ -152,7 +152,7 @@ COMMON_CROSS_PACKAGES = \
 	apache apr apr-util arc arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake avahi \
-	bash bc bind bip bison bitchx bitlbee bogofilter \
+	bash bc bftpd bind bip bison bitchx bitlbee bogofilter \
 	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract calc calcurse catdoc ccollect ccxstream cdargs \
