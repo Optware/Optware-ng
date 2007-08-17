@@ -36,7 +36,7 @@ NGREP_CONFLICTS=
 #
 # NGREP_IPK_VERSION should be incremented when the ipk changes.
 #
-NGREP_IPK_VERSION=1
+NGREP_IPK_VERSION=2
 
 #
 # NGREP_CONFFILES should be a list of user-editable files
