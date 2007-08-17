@@ -237,7 +237,7 @@ COMMON_CROSS_PACKAGES = \
 	sqsh squeak squid srelay sslwrap strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
-	tar tcpdump tcsh termcap textutils thttpd \
+	tar tcpdump tcpflow tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
 	transcode tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
