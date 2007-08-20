@@ -175,7 +175,7 @@ COMMON_CROSS_PACKAGES = \
 	ftpcopy ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
 	ggrab ghostscript git glib gnet gnokii \
-	gnu-smalltalk gnugo gnupg gnuplot gnutls \
+	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls \
 	grep groff gsasl gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
