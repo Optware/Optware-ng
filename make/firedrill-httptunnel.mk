@@ -47,7 +47,7 @@ FIREDRILL-HTTPTUNNEL_IPK_VERSION=1
 # FIREDRILL-HTTPTUNNEL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FIREDRILL-HTTPTUNNEL_PATCHES=$(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/configure.patch
+FIREDRILL-HTTPTUNNEL_PATCHES=$(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/find_if.patch
 
 #
 # If the compilation of the package requires additional
