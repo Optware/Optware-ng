@@ -1,0 +1,11 @@
+--- src/ThreadManager.cc.orig	2007-08-19 19:00:45.000000000 -0700
++++ src/ThreadManager.cc	2007-08-19 19:01:01.000000000 -0700
+@@ -151,7 +151,7 @@
+ 	MutexVar mv(m_mtx);
+ 
+ 	// Remove thread from list of active threads
+-	std::vector<ThreadDetails*>::iterator i = find_if(m_threadDetails.begin(),
++	std::vector<ThreadDetails*>::iterator i = std::find_if(m_threadDetails.begin(),
+ 		m_threadDetails.end(), PredGetDetails(thread));
+ 	if(i != m_threadDetails.end()) {
+ 		delete *i;
