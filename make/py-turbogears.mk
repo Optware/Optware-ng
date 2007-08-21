@@ -23,7 +23,7 @@
 #
 PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
 PY-TURBOGEARS_VERSION=1.0.3
-PY-TURBOGEARS_IPK_VERSION=1
+PY-TURBOGEARS_IPK_VERSION=2
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -46,7 +46,7 @@ PY24-TURBOGEARS_DEPENDS=python24, \
 	py-sqlobject (>=0.8), \
 	py-turbocheetah (>=0.9.5), \
 	py-turbojson (>=0.9.9), \
-	py-turbokid (>=1.0.2) \
+	py-turbokid (>=1.0.2), \
 	findutils \
 
 PY25-TURBOGEARS_DEPENDS=python25, \
@@ -62,7 +62,7 @@ PY25-TURBOGEARS_DEPENDS=python25, \
 	py25-sqlobject (>=0.8), \
 	py25-turbocheetah (>=0.9.5), \
 	py25-turbojson (>=0.9.9), \
-	py25-turbokid (>=1.0.2) \
+	py25-turbokid (>=1.0.2), \
 	findutils \
 
 PY-TURBOGEARS_CONFLICTS=
