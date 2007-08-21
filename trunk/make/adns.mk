@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 ADNS_SITE=http://www.chiark.greenend.org.uk/~ian/adns/ftp
-ADNS_VERSION=1.3
+ADNS_VERSION=1.4
 ADNS_SOURCE=adns-$(ADNS_VERSION).tar.gz
 ADNS_DIR=adns-$(ADNS_VERSION)
 ADNS_UNZIP=zcat
@@ -28,7 +28,7 @@ ADNS_DESCRIPTION=Asynchronous resolver library and DNS resolver utilities.
 #
 # ADNS_IPK_VERSION should be incremented when the ipk changes.
 #
-ADNS_IPK_VERSION=2
+ADNS_IPK_VERSION=1
 
 #
 # ADNS_CONFFILES should be a list of user-editable files
@@ -175,11 +175,11 @@ $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
 	rm -rf $(ADNS_IPK_DIR) $(BUILD_DIR)/adns_*_$(TARGET_ARCH).ipk
 	install -d $(ADNS_IPK_DIR)/opt/lib/
 	#install -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
-	install -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.$(ADNS_VERSION) \
-		 $(ADNS_IPK_DIR)/opt/lib/libadns.so.$(ADNS_VERSION)
-	ln -sf libadns.so.$(ADNS_VERSION) $(ADNS_IPK_DIR)/opt/lib/libadns.so.1
-	ln -sf libadns.so.$(ADNS_VERSION) $(ADNS_IPK_DIR)/opt/lib/libadns.so
-	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/lib/libadns.so
+	install -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.[0-9]*.[0-9]* \
+		 $(ADNS_IPK_DIR)/opt/lib/
+	ln -sf libadns.so.[0-9]*.[0-9]* $(ADNS_IPK_DIR)/opt/lib/libadns.so.1
+	ln -sf libadns.so.1 $(ADNS_IPK_DIR)/opt/lib/libadns.so
+	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/lib/libadns.so.[0-9]*.[0-9]*
 	install -d $(ADNS_IPK_DIR)/opt/include/
 	install -m 644 $(ADNS_BUILD_DIR)/src/adns.h $(ADNS_IPK_DIR)/opt/include/adns.h
 	install -d $(ADNS_IPK_DIR)/opt/bin/
@@ -208,3 +208,9 @@ adns-clean:
 #
 adns-dirclean:
 	rm -rf $(BUILD_DIR)/$(ADNS_DIR) $(ADNS_BUILD_DIR) $(ADNS_IPK_DIR) $(ADNS_IPK)
+
+#
+# Some sanity check for the package.
+#
+adns-check: $(ADNS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ADNS_IPK)
