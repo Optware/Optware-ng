@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UPX_SITE=http://upx.sourceforge.net/download
-UPX_VERSION=3.00
+UPX_VERSION=3.01
 UPX_SOURCE=upx-$(UPX_VERSION)-src.tar.bz2
 UPX_DIR=upx-$(UPX_VERSION)-src
 UPX_UNZIP=bzcat
