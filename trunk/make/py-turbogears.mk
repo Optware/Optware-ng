@@ -22,11 +22,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
-PY-TURBOGEARS_VERSION=1.0.2.2
+PY-TURBOGEARS_VERSION=1.0.3
+PY-TURBOGEARS_IPK_VERSION=1
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
-PY-TURBOGEARS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
+PY-TURBOGEARS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOGEARS_DESCRIPTION=Rapid web development megaframework in Python.
 PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
@@ -45,11 +46,10 @@ PY24-TURBOGEARS_DEPENDS=python24, \
 	py-sqlobject (>=0.8), \
 	py-turbocheetah (>=0.9.5), \
 	py-turbojson (>=0.9.9), \
-	py-turbokid (>=1.0.1) \
+	py-turbokid (>=1.0.2) \
 	findutils \
 
 PY25-TURBOGEARS_DEPENDS=python25, \
-	py25-celementtree (>=1.0.5), \
 	py25-cherrypy (>=2.2.1), \
 	py25-configobj (>=4.3.2), \
 	py25-decoratortools (>=1.4), \
@@ -62,15 +62,11 @@ PY25-TURBOGEARS_DEPENDS=python25, \
 	py25-sqlobject (>=0.8), \
 	py25-turbocheetah (>=0.9.5), \
 	py25-turbojson (>=0.9.9), \
-	py25-turbokid (>=1.0.1) \
+	py25-turbokid (>=1.0.2) \
 	findutils \
 
 PY-TURBOGEARS_CONFLICTS=
 
-#
-# PY-TURBOGEARS_IPK_VERSION should be incremented when the ipk changes.
-#
-PY-TURBOGEARS_IPK_VERSION=1
 
 #
 # PY-TURBOGEARS_CONFFILES should be a list of user-editable files
