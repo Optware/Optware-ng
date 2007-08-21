@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.5.2.4
+GIT_VERSION=1.5.2.5
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -40,7 +40,7 @@ GIT_CONFLICTS=
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=2
+GIT_IPK_VERSION=1
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
