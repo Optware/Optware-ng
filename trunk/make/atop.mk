@@ -100,7 +100,7 @@ $(ATOP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATOP_SOURCE) $(ATOP_PATCHES) make/ato
 	$(ATOP_UNZIP) $(DL_DIR)/$(ATOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ATOP_PATCHES)" ; \
 		then cat $(ATOP_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ATOP_DIR) -p1 ; \
+		patch -d $(BUILD_DIR)/$(ATOP_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ATOP_DIR)" != "$(ATOP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ATOP_DIR) $(ATOP_BUILD_DIR) ; \
