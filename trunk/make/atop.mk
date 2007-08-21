@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 ATOP_SITE=http://www.atconsultancy.nl/atop/packages
-ATOP_VERSION=1.17
+ATOP_VERSION=1.21
 ATOP_SOURCE=atop-$(ATOP_VERSION).tar.gz
 ATOP_DIR=atop-$(ATOP_VERSION)
 ATOP_UNZIP=zcat
