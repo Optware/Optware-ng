@@ -1,0 +1,22 @@
+--- finch/libgnt/gntline.c.orig	2007-08-20 11:12:48.000000000 -0700
++++ finch/libgnt/gntline.c	2007-08-21 16:12:11.000000000 -0700
+@@ -119,7 +119,7 @@
+ 			g_param_spec_boolean("vertical", "Vertical",
+ 				"Whether it's a vertical line or a horizontal one.",
+ 				TRUE,
+-				G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB
++				G_PARAM_READWRITE
+ 			)
+ 		);
+ }
+--- finch/libgnt/gnttree.c.orig	2007-08-20 11:12:48.000000000 -0700
++++ finch/libgnt/gnttree.c	2007-08-21 16:12:11.000000000 -0700
+@@ -986,7 +986,7 @@
+ 				"Number of columns in the tree.",
+ 				1, G_MAXINT, 1,
+ #if GLIB_CHECK_VERSION(2,8,0)
+-				G_PARAM_READWRITE|G_PARAM_STATIC_NAME|G_PARAM_STATIC_NICK|G_PARAM_STATIC_BLURB
++				G_PARAM_READWRITE
+ #else
+ 				G_PARAM_READWRITE|G_PARAM_PRIVATE
+ #endif

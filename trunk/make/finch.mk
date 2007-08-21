@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.0.2
+FINCH_VERSION=2.1.1
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -33,7 +33,7 @@ FINCH_IPK_VERSION=1
 # FINCH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FINCH_PATCHES=$(FINCH_SOURCE_DIR)/configure.patch
+FINCH_PATCHES=$(FINCH_SOURCE_DIR)/glib2.6-G_PARAM_STATIC.patch
 
 #
 # If the compilation of the package requires additional
@@ -91,7 +91,8 @@ finch-source: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) # make/finch.mk
+$(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/finch.mk
+	$(MAKE) perl-xml-parser-stage
 	$(MAKE) glib-stage gnutls-stage libxml2-stage ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(FINCH_DIR) $(FINCH_BUILD_DIR)
 	$(FINCH_UNZIP) $(DL_DIR)/$(FINCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
