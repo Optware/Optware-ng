@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.0.3
+BITLBEE_VERSION=1.0.4
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -31,13 +31,16 @@ BITLBEE_DESCRIPTION=A gateway between IRC and proprietary IM networks
 BITLBEE_SECTION=net
 BITLBEE_PRIORITY=optional
 BITLBEE_DEPENDS=glib, gnutls, xinetd, libgcrypt, libtasn1
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BITLBEE_DEPENDS+=, libiconv
+endif
 BITLBEE_SUGGESTS=
 BITLBEE_CONFLICTS=
 
 #
 # BITLBEE_IPK_VERSION should be incremented when the ipk changes.
 #
-BITLBEE_IPK_VERSION=2
+BITLBEE_IPK_VERSION=1
 
 #
 # BITLBEE_CONFFILES should be a list of user-editable files
@@ -55,6 +58,9 @@ BITLBEE_PATCHES=$(BITLBEE_SOURCE_DIR)/configure.patch
 #
 BITLBEE_CPPFLAGS=
 BITLBEE_LDFLAGS=
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+BITLBEE_LDFLAGS+=-liconv
+endif
 
 #
 # BITLBEE_BUILD_DIR is the directory in which the build is done.
@@ -103,6 +109,9 @@ bitlbee-source: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
 #
 $(BITLBEE_BUILD_DIR)/.configured: $(DL_DIR)/$(BITLBEE_SOURCE) $(BITLBEE_PATCHES)
 	$(MAKE) glib-stage gnutls-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(BITLBEE_DIR) $(BITLBEE_BUILD_DIR)
 	$(BITLBEE_UNZIP) $(DL_DIR)/$(BITLBEE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BITLBEE_PATCHES)"; \
