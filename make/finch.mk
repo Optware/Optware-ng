@@ -92,7 +92,6 @@ finch-source: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES)
 # shown below to make various patches to it.
 #
 $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/finch.mk
-	$(MAKE) perl-xml-parser-stage
 	$(MAKE) glib-stage gnutls-stage libxml2-stage ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(FINCH_DIR) $(FINCH_BUILD_DIR)
 	$(FINCH_UNZIP) $(DL_DIR)/$(FINCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
