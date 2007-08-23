@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.6
+NGINX_VERSION=0.6.8
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -155,7 +155,6 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	    $(NGINX_CONFIGURE_ENV) \
 	    ./configure \
 		--prefix=$(NGINX_PREFIX) \
-		--sysconfdir=/opt/nginx/conf \
 		--error-log-path=logs/error.log \
 		--pid-path=/opt/var/run/nginx.pid \
 		--http-log-path=logs/access.log \
