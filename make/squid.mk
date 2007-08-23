@@ -20,9 +20,10 @@
 # You should change all these variables to suit your package.
 #
 SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6/
-SQUID_VERSION=2.6.STABLE9
-SQUID_SOURCE=squid-$(SQUID_VERSION).tar.gz
-SQUID_DIR=squid-$(SQUID_VERSION)
+SQUID_UPSTREAM_VERSION=2.6.STABLE14
+SQUID_VERSION=2.6.14
+SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.gz
+SQUID_DIR=squid-$(SQUID_UPSTREAM_VERSION)
 SQUID_UNZIP=zcat
 
 SQUID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -96,6 +97,7 @@ SQUID_CROSS_CONFIG_ENVS=\
 	ac_cv_sizeof_uint64_t=8 \
 	ac_cv_sizeof_u_int64_t=8 \
 	ac_cv_sizeof___int64=0 \
+	ac_cv_af_unix_large_dgram=yes \
 	ac_cv_func_setresuid=yes \
 	ac_cv_func_va_copy=yes \
 	ac_cv_func___va_copy=yes
