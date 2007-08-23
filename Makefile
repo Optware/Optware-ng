@@ -102,6 +102,7 @@ PERL_PACKAGES = \
 	perl-xml-parser \
 	amavisd-new \
 	colordiff \
+	ddclient \
 	perlbal \
 	spamassassin \
 	stow \
