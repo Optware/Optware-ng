@@ -1,0 +1,31 @@
+--- ddclient.orig	2007-08-22 22:37:11.000000000 -0700
++++ ddclient	2007-08-22 22:38:39.000000000 -0700
+@@ -1,5 +1,4 @@
+-#!/usr/bin/perl -w
+-#!/usr/local/bin/perl -w
++#!/opt/bin/perl -w
+ ######################################################################
+ # $Id: ddclient 78 2007-08-07 06:35:55Z wimpunk $
+ #
+@@ -24,9 +23,9 @@
+ $program  =~ s/d$//;
+ my $now       = time;
+ my $hostname  = hostname();
+-my $etc       = ($program =~ /test/i) ? './'   : '/etc/ddclient/';
+-my $cachedir  = ($program =~ /test/i) ? './'   : '/var/cache/ddclient/';
+-my $savedir   = ($program =~ /test/i) ? 'URL/' : '/tmp/';
++my $etc       = ($program =~ /test/i) ? './'   : '/opt/etc/ddclient/';
++my $cachedir  = ($program =~ /test/i) ? './'   : '/opt/var/cache/ddclient/';
++my $savedir   = ($program =~ /test/i) ? 'URL/' : '/opt/tmp/';
+ my $msgs      = '';
+ my $last_msgs = '';
+ 
+@@ -34,7 +33,7 @@
+ local $file   = '';
+ local $lineno = '';
+ 
+-$ENV{'PATH'} = (exists($ENV{PATH}) ? "$ENV{PATH}:" : "") . "/sbin:/usr/sbin:/bin:/usr/bin:/etc:/usr/lib:";
++$ENV{'PATH'} = (exists($ENV{PATH}) ? "$ENV{PATH}:" : "") . "/opt/sbin:/opt/bin:/sbin:/usr/sbin:/bin:/usr/bin:/etc:/usr/lib:";
+ 
+ sub T_ANY	{'any'};
+ sub T_STRING	{'string'};
