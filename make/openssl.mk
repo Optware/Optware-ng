@@ -53,7 +53,7 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 			shared no-zlib \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
-			linux-$(HOST_MACHINE) \
+			linux-`uname -m | sed -e 's/i[5-9]86/pentium/'` \
 	)
 	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_HOST_BUILD_DIR)/apps/Makefile
 	$(MAKE) -C $(OPENSSL_HOST_BUILD_DIR) \
