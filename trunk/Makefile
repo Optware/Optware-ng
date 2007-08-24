@@ -108,7 +108,7 @@ PERL_PACKAGES = \
 	stow \
 
 PYTHON_PACKAGES = \
-	getmail ipython mailman mod-python mod-wsgi pyrex \
+	getmail ipython mailman mod-python mod-wsgi pyrex scons \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
@@ -231,7 +231,7 @@ COMMON_CROSS_PACKAGES = \
 	renderext rhtvision rlfe rlwrap rrdcollect rrdtool \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends \
-	scli scons scponly screen scsi-idle sdl sdparm \
+	scli scponly screen scsi-idle sdl sdparm \
 	sed sendmail ser setserial setpwc \
 	sharutils simh siproxd slang slrn slsc \
 	sm smartmontools snort snownews \

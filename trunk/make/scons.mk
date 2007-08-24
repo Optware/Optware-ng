@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SCONS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scons
-SCONS_VERSION=0.96.1
+SCONS_VERSION=0.97
 SCONS_SOURCE=scons-$(SCONS_VERSION).tar.gz
 SCONS_DIR=scons-$(SCONS_VERSION)
 SCONS_UNZIP=zcat
@@ -70,8 +70,11 @@ SCONS_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-SCONS_BUILD_DIR=$(BUILD_DIR)/scons
 SCONS_SOURCE_DIR=$(SOURCE_DIR)/scons
+
+SCONS_BUILD_DIR=$(BUILD_DIR)/scons
+SCONS_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/scons
+
 SCONS_IPK_DIR=$(BUILD_DIR)/scons-$(SCONS_VERSION)-ipk
 SCONS_IPK=$(BUILD_DIR)/scons_$(SCONS_VERSION)-$(SCONS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -127,10 +130,10 @@ $(SCONS_BUILD_DIR)/.configured: $(DL_DIR)/$(SCONS_SOURCE) $(SCONS_PATCHES) make/
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=/opt/bin/python2.4" \
 	    ) >> setup.cfg; \
 	)
-	touch $(SCONS_BUILD_DIR)/.configured
+	touch $@
 
 scons-unpack: $(SCONS_BUILD_DIR)/.configured
 
@@ -138,12 +141,12 @@ scons-unpack: $(SCONS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SCONS_BUILD_DIR)/.built: $(SCONS_BUILD_DIR)/.configured
-	rm -f $(SCONS_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(SCONS_BUILD_DIR); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
         )
-	touch $(SCONS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,21 +157,50 @@ scons: $(SCONS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SCONS_BUILD_DIR)/.staged: $(SCONS_BUILD_DIR)/.built
-	rm -f $(SCONS_BUILD_DIR)/.staged
+	rm -f $@
 	(cd $(SCONS_BUILD_DIR); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+			--root=$(STAGING_DIR) --prefix=/opt; \
         )
-	touch $(SCONS_BUILD_DIR)/.staged
+	touch $@
 
 scons-stage: $(SCONS_BUILD_DIR)/.staged
+
+$(SCONS_HOST_BUILD_DIR)/.staged: host/.configured make/scons.mk
+	rm -f $@
+	rm -rf $(HOST_STAGING_PREFIX)/bin/scons* \
+		$(HOST_STAGING_LIB_DIR)/scons-*
+	$(MAKE) python-stage
+	rm -rf $(HOST_BUILD_DIR)/$(SCONS_DIR) $(SCONS_HOST_BUILD_DIR)
+	$(SCONS_UNZIP) $(DL_DIR)/$(SCONS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(SCONS_DIR)" != "$(SCONS_HOST_BUILD_DIR)" ; \
+		then mv $(HOST_BUILD_DIR)/$(SCONS_DIR) $(SCONS_HOST_BUILD_DIR) ; \
+	fi
+	(cd $(SCONS_HOST_BUILD_DIR); \
+	    chmod +w setup.cfg ; \
+	    ( \
+		echo ; \
+		echo "[build_ext]"; \
+		echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.4"; \
+		echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+		echo "rpath=/opt/lib"; \
+	    ) >> setup.cfg; \
+	)
+	(cd $(SCONS_HOST_BUILD_DIR); \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+			--root=$(HOST_STAGING_DIR) --prefix=/opt; \
+        )
+	touch $@
+
+scons-host-stage: $(SCONS_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/scons
 #
 $(SCONS_IPK_DIR)/CONTROL/control:
-	@install -d $(SCONS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: scons" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -198,7 +230,8 @@ $(SCONS_IPK): $(SCONS_BUILD_DIR)/.built
 	rm -rf $(SCONS_IPK_DIR) $(BUILD_DIR)/scons_*_$(TARGET_ARCH).ipk
 	(cd $(SCONS_BUILD_DIR); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		python2.4 $(SCONS_BUILD_DIR)/setup.py install --root=$(SCONS_IPK_DIR) --prefix=/opt; \
+		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
+			--root=$(SCONS_IPK_DIR) --prefix=/opt; \
         )
 	install -d $(SCONS_IPK_DIR)/opt/etc/
 	$(MAKE) $(SCONS_IPK_DIR)/CONTROL/control
