@@ -48,6 +48,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
 	iozone \
 	lftp \
+	bsdgames \
 	bpalogin
 
 PERL_PACKAGES = \
@@ -154,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake avahi \
 	bash bc bftpd bind bip bison bitchx bitlbee bogofilter \
-	bsdgames bsdmainutils busybox byrequest bzflag bzip2 \
+	bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract calc calcurse catdoc ccollect ccxstream cdargs \
 	cherokee chicken chillispot chrpath cksfv \
