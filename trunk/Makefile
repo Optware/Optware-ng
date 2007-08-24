@@ -154,7 +154,7 @@ COMMON_CROSS_PACKAGES = \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake avahi \
 	bash bc bftpd bind bip bison bitchx bitlbee bogofilter \
-	bsdmainutils busybox byrequest bzflag bzip2 \
+	bsdgames bsdmainutils busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract calc calcurse catdoc ccollect ccxstream cdargs \
 	cherokee chicken chillispot chrpath cksfv \
