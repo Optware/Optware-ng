@@ -1,0 +1,33 @@
+#!/bin/sh
+
+bsd_games_cfg_non_interactive=y
+bsd_games_cfg_no_build_dirs='boggle hunt phantasia'
+# bsd_games_cfg_build_dirs="adventure arithmetic atc backgammon banner battlestar bcd boggle caesar canfield countmail cribbage dab dm factor fish fortune gomoku hack hangman hunt mille monop morse number phantasia pig pom ppt primes quiz rain random robots sail snake tetris trek wargames worm worms wtf wump"
+bsd_games_cfg_gamesdir=/opt/games
+bsd_games_cfg_sbindir=/opt/sbin
+bsd_games_cfg_usrbindir=/opt/bin
+bsd_games_cfg_libexecdir=/opt/lib/games/dm
+bsd_games_cfg_man5dir=/opt/share/man/man5
+bsd_games_cfg_man6dir=/opt/share/man/man6
+bsd_games_cfg_man8dir=/opt/share/man/man8
+bsd_games_cfg_docdir=/opt/share/doc/bsd-games
+bsd_games_cfg_sharedir=/opt/share/games
+bsd_games_cfg_varlibdir=/opt/var/games
+bsd_games_cfg_use_libcrypto=y
+bsd_games_cfg_do_chown=n
+
+bsd_games_cfg_dictionary_src=/opt/share/dict/words
+bsd_games_cfg_dm_configfile=/opt/etc/dm.conf
+bsd_games_cfg_dm_nogamesfile=/opt/etc/nogames
+bsd_games_cfg_hangman_wordsfile=/opt/share/dict/words
+bsd_games_cfg_wtf_acronymfile=/opt/share/misc/acronyms
+#bsd_games_cfg_vardata_perms_priv=0640
+#bsd_games_cfg_cc=gcc
+#bsd_games_cfg_optimize_flags="-g -O2"
+#bsd_games_cfg_warning_flags="-Wall -W -Wstrict-prototypes -Wmissing-prototypes -Wpointer-arith -Wcast-align -Wcast-qual -Wwrite-strings"
+#bsd_games_cfg_ncurses_lib="-lncurses"
+#bsd_games_cfg_ncurses_includes=''
+#bsd_games_cfg_other_cflags=''
+#bsd_games_cfg_other_ldflags=''
+bsd_games_cfg_base_libs=''
+bsd_games_cfg_pager=/opt/bin/less
