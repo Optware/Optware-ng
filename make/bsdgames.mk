@@ -107,6 +107,7 @@ bsdgames-source: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCHES)
 $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCHES) make/bsdgames.mk
 	$(MAKE) flex-stage
 	$(MAKE) ncurses-stage
+	$(MAKE) openssl-host-stage
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(BSDGAMES_DIR) $(BSDGAMES_BUILD_DIR)
 	$(BSDGAMES_UNZIP) $(DL_DIR)/$(BSDGAMES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -151,6 +152,7 @@ $(BSDGAMES_BUILD_DIR)/.built: $(BSDGAMES_BUILD_DIR)/.configured
 		;
 	$(MAKE) -C $(BSDGAMES_BUILD_DIR) \
 		CC=$(HOSTCC) \
+		OPTIMIZE="-O2 -I$(HOST_STAGING_INCLUDE_DIR)" \
 		hack/makedefs \
 		fortune/strfile/strfile \
 		monop/initdeck \
