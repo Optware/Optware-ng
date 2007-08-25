@@ -7,7 +7,7 @@
 # NOTE:
 #	This script works with the standard busybox tools.
 #
-PATH=/bin:/usr/bin
+PATH=/bin:/usr/bin:/opt/bin
 
 PROG=${0##*/}
 ERROR=""
@@ -16,6 +16,8 @@ HOME=""
 ROOT=""
 CREATE=""
 PASSWD=""
+FORCE=""
+SUPPORT=1
 
 if [ $(id -u) != 0 ]
 then
@@ -28,13 +30,34 @@ fi
 #
 umask 022
 
-#
-# This script is not supported or tested with dropbear.
-#
-if [ ! -f /opt/libexec/sftp-server ]
+
+if [ -f /.unslung ]
 then
-	echo "Scponly is only supported with openssh"
-	exit 2
+	FIRMWARE=unslung
+	FIRMWARE_VERSION=$(cat /.unslung)
+	SUPPORT=""
+else
+	FIRMWARE=unknown
+	FIRMWARE_VERSION=unknown
+fi
+
+if SSH_VERSION=$(ssh -V 2>&1)
+then
+	if [ "${SSH_VERSION%_*}" = OpenSSH ]
+	then
+		SSH=openssh
+	else
+		SUPPORT=1
+	fi
+else
+	if DROPBEAR=$(ssh -V 2>&1 | grep Dropbear)
+	then
+		SSH_VERSION="${DROPBEAR}"
+		SSH=dropbear
+	else
+		SSH=unknown
+	fi
+	SUPPORT=1
 fi
 
 while [ $# -ge 1 ]
@@ -60,12 +83,39 @@ do
 			PASSWD=1
 			shift
 			;;
+		-f)
+			FORCE=1
+			shift
+			;;
 		*)
 			ERROR=1
 			shift
 			;;
 	esac
 done
+
+if [ "${SUPPORT}" ]
+then
+	echo "Unsuported configuration."			>&2
+	echo							>&2
+	echo "Suported configurations:"				>&2
+	echo "	unslung & openssh"				>&2
+	echo							>&2
+	echo "Work in progress:"				>&2
+	echo "	openslug & busybox"				>&2
+	echo							>&2
+	echo "Use \"-f\" (force) to try creating a chroot"	>&2
+	echo							>&2
+	echo "And report succes on the mailinglist"		>&2
+	echo							>&2
+	echo "Detected firmware: $FIRMWARE_VERSION"		>&2
+	echo "Detected ssh: $SSH_VERSION"			>&2
+	echo							>&2
+	if [ ! "${FORCE}" ]
+	then
+		exit 2
+	fi
+fi
 
 if [ -z "${USER}" -o "${ERROR}" ]
 then
@@ -129,9 +179,9 @@ done
 
 cd "${ROOT}/lib"
 
-for f in ld-linux.so.2 libc.so.6 libcrypt.so.1 libdl.so.2 libm.so.6 libnsl.so.1 libnss_files.so.2 libresolv.so.2 libutil.so.1
+for f in ld-linux.so.2 libc.so.6 libcrypt.so.1 libdl.so.2 libm.so.6 libnsl.so.1 libnss_files.so.2 libresolv.so.2 libutil.so.1 libgcc_s.so.1
 do
-	cp "/lib/${f}" .
+	[ -f "/lib/${f}" ] && cp "/lib/${f}" .
 done
 
 cd "${ROOT}/etc"
@@ -145,7 +195,7 @@ echo "${USER}::${ID}:100::/${USER}:" >> passwd
 
 for f in ld.so.conf ld.so.cache
 do
-	cp "/etc/${f}" .
+	[ -f "/etc/${f}" ] && cp "/etc/${f}" .
 done
 
 cd "${ROOT}/dev"
@@ -153,15 +203,32 @@ mknod null c 1 3
 chmod 777 null
 
 cd "${ROOT}/usr/bin"
-cp /opt/bin/scp .
+
+if [ -f /opt/bin/scp ]
+then
+	cp /opt/bin/scp .
+elif [ -f /usr/bin/scp ]
+then
+	cp /usr/bin/scp .
+fi
 
 cd "${ROOT}/usr/libexec/openssh"
-cp /opt/libexec/sftp-server .
+[ -f /opt/libexec/sftp-server ] && cp /opt/libexec/sftp-server .
 
 cd "${ROOT}/usr/lib"
-cp /opt/lib/libcrypto.so.0.9.7 .
-cp /opt/lib/libz.so.1.2.3 .
-ln -s libz.so.1.2.3 libz.so
+[ -f /opt/lib/libcrypto.so.0.9.7  ] && cp /opt/lib/libcrypto.so.0.9.7 .
+
+if [ -f /opt/lib/libz.so.1.2.3 ]
+then
+	cp /opt/lib/libz.so.1.2.3 .
+	ln -s libz.so.1.2.3 libz.so
+	ln -s libz.so.1.2.3 libz.so.1
+elif [ -f /usr/lib/libz.so.1.2.3 ]
+then
+	cp /usr/lib/libz.so.1.2.3 .
+	ln -s libz.so.1.2.3 libz.so
+	ln -s libz.so.1.2.3 libz.so.1
+fi
 
 if [ -z "${PASSWD}" ]
 then
