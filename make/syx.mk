@@ -29,7 +29,7 @@ SYX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SYX_DESCRIPTION=Smalltalk YX is an open source Smalltalk-80 implementation.
 SYX_SECTION=lang
 SYX_PRIORITY=optional
-SYX_DEPENDS=
+SYX_DEPENDS=libgmp
 SYX_SUGGESTS=
 SYX_CONFLICTS=
 
@@ -64,8 +64,11 @@ SYX_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-SYX_BUILD_DIR=$(BUILD_DIR)/syx
 SYX_SOURCE_DIR=$(SOURCE_DIR)/syx
+
+SYX_BUILD_DIR=$(BUILD_DIR)/syx
+SYX_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/syx
+
 SYX_IPK_DIR=$(BUILD_DIR)/syx-$(SYX_VERSION)-ipk
 SYX_IPK=$(BUILD_DIR)/syx_$(SYX_VERSION)-$(SYX_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -106,6 +109,7 @@ syx-source: $(DL_DIR)/$(SYX_SOURCE) $(SYX_PATCHES)
 #
 $(SYX_BUILD_DIR)/.configured: $(DL_DIR)/$(SYX_SOURCE) $(SYX_PATCHES) make/syx.mk
 	$(MAKE) scons-host-stage
+	$(MAKE) libgmp-stage
 	rm -rf $(BUILD_DIR)/$(SYX_DIR) $(SYX_BUILD_DIR)
 	$(SYX_UNZIP) $(DL_DIR)/$(SYX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SYX_PATCHES)" ; \
@@ -115,6 +119,9 @@ $(SYX_BUILD_DIR)/.configured: $(DL_DIR)/$(SYX_SOURCE) $(SYX_PATCHES) make/syx.mk
 	if test "$(BUILD_DIR)/$(SYX_DIR)" != "$(SYX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SYX_DIR) $(SYX_BUILD_DIR) ; \
 	fi
+	sed -i.orig \
+	    -e '/bimage *=/{s|$$SOURCE |LD_LIBRARY_PATH=$(SYX_HOST_BUILD_DIR)/build/lib $$SOURCE |; s| prog,| "$(SYX_HOST_BUILD_DIR)/build/bin/syx",|}' \
+		$(SYX_BUILD_DIR)/src/SConscript
 #	(cd $(SYX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYX_CPPFLAGS)" \
@@ -155,6 +162,24 @@ $(SYX_BUILD_DIR)/.built: $(SYX_BUILD_DIR)/.configured
 # This is the build convenience target.
 #
 syx: $(SYX_BUILD_DIR)/.built
+
+$(SYX_HOST_BUILD_DIR)/.built: host/.configured make/syx.mk
+	$(MAKE) scons-host-stage
+	rm -f $@
+	rm -rf $(HOST_BUILD_DIR)/$(SYX_DIR) $(SYX_HOST_BUILD_DIR)
+	$(SYX_UNZIP) $(DL_DIR)/$(SYX_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(SYX_DIR)" != "$(SYX_HOST_BUILD_DIR)" ; \
+		then mv $(HOST_BUILD_DIR)/$(SYX_DIR) $(SYX_HOST_BUILD_DIR) ; \
+	fi
+	$(HOST_STAGING_PREFIX)/bin/scons \
+		-C $(SYX_HOST_BUILD_DIR) \
+		prefix=/opt \
+		GTK=false \
+		CC=$(HOSTCC) \
+		;
+	touch $@
+
+syx-host: $(SYX_HOST_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -198,27 +223,23 @@ $(SYX_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(SYX_IPK): $(SYX_BUILD_DIR)/.built
+	$(MAKE) syx-host
 	rm -rf $(SYX_IPK_DIR) $(BUILD_DIR)/syx_*_$(TARGET_ARCH).ipk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYX_LDFLAGS)" \
+	LD_LIBRARY_PATH=$(SYX_HOST_BUILD_DIR)/build/lib \
 	$(HOST_STAGING_PREFIX)/bin/scons \
 		-C $(SYX_BUILD_DIR) \
-		prefix=$(SYX_IPK_DIR)/opt \
+		prefix=/opt \
 		GTK=false \
 		CC=$(TARGET_CC) \
 		bdist
-#	$(MAKE) -C $(SYX_BUILD_DIR) DESTDIR=$(SYX_IPK_DIR) install-strip
-#	install -d $(SYX_IPK_DIR)/opt/etc/
-#	install -m 644 $(SYX_SOURCE_DIR)/syx.conf $(SYX_IPK_DIR)/opt/etc/syx.conf
-#	install -d $(SYX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SYX_SOURCE_DIR)/rc.syx $(SYX_IPK_DIR)/opt/etc/init.d/SXXsyx
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SYX_IPK_DIR)/opt/etc/init.d/SXXsyx
+	install -d $(SYX_IPK_DIR)
+	cp -rp $(SYX_BUILD_DIR)/syx-$(SYX_VERSION)/opt $(SYX_IPK_DIR)/
+	rm -f $(SYX_IPK_DIR)/opt/lib/libsyx.a
+	$(STRIP_COMMAND) $(SYX_IPK_DIR)/opt/lib/libsyx.so $(SYX_IPK_DIR)/opt/bin/syx
 	$(MAKE) $(SYX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SYX_SOURCE_DIR)/postinst $(SYX_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SYX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SYX_SOURCE_DIR)/prerm $(SYX_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SYX_IPK_DIR)/CONTROL/prerm
 	echo $(SYX_CONFFILES) | sed -e 's/ /\n/g' > $(SYX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SYX_IPK_DIR)
 
