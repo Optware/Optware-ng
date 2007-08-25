@@ -9,7 +9,8 @@ UCLIBC_BROKEN_PACKAGES = \
 	 newsbeuter \
 	 nfs-server nfs-utils \
 	 pango \
-	 qemu qemu-libc-i386 quickie sm \
+	 qemu qemu-libc-i386 quickie \
+	 sm syx \
 	 taglib uemacs vte \
 	 xauth xaw xchat xcursor \
 	 xfixes xft xrender xmu xt xterm

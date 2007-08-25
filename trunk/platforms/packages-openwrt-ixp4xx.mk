@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	oleo obexftp \
 	pango par2cmdline phoneme-advanced puppy \
 	qemu qemu-libc-i386 quagga quickie \
-	sm \
+	sm syx \
 	transcode \
 	uemacs usbutils util-linux \
 	vsftpd vte \
