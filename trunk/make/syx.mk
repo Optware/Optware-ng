@@ -36,7 +36,7 @@ SYX_CONFLICTS=
 #
 # SYX_IPK_VERSION should be incremented when the ipk changes.
 #
-SYX_IPK_VERSION=1
+SYX_IPK_VERSION=2
 
 #
 # SYX_CONFFILES should be a list of user-editable files
@@ -153,7 +153,7 @@ $(SYX_BUILD_DIR)/.built: $(SYX_BUILD_DIR)/.configured
 		-C $(SYX_BUILD_DIR) \
 		prefix=/opt \
 		GTK=false \
-		CC=$(TARGET_CC) \
+		host=`echo $(TARGET_CROSS) | sed 's/-$$//'` \
 		endianness=$$ENDIANNESS \
 		;
 	touch $@

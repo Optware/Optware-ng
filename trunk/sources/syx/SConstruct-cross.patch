@@ -1,10 +1,9 @@
 --- SConstruct.orig	2007-08-20 13:25:47.000000000 -0700
-+++ SConstruct	2007-08-24 16:44:03.000000000 -0700
-@@ -73,6 +73,10 @@
++++ SConstruct	2007-08-25 21:32:05.000000000 -0700
+@@ -73,6 +73,9 @@
                   'Installation prefix for C header files', 
                   '$prefix/include', PathOption.PathAccept))
  
-+opts.Add('CC', 'The C Compiler')
 +env.Prepend(CCFLAGS=os.environ['CPPFLAGS'])
 +env.Prepend(LINKFLAGS=os.environ['LDFLAGS'])
 +
