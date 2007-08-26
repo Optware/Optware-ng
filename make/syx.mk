@@ -175,7 +175,6 @@ $(SYX_HOST_BUILD_DIR)/.built: host/.configured make/syx.mk
 		-C $(SYX_HOST_BUILD_DIR) \
 		prefix=/opt \
 		GTK=false \
-		CC=$(HOSTCC) \
 		;
 	touch $@
 
@@ -228,12 +227,10 @@ $(SYX_IPK): $(SYX_BUILD_DIR)/.built
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYX_LDFLAGS)" \
-	LD_LIBRARY_PATH=$(SYX_HOST_BUILD_DIR)/build/lib \
 	$(HOST_STAGING_PREFIX)/bin/scons \
 		-C $(SYX_BUILD_DIR) \
 		prefix=/opt \
 		GTK=false \
-		CC=$(TARGET_CC) \
 		bdist
 	install -d $(SYX_IPK_DIR)
 	cp -rp $(SYX_BUILD_DIR)/syx-$(SYX_VERSION)/opt $(SYX_IPK_DIR)/
