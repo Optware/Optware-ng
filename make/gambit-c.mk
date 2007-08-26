@@ -26,10 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/4.0/source
-GAMBIT-C_VERSION=4.0b22
-GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_VERSION).tar.gz
-GAMBIT-C_DIR=gambc-$(GAMBIT-C_VERSION)
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.0/source
+GAMBIT-C_UPSTREAM_VERSION=v4_0_0
+GAMBIT-C_VERSION=4.0.0
+GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
+GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
 GAMBIT-C_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GAMBIT-C_DESCRIPTION=A portable implementation of Scheme.
@@ -195,16 +196,20 @@ $(GAMBIT-C_IPK_DIR)/CONTROL/control:
 $(GAMBIT-C_IPK): $(GAMBIT-C_BUILD_DIR)/.built
 	rm -rf $(GAMBIT-C_IPK_DIR) $(BUILD_DIR)/gambit-c_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GAMBIT-C_BUILD_DIR) prefix=$(GAMBIT-C_IPK_DIR)/opt install
-	mv $(GAMBIT-C_IPK_DIR)/opt/$(GAMBIT-C_VERSION)/* $(GAMBIT-C_IPK_DIR)/opt/ && rm -rf $(GAMBIT-C_IPK_DIR)/opt/{current,$(GAMBIT-C_VERSION)}
+	install -d $(GAMBIT-C_IPK_DIR)/opt/lib
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/bin $(GAMBIT-C_IPK_DIR)/opt/
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/include $(GAMBIT-C_IPK_DIR)/opt/
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/lib/lib*.so $(GAMBIT-C_IPK_DIR)/opt/lib/
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/share $(GAMBIT-C_IPK_DIR)/opt/
+	install -d $(GAMBIT-C_IPK_DIR)/opt/share/doc
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/doc $(GAMBIT-C_IPK_DIR)/opt/share/doc/gambit-c
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/info $(GAMBIT-C_IPK_DIR)/opt/share/
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/lib $(GAMBIT-C_IPK_DIR)/opt/lib/gambit-c
+	mv $(GAMBIT-C_IPK_DIR)/opt/current/*.scm $(GAMBIT-C_IPK_DIR)/opt/lib/gambit-c/
+	rm -rf $(GAMBIT-C_IPK_DIR)/opt/v$(GAMBIT-C_VERSION) $(GAMBIT-C_IPK_DIR)/opt/current
 	$(STRIP_COMMAND) $(GAMBIT-C_IPK_DIR)/opt/bin/gs[ci] $(GAMBIT-C_IPK_DIR)/opt/lib/lib*.so
 	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o
-#	install -d $(GAMBIT-C_IPK_DIR)/opt/etc/
-#	install -m 644 $(GAMBIT-C_SOURCE_DIR)/gambit-c.conf $(GAMBIT-C_IPK_DIR)/opt/etc/gambit-c.conf
-#	install -d $(GAMBIT-C_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GAMBIT-C_SOURCE_DIR)/rc.gambit-c $(GAMBIT-C_IPK_DIR)/opt/etc/init.d/SXXgambit-c
 	$(MAKE) $(GAMBIT-C_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GAMBIT-C_SOURCE_DIR)/postinst $(GAMBIT-C_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(GAMBIT-C_SOURCE_DIR)/prerm $(GAMBIT-C_IPK_DIR)/CONTROL/prerm
 	echo $(GAMBIT-C_CONFFILES) | sed -e 's/ /\n/g' > $(GAMBIT-C_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAMBIT-C_IPK_DIR)
 
