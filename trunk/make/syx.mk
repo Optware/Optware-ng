@@ -122,6 +122,9 @@ $(SYX_BUILD_DIR)/.configured: $(DL_DIR)/$(SYX_SOURCE) $(SYX_PATCHES) make/syx.mk
 	sed -i.orig \
 	    -e '/bimage *=/{s|$$SOURCE |LD_LIBRARY_PATH=$(SYX_HOST_BUILD_DIR)/build/lib $$SOURCE |; s| prog,| "$(SYX_HOST_BUILD_DIR)/build/bin/syx",|}' \
 		$(SYX_BUILD_DIR)/src/SConscript
+ifeq (mss, $(OPTWARE_TARGET))
+	sed -i.orig -e 's|-Wno-strict-aliasing ||' $(SYX_BUILD_DIR)/SConstruct
+endif
 #	(cd $(SYX_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYX_CPPFLAGS)" \
