@@ -21,10 +21,14 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
-TRANSMISSION_VERSION=0.7
-TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=2555
+TRANSMISSION_VERSION=0.81
+#TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
+#TRANSMISSION_SVN_REV=2555
+ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
+else
+TRANSMISSION_SOURCE=Transmission-$(TRANSMISSION_VERSION).tar.gz
+endif
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
 TRANSMISSION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -38,7 +42,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -83,6 +87,7 @@ TRANSMISSION_IPK=$(BUILD_DIR)/transmission_$(TRANSMISSION_VERSION)+r$(TRANSMISSI
 #	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)
 
 $(DL_DIR)/$(TRANSMISSION_SOURCE):
+ifdef TRANSMISSION_SVN_REV
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(TRANSMISSION_DIR) && \
 		svn co -r $(TRANSMISSION_SVN_REV) $(TRANSMISSION_SVN) \
@@ -90,7 +95,10 @@ $(DL_DIR)/$(TRANSMISSION_SOURCE):
 		tar -czf $@ $(TRANSMISSION_DIR) && \
 		rm -rf $(TRANSMISSION_DIR) \
 	)
-
+else
+	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TRANSMISSION_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -123,7 +131,12 @@ transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) 
 	$(MAKE) openssl-stage libevent-stage
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR)
+ifdef TRANSMISSION_SVN_REV
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
+	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR)/$(TRANSMISSION_DIR) -xvf -
+endif
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p1 ; \
@@ -131,7 +144,7 @@ $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSM
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
-
+	sed -i -e '/^[ 	]*AM_PATH_GTK_2_0/s/^/dnl /' $(TRANSMISSION_BUILD_DIR)/configure.ac
 	(cd $(TRANSMISSION_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
 		$(TARGET_CONFIGURE_OPTS) \
