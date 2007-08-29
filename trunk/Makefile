@@ -40,11 +40,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-# transmission
-#	configure.ac:67: error: possibly undefined macro: AM_PATH_GTK_2_0
-#	configure: error: cannot find install-sh or install.sh in . ./.. ./../..
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
-	transmission \
 	doxygen \
 	iozone \
 	lftp \
@@ -241,7 +237,7 @@ COMMON_CROSS_PACKAGES = \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
 	tar tcpdump tcpflow tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
-	transcode tsocks ttf-bitstream-vera tz tzwatch \
+	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy upslug2 upx usbutils ushare util-linux \
 	varnish vblade vdr-mediamvp vim vlc \
