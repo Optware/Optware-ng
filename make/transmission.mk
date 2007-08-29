@@ -206,7 +206,11 @@ $(TRANSMISSION_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(TRANSMISSION_PRIORITY)" >>$@
 	@echo "Section: $(TRANSMISSION_SECTION)" >>$@
+ifdef TRANSMISSION_SVN_REV
 	@echo "Version: $(TRANSMISSION_VERSION)+r$(TRANSMISSION_SVN_REV)-$(TRANSMISSION_IPK_VERSION)" >>$@
+else
+	@echo "Version: $(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)" >>$@
+endif
 	@echo "Maintainer: $(TRANSMISSION_MAINTAINER)" >>$@
 	@echo "Source: $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)" >>$@
 	@echo "Description: $(TRANSMISSION_DESCRIPTION)" >>$@
