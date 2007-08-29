@@ -6,7 +6,7 @@ BROKEN_PACKAGES = \
 	 $(UCLIBC_BROKEN_PACKAGES) \
 	 amule \
 	$(ASTERISK_PACKAGES) \
-	 atk avahi bitlbee bsdgames bsdmainutils \
+	 atk avahi bitlbee bsdgames bsdmainutils btpd \
 	 calc chicken coreutils ctrlproxy \
 	 dansguardian dcraw dnsmasq dump \
 	 ecl elinks emacs22 \
