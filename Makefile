@@ -179,7 +179,7 @@ COMMON_CROSS_PACKAGES = \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	haproxy hdparm hello hexcurse heyu hnb hpijs hping htop httping \
-	ice icecast id3lib iftop iksemel imagemagick imap \
+	ice icecast id3lib iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils ipac-ng \
 	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
