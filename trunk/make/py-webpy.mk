@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-WEBPY_SITE=http://webpy.org
-PY-WEBPY_VERSION=0.2
+PY-WEBPY_SITE=http://pypi.python.org/packages/source/w/web.py
+PY-WEBPY_VERSION=0.22
 PY-WEBPY_SOURCE=web.py-$(PY-WEBPY_VERSION).tar.gz
 PY-WEBPY_DIR=web.py-$(PY-WEBPY_VERSION)
 PY-WEBPY_UNZIP=zcat
