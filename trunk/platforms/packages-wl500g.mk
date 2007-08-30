@@ -27,7 +27,7 @@ BROKEN_PACKAGES = \
 	 nylon obexftp openldap openser \
 	 pal p7zip pcapsipdump postfix player psmisc py-mssql \
 	 rhtvision rtorrent rtpproxy \
-	 sablevm scli sdl ser snort \
+	 sablevm samba scli sdl ser snort \
 	 snownews sqsh swi-prolog syslog-ng \
 	 tcsh tshark tnftpd transcode \
 	 unrar \
