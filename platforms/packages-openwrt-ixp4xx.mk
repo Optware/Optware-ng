@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 	module-init-tools \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	$(PERL_PACKAGES) \
+	$(PACKAGES_REQUIRE_LINUX26) \
 
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \

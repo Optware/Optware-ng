@@ -143,6 +143,10 @@ ASTERISK_PACKAGES = \
 	asterisk14-moh-freeplay-ulaw \
 	asterisk14-gui \
 
+PACKAGES_REQUIRE_LINUX26 = \
+	inotify \
+	varnish \
+
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule analog antinat appweb \
@@ -241,7 +245,7 @@ COMMON_CROSS_PACKAGES = \
 	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy upslug2 upx usbutils ushare util-linux \
-	varnish vblade vdr-mediamvp vim vlc \
+	vblade vdr-mediamvp vim vlc \
 	vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer weechat wget \
 	which whois wizd wpa-supplicant wput wxbase \

@@ -20,6 +20,5 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 quickie \
 	sablevm svn \
 	tshark \
-	varnish \
 	wxbase \
 
