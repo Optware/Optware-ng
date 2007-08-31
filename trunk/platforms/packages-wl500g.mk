@@ -31,7 +31,7 @@ BROKEN_PACKAGES = \
 	 snownews sqsh swi-prolog syslog-ng \
 	 tcsh tshark tnftpd transcode \
 	 unrar \
-	 varnish vlc \
+	 vlc \
 	 w3m weechat wget wxbase x11 \
 	 xdpyinfo xext \
 	 xpm xtst zsh \

@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 	ipkg-opt \
 	module-init-tools \
 	$(PERL_PACKAGES) \
+	$(PACKAGES_REQUIRE_LINUX26) \
 
 # Packages that do not work for slugosbe.
 # puppy: usb_io.h:33:23: error: linux/usb.h: No such file or directory

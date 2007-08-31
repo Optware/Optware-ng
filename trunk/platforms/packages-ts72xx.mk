@@ -14,5 +14,5 @@ BROKEN_PACKAGES = \
 	oleo \
 	php php-apache pure-ftpd py-mysql py-soappy \
 	qemu qemu-libc-i386 quagga rtorrent \
-	sablevm tshark transcode varnish w3m xvid \
+	sablevm tshark transcode w3m xvid \
 
