@@ -35,7 +35,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = \
 NATIVE_PACKAGES_READY_FOR_TESTING = \
 
 # iozone - fileop_linux-arm.o: No such file or directory
-# lftp - segfault even with native build, upstream bug?
 # parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
@@ -43,7 +42,6 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
 	doxygen \
 	iozone \
-	lftp \
 	bpalogin
 
 PERL_PACKAGES = \
@@ -188,7 +186,7 @@ COMMON_CROSS_PACKAGES = \
 	iperf ipkg-web iptables iputils-arping ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
-	lame launchtool lcd4linux ldconfig less lha \
+	lame launchtool lcd4linux ldconfig less lftp lha \
 	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
