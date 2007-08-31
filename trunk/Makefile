@@ -144,7 +144,7 @@ ASTERISK_PACKAGES = \
 	asterisk14-gui \
 
 PACKAGES_REQUIRE_LINUX26 = \
-	inotify \
+	inotail \
 	varnish \
 
 # libao - has runtime trouble?
