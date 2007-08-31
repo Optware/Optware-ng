@@ -3,5 +3,7 @@ SPECIFIC_PACKAGES = unslung-feeds unslung-devel crosstool-native \
 	$(PERL_PACKAGES) \
 
 # Packages that do not work for nslu2.
+# lftp - runtime segfaults
 BROKEN_PACKAGES = \
+	lftp \
 

@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.5.10
+LFTP_VERSION=3.5.14
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -132,7 +132,7 @@ $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(LFTP_BUILD_DIR)/libtool
-	touch $(LFTP_BUILD_DIR)/.configured
+	touch $@
 
 lftp-unpack: $(LFTP_BUILD_DIR)/.configured
 
@@ -140,9 +140,9 @@ lftp-unpack: $(LFTP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LFTP_BUILD_DIR)/.built: $(LFTP_BUILD_DIR)/.configured
-	rm -f $(LFTP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LFTP_BUILD_DIR)
-	touch $(LFTP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,9 +153,9 @@ lftp: $(LFTP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LFTP_BUILD_DIR)/.staged: $(LFTP_BUILD_DIR)/.built
-	rm -f $(LFTP_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LFTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LFTP_BUILD_DIR)/.staged
+	touch $@
 
 lftp-stage: $(LFTP_BUILD_DIR)/.staged
 
@@ -164,7 +164,7 @@ lftp-stage: $(LFTP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lftp
 #
 $(LFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(LFTP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: lftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,13 +193,7 @@ $(LFTP_IPK_DIR)/CONTROL/control:
 $(LFTP_IPK): $(LFTP_BUILD_DIR)/.built
 	rm -rf $(LFTP_IPK_DIR) $(BUILD_DIR)/lftp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LFTP_BUILD_DIR) DESTDIR=$(LFTP_IPK_DIR) install-strip
-#	install -d $(LFTP_IPK_DIR)/opt/etc/
-#	install -m 644 $(LFTP_SOURCE_DIR)/lftp.conf $(LFTP_IPK_DIR)/opt/etc/lftp.conf
-#	install -d $(LFTP_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(LFTP_SOURCE_DIR)/rc.lftp $(LFTP_IPK_DIR)/opt/etc/init.d/SXXlftp
 	$(MAKE) $(LFTP_IPK_DIR)/CONTROL/control
-#	install -m 755 $(LFTP_SOURCE_DIR)/postinst $(LFTP_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(LFTP_SOURCE_DIR)/prerm $(LFTP_IPK_DIR)/CONTROL/prerm
 	echo $(LFTP_CONFFILES) | sed -e 's/ /\n/g' > $(LFTP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LFTP_IPK_DIR)
 
