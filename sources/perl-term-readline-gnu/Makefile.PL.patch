@@ -1,0 +1,11 @@
+--- Makefile.PL.orig	2005-10-01 08:44:07.000000000 -0700
++++ Makefile.PL	2007-08-31 20:33:36.000000000 -0700
+@@ -65,7 +65,7 @@
+ }
+ 
+ # Check version of  GNU Readline Library (for version 4.2 and before)
+-{
++sub dummy {
+     my ($rlmajorver, $rlminorver) =
+ 	check_readline_version($RLINC, $RLLIB, $defs, $lddflags, $libs);
+ 
