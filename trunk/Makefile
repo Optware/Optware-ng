@@ -77,7 +77,7 @@ PERL_PACKAGES = \
 	perl-libwww \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
-	perl-module-build perl-module-signature \
+	perl-module-build perl-module-refresh perl-module-signature \
 	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
 	perl-padwalker \
 	perl-par-dist \
