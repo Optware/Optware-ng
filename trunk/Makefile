@@ -63,6 +63,7 @@ PERL_PACKAGES = \
 	perl-db-file \
 	perl-dbd-mysql perl-dbd-sqlite perl-dbi \
 	perl-dbix-contextualfetch \
+	perl-devel-caller perl-devel-lexalias \
 	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
@@ -72,11 +73,13 @@ PERL_PACKAGES = \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-ip-country \
+	perl-lexical-persistence \
 	perl-libwww \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
 	perl-module-build perl-module-signature \
 	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
+	perl-padwalker \
 	perl-par-dist \
 	perl-pod-readme \
 	perl-scgi \
@@ -98,6 +101,7 @@ PERL_PACKAGES = \
 	colordiff \
 	ddclient \
 	perlbal \
+	perlconsole \
 	spamassassin \
 	stow \
 
