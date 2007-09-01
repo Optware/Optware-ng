@@ -84,7 +84,7 @@ PERL_PACKAGES = \
 	perl-sys-hostname-long \
 	perl-sys-syscall \
 	perl-template-toolkit \
-	perl-term-readkey \
+	perl-term-readkey perl-term-readline-gnu \
 	perl-text-diff \
 	perl-time-hires \
 	perl-unicode-map perl-unicode-string \
