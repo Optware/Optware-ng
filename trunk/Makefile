@@ -155,7 +155,7 @@ COMMON_CROSS_PACKAGES = \
 	abook adduser adns alac-decoder amule analog antinat appweb \
 	apache apr apr-util arc arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
-	at atftp atk atop audiofile autoconf automake avahi \
+	at atftp atk atop audiofile autoconf automake autossh avahi \
 	bash bc bftpd bind bip bison bitchx bitlbee bogofilter \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
