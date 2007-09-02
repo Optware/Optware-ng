@@ -1,0 +1,40 @@
+--- src/ifaces.c.orig	2005-09-12 23:42:54.000000000 -0700
++++ src/ifaces.c	2007-09-02 11:06:42.000000000 -0700
+@@ -37,7 +37,7 @@
+ extern int daemonized;
+ 
+ char ifaces[][6] =
+-    { "lo", "eth", "sl", "ppp", "ippp", "plip", "fddi", "isdn", "dvb",
++    { "lo", "eth", "ixp", "sl", "ppp", "ippp", "plip", "fddi", "isdn", "dvb",
+     "pvc", "hdlc", "ipsec", "sbni", "tr", "wvlan", "wlan", "sm2", "sm3",
+     "pent", "lec", "brg", "tun", "tap", "cipcb", "tunl", "vlan"
+ };
+--- src/promisc.c.orig	2005-09-12 23:42:54.000000000 -0700
++++ src/promisc.c	2007-09-02 11:29:41.000000000 -0700
+@@ -81,6 +81,7 @@
+              */
+ 
+             if ((strncmp(buf, "eth", 3) == 0) ||
++                (strncmp(buf, "ixp", 3) == 0) ||
+                 (strncmp(buf, "fddi", 4) == 0) ||
+                 (strncmp(buf, "tr", 2) == 0) ||
+                 (strncmp(ptmp->params.ifname, "wvlan", 4) == 0) ||
+@@ -195,6 +196,7 @@
+ 
+     while (ptmp != NULL) {
+         if (((strncmp(ptmp->params.ifname, "eth", 3) == 0) ||
++             (strncmp(ptmp->params.ifname, "ixp", 3) == 0) ||
+              (strncmp(ptmp->params.ifname, "fddi", 4) == 0) ||
+              (strncmp(ptmp->params.ifname, "tr", 2) == 0) ||
+              (strncmp(ptmp->params.ifname, "wvlan", 4) == 0) ||
+--- src/packet.c.orig	2005-09-12 23:42:54.000000000 -0700
++++ src/packet.c	2007-09-02 11:28:14.000000000 -0700
+@@ -79,6 +79,8 @@
+     case ARPHRD_ETHER:
+         if (strncmp(ifname, "eth", 3) == 0)
+             result = LINK_ETHERNET;
++        else if (strncmp(ifname, "ixp", 3) == 0)
++            result = LINK_ETHERNET;
+         else if (strncmp(ifname, "plip", 4) == 0)
+             result = LINK_PLIP;
+         else if (strncmp(ifname, "fddi", 4) == 0)       /* For some Ethernet- */
