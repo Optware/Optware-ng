@@ -1,0 +1,135 @@
+--- Python-3.0a1/Makefile.pre.in.orig	2007-08-29 16:43:40.000000000 -0700
++++ Python-3.0a1/Makefile.pre.in	2007-09-01 12:50:30.000000000 -0700
+@@ -36,6 +36,8 @@
+ RANLIB=		@RANLIB@
+ SVNVERSION=	@SVNVERSION@
+ 
++CROSS_COMPILE=	@CROSS_COMPILE@
++
+ # Shell used by make (some versions default to the login shell, which is bad)
+ SHELL=		/bin/sh
+ 
+@@ -99,7 +101,7 @@
+ 
+ # Symbols used for using shared libraries
+ SO=		@SO@
+-LDSHARED=	@LDSHARED@
++LDSHARED=	@LDSHARED@ @LDFLAGS@
+ BLDSHARED=	@BLDSHARED@
+ DESTSHARED=	$(BINLIBDEST)/lib-dynload
+ 
+@@ -169,7 +171,8 @@
+ UNICODE_OBJS=   @UNICODE_OBJS@
+ 
+ PYTHON=		python$(EXE)
+-BUILDPYTHON=	python$(BUILDEXE)
++HOSTPYTHON=	python$(BUILDEXE)
++BUILDPYTHON=	@BUILDPYTHON@
+ 
+ # === Definitions added by makesetup ===
+ 
+@@ -195,7 +198,8 @@
+ 
+ ##########################################################################
+ # Parser
+-PGEN=		Parser/pgen$(EXE)
++HOSTPGEN=	Parser/pgen$(EXE)
++BUILDPGEN=	@BUILDPGEN@
+ 
+ POBJS=		\
+ 		Parser/acceler.o \
+@@ -333,13 +337,13 @@
+ # Rules
+ 
+ # Default target
+-all:		$(BUILDPYTHON) oldsharedmods sharedmods
++all:		$(HOSTPYTHON) oldsharedmods sharedmods
+ 
+ # Build the interpreter
+-$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
+-		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
++$(HOSTPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
++		$(LINKCC) -o $@ \
+ 			Modules/python.o \
+-			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
++			$(BLDLIBRARY) $(LDFLAGS) $(LINKFORSHARED) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+ 
+ platform: $(BUILDPYTHON)
+ 	$(RUNSHARED) ./$(BUILDPYTHON) -E -c 'import sys ; from distutils.util import get_platform ; print(get_platform()+"-"+sys.version[0:3])' >platform
+@@ -472,11 +476,11 @@
+ 	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
+ 
+ 
+-$(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
+-		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
++$(GRAMMAR_H) $(GRAMMAR_C): $(BUILDPGEN) $(GRAMMAR_INPUT)
++		-$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ 
+-$(PGEN):	$(PGENOBJS)
+-		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
++$(HOSTPGEN):	$(PGENOBJS)
++		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(HOSTPGEN)
+ 
+ Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
+ 				$(srcdir)/Include/token.h \
+@@ -517,6 +521,16 @@
+ 
+ 
+ 
++#########################################################################
++# Rules for making python/pgen that will run on the build system
++# (only used for cross compiles)
++
++buildpython25/python$(BUILDEXE):				
++	cd buildpython25; make all; cd ..
++
++buildpython25/Parser/pgen$(BUILDEXE):
++	cd buildpython25; make Parser/pgen; cd ..
++				
+ ############################################################################
+ # Header files
+ 
+@@ -686,7 +700,7 @@
+ 		else	true; \
+ 		fi; \
+ 	done
+-	$(INSTALL_PROGRAM) $(BUILDPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
++	$(INSTALL_PROGRAM) $(HOSTPYTHON) $(DESTDIR)$(BINDIR)/python$(VERSION)$(EXE)
+ 	if test -f libpython$(VERSION)$(SO); then \
+ 		if test "$(SO)" = .dll; then \
+ 			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
+@@ -896,8 +910,9 @@
+ # Install the dynamically loadable modules
+ # This goes into $(exec_prefix)
+ sharedinstall:
+-	$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
+-	   	--prefix=$(prefix) \
++	CC='$(CC)' LDSHARED='$(BLDSHARED)' OPT='$(OPT)' CROSS_COMPILE='$(CROSS_COMPILE)' \
++		$(RUNSHARED) ./$(BUILDPYTHON) -E $(srcdir)/setup.py install \
++		--prefix=$(prefix) \
+ 		--install-scripts=$(BINDIR) \
+ 		--install-platlib=$(DESTSHARED) \
+ 		--root=/$(DESTDIR)
+@@ -984,7 +999,7 @@
+ config.status:	$(srcdir)/configure
+ 	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
+ 
+-.PRECIOUS: config.status $(BUILDPYTHON) Makefile Makefile.pre
++.PRECIOUS: config.status $(HOSTPYTHON) Makefile Makefile.pre
+ 
+ # Some make's put the object file in the current directory
+ .c.o:
+@@ -1042,11 +1057,12 @@
+ 	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
+ 
+ clobber: clean rmtestturds docclean
+-	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
++	-rm -f $(HOSTPYTHON) $(HOSTPGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
+ 		tags TAGS \
+ 		config.cache config.log pyconfig.h Modules/config.c
+ 	-rm -rf build platform
+ 	-rm -rf $(PYTHONFRAMEWORKDIR)
++	-rm -rf buildpython30
+ 
+ # Make things extra clean, before making a distribution:
+ # remove all generated files, even Makefile[.pre]

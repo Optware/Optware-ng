@@ -1,0 +1,42 @@
+--- Python-3.0a1/README.orig	2007-08-30 16:06:21.000000000 -0700
++++ Python-3.0a1/README	2007-09-01 19:57:02.000000000 -0700
+@@ -124,6 +124,39 @@
+ (This will fail if you *also* built at the top-level directory.  You
+ should do a "make clean" at the toplevel first.)
+ 
++Cross Compiling
++---------------
++
++Python can be cross compiled by supplying different --host and --build
++parameters to configure.  (Python is compiled on the "build" system
++and executed on the "host" system, in case you forgot :).  Python is
++tricky to cross compile because it needs to execute parts of itself
++during construction.  To work around this, make's VPATH feature is
++used to compile a native python in the subdirectory "buildpython30".
++When parts of python need to be executed during construction, the
++"buildpython30" versions are used.
++
++A consequence of using the VPATH feature is that you may not do a
++cross compile build in the source directory.  In other words, do this:
++
++mkdir mydir
++cd mydir
++../Python/configure --host=powerpc-405-linux-gnu --build=i686-pc-linux-gnu
++make
++
++Cross compiling works well under linux, mileage may vary for other
++platforms.
++
++A few reminders on using configure to cross compile:
++- Cross compile tools must be in the PATH.
++- Cross compile tools must be prefixed with the host type
++(ie powerpc-405-linux-gnu-cc, powerpc-405-linux-gnu-ranlib, ...)
++- CC, CXX, AR, and RANLIB must be undefined when running configure and
++make.  Configure will detect them.
++
++If you need a cross compiler, check out Dan Kegel's crosstool:
++http://www.kegel.com/crosstool
++
+ 
+ Copyright and License Information
+ ---------------------------------
