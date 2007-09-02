@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 	libiconv \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
+# iptraf: sys/types.h and linux/types.h conflicting
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	$(filter-out libstdc++ newsbeuter, $(UCLIBC_BROKEN_PACKAGES)) \
@@ -10,6 +11,7 @@ BROKEN_PACKAGES = \
 	bluez-hcidump chillispot \
 	dump ficy gdb \
 	gnuplot htop \
+	iptraf \
 	ircd-hybrid \
 	libopensync mdadm \
 	msynctool obexftp \
