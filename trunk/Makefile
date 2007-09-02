@@ -100,6 +100,7 @@ PERL_PACKAGES = \
 	amavisd-new \
 	colordiff \
 	ddclient \
+	ipcalc \
 	perlbal \
 	perlconsole \
 	spamassassin \
@@ -236,7 +237,7 @@ COMMON_CROSS_PACKAGES = \
 	sablevm samba samba2 sane-backends \
 	scli scponly screen scsi-idle sdl sdparm \
 	sed sendmail ser setserial setpwc \
-	sharutils simh siproxd slang slrn slsc \
+	sharutils simh sipcalc siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
 	socat speex sqlite sqlite2 \
 	sqsh squeak squid srelay sslwrap strace stunnel streamripper sudo \
