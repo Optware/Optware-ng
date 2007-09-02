@@ -1,0 +1,14 @@
+--- src/othptab.c.orig	2005-09-12 23:42:54.000000000 -0700
++++ src/othptab.c	2007-09-02 11:11:11.000000000 -0700
+@@ -16,6 +16,11 @@
+ 
+ ***/
+ 
++#ifndef _LINUX_TYPES_H
++# define _LINUX_TYPES_H         1
++# define __undef_LINUX_TYPES_H
++#endif
++
+ #include <asm/types.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_tr.h>

@@ -1,0 +1,62 @@
+--- src/install.sh.orig	2002-12-25 19:07:18.000000000 -0800
++++ src/install.sh	2007-09-02 11:06:42.000000000 -0700
+@@ -23,9 +23,9 @@
+ echo "*** Installing executable programs and preparing work directories"
+ echo
+ echo ">>> Installing iptraf in $TARGET"
+-$INSTALL -m 0700 -o root -g root -s iptraf $TARGET
++$INSTALL -m 0700 iptraf $TARGET
+ echo ">>> Installing rvnamed in $TARGET"
+-$INSTALL -m 0700 -o root -g root -s rvnamed $TARGET
++$INSTALL -m 0700 rvnamed $TARGET
+ 
+ if [ ! -d $WORKDIR ]; then
+     echo ">>> Creating IPTraf work directory $WORKDIR"
+@@ -34,27 +34,27 @@
+     rm -f $WORKDIR/othfilter.dat
+ fi
+ 
+-$INSTALL -m 0700 -o root -g root -d $WORKDIR
++$INSTALL -m 0700 -d $WORKDIR
+ 
+ if [ ! -d $LOGDIR ]; then
+     echo ">>> Creating IPTraf log directory $LOGDIR"
+ else
+     echo ">>> IPTraf log directory $LOGDIR already exists"
+ fi
+-$INSTALL -m 0700 -o root -g root -d $LOGDIR
++$INSTALL -m 0700 -d $LOGDIR
+ 
+ if [ ! -d $LOCKDIR ]; then
+     echo ">>> Creating IPTraf lockfile directory $LOCKDIR"
+ else
+     echo ">>> IPTraf lockfile directory $LOCKDIR already exists"
+ fi
+-$INSTALL -m 0700 -o root -g root -d $LOCKDIR
++$INSTALL -m 0700 -d $LOCKDIR
+ echo
+ echo
+ echo "*** iptraf, and rvnamed executables are in $TARGET"
+ echo "*** Log files are placed in $LOGDIR"
+ 
+-################# Filter clearing for 3.0 ##########################
++################## Filter clearing for 3.0 ##########################
+ 
+ if [ ! -f $WORKDIR/version ]; then
+     echo ">>> Clearing old filter list"
+@@ -85,13 +85,13 @@
+ echo "this version. You can view this file now (will require the 'less'"
+ echo "program in /usr/bin.  Press Q to quit when done)."
+ echo
+-echo -n "Would you like to view the RELEASE-NOTES file now (Y/N)? "; read YESNO
++#echo -n "Would you like to view the RELEASE-NOTES file now (Y/N)? "; read YESNO
+ 
+ if [ "$YESNO" = "y" -o "$YESNO" = "Y" ]; then
+     less ../RELEASE-NOTES
+ fi
+ 
+-clear
++#clear
+ echo
+ echo "====================================================================="
+ echo

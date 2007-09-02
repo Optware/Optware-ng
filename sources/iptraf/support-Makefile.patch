@@ -1,0 +1,25 @@
+--- support/Makefile.orig	2002-07-19 09:31:48.000000000 -0700
++++ support/Makefile	2007-09-02 11:06:42.000000000 -0700
+@@ -1,4 +1,4 @@
+-INCLUDEDIR		= -I/usr/include/ncurses
++INCLUDEDIR		= $(CPPFLAGS)
+ 
+ OBJS			= input.o menurt.o listbox.o winops.o labels.o \
+ 				msgboxes.o txbox.o
+@@ -7,12 +7,12 @@
+ 
+ libtextbox.a: $(OBJS)
+ 	rm -rf libtextbox.a
+-	ar cq libtextbox.a $(OBJS)
+-	ranlib libtextbox.a
+-#	gcc -shared -o libtextbox.so $(OBJS)
++	$(AR) cq libtextbox.a $(OBJS)
++	$(RANLIB) libtextbox.a
++#	$(CC) -shared -o libtextbox.so $(OBJS)
+ 
+ %.o: %.c *.h
+-	gcc -O2 -g -Wall -fPIC $(INCLUDEDIR) -c -o $*.o $<
++	$(CC) -O2 -g -Wall -fPIC $(INCLUDEDIR) -c -o $*.o $<
+ 
+ clean:
+ 	rm -rf *.o *~ libtextbox.a libtextbox.so

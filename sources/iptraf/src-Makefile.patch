@@ -1,0 +1,20 @@
+--- src/Makefile.orig	2005-09-13 02:11:17.000000000 -0700
++++ src/Makefile	2007-09-02 11:06:42.000000000 -0700
+@@ -39,7 +39,7 @@
+ # you may want to change this to point to your ncurses include directory
+ # if the ncurses include files are not in the default location.
+ 
+-INCLUDEDIR	= -I/usr/include/ncurses -I../support
++INCLUDEDIR	= $(CPPFLAGS) -I../support
+ 
+ # You can uncomment this one to disable the backspace key in input fields.
+ # This means you must use the Del key or Ctrl+H combination to erase the
+@@ -116,7 +116,7 @@
+ 	make -C ../support
+ 
+ %.o: %.c *.h version
+-	$(CC) $(CFLAGS) $(DIRS) $(INCLUDEDIR) $(VERSION) $(PLATFORM) $(PROF) $(DEBUG) $(EXECPERM) $(BSSETTING) -c -o $*.o $<
++	$(CC) $(CFLAGS) $(DIRS) $(INCLUDEDIR) $(VERSION) $(PLATFORM) $(PROF) $(DEBUG) $(EXECPERM) $(BSSETTING) -c  $<
+ 
+ rvnamed: rvnamed.o getpath.o
+ 	$(CC) $(LDOPTS) $(PROF) -o rvnamed rvnamed.o getpath.o

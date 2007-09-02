@@ -46,7 +46,11 @@ IPTRAF_IPK_VERSION=1
 # IPTRAF_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#IPTRAF_PATCHES=$(IPTRAF_SOURCE_DIR)/configure.patch
+IPTRAF_PATCHES=\
+$(IPTRAF_SOURCE_DIR)/src-Makefile.patch \
+$(IPTRAF_SOURCE_DIR)/support-Makefile.patch \
+$(IPTRAF_SOURCE_DIR)/src-install.sh.patch \
+$(IPTRAF_SOURCE_DIR)/ixp.patch \
 
 #
 # If the compilation of the package requires additional
@@ -110,33 +114,11 @@ $(IPTRAF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPTRAF_SOURCE) $(IPTRAF_PATCHES) ma
 	$(IPTRAF_UNZIP) $(DL_DIR)/$(IPTRAF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IPTRAF_PATCHES)" ; \
 		then cat $(IPTRAF_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(IPTRAF_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(IPTRAF_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IPTRAF_DIR)" != "$(IPTRAF_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(IPTRAF_DIR) $(IPTRAF_BUILD_DIR) ; \
 	fi
-	sed -i.orig -e 's|-I/usr/include/ncurses |$$(CPPFLAGS) |; s|-o $$\*.o||' \
-		$(IPTRAF_BUILD_DIR)/src/Makefile
-	sed -i.orig \
-		-e 's|-I/usr/include/ncurses|$$(CPPFLAGS)|' \
-		-e 's|	gcc |	$$(CC) |' \
-		-e 's|	ar |	$$(AR) |' \
-		-e 's|	ranlib |	$$(RANLIB) |' \
-		$(IPTRAF_BUILD_DIR)/support/Makefile
-	sed -i.orig \
-		-e '/read YESNO/s|^|#|' \
-		-e '/clear/s|^|#|' \
-		-e '/$$INSTALL/s|-o root -g root ||' \
-		-e '/$$INSTALL/s|-s ||' \
-		$(IPTRAF_BUILD_DIR)/src/install.sh
-	sed -i.orig \
-		-e 's|"eth"|"eth", "ixp"|' \
-		$(IPTRAF_BUILD_DIR)/src/ifaces.c
-ifeq (nslu2, $(OPTWARE_TARGET))
-	sed -i.orig \
-		-e '/strncmp/s|"eth"|"ixp"|' \
-		$(IPTRAF_BUILD_DIR)/src/promisc.c $(IPTRAF_BUILD_DIR)/src/packet.c
-endif
 #	(cd $(IPTRAF_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPTRAF_CPPFLAGS)" \
@@ -218,7 +200,7 @@ $(IPTRAF_IPK_DIR)/CONTROL/control:
 #
 $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 	rm -rf $(IPTRAF_IPK_DIR) $(BUILD_DIR)/iptraf_*_$(TARGET_ARCH).ipk
-	install -d $(IPTRAF_IPK_DIR)/opt/bin
+	install -d $(IPTRAF_IPK_DIR)/opt/bin $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf
 	$(MAKE) -C $(IPTRAF_BUILD_DIR)/src install \
 		TARGET=$(IPTRAF_IPK_DIR)/opt/bin \
 		WORKDIR=$(IPTRAF_IPK_DIR)/opt/var/iptraf \
@@ -226,6 +208,18 @@ $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 		LOCKDIR=$(IPTRAF_IPK_DIR)/opt/var/run/iptraf \
 		;
 	$(STRIP_COMMAND) $(IPTRAF_IPK_DIR)/opt/bin/*
+	install \
+		$(IPTRAF_BUILD_DIR)/CHANGES \
+		$(IPTRAF_BUILD_DIR)/LICENSE \
+		$(IPTRAF_BUILD_DIR)/FAQ \
+		$(IPTRAF_BUILD_DIR)/INSTALL \
+		$(IPTRAF_BUILD_DIR)/README* \
+		$(IPTRAF_BUILD_DIR)/RELEASE-NOTES \
+		$(IPTRAF_BUILD_DIR)/Setup \
+		$(IPTRAF_IPK_DIR)/opt/share/doc/iptraf/
+#	cp -pR $(IPTRAF_BUILD_DIR)/Documentation $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf/
+	install -d $(IPTRAF_IPK_DIR)/opt/share/man/man8
+	install $(IPTRAF_BUILD_DIR)/Documentation/*.8 $(IPTRAF_IPK_DIR)/opt/share/man/man8/
 	$(MAKE) $(IPTRAF_IPK_DIR)/CONTROL/control
 	echo $(IPTRAF_CONFFILES) | sed -e 's/ /\n/g' > $(IPTRAF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPTRAF_IPK_DIR)
