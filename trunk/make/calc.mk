@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALC_SITE=http://www.isthe.com/chongo/src/calc
-CALC_VERSION=2.12.1.13
+CALC_VERSION=2.12.2
 CALC_SOURCE=calc-$(CALC_VERSION).tar.gz
 CALC_DIR=calc-$(CALC_VERSION)
 CALC_UNZIP=zcat
@@ -151,6 +151,7 @@ $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 		INCDIR=$(TARGET_INCDIR) \
 		MANDIR=/opt/man \
 		LIBDIR=/opt/lib \
+		DEFAULT_LIB_INSTALL_PATH=/opt/lib \
 		;
 	touch $@
 
@@ -212,6 +213,7 @@ $(CALC_IPK): $(CALC_BUILD_DIR)/.built
 	chmod +w $(CALC_IPK_DIR)/opt/bin/calc && \
 		$(STRIP_COMMAND) $(CALC_IPK_DIR)/opt/bin/calc && \
 	chmod -w $(CALC_IPK_DIR)/opt/bin/calc
+	$(STRIP_COMMAND) $(CALC_IPK_DIR)/opt/lib/lib*calc*so.$(CALC_VERSION)
 #	install -d $(CALC_IPK_DIR)/opt/etc/
 #	install -m 644 $(CALC_SOURCE_DIR)/calc.conf $(CALC_IPK_DIR)/opt/etc/calc.conf
 #	install -d $(CALC_IPK_DIR)/opt/etc/init.d
