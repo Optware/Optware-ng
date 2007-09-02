@@ -109,7 +109,7 @@ PYTHON_PACKAGES = \
 	getmail ipython mailman mod-python mod-wsgi putmail pyrex scons \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
-	py-celementtree py-cheetah py-cherrypy py-cherrytemplate \
+	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
 	py-decoratortools py-django py-docutils py-duplicity \
 	py-elementtree py-flup py-formencode \
