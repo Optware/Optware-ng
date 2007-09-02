@@ -248,7 +248,8 @@ COMMON_CROSS_PACKAGES = \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
 	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
-	unzip up-imapproxy upslug2 upx usbutils ushare util-linux \
+	unzip up-imapproxy updatedd upslug2 \
+	upx usbutils ushare util-linux \
 	vblade vdr-mediamvp vim vlc \
 	vnstat vorbis-tools vsftpd vte \
 	w3cam w3m wakelan webalizer weechat wget \
