@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TOR_SITE=http://tor.eff.org/dist
-TOR_VERSION=0.1.1.26
+TOR_VERSION=0.1.2.17
 TOR_SOURCE=tor-$(TOR_VERSION).tar.gz
 TOR_DIR=tor-$(TOR_VERSION)
 TOR_UNZIP=zcat
@@ -36,7 +36,7 @@ TOR_CONFLICTS=
 #
 # TOR_IPK_VERSION should be incremented when the ipk changes.
 #
-TOR_IPK_VERSION=3
+TOR_IPK_VERSION=1
 
 #
 # TOR_CONFFILES should be a list of user-editable files
@@ -118,11 +118,12 @@ $(TOR_BUILD_DIR)/.configured: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES) make/tor.mk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TOR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TOR_LDFLAGS)" \
-		ac_cv_libevent_linker_option=-levent \
-		ac_cv_openssl_linker_option=-lssl \
+		tor_cv_libevent_linker_option=-levent \
+		tor_cv_openssl_linker_option=-lssl \
 		tor_cv_null_is_zero=yes \
 		tor_cv_unaligned_ok=yes \
 		tor_cv_time_t_signed=yes \
+		tor_cv_twos_complement=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -130,11 +131,11 @@ $(TOR_BUILD_DIR)/.configured: $(DL_DIR)/$(TOR_SOURCE) $(TOR_PATCHES) make/tor.mk
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-libevent-dir=$(STAGING_DIR)/opt \
-		--with-openssl-dir=$(STAGING_DIR)/opt \
+		--with-libevent-dir=$(STAGING_PREFIX) \
+		--with-openssl-dir=$(STAGING_PREFIX) \
 	)
 #	$(PATCH_LIBTOOL) $(TOR_BUILD_DIR)/libtool
-	touch $(TOR_BUILD_DIR)/.configured
+	touch $@
 
 tor-unpack: $(TOR_BUILD_DIR)/.configured
 
@@ -142,9 +143,9 @@ tor-unpack: $(TOR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TOR_BUILD_DIR)/.built: $(TOR_BUILD_DIR)/.configured
-	rm -f $(TOR_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(TOR_BUILD_DIR)
-	touch $(TOR_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +156,9 @@ tor: $(TOR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TOR_BUILD_DIR)/.staged: $(TOR_BUILD_DIR)/.built
-	rm -f $(TOR_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(TOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TOR_BUILD_DIR)/.staged
+	touch $@
 
 tor-stage: $(TOR_BUILD_DIR)/.staged
 
