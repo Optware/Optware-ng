@@ -10,8 +10,11 @@ BROKEN_PACKAGES = \
 	bluez-utils \
 	ecl erl-yaws \
 	fixesext fuppes gambit-c gdb \
-	gnugo gsnmp gphoto2 libgphoto2 libcdio \
-	libdvb libextractor libmtp libnsl libopensync loudmouth ltrace \
+	gnugo gsnmp \
+	iptraf \
+	gphoto2 libgphoto2 \
+	libcdio libdvb libextractor \
+	libmtp libnsl libopensync loudmouth ltrace \
 	msynctool multitail netatalk nget \
 	obexftp phoneme-advanced \
 	player psmisc \

@@ -8,6 +8,7 @@ BROKEN_PACKAGES = \
 	dialog \
 	gambit-c \
 	htop \
+	iptraf \
 	libdvb \
 	ltrace \
 	nget \
