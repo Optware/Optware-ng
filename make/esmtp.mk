@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esmtp
-ESMTP_VERSION=0.5.1
+ESMTP_VERSION=0.6.0
 ESMTP_SOURCE=esmtp-$(ESMTP_VERSION).tar.bz2
 ESMTP_DIR=esmtp-$(ESMTP_VERSION)
 ESMTP_UNZIP=bzcat
@@ -42,7 +42,7 @@ ESMTP_CONFLICTS=postfix
 #
 # ESMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-ESMTP_IPK_VERSION=2
+ESMTP_IPK_VERSION=1
 
 #
 # ESMTP_CONFFILES should be a list of user-editable files
@@ -211,3 +211,9 @@ esmtp-clean:
 #
 esmtp-dirclean:
 	rm -rf $(BUILD_DIR)/$(ESMTP_DIR) $(ESMTP_BUILD_DIR) $(ESMTP_IPK_DIR) $(ESMTP_IPK)
+
+#
+# Some sanity check for the package.
+#
+esmtp-check: $(ESMTP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ESMTP_IPK)
