@@ -185,7 +185,8 @@ COMMON_CROSS_PACKAGES = \
 	grep groff gsasl gsnmp gtk gzip  gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
-	haproxy hdparm hello hexcurse heyu hnb hpijs hping htop httping \
+	haproxy haserl hdparm hello hexcurse \
+	heyu hnb hpijs hping htop httping \
 	ice icecast id3lib iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils ipac-ng \
 	iperf ipkg-web iptables iptraf iputils-arping \
