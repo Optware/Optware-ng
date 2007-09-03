@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.9
+NGINX_VERSION=0.6.10
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -165,6 +165,8 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
                 --with-cpp=$(TARGET_CPP) \
                 --with-cc-opt="$(STAGING_CPPFLAGS) $(NGINX_CPPFLAGS)" \
                 --with-ld-opt="$(STAGING_LDFLAGS) $(NGINX_LDFLAGS)" \
+		--with-md5=$(STAGING_LIB_DIR) \
+		--with-sha1=$(STAGING_LIB_DIR) \
                 --with-http_ssl_module \
 		; \
 	)
