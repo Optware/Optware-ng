@@ -18,7 +18,7 @@ BROKEN_PACKAGES = \
 	kismet \
 	lame launchtool ldconfig libopensync \
 	moc monotone msynctool mtr multitail \
-	nfs-server nfs-utils ntop \
+	nfs-server nfs-utils nickle ntop \
 	oleo obexftp \
 	pango par2cmdline phoneme-advanced puppy \
 	qemu qemu-libc-i386 quagga quickie \

@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	gphoto2 libgphoto2 \
 	libcdio libdvb libextractor \
 	libmtp libnsl libopensync loudmouth ltrace \
-	msynctool multitail netatalk nget \
+	msynctool multitail netatalk nget nickle \
 	obexftp phoneme-advanced \
 	player psmisc \
 	quagga \
