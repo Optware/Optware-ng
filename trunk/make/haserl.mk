@@ -221,8 +221,9 @@ $(HASERL_IPK): $(HASERL_BUILD_DIR)/.built
 	rm -rf $(HASERL_IPK_DIR) $(BUILD_DIR)/haserl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HASERL_BUILD_DIR)/with-lua DESTDIR=$(HASERL_IPK_DIR) install-strip
 	mv $(HASERL_IPK_DIR)/opt/bin/haserl $(HASERL_IPK_DIR)/opt/bin/haserl-with-lua
-	install $(HASERL_BUILD_DIR)/without-lua/src/haserl $(HASERL_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(HASERL_IPK_DIR)/opt/bin/haserl
+	install $(HASERL_BUILD_DIR)/without-lua/src/haserl $(HASERL_IPK_DIR)/opt/bin/haserl-without-lua
+	$(STRIP_COMMAND) $(HASERL_IPK_DIR)/opt/bin/haserl-without-lua
+	cd $(HASERL_IPK_DIR)/opt/bin && ln -sf haserl-without-lua haserl
 	$(MAKE) $(HASERL_IPK_DIR)/CONTROL/control
 	echo $(HASERL_CONFFILES) | sed -e 's/ /\n/g' > $(HASERL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HASERL_IPK_DIR)
