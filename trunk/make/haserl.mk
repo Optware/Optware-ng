@@ -167,6 +167,9 @@ $(HASERL_BUILD_DIR)/.built: $(HASERL_BUILD_DIR)/.configured
 	$(MAKE) -C $(HASERL_BUILD_DIR)/with-lua/src lua2c \
 		CC=$(HOSTCC) \
 		LDFLAGS=-L$(LUA_HOST_BUILD_DIR)/opt/lib
+	if test -f $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH); then \
+		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH) $(HASERL_BUILD_DIR)/with-lua/src/; \
+	fi
 	$(MAKE) -C $(HASERL_BUILD_DIR)/with-lua
 	$(MAKE) -C $(HASERL_BUILD_DIR)/without-lua
 	touch $@
