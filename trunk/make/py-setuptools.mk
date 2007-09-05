@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SETUPTOOLS_SITE=http://cheeseshop.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=0.6c6
+PY-SETUPTOOLS_VERSION=0.6c7
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).tar.gz
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
 PY-SETUPTOOLS_UNZIP=zcat
