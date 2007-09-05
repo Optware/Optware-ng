@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MINIHTTPD_SITE=http://www.acme.com/software/minihttpd
+MINIHTTPD_SITE=http://www.acme.com/software/mini_httpd
 MINIHTTPD_VERSION=1.19
 MINIHTTPD_SOURCE=mini_httpd-$(MINIHTTPD_VERSION).tar.gz
 MINIHTTPD_DIR=mini_httpd-$(MINIHTTPD_VERSION)
@@ -37,11 +37,11 @@ MINIHTTPD_CONFLICTS=
 #
 # MINIHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIHTTPD_IPK_VERSION=2
+MINIHTTPD_IPK_VERSION=1
 
 #
 # MINIHTTPD_CONFFILES should be a list of user-editable files
-#MINIHTTPD_CONFFILES=/opt/etc/minihttpd.conf /opt/etc/init.d/SXXminihttpd
+MINIHTTPD_CONFFILES=/opt/etc/mini_httpd.conf /opt/etc/init.d/S80mini_httpd
 
 #
 # MINIHTTPD_PATCHES should list any patches, in the the order in
@@ -116,19 +116,19 @@ $(MINIHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIHTTPD_SOURCE) $(MINIHTTPD_PA
 		then mv $(BUILD_DIR)/$(MINIHTTPD_DIR) $(MINIHTTPD_BUILD_DIR) ; \
 	fi
 #	(cd $(MINIHTTPD_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIHTTPD_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(MINIHTTPD_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#		--disable-nls \
-#		--disable-static \
-#	)
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIHTTPD_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(MINIHTTPD_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+	)
 #	$(PATCH_LIBTOOL) $(MINIHTTPD_BUILD_DIR)/libtool
-#	touch $(MINIHTTPD_BUILD_DIR)/.configured
+	touch $@
 
 minihttpd-unpack: $(MINIHTTPD_BUILD_DIR)/.configured
 
@@ -136,9 +136,9 @@ minihttpd-unpack: $(MINIHTTPD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MINIHTTPD_BUILD_DIR)/.built: $(MINIHTTPD_BUILD_DIR)/.configured
-	rm -f $(MINIHTTPD_BUILD_DIR)/.built
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(MINIHTTPD_BUILD_DIR)
-	touch $(MINIHTTPD_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,9 +149,9 @@ minihttpd: $(MINIHTTPD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MINIHTTPD_BUILD_DIR)/.staged: $(MINIHTTPD_BUILD_DIR)/.built
-	rm -f $(MINIHTTPD_BUILD_DIR)/.staged
-	$(MAKE) -C $(MINIHTTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MINIHTTPD_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(MINIHTTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 minihttpd-stage: $(MINIHTTPD_BUILD_DIR)/.staged
 
@@ -160,7 +160,7 @@ minihttpd-stage: $(MINIHTTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/minihttpd
 #
 $(MINIHTTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(MINIHTTPD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: minihttpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -192,15 +192,13 @@ $(MINIHTTPD_IPK): $(MINIHTTPD_BUILD_DIR)/.built
 	install -m 755 $(MINIHTTPD_BUILD_DIR)/mini_httpd $(MINIHTTPD_IPK_DIR)/opt/sbin
 	install -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd_wrapper $(MINIHTTPD_IPK_DIR)/opt/sbin
 	install -d $(MINIHTTPD_IPK_DIR)/opt/bin
-	install -m 755 $(MINIHTTPD_BUILD_DIR)/htpasswd	$(MINIHTTPD_IPK_DIR)/opt/bin
+	install -m 755 $(MINIHTTPD_BUILD_DIR)/htpasswd	$(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
 	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/sbin/mini_httpd
-	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/bin/htpasswd
+	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
 	install -d $(MINIHTTPD_IPK_DIR)/opt/etc/init.d
 	install -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd.sh $(MINIHTTPD_IPK_DIR)/opt/etc/init.d/S80mini_httpd
+	install -d $(MINIHTTPD_IPK_DIR)/opt/share/www/cgi-bin
 	$(MAKE)	$(MINIHTTPD_IPK_DIR)/CONTROL/control
-#	echo $(MINIHTTPD_CONFFILES) | sed -e 's/ /\n/g' > $(MINIHTTPD_IPK_DIR)/CONTROL/conffiles
-#	install -m 755 $(MINIHTTPD_SOURCE_DIR)/postinst $(MINIHTTPD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MINIHTTPD_SOURCE_DIR)/prerm $(MINIHTTPD_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD)		$(MINIHTTPD_IPK_DIR)
 	install -d $(MINIHTTPD_IPK_DIR)/opt/etc/
 	install -m 644 $(MINIHTTPD_SOURCE_DIR)/mini_httpd.conf $(MINIHTTPD_IPK_DIR)/opt/etc
@@ -224,3 +222,9 @@ minihttpd-clean:
 #
 minihttpd-dirclean:
 	rm -rf $(BUILD_DIR)/$(MINIHTTPD_DIR) $(MINIHTTPD_BUILD_DIR) $(MINIHTTPD_IPK_DIR) $(MINIHTTPD_IPK)
+
+#
+# Some sanity check for the package.
+#
+minihttpd-check: $(MINIHTTPD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MINIHTTPD_IPK)

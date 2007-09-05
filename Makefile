@@ -39,7 +39,7 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki mini_httpd \
+PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin
@@ -207,7 +207,7 @@ COMMON_CROSS_PACKAGES = \
 	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
-	mg miau microcom microperl minicom miscfiles \
+	mg miau microcom microperl minicom minihttpd miscfiles \
 	mktemp moblock moc modutils monit most motion \
 	mod-fastcgi moe monotone mp3blaster mpack mpage mpc mpd \
 	mpg123 mpop mrtg msmtp msynctool mt-daapd mtools \
