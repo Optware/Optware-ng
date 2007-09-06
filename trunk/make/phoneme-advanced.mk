@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PHONEME_ADVANCED_SITE=http://download.java.net/mobileembedded/phoneme/advanced
-PHONEME_ADVANCED_VERSION=0.0.mr.2.b.21
-PHONEME_ADVANCED_SOURCE=phoneme_advanced-mr2-dev-src-b21-04_may_2007.zip
+PHONEME_ADVANCED_VERSION=0.0.mr.2.b.34
+PHONEME_ADVANCED_SOURCE=phoneme_advanced-mr2-dev-src-b34-02_aug_2007.zip
 PHONEME_ADVANCED_LEGAL=phoneme_advanced-legal.tar.gz
 PHONEME_ADVANCED_REPO=https://phoneme.dev.java.net/svn/phoneme
 PHONEME_ADVANCED_DIR=phoneme_advanced_mr2
@@ -53,10 +53,7 @@ PHONEME_ADVANCED_ARCH=$(strip \
 # PHONEME_ADVANCED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PHONEME_ADVANCED_PATCHES=
-ifeq (armeb, $(TARGET_ARCH))
-PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/armeb-memory_arch.patch
-endif
+PHONEME_ADVANCED_PATCHES=$(PHONEME_ADVANCED_SOURCE_DIR)/cdc-build-share-rules.mk.patch
 ifeq ($(LIBC_STYLE), uclibc)
 ifeq ($(PHONEME_ADVANCED_ARCH), arm)
 PHONEME_ADVANCED_PATCHES+=$(PHONEME_ADVANCED_SOURCE_DIR)/asm-types.patch
@@ -86,7 +83,7 @@ endif
 # You should not change any of these variables.
 #
 PHONEME_ADVANCED_BUILD_DIR=$(BUILD_DIR)/phoneme-advanced
-PHONEME_ADVANCED_CDC_BUILD_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/cdc/build/linux-$(PHONEME_ADVANCED_ARCH)-$(OPTWARE_TARGET)
+PHONEME_ADVANCED_CDC_BUILD_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/cdc/build/linux-$(PHONEME_ADVANCED_ARCH)-$(OPTWARE_TARGET:openwrt-%=openwrt)
 PHONEME_ADVANCED_SOURCE_DIR=$(SOURCE_DIR)/phoneme-advanced
 PHONEME_ADVANCED_IPK_DIR=$(BUILD_DIR)/phoneme-advanced-$(PHONEME_ADVANCED_VERSION)-ipk
 PHONEME_ADVANCED_IPK=$(BUILD_DIR)/phoneme-advanced_$(PHONEME_ADVANCED_VERSION)-$(PHONEME_ADVANCED_IPK_VERSION)_$(TARGET_ARCH).ipk

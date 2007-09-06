@@ -19,7 +19,6 @@ BROKEN_PACKAGES = \
 	nfs-utils \
 	oleo \
 	par2cmdline \
-	phoneme-advanced \
 	puppy \
 	py-psycopg \
 	qemu \

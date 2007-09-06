@@ -1,0 +1,11 @@
+--- cdc/build/share/rules.mk.orig	2007-09-06 14:40:41.000000000 -0700
++++ cdc/build/share/rules.mk	2007-09-06 14:41:19.000000000 -0700
+@@ -1092,6 +1092,8 @@
+ # Replace $(CVM_BUILD_TOP) with $(BINARY_BUNDLE_NAME)
+ BINARY_BUNDLE_PATTERNS := \
+ 	$(patsubst $(CVM_BUILD_TOP)%,$(BINARY_BUNDLE_DIRNAME)%,$(BINARY_BUNDLE_PATTERNS))
++BINARY_BUNDLE_PATTERNS := \
++	$(patsubst $(CVM_BUILD_TOP_ABS)%,$(BINARY_BUNDLE_DIRNAME)%,$(BINARY_BUNDLE_PATTERNS))
+ 
+ .PHONY : bin
+ bin: all
