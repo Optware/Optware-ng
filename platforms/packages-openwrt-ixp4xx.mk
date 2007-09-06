@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	moc monotone msynctool mtr multitail \
 	nfs-server nfs-utils nickle ntop \
 	oleo obexftp \
-	pango par2cmdline phoneme-advanced puppy \
+	pango par2cmdline puppy \
 	qemu qemu-libc-i386 quagga quickie \
 	sm syx \
 	transcode \
