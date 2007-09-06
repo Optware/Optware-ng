@@ -27,11 +27,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CTAGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ctags
-CTAGS_VERSION=5.6
+CTAGS_VERSION=5.7
 CTAGS_SOURCE=ctags-$(CTAGS_VERSION).tar.gz
 CTAGS_DIR=ctags-$(CTAGS_VERSION)
 CTAGS_UNZIP=zcat
-CTAGS_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+CTAGS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CTAGS_DESCRIPTION=Ctags generates an index (or tag) file of language objects found in source files that allows these items to be quickly and easily located by a text editor or other utility.
 CTAGS_SECTION=misc
 CTAGS_PRIORITY=optional
@@ -181,20 +181,13 @@ $(CTAGS_IPK): $(CTAGS_BUILD_DIR)/.built
 	$(MAKE) $(CTAGS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTAGS_IPK_DIR)
 
-#
-# This is called from the top level makefile to create the IPK file.
-#
 ctags-ipk: $(CTAGS_IPK)
 
-#
-# This is called from the top level makefile to clean all of the built files.
-#
 ctags-clean:
 	-$(MAKE) -C $(CTAGS_BUILD_DIR) clean
 
-#
-# This is called from the top level makefile to clean all dynamically created
-# directories.
-#
 ctags-dirclean:
 	rm -rf $(BUILD_DIR)/$(CTAGS_DIR) $(CTAGS_BUILD_DIR) $(CTAGS_IPK_DIR) $(CTAGS_IPK)
+
+ctags-check: $(CTAGS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CTAGS_IPK)
