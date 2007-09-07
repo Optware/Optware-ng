@@ -1,0 +1,10 @@
+--- src/io-term.c.orig	2007-09-07 12:03:12.000000000 -0700
++++ src/io-term.c	2007-09-07 12:03:42.000000000 -0700
+@@ -30,6 +30,7 @@
+ #include <dmalloc.h>
+ #endif
+ 
++#include <errno.h>
+ #include <ctype.h>
+ #include <stdio.h>
+ #include <locale.h>
