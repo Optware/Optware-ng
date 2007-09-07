@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 INOTAIL_SITE=http://distanz.ch/inotail
-INOTAIL_VERSION=0.4
+INOTAIL_VERSION=0.5
 INOTAIL_SOURCE=inotail-$(INOTAIL_VERSION).tar.bz2
 INOTAIL_DIR=inotail-$(INOTAIL_VERSION)
 INOTAIL_UNZIP=bzcat
 INOTAIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-INOTAIL_DESCRIPTION=Describe inotail here.
+INOTAIL_DESCRIPTION=inotail makes use of the inotify infrastructure in recent versions of the Linux kernel to speed up tailing files in the follow mode (the '-f' option).
 INOTAIL_SECTION=util
 INOTAIL_PRIORITY=optional
 INOTAIL_DEPENDS=
