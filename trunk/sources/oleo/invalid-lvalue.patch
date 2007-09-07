@@ -1,0 +1,11 @@
+--- src/io-term.c.orig	2001-02-13 15:38:06.000000000 -0800
++++ src/io-term.c	2007-09-07 12:43:35.000000000 -0700
+@@ -234,7 +235,7 @@
+ 
+ 		if (Preferences[i].copynext) {
+ 			ptr += strlen(Preferences[i].name) + 1;
+-			((char *)Preferences[i].var) = strdup(ptr);
++			Preferences[i].var = strdup(ptr);
+ 		} else if (Preferences[i].var)
+ 			*((int *)Preferences[i].var) = Preferences[i].value;
+ 

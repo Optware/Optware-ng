@@ -1,0 +1,22 @@
+--- src/io-term.c.orig	2007-09-07 12:29:59.000000000 -0700
++++ src/io-term.c	2007-09-07 12:33:52.000000000 -0700
+@@ -771,6 +771,8 @@
+     }
+ }
+ 
++extern struct cmd_func cmd_funcs[];
++
+ static void
+ init_maps (void)
+ {
+--- src/io-term.h.orig	2007-09-07 12:39:16.000000000 -0700
++++ src/io-term.h	2007-09-07 12:39:30.000000000 -0700
+@@ -44,8 +44,6 @@
+ extern int default_lock;
+ 
+ 
+-extern struct cmd_func cmd_funcs[];
+-
+ /* When printing ascii output, this controls page width. */
+ extern int modified;
+ 

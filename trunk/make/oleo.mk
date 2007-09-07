@@ -36,7 +36,7 @@ OLEO_CONFLICTS=
 #
 # OLEO_IPK_VERSION should be incremented when the ipk changes.
 #
-OLEO_IPK_VERSION=1
+OLEO_IPK_VERSION=2
 
 #
 # OLEO_CONFFILES should be a list of user-editable files
@@ -46,7 +46,10 @@ OLEO_IPK_VERSION=1
 # OLEO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#OLEO_PATCHES=$(OLEO_SOURCE_DIR)/io-term.h.patch
+OLEO_PATCHES=$(OLEO_SOURCE_DIR)/errno.patch \
+$(OLEO_SOURCE_DIR)/cmd_funcs.patch \
+$(OLEO_SOURCE_DIR)/invalid-lvalue.patch \
+$(OLEO_SOURCE_DIR)/non-static-decl.patch \
 
 #
 # If the compilation of the package requires additional
