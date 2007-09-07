@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
 	glib \
 	imagemagick irssi \
 	mod-fastcgi mod-python monotone \
-	oleo \
 	php-apache \
 	qemu qemu-libc-i386 \
 	svn \

@@ -33,7 +33,6 @@ BROKEN_PACKAGES = \
 	phoneme-advanced \
 	qemu qemu-libc-i386 quagga \
 	\
-	oleo \
 	openser \
 	snort \
 	strace \

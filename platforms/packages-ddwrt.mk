@@ -12,7 +12,6 @@ BROKEN_PACKAGES = \
 	libdvb \
 	ltrace \
 	nget \
-	oleo \
 	player \
 	zsh \
 

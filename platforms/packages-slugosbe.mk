@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	monotone \
 	netatalk \
 	nfs-utils \
-	oleo \
 	puppy \
 	py-psycopg \
 	qemu \
