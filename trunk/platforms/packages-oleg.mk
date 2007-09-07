@@ -12,7 +12,6 @@ BROKEN_PACKAGES = \
 	ltrace \
 	nget \
 	oleo \
-	phoneme-advanced \
 	player \
 	par2cmdline \
 	zsh \

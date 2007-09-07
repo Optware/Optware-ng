@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	libopensync motion msynctool \
 	nfs-server nfs-utils \
 	obexftp \
-	phoneme-advanced player \
+	player \
 	quagga transcode \
 	util-linux vsftpd \
 	wget buildroot uclibc-opt ipkg-opt \
