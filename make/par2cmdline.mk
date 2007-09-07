@@ -17,9 +17,11 @@ PAR2_DEPENDS=libstdc++
 PAR2_SUGGESTS=
 PAR2_CONFLICTS=
 
-PAR2CMDLINE_IPK_VERSION=2
+PAR2CMDLINE_IPK_VERSION=3
 
-PAR2CMDLINE_PATCHES=$(PAR2_SOURCE_DIR)/main-packet-fix.patch
+PAR2CMDLINE_PATCHES=\
+$(PAR2_SOURCE_DIR)/main-packet-fix.patch \
+$(PAR2_SOURCE_DIR)/par2cmdline-0.4-gcc4.patch \
 
 PAR2_CFLAGS=$(TARGET_CFLAGS)
 
@@ -35,7 +37,7 @@ $(DL_DIR)/$(PAR2_SOURCE):
 
 par2cmdline-source: $(DL_DIR)/$(PAR2_SOURCE)
 
-$(PAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(PAR2_SOURCE)
+$(PAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(PAR2_SOURCE) make/par2cmdline.mk
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(PAR2_DIR) $(PAR2_BUILD_DIR)
 	tar -C $(BUILD_DIR) -xzvf $(DL_DIR)/$(PAR2_SOURCE)

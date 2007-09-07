@@ -18,7 +18,6 @@ BROKEN_PACKAGES = \
 	netatalk \
 	nfs-utils \
 	oleo \
-	par2cmdline \
 	puppy \
 	py-psycopg \
 	qemu \

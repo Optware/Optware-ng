@@ -13,7 +13,6 @@ BROKEN_PACKAGES = \
 	ltrace \
 	nget \
 	oleo \
-	par2cmdline \
 	player \
 	zsh \
 
