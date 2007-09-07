@@ -16,7 +16,7 @@ BROKEN_PACKAGES = \
 	libcdio libdvb libextractor \
 	libmtp libnsl libopensync loudmouth ltrace \
 	msynctool multitail netatalk nget nickle \
-	obexftp phoneme-advanced \
+	obexftp \
 	player psmisc \
 	quagga \
 	recordext renderext \

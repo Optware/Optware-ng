@@ -13,5 +13,4 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	oleo \
 	openser \
-	phoneme-advanced \
 	qemu-libc-i386 \
