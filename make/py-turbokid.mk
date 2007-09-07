@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOKID_VERSION=1.0.2
+PY-TURBOKID_VERSION=1.0.3
 #PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
 #PY-TURBOKID_REPOSITORY=http://svn.turbogears.org/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
 PY-TURBOKID_SITE=http://cheeseshop.python.org/packages/source/T/TurboKid
