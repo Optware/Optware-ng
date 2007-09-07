@@ -20,14 +20,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-#OPENSER_SOURCE_TYPE=tarball
-OPENSER_SOURCE_TYPE=svn
+OPENSER_SOURCE_TYPE=tarball
+#OPENSER_SOURCE_TYPE=svn
 
-OPENSER_BASE_VERSION=1.2.0
+OPENSER_BASE_VERSION=1.2.2
 
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 #OPENSER_VERSION=$(OPENSER_BASE_VERSION)
-OPENSER_VERSION=1.2.0
+OPENSER_VERSION=1.2.2
 OPENSER_SITE=http://openser.org/pub/openser/$(OPENSER_VERSION)/src/
 OPENSER_DIR=openser-$(OPENSER_VERSION)
 else
@@ -55,7 +55,7 @@ OPENSER_CONFLICTS=
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-OPENSER_IPK_VERSION=7
+OPENSER_IPK_VERSION=1
 else
 OPENSER_IPK_VERSION=1
 endif
