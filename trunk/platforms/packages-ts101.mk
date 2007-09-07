@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	gift giftcurs \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
-	htop iptraf \
+	iptraf \
 	libopensync motion msynctool \
 	nfs-server nfs-utils \
 	obexftp \
