@@ -36,7 +36,7 @@ HTOP_CONFLICTS=
 #
 # HTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-HTOP_IPK_VERSION=1
+HTOP_IPK_VERSION=2
 
 #
 # HTOP_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ HTOP_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-HTOP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+HTOP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses -DDEBUG
 HTOP_LDFLAGS=
 
 ifneq ($(HOSTCC), $(TARGET_CC))

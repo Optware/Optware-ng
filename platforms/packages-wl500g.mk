@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	 ecl elinks emacs22 \
 	$(ERLANG_PACKAGES) \
 	 ficy finch freetds gambit-c gawk \
-	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb htop ice \
+	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb ice \
 	 glib gnet gsnmp \
 	 id3lib iperf irssi jikes \
 	 lftp \
