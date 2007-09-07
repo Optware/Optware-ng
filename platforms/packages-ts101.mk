@@ -12,7 +12,10 @@ BROKEN_PACKAGES = \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	htop iptraf \
-	libopensync motion msynctool nfs-server \
-	nfs-utils obexftp player quagga transcode \
+	libopensync motion msynctool \
+	nfs-server nfs-utils \
+	obexftp \
+	phoneme-advanced player \
+	quagga transcode \
 	util-linux vsftpd \
 	wget buildroot uclibc-opt ipkg-opt \

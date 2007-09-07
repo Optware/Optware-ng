@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	ltrace \
 	mod-fastcgi mod-python monotone \
 	newt ntp \
+	phoneme-advanced \
 	php-apache player py-lxml \
 	qemu qemu-libc-i386 quickie \
 	sablevm svn \
