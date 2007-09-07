@@ -55,7 +55,7 @@ OPENSER_CONFLICTS=
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-OPENSER_IPK_VERSION=1
+OPENSER_IPK_VERSION=2
 else
 OPENSER_IPK_VERSION=1
 endif
@@ -85,19 +85,12 @@ OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DI
 OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
 endif
 
-ifneq ($(OPTWARE_TARGET),ts101)
-ifeq ($(TARGET_ARCH),mipsel)
-OPENSER_MAKEFLAGS=ARCH=mips OS=linux OSREL=2.4.20
-else
-ifeq ($(OPTWARE_TARGET),slugosbe)
-OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.6.16
-else
-OPENSER_MAKEFLAGS=ARCH=arm OS=linux OSREL=2.4.22
-endif
-endif
-else
-OPENSER_MAKEFLAGS=ARCH=ppc OS=linux OSREL=2.6.12
-endif
+OPENSER_MAKEFLAGS=$(strip \
+        $(if $(filter powerpc, $(TARGET_ARCH)), ARCH=ppc OS=linux, \
+        $(if $(filter ts101, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
+        $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux OSREL=2.6.16, \
+        $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
+        ARCH=arm OS=linux OSREL=2.4.22)))))
 
 #
 # Excluded modules:
