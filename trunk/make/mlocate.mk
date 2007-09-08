@@ -11,10 +11,10 @@
 # if there are reasons.
 #
 MLOCATE_SITE=http://people.redhat.com/mitr/mlocate
-MLOCATE_VERSION=0.15
-MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
+MLOCATE_VERSION=0.18
+MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.bz2
 MLOCATE_DIR=mlocate-$(MLOCATE_VERSION)
-MLOCATE_UNZIP=zcat
+MLOCATE_UNZIP=bzcat
 MLOCATE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 MLOCATE_DESCRIPTION=A merginging locate program to find files fast
 MLOCATE_SECTION=admin
@@ -121,6 +121,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLOCATE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MLOCATE_LDFLAGS)" \
+		ac_cv_type_mbstate_t=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -129,7 +130,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	# $(PATCH_LIBTOOL) $(MLOCATE_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(MLOCATE_BUILD_DIR)/libtool
 	touch $@
 
 mlocate-unpack: $(MLOCATE_BUILD_DIR)/.configured
