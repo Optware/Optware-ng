@@ -1,0 +1,2 @@
+# start updatedb daily at early morning
+0 2 * * * root /opt/bin/updatedb -f proc
