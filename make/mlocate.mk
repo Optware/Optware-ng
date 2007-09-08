@@ -11,29 +11,34 @@
 # if there are reasons.
 #
 MLOCATE_SITE=http://people.redhat.com/mitr/mlocate
+ifeq ($(LIBC_STYLE), uclibc)
+MLOCATE_VERSION=0.15
+MLOCATE_IPK_VERSION=1
+MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
+MLOCATE_UNZIP=zcat
+else
 MLOCATE_VERSION=0.18
+MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.bz2
-MLOCATE_DIR=mlocate-$(MLOCATE_VERSION)
 MLOCATE_UNZIP=bzcat
+endif
+MLOCATE_DIR=mlocate-$(MLOCATE_VERSION)
 MLOCATE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 MLOCATE_DESCRIPTION=A merginging locate program to find files fast
 MLOCATE_SECTION=admin
 MLOCATE_PRIORITY=optional
-MLOCATE_DEPENDS=
 ifeq ($(GETTEXT_NLS), enable)
-MLOCATE_DEPENDS+=gettext
+MLOCATE_DEPENDS=adduser, gettext
+else
+MLOCATE_DEPENDS=adduser
 endif
 MLOCATE_SUGGESTS=
 MLOCATE_CONFLICTS=
 
-#
-# MLOCATE_IPK_VERSION should be incremented when the ipk changes.
-#
-MLOCATE_IPK_VERSION=1
 
 #
 # MLOCATE_CONFFILES should be a list of user-editable files
-# MLOCATE_CONFFILES=/opt/etc/mlocate.conf /opt/etc/init.d/SXXmlocate
+MLOCATE_CONFFILES=/opt/etc/cron.d/updatedb-mlocate
 
 #
 # MLOCATE_PATCHES should list any patches, in the the order in
@@ -197,8 +202,10 @@ $(MLOCATE_IPK): $(MLOCATE_BUILD_DIR)/.built
 #	install -d $(MLOCATE_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MLOCATE_SOURCE_DIR)/rc.mlocate $(MLOCATE_IPK_DIR)/opt/etc/init.d/SXXmlocate
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MLOCATE_IPK_DIR)/opt/etc/init.d/SXXmlocate
+	install -d $(MLOCATE_IPK_DIR)/opt/etc/cron.d
+	install -m 755 $(MLOCATE_SOURCE_DIR)/updatedb-daily $(MLOCATE_IPK_DIR)/opt/etc/cron.d/
 	$(MAKE) $(MLOCATE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MLOCATE_SOURCE_DIR)/postinst $(MLOCATE_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(MLOCATE_SOURCE_DIR)/postinst $(MLOCATE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MLOCATE_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(MLOCATE_SOURCE_DIR)/prerm $(MLOCATE_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MLOCATE_IPK_DIR)/CONTROL/prerm
