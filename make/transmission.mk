@@ -148,7 +148,10 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
-	sed -i -e '/^[ 	]*AM_PATH_GTK_2_0/s/^/dnl /' $(TRANSMISSION_BUILD_DIR)/configure.ac
+	sed -i \
+		-e '/^[ 	]*AM_PATH_GTK_2_0/s/^/dnl /' \
+		-e '/^[ 	]*AM_PATH_GLIB_2_0/s/^/dnl /' \
+		$(TRANSMISSION_BUILD_DIR)/configure.ac
 	(cd $(TRANSMISSION_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
 		$(TARGET_CONFIGURE_OPTS) \
