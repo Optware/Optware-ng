@@ -1,0 +1,10 @@
+#!/bin/sh
+
+grep -s mlocate /etc/group || addgroup mlocate
+chgrp mlocate /opt/var/mlocate
+chmod g=rx,o= /opt/var/mlocate
+chgrp mlocate /opt/bin/locate
+chmod g+s,go-w /opt/bin/locate
+
+touch /opt/var/mlocate/mlocate.db
+chgrp mlocate /opt/var/mlocate/mlocate.db
