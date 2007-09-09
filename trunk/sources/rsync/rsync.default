@@ -1,0 +1,12 @@
+# defaults file for rsync daemon mode
+
+# start rsync in daemon mode from init.d script?
+#  only allowed values are "true" and "false"
+RSYNC_ENABLE=false
+
+# what extra options to give rsync --daemon?
+#  that excludes the --daemon; that's always done in the init.d script
+#  Possibilities are:
+#   --address=123.45.67.89		(bind to a specific IP address)
+#   --port=8730				(bind to specified port; default 873)
+RSYNC_OPTS=''
