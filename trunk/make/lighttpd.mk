@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIGHTTPD_SITE=http://www.lighttpd.net/download
-LIGHTD_VERSION=1.4.17
+LIGHTD_VERSION=1.4.18
 LIGHTTPD_SOURCE=lighttpd-$(LIGHTD_VERSION).tar.bz2
 LIGHTTPD_DIR=lighttpd-$(LIGHTD_VERSION)
 LIGHTTPD_UNZIP=bzcat
