@@ -32,6 +32,7 @@ BROKEN_PACKAGES = \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
 	qemu qemu-libc-i386 quagga \
+	vtun \
 	\
 	openser \
 	snort \
