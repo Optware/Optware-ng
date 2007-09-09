@@ -1,8 +1,15 @@
 #!/bin/sh
 
-if [ -n "`pidof rsync`" ] ; then
-    killall rsync 2>/dev/null
+if [ -f /var/run/rsyncd.pid ] ; then
+  kill `cat /var/run/rsyncd.pid`
+else
+  killall rsync 2>/dev/null
 fi
 
-sleep 2
-/opt/bin/rsync --daemon
+rm -f /var/run/rsyncd.pid
+
+[ -e /opt/etc/default/rsync ] && . /opt/etc/default/rsync
+
+if ${RSYNC_ENABLE} ; then
+  /opt/bin/rsync --daemon ${RSYNC_OPTS}
+fi

@@ -16,9 +16,13 @@ RSYNC_PRIORITY=optional
 RSYNC_DEPENDS=
 RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=2
+RSYNC_IPK_VERSION=3
 
-RSYNC_CONFFILES=/opt/etc/rsyncd.conf /opt/etc/init.d/S57rsyncd /opt/etc/rsyncd.secrets
+RSYNC_CONFFILES= \
+	/opt/etc/rsyncd.conf \
+	/opt/etc/init.d/S57rsyncd \
+	/opt/etc/rsyncd.secrets \
+	/opt/etc/defaults/rsync
 
 RSYNC_PATCHES=$(RSYNC_SOURCE_DIR)/rsync.patch
 
@@ -113,6 +117,8 @@ $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
 	find $(RSYNC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	install -d $(RSYNC_IPK_DIR)/opt/etc
 	install -m 644 $(RSYNC_SOURCE_DIR)/rsyncd.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
+	install -d $(RSYNC_IPK_DIR)/opt/etc/default
+	install -m 644 $(RSYNC_SOURCE_DIR)/rsync.default $(RSYNC_IPK_DIR)/opt/etc/default/rsync
 	touch $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	chmod 600 $(RSYNC_IPK_DIR)/opt/etc/rsyncd.secrets
 	install -d $(RSYNC_IPK_DIR)/opt/etc/init.d
