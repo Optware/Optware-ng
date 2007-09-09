@@ -6,7 +6,7 @@
 
 UNFS3_DIR:=$(BUILD_DIR)/unfs3
 
-UNFS3_VERSION=0.9.17
+UNFS3_VERSION=0.9.18
 UNFS3=unfs3-$(UNFS3_VERSION)
 UNFS3_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/unfs3
 UNFS3_SOURCE:=$(UNFS3).tar.gz
@@ -52,8 +52,7 @@ $(UNFS3_DIR)/.configured: $(DL_DIR)/$(UNFS3_SOURCE)
 	$(MAKE) flex-stage
 	@rm -rf $(BUILD_DIR)/$(UNFS3) $(UNFS3_DIR)
 	$(UNFS3_UNZIP) $(DL_DIR)/$(UNFS3_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	(cd $(BUILD_DIR)/$(UNFS3) && \
-   ./configure)
+	(cd $(BUILD_DIR)/$(UNFS3) && ./configure)
 #	patch -d $(BUILD_DIR)/$(UNFS3) -p1 < $(UNFS3_PATCH)
 	mv $(BUILD_DIR)/$(UNFS3) $(UNFS3_DIR)
 	touch $(UNFS3_DIR)/.configured
