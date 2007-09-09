@@ -174,7 +174,7 @@ COMMON_CROSS_PACKAGES = \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog expat extract-xiso \
-	faad2 fann fcgi fconfig fetchmail ffmpeg \
+	faad2 fann fcgi fconfig fcron fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
 	fontconfig freeradius freetds freetype freeze \
@@ -214,7 +214,7 @@ COMMON_CROSS_PACKAGES = \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
-	ncftp ncmpc ncurses ncursesw nemesis \
+	ncftp ncmpc ncurses ncursesw ne nemesis \
 	neon net-snmp net-tools netatalk netcat nethack netio \
 	newsbeuter newt \
 	nfs-server nfs-utils \
