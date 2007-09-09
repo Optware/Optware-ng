@@ -1,0 +1,10 @@
+--- lfd_encrypt.c.orig	2007-09-08 21:39:21.000000000 -0700
++++ lfd_encrypt.c	2007-09-08 21:39:57.000000000 -0700
+@@ -44,6 +44,7 @@
+ #include <strings.h>
+ #include <string.h>
+ #include <time.h>
++#include <netinet/in.h>
+ 
+ #include "vtun.h"
+ #include "linkfd.h"
