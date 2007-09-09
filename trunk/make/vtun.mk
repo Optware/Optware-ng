@@ -117,6 +117,7 @@ $(VTUN_BUILD_DIR)/.configured: $(DL_DIR)/$(VTUN_SOURCE) $(VTUN_PATCHES) make/vtu
 	if test "$(BUILD_DIR)/$(VTUN_DIR)" != "$(VTUN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(VTUN_DIR) $(VTUN_BUILD_DIR) ; \
 	fi
+	cp $(SOURCE_DIR)/common/config.* $(VTUN_BUILD_DIR)
 	(cd $(VTUN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VTUN_CPPFLAGS)" \
