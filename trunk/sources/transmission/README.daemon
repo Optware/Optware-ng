@@ -11,7 +11,7 @@ Features
 * configurable ports
 * WWW interface transmission.cgi can be public (no password) as
    there is no delete provided.
-* Accelerator keys (ALT-key) for CGI interface. See help for underlined keys.
+* Accelerator keys (ALT-Shift-key) for CGI interface. See help for underlined keys.
 * Per torrent and cumulative status
 * start/stop/push/bypass and other commands available in WWW interface
 * lightweight - low memory footprint
@@ -232,25 +232,37 @@ echo "</pre>"
    and edit with crontab -e root
   
 FAQ
-1. Why wont the daemon start downloading after rebooting ? I need to push it to suspend and then again to make it work ? 
-It will restart after reboot if you properly configured cron to run transmisison_watchdog periodicly. For manual restart use Watchdog button.
+1. Why wont the daemon start downloading after rebooting ? 
+I need to push it to suspend and then again to make it work ? 
+It will restart after reboot if you properly configured cron to run 
+transmisison_watchdog periodicly. For manual restart use Watchdog button.
 
 2. How do i make it download 5 torrents at the same time ?  Can this be done ?
-Sure it can. Use Push button. You can also queue torrents, manual administer and get some transfer graph.
+Sure it can. Use Push button. You can also queue torrents, 
+manual administer and get some transfer graph.
 
 3. Is it possible to output a chart with no_UTC time (X-axis) ? 
 Just set TIMEZONE_OFFSET=seconds in transmission.conf 
 
-4. I just installed transmission package, pushed some torrent and it looks working.  But when I press Update button, I get this result: ".status not found for <torrent_path>"
-Problems with .status could be that transmisisond is not receiving USR1 signal. This may be due to invalid path to PIDFILE or something like that. Pressing Update sends signal to daemon, waits one second and reads .status files in active torrent directories. Take attention to syslog daemon.
+4. I just installed transmission package, pushed some torrent and it looks working.  
+But when I press Update button, I get this result: ".status not found for <torrent_path>"
+Problems with .status could be that transmisisond is not receiving USR1 signal. 
+This may be due to invalid path to PIDFILE or something like that. Pressing Update sends signal 
+to daemon, waits one second and reads .status files in active torrent directories. 
+Take attention to syslog daemon.
 
 5. Do I need "torrent" ipkg installed too?
 No. torrent package conflict is intentional. 
 
-6. I am getting some errors cat: /opt/var/run/transmission.pid: No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]getting some errors cat: /opt/var/run/transmission.pid: No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
+6. I am getting some errors cat: /opt/var/run/transmission.pid: No such file or directory 
+/opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] 
+[pid | job]... or kill -l [exitstatus]getting some errors cat: /opt/var/run/transmission.pid: 
+No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: 
+Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
 This means that Transmisison daemon is not running. Use Watchdog button to start in manually.
 
-7. Tried manually pressing watchdog for nothing.  Im still having that text under the buttons on the script page : /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
+7. Tried manually pressing watchdog for nothing.  Im still having that text under the buttons 
+on the script page : /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
 It looks like daemon died for some reason. Take a look into syslog messages.
 The recommended way for running is using "Oleg" feed and not default "wl500g".
 
@@ -336,9 +348,28 @@ chmod a+rw /tmp/harddisk/torrent/work
    Seeding state to Suspend. Then select the torrent en click Remove. 
    After that you can Purge them into oblivion.
 
-18. My links: "source" "work" and "target" are not valid.
- This depends on your http daemon. If you are using busybox_httpd then there is no autodir feature and links are preaty useless. If thttpd is used the you can create symlinks to directories and enable follow symlinks in config. Same goes to other servers. Anyway this links are not regarded as a feature but rather useless convenience.
+   There is also an option add FORCE_REMOVE="YES" to transmission.conf and this
+   will enable removing of DONE non-seeding torrents. Use with caution when exposing
+   CGI page to internet.
 
+18. My links: "source" "work" and "target" are not valid.
+ This depends on your http daemon. If you are using busybox_httpd then there is no autodir 
+ feature and links are preaty useless. If thttpd is used the you can create symlinks to 
+ directories and enable follow symlinks in config. Same goes to other servers. 
+ Anyway this links are not regarded as a feature but rather useless convenience.
+
+19. Well, it does not work at all When i choose push on a torrent i just get the infamous 
+"/opt/share/www/cgi-bin/transmission.cgi: kill: 9: (335) - No such process" error ..
+It is assumed that transmssiond is started through transmission_watchdog when you are 
+using transmission.cgi. If transmissiond is stopped/paused/not running then you get 
+informational message like (kill, not running, ...) 
+This is not a problem if you know what you are doing. You can administer torrents even
+faster if transmissiond is not running. When finished with huge rearangements the 
+you can unpause and restart with watchdog.
+
+transmission_watchdog is run every 30 minutes or so through cron process. 
+That's why there is no startup script for transmissiond. Although I've seen that some 
+people run transmission_watchdog at system startup, I do not recommend such practice.
 
 
 oleo

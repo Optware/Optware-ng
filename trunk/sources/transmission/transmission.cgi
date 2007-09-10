@@ -248,7 +248,7 @@ _scrape ()
     INFO="${TORRENT%/*}/.info"
     if [ -f "${INFO}" ]; then
 	. "${INFO}"
-	SCRAPE=`transmissioncli -s "${TORRENT}" | grep seeder`
+	SCRAPE=`transmission-cli -s "${TORRENT}" | grep seeder`
 	DUMMY=$?
 	_write_info
 	if [ $DUMMY != 0 ]; then
@@ -445,11 +445,20 @@ _remove ()
     fi
    
     _find
-   
+
+   if [ "${FORCE_REMOVE}" = "YES" -a -f "${TARGET}${TORRENT#${TARGET}}" ]; then
+      if [ ! -f "${TORRENT%.torrent.seeding}.torrent.seeding" ]; then
+        DUMMY="${TORRENT%/*}"
+        echo "<b>Removing ${DUMMY}</b>"
+        rm -rf "${DUMMY}"
+        return
+      fi
+   fi
+
    if [ -f "${TORRENT%.torrent.suspended}.torrent.suspended" ]; then
 	mv "${TORRENT}" "${TORRENT%.suspended}.removed"
    else
-	echo "<b>Can only remove suspended torrents!</b>"
+	echo "<b>Can only remove suspended torrents!</b> Edit transmission.conf to FORCE_REMOVE."
    fi
 }
 
@@ -577,9 +586,9 @@ _info ()
     _find
     echo "<h3>Torrent file metainfo</h3>"
     echo "<pre>"
-    transmissioncli -i "${TORRENT}"
+    transmission-cli -i "${TORRENT}"
     echo "<p>"
-    transmissioncli -s "${TORRENT}" | grep "seeder"
+    transmission-cli -s "${TORRENT}" | grep "seeder"
     echo "</p></pre>"
 }
 
