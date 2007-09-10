@@ -21,13 +21,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
-TRANSMISSION_VERSION=0.81
+TRANSMISSION_VERSION=0.82
 #TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
 #TRANSMISSION_SVN_REV=2555
 ifdef TRANSMISSION_SVN_REV
-TRANSMISSION_SOURCE=Transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
+TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
 else
-TRANSMISSION_SOURCE=Transmission-$(TRANSMISSION_VERSION).tar.gz
+TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.gz
 endif
 TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
 TRANSMISSION_UNZIP=zcat
