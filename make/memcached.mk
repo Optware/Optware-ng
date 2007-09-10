@@ -42,7 +42,7 @@ MEMCACHED_CONFLICTS=
 #
 # MEMCACHED_IPK_VERSION should be incremented when the ipk changes.
 #
-MEMCACHED_IPK_VERSION=3
+MEMCACHED_IPK_VERSION=4
 
 #
 # MEMCACHED_CONFFILES should be a list of user-editable files
