@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-FLUP_SITE=http://www.saddi.com/software/flup/dist
-PY-FLUP_VERSION=0.5+r2311
-PY-FLUP_DIR=flup-0.5
+PY-FLUP_VERSION=1.0
+PY-FLUP_DIR=flup-1.0
 PY-FLUP_SOURCE=$(PY-FLUP_DIR).tar.gz
 PY-FLUP_UNZIP=zcat
 PY-FLUP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
