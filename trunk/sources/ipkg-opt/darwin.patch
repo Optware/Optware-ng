@@ -1,0 +1,104 @@
+--- ipkg-opt/libbb/libbb.h.orig	2005-02-07 15:14:12.000000000 -0800
++++ ipkg-opt/libbb/libbb.h	2007-09-10 22:46:47.000000000 -0700
+@@ -50,7 +50,9 @@
+ #include "dmalloc.h"
+ #endif
+ 
+-#include <features.h>
++#ifndef __APPLE__
++# include <features.h>
++#endif
+ 
+ #if (__GNU_LIBRARY__ < 5) && (!defined __dietlibc__)
+ /* libc5 doesn't define socklen_t */
+@@ -274,7 +276,9 @@
+ extern struct hostent *xgethostbyname(const char *name);
+ extern int create_icmp_socket(void);
+ 
++#ifndef __APPLE__
+ char *dirname (char *path);
++#endif
+ 
+ int make_directory (const char *path, long mode, int flags);
+ 
+--- ipkg-opt/libbb/error_msg.c.orig	2003-02-24 07:31:52.000000000 -0800
++++ ipkg-opt/libbb/error_msg.c	2007-09-10 22:33:39.000000000 -0700
+@@ -24,6 +24,7 @@
+ #include <string.h>
+ #include <stdlib.h>
+ #include "libbb.h"
++struct errlist* error_list;
+ 
+ extern void error_msg(const char *s, ...)
+ {
+--- ipkg-opt/ipkg_conf.c.orig	2007-09-10 22:33:39.000000000 -0700
++++ ipkg-opt/ipkg_conf.c	2007-09-10 22:33:39.000000000 -0700
+@@ -28,6 +28,27 @@
+ #include "str_util.h"
+ #include "xsystem.h"
+ 
++#ifndef HAVE_STRNDUP
++static void*
++strndup (const char *src, size_t n)
++{
++       size_t i;
++       char *dst;
++
++       if (src == NULL)
++               return NULL;
++
++       dst = (char*) malloc (n + 1);
++       if (dst != NULL) {
++               for (i = 0; i < n && src[i]; i++)
++                       dst[i] = src[i];
++               dst[i] = '\0';
++       }
++
++       return dst;
++}
++#endif
++
+ static int ipkg_conf_parse_file(ipkg_conf_t *conf, const char *filename,
+ 				pkg_src_list_t *pkg_src_list,
+ 				nv_pair_list_t *tmp_dest_nv_pair_list,
+--- ipkg-opt/ipkg.h.in.orig	2005-05-13 13:03:41.000000000 -0700
++++ ipkg-opt/ipkg.h.in	2007-09-10 22:33:39.000000000 -0700
+@@ -62,7 +62,7 @@
+     struct errlist * next;
+ } ;
+ 
+-struct errlist* error_list;
++extern struct errlist* error_list;
+ 
+ 
+ #endif
+--- ipkg-opt/md5.c.orig	2002-03-06 11:52:06.000000000 -0800
++++ ipkg-opt/md5.c	2007-09-10 22:33:39.000000000 -0700
+@@ -50,7 +50,11 @@
+ #include <getopt.h>
+ #include <stdlib.h>
+ #include <string.h>
+-#include <endian.h>
++#ifndef __APPLE__
++# include <endian.h>
++#else
++# include <machine/endian.h>
++#endif
+ #include <sys/types.h>
+ #if defined HAVE_LIMITS_H
+ # include <limits.h>
+--- ipkg-opt/ipkg_utils.c.orig	2005-03-28 12:19:15.000000000 -0800
++++ ipkg-opt/ipkg_utils.c	2007-09-10 22:33:39.000000000 -0700
+@@ -18,7 +18,11 @@
+ #include "ipkg.h"
+ #include <errno.h>
+ #include <ctype.h>
+-#include <sys/vfs.h>
++#ifndef __APPLE__
++# include <sys/vfs.h>
++#else
++# include <sys/mount.h>
++#endif
+ 
+ #include "ipkg_utils.h"
+ #include "pkg.h"

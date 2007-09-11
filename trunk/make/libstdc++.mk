@@ -9,17 +9,25 @@ LIBSTDC++_VERSION=$(strip \
 	$(if $(filter fsg3v4 gumstix1151 ts101, $(OPTWARE_TARGET)), 6.0.3, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
 	$(if $(filter ds101 ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
-	5.0.7)))))
+	$(if $(filter iphone, $(OPTWARE_TARGET)), 6.0.9, \
+	5.0.7))))))
 LIBSTDC++_MAJOR=$(shell echo $(LIBSTDC++_VERSION) | sed 's/\..*//')
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
-LIBSTDC++_LIBNAME=libstdc++.so
+LIBSTDC++_LIBNAME=libstdc++.$(SHLIB_EXT)
 LIBSTDC++_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBSTDC++_DESCRIPTION=Standard C++ library, needed for dynamically linked C++ programs
 LIBSTDC++_SECTION=util
 LIBSTDC++_PRIORITY=optional
 LIBSTDC++_DEPENDS=
 LIBSTDC++_CONFLICTS=
+
+LIBSTDC++_LIBNAME_FULL=$(strip \
+	$(if $(filter darwin, $(TARGET_OS)), libstdc++.$(LIBSTDC++_VERSION).$(SHLIB_EXT), \
+	libstdc++.$(SHLIB_EXT).$(LIBSTDC++_VERSION)))
+LIBSTDC++_LIBNAME_MAJOR=$(strip \
+	$(if $(filter darwin, $(TARGET_OS)), libstdc++.$(LIBSTDC++_MAJOR).$(SHLIB_EXT), \
+	libstdc++.$(SHLIB_EXT).$(LIBSTDC++_MAJOR)))
 
 # most uclibc platforms use libuclibc++
 # but for the following uclibc platforms, libuclibc++ wrapper is not ready:
@@ -57,9 +65,9 @@ $(LIBSTDC++_BUILD_DIR)/.built: $(LIBSTDC++_BUILD_DIR)/.configured make/libstdc++
 	rm -f $(LIBSTDC++_BUILD_DIR)/.built
 ifdef LIBSTDC++_USED
 ifeq ($(OPTWARE_TARGET),fsg3v4)
-	cp $(TARGET_LIBDIR)/../../lib/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_BUILD_DIR)/
+	cp $(TARGET_LIBDIR)/../../lib/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_BUILD_DIR)/
 else
-	cp $(TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_BUILD_DIR)/
+	cp $(TARGET_LIBDIR)/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_BUILD_DIR)/
 endif
 endif
 	touch $(LIBSTDC++_BUILD_DIR)/.built
@@ -70,12 +78,10 @@ $(LIBSTDC++_BUILD_DIR)/.staged: $(LIBSTDC++_BUILD_DIR)/.built
 	rm -f $(LIBSTDC++_BUILD_DIR)/.staged
 ifdef LIBSTDC++_USED
 	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(STAGING_DIR)/opt/lib
+	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME_FULL) $(STAGING_DIR)/opt/lib
 	(cd $(STAGING_DIR)/opt/lib; \
-	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-		$(LIBSTDC++_LIBNAME); \
-	 ln -sf $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-		$(LIBSTDC++_LIBNAME).$(LIBSTDC++_MAJOR) \
+	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME); \
+	 ln -sf $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME_MAJOR) \
 	)
 endif
 	touch $(LIBSTDC++_BUILD_DIR)/.staged
@@ -100,14 +106,12 @@ $(LIBSTDC++_IPK): $(LIBSTDC++_BUILD_DIR)/.built
 	rm -rf $(LIBSTDC++_IPK_DIR) $(BUILD_DIR)/libstdc++_*_$(TARGET_ARCH).ipk
 ifdef LIBSTDC++_USED
 	install -d $(LIBSTDC++_IPK_DIR)/opt/lib
-	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) $(LIBSTDC++_IPK_DIR)/opt/lib
+	install -m 644 $(LIBSTDC++_BUILD_DIR)/$(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_IPK_DIR)/opt/lib
 	(cd $(LIBSTDC++_IPK_DIR)/opt/lib; \
-	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-               $(LIBSTDC++_LIBNAME); \
-	 ln -s $(LIBSTDC++_LIBNAME).$(LIBSTDC++_VERSION) \
-               $(LIBSTDC++_LIBNAME).$(LIBSTDC++_MAJOR) \
+	 ln -s $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME); \
+	 ln -s $(LIBSTDC++_LIBNAME_FULL) $(LIBSTDC++_LIBNAME_MAJOR) \
 	)
-	$(STRIP_COMMAND) $(LIBSTDC++_IPK_DIR)/opt/lib/*.so
+	$(STRIP_COMMAND) $(LIBSTDC++_IPK_DIR)/opt/lib/*.$(SHLIB_EXT)
 endif
 	$(MAKE) $(LIBSTDC++_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBSTDC++_IPK_DIR)

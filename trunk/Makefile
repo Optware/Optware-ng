@@ -326,6 +326,8 @@ all: directories toolchain packages
 TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
+SHLIB_EXT=$(strip $(if $(filter darwin, $(TARGET_OS)), dylib, so))
+
 include $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 ifndef TARGET_USRLIBDIR
 TARGET_USRLIBDIR = $(TARGET_LIBDIR)
@@ -383,7 +385,7 @@ TARGET_CONFIGURE_OPTS= \
 	STRIP=$(TARGET_STRIP)
 TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:/opt/bin:/opt/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 
-STRIP_COMMAND=$(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded
+STRIP_COMMAND ?= $(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded
 
 PATCH_LIBTOOL=sed -i \
 	-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \

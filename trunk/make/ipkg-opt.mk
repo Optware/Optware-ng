@@ -77,6 +77,10 @@ IPKG-OPT_PATCHES=$(IPKG-OPT_SOURCE_DIR)/args.h.patch \
 ifeq ($(LIBC_STYLE), uclibc)
 IPKG-OPT_PATCHES += $(IPKG-OPT_SOURCE_DIR)/ipkg_download.c.patch
 endif
+ifeq ($(TARGET_OS), darwin)
+IPKG-OPT_PATCHES += $(IPKG-OPT_SOURCE_DIR)/darwin.patch
+endif
+
 #
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
