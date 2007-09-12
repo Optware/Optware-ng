@@ -3,7 +3,8 @@
 # apache
 #
 ###########################################################
-
+#
+# $id$
 #
 # APACHE_VERSION, APACHE_SITE and APACHE_SOURCE define
 # the upstream location of the source code for the package.
@@ -13,11 +14,11 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://www.apache.org/dist/httpd
-APACHE_VERSION=2.2.4
+APACHE_VERSION=2.2.6
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
-APACHE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+APACHE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APACHE_DESCRIPTION=The most popular web server on the internet
 APACHE_SECTION=lib
 APACHE_PRIORITY=optional

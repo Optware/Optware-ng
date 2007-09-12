@@ -3,7 +3,8 @@
 # apr
 #
 ###########################################################
-
+#
+# $Id$
 #
 # APR_VERSION, APR_SITE and APR_SOURCE define
 # the upstream location of the source code for the package.
@@ -13,11 +14,11 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=1.2.8
+APR_VERSION=1.2.11
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
-APR_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+APR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APR_DESCRIPTION=Apache Portable Runtime library
 APR_SECTION=lib
 APR_PRIORITY=optional
@@ -127,6 +128,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 		apr_cv_process_shared_works=no \
 		ac_cv_file__dev_zero=yes \
 		apr_cv_tcp_nodelay_with_cork=no \
+		apr_cv_use_lfs64=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -135,6 +137,7 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 		--libdir=/opt/lib \
 		--disable-static \
 		--enable-layout=GNU \
+		--enable-lfs \
 	)
 	$(PATCH_LIBTOOL) $(APR_BUILD_DIR)/libtool
 	touch $(APR_BUILD_DIR)/.configured
