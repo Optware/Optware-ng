@@ -111,6 +111,12 @@ $(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCH
 #	cat $(READLINE_PATCHES) | patch -d $(BUILD_DIR)/$(READLINE_DIR) -p1
 	mv $(BUILD_DIR)/$(READLINE_DIR) $(READLINE_BUILD_DIR)
 	cp $(SOURCE_DIR)/common/config.sub $(READLINE_BUILD_DIR)/support/
+ifeq (darwin,$(TARGET_OS))
+	sed -i.orig \
+		-e '/host_os=/s|$$1|darwin8|' \
+		-e '/arch_only/s|`/usr/bin/arch`|$(TARGET_ARCH)|' \
+		$(READLINE_BUILD_DIR)/support/shobj-conf
+endif
 	(cd $(READLINE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(READLINE_CPPFLAGS)" \
@@ -123,7 +129,7 @@ $(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(READLINE_BUILD_DIR)/.configured
+	touch $@
 
 readline-unpack: $(READLINE_BUILD_DIR)/.configured
 
@@ -131,9 +137,9 @@ readline-unpack: $(READLINE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(READLINE_BUILD_DIR)/.built: $(READLINE_BUILD_DIR)/.configured
-	rm -f $(READLINE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(READLINE_BUILD_DIR)
-	touch $(READLINE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +150,9 @@ readline: $(READLINE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(READLINE_BUILD_DIR)/.staged: $(READLINE_BUILD_DIR)/.built
-	rm -f $(READLINE_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(READLINE_BUILD_DIR)/.staged
+	touch $@
 
 readline-stage: $(READLINE_BUILD_DIR)/.staged
 
@@ -155,7 +161,7 @@ readline-stage: $(READLINE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/readline
 #
 $(READLINE_IPK_DIR)/CONTROL/control:
-	@install -d $(READLINE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: readline" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,9 +189,9 @@ $(READLINE_IPK): $(READLINE_BUILD_DIR)/.built
 	rm -rf $(READLINE_IPK_DIR) $(BUILD_DIR)/readline_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(READLINE_IPK_DIR) install
 	(cd $(READLINE_IPK_DIR)/opt/lib/ ; \
-		find . -name '*.so' -exec chmod +w {} \; ; \
-		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
-		find . -name '*.so' -exec chmod -w {} \; ; \
+		find . -name '*.$(SHLIB_EXT)' -exec chmod +w {} \; ; \
+		find . -name '*.$(SHLIB_EXT)' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.$(SHLIB_EXT)' -exec chmod -w {} \; ; \
 	)
 	$(MAKE) $(READLINE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(READLINE_IPK_DIR)
