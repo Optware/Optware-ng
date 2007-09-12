@@ -331,14 +331,14 @@ ifndef TARGET_USRLIBDIR
 TARGET_USRLIBDIR = $(TARGET_LIBDIR)
 endif
 
-ifeq (linux,$(TARGET_OS))
-SHLIB_EXT=so
-SO=.so
-DYLIB=
-else	# darwin
+ifeq (darwin,$(TARGET_OS))
 SHLIB_EXT=dylib
 SO=
 DYLIB=.dylib
+else	# default linux
+SHLIB_EXT=so
+SO=.so
+DYLIB=
 endif
 
 ifeq ($(LIBC_STYLE), uclibc)
