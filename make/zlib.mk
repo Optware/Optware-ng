@@ -38,34 +38,40 @@ $(ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ZLIB_SOURCE)
 	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
 	$(ZLIB_UNZIP) $(DL_DIR)/$(ZLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
+	sed -i -e 's/`.*uname -s.*`/'`perl -e 'print ucfirst("$(TARGET_OS)/")'` \
+		$(ZLIB_BUILD_DIR)/configure
 	(cd $(ZLIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
+		prefix=/opt \
 		./configure \
 		--shared \
 	)
-	touch $(ZLIB_BUILD_DIR)/.configured
+	touch $@
 
 zlib-unpack: $(ZLIB_BUILD_DIR)/.configured
 
-$(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/.configured
-	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" SHAREDLIB="libz.so" \
-		SHAREDLIBV="libz.so.$(ZLIB_LIB_VERSION)" SHAREDLIBM="libz.so.1" \
-		LDSHARED="$(TARGET_LD) -shared -soname,libz.so.1" \
-		CFLAGS="$(ZLIB_CFLAGS)" CC=$(TARGET_CC) -C $(ZLIB_BUILD_DIR) all libz.so.$(ZLIB_LIB_VERSION) libz.a
+$(ZLIB_BUILD_DIR)/.built: $(ZLIB_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" \
+		CFLAGS="$(ZLIB_CFLAGS)" \
+		CC=$(TARGET_CC) -C $(ZLIB_BUILD_DIR) all libz.a
+	touch $@
 
-zlib: $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
+zlib: $(ZLIB_BUILD_DIR)/.built
 
-$(STAGING_LIB_DIR)/libz.so.$(ZLIB_LIB_VERSION): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
+$(ZLIB_BUILD_DIR)/.staged: $(ZLIB_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_INCLUDE_DIR)
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(STAGING_INCLUDE_DIR)
 	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(STAGING_INCLUDE_DIR)
 	install -d $(STAGING_LIB_DIR)
 	install -m 644 $(ZLIB_BUILD_DIR)/libz.a $(STAGING_LIB_DIR)
-	install -m 644 $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION) $(STAGING_LIB_DIR)
-	cd $(STAGING_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so
+	install -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(STAGING_LIB_DIR)
+	cd $(STAGING_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz$(SO).1$(DYLIB)
+	cd $(STAGING_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
+	touch $@
 
-zlib-stage: $(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
+zlib-stage: $(ZLIB_BUILD_DIR)/.staged
 
 
 #
@@ -73,7 +79,7 @@ zlib-stage: $(STAGING_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
 # necessary to create a seperate control file under sources/nylon
 #
 $(ZLIB_IPK_DIR)/CONTROL/control:
-	@install -d $(ZLIB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: zlib" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -86,16 +92,16 @@ $(ZLIB_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(ZLIB_DEPENDS)" >>$@
 	@echo "Conflicts: $(ZLIB_CONFLICTS)" >>$@
 
-$(ZLIB_IPK): $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION)
+$(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
 	rm -rf $(ZLIB_IPK_DIR) $(BUILD_DIR)/zlib_*_$(TARGET_ARCH).ipk
 	install -d $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)/opt/include
 	install -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)/opt/include
 	install -d $(ZLIB_IPK_DIR)/opt/lib
-	install -m 644 $(ZLIB_BUILD_DIR)/libz.so.$(ZLIB_LIB_VERSION) $(ZLIB_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(ZLIB_IPK_DIR)/opt/lib/libz.so.$(ZLIB_LIB_VERSION)
-	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so.1
-	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz.so.$(ZLIB_LIB_VERSION) libz.so
+	install -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)/opt/lib
+	$(STRIP_COMMAND) $(ZLIB_IPK_DIR)/opt/lib/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB)
+	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz$(SO).1$(DYLIB)
+	cd $(ZLIB_IPK_DIR)/opt/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
 	$(MAKE) $(ZLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
 
