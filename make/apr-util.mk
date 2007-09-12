@@ -3,7 +3,8 @@
 # apr-util
 #
 ###########################################################
-
+#
+# $Id$
 #
 # APR_UTIL_VERSION, APR_UTIL_SITE and APR_UTIL_SOURCE define
 # the upstream location of the source code for the package.
@@ -13,11 +14,11 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=1.2.8
+APR_UTIL_VERSION=1.2.10
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
-APR_UTIL_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+APR_UTIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
