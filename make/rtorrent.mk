@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.7.6
+RTORRENT_VERSION=0.7.8
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
@@ -39,7 +39,7 @@ RTORRENT_CONFFILES=/opt/etc/rtorrent.conf
 # RTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-RTORRENT_PATCHES=$(RTORRENT_SOURCE_DIR)/symlink_unlink.patch
+#RTORRENT_PATCHES=
 
 #
 # If the compilation of the package requires additional

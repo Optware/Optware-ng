@@ -1,7 +1,7 @@
---- configure	2005-09-01 17:43:21.000000000 +0200
-+++ configure.patched	2005-09-04 19:29:04.000000000 +0200
-@@ -19500,11 +19500,11 @@
- echo $ECHO_N "checking the byte alignment... $ECHO_C" >&6
+--- configure.orig	2007-08-20 06:21:36.000000000 -0700
++++ configure	2007-09-12 16:22:15.000000000 -0700
+@@ -20070,11 +20070,11 @@
+ echo $ECHO_N "checking the byte alignment... $ECHO_C" >&6; }
  
    if test "$cross_compiling" = yes; then
 -  { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
