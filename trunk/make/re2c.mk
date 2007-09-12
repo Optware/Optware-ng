@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RE2C_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/re2c
-RE2C_VERSION=0.12.2
+RE2C_VERSION=0.12.3
 RE2C_SOURCE=re2c-$(RE2C_VERSION).tar.gz
 RE2C_DIR=re2c-$(RE2C_VERSION)
 RE2C_UNZIP=zcat
