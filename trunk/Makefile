@@ -326,11 +326,19 @@ all: directories toolchain packages
 TARGET_OPTIMIZATION=-O2 #-mtune=xscale -march=armv4 -Wa,-mcpu=xscale
 TARGET_DEBUGGING= #-g
 
-SHLIB_EXT=$(strip $(if $(filter darwin, $(TARGET_OS)), dylib, so))
-
 include $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 ifndef TARGET_USRLIBDIR
 TARGET_USRLIBDIR = $(TARGET_LIBDIR)
+endif
+
+ifeq (linux,$(TARGET_OS))
+SHLIB_EXT=so
+SO=.so
+DYLIB=
+else	# darwin
+SHLIB_EXT=dylib
+SO=
+DYLIB=.dylib
 endif
 
 ifeq ($(LIBC_STYLE), uclibc)
