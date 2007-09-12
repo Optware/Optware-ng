@@ -24,6 +24,10 @@ ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
 ZLIB_CFLAGS+= -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
+ifneq (darwin,$(TARGET_OS))
+ZLIB_MAKE_FLAGS=LDSHARED="$(TARGET_LD) -shared -soname,libz.so.1"
+endif
+
 ZLIB_BUILD_DIR=$(BUILD_DIR)/zlib
 ZLIB_SOURCE_DIR=$(SOURCE_DIR)/zlib
 ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-$(ZLIB_VERSION)-ipk
@@ -38,8 +42,9 @@ $(ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ZLIB_SOURCE)
 	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
 	$(ZLIB_UNZIP) $(DL_DIR)/$(ZLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
-	sed -i -e 's/`.*uname -s.*`/'`perl -e 'print ucfirst("$(TARGET_OS)/")'` \
-		$(ZLIB_BUILD_DIR)/configure
+ifeq (darwin,$(TARGET_OS))
+	sed -i -e 's/`.*uname -s.*`/Darwin/' $(ZLIB_BUILD_DIR)/configure
+endif
 	(cd $(ZLIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		prefix=/opt \
@@ -53,8 +58,13 @@ zlib-unpack: $(ZLIB_BUILD_DIR)/.configured
 $(ZLIB_BUILD_DIR)/.built: $(ZLIB_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) RANLIB="$(TARGET_RANLIB)" AR="$(TARGET_AR) rc" \
+		SHAREDLIB="libz.$(SHLIB_EXT)" \
+		SHAREDLIBV="libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB)" \
+		SHAREDLIBM="libz$(SO).1$(DYLIB)" \
 		CFLAGS="$(ZLIB_CFLAGS)" \
-		CC=$(TARGET_CC) -C $(ZLIB_BUILD_DIR) all libz.a
+		CC=$(TARGET_CC) \
+		$(ZLIB_MAKE_FLAGS) \
+		-C $(ZLIB_BUILD_DIR) all libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.a
 	touch $@
 
 zlib: $(ZLIB_BUILD_DIR)/.built
