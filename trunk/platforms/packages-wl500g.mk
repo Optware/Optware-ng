@@ -17,11 +17,12 @@ BROKEN_PACKAGES = \
 	 id3lib iperf irssi jikes \
 	 lftp \
 	 libcdio libdaemon libdvb libftdi libidn liblcms \
-	 libmtp libopensync libtorrent \
+	 libmtp libopensync libsoup libtorrent \
 	 loudmouth \
 	 ltrace \
 	 mc mcabber mdadm minicom mlocate moc \
 	 mod-fastcgi mod-python \
+	 mpdscribble \
 	 msynctool mutt \
 	 ncmpc ncursesw netatalk newt nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
