@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PEN_SITE=http://siag.nu/pub/pen
-PEN_VERSION=0.17.1
+PEN_VERSION=0.17.2
 PEN_SOURCE=pen-$(PEN_VERSION).tar.gz
 PEN_DIR=pen-$(PEN_VERSION)
 PEN_UNZIP=zcat
@@ -187,7 +187,8 @@ $(PEN_IPK_DIR)/CONTROL/control:
 #
 $(PEN_IPK): $(PEN_BUILD_DIR)/.built
 	rm -rf $(PEN_IPK_DIR) $(BUILD_DIR)/pen_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PEN_BUILD_DIR) DESTDIR=$(PEN_IPK_DIR) install-strip
+	$(MAKE) -C $(PEN_BUILD_DIR) DESTDIR=$(PEN_IPK_DIR) install
+	$(STRIP_COMMAND) $(PEN_IPK_DIR)/opt/bin/*
 #	install -d $(PEN_IPK_DIR)/opt/etc/
 #	install -m 644 $(PEN_SOURCE_DIR)/pen.conf $(PEN_IPK_DIR)/opt/etc/pen.conf
 #	install -d $(PEN_IPK_DIR)/opt/etc/init.d
@@ -216,3 +217,9 @@ pen-clean:
 #
 pen-dirclean:
 	rm -rf $(BUILD_DIR)/$(PEN_DIR) $(PEN_BUILD_DIR) $(PEN_IPK_DIR) $(PEN_IPK)
+
+#
+# Some sanity check for the package.
+#
+pen-check: $(PEN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PEN_IPK)
