@@ -201,15 +201,17 @@ COMMON_CROSS_PACKAGES = \
 	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
-	libshout libsigc++ libsndfile libstdc++ libtasn1 libtiff libtool \
-	libtorrent libupnp libusb libvorbis libvorbisidec libxml2 libxslt \
+	libshout libsigc++ libsoup libsndfile libstdc++ \
+	libtasn1 libtiff libtool libtorrent \
+	libupnp libusb libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc littlesmalltalk \
 	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microperl minicom minihttpd miscfiles \
 	mktemp mlocate moblock moc modutils monit most motion \
-	mod-fastcgi moe monotone mp3blaster mpack mpage mpc mpd \
+	mod-fastcgi moe monotone mp3blaster mpack mpage \
+	mpc mpd mpdscribble \
 	mpg123 mpop mrtg msmtp msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
