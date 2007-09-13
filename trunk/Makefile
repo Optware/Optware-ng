@@ -162,7 +162,7 @@ COMMON_CROSS_PACKAGES = \
 	bluez-libs bluez-utils bluez-hcidump \
 	cabextract calc calcurse catdoc ccollect ccxstream cdargs \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver clips \
+	classpath clamav clearsilver clips cmdftp \
 	cogito connect coreutils cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cvs \
@@ -399,6 +399,7 @@ PATCH_LIBTOOL=sed -i \
 	-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(TARGET_LIBDIR) $(STAGING_LIB_DIR)"|' \
 	-e 's|^sys_lib_dlsearch_path_spec=.*"$$|sys_lib_dlsearch_path_spec=""|' \
 	-e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' \
+	-e 's|nmedit |$(TARGET_CROSS)nmedit |' \
 
 # Clear these variables to remove assumptions
 AR=
