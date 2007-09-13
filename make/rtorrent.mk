@@ -108,6 +108,10 @@ $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCH
 	if test "$(BUILD_DIR)/$(RTORRENT_DIR)" != "$(RTORRENT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR) ; \
 	fi
+ifeq (mss,$(OPTWARE_TARGET))
+	sed -i -e '/#include <string>/a#include <cctype>' \
+		$(RTORRENT_BUILD_DIR)/src/rpc/parse.h
+endif
 	(cd $(RTORRENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
