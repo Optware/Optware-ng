@@ -6,7 +6,9 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
-	aspell bogofilter \
+	arping \
+	aspell \
+	bogofilter \
 	bluez-utils \
 	ecl erl-yaws \
 	fixesext fuppes gambit-c gdb \
