@@ -128,6 +128,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	else sed -i -e '/^[ 	]*ac_cv_libnet_endianess=/s|=.*|=lil|' $(LIBNET11_BUILD_DIR)/configure; \
 	fi
 endif
+	cp $(SOURCE_DIR)/common/config.* $(LIBNET11_BUILD_DIR)/
 	(cd $(LIBNET11_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBNET11_CPPFLAGS)" \
