@@ -1,0 +1,22 @@
+#!/bin/sh
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+if grep -q ^messagebus: /etc/group; then
+	echo There already is an messagebus group on the system.
+	ADDUSER_OPT="-G messagebus"
+fi
+
+if grep -q ^messagebus: /etc/passwd; then
+	echo There already is an messagebus user on the system.
+else
+	echo -n "No messagebus user found, creating it... "
+	adduser -h /opt/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
+	echo done
+fi
+
+# echo ; echo
+# echo "A template configuration file is installed here : /opt/etc/dbus.conf"
+# echo "Please read the dbus documentation to create a configuration file matching you needs."
+# echo
+

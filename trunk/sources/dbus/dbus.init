@@ -1,0 +1,88 @@
+#! /bin/sh
+# -*- coding: utf-8 -*-
+# Debian init.d script for D-BUS
+# Copyright © 2003 Colin Walters <walters@debian.org>
+
+PATH=/sbin:/bin:/usr/bin:/usr/sbin:/opt/bin:/opt/sbin
+
+if grep -q ^messagebus: /etc/group; then
+	# echo There already is an messagebus group on the system.
+	ADDUSER_OPT="-G messagebus"
+fi
+
+if grep -q ^messagebus: /etc/passwd; then
+	# echo There already is an messagebus user on the system.
+	true
+else
+	echo -n "No messagebus user found, creating it... "
+	adduser -h /opt/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
+	echo done
+fi
+
+set -e
+
+DAEMON=/opt/bin/dbus-daemon
+NAME=dbus
+DAEMONUSER=messagebus
+PIDDIR=/opt/var/run/dbus
+PIDFILE=$PIDDIR/pid
+DESC="system message bus"
+
+test -x $DAEMON || exit 0
+
+# Source defaults file; edit that file to configure this script.
+ENABLED=1
+PARAMS=""
+if [ -e /opt/etc/default/dbus ]; then
+  . /opt/etc/default/dbus
+fi
+
+test "$ENABLED" != "0" || exit 0
+
+start_it_up()
+{
+  if [ ! -d $PIDDIR ]; then
+    mkdir -p $PIDDIR
+    chown $DAEMONUSER $PIDDIR
+    chgrp $DAEMONUSER $PIDDIR
+  fi
+  if [ -e $PIDFILE ]; then
+    echo "$DESC already started; not starting."
+  else
+    echo -n "Starting $DESC: "
+    ${DAEMON} --system $PARAMS
+    echo "$NAME."
+  fi
+}
+
+shut_it_down()
+{
+  echo -n "Stopping $DESC: "
+  if [ -e $PIDFILE ]; then
+    kill `cat $PIDFILE`
+  else
+    killall ${DAEMON}
+  fi
+  echo "$NAME."
+  rm -f $PIDFILE
+}
+
+case "$1" in
+  start)
+    start_it_up
+  ;;
+  stop)
+    shut_it_down
+  ;;
+  restart|force-reload)
+    shut_it_down
+    sleep 1
+    start_it_up
+  ;;
+  *)
+    echo "Usage: /opt/etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
+    exit 1
+  ;;
+esac
+
+exit 0

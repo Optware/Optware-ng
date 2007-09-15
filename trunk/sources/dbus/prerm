@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/bin/killall dbus-daemon
+
