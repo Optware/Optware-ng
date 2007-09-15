@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 P7ZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/p7zip
-P7ZIP_VERSION=4.53
+P7ZIP_VERSION=4.55
 P7ZIP_SOURCE=p7zip_$(P7ZIP_VERSION)_src_all.tar.bz2
 P7ZIP_DIR=p7zip_$(P7ZIP_VERSION)
 P7ZIP_UNZIP=bzcat
