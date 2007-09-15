@@ -29,18 +29,18 @@ DBUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DBUS_DESCRIPTION=D-Bus is a message bus system, a simple way for applications to talk to one another.
 DBUS_SECTION=misc
 DBUS_PRIORITY=optional
-DBUS_DEPENDS=expat
+DBUS_DEPENDS=expat, adduser
 DBUS_SUGGESTS=
 DBUS_CONFLICTS=
 
 #
 # DBUS_IPK_VERSION should be incremented when the ipk changes.
 #
-DBUS_IPK_VERSION=1
+DBUS_IPK_VERSION=2
 
 #
 # DBUS_CONFFILES should be a list of user-editable files
-#DBUS_CONFFILES=/opt/etc/dbus.conf /opt/etc/init.d/SXXdbus
+DBUS_CONFFILES=/opt/etc/init.d/S20dbus /opt/etc/default/dbus
 
 #
 # DBUS_PATCHES should list any patches, in the the order in
@@ -204,14 +204,16 @@ $(DBUS_IPK): $(DBUS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(DBUS_IPK_DIR)/opt/bin/* $(DBUS_IPK_DIR)/opt/lib/libdbus-*.so.*.*.*
 #	install -d $(DBUS_IPK_DIR)/opt/etc/
 #	install -m 644 $(DBUS_SOURCE_DIR)/dbus.conf $(DBUS_IPK_DIR)/opt/etc/dbus.conf
-#	install -d $(DBUS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(DBUS_SOURCE_DIR)/rc.dbus $(DBUS_IPK_DIR)/opt/etc/init.d/SXXdbus
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/opt/etc/init.d/SXXdbus
+	install -d $(DBUS_IPK_DIR)/opt/etc/default
+	install -m 644 $(DBUS_SOURCE_DIR)/dbus.default $(DBUS_IPK_DIR)/opt/etc/default/dbus
+	install -d $(DBUS_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(DBUS_SOURCE_DIR)/dbus.init $(DBUS_IPK_DIR)/opt/etc/init.d/S20dbus
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/opt/etc/init.d/S20dbus
 	$(MAKE) $(DBUS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(DBUS_SOURCE_DIR)/postinst $(DBUS_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(DBUS_SOURCE_DIR)/prerm $(DBUS_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(DBUS_SOURCE_DIR)/postinst $(DBUS_IPK_DIR)/CONTROL/postinst
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(DBUS_SOURCE_DIR)/prerm $(DBUS_IPK_DIR)/CONTROL/prerm
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/prerm
 	echo $(DBUS_CONFFILES) | sed -e 's/ /\n/g' > $(DBUS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DBUS_IPK_DIR)
 

@@ -1,0 +1,9 @@
+# This is a configuration file for /opt/etc/init.d/dbus; it allows you to
+# perform common modifications to the behavior of the dbus daemon
+# startup without editing the init script.
+
+# Parameters to pass to dbus.
+PARAMS=""
+
+# Whether or not to run the dbus system daemon; set to 0 to disable.
+ENABLED=1
