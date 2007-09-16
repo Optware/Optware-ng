@@ -47,7 +47,7 @@ BLUEZ-HCIDUMP_IPK_VERSION=1
 # BLUEZ-HCIDUMP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BLUEZ-HCIDUMP_PATCHES=$(BLUEZ-HCIDUMP_SOURCE_DIR)/configure.patch
+BLUEZ-HCIDUMP_PATCHES=$(BLUEZ-HCIDUMP_SOURCE_DIR)/AI_ADDRCONFIG.patch
 
 #
 # If the compilation of the package requires additional
@@ -105,7 +105,9 @@ $(BLUEZ-HCIDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) $(BLUE
 	$(MAKE) bluez-libs-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(BLUEZ-HCIDUMP_BUILD_DIR)
 	$(BLUEZ-HCIDUMP_UNZIP) $(DL_DIR)/$(BLUEZ-HCIDUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BLUEZ-HCIDUMP_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) -p1
+	if test -n "$(BLUEZ-HCIDUMP_PATCHES)"; then \
+		cat $(BLUEZ-HCIDUMP_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(BLUEZ-HCIDUMP_DIR) $(BLUEZ-HCIDUMP_BUILD_DIR)
 	(cd $(BLUEZ-HCIDUMP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
