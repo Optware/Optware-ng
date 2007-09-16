@@ -1,0 +1,14 @@
+--- src/hcidump.c.orig	2007-09-16 10:55:15.000000000 -0700
++++ src/hcidump.c	2007-09-16 10:56:02.000000000 -0700
+@@ -746,7 +746,11 @@
+ 	int err, opt, datagram, nfds = 0;
+ 
+ 	memset(&hints, 0, sizeof (hints));
++#ifdef AI_ADDRCONFIG
+ 	hints.ai_flags = AI_PASSIVE | AI_ADDRCONFIG;
++#else
++	hints.ai_flags = AI_PASSIVE;
++#endif
+ 	hints.ai_socktype = SOCK_STREAM;
+ 	hints.ai_protocol = IPPROTO_TCP;
+ 
