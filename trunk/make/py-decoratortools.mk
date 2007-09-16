@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DECORATORTOOLS_VERSION=1.4
+PY-DECORATORTOOLS_VERSION=1.5
 PY-DECORATORTOOLS_SITE=http://cheeseshop.python.org/packages/source/D/DecoratorTools
 PY-DECORATORTOOLS_DIR=DecoratorTools-$(PY-DECORATORTOOLS_VERSION)
 PY-DECORATORTOOLS_SOURCE=DecoratorTools-$(PY-DECORATORTOOLS_VERSION).zip
