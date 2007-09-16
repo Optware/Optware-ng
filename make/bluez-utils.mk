@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BLUEZ-UTILS_SITE=http://bluez.sf.net/download
-BLUEZ-UTILS_VERSION=3.9
+BLUEZ-UTILS_VERSION=3.17
 BLUEZ-UTILS_SOURCE=bluez-utils-$(BLUEZ-UTILS_VERSION).tar.gz
 BLUEZ-UTILS_DIR=bluez-utils-$(BLUEZ-UTILS_VERSION)
 BLUEZ-UTILS_UNZIP=zcat
@@ -45,6 +45,8 @@ BLUEZ-UTILS_CONFFILES=\
 /opt/etc/bluetooth/hcid.conf \
 /opt/etc/bluetooth/echo.service \
 /opt/etc/bluetooth/input.service \
+/opt/etc/bluetooth/serial.service \
+/opt/etc/bluetooth/network.service \
 /opt/etc/bluetooth/rfcomm.conf \
 /opt/etc/dbus-1/system.d/bluetooth.conf \
 /opt/etc/init.d/bluetooth \
