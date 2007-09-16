@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=1
+LIBCURL_IPK_VERSION=2
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -147,6 +147,7 @@ libcurl: $(LIBCURL_BUILD_DIR)/.built
 $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/curl-config
 	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/curl-config
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/curl-config $(STAGING_DIR)/bin/curl-config
