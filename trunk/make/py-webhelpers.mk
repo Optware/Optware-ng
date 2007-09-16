@@ -24,7 +24,7 @@
 # PY-WEBHELPERS_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-WEBHELPERS_SITE=http://cheeseshop.python.org/packages/source/W/WebHelpers
-PY-WEBHELPERS_VERSION=0.3
+PY-WEBHELPERS_VERSION=0.3.2
 PY-WEBHELPERS_IPK_VERSION=1
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
@@ -33,8 +33,8 @@ PY-WEBHELPERS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WEBHELPERS_DESCRIPTION=A library of helper functions intended to make writing templates in web applications easier.
 PY-WEBHELPERS_SECTION=misc
 PY-WEBHELPERS_PRIORITY=optional
-PY24-WEBHELPERS_DEPENDS=python24, py-routes (>=1.1), py-simplejson (>=1.4)
-PY25-WEBHELPERS_DEPENDS=python25, py25-routes (>=1.1), py25-simplejson (>=1.4)
+PY24-WEBHELPERS_DEPENDS=python24, py-routes (>=1.7), py-simplejson (>=1.4)
+PY25-WEBHELPERS_DEPENDS=python25, py25-routes (>=1.7), py25-simplejson (>=1.4)
 PY-WEBHELPERS_SUGGESTS=
 PY-WEBHELPERS_CONFLICTS=
 
