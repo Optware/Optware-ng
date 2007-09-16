@@ -1,8 +1,8 @@
-#############################################################
+###########################################################
 #
 # lsof
 #
-#############################################################
+###########################################################
 #
 # LSOF_VERSION, LSOF_SITE and LSOF_SOURCE define
 # the upstream location of the source code for the package.
@@ -20,15 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-
-LSOF_DIR:=$(BUILD_DIR)/lsof
-LSOF_SOURCE_DIR:=$(SOURCE_DIR)/lsof
-LSOF_VERSION:=4.77.dfsg.1
-LSOF:=lsof-$(LSOF_VERSION).orig
-LSOF_FILE:=lsof_$(LSOF_VERSION).orig
-LSOF_DSC=lsof_$(LSOF_VERSION)-3.dsc
-LSOF_SITE=http://http.us.debian.org/debian/pool/main/l/lsof
-LSOF_SOURCE:=$(LSOF_FILE).tar.gz
+LSOF_SITE=http://ftp.cerias.purdue.edu/pub/tools/unix/sysutils/lsof
+LSOF_VERSION=4.78
+LSOF_SOURCE=lsof_$(LSOF_VERSION).tar.bz2
+LSOF_DIR=lsof_$(LSOF_VERSION)_src
+LSOF_UNZIP=bzcat
 LSOF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LSOF_DESCRIPTION=LiSt Open Files - a diagnostic tool.
 LSOF_SECTION=admin
@@ -37,11 +33,29 @@ LSOF_DEPENDS=
 LSOF_SUGGESTS=
 LSOF_CONFLICTS=
 
-
 #
 # LSOF_IPK_VERSION should be incremented when the ipk changes.
 #
-LSOF_IPK_VERSION=2
+LSOF_IPK_VERSION=1
+
+#
+# LSOF_CONFFILES should be a list of user-editable files
+#LSOF_CONFFILES=/opt/etc/lsof.conf /opt/etc/init.d/SXXlsof
+
+#
+# LSOF_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+LSOF_PATCHES=$(LSOF_SOURCE_DIR)/Makefile-lib.patch
+ifeq (wl500g,$(OPTWARE_TARGET))
+LSOF_PATCHES+=$(LSOF_SOURCE_DIR)/machine_h.patch $(LSOF_SOURCE_DIR)/print_c.patch
+endif
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+LSOF_CPPFLAGS=
+LSOF_LDFLAGS=
 
 #
 # LSOF_BUILD_DIR is the directory in which the build is done.
@@ -52,14 +66,10 @@ LSOF_IPK_VERSION=2
 #
 # You should not change any of these variables.
 #
-LSOF_IPK:=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-$(LSOF_IPK_VERSION)_$(TARGET_ARCH).ipk
-LSOF_IPK_DIR:=$(BUILD_DIR)/lsof-$(LSOF_VERSION)-ipk
-ifeq ($(OPTWARE_TARGET),wl500g)
-LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch $(LSOF_SOURCE_DIR)/machine_h.patch $(LSOF_SOURCE_DIR)/print_c.patch
-else
-LSOF_PATCH:=$(LSOF_SOURCE_DIR)/Makefile-lib.patch
-endif
-LSOF_UNZIP:=gunzip
+LSOF_BUILD_DIR=$(BUILD_DIR)/lsof
+LSOF_SOURCE_DIR=$(SOURCE_DIR)/lsof
+LSOF_IPK_DIR=$(BUILD_DIR)/lsof-$(LSOF_VERSION)-ipk
+LSOF_IPK=$(BUILD_DIR)/lsof_$(LSOF_VERSION)-$(LSOF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: lsof-source lsof-unpack lsof lsof-stage lsof-ipk lsof-clean lsof-dirclean lsof-check
 
@@ -68,17 +78,15 @@ LSOF_UNZIP:=gunzip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LSOF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LSOF_SITE)/$(LSOF_SOURCE)
-
-$(DL_DIR)/$(LSOF_DSC):
-	$(WGET) -P $(DL_DIR) $(LSOF_SITE)/$(LSOF_DSC)
+	$(WGET) -P $(DL_DIR) $(LSOF_SITE)/$(LSOF_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LSOF_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-lsof-source: $(DL_DIR)/$(LSOF_SOURCE) $(DL_DIR)/$(LSOF_DSC) $(LSOF_PATCH)
+lsof-source: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -98,45 +106,61 @@ lsof-source: $(DL_DIR)/$(LSOF_SOURCE) $(DL_DIR)/$(LSOF_DSC) $(LSOF_PATCH)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LSOF_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(DL_DIR)/$(LSOF_DSC) $(LSOF_PATCHES)
-	@rm -rf $(BUILD_DIR)/$(LSOF) $(LSOF_DIR)
-	cd $(DL_DIR) && \
-		if [ `grep $(LSOF_SOURCE) $(LSOF_DSC) | cut -f 2 -d " "` != \
-			`md5sum $(DL_DIR)/$(LSOF_SOURCE) | cut -f $(if $MD5FIELD == ppc_darwin,4,1)  -d " "` ] ; then \
-			echo "md5sum is not a match, aborting." ; \
-			exit 2; \
-		else \
-			echo "md5sum verified." ; \
-		fi
-	cd $(BUILD_DIR) && tar zxf $(DL_DIR)/$(LSOF_SOURCE)	
-	cd $(BUILD_DIR)/$(LSOF) && echo "n\ny\ny\ny\nn\nn\ny\n" | env \
+$(LSOF_BUILD_DIR)/.configured: $(DL_DIR)/$(LSOF_SOURCE) $(LSOF_PATCHES) make/lsof.mk
+#	$(MAKE) <bar>-stage <baz>-stage
+	rm -rf $(BUILD_DIR)/$(LSOF_DIR) $(LSOF_BUILD_DIR)
+	$(LSOF_UNZIP) $(DL_DIR)/$(LSOF_SOURCE) | \
+		tar -xOvf - lsof_$(LSOF_VERSION)/lsof_$(LSOF_VERSION)_src.tar | \
+		tar -C $(BUILD_DIR) -xvf -
+	if test "$(BUILD_DIR)/$(LSOF_DIR)" != "$(LSOF_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(LSOF_DIR) $(LSOF_BUILD_DIR) ; \
+	fi
+	(cd $(LSOF_BUILD_DIR); \
+		echo "n\ny\ny\ny\nn\nn\ny\n" | env \
 		LSOF_CC=$(TARGET_CC) \
 		LSOF_INCLUDE=$(TARGET_INCDIR) \
 		LINUX_CLIB="-DGLIBCV=2" \
-		./Configure linux
-	cat $(LSOF_PATCH) | patch -d $(BUILD_DIR)/$(LSOF) -p1
-	mv $(BUILD_DIR)/$(LSOF) $(LSOF_DIR)
-	touch $(LSOF_DIR)/.configured
+		./Configure linux \
+	)
+	if test -n "$(LSOF_PATCHES)" ; \
+		then cat $(LSOF_PATCHES) | \
+		patch -d $(LSOF_BUILD_DIR) -p1 ; \
+	fi
+	touch $@
 
-lsof-unpack: $(LSOF_DIR)/.configured
+lsof-unpack: $(LSOF_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
-$(LSOF_DIR)/lsof: $(LSOF_DIR)/.configured
-	make -C $(LSOF_DIR) $(TARGET_CONFIGURE_OPTS) CDEF="$(TARGET_CFLAGS)"
+$(LSOF_BUILD_DIR)/.built: $(LSOF_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(LSOF_BUILD_DIR) \
+		$(TARGET_CONFIGURE_OPTS) \
+		CDEF="$(TARGET_CFLAGS)"
+	touch $@
 
 #
 # This is the build convenience target.
 #
-lsof: $(LSOF_DIR)/lsof
+lsof: $(LSOF_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(LSOF_BUILD_DIR)/.staged: $(LSOF_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(LSOF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
+
+lsof-stage: $(LSOF_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/lsof
 #
 $(LSOF_IPK_DIR)/CONTROL/control:
-	@install -d $(LSOF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: lsof" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -161,13 +185,16 @@ $(LSOF_IPK_DIR)/CONTROL/control:
 # Daemon startup scripts should be installed in $(LSOF_IPK_DIR)/opt/etc/init.d/S??lsof
 #
 # You may need to patch your application to make it use these locations.
-
-$(LSOF_IPK): $(LSOF_DIR)/lsof
+#
+$(LSOF_IPK): $(LSOF_BUILD_DIR)/.built
 	rm -rf $(LSOF_IPK_DIR) $(BUILD_DIR)/lsof_*_$(TARGET_ARCH).ipk
-	install -d $(LSOF_IPK_DIR)/CONTROL
+#	$(MAKE) -C $(LSOF_BUILD_DIR) DESTDIR=$(LSOF_IPK_DIR) install-strip
 	install -d $(LSOF_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(LSOF_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
+	$(STRIP_COMMAND) $(LSOF_BUILD_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
+	install -d $(LSOF_IPK_DIR)/opt/share/man/man8
+	install $(LSOF_BUILD_DIR)/lsof.8 $(LSOF_IPK_DIR)/opt/share/man/man8
 	$(MAKE) $(LSOF_IPK_DIR)/CONTROL/control
+	echo $(LSOF_CONFFILES) | sed -e 's/ /\n/g' > $(LSOF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LSOF_IPK_DIR)
 
 #
@@ -179,15 +206,16 @@ lsof-ipk: $(LSOF_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 lsof-clean:
-	-make -C $(LSOF_DIR) clean
+	rm -f $(LSOF_BUILD_DIR)/.built
+	-$(MAKE) -C $(LSOF_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
 lsof-dirclean:
-	rm -rf $(LSOF_DIR) $(LSOF_IPK_DIR) $(LSOF_IPK)
-
+	rm -rf $(BUILD_DIR)/$(LSOF_DIR) $(LSOF_BUILD_DIR) $(LSOF_IPK_DIR) $(LSOF_IPK)
+#
 #
 # Some sanity check for the package.
 #
