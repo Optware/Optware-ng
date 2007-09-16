@@ -112,12 +112,16 @@ PYTHON_PACKAGES = \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
 	py-clips py-codeville py-configobj py-constraint py-crypto py-curl \
-	py-decoratortools py-django py-docutils py-duplicity \
+	py-decorator py-decoratortools py-django py-docutils py-duplicity \
 	py-elementtree py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils \
-	py-kid py-lxml py-nose \
-	py-mercurial py-moin py-mssql py-mx-base py-mysql py-myghty py-myghtyutils \
-	py-paste py-pastedeploy py-pastescript py-pastewebkit py-pexpect py-pil py-ply py-protocols \
+	py-kid py-lxml \
+	py-mako py-mercurial \
+	py-moin py-mssql py-mx-base py-mysql \
+	py-myghty py-myghtyutils \
+	py-nose \
+	py-paste py-pastedeploy py-pastescript py-pastewebkit \
+	py-pexpect py-pil py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql \
 	py-pudge py-pylons py-pyro py-quixote \
 	py-rdiff-backup py-reportlab py-routes py-roundup py-ruledispatch \
