@@ -6,7 +6,7 @@
 
 DHCP_DIR:=$(BUILD_DIR)/dhcp
 
-DHCP_VERSION=3.0.5
+DHCP_VERSION=3.1.0
 DHCP=dhcp-$(DHCP_VERSION)
 DHCP_SITE=ftp://ftp.isc.org/isc/dhcp/
 DHCP_SOURCE:=$(DHCP).tar.gz
@@ -44,13 +44,14 @@ $(DHCP_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE)
 	sed -ie 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(DHCP_DIR)/includes/site.h
 	(cd $(DHCP_DIR) && \
 		./configure)
-	touch $(DHCP_DIR)/.configured
+	touch $@
 
 dhcp-unpack: $(DHCP_DIR)/.configured
 
 $(DHCP_DIR)/.built: $(DHCP_DIR)/.configured
+	rm -f $@
 	make -C $(DHCP_DIR) CC=$(TARGET_CC) AR=$(TARGET_AR) RANLIB=$(TARGET_RANLIB)
-	touch $(DHCP_DIR)/.built
+	touch $@
 
 dhcp: $(DHCP_DIR)/.built
 
@@ -59,7 +60,7 @@ dhcp: $(DHCP_DIR)/.built
 # necessary to create a seperate control file under sources/dhcp
 #
 $(DHCP_IPK_DIR)/CONTROL/control:
-	@install -d $(DHCP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: dhcp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -92,8 +93,5 @@ dhcp-clean:
 dhcp-dirclean:
 	rm -rf $(DHCP_DIR) $(DHCP_IPK_DIR) $(DHCP_IPK)
 
-#
-# Some sanity check for the package.
-#
 dhcp-check: $(DHCP_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DHCP_IPK)
