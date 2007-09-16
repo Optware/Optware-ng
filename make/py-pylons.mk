@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PYLONS_SITE=http://cheeseshop.python.org/packages/source/P/Pylons
-PY-PYLONS_VERSION=0.9.5
+PY-PYLONS_VERSION=0.9.6
 PY-PYLONS_SOURCE=Pylons-$(PY-PYLONS_VERSION).tar.gz
 PY-PYLONS_DIR=Pylons-$(PY-PYLONS_VERSION)
 PY-PYLONS_UNZIP=zcat
@@ -33,38 +33,33 @@ PY-PYLONS_PRIORITY=optional
 PY-PYLONS_CONFLICTS=
 
 PY24-PYLONS_DEPENDS=\
-	py-beaker (>=0.6.3), \
+	py-beaker (>=0.7.5), \
+	py-decorator (>=2.1.0),
 	py-formencode (>=0.7),
+	py-mako (>=0.1.8), \
 	py-myghty (>=1.1), \
-	py-nose (>=0.9.2), \
-	py-paste (>=1.3), \
-	py-pastedeploy (>=1.3), \
-	py-pastescript (>=1.3.2), \
-	py-routes (>=1.6.3), \
+	py-nose (>=0.9.3), \
+	py-paste (>=1.4), \
+	py-pastedeploy (>=1.3.1), \
+	py-pastescript (>=1.3.6), \
+	py-routes (>=1.7), \
 	py-simplejson (>=1.7.1), \
-	py-webhelpers (>=0.3)
+	py-webhelpers (>=0.3.2)
 
 PY25-PYLONS_DEPENDS=\
-	py25-beaker (>=0.6.3), \
+	py25-beaker (>=0.7.5), \
+	py25-decorator (>=2.1.0),
 	py25-formencode (>=0.7),
+	py25-mako (>=0.1.8), \
 	py25-myghty (>=1.1), \
-	py25-nose (>=0.9.2), \
-	py25-paste (>=1.3), \
-	py25-pastedeploy (>=1.3), \
-	py25-pastescript (>=1.3.2), \
-	py25-routes (>=1.6.3), \
+	py25-nose (>=0.9.3), \
+	py25-paste (>=1.4), \
+	py25-pastedeploy (>=1.3.1), \
+	py25-pastescript (>=1.3.6), \
+	py25-routes (>=1.7), \
 	py25-simplejson (>=1.7.1), \
-	py25-webhelpers (>=0.3)
+	py25-webhelpers (>=0.3.2)
 
-#	py (>=0.8.0_alpha2), \
-	py-buildutils (>=0.1.2), \
-	py-cheetah (>=1.0), \
-	py-docutils (>=0.4), \
-	py-elementtree (>=1.2.6), \
-	py-kid (>=0.9), \
-	py-pudge (>=0.1.3), \
-	py-turbocheetah (>=0.9.5), \
-	py-turbokid (>=0.9.1), \
 
 #
 # PY-PYLONS_IPK_VERSION should be incremented when the ipk changes.
