@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.2.4
+POSTGRESQL_VERSION=8.2.5
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-base-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -40,7 +40,7 @@ POSTGRESQL_DEPENDS=readline, coreutils
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=3
+POSTGRESQL_IPK_VERSION=1
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -135,7 +135,7 @@ $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL
 		--with-includes=$(STAGING_INCLUDE_DIR) \
 		--with-libs=$(STAGING_LIB_DIR) \
 	)
-	touch $(POSTGRESQL_BUILD_DIR)/.configured
+	touch $@
 
 postgresql-unpack: $(POSTGRESQL_BUILD_DIR)/.configured
 
@@ -143,11 +143,11 @@ postgresql-unpack: $(POSTGRESQL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(POSTGRESQL_BUILD_DIR)/.built: $(POSTGRESQL_BUILD_DIR)/.configured
-	rm -f $(POSTGRESQL_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POSTGRESQL_CPPFLAGS)" \
 		;
-	touch $(POSTGRESQL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -158,9 +158,9 @@ postgresql: $(POSTGRESQL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(POSTGRESQL_BUILD_DIR)/.staged: $(POSTGRESQL_BUILD_DIR)/.built
-	rm -f $(POSTGRESQL_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(POSTGRESQL_BUILD_DIR)/.staged
+	touch $@
 
 postgresql-stage: $(POSTGRESQL_BUILD_DIR)/.staged
 
@@ -169,7 +169,7 @@ postgresql-stage: $(POSTGRESQL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/postgresql
 #
 $(POSTGRESQL_IPK_DIR)/CONTROL/control:
-	@install -d $(POSTGRESQL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: postgresql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,6 +202,20 @@ $(POSTGRESQL_IPK): $(POSTGRESQL_BUILD_DIR)/.built
 #	install -m 644 $(POSTGRESQL_SOURCE_DIR)/postgresql.conf $(POSTGRESQL_IPK_DIR)/opt/etc/postgresql.conf
 	install -d $(POSTGRESQL_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(POSTGRESQL_SOURCE_DIR)/rc.postgresql $(POSTGRESQL_IPK_DIR)/opt/etc/init.d/S98postgresql
+	sed \
+	    -e '/^#max_connections = /{s|^#||;s|= [0-9]*|= 8|}' \
+	    -e '/^#shared_buffers = /{s|^#||;s|= [0-9]*MB|= 128kB|}' \
+	    -e '/^#max_prepared_transactions = /{s|^#||;s|= [0-9]|= 2|}' \
+	    -e '/^#work_mem = /{s|^#||;s|= [0-9]*MB|= 256kB|}' \
+	    -e '/^#maintenance_work_mem = /{s|^#||;s|= [0-9]*MB|= 1MB|}' \
+	    -e '/^#max_stack_depth = /{s|^#||;s|= [0-9]*MB|= 100kB|}' \
+	    -e '/^#max_fsm_pages = /{s|^#||;s|= [0-9]*|= 1600|}' \
+	    -e '/^#max_fsm_relations = /{s|^#||;s|= [0-9]*|= 100|}' \
+	    -e '/^#max_files_per_process = /{s|^#||;s|= [0-9]*|= 25|}' \
+	    -e '/^#wal_buffers = /{s|^#||;s|= [0-9]*kB|= 32kB|}' \
+	    -e '/^#effective_cache_size = /{s|^#||;s|= [0-9]*MB|= 4MB|}' \
+		$(POSTGRESQL_IPK_DIR)/opt/share/postgresql/postgresql.conf.sample > \
+		$(POSTGRESQL_IPK_DIR)/opt/share/postgresql/postgresql.conf.small
 	$(MAKE) $(POSTGRESQL_IPK_DIR)/CONTROL/control
 	install -m 755 $(POSTGRESQL_SOURCE_DIR)/postinst $(POSTGRESQL_IPK_DIR)/CONTROL/postinst
 ifneq ($(OPTWARE_TARGET), nslu2)
