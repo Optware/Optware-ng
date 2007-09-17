@@ -44,7 +44,7 @@ ID3LIB_CONFLICTS=
 #
 # ID3LIB_IPK_VERSION should be incremented when the ipk changes.
 #
-ID3LIB_IPK_VERSION=3
+ID3LIB_IPK_VERSION=4
 
 #
 # ID3LIB_CONFFILES should be a list of user-editable files
@@ -170,6 +170,7 @@ id3lib: $(ID3LIB_BUILD_DIR)/.built
 $(ID3LIB_BUILD_DIR)/.staged: $(ID3LIB_BUILD_DIR)/.built
 	rm -f $(ID3LIB_BUILD_DIR)/.staged
 	$(MAKE) -C $(ID3LIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_DIR)/opt/lib/libid3.la
 	touch $(ID3LIB_BUILD_DIR)/.staged
 
 id3lib-stage: $(ID3LIB_BUILD_DIR)/.staged
