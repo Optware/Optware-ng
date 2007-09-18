@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-ARCHIVE-TAR_SITE=http://search.cpan.org/CPAN/authors/id/K/KA/KANE
-PERL-ARCHIVE-TAR_VERSION=1.34
+PERL-ARCHIVE-TAR_VERSION=1.36
 PERL-ARCHIVE-TAR_SOURCE=Archive-Tar-$(PERL-ARCHIVE-TAR_VERSION).tar.gz
 PERL-ARCHIVE-TAR_DIR=Archive-Tar-$(PERL-ARCHIVE-TAR_VERSION)
 PERL-ARCHIVE-TAR_UNZIP=zcat
