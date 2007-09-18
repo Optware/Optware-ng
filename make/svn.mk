@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.4.4
+SVN_VERSION=1.4.5
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -35,10 +35,9 @@ SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SVN_DESCRIPTION=a compelling replacement for CVS
 SVN_SECTION=net
 SVN_PRIORITY=optional
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-SVN_DEPENDS=neon, apr, apr-util, openldap-libs, zlib, expat, libxml2
-else
 SVN_DEPENDS=neon, apr, apr-util, zlib, expat, libxml2
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+SVN_DEPENDS +=, openldap-libs
 endif
 ifeq ($(OPTWARE_TARGET),ts101)
 SVN_DEPENDS +=, gettext
@@ -59,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=4
+SVN_IPK_VERSION=1
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -75,7 +74,7 @@ SVN_CONFFILES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SVN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/neon
+SVN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/neon -D_LARGEFILE64_SOURCE
 SVN_LDFLAGS=
 ifeq ($(TARGET_CC), $(HOSTCC))
 SVN_CONFIG_ENV=
@@ -219,6 +218,7 @@ $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 	$(MAKE) -C $(SVN_BUILD_DIR) swig-pl \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
+		PASTHRU_INC="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
 		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -rpath /opt/lib -rpath-link $(STAGING_LIB_DIR)" \
 		OTHERLDFLAGS="-L$(SVN_BUILD_DIR)/subversion/bindings/swig/perl/libsvn_swig_perl/.libs" \
