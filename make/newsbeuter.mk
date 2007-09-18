@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEWSBEUTER_SITE=http://synflood.at/newsbeuter
-NEWSBEUTER_VERSION=0.6
+NEWSBEUTER_VERSION=0.7
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
