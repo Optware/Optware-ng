@@ -30,14 +30,14 @@ FIS_DEPENDS=
 FIS_SUGGESTS=
 FIS_CONFLICTS=
 
-FIS_SVN_TAG=5
+FIS_SVN_TAG=6
 FIS_VERSION=r${FIS_SVN_TAG}
 FIS_SVN_OPTS=-r $(FIS_SVN_TAG)
 
 #
 # FIS_IPK_VERSION should be incremented when the ipk changes.
 #
-FIS_IPK_VERSION=1
+FIS_IPK_VERSION=2
 
 #
 # FIS_CONFFILES should be a list of user-editable files
