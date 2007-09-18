@@ -40,3 +40,9 @@
     grep -l ifeq.*filter.*perl make/*.mk
   so enable the feed after getting perl working, or rebuild these packages.
 
+* if there is no firmware support for ipkg,
+  or if you want to keep ipk installation entirely independent under /opt,
+  you may want to build and include ipkg-opt
+  in SPECIFIC_PACKAGES of platforms/packages-<P>.mk
+  see http://www.nslu2-linux.org/wiki/Optware/Slugosbe for an example of
+  manual bootstrap.
