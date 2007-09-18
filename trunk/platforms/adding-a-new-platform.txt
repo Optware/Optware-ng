@@ -17,7 +17,7 @@
 * make hello-ipk
 
 * add an entry to %target_to_bintype in scripts/optware-check-package.pl
-  with `file binary` regex pattern, after than you can run
+  with `file binary` regex pattern, after that you can run
   make hello-check
 
 * set NO_BUILTIN_MATH correctly in platforms/toolchain-<P>.mk
