@@ -28,7 +28,7 @@ ADNS_DESCRIPTION=Asynchronous resolver library and DNS resolver utilities.
 #
 # ADNS_IPK_VERSION should be incremented when the ipk changes.
 #
-ADNS_IPK_VERSION=1
+ADNS_IPK_VERSION=2
 
 #
 # ADNS_CONFFILES should be a list of user-editable files
@@ -177,7 +177,7 @@ $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
 	#install -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
 	install -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.[0-9]*.[0-9]* \
 		 $(ADNS_IPK_DIR)/opt/lib/
-	ln -sf libadns.so.[0-9]*.[0-9]* $(ADNS_IPK_DIR)/opt/lib/libadns.so.1
+	cd $(ADNS_IPK_DIR)/opt/lib && ln -sf libadns.so.[0-9]*.[0-9]* libadns.so.1
 	ln -sf libadns.so.1 $(ADNS_IPK_DIR)/opt/lib/libadns.so
 	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/lib/libadns.so.[0-9]*.[0-9]*
 	install -d $(ADNS_IPK_DIR)/opt/include/
