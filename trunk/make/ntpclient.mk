@@ -32,21 +32,27 @@ $(DL_DIR)/$(NTPCLIENT_SOURCE):
 
 ntpclient-source: $(DL_DIR)/$(NTPCLIENT_SOURCE)
 
-$(NTPCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(NTPCLIENT_SOURCE)
+$(NTPCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(NTPCLIENT_SOURCE) make/ntpclient.mk
+	rm -rf $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR)
 	$(NTPCLIENT_UNZIP) $(DL_DIR)/$(NTPCLIENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	mv $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR)
-	touch $(NTPCLIENT_BUILD_DIR)/.configured
+	if test "$(BUILD_DIR)/$(NTPCLIENT_DIR)" != "$(NTPCLIENT_BUILD_DIR)" ; \
+	then mv $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR) ; \
+	fi
+	touch $@
 
 ntpclient-unpack: $(NTPCLIENT_BUILD_DIR)/.configured
 
-$(NTPCLIENT_BUILD_DIR)/ntpclient: $(NTPCLIENT_BUILD_DIR)/.configured
-	$(MAKE) -C $(NTPCLIENT_BUILD_DIR) ntpclient adjtimex CC=$(TARGET_CC) \
-	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
+$(NTPCLIENT_BUILD_DIR)/.built: $(NTPCLIENT_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(NTPCLIENT_BUILD_DIR) ntpclient adjtimex \
+		CC=$(TARGET_CC) \
+		RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
+	touch $@
 
-ntpclient: $(NTPCLIENT_BUILD_DIR)/ntpclient
+ntpclient: $(NTPCLIENT_BUILD_DIR)/.built
 
 $(NTPCLIENT_IPK_DIR)/CONTROL/control:
-	@install -d $(NTPCLIENT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ntpclient" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -59,7 +65,7 @@ $(NTPCLIENT_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(NTPCLIENT_DEPENDS)" >>$@
 	@echo "Conflicts: $(NTPCLIENT_CONFLICTS)" >>$@
 
-$(NTPCLIENT_IPK): $(NTPCLIENT_BUILD_DIR)/ntpclient
+$(NTPCLIENT_IPK): $(NTPCLIENT_BUILD_DIR)/.built
 	install -d $(NTPCLIENT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/ntpclient -o $(NTPCLIENT_IPK_DIR)/opt/bin/ntpclient
 	install -d $(NTPCLIENT_IPK_DIR)/opt/sbin
@@ -76,3 +82,6 @@ ntpclient-clean:
 
 ntpclient-dirclean:
 	rm -rf $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR) $(NTPCLIENT_IPK_DIR) $(NTPCLIENT_IPK)
+
+ntpclient-check: $(NTPCLIENT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NTPCLIENT_IPK)
