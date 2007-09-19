@@ -21,11 +21,11 @@
 #
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
-SAMBA_VERSION=3.0.25c
+SAMBA_VERSION=3.0.26a
 SAMBA_IPK_VERSION=1
 else
 SAMBA_VERSION=3.0.14a
-SAMBA_IPK_VERSION=3
+SAMBA_IPK_VERSION=4
 endif
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
@@ -34,10 +34,9 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-SAMBA_DEPENDS=popt, openldap-libs, readline, cups, gnutls
-else
 SAMBA_DEPENDS=popt, readline, cups, gnutls
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+SAMBA_DEPENDS +=, openldap-libs
 endif
 SAMBA_SUGGESTS=
 SAMBA_CONFLICTS=
@@ -54,18 +53,14 @@ SAMBA_CONFFILES=/opt/etc/init.d/S08samba
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch $(SAMBA_SOURCE_DIR)/samba.patch
 else
-SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in.patch
+SAMBA_PATCHES=$(SAMBA_SOURCE_DIR)/configure.in-wl500g.patch
 endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
-SAMBA_CPPFLAGS=-DPATH_MAX=4096
-else
 SAMBA_CPPFLAGS=
-endif
 SAMBA_LDFLAGS=
 
 #
@@ -185,6 +180,9 @@ endif
 	$(SAMBA_UNZIP) $(DL_DIR)/$(SAMBA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA_PATCHES) | patch -d $(BUILD_DIR)/$(SAMBA_DIR) -p1
 	mv $(BUILD_DIR)/$(SAMBA_DIR) $(SAMBA_BUILD_DIR)
+ifeq (3.0.14a, $(SAMBA_VERSION))
+	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(SAMBA_BUILD_DIR)/source/aclocal.m4
+endif
 	(cd $(SAMBA_BUILD_DIR)/source; \
 		ACLOCAL=aclocal-1.9 \
 		AUTOMAKE=automake-1.9 \
@@ -300,13 +298,9 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
-ifeq ($(OPTWARE_TARGET),ds101)
-		install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/postinst
-		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101 $(SAMBA_IPK_DIR)/CONTROL/preinst
-endif
-ifeq ($(OPTWARE_TARGET),ds101g)
-		install -m 644 $(SAMBA_SOURCE_DIR)/postinst.ds101g $(SAMBA_IPK_DIR)/CONTROL/postinst
-		install -m 644 $(SAMBA_SOURCE_DIR)/preinst.ds101g $(SAMBA_IPK_DIR)/CONTROL/preinst
+ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
+	install -m 644 $(SAMBA_SOURCE_DIR)/postinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(SAMBA_SOURCE_DIR)/preinst.$(OPTWARE_TARGET) $(SAMBA_IPK_DIR)/CONTROL/preinst
 endif
 	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
