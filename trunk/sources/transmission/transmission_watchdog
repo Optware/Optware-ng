@@ -215,7 +215,7 @@ _update_active()
 
 _stop_torrent()
 {
-    grep -v "${TORRENT}"  ${ACTIVE} > ${ACTIVE}.tmp
+    grep -v -F "${TORRENT}"  ${ACTIVE} > ${ACTIVE}.tmp
     mv ${ACTIVE}.tmp ${ACTIVE}
     kill -HUP `cat ${PIDFILE}`
     sleep 20
