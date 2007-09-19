@@ -376,7 +376,7 @@ __list ()
 		[ -n "${ENDTIME}" ] && echo " End: ${ENDTIME}"
 		[ -n "${SCRAPE}" ] && echo " ${SCRAPE}"
 		if [ -n "${SETNOTE}" -a "${idx}" = "${ID}" ]; then
-                   NOTE=$(echo "${SETNOTE}" | sed 's/%/\\x/g')
+                   NOTE=$(echo "${SETNOTE}" | sed 's/%/\\x/g;s/+/ /g')
                    NOTE=$(echo -e "${NOTE}")
 		   _write_info
 		   SETNOTE=
@@ -446,10 +446,10 @@ _remove ()
    
     _find
 
-   if [ "${FORCE_REMOVE}" = "YES" -a -f "${TARGET}${TORRENT#${TARGET}}" ]; then
+   if [ "${FORCE_REMOVE}" = "yes" -a -f "${TARGET}${TORRENT#${TARGET}}" ]; then
       if [ ! -f "${TORRENT%.torrent.seeding}.torrent.seeding" ]; then
         DUMMY="${TORRENT%/*}"
-        echo "<b>Removing ${DUMMY}</b>"
+        echo "<b>Removing ${DUMMY}...</b>"
         rm -rf "${DUMMY}"
         return
       fi
@@ -639,18 +639,91 @@ Content-type: text/html
   <title>Transmission</title>
   <style type="text/css">
   <!--
-      BODY { background-color: #F8F4E7; color: #552800 }
-      A:link { color: #0000A0 }
-      A:visited { color: #A000A0 }
-      THEAD {
-        background: #D0D0D0;
-        color: #000000;
-        text-align: center;
-      }
-      TBODY {
-        background: #D0D0E7;
-      }
-   //-->
+  body { 
+  	padding:0;
+  	margin:0;
+  	width: auto; 
+  	color: #2f2f2f;  
+  	font-family:tahoma; 
+  	font-size:11px;
+  }
+  
+  a:link { color: #0000A0 }
+  a:visited { color: #A000A0 }
+  
+  table {
+  	background-color: #fafafa;
+  	border-top: 1px #5c5c5c solid;
+  	border-collapse: collapse;
+  	border-spacing: 0px;
+  	width:99%;
+  	font-size:11px;
+  }
+  
+  td {
+  	border-bottom: 1px #7d7d7d dotted;
+  	text-align: left;
+  	font-family: Tahoma, sans-serif, Arial;
+  	font-weight: normal;
+  	padding-top: 4px;
+  	padding-bottom: 4px;
+  	padding-left: 8px;
+  	padding-right: 0px; 
+  }
+  	  
+  thead {
+  	background: #7d7d7d;
+  	  color: #fff;
+  	  font-weight:bold;
+  	  text-transform:uppercase;
+  	  font-size:10px;
+  }
+  	  	  
+  tbody {
+    	  background-color: #fafafa;
+  } 
+  	  	   
+  input {
+  	padding:4px 5px;
+	margin:0 0 0 0;
+	color:#fff;
+	font-family:tahoma;
+	font-size:11px;
+	font-weight:normal;
+	background-color:#5c5c5c;
+	border: none;
+   }
+
+   input:hover {
+	background-color: #bbb;
+   }
+
+   td input {
+	padding:0;
+	margin:0;
+	color:#fff;
+	font-weight:normal;
+	background-color:#fff;
+	border: none;
+   }
+  	  	   
+   form {
+	padding:20px;
+	margin:0px;
+	background-color:#FFF9D8;
+   }
+  	  	   
+   p {
+	padding:0px;
+	margin:10px;
+	color:#008000;
+   }
+  	  	   
+   #footer{
+	padding:0;
+	margin:0;
+   }
+  //-->
   </style>
 </head>
 <body>
@@ -709,14 +782,14 @@ echo "<p>" ; uptime ; echo "</p>"
 cat << __EOF__  
 </form>
 
-
-
+<!--
 <h3>Links</h3>
 <ul>
   <li><a href=../torrent/source>source</a></li>
   <li><a href=../torrent/work>work</a></li>
   <li><a href=../torrent/target>target</a></li>
 </ul>
+//-->
 <hr>
 <address>
 &copy; 2005-2007 oleo
