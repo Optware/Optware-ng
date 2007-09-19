@@ -12,12 +12,12 @@
 # GLIB_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GLIB_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-GLIB_VERSION=2.6.6
+GLIB_SITE=ftp://ftp.gtk.org/pub/gtk/v2.9/
+GLIB_VERSION=2.9.6
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.bz2
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=bzcat
-GLIB_MAINTAINER=giel <giel@caffeinetrip.com>
+GLIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GLIB_DESCRIPTION=The GLib library of C routines.
 GLIB_SECTION=lib
 GLIB_PRIORITY=optional
@@ -36,7 +36,7 @@ GLIB_CONFLICTS=
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=6
+GLIB_IPK_VERSION=1
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -230,3 +230,9 @@ glib-clean:
 #
 glib-dirclean:
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR) $(GLIB_IPK_DIR) $(GLIB_IPK)
+
+#
+# Some sanity check for the package.
+#
+glib-check: $(GLIB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GLIB_IPK)
