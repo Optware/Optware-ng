@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNXML_SITE=http://www2.autistici.org/bakunin/libnxml
-LIBNXML_VERSION=0.18.0
+LIBNXML_VERSION=0.18.1
 LIBNXML_SOURCE=libnxml-$(LIBNXML_VERSION).tar.gz
 LIBNXML_DIR=libnxml-$(LIBNXML_VERSION)
 LIBNXML_UNZIP=zcat
