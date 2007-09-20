@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	fixesext gdb \
 	iptraf \
 	gphoto2 libgphoto2 \
-	libcdio libdvb libextractor \
+	libdvb \
 	libmtp libnsl libopensync loudmouth ltrace \
 	msynctool netatalk nget nickle \
 	obexftp \
