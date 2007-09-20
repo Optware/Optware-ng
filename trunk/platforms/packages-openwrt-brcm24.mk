@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	aspell \
 	bogofilter \
 	ecl erl-yaws \
-	fixesext gambit-c gdb \
+	fixesext gdb \
 	gsnmp \
 	iptraf \
 	gphoto2 libgphoto2 \
