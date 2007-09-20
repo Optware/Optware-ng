@@ -22,12 +22,12 @@ APR_UTIL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APR_UTIL_DESCRIPTION=Apache Portable Runtime utilities library
 APR_UTIL_SECTION=lib
 APR_UTIL_PRIORITY=optional
-APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), gdbm, expat, libdb $(APR_UTIL_TARGET_DEPENDS)
+APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), e2fsprogs, expat, gdbm, libdb
 
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=3
+APR_UTIL_IPK_VERSION=4
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -39,10 +39,9 @@ APR_UTIL_CONFIGURE_TARGET_ARGS= \
 		--with-ldap-library=$(STAGING_LIB_DIR) \
 		--with-ldap-include=$(STAGING_INCLUDE_DIR) \
 		--with-ldap
-APR_UTIL_TARGET_DEPENDS=, openldap-libs
+APR_UTIL_DEPENDS +=, openldap-libs
 else
 APR_UTIL_CONFIGURE_TARGET_ARGS=
-APR_UTIL_TARGET_DEPENDS=
 endif
 
 #
@@ -128,6 +127,7 @@ $(APR_UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_UTIL_SOURCE) $(APR_UTIL_PATCH
 	$(MAKE) gdbm-stage
 	$(MAKE) libdb-stage
 	$(MAKE) expat-stage
+	$(MAKE) e2fsprogs-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
@@ -165,7 +165,7 @@ endif
 	sed -i \
 	 -e '/^OBJECTS_all/{s/[^ \t]\{1,\}\(mysql\|sqlite.\|pgsql\).lo//g}' \
 		$(APR_UTIL_BUILD_DIR)/build-outputs.mk
-	touch $(APR_UTIL_BUILD_DIR)/.configured
+	touch $@
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
 
@@ -174,9 +174,9 @@ apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(APR_UTIL_BUILD_DIR)/.built: $(APR_UTIL_BUILD_DIR)/.configured
-	rm -f $(APR_UTIL_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) HOSTCC=$(HOSTCC)
-	touch $(APR_UTIL_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
