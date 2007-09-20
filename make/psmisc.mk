@@ -30,13 +30,16 @@ PSMISC_DESCRIPTION=A set of some small useful utilities that use the proc filesy
 PSMISC_SECTION=misc
 PSMISC_PRIORITY=optional
 PSMISC_DEPENDS=ncurses
+ifeq ($(GETTEXT_NLS), enable)
+PSMISC_DEPENDS+=, gettext
+endif
 PSMISC_SUGGESTS=
 PSMISC_CONFLICTS=
 
 #
 # PSMISC_IPK_VERSION should be incremented when the ipk changes.
 #
-PSMISC_IPK_VERSION=1
+PSMISC_IPK_VERSION=2
 
 #
 # PSMISC_CONFFILES should be a list of user-editable files
@@ -52,11 +55,10 @@ PSMISC_PATCHES=$(PSMISC_SOURCE_DIR)/src-killall.c.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PSMISC_CPPFLAGS=
-ifeq ($(LIBC_STYLE), uclibc)
-PSMISC_LDFLAGS=-lintl
-else
+PSMISC_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 PSMISC_LDFLAGS=
+ifeq ($(LIBC_STYLE), uclibc)
+PSMISC_LDFLAGS += -lintl
 endif
 
 #
@@ -109,6 +111,9 @@ psmisc-source: $(DL_DIR)/$(PSMISC_SOURCE) $(PSMISC_PATCHES)
 #
 $(PSMISC_BUILD_DIR)/.configured: $(DL_DIR)/$(PSMISC_SOURCE) $(PSMISC_PATCHES) make/psmisc.mk
 	$(MAKE) ncurses-stage
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PSMISC_DIR) $(PSMISC_BUILD_DIR)
 	$(PSMISC_UNZIP) $(DL_DIR)/$(PSMISC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PSMISC_PATCHES)" ; \
@@ -118,7 +123,7 @@ $(PSMISC_BUILD_DIR)/.configured: $(DL_DIR)/$(PSMISC_SOURCE) $(PSMISC_PATCHES) ma
 	if test "$(BUILD_DIR)/$(PSMISC_DIR)" != "$(PSMISC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PSMISC_DIR) $(PSMISC_BUILD_DIR) ; \
 	fi
-	sed -ie 's|/usr/share/locale|/opt/share/locale|' $(PSMISC_BUILD_DIR)/src/Makefile.in
+	sed -i -e 's|/usr/share/locale|/opt/share/locale|' $(PSMISC_BUILD_DIR)/src/Makefile.in
 	(cd $(PSMISC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PSMISC_CPPFLAGS)" \

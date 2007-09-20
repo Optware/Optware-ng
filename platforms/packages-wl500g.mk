@@ -27,7 +27,7 @@ BROKEN_PACKAGES = \
 	 ncmpc ncursesw netatalk newt nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
 	 pal p7zip pcapsipdump \
-	 postfix player psmisc py-mssql \
+	 postfix player py-mssql \
 	 rhtvision rtorrent rtpproxy \
 	 sablevm samba scli sdl ser snort \
 	 snownews sqsh swi-prolog syslog-ng \
