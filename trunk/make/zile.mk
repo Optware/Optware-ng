@@ -137,6 +137,7 @@ zile-unpack: $(ZILE_BUILD_DIR)/.configured
 #
 $(ZILE_BUILD_DIR)/.built: $(ZILE_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(ZILE_BUILD_DIR)/doc mkdoc CPPFLAGS="" LDFLAGS=""
 	$(MAKE) -C $(ZILE_BUILD_DIR)
 	touch $@
 
