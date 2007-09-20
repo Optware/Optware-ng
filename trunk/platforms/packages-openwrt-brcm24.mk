@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
 	aspell \
 	ecl \
 	fixesext gdb \
-	gsnmp \
 	iptraf \
 	gphoto2 libgphoto2 \
 	libcdio libdvb libextractor \
@@ -20,5 +19,5 @@ BROKEN_PACKAGES = \
 	player \
 	quagga \
 	recordext renderext \
-	rhtvision scli sdl ser \
+	rhtvision sdl ser \
 	vlc x11 xdpyinfo xext xpm xtst
