@@ -9,7 +9,6 @@ BROKEN_PACKAGES = \
 	arping \
 	aspell \
 	bogofilter \
-	bluez-utils \
 	ecl erl-yaws \
 	fixesext fuppes gambit-c gdb \
 	gnugo gsnmp \
