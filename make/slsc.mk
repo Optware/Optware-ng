@@ -118,7 +118,7 @@ $(SLSC_BUILD_DIR)/.configured: $(DL_DIR)/$(SLSC_SOURCE) $(SLSC_PATCHES) make/sls
 	sed -i.orig -e '/include_and_lib in $$JD_Search_Dirs/s|$$JD_Search_Dirs|$(STAGING_INCLUDE_DIR)/slang1,$(STAGING_LIB_DIR)/slang1|' \
 		$(SLSC_BUILD_DIR)/configure
 	sed -i.orig -e '/SLang_Error_Routine/d' $(SLSC_BUILD_DIR)/src/sc.c
-	sed -i.orig -e '/EXECLIBS *=/s|$$|$(STAGING_LDFLAGS)|' $(SLSC_BUILD_DIR)/src/Makefile.in
+	sed -i.orig -e '/EXECLIBS *=/s|$$| $(STAGING_LDFLAGS)|' $(SLSC_BUILD_DIR)/src/Makefile.in
 	(cd $(SLSC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SLSC_CPPFLAGS)" \
