@@ -2,6 +2,9 @@ LIBC_STYLE=uclibc
 TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 
+GETTEXT_NLS=enable
+STAGING_CPPFLAGS+= -DMB_CUR_MAX=1
+
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = mipsel-linux
