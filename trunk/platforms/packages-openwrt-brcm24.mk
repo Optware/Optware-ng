@@ -11,7 +11,6 @@ BROKEN_PACKAGES = \
 	ecl \
 	fixesext gdb \
 	iptraf \
-	gphoto2 libgphoto2 \
 	libdvb \
 	libmtp libnsl libopensync loudmouth ltrace \
 	msynctool netatalk nget nickle \
