@@ -17,7 +17,7 @@ BROKEN_PACKAGES = \
 	jamvm \
 	kismet \
 	lame launchtool ldconfig libopensync \
-	moc monotone msynctool mtr multitail \
+	moc monotone msynctool mtr \
 	nfs-server nfs-utils nickle ntop \
 	obexftp \
 	pango puppy \

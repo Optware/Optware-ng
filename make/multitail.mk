@@ -118,6 +118,9 @@ ifeq ($(LIBC_STYLE), uclibc)
 # defined(__GLIBC__) should be 0 for uclibc toolchains, but it is not?
 	sed -i -e 's|defined(__GLIBC__)|0|' $(MULTITAIL_BUILD_DIR)/error.c
 endif
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-ixp4xx, $(OPTWARE_TARGET)))
+	sed -i -e 's|#ifdef _GNU_SOURCE|#if 0|' $(MULTITAIL_BUILD_DIR)/misc.c
+endif
 #	(cd $(MULTITAIL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MULTITAIL_CPPFLAGS)" \
