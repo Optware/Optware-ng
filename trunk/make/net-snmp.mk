@@ -7,7 +7,7 @@
 # $Header$
 #
 NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
-NET_SNMP_VERSION=5.4
+NET_SNMP_VERSION=5.4.1
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
@@ -122,7 +122,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--with-logfile=/opt/var/logsnmpd.log \
 		--with-persistent-directory=/opt/var/net-snmp \
 	)
-	touch $(NET_SNMP_BUILD_DIR)/.configured
+	touch $@
 
 net-snmp-unpack: $(NET_SNMP_BUILD_DIR)/.configured
 
@@ -130,9 +130,9 @@ net-snmp-unpack: $(NET_SNMP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NET_SNMP_BUILD_DIR)/.built: $(NET_SNMP_BUILD_DIR)/.configured
-	rm -f $(NET_SNMP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NET_SNMP_BUILD_DIR)
-	touch $(NET_SNMP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,9 +143,9 @@ net-snmp: $(NET_SNMP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NET_SNMP_BUILD_DIR)/.staged: $(NET_SNMP_BUILD_DIR)/.built
-	rm -f $(NET_SNMP_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(NET_SNMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NET_SNMP_BUILD_DIR)/.staged
+	touch $@
 
 net-snmp-stage: $(NET_SNMP_BUILD_DIR)/.staged
 
@@ -154,7 +154,7 @@ net-snmp-stage: $(NET_SNMP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/net-snmp
 #
 $(NET_SNMP_IPK_DIR)/CONTROL/control:
-	@install -d $(NET_SNMP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: net-snmp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
