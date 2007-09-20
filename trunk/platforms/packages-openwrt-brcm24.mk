@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
 	libmtp libnsl libopensync loudmouth ltrace \
 	msynctool netatalk nget nickle \
 	obexftp \
-	player psmisc \
+	player \
 	quagga \
 	recordext renderext \
 	rhtvision scli sdl ser slsc \
