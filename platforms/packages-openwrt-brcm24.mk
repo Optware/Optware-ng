@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	bogofilter \
 	ecl erl-yaws \
 	fixesext fuppes gambit-c gdb \
-	gnugo gsnmp \
+	gsnmp \
 	iptraf \
 	gphoto2 libgphoto2 \
 	libcdio libdvb libextractor \

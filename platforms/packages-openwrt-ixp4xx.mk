@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	chillispot \
 	ecl \
 	fcgi ficy fish \
-	gdb gnu-smalltalk gnugo gnuplot gtk \
+	gdb gnu-smalltalk gnuplot gtk \
 	hpijs \
 	ice iptables \
 	jamvm \

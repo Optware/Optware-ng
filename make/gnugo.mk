@@ -36,7 +36,7 @@ GNUGO_CONFLICTS=
 #
 # GNUGO_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUGO_IPK_VERSION=1
+GNUGO_IPK_VERSION=2
 
 #
 # GNUGO_CONFFILES should be a list of user-editable files
@@ -53,6 +53,9 @@ GNUGO_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 GNUGO_CPPFLAGS=
+ifeq (true,$(NO_BUILTIN_MATH))
+GNUGO_CPPFLAGS+= -fno-builtin-ceil
+endif
 GNUGO_LDFLAGS=
 
 #
