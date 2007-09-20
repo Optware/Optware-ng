@@ -8,7 +8,6 @@ BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	arping \
 	aspell \
-	bogofilter \
 	ecl \
 	fixesext gdb \
 	gsnmp \
