@@ -4,7 +4,7 @@
 #
 #############################################################
 
-BIND_VERSION=9.3.4
+BIND_VERSION=9.4.1-P1
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_VERSION)
 BIND_SOURCE=bind-$(BIND_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_VERSION)
@@ -31,7 +31,7 @@ $(DL_DIR)/$(BIND_SOURCE):
 
 bind-source: $(DL_DIR)/$(BIND_SOURCE) $(BIND_PATCHES)
 
-$(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE)
+$(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(BIND_BUILD_DIR)
 	$(BIND_UNZIP) $(DL_DIR)/$(BIND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -55,20 +55,19 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE)
 		--localstatedir=/opt/var \
 		--with-randomdev=/dev/random \
 		--disable-getifaddrs ; }
-	{ cd $(BIND_BUILD_DIR) && \
-	sed -i.bak -f $(BIND_SOURCE_DIR)/bind_gengen_patch lib/dns/Makefile ; }
-	touch $(BIND_BUILD_DIR)/.configured
+	touch $@
 
 bind-unpack: $(BIND_BUILD_DIR)/.configured
 
 $(BIND_BUILD_DIR)/.built: $(BIND_BUILD_DIR)/.configured
-	$(MAKE) -C $(BIND_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) HOSTCC=$(HOSTCC)
-	touch $(BIND_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(BIND_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) BUILD_CC=$(HOSTCC)
+	touch $@
 
 bind: $(BIND_BUILD_DIR)/.built
 
 $(BIND_IPK_DIR)/CONTROL/control:
-	@install -d $(BIND_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bind" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -87,8 +86,12 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 	rm -rf $(BIND_IPK_DIR) $(BIND_IPK)
 	$(MAKE) -C $(BIND_BUILD_DIR) DESTDIR=$(BIND_IPK_DIR) install
 	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/lib/*.so.*
-	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/bin/{dig,host,nslookup,nsupdate}
-	$(STRIP_COMMAND) $(BIND_IPK_DIR)/opt/sbin/*
+	$(STRIP_COMMAND) \
+		$(BIND_IPK_DIR)/opt/bin/dig \
+		$(BIND_IPK_DIR)/opt/bin/host \
+		$(BIND_IPK_DIR)/opt/bin/nslookup \
+		$(BIND_IPK_DIR)/opt/bin/nsupdate \
+		$(BIND_IPK_DIR)/opt/sbin/*
 	# cp -p $(BIND_IPK_DIR)/opt/sbin/named $(BIND_IPK_DIR)/opt/sbin/named.exe
 	rm -rf $(BIND_IPK_DIR)/opt/{man,include}
 	rm -f $(BIND_IPK_DIR)/opt/lib/*.{la,a}
@@ -108,8 +111,5 @@ bind-clean:
 bind-dirclean:
 	rm -rf $(BUILD_DIR)/$(BIND_BUILD_DIR) $(BIND_BUILD_DIR) $(BIND_IPK_DIR) $(BIND_IPK)
 
-#
-# Some sanity check for the package.
-#
 bind-check: $(BIND_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BIND_IPK)
