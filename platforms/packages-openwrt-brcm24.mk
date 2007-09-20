@@ -22,4 +22,4 @@ BROKEN_PACKAGES = \
 	quagga \
 	recordext renderext \
 	rhtvision scli sdl ser \
-	tcsh vlc x11 xdpyinfo xext xpm xtst
+	vlc x11 xdpyinfo xext xpm xtst

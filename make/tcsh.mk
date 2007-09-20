@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TCSH_SITE=ftp://ftp.astron.com/pub/tcsh
-TCSH_VERSION=6.14.00
+TCSH_VERSION=6.15.00
 TCSH_SOURCE=tcsh-$(TCSH_VERSION).tar.gz
 TCSH_DIR=tcsh-$(TCSH_VERSION)
 TCSH_UNZIP=zcat
@@ -29,7 +29,11 @@ TCSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TCSH_DESCRIPTION=C shell with file name completion and command line editing.
 TCSH_SECTION=shell
 TCSH_PRIORITY=optional
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+TCSH_DEPENDS=libiconv
+else
 TCSH_DEPENDS=
+endif
 TCSH_SUGGESTS=
 TCSH_CONFLICTS=
 
@@ -76,8 +80,9 @@ TCSH_IPK=$(BUILD_DIR)/tcsh_$(TCSH_VERSION)-$(TCSH_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TCSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TCSH_SITE)/$(TCSH_SOURCE)
-
+	$(WGET) -P $(DL_DIR) $(TCSH_SITE)/$(TCSH_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(TCSH_SITE)/old/$(TCSH_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TCSH_SOURCE)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -104,7 +109,9 @@ tcsh-source: $(DL_DIR)/$(TCSH_SOURCE) $(TCSH_PATCHES)
 # shown below to make various patches to it.
 #
 $(TCSH_BUILD_DIR)/.configured: $(DL_DIR)/$(TCSH_SOURCE) $(TCSH_PATCHES) make/tcsh.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(TCSH_DIR) $(TCSH_BUILD_DIR)
 	$(TCSH_UNZIP) $(DL_DIR)/$(TCSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TCSH_PATCHES)" ; \
@@ -114,6 +121,7 @@ $(TCSH_BUILD_DIR)/.configured: $(DL_DIR)/$(TCSH_SOURCE) $(TCSH_PATCHES) make/tcs
 	if test "$(BUILD_DIR)/$(TCSH_DIR)" != "$(TCSH_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TCSH_DIR) $(TCSH_BUILD_DIR) ; \
 	fi
+	sed -i -e '/^	-strip/s/^/#/' $(TCSH_BUILD_DIR)/Makefile.in
 	(cd $(TCSH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCSH_CPPFLAGS)" \
@@ -127,8 +135,11 @@ $(TCSH_BUILD_DIR)/.configured: $(DL_DIR)/$(TCSH_SOURCE) $(TCSH_PATCHES) make/tcs
 		--disable-nls \
 		--disable-static \
 	)
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	sed -i -e 's/^#define NLS_CATALOGS/#undef NLS_CATALOGS/' $(TCSH_BUILD_DIR)/config_p.h
+endif
 #	$(PATCH_LIBTOOL) $(TCSH_BUILD_DIR)/libtool
-	touch $(TCSH_BUILD_DIR)/.configured
+	touch $@
 
 tcsh-unpack: $(TCSH_BUILD_DIR)/.configured
 
@@ -136,10 +147,11 @@ tcsh-unpack: $(TCSH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TCSH_BUILD_DIR)/.built: $(TCSH_BUILD_DIR)/.configured
-	rm -f $(TCSH_BUILD_DIR)/.built
-	$(MAKE) -C $(TCSH_BUILD_DIR) gethost CC=$(HOSTCC)
+	rm -f $@
+	$(MAKE) -C $(TCSH_BUILD_DIR) gethost \
+		CC=$(HOSTCC) LDFLAGS="" EXTRALIBS=""
 	$(MAKE) -C $(TCSH_BUILD_DIR)
-	touch $(TCSH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,9 +162,9 @@ tcsh: $(TCSH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TCSH_BUILD_DIR)/.staged: $(TCSH_BUILD_DIR)/.built
-	rm -f $(TCSH_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(TCSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TCSH_BUILD_DIR)/.staged
+	touch $@
 
 tcsh-stage: $(TCSH_BUILD_DIR)/.staged
 
