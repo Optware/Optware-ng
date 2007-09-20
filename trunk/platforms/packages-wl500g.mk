@@ -31,7 +31,7 @@ BROKEN_PACKAGES = \
 	 rhtvision rtorrent rtpproxy \
 	 sablevm samba scli sdl ser snort \
 	 snownews sqsh swi-prolog syslog-ng \
-	 tcsh tshark tnftpd transcode \
+	 tshark tnftpd transcode \
 	 unrar \
 	 vlc \
 	 w3m weechat wget wxbase x11 \
