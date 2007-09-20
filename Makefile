@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	castget
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -165,7 +164,8 @@ COMMON_CROSS_PACKAGES = \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	cabextract calc calcurse catdoc ccollect ccxstream cdargs \
+	cabextract calc calcurse castget \
+	catdoc ccollect ccxstream cdargs \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver clips cmdftp \
 	cogito connect coreutils cpio cron \
