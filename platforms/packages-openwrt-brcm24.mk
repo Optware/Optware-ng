@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	arping \
 	aspell \
 	bogofilter \
-	ecl erl-yaws \
+	ecl \
 	fixesext gdb \
 	gsnmp \
 	iptraf \
