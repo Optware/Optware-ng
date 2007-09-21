@@ -20,7 +20,13 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
+ifneq (wl500g, $(OPTWARE_TARGET))
+GDB_VERSION=6.6
+GDB_IPK_VERSION=1
+else
 GDB_VERSION=6.3
+GDB_IPK_VERSION=3
+endif
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.bz2
 GDB_DIR=gdb-$(GDB_VERSION)
 GDB_UNZIP=bzcat
@@ -34,10 +40,6 @@ GDB_DEPENDS+=, libiconv
 endif
 GDB_CONFLICTS=
 
-#
-# GDB_IPK_VERSION should be incremented when the ipk changes.
-#
-GDB_IPK_VERSION=3
 
 #
 # GDB_CONFFILES should be a list of user-editable files
@@ -117,9 +119,12 @@ endif
 	$(GDB_UNZIP) $(DL_DIR)/$(GDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GDB_PATCHES) | patch -d $(BUILD_DIR)/$(GDB_DIR) -p1
 	mv $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
+	for f in `find $(GDB_BUILD_DIR) -name config.rpath`; do \
+		sed -i.orig -e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' $$f; \
+	done
 	(cd $(GDB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)" \
+		CPPFLAGS="`echo '$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)' | sed 's/  */ /g'`" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GDB_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -153,7 +158,7 @@ $(GDB_BUILD_DIR)/.built: $(GDB_BUILD_DIR)/.configured
 	bash_cv_must_reinstall_sighandlers=no \
 	bash_cv_func_strcoll_broken=no \
 	bash_cv_have_mbstate_t=yes \
-	CPPFLAGS="$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)" \
+	CPPFLAGS="`echo '$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)' | sed 's/  */ /g'`" \
 	PROFILE_CFLAGS="$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(GDB_LDFLAGS)" 
 	touch $@
