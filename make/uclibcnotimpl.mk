@@ -62,7 +62,7 @@ UCLIBCNOTIMPL_LDFLAGS=
 UCLIBCNOTIMPL_BUILD_DIR=$(BUILD_DIR)/uclibcnotimpl
 UCLIBCNOTIMPL_SOURCE_DIR=$(SOURCE_DIR)/uclibcnotimpl
 UCLIBCNOTIMPL_IPK_DIR=$(BUILD_DIR)/uclibcnotimpl-$(UCLIBCNOTIMPL_VERSION)-ipk
-UCLIBCNOTIMPL_IPK=$(BUILD_DIR)/UCLIBCNOTIMPL_$(UCLIBCNOTIMPL_VERSION)-$(UCLIBCNOTIMPL_IPK_VERSION)_$(TARGET_ARCH).ipk
+UCLIBCNOTIMPL_IPK=$(BUILD_DIR)/uclibcnotimpl_$(UCLIBCNOTIMPL_VERSION)-$(UCLIBCNOTIMPL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: uclibcnotimpl-source uclibcnotimpl-unpack uclibcnotimpl uclibcnotimpl-stage uclibcnotimpl-ipk uclibcnotimpl-clean uclibcnotimpl-dirclean uclibcnotimpl-check
 
@@ -110,7 +110,6 @@ $(UCLIBCNOTIMPL_BUILD_DIR)/.built: $(UCLIBCNOTIMPL_BUILD_DIR)/.configured
 	$(TARGET_CC) $(TARGET_CFLAGS) -Wall \
 		-c $(UCLIBCNOTIMPL_BUILD_DIR)/math.c -o \
 		$(UCLIBCNOTIMPL_BUILD_DIR)/math.o
-
 	$(TARGET_CROSS)ar rc $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
 		$(UCLIBCNOTIMPL_BUILD_DIR)/*.o
 #	$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR)
@@ -165,7 +164,7 @@ $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(UCLIBCNOTIMPL_IPK): $(UCLIBCNOTIMPL_BUILD_DIR)/.built
-	rm -rf $(UCLIBCNOTIMPL_IPK_DIR) $(BUILD_DIR)/UCLIBCNOTIMPL_*_$(TARGET_ARCH).ipk
+	rm -rf $(UCLIBCNOTIMPL_IPK_DIR) $(BUILD_DIR)/uclibcnotimpl_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR) DESTDIR=$(UCLIBCNOTIMPL_IPK_DIR) install-strip
 	install -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/lib
 	install -m 644  $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
