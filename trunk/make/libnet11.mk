@@ -128,6 +128,9 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	else sed -i -e '/^[ 	]*ac_cv_libnet_endianess=/s|=.*|=lil|' $(LIBNET11_BUILD_DIR)/configure; \
 	fi
 endif
+ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
+	sed -i.orig -e 's/^inline //' $(LIBNET11_BUILD_DIR)/include/libnet/libnet-functions.h
+endif
 	cp $(SOURCE_DIR)/common/config.* $(LIBNET11_BUILD_DIR)/
 	(cd $(LIBNET11_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \

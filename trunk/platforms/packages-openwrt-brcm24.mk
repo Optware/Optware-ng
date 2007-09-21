@@ -6,7 +6,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	buildroot uclibc-opt \
-	arping \
 	aspell \
 	ecl \
 	fixesext \
