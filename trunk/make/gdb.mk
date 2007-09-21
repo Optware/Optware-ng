@@ -29,12 +29,15 @@ GDB_DESCRIPTION=gdb is the standard GNU debugger
 GDB_SECTION=utility
 GDB_PRIORITY=optional
 GDB_DEPENDS=termcap
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GDB_DEPENDS+=, libiconv
+endif
 GDB_CONFLICTS=
 
 #
 # GDB_IPK_VERSION should be incremented when the ipk changes.
 #
-GDB_IPK_VERSION=2
+GDB_IPK_VERSION=3
 
 #
 # GDB_CONFFILES should be a list of user-editable files
@@ -107,6 +110,9 @@ gdb-source: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 
 $(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 	$(MAKE) termcap-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
 	$(GDB_UNZIP) $(DL_DIR)/$(GDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GDB_PATCHES) | patch -d $(BUILD_DIR)/$(GDB_DIR) -p1
@@ -123,7 +129,7 @@ $(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 		--disable-nls \
 		--disable-tui \
 	)
-	touch $(GDB_BUILD_DIR)/.configured
+	touch $@
 
 gdb-unpack: $(GDB_BUILD_DIR)/.configured
 
@@ -140,7 +146,7 @@ gdb-unpack: $(GDB_BUILD_DIR)/.configured
 #
 
 $(GDB_BUILD_DIR)/.built: $(GDB_BUILD_DIR)/.configured
-	rm -f $(GDB_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GDB_BUILD_DIR) \
 	ac_cv_func_fork_works=yes \
 	bash_cv_func_sigsetjmp=present \
@@ -148,8 +154,9 @@ $(GDB_BUILD_DIR)/.built: $(GDB_BUILD_DIR)/.configured
 	bash_cv_func_strcoll_broken=no \
 	bash_cv_have_mbstate_t=yes \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)" \
+	PROFILE_CFLAGS="$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(GDB_LDFLAGS)" 
-	touch $(GDB_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -171,7 +178,7 @@ gdb: $(GDB_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gdb
 #
 $(GDB_IPK_DIR)/CONTROL/control:
-	@install -d $(GDB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gdb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -210,6 +217,7 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)/opt install
 	rm -f $(GDB_IPK_DIR)/opt/info/standards.info
+	$(STRIP_COMMAND) $(GDB_IPK_DIR)/opt/bin/run
 #	install -d $(GDB_IPK_DIR)/opt/etc/
 #	install -m 644 $(GDB_SOURCE_DIR)/gdb.conf $(GDB_IPK_DIR)/opt/etc/gdb.conf
 #	install -d $(GDB_IPK_DIR)/opt/etc/init.d
@@ -237,3 +245,9 @@ gdb-clean:
 #
 gdb-dirclean:
 	rm -rf $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR) $(GDB_IPK_DIR) $(GDB_IPK)
+
+#
+# Some sanity check for the package.
+#
+gdb-check: $(GDB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GDB_IPK)
