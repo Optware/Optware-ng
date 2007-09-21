@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	$(filter-out libstdc++ newsbeuter, $(UCLIBC_BROKEN_PACKAGES)) \
 	amule asterisk \
 	bluez-hcidump chillispot \
-	dump ficy gdb \
+	dump ficy \
 	gnuplot \
 	iptraf \
 	ircd-hybrid \
