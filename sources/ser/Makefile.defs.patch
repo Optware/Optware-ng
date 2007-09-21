@@ -1,5 +1,5 @@
---- ser-0.8.14/Makefile.defs~	2005-03-28 15:00:38.789566896 -0800
-+++ ser-0.8.14/Makefile.defs	2005-03-28 15:02:47.044069248 -0800
+--- ser/Makefile.defs.orig	2004-07-27 04:38:33.000000000 -0700
++++ ser/Makefile.defs	2007-09-20 20:01:35.000000000 -0700
 @@ -520,7 +520,7 @@
  		# if gcc 
  ifeq		($(CC_NAME), gcc)
@@ -9,6 +9,23 @@
  					-Wall   \
  			#if gcc 3.0
  ifeq			($(CC_SHORTVER), 3.0)
+@@ -555,14 +555,14 @@
+ 					-Wall   \
+ 			#if gcc 3.0
+ ifeq			($(CC_SHORTVER), 3.0)
+-					CFLAGS+= -mcpu=r3000
++#					CFLAGS+= -mcpu=r3000
+ 							#-mcpu=athlon
+ else
+ ifeq			($(CC_SHORTVER), 2.9x) #older gcc version (2.9[1-5])
+ $(warning 			Old gcc detected ($(CC_SHORTVER)), use  gcc 3.0.x \
+ 					for better results)
+ 					
+-					CFLAGS+=-mcpu=r3000
++#					CFLAGS+=-mcpu=r3000
+ else
+ 				#really old version
+ $(warning			You are using an old and unsupported gcc \
 @@ -579,6 +579,7 @@
  
  
