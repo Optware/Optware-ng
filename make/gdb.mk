@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
-ifneq (wl500g, $(OPTWARE_TARGET))
+ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 GDB_VERSION=6.6
 GDB_IPK_VERSION=1
 else
