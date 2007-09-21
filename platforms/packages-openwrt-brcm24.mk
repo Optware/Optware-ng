@@ -12,10 +12,10 @@ BROKEN_PACKAGES = \
 	fixesext gdb \
 	iptraf \
 	libdvb \
-	libmtp libnsl ltrace \
-	netatalk nget nickle \
+	libnsl ltrace \
+	nget nickle \
 	player \
 	quagga \
 	recordext renderext \
-	rhtvision sdl ser \
+	sdl ser \
 	vlc x11 xdpyinfo xext xpm xtst
