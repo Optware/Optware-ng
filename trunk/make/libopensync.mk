@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBOPENSYNC_SITE=http://www.opensync.org/attachment/wiki/download
-LIBOPENSYNC_VERSION=0.21
+LIBOPENSYNC_VERSION=0.22
 LIBOPENSYNC_SOURCE=libopensync-$(LIBOPENSYNC_VERSION).tar.bz2
 LIBOPENSYNC_DIR=libopensync-$(LIBOPENSYNC_VERSION)
 LIBOPENSYNC_UNZIP=bzcat
@@ -30,6 +30,9 @@ LIBOPENSYNC_DESCRIPTION=A synchronization engine.
 LIBOPENSYNC_SECTION=misc
 LIBOPENSYNC_PRIORITY=optional
 LIBOPENSYNC_DEPENDS=glib, libxml2, sqlite
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+LIBOPENSYNC_DEPENDS+=, libiconv
+endif
 LIBOPENSYNC_SUGGESTS=
 LIBOPENSYNC_CONFLICTS=
 
@@ -106,6 +109,9 @@ libopensync-source: $(DL_DIR)/$(LIBOPENSYNC_SOURCE) $(LIBOPENSYNC_PATCHES)
 #
 $(LIBOPENSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOPENSYNC_SOURCE) $(LIBOPENSYNC_PATCHES) make/libopensync.mk
 	$(MAKE) glib-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) libxml2-stage
 	$(MAKE) sqlite-stage
 	rm -rf $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(LIBOPENSYNC_BUILD_DIR)
@@ -117,6 +123,9 @@ $(LIBOPENSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOPENSYNC_SOURCE) $(LIBOPENS
 	if test "$(BUILD_DIR)/$(LIBOPENSYNC_DIR)" != "$(LIBOPENSYNC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBOPENSYNC_DIR) $(LIBOPENSYNC_BUILD_DIR) ; \
 	fi
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	sed -i -e 's/#ifdef SOLARIS/#if 1/' $(LIBOPENSYNC_BUILD_DIR)/formats/vformats-xml/vformat.c
+endif
 	(cd $(LIBOPENSYNC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOPENSYNC_CPPFLAGS)" \
