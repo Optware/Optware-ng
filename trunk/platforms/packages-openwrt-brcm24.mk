@@ -12,9 +12,8 @@ BROKEN_PACKAGES = \
 	fixesext gdb \
 	iptraf \
 	libdvb \
-	libmtp libnsl libopensync ltrace \
-	msynctool netatalk nget nickle \
-	obexftp \
+	libmtp libnsl ltrace \
+	netatalk nget nickle \
 	player \
 	quagga \
 	recordext renderext \

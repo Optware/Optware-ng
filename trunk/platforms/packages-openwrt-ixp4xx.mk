@@ -16,10 +16,9 @@ BROKEN_PACKAGES = \
 	ice iptables \
 	jamvm \
 	kismet \
-	lame launchtool ldconfig libopensync \
-	moc monotone msynctool mtr \
+	lame launchtool ldconfig \
+	moc monotone mtr \
 	nfs-server nfs-utils nickle ntop \
-	obexftp \
 	pango puppy \
 	qemu qemu-libc-i386 quagga quickie \
 	sm syx \
