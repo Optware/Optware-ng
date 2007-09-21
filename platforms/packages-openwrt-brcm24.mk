@@ -18,4 +18,4 @@ BROKEN_PACKAGES = \
 	quagga \
 	recordext renderext \
 	sdl \
-	vlc x11 xdpyinfo xext xpm xtst
+	x11 xdpyinfo xext xpm xtst
