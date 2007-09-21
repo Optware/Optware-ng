@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	arping \
 	aspell \
 	ecl \
-	fixesext gdb \
+	fixesext \
 	iptraf \
 	libdvb \
 	libnsl ltrace \
