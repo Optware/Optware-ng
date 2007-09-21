@@ -135,7 +135,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ifeq (uclibc, $(LIBC_STYLE))
 	sed -i -e 's/^#define NLS_CATALOGS/#undef NLS_CATALOGS/' $(TCSH_BUILD_DIR)/config_p.h
 endif
 #	$(PATCH_LIBTOOL) $(TCSH_BUILD_DIR)/libtool
