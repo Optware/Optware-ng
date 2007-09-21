@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSYNCTOOL_SITE=http://www.opensync.org/attachment/wiki/download
-MSYNCTOOL_VERSION=0.21
+MSYNCTOOL_VERSION=0.22
 MSYNCTOOL_SOURCE=msynctool-$(MSYNCTOOL_VERSION).tar.bz2
 MSYNCTOOL_DIR=msynctool-$(MSYNCTOOL_VERSION)
 MSYNCTOOL_UNZIP=bzcat
@@ -29,7 +29,7 @@ MSYNCTOOL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MSYNCTOOL_DESCRIPTION=CLI for opensync.
 MSYNCTOOL_SECTION=misc
 MSYNCTOOL_PRIORITY=optional
-MSYNCTOOL_DEPENDS=libopensync
+MSYNCTOOL_DEPENDS=libopensync, libxml2
 MSYNCTOOL_SUGGESTS=
 MSYNCTOOL_CONFLICTS=
 
@@ -106,6 +106,7 @@ msynctool-source: $(DL_DIR)/$(MSYNCTOOL_SOURCE) $(MSYNCTOOL_PATCHES)
 #
 $(MSYNCTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(MSYNCTOOL_SOURCE) $(MSYNCTOOL_PATCHES) make/msynctool.mk
 	$(MAKE) libopensync-stage
+	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(MSYNCTOOL_DIR) $(MSYNCTOOL_BUILD_DIR)
 	$(MSYNCTOOL_UNZIP) $(DL_DIR)/$(MSYNCTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSYNCTOOL_PATCHES)" ; \
@@ -116,10 +117,13 @@ $(MSYNCTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(MSYNCTOOL_SOURCE) $(MSYNCTOOL_PA
 		then mv $(BUILD_DIR)/$(MSYNCTOOL_DIR) $(MSYNCTOOL_BUILD_DIR) ; \
 	fi
 	(cd $(MSYNCTOOL_BUILD_DIR); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
+			autoreconf -sfi; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MSYNCTOOL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MSYNCTOOL_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
