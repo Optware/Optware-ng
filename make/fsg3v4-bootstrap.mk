@@ -25,29 +25,26 @@ FSG3V4_BOOTSTRAP_IPK_DIR=$(BUILD_DIR)/fsg3v4-bootstrap-$(FSG3V4_BOOTSTRAP_VERSIO
 FSG3V4_BOOTSTRAP_IPK=$(BUILD_DIR)/fsg3v4-bootstrap_$(FSG3V4_BOOTSTRAP_VERSION)-$(FSG3V4_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 FSG3V4_BOOTSTRAP_XSH=$(BUILD_DIR)/fsg3v4-bootstrap_$(FSG3V4_BOOTSTRAP_VERSION)-$(FSG3V4_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
 
-# Additional ipk's we require
-FSG3V4_DIFFUTILS_IPK=diffutils_2.8.1-?_$(TARGET_ARCH).ipk
-
 $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.configured: $(FSG3V4_BOOTSTRAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(FSG3V4_BOOTSTRAP_DIR) $(FSG3V4_BOOTSTRAP_BUILD_DIR)
 	mkdir -p $(FSG3V4_BOOTSTRAP_BUILD_DIR)
-	touch $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.configured
+	touch $@
 
 fsg3v4-bootstrap-unpack: $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.configured
 
 $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built: $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.configured
-	rm -f $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built
+	rm -f $@
 #	cp -a $(TARGET_LIBDIR)/* $(FSG3V4_BOOTSTRAP_BUILD_DIR)/
 #	find $(FSG3V4_BOOTSTRAP_BUILD_DIR)/ -type l | xargs rm -f
 #	rm $(FSG3V4_BOOTSTRAP_BUILD_DIR)/libc.so*
-	touch $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built
+	touch $@
 
 fsg3v4-bootstrap: $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built
 
 fsg3v4-bootstrap-stage:
 
 $(FSG3V4_BOOTSTRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(FSG3V4_BOOTSTRAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: fsg3v4-bootstrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -88,11 +85,13 @@ $(FSG3V4_BOOTSTRAP_IPK): $(FSG3V4_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(FSG3V4_BOOTSTRAP_SOURCE_DIR)/postinst $(FSG3V4_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3V4_BOOTSTRAP_IPK_DIR)
 
-$(FSG3V4_BOOTSTRAP_XSH): $(FSG3V4_BOOTSTRAP_IPK) $(DIFFUTILS_IPK)
+$(FSG3V4_BOOTSTRAP_XSH): $(FSG3V4_BOOTSTRAP_IPK) $(BUILD_DIR)/diffutils/.ipk
 	rm -rf $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(FSG3V4_BOOTSTRAP_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
-	cp $(BUILD_DIR)/$(FSG3V4_DIFFUTILS_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/diffutils.ipk
+	# Additional ipk's we require
+	cp $(DIFFUTILS_IPK) $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap/diffutils.ipk
+	# bootstrap script
 	cp $(FSG3V4_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(FSG3V4_BOOTSTRAP_BUILD_DIR)/bootstrap
 
 	# If you should ever change the archive header (echo lines below), 

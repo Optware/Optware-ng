@@ -34,23 +34,23 @@ FSG3_WGET_SSL_IPK=wget-ssl_1.10.2-?_$(TARGET_ARCH).ipk
 $(FSG3_BOOTSTRAP_BUILD_DIR)/.configured: $(FSG3_BOOTSTRAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(FSG3_BOOTSTRAP_DIR) $(FSG3_BOOTSTRAP_BUILD_DIR)
 	mkdir -p $(FSG3_BOOTSTRAP_BUILD_DIR)
-	touch $(FSG3_BOOTSTRAP_BUILD_DIR)/.configured
+	touch $@
 
 fsg3-bootstrap-unpack: $(FSG3_BOOTSTRAP_BUILD_DIR)/.configured
 
 $(FSG3_BOOTSTRAP_BUILD_DIR)/.built: $(FSG3_BOOTSTRAP_BUILD_DIR)/.configured
-	rm -f $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
+	rm -f $@
 	cp -a $(TARGET_LIBDIR)/* $(FSG3_BOOTSTRAP_BUILD_DIR)/
 #	find $(FSG3_BOOTSTRAP_BUILD_DIR)/ -type l | xargs rm -f
 	rm $(FSG3_BOOTSTRAP_BUILD_DIR)/libc.so*
-	touch $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
+	touch $@
 
 fsg3-bootstrap: $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 
 fsg3-bootstrap-stage:
 
 $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: fsg3-bootstrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -87,7 +87,8 @@ $(FSG3_BOOTSTRAP_IPK): $(FSG3_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(FSG3_BOOTSTRAP_SOURCE_DIR)/postinst $(FSG3_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FSG3_BOOTSTRAP_IPK_DIR)
 
-$(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-ssl-ipk
+$(FSG3_BOOTSTRAP_XSH): $(FSG3_BOOTSTRAP_IPK) \
+	    $(BUILD_DIR)/ipkg-opt/.ipk $(BUILD_DIR)/openssl/.ipk $(BUILD_DIR)/wget-ssl/.ipk
 	rm -rf $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(FSG3_BOOTSTRAP_IPK) $(FSG3_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk

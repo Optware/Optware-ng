@@ -25,16 +25,10 @@ TS72XX_BOOTSTRAP_IPK_DIR=$(BUILD_DIR)/ts72xx-bootstrap-$(TS72XX_BOOTSTRAP_VERSIO
 TS72XX_BOOTSTRAP_IPK=$(BUILD_DIR)/ts72xx-bootstrap_$(TS72XX_BOOTSTRAP_VERSION)-$(TS72XX_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).ipk
 TS72XX_BOOTSTRAP_XSH=$(BUILD_DIR)/ts72xx-bootstrap_$(TS72XX_BOOTSTRAP_VERSION)-$(TS72XX_BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
 
-# Additional ipk's we require
-TS72XX_IPKG_IPK=$(IPKG-OPT_IPK)
-TS72XX_OPENSSL_IPK=openssl_0.9.7?-?_$(TARGET_ARCH).ipk
-TS72XX_WGET_SSL_IPK=wget-ssl_1.10.2-?_$(TARGET_ARCH).ipk
-
-
 $(TS72XX_BOOTSTRAP_BUILD_DIR)/.configured: $(TS72XX_BOOTSTRAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(TS72XX_BOOTSTRAP_DIR) $(TS72XX_BOOTSTRAP_BUILD_DIR)
 	mkdir -p $(TS72XX_BOOTSTRAP_BUILD_DIR)
-	touch $(TS72XX_BOOTSTRAP_BUILD_DIR)/.configured
+	touch $@
 
 ts72xx-bootstrap-unpack: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.configured
 
@@ -45,12 +39,12 @@ $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.configured
 	rm $(TS72XX_BOOTSTRAP_BUILD_DIR)/libc.so
 	cp $(TARGET_LIBDIR)/../sbin/ldconfig $(TS72XX_BOOTSTRAP_BUILD_DIR)/
 	cp $(IPKG-OPT_SOURCE_DIR)/rc.optware $(TS72XX_BOOTSTRAP_BUILD_DIR)/
-	touch $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
+	touch $@
 
 ts72xx-bootstrap: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
 
 $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
-	rm -f $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/lib
 	install -d $(STAGING_DIR)/opt/sbin
 	install -d $(STAGING_DIR)/opt/etc
@@ -63,12 +57,12 @@ $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/ldscripts/* $(STAGING_DIR)/opt/lib/ldscripts	
 	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/ldconfig $(STAGING_DIR)/opt/sbin
 	install -m 755 $(TS72XX_BOOTSTRAP_BUILD_DIR)/rc.optware $(STAGING_DIR)/opt/etc
-	touch $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged
+	touch $@
 
 ts72xx-bootstrap-stage: $(TS72XX_BOOTSTRAP_BUILD_DIR)/.staged
 
 $(TS72XX_BOOTSTRAP_IPK_DIR)/CONTROL/control:
-	@install -d $(TS72XX_BOOTSTRAP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ts72xx-bootstrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -105,13 +99,16 @@ $(TS72XX_BOOTSTRAP_IPK): $(TS72XX_BOOTSTRAP_BUILD_DIR)/.built
 	install -m 644 $(TS72XX_BOOTSTRAP_SOURCE_DIR)/postinst $(TS72XX_BOOTSTRAP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TS72XX_BOOTSTRAP_IPK_DIR)
 
-$(TS72XX_BOOTSTRAP_XSH): $(TS72XX_BOOTSTRAP_IPK) ipkg-opt-ipk openssl-ipk wget-ssl-ipk
+$(TS72XX_BOOTSTRAP_XSH): $(TS72XX_BOOTSTRAP_IPK) \
+		$(BUILD_DIR)/ipkg-opt/.ipk $(BUILD_DIR)/openssl/.ipk $(BUILD_DIR)/wget-ssl/.ipk
 	rm -rf $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 	mkdir -p $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(TS72XX_BOOTSTRAP_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.ipk
-	cp $(TS72XX_IPKG_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
-	cp $(BUILD_DIR)/$(TS72XX_OPENSSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
-	cp $(BUILD_DIR)/$(TS72XX_WGET_SSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
+	# Additional ipk's we require
+	cp $(IPKG-OPT_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
+	cp $(OPENSSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
+	cp $(WGET-SSL_IPK) $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
+	# bootstrap scripts
 	cp $(TS72XX_BOOTSTRAP_SOURCE_DIR)/bootstrap.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 	cp $(TS72XX_BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(TS72XX_BOOTSTRAP_BUILD_DIR)/bootstrap
 
