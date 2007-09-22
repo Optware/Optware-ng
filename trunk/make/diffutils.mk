@@ -102,7 +102,7 @@ $(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PA
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(DIFFUTILS_BUILD_DIR)/.configured
+	touch $@
 
 diffutils-unpack: $(DIFFUTILS_BUILD_DIR)/.configured
 
@@ -111,9 +111,9 @@ diffutils-unpack: $(DIFFUTILS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(DIFFUTILS_BUILD_DIR)/.built: $(DIFFUTILS_BUILD_DIR)/.configured
-	rm -f $(DIFFUTILS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(DIFFUTILS_BUILD_DIR)
-	touch $(DIFFUTILS_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -124,7 +124,8 @@ diffutils: $(DIFFUTILS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION): $(DIFFUTILS_BUILD_DIR)/.built
+$(DIFFUTILS_BUILD_DIR)/.staged: $(DIFFUTILS_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include
 	install -m 644 $(DIFFUTILS_BUILD_DIR)/diffutils.h $(STAGING_DIR)/opt/include
 	install -d $(STAGING_DIR)/opt/lib
@@ -132,15 +133,16 @@ $(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION): $(DIFFUTILS_BUILD_D
 	install -m 644 $(DIFFUTILS_BUILD_DIR)/libdiffutils.so.$(DIFFUTILS_VERSION) $(STAGING_DIR)/opt/lib
 	cd $(STAGING_DIR)/opt/lib && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libdiffutils.so.$(DIFFUTILS_VERSION) libdiffutils.so
+	touch $@
 
-diffutils-stage: $(STAGING_DIR)/opt/lib/libdiffutils.so.$(DIFFUTILS_VERSION)
+diffutils-stage: $(DIFFUTILS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/diffutils
 #
 $(DIFFUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(DIFFUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: diffutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,10 +177,13 @@ $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	$(MAKE) $(DIFFUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIFFUTILS_IPK_DIR)
 
+$(DIFFUTILS_BUILD_DIR)/.ipk: $(DIFFUTILS_IPK)
+	touch $@
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-diffutils-ipk: $(DIFFUTILS_IPK)
+diffutils-ipk: $(DIFFUTILS_BUILD_DIR)/.ipk
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -192,3 +197,9 @@ diffutils-clean:
 #
 diffutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(DIFFUTILS_DIR) $(DIFFUTILS_BUILD_DIR) $(DIFFUTILS_IPK_DIR) $(DIFFUTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+diffutils-check: $(DIFFUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DIFFUTILS_IPK)

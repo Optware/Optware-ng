@@ -128,10 +128,10 @@ $(WGET_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(WGET_BUILD_DIR)/.configured
+	touch $@
 
 $(WGET-SSL_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
-ifneq ($(HOST_MACHINE),armv5b)
+ifneq ($(HOSTCC),$(TARGET_CC))
 	$(MAKE) openssl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(WGET-SSL_BUILD_DIR)
@@ -150,7 +150,7 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(WGET-SSL_BUILD_DIR)/.configured
+	touch $@
 
 
 wget-unpack: $(WGET_BUILD_DIR)/.configured
@@ -160,14 +160,14 @@ wget-ssl-unpack: $(WGET-SSL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WGET_BUILD_DIR)/.built: $(WGET_BUILD_DIR)/.configured
-	rm -f $(WGET_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(WGET_BUILD_DIR)
-	touch $(WGET_BUILD_DIR)/.built
+	touch $@
 
 $(WGET-SSL_BUILD_DIR)/.built: $(WGET-SSL_BUILD_DIR)/.configured
-	rm -f $(WGET-SSL_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(WGET-SSL_BUILD_DIR)
-	touch $(WGET-SSL_BUILD_DIR)/.built
+	touch $@
 
 #
 #
@@ -179,7 +179,7 @@ wget-ssl: $(WGET-SSL_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/wget
 #
 $(WGET_IPK_DIR)/CONTROL/control:
-	@install -d $(WGET_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: wget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,7 +193,7 @@ $(WGET_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(WGET_CONFLICTS)" >>$@
 
 $(WGET-SSL_IPK_DIR)/CONTROL/control:
-	@install -d $(WGET-SSL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: wget-ssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -234,6 +234,9 @@ $(WGET_IPK): $(WGET_BUILD_DIR)/.built
 	echo $(WGET_CONFFILES) | sed -e 's/ /\n/g' > $(WGET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WGET_IPK_DIR)
 
+$(WGET_BUILD_DIR)/.ipk: $(WGET_IPK)
+	touch $@
+
 $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 	rm -rf $(WGET-SSL_IPK_DIR) $(BUILD_DIR)/wget-ssl_*_$(TARGET_ARCH).ipk
 	install -d $(WGET-SSL_IPK_DIR)/opt/bin
@@ -247,6 +250,9 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 #	install -m 644 $(WGET-SSL_SOURCE_DIR)/prerm $(WGET-SSL_IPK_DIR)/CONTROL/prerm
 	echo $(WGET_CONFFILES) | sed -e 's/ /\n/g' > $(WGET-SSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WGET-SSL_IPK_DIR)
+
+$(WGET-SSL_BUILD_DIR)/.ipk: $(WGET-SSL_IPK)
+	touch $@
 
 #
 # This is called from the top level makefile to create the IPK file.
