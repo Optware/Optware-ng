@@ -138,7 +138,7 @@ $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(IPKG-OPT_BUILD_DIR)/.configured
+	touch $@
 
 #		PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 
@@ -148,9 +148,9 @@ ipkg-opt-unpack: $(IPKG-OPT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(IPKG-OPT_BUILD_DIR)/.built: $(IPKG-OPT_BUILD_DIR)/.configured
-	rm -f $(IPKG-OPT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(IPKG-OPT_BUILD_DIR)
-	touch $(IPKG-OPT_BUILD_DIR)/.built
+	touch $@
 
 #	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" 
 
@@ -164,7 +164,7 @@ ipkg-opt: $(IPKG-OPT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ipkg-opt
 #
 $(IPKG-OPT_IPK_DIR)/CONTROL/control:
-	@install -d $(IPKG-OPT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ipkg-opt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -217,10 +217,14 @@ endif
 	echo $(IPKG-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(IPKG-OPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG-OPT_IPK_DIR)
 
+$(IPKG-OPT_BUILD_DIR)/.ipk: $(IPKG-OPT_IPK)
+	rm -f $@
+	touch $@
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-ipkg-opt-ipk: $(IPKG-OPT_IPK)
+ipkg-opt-ipk: $(IPKG-OPT_BUILD_DIR)/.ipk
 
 #
 # This is called from the top level makefile to clean all of the built files.

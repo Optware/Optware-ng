@@ -85,11 +85,12 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			$(OPENSSL_ARCH) \
 	)
 	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(OPENSSL_BUILD_DIR)/apps/Makefile
-	touch $(OPENSSL_BUILD_DIR)/.configured
+	touch $@
 
 openssl-unpack: $(OPENSSL_BUILD_DIR)/.configured
 
-$(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/.configured
+$(OPENSSL_BUILD_DIR)/.built: $(OPENSSL_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) zlib-stage
 	$(MAKE) -C $(OPENSSL_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -98,10 +99,12 @@ $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/.con
 		MANDIR=/opt/man \
 		EX_LIBS="$(STAGING_LDFLAGS) -ldl" \
 		DIRS="crypto ssl apps"
+	touch $@
 
-openssl: $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
+openssl: $(OPENSSL_BUILD_DIR)/.built
 
-$(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
+$(OPENSSL_BUILD_DIR)/.staged: $(OPENSSL_BUILD_DIR)/.built
+	rm -f $@
 	rm -rf $(STAGING_DIR)/opt/include/openssl
 	install -d $(STAGING_DIR)/opt/include/openssl
 	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(STAGING_DIR)/opt/include/openssl
@@ -129,8 +132,9 @@ endif
 	install -d $(STAGING_DIR)/opt/lib/pkgconfig
 	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(STAGING_DIR)/opt/lib/pkgconfig
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
+	touch $@
 
-openssl-stage: $(STAGING_DIR)/opt/lib/libssl.so.$(OPENSSL_LIB_VERSION)
+openssl-stage: $(OPENSSL_BUILD_DIR)/.staged
 
 $(OPENSSL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -146,7 +150,7 @@ $(OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(OPENSSL_DEPENDS)" >>$@
 	@echo "Conflicts: $(OPENSSL_CONFLICTS)" >>$@
 
-$(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
+$(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/.built
 	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk
 	install -d $(OPENSSL_IPK_DIR)/opt/bin
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)/opt/bin/openssl
@@ -168,7 +172,10 @@ $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION)
 	echo $(OPENSSL_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
 
-openssl-ipk: $(OPENSSL_IPK)
+$(OPENSSL_BUILD_DIR)/.ipk: $(OPENSSL_IPK)
+	touch $@
+
+openssl-ipk: $(OPENSSL_BUILD_DIR)/.ipk
 
 openssl-clean:
 	-$(MAKE) -C $(OPENSSL_BUILD_DIR) clean
