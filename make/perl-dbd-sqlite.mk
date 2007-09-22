@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-DBD-SQLITE_SITE=http://search.cpan.org/CPAN/authors/id/M/MS/MSERGEANT
-PERL-DBD-SQLITE_VERSION=1.13
+PERL-DBD-SQLITE_VERSION=1.14
 PERL-DBD-SQLITE_SOURCE=DBD-SQLite-$(PERL-DBD-SQLITE_VERSION).tar.gz
 PERL-DBD-SQLITE_DIR=DBD-SQLite-$(PERL-DBD-SQLITE_VERSION)
 PERL-DBD-SQLITE_UNZIP=zcat
@@ -52,18 +52,18 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE) $(
 		sed -e 's/~DRIVER~/SQLite/g' \
 		    $(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI/Driver.xst > SQLite.xsi; \
 	)
-	touch $(PERL-DBD-SQLITE_BUILD_DIR)/.configured
+	touch $@
 
 perl-dbd-sqlite-unpack: $(PERL-DBD-SQLITE_BUILD_DIR)/.configured
 
 $(PERL-DBD-SQLITE_BUILD_DIR)/.built: $(PERL-DBD-SQLITE_BUILD_DIR)/.configured
-	rm -f $(PERL-DBD-SQLITE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PERL-DBD-SQLITE_BUILD_DIR) \
 	    PASTHRU_INC="$(STAGING_CPPFLAGS) $(PERL-DBD-SQLITE_CPPFLAGS)" \
 	    LD_RUN_PATH=/opt/lib \
 	    $(PERL_INC) \
 	    PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-DBD-SQLITE_BUILD_DIR)/.built
+	touch $@
 
 perl-dbd-sqlite: $(PERL-DBD-SQLITE_BUILD_DIR)/.built
 
@@ -72,14 +72,14 @@ perl-dbd-sqlite-test: $(PERL-DBD-SQLITE_BUILD_DIR)/.staged
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
 	
 $(PERL-DBD-SQLITE_BUILD_DIR)/.staged: $(PERL-DBD-SQLITE_BUILD_DIR)/.built
-	rm -f $(PERL-DBD-SQLITE_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(PERL-DBD-SQLITE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-DBD-SQLITE_BUILD_DIR)/.staged
+	touch $@
 
 perl-dbd-sqlite-stage: $(PERL-DBD-SQLITE_BUILD_DIR)/.staged
 
 $(PERL-DBD-SQLITE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-DBD-SQLITE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-dbd-sqlite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
