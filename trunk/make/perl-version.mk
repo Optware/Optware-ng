@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-VERSION_SITE=http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK
-PERL-VERSION_VERSION=0.6701
+PERL-VERSION_VERSION=0.73
 PERL-VERSION_SOURCE=version-$(PERL-VERSION_VERSION).tar.gz
 PERL-VERSION_DIR=version-$(PERL-VERSION_VERSION)
 PERL-VERSION_UNZIP=zcat
@@ -17,7 +17,7 @@ PERL-VERSION_DEPENDS=perl, perl-module-build
 PERL-VERSION_SUGGESTS=
 PERL-VERSION_CONFLICTS=
 
-PERL-VERSION_IPK_VERSION=2
+PERL-VERSION_IPK_VERSION=1
 
 PERL-VERSION_CONFFILES=
 
@@ -46,32 +46,32 @@ $(PERL-VERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-VERSION_SOURCE) $(PERL-V
 		--config cc=$(TARGET_CC) \
 		--config ld=$(TARGET_CC) \
 	)
-	touch $(PERL-VERSION_BUILD_DIR)/.configured
+	touch $@
 
 perl-version-unpack: $(PERL-VERSION_BUILD_DIR)/.configured
 
 $(PERL-VERSION_BUILD_DIR)/.built: $(PERL-VERSION_BUILD_DIR)/.configured
-	rm -f $(PERL-VERSION_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PERL-VERSION_BUILD_DIR); \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		./Build \
 	)
-	touch $(PERL-VERSION_BUILD_DIR)/.built
+	touch $@
 
 perl-version: $(PERL-VERSION_BUILD_DIR)/.built
 
 $(PERL-VERSION_BUILD_DIR)/.staged: $(PERL-VERSION_BUILD_DIR)/.built
-	rm -f $(PERL-VERSION_BUILD_DIR)/.staged
+	rm -f $@
 	(cd $(PERL-VERSION_BUILD_DIR); \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		./Build --prefix $(STAGING_DIR)/opt install \
 	)
-	touch $(PERL-VERSION_BUILD_DIR)/.staged
+	touch $@
 
 perl-version-stage: $(PERL-VERSION_BUILD_DIR)/.staged
 
 $(PERL-VERSION_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-VERSION_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-version" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
