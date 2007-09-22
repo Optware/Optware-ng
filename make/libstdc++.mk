@@ -6,7 +6,7 @@
 
 LIBSTDC++_VERSION=$(strip \
 	$(if $(filter slugosbe openwrt-ixp4xx, $(OPTWARE_TARGET)), 6.0.8, \
-	$(if $(filter fsg3v4 gumstix1151 ts101, $(OPTWARE_TARGET)), 6.0.3, \
+	$(if $(filter fsg3v4 gumstix1151 ts101 mss2, $(OPTWARE_TARGET)), 6.0.3, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
 	$(if $(filter ds101 ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
 	$(if $(filter iphone, $(OPTWARE_TARGET)), 6.0.9, \
