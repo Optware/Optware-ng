@@ -6,3 +6,4 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	asterisk14-chan-capi \
 	gnuplot \
+	gtk \
