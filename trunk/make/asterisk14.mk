@@ -146,12 +146,11 @@ ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch $(ASTERISK14_SOURCE_DIR)/so
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
-ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR) -DPATH_MAX=4096
-else
 ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR)
-endif
 ASTERISK14_LDFLAGS=
+ifeq (mssii, $(OPTWARE_TARGET))
+ASTERISK14_LDFLAGS+=-lpthread -ldl -lresolv
+endif
 
 #
 # ASTERISK14_BUILD_DIR is the directory in which the build is done.
