@@ -6,7 +6,7 @@
 
 LIBNSL_VERSION=$(strip \
         $(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), 2.3.3, \
-        $(if $(filter fsg3v4, $(OPTWARE_TARGET)), 2.3.6, \
+        $(if $(filter fsg3v4 mssii, $(OPTWARE_TARGET)), 2.3.6, \
         $(if $(filter nslu2, $(OPTWARE_TARGET)), 2.2.5, \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), 2.3.90, \
         $(if $(filter ts72xx, $(OPTWARE_TARGET)), 2.3.2, \
@@ -34,19 +34,23 @@ LIBNSL_IPK=$(BUILD_DIR)/libnsl_$(LIBNSL_VERSION)-$(LIBNSL_IPK_VERSION)_$(TARGET_
 $(LIBNSL_BUILD_DIR)/.configured: make/libnsl.mk
 	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR)
 	mkdir -p $(LIBNSL_BUILD_DIR)
-	touch $(LIBNSL_BUILD_DIR)/.configured
+	touch $@
 
 libnsl-unpack: $(LIBNSL_BUILD_DIR)/.configured
 
 $(LIBNSL_BUILD_DIR)/.built: $(LIBNSL_BUILD_DIR)/.configured
-	rm -f $(LIBNSL_BUILD_DIR)/.built
+	rm -f $@
+ifeq ($(OPTWARE_TARGET), mssii)
+	cp $(TARGET_USRLIBDIR)/../../lib/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
+else
 	cp $(TARGET_LIBDIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
-	touch $(LIBNSL_BUILD_DIR)/.built
+endif
+	touch $@
 
 libnsl: $(LIBNSL_BUILD_DIR)/.built
 
 $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
-	rm -f $(LIBNSL_BUILD_DIR)/.staged
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_DIR)/opt/lib
 	(cd $(STAGING_DIR)/opt/lib; \
@@ -55,12 +59,12 @@ $(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                  $(LIBNSL_LIBNAME).so.1 \
 	)
-	touch $(LIBNSL_BUILD_DIR)/.staged
+	touch $@
 
 libnsl-stage: $(LIBNSL_BUILD_DIR)/.staged
 
 $(LIBNSL_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBNSL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libnsl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
