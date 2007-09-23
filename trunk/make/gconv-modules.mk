@@ -75,7 +75,7 @@ else
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
     ifneq ($(OPTWARE_TARGET), fsg3v4)
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/bin
-	cp $(TARGET_LIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
+	cp $(TARGET_USRLIBDIR)/../bin/iconv $(GCONV_MODULES_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
     endif
 	install -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
