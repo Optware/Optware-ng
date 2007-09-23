@@ -4,4 +4,5 @@ SPECIFIC_PACKAGES = \
 
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \
-	chillispot \
+	asterisk14-chan-capi \
+	gnuplot \
