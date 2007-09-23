@@ -57,7 +57,7 @@ CHILLISPOT_PATCHES=$(CHILLISPOT_SOURCE_DIR)/configure.patch $(CHILLISPOT_SOURCE_
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe mssii, $(OPTWARE_TARGET)))
 # ugly hack to get around kernel header linux/rtnetlink.h problem
 # see http://www.mail-archive.com/netdev@vger.kernel.org/msg28685.html
 CHILLISPOT_CPPFLAGS=-U__STRICT_ANSI__
