@@ -12,8 +12,8 @@
 # XCHAT_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-XCHAT_SITE=http://www.xchat.org/files/source/2.8
-XCHAT_VERSION=2.8.4
+XCHAT_SITE=http://www.xchat.org/files/source/2.6
+XCHAT_VERSION=2.6.8
 XCHAT_SOURCE=xchat-$(XCHAT_VERSION).tar.bz2
 XCHAT_DIR=xchat-$(XCHAT_VERSION)
 XCHAT_UNZIP=bzcat
