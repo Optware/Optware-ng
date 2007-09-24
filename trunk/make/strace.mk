@@ -28,7 +28,7 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=6
+STRACE_IPK_VERSION=7
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
@@ -36,7 +36,7 @@ STRACE_IPK_VERSION=6
 #
 #
 STRACE_PATCHES=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
-ifeq ($(TARGET_ARCH), armeb)
+ifeq ($(TARGET_ARCH), $(filter arm armeb, $(TARGET_ARCH)))
 #http://www.fluff.org/ben/patches/strace/strace-fix-arm-bad-syscall.patch
 STRACE_PATCHES+=$(STRACE_SOURCE_DIR)/strace-fix-arm-bad-syscall.patch
 endif
