@@ -12,8 +12,8 @@
 # PANGO_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-PANGO_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-PANGO_VERSION=1.8.0
+PANGO_SITE=ftp://ftp.gtk.org/pub/gtk/v2.9/
+PANGO_VERSION=1.11.99
 PANGO_SOURCE=pango-$(PANGO_VERSION).tar.bz2
 PANGO_DIR=pango-$(PANGO_VERSION)
 PANGO_UNZIP=bzcat
@@ -21,12 +21,12 @@ PANGO_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PANGO_DESCRIPTION=GNOME font abstraction library
 PANGO_SECTION=lib
 PANGO_PRIORITY=optional
-PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice
+PANGO_DEPENDS=glib, xft, freetype, fontconfig, ice, cairo
 
 #
 # PANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PANGO_IPK_VERSION=4
+PANGO_IPK_VERSION=1
 
 #
 # PANGO_LOCALES defines which locales get installed
@@ -68,7 +68,7 @@ PANGO_IPK=$(BUILD_DIR)/pango_$(PANGO_VERSION)-$(PANGO_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(PANGO_IPK_DIR)/CONTROL/control:
-	@install -d $(PANGO_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: pango" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -113,6 +113,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 	$(MAKE) glib-stage
 	$(MAKE) xft-stage
 	$(MAKE) ice-stage
+	$(MAKE) cairo-stage
 	rm -rf $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
 	$(PANGO_UNZIP) $(DL_DIR)/$(PANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PANGO_DIR) $(PANGO_BUILD_DIR)
@@ -134,7 +135,7 @@ $(PANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PANGO_SOURCE) $(PANGO_PATCHES)
 		--disable-glibtest \
 	)
 	$(PATCH_LIBTOOL) $(PANGO_BUILD_DIR)/libtool
-	touch $(PANGO_BUILD_DIR)/.configured
+	touch $@
 
 pango-unpack: $(PANGO_BUILD_DIR)/.configured
 
@@ -143,9 +144,9 @@ pango-unpack: $(PANGO_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PANGO_BUILD_DIR)/.built: $(PANGO_BUILD_DIR)/.configured
-	rm -f $(PANGO_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PANGO_BUILD_DIR)
-	touch $(PANGO_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -159,11 +160,12 @@ pango: $(PANGO_BUILD_DIR)/.built
 $(PANGO_BUILD_DIR)/.staged: $(PANGO_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(PANGO_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/pango*.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/pango*.pc
 	rm -f $(STAGING_DIR)/opt/lib/libpango-1.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libpangox-1.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libpangoxft-1.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libpangoft2-1.0.la
+	rm -f $(STAGING_DIR)/opt/lib/libpangocairo-1.0.la
 	touch $@
 
 pango-stage: $(PANGO_BUILD_DIR)/.staged
