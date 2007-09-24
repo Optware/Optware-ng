@@ -12,8 +12,8 @@
 # GTK_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GTK_SITE=ftp://ftp.gtk.org/pub/gtk/v2.6/
-GTK_VERSION=2.6.7
+GTK_SITE=ftp://ftp.gtk.org/pub/gtk/v2.8
+GTK_VERSION=2.8.9
 GTK_SOURCE=gtk+-$(GTK_VERSION).tar.bz2
 GTK_DIR=gtk+-$(GTK_VERSION)
 GTK_UNZIP=bzcat
@@ -26,7 +26,7 @@ GTK_DEPENDS=pango, atk, x11, xext, libtiff, libjpeg (>= 6b-2), libpng, xfixes, x
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=2
+GTK_IPK_VERSION=1
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -68,7 +68,7 @@ GTK_IPK=$(BUILD_DIR)/gtk_$(GTK_VERSION)-$(GTK_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(GTK_IPK_DIR)/CONTROL/control:
-	@install -d $(GTK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gtk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -143,7 +143,7 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) \
 		--disable-glibtest \
 	)
 	$(PATCH_LIBTOOL) $(GTK_BUILD_DIR)/libtool
-	touch $(GTK_BUILD_DIR)/.configured
+	touch $@
 
 gtk-unpack: $(GTK_BUILD_DIR)/.configured
 
@@ -152,10 +152,10 @@ gtk-unpack: $(GTK_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(GTK_BUILD_DIR)/.built: $(GTK_BUILD_DIR)/.configured
-	rm -f $(GTK_BUILD_DIR)/.built
+	rm -f $@
 	cp $(GTK_SOURCE_DIR)/test-inline-pixbufs.h $(GTK_BUILD_DIR)/demos
 	$(MAKE) -C $(GTK_BUILD_DIR)
-	touch $(GTK_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -167,15 +167,15 @@ gtk: $(GTK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
-	rm -f $(GTK_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(GTK_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc
 	rm -f $(STAGING_DIR)/opt/bin/gdk-pixbuf-csource
 	rm -f $(STAGING_DIR)/opt/lib/libgdk-x11-2.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf-2.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libgdk_pixbuf_xlib-2.0.la
 	rm -f $(STAGING_DIR)/opt/lib/libgtk-x11-2.0.la
-	touch $(GTK_BUILD_DIR)/.staged
+	touch $@
 
 gtk-stage: $(GTK_BUILD_DIR)/.staged
 
