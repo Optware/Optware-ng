@@ -147,6 +147,9 @@ ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch $(ASTERISK14_SOURCE_DIR)/so
 # compilation or linking flags, then list them here.
 #
 ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR)
+ifeq (slugosbe, $(OPTWARE_TARGET))
+ASTERISK14_CPPFLAGS+= -DPATH_MAX=4096
+endif
 ASTERISK14_LDFLAGS=
 ifeq (mssii, $(OPTWARE_TARGET))
 ASTERISK14_LDFLAGS+=-lpthread -ldl -lresolv
