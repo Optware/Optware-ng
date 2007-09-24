@@ -18,4 +18,3 @@ BROKEN_PACKAGES = \
 	socat \
 	uemacs \
 	usbutils \
-	gtk vte xchat \
