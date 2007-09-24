@@ -12,12 +12,12 @@
 # XCHAT_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-XCHAT_SITE=http://www.xchat.org/files/source/2.4
-XCHAT_VERSION=2.4.1
+XCHAT_SITE=http://www.xchat.org/files/source/2.8
+XCHAT_VERSION=2.8.4
 XCHAT_SOURCE=xchat-$(XCHAT_VERSION).tar.bz2
 XCHAT_DIR=xchat-$(XCHAT_VERSION)
 XCHAT_UNZIP=bzcat
-XCHAT_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
+XCHAT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XCHAT_DESCRIPTION=Gtk+ based IRC client
 XCHAT_SECTION=lib
 XCHAT_PRIORITY=optional
@@ -26,7 +26,7 @@ XCHAT_DEPENDS=gtk
 #
 # XCHAT_IPK_VERSION should be incremented when the ipk changes.
 #
-XCHAT_IPK_VERSION=2
+XCHAT_IPK_VERSION=1
 
 #
 # XCHAT_LOCALES defines which locales get installed
@@ -68,7 +68,7 @@ XCHAT_IPK=$(BUILD_DIR)/xchat_$(XCHAT_VERSION)-$(XCHAT_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(XCHAT_IPK_DIR)/CONTROL/control:
-	@install -d $(XCHAT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: xchat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -140,7 +140,7 @@ $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
 		--disable-tcl \
 	)
 	$(PATCH_LIBTOOL) $(XCHAT_BUILD_DIR)/libtool
-	touch $(XCHAT_BUILD_DIR)/.configured
+	touch $@
 
 xchat-unpack: $(XCHAT_BUILD_DIR)/.configured
 
@@ -149,10 +149,10 @@ xchat-unpack: $(XCHAT_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(XCHAT_BUILD_DIR)/.built: $(XCHAT_BUILD_DIR)/.configured
-	rm -f $(XCHAT_BUILD_DIR)/.built
+	rm -f $@
 	cp $(XCHAT_SOURCE_DIR)/inline_pngs.h $(XCHAT_BUILD_DIR)/src/pixmaps
 	$(MAKE) -C $(XCHAT_BUILD_DIR)
-	touch $(XCHAT_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -204,3 +204,9 @@ xchat-clean:
 #
 xchat-dirclean:
 	rm -rf $(BUILD_DIR)/$(XCHAT_DIR) $(XCHAT_BUILD_DIR) $(XCHAT_IPK_DIR) $(XCHAT_IPK)
+
+#
+# Some sanity check for the package.
+#
+xchat-check: $(XCHAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(XCHAT_IPK)
