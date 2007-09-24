@@ -4,6 +4,7 @@ SPECIFIC_PACKAGES = bip
 # Packages that do not work for ds101j.
 BROKEN_PACKAGES = \
 	apache apr-util \
+	cairo \
 	castget \
 	ctcs \
 	cyrus-sasl \
