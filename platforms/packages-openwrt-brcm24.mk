@@ -8,7 +8,7 @@ BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
 	aspell \
 	ecl \
-	fixesext \
+	cairo fixesext \
 	iptraf \
 	libdvb \
 	libnsl ltrace \

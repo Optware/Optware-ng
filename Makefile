@@ -164,7 +164,7 @@ COMMON_CROSS_PACKAGES = \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	cabextract calc calcurse castget \
+	cabextract cairo calc calcurse castget \
 	catdoc ccollect ccxstream cdargs \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver clips cmdftp \

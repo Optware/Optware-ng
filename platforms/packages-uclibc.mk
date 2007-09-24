@@ -2,6 +2,7 @@
 # moc - conflicting types for '__glibc_strerror_r'
 UCLIBC_BROKEN_PACKAGES = \
 	 bzflag \
+	 cairo \
 	 fcgi fish \
 	 gnu-smalltalk gtk ice iptables jabberd \
 	 jamvm launchtool ldconfig libstdc++ \
