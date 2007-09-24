@@ -27,8 +27,15 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.8
+ifneq (wl500g, $(OPTWARE_TARGET))
 RUBY_UPSTREAM_VERSION=1.8.6-p110
 RUBY_VERSION=1.8.6.110
+RUBY_IPK_VERSION=1
+else
+RUBY_UPSTREAM_VERSION=1.8.6-p36
+RUBY_VERSION=1.8.6.36
+RUBY_IPK_VERSION=1
+endif
 RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
 RUBY_UNZIP=zcat
@@ -38,10 +45,6 @@ RUBY_SECTION=misc
 RUBY_PRIORITY=optional
 RUBY_DEPENDS=
 
-#
-# RUBY_IPK_VERSION should be incremented when the ipk changes.
-#
-RUBY_IPK_VERSION=1
 
 #
 # RUBY_CONFFILES should be a list of user-editable files
