@@ -1,0 +1,6 @@
+#!/bin/sh
+
+touch /etc/profile
+if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1 ; then
+  echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /etc/profile
+fi
