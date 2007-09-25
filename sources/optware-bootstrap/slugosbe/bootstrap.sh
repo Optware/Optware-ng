@@ -1,5 +1,6 @@
 #!/bin/sh
-BSDIR="/.optware/ipkg-bootstrap"
+
+BSDIR="/opt/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."
 rm -rf $BSDIR
