@@ -434,12 +434,16 @@ $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
 .PHONY: index
 index: $(PACKAGE_DIR)/Packages
 
+ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 	if ls $(BUILD_DIR)/*_$(TARGET_ARCH).xsh > /dev/null 2>&1; then \
 		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(PACKAGE_DIR)/ ; \
 	else \
 		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(PACKAGE_DIR)/ ; \
 	fi
+else
+$(PACKAGE_DIR)/Packages:
+endif
 	{ \
 		cd $(PACKAGE_DIR); \
 		$(IPKG_MAKE_INDEX) . > Packages; \
