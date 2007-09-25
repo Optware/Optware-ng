@@ -1,6 +1,17 @@
 #!/bin/sh
 
+if [ `uname -m` = armv5tejl ]; then
+echo "Setting up ipkg arch-file"
+cat >> /opt/etc/ipkg/arch.conf << EOF
+arch all 1
+arch any 6
+arch noarch 11
+arch arm 16
+arch mssii 36
+EOF
+fi
+
 touch /etc/profile
 if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1 ; then
-  echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /etc/profile
+  echo "PATH=/opt/bin:/opt/sbin:\$PATH" >> /etc/profile
 fi
