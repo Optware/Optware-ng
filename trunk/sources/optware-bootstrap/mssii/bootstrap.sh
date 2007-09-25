@@ -1,11 +1,16 @@
 #!/bin/sh
 
-if test -z "${REAL_OPT_DIR}"; then
-    # next line to be replaced according to OPTWARE_TARGET
-    REAL_OPT_DIR=/opt/share
+if [ -e /share/.optware ] ; then
+    echo "Backup your configuration settings, then type:"
+    echo "  rm -rf /share/.optware"
+    echo "  rm -rf /usr/lib/ipkg"
+    echo "This will remove all existing optware packages."
+    echo
+    echo "You must *reboot* and then restart the bootstrap script."
+    exit 1
 fi
 
-BSDIR="${REAL_OPT_DIR}/ipkg-bootstrap"
+BSDIR="/share/.optware/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."
 rm -rf $BSDIR
