@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HASERL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/haserl
-HASERL_VERSION=0.9.18
+HASERL_VERSION=0.9.20
 HASERL_SOURCE=haserl-$(HASERL_VERSION).tar.gz
 HASERL_DIR=haserl-$(HASERL_VERSION)
 HASERL_UNZIP=zcat
@@ -164,9 +164,11 @@ haserl-unpack: $(HASERL_BUILD_DIR)/.configured
 #
 $(HASERL_BUILD_DIR)/.built: $(HASERL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(HASERL_BUILD_DIR)/with-lua/src lua2c \
-		CC=$(HOSTCC) \
-		LDFLAGS=-L$(LUA_HOST_BUILD_DIR)/opt/lib
+	cd $(HASERL_BUILD_DIR)/with-lua/src; \
+		$(HOSTCC) -I$(LUA_HOST_BUILD_DIR)/opt/include \
+		-Wl,-E -L$(LUA_HOST_BUILD_DIR)/opt/lib \
+		-o lua2c lua2c.c \
+		-llua -lm
 	if test -f $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH); then \
 		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH) $(HASERL_BUILD_DIR)/with-lua/src/; \
 	fi
