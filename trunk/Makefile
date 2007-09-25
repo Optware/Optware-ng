@@ -39,12 +39,10 @@ NATIVE_PACKAGES_READY_FOR_TESTING = \
 # lumikki - does not install to /opt
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-# perl-device-serialport - Could not find a serial port to use for testing
 PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	perl-device-serialport \
 
 PERL_PACKAGES = \
 	perl \
@@ -66,6 +64,7 @@ PERL_PACKAGES = \
 	perl-dbd-mysql perl-dbd-sqlite perl-dbi \
 	perl-dbix-contextualfetch \
 	perl-devel-caller perl-devel-lexalias \
+	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-file-next perl-file-rename \
