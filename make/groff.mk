@@ -35,7 +35,7 @@ GROFF_CONFLICTS=
 #
 # GROFF_IPK_VERSION should be incremented when the ipk changes.
 #
-GROFF_IPK_VERSION=1
+GROFF_IPK_VERSION=2
 
 #
 # GROFF_PATCHES should list any patches, in the the order in
@@ -155,6 +155,8 @@ $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/tbl
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/tfmtodit
 	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/troff
+	rm -f $(GROFF_IPK_DIR)/opt/info/dir
+	rm -f $(GROFF_IPK_DIR)/opt/info/dir.old
 	$(MAKE) $(GROFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GROFF_IPK_DIR)
 
