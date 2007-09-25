@@ -46,7 +46,9 @@ PERL-DEVICE-SERIALPORT_IPK_VERSION=1
 # PERL-DEVICE-SERIALPORT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# PERL-DEVICE-SERIALPORT_PATCHES=$(PERL-DEVICE-SERIALPORT_SOURCE_DIR)/configure.patch
+ifneq ($(HOSTCC), $(TARGET_CC))
+PERL-DEVICE-SERIALPORT_PATCHES=$(PERL-DEVICE-SERIALPORT_SOURCE_DIR)/Makefile.PL.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -105,6 +107,7 @@ perl-device-serialport-source: $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE) $(PERL
 # shown below to make various patches to it.
 #
 $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE) $(PERL-DEVICE-SERIALPORT_PATCHES) make/perl-device-serialport.mk
+	$(MAKE) perl-stage
 	rm -rf $(BUILD_DIR)/$(PERL-DEVICE-SERIALPORT_DIR) $(PERL-DEVICE-SERIALPORT_BUILD_DIR)
 	$(PERL-DEVICE-SERIALPORT_UNZIP) $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL-DEVICE-SERIALPORT_PATCHES)" ; \
