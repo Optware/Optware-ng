@@ -1,0 +1,20 @@
+#!/bin/sh
+
+[ -e /opt ] || mkdir /opt
+chmod 755 /opt
+REAL_OPT_DIR=
+if test -n "${REAL_OPT_DIR}"; then
+    [ -e ${REAL_OPT_DIR} ] || mkdir -p ${REAL_OPT_DIR}
+    chmod 755 ${REAL_OPT_DIR}
+    if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
+        mount -o bind ${REAL_OPT_DIR} /opt
+    fi
+fi
+[ -d /opt/etc ] || mkdir -p /opt/etc
+chmod 755 /opt/etc
+[ -d /opt/var/lib ] || mkdir -p /opt/var/lib
+chmod 755 /opt/var
+[ -d /opt/tmp ] || mkdir -p /opt/tmp
+chmod 1777 /opt/tmp
+[ -d /opt/lib ] || mkdir -p /opt/lib
+chmod 755 /opt/lib
