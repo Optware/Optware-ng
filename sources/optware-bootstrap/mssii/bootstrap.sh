@@ -1,7 +1,11 @@
 #!/bin/sh
 
-REAL_OPT_DIR=/share/opt
-BSDIR="$REAL_OPT_DIR/ipkg-bootstrap"
+if test -z "${REAL_OPT_DIR}"; then
+    # next line to be replaced according to OPTWARE_TARGET
+    REAL_OPT_DIR=/opt/share
+fi
+
+BSDIR="${REAL_OPT_DIR}/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."
 rm -rf $BSDIR
