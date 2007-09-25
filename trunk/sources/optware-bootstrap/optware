@@ -1,12 +1,19 @@
 #! /bin/sh
 
+if test -z "${REAL_OPT_DIR}"; then
+# next line to be replaced according to OPTWARE_TARGET
+REAL_OPT_DIR=
+fi
+
 case "$1" in
     start)
         echo "Starting Optware."
-	if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
-	    mkdir -p /opt
-	    mount -o bind /home/.optware /opt
-	fi	
+        if test -n "${REAL_OPT_DIR}"; then
+            if ! grep ' /opt ' /proc/mounts >/dev/null 2>&1 ; then
+                mkdir -p /opt
+                mount -o bind ${REAL_OPT_DIR} /opt
+            fi	
+        fi
 	[ -x /opt/etc/rc.optware ] && /opt/etc/rc.optware
     ;;
     reconfig)

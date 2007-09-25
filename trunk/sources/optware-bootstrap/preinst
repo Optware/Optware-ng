@@ -2,7 +2,10 @@
 
 [ -e /opt ] || mkdir /opt
 chmod 755 /opt
+if test -z "${REAL_OPT_DIR}"; then
+# next line to be replaced according to OPTWARE_TARGET
 REAL_OPT_DIR=
+fi
 if test -n "${REAL_OPT_DIR}"; then
     [ -e ${REAL_OPT_DIR} ] || mkdir -p ${REAL_OPT_DIR}
     chmod 755 ${REAL_OPT_DIR}
@@ -18,3 +21,6 @@ chmod 755 /opt/var
 chmod 1777 /opt/tmp
 [ -d /opt/lib ] || mkdir -p /opt/lib
 chmod 755 /opt/lib
+
+
+

@@ -76,7 +76,9 @@ $(OPTWARE-BOOTSTRAP_IPK): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built
 	$(MAKE) $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control
 	install -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/preinst $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
 ifneq (OPTWARE-BOOTSTRAP_REAL_OPT_DIR,)
-	sed -i -e '/^REAL_OPT_DIR=$$/s|$$|$(OPTWARE-BOOTSTRAP_REAL_OPT_DIR)|' $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/preinst
+	sed -i -e '/^[ 	]*REAL_OPT_DIR=$$/s|=.*|=$(OPTWARE-BOOTSTRAP_REAL_OPT_DIR)|' \
+		$(OPTWARE-BOOTSTRAP_IPK_DIR)/etc/init.d/optware \
+		$(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/preinst
 endif
 	install -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/postinst $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPTWARE-BOOTSTRAP_IPK_DIR)
@@ -92,8 +94,13 @@ $(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_IPK) \
 	cp $(OPENSSL_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(WGET-SSL_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
 	# optware-bootstrap scripts
-	cp $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/bootstrap.sh $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/ipkg.sh $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
+	cp $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/bootstrap.sh \
+	   $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/ipkg.sh \
+	   $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/
+ifneq (OPTWARE-BOOTSTRAP_REAL_OPT_DIR,)
+	sed -i -e '/^[ 	]*REAL_OPT_DIR=$$/s|=.*|=$(OPTWARE-BOOTSTRAP_REAL_OPT_DIR)|' \
+		$(OPTWARE-BOOTSTRAP_IPK_DIR)/bootstrap/bootstrap.sh
+endif
 	# NNN is the number of bytes to skip, assuming three digits
 	echo "#!/bin/sh" >$@
 	echo 'echo "Optware Bootstrap extracting archive... please wait"' >>$@
