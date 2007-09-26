@@ -23,7 +23,7 @@ PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=2
+PHP_APACHE_IPK_VERSION=1
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
@@ -217,5 +217,5 @@ php-apache-dirclean:
 #
 # Some sanity check for the package.
 #
-php-apache-check: $(PHP-APACHE_IPK)
+php-apache-check: $(PHP_APACHE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PHP_APACHE_IPK)
