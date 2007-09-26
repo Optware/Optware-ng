@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=0.90
+PY-BAZAAR-NG_VERSION=0.91
 PY-BAZAAR-NG_SITE=http://bazaar-vcs.org/releases/src
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
@@ -227,6 +227,9 @@ $(PY24-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY24-BAZAAR-NG_IPK_DIR)/opt/lib/python2.4/site-packages/bzrlib/*.so
+	for f in $(PY24-BAZAAR-NG_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
+	rm -rf $(PY24-BAZAAR-NG_IPK_DIR)/opt/man
 	$(MAKE) $(PY24-BAZAAR-NG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-BAZAAR-NG_IPK_DIR)
 
@@ -236,9 +239,6 @@ $(PY25-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY25-BAZAAR-NG_IPK_DIR)/opt/lib/python2.5/site-packages/bzrlib/*.so
-	for f in $(PY25-BAZAAR-NG_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
-	rm -rf $(PY25-BAZAAR-NG_IPK_DIR)/opt/man
 	$(MAKE) $(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BAZAAR-NG_IPK_DIR)
 
