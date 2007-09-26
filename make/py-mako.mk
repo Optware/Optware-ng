@@ -24,7 +24,7 @@
 # PY-MAKO_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-MAKO_SITE=http://pypi.python.org/packages/source/M/Mako
-PY-MAKO_VERSION=0.1.8
+PY-MAKO_VERSION=0.1.9
 PY-MAKO_IPK_VERSION=1
 PY-MAKO_SOURCE=Mako-$(PY-MAKO_VERSION).tar.gz
 PY-MAKO_DIR=Mako-$(PY-MAKO_VERSION)
