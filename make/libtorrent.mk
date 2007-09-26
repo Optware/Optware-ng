@@ -72,6 +72,9 @@ ifeq ($(TARGET_ARCH), $(filter $(TARGET_ARCH), arm armeb))
 LIBTORRENT_CONFIG_ARGS=--enable-aligned=yes
 endif
 endif
+ifeq ($(OPTWARE_TARGET), mssii)
+LIBTORRENT_CONFIG_ARGS+=--without-epoll
+endif
 
 #
 # LIBTORRENT_BUILD_DIR is the directory in which the build is done.
