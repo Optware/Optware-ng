@@ -83,7 +83,8 @@ qemu-libc-i386-source: $(DL_DIR)/$(QEMU_LIBC_I386_SOURCE) $(QEMU_LIBC_I386_PATCH
 #
 # This target unpacks the source code in the build directory.
 #
-$(QEMU_LIBC_I386_BUILD_DIR)/.configured: host/.configured $(DL_DIR)/$(QEMU_LIBC_I386_SOURCE) $(QEMU_LIBC_I386_PATCHES)
+$(QEMU_LIBC_I386_BUILD_DIR)/.configured: host/.configured make/qemu-libc-i386.mk \
+$(DL_DIR)/$(QEMU_LIBC_I386_SOURCE) $(QEMU_LIBC_I386_PATCHES)
 	rm -rf $(BUILD_DIR)/$(QEMU_LIBC_I386_DIR) $(QEMU_LIBC_I386_BUILD_DIR)
 	$(QEMU_LIBC_I386_UNZIP) $(DL_DIR)/$(QEMU_LIBC_I386_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(QEMU_LIBC_I386_DIR) $(QEMU_LIBC_I386_BUILD_DIR)
@@ -123,7 +124,7 @@ qemu-libc-i386: $(QEMU_LIBC_I386_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/qemu-libc-i386
 #
 $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/control:
-	@install -d $(QEMU_LIBC_I386_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: qemu-libc-i386" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
