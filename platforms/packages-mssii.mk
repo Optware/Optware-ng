@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	gnuplot \
 	iptraf \
 	ldconfig \
+	modutils \
 	monotone \
 	player \
 	puppy \
