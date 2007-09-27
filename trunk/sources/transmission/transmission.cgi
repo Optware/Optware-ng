@@ -553,7 +553,7 @@ fi
 echo "<p>Creating graph...</p>"
 TZO=${TIMEZONE_OFFSET:-0}
 cat > ${GNUPLOT_COMMAND} << __EOF__
-set terminal png small size 800,320
+set terminal png transparent small size 800,320
 set output '${GNUPLOT_OUTPUT}'
 set xdata time
 set timefmt "%s"

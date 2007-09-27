@@ -42,7 +42,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=3
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -54,6 +54,7 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 #
 TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.patch \
 	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
+	$(TRANSMISSION_SOURCE_DIR)/blocking-scrape-enable.patch
 
 # Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
@@ -148,8 +149,7 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
-	sed -i \
-		-e '/^[ 	]*AM_PATH_GTK_2_0/s/^/dnl /' \
+	sed -i  -e '/^[ 	]*AM_PATH_GTK_2_0/s/^/dnl /' \
 		-e '/^[ 	]*AM_PATH_GLIB_2_0/s/^/dnl /' \
 		$(TRANSMISSION_BUILD_DIR)/configure.ac
 	(cd $(TRANSMISSION_BUILD_DIR); \
