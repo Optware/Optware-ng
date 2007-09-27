@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UNITS_SITE=ftp://ftp.gnu.org/gnu/units/
-UNITS_VERSION=1.86
+UNITS_VERSION=1.87
 UNITS_SOURCE=units-$(UNITS_VERSION).tar.gz
 UNITS_DIR=units-$(UNITS_VERSION)
 UNITS_UNZIP=zcat
@@ -124,7 +124,7 @@ $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(UNITS_BUILD_DIR)/.configured
+	touch $@
 
 units-unpack: $(UNITS_BUILD_DIR)/.configured
 
@@ -132,9 +132,9 @@ units-unpack: $(UNITS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(UNITS_BUILD_DIR)/.built: $(UNITS_BUILD_DIR)/.configured
-	rm -f $(UNITS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(UNITS_BUILD_DIR)
-	touch $(UNITS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -145,9 +145,9 @@ units: $(UNITS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(UNITS_BUILD_DIR)/.staged: $(UNITS_BUILD_DIR)/.built
-	rm -f $(UNITS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(UNITS_BUILD_DIR)/.staged
+	touch $@
 
 units-stage: $(UNITS_BUILD_DIR)/.staged
 
@@ -156,7 +156,7 @@ units-stage: $(UNITS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/units
 #
 $(UNITS_IPK_DIR)/CONTROL/control:
-	@install -d $(UNITS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: units" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,14 +184,7 @@ $(UNITS_IPK): $(UNITS_BUILD_DIR)/.built
 	rm -rf $(UNITS_IPK_DIR) $(BUILD_DIR)/units_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNITS_BUILD_DIR) DESTDIR=$(UNITS_IPK_DIR) install
 	$(STRIP_COMMAND) $(UNITS_IPK_DIR)/opt/bin/units
-#	install -d $(UNITS_IPK_DIR)/opt/etc/
-#	install -m 644 $(UNITS_SOURCE_DIR)/units.conf $(UNITS_IPK_DIR)/opt/etc/units.conf
-#	install -d $(UNITS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UNITS_SOURCE_DIR)/rc.units $(UNITS_IPK_DIR)/opt/etc/init.d/SXXunits
 	$(MAKE) $(UNITS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UNITS_SOURCE_DIR)/postinst $(UNITS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UNITS_SOURCE_DIR)/prerm $(UNITS_IPK_DIR)/CONTROL/prerm
-#	echo $(UNITS_CONFFILES) | sed -e 's/ /\n/g' > $(UNITS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNITS_IPK_DIR)
 
 #
