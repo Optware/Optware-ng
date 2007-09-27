@@ -11,4 +11,3 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
 	ldconfig \
-	qemu-libc-i386 \
