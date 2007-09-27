@@ -70,8 +70,10 @@ QEMU_LIBC_I386_IPK=$(BUILD_DIR)/qemu-libc-i386_$(QEMU_LIBC_I386_VERSION)-$(QEMU_
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(QEMU_LIBC_I386_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(QEMU_LIBC_I386_SITE)/$(QEMU_LIBC_I386_SOURCE)
+ifneq ($(QEMU_LIBC_I386_CROSSTOOL_VERSION), $(CROSSTOOL_VERSION))
+$(DL_DIR)/$(QEMU_LIBC_I386_SOURCE):
+	$(WGET) -P $(DL_DIR) $(QEMU_LIBC_I386_SITE)/$(QEMU_LIBC_I386_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
