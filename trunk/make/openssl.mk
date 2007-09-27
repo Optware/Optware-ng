@@ -15,7 +15,7 @@ OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
 
-OPENSSL_IPK_VERSION=2
+OPENSSL_IPK_VERSION=3
 
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
@@ -23,6 +23,9 @@ OPENSSL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/openssl
 
 OPENSSL_IPK_DIR=$(BUILD_DIR)/openssl-$(OPENSSL_VERSION)-ipk
 OPENSSL_IPK=$(BUILD_DIR)/openssl_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+OPENSSL_DEV_IPK_DIR=$(BUILD_DIR)/openssl-dev-$(OPENSSL_VERSION)-ipk
+OPENSSL_DEV_IPK=$(BUILD_DIR)/openssl-dev_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/Configure.patch
 
@@ -150,15 +153,27 @@ $(OPENSSL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(OPENSSL_DEPENDS)" >>$@
 	@echo "Conflicts: $(OPENSSL_CONFLICTS)" >>$@
 
-$(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/.built
+$(OPENSSL_DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: openssl-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(OPENSSL_PRIORITY)" >>$@
+	@echo "Section: $(OPENSSL_SECTION)" >>$@
+	@echo "Version: $(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(OPENSSL_MAINTAINER)" >>$@
+	@echo "Source: $(OPENSSL_SITE)/$(OPENSSL_SOURCE)" >>$@
+	@echo "Description: openssl native development files" >>$@
+	@echo "Depends: openssl" >>$@
+	@echo "Conflicts: $(OPENSSL_CONFLICTS)" >>$@
+
+$(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk
 	install -d $(OPENSSL_IPK_DIR)/opt/bin
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)/opt/bin/openssl
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)/opt/bin/openssl
 	install -d $(OPENSSL_IPK_DIR)/opt/share/openssl
 	install -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)/opt/share/openssl/openssl.cnf
-	install -d $(OPENSSL_IPK_DIR)/opt/include/openssl
-	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_IPK_DIR)/opt/include/openssl
 	install -d $(OPENSSL_IPK_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)/opt/lib
@@ -171,8 +186,13 @@ $(OPENSSL_IPK): $(OPENSSL_BUILD_DIR)/.built
 	$(MAKE) $(OPENSSL_IPK_DIR)/CONTROL/control
 	echo $(OPENSSL_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
+	rm -rf $(OPENSSL_DEV_IPK_DIR) $(BUILD_DIR)/openssl-dev_*_$(TARGET_ARCH).ipk
+	install -d $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
+	install -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_DEV_IPK_DIR)/opt/include/openssl
+	$(MAKE) $(OPENSSL_DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_DEV_IPK_DIR)
 
-$(OPENSSL_BUILD_DIR)/.ipk: $(OPENSSL_IPK)
+$(OPENSSL_BUILD_DIR)/.ipk: $(OPENSSL_IPK) $(OPENSSL_DEV_IPK)
 	touch $@
 
 openssl-ipk: $(OPENSSL_BUILD_DIR)/.ipk
@@ -181,7 +201,8 @@ openssl-clean:
 	-$(MAKE) -C $(OPENSSL_BUILD_DIR) clean
 
 openssl-dirclean:
-	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR) $(OPENSSL_IPK_DIR) $(OPENSSL_IPK)
+	rm -rf $(BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_BUILD_DIR) $(OPENSSL_IPK_DIR)
+	rm -rf $(OPENSSL_IPK) $(OPENSSL_DEV_IPK)
 
 openssl-check: $(OPENSSL_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSSL_IPK)
