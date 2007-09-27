@@ -152,6 +152,7 @@ ASTERISK_PACKAGES = \
 
 PACKAGES_REQUIRE_LINUX26 = \
 	inotail \
+	module-init-tools \
 	varnish \
 
 # libao - has runtime trouble?
