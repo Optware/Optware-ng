@@ -162,6 +162,7 @@ COMMON_CROSS_PACKAGES = \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake autossh avahi \
 	bash bc bftpd bind bip bison bitchx bitlbee bogofilter \
+	bridge-utils \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
