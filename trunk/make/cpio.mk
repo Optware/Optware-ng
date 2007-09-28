@@ -5,7 +5,7 @@
 ###########################################################
 
 CPIO_SITE=http://ftp.gnu.org/gnu/cpio
-CPIO_VERSION=2.7
+CPIO_VERSION=2.9
 CPIO_SOURCE=cpio-$(CPIO_VERSION).tar.bz2
 CPIO_DIR=cpio-$(CPIO_VERSION)
 CPIO_UNZIP=bzcat
@@ -53,7 +53,8 @@ CPIO_IPK=$(BUILD_DIR)/cpio_$(CPIO_VERSION)-$(CPIO_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CPIO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CPIO_SITE)/$(CPIO_SOURCE)
+	$(WGET) -P $(DL_DIR) $(CPIO_SITE)/$(CPIO_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(CPIO_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -77,7 +78,7 @@ cpio-source: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
+$(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES) make/cpio.mk
 	rm -rf $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
 	$(CPIO_UNZIP) $(DL_DIR)/$(CPIO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(CPIO_DIR) $(CPIO_BUILD_DIR)
@@ -86,13 +87,14 @@ $(CPIO_BUILD_DIR)/.configured: $(DL_DIR)/$(CPIO_SOURCE) $(CPIO_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CPIO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CPIO_LDFLAGS)" \
 		./configure \
+		CPIO_MT_PROG=mt \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(CPIO_BUILD_DIR)/.configured
+	touch $@
 
 cpio-unpack: $(CPIO_BUILD_DIR)/.configured
 
@@ -100,9 +102,9 @@ cpio-unpack: $(CPIO_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CPIO_BUILD_DIR)/.built: $(CPIO_BUILD_DIR)/.configured
-	rm -f $(CPIO_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(CPIO_BUILD_DIR)
-	touch $(CPIO_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -120,7 +122,7 @@ cpio-stage: $(STAGING_DIR)/opt/lib/libcpio.so.$(CPIO_VERSION)
 # necessary to create a seperate control file under sources/cpio
 #
 $(CPIO_IPK_DIR)/CONTROL/control:
-	@install -d $(CPIO_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cpio" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
