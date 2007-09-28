@@ -138,7 +138,7 @@ bridge-utils-unpack: $(BRIDGE-UTILS_BUILD_DIR)/.configured
 #
 $(BRIDGE-UTILS_BUILD_DIR)/.built: $(BRIDGE-UTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(BRIDGE-UTILS_BUILD_DIR)
+	$(MAKE) -C $(BRIDGE-UTILS_BUILD_DIR) KERNEL_HEADERS=""
 	touch $@
 
 #
