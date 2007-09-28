@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 quagga quickie \
 	sm syx \
 	transcode \
-	uemacs usbutils util-linux \
+	uemacs util-linux \
 	vsftpd vte \
 	xt xmu xauth xaw xchat xterm
 

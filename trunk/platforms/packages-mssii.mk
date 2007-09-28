@@ -18,4 +18,3 @@ BROKEN_PACKAGES = \
 	quagga \
 	socat \
 	uemacs \
-	usbutils \
