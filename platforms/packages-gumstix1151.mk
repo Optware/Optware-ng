@@ -15,4 +15,4 @@ BROKEN_PACKAGES = \
 	ircd-hybrid \
 	mdadm \
 	puppy quagga sendmail \
-	usbutils util-linux
+	util-linux

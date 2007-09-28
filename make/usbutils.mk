@@ -14,13 +14,13 @@
 #
 # You should change all these variables to suit your package.
 #
-USBUTILS_SITE=http://wwwbode.cs.tum.edu/Par/arch/usb/download/usbutils
-USBUTILS_VERSION=0.11
+USBUTILS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/usbutils
+USBUTILS_VERSION=0.72
 USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.gz
 USBUTILS_DIR=usbutils-$(USBUTILS_VERSION)
 USBUTILS_UNZIP=zcat
 USBUTILS_PRIORITY=optional
-USBUTILS_DEPENDS=
+USBUTILS_DEPENDS=libusb
 USBUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 USBUTILS_SECTION=utility
 USBUTILS_DESCRIPTION=USB enumeration utilities
@@ -29,18 +29,17 @@ USBUTILS_DESCRIPTION=USB enumeration utilities
 #
 # USBUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-USBUTILS_IPK_VERSION=2
+USBUTILS_IPK_VERSION=1
 
 #
 # USBUTILS_CONFFILES should be a list of user-editable files
-#USBUTILS_CONFFILES=/opt/etc/usbutils.conf /opt/etc/init.d/SXXusbutils
+USBUTILS_CONFFILES=/opt/share/misc/usb.ids
 
 #
 # USBUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-USBUTILS_PATCHES=$(USBUTILS_SOURCE_DIR)/lsusb-endian.patch \
-	$(USBUTILS_SOURCE_DIR)/lsusb-wchar-unused.patch
+#USBUTILS_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -68,7 +67,8 @@ USBUTILS_IPK=$(BUILD_DIR)/usbutils_$(USBUTILS_VERSION)-$(USBUTILS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(USBUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(USBUTILS_SITE)/$(USBUTILS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(USBUTILS_SITE)/$(USBUTILS_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(USBUTILS_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -92,24 +92,29 @@ usbutils-source: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+$(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES) make/usbutils.mk
+	$(MAKE) libusb-stage
 	rm -rf $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR)
 	$(USBUTILS_UNZIP) $(DL_DIR)/$(USBUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1
+	if test -n "$(USBUTILS_PATCHES)"; then \
+		cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR)
+	sed -i 's|DEST=|&/opt/share/misc/|' $(USBUTILS_BUILD_DIR)/update-usbids.sh
 	(cd $(USBUTILS_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USBUTILS_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
 		--datadir=/opt/share/misc \
 	)
-	touch $(USBUTILS_BUILD_DIR)/.configured
+	touch $@
 
 usbutils-unpack: $(USBUTILS_BUILD_DIR)/.configured
 
@@ -117,9 +122,9 @@ usbutils-unpack: $(USBUTILS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(USBUTILS_BUILD_DIR)/.built: $(USBUTILS_BUILD_DIR)/.configured
-	rm -f $(USBUTILS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(USBUTILS_BUILD_DIR)
-	touch $(USBUTILS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -130,9 +135,9 @@ usbutils: $(USBUTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(USBUTILS_BUILD_DIR)/.staged: $(USBUTILS_BUILD_DIR)/.built
-	rm -f $(USBUTILS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(USBUTILS_BUILD_DIR)/.staged
+	touch $@
 
 usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
 
@@ -140,7 +145,7 @@ usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/usbutils
 #
 $(USBUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(USBUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: usbutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -168,6 +173,7 @@ $(USBUTILS_IPK_DIR)/CONTROL/control:
 $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
 	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install-strip
+	install -m 755 $(USBUTILS_BUILD_DIR)/update-usbids.sh $(USBUTILS_IPK_DIR)/opt/sbin/
 	# don't want these as they conflict with real libusb
 	rm -rf $(USBUTILS_IPK_DIR)/opt/lib $(USBUTILS_IPK_DIR)/opt/include
 #	install -d $(USBUTILS_IPK_DIR)/opt/etc/
@@ -197,3 +203,9 @@ usbutils-clean:
 #
 usbutils-dirclean:
 	rm -rf $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR) $(USBUTILS_IPK_DIR) $(USBUTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+usbutils-check: $(USBUTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(USBUTILS_IPK)
