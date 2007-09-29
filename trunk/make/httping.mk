@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTTPING_SITE=http://www.vanheusden.com/httping
-HTTPING_VERSION=1.2.4
+HTTPING_VERSION=1.2.5
 HTTPING_SOURCE=httping-$(HTTPING_VERSION).tgz
 HTTPING_DIR=httping-$(HTTPING_VERSION)
 HTTPING_UNZIP=zcat
@@ -46,7 +46,7 @@ HTTPING_IPK_VERSION=1
 # HTTPING_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HTTPING_PATCHES=$(HTTPING_SOURCE_DIR)/configure.patch
+HTTPING_PATCHES=$(HTTPING_SOURCE_DIR)/mem.c.patch
 
 #
 # If the compilation of the package requires additional
