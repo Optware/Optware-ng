@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	libnsl ltrace \
 	nget nickle \
 	player \
-	quagga \
 	recordext renderext \
 	sdl \
 	x11 xdpyinfo xext xpm xtst
