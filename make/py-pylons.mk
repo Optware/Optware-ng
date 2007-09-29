@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PYLONS_SITE=http://cheeseshop.python.org/packages/source/P/Pylons
-PY-PYLONS_VERSION=0.9.6
+PY-PYLONS_VERSION=0.9.6.1
 PY-PYLONS_SOURCE=Pylons-$(PY-PYLONS_VERSION).tar.gz
 PY-PYLONS_DIR=Pylons-$(PY-PYLONS_VERSION)
 PY-PYLONS_UNZIP=zcat
