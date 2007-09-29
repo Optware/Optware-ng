@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ERL_EJABBERD_VERSION=1.1.3
+ERL_EJABBERD_VERSION=1.1.4
 ERL_EJABBERD_SITE=http://www.process-one.net/downloads/ejabberd/$(ERL_EJABBERD_VERSION)
 ERL_EJABBERD_SOURCE=ejabberd-$(ERL_EJABBERD_VERSION).tar.gz
 ERL_EJABBERD_DIR=ejabberd-$(ERL_EJABBERD_VERSION)
@@ -53,7 +53,7 @@ ERL_EJABBERD_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 ERL_EJABBERD_CPPFLAGS=-I$(ERLANG_BUILD_DIR)/erts/emulator/beam/
-ERL_EJABBERD_LDFLAGS=-L$(ERLANG_BUILD_DIR)/lib/erl_interface/obj/$(shell ls $(ERLANG_BUILD_DIR)/lib/erl_interface/obj)
+ERL_EJABBERD_LDFLAGS=-L$(ERLANG_BUILD_DIR)/lib/erl_interface/obj/$(ERLANG_TARGET)
 
 #
 # ERL_EJABBERD_BUILD_DIR is the directory in which the build is done.
