@@ -99,39 +99,16 @@ ASTERISK_INFO_DIR=$(ASTERISK_INST_DIR)/info
 ASTERISK_MAN_DIR=$(ASTERISK_INST_DIR)/man
 ASTERISK_SYSCONF_SAMPLE_DIR=$(ASTERISK_INST_DIR)/etc/asterisk/sample
 
+ASTERISK_TARGET=CROSS_ARCH=Linux $(strip \
+	$(if $(filter ts72xx, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=maverick, \
+	$(if $(filter mssii, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=, \
+	$(if $(filter powerpc, $(TARGET_ARCH)), CROSS_PROC=ppc SUB_PROC=, \
+	$(if $(filter mss, $(OPTWARE_TARGET)), CROSS_PROC=mips SUB_PROC=, \
+	$(if $(filter mipsel, $(TARGET_ARCH)), CROSS_PROC=mips1 SUB_PROC=, \
+	CROSS_PROC=arm SUB_PROC=xscale \
+	))))))
 
-ifeq ($(OPTWARE_TARGET),ts72xx)
-ASTERISK_TARGET_PROC=arm
-ASTERISK_TARGET_SUB_PROC=maverick
-else
-    ifeq ($(OPTWARE_TARGET),ds101g)
-    ASTERISK_TARGET_PROC=ppc
-    ASTERISK_TARGET_SUB_PROC=
-    else
-	ifeq ($(LIBC_STYLE),uclibc)
-		ifeq ($(OPTWARE_TARGET),ts101)
-		ASTERISK_TARGET_PROC=ppc
-		ASTERISK_TARGET_SUB_PROC=
-		else
-		ASTERISK_TARGET_PROC=mips1
-		ASTERISK_TARGET_SUB_PROC=
-		endif	
-	else
-		ASTERISK_TARGET_PROC=arm
-		ASTERISK_TARGET_SUB_PROC=xscale
-	endif
-    endif
-endif
-
-ifeq ($(LIBC_STYLE),uclibc)
-ASTERISK_CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(TARGET_ARCH)-$(TARGET_OS)/$(CROSS_CONFIGURATION)
-else
-  ifeq ($(OPTWARE_TARGET), slugosbe)
-ASTERISK_CROSS_COMPILE_TARGET=$(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)
-  else
-ASTERISK_CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)
-  endif
-endif
+ASTERISK_CROSS_COMPILE_TARGET=$(TARGET_INCDIR)/..
 
 .PHONY: asterisk-source asterisk-unpack asterisk asterisk-stage asterisk-ipk asterisk-clean asterisk-dirclean asterisk-check
 
@@ -178,7 +155,7 @@ $(ASTERISK_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK_SOURCE) $(ASTERISK_PATCH
 	if test "$(BUILD_DIR)/$(ASTERISK_DIR)" != "$(ASTERISK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK_DIR) $(ASTERISK_BUILD_DIR) ; \
 	fi
-	touch $(ASTERISK_BUILD_DIR)/.configured
+	touch $@
 
 asterisk-unpack: $(ASTERISK_BUILD_DIR)/.configured
 
@@ -186,7 +163,7 @@ asterisk-unpack: $(ASTERISK_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ASTERISK_BUILD_DIR)/.built: $(ASTERISK_BUILD_DIR)/.configured
-	rm -f $(ASTERISK_BUILD_DIR)/.built
+	rm -f $@
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK_LDFLAGS)" \
 	$(MAKE) -C $(ASTERISK_BUILD_DIR) \
@@ -194,11 +171,9 @@ $(ASTERISK_BUILD_DIR)/.built: $(ASTERISK_BUILD_DIR)/.configured
 	CROSS_COMPILE=$(TARGET_CROSS) \
 	CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin/ \
-	CROSS_ARCH=Linux \
-	CROSS_PROC=$(ASTERISK_TARGET_PROC) \
-	SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
+	$(ASTERISK_TARGET) \
 	$(TARGET_CONFIGURE_OPTS)
-	touch $(ASTERISK_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -209,7 +184,7 @@ asterisk: $(ASTERISK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ASTERISK_BUILD_DIR)/.staged: $(ASTERISK_BUILD_DIR)/.built
-	rm -f $(ASTERISK_BUILD_DIR)/.staged
+	rm -f $@
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK_LDFLAGS)" \
 	$(MAKE) -C $(ASTERISK_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
@@ -218,11 +193,9 @@ $(ASTERISK_BUILD_DIR)/.staged: $(ASTERISK_BUILD_DIR)/.built
 	CROSS_COMPILE=$(TARGET_CROSS) \
 	CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 	CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
-	CROSS_ARCH=Linux \
-	CROSS_PROC=$(ASTERISK_TARGET_PROC) \
-	SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
+	$(ASTERISK_TARGET) \
 	install
-	touch $(ASTERISK_BUILD_DIR)/.staged
+	touch $@
 
 asterisk-stage: $(ASTERISK_BUILD_DIR)/.staged
 
@@ -231,7 +204,7 @@ asterisk-stage: $(ASTERISK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/asterisk
 #
 $(ASTERISK_IPK_DIR)/CONTROL/control:
-	@install -d $(ASTERISK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: asterisk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -269,9 +242,7 @@ $(ASTERISK_IPK): $(ASTERISK_BUILD_DIR)/.built
 		CROSS_COMPILE=$(TARGET_CROSS) \
 		CROSS_COMPILE_TARGET=$(ASTERISK_CROSS_COMPILE_TARGET) \
 		CROSS_COMPILE_BIN=$(STAGING_DIR)/bin/ \
-		CROSS_ARCH=Linux \
-		CROSS_PROC=$(ASTERISK_TARGET_PROC) \
-		SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
+		$(ASTERISK_TARGET) \
 		install
 	install -d $(ASTERISK_IPK_DIR)/opt/etc/
 	$(MAKE) -C $(ASTERISK_BUILD_DIR) DESTDIR=$(ASTERISK_IPK_DIR) \
@@ -285,9 +256,7 @@ $(ASTERISK_IPK): $(ASTERISK_BUILD_DIR)/.built
 		CROSS_COMPILE=$(TARGET_CROSS) \
 		CROSS_COMPILE_TARGET=$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/$(GNU_TARGET_NAME)  \
 		CROSS_COMPILE_BIN=$(STAGING_DIR)/bin \
-		CROSS_ARCH=Linux \
-		CROSS_PROC=$(ASTERISK_TARGET_PROC) \
-		SUB_PROC=$(ASTERISK_TARGET_SUB_PROC) \
+		$(ASTERISK_TARGET) \
 		samples
 	$(STRIP_COMMAND) $(ASTERISK_IPK_DIR)/opt/sbin/asterisk \
 			 $(ASTERISK_IPK_DIR)/opt/sbin/stereorize \
