@@ -201,7 +201,7 @@ COMMON_CROSS_PACKAGES = \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
-	lame launchtool lcd4linux ldconfig less lftp lha \
+	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
 	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
