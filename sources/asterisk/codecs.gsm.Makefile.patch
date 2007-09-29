@@ -1,47 +1,38 @@
---- asterisk-1.2.10/codecs/gsm/Makefile	2006-05-30 21:18:30.000000000 +0200
-+++ asterisk/codecs/gsm/Makefile	2006-07-20 16:15:15.000000000 +0200
-@@ -243,6 +243,10 @@
- ifneq (${PROC},arm)
+--- asterisk/codecs/gsm/Makefile.orig	2006-07-24 10:05:56.000000000 -0700
++++ asterisk/codecs/gsm/Makefile	2007-09-29 13:52:16.000000000 -0700
+@@ -51,7 +51,9 @@
+            ifneq (${PROC},ppc)
+             ifneq (${PROC},ppc64)
+              ifneq (${PROC},s390)
++	      ifneq (${PROC}, $(filter mips mipsel, ${PROC}))
+ OPTIMIZE+=-march=$(PROC)
++              endif
+              endif
+             endif
+            endif
+@@ -240,9 +242,9 @@
+ ifneq ($(shell uname -m),alpha)
+ ifneq ($(shell uname -m),armv4l)
+ ifneq ($(shell uname -m),sparc64)
+-ifneq (${PROC},arm)
  ifneq ($(shell uname -m), parisc)
  ifneq ($(shell uname -m),s390)
-+ifneq (${PROC}, ppc)
-+ifneq (${PROC}, mips1)
-+ifneq (${PROC}, mips)
-+ifneq (${PROC}, mipsel)
++ifneq (${PROC}, $(filter arm ppc mips1 mips mipsel, ${PROC}))
  GSM_SOURCES+= $(SRC)/k6opt.s
  endif
  endif
-@@ -255,6 +259,10 @@
- endif
- endif
- endif
-+endif
-+endif
-+endif
-+endif
- 
- TOAST_SOURCES = $(SRC)/toast.c 		\
- 		$(SRC)/toast_lin.c	\
-@@ -309,6 +317,11 @@
+@@ -310,6 +312,7 @@
  ifneq ($(shell uname -m), armv4l)
  ifneq ($(shell uname -m), parisc)
  ifneq ($(shell uname -m),s390)
-+ifneq (${PROC},arm)
-+ifneq (${PROC},ppc)
-+ifneq (${PROC},mips1)
-+ifneq (${PROC},mips)
-+ifneq (${PROC},mipsel)
++ifneq (${PROC}, $(filter arm ppc mips1 mips mipsel, ${PROC}))
  GSM_OBJECTS+= $(SRC)/k6opt.o
  endif
  endif
-@@ -319,6 +332,11 @@
+@@ -321,6 +324,7 @@
  endif
  endif
  endif
-+endif
-+endif
-+endif
-+endif
 +endif
  
  TOAST_OBJECTS =	$(SRC)/toast.o 		\
