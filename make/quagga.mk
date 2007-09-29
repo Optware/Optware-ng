@@ -114,7 +114,9 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 	$(MAKE) readline-stage termcap-stage 
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1
+	if test -n "$(QUAGGA_PATCHES)"; then \
+		cat $(QUAGGA_PATCHES) | patch -d $(BUILD_DIR)/$(QUAGGA_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(QUAGGA_DIR) $(QUAGGA_BUILD_DIR)
 	# Cross compilation requires checks for include files to point to target include dirictory
 	sed -i -e 's!/usr/include/!$(TARGET_INCDIR)/!g' $(QUAGGA_BUILD_DIR)/configure.ac
@@ -122,6 +124,8 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 	sed -i -e 's!struct user!struct vtysh_user!g' $(QUAGGA_BUILD_DIR)/vtysh/vtysh_user.c
 	(cd $(QUAGGA_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
+		touch aclocal.m4 Makefile.in config.h.in; \
+		touch configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QUAGGA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(QUAGGA_LDFLAGS)" \
@@ -136,7 +140,7 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 		--disable-static \
 		--enable-vtysh \
 	)
-	touch $(QUAGGA_BUILD_DIR)/.configured
+	touch $@
 
 quagga-unpack: $(QUAGGA_BUILD_DIR)/.configured
 
@@ -144,9 +148,9 @@ quagga-unpack: $(QUAGGA_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(QUAGGA_BUILD_DIR)/.built: $(QUAGGA_BUILD_DIR)/.configured
-	rm -f $(QUAGGA_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(QUAGGA_BUILD_DIR)
-	touch $(QUAGGA_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -157,9 +161,9 @@ quagga: $(QUAGGA_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(QUAGGA_BUILD_DIR)/.staged: $(QUAGGA_BUILD_DIR)/.built
-	rm -f $(QUAGGA_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(QUAGGA_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(QUAGGA_BUILD_DIR)/.staged
+	touch $@
 
 quagga-stage: $(QUAGGA_BUILD_DIR)/.staged
 
@@ -168,7 +172,7 @@ quagga-stage: $(QUAGGA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/quagga
 #
 $(QUAGGA_IPK_DIR)/CONTROL/control:
-	@install -d $(QUAGGA_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: quagga" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
