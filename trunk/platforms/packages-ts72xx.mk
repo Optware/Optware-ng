@@ -12,6 +12,6 @@ BROKEN_PACKAGES = \
 	ldconfig lighttpd \
 	motion mysql nfs-server nrpe \
 	php php-apache pure-ftpd py-mysql py-soappy \
-	qemu qemu-libc-i386 quagga rtorrent \
+	qemu qemu-libc-i386 rtorrent \
 	sablevm tshark transcode w3m xvid \
 
