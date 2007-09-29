@@ -4,7 +4,7 @@ SPECIFIC_PACKAGES =
 # Packages that do not work for mss.
 BROKEN_PACKAGES = \
 	amule \
-	$(ASTERISK_PACKAGES) \
+	$(filter-out asterisk asterisk-sounds, $(ASTERISK_PACKAGES)) \
 	clamav \
 	elinks \
 	$(ERLANG_PACKAGES) \

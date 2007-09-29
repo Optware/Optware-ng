@@ -6,7 +6,6 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	buildroot uclibc-opt \
-	asterisk \
 	cairo \
 	chillispot \
 	ecl \
