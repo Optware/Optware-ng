@@ -23,7 +23,7 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_URL) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TOOLCHAIN_SOURCE)
 
-$(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) $(OPTWARE_TOP)/platforms/toolchain-gumstix1151.mk
+$(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP)
 	mkdir -p $(TARGET_CROSS_TOP)
 	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_SOURCE)
