@@ -21,15 +21,18 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VERSION=6.3.5
-IMAGEMAGICK_REV=3
+IMAGEMAGICK_VER=6.3.5
+IMAGEMAGICK_REV=10
+IMAGEMAGICK_IPK_VERSION=1
 else
-IMAGEMAGICK_VERSION=6.3.1
+IMAGEMAGICK_VER=6.3.1
 IMAGEMAGICK_REV=6
+IMAGEMAGICK_IPK_VERSION=2
 endif
-IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV).tar.gz
-IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VERSION)
-IMAGEMAGICK_UNZIP=zcat
+IMAGEMAGICK_VERSION=$(IMAGEMAGICK_VER).$(IMAGEMAGICK_REV)
+IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
+IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VER)
+IMAGEMAGICK_UNZIP=bzcat
 IMAGEMAGICK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
 IMAGEMAGICK_SECTION=graphics
@@ -37,11 +40,6 @@ IMAGEMAGICK_PRIORITY=optional
 IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms
 IMAGEMAGICK_SUGGESTS=
 IMAGEMAGICK_CONFLICTS=
-
-#
-# IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
-#
-IMAGEMAGICK_IPK_VERSION=1
 
 #
 # IMAGEMAGICK_PATCHES should list any patches, in the the order in
@@ -73,7 +71,7 @@ IMAGEMAGICK_LDFLAGS=
 IMAGEMAGICK_BUILD_DIR=$(BUILD_DIR)/imagemagick
 IMAGEMAGICK_SOURCE_DIR=$(SOURCE_DIR)/imagemagick
 IMAGEMAGICK_IPK_DIR=$(BUILD_DIR)/imagemagick-$(IMAGEMAGICK_VERSION)-ipk
-IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)_$(TARGET_ARCH).ipk
+IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: imagemagick-source imagemagick-unpack imagemagick imagemagick-stage imagemagick-ipk imagemagick-clean imagemagick-dirclean imagemagick-check
 
@@ -136,7 +134,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--without-gslib \
 	)
 	$(PATCH_LIBTOOL) $(IMAGEMAGICK_BUILD_DIR)/libtool
-	touch $(IMAGEMAGICK_BUILD_DIR)/.configured
+	touch $@
 
 imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
 
@@ -159,9 +157,9 @@ imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(IMAGEMAGICK_BUILD_DIR)/.built: $(IMAGEMAGICK_BUILD_DIR)/.configured
-	rm -f $(IMAGEMAGICK_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR)
-	touch $(IMAGEMAGICK_BUILD_DIR)/.built
+	touch $@
 
 
 #
@@ -175,13 +173,13 @@ imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/imagemagick
 #
 $(IMAGEMAGICK_IPK_DIR)/CONTROL/control:
-	@install -d $(IMAGEMAGICK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: imagemagick" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(IMAGEMAGICK_PRIORITY)" >>$@
 	@echo "Section: $(IMAGEMAGICK_SECTION)" >>$@
-	@echo "Version: $(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_REV)-$(IMAGEMAGICK_IPK_VERSION)" >>$@
+	@echo "Version: $(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(IMAGEMAGICK_MAINTAINER)" >>$@
 	@echo "Source: $(IMAGEMAGICK_SITE)/$(IMAGEMAGICK_SOURCE)" >>$@
 	@echo "Description: $(IMAGEMAGICK_DESCRIPTION)" >>$@
@@ -203,12 +201,15 @@ $(IMAGEMAGICK_IPK_DIR)/CONTROL/control:
 #
 $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) install-am
+	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) transform='' install-am
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/libltdl*
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.la
 	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
 		-name '*.a' \
+		-exec rm -f {} \;
+	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+		-name '*.la' \
 		-exec rm -f {} \;
 	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
 		-name '*.so' \
@@ -229,9 +230,8 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 		$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/$$f -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/$$f; \
 		$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/bin/$$f; \
 		done
-	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/www
-	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VERSION)/images
-	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/man
+	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VER)/www
+	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VER)/images
 	$(MAKE) $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAGEMAGICK_IPK_DIR)
 
