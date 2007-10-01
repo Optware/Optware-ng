@@ -230,7 +230,7 @@ COMMON_CROSS_PACKAGES = \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle nmap nload noip nrpe \
 	ntfsprogs ntop ntp ntpclient nttcp nvi nylon nzbget \
-	oleo \
+	oleo open2300 \
 	openobex obexftp \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
