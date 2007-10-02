@@ -1,4 +1,4 @@
-# !/bin/sh
+#!/opt/bin/bash
 # This script depends on screen.
 # For the stop function to work, you must set an
 # explicit session directory using absolute paths in your rtorrent.rc.
