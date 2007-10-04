@@ -211,6 +211,7 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 # This is called from the top level makefile to create the IPK file.
 #
 kernel-modules-ipk: $(KERNEL_BUILD_DIR)/.ipkdone
+$(OPTWARE_TARGET)-kernel-modules-ipk: $(KERNEL_BUILD_DIR)/.ipkdone
 
 #
 # This is called from the top level makefile to clean all of the built files.
