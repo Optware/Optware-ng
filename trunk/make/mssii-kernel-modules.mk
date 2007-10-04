@@ -13,8 +13,11 @@ MSSII_GPL_SOURCE=MSSII_3.1.2.src.tgz
 KERNEL_VERSION=2.6.12.6-arm1
 KERNEL-MODULES_DIR=linux-$(KERNEL_VERSION)
 KERNEL-MODULES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-KERNEL-MODULES_DESCRIPTION=MSS II kernel modules
+
 KERNEL-IMAGE_DESCRIPTION=MSS II kernel
+KERNEL-MODULE_DESCRIPTION=MSS II kernel module
+KERNEL-MODULES_DESCRIPTION=MSS II kernel modules
+
 KERNEL-MODULES_SECTION=kernel
 KERNEL-MODULES_PRIORITY=optional
 KERNEL-MODULES_DEPENDS=
@@ -50,10 +53,10 @@ KERNEL_BUILD_DIR=$(BUILD_DIR)/kernel-modules
 
 KERNEL-MODULES_IPK_DIR=$(BUILD_DIR)/kernel-modules-$(KERNEL_VERSION)-ipk
 KERNEL-MODULE_IPKS_DIR=$(BUILD_DIR)/kernel-module-$(KERNEL_VERSION)-ipks
-KERNEL-MODULES_IPK=$(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-modules_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
+KERNEL-MODULES_IPK=$(BUILD_DIR)/kernel-modules_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 KERNEL-IMAGE_IPK_DIR=$(BUILD_DIR)/kernel-image-$(KERNEL_VERSION)-ipk
-KERNEL-IMAG_IPK=$(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-image_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
+KERNEL-IMAG_IPK=$(BUILD_DIR)/kernel-image_$(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -72,7 +75,7 @@ kernel-modules-source: $(DL_DIR)/$(MSSII_GPL_SOURCE) $(KERNEL-MODULES_PATCHES)
 
 $(KERNEL_BUILD_DIR)/.configured: \
 $(DL_DIR)/$(MSSII_GPL_SOURCE) $(KERNEL-MODULES_PATCHES) \
-$(MSSII_GPL_SOURCE_DIR)/defconfig # make/mssii-kernel-modules.mk
+$(MSSII_GPL_SOURCE_DIR)/defconfig make/$(OPTWARE_TARGET)-kernel-modules.mk
 	$(MAKE) u-boot-mkimage
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(KERNEL_BUILD_DIR)
 	mkdir -p $(KERNEL_BUILD_DIR)
@@ -115,7 +118,7 @@ kernel-modules: $(KERNEL_BUILD_DIR)/.built
 $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	install -d $(@D)
 	( \
-	  echo "Package: mssii-kernel-modules"; \
+	  echo "Package: kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
 	  echo "Priority: $(KERNEL-MODULES_PRIORITY)"; \
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
@@ -123,7 +126,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
 	  echo "Source: $(MSSII_GPL_SOURCE_SITE)/$(MSSII_GPL_SOURCE)"; \
 	  echo "Description: $(KERNEL-MODULES_DESCRIPTION)"; \
-	  echo -n "Depends: mssii-kernel-image"; \
+	  echo -n "Depends: kernel-image"; \
 	) >> $@
 	for m in $(KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
@@ -131,21 +134,21 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  install -d $(KERNEL-MODULE_IPKS_DIR)/$$n/CONTROL; \
 	  rm -f $(KERNEL-MODULE_IPKS_DIR)/$$n/CONTROL/control; \
           ( \
-	    echo -n ", mssii-kernel-module-$$n" >> $@; \
-	    echo "Package: mssii-kernel-module-$$n"; \
+	    echo -n ", kernel-module-$$n" >> $@; \
+	    echo "Package: kernel-module-$$n"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(KERNEL-MODULES_SECTION)"; \
 	    echo "Version: $(KERNEL_VERSION)-$(KERNEL-MODULES_IPK_VERSION)"; \
 	    echo "Maintainer: $(KERNEL-MODULES_MAINTAINER)"; \
 	    echo "Source: $(MSSII_GPL_SOURCE_SITE)/$(MSSII_GPL_SOURCE)"; \
-	    echo "Description: $(KERNEL-MODULES_DESCRIPTION) $$m"; \
+	    echo "Description: $(KERNEL-MODULE_DESCRIPTION) $$m"; \
 	    echo -n "Depends: "; \
             DEPS="$(KERNEL-MODULES_DEPENDS)"; \
 	    for i in `grep "$$m.ko:" $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules/$(KERNEL_VERSION)/modules.dep|cut -d ":" -f 2`; do \
 	      if test -n "$$DEPS"; then DEPS="$$DEPS,"; fi; \
 	      j=`basename $$i .ko | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	      DEPS="$$DEPS mssii-kernel-module-$$j"; \
+	      DEPS="$$DEPS kernel-module-$$j"; \
             done; \
             echo "$$DEPS";\
 	    echo "Suggests: $(KERNEL-MODULES_SUGGESTS)"; \
@@ -158,7 +161,7 @@ $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 	install -d $(@D)
 	rm -f $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
-	  echo "Package: mssii-kernel-image"; \
+	  echo "Package: kernel-image"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
 	  echo "Priority: $(KERNEL-MODULES_PRIORITY)"; \
 	  echo "Section: $(KERNEL-MODULES_SECTION)"; \
@@ -172,11 +175,11 @@ $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 # This builds the IPK files.
 #
 $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
-	rm -f $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-modules_*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-module-*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-image_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-modules_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
 	# Package the kernel image first
-	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-image_*_$(TARGET_ARCH).ipk
+	rm -rf $(KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
 	install -m 644 $(KERNEL_BUILD_DIR)/arch/arm/boot/uImage \
@@ -223,8 +226,8 @@ kernel-modules-clean:
 kernel-modules-dirclean:
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(KERNEL_BUILD_DIR)
 	rm -rf $(KERNEL-MODULES_IPK_DIR)* $(KERNEL-IMAGE_IPK_DIR)* $(KERNEL-MODULE_IPKS_DIR)
-	rm -f $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-modules_*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-module-*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/$(OPTWARE_TARGET)-kernel-image_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-modules_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
 
 endif
