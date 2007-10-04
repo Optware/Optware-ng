@@ -36,7 +36,7 @@ MODULE_INIT_TOOLS_CONFLICTS=
 #
 # MODULE_INIT_TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MODULE_INIT_TOOLS_IPK_VERSION=1
+MODULE_INIT_TOOLS_IPK_VERSION=2
 
 #
 # MODULE_INIT_TOOLS_CONFFILES should be a list of user-editable files
@@ -54,6 +54,10 @@ MODULE_INIT_TOOLS_IPK_VERSION=1
 #
 MODULE_INIT_TOOLS_CPPFLAGS=
 MODULE_INIT_TOOLS_LDFLAGS=
+
+ifeq ($(OPTWARE_TARGET), $(filter mssii, $(OPTWARE_TARGET)))
+MODULE_INIT_TOOLS_CONFIGURE_OPTIONS=--with-moddir=/opt/lib/modules
+endif
 
 #
 # MODULE_INIT_TOOLS_BUILD_DIR is the directory in which the build is done.
@@ -124,6 +128,7 @@ $(MODULE_INIT_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(MODULE_INIT_TOOLS_SOURCE
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(MODULE_INIT_TOOLS_CONFIGURE_OPTIONS) \
 		--disable-nls \
 		--disable-static \
 	)
