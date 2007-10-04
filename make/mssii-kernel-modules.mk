@@ -183,7 +183,7 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 	$(MAKE) $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	install -d $(KERNEL-IMAGE_IPK_DIR)/boot/
 	install -m 644 $(KERNEL_BUILD_DIR)/arch/arm/boot/uImage \
-		$(KERNEL-IMAGE_IPK_DIR)/boot/uImage-$(KERNEL_VERSION)_$(KERNEL_MODULES_IPK_VERSION)
+		$(KERNEL-IMAGE_IPK_DIR)/boot/uImage-$(KERNEL_VERSION)-optware-build-$(KERNEL-MODULES_IPK_VERSION)
 	( cd $(BUILD_DIR); $(IPKG_BUILD) $(KERNEL-IMAGE_IPK_DIR) )
 	# Now package the kernel modules
 	rm -rf $(KERNEL-MODULES_IPK_DIR)* $(KERNEL-MODULE_IPKS_DIR)
