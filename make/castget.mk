@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CASTGET_SITE=http://savannah.nongnu.org/download/castget
-CASTGET_VERSION=0.9.6
+CASTGET_VERSION=1.0.0
 CASTGET_SOURCE=castget-$(CASTGET_VERSION).tar.gz
 CASTGET_DIR=castget-$(CASTGET_VERSION)
 CASTGET_UNZIP=zcat
