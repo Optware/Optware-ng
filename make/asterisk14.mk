@@ -24,7 +24,7 @@ ASTERISK14_SOURCE_TYPE=tarball
 #ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK14_BASE_VERSION=1.4.11
+ASTERISK14_BASE_VERSION=1.4.12
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
@@ -108,7 +108,6 @@ ASTERISK14_CONFFILES=\
 /opt/etc/asterisk/meetme.conf \
 /opt/etc/asterisk/mgcp.conf \
 /opt/etc/asterisk/misdn.conf \
-/opt/etc/asterisk/modem.conf \
 /opt/etc/asterisk/modules.conf \
 /opt/etc/asterisk/musiconhold.conf \
 /opt/etc/asterisk/muted.conf \
