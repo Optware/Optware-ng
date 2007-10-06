@@ -29,7 +29,7 @@ CDRTOOLS_CONFLICTS=
 #
 # CDRTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-CDRTOOLS_IPK_VERSION=1
+CDRTOOLS_IPK_VERSION=2
 
 #
 # Force using gcc rather than cc
@@ -96,7 +96,31 @@ $(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCH
 	if test "$(BUILD_DIR)/$(CDRTOOLS_DIR)" != "$(CDRTOOLS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(CDRTOOLS_DIR) $(CDRTOOLS_BUILD_DIR) ; \
 	fi
-	touch $(CDRTOOLS_BUILD_DIR)/.configured
+	sed -i \
+	    -e 's|$$(_MACHCMD)|echo unknown|' \
+	    -e 's|$$(_ARCHCMD)|echo arch|' \
+	    -e '/^XK_ARCH:=	/s|uname -m *|echo arch |' \
+	    -e '/^OSNAME:=	/s|$$.*|linux|' \
+	    -e '/^OSREL:=	/s|$$.*|2.4.22-xfs|' \
+	    -e '/^__gmake_warn:=/s!$$(shell .*)$$!!' \
+	    $(CDRTOOLS_BUILD_DIR)/RULES/mk-*.id
+	sed -i \
+	    -e 's|$$(PTARGETC) > |cp $(CDRTOOLS_SOURCE_DIR)/`basename $$@` |' \
+	    $(CDRTOOLS_BUILD_DIR)/RULES/rules.inc
+	sed -i \
+	    -e 's|; gcc|; $(TARGET_CC)|' \
+	    $(CDRTOOLS_BUILD_DIR)/RULES/arch-linux-cc.rul \
+	    $(CDRTOOLS_BUILD_DIR)/RULES/arch-linux-gcc.rul
+	sed -i -e 's|$${CC-cc}|$(TARGET_CC)|g' $(CDRTOOLS_BUILD_DIR)/conf/configure
+	mkdir -p $(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/
+	[ -e "$(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache" ] && \
+		cp $(CDRTOOLS_SOURCE_DIR)/optware-$(OPTWARE_TARGET)-config.cache \
+			$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache || \
+	[ -e "$(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache" ] && \
+		cp $(CDRTOOLS_SOURCE_DIR)/$(TARGET_ARCH)-config.cache \
+			$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache || \
+	true
+	touch $@
 
 cdrtools-unpack: $(CDRTOOLS_BUILD_DIR)/.configured
 
@@ -104,9 +128,49 @@ cdrtools-unpack: $(CDRTOOLS_BUILD_DIR)/.configured
 # This builds the actual binaries.
 #
 $(CDRTOOLS_BUILD_DIR)/.built: $(CDRTOOLS_BUILD_DIR)/.configured
-	rm -f $(CDRTOOLS_BUILD_DIR)/.built
-	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS)
-	touch $(CDRTOOLS_BUILD_DIR)/.built
+	rm -f $@
+	if test ! -f "$(CDRTOOLS_BUILD_DIR)/incs/arch-linux-gcc/config.cache"; then export \
+	ac_cv_prog_cc_cross=yes \
+	ac_cv_dev_minor_bits=8 \
+	ac_cv_dev_minor_noncontig=no \
+	ac_cv_c_bitfields_htol=yes \
+	ac_cv_type_prototypes=yes \
+	ac_cv_sizeof_char=1 \
+	ac_cv_sizeof_short_int=2 \
+	ac_cv_sizeof_int=4 \
+	ac_cv_sizeof_long_int=4 \
+	ac_cv_sizeof_long_long=8 \
+	ac_cv_sizeof_char_p=4 \
+	ac_cv_sizeof_unsigned_char=1 \
+	ac_cv_sizeof_unsigned_short_int=2 \
+	ac_cv_sizeof_unsigned_int=4 \
+	ac_cv_sizeof_unsigned_long_int=4 \
+	ac_cv_sizeof_unsigned_long_long=8 \
+	ac_cv_sizeof_unsigned_char_p=4 \
+	ac_cv_func_mlock=yes \
+	ac_cv_func_mlockall=yes \
+	ac_cv_func_ecvt=yes \
+	ac_cv_func_fcvt=yes \
+	ac_cv_func_gcvt=no \
+	ac_cv_func_dtoa_r=no \
+	ac_cv_func_sys_siglist=yes \
+	ac_cv_func_bsd_getpgrp=no ac_cv_func_bsd_setpgrp=no \
+	ac_cv_no_user_malloc=no \
+	ac_cv_hard_symlinks=yes \
+	ac_cv_link_nofollow=yes \
+	ac_cv_access_e_ok=no \
+	\
+	ac_cv_func_mmap_fixed_mapped=yes \
+	ac_cv_func_wait3_rusage=yes \
+	ac_cv_func_smmap=yes \
+	ac_cv_type_char_unsigned=yes \
+	; fi; \
+	$(TARGET_CONFIGURE_OPTS) \
+	CPPFLAGS="$(STAGING_CPPFLAGS) $(CDRTOOLS_CPPFLAGS)" \
+	LDFLAGS="$(STAGING_LDFLAGS) $(CDRTOOLS_LDFLAGS)" \
+	CONFFLAGS="--build=$(GNU_HOST_NAME) --host=$(GNU_TARGET_NAME) --target=$(GNU_TARGET_NAME)" \
+	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS);
+	touch $@
 
 #
 # This is the build convenience target.
@@ -117,10 +181,11 @@ cdrtools: $(CDRTOOLS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CDRTOOLS_BUILD_DIR)/.staged: $(CDRTOOLS_BUILD_DIR)/.built
-	rm -f $(CDRTOOLS_BUILD_DIR)/.staged
+	rm -f $@
+	$(TARGET_CONFIGURE_OPTS) \
 	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
 		INS_BASE=$(STAGING_DIR) install
-	touch $(CDRTOOLS_BUILD_DIR)/.staged
+	touch $@
 
 cdrtools-stage: $(CDRTOOLS_BUILD_DIR)/.staged
 
@@ -157,9 +222,10 @@ $(CDRTOOLS_IPK_DIR)/CONTROL/control:
 #
 $(CDRTOOLS_IPK): $(CDRTOOLS_BUILD_DIR)/.built
 	rm -rf $(CDRTOOLS_IPK_DIR) $(BUILD_DIR)/cdrtools_*_$(TARGET_ARCH).ipk
+	$(TARGET_CONFIGURE_OPTS) \
 	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
 		INS_BASE=$(CDRTOOLS_IPK_DIR)/opt install
-	$(CDRTOOLS_MAKE) $(CDRTOOLS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(CDRTOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CDRTOOLS_IPK_DIR)
 
 #
@@ -179,5 +245,10 @@ cdrtools-clean:
 # directories.
 #
 cdrtools-dirclean:
-#
 	rm -rf $(BUILD_DIR)/$(CDRTOOLS_DIR) $(CDRTOOLS_BUILD_DIR) $(CDRTOOLS_IPK_DIR) $(CDRTOOLS_IPK)
+
+#
+# Some sanity check for the package.
+#
+cdrtools-check: $(CDRTOOLS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CDRTOOLS_IPK)
