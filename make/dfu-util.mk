@@ -20,20 +20,20 @@ DFU-UTIL_DEPENDS=libusb
 DFU-UTIL_SUGGESTS=
 DFU-UTIL_CONFLICTS=
 
-DFU-UTIL_SVN_TAG=1574
+DFU-UTIL_SVN_TAG=3095
 DFU-UTIL_VERSION=r${DFU-UTIL_SVN_TAG}
 DFU-UTIL_SVN_OPTS=-r $(DFU-UTIL_SVN_TAG)
 
 #
 # DFU-UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-DFU-UTIL_IPK_VERSION=2
+DFU-UTIL_IPK_VERSION=3
 
 #
 # DFU-UTIL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-DFU-UTIL_PATCHES=$(DFU-UTIL_SOURCE_DIR)/fix-endianess.patch
+DFU-UTIL_PATCHES=
 
 #
 # If the compilation of the package requires additional
