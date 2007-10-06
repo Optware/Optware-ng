@@ -1,6 +1,6 @@
-diff -crN ../cdrtools-2.01/RULES/armv5b-linux-cc.rul ./RULES/armv5b-linux-cc.rul
-*** ../cdrtools-2.01/RULES/armv5b-linux-cc.rul	Wed Dec 31 17:00:00 1969
---- ./RULES/armv5b-linux-cc.rul	Tue Oct 15 14:43:40 2002
+diff -crN ../cdrtools-2.01/RULES/arch-linux-cc.rul ./RULES/arch-linux-cc.rul
+*** ../cdrtools-2.01/RULES/arch-linux-cc.rul	Wed Dec 31 17:00:00 1969
+--- ./RULES/arch-linux-cc.rul	Tue Oct 15 14:43:40 2002
 ***************
 *** 0 ****
 --- 1,70 ----
@@ -74,9 +74,9 @@ diff -crN ../cdrtools-2.01/RULES/armv5b-linux-cc.rul ./RULES/armv5b-linux-cc.rul
 + RMDEP=		:
 + MKDEP=		@echo "	==> MAKING DEPENDENCIES \"$@\""; $(RMDEP); gcc -M
 + MKDEP_OUT=
-diff -crN ../cdrtools-2.01/RULES/armv5b-linux-gcc.rul ./RULES/armv5b-linux-gcc.rul
-*** ../cdrtools-2.01/RULES/armv5b-linux-gcc.rul	Wed Dec 31 17:00:00 1969
---- ./RULES/armv5b-linux-gcc.rul	Tue Oct 15 14:43:42 2002
+diff -crN ../cdrtools-2.01/RULES/arch-linux-gcc.rul ./RULES/arch-linux-gcc.rul
+*** ../cdrtools-2.01/RULES/arch-linux-gcc.rul	Wed Dec 31 17:00:00 1969
+--- ./RULES/arch-linux-gcc.rul	Tue Oct 15 14:43:42 2002
 ***************
 *** 0 ****
 --- 1,70 ----
