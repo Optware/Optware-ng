@@ -1,11 +1,19 @@
 #!/bin/sh
 #
-# Startup script for proftpd as standalone server
+# Startup script for bip as standalone server
 #
+
+# Source defaults file; edit that file to configure this script.
+ENABLED=1
+PARAMS=""
+if [ -e /opt/etc/default/bip ]; then
+  . /opt/etc/default/bip
+fi
+
+test "$ENABLED" != "0" || exit 0
 
 if [ -n "`pidof bip`" ]; then
     /bin/killall bip 2>/dev/null
-    fi
+fi
 
-    /opt/bin/bip -f /opt/etc/bip.conf
-
+/opt/bin/bip -f /opt/etc/bip.conf $PARAMS

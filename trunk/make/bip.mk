@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BIP_SITE=http://download.berlios.de/bip/
-BIP_VERSION=0.5
+BIP_SITE=http://bip.t1r.net/downloads
+BIP_VERSION=0.6.1
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -46,7 +46,7 @@ BIP_IPK_VERSION=1
 
 #
 # BIP_CONFFILES should be a list of user-editable files
-BIP_CONFFILES=/opt/etc/bip.conf
+BIP_CONFFILES=/opt/etc/bip.conf /opt/etc/init.d/S99bip /opt/etc/default/bip
 
 #
 # BIP_PATCHES should list any patches, in the the order in
@@ -80,7 +80,8 @@ BIP_IPK=$(BUILD_DIR)/bip_$(BIP_VERSION)-$(BIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BIP_SITE)/$(BIP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(BIP_SITE)/$(BIP_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(BIP_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,7 +108,7 @@ bip-source: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES)
+$(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR)
 	$(BIP_UNZIP) $(DL_DIR)/$(BIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -132,7 +133,7 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES)
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(BIP_BUILD_DIR)/libtool
-	touch $(BIP_BUILD_DIR)/.configured
+	touch $@
 
 bip-unpack: $(BIP_BUILD_DIR)/.configured
 
@@ -140,9 +141,9 @@ bip-unpack: $(BIP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BIP_BUILD_DIR)/.built: $(BIP_BUILD_DIR)/.configured
-	rm -f $(BIP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(BIP_BUILD_DIR)
-	touch $(BIP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,9 +154,9 @@ bip: $(BIP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BIP_BUILD_DIR)/.staged: $(BIP_BUILD_DIR)/.built
-	rm -f $(BIP_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(BIP_BUILD_DIR)/.staged
+	touch $@
 
 bip-stage: $(BIP_BUILD_DIR)/.staged
 
@@ -164,7 +165,7 @@ bip-stage: $(BIP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bip
 #
 $(BIP_IPK_DIR)/CONTROL/control:
-	@install -d $(BIP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -193,13 +194,12 @@ $(BIP_IPK_DIR)/CONTROL/control:
 $(BIP_IPK): $(BIP_BUILD_DIR)/.built
 	rm -rf $(BIP_IPK_DIR) $(BUILD_DIR)/bip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(BIP_IPK_DIR) install-strip
-	install -d $(BIP_IPK_DIR)/opt/etc/
-	install -m 644 $(BIP_BUILD_DIR)/samples/bip.conf $(BIP_IPK_DIR)/opt/etc/bip.conf
-	install -d $(BIP_IPK_DIR)/opt/doc/bip
-	install -m 755 $(BIP_SOURCE_DIR)/rc.bip $(BIP_IPK_DIR)/opt/doc/bip/SXXbip
+	install -d $(BIP_IPK_DIR)/opt/etc/default
+	install -m 644 $(BIP_BUILD_DIR)/samples/bip.conf $(BIP_IPK_DIR)/opt/etc/
+	install -m 644 $(BIP_SOURCE_DIR)/default.bip $(BIP_IPK_DIR)/opt/etc/default/bip
+	install -d $(BIP_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(BIP_SOURCE_DIR)/rc.bip $(BIP_IPK_DIR)/opt/etc/init.d/S99bip
 	$(MAKE) $(BIP_IPK_DIR)/CONTROL/control
-	install -m 755 $(BIP_SOURCE_DIR)/postinst $(BIP_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(BIP_SOURCE_DIR)/prerm $(BIP_IPK_DIR)/CONTROL/prerm
 	echo $(BIP_CONFFILES) | sed -e 's/ /\n/g' > $(BIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BIP_IPK_DIR)
 
@@ -221,3 +221,9 @@ bip-clean:
 #
 bip-dirclean:
 	rm -rf $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR) $(BIP_IPK_DIR) $(BIP_IPK)
+
+#
+# Some sanity check for the package.
+#
+bip-check: $(BIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BIP_IPK)

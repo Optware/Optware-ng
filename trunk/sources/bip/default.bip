@@ -1,0 +1,9 @@
+# This is a configuration file for /opt/etc/init.d/bip; it allows you to
+# perform common modifications to the behavior of the bip daemon
+# startup without editing the init script.
+
+# Parameters to pass to bip.
+PARAMS=""
+
+# Whether or not to run the bip system daemon; set to 0 to disable.
+ENABLED=1
