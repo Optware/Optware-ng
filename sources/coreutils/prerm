@@ -1,5 +1,0 @@
-#!/bin/sh
-
-update-alternatives --remove kill /opt/bin/coreutils-kill
-update-alternatives --remove uptime /opt/bin/coreutils-uptime
-update-alternatives --remove su /opt/bin/coreutils-su
