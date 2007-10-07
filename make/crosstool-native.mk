@@ -33,10 +33,12 @@ CROSSTOOL-NATIVE_DEPENDS=\
 CROSSTOOL-NATIVE_SUGGESTS=
 CROSSTOOL-NATIVE_CONFLICTS=
 
+CROSSTOOL-NATIVE_HOSTCC=gcc-3.4
+
 #
 # CROSSTOOL-NATIVE_IPK_VERSION should be incremented when the ipk changes.
 #
-CROSSTOOL-NATIVE_IPK_VERSION=6
+CROSSTOOL-NATIVE_IPK_VERSION=7
 CROSSTOOL-NATIVE_IPK_V=$(CROSSTOOL-NATIVE_VERSION)-$(CROSSTOOL-NATIVE_IPK_VERSION)
 
 CROSSTOOL-NATIVE_SCRIPT ?= nslu2-native335.sh
@@ -222,7 +224,8 @@ $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured: $(DL_DIR)/$(CROSSTOOL-NATIVE_SOURCE) 
 	cp $(CROSSTOOL-NATIVE_SOURCE_DIR)/*.dat $(CROSSTOOL-NATIVE_BUILD_DIR)
 	mkdir $(CROSSTOOL-NATIVE_BUILD_DIR)/patches/gcc-3.3.5
 	cp $(CROSSTOOL-NATIVE_BUILD_DIR)/patches/gcc-3.3.4/gcc-3.3.4-arm-bigendian.patch $(CROSSTOOL-NATIVE_BUILD_DIR)/patches/gcc-3.3.5
-	touch $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
+	sed -i -e 's/CC=gcc /CC=$(CROSSTOOL-NATIVE_HOSTCC) /' $(CROSSTOOL-NATIVE_BUILD_DIR)/crosstool.sh
+	touch $@
 
 crosstool-native-unpack: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 
@@ -231,7 +234,7 @@ crosstool-native-unpack: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(CROSSTOOL-NATIVE_BUILD_DIR)/.built: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
-	rm -f $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
+	rm -f $@
 	rm -rf $(CROSSTOOL-NATIVE_BUILD_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	mkdir -p $(CROSSTOOL-NATIVE_BUILD_DIR)$(CROSSTOOL-NATIVE_PREFIX)
 	$(SUDO) rm -rf $(CROSSTOOL-NATIVE_PREFIX)
@@ -254,7 +257,7 @@ $(CROSSTOOL-NATIVE_BUILD_DIR)/.built: $(CROSSTOOL-NATIVE_BUILD_DIR)/.configured
 		export RANLIB=$(TARGET_CROSS)ranlib ; \
 		sh $(CROSSTOOL-NATIVE_SCRIPT) \
 	)
-	touch $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
