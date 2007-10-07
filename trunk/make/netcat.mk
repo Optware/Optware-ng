@@ -39,7 +39,7 @@ NETCAT_CONFLICTS=
 #
 # NETCAT_IPK_VERSION should be incremented when the ipk changes.
 #
-NETCAT_IPK_VERSION=1
+NETCAT_IPK_VERSION=2
 
 #
 # NETCAT_CONFFILES should be a list of user-editable files
@@ -122,7 +122,7 @@ $(NETCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(NETCAT_SOURCE) $(NETCAT_PATCHES) ma
 		for i in `cat debian/series`; do cat debian/$$i | patch -p1; done; \
 		sed -i -e 's|/usr/share|/opt/share|g' debian/nc.1; \
 	)
-	touch $(NETCAT_BUILD_DIR)/.configured
+	touch $@
 
 netcat-unpack: $(NETCAT_BUILD_DIR)/.configured
 
@@ -130,9 +130,9 @@ netcat-unpack: $(NETCAT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NETCAT_BUILD_DIR)/.built: $(NETCAT_BUILD_DIR)/.configured
-	rm -f $(NETCAT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NETCAT_BUILD_DIR) CC=$(TARGET_CC) linux
-	touch $(NETCAT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,9 +143,9 @@ netcat: $(NETCAT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NETCAT_BUILD_DIR)/.staged: $(NETCAT_BUILD_DIR)/.built
-	rm -f $(NETCAT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(NETCAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NETCAT_BUILD_DIR)/.staged
+	touch $@
 
 netcat-stage: $(NETCAT_BUILD_DIR)/.staged
 
@@ -154,7 +154,7 @@ netcat-stage: $(NETCAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/netcat
 #
 $(NETCAT_IPK_DIR)/CONTROL/control:
-	@install -d $(NETCAT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: netcat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -183,18 +183,17 @@ $(NETCAT_IPK_DIR)/CONTROL/control:
 $(NETCAT_IPK): $(NETCAT_BUILD_DIR)/.built
 	rm -rf $(NETCAT_IPK_DIR) $(BUILD_DIR)/netcat_*_$(TARGET_ARCH).ipk
 	install -d $(NETCAT_IPK_DIR)/opt/{bin,man/man1,share/doc/netcat}
-	install $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)/opt/bin
+	install $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
 	install $(NETCAT_BUILD_DIR)/debian/nc.1 $(NETCAT_IPK_DIR)/opt/man/man1
 	gzip -c $(NETCAT_BUILD_DIR)/README > $(NETCAT_IPK_DIR)/opt/share/doc/netcat/README.gz
-	$(STRIP_COMMAND) $(NETCAT_IPK_DIR)/opt/bin/nc
-#	$(MAKE) -C $(NETCAT_BUILD_DIR) DESTDIR=$(NETCAT_IPK_DIR) install-strip
-#	install -d $(NETCAT_IPK_DIR)/opt/etc/
-#	install -m 644 $(NETCAT_SOURCE_DIR)/netcat.conf $(NETCAT_IPK_DIR)/opt/etc/netcat.conf
-#	install -d $(NETCAT_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NETCAT_SOURCE_DIR)/rc.netcat $(NETCAT_IPK_DIR)/opt/etc/init.d/SXXnetcat
+	$(STRIP_COMMAND) $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
 	$(MAKE) $(NETCAT_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NETCAT_SOURCE_DIR)/postinst $(NETCAT_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NETCAT_SOURCE_DIR)/prerm $(NETCAT_IPK_DIR)/CONTROL/prerm
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/nc nc /opt/bin/netcat-nc 80"; \
+	) > $(NETCAT_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove nc /opt/bin/netcat-nc"; \
+	) > $(NETCAT_IPK_DIR)/CONTROL/prerm
 	echo $(NETCAT_CONFFILES) | sed -e 's/ /\n/g' > $(NETCAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETCAT_IPK_DIR)
 
@@ -216,3 +215,9 @@ netcat-clean:
 #
 netcat-dirclean:
 	rm -rf $(BUILD_DIR)/$(NETCAT_DIR) $(NETCAT_BUILD_DIR) $(NETCAT_IPK_DIR) $(NETCAT_IPK)
+
+#
+# Some sanity check for the package.
+#
+netcat-check: $(NETCAT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NETCAT_IPK)
