@@ -20,9 +20,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ESNIPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/esniper
-ESNIPER_VERSION=2-16-1
-ESNIPER_SOURCE=esniper-$(ESNIPER_VERSION).tgz
-ESNIPER_DIR=esniper-$(ESNIPER_VERSION)
+ESNIPER_UPSTREAM_VERSION=2-17-1
+ESNIPER_VERSION=2.17.1
+ESNIPER_SOURCE=esniper-$(ESNIPER_UPSTREAM_VERSION).tgz
+ESNIPER_DIR=esniper-$(ESNIPER_UPSTREAM_VERSION)
 ESNIPER_UNZIP=zcat
 ESNIPER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ESNIPER_DESCRIPTION=A lightweight eBay sniping tool
@@ -128,7 +129,7 @@ $(ESNIPER_BUILD_DIR)/.configured: $(DL_DIR)/$(ESNIPER_SOURCE) $(ESNIPER_PATCHES)
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(ESNIPER_BUILD_DIR)/libtool
-	touch $(ESNIPER_BUILD_DIR)/.configured
+	touch $@
 
 esniper-unpack: $(ESNIPER_BUILD_DIR)/.configured
 
@@ -136,9 +137,9 @@ esniper-unpack: $(ESNIPER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ESNIPER_BUILD_DIR)/.built: $(ESNIPER_BUILD_DIR)/.configured
-	rm -f $(ESNIPER_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(ESNIPER_BUILD_DIR)
-	touch $(ESNIPER_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -149,9 +150,9 @@ esniper: $(ESNIPER_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ESNIPER_BUILD_DIR)/.staged: $(ESNIPER_BUILD_DIR)/.built
-	rm -f $(ESNIPER_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(ESNIPER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ESNIPER_BUILD_DIR)/.staged
+	touch $@
 
 esniper-stage: $(ESNIPER_BUILD_DIR)/.staged
 
@@ -190,15 +191,7 @@ $(ESNIPER_IPK): $(ESNIPER_BUILD_DIR)/.built
 	rm -rf $(ESNIPER_IPK_DIR) $(BUILD_DIR)/esniper_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ESNIPER_BUILD_DIR) DESTDIR=$(ESNIPER_IPK_DIR) install-strip
 	install -d $(ESNIPER_IPK_DIR)/opt/etc/
-#	install -m 644 $(ESNIPER_SOURCE_DIR)/esniper.conf $(ESNIPER_IPK_DIR)/opt/etc/esniper.conf
-#	install -d $(ESNIPER_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ESNIPER_SOURCE_DIR)/rc.esniper $(ESNIPER_IPK_DIR)/opt/etc/init.d/SXXesniper
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXesniper
 	$(MAKE) $(ESNIPER_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ESNIPER_SOURCE_DIR)/postinst $(ESNIPER_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ESNIPER_SOURCE_DIR)/prerm $(ESNIPER_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
 #	echo $(ESNIPER_CONFFILES) | sed -e 's/ /\n/g' > $(ESNIPER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESNIPER_IPK_DIR)
 
