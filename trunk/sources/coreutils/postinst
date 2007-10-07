@@ -1,8 +1,0 @@
-#!/bin/sh
-
-/bin/chown 0:0 /opt/bin/coreutils-su
-/bin/chmod 4755 /opt/bin/coreutils-su
-
-update-alternatives --install /opt/bin/kill kill /opt/bin/coreutils-kill 50
-update-alternatives --install /opt/bin/uptime uptime /opt/bin/coreutils-uptime 50
-update-alternatives --install /opt/bin/su su /opt/bin/coreutils-su 50

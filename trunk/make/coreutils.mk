@@ -36,12 +36,12 @@ endif
 ifeq (enable, $(GETTEXT_NLS))
 COREUTILS_DEPENDS+=, gettext
 endif
-COREUTILS_CONFLICTS=busybox-links
+COREUTILS_CONFLICTS=
 
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=4
+COREUTILS_IPK_VERSION=5
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -145,7 +145,7 @@ endif
 		--prefix=/opt \
 		--datarootdir=/opt \
 	)
-	touch $(COREUTILS_BUILD_DIR)/.configured
+	touch $@
 
 coreutils-unpack: $(COREUTILS_BUILD_DIR)/.configured
 
@@ -154,9 +154,9 @@ coreutils-unpack: $(COREUTILS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(COREUTILS_BUILD_DIR)/.built: $(COREUTILS_BUILD_DIR)/.configured
-	rm -f $(COREUTILS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)
-	touch $(COREUTILS_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -183,7 +183,7 @@ coreutils: $(COREUTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/coreutils
 #
 $(COREUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(COREUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: coreutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -225,18 +225,31 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	rm $(COREUTILS_IPK_DIR)/opt/man/man1/hostname.1
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
 	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
-	mv $(COREUTILS_IPK_DIR)/opt/bin/kill $(COREUTILS_IPK_DIR)/opt/bin/coreutils-kill
-	mv $(COREUTILS_IPK_DIR)/opt/bin/uptime $(COREUTILS_IPK_DIR)/opt/bin/coreutils-uptime
-	mv $(COREUTILS_IPK_DIR)/opt/bin/su $(COREUTILS_IPK_DIR)/opt/bin/coreutils-su
+	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(COREUTILS_IPK_DIR)/CONTROL/postinst
+	(echo "/bin/chown 0:0 /opt/bin/coreutils-su"; \
+	 echo "/bin/chmod 4755 /opt/bin/coreutils-su"; \
+	) >> $(COREUTILS_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(COREUTILS_IPK_DIR)/CONTROL/prerm
+	cd $(COREUTILS_IPK_DIR)/opt/bin; \
+	for p in *; do \
+	    if test "$$p" = "["; then \
+		q=coreutils-lbracket; \
+	    else \
+		q=coreutils-$$p; \
+	    fi; \
+	    mv $$p $$q; \
+	    echo "update-alternatives --install '/opt/bin/$$p' '$$p' '$$q' 50" \
+		>> $(COREUTILS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove '$$p' '$$q'" \
+		>> $(COREUTILS_IPK_DIR)/CONTROL/prerm; \
+	done
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	install -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/S05coreutils
 	install -d $(COREUTILS_IPK_DIR)/usr/bin
 	ln -s /opt/bin/env $(COREUTILS_IPK_DIR)/usr/bin/env
 endif
-	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
-	install -m 644 $(COREUTILS_SOURCE_DIR)/postinst $(COREUTILS_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(COREUTILS_SOURCE_DIR)/prerm $(COREUTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 
 #
