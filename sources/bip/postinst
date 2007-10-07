@@ -1,6 +1,0 @@
-echo ""
-echo "When he installation is finished, you should edit /opt/etc/bip.conf"
-echo "and after do this, then you could copy /opt/doc/bip/SXXbip to "
-echo "/opt/etc/init.d/S99bip, chmod 755 /opt/etc/init.d/S99bip, and"
-echo "execute this file."
-echo ""
