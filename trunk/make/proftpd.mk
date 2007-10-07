@@ -21,7 +21,7 @@
 #
 PROFTPD_NAME=proftpd
 PROFTPD_SITE=ftp://ftp.proftpd.org/distrib/source
-PROFTPD_VERSION=1.3.0a
+PROFTPD_VERSION=1.3.1
 PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=bzcat
@@ -143,7 +143,7 @@ $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 		--enable-ctrls \
 		--cache-file=config.cache \
 	)
-	touch $(PROFTPD_BUILD_DIR)/.configured
+	touch $@
 
 proftpd-unpack: $(PROFTPD_BUILD_DIR)/.configured
 
@@ -152,9 +152,9 @@ proftpd-unpack: $(PROFTPD_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PROFTPD_BUILD_DIR)/.built: $(PROFTPD_BUILD_DIR)/.configured
-	rm -f $(PROFTPD_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PROFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) HOSTCC=$(HOSTCC)
-	touch $(PROFTPD_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
