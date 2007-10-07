@@ -21,11 +21,10 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.5.1
+BUSYBOX_VERSION=1.7.2
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
-BUSYBOX_CONFIG=$(BUSYBOX_SOURCE_DIR)/defconfig
 BUSYBOX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BUSYBOX_DESCRIPTION=A userland replacement for embedded systems.
 BUSYBOX_SECTION=core
@@ -98,20 +97,22 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(BUSYBOX_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(BUSYBOX_BUILD_DIR) ; \
 	fi
-	cp $(BUSYBOX_CONFIG) $(BUSYBOX_BUILD_DIR)/.config
+	cp $(BUSYBOX_SOURCE_DIR)/defconfig $(BUSYBOX_BUILD_DIR)/.config
 ifeq ($(LIBC_STYLE),uclibc)
+# default on, turn off if uclibc
 	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/# CONFIG_FEATURE_SORT_BIG is not set/" \
-		-e "s/^.*CONFIG_MKSWAP.*/CONFIG_MKSWAP=y/" \
-		-e "s/^.*CONFIG_LOSETUP.*/CONFIG_LOSETUP=y/" \
 		$(BUSYBOX_BUILD_DIR)/.config
-else
-	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/CONFIG_FEATURE_SORT_BIG=y/" \
+endif
+ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
+# default off, turn on if linux 2.6
+	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" \
 		$(BUSYBOX_BUILD_DIR)/.config
 endif
 	sed -i -e 's/-strip /-$$(STRIP) /' $(BUSYBOX_BUILD_DIR)/scripts/Makefile.IMA
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" \
 		-C $(BUSYBOX_BUILD_DIR) oldconfig
-	touch $(BUSYBOX_BUILD_DIR)/.configured
+#		-C $(BUSYBOX_BUILD_DIR) menuconfig
+	touch $@
 
 busybox-unpack: $(BUSYBOX_BUILD_DIR)/.configured
 
@@ -119,14 +120,14 @@ busybox-unpack: $(BUSYBOX_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BUSYBOX_BUILD_DIR)/.built: $(BUSYBOX_BUILD_DIR)/.configured
-	rm -f $(BUSYBOX_BUILD_DIR)/.built
+	rm -f $@
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(BUSYBOX_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(BUSYBOX_LDFLAGS)" \
 	$(MAKE) CROSS="$(TARGET_CROSS)" \
 		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		-C $(BUSYBOX_BUILD_DIR)
-	touch $(BUSYBOX_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,9 +138,9 @@ busybox: $(BUSYBOX_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BUSYBOX_BUILD_DIR)/.staged: $(BUSYBOX_BUILD_DIR)/.built
-	rm -f $(BUSYBOX_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(BUSYBOX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(BUSYBOX_BUILD_DIR)/.staged
+	touch $@
 
 busybox-stage: $(BUSYBOX_BUILD_DIR)/.staged
 
@@ -148,7 +149,7 @@ busybox-stage: $(BUSYBOX_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources
 #
 $(BUSYBOX_IPK_DIR)/CONTROL/control:
-	@install -d $(BUSYBOX_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: busybox" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -162,7 +163,7 @@ $(BUSYBOX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(BUSYBOX_CONFLICTS)" >>$@
 
 $(BUSYBOX_IPK_DIR)-base/CONTROL/control:
-	@install -d $(BUSYBOX_IPK_DIR)-base/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: busybox-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,7 +177,7 @@ $(BUSYBOX_IPK_DIR)-base/CONTROL/control:
 	@echo "Conflicts: $(BUSYBOX_CONFLICTS)" >>$@
 
 $(BUSYBOX_IPK_DIR)-links/CONTROL/control:
-	@install -d $(BUSYBOX_IPK_DIR)-links/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: busybox-links" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,12 +220,19 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 	install -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	mv $(BUSYBOX_IPK_DIR)/opt/bin/* $(BUSYBOX_IPK_DIR)-links/opt/bin
 	mv $(BUSYBOX_IPK_DIR)/opt/sbin/* $(BUSYBOX_IPK_DIR)-links/opt/sbin
-	# Remove the symlinks for potential "stock functionality" applets.
-	rm $(BUSYBOX_IPK_DIR)-links/opt/sbin/fdisk
-	rm $(BUSYBOX_IPK_DIR)-links/opt/sbin/insmod
-	# Remove broken df - stock is better
-	rm $(BUSYBOX_IPK_DIR)-links/opt/bin/df
 	$(MAKE) $(BUSYBOX_IPK_DIR)-links/CONTROL/control
+	echo "#!/bin/sh" > $(BUSYBOX_IPK_DIR)-links/CONTROL/postinst
+	echo "#!/bin/sh" > $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm
+	for d in bin sbin; do \
+	    cd $(BUSYBOX_IPK_DIR)-links/opt/$$d; \
+	    for l in *; do \
+		echo "update-alternatives --install '/opt/$$d/$$l' '$$l' /opt/bin/busybox 30" \
+		    >> $(BUSYBOX_IPK_DIR)-links/CONTROL/postinst; \
+		echo "update-alternatives --remove '$$l' /opt/bin/busybox" \
+		    >> $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm; \
+	    done; \
+	done
+	rm -rf $(BUSYBOX_IPK_DIR)-links/opt
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)-links
 	rm -rf $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) $(BUSYBOX_IPK_DIR)/CONTROL/control
