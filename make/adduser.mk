@@ -110,7 +110,7 @@ $(ADDUSER_BUILD_DIR)/.configured:
 ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
 # default off, turn on if linux 2.6
 	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" \
-		$(BUSYBOX_BUILD_DIR)/.config
+		$(ADDUSER_BUILD_DIR)/.config
 endif
 	sed -i -e 's/-strip /-$$(STRIP) /' $(ADDUSER_BUILD_DIR)/scripts/Makefile.IMA
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS=$(TARGET_CROSS) \
