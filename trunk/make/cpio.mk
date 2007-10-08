@@ -18,7 +18,7 @@ CPIO_DEPENDS=
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=1
+CPIO_IPK_VERSION=2
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
@@ -150,7 +150,14 @@ $(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	rm -rf $(CPIO_IPK_DIR) $(BUILD_DIR)/cpio_*_$(TARGET_ARCH).ipk
 	install -d $(CPIO_IPK_DIR)/opt/bin
 	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
+	mv $(CPIO_IPK_DIR)/opt/bin/cpio $(CPIO_IPK_DIR)/opt/bin/cpio-cpio
 	$(MAKE) $(CPIO_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/cpio cpio /opt/bin/cpio-cpio 80"; \
+	) > $(CPIO_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove cpio /opt/bin/cpio-cpio"; \
+	) > $(CPIO_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)
 
 #
