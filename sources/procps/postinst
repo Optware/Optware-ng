@@ -1,4 +1,8 @@
 #!/bin/sh
 
+update-alternatives --install /opt/bin/free free /opt/bin/procps-free 80
 update-alternatives --install /opt/bin/kill kill /opt/bin/procps-kill 80
+update-alternatives --install /opt/bin/ps ps /opt/bin/procps-ps 80
+update-alternatives --install /opt/bin/top top /opt/bin/procps-top 80
 update-alternatives --install /opt/bin/uptime uptime /opt/bin/procps-uptime 80
+update-alternatives --install /opt/bin/watch watch /opt/bin/procps-watch 80

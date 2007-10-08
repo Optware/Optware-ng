@@ -1,4 +1,8 @@
 #!/bin/sh
 
+update-alternatives --remove free /opt/bin/procps-free
 update-alternatives --remove kill /opt/bin/procps-kill
+update-alternatives --remove ps /opt/bin/procps-ps
+update-alternatives --remove top /opt/bin/procps-top
 update-alternatives --remove uptime /opt/bin/procps-uptime
+update-alternatives --remove watch /opt/bin/procps-watch
