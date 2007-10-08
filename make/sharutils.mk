@@ -36,7 +36,7 @@ SHARUTILS_CONFLICTS=
 #
 # SHARUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-SHARUTILS_IPK_VERSION=1
+SHARUTILS_IPK_VERSION=2
 
 #
 # SHARUTILS_CONFFILES should be a list of user-editable files
@@ -189,16 +189,17 @@ $(SHARUTILS_IPK_DIR)/CONTROL/control:
 $(SHARUTILS_IPK): $(SHARUTILS_BUILD_DIR)/.built
 	rm -rf $(SHARUTILS_IPK_DIR) $(BUILD_DIR)/sharutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHARUTILS_BUILD_DIR) DESTDIR=$(SHARUTILS_IPK_DIR) install-strip
-#	install -d $(SHARUTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(SHARUTILS_SOURCE_DIR)/sharutils.conf $(SHARUTILS_IPK_DIR)/opt/etc/sharutils.conf
-#	install -d $(SHARUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(SHARUTILS_SOURCE_DIR)/rc.sharutils $(SHARUTILS_IPK_DIR)/opt/etc/init.d/SXXsharutils
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARUTILS_IPK_DIR)/opt/etc/init.d/SXXsharutils
+	mv $(SHARUTILS_IPK_DIR)/opt/bin/uudecode $(SHARUTILS_IPK_DIR)/opt/bin/sharutils-uudecode
+	mv $(SHARUTILS_IPK_DIR)/opt/bin/uuencode $(SHARUTILS_IPK_DIR)/opt/bin/sharutils-uuencode
 	$(MAKE) $(SHARUTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SHARUTILS_SOURCE_DIR)/postinst $(SHARUTILS_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARUTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SHARUTILS_SOURCE_DIR)/prerm $(SHARUTILS_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARUTILS_IPK_DIR)/CONTROL/prerm
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/uudecode uudecode /opt/bin/sharutils-uudecode 70"; \
+	 echo "update-alternatives --install /opt/bin/uuencode uuencode /opt/bin/sharutils-uuencode 70"; \
+	) > $(SHARUTILS_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove uudecode /opt/bin/sharutils-uudecode"; \
+	 echo "update-alternatives --remove uuencode /opt/bin/sharutils-uuencode"; \
+	) > $(SHARUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(SHARUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(SHARUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SHARUTILS_IPK_DIR)
 
