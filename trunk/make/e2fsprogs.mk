@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=1
+E2FSPROGS_IPK_VERSION=2
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -120,7 +120,7 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 	sed -i -e '/LN_S/s|-f $$(ELF_INSTALL_DIR)/$$(ELF_SONAME)|-f $$(ELF_SONAME)|' \
 		$(E2FSPROGS_BUILD_DIR)/lib/Makefile* \
 		$(E2FSPROGS_BUILD_DIR)/lib/*/Makefile
-	touch $(E2FSPROGS_BUILD_DIR)/.configured
+	touch $@
 
 e2fsprogs-unpack: $(E2FSPROGS_BUILD_DIR)/.configured
 
@@ -128,9 +128,9 @@ e2fsprogs-unpack: $(E2FSPROGS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(E2FSPROGS_BUILD_DIR)/.built: $(E2FSPROGS_BUILD_DIR)/.configured
-	rm -f $(E2FSPROGS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)
-	touch $(E2FSPROGS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,7 +148,7 @@ $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
 	DESTDIR=$(STAGING_DIR) install
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/et \
 	DESTDIR=$(STAGING_DIR) install
-	touch $(E2FSPROGS_BUILD_DIR)/.staged
+	touch $@
 
 e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
 
@@ -157,7 +157,7 @@ e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/e2fsprogs
 #
 $(E2FSPROGS_IPK_DIR)/CONTROL/control:
-	@install -d $(E2FSPROGS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: e2fsprogs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -216,9 +216,23 @@ endif
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/lsattr.1
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/chattr.1
 	# Package files
-	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control 
-#	install -m 644 $(E2FSPROGS_SOURCE_DIR)/postinst $(E2FSPROGS_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(E2FSPROGS_SOURCE_DIR)/prerm $(E2FSPROGS_IPK_DIR)/CONTROL/prerm
+	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(E2FSPROGS_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(E2FSPROGS_IPK_DIR)/CONTROL/prerm
+	for f in chattr lsattr; do \
+	    mv $(E2FSPROGS_IPK_DIR)/opt/bin/$$f $(E2FSPROGS_IPK_DIR)/opt/bin/e2fsprogs-$$f; \
+	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/e2fsprogs-$$f 80" \
+		>> $(E2FSPROGS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/bin/e2fsprogs-$$f" \
+		>> $(E2FSPROGS_IPK_DIR)/CONTROL/prerm; \
+	done
+	for f in fsck; do \
+	    mv $(E2FSPROGS_IPK_DIR)/opt/sbin/$$f $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsprogs-$$f; \
+	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/e2fsprogs-$$f 80" \
+		>> $(E2FSPROGS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/sbin/e2fsprogs-$$f" \
+		>> $(E2FSPROGS_IPK_DIR)/CONTROL/prerm; \
+	done
 	echo $(E2FSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(E2FSPROGS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSPROGS_IPK_DIR)
 
