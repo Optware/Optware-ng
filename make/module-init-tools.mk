@@ -36,7 +36,7 @@ MODULE_INIT_TOOLS_CONFLICTS=
 #
 # MODULE_INIT_TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MODULE_INIT_TOOLS_IPK_VERSION=2
+MODULE_INIT_TOOLS_IPK_VERSION=3
 
 #
 # MODULE_INIT_TOOLS_CONFFILES should be a list of user-editable files
@@ -195,16 +195,17 @@ $(MODULE_INIT_TOOLS_IPK): $(MODULE_INIT_TOOLS_BUILD_DIR)/.built
 	rm -rf $(MODULE_INIT_TOOLS_IPK_DIR) $(BUILD_DIR)/module-init-tools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MODULE_INIT_TOOLS_BUILD_DIR) install-strip \
 		DESTDIR=$(MODULE_INIT_TOOLS_IPK_DIR) transform=''
-#	install -d $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/
-#	install -m 644 $(MODULE_INIT_TOOLS_SOURCE_DIR)/module-init-tools.conf $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/module-init-tools.conf
-#	install -d $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MODULE_INIT_TOOLS_SOURCE_DIR)/rc.module-init-tools $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/init.d/SXXmodule-init-tools
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/init.d/SXXmodule-init-tools
 	$(MAKE) $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MODULE_INIT_TOOLS_SOURCE_DIR)/postinst $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MODULE_INIT_TOOLS_SOURCE_DIR)/prerm $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm
+	echo "#!/bin/sh" > $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm
+	cd $(MODULE_INIT_TOOLS_IPK_DIR)/opt/sbin; \
+	for f in depmod insmod modprobe rmmod; do \
+	    mv $$f module-init-tools-$$f; \
+	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/module-init-tools-$$f 80" \
+		>> $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/sbin/module-init-tools-$$f" \
+		>> $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm; \
+	done
 	echo $(MODULE_INIT_TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MODULE_INIT_TOOLS_IPK_DIR)
 
