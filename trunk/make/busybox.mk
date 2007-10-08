@@ -35,7 +35,7 @@ BUSYBOX_CONFLICTS=
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
-BUSYBOX_IPK_VERSION=1
+BUSYBOX_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -219,13 +219,17 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)-base
 	rm -rf $(BUSYBOX_IPK_DIR)-links
 	install -d $(BUSYBOX_IPK_DIR)-links/opt/bin
+	install -d $(BUSYBOX_IPK_DIR)-links/opt/libexec
 	install -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	mv $(BUSYBOX_IPK_DIR)/opt/bin/* $(BUSYBOX_IPK_DIR)-links/opt/bin
 	mv $(BUSYBOX_IPK_DIR)/opt/sbin/* $(BUSYBOX_IPK_DIR)-links/opt/sbin
+	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/chroot $(BUSYBOX_IPK_DIR)-links/opt/bin/
+	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/ifconfig $(BUSYBOX_IPK_DIR)-links/opt/bin/
+	mv $(BUSYBOX_IPK_DIR)-links/opt/sbin/syslogd $(BUSYBOX_IPK_DIR)-links/opt/libexec/
 	$(MAKE) $(BUSYBOX_IPK_DIR)-links/CONTROL/control
 	echo "#!/bin/sh" > $(BUSYBOX_IPK_DIR)-links/CONTROL/postinst
 	echo "#!/bin/sh" > $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm
-	for d in bin sbin; do \
+	for d in bin libexec sbin; do \
 	    cd $(BUSYBOX_IPK_DIR)-links/opt/$$d; \
 	    for l in *; do \
 		echo "update-alternatives --install '/opt/$$d/$$l' '$$l' /opt/bin/busybox 30" \
@@ -235,6 +239,9 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 	    done; \
 	done
 	rm -rf $(BUSYBOX_IPK_DIR)-links/opt
+	install -d $(BUSYBOX_IPK_DIR)-links/opt/bin
+	install -d $(BUSYBOX_IPK_DIR)-links/opt/libexec
+	install -d $(BUSYBOX_IPK_DIR)-links/opt/sbin
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BUSYBOX_IPK_DIR)-links
 	rm -rf $(BUSYBOX_IPK_DIR)/opt
 	$(MAKE) $(BUSYBOX_IPK_DIR)/CONTROL/control
