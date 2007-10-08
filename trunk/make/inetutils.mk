@@ -30,10 +30,10 @@ INETUTILS_NAME=inetutils
 INETUTILS_SITE=ftp://ftp.gnu.org/pub/gnu/inetutils
 ifneq ($(OPTWARE_TARGET), wl500g)
 INETUTILS_VERSION=1.5
-INETUTILS_IPK_VERSION=1
+INETUTILS_IPK_VERSION=2
 else
 INETUTILS_VERSION=1.4.2
-INETUTILS_IPK_VERSION=6
+INETUTILS_IPK_VERSION=7
 endif
 INETUTILS_SOURCE=$(INETUTILS_NAME)-$(INETUTILS_VERSION).tar.gz
 INETUTILS_DIR=$(INETUTILS_NAME)-$(INETUTILS_VERSION)
@@ -107,7 +107,7 @@ inetutils-source: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES)
+$(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PATCHES) make/inetutils.mk
 	$(MAKE) ncurses-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(INETUTILS_DIR) $(INETUTILS_BUILD_DIR)
 	$(INETUTILS_UNZIP) $(DL_DIR)/$(INETUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -127,7 +127,7 @@ $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PA
 		--with-ncurses-include-dir=$(STAGING_DIR)/opt/include/ncurses \
 		--program-prefix="" \
 	)
-	touch $(INETUTILS_BUILD_DIR)/.configured
+	touch $@
 
 inetutils-unpack: $(INETUTILS_BUILD_DIR)/.configured
 
@@ -135,9 +135,9 @@ inetutils-unpack: $(INETUTILS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(INETUTILS_BUILD_DIR)/.built: $(INETUTILS_BUILD_DIR)/.configured
-	rm -f $(INETUTILS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(INETUTILS_BUILD_DIR)
-	touch $(INETUTILS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,7 +148,8 @@ inetutils: $(INETUTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(INETUTILS_BUILD_DIR)/.staged: $(INETUTILS_BUILD_DIR)/.built
-	touch $(INETUTILS_BUILD_DIR)/.staged
+	rm -f $@
+	touch $@
 
 inetutils-stage: $(INETUTILS_BUILD_DIR)/.staged
 
@@ -157,7 +158,7 @@ inetutils-stage: $(INETUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/inetutils
 #
 $(INETUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(INETUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: $(INETUTILS_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,8 +196,25 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 #	install -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
 	$(MAKE) $(INETUTILS_IPK_DIR)/CONTROL/control
-	# Setuid stuff doesn't work as non-root, but we fix in in the postinst script.
+	# Setuid stuff doesn't work as non-root, but we fix it in the postinst script.
 	install -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
+	echo "#!/bin/sh" > $(INETUTILS_IPK_DIR)/CONTROL/prerm
+	cd $(INETUTILS_IPK_DIR)/opt/bin; \
+	for f in *; do \
+	    mv $$f inetutils-$$f; \
+	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/inetutils-$$f 70" \
+		>> $(INETUTILS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/bin/inetutils-$$f" \
+		>> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
+	done
+	cd $(INETUTILS_IPK_DIR)/opt/libexec; \
+	for f in *; do \
+	    mv $$f inetutils-$$f; \
+	    echo "update-alternatives --install /opt/libexec/$$f $$f /opt/libexec/inetutils-$$f 70" \
+		>> $(INETUTILS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/libexec/inetutils-$$f" \
+		>> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
+	done
 	echo $(INETUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(INETUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INETUTILS_IPK_DIR)
 

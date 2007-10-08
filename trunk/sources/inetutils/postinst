@@ -1,8 +1,9 @@
-chown root /opt/bin/rcp
-chown root /opt/bin/rsh
-chown root /opt/bin/rlogin
-chown root /opt/bin/ping
-chmod 4755 /opt/bin/rcp
-chmod 4755 /opt/bin/rsh
-chmod 4755 /opt/bin/rlogin
-chmod 4755 /opt/bin/ping
+#!/bin/sh
+chown root /opt/bin/inetutils-rcp
+chown root /opt/bin/inetutils-rsh
+chown root /opt/bin/inetutils-rlogin
+chown root /opt/bin/inetutils-ping
+chmod 4755 /opt/bin/inetutils-rcp
+chmod 4755 /opt/bin/inetutils-rsh
+chmod 4755 /opt/bin/inetutils-rlogin
+chmod 4755 /opt/bin/inetutils-ping
