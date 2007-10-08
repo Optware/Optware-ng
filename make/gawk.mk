@@ -35,7 +35,7 @@ GAWK_CONFLICTS=
 #
 # GAWK_IPK_VERSION should be incremented when the ipk changes.
 #
-GAWK_IPK_VERSION=1
+GAWK_IPK_VERSION=3
 
 #
 # GAWK_PATCHES should list any patches, in the the order in
@@ -119,7 +119,7 @@ ifeq ($(OPTWARE_TARGET),slugosbe)
 	echo "#define NGROUPS_MAX 32" >> $(GAWK_BUILD_DIR)/config.h
 endif
 endif
-	touch $(GAWK_BUILD_DIR)/.configured
+	touch $@
 
 gawk-unpack: $(GAWK_BUILD_DIR)/.configured
 
@@ -128,9 +128,9 @@ gawk-unpack: $(GAWK_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(GAWK_BUILD_DIR)/.built: $(GAWK_BUILD_DIR)/.configured
-	rm -f $(GAWK_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GAWK_BUILD_DIR)
-	touch $(GAWK_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -153,7 +153,7 @@ $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION): $(GAWK_BUILD_DIR)/.built
 gawk-stage: $(STAGING_DIR)/opt/lib/libgawk.so.$(GAWK_VERSION)
 
 $(GAWK_IPK_DIR)/CONTROL/control:
-	@install -d $(GAWK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gawk" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -191,6 +191,12 @@ $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/grcat
 	$(STRIP_COMMAND) $(GAWK_IPK_DIR)/opt/libexec/awk/pwcat
 	$(MAKE) $(GAWK_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/awk awk /opt/bin/gawk 80"; \
+	) > $(GAWK_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove awk /opt/bin/gawk"; \
+	) > $(GAWK_IPK_DIR)/CONTROL/prerm
 #	install -m 644 $(GAWK_SOURCE_DIR)/postinst $(GAWK_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(GAWK_SOURCE_DIR)/prerm $(GAWK_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAWK_IPK_DIR)
