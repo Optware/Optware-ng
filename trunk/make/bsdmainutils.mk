@@ -40,7 +40,7 @@ BSDMAINUTILS_CONFLICTS=
 #
 # BSDMAINUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDMAINUTILS_IPK_VERSION=1
+BSDMAINUTILS_IPK_VERSION=2
 
 #
 # BSDMAINUTILS_CONFFILES should be a list of user-editable files
@@ -153,12 +153,12 @@ bsdmainutils-unpack: $(BSDMAINUTILS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BSDMAINUTILS_BUILD_DIR)/.built: $(BSDMAINUTILS_BUILD_DIR)/.configured
-	rm -f $(BSDMAINUTILS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(BSDMAINUTILS_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		FLAGS="$(STAGING_CPPFLAGS) $(BSDMAINUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BSDMAINUTILS_LDFLAGS)"
-	touch $(BSDMAINUTILS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -169,9 +169,9 @@ bsdmainutils: $(BSDMAINUTILS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BSDMAINUTILS_BUILD_DIR)/.staged: $(BSDMAINUTILS_BUILD_DIR)/.built
-	rm -f $(BSDMAINUTILS_BUILD_DIR)/.staged
-	$(MAKE) -C $(BSDMAINUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(BSDMAINUTILS_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(BSDMAINUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 bsdmainutils-stage: $(BSDMAINUTILS_BUILD_DIR)/.staged
 
@@ -180,7 +180,7 @@ bsdmainutils-stage: $(BSDMAINUTILS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bsdmainutils
 #
 $(BSDMAINUTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(BSDMAINUTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bsdmainutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -213,13 +213,14 @@ $(BSDMAINUTILS_IPK): $(BSDMAINUTILS_BUILD_DIR)/.built
 		sysconfdir=$(BSDMAINUTILS_IPK_DIR)/opt/etc
 	rm -rf $(BSDMAINUTILS_IPK_DIR)/opt/games $(BSDMAINUTILS_IPK_DIR)/opt/share/man/man6
 	$(STRIP_COMMAND) `ls $(BSDMAINUTILS_IPK_DIR)/opt/bin/* | egrep -v bin/lorder`
-#	install -d $(BSDMAINUTILS_IPK_DIR)/opt/etc/
-#	install -m 644 $(BSDMAINUTILS_SOURCE_DIR)/bsdmainutils.conf $(BSDMAINUTILS_IPK_DIR)/opt/etc/bsdmainutils.conf
-#	install -d $(BSDMAINUTILS_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(BSDMAINUTILS_SOURCE_DIR)/rc.bsdmainutils $(BSDMAINUTILS_IPK_DIR)/opt/etc/init.d/SXXbsdmainutils
+	mv $(BSDMAINUTILS_IPK_DIR)/opt/bin/hexdump $(BSDMAINUTILS_IPK_DIR)/opt/bin/bsdmainutils-hexdump
 	$(MAKE) $(BSDMAINUTILS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(BSDMAINUTILS_SOURCE_DIR)/postinst $(BSDMAINUTILS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(BSDMAINUTILS_SOURCE_DIR)/prerm $(BSDMAINUTILS_IPK_DIR)/CONTROL/prerm
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/hexdump hexdump /opt/bin/bsdmainutils-hexdump 70"; \
+	) > $(BSDMAINUTILS_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove hexdump /opt/bin/bsdmainutils-hexdump"; \
+	) > $(BSDMAINUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(BSDMAINUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BSDMAINUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BSDMAINUTILS_IPK_DIR)
 
