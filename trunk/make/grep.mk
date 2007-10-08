@@ -4,15 +4,13 @@
 #
 ###########################################################
 
-GREP_DIR=$(BUILD_DIR)/grep
-
 ifeq ($(LIBC_STYLE),uclibc)
 GREP_VERSION=2.4.2
-GREP_IPK_VERSION=6
+GREP_IPK_VERSION=7
 GREP_DEPENDS=
 else
 GREP_VERSION=2.5.1a
-GREP_IPK_VERSION=2
+GREP_IPK_VERSION=3
 GREP_DEPENDS=pcre
 endif
 
@@ -50,15 +48,15 @@ $(DL_DIR)/$(GREP_SOURCE):
 
 grep-source: $(DL_DIR)/$(GREP_SOURCE)
 
-$(GREP_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE) make/grep.mk
+$(GREP_BUILD_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE) make/grep.mk
 ifneq ($(GREP_VERSION), 2.4.2)
 	$(MAKE) pcre-stage
 endif
-	rm -rf $(BUILD_DIR)/$(GREP_DIR) $(GREP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GREP_BUILD_DIR) $(GREP_BUILD_DIR)
 	$(GREP_UNZIP) $(DL_DIR)/$(GREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(GREP_DIR)
+	mv $(BUILD_DIR)/grep-$(GREP_VERSION) $(GREP_BUILD_DIR)
 	cp -f $(SOURCE_DIR)/common/config.* $(GREP_BUILD_DIR)/
-	(cd $(GREP_DIR); \
+	(cd $(GREP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GREP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GREP_LDFLAGS)" \
@@ -68,23 +66,25 @@ endif
 		--prefix=/opt \
 		$(GREP_CONFIGURE_ARGS) \
 	);
-	sed -i -e '/^LIBS/s|-L/usr/lib||' $(GREP_DIR)/src/Makefile
-	touch $(GREP_DIR)/.configured
+	sed -i -e '/^LIBS/s|-L/usr/lib||' $(GREP_BUILD_DIR)/src/Makefile
+	touch $@
 
-grep-unpack: $(GREP_DIR)/.configured
+grep-unpack: $(GREP_BUILD_DIR)/.configured
 
-$(GREP_DIR)/src/grep: $(GREP_DIR)/.configured
-	$(MAKE) -C $(GREP_DIR) CC=$(TARGET_CC) \
+$(GREP_BUILD_DIR)/.built: $(GREP_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(GREP_BUILD_DIR) CC=$(TARGET_CC) \
 	RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD)
+	touch $@
 
-grep: $(GREP_DIR)/src/grep
+grep: $(GREP_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/grep
 #
 $(GREP_IPK_DIR)/CONTROL/control:
-	@install -d $(GREP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: grep" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -97,7 +97,7 @@ $(GREP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(GREP_DEPENDS)" >>$@
 	@echo "Conflicts: $(GREP_CONFLICTS)" >>$@
 
-$(GREP_IPK): $(GREP_DIR)/src/grep
+$(GREP_IPK): $(GREP_BUILD_DIR)/.built
 	rm -rf $(GREP_IPK_DIR) $(BUILD_DIR)/grep_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GREP_BUILD_DIR) install \
 		top_distdir=$(GREP_IPK_DIR) \
@@ -109,15 +109,25 @@ ifeq ($(GREP_VERSION), 2.4.2)
 	$(STRIP_COMMAND) $(GREP_IPK_DIR)/opt/bin/egrep $(GREP_IPK_DIR)/opt/bin/fgrep
 endif
 	$(MAKE) $(GREP_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(GREP_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(GREP_IPK_DIR)/CONTROL/prerm
+	cd $(GREP_IPK_DIR)/opt/bin; \
+	for f in grep egrep fgrep; do \
+	    mv $$f grep-$$f; \
+	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/grep-$$f 80" \
+		>> $(GREP_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/bin/grep-$$f" \
+		>> $(GREP_IPK_DIR)/CONTROL/prerm; \
+	done
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
 
 grep-ipk: $(GREP_IPK)
 
 grep-clean:
-	-$(MAKE) -C $(GREP_DIR) clean
+	-$(MAKE) -C $(GREP_BUILD_DIR) clean
 
 grep-dirclean:
-	rm -rf $(GREP_DIR) $(GREP_IPK_DIR) $(GREP_IPK)
+	rm -rf $(GREP_BUILD_DIR) $(GREP_IPK_DIR) $(GREP_IPK)
 
 grep-check: $(GREP_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GREP_IPK)
