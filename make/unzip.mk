@@ -38,7 +38,7 @@ UNZIP_CONFLICTS=
 #
 # UNZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-UNZIP_IPK_VERSION=1
+UNZIP_IPK_VERSION=2
 
 #
 # UNZIP_CONFFILES should be a list of user-editable files
@@ -113,7 +113,7 @@ $(UNZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(UNZIP_SOURCE) $(UNZIP_PATCHES)
 	if test "$(BUILD_DIR)/$(UNZIP_DIR)" != "$(UNZIP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UNZIP_DIR) $(UNZIP_BUILD_DIR) ; \
 	fi
-	touch $(UNZIP_BUILD_DIR)/.configured
+	touch $@
 
 unzip-unpack: $(UNZIP_BUILD_DIR)/.configured
 
@@ -121,10 +121,10 @@ unzip-unpack: $(UNZIP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(UNZIP_BUILD_DIR)/.built: $(UNZIP_BUILD_DIR)/.configured
-	rm -f $(UNZIP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(UNZIP_BUILD_DIR) -f unix/Makefile generic \
 		$(TARGET_CONFIGURE_OPTS) LD=$(TARGET_CC)
-	touch $(UNZIP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -136,7 +136,7 @@ unzip: $(UNZIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/unzip
 #
 $(UNZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(UNZIP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: unzip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -165,7 +165,14 @@ $(UNZIP_IPK_DIR)/CONTROL/control:
 $(UNZIP_IPK): $(UNZIP_BUILD_DIR)/.built
 	rm -rf $(UNZIP_IPK_DIR) $(BUILD_DIR)/unzip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNZIP_BUILD_DIR) -f unix/Makefile prefix=$(UNZIP_IPK_DIR)/opt install
+	mv $(UNZIP_IPK_DIR)/opt/bin/unzip $(UNZIP_IPK_DIR)/opt/bin/unzip-unzip
 	$(MAKE) $(UNZIP_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/unzip unzip /opt/bin/unzip-unzip 80"; \
+	) > $(UNZIP_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove unzip /opt/bin/unzip-unzip"; \
+	) > $(UNZIP_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNZIP_IPK_DIR)
 
 #
@@ -186,3 +193,9 @@ unzip-clean:
 #
 unzip-dirclean:
 	rm -rf $(BUILD_DIR)/$(UNZIP_DIR) $(UNZIP_BUILD_DIR) $(UNZIP_IPK_DIR) $(UNZIP_IPK)
+
+#
+# Some sanity check for the package.
+#
+unzip-check: $(UNZIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(UNZIP_IPK)
