@@ -36,7 +36,7 @@ HD2U_CONFLICTS=
 #
 # HD2U_IPK_VERSION should be incremented when the ipk changes.
 #
-HD2U_IPK_VERSION=1
+HD2U_IPK_VERSION=2
 
 #
 # HD2U_CONFFILES should be a list of user-editable files
@@ -202,6 +202,7 @@ $(HD2U_IPK): $(HD2U_BUILD_DIR)/.built
 		prefix=$(HD2U_IPK_DIR)/opt \
 		;
 	$(STRIP_COMMAND) $(HD2U_IPK_DIR)/opt/bin/*
+	mv $(HD2U_IPK_DIR)/opt/bin/dos2unix $(HD2U_IPK_DIR)/opt/bin/hd2u-dos2unix
 	install -d $(HD2U_IPK_DIR)/opt/share/doc/hd2u
 	install $(HD2U_BUILD_DIR)/AUTHORS \
 		$(HD2U_BUILD_DIR)/ChangeLog \
@@ -213,6 +214,12 @@ $(HD2U_IPK): $(HD2U_BUILD_DIR)/.built
 		$(HD2U_BUILD_DIR)/TODO \
 		$(HD2U_IPK_DIR)/opt/share/doc/hd2u/
 	$(MAKE) $(HD2U_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/dos2unix dos2unix /opt/bin/hd2u-dos2unix 60"; \
+	) > $(HD2U_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove dos2unix /opt/bin/hd2u-dos2unix"; \
+	) > $(HD2U_IPK_DIR)/CONTROL/prerm
 	echo $(HD2U_CONFFILES) | sed -e 's/ /\n/g' > $(HD2U_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HD2U_IPK_DIR)
 
