@@ -5,7 +5,7 @@
 ###########################################################
 
 LESS_SITE=http://www.greenwoodsoftware.com/less/
-LESS_VERSION=394
+LESS_VERSION=408
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
@@ -19,7 +19,7 @@ LESS_CONFLICTS=
 #
 # LESS_IPK_VERSION should be incremented when the ipk changes.
 #
-LESS_IPK_VERSION=3
+LESS_IPK_VERSION=1
 
 #
 # LESS_PATCHES should list any patches, in the the order in
@@ -96,7 +96,7 @@ $(LESS_BUILD_DIR)/.configured: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(LESS_BUILD_DIR)/.configured
+	touch $@
 
 less-unpack: $(LESS_BUILD_DIR)/.configured
 
@@ -104,22 +104,23 @@ less-unpack: $(LESS_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(LESS_BUILD_DIR)/less: $(LESS_BUILD_DIR)/.configured
-	rm -f $(LESS_BUILD_DIR)/less
+$(LESS_BUILD_DIR)/.built: $(LESS_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(LESS_BUILD_DIR)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-less: $(LESS_BUILD_DIR)/less
+less: $(LESS_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/less
 #
 $(LESS_IPK_DIR)/CONTROL/control:
-	@install -d $(LESS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: less" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -144,11 +145,17 @@ $(LESS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LESS_IPK): $(LESS_BUILD_DIR)/less
+$(LESS_IPK): $(LESS_BUILD_DIR)/.built
 	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_$(TARGET_ARCH).ipk
 	install -d $(LESS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less
+	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less-less
 	$(MAKE) $(LESS_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/less less /opt/bin/less-less 80"; \
+	) > $(LESS_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove less /opt/bin/less-less"; \
+	) > $(LESS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LESS_IPK_DIR)
 
 #
