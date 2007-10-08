@@ -34,7 +34,7 @@ PATCH_CONFLICTS=
 #
 # PATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-PATCH_IPK_VERSION=1
+PATCH_IPK_VERSION=2
 
 #
 # PATCH_PATCHES should list any patches, in the the order in
@@ -111,7 +111,7 @@ $(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
-	touch $(PATCH_BUILD_DIR)/.configured
+	touch $@
 
 patch-unpack: $(PATCH_BUILD_DIR)/.configured
 
@@ -120,9 +120,9 @@ patch-unpack: $(PATCH_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PATCH_BUILD_DIR)/.built: $(PATCH_BUILD_DIR)/.configured
-	rm -f $(PATCH_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PATCH_BUILD_DIR)
-	touch $(PATCH_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -131,9 +131,9 @@ $(PATCH_BUILD_DIR)/.built: $(PATCH_BUILD_DIR)/.configured
 patch: $(PATCH_BUILD_DIR)/.built
 
 $(PATCH_BUILD_DIR)/.staged: $(PATCH_BUILD_DIR)/.built
-	rm -f $(PATCH_BUILD_DIR)/.staged
-	$(MAKE) -C $(PATCH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PATCH_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(PATCH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 patch-stage: $(PATCH_BUILD_DIR)/.staged
 			
@@ -142,7 +142,7 @@ patch-stage: $(PATCH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/patch
 # 
 $(PATCH_IPK_DIR)/CONTROL/control:
-	@install -d $(PATCH_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: patch" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -170,12 +170,15 @@ $(PATCH_IPK_DIR)/CONTROL/control:
 $(PATCH_IPK): $(PATCH_BUILD_DIR)/.built
 	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PATCH_BUILD_DIR) prefix=$(PATCH_IPK_DIR)/opt install
-	$(STRIP_COMMAND) $(PATCH_BUILD_DIR)/patch -o $(PATCH_IPK_DIR)/opt/bin/patch
-#	install -d $(PATCH_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PATCH_SOURCE_DIR)/rc.patch $(PATCH_IPK_DIR)/opt/etc/init.d/SXXpatch
+	$(STRIP_COMMAND) $(PATCH_IPK_DIR)/opt/bin/patch
+	mv $(PATCH_IPK_DIR)/opt/bin/patch $(PATCH_IPK_DIR)/opt/bin/patch-patch
 	$(MAKE) $(PATCH_IPK_DIR)/CONTROL/control
-#	install -m 644 $(PATCH_SOURCE_DIR)/postinst $(PATCH_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(PATCH_SOURCE_DIR)/prerm $(PATCH_IPK_DIR)/CONTROL/prerm
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/patch patch /opt/bin/patch-patch 80"; \
+	) > $(PATCH_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove patch /opt/bin/patch-patch"; \
+	) > $(PATCH_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PATCH_IPK_DIR)
 
 #
