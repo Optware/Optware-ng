@@ -29,12 +29,12 @@ DIFFUTILS_DESCRIPTION=contains gnu diff, cmp, sdiff and diff3 to display differe
 DIFFUTILS_SECTION=util
 DIFFUTILS_PRIORITY=optional
 DIFFUTILS_DEPENDS=
-DIFFUTILS_CONFLICTS=busybox-links
+DIFFUTILS_CONFLICTS=
 
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=4
+DIFFUTILS_IPK_VERSION=5
 
 #
 # If the compilation of the package requires additional
@@ -170,11 +170,19 @@ $(DIFFUTILS_IPK_DIR)/CONTROL/control:
 $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	rm -rf $(DIFFUTILS_IPK_DIR) $(BUILD_DIR)/diffutils_*_$(TARGET_ARCH).ipk
 	install -d $(DIFFUTILS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/cmp
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diff3
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/sdiff
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-cmp
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-diff
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-diff3
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-sdiff
 	$(MAKE) $(DIFFUTILS_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(DIFFUTILS_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(DIFFUTILS_IPK_DIR)/CONTROL/prerm
+	for f in cmp diff diff3 sdiff; do \
+	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/diffutils-$$f 80" \
+		>> $(DIFFUTILS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/bin/diffutils-$$f" \
+		>> $(DIFFUTILS_IPK_DIR)/CONTROL/prerm; \
+	done
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIFFUTILS_IPK_DIR)
 
 $(DIFFUTILS_BUILD_DIR)/.ipk: $(DIFFUTILS_IPK)
