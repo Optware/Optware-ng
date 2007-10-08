@@ -39,7 +39,7 @@ PSMISC_CONFLICTS=
 #
 # PSMISC_IPK_VERSION should be incremented when the ipk changes.
 #
-PSMISC_IPK_VERSION=2
+PSMISC_IPK_VERSION=3
 
 #
 # PSMISC_CONFFILES should be a list of user-editable files
@@ -198,17 +198,14 @@ $(PSMISC_IPK_DIR)/CONTROL/control:
 $(PSMISC_IPK): $(PSMISC_BUILD_DIR)/.built
 	rm -rf $(PSMISC_IPK_DIR) $(BUILD_DIR)/psmisc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PSMISC_BUILD_DIR) DESTDIR=$(PSMISC_IPK_DIR) install-strip
-#	install -d $(PSMISC_IPK_DIR)/opt/etc/
-#	install -m 644 $(PSMISC_SOURCE_DIR)/psmisc.conf $(PSMISC_IPK_DIR)/opt/etc/psmisc.conf
-#	install -d $(PSMISC_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(PSMISC_SOURCE_DIR)/rc.psmisc $(PSMISC_IPK_DIR)/opt/etc/init.d/SXXpsmisc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXpsmisc
+	mv $(PSMISC_IPK_DIR)/opt/bin/killall $(PSMISC_IPK_DIR)/opt/bin/psmisc-killall
 	$(MAKE) $(PSMISC_IPK_DIR)/CONTROL/control
-#	install -m 755 $(PSMISC_SOURCE_DIR)/postinst $(PSMISC_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(PSMISC_SOURCE_DIR)/prerm $(PSMISC_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
-#	echo $(PSMISC_CONFFILES) | sed -e 's/ /\n/g' > $(PSMISC_IPK_DIR)/CONTROL/conffiles
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/killall killall /opt/bin/psmisc-killall 70"; \
+	) > $(PSMISC_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove killall /opt/bin/psmisc-killall"; \
+	) > $(PSMISC_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PSMISC_IPK_DIR)
 
 #
