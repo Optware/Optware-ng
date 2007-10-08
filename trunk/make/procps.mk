@@ -18,9 +18,9 @@ PROCPS_DESCRIPTION=PROCPS System Utilities
 PROCPS_SECTION=devel
 PROCPS_PRIORITY=optional
 PROCPS_DEPENDS=ncurses
-PROCPS_CONFLICTS=busybox-links
+PROCPS_CONFLICTS=
 
-PROCPS_IPK_VERSION=4
+PROCPS_IPK_VERSION=5
 
 PROCPS_BUILD_DIR=$(BUILD_DIR)/procps
 PROCPS_SOURCE_DIR=$(SOURCE_DIR)/procps
@@ -70,14 +70,14 @@ procps-unpack: $(PROCPS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PROCPS_BUILD_DIR)/.built: $(PROCPS_BUILD_DIR)/.configured
-	rm -f $(PROCPS_BUILD_DIR)/.built
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(PROCPS_BUILD_DIR)	\
 	CC=$(TARGET_CC)			\
 	CPPFLAGS=$(PROCPS_CPPFLAGS)	\
 	LDFLAGS=$(PROCPS_LDFLAGS)	\
 	RANLIB=$(TARGET_RANLIB)
-	touch $(PROCPS_BUILD_DIR)/.built
+	touch $@
 #
 # These are the dependencies for the binary.  
 #
@@ -88,7 +88,7 @@ procps: ncurses $(PROCPS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/procps
 #
 $(PROCPS_IPK_DIR)/CONTROL/control:
-	@install -d $(PROCPS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: procps" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -108,23 +108,23 @@ $(PROCPS_IPK): $(PROCPS_BUILD_DIR)/.built
 	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_$(TARGET_ARCH).ipk
 	mkdir -p $(PROCPS_IPK_DIR)/opt
 	mkdir -p $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/free -o $(PROCPS_IPK_DIR)/opt/bin/free
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/free -o $(PROCPS_IPK_DIR)/opt/bin/procps-free
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/kill -o $(PROCPS_IPK_DIR)/opt/bin/procps-kill
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/pgrep -o $(PROCPS_IPK_DIR)/opt/bin/pgrep
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/pmap -o $(PROCPS_IPK_DIR)/opt/bin/pmap
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/ps/ps -o $(PROCPS_IPK_DIR)/opt/bin/ps
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/ps/ps -o $(PROCPS_IPK_DIR)/opt/bin/procps-ps
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/skill -o $(PROCPS_IPK_DIR)/opt/bin/skill
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/slabtop -o $(PROCPS_IPK_DIR)/opt/bin/slabtop
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/snice -o $(PROCPS_IPK_DIR)/opt/bin/snice
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/sysctl -o $(PROCPS_IPK_DIR)/opt/bin/sysctl
 	cp $(PROCPS_BUILD_DIR)/t $(PROCPS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/tload -o $(PROCPS_IPK_DIR)/opt/bin/tload
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/top -o $(PROCPS_IPK_DIR)/opt/bin/top
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/top -o $(PROCPS_IPK_DIR)/opt/bin/procps-top
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/uptime -o $(PROCPS_IPK_DIR)/opt/bin/procps-uptime
 	cp $(PROCPS_BUILD_DIR)/v $(PROCPS_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/vmstat -o $(PROCPS_IPK_DIR)/opt/bin/vmstat
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/w -o $(PROCPS_IPK_DIR)/opt/bin/w
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/watch
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/procps-watch
 	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
 	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/proc/libproc-$(PROCPS_VERSION).so -o $(PROCPS_IPK_DIR)/opt/lib/libproc-$(PROCPS_VERSION).so
 	$(MAKE) $(PROCPS_IPK_DIR)/CONTROL/control
@@ -158,3 +158,6 @@ procps-distclean:
 #
 procps-dirclean:
 	rm -rf $(PROCPS_BUILD_DIR) $(PROCPS_IPK_DIR) $(PROCPS_IPK)
+
+procps-check: $(PROCPS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PROCPS_IPK)
