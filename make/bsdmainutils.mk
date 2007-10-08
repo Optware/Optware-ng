@@ -40,7 +40,7 @@ BSDMAINUTILS_CONFLICTS=
 #
 # BSDMAINUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDMAINUTILS_IPK_VERSION=2
+BSDMAINUTILS_IPK_VERSION=3
 
 #
 # BSDMAINUTILS_CONFFILES should be a list of user-editable files
@@ -214,12 +214,15 @@ $(BSDMAINUTILS_IPK): $(BSDMAINUTILS_BUILD_DIR)/.built
 	rm -rf $(BSDMAINUTILS_IPK_DIR)/opt/games $(BSDMAINUTILS_IPK_DIR)/opt/share/man/man6
 	$(STRIP_COMMAND) `ls $(BSDMAINUTILS_IPK_DIR)/opt/bin/* | egrep -v bin/lorder`
 	mv $(BSDMAINUTILS_IPK_DIR)/opt/bin/hexdump $(BSDMAINUTILS_IPK_DIR)/opt/bin/bsdmainutils-hexdump
+	rm -f $(BSDMAINUTILS_IPK_DIR)/opt/bin/cal
 	$(MAKE) $(BSDMAINUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --install /opt/bin/hexdump hexdump /opt/bin/bsdmainutils-hexdump 70"; \
+	 echo "update-alternatives --install /opt/bin/cal cal /opt/bin/ncal 50"; \
 	) > $(BSDMAINUTILS_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove hexdump /opt/bin/bsdmainutils-hexdump"; \
+	 echo "update-alternatives --remove cal /opt/bin/ncal"; \
 	) > $(BSDMAINUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(BSDMAINUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BSDMAINUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BSDMAINUTILS_IPK_DIR)
