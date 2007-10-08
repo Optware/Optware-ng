@@ -34,7 +34,7 @@ WHICH_CONFLICTS=
 #
 # WHICH_IPK_VERSION should be incremented when the ipk changes.
 #
-WHICH_IPK_VERSION=3
+WHICH_IPK_VERSION=4
 
 #
 # WHICH_PATCHES should list any patches, in the the order in
@@ -134,7 +134,7 @@ $(WHICH_BUILD_DIR)/.configured: $(DL_DIR)/$(WHICH_SOURCE) $(WHICH_PATCHES)
 		--mandir=$(WHICH_MAN_DIR) \
 		--disable-nls \
 	)
-	touch $(WHICH_BUILD_DIR)/.configured
+	touch $@
 
 which-unpack: $(WHICH_BUILD_DIR)/.configured
 
@@ -142,9 +142,9 @@ which-unpack: $(WHICH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WHICH_BUILD_DIR)/.built: $(WHICH_BUILD_DIR)/.configured
-	rm -f $(WHICH_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(WHICH_BUILD_DIR)
-	touch $(WHICH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +155,9 @@ which: $(WHICH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(WHICH_BUILD_DIR)/.staged: $(WHICH_BUILD_DIR)/.built
-	rm -f $(WHICH_BUILD_DIR)/.staged
-	$(MAKE) -C $(WHICH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(WHICH_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(WHICH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 which-stage: $(WHICH_BUILD_DIR)/.staged
 
@@ -166,7 +166,7 @@ which-stage: $(WHICH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/which
 #
 $(WHICH_IPK_DIR)/CONTROL/control:
-	@install -d $(WHICH_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: which" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,8 +194,16 @@ $(WHICH_IPK_DIR)/CONTROL/control:
 $(WHICH_IPK): $(WHICH_BUILD_DIR)/.built
 	rm -rf $(WHICH_IPK_DIR) $(BUILD_DIR)/which_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WHICH_BUILD_DIR) DESTDIR=$(WHICH_IPK_DIR) install
+	rm -f $(WHICH_IPK_DIR)/opt/info/dir $(WHICH_IPK_DIR)/opt/info/dir.old
 	$(STRIP_COMMAND) $(WHICH_IPK_DIR)/opt/bin/which
+	mv $(WHICH_IPK_DIR)/opt/bin/which $(WHICH_IPK_DIR)/opt/bin/which-which
 	$(MAKE) $(WHICH_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/which which /opt/bin/which-which 80"; \
+	) > $(WHICH_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove which /opt/bin/which-which"; \
+	) > $(WHICH_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHICH_IPK_DIR)
 
 #
