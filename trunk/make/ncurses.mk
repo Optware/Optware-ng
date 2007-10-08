@@ -25,7 +25,7 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=1
+NCURSES_IPK_VERSION=2
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
@@ -60,7 +60,7 @@ $(NCURSES_DIR)/.configured: $(NCURSES_DIR)/.source
 		--without-ada		\
 	);
 ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -ie '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(NCURSES_DIR)/*/Makefile
+	sed -i -e '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(NCURSES_DIR)/*/Makefile
 endif
 	touch $(NCURSES_DIR)/.configured
 
@@ -78,7 +78,7 @@ $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION): $(NCURSES_DIR)/lib
 ncurses-stage: $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 
 $(NCURSES_IPK_DIR)/CONTROL/control:
-	@install -d $(NCURSES_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ncurses" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,19 @@ $(NCURSES_IPK): $(STAGING_DIR)/opt/lib/libncurses.so.$(NCURSES_SHLIBVERSION)
 	rm -f $(NCURSES_IPK_DIR)/opt/lib/*.a
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/lib/*$(SO).5$(DYLIB)
+ifeq (darwin, $(TARGET_OS))
+	for dylib in $(NCURSES_IPK_DIR)/opt/lib/*$(SO).5$(DYLIB); do \
+	$(TARGET_CROSS)install_name_tool -change $$dylib /opt/lib/`basename $$dylib` $$dylib; \
+	done
+endif
 	$(MAKE) $(NCURSES_IPK_DIR)/CONTROL/control
+	mv $(NCURSES_IPK_DIR)/opt/bin/clear $(NCURSES_IPK_DIR)/opt/bin/ncurses-clear
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/clear clear /opt/bin/ncurses-clear 80"; \
+	) > $(NCURSES_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove clear /opt/bin/ncurses-clear"; \
+	) > $(NCURSES_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 
 ncurses-ipk: $(NCURSES_IPK)
