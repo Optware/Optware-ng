@@ -30,7 +30,7 @@ SED_CONFLICTS=
 #
 # SED_IPK_VERSION should be incremented when the ipk changes.
 #
-SED_IPK_VERSION=1
+SED_IPK_VERSION=2
 
 #
 # SED_CONFFILES should be a list of user-editable files
@@ -94,7 +94,7 @@ sed-source: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
+$(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES) make/sed.mk
 	rm -rf $(BUILD_DIR)/$(SED_DIR) $(SED_BUILD_DIR)
 	$(SED_UNZIP) $(DL_DIR)/$(SED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SED_PATCHES) | patch -d $(BUILD_DIR)/$(SED_DIR) -p1
@@ -111,7 +111,7 @@ $(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(SED_BUILD_DIR)/.configured
+	touch $@
 
 sed-unpack: $(SED_BUILD_DIR)/.configured
 
@@ -119,9 +119,9 @@ sed-unpack: $(SED_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SED_BUILD_DIR)/.built: $(SED_BUILD_DIR)/.configured
-	rm -f $(SED_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SED_BUILD_DIR)
-	touch $(SED_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -132,9 +132,9 @@ sed: $(SED_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SED_BUILD_DIR)/.staged: $(SED_BUILD_DIR)/.built
-	rm -f $(SED_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SED_BUILD_DIR)/.staged
+	touch $@
 
 sed-stage: $(SED_BUILD_DIR)/.staged
 
@@ -143,7 +143,7 @@ sed-stage: $(SED_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sed
 #
 $(SED_IPK_DIR)/CONTROL/control:
-	@install -d $(SED_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -172,7 +172,14 @@ $(SED_IPK_DIR)/CONTROL/control:
 $(SED_IPK): $(SED_BUILD_DIR)/.built
 	rm -rf $(SED_IPK_DIR) $(BUILD_DIR)/sed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(SED_IPK_DIR) install-strip
+	mv $(SED_IPK_DIR)/opt/bin/sed $(SED_IPK_DIR)/opt/bin/gnu-sed
 	$(MAKE) $(SED_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/sed sed /opt/bin/gnu-sed 80"; \
+	) > $(SED_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove sed /opt/bin/gnu-sed"; \
+	) > $(SED_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SED_IPK_DIR)
 
 #
