@@ -32,12 +32,12 @@ NET-TOOLS_SECTION=net
 NET-TOOLS_PRIORITY=optional
 NET-TOOLS_DEPENDS=
 NET-TOOLS_SUGGESTS=
-NET-TOOLS_CONFLICTS=busybox-links
+NET-TOOLS_CONFLICTS=
 
 #
 # NET-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-NET-TOOLS_IPK_VERSION=3
+NET-TOOLS_IPK_VERSION=4
 
 #
 # NET-TOOLS_CONFFILES should be a list of user-editable files
@@ -118,7 +118,7 @@ $(NET-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(NET-TOOLS_SOURCE) $(NET-TOOLS_PA
 	$(NET-TOOLS_UNZIP) $(DL_DIR)/$(NET-TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(NET-TOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(NET-TOOLS_DIR) -p1
 	mv $(BUILD_DIR)/$(NET-TOOLS_DIR) $(NET-TOOLS_BUILD_DIR)
-	touch $(NET-TOOLS_BUILD_DIR)/.configured
+	touch $@
 
 net-tools-unpack: $(NET-TOOLS_BUILD_DIR)/.configured
 
@@ -126,9 +126,9 @@ net-tools-unpack: $(NET-TOOLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NET-TOOLS_BUILD_DIR)/.built: $(NET-TOOLS_BUILD_DIR)/.configured
-	rm -f $(NET-TOOLS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) CC=$(TARGET_CC) BASEDIR=/opt COPTS="$(STAGING_CPPFLAGS) $(NET-TOOLS_CPPFLAGS)" LOPTS="$(STAGING_LDFLAGS) $(NET-TOOLS_LDFLAGS)" -C $(NET-TOOLS_BUILD_DIR)
-	touch $(NET-TOOLS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,9 +139,9 @@ net-tools: $(NET-TOOLS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NET-TOOLS_BUILD_DIR)/.staged: $(NET-TOOLS_BUILD_DIR)/.built
-	rm -f $(NET-TOOLS_BUILD_DIR)/.staged
-	$(MAKE) -C $(NET-TOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NET-TOOLS_BUILD_DIR)/.staged
+	rm -f $@
+#	$(MAKE) -C $(NET-TOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 net-tools-stage: $(NET-TOOLS_BUILD_DIR)/.staged
 
@@ -150,7 +150,7 @@ net-tools-stage: $(NET-TOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/net-tools
 #
 $(NET-TOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(NET-TOOLS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: net-tools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,12 +182,25 @@ $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/sbin/*
 	install -d $(NET-TOOLS_IPK_DIR)/opt/etc/
-	#install -m 644 $(NET-TOOLS_SOURCE_DIR)/net-tools.conf $(NET-TOOLS_IPK_DIR)/opt/etc/net-tools.conf
-	#install -d $(NET-TOOLS_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(NET-TOOLS_SOURCE_DIR)/rc.net-tools $(NET-TOOLS_IPK_DIR)/opt/etc/init.d/SXXnet-tools
 	$(MAKE) $(NET-TOOLS_IPK_DIR)/CONTROL/control
-	#install -m 755 $(NET-TOOLS_SOURCE_DIR)/postinst $(NET-TOOLS_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(NET-TOOLS_SOURCE_DIR)/prerm $(NET-TOOLS_IPK_DIR)/CONTROL/prerm
+	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/prerm
+	cd $(NET-TOOLS_IPK_DIR)/opt/bin; \
+	for f in hostname netstat; do \
+	    mv $$f net-tools-$$f; \
+	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/net-tools-$$f 80" \
+		>> $(NET-TOOLS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/bin/net-tools-$$f" \
+		>> $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
+	done
+	cd $(NET-TOOLS_IPK_DIR)/opt/sbin; \
+	for f in arp ifconfig route; do \
+	    mv $$f net-tools-$$f; \
+	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/net-tools-$$f 80" \
+		>> $(NET-TOOLS_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/sbin/net-tools-$$f" \
+		>> $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
+	done
 	echo $(NET-TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(NET-TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NET-TOOLS_IPK_DIR)
 
