@@ -9,10 +9,10 @@ FINDUTILS_DOC_NAME=findutils-doc
 FINDUTILS_SITE=http://ftp.gnu.org/pub/gnu/findutils
 ifneq ($(OPTWARE_TARGET),wl500g)
 FINDUTILS_VERSION=4.2.31
-FINDUTILS_IPK_VERSION=1
+FINDUTILS_IPK_VERSION=2
 else
 FINDUTILS_VERSION=4.1.20
-FINDUTILS_IPK_VERSION=2
+FINDUTILS_IPK_VERSION=3
 endif
 FINDUTILS_SOURCE=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION).tar.gz
 FINDUTILS_DIR=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION)
@@ -191,12 +191,20 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_IPK_DIR) $(BUILD_DIR)/findutils_*_$(TARGET_ARCH).ipk
 	install -d $(FINDUTILS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/find
-	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/xargs
+	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/findutils-find
+	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/findutils-xargs
 	install -d $(FINDUTILS_IPK_DIR)/opt/man/man1
 	install -m 644 $(FINDUTILS_BUILD_DIR)/find/find.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
 	install -m 644 $(FINDUTILS_BUILD_DIR)/xargs/xargs.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
 	make  $(FINDUTILS_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/find find /opt/bin/findutils-find 80"; \
+	 echo "update-alternatives --install /opt/bin/xargs xargs /opt/bin/findutils-xargs 80"; \
+	) > $(FINDUTILS_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove find /opt/bin/findutils-find"; \
+	 echo "update-alternatives --remove xargs /opt/bin/findutils-xargs"; \
+	) > $(FINDUTILS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
