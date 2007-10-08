@@ -34,7 +34,7 @@ GZIP_CONFLICTS=
 #
 # GZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-GZIP_IPK_VERSION=1
+GZIP_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -101,7 +101,7 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(GZIP_BUILD_DIR)/.configured
+	touch $@
 
 gzip-unpack: $(GZIP_BUILD_DIR)/.configured
 
@@ -109,9 +109,9 @@ gzip-unpack: $(GZIP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GZIP_BUILD_DIR)/.built: $(GZIP_BUILD_DIR)/.configured
-	rm -f $(GZIP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GZIP_BUILD_DIR)
-	touch $(GZIP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -123,7 +123,7 @@ gzip: $(GZIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/gzip
 #
 $(GZIP_IPK_DIR)/CONTROL/control:
-	@install -d $(GZIP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gzip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -156,6 +156,17 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	install -d $(GZIP_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)/opt install
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/prerm
+	cd $(GZIP_IPK_DIR)/opt/bin; \
+	for f in gunzip gzip zcat; do \
+	    mv $$f gzip-$$f; \
+	    $(STRIP_COMMAND) gzip-$$f; \
+	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/gzip-$$f 80" \
+		>> $(GZIP_IPK_DIR)/CONTROL/postinst; \
+	    echo "update-alternatives --remove $$f /opt/bin/gzip-$$f" \
+		>> $(GZIP_IPK_DIR)/CONTROL/prerm; \
+	done
 	echo $(GZIP_CONFFILES) | sed -e 's/ /\n/g' > $(GZIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GZIP_IPK_DIR)
 
@@ -176,3 +187,9 @@ gzip-clean:
 #
 gzip-dirclean:
 	rm -rf $(BUILD_DIR)/$(GZIP_DIR) $(GZIP_BUILD_DIR) $(GZIP_IPK_DIR) $(GZIP_IPK)
+
+#
+# Some sanity check for the package.
+#
+gzip-check: $(GZIP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GZIP_IPK)
