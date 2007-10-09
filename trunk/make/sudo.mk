@@ -4,7 +4,7 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_VERSION=1.6.9p5
+SUDO_VERSION=1.6.9p6
 SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_VERSION)
 SUDO_UNZIP=zcat
