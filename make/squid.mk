@@ -37,7 +37,11 @@ SQUID_CONFLICTS=
 #
 # SQUID_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUID_IPK_VERSION=1
+SQUID_IPK_VERSION=2
+
+#
+## SQUID_CONFFILES should be a list of user-editable files
+SQUID_CONFFILES=/opt/etc/squid/squid.conf /opt/etc/init.d/S80squid
 
 #
 # SQUID_PATCHES should list any patches, in the the order in
@@ -101,7 +105,7 @@ SQUID_CROSS_CONFIG_ENVS=\
 	ac_cv_func_setresuid=yes \
 	ac_cv_func_va_copy=yes \
 	ac_cv_func___va_copy=yes
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
 SQUID_CROSS_CONFIG_OPTIONS=--enable-epoll
 SQUID_CROSS_CONFIG_ENVS+= ac_cv_epoll_works=yes
 else
@@ -137,7 +141,7 @@ $(SQUID_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID_SOURCE) make/
 		--prefix=/opt \
 	)
 	$(MAKE) -C $(SQUID_HOST_BUILD_DIR)
-	touch $(SQUID_HOST_BUILD_DIR)/.built
+	touch $@
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -191,12 +195,13 @@ endif
 		--infodir=$(SQUID_INFO_DIR) \
 		--mandir=$(SQUID_MAN_DIR) \
 		$(SQUID_CROSS_CONFIG_OPTIONS) \
+		--enable-basic-auth-helpers="NCSA" \
 		--disable-nls \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i -e 's|./cf_gen |$(SQUID_HOST_BUILD_DIR)/src/cf_gen |g' $(SQUID_BUILD_DIR)/src/Makefile
 endif
-	touch $(SQUID_BUILD_DIR)/.configured
+	touch $@
 
 squid-unpack: $(SQUID_BUILD_DIR)/.configured
 
@@ -204,9 +209,9 @@ squid-unpack: $(SQUID_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SQUID_BUILD_DIR)/.built: $(SQUID_BUILD_DIR)/.configured
-	rm -f $(SQUID_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SQUID_BUILD_DIR)
-	touch $(SQUID_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -217,9 +222,9 @@ squid: $(SQUID_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SQUID_BUILD_DIR)/.staged: $(SQUID_BUILD_DIR)/.built
-	rm -f $(SQUID_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SQUID_BUILD_DIR)/.staged
+	touch $@
 
 squid-stage: $(SQUID_BUILD_DIR)/.staged
 
@@ -254,7 +259,8 @@ $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
 	rm -rf $(SQUID_IPK_DIR) $(BUILD_DIR)/squid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(SQUID_IPK_DIR) install
 	cd $(SQUID_IPK_DIR)/opt; \
-	$(STRIP_COMMAND) bin/squidclient libexec/cachemgr.cgi libexec/unlinkd sbin/squid
+	$(STRIP_COMMAND) bin/squidclient sbin/squid \
+		libexec/cachemgr.cgi libexec/ncsa_auth libexec/unlinkd
 	install -d $(SQUID_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid
 	ln -sf /opt/etc/init.d/S80squid $(SQUID_IPK_DIR)/opt/etc/init.d/K80squid 
