@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-NOSE_SITE=http://somethingaboutorange.com/mrl/projects/nose
-PY-NOSE_VERSION=0.9.3
+PY-NOSE_VERSION=0.10.0
 PY-NOSE_SOURCE=nose-$(PY-NOSE_VERSION).tar.gz
 PY-NOSE_DIR=nose-$(PY-NOSE_VERSION)
 PY-NOSE_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-NOSE_CONFLICTS=
 #
 # PY-NOSE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NOSE_IPK_VERSION=2
+PY-NOSE_IPK_VERSION=1
 
 #
 # PY-NOSE_CONFFILES should be a list of user-editable files
@@ -210,6 +210,8 @@ $(PY24-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-NOSE_IPK_DIR) --prefix=/opt)
 	rm -rf $(PY24-NOSE_IPK_DIR)/opt/man/
+	for f in $(PY24-NOSE_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-NOSE_IPK_DIR)/CONTROL/control
 #	echo $(PY-NOSE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-NOSE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-NOSE_IPK_DIR)
@@ -219,8 +221,6 @@ $(PY25-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
 	(cd $(PY-NOSE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-NOSE_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-NOSE_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-NOSE_IPK_DIR)/CONTROL/control
 #	echo $(PY-NOSE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-NOSE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-NOSE_IPK_DIR)
