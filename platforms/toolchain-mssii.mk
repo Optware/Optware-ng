@@ -14,17 +14,23 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-TOOLCHAIN_URL="http://www.codesourcery.com/gnu_toolchains/arm/releases/download?version=2005q3-2&pkg_prefix=arm&target=arm-none-linux-gnueabi&host=i686-pc-linux-gnu"
-TOOLCHAIN_SOURCE=arm-2005q3-2-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+TOOLCHAIN_BINARY_URL="http://www.codesourcery.com/gnu_toolchains/arm/releases/download?version=2005q3-2&pkg_prefix=arm&target=arm-none-linux-gnueabi&host=i686-pc-linux-gnu"
+TOOLCHAIN_BINARY=arm-2005q3-2-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
+TOOLCHAIN_SOURCE_SITE=http://www.codesourcery.com/public/gnu_toolchain/arm-none-linux-gnueabi
+TOOLCHAIN_SOURCE=arm-2005q3-2-arm-none-linux-gnueabi.src.tar.bz2
 
 toolchain: $(TARGET_CROSS_TOP)/.unpacked
 
-$(DL_DIR)/$(TOOLCHAIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_URL) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TOOLCHAIN_SOURCE)
+$(DL_DIR)/$(TOOLCHAIN_BINARY):
+	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_BINARY_URL) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
-$(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_SOURCE) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(DL_DIR)/$(TOOLCHAIN_SOURCE):
+	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_SOURCE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+
+$(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP)
 	mkdir -p $(TARGET_CROSS_TOP)
-	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_SOURCE)
+	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	touch $@

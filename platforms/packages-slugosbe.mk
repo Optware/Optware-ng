@@ -18,5 +18,6 @@ BROKEN_PACKAGES = \
 	puppy \
 	py-psycopg \
 	qemu \
+	spindown \
 	ushare \
 

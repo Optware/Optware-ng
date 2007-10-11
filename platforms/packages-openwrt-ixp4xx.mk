@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	nfs-server nfs-utils nickle ntop \
 	pango puppy \
 	qemu qemu-libc-i386 quagga quickie \
-	sm syx \
+	sm spindown syx \
 	transcode \
 	uemacs util-linux \
 	vsftpd vte \
