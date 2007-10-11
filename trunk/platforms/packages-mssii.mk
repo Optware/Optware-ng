@@ -18,4 +18,5 @@ BROKEN_PACKAGES = \
 	qemu qemu-libc-i386 \
 	quagga \
 	socat \
+	spindown \
 	uemacs \

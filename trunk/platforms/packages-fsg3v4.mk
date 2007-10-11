@@ -35,5 +35,6 @@ BROKEN_PACKAGES = \
 	\
 	openser \
 	snort \
+	spindown \
 	strace \
 	uemacs \
