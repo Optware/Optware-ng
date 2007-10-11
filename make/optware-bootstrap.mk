@@ -9,32 +9,42 @@
 OPTWARE-BOOTSTRAP_VERSION=1.0
 OPTWARE-BOOTSTRAP_DIR=optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)
 OPTWARE-BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-OPTWARE-BOOTSTRAP_DESCRIPTION=Optware bootstrap package for $(OPTWARE_TARGET)
+OPTWARE-BOOTSTRAP_DESCRIPTION=Optware bootstrap package
 OPTWARE-BOOTSTRAP_SECTION=util
 OPTWARE-BOOTSTRAP_PRIORITY=optional
 OPTWARE-BOOTSTRAP_DEPENDS=
 OPTWARE-BOOTSTRAP_CONFLICTS=
 
-OPTWARE-BOOTSTRAP_IPK_VERSION=1
+# This is used when multiple devices shares the same feed, but need different bootstrap.xsh
+# For instance, in the case of mssii
+# 	OPTWARE_TARGET is set to mssii
+# 	OPTWARE-BOOTSTRAP_TARGET can be either mssii, lspro, terapro
+OPTWARE-BOOTSTRAP_TARGET ?= $(OPTWARE_TARGET)
 
-OPTWARE-BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/optware-bootstrap
+OPTWARE-BOOTSTRAP_IPK_VERSION=2
+
 OPTWARE-BOOTSTRAP_SOURCE_DIR=$(SOURCE_DIR)/optware-bootstrap
-OPTWARE-BOOTSTRAP_IPK_DIR=$(BUILD_DIR)/optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)-ipk
-OPTWARE-BOOTSTRAP_IPK=$(BUILD_DIR)/optware-bootstrap_$(OPTWARE-BOOTSTRAP_VERSION)-$(OPTWARE-BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).ipk
-OPTWARE-BOOTSTRAP_XSH=$(BUILD_DIR)/$(OPTWARE_TARGET)-bootstrap_$(OPTWARE-BOOTSTRAP_VERSION)-$(OPTWARE-BOOTSTRAP_IPK_VERSION)_$(TARGET_ARCH).xsh
+OPTWARE-BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap
+
+OPTWARE-BOOTSTRAP_V=$(OPTWARE-BOOTSTRAP_VERSION)-$(OPTWARE-BOOTSTRAP_IPK_VERSION)
+OPTWARE-BOOTSTRAP_IPK_DIR=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)-ipk
+OPTWARE-BOOTSTRAP_IPK=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_$(OPTWARE-BOOTSTRAP_V)_$(TARGET_ARCH).ipk
+OPTWARE-BOOTSTRAP_XSH=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_$(OPTWARE-BOOTSTRAP_V)_$(TARGET_ARCH).xsh
 
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
 	$(if $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)), /home/.optware, \
-	$(if $(filter mssii, $(OPTWARE_TARGET)), /share/.optware, \
-	))))
+	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
+	$(if $(filter lspro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
+	$(if $(filter terapro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
+	))))))
 OPTWARE-BOOTSTRAP_RC=$(strip \
 	$(if $(filter mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
 	/etc/init.d/optware))
 
-$(OPTWARE-BOOTSTRAP_BUILD_DIR)/.configured: $(OPTWARE-BOOTSTRAP_PATCHES)
-	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(OPTWARE-BOOTSTRAP_BUILD_DIR)
-	mkdir -p $(OPTWARE-BOOTSTRAP_BUILD_DIR)
+$(OPTWARE-BOOTSTRAP_BUILD_DIR)/.configured: $(OPTWARE-BOOTSTRAP_PATCHES) make/optware-bootstrap.mk
+	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(@D)
+	mkdir -p $(@D)
 	touch $@
 
 optware-bootstrap-unpack: $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.configured
@@ -53,19 +63,21 @@ optware-bootstrap-stage:
 $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: optware-bootstrap" >>$@
+	@echo "Package: $(OPTWARE-BOOTSTRAP_TARGET)-bootstrap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(OPTWARE-BOOTSTRAP_PRIORITY)" >>$@
 	@echo "Section: $(OPTWARE-BOOTSTRAP_SECTION)" >>$@
-	@echo "Version: $(OPTWARE-BOOTSTRAP_VERSION)-$(OPTWARE-BOOTSTRAP_IPK_VERSION)" >>$@
+	@echo "Version: $(OPTWARE-BOOTSTRAP_V)" >>$@
 	@echo "Maintainer: $(OPTWARE-BOOTSTRAP_MAINTAINER)" >>$@
 	@echo "Source: $(OPTWARE-BOOTSTRAP_SITE)/$(OPTWARE-BOOTSTRAP_SOURCE)" >>$@
-	@echo "Description: $(OPTWARE-BOOTSTRAP_DESCRIPTION)" >>$@
+	@echo "Description: $(OPTWARE-BOOTSTRAP_DESCRIPTION) for $(OPTWARE-BOOTSTRAP_TARGET)" >>$@
 	@echo "Depends: $(OPTWARE-BOOTSTRAP_DEPENDS)" >>$@
 	@echo "Conflicts: $(OPTWARE-BOOTSTRAP_CONFLICTS)" >>$@
 
-$(OPTWARE-BOOTSTRAP_IPK): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built
-	rm -rf $(OPTWARE-BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/optware-bootstrap_*_$(TARGET_ARCH).ipk
+$(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built \
+	    $(BUILD_DIR)/ipkg-opt/.ipk $(BUILD_DIR)/openssl/.ipk $(BUILD_DIR)/wget-ssl/.ipk
+	# build optware-bootstrap.ipk first
+	rm -rf $(OPTWARE-BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_*_$(TARGET_ARCH).ipk
 	install -d -m 755 \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/etc \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/opt/lib \
@@ -82,26 +94,26 @@ ifneq (OPTWARE-BOOTSTRAP_REAL_OPT_DIR,)
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)$(OPTWARE-BOOTSTRAP_RC) \
 		$(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/preinst
 endif
-	install -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/postinst $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
+	install -m 644 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/postinst $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPTWARE-BOOTSTRAP_IPK_DIR)
-
-$(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_IPK) \
-	    $(BUILD_DIR)/ipkg-opt/.ipk $(BUILD_DIR)/openssl/.ipk $(BUILD_DIR)/wget-ssl/.ipk
-	rm -rf $(BUILD_DIR)/optware-bootstrap_*_$(TARGET_ARCH).xsh
+	# build optware-bootstrap.xsh next
+	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_*_$(TARGET_ARCH).xsh
 	rm -rf $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
 	install -d $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap
-	cp $(OPTWARE-BOOTSTRAP_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/optware-bootstrap.ipk
-	# Additional ipk's we require
+	#	move the ipk, so it will not be in the feed
+	mv $(OPTWARE-BOOTSTRAP_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/optware-bootstrap.ipk
+	#	additional ipk's we require
 	cp $(IPKG-OPT_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
 	cp $(OPENSSL_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
 	cp $(WGET-SSL_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
-	# bootstrap scripts
-	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE_TARGET)/bootstrap.sh \
+	#	bootstrap scripts
+	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/bootstrap.sh \
 	   $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/ipkg.sh \
 	   $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/
-	# NNN is the number of bytes to skip, adjust if not 3 digits
+	#	NNN is the number of bytes to skip, adjust if not 3 digits
 	echo "#!/bin/sh" >$@
-	echo 'echo "Optware Bootstrap extracting archive... please wait"' >>$@
+	echo 'echo "Optware Bootstrap for $(OPTWARE-BOOTSTRAP_TARGET)."' >>$@
+	echo 'echo "Extracting archive... please wait"' >>$@
 	echo 'dd if=$$0 bs=NNN skip=1 | tar xzv' >>$@
 	echo "cd bootstrap && sh bootstrap.sh && cd .. && rm -r bootstrap" >>$@
 	echo 'exec /bin/sh --login' >>$@
@@ -116,4 +128,11 @@ optware-bootstrap-clean:
 	rm -rf $(OPTWARE-BOOTSTRAP_BUILD_DIR)/*
 
 optware-bootstrap-dirclean:
-	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(OPTWARE-BOOTSTRAP_BUILD_DIR) $(OPTWARE-BOOTSTRAP_IPK_DIR) $(OPTWARE-BOOTSTRAP_IPK) $(OPTWARE-BOOTSTRAP_XSH)
+	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(OPTWARE-BOOTSTRAP_BUILD_DIR) $(OPTWARE-BOOTSTRAP_IPK_DIR) $(OPTWARE-BOOTSTRAP_IPK)
+	rm -rf $(OPTWARE-BOOTSTRAP_XSH)
+
+%-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=$*
+
+%-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=$*
