@@ -1,6 +1,6 @@
 # Packages that *only* work for mssii - do not just put new packages here.
 SPECIFIC_PACKAGES = \
-	mssii-optware-bootstrap \
+	optware-bootstrap \
 	mssii-kernel-modules \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
