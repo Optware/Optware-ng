@@ -36,7 +36,7 @@ UTIL_LINUX_CONFLICTS=
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=2
+UTIL_LINUX_IPK_VERSION=3
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -232,22 +232,23 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 	$(STRIP_COMMAND) `ls $(UTIL_LINUX_IPK_DIR)/opt/bin/* | grep -v chkdupexe`
 	rm -f $(UTIL_LINUX_IPK_DIR)/opt/sbin/swapoff
 	$(STRIP_COMMAND) $(UTIL_LINUX_IPK_DIR)/opt/sbin/*
-	for d in /opt/sbin /opt/bin /opt/share/man; do \
-	    for f in `find $(UTIL_LINUX_IPK_DIR)/$$d -type f`; do \
-		mv `dirname $$f`/`basename $$f` `dirname $$f`/util-linux-`basename $$f`; \
+	$(MAKE) $(UTIL_LINUX_IPK_DIR)/CONTROL/control
+	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
+	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
+	for d in /opt/sbin /opt/bin /opt/share/man/man1 /opt/share/man/man8; do \
+	    cd $(UTIL_LINUX_IPK_DIR)/$$d; \
+	    for f in *; do \
+		mv $$f util-linux-$$f; \
+		echo "update-alternatives --install $$d/$$f $$f $$d/util-linux-$$f 80" \
+			>> $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst; \
+		echo "update-alternatives --remove $$f $$d/util-linux-$$f" \
+			>> $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm; \
 	    done; \
 	done
-	cd $(UTIL_LINUX_IPK_DIR)/opt/sbin; ln -sf util-linux-swapon util-linux-swapoff
-#	install -d $(UTIL_LINUX_IPK_DIR)/opt/etc/
-#	install -m 644 $(UTIL_LINUX_SOURCE_DIR)/util-linux.conf $(UTIL_LINUX_IPK_DIR)/opt/etc/util-linux.conf
-#	install -d $(UTIL_LINUX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(UTIL_LINUX_SOURCE_DIR)/rc.util-linux $(UTIL_LINUX_IPK_DIR)/opt/etc/init.d/SXXutil-linux
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UTIL_LINUX_IPK_DIR)/opt/etc/init.d/SXXutil-linux
-	$(MAKE) $(UTIL_LINUX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(UTIL_LINUX_SOURCE_DIR)/postinst $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(UTIL_LINUX_SOURCE_DIR)/prerm $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
+	echo "update-alternatives --install /opt/sbin/swapoff swapoff /opt/sbin/util-linux-swapon 80" \
+		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
+	echo "update-alternatives --remove swapoff /opt/sbin/util-linux-swapon" \
+		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
 	echo $(UTIL_LINUX_CONFFILES) | sed -e 's/ /\n/g' > $(UTIL_LINUX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UTIL_LINUX_IPK_DIR)
 
