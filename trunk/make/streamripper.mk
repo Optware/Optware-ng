@@ -28,7 +28,7 @@
 #
 STREAMRIPPER_NAME=streamripper
 STREAMRIPPER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/streamripper/
-STREAMRIPPER_VERSION=1.61.27
+STREAMRIPPER_VERSION=1.62.1
 STREAMRIPPER_SOURCE=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION).tar.gz
 STREAMRIPPER_DIR=$(STREAMRIPPER_NAME)-$(STREAMRIPPER_VERSION)
 STREAMRIPPER_UNZIP=zcat
@@ -109,12 +109,15 @@ streamripper-source: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAMRIPPER_PATCHES) make/streamripper.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libmad-stage
 	$(MAKE) libvorbis-stage libogg-stage
+	$(MAKE) tre-stage
 	rm -rf $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(STREAMRIPPER_BUILD_DIR)
 	$(STREAMRIPPER_UNZIP) $(DL_DIR)/$(STREAMRIPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(STREAMRIPPER_PATCHES) | patch -d $(BUILD_DIR)/$(STREAMRIPPER_DIR) -p1
 	mv $(BUILD_DIR)/$(STREAMRIPPER_DIR) $(STREAMRIPPER_BUILD_DIR)
+	sed -i -e '/^DEFAULT_INCLUDES *=/s|$$| $(STAGING_CPPFLAGS)|' \
+		$(STREAMRIPPER_BUILD_DIR)/lib/Makefile.in
 	cp -f $(SOURCE_DIR)/common/config.* $(STREAMRIPPER_BUILD_DIR)/
 	(cd $(STREAMRIPPER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -128,10 +131,10 @@ $(STREAMRIPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(STREAMRIPPER_SOURCE) $(STREAM
 		--disable-nls \
 		--disable-oggtest \
 		--disable-vorbistest \
-		--with-ogg=$(STAGING_DIR)/opt \
-		--with-vorbis=$(STAGING_DIR)/opt \
+		--with-ogg=$(STAGING_PREFIX) \
+		--with-vorbis=$(STAGING_PREFIX) \
 	)
-	touch $(STREAMRIPPER_BUILD_DIR)/.configured
+	touch $@
 
 streamripper-unpack: $(STREAMRIPPER_BUILD_DIR)/.configured
 
@@ -139,9 +142,9 @@ streamripper-unpack: $(STREAMRIPPER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(STREAMRIPPER_BUILD_DIR)/.built: $(STREAMRIPPER_BUILD_DIR)/.configured
-	rm -f $(STREAMRIPPER_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(STREAMRIPPER_BUILD_DIR)
-	touch $(STREAMRIPPER_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -152,9 +155,9 @@ streamripper: $(STREAMRIPPER_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(STREAMRIPPER_BUILD_DIR)/.staged: $(STREAMRIPPER_BUILD_DIR)/.built
-	rm -f $(STREAMRIPPER_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(STREAMRIPPER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(STREAMRIPPER_BUILD_DIR)/.staged
+	touch $@
 
 streamripper-stage: $(STREAMRIPPER_BUILD_DIR)/.staged
 
@@ -163,7 +166,7 @@ streamripper-stage: $(STREAMRIPPER_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/streamripper
 #
 $(STREAMRIPPER_IPK_DIR)/CONTROL/control:
-	@install -d $(STREAMRIPPER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: $(STREAMRIPPER_NAME)" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
