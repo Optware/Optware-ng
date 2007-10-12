@@ -30,10 +30,10 @@ INETUTILS_NAME=inetutils
 INETUTILS_SITE=ftp://ftp.gnu.org/pub/gnu/inetutils
 ifneq ($(OPTWARE_TARGET), wl500g)
 INETUTILS_VERSION=1.5
-INETUTILS_IPK_VERSION=2
+INETUTILS_IPK_VERSION=3
 else
 INETUTILS_VERSION=1.4.2
-INETUTILS_IPK_VERSION=7
+INETUTILS_IPK_VERSION=8
 endif
 INETUTILS_SOURCE=$(INETUTILS_NAME)-$(INETUTILS_VERSION).tar.gz
 INETUTILS_DIR=$(INETUTILS_NAME)-$(INETUTILS_VERSION)
@@ -123,8 +123,9 @@ $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--infodir=/opt/doc/inetutils \
+		--mandir=/opt/share/man \
 		--with-ncurses \
-		--with-ncurses-include-dir=$(STAGING_DIR)/opt/include/ncurses \
+		--with-ncurses-include-dir=$(STAGING_INCLUDE_DIR)/ncurses \
 		--program-prefix="" \
 	)
 	touch $@
@@ -188,9 +189,9 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 	$(MAKE) -C $(INETUTILS_BUILD_DIR) DESTDIR=$(INETUTILS_IPK_DIR) install
 	# Remove the stuff we don't want: inetd, whois, ftpd
 	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/inetd
-	rm -f $(INETUTILS_IPK_DIR)/opt/man/man8/inetd.8
+	rm -f $(INETUTILS_IPK_DIR)/opt/share/man/man8/inetd.8
 	rm -f $(INETUTILS_IPK_DIR)/opt/bin/whois
-	rm -f $(INETUTILS_IPK_DIR)/opt/man/man8/ftpd.8
+	rm -f $(INETUTILS_IPK_DIR)/opt/share/man/man8/ftpd.8
 	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/ftpd
 	$(STRIP_COMMAND) $(INETUTILS_IPK_DIR)/opt/bin/* $(INETUTILS_IPK_DIR)/opt/libexec/*
 #	install -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
@@ -199,21 +200,15 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 	# Setuid stuff doesn't work as non-root, but we fix it in the postinst script.
 	install -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
 	echo "#!/bin/sh" > $(INETUTILS_IPK_DIR)/CONTROL/prerm
-	cd $(INETUTILS_IPK_DIR)/opt/bin; \
-	for f in *; do \
-	    mv $$f inetutils-$$f; \
-	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/inetutils-$$f 70" \
-		>> $(INETUTILS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/bin/inetutils-$$f" \
-		>> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
-	done
-	cd $(INETUTILS_IPK_DIR)/opt/libexec; \
-	for f in *; do \
-	    mv $$f inetutils-$$f; \
-	    echo "update-alternatives --install /opt/libexec/$$f $$f /opt/libexec/inetutils-$$f 70" \
-		>> $(INETUTILS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/libexec/inetutils-$$f" \
-		>> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
+	for d in /opt/bin /opt/libexec /opt/share/man/man1 /opt/share/man/man8; do \
+	    cd $(INETUTILS_IPK_DIR)/$$d; \
+	    for f in *; do \
+		mv $$f inetutils-$$f; \
+		echo "update-alternatives --install $$d/$$f $$f $$d/inetutils-$$f 70" \
+		    >> $(INETUTILS_IPK_DIR)/CONTROL/postinst; \
+		echo "update-alternatives --remove $$f $$d/inetutils-$$f" \
+		    >> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
+	    done; \
 	done
 	echo $(INETUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(INETUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INETUTILS_IPK_DIR)
