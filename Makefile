@@ -434,7 +434,11 @@ $(PACKAGES_IPKG) %-ipk : directories toolchain ipkg-utils
 index: $(PACKAGE_DIR)/Packages
 
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
+    ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
+$(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
+    else
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
+    endif
 	if ls $(BUILD_DIR)/*_$(TARGET_ARCH).xsh > /dev/null 2>&1; then \
 		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(PACKAGE_DIR)/ ; \
 	else \
