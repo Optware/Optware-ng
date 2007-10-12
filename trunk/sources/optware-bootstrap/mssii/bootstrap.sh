@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# replaced during packaging based on value in 00.mk
+# Replaced during packaging based on value in target-specific.mk
 REAL_OPT_DIR=/mnt/.optware
 
 if [ -e "$REAL_OPT_DIR" ] ; then
