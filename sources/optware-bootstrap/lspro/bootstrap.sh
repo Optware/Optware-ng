@@ -1,8 +1,11 @@
 #!/bin/sh
 
-if [ -e /share/.optware ] ; then
+# replaced during packaging based on value in 00.mk
+REAL_OPT_DIR=/mnt/.optware
+
+if [ -e "$REAL_OPT_DIR" ] ; then
     echo "Backup your configuration settings, then type:"
-    echo "  rm -rf /share/.optware"
+    echo "  rm -rf $REAL_OPT_DIR"
     echo "  rm -rf /usr/lib/ipkg"
     echo "This will remove all existing optware packages."
     echo
@@ -10,7 +13,7 @@ if [ -e /share/.optware ] ; then
     exit 1
 fi
 
-BSDIR="/share/.optware/ipkg-bootstrap"
+BSDIR="$REAL_OPT_DIR/ipkg-bootstrap"
 
 echo "Creating temporary ipkg repository..."
 rm -rf $BSDIR
@@ -44,7 +47,7 @@ echo "Installing wget..."
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
 then
 	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/mssii/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/${OPTWARE_TARGET}/cross/stable" >/opt/etc/ipkg/cross-feed.conf
 fi
 
 echo "Setup complete."
