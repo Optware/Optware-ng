@@ -257,7 +257,7 @@ COMMON_CROSS_PACKAGES = \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
 	tar tcpdump tcpflow tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
-	transcode transmission tsocks ttf-bitstream-vera tz tzwatch \
+	transcode transmission tre tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare util-linux \
