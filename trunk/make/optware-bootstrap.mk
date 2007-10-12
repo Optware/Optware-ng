@@ -7,6 +7,8 @@
 ###########################################################
 
 OPTWARE-BOOTSTRAP_VERSION=1.0
+OPTWARE-BOOTSTRAP_IPK_VERSION=3
+
 OPTWARE-BOOTSTRAP_DIR=optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)
 OPTWARE-BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OPTWARE-BOOTSTRAP_DESCRIPTION=Optware bootstrap package
@@ -15,32 +17,25 @@ OPTWARE-BOOTSTRAP_PRIORITY=optional
 OPTWARE-BOOTSTRAP_DEPENDS=
 OPTWARE-BOOTSTRAP_CONFLICTS=
 
+OPTWARE-BOOTSTRAP_SOURCE_DIR=$(SOURCE_DIR)/optware-bootstrap
+
 # This is used when multiple devices shares the same feed, but need different bootstrap.xsh
 # For instance, in the case of mssii
 # 	OPTWARE_TARGET is set to mssii
 # 	OPTWARE-BOOTSTRAP_TARGET can be either mssii, lspro, terapro
 OPTWARE-BOOTSTRAP_TARGET ?= $(OPTWARE_TARGET)
 
-OPTWARE-BOOTSTRAP_IPK_VERSION=2
+# bootstrap target specific options such as
+# OPTWARE-BOOTSTRAP_REAL_OPT_DIR and OPTWARE-BOOTSTRAP_RC
+# will be set in the .mk included below
+include $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/target-specific.mk
 
-OPTWARE-BOOTSTRAP_SOURCE_DIR=$(SOURCE_DIR)/optware-bootstrap
 OPTWARE-BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-optware-bootstrap
 
 OPTWARE-BOOTSTRAP_V=$(OPTWARE-BOOTSTRAP_VERSION)-$(OPTWARE-BOOTSTRAP_IPK_VERSION)
 OPTWARE-BOOTSTRAP_IPK_DIR=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)-ipk
 OPTWARE-BOOTSTRAP_IPK=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_$(OPTWARE-BOOTSTRAP_V)_$(TARGET_ARCH).ipk
 OPTWARE-BOOTSTRAP_XSH=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_$(OPTWARE-BOOTSTRAP_V)_$(TARGET_ARCH).xsh
-
-OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
-	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
-	$(if $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)), /home/.optware, \
-	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
-	$(if $(filter lspro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
-	$(if $(filter terapro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
-	))))))
-OPTWARE-BOOTSTRAP_RC=$(strip \
-	$(if $(filter mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
-	/etc/init.d/optware))
 
 $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.configured: $(OPTWARE-BOOTSTRAP_PATCHES) make/optware-bootstrap.mk
 	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(@D)
@@ -110,6 +105,11 @@ endif
 	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/bootstrap.sh \
 	   $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/ipkg.sh \
 	   $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/
+ifneq (OPTWARE-BOOTSTRAP_REAL_OPT_DIR,)
+	sed -i -e '/^[ 	]*REAL_OPT_DIR=.*/s|=.*|=$(OPTWARE-BOOTSTRAP_REAL_OPT_DIR)|' \
+	       -e 's/$${OPTWARE_TARGET}/$(OPTWARE_TARGET)/g' \
+	   $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/bootstrap.sh
+endif
 	#	NNN is the number of bytes to skip, adjust if not 3 digits
 	echo "#!/bin/sh" >$@
 	echo 'echo "Optware Bootstrap for $(OPTWARE-BOOTSTRAP_TARGET)."' >>$@
@@ -130,9 +130,3 @@ optware-bootstrap-clean:
 optware-bootstrap-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(OPTWARE-BOOTSTRAP_BUILD_DIR) $(OPTWARE-BOOTSTRAP_IPK_DIR) $(OPTWARE-BOOTSTRAP_IPK)
 	rm -rf $(OPTWARE-BOOTSTRAP_XSH)
-
-%-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=$*
-
-%-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=$*
