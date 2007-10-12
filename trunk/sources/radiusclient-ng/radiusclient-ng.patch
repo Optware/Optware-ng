@@ -1,6 +1,6 @@
---- radiusclient-ng-0.5.3/configure	2006-03-14 12:06:55.000000000 -0500
-+++ radiusclient-ng/configure	2007-01-24 00:10:29.000000000 -0500
-@@ -22711,8 +22711,7 @@
+--- radiusclient-ng-0.5.6/configure	2007-10-12 00:51:14.070091240 -0400
++++ radiusclient-ng/configure	2007-10-12 00:52:05.363293488 -0400
+@@ -23332,8 +23332,7 @@ echo $ECHO_N "checking for field domainn
    { { echo "$as_me:$LINENO: error: cannot run test program while cross compiling
  See \`config.log' for more details." >&5
  echo "$as_me: error: cannot run test program while cross compiling
@@ -10,18 +10,3 @@
  else
    cat >conftest.$ac_ext <<_ACEOF
  /* confdefs.h.  */
---- radiusclient-ng-0.5.3/etc/Makefile.in	2006-03-14 12:06:49.000000000 -0500
-+++ radiusclient-ng/etc/Makefile.in	2007-01-24 08:43:13.000000000 -0500
-@@ -366,9 +366,9 @@
- 	    <$(srcdir)/radiusclient.conf.in >radiusclient.conf
- 
- install-data-local: servers
--	$(mkinstalldirs) $(pkgsysconfdir); \
--        echo " $(INSTALL) -m 600 $(srcdir)/servers $(pkgsysconfdir)/servers"; \
--        $(INSTALL) -m 600 $(srcdir)/servers $(pkgsysconfdir)/servers
-+	$(mkinstalldirs) $(DESTDIR)/$(pkgsysconfdir); \
-+        echo " $(INSTALL) -m 600 $(srcdir)/servers $(DESTDIR)/$(pkgsysconfdir)/servers"; \
-+        $(INSTALL) -m 600 $(srcdir)/servers $(DESTDIR)/$(pkgsysconfdir)/servers
- 
- uninstall-local:
- 	rm -f $(pkgsysconfdir)/servers
