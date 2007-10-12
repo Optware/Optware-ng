@@ -17,7 +17,7 @@ PERL-FILE-RENAME_DEPENDS=perl
 PERL-FILE-RENAME_SUGGESTS=
 PERL-FILE-RENAME_CONFLICTS=
 
-PERL-FILE-RENAME_IPK_VERSION=1
+PERL-FILE-RENAME_IPK_VERSION=2
 
 PERL-FILE-RENAME_CONFFILES=
 
@@ -89,6 +89,13 @@ $(PERL-FILE-RENAME_IPK): $(PERL-FILE-RENAME_BUILD_DIR)/.built
 	)
 	find $(PERL-FILE-RENAME_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/control
+	mv $(PERL-FILE-RENAME_IPK_DIR)/opt/bin/rename $(PERL-FILE-RENAME_IPK_DIR)/opt/bin/perl-file-rename
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --install /opt/bin/rename rename /opt/bin/perl-file-rename 85"; \
+	) > $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh"; \
+	 echo "update-alternatives --remove rename /opt/bin/perl-file-rename"; \
+	) > $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/prerm
 	echo $(PERL-FILE-RENAME_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-FILE-RENAME_IPK_DIR)
 
