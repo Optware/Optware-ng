@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-ifeq ($(OPTWARE_TARGET), mssii)
+ifeq ($(OPTWARE_TARGET), $(filter mssii mssii-kernel, $(OPTWARE_TARGET)))
 
 MSSII_GPL_SOURCE_SITE=http://www.seagate.com/staticfiles/maxtor/en_us/downloads
 MSSII_GPL_SOURCE=MSSII_3.1.2.src.tgz
@@ -48,7 +48,7 @@ KERNEL-MODULES_IPK_VERSION=1
 KERNEL-MODULES_CPPFLAGS=
 KERNEL-MODULES_LDFLAGS=
 
-MSSII_GPL_SOURCE_DIR=$(SOURCE_DIR)/$(OPTWARE_TARGET)-kernel-modules
+MSSII_GPL_SOURCE_DIR=$(SOURCE_DIR)/mssii-kernel-modules
 KERNEL_BUILD_DIR=$(BUILD_DIR)/kernel-modules
 
 KERNEL-MODULES_IPK_DIR=$(BUILD_DIR)/kernel-modules-$(KERNEL_VERSION)-ipk
@@ -75,7 +75,7 @@ kernel-modules-source: $(DL_DIR)/$(MSSII_GPL_SOURCE) $(KERNEL-MODULES_PATCHES)
 
 $(KERNEL_BUILD_DIR)/.configured: \
 $(DL_DIR)/$(MSSII_GPL_SOURCE) $(KERNEL-MODULES_PATCHES) \
-$(MSSII_GPL_SOURCE_DIR)/defconfig make/$(OPTWARE_TARGET)-kernel-modules.mk
+$(MSSII_GPL_SOURCE_DIR)/defconfig make/mssii-kernel-modules.mk
 	$(MAKE) u-boot-mkimage
 	rm -rf $(BUILD_DIR)/$(KERNEL-MODULES_DIR) $(KERNEL_BUILD_DIR)
 	mkdir -p $(KERNEL_BUILD_DIR)
@@ -106,10 +106,17 @@ $(KERNEL_BUILD_DIR)/.built: $(KERNEL_BUILD_DIR)/.configured
 	$(MAKE) -C $(KERNEL_BUILD_DIR) $(KERNEL-MODULES-FLAGS) uImage modules
 	touch $@
 
-#
-# This is the build convenience target.
-#
 kernel-modules: $(KERNEL_BUILD_DIR)/.built
+
+$(KERNEL_BUILD_DIR)/.staged: $(KERNEL_BUILD_DIR)/.built
+	rm -f $@
+	rm -rf $(STAGING_DIR)/src/linux
+	mkdir -p $(STAGING_DIR)/src/linux
+	cp $(KERNEL_BUILD_DIR)/.config $(STAGING_DIR)/src/linux
+	cp -a $(KERNEL_BUILD_DIR)/* $(STAGING_DIR)/src/linux
+	touch $@
+
+kernel-modules-stage: $(KERNEL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -159,7 +166,7 @@ $(KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 
 $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 	install -d $(@D)
-	rm -f $(KERNEL-IMAGE_IPK_DIR)/CONTROL/control
+	rm -f $@
 	( \
 	  echo "Package: kernel-image"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
@@ -211,7 +218,7 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 # This is called from the top level makefile to create the IPK file.
 #
 kernel-modules-ipk: $(KERNEL_BUILD_DIR)/.ipkdone
-$(OPTWARE_TARGET)-kernel-modules-ipk: $(KERNEL_BUILD_DIR)/.ipkdone
+mssii-kernel-modules-ipk: $(KERNEL_BUILD_DIR)/.ipkdone
 
 #
 # This is called from the top level makefile to clean all of the built files.
