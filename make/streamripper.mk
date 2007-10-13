@@ -36,13 +36,13 @@ STREAMRIPPER_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 STREAMRIPPER_DESCRIPTION=Shoutcast ripper
 STREAMRIPPER_SECTION=net
 STREAMRIPPER_PRIORITY=optional
-STREAMRIPPER_DEPENDS=libogg, libvorbis
+STREAMRIPPER_DEPENDS=libmad, libogg, libvorbis, tre
 STREAMRIPPER_CONFLICTS=
 
 #
 # STREAMRIPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-STREAMRIPPER_IPK_VERSION=1
+STREAMRIPPER_IPK_VERSION=2
 
 #
 # STREAMRIPPER_CONFFILES should be a list of user-editable files
