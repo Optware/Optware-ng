@@ -47,7 +47,12 @@ echo "Installing wget..."
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
 then
 	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/${OPTWARE_TARGET}/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/mssii/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+fi
+if [ ! -e /opt/etc/ipkg/kernel-feed.conf ]
+then
+	echo "Creating /opt/etc/ipkg/kernel-feed.conf..."
+	echo "src/gz kernel http://ipkg.nslu2-linux.org/feeds/optware/mssii-kernel/cross/stable" >/opt/etc/ipkg/kernel-feed.conf
 fi
 
 echo "Setup complete."
