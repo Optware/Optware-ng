@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zile
-ZILE_VERSION=2.2.43
+ZILE_VERSION=2.2.45
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -190,16 +190,7 @@ $(ZILE_IPK_DIR)/CONTROL/control:
 $(ZILE_IPK): $(ZILE_BUILD_DIR)/.built
 	rm -rf $(ZILE_IPK_DIR) $(BUILD_DIR)/zile_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ZILE_BUILD_DIR) DESTDIR=$(ZILE_IPK_DIR) install-strip
-#	install -d $(ZILE_IPK_DIR)/opt/etc/
-#	install -m 644 $(ZILE_SOURCE_DIR)/zile.conf $(ZILE_IPK_DIR)/opt/etc/zile.conf
-#	install -d $(ZILE_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(ZILE_SOURCE_DIR)/rc.zile $(ZILE_IPK_DIR)/opt/etc/init.d/SXXzile
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ZILE_IPK_DIR)/opt/etc/init.d/SXXzile
 	$(MAKE) $(ZILE_IPK_DIR)/CONTROL/control
-#	install -m 755 $(ZILE_SOURCE_DIR)/postinst $(ZILE_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ZILE_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(ZILE_SOURCE_DIR)/prerm $(ZILE_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ZILE_IPK_DIR)/CONTROL/prerm
 	echo $(ZILE_CONFFILES) | sed -e 's/ /\n/g' > $(ZILE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZILE_IPK_DIR)
 
