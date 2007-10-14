@@ -3,7 +3,7 @@ OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)), /home/.optware, \
 	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
 	$(if $(filter lspro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
-	$(if $(filter terapro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
+	$(if $(filter teraprov2, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
 	))))))
 
 OPTWARE-BOOTSTRAP_RC=$(strip \
@@ -27,3 +27,8 @@ lspro-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=lspro
 lspro-optware-bootstrap-dirclean:
 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=lspro
+
+teraprov2-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=teraprov2
+teraprov2-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=teraprov2
