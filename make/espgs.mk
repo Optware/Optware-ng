@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-ESPGS_SITE=http://ftp.easysw.com/pub/ghostscript/test
-ESPGS_VERSION=8.15rc2
+ESPGS_VERSION=8.15.1
+ESPGS_SITE=http://ftp.easysw.com/pub/ghostscript/$(ESPGS_VERSION)
 ESPGS_SOURCE=espgs-$(ESPGS_VERSION)-source.tar.bz2
 ESPGS_DIR=espgs-$(ESPGS_VERSION)
 ESPGS_UNZIP=bzcat
@@ -57,8 +57,11 @@ ESPGS_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-ESPGS_BUILD_DIR=$(BUILD_DIR)/espgs
 ESPGS_SOURCE_DIR=$(SOURCE_DIR)/espgs
+
+ESPGS_BUILD_DIR=$(BUILD_DIR)/espgs
+ESPGS_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/espgs
+
 ESPGS_IPK_DIR=$(BUILD_DIR)/espgs-$(ESPGS_VERSION)-ipk
 ESPGS_IPK=$(BUILD_DIR)/espgs_$(ESPGS_VERSION)-$(ESPGS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -74,23 +77,20 @@ $(DL_DIR)/$(ESPGS_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-#espgs-source: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
+espgs-source: $(DL_DIR)/$(ESPGS_SOURCE)
 
-#
-# This target unpacks the source code in the build directory.
-# If the source archive is not .tar.gz or .tar.bz2, then you will need
-# to change the commands here.  Patches to the source code are also
-# applied in this target as required.
-#
-# This target also configures the build within the build directory.
-# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
-# and NOT $(MAKE) below.  Passing it to configure causes configure to
-# correctly BUILD the Makefile with the right paths, where passing it
-# to Make causes it to override the default search paths of the compiler.
-#
-# If the compilation of the package requires other packages to be staged
-## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
-#
+$(ESPGS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
+	rm -rf $(HOST_BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_HOST_BUILD_DIR)
+	$(ESPGS_UNZIP) $(DL_DIR)/$(ESPGS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_HOST_BUILD_DIR)
+	cd $(ESPGS_HOST_BUILD_DIR); \
+		./configure --prefix=/opt
+	mkdir -p $(ESPGS_HOST_BUILD_DIR)/obj
+	$(MAKE) -C $(ESPGS_HOST_BUILD_DIR) ./obj/echogs
+	touch $@
+
+espgs-host-build: $(ESPGS_HOST_BUILD_DIR)/.built
+
 $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
 	$(MAKE) libjpeg-stage zlib-stage libpng-stage libtiff-stage cups-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
@@ -98,6 +98,22 @@ $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
 	cat $(ESPGS_PATCHES) | patch -d $(BUILD_DIR)/$(ESPGS_DIR) -p1
 	mv $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
 	(cd $(ESPGS_BUILD_DIR); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(<FOO>_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(<FOO>_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		ac_cv_func_malloc_0_nonnull=yes \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--with-ijs \
+		--disable-nls \
+		--disable-static \
+		; \
+	)
+#	(cd $(ESPGS_BUILD_DIR); \
 		ln -s src/unix-gcc.mak Makefile ; \
 		mkdir obj; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -111,7 +127,7 @@ $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
 		ln -s ../../builds/zlib zlib; \
 		ln -s ../../builds/libpng libpng; \
 	)
-	touch $(ESPGS_BUILD_DIR)/.configured
+	touch $@
 
 espgs-unpack: $(ESPGS_BUILD_DIR)/.configured
 
@@ -119,10 +135,24 @@ espgs-unpack: $(ESPGS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ESPGS_BUILD_DIR)/.built: $(ESPGS_BUILD_DIR)/.configured
-	rm -f $(ESPGS_BUILD_DIR)/.built
-	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) prefix=/opt CC=$(TARGET_CC) CCFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)"  LD=$(TARGET_LD) -C $(ESPGS_BUILD_DIR)
-	touch $(ESPGS_BUILD_DIR)/.built
+	rm -f $@
+	mkdir -p $(@D)/obj
+	$(MAKE) -C $(@D) ./obj/echogs ./obj/genarch ./obj/genconf CC=$(HOSTCC)
+	mv $(@D)/obj/echogs $(@D)/obj/echogs.build
+	mv $(@D)/obj/genarch $(@D)/obj/genarch.build
+	mv $(@D)/obj/genconf $(@D)/obj/genconf.build
+	# TODO different platform needs different arch.h
+	$(MAKE) -C $(@D) obj/arch.h \
+		GENARCH_XE=$(@D)/obj/genarch.build
+	cp $(@D)/obj/arch.h $(@D)/obj/arch.h.orig
+	cp $(ESPGS_SOURCE_DIR)/arch.h $(@D)/obj/arch.h
+	#
+	$(MAKE) -C $(@D) \
+		ECHOGS_XE=$(@D)/obj/echogs.build \
+		GENARCH_XE=$(@D)/obj/genarch.build \
+		GENCONF_XE=$(@D)/obj/genconf.build \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
