@@ -2,6 +2,7 @@
 SPECIFIC_PACKAGES = \
 	mssii-optware-bootstrap \
 	lspro-optware-bootstrap \
+	teraprov2-optware-bootstrap \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
