@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -180,8 +180,7 @@ endif
 		--disable-slp \
 		--disable-gnutls \
 	)
-
-	touch $(CUPS_BUILD_DIR)/.configured
+	touch $@
 
 cups-unpack: $(CUPS_BUILD_DIR)/.configured
 
@@ -190,13 +189,13 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
-	rm -f $(CUPS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(CUPS_BUILD_DIR)
 	$(MAKE) install -C $(CUPS_BUILD_DIR) \
 		BUILDROOT=$(CUPS_BUILD_DIR)/install/ \
 		datarootdir='$${prefix}' \
 		INSTALL_BIN="install -m 755"
-	touch $(CUPS_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -207,7 +206,8 @@ cups: $(CUPS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION): $(CUPS_BUILD_DIR)/.built
+$(CUPS_BUILD_DIR)/.staged: $(CUPS_BUILD_DIR)/.built
+	rm -f $@
 	install -d $(STAGING_DIR)/opt/include/cups
 	install -d $(STAGING_DIR)/opt/include/filter
 	install -m 644 $(CUPS_BUILD_DIR)/cups/*.h \
@@ -228,15 +228,16 @@ $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION): $(CUPS_BUILD_DIR)/.built
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so.1
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcups.so.2 libcups.so
 	cd $(STAGING_DIR)/opt/lib && ln -fs libcupsimage.so.2 libcupsimage.so
+	touch $@
 
-cups-stage: $(STAGING_DIR)/opt/lib/libcups.so.$(CUPS_VERSION)
+cups-stage: $(CUPS_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/cups
 #
 $(CUPS_IPK_DIR)/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cups" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -251,7 +252,7 @@ $(CUPS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
 $(CUPS_IPK_DIR)-doc/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)-doc/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -266,7 +267,7 @@ $(CUPS_IPK_DIR)-doc/CONTROL/control:
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
 $(CUPS_IPK_DIR)-doc-pl/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)-doc-pl/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-doc-pl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -281,7 +282,7 @@ $(CUPS_IPK_DIR)-doc-pl/CONTROL/control:
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
 $(CUPS_IPK_DIR)-doc-de/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)-doc-de/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-doc-de" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -296,7 +297,7 @@ $(CUPS_IPK_DIR)-doc-de/CONTROL/control:
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
 $(CUPS_IPK_DIR)-doc-es/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)-doc-es/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-doc-es" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -311,7 +312,7 @@ $(CUPS_IPK_DIR)-doc-es/CONTROL/control:
 	@echo "Conflicts: $(CUPS_CONFLICTS)" >>$@
 
 $(CUPS_IPK_DIR)-doc-fr/CONTROL/control:
-	@install -d $(CUPS_IPK_DIR)-doc-fr/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cups-doc-fr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
