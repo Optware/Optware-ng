@@ -19,11 +19,19 @@
 #
 # You should change all these variables to suit your package.
 #
-ESPGS_VERSION=8.15.1
+ESPGS_VERSION=8.15.4
 ESPGS_SITE=http://ftp.easysw.com/pub/ghostscript/$(ESPGS_VERSION)
 ESPGS_SOURCE=espgs-$(ESPGS_VERSION)-source.tar.bz2
 ESPGS_DIR=espgs-$(ESPGS_VERSION)
 ESPGS_UNZIP=bzcat
+ESPGS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+# Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+ESPGS_DESCRIPTION=ESP Ghostscript
+ESPGS_SECTION=tool
+ESPGS_PRIORITY=optional
+ESPGS_DEPENDS=
+ESPGS_SUGGESTS=
+ESPGS_CONFLICTS=
 
 #
 # ESPGS_IPK_VERSION should be incremented when the ipk changes.
@@ -32,8 +40,7 @@ ESPGS_IPK_VERSION=1
 
 #
 # ESPGS_CONFFILES should be a list of user-editable files
-ESPGS_CONFFILES=/opt/etc/espgs.conf /opt/etc/init.d/SXXespgs
-### PATH=$(TARGET_PATH) <--- this would break other packages; if you don't see why, contact jp30@sf.net
+# ESPGS_CONFFILES=/opt/etc/espgs.conf /opt/etc/init.d/SXXespgs
 
 #
 ## ESPGS_PATCHES should list any patches, in the the order in
@@ -92,15 +99,21 @@ $(ESPGS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ESPGS_SOURCE) $(ESP
 espgs-host-build: $(ESPGS_HOST_BUILD_DIR)/.built
 
 $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
-	$(MAKE) libjpeg-stage zlib-stage libpng-stage libtiff-stage cups-stage openssl-stage zlib-stage
+	$(MAKE) libjpeg-stage zlib-stage libpng-stage libtiff-stage
+	$(MAKE) cups-stage openssl-stage zlib-stage
+	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
 	$(ESPGS_UNZIP) $(DL_DIR)/$(ESPGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(ESPGS_PATCHES) | patch -d $(BUILD_DIR)/$(ESPGS_DIR) -p1
 	mv $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR)
+#	sed -i \
+	       -e '/-mkdir -p $$(datadir)/s|mkdir -p |mkdir -p $$(install_prefix)|' \
+		$(ESPGS_BUILD_DIR)/src/unixinst.mak
 	(cd $(ESPGS_BUILD_DIR); \
+		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(<FOO>_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(<FOO>_LDFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
@@ -108,24 +121,11 @@ $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--without-x \
 		--with-ijs \
 		--disable-nls \
 		--disable-static \
 		; \
-	)
-#	(cd $(ESPGS_BUILD_DIR); \
-		ln -s src/unix-gcc.mak Makefile ; \
-		mkdir obj; \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)" \
-		$(MAKE) obj/arch.h ; \
-		cp obj/arch.h obj/arch.h.orig; \
-		cp $(ESPGS_SOURCE_DIR)/arch.h obj/arch.h; \
-		$(MAKE) obj/genconf obj/echogs; \
-		ln -s ../../builds/libjpeg jpeg; \
-		ln -s ../../builds/zlib zlib; \
-		ln -s ../../builds/libpng libpng; \
 	)
 	touch $@
 
@@ -141,7 +141,7 @@ $(ESPGS_BUILD_DIR)/.built: $(ESPGS_BUILD_DIR)/.configured
 	mv $(@D)/obj/echogs $(@D)/obj/echogs.build
 	mv $(@D)/obj/genarch $(@D)/obj/genarch.build
 	mv $(@D)/obj/genconf $(@D)/obj/genconf.build
-	# TODO different platform needs different arch.h
+	# TODO different TARGET_ARCH needs different arch.h
 	$(MAKE) -C $(@D) obj/arch.h \
 		GENARCH_XE=$(@D)/obj/genarch.build
 	cp $(@D)/obj/arch.h $(@D)/obj/arch.h.orig
@@ -163,47 +163,51 @@ espgs: $(ESPGS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ESPGS_BUILD_DIR)/.staged: $(ESPGS_BUILD_DIR)/.built
-	rm -f $(ESPGS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(ESPGS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ESPGS_BUILD_DIR)/.staged
+	touch $@
 
 espgs-stage: $(ESPGS_BUILD_DIR)/.staged
 
-#
-# This builds the IPK file.
-#
-# Binaries should be installed into $(ESPGS_IPK_DIR)/opt/sbin or $(ESPGS_IPK_DIR)/opt/bin
-# (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ESPGS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ESPGS_IPK_DIR)/opt/etc/espgs/...
-# Documentation files should be installed in $(ESPGS_IPK_DIR)/opt/doc/espgs/...
-# Daemon startup scripts should be installed in $(ESPGS_IPK_DIR)/opt/etc/init.d/S??espgs
-#
-# You may need to patch your application to make it use these locations.
-#
+$(ESPGS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: espgs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ESPGS_PRIORITY)" >>$@
+	@echo "Section: $(ESPGS_SECTION)" >>$@
+	@echo "Version: $(ESPGS_VERSION)-$(ESPGS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ESPGS_MAINTAINER)" >>$@
+	@echo "Source: $(ESPGS_SITE)/$(ESPGS_SOURCE)" >>$@
+	@echo "Description: $(ESPGS_DESCRIPTION)" >>$@
+	@echo "Depends: $(ESPGS_DEPENDS)" >>$@
+	@echo "Suggests: $(ESPGS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(ESPGS_CONFLICTS)" >>$@
+
 $(ESPGS_IPK): $(ESPGS_BUILD_DIR)/.built
 	rm -rf $(ESPGS_IPK_DIR) $(BUILD_DIR)/espgs_*_$(TARGET_ARCH).ipk
-	cat $(ESPGS_BUILD_DIR)/pstoraster/pstopxl.in | sed 's/@bindir@/\/opt\/bin/g' | sed 's/@prefix@/\/opt/g'| sed 's/@exec_prefix@/\/opt/g' |sed 's/@GS_VERSION_MAJOR@/8/g'|  sed 's/@GS_VERSION_MINOR@/15/g' |  sed 's/@GS_VERSION_PATCH@//g' |  sed 's/@GS@/gs/g' > $(ESPGS_BUILD_DIR)/pstoraster/pstopxl
-	cat $(ESPGS_BUILD_DIR)/pstoraster/pstoraster.in | sed 's/@bindir@/\/opt\/bin/g' | sed 's/@prefix@/\/opt/g'| sed 's/@exec_prefix@/\/opt/g' |sed 's/@GS_VERSION_MAJOR@/8/g'|  sed 's/@GS_VERSION_MINOR@/15/g' |  sed 's/@GS_VERSION_PATCH@//g' |  sed 's/@GS@/gs/g' > $(ESPGS_BUILD_DIR)/pstoraster/pstoraster
-	$(MAKE) -C $(ESPGS_BUILD_DIR) install_prefix=$(ESPGS_IPK_DIR) prefix=$(ESPGS_IPK_DIR)/opt DESTDIR=$(ESPGS_IPK_DIR) install
-	install -d $(ESPGS_IPK_DIR)/CONTROL
-	install -m 644 $(ESPGS_SOURCE_DIR)/control $(ESPGS_IPK_DIR)/CONTROL/control
+	PATH=$(STAGING_PREFIX)/bin:$$PATH \
+	$(MAKE) -C $(ESPGS_BUILD_DIR) install \
+		DESTDIR=$(ESPGS_IPK_DIR) \
+		install_prefix=$(ESPGS_IPK_DIR) \
+		prefix=/opt \
+		ECHOGS_XE=$(ESPGS_BUILD_DIR)/obj/echogs.build \
+		GENARCH_XE=$(ESPGS_BUILD_DIR)/obj/genarch.build \
+		GENCONF_XE=$(ESPGS_BUILD_DIR)/obj/genconf.build \
+		;
+	sed -i -e 's|/usr/share|/opt/share|' $(ESPGS_IPK_DIR)/opt/lib/cups/filter/psto*
+	$(STRIP_COMMAND) $(ESPGS_IPK_DIR)/opt/bin/gs
+	$(MAKE) $(ESPGS_IPK_DIR)/CONTROL/control
+	echo $(ESPGS_CONFFILES) | sed -e 's/ /\n/g' > $(ESPGS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESPGS_IPK_DIR)
 
-#
-# This is called from the top level makefile to create the IPK file.
-#
 espgs-ipk: $(ESPGS_IPK)
 
-#
-# This is called from the top level makefile to clean all of the built files.
-#
 espgs-clean:
 	-$(MAKE) -C $(ESPGS_BUILD_DIR) clean
 
-#
-# This is called from the top level makefile to clean all dynamically created
-# directories.
-#
 espgs-dirclean:
 	rm -rf $(BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_BUILD_DIR) $(ESPGS_IPK_DIR) $(ESPGS_IPK)
+
+espgs-check: $(ESPGS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(ESPGS_IPK)

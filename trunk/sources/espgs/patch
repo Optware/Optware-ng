@@ -2260,15 +2260,3 @@ diff -Naur a/src/unix-gcc.mak b/src/unix-gcc.mak
  
  # This has to come last so it won't be taken as the default target.
  $(AK):
-diff -Naur a/src/unixinst.mak b/src/unixinst.mak
---- a/src/unixinst.mak	2005-02-25 08:10:24.000000000 +0000
-+++ b/src/unixinst.mak	2005-02-25 08:10:53.000000000 +0000
-@@ -18,7 +18,7 @@
- # containing the `install' targets.
- # This is the very last part of the makefile for these configurations.
- 
--install: install-exec install-scripts install-data install-shared install-addons-extras
-+install: install-exec install-scripts install-data install-shared 
- 
- # The sh -c in the rules below is required because Ultrix's implementation
- # of sh -e terminates execution of a command if any error occurs, even if
