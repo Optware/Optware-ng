@@ -1,9 +1,0 @@
-Package: espgs
-Version: 8.15rc2-1
-Architecture: armeb
-Maintainer: Keith Garry Boyce <nslu2-linux@yahoogroups.com>
-Source: http://unc.dl.sourceforge.net/sourceforge/espgs
-Section:  tool
-Priority: optional
-Depends: 
-Description:  ESP Ghostscript
