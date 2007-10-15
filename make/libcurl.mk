@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=2
+LIBCURL_IPK_VERSION=3
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -122,6 +122,7 @@ $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--without-libidn \
+		--disable-ldap \
 		--with-random="/dev/urandom" \
 	)
 	touch $@
