@@ -85,7 +85,7 @@ $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
 #
 ghostscript-source: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE)
 
-$(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) # make/ghostscript.mk
+$(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) make/ghostscript.mk
 	rm -rf $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_HOST_BUILD_DIR)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_HOST_BUILD_DIR)
@@ -156,6 +156,7 @@ endif
 		--disable-static \
 		; \
 	)
+	sed -i -e 's|-I/opt/include ||' $(GHOSTSCRIPT_BUILD_DIR)/Makefile
 	touch $@
 
 ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
