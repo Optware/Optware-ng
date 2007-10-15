@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CLASSPATH_SITE=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_VERSION=0.93
+CLASSPATH_VERSION=0.95
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -38,7 +38,7 @@ CLASSPATH_IPK_VERSION=1
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
-CLASSPATH_CONFFILES=/opt/etc/classpath.conf /opt/etc/init.d/SXXclasspath
+#CLASSPATH_CONFFILES=/opt/etc/classpath.conf /opt/etc/init.d/SXXclasspath
 
 #
 # CLASSPATH_PATCHES should list any patches, in the the order in
@@ -109,7 +109,6 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLASSPATH_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
-		--with-jikes \
 		--with-glibj=zip \
 		--enable-jni \
 		--disable-gtk-peer \
@@ -123,7 +122,8 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		--disable-nls \
 		; \
 	)
-	touch $(CLASSPATH_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(CLASSPATH_BUILD_DIR)/libtool
+	touch $@
 
 classpath-unpack: $(CLASSPATH_BUILD_DIR)/.configured
 
@@ -131,9 +131,9 @@ classpath-unpack: $(CLASSPATH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CLASSPATH_BUILD_DIR)/.built: $(CLASSPATH_BUILD_DIR)/.configured
-	rm -f $(CLASSPATH_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(CLASSPATH_BUILD_DIR)
-	touch $(CLASSPATH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,23 +143,25 @@ classpath: $(CLASSPATH_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libclasspath.so.$(CLASSPATH_VERSION): $(CLASSPATH_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(CLASSPATH_BUILD_DIR)/classpath.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(CLASSPATH_BUILD_DIR)/libclasspath.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(CLASSPATH_BUILD_DIR)/libclasspath.so.$(CLASSPATH_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libclasspath.so.$(CLASSPATH_VERSION) libclasspath.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libclasspath.so.$(CLASSPATH_VERSION) libclasspath.so
+$(CLASSPATH_BUILD_DIR)/.staged: $(CLASSPATH_BUILD_DIR)/.built
+	rm -f $@
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(@D)/classpath.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libclasspath.a $(STAGING_LIB_DIR)
+	install -m 644 $(@D)/libclasspath.so.$(CLASSPATH_VERSION) $(STAGING_LIB_DIR)
+	cd $(STAGING_LIB_DIR) && ln -fs libclasspath.so.$(CLASSPATH_VERSION) libclasspath.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libclasspath.so.$(CLASSPATH_VERSION) libclasspath.so
+	touch $@
 
-classpath-stage: $(STAGING_DIR)/opt/lib/libclasspath.so.$(CLASSPATH_VERSION)
+classpath-stage: $(CLASSPATH_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/classpath
 #
 $(CLASSPATH_IPK_DIR)/CONTROL/control:
-	@install -d $(CLASSPATH_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: classpath" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,8 +188,7 @@ $(CLASSPATH_IPK_DIR)/CONTROL/control:
 #
 $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
 	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install prefix=$(CLASSPATH_IPK_DIR)/opt
-	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip prefix=$(CLASSPATH_IPK_DIR)/opt
+	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip transform="" prefix=$(CLASSPATH_IPK_DIR)/opt
 	$(MAKE) $(CLASSPATH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLASSPATH_IPK_DIR)
 
