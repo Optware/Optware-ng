@@ -20,16 +20,16 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
-JAMVM_VERSION=1.4.4
-JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
+JAMVM_VERSION=1.4.5
+JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.bz2
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
-JAMVM_UNZIP=zcat
+JAMVM_UNZIP=bzcat
 JAMVM_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 JAMVM_DESCRIPTION=VM spec version 2 conformant. Extremely small with stripped executable
 JAMVM_SECTION=language
 JAMVM_PRIORITY=optional
 JAMVM_DEPENDS=zlib
-JAMVM_SUGGESTS=
+JAMVM_SUGGESTS=classpath
 JAMVM_CONFLICTS=
 
 #
@@ -39,7 +39,7 @@ JAMVM_IPK_VERSION=1
 
 #
 # JAMVM_CONFFILES should be a list of user-editable files
-JAMVM_CONFFILES=/opt/etc/jamvm.conf /opt/etc/init.d/SXXjamvm
+#JAMVM_CONFFILES=/opt/etc/jamvm.conf /opt/etc/init.d/SXXjamvm
 
 #
 # JAMVM_PATCHES should list any patches, in the the order in
@@ -117,7 +117,7 @@ $(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(JAMVM_BUILD_DIR)/.configured
+	touch $@
 
 jamvm-unpack: $(JAMVM_BUILD_DIR)/.configured
 
@@ -125,9 +125,9 @@ jamvm-unpack: $(JAMVM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(JAMVM_BUILD_DIR)/.built: $(JAMVM_BUILD_DIR)/.configured
-	rm -f $(JAMVM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(JAMVM_BUILD_DIR)
-	touch $(JAMVM_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,7 +153,7 @@ jamvm-stage: $(STAGING_DIR)/opt/lib/libjamvm.so.$(JAMVM_VERSION)
 # necessary to create a seperate control file under sources/jamvm
 #
 $(JAMVM_IPK_DIR)/CONTROL/control:
-	@install -d $(JAMVM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: jamvm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
