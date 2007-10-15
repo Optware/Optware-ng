@@ -20,32 +20,34 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.50
+GHOSTSCRIPT_VERSION=8.60
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
-GHOSTSCRIPT_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
+GHOSTSCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GHOSTSCRIPT_DESCRIPTION=An interpreter for the PostScript (TM) language
-GHOSTSCRIPT_SECTION=tool
+GHOSTSCRIPT_SECTION=text
 GHOSTSCRIPT_PRIORITY=optional
-GHOSTSCRIPT_DEPENDS=
+GHOSTSCRIPT_DEPENDS=cups, fontconfig, libpng, openssl
 GHOSTSCRIPT_SUGGESTS=
 GHOSTSCRIPT_CONFLICTS=
 
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=2
+GHOSTSCRIPT_IPK_VERSION=1
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
-GHOSTSCRIPT_CONFFILES=/opt/etc/ghostscript.conf /opt/etc/init.d/SXXghostscript
+# GHOSTSCRIPT_CONFFILES=/opt/etc/ghostscript.conf /opt/etc/init.d/SXXghostscript
 
 #
 ## GHOSTSCRIPT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GHOSTSCRIPT_PATCHES=$(GHOSTSCRIPT_SOURCE_DIR)/patch
+ifdef NO_BUILTIN_MATH
+GHOSTSCRIPT_PATCHES=$(GHOSTSCRIPT_SOURCE_DIR)/uclibc-cbrt.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -63,8 +65,9 @@ GHOSTSCRIPT_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-GHOSTSCRIPT_BUILD_DIR=$(BUILD_DIR)/ghostscript
 GHOSTSCRIPT_SOURCE_DIR=$(SOURCE_DIR)/ghostscript
+GHOSTSCRIPT_BUILD_DIR=$(BUILD_DIR)/ghostscript
+GHOSTSCRIPT_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/ghostscript
 GHOSTSCRIPT_IPK_DIR=$(BUILD_DIR)/ghostscript-$(GHOSTSCRIPT_VERSION)-ipk
 GHOSTSCRIPT_IPK=$(BUILD_DIR)/ghostscript_$(GHOSTSCRIPT_VERSION)-$(GHOSTSCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -80,7 +83,28 @@ $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-#ghostscript-source: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) $(GHOSTSCRIPT_PATCHES)
+ghostscript-source: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE)
+
+$(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) # make/ghostscript.mk
+	rm -rf $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_HOST_BUILD_DIR)
+	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_HOST_BUILD_DIR)
+#	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(GHOSTSCRIPT_HOST_BUILD_DIR)/Makefile.in
+	(cd $(GHOSTSCRIPT_HOST_BUILD_DIR); \
+		./configure \
+		--prefix=/opt \
+		--without-x \
+		--without-jasper \
+		--disable-nls \
+		--disable-static \
+		; \
+	)
+	mkdir -p $(@D)/obj
+	$(MAKE) -C $(@D) \
+		./obj/echogs ./obj/genarch ./obj/genconf ./obj/geninit ./obj/mkromfs
+	touch $@
+
+ghostscript-host-build: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built
 
 #
 # This target unpacks the source code in the build directory.
@@ -97,26 +121,42 @@ $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GHOSTSCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) $(GHOSTSCRIPT_PATCHES)
-	$(MAKE) libjpeg-stage zlib-stage libpng-stage
+ifeq ($(TARGET_CC),$(HOSTCC))
+$(GHOSTSCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) $(GHOSTSCRIPT_PATCHES) make/ghostscript.mk
+else
+$(GHOSTSCRIPT_BUILD_DIR)/.configured: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built $(GHOSTSCRIPT_PATCHES)
+endif
+	$(MAKE) cups-stage fontconfig-stage openssl-stage
+	$(MAKE) libjpeg-stage libpng-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p1
+	if test -n "$(GHOSTSCRIPT_PATCHES)"; then \
+		cat $(GHOSTSCRIPT_PATCHES) | patch -d $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
+	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(GHOSTSCRIPT_BUILD_DIR)/Makefile.in
+	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' \
+		$(GHOSTSCRIPT_BUILD_DIR)/src/int.mak
 	(cd $(GHOSTSCRIPT_BUILD_DIR); \
-		ln -s src/unix-gcc.mak Makefile ; \
-		mkdir obj; \
+		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(GHOSTSCRIPT_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(GHOSTSCRIPT_LDFLAGS)" \
-		$(MAKE) obj/arch.h ; \
-		cp $(GHOSTSCRIPT_SOURCE_DIR)/arch.h obj/arch.h; \
-		$(MAKE) obj/genconf obj/echogs; \
-		ln -s ../../builds/libjpeg jpeg; \
-		ln -s ../../builds/zlib zlib; \
-		ln -s ../../builds/libpng libpng; \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		ac_cv_func_malloc_0_nonnull=yes \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--without-x \
+		--without-jasper \
+		--with-ijs \
+		--disable-nls \
+		--disable-static \
+		; \
 	)
-	touch $(GHOSTSCRIPT_BUILD_DIR)/.configured
+	touch $@
 
 ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 
@@ -124,9 +164,27 @@ ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.built: $(GHOSTSCRIPT_BUILD_DIR)/.configured
-	rm -f $(GHOSTSCRIPT_BUILD_DIR)/.built
-	$(MAKE) prefix=/opt CC=$(TARGET_CC) LD=$(TARGET_LD) -C $(GHOSTSCRIPT_BUILD_DIR)
-	touch $(GHOSTSCRIPT_BUILD_DIR)/.built
+	rm -f $@
+	mkdir -p $(@D)/obj
+	# TODO different TARGET_ARCH needs different arch.h
+	$(MAKE) -C $(@D) obj/arch.h \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch
+	[ -e $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h ] && \
+	cp $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h $(@D)/obj/arch.h || \
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
+	then sed -e '/ARCH_IS_BIG_ENDIAN/s/[01]/1/' $(GHOSTSCRIPT_SOURCE_DIR)/arch-unknown.h \
+		> $(@D)/obj/arch.h; \
+	else sed -e '/ARCH_IS_BIG_ENDIAN/s/[01]/0/' $(GHOSTSCRIPT_SOURCE_DIR)/arch-unknown.h \
+		> $(@D)/obj/arch.h; \
+	fi
+	#
+	$(MAKE) -C $(@D) \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genconf \
+		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/geninit \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,9 +195,9 @@ ghostscript: $(GHOSTSCRIPT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.staged: $(GHOSTSCRIPT_BUILD_DIR)/.built
-	rm -f $(GHOSTSCRIPT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(GHOSTSCRIPT_BUILD_DIR)/.staged
+	touch $@
 
 ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 
@@ -148,7 +206,7 @@ ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ghostscript
 #
 $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control:
-	@install -d $(GHOSTSCRIPT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ghostscript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,7 +234,16 @@ $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control:
 #
 $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) prefix=$(GHOSTSCRIPT_IPK_DIR)/opt DESTDIR=$(GHOSTSCRIPT_IPK_DIR) install
+	PATH=$(STAGING_PREFIX)/bin:$$PATH \
+	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) install \
+		DESTDIR=$(GHOSTSCRIPT_IPK_DIR) \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genconf \
+		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/geninit \
+		;
+	$(STRIP_COMMAND) $(GHOSTSCRIPT_IPK_DIR)/opt/bin/gs
+	sed -i -e 's|/usr/share|/opt/share|' $(GHOSTSCRIPT_IPK_DIR)/opt/lib/cups/filter/psto*
 	$(MAKE) $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GHOSTSCRIPT_IPK_DIR)
 
@@ -197,3 +264,9 @@ ghostscript-clean:
 #
 ghostscript-dirclean:
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR) $(GHOSTSCRIPT_IPK_DIR) $(GHOSTSCRIPT_IPK)
+
+#
+# Some sanity check for the package.
+#
+ghostscript-check: $(GHOSTSCRIPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GHOSTSCRIPT_IPK)

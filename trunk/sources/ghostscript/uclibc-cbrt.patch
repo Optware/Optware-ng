@@ -1,0 +1,29 @@
+--- cups/gdevcups.c.orig	2007-10-14 22:40:10.000000000 -0700
++++ cups/gdevcups.c	2007-10-14 22:40:48.000000000 -0700
+@@ -947,7 +947,7 @@
+   x_xn = x / xn;
+ 
+   if (x_xn > 0.008856)
+-    return (cbrt(x_xn));
++    return (pow(x_xn, 1.0/3.0));
+   else
+     return (7.787 * x_xn + 16.0 / 116.0);
+ }
+@@ -1302,7 +1302,7 @@
+ 	  ciey_yn = ciey / D65_Y;
+ 
+ 	  if (ciey_yn > 0.008856)
+-	    ciel = 116 * cbrt(ciey_yn) - 16;
++	    ciel = 116 * pow(ciey_yn, 1.0/3.0) - 16;
+ 	  else
+ 	    ciel = 903.3 * ciey_yn;
+ 
+@@ -2403,7 +2403,7 @@
+ 	  ciey_yn = ciey / D65_Y;
+ 
+ 	  if (ciey_yn > 0.008856)
+-	    ciel = 116 * cbrt(ciey_yn) - 16;
++	    ciel = 116 * pow(ciey_yn, 1.0/3.0) - 16;
+ 	  else
+ 	    ciel = 903.3 * ciey_yn;
+ 
