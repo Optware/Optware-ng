@@ -1,0 +1,11 @@
+--- java/util/EnumSet.java.orig	2007-10-16 10:34:31.000000000 -0700
++++ java/util/EnumSet.java	2007-10-16 10:34:44.000000000 -0700
+@@ -249,7 +249,7 @@
+ 	boolean result = false;
+ 	if (c instanceof EnumSet)
+ 	{
+-	  EnumSet<T> other = (EnumSet<T>) c;
++	  EnumSet<T> other = (EnumSet) c;
+ 	  if (enumClass == other.enumClass)
+ 	  {
+ 	    store.or(other.store);
