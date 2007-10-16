@@ -1,0 +1,35 @@
+--- src/cups-pdf.h.orig	2007-10-15 19:37:25.000000000 -0700
++++ src/cups-pdf.h	2007-10-15 19:38:37.000000000 -0700
+@@ -19,7 +19,7 @@
+ /  they are reasonable for most systems.			     */
+ 
+ /* location of the configuration file */
+-#define CPCONFIG "/etc/cups/cups-pdf.conf"
++#define CPCONFIG "/opt/etc/cups/cups-pdf.conf"
+ 
+ 
+ 
+@@ -65,17 +65,17 @@
+ } conf;
+ 
+ static void _set_defaults() {
+-  snprintf(conf.anondirname,BUFSIZE,"%s","/var/spool/cups-pdf/ANONYMOUS");
++  snprintf(conf.anondirname,BUFSIZE,"%s","/opt/var/spool/cups-pdf/ANONYMOUS");
+   snprintf(conf.anonuser,BUFSIZE,"%s","nobody");
+-  snprintf(conf.ghostscript,BUFSIZE,"/usr/bin/gs");
++  snprintf(conf.ghostscript,BUFSIZE,"/opt/bin/gs");
+   snprintf(conf.gscall,BUFSIZE,"%s","%s -q -dCompatibilityLevel=%s -dNOPAUSE -dBATCH -dSAFER -sDEVICE=pdfwrite -sOutputFile=\"%s\" -dAutoRotatePages=/PageByPage -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode -dPDFSETTINGS=/prepress -c .setpdfwrite -f %s");
+   snprintf(conf.grp,BUFSIZE,"%s","lp");
+-  snprintf(conf.gstmp,BUFSIZE,"%s","TMPDIR=/var/tmp");
+-  snprintf(conf.log,BUFSIZE,"%s","/var/log/cups");
++  snprintf(conf.gstmp,BUFSIZE,"%s","TMPDIR=/opt/var/tmp");
++  snprintf(conf.log,BUFSIZE,"%s","/opt/var/log/cups");
+   snprintf(conf.pdfver,BUFSIZE,"%s","1.4");
+   snprintf(conf.postprocessing,BUFSIZE,"%s","");
+-  snprintf(conf.out,BUFSIZE,"%s","/var/spool/cups-pdf/${USER}");
+-  snprintf(conf.spool,BUFSIZE,"%s","/var/spool/cups-pdf/SPOOL");
++  snprintf(conf.out,BUFSIZE,"%s","/opt/var/spool/cups-pdf/${USER}");
++  snprintf(conf.spool,BUFSIZE,"%s","/opt/var/spool/cups-pdf/SPOOL");
+   snprintf(conf.userprefix,BUFSIZE,"%s","");
+   snprintf(conf.removeprefix,BUFSIZE,"%s","");
+   conf.cut=3;
