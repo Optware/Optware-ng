@@ -5,7 +5,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	 cairo \
 	 fcgi fish \
 	 gnu-smalltalk gtk ice iptables jabberd \
-	 jamvm launchtool ldconfig libstdc++ \
+	 launchtool ldconfig libstdc++ \
 	 moe monotone mtr \
 	 newsbeuter \
 	 nfs-server nfs-utils \

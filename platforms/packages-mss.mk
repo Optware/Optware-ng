@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	gambit-c gawk \
 	gnu-smalltalk \
-	jamvm \
 	gnokii \
 	ldconfig \
 	ltrace \

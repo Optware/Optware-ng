@@ -13,7 +13,6 @@ BROKEN_PACKAGES = \
 	gnu-smalltalk gnuplot gtk \
 	hpijs \
 	ice iptables \
-	jamvm \
 	kismet \
 	lame launchtool ldconfig \
 	moc monotone mtr \
