@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-CLASSPATH_SITE=ftp://ftp.gnu.org/gnu/classpath
-CLASSPATH_VERSION=0.95
+CLASSPATH_SITE=http://builder.classpath.org/dist
+CLASSPATH_VERSION=0.96
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -44,7 +44,7 @@ CLASSPATH_IPK_VERSION=1
 # CLASSPATH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CLASSPATH_PATCHES=$(CLASSPATH_SOURCE_DIR)/configure.patch
+CLASSPATH_PATCHES=$(CLASSPATH_SOURCE_DIR)/EnumSet.java.patch
 
 #
 # If the compilation of the package requires additional
@@ -101,15 +101,17 @@ classpath-source: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES)
 $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES)
 	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(CLASSPATH_BUILD_DIR)
 	$(CLASSPATH_UNZIP) $(DL_DIR)/$(CLASSPATH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CLASSPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CLASSPATH_DIR) -p1
+	if test -n "$(CLASSPATH_PATCHES)"; then \
+		cat $(CLASSPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CLASSPATH_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(CLASSPATH_DIR) $(CLASSPATH_BUILD_DIR)
-	sed -i -e '/JCOMPILER/s|$$(JAVAC) -bootclasspath|$$(JAVAC) -J-Xmx512M -bootclasspath|' \
-		$(@D)/lib/Makefile.in
+	sed -i -e 's/$$JAVAC conftest/$$JAVAC $$JAVAC_OPTS conftest/' $(@D)/configure
 	(cd $(CLASSPATH_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLASSPATH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLASSPATH_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		JAVAC_OPTS=-J-Xmx512M \
 		./configure \
 		--with-glibj=zip \
 		--enable-jni \
