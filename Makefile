@@ -172,7 +172,7 @@ COMMON_CROSS_PACKAGES = \
 	classpath clamav clearsilver clips cmdftp \
 	cogito connect coreutils cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
-	cups cvs \
+	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
 	dansguardian dash davtools dbus dcraw denyhosts dev-pts dfu-util \
 	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
