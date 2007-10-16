@@ -23,7 +23,7 @@ IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 IMAGEMAGICK_VER=6.3.5
 IMAGEMAGICK_REV=10
-IMAGEMAGICK_IPK_VERSION=1
+IMAGEMAGICK_IPK_VERSION=2
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
 IMAGEMAGICK_UNZIP=bzcat
 else
@@ -39,7 +39,7 @@ IMAGEMAGICK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
 IMAGEMAGICK_SECTION=graphics
 IMAGEMAGICK_PRIORITY=optional
-IMAGEMAGICK_DEPENDS=zlib, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms
+IMAGEMAGICK_DEPENDS=zlib, freetype, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms
 IMAGEMAGICK_SUGGESTS=
 IMAGEMAGICK_CONFLICTS=
 
@@ -108,7 +108,7 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES) make/imagemagick.mk
-	make zlib-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage
+	make zlib-stage freetype-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(IMAGEMAGICK_BUILD_DIR)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IMAGEMAGICK_PATCHES)" ; \
@@ -133,6 +133,7 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 		--with-jpeg \
 		--with-png \
 		--with-tiff \
+		--with-freetype \
 		--without-gslib \
 	)
 	$(PATCH_LIBTOOL) $(IMAGEMAGICK_BUILD_DIR)/libtool
