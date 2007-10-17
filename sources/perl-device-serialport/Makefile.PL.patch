@@ -1,11 +1,11 @@
---- Makefile.PL.orig	2007-09-25 15:48:09.000000000 -0700
-+++ Makefile.PL	2007-09-25 15:48:27.000000000 -0700
-@@ -30,7 +30,7 @@
- 	print "(use 'perl Makefile.PL TESTPORT=<DEVICE>' to override this search)\n";
+--- Makefile.PL.orig	2007-07-20 10:27:38.000000000 -0700
++++ Makefile.PL	2007-10-16 20:51:28.000000000 -0700
+@@ -37,7 +37,7 @@
+ 	unlink("t/DefaultPort.pm");
  }
- 
--my $file=undef;
-+my $file='/dev/ttyS1';
- my $test;
- foreach $test (@SERIALS) {
+ else {
+-  my $file=undef;
++  my $file='/dev/ttyS1';
+   my $test;
+   foreach $test (@SERIALS) {
      print "\tchecking '$test' ... ";
