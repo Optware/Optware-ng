@@ -29,7 +29,9 @@ MSORT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MSORT_DESCRIPTION=Msort sorts files in sophisticated ways.
 MSORT_SECTION=utils
 MSORT_PRIORITY=optional
-MSORT_DEPENDS=
+ifeq ($(GETTEXT_NLS), enable)
+MSORT_DEPENDS=gettext
+endif
 MSORT_SUGGESTS=
 MSORT_CONFLICTS=
 
@@ -109,6 +111,9 @@ msort-source: $(DL_DIR)/$(MSORT_SOURCE) $(MSORT_PATCHES)
 #
 $(MSORT_BUILD_DIR)/.configured: $(DL_DIR)/$(MSORT_SOURCE) $(MSORT_PATCHES) make/msort.mk
 	$(MAKE) tre-stage utf8proc-stage
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MSORT_DIR) $(MSORT_BUILD_DIR)
 	$(MSORT_UNZIP) $(DL_DIR)/$(MSORT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MSORT_PATCHES)" ; \
