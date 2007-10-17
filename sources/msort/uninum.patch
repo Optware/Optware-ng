@@ -1,0 +1,13 @@
+--- misc.c.orig	2007-10-16 23:01:29.000000000 -0700
++++ misc.c	2007-10-16 23:02:00.000000000 -0700
+@@ -50,8 +50,10 @@
+ #else
+ #include "unicode.h"
+ #endif
++#ifdef USE_UNINUM
+ #include <uninum/nsdefs.h>
+ #include <uninum/uninum.h>
++#endif
+ #include "dstr.h"
+ #include "exitcode.h"
+ #include "retcodes.h"
