@@ -24,7 +24,7 @@ BROKEN_PACKAGES = \
 	 mc mcabber mdadm minicom mlocate moc \
 	 mod-fastcgi mod-python \
 	 mpdscribble \
-	 msynctool mutt \
+	 msort msynctool mutt \
 	 ncmpc ncursesw netatalk newt nget ntfsprogs ntp nvi \
 	 nylon obexftp openldap openser \
 	 pal p7zip pcapsipdump \

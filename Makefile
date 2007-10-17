@@ -220,7 +220,8 @@ COMMON_CROSS_PACKAGES = \
 	mktemp mlocate moblock moc modutils monit most motion \
 	mod-fastcgi moe monotone mp3blaster mpack mpage \
 	mpc mpd mpdscribble \
-	mpg123 mpop mrtg msmtp msynctool mt-daapd mtools \
+	mpg123 mpop mrtg msmtp \
+	msort msynctool mt-daapd mtools \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
