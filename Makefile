@@ -260,7 +260,7 @@ COMMON_CROSS_PACKAGES = \
 	transcode transmission tre tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy updatedd upslug2 \
-	upx usbutils ushare util-linux \
+	upx usbutils ushare utf8proc util-linux \
 	vblade vdr-mediamvp vim vlc \
 	vnstat vorbis-tools vsftpd vte vtun \
 	w3cam w3m wakelan webalizer weechat wget \
