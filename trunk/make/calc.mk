@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALC_SITE=http://www.isthe.com/chongo/src/calc
-CALC_VERSION=2.12.2
-CALC_SOURCE=calc-$(CALC_VERSION).tar.gz
+CALC_VERSION=2.12.2.2
+CALC_SOURCE=calc-$(CALC_VERSION).tar.bz2
 CALC_DIR=calc-$(CALC_VERSION)
-CALC_UNZIP=zcat
+CALC_UNZIP=bzcat
 CALC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CALC_DESCRIPTION=Calc is arbitrary precision arithmetic system that uses a C-like language.
 CALC_SECTION=misc
