@@ -29,8 +29,9 @@ MSORT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MSORT_DESCRIPTION=Msort sorts files in sophisticated ways.
 MSORT_SECTION=utils
 MSORT_PRIORITY=optional
+MSORT_DEPENDS=tre, utf8proc
 ifeq ($(GETTEXT_NLS), enable)
-MSORT_DEPENDS=gettext
+MSORT_DEPENDS+=, gettext
 endif
 MSORT_SUGGESTS=
 MSORT_CONFLICTS=
@@ -38,7 +39,7 @@ MSORT_CONFLICTS=
 #
 # MSORT_IPK_VERSION should be incremented when the ipk changes.
 #
-MSORT_IPK_VERSION=1
+MSORT_IPK_VERSION=2
 
 #
 # MSORT_CONFFILES should be a list of user-editable files
