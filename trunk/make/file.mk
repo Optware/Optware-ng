@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=4.20
+FILE_VERSION=4.21
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -40,7 +40,7 @@ FILE_IPK_VERSION=1
 # FILE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FILE_PATCHES=$(FILE_SOURCE_DIR)/REG_STARTEND.patch
+#FILE_PATCHES=$(FILE_SOURCE_DIR)/REG_STARTEND.patch
 
 #
 # If the compilation of the package requires additional
@@ -181,6 +181,7 @@ $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	install -d $(FILE_IPK_DIR)/opt/bin
 	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install-strip
 	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install-strip
+	rm -f $(FILE_IPK_DIR)/opt/lib/libmagic.la
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
 	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
