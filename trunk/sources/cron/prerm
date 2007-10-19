@@ -4,4 +4,4 @@ if [ -n "`pidof cron`" ]; then
     /bin/killall cron 2>/dev/null
 fi
 
-return 0
+exit 0
