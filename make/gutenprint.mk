@@ -99,6 +99,7 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 	if test "$(HOST_BUILD_DIR)/$(GUTENPRINT_DIR)" != "$(GUTENPRINT_HOST_BUILD_DIR)" ; \
 		then mv $(HOST_BUILD_DIR)/$(GUTENPRINT_DIR) $(@D) ; \
 	fi
+#		ac_cv_path_FOOMATIC_CONFIGURE=$(HOST_STAGING_PREFIX)/bin/foomatic-config
 	(cd $(GUTENPRINT_HOST_BUILD_DIR); \
 		ac_cv_path_CUPS_CONFIG=$(HOST_STAGING_PREFIX)/bin/cups-config \
 		./configure \
@@ -110,11 +111,13 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 		--enable-cups-ppds \
 		--enable-cups-level3-ppds \
 		--without-ghostscript \
+		--without-foomatic \
 		--disable-libgutenprintui2 \
 		--disable-gtktest \
 		--disable-nls \
 		--disable-static \
 	)
+	LD_LIBRARY_PATH=$(HOST_STAGING_LIB_DIR) \
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -238,7 +241,8 @@ $(GUTENPRINT-FOOMATIC-DB_IPK): $(GUTENPRINT_HOST_BUILD_DIR)/.built
 	$(MAKE) $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)
 
-gutenprint-ipk: $(GUTENPRINT_IPK) $(GUTENPRINT-CUPS-DRIVER_IPK) $(GUTENPRINT-FOOMATIC-DB_IPK)
+#gutenprint-ipk: $(GUTENPRINT_IPK) $(GUTENPRINT-CUPS-DRIVER_IPK) $(GUTENPRINT-FOOMATIC-DB_IPK_DIR)
+gutenprint-ipk: $(GUTENPRINT_IPK) $(GUTENPRINT-CUPS-DRIVER_IPK)
 
 gutenprint-clean:
 	rm -f $(GUTENPRINT_BUILD_DIR)/.built
