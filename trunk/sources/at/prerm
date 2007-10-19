@@ -4,4 +4,4 @@ if [ -n "`pidof atd`" ]; then
     /bin/killall atd 2>/dev/null
 fi
 
-return 0
+exit 0
