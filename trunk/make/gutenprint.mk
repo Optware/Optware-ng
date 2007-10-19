@@ -110,6 +110,8 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 		--enable-cups-ppds \
 		--enable-cups-level3-ppds \
 		--without-ghostscript \
+		--disable-libgutenprintui2 \
+		--disable-gtktest \
 		--disable-nls \
 		--disable-static \
 	)
@@ -144,6 +146,8 @@ $(GUTENPRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT
 		--with-cups=/opt \
 		--disable-cups-ppds \
 		--without-foomatic \
+		--disable-libgutenprintui2 \
+		--disable-gtktest \
 		--disable-nls \
 		--disable-static \
 	)
