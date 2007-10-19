@@ -190,7 +190,8 @@ COMMON_CROSS_PACKAGES = \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
 	ggrab ghostscript git glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls \
-	grep groff gsasl gsnmp gtk gzip  gphoto2 libgphoto2 \
+	grep groff gsasl gsnmp gtk gutenprint gzip  \
+	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	haproxy haserl hd2u hdparm hello hexcurse \
