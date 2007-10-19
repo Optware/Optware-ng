@@ -39,7 +39,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=3
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS_DOC_PL_DESCRIPTION=Polish documentation for CUPS
@@ -96,8 +96,11 @@ endif
 #
 # You should not change any of these variables.
 #
-CUPS_BUILD_DIR=$(BUILD_DIR)/cups
 CUPS_SOURCE_DIR=$(SOURCE_DIR)/cups
+
+CUPS_BUILD_DIR=$(BUILD_DIR)/cups
+CUPS_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/cups
+
 CUPS_IPK_DIR=$(BUILD_DIR)/cups-$(CUPS_VERSION)-ipk
 CUPS_IPK=$(BUILD_DIR)/cups_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CUPS_DOC_IPK=$(BUILD_DIR)/cups-doc_$(CUPS_VERSION)-$(CUPS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -123,22 +126,45 @@ $(DL_DIR)/$(CUPS_SOURCE):
 #
 cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 
+$(CUPS_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(CUPS_SOURCE) make/cups.mk
+#	$(MAKE) libjpeg-host-stage libpng-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D)
+	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_HOST_NAME) \
+		--target=$(GNU_HOST_NAME) \
+		--prefix=/opt \
+		--exec_prefix=/opt \
+		--with-icondir=/opt/share/icons \
+		--with-menudir=/opt/share/applications \
+		--libdir=/opt/lib \
+		--disable-nls \
+		--disable-dbus \
+		--disable-tiff \
+		--without-openssl \
+		--without-java \
+		--without-perl \
+		--without-php \
+		--without-python \
+		--disable-slp \
+		--disable-gnutls \
+	)
+	$(MAKE) -C $(@D)
+	touch $@
 
+$(CUPS_HOST_BUILD_DIR)/.staged: $(CUPS_HOST_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install DSTROOT=$(HOST_STAGING_DIR)
+	sed -i -e 's|=/opt|=$(HOST_STAGING_PREFIX)|' $(HOST_STAGING_PREFIX)/bin/cups-config
+	touch $@
 
-# This target unpacks the source code in the build directory.
-# If the source archive is not .tar.gz or .tar.bz2, then you will need
-# to change the commands here.  Patches to the source code are also
-# applied in this target as required.
-#
-# This target also configures the build within the build directory.
-# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
-# and NOT $(MAKE) below.  Passing it to configure causes configure to
-# correctly BUILD the Makefile with the right paths, where passing it
-# to Make causes it to override the default search paths of the compiler.
-#
-# If the compilation of the package requires other packages to be staged
-# first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
-#
+cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
+
 $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage
 	$(MAKE) libjpeg-stage libtiff-stage
@@ -216,7 +242,8 @@ $(CUPS_BUILD_DIR)/.staged: $(CUPS_BUILD_DIR)/.built
 		$(STAGING_DIR)/opt/include/cups
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config \
-		$(STAGING_DIR)/opt/bin
+		$(STAGING_PREFIX)/bin
+	sed -i -e 's|=/opt|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/cups-config
 	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a \
 		$(STAGING_DIR)/opt/lib
 	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_DIR)/opt/lib
