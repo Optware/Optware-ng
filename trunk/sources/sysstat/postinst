@@ -1,4 +1,4 @@
 echo "If you want to run sysstat periodicaly, then you should add the content of the "
 echo "/opt/doc/sysstat-6.0.0/sysstat.crond to your crontab, and then run /etc/rc.d/rc.crond"
 echo "to restart the cron daemon."
-return 0
+exit 0
