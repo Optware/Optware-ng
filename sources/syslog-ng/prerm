@@ -4,4 +4,4 @@ if [ -n "`pidof syslog-ng`" ]; then
     /bin/killall syslog-ng 2>/dev/null
 fi
 
-return 0
+exit 0
