@@ -5,4 +5,4 @@ echo " - Copy /opt/doc/metalog/rc.sysinit to /unslung (if /unslung/rc.sysinit"
 echo "   exists, merge the two)"
 echo "To start metalog afterwards, reboot."
 
-return 0
+exit 0
