@@ -36,7 +36,7 @@ AT_CONFLICTS=
 #
 # AT_IPK_VERSION should be incremented when the ipk changes.
 #
-AT_IPK_VERSION=3
+AT_IPK_VERSION=4
 
 #
 # AT_CONFFILES should be a list of user-editable files
