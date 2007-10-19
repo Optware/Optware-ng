@@ -5,4 +5,4 @@ echo "After commenting the lines, run /opt/etc/init.d/S01syslog-ng."
 echo "The program will be started automaticaly at the next reboot."
 echo
 echo "Log files will be created by default at /opt/var/log."
-return 0
+exit 0
