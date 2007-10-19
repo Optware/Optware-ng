@@ -205,7 +205,8 @@ COMMON_CROSS_PACKAGES = \
 	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
-	libgc libgcrypt libgd libghttp libgmp libgpg-error libid3tag libidn \
+	libgc libgcrypt libgd libghttp libgmp libgpg-error \
+	libid3tag libidn libijs \
 	libjpeg liblcms libmad libmemcache libmpcdec libmpeg2 libmrss libmtp \
 	libnetfilter-queue libnfnetlink libnsl libnxml \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
