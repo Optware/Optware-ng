@@ -6,4 +6,4 @@ if [ ${OPTWARE_TARGET} = "nslu2" ] ; then
   /etc/rc.d/rc.xinetd
 fi
 
-return 0
+exit 0

@@ -37,7 +37,7 @@ XINETD_DEPENDS=
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=6
+XINETD_IPK_VERSION=7
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
