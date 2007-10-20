@@ -23,7 +23,7 @@ NFS-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NFS-UTILS_DESCRIPTION=Kernel NFS Server
 NFS-UTILS_SECTION=net
 NFS-UTILS_PRIORITY=optional
-NFS-UTILS_DEPENDS=portmap
+NFS-UTILS_DEPENDS=portmap, e2fsprogs
 NFS-UTILS_SUGGESTS=
 NFS-UTILS_CONFLICTS=
 
@@ -89,6 +89,7 @@ nfs-utils-source: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PATCHES)
+	$(MAKE) e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	$(NFS-UTILS_UNZIP) $(DL_DIR)/$(NFS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	chmod u+w $(BUILD_DIR)/$(NFS-UTILS_DIR)/*
@@ -109,6 +110,7 @@ $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PA
 		--enable-nfsv3 \
 		--disable-nfsv4 \
 		--disable-gss \
+		--without-tcp-wrappers \
 	)
 	touch $@
 
