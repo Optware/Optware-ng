@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=0.9.4
+PY-MERCURIAL_VERSION=0.9.5
 PY-MERCURIAL_SITE=http://www.selenic.com/mercurial/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -226,6 +226,8 @@ $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY24-MERCURIAL_IPK_DIR)/opt/lib/python2.4/site-packages/mercurial/*.so
+	for f in $(PY24-MERCURIAL_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MERCURIAL_IPK_DIR)
 	# 2.5
@@ -234,8 +236,6 @@ $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY25-MERCURIAL_IPK_DIR)/opt/lib/python2.5/site-packages/mercurial/*.so
-	for f in $(PY25-MERCURIAL_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MERCURIAL_IPK_DIR)
 
