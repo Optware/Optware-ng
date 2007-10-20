@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=2
+E2FSPROGS_IPK_VERSION=3
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -144,10 +144,9 @@ $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
 	rm -f $(E2FSPROGS_BUILD_DIR)/.staged
 	LDCONFIG=true DESTDIR=$(STAGING_DIR) \
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)  install
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/ext2fs \
-	DESTDIR=$(STAGING_DIR) install
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/et \
-	DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/ext2fs DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/et DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/blkid DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
