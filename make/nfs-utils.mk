@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 NFS-UTILS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nfs
-NFS-UTILS_VERSION=1.0.7
+NFS-UTILS_VERSION=1.1.1
 NFS-UTILS_SOURCE=nfs-utils-$(NFS-UTILS_VERSION).tar.gz
 NFS-UTILS_DIR=nfs-utils-$(NFS-UTILS_VERSION)
 NFS-UTILS_UNZIP=zcat
@@ -30,14 +30,13 @@ NFS-UTILS_CONFLICTS=
 #
 # NFS-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS-UTILS_IPK_VERSION=5
+NFS-UTILS_IPK_VERSION=1
 
 #
 # NFS-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NFS-UTILS_PATCHES=$(NFS-UTILS_SOURCE_DIR)/acinclude-lossage.patch \
-		$(NFS-UTILS_SOURCE_DIR)/rpcgen-lossage.patch
+#NFS-UTILS_PATCHES=$(NFS-UTILS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -93,7 +92,9 @@ $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PA
 	rm -rf $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	$(NFS-UTILS_UNZIP) $(DL_DIR)/$(NFS-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	chmod u+w $(BUILD_DIR)/$(NFS-UTILS_DIR)/*
-	cat $(NFS-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(NFS-UTILS_DIR) -p1
+	if test -n "$(NFS-UTILS_PATCHES)"; then \
+		cat $(NFS-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(NFS-UTILS_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR)
 	(cd $(NFS-UTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -109,7 +110,7 @@ $(NFS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(NFS-UTILS_SOURCE) $(NFS-UTILS_PA
 		--disable-nfsv4 \
 		--disable-gss \
 	)
-	touch $(NFS-UTILS_BUILD_DIR)/.configured
+	touch $@
 
 nfs-utils-unpack: $(NFS-UTILS_BUILD_DIR)/.configured
 
@@ -118,9 +119,9 @@ nfs-utils-unpack: $(NFS-UTILS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(NFS-UTILS_BUILD_DIR)/.built: $(NFS-UTILS_BUILD_DIR)/.configured
-	rm -f $(NFS-UTILS_BUILD_DIR)/.built
-	$(MAKE) -C $(NFS-UTILS_BUILD_DIR)
-	touch $(NFS-UTILS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -133,7 +134,7 @@ nfs-utils: $(NFS-UTILS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/nfs-utils
 #
 $(NFS-UTILS_IPK_DIR)/CONTROL/control:
-	@install -d $(NFS-UTILS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nfs-utils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,3 +197,9 @@ nfs-utils-clean:
 #
 nfs-utils-dirclean:
 	rm -rf $(BUILD_DIR)/$(NFS-UTILS_DIR) $(NFS-UTILS_BUILD_DIR) $(NFS-UTILS_IPK_DIR) $(NFS-UTILS_IPK)
+
+#
+# Some sanity check for the package.
+#
+nfs-utils-check: $(NFS-UTILS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NFS-UTILS_IPK)
