@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION=2
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -149,7 +149,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		--with-openssl=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(LIBTORRENT_BUILD_DIR)/libtool
-	touch $(LIBTORRENT_BUILD_DIR)/.configured
+	touch $@
 
 libtorrent-unpack: $(LIBTORRENT_BUILD_DIR)/.configured
 
@@ -157,9 +157,9 @@ libtorrent-unpack: $(LIBTORRENT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBTORRENT_BUILD_DIR)/.built: $(LIBTORRENT_BUILD_DIR)/.configured
-	rm -f $(LIBTORRENT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBTORRENT_BUILD_DIR)
-	touch $(LIBTORRENT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -170,11 +170,12 @@ libtorrent: $(LIBTORRENT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBTORRENT_BUILD_DIR)/.staged: $(LIBTORRENT_BUILD_DIR)/.built
-	rm -f $(LIBTORRENT_BUILD_DIR)/.staged
+	rm -f $@
+	rm -f $(STAGING_LIB_DIR)/libtorrent*
 	$(MAKE) -C $(LIBTORRENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libtorrent.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtorrent.pc
-	touch $(LIBTORRENT_BUILD_DIR)/.staged
+	touch $@
 
 libtorrent-stage: $(LIBTORRENT_BUILD_DIR)/.staged
 
@@ -183,7 +184,7 @@ libtorrent-stage: $(LIBTORRENT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtorrent
 #
 $(LIBTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBTORRENT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libtorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
