@@ -28,7 +28,7 @@ RTORRENT_CONFLICTS=
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=1
+RTORRENT_IPK_VERSION=2
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -128,7 +128,7 @@ endif
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(RTORRENT_BUILD_DIR)/libtool
-	touch $(RTORRENT_BUILD_DIR)/.configured
+	touch $@
 
 rtorrent-unpack: $(RTORRENT_BUILD_DIR)/.configured
 
@@ -136,9 +136,9 @@ rtorrent-unpack: $(RTORRENT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RTORRENT_BUILD_DIR)/.built: $(RTORRENT_BUILD_DIR)/.configured
-	rm -f $(RTORRENT_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(RTORRENT_BUILD_DIR)
-	touch $(RTORRENT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -160,7 +160,7 @@ rtorrent: $(RTORRENT_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/rtorrent
 #
 $(RTORRENT_IPK_DIR)/CONTROL/control:
-	@install -d $(RTORRENT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: rtorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
