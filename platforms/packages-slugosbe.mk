@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	ldconfig modutils \
 	monotone \
 	netatalk \
-	nfs-utils \
 	puppy \
 	py-psycopg \
 	qemu \
