@@ -1,6 +1,7 @@
 # Packages that do not work for uclibc
 # moc - conflicting types for '__glibc_strerror_r'
 UCLIBC_BROKEN_PACKAGES = \
+	 9base \
 	 bzflag \
 	 cairo \
 	 fcgi fish \
