@@ -186,7 +186,7 @@ COMMON_CROSS_PACKAGES = \
 	faad2 fann fcgi fconfig fetchmail ffmpeg \
 	ficy file finch findutils firedrill-httptunnel \
 	fis fish fixesext flac flex flip \
-	fontconfig freeradius freetds freetype freeze \
+	fontconfig freecell freeradius freetds freetype freeze \
 	ftpcopy ftpd-topfield fuppes \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
 	ggrab ghostscript git glib gnet gnokii \
