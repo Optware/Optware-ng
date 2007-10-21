@@ -157,6 +157,7 @@ PACKAGES_REQUIRE_LINUX26 = \
 
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
+	9base \
 	abook adduser adns alac-decoder amule analog antinat appweb \
 	apache apr apr-util arc arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \

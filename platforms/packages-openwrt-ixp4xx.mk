@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
 BROKEN_PACKAGES = \
+	9base \
 	buildroot uclibc-opt \
 	cairo \
 	chillispot \
