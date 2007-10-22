@@ -30,13 +30,13 @@ EACCELERATOR_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 EACCELERATOR_DESCRIPTION=Yet another php cache / accelerator
 EACCELERATOR_SECTION=web
 EACCELERATOR_PRIORITY=optional
-EACCELERATOR_DEPENDS=php (>= 5.1)
+EACCELERATOR_DEPENDS=php (= 5.2.4)
 EACCELERATOR_CONFLICTS=
 
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=1
+EACCELERATOR_IPK_VERSION=2
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
@@ -123,7 +123,7 @@ $(EACCELERATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCEL
 		--enable-eaccelerator=shared \
 		--with-php-config=$(STAGING_DIR)/opt/bin/php-config \
 	)
-	touch $(EACCELERATOR_BUILD_DIR)/.configured
+	touch $@
 
 eaccelerator-unpack: $(EACCELERATOR_BUILD_DIR)/.configured
 
@@ -131,9 +131,9 @@ eaccelerator-unpack: $(EACCELERATOR_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(EACCELERATOR_BUILD_DIR)/.built: $(EACCELERATOR_BUILD_DIR)/.configured
-	rm -f $(EACCELERATOR_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(EACCELERATOR_BUILD_DIR) INCLUDES=""
-	touch $(EACCELERATOR_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +144,9 @@ eaccelerator: $(EACCELERATOR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(EACCELERATOR_BUILD_DIR)/.staged: $(EACCELERATOR_BUILD_DIR)/.built
-	rm -f $(EACCELERATOR_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(EACCELERATOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(EACCELERATOR_BUILD_DIR)/.staged
+	touch $@
 
 eaccelerator-stage: $(EACCELERATOR_BUILD_DIR)/.staged
 
@@ -155,7 +155,7 @@ eaccelerator-stage: $(EACCELERATOR_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/eaccelerator
 #
 $(EACCELERATOR_IPK_DIR)/CONTROL/control:
-	@install -d $(EACCELERATOR_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: eaccelerator" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
