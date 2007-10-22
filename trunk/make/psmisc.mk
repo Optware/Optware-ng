@@ -39,7 +39,7 @@ PSMISC_CONFLICTS=
 #
 # PSMISC_IPK_VERSION should be incremented when the ipk changes.
 #
-PSMISC_IPK_VERSION=3
+PSMISC_IPK_VERSION=4
 
 #
 # PSMISC_CONFFILES should be a list of user-editable files
@@ -206,6 +206,10 @@ $(PSMISC_IPK): $(PSMISC_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove killall /opt/bin/psmisc-killall"; \
 	) > $(PSMISC_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(PSMISC_IPK_DIR)/CONTROL/postinst $(PSMISC_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PSMISC_IPK_DIR)
 
 #

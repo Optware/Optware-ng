@@ -18,7 +18,7 @@ CPIO_DEPENDS=
 #
 # CPIO_IPK_VERSION should be incremented when the ipk changes.
 #
-CPIO_IPK_VERSION=2
+CPIO_IPK_VERSION=3
 
 #
 # CPIO_PATCHES should list any patches, in the the order in
@@ -158,6 +158,10 @@ $(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove cpio /opt/bin/cpio-cpio"; \
 	) > $(CPIO_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(CPIO_IPK_DIR)/CONTROL/postinst $(CPIO_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)
 
 #

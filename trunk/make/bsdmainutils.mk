@@ -40,7 +40,7 @@ BSDMAINUTILS_CONFLICTS=
 #
 # BSDMAINUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDMAINUTILS_IPK_VERSION=4
+BSDMAINUTILS_IPK_VERSION=5
 
 #
 # BSDMAINUTILS_CONFFILES should be a list of user-editable files
@@ -238,6 +238,10 @@ $(BSDMAINUTILS_IPK): $(BSDMAINUTILS_BUILD_DIR)/.built
 	    echo "update-alternatives --remove $$f $$d/bsdmainutils-$$f" \
 		>> $(BSDMAINUTILS_IPK_DIR)/CONTROL/prerm; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+		$(BSDMAINUTILS_IPK_DIR)/CONTROL/postinst $(BSDMAINUTILS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(BSDMAINUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BSDMAINUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BSDMAINUTILS_IPK_DIR)
 

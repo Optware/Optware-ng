@@ -34,7 +34,7 @@ GZIP_CONFLICTS=
 #
 # GZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-GZIP_IPK_VERSION=2
+GZIP_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional
@@ -167,6 +167,10 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	    echo "update-alternatives --remove $$f /opt/bin/gzip-$$f" \
 		>> $(GZIP_IPK_DIR)/CONTROL/prerm; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(GZIP_IPK_DIR)/CONTROL/postinst $(GZIP_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(GZIP_CONFFILES) | sed -e 's/ /\n/g' > $(GZIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GZIP_IPK_DIR)
 

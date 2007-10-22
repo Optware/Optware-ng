@@ -34,7 +34,7 @@ WHICH_CONFLICTS=
 #
 # WHICH_IPK_VERSION should be incremented when the ipk changes.
 #
-WHICH_IPK_VERSION=4
+WHICH_IPK_VERSION=5
 
 #
 # WHICH_PATCHES should list any patches, in the the order in
@@ -204,6 +204,10 @@ $(WHICH_IPK): $(WHICH_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove which /opt/bin/which-which"; \
 	) > $(WHICH_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(WHICH_IPK_DIR)/CONTROL/postinst $(WHICH_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHICH_IPK_DIR)
 
 #

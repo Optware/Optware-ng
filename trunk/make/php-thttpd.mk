@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=4
+PHP_THTTPD_IPK_VERSION=5
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -234,6 +234,10 @@ $(PHP_THTTPD_IPK): $(PHP_THTTPD_BUILD_DIR)/.built
 	$(MAKE) $(PHP_THTTPD_IPK_DIR)/CONTROL/control
 	install -m 755 $(PHP_THTTPD_SOURCE_DIR)/postinst $(PHP_THTTPD_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(PHP_THTTPD_SOURCE_DIR)/prerm $(PHP_THTTPD_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(PHP_THTTPD_IPK_DIR)/CONTROL/postinst $(PHP_THTTPD_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(PHP_THTTPD_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_THTTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_THTTPD_IPK_DIR)
 
