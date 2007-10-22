@@ -60,3 +60,4 @@ http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=287904
 +template <> bool ReedSolomon<Galois16>::Process(size_t size, u32 inputindex, const void *inputbuffer, u32 outputindex, void *outputbuffer)
  {
    // Look up the appropriate element in the RS matrix
+
