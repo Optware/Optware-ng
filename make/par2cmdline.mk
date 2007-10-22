@@ -17,7 +17,7 @@ PAR2_DEPENDS=libstdc++
 PAR2_SUGGESTS=
 PAR2_CONFLICTS=
 
-PAR2CMDLINE_IPK_VERSION=3
+PAR2CMDLINE_IPK_VERSION=4
 
 PAR2CMDLINE_PATCHES=\
 $(PAR2_SOURCE_DIR)/main-packet-fix.patch \
@@ -48,6 +48,9 @@ $(PAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(PAR2_SOURCE) make/par2cmdline.mk
 	if test "$(BUILD_DIR)/$(PAR2_DIR)" != "$(PAR2_BUILD_DIR)" ; \
                 then mv $(BUILD_DIR)/$(PAR2_DIR) $(PAR2_BUILD_DIR) ; \
         fi
+ifneq (, $(filter libuclibc++, $(PACKAGES)))
+	sed -i -e '/LDADD/s/ -lstdc[+][+]//' $(@D)/Makefile.*
+endif
 	(cd $(PAR2_BUILD_DIR); \
                 $(TARGET_CONFIGURE_OPTS) \
                 CPPFLAGS="$(STAGING_CPPFLAGS) $(PAR2_CPPFLAGS)" \
@@ -60,7 +63,7 @@ $(PAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(PAR2_SOURCE) make/par2cmdline.mk
                 --disable-nls \
                 --disable-static \
         )
-	touch $(PAR2_BUILD_DIR)/.configured
+	touch $@
 
 par2cmdline-unpack: $(PAR2_BUILD_DIR)/.configured
 
@@ -68,12 +71,12 @@ par2cmdline-unpack: $(PAR2_BUILD_DIR)/.configured
 ## This builds the actual binary.
 #
 $(PAR2_BUILD_DIR)/.built: $(PAR2_BUILD_DIR)/.configured
-	rm -f $(PAR2_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) $(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(PAR2_CFLAGS)" CXXFLAGS="$(PAR2_CFLAGS)" \
 		-C $(PAR2_BUILD_DIR) \
 		LDFLAGS="$(STAGING_LDFLAGS)"
-	touch $(PAR2_BUILD_DIR)/.built
+	touch $@
 
 #
 ## This is the build convenience target.
@@ -85,7 +88,7 @@ par2cmdline: $(PAR2_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/par2cmdline
 #
 $(PAR2_IPK_DIR)/CONTROL/control:
-	@install -d $(PAR2_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: par2cmdline" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
