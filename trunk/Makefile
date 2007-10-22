@@ -368,6 +368,10 @@ PACKAGES ?= $(filter-out $(NATIVE_PACKAGES) $(BROKEN_PACKAGES), $(COMMON_CROSS_P
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 
+ifneq (, $(filter ipkg-opt $(OPTWARE_TARGET)-bootstrap $(OPTWARE_TARGET)-optware-bootstrap, $(PACKAGES)))
+IPKG_PREFIX=/opt
+endif
+
 testing:
 	$(MAKE) PACKAGES="$(PACKAGES_READY_FOR_TESTING)" all
 	$(PERL) -w scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(patsubst %,$(BUILD_DIR)/%*.ipk,$(PACKAGES_READY_FOR_TESTING))

@@ -195,6 +195,10 @@ $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 	$(MAKE) $(<BAR>_IPK_DIR)/CONTROL/control
 	install -m 755 $(<BAR>_SOURCE_DIR)/postinst $(<BAR>_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(<BAR>_SOURCE_DIR)/prerm $(<BAR>_IPK_DIR)/CONTROL/prerm
+ifeq (/opt, $(IPKG_PREFIX))
+	sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+		$(<BAR>_IPK_DIR)/CONTROL/postinst $(<BAR>_IPK_DIR)/CONTROL/prerm
+endif
 	echo $(<BAR>_CONFFILES) | sed -e 's/ /\n/g' > $(<BAR>_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(<BAR>_IPK_DIR)
 
