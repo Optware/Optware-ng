@@ -35,7 +35,7 @@ BUSYBOX_CONFLICTS=
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
-BUSYBOX_IPK_VERSION=2
+BUSYBOX_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional
@@ -238,6 +238,10 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 		    >> $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm; \
 	    done; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(BUSYBOX_IPK_DIR)-links/CONTROL/postinst $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm; \
+	fi
 	rm -rf $(BUSYBOX_IPK_DIR)-links/opt
 	install -d $(BUSYBOX_IPK_DIR)-links/opt/bin
 	install -d $(BUSYBOX_IPK_DIR)-links/opt/libexec

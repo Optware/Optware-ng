@@ -19,7 +19,7 @@ LESS_CONFLICTS=
 #
 # LESS_IPK_VERSION should be incremented when the ipk changes.
 #
-LESS_IPK_VERSION=1
+LESS_IPK_VERSION=2
 
 #
 # LESS_PATCHES should list any patches, in the the order in
@@ -156,6 +156,10 @@ $(LESS_IPK): $(LESS_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove less /opt/bin/less-less"; \
 	) > $(LESS_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(LESS_IPK_DIR)/CONTROL/postinst $(LESS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LESS_IPK_DIR)
 
 #

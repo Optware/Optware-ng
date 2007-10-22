@@ -35,7 +35,7 @@ GAWK_CONFLICTS=
 #
 # GAWK_IPK_VERSION should be incremented when the ipk changes.
 #
-GAWK_IPK_VERSION=3
+GAWK_IPK_VERSION=4
 
 #
 # GAWK_PATCHES should list any patches, in the the order in
@@ -197,8 +197,10 @@ $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove awk /opt/bin/gawk"; \
 	) > $(GAWK_IPK_DIR)/CONTROL/prerm
-#	install -m 644 $(GAWK_SOURCE_DIR)/postinst $(GAWK_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(GAWK_SOURCE_DIR)/prerm $(GAWK_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(GAWK_IPK_DIR)/CONTROL/postinst $(GAWK_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAWK_IPK_DIR)
 
 #

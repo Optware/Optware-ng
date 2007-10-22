@@ -30,10 +30,10 @@ INETUTILS_NAME=inetutils
 INETUTILS_SITE=ftp://ftp.gnu.org/pub/gnu/inetutils
 ifneq ($(OPTWARE_TARGET), wl500g)
 INETUTILS_VERSION=1.5
-INETUTILS_IPK_VERSION=3
+INETUTILS_IPK_VERSION=4
 else
 INETUTILS_VERSION=1.4.2
-INETUTILS_IPK_VERSION=8
+INETUTILS_IPK_VERSION=9
 endif
 INETUTILS_SOURCE=$(INETUTILS_NAME)-$(INETUTILS_VERSION).tar.gz
 INETUTILS_DIR=$(INETUTILS_NAME)-$(INETUTILS_VERSION)
@@ -210,6 +210,10 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 		    >> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
 	    done; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(INETUTILS_IPK_DIR)/CONTROL/postinst $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(INETUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(INETUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INETUTILS_IPK_DIR)
 

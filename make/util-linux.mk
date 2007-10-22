@@ -36,7 +36,7 @@ UTIL_LINUX_CONFLICTS=
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=3
+UTIL_LINUX_IPK_VERSION=4
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -249,6 +249,10 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
 	echo "update-alternatives --remove swapoff /opt/sbin/util-linux-swapon" \
 		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(UTIL_LINUX_IPK_DIR)/CONTROL/postinst $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(UTIL_LINUX_CONFFILES) | sed -e 's/ /\n/g' > $(UTIL_LINUX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UTIL_LINUX_IPK_DIR)
 

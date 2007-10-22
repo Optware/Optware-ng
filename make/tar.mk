@@ -22,10 +22,10 @@
 TAR_SITE=http://ftp.gnu.org/gnu/tar
 ifneq ($(OPTWARE_TARGET), wl500g)
 TAR_VERSION=1.18
-TAR_IPK_VERSION=2
+TAR_IPK_VERSION=3
 else
 TAR_VERSION=1.16.1
-TAR_IPK_VERSION=2
+TAR_IPK_VERSION=3
 endif
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
@@ -170,6 +170,10 @@ $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove tar /opt/bin/gnutar"; \
 	) > $(TAR_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(TAR_IPK_DIR)/CONTROL/postinst $(TAR_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAR_IPK_DIR)
 
 #

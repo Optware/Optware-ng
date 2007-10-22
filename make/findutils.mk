@@ -9,10 +9,10 @@ FINDUTILS_DOC_NAME=findutils-doc
 FINDUTILS_SITE=http://ftp.gnu.org/pub/gnu/findutils
 ifneq ($(OPTWARE_TARGET),wl500g)
 FINDUTILS_VERSION=4.2.31
-FINDUTILS_IPK_VERSION=2
+FINDUTILS_IPK_VERSION=3
 else
 FINDUTILS_VERSION=4.1.20
-FINDUTILS_IPK_VERSION=3
+FINDUTILS_IPK_VERSION=4
 endif
 FINDUTILS_SOURCE=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION).tar.gz
 FINDUTILS_DIR=$(FINDUTILS_NAME)-$(FINDUTILS_VERSION)
@@ -29,7 +29,7 @@ FINDUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FINDUTILS_DESCRIPTION=File finding utilities
 FINDUTILS_SECTION=utilities
 FINDUTILS_PRIORITY=optional
-FINDUTILS_CONFLICTS=busybox-links
+FINDUTILS_CONFLICTS=
 FINDUTILS_DEPENDS=
 
 FINDUTILS_DOC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -153,7 +153,7 @@ $(FINDUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(FINDUTILS_SOURCE) $(FINDUTILS_PA
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(FINDUTILS_BUILD_DIR)/.configured
+	touch $@
 
 findutils-unpack: $(FINDUTILS_BUILD_DIR)/.configured
 
@@ -162,9 +162,9 @@ findutils-unpack: $(FINDUTILS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(FINDUTILS_BUILD_DIR)/.built: $(FINDUTILS_BUILD_DIR)/.configured
-	rm -f $(FINDUTILS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FINDUTILS_BUILD_DIR)
-	touch $(FINDUTILS_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -205,6 +205,10 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	 echo "update-alternatives --remove find /opt/bin/findutils-find"; \
 	 echo "update-alternatives --remove xargs /opt/bin/findutils-xargs"; \
 	) > $(FINDUTILS_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(FINDUTILS_IPK_DIR)/CONTROL/postinst $(FINDUTILS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built

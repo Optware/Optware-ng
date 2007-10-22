@@ -34,7 +34,7 @@ DIFFUTILS_CONFLICTS=
 #
 # DIFFUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-DIFFUTILS_IPK_VERSION=5
+DIFFUTILS_IPK_VERSION=6
 
 #
 # If the compilation of the package requires additional
@@ -183,6 +183,10 @@ $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	    echo "update-alternatives --remove $$f /opt/bin/diffutils-$$f" \
 		>> $(DIFFUTILS_IPK_DIR)/CONTROL/prerm; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(DIFFUTILS_IPK_DIR)/CONTROL/postinst $(DIFFUTILS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIFFUTILS_IPK_DIR)
 
 $(DIFFUTILS_BUILD_DIR)/.ipk: $(DIFFUTILS_IPK)

@@ -38,7 +38,7 @@ ADDUSER_VERSION:=$(shell sed -n -e 's/^BUSYBOX_VERSION *=\([0-9]\)/\1/p' make/bu
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #
-ADDUSER_IPK_VERSION=1
+ADDUSER_IPK_VERSION=2
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
@@ -180,6 +180,10 @@ $(ADDUSER_IPK): $(ADDUSER_BUILD_DIR)/.built
 	$(MAKE) $(ADDUSER_IPK_DIR)/CONTROL/control
 	install -m 644 $(ADDUSER_SOURCE_DIR)/postinst $(ADDUSER_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(ADDUSER_SOURCE_DIR)/prerm $(ADDUSER_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(ADDUSER_IPK_DIR)/CONTROL/postinst $(ADDUSER_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADDUSER_IPK_DIR)
 
 #

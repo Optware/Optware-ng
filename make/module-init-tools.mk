@@ -36,7 +36,7 @@ MODULE_INIT_TOOLS_CONFLICTS=
 #
 # MODULE_INIT_TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MODULE_INIT_TOOLS_IPK_VERSION=3
+MODULE_INIT_TOOLS_IPK_VERSION=4
 
 #
 # MODULE_INIT_TOOLS_CONFFILES should be a list of user-editable files
@@ -206,6 +206,10 @@ $(MODULE_INIT_TOOLS_IPK): $(MODULE_INIT_TOOLS_BUILD_DIR)/.built
 	    echo "update-alternatives --remove $$f /opt/sbin/module-init-tools-$$f" \
 		>> $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(MODULE_INIT_TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MODULE_INIT_TOOLS_IPK_DIR)
 

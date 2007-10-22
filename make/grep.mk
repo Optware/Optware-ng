@@ -6,11 +6,11 @@
 
 ifeq ($(LIBC_STYLE),uclibc)
 GREP_VERSION=2.4.2
-GREP_IPK_VERSION=7
+GREP_IPK_VERSION=8
 GREP_DEPENDS=
 else
 GREP_VERSION=2.5.1a
-GREP_IPK_VERSION=3
+GREP_IPK_VERSION=4
 GREP_DEPENDS=pcre
 endif
 
@@ -22,7 +22,7 @@ GREP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GREP_DESCRIPTION=Global regular expression parser
 GREP_SECTION=util
 GREP_PRIORITY=optional
-GREP_CONFLICTS=busybox-links
+GREP_CONFLICTS=
 
 #ifeq ($(OPTWARE_TARGET), wl500g)
 #GREP_CPPFLAGS=-DMB_CUR_MAX=1
@@ -119,6 +119,10 @@ endif
 	    echo "update-alternatives --remove $$f /opt/bin/grep-$$f" \
 		>> $(GREP_IPK_DIR)/CONTROL/prerm; \
 	done
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(GREP_IPK_DIR)/CONTROL/postinst $(GREP_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)
 
 grep-ipk: $(GREP_IPK)

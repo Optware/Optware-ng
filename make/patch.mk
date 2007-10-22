@@ -34,7 +34,7 @@ PATCH_CONFLICTS=
 #
 # PATCH_IPK_VERSION should be incremented when the ipk changes.
 #
-PATCH_IPK_VERSION=2
+PATCH_IPK_VERSION=3
 
 #
 # PATCH_PATCHES should list any patches, in the the order in
@@ -179,6 +179,10 @@ $(PATCH_IPK): $(PATCH_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove patch /opt/bin/patch-patch"; \
 	) > $(PATCH_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(PATCH_IPK_DIR)/CONTROL/postinst $(PATCH_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PATCH_IPK_DIR)
 
 #

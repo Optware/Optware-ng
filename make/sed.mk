@@ -30,7 +30,7 @@ SED_CONFLICTS=
 #
 # SED_IPK_VERSION should be incremented when the ipk changes.
 #
-SED_IPK_VERSION=2
+SED_IPK_VERSION=3
 
 #
 # SED_CONFFILES should be a list of user-editable files
@@ -180,6 +180,10 @@ $(SED_IPK): $(SED_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove sed /opt/bin/gnu-sed"; \
 	) > $(SED_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(SED_IPK_DIR)/CONTROL/postinst $(SED_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SED_IPK_DIR)
 
 #

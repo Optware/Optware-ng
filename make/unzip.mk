@@ -38,7 +38,7 @@ UNZIP_CONFLICTS=
 #
 # UNZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-UNZIP_IPK_VERSION=2
+UNZIP_IPK_VERSION=3
 
 #
 # UNZIP_CONFFILES should be a list of user-editable files
@@ -173,6 +173,10 @@ $(UNZIP_IPK): $(UNZIP_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove unzip /opt/bin/unzip-unzip"; \
 	) > $(UNZIP_IPK_DIR)/CONTROL/prerm
+	if test "/opt" = "$(IPKG_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+			$(UNZIP_IPK_DIR)/CONTROL/postinst $(UNZIP_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNZIP_IPK_DIR)
 
 #
