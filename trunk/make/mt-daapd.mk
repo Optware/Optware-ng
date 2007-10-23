@@ -5,7 +5,7 @@
 ###########################################################
 
 MT_DAAPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mt-daapd
-MT_DAAPD_VERSION=0.2.4
+MT_DAAPD_VERSION=0.2.4.1
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
@@ -16,7 +16,7 @@ MT_DAAPD_PRIORITY=optional
 MT_DAAPD_DEPENDS=gdbm, libid3tag
 MT_DAAPD_CONFLICTS=
 
-MT_DAAPD_IPK_VERSION=2
+MT_DAAPD_IPK_VERSION=1
 
 MT_DAAPD_CPPFLAGS=-DSTRSEP
 MT_DAAPD_LDFLAGS=
@@ -55,13 +55,16 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 	        --with-static-libs=$(STAGING_DIR)/opt/lib \
 		--with-gdbm-include=$(STAGING_DIR)/opt/include \
 		--enable-nslu2 \
+		--enable-browse \
+		--enable-query \
+		--enable-mdns \
 	)
 ifeq ($(OPTWARE_TARGET), slugosbe)
-	sed -ie '/#include <limits.h>/a#include <linux/limits.h>' \
+	sed -i -e '/#include <limits.h>/a#include <linux/limits.h>' \
 		$(MT_DAAPD_BUILD_DIR)/src/dynamic-art.c \
 		$(MT_DAAPD_BUILD_DIR)/src/restart.c
 endif
-	touch $(MT_DAAPD_BUILD_DIR)/.configured
+	touch $@
 
 mt-daapd-unpack: $(MT_DAAPD_BUILD_DIR)/.configured
 
@@ -77,7 +80,7 @@ mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 # necessary to create a seperate control file under sources/mt-daapd
 #
 $(MT_DAAPD_IPK_DIR)/CONTROL/control:
-	@install -d $(MT_DAAPD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mt-daapd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
