@@ -21,22 +21,23 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-EACCELERATOR_VERSION=0.9.5.2
-EACCELERATOR_SITE=http://bart.eaccelerator.net/source/$(EACCELERATOR_VERSION)
-EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VERSION).tar.bz2
-EACCELERATOR_DIR=eaccelerator-$(EACCELERATOR_VERSION)
+EACCELERATOR_VER=0.9.5.2
+EACCELERATOR_VERSION:=$(EACCELERATOR_VER)-$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
+EACCELERATOR_SITE=http://bart.eaccelerator.net/source/$(EACCELERATOR_VER)
+EACCELERATOR_SOURCE=eaccelerator-$(EACCELERATOR_VER).tar.bz2
+EACCELERATOR_DIR=eaccelerator-$(EACCELERATOR_VER)
 EACCELERATOR_UNZIP=bzcat
 EACCELERATOR_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 EACCELERATOR_DESCRIPTION=Yet another php cache / accelerator
 EACCELERATOR_SECTION=web
 EACCELERATOR_PRIORITY=optional
-EACCELERATOR_DEPENDS=php (= 5.2.4)
+EACCELERATOR_DEPENDS=php
 EACCELERATOR_CONFLICTS=
 
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=2
+EACCELERATOR_IPK_VERSION=1
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
@@ -101,7 +102,8 @@ eaccelerator-source: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(EACCELERATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES)
+$(EACCELERATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES) \
+make/eaccelerator.mk make/php.mk
 	$(MAKE) php-stage
 	rm -rf $(BUILD_DIR)/$(EACCELERATOR_DIR) $(EACCELERATOR_BUILD_DIR)
 	$(EACCELERATOR_UNZIP) $(DL_DIR)/$(EACCELERATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -165,7 +167,7 @@ $(EACCELERATOR_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(EACCELERATOR_MAINTAINER)" >>$@
 	@echo "Source: $(EACCELERATOR_SITE)/$(EACCELERATOR_SOURCE)" >>$@
 	@echo "Description: $(EACCELERATOR_DESCRIPTION)" >>$@
-	@echo "Depends: $(EACCELERATOR_DEPENDS)" >>$@
+	@echo "Depends: php (>= $(PHP_VERSION))" >>$@
 	@echo "Conflicts: $(EACCELERATOR_CONFLICTS)" >>$@
 
 #
