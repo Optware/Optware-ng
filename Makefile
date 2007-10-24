@@ -214,7 +214,7 @@ COMMON_CROSS_PACKAGES = \
 	libol libogg libosip2 libopensync libpcap libpng libpth librsync \
 	libshout libsigc++ libsoup libsndfile libstdc++ \
 	libtasn1 libtiff libtool libtorrent \
-	libupnp libusb libvorbis libvorbisidec libxml2 libxslt \
+	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc littlesmalltalk \
 	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
