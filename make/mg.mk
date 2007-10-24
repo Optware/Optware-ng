@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MG_SITE=http://www.xs4all.nl/~hanb/software/mg
-MG_VERSION=20070329
+MG_VERSION=20070918
 MG_SOURCE=mg-$(MG_VERSION).tar.gz
 MG_DIR=mg-$(MG_VERSION)
 MG_UNZIP=zcat
