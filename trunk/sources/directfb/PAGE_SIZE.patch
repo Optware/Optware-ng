@@ -1,0 +1,12 @@
+--- lib/direct/system.c.orig       2007-08-08 03:43:00.000000000 +0800
++++ lib/direct/system.c    2007-10-11 14:32:34.000000000 +0800
+@@ -36,7 +36,9 @@
+
+ #if HAVE_ASM_PAGE_H
+ #include <asm/page.h>
+-#else
++#endif
++
++#ifndef PAGE_SIZE
+ #define PAGE_SIZE   sysconf( _SC_PAGESIZE )
+ #endif
