@@ -5,7 +5,7 @@
 ###########################################################
 
 PERLBAL_SITE=http://search.cpan.org/CPAN/authors/id/B/BR/BRADFITZ
-PERLBAL_VERSION=1.59
+PERLBAL_VERSION=1.60
 PERLBAL_SOURCE=Perlbal-$(PERLBAL_VERSION).tar.gz
 PERLBAL_DIR=Perlbal-$(PERLBAL_VERSION)
 PERLBAL_UNZIP=zcat
@@ -44,35 +44,35 @@ $(PERLBAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERLBAL_BUILD_DIR)/.configured
+	touch $@
 
 perlbal-unpack: $(PERLBAL_BUILD_DIR)/.configured
 
 $(PERLBAL_BUILD_DIR)/.built: $(PERLBAL_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) perl-bsd-resource-stage
 	$(MAKE) perl-danga-socket-stage
 	$(MAKE) perl-libwww-stage
 	$(MAKE) perl-sys-syscall-stage
-	rm -f $(PERLBAL_BUILD_DIR)/.built
 	$(MAKE) -C $(PERLBAL_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERLBAL_BUILD_DIR)/.built
+	touch $@
 
 perlbal: $(PERLBAL_BUILD_DIR)/.built
 
 $(PERLBAL_BUILD_DIR)/.staged: $(PERLBAL_BUILD_DIR)/.built
-	rm -f $(PERLBAL_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(PERLBAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERLBAL_BUILD_DIR)/.staged
+	touch $@
 
 perlbal-stage: $(PERLBAL_BUILD_DIR)/.staged
 
 $(PERLBAL_IPK_DIR)/CONTROL/control:
-	@install -d $(PERLBAL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perlbal" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
