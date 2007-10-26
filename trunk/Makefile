@@ -155,6 +155,10 @@ PACKAGES_REQUIRE_LINUX26 = \
 	module-init-tools \
 	varnish \
 
+PACKAGES_ONLY_WORK_ON_LINUX24 = \
+	modutils \
+	spindown \
+
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	9base \

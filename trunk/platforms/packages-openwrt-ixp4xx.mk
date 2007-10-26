@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
 BROKEN_PACKAGES = \
+	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	9base \
 	buildroot uclibc-opt \
 	cairo \
@@ -20,7 +21,7 @@ BROKEN_PACKAGES = \
 	nfs-server nfs-utils nickle ntop \
 	pango puppy \
 	qemu qemu-libc-i386 quickie \
-	sm spindown syx \
+	sm syx \
 	transcode \
 	uemacs util-linux \
 	vsftpd vte \

@@ -9,14 +9,14 @@ SPECIFIC_PACKAGES = \
 # heyu: xwrite.c:34:30: error: linux/serial_reg.h: No such file or directory
 # iptraf: sys/types.h and linux/types.h conflicting, the ipk for unslung seems to work though
 BROKEN_PACKAGES = \
+	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	heyu \
 	iptraf \
-	ldconfig modutils \
+	ldconfig \
 	monotone \
 	netatalk \
 	puppy \
 	py-psycopg \
 	qemu \
-	spindown \
 	ushare \
 
