@@ -42,7 +42,7 @@ QUAGGA_CONFLICTS=
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=2
+QUAGGA_IPK_VERSION=3
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -58,11 +58,7 @@ QUAGGA_PATCHES=$(QUAGGA_SOURCE_DIR)/configure.ac.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
 QUAGGA_CPPFLAGS=-U__STRICT_ANSI__
-else
-QUAGGA_CPPFLAGS=
-endif
 QUAGGA_LDFLAGS=-lreadline -ltermcap
 
 #

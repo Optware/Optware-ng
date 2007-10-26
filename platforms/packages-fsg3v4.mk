@@ -31,7 +31,7 @@ BROKEN_PACKAGES = \
 	monotone \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
-	qemu qemu-libc-i386 quagga \
+	qemu qemu-libc-i386 \
 	\
 	openser \
 	snort \
