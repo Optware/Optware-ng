@@ -5,7 +5,7 @@
 ###########################################################
 
 LESS_SITE=http://www.greenwoodsoftware.com/less/
-LESS_VERSION=408
+LESS_VERSION=409
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
@@ -19,7 +19,7 @@ LESS_CONFLICTS=
 #
 # LESS_IPK_VERSION should be incremented when the ipk changes.
 #
-LESS_IPK_VERSION=2
+LESS_IPK_VERSION=1
 
 #
 # LESS_PATCHES should list any patches, in the the order in
