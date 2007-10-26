@@ -15,6 +15,6 @@ BROKEN_PACKAGES = \
 	motion \
 	nfs-server nfs-utils \
 	player \
-	quagga transcode \
+	transcode \
 	util-linux vsftpd \
 	wget buildroot uclibc-opt ipkg-opt \

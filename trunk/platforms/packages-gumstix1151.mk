@@ -14,5 +14,5 @@ BROKEN_PACKAGES = \
 	iptraf \
 	ircd-hybrid \
 	mdadm \
-	puppy quagga sendmail \
+	puppy sendmail \
 	util-linux

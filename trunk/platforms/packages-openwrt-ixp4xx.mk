@@ -19,7 +19,7 @@ BROKEN_PACKAGES = \
 	moc monotone mtr \
 	nfs-server nfs-utils nickle ntop \
 	pango puppy \
-	qemu qemu-libc-i386 quagga quickie \
+	qemu qemu-libc-i386 quickie \
 	sm spindown syx \
 	transcode \
 	uemacs util-linux \
