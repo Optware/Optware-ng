@@ -10,12 +10,12 @@ SPECIFIC_PACKAGES = \
 # Third group are sorted dependency trees.
 
 # crosstool-native is not available (and therefore neither is optware-devel)
-# modutils is for 2.4 kernels only
 # nfs-kernel is not useful, cause the kernel does not have NFSD enabled
 # ufsd is only for NSLU2 firmware
 
 BROKEN_PACKAGES = \
-	crosstool-native optware-devel modutils ufsd \
+	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
+	crosstool-native optware-devel ufsd \
 	\
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi \
@@ -35,6 +35,5 @@ BROKEN_PACKAGES = \
 	\
 	openser \
 	snort \
-	spindown \
 	strace \
 	uemacs \
