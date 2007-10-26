@@ -4,7 +4,7 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_VERSION=1.6.9p6
+SUDO_VERSION=1.6.9p7
 SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_VERSION)
 SUDO_UNZIP=zcat
@@ -63,7 +63,7 @@ $(SUDO_BUILD_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES) make/sud
 			--with-editor=/bin/vi \
 			--with-env-editor \
 			--sysconfdir=/opt/etc
-	touch $(SUDO_BUILD_DIR)/.configured
+	touch $@
 
 sudo-unpack: $(SUDO_BUILD_DIR)/.configured
 
@@ -79,7 +79,7 @@ sudo: $(SUDO_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/sudo
 #
 $(SUDO_IPK_DIR)/CONTROL/control:
-	@install -d $(SUDO_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sudo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
