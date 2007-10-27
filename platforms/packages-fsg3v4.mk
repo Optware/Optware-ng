@@ -5,9 +5,6 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES)
 
 # Packages that do not work for fsg3v4.
-# First group is unsorted.
-# Second group is config.sub related.
-# Third group are sorted dependency trees.
 
 # crosstool-native is not available (and therefore neither is optware-devel)
 # nfs-kernel is not useful, cause the kernel does not have NFSD enabled
@@ -32,6 +29,7 @@ BROKEN_PACKAGES = \
 	net-snmp net-tools netatalk nmap \
 	phoneme-advanced \
 	qemu qemu-libc-i386 \
+	quagga \
 	\
 	openser \
 	snort \
