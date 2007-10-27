@@ -243,7 +243,9 @@ $(CUPS_BUILD_DIR)/.staged: $(CUPS_BUILD_DIR)/.built
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config \
 		$(STAGING_PREFIX)/bin
-	sed -i -e 's|=/opt|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/cups-config
+	sed -i -e 's|^prefix=/opt|prefix=$(STAGING_PREFIX)|' \
+	       -e 's|^libdir=/opt|libdir=$${prefix}|' \
+		$(STAGING_PREFIX)/bin/cups-config
 	install -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a \
 		$(STAGING_DIR)/opt/lib
 	install -m 644 $(CUPS_BUILD_DIR)/cups/libcups.a $(STAGING_DIR)/opt/lib
