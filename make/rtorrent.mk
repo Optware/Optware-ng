@@ -42,9 +42,7 @@ RTORRENT_CONFFILES=/opt/etc/rtorrent.conf
 # RTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifneq ($(TARGET_CC), $(HOSTCC))
-RTORRENT_PATCHES=$(RTORRENT_SOURCE_DIR)/execinfo-cross.patch
-endif
+#RTORRENT_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -121,10 +119,14 @@ ifeq (mss,$(OPTWARE_TARGET))
 	sed -i -e '/#include <string>/a#include <cctype>' \
 		$(RTORRENT_BUILD_DIR)/src/rpc/parse.h
 endif
+ifeq (uclibc, $(LIBC_STYLE))
+	sed -i -e '/TORRENT_CHECK_EXECINFO()/d' $(@D)/configure.ac
+else
+	sed -i -e '/TORRENT_CHECK_EXECINFO()/s/.*/AC_DEFINE(USE_EXECINFO, 1, Use execinfo.h)/' \
+		$(@D)/configure.ac
+endif
 	(cd $(RTORRENT_BUILD_DIR); \
-		if test -n "$(RTORRENT_PATCHES)"; then \
-			AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f; \
-		fi; \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTORRENT_LDFLAGS)" \
