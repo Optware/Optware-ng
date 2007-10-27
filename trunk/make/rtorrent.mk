@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.7.8
+RTORRENT_VERSION=0.7.9
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
@@ -21,14 +21,17 @@ RTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RTORRENT_DESCRIPTION=rtorrent is a BitTorrent client for ncurses, using the libtorrent library.
 RTORRENT_SECTION=net
 RTORRENT_PRIORITY=optional
-RTORRENT_DEPENDS=libtorrent, $(NCURSES_FOR_OPTWARE_TARGET), libcurl, zlib
+RTORRENT_NCURSES=$(strip \
+	$(if $(filter ds101g, $(OPTWARE_TARGET)), ncurses, \
+	$(NCURSES_FOR_OPTWARE_TARGET)))
+RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, zlib
 RTORRENT_SUGGESTS=dtach, screen
 RTORRENT_CONFLICTS=
 
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=2
+RTORRENT_IPK_VERSION=1
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -39,7 +42,9 @@ RTORRENT_CONFFILES=/opt/etc/rtorrent.conf
 # RTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RTORRENT_PATCHES=
+ifneq ($(TARGET_CC), $(HOSTCC))
+RTORRENT_PATCHES=$(RTORRENT_SOURCE_DIR)/execinfo-cross.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -52,6 +57,10 @@ ifeq ($(LIBC_STYLE), uclibc)
 ifdef TARGET_GXX
 RTORRENT_CONFIGURE += CXX=$(TARGET_GXX)
 endif
+endif
+ifeq (ncurses, $(RTORRENT_NCURSES))
+RTORRENT_CONFIGURE += ac_cv_search_add_wch=no
+RTORRENT_CONFIGURE_OPTS = --without-ncursesw
 endif
 
 
@@ -98,7 +107,7 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 # 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
-	$(MAKE) libtorrent-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage libcurl-stage zlib-stage
+	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage libcurl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
 	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RTORRENT_PATCHES)" ; \
@@ -113,6 +122,9 @@ ifeq (mss,$(OPTWARE_TARGET))
 		$(RTORRENT_BUILD_DIR)/src/rpc/parse.h
 endif
 	(cd $(RTORRENT_BUILD_DIR); \
+		if test -n "$(RTORRENT_PATCHES)"; then \
+			AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f; \
+		fi; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTORRENT_LDFLAGS)" \
@@ -124,6 +136,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		$(RTORRENT_CONFIGURE_OPTS) \
 		--disable-nls \
 		--disable-static \
 	)
