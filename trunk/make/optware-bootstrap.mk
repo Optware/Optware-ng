@@ -30,6 +30,9 @@ OPTWARE-BOOTSTRAP_TARGET ?= $(OPTWARE_TARGET)
 # will be set in the .mk included below
 include $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/target-specific.mk
 
+OPTWARE-BOOTSTRAP_CONTAINS ?= openssl wget-ssl
+OPTWARE-BOOTSTRAP_IPKS_DONE:=$(foreach p, $(OPTWARE-BOOTSTRAP_CONTAINS), $(BUILD_DIR)/$(p)/.ipk)
+
 OPTWARE-BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-optware-bootstrap
 
 OPTWARE-BOOTSTRAP_V=$(OPTWARE-BOOTSTRAP_VERSION)-$(OPTWARE-BOOTSTRAP_IPK_VERSION)
@@ -70,7 +73,7 @@ $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPTWARE-BOOTSTRAP_CONFLICTS)" >>$@
 
 $(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built \
-	    $(BUILD_DIR)/ipkg-opt/.ipk $(BUILD_DIR)/openssl/.ipk $(BUILD_DIR)/wget-ssl/.ipk
+	    $(BUILD_DIR)/ipkg-opt/.ipk $(OPTWARE-BOOTSTRAP_IPKS_DONE)
 	# build optware-bootstrap.ipk first
 	rm -rf $(OPTWARE-BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_*_$(TARGET_ARCH).ipk
 	install -d -m 755 \
@@ -99,8 +102,11 @@ endif
 	mv $(OPTWARE-BOOTSTRAP_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/optware-bootstrap.ipk
 	#	additional ipk's we require
 	cp $(IPKG-OPT_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
-	cp $(OPENSSL_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/openssl.ipk
-	cp $(WGET-SSL_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/wget-ssl.ipk
+	for i in $(OPTWARE-BOOTSTRAP_CONTAINS); do \
+		I_IPK=`grep -i $${i}_IPK= make/*.mk | sed 's/^.*://;s/=.*//'`; \
+		ipkfile=`MAKEFLAGS=-s $(MAKE) query-$${I_IPK}`; \
+		cp $$ipkfile $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/$${i}.ipk; \
+	done
 	#	bootstrap scripts
 	install -m 755 $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)/bootstrap.sh \
 	   $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/ipkg.sh \
