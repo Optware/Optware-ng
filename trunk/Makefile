@@ -373,7 +373,7 @@ PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 
 ifneq (, $(filter ipkg-opt $(OPTWARE_TARGET)-bootstrap $(OPTWARE_TARGET)-optware-bootstrap, $(PACKAGES)))
-IPKG_PREFIX=/opt
+IPKG_PREFIX ?= /opt
 endif
 
 testing:
