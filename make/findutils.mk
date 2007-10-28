@@ -205,8 +205,8 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	 echo "update-alternatives --remove find /opt/bin/findutils-find"; \
 	 echo "update-alternatives --remove xargs /opt/bin/findutils-xargs"; \
 	) > $(FINDUTILS_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(FINDUTILS_IPK_DIR)/CONTROL/postinst $(FINDUTILS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_IPK_DIR)

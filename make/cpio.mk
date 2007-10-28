@@ -158,8 +158,8 @@ $(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove cpio /opt/bin/cpio-cpio"; \
 	) > $(CPIO_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(CPIO_IPK_DIR)/CONTROL/postinst $(CPIO_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CPIO_IPK_DIR)

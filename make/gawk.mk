@@ -197,8 +197,8 @@ $(GAWK_IPK): $(GAWK_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove awk /opt/bin/gawk"; \
 	) > $(GAWK_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(GAWK_IPK_DIR)/CONTROL/postinst $(GAWK_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAWK_IPK_DIR)

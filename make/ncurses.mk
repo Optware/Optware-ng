@@ -112,8 +112,8 @@ endif
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove clear /opt/bin/ncurses-clear"; \
 	) > $(NCURSES_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(NCURSES_IPK_DIR)/CONTROL/postinst $(NCURSES_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)

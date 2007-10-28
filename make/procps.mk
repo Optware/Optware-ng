@@ -130,8 +130,8 @@ $(PROCPS_IPK): $(PROCPS_BUILD_DIR)/.built
 	$(MAKE) $(PROCPS_IPK_DIR)/CONTROL/control
 	install -m 644 $(PROCPS_SOURCE_DIR)/postinst $(PROCPS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(PROCPS_SOURCE_DIR)/prerm $(PROCPS_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(PROCPS_IPK_DIR)/CONTROL/postinst $(PROCPS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROCPS_IPK_DIR)

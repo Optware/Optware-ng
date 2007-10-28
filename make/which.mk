@@ -204,8 +204,8 @@ $(WHICH_IPK): $(WHICH_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove which /opt/bin/which-which"; \
 	) > $(WHICH_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(WHICH_IPK_DIR)/CONTROL/postinst $(WHICH_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHICH_IPK_DIR)
