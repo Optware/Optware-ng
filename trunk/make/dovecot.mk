@@ -47,7 +47,7 @@ DOVECOT_CONFLICTS=cyrus-imapd, imap
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=1
+DOVECOT_IPK_VERSION=2
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -120,7 +120,7 @@ dovecot-source: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
+$(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES) make/dovecot.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(DOVECOT_DIR) $(DOVECOT_BUILD_DIR)
 	$(DOVECOT_UNZIP) $(DL_DIR)/$(DOVECOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -153,7 +153,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		--without-sql-drivers; \
 	)
 	#$(PATCH_LIBTOOL) $(DOVECOT_BUILD_DIR)/libtool
-	touch $(DOVECOT_BUILD_DIR)/.configured
+	touch $@
 
 dovecot-unpack: $(DOVECOT_BUILD_DIR)/.configured
 
@@ -161,9 +161,9 @@ dovecot-unpack: $(DOVECOT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(DOVECOT_BUILD_DIR)/.built: $(DOVECOT_BUILD_DIR)/.configured
-	rm -f $(DOVECOT_BUILD_DIR)/.built
-	$(MAKE) -C $(DOVECOT_BUILD_DIR)
-	touch $(DOVECOT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -174,9 +174,9 @@ dovecot: $(DOVECOT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(DOVECOT_BUILD_DIR)/.staged: $(DOVECOT_BUILD_DIR)/.built
-	rm -f $(DOVECOT_BUILD_DIR)/.staged
-	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(DOVECOT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 dovecot-stage: $(DOVECOT_BUILD_DIR)/.staged
 
@@ -185,7 +185,7 @@ dovecot-stage: $(DOVECOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dovecot
 #
 $(DOVECOT_IPK_DIR)/CONTROL/control:
-	@install -d $(DOVECOT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: dovecot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,7 +214,6 @@ $(DOVECOT_IPK_DIR)/CONTROL/control:
 $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	rm -rf $(DOVECOT_IPK_DIR) $(BUILD_DIR)/dovecot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(DOVECOT_IPK_DIR) install-strip
-	rm -f $(DOVECOT_IPK_DIR)/opt/etc/dovecot-example.conf
 	install -d $(DOVECOT_IPK_DIR)/opt/etc/
 	install -m 700 -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
 	install -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot.conf
