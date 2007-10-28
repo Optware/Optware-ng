@@ -173,8 +173,8 @@ $(UNZIP_IPK): $(UNZIP_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove unzip /opt/bin/unzip-unzip"; \
 	) > $(UNZIP_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(UNZIP_IPK_DIR)/CONTROL/postinst $(UNZIP_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNZIP_IPK_DIR)

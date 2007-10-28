@@ -96,8 +96,8 @@ $(PERL-FILE-RENAME_IPK): $(PERL-FILE-RENAME_BUILD_DIR)/.built
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove rename /opt/bin/perl-file-rename"; \
 	) > $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/prerm
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(PERL-FILE-RENAME_IPK_DIR)/CONTROL/postinst $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(PERL-FILE-RENAME_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-FILE-RENAME_IPK_DIR)/CONTROL/conffiles

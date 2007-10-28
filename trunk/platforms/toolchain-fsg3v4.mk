@@ -14,6 +14,9 @@ TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
+# update-alternatives is installed in /bin/
+UPD-ALT_PREFIX=
+
 #
 ## Installation instructions for the binary toolchain ...
 #

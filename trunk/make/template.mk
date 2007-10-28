@@ -205,8 +205,8 @@ $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/prerm
-	if test -n "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(<FOO>_IPK_DIR)/CONTROL/postinst $(<FOO>_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(<FOO>_CONFFILES) | sed -e 's/ /\n/g' > $(<FOO>_IPK_DIR)/CONTROL/conffiles

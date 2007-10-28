@@ -201,8 +201,8 @@ $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 	    echo "update-alternatives --remove $$f /opt/sbin/net-tools-$$f" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
 	done
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(NET-TOOLS_IPK_DIR)/CONTROL/postinst $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(NET-TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(NET-TOOLS_IPK_DIR)/CONTROL/conffiles

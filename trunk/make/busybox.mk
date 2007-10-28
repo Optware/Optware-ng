@@ -238,8 +238,8 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 		    >> $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm; \
 	    done; \
 	done
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(BUSYBOX_IPK_DIR)-links/CONTROL/postinst $(BUSYBOX_IPK_DIR)-links/CONTROL/prerm; \
 	fi
 	rm -rf $(BUSYBOX_IPK_DIR)-links/opt

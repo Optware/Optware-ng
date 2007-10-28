@@ -232,8 +232,8 @@ endif
 	    echo "update-alternatives --remove $$f /opt/sbin/e2fsprogs-$$f" \
 		>> $(E2FSPROGS_IPK_DIR)/CONTROL/prerm; \
 	done
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(E2FSPROGS_IPK_DIR)/CONTROL/postinst $(E2FSPROGS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(E2FSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(E2FSPROGS_IPK_DIR)/CONTROL/conffiles

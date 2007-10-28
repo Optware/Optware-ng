@@ -119,8 +119,8 @@ endif
 	    echo "update-alternatives --remove $$f /opt/bin/grep-$$f" \
 		>> $(GREP_IPK_DIR)/CONTROL/prerm; \
 	done
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(GREP_IPK_DIR)/CONTROL/postinst $(GREP_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GREP_IPK_DIR)

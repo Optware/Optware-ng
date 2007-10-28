@@ -210,8 +210,8 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 		    >> $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
 	    done; \
 	done
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(INETUTILS_IPK_DIR)/CONTROL/postinst $(INETUTILS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(INETUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(INETUTILS_IPK_DIR)/CONTROL/conffiles

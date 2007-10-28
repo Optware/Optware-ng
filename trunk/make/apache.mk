@@ -278,8 +278,8 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	$(MAKE) $(APACHE_IPK_DIR)/CONTROL/control
 	install -m 755 $(APACHE_SOURCE_DIR)/prerm $(APACHE_IPK_DIR)/CONTROL/prerm
 	install -m 755 $(APACHE_SOURCE_DIR)/postinst $(APACHE_IPK_DIR)/CONTROL/postinst
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(APACHE_IPK_DIR)/CONTROL/postinst $(APACHE_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(APACHE_IPK_DIR)/CONTROL/conffiles

@@ -201,8 +201,8 @@ $(SHARUTILS_IPK): $(SHARUTILS_BUILD_DIR)/.built
 	 echo "update-alternatives --remove uuencode /opt/bin/sharutils-uuencode"; \
 	) > $(SHARUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(SHARUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(SHARUTILS_IPK_DIR)/CONTROL/conffiles
-	if test "/opt" = "$(IPKG_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(IPKG_PREFIX)/bin/&|' \
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(SHARUTILS_IPK_DIR)/CONTROL/postinst $(SHARUTILS_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SHARUTILS_IPK_DIR)
