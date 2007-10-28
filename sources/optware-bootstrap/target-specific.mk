@@ -10,6 +10,10 @@ OPTWARE-BOOTSTRAP_RC=$(strip \
 	$(if $(filter mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
 	/etc/init.d/optware))
 
+OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
+	$(if $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)), diffutils, \
+	ipkg-opt openssl wget-ssl))
+
 # Ideally the following stanza would work
 # unfortunately it has some conflict with optware/Makefile
 
@@ -18,15 +22,20 @@ OPTWARE-BOOTSTRAP_RC=$(strip \
 # %-optware-bootstrap-dirclean:
 # 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=$*
 
-mssii-optware-bootstrap-ipk:
-	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=mssii
-mssii-optware-bootstrap-dirclean:
-	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=mssii
+fsg3v4-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=fsg3v4
+fsg3v4-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=fsg3v4
 
 lspro-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=lspro
 lspro-optware-bootstrap-dirclean:
 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=lspro
+
+mssii-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=mssii
+mssii-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=mssii
 
 teraprov2-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=teraprov2
