@@ -18,7 +18,7 @@ mkdir -p /usr/lib/ipkg/info/
 sh ./ipkg.sh install bootstrap.ipk
 
 echo "Installing ipkg..."
-sh ./ipkg.sh install ipkg.ipk
+sh ./ipkg.sh install ipkg-opt.ipk
 
 echo "Removing temporary ipkg repository..."
 rm -rf $BSDIR

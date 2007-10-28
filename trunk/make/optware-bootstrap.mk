@@ -7,7 +7,7 @@
 ###########################################################
 
 OPTWARE-BOOTSTRAP_VERSION=1.0
-OPTWARE-BOOTSTRAP_IPK_VERSION=4
+OPTWARE-BOOTSTRAP_IPK_VERSION=5
 
 OPTWARE-BOOTSTRAP_DIR=optware-bootstrap-$(OPTWARE-BOOTSTRAP_VERSION)
 OPTWARE-BOOTSTRAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -30,7 +30,7 @@ OPTWARE-BOOTSTRAP_TARGET ?= $(OPTWARE_TARGET)
 # will be set in the .mk included below
 include $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/target-specific.mk
 
-OPTWARE-BOOTSTRAP_CONTAINS ?= openssl wget-ssl
+OPTWARE-BOOTSTRAP_CONTAINS ?= ipkg-opt openssl wget-ssl
 OPTWARE-BOOTSTRAP_IPKS_DONE:=$(foreach p, $(OPTWARE-BOOTSTRAP_CONTAINS), $(BUILD_DIR)/$(p)/.ipk)
 
 OPTWARE-BOOTSTRAP_BUILD_DIR=$(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-optware-bootstrap
@@ -72,8 +72,7 @@ $(OPTWARE-BOOTSTRAP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(OPTWARE-BOOTSTRAP_DEPENDS)" >>$@
 	@echo "Conflicts: $(OPTWARE-BOOTSTRAP_CONFLICTS)" >>$@
 
-$(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built \
-	    $(BUILD_DIR)/ipkg-opt/.ipk $(OPTWARE-BOOTSTRAP_IPKS_DONE)
+$(OPTWARE-BOOTSTRAP_XSH): $(OPTWARE-BOOTSTRAP_BUILD_DIR)/.built $(OPTWARE-BOOTSTRAP_IPKS_DONE)
 	# build optware-bootstrap.ipk first
 	rm -rf $(OPTWARE-BOOTSTRAP_IPK_DIR) $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_TARGET)-bootstrap_*_$(TARGET_ARCH).ipk
 	install -d -m 755 \
@@ -101,9 +100,8 @@ endif
 	#	move the ipk, so it will not be in the feed
 	mv $(OPTWARE-BOOTSTRAP_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/optware-bootstrap.ipk
 	#	additional ipk's we require
-	cp $(IPKG-OPT_IPK) $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/ipkg.ipk
 	for i in $(OPTWARE-BOOTSTRAP_CONTAINS); do \
-		I_IPK=`grep -i $${i}_IPK= make/*.mk | sed 's/^.*://;s/=.*//'`; \
+		I_IPK=`grep -i ^$${i}_IPK= make/*.mk | sed 's/^.*://;s/=.*//'`; \
 		ipkfile=`MAKEFLAGS=-s $(MAKE) query-$${I_IPK}`; \
 		cp $$ipkfile $(OPTWARE-BOOTSTRAP_BUILD_DIR)/bootstrap/$${i}.ipk; \
 	done

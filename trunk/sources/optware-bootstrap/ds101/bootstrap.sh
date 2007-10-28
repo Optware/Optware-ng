@@ -20,7 +20,7 @@ sh ./ipkg.sh install bootstrap.ipk || exit 1
 echo " success"
 
 echo "Installing IPKG package... (Ignore missing md5sum warning)"
-sh ./ipkg.sh install ipkg.ipk
+sh ./ipkg.sh install ipkg-opt.ipk
 
 echo "Removing temporary ipkg repository..."
 rm -rf $BSDIR

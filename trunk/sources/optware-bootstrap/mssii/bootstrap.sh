@@ -31,7 +31,7 @@ echo "Installing optware-bootstrap package..."
 sh ./ipkg.sh install optware-bootstrap.ipk
 
 echo "Installing ipkg..."
-sh ./ipkg.sh install ipkg.ipk
+sh ./ipkg.sh install ipkg-opt.ipk
 
 echo "Removing temporary ipkg repository..."
 rm -rf $BSDIR
