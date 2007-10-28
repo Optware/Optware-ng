@@ -143,6 +143,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		$(DOVECOT_CONFIGURE) \
 		--enable-debug \
 		--without-gssapi \
+		--without-pam \
 		--with-notify=dnotify \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
