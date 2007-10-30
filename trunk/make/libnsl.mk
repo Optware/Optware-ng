@@ -6,7 +6,7 @@
 
 LIBNSL_VERSION=$(strip \
         $(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), 2.3.3, \
-        $(if $(filter fsg3v4 mssii, $(OPTWARE_TARGET)), 2.3.6, \
+        $(if $(filter cs05q3armel fsg3v4 mssii, $(OPTWARE_TARGET)), 2.3.6, \
         $(if $(filter nslu2, $(OPTWARE_TARGET)), 2.2.5, \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), 2.3.90, \
         $(if $(filter ts72xx, $(OPTWARE_TARGET)), 2.3.2, \
