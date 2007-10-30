@@ -256,6 +256,9 @@ ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 endif
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 
+$(COREUTILS_BUILD_DIR)/.ipk: $(COREUTILS_IPK)
+	touch $@
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
