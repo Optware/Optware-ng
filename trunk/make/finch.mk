@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.1.1
+FINCH_VERSION=2.2.2
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -33,7 +33,7 @@ FINCH_IPK_VERSION=1
 # FINCH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FINCH_PATCHES=$(FINCH_SOURCE_DIR)/glib2.6-G_PARAM_STATIC.patch
+#FINCH_PATCHES=$(FINCH_SOURCE_DIR)/glib2.6-G_PARAM_STATIC.patch
 
 #
 # If the compilation of the package requires additional
