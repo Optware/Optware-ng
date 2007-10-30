@@ -10,15 +10,21 @@ if [ -e /home/.optware ] ; then
     exit 1
 fi
 
+echo "Sanitizing /etc/ipkg.conf..."
+echo "arch arm 1" >/etc/ipkg.conf
+
 echo "Installing DataTank bootstrap package..."
 ipkg install optware-bootstrap.ipk
+
+echo "Installing coreutils..."
+ipkg install coreutils.ipk
 
 echo "Installing diffutils..."
 ipkg install diffutils.ipk
 
-echo "Overwriting /etc/ipkg.conf..."
+echo "Updating /etc/ipkg.conf..."
 echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/dt2/cross/stable" \
-		>/etc/ipkg.conf
+		>>/etc/ipkg.conf
 echo "src/gz armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable" \
 		>>/etc/ipkg.conf
 

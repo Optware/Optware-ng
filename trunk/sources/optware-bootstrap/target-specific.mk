@@ -11,7 +11,7 @@ OPTWARE-BOOTSTRAP_RC=$(strip \
 	/etc/init.d/optware))
 
 OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
-	$(if $(filter fsg3 fsg3v4 dt2, $(OPTWARE_TARGET)), diffutils, \
+	$(if $(filter fsg3 fsg3v4 dt2, $(OPTWARE_TARGET)), coreutils diffutils, \
 	ipkg-opt openssl wget-ssl))
 
 # Ideally the following stanza would work
