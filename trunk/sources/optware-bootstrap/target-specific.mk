@@ -7,7 +7,7 @@ OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	))))))
 
 OPTWARE-BOOTSTRAP_RC=$(strip \
-	$(if $(filter mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
+	$(if $(filter cs05q3armel mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
 	/etc/init.d/optware))
 
 OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
