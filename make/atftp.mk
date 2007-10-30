@@ -20,7 +20,7 @@ ATFTP_IPK_VERSION=7
 
 ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
-ifeq ($(OPTWARE_TARGET), $(filter slugosbe fsg3v4 mssii, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe fsg3v4 cs05q3armel mssii, $(OPTWARE_TARGET)))
 ATFTP_PATCHES=$(ATFTP_SOURCE_DIR)/argz.h.patch
 endif
 

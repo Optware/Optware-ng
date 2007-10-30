@@ -40,7 +40,7 @@ libnsl-unpack: $(LIBNSL_BUILD_DIR)/.configured
 
 $(LIBNSL_BUILD_DIR)/.built: $(LIBNSL_BUILD_DIR)/.configured
 	rm -f $@
-ifeq ($(OPTWARE_TARGET), mssii)
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
 	cp $(TARGET_USRLIBDIR)/../../lib/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
 else
 	cp $(TARGET_LIBDIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/

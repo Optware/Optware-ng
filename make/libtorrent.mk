@@ -72,7 +72,7 @@ ifeq ($(TARGET_ARCH), $(filter $(TARGET_ARCH), arm armeb))
 LIBTORRENT_CONFIG_ARGS=--enable-aligned=yes
 endif
 endif
-ifeq ($(OPTWARE_TARGET), mssii)
+ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
 LIBTORRENT_CONFIG_ARGS+=--without-epoll
 endif
 
