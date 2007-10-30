@@ -11,7 +11,7 @@ if [ -e /home/.optware ] ; then
 fi
 
 echo "Installing DataTank bootstrap package..."
-ipkg install bootstrap.ipk
+ipkg install optware-bootstrap.ipk
 
 echo "Installing diffutils..."
 ipkg install diffutils.ipk
