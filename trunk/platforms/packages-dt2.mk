@@ -1,19 +1,5 @@
 # Packages that *only* work for dt2 - do not just put new packages here.
-SPECIFIC_PACKAGES = \
-	dt2-optware-bootstrap \
-	$(PERL_PACKAGES) \
-	$(PACKAGES_REQUIRE_LINUX26) \
+PACKAGES = \
+	dt2-optware-bootstrap
 
-# Packages that do not work for dt2.
-BROKEN_PACKAGES = \
-	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk14-chan-capi libcapi20 \
-	gnuplot \
-	iptraf \
-	ldconfig \
-	monotone \
-	player \
-	puppy \
-	qemu qemu-libc-i386 \
-	socat \
-	uemacs \
+# The rest of the packages for the DataTank come from the cs05q3armel feed.
