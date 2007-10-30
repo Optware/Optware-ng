@@ -19,5 +19,7 @@ ipkg install diffutils.ipk
 echo "Overwriting /etc/ipkg.conf..."
 echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/dt2/cross/stable" \
 		>/etc/ipkg.conf
+echo "src/gz armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable" \
+		>>/etc/ipkg.conf
 
 echo "Setup complete."
