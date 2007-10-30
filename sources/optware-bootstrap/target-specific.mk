@@ -1,6 +1,6 @@
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
-	$(if $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)), /home/.optware, \
+	$(if $(filter fsg3 fsg3v4 dt2, $(OPTWARE_TARGET)), /home/.optware, \
 	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
 	$(if $(filter lspro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
 	$(if $(filter teraprov2, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
@@ -11,7 +11,7 @@ OPTWARE-BOOTSTRAP_RC=$(strip \
 	/etc/init.d/optware))
 
 OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
-	$(if $(filter fsg3 fsg3v4, $(OPTWARE_TARGET)), diffutils, \
+	$(if $(filter fsg3 fsg3v4 dt2, $(OPTWARE_TARGET)), diffutils, \
 	ipkg-opt openssl wget-ssl))
 
 # Ideally the following stanza would work
@@ -26,6 +26,11 @@ fsg3v4-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=fsg3v4
 fsg3v4-optware-bootstrap-dirclean:
 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=fsg3v4
+
+dt2-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=dt2
+dt2-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=dt2
 
 lspro-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=lspro
