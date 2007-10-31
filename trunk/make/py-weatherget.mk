@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-WEATHERGET_VERSION=0.3.2
+PY-WEATHERGET_VERSION=0.4.0.1
 PY-WEATHERGET_SITE=http://download.berlios.de/weatherget
 PY-WEATHERGET_SOURCE=weatherget-$(PY-WEATHERGET_VERSION).tar.bz2
 PY-WEATHERGET_DIR=weatherget-$(PY-WEATHERGET_VERSION)
@@ -246,6 +246,8 @@ $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEA
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-WEATHERGET_IPK_DIR) --prefix=/opt
+	for f in $(PY24-WEATHERGET_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-py2.4|'`; done
 	rm -rf $(PY24-WEATHERGET_IPK_DIR)/opt/share
 	$(MAKE) $(PY24-WEATHERGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-WEATHERGET_IPK_DIR)
@@ -255,8 +257,6 @@ $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEA
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-WEATHERGET_IPK_DIR) --prefix=/opt
-	for f in $(PY25-WEATHERGET_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	install -d $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
 	mv $(PY25-WEATHERGET_IPK_DIR)/opt/share $(PY-WEATHERGET-DOC_IPK_DIR)/opt/
 	$(MAKE) $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control
