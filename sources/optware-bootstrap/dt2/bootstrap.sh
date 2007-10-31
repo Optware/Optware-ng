@@ -16,6 +16,11 @@ echo "arch arm 1" >/etc/ipkg.conf
 echo "Installing DataTank bootstrap package..."
 ipkg install optware-bootstrap.ipk
 
+if [ ! -e /usr/bin/sort ] ; then
+    echo "Installing /usr/bin/sort symlink for update-alternatives..."
+    ln -s /opt/bin/coreutils-sort /usr/bin/sort
+fi
+
 echo "Installing coreutils..."
 ipkg install coreutils.ipk
 
