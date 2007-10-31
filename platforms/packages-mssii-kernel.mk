@@ -1,3 +1,0 @@
-PACKAGES = \
-	mssii-kernel-modules \
-

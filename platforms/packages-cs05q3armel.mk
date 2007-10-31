@@ -1,6 +1,5 @@
 # Packages that *only* work for mssii - do not just put new packages here.
 SPECIFIC_PACKAGES = \
-	mssii-optware-bootstrap \
 	lspro-optware-bootstrap \
 	teraprov2-optware-bootstrap \
 	$(PERL_PACKAGES) \
