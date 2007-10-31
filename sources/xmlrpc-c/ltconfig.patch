@@ -1,0 +1,11 @@
+--- ltconfig.orig	2004-10-20 16:45:14.000000000 -0700
++++ ltconfig	2007-10-31 10:14:37.000000000 -0700
+@@ -1957,7 +1957,7 @@
+   ;;
+ 
+ # This must be Linux ELF.
+-linux-gnu*)
++*linux*)
+   version_type=linux
+   need_lib_prefix=no
+   need_version=no
