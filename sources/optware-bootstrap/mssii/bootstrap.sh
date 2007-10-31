@@ -46,13 +46,13 @@ echo "Installing wget..."
 [ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
 if [ ! -e /opt/etc/ipkg/cross-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/cross-feed.conf..."
-	echo "src/gz cross http://ipkg.nslu2-linux.org/feeds/optware/mssii/cross/stable" >/opt/etc/ipkg/cross-feed.conf
+	echo "Creating /opt/etc/ipkg/armel-feed.conf..."
+	echo "src/gz armel http://ipkg.nslu2-linux.org/feeds/optware/cs05q3armel/cross/stable" >/opt/etc/ipkg/armel-feed.conf
 fi
-if [ ! -e /opt/etc/ipkg/kernel-feed.conf ]
+if [ ! -e /opt/etc/ipkg/mssii-feed.conf ]
 then
-	echo "Creating /opt/etc/ipkg/kernel-feed.conf..."
-	echo "src/gz kernel http://ipkg.nslu2-linux.org/feeds/optware/mssii-kernel/cross/stable" >/opt/etc/ipkg/kernel-feed.conf
+	echo "Creating /opt/etc/ipkg/mssii-feed.conf..."
+	echo "src/gz mssii http://ipkg.nslu2-linux.org/feeds/optware/mssii/cross/stable" >/opt/etc/ipkg/mssii-feed.conf
 fi
 
 echo "Setup complete."
