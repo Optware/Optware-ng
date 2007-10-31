@@ -1,0 +1,19 @@
+--- Makefile.config.in.orig	2007-10-31 11:51:35.000000000 -0700
++++ Makefile.config.in	2007-10-31 11:52:52.000000000 -0700
+@@ -177,14 +177,14 @@
+ shlibfn = $(1:%=%.shlibdummy)
+ shliblefn = $(1:%=%.shlibledummy)
+ 
+-ifeq ($(HOST_OS),linux-gnu)
++ifeq (1,1)
+   # Assume linker is GNU Compiler (gcc)
+   SHARED_LIB_TYPE = unix
+   SHLIB_SUFFIX = so
+   shlibfn = $(1:%=%.$(SHLIB_SUFFIX).$(MAJ).$(MIN))
+   shliblefn = $(1:%=%.$(SHLIB_SUFFIX))
+ #  SHLIB_CLIB = -lc
+-  LDFLAGS_SHLIB = -shared -Wl,-soname,$(SONAME) $(SHLIB_CLIB)
++  LDFLAGS_SHLIB = -shared -Wl,-soname,$(SONAME) $(SHLIB_CLIB) $(LDFLAGS)
+   CFLAGS_SHLIB=-fPIC
+ endif
+ 
