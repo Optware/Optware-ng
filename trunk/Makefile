@@ -273,6 +273,7 @@ COMMON_CROSS_PACKAGES = \
 	vnstat vorbis-tools vsftpd vte vtun \
 	w3cam w3m wakelan webalizer weechat wget \
 	which whois wizd wpa-supplicant wput wxbase \
+	xmlrpc-c \
 	x11 xau xauth xaw xchat xcursor xdmcp xdpyinfo xext \
 	xextensions xfixes xft xinetd \
 	xmu xpdf xpm xproto xrender xt xterm xtrans xtst \
