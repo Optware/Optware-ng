@@ -60,7 +60,9 @@ ifeq (ncurses, $(RTORRENT_NCURSES))
 RTORRENT_CONFIGURE += ac_cv_search_add_wch=no
 RTORRENT_CONFIGURE_OPTS = --without-ncursesw
 endif
-
+ifneq (slugosbe, $(OPTWARE_TARGET))
+RTORRENT_CONFIGURE_OPTS += --with-xmlrpc-c
+endif
 
 #
 # RTORRENT_BUILD_DIR is the directory in which the build is done.
@@ -139,7 +141,6 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-xmlrpc-c \
 		$(RTORRENT_CONFIGURE_OPTS) \
 		--disable-nls \
 		--disable-static \
