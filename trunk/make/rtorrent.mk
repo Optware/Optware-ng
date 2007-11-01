@@ -24,14 +24,14 @@ RTORRENT_PRIORITY=optional
 RTORRENT_NCURSES=$(strip \
 	$(if $(filter ds101g, $(OPTWARE_TARGET)), ncurses, \
 	$(NCURSES_FOR_OPTWARE_TARGET)))
-RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, zlib
+RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
 RTORRENT_SUGGESTS=dtach, screen
 RTORRENT_CONFLICTS=
 
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=1
+RTORRENT_IPK_VERSION=2
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -105,7 +105,8 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 # 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
-	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage libcurl-stage zlib-stage
+	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage
+	$(MAKE) libcurl-stage xmlrpc-c-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
 	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RTORRENT_PATCHES)" ; \
@@ -138,6 +139,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--with-xmlrpc-c \
 		$(RTORRENT_CONFIGURE_OPTS) \
 		--disable-nls \
 		--disable-static \
