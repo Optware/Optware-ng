@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=1
+PYTHON25_IPK_VERSION=2
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -161,7 +161,7 @@ endif
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
-	touch $(PYTHON25_BUILD_DIR)/.configured
+	touch $@
 
 python25-unpack: $(PYTHON25_BUILD_DIR)/.configured
 
@@ -169,10 +169,9 @@ python25-unpack: $(PYTHON25_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PYTHON25_BUILD_DIR)/.built: $(PYTHON25_BUILD_DIR)/.configured
-	rm -f $(PYTHON25_BUILD_DIR)/.built
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON25_BUILD_DIR)
-	touch $(PYTHON25_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -183,18 +182,16 @@ python25: $(PYTHON25_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PYTHON25_BUILD_DIR)/.staged: $(PYTHON25_BUILD_DIR)/.built
-	rm -f $(PYTHON25_BUILD_DIR)/.staged
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PYTHON25_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 python25-stage: $(PYTHON25_BUILD_DIR)/.staged
 
 $(HOST_STAGING_PREFIX)/bin/python2.5: host/.configured make/python25.mk
 	$(MAKE) $(PYTHON25_BUILD_DIR)/.built
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install
-	rm -f $(HOST_STAGING_PREFIX)/bin/python
+	$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install
+	rm -f $@
 
 python25-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.5
 
@@ -229,8 +226,7 @@ $(PYTHON25_IPK_DIR)/CONTROL/control:
 #
 $(PYTHON25_IPK): $(PYTHON25_BUILD_DIR)/.built
 	rm -rf $(PYTHON25_IPK_DIR) $(BUILD_DIR)/python25_*_$(TARGET_ARCH).ipk
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(PYTHON25_IPK_DIR) install
+	$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(PYTHON25_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)/opt/bin/python$(PYTHON25_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)/opt/lib/python$(PYTHON25_VERSION_MAJOR)/lib-dynload/*.so
 	chmod 755 $(PYTHON25_IPK_DIR)/opt/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
@@ -242,6 +238,11 @@ $(PYTHON25_IPK): $(PYTHON25_BUILD_DIR)/.built
 	    do mv $(PYTHON25_IPK_DIR)/opt/$$f $(PYTHON25_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/2.5\1/'`; done
 	install -d $(PYTHON25_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON25_IPK_DIR)/opt/local/lib/python$(PYTHON25_VERSION_MAJOR)/site-packages
+	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
+	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
+	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
+	       -e '/^RUNSHARED=/s|=.*|=|' \
+	       $(PYTHON25_IPK_DIR)/opt/lib/python2.5/config/Makefile
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 #	install -d $(PYTHON25_IPK_DIR)/usr/bin
 #	ln -s /opt/bin/python $(PYTHON25_IPK_DIR)/usr/bin/python
