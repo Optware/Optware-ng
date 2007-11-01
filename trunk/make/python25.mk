@@ -191,7 +191,7 @@ python25-stage: $(PYTHON25_BUILD_DIR)/.staged
 $(HOST_STAGING_PREFIX)/bin/python2.5: host/.configured make/python25.mk
 	$(MAKE) $(PYTHON25_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install
-	rm -f $@
+	rm -f $(@D)/python
 
 python25-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.5
 
