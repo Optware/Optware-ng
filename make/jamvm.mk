@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
-JAMVM_VERSION=1.4.5
-JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.bz2
+JAMVM_VERSION=1.5.0
+JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
-JAMVM_UNZIP=bzcat
+JAMVM_UNZIP=zcat
 JAMVM_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 JAMVM_DESCRIPTION=VM spec version 2 conformant. Extremely small with stripped executable
 JAMVM_SECTION=language
