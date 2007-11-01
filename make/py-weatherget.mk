@@ -240,8 +240,10 @@ $(PY25-WEATHERGET_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEATHERGET_BUILD_DIR)/.built
-	# 2.4
 	rm -rf $(PY24-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py-weatherget_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY25-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py25-weatherget_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-WEATHERGET-DOC_IPK_DIR) $(BUILD_DIR)/py-weatherget-doc_*_$(TARGET_ARCH).ipk
+	# 2.4
 	install -d $(PY24-WEATHERGET_IPK_DIR)/opt/lib/python2.4/site-packages
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
@@ -252,7 +254,6 @@ $(PY24-WEATHERGET_IPK) $(PY25-WEATHERGET_IPK) $(PY-WEATHERGET-DOC_IPK): $(PY-WEA
 	$(MAKE) $(PY24-WEATHERGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-WEATHERGET_IPK_DIR)
 	# 2.5
-	rm -rf $(PY25-WEATHERGET_IPK_DIR) $(BUILD_DIR)/py25-weatherget_*_$(TARGET_ARCH).ipk
 	install -d $(PY25-WEATHERGET_IPK_DIR)/opt/lib/python2.5/site-packages
 	cd $(PY-WEATHERGET_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
