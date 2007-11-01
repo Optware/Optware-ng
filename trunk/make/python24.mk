@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=5
+PYTHON24_IPK_VERSION=6
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -158,7 +158,7 @@ endif
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
-	touch $(PYTHON24_BUILD_DIR)/.configured
+	touch $@
 
 python24-unpack: $(PYTHON24_BUILD_DIR)/.configured
 
@@ -166,10 +166,9 @@ python24-unpack: $(PYTHON24_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PYTHON24_BUILD_DIR)/.built: $(PYTHON24_BUILD_DIR)/.configured
-	rm -f $(PYTHON24_BUILD_DIR)/.built
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON24_BUILD_DIR)
-	touch $(PYTHON24_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -180,19 +179,17 @@ python24: $(PYTHON24_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PYTHON24_BUILD_DIR)/.staged: $(PYTHON24_BUILD_DIR)/.built
-	rm -f $(PYTHON24_BUILD_DIR)/.staged
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON24_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	install $(PYTHON24_BUILD_DIR)/buildpython/python $(STAGING_DIR)/opt/bin/
-	touch $(PYTHON24_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	install $(@D)/buildpython/python $(STAGING_DIR)/opt/bin/
+	touch $@
 
 python24-stage: $(PYTHON24_BUILD_DIR)/.staged
 
 $(HOST_STAGING_PREFIX)/bin/python2.4: host/.configured make/python24.mk
 	$(MAKE) $(PYTHON24_BUILD_DIR)/.built
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON24_BUILD_DIR)/buildpython DESTDIR=$(HOST_STAGING_DIR) install
-	rm -f $(HOST_STAGING_PREFIX)/bin/python
+	$(MAKE) -C $(PYTHON24_BUILD_DIR)/buildpython DESTDIR=$(HOST_STAGING_DIR) install
+	rm -f $(@D)/python
 
 python24-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.4
 
@@ -227,8 +224,7 @@ $(PYTHON24_IPK_DIR)/CONTROL/control:
 #
 $(PYTHON24_IPK): $(PYTHON24_BUILD_DIR)/.built
 	rm -rf $(PYTHON24_IPK_DIR) $(BUILD_DIR)/python24_*_$(TARGET_ARCH).ipk
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON24_BUILD_DIR) DESTDIR=$(PYTHON24_IPK_DIR) install
+	$(MAKE) -C $(PYTHON24_BUILD_DIR) DESTDIR=$(PYTHON24_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON24_IPK_DIR)/opt/bin/python$(PYTHON24_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON24_IPK_DIR)/opt/lib/python$(PYTHON24_VERSION_MAJOR)/lib-dynload/*.so
 	chmod 755 $(PYTHON24_IPK_DIR)/opt/lib/libpython$(PYTHON24_VERSION_MAJOR).so.1.0
@@ -242,6 +238,11 @@ $(PYTHON24_IPK): $(PYTHON24_BUILD_DIR)/.built
 	rm $(PYTHON24_IPK_DIR)/opt/bin/python
 	install -d $(PYTHON24_IPK_DIR)/opt/local/bin
 	install -d $(PYTHON24_IPK_DIR)/opt/local/lib/python$(PYTHON24_VERSION_MAJOR)/site-packages
+	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
+	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
+	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
+	       -e '/^RUNSHARED=/s|=.*|=|' \
+	       $(PYTHON24_IPK_DIR)/opt/lib/python2.4/config/Makefile
 	$(MAKE) $(PYTHON24_IPK_DIR)/CONTROL/control
 #	install -m 755 $(PYTHON24_SOURCE_DIR)/postinst $(PYTHON24_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(PYTHON24_SOURCE_DIR)/prerm $(PYTHON24_IPK_DIR)/CONTROL/prerm
