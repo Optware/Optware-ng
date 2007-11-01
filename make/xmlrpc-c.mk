@@ -39,7 +39,7 @@ XMLRPC-C_CONFLICTS=
 #
 # XMLRPC-C_IPK_VERSION should be incremented when the ipk changes.
 #
-XMLRPC-C_IPK_VERSION=1
+XMLRPC-C_IPK_VERSION=2
 
 #
 # XMLRPC-C_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ XMLRPC-C_IPK_VERSION=1
 # XMLRPC-C_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XMLRPC-C_PATCHES=$(XMLRPC-C_SOURCE_DIR)/ltconfig.patch
+XMLRPC-C_PATCHES=$(XMLRPC-C_SOURCE_DIR)/ltconfig.patch $(XMLRPC-C_SOURCE_DIR)/Makefile.config.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -138,7 +138,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(XMLRPC-C_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) \
+	-e 's|CC -shared|& $(STAGING_LDFLAGS) $(XMLRPC-C_LDFLAGS)|' \
+	$(XMLRPC-C_BUILD_DIR)/libtool
 	touch $@
 
 xmlrpc-c-unpack: $(XMLRPC-C_BUILD_DIR)/.configured
@@ -152,7 +154,7 @@ $(XMLRPC-C_BUILD_DIR)/.built: $(XMLRPC-C_BUILD_DIR)/.configured
 	$(MAKE) -C $(XMLRPC-C_BUILD_DIR) \
 		HOST_OS=linux-gnu \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMLRPC-C_CPPFLAGS)" \
-		LADD="$(STAGING_LDFLAGS) $(XMLRPC-C_LDFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(XMLRPC-C_LDFLAGS)" \
 		;
 	touch $@
 
