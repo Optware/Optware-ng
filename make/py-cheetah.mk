@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CHEETAH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cheetahtemplate
-PY-CHEETAH_VERSION=2.0rc7
+PY-CHEETAH_VERSION=2.0
 PY-CHEETAH_SOURCE=Cheetah-$(PY-CHEETAH_VERSION).tar.gz
 PY-CHEETAH_DIR=Cheetah-$(PY-CHEETAH_VERSION)
 PY-CHEETAH_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-CHEETAH_CONFLICTS=
 #
 # PY-CHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHEETAH_IPK_VERSION=2
+PY-CHEETAH_IPK_VERSION=1
 
 #
 # PY-CHEETAH_CONFFILES should be a list of user-editable files
@@ -219,9 +219,7 @@ $(PY24-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
 	    install --root=$(PY24-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
-	if test 2.4 != $(PYTHON_MAJOR); \
-		then ls $(PY24-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.4; \
-	fi
+	ls $(PY24-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.4
 	$(STRIP_COMMAND) `find $(PY24-CHEETAH_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	$(MAKE) $(PY24-CHEETAH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CHEETAH_IPK_DIR)
@@ -234,9 +232,7 @@ $(PY25-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
 	    install --root=$(PY25-CHEETAH_IPK_DIR) --prefix=/opt; \
 	)
-	if test 2.5 != $(PYTHON_MAJOR); \
-		then ls $(PY25-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.5; \
-	fi
+	# ls $(PY25-CHEETAH_IPK_DIR)/opt/bin/* | xargs -I{} mv {} {}-2.5
 	$(STRIP_COMMAND) `find $(PY25-CHEETAH_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	$(MAKE) $(PY25-CHEETAH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHEETAH_IPK_DIR)
