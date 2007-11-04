@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://cheeseshop.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.3.3
+PY-ROUNDUP_VERSION=1.4.0
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -240,6 +240,8 @@ $(PY24-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-ROUNDUP_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-ROUNDUP_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 #	$(STRIP_COMMAND) `find $(PY24-ROUNDUP_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`
 	rm -rf $(PY24-ROUNDUP_IPK_DIR)/opt/man $(PY24-ROUNDUP_IPK_DIR)/opt/share
 	$(MAKE) $(PY24-ROUNDUP_IPK_DIR)/CONTROL/control
@@ -252,8 +254,6 @@ $(PY25-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-ROUNDUP_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-ROUNDUP_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 #	$(STRIP_COMMAND) `find $(PY25-ROUNDUP_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	mkdir -p $(PY-ROUNDUP-COMMON_IPK_DIR)/opt
 	mv $(PY25-ROUNDUP_IPK_DIR)/opt/share $(PY25-ROUNDUP_IPK_DIR)/opt/man $(PY-ROUNDUP-COMMON_IPK_DIR)/opt/
