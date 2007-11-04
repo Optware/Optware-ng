@@ -103,6 +103,7 @@ PERL_PACKAGES = \
 	ipcalc \
 	perlbal \
 	perlconsole \
+	rsnapshot \
 	spamassassin \
 	stow \
 
@@ -284,7 +285,6 @@ COMMON_CROSS_PACKAGES = \
 # emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
 # ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
 # pure-ftpd too many AC_RUN_IF_ELSE
-# rsnapshot depends on perl
 COMMON_NATIVE_PACKAGES = \
 	emacs \
 	xemacs \
@@ -293,7 +293,6 @@ COMMON_NATIVE_PACKAGES = \
 	mzscheme \
         ocaml \
         pure-ftpd \
-	rsnapshot \
 	unison \
 
 # libiconv - has been made obsolete by gconv-modules
