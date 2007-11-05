@@ -16,7 +16,7 @@ AUTOMAKE_PRIORITY=optional
 AUTOMAKE_DEPENDS=autoconf
 AUTOMAKE_CONFLICTS=
 
-AUTOMAKE_IPK_VERSION=1
+AUTOMAKE_IPK_VERSION=2
 
 AUTOMAKE_BUILD_DIR=$(BUILD_DIR)/automake
 AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
@@ -45,21 +45,21 @@ $(AUTOMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCH
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(AUTOMAKE_BUILD_DIR)/.configured
+	touch $@
 
 automake-unpack: $(AUTOMAKE_BUILD_DIR)/.configured
 
 $(AUTOMAKE_BUILD_DIR)/.built: $(AUTOMAKE_BUILD_DIR)/.configured
-	rm -f $(AUTOMAKE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(AUTOMAKE_BUILD_DIR)
-	touch $(AUTOMAKE_BUILD_DIR)/.built
+	touch $@
 
 automake: $(AUTOMAKE_BUILD_DIR)/.built
 
 $(AUTOMAKE_BUILD_DIR)/.staged: $(AUTOMAKE_BUILD_DIR)/.built
-	rm -f $(AUTOMAKE_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(AUTOMAKE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(AUTOMAKE_BUILD_DIR)/.staged
+	touch $@
 
 automake-stage: $(AUTOMAKE_BUILD_DIR)/.staged
 
@@ -81,16 +81,17 @@ $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE_IPK_DIR) $(BUILD_DIR)/automake_*_$(TARGET_ARCH).ipk
 	install -d $(AUTOMAKE_IPK_DIR)/opt/bin
 	install -d $(AUTOMAKE_IPK_DIR)/opt/info
-	install -d $(AUTOMAKE_IPK_DIR)/opt/share/aclocal-1.9
-	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-1.9/Automake
-	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-1.9/am
+	install -d $(AUTOMAKE_IPK_DIR)/opt/share/aclocal-1.10
+	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-1.10/Automake
+	install -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-1.10/am
 	$(MAKE) -C $(AUTOMAKE_BUILD_DIR) DESTDIR=$(AUTOMAKE_IPK_DIR) install
+	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOMAKE_IPK_DIR)/CONTROL/control
 	rm -f $(AUTOMAKE_IPK_DIR)/opt/info/dir
 	(cd $(AUTOMAKE_IPK_DIR)/opt/bin; \
 		rm automake aclocal; \
-		ln -s automake-1.9 automake; \
-		ln -s aclocal-1.9 aclocal; \
+		ln -s automake-1.10 automake; \
+		ln -s aclocal-1.10 aclocal; \
 	)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOMAKE_IPK_DIR)
 
