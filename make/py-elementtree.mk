@@ -37,7 +37,7 @@ PY-ELEMENTTREE_CONFLICTS=
 #
 # PY-ELEMENTTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ELEMENTTREE_IPK_VERSION=3
+PY-ELEMENTTREE_IPK_VERSION=4
 
 #
 # PY-ELEMENTTREE_CONFFILES should be a list of user-editable files
@@ -127,7 +127,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
-	touch $(PY-ELEMENTTREE_BUILD_DIR)/.configured
+	touch $@
 
 py-elementtree-unpack: $(PY-ELEMENTTREE_BUILD_DIR)/.configured
 
@@ -135,9 +135,9 @@ py-elementtree-unpack: $(PY-ELEMENTTREE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-ELEMENTTREE_BUILD_DIR)/.built: $(PY-ELEMENTTREE_BUILD_DIR)/.configured
-	rm -f $(PY-ELEMENTTREE_BUILD_DIR)/.built
+	rm -f $@
 #	$(MAKE) -C $(PY-ELEMENTTREE_BUILD_DIR)
-	touch $(PY-ELEMENTTREE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +148,12 @@ py-elementtree: $(PY-ELEMENTTREE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-ELEMENTTREE_BUILD_DIR)/.staged: $(PY-ELEMENTTREE_BUILD_DIR)/.built
-	rm -f $(PY-ELEMENTTREE_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-ELEMENTTREE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-ELEMENTTREE_BUILD_DIR)/.staged
+	rm -f $@
+	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
 
 py-elementtree-stage: $(PY-ELEMENTTREE_BUILD_DIR)/.staged
 
