@@ -37,7 +37,7 @@ PY-CHERRYPY_CONFLICTS=
 #
 # PY-CHERRYPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHERRYPY_IPK_VERSION=2
+PY-CHERRYPY_IPK_VERSION=3
 
 #
 # PY-CHERRYPY_CONFFILES should be a list of user-editable files
@@ -121,7 +121,7 @@ $(PY-CHERRYPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYPY_SOURCE) $(PY-CHERR
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
-	touch $(PY-CHERRYPY_BUILD_DIR)/.configured
+	touch $@
 
 py-cherrypy-unpack: $(PY-CHERRYPY_BUILD_DIR)/.configured
 
@@ -129,14 +129,14 @@ py-cherrypy-unpack: $(PY-CHERRYPY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-CHERRYPY_BUILD_DIR)/.built: $(PY-CHERRYPY_BUILD_DIR)/.configured
-	rm -f $(PY-CHERRYPY_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
-	touch $(PY-CHERRYPY_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,9 +147,16 @@ py-cherrypy: $(PY-CHERRYPY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-CHERRYPY_BUILD_DIR)/.staged: $(PY-CHERRYPY_BUILD_DIR)/.built
-	rm -f $(PY-CHERRYPY_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-CHERRYPY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-CHERRYPY_BUILD_DIR)/.staged
+	rm -f $@
+	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(STAGING_DIR) --prefix=/opt)
+	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
+	    install --root=$(STAGING_DIR) --prefix=/opt)
+	touch $@
 
 py-cherrypy-stage: $(PY-CHERRYPY_BUILD_DIR)/.staged
 
