@@ -16,7 +16,7 @@ AUTOCONF_PRIORITY=optional
 AUTOCONF_DEPENDS=make, m4
 AUTOCONF_CONFLICTS=
 
-AUTOCONF_IPK_VERSION=1
+AUTOCONF_IPK_VERSION=2
 
 AUTOCONF_BUILD_DIR=$(BUILD_DIR)/autoconf
 AUTOCONF_SOURCE_DIR=$(SOURCE_DIR)/autoconf
@@ -45,26 +45,26 @@ $(AUTOCONF_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOCONF_SOURCE) $(AUTOCONF_PATCH
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(AUTOCONF_BUILD_DIR)/.configured
+	touch $@
 
 autoconf-unpack: $(AUTOCONF_BUILD_DIR)/.configured
 
 $(AUTOCONF_BUILD_DIR)/.built: $(AUTOCONF_BUILD_DIR)/.configured
-	rm -f $(AUTOCONF_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR)
-	touch $(AUTOCONF_BUILD_DIR)/.built
+	touch $@
 
 autoconf: $(AUTOCONF_BUILD_DIR)/.built
 
 $(AUTOCONF_BUILD_DIR)/.staged: $(AUTOCONF_BUILD_DIR)/.built
-	rm -f $(AUTOCONF_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(AUTOCONF_BUILD_DIR)/.staged
+	touch $@
 
 autoconf-stage: $(AUTOCONF_BUILD_DIR)/.staged
 
 $(AUTOCONF_IPK_DIR)/CONTROL/control:
-	@install -d $(AUTOCONF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: autoconf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -89,6 +89,7 @@ $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
 	install -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/m4sugar
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(AUTOCONF_IPK_DIR) install
 	sed -i -e 's|/usr/bin/m4|/opt/bin/m4|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
+	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
 	$(MAKE) $(AUTOCONF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOCONF_IPK_DIR)
 
