@@ -1,0 +1,8 @@
+#!/bin/sh
+echo "Please edit config (/opt/etc/hellanzb.conf)"
+echo ""
+echo "Configure your news-servers and optionally change directory prefix. (now is /opt/tmp)"
+echo ""
+echo "You can start hellanzb by /opt/etc/init.d/S71hellanzb or a reboot."
+echo "To monitor progress, you can watch /opt/var/log/hellanzb.log"
+echo "Or you can install a webinterface, like zussaweb"
