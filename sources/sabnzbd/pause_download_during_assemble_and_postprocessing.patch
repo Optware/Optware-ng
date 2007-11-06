@@ -1,0 +1,160 @@
+diff -Naur SABnzbd-0.2.5.orig/sabnzbd/assembler.py SABnzbd-0.2.5/sabnzbd/assembler.py
+--- SABnzbd-0.2.5.orig/sabnzbd/assembler.py	2006-12-01 14:43:30.000000000 -0500
++++ SABnzbd-0.2.5/sabnzbd/assembler.py	2007-10-20 07:41:36.000000000 -0400
+@@ -77,6 +77,9 @@
+                 logging.info('[%s] Starting PostProcessing on %s' + \
+                              ' => Repair:%s, Unpack:%s, Delete:%s',
+                              __NAME__, filename, rep, unp, dele)
++
++                if sabnzbd.PAUSE_DOWNLOAD_DURING_POSTPROCESSING:
++                    sabnzbd.pause_downloader()
+                              
+                 ## Run Stage 1: Repair
+                 if rep:
+@@ -96,6 +99,8 @@
+                     if readd:
+                         logging.info('[%s] Readded %s to queue', __NAME__, filename)
+                         sabnzbd.add_nzo(nzo, 0)
++                        if sabnzbd.PAUSE_DOWNLOAD_DURING_POSTPROCESSING:
++                            sabnzbd.resume_downloader()
+                         ## Break out
+                         continue
+                         
+@@ -173,6 +178,9 @@
+             except:
+                 logging.exception("[%s] Cleanup of %s failed.", __NAME__,
+                                   nzo.get_filename())
++
++            if sabnzbd.PAUSE_DOWNLOAD_DURING_POSTPROCESSING:
++                sabnzbd.resume_downloader()
+                                   
+ #------------------------------------------------------------------------------
+ ## sabnzbd.pause_downloader
+@@ -242,6 +250,8 @@
+                 sabnzbd.postprocess_nzo(nzo)
+                 
+ def _assemble(nzf, path, dupe):
++    if sabnzbd.PAUSE_DOWNLOAD_DURING_ASSEMBLE:
++        sabnzbd.pause_downloader()
+     if os.path.exists(path):
+         unique_path = get_unique_path(path, create_dir = False)
+         if dupe:
+@@ -294,6 +304,8 @@
+             
+     fout.flush()
+     fout.close()
++    if sabnzbd.PAUSE_DOWNLOAD_DURING_ASSEMBLE:
++        sabnzbd.resume_downloader()
+     try:
+         os.chmod(path, sabnzbd.UMASK)
+     except:
+diff -Naur SABnzbd-0.2.5.orig/sabnzbd/__init__.py SABnzbd-0.2.5/sabnzbd/__init__.py
+--- SABnzbd-0.2.5.orig/sabnzbd/__init__.py	2006-12-01 20:21:48.000000000 -0500
++++ SABnzbd-0.2.5/sabnzbd/__init__.py	2007-10-20 07:43:07.000000000 -0400
+@@ -66,6 +66,8 @@
+ 
+ UMASK = 0755
+ BANDWITH_LIMIT = 0.0
++PAUSE_DOWNLOAD_DURING_ASSEMBLE = False
++PAUSE_DOWNLOAD_DURING_POSTPROCESSING = False
+ 
+ USERNAME_NEWZBIN = None
+ PASSWORD_NEWZBIN = None
+@@ -128,7 +130,8 @@
+            USERNAME_NEWZBIN, PASSWORD_NEWZBIN, POSTPROCESSOR, ASSEMBLER, \
+            DIRSCANNER, SCHED, NZBQ, DOWNLOADER, NZB_BACKUP_DIR, DOWNLOAD_DIR, \
+            COMPLETE_DIR, CACHE_DIR, UMASK, SEND_GROUP, CREATE_CAT_FOLDERS, \
+-           CREATE_CAT_SUB, BPSMETER, BANDWITH_LIMIT, ARTICLECACHE
++           CREATE_CAT_SUB, BPSMETER, BANDWITH_LIMIT, ARTICLECACHE, \
++           PAUSE_DOWNLOAD_DURING_ASSEMBLE, PAUSE_DOWNLOAD_DURING_POSTPROCESSING
+            
+     if __INITIALIZED__:
+         return False
+@@ -163,6 +166,12 @@
+     PAR_CLEANUP = bool(int(CFG['misc']['enable_par_cleanup']))
+     logging.debug("PAR_CLEANUP -> %s", PAR_CLEANUP)
+     
++    PAUSE_DOWNLOAD_DURING_ASSEMBLE = bool(int(CFG['misc']['pause_download_during_assemble']))
++    logging.debug("PAUSE_DOWNLOAD_DURING_ASSEMBLE -> %s", PAUSE_DOWNLOAD_DURING_ASSEMBLE)
++    
++    PAUSE_DOWNLOAD_DURING_POSTPROCESSING = bool(int(CFG['misc']['pause_download_during_postprocessing']))
++    logging.debug("PAUSE_DOWNLOAD_DURING_POSTPROCESSING -> %s", PAUSE_DOWNLOAD_DURING_POSTPROCESSING)
++    
+     CLEANUP_LIST = CFG['misc']['cleanup_list']
+     if type(CLEANUP_LIST) != type([]):
+         CLEANUP_LIST = []
+diff -Naur SABnzbd-0.2.5.orig/sabnzbd/interface.py SABnzbd-0.2.5/sabnzbd/interface.py
+--- SABnzbd-0.2.5.orig/sabnzbd/interface.py	2006-12-01 20:08:12.000000000 -0500
++++ SABnzbd-0.2.5/sabnzbd/interface.py	2007-10-20 08:18:18.000000000 -0400
+@@ -710,6 +710,8 @@
+         config['username'] = sabnzbd.CFG['misc']['username']
+         config['password'] = sabnzbd.CFG['misc']['password']
+         config['bandwith_limit'] = sabnzbd.CFG['misc']['bandwith_limit']
++        config['pause_download_during_assemble'] = int(sabnzbd.CFG['misc']['pause_download_during_assemble'])
++        config['pause_download_during_postprocessing'] = int(sabnzbd.CFG['misc']['pause_download_during_postprocessing'])
+         config['username_newzbin'] = sabnzbd.CFG['newzbin']['username']
+         config['password_newzbin'] = sabnzbd.CFG['newzbin']['password']
+         config['cache_limit'] = sabnzbd.CFG['misc']['cache_limit']
+@@ -732,12 +734,15 @@
+     @cherrypy.expose
+     def saveGeneral(self, host = None, port = None, username = None, password = None,
+                     cronlines = None, username_newzbin = None, password_newzbin = None, 
+-                    bandwith_limit = None, cleanup_list = None, cache_limit = None):
++                    bandwith_limit = None, cleanup_list = None, cache_limit = None, 
++                    pause_download_during_assemble = None, pause_download_during_postprocessing = None):
+         sabnzbd.CFG['misc']['host'] = host
+         sabnzbd.CFG['misc']['port'] = port
+         sabnzbd.CFG['misc']['username'] = username
+         sabnzbd.CFG['misc']['password'] = password
+         sabnzbd.CFG['misc']['bandwith_limit'] = bandwith_limit
++        sabnzbd.CFG['misc']['pause_download_during_assemble'] = int(pause_download_during_assemble)
++        sabnzbd.CFG['misc']['pause_download_during_postprocessing'] = int(pause_download_during_postprocessing)
+         sabnzbd.CFG['newzbin']['username'] = username_newzbin
+         sabnzbd.CFG['newzbin']['password'] = password_newzbin
+         sabnzbd.CFG['misc']['cleanup_list'] = listquote.simplelist(cleanup_list)
+diff -Naur SABnzbd-0.2.5.orig/SABnzbd.ini.sample SABnzbd-0.2.5/SABnzbd.ini.sample
+--- SABnzbd-0.2.5.orig/SABnzbd.ini.sample	2006-12-01 19:27:00.000000000 -0500
++++ SABnzbd-0.2.5/SABnzbd.ini.sample	2007-10-20 07:27:58.000000000 -0400
+@@ -84,6 +84,20 @@
+     ## (only if verifiying/repairing succeded)
+     enable_par_cleanup = 1
+     
++    ## Enable/disable pause download during assemble
++    ## 0 = Disabled
++    ## 1 = Enabled
++    ## Pauses the download queue during the assembly of a file
++    ## Improves stability on low powered machines
++    pause_download_during_assemble = 0
++    
++    ## Enable/disable pause download during postprocessing
++    ## 0 = Disabled
++    ## 1 = Enabled
++    ## Pauses the download queue during the postprocessing of a nzb
++    ## Improves stability on low powered machines
++    pause_download_during_postprocessing = 0
++    
+     ## should we failover on yenc crc errors
+     ## 0 = no
+     ## 1 = yes
+diff -Naur SABnzbd-0.2.5.orig/templates/config_general.tmpl SABnzbd-0.2.5/templates/config_general.tmpl
+--- SABnzbd-0.2.5.orig/templates/config_general.tmpl	2006-11-24 15:27:56.000000000 -0500
++++ SABnzbd-0.2.5/templates/config_general.tmpl	2007-10-20 11:55:00.000000000 -0400
+@@ -63,6 +63,18 @@
+ List of file (extensions) that should be deleted at the cleanup stage.<br>
+ For example: ".nfo," or ".nfo, .sfv"<br>
+ <input type="text" name="cleanup_list" value="$cleanup_list">
++<br>
++<br>
++<strong>Pause download during assemble:</strong><br>
++Improves stability on low powered machines.<br>
++<input type="radio" name="pause_download_during_assemble" value="0" <!--#if $pause_download_during_assemble == 0 then "checked=1" else ""#--> /> No
++<input type="radio" name="pause_download_during_assemble" value="1" <!--#if $pause_download_during_assemble  > 0 then "checked=1" else ""#--> /> Yes
++<br>
++<br>
++<strong>Pause download during postprocessing:</strong><br>
++Improves stability on low powered machines.<br>
++<input type="radio" name="pause_download_during_postprocessing" value="0" <!--#if $pause_download_during_postprocessing == 0 then "checked=1" else ""#--> /> No
++<input type="radio" name="pause_download_during_postprocessing" value="1" <!--#if $pause_download_during_postprocessing  > 0 then "checked=1" else ""#--> /> Yes
+ </fieldset>
+ </div>
+ <div class="EntryBlock">

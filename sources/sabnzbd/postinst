@@ -1,0 +1,23 @@
+#!/bin/sh
+echo "Please edit config (/opt/etc/SABnzbd.ini)"
+echo "Default locations are: "
+echo ""
+echo "\
+download_dir	= /opt/tmp/SABnzbd/tmp/"
+echo "\
+complete_dir	= /opt/tmp/downloads/"
+echo "\
+nzb_backup_dir	= /opt/tmp/SABnzbd/nzb/backup/"
+echo "\
+cache_dir	= /opt/tmp/SABnzbd/cache/"
+echo "\
+log_dir		= /opt/var/log"
+echo "\
+dirscan_dir	= /opt/tmp/SABnzbd/nzb/"
+echo ""
+echo "If you like them, you only have to configure your news-servers."
+echo "Otherwise, remove the directories, make your own, and modify the configuration." 
+echo ""
+echo "You can start SABnzbd by /opt/etc/init.d/S70sabnzbd or a reboot."
+echo "The webinterface is on eg. http://192.168.1.1:8080/sabnzbd"
+
