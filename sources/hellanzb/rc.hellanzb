@@ -1,0 +1,3 @@
+#!/bin/sh
+
+nice -n19 /opt/bin/hellanzb.py -D
