@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export PATH=/opt/sbin:/opt/bin:${PATH}
+/opt/bin/SABnzbd.py -f /opt/etc/SABnzbd.ini -d

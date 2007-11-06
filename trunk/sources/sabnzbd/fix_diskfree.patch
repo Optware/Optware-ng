@@ -1,0 +1,13 @@
+diff -Naur SABnzbd-0.2.5.orig/sabnzbd/interface.py SABnzbd-0.2.5/sabnzbd/interface.py
+
+--- SABnzbd-0.2.5.orig/sabnzbd/interface.py	2006-12-02 02:08:12.000000000 +0100
++++ SABnzbd-0.2.5/sabnzbd/interface.py	2007-10-19 14:13:36.000000000 +0200
+@@ -55,7 +55,7 @@
+     def diskfree(_dir):
+         try:
+             s = os.statvfs(_dir)
+-            return (s[statvfs.F_BFREE] * s[statvfs.F_FRSIZE]) / GIGI
++            return (s[statvfs.F_BAVAIL] * s[statvfs.F_FRSIZE]) / GIGI
+         except OSError:
+             return 0.0
+ except AttributeError:
