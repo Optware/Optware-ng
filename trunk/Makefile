@@ -27,9 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = py-yenc \
-	sabnzbd \
-	hellanzb \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -110,7 +108,15 @@ PERL_PACKAGES = \
 	stow \
 
 PYTHON_PACKAGES = \
-	getmail ipython mailman mod-python mod-wsgi putmail pyrex scons \
+	getmail \
+	hellanzb \
+	ipython \
+	mailman \
+	mod-python mod-wsgi \
+	putmail \
+	pyrex \
+	sabnzbd \
+	scons \
 	py-4suite py-amara py-apsw \
 	py-bazaar-ng py-beaker py-bittorrent py-bluez py-buildutils \
 	py-celementtree py-cheetah py-cherrypy py-cherrytemplate py-cjson \
@@ -134,7 +140,7 @@ PYTHON_PACKAGES = \
 	py-tailor py-tgfastdata py-trac \
 	py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-usb py-weatherget py-webpy py-wsgiref py-webhelpers \
-	py-xml py-yaml py-zope-interface \
+	py-xml py-yaml py-yenc py-zope-interface \
 	py-twisted py-axiom py-epsilon py-mantissa py-nevow \
 
 ERLANG_PACKAGES = \

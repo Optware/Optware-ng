@@ -32,7 +32,8 @@ HELLANZB_PRIORITY=optional
 HELLANZB_PY24_DEPENDS=python24, py-twisted, py-yenc, par2cmdline, unrar
 HELLANZB_PY25_DEPENDS=python25, py25-twisted, py25-yenc, par2cmdline, unrar
 HELLANZB_SUGGESTS=
-HELLANZB_CONFLICTS=
+HELLANZB_PY24_CONFLICTS=py25-hellanzb
+HELLANZB_PY25_CONFLICTS=py-hellanzb
 
 #
 # HELLANZB_IPK_VERSION should be incremented when the ipk changes.
@@ -192,7 +193,7 @@ $(PY24-HELLANZB_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(HELLANZB_DESCRIPTION)" >>$@
 	@echo "Depends: $(HELLANZB_PY24_DEPENDS)" >>$@
 	@echo "Suggests: $(HELLANZB_SUGGESTS)" >>$@
-	@echo "Conflicts: $(HELLANZB_CONFLICTS)" >>$@
+	@echo "Conflicts: $(HELLANZB_PY24_CONFLICTS)" >>$@
 
 $(PY25-HELLANZB_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -207,7 +208,7 @@ $(PY25-HELLANZB_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(HELLANZB_DESCRIPTION)" >>$@
 	@echo "Depends: $(HELLANZB_PY25_DEPENDS)" >>$@
 	@echo "Suggests: $(HELLANZB_SUGGESTS)" >>$@
-	@echo "Conflicts: $(HELLANZB_CONFLICTS)" >>$@
+	@echo "Conflicts: $(HELLANZB_PY25_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
