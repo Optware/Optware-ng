@@ -32,7 +32,8 @@ SABNZBD_PRIORITY=optional
 SABNZBD_PY24_DEPENDS=python24, py-cherrypy, py-cheetah, py-elementtree, py-celementtree, py-yenc
 SABNZBD_PY25_DEPENDS=python25, py25-cherrypy, py25-cheetah, py25-celementtree, py25-yenc
 SABNZBD_SUGGESTS=par2cmdline, unrar, unzip
-SABNZBD_CONFLICTS=
+SABNZBD_PY24_CONFLICTS=py25-sabnzbd
+SABNZBD_PY25_CONFLICTS=py-sabnzbd
 
 #
 # SABNZBD_IPK_VERSION should be incremented when the ipk changes.
@@ -197,7 +198,7 @@ $(SABNZBD_PY24_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(SABNZBD_SITE)/$(SABNZBD_SOURCE)" >>$@
 	@echo "Description: $(SABNZBD_DESCRIPTION)" >>$@
 	@echo "Depends: $(SABNZBD_PY24_DEPENDS)" >>$@
-	@echo "Conflicts: $(SABNZBD_CONFLICTS)" >>$@
+	@echo "Conflicts: $(SABNZBD_PY24_CONFLICTS)" >>$@
 
 $(SABNZBD_PY25_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
@@ -211,7 +212,7 @@ $(SABNZBD_PY25_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(SABNZBD_SITE)/$(SABNZBD_SOURCE)" >>$@
 	@echo "Description: $(SABNZBD_DESCRIPTION)" >>$@
 	@echo "Depends: $(SABNZBD_PY25_DEPENDS)" >>$@
-	@echo "Conflicts: $(SABNZBD_CONFLICTS)" >>$@
+	@echo "Conflicts: $(SABNZBD_PY25_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
