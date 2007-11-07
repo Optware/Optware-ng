@@ -17,11 +17,11 @@ POSTFIX_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 POSTFIX_DESCRIPTION=The Postfix mail system is an alternative to sendmail.
 POSTFIX_SECTION=util
 POSTFIX_PRIORITY=optional
-POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils
+POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils, openssl
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=1
+POSTFIX_IPK_VERSION=2
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -35,7 +35,7 @@ POSTFIX_PATCHES=$(POSTFIX_SOURCE_DIR)/postfix.patch \
 		$(POSTFIX_SOURCE_DIR)/sys_defs.h.patch
 
 POSTFIX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/sasl
-POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl
+POSTFIX_LDFLAGS=-lpcre -lnsl -lsasl2 -ldl -lssl
 
 POSTFIX_BUILD_DIR=$(BUILD_DIR)/postfix
 POSTFIX_SOURCE_DIR=$(SOURCE_DIR)/postfix
@@ -52,12 +52,12 @@ $(DL_DIR)/$(POSTFIX_SOURCE):
 postfix-source: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 
 $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
-	$(MAKE) libdb-stage libnsl-stage pcre-stage cyrus-sasl-stage
-	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR)
+	$(MAKE) libdb-stage libnsl-stage pcre-stage cyrus-sasl-stage openssl-stage
+	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
 	$(POSTFIX_UNZIP) $(DL_DIR)/$(POSTFIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(POSTFIX_PATCHES) | patch -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1
-	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR)
-	(cd $(POSTFIX_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(MAKE) makefiles \
 		CCARGS=' \
@@ -74,18 +74,19 @@ $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 			-DHAS_PCRE \
 			-DUSE_CYRUS_SASL \
 			-DUSE_SASL_AUTH \
+			-DUSE_TLS \
 			$(STAGING_CPPFLAGS) $(POSTFIX_CPPFLAGS) \
 			' \
 		AUXLIBS="$(STAGING_LDFLAGS) $(POSTFIX_LDFLAGS)" \
 	)
-	touch $(POSTFIX_BUILD_DIR)/.configured
+	touch $@
 
 postfix-unpack: $(POSTFIX_BUILD_DIR)/.configured
 
 $(POSTFIX_BUILD_DIR)/.built: $(POSTFIX_BUILD_DIR)/.configured
-	rm -f $(POSTFIX_BUILD_DIR)/.built
-	$(MAKE) -C $(POSTFIX_BUILD_DIR)
-	(cd $(POSTFIX_BUILD_DIR); \
+	rm -f $@
+	$(MAKE) -C $(@D)
+	(cd $(@D); \
 		sed -i 's/fmt/\/opt\/bin\/fmt/g' postfix-install; \
 		sed -i 's/cmp/\/opt\/bin\/cmp/g' postfix-install; \
 		rm -f conf/LICENSE; \
@@ -102,20 +103,20 @@ $(POSTFIX_BUILD_DIR)/.built: $(POSTFIX_BUILD_DIR)/.configured
 		rm -f trace.8.html; \
 		cp bounce.8.html trace.8.html; \
 	)
-	touch $(POSTFIX_BUILD_DIR)/.built
+	touch $@
 
 postfix: $(POSTFIX_BUILD_DIR)/.built
 
 $(POSTFIX_BUILD_DIR)/.staged: $(POSTFIX_BUILD_DIR)/.built
-	rm -f $(POSTFIX_BUILD_DIR)/.staged
-#	$(MAKE) -C $(POSTFIX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	echo "Warning: the makefile target 'postfix-stage' is not available."
-	touch $(POSTFIX_BUILD_DIR)/.staged
+	touch $@
 
 postfix-stage: $(POSTFIX_BUILD_DIR)/.staged
 
 $(POSTFIX_IPK_DIR)/CONTROL/control:
-	@install -d $(POSTFIX_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: postfix" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -130,7 +131,7 @@ $(POSTFIX_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(POSTFIX_CONFLICTS)" >>$@
 
 $(POSTFIX_DOC_IPK_DIR)/CONTROL/control:
-	@install -d $(POSTFIX_DOC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: postfix-doc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -196,10 +197,6 @@ postfix-clean:
 postfix-dirclean:
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(POSTFIX_BUILD_DIR) $(POSTFIX_IPK_DIR) $(POSTFIX_IPK)
 	rm -rf $(POSTFIX_DOC_IPK_DIR) $(POSTFIX_DOC_IPK)
-#
-#
-# Some sanity check for the package.
-#
-#
+
 postfix-check: $(POSTFIX_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POSTFIX_IPK)
