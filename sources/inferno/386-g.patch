@@ -1,0 +1,51 @@
+Index: mkfiles/mkfile-Linux-386
+===================================================================
+--- mkfiles/mkfile-Linux-386	(revision 221)
++++ mkfiles/mkfile-Linux-386	(working copy)
+@@ -16,13 +16,11 @@
+ 		-O\
+ 		-I$ROOT/Linux/386/include\
+ 		-I$ROOT/include\
+- 		-I/usr/X11R6/include\
+ 		-DLINUX_386
+ 
+ ANSICPP=
+ LD=		cc -m32
+-LDFLAGS=	-L/usr/openwin/lib\
+-		-L/usr/X11R6/lib\
++LDFLAGS=
+ 
+ SYSLIBS=
+ 
+Index: emu/Linux/mkfile
+===================================================================
+--- emu/Linux/mkfile	(revision 221)
++++ emu/Linux/mkfile	(working copy)
+@@ -4,8 +4,8 @@
+ 
+ #Configurable parameters
+ 
+-CONF=emu			#default configuration
+-CONFLIST=emu
++CONF=emu-g			#default configuration
++CONFLIST=emu-g
+ CLEANCONFLIST=
+ 
+ INSTALLDIR=$ROOT/$SYSTARG/$OBJTYPE/bin	#path of directory where kernel is installed
+@@ -19,7 +19,6 @@
+ OBJ=\
+ 	asm-$OBJTYPE.$O\
+ 	os.$O\
+-	win-x11a.$O\
+ 	$CONF.root.$O\
+ 	lock.$O\
+ 	$DEVS\
+@@ -31,7 +30,7 @@
+ HFILES=\
+ 
+ CFLAGS='-DROOT="'$ROOT'"' -DEMU -I. -I../port -I$ROOT/$SYSTARG/$OBJTYPE/include -I$ROOT/include -I$ROOT/libinterp $CTHREADFLAGS $CFLAGS $EMUOPTIONS
+-SYSLIBS= -lm -lX11 -lXext
++SYSLIBS= -lm
+ KERNDATE=`{$NDATE}
+ 
+ default:V:	$O.$CONF

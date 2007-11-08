@@ -1,0 +1,46 @@
+Index: mkconfig
+===================================================================
+--- mkconfig	(revision 221)
++++ mkconfig	(working copy)
+@@ -4,7 +4,7 @@
+ #	They are almost always the same.
+ 
+ #	On Nt systems, the ROOT path MUST be of the form `drive:/path'
+-ROOT=/usr/inferno
++ROOT=/home/bzhou/devel/inferno-os
+ 
+ #
+ #	Specify the flavour of Tk (std for standard builds)
+@@ -14,7 +14,7 @@
+ #
+ #	Except for building kernels, SYSTARG must always be the same as SYSHOST
+ #
+-SYSHOST=Plan9		# build system OS type (Hp, Inferno, Irix, Linux, Nt, Plan9, Solaris)
++SYSHOST=Linux		# build system OS type (Hp, Inferno, Irix, Linux, Nt, Plan9, Solaris)
+ SYSTARG=$SYSHOST		# target system OS type (Hp, Inferno, Irix, Linux, Nt, Plan9, Solaris)
+ 
+ #
+@@ -22,7 +22,7 @@
+ #	environment; for other systems it is usually just hard-coded
+ #
+ #OBJTYPE=386			# target system object type (s800, mips, 386, arm, sparc)
+-OBJTYPE=$objtype
++OBJTYPE=386
+ 
+ #
+ #	no changes required beyond this point
+Index: makemk.sh
+===================================================================
+--- makemk.sh	(revision 221)
++++ makemk.sh	(working copy)
+@@ -8,8 +8,8 @@
+ 
+ # change these defines as appropriate here or in mkconfig
+ # ROOT should be the root of the Inferno tree
+-ROOT=/usr/inferno
+-SYSTARG=FreeBSD
++ROOT=/home/bzhou/devel/inferno-os
++SYSTARG=Linux
+ OBJTYPE=386
+ SYSTYPE=posix
+ 
