@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://cheeseshop.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.4.0
+PY-ROUNDUP_VERSION=1.4.1
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
