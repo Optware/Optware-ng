@@ -1,0 +1,10 @@
+--- libmath/blas.c.orig	2007-11-06 14:25:46.000000000 -0800
++++ libmath/blas.c	2007-11-06 14:26:04.000000000 -0800
+@@ -41,7 +41,6 @@
+ 	if (n <= 0) 
+ 		return 0;
+ 	while (n--) {
+-		sum += fabs(*x++);
+ 	}
+ 	return sum;
+ }
