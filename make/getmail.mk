@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.7.6
+GETMAIL_VERSION=4.7.7
 PY-GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 PY-GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 PY-GETMAIL_UNZIP=zcat
@@ -239,6 +239,8 @@ $(PY-GETMAIL-COMMON_IPK) $(PY24-GETMAIL_IPK) $(PY25-GETMAIL_IPK): $(PY-GETMAIL_B
 	install -d $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
 	mv $(PY24-GETMAIL_IPK_DIR)/opt/share $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
 	$(MAKE) $(PY24-GETMAIL_IPK_DIR)/CONTROL/control
+	for f in $(PY24-GETMAIL_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-py2.4|'`; done
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GETMAIL_IPK_DIR)
 	$(MAKE) $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-GETMAIL-COMMON_IPK_DIR)
@@ -249,8 +251,6 @@ $(PY-GETMAIL-COMMON_IPK) $(PY24-GETMAIL_IPK) $(PY25-GETMAIL_IPK): $(PY-GETMAIL_B
 	    --root=$(PY25-GETMAIL_IPK_DIR) --prefix=/opt; \
 	)
 	rm -rf $(PY25-GETMAIL_IPK_DIR)/opt/share
-	for f in $(PY25-GETMAIL_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(MAKE) $(PY25-GETMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GETMAIL_IPK_DIR)
 
