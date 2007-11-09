@@ -20,13 +20,16 @@ DSTAT_DESCRIPTION=dstat is a versatile replacement for vmstat, iostat, netstat, 
 DSTAT_SECTION=admin
 DSTAT_PRIORITY=optional
 DSTAT_DEPENDS=python
+ifeq (nslu2, $(OPTWARE_TARGET))
+DSTAT_DEPENDS+=, coreutils
+endif
 DSTAT_SUGGESTS=
 DSTAT_CONFLICTS=
 
 #
 # DSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-DSTAT_IPK_VERSION=1
+DSTAT_IPK_VERSION=2
 
 #
 # DSTAT_CONFFILES should be a list of user-editable files

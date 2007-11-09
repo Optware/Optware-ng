@@ -108,6 +108,7 @@ PERL_PACKAGES = \
 	stow \
 
 PYTHON_PACKAGES = \
+	dstat \
 	getmail \
 	hellanzb \
 	ipython \
@@ -192,7 +193,7 @@ COMMON_CROSS_PACKAGES = \
 	dansguardian dash davtools dbus dcraw denyhosts dev-pts dfu-util \
 	dialog dict digitemp dircproxy distcc dhcp diffstat diffutils \
 	dnsmasq dokuwiki dosfstools dovecot \
-	dropbear drraw dspam dstat dtach dump \
+	dropbear drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator ed ecl electric-fence elinks \
 	emacs22 endian enhanced-ctorrent esmtp esniper \
 	$(ERLANG_PACKAGES) \
