@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.22
+LIBPNG_VERSION=1.2.23
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
@@ -96,15 +96,15 @@ libpng-source: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 #
 $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBPNG_DIR) $(@D)
 	$(LIBPNG_UNZIP) $(DL_DIR)/$(LIBPNG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPNG_PATCHES)"; \
 		then cat $(LIBPNG_PATCHES) | patch -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(LIBPNG_BUILD_DIR)
+	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(@D)
 #	cd $(LIBPNG_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ;
-	(cd $(LIBPNG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPNG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPNG_LDFLAGS)" \
@@ -116,7 +116,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBPNG_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libpng-unpack: $(LIBPNG_BUILD_DIR)/.configured
@@ -127,7 +127,7 @@ libpng-unpack: $(LIBPNG_BUILD_DIR)/.configured
 #
 $(LIBPNG_BUILD_DIR)/.built: $(LIBPNG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBPNG_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -141,7 +141,7 @@ libpng: $(LIBPNG_BUILD_DIR)/.built
 #
 $(LIBPNG_BUILD_DIR)/.staged: $(LIBPNG_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(STAGING_PREFIX) install
+	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
 	rm -f $(STAGING_DIR)/opt/lib/libpng.la
 	rm -f $(STAGING_DIR)/opt/lib/libpng12.la
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libpng*.pc
