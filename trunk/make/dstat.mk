@@ -29,7 +29,7 @@ DSTAT_CONFLICTS=
 #
 # DSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-DSTAT_IPK_VERSION=2
+DSTAT_IPK_VERSION=3
 
 #
 # DSTAT_CONFFILES should be a list of user-editable files
@@ -110,7 +110,8 @@ $(DSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(DSTAT_SOURCE) $(DSTAT_PATCHES) make/
 	fi
 	(cd $(DSTAT_BUILD_DIR); \
 		sed -i -e 's#prefix = /usr#prefix = /opt#' \
-			-e 's#sysconfdir = /etc#sysconfdir = /opt/etc#' Makefile)
+			-e 's#sysconfdir = /etc#sysconfdir = /opt/etc#' Makefile; \
+		sed -i -e 's@#!/usr/bin/env python@#!/opt/bin/python@' dstat )
 	touch $@
 
 dstat-unpack: $(DSTAT_BUILD_DIR)/.configured
