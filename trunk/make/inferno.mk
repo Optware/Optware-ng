@@ -47,7 +47,9 @@ INFERNO_PATCHES=$(INFERNO_SOURCE_DIR)/arm-g.patch
 ifeq (cs05q3armel, $(OPTWARE_TARGET))
 INFERNO_PATCHES+=$(INFERNO_SOURCE_DIR)/libmath-blas.patch
 endif
+ifneq (cs04q3armel, $(OPTWARE_TARGET))
 INFERNO_PATCHES+=$(INFERNO_SOURCE_DIR)/asm-arm-SWP-Rn-overlapping.patch
+endif
 INFERNO_PATCHES+=$(INFERNO_SOURCE_DIR)/asm-arm-SYS_exit.patch
 endif
 
