@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = spandsp\
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -270,7 +270,7 @@ COMMON_CROSS_PACKAGES = \
 	sed sendmail ser setserial setpwc \
 	sharutils simh sipcalc siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
-	socat speex spindown sqlite sqlite2 \
+	socat spandsp speex spindown sqlite sqlite2 \
 	sqsh squeak squid srelay sslwrap strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
