@@ -27,8 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = asterisk14-extra-sounds-en-alaw asterisk14-core-sounds-en-alaw\
-				asterisk14-extra-sounds-en-g729 asterisk14-core-sounds-en-g729\
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -154,8 +153,12 @@ ASTERISK_PACKAGES = \
 	asterisk asterisk-sounds \
 	asterisk14 \
 	asterisk14-chan-capi \
+	asterisk14-core-sounds-en-alaw \
+	asterisk14-core-sounds-en-g729 \
 	asterisk14-core-sounds-en-gsm \
 	asterisk14-core-sounds-en-ulaw \
+	asterisk14-extra-sounds-en-alaw \
+	asterisk14-extra-sounds-en-g729 \
 	asterisk14-extra-sounds-en-gsm \
 	asterisk14-extra-sounds-en-ulaw \
 	asterisk14-moh-freeplay-gsm \
