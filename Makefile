@@ -28,6 +28,7 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = asterisk14-extra-sounds-en-alaw asterisk14-core-sounds-en-alaw\
+				asterisk14-extra-sounds-en-g729 asterisk14-core-sounds-en-g729\
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
