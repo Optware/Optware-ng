@@ -128,6 +128,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMLRPC-C_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XMLRPC-C_LDFLAGS)" \
+		ac_cv_prog_have_libwww_config=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
