@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IRSSI_SITE=http://www.irssi.org/files
-IRSSI_VERSION=0.8.11
+IRSSI_VERSION=0.8.12
 IRSSI_SOURCE=irssi-$(IRSSI_VERSION).tar.gz
 IRSSI_DIR=irssi-$(IRSSI_VERSION)
 IRSSI_UNZIP=zcat
@@ -48,7 +48,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=2
+IRSSI_IPK_VERSION=1
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
