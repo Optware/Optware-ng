@@ -16,8 +16,8 @@
 +APPENDDEF(`confLIBS',`-lssl -lcrypto -ldb')
 +
 
---- cf/cf/generic-linux.cf.config	2006-10-29 22:09:59.000000000 +0100
-+++ cf/cf/generic-linux.cf	2006-10-29 22:10:26.000000000 +0100
+--- cf/cf/generic-linux.cf.orig	2007-04-04 01:32:55.000000000 +0200
++++ cf/cf/generic-linux.cf	2007-08-26 18:58:30.000000000 +0200
 @@ -70,7 +70,7 @@
  
  Cwlocalhost
@@ -70,18 +70,9 @@
 -O QueueDirectory=/var/spool/mqueue
 +O QueueDirectory=/opt/var/spool/mqueue
  
- # key for shared memory; 0 to turn off
+ # key for shared memory; 0 to turn off, -1 to auto-select
  #O SharedMemoryKey=0
-@@ -327,7 +327,7 @@
- O SuperSafe=True
- 
- # status file
--O StatusFile=/etc/mail/statistics
-+O StatusFile=/opt/etc/mail/statistics
- 
- # time zone handling:
- #  if undefined, use system default
-@@ -339,7 +339,7 @@
+@@ -340,7 +340,7 @@
  #O DefaultUser=mailnull
  
  # list of locations of user database file (null means no lookup)
@@ -90,7 +81,7 @@
  
  # fallback MX host
  #O FallbackMXhost=fall.back.host.net
-@@ -387,7 +387,7 @@
+@@ -388,7 +388,7 @@
  #O DefaultCharSet=unknown-8bit
  
  # service switch file (name hardwired on Solaris, Ultrix, OSF/1, others)
@@ -99,8 +90,8 @@
  
  # hosts file (normally /etc/hosts)
  #O HostsFile=/etc/hosts
-@@ -437,7 +437,7 @@
- #O DoubleBounceAddress=postmaster
+@@ -441,7 +441,7 @@
+ #O SoftBounce=False
  
  # where to save bounces if all else fails
 -#O DeadLetterDrop=/var/tmp/dead.letter
@@ -108,7 +99,7 @@
  
  # what user id do we assume for the majority of the processing?
  #O RunAsUser=sendmail
-@@ -462,7 +462,7 @@
+@@ -466,7 +466,7 @@
  #O TrustedUser=root
  
  # Control socket for daemon management
@@ -117,7 +108,7 @@
  
  # Maximum MIME header length to protect MUAs
  #O MaxMimeHeaderLength=0/0
-@@ -474,7 +474,7 @@
+@@ -478,7 +478,7 @@
  #O MaxAliasRecursion=10
  
  # location of pid file
@@ -126,7 +117,7 @@
  
  # Prefix string for the process title shown on 'ps' listings
  #O ProcessTitlePrefix=prefix
-@@ -498,7 +498,7 @@
+@@ -502,7 +502,7 @@
  #O AuthRealm
  
  # default authentication information for outgoing connections
@@ -135,7 +126,7 @@
  
  # SMTP AUTH flags
  #O AuthOptions
-@@ -552,7 +552,7 @@
+@@ -562,7 +562,7 @@
  #####################
  
  # this is equivalent to setting class "t"
@@ -144,7 +135,7 @@
  Troot
  Tdaemon
  Tuucp
-@@ -1328,7 +1328,7 @@
+@@ -1341,7 +1341,7 @@
  #
  SAddDomain
  

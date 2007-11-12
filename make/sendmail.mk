@@ -5,7 +5,7 @@
 ###########################################################
 
 SENDMAIL_SITE=ftp://ftp.sendmail.org/pub/sendmail
-SENDMAIL_VERSION=8.13.8
+SENDMAIL_VERSION=8.14.2
 SENDMAIL_SOURCE=sendmail.$(SENDMAIL_VERSION).tar.gz
 SENDMAIL_DIR=sendmail-$(SENDMAIL_VERSION)
 SENDMAIL_UNZIP=zcat
@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=5
+SENDMAIL_IPK_VERSION=1
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -44,7 +44,7 @@ SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/config-uClibc.patch
 else
 SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/config.patch
 endif
-#SENDMAIL_CPPFLAGS=
+SENDMAIL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/openssl
 #SENDMAIL_LDFLAGS=
 
 #
@@ -115,8 +115,8 @@ sendmail-unpack: $(SENDMAIL_BUILD_DIR)/.configured
 $(SENDMAIL_BUILD_DIR)/.built: $(SENDMAIL_BUILD_DIR)/.configured
 	rm -f $(SENDMAIL_BUILD_DIR)/.built
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) \
-		CC=$(TARGET_CC)	\
-	CCOPTS="-D_PATH_SENDMAILCF=\\\"/opt/etc/mail/sendmail.cf\\\" -I$(STAGING_INCLUDE_DIR)"			\
+		CC=$(TARGET_CC)	CCLINK=$(TARGET_CC) \
+	CCOPTS="-D_PATH_SENDMAILCF=\\\"/opt/etc/mail/sendmail.cf\\\" -I$(STAGING_INCLUDE_DIR) $(SENDMAIL_CPPFLAGS)" \
 		LIBDIRS="-L$(STAGING_LIB_DIR) -Wl,--rpath=/opt/lib"
 	touch $(SENDMAIL_BUILD_DIR)/.built
 
