@@ -37,17 +37,23 @@ endif
 ASTERISK14_SOURCE=asterisk-$(ASTERISK14_VERSION).tar.gz
 ASTERISK14_DIR=asterisk-$(ASTERISK14_VERSION)
 ASTERISK14_UNZIP=zcat
-ASTERISK14_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
+ASTERISK14_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 ASTERISK14_DESCRIPTION=Asterisk is an Open Source PBX and telephony toolkit.
 ASTERISK14_SECTION=util
 ASTERISK14_PRIORITY=optional
 ASTERISK14_DEPENDS=openssl,ncurses,libcurl,zlib,termcap,libstdc++,popt
 ASTERISK14_SUGGESTS=\
 asterisk14-chan-capi,\
+asterisk14-core-sounds-en-alaw,\
+asterisk14-core-sounds-en-g729,\
 asterisk14-core-sounds-en-gsm,\
 asterisk14-core-sounds-en-ulaw,\
+asterisk14-extra-sounds-en-alaw,\
+asterisk14-extra-sounds-en-g729,\
 asterisk14-extra-sounds-en-gsm,\
 asterisk14-extra-sounds-en-ulaw,\
+asterisk14-moh-freeplay-alaw,\
+asterisk14-moh-freeplay-g729,\
 asterisk14-moh-freeplay-gsm,\
 asterisk14-moh-freeplay-ulaw,\
 asterisk14-gui,\
@@ -65,7 +71,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -139,7 +145,9 @@ ASTERISK14_CONFFILES=\
 # which they should be applied to the source code.
 #
 #ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/main-db1-ast-Makefile.patch $(ASTERISK14_SOURCE_DIR)/gsm.patch
-ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch $(ASTERISK14_SOURCE_DIR)/sounds.xml.patch
+ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch\
+	$(ASTERISK14_SOURCE_DIR)/app_notify_2.0rc1.patch\
+	$(ASTERISK14_SOURCE_DIR)/sounds.xml.patch
 
 #
 # If the compilation of the package requires additional
