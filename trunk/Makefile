@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = asterisk14-moh-freeplay-alaw asterisk14-moh-freeplay-g729 \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -161,6 +161,8 @@ ASTERISK_PACKAGES = \
 	asterisk14-extra-sounds-en-g729 \
 	asterisk14-extra-sounds-en-gsm \
 	asterisk14-extra-sounds-en-ulaw \
+	asterisk14-moh-freeplay-alaw \
+	asterisk14-moh-freeplay-g729 \
 	asterisk14-moh-freeplay-gsm \
 	asterisk14-moh-freeplay-ulaw \
 	asterisk14-gui \
