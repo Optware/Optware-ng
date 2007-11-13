@@ -1,0 +1,160 @@
+diff -Naurp asterisk-1.4.13-orig/apps/app_notify.c asterisk-1.4.13/apps/app_notify.c
+--- asterisk-1.4.13-orig/apps/app_notify.c	1969-12-31 19:00:00.000000000 -0500
++++ asterisk-1.4.13/apps/app_notify.c	2007-11-12 00:46:52.556872944 -0500
+@@ -0,0 +1,156 @@
++/*
++ * Asterisk -- A telephony toolkit for Unix.
++ *
++ * Network Notification Application Module for Asterisk
++ *
++ * Copyright (c)2005,2006 mezzoCONSULT C.B. 
++ *           Sven Slezak <sunny@mezzo.net>
++ * Version: 2.0rc1 (Jan 29.2007)
++ * http://www.mezzo.net/asterisk
++ *
++ */
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <string.h>
++#include <sys/types.h>
++
++#include <asterisk/options.h>
++#include <asterisk/file.h>
++#include <asterisk/logger.h>
++#include <asterisk/channel.h>
++#include <asterisk/pbx.h>
++#include <asterisk/module.h>
++#include <asterisk/astdb.h>
++#include <asterisk/lock.h>
++#include <asterisk/config.h>
++#include <asterisk/utils.h>
++
++#include <ctype.h>
++#include <errno.h>
++
++#include <sys/socket.h>
++#include <netinet/in.h>
++#include <arpa/inet.h>
++#include <netdb.h>
++#include <sys/time.h> /* select() */ 
++
++#define AST_MODULE "app_notify"
++
++#define DEFAULT_PORT 40000
++
++int notify(const char *text, const char *host, int port);
++
++
++static char *app = "Notify";
++static char *synopsis = "network notification application";
++
++static char *descrip =
++  "  Notify(text/hostname_or_ip[:port]): \n"
++  "   sends the text to the given hosts.\n"
++  "   Always returns 0.\n";
++
++static int notify_exec (struct ast_channel *chan, void *data)
++{
++  int arglen, port;
++  char *argv, *text, *host, *tmp;
++	struct ast_module_user *u;
++
++	if(!data) {
++		ast_log (LOG_ERROR, "Requires parameters\n");
++		return -1;
++	}        
++	u = ast_module_user_add(chan);
++
++  arglen = strlen(data);
++  argv = alloca(arglen + 1);
++  if(!argv) {
++    ast_log (LOG_ERROR, "Memory allocation failed\n");
++		ast_module_user_remove(u);
++		return -1;
++  }
++  memcpy (argv, data, arglen + 1);
++
++  if(strchr(argv, '/')) {
++    text = strsep(&argv, "/");
++    host = strsep(&argv, "\0");
++    if (!text || !host) {
++      ast_log (LOG_ERROR, "Ignoring: Syntax error in argument\n");
++			ast_module_user_remove(u);
++			return -1;
++    } 
++    if(strchr(host, ':')) {
++      tmp = strsep(&host, ":");
++      port = atoi(strsep(&host, "\0"));
++      host = tmp;
++    } else {
++      port = DEFAULT_PORT;
++    }
++  } else {
++    ast_log (LOG_ERROR, "Ignoring: Wrong parameters\n");
++		ast_module_user_remove(u);
++		return -1;
++  }
++
++  notify(text, host, port);
++	ast_module_user_remove(u);
++
++  return 0;
++}
++
++int notify(const char *text, const char *host, int port) 
++{
++  int sock;
++  int broadcast = 1;
++  struct sockaddr_in servAddr;
++  struct hostent *hp;
++  struct ast_hostent ahp;
++
++  if(option_verbose > 2)
++    ast_verbose (VERBOSE_PREFIX_3 "Notify: sending '%s' to %s:%d \n", text, host, port);
++
++  if ((sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP)) < 0) {
++    ast_log(LOG_ERROR, "cannot open socket\n");
++    return -1;
++  }
++
++  if(setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast)) < 0) {
++    ast_log(LOG_ERROR, "setsockopt error.\n");
++  }
++
++  memset(&servAddr, 0, sizeof(struct sockaddr_in));
++  servAddr.sin_family = AF_INET;
++  servAddr.sin_port = htons(port);
++
++  if((servAddr.sin_addr.s_addr = inet_addr(host)) == -1) {
++    hp = ast_gethostbyname(host, &ahp);
++    if(hp == (struct hostent *)0) {
++      ast_log(LOG_ERROR, "unknown host: %s\n", host);
++      return -1;
++    }
++    memcpy(&servAddr.sin_addr, hp->h_addr_list[0], hp->h_length);
++  }  
++
++  if (sendto(sock, text, strlen(text)+1, 0, (struct sockaddr *)&servAddr, sizeof(servAddr)) < 0) {
++    ast_log(LOG_ERROR, "cannot send text\n");
++    close(sock);
++    return -1;
++  }
++
++  close(sock);
++  return 0;
++}
++
++static int unload_module(void)
++{
++	ast_module_user_hangup_all(); 
++	return ast_unregister_application(app);
++}
++
++static int load_module(void)
++{
++	return ast_register_application(app, notify_exec, synopsis, descrip);
++}
++
++AST_MODULE_INFO_STANDARD(ASTERISK_GPL_KEY, "network notification function for Asterisk extension logic.");
