@@ -31,7 +31,7 @@ IRSSI_SECTION=net
 IRSSI_PRIORITY=optional
 IRSSI_DEPENDS=glib, ncurses, gconv-modules, openssl
 IRSSI_CONFIGURE_OPTIONS=
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 IRSSI_SUGGESTS=perl
 IRSSI_CONFIGURE_OPTIONS+=--with-perl
 else
@@ -48,7 +48,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=2
+IRSSI_IPK_VERSION=3
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -122,7 +122,7 @@ irssi-source: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
 #
 $(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES) make/irssi.mk
 	$(MAKE) glib-stage ncurses-stage openssl-stage
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(@D)
@@ -157,7 +157,7 @@ endif
 		--disable-glibtest \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 	)
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	for i in common irc ui textui; do \
 	    (cd $(IRSSI_BUILD_DIR)/src/perl/$$i; \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -179,7 +179,7 @@ irssi-unpack: $(IRSSI_BUILD_DIR)/.configured
 #
 $(IRSSI_BUILD_DIR)/.built: $(IRSSI_BUILD_DIR)/.configured
 	rm -f $@
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	for i in common irc ui textui; do \
 	    $(MAKE) -C $(@D)/src/perl/$$i \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -249,7 +249,7 @@ $(IRSSI_IPK): $(IRSSI_BUILD_DIR)/.built
 #	install -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
 #	install -d $(IRSSI_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(IRSSI_SOURCE_DIR)/rc.irssi $(IRSSI_IPK_DIR)/opt/etc/init.d/SXXirssi
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	(cd $(IRSSI_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \

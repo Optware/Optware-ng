@@ -17,7 +17,7 @@ CYRUS-IMAPD_DEPENDS=openssl, libdb, cyrus-sasl, e2fsprogs, perl
 CYRUS-IMAPD_SUGGESTS=
 CYRUS-IMAPD_CONFLICTS=
 
-CYRUS-IMAPD_IPK_VERSION=14
+CYRUS-IMAPD_IPK_VERSION=15
 
 CYRUS-IMAPD_CONFFILES=/opt/etc/cyrus.conf /opt/etc/imapd.conf /opt/etc/init.d/S59cyrus-imapd
 
@@ -51,7 +51,7 @@ $(CYRUS-IMAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-IMAPD_SOURCE) $(CYRUS-IM
 	$(MAKE) libdb-stage openssl-stage
 	$(MAKE) cyrus-sasl-stage
 	$(MAKE) e2fsprogs-stage # for libcom_err.a and friends
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(CYRUS-IMAPD_BUILD_DIR)
@@ -92,7 +92,7 @@ endif
 		--with-com_err \
 		--without-perl \
 	)
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	for i in perl/imap perl/sieve/managesieve; do \
 	(cd $(CYRUS-IMAPD_BUILD_DIR)/$$i; \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -113,7 +113,7 @@ $(CYRUS-IMAPD_BUILD_DIR)/.built: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 	rm -f $(CYRUS-IMAPD_BUILD_DIR)/.built
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
@@ -222,7 +222,7 @@ $(CYRUS-IMAPD_IPK) $(CYRUS-IMAPD-DOC_IPK) $(CYRUS-IMAPD-DEVEL_IPK): $(CYRUS-IMAP
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/libexec/cyrus/bin/*
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/lib/*.a
 	$(STRIP_COMMAND) $(CYRUS-IMAPD_IPK_DIR)/opt/bin/imtest
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve DESTDIR=$(CYRUS-IMAPD_IPK_DIR) install
 	(cd $(CYRUS-IMAPD_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/Cyrus ; \

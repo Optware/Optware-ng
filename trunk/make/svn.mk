@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=1
+SVN_IPK_VERSION=2
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -101,7 +101,7 @@ SVN-PY_IPK_DIR=$(BUILD_DIR)/svn-py-$(SVN_VERSION)-ipk
 SVN-PY_IPK=$(BUILD_DIR)/svn-py_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
 SVN_INSTALL_SWIG_TARGETS=install-swig-py
 
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 SVN_CONFIG_ENV+=PERL=$(PERL_HOSTPERL)
 SVN-PL_IPK_DIR=$(BUILD_DIR)/svn-pl-$(SVN_VERSION)-ipk
 SVN-PL_IPK=$(BUILD_DIR)/svn-pl_$(SVN_VERSION)-$(SVN_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -152,7 +152,7 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	$(MAKE) python25-stage python25-host-stage
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
@@ -278,7 +278,7 @@ $(SVN-PY_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(SVN-PY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(SVN-PY_CONFLICTS)" >>$@
 
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 $(SVN-PL_IPK_DIR)/CONTROL/control:
 	@install -d $(SVN-PL_IPK_DIR)/CONTROL
 	@rm -f $@
@@ -307,7 +307,7 @@ endif
 #
 # You may need to patch your application to make it use these locations.
 #
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 $(SVN_IPK) $(SVN-PY_IPK) $(SVN_PL_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.pl-built
 else
 $(SVN_IPK) $(SVN-PY_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built
@@ -322,7 +322,7 @@ endif
 	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/lib/*.so
 	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/libexec/*.so
 	$(TARGET_STRIP) $(SVN_IPK_DIR)/opt/lib/svn-python/libsvn/*.so
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	for f in `find $(SVN_IPK_DIR)/opt/lib/perl5/ -type f -name '*.so'`; do \
 		chmod +w $$f; \
 		$(TARGET_STRIP) $$f; \
@@ -375,7 +375,7 @@ svn-dirclean:
 	rm -rf $(BUILD_DIR)/$(SVN_DIR) $(SVN_BUILD_DIR)
 	rm -rf $(SVN_IPK_DIR) $(SVN_IPK)
 	rm -rf $(SVN-PY_IPK_DIR) $(SVN-PY_IPK)
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	rm -rf $(SVN-PL_IPK_DIR) $(SVN-PL_IPK)
 endif
 
