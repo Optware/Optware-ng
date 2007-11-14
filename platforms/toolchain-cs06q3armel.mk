@@ -7,7 +7,7 @@ LIBC_STYLE=glibc
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = arm-none-linux-gnueabi
-TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/$(GNU_TARGET_NAME)/gcc-2006q3-glibc-2.3.6
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/arm-2006q3
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
 TARGET_USRLIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/libc/usr/lib
@@ -32,6 +32,6 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 
 $(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP)
-	mkdir -p $(TARGET_CROSS_TOP)
-	tar -xj -C $(TARGET_CROSS_TOP) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
+	mkdir -p $(BASE_DIR)/toolchain
+	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	touch $@
