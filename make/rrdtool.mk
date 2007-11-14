@@ -37,7 +37,7 @@ RRDTOOL_SECTION=misc
 RRDTOOL_PRIORITY=optional
 RRDTOOL_DEPENDS=zlib, libpng, freetype, libart
 RRDTOOL_SUGGESTS=
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 RRDTOOL_PERL=--enable-perl --enable-perl-site-install
 else
 RRDTOOL_PERL=--disable-perl
@@ -48,7 +48,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=2
+RRDTOOL_IPK_VERSION=3
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -119,7 +119,7 @@ rrdtool-source: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 #
 $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-extutils-parsexs-stage
 endif
 	rm -rf $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
@@ -159,7 +159,7 @@ endif
 		--disable-mmap \
 		--disable-x \
 	)
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	for m in perl-piped perl-shared; do \
 	    cd $(RRDTOOL_BUILD_DIR)/bindings/$$m; \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -240,7 +240,7 @@ $(RRDTOOL_IPK): $(RRDTOOL_BUILD_DIR)/.built
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip
 	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd.la $(RRDTOOL_IPK_DIR)/opt/lib/librrd_th.la
 	rm -f $(RRDTOOL_IPK_DIR)/opt/lib/librrd.a $(RRDTOOL_IPK_DIR)/opt/lib/librrd_th.a
-ifeq (perl,$(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	cd $(RRDTOOL_IPK_DIR)/opt/lib/perl5; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \

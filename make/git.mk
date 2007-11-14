@@ -40,7 +40,7 @@ GIT_CONFLICTS=
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=1
+GIT_IPK_VERSION=2
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
@@ -66,7 +66,7 @@ else
 GIT_LDFLAGS=
 endif
 
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 GIT_PERL_PATH=PERL_PATH=$(PERL_HOSTPERL)
 endif
 #
@@ -129,7 +129,7 @@ $(GIT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIT_SOURCE) $(GIT_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
 	rm -rf $(BUILD_DIR)/$(GIT_DIR) $(GIT_BUILD_DIR)
@@ -243,7 +243,7 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		prefix=/opt \
 		install
 	-$(STRIP_COMMAND) $(GIT_IPK_DIR)/opt/bin/git-daemon
-ifeq (perl, $(filter perl, $(PACKAGES)))
+ifneq (,$(filter perl, $(PACKAGES)))
 	mv $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
 	   $(GIT_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.git 
 endif
