@@ -1,5 +1,6 @@
 SPECIFIC_PACKAGES = \
 	libiconv \
+	$(PERL_PACKAGES) \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	uclibcnotimpl libuclibc++ \
 

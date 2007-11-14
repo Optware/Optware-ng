@@ -20,4 +20,3 @@ UCLIBC_BROKEN_PACKAGES = \
 # Packages that *only* work for uclibc - do not just put new packages here.
 UCLIBC_SPECIFIC_PACKAGES = \
 	libuclibc++ buildroot uclibc-opt ipkg-opt \
-	$(PERL_PACKAGES) \
