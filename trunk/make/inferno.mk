@@ -132,6 +132,7 @@ $(INFERNO_BUILD_DIR)/.configured: $(INFERNO_HOST_BUILD_DIR)/.built
 	sed -i.orig \
 		-e '/^AS=/s|=.*|=$(TARGET_CC) -c|' \
 		-e '/^CC=/s|=.*|=$(TARGET_CC) -c|' \
+		-e '/^LD=/s|=.*|=$(TARGET_CC) $(STAGING_LDFLAGS)|' \
 		$(@D)/mkfiles/mkfile-Linux-arm
 	touch $@
 
@@ -146,7 +147,6 @@ $(INFERNO_BUILD_DIR)/.built: $(INFERNO_BUILD_DIR)/.configured
 		export PATH=$(INFERNO_HOST_BUILD_DIR)/Linux/386/bin:$$PATH; \
 		mk nuke install \
 			AR=$(TARGET_AR) \
-			LD="$(TARGET_CC)" \
 		; \
 	)
 	touch $@
