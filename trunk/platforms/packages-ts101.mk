@@ -2,6 +2,7 @@ SPECIFIC_PACKAGES = \
 	libiconv \
 	py-ctypes \
 	ts101-kernel-modules \
+	$(PERL_PACKAGES) \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 

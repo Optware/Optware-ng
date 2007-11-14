@@ -1,6 +1,7 @@
 SPECIFIC_PACKAGES = \
 	ipkg-opt \
 	libiconv \
+	$(PERL_PACKAGES) \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 # iptraf: sys/types.h and linux/types.h conflicting
