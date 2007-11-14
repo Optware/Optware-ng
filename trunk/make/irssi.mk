@@ -29,7 +29,7 @@ IRSSI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IRSSI_DESCRIPTION=A terminal based IRC client for UNIX systems.
 IRSSI_SECTION=net
 IRSSI_PRIORITY=optional
-IRSSI_DEPENDS=glib, ncurses, gconv-modules
+IRSSI_DEPENDS=glib, ncurses, gconv-modules, openssl
 IRSSI_CONFIGURE_OPTIONS=
 ifeq (perl,$(filter perl, $(PACKAGES)))
 IRSSI_SUGGESTS=perl
@@ -48,7 +48,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=1
+IRSSI_IPK_VERSION=2
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -120,22 +120,21 @@ irssi-source: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES)
-# make/irssi.mk
+$(IRSSI_BUILD_DIR)/.configured: $(DL_DIR)/$(IRSSI_SOURCE) $(IRSSI_PATCHES) make/irssi.mk
 	$(MAKE) glib-stage ncurses-stage openssl-stage
 ifeq (perl,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif
-	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(IRSSI_DIR) $(@D)
 	$(IRSSI_UNZIP) $(DL_DIR)/$(IRSSI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IRSSI_PATCHES)" ; \
 		then cat $(IRSSI_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(IRSSI_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(IRSSI_DIR)" != "$(IRSSI_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(IRSSI_DIR) $(IRSSI_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(IRSSI_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(IRSSI_DIR) $(@D) ; \
 	fi
-	(cd $(IRSSI_BUILD_DIR); \
+	(cd $(@D); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IRSSI_CPPFLAGS)" \
@@ -154,6 +153,7 @@ endif
 		--with-glib-prefix=$(STAGING_PREFIX) \
 		--with-ncurses=$(STAGING_PREFIX) \
 		--with-proxy \
+		--enable-ssl \
 		--disable-glibtest \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 	)
@@ -169,8 +169,8 @@ ifeq (perl,$(filter perl, $(PACKAGES)))
 	    ) \
 	done
 endif
-	$(PATCH_LIBTOOL) $(IRSSI_BUILD_DIR)/libtool
-	touch $(IRSSI_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 irssi-unpack: $(IRSSI_BUILD_DIR)/.configured
 
@@ -178,10 +178,10 @@ irssi-unpack: $(IRSSI_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(IRSSI_BUILD_DIR)/.built: $(IRSSI_BUILD_DIR)/.configured
-	rm -f $(IRSSI_BUILD_DIR)/.built
+	rm -f $@
 ifeq (perl,$(filter perl, $(PACKAGES)))
 	for i in common irc ui textui; do \
-	    $(MAKE) -C $(IRSSI_BUILD_DIR)/src/perl/$$i \
+	    $(MAKE) -C $(@D)/src/perl/$$i \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -190,8 +190,8 @@ ifeq (perl,$(filter perl, $(PACKAGES)))
 	    ; \
 	done
 endif
-	$(MAKE) -C $(IRSSI_BUILD_DIR) GLIB_CFLAGS=""
-	touch $(IRSSI_BUILD_DIR)/.built
+	$(MAKE) -C $(@D) GLIB_CFLAGS=""
+	touch $@
 
 #
 # This is the build convenience target.
@@ -202,9 +202,9 @@ irssi: $(IRSSI_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(IRSSI_BUILD_DIR)/.staged: $(IRSSI_BUILD_DIR)/.built
-	rm -f $(IRSSI_BUILD_DIR)/.staged
-	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(IRSSI_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 irssi-stage: $(IRSSI_BUILD_DIR)/.staged
 
@@ -213,7 +213,7 @@ irssi-stage: $(IRSSI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/irssi
 #
 $(IRSSI_IPK_DIR)/CONTROL/control:
-	@install -d $(IRSSI_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: irssi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
