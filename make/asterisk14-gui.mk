@@ -20,14 +20,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_GUI_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/asterisk14-gui
-ASTERISK14_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/trunk
-ASTERISK14_GUI_SVN_REV=395
+ASTERISK14_GUI_SITE=http://downloads.digium.com/pub/telephony/asterisk
+ASTERISK14_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/branches/1.4
+ASTERISK14_GUI_SVN_REV=1760
 ASTERISK14_GUI_VERSION=0.0.0svn-r$(ASTERISK14_GUI_SVN_REV)
 ASTERISK14_GUI_SOURCE=asterisk14-gui-$(ASTERISK14_GUI_VERSION).tar.gz
 ASTERISK14_GUI_DIR=asterisk14-gui
 ASTERISK14_GUI_UNZIP=zcat
-ASTERISK14_GUI_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
+ASTERISK14_GUI_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 ASTERISK14_GUI_DESCRIPTION=Asterisk-GUI is a framework for the \
 creation of graphical interfaces for configuring Asterisk.
 ASTERISK14_GUI_SECTION=util
@@ -197,33 +197,49 @@ $(ASTERISK14_GUI_IPK): $(ASTERISK14_GUI_BUILD_DIR)/.built
 	$(MAKE) -C $(ASTERISK14_GUI_BUILD_DIR) DESTDIR=$(ASTERISK14_GUI_IPK_DIR) install
 
 	# FIX gui_sysinfo
-	sed -i -e 's#`uname -a`#`/opt/bin/uname -a`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`uptime`#`/opt/bin/uptime`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`/usr/sbin/asterisk -V`#`/opt/sbin/asterisk -V`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`date`#`/opt/bin/date`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`hostname -f`#`/bin/hostname -f`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`ifconfig`#`/sbin/ifconfig`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`df -h`#`/opt/bin/df -h`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`free`#`/opt/bin/free`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`/bin/date +%b`#`/opt/bin/date +%b`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`/bin/date +%d`#`/opt/bin/date +%d`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#`/bin/date +%_d`#`/opt/bin/date +%_d`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
-	sed -i -e 's#/bin/grep /var/log/asterisk/messages#/opt/bin/grep /var/log/asterisk/messages#g' $(ASTERISK14_GUI_IPK_DIR)/opt/etc/asterisk/gui_sysinfo
+	sed -i -e 's#`uname #`/opt/bin/uname #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`uptime`#`/opt/bin/uptime`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`/usr/sbin/asterisk #`/opt/sbin/asterisk #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`date`#`/opt/bin/date`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`hostname #`/bin/hostname #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`ifconfig`#`/sbin/ifconfig`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`df #`/opt/bin/df #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`free`#`/opt/bin/free`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#`/bin/date #`/opt/bin/date #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+
+	# FIX scripts
+	sed -i -e 's#`/bin/bash`#`/bin/sh`#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#/etc/#/opt/etc/#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#/var/#/opt/var/#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+
+	sed -i -e 's#/bin/grep /var/log/asterisk/messages#/opt/bin/grep /var/log/asterisk/messages#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#/bin/mkdir #/opt/bin/mkdir #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#/bin/ls #/opt/bin/ls #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
+	sed -i -e 's#/bin/echo #/opt/bin/echo #g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/scripts/*
 
 	# FIX asterisk config directory location
-	sed -i -e 's#/etc/asterisk/#/opt/etc/asterisk/#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
-	# FIX rm
-	sed -i -e 's#/bin/rm#/opt/bin/rm#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
-	# FIX tar
-	sed -i -e 's#/bin/tar#/opt/bin/tar#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
-	# FIX grep
-	sed -i -e 's#/bin/grep#/opt/bin/grep#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
-	# FIX touch
-	sed -i -e 's#/bin/touch#/opt/bin/touch#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
-	# FIX reboot
-	sed -i -e 's#/bin/reboot#/sbin/reboot#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
-	# FIX reset_config
-	# sed -i -e 's#/bin/reset_config#/sbin/reset_config#g' $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config/*.html
+	ASTERISK14_GUI_HTML_FILES=`find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.html'`
+	ASTERISK14_GUI_JS_FILES=`find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.js'`
+	ASTERISK14_GUI_SVGZ_FILES=`find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.svgz'`
+	ASTERISK14_GUI_GUI_CONFIG_FILES="$(ASTERISK14_GUI_HTML_FILES) $(ASTERISK14_GUI_JS_FILES) $(ASTERISK14_GUI_SVGZ_FILES)"
+
+	#ASTERISK14_GUI_GUI_CONFIG_FILE=`find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config`
+	#for f in $(ASTERISK14_GUI_HTML_FILES) $(ASTERISK14_GUI_JS_FILES) $(ASTERISK14_GUI_SVGZ_FILES) ; do
+	#for f in `find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.html'`; do \
+
+
+	for f in `find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.html'; \
+		find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.js'; \
+		find $(ASTERISK14_GUI_IPK_DIR)/opt/var/lib/asterisk/static-http/config -name '*.svgz'`; do \
+		sed -i -e 's#/etc/#/opt/etc/#g' $$f; \
+		sed -i -e 's#/var/#/opt/var/#g' $$f; \
+		sed -i -e 's#/bin/rm#/opt/bin/rm#g' $$f; \
+		sed -i -e 's#/bin/tar#/opt/bin/tar#g' $$f; \
+		sed -i -e 's#/bin/grep#/opt/bin/grep#g' $$f; \
+		sed -i -e 's#/bin/touch#/opt/bin/touch#g' $$f; \
+		sed -i -e 's#/bin/reboot#/sbin/reboot#g' $$f; \
+		sed -i -e 's#/bin/reset_config#/sbin/reset_config#g' $$f; \
+	done
 
 	$(MAKE) $(ASTERISK14_GUI_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_GUI_IPK_DIR)
