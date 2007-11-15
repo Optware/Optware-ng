@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.5.14
+LFTP_VERSION=3.6.1
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -106,7 +106,7 @@ lftp-source: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 #
 $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 	$(MAKE) readline-stage ncurses-stage expat-stage libstdc++-stage
-#	$(MAKE) readline-stage ncurses-stage expat-stage libstdc++-stage gnutls-stage libtasn1-stage zlib-stage
+#	$(MAKE) gnutls-stage libtasn1-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(LFTP_BUILD_DIR)
 	$(LFTP_UNZIP) $(DL_DIR)/$(LFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LFTP_PATCHES)" ; \
