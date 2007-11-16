@@ -20,7 +20,7 @@ Features
 * syslog watchdog events
 * mail notify when torrent finishes
 * no state database required. Directory tree is database (slow, but fail-safe)
-* stable and portable. Developed on Asus WL-500g Deluxe with Oleg firmware 
+* stable and portable. Developed on Asus WL-500g Deluxe with OpenWrt Kamikaze firmware 
 
 Workflow
 
@@ -117,10 +117,8 @@ I suggest to install procps package and then use
 9179 ? SNs 0:01 transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
 9180 ? SN  0:00  \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  ...
 9181 ? SN  0:00      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i ..
-9184 ? SN  0:03      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i  .
-9185 ? RN 17:43      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/..
-9186 ? RN  0:38      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var..
-9187 ? RN  0:40      \_ transmissiond -p 65534 -w 600 -u -1 -d -1 -i /opt/var/run/transmission.pid /tmp
+
+
 
 Master thread in above example has PID=9179 Sending "kill -USR1 9197" must
 write .status files. This should also be done by CGI.
@@ -232,39 +230,50 @@ echo "</pre>"
    and edit with crontab -e root
   
 FAQ
-1. Why wont the daemon start downloading after rebooting ? 
-I need to push it to suspend and then again to make it work ? 
-It will restart after reboot if you properly configured cron to run 
-transmisison_watchdog periodicly. For manual restart use Watchdog button.
 
-2. How do i make it download 5 torrents at the same time ?  Can this be done ?
-Sure it can. Use Push button. You can also queue torrents, 
-manual administer and get some transfer graph.
+1. Why wont the daemon start downloading after rebooting ? I need to push
+it to suspend and then again to make it work ? It will restart after reboot
+if you properly configured cron to run transmisison_watchdog periodicly.
+For manual restart use Watchdog button.
+
+2. How do i make it download 5 torrents at the same time ? Can this be done
+? Sure it can. Use Push button. You can also queue torrents, manual
+administer and get some transfer graph.
 
 3. Is it possible to output a chart with no_UTC time (X-axis) ? 
 Just set TIMEZONE_OFFSET=seconds in transmission.conf 
 
-4. I just installed transmission package, pushed some torrent and it looks working.  
-But when I press Update button, I get this result: ".status not found for <torrent_path>"
-Problems with .status could be that transmisisond is not receiving USR1 signal. 
-This may be due to invalid path to PIDFILE or something like that. Pressing Update sends signal 
-to daemon, waits one second and reads .status files in active torrent directories. 
-Take attention to syslog daemon.
+4. I just installed transmission package, pushed some torrent and it looks
+working. But when I press Update button, I get this result: ".status not
+found for <torrent_path>" Problems with .status could be that transmisisond
+is not receiving USR1 signal. This may be due to invalid path to PIDFILE or
+something like that. Pressing Update sends signal to daemon, waits one
+second and reads .status files in active torrent directories. Take
+attention to syslog daemon.
 
 5. Do I need "torrent" ipkg installed too?
-No. torrent package conflict is intentional. 
+No. torrent package conflict is intentional.
 
-6. I am getting some errors cat: /opt/var/run/transmission.pid: No such file or directory 
-/opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec | -signum | -sigspec] 
-[pid | job]... or kill -l [exitstatus]getting some errors cat: /opt/var/run/transmission.pid: 
-No such file or directory /opt/share/www/cgi-bin/transmission.cgi: kill: 624: 
-Usage: kill [-s sigspec | -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
-This means that Transmisison daemon is not running. Use Watchdog button to start in manually.
+6. I am getting some errors
 
-7. Tried manually pressing watchdog for nothing.  Im still having that text under the buttons 
-on the script page : /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
-It looks like daemon died for some reason. Take a look into syslog messages.
-The recommended way for running is using "Oleg" feed and not default "wl500g".
+cat: /opt/var/run/transmission.pid: No such file or directory
+/opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec
+| -signum | -sigspec] [pid | job]... or kill -l [exitstatus]getting some
+errors cat: /opt/var/run/transmission.pid: No such file or directory
+/opt/share/www/cgi-bin/transmission.cgi: kill: 624: Usage: kill [-s sigspec
+| -signum | -sigspec] [pid | job]... or kill -l [exitstatus]
+
+  This means that Transmisison daemon is not running. Use Watchdog button
+ to start in manually.
+
+7. Tried manually pressing watchdog for nothing. Im still having that text
+ under the buttons on the script page :
+
+ /opt/share/www/cgi-bin/transmission.cgi: kill: 624: (249) - No such process .
+
+ It looks like daemon died for some reason. Take a look into syslog
+ messages. The recommended way for running is using "Oleg" feed and not
+ default "wl500g".
 
 8. What directories need to be created by default?
 mkdir /tmp/harddisk/torrent
@@ -276,28 +285,27 @@ chmod a+rw /tmp/harddisk/torrent/source
 chmod a+rw /tmp/harddisk/torrent/target
 chmod a+rw /tmp/harddisk/torrent/work
 
-9. My daemon dies frequently.
-512 MB swap is recommended on 32MB routers.
+9. My daemon dies frequently. 512 MB swap is recommended on 32MB routers.
 
 
-10. How do I password protect transmission.cgi script?
- Use appropriate web server and its protection. busybox_http uses 
- IP access and password protection with httpd.conf 
+10. How do I password protect transmission.cgi script? Use appropriate web
+ server and its protection. busybox_http uses IP access and password
+ protection with httpd.conf
 
-11. Can I set some cap on UPLOAD_SPEED or is this thing totally bugged ?
- If bugged any workaround ?
- This bug is a hard thing. Anyway ratecontrol is somehow useless as it
- limits only good packets and not the whole transport. I recommend
- to use some QOS router capabilities. Personally I use another OpenWRT router.
+11. Can I set some cap on UPLOAD_SPEED or is this thing totally bugged ? If
+ bugged any workaround ? This bug is a hard thing. Anyway ratecontrol is
+ somehow useless as it limits only good packets and not the whole
+ transport. I recommend to use some QOS router capabilities. Personally I
+ use another OpenWRT router.
 
-12. Does this daemon allow active port transfer? I mean do i have to open 
- ports manually thru iptables to point the active port to router or similar?  
- I believe program who use active connections boosts the transfers in 
- seeding or receiving, allowing more connetions.
+12. Does this daemon allow active port transfer? I mean do i have to open
+ ports manually thru iptables to point the active port to router or
+ similar? I believe program who use active connections boosts the transfers
+ in seeding or receiving, allowing more connetions.
 
- You need to open incoming TCP port on router (65534). It also recommended 
- to allow ping responses (ICMP protocol). To check connectivity
- with telneting to your listening port
+ You need to open incoming TCP port on router (65534). It also recommended
+ to allow ping responses (ICMP protocol). To check connectivity with
+ telneting to your listening port
  
  telnet  your.outside.router.ip 65534
  Connected to your.outside.router.ip
@@ -308,68 +316,97 @@ chmod a+rw /tmp/harddisk/torrent/work
 
  You should get "Nice try..." response.
 
-13. How can I interpret load average and uptime values in graph and CGI?
-   We can assume (by looking at procps top) that CPU is mostly idling
-   and that most uninterruptable state is waiting for some I/O access,
-   eg waiting for disk access. So load average over 1 means that external
-   USB disk is doing operations for more processes and it cannot handle
-   without waiting for disk. In such cases I recommend to lower the number
-   of active torrents. Mostly downloading gives much burden.
+13. How can I interpret load average and uptime values in graph and CGI? We
+   can assume (by looking at procps top) that CPU is mostly idling and that
+   most uninterruptable state is waiting for some I/O access, eg waiting
+   for disk access. So load average over 1 means that external USB disk is
+   doing operations for more processes and it cannot handle without waiting
+   for disk. In such cases I recommend to lower the number of active
+   torrents. Mostly downloading gives much burden.
 
-14. Is there an easy way to open ports for transmission?
-    Yes. If your router soupports traversal using NAT-PMP or UPnP IGD services
-    just uncomment NAT_TRAVERSAL line in /opt/etc/transmission.conf
+14. Is there an easy way to open ports for transmission? Yes. If your
+    router soupports traversal using NAT-PMP or UPnP IGD services just
+    uncomment NAT_TRAVERSAL line in /opt/etc/transmission.conf
 
-15. I'm trying to get the graph to work for transmission the cron is running and 
-   everything is logging to syslog but the only thing that is showing up is load.
-   Edit : I got it working but is there a way to have it form a line like load does.
+15. I'm trying to get the graph to work for transmission the cron is
+   running and everything is logging to syslog but the only thing that is
+   showing up is load. Edit : I got it working but is there a way to have
+   it form a line like load does.
 
-   I do not recommend anything else than spikes for Transmission graphing. SysLog 
-   rotation should be tailored in such way that it acumulates approx one week. 
-   Then spikes will show in high density and you will see if there was any 
-   interruption without hearbeat. Lines like load could be changed in 
-   transmission.cgi but then you will loose interval display. 
-   Maybe linespoints is middleway? 
+   I do not recommend anything else than spikes for Transmission graphing.
+   SysLog rotation should be tailored in such way that it acumulates approx
+   one week. Then spikes will show in high density and you will see if
+   there was any interruption without hearbeat. Lines like load could be
+   changed in transmission.cgi but then you will loose interval display.
+   Maybe linespoints is middleway?
 
-16. I am getting "Could not open ....nfo in /tmp/harddisk/torrent/work/... (0, -2147483640)"
-  This bug is harmless. It tries to check nonexistent file at startup. libtransmission 
-  developer should eventually add empty file creation or skip this check.
+16. I am getting "Could not open ....nfo in /tmp/harddisk/torrent/work/...
+  (0, -2147483640)" This bug is harmless. It tries to check nonexistent
+  file at startup. libtransmission developer should eventually add empty
+  file creation or skip this check.
 
-17. I also implemented transmission and I am very much excited. But shame on me, 
-   I am not able to purge these damned completed torrents. I tried everything.
+17. I also implemented transmission and I am very much excited. But shame
+   on me, I am not able to purge these damned completed torrents. I tried
+   everything.
 
-   This is the feature of the Transmission. You cannot remove torrents with WWW interface!
+   This is the feature of the Transmission. You cannot remove torrents with
+   WWW interface!
    Use simple file removal like:
 	cd /tmp/harddisk/torrent/target 
 	ls -lt */*.torrent
 	rm -rf My.Torrent.directory
-   Or just use simple samba share and delete it under Windows explorer.
-   For active and suspended torrents use: Push them with the 'push' button from 
-   Seeding state to Suspend. Then select the torrent en click Remove. 
-   After that you can Purge them into oblivion.
 
-   There is also an option add FORCE_REMOVE="YES" to transmission.conf and this
-   will enable removing of DONE non-seeding torrents. Use with caution when exposing
-   CGI page to internet.
+   Or just use simple samba share and delete it under Windows explorer. For
+   active and suspended torrents use: Push them with the 'push' button from
+   Seeding state to Suspend. Then select the torrent en click Remove. After
+   that you can Purge them into oblivion.
 
-18. My links: "source" "work" and "target" are not valid.
- This depends on your http daemon. If you are using busybox_httpd then there is no autodir 
- feature and links are preaty useless. If thttpd is used the you can create symlinks to 
- directories and enable follow symlinks in config. Same goes to other servers. 
- Anyway this links are not regarded as a feature but rather useless convenience.
+   There is also an option add FORCE_REMOVE="YES" to transmission.conf and
+   this will enable removing of DONE non-seeding torrents. Use with caution
+   when exposing CGI page to internet.
 
-19. Well, it does not work at all When i choose push on a torrent i just get the infamous 
-"/opt/share/www/cgi-bin/transmission.cgi: kill: 9: (335) - No such process" error ..
-It is assumed that transmssiond is started through transmission_watchdog when you are 
-using transmission.cgi. If transmissiond is stopped/paused/not running then you get 
-informational message like (kill, not running, ...) 
-This is not a problem if you know what you are doing. You can administer torrents even
-faster if transmissiond is not running. When finished with huge rearangements the 
-you can unpause and restart with watchdog.
+18. My links: "source" "work" and "target" are not valid. This depends on
+ your http daemon. If you are using busybox_httpd then there is no autodir
+ feature and links are preaty useless. If thttpd is used the you can create
+ symlinks to directories and enable follow symlinks in config. Same goes to
+ other servers. Anyway this links are not regarded as a feature but rather
+ useless convenience.
 
-transmission_watchdog is run every 30 minutes or so through cron process. 
-That's why there is no startup script for transmissiond. Although I've seen that some 
-people run transmission_watchdog at system startup, I do not recommend such practice.
+19. Well, it does not work at all When i choose push on a torrent i just
+get the infamous "/opt/share/www/cgi-bin/transmission.cgi: kill: 9: (335) -
+No such process" error .. It is assumed that transmssiond is started
+through transmission_watchdog when you are using transmission.cgi. If
+transmissiond is stopped/paused/not running then you get informational
+message like (kill, not running, ...) This is not a problem if you know
+what you are doing. You can administer torrents even faster if
+transmissiond is not running. When finished with huge rearangements the you
+can unpause and restart with watchdog.
 
+transmission_watchdog is run every 30 minutes or so through cron process.
+That's why there is no startup script for transmissiond. Although I've seen
+that some people run transmission_watchdog at system startup, I do not
+recommend such practice.
+
+20. I am getting .status not found. I am getting Unable to find recent
+transfer stats in syslog.
+
+transmissiond wirks in nonblocking mode. This means that some stats in
+.status file are written when transmissiond gets time to write them.
+Sometimes transmissiond is too busy to write status on time and it misses
+status wtiteout that CGI fetches. This is harmless but confusing sometimes
+as it shows different sum of transfer stats. Just press Update again and
+stats should be updated correctly.
+
+
+CHANGELOG
+
+With introdution of 0.9x libtransmission library many changes happened.
+Most notable is new developer, that brought new ideas such as libevent
+instead of threads, encryption support, PEX, ban peers, ..., and new bugs.
+
+So beware before upgrading from 0.82 and prior to 0.93 and later. COMPLETE
+YOUR DOWNLOADS BEFORE UPGRADING OR YOU WILL LOSE DATA!
 
 oleo
+
+

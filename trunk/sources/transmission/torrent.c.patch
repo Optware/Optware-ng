@@ -1,0 +1,11 @@
+--- transmission-0.92/libtransmission/torrent.c	2007-11-09 18:57:07.000000000 +0100
++++ transmission/libtransmission/torrent.c	2007-11-09 20:10:58.000000000 +0100
+@@ -468,7 +468,7 @@
+     else if(!(( tor = tr_new0( tr_torrent, 1 ))))
+         *error = TR_EOTHER;
+     else {
+-        tr_metainfoParseFile( &tor->info, h->tag, path, TRUE );
++        tr_metainfoParseFile( &tor->info, h->tag, path, FALSE );
+         torrentRealInit( h, tor, destination, destinationIsFallback, isPaused );
+     }
+ 

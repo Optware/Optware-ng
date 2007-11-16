@@ -21,28 +21,28 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
-TRANSMISSION_VERSION=0.82
-#TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-#TRANSMISSION_SVN_REV=2555
+TRANSMISSION_VERSION=0.93
+TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
+TRANSMISSION_SVN_REV=3834
 ifdef TRANSMISSION_SVN_REV
-TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.gz
+TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
-TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.gz
+TRANSMISSION_SOURCE=transmission-$(TRANSMISSION_VERSION).tar.bz2
 endif
-TRANSMISSION_DIR=Transmission-$(TRANSMISSION_VERSION)
-TRANSMISSION_UNZIP=zcat
-TRANSMISSION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+TRANSMISSION_DIR=transmission-$(TRANSMISSION_VERSION)
+TRANSMISSION_UNZIP=bzcat
+TRANSMISSION_MAINTAINER=oleo@email.si
 TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon with WWW interface
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
-TRANSMISSION_DEPENDS=openssl, libevent
+TRANSMISSION_DEPENDS=openssl
 TRANSMISSION_SUGGESTS=gnuplot, logrotate, thttpd
 TRANSMISSION_CONFLICTS=torrent
 
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=3
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -52,9 +52,11 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 # TRANSMISSION_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRANSMISSION_PATCHES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.patch \
+TRANSMISSION_PATCHES= \
 	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
-	$(TRANSMISSION_SOURCE_DIR)/blocking-scrape-enable.patch
+	$(TRANSMISSION_SOURCE_DIR)/transmissionh.patch \
+	$(TRANSMISSION_SOURCE_DIR)/torrent.c.patch \
+
 
 # Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
@@ -63,7 +65,7 @@ TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-TRANSMISSION_CPPFLAGS= -O3 
+TRANSMISSION_CPPFLAGS=-O3
 TRANSMISSION_LDFLAGS=
 
 #
@@ -97,7 +99,7 @@ ifdef TRANSMISSION_SVN_REV
 		rm -rf $(TRANSMISSION_DIR) && \
 		svn co -r $(TRANSMISSION_SVN_REV) $(TRANSMISSION_SVN) \
 			$(TRANSMISSION_DIR) && \
-		tar -czf $@ $(TRANSMISSION_DIR) && \
+		tar -cjf $@ $(TRANSMISSION_DIR) && \
 		rm -rf $(TRANSMISSION_DIR) \
 	)
 else
@@ -134,13 +136,13 @@ transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 # better to use Transmission provided (built-in) SHA1 hash
 #
 $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) 
-	$(MAKE) openssl-stage libevent-stage
+	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR)
 ifdef TRANSMISSION_SVN_REV
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
 	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
-	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR)/$(TRANSMISSION_DIR) -xvf -
+	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 endif
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
@@ -149,13 +151,11 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
-	sed -i  -e '/^[ 	]*AM_PATH_GTK_2_0/s/^/dnl /' \
-		-e '/^[ 	]*AM_PATH_GLIB_2_0/s/^/dnl /' \
-		$(TRANSMISSION_BUILD_DIR)/configure.ac
+	sed -i -e 's/-g / /' $(TRANSMISSION_BUILD_DIR)/configure.ac
 	(cd $(TRANSMISSION_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
+		./autogen.sh ; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -164,12 +164,13 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--disable-nls \
 		--without-gtk \
+		--without-wx \
+		--without-nls \
 	)
-	sed -i -e 's/ -g / /' $(TRANSMISSION_BUILD_DIR)/mk/common.mk
+#		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
 #		--verbose \
-#	$(PATCH_LIBTOOL) $(TRANSMISSION_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(TRANSMISSION_BUILD_DIR)/libtool
 	touch $(TRANSMISSION_BUILD_DIR)/.configured
 #		--disable-openssl \
 
