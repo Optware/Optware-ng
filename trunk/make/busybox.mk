@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.7.2
+BUSYBOX_VERSION=1.8.1
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -35,7 +35,7 @@ BUSYBOX_CONFLICTS=
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
-BUSYBOX_IPK_VERSION=3
+BUSYBOX_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
