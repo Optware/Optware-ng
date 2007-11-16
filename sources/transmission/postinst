@@ -7,7 +7,8 @@
 grep -q transmission_watchdog /opt/etc/crontab || echo "*/30 * * * * admin nice /opt/sbin/transmission_watchdog" >> /opt/etc/crontab
 
 # Install default page if none exists 
-if [ ! -e /opt/share/www/index.html ]; then
+INDEX=/opt/share/www/index.html
+if [ ! -e ${INDEX} ]; then
    cat > ${INDEX} << __EOF__
 <html>
  <head>

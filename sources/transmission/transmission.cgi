@@ -248,11 +248,11 @@ _scrape ()
     INFO="${TORRENT%/*}/.info"
     if [ -f "${INFO}" ]; then
 	. "${INFO}"
-	SCRAPE=`transmission-cli -s "${TORRENT}" | grep seeder`
+	SCRAPE=`transmission-cli -s "${TORRENT}" 2> /dev/null | grep seeder`
 	DUMMY=$?
 	_write_info
 	if [ $DUMMY != 0 ]; then
-	   echo "<p>${TORRENT} scrape failed</p>"
+	   echo "[${TORRENT##*/} scrape failed]"
 	fi
 	UPLOADED=
 	echo "."
@@ -446,7 +446,7 @@ _remove ()
    
     _find
 
-   if [ "${FORCE_REMOVE}" = "yes" -a -f "${TARGET}${TORRENT#${TARGET}}" ]; then
+   if [ "${FORCE_REMOVE}" = "YES" -a -f "${TARGET}${TORRENT#${TARGET}}" ]; then
       if [ ! -f "${TORRENT%.torrent.seeding}.torrent.seeding" ]; then
         DUMMY="${TORRENT%/*}"
         echo "<b>Removing ${DUMMY}...</b>"
@@ -553,7 +553,7 @@ fi
 echo "<p>Creating graph...</p>"
 TZO=${TIMEZONE_OFFSET:-0}
 cat > ${GNUPLOT_COMMAND} << __EOF__
-set terminal png transparent small size 800,320
+set terminal png small size 800,320
 set output '${GNUPLOT_OUTPUT}'
 set xdata time
 set timefmt "%s"
@@ -586,9 +586,9 @@ _info ()
     _find
     echo "<h3>Torrent file metainfo</h3>"
     echo "<pre>"
-    transmission-cli -i "${TORRENT}"
+    transmission-cli -i "${TORRENT}" 2> /dev/null
     echo "<p>"
-    transmission-cli -s "${TORRENT}" | grep "seeder"
+    transmission-cli -s "${TORRENT}" 2> /dev/null | grep "seeder"
     echo "</p></pre>"
 }
 
