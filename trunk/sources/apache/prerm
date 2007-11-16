@@ -3,3 +3,4 @@
 /opt/sbin/httpd -k stop
 
 update-alternatives --remove htpasswd /opt/sbin/apache-htpasswd
+update-alternatives --remove httpd /opt/sbin/apache-httpd

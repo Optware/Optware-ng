@@ -31,7 +31,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=4
+APACHE_IPK_VERSION=5
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -209,7 +209,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--with-expat=/opt \
 		--with-port=8000 \
 	)
-	touch $(APACHE_BUILD_DIR)/.configured
+	touch $@
 
 apache-unpack: $(APACHE_BUILD_DIR)/.configured
 
@@ -218,9 +218,9 @@ apache-unpack: $(APACHE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(APACHE_BUILD_DIR)/.built: $(APACHE_BUILD_DIR)/.configured
-	rm -f $(APACHE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(APACHE_BUILD_DIR) HOSTCC=$(HOSTCC)
-	touch $(APACHE_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -232,11 +232,11 @@ apache: $(APACHE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
-	rm -f $(APACHE_BUILD_DIR)/.staged
+	rm -f $@
 	rm -f $(STAGING_PREFIX)/libexec/mod_*.so
 	$(MAKE) -C $(APACHE_BUILD_DIR) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
 	sed -i -e 's!includedir = .*!includedir = $(STAGING_DIR)/opt/include/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
-	touch $(APACHE_BUILD_DIR)/.staged
+	touch $@
 
 apache-stage: $(APACHE_BUILD_DIR)/.staged
 
@@ -267,6 +267,7 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httpd
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/logresolve
 	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/rotatelogs
+	mv $(APACHE_IPK_DIR)/opt/sbin/httpd $(APACHE_IPK_DIR)/opt/sbin/apache-httpd
 	mv $(APACHE_IPK_DIR)/opt/sbin/htpasswd $(APACHE_IPK_DIR)/opt/sbin/apache-htpasswd
 	rm -f $(APACHE_IPK_DIR)/opt/man/man1/htpasswd.1
 	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)/opt/sbin/apxs
