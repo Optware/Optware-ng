@@ -109,7 +109,7 @@ $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/.built
 	) > $(BZIP2_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(BZIP2_IPK_DIR)-links/CONTROL/postinst $(BZIP2_IPK_DIR)-links/CONTROL/prerm; \
+			$(BZIP2_IPK_DIR)/CONTROL/postinst $(BZIP2_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BZIP2_IPK_DIR)
 
