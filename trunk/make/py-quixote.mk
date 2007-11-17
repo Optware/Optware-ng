@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-QUIXOTE_VERSION=2.5b1
+PY-QUIXOTE_VERSION=2.5
 PY-QUIXOTE_SITE=http://quixote.ca/releases
 PY-QUIXOTE_SOURCE=Quixote-$(PY-QUIXOTE_VERSION).tar.gz
 PY-QUIXOTE_DIR=Quixote-$(PY-QUIXOTE_VERSION)
