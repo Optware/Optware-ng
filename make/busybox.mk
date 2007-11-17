@@ -92,28 +92,30 @@ busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) make/busybox.mk
-	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(BUSYBOX_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(BUSYBOX_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(BUSYBOX_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D) ; \
 	fi
-	cp $(BUSYBOX_SOURCE_DIR)/defconfig $(BUSYBOX_BUILD_DIR)/.config
+	cp $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config
 ifeq ($(LIBC_STYLE),uclibc)
 # default on, turn off if uclibc
 	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/# CONFIG_FEATURE_SORT_BIG is not set/" \
-		$(BUSYBOX_BUILD_DIR)/.config
+		$(@D)/.config
 endif
 ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
 ifneq ($(OPTWARE_TARGET), $(filter fsg3v4, $(OPTWARE_TARGET)))
 # default off, turn on if linux 2.6
-	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" \
-		$(BUSYBOX_BUILD_DIR)/.config
+	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" $(@D)/.config
 endif
 endif
-	sed -i -e 's/-strip /-$$(STRIP) /' $(BUSYBOX_BUILD_DIR)/scripts/Makefile.IMA
+	sed -i -e 's/-strip /-$$(STRIP) /' $(@D)/scripts/Makefile.IMA
+ifeq ($(OPTWARE_TARGET), $(filter ds101g, $(OPTWARE_TARGET)))
+	sed -i -e '/sort-common/d; /sort-section/d' $(@D)/scripts/trylink
+endif
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" \
-		-C $(BUSYBOX_BUILD_DIR) oldconfig
-#		-C $(BUSYBOX_BUILD_DIR) menuconfig
+		-C $(@D) oldconfig
+#		-C $(@D) menuconfig
 	touch $@
 
 busybox-unpack: $(BUSYBOX_BUILD_DIR)/.configured
