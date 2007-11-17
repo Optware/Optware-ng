@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.16
+NGINX_VERSION=0.6.17
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -57,8 +57,12 @@ NGINX_PATCHES=
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure.patch
-NGINX_CONFIGURE_ENV=\
-NGX_SYSTEM=Linux NGX_RELEASE=2.4 NGX_MACHINE=$(TARGET_ARCH) \
+ifneq (,$(filter module-init-tools, $(PACKAGES)))
+NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_RELEASE=2.6 NGX_MACHINE=$(TARGET_ARCH)
+else
+NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_RELEASE=2.4 NGX_MACHINE=$(TARGET_ARCH)
+endif
+NGINX_CONFIGURE_ENV+=\
 cross_compiling=yes \
 ngx_cache_NGX_HAVE_STRERROR_R=no \
 ngx_cache_sizeof_int=4 \
