@@ -38,7 +38,7 @@ ADDUSER_VERSION:=$(shell sed -n -e 's/^BUSYBOX_VERSION *=\([0-9]\)/\1/p' make/bu
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #
-ADDUSER_IPK_VERSION=2
+ADDUSER_IPK_VERSION=3
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
@@ -115,9 +115,13 @@ ifneq ($(OPTWARE_TARGET), $(filter fsg3v4, $(OPTWARE_TARGET)))
 endif
 endif
 	sed -i -e 's/-strip /-$$(STRIP) /' $(ADDUSER_BUILD_DIR)/scripts/Makefile.IMA
+ifeq ($(OPTWARE_TARGET), $(filter ds101g, $(OPTWARE_TARGET)))
+	sed -i -e '/sort-common/d; /sort-section/d' $(ADDUSER_BUILD_DIR)/scripts/trylink
+endif
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS=$(TARGET_CROSS) \
 		-C $(ADDUSER_BUILD_DIR) oldconfig
-	touch $(ADDUSER_BUILD_DIR)/.configured
+#		-C $(ADDUSER_BUILD_DIR) menuconfig
+	touch $@
 
 adduser-unpack: $(ADDUSER_BUILD_DIR)/.configured
 
@@ -125,14 +129,14 @@ adduser-unpack: $(ADDUSER_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ADDUSER_BUILD_DIR)/.built: $(ADDUSER_BUILD_DIR)/.configured
-	rm -f $(ADDUSER_BUILD_DIR)/.built
+	rm -f $@
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(ADDUSER_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(ADDUSER_LDFLAGS)" \
 	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="/opt" \
 		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		-C $(ADDUSER_BUILD_DIR)
-	touch $(ADDUSER_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,7 +148,7 @@ adduser: $(ADDUSER_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/adduser
 #
 $(ADDUSER_IPK_DIR)/CONTROL/control:
-	@install -d $(ADDUSER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: adduser" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
