@@ -28,7 +28,6 @@ OPTWARE_TARGET ?= nslu2
 # When they have been tested, they will be promoted and uploaded.
 #
 CROSS_PACKAGES_READY_FOR_TESTING = \
-	ninvaders
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -44,6 +43,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
+	transmission \
 
 PERL_PACKAGES = \
 	perl \
@@ -254,7 +254,7 @@ COMMON_CROSS_PACKAGES = \
 	neon net-snmp net-tools netatalk netcat nethack netio \
 	newsbeuter newt \
 	nfs-server nfs-utils \
-	nget nginx ngrep nickle nmap nload noip nrpe \
+	nget nginx ngrep nickle ninvaders nmap nload noip nrpe \
 	ntfsprogs ntop ntp ntpclient nttcp nvi nylon nzbget \
 	oleo open2300 \
 	openobex obexftp \
