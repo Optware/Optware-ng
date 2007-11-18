@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-NET-SERVER_SITE=http://search.cpan.org/CPAN/authors/id/R/RH/RHANDOM
-PERL-NET-SERVER_VERSION=0.94
+PERL-NET-SERVER_VERSION=0.97
 PERL-NET-SERVER_SOURCE=Net-Server-$(PERL-NET-SERVER_VERSION).tar.gz
 PERL-NET-SERVER_DIR=Net-Server-$(PERL-NET-SERVER_VERSION)
 PERL-NET-SERVER_UNZIP=zcat
@@ -32,11 +32,11 @@ $(DL_DIR)/$(PERL-NET-SERVER_SOURCE):
 perl-net-server-source: $(DL_DIR)/$(PERL-NET-SERVER_SOURCE) $(PERL-NET-SERVER_PATCHES)
 
 $(PERL-NET-SERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SERVER_SOURCE) $(PERL-NET-SERVER_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PERL-NET-SERVER_DIR) $(PERL-NET-SERVER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-NET-SERVER_DIR) $(@D)
 	$(PERL-NET-SERVER_UNZIP) $(DL_DIR)/$(PERL-NET-SERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-NET-SERVER_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-NET-SERVER_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-NET-SERVER_DIR) $(PERL-NET-SERVER_BUILD_DIR)
-	(cd $(PERL-NET-SERVER_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-NET-SERVER_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -44,31 +44,31 @@ $(PERL-NET-SERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SERVER_SOURCE) $(
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
-	touch $(PERL-NET-SERVER_BUILD_DIR)/.configured
+	touch $@
 
 perl-net-server-unpack: $(PERL-NET-SERVER_BUILD_DIR)/.configured
 
 $(PERL-NET-SERVER_BUILD_DIR)/.built: $(PERL-NET-SERVER_BUILD_DIR)/.configured
-	rm -f $(PERL-NET-SERVER_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-NET-SERVER_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-NET-SERVER_BUILD_DIR)/.built
+	touch $@
 
 perl-net-server: $(PERL-NET-SERVER_BUILD_DIR)/.built
 
 $(PERL-NET-SERVER_BUILD_DIR)/.staged: $(PERL-NET-SERVER_BUILD_DIR)/.built
-	rm -f $(PERL-NET-SERVER_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-NET-SERVER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-NET-SERVER_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-net-server-stage: $(PERL-NET-SERVER_BUILD_DIR)/.staged
 
 $(PERL-NET-SERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-NET-SERVER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-net-server" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
