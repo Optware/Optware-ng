@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-IO-MULTIPLEX_SITE=http://search.cpan.org/CPAN/authors/id/B/BB/BBB
-PERL-IO-MULTIPLEX_VERSION=1.08
+PERL-IO-MULTIPLEX_VERSION=1.09
 PERL-IO-MULTIPLEX_SOURCE=IO-Multiplex-$(PERL-IO-MULTIPLEX_VERSION).tar.gz
 PERL-IO-MULTIPLEX_DIR=IO-Multiplex-$(PERL-IO-MULTIPLEX_VERSION)
 PERL-IO-MULTIPLEX_UNZIP=zcat
@@ -32,11 +32,11 @@ $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE):
 perl-io-multiplex-source: $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE) $(PERL-IO-MULTIPLEX_PATCHES)
 
 $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE) $(PERL-IO-MULTIPLEX_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) $(PERL-IO-MULTIPLEX_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) $(@D)
 	$(PERL-IO-MULTIPLEX_UNZIP) $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-IO-MULTIPLEX_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) $(PERL-IO-MULTIPLEX_BUILD_DIR)
-	(cd $(PERL-IO-MULTIPLEX_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-IO-MULTIPLEX_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -44,31 +44,31 @@ $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IO-MULTIPLEX_SOURCE
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
-	touch $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured
+	touch $@
 
 perl-io-multiplex-unpack: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured
 
 $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.configured
-	rm -f $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-IO-MULTIPLEX_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built
+	touch $@
 
 perl-io-multiplex: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built
 
 $(PERL-IO-MULTIPLEX_BUILD_DIR)/.staged: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.built
-	rm -f $(PERL-IO-MULTIPLEX_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-IO-MULTIPLEX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-IO-MULTIPLEX_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-io-multiplex-stage: $(PERL-IO-MULTIPLEX_BUILD_DIR)/.staged
 
 $(PERL-IO-MULTIPLEX_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-IO-MULTIPLEX_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-io-multiplex" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
