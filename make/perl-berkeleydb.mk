@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-BERKELEYDB_SITE=http://search.cpan.org/CPAN/authors/id/P/PM/PMQS
-PERL-BERKELEYDB_VERSION=0.29
+PERL-BERKELEYDB_VERSION=0.32
 PERL-BERKELEYDB_SOURCE=BerkeleyDB-$(PERL-BERKELEYDB_VERSION).tar.gz
 PERL-BERKELEYDB_DIR=BerkeleyDB-$(PERL-BERKELEYDB_VERSION)
 PERL-BERKELEYDB_UNZIP=zcat
@@ -33,11 +33,11 @@ perl-berkeleydb-source: $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) $(PERL-BERKELEYDB_PA
 
 $(PERL-BERKELEYDB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) $(PERL-BERKELEYDB_PATCHES)
 	$(MAKE) perl-stage openssl-stage zlib-stage libdb-stage
-	rm -rf $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) $(PERL-BERKELEYDB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) $(@D)
 	$(PERL-BERKELEYDB_UNZIP) $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-BERKELEYDB_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) $(PERL-BERKELEYDB_BUILD_DIR)
-	(cd $(PERL-BERKELEYDB_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-BERKELEYDB_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -47,31 +47,31 @@ $(PERL-BERKELEYDB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-BERKELEYDB_SOURCE) $(
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERL-BERKELEYDB_BUILD_DIR)/.configured
+	touch $@
 
 perl-berkeleydb-unpack: $(PERL-BERKELEYDB_BUILD_DIR)/.configured
 
 $(PERL-BERKELEYDB_BUILD_DIR)/.built: $(PERL-BERKELEYDB_BUILD_DIR)/.configured
-	rm -f $(PERL-BERKELEYDB_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-BERKELEYDB_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-BERKELEYDB_BUILD_DIR)/.built
+	touch $@
 
 perl-berkeleydb: $(PERL-BERKELEYDB_BUILD_DIR)/.built
 
 $(PERL-BERKELEYDB_BUILD_DIR)/.staged: $(PERL-BERKELEYDB_BUILD_DIR)/.built
-	rm -f $(PERL-BERKELEYDB_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-BERKELEYDB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-BERKELEYDB_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-berkeleydb-stage: $(PERL-BERKELEYDB_BUILD_DIR)/.staged
 
 $(PERL-BERKELEYDB_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-BERKELEYDB_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-berkeleydb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
