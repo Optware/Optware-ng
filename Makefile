@@ -104,6 +104,7 @@ PERL_PACKAGES = \
 	ipcalc \
 	perlbal \
 	perlconsole \
+	postgrey \
 	rsnapshot \
 	spamassassin \
 	stow \
