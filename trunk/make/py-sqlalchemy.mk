@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLALCHEMY_VERSION=0.4.0
+PY-SQLALCHEMY_VERSION=0.4.1
 PY-SQLALCHEMY_IPK_VERSION=1
 
 PY-SQLALCHEMY_SVN_REV=
@@ -125,8 +125,8 @@ else
 $(PY-SQLALCHEMY_BUILD_DIR)/.configured: $(PY-SQLALCHEMY_PATCHES)
 endif
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-SQLALCHEMY_BUILD_DIR)
-	mkdir -p $(PY-SQLALCHEMY_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR)
 ifeq ($(PY-SQLALCHEMY_SVN),)
@@ -143,8 +143,8 @@ endif
 	if test -n "$(PY-SQLALCHEMY_PATCHES)"; then \
 	    cat $(PY-SQLALCHEMY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(PY-SQLALCHEMY_BUILD_DIR)/2.4
-	(cd $(PY-SQLALCHEMY_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 	    echo "[install]"; \
 	    echo "install_scripts = /opt/bin"; \
@@ -168,8 +168,8 @@ endif
 	if test -n "$(PY-SQLALCHEMY_PATCHES)"; then \
 	    cat $(PY-SQLALCHEMY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(PY-SQLALCHEMY_BUILD_DIR)/2.5
-	(cd $(PY-SQLALCHEMY_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-SQLALCHEMY_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[install]"; \
 	    echo "install_scripts = /opt/bin"; \
@@ -177,7 +177,7 @@ endif
 	    echo "executable=/opt/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-SQLALCHEMY_BUILD_DIR)/.configured
+	touch $@
 
 py-sqlalchemy-unpack: $(PY-SQLALCHEMY_BUILD_DIR)/.configured
 
@@ -185,14 +185,14 @@ py-sqlalchemy-unpack: $(PY-SQLALCHEMY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SQLALCHEMY_BUILD_DIR)/.built: $(PY-SQLALCHEMY_BUILD_DIR)/.configured
-	rm -f $(PY-SQLALCHEMY_BUILD_DIR)/.built
-	(cd $(PY-SQLALCHEMY_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-SQLALCHEMY_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-SQLALCHEMY_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -203,9 +203,9 @@ py-sqlalchemy: $(PY-SQLALCHEMY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SQLALCHEMY_BUILD_DIR)/.staged: $(PY-SQLALCHEMY_BUILD_DIR)/.built
-	rm -f $(PY-SQLALCHEMY_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-SQLALCHEMY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SQLALCHEMY_BUILD_DIR)/.staged
+	touch $@
 
 py-sqlalchemy-stage: $(PY-SQLALCHEMY_BUILD_DIR)/.staged
 
