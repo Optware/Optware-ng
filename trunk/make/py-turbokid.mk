@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOKID_VERSION=1.0.3
+PY-TURBOKID_VERSION=1.0.4
 #PY-TURBOKID_SVN_TAG=$(PY-TURBOKID_VERSION)
 #PY-TURBOKID_REPOSITORY=http://svn.turbogears.org/projects/TurboKid/tags/$(PY-TURBOKID_SVN_TAG)
 PY-TURBOKID_SITE=http://cheeseshop.python.org/packages/source/T/TurboKid
@@ -113,14 +113,14 @@ py-turbokid-source: $(PY-TURBOKID_PATCHES)
 #
 $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBOKID_PATCHES) make/py-turbokid.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-TURBOKID_BUILD_DIR)
-	mkdir -p $(PY-TURBOKID_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)/2.4
-	(cd $(PY-TURBOKID_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -128,12 +128,12 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
 	$(PY-TURBOKID_UNZIP) $(DL_DIR)/$(PY-TURBOKID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TURBOKID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOKID_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(PY-TURBOKID_BUILD_DIR)/2.5
-	(cd $(PY-TURBOKID_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-TURBOKID_BUILD_DIR)/.configured
+	touch $@
 
 py-turbokid-unpack: $(PY-TURBOKID_BUILD_DIR)/.configured
 
@@ -141,14 +141,14 @@ py-turbokid-unpack: $(PY-TURBOKID_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-TURBOKID_BUILD_DIR)/.built: $(PY-TURBOKID_BUILD_DIR)/.configured
-	rm -f $(PY-TURBOKID_BUILD_DIR)/.built
-	(cd $(PY-TURBOKID_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-TURBOKID_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-TURBOKID_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -159,9 +159,9 @@ py-turbokid: $(PY-TURBOKID_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-TURBOKID_BUILD_DIR)/.staged: $(PY-TURBOKID_BUILD_DIR)/.built
-	rm -f $(PY-TURBOKID_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-TURBOKID_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-TURBOKID_BUILD_DIR)/.staged
+	touch $@
 
 py-turbokid-stage: $(PY-TURBOKID_BUILD_DIR)/.staged
 
