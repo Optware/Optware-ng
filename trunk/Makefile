@@ -227,7 +227,8 @@ COMMON_CROSS_PACKAGES = \
 	jabberd jamvm jed jikes jove joe \
 	keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
-	liba52 libao libart libbt libcapi20 libcdio libcurl libdaemon libdb \
+	liba52 libao libart libbt libcapi20 libcdio libcurl \
+	libdaemon libdb libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread \
 	libesmtp libevent libexif libextractor libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error \
