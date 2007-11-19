@@ -21,9 +21,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOCHEETAH_VERSION=0.9.5
-PY-TURBOCHEETAH_SVN_TAG=$(PY-TURBOCHEETAH_VERSION)
-PY-TURBOCHEETAH_REPOSITORY=http://svn.turbogears.org/projects/TurboCheetah/tags/$(PY-TURBOCHEETAH_SVN_TAG)
+PY-TURBOCHEETAH_VERSION=1.0
+PY-TURBOCHEETAH_SITE=http://pypi.python.org/packages/source/T/TurboCheetah
+PY-TURBOCHEETAH_SOURCE=TurboCheetah-$(PY-TURBOCHEETAH_VERSION).tar.gz
+#PY-TURBOCHEETAH_SVN_TAG=$(PY-TURBOCHEETAH_VERSION)
+#PY-TURBOCHEETAH_REPOSITORY=http://svn.turbogears.org/projects/TurboCheetah/tags/$(PY-TURBOCHEETAH_SVN_TAG)
 PY-TURBOCHEETAH_DIR=TurboCheetah-$(PY-TURBOCHEETAH_VERSION)
 PY-TURBOCHEETAH_UNZIP=zcat
 PY-TURBOCHEETAH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -37,7 +39,7 @@ PY-TURBOCHEETAH_CONFLICTS=
 #
 # PY-TURBOCHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOCHEETAH_IPK_VERSION=4
+PY-TURBOCHEETAH_IPK_VERSION=1
 
 #
 # PY-TURBOCHEETAH_CONFFILES should be a list of user-editable files
@@ -107,7 +109,7 @@ py-turbocheetah-source: $(PY-TURBOCHEETAH_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TURBOCHEETAH_BUILD_DIR)/.configured: $(PY-TURBOCHEETAH_PATCHES) make/py-turbocheetah.mk
+$(PY-TURBOCHEETAH_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOCHEETAH_SOURCE) $(PY-TURBOCHEETAH_PATCHES) make/py-turbocheetah.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(PY-TURBOCHEETAH_BUILD_DIR)
 	mkdir -p $(PY-TURBOCHEETAH_BUILD_DIR)
@@ -121,8 +123,8 @@ else
 	)
 endif
 #	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)/2.4
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -136,12 +138,12 @@ else
 	)
 endif
 #	cat $(PY-TURBOCHEETAH_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(PY-TURBOCHEETAH_BUILD_DIR)/2.5
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-TURBOCHEETAH_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
+	touch $@
 
 py-turbocheetah-unpack: $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
 
@@ -149,14 +151,14 @@ py-turbocheetah-unpack: $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-TURBOCHEETAH_BUILD_DIR)/.built: $(PY-TURBOCHEETAH_BUILD_DIR)/.configured
-	rm -f $(PY-TURBOCHEETAH_BUILD_DIR)/.built
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-TURBOCHEETAH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -167,9 +169,9 @@ py-turbocheetah: $(PY-TURBOCHEETAH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-TURBOCHEETAH_BUILD_DIR)/.staged: $(PY-TURBOCHEETAH_BUILD_DIR)/.built
-	rm -f $(PY-TURBOCHEETAH_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-TURBOCHEETAH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-TURBOCHEETAH_BUILD_DIR)/.staged
+	touch $@
 
 py-turbocheetah-stage: $(PY-TURBOCHEETAH_BUILD_DIR)/.staged
 
