@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FLAC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flac
-FLAC_VERSION=1.1.4
+FLAC_VERSION=1.2.1
 FLAC_SOURCE=flac-$(FLAC_VERSION).tar.gz
 FLAC_DIR=flac-$(FLAC_VERSION)
 FLAC_UNZIP=zcat
@@ -102,13 +102,13 @@ flac-source: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES)
 $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES) make/flac.mk
 	rm -rf $(STAGING_INCLUDE_DIR)/FLAC*
 	$(MAKE) libogg-stage
-	rm -rf $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FLAC_DIR) $(@D)
 	$(FLAC_UNZIP) $(DL_DIR)/$(FLAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FLAC_PATCHES)"; \
 		then cat $(FLAC_PATCHES) | patch -d $(BUILD_DIR)/$(FLAC_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(FLAC_DIR) $(FLAC_BUILD_DIR)
-	(cd $(FLAC_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(FLAC_DIR) $(@D)
+	(cd $(@D); \
 		sed -i -e '/LOCAL_EXTRA_LDFLAGS.*read_only_relocs/d' src/libFLAC/Makefile.in; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FLAC_CPPFLAGS)" \
@@ -119,10 +119,10 @@ $(FLAC_BUILD_DIR)/.configured: $(DL_DIR)/$(FLAC_SOURCE) $(FLAC_PATCHES) make/fla
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-ogg=$(STAGING_PREFIX) \
-		--without-xmms \
+		--disable-xmms-plugin \
 		--disable-nls \
 	)
-	touch $(FLAC_BUILD_DIR)/.configured
+	touch $@
 
 flac-unpack: $(FLAC_BUILD_DIR)/.configured
 
@@ -130,9 +130,9 @@ flac-unpack: $(FLAC_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FLAC_BUILD_DIR)/.built: $(FLAC_BUILD_DIR)/.configured
-	rm -f $(FLAC_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FLAC_BUILD_DIR)
-	touch $(FLAC_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,9 +143,10 @@ flac: $(FLAC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FLAC_BUILD_DIR)/.staged: $(FLAC_BUILD_DIR)/.built
-	rm -f $(FLAC_BUILD_DIR)/.staged
-	$(MAKE) -C $(FLAC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(FLAC_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/flac*.pc
+	touch $@
 
 flac-stage: $(FLAC_BUILD_DIR)/.staged
 
@@ -154,7 +155,7 @@ flac-stage: $(FLAC_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/flac
 #
 $(FLAC_IPK_DIR)/CONTROL/control:
-	@install -d $(FLAC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: flac" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
