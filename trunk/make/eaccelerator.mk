@@ -37,7 +37,7 @@ EACCELERATOR_CONFLICTS=
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=1
+EACCELERATOR_IPK_VERSION=2
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
@@ -124,6 +124,7 @@ make/eaccelerator.mk make/php.mk
 		--prefix=/opt \
 		--enable-eaccelerator=shared \
 		--with-php-config=$(STAGING_DIR)/opt/bin/php-config \
+		--with-eaccelerator-userid=nobody \
 	)
 	touch $@
 
