@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.0/source
-GAMBIT-C_UPSTREAM_VERSION=v4_0_0
-GAMBIT-C_VERSION=4.0.0
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.1/source
+GAMBIT-C_UPSTREAM_VERSION=v4_1_0
+GAMBIT-C_VERSION=4.1.0
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
@@ -37,7 +37,9 @@ GAMBIT-C_DESCRIPTION=A portable implementation of Scheme.
 GAMBIT-C_SECTION=lang
 GAMBIT-C_PRIORITY=optional
 GAMBIT-C_DEPENDS=
+ifneq (, $filter(crosstool-native, $(PACKAGES)))
 GAMBIT-C_SUGGESTS=crosstool-native
+endif
 GAMBIT-C_CONFLICTS=
 
 #
@@ -110,16 +112,16 @@ gambit-c-source: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCHES)
 #
 $(GAMBIT-C_BUILD_DIR)/.configured: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCHES) make/gambit-c.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(GAMBIT-C_DIR) $(GAMBIT-C_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GAMBIT-C_DIR) $(@D)
 	$(GAMBIT-C_UNZIP) $(DL_DIR)/$(GAMBIT-C_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GAMBIT-C_PATCHES)" ; \
 		then cat $(GAMBIT-C_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GAMBIT-C_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GAMBIT-C_DIR)" != "$(GAMBIT-C_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(GAMBIT-C_DIR) $(GAMBIT-C_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(GAMBIT-C_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GAMBIT-C_DIR) $(@D) ; \
 	fi
-	(cd $(GAMBIT-C_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GAMBIT-C_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GAMBIT-C_LDFLAGS)" \
@@ -135,7 +137,7 @@ $(GAMBIT-C_BUILD_DIR)/.configured: $(DL_DIR)/$(GAMBIT-C_SOURCE) $(GAMBIT-C_PATCH
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(GAMBIT-C_BUILD_DIR)/libtool
-	touch $(GAMBIT-C_BUILD_DIR)/.configured
+	touch $@
 
 gambit-c-unpack: $(GAMBIT-C_BUILD_DIR)/.configured
 
@@ -143,9 +145,9 @@ gambit-c-unpack: $(GAMBIT-C_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GAMBIT-C_BUILD_DIR)/.built: $(GAMBIT-C_BUILD_DIR)/.configured
-	rm -f $(GAMBIT-C_BUILD_DIR)/.built
-	$(MAKE) -C $(GAMBIT-C_BUILD_DIR)
-	touch $(GAMBIT-C_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,9 +158,9 @@ gambit-c: $(GAMBIT-C_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GAMBIT-C_BUILD_DIR)/.staged: $(GAMBIT-C_BUILD_DIR)/.built
-	rm -f $(GAMBIT-C_BUILD_DIR)/.staged
-	$(MAKE) -C $(GAMBIT-C_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(GAMBIT-C_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 gambit-c-stage: $(GAMBIT-C_BUILD_DIR)/.staged
 
@@ -167,7 +169,7 @@ gambit-c-stage: $(GAMBIT-C_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gambit-c
 #
 $(GAMBIT-C_IPK_DIR)/CONTROL/control:
-	@install -d $(GAMBIT-C_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gambit-c" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
