@@ -1,6 +1,6 @@
---- transmission-0.93/libtransmission/transmission.h	2007-11-16 09:39:35.000000000 +0100
-+++ transmission/libtransmission/transmission.h	2007-11-16 09:40:36.000000000 +0100
-@@ -567,6 +567,7 @@
+--- transmission-0.93/libtransmission/transmission.h	2007-11-20 21:32:11.000000000 +0100
++++ transmission/libtransmission/transmission.h	2007-11-20 21:36:44.000000000 +0100
+@@ -597,6 +597,7 @@
      /* Flags */
      unsigned int isPrivate : 1;
      unsigned int isMultifile : 1;

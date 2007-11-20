@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.93
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=3834
+TRANSMISSION_SVN_REV=3909
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -153,9 +153,9 @@ endif
 	fi
 	sed -i -e 's/-g / /' $(TRANSMISSION_BUILD_DIR)/configure.ac
 	(cd $(TRANSMISSION_BUILD_DIR); \
-		./autogen.sh ; \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -166,7 +166,7 @@ endif
 		--prefix=/opt \
 		--without-gtk \
 		--without-wx \
-		--without-nls \
+		--disable-nls \
 	)
 #		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
 #		--verbose \
