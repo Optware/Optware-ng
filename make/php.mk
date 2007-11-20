@@ -21,10 +21,9 @@ PHP_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PHP_DESCRIPTION=The php scripting language
 PHP_SECTION=net
 PHP_PRIORITY=optional
-ifeq (openldap, $(filter openldap, $(PACKAGES)))
-PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre, cyrus-sasl-libs, openldap-libs
-else
 PHP_DEPENDS=bzip2, openssl, zlib, libxml2, libxslt, gdbm, libdb, pcre
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+PHP_DEPENDS+=, cyrus-sasl-libs, openldap-libs
 endif
 
 #
@@ -299,7 +298,7 @@ php-source: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES)
+$(PHP_BUILD_DIR)/.configured: $(DL_DIR)/$(PHP_SOURCE) $(PHP_PATCHES) make/php.mk
 	$(MAKE) bzip2-stage 
 	$(MAKE) gdbm-stage 
 	$(MAKE) libcurl-stage
@@ -318,19 +317,19 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 	$(MAKE) cyrus-sasl-stage
 endif
-	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	$(PHP_UNZIP) $(DL_DIR)/$(PHP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PHP_DIR) $(PHP_BUILD_DIR)
+	mv $(BUILD_DIR)/$(PHP_DIR) $(@D)
 	if test -n "$(PHP_PATCHES)"; \
-	    then cat $(PHP_PATCHES) | patch -p0 -bd $(PHP_BUILD_DIR); \
+	    then cat $(PHP_PATCHES) | patch -p0 -bd $(@D); \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i \
 	    -e 's|`$$PG_CONFIG --includedir`|$(STAGING_INCLUDE_DIR)|' \
 	    -e 's|`$$PG_CONFIG --libdir`|$(STAGING_LIB_DIR)|' \
-	    $(PHP_BUILD_DIR)/ext/*pgsql/*.m4
+	    $(@D)/ext/*pgsql/*.m4
 endif
-	(cd $(PHP_BUILD_DIR); \
+	(cd $(@D); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \
@@ -398,8 +397,8 @@ endif
 		--without-iconv \
 		--without-pear \
 	)
-	$(PATCH_LIBTOOL) $(PHP_BUILD_DIR)/libtool
-	touch $(PHP_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 php-unpack: $(PHP_BUILD_DIR)/.configured
 
@@ -408,9 +407,9 @@ php-unpack: $(PHP_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(PHP_BUILD_DIR)/.built: $(PHP_BUILD_DIR)/.configured
-	rm -f $(PHP_BUILD_DIR)/.built
-	$(MAKE) -C $(PHP_BUILD_DIR)
-	touch $(PHP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -423,7 +422,7 @@ php: $(PHP_BUILD_DIR)/.built
 #
 $(PHP_BUILD_DIR)/.staged: $(PHP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PHP_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) program_prefix="" install
+	$(MAKE) -C $(@D) INSTALL_ROOT=$(STAGING_DIR) program_prefix="" install
 	cp $(STAGING_PREFIX)/bin/php-config $(STAGING_DIR)/bin/php-config
 	cp $(STAGING_PREFIX)/bin/phpize $(STAGING_DIR)/bin/phpize
 	sed -i -e 's!prefix=.*!prefix=$(STAGING_PREFIX)!' $(STAGING_DIR)/bin/phpize
