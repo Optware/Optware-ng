@@ -1,0 +1,1 @@
+TYPES := -D__int8="char" -D__int16="short" -D__int32="int" -D__int64="long long"
