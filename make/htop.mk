@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-HTOP_VERSION=0.6.6
+HTOP_VERSION=0.7
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -36,7 +36,7 @@ HTOP_CONFLICTS=
 #
 # HTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-HTOP_IPK_VERSION=2
+HTOP_IPK_VERSION=1
 
 #
 # HTOP_CONFFILES should be a list of user-editable files
@@ -136,7 +136,7 @@ $(HTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES) make/hto
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(HTOP_BUILD_DIR)/libtool
-	touch $(HTOP_BUILD_DIR)/.configured
+	touch $@
 
 htop-unpack: $(HTOP_BUILD_DIR)/.configured
 
@@ -144,9 +144,9 @@ htop-unpack: $(HTOP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(HTOP_BUILD_DIR)/.built: $(HTOP_BUILD_DIR)/.configured
-	rm -f $(HTOP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(HTOP_BUILD_DIR)
-	touch $(HTOP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -157,9 +157,9 @@ htop: $(HTOP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(HTOP_BUILD_DIR)/.staged: $(HTOP_BUILD_DIR)/.built
-	rm -f $(HTOP_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(HTOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(HTOP_BUILD_DIR)/.staged
+	touch $@
 
 htop-stage: $(HTOP_BUILD_DIR)/.staged
 
