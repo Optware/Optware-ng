@@ -21,15 +21,15 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=0.2.3
+NZBGET_VERSION=0.3.0
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
 NZBGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-NZBGET_DESCRIPTION=A command-line based binary newsgrabber supporting nzb-files.
+NZBGET_DESCRIPTION=A command-line client/server based binary newsgrabber for nzb-files.
 NZBGET_SECTION=net
 NZBGET_PRIORITY=optional
-NZBGET_DEPENDS=libxml2, ncurses, libstdc++, zlib
+NZBGET_DEPENDS=ncurses, libxml2, libstdc++, libsigc++, libpar2
 NZBGET_SUGGESTS=
 NZBGET_CONFLICTS=
 
@@ -40,7 +40,7 @@ NZBGET_IPK_VERSION=1
 
 #
 # NZBGET_CONFFILES should be a list of user-editable files
-#NZBGET_CONFFILES=/opt/etc/nzbget.conf /opt/etc/init.d/SXXnzbget
+#NZBGET_CONFFILES=~/.nzbget
 
 #
 # NZBGET_PATCHES should list any patches, in the the order in
@@ -83,6 +83,10 @@ $(DL_DIR)/$(NZBGET_SOURCE):
 #
 nzbget-source: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 
+ifeq ($(NZBGET_CONFIGURE_OPTS), )
+NZBGET_CONFIGURE_OPTS=--disable-parprogress
+endif
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -101,8 +105,8 @@ nzbget-source: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES) make/nzbget.mk
-	$(MAKE) libxml2-stage ncurses-stage libstdc++-stage zlib-stage
+$(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
+	$(MAKE) libxml2-stage ncurses-stage libstdc++-stage libsigc++-stage libpar2-stage
 	rm -rf $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR)
 	$(NZBGET_UNZIP) $(DL_DIR)/$(NZBGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NZBGET_PATCHES)" ; \
@@ -112,11 +116,11 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES) ma
 	if test "$(BUILD_DIR)/$(NZBGET_DIR)" != "$(NZBGET_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR) ; \
 	fi
-	cp -f $(SOURCE_DIR)/common/config.* $(NZBGET_BUILD_DIR)/
 	(cd $(NZBGET_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NZBGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NZBGET_LDFLAGS)" \
+		LIBPREF="$(STAGING_DIR)/opt" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -124,10 +128,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--with-stl-includes=$(STAGING_INCLUDE_DIR) \
-		--with-stl-libraries=$(STAGING_LIB_DIR) \
-		--with-libxml2-includes=$(STAGING_INCLUDE_DIR)/libxml2 \
-		--with-libxml2-libraries=$(STAGING_LIB_DIR) \
+		$(NZBGET_CONFIGURE_OPTS) \
 	)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
 		$(NZBGET_BUILD_DIR)/Makefile
@@ -195,7 +196,7 @@ $(NZBGET_IPK): $(NZBGET_BUILD_DIR)/.built
 #	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(NZBGET_IPK_DIR) install
 	install -d $(NZBGET_IPK_DIR)/opt/bin $(NZBGET_IPK_DIR)/opt/share/doc/nzbget
 	install -m 755 $(NZBGET_BUILD_DIR)/nzbget $(NZBGET_IPK_DIR)/opt/bin/
-	install -m 644 $(NZBGET_BUILD_DIR)/nzbget.cfg.example $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
+	install -m 644 $(NZBGET_BUILD_DIR)/nzbget.conf.example $(NZBGET_IPK_DIR)/opt/share/doc/nzbget/
 	$(STRIP_COMMAND) $(NZBGET_IPK_DIR)/opt/bin/nzbget
 #	install -d $(NZBGET_IPK_DIR)/opt/etc/
 #	install -m 644 $(NZBGET_SOURCE_DIR)/nzbget.conf $(NZBGET_IPK_DIR)/opt/etc/nzbget.conf
@@ -204,7 +205,7 @@ $(NZBGET_IPK): $(NZBGET_BUILD_DIR)/.built
 	$(MAKE) $(NZBGET_IPK_DIR)/CONTROL/control
 #	install -m 755 $(NZBGET_SOURCE_DIR)/postinst $(NZBGET_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(NZBGET_SOURCE_DIR)/prerm $(NZBGET_IPK_DIR)/CONTROL/prerm
-	echo $(NZBGET_CONFFILES) | sed -e 's/ /\n/g' > $(NZBGET_IPK_DIR)/CONTROL/conffiles
+#	echo $(NZBGET_CONFFILES) | sed -e 's/ /\n/g' > $(NZBGET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NZBGET_IPK_DIR)
 
 #
@@ -225,3 +226,10 @@ nzbget-clean:
 #
 nzbget-dirclean:
 	rm -rf $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR) $(NZBGET_IPK_DIR) $(NZBGET_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+nzbget-check: $(NZBGET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NZBGET_IPK)
