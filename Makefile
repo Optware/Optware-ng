@@ -279,7 +279,7 @@ COMMON_CROSS_PACKAGES = \
 	sed sendmail ser setserial setpwc \
 	sharutils simh sipcalc siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
-	socat spandsp speex spindown sqlite sqlite2 \
+	socat softflowd spandsp speex spindown sqlite sqlite2 \
 	sqsh squeak squid srelay sslwrap strace stunnel streamripper sudo \
 	swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
