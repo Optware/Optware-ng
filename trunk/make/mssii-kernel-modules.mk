@@ -28,7 +28,7 @@ KERNEL-MODULES=`find $(KERNEL-MODULES_IPK_DIR) -name *.ko`
 #
 # KERNEL-MODULES_IPK_VERSION should be incremented when the ipk changes.
 #
-KERNEL-MODULES_IPK_VERSION=1
+KERNEL-MODULES_IPK_VERSION=2
 
 #
 # KERNEL-MODULES_CONFFILES should be a list of user-editable files
@@ -99,11 +99,11 @@ KERNEL-MODULES-FLAGS = ARCH=arm EXTRAVERSION=.6-arm1 ROOTDIR=$(KERNEL_BUILD_DIR)
 #
 $(KERNEL_BUILD_DIR)/.built: $(KERNEL_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(KERNEL_BUILD_DIR) $(KERNEL-MODULES-FLAGS) clean
-	cp  $(MSSII_GPL_SOURCE_DIR)/defconfig $(KERNEL_BUILD_DIR)/.config;
-	$(MAKE) -C $(KERNEL_BUILD_DIR) $(KERNEL-MODULES-FLAGS) oldconfig
+#	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) clean
+	cp  $(MSSII_GPL_SOURCE_DIR)/defconfig $(@D)/.config
+	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) oldconfig
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
-	$(MAKE) -C $(KERNEL_BUILD_DIR) $(KERNEL-MODULES-FLAGS) uImage modules
+	$(MAKE) -C $(@D) $(KERNEL-MODULES-FLAGS) uImage modules
 	touch $@
 
 kernel-modules: $(KERNEL_BUILD_DIR)/.built
