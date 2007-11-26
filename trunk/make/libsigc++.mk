@@ -145,8 +145,7 @@ libsigc++: $(LIBSIGC++_BUILD_DIR)/.built
 $(LIBSIGC++_BUILD_DIR)/.staged: $(LIBSIGC++_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) SUBDIRS=sigc++ install
-	sed -e 's!{includedir}!/$(STAGING_INCLUDE_DIR)!' \
-	    -e 's!{libdir}!/$(STAGING_LIB_DIR)!' \
+	sed -e 's!^prefix=.*!prefix=$(STAGING_PREFIX)!' \
 		$(@D)/sigc++-2.0.pc > $(STAGING_LIB_DIR)/pkgconfig/sigc++-2.0.pc
 	rm -f $(STAGING_LIB_DIR)/libsigc-2.0.la
 	touch $@
