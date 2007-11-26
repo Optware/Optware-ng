@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBSIGC++_SITE=http://ftp.gnome.org/pub/GNOME/sources/libsigc++/2.0/
-LIBSIGC++_VERSION=2.0.17
+LIBSIGC++_VERSION=2.0.18
 LIBSIGC++_SOURCE=libsigc++-$(LIBSIGC++_VERSION).tar.gz
 LIBSIGC++_DIR=libsigc++-$(LIBSIGC++_VERSION)
 LIBSIGC++_UNZIP=zcat
@@ -28,7 +28,7 @@ LIBSIGC++_CONFLICTS=
 #
 # LIBSIGC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSIGC++_IPK_VERSION=3
+LIBSIGC++_IPK_VERSION=1
 
 #
 # LIBSIGC++_CONFFILES should be a list of user-editable files
@@ -97,17 +97,18 @@ libsigc++-source: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PATCHES)
-	rm -rf $(BUILD_DIR)/$(LIBSIGC++_DIR) $(LIBSIGC++_BUILD_DIR)
+$(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PATCHES) make/libsigc++.mk
+	$(MAKE) libstdc++-stage
+	rm -rf $(BUILD_DIR)/$(LIBSIGC++_DIR) $(@D)
 	$(LIBSIGC++_UNZIP) $(DL_DIR)/$(LIBSIGC++_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBSIGC++_PATCHES)" ; \
 		then cat $(LIBSIGC++_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBSIGC++_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBSIGC++_DIR)" != "$(LIBSIGC++_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBSIGC++_DIR) $(LIBSIGC++_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBSIGC++_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBSIGC++_DIR) $(@D) ; \
 	fi
-	(cd $(LIBSIGC++_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBSIGC++_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBSIGC++_LDFLAGS)" \
@@ -120,8 +121,8 @@ $(LIBSIGC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSIGC++_SOURCE) $(LIBSIGC++_PA
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBSIGC++_BUILD_DIR)/libtool
-	touch $(LIBSIGC++_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libsigc++-unpack: $(LIBSIGC++_BUILD_DIR)/.configured
 
@@ -129,9 +130,9 @@ libsigc++-unpack: $(LIBSIGC++_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBSIGC++_BUILD_DIR)/.built: $(LIBSIGC++_BUILD_DIR)/.configured
-	rm -f $(LIBSIGC++_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBSIGC++_BUILD_DIR)
-	touch $(LIBSIGC++_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,14 +143,13 @@ libsigc++: $(LIBSIGC++_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBSIGC++_BUILD_DIR)/.staged: $(LIBSIGC++_BUILD_DIR)/.built
-	rm -f $(LIBSIGC++_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBSIGC++_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-		sed -e 's!{includedir}!/$(STAGING_DIR)/opt/include!' \
-		    -e 's!{libdir}!/$(STAGING_DIR)/opt/lib!' \
-			$(LIBSIGC++_BUILD_DIR)/sigc++-2.0.pc \
-		> $(STAGING_DIR)/opt/lib/pkgconfig/sigc++-2.0.pc 
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) SUBDIRS=sigc++ install
+	sed -e 's!{includedir}!/$(STAGING_INCLUDE_DIR)!' \
+	    -e 's!{libdir}!/$(STAGING_LIB_DIR)!' \
+		$(@D)/sigc++-2.0.pc > $(STAGING_LIB_DIR)/pkgconfig/sigc++-2.0.pc
 	rm -f $(STAGING_LIB_DIR)/libsigc-2.0.la
-	touch $(LIBSIGC++_BUILD_DIR)/.staged
+	touch $@
 
 libsigc++-stage: $(LIBSIGC++_BUILD_DIR)/.staged
 
@@ -158,7 +158,7 @@ libsigc++-stage: $(LIBSIGC++_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libsigc++
 #
 $(LIBSIGC++_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBSIGC++_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libsigc++" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -186,7 +186,8 @@ $(LIBSIGC++_IPK_DIR)/CONTROL/control:
 #
 $(LIBSIGC++_IPK): $(LIBSIGC++_BUILD_DIR)/.built
 	rm -rf $(LIBSIGC++_IPK_DIR) $(BUILD_DIR)/libsigc++_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBSIGC++_BUILD_DIR) DESTDIR=$(LIBSIGC++_IPK_DIR) install-strip
+	$(MAKE) -C $(LIBSIGC++_BUILD_DIR) install-strip \
+		DESTDIR=$(LIBSIGC++_IPK_DIR) SUBDIRS=sigc++
 	# remove documentation and stuff
 	rm -rf $(LIBSIGC++_IPK_DIR)/opt/include
 	rm -rf $(LIBSIGC++_IPK_DIR)/opt/share
@@ -215,3 +216,9 @@ libsigc++-clean:
 #
 libsigc++-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBSIGC++_DIR) $(LIBSIGC++_BUILD_DIR) $(LIBSIGC++_IPK_DIR) $(LIBSIGC++_IPK)
+
+#
+# Some sanity check for the package.
+#
+libsigc++-check: $(LIBSIGC++_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBSIGC++_IPK)
