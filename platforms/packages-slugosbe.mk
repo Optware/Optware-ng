@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	heyu \
 	iptraf \
 	ldconfig \
+	libpar2 \
 	monotone \
 	netatalk \
 	puppy \

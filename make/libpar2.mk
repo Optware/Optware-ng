@@ -35,7 +35,7 @@ LIBPAR2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBPAR2_DESCRIPTION=A library for performing common tasks related to PAR recovery sets
 LIBPAR2_SECTION=libs
 LIBPAR2_PRIORITY=optional
-LIBPAR2_DEPENDS=libstdc++,libsigc++
+LIBPAR2_DEPENDS=libsigc++
 LIBPAR2_SUGGESTS=
 LIBPAR2_CONFLICTS=
 
@@ -58,11 +58,9 @@ LIBPAR2_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-# Package sigc++-2.0 has incorrect infos for cflags and libs, we correct them here
-LIBPAR2_CPPFLAGS=-I$(STAGING_DIR)/opt/include/sigc++-2.0 -I$(STAGING_DIR)/opt/lib/sigc++-2.0/include
-LIBPAR2_LDFLAGS=-L$(STAGING_DIR)/opt/lib -lsigc-2.0
+LIBPAR2_CPPFLAGS=
+LIBPAR2_LDFLAGS=
 
-PKG_CONFIG_PATH=$(STAGING_DIR)/opt/lib/pkgconfig
 
 #
 # LIBPAR2_BUILD_DIR is the directory in which the build is done.
@@ -114,20 +112,21 @@ libpar2-source: $(DL_DIR)/$(LIBPAR2_SOURCE) $(LIBPAR2_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBPAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAR2_SOURCE) $(LIBPAR2_PATCHES) make/libpar2.mk
-	$(MAKE) libstdc++-stage libsigc++-stage
-	rm -rf $(BUILD_DIR)/$(LIBPAR2_DIR) $(LIBPAR2_BUILD_DIR)
+	$(MAKE) libsigc++-stage
+	rm -rf $(BUILD_DIR)/$(LIBPAR2_DIR) $(@D)
 	$(LIBPAR2_UNZIP) $(DL_DIR)/$(LIBPAR2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPAR2_PATCHES)" ; \
 		then cat $(LIBPAR2_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(LIBPAR2_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBPAR2_DIR)" != "$(LIBPAR2_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBPAR2_DIR) $(LIBPAR2_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBPAR2_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBPAR2_DIR) $(@D) ; \
 	fi
-	(cd $(LIBPAR2_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPAR2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPAR2_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -136,7 +135,7 @@ $(LIBPAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAR2_SOURCE) $(LIBPAR2_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBPAR2_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libpar2-unpack: $(LIBPAR2_BUILD_DIR)/.configured
@@ -146,6 +145,7 @@ libpar2-unpack: $(LIBPAR2_BUILD_DIR)/.configured
 #
 $(LIBPAR2_BUILD_DIR)/.built: $(LIBPAR2_BUILD_DIR)/.configured
 	rm -f $@
+	PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 	$(MAKE) -C $(LIBPAR2_BUILD_DIR)
 	touch $@
 
