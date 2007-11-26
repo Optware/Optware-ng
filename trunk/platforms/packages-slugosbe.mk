@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	libpar2 \
 	monotone \
 	netatalk \
+	nzbget \
 	puppy \
 	py-psycopg \
 	qemu \
