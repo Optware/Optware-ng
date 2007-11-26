@@ -13,10 +13,8 @@ BROKEN_PACKAGES = \
 	heyu \
 	iptraf \
 	ldconfig \
-	libpar2 \
 	monotone \
 	netatalk \
-	nzbget \
 	puppy \
 	py-psycopg \
 	qemu \
