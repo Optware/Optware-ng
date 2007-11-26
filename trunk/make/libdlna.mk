@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDLNA_SITE=http://libdlna.geexbox.org/releases
-LIBDLNA_VERSION=0.2.1
+LIBDLNA_VERSION=0.2.3
 LIBDLNA_SOURCE=libdlna-$(LIBDLNA_VERSION).tar.bz2
 LIBDLNA_DIR=libdlna-$(LIBDLNA_VERSION)
 LIBDLNA_UNZIP=bzcat
