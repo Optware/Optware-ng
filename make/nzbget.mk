@@ -29,7 +29,7 @@ NZBGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NZBGET_DESCRIPTION=A command-line client/server based binary newsgrabber for nzb-files.
 NZBGET_SECTION=net
 NZBGET_PRIORITY=optional
-NZBGET_DEPENDS=ncurses, libxml2, libstdc++, libsigc++, libpar2
+NZBGET_DEPENDS=ncurses, libxml2, libpar2
 NZBGET_SUGGESTS=
 NZBGET_CONFLICTS=
 
@@ -106,7 +106,7 @@ endif
 # shown below to make various patches to it.
 #
 $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
-	$(MAKE) libxml2-stage ncurses-stage libstdc++-stage libsigc++-stage libpar2-stage
+	$(MAKE) libxml2-stage ncurses-stage libpar2-stage
 	rm -rf $(BUILD_DIR)/$(NZBGET_DIR) $(NZBGET_BUILD_DIR)
 	$(NZBGET_UNZIP) $(DL_DIR)/$(NZBGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NZBGET_PATCHES)" ; \
@@ -133,7 +133,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 	sed -i -e '/^CPPFLAGS/s:-I/usr.*$$::' -e '/^LDFLAGS/s:-L/usr.*$$::' \
 		$(NZBGET_BUILD_DIR)/Makefile
 #	$(PATCH_LIBTOOL) $(NZBGET_BUILD_DIR)/libtool
-	touch $(NZBGET_BUILD_DIR)/.configured
+	touch $@
 
 nzbget-unpack: $(NZBGET_BUILD_DIR)/.configured
 
@@ -141,9 +141,9 @@ nzbget-unpack: $(NZBGET_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NZBGET_BUILD_DIR)/.built: $(NZBGET_BUILD_DIR)/.configured
-	rm -f $(NZBGET_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NZBGET_BUILD_DIR)
-	touch $(NZBGET_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,9 +154,9 @@ nzbget: $(NZBGET_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NZBGET_BUILD_DIR)/.staged: $(NZBGET_BUILD_DIR)/.built
-	rm -f $(NZBGET_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(NZBGET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NZBGET_BUILD_DIR)/.staged
+	touch $@
 
 nzbget-stage: $(NZBGET_BUILD_DIR)/.staged
 
@@ -165,7 +165,7 @@ nzbget-stage: $(NZBGET_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/nzbget
 #
 $(NZBGET_IPK_DIR)/CONTROL/control:
-	@install -d $(NZBGET_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nzbget" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
