@@ -42,7 +42,7 @@ LIBPAR2_CONFLICTS=
 #
 # LIBPAR2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPAR2_IPK_VERSION=2
+LIBPAR2_IPK_VERSION=3
 
 #
 # LIBPAR2_CONFFILES should be a list of user-editable files
@@ -60,6 +60,12 @@ LIBPAR2_PATCHES=$(LIBPAR2_SOURCE_DIR)/main-packet-fix.patch
 #
 LIBPAR2_CPPFLAGS=
 LIBPAR2_LDFLAGS=
+LIBPAR2_CONFIGURE=
+ifeq ($(LIBC_STYLE), uclibc)
+ifdef TARGET_GXX
+LIBPAR2_CONFIGURE += CXX=$(TARGET_GXX)
+endif
+endif
 
 
 #
@@ -127,6 +133,7 @@ $(LIBPAR2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAR2_SOURCE) $(LIBPAR2_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPAR2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPAR2_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		$(LIBPAR2_CONFIGURE) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
