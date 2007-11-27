@@ -5,12 +5,13 @@
 ###########################################################
 
 LIBSTDC++_VERSION=$(strip \
-	$(if $(filter slugosbe openwrt-ixp4xx, $(OPTWARE_TARGET)), 6.0.8, \
+	$(if $(filter cs06q3armel slugosbe openwrt-ixp4xx, $(OPTWARE_TARGET)), 6.0.8, \
 	$(if $(filter cs05q3armel fsg3v4 gumstix1151 ts101 mssii, $(OPTWARE_TARGET)), 6.0.3, \
+	$(if $(filter cs04q3armel, $(OPTWARE_TARGET)), 6.0.2, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), 5.0.3, \
 	$(if $(filter ds101 ds101g ts72xx, $(OPTWARE_TARGET)), 5.0.6, \
 	$(if $(filter iphone, $(OPTWARE_TARGET)), 6.0.9, \
-	5.0.7))))))
+	5.0.7)))))))
 LIBSTDC++_MAJOR=$(shell echo $(LIBSTDC++_VERSION) | sed 's/\..*//')
 
 LIBSTDC++_DIR=libstdc++-$(LIBSTDC++_VERSION)
@@ -34,8 +35,12 @@ LIBSTDC++_LIBNAME_MAJOR=$(strip \
 # 	ts101
 # 	openwrt-ixp4xx
 # 	gumstix1151
+ifeq (glibc, $(LIBC_STYLE))
+LIBSTDC++_USED=yes
+else
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 LIBSTDC++_USED=yes
+endif
 endif
 
 ifndef LIBSTDC++_USED
