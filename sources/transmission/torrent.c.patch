@@ -1,6 +1,6 @@
---- transmission-0.92/libtransmission/torrent.c	2007-11-09 18:57:07.000000000 +0100
-+++ transmission/libtransmission/torrent.c	2007-11-09 20:10:58.000000000 +0100
-@@ -468,7 +468,7 @@
+--- transmission-0.93/libtransmission/torrent.c	2007-11-27 09:28:49.000000000 +0100
++++ transmission/libtransmission/torrent.c	2007-11-27 09:32:04.000000000 +0100
+@@ -469,7 +469,7 @@
      else if(!(( tor = tr_new0( tr_torrent, 1 ))))
          *error = TR_EOTHER;
      else {
