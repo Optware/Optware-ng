@@ -36,7 +36,7 @@ NZBGET_CONFLICTS=
 #
 # NZBGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NZBGET_IPK_VERSION=1
+NZBGET_IPK_VERSION=2
 
 #
 # NZBGET_CONFFILES should be a list of user-editable files
@@ -54,6 +54,12 @@ NZBGET_IPK_VERSION=1
 #
 NZBGET_CPPFLAGS=
 NZBGET_LDFLAGS=
+NZBGET_CONFIGURE=
+ifeq ($(LIBC_STYLE), uclibc)
+ifdef TARGET_GXX
+NZBGET_CONFIGURE += CXX=$(TARGET_GXX)
+endif
+endif
 
 #
 # NZBGET_BUILD_DIR is the directory in which the build is done.
@@ -82,10 +88,6 @@ $(DL_DIR)/$(NZBGET_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 nzbget-source: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
-
-ifeq ($(NZBGET_CONFIGURE_OPTS), )
-NZBGET_CONFIGURE_OPTS=--disable-parprogress
-endif
 
 #
 # This target unpacks the source code in the build directory.
@@ -121,6 +123,7 @@ $(NZBGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NZBGET_SOURCE) $(NZBGET_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NZBGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NZBGET_LDFLAGS)" \
 		LIBPREF="$(STAGING_DIR)/opt" \
+		$(NZBGET_CONFIGURE) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
