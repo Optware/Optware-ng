@@ -1,0 +1,129 @@
+#
+# Copyright  1990-2006 Sun Microsystems, Inc. All Rights Reserved.
+# DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER
+# 
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License version
+# 2 only, as published by the Free Software Foundation. 
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License version 2 for more details (a copy is
+# included at /legal/license.txt). 
+# 
+# You should have received a copy of the GNU General Public License
+# version 2 along with this work; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+# 02110-1301 USA 
+# 
+# Please contact Sun Microsystems, Inc., 4150 Network Circle, Santa
+# Clara, CA 95054 or visit www.sun.com if you need additional
+# information or have any questions. 
+#
+# @(#)GNUmakefile	1.6 06/10/10
+#
+
+#
+# GNUmakefile for linux-arm-generic target. Use this makefile as a template
+# for your Linux/ARM platform.
+#
+
+# ASM_ARCH_FLAGS: It can usually be left empty unless you are trying to take
+# advantage of features the assembler does not support by default. For
+# example, add -Wa,-mcpu=iwmmxt if you are trying to use the Intel
+# WMMX coprocessor support.
+ASM_ARCH_FLAGS		=
+
+# CC_ARCH_FLAGS: If your compiler is properly built for your target device,
+# usually you don't need to set CC_ARCH_FLAGS. However, in some cases the
+# compiler defaults may not be the defaults that are correct for your device.
+# You can add additional compiler options here. Some examples would be:
+#
+#   -Wa,-mcpu=iwmmxt   -> passed on to asm when WMMX support is used
+#   -mcpu=xscale       -> generate code for xscale
+#   -msoft-float       -> use soft floating point
+#   -mhard-float       -> use hard floating point
+#   -mfpu=vfp          -> generate VFP hard float instructions
+#   -mfloat-abi=softfp -> Use the VFP softfp abi
+#
+# It is usually best not set any of the above unless you really know you need
+# or want them since they can cause problems. For example, setting -mcpu=xscale
+# might seem like the right thing to do for an xscale target. However, there
+# was at least one case where -mcpu=xscale was already the default, and
+# using -mcpu=xscale caused a change in the ABI and broke things.
+CC_ARCH_FLAGS		= 
+
+# CC_ARCH_FLAGS_FDLIB: Mostly used to fix fdlibm correctness problems.
+# Some platforms require -ffloat-store or other options in order to
+# get proper floating point results for StrictMath, which uses fdlibm.
+#
+# There's no need to include any flags already specified in CC_ARCH_FLAGS
+CC_ARCH_FLAGS_FDLIB	=
+
+# CC_ARCH_FLAGS_LOOP: The interpreter loop is basically a giant switch
+# statement. Because of the large amount of code, the C compiler often has
+# problems generating good code due to register pressure. Compiling with
+# -fno-inline often produces better results, but typically not on ARM.
+#
+# There's no need to include any flags already specified in CC_ARCH_FLAGS
+CC_ARCH_FLAGS_LOOP 	=
+
+# LINK_ARCH_FLAGS: Usually empty. If you need to specify -msoft-float
+# or -mhard-float in CC_ARCH_FLAGS, you may need to do the same in
+# LINK_ARCH_FLAGS.
+LINK_ARCH_FLAGS		=
+
+# LINK_ARCH_LIBS: Used for extra libraries that you need to link with on
+# your platform. Usually empty for ARM. On some other platforms -lm is needed.
+LINK_ARCH_LIBS		=
+
+# Only enable USE_GCC2 if GCC 3.x or later is *not* being used
+USE_GCC2 ?= false
+
+# CVM_DEFINES: Used to add extra compiler defines. This is used to enable
+# extra VM features, like supporting Intels WMMX coprocessor and other
+# optimizations that are not normally enabled.
+CVM_DEFINES +=
+
+# USE_AAPCS is used to tell the source to enable AAPCS calling
+# conventions rather than APCS. This is usually needed for MontaVista.
+USE_AAPCS ?= false
+
+# Enable the JIT by default. You can always override this on the command line.
+CVM_JIT ?= true
+
+# CVM_TARGET_TOOLS_PREFIX: Used to specify where your target tools are
+# located. You can set it on the command line or here. Basically it is
+# the entire path leading up to the "gcc" portion of the tool.
+#
+# For example, if gcc is located at /opt/arm-linux/bin/arm-linux-gcc,
+# you would use:
+#
+#    CVM_TARGET_TOOLS_PREFIX=/opt/arm-linux/bin/arm-linux-
+CVM_TARGET_TOOLS_PREFIX=/opt/arm-linux/bin/arm-linux-
+
+CVM_FORCE_HARD_FLOAT=true
+
+#
+# Here are a number of common settings you may need or want to use on ARM.
+#
+# Intel WMMX optimizations support: Do not use on MontaVista. At last
+# check there was an known bug that prevented these optimization from
+# working properly on MontaVista.
+#   ASM_ARCH_FLAGS = -Wa,-mcpu=iwmmxt
+#   CC_ARCH_FLAGS  = -Wa,-mcpu=iwmmxt
+#   CVM_DEFINES += -DCVM_ARM_HAS_WMMX
+#
+# AAPCS callng conventions support. Usually needed for MontaVista, and 
+# possibly other recent distros.
+#   USE_AAPCS ?= true 
+#
+# Force hard VFP, but with softfp calling conventions:
+#    ASM_ARCH_FLAGS     += -mfpu=vfp
+#    CC_ARCH_FLAGS      += -mfloat-abi=softfp -mfpu=vfp
+#
+
+# Including top.mk is always done last. It will include all the required
+# CDC makefiles.
+include ../share/top.mk
