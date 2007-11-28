@@ -197,9 +197,17 @@ $(TRUECRYPT_IPK): $(TRUECRYPT_BUILD_DIR)/.built
 	install -d $(TRUECRYPT_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/truecrypt \
 		-o $(TRUECRYPT_IPK_DIR)/opt/bin/truecrypt
+	install -d $(TRUECRYPT_IPK_DIR)/opt/share/man/man1
+	install $(TRUECRYPT_BUILD_DIR)/Linux/Cli/Man/truecrypt.1 $(TRUECRYPT_IPK_DIR)/opt/share/man/man1/
+	install -d $(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc
+	install -m 644 \
+		$(TRUECRYPT_BUILD_DIR)/License.txt \
+		$(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc/
+	install -m 644 \
+		"$(TRUECRYPT_BUILD_DIR)/Release/Setup Files/TrueCrypt User Guide.pdf" \
+		$(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc/TrueCrypt-User-Guide.pdf
 #	$(MAKE) -C $(TRUECRYPT_BUILD_DIR) DESTDIR=$(TRUECRYPT_IPK_DIR) install-strip
 	$(MAKE) $(TRUECRYPT_IPK_DIR)/CONTROL/control
-	# TODO write postinst/prerm
 #	install -m 755 $(TRUECRYPT_SOURCE_DIR)/postinst $(TRUECRYPT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(TRUECRYPT_SOURCE_DIR)/prerm $(TRUECRYPT_IPK_DIR)/CONTROL/prerm
 	echo $(TRUECRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(TRUECRYPT_IPK_DIR)/CONTROL/conffiles
