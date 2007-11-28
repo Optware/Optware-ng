@@ -26,11 +26,11 @@ TRUECRYPT_SOURCE=truecrypt-$(TRUECRYPT_VERSION)-source-code.tar.gz
 TRUECRYPT_DIR=truecrypt-$(TRUECRYPT_VERSION)-source-code
 TRUECRYPT_UNZIP=zcat
 TRUECRYPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-TRUECRYPT_DESCRIPTION=Describe truecrypt here.
+TRUECRYPT_DESCRIPTION=Open-source and platform-independent On-The-Fly disk encryption software.
 TRUECRYPT_SECTION=misc
 TRUECRYPT_PRIORITY=optional
-TRUECRYPT_DEPENDS=
-TRUECRYPT_SUGGESTS=
+TRUECRYPT_DEPENDS=dmsetup
+TRUECRYPT_SUGGESTS=module-init-tools
 TRUECRYPT_CONFLICTS=
 
 #
@@ -68,6 +68,8 @@ TRUECRYPT_BUILD_DIR=$(BUILD_DIR)/truecrypt
 TRUECRYPT_SOURCE_DIR=$(SOURCE_DIR)/truecrypt
 TRUECRYPT_IPK_DIR=$(BUILD_DIR)/truecrypt-$(TRUECRYPT_VERSION)-ipk
 TRUECRYPT_IPK=$(BUILD_DIR)/truecrypt_$(TRUECRYPT_VERSION)-$(TRUECRYPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+TRUECRYPT_MODDIR=$(TRUECRYPT_IPK_DIR)/opt/lib/modules/2.6.12.6-arm1/extra
 
 .PHONY: truecrypt-source truecrypt-unpack truecrypt truecrypt-stage truecrypt-ipk truecrypt-clean truecrypt-dirclean truecrypt-check
 
@@ -188,10 +190,15 @@ $(TRUECRYPT_IPK_DIR)/CONTROL/control:
 #
 $(TRUECRYPT_IPK): $(TRUECRYPT_BUILD_DIR)/.built
 	rm -rf $(TRUECRYPT_IPK_DIR) $(BUILD_DIR)/truecrypt_*_$(TARGET_ARCH).ipk
+	install -d $(TRUECRYPT_MODDIR)
+	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Kernel/truecrypt.ko \
+		-o $(TRUECRYPT_MODDIR)/truecrypt.ko
+	install -d $(TRUECRYPT_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/truecrypt \
+		-o $(TRUECRYPT_IPK_DIR)/opt/bin/truecrypt
 #	$(MAKE) -C $(TRUECRYPT_BUILD_DIR) DESTDIR=$(TRUECRYPT_IPK_DIR) install-strip
-	install -d $(TRUECRYPT_IPK_DIR)/opt/etc/
 	$(MAKE) $(TRUECRYPT_IPK_DIR)/CONTROL/control
-	# TODO install files and write postinst/prerm
+	# TODO write postinst/prerm
 #	install -m 755 $(TRUECRYPT_SOURCE_DIR)/postinst $(TRUECRYPT_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(TRUECRYPT_SOURCE_DIR)/prerm $(TRUECRYPT_IPK_DIR)/CONTROL/prerm
 	echo $(TRUECRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(TRUECRYPT_IPK_DIR)/CONTROL/conffiles
