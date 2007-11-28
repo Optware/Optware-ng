@@ -125,6 +125,7 @@ $(TRUECRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(TRUECRYPT_SOURCE) $(TRUECRYPT_PA
 		-e 's|M=$$(PWD)|& $(KERNEL-MODULES-FLAGS)|' \
 		$(@D)/Linux/Kernel/Makefile
 	sed -i	-e 's|@strip |$(TARGET_STRIP) |' $(@D)/Linux/Cli/Makefile
+	sed -i	-e '/setenv.*PATH/s|"/|"/opt/sbin:/opt/bin:/|' $(@D)/Linux/Cli/Cli.c
 	touch $@
 
 truecrypt-unpack: $(TRUECRYPT_BUILD_DIR)/.configured
