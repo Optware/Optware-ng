@@ -29,14 +29,14 @@ CUPS-PDF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CUPS-PDF_DESCRIPTION=CUPS-PDF provides a PDF Writer backend to CUPS. This can be used as a virtual printer in a paperless network.
 CUPS-PDF_SECTION=util
 CUPS-PDF_PRIORITY=optional
-CUPS-PDF_DEPENDS=
+CUPS-PDF_DEPENDS=cups, ghostscript
 CUPS-PDF_SUGGESTS=
-CUPS-PDF_CONFLICTS=cups, ghostscript
+CUPS-PDF_CONFLICTS=
 
 #
 # CUPS-PDF_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS-PDF_IPK_VERSION=1
+CUPS-PDF_IPK_VERSION=2
 
 #
 # CUPS-PDF_CONFFILES should be a list of user-editable files
