@@ -101,7 +101,7 @@ ASTERISK_SYSCONF_SAMPLE_DIR=$(ASTERISK_INST_DIR)/etc/asterisk/sample
 
 ASTERISK_TARGET=CROSS_ARCH=Linux $(strip \
 	$(if $(filter ts72xx, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=maverick, \
-	$(if $(filter cs05q3armel mssii, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=, \
+	$(if $(filter cs04q3armel cs05q3armel mssii, $(OPTWARE_TARGET)), CROSS_PROC=arm SUB_PROC=, \
 	$(if $(filter powerpc, $(TARGET_ARCH)), CROSS_PROC=ppc SUB_PROC=, \
 	$(if $(filter mss, $(OPTWARE_TARGET)), CROSS_PROC=mips SUB_PROC=, \
 	$(if $(filter mipsel, $(TARGET_ARCH)), CROSS_PROC=mips1 SUB_PROC=, \
@@ -155,6 +155,9 @@ $(ASTERISK_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK_SOURCE) $(ASTERISK_PATCH
 	if test "$(BUILD_DIR)/$(ASTERISK_DIR)" != "$(ASTERISK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK_DIR) $(ASTERISK_BUILD_DIR) ; \
 	fi
+ifeq (cs04q3armel, $(OPTWARE_TARGET))
+	sed -i -e 's|$$(CROSS_COMPILE_TARGET)/include|$(TARGET_INCDIR)|' $(@D)/Makefile
+endif
 	touch $@
 
 asterisk-unpack: $(ASTERISK_BUILD_DIR)/.configured
