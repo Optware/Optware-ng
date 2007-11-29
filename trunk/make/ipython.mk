@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.8.1
+IPYTHON_VERSION=0.8.2
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
@@ -30,8 +30,9 @@ IPYTHON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPYTHON_DESCRIPTION=An enhanced interactive Python shell
 IPYTHON_SECTION=misc
 IPYTHON_PRIORITY=optional
-IPYTHON_PY24_DEPENDS=python24, ipython-common
-IPYTHON_PY25_DEPENDS=python25, ipython-common
+IPYTHON_PY24_DEPENDS=python24
+IPYTHON_PY25_DEPENDS=python25
+IPYTHON_SUGGESTS=ipython-common
 IPYTHON_CONFLICTS=
 
 #
@@ -193,6 +194,7 @@ $(IPYTHON_PY24_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(IPYTHON_SITE)/$(IPYTHON_SOURCE)" >>$@
 	@echo "Description: $(IPYTHON_DESCRIPTION)" >>$@
 	@echo "Depends: $(IPYTHON_PY24_DEPENDS)" >>$@
+	@echo "Suggests: $(IPYTHON_SUGGESTS)" >>$@
 	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
 
 $(IPYTHON_PY25_IPK_DIR)/CONTROL/control:
@@ -207,6 +209,7 @@ $(IPYTHON_PY25_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(IPYTHON_SITE)/$(IPYTHON_SOURCE)" >>$@
 	@echo "Description: $(IPYTHON_DESCRIPTION)" >>$@
 	@echo "Depends: $(IPYTHON_PY25_DEPENDS)" >>$@
+	@echo "Suggests: $(IPYTHON_SUGGESTS)" >>$@
 	@echo "Conflicts: $(IPYTHON_CONFLICTS)" >>$@
 
 #
@@ -228,22 +231,28 @@ $(IPYTHON_PY24_IPK): $(IPYTHON_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
 		install --root=$(IPYTHON_PY24_IPK_DIR) --prefix=/opt)
 	rm -rf $(IPYTHON_PY24_IPK_DIR)/opt/share
+	for f in $(IPYTHON_PY24_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(IPYTHON_PY24_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY24_IPK_DIR)
 
-$(IPYTHON_PY25_IPK) $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
+$(IPYTHON_PY25_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY25_IPK_DIR) $(BUILD_DIR)/py25-ipython_*_$(TARGET_ARCH).ipk
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
 		install --root=$(IPYTHON_PY25_IPK_DIR) --prefix=/opt)
-	for f in $(IPYTHON_PY25_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
-	install -d $(IPYTHON-COMMON_IPK_DIR)/opt
-	mv $(IPYTHON_PY25_IPK_DIR)/opt/share $(IPYTHON-COMMON_IPK_DIR)/opt/
+	rm -rf $(IPYTHON_PY25_IPK_DIR)/opt/share
 	$(MAKE) $(IPYTHON_PY25_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY25_IPK_DIR)
+
+$(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
+	(cd $(IPYTHON_BUILD_DIR)/2.5; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
+		install --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=/opt)
+	rm -rf $(IPYTHON-COMMON_IPK_DIR)/opt/bin $(IPYTHON-COMMON_IPK_DIR)/opt/lib
 	$(MAKE) $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON_IPK_DIR)
 
