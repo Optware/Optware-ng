@@ -21,7 +21,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
+ifeq (, $(filter nslu2, $(OPTWARE_TARGET)))
 HTOP_VERSION=0.7
+HTOP_IPK_VERSION=1
+else
+HTOP_VERSION=0.6.6
+HTOP_IPK_VERSION=2
+endif
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -33,10 +39,6 @@ HTOP_DEPENDS=ncurses
 HTOP_SUGGESTS=
 HTOP_CONFLICTS=
 
-#
-# HTOP_IPK_VERSION should be incremented when the ipk changes.
-#
-HTOP_IPK_VERSION=1
 
 #
 # HTOP_CONFFILES should be a list of user-editable files
