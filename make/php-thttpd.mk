@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=5
+PHP_THTTPD_IPK_VERSION=1
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
