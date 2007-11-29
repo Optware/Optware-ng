@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 YOUGRABBER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/yougrabber
-YOUGRABBER_VERSION=0.20.2
+YOUGRABBER_VERSION=0.29
 YOUGRABBER_SOURCE=YouGrabber-$(YOUGRABBER_VERSION).tar.gz
 YOUGRABBER_DIR=YouGrabber-$(YOUGRABBER_VERSION)
 YOUGRABBER_UNZIP=zcat
@@ -29,7 +29,7 @@ YOUGRABBER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 YOUGRABBER_DESCRIPTION=YouGrabber is a lightweight, multi-threaded (NPTL based) command line YouTube.com video downloader.
 YOUGRABBER_SECTION=misc
 YOUGRABBER_PRIORITY=optional
-YOUGRABBER_DEPENDS=libcurl, ncurses
+YOUGRABBER_DEPENDS=glib, libcurl, ncurses, openssl
 YOUGRABBER_SUGGESTS=
 YOUGRABBER_CONFLICTS=
 
@@ -105,7 +105,7 @@ yougrabber-source: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER_PATCHES)
 # shown below to make various patches to it.
 #
 $(YOUGRABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER_PATCHES) make/yougrabber.mk
-	$(MAKE) libcurl-stage ncurses-stage
+	$(MAKE) glib-stage libcurl-stage ncurses-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(YOUGRABBER_DIR) $(YOUGRABBER_BUILD_DIR)
 	$(YOUGRABBER_UNZIP) $(DL_DIR)/$(YOUGRABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YOUGRABBER_PATCHES)" ; \
@@ -115,7 +115,6 @@ $(YOUGRABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER
 	if test "$(BUILD_DIR)/$(YOUGRABBER_DIR)" != "$(YOUGRABBER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(YOUGRABBER_DIR) $(YOUGRABBER_BUILD_DIR) ; \
 	fi
-	sed -i -e '/^LIBS/s|$$| $$(LDFLAGS)|' $(YOUGRABBER_BUILD_DIR)/Makefile
 #	(cd $(YOUGRABBER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(YOUGRABBER_CPPFLAGS)" \
@@ -139,7 +138,8 @@ yougrabber-unpack: $(YOUGRABBER_BUILD_DIR)/.configured
 $(YOUGRABBER_BUILD_DIR)/.built: $(YOUGRABBER_BUILD_DIR)/.configured
 	rm -f $@
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
-	$(MAKE) -C $(YOUGRABBER_BUILD_DIR) \
+	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+	$(MAKE) -C $(@D)/src \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(YOUGRABBER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(YOUGRABBER_LDFLAGS)" \
@@ -195,15 +195,15 @@ $(YOUGRABBER_IPK_DIR)/CONTROL/control:
 $(YOUGRABBER_IPK): $(YOUGRABBER_BUILD_DIR)/.built
 	rm -rf $(YOUGRABBER_IPK_DIR) $(BUILD_DIR)/yougrabber_*_$(TARGET_ARCH).ipk
 	install -d $(YOUGRABBER_IPK_DIR)/opt/bin
-	$(MAKE) -C $(YOUGRABBER_BUILD_DIR) install \
+	$(MAKE) -C $(YOUGRABBER_BUILD_DIR)/src install \
 		PREFIX=$(YOUGRABBER_IPK_DIR)/opt \
 		COPY=install
 	$(STRIP_COMMAND) $(YOUGRABBER_IPK_DIR)/opt/bin/yg
 	install -d $(YOUGRABBER_IPK_DIR)/opt/share/doc/yougrabber
-	install $(YOUGRABBER_BUILD_DIR)/CHANGELOG \
-		$(YOUGRABBER_BUILD_DIR)/INSTALL \
-		$(YOUGRABBER_BUILD_DIR)/LICENSE \
-		$(YOUGRABBER_BUILD_DIR)/README \
+	install $(YOUGRABBER_BUILD_DIR)/doc/CHANGELOG \
+		$(YOUGRABBER_BUILD_DIR)/doc/INSTALL \
+		$(YOUGRABBER_BUILD_DIR)/doc/LICENSE \
+		$(YOUGRABBER_BUILD_DIR)/doc/README \
 		$(YOUGRABBER_BUILD_DIR)/yg.conf.sample \
 		$(YOUGRABBER_IPK_DIR)/opt/share/doc/yougrabber
 	$(MAKE) $(YOUGRABBER_IPK_DIR)/CONTROL/control
