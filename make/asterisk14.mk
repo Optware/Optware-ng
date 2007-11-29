@@ -56,22 +56,28 @@ asterisk14-moh-freeplay-alaw,\
 asterisk14-moh-freeplay-g729,\
 asterisk14-moh-freeplay-gsm,\
 asterisk14-moh-freeplay-ulaw,\
-asterisk14-gui,\
-freetds,\
-iksemel,\
-jabberd,\
-libogg,\
-net-snmp,\
-radiusclient-ng,\
-sqlite2,\
-unixodbc
+asterisk14-gui\
+,freetds\
+,libogg\
+,net-snmp\
+,radiusclient-ng\
+,sqlite2\
+,unixodbc
+
+ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
+ASTERISK14_SUGGESTS +=,jabberd
+endif
+ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
+ASTERISK14_SUGGESTS +=,iksemel
+endif
+
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
 
 
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -162,6 +168,18 @@ ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
 ASTERISK14_LDFLAGS+=-lpthread -ldl -lresolv
 endif
 
+ASTERISK14_CONFIGURE_OPTS=
+ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
+ASTERISK14_CONFIGURE_OPTS += --with-gnutls=$(STAGING_PREFIX)
+else
+ASTERISK14_CONFIGURE_OPTS += --without-gnutls
+endif
+ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
+ASTERISK14_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
+else
+ASTERISK14_CONFIGURE_OPTS += --without-iksemel
+endif
+
 #
 # ASTERISK14_BUILD_DIR is the directory in which the build is done.
 # ASTERISK14_SOURCE_DIR is the directory which holds all the
@@ -225,7 +243,10 @@ $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14
 ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
 	$(MAKE) jabberd-stage
 endif
-	$(MAKE) iksemel-stage gnutls-stage radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
+ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
+	$(MAKE) iksemel-stage
+endif
+	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite2-stage freetds-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -236,7 +257,10 @@ endif
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
 	fi
-	(cd $(ASTERISK14_BUILD_DIR); \
+ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
+	sed -i -e '/-pipe/s/^/#/' $(@D)/Makefile
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK14_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK14_LDFLAGS)" \
@@ -258,16 +282,15 @@ endif
 		--with-tds=$(STAGING_PREFIX) \
 		--with-sqlite=$(STAGING_PREFIX) \
 		--without-postgres \
-		--with-iksemel=$(STAGING_PREFIX) \
-		--with-gnutls=$(STAGING_PREFIX) \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
 		--without-imap \
+		$(ASTERISK14_CONFIGURE_OPTS) \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
-	touch $(ASTERISK14_BUILD_DIR)/.configured
+	touch $@
 
 asterisk14-unpack: $(ASTERISK14_BUILD_DIR)/.configured
 
@@ -275,12 +298,12 @@ asterisk14-unpack: $(ASTERISK14_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ASTERISK14_BUILD_DIR)/.built: $(ASTERISK14_BUILD_DIR)/.configured
-	rm -f $(ASTERISK14_BUILD_DIR)/.built
+	rm -f $@
 	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK14_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK14_LDFLAGS)" \
-	$(MAKE) -C $(ASTERISK14_BUILD_DIR)
-	touch $(ASTERISK14_BUILD_DIR)/.built
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
