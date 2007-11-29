@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-ifeq (, $(filter nslu2, $(OPTWARE_TARGET)))
+ifneq (, $(filter cs05q3armel fsg3v4 slugosbe, $(OPTWARE_TARGET)))
 HTOP_VERSION=0.7
 HTOP_IPK_VERSION=1
 else
