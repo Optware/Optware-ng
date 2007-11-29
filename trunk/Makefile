@@ -252,7 +252,7 @@ COMMON_CROSS_PACKAGES = \
 	mtr multitail mutt mxml \
 	mysql mysql-connector-odbc \
 	nagg nagios-plugins nail nano nanoblogger nbench-byte \
-	ncftp ncmpc ncurses ncursesw ne nemesis \
+	ncdu ncftp ncmpc ncurses ncursesw ne nemesis \
 	neon net-snmp net-tools netatalk netcat nethack netio \
 	newsbeuter newt \
 	nfs-server nfs-utils \
