@@ -5,7 +5,7 @@
 ###########################################################
 
 LESS_SITE=http://www.greenwoodsoftware.com/less/
-LESS_VERSION=409
+LESS_VERSION=416
 LESS_SOURCE=less-$(LESS_VERSION).tar.gz
 LESS_DIR=less-$(LESS_VERSION)
 LESS_UNZIP=zcat
@@ -81,10 +81,10 @@ less-source: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
 #
 $(LESS_BUILD_DIR)/.configured: $(DL_DIR)/$(LESS_SOURCE) $(LESS_PATCHES)
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
-	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LESS_DIR) $(@D)
 	$(LESS_UNZIP) $(DL_DIR)/$(LESS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(LESS_DIR) $(LESS_BUILD_DIR)
-	(cd $(LESS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LESS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LESS_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(LESS_CPPFLAGS)" \
@@ -106,7 +106,7 @@ less-unpack: $(LESS_BUILD_DIR)/.configured
 #
 $(LESS_BUILD_DIR)/.built: $(LESS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LESS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
