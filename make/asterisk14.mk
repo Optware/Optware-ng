@@ -24,7 +24,7 @@ ASTERISK14_SOURCE_TYPE=tarball
 #ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK14_BASE_VERSION=1.4.14
+ASTERISK14_BASE_VERSION=1.4.15
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
@@ -252,7 +252,7 @@ endif
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK14_PATCHES)" ; \
 		then cat $(ASTERISK14_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(ASTERISK14_DIR) -p1 ; \
+		patch -d $(BUILD_DIR)/$(ASTERISK14_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASTERISK14_DIR)" != "$(ASTERISK14_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR) ; \
