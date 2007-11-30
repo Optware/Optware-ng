@@ -1,6 +1,6 @@
-diff -Naur asterisk-1.4.0/apps/app_nv_backgrounddetect.c asterisk-1.4.0-nv/apps/app_nv_backgrounddetect.c
---- asterisk-1.4.0/apps/app_nv_backgrounddetect.c	1969-12-31 19:00:00.000000000 -0500
-+++ asterisk-1.4.0-nv/apps/app_nv_backgrounddetect.c	2007-01-15 04:24:38.000000000 -0500
+diff -Naur apps/app_nv_backgrounddetect.c apps/app_nv_backgrounddetect.c
+--- apps/app_nv_backgrounddetect.c	1969-12-31 19:00:00.000000000 -0500
++++ apps/app_nv_backgrounddetect.c	2007-01-15 04:24:38.000000000 -0500
 @@ -0,0 +1,329 @@
 +/*
 + * Asterisk -- A telephony toolkit for Linux.
@@ -331,9 +331,9 @@ diff -Naur asterisk-1.4.0/apps/app_nv_backgrounddetect.c asterisk-1.4.0-nv/apps/
 +	return ast_register_application(app, nv_background_detect_exec, synopsis, descrip);
 +}
 +AST_MODULE_INFO_STANDARD(ASTERISK_GPL_KEY, "Newman's playback with talk and fax detection");
-diff -Naur asterisk-1.4.0/apps/app_nv_faxdetect.c asterisk-1.4.0-nv/apps/app_nv_faxdetect.c
---- asterisk-1.4.0/apps/app_nv_faxdetect.c	1969-12-31 19:00:00.000000000 -0500
-+++ asterisk-1.4.0-nv/apps/app_nv_faxdetect.c	2007-01-15 04:12:36.000000000 -0500
+diff -Naur apps/app_nv_faxdetect.c apps/app_nv_faxdetect.c
+--- apps/app_nv_faxdetect.c	1969-12-31 19:00:00.000000000 -0500
++++ apps/app_nv_faxdetect.c	2007-01-15 04:12:36.000000000 -0500
 @@ -0,0 +1,321 @@
 +/*
 + * Asterisk -- A telephony toolkit for Linux.
@@ -656,9 +656,9 @@ diff -Naur asterisk-1.4.0/apps/app_nv_faxdetect.c asterisk-1.4.0-nv/apps/app_nv_
 +	return ast_register_application(app, nv_detectfax_exec, synopsis, descrip);
 +}
 +AST_MODULE_INFO_STANDARD(ASTERISK_GPL_KEY, "Newman's fax detection application");
-diff -Naur asterisk-1.4.0/apps/app_nv_faxemail.c asterisk-1.4.0-nv/apps/app_nv_faxemail.c
---- asterisk-1.4.0/apps/app_nv_faxemail.c	1969-12-31 19:00:00.000000000 -0500
-+++ asterisk-1.4.0-nv/apps/app_nv_faxemail.c	2007-01-15 04:37:48.000000000 -0500
+diff -Naur apps/app_nv_faxemail.c apps/app_nv_faxemail.c
+--- apps/app_nv_faxemail.c	1969-12-31 19:00:00.000000000 -0500
++++ apps/app_nv_faxemail.c	2007-01-15 04:37:48.000000000 -0500
 @@ -0,0 +1,509 @@
 +/*
 + * Asterisk -- A telephony toolkit for Linux.

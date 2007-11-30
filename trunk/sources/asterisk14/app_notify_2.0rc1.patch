@@ -1,6 +1,6 @@
-diff -Naurp asterisk-1.4.13-orig/apps/app_notify.c asterisk-1.4.13/apps/app_notify.c
---- asterisk-1.4.13-orig/apps/app_notify.c	1969-12-31 19:00:00.000000000 -0500
-+++ asterisk-1.4.13/apps/app_notify.c	2007-11-12 00:46:52.556872944 -0500
+diff -Naurp apps/app_notify.c apps/app_notify.c
+--- apps/app_notify.c	1969-12-31 19:00:00.000000000 -0500
++++ apps/app_notify.c	2007-11-12 00:46:52.556872944 -0500
 @@ -0,0 +1,156 @@
 +/*
 + * Asterisk -- A telephony toolkit for Unix.
