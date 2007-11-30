@@ -22,7 +22,7 @@ SCPONLY_CONFLICTS=
 #
 # SCPONLY_IPK_VERSION should be incremented when the ipk changes.
 #
-SCPONLY_IPK_VERSION=4
+SCPONLY_IPK_VERSION=5
 
 #
 # SCPONLY_CONFFILES should be a list of user-editable files
@@ -110,6 +110,8 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCPONLY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SCPONLY_LDFLAGS)" \
+		ac_cv_path_scponly_PROG_SCP=/opt/bin/scp \
+		ac_cv_path_scponly_PROG_GROUPS=/opt/bin/groups \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

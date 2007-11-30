@@ -17,7 +17,7 @@ ROOT=""
 CREATE=""
 PASSWD=""
 FORCE=""
-SUPPORT=1
+SUPPORT=2
 
 if [ $(id -u) != 0 ]
 then
@@ -36,6 +36,11 @@ then
 	FIRMWARE=unslung
 	FIRMWARE_VERSION=$(cat /.unslung)
 	SUPPORT=""
+elif grep -q OpenSlug /etc/issue
+then
+	FIRMWARE=OpenSlug
+	FIRMWARE_VERSION=$(awk '/OpenSlug/ {print $2}' /etc/issue)
+	SUPPORT="1"
 else
 	FIRMWARE=unknown
 	FIRMWARE_VERSION=unknown
@@ -47,17 +52,18 @@ then
 	then
 		SSH=openssh
 	else
-		SUPPORT=1
+		SUPPORT=2
 	fi
 else
 	if DROPBEAR=$(ssh -V 2>&1 | grep Dropbear)
 	then
 		SSH_VERSION="${DROPBEAR}"
 		SSH=dropbear
+		[ ${FIRMWARE} = unslung ] && SUPPORT=2
 	else
 		SSH=unknown
+		SUPPORT=2
 	fi
-	SUPPORT=1
 fi
 
 while [ $# -ge 1 ]
@@ -96,6 +102,7 @@ done
 
 if [ "${SUPPORT}" ]
 then
+	echo							>&2
 	echo "Unsuported configuration."			>&2
 	echo							>&2
 	echo "Suported configurations:"				>&2
@@ -104,6 +111,9 @@ then
 	echo "Work in progress:"				>&2
 	echo "	openslug & busybox"				>&2
 	echo							>&2
+	echo "Work in progress:"				>&2
+	echo "	openslug & openssh"				>&2
+	echo							>&2
 	echo "Use \"-f\" (force) to try creating a chroot"	>&2
 	echo							>&2
 	echo "And report succes on the mailinglist"		>&2
@@ -111,7 +121,7 @@ then
 	echo "Detected firmware: $FIRMWARE_VERSION"		>&2
 	echo "Detected ssh: $SSH_VERSION"			>&2
 	echo							>&2
-	if [ ! "${FORCE}" ]
+	if [ ${SUPPORT} = 2  -a ! "${FORCE}" ]
 	then
 		exit 2
 	fi
@@ -141,6 +151,9 @@ then
 	HOME="${ROOT}//${USER}"
 fi
 
+#
+# We should use adduser but it's not default installed on unslung
+#
 if [ -z "${CREATE}" ]
 then
 	if grep -q "^${USER}:" /etc/passwd
@@ -213,7 +226,13 @@ then
 fi
 
 cd "${ROOT}/usr/libexec/openssh"
-[ -f /opt/libexec/sftp-server ] && cp /opt/libexec/sftp-server .
+if [ -f /opt/libexec/sftp-server ]
+then
+	cp /opt/libexec/sftp-server .
+elif [ -f /usr/libexec/sftp-server ]
+then
+	cp /usr/libexec/sftp-server .
+fi
 
 cd "${ROOT}/usr/lib"
 [ -f /opt/lib/libcrypto.so.0.9.7  ] && cp /opt/lib/libcrypto.so.0.9.7 .
