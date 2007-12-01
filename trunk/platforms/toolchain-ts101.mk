@@ -2,6 +2,8 @@ LIBC_STYLE=uclibc
 TARGET_ARCH=powerpc
 TARGET_OS=linux
 
+LIBSTDC++_VERSION=6.0.3
+
 GETTEXT_NLS=enable
 NO_BUILTIN_MATH=true
 

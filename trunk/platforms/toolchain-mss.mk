@@ -1,6 +1,9 @@
 TARGET_ARCH=mipsel
 TARGET_OS=linux
 
+LIBSTDC++_VERSION=5.0.3
+LIBNSL_VERSION=2.2.5
+
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = mipsel-linux

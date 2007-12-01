@@ -4,6 +4,9 @@ TARGET_ARCH=arm
 TARGET_OS=linux
 LIBC_STYLE=glibc
 
+LIBSTDC++_VERSION=6.0.9
+LIBNSL_VERSION=2.3.6
+
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = arm-none-linux-gnueabi
