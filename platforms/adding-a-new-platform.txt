@@ -23,9 +23,9 @@
 * set NO_BUILTIN_MATH correctly in platforms/toolchain-<P>.mk
   set GETTEXT_NLS correctly in platforms/toolchain-<P>.mk
 
-* provide LIBNSL_VERSION in make/libnsl.mk
+* provide LIBNSL_VERSION in platforms/toolchain-<P>.mk
 
-* if libstdc++, fill-in libstdc++ version in make/libstdc++.mk
+* if libstdc++, fill-in libstdc++ version in platforms/toolchain-<P>.mk
   if exclusively libuclibc++, work out the libstdc++ wrapper
 
 * to test the build of a C++ program, you can try
