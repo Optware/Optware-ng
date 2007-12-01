@@ -471,9 +471,11 @@ $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk
 $(PACKAGE_DIR)/Packages: $(BUILD_DIR)/*.ipk $(BUILD_DIR)/*.xsh
     endif
 	if ls $(BUILD_DIR)/*_$(TARGET_ARCH).xsh > /dev/null 2>&1; then \
-		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(PACKAGE_DIR)/ ; \
+		rm -f $(@D)/*_$(TARGET_ARCH).{ipk,xsh} ; \
+		cp -fal $(BUILD_DIR)/*_$(TARGET_ARCH).{ipk,xsh} $(@D)/ ; \
 	else \
-		rsync -avr --delete $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(PACKAGE_DIR)/ ; \
+		rm -f $(@D)/*_$(TARGET_ARCH).ipk ; \
+		cp -fal $(BUILD_DIR)/*_$(TARGET_ARCH).ipk $(@D)/ ; \
 	fi
 else
 $(PACKAGE_DIR)/Packages:
