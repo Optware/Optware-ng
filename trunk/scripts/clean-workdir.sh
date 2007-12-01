@@ -5,6 +5,8 @@
 # if P_IPK built, and
 # either $p-stage is not used, or $p staged already
 
+test -n "$DEBUG" && set -x
+
 if test "x$1" = "x-d"
 then shift; dry_run=1
 fi
@@ -27,9 +29,9 @@ do
 	echo -n $p
         IPK=`sed -n '/_IPK[: ]*=/s/[: ]*=.*//p' make/${p}.mk | head -1`
         P=`echo $IPK | sed 's/_IPK$//'`
-	ipk=`make query-${IPK}`
-	ipk_dir=`make query-${P}_IPK_DIR`
-	build_dir=`make query-${P}_BUILD_DIR`
+	ipk=`make -s query-${IPK}`
+	ipk_dir=`make -s query-${P}_IPK_DIR`
+	build_dir=`make -s query-${P}_BUILD_DIR`
         staging_count=`grep -l ' ${p}-stage' make/*.mk | wc -l`
         todo="skip"
         if test 0 -eq `grep -c 'IPK): .*/\.built' make/${p}.mk`; then
