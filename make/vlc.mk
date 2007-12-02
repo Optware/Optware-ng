@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.8.6c
+VLC_VERSION=0.8.6d
 VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
@@ -30,23 +30,26 @@ VLC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
-VLC_DEPENDS=ffmpeg, \
-libdvbpsi, \
-libmad, \
-libmpeg2, \
-libpng, \
-libxml2, \
-ncurses
-VLC_SUGGESTS=faad2, \
+VLC_DEPENDS=libdvbpsi
+VLC_SUGGESTS=\
+faad2, \
+ffmpeg, \
 flac, \
 freetype, \
 liba52, \
 libdvdnav, \
 libdvdread, \
+libid3tag, \
+libmad, \
 libmpcdec, \
+libmpeg2, \
 libogg, \
+libpng, \
 libshout, \
+libupnp, \
 libvorbis, \
+libxml2, \
+ncurses, \
 speex, \
 x264
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
@@ -137,12 +140,14 @@ endif
 	$(MAKE) libdvbpsi-stage
 	$(MAKE) libdvdnav-stage
 	$(MAKE) libdvdread-stage
+	$(MAKE) libid3tag-stage
 	$(MAKE) libmad-stage
 	$(MAKE) libmpcdec-stage
 	$(MAKE) libmpeg2-stage
 	$(MAKE) libogg-stage
 	$(MAKE) libpng-stage
 	$(MAKE) libshout-stage
+	$(MAKE) libupnp-stage
 	$(MAKE) libvorbis-stage
 	$(MAKE) libxml2-stage
 	$(MAKE) ncurses-stage
