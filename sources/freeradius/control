@@ -1,9 +1,0 @@
-Package: freeradius
-Version: @VERSION@-@RELEASE@
-Architecture: @ARCH@
-Maintainer: Christopher <edmondsc@onid.orst.edu>
-Source: ftp://www.freeradius.org/pub/radius/freeradius-@VERSION@.tar.gz
-Section: Networking
-Priority: optional
-Depends:
-Description: An open source RADIUS server.

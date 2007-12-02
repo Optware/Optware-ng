@@ -24,11 +24,18 @@ FREERADIUS_VERSION=1.0.5
 FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.gz
 FREERADIUS_DIR=freeradius-$(FREERADIUS_VERSION)
 FREERADIUS_UNZIP=zcat
+FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+FREERADIUS_DESCRIPTION=An open source RADIUS server.
+FREERADIUS_SECTION=net
+FREERADIUS_PRIORITY=optional
+FREERADIUS_DEPENDS=libtool, openssl
+FREERADIUS_SUGGESTS=freeradius-doc
+FREERADIUS_CONFLICTS=
 
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=3
+FREERADIUS_IPK_VERSION=4
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -96,11 +103,11 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 	$(MAKE) libtool-stage
 	$(MAKE) mysql-stage
 	$(MAKE) postgresql-stage
-	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(FREERADIUS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	$(FREERADIUS_UNZIP) $(DL_DIR)/$(FREERADIUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(FREERADIUS_PATCHES) | patch -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1
-	mv $(BUILD_DIR)/$(FREERADIUS_DIR) $(FREERADIUS_BUILD_DIR)
-	(cd $(FREERADIUS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
@@ -123,7 +130,7 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 		--with-rlm-sql-postgresql-lib-dir=$(STAGING_LIB_DIR) \
 		--without-rlm-ippool \
 	)
-	touch $(FREERADIUS_BUILD_DIR)/.configured
+	touch $@
 
 freeradius-unpack: $(FREERADIUS_BUILD_DIR)/.configured
 
@@ -131,32 +138,71 @@ freeradius-unpack: $(FREERADIUS_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd: $(FREERADIUS_BUILD_DIR)/.configured
-	$(MAKE) -C $(FREERADIUS_BUILD_DIR) RLM_LIBS="$(STAGING_LDFLAGS)" RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
-	 SNMP_INCLUDE="-I${FREERADIUS_BUILD_DIR}/src/include ${STAGING_CPPFLAGS}" LIBLTDL=${STAGING_DIR}/opt/lib/libltdl.so
-	$(MAKE) install -C $(FREERADIUS_BUILD_DIR) RLM_LIBS="$(STAGING_LDFLAGS)" RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
-	 LIBLTDL=${STAGING_DIR}/opt/lib/libltdl.so R=$(FREERADIUS_BUILD_DIR)/install CFLAGS="${STAGING_CPPFLAGS}" \
-	 R=$(FREERADIUS_BUILD_DIR)/install/ STRIPPROG=$(TARGET_STRIP)
+$(FREERADIUS_BUILD_DIR)/.built: $(FREERADIUS_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D) \
+		RLM_LIBS="$(STAGING_LDFLAGS)" \
+		RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
+		SNMP_INCLUDE="-I${@D}/src/include ${STAGING_CPPFLAGS}" \
+		LIBLTDL=${STAGING_LIB_DIR}/libltdl.so
+	$(MAKE) install -C $(@D) \
+		RLM_LIBS="$(STAGING_LDFLAGS)" \
+		RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
+		LIBLTDL=${STAGING_LIB_DIR}/libltdl.so \
+		R=$(@D)/install \
+		CFLAGS="${STAGING_CPPFLAGS}" \
+		R=$(@D)/install/ \
+		STRIPPROG=$(TARGET_STRIP)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-freeradius: $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
+freeradius: $(FREERADIUS_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libfreeradius.so.$(FREERADIUS_VERSION): $(FREERADIUS_BUILD_DIR)/libfreeradius.so.$(FREERADIUS_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(FREERADIUS_BUILD_DIR)/freeradius.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(FREERADIUS_BUILD_DIR)/libfreeradius.a $(STAGING_DIR)/opt/lib/freeradius
-	install -m 644 $(FREERADIUS_BUILD_DIR)/libfreeradius.so.$(FREERADIUS_VERSION) $(STAGING_DIR)/opt/lib/freeradius
-	cd $(STAGING_DIR)/opt/lib && ln -fs libfreeradius.so.$(FREERADIUS_VERSION) libfreeradius.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libfreeradius.so.$(FREERADIUS_VERSION) libfreeradius.so
-	cp -rf $(FREERADIUS_BUILD_DIR)/install/lib/* $(STAGIN_DIR)/opt/lib/freeradius/
+$(FREERADIUS_BUILD_DIR)/.staged: $(FREERADIUS_BUILD_DIR)/.built
+	rm -f $@
+	install -d $(STAGING_INCLUDE_DIR)
+	install -m 644 $(@D)/freeradius.h $(STAGING_INCLUDE_DIR)
+	install -d $(STAGING_LIB_DIR)/freeradius
+	install -m 644 $(@D)/libfreeradius.a $(STAGING_LIB_DIR)/freeradius
+	install -m 644 $(@D)/libfreeradius.so.$(FREERADIUS_VERSION) $(STAGING_LIB_DIR)/freeradius
+	cd $(STAGING_LIB_DIR) && ln -fs libfreeradius.so.$(FREERADIUS_VERSION) libfreeradius.so.1
+	cd $(STAGING_LIB_DIR) && ln -fs libfreeradius.so.$(FREERADIUS_VERSION) libfreeradius.so
+	cp -rf $(@D)/install/lib/* $(STAGING_LIB_DIR)/freeradius/
+	touch $@
 
-freeradius-stage: $(STAGING_DIR)/opt/lib/freeradius/libfreeradius.so.$(FREERADIUS_VERSION)
+freeradius-stage: $(FREERADIUS_BUILD_DIR)/.staged
+
+$(FREERADIUS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: freeradius" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FREERADIUS_PRIORITY)" >>$@
+	@echo "Section: $(FREERADIUS_SECTION)" >>$@
+	@echo "Version: $(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FREERADIUS_MAINTAINER)" >>$@
+	@echo "Source: $(FREERADIUS_SITE)/$(FREERADIUS_SOURCE)" >>$@
+	@echo "Description: $(FREERADIUS_DESCRIPTION)" >>$@
+	@echo "Depends: $(FREERADIUS_DEPENDS)" >>$@
+	@echo "Suggests: $(FREERADIUS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(FREERADIUS_CONFLICTS)" >>$@
+
+$(FREERADIUS_DOC_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: freeradius-doc" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(FREERADIUS_PRIORITY)" >>$@
+	@echo "Section: $(FREERADIUS_SECTION)" >>$@
+	@echo "Version: $(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(FREERADIUS_MAINTAINER)" >>$@
+	@echo "Source: $(FREERADIUS_SITE)/$(FREERADIUS_SOURCE)" >>$@
+	@echo "Description: $(FREERADIUS_DESCRIPTION)" >>$@
 
 #
 # This builds the IPK file.
@@ -170,7 +216,7 @@ freeradius-stage: $(STAGING_DIR)/opt/lib/freeradius/libfreeradius.so.$(FREERADIU
 #
 # You may need to patch your application to make it use these locations.
 #
-$(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
+$(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	rm -rf $(FREERADIUS_IPK_DIR) $(FREERADIUS_IPK)
 	install -d $(FREERADIUS_IPK_DIR)/opt
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/* $(FREERADIUS_IPK_DIR)/
@@ -181,29 +227,26 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
 	mv $(FREERADIUS_IPK_DIR)/opt/etc/* $(FREERADIUS_IPK_DIR)/opt/doc/.radius/
 	cp -f $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
 	install -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd -o $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radrelay -o $(FREERADIUS_IPK_DIR)/opt/bin/radrelay
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radclient -o $(FREERADIUS_IPK_DIR)/opt/bin/radclient
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt -o $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/sbin/radiusd
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radrelay
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radclient
+	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/smbencrypt
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/bin/radeapclient $(FREERADIUS_IPK_DIR)/opt/bin/radwho
 	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)/opt/lib/lib*.so $(FREERADIUS_IPK_DIR)/opt/lib/rlm_*.so
 	install -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)/opt/etc/init.d/S55freeradius
-	install -d $(FREERADIUS_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(FREERADIUS_VERSION)/" \
-		-e "s/@RELEASE@/$(FREERADIUS_IPK_VERSION)/" $(FREERADIUS_SOURCE_DIR)/control > $(FREERADIUS_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FREERADIUS_IPK_DIR)/CONTROL/control
 	install -m 644 $(FREERADIUS_SOURCE_DIR)/postinst $(FREERADIUS_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(FREERADIUS_SOURCE_DIR)/prerm $(FREERADIUS_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_IPK_DIR)
 
-$(FREERADIUS_DOC_IPK): $(FREERADIUS_BUILD_DIR)/install/opt/sbin/radiusd
+$(FREERADIUS_DOC_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	rm -rf $(FREERADIUS_DOC_IPK_DIR) $(FREERADIUS_DOC_IPK)
 	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/doc
 	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/man
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/man/* $(FREERADIUS_DOC_IPK_DIR)/opt/man/
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/share/doc/* $(FREERADIUS_DOC_IPK_DIR)/opt/doc/
 	install -d $(FREERADIUS_DOC_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(FREERADIUS_VERSION)/" \
-		-e "s/@RELEASE@/$(FREERADIUS_IPK_VERSION)/" $(FREERADIUS_SOURCE_DIR)/control.doc > $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control
+	$(MAKE) $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREERADIUS_DOC_IPK_DIR)
 
 #

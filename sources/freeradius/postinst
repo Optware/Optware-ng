@@ -1,9 +1,5 @@
 #!/bin/sh
 
-echo "Storing freeradius log directory structure in /var.state"
-mkdir /var.state/spool/radius
-cp -rf /var/spool/radius/* /var.state/spool/radius/
-
 if [ ! -f /opt/etc/raddb/radiusd.conf ] ;  then
     cp -rf /opt/doc/.radius/* /opt/etc/
     echo ; echo
