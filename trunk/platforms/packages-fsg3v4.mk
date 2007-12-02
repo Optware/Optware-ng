@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	chillispot \
 	dhcp \
 	ecl eggdrop \
-	fcgi freeradius \
+	fcgi \
 	gdb \
 	gnuplot \
 	ldconfig \
