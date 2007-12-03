@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VLC_VERSION=0.8.6d
-VLC_IPK_VERSION=1
+VLC_IPK_VERSION=2
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -190,6 +190,7 @@ endif
 		--enable-speex \
 		--enable-vorbis \
 		--enable-x264 \
+		--disable-alsa \
 		--disable-dts \
 		--disable-glx \
 		--disable-gnomevfs \
