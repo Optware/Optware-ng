@@ -19,4 +19,5 @@ BROKEN_PACKAGES = \
 	py-psycopg \
 	qemu \
 	ushare \
+	vlc \
 
