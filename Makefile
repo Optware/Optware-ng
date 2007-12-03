@@ -557,6 +557,9 @@ distclean:
 toolclean:
 	rm -rf $(TOOL_BUILD_DIR)
 
+%-savespace:
+	scripts/clean-workdir.sh $*
+
 host/.configured:
 	[ -d $(HOST_BUILD_DIR) ] || ( \
 		if [ "$(OPTWARE_TARGET)" = $(shell basename $(BASE_DIR)) ]; \
