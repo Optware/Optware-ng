@@ -1,4 +1,4 @@
-TARGET_ARCH=armeb
+TARGET_ARCH=arm
 TARGET_OS=linux
 LIBC_STYLE=glibc
 
