@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	asterisk asterisk14 asterisk14-chan-capi \
 	atftp atk chillispot \
 	ftpd-topfield gconv-modules \
-	gtk ii ipac-ng ivorbis-tools \
+	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
 	pcapsipdump phoneme-advanced \
 	player py-silvercity rhtvision sane-backends \
