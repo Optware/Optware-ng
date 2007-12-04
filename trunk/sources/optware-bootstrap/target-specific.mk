@@ -1,3 +1,10 @@
+OPTWARE-BOOTSTRAP_TARGETS=\
+	dt2 \
+	fsg3v4 \
+	lspro \
+	mssii \
+	teraprov2 \
+
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
 	$(if $(filter fsg3 fsg3v4 dt2, $(OPTWARE_TARGET)), /home/.optware, \
