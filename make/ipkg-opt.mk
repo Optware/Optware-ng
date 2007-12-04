@@ -110,16 +110,16 @@ ipkg-opt-source: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 # first, then do that first (e.g. "$(MAKE) ipkg-opt-stage <baz>-stage").
 #
 $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
-	rm -rf $(BUILD_DIR)/$(IPKG-OPT_DIR) $(IPKG-OPT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 	if test -n "$(IPKG-OPT_PATCHES)" ; \
 		then cat $(IPKG-OPT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(IPKG-OPT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(IPKG-OPT_DIR)" != "$(IPKG-OPT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(IPKG-OPT_DIR) $(IPKG-OPT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(IPKG-OPT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D) ; \
 	fi
-	(cd $(IPKG-OPT_BUILD_DIR); \
+	(cd $(@D); \
 		rm -f etc/Makefile; \
 		rm -f aclocal.m4; \
 		libtoolize --force --copy; \
@@ -149,7 +149,7 @@ ipkg-opt-unpack: $(IPKG-OPT_BUILD_DIR)/.configured
 #
 $(IPKG-OPT_BUILD_DIR)/.built: $(IPKG-OPT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(IPKG-OPT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" 
@@ -196,7 +196,7 @@ $(IPKG-OPT_IPK): $(IPKG-OPT_BUILD_DIR)/.built
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-OPT_BUILD_DIR) DESTDIR=$(IPKG-OPT_IPK_DIR) install-strip
 	install -d $(IPKG-OPT_IPK_DIR)/opt/etc/
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt ds101 ds101g fsg3 mss nas100d nslu2 oleg slugosbe ts72xx wl500g, $(OPTWARE_TARGET)))
+ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slugosbe slugosle ts72xx wl500g, $(OPTWARE_TARGET)))
 	echo "#Uncomment the following line for native packages feed (if any)" \
 		> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
 	echo "#src/gz native $(IPKG-OPT_FEEDS)/$(OPTWARE_TARGET)/native/stable"\
