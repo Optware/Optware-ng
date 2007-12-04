@@ -30,6 +30,8 @@ OPTWARE-BOOTSTRAP_TARGET ?= $(OPTWARE_TARGET)
 # will be set in the .mk included below
 include $(OPTWARE-BOOTSTRAP_SOURCE_DIR)/target-specific.mk
 
+ifneq (, $(filter $(OPTWARE-BOOTSTRAP_TARGET), $(OPTWARE-BOOTSTRAP_TARGETS)))
+
 OPTWARE-BOOTSTRAP_CONTAINS ?= ipkg-opt openssl wget-ssl
 OPTWARE-BOOTSTRAP_IPKS_DONE:=$(foreach p, $(OPTWARE-BOOTSTRAP_CONTAINS), $(BUILD_DIR)/$(p)/.ipk)
 
@@ -139,3 +141,5 @@ optware-bootstrap-clean:
 optware-bootstrap-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPTWARE-BOOTSTRAP_DIR) $(OPTWARE-BOOTSTRAP_BUILD_DIR) $(OPTWARE-BOOTSTRAP_IPK_DIR) $(OPTWARE-BOOTSTRAP_IPK)
 	rm -rf $(OPTWARE-BOOTSTRAP_XSH)
+
+endif
