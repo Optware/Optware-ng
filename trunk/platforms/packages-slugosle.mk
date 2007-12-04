@@ -22,7 +22,7 @@ BROKEN_PACKAGES = \
 	\
 	asterisk asterisk14 asterisk14-chan-capi \
 	atftp atk btpd chillispot \
-	ftpd-topfield gawk gconv-modules \
+	ftpd-topfield gconv-modules \
 	gtk ii ipac-ng ivorbis-tools \
 	libpar2 madplay mlocate mt-daapd nfs-utils nginx nzbget \
 	pcapsipdump phoneme-advanced picocom \
