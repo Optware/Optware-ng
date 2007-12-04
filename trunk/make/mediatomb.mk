@@ -31,18 +31,12 @@ MEDIATOMB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEDIATOMB_DESCRIPTION=UPnP AV Mediaserver for Linux.
 MEDIATOMB_SECTION=multimedia
 MEDIATOMB_PRIORITY=optional
-MEDIATOMB_DEPENDS=file, ossp-js, libexif, sqlite, zlib
+MEDIATOMB_DEPENDS=file, libexif, libstdc++, ossp-js, sqlite, zlib
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, libiconv
 endif
 ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, id3lib
-endif
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
-MEDIATOMB_DEPENDS+=, libstdc++
-endif
-ifeq (libuclibc++, $(filter libuclibc++, $(PACKAGES)))
-MEDIATOMB_DEPENDS+=, libuclibc++
 endif
 MEDIATOMB_SUGGESTS=
 MEDIATOMB_CONFLICTS=
@@ -50,7 +44,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=1
+MEDIATOMB_IPK_VERSION=2
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
