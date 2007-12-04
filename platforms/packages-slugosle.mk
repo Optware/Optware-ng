@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	ushare \
 	\
 	asterisk asterisk14 asterisk14-chan-capi \
-	atftp atk btpd chillispot \
+	atftp atk chillispot \
 	ftpd-topfield gconv-modules \
 	gtk ii ipac-ng ivorbis-tools \
 	libpar2 madplay mlocate mt-daapd nfs-utils nginx nzbget \
