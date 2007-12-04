@@ -19,4 +19,13 @@ BROKEN_PACKAGES = \
 	py-psycopg \
 	qemu \
 	ushare \
-
+	\
+	asterisk asterisk14 asterisk14-chan-capi \
+	atftp atk btpd chillispot \
+	ftpd-topfield gawk gconv-modules \
+	gtk ii ipac-ng ivorbis-tools \
+	libpar2 madplay mlocate mt-daapd nfs-utils nginx nzbget \
+	pcapsipdump phoneme-advanced picocom \
+	player py-silvercity rhtvision sane-backends \
+	squeak strace transcode util-linux vlc vsftpd \
+	vte xchat
