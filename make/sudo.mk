@@ -4,7 +4,7 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_VERSION=1.6.9p8
+SUDO_VERSION=1.6.9p9
 SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_VERSION)
 SUDO_UNZIP=zcat
@@ -43,13 +43,13 @@ sudo-source: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES)
 
 
 $(SUDO_BUILD_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES) make/sudo.mk
-	rm -rf $(BUILD_DIR)/$(SUDO_DIR) $(SUDO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SUDO_DIR) $(@D)
 	$(SUDO_UNZIP) $(DL_DIR)/$(SUDO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SUDO_PATCHES)"; then \
 		cat $(SUDO_PATCHES) | patch -d $(BUILD_DIR)/$(SUDO_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(SUDO_DIR) $(SUDO_BUILD_DIR)
-	cd $(SUDO_BUILD_DIR) && \
+	mv $(BUILD_DIR)/$(SUDO_DIR) $(@D)
+	cd $(@D) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(SUDO_CONFIGURE_ENV) \
 		./configure \
@@ -69,7 +69,7 @@ sudo-unpack: $(SUDO_BUILD_DIR)/.configured
 
 $(SUDO_BUILD_DIR)/.built: $(SUDO_BUILD_DIR)/.configured
 	rm -f $@
-	make -C $(SUDO_BUILD_DIR)
+	make -C $(@D)
 	touch $@
 
 sudo: $(SUDO_BUILD_DIR)/.built
