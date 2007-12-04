@@ -3,7 +3,6 @@ SPECIFIC_PACKAGES = \
 	py-ctypes \
 	ts101-kernel-modules \
 	$(PERL_PACKAGES) \
-	$(UCLIBC_SPECIFIC_PACKAGES) \
 
 
 BROKEN_PACKAGES = \
@@ -18,4 +17,4 @@ BROKEN_PACKAGES = \
 	player \
 	transcode \
 	util-linux vsftpd \
-	wget buildroot uclibc-opt ipkg-opt \
+	wget \
