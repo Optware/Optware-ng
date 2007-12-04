@@ -25,7 +25,7 @@ BROKEN_PACKAGES = \
 	ftpd-topfield gconv-modules \
 	gtk ii ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
-	pcapsipdump phoneme-advanced picocom \
+	pcapsipdump phoneme-advanced \
 	player py-silvercity rhtvision sane-backends \
 	squeak strace transcode util-linux vlc vsftpd \
 	vte xchat

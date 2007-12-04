@@ -52,7 +52,7 @@ PICOCOM_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifneq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
 PICOCOM_CPPFLAGS=-DVERSION_STR=\\\"$(PICOCOM_VERSION)\\\" -DUUCP_LOCK_DIR=\\\"/opt/var/lock\\\" -D_POSIX_PATH_MAX=4096
 else
 PICOCOM_CPPFLAGS=-DVERSION_STR=\\\"$(PICOCOM_VERSION)\\\" -DUUCP_LOCK_DIR=\\\"/opt/var/lock\\\"
