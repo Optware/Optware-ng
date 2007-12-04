@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GAWK_SITE=http://ftp.gnu.org/gnu/gawk
-GAWK_VERSION=3.1.5
+GAWK_VERSION=3.1.6
 GAWK_SOURCE=gawk-$(GAWK_VERSION).tar.gz
 GAWK_DIR=gawk-$(GAWK_VERSION)
 GAWK_UNZIP=zcat
@@ -35,7 +35,7 @@ GAWK_CONFLICTS=
 #
 # GAWK_IPK_VERSION should be incremented when the ipk changes.
 #
-GAWK_IPK_VERSION=4
+GAWK_IPK_VERSION=1
 
 #
 # GAWK_PATCHES should list any patches, in the the order in
