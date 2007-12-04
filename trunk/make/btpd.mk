@@ -53,7 +53,7 @@ BTPD_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 BTPD_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifneq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
 BTPD_CPPFLAGS+=-DIOV_MAX=1024
 endif
 ifeq ($(LIBC_STYLE), uclibc)
