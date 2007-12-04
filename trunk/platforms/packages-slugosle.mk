@@ -24,7 +24,7 @@ BROKEN_PACKAGES = \
 	atftp atk chillispot \
 	ftpd-topfield gconv-modules \
 	gtk ii ipac-ng ivorbis-tools \
-	libpar2 madplay mlocate mt-daapd nfs-utils nginx nzbget \
+	madplay mlocate mt-daapd nfs-utils nginx \
 	pcapsipdump phoneme-advanced picocom \
 	player py-silvercity rhtvision sane-backends \
 	squeak strace transcode util-linux vlc vsftpd \
