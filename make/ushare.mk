@@ -13,7 +13,7 @@ USHARE_MAINTAINER=Peter Enzerink <nslu2-ushare@enzerink.net>
 USHARE_DESCRIPTION=A free UPnP A/V Media Server for Linux.
 USHARE_SECTION=net
 USHARE_PRIORITY=optional
-USHARE_DEPENDS=libupnp
+USHARE_DEPENDS=libdlna, libupnp
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 USHARE_DEPENDS+=, libiconv
 endif
