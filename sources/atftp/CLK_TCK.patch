@@ -1,0 +1,13 @@
+--- stats.c
++++ stats.c
+@@ -142,6 +142,10 @@
+      pthread_mutex_unlock(&s_stats.mutex);
+ }
+ 
++#ifndef CLK_TCK
++#define CLK_TCK CLOCKS_PER_SEC
++#endif
++
+ /*
+  * Called at the end of the main thread, when no other threads are
+  * running, to print the final statistics.
