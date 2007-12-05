@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace/
-STRACE_VERSION=4.5.14
+STRACE_VERSION=4.5.16
 STRACE_SOURCE=strace-$(STRACE_VERSION).tar.bz2
 STRACE_DIR=strace-$(STRACE_VERSION)
 STRACE_UNZIP=bzcat
@@ -28,7 +28,7 @@ STRACE_UNZIP=bzcat
 #
 # STRACE_IPK_VERSION should be incremented when the ipk changes.
 #
-STRACE_IPK_VERSION=7
+STRACE_IPK_VERSION=1
 
 #
 # STRACE_PATCHES should list any patches, in the the order in
@@ -91,15 +91,15 @@ strace-source: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
-	rm -rf $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
+$(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES) make/strace.mk
+	rm -rf $(BUILD_DIR)/$(STRACE_DIR) $(@D)
 	$(STRACE_UNZIP) $(DL_DIR)/$(STRACE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(STRACE_PATCHES)" ; \
                 then cat $(STRACE_PATCHES) | \
                 patch -d $(BUILD_DIR)/$(STRACE_DIR) -p1 ; \
         fi
-	mv $(BUILD_DIR)/$(STRACE_DIR) $(STRACE_BUILD_DIR)
-	(cd $(STRACE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(STRACE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STRACE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(STRACE_LDFLAGS)" \
@@ -109,7 +109,7 @@ $(STRACE_BUILD_DIR)/.configured: $(DL_DIR)/$(STRACE_SOURCE) $(STRACE_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
-	touch $(STRACE_BUILD_DIR)/.configured
+	touch $@
 
 strace-unpack: $(STRACE_BUILD_DIR)/.configured
 
@@ -117,14 +117,16 @@ strace-unpack: $(STRACE_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(STRACE_BUILD_DIR)/strace: $(STRACE_BUILD_DIR)/.configured
-	$(MAKE) -C $(STRACE_BUILD_DIR)
+$(STRACE_BUILD_DIR)/.built: $(STRACE_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-strace: $(STRACE_BUILD_DIR)/strace
+strace: $(STRACE_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -143,7 +145,7 @@ strace: $(STRACE_BUILD_DIR)/strace
 #
 # You may need to patch your application to make it use these locations.
 #
-$(STRACE_IPK): $(STRACE_BUILD_DIR)/strace
+$(STRACE_IPK): $(STRACE_BUILD_DIR)/.built
 	rm -rf $(STRACE_IPK_DIR) $(STRACE_IPK)
 	install -d $(STRACE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)/opt/bin/strace
