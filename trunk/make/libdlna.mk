@@ -160,7 +160,9 @@ $(LIBDLNA_BUILD_DIR)/.staged: $(LIBDLNA_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libdlna.a
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libdlna.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+	       -e 's|^Version:|& $(LIBDLNA_VERSION)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/libdlna.pc
 	touch $@
 
 libdlna-stage: $(LIBDLNA_BUILD_DIR)/.staged
