@@ -27,5 +27,5 @@ BROKEN_PACKAGES = \
 	madplay mt-daapd nfs-utils \
 	pcapsipdump phoneme-advanced \
 	player py-silvercity rhtvision sane-backends \
-	squeak strace transcode util-linux vlc vsftpd \
+	squeak transcode util-linux vlc vsftpd \
 	vte xchat
