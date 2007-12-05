@@ -5,12 +5,12 @@
 ###########################################################
 
 USHARE_SITE=http://ushare.geexbox.org/releases
-USHARE_VERSION=1.0
+USHARE_VERSION=1.1
 USHARE_SOURCE=ushare-$(USHARE_VERSION).tar.bz2
 USHARE_DIR=ushare-$(USHARE_VERSION)
 USHARE_UNZIP=bzcat
 USHARE_MAINTAINER=Peter Enzerink <nslu2-ushare@enzerink.net>
-USHARE_DESCRIPTION= A free UPnP A/V Media Server for Linux.
+USHARE_DESCRIPTION=A free UPnP A/V Media Server for Linux.
 USHARE_SECTION=net
 USHARE_PRIORITY=optional
 USHARE_DEPENDS=libupnp
@@ -23,7 +23,7 @@ USHARE_CONFLICTS=
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=3
+USHARE_IPK_VERSION=1
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
@@ -33,17 +33,22 @@ USHARE_CONFFILES=/opt/etc/ushare.conf
 # USHARE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-USHARE_PATCHES=$(USHARE_SOURCE_DIR)/ushare.conf.patch $(USHARE_SOURCE_DIR)/cfgparser.h.patch
+#USHARE_PATCHES=$(USHARE_SOURCE_DIR)/ushare.conf.patch $(USHARE_SOURCE_DIR)/cfgparser.h.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-USHARE_CPPFLAGS=
+USHARE_CPPFLAGS=-I$(USHARE_BUILD_DIR)
 USHARE_LDFLAGS=
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 USHARE_LDFLAGS+=-liconv
 endif
+USHARE_IFACE=$(strip \
+	$(if $(filter nslu2, $(OPTWARE_TARGET)), ixp0, \
+	$(if $(filter cs05q3armel, $(OPTWARE_TARGET)), egiga0, \
+	$(if $(and $(filter mips mipsel, $(TARGET_ARCH)), $(filter uclibc, $(LIBC_STYLE))), br0, \
+))))
 
 #
 # USHARE_BUILD_DIR is the directory in which the build is done.
@@ -85,34 +90,38 @@ $(USHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(USHARE_SOURCE) $(USHARE_PATCHES) ma
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libupnp-stage
+	$(MAKE) libdlna-stage libupnp-stage
 	rm -rf $(BUILD_DIR)/$(USHARE_DIR) $(USHARE_BUILD_DIR)
 	$(USHARE_UNZIP) $(DL_DIR)/$(USHARE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(USHARE_PATCHES)" ; \
 		then cat $(USHARE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(USHARE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(USHARE_DIR)" != "$(USHARE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(USHARE_DIR) $(USHARE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(USHARE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(USHARE_DIR) $(@D) ; \
 	fi
-	(cd $(USHARE_BUILD_DIR); \
+	sed -i -e 's|^USHARE_NAME=.*|USHARE_NAME=$(OPTWARE_TARGET)|' \
+	       -e 's|^USHARE_IFACE=.*|USHARE_IFACE=$(USHARE_IFACE)|' \
+		$(@D)/scripts/ushare.conf
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
+		CFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USHARE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--cross-compile \
+		--cross-prefix=$(TARGET_CROSS) \
+		--with-libupnp-dir=$(STAGING_PREFIX) \
+		--with-libdlna-dir=$(STAGING_PREFIX) \
 		--disable-nls \
-		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(USHARE_BUILD_DIR)/libtool
-	touch $(USHARE_BUILD_DIR)/.configured
+	touch $@
 
 ushare-unpack: $(USHARE_BUILD_DIR)/.configured
 
@@ -120,9 +129,9 @@ ushare-unpack: $(USHARE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(USHARE_BUILD_DIR)/.built: $(USHARE_BUILD_DIR)/.configured
-	rm -f $(USHARE_BUILD_DIR)/.built
-	$(MAKE) -C $(USHARE_BUILD_DIR)
-	touch $(USHARE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -133,9 +142,9 @@ ushare: $(USHARE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(USHARE_BUILD_DIR)/.staged: $(USHARE_BUILD_DIR)/.built
-	rm -f $(USHARE_BUILD_DIR)/.staged
-	$(MAKE) -C $(USHARE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(USHARE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 ushare-stage: $(USHARE_BUILD_DIR)/.staged
 
@@ -144,7 +153,7 @@ ushare-stage: $(USHARE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ushare
 #
 $(USHARE_IPK_DIR)/CONTROL/control:
-	@install -d $(USHARE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ushare" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -172,7 +181,7 @@ $(USHARE_IPK_DIR)/CONTROL/control:
 #
 $(USHARE_IPK): $(USHARE_BUILD_DIR)/.built
 	rm -rf $(USHARE_IPK_DIR) $(BUILD_DIR)/ushare_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(USHARE_BUILD_DIR) DESTDIR=$(USHARE_IPK_DIR) install-strip
+	$(MAKE) -C $(USHARE_BUILD_DIR) DESTDIR=$(USHARE_IPK_DIR) install
 	install -d $(USHARE_IPK_DIR)/opt/etc/
 	install -m 644 $(USHARE_BUILD_DIR)/scripts/ushare.conf $(USHARE_IPK_DIR)/opt/etc/ushare.conf
 	install -d $(USHARE_IPK_DIR)/opt/etc/init.d
