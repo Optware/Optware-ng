@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBUPNP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pupnp
-LIBUPNP_VERSION=1.4.3
+LIBUPNP_VERSION=1.6.0
 LIBUPNP_SOURCE=libupnp-$(LIBUPNP_VERSION).tar.bz2
 LIBUPNP_DIR=libupnp-$(LIBUPNP_VERSION)
 LIBUPNP_UNZIP=bzcat
@@ -134,7 +134,7 @@ $(LIBUPNP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUPNP_SOURCE) $(LIBUPNP_PATCHES)
 		--disable-static \
 	)
 	$(PATCH_LIBTOOL) $(LIBUPNP_BUILD_DIR)/libtool
-	touch $(LIBUPNP_BUILD_DIR)/.configured
+	touch $@
 
 libupnp-unpack: $(LIBUPNP_BUILD_DIR)/.configured
 
@@ -142,9 +142,9 @@ libupnp-unpack: $(LIBUPNP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBUPNP_BUILD_DIR)/.built: $(LIBUPNP_BUILD_DIR)/.configured
-	rm -f $(LIBUPNP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBUPNP_BUILD_DIR)
-	touch $(LIBUPNP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +155,11 @@ libupnp: $(LIBUPNP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBUPNP_BUILD_DIR)/.staged: $(LIBUPNP_BUILD_DIR)/.built
-	rm -f $(LIBUPNP_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBUPNP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIBUPNP_BUILD_DIR)/.staged
+	rm -f $(STAGING_LIB_DIR)/libixml*.la $(STAGING_LIB_DIR)/libupnp*.la
+	sed -i -e '/^prefix=/s|=/opt|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libupnp.pc
+	touch $@
 
 libupnp-stage: $(LIBUPNP_BUILD_DIR)/.staged
 
@@ -166,7 +168,7 @@ libupnp-stage: $(LIBUPNP_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libupnp
 #
 $(LIBUPNP_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBUPNP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libupnp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -195,6 +197,7 @@ $(LIBUPNP_IPK_DIR)/CONTROL/control:
 $(LIBUPNP_IPK): $(LIBUPNP_BUILD_DIR)/.built
 	rm -rf $(LIBUPNP_IPK_DIR) $(BUILD_DIR)/libupnp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBUPNP_BUILD_DIR) DESTDIR=$(LIBUPNP_IPK_DIR) install-strip
+	rm -f $(LIBUPNP_IPK_DIR)/opt/lib/*.la
 	install -d $(LIBUPNP_IPK_DIR)/opt/etc/
 #	install -m 644 $(LIBUPNP_SOURCE_DIR)/libupnp.conf $(LIBUPNP_IPK_DIR)/opt/etc/libupnp.conf
 #	install -d $(LIBUPNP_IPK_DIR)/opt/etc/init.d
