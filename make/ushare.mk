@@ -133,6 +133,7 @@ ushare-unpack: $(USHARE_BUILD_DIR)/.configured
 #
 $(USHARE_BUILD_DIR)/.built: $(USHARE_BUILD_DIR)/.configured
 	rm -f $@
+		CFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
 	$(MAKE) -C $(@D)
 	touch $@
 
