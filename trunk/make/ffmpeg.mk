@@ -123,18 +123,18 @@ endif
 
 # Snow is know to create build problems on ds101 
 
-$(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
+$(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D)
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FFMPEG_PATCHES)" ; \
 		then cat $(FFMPEG_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(FFMPEG_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(FFMPEG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(FFMPEG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) ; \
 	fi
-	(cd $(FFMPEG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FFMPEG_LDFLAGS)" \
@@ -159,7 +159,7 @@ endif
 ifdef NO_BUILTIN_MATH
 	sed -i -e '/^OPTFLAGS/s|$$| $(FFMPEG_CPPFLAGS)|' $(FFMPEG_BUILD_DIR)/config.mak
 endif
-	touch $(FFMPEG_BUILD_DIR)/.configured
+	touch $@
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
 ##		--disable-nls \
@@ -170,9 +170,9 @@ ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FFMPEG_BUILD_DIR)/.built: $(FFMPEG_BUILD_DIR)/.configured
-	rm -f $(FFMPEG_BUILD_DIR)/.built
-	$(MAKE) -C $(FFMPEG_BUILD_DIR)
-	touch $(FFMPEG_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -183,9 +183,18 @@ ffmpeg: $(FFMPEG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
-	rm -f $(FFMPEG_BUILD_DIR)/.staged
-	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(STAGING_DIR)/opt/man bindir=$(STAGING_DIR)/opt/bin prefix=$(STAGING_DIR)/opt DESTDIR=$(STAGING_DIR) install
-	touch $(FFMPEG_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) install \
+		mandir=$(STAGING_DIR)/opt/man \
+		bindir=$(STAGING_DIR)/opt/bin \
+		prefix=$(STAGING_DIR)/opt \
+		DESTDIR=$(STAGING_DIR)
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+		$(STAGING_LIB_DIR)/pkgconfig/libavcodec.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/libavformat.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/libavutil.pc \
+		$(STAGING_LIB_DIR)/pkgconfig/libpostproc.pc
+	touch $@
 
 ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 
@@ -194,7 +203,7 @@ ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ffmpeg
 #
 $(FFMPEG_IPK_DIR)/CONTROL/control:
-	@install -d $(FFMPEG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ffmpeg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
