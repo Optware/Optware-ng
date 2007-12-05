@@ -16,13 +16,14 @@ ATFTP_PRIORITY=optional
 ATFTP_DEPENDS=xinetd,pcre
 ATFTP_CONFLICTS=
 
-ATFTP_IPK_VERSION=7
+ATFTP_IPK_VERSION=8
 
 ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
 
-ifeq ($(OPTWARE_TARGET), $(filter slugosbe fsg3v4 cs05q3armel mssii, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle fsg3v4 cs05q3armel mssii, $(OPTWARE_TARGET)))
 ATFTP_PATCHES=$(ATFTP_SOURCE_DIR)/argz.h.patch
 endif
+ATFTP_PATCHES+=$(ATFTP_SOURCE_DIR)/CLK_TCK.patch
 
 ATFTP_BUILD_DIR=$(BUILD_DIR)/atftp
 ATFTP_SOURCE_DIR=$(SOURCE_DIR)/atftp
@@ -36,13 +37,13 @@ atftp-source: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES)
 
 $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/atftp.mk
 	$(MAKE) ncurses-stage pcre-stage
-	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ATFTP_DIR) $(@D)
 	$(ATFTP_UNZIP) $(DL_DIR)/$(ATFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ATFTP_PATCHES)" ; then \
 		cat $(ATFTP_PATCHES) | patch -d $(BUILD_DIR)/$(ATFTP_DIR) -p0 ; \
 	fi
-	mv $(BUILD_DIR)/$(ATFTP_DIR) $(ATFTP_BUILD_DIR)
-	(cd $(ATFTP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(ATFTP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -56,13 +57,15 @@ $(ATFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(ATFTP_SOURCE) $(ATFTP_PATCHES) make/
 
 atftp-unpack: $(ATFTP_BUILD_DIR)/.configured
 
-$(ATFTP_BUILD_DIR)/atftp: $(ATFTP_BUILD_DIR)/.configured
-	$(MAKE) -C $(ATFTP_BUILD_DIR)
+$(ATFTP_BUILD_DIR)/.built: $(ATFTP_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
-atftp: $(ATFTP_BUILD_DIR)/atftp
+atftp: $(ATFTP_BUILD_DIR)/.built
 
 $(ATFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(ATFTP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: atftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -75,7 +78,7 @@ $(ATFTP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(ATFTP_DEPENDS)" >>$@
 	@echo "Conflicts: $(ATFTP_CONFLICTS)" >>$@
 
-$(ATFTP_IPK): $(ATFTP_BUILD_DIR)/atftp
+$(ATFTP_IPK): $(ATFTP_BUILD_DIR)/.built
 	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_$(TARGET_ARCH).ipk
 	install -d $(ATFTP_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
