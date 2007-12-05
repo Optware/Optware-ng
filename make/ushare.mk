@@ -41,6 +41,9 @@ USHARE_CONFFILES=/opt/etc/ushare.conf
 #
 USHARE_CPPFLAGS=-I$(USHARE_BUILD_DIR)
 USHARE_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+USHARE_LDFLAGS +=-lpthread
+endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 USHARE_LDFLAGS+=-liconv
 endif
