@@ -39,7 +39,7 @@ SVN_DEPENDS=neon, apr, apr-util, zlib, expat, libxml2
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SVN_DEPENDS +=, openldap-libs
 endif
-ifeq ($(OPTWARE_TARGET),ts101)
+ifeq (enable, $(GETTEXT_NLS))
 SVN_DEPENDS +=, gettext
 endif
 SVN_SUGGESTS=
@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=2
+SVN_IPK_VERSION=3
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -188,7 +188,7 @@ endif
 	$(PATCH_LIBTOOL) $(SVN_BUILD_DIR)/libtool
 #	sed -i -e '/^runpath_var=/s/LD_RUN_PATH//' $(SVN_BUILD_DIR)/libtool
 	sed -i -e '/export $$runpath_var/'"s|'.*'|'/opt/lib'|" $(SVN_BUILD_DIR)/libtool
-	touch $(SVN_BUILD_DIR)/.configured
+	touch $@
 
 svn-unpack: $(SVN_BUILD_DIR)/.configured
 
@@ -249,7 +249,7 @@ svn-stage: $(SVN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/svn
 #
 $(SVN_IPK_DIR)/CONTROL/control:
-	@install -d $(SVN_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: svn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -264,7 +264,7 @@ $(SVN_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(SVN_CONFLICTS)" >>$@
 
 $(SVN-PY_IPK_DIR)/CONTROL/control:
-	@install -d $(SVN-PY_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: svn-py" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -280,7 +280,7 @@ $(SVN-PY_IPK_DIR)/CONTROL/control:
 
 ifneq (,$(filter perl, $(PACKAGES)))
 $(SVN-PL_IPK_DIR)/CONTROL/control:
-	@install -d $(SVN-PL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: svn-pl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
