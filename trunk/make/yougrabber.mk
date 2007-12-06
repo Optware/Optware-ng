@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 YOUGRABBER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/yougrabber
-YOUGRABBER_VERSION=0.29
+YOUGRABBER_VERSION=0.29.1
 YOUGRABBER_SOURCE=YouGrabber-$(YOUGRABBER_VERSION).tar.gz
 YOUGRABBER_DIR=YouGrabber-$(YOUGRABBER_VERSION)
 YOUGRABBER_UNZIP=zcat
@@ -106,14 +106,14 @@ yougrabber-source: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER_PATCHES)
 #
 $(YOUGRABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER_PATCHES) make/yougrabber.mk
 	$(MAKE) glib-stage libcurl-stage ncurses-stage openssl-stage
-	rm -rf $(BUILD_DIR)/$(YOUGRABBER_DIR) $(YOUGRABBER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(YOUGRABBER_DIR) $(@D)
 	$(YOUGRABBER_UNZIP) $(DL_DIR)/$(YOUGRABBER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(YOUGRABBER_PATCHES)" ; \
 		then cat $(YOUGRABBER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(YOUGRABBER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(YOUGRABBER_DIR)" != "$(YOUGRABBER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(YOUGRABBER_DIR) $(YOUGRABBER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(YOUGRABBER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(YOUGRABBER_DIR) $(@D) ; \
 	fi
 #	(cd $(YOUGRABBER_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
