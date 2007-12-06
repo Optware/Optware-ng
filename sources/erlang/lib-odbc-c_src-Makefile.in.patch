@@ -1,0 +1,11 @@
+--- erlang/lib/odbc/c_src/Makefile.in.orig	2007-12-05 23:20:38.000000000 -0800
++++ erlang/lib/odbc/c_src/Makefile.in	2007-12-05 23:21:24.000000000 -0800
+@@ -78,7 +78,7 @@
+ CFLAGS = $(TYPEFLAGS) @CFLAGS@
+ EI_LDFLAGS = -L$(EI_ROOT)/obj$(TYPEMARKER)/$(TARGET)
+ LD = @DED_LD@
+-LDFLAGS =  $(ODBC_LIB) $(EI_LDFLAGS)
++LDFLAGS =  $(ODBC_LIB) $(EI_LDFLAGS) @LDFLAGS@
+ LIBS = @LIBS@ $(EI_LIB)
+ INCLUDES = -I. $(ODBC_INCLUDE) $(EI_INCLUDE)
+ TARGET_FLAGS =  @TARGET_FLAGS@
