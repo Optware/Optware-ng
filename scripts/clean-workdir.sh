@@ -27,16 +27,23 @@ fi
 for p in ${packages}
 do
 	echo -n $p
-        IPK=`sed -n '/_IPK[: ]*=/s/[: ]*=.*//p' make/${p}.mk | head -1`
-        P=`echo $IPK | sed 's/_IPK$//'`
-	ipk=`make -s query-${IPK}`
-	ipk_dir=`make -s query-${P}_IPK_DIR`
-	build_dir=`make -s query-${P}_BUILD_DIR`
+
+        all_ipk_files_exist=true
+        ipk_dirs=""
+        for IPK in `sed -n '/_IPK[:? ]*=/s/[:? ]*=.*//p' make/${p}.mk`; do
+            ipk=`make -s query-${IPK}`
+            test -f $ipk || all_ipk_files_exist=false
+            ipk_dirs="$ipk_dirs `make -s query-${IPK}_DIR`"
+        done
+
+	BUILD_DIR_VAR=`sed -n '/_BUILD_DIR[:? ]*=/s/[:? ]*=.*//p' make/${p}.mk | head -1`
+	build_dir=`make -s query-${BUILD_DIR_VAR}`
+
         staging_count=`grep -l ' ${p}-stage' make/*.mk | wc -l`
         todo="skip"
         if test 0 -eq `grep -c 'IPK): .*/\.built' make/${p}.mk`; then
             todo="skip"
-        elif test -d "$build_dir" -a -f "$ipk"; then
+        elif test -d "$build_dir" -a "$all_ipk_files_exist" = "true"; then
             if test $staging_count -le 1 -o -f "$build_dir/.staged"; then
         	if ! ls $build_dir/* > /dev/null 2>&1; then
                 	todo="already clean"
@@ -47,8 +54,9 @@ do
         	fi
             fi
         fi
+
         echo " $todo"
         if test "$todo" = "clean"; then
-               echo $build_dir/* $ipk_dir | xargs rm -rf
+               echo $build_dir/* $ipk_dirs | xargs rm -rf
         fi
 done
