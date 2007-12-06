@@ -30,13 +30,13 @@ do
 
         all_ipk_files_exist=true
         ipk_dirs=""
-        for IPK in `sed -n '/_IPK[:? ]*=/s/[:? ]*=.*//p' make/${p}.mk`; do
+        for IPK in `sed -n '/^[^#].*_IPK[:? ]*=/s/[:? ]*=.*//p' make/${p}.mk`; do
             ipk=`make -s query-${IPK}`
             test -f $ipk || all_ipk_files_exist=false
             ipk_dirs="$ipk_dirs `make -s query-${IPK}_DIR`"
         done
 
-	BUILD_DIR_VAR=`sed -n '/_BUILD_DIR[:? ]*=/s/[:? ]*=.*//p' make/${p}.mk | head -1`
+	BUILD_DIR_VAR=`sed -n '/^[^#].*_BUILD_DIR[:? ]*=/s/[:? ]*=.*//p' make/${p}.mk | head -1`
 	build_dir=`make -s query-${BUILD_DIR_VAR}`
 
         staging_count=`grep -l ' ${p}-stage' make/*.mk | wc -l`
