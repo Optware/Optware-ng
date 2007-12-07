@@ -46,7 +46,7 @@
 
 #
 # <FOO>_CONFFILES should be a list of user-editable files
-<FOO>_CONFFILES=/opt/etc/<foo>.conf /opt/etc/init.d/SXX<foo>
+#<FOO>_CONFFILES=/opt/etc/<foo>.conf /opt/etc/init.d/SXX<foo>
 
 #
 # <FOO>_PATCHES should list any patches, in the the order in
@@ -112,16 +112,16 @@ $(DL_DIR)/$(<FOO>_SOURCE):
 #
 $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES) make/<foo>.mk
 	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(<FOO>_DIR) $(@D)
 	$(<FOO>_UNZIP) $(DL_DIR)/$(<FOO>_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(<FOO>_PATCHES)" ; \
 		then cat $(<FOO>_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(<FOO>_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(<FOO>_DIR)" != "$(<FOO>_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(<FOO>_DIR) $(<FOO>_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(<FOO>_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(<FOO>_DIR) $(@D) ; \
 	fi
-	(cd $(<FOO>_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(<FOO>_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(<FOO>_LDFLAGS)" \
@@ -133,7 +133,7 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(<FOO>_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 <foo>-unpack: $(<FOO>_BUILD_DIR)/.configured
@@ -143,7 +143,7 @@ $(<FOO>_BUILD_DIR)/.configured: $(DL_DIR)/$(<FOO>_SOURCE) $(<FOO>_PATCHES) make/
 #
 $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(<FOO>_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -156,7 +156,7 @@ $(<FOO>_BUILD_DIR)/.built: $(<FOO>_BUILD_DIR)/.configured
 #
 $(<FOO>_BUILD_DIR)/.staged: $(<FOO>_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 <foo>-stage: $(<FOO>_BUILD_DIR)/.staged
@@ -195,17 +195,17 @@ $(<FOO>_IPK_DIR)/CONTROL/control:
 $(<FOO>_IPK): $(<FOO>_BUILD_DIR)/.built
 	rm -rf $(<FOO>_IPK_DIR) $(BUILD_DIR)/<foo>_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<FOO>_BUILD_DIR) DESTDIR=$(<FOO>_IPK_DIR) install-strip
-	install -d $(<FOO>_IPK_DIR)/opt/etc/
-	install -m 644 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
-	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(<FOO>_SOURCE_DIR)/rc.<foo> $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
+#	install -d $(<FOO>_IPK_DIR)/opt/etc/
+#	install -m 644 $(<FOO>_SOURCE_DIR)/<foo>.conf $(<FOO>_IPK_DIR)/opt/etc/<foo>.conf
+#	install -d $(<FOO>_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(<FOO>_SOURCE_DIR)/rc.<foo> $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/opt/etc/init.d/SXX<foo>
 	$(MAKE) $(<FOO>_IPK_DIR)/CONTROL/control
-	install -m 755 $(<FOO>_SOURCE_DIR)/postinst $(<FOO>_IPK_DIR)/CONTROL/postinst
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/postinst
-	install -m 755 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/prerm
-	if test -n "$(UPD-ALT_PREFIX)"; then \
+#	install -m 755 $(<FOO>_SOURCE_DIR)/postinst $(<FOO>_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(<FOO>_SOURCE_DIR)/prerm $(<FOO>_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(<FOO>_IPK_DIR)/CONTROL/prerm
+#	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(<FOO>_IPK_DIR)/CONTROL/postinst $(<FOO>_IPK_DIR)/CONTROL/prerm; \
 	fi
