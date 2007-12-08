@@ -117,6 +117,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|prefix=NONE|prefix=/opt|' $(@D)/configure
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \
