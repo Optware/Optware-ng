@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0a1
+PYTHON30_VERSION=3.0a2
 PYTHON30_VERSION_MAJOR=3.0
 PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
@@ -161,7 +161,7 @@ endif
 		--enable-shared \
 		--enable-unicode=ucs4 \
 	)
-	touch $(PYTHON30_BUILD_DIR)/.configured
+	touch $@
 
 python30-unpack: $(PYTHON30_BUILD_DIR)/.configured
 
@@ -169,10 +169,10 @@ python30-unpack: $(PYTHON30_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PYTHON30_BUILD_DIR)/.built: $(PYTHON30_BUILD_DIR)/.configured
-	rm -f $(PYTHON30_BUILD_DIR)/.built
+	rm -f $@
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON30_BUILD_DIR)
-	touch $(PYTHON30_BUILD_DIR)/.built
+		$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -183,10 +183,10 @@ python30: $(PYTHON30_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PYTHON30_BUILD_DIR)/.staged: $(PYTHON30_BUILD_DIR)/.built
-	rm -f $(PYTHON30_BUILD_DIR)/.staged
+	rm -f $@
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON30_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PYTHON30_BUILD_DIR)/.staged
+		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 python30-stage: $(PYTHON30_BUILD_DIR)/.staged
 
