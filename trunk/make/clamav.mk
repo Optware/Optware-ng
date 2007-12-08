@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CLAMAV_SITE=http://$(SOURCEFORGE_MIRROR)/clamav
-CLAMAV_VERSION=0.90.3
+CLAMAV_VERSION=0.91.2
 CLAMAV_SOURCE=clamav-$(CLAMAV_VERSION).tar.gz
 CLAMAV_DIR=clamav-$(CLAMAV_VERSION)
 CLAMAV_UNZIP=zcat
@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=2
+CLAMAV_IPK_VERSION=1
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -109,20 +109,23 @@ clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
+$(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 	$(MAKE) zlib-stage libgmp-stage
-	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
-#	if [ ! -e /opt/bin/adduser ]; then ipkg update; ipkg install unslung-feeds; ipkg update; ipkg install adduser; fi 
-#	if (! (grep clamav /etc/passwd)) then addgroup clamav; adduser -s /dev/null -H -D -G clamav clamav; fi     
+	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(CLAMAV_PATCHES) | patch -d $(BUILD_DIR)/$(CLAMAV_DIR) -p1
-	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(CLAMAV_BUILD_DIR)
-	(cd $(CLAMAV_BUILD_DIR); \
+	if test -n "$(CLAMAV_PATCHES)"; \
+		then cat $(CLAMAV_PATCHES) | patch -bd $(BUILD_DIR)/$(CLAMAV_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
+	(cd $(@D); \
 		find . -name '*.[ch]' | xargs sed -i -e 's|P_tmpdir|CLAMAV_tmpdir|g'; \
-		autoconf; \
+		autoreconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLAMAV_LDFLAGS)" \
+		ac_cv_func_setpgrp_void=yes \
+		ac_cv_have_accrights_in_msghdr=no \
+		ac_cv_have_control_in_msghdr=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -133,10 +136,10 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) #$(CLAMAV_PATCHES)
 		--disable-static \
 		--sysconfdir=/opt/etc \
 		--with-zlib=$(STAGING_DIR)/opt \
-		--without-libcurl	\
 		--mandir=/opt/man	\
 	)
-	touch $(CLAMAV_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 clamav-unpack: $(CLAMAV_BUILD_DIR)/.configured
 
@@ -144,10 +147,10 @@ clamav-unpack: $(CLAMAV_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CLAMAV_BUILD_DIR)/.built: $(CLAMAV_BUILD_DIR)/.configured
-	rm -f $(CLAMAV_BUILD_DIR)/.built
-	$(MAKE) -C $(CLAMAV_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS) -DCLAMAV_tmpdir=\\\"/opt/tmp\\\""
-	touch $(CLAMAV_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -158,9 +161,9 @@ clamav: $(CLAMAV_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CLAMAV_BUILD_DIR)/.staged: $(CLAMAV_BUILD_DIR)/.built
-	rm -f $(CLAMAV_BUILD_DIR)/.staged
-	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CLAMAV_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 clamav-stage: $(CLAMAV_BUILD_DIR)/.staged
 
@@ -169,7 +172,7 @@ clamav-stage: $(CLAMAV_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clamav
 #
 $(CLAMAV_IPK_DIR)/CONTROL/control:
-	@install -d $(CLAMAV_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: clamav" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -197,7 +200,8 @@ $(CLAMAV_IPK_DIR)/CONTROL/control:
 #
 $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CLAMAV_BUILD_DIR) DESTDIR=$(CLAMAV_IPK_DIR) install-strip
+	$(MAKE) -C $(CLAMAV_BUILD_DIR) install-strip \
+		DESTDIR=$(CLAMAV_IPK_DIR) transform=""
 	install -d $(CLAMAV_IPK_DIR)/opt/tmp/
 	install -d $(CLAMAV_IPK_DIR)/opt/etc/
 	install -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
@@ -208,27 +212,9 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	install -m 755 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
 	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
-	cd $(CLAMAV_IPK_DIR)/opt/bin
-	rm $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-clamav-config # contains staging paths
+	rm $(CLAMAV_IPK_DIR)/opt/bin/clamav-config # contains staging paths
 	rm $(CLAMAV_IPK_DIR)/opt/lib/libclamav.la # contains staging paths
-	rm $(CLAMAV_IPK_DIR)/opt/lib/pkgconfig/libclamav.pc # contains staging paths
-	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-clamdscan $(CLAMAV_IPK_DIR)/opt/bin/clamdscan
-	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-clamscan $(CLAMAV_IPK_DIR)/opt/bin/clamscan
-	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-freshclam $(CLAMAV_IPK_DIR)/opt/bin/freshclam
-	mv $(CLAMAV_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-sigtool $(CLAMAV_IPK_DIR)/opt/bin/sigtool
-	cd $(CLAMAV_IPK_DIR)/opt/sbin
-	mv $(CLAMAV_IPK_DIR)/opt/sbin/$(GNU_TARGET_NAME)-clamd $(CLAMAV_IPK_DIR)/opt/sbin/clamd
-	cd $(CLAMAV_IPK_DIR)/opt/man/man1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-clamdscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamdscan.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-clamscan.1 $(CLAMAV_IPK_DIR)/opt/man/man1/clamscan.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-freshclam.1 $(CLAMAV_IPK_DIR)/opt/man/man1/freshclam.1
-	mv $(CLAMAV_IPK_DIR)/opt/man/man1/$(GNU_TARGET_NAME)-sigtool.1 $(CLAMAV_IPK_DIR)/opt/man/man1/sigtool.1
-	cd $(CLAMAV_IPK_DIR)/opt/man/man5
-	mv $(CLAMAV_IPK_DIR)/opt/man/man5/$(GNU_TARGET_NAME)-clamd.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/clamd.conf.5
-	mv $(CLAMAV_IPK_DIR)/opt/man/man5/$(GNU_TARGET_NAME)-freshclam.conf.5 $(CLAMAV_IPK_DIR)/opt/man/man5/freshclam.conf.5
-	cd $(CLAMAV_IPK_DIR)/opt/man/man8
-	rm $(CLAMAV_IPK_DIR)/opt/man/man8/$(GNU_TARGET_NAME)-clamav-milter.8
-	mv $(CLAMAV_IPK_DIR)/opt/man/man8/$(GNU_TARGET_NAME)-clamd.8 $(CLAMAV_IPK_DIR)/opt/man/man8/clamd.8
+	rm -rf $(CLAMAV_IPK_DIR)/opt/lib/pkgconfig/ # contains staging paths
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLAMAV_IPK_DIR)
 
 #
