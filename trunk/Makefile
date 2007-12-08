@@ -181,7 +181,8 @@ PACKAGES_ONLY_WORK_ON_LINUX24 = \
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	9base \
-	abook adduser adns alac-decoder amule analog antinat appweb \
+	abook adduser adns alac-decoder amule analog antinat \
+	apcupsd appweb \
 	apache apr apr-util arc arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
 	at atftp atk atop audiofile autoconf automake autossh avahi \
