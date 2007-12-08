@@ -100,8 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON30_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON30_SITE)/$(PYTHON30_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PYTHON30_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PYTHON30_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -170,8 +170,7 @@ python30-unpack: $(PYTHON30_BUILD_DIR)/.configured
 #
 $(PYTHON30_BUILD_DIR)/.built: $(PYTHON30_BUILD_DIR)/.configured
 	rm -f $@
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -184,17 +183,15 @@ python30: $(PYTHON30_BUILD_DIR)/.built
 #
 $(PYTHON30_BUILD_DIR)/.staged: $(PYTHON30_BUILD_DIR)/.built
 	rm -f $@
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 python30-stage: $(PYTHON30_BUILD_DIR)/.staged
 
 $(HOST_STAGING_PREFIX)/bin/python3.0: host/.configured make/python30.mk
 	$(MAKE) $(PYTHON30_BUILD_DIR)/.built
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON30_BUILD_DIR)/buildpython30 DESTDIR=$(HOST_STAGING_DIR) install
-	rm -f $(HOST_STAGING_PREFIX)/bin/python
+	$(MAKE) -C $(PYTHON30_BUILD_DIR)/buildpython30 DESTDIR=$(HOST_STAGING_DIR) install
+	rm -f $(@D)/bin/python
 
 python30-host-stage: $(HOST_STAGING_PREFIX)/bin/python3.0
 
@@ -229,8 +226,7 @@ $(PYTHON30_IPK_DIR)/CONTROL/control:
 #
 $(PYTHON30_IPK): $(PYTHON30_BUILD_DIR)/.built
 	rm -rf $(PYTHON30_IPK_DIR) $(BUILD_DIR)/python30_*_$(TARGET_ARCH).ipk
-	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PYTHON30_BUILD_DIR) DESTDIR=$(PYTHON30_IPK_DIR) install
+	$(MAKE) -C $(PYTHON30_BUILD_DIR) DESTDIR=$(PYTHON30_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON30_IPK_DIR)/opt/bin/python$(PYTHON30_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON30_IPK_DIR)/opt/lib/python$(PYTHON30_VERSION_MAJOR)/lib-dynload/*.so
 	chmod 755 $(PYTHON30_IPK_DIR)/opt/lib/libpython$(PYTHON30_VERSION_MAJOR).so.1.0
