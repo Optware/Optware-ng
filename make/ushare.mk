@@ -5,7 +5,7 @@
 ###########################################################
 
 USHARE_SITE=http://ushare.geexbox.org/releases
-USHARE_VERSION=1.1
+USHARE_VERSION=1.1a
 USHARE_SOURCE=ushare-$(USHARE_VERSION).tar.bz2
 USHARE_DIR=ushare-$(USHARE_VERSION)
 USHARE_UNZIP=bzcat
@@ -120,6 +120,7 @@ endif
 		--cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
 		--with-libupnp-dir=$(STAGING_PREFIX) \
+		--enable-dlna \
 		--with-libdlna-dir=$(STAGING_PREFIX) \
 		--disable-nls \
 	)
