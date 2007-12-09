@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 YOUGRABBER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/yougrabber
-YOUGRABBER_VERSION=0.29.1
-YOUGRABBER_SOURCE=YouGrabber-$(YOUGRABBER_VERSION).tar.gz
-YOUGRABBER_DIR=YouGrabber-$(YOUGRABBER_VERSION)
-YOUGRABBER_UNZIP=zcat
+YOUGRABBER_VERSION=0.29.2
+YOUGRABBER_SOURCE=yougrabber-$(YOUGRABBER_VERSION).tar.bz2
+YOUGRABBER_DIR=yougrabber-$(YOUGRABBER_VERSION)
+YOUGRABBER_UNZIP=bzcat
 YOUGRABBER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 YOUGRABBER_DESCRIPTION=YouGrabber is a lightweight, multi-threaded (NPTL based) command line YouTube.com video downloader.
 YOUGRABBER_SECTION=misc
@@ -200,11 +200,12 @@ $(YOUGRABBER_IPK): $(YOUGRABBER_BUILD_DIR)/.built
 		COPY=install
 	$(STRIP_COMMAND) $(YOUGRABBER_IPK_DIR)/opt/bin/yg
 	install -d $(YOUGRABBER_IPK_DIR)/opt/share/doc/yougrabber
-	install $(YOUGRABBER_BUILD_DIR)/doc/CHANGELOG \
-		$(YOUGRABBER_BUILD_DIR)/doc/INSTALL \
-		$(YOUGRABBER_BUILD_DIR)/doc/LICENSE \
-		$(YOUGRABBER_BUILD_DIR)/doc/README \
-		$(YOUGRABBER_BUILD_DIR)/yg.conf.sample \
+	install $(YOUGRABBER_BUILD_DIR)/CHANGELOG \
+		$(YOUGRABBER_BUILD_DIR)/CONTRIBUTORS \
+		$(YOUGRABBER_BUILD_DIR)/INSTALL \
+		$(YOUGRABBER_BUILD_DIR)/LICENSE \
+		$(YOUGRABBER_BUILD_DIR)/README \
+		$(YOUGRABBER_BUILD_DIR)/yg.conf.example \
 		$(YOUGRABBER_IPK_DIR)/opt/share/doc/yougrabber
 	$(MAKE) $(YOUGRABBER_IPK_DIR)/CONTROL/control
 	echo $(YOUGRABBER_CONFFILES) | sed -e 's/ /\n/g' > $(YOUGRABBER_IPK_DIR)/CONTROL/conffiles
