@@ -36,7 +36,7 @@ NETATALK_CONFLICTS=
 #
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=2
+NETATALK_IPK_VERSION=3
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
@@ -106,19 +106,20 @@ netatalk-source: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES)
 #
 $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES) make/netatalk.mk
 	$(MAKE) libdb-stage
-	rm -rf $(BUILD_DIR)/$(NETATALK_DIR) $(NETATALK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NETATALK_DIR) $(@D)
 	$(NETATALK_UNZIP) $(DL_DIR)/$(NETATALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETATALK_PATCHES)" ; \
 		then cat $(NETATALK_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NETATALK_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NETATALK_DIR)" != "$(NETATALK_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NETATALK_DIR) $(NETATALK_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NETATALK_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NETATALK_DIR) $(@D) ; \
 	fi
-	(cd $(NETATALK_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETATALK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NETATALK_LDFLAGS)" \
+		netatalk_cv_SIZEOF_OFF_T=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -127,10 +128,11 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		--with-bdb=$(STAGING_INCLUDE_DIR) \
 		--with-ssl-dir=$(STAGING_PREFIX) \
 		--without-shadow \
+		--enable-afp3 \
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(NETATALK_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 netatalk-unpack: $(NETATALK_BUILD_DIR)/.configured
@@ -140,7 +142,7 @@ netatalk-unpack: $(NETATALK_BUILD_DIR)/.configured
 #
 $(NETATALK_BUILD_DIR)/.built: $(NETATALK_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NETATALK_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -153,7 +155,7 @@ netatalk: $(NETATALK_BUILD_DIR)/.built
 #
 $(NETATALK_BUILD_DIR)/.staged: $(NETATALK_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NETATALK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 netatalk-stage: $(NETATALK_BUILD_DIR)/.staged
