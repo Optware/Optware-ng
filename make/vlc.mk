@@ -168,6 +168,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(VLC_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		ac_cv_header_sysfs_libsysfs_h=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
