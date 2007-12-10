@@ -78,6 +78,11 @@ $(PLAN9PORT_BUILD_DIR)/.configured: $(PLAN9PORT_HOST_BUILD_DIR)/.staged $(PLAN9P
 		 echo OBJTYPE=arm; \
 		) > LOCAL.config; \
 	)
+	sed -i -e 's|`uname`|Linux|' -e 's|uname -m|echo arm|' $(@D)/src/mkhdr
+	for i in src/libmp src/libsec; do \
+		mkdir -p $(@D)/$$i/arm; \
+		cp $(@D)/$$i/x86_64/mkfile $(@D)/$$i/arm/; \
+	done
 	# rgbycc.c -> o.rgbycc -> ycbcr.h
 	# rgbrgbv.c -> o.rgbv -> rgbv.h
 	touch $@
