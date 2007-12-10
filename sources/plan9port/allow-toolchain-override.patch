@@ -1,0 +1,67 @@
+--- bin/9a.orig	2007-12-09 15:12:37.000000000 -0800
++++ bin/9a	2007-12-09 15:12:54.000000000 -0800
+@@ -6,4 +6,4 @@
+ fi
+ 
+ out=`echo $1 | sed 's/\.s$//;s/$/.o/'`
+-exec as -o $out $1
++exec ${OVERRIDE_AS:-as} -o $out $1
+--- bin/9ar.orig	2007-12-09 15:13:47.000000000 -0800
++++ bin/9ar	2007-12-09 15:14:14.000000000 -0800
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-ar "$@"
++${OVERRIDE_AR:-ar} "$@"
+ 
+ # We used to run ranlib if uname = Darwin,
+ # but the mkfiles now pass the s flag to 9ar,
+--- bin/9c.orig	2007-12-09 15:09:23.000000000 -0800
++++ bin/9c	2007-12-09 15:10:35.000000000 -0800
+@@ -3,7 +3,7 @@
+ test -f $PLAN9/config && . $PLAN9/config
+ usegcc()
+ {
+-	cc=gcc
++	cc=${OVERRIDE_CC:-gcc}
+ 	ngflags=" \
+ 		-O2 \
+ 		-c \
+--- bin/9l.orig	2007-12-09 15:11:11.000000000 -0800
++++ bin/9l	2007-12-09 15:17:46.000000000 -0800
+@@ -41,7 +41,7 @@
+ 	if [ "x$ofiles" != "x" ]
+ 	then
+ 		a=`
+-			nm $ofiles |
++			${OVERRIDE_NM:-nm} $ofiles |
+ 			grep '__p9l_autolib_[a-zA-Z0-9+-]*$' |
+ 			sed 's/.*__p9l_autolib_//' |
+ 			sort -u
+@@ -69,7 +69,7 @@
+ 			# libthread or libdraw - we might not be linking with
+ 			# those object files.
+ 			a=`
+-				nm $PLAN9/lib/lib$i.a 2>/dev/null |
++				${OVERRIDE_NM:-nm} $PLAN9/lib/lib$i.a 2>/dev/null |
+ 				grep '__p9l_autolib_[a-zA-Z0-9+-]*$' |
+ 				sed 's/.*__p9l_autolib_//' |
+ 				sort -u |
+@@ -199,7 +199,7 @@
+ 	if [ "x$ofiles" != "x" ]
+ 	then
+ 		a=`
+-			nm $ofiles |
++			${OVERRIDE_NM:-nm} $ofiles |
+ 			grep '__p9l_autoframework_[a-zA-Z0-9+-]*$' |
+ 			sed 's/.*__p9l_autoframework_//' |
+ 			sort -u
+@@ -250,7 +250,7 @@
+ 	extralibs="$extralibs -lutil"
+ 	;;
+ *Linux*)
+-	ld=gcc
++	ld=${OVERRIDE_CC:-gcc}
+ 	userpath=true
+ 	extralibs="$extralibs -lutil"
+ 	case "${SYSVERSION:-`uname -r`}" in
