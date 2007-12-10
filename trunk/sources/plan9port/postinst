@@ -1,0 +1,5 @@
+#!/bin/sh
+
+PLAN9=/opt/plan9
+PATH=$PATH:$PLAN9/bin
+cd $PLAN9 && sh lib/moveplan9.sh
