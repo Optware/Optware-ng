@@ -50,7 +50,7 @@ $(PLAN9PORT_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PLAN9PORT_SOUR
 		./INSTALL -b; \
 	)
 	rm -rf $(HOST_STAGING_PREFIX)/plan9
-	cp -a $(@D) $(HOST_STAGING_PREFIX)/plan9/bin
+	cp -a $(@D) $(HOST_STAGING_PREFIX)/plan9
 	(cd $(HOST_STAGING_PREFIX)/plan9; \
 		./INSTALL -c; \
 		sed -i.orig -e '/^PLAN9=/s|=.*|=$(HOST_STAGING_PREFIX)/plan9|' bin/9; \
