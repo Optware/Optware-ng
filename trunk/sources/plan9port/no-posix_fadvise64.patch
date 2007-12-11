@@ -1,0 +1,20 @@
+--- src/cmd/venti/srv/part.c.orig	2007-12-08 22:44:27.000000000 -0800
++++ src/cmd/venti/srv/part.c	2007-12-10 20:23:15.000000000 -0800
+@@ -163,7 +163,7 @@
+ flushpart(Part *part)
+ {
+ 	USED(part);
+-#ifdef __linux__	/* grrr! */
++#if 0
+ 	if(fsync(part->fd) < 0){
+ 		logerr(EAdmin, "flushpart %s: %r", part->name);
+ 		return -1;
+@@ -422,7 +422,7 @@
+ #endif
+ 		break;
+ 	}
+-#ifdef __linux__	/* sigh */
++#if 0
+ 	posix_fadvise(part->fd, part->offset+offset, n, POSIX_FADV_DONTNEED);
+ #endif
+ 	return n;

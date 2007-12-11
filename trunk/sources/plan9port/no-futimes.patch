@@ -1,0 +1,11 @@
+--- src/lib9/dirfwstat.c.orig	2007-12-10 19:48:55.000000000 -0800
++++ src/lib9/dirfwstat.c	2007-12-10 19:49:53.000000000 -0800
+@@ -4,7 +4,7 @@
+ #include <sys/time.h>
+ #include <sys/stat.h>
+ 
+-#if defined(__FreeBSD__) || defined(__APPLE__) || defined(__OpenBSD__) || defined(__linux__)
++#if 0
+ /* do nothing -- futimes exists and is fine */
+ 
+ #elif defined(__SunOS5_9__)
