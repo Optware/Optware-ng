@@ -19,12 +19,12 @@
 #
 # You should change all these variables to suit your package.
 #
-SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6/
-SQUID_UPSTREAM_VERSION=2.6.STABLE16
-SQUID_VERSION=2.6.16
-SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.gz
+SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6
+SQUID_UPSTREAM_VERSION=2.6.STABLE17
+SQUID_VERSION=2.6.17
+SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.bz2
 SQUID_DIR=squid-$(SQUID_UPSTREAM_VERSION)
-SQUID_UNZIP=zcat
+SQUID_UNZIP=bzcat
 
 SQUID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQUID_DESCRIPTION=Full-featured Web proxy cache.
@@ -37,7 +37,7 @@ SQUID_CONFLICTS=
 #
 # SQUID_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUID_IPK_VERSION=2
+SQUID_IPK_VERSION=1
 
 #
 ## SQUID_CONFFILES should be a list of user-editable files
