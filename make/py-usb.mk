@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-USB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyusb
-PY-USB_VERSION=0.4.0
+PY-USB_VERSION=0.4.1
 PY-USB_SOURCE=pyusb-$(PY-USB_VERSION).tar.gz
 PY-USB_DIR=pyusb-$(PY-USB_VERSION)
 PY-USB_UNZIP=zcat
