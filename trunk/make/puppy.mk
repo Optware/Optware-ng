@@ -70,11 +70,11 @@ puppy-source: $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PUPPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES)
-	rm -rf $(BUILD_DIR)/$(PUPPY_DIR) $(PUPPY_BUILD_DIR)
+$(PUPPY_BUILD_DIR)/.configured: toolchain $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES)
+	rm -rf $(BUILD_DIR)/$(PUPPY_DIR) $(@D)
 	$(PUPPY_UNZIP) $(DL_DIR)/$(PUPPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PUPPY_DIR) $(PUPPY_BUILD_DIR)
-	touch $(PUPPY_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(PUPPY_DIR) $(@D)
+	touch $@
 
 puppy-unpack: $(PUPPY_BUILD_DIR)/.configured
 
@@ -82,21 +82,23 @@ puppy-unpack: $(PUPPY_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(PUPPY_BUILD_DIR)/puppy: $(PUPPY_BUILD_DIR)/.configured
-	$(MAKE) -C $(PUPPY_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) CPPFLAGS="-I$(PUPPY_BUILD_DIR)/puppy"
+$(PUPPY_BUILD_DIR)/.built: $(PUPPY_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) CPPFLAGS="-I$(PUPPY_BUILD_DIR)/puppy"
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-puppy: $(PUPPY_BUILD_DIR)/puppy
+puppy: $(PUPPY_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/puppy
 #
 $(PUPPY_IPK_DIR)/CONTROL/control:
-	@install -d $(PUPPY_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: puppy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -121,7 +123,7 @@ $(PUPPY_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PUPPY_IPK): $(PUPPY_BUILD_DIR)/puppy
+$(PUPPY_IPK): $(PUPPY_BUILD_DIR)/.built
 	rm -rf $(PUPPY_IPK_DIR) $(BUILD_DIR)/puppy_*_$(TARGET_ARCH).ipk
 	install -d $(PUPPY_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(PUPPY_BUILD_DIR)/puppy -o $(PUPPY_IPK_DIR)/opt/bin/puppy
@@ -145,3 +147,6 @@ puppy-clean:
 #
 puppy-dirclean:
 	rm -rf $(BUILD_DIR)/$(PUPPY_DIR) $(PUPPY_BUILD_DIR) $(PUPPY_IPK_DIR) $(PUPPY_IPK)
+
+puppy-check: $(PUPPY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PUPPY_IPK)

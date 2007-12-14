@@ -14,7 +14,6 @@ BROKEN_PACKAGES = \
 	ldconfig \
 	monotone \
 	player \
-	puppy \
 	qemu qemu-libc-i386 \
 	socat \
 	uemacs \
