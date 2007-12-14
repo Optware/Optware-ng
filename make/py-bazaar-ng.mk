@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=0.92
+PY-BAZAAR-NG_VERSION=1.0
 PY-BAZAAR-NG_SITE=http://bazaar-vcs.org/releases/src
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
@@ -107,14 +107,14 @@ py-bazaar-ng-source: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES)
 #
 $(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZAAR-NG_PATCHES)
 	$(MAKE) python-stage
-	rm -rf $(PY-BAZAAR-NG_BUILD_DIR)
-	mkdir -p $(PY-BAZAAR-NG_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR)
 	$(PY-BAZAAR-NG_UNZIP) $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-BAZAAR-NG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)/2.4
-	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -130,8 +130,8 @@ $(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZ
 	rm -rf $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR)
 	$(PY-BAZAAR-NG_UNZIP) $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-BAZAAR-NG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(PY-BAZAAR-NG_BUILD_DIR)/2.5
-	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-BAZAAR-NG_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -143,7 +143,7 @@ $(PY-BAZAAR-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE) $(PY-BAZ
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-BAZAAR-NG_BUILD_DIR)/.configured
+	touch $@
 
 py-bazaar-ng-unpack: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
 
@@ -151,16 +151,16 @@ py-bazaar-ng-unpack: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-BAZAAR-NG_BUILD_DIR)/.built: $(PY-BAZAAR-NG_BUILD_DIR)/.configured
-	rm -f $(PY-BAZAAR-NG_BUILD_DIR)/.built
-	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-BAZAAR-NG_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -171,9 +171,9 @@ py-bazaar-ng: $(PY-BAZAAR-NG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-BAZAAR-NG_BUILD_DIR)/.staged: $(PY-BAZAAR-NG_BUILD_DIR)/.built
-	rm -f $(PY-BAZAAR-NG_BUILD_DIR)/.staged
+#	rm -f $@
 	#$(MAKE) -C $(PY-BAZAAR-NG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-BAZAAR-NG_BUILD_DIR)/.staged
+#	touch $@
 
 py-bazaar-ng-stage: $(PY-BAZAAR-NG_BUILD_DIR)/.staged
 
