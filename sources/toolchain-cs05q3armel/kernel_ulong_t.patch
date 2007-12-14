@@ -1,0 +1,14 @@
+http://lkml.org/lkml/2004/9/10/251
+--- linux/mod_devicetable.h.orig	2005-05-01 12:41:51.000000000 -0700
++++ linux/mod_devicetable.h	2007-12-13 20:21:47.000000000 -0800
+@@ -7,10 +7,8 @@
+ #ifndef LINUX_MOD_DEVICETABLE_H
+ #define LINUX_MOD_DEVICETABLE_H
+ 
+-#ifdef __KERNEL__
+ #include <linux/types.h>
+ typedef unsigned long kernel_ulong_t;
+-#endif
+ 
+ #define PCI_ANY_ID (~0)
+ 
