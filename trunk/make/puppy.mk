@@ -70,7 +70,7 @@ puppy-source: $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PUPPY_BUILD_DIR)/.configured: toolchain $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES)
+$(PUPPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PUPPY_DIR) $(@D)
 	$(PUPPY_UNZIP) $(DL_DIR)/$(PUPPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PUPPY_DIR) $(@D)
