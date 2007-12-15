@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SYX_SITE=http://syx.googlecode.com/files
-SYX_VERSION=0.1.4
+SYX_VERSION=0.1.5
 SYX_SOURCE=syx-$(SYX_VERSION).tar.gz
 SYX_DIR=syx-$(SYX_VERSION)
 SYX_UNZIP=zcat
@@ -36,7 +36,7 @@ SYX_CONFLICTS=
 #
 # SYX_IPK_VERSION should be incremented when the ipk changes.
 #
-SYX_IPK_VERSION=2
+SYX_IPK_VERSION=1
 
 #
 # SYX_CONFFILES should be a list of user-editable files
