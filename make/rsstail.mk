@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RSSTAIL_SITE=http://www.vanheusden.com/rsstail
-RSSTAIL_VERSION=1.3
+RSSTAIL_VERSION=1.4
 RSSTAIL_SOURCE=rsstail-$(RSSTAIL_VERSION).tgz
 RSSTAIL_DIR=rsstail-$(RSSTAIL_VERSION)
 RSSTAIL_UNZIP=zcat
