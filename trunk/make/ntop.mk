@@ -34,6 +34,12 @@ NTOP_DESCRIPTION=Network monitoring software
 NTOP_SECTION=net
 NTOP_PRIORITY=optional
 NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre
+ifneq (, $(filter mysql, $(PACKAGES)))
+NTOP_DEPENDS+=, mysql
+endif
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+NTOP_DEPENDS+=, net-snmp
+endif
 
 # CVS info
 #NTOP_REPOSITORY=:pserver:anonymous:ntop@cvs.ntop.org:/export/home/ntop
@@ -42,7 +48,7 @@ NTOP_DEPENDS=openssl, zlib, gdbm, libgd, libxml2, rrdtool, pcre
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=2
+NTOP_IPK_VERSION=3
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -63,6 +69,13 @@ NTOP_PATCHES=
 #
 NTOP_CPPFLAGS=
 NTOP_LDFLAGS=-ljpeg -lfreetype -lfontconfig -lexpat -lpng12 -lz
+
+ifneq (, $(filter mysql, $(PACKAGES)))
+NTOP_CONFIGURE_OPTS +=--enable-mysql
+endif
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+NTOP_CONFIGURE_OPTS +=--enable-snmp
+endif
 
 #
 # NTOP_BUILD_DIR is the directory in which the build is done.
@@ -130,7 +143,14 @@ ntop-source: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 # 
 $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
-	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage libgd-stage rrdtool-stage pcre-stage
+	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage
+	$(MAKE) libgd-stage rrdtool-stage pcre-stage
+ifneq (, $(filter mysql, $(PACKAGES)))
+	$(MAKE) mysql-stage
+endif
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+	$(MAKE) net-snmp-stage
+endif
 #	rm -rf $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR)
 #	$(NTOP_UNZIP) $(DL_DIR)/$(NTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(NTOP_PATCHES) | patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1
@@ -140,19 +160,20 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 		then cat $(NTOP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NTOP_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NTOP_DIR)" != "$(NTOP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NTOP_DIR) $(NTOP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NTOP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NTOP_DIR) $(@D) ; \
 	fi
-	(cd $(NTOP_BUILD_DIR); \
+	(cd $(@D); \
 		sed -i -e 's/config="y"/config="n"/' autogen.sh; \
 		./autogen.sh; \
 	)
-	(cd $(NTOP_BUILD_DIR); \
+	(cd $(@D); \
 		sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' configure.in; \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -v ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NTOP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NTOP_LDFLAGS)" \
+		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		ac_cv_file_aclocal_m4=yes \
 		ac_cv_file_depcomp=yes \
 		ac_cv_lib_gd_gdImageDestroy=yes \
@@ -161,15 +182,16 @@ $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATC
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--disable-ipv6 \
 		--prefix=/opt \
+		--disable-ipv6 \
+		$(NTOP_CONFIGURE_OPTS) \
 		--disable-nls --disable-i18n \
-		--with-rrd-home=$(STAGING_DIR)/opt \
+		--with-rrd-home=$(STAGING_PREFIX) \
 	)
 	sed -i -e '/HAVE_LOCALE_H/d' -e '/HAVE_MALLINFO_MALLOC_H/d' \
-		$(NTOP_BUILD_DIR)/config.status
-	$(PATCH_LIBTOOL) $(NTOP_BUILD_DIR)/libtool
-	touch $(NTOP_BUILD_DIR)/.configured
+		$(@D)/config.status
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 ntop-unpack: $(NTOP_BUILD_DIR)/.configured
 
@@ -177,9 +199,9 @@ ntop-unpack: $(NTOP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NTOP_BUILD_DIR)/.built: $(NTOP_BUILD_DIR)/.configured
-	rm -f $(NTOP_BUILD_DIR)/.built
-	$(MAKE) -C $(NTOP_BUILD_DIR)
-	touch $(NTOP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -190,9 +212,9 @@ ntop: $(NTOP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NTOP_BUILD_DIR)/.staged: $(NTOP_BUILD_DIR)/.built
-	rm -f $(NTOP_BUILD_DIR)/.staged
-	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NTOP_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 ntop-stage: $(NTOP_BUILD_DIR)/.staged
 
