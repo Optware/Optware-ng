@@ -1,6 +1,15 @@
 #!/bin/sh
 
 mkdir -p /opt/var/lib/rrd
+chmod ugo+rx /opt/var/lib/rrd
 
-mkdir -p /opt/tmp/drraw/saved
-mkdir -p /opt/tmp/drraw/tmp
+mkdir -p /opt/var/lib/drraw
+chmod ugo+rx /opt/var/lib/drraw
+
+mkdir -p /opt/var/lib/drraw/saved
+chmod ugo+rwx /opt/var/lib/drraw/saved
+
+mkdir -p /opt/var/lib/drraw/tmp
+chmod ugo+rwx /opt/var/lib/drraw/tmp
+
+chmod ugo+rx /opt/share/www/cgi-bin/drraw.cgi
