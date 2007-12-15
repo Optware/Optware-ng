@@ -32,8 +32,10 @@ NMAP_IPK_VERSION=1
 # NMAP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NMAP_PATCHES=$(NMAP_SOURCE_DIR)/libdnet-configure.patch \
-$(NMAP_SOURCE_DIR)/configure.patch \
+NMAP_PATCHES=$(NMAP_SOURCE_DIR)/libdnet-configure.patch $(NMAP_SOURCE_DIR)/configure.patch
+ifneq (, $(filter libuclibc++, $(PACKAGES)))
+NMAP_PATCHES+=$(NMAP_SOURCE_DIR)/uclibc++-ctime.patch $(NMAP_SOURCE_DIR)/uclibc++-output.cc.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -41,6 +43,9 @@ $(NMAP_SOURCE_DIR)/configure.patch \
 #
 NMAP_CPPFLAGS=
 NMAP_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+NMAP_LDFLAGS+=-lm
+endif
 
 #
 # NMAP_BUILD_DIR is the directory in which the build is done.
