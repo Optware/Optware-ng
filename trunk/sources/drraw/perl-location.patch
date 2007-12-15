@@ -1,0 +1,8 @@
+--- drraw.cgi.orig	2007-12-15 20:43:21.000000000 +1030
++++ drraw.cgi	2007-12-15 20:43:26.000000000 +1030
+@@ -1,4 +1,4 @@
+-#! /usr/local/bin/perl -T
++#! /opt/bin/perl -T
+ #
+ # Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007 Christophe Kalt
+ #

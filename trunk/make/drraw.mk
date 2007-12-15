@@ -20,7 +20,7 @@ DRRAW_CONFLICTS=
 #
 # DRRAW_IPK_VERSION should be incremented when the ipk changes.
 #
-DRRAW_IPK_VERSION=1
+DRRAW_IPK_VERSION=2
 
 #
 # DRRAW_CONFFILES should be a list of user-editable files
@@ -30,7 +30,8 @@ DRRAW_CONFFILES=/opt/etc/drraw.conf
 # DRRAW_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-DRRAW_PATCHES=$(DRRAW_SOURCE_DIR)/config-location.patch
+DRRAW_PATCHES=  $(DRRAW_SOURCE_DIR)/config-location.patch \
+		$(DRRAW_SOURCE_DIR)/perl-location.patch
 
 #
 # If the compilation of the package requires additional
