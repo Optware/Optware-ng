@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
-TRANSMISSION_VERSION=0.94
-TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=4003
+TRANSMISSION_VERSION=0.96
+#TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
+#TRANSMISSION_SVN_REV=4003
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -56,6 +56,7 @@ TRANSMISSION_PATCHES= \
 	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
 	$(TRANSMISSION_SOURCE_DIR)/transmissionh.patch \
 	$(TRANSMISSION_SOURCE_DIR)/torrent.c.patch \
+	$(TRANSMISSION_SOURCE_DIR)/transmission-pthread.patch \
 
 
 # Additional sources to enhance transmission (like this CGI daemon)
@@ -155,7 +156,7 @@ endif
 	(cd $(TRANSMISSION_BUILD_DIR); \
 		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -170,9 +171,8 @@ endif
 	)
 #		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
 #		--verbose \
-	$(PATCH_LIBTOOL) $(TRANSMISSION_BUILD_DIR)/libtool
-	touch $(TRANSMISSION_BUILD_DIR)/.configured
-#		--disable-openssl \
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured
 
@@ -180,10 +180,11 @@ transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION_SOURCES)
-	rm -f $(TRANSMISSION_BUILD_DIR)/.built
-	cp $(TRANSMISSION_SOURCES) $(TRANSMISSION_BUILD_DIR)/cli
-	$(MAKE) -C $(TRANSMISSION_BUILD_DIR)
-	touch $(TRANSMISSION_BUILD_DIR)/.built
+	rm -f $@
+	cp $(TRANSMISSION_SOURCES) $(@D)/cli
+		$(TARGET_CONFIGURE_OPTS) \
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -194,9 +195,9 @@ transmission: $(TRANSMISSION_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TRANSMISSION_BUILD_DIR)/.staged: $(TRANSMISSION_BUILD_DIR)/.built
-	rm -f $(TRANSMISSION_BUILD_DIR)/.staged
-	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TRANSMISSION_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 transmission-stage: $(TRANSMISSION_BUILD_DIR)/.staged
 
@@ -204,7 +205,7 @@ transmission-stage: $(TRANSMISSION_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  
 #
 $(TRANSMISSION_IPK_DIR)/CONTROL/control:
-	@install -d $(TRANSMISSION_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: transmission" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
