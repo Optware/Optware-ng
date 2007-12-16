@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=2
+NET_SNMP_IPK_VERSION=3
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -32,7 +32,7 @@ NET_SNMP_CONFFILES=/opt/etc/snmpd.conf /opt/etc/init.d/S70net-snmp
 # NET_SNMP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# NET_SNMP_PATCHES=$(NET_SNMP_SOURCE_DIR)/configure.patch
+NET_SNMP_PATCHES=$(NET_SNMP_SOURCE_DIR)/SNMP_FREE-gcc4.patch
 
 #
 # If the compilation of the package requires additional
@@ -95,7 +95,9 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p1
+	if test -n "$(NET_SNMP_PATCHES)"; then \
+		cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
 	(cd $(NET_SNMP_BUILD_DIR); \
 		if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
