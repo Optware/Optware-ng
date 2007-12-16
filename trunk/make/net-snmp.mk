@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=1
+NET_SNMP_IPK_VERSION=2
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -119,7 +119,7 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--with-default-snmp-version=3 \
 		--with-sys-contact=root@localhost \
 		--with-sys-location="(Unknown)" \
-		--with-logfile=/opt/var/logsnmpd.log \
+		--with-logfile=/opt/var/log/snmpd.log \
 		--with-persistent-directory=/opt/var/net-snmp \
 	)
 	touch $@
