@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 P7ZIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/p7zip
-P7ZIP_VERSION=4.55
+P7ZIP_VERSION=4.57
 P7ZIP_SOURCE=p7zip_$(P7ZIP_VERSION)_src_all.tar.bz2
 P7ZIP_DIR=p7zip_$(P7ZIP_VERSION)
 P7ZIP_UNZIP=bzcat
@@ -29,9 +29,7 @@ P7ZIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 P7ZIP_DESCRIPTION=Command line version of 7-zip for POSIX systems.
 P7ZIP_SECTION=compression
 P7ZIP_PRIORITY=optional
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 P7ZIP_DEPENDS=libstdc++
-endif
 P7ZIP_SUGGESTS=
 P7ZIP_CONFLICTS=
 
@@ -107,20 +105,18 @@ p7zip-source: $(DL_DIR)/$(P7ZIP_SOURCE) $(P7ZIP_PATCHES)
 # shown below to make various patches to it.
 #
 $(P7ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(P7ZIP_SOURCE) $(P7ZIP_PATCHES) make/p7zip.mk
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
-endif
-	rm -rf $(BUILD_DIR)/$(P7ZIP_DIR) $(P7ZIP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(P7ZIP_DIR) $(@D)
 	$(P7ZIP_UNZIP) $(DL_DIR)/$(P7ZIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(P7ZIP_PATCHES)" ; \
 		then cat $(P7ZIP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(P7ZIP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(P7ZIP_DIR)" != "$(P7ZIP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(P7ZIP_DIR) $(P7ZIP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(P7ZIP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(P7ZIP_DIR) $(@D) ; \
 	fi
-	sed -i.orig -e '/DEST_.*DEST_.*DEST_/s|$$| $$(DEST_DIR)|' $(P7ZIP_BUILD_DIR)/makefile
-	sed -i.orig -e 's|^DEST_HOME=.*|DEST_HOME=/opt|' $(P7ZIP_BUILD_DIR)/install.sh
+	sed -i.orig -e '/DEST_.*DEST_.*DEST_/s|$$| $$(DEST_DIR)|' $(@D)/makefile
+	sed -i.orig -e 's|^DEST_HOME=.*|DEST_HOME=/opt|' $(@D)/install.sh
 #	(cd $(P7ZIP_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(P7ZIP_CPPFLAGS)" \
@@ -143,7 +139,7 @@ p7zip-unpack: $(P7ZIP_BUILD_DIR)/.configured
 #
 $(P7ZIP_BUILD_DIR)/.built: $(P7ZIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(P7ZIP_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(P7ZIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(P7ZIP_LDFLAGS)" \
@@ -162,7 +158,7 @@ p7zip: $(P7ZIP_BUILD_DIR)/.built
 #
 $(P7ZIP_BUILD_DIR)/.staged: $(P7ZIP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(P7ZIP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 p7zip-stage: $(P7ZIP_BUILD_DIR)/.staged
