@@ -27,9 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NOIP_SITE=http://www.no-ip.com/client/linux
-NOIP_VERSION=2.1.4
+NOIP_VERSION=2.1.7
 NOIP_TARBALL=noip-duc-linux.tar.gz
-NOIP_TARBALL_MD5=d65e221016a61cd4e412242c34c71ff1
+NOIP_TARBALL_MD5=7b6b64c08708c2b147c375dda074a8dc
 NOIP_SOURCE=noip-$(NOIP_VERSION).tar.gz
 NOIP_DIR=noip-$(NOIP_VERSION)
 NOIP_UNZIP=zcat
@@ -84,11 +84,11 @@ NOIP_IPK=$(BUILD_DIR)/noip_$(NOIP_VERSION)-$(NOIP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NOIP_SOURCE):
-	rm -f $(DL_DIR)/$(NOIP_TARBALL) $(DL_DIR)/$(NOIP_SOURCE)
-	$(WGET) -P $(DL_DIR) $(NOIP_SITE)/$(NOIP_TARBALL) && \
-	[ `md5sum $(DL_DIR)/$(NOIP_TARBALL) | cut -f1 -d" "` = $(NOIP_TARBALL_MD5) ] && \
-	mv $(DL_DIR)/$(NOIP_TARBALL) $(DL_DIR)/$(NOIP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NOIP_SOURCE)
+	rm -f $(@D)/$(NOIP_TARBALL) $@
+	$(WGET) -P $(@D) $(NOIP_SITE)/$(NOIP_TARBALL) && \
+	[ `md5sum $(@D)/$(NOIP_TARBALL) | cut -f1 -d" "` = $(NOIP_TARBALL_MD5) ] && \
+	mv $(@D)/$(NOIP_TARBALL) $@ || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -116,16 +116,16 @@ noip-source: $(DL_DIR)/$(NOIP_SOURCE) $(NOIP_PATCHES)
 # shown below to make various patches to it.
 #
 $(NOIP_BUILD_DIR)/.configured: $(DL_DIR)/$(NOIP_SOURCE) $(NOIP_PATCHES) make/noip.mk
-	rm -rf $(BUILD_DIR)/$(NOIP_DIR) $(NOIP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NOIP_DIR) $(@D)
 	$(NOIP_UNZIP) $(DL_DIR)/$(NOIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NOIP_PATCHES)" ; \
 		then cat $(NOIP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NOIP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NOIP_DIR)" != "$(NOIP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NOIP_DIR) $(NOIP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NOIP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NOIP_DIR) $(@D) ; \
 	fi
-	touch $(NOIP_BUILD_DIR)/.configured
+	touch $@
 
 noip-unpack: $(NOIP_BUILD_DIR)/.configured
 
@@ -133,9 +133,9 @@ noip-unpack: $(NOIP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NOIP_BUILD_DIR)/.built: $(NOIP_BUILD_DIR)/.configured
-	rm -f $(NOIP_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NOIP_BUILD_DIR) PREFIX=/opt $(TARGET_CONFIGURE_OPTS)
-	touch $(NOIP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -147,7 +147,7 @@ noip: $(NOIP_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/noip
 #
 $(NOIP_IPK_DIR)/CONTROL/control:
-	@install -d $(NOIP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: noip" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
