@@ -190,6 +190,7 @@ endif
 	)
 	sed -i -e '/HAVE_LOCALE_H/d' -e '/HAVE_MALLINFO_MALLOC_H/d' \
 		$(@D)/config.status
+	sed -i -e 's| -I/opt/include||' $(@D)/Makefile $(@D)/plugins/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
