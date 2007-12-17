@@ -397,6 +397,11 @@ status wtiteout that CGI fetches. This is harmless but confusing sometimes
 as it shows different sum of transfer stats. Just press Update again and
 stats should be updated correctly.
 
+21. How can I install the new version ?  Cos by doing ipkg update it will 
+erase my configuration.
+Transmisison will not erase your configuration during upgrade!
+It will always ask you what to do with /opt/etc/transmission.conf
+Use ipkg update and ipkg upgrade for package upgrade!
 
 CHANGELOG
 

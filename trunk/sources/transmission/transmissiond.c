@@ -514,8 +514,9 @@ int main( int argc, char ** argv )
   openlog(cp, LOG_NDELAY|LOG_PID, LOG_USER);
   
   syslog(LOG_INFO,
-         "Transmission daemon %s started - http://transmission.m0k.org/",
-         LONG_VERSION_STRING );
+         "Transmission daemon %s started - http://transmission.m0k.org/ "
+         "at port %d",
+         LONG_VERSION_STRING, bindPort );
   
   /*  */
   if (pidfile != NULL)
@@ -602,7 +603,7 @@ int main( int argc, char ** argv )
        tr_torrentIterate( h, dispose, &dirty ); 
        if (! dirty)
           break;
-	sleep(20);
+       sleep(20);
     }
   if (dirty)
       tr_torrentIterate( h, force_close, NULL );
@@ -610,7 +611,7 @@ int main( int argc, char ** argv )
   for( i = 0; i < 10; i++ )
     {
       hstat = tr_handleStatus( h );
-      if( TR_NAT_TRAVERSAL_DISABLED == hstat->natTraversalStatus )
+      if( TR_NAT_TRAVERSAL_UNMAPPED == hstat->natTraversalStatus )
         {
           /* Port mappings were deleted */
           break;
