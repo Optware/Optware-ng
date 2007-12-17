@@ -55,6 +55,9 @@ $(AVAHI_SOURCE_DIR)/avahi-core_socket.h.patch \
 #
 AVAHI_CPPFLAGS=
 AVAHI_LDFLAGS=
+ifeq (uclibc,$(LIBC_STYLE))
+AVAHI_LDFLAGS+=-lintl
+endif
 
 #
 # AVAHI_BUILD_DIR is the directory in which the build is done.
