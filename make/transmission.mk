@@ -22,8 +22,8 @@
 #
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.96
-#TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-#TRANSMISSION_SVN_REV=4003
+TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
+TRANSMISSION_SVN_REV=4182
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -56,11 +56,10 @@ TRANSMISSION_PATCHES= \
 	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
 	$(TRANSMISSION_SOURCE_DIR)/transmissionh.patch \
 	$(TRANSMISSION_SOURCE_DIR)/torrent.c.patch \
-	$(TRANSMISSION_SOURCE_DIR)/transmission-pthread.patch \
 
 
 # Additional sources to enhance transmission (like this CGI daemon)
-TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c
+TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c \
 
 #
 # If the compilation of the package requires additional
@@ -154,7 +153,7 @@ endif
 	fi
 	sed -i -e 's/-g / /' $(TRANSMISSION_BUILD_DIR)/configure.ac
 	(cd $(TRANSMISSION_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh ; \
+		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
@@ -182,8 +181,7 @@ transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured
 $(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION_SOURCES)
 	rm -f $@
 	cp $(TRANSMISSION_SOURCES) $(@D)/cli
-		$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(@D)
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 #
