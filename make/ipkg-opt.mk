@@ -204,6 +204,7 @@ ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slu
 	echo "src/gz optware $(IPKG-OPT_FEEDS)/$(OPTWARE_TARGET)/cross/stable" \
 			>> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
 	echo "dest /opt/ /" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+	echo "#option verbose-wget" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
 else
 	install -m 644 $(IPKG-OPT_SOURCE_DIR)/ipkg.conf \
 		$(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
