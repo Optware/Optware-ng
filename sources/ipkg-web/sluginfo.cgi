@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# $Header$
+# $Id$
 #
 if [ "${BASH_CHECK}" != 1 -a -f /opt/bin/bash ]
 then
