@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.96
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=4182
+TRANSMISSION_SVN_REV=4198
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -94,6 +94,7 @@ endif
 #	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE)
 
 $(DL_DIR)/$(TRANSMISSION_SOURCE):
+	rm -fv	$(DL_DIR)/transmission*.tar.bz2
 ifdef TRANSMISSION_SVN_REV
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(TRANSMISSION_DIR) && \
