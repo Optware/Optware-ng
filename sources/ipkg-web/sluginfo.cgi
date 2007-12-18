@@ -59,6 +59,7 @@ Content-type: text/html
 <li><a href="#soft">Installed software</a></li>
 <li><a href="#disk">Disks</a></li>
 <li><a href="#network">Network</a></li>
+<li><a href="#samba">samba</a></li>
 </ol>
 EOF
 echo '<a id="sys" /><h2>System</h2>'
@@ -86,5 +87,10 @@ showfile /etc/resolv.conf
 runprog /opt/bin/host ipkg.nslu2-linux.org
 runprog /bin/ping -c 2 ipkg.nslu2-linux.org
 runprog /usr/bin/wget http://ipkg.nslu2-linux.org
+echo '<a id="samba" /><h2>Samba</h2>'
+showfile /etc/samba/smb.conf
+showfile /etc/samba/user_smb.conf
+showfile /var/log/samba/log.smbd
+showfile /var/log/samba/log.nmbd
 echo '</body>'
 echo '</html>'
