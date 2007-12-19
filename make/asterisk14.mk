@@ -24,7 +24,7 @@ ASTERISK14_SOURCE_TYPE=tarball
 #ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK14_BASE_VERSION=1.4.15
+ASTERISK14_BASE_VERSION=1.4.16
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
@@ -77,7 +77,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=2
+ASTERISK14_IPK_VERSION=1
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
