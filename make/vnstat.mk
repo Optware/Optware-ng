@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VNSTAT_SITE=http://humdi.net/vnstat
-VNSTAT_VERSION=1.4
+VNSTAT_VERSION=1.5
 VNSTAT_SOURCE=vnstat-$(VNSTAT_VERSION).tar.gz
 VNSTAT_DIR=vnstat-$(VNSTAT_VERSION)
 VNSTAT_UNZIP=zcat
@@ -36,11 +36,11 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=4
+VNSTAT_IPK_VERSION=1
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
-VNSTAT_CONFFILES=/opt/etc/cron.d/vnstat
+VNSTAT_CONFFILES=/opt/etc/cron.d/vnstat /opt/etc/vnstat.conf
 
 #
 # VNSTAT_PATCHES should list any patches, in the the order in
@@ -116,10 +116,12 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 	fi
 	( cd $(VNSTAT_BUILD_DIR); \
 		sed -i -e 's|/usr|/opt|;s|/var/|/opt/var/|' \
-		-e 's|/etc/|/opt/etc/|;s|/share/man|/man|' \
+		-e 's|/etc|/opt/etc|;s|/share/man|/man|' \
+		-e 's|local/bin|bin|' \
+		-e 's|install -s|install|' \
 		-e '/^CC/d;/^CFLAGS/d'  \
 		cron/vnstat pppd/vnstat_ip-down pppd/vnstat_ip-up \
-		Makefile src/Makefile \
+		Makefile src/Makefile src/cfg.c cfg/vnstat.conf \
 	)
 	touch $(VNSTAT_BUILD_DIR)/.configured
 
@@ -182,10 +184,10 @@ $(VNSTAT_IPK_DIR)/CONTROL/control:
 #
 $(VNSTAT_IPK): $(VNSTAT_BUILD_DIR)/.built
 	rm -rf $(VNSTAT_IPK_DIR) $(BUILD_DIR)/vnstat_*_$(TARGET_ARCH).ipk
+	install -d $(VNSTAT_IPK_DIR)/opt/etc/
 	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(VNSTAT_IPK_DIR) install
 	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)/opt/bin/vnstat
 	chmod 600 $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
-#	install -d $(VNSTAT_IPK_DIR)/opt/etc/
 #	install -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)/opt/etc/vnstat.conf
 #	install -d $(VNSTAT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(VNSTAT_SOURCE_DIR)/rc.vnstat $(VNSTAT_IPK_DIR)/opt/etc/init.d/SXXvnstat
