@@ -5,7 +5,7 @@
 ###########################################################
 
 NANO_SITE=http://www.nano-editor.org/dist/v2.0
-NANO_VERSION=2.0.6
+NANO_VERSION=2.0.7
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -60,26 +60,26 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 		--disable-utf8 \
 		--disable-nls \
 	)
-	touch $(NANO_BUILD_DIR)/.configured
+	touch $@
 
 nano-unpack: $(NANO_BUILD_DIR)/.configured
 
 $(NANO_BUILD_DIR)/.built: $(NANO_BUILD_DIR)/.configured
-	rm -f $(NANO_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NANO_BUILD_DIR)
-	touch $(NANO_BUILD_DIR)/.built
+	touch $@
 
 nano: $(NANO_BUILD_DIR)/.built
 
 $(NANO_BUILD_DIR)/.staged: $(NANO_BUILD_DIR)/.built
-	rm -f $(NANO_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NANO_BUILD_DIR)/.staged
+	touch $@
 
 nano-stage: $(NANO_BUILD_DIR)/.staged
 
 $(NANO_IPK_DIR)/CONTROL/control:
-	@install -d $(NANO_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nano" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
