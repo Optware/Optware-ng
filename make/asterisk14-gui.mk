@@ -22,7 +22,7 @@
 #
 ASTERISK14_GUI_SITE=http://downloads.digium.com/pub/telephony/asterisk
 ASTERISK14_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/branches/1.4
-ASTERISK14_GUI_SVN_REV=1760
+ASTERISK14_GUI_SVN_REV=2036
 ASTERISK14_GUI_VERSION=0.0.0svn-r$(ASTERISK14_GUI_SVN_REV)
 ASTERISK14_GUI_SOURCE=asterisk14-gui-$(ASTERISK14_GUI_VERSION).tar.gz
 ASTERISK14_GUI_DIR=asterisk14-gui
