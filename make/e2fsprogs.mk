@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-E2FSPROGS_VERSION=1.40.2
+E2FSPROGS_VERSION=1.40.3
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=4
+E2FSPROGS_IPK_VERSION=1
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -192,7 +192,6 @@ $(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	install -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
 	DESTDIR=$(E2FSPROGS_IPK_DIR) LDCONFIG=true \
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) install-strip
-	rmdir $(E2FSPROGS_IPK_DIR)/etc
 	# Strip in the 3 executables - take both e2fsck versions for now
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/debugfs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
