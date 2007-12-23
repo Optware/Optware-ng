@@ -185,6 +185,7 @@ static void reload_active()
   tr_torrent * tor;
   int error;
   FILE *stream;
+  tr_ctor * ctor; 
 
   struct active_torrents_s active_torrents;
 
@@ -214,13 +215,20 @@ static void reload_active()
           if ( !active_torrents.found ) /* add new torrent */
             {
               char *folder = strdup(fn);
-              if( !(tor = tr_torrentInit( h, fn, dirname(folder), 0, &error )))
+	      ctor = tr_ctorNew( h ); 
+	      tr_ctorSetMetainfoFromFile( ctor, fn); 
+              tr_ctorSetPaused( ctor, TR_FORCE, 0 ); 
+	      tr_ctorSetDestination( ctor, TR_FORCE, dirname(folder)); 
+	      tor = tr_torrentNew( h, ctor, &error ); 
+	      tr_ctorFree( ctor ); 
+	      if( tor == NULL ) 
                 {
                   syslog(LOG_CRIT, "%.80s - %m", fn );
                 }
               else
                 {
                   tr_info * info = (tr_info *)  tr_torrentInfo( tor );
+		  strncpy(info->torrent, fn, MAX_PATH_LENGTH);
                   tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
                   tr_torrentStart( tor );
                   info->isActive = 1;
@@ -330,7 +338,7 @@ static void write_info(tr_torrent *tor, void * data UNUSED )
 static void list(tr_torrent *tor, void * data UNUSED)
 {
   tr_info * info =  (tr_info *) tr_torrentInfo( tor );
-  syslog(LOG_INFO, "'%s':%s", info->name, status(tor));
+  syslog(LOG_INFO, "'%s' (%s) :%s", info->torrent, info->name, status(tor));
 }
 
 
