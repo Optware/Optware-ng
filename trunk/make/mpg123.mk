@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=0.68
+MPG123_VERSION=1.0.0
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -55,7 +55,7 @@ MPG123_IPK_VERSION=1
 MPG123_CPPFLAGS=
 MPG123_LDFLAGS=
 
-MPG123_CONFIG_ARG=--with-cpu=generic_nofpu
+MPG123_CONFIG_ARG=--with-cpu=generic_nofpu --with-audio=oss
 
 #
 # MPG123_BUILD_DIR is the directory in which the build is done.
