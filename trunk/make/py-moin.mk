@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MOIN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/moin
-PY-MOIN_VERSION=1.5.8
+PY-MOIN_SITE=http://static.moinmo.in/files
+PY-MOIN_VERSION=1.6.0
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -110,22 +110,22 @@ py-moin-source: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 #
 $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-MOIN_BUILD_DIR)
-	mkdir -p $(PY-MOIN_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(PY-MOIN_BUILD_DIR)/2.4
+	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.4
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.4") >> $(PY-MOIN_BUILD_DIR)/2.4/setup.cfg
+         echo "executable=/opt/bin/python2.4") >> $(@D)/2.4/setup.cfg
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(PY-MOIN_BUILD_DIR)/2.5
+	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.5") >> $(PY-MOIN_BUILD_DIR)/2.4/setup.cfg
+         echo "executable=/opt/bin/python2.5") >> $(@D)/2.4/setup.cfg
 	touch $@
 
 py-moin-unpack: $(PY-MOIN_BUILD_DIR)/.configured
@@ -135,9 +135,9 @@ py-moin-unpack: $(PY-MOIN_BUILD_DIR)/.configured
 #
 $(PY-MOIN_BUILD_DIR)/.built: $(PY-MOIN_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-MOIN_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
-	cd $(PY-MOIN_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build;
 	touch $@
 
