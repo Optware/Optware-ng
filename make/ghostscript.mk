@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.60
+GHOSTSCRIPT_VERSION=8.61
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
@@ -136,6 +136,7 @@ endif
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(GHOSTSCRIPT_BUILD_DIR)
 	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(GHOSTSCRIPT_BUILD_DIR)/Makefile.in
 	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' \
+		$(GHOSTSCRIPT_BUILD_DIR)/src/lib.mak \
 		$(GHOSTSCRIPT_BUILD_DIR)/src/int.mak
 	(cd $(GHOSTSCRIPT_BUILD_DIR); \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
@@ -143,6 +144,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		ac_cv_path_CUPSCONFIG=$(STAGING_PREFIX)/bin/cups-config \
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
