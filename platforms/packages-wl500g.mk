@@ -14,7 +14,7 @@ BROKEN_PACKAGES = \
 	$(ERLANG_PACKAGES) \
 	 ficy finch freetds gambit-c gawk \
 	 giftcurs git-core gnokii gnupg gphoto2 ggrab libgphoto2 hnb ice \
-	 glib gnet gsnmp \
+	 glib gnet gsnmp gtmess \
 	 id3lib iperf irssi jikes \
 	 lftp \
 	 libcdio libdaemon libdvb libftdi libidn liblcms \

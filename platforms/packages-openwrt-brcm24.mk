@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	aspell \
 	ecl \
 	cairo fixesext \
+	gtmess \
 	iptraf \
 	libdvb \
 	libnsl ltrace \

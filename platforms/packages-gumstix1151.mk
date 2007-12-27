@@ -11,6 +11,7 @@ BROKEN_PACKAGES = \
 	bluez-hcidump chillispot \
 	dump ficy \
 	gnuplot \
+	gtmess \
 	iptraf \
 	ircd-hybrid \
 	mdadm \
