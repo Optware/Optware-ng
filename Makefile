@@ -290,7 +290,7 @@ COMMON_CROSS_PACKAGES = \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux \
-	vblade vdr-mediamvp vim vlc \
+	vblade vdr-mediamvp vim vitetris vlc \
 	vnstat vorbis-tools vsftpd vte vtun \
 	w3cam w3m wakelan webalizer weechat wget \
 	which whois wizd wpa-supplicant wput wxbase \
