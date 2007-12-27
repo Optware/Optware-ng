@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.8.2
+BUSYBOX_VERSION=1.9.0
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -91,7 +91,7 @@ busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) make/busybox.mk
+$(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) $(BUSYBOX_SOURCE_DIR)/defconfig make/busybox.mk
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(@D)" ; \
