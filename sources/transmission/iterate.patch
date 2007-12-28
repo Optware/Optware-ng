@@ -1,0 +1,46 @@
+--- transmission-0.96/libtransmission/transmission.h	2007-12-28 10:16:20.000000000 +0100
++++ transmission-r4345/libtransmission/transmission.h	2007-12-28 10:15:17.000000000 +0100
+@@ -235,7 +235,15 @@
+ int tr_torrentCount( tr_handle * h );
+ 
+ 
++/***********************************************************************
++ * tr_torrentIterate
++ ***********************************************************************
++ * Iterates on open torrents
++ **********************************************************************/
+ typedef struct tr_torrent tr_torrent;
++typedef void (*tr_callback_t) ( tr_torrent *, void * );
++void tr_torrentIterate( tr_handle *, tr_callback_t, void * );
++
+ 
+ /***********************************************************************
+ *** Speed Limits
+--- transmission-0.96/libtransmission/transmission.c	2007-12-28 10:16:20.000000000 +0100
++++ transmission-r4345/libtransmission/transmission.c	2007-12-28 10:15:17.000000000 +0100
+@@ -1,5 +1,5 @@
+ /******************************************************************************
+- * $Id: transmission.c 4346 2007-12-26 20:45:08Z charles $
++ * $Id: transmission.c 4324 2007-12-25 05:37:32Z charles $
+  *
+  * Copyright (c) 2005-2007 Transmission authors and contributors
+  *
+@@ -349,6 +349,18 @@
+     return h->torrentCount;
+ }
+ 
++void
++tr_torrentIterate( tr_handle * h, tr_callback_t func, void * d )
++{
++    tr_torrent * tor, * next;
++
++    for( tor = h->torrentList; tor; tor = next )
++    {
++        next = tor->next;
++        func( tor, d );
++    }
++}
++
+ static void
+ tr_closeImpl( void * vh )
+ {

@@ -23,7 +23,7 @@
 TRANSMISSION_SITE=http://download.m0k.org/transmission/files
 TRANSMISSION_VERSION=0.96
 TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=4340
+TRANSMISSION_SVN_REV=4366
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -54,6 +54,7 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 #
 TRANSMISSION_PATCHES= \
 	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
+	$(TRANSMISSION_SOURCE_DIR)/iterate.patch \
 	$(TRANSMISSION_SOURCE_DIR)/transmissionh.patch \
 
 # Additional sources to enhance transmission (like this CGI daemon)
