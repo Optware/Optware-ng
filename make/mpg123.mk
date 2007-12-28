@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.0.0
+MPG123_VERSION=1.0.1
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -107,16 +107,16 @@ mpg123-source: $(DL_DIR)/$(MPG123_SOURCE) $(MPG123_PATCHES)
 #
 $(MPG123_BUILD_DIR)/.configured: $(DL_DIR)/$(MPG123_SOURCE) $(MPG123_PATCHES) make/mpg123.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MPG123_DIR) $(MPG123_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MPG123_DIR) $(@D)
 	$(MPG123_UNZIP) $(DL_DIR)/$(MPG123_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPG123_PATCHES)" ; \
 		then cat $(MPG123_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MPG123_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MPG123_DIR)" != "$(MPG123_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MPG123_DIR) $(MPG123_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MPG123_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MPG123_DIR) $(@D) ; \
 	fi
-	(cd $(MPG123_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPG123_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MPG123_LDFLAGS)" \
@@ -129,7 +129,7 @@ $(MPG123_BUILD_DIR)/.configured: $(DL_DIR)/$(MPG123_SOURCE) $(MPG123_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MPG123_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 mpg123-unpack: $(MPG123_BUILD_DIR)/.configured
@@ -139,7 +139,7 @@ mpg123-unpack: $(MPG123_BUILD_DIR)/.configured
 #
 $(MPG123_BUILD_DIR)/.built: $(MPG123_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MPG123_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ mpg123: $(MPG123_BUILD_DIR)/.built
 #
 $(MPG123_BUILD_DIR)/.staged: $(MPG123_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MPG123_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mpg123-stage: $(MPG123_BUILD_DIR)/.staged
@@ -191,17 +191,7 @@ $(MPG123_IPK_DIR)/CONTROL/control:
 $(MPG123_IPK): $(MPG123_BUILD_DIR)/.built
 	rm -rf $(MPG123_IPK_DIR) $(BUILD_DIR)/mpg123_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPG123_BUILD_DIR) DESTDIR=$(MPG123_IPK_DIR) program_transform_name="" install-strip
-#	install -d $(MPG123_IPK_DIR)/opt/etc/
-#	install -m 644 $(MPG123_SOURCE_DIR)/mpg123.conf $(MPG123_IPK_DIR)/opt/etc/mpg123.conf
-#	install -d $(MPG123_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MPG123_SOURCE_DIR)/rc.mpg123 $(MPG123_IPK_DIR)/opt/etc/init.d/SXXmpg123
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmpg123
 	$(MAKE) $(MPG123_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MPG123_SOURCE_DIR)/postinst $(MPG123_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MPG123_SOURCE_DIR)/prerm $(MPG123_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/prerm
-#	echo $(MPG123_CONFFILES) | sed -e 's/ /\n/g' > $(MPG123_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MPG123_IPK_DIR)
 
 #
