@@ -83,7 +83,8 @@ WHICH_MAN_DIR=$(WHICH_INST_DIR)/man
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WHICH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WHICH_SITE)/$(WHICH_SOURCE)
+	$(WGET) -P $(DL_DIR) $(WHICH_SITE)/$(WHICH_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(WHICH_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
