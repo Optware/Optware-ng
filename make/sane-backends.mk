@@ -39,7 +39,7 @@ SANE_BACKENDS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SANE_BACKENDS_DESCRIPTION=SANE is a universal scanner interface
 SANE_BACKENDS_SECTION=util
 SANE_BACKENDS_PRIORITY=optional
-SANE_BACKENDS_DEPENDS=libjpeg, libusb
+SANE_BACKENDS_DEPENDS=libjpeg, libtiff, libusb
 SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
@@ -52,7 +52,7 @@ SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
 #
-SANE_BACKENDS_IPK_VERSION=1
+SANE_BACKENDS_IPK_VERSION=2
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
@@ -124,7 +124,7 @@ sane-backends-source: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
-	$(MAKE) libusb-stage libjpeg-stage
+	$(MAKE) libusb-stage libjpeg-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(SANE_BACKENDS_BUILD_DIR)
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SANE_BACKENDS_PATCHES)" ; \

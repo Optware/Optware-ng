@@ -26,6 +26,6 @@ BROKEN_PACKAGES = \
 	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
 	pcapsipdump phoneme-advanced \
-	player rhtvision sane-backends \
+	player rhtvision \
 	squeak transcode util-linux vsftpd \
 	vte xchat
