@@ -20,9 +20,9 @@
 # You should change all these variables to suit your package.
 #
 WHICH_SITE=http://www.xs4all.nl/~carlo17/which
-WHICH_VERSION=2.16
-WHICH_SOURCE=which-2.16.tar.gz
-WHICH_DIR=which-2.16
+WHICH_VERSION=2.18
+WHICH_SOURCE=which-$(WHICH_VERSION).tar.gz
+WHICH_DIR=which-$(WHICH_VERSION)
 WHICH_UNZIP=zcat
 WHICH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WHICH_DESCRIPTION=which prints out the full path of the executablesthat bash(1) would execute when the passed program names would have been entered on the shell prompt. It uses the exact same algorithm as bash. Tildes and a dot in the PATH are now expanded to the full path by default. Options allow users to print "~/*" or "./*" and/or to  print all executables that match any directory in the PATH
@@ -34,7 +34,7 @@ WHICH_CONFLICTS=
 #
 # WHICH_IPK_VERSION should be incremented when the ipk changes.
 #
-WHICH_IPK_VERSION=5
+WHICH_IPK_VERSION=1
 
 #
 # WHICH_PATCHES should list any patches, in the the order in
