@@ -44,7 +44,7 @@ SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
 # CVS info
-SANE_BACKENDS_CVS_DATE=20061127
+SANE_BACKENDS_CVS_DATE=20080102
 SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
 SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 
@@ -136,8 +136,8 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 	fi
 	(cd $(SANE_BACKENDS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
-		LDFLAGS="$(SANE_BACKENDS_LDFLAGS)" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(SANE_BACKENDS_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(SANE_BACKENDS_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -147,8 +147,10 @@ $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE
 		--without-gphoto2 \
 		--disable-translations \
 		--disable-nls \
+		--disable-static \
 	)
-	touch $(SANE_BACKENDS_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 sane-backends-unpack: $(SANE_BACKENDS_BUILD_DIR)/.configured
 
@@ -156,9 +158,9 @@ sane-backends-unpack: $(SANE_BACKENDS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SANE_BACKENDS_BUILD_DIR)/.built: $(SANE_BACKENDS_BUILD_DIR)/.configured
-	rm -f $(SANE_BACKENDS_BUILD_DIR)/.built
-	$(MAKE) -C $(SANE_BACKENDS_BUILD_DIR)
-	touch $(SANE_BACKENDS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -169,9 +171,10 @@ sane-backends: $(SANE_BACKENDS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SANE_BACKENDS_BUILD_DIR)/.staged: $(SANE_BACKENDS_BUILD_DIR)/.built
-	rm -f $(SANE_BACKENDS_BUILD_DIR)/.staged
-	$(MAKE) -C $(SANE_BACKENDS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SANE_BACKENDS_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libsane.la $(STAGING_LIB_DIR)/sane/*.la
+	touch $@
 
 sane-backends-stage: $(SANE_BACKENDS_BUILD_DIR)/.staged
 
@@ -180,7 +183,7 @@ sane-backends-stage: $(SANE_BACKENDS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sane-backends
 #
 $(SANE_BACKENDS_IPK_DIR)/CONTROL/control:
-	@install -d $(SANE_BACKENDS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sane-backends" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
