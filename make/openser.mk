@@ -23,16 +23,17 @@
 OPENSER_SOURCE_TYPE=tarball
 #OPENSER_SOURCE_TYPE=svn
 
-OPENSER_BASE_VERSION=1.2.2
+OPENSER_BASE_VERSION=1.3.0
 
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 #OPENSER_VERSION=$(OPENSER_BASE_VERSION)
-OPENSER_VERSION=1.2.2
+OPENSER_VERSION=1.3.0
 OPENSER_SITE=http://openser.org/pub/openser/$(OPENSER_VERSION)/src/
 OPENSER_DIR=openser-$(OPENSER_VERSION)
 else
-OPENSER_SVN=http://openser.svn.sourceforge.net/svnroot/openser/branches/1.2
-OPENSER_SVN_REV=2000
+OPENSER_SVN=http://openser.svn.sourceforge.net/svnroot/openser/branches/1.3
+#OPENSER_SVN=http://openser.svn.sourceforge.net/svnroot/openser/trunk
+OPENSER_SVN_REV=3104
 OPENSER_VERSION=$(OPENSER_BASE_VERSION)svn-r$(OPENSER_SVN_REV)
 OPENSER_DIR=openser
 endif
@@ -40,7 +41,7 @@ endif
 OPENSER_SOURCE=openser-$(OPENSER_VERSION)-tls_src.tar.gz
 
 OPENSER_UNZIP=zcat
-OPENSER_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
+OPENSER_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 OPENSER_DESCRIPTION=openSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
@@ -55,7 +56,7 @@ OPENSER_CONFLICTS=
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-OPENSER_IPK_VERSION=2
+OPENSER_IPK_VERSION=1
 else
 OPENSER_IPK_VERSION=1
 endif
@@ -64,8 +65,7 @@ endif
 # OPENSER_CONFFILES should be a list of user-editable files
 OPENSER_CONFFILES=\
 /opt/etc/openser/openser.cfg \
-/opt/etc/openser/openserctlrc \
-/opt/etc/openser/.openscdbtextrc
+/opt/etc/openser/openserctlrc
 
 #
 # OPENSER_PATCHES should list any patches, in the the order in
@@ -79,9 +79,29 @@ OPENSER_CONFFILES=\
 #
 OPENSER_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -DSTATS
 
+# perl stuff
+#
+#PERLLDOPTS should be set to the output of
+#perl -MExtUtils::Embed -e ldopts
+#on the destination machine;
+#
+#PERLCCOPTS should be set to the output of
+#perl -MExtUtils::Embed -e ccopts
+#on the destination machine;
+#
+#TYPEMAP should be set to the full file name including path of your
+#ExtUtils/typemap file.
+
 ifeq ($(OPTWARE_TARGET),slugosbe)
-OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+#OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
 OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
+OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+endif
+
+ifeq ($(OPTWARE_TARGET),ddwrt)
+OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/mipsel-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer  -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE
 OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
 endif
 
@@ -106,7 +126,11 @@ OPENSER_MAKEFLAGS=$(strip \
 ifeq ($(OPTWARE_TARGET),slugosbe)
 OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres perl pua
 else
+ifeq ($(OPTWARE_TARGET),ddwrt)
+OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres perl pua
+else
 OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
+endif
 endif
 
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
@@ -177,7 +201,7 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
 	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
-	$(MAKE) postgresql-stage net-snmp-stage
+	$(MAKE) postgresql-stage net-snmp-stage perl-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
@@ -186,7 +210,7 @@ endif
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 	if test -n "$(OPENSER_PATCHES)" ; \
 		then cat $(OPENSER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSER_DIR)-tls -p1 ; \
+		patch -d $(BUILD_DIR)/$(OPENSER_DIR)-tls -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSER_DIR)" != "$(OPENSER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSER_DIR)-tls $(OPENSER_BUILD_DIR) ; \
@@ -194,7 +218,7 @@ ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 else
 	if test -n "$(OPENSER_PATCHES)" ; \
 		then cat $(OPENSER_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(OPENSER_DIR) -p1 ; \
+		patch -d $(BUILD_DIR)/$(OPENSER_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(OPENSER_DIR)" != "$(OPENSER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(OPENSER_DIR) $(OPENSER_BUILD_DIR) ; \
@@ -209,9 +233,11 @@ openser-unpack: $(OPENSER_BUILD_DIR)/.configured
 #
 $(OPENSER_BUILD_DIR)/.built: $(OPENSER_BUILD_DIR)/.configured
 	rm -f $(OPENSER_BUILD_DIR)/.built
+
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
 	PERLLDOPTS="$(OPENSER_PERLLDOPTS)" PERLCCOPTS="$(OPENSER_PERLCCOPTS)" TYPEMAP="$(OPENSER_TYPEMAP)" \
+	CROSS_COMPILE="true" \
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) $(OPENSER_DEBUG_MODE) \
 	include_modules="$(OPENSER_INCLUDE_MODULES)" $(OPENSER_EXCLUDE_MODULES) prefix=/opt all
@@ -227,15 +253,6 @@ openser: $(OPENSER_BUILD_DIR)/.built
 #
 $(OPENSER_BUILD_DIR)/.staged: $(OPENSER_BUILD_DIR)/.built
 	rm -f $(OPENSER_BUILD_DIR)/.staged
-
-	# openSER doesn't provide a dev environment
-	#CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
-	#LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
-	#PERLLDOPTS="$(OPENSER_PERLLDOPTS)" PERLCCOPTS="$(OPENSER_PERLCCOPTS)" TYPEMAP="$(OPENSER_TYPEMAP)" \
-	#TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
-	#$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(STAGING_DIR) \
-	#prefix=$(STAGING_DIR)/opt cfg-prefix=$(STAGING_DIR)/opt $(OPENSER_DEBUG_MODE) \
-	#include_modules="$(OPENSER_INCLUDE_MODULES)" $(OPENSER_EXCLUDE_MODULES) install
 	touch $(OPENSER_BUILD_DIR)/.staged
 
 openser-stage: $(OPENSER_BUILD_DIR)/.staged
@@ -277,6 +294,7 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	CC_EXTRA_OPTS="$(OPENSER_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" \
 	PERLLDOPTS="$(OPENSER_PERLLDOPTS)" PERLCCOPTS="$(OPENSER_PERLCCOPTS)" TYPEMAP="$(OPENSER_TYPEMAP)" \
+	CROSS_COMPILE="true" \
 	TLS=1 LOCALBASE=$(STAGING_DIR)/opt SYSBASE=$(STAGING_DIR)/opt CC="$(TARGET_CC)" \
 	$(MAKE) -C $(OPENSER_BUILD_DIR) $(OPENSER_MAKEFLAGS) DESTDIR=$(OPENSER_IPK_DIR) \
 	prefix=$(OPENSER_IPK_DIR)/opt cfg-prefix=$(OPENSER_IPK_DIR)/opt $(OPENSER_DEBUG_MODE) \
@@ -289,21 +307,23 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)/opt/sbin/openser
 	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)/opt/sbin/openserunix
 
-	cp $(OPENSER_BUILD_DIR)/etc/openser.init $(OPENSER_IPK_DIR)/opt/etc/openser
-	install -m 755 $(OPENSER_BUILD_DIR)/scripts/sc.dbtext $(OPENSER_IPK_DIR)/opt/sbin/openser_dbtext_ctl
-	echo "DBTEXT_PATH=/opt/etc/openser/dbtext" > $(OPENSER_IPK_DIR)/opt/etc/openser/.openscdbtextrc
-	sed -i -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/sbin/openser_dbtext_ctl
-
-ifeq (mysql, $(filter mysql, $(PACKAGES)))
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openser_mysql.sh
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openser_mysql.sh
-endif
-
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openser_postgresql.sh
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openser_postgresql.sh
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openserdbctl
+	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openserdbctl
 
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
+
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.base
+	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.base
+
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.dbtext
+	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.dbtext
+
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
+	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
+
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.dbtext
+	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.dbtext
 
 	############################
 	# installing example files #
