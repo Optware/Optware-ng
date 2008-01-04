@@ -36,7 +36,7 @@ APCUPSD_CONFLICTS=
 #
 # APCUPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-APCUPSD_IPK_VERSION=1
+APCUPSD_IPK_VERSION=2
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files
@@ -137,6 +137,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		--with-pid-dir=/opt/var/run \
 		--with-log-dir=/opt/var/log \
 		--with-lock-dir=/opt/var/lock \
+		--enable-usb \
 		--disable-nls \
 		--disable-static \
 	)
