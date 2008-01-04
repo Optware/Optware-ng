@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = ser2net \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -277,7 +277,7 @@ COMMON_CROSS_PACKAGES = \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends \
 	scli scponly screen scsi-idle sdl sdparm \
-	sed sendmail ser setserial setpwc \
+	sed sendmail ser ser2net setserial setpwc \
 	sharutils simh sipcalc siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
 	socat softflowd spandsp speex spindown sqlite sqlite2 \
