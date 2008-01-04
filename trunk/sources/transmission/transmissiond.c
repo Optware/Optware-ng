@@ -404,7 +404,6 @@ static void flush_queued_messages( void )
   
   while( NULL != list )
     {
-      if (! strstr(list->message, "Tracker hasn't responded yet."))
         if (prev && (strcmp(prev->message, list->message) == 0))
           {
             repeated ++;

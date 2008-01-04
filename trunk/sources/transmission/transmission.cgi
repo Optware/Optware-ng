@@ -248,7 +248,7 @@ _scrape ()
     INFO="${TORRENT%/*}/.info"
     if [ -f "${INFO}" ]; then
 	. "${INFO}"
-	SCRAPE=`transmission-cli -s "${TORRENT}" 2> /dev/null | grep seeder`
+	SCRAPE=`transmissioncli -s "${TORRENT}" 2> /dev/null | grep seeder`
 	DUMMY=$?
 	_write_info
 	if [ $DUMMY != 0 ]; then
@@ -586,9 +586,9 @@ _info ()
     _find
     echo "<h3>Torrent file metainfo</h3>"
     echo "<pre>"
-    transmission-cli -i "${TORRENT}" 2> /dev/null
+    transmissioncli -i "${TORRENT}" 2> /dev/null
     echo "<p>"
-    transmission-cli -s "${TORRENT}" 2> /dev/null | grep "seeder"
+    transmissioncli -s "${TORRENT}" 2> /dev/null | grep "seeder"
     echo "</p></pre>"
 }
 
@@ -792,7 +792,7 @@ cat << __EOF__
 //-->
 <hr>
 <address>
-&copy; 2005-2007 oleo
+&copy; 2005-2008 oleo
 </address>
 </body>
 </html>
