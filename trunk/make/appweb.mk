@@ -22,9 +22,9 @@
 # You should change all these variables to suit your package.
 #
 APPWEB_SITE=http://www.appwebserver.org/software
-APPWEB_VERSION=2.4.0
-APPWEB_VERSION_EXTRA=0
-APPWEB_SOURCE=appweb-src-$(APPWEB_VERSION)-$(APPWEB_VERSION_EXTRA).tar.gz
+APPWEB_VERSION=2.1.0
+APPWEB_VERSION_EXTRA=2
+APPWEB_SOURCE=appWeb-src-$(APPWEB_VERSION)-$(APPWEB_VERSION_EXTRA).tar.gz
 APPWEB_DIR=appWeb-$(APPWEB_VERSION)
 APPWEB_UNZIP=zcat
 APPWEB_MAINTAINER=Matt McNeill <matt_mcneill@hotmail.com>
