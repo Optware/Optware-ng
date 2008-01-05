@@ -10,12 +10,10 @@
 # FONTCONFIG_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-FONTCONFIG_SITE=http://freedesktop.org
-FONTCONFIG_SOURCE=# none - available from CVS only
-FONTCONFIG_VERSION=2.3.2
-FONTCONFIG_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/fontconfig
-FONTCONFIG_DIR=fontconfig
-FONTCONFIG_CVS_OPTS=-r fc-2_3_2
+FONTCONFIG_SITE=http://fontconfig.org/release
+FONTCONFIG_VERSION=2.5.0
+FONTCONFIG_SOURCE=fontconfig-$(FONTCONFIG_VERSION).tar.gz
+FONTCONFIG_DIR=fontconfig-$(FONTCONFIG_VERSION)
 FONTCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 FONTCONFIG_DESCRIPTION=Font configuration library
 FONTCONFIG_SECTION=lib
@@ -25,7 +23,7 @@ FONTCONFIG_DEPENDS=expat, freetype, gconv-modules
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=5
+FONTCONFIG_IPK_VERSION=0
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
@@ -82,12 +80,7 @@ $(FONTCONFIG_IPK_DIR)/CONTROL/control:
 # directly to the builddir with CVS
 #
 $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(FONTCONFIG_DIR) && \
-		cvs -d $(FONTCONFIG_REPOSITORY) -z3 co $(FONTCONFIG_CVS_OPTS) $(FONTCONFIG_DIR) && \
-		tar -czf $@ $(FONTCONFIG_DIR) && \
-		rm -rf $(FONTCONFIG_DIR) \
-	)
+	$(WGET) -P $(DL_DIR) $(FONTCONFIG_SITE)/$(FONTCONFIG_SOURCE)
 
 fontconfig-source: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz $(FONTCONFIG_PATCHES)
 
@@ -114,19 +107,15 @@ $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).
 	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(FONTCONFIG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \
 	fi
-	sed -i -e '/^LINK/s/$$(LDFLAGS)\|$$(CFLAGS)//g' \
-		$(FONTCONFIG_BUILD_DIR)/fc-case/Makefile.am \
-		$(FONTCONFIG_BUILD_DIR)/fc-lang/Makefile.am \
-		$(FONTCONFIG_BUILD_DIR)/fc-glyphname/Makefile.am
 	(cd $(FONTCONFIG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FONTCONFIG_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
 		ac_cv_prog_HASDOCBOOK=no \
-		./autogen.sh \
+		./configure \
+		--with-arch=$(TARGET_ARCH) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
