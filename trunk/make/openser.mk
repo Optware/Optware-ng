@@ -45,7 +45,7 @@ OPENSER_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 OPENSER_DESCRIPTION=openSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
-OPENSER_DEPENDS=coreutils,flex,openssl
+OPENSER_DEPENDS=coreutils,openssl
 OPENSER_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,perl
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSER_SUGGESTS=$(OPENSER_BASE_SUGGESTS),mysql
@@ -200,7 +200,7 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
-	$(MAKE) flex-stage openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
+	$(MAKE) openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
 	$(MAKE) postgresql-stage net-snmp-stage perl-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
