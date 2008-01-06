@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/GnuPG/libgpg-error
+LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/gcrypt/libgpg-error
 LIBGPG-ERROR_VERSION=1.4
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
