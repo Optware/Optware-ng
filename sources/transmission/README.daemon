@@ -403,14 +403,19 @@ Transmisison will not erase your configuration during upgrade!
 It will always ask you what to do with /opt/etc/transmission.conf
 Use ipkg update and ipkg upgrade for package upgrade!
 
+22. The interface PAUSE button is missinterpreted. If I click on the PAUSE button, I have to click again on the same button to resume the transfers. Took me about 1 hour to find out this.
+Think of Pause button as Pause on tape recorder. It Stops/Starts activity of the transmission daemon. And yes, it is design problem of the static header that prevents Resume/Pause button.
+
 CHANGELOG
 
-With introdution of 0.9x libtransmission library many changes happened.
+With introduction of 0.9x libtransmission library many changes happened.
 Most notable is new developer, that brought new ideas such as libevent
 instead of threads, encryption support, PEX, ban peers, ..., and new bugs.
 
 So beware before upgrading from 0.82 and prior to 0.93 and later. COMPLETE
 YOUR DOWNLOADS BEFORE UPGRADING OR YOU WILL LOSE DATA!
+
+1.0 added PEX as default. Encryption can be enabled with config file.
 
 oleo
 

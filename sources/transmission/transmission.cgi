@@ -216,7 +216,7 @@ _pause ()
 	if  false ; then
 	        echo "Starting transmission daemon ..." 
                 transmissiond -p ${LISTENING_PORT} \
-                ${NAT_TRAVERSAL} \
+                ${NAT_TRAVERSAL} ${ENCRYPTION} \
 		-w ${WATCHDOG} \
 		-u ${UPLOAD_SPEED} \
 		-d ${DOWNLOAD_SPEED} \
