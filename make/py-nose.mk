@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-NOSE_SITE=http://somethingaboutorange.com/mrl/projects/nose
-PY-NOSE_VERSION=0.10.0
+PY-NOSE_VERSION=0.10.1
 PY-NOSE_SOURCE=nose-$(PY-NOSE_VERSION).tar.gz
 PY-NOSE_DIR=nose-$(PY-NOSE_VERSION)
 PY-NOSE_UNZIP=zcat
