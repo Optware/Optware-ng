@@ -71,6 +71,7 @@
 "  -n  --nat-traversal  Attempt NAT traversal using NAT-PMP or UPnP IGD\n" \
 "  -w, --watchdog <int> Watchdog interval in seconds (default = 600)\n" \
 "  -i, --pidfile <path> PID file path \n" \
+"  -e, --encryption	Turns on encryption as preferred\n" \
 "Signals:\n"                                                            \
 "\tHUP\treload active-torrents.txt and start/stop torrents\n"\
 "\tUSR1\twrite .status files into torrent directories\n"   \
@@ -84,6 +85,7 @@ static int          downloadLimit = -1;
 static char         * torrentPath = NULL;
 static int          watchdogInterval = 600;
 static int          natTraversal  = 0;
+static int	    encryptionMode = TR_PLAINTEXT_PREFERRED;
 static sig_atomic_t mustDie       = 0;
 static sig_atomic_t got_hup       = 0;
 static sig_atomic_t got_usr1      = 0;
@@ -465,21 +467,6 @@ int main( int argc, char ** argv )
       return 0;
     }
   
-  if( verboseLevel < 0 )
-    {
-      verboseLevel = 0;
-    }
-  else if( verboseLevel > 9 )
-    {
-      verboseLevel = 9;
-    }
-  if( verboseLevel )
-    {
-      static char env[11];
-      sprintf( env, "TR_DEBUG=%d", verboseLevel );
-      putenv( env );
-    }
-  
   if( bindPort < 1 || bindPort > 65535 )
     {
       printf( "Invalid port '%d'\n", bindPort );
@@ -531,7 +518,18 @@ int main( int argc, char ** argv )
   
   
   /* Initialize libtransmission */
-  h = tr_init("cgi");
+  h = tr_initFull("cgi",
+                   1,                       /* pex enabled */
+		   natTraversal,            /* nat enabled */
+		   bindPort,                /* public port */
+		   encryptionMode, 	    /* encryption mode */
+		   uploadLimit > 0,         /* use upload speed limit? */
+		   uploadLimit,             /* upload speed limit */
+		   downloadLimit > 0,       /* use download speed limit? */
+		   downloadLimit,           /* download speed limit */
+		   512,                     /* globalPeerLimit */
+		   verboseLevel + 1,        /* messageLevel */
+		   1 );                     /* is message queueing enabled? */
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir(tr_getPrefsDirectory())  < 0)
@@ -545,13 +543,6 @@ int main( int argc, char ** argv )
       tr_setMessageQueuing(TR_MSG_ERR);
       tr_setMessageLevel(TR_MSG_ERR);
     }
-  tr_setBindPort( h, bindPort );
-  tr_setGlobalSpeedLimit   ( h, TR_UP,   uploadLimit );
-  tr_setUseGlobalSpeedLimit( h, TR_UP,   uploadLimit > 0 );
-  tr_setGlobalSpeedLimit   ( h, TR_DOWN, downloadLimit );
-  tr_setUseGlobalSpeedLimit( h, TR_DOWN, downloadLimit > 0 );
-
-  tr_natTraversalEnable( h, natTraversal);
   
   setupsighandlers();
   reload_active();
@@ -652,10 +643,11 @@ static int parseCommandLine( int argc, char ** argv )
             { "watchdog", required_argument, NULL, 'w' },
             { "pidfile",  required_argument, NULL, 'i' }, 
             { "nat-traversal", no_argument,  NULL, 'n' },
+	    { "encryption", no_argument,     NULL, 'e' },
             { 0, 0, 0, 0} };
 
         int c, optind = 0;
-        c = getopt_long( argc, argv, "hv:p:u:d:f:w:i:n", long_options, &optind );
+        c = getopt_long( argc, argv, "hv:p:u:d:f:w:i:ne", long_options, &optind );
         if( c < 0 )
         {
             break;
@@ -689,6 +681,10 @@ static int parseCommandLine( int argc, char ** argv )
           case 'n':
             natTraversal = 1;
             break;
+	  case 'e':
+	    encryptionMode = encryptionMode == TR_PLAINTEXT_PREFERRED ?
+	    	TR_ENCRYPTION_PREFERRED : TR_ENCRYPTION_REQUIRED;
+	    break;
           default:
             return 1;
         }

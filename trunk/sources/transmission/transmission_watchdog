@@ -293,7 +293,7 @@ if [ ${is_running} = "no" ]; then
     _update_active
     ulimit -c 60000
     transmissiond -p ${LISTENING_PORT} \
-    	${NAT_TRAVERSAL} \
+    	${NAT_TRAVERSAL} ${ENCRYPTION} \
 	-w ${WATCHDOG} \
 	-u ${UPLOAD_SPEED} \
 	-d ${DOWNLOAD_SPEED} \
