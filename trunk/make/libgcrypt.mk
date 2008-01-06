@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGCRYPT_SITE=http://ftp.gnupg.org/GnuPG/libgcrypt
+LIBGCRYPT_SITE=ftp://ftp.gnupg.org/GnuPG/libgcrypt
 LIBGCRYPT_VERSION=1.2.4
 LIBGCRYPT_SOURCE=libgcrypt-$(LIBGCRYPT_VERSION).tar.gz
 LIBGCRYPT_DIR=libgcrypt-$(LIBGCRYPT_VERSION)
@@ -83,7 +83,8 @@ LIBGCRYPT_IPK=$(BUILD_DIR)/libgcrypt_$(LIBGCRYPT_VERSION)-$(LIBGCRYPT_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGCRYPT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGCRYPT_SITE)/$(LIBGCRYPT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBGCRYPT_SITE)/$(LIBGCRYPT_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBGCRYPT_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
