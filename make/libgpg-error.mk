@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBGPG-ERROR_SITE=http://ftp.gnupg.org/GnuPG/libgpg-error
+LIBGPG-ERROR_SITE=ftp://ftp.gnupg.org/GnuPG/libgpg-error
 LIBGPG-ERROR_VERSION=1.4
 LIBGPG-ERROR_SOURCE=libgpg-error-$(LIBGPG-ERROR_VERSION).tar.gz
 LIBGPG-ERROR_DIR=libgpg-error-$(LIBGPG-ERROR_VERSION)
@@ -82,7 +82,8 @@ LIBGPG-ERROR_IPK=$(BUILD_DIR)/libgpg-error_$(LIBGPG-ERROR_VERSION)-$(LIBGPG-ERRO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGPG-ERROR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGPG-ERROR_SITE)/$(LIBGPG-ERROR_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBGPG-ERROR_SITE)/$(LIBGPG-ERROR_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LIBGPG-ERROR_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
