@@ -4,9 +4,10 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_VERSION=1.6.9p9
-SUDO_SOURCE=sudo-$(SUDO_VERSION).tar.gz
-SUDO_DIR=sudo-$(SUDO_VERSION)
+SUDO_UPSTREAM_VERSION=1.6.9p11
+SUDO_VERSION=1.6.9.11
+SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
+SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
 SUDO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SUDO_DESCRIPTION=System utility to execute commands as the superuser
