@@ -14,8 +14,8 @@
 #
 # You should change all these variables to suit your package.
 #
-MAN_SITE=http://www.kernel.org/pub/linux/utils/man
-MAN_VERSION=1.5p
+MAN_SITE=http://primates.ximian.com/~flucifredi/man
+MAN_VERSION=1.6f
 MAN_SOURCE=man-$(MAN_VERSION).tar.gz
 MAN_DIR=man-$(MAN_VERSION)
 MAN_UNZIP=zcat
@@ -29,7 +29,7 @@ MAN_CONFLICTS=
 #
 # MAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MAN_IPK_VERSION=4
+MAN_IPK_VERSION=1
 
 #
 # MAN_CONFFILES should be a list of user-editable files
@@ -67,7 +67,8 @@ MAN_IPK=$(BUILD_DIR)/man_$(MAN_VERSION)-$(MAN_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MAN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MAN_SITE)/$(MAN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MAN_SITE)/$(MAN_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MAN_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,7 +107,7 @@ $(MAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_SOURCE) $(MAN_PATCHES)
 		--prefix=/opt \
 		-confdir /opt/etc \
 	)
-	touch $(MAN_BUILD_DIR)/.configured
+	touch $@
 
 man-unpack: $(MAN_BUILD_DIR)/.configured
 
@@ -114,9 +115,9 @@ man-unpack: $(MAN_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MAN_BUILD_DIR)/.built: $(MAN_BUILD_DIR)/.configured
-	rm -f $(MAN_BUILD_DIR)/.built
-	$(MAKE) -C $(MAN_BUILD_DIR)
-	touch $(MAN_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -127,9 +128,9 @@ man: $(MAN_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MAN_BUILD_DIR)/.staged: $(MAN_BUILD_DIR)/.built
-	rm -f $(MAN_BUILD_DIR)/.staged
-	$(MAKE) -C $(MAN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MAN_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 man-stage: $(MAN_BUILD_DIR)/.staged
 
@@ -138,7 +139,7 @@ man-stage: $(MAN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/man
 # 
 $(MAN_IPK_DIR)/CONTROL/control:
-	@install -d $(MAN_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: man" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -167,6 +168,7 @@ $(MAN_IPK_DIR)/CONTROL/control:
 $(MAN_IPK): $(MAN_BUILD_DIR)/.built
 	rm -rf $(MAN_IPK_DIR) $(BUILD_DIR)/man_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAN_BUILD_DIR) DESTDIR=$(MAN_IPK_DIR) install
+	$(STRIP_COMMAND) $(MAN_IPK_DIR)/opt/bin/man2html
 	install -d $(MAN_IPK_DIR)/opt/etc/
 	install -m 644 $(MAN_SOURCE_DIR)/man.conf $(MAN_IPK_DIR)/opt/etc/man.conf
 #	install -d $(MAN_IPK_DIR)/opt/etc/init.d
@@ -194,3 +196,9 @@ man-clean:
 #
 man-dirclean:
 	rm -rf $(BUILD_DIR)/$(MAN_DIR) $(MAN_BUILD_DIR) $(MAN_IPK_DIR) $(MAN_IPK)
+
+#
+# Some sanity check for the package.
+#
+man-check: $(MAN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MAN_IPK)

@@ -1,11 +1,11 @@
---- man/configure.orig	2005-01-27 04:06:14.000000000 -0800
-+++ man/configure	2005-01-27 04:06:28.000000000 -0800
-@@ -998,7 +998,7 @@
+--- man/configure.orig	2007-08-20 21:15:21.000000000 -0700
++++ man/configure	2008-01-06 16:10:13.000000000 -0800
+@@ -1015,7 +1015,7 @@
    then
      DO_COMPRESSION=true
      compress=
--    for i in bzip2 gzip bzip tzip pack compress freeze yabba
-+    for i in gzip bzip2 bzip tzip pack compress freeze yabba
+-    for i in lzma bzip2 gzip bzip tzip pack compress freeze yabba
++    for i in gzip lzma bzip2 bzip tzip pack compress freeze yabba
      do
        eval F$i=missing
        for j in $DEFPATH
