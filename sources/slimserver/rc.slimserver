@@ -1,0 +1,127 @@
+#! /bin/sh
+#
+# Copyright (c) 2002 Benjamin Scott <bscott@chiark.greenend.org.uk>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# init.d/slimserver
+#
+# System startup script for the SlimServer.
+
+# get site config
+. /opt/etc/slimserver.conf
+
+
+case "$1" in
+    start)
+       
+        if [ ${SLIMSERVER_START} = "Yes" ]; then
+		echo -n "Starting SlimServer"
+		if [ ! -x $SLIMSERVER_BIN ] ; then
+		  echo "Failed: Slimserver binary ${SLIMSERVER_BIN{} is not executable."
+		  exit 1
+		fi
+	#
+	# Fire up the server script, redirecting errors to the bit bucket.
+	#
+		if [ -s ${SLIMSERVER_PIDFILE} ]; then
+		    ${SLIMSERVER_PID}=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	    		if [ -d /proc/${SLIMSERVER_PID} ]; then
+				echo "already running."
+				exit 0;
+	    		else
+			rm -f ${SLIMSERVER_PIDFILE};
+	    		fi
+	    	SLIMSERVER_PID=
+		fi
+		$SLIMSERVER_BIN --pidfile ${SLIMSERVER_PIDFILE} ${SLIMSERVER_ARGS} >> ${SLIMSERVER_LOG} 2>&1 
+		RETVAL=$?
+
+		SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+		if [ $RETVAL -eq 0 ] && [ ! -z ${SLIMSERVER_PID} ]; then
+		    echo "Slimserver daemon started OK. PID is ${SLIMSERVER_PID}."
+		    exit 0
+		else
+		    echo "Slimserver failed to run. Return value: $RETVAL."
+		    exit 1
+		fi
+        fi
+	;;
+    
+     stop)
+
+	if test ! -r ${SLIMSERVER_PIDFILE} ; then
+	    echo "Can't stop SlimServer as it is not running. There is no PID file"
+	    exit 1
+	fi
+
+	SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	if test ! -d /proc/${SLIMSERVER_PID} ; then
+	    echo "Can't stop SlimServer as it is not running.  There is no process with PID ${SLIMSERVER_PID}."
+	    rm -f ${SLIMSERVER_PIDFILE}
+	    exit 2
+	fi
+
+	echo -n "Shutting down SlimServer (please wait) "
+
+	kill ${SLIMSERVER_PID} 2>/dev/null
+#	killall slimserver	
+
+	count=0
+	maxcount=20
+
+	while [ $count -lt $maxcount ]
+	do
+	 if [  ! -f /proc/${SLIMSERVER_PID}/cmdline ] ;  then
+		break;
+	   fi
+	 /bin/sleep 2
+	 let count = count + 1
+	done
+	
+	if [ ! -f $/proc/${SLIMSERVER_PID}/cmdline ] ; then
+	    echo " OK - stop succeeded."
+	    rm -f ${SLIMSERVER_PIDFILE} 2>/dev/null
+	    exit 0
+	else
+	    echo " FAILED! Try to kill it. Couldn't kill process $PID"
+	    exit 1
+	fi
+	;;
+
+    status)
+	echo -n "Checking for SlimServer: "
+
+	if test ! -r ${SLIMSERVER_PIDFILE} ; then
+	    echo "Can't stop SlimServer as it is not running. There is no PID file"
+	    exit 1
+	fi
+
+	SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	if test -z ${SLIMSERVER_PID} ; then
+	    echo "Can't stop SlimServer as it is not running. PID file exist but no PID number"
+	    exit 0
+	fi
+	if test -d /proc/${SLIMSERVER_PID} ; then
+	    echo " running - process ${SLIMSERVER_PID}"	
+	    exit 0
+	else
+   	    echo " not running - last PID ${SLIMSERVER_PID})"
+	    rm -f ${SLIMSERVER_PIDFILE}
+	    exit 2
+	fi
+	;;
+
+    *)
+	echo "Usage: $0 {start|stop|status}"
+	exit 1
+	;;
+esac
+

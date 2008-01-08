@@ -1,0 +1,225 @@
+#! /bin/sh
+#
+# Copyright (c) 2002 Benjamin Scott <bscott@chiark.greenend.org.uk>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# init.d/slimserver
+#
+# System startup script for the SlimServer.
+
+# get site config
+. /opt/etc/slimserver.conf
+
+setupfirewall() {
+        WAN_TYPE=$(grep wan_type  /etc/master.conf | cut -d= -f2)
+        if [ $WAN_TYPE = "pppoe" -o $WAN_TYPE = "pptp" ]; then
+          EXIF=ppp0
+        else
+          EXIF=eth1
+        fi
+
+        /sbin/iptables -D INPUT -i $EXIF -m state --state NEW,ESTABLISHED,RELATED -p tcp --dport ${SLIMSERVER_HTTPPORT} -j ACCEPT
+        /sbin/iptables -D INPUT -i $EXIF -m state --state NEW,ESTABLISHED,RELATED -p tcp --dport 3483 -j ACCEPT
+        /sbin/iptables -D INPUT -i $EXIF -m state --state NEW,ESTABLISHED,RELATED -p udp --dport 3483 -j ACCEPT
+
+        # reachable to the outside ?
+        if [ ${SLIMSERVER_EXTERN} = "yes" ] ; then  
+ 	  echo -n "Opening Slimserver ports ${SLIMSERVER_HTTPPORT} and 3483  "
+          /sbin/iptables -I INPUT -i $EXIF -m state --state NEW,ESTABLISHED,RELATED -p tcp --dport ${SLIMSERVER_HTTPPORT} -j ACCEPT
+          /sbin/iptables -I INPUT -i $EXIF -m state --state NEW,ESTABLISHED,RELATED -p tcp --dport 3483 -j ACCEPT
+          /sbin/iptables -I INPUT -i $EXIF -m state --state NEW,ESTABLISHED,RELATED -p udp --dport 3483 -j ACCEPT
+        fi
+}
+
+case "$1" in
+    start)
+       
+        if [ ${SLIMSERVER_START} = "yes" ]; then
+		echo -n "Starting SlimServer"
+		if [ ! -x $SLIMSERVER_BIN ] ; then
+		  echo "Failed: Slimserver binary ${SLIMSERVER_BIN} is not executable."
+		  exit 1
+		fi
+#	setupfirewall
+	#
+	# Fire up the server script, redirecting errors to the bit bucket.
+	#
+		if [ -s ${SLIMSERVER_PIDFILE} ]; then
+		    SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	    		if [ -d /proc/${SLIMSERVER_PID} ]; then
+				echo " - already running."
+				exit 0;
+	    		else
+			rm -f ${SLIMSERVER_PIDFILE};
+	    		fi
+	    	SLIMSERVER_PID=
+		fi
+		$SLIMSERVER_BIN --daemon --httpport ${SLIMSERVER_HTTPPORT} --pidfile ${SLIMSERVER_PIDFILE} --prefsfile=$SLIMSERVER_PREF --logfile=$SLIMSERVER_LOG --user $SLIMSERVER_USER --group $SLIMSERVER_GROUP --cachedir ${SLIMSERVER_CACHEDIR} ${SLIMSERVER_ARGS} >> ${SLIMSERVER_LOG} 2>&1 
+		RETVAL=$?
+
+		SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+		if [ $RETVAL -eq 0 ] && [ ! -z ${SLIMSERVER_PID} ]; then
+		    echo "Slimserver daemon started OK. PID is ${SLIMSERVER_PID}."
+		    exit 0
+		else
+		    echo "Slimserver failed to run. Return value: $RETVAL."
+		    exit 1
+		fi
+
+        fi
+	;;
+    
+     stop)
+
+	if test ! -r ${SLIMSERVER_PIDFILE} ; then
+	    echo "Can't stop SlimServer as it is not running. There is no PID file"
+	    exit 1
+	fi
+
+	SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	if test ! -d /proc/${SLIMSERVER_PID} ; then
+	    echo "Can't stop SlimServer as it is not running.  There is no process with PID ${SLIMSERVER_PID}."
+	    rm -f ${SLIMSERVER_PIDFILE}
+	    exit 2
+	fi
+
+	echo -n "Shutting down SlimServer (please wait) "
+
+	kill ${SLIMSERVER_PID} 2>/dev/null
+#	killall slimserver	
+
+	count=0
+	maxcount=20
+
+	while [ $count -lt $maxcount ]
+	do
+	 if [  ! -f /proc/${SLIMSERVER_PID}/cmdline ] ;  then
+		break;
+	   fi
+	 /bin/sleep 2
+	 count=`expr $count + 1`
+	done
+	
+	if [ ! -f $/proc/${SLIMSERVER_PID}/cmdline ] ; then
+	    echo " OK - stop succeeded."
+	    rm -f ${SLIMSERVER_PIDFILE} 2>/dev/null
+	    exit 0
+	else
+	    echo " FAILED! Try to kill it. Couldn't kill process $PID"
+	    exit 1
+	fi
+	;;
+
+    status)
+	echo -n "Checking for SlimServer: "
+
+	if test ! -r ${SLIMSERVER_PIDFILE} ; then
+	    echo "SlimServer is not running. There is no PID file"
+	    exit 1
+	fi
+
+	SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	if test -z ${SLIMSERVER_PID} ; then
+	    echo "SlimServer is not running. PID file exist but is empty."
+	    exit 0
+	fi
+	if test -d /proc/${SLIMSERVER_PID} ; then
+	    echo " Slimserver is running - process id = ${SLIMSERVER_PID}"	
+	    exit 0
+	else
+   	    echo " Slimserver is not running - last process id =  ${SLIMSERVER_PID})"
+	    rm -f ${SLIMSERVER_PIDFILE}
+	    exit 2
+	fi
+	;;
+    enable)
+	echo -n "Enabling SlimServer start "
+	sed -i "s|^SLIMSERVER_START=.*$|SLIMSERVER_START=yes|" /opt/etc/slimserver.conf
+	exit 0
+	;;
+
+    disable)
+	echo -n "Disabling SlimServer start "
+	sed -i "s|^SLIMSERVER_START=.*$|SLIMSERVER_START=no|" /opt/etc/slimserver.conf
+	exit 0
+	;;
+    wanenable)
+	echo -n "Enabling SlimServer on WAN "
+	sed -i "s|^SLIMSERVER_EXTERN=.*$|SLIMSERVER_EXTERN=yes|" /opt/etc/slimserver.conf
+	exit 0
+	;;
+
+    wandisable)
+	echo -n "Disabling SlimServer on WAN "
+	sed -i "s|^SLIMSERVER_EXTERN=.*$|SLIMSERVER_EXTERN=no|" /opt/etc/slimserver.conf
+	exit 0
+	;;
+
+    firewall)
+        grep -q ^twonky_server=checked /etc/master.conf
+        if [ $? = "0" ] ; then
+                echo "Twonky media server enabled "
+		if [ ${SLIMSERVER_HTTPPORT} -eq 9000 ] ; then
+		echo " Slimserver configured to use port 9000 - possible clash with Twonky"
+		fi
+	fi
+	setupfirewall
+
+ 	exit 0
+	;;
+
+    reconfig)
+	echo  "Slimserver rc - reconfig "
+	setupfirewall
+	exit 0
+	;;
+
+    info)
+	echo  "Slimserver status & configuration file setting"
+
+	if test ! -r ${SLIMSERVER_PIDFILE} ; then
+	    echo "SlimServer is not running. There is no PID file"
+	else
+	    SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+	    if test -z ${SLIMSERVER_PID} ; then
+	       echo "SlimServer is not running. PID file exist but is empty."
+	    elif test -d /proc/${SLIMSERVER_PID} ; then
+	       echo " Slimserver is running - process id = ${SLIMSERVER_PID}"	
+	    else
+   	       echo " Slimserver is not running - last process id =  ${SLIMSERVER_PID})"
+	       rm -f ${SLIMSERVER_PIDFILE}
+            fi
+	fi
+
+	echo  " "
+	echo  " Slimserver binary:                       ${SLIMSERVER_BIN}"
+	echo  " Slimserver log is in file                ${SLIMSERVER_LOG}"
+	echo  " Slimserver preferences are in file       ${SLIMSERVER_PREF}"
+	echo  " Slimserver file with process id (PID)    ${SLIMSERVER_PIDFILE}"
+	echo  " Slimserver will run as User ${SLIMSERVER_USER} Group ${SLIMSERVER_GROUP} using HTTP port ${SLIMSERVER_HTTPPORT}"
+	echo  " Slimserver command line arguments ${SLIMSERVER_ARGS}"
+	echo  " Slimserver home directory:               ${SLIMSERVER_HOME}"
+	echo  " Slimserver access thro WAN port:         ${SLIMSERVER_EXTERN}"
+	echo  " Slimserver command line arguments ${SLIMSERVER_ARGS}"
+	if [ ${SLIMSERVER_START} = "yes" ] ; then
+	  echo "Slimserver startup is ensabled "
+	else
+	  echo "Slimserver startup is disabled "
+	fi
+	;;
+
+
+    *)
+	echo "Usage: $0 {start|stop|status|enable|disable|firewall|wanenable|wandisable|info}"
+	exit 1
+	;;
+esac
+

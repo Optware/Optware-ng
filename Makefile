@@ -106,7 +106,7 @@ PERL_PACKAGES = \
 	perlconsole \
 	postgrey \
 	rsnapshot \
-	spamassassin \
+	slimserver spamassassin \
 	stow \
 
 PYTHON_PACKAGES = \

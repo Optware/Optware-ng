@@ -1,0 +1,37 @@
+#!/bin/sh
+
+. /opt/etc/slimserver.conf
+
+#
+#  Check if user/group slimserver exists
+#
+#	if chown ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_HOME} 2>/dev/null ; then
+        if test `grep -c "^${SLIMSERVER_USER}" /etc/passwd` -eq 0 ; then 
+
+            test `grep -c "^${SLIMSERVER_GROUP}" /etc/group` -eq 0  &&  addgroup ${SLIMSERVER_GROUP} 
+	    adduser -D -s /dev/null -h ${SLIMSERVER_HOME} -G ${SLIMSERVER_GROUP} ${SLIMSERVER_USER}
+	    sleep 1 # wait for user creation
+
+	fi
+        touch  ${SLIMSERVER_PREF} 
+	chown $VERBOSE ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_PREF}
+
+	touch  ${SLIMSERVER_LOG}
+	chown $VERBOSE ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_LOG}
+
+	mkdir ${SLIMSERVER_HOME}/cache 2>/dev/null
+	chown $VERBOSE -R ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_HOME} 
+
+# Slimserver expects an mysqld in its Bin directory - on fsg3 mysqld is pre-installed.
+# on other systems copy or link from another directory.
+	if test -e /usr/local/mysql/bin/mysqld ; then
+		cp /usr/local/mysql/bin/mysqld /opt/share/slimserver/Bin/mysqld
+	fi
+
+# The firmware bin files cannot be distributed and wil be downloadd by slimserver
+# on first startup so user slimserver has to be able to write files into Firmware directory
+
+	chmod a+rw /opt/share/slimserver/Firmware
+
+exit 0
+	

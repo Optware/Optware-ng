@@ -1,0 +1,146 @@
+--- Bin/build-perl-modules.pl.654	2007-10-23 10:32:49.000000000 +0100
++++ Bin/build-perl-modules.pl	2007-10-23 13:31:07.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl -w
++#
+ 
+ # $Id$
+ #
+@@ -17,7 +17,6 @@
+ use File::Copy;
+ use File::Find;
+ use File::Path;
+-use File::Which;
+ 
+ my $SOURCE = 'http://svn.slimdevices.com/vendor/src';
+ my $dlext  = $Config{'dlext'};
+@@ -53,6 +52,13 @@
+ 		)),
+ 	},
+ 
++	'XML-Parser-2.34' => {
++		'Makefile.PL' => join(' ', qw(
++                        EXPATLIBPATH=/opt/lib
++                        EXPATINCPATH=/opt/include
++                 )),
++        },
++
+ 	'DBD-mysql-3.0002' => {
+ 
+ 		'env' => [qw(DBI-1.50/blib/lib: DBI-1.50/blib/arch)],
+@@ -61,11 +67,17 @@
+ 
+ sub main {
+ 	my ($slimServerPath, $downloadPath, $perlBinary, @libList, $downloadUsing);
++	my $dbipackagedir;
++
++	my $archname = $ENV{GCC};
++	$archname =~ m/(^.+\/)(.+)(-gcc$)/;
++	$archname = $2;
+ 
+-	my $archname = $Config{'archname'};
+ 	my $version  = $Config{'version'};
+ 
+-	print "Welcome to the SlimServer perl module installer.\n\n";
++	$packageOptions{'DBD-mysql-3.0002'}->{'Makefile.PL'} = " --mysql_config=$ENV{STAGINGDIR}/opt/bin/mysql_config ";
++
++	print "Welcome to the Slim Devices perl module installer.\n\n";
+ 	print "These packages are needed for SlimServer to function.\n";
+ 	print "You will need a C compiler (gcc), make, and perl installed.\n\n";
+ 	print "You will need development libraries for MySQL. eg: libmysqlclient\n\n";
+@@ -135,7 +147,10 @@
+ 
+ 		for my $cmd (qw(curl wget)) {
+ 
+-			if ($downloadUsing = which($cmd)) {
++			system("which $cmd >/dev/null 2>&1");
++
++			unless ($? >> 8) {
++				$downloadUsing = $cmd;
+ 				last;
+ 			}
+ 		}
+@@ -153,21 +168,7 @@
+ 
+ 	# Only download the packages that were passsed.
+ 	my @packages = ();
+-
+-	if (scalar @ARGV) {
+-
+-		for my $package (@ARGV) {
+-
+-			if (grep { /$package/ } keys %packages) {
+-
+-				push @packages, $packages{$package};
+-			}
+-		}
+-
+-	} else {
+-
+-		@packages = sort values %packages;
+-	}
++	@packages = sort values %packages;
+ 
+ 	# DBI needs to be first.
+ 	if ((grep { /DBI/ } @packages) && (grep { /DBD/ } @packages)) {
+@@ -187,6 +188,8 @@
+ 
+ 	for my $package (@packages) {
+ 
++		my ($targetconfigureopts,$pasthruinc, $ldopts);
++		$targetconfigureopts = "AR=$ENV{AR} AS=$ENV{AS} LD=$ENV{LD} NM=$ENV{NM} CC=$ENV{CC} CPP=\"$ENV{CPP}\" GCC=$ENV{GCC} CXX=$ENV{CXX} RANLIB=$ENV{RANLIB} STRIP=$ENV{STRIP} CPPFLAGS=\"$ENV{CPPFLAGS}\" LDFLAGS=\"$ENV{LDFLAGS}\"";
+ 		chdir($pwd) or die "Couldn't change to $pwd : $!";
+ 
+ 		print "\nDownloading $package to: $pwd\n";
+@@ -230,15 +233,48 @@
+ 		}
+ 
+ 		print "Configuring..\n";
+-		print "$env $perlBinary Makefile.PL $options\n";
+-		`$env $perlBinary Makefile.PL $options`;
++		print "$env$targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt\n";
++
++		if ( $package eq  "DBD-mysql-3.0002.tar.gz" ) { 
++		`cp ../../slimserver_DBD_Makefile.PL Makefile.PL`;
++		}
++		if ( $package eq  "Time-HiRes-1.86.tar.gz" ) { 
++		`cp ../../slimserver_TimeMakefile.PL Makefile.PL`;
++		}
++
++		` $env $targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt`;
+ 
+ 		unless (-f 'Makefile') {
+ 			die "There was a problem creating Makefile - exiting!\n";
+ 		}
++		if ($package eq  "DBD-mysql-3.0002.tar.gz") {
++# This code relies on DBI being processed before DBDSqlite.
++		`sed -e "s/~DRIVER~/mysql/g"  $dbipackagedir/Driver.xst > mysql.xsi`;
++		  $pasthruinc="\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGINGDIR}/opt/include/mysql -L$ENV{STAGINGDIR}/opt/lib/mysql\"";
++
++		} else {
++		  $pasthruinc = "\"$ENV{CPPFLAGS}\"";
++		}
++
++		if ($package eq  "DBI-1.50.tar.gz") {
++		  $dbipackagedir  = "$downloadPath/$packageDir/blib/arch/auto/DBI" ;
++		}
++
++		$ldopts="PASTHRU_INC=$pasthruinc"; 
++		if ( $package eq  "XML-Parser-2.34.tar.gz" ) { 
++                      $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS}\"";
++                 } ;
++
++		if ( $package eq  "DBD-mysql-3.0002.tar.gz" ) { 
++		         $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,/opt/lib/mysql\"";
++		} ;
++		$ldopts = $ldopts . " LD_RUN_PATH=/opt/lib" ;
++		if ( defined($ENV{PERL_INC}) && $ENV{PERL_INC} ne "") { $ldopts = $ldopts . " PERL_INC=$ENV{PERL_INC}" ;  }; 
++
+ 
+ 		print "Building..\n";
+-		`make`;	
++		print "\n\nmake $targetconfigureopts $ldopts\n\n";	
++		` make $targetconfigureopts $ldopts`;	
+ 
+ 		#print "Testing..\n";
+ 		#`make test`;
