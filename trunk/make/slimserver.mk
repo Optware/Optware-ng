@@ -115,7 +115,7 @@ slimserver-source: $(DL_DIR)/$(SLIMSERVER_SOURCE)
 #
 #
 $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER_PATCHES)  make/slimserver.mk
-	$(MAKE) perl-stage expat-stage perl-dbd-mysql-unpack perl-time-hires-unpack
+	$(MAKE) perl-stage expat-stage perl-dbd-mysql-unpack perl-time-hires-stage
 	rm -rf $(BUILD_DIR)/$(SLIMSERVER_DIR) $(SLIMSERVER_BUILD_DIR)
 	$(SLIMSERVER_UNZIP) $(DL_DIR)/$(SLIMSERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -	
 	if test -n "$(SLIMSERVER_PATCHES)" ; \
