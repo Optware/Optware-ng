@@ -1,0 +1,10 @@
+#!/bin/sh 
+
+. /opt/etc/slimserverrm.conf
+	rm -rf /opt/etc/slimserverrm.conf 2>/dev/null
+	rm -rf ${SLIMSERVER_PREF} 2>/dev/null
+	rm -rf ${SLIMSERVER_LOG} 2>/dev/null 
+	rm -rf ${SLIMSERVER_PIDFILE} 2>/dev/null
+	test `grep -c "^${SLIMSERVER_USER}" /etc/passwd` -eq 1  && deluser ${SLIMSERVER_USER} 2>/dev/null
+exit 0
+

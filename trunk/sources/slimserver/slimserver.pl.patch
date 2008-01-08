@@ -1,0 +1,8 @@
+--- slimserver.pl.old	2007-10-23 01:29:09.000000000 +0100
++++ slimserver.pl	2007-10-23 01:31:00.000000000 +0100
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl -w
++#!/opt/bin/perl -w
+ 
+ # SlimServer Copyright (C) 2001-2007 Logitech.
+ # This program is free software; you can redistribute it and/or

@@ -1,0 +1,14 @@
+#!/bin/sh 
+. /opt/etc/slimserver.conf
+cp /opt/etc/slimserver.conf /opt/etc/slimserverrm.conf
+if test  -r ${SLIMSERVER_PIDFILE} ; then
+ SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
+ if test  -d /proc/${SLIMSERVER_PID} ; then
+	kill ${SLIMSERVER_PID} 2>/dev/null
+ fi
+fi
+
+rm -f ${SLIMSERVER_PIDFILE}
+
+exit 0
+
