@@ -8,7 +8,6 @@
 # upper case name of your new package.  Some places below will say
 # "Do not change this" - that does not include this global change,
 # which must always be done to ensure we have unique names.
-
 #
 # OPENVPN_VERSION, OPENVPN_SITE and OPENVPN_SOURCE define
 # the upstream location of the source code for the package.
@@ -18,13 +17,26 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
-OPENVPN_NAME=openvpn
 OPENVPN_SITE=http://openvpn.net/release
-OPENVPN_VERSION=2.0.7
-OPENVPN_SOURCE=$(OPENVPN_NAME)-$(OPENVPN_VERSION).tar.gz
-OPENVPN_DIR=$(OPENVPN_NAME)-$(OPENVPN_VERSION)
+OPENVPN_VERSION=2.0.9
+OPENVPN_SOURCE=openvpn-$(OPENVPN_VERSION).tar.gz
+OPENVPN_DIR=openvpn-$(OPENVPN_VERSION)
 OPENVPN_UNZIP=zcat
+OPENVPN_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
+OPENVPN_DESCRIPTION=SSL based VPN server with Windows client support
+OPENVPN_SECTION=net
+OPENVPN_PRIORITY=optional
+OPENVPN_DEPENDS=openssl, lzo, kernel-module-tun
+OPENVPN_SUGGESTS=
+OPENVPN_CONFLICTS=
 
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
@@ -32,19 +44,9 @@ OPENVPN_UNZIP=zcat
 OPENVPN_IPK_VERSION=1
 
 #
-# Control file info
-#
-OPENVPN_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
-OPENVPN_DESCRIPTION=SSL based VPN server with Windows client support
-OPENVPN_SECTION=net
-OPENVPN_PRIORITY=optional
-OPENVPN_CONFLICTS=
-OPENVPN_DEPENDS=openssl, lzo, kernel-module-tun
-
-
-#
 # OPENVPN_CONFFILES should be a list of user-editable files
-OPENVPN_CONFFILES=/opt/etc/openvpn/openvpn.conf
+OPENVPN_CONFFILES=/opt/etc/openvpn/openvpn.conf /opt/etc/openvpn/openvpn.up \
+/opt/etc/init.d/S20openvpn /opt/etc/xinetd.d/openvpn
 
 #
 # OPENVPN_PATCHES should list any patches, in the the order in
@@ -74,29 +76,15 @@ OPENVPN_SOURCE_DIR=$(SOURCE_DIR)/openvpn
 OPENVPN_IPK_DIR=$(BUILD_DIR)/openvpn-$(OPENVPN_VERSION)-ipk
 OPENVPN_IPK=$(BUILD_DIR)/openvpn_$(OPENVPN_VERSION)-$(OPENVPN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-#
-# Automatically create a ipkg control file
-#
-$(OPENVPN_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENVPN_IPK_DIR)/CONTROL
-	@rm -f $@
-	@echo "Package: $(OPENVPN_NAME)" >>$@
-	@echo "Architecture: $(TARGET_ARCH)" >>$@
-	@echo "Priority: $(OPENVPN_PRIORITY)" >>$@
-	@echo "Section: $(OPENVPN_SECTION)" >>$@
-	@echo "Version: $(OPENVPN_VERSION)-$(OPENVPN_IPK_VERSION)" >>$@
-	@echo "Maintainer: $(OPENVPN_MAINTAINER)" >>$@
-	@echo "Source: $(OPENVPN_SITE)/$(OPENVPN_SOURCE)" >>$@
-	@echo "Description: $(OPENVPN_DESCRIPTION)" >>$@
-	@echo "Depends: $(OPENVPN_DEPENDS)" >>$@
-	@echo "Conflicts: $(OPENVPN_CONFLICTS)" >>$@
+.PHONY: openvpn-source openvpn-unpack openvpn openvpn-stage openvpn-ipk openvpn-clean openvpn-dirclean openvpn-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(OPENVPN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(OPENVPN_SITE)/$(OPENVPN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(OPENVPN_SITE)/$(OPENVPN_SOURCE) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(OPENVPN_SOURCE)
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,16 +108,21 @@ openvpn-source: $(DL_DIR)/$(OPENVPN_SOURCE) $(OPENVPN_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(OPENVPN_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENVPN_SOURCE) $(OPENVPN_PATCHES)
+$(OPENVPN_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENVPN_SOURCE) $(OPENVPN_PATCHES) make/openvpn.mk
 	$(MAKE) lzo-stage
 ifneq ($(HOST_MACHINE),armv5b)
 	$(MAKE) openssl-stage
 endif
-	rm -rf $(BUILD_DIR)/$(OPENVPN_DIR) $(OPENVPN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OPENVPN_DIR) $(@D)
 	$(OPENVPN_UNZIP) $(DL_DIR)/$(OPENVPN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(OPENVPN_PATCHES) | patch -d $(BUILD_DIR)/$(OPENVPN_DIR) -p1
-	mv $(BUILD_DIR)/$(OPENVPN_DIR) $(OPENVPN_BUILD_DIR)
-	(cd $(OPENVPN_BUILD_DIR); \
+	if test -n "$(OPENVPN_PATCHES)" ; \
+		then cat $(OPENVPN_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(OPENVPN_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(OPENVPN_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(OPENVPN_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OPENVPN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OPENVPN_LDFLAGS)" \
@@ -140,7 +133,7 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(OPENVPN_BUILD_DIR)/.configured
+	touch $@
 
 openvpn-unpack: $(OPENVPN_BUILD_DIR)/.configured
 
@@ -148,9 +141,9 @@ openvpn-unpack: $(OPENVPN_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(OPENVPN_BUILD_DIR)/.built: $(OPENVPN_BUILD_DIR)/.configured
-	rm -f $(OPENVPN_BUILD_DIR)/.built
-	$(MAKE) -C $(OPENVPN_BUILD_DIR)
-	touch $(OPENVPN_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -160,16 +153,31 @@ openvpn: $(OPENVPN_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libopenvpn.so.$(OPENVPN_VERSION): $(OPENVPN_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(OPENVPN_BUILD_DIR)/openvpn.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENVPN_BUILD_DIR)/libopenvpn.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENVPN_BUILD_DIR)/libopenvpn.so.$(OPENVPN_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libopenvpn.so.$(OPENVPN_VERSION) libopenvpn.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libopenvpn.so.$(OPENVPN_VERSION) libopenvpn.so
+$(OPENVPN_BUILD_DIR)/.staged: $(OPENVPN_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
-openvpn-stage: $(STAGING_DIR)/opt/lib/libopenvpn.so.$(OPENVPN_VERSION)
+openvpn-stage: $(OPENVPN_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/openvpn
+#
+$(OPENVPN_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: openvpn" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(OPENVPN_PRIORITY)" >>$@
+	@echo "Section: $(OPENVPN_SECTION)" >>$@
+	@echo "Version: $(OPENVPN_VERSION)-$(OPENVPN_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(OPENVPN_MAINTAINER)" >>$@
+	@echo "Source: $(OPENVPN_SITE)/$(OPENVPN_SOURCE)" >>$@
+	@echo "Description: $(OPENVPN_DESCRIPTION)" >>$@
+	@echo "Depends: $(OPENVPN_DEPENDS)" >>$@
+	@echo "Suggests: $(OPENVPN_SUGGESTS)" >>$@
+	@echo "Conflicts: $(OPENVPN_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -188,31 +196,32 @@ $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	# Install server to /opt/sbin
 	install -d $(OPENVPN_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(OPENVPN_BUILD_DIR)/openvpn -o $(OPENVPN_IPK_DIR)/opt/sbin/openvpn
-	# Install startup file
-	install -d $(OPENVPN_IPK_DIR)/opt/doc/openvpn
+
 	# xinetd startup file
-	install -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.xinetd $(OPENVPN_IPK_DIR)/opt/doc
+	install -d $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d
+	install -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.xinetd $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d/openvpn
+
 	# init.d startup file
-	install -m 755 $(OPENVPN_SOURCE_DIR)/S20openvpn $(OPENVPN_IPK_DIR)/opt/doc/openvpn
+	install -d $(OPENVPN_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(OPENVPN_SOURCE_DIR)/S20openvpn $(OPENVPN_IPK_DIR)/opt/etc/init.d
+
 	# openvpn config files
 	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn
 	install -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.conf $(OPENVPN_IPK_DIR)/opt/etc/openvpn
 	install -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)/opt/etc/openvpn
+
 	# openvpn loopback test 
 	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/loopback-client $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/loopback-server $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
+	install -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
+
 	# openvpn sample keys
 	install -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/dh1024.pem $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/tmp-ca.crt $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/client.key $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/client.crt $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/server.key $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/server.crt $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
+	install -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
+
 	# Install man pages
 	install -d $(OPENVPN_IPK_DIR)/opt/man/man8
-	install -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8	$(OPENVPN_IPK_DIR)/opt/man/man8
+	install -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)/opt/man/man8
+
 	# Install control files
 	make  $(OPENVPN_IPK_DIR)/CONTROL/control
 #	install -m 644 $(OPENVPN_SOURCE_DIR)/postinst $(OPENVPN_IPK_DIR)/CONTROL
@@ -229,6 +238,7 @@ openvpn-ipk: $(OPENVPN_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 openvpn-clean:
+	rm -f $(OPENVPN_BUILD_DIR)/.built
 	-$(MAKE) -C $(OPENVPN_BUILD_DIR) clean
 
 #
@@ -237,3 +247,9 @@ openvpn-clean:
 #
 openvpn-dirclean:
 	rm -rf $(BUILD_DIR)/$(OPENVPN_DIR) $(OPENVPN_BUILD_DIR) $(OPENVPN_IPK_DIR) $(OPENVPN_IPK)
+#
+#
+# Some sanity check for the package.
+#
+openvpn-check: $(OPENVPN_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENVPN_IPK)
