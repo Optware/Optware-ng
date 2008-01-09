@@ -27,7 +27,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION=2
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -148,6 +148,9 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		--disable-static \
 		--with-openssl=$(STAGING_PREFIX) \
 	)
+ifneq (, $(filter gumstix1151, $(OPTWARE_TARGET)))
+	sed -i -e '/USE_MADVISE/s|.*|/* #undef USE_MADVISE */|' $(@D)/config.h
+endif
 	$(PATCH_LIBTOOL) $(LIBTORRENT_BUILD_DIR)/libtool
 	touch $@
 
