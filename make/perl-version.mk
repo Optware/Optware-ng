@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-VERSION_SITE=http://search.cpan.org/CPAN/authors/id/J/JP/JPEACOCK
-PERL-VERSION_VERSION=0.73
+PERL-VERSION_VERSION=0.74
 PERL-VERSION_SOURCE=version-$(PERL-VERSION_VERSION).tar.gz
 PERL-VERSION_DIR=version-$(PERL-VERSION_VERSION)
 PERL-VERSION_UNZIP=zcat
@@ -37,7 +37,7 @@ $(PERL-VERSION_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-VERSION_SOURCE) $(PERL-V
 	$(PERL-VERSION_UNZIP) $(DL_DIR)/$(PERL-VERSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-VERSION_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-VERSION_DIR) -p1
 	mv $(BUILD_DIR)/$(PERL-VERSION_DIR) $(PERL-VERSION_BUILD_DIR)
-	(cd $(PERL-VERSION_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -52,7 +52,7 @@ perl-version-unpack: $(PERL-VERSION_BUILD_DIR)/.configured
 
 $(PERL-VERSION_BUILD_DIR)/.built: $(PERL-VERSION_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PERL-VERSION_BUILD_DIR); \
+	(cd $(@D); \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		./Build \
 	)
@@ -62,7 +62,7 @@ perl-version: $(PERL-VERSION_BUILD_DIR)/.built
 
 $(PERL-VERSION_BUILD_DIR)/.staged: $(PERL-VERSION_BUILD_DIR)/.built
 	rm -f $@
-	(cd $(PERL-VERSION_BUILD_DIR); \
+	(cd $(@D); \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		./Build --prefix $(STAGING_DIR)/opt install \
 	)
