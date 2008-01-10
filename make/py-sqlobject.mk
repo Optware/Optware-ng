@@ -28,7 +28,7 @@ PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
 #PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-PY-SQLOBJECT_VERSION=0.8.6
+PY-SQLOBJECT_VERSION=0.8.7
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
@@ -163,14 +163,14 @@ py-sqlobject-unpack: $(PY-SQLOBJECT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SQLOBJECT_BUILD_DIR)/.built: $(PY-SQLOBJECT_BUILD_DIR)/.configured
-	rm -f $(PY-SQLOBJECT_BUILD_DIR)/.built
-	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
-	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
-	touch $(PY-SQLOBJECT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -181,9 +181,9 @@ py-sqlobject: $(PY-SQLOBJECT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SQLOBJECT_BUILD_DIR)/.staged: $(PY-SQLOBJECT_BUILD_DIR)/.built
-	rm -f $(PY-SQLOBJECT_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-SQLOBJECT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SQLOBJECT_BUILD_DIR)/.staged
+	touch $@
 
 py-sqlobject-stage: $(PY-SQLOBJECT_BUILD_DIR)/.staged
 
@@ -239,6 +239,8 @@ $(PY24-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
 		--root=$(PY24-SQLOBJECT_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-SQLOBJECT_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SQLOBJECT_IPK_DIR)
@@ -249,8 +251,6 @@ $(PY25-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
 		--root=$(PY25-SQLOBJECT_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-SQLOBJECT_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SQLOBJECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SQLOBJECT_IPK_DIR)
