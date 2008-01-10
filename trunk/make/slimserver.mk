@@ -35,14 +35,18 @@ SLIMSERVER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SLIMSERVER_DESCRIPTION=Streaming Audio Server
 SLIMSERVER_SECTION=sound
 SLIMSERVER_PRIORITY=optional
-SLIMSERVER_DEPENDS=perl, expat
+SLIMSERVER_DEPENDS=perl, expat, adduser
 SLIMSERVER_SUGGESTS=
 SLIMSERVER_CONFLICTS=
+
+ifneq ($(OPTWARE_TARGET),fsg3)
+SLIMSERVER_DEPENDS+=, mysql
+endif
 
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=1
+SLIMSERVER_IPK_VERSION=2
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
