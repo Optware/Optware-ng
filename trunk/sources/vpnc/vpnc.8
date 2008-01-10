@@ -1,0 +1,499 @@
+.\" This manpage is generated!
+.\" Please edit the template-file in the source-distribution only.
+.TH VPNC "8" "December 2007" "vpnc version 0.5.1" "System Administration Utilities"
+.SH NAME
+vpnc \- client for Cisco VPN3000 Concentrator, IOS and PIX
+.SH SYNOPSIS
+.B vpnc
+[\fI--version\fR] [\fI--print-config\fR] [\fI--help\fR] [\fI--long-help\fR] [\fIoptions\fR] [\fIconfig files\fR]
+.SH "DESCRIPTION"
+.PP
+This manual page documents briefly the
+\fBvpnc\fR and
+\fBvpnc\-disconnect\fR commands.
+.PP
+\fBvpnc\fR is a 
+VPN client for the Cisco 3000 VPN  Concentrator,  creating  a IPSec-like
+connection as a tunneling network device for the local system. It uses
+the TUN/TAP driver in  Linux  kernel  2.4  and  above  and device tun(4)
+on BSD. The created connection is presented as a tunneling network
+device to the local system.
+.PP
+OBLIGATORY WARNING: the most used configuration (XAUTH authentication
+with pre-shared keys and password authentication) is insecure by design,
+be aware of this fact when you use vpnc to exchange sensitive data like
+passwords!
+.PP
+The vpnc daemon by itself does not set any routes, but it calls
+\fBvpnc\-script\fR to do this job. \fBvpnc\-script\fR displays
+a connect banner. If the concentrator supplies a network list
+for split-tunneling these networks are added to the routing table.
+Otherwise the default-route will be modified to point to the tunnel.
+Further a host route to the concentrator is added in the later case.
+If the client host needs DHCP, care must be taken to add another
+host route to the DHCP-Server around the tunnel.
+.PP
+The \fBvpnc\-disconnect\fR command is used to terminate
+the connection previously created by \fBvpnc\fR
+and restore the previous routing configuration.
+
+.SH CONFIGURATION
+The daemon reads configuration data from the following places:
+.PD 0
+.IP \(bu
+command line options
+.IP \(bu
+config file(s) specified on the command line
+.IP \(bu
+/opt/etc/vpnc/default.conf
+.IP \(bu
+/opt/etc/vpnc.conf
+.IP \(bu
+prompting the user if not found above
+
+.PP
+
+vpnc can parse options and
+.B configuration files
+in any order. However the first
+place to set an option wins.
+configuration filenames
+which do not contain a /
+will be searched at
+.B /opt/etc/vpnc/<filename>
+and
+.B /opt/etc/vpnc/<filename>.conf.
+Otherwise
+.B <filename>
+and
+.B <filename>.conf
+will be used.
+If no configuration file
+is specified on the command-line
+at all, both
+.B /opt/etc/vpnc/default.conf
+and
+.B /opt/etc/vpnc.conf
+will be loaded.
+
+.SH OPTIONS
+The program options can be either given as arguments (but not all of them
+for security reasons) or be stored in a configuration file.
+.PD 0
+
+.TP
+.BI "\-\-gateway"  " <ip/hostname>"
+IP/name of your IPSec gateway
+.P
+conf\-variable:
+.BI "IPSec gateway" " <ip/hostname>"
+
+.TP
+.BI "\-\-id"  " <ASCII string>"
+your group name
+.P
+conf\-variable:
+.BI "IPSec ID" " <ASCII string>"
+
+.TP
+.B (configfile only option)
+your group password (cleartext)
+.P
+conf\-variable:
+.BI "IPSec secret" " <ASCII string>"
+
+.TP
+.B (configfile only option)
+your group password (obfuscated)
+.P
+conf\-variable:
+.BI "IPSec obfuscated secret" " <hex string>"
+
+.TP
+.BI "\-\-username"  " <ASCII string>"
+your username
+.P
+conf\-variable:
+.BI "Xauth username" " <ASCII string>"
+
+.TP
+.B (configfile only option)
+your password (cleartext)
+.P
+conf\-variable:
+.BI "Xauth password" " <ASCII string>"
+
+.TP
+.B (configfile only option)
+your password (obfuscated)
+.P
+conf\-variable:
+.BI "Xauth obfuscated password" " <hex string>"
+
+.TP
+.BI "\-\-domain"  " <ASCII string>"
+(NT\-) Domain name for authentication
+.P
+conf\-variable:
+.BI "Domain" " <ASCII string>"
+
+.TP
+.BI "\-\-xauth\-inter"
+enable interactive extended authentication (for challenge response auth)
+.P
+conf\-variable:
+.BI "Xauth interactive"
+
+.TP
+.BI "\-\-vendor"  " <cisco/netscreen>"
+vendor of your IPSec gateway
+.IP
+Default: cisco
+.P
+conf\-variable:
+.BI "Vendor" " <cisco/netscreen>"
+
+.TP
+.BI "\-\-natt\-mode"  " <natt/none/force\-natt/cisco\-udp>"
+Which NAT\-Traversal Method to use:
+.RS
+.IP \(bu
+natt \-\- NAT\-T as defined in RFC3947
+.IP \(bu
+none \-\- disable use of any NAT\-T method
+.IP \(bu
+force\-natt \-\- always use NAT\-T encapsulation even
+without presence of a NAT device
+(useful if the OS captures all ESP traffic)
+.IP \(bu
+cisco\-udp \-\- Cisco proprietary UDP encapsulation, commonly over Port 10000
+.RE
+.IP
+Note: cisco\-tcp encapsulation is not yet supported
+.IP
+Default: natt
+.P
+conf\-variable:
+.BI "NAT Traversal Mode" " <natt/none/force\-natt/cisco\-udp>"
+
+.TP
+.BI "\-\-script"  " <command>"
+command is executed using system() to configure the interface,
+routing and so on. Device name, IP, etc. are passed using enviroment
+variables, see README. This script is executed right after ISAKMP is
+done, but before tunneling is enabled. It is called when vpnc
+terminates, too
+.IP
+Default: /opt/etc/vpnc/vpnc\-script
+.P
+conf\-variable:
+.BI "Script" " <command>"
+
+.TP
+.BI "\-\-dh"  " <dh1/dh2/dh5>"
+name of the IKE DH Group
+.IP
+Default: dh2
+.P
+conf\-variable:
+.BI "IKE DH Group" " <dh1/dh2/dh5>"
+
+.TP
+.BI "\-\-pfs"  " <nopfs/dh1/dh2/dh5/server>"
+Diffie\-Hellman group to use for PFS
+.IP
+Default: server
+.P
+conf\-variable:
+.BI "Perfect Forward Secrecy" " <nopfs/dh1/dh2/dh5/server>"
+
+.TP
+.BI "\-\-enable\-1des"
+enables weak single DES encryption
+.P
+conf\-variable:
+.BI "Enable Single DES"
+
+.TP
+.BI "\-\-enable\-no\-encryption"
+enables using no encryption for data traffic (key exchanged must be encrypted)
+.P
+conf\-variable:
+.BI "Enable no encryption"
+
+.TP
+.BI "\-\-application\-version"  " <ASCII string>"
+Application Version to report. Note: Default string is generated at runtime.
+.IP
+Default: Cisco Systems VPN Client 0.5.1:Linux
+.P
+conf\-variable:
+.BI "Application version" " <ASCII string>"
+
+.TP
+.BI "\-\-ifname"  " <ASCII string>"
+visible name of the TUN/TAP interface
+.P
+conf\-variable:
+.BI "Interface name" " <ASCII string>"
+
+.TP
+.BI "\-\-ifmode"  " <tun/tap>"
+mode of TUN/TAP interface:
+.RS
+.IP \(bu
+tun: virtual point to point interface (default)
+.IP \(bu
+tap: virtual ethernet interface
+.RE
+.IP
+Default: tun
+.P
+conf\-variable:
+.BI "Interface mode" " <tun/tap>"
+
+.TP
+.BI "\-\-debug"  " <0/1/2/3/99>"
+.IP
+Show verbose debug messages
+.RS
+.IP \(bu
+ 0: Do not print debug information.
+.IP \(bu
+ 1: Print minimal debug information.
+.IP \(bu
+ 2: Show statemachine and packet/payload type information.
+.IP \(bu
+ 3: Dump everything exluding authentication data.
+.IP \(bu
+99: Dump everything including authentication data (e.g. passwords).
+.RE
+.P
+conf\-variable:
+.BI "Debug" " <0/1/2/3/99>"
+
+.TP
+.BI "\-\-no\-detach"
+.IP
+Don't detach from the console after login
+.P
+conf\-variable:
+.BI "No Detach"
+
+.TP
+.BI "\-\-pid\-file"  " <filename>"
+store the pid of background process in <filename>
+.IP
+Default: /opt/var/run/vpnc/pid
+.P
+conf\-variable:
+.BI "Pidfile" " <filename>"
+
+.TP
+.BI "\-\-local\-addr"  " <ip/hostname>"
+local IP to use for ISAKMP / ESP / ... (0.0.0.0 == automatically assign)
+.IP
+Default: 0.0.0.0
+.P
+conf\-variable:
+.BI "Local Addr" " <ip/hostname>"
+
+.TP
+.BI "\-\-local\-port"  " <0\-65535>"
+local ISAKMP port number to use (0 == use random port)
+.IP
+Default: 500
+.P
+conf\-variable:
+.BI "Local Port" " <0\-65535>"
+
+.TP
+.BI "\-\-udp\-port"  " <0\-65535>"
+Local UDP port number to use (0 == use random port).
+This is only relevant if cisco\-udp nat\-traversal is used.
+This is the _local_ port, the remote udp port is discovered automatically.
+It is especially not the cisco\-tcp port.
+.IP
+Default: 10000
+.P
+conf\-variable:
+.BI "Cisco UDP Encapsulation Port" " <0\-65535>"
+
+.TP
+.BI "\-\-dpd\-idle"  " <0,10\-86400>"
+Send DPD packet after not receiving anything for <idle> seconds.
+Use 0 to disable DPD completely (both ways).
+.IP
+Default: 300
+.P
+conf\-variable:
+.BI "DPD idle timeout (our side)" " <0,10\-86400>"
+
+.TP
+.BI "\-\-non\-inter"
+Don't ask anything, exit on missing options
+.P
+conf\-variable:
+.BI "Noninteractive"
+
+.TP
+.BI "\-\-auth\-mode"  " <psk/cert/hybrid>"
+Authentication mode:
+.RS
+.IP \(bu
+psk:    pre\-shared key (default)
+.IP \(bu
+cert:   server + client certificate (not implemented yet)
+.IP \(bu
+hybrid: server certificate + xauth (if built with openssl support)
+.RE
+.IP
+Default: psk
+.P
+conf\-variable:
+.BI "IKE Authmode" " <psk/cert/hybrid>"
+
+.TP
+.BI "\-\-ca\-file"  " <filename>"
+.IP
+filename and path to the CA\-PEM\-File
+.P
+conf\-variable:
+.BI "CA\-File" " <filename>"
+
+.TP
+.BI "\-\-ca\-dir"  " <directory>"
+path of the trusted CA\-Directory
+.IP
+Default: /opt/etc/ssl/certs
+.P
+conf\-variable:
+.BI "CA\-Dir" " <directory>"
+
+.HP 
+\fB\-\-print\-config\fR
+.IP
+Prints your configuration; output can be used as vpnc.conf
+
+.SH FILES
+.I /opt/etc/vpnc.conf
+.I /opt/etc/vpnc/default.conf
+.RS
+The default configuration file. You can specify the same config
+directives as with command line options and additionaly
+.B IPSec secret
+and
+.B Xauth password
+both supplying a cleartext password. Scrambled passwords from the Cisco
+configuration profiles can be used with
+.B IPSec obfuscated secret
+and
+.B Xauth obfuscated password.
+
+See
+.BR EXAMPLES
+for further details.
+.RE
+
+.I /opt/etc/vpnc/*.conf
+.RS
+vpnc will read configuration files in this directory when
+the config filename (with or without .conf) is specified on the command line.
+.RE
+
+
+.SH EXAMPLES
+This is an example vpnc.conf with pre-shared keys:
+
+.RS
+.PD 0
+IPSec gateway vpn.example.com
+.P
+IPSec ID ExampleVpnPSK
+.P
+IKE Authmode psk
+.P
+IPSec secret PskS3cret!
+.P
+Xauth username user@example.com
+.P
+Xauth password USecr3t
+.PD
+.RE
+
+And another one with hybrid authentication (requires that vpnc was
+built with openssl support):
+
+.RS
+.PD 0
+IPSec gateway vpn.example.com
+.P
+IPSec ID ExampleVpnHybrid
+.P
+IKE Authmode hybrid
+.P
+
+.P
+CA-Dir /opt/etc/vpnc
+.P
+\fBor\fR
+.P
+CA-File /opt/etc/vpnc/vpn-example-com.pem
+.P
+
+.P
+IPSec secret HybS3cret?
+.P
+Xauth username user@example.com
+.P
+Xauth password 123456
+.PD
+.RE
+
+The lines begin with a keyword (no leading spaces!).
+The values start exactly one space after the keywords, and run to the end of
+line. This lets you put any kind of weird character (except CR, LF and NUL) in
+your strings, but it does mean you can't add comments after a string, or spaces
+before them.
+
+In case the the \fBCA-Dir\fR option is used, your certificate needs to be
+named something like 722d15bd.X, where X is a manually assigned number to
+make sure that files with colliding hashes have different names. The number
+can be derived from the certificate file itself:
+.P
+openssl x509 -subject_hash -noout -in /opt/etc/vpnc/vpn-example-com.pem
+
+See also the
+.B \-\-print\-config
+option to generate a config file, and the example file in the package
+documentation directory where more advanced usage is demonstrated.
+
+Advanced features like manual setting of multiple target routes and
+disabling /etc/resolv.conf rewriting is documented in the README of the
+vpnc package.
+
+.SH TODO
+.PD 0
+Certificate support (Pre-Shared-Key + XAUTH is known to be insecure).
+.P
+Further points can be found in the TODO file.
+.PD
+
+.SH AUTHOR
+This man-page has been written by Eduard Bloch <blade(at)debian.org> and
+Christian Lackas <delta(at)lackas.net>, based on vpnc README by
+Maurice Massar <vpnc(at)unix\-ag.uni\-kl.de>.
+Permission is
+granted to copy, distribute and/or modify this document under
+the terms of the GNU General Public License, Version 2 any 
+later version published by the Free Software Foundation.
+.PP
+On Debian systems, the complete text of the GNU General Public
+License can be found in /usr/share/common\-licenses/GPL.
+.SH "SEE ALSO"
+.BR pcf2vpnc (1),
+.BR cisco-decrypt (1),
+.BR ip (8),
+.BR ifconfig (8),
+.BR route (1),
+.BR http://www.unix\-ag.uni\-kl.de/~massar/vpnc/
