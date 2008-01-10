@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SNOWNEWS_SITE=http://kiza.kcore.de/software/snownews/download
-SNOWNEWS_VERSION=1.5.7
+SNOWNEWS_VERSION=1.5.8
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
@@ -45,7 +45,7 @@ endif
 #
 # SNOWNEWS_IPK_VERSION should be incremented when the ipk changes.
 #
-SNOWNEWS_IPK_VERSION=7
+SNOWNEWS_IPK_VERSION=1
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
@@ -55,17 +55,16 @@ SNOWNEWS_IPK_VERSION=7
 # SNOWNEWS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SNOWNEWS_PATCHES=$(SNOWNEWS_SOURCE_DIR)/configure.patch
+#SNOWNEWS_PATCHES=$(SNOWNEWS_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 SNOWNEWS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2
-ifeq ($(LIBC_STYLE), uclibc)
-SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm -lintl
-else
 SNOWNEWS_LDFLAGS=-lncurses -lxml2 -lz -lpthread -lm
+ifeq ($(LIBC_STYLE), uclibc)
+SNOWNEWS_LDFLAGS+= -lintl
 endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 SNOWNEWS_LDFLAGS+= -liconv
@@ -124,23 +123,24 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 else
 	$(MAKE) gconv-modules-stage
 endif
-	rm -rf $(BUILD_DIR)/$(SNOWNEWS_DIR) $(SNOWNEWS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SNOWNEWS_DIR) $(@D)
 	$(SNOWNEWS_UNZIP) $(DL_DIR)/$(SNOWNEWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SNOWNEWS_PATCHES) | patch -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p1
-	mv $(BUILD_DIR)/$(SNOWNEWS_DIR) $(SNOWNEWS_BUILD_DIR)
-	@(cd $(SNOWNEWS_BUILD_DIR); \
+	if test -n "$(SNOWNEWS_PATCHES)"; then \
+		cat $(SNOWNEWS_PATCHES) | patch -d $(BUILD_DIR)/$(SNOWNEWS_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(SNOWNEWS_DIR) $(@D)
+	(cd $(@D); \
                 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SNOWNEWS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SNOWNEWS_LDFLAGS)" \
-		export CC GCC LD STRIP RANLIB AR CPPFLAGS LDFLAGS; \
-		sed -i \
-		    -e "s:@CC@:$$CC:" \
-		    -e "s:@STRIP@:$$STRIP:" \
-		    -e "s:@CPPFLAGS@:$$CPPFLAGS:" \
-		    -e "s:@LDFLAGS@:$$LDFLAGS:" \
-		    $(SNOWNEWS_BUILD_DIR)/platform_settings; \
+		PATH=$(STAGING_PREFIX)/bin:$$PATH \
+		./configure \
+		--prefix=/opt \
+		--disable-nls \
+		; \
 	)
-	touch $(SNOWNEWS_BUILD_DIR)/.configured
+	sed -i -e '/$$(INSTALL)/s/-s //' $(@D)/Makefile
+	touch $@
 
 snownews-unpack: $(SNOWNEWS_BUILD_DIR)/.configured
 
@@ -148,9 +148,13 @@ snownews-unpack: $(SNOWNEWS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SNOWNEWS_BUILD_DIR)/.built: $(SNOWNEWS_BUILD_DIR)/.configured
-	rm -f $(SNOWNEWS_BUILD_DIR)/.built
-	$(MAKE) -C $(SNOWNEWS_BUILD_DIR)
-	touch $(SNOWNEWS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) \
+                $(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(SNOWNEWS_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(SNOWNEWS_LDFLAGS)" \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -161,9 +165,9 @@ snownews: $(SNOWNEWS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SNOWNEWS_BUILD_DIR)/.staged: $(SNOWNEWS_BUILD_DIR)/.built
-	rm -f $(SNOWNEWS_BUILD_DIR)/.staged
-	$(MAKE) -C $(SNOWNEWS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SNOWNEWS_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 snownews-stage: $(SNOWNEWS_BUILD_DIR)/.staged
 
@@ -172,7 +176,7 @@ snownews-stage: $(SNOWNEWS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/snownews
 #
 $(SNOWNEWS_IPK_DIR)/CONTROL/control:
-	@install -d $(SNOWNEWS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: snownews" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
