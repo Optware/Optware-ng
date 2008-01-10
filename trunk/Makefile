@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = vpnc \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -291,7 +291,7 @@ COMMON_CROSS_PACKAGES = \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux \
 	vblade vdr-mediamvp vim vitetris vlc \
-	vnstat vorbis-tools vsftpd vte vtun \
+	vnstat vorbis-tools vpnc vsftpd vte vtun \
 	w3cam w3m wakelan webalizer weechat wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	xmlrpc-c \
