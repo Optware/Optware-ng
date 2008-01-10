@@ -1,0 +1,10 @@
+--- vpnc-disconnect.orig	2007-12-09 02:58:49.000000000 +0100
++++ vpnc-disconnect	2007-12-09 03:00:28.000000000 +0100
+@@ -1,6 +1,6 @@
+ #!/bin/sh
+ 
+-pid=/var/run/vpnc/pid
++pid=/opt/var/run/vpnc/pid
+ 
+ if [ $# -ne 0 ]; then
+ 	echo "Usage: $0" 1>&2

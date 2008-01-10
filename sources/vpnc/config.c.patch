@@ -1,0 +1,46 @@
+--- config.c.orig	2007-12-09 03:02:14.000000000 +0100
++++ config.c	2007-12-09 03:02:21.000000000 +0100
+@@ -247,7 +247,7 @@
+ 
+ static const char *config_ca_dir(void)
+ {
+-	return "/etc/ssl/certs";
++	return "/opt/etc/ssl/certs";
+ }
+ 
+ static const char *config_def_auth_mode(void)
+@@ -267,12 +267,12 @@
+ 
+ static const char *config_def_script(void)
+ {
+-	return "/etc/vpnc/vpnc-script";
++	return "/opt/etc/vpnc/vpnc-script";
+ }
+ 
+ static const char *config_def_pid_file(void)
+ {
+-	return "/var/run/vpnc/pid";
++	return "/opt/var/run/vpnc/pid";
+ }
+ 
+ static const char *config_def_vendor(void)
+@@ -538,7 +538,7 @@
+ {
+ 	char *realname;
+ 	
+-	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
++	asprintf(&realname, "%s%s%s", index(name, '/') ? "" : "/opt/etc/vpnc/", name, add_dot_conf ? ".conf" : "");
+ 	return realname;
+ }
+ 
+@@ -757,8 +757,8 @@
+ 	}
+ 	
+ 	if (!got_conffile) {
+-		read_config_file("/etc/vpnc/default.conf", config, 1);
+-		read_config_file("/etc/vpnc.conf", config, 1);
++		read_config_file("/opt/etc/vpnc/default.conf", config, 1);
++		read_config_file("/opt/etc/vpnc.conf", config, 1);
+ 	}
+ 	
+ 	if (!print_config) {

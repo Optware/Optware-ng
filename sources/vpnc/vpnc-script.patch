@@ -1,0 +1,37 @@
+--- vpnc-script.orig	2007-12-09 02:56:57.000000000 +0100
++++ vpnc-script	2007-12-09 02:58:25.000000000 +0100
+@@ -56,18 +56,18 @@
+ 		;;
+ esac
+ 
+-DEFAULT_ROUTE_FILE=/var/run/vpnc/defaultroute
+-RESOLV_CONF_BACKUP=/var/run/vpnc/resolv.conf-backup
++DEFAULT_ROUTE_FILE=/opt/var/run/vpnc/defaultroute
++RESOLV_CONF_BACKUP=/opt/var/run/vpnc/resolv.conf-backup
+ FULL_SCRIPTNAME=/usr/local/sbin/vpnc
+ SCRIPTNAME=`basename $FULL_SCRIPTNAME`
+ 
+ # some systems, eg. Darwin & FreeBSD, prune /var/run on boot
+-if ! [ -d "/var/run/vpnc" ]; then
+-	mkdir -p /var/run/vpnc
++if ! [ -d "/opt/var/run/vpnc" ]; then
++	mkdir -p /opt/var/run/vpnc
+ fi
+ 
+ # stupid SunOS: no blubber in /usr/local/bin ... (on stdout)
+-IPROUTE="`which ip | grep '^/' 2> /dev/null`"
++IPROUTE="`which ip 2> /dev/null | grep '^/'`"
+ 
+ if [ "$OS" = "Linux" ]; then
+ 	ifconfig_syntax_ptp="pointopoint"
+@@ -157,7 +157,9 @@
+ 		# isn't -n supposed to give --numeric output?
+ 		# apperently not...
+ 		# Get rid of lines containing IPv6 addresses (':')
+-		netstat -r -n | sed 's/default/0.0.0.0/' | sed 's/^.*:.*$//' | grep '^0.0.0.0' | awk '{print $2}'
++		#netstat -r -n | sed 's/default/0.0.0.0/' | sed 's/^.*:.*$//' | grep '^0.0.0.0' | awk '{print $2}'
++		set `route | grep '^default'`
++		echo $2
+ 	}
+ 	
+ 	set_vpngateway_route() {

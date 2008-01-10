@@ -1,0 +1,9 @@
+--- vpnc.conf.orig	2007-12-09 02:12:35.000000000 +0100
++++ vpnc.conf	2007-12-09 02:12:51.000000000 +0100
+@@ -1,6 +1,5 @@
+ IPSec gateway <gateway>
+ IPSec ID <group-id>
+ IPSec secret <group-psk>
+-IKE Authmode hybrid
+ Xauth username <username>
+ Xauth password <password>
