@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.24
+NGINX_VERSION=0.6.25
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -152,7 +152,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 		--disable-nls \
 		--disable-static
 	sed -i -e 's|/usr/include/|$(TARGET_INCDIR)/|' $(NGINX_BUILD_DIR)/auto/os/linux
-	(cd $(NGINX_BUILD_DIR); \
+	(cd $(@D); \
 	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*LITTLE_ENDIAN; \
 		then export ngx_cache_ENDIAN=LITTLE; \
 	    fi; \
@@ -180,12 +180,12 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
                 -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
                 $(NGINX_BUILD_DIR)/objs/Makefile
 ifeq ($(OPTWARE_TARGET), nslu2)
-	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(NGINX_BUILD_DIR)/objs/ngx_auto_config.h
+	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(@D)/objs/ngx_auto_config.h
 endif
 ifeq ($(LIBC_STYLE), uclibc)
-	sed -i -e 's/#ifndef NGX_HAVE_GNU_CRYPT_R/#if 0/' $(NGINX_BUILD_DIR)/src/os/unix/ngx_linux_config.h
+	sed -i -e 's/#ifndef NGX_HAVE_GNU_CRYPT_R/#if 0/' $(@D)/src/os/unix/ngx_linux_config.h
 endif
-	touch $(NGINX_BUILD_DIR)/.configured
+	touch $@
 
 nginx-unpack: $(NGINX_BUILD_DIR)/.configured
 
@@ -193,9 +193,9 @@ nginx-unpack: $(NGINX_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NGINX_BUILD_DIR)/.built: $(NGINX_BUILD_DIR)/.configured
-	rm -f $(NGINX_BUILD_DIR)/.built
-	$(MAKE) -C $(NGINX_BUILD_DIR)
-	touch $(NGINX_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -206,9 +206,9 @@ nginx: $(NGINX_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NGINX_BUILD_DIR)/.staged: $(NGINX_BUILD_DIR)/.built
-	rm -f $(NGINX_BUILD_DIR)/.staged
-	$(MAKE) -C $(NGINX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NGINX_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 nginx-stage: $(NGINX_BUILD_DIR)/.staged
 
