@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-ARCHIVE-TAR_SITE=http://search.cpan.org/CPAN/authors/id/K/KA/KANE
-PERL-ARCHIVE-TAR_VERSION=1.36
+PERL-ARCHIVE-TAR_VERSION=1.38
 PERL-ARCHIVE-TAR_SOURCE=Archive-Tar-$(PERL-ARCHIVE-TAR_VERSION).tar.gz
 PERL-ARCHIVE-TAR_DIR=Archive-Tar-$(PERL-ARCHIVE-TAR_VERSION)
 PERL-ARCHIVE-TAR_UNZIP=zcat
@@ -36,8 +36,8 @@ $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) 
 	rm -rf $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) $(PERL-ARCHIVE-TAR_BUILD_DIR)
 	$(PERL-ARCHIVE-TAR_UNZIP) $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERL-ARCHIVE-TAR_PATCHES) | patch -d $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) -p1
-	mv $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) $(PERL-ARCHIVE-TAR_BUILD_DIR)
-	(cd $(PERL-ARCHIVE-TAR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERL-ARCHIVE-TAR_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -45,27 +45,27 @@ $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-ARCHIVE-TAR_SOURCE) 
 		$(PERL_HOSTPERL) Makefile.PL -d\
 		PREFIX=/opt \
 	)
-	touch $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured
+	touch $@
 
 perl-archive-tar-unpack: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured
 
 $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.configured
-	rm -f $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built
-	$(MAKE) -C $(PERL-ARCHIVE-TAR_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built
+	touch $@
 
 perl-archive-tar: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built
 
 $(PERL-ARCHIVE-TAR_BUILD_DIR)/.staged: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.built
-	rm -f $(PERL-ARCHIVE-TAR_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERL-ARCHIVE-TAR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERL-ARCHIVE-TAR_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perl-archive-tar-stage: $(PERL-ARCHIVE-TAR_BUILD_DIR)/.staged
 
 $(PERL-ARCHIVE-TAR_IPK_DIR)/CONTROL/control:
-	@install -d $(PERL-ARCHIVE-TAR_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perl-archive-tar" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
