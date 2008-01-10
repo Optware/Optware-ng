@@ -8,10 +8,22 @@
 #	if chown ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_HOME} 2>/dev/null ; then
         if test `grep -c "^${SLIMSERVER_USER}" /etc/passwd` -eq 0 ; then 
 
-            test `grep -c "^${SLIMSERVER_GROUP}" /etc/group` -eq 0  &&  addgroup ${SLIMSERVER_GROUP} 
-	    adduser -D -s /dev/null -h ${SLIMSERVER_HOME} -G ${SLIMSERVER_GROUP} ${SLIMSERVER_USER}
-	    sleep 1 # wait for user creation
-
+            test `grep -c "^${SLIMSERVER_GROUP}" /etc/group` -eq 0  &&  addgroup ${SLIMSERVER_GROUP}
+            echo -n "Enter SLIMSERVER_HOME location [${SLIMSERVER_HOME}]: "
+            read answer
+            if [ "$answer" != "" ]; then
+                SLIMSERVER_HOME=$answer
+                mkdir -p $SLIMSERVER_HOME
+	        adduser -D -s /dev/null -h ${SLIMSERVER_HOME} -G ${SLIMSERVER_GROUP} ${SLIMSERVER_USER}
+	        sleep 1 # wait for user creation
+                sed -i -e "s|^SLIMSERVER_HOME=.*|SLIMSERVER_HOME=${SLIMSERVER_HOME}|" \
+                    -e "s|^SLIMSERVER_LOG=.*|SLIMSERVER_LOG=${SLIMSERVER_HOME}/slimserver.log|" \
+                    -e "s|^SLIMSERVER_PREF=.*|SLIMSERVER_PREF=${SLIMSERVER_HOME}/slimserver.pref|" \
+                    -e "s|^SLIMSERVER_PIDFILE=.*|SLIMSERVER_PIDFILE=${SLIMSERVER_HOME}/slimserver.pid|"
+                    -e "s|^SLIMSERVER_CACHEDIR=.*|SLIMSERVER_CACHEDIR=${SLIMSERVER_HOME}/cache|" \
+                    /opt/etc/slimserver.conf
+                . /opt/etc/slimserver.conf
+            fi
 	fi
         touch  ${SLIMSERVER_PREF} 
 	chown $VERBOSE ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_PREF}
@@ -25,10 +37,15 @@
 # Slimserver expects an mysqld in its Bin directory - on fsg3 mysqld is pre-installed.
 # on other systems copy or link from another directory.
 	if test -e /usr/local/mysql/bin/mysqld ; then
-		cp /usr/local/mysql/bin/mysqld /opt/share/slimserver/Bin/mysqld
+		ln -sf /usr/local/mysql/bin/mysqld /opt/share/slimserver/Bin/mysqld
+	fi
+	if test -e /opt/bin/mysqld ; then
+		ln -sf /opt/bin/mysqld /opt/share/slimserver/Bin/mysqld
 	fi
 
-# The firmware bin files cannot be distributed and wil be downloadd by slimserver
+        
+
+# The firmware bin files cannot be distributed and will be downloadd by slimserver
 # on first startup so user slimserver has to be able to write files into Firmware directory
 
 	chmod a+rw /opt/share/slimserver/Firmware
