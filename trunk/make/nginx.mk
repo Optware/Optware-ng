@@ -80,7 +80,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 NGINX_CPPFLAGS=
-ifneq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 NGINX_CPPFLAGS+=-DIOV_MAX=1024
 endif
 NGINX_LDFLAGS=

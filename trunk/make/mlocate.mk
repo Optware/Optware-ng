@@ -51,7 +51,7 @@ MLOCATE_CONFFILES=/opt/etc/cron.d/updatedb-mlocate
 # compilation or linking flags, then list them here.
 #
 MLOCATE_CPPFLAGS=
-ifneq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 MLOCATE_CPPFLAGS+=-DSSIZE_MAX=2147483647L
 endif
 

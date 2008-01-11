@@ -115,7 +115,7 @@ $(GAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(GAWK_SOURCE) $(GAWK_PATCHES)
 ifeq ($(HOST_MACHINE),armv5b)
 	echo "#define NGROUPS_MAX 32" >> $(GAWK_BUILD_DIR)/config.h
 else
-ifneq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 	echo "#define NGROUPS_MAX 32" >> $(GAWK_BUILD_DIR)/config.h
 endif
 endif
