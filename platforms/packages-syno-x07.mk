@@ -3,10 +3,6 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
 
-LIBTIFF_PACKAGES = \
-	libtiff cups ghostscript imagemagick samba sane-backends spandsp \
-	gtk gutenprint \
-
 BROKEN_PACKAGES = \
 	asterisk asterisk14 asterisk14-chan-capi \
 	busybox \
@@ -25,5 +21,4 @@ BROKEN_PACKAGES = \
 	qemu sablevm \
 	socat \
 	streamripper transcode uemacs \
-	vlc vorbis-tools vte \
-	xchat \
+	vlc vorbis-tools \
