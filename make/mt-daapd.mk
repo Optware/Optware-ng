@@ -59,7 +59,7 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 		--enable-query \
 		--enable-mdns \
 	)
-ifeq ($(OPTWARE_TARGET), slugosbe)
+ifneq (, $(filter slugosbe syno-x07, $(OPTWARE_TARGET)))
 	sed -i -e '/#include <limits.h>/a#include <linux/limits.h>' \
 		$(MT_DAAPD_BUILD_DIR)/src/dynamic-art.c \
 		$(MT_DAAPD_BUILD_DIR)/src/restart.c

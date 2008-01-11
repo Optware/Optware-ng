@@ -18,7 +18,7 @@ BROKEN_PACKAGES = \
 	ldconfig libcapi20 libextractor \
 	libshout libvorbis \
 	moc modutils \
-	monotone mt-daapd \
+	monotone \
 	ncftp net-snmp ntop \
 	openser p7zip \
 	player puppy \
