@@ -7,12 +7,11 @@ BROKEN_PACKAGES = \
 	asterisk asterisk14 asterisk14-chan-capi \
 	busybox \
 	chillispot classpath \
-	fuppes \
 	gambit-c gconv-modules gnu-smalltalk \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
-	icecast iptraf ivorbis-tools \
+	icecast iptraf \
 	ldconfig libcapi20 libextractor \
-	libshout libvorbis \
+	libshout \
 	moc modutils \
 	monotone \
 	ncftp net-snmp ntop \
@@ -20,5 +19,4 @@ BROKEN_PACKAGES = \
 	player puppy \
 	qemu sablevm \
 	socat \
-	streamripper transcode uemacs \
-	vlc vorbis-tools \
+	uemacs \
