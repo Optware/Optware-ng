@@ -34,16 +34,19 @@ $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_KERNEL_SITE)/$(@F) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
+$(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux/version.h: $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE)
+	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE)
+	$(MAKE) -C $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION) include/linux/version.h
+
 $(TARGET_CROSS_TOP)/.unpacked: \
+$(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux/version.h \
 $(DL_DIR)/$(TOOLCHAIN_BINARY) \
-$(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE) \
 # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	mv $(BASE_DIR)/toolchain/usr/local/$(GNU_TARGET_NAME)/* $(@D)
 	rm -rf $(BASE_DIR)/toolchain/usr
-	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE)
 	ln -s $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux $(TARGET_INCDIR)/
 	ln -s $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-arm $(TARGET_INCDIR)/asm
 	ln -s $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-generic $(TARGET_INCDIR)/
