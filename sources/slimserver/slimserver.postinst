@@ -39,8 +39,8 @@
 	if test -e /usr/local/mysql/bin/mysqld ; then
 		ln -sf /usr/local/mysql/bin/mysqld /opt/share/slimserver/Bin/mysqld
 	fi
-	if test -e /opt/bin/mysqld ; then
-		ln -sf /opt/bin/mysqld /opt/share/slimserver/Bin/mysqld
+	if test -e /opt/libexec/mysqld ; then
+		ln -sf /opt/libexec/mysqld /opt/share/slimserver/Bin/mysqld
 	fi
 
         
