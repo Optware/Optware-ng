@@ -34,7 +34,10 @@ $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE):
 	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_KERNEL_SITE)/$(@F) || \
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
-$(TARGET_CROSS_TOP)/.unpacked: $(DL_DIR)/$(TOOLCHAIN_BINARY) # $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(TARGET_CROSS_TOP)/.unpacked: \
+$(DL_DIR)/$(TOOLCHAIN_BINARY) \
+$(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE) \
+# $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
