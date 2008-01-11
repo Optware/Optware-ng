@@ -53,7 +53,7 @@ II_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 II_CPPFLAGS=
-ifneq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 II_CPPFLAGS+= -D_POSIX_PATH_MAX=4096
 endif
 II_LDFLAGS=
