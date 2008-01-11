@@ -47,7 +47,11 @@ LIBTIFF_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBTIFF_CPPFLAGS=
+ifeq (syno-x07, $(OPTWARE_TARGET))
+LIBTIFF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)
+else
+LIBTIFF_CPPFLAGS=$(STAGING_CPPFLAGS)
+endif
 LIBTIFF_LDFLAGS=
 
 #
@@ -96,13 +100,13 @@ $(DL_DIR)/$(LIBTIFF_SOURCE):
 #
 $(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(LIBTIFF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(@D)
 	$(LIBTIFF_UNZIP) $(DL_DIR)/$(LIBTIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBTIFF_PATCHES) | patch -d $(BUILD_DIR)/$(LIBTIFF_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBTIFF_DIR) $(LIBTIFF_BUILD_DIR)
-	(cd $(LIBTIFF_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBTIFF_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTIFF_CPPFLAGS)" \
+		CPPFLAGS="$(LIBTIFF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTIFF_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -112,8 +116,11 @@ $(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBTIFF_BUILD_DIR)/libtool
-	touch $(LIBTIFF_BUILD_DIR)/.configured
+ifeq (syno-x07, $(OPTWARE_TARGET))
+	sed -i -e 's| -O2||' $(@D)/libtiff/Makefile
+endif
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libtiff-unpack: $(LIBTIFF_BUILD_DIR)/.configured
 
@@ -122,9 +129,9 @@ libtiff-unpack: $(LIBTIFF_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBTIFF_BUILD_DIR)/.built: $(LIBTIFF_BUILD_DIR)/.configured
-	rm -f $(LIBTIFF_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LIBTIFF_BUILD_DIR)
-	touch $(LIBTIFF_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -156,7 +163,7 @@ libtiff-stage: $(LIBTIFF_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libtiff
 #
 $(LIBTIFF_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBTIFF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libtiff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
