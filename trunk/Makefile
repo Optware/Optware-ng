@@ -113,6 +113,7 @@ PYTHON_PACKAGES = \
 	dstat \
 	getmail \
 	hellanzb \
+	hgsvn \
 	ipython \
 	mailman \
 	mod-python mod-wsgi \
