@@ -59,16 +59,18 @@ asterisk14-moh-freeplay-ulaw,\
 asterisk14-gui\
 ,freetds\
 ,libogg\
-,net-snmp\
 ,radiusclient-ng\
 ,sqlite2\
 ,unixodbc
 
-ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
+ifneq (, $(filter jabberd, $(PACKAGES)))
 ASTERISK14_SUGGESTS +=,jabberd
 endif
-ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
+ifneq (, $(filter iksemel, $(PACKAGES)))
 ASTERISK14_SUGGESTS +=,iksemel
+endif
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+ASTERISK14_SUGGESTS +=,net-snmp
 endif
 
 ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
@@ -77,7 +79,7 @@ ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=1
+ASTERISK14_IPK_VERSION=2
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
@@ -160,7 +162,7 @@ ASTERISK14_PATCHES=$(ASTERISK14_SOURCE_DIR)/nv.patch\
 # compilation or linking flags, then list them here.
 #
 ASTERISK14_CPPFLAGS=-fsigned-char -I$(STAGING_INCLUDE_DIR)
-ifeq (slugosbe, $(OPTWARE_TARGET))
+ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 ASTERISK14_CPPFLAGS+= -DPATH_MAX=4096
 endif
 ASTERISK14_LDFLAGS=
@@ -169,15 +171,20 @@ ASTERISK14_LDFLAGS+=-lpthread -ldl -lresolv
 endif
 
 ASTERISK14_CONFIGURE_OPTS=
-ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
+ifneq (, $(filter gnutls, $(PACKAGES)))
 ASTERISK14_CONFIGURE_OPTS += --with-gnutls=$(STAGING_PREFIX)
 else
 ASTERISK14_CONFIGURE_OPTS += --without-gnutls
 endif
-ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
+ifneq (, $(filter iksemel, $(PACKAGES)))
 ASTERISK14_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
 ASTERISK14_CONFIGURE_OPTS += --without-iksemel
+endif
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+ASTERISK14_CONFIGURE_OPTS += --with-netsnmp=$(STAGING_PREFIX)
+else
+ASTERISK14_CONFIGURE_OPTS += --without-netsnmp
 endif
 
 #
@@ -240,13 +247,16 @@ asterisk14-source: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES)
 #
 $(ASTERISK14_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK14_SOURCE) $(ASTERISK14_PATCHES) make/asterisk14.mk
 	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
-ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
+ifneq (, $(filter jabberd, $(PACKAGES)))
 	$(MAKE) jabberd-stage
 endif
-ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
+ifneq (, $(filter iksemel, $(PACKAGES)))
 	$(MAKE) iksemel-stage
 endif
-	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+	$(MAKE) net-snmp-stage
+endif
+	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage
 	$(MAKE) sqlite2-stage freetds-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK14_DIR) $(ASTERISK14_BUILD_DIR)
 	$(ASTERISK14_UNZIP) $(DL_DIR)/$(ASTERISK14_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -284,7 +294,6 @@ endif
 		--without-postgres \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
-		--with-netsnmp=$(STAGING_PREFIX) \
 		--without-imap \
 		$(ASTERISK14_CONFIGURE_OPTS) \
 		--localstatedir=/opt/var \
