@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VARNISH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/varnish
-VARNISH_VERSION=1.1.1
+VARNISH_VERSION=1.1.2
 VARNISH_SOURCE=varnish-$(VARNISH_VERSION).tar.gz
 VARNISH_DIR=varnish-$(VARNISH_VERSION)
 VARNISH_UNZIP=zcat
@@ -123,6 +123,8 @@ $(VARNISH_BUILD_DIR)/.configured: $(DL_DIR)/$(VARNISH_SOURCE) $(VARNISH_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VARNISH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VARNISH_LDFLAGS)" \
+		ac_cv_so_sndtimeo_works=yes \
+		ac_cv_so_rcvtimeo_works=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
