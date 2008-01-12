@@ -51,7 +51,11 @@ LIBVORBIS_IPK_VERSION=5
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBVORBIS_CPPFLAGS=-D__USE_EXTERN_INLINES 
+ifneq (, $(filter syno-x07, $(OPTWARE_TARGET)))
+LIBVORBIS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR) -D__USE_EXTERN_INLINES
+else
+LIBVORBIS_CPPFLAGS=$(STAGING_CPPFLAGS) -D__USE_EXTERN_INLINES
+endif
 ifdef NO_BUILTIN_MATH
 LIBVORBIS_CPPFLAGS+= -fno-builtin-cos -fno-builtin-acos -fno-builtin-rint -fno-builtin-lrint -fno-builtin-sin
 endif
@@ -113,7 +117,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	fi
 	(cd $(LIBVORBIS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBIS_CPPFLAGS)" \
+		CFLAGS="$(LIBVORBIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBIS_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -126,7 +130,10 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	)
 	$(PATCH_LIBTOOL) $(LIBVORBIS_BUILD_DIR)/libtool
 	sed -i -e 's/examples//g' $(LIBVORBIS_BUILD_DIR)/Makefile
-	touch $(LIBVORBIS_BUILD_DIR)/.configured
+ifneq (, $(filter syno-x07, $(OPTWARE_TARGET)))
+	sed -i -e 's/ -O20//g' -e 's/ -O2//g' $(@D)/lib/Makefile
+endif
+	touch $@
 
 libvorbis-unpack: $(LIBVORBIS_BUILD_DIR)/.configured
 
@@ -135,11 +142,11 @@ libvorbis-unpack: $(LIBVORBIS_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LIBVORBIS_BUILD_DIR)/.built: $(LIBVORBIS_BUILD_DIR)/.configured
-	rm -f $(LIBVORBIS_BUILD_DIR)/.built
-	CFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBIS_CPPFLAGS)" \
+	rm -f $@
+	CFLAGS="$(LIBVORBIS_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBIS_LDFLAGS)" \
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR)
-	touch $(LIBVORBIS_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -151,7 +158,7 @@ libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
-	rm -f $(LIBVORBIS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/vorbisenc.pc \
@@ -160,7 +167,7 @@ $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $(STAGING_LIB_DIR)/libvorbisenc.la
 	rm -f $(STAGING_LIB_DIR)/libvorbisfile.la
 	rm -f $(STAGING_LIB_DIR)/libvorbis.la
-	touch $(LIBVORBIS_BUILD_DIR)/.staged
+	touch $@
 
 libvorbis-stage: $(LIBVORBIS_BUILD_DIR)/.staged
 
