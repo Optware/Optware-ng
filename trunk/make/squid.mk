@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6
-SQUID_UPSTREAM_VERSION=2.6.STABLE17
-SQUID_VERSION=2.6.17
+SQUID_UPSTREAM_VERSION=2.6.STABLE18
+SQUID_VERSION=2.6.18
 SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.bz2
 SQUID_DIR=squid-$(SQUID_UPSTREAM_VERSION)
 SQUID_UNZIP=bzcat
