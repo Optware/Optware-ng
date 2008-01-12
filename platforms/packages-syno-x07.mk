@@ -19,3 +19,4 @@ BROKEN_PACKAGES = \
 	qemu sablevm \
 	socat \
 	uemacs \
+	varnish \
