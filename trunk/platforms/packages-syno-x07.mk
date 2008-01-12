@@ -5,7 +5,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk asterisk14 asterisk14-chan-capi \
+	asterisk asterisk14-chan-capi \
 	busybox \
 	chillispot classpath \
 	gambit-c gconv-modules gnu-smalltalk \
