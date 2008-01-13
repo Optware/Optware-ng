@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	qemu \
 	ushare \
 	\
-	asterisk asterisk14 asterisk14-chan-capi \
+	asterisk \
 	atk chillispot \
 	ftpd-topfield gconv-modules \
 	gtk ipac-ng ivorbis-tools \
