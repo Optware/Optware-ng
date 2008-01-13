@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MCABBER_SITE=http://www.lilotux.net/~mikael/mcabber/files
-MCABBER_VERSION=0.9.3
+MCABBER_VERSION=0.9.6
 MCABBER_SOURCE=mcabber-$(MCABBER_VERSION).tar.bz2
 MCABBER_DIR=mcabber-$(MCABBER_VERSION)
 MCABBER_UNZIP=bzcat
@@ -132,6 +132,7 @@ $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--with-openssl=$(STAGING_INCLUDE_DIR) \
+		--disable-hgcset \
 		--disable-nls \
 		--disable-static \
 	)
