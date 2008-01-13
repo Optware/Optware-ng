@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VNSTAT_SITE=http://humdi.net/vnstat
-VNSTAT_VERSION=1.5
+VNSTAT_VERSION=1.6
 VNSTAT_SOURCE=vnstat-$(VNSTAT_VERSION).tar.gz
 VNSTAT_DIR=vnstat-$(VNSTAT_VERSION)
 VNSTAT_UNZIP=zcat
@@ -105,16 +105,16 @@ vnstat-source: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES)
 #
 $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) make/vnstat.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(VNSTAT_DIR) $(VNSTAT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(VNSTAT_DIR) $(@D)
 	$(VNSTAT_UNZIP) $(DL_DIR)/$(VNSTAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VNSTAT_PATCHES)" ; \
 		then cat $(VNSTAT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(VNSTAT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(VNSTAT_DIR)" != "$(VNSTAT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(VNSTAT_DIR) $(VNSTAT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(VNSTAT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(VNSTAT_DIR) $(@D) ; \
 	fi
-	( cd $(VNSTAT_BUILD_DIR); \
+	( cd $(@D); \
 		sed -i -e 's|/usr|/opt|;s|/var/|/opt/var/|' \
 		-e 's|/etc|/opt/etc|;s|/share/man|/man|' \
 		-e 's|local/bin|bin|' \
@@ -123,7 +123,7 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 		cron/vnstat pppd/vnstat_ip-down pppd/vnstat_ip-up \
 		Makefile src/Makefile src/cfg.c cfg/vnstat.conf \
 	)
-	touch $(VNSTAT_BUILD_DIR)/.configured
+	touch $@
 
 vnstat-unpack: $(VNSTAT_BUILD_DIR)/.configured
 
@@ -131,10 +131,10 @@ vnstat-unpack: $(VNSTAT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(VNSTAT_BUILD_DIR)/.built: $(VNSTAT_BUILD_DIR)/.configured
-	rm -f $(VNSTAT_BUILD_DIR)/.built
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(VNSTAT_BUILD_DIR)
-	touch $(VNSTAT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -145,9 +145,9 @@ vnstat: $(VNSTAT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(VNSTAT_BUILD_DIR)/.staged: $(VNSTAT_BUILD_DIR)/.built
-	rm -f $(VNSTAT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(VNSTAT_BUILD_DIR)/.staged
+	touch $@
 
 vnstat-stage: $(VNSTAT_BUILD_DIR)/.staged
 
