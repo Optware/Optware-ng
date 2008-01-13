@@ -40,7 +40,7 @@ LM_SENSORS_IPK_VERSION=1
 
 #
 # LM_SENSORS_CONFFILES should be a list of user-editable files
-#LM_SENSORS_CONFFILES=/opt/etc/lm-sensors.conf /opt/etc/init.d/SXXlm-sensors
+LM_SENSORS_CONFFILES=/opt/etc/sensors3.conf
 
 #
 # LM_SENSORS_PATCHES should list any patches, in the the order in
