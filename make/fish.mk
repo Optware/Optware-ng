@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FISH_VERSION=1.22.3
+FISH_VERSION=1.23.0
 FISH_SITE=http://fishshell.org/files/$(FISH_VERSION)
 FISH_SOURCE=fish-$(FISH_VERSION).tar.bz2
 FISH_DIR=fish-$(FISH_VERSION)
@@ -114,18 +114,18 @@ fish-source: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES)
 #
 $(FISH_BUILD_DIR)/.configured: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES) make/fish.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(FISH_DIR) $(FISH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FISH_DIR) $(@D)
 	$(FISH_UNZIP) $(DL_DIR)/$(FISH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FISH_PATCHES)" ; \
 		then cat $(FISH_PATCHES) | patch -bd $(BUILD_DIR)/$(FISH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FISH_DIR)" != "$(FISH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FISH_DIR) $(FISH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FISH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FISH_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cd $(FISH_BUILD_DIR); autoreconf
+	cd $(@D); autoreconf
 endif
-	(cd $(FISH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FISH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FISH_LDFLAGS)" \
@@ -139,9 +139,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -ie '/^all:/s/user_doc //' $(FISH_BUILD_DIR)/Makefile
+	sed -i -e '/^all:/s/user_doc //' $(@D)/Makefile
 #	$(PATCH_LIBTOOL) $(FISH_BUILD_DIR)/libtool
-	touch $(FISH_BUILD_DIR)/.configured
+	touch $(@D)/.configured
 
 fish-unpack: $(FISH_BUILD_DIR)/.configured
 
@@ -149,9 +149,9 @@ fish-unpack: $(FISH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FISH_BUILD_DIR)/.built: $(FISH_BUILD_DIR)/.configured
-	rm -f $(FISH_BUILD_DIR)/.built
-	$(MAKE) -C $(FISH_BUILD_DIR)
-	touch $(FISH_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -162,9 +162,9 @@ fish: $(FISH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FISH_BUILD_DIR)/.staged: $(FISH_BUILD_DIR)/.built
-	rm -f $(FISH_BUILD_DIR)/.staged
-	$(MAKE) -C $(FISH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(FISH_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 fish-stage: $(FISH_BUILD_DIR)/.staged
 
