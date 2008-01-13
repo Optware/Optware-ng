@@ -173,6 +173,7 @@ ASTERISK_PACKAGES = \
 PACKAGES_REQUIRE_LINUX26 = \
 	inotail \
 	module-init-tools \
+	sysfsutils \
 	varnish \
 
 PACKAGES_ONLY_WORK_ON_LINUX24 = \
