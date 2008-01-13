@@ -172,6 +172,7 @@ ASTERISK_PACKAGES = \
 
 PACKAGES_REQUIRE_LINUX26 = \
 	inotail \
+	lm-sensors \
 	module-init-tools \
 	sysfsutils \
 	varnish \
