@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PEXPECT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pexpect
-PY-PEXPECT_VERSION=2.1
+PY-PEXPECT_VERSION=2.3
 PY-PEXPECT_SOURCE=pexpect-$(PY-PEXPECT_VERSION).tar.gz
 PY-PEXPECT_DIR=pexpect-$(PY-PEXPECT_VERSION)
 PY-PEXPECT_UNZIP=zcat
