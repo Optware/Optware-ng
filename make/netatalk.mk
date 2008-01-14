@@ -29,14 +29,14 @@ NETATALK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NETATALK_DESCRIPTION=Apple talk networking daemon.
 NETATALK_SECTION=networking
 NETATALK_PRIORITY=optional
-NETATALK_DEPENDS=
+NETATALK_DEPENDS=libdb
 NETATALK_SUGGESTS=
 NETATALK_CONFLICTS=
 
 #
 # NETATALK_IPK_VERSION should be incremented when the ipk changes.
 #
-NETATALK_IPK_VERSION=3
+NETATALK_IPK_VERSION=4
 
 #
 # NETATALK_CONFFILES should be a list of user-editable files
