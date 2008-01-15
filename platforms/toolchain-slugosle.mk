@@ -28,7 +28,10 @@ else
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = arm-linux
-TARGET_CROSS_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/slugosle/tmp/cross
+#TARGET_CROSS_TOOLCHAIN_LOCATION=slugosle/tmp/cross
+#TARGET_CROSS_TOOLCHAIN_LOCATION=releases/slugos-3.10-beta/debianslug-nslu2.tmp/cross
+TARGET_CROSS_TOOLCHAIN_LOCATION=releases/slugos-4.8-beta/nslu2le.tmp/cross
+TARGET_CROSS_TOP = $(shell cd $(BASE_DIR)/../..; pwd)/$(TARGET_CROSS_TOOLCHAIN_LOCATION)
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/$(GNU_TARGET_NAME)-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/$(GNU_TARGET_NAME)/include
