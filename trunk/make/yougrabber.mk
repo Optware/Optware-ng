@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 YOUGRABBER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/yougrabber
-YOUGRABBER_VERSION=0.29.2
+YOUGRABBER_VERSION=0.29.3
 YOUGRABBER_SOURCE=yougrabber-$(YOUGRABBER_VERSION).tar.bz2
 YOUGRABBER_DIR=yougrabber-$(YOUGRABBER_VERSION)
 YOUGRABBER_UNZIP=bzcat
@@ -155,9 +155,9 @@ yougrabber: $(YOUGRABBER_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(YOUGRABBER_BUILD_DIR)/.staged: $(YOUGRABBER_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(YOUGRABBER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 yougrabber-stage: $(YOUGRABBER_BUILD_DIR)/.staged
 
@@ -199,14 +199,12 @@ $(YOUGRABBER_IPK): $(YOUGRABBER_BUILD_DIR)/.built
 		PREFIX=$(YOUGRABBER_IPK_DIR)/opt \
 		COPY=install
 	$(STRIP_COMMAND) $(YOUGRABBER_IPK_DIR)/opt/bin/yg
-	install -d $(YOUGRABBER_IPK_DIR)/opt/share/doc/yougrabber
 	install $(YOUGRABBER_BUILD_DIR)/CHANGELOG \
 		$(YOUGRABBER_BUILD_DIR)/CONTRIBUTORS \
 		$(YOUGRABBER_BUILD_DIR)/INSTALL \
 		$(YOUGRABBER_BUILD_DIR)/LICENSE \
 		$(YOUGRABBER_BUILD_DIR)/README \
-		$(YOUGRABBER_BUILD_DIR)/yg.conf.example \
-		$(YOUGRABBER_IPK_DIR)/opt/share/doc/yougrabber
+		$(YOUGRABBER_IPK_DIR)/opt/share/doc/yg
 	$(MAKE) $(YOUGRABBER_IPK_DIR)/CONTROL/control
 	echo $(YOUGRABBER_CONFFILES) | sed -e 's/ /\n/g' > $(YOUGRABBER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(YOUGRABBER_IPK_DIR)
