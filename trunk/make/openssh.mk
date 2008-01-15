@@ -168,7 +168,7 @@ $(OPENSSH_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(OPENSSH_DESCRIPTION)" >>$@
 	@echo "Depends: $(OPENSSH_DEPENDS)" >>$@
 	@echo "Suggests: $(OPENSSH_SUGGESTS)" >>$@
-	@echo "Conflicts: openssh-sftp-server $(OPENSSH_CONFLICTS)" >>$@
+	@echo "Conflicts: $(OPENSSH_CONFLICTS)" >>$@
 
 $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control:
 	@install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL
@@ -183,7 +183,7 @@ $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control:
 	@echo "Description: sftp-server only from $(OPENSSH_DESCRIPTION)" >>$@
 	@echo "Depends: $(OPENSSH_DEPENDS)" >>$@
 	@echo "Suggests: $(OPENSSH_SUGGESTS)" >>$@
-	@echo "Conflicts: openssh $(OPENSSH_CONFLICTS)" >>$@
+	@echo "Conflicts: $(OPENSSH_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -195,17 +195,18 @@ $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 	rm -rf $(OPENSSH_IPK_DIR)/opt/man
 	install -d $(OPENSSH_IPK_DIR)/opt/etc/init.d/
 	install -d $(OPENSSH_IPK_DIR)/opt/var/run/
+	rm -rf $(OPENSSH_SFTP_SERVER_IPK_DIR) \
+		$(BUILD_DIR)/openssh-sftp-server_*_$(TARGET_ARCH).ipk
+	install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
+	install -m 775 $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server \
+		$(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
+	rm -f $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server
 	install -m 755 $(OPENSSH_SOURCE_DIR)/rc.openssh $(OPENSSH_IPK_DIR)/opt/etc/init.d/S40sshd
 	$(MAKE) $(OPENSSH_IPK_DIR)/CONTROL/control
 	install -m 755 $(OPENSSH_SOURCE_DIR)/postinst $(OPENSSH_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm
 	echo $(OPENSSH_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSH_IPK_DIR)
-	rm -rf $(OPENSSH_SFTP_SERVER_IPK_DIR) \
-		$(BUILD_DIR)/openssh-sftp-server_*_$(TARGET_ARCH).ipk
-	install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
-	install -m 755 $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server \
-		$(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
 	$(MAKE) $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSH_SFTP_SERVER_IPK_DIR)
 #
