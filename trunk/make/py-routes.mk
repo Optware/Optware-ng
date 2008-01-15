@@ -24,7 +24,7 @@
 # PY-ROUTES_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-ROUTES_SITE=http://cheeseshop.python.org/packages/source/R/Routes
-PY-ROUTES_VERSION=1.7
+PY-ROUTES_VERSION=1.7.1
 PY-ROUTES_IPK_VERSION=1
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
@@ -106,16 +106,17 @@ py-routes-source: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PATCHES)
 #
 $(PY-ROUTES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-ROUTES_BUILD_DIR)
-	mkdir -p $(PY-ROUTES_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-ROUTES_DIR)
 	$(PY-ROUTES_UNZIP) $(DL_DIR)/$(PY-ROUTES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-ROUTES_PATCHES)" ; then \
 	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(PY-ROUTES_BUILD_DIR)/2.4
-	(cd $(PY-ROUTES_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
+	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -124,8 +125,9 @@ $(PY-ROUTES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUTES_SOURCE) $(PY-ROUTES_PA
 	if test -n "$(PY-ROUTES_PATCHES)" ; then \
 	    cat $(PY-ROUTES_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUTES_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(PY-ROUTES_BUILD_DIR)/2.5
-	(cd $(PY-ROUTES_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-ROUTES_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
+	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -137,10 +139,10 @@ py-routes-unpack: $(PY-ROUTES_BUILD_DIR)/.configured
 #
 $(PY-ROUTES_BUILD_DIR)/.built: $(PY-ROUTES_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-ROUTES_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-ROUTES_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
