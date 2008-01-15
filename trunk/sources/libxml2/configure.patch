@@ -1,150 +1,91 @@
---- libxml2/configure.orig	2007-06-12 09:10:36.000000000 -0700
-+++ libxml2/configure	2007-06-30 14:04:16.000000000 -0700
-@@ -8648,7 +8648,7 @@
+--- libxml2-2.6.31/configure.orig	2008-01-11 00:01:56.000000000 -0800
++++ libxml2-2.6.31/configure	2008-01-14 15:52:42.000000000 -0800
+@@ -9568,7 +9568,7 @@
  shlibpath_overrides_runpath=unknown
  version_type=none
  dynamic_linker="$host_os ld.so"
 -sys_lib_dlsearch_path_spec="/lib /usr/lib"
 +sys_lib_dlsearch_path_spec=""
+ 
  if test "$GCC" = yes; then
-   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
-@@ -8661,7 +8661,7 @@
-     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
-   fi
+   case $host_os in
+@@ -9619,7 +9619,7 @@
+ }'`
+   sys_lib_search_path_spec=`echo $lt_search_path_spec`
  else
 -  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
 +  sys_lib_search_path_spec=""
  fi
  need_lib_prefix=unknown
  hardcode_into_libs=no
-@@ -8997,8 +8997,8 @@
-   esac
-   shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
-   shlibpath_overrides_runpath=no
+@@ -9963,8 +9963,8 @@
+   # Some rework will be needed to allow for fast_install
+   # before this can be enabled.
+   hardcode_into_libs=yes
 -  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
 -  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
 +  sys_lib_search_path_spec=""
 +  sys_lib_dlsearch_path_spec=""
-   hardcode_into_libs=yes
-   ;;
  
-@@ -9046,7 +9046,7 @@
    # Append ld.so.conf contents to the search path
    if test -f /etc/ld.so.conf; then
-     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
--    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-+    sys_lib_dlsearch_path_spec=""
-   fi
- 
-   # We used to test for /lib/ld.so.1 and disable shared libraries on
-@@ -12628,7 +12628,7 @@
+@@ -13588,7 +13588,7 @@
  shlibpath_overrides_runpath=unknown
  version_type=none
  dynamic_linker="$host_os ld.so"
 -sys_lib_dlsearch_path_spec="/lib /usr/lib"
 +sys_lib_dlsearch_path_spec=""
- if test "$GCC" = yes; then
-   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
-@@ -12641,7 +12641,7 @@
-     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
-   fi
- else
--  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
-+  sys_lib_search_path_spec=""
- fi
+ 
  need_lib_prefix=unknown
  hardcode_into_libs=no
-@@ -12977,8 +12977,8 @@
-   esac
-   shlibpath_var=LD_LIBRARY${shlibsuff}_PATH
-   shlibpath_overrides_runpath=no
+@@ -13931,8 +13931,8 @@
+   # Some rework will be needed to allow for fast_install
+   # before this can be enabled.
+   hardcode_into_libs=yes
 -  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
 -  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
 +  sys_lib_search_path_spec=""
 +  sys_lib_dlsearch_path_spec=""
+ 
+   # Append ld.so.conf contents to the search path
+   if test -f /etc/ld.so.conf; then
+@@ -16191,7 +16191,7 @@
+ shlibpath_overrides_runpath=unknown
+ version_type=none
+ dynamic_linker="$host_os ld.so"
+-sys_lib_dlsearch_path_spec="/lib /usr/lib"
++sys_lib_dlsearch_path_spec=""
+ 
+ need_lib_prefix=unknown
+ hardcode_into_libs=no
+@@ -16534,8 +16534,8 @@
+   # Some rework will be needed to allow for fast_install
+   # before this can be enabled.
    hardcode_into_libs=yes
-   ;;
+-  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
+-  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
++  sys_lib_search_path_spec=""
++  sys_lib_dlsearch_path_spec=""
  
-@@ -13026,7 +13026,7 @@
    # Append ld.so.conf contents to the search path
    if test -f /etc/ld.so.conf; then
-     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
--    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-+    sys_lib_dlsearch_path_spec=""
-   fi
- 
-   # We used to test for /lib/ld.so.1 and disable shared libraries on
-@@ -15239,7 +15239,7 @@
+@@ -18794,7 +18794,7 @@
  shlibpath_overrides_runpath=unknown
  version_type=none
  dynamic_linker="$host_os ld.so"
 -sys_lib_dlsearch_path_spec="/lib /usr/lib"
 +sys_lib_dlsearch_path_spec=""
- if test "$GCC" = yes; then
-   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
-@@ -15252,7 +15252,7 @@
-     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
-   fi
- else
--  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
-+  sys_lib_search_path_spec=""
- fi
+ 
  need_lib_prefix=unknown
  hardcode_into_libs=no
-@@ -15626,7 +15626,7 @@
-       case `/usr/bin/file conftest.$ac_objext` in
-       *64-bit*)
-         libsuff=64
--        sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
-+        sys_lib_search_path_spec=""
-         ;;
-       esac
-     fi
-@@ -15637,7 +15637,7 @@
-   # Append ld.so.conf contents to the search path
-   if test -f /etc/ld.so.conf; then
-     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
--    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-+    sys_lib_dlsearch_path_spec=""
-   fi
- 
-   # We used to test for /lib/ld.so.1 and disable shared libraries on
-@@ -17858,7 +17858,7 @@
- shlibpath_overrides_runpath=unknown
- version_type=none
- dynamic_linker="$host_os ld.so"
--sys_lib_dlsearch_path_spec="/lib /usr/lib"
-+sys_lib_dlsearch_path_spec=""
- if test "$GCC" = yes; then
-   sys_lib_search_path_spec=`$CC -print-search-dirs | grep "^libraries:" | $SED -e "s/^libraries://" -e "s,=/,/,g"`
-   if echo "$sys_lib_search_path_spec" | grep ';' >/dev/null ; then
-@@ -17871,7 +17871,7 @@
-     sys_lib_search_path_spec=`echo "$sys_lib_search_path_spec" | $SED  -e "s/$PATH_SEPARATOR/ /g"`
-   fi
- else
--  sys_lib_search_path_spec="/lib /usr/lib /usr/local/lib"
+@@ -19137,8 +19137,8 @@
+   # Some rework will be needed to allow for fast_install
+   # before this can be enabled.
+   hardcode_into_libs=yes
+-  sys_lib_search_path_spec="/usr/lib${libsuff} /lib${libsuff} /usr/local/lib${libsuff}"
+-  sys_lib_dlsearch_path_spec="/usr/lib${libsuff} /lib${libsuff}"
 +  sys_lib_search_path_spec=""
- fi
- need_lib_prefix=unknown
- hardcode_into_libs=no
-@@ -18245,7 +18245,7 @@
-       case `/usr/bin/file conftest.$ac_objext` in
-       *64-bit*)
-         libsuff=64
--        sys_lib_search_path_spec="/lib${libsuff} /usr/lib${libsuff} /usr/local/lib${libsuff}"
-+        sys_lib_search_path_spec=""
-         ;;
-       esac
-     fi
-@@ -18256,7 +18256,7 @@
++  sys_lib_dlsearch_path_spec=""
+ 
    # Append ld.so.conf contents to the search path
    if test -f /etc/ld.so.conf; then
-     lt_ld_extra=`awk '/^include / { system(sprintf("cd /etc; cat %s 2>/dev/null", \$2)); skip = 1; } { if (!skip) print \$0; skip = 0; }' < /etc/ld.so.conf | $SED -e 's/#.*//;s/[:,	]/ /g;s/=[^=]*$//;s/=[^= ]* / /g;/^$/d' | tr '\n' ' '`
--    sys_lib_dlsearch_path_spec="/lib${libsuff} /usr/lib${libsuff} $lt_ld_extra"
-+    sys_lib_dlsearch_path_spec=""
-   fi
- 
-   # We used to test for /lib/ld.so.1 and disable shared libraries on
