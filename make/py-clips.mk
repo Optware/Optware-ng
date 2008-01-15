@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyclips
-PY-CLIPS_VERSION=1.0.4.320
+PY-CLIPS_VERSION=1.0.6.335
 PY-CLIPS_SOURCE=pyclips-$(PY-CLIPS_VERSION).tar.gz
 PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
 PY-CLIPS_CLIPS_ZIP=CLIPSSrc.zip
@@ -85,10 +85,10 @@ PY25-CLIPS_IPK=$(BUILD_DIR)/py25-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CLIPS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CLIPS_SITE)/$(PY-CLIPS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-CLIPS_SITE)/$(@F)
 
 $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE):
-	$(WGET) -O $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE) $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_ZIP)
+	$(WGET) -O $@ $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_ZIP)
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,8 +120,8 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)/2.4
-	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
@@ -137,8 +137,8 @@ $(PY-CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CLIPS_SOURCE) $(DL_DIR)/$(PY-C
 	rm -rf $(BUILD_DIR)/$(PY-CLIPS_DIR)
 	$(PY-CLIPS_UNZIP) $(DL_DIR)/$(PY-CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CLIPS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CLIPS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(PY-CLIPS_BUILD_DIR)/2.5
-	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-CLIPS_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo ; \
 		echo "[build_ext]"; \
@@ -158,16 +158,16 @@ py-clips-unpack: $(PY-CLIPS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-CLIPS_BUILD_DIR)/.built: $(PY-CLIPS_BUILD_DIR)/.configured
-	rm -f $(PY-CLIPS_BUILD_DIR)/.built
-	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
         )
-	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
         )
-	touch $(PY-CLIPS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -178,9 +178,9 @@ py-clips: $(PY-CLIPS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-CLIPS_BUILD_DIR)/.staged: $(PY-CLIPS_BUILD_DIR)/.built
-	rm -f $(PY-CLIPS_BUILD_DIR)/.staged
-	$(MAKE) -C $(PY-CLIPS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-CLIPS_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-clips-stage: $(PY-CLIPS_BUILD_DIR)/.staged
 
