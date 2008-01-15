@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=1
+OPENSSH_IPK_VERSION=2
 
 OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
 	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
@@ -46,6 +46,9 @@ OPENSSH_BUILD_DIR=$(BUILD_DIR)/openssh
 OPENSSH_SOURCE_DIR=$(SOURCE_DIR)/openssh
 OPENSSH_IPK_DIR=$(BUILD_DIR)/openssh-$(OPENSSH_VERSION)-ipk
 OPENSSH_IPK=$(BUILD_DIR)/openssh_$(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+OPENSSH_SFTP_SERVER_IPK_DIR=$(BUILD_DIR)/openssh-sftp-server-$(OPENSSH_VERSION)-ipk
+OPENSSH_SFTP_SERVER_IPK=$(BUILD_DIR)/openssh-sftp-server_$(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 
 .PHONY: openssh-source openssh-unpack openssh openssh-stage openssh-ipk openssh-clean openssh-dirclean openssh-check
@@ -165,12 +168,27 @@ $(OPENSSH_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(OPENSSH_DESCRIPTION)" >>$@
 	@echo "Depends: $(OPENSSH_DEPENDS)" >>$@
 	@echo "Suggests: $(OPENSSH_SUGGESTS)" >>$@
-	@echo "Conflicts: $(OPENSSH_CONFLICTS)" >>$@
+	@echo "Conflicts: openssh-sftp-server $(OPENSSH_CONFLICTS)" >>$@
+
+$(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control:
+	@install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL
+	@rm -f $@
+	@echo "Package: openssh-sftp-server" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(OPENSSH_PRIORITY)" >>$@
+	@echo "Section: $(OPENSSH_SECTION)" >>$@
+	@echo "Version: $(OPENSSH_VERSION)-$(OPENSSH_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(OPENSSH_MAINTAINER)" >>$@
+	@echo "Source: $(OPENSSH_SITE)/$(OPENSSH_SOURCE)" >>$@
+	@echo "Description: sftp-server only from $(OPENSSH_DESCRIPTION)" >>$@
+	@echo "Depends: $(OPENSSH_DEPENDS)" >>$@
+	@echo "Suggests: $(OPENSSH_SUGGESTS)" >>$@
+	@echo "Conflicts: openssh $(OPENSSH_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
 #
-$(OPENSSH_IPK): $(OPENSSH_BUILD_DIR)/.built
+$(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 	rm -rf $(OPENSSH_IPK_DIR) $(BUILD_DIR)/openssh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENSSH_BUILD_DIR) DESTDIR=$(OPENSSH_IPK_DIR) install-nokeys
 	rm -rf $(OPENSSH_IPK_DIR)/opt/share
@@ -183,11 +201,21 @@ $(OPENSSH_IPK): $(OPENSSH_BUILD_DIR)/.built
 	install -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm
 	echo $(OPENSSH_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSH_IPK_DIR)
-
+	rm -rf $(OPENSSH_SFTP_SERVER_IPK_DIR) \
+		$(BUILD_DIR)/openssh-sftp-server_*_$(TARGET_ARCH).ipk
+	install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
+	install -m 755 $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server \
+		$(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
+	$(MAKE) $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSH_SFTP_SERVER_IPK_DIR)
 #
 # This is called from the top level makefile to create the IPK file.
 #
-openssh-ipk: $(OPENSSH_IPK)
+
+$(OPENSSH_BUILD_DIR)/.ipk: $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK)
+	touch $@
+
+openssh-ipk: $(OPENSSH_BUILD_DIR)/.ipk 
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -201,7 +229,7 @@ openssh-clean:
 # directories.
 #
 openssh-dirclean:
-	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) $(OPENSSH_IPK_DIR) $(OPENSSH_IPK)
+	rm -rf $(BUILD_DIR)/$(OPENSSH_DIR) $(OPENSSH_BUILD_DIR) $(OPENSSH_IPK_DIR) $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK_DIR) $(OPENSSH_SFTP_SERVER_IPK) 
 #
 #
 # Some sanity check for the package.
