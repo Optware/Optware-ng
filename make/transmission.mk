@@ -20,10 +20,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TRANSMISSION_SITE=http://download.m0k.org/transmission/files
+#  TRAC: http://trac.transmissionbt.com/timeline
+#
+TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.0
-TRANSMISSION_SVN=svn://svn.m0k.org/Transmission/trunk
-TRANSMISSION_SVN_REV=4567
+TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
+TRANSMISSION_SVN_REV=4684
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
