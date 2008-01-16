@@ -1,0 +1,10 @@
+--- src/utils/directory.h.orig	2008-01-16 11:00:03.000000000 -0800
++++ src/utils/directory.h	2008-01-16 11:11:36.000000000 -0800
+@@ -37,6 +37,7 @@
+ #ifndef RTORRENT_UTILS_DIRECTORY_H
+ #define RTORRENT_UTILS_DIRECTORY_H
+ 
++#include <inttypes.h>
+ #include <string>
+ #include <vector>
+ 
