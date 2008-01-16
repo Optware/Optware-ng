@@ -46,7 +46,7 @@ endif
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=3
+SLIMSERVER_IPK_VERSION=4
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
@@ -119,7 +119,7 @@ slimserver-source: $(DL_DIR)/$(SLIMSERVER_SOURCE)
 #
 #
 $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER_PATCHES)  make/slimserver.mk
-	$(MAKE) perl-stage expat-stage perl-dbd-mysql-unpack perl-time-hires-stage
+	$(MAKE) perl-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(SLIMSERVER_DIR) $(SLIMSERVER_BUILD_DIR)
 	$(SLIMSERVER_UNZIP) $(DL_DIR)/$(SLIMSERVER_SOURCE) | tar -C $(BUILD_DIR) -xvf -	
 	if test -n "$(SLIMSERVER_PATCHES)" ; \
@@ -129,11 +129,14 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER
 	if test "$(BUILD_DIR)/$(SLIMSERVER_DIR)" != "$(SLIMSERVER_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SLIMSERVER_DIR) $(SLIMSERVER_BUILD_DIR) ; \
 	fi
-	cp $(PERL-DBD-MYSQL_BUILD_DIR)/Makefile.PL $(SLIMSERVER_BUILD_DIR)/slimserver_DBD_Makefile.PL
-	cp $(PERL-TIME-HIRES_BUILD_DIR)/Makefile.PL $(SLIMSERVER_BUILD_DIR)/slimserver_TimeMakefile.PL
-	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(PERL-DBI_BUILD_DIR)/blib/arch/auto/DBI|" \
-		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(PERL-DBI_BUILD_DIR)/blib/arch/auto/DBI/Driver.xst|" \
-		$(SLIMSERVER_BUILD_DIR)/slimserver_DBD_Makefile.PL
+	cp $(SLIMSERVER_SOURCE_DIR)/DBD-mysql-Makefile.PL $(SLIMSERVER_BUILD_DIR)/
+	sed -i  -e "s|^DBI_INSTARCH_DIR=.*|DBI_INSTARCH_DIR=$(SLIMSERVER_BUILD_DIR)/temp/DBI-1.50/blib/arch/auto/DBI|" \
+		-e "s|^DBI_DRIVER_XST=.*|DBI_DRIVER_XST=$(SLIMSERVER_BUILD_DIR)/temp/DBI-1.50/blib/arch/auto/DBI/Driver.xst|" \
+		$(SLIMSERVER_BUILD_DIR)/DBD-mysql-Makefile.PL
+	cp $(SLIMSERVER_SOURCE_DIR)/Time-HiRes-Makefile.PL $(SLIMSERVER_BUILD_DIR)/
+	sed -i -e "s|\$$Config{'ccflags'}|'$(STAGING_CPPFLAGS)'|" \
+		-e "s|\$$Config{'cc'}|$(TARGET_CC)|" \
+		$(SLIMSERVER_BUILD_DIR)/Time-HiRes-Makefile.PL
 	sed -i  -e "s|perlBinary = <STDIN>|perlBinary = \"$(PERL_HOSTPERL)\"|" \
 		-e "s|slimServerPath = <STDIN>|slimServerPath = \"$(SLIMSERVER_BUILD_DIR)\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
@@ -142,6 +145,7 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER
 	touch $(SLIMSERVER_BUILD_DIR)/.configured
 
 slimserver-unpack: $(SLIMSERVER_BUILD_DIR)/.configured
+#		-e "s|DBI-1.50|DBI-$(PERL-DBI_VERSION)|g" \
 
 #
 # This builds the actual binary.
@@ -157,7 +161,6 @@ $(SLIMSERVER_BUILD_DIR)/.built: $(SLIMSERVER_BUILD_DIR)/.configured
 		STAGINGDIR="${STAGING_DIR}" \
 		$(PERL_HOSTPERL) build-perl-modules.pl \
 		PREFIX=/opt \
-		; cd ..\
 	)
 	touch $(SLIMSERVER_BUILD_DIR)/.built
 
@@ -212,16 +215,14 @@ $(SLIMSERVER_IPK_DIR)/CONTROL/control:
 #
 $(SLIMSERVER_IPK): $(SLIMSERVER_BUILD_DIR)/.built
 	rm -rf $(SLIMSERVER_IPK_DIR) $(BUILD_DIR)/slimserver_*_$(TARGET_ARCH).ipk
-
 	install -d $(SLIMSERVER_IPK_DIR)/opt/etc/
 	install -d $(SLIMSERVER_IPK_DIR)/opt/bin/ $(SLIMSERVER_IPK_DIR)/opt/share/slimserver
-
 #	install -m 755 $(SLIMSERVER_BUILD_DIR)/slimserver.pl $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
 	cp -r $(SLIMSERVER_BUILD_DIR)/ $(SLIMSERVER_IPK_DIR)/opt/share
-	rm -Rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/temp
-	rm -Rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/Bin/i386-linux
+	rm -rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/temp
+	rm -rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/Bin/i386-linux
 # To comply with Licence - only Logitech/Slimdevices can include the firmware bin files
-# in distribution. Slmserver will download bin files at startup.
+# in distribution. Slimserver will download bin files at startup.
 	rm  $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/Firmware/*.bin
 	(cd  $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/CPAN ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
@@ -237,7 +238,6 @@ else
 
 endif
 	ln -sf ../etc/init.d/S99slimserver $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
-#	chmod 0755 $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
 	$(MAKE) $(SLIMSERVER_IPK_DIR)/CONTROL/control
 	install -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.postinst $(SLIMSERVER_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.prerm $(SLIMSERVER_IPK_DIR)/CONTROL/prerm
