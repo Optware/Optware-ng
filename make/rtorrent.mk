@@ -14,7 +14,13 @@
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
 RTORRENT_VERSION=0.7.9
+RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
+RTORRENT_SVN_REV=1027
+ifdef RTORRENT_SVN_REV
+RTORRENT_SOURCE=rtorrent-svn-$(RTORRENT_SVN_REV).tar.gz
+else
 RTORRENT_SOURCE=rtorrent-$(RTORRENT_VERSION).tar.gz
+endif
 RTORRENT_DIR=rtorrent-$(RTORRENT_VERSION)
 RTORRENT_UNZIP=zcat
 RTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -25,13 +31,13 @@ RTORRENT_NCURSES=$(strip \
 	$(if $(filter ds101g, $(OPTWARE_TARGET)), ncurses, \
 	$(NCURSES_FOR_OPTWARE_TARGET)))
 RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
-RTORRENT_SUGGESTS=dtach, screen
+RTORRENT_SUGGESTS=dtach, screen, adduser
 RTORRENT_CONFLICTS=
 
 #
 # RTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-RTORRENT_IPK_VERSION=2
+RTORRENT_IPK_VERSION=1
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -74,7 +80,11 @@ RTORRENT_CONFIGURE_OPTS += --with-xmlrpc-c
 RTORRENT_BUILD_DIR=$(BUILD_DIR)/rtorrent
 RTORRENT_SOURCE_DIR=$(SOURCE_DIR)/rtorrent
 RTORRENT_IPK_DIR=$(BUILD_DIR)/rtorrent-$(RTORRENT_VERSION)-ipk
+ifdef RTORRENT_SVN_REV
+RTORRENT_IPK=$(BUILD_DIR)/rtorrent_$(RTORRENT_VERSION)+r$(RTORRENT_SVN_REV)-$(RTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+else
 RTORRENT_IPK=$(BUILD_DIR)/rtorrent_$(RTORRENT_VERSION)-$(RTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+endif
 
 .PHONY: rtorrent-source rtorrent-unpack rtorrent rtorrent-stage rtorrent-ipk rtorrent-clean rtorrent-dirclean rtorrent-check
 
@@ -83,7 +93,17 @@ RTORRENT_IPK=$(BUILD_DIR)/rtorrent_$(RTORRENT_VERSION)-$(RTORRENT_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RTORRENT_SOURCE):
+ifdef RTORRENT_SVN_REV
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(RTORRENT_DIR) && \
+		svn co -r $(RTORRENT_SVN_REV) $(RTORRENT_SVN) \
+			$(RTORRENT_DIR) && \
+		tar -czf $@ $(RTORRENT_DIR) && \
+		rm -rf $(RTORRENT_DIR) \
+	)
+else
 	$(WGET) -P $(DL_DIR) $(RTORRENT_SITE)/$(RTORRENT_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,7 +128,12 @@ $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCH
 	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage
 	$(MAKE) libcurl-stage xmlrpc-c-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
+ifdef RTORRENT_SVN_REV
 	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+else
+	mkdir -p $(BUILD_DIR)/$(RTORRENT_DIR)
+	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+endif
 	if test -n "$(RTORRENT_PATCHES)" ; \
 		then cat $(RTORRENT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(RTORRENT_DIR) -p0 ; \
@@ -127,7 +152,7 @@ else
 		$(@D)/configure.ac
 endif
 	(cd $(RTORRENT_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -i -f; \
+		AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RTORRENT_LDFLAGS)" \
@@ -182,7 +207,11 @@ $(RTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(RTORRENT_PRIORITY)" >>$@
 	@echo "Section: $(RTORRENT_SECTION)" >>$@
+ifdef RTORRENT_SVN_REV
+	@echo "Version: $(RTORRENT_VERSION)+r$(RTORRENT_SVN_REV)-$(RTORRENT_IPK_VERSION)" >>$@
+else
 	@echo "Version: $(RTORRENT_VERSION)-$(RTORRENT_IPK_VERSION)" >>$@
+endif
 	@echo "Maintainer: $(RTORRENT_MAINTAINER)" >>$@
 	@echo "Source: $(RTORRENT_SITE)/$(RTORRENT_SOURCE)" >>$@
 	@echo "Description: $(RTORRENT_DESCRIPTION)" >>$@

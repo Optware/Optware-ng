@@ -13,7 +13,13 @@
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
 LIBTORRENT_VERSION=0.11.9
+LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
+LIBTORRENT_SVN_REV=1027
+ifdef LIBTORRENT_SVN_REV
+LIBTORRENT_SOURCE=libtorrent-svn-$(LIBTORRENT_SVN_REV).tar.gz
+else
 LIBTORRENT_SOURCE=libtorrent-$(LIBTORRENT_VERSION).tar.gz
+endif
 LIBTORRENT_DIR=libtorrent-$(LIBTORRENT_VERSION)
 LIBTORRENT_UNZIP=zcat
 LIBTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -27,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=2
+LIBTORRENT_IPK_VERSION=1
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -37,10 +43,13 @@ LIBTORRENT_IPK_VERSION=2
 # LIBTORRENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+LIBTORRENT_PATCHES=
+ifdef LIBTORRENT_SVN_REV
+LIBTORRENT_POST_AC_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
+else
 ifneq ($(HOSTCC), $(TARGET_CC))
 LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
-else
-LIBTORRENT_PATCHES=
+endif
 endif
 ifeq ($(TARGET_ARCH), armeb)
 ifeq ($(LIBC_STYLE), glibc)
@@ -88,7 +97,11 @@ endif
 LIBTORRENT_BUILD_DIR=$(BUILD_DIR)/libtorrent
 LIBTORRENT_SOURCE_DIR=$(SOURCE_DIR)/libtorrent
 LIBTORRENT_IPK_DIR=$(BUILD_DIR)/libtorrent-$(LIBTORRENT_VERSION)-ipk
+ifdef LIBTORRENT_SVN_REV
+LIBTORRENT_IPK=$(BUILD_DIR)/libtorrent_$(LIBTORRENT_VERSION)+r$(LIBTORRENT_SVN_REV)-$(LIBTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+else
 LIBTORRENT_IPK=$(BUILD_DIR)/libtorrent_$(LIBTORRENT_VERSION)-$(LIBTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+endif
 
 .PHONY: libtorrent-source libtorrent-unpack libtorrent libtorrent-stage libtorrent-ipk libtorrent-clean libtorrent-dirclean libtorrent-check
 
@@ -97,7 +110,17 @@ LIBTORRENT_IPK=$(BUILD_DIR)/libtorrent_$(LIBTORRENT_VERSION)-$(LIBTORRENT_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBTORRENT_SOURCE):
+ifdef LIBTORRENT_SVN_REV
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(LIBTORRENT_DIR) && \
+		svn co -r $(LIBTORRENT_SVN_REV) $(LIBTORRENT_SVN) \
+			$(LIBTORRENT_DIR) && \
+		tar -czf $@ $(LIBTORRENT_DIR) && \
+		rm -rf $(LIBTORRENT_DIR) \
+		)
+else
 	$(WGET) -P $(DL_DIR) $(LIBTORRENT_SITE)/$(LIBTORRENT_SOURCE)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -132,7 +155,31 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 	if test "$(BUILD_DIR)/$(LIBTORRENT_DIR)" != "$(LIBTORRENT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR) ; \
 	fi
+ifdef LIBTORRENT_SVN_REV
 	(cd $(LIBTORRENT_BUILD_DIR); \
+		AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f ; \
+		if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; \
+			then cat $(LIBTORRENT_POST_AC_PATCHES) | \
+			patch -d $(LIBTORRENT_BUILD_DIR) -p0 ; \
+		fi ; \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig/" \
+		$(LIBTORRENT_CONFIGURE) \
+		PATH="$(PATH):$(STAGING_DIR)/opt/bin" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		$(LIBTORRENT_CONFIG_ARGS) \
+		--disable-nls \
+		--disable-static \
+		--with-openssl=$(STAGING_PREFIX) \
+	)
+else
+		(cd $(LIBTORRENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT_LDFLAGS)" \
@@ -148,6 +195,8 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		--disable-static \
 		--with-openssl=$(STAGING_PREFIX) \
 	)
+endif
+
 ifneq (, $(filter gumstix1151, $(OPTWARE_TARGET)))
 	sed -i -e '/USE_MADVISE/s|.*|/* #undef USE_MADVISE */|' $(@D)/config.h
 endif
@@ -193,7 +242,11 @@ $(LIBTORRENT_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(LIBTORRENT_PRIORITY)" >>$@
 	@echo "Section: $(LIBTORRENT_SECTION)" >>$@
+ifdef LIBTORRENT_SVN_REV
+	@echo "Version: $(LIBTORRENT_VERSION)+r$(LIBTORRENT_SVN_REV)-$(LIBTORRENT_IPK_VERSION)" >>$@
+else
 	@echo "Version: $(LIBTORRENT_VERSION)-$(LIBTORRENT_IPK_VERSION)" >>$@
+endif
 	@echo "Maintainer: $(LIBTORRENT_MAINTAINER)" >>$@
 	@echo "Source: $(LIBTORRENT_SITE)/$(LIBTORRENT_SOURCE)" >>$@
 	@echo "Description: $(LIBTORRENT_DESCRIPTION)" >>$@
