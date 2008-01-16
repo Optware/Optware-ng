@@ -101,10 +101,10 @@
 +		print "$env$targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt\n";
 +
 +		if ( $package eq  "DBD-mysql-3.0002.tar.gz" ) { 
-+		`cp ../../slimserver_DBD_Makefile.PL Makefile.PL`;
++		`cp ../../DBD-mysql-Makefile.PL Makefile.PL`;
 +		}
 +		if ( $package eq  "Time-HiRes-1.86.tar.gz" ) { 
-+		`cp ../../slimserver_TimeMakefile.PL Makefile.PL`;
++		`cp ../../Time-HiRes-Makefile.PL Makefile.PL`;
 +		}
 +
 +		` $env $targetconfigureopts $perlBinary Makefile.PL $options  PREFIX=/opt`;

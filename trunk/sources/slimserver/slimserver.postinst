@@ -5,21 +5,18 @@
 #
 #  Check if user/group slimserver exists
 #
-#	if chown ${SLIMSERVER_USER}:${SLIMSERVER_GROUP} ${SLIMSERVER_HOME} 2>/dev/null ; then
         if test `grep -c "^${SLIMSERVER_USER}" /etc/passwd` -eq 0 ; then 
-
             test `grep -c "^${SLIMSERVER_GROUP}" /etc/group` -eq 0  &&  addgroup ${SLIMSERVER_GROUP}
             echo -n "Enter SLIMSERVER_HOME location [${SLIMSERVER_HOME}]: "
             read answer
-            if [ "$answer" != "" ]; then
-                SLIMSERVER_HOME=$answer
-                mkdir -p $SLIMSERVER_HOME
+            test  "$answer" != "" && SLIMSERVER_HOME=$answer
+            if test ! -d SLIMSERVER_HOME ; then
 	        adduser -D -s /dev/null -h ${SLIMSERVER_HOME} -G ${SLIMSERVER_GROUP} ${SLIMSERVER_USER}
 	        sleep 1 # wait for user creation
                 sed -i -e "s|^SLIMSERVER_HOME=.*|SLIMSERVER_HOME=${SLIMSERVER_HOME}|" \
                     -e "s|^SLIMSERVER_LOG=.*|SLIMSERVER_LOG=${SLIMSERVER_HOME}/slimserver.log|" \
                     -e "s|^SLIMSERVER_PREF=.*|SLIMSERVER_PREF=${SLIMSERVER_HOME}/slimserver.pref|" \
-                    -e "s|^SLIMSERVER_PIDFILE=.*|SLIMSERVER_PIDFILE=${SLIMSERVER_HOME}/slimserver.pid|"
+                    -e "s|^SLIMSERVER_PIDFILE=.*|SLIMSERVER_PIDFILE=${SLIMSERVER_HOME}/slimserver.pid|" \
                     -e "s|^SLIMSERVER_CACHEDIR=.*|SLIMSERVER_CACHEDIR=${SLIMSERVER_HOME}/cache|" \
                     /opt/etc/slimserver.conf
                 . /opt/etc/slimserver.conf
