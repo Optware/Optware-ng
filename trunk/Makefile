@@ -284,8 +284,8 @@ COMMON_CROSS_PACKAGES = \
 	sharutils simh sipcalc siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
 	socat softflowd spandsp speex spindown sqlite sqlite2 \
-	sqsh squeak squid srelay sslwrap strace stunnel streamripper sudo \
-	swi-prolog svn syslog-ng sysstat syx \
+	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
+	sudo swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
 	tar tcpdump tcpflow tcsh termcap textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
