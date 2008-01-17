@@ -57,6 +57,9 @@ ifeq ($(LIBC_STYLE), glibc)
 LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/src-data-socket_file.cc.patch
 endif
 endif
+ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
+LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/ceilf.patch
+endif
 
 #
 # If the compilation of the package requires additional
