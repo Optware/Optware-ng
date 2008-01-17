@@ -30,14 +30,14 @@ CASTGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CASTGET_DESCRIPTION=castget is a simple, command-line based RSS enclosure downloader, primarily intended for automatic, unattended downloading of podcasts.
 CASTGET_SECTION=net
 CASTGET_PRIORITY=optional
-CASTGET_DEPENDS=libxml2, libcurl, id3lib, glib
+CASTGET_DEPENDS=libxml2, libcurl, id3lib, glib, libstdc++
 CASTGET_SUGGESTS=
 CASTGET_CONFLICTS=
 
 #
 # CASTGET_IPK_VERSION should be incremented when the ipk changes.
 #
-CASTGET_IPK_VERSION=1
+CASTGET_IPK_VERSION=2
 
 #
 # CASTGET_CONFFILES should be a list of user-editable files
@@ -112,17 +112,17 @@ castget-source: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 # of a GNU-compatible malloc even when cross compiling.
 #
 $(CASTGET_BUILD_DIR)/.configured: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES) make/castget.mk
-	$(MAKE) libxml2-stage libcurl-stage glib-stage id3lib-stage
-	rm -rf $(BUILD_DIR)/$(CASTGET_DIR) $(CASTGET_BUILD_DIR)
+	$(MAKE) libxml2-stage libcurl-stage glib-stage id3lib-stage libstdc++-stage
+	rm -rf $(BUILD_DIR)/$(CASTGET_DIR) $(@D)
 	$(CASTGET_UNZIP) $(DL_DIR)/$(CASTGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CASTGET_PATCHES)" ; \
 		then cat $(CASTGET_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CASTGET_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CASTGET_DIR)" != "$(CASTGET_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CASTGET_DIR) $(CASTGET_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CASTGET_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CASTGET_DIR) $(@D) ; \
 	fi
-	(cd $(CASTGET_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CASTGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CASTGET_LDFLAGS)" \
@@ -138,7 +138,7 @@ $(CASTGET_BUILD_DIR)/.configured: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(CASTGET_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 castget-unpack: $(CASTGET_BUILD_DIR)/.configured
@@ -148,7 +148,7 @@ castget-unpack: $(CASTGET_BUILD_DIR)/.configured
 #
 $(CASTGET_BUILD_DIR)/.built: $(CASTGET_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CASTGET_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -160,9 +160,9 @@ castget: $(CASTGET_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CASTGET_BUILD_DIR)/.staged: $(CASTGET_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(CASTGET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 castget-stage: $(CASTGET_BUILD_DIR)/.staged
 
