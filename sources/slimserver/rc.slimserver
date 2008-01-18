@@ -22,10 +22,10 @@
 case "$1" in
     start)
        
-        if [ ${SLIMSERVER_START} = "Yes" ]; then
+        if [ ${SLIMSERVER_START} = "yes" ]; then
 		echo -n "Starting SlimServer"
 		if [ ! -x $SLIMSERVER_BIN ] ; then
-		  echo "Failed: Slimserver binary ${SLIMSERVER_BIN{} is not executable."
+		  echo "Failed: Slimserver binary ${SLIMSERVER_BIN} is not executable."
 		  exit 1
 		fi
 	#
