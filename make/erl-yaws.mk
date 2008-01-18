@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.68
+ERL-YAWS_VERSION=1.74
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
@@ -105,17 +105,17 @@ erl-yaws-source: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCHES)
 #
 $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCHES) make/erl-yaws.mk
 	$(MAKE) erlang
-	rm -rf $(BUILD_DIR)/$(ERL-YAWS_DIR) $(ERL-YAWS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ERL-YAWS_DIR) $(@D)
 	$(ERL-YAWS_UNZIP) $(DL_DIR)/$(ERL-YAWS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ERL-YAWS_PATCHES)" ; \
 		then cat $(ERL-YAWS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ERL-YAWS_DIR) -p0 ; \
 	fi
 	test -h $(BUILD_DIR)/yaws && rm $(BUILD_DIR)/yaws
-	if test "$(BUILD_DIR)/$(ERL-YAWS_DIR)" != "$(ERL-YAWS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ERL-YAWS_DIR) $(ERL-YAWS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ERL-YAWS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ERL-YAWS_DIR) $(@D) ; \
 	fi
-	(cd $(ERL-YAWS_BUILD_DIR); \
+	(cd $(@D); \
 		sed -i -e '/LD_SHARED.*ld -shared/s|ld -shared|$(TARGET_LD) -shared|' \
 		       -e '/LD_SHARED.*gcc -shared/s|gcc -shared|$(TARGET_CC) -shared|' \
 		       -e 's|-I/usr/include/security||' \
@@ -135,10 +135,11 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 		--disable-nls \
 		--disable-static \
 		; \
-		sed -i -e 's|-I/usr/include/pam/||' c_src/Makefile; \
 	)
+	sed -i -e 's|-I/usr/include/pam/||' $(@D)/c_src/Makefile
+	sed -i -e '/-noshell.*mime_type_c/{s|-noshell |& -detached |; s|$$|; sleep 10|}' $(@D)/src/Makefile
 #	$(PATCH_LIBTOOL) $(ERL-YAWS_BUILD_DIR)/libtool
-	touch $(ERL-YAWS_BUILD_DIR)/.configured
+	touch $@
 
 erl-yaws-unpack: $(ERL-YAWS_BUILD_DIR)/.configured
 
@@ -146,9 +147,9 @@ erl-yaws-unpack: $(ERL-YAWS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ERL-YAWS_BUILD_DIR)/.built: $(ERL-YAWS_BUILD_DIR)/.configured
-	rm -f $(ERL-YAWS_BUILD_DIR)/.built
-	$(MAKE) -C $(ERL-YAWS_BUILD_DIR)
-	touch $(ERL-YAWS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -159,9 +160,9 @@ erl-yaws: $(ERL-YAWS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ERL-YAWS_BUILD_DIR)/.staged: $(ERL-YAWS_BUILD_DIR)/.built
-	rm -f $(ERL-YAWS_BUILD_DIR)/.staged
-	$(MAKE) -C $(ERL-YAWS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ERL-YAWS_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 erl-yaws-stage: $(ERL-YAWS_BUILD_DIR)/.staged
 
@@ -199,7 +200,7 @@ $(ERL-YAWS_IPK_DIR)/CONTROL/control:
 $(ERL-YAWS_IPK): $(ERL-YAWS_BUILD_DIR)/.built
 	rm -rf $(ERL-YAWS_IPK_DIR) $(BUILD_DIR)/erl-yaws_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERL-YAWS_BUILD_DIR) DESTDIR=$(ERL-YAWS_IPK_DIR) install
-	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)/opt/lib/yaws/priv/setuid_drv.so
+	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)/opt/lib/yaws/priv/lib/setuid_drv.so
 	mv $(ERL-YAWS_IPK_DIR)/opt/etc/init.d/yaws $(ERL-YAWS_IPK_DIR)/opt/share/doc/$(ERL-YAWS_DIR)/sample-init.d-yaws
 	sed -i \
 	    -e 's|^erl=.*|erl="/opt/lib/erlang/bin/erl"|' \
