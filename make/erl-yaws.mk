@@ -137,7 +137,7 @@ $(ERL-YAWS_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-YAWS_SOURCE) $(ERL-YAWS_PATCH
 		; \
 	)
 	sed -i -e 's|-I/usr/include/pam/||' $(@D)/c_src/Makefile
-	sed -i -e '/-noshell.*mime_type_c/{s|-noshell |& -detached |; s|$$|; sleep 10|}' $(@D)/src/Makefile
+	sed -i -e '/-noshell.*mime_type_c/{s|-noshell |-noinput |}' $(@D)/src/Makefile
 #	$(PATCH_LIBTOOL) $(ERL-YAWS_BUILD_DIR)/libtool
 	touch $@
 
