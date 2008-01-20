@@ -50,4 +50,5 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY) \
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux $(TARGET_INCDIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-arm $(TARGET_INCDIR)/asm
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-generic $(TARGET_INCDIR)/
+	cd $(TARGET_CROSS_TOP)/920t_le/bin && sh $(OPTWARE_TOP)/sources/toolchain-$(OPTWARE_TARGET)/symlink-back.sh
 	touch $@
