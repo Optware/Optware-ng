@@ -171,6 +171,11 @@ else
 		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
 		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) ] && \
 		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) . ) ; \
+	)
+ifeq (vt4, $(OPTWARE_TARGET))
+	sed -i -e 's|-shared|& -L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
+endif
+	(cd $(@D)/Cross; \
 		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile . ; \
 		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile.SH.patch . ; \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
