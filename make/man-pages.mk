@@ -67,7 +67,9 @@ MAN_PAGES_IPK=$(BUILD_DIR)/man-pages_$(MAN_PAGES_VERSION)-$(MAN_PAGES_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MAN_PAGES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MAN_PAGES_SITE)/$(MAN_PAGES_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MAN_PAGES_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(MAN_PAGES_SITE)/Archive/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
