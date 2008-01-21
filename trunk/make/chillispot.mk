@@ -86,7 +86,8 @@ CHILLISPOT_IPK=$(BUILD_DIR)/chillispot_$(CHILLISPOT_VERSION)-$(CHILLISPOT_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CHILLISPOT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CHILLISPOT_SITE)/$(CHILLISPOT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(CHILLISPOT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
