@@ -76,7 +76,8 @@ DIRCPROXY_IPK=$(BUILD_DIR)/dircproxy_$(DIRCPROXY_VERSION)-$(DIRCPROXY_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DIRCPROXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DIRCPROXY_SITE)/$(DIRCPROXY_SOURCE)
+	$(WGET) -P $(DL_DIR) $(DIRCPROXY_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
