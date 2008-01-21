@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NCFTP_SITE=ftp://ftp.ncftp.com/ncftp
-NCFTP_VERSION=3.2.0
+NCFTP_VERSION=3.2.1
 NCFTP_SOURCE=ncftp-$(NCFTP_VERSION)-src.tar.gz
 NCFTP_DIR=ncftp-$(NCFTP_VERSION)
 NCFTP_UNZIP=zcat
@@ -33,7 +33,7 @@ NCFTP_DESCRIPTION=Nice command line FTP client
 #
 # NCFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NCFTP_IPK_VERSION=2
+NCFTP_IPK_VERSION=1
 
 #
 # NCFTP_CONFFILES should be a list of user-editable files
@@ -78,7 +78,9 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NCFTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NCFTP_SITE)/$(NCFTP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(NCFTP_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(NCFTP_SITE)/older_versions/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,11 +106,13 @@ ncftp-source: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 #
 $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NCFTP_DIR) $(@D)
 	$(NCFTP_UNZIP) $(DL_DIR)/$(NCFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NCFTP_PATCHES) | patch -bd $(BUILD_DIR)/$(NCFTP_DIR) -p1
-	mv $(BUILD_DIR)/$(NCFTP_DIR) $(NCFTP_BUILD_DIR)
-	(cd $(NCFTP_BUILD_DIR); \
+	if test -n "$(NCFTP_PATCHES)"; \
+		then cat $(NCFTP_PATCHES) | patch -bd $(BUILD_DIR)/$(NCFTP_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(NCFTP_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NCFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NCFTP_LDFLAGS)" \
@@ -122,7 +126,7 @@ $(NCFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NCFTP_SOURCE) $(NCFTP_PATCHES)
 		--prefix=opt \
 		--disable-nls \
 	)
-	touch $(NCFTP_BUILD_DIR)/.configured
+	touch $@
 
 ncftp-unpack: $(NCFTP_BUILD_DIR)/.configured
 
@@ -131,9 +135,9 @@ ncftp-unpack: $(NCFTP_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(NCFTP_BUILD_DIR)/.built: $(NCFTP_BUILD_DIR)/.configured
-	rm -f $(NCFTP_BUILD_DIR)/.built
-	$(MAKE) -C $(NCFTP_BUILD_DIR)
-	touch $(NCFTP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -142,25 +146,11 @@ $(NCFTP_BUILD_DIR)/.built: $(NCFTP_BUILD_DIR)/.configured
 ncftp: $(NCFTP_BUILD_DIR)/.built
 
 #
-# If you are building a library, then you need to stage it too.
-#
-$(STAGING_DIR)/opt/lib/libncftp.so.$(NCFTP_VERSION): $(NCFTP_BUILD_DIR)/.built
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(NCFTP_BUILD_DIR)/ncftp.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(NCFTP_BUILD_DIR)/libncftp.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(NCFTP_BUILD_DIR)/libncftp.so.$(NCFTP_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libncftp.so.$(NCFTP_VERSION) libncftp.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libncftp.so.$(NCFTP_VERSION) libncftp.so
-
-ncftp-stage: $(STAGING_DIR)/opt/lib/libncftp.so.$(NCFTP_VERSION)
-
-#
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/ncftp
 #
 $(NCFTP_IPK_DIR)/CONTROL/control:
-	@install -d $(NCFTP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ncftp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
