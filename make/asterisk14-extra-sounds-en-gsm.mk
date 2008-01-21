@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
+ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE=http://ftp.digium.com/pub/telephony/sounds/releases
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.6
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_SOURCE=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_DIR=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION)
@@ -76,7 +76,8 @@ ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK=$(BUILD_DIR)/asterisk14-extra-sounds-en-gsm_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE)/$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

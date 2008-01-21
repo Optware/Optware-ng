@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
+ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE=http://ftp.digium.com/pub/telephony/sounds/releases
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.6
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SOURCE=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_DIR=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION)
@@ -76,7 +76,8 @@ ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK=$(BUILD_DIR)/asterisk14-extra-sounds-en-ulaw
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE)/$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
