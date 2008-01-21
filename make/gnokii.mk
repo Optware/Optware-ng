@@ -83,7 +83,8 @@ GNOKII_SMSD_MYSQL_IPK=$(BUILD_DIR)/gnokii-smsd-mysql_$(GNOKII_VERSION)-$(GNOKII_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GNOKII_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GNOKII_SITE)/$(GNOKII_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GNOKII_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
