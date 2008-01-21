@@ -78,7 +78,8 @@ MOD_FASTCGI_IPK=$(BUILD_DIR)/mod-fastcgi_$(MOD_FASTCGI_VERSION)-$(MOD_FASTCGI_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MOD_FASTCGI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MOD_FASTCGI_SITE)/$(MOD_FASTCGI_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MOD_FASTCGI_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
