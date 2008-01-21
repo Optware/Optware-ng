@@ -81,7 +81,8 @@ PY25-GDCHART2_IPK=$(BUILD_DIR)/py25-gdchart2_$(PY-GDCHART2_VERSION)-$(PY-GDCHART
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-GDCHART2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-GDCHART2_SITE)/$(PY-GDCHART2_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-GDCHART2_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
