@@ -19,8 +19,8 @@
 #
 # You should change all these variables to suit your package.
 #
-SQLITE2_SITE=http://www.sqlite.org/
-SQLITE2_VERSION=2.8.16
+SQLITE2_SITE=http://sqlite.org
+SQLITE2_VERSION=2.8.17
 SQLITE2_SOURCE=sqlite-$(SQLITE2_VERSION).tar.gz
 SQLITE2_DIR=sqlite-$(SQLITE2_VERSION)
 SQLITE2_UNZIP=zcat
@@ -100,7 +100,9 @@ $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 	$(MAKE) readline-stage
 	rm -rf $(BUILD_DIR)/$(SQLITE2_DIR) $(SQLITE2_BUILD_DIR)
 	$(SQLITE2_UNZIP) $(DL_DIR)/$(SQLITE2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(SQLITE2_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE2_DIR) -p1
+	if test -n "$(SQLITE2_PATCHES)"; \
+		then cat $(SQLITE2_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE2_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(SQLITE2_DIR) $(SQLITE2_BUILD_DIR)
 	(cd $(SQLITE2_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -114,7 +116,7 @@ $(SQLITE2_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE2_SOURCE) $(SQLITE2_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(SQLITE2_BUILD_DIR)/.configured
+	touch $@
 
 sqlite2-unpack: $(SQLITE2_BUILD_DIR)/.configured
 
@@ -122,9 +124,9 @@ sqlite2-unpack: $(SQLITE2_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SQLITE2_BUILD_DIR)/.built: $(SQLITE2_BUILD_DIR)/.configured
-	rm -f $(SQLITE2_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SQLITE2_BUILD_DIR)
-	touch $(SQLITE2_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,9 +137,9 @@ sqlite2: $(SQLITE2_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SQLITE2_BUILD_DIR)/.staged: $(SQLITE2_BUILD_DIR)/.built
-	rm -f $(SQLITE2_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SQLITE2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SQLITE2_BUILD_DIR)/.staged
+	touch $@
 
 sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
 
@@ -146,7 +148,7 @@ sqlite2-stage: $(SQLITE2_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sqlite2
 #
 $(SQLITE2_IPK_DIR)/CONTROL/control:
-	@install -d $(SQLITE2_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sqlite2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,6 +177,7 @@ $(SQLITE2_IPK_DIR)/CONTROL/control:
 $(SQLITE2_IPK): $(SQLITE2_BUILD_DIR)/.built
 	rm -rf $(SQLITE2_IPK_DIR) $(BUILD_DIR)/sqlite2_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(SQLITE2_BUILD_DIR) DESTDIR=$(SQLITE2_IPK_DIR) install
+	$(STRIP_COMMAND) $(SQLITE2_IPK_DIR)/opt/bin/sqlite $(SQLITE2_IPK_DIR)/opt/lib/libsqlite.so.*.*.*
 	$(MAKE) $(SQLITE2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQLITE2_IPK_DIR)
 
@@ -195,3 +198,9 @@ sqlite2-clean:
 #
 sqlite2-dirclean:
 	rm -rf $(BUILD_DIR)/$(SQLITE2_DIR) $(SQLITE2_BUILD_DIR) $(SQLITE2_IPK_DIR) $(SQLITE2_IPK)
+
+#
+# Some sanity check for the package.
+#
+sqlite2-check: $(SQLITE2_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SQLITE2_IPK)
