@@ -73,7 +73,8 @@ LIBOL_IPK=$(BUILD_DIR)/libol_$(LIBOL_VERSION)-$(LIBOL_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBOL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBOL_SITE)/$(LIBOL_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBOL_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
