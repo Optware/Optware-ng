@@ -71,7 +71,8 @@ SQLITE2_IPK=$(BUILD_DIR)/sqlite2_$(SQLITE2_VERSION)-$(SQLITE2_IPK_VERSION)_${TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQLITE2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQLITE2_SITE)/$(SQLITE2_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SQLITE2_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
