@@ -74,7 +74,8 @@ LIBLCMS_IPK=$(BUILD_DIR)/liblcms_$(LIBLCMS_VERSION)-$(LIBLCMS_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBLCMS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBLCMS_SITE)/$(LIBLCMS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBLCMS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
