@@ -89,7 +89,7 @@ $(DL_DIR)/$(PY-SOAPPY_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-soappy-source: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(PY-SOAPPY_PATCHES)
+py-soappy-source: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(DL_DIR)/$(PY-SOAPPY_FPCONST_SOURCE) $(PY-SOAPPY_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
