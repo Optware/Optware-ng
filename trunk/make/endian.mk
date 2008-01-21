@@ -76,7 +76,8 @@ ENDIAN_IPK=$(BUILD_DIR)/endian_$(ENDIAN_VERSION)-$(ENDIAN_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ENDIAN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ENDIAN_SITE)/$(ENDIAN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ENDIAN_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
