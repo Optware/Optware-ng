@@ -74,7 +74,8 @@ PALANTIR_IPK=$(BUILD_DIR)/palantir_$(PALANTIR_VERSION)-$(PALANTIR_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PALANTIR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PALANTIR_SITE)/$(PALANTIR_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PALANTIR_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
