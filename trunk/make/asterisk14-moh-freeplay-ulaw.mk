@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK14_MOH_FREEPLAY_ULAW_SITE=http://ftp1.digium.com/pub/telephony/sounds/releases
+ASTERISK14_MOH_FREEPLAY_ULAW_SITE=http://ftp.digium.com/pub/telephony/sounds/releases
 ASTERISK14_MOH_FREEPLAY_ULAW_VERSION=0.0.0
 #ASTERISK14_MOH_FREEPLAY_ULAW_SOURCE=asterisk-moh-freeplay-ulaw-$(ASTERISK14_MOH_FREEPLAY_ULAW_VERSION).tar.gz
 ASTERISK14_MOH_FREEPLAY_ULAW_SOURCE=asterisk-moh-freeplay-ulaw.tar.gz
@@ -77,7 +77,8 @@ ASTERISK14_MOH_FREEPLAY_ULAW_IPK=$(BUILD_DIR)/asterisk14-moh-freeplay-ulaw_$(AST
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK14_MOH_FREEPLAY_ULAW_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ASTERISK14_MOH_FREEPLAY_ULAW_SITE)/$(ASTERISK14_MOH_FREEPLAY_ULAW_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ASTERISK14_MOH_FREEPLAY_ULAW_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
