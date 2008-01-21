@@ -81,7 +81,8 @@ PY25-PYREX_IPK=$(BUILD_DIR)/py25-pyrex_$(PYREX_VERSION)-$(PYREX_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYREX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYREX_SITE)/$(PYREX_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PYREX_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
