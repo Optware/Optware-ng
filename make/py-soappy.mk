@@ -76,16 +76,20 @@ PY-SOAPPY_IPK=$(BUILD_DIR)/py-soappy_$(PY-SOAPPY_VERSION)-$(PY-SOAPPY_IPK_VERSIO
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+$(DL_DIR)/$(PY-SOAPPY_FPCONST_SOURCE):
+	$(WGET) -P $(DL_DIR) $(PY-SOAPPY_FPCONST_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+
 $(DL_DIR)/$(PY-SOAPPY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SOAPPY_SITE)/$(PY-SOAPPY_SOURCE)
-	$(WGET) -P $(DL_DIR) $(PY-SOAPPY_FPCONST_SITE)/$(PY-SOAPPY_FPCONST_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SOAPPY_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-soappy-source: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(PY-SOAPPY_PATCHES)
+py-soappy-source: $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(DL_DIR)/$(PY-SOAPPY_SOURCE) $(PY-SOAPPY_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
