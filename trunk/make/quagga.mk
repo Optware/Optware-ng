@@ -82,7 +82,8 @@ QUAGGA_IPK=$(BUILD_DIR)/quagga_$(QUAGGA_VERSION)-$(QUAGGA_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(QUAGGA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(QUAGGA_SITE)/$(QUAGGA_SOURCE)
+	$(WGET) -P $(DL_DIR) $(QUAGGA_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
