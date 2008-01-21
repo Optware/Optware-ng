@@ -68,7 +68,8 @@ NETIO_IPK=$(BUILD_DIR)/netio_$(NETIO_VERSION)-$(NETIO_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NETIO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NETIO_SITE)/$(NETIO_SOURCE)
+	$(WGET) -P $(DL_DIR) $(NETIO_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
