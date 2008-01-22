@@ -67,7 +67,8 @@ ZIP_IPK=$(BUILD_DIR)/zip_$(ZIP_VERSION)-$(ZIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ZIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZIP_SITE)/$(ZIP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ZIP_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
