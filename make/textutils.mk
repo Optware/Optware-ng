@@ -36,7 +36,7 @@ TEXTUTILS_DESCRIPTION=GNU Text Utilities
 TEXTUTILS_SECTION=util
 TEXTUTILS_PRIORITY=optional
 TEXTUTILS_DEPENDS=
-TEXTUTILS_CONFLICTS=busybox-links
+TEXTUTILS_CONFLICTS=
 
 #
 # TEXTUTILS_IPK_VERSION should be incremented when the ipk changes.
@@ -79,7 +79,8 @@ TEXTUTILS_IPK=$(BUILD_DIR)/textutils_$(TEXTUTILS_VERSION)-$(TEXTUTILS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TEXTUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TEXTUTILS_SITE)/$(TEXTUTILS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TEXTUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
