@@ -10,4 +10,5 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for ds101g+.
 BROKEN_PACKAGES = \
 	$(COMMON_NATIVE_PACKAGES) \
+	ecl \
 	ldconfig \
