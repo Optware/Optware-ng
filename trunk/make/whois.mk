@@ -77,7 +77,8 @@ WHOIS_IPK=$(BUILD_DIR)/whois_$(WHOIS_VERSION)-$(WHOIS_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WHOIS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WHOIS_SITE)/$(WHOIS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(WHOIS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
