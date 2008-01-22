@@ -108,7 +108,7 @@ $(ADDUSER_BUILD_DIR)/.configured: $(ADDUSER_SOURCE_DIR)/defconfig make/adduser.m
 	mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	cp $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
 ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
-ifneq ($(OPTWARE_TARGET), $(filter fsg3v4, $(OPTWARE_TARGET)))
+ifneq ($(OPTWARE_TARGET), $(filter fsg3v4 syno-x07, $(OPTWARE_TARGET)))
 # default off, turn on if linux 2.6
 	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" \
 		$(ADDUSER_BUILD_DIR)/.config
