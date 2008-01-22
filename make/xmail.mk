@@ -84,7 +84,8 @@ XMAIL_IPK=$(BUILD_DIR)/xmail_$(XMAIL_VERSION)-$(XMAIL_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(XMAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(XMAIL_SITE)/$(XMAIL_SOURCE)
+	$(WGET) -P $(DL_DIR) $(XMAIL_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
