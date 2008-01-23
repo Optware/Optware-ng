@@ -20,4 +20,6 @@ BROKEN_PACKAGES = \
 	qemu \
 	slimserver \
 	ushare \
-
+	\
+	atk ftpd-topfield gtk madplay nfs-utils squeak transcode \
+	util-linux vsftpd vte xchat \
