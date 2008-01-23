@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SITE=http://ftp.digium.com/pub/telephony/sounds/releases
-ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.6
+ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION=1.4.7
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_SOURCE=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_DIR=asterisk-extra-sounds-en-ulaw-$(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_ULAW_UNZIP=zcat
@@ -176,12 +176,8 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/CONTROL/control
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-thereare.ulaw
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/invalid.ulaw
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/ha/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/phonetic/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_BUILD_DIR)/wx/*.ulaw $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_EXTRA_SOUNDS_EN_ULAW_IPK_DIR)

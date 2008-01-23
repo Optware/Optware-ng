@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_SITE=http://ftp.digium.com/pub/telephony/sounds/releases
-ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.6
+ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION=1.4.7
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_SOURCE=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION).tar.gz
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_DIR=asterisk-extra-sounds-en-gsm-$(ASTERISK14_EXTRA_SOUNDS_EN_GSM_VERSION)
 ASTERISK14_EXTRA_SOUNDS_EN_GSM_UNZIP=zcat
@@ -176,12 +176,8 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DI
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/CONTROL/control
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/conf-thereare.gsm
-	rm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/invalid.gsm
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/ha/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
-	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/phonetic/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
 	install -d $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	install -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_BUILD_DIR)/wx/*.gsm $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_EXTRA_SOUNDS_EN_GSM_IPK_DIR)
