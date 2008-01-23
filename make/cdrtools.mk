@@ -29,7 +29,7 @@ CDRTOOLS_CONFLICTS=
 #
 # CDRTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-CDRTOOLS_IPK_VERSION=2
+CDRTOOLS_IPK_VERSION=3
 
 #
 # Force using gcc rather than cc
