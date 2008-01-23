@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WPUT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wput
-WPUT_VERSION=0.6
+WPUT_VERSION=0.6.1
 WPUT_SOURCE=wput-$(WPUT_VERSION).tgz
-WPUT_DIR=wput
+WPUT_DIR=wput-$(WPUT_VERSION)
 WPUT_UNZIP=zcat
 WPUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WPUT_DESCRIPTION=A command-line ftp-client that uploads files or whole directories to remote ftp-servers.
@@ -76,7 +76,8 @@ WPUT_IPK=$(BUILD_DIR)/wput_$(WPUT_VERSION)-$(WPUT_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WPUT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WPUT_SITE)/$(WPUT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(WPUT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,7 +115,7 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 	if test "$(BUILD_DIR)/$(WPUT_DIR)" != "$(WPUT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(WPUT_DIR) $(WPUT_BUILD_DIR) ; \
 	fi
-	(cd $(WPUT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WPUT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WPUT_LDFLAGS)" \
@@ -129,9 +130,9 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 	sed -i \
 	-e 's|$$(CC)|$$(CC) $$(CPPFLAGS)|' \
 	-e 's|$$(LIBS)|$$(LIBS) $$(LDFLAGS)|' \
-	$(WPUT_BUILD_DIR)/src/Makefile
+	$(@D)/src/Makefile
 #	$(PATCH_LIBTOOL) $(WPUT_BUILD_DIR)/libtool
-	touch $(WPUT_BUILD_DIR)/.configured
+	touch $@
 
 wput-unpack: $(WPUT_BUILD_DIR)/.configured
 
@@ -139,11 +140,11 @@ wput-unpack: $(WPUT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WPUT_BUILD_DIR)/.built: $(WPUT_BUILD_DIR)/.configured
-	rm -f $(WPUT_BUILD_DIR)/.built
+	rm -f $@
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WPUT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WPUT_LDFLAGS)" \
-	$(MAKE) -C $(WPUT_BUILD_DIR)
-	touch $(WPUT_BUILD_DIR)/.built
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,9 +155,9 @@ wput: $(WPUT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(WPUT_BUILD_DIR)/.staged: $(WPUT_BUILD_DIR)/.built
-	rm -f $(WPUT_BUILD_DIR)/.staged
-	$(MAKE) -C $(WPUT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(WPUT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 wput-stage: $(WPUT_BUILD_DIR)/.staged
 
