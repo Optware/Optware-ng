@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MAN_PAGES_SITE=http://www.kernel.org/pub/linux/docs/manpages
-MAN_PAGES_VERSION=2.33
+MAN_PAGES_VERSION=2.76
 MAN_PAGES_SOURCE=man-pages-$(MAN_PAGES_VERSION).tar.gz
 MAN_PAGES_DIR=man-pages-$(MAN_PAGES_VERSION)
 MAN_PAGES_UNZIP=zcat
@@ -29,7 +29,7 @@ MAN_PAGES_CONFLICTS=
 #
 # MAN_PAGES_IPK_VERSION should be incremented when the ipk changes.
 #
-MAN_PAGES_IPK_VERSION=3
+MAN_PAGES_IPK_VERSION=1
 
 #
 # MAN_PAGES_CONFFILES should be a list of user-editable files
@@ -95,10 +95,10 @@ man-pages-source: $(DL_DIR)/$(MAN_PAGES_SOURCE) $(MAN_PAGES_PATCHES)
 #
 $(MAN_PAGES_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_PAGES_SOURCE) $(MAN_PAGES_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MAN_PAGES_DIR) $(MAN_PAGES_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MAN_PAGES_DIR) $(@D)
 	$(MAN_PAGES_UNZIP) $(DL_DIR)/$(MAN_PAGES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MAN_PAGES_PATCHES) | patch -d $(BUILD_DIR)/$(MAN_PAGES_DIR) -p1
-	mv $(BUILD_DIR)/$(MAN_PAGES_DIR) $(MAN_PAGES_BUILD_DIR)
+	mv $(BUILD_DIR)/$(MAN_PAGES_DIR) $(@D)
 #	(cd $(MAN_PAGES_BUILD_DIR); \
 #		$(TARGET_CONFIGURE_OPTS) \
 #		CPPFLAGS="$(STAGING_CPPFLAGS) $(MAN_PAGES_CPPFLAGS)" \
@@ -110,7 +110,7 @@ $(MAN_PAGES_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_PAGES_SOURCE) $(MAN_PAGES_PA
 #		--prefix=/opt \
 #		--disable-nls \
 #	)
-	touch $(MAN_PAGES_BUILD_DIR)/.configured
+	touch $@
 
 man-pages-unpack: $(MAN_PAGES_BUILD_DIR)/.configured
 
@@ -118,9 +118,9 @@ man-pages-unpack: $(MAN_PAGES_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MAN_PAGES_BUILD_DIR)/.built: $(MAN_PAGES_BUILD_DIR)/.configured
-	rm -f $(MAN_PAGES_BUILD_DIR)/.built
-	$(MAKE) -C $(MAN_PAGES_BUILD_DIR) MANDIR=/opt/man gz
-	touch $(MAN_PAGES_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) MANDIR=/opt/man gz
+	touch $@
 
 #
 # This is the build convenience target.
@@ -131,9 +131,9 @@ man-pages: $(MAN_PAGES_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MAN_PAGES_BUILD_DIR)/.staged: $(MAN_PAGES_BUILD_DIR)/.built
-	rm -f $(MAN_PAGES_BUILD_DIR)/.staged
-	$(MAKE) -C $(MAN_PAGES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MAN_PAGES_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 man-pages-stage: $(MAN_PAGES_BUILD_DIR)/.staged
 
@@ -142,7 +142,7 @@ man-pages-stage: $(MAN_PAGES_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/man-pages
 # 
 $(MAN_PAGES_IPK_DIR)/CONTROL/control:
-	@install -d $(MAN_PAGES_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: man-pages" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
