@@ -42,7 +42,7 @@ FTPD-TOPFIELD_PRIORITY=optional
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=1
+FTPD-TOPFIELD_IPK_VERSION=2
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
@@ -52,7 +52,9 @@ FTPD-TOPFIELD_IPK_VERSION=1
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
 FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/usb_io.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -111,9 +113,11 @@ ftpd-topfield-source: $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) $(FTPD-TOPFIELD_PATCHES)
 $(FTPD-TOPFIELD_BUILD_DIR)/.configured: $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) $(FTPD-TOPFIELD_PATCHES) make/ftpd-topfield.mk
 	rm -rf $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) $(FTPD-TOPFIELD_BUILD_DIR)
 	$(FTPD-TOPFIELD_UNZIP) $(DL_DIR)/$(FTPD-TOPFIELD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(FTPD-TOPFIELD_PATCHES) | patch -d $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) -p1
+	if test -n "$(FTPD-TOPFIELD_PATCHES)"; then \
+		cat $(FTPD-TOPFIELD_PATCHES) | patch -d $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(FTPD-TOPFIELD_DIR) $(FTPD-TOPFIELD_BUILD_DIR)
-	touch $(FTPD-TOPFIELD_BUILD_DIR)/.configured
+	touch $@
 
 ftpd-topfield-unpack: $(FTPD-TOPFIELD_BUILD_DIR)/.configured
 
@@ -121,11 +125,11 @@ ftpd-topfield-unpack: $(FTPD-TOPFIELD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FTPD-TOPFIELD_BUILD_DIR)/.built: $(FTPD-TOPFIELD_BUILD_DIR)/.configured
-	rm -f $(FTPD-TOPFIELD_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(FTPD-TOPFIELD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FTPD-TOPFIELD_CPPFLAGS)" \
 		LFLAGS="$(STAGING_LDFLAGS) $(FTPD-TOPFIELD_LDFLAGS)"
-	touch $(FTPD-TOPFIELD_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,7 +141,7 @@ ftpd-topfield: $(FTPD-TOPFIELD_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ftpd-topfield
 #
 $(FTPD-TOPFIELD_IPK_DIR)/CONTROL/control:
-	@install -d $(FTPD-TOPFIELD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ftpd-topfield" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

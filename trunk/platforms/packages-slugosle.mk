@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	\
 	asterisk \
 	atk chillispot \
-	ftpd-topfield gconv-modules \
+	gconv-modules \
 	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \
 	pcapsipdump phoneme-advanced \
