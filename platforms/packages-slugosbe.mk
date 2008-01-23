@@ -21,5 +21,5 @@ BROKEN_PACKAGES = \
 	slimserver \
 	ushare \
 	\
-	atk ftpd-topfield gtk madplay nfs-utils squeak transcode \
+	atk gtk madplay nfs-utils squeak transcode \
 	util-linux vsftpd vte xchat \
