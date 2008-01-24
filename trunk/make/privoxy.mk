@@ -20,12 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PRIVOXY_SITE=http://surfnet.dl.sourceforge.net/sourceforge/ijbswa
-# http://dl.sourceforge.net/sourceforge/ijbswa/privoxy-3.0.5-beta-src.tar.gz
-PRIVOXY_VER=3.0.6
-PRIVOXY_VERSION=3.0.6
-PRIVOXY_SOURCE=privoxy-$(PRIVOXY_VER)-stable-src.tar.gz
-PRIVOXY_DIR=privoxy-$(PRIVOXY_VER)-stable
+PRIVOXY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ijbswa
+PRIVOXY_VERSION=3.0.8
+PRIVOXY_SOURCE=privoxy-$(PRIVOXY_VERSION)-stable-src.tar.gz
+PRIVOXY_DIR=privoxy-$(PRIVOXY_VERSION)-stable
 PRIVOXY_UNZIP=zcat
 PRIVOXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PRIVOXY_DESCRIPTION=A Web proxy based on Internet Junkbuster.
@@ -131,20 +129,21 @@ $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--sysconfdir='$${prefix}/etc/privoxy' \
 		--disable-nls \
 		--disable-static \
 		--disable-dynamic-pcre \
 		--disable-dynamic-pcrs \
 		; \
 		sed -i \
-		    -e '/SED.*config/s|$$(CONF_DEST)|/opt/etc|' \
+		    -e '/SED.*config/s|$$(CONF_DEST)|/opt/etc/privoxy|' \
 		    -e '/SED.*config/s|$$(LOG_DEST)|/opt/var/log/privoxy|' \
 		    -e '/SED.*config/s|$$(DOC_DEST)|/opt/share/doc/privoxy|' \
 		    -e '/SED.*config/s|$$(prefix)|/opt|' \
 		    GNUmakefile; \
 	)
 #	$(PATCH_LIBTOOL) $(PRIVOXY_BUILD_DIR)/libtool
-	touch $(PRIVOXY_BUILD_DIR)/.configured
+	touch $@
 
 privoxy-unpack: $(PRIVOXY_BUILD_DIR)/.configured
 
@@ -152,11 +151,11 @@ privoxy-unpack: $(PRIVOXY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PRIVOXY_BUILD_DIR)/.built: $(PRIVOXY_BUILD_DIR)/.configured
-	rm -f $(PRIVOXY_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(PRIVOXY_BUILD_DIR)/pcre dftables CC=$(HOSTCC)
 	$(MAKE) -C $(PRIVOXY_BUILD_DIR) \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PRIVOXY_LDFLAGS)"
-	touch $(PRIVOXY_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -167,9 +166,9 @@ privoxy: $(PRIVOXY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PRIVOXY_BUILD_DIR)/.staged: $(PRIVOXY_BUILD_DIR)/.built
-	rm -f $(PRIVOXY_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(PRIVOXY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PRIVOXY_BUILD_DIR)/.staged
+	touch $@
 
 privoxy-stage: $(PRIVOXY_BUILD_DIR)/.staged
 
@@ -178,7 +177,7 @@ privoxy-stage: $(PRIVOXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/privoxy
 #
 $(PRIVOXY_IPK_DIR)/CONTROL/control:
-	@install -d $(PRIVOXY_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: privoxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
