@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|' | sed 's/-linux$$/-linux-gnu/'))
 
@@ -93,6 +93,10 @@ ERLANG_CPPFLAGS+=-DNO_ACOSH -DNO_ASINH -DNO_ATANH -DNO_ERF -DNO_ERFC
 endif
 endif
 ERLANG_LDFLAGS=
+
+ERLANG_CONFIG_ENVS=erl_cv_time_correction=$(strip \
+	$(if $(filter module-init-tools, $(PACKAGES)) , clock_gettime, times))
+
 ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
 ERLANG_CONFIG_ARGS+=$(ERLANG_HIPE)
 
@@ -248,6 +252,7 @@ else
 		ac_cv_func_mmap_fixed_mapped=yes \
 		ac_cv_sizeof_long_long=8 \
 		ac_cv_sizeof_off_t=8 \
+		$(ERLANG_CONFIG_ENVS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
