@@ -38,7 +38,7 @@ UCLIBC-OPT_IPK=$(BUILD_DIR)/uclibc-opt_$(UCLIBC-OPT_VERSION)-$(UCLIBC-OPT_IPK_VE
 # necessary to create a seperate control file under sources/buildroot
 #
 $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
-	@install -d $(UCLIBC-OPT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: uclibc-opt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,6 +78,7 @@ $(UCLIBC-OPT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC-OPT_IPK_DIR) install-strip
 #	tar -xv -C $(UCLIBC-OPT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
 #		--wildcards $(UCLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
+	install -d $(UCLIBC-OPT_IPK_DIR)/opt/etc
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
 	install -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
