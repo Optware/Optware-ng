@@ -72,7 +72,7 @@ BUILDROOT_CONFLICTS=
 #
 # BUILDROOT_IPK_VERSION should be incremented when the ipk changes.
 #
-BUILDROOT_IPK_VERSION=12
+BUILDROOT_IPK_VERSION=13
 
 # Custom linux headers
 # Headers should contain $(HEADERS_*_UNPACK_DIR)/Makefile and 
@@ -167,11 +167,10 @@ BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifeq ($(OPTWARE_TARGET), ts101)
 $(DL_DIR)/$(BUILDROOT_SOURCE):
+ifeq ($(OPTWARE_TARGET), ts101)
 	$(WGET) -P $(DL_DIR) $(BUILDROOT_SITE)/$(BUILDROOT_SOURCE)
 else
-$(DL_DIR)/$(BUILDROOT_SOURCE):
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(BUILDROOT_DIR) && \
 		svn co -r $(BUILDROOT_SVN_REV) $(BUILDROOT_SVN) && \
@@ -301,7 +300,7 @@ buildroot-stage uclibc-opt-stage buildroot-toolchain: $(BUILDROOT_BUILD_DIR)/.st
 # necessary to create a seperate control file under sources/buildroot
 #
 $(BUILDROOT_IPK_DIR)/CONTROL/control:
-	@install -d $(BUILDROOT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: buildroot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
