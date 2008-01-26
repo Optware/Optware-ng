@@ -166,8 +166,8 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--without-gtk \
-		--without-wx \
+		--disable-gtk \
+		--disable-wx \
 		--disable-nls \
 	)
 #		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
