@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://subversion.tigris.org/downloads
-SVN_VERSION=1.4.5
+SVN_VERSION=1.4.6
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -58,7 +58,7 @@ SVN-PL_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=3
+SVN_IPK_VERSION=1
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -197,25 +197,25 @@ svn-unpack: $(SVN_BUILD_DIR)/.configured
 #
 $(SVN_BUILD_DIR)/.built: $(SVN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SVN_BUILD_DIR)
+	$(MAKE) -C $(SVN_BUILD_DIR) NEON_LIBS=-lneon
 	touch $@
 
 $(SVN_BUILD_DIR)/.py-built: $(SVN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SVN_BUILD_DIR) swig-py
+	$(MAKE) -C $(@D) swig-py
 	touch $@
 
 $(SVN_BUILD_DIR)/.pl-built: $(SVN_BUILD_DIR)/.built
 	rm -f $@
-	cd $(SVN_BUILD_DIR)/subversion/bindings/swig/perl/native; \
+	cd $(@D)/subversion/bindings/swig/perl/native; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		;
-	sed -i -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' $(SVN_BUILD_DIR)/subversion/bindings/swig/perl/native/Makefile
-	$(MAKE) -C $(SVN_BUILD_DIR) swig-pl \
+	sed -i -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' $(@D)/subversion/bindings/swig/perl/native/Makefile
+	$(MAKE) -C $(@D) swig-pl \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		PASTHRU_INC="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
