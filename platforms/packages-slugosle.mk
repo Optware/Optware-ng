@@ -18,7 +18,6 @@ BROKEN_PACKAGES = \
 	puppy \
 	py-psycopg \
 	qemu \
-	slimserver \
 	ushare \
 	\
 	asterisk \
