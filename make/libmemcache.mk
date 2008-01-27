@@ -37,7 +37,7 @@ LIBMEMCACHE_CONFLICTS=
 #
 # LIBMEMCACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMEMCACHE_IPK_VERSION=2
+LIBMEMCACHE_IPK_VERSION=3
 
 #
 # LIBMEMCACHE_CONFFILES should be a list of user-editable files
@@ -113,6 +113,9 @@ $(LIBMEMCACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMEMCACHE_SOURCE) $(LIBMEMCA
 	if test "$(BUILD_DIR)/$(LIBMEMCACHE_DIR)" != "$(LIBMEMCACHE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBMEMCACHE_DIR) $(LIBMEMCACHE_BUILD_DIR) ; \
 	fi
+ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
+	sed -i -e 's|-Wall -pipe|-Wall|' $(@D)/configure.ac
+endif
 	(cd $(LIBMEMCACHE_BUILD_DIR); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
