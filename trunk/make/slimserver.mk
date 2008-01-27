@@ -46,7 +46,7 @@ endif
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=5
+SLIMSERVER_IPK_VERSION=6
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
@@ -141,6 +141,7 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER
 		-e "s|slimServerPath = <STDIN>|slimServerPath = \"$(SLIMSERVER_BUILD_DIR)\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
+		-e "/EXPAT.*PATH=/s|=/opt|$$ENV{STAGING_DIR}&|" \
 		$(SLIMSERVER_BUILD_DIR)/Bin/build-perl-modules.pl
 	touch $(SLIMSERVER_BUILD_DIR)/.configured
 
@@ -219,6 +220,8 @@ $(SLIMSERVER_IPK): $(SLIMSERVER_BUILD_DIR)/.built
 	install -d $(SLIMSERVER_IPK_DIR)/opt/bin/ $(SLIMSERVER_IPK_DIR)/opt/share/slimserver
 #	install -m 755 $(SLIMSERVER_BUILD_DIR)/slimserver.pl $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
 	cp -r $(SLIMSERVER_BUILD_DIR)/ $(SLIMSERVER_IPK_DIR)/opt/share
+	rm -rf	$(SLIMSERVER_IPK_DIR)/opt/share/slimserver/.configured \
+		$(SLIMSERVER_IPK_DIR)/opt/share/slimserver/.built
 	rm -rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/temp
 	rm -rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/Bin/i386-linux
 # To comply with Licence - only Logitech/Slimdevices can include the firmware bin files
