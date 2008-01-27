@@ -280,7 +280,7 @@ COMMON_CROSS_PACKAGES = \
 	rsstail rsync rtorrent rtpproxy ruby rubygems \
 	sablevm samba samba2 sane-backends \
 	scli scponly screen scsi-idle sdl sdparm \
-	sed sendmail ser ser2net setserial setpwc \
+	sed sendmail ser ser2net setserial setpwc sg3-utils \
 	sharutils simh sipcalc siproxd slang slrn slsc \
 	sm smartmontools snort snownews \
 	socat softflowd spandsp speex spindown sqlite sqlite2 \
