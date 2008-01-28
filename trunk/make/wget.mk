@@ -16,7 +16,7 @@
 # You should change all these variables to suit your package.
 #
 WGET_SITE=http://ftp.gnu.org/pub/gnu/wget
-WGET_VERSION=1.10.2
+WGET_VERSION=1.11
 WGET_SOURCE=wget-$(WGET_VERSION).tar.gz
 WGET_DIR=wget-$(WGET_VERSION)
 WGET_UNZIP=zcat
@@ -32,7 +32,7 @@ WGET-SSL_CONFLICTS=wget
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=4
+WGET_IPK_VERSION=1
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -85,7 +85,7 @@ WGET-SSL_IPK=$(BUILD_DIR)/wget-ssl_$(WGET_VERSION)-$(WGET_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WGET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WGET_SITE)/$(WGET_SOURCE)
+	$(WGET) -P $(DL_DIR) $(WGET_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -161,12 +161,12 @@ wget-ssl-unpack: $(WGET-SSL_BUILD_DIR)/.configured
 #
 $(WGET_BUILD_DIR)/.built: $(WGET_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(WGET_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 $(WGET-SSL_BUILD_DIR)/.built: $(WGET-SSL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(WGET-SSL_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
