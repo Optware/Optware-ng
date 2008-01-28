@@ -4,10 +4,9 @@ SPECIFIC_PACKAGES = \
 	ds101-kernel-modules \
 
 # Packages that do not work for ds101.
-# gnuplot - matrix.c:337: In function `lu_decomp': internal compiler error: Segmentation fault
 BROKEN_PACKAGES = \
 	bpalogin \
-	freeradius gnuplot \
+	freeradius \
 	imagemagick \
 	ldconfig lftp \
 	monotone motion \

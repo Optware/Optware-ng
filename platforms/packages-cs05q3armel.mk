@@ -9,7 +9,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk14-chan-capi libcapi20 \
-	gnuplot \
 	iptraf \
 	ldconfig \
 	monotone \

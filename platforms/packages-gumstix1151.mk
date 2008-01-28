@@ -10,7 +10,6 @@ BROKEN_PACKAGES = \
 	amule asterisk \
 	bluez-hcidump chillispot \
 	dump ficy \
-	gnuplot \
 	gtmess \
 	iptraf \
 	ircd-hybrid \
