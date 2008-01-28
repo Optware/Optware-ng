@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPLOT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gnuplot
-GNUPLOT_VERSION=4.2.0
+GNUPLOT_VERSION=4.2.2
 GNUPLOT_SOURCE=gnuplot-$(GNUPLOT_VERSION).tar.gz
 GNUPLOT_DIR=gnuplot-$(GNUPLOT_VERSION)
 GNUPLOT_UNZIP=zcat
@@ -36,7 +36,7 @@ GNUPLOT_CONFLICTS=
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=5
+GNUPLOT_IPK_VERSION=1
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
@@ -49,7 +49,7 @@ GNUPLOT_IPK_VERSION=5
 GNUPLOT_PATCHES=$(GNUPLOT_SOURCE_DIR)/Makefile.in.patch \
 		$(GNUPLOT_SOURCE_DIR)/docs-Makefile.in.patch \
 
-ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
+ifneq (, $(filter openwrt-brcm24 openwrt-ixp4xx, $(OPTWARE_TARGET)))
 GNUPLOT_PATCHES += $(GNUPLOT_SOURCE_DIR)/no-specfun.patch
 endif
 
@@ -108,7 +108,7 @@ gnuplot-source: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
+$(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES) make/gnuplot.mk
 	$(MAKE) readline-stage libpng-stage libgd-stage ncurses-stage expat-stage
 	rm -rf $(BUILD_DIR)/$(GNUPLOT_DIR) $(GNUPLOT_BUILD_DIR)
 	$(GNUPLOT_UNZIP) $(DL_DIR)/$(GNUPLOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -144,7 +144,7 @@ $(GNUPLOT_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPLOT_SOURCE) $(GNUPLOT_PATCHES)
 		--disable-wxwidgets \
 	)
 #	$(PATCH_LIBTOOL) $(GNUPLOT_BUILD_DIR)/libtool
-	touch $(GNUPLOT_BUILD_DIR)/.configured
+	touch $@
 
 gnuplot-unpack: $(GNUPLOT_BUILD_DIR)/.configured
 
@@ -152,10 +152,15 @@ gnuplot-unpack: $(GNUPLOT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GNUPLOT_BUILD_DIR)/.built: $(GNUPLOT_BUILD_DIR)/.configured
-	rm -f $(GNUPLOT_BUILD_DIR)/.built
-	   $(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(GNUPLOT_BUILD_DIR) HOSTCC=$(HOSTCC)
-	touch $(GNUPLOT_BUILD_DIR)/.built
+	rm -f $@
+ifneq (, $(filter cs05q3armel cs06q3armel ds101 fsg3v4, $(OPTWARE_TARGET)))
+# no optimization
+	$(MAKE) -C $(@D)/src HOSTCC=$(HOSTCC) matrix.o \
+		CFLAGS="" CPPFLAGS="-I$(STAGING_INCLUDE_DIR)"
+endif
+	$(TARGET_CONFIGURE_OPTS) \
+		$(MAKE) -C $(GNUPLOT_BUILD_DIR) HOSTCC=$(HOSTCC)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -166,9 +171,9 @@ gnuplot: $(GNUPLOT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GNUPLOT_BUILD_DIR)/.staged: $(GNUPLOT_BUILD_DIR)/.built
-	rm -f $(GNUPLOT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(GNUPLOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(GNUPLOT_BUILD_DIR)/.staged
+	touch $@
 
 gnuplot-stage: $(GNUPLOT_BUILD_DIR)/.staged
 
@@ -177,7 +182,7 @@ gnuplot-stage: $(GNUPLOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnuplot
 #
 $(GNUPLOT_IPK_DIR)/CONTROL/control:
-	@install -d $(GNUPLOT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gnuplot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

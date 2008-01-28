@@ -22,7 +22,6 @@ BROKEN_PACKAGES = \
 	ecl eggdrop \
 	fcgi \
 	gdb \
-	gnuplot \
 	ldconfig \
 	libpcap loudmouth \
 	monotone \
