@@ -22,7 +22,7 @@
 #
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=7.5
+PCRE_VERSION=7.6
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
@@ -30,14 +30,10 @@ PCRE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PCRE_DESCRIPTION=Perl-compatible regular expression library
 PCRE_SECTION=util
 PCRE_PRIORITY=optional
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PCRE_DEPENDS=libstdc++
-else
-PCRE_DEPENDS=
-endif
 PCRE_CONFLICTS=
 
-ifeq ($(HOST_MACHINE),armv5b)
+ifeq ($(HOSTCC), $(TARGET_CC))
 	PCRE_LIBTOOL_TAG=""
 else
 	PCRE_LIBTOOL_TAG="--tag=CXX"
@@ -109,16 +105,13 @@ pcre-source: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES) \
-	make/pcre.mk
-ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
+$(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES) make/pcre.mk
 	$(MAKE) libstdc++-stage
-endif
 	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
 	$(PCRE_UNZIP) $(DL_DIR)/$(PCRE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PCRE_PATCHES) | patch -d $(BUILD_DIR)/$(PCRE_DIR) -p1
 	mv $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
-	(cd $(PCRE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CC_FOR_BUILD=$(HOSTCC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -132,7 +125,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(PCRE_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 pcre-unpack: $(PCRE_BUILD_DIR)/.configured
@@ -142,7 +135,7 @@ pcre-unpack: $(PCRE_BUILD_DIR)/.configured
 #
 $(PCRE_BUILD_DIR)/.built: $(PCRE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PCRE_BUILD_DIR) LIBTOOL_TAG=$(PCRE_LIBTOOL_TAG)
+	$(MAKE) -C $(@D) LIBTOOL_TAG=$(PCRE_LIBTOOL_TAG)
 	touch $@
 #
 # This is the build convenience target.
@@ -154,7 +147,7 @@ pcre: $(PCRE_BUILD_DIR)/.built
 #
 $(PCRE_BUILD_DIR)/.staged: $(PCRE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpcre.la
 	rm -f $(STAGING_LIB_DIR)/libpcreposix.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
