@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.12.6-arm1
-# Sun Nov 25 11:54:54 2007
+# Mon Jan 28 08:49:01 2008
 #
 CONFIG_ARM=y
 CONFIG_MMU=y
@@ -827,7 +827,41 @@ CONFIG_DUMMY_CONSOLE=y
 #
 # Sound
 #
-# CONFIG_SOUND is not set
+CONFIG_SOUND=m
+
+#
+# Advanced Linux Sound Architecture
+#
+# CONFIG_SND is not set
+
+#
+# Open Sound System
+#
+CONFIG_SOUND_PRIME=m
+# CONFIG_SOUND_BT878 is not set
+# CONFIG_SOUND_CMPCI is not set
+# CONFIG_SOUND_EMU10K1 is not set
+# CONFIG_SOUND_FUSION is not set
+# CONFIG_SOUND_CS4281 is not set
+# CONFIG_SOUND_ES1370 is not set
+# CONFIG_SOUND_ES1371 is not set
+# CONFIG_SOUND_ESSSOLO1 is not set
+# CONFIG_SOUND_MAESTRO is not set
+# CONFIG_SOUND_MAESTRO3 is not set
+# CONFIG_SOUND_ICH is not set
+# CONFIG_SOUND_SONICVIBES is not set
+# CONFIG_SOUND_TRIDENT is not set
+# CONFIG_SOUND_MSNDCLAS is not set
+# CONFIG_SOUND_MSNDPIN is not set
+# CONFIG_SOUND_VIA82CXXX is not set
+# CONFIG_SOUND_OSS is not set
+# CONFIG_AEDSP16_MSS is not set
+# CONFIG_AEDSP16_SBPRO is not set
+# CONFIG_SOUND_TVMIXER is not set
+# CONFIG_SOUND_ALI5455 is not set
+# CONFIG_SOUND_FORTE is not set
+# CONFIG_SOUND_RME96XX is not set
+# CONFIG_SOUND_AD1980 is not set
 
 #
 # USB support
@@ -860,10 +894,12 @@ CONFIG_USB_UHCI_HCD=y
 #
 # USB Device Class drivers
 #
+CONFIG_USB_AUDIO=m
 
 #
 # USB Bluetooth TTY can only be used with disabled Bluetooth subsystem
 #
+# CONFIG_USB_MIDI is not set
 CONFIG_USB_ACM=y
 CONFIG_USB_PRINTER=y
 
