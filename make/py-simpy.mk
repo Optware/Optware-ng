@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/simpy
-PY-SIMPY_VERSION=1.8
+PY-SIMPY_VERSION=1.9
 PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).tar.gz
 PY-SIMPY_DIR=SimPy-$(PY-SIMPY_VERSION)
 PY-SIMPY_UNZIP=zcat
@@ -69,8 +69,8 @@ PY-SIMPY_LDFLAGS=
 PY-SIMPY_BUILD_DIR=$(BUILD_DIR)/py-simpy
 PY-SIMPY_SOURCE_DIR=$(SOURCE_DIR)/py-simpy
 
-PY24-SIMPY_IPK_DIR=$(BUILD_DIR)/py-simpy-$(PY-SIMPY_VERSION)-ipk
-PY24-SIMPY_IPK=$(BUILD_DIR)/py-simpy_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SIMPY_IPK_DIR=$(BUILD_DIR)/py24-simpy-$(PY-SIMPY_VERSION)-ipk
+PY24-SIMPY_IPK=$(BUILD_DIR)/py24-simpy_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SIMPY_IPK_DIR=$(BUILD_DIR)/py25-simpy-$(PY-SIMPY_VERSION)-ipk
 PY25-SIMPY_IPK=$(BUILD_DIR)/py25-simpy_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -85,7 +85,8 @@ PY-SIMPY-DOC_IPK=$(BUILD_DIR)/py-simpy-doc_$(PY-SIMPY_VERSION)-$(PY-SIMPY_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SIMPY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SIMPY_SITE)/$(PY-SIMPY_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SIMPY_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,14 +112,14 @@ py-simpy-source: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCHES)
 #
 $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-SIMPY_BUILD_DIR)
-	mkdir -p $(PY-SIMPY_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
 	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(PY-SIMPY_BUILD_DIR)/2.4
-	(cd $(PY-SIMPY_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.4" \
@@ -128,14 +129,14 @@ $(PY-SIMPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPY_SOURCE) $(PY-SIMPY_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-SIMPY_DIR)
 	$(PY-SIMPY_UNZIP) $(DL_DIR)/$(PY-SIMPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SIMPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(PY-SIMPY_BUILD_DIR)/2.5
-	(cd $(PY-SIMPY_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-SIMPY_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-SIMPY_BUILD_DIR)/.configured
+	touch $@
 
 py-simpy-unpack: $(PY-SIMPY_BUILD_DIR)/.configured
 
@@ -144,9 +145,9 @@ py-simpy-unpack: $(PY-SIMPY_BUILD_DIR)/.configured
 #
 $(PY-SIMPY_BUILD_DIR)/.built: $(PY-SIMPY_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-SIMPY_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build;
-	cd $(PY-SIMPY_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build;
 	touch $@
 
@@ -172,7 +173,7 @@ py-simpy-stage: $(PY-SIMPY_BUILD_DIR)/.staged
 $(PY24-SIMPY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-simpy" >>$@
+	@echo "Package: py24-simpy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SIMPY_PRIORITY)" >>$@
 	@echo "Section: $(PY-SIMPY_SECTION)" >>$@
