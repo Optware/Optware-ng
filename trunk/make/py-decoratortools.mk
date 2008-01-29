@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DECORATORTOOLS_VERSION=1.6
+PY-DECORATORTOOLS_VERSION=1.7
 PY-DECORATORTOOLS_SITE=http://cheeseshop.python.org/packages/source/D/DecoratorTools
 PY-DECORATORTOOLS_DIR=DecoratorTools-$(PY-DECORATORTOOLS_VERSION)
 PY-DECORATORTOOLS_SOURCE=DecoratorTools-$(PY-DECORATORTOOLS_VERSION).zip
@@ -81,8 +81,8 @@ PY25-DECORATORTOOLS_IPK=$(BUILD_DIR)/py25-decoratortools_$(PY-DECORATORTOOLS_VER
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-DECORATORTOOLS_SITE)/$(PY-DECORATORTOOLS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PY-DECORATORTOOLS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-DECORATORTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,14 +108,14 @@ py-decoratortools-source: $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE) $(PY-DECORATORTO
 #
 $(PY-DECORATORTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE) $(PY-DECORATORTOOLS_PATCHES) make/py-decoratortools.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-DECORATORTOOLS_BUILD_DIR)
-	mkdir -p $(PY-DECORATORTOOLS_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR)
 	cd $(BUILD_DIR) && $(PY-DECORATORTOOLS_UNZIP) $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE)
 #	cat $(PY-DECORATORTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) $(PY-DECORATORTOOLS_BUILD_DIR)/2.4
-	(cd $(PY-DECORATORTOOLS_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -123,12 +123,12 @@ $(PY-DECORATORTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE
 	rm -rf $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR)
 	cd $(BUILD_DIR) && $(PY-DECORATORTOOLS_UNZIP) $(DL_DIR)/$(PY-DECORATORTOOLS_SOURCE)
 #	cat $(PY-DECORATORTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) $(PY-DECORATORTOOLS_BUILD_DIR)/2.5
-	(cd $(PY-DECORATORTOOLS_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-DECORATORTOOLS_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-DECORATORTOOLS_BUILD_DIR)/.configured
+	touch $@
 
 py-decoratortools-unpack: $(PY-DECORATORTOOLS_BUILD_DIR)/.configured
 
@@ -136,14 +136,14 @@ py-decoratortools-unpack: $(PY-DECORATORTOOLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-DECORATORTOOLS_BUILD_DIR)/.built: $(PY-DECORATORTOOLS_BUILD_DIR)/.configured
-	rm -f $(PY-DECORATORTOOLS_BUILD_DIR)/.built
-	(cd $(PY-DECORATORTOOLS_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-DECORATORTOOLS_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-DECORATORTOOLS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,9 +154,9 @@ py-decoratortools: $(PY-DECORATORTOOLS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-DECORATORTOOLS_BUILD_DIR)/.staged: $(PY-DECORATORTOOLS_BUILD_DIR)/.built
-	rm -f $(PY-DECORATORTOOLS_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-DECORATORTOOLS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-DECORATORTOOLS_BUILD_DIR)/.staged
+	touch $@
 
 py-decoratortools-stage: $(PY-DECORATORTOOLS_BUILD_DIR)/.staged
 
