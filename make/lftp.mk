@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.6.1
+LFTP_VERSION=3.6.3
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -117,12 +117,13 @@ $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(LFTP_BUILD_DIR) ; \
 	fi
 #		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/$(GNU_TARGET_NAME)-libgnutls-config
-	(cd $(LFTP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
 		ac_cv_need_trio=no \
 		lftp_cv_va_copy=yes \
+		enable_wcwidth_replacement=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -131,7 +132,7 @@ $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LFTP_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 lftp-unpack: $(LFTP_BUILD_DIR)/.configured
@@ -141,7 +142,7 @@ lftp-unpack: $(LFTP_BUILD_DIR)/.configured
 #
 $(LFTP_BUILD_DIR)/.built: $(LFTP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LFTP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,7 +155,7 @@ lftp: $(LFTP_BUILD_DIR)/.built
 #
 $(LFTP_BUILD_DIR)/.staged: $(LFTP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LFTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 lftp-stage: $(LFTP_BUILD_DIR)/.staged
