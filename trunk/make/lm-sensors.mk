@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LM_SENSORS_SITE=http://dl.lm-sensors.org/lm-sensors/releases
-LM_SENSORS_VERSION=3.0.0
+LM_SENSORS_VERSION=3.0.1
 LM_SENSORS_SOURCE=lm_sensors-$(LM_SENSORS_VERSION).tar.bz2
 LM_SENSORS_DIR=lm_sensors-$(LM_SENSORS_VERSION)
 LM_SENSORS_UNZIP=bzcat
