@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.17.0
+LIBCURL_VERSION=7.18.0
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=3
+LIBCURL_IPK_VERSION=1
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -152,7 +152,7 @@ $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
 	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/curl-config
 	install -d $(STAGING_DIR)/bin
 	cp $(STAGING_DIR)/opt/bin/curl-config $(STAGING_DIR)/bin/curl-config
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcurl.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcurl.pc
 	rm -f $(STAGING_LIB_DIR)/libcurl.la
 	touch $@
 
@@ -191,14 +191,8 @@ $(LIBCURL_IPK_DIR)/CONTROL/control:
 $(LIBCURL_IPK): $(LIBCURL_BUILD_DIR)/.built
 	rm -rf $(LIBCURL_IPK_DIR) $(BUILD_DIR)/libcurl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install-strip
-	rm -f $(LIBCURL_IPK_DIR)/opt/lib/libcurl.a
-	#install -d $(LIBCURL_IPK_DIR)/opt/etc/
-	#install -m 644 $(LIBCURL_SOURCE_DIR)/libcurl.conf $(LIBCURL_IPK_DIR)/opt/etc/libcurl.conf
-	#install -d $(LIBCURL_IPK_DIR)/opt/etc/init.d
-	#install -m 755 $(LIBCURL_SOURCE_DIR)/rc.libcurl $(LIBCURL_IPK_DIR)/opt/etc/init.d/SXXlibcurl
+	rm -f $(LIBCURL_IPK_DIR)/opt/lib/libcurl.a $(LIBCURL_IPK_DIR)/opt/lib/libcurl.la
 	$(MAKE) $(LIBCURL_IPK_DIR)/CONTROL/control
-	#install -m 755 $(LIBCURL_SOURCE_DIR)/postinst $(LIBCURL_IPK_DIR)/CONTROL/postinst
-	#install -m 755 $(LIBCURL_SOURCE_DIR)/prerm $(LIBCURL_IPK_DIR)/CONTROL/prerm
 	echo $(LIBCURL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBCURL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL_IPK_DIR)
 
