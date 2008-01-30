@@ -621,6 +621,11 @@ This is quick explanation of the buttons:
 Transmission daemon wiki page</a>.</p>
 
 __EOF__
+if [ -r /opt/share/doc/transmission/NEWS ]; then 
+	echo "<pre>" 
+	cat /opt/share/doc/transmission/NEWS
+	echo "</pre>" 
+fi                                         
 if [ -r /opt/share/doc/transmission/README.daemon ]; then 
 	echo "<pre>" 
 	cat /opt/share/doc/transmission/README.daemon

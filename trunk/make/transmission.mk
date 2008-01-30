@@ -23,9 +23,9 @@
 #  TRAC: http://trac.transmissionbt.com/timeline
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.0
+TRANSMISSION_VERSION=1.03
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=4839
+TRANSMISSION_SVN_REV=4868
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -38,7 +38,7 @@ TRANSMISSION_DESCRIPTION=lightweight BitTorrent client and daemon with WWW inter
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
 TRANSMISSION_DEPENDS=openssl
-TRANSMISSION_SUGGESTS=gnuplot, logrotate, thttpd
+TRANSMISSION_SUGGESTS=gnuplot, logrotate, thttpd, mini-sendmail
 TRANSMISSION_CONFLICTS=torrent
 
 #
@@ -249,6 +249,7 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -m 666 $(TRANSMISSION_SOURCE_DIR)/README.daemon $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
+	install -m 666 $(TRANSMISSION_BUILD_DIR)/NEWS $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/log
 	install -d $(TRANSMISSION_IPK_DIR)/opt/var/run
 	$(MAKE) $(TRANSMISSION_IPK_DIR)/CONTROL/control
