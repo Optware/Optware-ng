@@ -45,6 +45,7 @@
 #include <sys/stat.h>
 #include <syslog.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/utils.h> /* tr_wait */
 #ifdef SYS_BEOS
 #include <kernel/OS.h>
 #define usleep snooze
@@ -451,7 +452,6 @@ int main( int argc, char ** argv )
   int i;
   pid_t pid;
   char *cp;
-  tr_handle_status * hstat;
   int dirty;
   
   /* Get options */
@@ -522,10 +522,10 @@ int main( int argc, char ** argv )
                    1,                       /* pex enabled */
 		   natTraversal,            /* nat enabled */
 		   bindPort,                /* public port */
-		   encryptionMode, 	    /* encryption mode */
-		   uploadLimit > 0,         /* use upload speed limit? */
+		   encryptionMode, 	        /* encryption mode */
+		   uploadLimit >= 0,        /* use upload speed limit? */
 		   uploadLimit,             /* upload speed limit */
-		   downloadLimit > 0,       /* use download speed limit? */
+		   downloadLimit >= 0,      /* use download speed limit? */
 		   downloadLimit,           /* download speed limit */
 		   512,                     /* globalPeerLimit */
 		   verboseLevel + 1,        /* messageLevel */
@@ -608,13 +608,13 @@ int main( int argc, char ** argv )
 
   for( i = 0; i < 10; i++ )
     {
-      hstat = tr_handleStatus( h );
+      const tr_handle_status * hstat = tr_handleStatus( h );
       if( TR_NAT_TRAVERSAL_UNMAPPED == hstat->natTraversalStatus )
         {
           /* Port mappings were deleted */
           break;
         }
-      usleep( 500000 );
+      tr_wait( 500 );
     }
   tr_close( h );
   
