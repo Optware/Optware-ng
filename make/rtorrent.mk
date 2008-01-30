@@ -13,9 +13,9 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.7.9
+RTORRENT_VERSION=0.8.0
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
-RTORRENT_SVN_REV=1027
+#RTORRENT_SVN_REV=1037
 ifdef RTORRENT_SVN_REV
 RTORRENT_SOURCE=rtorrent-svn-$(RTORRENT_SVN_REV).tar.gz
 else
@@ -125,6 +125,7 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 # 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
+	$(MAKE) ncurses-stage
 	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage
 	$(MAKE) libcurl-stage xmlrpc-c-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)

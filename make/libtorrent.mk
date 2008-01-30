@@ -12,9 +12,9 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.11.9
+LIBTORRENT_VERSION=0.12.0
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
-LIBTORRENT_SVN_REV=1027
+#LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
 LIBTORRENT_SOURCE=libtorrent-svn-$(LIBTORRENT_SVN_REV).tar.gz
 else
@@ -44,13 +44,11 @@ LIBTORRENT_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 LIBTORRENT_PATCHES=
-ifdef LIBTORRENT_SVN_REV
-LIBTORRENT_POST_AC_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
-else
 ifneq ($(HOSTCC), $(TARGET_CC))
-LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
+LIBTORRENT_POST_AC_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
+#LIBTORRENT_PATCHES=$(LIBTORRENT_SOURCE_DIR)/configure.patch
 endif
-endif
+
 ifeq ($(TARGET_ARCH), armeb)
 ifeq ($(LIBC_STYLE), glibc)
 # http://tech.groups.yahoo.com/group/nslu2-developers/message/1503
@@ -159,12 +157,14 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		then mv $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR) ; \
 	fi
 ifdef LIBTORRENT_SVN_REV
-	(cd $(LIBTORRENT_BUILD_DIR); \
+	(cd $(@D); \
 		AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f ; \
-		if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; \
-			then cat $(LIBTORRENT_POST_AC_PATCHES) | \
-			patch -d $(LIBTORRENT_BUILD_DIR) -p0 ; \
-		fi ; \
+	)
+endif
+	if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; then \
+		cat $(LIBTORRENT_POST_AC_PATCHES) | patch -d $(LIBTORRENT_BUILD_DIR) -p0 ; \
+	fi
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT_LDFLAGS)" \
@@ -181,29 +181,10 @@ ifdef LIBTORRENT_SVN_REV
 		--disable-static \
 		--with-openssl=$(STAGING_PREFIX) \
 	)
-else
-		(cd $(LIBTORRENT_BUILD_DIR); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(LIBTORRENT_LDFLAGS)" \
-		PKG_CONFIG_PATH="$(STAGING_DIR)/opt/lib/pkgconfig/" \
-		$(LIBTORRENT_CONFIGURE) \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		$(LIBTORRENT_CONFIG_ARGS) \
-		--disable-nls \
-		--disable-static \
-		--with-openssl=$(STAGING_PREFIX) \
-	)
-endif
-
 ifneq (, $(filter gumstix1151, $(OPTWARE_TARGET)))
 	sed -i -e '/USE_MADVISE/s|.*|/* #undef USE_MADVISE */|' $(@D)/config.h
 endif
-	$(PATCH_LIBTOOL) $(LIBTORRENT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libtorrent-unpack: $(LIBTORRENT_BUILD_DIR)/.configured
@@ -213,7 +194,7 @@ libtorrent-unpack: $(LIBTORRENT_BUILD_DIR)/.configured
 #
 $(LIBTORRENT_BUILD_DIR)/.built: $(LIBTORRENT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBTORRENT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -227,7 +208,7 @@ libtorrent: $(LIBTORRENT_BUILD_DIR)/.built
 $(LIBTORRENT_BUILD_DIR)/.staged: $(LIBTORRENT_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_LIB_DIR)/libtorrent*
-	$(MAKE) -C $(LIBTORRENT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libtorrent.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libtorrent.pc
 	touch $@
