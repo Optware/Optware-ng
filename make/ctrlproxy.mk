@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CTRLPROXY_SITE=http://ctrlproxy.vernstok.nl/releases
-CTRLPROXY_VERSION=3.0.1
+CTRLPROXY_VERSION=3.0.5
 CTRLPROXY_SOURCE=ctrlproxy-$(CTRLPROXY_VERSION).tar.gz
 CTRLPROXY_DIR=ctrlproxy-$(CTRLPROXY_VERSION)
 CTRLPROXY_UNZIP=zcat
@@ -50,13 +50,13 @@ CTRLPROXY_CONFFILES=
 # CTRLPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CTRLPROXY_PATCHES=$(CTRLPROXY_SOURCE_DIR)/configure.patch
+CTRLPROXY_PATCHES=$(CTRLPROXY_SOURCE_DIR)/AI_ADDRCONFIG.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-CTRLPROXY_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0
+CTRLPROXY_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -D__USE_POSIX
 CTRLPROXY_LDFLAGS=
 
 #
@@ -102,12 +102,13 @@ ctrlproxy-source: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES)
+$(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PATCHES) make/ctrlproxy.mk
 	$(MAKE) glib-stage libxml2-stage popt-stage pcre-stage gnutls-stage
 	rm -rf $(BUILD_DIR)/$(CTRLPROXY_DIR) $(CTRLPROXY_BUILD_DIR)
 	$(CTRLPROXY_UNZIP) $(DL_DIR)/$(CTRLPROXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(CTRLPROXY_PATCHES) | patch -d $(BUILD_DIR)/$(CTRLPROXY_DIR) -p1
-#	cp $(CTRLPROXY_SOURCE_DIR)/configure.new $(BUILD_DIR)/$(CTRLPROXY_DIR)/configure
+	if test "$(CTRLPROXY_PATCHES)"; \
+		then cat $(CTRLPROXY_PATCHES) | patch -d $(BUILD_DIR)/$(CTRLPROXY_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(CTRLPROXY_DIR) $(CTRLPROXY_BUILD_DIR)
 	(cd $(CTRLPROXY_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -125,12 +126,8 @@ $(CTRLPROXY_BUILD_DIR)/.configured: $(DL_DIR)/$(CTRLPROXY_SOURCE) $(CTRLPROXY_PA
 		--disable-gcov \
 		--disable-nls \
 	)
-	sed -i -e '/(CC) .*-rdynamic/s|(CC) |(CC) $$(LDFLAGS)|' \
-		$(CTRLPROXY_BUILD_DIR)/Makefile
-	sed -i -e 's|^CFLAGS.*|CFLAGS = $(STAGING_CPPFLAGS) $(CTRLPROXY_CPPFLAGS)|' \
-	       -e '/WITH_GCOV/s|1|0|' \
-		$(CTRLPROXY_BUILD_DIR)/Makefile.settings
-	touch $(CTRLPROXY_BUILD_DIR)/.configured
+	sed -i -e '/WITH_GCOV/s|1|0|' $(@D)/Makefile.settings
+	touch $@
 
 ctrlproxy-unpack: $(CTRLPROXY_BUILD_DIR)/.configured
 
@@ -138,9 +135,9 @@ ctrlproxy-unpack: $(CTRLPROXY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CTRLPROXY_BUILD_DIR)/.built: $(CTRLPROXY_BUILD_DIR)/.configured
-	rm -f $(CTRLPROXY_BUILD_DIR)/.built
-	$(MAKE) -C $(CTRLPROXY_BUILD_DIR)
-	touch $(CTRLPROXY_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,9 +148,9 @@ ctrlproxy: $(CTRLPROXY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CTRLPROXY_BUILD_DIR)/.staged: $(CTRLPROXY_BUILD_DIR)/.built
-	rm -f $(CTRLPROXY_BUILD_DIR)/.staged
-	$(MAKE) -C $(CTRLPROXY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CTRLPROXY_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 ctrlproxy-stage: $(CTRLPROXY_BUILD_DIR)/.staged
 
@@ -162,7 +159,7 @@ ctrlproxy-stage: $(CTRLPROXY_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/ctrlproxy
 #
 $(CTRLPROXY_IPK_DIR)/CONTROL/control:
-	@install -d $(CTRLPROXY_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ctrlproxy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -188,9 +185,9 @@ $(CTRLPROXY_IPK_DIR)/CONTROL/control:
 #
 $(CTRLPROXY_IPK): $(CTRLPROXY_BUILD_DIR)/.built
 	rm -rf $(CTRLPROXY_IPK_DIR) $(BUILD_DIR)/ctrlproxy_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CTRLPROXY_BUILD_DIR) DESTDIR=$(CTRLPROXY_IPK_DIR) install
-	$(STRIP_COMMAND) $(CTRLPROXY_IPK_DIR)/opt/bin/ctrlproxy \
-		$(CTRLPROXY_IPK_DIR)/opt/lib/ctrlproxy/*.so
+	$(MAKE) -C $(CTRLPROXY_BUILD_DIR) DESTDIR=$(CTRLPROXY_IPK_DIR) \
+		all install-dirs install-bin install-data install-doc
+	$(STRIP_COMMAND) $(CTRLPROXY_IPK_DIR)/opt/bin/ctrlproxy
 #	install -d $(CTRLPROXY_IPK_DIR)/opt/etc/
 #	install -m 644 $(CTRLPROXY_SOURCE_DIR)/ctrlproxy.conf $(CTRLPROXY_IPK_DIR)/opt/etc/ctrlproxy.conf
 #	install -d $(CTRLPROXY_IPK_DIR)/opt/etc/init.d
