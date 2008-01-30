@@ -32,11 +32,13 @@ GNUPLOT_PRIORITY=optional
 GNUPLOT_DEPENDS=readline, libgd, ncurses, expat, libstdc++
 GNUPLOT_SUGGESTS=
 GNUPLOT_CONFLICTS=
-
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GNUPLOT_DEPENDS+=, libiconv
+endif
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=1
+GNUPLOT_IPK_VERSION=2
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
