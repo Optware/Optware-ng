@@ -19,5 +19,4 @@ BROKEN_PACKAGES = \
 	player puppy \
 	qemu sablevm \
 	socat \
-	uemacs \
 	varnish \

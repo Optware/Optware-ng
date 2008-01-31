@@ -16,4 +16,3 @@ BROKEN_PACKAGES = \
 	puppy \
 	qemu qemu-libc-i386 \
 	socat \
-	uemacs \

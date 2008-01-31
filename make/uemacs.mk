@@ -36,7 +36,7 @@ UEMACS_CONFLICTS=
 #
 # UEMACS_IPK_VERSION should be incremented when the ipk changes.
 #
-UEMACS_IPK_VERSION=1
+UEMACS_IPK_VERSION=2
 
 #
 # UEMACS_CONFFILES should be a list of user-editable files
@@ -118,7 +118,8 @@ $(UEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(UEMACS_SOURCE) $(UEMACS_PATCHES) ma
 	if test "$(BUILD_DIR)/$(UEMACS_DIR)" != "$(UEMACS_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UEMACS_DIR) $(UEMACS_BUILD_DIR) ; \
 	fi
-	sed -i -e 's|strip|$(STRIP_COMMAND)|' $(UEMACS_BUILD_DIR)/makefile
+	sed -i -e 's|strip|$(STRIP_COMMAND)|' $(@D)/makefile
+	sed -i -e 's|MSDOS.*PKCODE|0|' $(@D)/main.c
 #	(cd $(UEMACS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UEMACS_CPPFLAGS)" \
@@ -141,7 +142,7 @@ uemacs-unpack: $(UEMACS_BUILD_DIR)/.configured
 #
 $(UEMACS_BUILD_DIR)/.built: $(UEMACS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(UEMACS_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UEMACS_CPPFLAGS)" \
 		LIBS="-lncurses $(STAGING_LDFLAGS) $(UEMACS_LDFLAGS)" \
