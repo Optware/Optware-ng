@@ -1,0 +1,9 @@
+#!/bin/sh
+
+touch /etc/profile
+if ! grep '^PATH=.*/opt/bin' /etc/profile >/dev/null 2>&1 ; then
+  echo "PATH=\$PATH:/opt/bin:/opt/sbin" >> /etc/profile
+fi
+
+rm -f /etc/rc/S98optware
+ln -s /etc/init.d/optware /etc/rc/S98optware
