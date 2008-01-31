@@ -3,12 +3,6 @@
 # tcpdump
 #
 ###########################################################
-
-# You must replace "tcpdump" and "TCPDUMP" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # TCPDUMP_VERSION, TCPDUMP_SITE and TCPDUMP_SOURCE define
 # the upstream location of the source code for the package.
@@ -18,17 +12,35 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 # You should change all these variables to suit your package.
+# Please make sure that you add a description, and that you
+# list all your packages' dependencies, seperated by commas.
+# 
+# If you list yourself as MAINTAINER, please give a valid email
+# address, and indicate your irc nick if it cannot be easily deduced
+# from your name or email address.  If you leave MAINTAINER set to
+# "NSLU2 Linux" other developers will feel free to edit.
 #
 TCPDUMP_SITE=http://www.tcpdump.org/release
-TCPDUMP_VERSION=3.9.7
+TCPDUMP_VERSION=3.9.8
 TCPDUMP_SOURCE=tcpdump-$(TCPDUMP_VERSION).tar.gz
 TCPDUMP_DIR=tcpdump-$(TCPDUMP_VERSION)
 TCPDUMP_UNZIP=zcat
+TCPDUMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+TCPDUMP_DESCRIPTION=tcpdump dumps the traffic on a network
+TCPDUMP_SECTION=net
+TCPDUMP_PRIORITY=optional
+TCPDUMP_DEPENDS=
+TCPDUMP_SUGGESTS=
+TCPDUMP_CONFLICTS=
 
 #
 # TCPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
 TCPDUMP_IPK_VERSION=1
+
+#
+# TCPDUMP_CONFFILES should be a list of user-editable files
+#TCPDUMP_CONFFILES=/opt/etc/tcpdump.conf /opt/etc/init.d/SXXtcpdump
 
 #
 # TCPDUMP_PATCHES should list any patches, in the the order in
@@ -57,12 +69,15 @@ TCPDUMP_SOURCE_DIR=$(SOURCE_DIR)/tcpdump
 TCPDUMP_IPK_DIR=$(BUILD_DIR)/tcpdump-$(TCPDUMP_VERSION)-ipk
 TCPDUMP_IPK=$(BUILD_DIR)/tcpdump_$(TCPDUMP_VERSION)-$(TCPDUMP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: tcpdump-source tcpdump-unpack tcpdump tcpdump-stage tcpdump-ipk tcpdump-clean tcpdump-dirclean tcpdump-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TCPDUMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TCPDUMP_SITE)/$(TCPDUMP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TCPDUMP_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -86,13 +101,21 @@ tcpdump-source: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
-	$(MAKE) libpcap-stage libpcap-stage
-	rm -rf $(BUILD_DIR)/$(TCPDUMP_DIR) $(TCPDUMP_BUILD_DIR)
+# If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
+# shown below to make various patches to it.
+#
+$(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES) make/tcpdump.mk
+	$(MAKE) libpcap-stage
+	rm -rf $(BUILD_DIR)/$(TCPDUMP_DIR) $(@D)
 	$(TCPDUMP_UNZIP) $(DL_DIR)/$(TCPDUMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(TCPDUMP_PATCHES) | patch -d $(BUILD_DIR)/$(TCPDUMP_DIR) -p1
-	mv $(BUILD_DIR)/$(TCPDUMP_DIR) $(TCPDUMP_BUILD_DIR)
-	(cd $(TCPDUMP_BUILD_DIR); \
+	if test -n "$(TCPDUMP_PATCHES)" ; \
+		then cat $(TCPDUMP_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(TCPDUMP_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(TCPDUMP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TCPDUMP_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TCPDUMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TCPDUMP_LDFLAGS)" \
@@ -102,39 +125,57 @@ $(TCPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(TCPDUMP_SOURCE) $(TCPDUMP_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
 		--disable-smb \
 		--without-crypto \
 	)
-	touch $(TCPDUMP_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 tcpdump-unpack: $(TCPDUMP_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.  You should change the target to refer
-# directly to the main binary which is built.
+# This builds the actual binary.
 #
-$(TCPDUMP_BUILD_DIR)/tcpdump: $(TCPDUMP_BUILD_DIR)/.configured
-	$(MAKE) -C $(TCPDUMP_BUILD_DIR)
+$(TCPDUMP_BUILD_DIR)/.built: $(TCPDUMP_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
-# You should change the dependency to refer directly to the main binary
-# which is built.
+# This is the build convenience target.
 #
-tcpdump: $(TCPDUMP_BUILD_DIR)/tcpdump
+tcpdump: $(TCPDUMP_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libtcpdump.so.$(TCPDUMP_VERSION): $(TCPDUMP_BUILD_DIR)/libtcpdump.so.$(TCPDUMP_VERSION)
-	install -d $(STAGING_DIR)/opt/include
-	install -m 644 $(TCPDUMP_BUILD_DIR)/tcpdump.h $(STAGING_DIR)/opt/include
-	install -d $(STAGING_DIR)/opt/lib
-	install -m 644 $(TCPDUMP_BUILD_DIR)/libtcpdump.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(TCPDUMP_BUILD_DIR)/libtcpdump.so.$(TCPDUMP_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtcpdump.so.$(TCPDUMP_VERSION) libtcpdump.so.1
-	cd $(STAGING_DIR)/opt/lib && ln -fs libtcpdump.so.$(TCPDUMP_VERSION) libtcpdump.so
+$(TCPDUMP_BUILD_DIR)/.staged: $(TCPDUMP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
-tcpdump-stage: $(STAGING_DIR)/opt/lib/libtcpdump.so.$(TCPDUMP_VERSION)
+tcpdump-stage: $(TCPDUMP_BUILD_DIR)/.staged
+
+#
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/tcpdump
+#
+$(TCPDUMP_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: tcpdump" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TCPDUMP_PRIORITY)" >>$@
+	@echo "Section: $(TCPDUMP_SECTION)" >>$@
+	@echo "Version: $(TCPDUMP_VERSION)-$(TCPDUMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TCPDUMP_MAINTAINER)" >>$@
+	@echo "Source: $(TCPDUMP_SITE)/$(TCPDUMP_SOURCE)" >>$@
+	@echo "Description: $(TCPDUMP_DESCRIPTION)" >>$@
+	@echo "Depends: $(TCPDUMP_DEPENDS)" >>$@
+	@echo "Suggests: $(TCPDUMP_SUGGESTS)" >>$@
+	@echo "Conflicts: $(TCPDUMP_CONFLICTS)" >>$@
 
 #
 # This builds the IPK file.
@@ -148,13 +189,25 @@ tcpdump-stage: $(STAGING_DIR)/opt/lib/libtcpdump.so.$(TCPDUMP_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/tcpdump
-	rm -rf $(TCPDUMP_IPK_DIR) $(TCPDUMP_IPK)
-	install -d $(TCPDUMP_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(TCPDUMP_BUILD_DIR)/tcpdump -o $(TCPDUMP_IPK_DIR)/opt/bin/tcpdump
-	install -d $(TCPDUMP_IPK_DIR)/CONTROL
-	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(TCPDUMP_VERSION)/" \
-		-e "s/@RELEASE@/$(TCPDUMP_IPK_VERSION)/" $(TCPDUMP_SOURCE_DIR)/control > $(TCPDUMP_IPK_DIR)/CONTROL/control
+$(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/.built
+	rm -rf $(TCPDUMP_IPK_DIR) $(BUILD_DIR)/tcpdump_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(TCPDUMP_BUILD_DIR) DESTDIR=$(TCPDUMP_IPK_DIR) install
+	$(STRIP_COMMAND) $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump
+#	install -d $(TCPDUMP_IPK_DIR)/opt/etc/
+#	install -m 644 $(TCPDUMP_SOURCE_DIR)/tcpdump.conf $(TCPDUMP_IPK_DIR)/opt/etc/tcpdump.conf
+#	install -d $(TCPDUMP_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
+	$(MAKE) $(TCPDUMP_IPK_DIR)/CONTROL/control
+#	install -m 755 $(TCPDUMP_SOURCE_DIR)/postinst $(TCPDUMP_IPK_DIR)/CONTROL/postinst
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/CONTROL/postinst
+#	install -m 755 $(TCPDUMP_SOURCE_DIR)/prerm $(TCPDUMP_IPK_DIR)/CONTROL/prerm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/CONTROL/prerm
+#	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(TCPDUMP_IPK_DIR)/CONTROL/postinst $(TCPDUMP_IPK_DIR)/CONTROL/prerm; \
+	fi
+	echo $(TCPDUMP_CONFFILES) | sed -e 's/ /\n/g' > $(TCPDUMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCPDUMP_IPK_DIR)
 
 #
@@ -166,6 +219,7 @@ tcpdump-ipk: $(TCPDUMP_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 tcpdump-clean:
+	rm -f $(TCPDUMP_BUILD_DIR)/.built
 	-$(MAKE) -C $(TCPDUMP_BUILD_DIR) clean
 
 #
@@ -174,7 +228,7 @@ tcpdump-clean:
 #
 tcpdump-dirclean:
 	rm -rf $(BUILD_DIR)/$(TCPDUMP_DIR) $(TCPDUMP_BUILD_DIR) $(TCPDUMP_IPK_DIR) $(TCPDUMP_IPK)
-
+#
 #
 # Some sanity check for the package.
 #
