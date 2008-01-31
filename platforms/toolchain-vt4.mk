@@ -48,7 +48,7 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY) \
 	mkdir -p $(@D)
 	tar -xj -C $(@D) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	install -d $(STAGING_LIB_DIR)
-	install $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl.so* $(STAGING_LIB_DIR)/
+	cp -fpd $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl*so* $(STAGING_LIB_DIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux $(TARGET_INCDIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-arm $(TARGET_INCDIR)/asm
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-generic $(TARGET_INCDIR)/
