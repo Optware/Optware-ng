@@ -1,9 +1,0 @@
-Package: tcpdump
-Version: @VERSION@-@RELEASE@
-Architecture: @ARCH@
-Maintainer: NSLU2 Linux <nslu2-linux@yahoogroups.com>
-Source: http://www.tcpdump.org/release/tcpdump-@VERSION@.tar.gz
-Section: net
-Priority: optional
-Depends: 
-Description: tcpdump dumps the traffic on a network
