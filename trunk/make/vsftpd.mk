@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=1
+VSFTPD_IPK_VERSION=2
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
@@ -38,7 +38,7 @@ VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
 # VSFTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VSFTPD_PATCHES=$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch
+VSFTPD_PATCHES=$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch $(VSFTPD_SOURCE_DIR)/syscall.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,8 +68,8 @@ VSFTPD_IPK=$(BUILD_DIR)/vsftpd_$(VSFTPD_VERSION)-$(VSFTPD_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VSFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(VSFTPD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(VSFTPD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(VSFTPD_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -108,7 +108,7 @@ $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 #		--target=$(GNU_TARGET_NAME) \
 #		--prefix=/opt \
 #	)
-	touch $(VSFTPD_BUILD_DIR)/.configured
+	touch $@
 
 vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
 
@@ -116,19 +116,21 @@ vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
-$(VSFTPD_BUILD_DIR)/vsftpd: $(VSFTPD_BUILD_DIR)/.configured
+$(VSFTPD_BUILD_DIR)/.built: $(VSFTPD_BUILD_DIR)/.configured
+	rm -f $@
 	$(MAKE) -C $(VSFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) LIBS="$(STAGING_LDFLAGS) -lcrypt"
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
 # which is built.
 #
-vsftpd: $(VSFTPD_BUILD_DIR)/vsftpd
+vsftpd: $(VSFTPD_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
 #
-$(STAGING_DIR)/opt/lib/libvsftpd.so.$(VSFTPD_VERSION): $(VSFTPD_BUILD_DIR)/libvsftpd.so.$(VSFTPD_VERSION)
+$(VSFTPD_BUILD_DIR)/.staged: $(VSFTPD_BUILD_DIR)/.built
 #	install -d $(STAGING_DIR)/opt/include
 #	install -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.h $(STAGING_DIR)/opt/include
 #	install -d $(STAGING_DIR)/opt/lib
@@ -137,7 +139,7 @@ $(STAGING_DIR)/opt/lib/libvsftpd.so.$(VSFTPD_VERSION): $(VSFTPD_BUILD_DIR)/libvs
 #	cd $(STAGING_DIR)/opt/lib && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so.1
 #	cd $(STAGING_DIR)/opt/lib && ln -fs libvsftpd.so.$(VSFTPD_VERSION) libvsftpd.so
 
-vsftpd-stage: $(STAGING_DIR)/opt/lib/libvsftpd.so.$(VSFTPD_VERSION)
+vsftpd-stage: $(VSFTPD_BUILD_DIR)/.staged
 
 #
 # This builds the IPK file.
@@ -151,7 +153,7 @@ vsftpd-stage: $(STAGING_DIR)/opt/lib/libvsftpd.so.$(VSFTPD_VERSION)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/vsftpd
+$(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/.built
 	rm -rf $(VSFTPD_IPK_DIR) $(BUILD_DIR)/vsftpd_*_$(TARGET_ARCH).ipk
 	install -d $(VSFTPD_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/sbin/vsftpd
