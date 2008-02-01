@@ -40,7 +40,7 @@ PERL_IPK_VERSION=17
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PERL_PATCHES=$(PERL_SOURCE_DIR)/Cross/Configure.patch
+PERL_PATCHES=$(PERL_SOURCE_DIR)/Cross/Configure.patch $(PERL_SOURCE_DIR)/Cross/gcc42.patch
 PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 
 #
