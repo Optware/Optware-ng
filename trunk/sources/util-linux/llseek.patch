@@ -1,0 +1,32 @@
+--- fdisk/llseek.c	2006-08-21 16:26:32.000000000 +0200
++++ fdisk/llseek.c	2006-08-21 16:26:40.000000000 +0200
+@@ -31,9 +31,11 @@
+ 
+ #ifdef __NR__llseek
+ 
+-static _syscall5(int,_llseek,unsigned int,fd,unsigned long,offset_high,
+-		 unsigned long, offset_low,long long *,result,
+-		 unsigned int, origin)
++static int _llseek (unsigned int fd, unsigned long oh,
++		    unsigned long ol, long long *result,
++		    unsigned int origin) {
++	return syscall (__NR__llseek, fd, oh, ol, result, origin);
++}
+ 
+ #else
+ 
+--- fdisk/sfdisk.c	2005-01-04 23:31:57.000000000 +0100
++++ fdisk/sfdisk.c	2006-08-21 16:27:54.000000000 +0200
+@@ -178,8 +178,10 @@
+ 
+ #ifndef use_lseek
+ static __attribute__used
+-_syscall5(int,  _llseek,  unsigned int,  fd, ulong, hi, ulong, lo,
+-       loff_t *, res, unsigned int, wh);
++int _llseek (unsigned int fd, ulong hi, ulong lo,
++       loff_t *res, unsigned int wh) {
++	return syscall (__NR__llseek, fd, hi, lo, res, wh);
++}
+ #endif
+ 
+ static int

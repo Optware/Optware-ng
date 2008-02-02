@@ -36,7 +36,7 @@ UTIL_LINUX_CONFLICTS=
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=4
+UTIL_LINUX_IPK_VERSION=5
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ UTIL_LINUX_IPK_VERSION=4
 # UTIL_LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#UTIL_LINUX_PATCHES=$(UTIL_LINUX_SOURCE_DIR)/configure.patch
+UTIL_LINUX_PATCHES=$(UTIL_LINUX_SOURCE_DIR)/llseek.patch $(UTIL_LINUX_SOURCE_DIR)/umount2.patch
 
 #
 # If the compilation of the package requires additional
@@ -76,8 +76,8 @@ UTIL_LINUX_IPK=$(BUILD_DIR)/util-linux_$(UTIL_LINUX_VERSION)-$(UTIL_LINUX_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(UTIL_LINUX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(UTIL_LINUX_SITE)/$(UTIL_LINUX_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(UTIL_LINUX_SOURCE)
+	$(WGET) -P $(DL_DIR) $(UTIL_LINUX_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,19 +106,16 @@ util-linux-source: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES)
 #
 $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES) make/util-linux.mk
 	$(MAKE) ncurses-stage zlib-stage
-	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(UTIL_LINUX_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D)
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_PATCHES)" ; \
 		then cat $(UTIL_LINUX_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(UTIL_LINUX_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(UTIL_LINUX_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(UTIL_LINUX_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), slugosbe)
-	sed -i -e 's/^static int umount2/int umount2/' $(UTIL_LINUX_BUILD_DIR)/mount/umount.c
-endif
-	(cd $(UTIL_LINUX_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
@@ -144,7 +141,7 @@ util-linux-unpack: $(UTIL_LINUX_BUILD_DIR)/.configured
 #
 $(UTIL_LINUX_BUILD_DIR)/.built: $(UTIL_LINUX_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(UTIL_LINUX_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		DISABLE_NLS=yes \
 		HAVE_SYSVINIT_UTILS=no \
 		USE_TTY_GROUP=no \
@@ -229,6 +226,7 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 		USRSHAREMISC_DIR=/opt/share/misc \
 		LOCALEDIR=/opt/share/locale \
 		;
+	rm -rf $(UTIL_LINUX_IPK_DIR)/opt/share/info
 	$(STRIP_COMMAND) `ls $(UTIL_LINUX_IPK_DIR)/opt/bin/* | grep -v chkdupexe`
 	rm -f $(UTIL_LINUX_IPK_DIR)/opt/sbin/swapoff
 	$(STRIP_COMMAND) $(UTIL_LINUX_IPK_DIR)/opt/sbin/*
