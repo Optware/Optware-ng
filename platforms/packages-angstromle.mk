@@ -12,5 +12,5 @@ BROKEN_PACKAGES = \
 	chillispot coreutils gconv-modules ipac-ng \
 	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
 	netatalk nfs-utils nget phoneme-advanced player puppy py-psycopg \
-	qemu squeak util-linux \
+	qemu squeak \
 	atk gtk vte xchat

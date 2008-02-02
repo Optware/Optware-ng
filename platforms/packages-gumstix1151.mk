@@ -16,4 +16,3 @@ BROKEN_PACKAGES = \
 	mdadm \
 	player \
 	puppy sendmail \
-	util-linux

@@ -27,5 +27,5 @@ BROKEN_PACKAGES = \
 	madplay mt-daapd nfs-utils \
 	pcapsipdump phoneme-advanced \
 	player rhtvision \
-	squeak transcode util-linux \
+	squeak transcode \
 	vte xchat

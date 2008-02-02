@@ -21,4 +21,4 @@ BROKEN_PACKAGES = \
 	ushare \
 	\
 	atk gtk madplay nfs-utils squeak transcode \
-	util-linux vte xchat \
+	vte xchat \
