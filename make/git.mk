@@ -40,7 +40,7 @@ GIT_CONFLICTS=
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=1
+GIT_IPK_VERSION=2
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
@@ -154,7 +154,7 @@ endif
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(GIT_BUILD_DIR)/libtool
-	touch $(GIT_BUILD_DIR)/.configured
+	touch $@
 
 git-unpack: $(GIT_BUILD_DIR)/.configured
 
@@ -162,15 +162,16 @@ git-unpack: $(GIT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(GIT_BUILD_DIR)/.built: $(GIT_BUILD_DIR)/.configured
-	rm -f $(GIT_BUILD_DIR)/.built
+	rm -f $@
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 	$(GIT_PERL_PATH) \
 	$(MAKE) -C $(GIT_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
+		NO_TCLTK=true \
 		prefix=/opt all strip
-	touch $(GIT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -181,9 +182,9 @@ git: $(GIT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GIT_BUILD_DIR)/.staged: $(GIT_BUILD_DIR)/.built
-	rm -f $(GIT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(GIT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(GIT_BUILD_DIR)/.staged
+	touch $@
 
 git-stage: $(GIT_BUILD_DIR)/.staged
 
@@ -240,6 +241,7 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
+		NO_TCLTK=true \
 		prefix=/opt \
 		install
 	-$(STRIP_COMMAND) $(GIT_IPK_DIR)/opt/bin/git-daemon
