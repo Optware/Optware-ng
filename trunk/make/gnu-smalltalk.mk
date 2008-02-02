@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNU_SMALLTALK_SITE=ftp://ftp.gnu.org/gnu/smalltalk
-GNU_SMALLTALK_VERSION=2.3.5
+GNU_SMALLTALK_VERSION=2.3.6
 GNU_SMALLTALK_SOURCE=smalltalk-$(GNU_SMALLTALK_VERSION).tar.gz
 GNU_SMALLTALK_DIR=smalltalk-$(GNU_SMALLTALK_VERSION)
 GNU_SMALLTALK_UNZIP=zcat
@@ -96,8 +96,8 @@ GNU_SMALLTALK_IPK=$(BUILD_DIR)/gnu-smalltalk_$(GNU_SMALLTALK_VERSION)-$(GNU_SMAL
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GNU_SMALLTALK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GNU_SMALLTALK_SITE)/$(GNU_SMALLTALK_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(GNU_SMALLTALK_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GNU_SMALLTALK_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -150,17 +150,17 @@ endif
 #	$(MAKE) readline-stage
 	$(MAKE) gdbm-stage
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(GNU_SMALLTALK_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(@D)
 	$(GNU_SMALLTALK_UNZIP) $(DL_DIR)/$(GNU_SMALLTALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNU_SMALLTALK_PATCHES)" ; \
 		then cat $(GNU_SMALLTALK_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(GNU_SMALLTALK_DIR)" != "$(GNU_SMALLTALK_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(GNU_SMALLTALK_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(GNU_SMALLTALK_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(@D) ; \
 	fi
 #		gst_cv_readline_libs="-lreadline -ltermcap"
-	(cd $(GNU_SMALLTALK_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNU_SMALLTALK_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNU_SMALLTALK_LDFLAGS)" \
@@ -178,7 +178,7 @@ endif
 		--without-tk \
 	)
 #	sed -i -e 's/ sigsegv//' $(GNU_SMALLTALK_BUILD_DIR)/Makefile
-	$(PATCH_LIBTOOL) $(GNU_SMALLTALK_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 gnu-smalltalk-unpack: $(GNU_SMALLTALK_BUILD_DIR)/.configured
@@ -188,7 +188,7 @@ gnu-smalltalk-unpack: $(GNU_SMALLTALK_BUILD_DIR)/.configured
 #
 $(GNU_SMALLTALK_BUILD_DIR)/.built: $(GNU_SMALLTALK_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GNU_SMALLTALK_BUILD_DIR) GNU_SMALLTALK_HOST_BUILD_DIR=$(GNU_SMALLTALK_HOST_BUILD_DIR)
+	$(MAKE) -C $(@D) GNU_SMALLTALK_HOST_BUILD_DIR=$(GNU_SMALLTALK_HOST_BUILD_DIR)
 	touch $@
 
 #
@@ -200,9 +200,9 @@ gnu-smalltalk: $(GNU_SMALLTALK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GNU_SMALLTALK_BUILD_DIR)/.staged: $(GNU_SMALLTALK_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(GNU_SMALLTALK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 gnu-smalltalk-stage: $(GNU_SMALLTALK_BUILD_DIR)/.staged
 
