@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DTACH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dtach
-DTACH_VERSION=0.7
+DTACH_VERSION=0.8
 DTACH_SOURCE=dtach-$(DTACH_VERSION).tar.gz
 DTACH_DIR=dtach-$(DTACH_VERSION)
 DTACH_UNZIP=zcat
@@ -76,7 +76,8 @@ DTACH_IPK=$(BUILD_DIR)/dtach_$(DTACH_VERSION)-$(DTACH_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DTACH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DTACH_SITE)/$(DTACH_SOURCE)
+	$(WGET) -P $(DL_DIR) $(DTACH_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -127,7 +128,7 @@ $(DTACH_BUILD_DIR)/.configured: $(DL_DIR)/$(DTACH_SOURCE) $(DTACH_PATCHES) make/
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(DTACH_BUILD_DIR)/libtool
-	touch $(DTACH_BUILD_DIR)/.configured
+	touch $@
 
 dtach-unpack: $(DTACH_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ dtach-unpack: $(DTACH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(DTACH_BUILD_DIR)/.built: $(DTACH_BUILD_DIR)/.configured
-	rm -f $(DTACH_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(DTACH_BUILD_DIR)
-	touch $(DTACH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +149,9 @@ dtach: $(DTACH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(DTACH_BUILD_DIR)/.staged: $(DTACH_BUILD_DIR)/.built
-	rm -f $(DTACH_BUILD_DIR)/.staged
-	$(MAKE) -C $(DTACH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(DTACH_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(DTACH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 dtach-stage: $(DTACH_BUILD_DIR)/.staged
 
