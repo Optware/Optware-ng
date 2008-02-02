@@ -147,6 +147,7 @@ $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/ext2fs DESTDIR=$(STAGING_DIR) install
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/et DESTDIR=$(STAGING_DIR) install
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/blkid DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/uuid DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
