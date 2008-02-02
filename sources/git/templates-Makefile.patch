@@ -1,10 +1,10 @@
---- git-core/templates/Makefile.orig	2006-12-16 17:00:17.000000000 +0100
-+++ git-core/templates/Makefile	2006-12-16 17:16:22.000000000 +0100
-@@ -42,5 +42,5 @@
+--- git/templates/Makefile.orig	2008-01-27 00:04:18.000000000 -0800
++++ git/templates/Makefile	2008-01-31 13:44:03.000000000 -0800
+@@ -47,5 +47,5 @@
  
  install: all
- 	$(INSTALL) -d -m755 '$(DESTDIR_SQ)$(template_dir_SQ)'
+ 	$(INSTALL) -d -m 755 '$(DESTDIR_SQ)$(template_dir_SQ)'
 -	(cd blt && $(TAR) cf - .) | \
 -	(cd '$(DESTDIR_SQ)$(template_dir_SQ)' && $(TAR) xf -)
-+	$(TAR) c -C blt -f - . | \
-+	$(TAR) x -C '$(DESTDIR_SQ)$(template_dir_SQ)' -f -
++	$(TAR) -c -C blt -f - . | \
++	$(TAR) -x -C '$(DESTDIR_SQ)$(template_dir_SQ)' -f -
