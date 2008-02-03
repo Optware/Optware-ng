@@ -1,0 +1,11 @@
+--- sys-utils/Makefile.in.orig	2008-01-16 04:15:32.000000000 -0800
++++ sys-utils/Makefile.in	2008-02-03 08:33:51.000000000 -0800
+@@ -37,7 +37,7 @@
+ 	$(srcdir)/Makefile.in $(top_srcdir)/config/include-Makefile.am
+ bin_PROGRAMS = dmesg$(EXEEXT) $(am__EXEEXT_1)
+ usrbinexec_PROGRAMS = cytune$(EXEEXT) flock$(EXEEXT) ipcrm$(EXEEXT) \
+-	ipcs$(EXEEXT) renice$(EXEEXT) setsid$(EXEEXT) setarch$(EXEEXT)
++	ipcs$(EXEEXT) renice$(EXEEXT) setsid$(EXEEXT)
+ sbin_PROGRAMS = ctrlaltdel$(EXEEXT)
+ usrsbinexec_PROGRAMS = readprofile$(EXEEXT) tunelp$(EXEEXT) \
+ 	rtcwake$(EXEEXT) $(am__EXEEXT_2) $(am__EXEEXT_3)

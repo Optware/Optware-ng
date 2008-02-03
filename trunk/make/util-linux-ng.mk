@@ -47,6 +47,9 @@ UTIL_LINUX_NG_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 UTIL_LINUX_NG_PATCHES=$(UTIL_LINUX_NG_SOURCE_DIR)/HOST_NAME_MAX.patch $(UTIL_LINUX_NG_SOURCE_DIR)/AI_ADDRCONFIG.patch
+ifeq (uclibc, $(LIBC_STYLE))
+UTIL_LINUX_NG_PATCHES +=$(UTIL_LINUX_NG_SOURCE_DIR)/disable-setarch.patch
+endif
 
 #
 # If the compilation of the package requires additional
