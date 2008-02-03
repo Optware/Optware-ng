@@ -36,7 +36,7 @@ UTIL_LINUX_CONFLICTS=
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=5
+UTIL_LINUX_IPK_VERSION=6
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -233,7 +233,7 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 	$(MAKE) $(UTIL_LINUX_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
-	for d in /opt/sbin /opt/bin /opt/share/man/man1 /opt/share/man/man8; do \
+	for d in /opt/sbin /opt/bin /opt/share/man/man1 /opt/share/man/man5 /opt/share/man/man8; do \
 	    cd $(UTIL_LINUX_IPK_DIR)/$$d; \
 	    for f in *; do \
 		mv $$f util-linux-$$f; \
