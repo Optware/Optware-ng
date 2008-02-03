@@ -45,7 +45,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=1
+LIGHTTPD_IPK_VERSION=2
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
