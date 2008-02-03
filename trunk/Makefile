@@ -43,7 +43,6 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 	doxygen \
 	iozone \
 	bpalogin \
-	transmission \
 
 PERL_PACKAGES = \
 	perl \
@@ -197,7 +196,7 @@ COMMON_CROSS_PACKAGES = \
 	cabextract cairo calc calcurse castget \
 	catdoc ccollect ccxstream cdargs cdrtools \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver clips cmdftp \
+	classpath clamav clearsilver clips clutch cmdftp \
 	cogito connect coreutils cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \

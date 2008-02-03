@@ -1,0 +1,13 @@
+#!/bin/sh
+
+CONF=/opt/etc/lighttpd/lighttpd.conf
+test -f ${CONF} || exit 0
+#uncomment fastcgi module
+echo "Enabling fastgi module for lighttp"
+sed -i -e '/mod_fastcgi/s/^#/ /' ${CONF}
+#uncomment fastcgi.server
+sed -i -e '/^#fastcgi.server/b uc;b;:uc;s/^#//;n;s/^#//;t uc' ${CONF}
+SERVER_PORT=$(sed -ne 's/server.port.*=[ \t]*\+\([0-9]\{1,\}\)/\1/p'\
+		/opt/etc/lighttpd/lighttpd.conf)
+echo "Point your browser to http://server.ip:${SERVER_PORT}/clutch"
+
