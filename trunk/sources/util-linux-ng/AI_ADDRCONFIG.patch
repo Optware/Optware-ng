@@ -1,0 +1,26 @@
+--- login-utils/login.c.orig	2008-01-16 01:31:41.000000000 -0800
++++ login-utils/login.c	2008-02-01 18:07:08.000000000 -0800
+@@ -425,7 +425,9 @@
+ 		struct addrinfo hints, *info = NULL;
+ 
+ 		memset(&hints, 0, sizeof(hints));
++#ifdef AI_ADDRCONFIG
+ 		hints.ai_flags = AI_ADDRCONFIG;
++#endif
+ 
+ 		hostaddress[0] = 0;
+ 
+--- login-utils/checktty.c.orig	2008-01-16 01:31:41.000000000 -0800
++++ login-utils/checktty.c	2008-02-01 18:07:52.000000000 -0800
+@@ -303,7 +303,11 @@
+ 
+ 	memset(&hints, 0, sizeof(hints));
+ 	hints.ai_family = AF_UNSPEC;
++#ifdef AI_ADDRCONFIG
+ 	hints.ai_flags = AI_NUMERICHOST |  AI_PASSIVE | AI_ADDRCONFIG;
++#else
++	hints.ai_flags = AI_NUMERICHOST |  AI_PASSIVE ;
++#endif
+ 	hints.ai_socktype = SOCK_STREAM;
+ 
+ 	for (item = alist; item->range; item++) {
