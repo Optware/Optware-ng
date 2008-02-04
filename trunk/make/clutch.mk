@@ -36,7 +36,7 @@ CLUTCH_CONFLICTS=
 #
 # CLUTCH_IPK_VERSION should be incremented when the ipk changes.
 #
-CLUTCH_IPK_VERSION=1
+CLUTCH_IPK_VERSION=2
 
 #
 # CLUTCH_CONFFILES should be a list of user-editable files
