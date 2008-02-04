@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MOIN_SITE=http://static.moinmo.in/files
-PY-MOIN_VERSION=1.6.0
+PY-MOIN_VERSION=1.6.1
 PY-MOIN_SOURCE=moin-$(PY-MOIN_VERSION).tar.gz
 PY-MOIN_DIR=moin-$(PY-MOIN_VERSION)
 PY-MOIN_UNZIP=zcat
@@ -71,8 +71,8 @@ PY-MOIN_SOURCE_DIR=$(SOURCE_DIR)/py-moin
 PY-MOIN-COMMON_IPK_DIR=$(BUILD_DIR)/py-moin-common-$(PY-MOIN_VERSION)-ipk
 PY-MOIN-COMMON_IPK=$(BUILD_DIR)/py-moin-common_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-MOIN_IPK_DIR=$(BUILD_DIR)/py-moin-$(PY-MOIN_VERSION)-ipk
-PY24-MOIN_IPK=$(BUILD_DIR)/py-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MOIN_IPK_DIR=$(BUILD_DIR)/py24-moin-$(PY-MOIN_VERSION)-ipk
+PY24-MOIN_IPK=$(BUILD_DIR)/py24-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MOIN_IPK_DIR=$(BUILD_DIR)/py25-moin-$(PY-MOIN_VERSION)-ipk
 PY25-MOIN_IPK=$(BUILD_DIR)/py25-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -84,7 +84,8 @@ PY25-MOIN_IPK=$(BUILD_DIR)/py25-moin_$(PY-MOIN_VERSION)-$(PY-MOIN_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MOIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MOIN_SITE)/$(PY-MOIN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-MOIN_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -150,9 +151,9 @@ py-moin: $(PY-MOIN_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-MOIN_BUILD_DIR)/.staged: $(PY-MOIN_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(PY-MOIN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 py-moin-stage: $(PY-MOIN_BUILD_DIR)/.staged
 
@@ -177,7 +178,7 @@ $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control:
 $(PY24-MOIN_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-moin" >>$@
+	@echo "Package: py24-moin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MOIN_PRIORITY)" >>$@
 	@echo "Section: $(PY-MOIN_SECTION)" >>$@
@@ -215,22 +216,22 @@ $(PY25-MOIN_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-MOIN_IPK): $(PY-MOIN_BUILD_DIR)/.built
-	rm -rf $(PY24-MOIN_IPK_DIR) $(BUILD_DIR)/py-moin_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MOIN_IPK_DIR) $(BUILD_DIR)/py24-moin_*_$(TARGET_ARCH).ipk
 	cd $(PY-MOIN_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-MOIN_IPK_DIR) --prefix=/opt;
+	for f in $(PY24-MOIN_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	rm -rf $(PY24-MOIN_IPK_DIR)/opt/share/
 	$(MAKE) $(PY24-MOIN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MOIN_IPK_DIR)
 
 $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	rm -rf $(PY25-MOIN_IPK_DIR) $(BUILD_DIR)/py25-moin_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY-MOIN-COMMON_IPK_DIR) $(BUILD_DIR)/py-moin-common_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-MOIN-COMMON_IPK_DIR) $(BUILD_DIR)/py-moin*_*_$(TARGET_ARCH).ipk
 	cd $(PY-MOIN_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-MOIN_IPK_DIR) --prefix=/opt;
-	for f in $(PY25-MOIN_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	cd $(PY25-MOIN_IPK_DIR)/opt/share/moin; \
 	    tar --remove-files -cvzf underlay.tar.gz underlay; \
 	    rm -rf underlay
