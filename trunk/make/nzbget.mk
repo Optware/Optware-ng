@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=0.3.0
+NZBGET_VERSION=0.3.1
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
@@ -36,7 +36,7 @@ NZBGET_CONFLICTS=
 #
 # NZBGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NZBGET_IPK_VERSION=2
+NZBGET_IPK_VERSION=1
 
 #
 # NZBGET_CONFFILES should be a list of user-editable files
