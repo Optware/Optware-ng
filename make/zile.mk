@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZILE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zile
-ZILE_VERSION=2.2.50
+ZILE_VERSION=2.2.53
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -76,8 +76,8 @@ ZILE_IPK=$(BUILD_DIR)/zile_$(ZILE_VERSION)-$(ZILE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ZILE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZILE_SITE)/$(ZILE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ZILE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ZILE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ zile-source: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES)
 #
 $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zile.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(ZILE_DIR) $(ZILE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ZILE_DIR) $(@D)
 	$(ZILE_UNZIP) $(DL_DIR)/$(ZILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZILE_PATCHES)" ; \
 		then cat $(ZILE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ZILE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ZILE_DIR)" != "$(ZILE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ZILE_DIR) $(ZILE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ZILE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ZILE_DIR) $(@D) ; \
 	fi
-	(cd $(ZILE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZILE_LDFLAGS)" \
@@ -127,7 +127,7 @@ $(ZILE_BUILD_DIR)/.configured: $(DL_DIR)/$(ZILE_SOURCE) $(ZILE_PATCHES) make/zil
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(ZILE_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 zile-unpack: $(ZILE_BUILD_DIR)/.configured
@@ -137,8 +137,8 @@ zile-unpack: $(ZILE_BUILD_DIR)/.configured
 #
 $(ZILE_BUILD_DIR)/.built: $(ZILE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(ZILE_BUILD_DIR)/doc mkdoc CPPFLAGS="" LDFLAGS=""
-	$(MAKE) -C $(ZILE_BUILD_DIR)
+	$(MAKE) -C $(@D)/doc mkdoc CPPFLAGS="" LDFLAGS=""
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +151,7 @@ zile: $(ZILE_BUILD_DIR)/.built
 #
 $(ZILE_BUILD_DIR)/.staged: $(ZILE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(ZILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 zile-stage: $(ZILE_BUILD_DIR)/.staged
