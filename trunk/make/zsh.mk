@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
-ZSH_VERSION=4.3.4
+ZSH_VERSION=4.3.5
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -76,7 +76,8 @@ ZSH_IPK=$(BUILD_DIR)/zsh_$(ZSH_VERSION)-$(ZSH_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ZSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZSH_SITE)/$(ZSH_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ZSH_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +107,16 @@ zsh-source: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES)
 $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) # make/zsh.mk
 	$(MAKE) ncurses-stage
 	$(MAKE) termcap-stage
-	rm -rf $(BUILD_DIR)/$(ZSH_DIR) $(ZSH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ZSH_DIR) $(@D)
 	$(ZSH_UNZIP) $(DL_DIR)/$(ZSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZSH_PATCHES)" ; \
 		then cat $(ZSH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ZSH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ZSH_DIR)" != "$(ZSH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ZSH_DIR) $(ZSH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ZSH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ZSH_DIR) $(@D) ; \
 	fi
-	(cd $(ZSH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(ZSH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZSH_LDFLAGS)" \
@@ -129,12 +130,11 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) # make/zsh.
 		--disable-nls \
 		--disable-static \
 	)
-
 ifneq ($(HOSTCC), $(TARGET_CC))
-	cp $(ZSH_SOURCE_DIR)/native-config.h $(ZSH_BUILD_DIR)
+	cp $(ZSH_SOURCE_DIR)/native-config.h $(@D)
 endif
 #	$(PATCH_LIBTOOL) $(ZSH_BUILD_DIR)/libtool
-	touch $(ZSH_BUILD_DIR)/.configured
+	touch $@
 
 zsh-unpack: $(ZSH_BUILD_DIR)/.configured
 
@@ -142,9 +142,9 @@ zsh-unpack: $(ZSH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ZSH_BUILD_DIR)/.built: $(ZSH_BUILD_DIR)/.configured
-	rm -f $(ZSH_BUILD_DIR)/.built
-	$(MAKE) -C $(ZSH_BUILD_DIR)
-	touch $(ZSH_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +155,9 @@ zsh: $(ZSH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ZSH_BUILD_DIR)/.staged: $(ZSH_BUILD_DIR)/.built
-	rm -f $(ZSH_BUILD_DIR)/.staged
-	$(MAKE) -C $(ZSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(ZSH_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 zsh-stage: $(ZSH_BUILD_DIR)/.staged
 
