@@ -32,7 +32,7 @@ LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION).tbz2
 else
 LIBUCLIBC++_VERSION=0.2.2
 LIBUCLIBC++_SVN=svn://uclibc.org/trunk/uClibc++
-LIBUCLIBC++_SVN_REV=16938
+LIBUCLIBC++_SVN_REV=18737
 LIBUCLIBC++_SOURCE=uClibc++-$(LIBUCLIBC++_VERSION)+r$(LIBUCLIBC++_SVN_REV).tbz2
 endif
 LIBUCLIBC++_DIR=uClibc++
@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=4
+LIBUCLIBC++_IPK_VERSION=5
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -58,7 +58,7 @@ LIBUCLIBC++_IPK_VERSION=4
 # LIBUCLIBC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/wrapper.patch 
+LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/bin-Makefile.patch 
 
 ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch \
