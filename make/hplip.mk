@@ -29,7 +29,7 @@ HPLIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
-HPLIP_DEPENDS=sane-backends, python
+HPLIP_DEPENDS=sane-backends, python, libstdc++
 HPLIP_SUGGESTS=cups
 HPLIP_CONFLICTS=
 
