@@ -12,23 +12,23 @@
  
  $(TTF_DIR)/hipe_literals.h:	$(BINDIR)/hipe_mkliterals$(TF_MARKER)
  	$(BINDIR)/hipe_mkliterals$(TF_MARKER) -c > $@
---- erlang/erts/emulator/hipe/hipe_process.h.orig	2007-05-24 11:54:04.000000000 -0700
-+++ erlang/erts/emulator/hipe/hipe_process.h	2007-05-24 11:57:11.000000000 -0700
-@@ -24,11 +24,11 @@
-                                         To find the first stack descriptor
- 					at GC or exception. */
- #endif
+--- otp_src_R12B-1/erts/emulator/hipe/hipe_process.h.orig	2008-02-05 05:37:55.000000000 -0800
++++ otp_src_R12B-1/erts/emulator/hipe/hipe_process.h	2008-02-07 06:14:13.000000000 -0800
+@@ -17,11 +17,11 @@
+     Eterm *nstblacklim;		/* Black/gray stack boundary. Must exist if
+ 				   graylim exists. Ignored if no graylim. */
+     void (*ngra)(void);		/* Saved original RA from graylim frame. */
 -#if defined(__i386__) || defined(__x86_64__)
 +#if 0 /* defined(__i386__) || defined(__x86_64__) */
      Eterm *ncsp;		/* Saved C stack pointer. */
-     unsigned int narity;
+     unsigned int narity;	/* Arity of BIF call, for stack walks. */
  #endif
--#if defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__)
-+#if 1 /* defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
+-#if defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__)
++#if 1 /* defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
      void (*nra)(void);		/* Native code return address. */
      unsigned int narity;	/* Arity of BIF call, for stack walks. */
  #endif
-@@ -44,10 +44,10 @@
+@@ -37,10 +37,10 @@
      p->nstgraylim = NULL;
      p->nstblacklim = NULL;
      p->ngra = NULL;
@@ -36,24 +36,24 @@
 +#if 1 /* defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
      p->nra = NULL;
  #endif
--#if defined(__i386__) || defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__)
-+#if 1 /* defined(__i386__) || defined(__x86_64__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
+-#if defined(__i386__) || defined(__x86_64__) || defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__)
++#if 1 /* defined(__i386__) || defined(__x86_64__) || defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
      p->narity = 0;
  #endif
  }
---- erlang/erts/emulator/hipe/hipe_mkliterals.c.orig	2007-05-24 11:54:12.000000000 -0700
-+++ erlang/erts/emulator/hipe/hipe_mkliterals.c	2007-05-24 11:58:51.000000000 -0700
-@@ -259,11 +259,11 @@
- #if defined(__sparc__)
-     { "P_NSP_LIMIT", offsetof(struct process, hipe.nstend) },
-     { "P_NRA", offsetof(struct process, hipe.nra) },
--#elif defined(__i386__) || defined(__x86_64__)
-+#elif 0 /* defined(__i386__) || defined(__x86_64__) */
+--- otp_src_R12B-1/erts/emulator/hipe/hipe_mkliterals.c.orig	2008-02-05 05:37:52.000000000 -0800
++++ otp_src_R12B-1/erts/emulator/hipe/hipe_mkliterals.c	2008-02-07 06:17:00.000000000 -0800
+@@ -264,11 +264,11 @@
+     { "P_NSP", offsetof(struct process, hipe.nsp) },
+     { "P_NCALLEE", offsetof(struct process, hipe.ncallee) },
+     { "P_CLOSURE", offsetof(struct process, hipe.closure) },
+-#if defined(__i386__) || defined(__x86_64__)
++#if 0 /* defined(__i386__) || defined(__x86_64__) */
      { "P_NSP_LIMIT", offsetof(struct process, hipe.nstack) },
      { "P_CSP", offsetof(struct process, hipe.ncsp) },
      { "P_NARITY", offsetof(struct process, hipe.narity) },
--#elif defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__)
-+#elif 1 /* defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
+-#elif defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__)
++#elif 1 /* defined(__sparc__) || defined(__powerpc__) || defined(__ppc__) || defined(__powerpc64__) || defined(__arm__) */
      { "P_NSP_LIMIT", offsetof(struct process, hipe.nstack) },
      { "P_NRA", offsetof(struct process, hipe.nra) },
      { "P_NARITY", offsetof(struct process, hipe.narity) },

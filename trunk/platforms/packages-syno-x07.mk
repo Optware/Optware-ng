@@ -8,7 +8,6 @@ BROKEN_PACKAGES = \
 	asterisk asterisk14-chan-capi \
 	busybox \
 	chillispot classpath \
-	erlang \
 	gambit-c gconv-modules gnu-smalltalk \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
 	iptraf \
