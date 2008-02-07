@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R12B-0
-ERLANG_VERSION=R12B0
+ERLANG_UPSTREAM_VERSION=R12B-1
+ERLANG_VERSION=R12B1
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -45,7 +45,7 @@ ERLANG_WITH_SAE=no
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=1
 
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|' | sed 's/-linux$$/-linux-gnu/'))
 
@@ -95,7 +95,8 @@ endif
 ERLANG_LDFLAGS=
 
 ERLANG_CONFIG_ENVS=erl_cv_time_correction=$(strip \
-	$(if $(filter module-init-tools, $(PACKAGES)) , clock_gettime, times))
+	$(if $(filter syno-x07, $(OPTWARE_TARGET)), times, \
+	$(if $(filter module-init-tools, $(PACKAGES)), clock_gettime, times)))
 
 ERLANG_CONFIG_ARGS=--disable-smp-support --enable-threads
 ERLANG_CONFIG_ARGS+=$(ERLANG_HIPE)
@@ -478,6 +479,7 @@ endif
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/odbc-*/priv/bin/odbcserver \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/orber-*/priv/bin/obj_init_port \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/os_mon-*/priv/bin/memsup \
+		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/os_mon-*/priv/bin/cpu_sup \
 		$(ERLANG_IPK_DIR)/opt/lib/erlang/lib/ssl-*/priv/bin/ssl_esock \
 	; do \
 		[ -f $$f ] && $(STRIP_COMMAND) $$f || true; \
