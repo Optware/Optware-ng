@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VTUN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/vtun
-VTUN_VERSION=3.0.1
+VTUN_VERSION=3.0.2
 VTUN_SOURCE=vtun-$(VTUN_VERSION).tar.gz
 VTUN_DIR=vtun-$(VTUN_VERSION)
 VTUN_UNZIP=zcat
 VTUN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-VTUN_DESCRIPTION=Describe vtun here.
+VTUN_DESCRIPTION=Virtual Tunnels over TCP/IP networks with traffic shaping, compression, and encryption.
 VTUN_SECTION=net
 VTUN_PRIORITY=optional
 VTUN_DEPENDS=lzo, openssl, zlib
@@ -78,8 +78,8 @@ VTUN_IPK=$(BUILD_DIR)/vtun_$(VTUN_VERSION)-$(VTUN_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VTUN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VTUN_SITE)/$(VTUN_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(VTUN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(VTUN_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
