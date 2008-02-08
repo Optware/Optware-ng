@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.74
+ERL-YAWS_VERSION=1.75
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
