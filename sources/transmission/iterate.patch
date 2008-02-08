@@ -1,6 +1,6 @@
 --- transmission-0.96/libtransmission/transmission.h	2007-12-28 10:16:20.000000000 +0100
 +++ transmission-r4345/libtransmission/transmission.h	2007-12-28 10:15:17.000000000 +0100
-@@ -235,7 +235,15 @@
+@@ -206,7 +206,15 @@
  int tr_torrentCount( tr_handle * h );
  
  
@@ -18,7 +18,7 @@
  *** Speed Limits
 --- transmission-0.96/libtransmission/transmission.c	2007-12-28 10:16:20.000000000 +0100
 +++ transmission-r4345/libtransmission/transmission.c	2007-12-28 10:15:17.000000000 +0100
-@@ -349,6 +349,18 @@
+@@ -359,6 +359,18 @@
      return h->torrentCount;
  }
  
