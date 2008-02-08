@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CONFIGOBJ_SITE=http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=
-PY-CONFIGOBJ_VERSION=4.5.0
+PY-CONFIGOBJ_VERSION=4.5.1
 PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).zip
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
 PY-CONFIGOBJ_UNZIP=unzip
