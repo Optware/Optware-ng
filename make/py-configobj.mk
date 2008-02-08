@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CONFIGOBJ_SITE=http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=
-PY-CONFIGOBJ_VERSION=4.4.0
+PY-CONFIGOBJ_VERSION=4.5.0
 PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).zip
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
 PY-CONFIGOBJ_UNZIP=unzip
@@ -81,7 +81,8 @@ PY25-CONFIGOBJ_IPK=$(BUILD_DIR)/py25-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONF
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE):
-	$(WGET) -O $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CONFIGOBJ_SITE)$(PY-CONFIGOBJ_SOURCE)
+	$(WGET) -O $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CONFIGOBJ_SITE)$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
