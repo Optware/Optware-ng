@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	ecl \
 	fcgi ficy fish \
 	gnu-smalltalk gtmess gtk \
-	hpijs \
+	hpijs hplip \
 	ice iptables \
 	kismet \
 	lame launchtool ldconfig \
