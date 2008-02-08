@@ -36,7 +36,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=1
+HPLIP_IPK_VERSION=2
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -57,6 +57,10 @@ HPLIP_CONFFILES=/opt/etc/hp/hplip.conf \
 #
 HPLIP_CPPFLAGS=
 HPLIP_LDFLAGS=
+
+ifeq (, $(filter net-snmp, $(PACKAGES)))
+HPLIP_CONFIG_ARGS += --disable-network-build
+endif
 
 #
 # HPLIP_BUILD_DIR is the directory in which the build is done.
@@ -108,7 +112,10 @@ hplip-source: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES)
 # shown below to make various patches to it.
 #
 $(HPLIP_BUILD_DIR)/.configured: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES) make/hplip.mk
-	$(MAKE) sane-backends-stage python-stage 
+	$(MAKE) cups-stage sane-backends-stage python-stage
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+	$(MAKE) net-snmp-stage
+endif
 	rm -rf $(BUILD_DIR)/$(HPLIP_DIR) $(@D)
 	$(HPLIP_UNZIP) $(DL_DIR)/$(HPLIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HPLIP_PATCHES)" ; \
@@ -134,6 +141,7 @@ $(HPLIP_BUILD_DIR)/.configured: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		$(HPLIP_CONFIG_ARGS) \
 		--disable-dependency-tracking \
 		--with-cupsbackenddir=/opt/lib/cups/backend \
 		--with-icondir=/opt/share/applications \
