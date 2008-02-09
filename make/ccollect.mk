@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CCOLLECT_SITE=http://unix.schottelius.org/ccollect
-CCOLLECT_VERSION=0.5.2
+CCOLLECT_VERSION=0.6.2
 CCOLLECT_SOURCE=ccollect-$(CCOLLECT_VERSION).tar.bz2
 CCOLLECT_DIR=ccollect-$(CCOLLECT_VERSION)
 CCOLLECT_UNZIP=bzcat
@@ -124,7 +124,7 @@ $(CCOLLECT_BUILD_DIR)/.configured: $(DL_DIR)/$(CCOLLECT_SOURCE) $(CCOLLECT_PATCH
 	(cd $(CCOLLECT_BUILD_DIR); \
 		sed -i -e '1aexport PATH=/opt/bin:/opt/sbin:$$PATH' \
 			-e 's|/etc/ccollect|/opt/etc/ccollect|' \
-			-e 's|mktemp|/opt/bin/mktemp|' ccollect.sh \
+			-e 's|mktemp|/opt/bin/mktemp|' ccollect.sh tools/* \
 	)
 	touch $@
 
@@ -200,8 +200,12 @@ $(CCOLLECT_IPK): $(CCOLLECT_BUILD_DIR)/.built
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals/
 	install -m 755 $(CCOLLECT_BUILD_DIR)/conf/defaults/intervals/monthly \
 		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/defaults/intervals/
+	install -d $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/tools
+	install -m 755 $(CCOLLECT_BUILD_DIR)/tools/* \
+		$(CCOLLECT_IPK_DIR)/opt/etc/ccollect/tools/
 	install -d $(CCOLLECT_IPK_DIR)/opt/man/man1
-	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/man/ccollect.man $(CCOLLECT_IPK_DIR)/opt/man/man1/ccollect.1
+	install -m 644 $(CCOLLECT_BUILD_DIR)/doc/man/*.1 \
+		$(CCOLLECT_IPK_DIR)/opt/man/man1/
 #	install -m 644 $(CCOLLECT_SOURCE_DIR)/ccollect.conf $(CCOLLECT_IPK_DIR)/opt/etc/ccollect/ccollect.conf
 #	install -d $(CCOLLECT_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(CCOLLECT_SOURCE_DIR)/rc.ccollect $(CCOLLECT_IPK_DIR)/opt/etc/init.d/SXXccollect
