@@ -107,11 +107,14 @@ libcurl-source: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 #
 $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES) make/libcurl.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(LIBCURL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 	$(LIBCURL_UNZIP) $(DL_DIR)/$(LIBCURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBCURL_PATCHES) | patch -d $(BUILD_DIR)/$(LIBCURL_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBCURL_DIR) $(LIBCURL_BUILD_DIR)
-	(cd $(LIBCURL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
+ifeq (vt4, $(OPTWARE_TARGET))
+	sed -i -e '/^SUBDIRS/s|examples *||' $(@D)/docs/Makefile.in
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBCURL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBCURL_LDFLAGS)" \
@@ -134,7 +137,7 @@ libcurl-unpack: $(LIBCURL_BUILD_DIR)/.configured
 #
 $(LIBCURL_BUILD_DIR)/.built: $(LIBCURL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBCURL_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -147,7 +150,7 @@ libcurl: $(LIBCURL_BUILD_DIR)/.built
 #
 $(LIBCURL_BUILD_DIR)/.staged: $(LIBCURL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/curl-config
 	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/curl-config
 	install -d $(STAGING_DIR)/bin
