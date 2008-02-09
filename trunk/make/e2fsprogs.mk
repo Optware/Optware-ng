@@ -25,16 +25,16 @@ E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
 E2FSPROGS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
-E2FSPROGS_DESCRIPTION=Ext2 Filesystem Utilities
-E2FSPROGS_SECTION=lib
+E2FSPROGS_DESCRIPTION=Ext2 Filesystem
+E2FSPROGS_SECTION=utils
 E2FSPROGS_PRIORITY=optional
-E2FSPROGS_DEPENDS=
+E2FSPROGS_DEPENDS=e2fslibs
 E2FSPROGS_CONFLICTS=
 
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=1
+E2FSPROGS_IPK_VERSION=2
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -64,8 +64,11 @@ E2FSPROGS_LDFLAGS=
 #
 E2FSPROGS_BUILD_DIR=$(BUILD_DIR)/e2fsprogs
 E2FSPROGS_SOURCE_DIR=$(SOURCE_DIR)/e2fsprogs
+
 E2FSPROGS_IPK_DIR=$(BUILD_DIR)/e2fsprogs-$(E2FSPROGS_VERSION)-ipk
 E2FSPROGS_IPK=$(BUILD_DIR)/e2fsprogs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)_$(TARGET_ARCH).ipk
+E2FSLIBS_IPK_DIR=$(BUILD_DIR)/e2fslibs-$(E2FSPROGS_VERSION)-ipk
+E2FSLIBS_IPK=$(BUILD_DIR)/e2fslibs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: e2fsprogs-source e2fsprogs-unpack e2fsprogs e2fsprogs-stage e2fsprogs-ipk e2fsprogs-clean e2fsprogs-dirclean e2fsprogs-check
 
@@ -99,11 +102,11 @@ e2fsprogs-source: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES)
-	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(E2FSPROGS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
 	$(E2FSPROGS_UNZIP) $(DL_DIR)/$(E2FSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(E2FSPROGS_PATCHES) | patch -d $(BUILD_DIR)/$(E2FSPROGS_DIR) -p1
-	mv $(BUILD_DIR)/$(E2FSPROGS_DIR) $(E2FSPROGS_BUILD_DIR)
-	(cd $(E2FSPROGS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(E2FSPROGS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(E2FSPROGS_LDFLAGS)" \
@@ -118,8 +121,8 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 		--enable-rpath \
 	)
 	sed -i -e '/LN_S/s|-f $$(ELF_INSTALL_DIR)/$$(ELF_SONAME)|-f $$(ELF_SONAME)|' \
-		$(E2FSPROGS_BUILD_DIR)/lib/Makefile* \
-		$(E2FSPROGS_BUILD_DIR)/lib/*/Makefile
+		$(@D)/lib/Makefile* \
+		$(@D)/lib/*/Makefile
 	touch $@
 
 e2fsprogs-unpack: $(E2FSPROGS_BUILD_DIR)/.configured
@@ -129,7 +132,7 @@ e2fsprogs-unpack: $(E2FSPROGS_BUILD_DIR)/.configured
 #
 $(E2FSPROGS_BUILD_DIR)/.built: $(E2FSPROGS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -141,13 +144,13 @@ e2fsprogs: $(E2FSPROGS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(E2FSPROGS_BUILD_DIR)/.staged: $(E2FSPROGS_BUILD_DIR)/.built
-	rm -f $(E2FSPROGS_BUILD_DIR)/.staged
+	rm -f $(@D)/.staged
 	LDCONFIG=true DESTDIR=$(STAGING_DIR) \
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)  install
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/ext2fs DESTDIR=$(STAGING_DIR) install
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/et DESTDIR=$(STAGING_DIR) install
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/blkid DESTDIR=$(STAGING_DIR) install
-	$(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/uuid DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)  install
+	$(MAKE) -C $(@D)/lib/ext2fs DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/lib/et DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/lib/blkid DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/lib/uuid DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 e2fsprogs-stage: $(E2FSPROGS_BUILD_DIR)/.staged
@@ -166,8 +169,22 @@ $(E2FSPROGS_IPK_DIR)/CONTROL/control:
 	@echo "Version: $(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(E2FSPROGS_MAINTAINER)" >>$@
 	@echo "Source: $(E2FSPROGS_SITE)/$(E2FSPROGS_SOURCE)" >>$@
-	@echo "Description: $(E2FSPROGS_DESCRIPTION)" >>$@
+	@echo "Description: $(E2FSPROGS_DESCRIPTION) Utilities" >>$@
 	@echo "Depends: $(E2FSPROGS_DEPENDS)" >>$@
+	@echo "Conflicts: $(E2FSPROGS_CONFLICTS)" >>$@
+
+$(E2FSLIBS_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: e2fslibs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(E2FSPROGS_PRIORITY)" >>$@
+	@echo "Section: lib" >>$@
+	@echo "Version: $(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(E2FSPROGS_MAINTAINER)" >>$@
+	@echo "Source: $(E2FSPROGS_SITE)/$(E2FSPROGS_SOURCE)" >>$@
+	@echo "Description: $(E2FSPROGS_DESCRIPTION) Libraries" >>$@
+	@echo "Depends: " >>$@
 	@echo "Conflicts: $(E2FSPROGS_CONFLICTS)" >>$@
 
 #
@@ -182,8 +199,9 @@ $(E2FSPROGS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(E2FSPROGS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
+$(E2FSPROGS_IPK) $(E2FSLIBS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk
+	rm -rf $(E2FSLIBS_IPK_DIR) $(BUILD_DIR)/e2fslibs_*_$(TARGET_ARCH).ipk
 	# We place files in /opt/lib and /opt/sbin only
 	install -d $(E2FSPROGS_IPK_DIR)/opt/etc
 	install -d $(E2FSPROGS_IPK_DIR)/opt/lib
@@ -207,6 +225,12 @@ ifeq ($(OPTWARE_TARGET),ts72xx)
 else
 	rm -f $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
 endif
+	# e2fslibs
+	install -d $(E2FSLIBS_IPK_DIR)/opt
+	mv $(E2FSPROGS_IPK_DIR)/opt/lib $(E2FSLIBS_IPK_DIR)/opt/
+	$(MAKE) $(E2FSLIBS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSLIBS_IPK_DIR)
+	# e2fsprogs
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
 	install -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/debugfs.8
@@ -242,7 +266,7 @@ endif
 #
 # This is called from the top level makefile to create the IPK file.
 #
-e2fsprogs-ipk: $(E2FSPROGS_IPK)
+e2fsprogs-ipk: $(E2FSPROGS_IPK) $(E2FSLIBS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -255,10 +279,12 @@ e2fsprogs-clean:
 # directories.
 #
 e2fsprogs-dirclean:
-	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(E2FSPROGS_BUILD_DIR) $(E2FSPROGS_IPK_DIR) $(E2FSPROGS_IPK)
+	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(E2FSPROGS_BUILD_DIR)
+	rm -rf $(E2FSPROGS_IPK_DIR) $(E2FSPROGS_IPK)
+	rm -rf $(E2FSLIBS_IPK_DIR) $(E2FSLIBS_IPK)
 
 #
 # Some sanity check for the package.
 #
 e2fsprogs-check: $(E2FSPROGS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(E2FSPROGS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(E2FSPROGS_IPK) $(E2FSLIBS_IPK)
