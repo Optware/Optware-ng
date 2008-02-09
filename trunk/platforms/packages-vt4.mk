@@ -1,9 +1,12 @@
 # Packages that *only* work for vt4 - do not just put new packages here.
 SPECIFIC_PACKAGES = \
-	vt4-optware-bootstrap
+	vt4-optware-bootstrap \
+	$(PERL_PACKAGES) \
+	$(PACKAGES_REQUIRE_LINUX26) \
 
 # Packages that do not work for vt4.
 BROKEN_PACKAGES = \
+	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule appweb apache aspell asterisk asterisk14 asterisk14-chan-capi \
 	atftp avahi \
 	bitlbee bsdgames btpd bzflag \
@@ -21,7 +24,7 @@ BROKEN_PACKAGES = \
 	libcurl libdvb libextractor libmrss libnsl libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
 	lighttpd loudmouth \
-	mc mediatomb metalog moc modutils most motion mod-fastcgi moe \
+	mc mediatomb metalog moc most motion mod-fastcgi moe \
 	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mysql mysql-connector-odbc mod-python mod-wsgi \
 	newsbeuter newt nget nginx nmap nload ntop nzbget \
@@ -37,5 +40,5 @@ BROKEN_PACKAGES = \
 	vlc vnstat vorbis-tools vte \
 	weechat wget wput wxbase \
 	xmlrpc-c xchat \
-	yougrabber
-
+	yougrabber \
+	perl-dbd-mysql perl-net-dns perl-unix-syslog slimserver \
