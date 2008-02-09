@@ -14,14 +14,14 @@ BROKEN_PACKAGES = \
 	dansguardian dspam \
 	eaccelerator emacs22 enhanced-ctorrent esniper erlang erl-yaws \
 	ficy finch firedrill-httptunnel flac flip freeradius fuppes \
-	gconv-modules ggrab ghostscript git gnokii gnupg \
+	gconv-modules ggrab ghostscript gnokii gnupg \
 	gnuplot gnutls grep gtk gutenprint \
 	haproxy hplip \
 	icecast id3lib iksemel imagemagick iptraf ivorbis-tools \
 	jabberd jed jikes \
 	kismet \
 	launchtool ldconfig leafnode lftp liba52 libbt libcapi20 libcdio \
-	libcurl libdvb libextractor libmrss libnsl libnxml libopensync \
+	libdvb libextractor libmrss libnsl libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
 	lighttpd loudmouth \
 	mc mediatomb metalog moc most motion mod-fastcgi moe \
@@ -30,7 +30,7 @@ BROKEN_PACKAGES = \
 	newsbeuter newt nget nginx nmap nload ntop nzbget \
 	open2300 obexftp openser oww \
 	p7zip par2cmdline pcapsipdump pcre php php-apache php-fcgi \
-	picolisp player postfix pound puppy py-curl py-mysql \
+	picolisp player postfix pound puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rrdcollect rsstail rtorrent \
 	sablevm samba sane-backends simh slang snort socat spandsp \
