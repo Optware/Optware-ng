@@ -46,11 +46,12 @@ endif
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=6
+SLIMSERVER_IPK_VERSION=7
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
-SLIMSERVER_CONFFILES=/opt/etc/slimserver.conf /opt/etc/init.d/S99slimserver
+SLIMSERVER_CONFFILES=/opt/etc/slimserver.conf /opt/etc/init.d/S99slimserver \
+	/opt/share/slimserver/MySQL/my.tt
 
 #
 # SLIMSERVER_PATCHES should list any patches, in the the order in
@@ -142,7 +143,10 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) $(SLIMSERVER
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(SLIMSERVER_BUILD_DIR)\/temp\"|" \
 		-e "/EXPAT.*PATH=/s|=/opt|$$ENV{STAGING_DIR}&|" \
+		-e '/archname = $$2/a         $$archname =~ s|-uclibc||;' \
 		$(SLIMSERVER_BUILD_DIR)/Bin/build-perl-modules.pl
+	sed -i -e 's/^innodb_fast_shutdown/#innodb_fast_shutdown/' \
+		$(SLIMSERVER_BUILD_DIR)/MySQL/my.tt
 	touch $(SLIMSERVER_BUILD_DIR)/.configured
 
 slimserver-unpack: $(SLIMSERVER_BUILD_DIR)/.configured
