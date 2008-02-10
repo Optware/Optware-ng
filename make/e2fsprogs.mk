@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-E2FSPROGS_VERSION=1.40.3
+E2FSPROGS_VERSION=1.40.4
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
@@ -34,7 +34,7 @@ E2FSPROGS_CONFLICTS=
 #
 # E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-E2FSPROGS_IPK_VERSION=2
+E2FSPROGS_IPK_VERSION=1
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -101,7 +101,7 @@ e2fsprogs-source: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES)
+$(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PATCHES) make/e2fsprogs.mk
 	rm -rf $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
 	$(E2FSPROGS_UNZIP) $(DL_DIR)/$(E2FSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(E2FSPROGS_PATCHES) | patch -d $(BUILD_DIR)/$(E2FSPROGS_DIR) -p1
