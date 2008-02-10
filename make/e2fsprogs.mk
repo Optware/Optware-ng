@@ -20,7 +20,13 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-E2FSPROGS_VERSION=1.40.4
+ifeq (, $(filter cs05q3armel ddwrt fsg3v4 oleg openwrt-ixp4xx syno-x07, $(OPTWARE_TARGET)))
+E2FSPROGS_VERSION=1.40.5
+E2FSPROGS_IPK_VERSION=1
+else
+E2FSPROGS_VERSION=1.40.3
+E2FSPROGS_IPK_VERSION=3
+endif
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
 E2FSPROGS_UNZIP=zcat
@@ -31,10 +37,6 @@ E2FSPROGS_PRIORITY=optional
 E2FSPROGS_DEPENDS=e2fslibs
 E2FSPROGS_CONFLICTS=
 
-#
-# E2FSPROGS_IPK_VERSION should be incremented when the ipk changes.
-#
-E2FSPROGS_IPK_VERSION=1
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
@@ -106,6 +108,7 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 	$(E2FSPROGS_UNZIP) $(DL_DIR)/$(E2FSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(E2FSPROGS_PATCHES) | patch -d $(BUILD_DIR)/$(E2FSPROGS_DIR) -p1
 	mv $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
+	sed -i -e 's|(DESTDIR)/etc|(DESTDIR)/opt/etc|g' $(@D)/misc/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(E2FSPROGS_CPPFLAGS)" \
