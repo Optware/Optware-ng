@@ -290,7 +290,7 @@ COMMON_CROSS_PACKAGES = \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
 	transcode transmission tre tree \
 	tsocks ttf-bitstream-vera tz tzwatch \
-	ucl uemacs ufsd unarj unfs3 units unixodbc unrar \
+	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux util-linux-ng \
 	vblade vdr-mediamvp vim vitetris vlc \
