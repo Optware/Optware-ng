@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LUA_SITE=http://www.lua.org/ftp
-LUA_VERSION=5.1.2
+LUA_VERSION=5.1.3
 LUA_SOURCE=lua-$(LUA_VERSION).tar.gz
 LUA_DIR=lua-$(LUA_VERSION)
 LUA_UNZIP=zcat
@@ -79,7 +79,8 @@ LUA_HOST_BUILD_DIR=$(BUILD_DIR)/lua-host
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LUA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LUA_SITE)/$(LUA_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LUA_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,7 +111,7 @@ $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
-	touch $(LUA_BUILD_DIR)/.configured
+	touch $@
 
 lua-unpack: $(LUA_BUILD_DIR)/.configured
 
@@ -118,7 +119,7 @@ lua-unpack: $(LUA_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LUA_BUILD_DIR)/.built: $(LUA_BUILD_DIR)/.configured
-	rm -f $(LUA_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LUA_HOST_BUILD_DIR)/src \
 		MYCFLAGS="-DLUA_ANSI" \
 		MYLDFLAGS="$(LUA_LDFLAGS)" \
@@ -131,7 +132,7 @@ $(LUA_BUILD_DIR)/.built: $(LUA_BUILD_DIR)/.configured
 		MYLDFLAGS="$(STAGING_LDFLAGS) $(LUA_LDFLAGS)" \
 		MYLIBS="-Wl,-E -ldl -lreadline -lhistory -lncurses" \
 		all
-	touch $(LUA_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,12 +143,12 @@ lua: $(LUA_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LUA_BUILD_DIR)/.staged: $(LUA_BUILD_DIR)/.built
-	rm -f $(LUA_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(LUA_HOST_BUILD_DIR) INSTALL_TOP=$(LUA_HOST_BUILD_DIR)/opt install
-	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(STAGING_PREFIX) install
+	$(MAKE) -C $(@D) INSTALL_TOP=$(STAGING_PREFIX) install
 	mkdir -p $(STAGING_LIB_DIR)/pkgconfig
-	sed -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(LUA_BUILD_DIR)/etc/lua.pc > $(STAGING_LIB_DIR)/pkgconfig/lua.pc
-	touch $(LUA_BUILD_DIR)/.staged
+	sed -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(@D)/etc/lua.pc > $(STAGING_LIB_DIR)/pkgconfig/lua.pc
+	touch $@
 
 lua-stage: $(LUA_BUILD_DIR)/.staged
 
@@ -156,7 +157,7 @@ lua-stage: $(LUA_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lua
 #
 $(LUA_IPK_DIR)/CONTROL/control:
-	@install -d $(LUA_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: lua" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
