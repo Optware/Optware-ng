@@ -11,6 +11,6 @@ BROKEN_PACKAGES = \
 	atftp bitchx bzflag \
 	chillispot coreutils gconv-modules ipac-ng \
 	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
-	netatalk nfs-utils nget phoneme-advanced player puppy py-psycopg \
+	netatalk nfs-utils nget phoneme-advanced player puppy \
 	qemu squeak \
 	atk gtk vte xchat

@@ -37,7 +37,7 @@ PY-PSYCOPG_CONFLICTS=
 #
 # PY-PSYCOPG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG_IPK_VERSION=4
+PY-PSYCOPG_IPK_VERSION=5
 
 #
 # PY-PSYCOPG_CONFFILES should be a list of user-editable files
@@ -81,8 +81,8 @@ PY25-PSYCOPG_IPK=$(BUILD_DIR)/py25-psycopg_$(PY-PSYCOPG_VERSION)-$(PY-PSYCOPG_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-PSYCOPG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/$(PY-PSYCOPG_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/PSYCOPG-1-1/$(PY-PSYCOPG_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG_SITE)/PSYCOPG-1-1/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,11 +114,11 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG_DIR)
 	$(PY-PSYCOPG_UNZIP) $(DL_DIR)/$(PY-PSYCOPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-PSYCOPG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PSYCOPG_DIR) $(PY-PSYCOPG_BUILD_DIR)/2.4
-	(cd $(PY-PSYCOPG_BUILD_DIR)/2.4; \
-	sed -ie '/py_makefile=/s|=.*|=$(STAGING_LIB_DIR)/python2.4/config/Makefile|' configure; \
+	mv $(BUILD_DIR)/$(PY-PSYCOPG_DIR) $(@D)/2.4
+	sed -i -e '/py_makefile=/s|=.*|=$(STAGING_LIB_DIR)/python2.4/config/Makefile|' $(@D)/2.4/configure
+	(cd $(@D)/2.4; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(PY-PSYCOPG_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.4" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PY-PSYCOPG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-PSYCOPG_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -136,11 +136,11 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG_DIR)
 	$(PY-PSYCOPG_UNZIP) $(DL_DIR)/$(PY-PSYCOPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-PSYCOPG_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PSYCOPG_DIR) $(PY-PSYCOPG_BUILD_DIR)/2.5
-	(cd $(PY-PSYCOPG_BUILD_DIR)/2.5; \
-	sed -ie '/py_makefile=/s|=.*|=$(STAGING_LIB_DIR)/python2.5/config/Makefile|' configure; \
+	mv $(BUILD_DIR)/$(PY-PSYCOPG_DIR) $(@D)/2.5
+	sed -i -e '/py_makefile=/s|=.*|=$(STAGING_LIB_DIR)/python2.5/config/Makefile|' $(@D)/2.5/configure
+	(cd $(@D)/2.5; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(PY-PSYCOPG_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.5" \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(PY-PSYCOPG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-PSYCOPG_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -154,7 +154,7 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 		--with-postgres-libraries=$(STAGING_LIB_DIR) \
 		--with-mxdatetime-includes=$(STAGING_LIB_DIR)/python2.5/site-packages/mx/DateTime/mxDateTime/ \
 	)
-	touch $(PY-PSYCOPG_BUILD_DIR)/.configured
+	touch $@
 
 py-psycopg-unpack: $(PY-PSYCOPG_BUILD_DIR)/.configured
 
@@ -162,14 +162,16 @@ py-psycopg-unpack: $(PY-PSYCOPG_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PSYCOPG_BUILD_DIR)/.built: $(PY-PSYCOPG_BUILD_DIR)/.configured
-	rm -f $(PY-PSYCOPG_BUILD_DIR)/.built
+	rm -f $@
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.4 \
+		$(MAKE) -C $(@D)/2.4 \
+		INCLUDEDIR=$(STAGING_INCLUDE_DIR) \
 		LDSHARED="$(TARGET_CC) -s -shared -lc `echo $(STAGING_LDFLAGS) $(PY-PSYCOPG_LDFLAGS)`"
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
-		$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.5 \
+		$(MAKE) -C $(@D)/2.5 \
+		INCLUDEDIR=$(STAGING_INCLUDE_DIR) \
 		LDSHARED="$(TARGET_CC) -s -shared -lc `echo $(STAGING_LDFLAGS) $(PY-PSYCOPG_LDFLAGS)`"
-	touch $(PY-PSYCOPG_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -180,9 +182,9 @@ py-psycopg: $(PY-PSYCOPG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PSYCOPG_BUILD_DIR)/.staged: $(PY-PSYCOPG_BUILD_DIR)/.built
-	rm -f $(PY-PSYCOPG_BUILD_DIR)/.staged
+	rm -f $@
 	#$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PSYCOPG_BUILD_DIR)/.staged
+	touch $@
 
 py-psycopg-stage: $(PY-PSYCOPG_BUILD_DIR)/.staged
 

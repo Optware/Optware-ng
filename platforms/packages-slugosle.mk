@@ -16,7 +16,6 @@ BROKEN_PACKAGES = \
 	monotone \
 	netatalk \
 	puppy \
-	py-psycopg \
 	qemu \
 	ushare \
 	\
