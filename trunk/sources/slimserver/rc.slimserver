@@ -41,7 +41,13 @@ case "$1" in
 	    		fi
 	    	SLIMSERVER_PID=
 		fi
-		$SLIMSERVER_BIN --pidfile ${SLIMSERVER_PIDFILE} ${SLIMSERVER_ARGS} >> ${SLIMSERVER_LOG} 2>&1 
+		$SLIMSERVER_BIN --daemon --pidfile=${SLIMSERVER_PIDFILE} \
+			--httpport=${SLIMSERVER_HTTPPORT} \
+			--user=${SLIMSERVER_USER} --group=${SLIMSERVER_GROUP} \
+			--cachedir=${SLIMSERVER_CACHEDIR} \
+			--prefsfile=${SLIMSERVER_PREF} \
+			--logfile=${SLIMSERVER_LOGFILE} \
+			${SLIMSERVER_ARGS} >> ${SLIMSERVER_LOG} 2>&1 
 		RETVAL=$?
 
 		SLIMSERVER_PID=`cat ${SLIMSERVER_PIDFILE} 2>/dev/null`
@@ -83,7 +89,7 @@ case "$1" in
 		break;
 	   fi
 	 /bin/sleep 2
-	 let count = count + 1
+	 count=$((count+1))
 	done
 	
 	if [ ! -f $/proc/${SLIMSERVER_PID}/cmdline ] ; then

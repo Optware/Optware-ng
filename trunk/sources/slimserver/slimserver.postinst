@@ -1,5 +1,8 @@
 #!/bin/sh
 
+PATH=/opt/bin:/opt/sbin:/opt/libexec:/usr/sbin:/usr/bin:/usr/local/bin:
+export PATH
+
 . /opt/etc/slimserver.conf
 
 #
@@ -11,7 +14,7 @@
             read answer
             test  "$answer" != "" && SLIMSERVER_HOME=$answer
             if test ! -d SLIMSERVER_HOME ; then
-	        adduser -D -s /dev/null -h ${SLIMSERVER_HOME} -G ${SLIMSERVER_GROUP} ${SLIMSERVER_USER}
+	        adduser -D -s /dev/null -h ${SLIMSERVER_HOME} -G ${SLIMSERVER_GROUP} ${SLIMSERVER_USER} 2>/dev/null
 	        sleep 1 # wait for user creation
                 sed -i -e "s|^SLIMSERVER_HOME=.*|SLIMSERVER_HOME=${SLIMSERVER_HOME}|" \
                     -e "s|^SLIMSERVER_LOG=.*|SLIMSERVER_LOG=${SLIMSERVER_HOME}/slimserver.log|" \
