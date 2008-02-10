@@ -216,7 +216,7 @@ $(E2FSPROGS_IPK) $(E2FSLIBS_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) install-strip
 	# Strip in the 3 executables - take both e2fsck versions for now
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/debugfs
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
+	-$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/resize/resize2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/resize2fs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/tune2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/tune2fs
 	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/dumpe2fs
