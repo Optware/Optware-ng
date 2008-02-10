@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PSYCOPG2_SITE=http://initd.org/pub/software/psycopg
-PY-PSYCOPG2_VERSION=2.0.5.1
+PY-PSYCOPG2_VERSION=2.0.6
 PY-PSYCOPG2_SOURCE=psycopg2-$(PY-PSYCOPG2_VERSION).tar.gz
 PY-PSYCOPG2_DIR=psycopg2-$(PY-PSYCOPG2_VERSION)
 PY-PSYCOPG2_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-PSYCOPG2_CONFLICTS=
 #
 # PY-PSYCOPG2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG2_IPK_VERSION=2
+PY-PSYCOPG2_IPK_VERSION=1
 
 #
 # PY-PSYCOPG2_CONFFILES should be a list of user-editable files
