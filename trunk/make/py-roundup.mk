@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-ROUNDUP_SITE=http://cheeseshop.python.org/packages/source/r/roundup
-PY-ROUNDUP_VERSION=1.4.1
+PY-ROUNDUP_VERSION=1.4.2
 PY-ROUNDUP_SOURCE=roundup-$(PY-ROUNDUP_VERSION).tar.gz
 PY-ROUNDUP_DIR=roundup-$(PY-ROUNDUP_VERSION)
 PY-ROUNDUP_UNZIP=zcat
@@ -71,8 +71,8 @@ PY-ROUNDUP_SOURCE_DIR=$(SOURCE_DIR)/py-roundup
 PY-ROUNDUP-COMMON_IPK_DIR=$(BUILD_DIR)/py-roundup-common-$(PY-ROUNDUP_VERSION)-ipk
 PY-ROUNDUP-COMMON_IPK=$(BUILD_DIR)/py-roundup-common_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py-roundup-$(PY-ROUNDUP_VERSION)-ipk
-PY24-ROUNDUP_IPK=$(BUILD_DIR)/py-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py24-roundup-$(PY-ROUNDUP_VERSION)-ipk
+PY24-ROUNDUP_IPK=$(BUILD_DIR)/py24-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-ROUNDUP_IPK_DIR=$(BUILD_DIR)/py25-roundup-$(PY-ROUNDUP_VERSION)-ipk
 PY25-ROUNDUP_IPK=$(BUILD_DIR)/py25-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -84,7 +84,8 @@ PY25-ROUNDUP_IPK=$(BUILD_DIR)/py25-roundup_$(PY-ROUNDUP_VERSION)-$(PY-ROUNDUP_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-ROUNDUP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-ROUNDUP_SITE)/$(PY-ROUNDUP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-ROUNDUP_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,14 +111,14 @@ py-roundup-source: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP_PATCHES)
 #
 $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-ROUNDUP_BUILD_DIR)
-	mkdir -p $(PY-ROUNDUP_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR)
 	$(PY-ROUNDUP_UNZIP) $(DL_DIR)/$(PY-ROUNDUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-ROUNDUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUNDUP_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(PY-ROUNDUP_BUILD_DIR)/2.4
-	(cd $(PY-ROUNDUP_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -131,8 +132,8 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 	rm -rf $(BUILD_DIR)/$(PY-ROUNDUP_DIR)
 	$(PY-ROUNDUP_UNZIP) $(DL_DIR)/$(PY-ROUNDUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-ROUNDUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-ROUNDUP_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(PY-ROUNDUP_BUILD_DIR)/2.5
-	(cd $(PY-ROUNDUP_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-ROUNDUP_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -142,7 +143,7 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 		echo "executable=/opt/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-ROUNDUP_BUILD_DIR)/.configured
+	touch $@
 
 py-roundup-unpack: $(PY-ROUNDUP_BUILD_DIR)/.configured
 
@@ -150,16 +151,16 @@ py-roundup-unpack: $(PY-ROUNDUP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-ROUNDUP_BUILD_DIR)/.built: $(PY-ROUNDUP_BUILD_DIR)/.configured
-	rm -f $(PY-ROUNDUP_BUILD_DIR)/.built
-	(cd $(PY-ROUNDUP_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-ROUNDUP_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-ROUNDUP_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -170,9 +171,9 @@ py-roundup: $(PY-ROUNDUP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-ROUNDUP_BUILD_DIR)/.staged: $(PY-ROUNDUP_BUILD_DIR)/.built
-	rm -f $(PY-ROUNDUP_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-ROUNDUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-ROUNDUP_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(PY-ROUNDUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-roundup-stage: $(PY-ROUNDUP_BUILD_DIR)/.staged
 
@@ -197,7 +198,7 @@ $(PY-ROUNDUP-COMMON_IPK_DIR)/CONTROL/control:
 $(PY24-ROUNDUP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-roundup" >>$@
+	@echo "Package: py24-roundup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-ROUNDUP_PRIORITY)" >>$@
 	@echo "Section: $(PY-ROUNDUP_SECTION)" >>$@
@@ -235,7 +236,8 @@ $(PY25-ROUNDUP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
-	rm -rf $(PY24-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py-roundup_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-roundup_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py24-roundup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ROUNDUP_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
