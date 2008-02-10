@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 
 # firmware-oleg 1) needs specific version of old make; 2) requires wl500g toolchain
 # lirc depends on firmware-oleg
+# rssh: rssh needs wordexp() to compile
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	dansguardian \
@@ -14,6 +15,7 @@ BROKEN_PACKAGES = \
 	ltrace \
 	nget \
 	player \
+	rssh \
 	zsh \
 	\
 	firmware-oleg \
