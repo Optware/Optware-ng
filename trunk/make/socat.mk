@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SOCAT_SITE=http://www.dest-unreach.org/socat/download
-SOCAT_VERSION=1.6.0.0
+SOCAT_VERSION=1.6.0.1
 SOCAT_SOURCE=socat-$(SOCAT_VERSION).tar.bz2
 SOCAT_DIR=socat-$(SOCAT_VERSION)
 SOCAT_UNZIP=bzcat
@@ -76,7 +76,8 @@ SOCAT_IPK=$(BUILD_DIR)/socat_$(SOCAT_VERSION)-$(SOCAT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SOCAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SOCAT_SITE)/$(SOCAT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SOCAT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,17 +106,17 @@ socat-source: $(DL_DIR)/$(SOCAT_SOURCE) $(SOCAT_PATCHES)
 #
 $(SOCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SOCAT_SOURCE) $(SOCAT_PATCHES) make/socat.mk
 	$(MAKE) openssl-stage readline-stage
-	rm -rf $(BUILD_DIR)/$(SOCAT_DIR) $(SOCAT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SOCAT_DIR) $(@D)
 	$(SOCAT_UNZIP) $(DL_DIR)/$(SOCAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SOCAT_PATCHES)" ; \
 		then cat $(SOCAT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SOCAT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SOCAT_DIR)" != "$(SOCAT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SOCAT_DIR) $(SOCAT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SOCAT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SOCAT_DIR) $(@D) ; \
 	fi
 	# Not very sure about platforms other than nslu2, may need adjust
-	(cd $(SOCAT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SOCAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SOCAT_LDFLAGS)" \
@@ -133,8 +134,8 @@ $(SOCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SOCAT_SOURCE) $(SOCAT_PATCHES) make/
 		--disable-static \
 		--disable-libwrap \
 	)
-#	$(PATCH_LIBTOOL) $(SOCAT_BUILD_DIR)/libtool
-	touch $(SOCAT_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 socat-unpack: $(SOCAT_BUILD_DIR)/.configured
 
@@ -142,9 +143,9 @@ socat-unpack: $(SOCAT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SOCAT_BUILD_DIR)/.built: $(SOCAT_BUILD_DIR)/.configured
-	rm -f $(SOCAT_BUILD_DIR)/.built
-	$(MAKE) -C $(SOCAT_BUILD_DIR)
-	touch $(SOCAT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +156,9 @@ socat: $(SOCAT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SOCAT_BUILD_DIR)/.staged: $(SOCAT_BUILD_DIR)/.built
-	rm -f $(SOCAT_BUILD_DIR)/.staged
-	$(MAKE) -C $(SOCAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SOCAT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 socat-stage: $(SOCAT_BUILD_DIR)/.staged
 
@@ -166,7 +167,7 @@ socat-stage: $(SOCAT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/socat
 #
 $(SOCAT_IPK_DIR)/CONTROL/control:
-	@install -d $(SOCAT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: socat" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
