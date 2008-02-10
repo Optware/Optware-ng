@@ -15,4 +15,3 @@ BROKEN_PACKAGES = \
 	player \
 	puppy \
 	qemu qemu-libc-i386 \
-	socat \

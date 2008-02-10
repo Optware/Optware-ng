@@ -14,4 +14,3 @@ BROKEN_PACKAGES = \
 	monotone \
 	player \
 	qemu qemu-libc-i386 \
-	socat \

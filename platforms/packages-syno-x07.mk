@@ -17,5 +17,4 @@ BROKEN_PACKAGES = \
 	openser p7zip \
 	player puppy \
 	qemu sablevm \
-	socat \
 	varnish \
