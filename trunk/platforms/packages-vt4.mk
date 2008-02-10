@@ -33,7 +33,7 @@ BROKEN_PACKAGES = \
 	picolisp player postfix pound puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rrdcollect rsstail rtorrent \
-	sablevm samba sane-backends simh slang snort socat spandsp \
+	sablevm samba sane-backends simh slang snort spandsp \
 	swi-prolog svn \
 	taglib tshark transcode \
 	unrar upslug2 upx \

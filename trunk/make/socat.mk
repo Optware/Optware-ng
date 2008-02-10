@@ -134,6 +134,9 @@ $(SOCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SOCAT_SOURCE) $(SOCAT_PATCHES) make/
 		--disable-static \
 		--disable-libwrap \
 	)
+ifneq (, $(filter cs05q3armel cs06q3armel syno-x07 vt4, $(OPTWARE_TARGET)))
+	sed -i -e '/HAVE_LINUX_EXT2_FS_H/s|.*|#undef HAVE_LINUX_EXT2_FS_H|' $(@D)/config.h
+endif
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
