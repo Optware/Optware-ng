@@ -46,7 +46,7 @@ case "$1" in
 			--user=${SLIMSERVER_USER} --group=${SLIMSERVER_GROUP} \
 			--cachedir=${SLIMSERVER_CACHEDIR} \
 			--prefsfile=${SLIMSERVER_PREF} \
-			--logfile=${SLIMSERVER_LOGFILE} \
+			--logfile=${SLIMSERVER_LOG} \
 			${SLIMSERVER_ARGS} >> ${SLIMSERVER_LOG} 2>&1 
 		RETVAL=$?
 
