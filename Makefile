@@ -286,7 +286,7 @@ COMMON_CROSS_PACKAGES = \
 	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
 	sudo swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tcl tcpwrappers tshark tftp-hpa \
-	tar tcpdump tcpflow tcsh termcap textutils thttpd \
+	tar tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
 	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
 	transcode transmission tre tree \
 	tsocks ttf-bitstream-vera tz tzwatch \

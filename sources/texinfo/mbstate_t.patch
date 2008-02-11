@@ -1,0 +1,18 @@
+Submitted By: Jim Gifford (patches at jg555 dot com)
+Date: 2007-10-03
+Initial Package Version: 4.11
+Origin: T2-Project
+Upstream Status: Unknown
+Description: Fixes undeclared mbstate
+ 
+diff -Naur texinfo-4.11.orig/gnulib/lib/wchar_.h texinfo-4.11/gnulib/lib/wchar_.h
+--- texinfo-4.11.orig/gnulib/lib/wchar_.h	2007-07-08 08:14:45.000000000 +0000
++++ texinfo-4.11/gnulib/lib/wchar_.h	2007-10-03 15:31:39.000000000 +0000
+@@ -40,6 +40,7 @@
+    Some builds of uClibc lack it.  */
+ /* The include_next requires a split double-inclusion guard.  */
+ #if @HAVE_WCHAR_H@
++# undef __need_mbstate_t
+ # @INCLUDE_NEXT@ @NEXT_WCHAR_H@
+ #endif
+ 
