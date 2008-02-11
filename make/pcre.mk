@@ -30,7 +30,7 @@ PCRE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PCRE_DESCRIPTION=Perl-compatible regular expression library
 PCRE_SECTION=util
 PCRE_PRIORITY=optional
-PCRE_DEPENDS=libstdc++
+PCRE_DEPENDS=$(filter libstdc++, $(PACKAGES))
 PCRE_CONFLICTS=
 
 ifeq ($(HOSTCC), $(TARGET_CC))
@@ -42,7 +42,7 @@ endif
 #
 # PCRE_IPK_VERSION should be incremented when the ipk changes.
 #
-PCRE_IPK_VERSION=1
+PCRE_IPK_VERSION=2
 
 #
 # PCRE_PATCHES should list any patches, in the the order in
@@ -56,6 +56,12 @@ PCRE_PATCHES=$(PCRE_SOURCE_DIR)/Makefile.in.patch
 #
 PCRE_CPPFLAGS=
 PCRE_LDFLAGS=
+PCRE_CONFIG_ARGS=
+ifeq (glibc, $(LIBC_STYLE))
+ifeq (, $(filter libstdc++, $(PACKAGES)))
+PCRE_CONFIG_ARGS +=--disable-cpp
+endif
+endif
 
 #
 # PCRE_BUILD_DIR is the directory in which the build is done.
@@ -106,7 +112,9 @@ pcre-source: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES)
 # shown below to make various patches to it.
 #
 $(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES) make/pcre.mk
+ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PCRE_DIR) $(PCRE_BUILD_DIR)
 	$(PCRE_UNZIP) $(DL_DIR)/$(PCRE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PCRE_PATCHES) | patch -d $(BUILD_DIR)/$(PCRE_DIR) -p1
@@ -122,6 +130,7 @@ $(PCRE_BUILD_DIR)/.configured: $(DL_DIR)/$(PCRE_SOURCE) $(PCRE_PATCHES) make/pcr
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-utf8 \
+		$(PCRE_CONFIG_ARGS) \
 		--disable-nls \
 		--disable-static \
 	)
