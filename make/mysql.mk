@@ -35,13 +35,16 @@ MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MYSQL_DESCRIPTION=Popular free SQL database system
 MYSQL_SECTION=misc
 MYSQL_PRIORITY=optional
-MYSQL_DEPENDS=zlib, ncurses, openssl, readline, libstdc++
+MYSQL_DEPENDS=zlib, ncurses, openssl, readline
+ifneq (, $(filter libstdc++, $(PACKAGES)))
+MYSQL_DEPENDS +=, libstdc++
+endif
 MYSQL_CONFLICTS=
 
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=2
+MYSQL_IPK_VERSION=3
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -108,7 +111,9 @@ $(MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
 	$(MAKE) ncurses-stage
 	$(MAKE) zlib-stage
 	$(MAKE) readline-stage
+ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(MYSQL_DIR) -p1
@@ -243,3 +248,9 @@ mysql-clean:
 #
 mysql-dirclean:
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR) $(MYSQL_IPK_DIR) $(MYSQL_IPK)
+
+#
+# Some sanity check for the package.
+#
+mysql-check: $(MYSQL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MYSQL_IPK)
