@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 POUND_SITE=http://www.apsis.ch/pound
-POUND_VERSION=2.3.2
+POUND_VERSION=2.4
 POUND_SOURCE=Pound-$(POUND_VERSION).tgz
 POUND_DIR=Pound-$(POUND_VERSION)
 POUND_UNZIP=zcat
@@ -76,7 +76,8 @@ POUND_IPK=$(BUILD_DIR)/pound_$(POUND_VERSION)-$(POUND_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(POUND_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POUND_SITE)/$(POUND_SOURCE)
+	$(WGET) -P $(DL_DIR) $(POUND_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,11 +115,15 @@ $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/
 	if test "$(BUILD_DIR)/$(POUND_DIR)" != "$(POUND_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(POUND_DIR) $(POUND_BUILD_DIR) ; \
 	fi
-	(cd $(POUND_BUILD_DIR); \
-	sed -i.orig -e '/@INSTALL@/s/-s //' -e '/@INSTALL@/s/-o.*-g [^ ]*//' -e 's/-m 555 //' Makefile.in; \
+	sed -i.orig \
+		-e '/@INSTALL@/s/-s //' \
+		-e '/@INSTALL@/s/-o.*-g [^ ]*//' \
+		-e 's/-m 555 //' $(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POUND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POUND_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -128,8 +133,8 @@ $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(POUND_BUILD_DIR)/libtool
-	touch $(POUND_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 pound-unpack: $(POUND_BUILD_DIR)/.configured
 
@@ -137,9 +142,9 @@ pound-unpack: $(POUND_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(POUND_BUILD_DIR)/.built: $(POUND_BUILD_DIR)/.configured
-	rm -f $(POUND_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(POUND_BUILD_DIR)
-	touch $(POUND_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -150,9 +155,9 @@ pound: $(POUND_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(POUND_BUILD_DIR)/.staged: $(POUND_BUILD_DIR)/.built
-	rm -f $(POUND_BUILD_DIR)/.staged
-	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(POUND_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 pound-stage: $(POUND_BUILD_DIR)/.staged
 
@@ -161,7 +166,7 @@ pound-stage: $(POUND_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pound
 #
 $(POUND_IPK_DIR)/CONTROL/control:
-	@install -d $(POUND_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: pound" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
