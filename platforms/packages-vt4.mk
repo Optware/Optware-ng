@@ -7,15 +7,15 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for vt4.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	amule appweb apache aspell asterisk asterisk14 asterisk14-chan-capi \
+	amule apache aspell asterisk asterisk14 asterisk14-chan-capi \
 	atftp avahi \
 	bitlbee bsdgames btpd bzflag \
 	castget cdargs cherokee chillispot clamav ctorrent ctrlproxy cups \
 	dansguardian dspam \
-	eaccelerator emacs22 enhanced-ctorrent esniper erlang erl-yaws \
+	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
 	ficy finch firedrill-httptunnel flac flip freeradius fuppes \
 	gconv-modules ggrab ghostscript gnokii gnupg \
-	gnuplot gnutls grep gtk gutenprint \
+	gnuplot gnutls gtk gutenprint \
 	hplip \
 	icecast id3lib iksemel imagemagick iptraf ivorbis-tools \
 	jabberd jikes \
@@ -27,9 +27,9 @@ BROKEN_PACKAGES = \
 	mediatomb metalog moc motion mod-fastcgi moe \
 	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mysql mysql-connector-odbc mod-python mod-wsgi \
-	newsbeuter nget nginx nmap nload ntop nzbget \
+	newsbeuter nget nmap nload ntop nzbget \
 	open2300 openldap obexftp openser oww \
-	p7zip par2cmdline pcapsipdump php php-apache php-fcgi \
+	p7zip par2cmdline pcapsipdump php-apache \
 	picolisp player postfix puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rrdcollect rsstail rtorrent \
