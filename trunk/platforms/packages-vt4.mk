@@ -23,16 +23,16 @@ BROKEN_PACKAGES = \
 	launchtool ldconfig lftp liba52 libbt libcapi20 libcdio \
 	libdvb libextractor libmrss libnsl libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
-	lighttpd loudmouth \
-	mediatomb metalog moc motion mod-fastcgi moe \
+	loudmouth \
+	mediatomb moc motion mod-fastcgi moe \
 	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mysql mysql-connector-odbc mod-python mod-wsgi \
-	newsbeuter nget nmap nload ntop nzbget \
+	newsbeuter nget nmap nload nzbget \
 	open2300 openldap obexftp openser oww \
 	p7zip par2cmdline pcapsipdump php-apache \
 	picolisp player postfix puppy py-mysql \
 	qemu quickie \
-	re2c rhtvision rrdcollect rsstail rtorrent \
+	re2c rhtvision rsstail rtorrent \
 	sablevm samba sane-backends simh snort spandsp \
 	swi-prolog svn \
 	taglib tshark transcode \
