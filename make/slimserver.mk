@@ -46,7 +46,7 @@ endif
 #
 # SLIMSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-SLIMSERVER_IPK_VERSION=8
+SLIMSERVER_IPK_VERSION=9
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
