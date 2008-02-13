@@ -29,9 +29,12 @@ IMAGEMAGICK_UNZIP=bzcat
 else
 IMAGEMAGICK_VER=6.3.1
 IMAGEMAGICK_REV=6
-IMAGEMAGICK_IPK_VERSION=2
+IMAGEMAGICK_IPK_VERSION=3
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.gz
 IMAGEMAGICK_UNZIP=zcat
+ifeq ($(LIBC_STYLE), uclibc)
+IMAGEMAGICK_PATCHES=$(IMAGEMAGICK_SOURCE_DIR)/uClibc-errno.patch
+endif
 endif
 IMAGEMAGICK_VERSION=$(IMAGEMAGICK_VER).$(IMAGEMAGICK_REV)
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VER)
@@ -42,14 +45,6 @@ IMAGEMAGICK_PRIORITY=optional
 IMAGEMAGICK_DEPENDS=zlib, freetype, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms
 IMAGEMAGICK_SUGGESTS=
 IMAGEMAGICK_CONFLICTS=
-
-#
-# IMAGEMAGICK_PATCHES should list any patches, in the the order in
-# which they should be applied to the source code.
-#
-ifeq ($(LIBC_STYLE), uclibc)
-IMAGEMAGICK_PATCHES=$(IMAGEMAGICK_SOURCE_DIR)/uClibc-errno.patch
-endif
 
 #
 # If the compilation of the package requires additional
