@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.3.6
-IMAGEMAGICK_REV=10
+IMAGEMAGICK_VER=6.3.8
+IMAGEMAGICK_REV=7
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.bz2
 IMAGEMAGICK_UNZIP=bzcat
@@ -207,11 +207,11 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) transform='' install-am
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
 	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/libltdl*
-	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.la
+#	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.la
 	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
 		-name '*.a' \
 		-exec rm -f {} \;
-	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+#	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
 		-name '*.la' \
 		-exec rm -f {} \;
 	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
