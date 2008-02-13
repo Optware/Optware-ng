@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=5
+LIBUCLIBC++_IPK_VERSION=6
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -184,7 +184,7 @@ endif
 		install -d $(LIBUCLIBC++_INSTALL_DIR)/nowrap ; \
 		mv $(TARGET_CXX) $(LIBUCLIBC++_INSTALL_DIR)/nowrap/ ; \
 	fi
-	sed -i -e 's|/bin/bash|/bin/sh|' \
+	sed -i -e 's|/bin/bash|/bin/sh|;s/==/=/g' \
 	  -e 's|^WRAPPER_INCLUDEDIR=.*|WRAPPER_INCLUDEDIR=-I$(LIBUCLIBC++_INSTALL_DIR)/uClibc++/include|' \
 	  -e 's|^WRAPPER_LIBDIR=.*|WRAPPER_LIBDIR=-L$(LIBUCLIBC++_INSTALL_DIR)/uClibc++/lib|' \
 	  -e 's|$(CROSS_CONFIGURATION)/bin|$(CROSS_CONFIGURATION)/nowrap|' \
