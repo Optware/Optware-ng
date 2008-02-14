@@ -100,6 +100,7 @@ $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR)
 ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
 	sed -i -e '/pam_start/s/.*/if false; then/' $(@D)/vsf_findlibs.sh
+	sed -i -e '/VSF_BUILD_PAM/s/#define/#undef/' $(@D)/builddefs.h
 endif
 #	(cd $(VSFTPD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
