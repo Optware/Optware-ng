@@ -26,7 +26,7 @@ BROKEN_PACKAGES = \
 	loudmouth \
 	mediatomb moc motion mod-fastcgi moe \
 	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
-	mysql mysql-connector-odbc mod-python mod-wsgi \
+	mod-python mod-wsgi \
 	newsbeuter nget nmap nload nzbget \
 	open2300 openldap obexftp openser oww \
 	p7zip par2cmdline pcapsipdump php-apache \
@@ -41,4 +41,4 @@ BROKEN_PACKAGES = \
 	weechat wget wput wxbase \
 	xmlrpc-c xchat \
 	yougrabber \
-	perl-dbd-mysql perl-net-dns perl-unix-syslog slimserver \
+	perl-net-dns perl-unix-syslog \
