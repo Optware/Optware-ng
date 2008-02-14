@@ -20,12 +20,12 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-ifeq (, $(filter cs05q3armel ddwrt fsg3v4 oleg openwrt-ixp4xx syno-x07, $(OPTWARE_TARGET)))
-E2FSPROGS_VERSION=1.40.5
+ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel ddwrt fsg3v4 oleg openwrt-ixp4xx syno-x07, $(OPTWARE_TARGET)))
+E2FSPROGS_VERSION=1.40.6
 E2FSPROGS_IPK_VERSION=1
 else
 E2FSPROGS_VERSION=1.40.3
-E2FSPROGS_IPK_VERSION=3
+E2FSPROGS_IPK_VERSION=4
 endif
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
@@ -229,8 +229,9 @@ else
 	rm -f $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
 endif
 	# e2fslibs
-	install -d $(E2FSLIBS_IPK_DIR)/opt
+	install -d $(E2FSLIBS_IPK_DIR)/opt/share
 	mv $(E2FSPROGS_IPK_DIR)/opt/lib $(E2FSLIBS_IPK_DIR)/opt/
+	mv $(E2FSPROGS_IPK_DIR)/opt/share/info $(E2FSLIBS_IPK_DIR)/opt/share/
 	$(MAKE) $(E2FSLIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSLIBS_IPK_DIR)
 	# e2fsprogs
