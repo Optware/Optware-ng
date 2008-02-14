@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.5.4
+GIT_VERSION=1.5.4.1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -40,7 +40,7 @@ GIT_CONFLICTS=
 #
 # GIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIT_IPK_VERSION=2
+GIT_IPK_VERSION=1
 
 GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
@@ -94,10 +94,10 @@ GIT-MANPAGES_IPK=$(BUILD_DIR)/git-manpages_$(GIT_VERSION)-$(GIT_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GIT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GIT_SITE)/$(GIT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GIT_SITE)/$(@F)
 
 $(DL_DIR)/$(GIT-MANPAGES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GIT_SITE)/$(GIT-MANPAGES_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GIT_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
