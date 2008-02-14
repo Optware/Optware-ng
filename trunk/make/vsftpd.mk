@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 VSFTPD_SITE=ftp://vsftpd.beasts.org/users/cevans
-VSFTPD_VERSION=2.0.5
+VSFTPD_VERSION=2.0.6
 VSFTPD_SOURCE=vsftpd-$(VSFTPD_VERSION).tar.gz
 VSFTPD_DIR=vsftpd-$(VSFTPD_VERSION)
 VSFTPD_UNZIP=zcat
@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=2
+VSFTPD_IPK_VERSION=1
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
