@@ -98,16 +98,19 @@ $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 	$(VSFTPD_UNZIP) $(DL_DIR)/$(VSFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(VSFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(VSFTPD_BUILD_DIR)
+ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
+	sed -i -e '/pam_start/s/.*/if false; then/' $(@D)/vsf_findlibs.sh
+endif
 #	(cd $(VSFTPD_BUILD_DIR); \
-#		$(TARGET_CONFIGURE_OPTS) \
-#		CPPFLAGS="$(STAGING_CPPFLAGS) $(VSFTPD_CPPFLAGS)" \
-#		LDFLAGS="$(STAGING_LDFLAGS) $(VSFTPD_LDFLAGS)" \
-#		./configure \
-#		--build=$(GNU_HOST_NAME) \
-#		--host=$(GNU_TARGET_NAME) \
-#		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
-#	)
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(VSFTPD_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(VSFTPD_LDFLAGS)" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+	)
 	touch $@
 
 vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
