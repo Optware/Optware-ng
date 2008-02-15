@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.9.0
+BUSYBOX_VERSION=1.9.1
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -67,7 +67,8 @@ BUSYBOX-LINKS_IPK=$(BUILD_DIR)/busybox-links_$(BUSYBOX_VERSION)-$(BUSYBOX_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BUSYBOX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BUSYBOX_SITE)/$(BUSYBOX_SOURCE)
+	$(WGET) -P $(DL_DIR) $(BUSYBOX_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
