@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SETUPTOOLS_SITE=http://cheeseshop.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=0.6c7
+PY-SETUPTOOLS_VERSION=0.6c8
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).tar.gz
 PY-SETUPTOOLS_DIR=setuptools-$(PY-SETUPTOOLS_VERSION)
 PY-SETUPTOOLS_UNZIP=zcat
@@ -68,8 +68,8 @@ PY-SETUPTOOLS_LDFLAGS=
 PY-SETUPTOOLS_SOURCE_DIR=$(SOURCE_DIR)/py-setuptools
 PY-SETUPTOOLS_BUILD_DIR=$(BUILD_DIR)/py-setuptools
 
-PY24-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
-PY24-SETUPTOOLS_IPK=$(BUILD_DIR)/py-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py24-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
+PY24-SETUPTOOLS_IPK=$(BUILD_DIR)/py24-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SETUPTOOLS_IPK_DIR=$(BUILD_DIR)/py25-setuptools-$(PY-SETUPTOOLS_VERSION)-ipk
 PY25-SETUPTOOLS_IPK=$(BUILD_DIR)/py25-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-SETUPTOOLS_IPK=$(BUILD_DIR)/py25-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-S
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SETUPTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,8 +116,8 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-S
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)/2.4
-	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[install]"; \
 		echo "install_scripts = /opt/bin"; \
@@ -127,8 +128,8 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-S
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SETUPTOOLS_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(PY-SETUPTOOLS_BUILD_DIR)/2.5
-	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[install]"; \
 		echo "install_scripts = /opt/bin"; \
@@ -136,7 +137,7 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(PY-S
 		echo "executable=/opt/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-SETUPTOOLS_BUILD_DIR)/.configured
+	touch $@
 
 py-setuptools-unpack: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 
@@ -144,10 +145,10 @@ py-setuptools-unpack: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.built: $(PY-SETUPTOOLS_BUILD_DIR)/.configured
-	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.built
-	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-SETUPTOOLS_BUILD_DIR)/.built
+	rm -f $@
+	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -158,14 +159,14 @@ py-setuptools: $(PY-SETUPTOOLS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SETUPTOOLS_BUILD_DIR)/.staged: $(PY-SETUPTOOLS_BUILD_DIR)/.built
-	rm -f $(PY-SETUPTOOLS_BUILD_DIR)/.staged
+	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/setuptools*
-	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/setuptools*
-	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
-	touch $(PY-SETUPTOOLS_BUILD_DIR)/.staged
+	touch $@
 
 py-setuptools-stage: $(PY-SETUPTOOLS_BUILD_DIR)/.staged
 
@@ -174,9 +175,9 @@ py-setuptools-stage: $(PY-SETUPTOOLS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-setuptools
 #
 $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-setuptools" >>$@
+	@echo "Package: py24-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SETUPTOOLS_PRIORITY)" >>$@
 	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
@@ -188,7 +189,7 @@ $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
 
 $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py25-setuptools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,6 +220,7 @@ $(PY24-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-SETUPTOOLS_IPK_DIR) --prefix=/opt)
+	rm -f $(PY24-SETUPTOOLS_IPK_DIR)/opt/bin/easy_install
 	$(MAKE) $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/control
 	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SETUPTOOLS_IPK_DIR)
@@ -229,7 +231,7 @@ $(PY25-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-SETUPTOOLS_IPK_DIR) --prefix=/opt)
-	rm -f $(PY25-SETUPTOOLS_IPK_DIR)/opt/bin/easy_install
+#	rm -f $(PY25-SETUPTOOLS_IPK_DIR)/opt/bin/easy_install
 	$(MAKE) $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/control
 	echo $(PY-SETUPTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SETUPTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SETUPTOOLS_IPK_DIR)
