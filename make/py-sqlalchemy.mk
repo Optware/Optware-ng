@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLALCHEMY_VERSION=0.4.2p3
+PY-SQLALCHEMY_VERSION=0.4.3
 PY-SQLALCHEMY_IPK_VERSION=1
 
 PY-SQLALCHEMY_SVN_REV=
@@ -80,8 +80,8 @@ PY-SQLALCHEMY_LDFLAGS=
 PY-SQLALCHEMY_BUILD_DIR=$(BUILD_DIR)/py-sqlalchemy
 PY-SQLALCHEMY_SOURCE_DIR=$(SOURCE_DIR)/py-sqlalchemy
 
-PY24-SQLALCHEMY_IPK_DIR=$(BUILD_DIR)/py-sqlalchemy-$(PY-SQLALCHEMY_VERSION)-ipk
-PY24-SQLALCHEMY_IPK=$(BUILD_DIR)/py-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SQLALCHEMY_IPK_DIR=$(BUILD_DIR)/py24-sqlalchemy-$(PY-SQLALCHEMY_VERSION)-ipk
+PY24-SQLALCHEMY_IPK=$(BUILD_DIR)/py24-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SQLALCHEMY_IPK_DIR=$(BUILD_DIR)/py25-sqlalchemy-$(PY-SQLALCHEMY_VERSION)-ipk
 PY25-SQLALCHEMY_IPK=$(BUILD_DIR)/py25-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-SQLALCHEMY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -94,7 +94,8 @@ PY25-SQLALCHEMY_IPK=$(BUILD_DIR)/py25-sqlalchemy_$(PY-SQLALCHEMY_VERSION)-$(PY-S
 #
 ifeq ($(PY-SQLALCHEMY_SVN),)
 $(DL_DIR)/$(PY-SQLALCHEMY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SQLALCHEMY_SITE)/$(PY-SQLALCHEMY_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SQLALCHEMY_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -216,7 +217,7 @@ py-sqlalchemy-stage: $(PY-SQLALCHEMY_BUILD_DIR)/.staged
 $(PY24-SQLALCHEMY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-sqlalchemy" >>$@
+	@echo "Package: py24-sqlalchemy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SQLALCHEMY_PRIORITY)" >>$@
 	@echo "Section: $(PY-SQLALCHEMY_SECTION)" >>$@
@@ -254,7 +255,8 @@ $(PY25-SQLALCHEMY_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-SQLALCHEMY_IPK): $(PY-SQLALCHEMY_BUILD_DIR)/.built
-	rm -rf $(PY24-SQLALCHEMY_IPK_DIR) $(BUILD_DIR)/py-sqlalchemy_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-sqlalchemy_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-SQLALCHEMY_IPK_DIR) $(BUILD_DIR)/py24-sqlalchemy_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLALCHEMY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-SQLALCHEMY_IPK_DIR) --prefix=/opt)
