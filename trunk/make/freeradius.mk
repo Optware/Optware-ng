@@ -19,11 +19,12 @@
 #
 # You should change all these variables to suit your package.
 #
-FREERADIUS_SITE=http://www.mirrors.wiretapped.net/security/authentication/radius/freeradius/old
-FREERADIUS_VERSION=1.0.5
-FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.gz
+FREERADIUS_SITE=ftp://ftp.freeradius.org/pub/radius
+FREERADIUS_SITE2=$(FREERADIUS_SITE)/old
+FREERADIUS_VERSION=1.1.7
+FREERADIUS_SOURCE=freeradius-$(FREERADIUS_VERSION).tar.bz2
 FREERADIUS_DIR=freeradius-$(FREERADIUS_VERSION)
-FREERADIUS_UNZIP=zcat
+FREERADIUS_UNZIP=bzcat
 FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FREERADIUS_DESCRIPTION=An open source RADIUS server.
 FREERADIUS_SECTION=net
@@ -35,20 +36,20 @@ FREERADIUS_CONFLICTS=
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=4
+FREERADIUS_IPK_VERSION=1
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FREERADIUS_PATCHES=$(FREERADIUS_SOURCE_DIR)/freeradius.patch
+#FREERADIUS_PATCHES=$(FREERADIUS_SOURCE_DIR)/freeradius.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 FREERADIUS_CPPFLAGS=-I$(FREERADIUS_BUILD_DIR)/src/include -I$(STAGING_INCLUDE_DIR)/mysql
-FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR) -L$(STAGING_LIB_DIR)/mysql
+FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql
 
 #
 # FREERADIUS_BUILD_DIR is the directory in which the build is done.
@@ -65,7 +66,6 @@ FREERADIUS_IPK_DIR=$(BUILD_DIR)/freeradius-$(FREERADIUS_VERSION)-ipk
 FREERADIUS_DOC_IPK_DIR=$(BUILD_DIR)/freeradius-doc-$(FREERADIUS_VERSION)-ipk
 FREERADIUS_IPK=$(BUILD_DIR)/freeradius_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_$(TARGET_ARCH).ipk
 FREERADIUS_DOC_IPK=$(BUILD_DIR)/freeradius-doc_$(FREERADIUS_VERSION)-$(FREERADIUS_IPK_VERSION)_$(TARGET_ARCH).ipk
-FREERADIUS_RLMCFLAGS="${STAGING_CPPFLAGS} -I${FREERADIUS_BUILD_DIR}/src/include -I../rlm_eap_tls -I${FREERADIUS_BUILD_DIR}/src/modules/rlm_eap -I${FREERADIUS_BUILD_DIR}/src/modules/rlm_eap/libeap/ -DX99_MODULE_NAME=\"rlm_x99_token\"  -DFREERADIUS"
 
 .PHONY: freeradius-source freeradius-unpack freeradius freeradius-stage freeradius-ipk freeradius-clean freeradius-dirclean freeradius-check
 
@@ -74,7 +74,9 @@ FREERADIUS_RLMCFLAGS="${STAGING_CPPFLAGS} -I${FREERADIUS_BUILD_DIR}/src/include 
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FREERADIUS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FREERADIUS_SITE)/$(FREERADIUS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(FREERADIUS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(FREERADIUS_SITE2)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -101,12 +103,14 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 	$(MAKE) openssl-stage
 	$(MAKE) libtool-stage
-	$(MAKE) mysql-stage
-	$(MAKE) postgresql-stage
+	$(MAKE) mysql-stage postgresql-stage unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	$(FREERADIUS_UNZIP) $(DL_DIR)/$(FREERADIUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(FREERADIUS_PATCHES) | patch -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1
+	if test -n "$(FREERADIUS_PATCHES)"; \
+		then cat $(FREERADIUS_PATCHES) | patch -d $(BUILD_DIR)/$(FREERADIUS_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
+	sed -i.orig -e '/rlm_perl/d' $(@D)/src/modules/stable
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
@@ -128,7 +132,6 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 		--with-mysql-lib-dir=$(STAGING_LIB_DIR)/mysql \
 		--with-rlm-sql-postgresql-include-dir=$(STAGING_INCLUDE_DIR) \
 		--with-rlm-sql-postgresql-lib-dir=$(STAGING_LIB_DIR) \
-		--without-rlm-ippool \
 	)
 	touch $@
 
@@ -140,19 +143,11 @@ freeradius-unpack: $(FREERADIUS_BUILD_DIR)/.configured
 #
 $(FREERADIUS_BUILD_DIR)/.built: $(FREERADIUS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) \
-		RLM_LIBS="$(STAGING_LDFLAGS)" \
-		RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
-		SNMP_INCLUDE="-I${@D}/src/include ${STAGING_CPPFLAGS}" \
-		LIBLTDL=${STAGING_LIB_DIR}/libltdl.so
+	$(MAKE) -C $(@D)
 	$(MAKE) install -C $(@D) \
-		RLM_LIBS="$(STAGING_LDFLAGS)" \
-		RLM_CFLAGS=${FREERADIUS_RLMCFLAGS} \
-		LIBLTDL=${STAGING_LIB_DIR}/libltdl.so \
 		R=$(@D)/install \
-		CFLAGS="${STAGING_CPPFLAGS}" \
-		R=$(@D)/install/ \
-		STRIPPROG=$(TARGET_STRIP)
+		STRIPPROG=$(TARGET_STRIP) \
+		;
 	touch $@
 
 #
@@ -224,6 +219,7 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	install -d $(FREERADIUS_IPK_DIR)/opt/doc/.radius
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/lib/*.a
 	rm -rf $(FREERADIUS_IPK_DIR)/opt/man/*
+	rm -rf $(FREERADIUS_IPK_DIR)/opt/share/man/*
 	mv $(FREERADIUS_IPK_DIR)/opt/etc/* $(FREERADIUS_IPK_DIR)/opt/doc/.radius/
 	cp -f $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)/opt/doc/.radius/raddb/radiusd.conf
 	install -d $(FREERADIUS_IPK_DIR)/opt/etc/init.d
@@ -243,7 +239,7 @@ $(FREERADIUS_DOC_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	rm -rf $(FREERADIUS_DOC_IPK_DIR) $(FREERADIUS_DOC_IPK)
 	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/doc
 	install -d $(FREERADIUS_DOC_IPK_DIR)/opt/man
-	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/man/* $(FREERADIUS_DOC_IPK_DIR)/opt/man/
+	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/share/man/* $(FREERADIUS_DOC_IPK_DIR)/opt/man/
 	cp -rf $(FREERADIUS_BUILD_DIR)/install/opt/share/doc/* $(FREERADIUS_DOC_IPK_DIR)/opt/doc/
 	install -d $(FREERADIUS_DOC_IPK_DIR)/CONTROL
 	$(MAKE) $(FREERADIUS_DOC_IPK_DIR)/CONTROL/control
