@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=1.1
+PY-BAZAAR-NG_VERSION=1.2
 PY-BAZAAR-NG_SITE=http://bazaar-vcs.org/releases/src
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
@@ -68,8 +68,8 @@ PY-BAZAAR-NG_LDFLAGS=
 PY-BAZAAR-NG_BUILD_DIR=$(BUILD_DIR)/py-bazaar-ng
 PY-BAZAAR-NG_SOURCE_DIR=$(SOURCE_DIR)/py-bazaar-ng
 
-PY24-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
-PY24-BAZAAR-NG_IPK=$(BUILD_DIR)/py-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py24-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
+PY24-BAZAAR-NG_IPK=$(BUILD_DIR)/py24-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-BAZAAR-NG_IPK_DIR=$(BUILD_DIR)/py25-bazaar-ng-$(PY-BAZAAR-NG_VERSION)-ipk
 PY25-BAZAAR-NG_IPK=$(BUILD_DIR)/py25-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZAAR-NG_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-BAZAAR-NG_IPK=$(BUILD_DIR)/py25-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZA
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-BAZAAR-NG_SITE)/$(PY-BAZAAR-NG_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-BAZAAR-NG_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -184,7 +185,7 @@ py-bazaar-ng-stage: $(PY-BAZAAR-NG_BUILD_DIR)/.staged
 $(PY24-BAZAAR-NG_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-bazaar-ng" >>$@
+	@echo "Package: py24-bazaar-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-BAZAAR-NG_PRIORITY)" >>$@
 	@echo "Section: $(PY-BAZAAR-NG_SECTION)" >>$@
@@ -222,7 +223,8 @@ $(PY25-BAZAAR-NG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-BAZAAR-NG_IPK): $(PY-BAZAAR-NG_BUILD_DIR)/.built
-	rm -rf $(PY24-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py-bazaar-ng_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-bazaar-ng_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-BAZAAR-NG_IPK_DIR) $(BUILD_DIR)/py24-bazaar-ng_*_$(TARGET_ARCH).ipk
 	(cd $(PY-BAZAAR-NG_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BAZAAR-NG_IPK_DIR) --prefix=/opt; \
 	)
