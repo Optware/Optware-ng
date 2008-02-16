@@ -21,13 +21,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RE2C_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/re2c
-RE2C_VERSION=0.12.3
+RE2C_VERSION=0.13.2
 RE2C_SOURCE=re2c-$(RE2C_VERSION).tar.gz
 RE2C_DIR=re2c-$(RE2C_VERSION)
 RE2C_UNZIP=zcat
 RE2C_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RE2C_DESCRIPTION=re2c is a tool for writing very fast and very flexible scanners.
-RE2C_SECTION=tool
+RE2C_SECTION=devel
 RE2C_PRIORITY=optional
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 RE2C_DEPENDS=libstdc++
@@ -81,8 +81,8 @@ RE2C_IPK=$(BUILD_DIR)/re2c_$(RE2C_VERSION)-$(RE2C_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RE2C_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RE2C_SITE)/$(RE2C_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(RE2C_SOURCE)
+	$(WGET) -P $(DL_DIR) $(RE2C_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -122,7 +122,7 @@ endif
 	if test "$(BUILD_DIR)/$(RE2C_DIR)" != "$(RE2C_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RE2C_DIR) $(RE2C_BUILD_DIR) ; \
 	fi
-	(cd $(RE2C_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RE2C_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RE2C_LDFLAGS)" \
@@ -145,7 +145,7 @@ re2c-unpack: $(RE2C_BUILD_DIR)/.configured
 #
 $(RE2C_BUILD_DIR)/.built: $(RE2C_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RE2C_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,7 +158,7 @@ re2c: $(RE2C_BUILD_DIR)/.built
 #
 $(RE2C_BUILD_DIR)/.staged: $(RE2C_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RE2C_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 re2c-stage: $(RE2C_BUILD_DIR)/.staged
