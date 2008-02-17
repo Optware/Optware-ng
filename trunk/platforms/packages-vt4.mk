@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	amule apache aspell asterisk asterisk14 asterisk14-chan-capi \
 	atftp avahi \
 	bitlbee bsdgames btpd bzflag \
-	castget cdargs cherokee chillispot clamav ctorrent ctrlproxy cups \
+	castget cdargs cherokee clamav ctorrent ctrlproxy cups \
 	dansguardian dspam \
 	emacs22 enhanced-ctorrent esniper erlang erl-yaws \
 	ficy finch firedrill-httptunnel flac flip freeradius fuppes \

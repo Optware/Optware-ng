@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CHILLISPOT_SITE=http://www.chillispot.org/download
-CHILLISPOT_VERSION=1.0RC3
+CHILLISPOT_VERSION=1.1.0
 CHILLISPOT_SOURCE=chillispot-$(CHILLISPOT_VERSION).tar.gz
 CHILLISPOT_DIR=chillispot-$(CHILLISPOT_VERSION)
 CHILLISPOT_UNZIP=zcat
@@ -41,7 +41,7 @@ CHILLISPOT_CONFLICTS=
 #
 # CHILLISPOT_IPK_VERSION should be incremented when the ipk changes.
 #
-CHILLISPOT_IPK_VERSION=2
+CHILLISPOT_IPK_VERSION=1
 
 #
 # CHILLISPOT_CONFFILES should be a list of user-editable files
@@ -51,18 +51,13 @@ CHILLISPOT_CONFFILES=/opt/etc/chilli.conf /opt/etc/init.d/S80chillispot
 # CHILLISPOT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CHILLISPOT_PATCHES=$(CHILLISPOT_SOURCE_DIR)/configure.patch $(CHILLISPOT_SOURCE_DIR)/chillispot.patch
+#CHILLISPOT_PATCHES=
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 CHILLISPOT_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter slugosbe mssii cs05q3armel, $(OPTWARE_TARGET)))
-# ugly hack to get around kernel header linux/rtnetlink.h problem
-# see http://www.mail-archive.com/netdev@vger.kernel.org/msg28685.html
-CHILLISPOT_CPPFLAGS+=-U__STRICT_ANSI__
-endif
 CHILLISPOT_LDFLAGS=
 
 #
@@ -113,16 +108,17 @@ chillispot-source: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES)
 #
 $(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(CHILLISPOT_DIR) $(CHILLISPOT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CHILLISPOT_DIR) $(@D)
 	$(CHILLISPOT_UNZIP) $(DL_DIR)/$(CHILLISPOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CHILLISPOT_PATCHES)"; \
 		then cat $(CHILLISPOT_PATCHES) | patch -d $(BUILD_DIR)/$(CHILLISPOT_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(CHILLISPOT_DIR) $(CHILLISPOT_BUILD_DIR)
-	(cd $(CHILLISPOT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(CHILLISPOT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHILLISPOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CHILLISPOT_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -130,8 +126,8 @@ $(CHILLISPOT_BUILD_DIR)/.configured: $(DL_DIR)/$(CHILLISPOT_SOURCE) $(CHILLISPOT
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(CHILLISPOT_BUILD_DIR)/libtool
-	touch $(CHILLISPOT_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 chillispot-unpack: $(CHILLISPOT_BUILD_DIR)/.configured
 
@@ -139,9 +135,9 @@ chillispot-unpack: $(CHILLISPOT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CHILLISPOT_BUILD_DIR)/.built: $(CHILLISPOT_BUILD_DIR)/.configured
-	rm -f $(CHILLISPOT_BUILD_DIR)/.built
-	$(MAKE) -C $(CHILLISPOT_BUILD_DIR)
-	touch $(CHILLISPOT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -152,9 +148,9 @@ chillispot: $(CHILLISPOT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CHILLISPOT_BUILD_DIR)/.staged: $(CHILLISPOT_BUILD_DIR)/.built
-	rm -f $(CHILLISPOT_BUILD_DIR)/.staged
-	$(MAKE) -C $(CHILLISPOT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CHILLISPOT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 chillispot-stage: $(CHILLISPOT_BUILD_DIR)/.staged
 
@@ -163,7 +159,7 @@ chillispot-stage: $(CHILLISPOT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/chillispot
 #
 $(CHILLISPOT_IPK_DIR)/CONTROL/control:
-	@install -d $(CHILLISPOT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: chillispot" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
