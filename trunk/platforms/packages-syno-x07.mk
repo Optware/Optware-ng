@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk asterisk14-chan-capi \
 	busybox \
-	chillispot classpath \
+	classpath \
 	freeradius \
 	gambit-c gconv-modules gnu-smalltalk \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella gift-openft gift-opennap \
