@@ -60,6 +60,9 @@ KISMET_PATCHES=$(KISMET_SOURCE_DIR)/Makefile.in.patch \
 # compilation or linking flags, then list them here.
 #
 KISMET_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(PACKAGES)))
+KISMET_CPPFLAGS += -fno-builtin-rint
+endif
 KISMET_LDFLAGS=
 
 #
