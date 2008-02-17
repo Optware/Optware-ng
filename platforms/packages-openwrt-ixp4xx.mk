@@ -9,7 +9,6 @@ BROKEN_PACKAGES = \
 	9base \
 	buildroot uclibc-opt \
 	cairo \
-	chillispot \
 	ecl \
 	fcgi ficy fish \
 	gnu-smalltalk gtmess gtk \

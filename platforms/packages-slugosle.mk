@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	ushare \
 	\
 	asterisk \
-	atk chillispot \
+	atk \
 	gconv-modules \
 	gtk ipac-ng ivorbis-tools \
 	madplay mt-daapd nfs-utils \

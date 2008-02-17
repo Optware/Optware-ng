@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	antinat asterisk \
 	asterisk14 asterisk14-chan-capi \
 	busybox \
-	chillispot \
 	dhcp \
 	ecl eggdrop \
 	fcgi \
