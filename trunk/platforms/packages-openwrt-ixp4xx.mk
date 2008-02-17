@@ -24,6 +24,6 @@ BROKEN_PACKAGES = \
 	sm syx \
 	transcode \
 	uemacs \
-	vsftpd vte \
+	vte \
 	xt xmu xauth xaw xchat xterm
 

@@ -28,7 +28,7 @@ VSFTPD_UNZIP=zcat
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=1
+VSFTPD_IPK_VERSION=2
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
@@ -38,7 +38,10 @@ VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
 # VSFTPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VSFTPD_PATCHES=$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch $(VSFTPD_SOURCE_DIR)/syscall.patch
+VSFTPD_PATCHES=\
+$(VSFTPD_SOURCE_DIR)/uclibc-prctl.patch \
+$(VSFTPD_SOURCE_DIR)/syscall.patch \
+$(VSFTPD_SOURCE_DIR)/exit_status_const.patch
 
 #
 # If the compilation of the package requires additional
@@ -122,7 +125,7 @@ vsftpd-unpack: $(VSFTPD_BUILD_DIR)/.configured
 #
 $(VSFTPD_BUILD_DIR)/.built: $(VSFTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(VSFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) LIBS="$(STAGING_LDFLAGS) -lcrypt"
+	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) LIBS="$(STAGING_LDFLAGS) -lcrypt"
 	touch $@
 
 #
