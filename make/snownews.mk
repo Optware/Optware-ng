@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SNOWNEWS_SITE=http://kiza.kcore.de/software/snownews/download
-SNOWNEWS_VERSION=1.5.8
+SNOWNEWS_VERSION=1.5.9
 SNOWNEWS_SOURCE=snownews-$(SNOWNEWS_VERSION).tar.gz
 SNOWNEWS_DIR=snownews-$(SNOWNEWS_VERSION)
 SNOWNEWS_UNZIP=zcat
