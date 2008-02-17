@@ -15,7 +15,6 @@ BROKEN_PACKAGES = \
 	gnu-smalltalk gtmess gtk \
 	hpijs hplip \
 	ice iptables \
-	kismet \
 	lame launchtool ldconfig \
 	moc monotone mtr \
 	nfs-server nfs-utils nickle ntop \
