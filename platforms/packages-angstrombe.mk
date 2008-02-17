@@ -7,11 +7,10 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for angstrombe.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	antinat
-#	asterisk asterisk14 asterisk14-chan-capi \
-#	atftp bitchx bzflag \
-#	chillispot coreutils gconv-modules ipac-ng \
-#	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
-#	netatalk nfs-utils nget phoneme-advanced player puppy \
-#	qemu squeak \
-#	atk gtk vte xchat
+	antinat asterisk asterisk14 asterisk14-chan-capi \
+	atftp atk bitchx bsdgames bsdmainutils bzflag \
+	chillispot coreutils gconv-modules ipac-ng \
+	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
+	netatalk nfs-utils nget phoneme-advanced player puppy \
+	qemu squeak \
+	atk gtk vte xchat
