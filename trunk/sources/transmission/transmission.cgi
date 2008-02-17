@@ -293,8 +293,9 @@ _fetch()
 {
     TORRENT=$(echo "${FETCH}" |sed 's/%/\\x/g')
     TORRENT=$(echo -e "${TORRENT}")
-    echo "<p>Fetching ${TORRENT}</p>"
-    wget -q -P ${SOURCE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
+    FILE=$(echo "${TORRENT}" |sed 's|^.*/||;s|?.*||')
+    echo "<p>Fetching ${TORRENT} as ${FILE}</p>"
+    wget -q -O ${SOURCE}/${FILE} "${TORRENT}"  ||  echo "<p>wget ${TORRENT} failed</p>"
 }
 
 
