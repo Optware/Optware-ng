@@ -39,7 +39,7 @@ diff -Nur coreutils-6.9.orig/src/copy.c coreutils-6.9.futimens/src/copy.c
  	  if (x-&gt;require_preserve)
 diff -Nur coreutils-6.9.orig/src/touch.c coreutils-6.9.futimens/src/touch.c
 --- coreutils-6.9.orig/src/touch.c	2007-03-18 23:36:43.000000000 +0200
-+++ coreutils-6.9.futimens/src/touch.c	2007-05-18 15:18:06.000000000 +0300
++++ coreutils-6.9.futimens/src/touch.c	2007-03-18 23:36:43.000000000 +0200
 @@ -167,7 +167,7 @@
  
    if (amtime_now)

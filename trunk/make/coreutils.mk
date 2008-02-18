@@ -41,13 +41,15 @@ COREUTILS_CONFLICTS=
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=6
+COREUTILS_IPK_VERSION=7
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/mountlist.patch
+COREUTILS_PATCHES+=$(COREUTILS_SOURCE_DIR)/coreutils-futimens.patch
+
 # Assume that all uclibc systems are the same
 ifeq ($(LIBC_STYLE), uclibc)
 ifeq ($(OPTWARE_TARGET), openwrt-brcm24)
@@ -127,7 +129,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(COREUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
+	cat $(COREUTILS_PATCHES) | patch -Z -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
 	cp $(COREUTILS_AC_CACHE) $(COREUTILS_BUILD_DIR)/config.cache
 ifeq ($(OPTWARE_TARGET), ts101)
