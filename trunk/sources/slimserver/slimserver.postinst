@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/opt/bin:/opt/sbin:/opt/libexec:/usr/sbin:/usr/bin:/usr/local/bin:
+PATH=/opt/bin:/opt/sbin:/opt/libexec:/bin:/usr/sbin:/usr/bin:/usr/local/bin:
 export PATH
 
 . /opt/etc/slimserver.conf
