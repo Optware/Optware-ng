@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 HDPARM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hdparm
-HDPARM_VERSION=6.9
+HDPARM_VERSION=8.1
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)
 HDPARM_UNZIP=zcat
@@ -68,7 +68,7 @@ HDPARM_IPK=$(BUILD_DIR)/hdparm_$(HDPARM_VERSION)-$(HDPARM_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(HDPARM_IPK_DIR)/CONTROL/control:
-	@install -d $(HDPARM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: hdparm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -85,7 +85,8 @@ $(HDPARM_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HDPARM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HDPARM_SITE)/$(HDPARM_SOURCE)
+	$(WGET) -P $(DL_DIR) $(HDPARM_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -100,12 +101,13 @@ hdparm-source: $(DL_DIR)/$(HDPARM_SOURCE) $(HDPARM_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(HDPARM_BUILD_DIR)/.configured: $(DL_DIR)/$(HDPARM_SOURCE) \
-		$(HDPARM_PATCHES)
-	rm -rf $(BUILD_DIR)/$(HDPARM_DIR) $(HDPARM_BUILD_DIR)
+$(HDPARM_BUILD_DIR)/.configured: make/hdparm.mk \
+$(DL_DIR)/$(HDPARM_SOURCE) $(HDPARM_PATCHES)
+	rm -rf $(BUILD_DIR)/$(HDPARM_DIR) $(@D)
 	$(HDPARM_UNZIP) $(DL_DIR)/$(HDPARM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(HDPARM_DIR) $(HDPARM_BUILD_DIR)
-	touch $(HDPARM_BUILD_DIR)/.configured
+	mv $(BUILD_DIR)/$(HDPARM_DIR) $(@D)
+	sed -i -e '/^	strip/d' $(@D)/Makefile
+	touch $@
 
 hdparm-unpack: $(HDPARM_BUILD_DIR)/.configured
 
@@ -114,9 +116,11 @@ hdparm-unpack: $(HDPARM_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(HDPARM_BUILD_DIR)/.built: $(HDPARM_BUILD_DIR)/.configured
-	rm -f $(HDPARM_BUILD_DIR)/.built
-	$(MAKE) -C $(HDPARM_BUILD_DIR) binprefix=/opt manprefix=/opt CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
-	touch $(HDPARM_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) \
+		binprefix=/opt manprefix=/opt \
+		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -138,7 +142,10 @@ hdparm: $(HDPARM_BUILD_DIR)/.built
 $(HDPARM_IPK): $(HDPARM_BUILD_DIR)/.built
 	rm -rf $(HDPARM_IPK_DIR) $(BUILD_DIR)/hdparm_*_$(TARGET_ARCH).ipk
 	install -d $(HDPARM_IPK_DIR)/opt/sbin
-	$(MAKE) -C $(HDPARM_BUILD_DIR) DESTDIR=$(HDPARM_IPK_DIR) install binprefix=/opt manprefix=/opt CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+	$(MAKE) -C $(HDPARM_BUILD_DIR) DESTDIR=$(HDPARM_IPK_DIR) install \
+		binprefix=/opt manprefix=/opt \
+		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
+	$(STRIP_COMMAND) $(HDPARM_IPK_DIR)/opt/sbin/hdparm
 	$(MAKE) $(HDPARM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HDPARM_IPK_DIR)
 
@@ -159,3 +166,9 @@ hdparm-clean:
 #
 hdparm-dirclean:
 	rm -rf $(BUILD_DIR)/$(HDPARM_DIR) $(HDPARM_BUILD_DIR) $(HDPARM_IPK_DIR) $(HDPARM_IPK)
+
+#
+# Some sanity check for the package.
+#
+hdparm-check: $(HDPARM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(HDPARM_IPK)
