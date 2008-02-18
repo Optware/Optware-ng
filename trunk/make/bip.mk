@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.6.1
+BIP_VERSION=0.7.0
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -80,8 +80,8 @@ BIP_IPK=$(BUILD_DIR)/bip_$(BIP_VERSION)-$(BIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BIP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BIP_SITE)/$(BIP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(BIP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(BIP_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -119,7 +119,7 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(BIP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR) ; \
 	fi
-	(cd $(BIP_BUILD_DIR); \
+	(cd $(@D); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BIP_CPPFLAGS)" \
@@ -142,7 +142,7 @@ bip-unpack: $(BIP_BUILD_DIR)/.configured
 #
 $(BIP_BUILD_DIR)/.built: $(BIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(BIP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,9 +154,9 @@ bip: $(BIP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BIP_BUILD_DIR)/.staged: $(BIP_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(BIP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 bip-stage: $(BIP_BUILD_DIR)/.staged
 
