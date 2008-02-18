@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	antinat asterisk asterisk14 asterisk14-chan-capi \
 	atftp atk bitchx bzflag \
-	cabextract chillispot connect coreutils \
+	cabextract chillispot connect \
 	gconv-modules gtk \
 	ipac-ng iptables iptraf ivorbis-tools \
 	ldconfig madplay monotone mt-daapd \
