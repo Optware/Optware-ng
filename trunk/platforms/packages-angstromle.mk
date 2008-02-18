@@ -9,7 +9,7 @@ BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	asterisk asterisk14 asterisk14-chan-capi \
 	atftp bitchx bzflag \
-	coreutils gconv-modules ipac-ng \
+	gconv-modules ipac-ng \
 	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \
 	netatalk nfs-utils nget phoneme-advanced player puppy \
 	qemu squeak \
