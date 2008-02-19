@@ -33,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=1
+LIBTORRENT_IPK_VERSION=2
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -57,6 +57,9 @@ endif
 endif
 ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
 LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/ceilf.patch
+endif
+ifeq ($(OPTWARE_TARGET), $(filter nslu2, $(OPTWARE_TARGET)))
+LIBTORRENT_PATCHES+=$(LIBTORRENT_SOURCE_DIR)/throttle_no_float.patch
 endif
 
 #
