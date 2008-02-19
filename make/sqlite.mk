@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.5.4
+SQLITE_VERSION=3.5.6
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -84,7 +84,8 @@ SQLITE_IPK=$(BUILD_DIR)/sqlite_$(SQLITE_VERSION)-$(SQLITE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQLITE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQLITE_SITE)/$(SQLITE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SQLITE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -110,17 +111,16 @@ sqlite-source: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 #
 $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 	$(MAKE) readline-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE_PATCHES)"; \
 		then cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(SQLITE_DIR) $(SQLITE_BUILD_DIR)
-	mkdir -p $(SQLITE_BUILD_DIR)
+	mv $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
 	if test -n "$(SQLITE_PATCHES)"; \
-		then cd $(SQLITE_BUILD_DIR); autoreconf; \
+		then cd $(@D); autoreconf; \
 	fi
-	(cd $(SQLITE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		config_BUILD_CC="$(HOSTCC)" \
 		config_TARGET_CC="$(TARGET_CC)" \
@@ -134,8 +134,8 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 		--disable-nls \
 		--disable-tcl \
 	)
-	$(PATCH_LIBTOOL) $(SQLITE_BUILD_DIR)/libtool
-	sed -i "/^shrext_cmds=/a shrext='.so'" $(SQLITE_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i "/^shrext_cmds=/a shrext='.so'" $(@D)/libtool
 	touch $@
 
 sqlite-unpack: $(SQLITE_BUILD_DIR)/.configured
@@ -145,7 +145,7 @@ sqlite-unpack: $(SQLITE_BUILD_DIR)/.configured
 #
 $(SQLITE_BUILD_DIR)/.built: $(SQLITE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SQLITE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,7 +158,7 @@ sqlite: $(SQLITE_BUILD_DIR)/.built
 #
 $(SQLITE_BUILD_DIR)/.staged: $(SQLITE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SQLITE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/sqlite3.pc
 	touch $@
 
