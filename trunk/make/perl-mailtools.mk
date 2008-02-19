@@ -5,7 +5,7 @@
 ###########################################################
 
 PERL-MAILTOOLS_SITE=http://search.cpan.org/CPAN/authors/id/M/MA/MARKOV
-PERL-MAILTOOLS_VERSION=1.74
+PERL-MAILTOOLS_VERSION=1.77
 PERL-MAILTOOLS_SOURCE=MailTools-$(PERL-MAILTOOLS_VERSION).tar.gz
 PERL-MAILTOOLS_DIR=MailTools-$(PERL-MAILTOOLS_VERSION)
 PERL-MAILTOOLS_UNZIP=zcat
