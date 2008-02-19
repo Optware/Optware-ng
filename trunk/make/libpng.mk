@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPNG_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
-LIBPNG_VERSION=1.2.24
+LIBPNG_VERSION=1.2.25
 LIBPNG_SOURCE=libpng-$(LIBPNG_VERSION).tar.gz
 LIBPNG_DIR=libpng-$(LIBPNG_VERSION)
 LIBPNG_UNZIP=zcat
@@ -70,7 +70,8 @@ LIBPNG_IPK=$(BUILD_DIR)/libpng_$(LIBPNG_VERSION)-$(LIBPNG_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBPNG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBPNG_SITE)/$(LIBPNG_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBPNG_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
