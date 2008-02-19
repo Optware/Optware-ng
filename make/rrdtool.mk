@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RRDTOOL_SITE=http://oss.oetiker.ch/rrdtool/pub/
-RRDTOOL_VERSION=1.2.23
+RRDTOOL_VERSION=1.2.27
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
@@ -48,7 +48,7 @@ RRDTOOL_CONFLICTS=
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=3
+RRDTOOL_IPK_VERSION=1
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -93,7 +93,8 @@ RRDTOOL_IPK=$(BUILD_DIR)/rrdtool_$(RRDTOOL_VERSION)-$(RRDTOOL_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RRDTOOL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RRDTOOL_SITE)/$(RRDTOOL_SOURCE)
+	$(WGET) -P $(DL_DIR) $(RRDTOOL_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -117,7 +118,7 @@ rrdtool-source: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
+$(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES) make/rrdtool.mk
 	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) perl-extutils-parsexs-stage
@@ -131,7 +132,7 @@ endif
 	if test "$(BUILD_DIR)/$(RRDTOOL_DIR)" != "$(RRDTOOL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR) ; \
 	fi
-	(cd $(RRDTOOL_BUILD_DIR); \
+	(cd $(@D); \
 		sed -i -e '/CPPFLAGS=/s|-I/usr/include/.*"|"|g' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RRDTOOL_CPPFLAGS)" \
@@ -161,7 +162,7 @@ endif
 	)
 ifneq (,$(filter perl, $(PACKAGES)))
 	for m in perl-piped perl-shared; do \
-	    cd $(RRDTOOL_BUILD_DIR)/bindings/$$m; \
+	    cd $(@D)/bindings/$$m; \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl" \
@@ -170,12 +171,12 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		PREFIX=/opt \
 		; \
 	    sed -i -e '/^PERLRUN *=/s|$$| -I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)|' \
-	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -rpath /opt/lib|' \
+	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -rpath /opt/lib -L$(STAGING_LIB_DIR)|' \
 	    	Makefile; \
 	done
 endif   
-	$(PATCH_LIBTOOL) $(RRDTOOL_BUILD_DIR)/libtool
-	touch $(RRDTOOL_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 rrdtool-unpack: $(RRDTOOL_BUILD_DIR)/.configured
 
@@ -183,9 +184,9 @@ rrdtool-unpack: $(RRDTOOL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RRDTOOL_BUILD_DIR)/.built: $(RRDTOOL_BUILD_DIR)/.configured
-	rm -f $(RRDTOOL_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR)
-	touch $(RRDTOOL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -196,11 +197,11 @@ rrdtool: $(RRDTOOL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(RRDTOOL_BUILD_DIR)/.staged: $(RRDTOOL_BUILD_DIR)/.built
-	rm -f $(RRDTOOL_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/librrd.la
 	rm -f $(STAGING_LIB_DIR)/librrd_th.la
-	touch $(RRDTOOL_BUILD_DIR)/.staged
+	touch $@
 
 rrdtool-stage: $(RRDTOOL_BUILD_DIR)/.staged
 
@@ -209,7 +210,7 @@ rrdtool-stage: $(RRDTOOL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/rrdtool
 #
 $(RRDTOOL_IPK_DIR)/CONTROL/control:
-	@install -d $(RRDTOOL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: rrdtool" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
