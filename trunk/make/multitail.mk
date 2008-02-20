@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MULTITAIL_SITE=http://www.vanheusden.com/multitail
-MULTITAIL_VERSION=5.2.0
+MULTITAIL_VERSION=5.2.1
 MULTITAIL_SOURCE=multitail-$(MULTITAIL_VERSION).tgz
 MULTITAIL_DIR=multitail-$(MULTITAIL_VERSION)
 MULTITAIL_UNZIP=zcat
@@ -76,7 +76,8 @@ MULTITAIL_IPK=$(BUILD_DIR)/multitail_$(MULTITAIL_VERSION)-$(MULTITAIL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MULTITAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MULTITAIL_SITE)/$(MULTITAIL_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MULTITAIL_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,21 +106,21 @@ multitail-source: $(DL_DIR)/$(MULTITAIL_SOURCE) $(MULTITAIL_PATCHES)
 #
 $(MULTITAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(MULTITAIL_SOURCE) $(MULTITAIL_PATCHES) make/multitail.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(MULTITAIL_DIR) $(MULTITAIL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MULTITAIL_DIR) $(@D)
 	$(MULTITAIL_UNZIP) $(DL_DIR)/$(MULTITAIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MULTITAIL_PATCHES)" ; \
 		then cat $(MULTITAIL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MULTITAIL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MULTITAIL_DIR)" != "$(MULTITAIL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MULTITAIL_DIR) $(MULTITAIL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MULTITAIL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MULTITAIL_DIR) $(@D) ; \
 	fi
 ifeq ($(LIBC_STYLE), uclibc)
 # defined(__GLIBC__) should be 0 for uclibc toolchains, but it is not?
-	sed -i -e 's|defined(__GLIBC__)|0|' $(MULTITAIL_BUILD_DIR)/error.c
+	sed -i -e 's|defined(__GLIBC__)|0|' $(@D)/error.c
 endif
 ifeq ($(OPTWARE_TARGET), $(filter openwrt-brcm24 openwrt-ixp4xx, $(OPTWARE_TARGET)))
-	sed -i -e 's|#ifdef _GNU_SOURCE|#if 0|' $(MULTITAIL_BUILD_DIR)/misc.c
+	sed -i -e 's|#ifdef _GNU_SOURCE|#if 0|' $(@D)/misc.c
 endif
 #	(cd $(MULTITAIL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -134,7 +135,7 @@ endif
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(MULTITAIL_BUILD_DIR)/libtool
-	touch $(MULTITAIL_BUILD_DIR)/.configured
+	touch $@
 
 multitail-unpack: $(MULTITAIL_BUILD_DIR)/.configured
 
@@ -142,13 +143,13 @@ multitail-unpack: $(MULTITAIL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MULTITAIL_BUILD_DIR)/.built: $(MULTITAIL_BUILD_DIR)/.configured
-	rm -f $(MULTITAIL_BUILD_DIR)/.built
-	$(MAKE) -C $(MULTITAIL_BUILD_DIR) -f makefile.cross-arm-linux \
+	rm -f $@
+	$(MAKE) -C $(@D) -f makefile.cross-arm-linux \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MULTITAIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MULTITAIL_LDFLAGS)" \
 		CONFIG_FILE=/opt/etc/multitail.conf
-	touch $(MULTITAIL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -159,9 +160,9 @@ multitail: $(MULTITAIL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MULTITAIL_BUILD_DIR)/.staged: $(MULTITAIL_BUILD_DIR)/.built
-	rm -f $(MULTITAIL_BUILD_DIR)/.staged
-	$(MAKE) -C $(MULTITAIL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MULTITAIL_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 multitail-stage: $(MULTITAIL_BUILD_DIR)/.staged
 
@@ -170,7 +171,7 @@ multitail-stage: $(MULTITAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/multitail
 #
 $(MULTITAIL_IPK_DIR)/CONTROL/control:
-	@install -d $(MULTITAIL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: multitail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,13 +206,7 @@ $(MULTITAIL_IPK): $(MULTITAIL_BUILD_DIR)/.built
 	install -m 644 $(MULTITAIL_BUILD_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/
 	install -d $(MULTITAIL_IPK_DIR)/opt/man/man1
 	install -m 644 $(MULTITAIL_BUILD_DIR)/multitail.1 $(MULTITAIL_IPK_DIR)/opt/man/man1/
-#	install -d $(MULTITAIL_IPK_DIR)/opt/etc/
-#	install -m 644 $(MULTITAIL_SOURCE_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/multitail.conf
-#	install -d $(MULTITAIL_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MULTITAIL_SOURCE_DIR)/rc.multitail $(MULTITAIL_IPK_DIR)/opt/etc/init.d/SXXmultitail
 	$(MAKE) $(MULTITAIL_IPK_DIR)/CONTROL/control
-#	install -m 755 $(MULTITAIL_SOURCE_DIR)/postinst $(MULTITAIL_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MULTITAIL_SOURCE_DIR)/prerm $(MULTITAIL_IPK_DIR)/CONTROL/prerm
 	echo $(MULTITAIL_CONFFILES) | sed -e 's/ /\n/g' > $(MULTITAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MULTITAIL_IPK_DIR)
 
