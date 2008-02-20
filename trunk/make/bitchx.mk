@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BITCHX_SITE=ftp://bitchx.org/pub/BitchX/source/
+BITCHX_SITE=ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/distfiles
 BITCHX_VERSION=1.1a-final
 BITCHX_SOURCE=ircii-pana-$(BITCHX_VERSION).tar.gz
 BITCHX_DIR=BitchX
