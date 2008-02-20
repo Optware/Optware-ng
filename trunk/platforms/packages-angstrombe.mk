@@ -13,6 +13,6 @@ BROKEN_PACKAGES = \
 	ecl eggdrop fcgi gconv-modules gtk \
 	inadyn ipac-ng iptables iptraf ivorbis-tools \
 	ldconfig libcapi20 madplay microcom monotone mt-daapd \
-	netatalk nfs-utils nget ntop \
+	netatalk nfs-utils nget \
 	phoneme-advanced player puppy py-soappy \
 	slrn spandsp qemu squeak vte xchat 
