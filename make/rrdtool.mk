@@ -171,7 +171,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		PREFIX=/opt \
 		; \
 	    sed -i -e '/^PERLRUN *=/s|$$| -I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)|' \
-	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -rpath /opt/lib -L$(STAGING_LIB_DIR)|' \
+	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -rpath /opt/lib -L$(STAGING_LIB_DIR) $(PERL_LDFLAGS_EXTRA)|' \
 	    	Makefile; \
 	done
 endif   
