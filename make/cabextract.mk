@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-CABEXTRACT_SITE=http://www.kyz.uklinux.net/downloads
+CABEXTRACT_SITE=http://www.cabextract.org.uk
 CABEXTRACT_VERSION=1.2
 CABEXTRACT_SOURCE=cabextract-$(CABEXTRACT_VERSION).tar.gz
 CABEXTRACT_DIR=cabextract-$(CABEXTRACT_VERSION)
@@ -50,7 +50,8 @@ CABEXTRACT_IPK=$(BUILD_DIR)/cabextract_$(CABEXTRACT_VERSION)-$(CABEXTRACT_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CABEXTRACT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CABEXTRACT_SITE)/$(CABEXTRACT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(CABEXTRACT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
