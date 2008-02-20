@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MRTG_SITE=http://oss.oetiker.ch/mrtg/pub/
-MRTG_VERSION=2.15.2
+MRTG_VERSION=2.16.1
 MRTG_SOURCE=mrtg-$(MRTG_VERSION).tar.gz
 MRTG_DIR=mrtg-$(MRTG_VERSION)
 MRTG_UNZIP=zcat
@@ -75,7 +75,8 @@ MRTG_IPK=$(BUILD_DIR)/mrtg_$(MRTG_VERSION)-$(MRTG_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MRTG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MRTG_SITE)/$(MRTG_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MRTG_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,16 +105,16 @@ mrtg-source: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
 #
 $(MRTG_BUILD_DIR)/.configured: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
 	$(MAKE) libgd-stage
-	rm -rf $(BUILD_DIR)/$(MRTG_DIR) $(MRTG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MRTG_DIR) $(@D)
 	$(MRTG_UNZIP) $(DL_DIR)/$(MRTG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MRTG_PATCHES)" ; \
 		then cat $(MRTG_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MRTG_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MRTG_DIR)" != "$(MRTG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MRTG_DIR) $(MRTG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MRTG_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MRTG_DIR) $(@D) ; \
 	fi
-	(cd $(MRTG_BUILD_DIR); \
+	(cd $(@D); \
 		autoconf ;\
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MRTG_CPPFLAGS)" \
@@ -126,8 +127,8 @@ $(MRTG_BUILD_DIR)/.configured: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MRTG_BUILD_DIR)/libtool
-	touch $(MRTG_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 mrtg-unpack: $(MRTG_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ mrtg-unpack: $(MRTG_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MRTG_BUILD_DIR)/.built: $(MRTG_BUILD_DIR)/.configured
-	rm -f $(MRTG_BUILD_DIR)/.built
-	$(MAKE) -C $(MRTG_BUILD_DIR) TARGET_PERL="/opt/bin/perl"
-	touch $(MRTG_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) TARGET_PERL="/opt/bin/perl"
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +149,9 @@ mrtg: $(MRTG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MRTG_BUILD_DIR)/.staged: $(MRTG_BUILD_DIR)/.built
-	rm -f $(MRTG_BUILD_DIR)/.staged
-	$(MAKE) -C $(MRTG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MRTG_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 mrtg-stage: $(MRTG_BUILD_DIR)/.staged
 
@@ -159,7 +160,7 @@ mrtg-stage: $(MRTG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mrtg
 #
 $(MRTG_IPK_DIR)/CONTROL/control:
-	@install -d $(MRTG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mrtg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
