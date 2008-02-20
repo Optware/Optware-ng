@@ -26,7 +26,7 @@ LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=1
+LIBGD_IPK_VERSION=2
 
 #
 # LIBGD_LOCALES defines which locales get installed
@@ -163,7 +163,8 @@ libgd: $(LIBGD_BUILD_DIR)/.built
 #
 $(LIBGD_BUILD_DIR)/.staged: $(LIBGD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBGD_BUILD_DIR) install DESTDIR=$(STAGING_DIR)
+	$(MAKE) -C $(LIBGD_BUILD_DIR) install \
+		DESTDIR=$(STAGING_DIR) transform=''
 	rm -rf $(STAGING_DIR)/opt/lib/libgd.la
 	touch $@
 
