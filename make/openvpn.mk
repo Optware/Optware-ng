@@ -26,7 +26,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OPENVPN_SITE=http://openvpn.net/release
-OPENVPN_VERSION=2.0.9
+OPENVPN_VERSION=2.1_rc7
 OPENVPN_SOURCE=openvpn-$(OPENVPN_VERSION).tar.gz
 OPENVPN_DIR=openvpn-$(OPENVPN_VERSION)
 OPENVPN_UNZIP=zcat
@@ -34,8 +34,8 @@ OPENVPN_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 OPENVPN_DESCRIPTION=SSL based VPN server with Windows client support
 OPENVPN_SECTION=net
 OPENVPN_PRIORITY=optional
-OPENVPN_DEPENDS=openssl, lzo, kernel-module-tun
-OPENVPN_SUGGESTS=
+OPENVPN_DEPENDS=openssl, lzo
+OPENVPN_SUGGESTS=kernel-module-tun
 OPENVPN_CONFLICTS=
 
 #
