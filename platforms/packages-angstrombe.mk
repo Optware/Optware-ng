@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for angstrombe.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	antinat asterisk asterisk14 asterisk14-chan-capi \
+	antinat asterisk14 asterisk14-chan-capi \
 	atftp atk bitchx bzflag \
 	cabextract dircproxy \
 	ecl eggdrop fcgi gconv-modules gtk \
@@ -15,4 +15,4 @@ BROKEN_PACKAGES = \
 	ldconfig libcapi20 madplay microcom monotone mt-daapd \
 	netatalk nfs-utils nget \
 	phoneme-advanced player puppy py-soappy \
-	slrn spandsp qemu squeak vte xchat 
+	qemu slrn spandsp squeak vte xchat 
