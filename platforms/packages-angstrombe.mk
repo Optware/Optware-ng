@@ -8,10 +8,9 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	antinat asterisk14 asterisk14-chan-capi \
-	atftp atk bitchx bzflag \
-	cabextract dircproxy \
+	atftp atk bitchx bzflag dircproxy \
 	ecl eggdrop fcgi gconv-modules gtk \
-	inadyn ipac-ng iptables iptraf ivorbis-tools \
+	ipac-ng iptables iptraf ivorbis-tools \
 	ldconfig libcapi20 madplay microcom monotone mt-daapd \
 	netatalk nfs-utils nget \
 	phoneme-advanced player puppy py-soappy \
