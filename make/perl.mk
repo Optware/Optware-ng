@@ -54,6 +54,9 @@ PERL_ARCH=$(strip \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))
 PERL_LDFLAGS="-Wl,-rpath,/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE"
+ifeq (vt4, $(OPTWARE_TARGET))
+PERL_LDFLAGS_EXTRA=-L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4
+endif
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
@@ -172,8 +175,8 @@ else
 		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) ] && \
 		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) . ) ; \
 	)
-ifeq (vt4, $(OPTWARE_TARGET))
-	sed -i -e 's|-shared|& -L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
+ifdef PERL_LDFLAGS_EXTRA
+	sed -i -e 's|-shared|& $(PERL_LDFLAGS_EXTRA)|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
 endif
 	(cd $(@D)/Cross; \
 		cp -f $(PERL_SOURCE_DIR)/Cross/Makefile . ; \
