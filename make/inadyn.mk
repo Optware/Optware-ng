@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-INADYN_SITE=http://inadyn.ina-tech.net
+INADYN_SITE=ftp://ftp.FreeBSD.org/pub/FreeBSD/ports/distfiles
 INADYN_VERSION=1.96.2
 INADYN_SOURCE=inadyn.v$(INADYN_VERSION).zip
 INADYN_DIR=inadyn
@@ -76,8 +76,8 @@ INADYN_IPK=$(BUILD_DIR)/inadyn_$(INADYN_VERSION)-$(INADYN_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(INADYN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(INADYN_SITE)/$(INADYN_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(INADYN_SOURCE)
+	$(WGET) -P $(DL_DIR) $(INADYN_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
