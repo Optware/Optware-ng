@@ -59,7 +59,7 @@ PERL_PACKAGES = \
 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
 	perl-crypt-openssl-random perl-crypt-openssl-rsa perl-crypt-ssleay \
 	perl-danga-socket \
-	perl-date-manip \
+	perl-date-calc perl-date-manip \
 	perl-db-file \
 	perl-dbd-mysql perl-dbd-sqlite perl-dbi \
 	perl-dbix-contextualfetch \
