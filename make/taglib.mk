@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TAGLIB_SITE=http://developer.kde.org/~wheeler/files/src
-TAGLIB_VERSION=1.4
+TAGLIB_VERSION=1.5
 TAGLIB_SOURCE=taglib-$(TAGLIB_VERSION).tar.gz
 TAGLIB_DIR=taglib-$(TAGLIB_VERSION)
 TAGLIB_UNZIP=zcat
@@ -76,8 +76,8 @@ TAGLIB_IPK=$(BUILD_DIR)/taglib_$(TAGLIB_VERSION)-$(TAGLIB_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TAGLIB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TAGLIB_SITE)/$(TAGLIB_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TAGLIB_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TAGLIB_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ taglib-source: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES)
 #
 $(TAGLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES) make/taglib.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(TAGLIB_DIR) $(TAGLIB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TAGLIB_DIR) $(@D)
 	$(TAGLIB_UNZIP) $(DL_DIR)/$(TAGLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TAGLIB_PATCHES)" ; \
 		then cat $(TAGLIB_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TAGLIB_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TAGLIB_DIR)" != "$(TAGLIB_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TAGLIB_DIR) $(TAGLIB_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TAGLIB_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TAGLIB_DIR) $(@D) ; \
 	fi
-	(cd $(TAGLIB_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TAGLIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TAGLIB_LDFLAGS)" \
@@ -127,7 +127,7 @@ $(TAGLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(TAGLIB_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 taglib-unpack: $(TAGLIB_BUILD_DIR)/.configured
@@ -137,7 +137,7 @@ taglib-unpack: $(TAGLIB_BUILD_DIR)/.configured
 #
 $(TAGLIB_BUILD_DIR)/.built: $(TAGLIB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TAGLIB_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -150,7 +150,7 @@ taglib: $(TAGLIB_BUILD_DIR)/.built
 #
 $(TAGLIB_BUILD_DIR)/.staged: $(TAGLIB_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(TAGLIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) transform="" install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) transform="" install
 	sed -i -e '/includedir=/s|$${prefix}|$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/taglib-config
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/taglib.pc
 	touch $@
