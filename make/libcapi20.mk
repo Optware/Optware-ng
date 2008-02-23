@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBCAPI20_SITE=ftp://ftp.melware.net/capi-utils
-LIBCAPI20_VERSION=3-cm
+LIBCAPI20_VERSION=3.0.5-cm
 LIBCAPI20_SOURCE=libcapi20-$(LIBCAPI20_VERSION).tar.gz
 LIBCAPI20_DIR=libcapi20-$(LIBCAPI20_VERSION)
 LIBCAPI20_UNZIP=zcat
@@ -34,7 +34,7 @@ LIBCAPI20_CONFLICTS=
 #
 # LIBCAPI20_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCAPI20_IPK_VERSION=1
+LIBCAPI20_IPK_VERSION=2
 
 #
 # LIBCAPI20_PATCHES should list any patches, in the the order in
