@@ -387,6 +387,7 @@ $(ASTERISK16_IPK): $(ASTERISK16_BUILD_DIR)/.built
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_alsa.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_gtalk.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_jingle.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_oss.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_ilbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -395,15 +396,19 @@ $(ASTERISK16_IPK): $(ASTERISK16_BUILD_DIR)/.built
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_config_ldap.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_odbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => res_config_sqlite.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_jabber.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_odbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_snmp.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_smdi.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_adaptive_odbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_odbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_radius.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_sqlite.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => cdr_sqlite3_custom.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => cdr_tds.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 
 	#cp -r $(ASTERISK16_IPK_DIR)/opt/etc/asterisk $(ASTERISK16_IPK_DIR)/opt/etc/samples
