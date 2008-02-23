@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for angstromle.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	asterisk asterisk14-chan-capi \
+	asterisk \
 	atftp bitchx bzflag \
 	gconv-modules ipac-ng \
 	iptables iptraf ivorbis-tools ldconfig madplay monotone mt-daapd \

@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for angstrombe.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
-	antinat asterisk14-chan-capi \
+	antinat \
 	atftp atk bitchx bzflag dircproxy \
 	ecl eggdrop fcgi gconv-modules gtk \
 	ipac-ng iptables iptraf ivorbis-tools \
