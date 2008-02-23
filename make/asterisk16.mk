@@ -170,8 +170,11 @@ ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK16_CPPFLAGS+= -DPATH_MAX=4096
 endif
 ASTERISK16_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle cs05q3armel, $(OPTWARE_TARGET)))
 ASTERISK16_LDFLAGS+=-lpthread -ldl -lresolv
+endif
+ifeq (uclibc, $(LIBC_STYLE))
+ASTERISK16_LDFLAGS+=-lpthread -lm
 endif
 
 ASTERISK16_CONFIGURE_OPTS=
