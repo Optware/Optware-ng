@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MICROCOM_SITE=http://microcom.port5.com
+MICROCOM_SITE=http://sources.nslu2-linux.org/sources
 MICROCOM_VERSION=102
 MICROCOM_SOURCE=m$(MICROCOM_VERSION).tar.gz
 MICROCOM_DIR=m$(MICROCOM_VERSION)
