@@ -1,5 +1,5 @@
---- Python-2.5c2/Makefile.pre.in.orig	2006-07-30 09:20:10.000000000 -0700
-+++ Python-2.5c2/Makefile.pre.in	2006-09-13 13:09:43.000000000 -0700
+--- Python-2.5.2c1/Makefile.pre.in.orig	2007-12-05 12:43:57.000000000 -0800
++++ Python-2.5.2c1/Makefile.pre.in	2008-02-15 13:39:38.000000000 -0800
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -9,7 +9,7 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -99,7 +101,7 @@
+@@ -102,7 +104,7 @@
  
  # Symbols used for using shared libraries
  SO=		@SO@
@@ -18,7 +18,7 @@
  BLDSHARED=	@BLDSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
  
-@@ -169,7 +171,8 @@
+@@ -172,7 +174,8 @@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
@@ -28,7 +28,7 @@
  
  # === Definitions added by makesetup ===
  
-@@ -195,7 +198,8 @@
+@@ -198,7 +201,8 @@
  
  ##########################################################################
  # Parser
@@ -38,7 +38,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -330,13 +334,13 @@
+@@ -333,13 +337,13 @@
  # Rules
  
  # Default target
@@ -56,13 +56,14 @@
  
  platform: $(BUILDPYTHON)
  	$(RUNSHARED) ./$(BUILDPYTHON) -E -c 'import sys ; from distutils.util import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
-@@ -469,11 +473,11 @@
+@@ -472,12 +476,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
 -$(GRAMMAR_H) $(GRAMMAR_C): $(PGEN) $(GRAMMAR_INPUT)
--		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
 +$(GRAMMAR_H) $(GRAMMAR_C): $(BUILDPGEN) $(GRAMMAR_INPUT)
+ 		-@ mkdir Include
+-		-$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
 +		-$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
  
 -$(PGEN):	$(PGENOBJS)
@@ -72,7 +73,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -499,6 +503,16 @@
+@@ -503,6 +507,16 @@
  Objects/unicodectype.o:	$(srcdir)/Objects/unicodectype.c \
  				$(srcdir)/Objects/unicodetype_db.h
  
@@ -89,7 +90,7 @@
  ############################################################################
  # Header files
  
-@@ -664,7 +678,7 @@
+@@ -673,7 +687,7 @@
  		else	true; \
  		fi; \
  	done
@@ -98,7 +99,7 @@
  	if test -f libpython$(VERSION)$(SO); then \
  		if test "$(SO)" = .dll; then \
  			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
-@@ -885,8 +899,9 @@
+@@ -894,8 +908,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -110,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -973,7 +988,7 @@
+@@ -982,7 +997,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -119,7 +120,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1020,11 +1035,12 @@
+@@ -1029,11 +1044,12 @@
  	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
  
  clobber: clean
