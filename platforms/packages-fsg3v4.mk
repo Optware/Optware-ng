@@ -15,7 +15,7 @@ BROKEN_PACKAGES = \
 	crosstool-native optware-devel ufsd \
 	\
 	antinat asterisk \
-	asterisk14 asterisk14-chan-capi \
+	asterisk14 asterisk14-chan-capi asterisk16 \
 	busybox \
 	chillispot \
 	dhcp \
