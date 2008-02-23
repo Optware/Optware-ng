@@ -213,7 +213,7 @@ $(GPSD_IPK_DIR)/CONTROL/control:
 $(GPSD_IPK): $(GPSD_BUILD_DIR)/.built
 	rm -rf $(GPSD_IPK_DIR) $(BUILD_DIR)/gpsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GPSD_BUILD_DIR) DESTDIR=$(GPSD_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(GPSD_IPK_DIR)/opt/lib/python2.5/site-packages/*.so
+	-$(STRIP_COMMAND) $(GPSD_IPK_DIR)/opt/lib/python2.5/site-packages/*.so
 	$(MAKE) $(GPSD_IPK_DIR)/CONTROL/control
 	echo $(GPSD_CONFFILES) | sed -e 's/ /\n/g' > $(GPSD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GPSD_IPK_DIR)
