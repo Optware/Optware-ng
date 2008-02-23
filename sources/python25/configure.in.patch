@@ -1,5 +1,5 @@
---- Python-2.5.1c1/configure.in.orig	2007-03-12 03:50:51.000000000 -0700
-+++ Python-2.5.1c1/configure.in	2007-04-10 09:32:32.000000000 -0700
+--- Python-2.5.2c1/configure.in.orig	2008-02-13 11:17:17.000000000 -0800
++++ Python-2.5.2c1/configure.in	2008-02-15 13:34:37.000000000 -0800
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -12,17 +12,17 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -3368,39 +3373,8 @@
- fi
+@@ -3411,43 +3416,8 @@
+ 
  
  AC_MSG_CHECKING(for %zd printf() format support)
 -AC_TRY_RUN([#include <stdio.h>
 -#include <stddef.h>
 -#include <string.h>
 -
--int main()
--{
--    char buffer[256];
+-#ifdef HAVE_SYS_TYPES_H
+-#include <sys/types.h>
+-#endif
 -
 -#ifdef HAVE_SSIZE_T
 -typedef ssize_t Py_ssize_t;
@@ -31,6 +31,10 @@
 -#else
 -typedef int Py_ssize_t;
 -#endif
+-
+-int main()
+-{
+-    char buffer[256];
 -
 -    if(sprintf(buffer, "%zd", (size_t)123) < 0)
 -       	return 1;
@@ -49,12 +53,12 @@
 -[AC_MSG_RESULT(yes)
 - AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])],
 - AC_MSG_RESULT(no))
-+AC_MSG_RESULT(yes)
++ AC_MSG_RESULT(yes)
 + AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3430,6 +3404,25 @@
+@@ -3477,6 +3447,25 @@
  done
  AC_MSG_RESULT(done)
  
