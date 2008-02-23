@@ -159,6 +159,13 @@ gpsd-unpack: $(GPSD_BUILD_DIR)/.configured
 #
 $(GPSD_BUILD_DIR)/.built: $(GPSD_BUILD_DIR)/.configured
 	rm -f $@
+ifneq (, $(filter openwrt-brcm24, $(OPTWARE_TARGET)))
+# work around an -O2 bug of mipsel gcc 3.4.6 by lowering to -O1 on that file alone
+	$(MAKE) -C $(@D) navcom.lo \
+	CPPFLAGS="`sed -n -e '/^CPPFLAGS/{s/CPPFLAGS *=//;s/-O2/-O1/;p}' $(@D)/Makefile`" \
+	CFLAGS="`sed -n -e '/^CFLAGS/{s/CFLAGS *=//;s/-O2/-O1/;p}' $(@D)/Makefile`" \
+	;
+endif
 	$(MAKE) -C $(@D) \
 	PYTHON_ENV='$(TARGET_CONFIGURE_OPTS) LDSHARED="$(TARGET_CC) -shared" CPPFLAGS="$(STAGING_CPPFLAGS)"' \
 	PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5
