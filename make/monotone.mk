@@ -21,7 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MONOTONE_SITE=http://venge.net/monotone/downloads
+MONOTONE_SITE=http://venge.net/monotone/downloads/$(MONOTONE_XVERSION)/
+MONOTONE_XVERSION=0.25
 MONOTONE_VERSION=0.25.2
 MONOTONE_SOURCE=monotone-$(MONOTONE_VERSION).tar.gz
 MONOTONE_DIR=monotone-$(MONOTONE_VERSION)
