@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TZ_SITE=ftp://elsie.nci.nih.gov/pub
-TZ_VERSION=2007j
+TZ_VERSION=2007k
 TZ_CODE_SOURCE=tzcode$(TZ_VERSION).tar.gz
 TZ_DATA_SOURCE=tzdata$(TZ_VERSION).tar.gz
 TZ_DIR=tz-$(TZ_VERSION)
@@ -78,12 +78,12 @@ TZ_IPK=$(BUILD_DIR)/tz_$(TZ_VERSION)-$(TZ_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TZ_CODE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TZ_SITE)/$(TZ_CODE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TZ_CODE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TZ_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(TZ_DATA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TZ_SITE)/$(TZ_DATA_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TZ_DATA_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TZ_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
@@ -111,7 +111,7 @@ tz-source: $(DL_DIR)/$(TZ_CODE_SOURCE) $(DL_DIR)/$(TZ_DATA_SOURCE) $(TZ_PATCHES)
 #
 $(TZ_BUILD_DIR)/.configured: $(DL_DIR)/$(TZ_CODE_SOURCE) $(DL_DIR)/$(TZ_DATA_SOURCE) $(TZ_PATCHES) make/tz.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(TZ_DIR) $(TZ_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(TZ_DIR) $(@D)
 	mkdir -p $(BUILD_DIR)/$(TZ_DIR)
 	$(TZ_UNZIP) $(DL_DIR)/$(TZ_CODE_SOURCE) | tar -C $(BUILD_DIR)/$(TZ_DIR) -xvf -
 	$(TZ_UNZIP) $(DL_DIR)/$(TZ_DATA_SOURCE) | tar -C $(BUILD_DIR)/$(TZ_DIR) -xvf -
@@ -119,12 +119,12 @@ $(TZ_BUILD_DIR)/.configured: $(DL_DIR)/$(TZ_CODE_SOURCE) $(DL_DIR)/$(TZ_DATA_SOU
 		then cat $(TZ_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TZ_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(TZ_DIR)" != "$(TZ_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(TZ_DIR) $(TZ_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(TZ_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TZ_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|-l $$(LOCALTIME) ||' \
 	       -e '/^TZDIR/s|/etc/|/share/|' \
-		$(TZ_BUILD_DIR)/Makefile
+		$(@D)/Makefile
 #	(cd $(TZ_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TZ_CPPFLAGS)" \
@@ -146,7 +146,7 @@ tz-unpack: $(TZ_BUILD_DIR)/.configured
 #
 $(TZ_BUILD_DIR)/.built: $(TZ_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(TZ_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TZ_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TZ_LDFLAGS)" \
@@ -166,7 +166,7 @@ tz: $(TZ_BUILD_DIR)/.built
 #
 $(TZ_BUILD_DIR)/.staged: $(TZ_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(TZ_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 tz-stage: $(TZ_BUILD_DIR)/.staged
