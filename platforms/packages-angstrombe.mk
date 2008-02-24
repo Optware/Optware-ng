@@ -13,5 +13,5 @@ BROKEN_PACKAGES = \
 	ipac-ng iptables iptraf ivorbis-tools \
 	ldconfig libcapi20 madplay microcom monotone mt-daapd \
 	netatalk nfs-utils nget \
-	phoneme-advanced player puppy py-soappy \
+	phoneme-advanced player puppy \
 	qemu slrn spandsp squeak vte xchat 
