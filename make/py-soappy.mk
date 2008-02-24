@@ -33,13 +33,13 @@ PY-SOAPPY_PRIORITY=optional
 PY-SOAPPY_DEPENDS=python, py-xml
 PY-SOAPPY_CONFLICTS=
 
-PY-SOAPPY_FPCONST_SITE=http://mac.warnes.net/~warnes/files
+PY-SOAPPY_FPCONST_SITE=http://pypi.python.org/packages/source/f/fpconst
 PY-SOAPPY_FPCONST_DIR=fpconst-0.7.2
 PY-SOAPPY_FPCONST_SOURCE=$(PY-SOAPPY_FPCONST_DIR).tar.gz
 #
 # PY-SOAPPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SOAPPY_IPK_VERSION=2
+PY-SOAPPY_IPK_VERSION=3
 
 #
 # PY-SOAPPY_CONFFILES should be a list of user-editable files
