@@ -6,16 +6,12 @@
 #
 # $Id$
 #
-#
 # I have placed my name as maintainer so that people can ask
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-# TODO:
-#	Search a sollution for popt.
-#
 GPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto
-GPHOTO2_VERSION=2.3.1
+GPHOTO2_VERSION=2.4.0
 GPHOTO2_SOURCE=gphoto2-$(GPHOTO2_VERSION).tar.bz2
 GPHOTO2_DIR=gphoto2-$(GPHOTO2_VERSION)
 GPHOTO2_UNZIP=bzcat
