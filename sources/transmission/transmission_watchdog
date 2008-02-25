@@ -311,14 +311,14 @@ HEARTBEAT=0
 # We will check all torrents for running state
 for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding ; do
     if [ -f "${TORRENT}" ]; then
-    	TOTAL_ACTIVE=$((TOTAL_ACTIVE+1))
+    	TOTAL_ACTIVE=$((${TOTAL_ACTIVE}+1))
         if [ -f "${WORK}/${TORRENT#${WORK}}" ]; then 
 	    _check_if_complete
     	    if [ -f "${TORRENT%/*}/.bypass" ] ; then
-		BYPASS=$((BYPASS+1))
+		BYPASS=$((${BYPASS}+1))
 	    else
 	    	if [ -f "${TORRENT%.seeding}" ] ; then
-		    HEARTBEAT=$((HEARTBEAT+1))
+		    HEARTBEAT=$((${HEARTBEAT}+1))
 		fi
 	    fi
 	fi # work
