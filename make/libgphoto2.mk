@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 LIBGPHOTO2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gphoto
-LIBGPHOTO2_VERSION=2.3.1
+LIBGPHOTO2_VERSION=2.4.0
 LIBGPHOTO2_SOURCE=libgphoto2-$(LIBGPHOTO2_VERSION).tar.bz2
 LIBGPHOTO2_DIR=libgphoto2-$(LIBGPHOTO2_VERSION)
 LIBGPHOTO2_UNZIP=bzcat
@@ -36,8 +36,12 @@ LIBGPHOTO2_IPK_VERSION=1
 # LIBGPHOTO2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBGPHOTO2_PATCHES=$(LIBGPHOTO2_SOURCE_DIR)/Makefile_am_in.patch \
-	$(LIBGPHOTO2_SOURCE_DIR)/packaging-generic.patch
+LIBGPHOTO2_PATCHES=
+#
+# Version 2.3.1
+#
+#LIBGPHOTO2_PATCHES=$(LIBGPHOTO2_SOURCE_DIR)/Makefile_am_in.patch \
+#	$(LIBGPHOTO2_SOURCE_DIR)/packaging-generic.patch
 
 #
 # If the compilation of the package requires additional
