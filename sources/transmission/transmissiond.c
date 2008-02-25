@@ -13,7 +13,7 @@
  * TODO: 
  *  config file 
  *
- * Copyright (c) 2005-2007 Transmission authors and contributors
+ * Copyright (c) 2005-2008 Transmission authors and contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -407,6 +407,7 @@ static void flush_queued_messages( void )
   
   while( NULL != list )
     {
+      if (! strstr(list->message, "Tracker hasn't responded yet."))
         if (prev && (strcmp(prev->message, list->message) == 0))
           {
             repeated ++;

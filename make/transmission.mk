@@ -25,7 +25,7 @@
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.05
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=5103
+TRANSMISSION_SVN_REV=5109
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -44,7 +44,7 @@ TRANSMISSION_CONFLICTS=torrent
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=2
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
