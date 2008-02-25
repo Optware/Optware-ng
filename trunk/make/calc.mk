@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALC_SITE=http://www.isthe.com/chongo/src/calc
-CALC_VERSION=2.12.2.2
+CALC_VERSION=2.12.3.0
 CALC_SOURCE=calc-$(CALC_VERSION).tar.bz2
 CALC_DIR=calc-$(CALC_VERSION)
 CALC_UNZIP=bzcat
@@ -76,8 +76,8 @@ CALC_IPK=$(BUILD_DIR)/calc_$(CALC_VERSION)-$(CALC_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CALC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CALC_SITE)/$(CALC_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(CALC_SOURCE)
+	$(WGET) -P $(DL_DIR) $(CALC_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
