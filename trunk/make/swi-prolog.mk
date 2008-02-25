@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SWI-PROLOG_SITE=ftp://gollem.science.uva.nl/SWI-Prolog
-SWI-PROLOG_VERSION=5.6.50
+SWI-PROLOG_VERSION=5.6.51
 SWI-PROLOG_SOURCE=pl-$(SWI-PROLOG_VERSION).tar.gz
 SWI-PROLOG_DIR=pl-$(SWI-PROLOG_VERSION)
 SWI-PROLOG_UNZIP=zcat
@@ -290,8 +290,12 @@ $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) install DESTDIR=$(SWI-PROLOG_IPK_DIR)
 	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/bin/$(SWI-PROLOG_TARGET)/*pl*
 	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages install DESTDIR=$(SWI-PROLOG_IPK_DIR)
-	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/*.so
 	rm $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/lib*.a
+	(cd $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION); \
+		for f in `find . -name '*.so'`; do \
+			chmod +w $$f; $(STRIP_COMMAND) $$f; chmod -w $$f; \
+		done; \
+	)
 	install -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 	install -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
 #	install -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
