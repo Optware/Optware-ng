@@ -50,8 +50,10 @@ PERL_PACKAGES = \
 	perl-app-ack perl-appconfig perl-assp \
 	perl-archive-tar perl-archive-zip \
 	perl-berkeleydb \
+	perl-bit-vector \
 	perl-bsd-resource \
 	perl-business-isbn-data perl-business-isbn \
+	perl-carp-clan \
 	perl-cgi-application \
 	perl-class-accessor perl-class-data-inheritable perl-class-dbi perl-class-trigger \
 	perl-clone \
