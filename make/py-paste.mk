@@ -43,7 +43,7 @@ PY25-PASTE_DEPENDS=python25
 PY-PASTE_SUGGESTS=
 PY-PASTE_CONFLICTS=
 
-PY-PASTE_IPK_VERSION=1
+PY-PASTE_IPK_VERSION=2
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
@@ -74,8 +74,8 @@ PY-PASTE_LDFLAGS=
 PY-PASTE_BUILD_DIR=$(BUILD_DIR)/py-paste
 PY-PASTE_SOURCE_DIR=$(SOURCE_DIR)/py-paste
 
-PY24-PASTE_IPK_DIR=$(BUILD_DIR)/py-paste-$(PY-PASTE_VERSION)-ipk
-PY24-PASTE_IPK=$(BUILD_DIR)/py-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PASTE_IPK_DIR=$(BUILD_DIR)/py24-paste-$(PY-PASTE_VERSION)-ipk
+PY24-PASTE_IPK=$(BUILD_DIR)/py24-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PASTE_IPK_DIR=$(BUILD_DIR)/py25-paste-$(PY-PASTE_VERSION)-ipk
 PY25-PASTE_IPK=$(BUILD_DIR)/py25-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -88,7 +88,8 @@ PY25-PASTE_IPK=$(BUILD_DIR)/py25-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSIO
 #
 ifeq ($(PY-PASTE_SVN_REV),)
 $(DL_DIR)/$(PY-PASTE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PASTE_SITE)/$(PY-PASTE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-PASTE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -149,7 +150,7 @@ endif
 	(cd $(PY-PASTE_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-PASTE_BUILD_DIR)/.configured
+	touch $@
 
 py-paste-unpack: $(PY-PASTE_BUILD_DIR)/.configured
 
@@ -157,14 +158,14 @@ py-paste-unpack: $(PY-PASTE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PASTE_BUILD_DIR)/.built: $(PY-PASTE_BUILD_DIR)/.configured
-	rm -f $(PY-PASTE_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-PASTE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-PASTE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-PASTE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -175,9 +176,9 @@ py-paste: $(PY-PASTE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PASTE_BUILD_DIR)/.staged: $(PY-PASTE_BUILD_DIR)/.built
-	rm -f $(PY-PASTE_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-PASTE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PASTE_BUILD_DIR)/.staged
+#	touch $@
 
 py-paste-stage: $(PY-PASTE_BUILD_DIR)/.staged
 
@@ -188,7 +189,7 @@ py-paste-stage: $(PY-PASTE_BUILD_DIR)/.staged
 $(PY24-PASTE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-paste" >>$@
+	@echo "Package: py24-paste" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PASTE_PRIORITY)" >>$@
 	@echo "Section: $(PY-PASTE_SECTION)" >>$@
@@ -226,7 +227,8 @@ $(PY25-PASTE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
-	rm -rf $(PY24-PASTE_IPK_DIR) $(BUILD_DIR)/py-paste_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-paste_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PASTE_IPK_DIR) $(BUILD_DIR)/py24-paste_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

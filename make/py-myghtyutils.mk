@@ -68,8 +68,8 @@ PY-MYGHTYUTILS_LDFLAGS=
 PY-MYGHTYUTILS_BUILD_DIR=$(BUILD_DIR)/py-myghtyutils
 PY-MYGHTYUTILS_SOURCE_DIR=$(SOURCE_DIR)/py-myghtyutils
 
-PY24-MYGHTYUTILS_IPK_DIR=$(BUILD_DIR)/py-myghtyutils-$(PY-MYGHTYUTILS_VERSION)-ipk
-PY24-MYGHTYUTILS_IPK=$(BUILD_DIR)/py-myghtyutils_$(PY-MYGHTYUTILS_VERSION)-$(PY-MYGHTYUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MYGHTYUTILS_IPK_DIR=$(BUILD_DIR)/py24-myghtyutils-$(PY-MYGHTYUTILS_VERSION)-ipk
+PY24-MYGHTYUTILS_IPK=$(BUILD_DIR)/py24-myghtyutils_$(PY-MYGHTYUTILS_VERSION)-$(PY-MYGHTYUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MYGHTYUTILS_IPK_DIR=$(BUILD_DIR)/py25-myghtyutils-$(PY-MYGHTYUTILS_VERSION)-ipk
 PY25-MYGHTYUTILS_IPK=$(BUILD_DIR)/py25-myghtyutils_$(PY-MYGHTYUTILS_VERSION)-$(PY-MYGHTYUTILS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -163,7 +163,7 @@ py-myghtyutils-stage: $(PY-MYGHTYUTILS_BUILD_DIR)/.staged
 $(PY24-MYGHTYUTILS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-myghtyutils" >>$@
+	@echo "Package: py24-myghtyutils" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MYGHTYUTILS_PRIORITY)" >>$@
 	@echo "Section: $(PY-MYGHTYUTILS_SECTION)" >>$@
@@ -201,7 +201,8 @@ $(PY25-MYGHTYUTILS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-MYGHTYUTILS_IPK): $(PY-MYGHTYUTILS_BUILD_DIR)/.built
-	rm -rf $(PY24-MYGHTYUTILS_IPK_DIR) $(BUILD_DIR)/py-myghtyutils_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-myghtyutils_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MYGHTYUTILS_IPK_DIR) $(BUILD_DIR)/py24-myghtyutils_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MYGHTYUTILS_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

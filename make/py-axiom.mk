@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-AXIOM_VERSION=0.5.20
+PY-AXIOM_VERSION=0.5.27
 PY-AXIOM_SOURCE=Axiom-$(PY-AXIOM_VERSION).tar.gz
 PY-AXIOM_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-AXIOM_SOURCE)?format=raw
 PY-AXIOM_DIR=Axiom-$(PY-AXIOM_VERSION)
@@ -30,7 +30,7 @@ PY-AXIOM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-AXIOM_DESCRIPTION=An object database or object-relational mapper.
 PY-AXIOM_SECTION=misc
 PY-AXIOM_PRIORITY=optional
-PY24-AXIOM_DEPENDS=python24, py-sqlite, py-epsilon
+PY24-AXIOM_DEPENDS=python24, py24-epsilon, py24-sqlite
 PY25-AXIOM_DEPENDS=python25, py25-epsilon
 PY-AXIOM_CONFLICTS=
 
@@ -68,8 +68,8 @@ PY-AXIOM_LDFLAGS=
 PY-AXIOM_BUILD_DIR=$(BUILD_DIR)/py-axiom
 PY-AXIOM_SOURCE_DIR=$(SOURCE_DIR)/py-axiom
 
-PY24-AXIOM_IPK_DIR=$(BUILD_DIR)/py-axiom-$(PY-AXIOM_VERSION)-ipk
-PY24-AXIOM_IPK=$(BUILD_DIR)/py-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-AXIOM_IPK_DIR=$(BUILD_DIR)/py24-axiom-$(PY-AXIOM_VERSION)-ipk
+PY24-AXIOM_IPK=$(BUILD_DIR)/py24-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-AXIOM_IPK_DIR=$(BUILD_DIR)/py25-axiom-$(PY-AXIOM_VERSION)-ipk
 PY25-AXIOM_IPK=$(BUILD_DIR)/py25-axiom_$(PY-AXIOM_VERSION)-$(PY-AXIOM_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -174,7 +174,7 @@ py-axiom-stage: $(PY-AXIOM_BUILD_DIR)/.staged
 $(PY24-AXIOM_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-axiom" >>$@
+	@echo "Package: py24-axiom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-AXIOM_PRIORITY)" >>$@
 	@echo "Section: $(PY-AXIOM_SECTION)" >>$@
@@ -212,7 +212,8 @@ $(PY25-AXIOM_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-AXIOM_IPK): $(PY-AXIOM_BUILD_DIR)/.built
-	rm -rf $(PY24-AXIOM_IPK_DIR) $(BUILD_DIR)/py-axiom_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-axiom_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-AXIOM_IPK_DIR) $(BUILD_DIR)/py24-axiom_*_$(TARGET_ARCH).ipk
 	(cd $(PY-AXIOM_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

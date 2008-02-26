@@ -68,8 +68,8 @@ PY-YENC_LDFLAGS=
 PY-YENC_BUILD_DIR=$(BUILD_DIR)/py-yenc
 PY-YENC_SOURCE_DIR=$(SOURCE_DIR)/py-yenc
 
-PY24-YENC_IPK_DIR=$(BUILD_DIR)/py-yenc-$(PY-YENC_VERSION)-ipk
-PY24-YENC_IPK=$(BUILD_DIR)/py-yenc_$(PY-YENC_VERSION)-$(PY-YENC_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-YENC_IPK_DIR=$(BUILD_DIR)/py24-yenc-$(PY-YENC_VERSION)-ipk
+PY24-YENC_IPK=$(BUILD_DIR)/py24-yenc_$(PY-YENC_VERSION)-$(PY-YENC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-YENC_IPK_DIR=$(BUILD_DIR)/py25-yenc-$(PY-YENC_VERSION)-ipk
 PY25-YENC_IPK=$(BUILD_DIR)/py25-yenc_$(PY-YENC_VERSION)-$(PY-YENC_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-YENC_IPK=$(BUILD_DIR)/py25-yenc_$(PY-YENC_VERSION)-$(PY-YENC_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-YENC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-YENC_SITE)/$(PY-YENC_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-YENC_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -180,7 +181,7 @@ py-yenc-stage: $(PY-YENC_BUILD_DIR)/.staged
 $(PY24-YENC_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-yenc" >>$@
+	@echo "Package: py24-yenc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-YENC_PRIORITY)" >>$@
 	@echo "Section: $(PY-YENC_SECTION)" >>$@
@@ -218,7 +219,8 @@ $(PY25-YENC_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-YENC_IPK): $(PY-YENC_BUILD_DIR)/.built
-	rm -rf $(PY24-YENC_IPK_DIR) $(BUILD_DIR)/py-yenc_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-yenc_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-YENC_IPK_DIR) $(BUILD_DIR)/py24-yenc_*_$(TARGET_ARCH).ipk
 	cd $(PY-YENC_BUILD_DIR)/2.4; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-YENC_IPK_DIR) --prefix=/opt

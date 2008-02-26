@@ -30,14 +30,14 @@ PY-BAZAAR-NG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BAZAAR-NG_DESCRIPTION=A decentralized revision control system designed to be easy for developers and end users alike.
 PY-BAZAAR-NG_SECTION=misc
 PY-BAZAAR-NG_PRIORITY=optional
-PY24-BAZAAR-NG_DEPENDS=python24, py-celementtree
+PY24-BAZAAR-NG_DEPENDS=python24, py24-celementtree
 PY25-BAZAAR-NG_DEPENDS=python25, py25-celementtree
 PY-BAZAAR-NG_CONFLICTS=
 
 #
 # PY-BAZAAR-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-BAZAAR-NG_IPK_VERSION=1
+PY-BAZAAR-NG_IPK_VERSION=2
 
 #
 # PY-BAZAAR-NG_CONFFILES should be a list of user-editable files

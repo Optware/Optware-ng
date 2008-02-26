@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLITE_VERSION=2.3.5
-PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.3/$(PY-SQLITE_VERSION)
+PY-SQLITE_VERSION=2.4.1
+PY-SQLITE_SITE=http://initd.org/pub/software/pysqlite/releases/2.4/$(PY-SQLITE_VERSION)
 PY-SQLITE_SOURCE=pysqlite-$(PY-SQLITE_VERSION).tar.gz
 PY-SQLITE_DIR=pysqlite-$(PY-SQLITE_VERSION)
 PY-SQLITE_UNZIP=zcat
@@ -30,7 +30,7 @@ PY-SQLITE_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 PY-SQLITE_DESCRIPTION=pysqlite is an interface to the SQLite database server for Python. It aims to be fully compliant with Python database API version 2.0 while also exploiting the unique features of SQLite.
 PY-SQLITE_SECTION=misc
 PY-SQLITE_PRIORITY=optional
-PY-SQLITE_DEPENDS=python, sqlite
+PY-SQLITE_DEPENDS=python24, sqlite
 PY-SQLITE_CONFLICTS=
 
 #
@@ -66,15 +66,16 @@ PY-SQLITE_LDFLAGS=
 #
 PY-SQLITE_BUILD_DIR=$(BUILD_DIR)/py-sqlite
 PY-SQLITE_SOURCE_DIR=$(SOURCE_DIR)/py-sqlite
-PY-SQLITE_IPK_DIR=$(BUILD_DIR)/py-sqlite-$(PY-SQLITE_VERSION)-ipk
-PY-SQLITE_IPK=$(BUILD_DIR)/py-sqlite_$(PY-SQLITE_VERSION)-$(PY-SQLITE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-SQLITE_IPK_DIR=$(BUILD_DIR)/py24-sqlite-$(PY-SQLITE_VERSION)-ipk
+PY-SQLITE_IPK=$(BUILD_DIR)/py24-sqlite_$(PY-SQLITE_VERSION)-$(PY-SQLITE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SQLITE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SQLITE_SITE)/$(PY-SQLITE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SQLITE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -100,11 +101,11 @@ py-sqlite-source: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PATCHES)
 #
 $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PATCHES)
 	$(MAKE) py-setuptools-stage sqlite-stage
-	rm -rf $(BUILD_DIR)/$(PY-SQLITE_DIR) $(PY-SQLITE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-SQLITE_DIR) $(@D)
 	$(PY-SQLITE_UNZIP) $(DL_DIR)/$(PY-SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SQLITE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SQLITE_DIR) $(PY-SQLITE_BUILD_DIR)
-	(cd $(PY-SQLITE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-SQLITE_DIR) $(@D)
+	(cd $(@D); \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -115,7 +116,7 @@ $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PA
 		echo "executable=/opt/bin/python" \
 	    ) > setup.cfg; \
 	)
-	touch $(PY-SQLITE_BUILD_DIR)/.configured
+	touch $@
 
 py-sqlite-unpack: $(PY-SQLITE_BUILD_DIR)/.configured
 
@@ -123,13 +124,13 @@ py-sqlite-unpack: $(PY-SQLITE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SQLITE_BUILD_DIR)/.built: $(PY-SQLITE_BUILD_DIR)/.configured
-	rm -f $(PY-SQLITE_BUILD_DIR)/.built
-	(cd $(PY-SQLITE_BUILD_DIR); \
+	rm -f $@
+	(cd $(@D); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build; \
 	)
-	touch $(PY-SQLITE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -140,9 +141,9 @@ py-sqlite: $(PY-SQLITE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SQLITE_BUILD_DIR)/.staged: $(PY-SQLITE_BUILD_DIR)/.built
-	rm -f $(PY-SQLITE_BUILD_DIR)/.staged
+	rm -f $@
 #	$(MAKE) -C $(PY-SQLITE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SQLITE_BUILD_DIR)/.staged
+	touch $@
 
 py-sqlite-stage: $(PY-SQLITE_BUILD_DIR)/.staged
 
@@ -151,9 +152,9 @@ py-sqlite-stage: $(PY-SQLITE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/py-sqlite
 #
 $(PY-SQLITE_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-SQLITE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-sqlite" >>$@
+	@echo "Package: py24-sqlite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SQLITE_PRIORITY)" >>$@
 	@echo "Section: $(PY-SQLITE_SECTION)" >>$@
@@ -177,7 +178,8 @@ $(PY-SQLITE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY-SQLITE_IPK): $(PY-SQLITE_BUILD_DIR)/.built
-	rm -rf $(PY-SQLITE_IPK_DIR) $(BUILD_DIR)/py-sqlite_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-sqlite_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-SQLITE_IPK_DIR) $(BUILD_DIR)/py24-sqlite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLITE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \

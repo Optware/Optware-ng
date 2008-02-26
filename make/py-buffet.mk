@@ -30,7 +30,8 @@ PY-BUFFET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BUFFET_DESCRIPTION=A universal templating system for CherryPy.
 PY-BUFFET_SECTION=misc
 PY-BUFFET_PRIORITY=optional
-PY-BUFFET_DEPENDS=python, py-cherrypy
+PY24-BUFFET_DEPENDS=python24, py24-cherrypy
+PY25-BUFFET_DEPENDS=python25, py25-cherrypy
 PY-BUFFET_CONFLICTS=
 
 #
@@ -66,15 +67,20 @@ PY-BUFFET_LDFLAGS=
 #
 PY-BUFFET_BUILD_DIR=$(BUILD_DIR)/py-buffet
 PY-BUFFET_SOURCE_DIR=$(SOURCE_DIR)/py-buffet
-PY-BUFFET_IPK_DIR=$(BUILD_DIR)/py-buffet-$(PY-BUFFET_VERSION)-ipk
-PY-BUFFET_IPK=$(BUILD_DIR)/py-buffet_$(PY-BUFFET_VERSION)-$(PY-BUFFET_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY24-BUFFET_IPK_DIR=$(BUILD_DIR)/py24-buffet-$(PY-BUFFET_VERSION)-ipk
+PY24-BUFFET_IPK=$(BUILD_DIR)/py24-buffet_$(PY-BUFFET_VERSION)-$(PY-BUFFET_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY25-BUFFET_IPK_DIR=$(BUILD_DIR)/py25-buffet-$(PY-BUFFET_VERSION)-ipk
+PY25-BUFFET_IPK=$(BUILD_DIR)/py25-buffet_$(PY-BUFFET_VERSION)-$(PY-BUFFET_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-BUFFET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-BUFFET_SITE)/$(PY-BUFFET_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-BUFFET_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,7 +114,7 @@ $(PY-BUFFET_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BUFFET_SOURCE) $(PY-BUFFET_PA
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python") >> setup.cfg \
 	)
-	touch $(PY-BUFFET_BUILD_DIR)/.configured
+	touch $@
 
 py-buffet-unpack: $(PY-BUFFET_BUILD_DIR)/.configured
 
@@ -116,12 +122,12 @@ py-buffet-unpack: $(PY-BUFFET_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-BUFFET_BUILD_DIR)/.built: $(PY-BUFFET_BUILD_DIR)/.configured
-	rm -f $(PY-BUFFET_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-BUFFET_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	python2.4 setup.py build)
 #	$(MAKE) -C $(PY-BUFFET_BUILD_DIR)
-	touch $(PY-BUFFET_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -132,9 +138,9 @@ py-buffet: $(PY-BUFFET_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-BUFFET_BUILD_DIR)/.staged: $(PY-BUFFET_BUILD_DIR)/.built
-	rm -f $(PY-BUFFET_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-BUFFET_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-BUFFET_BUILD_DIR)/.staged
+#	touch $@
 
 py-buffet-stage: $(PY-BUFFET_BUILD_DIR)/.staged
 
@@ -142,8 +148,8 @@ py-buffet-stage: $(PY-BUFFET_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-buffet
 #
-$(PY-BUFFET_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-BUFFET_IPK_DIR)/CONTROL
+$(PY24-BUFFET_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: py-buffet" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -194,3 +200,9 @@ py-buffet-clean:
 #
 py-buffet-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-BUFFET_DIR) $(PY-BUFFET_BUILD_DIR) $(PY-BUFFET_IPK_DIR) $(PY-BUFFET_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-buffet-check: $(PY-BUFFET_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY-BUFFET_IPK)

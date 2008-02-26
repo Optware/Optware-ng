@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-ZOPE-INTERFACE_VERSION=3.3.0.1
+PY-ZOPE-INTERFACE_VERSION=3.4.1
 PY-ZOPE-INTERFACE_SITE=http://cheeseshop.python.org/packages/source/z/zope.interface
 PY-ZOPE-INTERFACE_SOURCE=zope.interface-$(PY-ZOPE-INTERFACE_VERSION).tar.gz
 PY-ZOPE-INTERFACE_DIR=zope.interface-$(PY-ZOPE-INTERFACE_VERSION)
@@ -68,8 +68,8 @@ PY-ZOPE-INTERFACE_LDFLAGS=
 PY-ZOPE-INTERFACE_BUILD_DIR=$(BUILD_DIR)/py-zope-interface
 PY-ZOPE-INTERFACE_SOURCE_DIR=$(SOURCE_DIR)/py-zope-interface
 
-PY24-ZOPE-INTERFACE_IPK_DIR=$(BUILD_DIR)/py-zope-interface-$(PY-ZOPE-INTERFACE_VERSION)-ipk
-PY24-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py-zope-interface_$(PY-ZOPE-INTERFACE_VERSION)-$(PY-ZOPE-INTERFACE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-ZOPE-INTERFACE_IPK_DIR=$(BUILD_DIR)/py24-zope-interface-$(PY-ZOPE-INTERFACE_VERSION)-ipk
+PY24-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py24-zope-interface_$(PY-ZOPE-INTERFACE_VERSION)-$(PY-ZOPE-INTERFACE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-ZOPE-INTERFACE_IPK_DIR=$(BUILD_DIR)/py25-zope-interface-$(PY-ZOPE-INTERFACE_VERSION)-ipk
 PY25-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py25-zope-interface_$(PY-ZOPE-INTERFACE_VERSION)-$(PY-ZOPE-INTERFACE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-ZOPE-INTERFACE_IPK=$(BUILD_DIR)/py25-zope-interface_$(PY-ZOPE-INTERFACE_VER
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-ZOPE-INTERFACE_SITE)/$(PY-ZOPE-INTERFACE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-ZOPE-INTERFACE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -139,7 +140,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ZOPE-INTERFACE_SOURCE
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured
+	touch $@
 
 py-zope-interface-unpack: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured
 
@@ -147,7 +148,7 @@ py-zope-interface-unpack: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configured
-	rm -f $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.4; \
 	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
@@ -156,7 +157,7 @@ $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.configure
 	CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -167,14 +168,14 @@ py-zope-interface: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
-	rm -f $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
+	rm -f $@
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
-	touch $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
+	touch $@
 
 py-zope-interface-stage: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
 
@@ -185,7 +186,7 @@ py-zope-interface-stage: $(PY-ZOPE-INTERFACE_BUILD_DIR)/.staged
 $(PY24-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-zope-interface" >>$@
+	@echo "Package: py24-zope-interface" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-ZOPE-INTERFACE_PRIORITY)" >>$@
 	@echo "Section: $(PY-ZOPE-INTERFACE_SECTION)" >>$@
@@ -223,7 +224,8 @@ $(PY25-ZOPE-INTERFACE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-ZOPE-INTERFACE_IPK): $(PY-ZOPE-INTERFACE_BUILD_DIR)/.built
-	rm -rf $(PY24-ZOPE-INTERFACE_IPK_DIR) $(BUILD_DIR)/py-zope-interface_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-zope-interface_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-ZOPE-INTERFACE_IPK_DIR) $(BUILD_DIR)/py24-zope-interface_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ZOPE-INTERFACE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-ZOPE-INTERFACE_IPK_DIR) --prefix=/opt)

@@ -37,7 +37,7 @@ PY-SIMPLEJSON_CONFLICTS=
 #
 # PY-SIMPLEJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIMPLEJSON_IPK_VERSION=1
+PY-SIMPLEJSON_IPK_VERSION=2
 
 #
 # PY-SIMPLEJSON_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-SIMPLEJSON_LDFLAGS=
 PY-SIMPLEJSON_BUILD_DIR=$(BUILD_DIR)/py-simplejson
 PY-SIMPLEJSON_SOURCE_DIR=$(SOURCE_DIR)/py-simplejson
 
-PY24-SIMPLEJSON_IPK_DIR=$(BUILD_DIR)/py-simplejson-$(PY-SIMPLEJSON_VERSION)-ipk
-PY24-SIMPLEJSON_IPK=$(BUILD_DIR)/py-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SIMPLEJSON_IPK_DIR=$(BUILD_DIR)/py24-simplejson-$(PY-SIMPLEJSON_VERSION)-ipk
+PY24-SIMPLEJSON_IPK=$(BUILD_DIR)/py24-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SIMPLEJSON_IPK_DIR=$(BUILD_DIR)/py25-simplejson-$(PY-SIMPLEJSON_VERSION)-ipk
 PY25-SIMPLEJSON_IPK=$(BUILD_DIR)/py25-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-SIMPLEJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-SIMPLEJSON_IPK=$(BUILD_DIR)/py25-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-S
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SIMPLEJSON_SITE)/$(PY-SIMPLEJSON_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-SIMPLEJSON_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -139,7 +140,7 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-S
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-SIMPLEJSON_BUILD_DIR)/.configured
+	touch $@
 
 py-simplejson-unpack: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 
@@ -147,7 +148,7 @@ py-simplejson-unpack: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.built: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
-	rm -f $(PY-SIMPLEJSON_BUILD_DIR)/.built
+	rm -f $@
 	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
@@ -156,7 +157,7 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.built: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
-	touch $(PY-SIMPLEJSON_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -167,9 +168,9 @@ py-simplejson: $(PY-SIMPLEJSON_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.staged: $(PY-SIMPLEJSON_BUILD_DIR)/.built
-	rm -f $(PY-SIMPLEJSON_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-SIMPLEJSON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SIMPLEJSON_BUILD_DIR)/.staged
+#	touch $@
 
 py-simplejson-stage: $(PY-SIMPLEJSON_BUILD_DIR)/.staged
 
@@ -180,7 +181,7 @@ py-simplejson-stage: $(PY-SIMPLEJSON_BUILD_DIR)/.staged
 $(PY24-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-simplejson" >>$@
+	@echo "Package: py24-simplejson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SIMPLEJSON_PRIORITY)" >>$@
 	@echo "Section: $(PY-SIMPLEJSON_SECTION)" >>$@
@@ -218,7 +219,8 @@ $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
-	rm -rf $(PY24-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py-simplejson_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-simplejson_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-SIMPLEJSON_IPK_DIR) $(BUILD_DIR)/py24-simplejson_*_$(TARGET_ARCH).ipk
 	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

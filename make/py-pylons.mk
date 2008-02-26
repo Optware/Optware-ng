@@ -33,18 +33,18 @@ PY-PYLONS_PRIORITY=optional
 PY-PYLONS_CONFLICTS=
 
 PY24-PYLONS_DEPENDS=\
-	py-beaker (>=0.7.5), \
-	py-decorator (>=2.1.0),
-	py-formencode (>=0.7),
-	py-mako (>=0.1.8), \
-	py-myghty (>=1.1), \
-	py-nose (>=0.9.3), \
-	py-paste (>=1.4), \
-	py-pastedeploy (>=1.3.1), \
-	py-pastescript (>=1.3.6), \
-	py-routes (>=1.7), \
-	py-simplejson (>=1.7.1), \
-	py-webhelpers (>=0.3.2)
+	py24-beaker (>=0.7.5), \
+	py24-decorator (>=2.1.0),
+	py24-formencode (>=0.7),
+	py24-mako (>=0.1.8), \
+	py24-myghty (>=1.1), \
+	py24-nose (>=0.9.3), \
+	py24-paste (>=1.4), \
+	py24-pastedeploy (>=1.3.1), \
+	py24-pastescript (>=1.3.6), \
+	py24-routes (>=1.7), \
+	py24-simplejson (>=1.7.1), \
+	py24-webhelpers (>=0.3.2)
 
 PY25-PYLONS_DEPENDS=\
 	py25-beaker (>=0.7.5), \
@@ -64,7 +64,7 @@ PY25-PYLONS_DEPENDS=\
 #
 # PY-PYLONS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYLONS_IPK_VERSION=1
+PY-PYLONS_IPK_VERSION=2
 
 #
 # PY-PYLONS_CONFFILES should be a list of user-editable files
@@ -95,8 +95,8 @@ PY-PYLONS_LDFLAGS=
 PY-PYLONS_BUILD_DIR=$(BUILD_DIR)/py-pylons
 PY-PYLONS_SOURCE_DIR=$(SOURCE_DIR)/py-pylons
 
-PY24-PYLONS_IPK_DIR=$(BUILD_DIR)/py-pylons-$(PY-PYLONS_VERSION)-ipk
-PY24-PYLONS_IPK=$(BUILD_DIR)/py-pylons_$(PY-PYLONS_VERSION)-$(PY-PYLONS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PYLONS_IPK_DIR=$(BUILD_DIR)/py24-pylons-$(PY-PYLONS_VERSION)-ipk
+PY24-PYLONS_IPK=$(BUILD_DIR)/py24-pylons_$(PY-PYLONS_VERSION)-$(PY-PYLONS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PYLONS_IPK_DIR=$(BUILD_DIR)/py25-pylons-$(PY-PYLONS_VERSION)-ipk
 PY25-PYLONS_IPK=$(BUILD_DIR)/py25-pylons_$(PY-PYLONS_VERSION)-$(PY-PYLONS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -211,7 +211,7 @@ py-pylons-stage: $(PY-PYLONS_BUILD_DIR)/.staged
 $(PY24-PYLONS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-pylons" >>$@
+	@echo "Package: py24-pylons" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PYLONS_PRIORITY)" >>$@
 	@echo "Section: $(PY-PYLONS_SECTION)" >>$@
@@ -249,7 +249,8 @@ $(PY25-PYLONS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PYLONS_IPK): $(PY-PYLONS_BUILD_DIR)/.built
-	rm -rf $(PY24-PYLONS_IPK_DIR) $(BUILD_DIR)/py-pylons_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-pylons_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PYLONS_IPK_DIR) $(BUILD_DIR)/py24-pylons_*_$(TARGET_ARCH).ipk
 	cd $(PY-PYLONS_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

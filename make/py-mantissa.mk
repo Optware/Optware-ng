@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MANTISSA_VERSION=0.6.1
+PY-MANTISSA_VERSION=0.6.16
 PY-MANTISSA_SOURCE=Mantissa-$(PY-MANTISSA_VERSION).tar.gz
 PY-MANTISSA_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-MANTISSA_SOURCE)?format=raw
 PY-MANTISSA_DIR=Mantissa-$(PY-MANTISSA_VERSION)
@@ -30,7 +30,7 @@ PY-MANTISSA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MANTISSA_DESCRIPTION=An extensible, multi-protocol, multi-user, interactive application server built on top of Axiom and Nevow.
 PY-MANTISSA_SECTION=misc
 PY-MANTISSA_PRIORITY=optional
-PY24-MANTISSA_DEPENDS=python24, py-nevow
+PY24-MANTISSA_DEPENDS=python24, py24-nevow
 PY25-MANTISSA_DEPENDS=python25, py25-nevow
 PY-MANTISSA_CONFLICTS=
 
@@ -68,8 +68,8 @@ PY-MANTISSA_LDFLAGS=
 PY-MANTISSA_BUILD_DIR=$(BUILD_DIR)/py-mantissa
 PY-MANTISSA_SOURCE_DIR=$(SOURCE_DIR)/py-mantissa
 
-PY24-MANTISSA_IPK_DIR=$(BUILD_DIR)/py-mantissa-$(PY-MANTISSA_VERSION)-ipk
-PY24-MANTISSA_IPK=$(BUILD_DIR)/py-mantissa_$(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MANTISSA_IPK_DIR=$(BUILD_DIR)/py24-mantissa-$(PY-MANTISSA_VERSION)-ipk
+PY24-MANTISSA_IPK=$(BUILD_DIR)/py24-mantissa_$(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MANTISSA_IPK_DIR=$(BUILD_DIR)/py25-mantissa-$(PY-MANTISSA_VERSION)-ipk
 PY25-MANTISSA_IPK=$(BUILD_DIR)/py25-mantissa_$(PY-MANTISSA_VERSION)-$(PY-MANTISSA_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -174,7 +174,7 @@ py-mantissa-stage: $(PY-MANTISSA_BUILD_DIR)/.staged
 $(PY24-MANTISSA_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-mantissa" >>$@
+	@echo "Package: py24-mantissa" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MANTISSA_PRIORITY)" >>$@
 	@echo "Section: $(PY-MANTISSA_SECTION)" >>$@
@@ -212,7 +212,8 @@ $(PY25-MANTISSA_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-MANTISSA_IPK): $(PY-MANTISSA_BUILD_DIR)/.built
-	rm -rf $(PY24-MANTISSA_IPK_DIR) $(BUILD_DIR)/py-mantissa_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-mantissa_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MANTISSA_IPK_DIR) $(BUILD_DIR)/py24-mantissa_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MANTISSA_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

@@ -25,7 +25,7 @@
 #
 PY-DECORATOR_SITE=http://www.phyast.pitt.edu/~micheles/python
 PY-DECORATOR_VERSION=2.2.0
-PY-DECORATOR_IPK_VERSION=1
+PY-DECORATOR_IPK_VERSION=2
 PY-DECORATOR_SOURCE=decorator-$(PY-DECORATOR_VERSION).zip
 PY-DECORATOR_DIR=decorator-$(PY-DECORATOR_VERSION)
 PY-DECORATOR_UNZIP=unzip
@@ -68,8 +68,8 @@ PY-DECORATOR_LDFLAGS=
 PY-DECORATOR_BUILD_DIR=$(BUILD_DIR)/py-decorator
 PY-DECORATOR_SOURCE_DIR=$(SOURCE_DIR)/py-decorator
 
-PY24-DECORATOR_IPK_DIR=$(BUILD_DIR)/py-decorator-$(PY-DECORATOR_VERSION)-ipk
-PY24-DECORATOR_IPK=$(BUILD_DIR)/py-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECORATOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-DECORATOR_IPK_DIR=$(BUILD_DIR)/py24-decorator-$(PY-DECORATOR_VERSION)-ipk
+PY24-DECORATOR_IPK=$(BUILD_DIR)/py24-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECORATOR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-DECORATOR_IPK_DIR=$(BUILD_DIR)/py25-decorator-$(PY-DECORATOR_VERSION)-ipk
 PY25-DECORATOR_IPK=$(BUILD_DIR)/py25-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECORATOR_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-DECORATOR_IPK=$(BUILD_DIR)/py25-decorator_$(PY-DECORATOR_VERSION)-$(PY-DECO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DECORATOR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-DECORATOR_SITE)/$(PY-DECORATOR_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-DECORATOR_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -165,7 +166,7 @@ py-decorator-stage: $(PY-DECORATOR_BUILD_DIR)/.staged
 $(PY24-DECORATOR_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-decorator" >>$@
+	@echo "Package: py24-decorator" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-DECORATOR_PRIORITY)" >>$@
 	@echo "Section: $(PY-DECORATOR_SECTION)" >>$@
@@ -203,7 +204,8 @@ $(PY25-DECORATOR_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-DECORATOR_IPK): $(PY-DECORATOR_BUILD_DIR)/.built
-	rm -rf $(PY24-DECORATOR_IPK_DIR) $(BUILD_DIR)/py-decorator_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-decorator_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-DECORATOR_IPK_DIR) $(BUILD_DIR)/py24-decorator_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DECORATOR_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

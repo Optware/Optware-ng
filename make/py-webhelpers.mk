@@ -25,7 +25,7 @@
 #
 PY-WEBHELPERS_SITE=http://cheeseshop.python.org/packages/source/W/WebHelpers
 PY-WEBHELPERS_VERSION=0.3.2
-PY-WEBHELPERS_IPK_VERSION=1
+PY-WEBHELPERS_IPK_VERSION=2
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
 PY-WEBHELPERS_UNZIP=zcat
@@ -33,7 +33,7 @@ PY-WEBHELPERS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WEBHELPERS_DESCRIPTION=A library of helper functions intended to make writing templates in web applications easier.
 PY-WEBHELPERS_SECTION=misc
 PY-WEBHELPERS_PRIORITY=optional
-PY24-WEBHELPERS_DEPENDS=python24, py-routes (>=1.7), py-simplejson (>=1.4)
+PY24-WEBHELPERS_DEPENDS=python24, py24-routes (>=1.7), py24-simplejson (>=1.4)
 PY25-WEBHELPERS_DEPENDS=python25, py25-routes (>=1.7), py25-simplejson (>=1.4)
 PY-WEBHELPERS_SUGGESTS=
 PY-WEBHELPERS_CONFLICTS=
@@ -68,8 +68,8 @@ PY-WEBHELPERS_LDFLAGS=
 PY-WEBHELPERS_BUILD_DIR=$(BUILD_DIR)/py-webhelpers
 PY-WEBHELPERS_SOURCE_DIR=$(SOURCE_DIR)/py-webhelpers
 
-PY24-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
-PY24-WEBHELPERS_IPK=$(BUILD_DIR)/py-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py24-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
+PY24-WEBHELPERS_IPK=$(BUILD_DIR)/py24-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-WEBHELPERS_IPK_DIR=$(BUILD_DIR)/py25-webhelpers-$(PY-WEBHELPERS_VERSION)-ipk
 PY25-WEBHELPERS_IPK=$(BUILD_DIR)/py25-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-WEBHELPERS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -163,7 +163,7 @@ py-webhelpers-stage: $(PY-WEBHELPERS_BUILD_DIR)/.staged
 $(PY24-WEBHELPERS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-webhelpers" >>$@
+	@echo "Package: py24-webhelpers" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-WEBHELPERS_PRIORITY)" >>$@
 	@echo "Section: $(PY-WEBHELPERS_SECTION)" >>$@
@@ -201,7 +201,8 @@ $(PY25-WEBHELPERS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-WEBHELPERS_IPK): $(PY-WEBHELPERS_BUILD_DIR)/.built
-	rm -rf $(PY24-WEBHELPERS_IPK_DIR) $(BUILD_DIR)/py-webhelpers_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-webhelpers_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-WEBHELPERS_IPK_DIR) $(BUILD_DIR)/py24-webhelpers_*_$(TARGET_ARCH).ipk
 	(cd $(PY-WEBHELPERS_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

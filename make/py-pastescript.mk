@@ -26,7 +26,7 @@
 PY-PASTESCRIPT_SITE=http://cheeseshop.python.org/packages/source/P/PasteScript
 PY-PASTESCRIPT_VERSION=1.6.1.1
 #PY-PASTESCRIPT_SVN_REV=
-PY-PASTESCRIPT_IPK_VERSION=1
+PY-PASTESCRIPT_IPK_VERSION=2
 #ifneq ($(PY-PASTESCRIPT_SVN_REV),)
 #PY-PASTESCRIPT_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-PASTESCRIPT_xxx_VERSION:=$(PY-PASTESCRIPT_VERSION)dev_r$(PY-PASTESCRIPT_SVN_REV)
@@ -39,7 +39,7 @@ PY-PASTESCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTESCRIPT_DESCRIPTION=A pluggable command-line frontend, including commands to setup package file layouts.
 PY-PASTESCRIPT_SECTION=misc
 PY-PASTESCRIPT_PRIORITY=optional
-PY24-PASTESCRIPT_DEPENDS=python24, py-cheetah, py-paste, py-pastedeploy
+PY24-PASTESCRIPT_DEPENDS=python24, py24-cheetah, py24-paste, py24-pastedeploy
 PY25-PASTESCRIPT_DEPENDS=python25, py25-cheetah, py25-paste, py25-pastedeploy
 PY-PASTESCRIPT_SUGGESTS=
 PY-PASTESCRIPT_CONFLICTS=
@@ -73,8 +73,8 @@ PY-PASTESCRIPT_LDFLAGS=
 PY-PASTESCRIPT_BUILD_DIR=$(BUILD_DIR)/py-pastescript
 PY-PASTESCRIPT_SOURCE_DIR=$(SOURCE_DIR)/py-pastescript
 
-PY24-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
-PY24-PASTESCRIPT_IPK=$(BUILD_DIR)/py-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py24-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
+PY24-PASTESCRIPT_IPK=$(BUILD_DIR)/py24-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PASTESCRIPT_IPK_DIR=$(BUILD_DIR)/py25-pastescript-$(PY-PASTESCRIPT_VERSION)-ipk
 PY25-PASTESCRIPT_IPK=$(BUILD_DIR)/py25-pastescript_$(PY-PASTESCRIPT_VERSION)-$(PY-PASTESCRIPT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -87,7 +87,8 @@ PY25-PASTESCRIPT_IPK=$(BUILD_DIR)/py25-pastescript_$(PY-PASTESCRIPT_VERSION)-$(P
 #
 ifeq ($(PY-PASTESCRIPT_SVN_REV),)
 $(DL_DIR)/$(PY-PASTESCRIPT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PASTESCRIPT_SITE)/$(PY-PASTESCRIPT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-PASTESCRIPT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -148,7 +149,7 @@ endif
 	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-PASTESCRIPT_BUILD_DIR)/.configured
+	touch $@
 
 py-pastescript-unpack: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 
@@ -156,14 +157,14 @@ py-pastescript-unpack: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.built: $(PY-PASTESCRIPT_BUILD_DIR)/.configured
-	rm -f $(PY-PASTESCRIPT_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-PASTESCRIPT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -174,9 +175,9 @@ py-pastescript: $(PY-PASTESCRIPT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PASTESCRIPT_BUILD_DIR)/.staged: $(PY-PASTESCRIPT_BUILD_DIR)/.built
-	rm -f $(PY-PASTESCRIPT_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-PASTESCRIPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PASTESCRIPT_BUILD_DIR)/.staged
+#	touch $@
 
 py-pastescript-stage: $(PY-PASTESCRIPT_BUILD_DIR)/.staged
 
@@ -187,7 +188,7 @@ py-pastescript-stage: $(PY-PASTESCRIPT_BUILD_DIR)/.staged
 $(PY24-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-pastescript" >>$@
+	@echo "Package: py24-pastescript" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PASTESCRIPT_PRIORITY)" >>$@
 	@echo "Section: $(PY-PASTESCRIPT_SECTION)" >>$@
@@ -225,7 +226,8 @@ $(PY25-PASTESCRIPT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PASTESCRIPT_IPK): $(PY-PASTESCRIPT_BUILD_DIR)/.built
-	rm -rf $(PY24-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py-pastescript_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-pastescript_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PASTESCRIPT_IPK_DIR) $(BUILD_DIR)/py24-pastescript_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTESCRIPT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

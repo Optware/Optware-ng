@@ -37,7 +37,7 @@ PY-ELEMENTTREE_CONFLICTS=
 #
 # PY-ELEMENTTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ELEMENTTREE_IPK_VERSION=4
+PY-ELEMENTTREE_IPK_VERSION=5
 
 #
 # PY-ELEMENTTREE_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-ELEMENTTREE_LDFLAGS=
 PY-ELEMENTTREE_BUILD_DIR=$(BUILD_DIR)/py-elementtree
 PY-ELEMENTTREE_SOURCE_DIR=$(SOURCE_DIR)/py-elementtree
 
-PY24-ELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py-elementtree-$(PY-ELEMENTTREE_VERSION)-ipk
-PY24-ELEMENTTREE_IPK=$(BUILD_DIR)/py-elementtree_$(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-ELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py24-elementtree-$(PY-ELEMENTTREE_VERSION)-ipk
+PY24-ELEMENTTREE_IPK=$(BUILD_DIR)/py24-elementtree_$(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-ELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py25-elementtree-$(PY-ELEMENTTREE_VERSION)-ipk
 PY25-ELEMENTTREE_IPK=$(BUILD_DIR)/py25-elementtree_$(PY-ELEMENTTREE_VERSION)-$(PY-ELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -164,7 +164,7 @@ py-elementtree-stage: $(PY-ELEMENTTREE_BUILD_DIR)/.staged
 $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-elementtree" >>$@
+	@echo "Package: py24-elementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-ELEMENTTREE_PRIORITY)" >>$@
 	@echo "Section: $(PY-ELEMENTTREE_SECTION)" >>$@
@@ -202,7 +202,8 @@ $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
-	rm -rf $(PY24-ELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py-elementtree_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-elementtree_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-ELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py24-elementtree_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \

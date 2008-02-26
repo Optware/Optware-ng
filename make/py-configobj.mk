@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CONFIGOBJ_SITE=http://www.voidspace.org.uk/cgi-bin/voidspace/downman.py?file=
-PY-CONFIGOBJ_VERSION=4.5.1
+PY-CONFIGOBJ_VERSION=4.5.2
 PY-CONFIGOBJ_SOURCE=configobj-$(PY-CONFIGOBJ_VERSION).zip
 PY-CONFIGOBJ_DIR=configobj-$(PY-CONFIGOBJ_VERSION)
 PY-CONFIGOBJ_UNZIP=unzip
@@ -68,8 +68,8 @@ PY-CONFIGOBJ_LDFLAGS=
 PY-CONFIGOBJ_BUILD_DIR=$(BUILD_DIR)/py-configobj
 PY-CONFIGOBJ_SOURCE_DIR=$(SOURCE_DIR)/py-configobj
 
-PY24-CONFIGOBJ_IPK_DIR=$(BUILD_DIR)/py-configobj-$(PY-CONFIGOBJ_VERSION)-ipk
-PY24-CONFIGOBJ_IPK=$(BUILD_DIR)/py-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOBJ_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-CONFIGOBJ_IPK_DIR=$(BUILD_DIR)/py24-configobj-$(PY-CONFIGOBJ_VERSION)-ipk
+PY24-CONFIGOBJ_IPK=$(BUILD_DIR)/py24-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOBJ_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-CONFIGOBJ_IPK_DIR=$(BUILD_DIR)/py25-configobj-$(PY-CONFIGOBJ_VERSION)-ipk
 PY25-CONFIGOBJ_IPK=$(BUILD_DIR)/py25-configobj_$(PY-CONFIGOBJ_VERSION)-$(PY-CONFIGOBJ_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -128,7 +128,7 @@ $(PY-CONFIGOBJ_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CONFIGOBJ_SOURCE) $(PY-CON
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-CONFIGOBJ_BUILD_DIR)/.configured
+	touch $@
 
 py-configobj-unpack: $(PY-CONFIGOBJ_BUILD_DIR)/.configured
 
@@ -136,14 +136,14 @@ py-configobj-unpack: $(PY-CONFIGOBJ_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-CONFIGOBJ_BUILD_DIR)/.built: $(PY-CONFIGOBJ_BUILD_DIR)/.configured
-	rm -f $(PY-CONFIGOBJ_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
 	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
-	touch $(PY-CONFIGOBJ_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,9 +154,9 @@ py-configobj: $(PY-CONFIGOBJ_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-CONFIGOBJ_BUILD_DIR)/.staged: $(PY-CONFIGOBJ_BUILD_DIR)/.built
-	rm -f $(PY-CONFIGOBJ_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-CONFIGOBJ_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-CONFIGOBJ_BUILD_DIR)/.staged
+#	touch $@
 
 py-configobj-stage: $(PY-CONFIGOBJ_BUILD_DIR)/.staged
 
@@ -167,7 +167,7 @@ py-configobj-stage: $(PY-CONFIGOBJ_BUILD_DIR)/.staged
 $(PY24-CONFIGOBJ_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-configobj" >>$@
+	@echo "Package: py24-configobj" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-CONFIGOBJ_PRIORITY)" >>$@
 	@echo "Section: $(PY-CONFIGOBJ_SECTION)" >>$@
@@ -205,7 +205,8 @@ $(PY25-CONFIGOBJ_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-CONFIGOBJ_IPK): $(PY-CONFIGOBJ_BUILD_DIR)/.built
-	rm -rf $(PY24-CONFIGOBJ_IPK_DIR) $(BUILD_DIR)/py-configobj_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-configobj_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-CONFIGOBJ_IPK_DIR) $(BUILD_DIR)/py24-configobj_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CONFIGOBJ_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \

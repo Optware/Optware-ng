@@ -29,16 +29,16 @@ HELLANZB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HELLANZB_DESCRIPTION=Hellanzb is a Python application designed for *nix environments that retrieves nzb files and fully processes them
 HELLANZB_SECTION=net
 HELLANZB_PRIORITY=optional
-HELLANZB_PY24_DEPENDS=python24, py-twisted, py-yenc, par2cmdline, unrar
+HELLANZB_PY24_DEPENDS=python24, py24-twisted, py24-yenc, par2cmdline, unrar
 HELLANZB_PY25_DEPENDS=python25, py25-twisted, py25-yenc, par2cmdline, unrar
 HELLANZB_SUGGESTS=
 HELLANZB_PY24_CONFLICTS=py25-hellanzb
-HELLANZB_PY25_CONFLICTS=py-hellanzb
+HELLANZB_PY25_CONFLICTS=py24-hellanzb
 
 #
 # HELLANZB_IPK_VERSION should be incremented when the ipk changes.
 #
-HELLANZB_IPK_VERSION=1
+HELLANZB_IPK_VERSION=2
 
 #
 # HELLANZB_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ HELLANZB_LDFLAGS=
 #
 HELLANZB_BUILD_DIR=$(BUILD_DIR)/hellanzb
 HELLANZB_SOURCE_DIR=$(SOURCE_DIR)/hellanzb
-PY24-HELLANZB_IPK_DIR=$(BUILD_DIR)/py-hellanzb-$(HELLANZB_VERSION)-ipk
-PY24-HELLANZB_IPK=$(BUILD_DIR)/py-hellanzb_$(HELLANZB_VERSION)-$(HELLANZB_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-HELLANZB_IPK_DIR=$(BUILD_DIR)/py24-hellanzb-$(HELLANZB_VERSION)-ipk
+PY24-HELLANZB_IPK=$(BUILD_DIR)/py24-hellanzb_$(HELLANZB_VERSION)-$(HELLANZB_IPK_VERSION)_$(TARGET_ARCH).ipk
 PY25-HELLANZB_IPK_DIR=$(BUILD_DIR)/py25-hellanzb-$(HELLANZB_VERSION)-ipk
 PY25-HELLANZB_IPK=$(BUILD_DIR)/py25-hellanzb_$(HELLANZB_VERSION)-$(HELLANZB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -80,8 +80,8 @@ PY25-HELLANZB_IPK=$(BUILD_DIR)/py25-hellanzb_$(HELLANZB_VERSION)-$(HELLANZB_IPK_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HELLANZB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HELLANZB_SITE)/$(HELLANZB_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(HELLANZB_SOURCE)
+	$(WGET) -P $(DL_DIR) $(HELLANZB_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -183,7 +183,7 @@ hellanzb-stage: $(HELLANZB_BUILD_DIR)/.staged
 $(PY24-HELLANZB_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-hellanzb" >>$@
+	@echo "Package: py24-hellanzb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(HELLANZB_PRIORITY)" >>$@
 	@echo "Section: $(HELLANZB_SECTION)" >>$@
@@ -223,7 +223,8 @@ $(PY25-HELLANZB_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-HELLANZB_IPK): $(HELLANZB_BUILD_DIR)/.built
-	rm -rf $(PY24-HELLANZB_IPK_DIR) $(BUILD_DIR)/py-hellanzb_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-hellanzb_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-HELLANZB_IPK_DIR) $(BUILD_DIR)/py24-hellanzb_*_$(TARGET_ARCH).ipk
 	cd $(HELLANZB_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-HELLANZB_IPK_DIR) --prefix=/opt 

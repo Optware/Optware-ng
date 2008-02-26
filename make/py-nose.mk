@@ -37,7 +37,7 @@ PY-NOSE_CONFLICTS=
 #
 # PY-NOSE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NOSE_IPK_VERSION=1
+PY-NOSE_IPK_VERSION=2
 
 #
 # PY-NOSE_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-NOSE_LDFLAGS=
 PY-NOSE_BUILD_DIR=$(BUILD_DIR)/py-nose
 PY-NOSE_SOURCE_DIR=$(SOURCE_DIR)/py-nose
 
-PY24-NOSE_IPK_DIR=$(BUILD_DIR)/py-nose-$(PY-NOSE_VERSION)-ipk
-PY24-NOSE_IPK=$(BUILD_DIR)/py-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-NOSE_IPK_DIR=$(BUILD_DIR)/py24-nose-$(PY-NOSE_VERSION)-ipk
+PY24-NOSE_IPK=$(BUILD_DIR)/py24-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-NOSE_IPK_DIR=$(BUILD_DIR)/py25-nose-$(PY-NOSE_VERSION)-ipk
 PY25-NOSE_IPK=$(BUILD_DIR)/py25-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -79,7 +79,8 @@ PY25-NOSE_IPK=$(BUILD_DIR)/py25-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-NOSE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-NOSE_SITE)/$(PY-NOSE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-NOSE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: py-nose-source py-nose-unpack py-nose py-nose-stage py-nose-ipk py-nose-clean py-nose-dirclean py-nose-check
 
@@ -127,7 +128,7 @@ $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-NOSE_BUILD_DIR)/.configured
+	touch $@
 
 py-nose-unpack: $(PY-NOSE_BUILD_DIR)/.configured
 
@@ -135,7 +136,7 @@ py-nose-unpack: $(PY-NOSE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-NOSE_BUILD_DIR)/.built: $(PY-NOSE_BUILD_DIR)/.configured
-	rm -f $(PY-NOSE_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-NOSE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
@@ -143,7 +144,7 @@ $(PY-NOSE_BUILD_DIR)/.built: $(PY-NOSE_BUILD_DIR)/.configured
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 #	$(MAKE) -C $(PY-NOSE_BUILD_DIR)
-	touch $(PY-NOSE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,9 +155,9 @@ py-nose: $(PY-NOSE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-NOSE_BUILD_DIR)/.staged: $(PY-NOSE_BUILD_DIR)/.built
-	rm -f $(PY-NOSE_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-NOSE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-NOSE_BUILD_DIR)/.staged
+#	touch $@
 
 py-nose-stage: $(PY-NOSE_BUILD_DIR)/.staged
 
@@ -167,7 +168,7 @@ py-nose-stage: $(PY-NOSE_BUILD_DIR)/.staged
 $(PY24-NOSE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-nose" >>$@
+	@echo "Package: py24-nose" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-NOSE_PRIORITY)" >>$@
 	@echo "Section: $(PY-NOSE_SECTION)" >>$@
@@ -205,7 +206,8 @@ $(PY25-NOSE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-NOSE_IPK): $(PY-NOSE_BUILD_DIR)/.built
-	rm -rf $(PY24-NOSE_IPK_DIR) $(BUILD_DIR)/py-nose_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-nose_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-NOSE_IPK_DIR) $(BUILD_DIR)/py24-nose_*_$(TARGET_ARCH).ipk
 	(cd $(PY-NOSE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-NOSE_IPK_DIR) --prefix=/opt)

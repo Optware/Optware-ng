@@ -37,7 +37,7 @@ PY-DECORATORTOOLS_CONFLICTS=
 #
 # PY-DECORATORTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DECORATORTOOLS_IPK_VERSION=1
+PY-DECORATORTOOLS_IPK_VERSION=2
 
 #
 # PY-DECORATORTOOLS_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-DECORATORTOOLS_LDFLAGS=
 PY-DECORATORTOOLS_BUILD_DIR=$(BUILD_DIR)/py-decoratortools
 PY-DECORATORTOOLS_SOURCE_DIR=$(SOURCE_DIR)/py-decoratortools
 
-PY24-DECORATORTOOLS_IPK_DIR=$(BUILD_DIR)/py-decoratortools-$(PY-DECORATORTOOLS_VERSION)-ipk
-PY24-DECORATORTOOLS_IPK=$(BUILD_DIR)/py-decoratortools_$(PY-DECORATORTOOLS_VERSION)-$(PY-DECORATORTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-DECORATORTOOLS_IPK_DIR=$(BUILD_DIR)/py24-decoratortools-$(PY-DECORATORTOOLS_VERSION)-ipk
+PY24-DECORATORTOOLS_IPK=$(BUILD_DIR)/py24-decoratortools_$(PY-DECORATORTOOLS_VERSION)-$(PY-DECORATORTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-DECORATORTOOLS_IPK_DIR=$(BUILD_DIR)/py25-decoratortools-$(PY-DECORATORTOOLS_VERSION)-ipk
 PY25-DECORATORTOOLS_IPK=$(BUILD_DIR)/py25-decoratortools_$(PY-DECORATORTOOLS_VERSION)-$(PY-DECORATORTOOLS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -167,7 +167,7 @@ py-decoratortools-stage: $(PY-DECORATORTOOLS_BUILD_DIR)/.staged
 $(PY24-DECORATORTOOLS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-decoratortools" >>$@
+	@echo "Package: py24-decoratortools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-DECORATORTOOLS_PRIORITY)" >>$@
 	@echo "Section: $(PY-DECORATORTOOLS_SECTION)" >>$@
@@ -205,7 +205,8 @@ $(PY25-DECORATORTOOLS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-DECORATORTOOLS_IPK): $(PY-DECORATORTOOLS_BUILD_DIR)/.built
-	rm -rf $(PY24-DECORATORTOOLS_IPK_DIR) $(BUILD_DIR)/py-decoratortools_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-decoratortools_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-DECORATORTOOLS_IPK_DIR) $(BUILD_DIR)/py24-decoratortools_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DECORATORTOOLS_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

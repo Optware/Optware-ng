@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-NEVOW_VERSION=0.9.18
+PY-NEVOW_VERSION=0.9.29
 PY-NEVOW_SOURCE=Nevow-$(PY-NEVOW_VERSION).tar.gz
 PY-NEVOW_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-NEVOW_SOURCE)?format=raw
 PY-NEVOW_DIR=Nevow-$(PY-NEVOW_VERSION)
@@ -68,8 +68,8 @@ PY-NEVOW_LDFLAGS=
 PY-NEVOW_BUILD_DIR=$(BUILD_DIR)/py-nevow
 PY-NEVOW_SOURCE_DIR=$(SOURCE_DIR)/py-nevow
 
-PY24-NEVOW_IPK_DIR=$(BUILD_DIR)/py-nevow-$(PY-NEVOW_VERSION)-ipk
-PY24-NEVOW_IPK=$(BUILD_DIR)/py-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-NEVOW_IPK_DIR=$(BUILD_DIR)/py24-nevow-$(PY-NEVOW_VERSION)-ipk
+PY24-NEVOW_IPK=$(BUILD_DIR)/py24-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-NEVOW_IPK_DIR=$(BUILD_DIR)/py25-nevow-$(PY-NEVOW_VERSION)-ipk
 PY25-NEVOW_IPK=$(BUILD_DIR)/py25-nevow_$(PY-NEVOW_VERSION)-$(PY-NEVOW_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -174,7 +174,7 @@ py-nevow-stage: $(PY-NEVOW_BUILD_DIR)/.staged
 $(PY24-NEVOW_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-nevow" >>$@
+	@echo "Package: py24-nevow" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-NEVOW_PRIORITY)" >>$@
 	@echo "Section: $(PY-NEVOW_SECTION)" >>$@
@@ -212,7 +212,8 @@ $(PY25-NEVOW_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-NEVOW_IPK): $(PY-NEVOW_BUILD_DIR)/.built
-	rm -rf $(PY24-NEVOW_IPK_DIR) $(BUILD_DIR)/py-nevow_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-nevow_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-NEVOW_IPK_DIR) $(BUILD_DIR)/py24-nevow_*_$(TARGET_ARCH).ipk
 	(cd $(PY-NEVOW_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

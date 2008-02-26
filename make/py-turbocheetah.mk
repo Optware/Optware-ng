@@ -32,14 +32,14 @@ PY-TURBOCHEETAH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOCHEETAH_DESCRIPTION=Python template plugin that supports use of Cheetah templates.
 PY-TURBOCHEETAH_SECTION=misc
 PY-TURBOCHEETAH_PRIORITY=optional
-PY24-TURBOCHEETAH_DEPENDS=python24, py-cheetah
+PY24-TURBOCHEETAH_DEPENDS=python24, py24-cheetah
 PY25-TURBOCHEETAH_DEPENDS=python25, py25-cheetah
 PY-TURBOCHEETAH_CONFLICTS=
 
 #
 # PY-TURBOCHEETAH_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOCHEETAH_IPK_VERSION=1
+PY-TURBOCHEETAH_IPK_VERSION=2
 
 #
 # PY-TURBOCHEETAH_CONFFILES should be a list of user-editable files
@@ -70,8 +70,8 @@ PY-TURBOCHEETAH_LDFLAGS=
 PY-TURBOCHEETAH_BUILD_DIR=$(BUILD_DIR)/py-turbocheetah
 PY-TURBOCHEETAH_SOURCE_DIR=$(SOURCE_DIR)/py-turbocheetah
 
-PY24-TURBOCHEETAH_IPK_DIR=$(BUILD_DIR)/py-turbocheetah-$(PY-TURBOCHEETAH_VERSION)-ipk
-PY24-TURBOCHEETAH_IPK=$(BUILD_DIR)/py-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-TURBOCHEETAH_IPK_DIR=$(BUILD_DIR)/py24-turbocheetah-$(PY-TURBOCHEETAH_VERSION)-ipk
+PY24-TURBOCHEETAH_IPK=$(BUILD_DIR)/py24-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-TURBOCHEETAH_IPK_DIR=$(BUILD_DIR)/py25-turbocheetah-$(PY-TURBOCHEETAH_VERSION)-ipk
 PY25-TURBOCHEETAH_IPK=$(BUILD_DIR)/py25-turbocheetah_$(PY-TURBOCHEETAH_VERSION)-$(PY-TURBOCHEETAH_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -182,7 +182,7 @@ py-turbocheetah-stage: $(PY-TURBOCHEETAH_BUILD_DIR)/.staged
 $(PY24-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-turbocheetah" >>$@
+	@echo "Package: py24-turbocheetah" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TURBOCHEETAH_PRIORITY)" >>$@
 	@echo "Section: $(PY-TURBOCHEETAH_SECTION)" >>$@
@@ -220,7 +220,8 @@ $(PY25-TURBOCHEETAH_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-TURBOCHEETAH_IPK): $(PY-TURBOCHEETAH_BUILD_DIR)/.built
-	rm -rf $(PY24-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py-turbocheetah_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-turbocheetah_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TURBOCHEETAH_IPK_DIR) $(BUILD_DIR)/py24-turbocheetah_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOCHEETAH_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

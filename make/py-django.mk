@@ -37,7 +37,7 @@ PY-DJANGO_CONFLICTS=
 #
 # PY-DJANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DJANGO_IPK_VERSION=1
+PY-DJANGO_IPK_VERSION=2
 
 #
 # PY-DJANGO_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-DJANGO_LDFLAGS=
 PY-DJANGO_BUILD_DIR=$(BUILD_DIR)/py-django
 PY-DJANGO_SOURCE_DIR=$(SOURCE_DIR)/py-django
 
-PY24-DJANGO_IPK_DIR=$(BUILD_DIR)/py-django-$(PY-DJANGO_VERSION)-ipk
-PY24-DJANGO_IPK=$(BUILD_DIR)/py-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-DJANGO_IPK_DIR=$(BUILD_DIR)/py24-django-$(PY-DJANGO_VERSION)-ipk
+PY24-DJANGO_IPK=$(BUILD_DIR)/py24-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-DJANGO_IPK_DIR=$(BUILD_DIR)/py25-django-$(PY-DJANGO_VERSION)-ipk
 PY25-DJANGO_IPK=$(BUILD_DIR)/py25-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-DJANGO_IPK=$(BUILD_DIR)/py25-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DJANGO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-DJANGO_SITE)
+	$(WGET) -P $(DL_DIR) $(PY-DJANGO_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -131,7 +132,7 @@ $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(PY-DJANGO_PA
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-DJANGO_BUILD_DIR)/.configured
+	touch $@
 
 py-django-unpack: $(PY-DJANGO_BUILD_DIR)/.configured
 
@@ -139,14 +140,14 @@ py-django-unpack: $(PY-DJANGO_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-DJANGO_BUILD_DIR)/.built: $(PY-DJANGO_BUILD_DIR)/.configured
-	rm -f $(PY-DJANGO_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-DJANGO_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -157,9 +158,9 @@ py-django: $(PY-DJANGO_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-DJANGO_BUILD_DIR)/.staged: $(PY-DJANGO_BUILD_DIR)/.built
-	rm -f $(PY-DJANGO_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-DJANGO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-DJANGO_BUILD_DIR)/.staged
+#	touch $@
 
 py-django-stage: $(PY-DJANGO_BUILD_DIR)/.staged
 
@@ -170,7 +171,7 @@ py-django-stage: $(PY-DJANGO_BUILD_DIR)/.staged
 $(PY24-DJANGO_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-django" >>$@
+	@echo "Package: py24-django" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-DJANGO_PRIORITY)" >>$@
 	@echo "Section: $(PY-DJANGO_SECTION)" >>$@
@@ -208,7 +209,8 @@ $(PY25-DJANGO_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
-	rm -rf $(PY24-DJANGO_IPK_DIR) $(BUILD_DIR)/py-django_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-django_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-DJANGO_IPK_DIR) $(BUILD_DIR)/py24-django_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DJANGO_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-DJANGO_IPK_DIR) --prefix=/opt)

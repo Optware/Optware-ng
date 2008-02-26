@@ -30,14 +30,14 @@ PY-MYGHTY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MYGHTY_DESCRIPTION=A Python based web and templating framework.
 PY-MYGHTY_SECTION=misc
 PY-MYGHTY_PRIORITY=optional
-PY24-MYGHTY_DEPENDS=py-paste, py-pastedeploy, py-pastescript, py-routes
+PY24-MYGHTY_DEPENDS=py24-paste, py24-pastedeploy, py24-pastescript, py24-routes
 PY25-MYGHTY_DEPENDS=py25-paste, py25-pastedeploy, py25-pastescript, py25-routes
 PY-MYGHTY_CONFLICTS=
 
 #
 # PY-MYGHTY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYGHTY_IPK_VERSION=2
+PY-MYGHTY_IPK_VERSION=3
 
 #
 # PY-MYGHTY_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-MYGHTY_LDFLAGS=
 PY-MYGHTY_BUILD_DIR=$(BUILD_DIR)/py-myghty
 PY-MYGHTY_SOURCE_DIR=$(SOURCE_DIR)/py-myghty
 
-PY24-MYGHTY_IPK_DIR=$(BUILD_DIR)/py-myghty-$(PY-MYGHTY_VERSION)-ipk
-PY24-MYGHTY_IPK=$(BUILD_DIR)/py-myghty_$(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MYGHTY_IPK_DIR=$(BUILD_DIR)/py24-myghty-$(PY-MYGHTY_VERSION)-ipk
+PY24-MYGHTY_IPK=$(BUILD_DIR)/py24-myghty_$(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MYGHTY_IPK_DIR=$(BUILD_DIR)/py25-myghty-$(PY-MYGHTY_VERSION)-ipk
 PY25-MYGHTY_IPK=$(BUILD_DIR)/py25-myghty_$(PY-MYGHTY_VERSION)-$(PY-MYGHTY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -166,7 +166,7 @@ py-myghty-stage: $(PY-MYGHTY_BUILD_DIR)/.staged
 $(PY24-MYGHTY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-myghty" >>$@
+	@echo "Package: py24-myghty" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MYGHTY_PRIORITY)" >>$@
 	@echo "Section: $(PY-MYGHTY_SECTION)" >>$@
@@ -204,7 +204,8 @@ $(PY25-MYGHTY_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-MYGHTY_IPK): $(PY-MYGHTY_BUILD_DIR)/.built
-	rm -rf $(PY24-MYGHTY_IPK_DIR) $(BUILD_DIR)/py-myghty_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-myghty_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MYGHTY_IPK_DIR) $(BUILD_DIR)/py24-myghty_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MYGHTY_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

@@ -26,7 +26,7 @@
 PY-PASTEDEPLOY_SITE=http://cheeseshop.python.org/packages/source/P/PasteDeploy
 PY-PASTEDEPLOY_VERSION=1.3.1
 #PY-PASTEDEPLOY_SVN_REV=
-PY-PASTEDEPLOY_IPK_VERSION=1
+PY-PASTEDEPLOY_IPK_VERSION=2
 #ifneq ($(PY-PASTEDEPLOY_SVN_REV),)
 #PY-PASTEDEPLOY_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-PASTEDEPLOY_xxx_VERSION:=$(PY-PASTEDEPLOY_VERSION)dev_r$(PY-PASTEDEPLOY_SVN_REV)
@@ -74,8 +74,8 @@ PY-PASTEDEPLOY_LDFLAGS=
 PY-PASTEDEPLOY_BUILD_DIR=$(BUILD_DIR)/py-pastedeploy
 PY-PASTEDEPLOY_SOURCE_DIR=$(SOURCE_DIR)/py-pastedeploy
 
-PY24-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
-PY24-PASTEDEPLOY_IPK=$(BUILD_DIR)/py-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py24-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
+PY24-PASTEDEPLOY_IPK=$(BUILD_DIR)/py24-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PASTEDEPLOY_IPK_DIR=$(BUILD_DIR)/py25-pastedeploy-$(PY-PASTEDEPLOY_VERSION)-ipk
 PY25-PASTEDEPLOY_IPK=$(BUILD_DIR)/py25-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(PY-PASTEDEPLOY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -88,7 +88,8 @@ PY25-PASTEDEPLOY_IPK=$(BUILD_DIR)/py25-pastedeploy_$(PY-PASTEDEPLOY_VERSION)-$(P
 #
 ifeq ($(PY-PASTEDEPLOY_SVN_REV),)
 $(DL_DIR)/$(PY-PASTEDEPLOY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PASTEDEPLOY_SITE)/$(PY-PASTEDEPLOY_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-PASTEDEPLOY_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -149,7 +150,7 @@ endif
 	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
+	touch $@
 
 py-pastedeploy-unpack: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 
@@ -157,14 +158,14 @@ py-pastedeploy-unpack: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PASTEDEPLOY_BUILD_DIR)/.built: $(PY-PASTEDEPLOY_BUILD_DIR)/.configured
-	rm -f $(PY-PASTEDEPLOY_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-PASTEDEPLOY_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -175,9 +176,9 @@ py-pastedeploy: $(PY-PASTEDEPLOY_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PASTEDEPLOY_BUILD_DIR)/.staged: $(PY-PASTEDEPLOY_BUILD_DIR)/.built
-	rm -f $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-PASTEDEPLOY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
+#	touch $@
 
 py-pastedeploy-stage: $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
 
@@ -188,7 +189,7 @@ py-pastedeploy-stage: $(PY-PASTEDEPLOY_BUILD_DIR)/.staged
 $(PY24-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-pastedeploy" >>$@
+	@echo "Package: py24-pastedeploy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PASTEDEPLOY_PRIORITY)" >>$@
 	@echo "Section: $(PY-PASTEDEPLOY_SECTION)" >>$@
@@ -226,7 +227,8 @@ $(PY25-PASTEDEPLOY_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PASTEDEPLOY_IPK): $(PY-PASTEDEPLOY_BUILD_DIR)/.built
-	rm -rf $(PY24-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py-pastedeploy_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-pastedeploy_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PASTEDEPLOY_IPK_DIR) $(BUILD_DIR)/py24-pastedeploy_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTEDEPLOY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install\

@@ -30,14 +30,14 @@ PY-PASTEWEBKIT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PASTEWEBKIT_DESCRIPTION=A port/reimplementation of Webware WebKit in WSGI and Paste.
 PY-PASTEWEBKIT_SECTION=misc
 PY-PASTEWEBKIT_PRIORITY=optional
-PY24-PASTEWEBKIT_DEPENDS=python24, py-paste, py-pastedeploy, py-pastescript
+PY24-PASTEWEBKIT_DEPENDS=python24, py24-paste, py24-pastedeploy, py24-pastescript
 PY25-PASTEWEBKIT_DEPENDS=python25, py25-paste, py25-pastedeploy, py25-pastescript
 PY-PASTEWEBKIT_CONFLICTS=
 
 #
 # PY-PASTEWEBKIT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PASTEWEBKIT_IPK_VERSION=2
+PY-PASTEWEBKIT_IPK_VERSION=3
 
 #
 # PY-PASTEWEBKIT_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-PASTEWEBKIT_LDFLAGS=
 PY-PASTEWEBKIT_BUILD_DIR=$(BUILD_DIR)/py-pastewebkit
 PY-PASTEWEBKIT_SOURCE_DIR=$(SOURCE_DIR)/py-pastewebkit
 
-PY24-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
-PY24-PASTEWEBKIT_IPK=$(BUILD_DIR)/py-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py24-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
+PY24-PASTEWEBKIT_IPK=$(BUILD_DIR)/py24-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PASTEWEBKIT_IPK_DIR=$(BUILD_DIR)/py25-pastewebkit-$(PY-PASTEWEBKIT_VERSION)-ipk
 PY25-PASTEWEBKIT_IPK=$(BUILD_DIR)/py25-pastewebkit_$(PY-PASTEWEBKIT_VERSION)-$(PY-PASTEWEBKIT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -139,7 +139,7 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
+	touch $@
 
 py-pastewebkit-unpack: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
 
@@ -147,14 +147,14 @@ py-pastewebkit-unpack: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PASTEWEBKIT_BUILD_DIR)/.built: $(PY-PASTEWEBKIT_BUILD_DIR)/.configured
-	rm -f $(PY-PASTEWEBKIT_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-PASTEWEBKIT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -165,9 +165,9 @@ py-pastewebkit: $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PASTEWEBKIT_BUILD_DIR)/.staged: $(PY-PASTEWEBKIT_BUILD_DIR)/.built
-	rm -f $(PY-PASTEWEBKIT_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-PASTEWEBKIT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PASTEWEBKIT_BUILD_DIR)/.staged
+#	touch $@
 
 py-pastewebkit-stage: $(PY-PASTEWEBKIT_BUILD_DIR)/.staged
 
@@ -178,7 +178,7 @@ py-pastewebkit-stage: $(PY-PASTEWEBKIT_BUILD_DIR)/.staged
 $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-pastewebkit" >>$@
+	@echo "Package: py24-pastewebkit" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PASTEWEBKIT_PRIORITY)" >>$@
 	@echo "Section: $(PY-PASTEWEBKIT_SECTION)" >>$@
@@ -216,7 +216,8 @@ $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
-	rm -rf $(PY24-PASTEWEBKIT_IPK_DIR) $(BUILD_DIR)/py-pastewebkit_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-pastewebkit_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PASTEWEBKIT_IPK_DIR) $(BUILD_DIR)/py24-pastewebkit_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \

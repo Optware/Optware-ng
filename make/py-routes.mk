@@ -25,7 +25,7 @@
 #
 PY-ROUTES_SITE=http://cheeseshop.python.org/packages/source/R/Routes
 PY-ROUTES_VERSION=1.7.1
-PY-ROUTES_IPK_VERSION=1
+PY-ROUTES_IPK_VERSION=2
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
 PY-ROUTES_UNZIP=zcat
@@ -67,8 +67,8 @@ PY-ROUTES_LDFLAGS=
 PY-ROUTES_BUILD_DIR=$(BUILD_DIR)/py-routes
 PY-ROUTES_SOURCE_DIR=$(SOURCE_DIR)/py-routes
 
-PY24-ROUTES_IPK_DIR=$(BUILD_DIR)/py-routes-$(PY-ROUTES_VERSION)-ipk
-PY24-ROUTES_IPK=$(BUILD_DIR)/py-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-ROUTES_IPK_DIR=$(BUILD_DIR)/py24-routes-$(PY-ROUTES_VERSION)-ipk
+PY24-ROUTES_IPK=$(BUILD_DIR)/py24-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-ROUTES_IPK_DIR=$(BUILD_DIR)/py25-routes-$(PY-ROUTES_VERSION)-ipk
 PY25-ROUTES_IPK=$(BUILD_DIR)/py25-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -169,7 +169,7 @@ py-routes-stage: $(PY-ROUTES_BUILD_DIR)/.staged
 $(PY24-ROUTES_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-routes" >>$@
+	@echo "Package: py24-routes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-ROUTES_PRIORITY)" >>$@
 	@echo "Section: $(PY-ROUTES_SECTION)" >>$@
@@ -207,7 +207,8 @@ $(PY25-ROUTES_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-ROUTES_IPK): $(PY-ROUTES_BUILD_DIR)/.built
-	rm -rf $(PY24-ROUTES_IPK_DIR) $(BUILD_DIR)/py-routes_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-routes_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-ROUTES_IPK_DIR) $(BUILD_DIR)/py24-routes_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ROUTES_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install\

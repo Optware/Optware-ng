@@ -26,7 +26,7 @@
 PY-WAREWEB_SITE=http://cheeseshop.python.org/packages/source/W/Wareweb
 PY-WAREWEB_VERSION=0.3
 #PY-WAREWEB_SVN_REV=
-PY-WAREWEB_IPK_VERSION=1
+PY-WAREWEB_IPK_VERSION=2
 #ifneq ($(PY-WAREWEB_SVN_REV),)
 #PY-WAREWEB_SVN=http://svn.pythonpaste.org/Paste/Script/trunk
 #PY-WAREWEB_xxx_VERSION:=$(PY-WAREWEB_VERSION)dev_r$(PY-WAREWEB_SVN_REV)
@@ -39,7 +39,7 @@ PY-WAREWEB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WAREWEB_DESCRIPTION=A web framework, a next generation evolution from Webware/WebKit servlet model.
 PY-WAREWEB_SECTION=misc
 PY-WAREWEB_PRIORITY=optional
-PY-WAREWEB_DEPENDS=python, py-paste, py-pastedeploy, py-pastescript
+PY-WAREWEB_DEPENDS=python24, py24-paste, py24-pastedeploy, py24-pastescript
 PY-WAREWEB_SUGGESTS=
 PY-WAREWEB_CONFLICTS=
 
@@ -72,8 +72,8 @@ PY-WAREWEB_LDFLAGS=
 #
 PY-WAREWEB_BUILD_DIR=$(BUILD_DIR)/py-wareweb
 PY-WAREWEB_SOURCE_DIR=$(SOURCE_DIR)/py-wareweb
-PY-WAREWEB_IPK_DIR=$(BUILD_DIR)/py-wareweb-$(PY-WAREWEB_VERSION)-ipk
-PY-WAREWEB_IPK=$(BUILD_DIR)/py-wareweb_$(PY-WAREWEB_VERSION)-$(PY-WAREWEB_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY-WAREWEB_IPK_DIR=$(BUILD_DIR)/py24-wareweb-$(PY-WAREWEB_VERSION)-ipk
+PY-WAREWEB_IPK=$(BUILD_DIR)/py24-wareweb_$(PY-WAREWEB_VERSION)-$(PY-WAREWEB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -157,7 +157,7 @@ py-wareweb-stage: $(PY-WAREWEB_BUILD_DIR)/.staged
 $(PY-WAREWEB_IPK_DIR)/CONTROL/control:
 	@install -d $(PY-WAREWEB_IPK_DIR)/CONTROL
 	@rm -f $@
-	@echo "Package: py-wareweb" >>$@
+	@echo "Package: py24-wareweb" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-WAREWEB_PRIORITY)" >>$@
 	@echo "Section: $(PY-WAREWEB_SECTION)" >>$@
@@ -181,7 +181,8 @@ $(PY-WAREWEB_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY-WAREWEB_IPK): $(PY-WAREWEB_BUILD_DIR)/.built
-	rm -rf $(PY-WAREWEB_IPK_DIR) $(BUILD_DIR)/py-wareweb_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-wareweb_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY-WAREWEB_IPK_DIR) $(BUILD_DIR)/py24-wareweb_*_$(TARGET_ARCH).ipk
 	(cd $(PY-WAREWEB_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		python2.4 setup.py install\
@@ -207,3 +208,9 @@ py-wareweb-clean:
 #
 py-wareweb-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-WAREWEB_DIR) $(PY-WAREWEB_BUILD_DIR) $(PY-WAREWEB_IPK_DIR) $(PY-WAREWEB_IPK)
+
+#
+# Some sanity check for the package.
+#
+py-wareweb-check: $(PY-WAREWEB_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY-WAREWEB_IPK)

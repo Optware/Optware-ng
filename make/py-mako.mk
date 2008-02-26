@@ -25,7 +25,7 @@
 #
 PY-MAKO_SITE=http://pypi.python.org/packages/source/M/Mako
 PY-MAKO_VERSION=0.1.10
-PY-MAKO_IPK_VERSION=1
+PY-MAKO_IPK_VERSION=2
 PY-MAKO_SOURCE=Mako-$(PY-MAKO_VERSION).tar.gz
 PY-MAKO_DIR=Mako-$(PY-MAKO_VERSION)
 PY-MAKO_UNZIP=zcat
@@ -33,7 +33,7 @@ PY-MAKO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MAKO_DESCRIPTION=Mako is a template library written in Python.
 PY-MAKO_SECTION=misc
 PY-MAKO_PRIORITY=optional
-PY24-MAKO_DEPENDS=python24, py-beaker
+PY24-MAKO_DEPENDS=python24, py24-beaker
 PY25-MAKO_DEPENDS=python25, py25-beaker
 PY-MAKO_SUGGESTS=
 PY-MAKO_CONFLICTS=
@@ -68,8 +68,8 @@ PY-MAKO_LDFLAGS=
 PY-MAKO_BUILD_DIR=$(BUILD_DIR)/py-mako
 PY-MAKO_SOURCE_DIR=$(SOURCE_DIR)/py-mako
 
-PY24-MAKO_IPK_DIR=$(BUILD_DIR)/py-mako-$(PY-MAKO_VERSION)-ipk
-PY24-MAKO_IPK=$(BUILD_DIR)/py-mako_$(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MAKO_IPK_DIR=$(BUILD_DIR)/py24-mako-$(PY-MAKO_VERSION)-ipk
+PY24-MAKO_IPK=$(BUILD_DIR)/py24-mako_$(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MAKO_IPK_DIR=$(BUILD_DIR)/py25-mako-$(PY-MAKO_VERSION)-ipk
 PY25-MAKO_IPK=$(BUILD_DIR)/py25-mako_$(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -163,7 +163,7 @@ py-mako-stage: $(PY-MAKO_BUILD_DIR)/.staged
 $(PY24-MAKO_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-mako" >>$@
+	@echo "Package: py24-mako" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MAKO_PRIORITY)" >>$@
 	@echo "Section: $(PY-MAKO_SECTION)" >>$@
@@ -201,7 +201,8 @@ $(PY25-MAKO_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
-	rm -rf $(PY24-MAKO_IPK_DIR) $(BUILD_DIR)/py-mako_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-mako_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MAKO_IPK_DIR) $(BUILD_DIR)/py24-mako_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MAKO_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
