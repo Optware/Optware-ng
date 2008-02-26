@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SDPARM_SITE=http://sg.torque.net/sg/p
-SDPARM_VERSION=0.99
+SDPARM_VERSION=1.02
 SDPARM_SOURCE=sdparm-$(SDPARM_VERSION).tgz
 SDPARM_DIR=sdparm-$(SDPARM_VERSION)
 SDPARM_UNZIP=zcat
@@ -74,7 +74,8 @@ SDPARM_IPK=$(BUILD_DIR)/sdparm_$(SDPARM_VERSION)-$(SDPARM_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SDPARM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SDPARM_SITE)/$(SDPARM_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SDPARM_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -125,7 +126,7 @@ $(SDPARM_BUILD_DIR)/.configured: $(DL_DIR)/$(SDPARM_SOURCE) $(SDPARM_PATCHES) ma
 		--disable-static \
 	)
 #	$(PATCH_LIBTOOL) $(SDPARM_BUILD_DIR)/libtool
-	touch $(SDPARM_BUILD_DIR)/.configured
+	touch $@
 
 sdparm-unpack: $(SDPARM_BUILD_DIR)/.configured
 
@@ -133,9 +134,9 @@ sdparm-unpack: $(SDPARM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SDPARM_BUILD_DIR)/.built: $(SDPARM_BUILD_DIR)/.configured
-	rm -f $(SDPARM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SDPARM_BUILD_DIR)
-	touch $(SDPARM_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -146,9 +147,9 @@ sdparm: $(SDPARM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SDPARM_BUILD_DIR)/.staged: $(SDPARM_BUILD_DIR)/.built
-	rm -f $(SDPARM_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SDPARM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SDPARM_BUILD_DIR)/.staged
+	touch $@
 
 sdparm-stage: $(SDPARM_BUILD_DIR)/.staged
 
@@ -157,7 +158,7 @@ sdparm-stage: $(SDPARM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sdparm
 #
 $(SDPARM_IPK_DIR)/CONTROL/control:
-	@install -d $(SDPARM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sdparm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -214,3 +215,9 @@ sdparm-clean:
 #
 sdparm-dirclean:
 	rm -rf $(BUILD_DIR)/$(SDPARM_DIR) $(SDPARM_BUILD_DIR) $(SDPARM_IPK_DIR) $(SDPARM_IPK)
+
+#
+# Some sanity check for the package.
+#
+sdparm-check: $(SDPARM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SDPARM_IPK)
