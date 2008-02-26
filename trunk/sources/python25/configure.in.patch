@@ -1,5 +1,5 @@
---- Python-2.5.2c1/configure.in.orig	2008-02-13 11:17:17.000000000 -0800
-+++ Python-2.5.2c1/configure.in	2008-02-15 13:34:37.000000000 -0800
+--- Python-2.5.2/configure.in.orig	2008-02-13 11:17:17.000000000 -0800
++++ Python-2.5.2/configure.in	2008-02-26 09:30:57.000000000 -0800
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -12,6 +12,15 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
+@@ -759,7 +764,7 @@
+ 	    STRICT_PROTO="-Wstrict-prototypes"
+ 	fi
+         # For gcc 4.x we need to use -fwrapv so lets check if its supported
+-        if "$CC" -v --help 2>/dev/null |grep -- -fwrapv > /dev/null; then
++        if "$TARGET_CC" -v --help 2>/dev/null |grep -- -fwrapv > /dev/null; then
+            WRAP="-fwrapv"
+         fi
+ 	case $ac_cv_prog_cc_g in
 @@ -3411,43 +3416,8 @@
  
  
