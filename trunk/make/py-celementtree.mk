@@ -30,14 +30,14 @@ PY-CELEMENTTREE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CELEMENTTREE_DESCRIPTION=A toolkit that contains a number of light-weight components for working with XML (C implementation).
 PY-CELEMENTTREE_SECTION=misc
 PY-CELEMENTTREE_PRIORITY=optional
-PY24-CELEMENTTREE_DEPENDS=python24, py-elementtree
+PY24-CELEMENTTREE_DEPENDS=python24, py24-elementtree
 PY25-CELEMENTTREE_DEPENDS=python25, py25-elementtree
 PY-CELEMENTTREE_CONFLICTS=
 
 #
 # PY-CELEMENTTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CELEMENTTREE_IPK_VERSION=4
+PY-CELEMENTTREE_IPK_VERSION=5
 
 #
 # PY-CELEMENTTREE_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-CELEMENTTREE_LDFLAGS=
 PY-CELEMENTTREE_BUILD_DIR=$(BUILD_DIR)/py-celementtree
 PY-CELEMENTTREE_SOURCE_DIR=$(SOURCE_DIR)/py-celementtree
 
-PY24-CELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py-celementtree-$(PY-CELEMENTTREE_VERSION)-ipk
-PY24-CELEMENTTREE_IPK=$(BUILD_DIR)/py-celementtree_$(PY-CELEMENTTREE_VERSION)-$(PY-CELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-CELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py24-celementtree-$(PY-CELEMENTTREE_VERSION)-ipk
+PY24-CELEMENTTREE_IPK=$(BUILD_DIR)/py24-celementtree_$(PY-CELEMENTTREE_VERSION)-$(PY-CELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-CELEMENTTREE_IPK_DIR=$(BUILD_DIR)/py25-celementtree-$(PY-CELEMENTTREE_VERSION)-ipk
 PY25-CELEMENTTREE_IPK=$(BUILD_DIR)/py25-celementtree_$(PY-CELEMENTTREE_VERSION)-$(PY-CELEMENTTREE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-CELEMENTTREE_IPK=$(BUILD_DIR)/py25-celementtree_$(PY-CELEMENTTREE_VERSION)-
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CELEMENTTREE_SITE)/$(PY-CELEMENTTREE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-CELEMENTTREE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -137,7 +138,7 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
-	touch $(PY-CELEMENTTREE_BUILD_DIR)/.configured
+	touch $@
 
 py-celementtree-unpack: $(PY-CELEMENTTREE_BUILD_DIR)/.configured
 
@@ -145,7 +146,7 @@ py-celementtree-unpack: $(PY-CELEMENTTREE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-CELEMENTTREE_BUILD_DIR)/.built: $(PY-CELEMENTTREE_BUILD_DIR)/.configured
-	rm -f $(PY-CELEMENTTREE_BUILD_DIR)/.built
+	rm -f $@
 #	$(MAKE) -C $(PY-CELEMENTTREE_BUILD_DIR)
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
@@ -155,7 +156,7 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.built: $(PY-CELEMENTTREE_BUILD_DIR)/.configured
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-CELEMENTTREE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -166,9 +167,9 @@ py-celementtree: $(PY-CELEMENTTREE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-CELEMENTTREE_BUILD_DIR)/.staged: $(PY-CELEMENTTREE_BUILD_DIR)/.built
-	rm -f $(PY-CELEMENTTREE_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-CELEMENTTREE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-CELEMENTTREE_BUILD_DIR)/.staged
+#	touch $@
 
 py-celementtree-stage: $(PY-CELEMENTTREE_BUILD_DIR)/.staged
 
@@ -179,7 +180,7 @@ py-celementtree-stage: $(PY-CELEMENTTREE_BUILD_DIR)/.staged
 $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-celementtree" >>$@
+	@echo "Package: py24-celementtree" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-CELEMENTTREE_PRIORITY)" >>$@
 	@echo "Section: $(PY-CELEMENTTREE_SECTION)" >>$@
@@ -217,7 +218,8 @@ $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
-	rm -rf $(PY24-CELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py-celementtree_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-celementtree_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-CELEMENTTREE_IPK_DIR) $(BUILD_DIR)/py24-celementtree_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \

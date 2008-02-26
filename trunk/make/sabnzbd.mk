@@ -29,16 +29,16 @@ SABNZBD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SABNZBD_DESCRIPTION=A web-interface based binary newsgrabber written in python, with nzb file support.
 SABNZBD_SECTION=net
 SABNZBD_PRIORITY=optional
-SABNZBD_PY24_DEPENDS=python24, py-cherrypy, py-cheetah, py-elementtree, py-celementtree, py-yenc
+SABNZBD_PY24_DEPENDS=python24, py24-cherrypy, py24-cheetah, py24-celementtree, py24-yenc
 SABNZBD_PY25_DEPENDS=python25, py25-cherrypy, py25-cheetah, py25-celementtree, py25-yenc
 SABNZBD_SUGGESTS=par2cmdline, unrar, unzip
 SABNZBD_PY24_CONFLICTS=py25-sabnzbd
-SABNZBD_PY25_CONFLICTS=py-sabnzbd
+SABNZBD_PY25_CONFLICTS=py24-sabnzbd
 
 #
 # SABNZBD_IPK_VERSION should be incremented when the ipk changes.
 #
-SABNZBD_IPK_VERSION=1
+SABNZBD_IPK_VERSION=2
 
 #
 # SABNZBD_CONFFILES should be a list of user-editable files
@@ -70,8 +70,8 @@ SABNZBD_LDFLAGS=
 SABNZBD_BUILD_DIR=$(BUILD_DIR)/sabnzbd
 SABNZBD_SOURCE_DIR=$(SOURCE_DIR)/sabnzbd
 
-SABNZBD_PY24_IPK_DIR=$(BUILD_DIR)/py-sabnzbd-$(SABNZBD_VERSION)-ipk
-SABNZBD_PY24_IPK=$(BUILD_DIR)/py-sabnzbd_$(SABNZBD_VERSION)-$(SABNZBD_IPK_VERSION)_$(TARGET_ARCH).ipk
+SABNZBD_PY24_IPK_DIR=$(BUILD_DIR)/py24-sabnzbd-$(SABNZBD_VERSION)-ipk
+SABNZBD_PY24_IPK=$(BUILD_DIR)/py24-sabnzbd_$(SABNZBD_VERSION)-$(SABNZBD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 SABNZBD_PY25_IPK_DIR=$(BUILD_DIR)/py25-sabnzbd-$(SABNZBD_VERSION)-ipk
 SABNZBD_PY25_IPK=$(BUILD_DIR)/py25-sabnzbd_$(SABNZBD_VERSION)-$(SABNZBD_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -83,8 +83,8 @@ SABNZBD_PY25_IPK=$(BUILD_DIR)/py25-sabnzbd_$(SABNZBD_VERSION)-$(SABNZBD_IPK_VERS
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SABNZBD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SABNZBD_SITE)/$(SABNZBD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SABNZBD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(SABNZBD_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -189,7 +189,7 @@ sabnzbd-stage: $(SABNZBD_BUILD_DIR)/.staged
 $(SABNZBD_PY24_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-sabnzbd" >>$@
+	@echo "Package: py24-sabnzbd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(SABNZBD_PRIORITY)" >>$@
 	@echo "Section: $(SABNZBD_SECTION)" >>$@
@@ -228,7 +228,8 @@ $(SABNZBD_PY25_IPK_DIR)/CONTROL/control:
 #
 
 $(SABNZBD_PY24_IPK): $(SABNZBD_BUILD_DIR)/.built
-	rm -rf $(SABNZBD_PY24_IPK_DIR) $(BUILD_DIR)/py-sabnzbd_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-sabnzbd_*_$(TARGET_ARCH).ipk
+	rm -rf $(SABNZBD_PY24_IPK_DIR) $(BUILD_DIR)/py24-sabnzbd_*_$(TARGET_ARCH).ipk
 	cd $(SABNZBD_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \

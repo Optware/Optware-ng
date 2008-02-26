@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CHERRYPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/cherrypy
-PY-CHERRYPY_VERSION=2.2.1
+PY-CHERRYPY_VERSION=2.3.0
+PY-CHERRYPY_SITE=http://download.cherrypy.org/cherrypy/$(PY-CHERRYPY_VERSION)
 PY-CHERRYPY_SOURCE=CherryPy-$(PY-CHERRYPY_VERSION).tar.gz
 PY-CHERRYPY_DIR=CherryPy-$(PY-CHERRYPY_VERSION)
 PY-CHERRYPY_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-CHERRYPY_CONFLICTS=
 #
 # PY-CHERRYPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHERRYPY_IPK_VERSION=3
+PY-CHERRYPY_IPK_VERSION=1
 
 #
 # PY-CHERRYPY_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-CHERRYPY_LDFLAGS=
 PY-CHERRYPY_BUILD_DIR=$(BUILD_DIR)/py-cherrypy
 PY-CHERRYPY_SOURCE_DIR=$(SOURCE_DIR)/py-cherrypy
 
-PY24-CHERRYPY_IPK_DIR=$(BUILD_DIR)/py-cherrypy-$(PY-CHERRYPY_VERSION)-ipk
-PY24-CHERRYPY_IPK=$(BUILD_DIR)/py-cherrypy_$(PY-CHERRYPY_VERSION)-$(PY-CHERRYPY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-CHERRYPY_IPK_DIR=$(BUILD_DIR)/py24-cherrypy-$(PY-CHERRYPY_VERSION)-ipk
+PY24-CHERRYPY_IPK=$(BUILD_DIR)/py24-cherrypy_$(PY-CHERRYPY_VERSION)-$(PY-CHERRYPY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-CHERRYPY_IPK_DIR=$(BUILD_DIR)/py25-cherrypy-$(PY-CHERRYPY_VERSION)-ipk
 PY25-CHERRYPY_IPK=$(BUILD_DIR)/py25-cherrypy_$(PY-CHERRYPY_VERSION)-$(PY-CHERRYPY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -79,7 +79,8 @@ PY25-CHERRYPY_IPK=$(BUILD_DIR)/py25-cherrypy_$(PY-CHERRYPY_VERSION)-$(PY-CHERRYP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CHERRYPY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CHERRYPY_SITE)/$(PY-CHERRYPY_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-CHERRYPY_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,15 +110,15 @@ $(PY-CHERRYPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYPY_SOURCE) $(PY-CHERR
 	mkdir -p $(PY-CHERRYPY_BUILD_DIR)
 	$(PY-CHERRYPY_UNZIP) $(DL_DIR)/$(PY-CHERRYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHERRYPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(PY-CHERRYPY_BUILD_DIR)/2.4
-	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") > setup.cfg \
 	)
 	$(PY-CHERRYPY_UNZIP) $(DL_DIR)/$(PY-CHERRYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHERRYPY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(PY-CHERRYPY_BUILD_DIR)/2.5
-	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
@@ -130,10 +131,10 @@ py-cherrypy-unpack: $(PY-CHERRYPY_BUILD_DIR)/.configured
 #
 $(PY-CHERRYPY_BUILD_DIR)/.built: $(PY-CHERRYPY_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
-	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
 	touch $@
@@ -148,11 +149,11 @@ py-cherrypy: $(PY-CHERRYPY_BUILD_DIR)/.built
 #
 $(PY-CHERRYPY_BUILD_DIR)/.staged: $(PY-CHERRYPY_BUILD_DIR)/.built
 	rm -f $@
-	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
 	    install --root=$(STAGING_DIR) --prefix=/opt)
-	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
 	    install --root=$(STAGING_DIR) --prefix=/opt)
@@ -167,7 +168,7 @@ py-cherrypy-stage: $(PY-CHERRYPY_BUILD_DIR)/.staged
 $(PY24-CHERRYPY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-cherrypy" >>$@
+	@echo "Package: py24-cherrypy" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-CHERRYPY_PRIORITY)" >>$@
 	@echo "Section: $(PY-CHERRYPY_SECTION)" >>$@
@@ -205,7 +206,8 @@ $(PY25-CHERRYPY_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
-	rm -rf $(PY24-CHERRYPY_IPK_DIR) $(BUILD_DIR)/py-cherrypy_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-cherrypy_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-CHERRYPY_IPK_DIR) $(BUILD_DIR)/py24-cherrypy_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
@@ -243,3 +245,9 @@ py-cherrypy-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(PY-CHERRYPY_BUILD_DIR) \
 	$(PY24-CHERRYPY_IPK_DIR) $(PY24-CHERRYPY_IPK) \
 	$(PY25-CHERRYPY_IPK_DIR) $(PY25-CHERRYPY_IPK) \
+
+#
+# Some sanity check for the package.
+#
+py-cherrypy-check: $(PY24-CHERRYPY_IPK) $(PY25-CHERRYPY_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(PY24-CHERRYPY_IPK) $(PY25-CHERRYPY_IPK)

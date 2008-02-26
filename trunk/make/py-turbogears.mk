@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
-PY-TURBOGEARS_VERSION=1.0.3
-PY-TURBOGEARS_IPK_VERSION=2
+PY-TURBOGEARS_VERSION=1.0.3.3
+PY-TURBOGEARS_IPK_VERSION=1
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
 PY-TURBOGEARS_DIR=TurboGears-$(PY-TURBOGEARS_VERSION)
 PY-TURBOGEARS_UNZIP=zcat
@@ -33,24 +33,24 @@ PY-TURBOGEARS_SECTION=misc
 PY-TURBOGEARS_PRIORITY=optional
 
 PY24-TURBOGEARS_DEPENDS=python24, \
-	py-celementtree (>=1.0.5), \
-	py-cherrypy (>=2.2.1), \
-	py-configobj (>=4.3.2), \
-	py-decoratortools (>=1.4), \
-	py-elementtree (>=1.2.6), \
-	py-formencode (>=0.7.1), \
-	py-nose (>=0.9.1), \
-	py-pastescript (>=0.9.7), \
-	py-ruledispatch, \
-	py-simplejson (>=1.3), \
-	py-sqlobject (>=0.8), \
-	py-turbocheetah (>=0.9.5), \
-	py-turbojson (>=0.9.9), \
-	py-turbokid (>=1.0.2), \
+	py24-celementtree (>=1.0.5), \
+	py24-cherrypy (>=2.3.0), \
+	py24-configobj (>=4.3.2), \
+	py24-decoratortools (>=1.4), \
+	py24-elementtree (>=1.2.6), \
+	py24-formencode (>=0.7.1), \
+	py24-nose (>=0.9.1), \
+	py24-pastescript (>=0.9.7), \
+	py24-ruledispatch, \
+	py24-simplejson (>=1.3), \
+	py24-sqlobject (>=0.8), \
+	py24-turbocheetah (>=0.9.5), \
+	py24-turbojson (>=0.9.9), \
+	py24-turbokid (>=1.0.2), \
 	findutils \
 
 PY25-TURBOGEARS_DEPENDS=python25, \
-	py25-cherrypy (>=2.2.1), \
+	py25-cherrypy (>=2.3.0), \
 	py25-configobj (>=4.3.2), \
 	py25-decoratortools (>=1.4), \
 	py25-elementtree (>=1.2.6), \
@@ -97,8 +97,8 @@ PY-TURBOGEARS_LDFLAGS=
 PY-TURBOGEARS_BUILD_DIR=$(BUILD_DIR)/py-turbogears
 PY-TURBOGEARS_SOURCE_DIR=$(SOURCE_DIR)/py-turbogears
 
-PY24-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
-PY24-TURBOGEARS_IPK=$(BUILD_DIR)/py-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py24-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
+PY24-TURBOGEARS_IPK=$(BUILD_DIR)/py24-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-TURBOGEARS_IPK_DIR=$(BUILD_DIR)/py25-turbogears-$(PY-TURBOGEARS_VERSION)-ipk
 PY25-TURBOGEARS_IPK=$(BUILD_DIR)/py25-turbogears_$(PY-TURBOGEARS_VERSION)-$(PY-TURBOGEARS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -156,7 +156,7 @@ $(PY-TURBOGEARS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOGEARS_SOURCE) $(PY-T
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-TURBOGEARS_BUILD_DIR)/.configured
+	touch $@
 
 py-turbogears-unpack: $(PY-TURBOGEARS_BUILD_DIR)/.configured
 
@@ -164,14 +164,14 @@ py-turbogears-unpack: $(PY-TURBOGEARS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-TURBOGEARS_BUILD_DIR)/.built: $(PY-TURBOGEARS_BUILD_DIR)/.configured
-	rm -f $(PY-TURBOGEARS_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-TURBOGEARS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -182,9 +182,9 @@ py-turbogears: $(PY-TURBOGEARS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-TURBOGEARS_BUILD_DIR)/.staged: $(PY-TURBOGEARS_BUILD_DIR)/.built
-	rm -f $(PY-TURBOGEARS_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-TURBOGEARS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-TURBOGEARS_BUILD_DIR)/.staged
+#	touch $@
 
 py-turbogears-stage: $(PY-TURBOGEARS_BUILD_DIR)/.staged
 
@@ -195,7 +195,7 @@ py-turbogears-stage: $(PY-TURBOGEARS_BUILD_DIR)/.staged
 $(PY24-TURBOGEARS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-turbogears" >>$@
+	@echo "Package: py24-turbogears" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TURBOGEARS_PRIORITY)" >>$@
 	@echo "Section: $(PY-TURBOGEARS_SECTION)" >>$@
@@ -233,11 +233,14 @@ $(PY25-TURBOGEARS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
-	rm -rf $(PY24-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py-turbogears_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-turbogears_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TURBOGEARS_IPK_DIR) $(BUILD_DIR)/py24-turbogears_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOGEARS_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 		--root=$(PY24-TURBOGEARS_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-TURBOGEARS_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-TURBOGEARS_IPK_DIR)/CONTROL/control
 	(echo '#!/bin/sh'; \
 echo /opt/bin/find /opt/lib/python2.4/site-packages -maxdepth 1 -empty -type d -name \'*.egg-info\' -printf \"rmdir %p\\n\" -exec rmdir {} + ; \
@@ -251,8 +254,6 @@ $(PY25-TURBOGEARS_IPK): $(PY-TURBOGEARS_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(PY25-TURBOGEARS_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-TURBOGEARS_IPK_DIR)/opt/bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-TURBOGEARS_IPK_DIR)/CONTROL/control
 	(echo '#!/bin/sh'; \
 echo /opt/bin/find /opt/lib/python2.5/site-packages -maxdepth 1 -empty -type d -name \'*.egg-info\' -printf \"rmdir %p\\n\" -exec rmdir {} + ; \

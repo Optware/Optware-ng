@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-EPSILON_VERSION=0.5.6
+PY-EPSILON_VERSION=0.5.8
 PY-EPSILON_SOURCE=Epsilon-$(PY-EPSILON_VERSION).tar.gz
 PY-EPSILON_SITE=http://divmod.org/trac/attachment/wiki/SoftwareReleases/$(PY-EPSILON_SOURCE)?format=raw
 PY-EPSILON_DIR=Epsilon-$(PY-EPSILON_VERSION)
@@ -30,7 +30,7 @@ PY-EPSILON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-EPSILON_DESCRIPTION=A small python utility package.
 PY-EPSILON_SECTION=misc
 PY-EPSILON_PRIORITY=optional
-PY24-EPSILON_DEPENDS=python24, py-twisted
+PY24-EPSILON_DEPENDS=python24, py24-twisted
 PY25-EPSILON_DEPENDS=python25, py25-twisted
 PY-EPSILON_CONFLICTS=
 
@@ -68,8 +68,8 @@ PY-EPSILON_LDFLAGS=
 PY-EPSILON_BUILD_DIR=$(BUILD_DIR)/py-epsilon
 PY-EPSILON_SOURCE_DIR=$(SOURCE_DIR)/py-epsilon
 
-PY24-EPSILON_IPK_DIR=$(BUILD_DIR)/py-epsilon-$(PY-EPSILON_VERSION)-ipk
-PY24-EPSILON_IPK=$(BUILD_DIR)/py-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-EPSILON_IPK_DIR=$(BUILD_DIR)/py24-epsilon-$(PY-EPSILON_VERSION)-ipk
+PY24-EPSILON_IPK=$(BUILD_DIR)/py24-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-EPSILON_IPK_DIR=$(BUILD_DIR)/py25-epsilon-$(PY-EPSILON_VERSION)-ipk
 PY25-EPSILON_IPK=$(BUILD_DIR)/py25-epsilon_$(PY-EPSILON_VERSION)-$(PY-EPSILON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -181,7 +181,7 @@ py-epsilon-stage: $(PY-EPSILON_BUILD_DIR)/.staged
 $(PY24-EPSILON_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-epsilon" >>$@
+	@echo "Package: py24-epsilon" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-EPSILON_PRIORITY)" >>$@
 	@echo "Section: $(PY-EPSILON_SECTION)" >>$@
@@ -219,7 +219,8 @@ $(PY25-EPSILON_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
-	rm -rf $(PY24-EPSILON_IPK_DIR) $(BUILD_DIR)/py-epsilon_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-epsilon_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-EPSILON_IPK_DIR) $(BUILD_DIR)/py24-epsilon_*_$(TARGET_ARCH).ipk
 	(cd $(PY-EPSILON_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

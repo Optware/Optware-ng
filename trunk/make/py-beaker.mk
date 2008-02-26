@@ -25,7 +25,7 @@
 #
 PY-BEAKER_SITE=http://cheeseshop.python.org/packages/source/B/Beaker
 PY-BEAKER_VERSION=0.9.2
-PY-BEAKER_IPK_VERSION=1
+PY-BEAKER_IPK_VERSION=2
 PY-BEAKER_SOURCE=Beaker-$(PY-BEAKER_VERSION).tar.gz
 PY-BEAKER_DIR=Beaker-$(PY-BEAKER_VERSION)
 PY-BEAKER_UNZIP=zcat
@@ -33,7 +33,7 @@ PY-BEAKER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BEAKER_DESCRIPTION=A Session and Caching library with WSGI Middleware.
 PY-BEAKER_SECTION=misc
 PY-BEAKER_PRIORITY=optional
-PY24-BEAKER_DEPENDS=python24, py-myghtyutils
+PY24-BEAKER_DEPENDS=python24, py24-myghtyutils
 PY25-BEAKER_DEPENDS=python25, py25-myghtyutils
 PY-BEAKER_SUGGESTS=
 PY-BEAKER_CONFLICTS=
@@ -68,8 +68,8 @@ PY-BEAKER_LDFLAGS=
 PY-BEAKER_BUILD_DIR=$(BUILD_DIR)/py-beaker
 PY-BEAKER_SOURCE_DIR=$(SOURCE_DIR)/py-beaker
 
-PY24-BEAKER_IPK_DIR=$(BUILD_DIR)/py-beaker-$(PY-BEAKER_VERSION)-ipk
-PY24-BEAKER_IPK=$(BUILD_DIR)/py-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-BEAKER_IPK_DIR=$(BUILD_DIR)/py24-beaker-$(PY-BEAKER_VERSION)-ipk
+PY24-BEAKER_IPK=$(BUILD_DIR)/py24-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-BEAKER_IPK_DIR=$(BUILD_DIR)/py25-beaker-$(PY-BEAKER_VERSION)-ipk
 PY25-BEAKER_IPK=$(BUILD_DIR)/py25-beaker_$(PY-BEAKER_VERSION)-$(PY-BEAKER_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -163,7 +163,7 @@ py-beaker-stage: $(PY-BEAKER_BUILD_DIR)/.staged
 $(PY24-BEAKER_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-beaker" >>$@
+	@echo "Package: py24-beaker" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-BEAKER_PRIORITY)" >>$@
 	@echo "Section: $(PY-BEAKER_SECTION)" >>$@
@@ -201,7 +201,8 @@ $(PY25-BEAKER_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-BEAKER_IPK): $(PY-BEAKER_BUILD_DIR)/.built
-	rm -rf $(PY24-BEAKER_IPK_DIR) $(BUILD_DIR)/py-beaker_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-beaker_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-BEAKER_IPK_DIR) $(BUILD_DIR)/py24-beaker_*_$(TARGET_ARCH).ipk
 	(cd $(PY-BEAKER_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

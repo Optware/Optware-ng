@@ -30,14 +30,14 @@ PY-TWISTED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TWISTED_DESCRIPTION=A networking engine written in Python.
 PY-TWISTED_SECTION=misc
 PY-TWISTED_PRIORITY=optional
-PY24-TWISTED_DEPENDS=python24, py-zope-interface
+PY24-TWISTED_DEPENDS=python24, py24-zope-interface
 PY25-TWISTED_DEPENDS=python25, py25-zope-interface
 PY-TWISTED_CONFLICTS=
 
 #
 # PY-TWISTED_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TWISTED_IPK_VERSION=1
+PY-TWISTED_IPK_VERSION=2
 
 #
 # PY-TWISTED_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-TWISTED_LDFLAGS=
 PY-TWISTED_BUILD_DIR=$(BUILD_DIR)/py-twisted
 PY-TWISTED_SOURCE_DIR=$(SOURCE_DIR)/py-twisted
 
-PY24-TWISTED_IPK_DIR=$(BUILD_DIR)/py-twisted-$(PY-TWISTED_VERSION)-ipk
-PY24-TWISTED_IPK=$(BUILD_DIR)/py-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-TWISTED_IPK_DIR=$(BUILD_DIR)/py24-twisted-$(PY-TWISTED_VERSION)-ipk
+PY24-TWISTED_IPK=$(BUILD_DIR)/py24-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-TWISTED_IPK_DIR=$(BUILD_DIR)/py25-twisted-$(PY-TWISTED_VERSION)-ipk
 PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-TWISTED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TWISTED_SITE)/$(PY-TWISTED_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-TWISTED_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -143,7 +144,7 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 	)
 	for d in $(PY-TWISTED_BUILD_DIR)/2.5/Twisted*-[0-9]*; \
 		do cp $(PY-TWISTED_BUILD_DIR)/2.5/setup.cfg $$d; done
-	touch $(PY-TWISTED_BUILD_DIR)/.configured
+	touch $@
 
 py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
 
@@ -151,7 +152,7 @@ py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
-	rm -f $(PY-TWISTED_BUILD_DIR)/.built
+	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/twisted
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
@@ -162,7 +163,7 @@ $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
-	touch $(PY-TWISTED_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -173,7 +174,7 @@ py-twisted: $(PY-TWISTED_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
-	rm -f $(PY-TWISTED_BUILD_DIR)/.staged
+	rm -f $@
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
@@ -182,7 +183,7 @@ $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
-	touch $(PY-TWISTED_BUILD_DIR)/.staged
+	touch $@
 
 py-twisted-stage: $(PY-TWISTED_BUILD_DIR)/.staged
 
@@ -193,7 +194,7 @@ py-twisted-stage: $(PY-TWISTED_BUILD_DIR)/.staged
 $(PY24-TWISTED_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-twisted" >>$@
+	@echo "Package: py24-twisted" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TWISTED_PRIORITY)" >>$@
 	@echo "Section: $(PY-TWISTED_SECTION)" >>$@
@@ -231,7 +232,8 @@ $(PY25-TWISTED_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
-	rm -rf $(PY24-TWISTED_IPK_DIR) $(BUILD_DIR)/py-twisted_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-twisted_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TWISTED_IPK_DIR) $(BUILD_DIR)/py24-twisted_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \

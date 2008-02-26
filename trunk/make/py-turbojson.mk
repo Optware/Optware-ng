@@ -32,14 +32,14 @@ PY-TURBOJSON_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOJSON_DESCRIPTION=Python template plugin that supports JSON.
 PY-TURBOJSON_SECTION=misc
 PY-TURBOJSON_PRIORITY=optional
-PY24-TURBOJSON_DEPENDS=python24, py-simplejson
+PY24-TURBOJSON_DEPENDS=python24, py24-simplejson
 PY25-TURBOJSON_DEPENDS=python25, py25-simplejson
 PY-TURBOJSON_CONFLICTS=
 
 #
 # PY-TURBOJSON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOJSON_IPK_VERSION=1
+PY-TURBOJSON_IPK_VERSION=2
 
 #
 # PY-TURBOJSON_CONFFILES should be a list of user-editable files
@@ -70,8 +70,8 @@ PY-TURBOJSON_LDFLAGS=
 PY-TURBOJSON_BUILD_DIR=$(BUILD_DIR)/py-turbojson
 PY-TURBOJSON_SOURCE_DIR=$(SOURCE_DIR)/py-turbojson
 
-PY24-TURBOJSON_IPK_DIR=$(BUILD_DIR)/py-turbojson-$(PY-TURBOJSON_VERSION)-ipk
-PY24-TURBOJSON_IPK=$(BUILD_DIR)/py-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-TURBOJSON_IPK_DIR=$(BUILD_DIR)/py24-turbojson-$(PY-TURBOJSON_VERSION)-ipk
+PY24-TURBOJSON_IPK=$(BUILD_DIR)/py24-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-TURBOJSON_IPK_DIR=$(BUILD_DIR)/py25-turbojson-$(PY-TURBOJSON_VERSION)-ipk
 PY25-TURBOJSON_IPK=$(BUILD_DIR)/py25-turbojson_$(PY-TURBOJSON_VERSION)-$(PY-TURBOJSON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -191,7 +191,7 @@ py-turbojson-stage: $(PY-TURBOJSON_BUILD_DIR)/.staged
 $(PY24-TURBOJSON_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-turbojson" >>$@
+	@echo "Package: py24-turbojson" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TURBOJSON_PRIORITY)" >>$@
 	@echo "Section: $(PY-TURBOJSON_SECTION)" >>$@
@@ -229,7 +229,8 @@ $(PY25-TURBOJSON_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-TURBOJSON_IPK): $(PY-TURBOJSON_BUILD_DIR)/.built
-	rm -rf $(PY24-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py-turbojson_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-turbojson_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TURBOJSON_IPK_DIR) $(BUILD_DIR)/py24-turbojson_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOJSON_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

@@ -32,14 +32,14 @@ PY-TURBOKID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-TURBOKID_DESCRIPTION=Python template plugin that supports Kid templates.
 PY-TURBOKID_SECTION=misc
 PY-TURBOKID_PRIORITY=optional
-PY24-TURBOKID_DEPENDS=python24, py-kid
+PY24-TURBOKID_DEPENDS=python24, py24-kid
 PY25-TURBOKID_DEPENDS=python25, py25-kid
 PY-TURBOKID_CONFLICTS=
 
 #
 # PY-TURBOKID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TURBOKID_IPK_VERSION=1
+PY-TURBOKID_IPK_VERSION=2
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
@@ -70,8 +70,8 @@ PY-TURBOKID_LDFLAGS=
 PY-TURBOKID_BUILD_DIR=$(BUILD_DIR)/py-turbokid
 PY-TURBOKID_SOURCE_DIR=$(SOURCE_DIR)/py-turbokid
 
-PY24-TURBOKID_IPK_DIR=$(BUILD_DIR)/py-turbokid-$(PY-TURBOKID_VERSION)-ipk
-PY24-TURBOKID_IPK=$(BUILD_DIR)/py-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-TURBOKID_IPK_DIR=$(BUILD_DIR)/py24-turbokid-$(PY-TURBOKID_VERSION)-ipk
+PY24-TURBOKID_IPK=$(BUILD_DIR)/py24-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-TURBOKID_IPK_DIR=$(BUILD_DIR)/py25-turbokid-$(PY-TURBOKID_VERSION)-ipk
 PY25-TURBOKID_IPK=$(BUILD_DIR)/py25-turbokid_$(PY-TURBOKID_VERSION)-$(PY-TURBOKID_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -172,7 +172,7 @@ py-turbokid-stage: $(PY-TURBOKID_BUILD_DIR)/.staged
 $(PY24-TURBOKID_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-turbokid" >>$@
+	@echo "Package: py24-turbokid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TURBOKID_PRIORITY)" >>$@
 	@echo "Section: $(PY-TURBOKID_SECTION)" >>$@
@@ -210,7 +210,8 @@ $(PY25-TURBOKID_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
-	rm -rf $(PY24-TURBOKID_IPK_DIR) $(BUILD_DIR)/py-turbokid_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-turbokid_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TURBOKID_IPK_DIR) $(BUILD_DIR)/py24-turbokid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TURBOKID_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \

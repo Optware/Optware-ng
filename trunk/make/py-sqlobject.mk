@@ -28,7 +28,7 @@ PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
 #PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-PY-SQLOBJECT_VERSION=0.8.7
+PY-SQLOBJECT_VERSION=0.9.3
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
@@ -37,9 +37,9 @@ PY-SQLOBJECT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-SQLOBJECT_DESCRIPTION=An object-relational mapper for python.
 PY-SQLOBJECT_SECTION=misc
 PY-SQLOBJECT_PRIORITY=optional
-PY24-SQLOBJECT_DEPENDS=python24, py-formencode
+PY24-SQLOBJECT_DEPENDS=python24, py24-formencode
 PY25-SQLOBJECT_DEPENDS=python25, py25-formencode
-PY24-SQLOBJECT_SUGGESTS=py-sqlite, py-psycopg2, py-mysql
+PY24-SQLOBJECT_SUGGESTS=py24-sqlite, py-psycopg2, py-mysql
 PY25-SQLOBJECT_SUGGESTS=py25-psycopg2, py25-mysql
 PY-SQLOBJECT_CONFLICTS=
 
@@ -74,8 +74,8 @@ PY-SQLOBJECT_LDFLAGS=
 PY-SQLOBJECT_BUILD_DIR=$(BUILD_DIR)/py-sqlobject
 PY-SQLOBJECT_SOURCE_DIR=$(SOURCE_DIR)/py-sqlobject
 
-PY24-SQLOBJECT_IPK_DIR=$(BUILD_DIR)/py-sqlobject-$(PY-SQLOBJECT_VERSION)-ipk
-PY24-SQLOBJECT_IPK=$(BUILD_DIR)/py-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SQLOBJECT_IPK_DIR=$(BUILD_DIR)/py24-sqlobject-$(PY-SQLOBJECT_VERSION)-ipk
+PY24-SQLOBJECT_IPK=$(BUILD_DIR)/py24-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SQLOBJECT_IPK_DIR=$(BUILD_DIR)/py25-sqlobject-$(PY-SQLOBJECT_VERSION)-ipk
 PY25-SQLOBJECT_IPK=$(BUILD_DIR)/py25-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLOBJECT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -194,7 +194,7 @@ py-sqlobject-stage: $(PY-SQLOBJECT_BUILD_DIR)/.staged
 $(PY24-SQLOBJECT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-sqlobject" >>$@
+	@echo "Package: py24-sqlobject" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SQLOBJECT_PRIORITY)" >>$@
 	@echo "Section: $(PY-SQLOBJECT_SECTION)" >>$@
@@ -234,7 +234,8 @@ $(PY25-SQLOBJECT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-SQLOBJECT_IPK): $(PY-SQLOBJECT_BUILD_DIR)/.built
-	rm -rf $(PY24-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-sqlobject_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-SQLOBJECT_IPK_DIR) $(BUILD_DIR)/py24-sqlobject_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SQLOBJECT_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \

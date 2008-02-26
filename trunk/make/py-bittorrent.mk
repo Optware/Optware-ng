@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-BITTORRENT_SITE=http://download.bittorrent.com/dl
-PY-BITTORRENT_VERSION=5.0.7
+PY-BITTORRENT_VERSION=5.0.9
 PY-BITTORRENT_SOURCE=BitTorrent-$(PY-BITTORRENT_VERSION).tar.gz
 PY-BITTORRENT_DIR=BitTorrent-$(PY-BITTORRENT_VERSION)
 PY-BITTORRENT_UNZIP=zcat
@@ -35,7 +35,7 @@ PY-BITTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-BITTORRENT_DESCRIPTION=BitTorrent is a scatter-gather network file transfer tool.
 PY-BITTORRENT_SECTION=misc
 PY-BITTORRENT_PRIORITY=optional
-PY24-BITTORRENT_DEPENDS=py-twisted, py-crypto
+PY24-BITTORRENT_DEPENDS=py24-twisted, py24-crypto
 PY25-BITTORRENT_DEPENDS=py25-twisted, py25-crypto
 PY-BITTORRENT_CONFLICTS=
 
@@ -77,8 +77,8 @@ PY-BITTORRENT_SOURCE_DIR=$(SOURCE_DIR)/py-bittorrent
 PY-BITTORRENT-COMMON_IPK_DIR=$(BUILD_DIR)/py-bittorrent-common-$(PY-BITTORRENT_VERSION)-ipk
 PY-BITTORRENT-COMMON_IPK=$(BUILD_DIR)/py-bittorrent-common_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
-PY24-BITTORRENT_IPK=$(BUILD_DIR)/py-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py24-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
+PY24-BITTORRENT_IPK=$(BUILD_DIR)/py24-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-BITTORRENT_IPK_DIR=$(BUILD_DIR)/py25-bittorrent-$(PY-BITTORRENT_VERSION)-ipk
 PY25-BITTORRENT_IPK=$(BUILD_DIR)/py25-bittorrent_$(PY-BITTORRENT_VERSION)-$(PY-BITTORRENT_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -189,7 +189,7 @@ $(PY-BITTORRENT-COMMON_IPK_DIR)/CONTROL/control:
 $(PY24-BITTORRENT_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-bittorrent" >>$@
+	@echo "Package: py24-bittorrent" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-BITTORRENT_PRIORITY)" >>$@
 	@echo "Section: $(PY-BITTORRENT_SECTION)" >>$@
@@ -227,10 +227,13 @@ $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-BITTORRENT_IPK): $(PY-BITTORRENT_BUILD_DIR)/.built
-	rm -rf $(PY24-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-bittorrent_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-BITTORRENT_IPK_DIR) $(BUILD_DIR)/py24-bittorrent_*_$(TARGET_ARCH).ipk
 	(cd $(PY-BITTORRENT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-BITTORRENT_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-BITTORRENT_IPK_DIR)/opt/*bin/*; \
+	    do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	rm -rf $(PY24-BITTORRENT_IPK_DIR)/opt/share
 	$(MAKE) $(PY24-BITTORRENT_IPK_DIR)/CONTROL/control
 #	echo $(PY-BITTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-BITTORRENT_IPK_DIR)/CONTROL/conffiles
@@ -242,8 +245,6 @@ $(PY25-BITTORRENT_IPK) $(PY-BITTORRENT-COMMON_IPK): $(PY-BITTORRENT_BUILD_DIR)/.
 	(cd $(PY-BITTORRENT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BITTORRENT_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-BITTORRENT_IPK_DIR)/opt/*bin/*; \
-	    do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	install -d $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
 	mv $(PY25-BITTORRENT_IPK_DIR)/opt/share $(PY-BITTORRENT-COMMON_IPK_DIR)/opt
 	$(MAKE) $(PY25-BITTORRENT_IPK_DIR)/CONTROL/control

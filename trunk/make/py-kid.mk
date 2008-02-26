@@ -30,14 +30,14 @@ PY-KID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-KID_DESCRIPTION=Pythonic XML-based Templating
 PY-KID_SECTION=misc
 PY-KID_PRIORITY=optional
-PY24-KID_DEPENDS=python24, py-elementtree
+PY24-KID_DEPENDS=python24, py24-elementtree
 PY25-KID_DEPENDS=python25, py25-elementtree
 PY-KID_CONFLICTS=
 
 #
 # PY-KID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-KID_IPK_VERSION=1
+PY-KID_IPK_VERSION=2
 
 #
 # PY-KID_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-KID_LDFLAGS=
 PY-KID_BUILD_DIR=$(BUILD_DIR)/py-kid
 PY-KID_SOURCE_DIR=$(SOURCE_DIR)/py-kid
 
-PY24-KID_IPK_DIR=$(BUILD_DIR)/py-kid-$(PY-KID_VERSION)-ipk
-PY24-KID_IPK=$(BUILD_DIR)/py-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-KID_IPK_DIR=$(BUILD_DIR)/py24-kid-$(PY-KID_VERSION)-ipk
+PY24-KID_IPK=$(BUILD_DIR)/py24-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-KID_IPK_DIR=$(BUILD_DIR)/py25-kid-$(PY-KID_VERSION)-ipk
 PY25-KID_IPK=$(BUILD_DIR)/py25-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-KID_IPK=$(BUILD_DIR)/py25-kid_$(PY-KID_VERSION)-$(PY-KID_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-KID_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-KID_SITE)/$(PY-KID_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-KID_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -137,7 +138,7 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	    echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	touch $(PY-KID_BUILD_DIR)/.configured
+	touch $@
 
 py-kid-unpack: $(PY-KID_BUILD_DIR)/.configured
 
@@ -145,14 +146,14 @@ py-kid-unpack: $(PY-KID_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-KID_BUILD_DIR)/.built: $(PY-KID_BUILD_DIR)/.configured
-	rm -f $(PY-KID_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-KID_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-KID_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -163,9 +164,9 @@ py-kid: $(PY-KID_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-KID_BUILD_DIR)/.staged: $(PY-KID_BUILD_DIR)/.built
-	rm -f $(PY-KID_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-KID_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-KID_BUILD_DIR)/.staged
+#	touch $@
 
 py-kid-stage: $(PY-KID_BUILD_DIR)/.staged
 
@@ -176,7 +177,7 @@ py-kid-stage: $(PY-KID_BUILD_DIR)/.staged
 $(PY24-KID_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-kid" >>$@
+	@echo "Package: py24-kid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-KID_PRIORITY)" >>$@
 	@echo "Section: $(PY-KID_SECTION)" >>$@
@@ -216,10 +217,13 @@ $(PY25-KID_IPK_DIR)/CONTROL/control:
 $(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
 	# 2.4
 	rm -rf $(PY24-KID_IPK_DIR)
+	rm -rf $(BUILD_DIR)/py24-kid_*_$(TARGET_ARCH).ipk
 	rm -rf $(BUILD_DIR)/py-kid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-KID_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-KID_IPK_DIR)/opt/*bin/*; \
+            do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-KID_IPK_DIR)/CONTROL/control
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-KID_IPK_DIR)
@@ -229,8 +233,6 @@ $(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
 	(cd $(PY-KID_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-KID_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-KID_IPK_DIR)/opt/*bin/*; \
-            do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-KID_IPK_DIR)/CONTROL/control
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-KID_IPK_DIR)

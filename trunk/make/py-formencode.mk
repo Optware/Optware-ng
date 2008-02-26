@@ -37,7 +37,7 @@ PY-FORMENCODE_CONFLICTS=
 #
 # PY-FORMENCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-FORMENCODE_IPK_VERSION=1
+PY-FORMENCODE_IPK_VERSION=2
 
 #
 # PY-FORMENCODE_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-FORMENCODE_LDFLAGS=
 PY-FORMENCODE_BUILD_DIR=$(BUILD_DIR)/py-formencode
 PY-FORMENCODE_SOURCE_DIR=$(SOURCE_DIR)/py-formencode
 
-PY24-FORMENCODE_IPK_DIR=$(BUILD_DIR)/py-formencode-$(PY-FORMENCODE_VERSION)-ipk
-PY24-FORMENCODE_IPK=$(BUILD_DIR)/py-formencode_$(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-FORMENCODE_IPK_DIR=$(BUILD_DIR)/py24-formencode-$(PY-FORMENCODE_VERSION)-ipk
+PY24-FORMENCODE_IPK=$(BUILD_DIR)/py24-formencode_$(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-FORMENCODE_IPK_DIR=$(BUILD_DIR)/py25-formencode-$(PY-FORMENCODE_VERSION)-ipk
 PY25-FORMENCODE_IPK=$(BUILD_DIR)/py25-formencode_$(PY-FORMENCODE_VERSION)-$(PY-FORMENCODE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -127,7 +127,7 @@ $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-F
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-FORMENCODE_BUILD_DIR)/.configured
+	touch $@
 
 py-formencode-unpack: $(PY-FORMENCODE_BUILD_DIR)/.configured
 
@@ -135,14 +135,14 @@ py-formencode-unpack: $(PY-FORMENCODE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-FORMENCODE_BUILD_DIR)/.built: $(PY-FORMENCODE_BUILD_DIR)/.configured
-	rm -f $(PY-FORMENCODE_BUILD_DIR)/.built
+	rm -f $@
 	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(PY-FORMENCODE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-FORMENCODE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,9 +153,9 @@ py-formencode: $(PY-FORMENCODE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-FORMENCODE_BUILD_DIR)/.staged: $(PY-FORMENCODE_BUILD_DIR)/.built
-	rm -f $(PY-FORMENCODE_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-FORMENCODE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-FORMENCODE_BUILD_DIR)/.staged
+#	touch $@
 
 py-formencode-stage: $(PY-FORMENCODE_BUILD_DIR)/.staged
 
@@ -166,7 +166,7 @@ py-formencode-stage: $(PY-FORMENCODE_BUILD_DIR)/.staged
 $(PY24-FORMENCODE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-formencode" >>$@
+	@echo "Package: py24-formencode" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-FORMENCODE_PRIORITY)" >>$@
 	@echo "Section: $(PY-FORMENCODE_SECTION)" >>$@
@@ -204,7 +204,8 @@ $(PY25-FORMENCODE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-FORMENCODE_IPK): $(PY-FORMENCODE_BUILD_DIR)/.built
-	rm -rf $(PY24-FORMENCODE_IPK_DIR) $(BUILD_DIR)/py-formencode_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-formencode_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-FORMENCODE_IPK_DIR) $(BUILD_DIR)/py24-formencode_*_$(TARGET_ARCH).ipk
 	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-FORMENCODE_IPK_DIR) --prefix=/opt)

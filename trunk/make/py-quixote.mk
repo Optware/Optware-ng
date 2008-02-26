@@ -258,7 +258,9 @@ py-quixote-clean:
 # directories.
 #
 py-quixote-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR) $(PY-QUIXOTE_IPK_DIR) $(PY-QUIXOTE_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-QUIXOTE_DIR) $(PY-QUIXOTE_BUILD_DIR)
+	rm -rf $(PY24-QUIXOTE_IPK_DIR) $(PY24-QUIXOTE_IPK)
+	rm -rf $(PY25-QUIXOTE_IPK_DIR) $(PY25-QUIXOTE_IPK)
 
 #
 # Some sanity check for the package.
