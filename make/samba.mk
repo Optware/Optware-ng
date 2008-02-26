@@ -22,10 +22,10 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.28
-SAMBA_IPK_VERSION=1
+SAMBA_IPK_VERSION=2
 else
 SAMBA_VERSION=3.0.14a
-SAMBA_IPK_VERSION=4
+SAMBA_IPK_VERSION=5
 endif
 SAMBA_SOURCE=samba-$(SAMBA_VERSION).tar.gz
 SAMBA_DIR=samba-$(SAMBA_VERSION)
@@ -34,12 +34,12 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-SAMBA_DEPENDS=popt, readline, cups, gnutls
+SAMBA_DEPENDS=popt, readline, gnutls
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
 endif
-SAMBA_SUGGESTS=
-SAMBA_CONFLICTS=
+SAMBA_SUGGESTS=cups
+SAMBA_CONFLICTS=samba2
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
