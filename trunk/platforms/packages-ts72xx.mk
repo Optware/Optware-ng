@@ -3,15 +3,16 @@ SPECIFIC_PACKAGES =
 
 # Packages that do not work for ts72xx.
 BROKEN_PACKAGES = \
-	appweb \
-	$(ASTERISK_PACKAGES) \
-	classpath clearsilver dict dspam \
-	eaccelerator ecl \
-	$(ERLANG_PACKAGES) \
-	freeradius \
-	ldconfig lighttpd \
-	motion mysql nfs-server nrpe \
-	php php-apache pure-ftpd py-mysql py-soappy \
-	qemu qemu-libc-i386 rtorrent \
-	sablevm tshark transcode w3m xvid \
-
+	asterisk \
+	ldconfig \
+	mod-python \
+	py-4suite py-apsw py-axiom py-bazaar-ng py-bittorrent py-bluez \
+	py-celementtree py-cheetah py-cjson py-clips py-crypto \
+	py-curl py-duplicity py-epsilon py-gdchart2 py-gd py-lxml \
+	py-mantissa py-mercurial py-mssql py-mx-base py-mysql \
+	py-nevow py-openssl py-pil py-pgsql \
+	py-psycopg py-psycopg2 py-pygresql py-quixote py-rdiff-backup \
+	py-reportlab py-scgi py-silvercity py-simplejson py-twisted \
+	py-urwid py-usb py-xml py-yenc py-zope-interface \
+	qemu qemu-libc-i386 
+	
