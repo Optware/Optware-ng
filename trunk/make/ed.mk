@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 ED_SITE=http://ftp.gnu.org/gnu/ed
-ED_VERSION=0.8
+ED_VERSION=0.9
 ED_SOURCE=ed-$(ED_VERSION).tar.bz2
 ED_DIR=ed-$(ED_VERSION)
 ED_UNZIP=bzcat
@@ -69,7 +69,8 @@ ED_IPK=$(BUILD_DIR)/ed_$(ED_VERSION)-$(ED_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ED_SITE)/$(ED_SOURCE)
+	$(WGET) -P $(DL_DIR) $(ED_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -94,11 +95,14 @@ ed-source: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES)
-	rm -rf $(BUILD_DIR)/$(ED_DIR) $(ED_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ED_DIR) $(@D)
 	$(ED_UNZIP) $(DL_DIR)/$(ED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(ED_PATCHES) | patch -d $(BUILD_DIR)/$(ED_DIR) -p1
-	mv $(BUILD_DIR)/$(ED_DIR) $(ED_BUILD_DIR)
-	(cd $(ED_BUILD_DIR); \
+	if test -n "$(ED_PATCHES)"; then \
+		cat $(ED_PATCHES) | patch -d $(BUILD_DIR)/$(ED_DIR) -p0; \
+	fi
+	mv $(BUILD_DIR)/$(ED_DIR) $(@D)
+	sed -i -e '/-install-info/d' $(@D)/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ED_LDFLAGS)" \
@@ -111,7 +115,7 @@ $(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ED_LDFLAGS)" \
 	)
-	touch $(ED_BUILD_DIR)/.configured
+	touch $@
 
 ed-unpack: $(ED_BUILD_DIR)/.configured
 
@@ -119,9 +123,9 @@ ed-unpack: $(ED_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(ED_BUILD_DIR)/.built: $(ED_BUILD_DIR)/.configured
-	rm -f $(ED_BUILD_DIR)/.built
-	$(MAKE) -C $(ED_BUILD_DIR)
-	touch $(ED_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -133,7 +137,7 @@ ed: $(ED_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/ed
 #
 $(ED_IPK_DIR)/CONTROL/control:
-	@install -d $(ED_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: ed" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
