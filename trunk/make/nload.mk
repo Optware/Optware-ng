@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 NLOAD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nload
-NLOAD_VERSION=0.6.0
+NLOAD_VERSION=0.7.1
 NLOAD_SOURCE=nload-$(NLOAD_VERSION).tar.gz
 NLOAD_DIR=nload-$(NLOAD_VERSION)
 NLOAD_UNZIP=zcat
@@ -35,19 +35,19 @@ NLOAD_CONFLICTS=
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=2
+NLOAD_IPK_VERSION=1
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NLOAD_PATCHES=$(NLOAD_SOURCE_DIR)/dev.h.patch
+NLOAD_PATCHES=
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NLOAD_CPPFLAGS="-I$(STAGING_DIR)/opt/include/ncurses"
+NLOAD_CPPFLAGS="-I$(STAGING_INCLUDE_DIR)/ncurses"
 NLOAD_LDFLAGS=
 
 #
@@ -69,7 +69,8 @@ NLOAD_IPK=$(BUILD_DIR)/nload_$(NLOAD_VERSION)-$(NLOAD_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NLOAD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NLOAD_SITE)/$(NLOAD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(NLOAD_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -97,7 +98,9 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR)
 	$(NLOAD_UNZIP) $(DL_DIR)/$(NLOAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1
+	if test -n "$(NLOAD_PATCHES)"; then \
+		cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
+	fi
 	mv $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR)
 	(cd $(NLOAD_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -109,7 +112,7 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	)
-	touch $(NLOAD_BUILD_DIR)/.configured
+	touch $@
 
 nload-unpack: $(NLOAD_BUILD_DIR)/.configured
 
@@ -118,9 +121,9 @@ nload-unpack: $(NLOAD_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(NLOAD_BUILD_DIR)/.built: $(NLOAD_BUILD_DIR)/.configured
-	rm -f $(NLOAD_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(NLOAD_BUILD_DIR)
-	touch $(NLOAD_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -147,7 +150,7 @@ nload-stage: $(STAGING_DIR)/opt/lib/libnload.so.$(NLOAD_VERSION)
 # necessary to create a seperate control file under sources/nload
 #
 $(NLOAD_IPK_DIR)/CONTROL/control:
-	@install -d $(NLOAD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: nload" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,8 +178,7 @@ $(NLOAD_IPK_DIR)/CONTROL/control:
 #
 $(NLOAD_IPK): $(NLOAD_BUILD_DIR)/.built
 	rm -rf $(NLOAD_IPK_DIR) $(BUILD_DIR)/nload_*_$(TARGET_ARCH).ipk
-	install -d $(NLOAD_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(NLOAD_BUILD_DIR)/src/nload -o $(NLOAD_IPK_DIR)/opt/bin/nload
+	$(MAKE) -C $(NLOAD_BUILD_DIR) DESTDIR=$(NLOAD_IPK_DIR) install-strip
 	$(MAKE) $(NLOAD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NLOAD_IPK_DIR)
 
@@ -197,3 +199,9 @@ nload-clean:
 #
 nload-dirclean:
 	rm -rf $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR) $(NLOAD_IPK_DIR) $(NLOAD_IPK)
+
+#
+# Some sanity check for the package.
+#
+nload-check: $(NLOAD_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NLOAD_IPK)
