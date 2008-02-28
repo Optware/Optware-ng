@@ -19,11 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)))
-CUPS_VERSION=1.3.5
-else
 CUPS_VERSION=1.3.6
-endif
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -169,16 +165,19 @@ $(CUPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cup
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
-	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(@D)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUPS_PATCHES)" ; \
 		then cat $(CUPS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CUPS_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(CUPS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CUPS_DIR) $(CUPS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CUPS_DIR) $(@D) ; \
 	fi
-	(cd $(CUPS_BUILD_DIR); \
+ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)))
+	sed -i -e '/OPTIM=/s/ -fstack-protector//' $(@D)/configure
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(CUPS_LDFLAGS) $(STAGING_LDFLAGS)" \
@@ -214,7 +213,7 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 #
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CUPS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	$(MAKE) install -C $(CUPS_BUILD_DIR) \
 		BUILDROOT=$(CUPS_BUILD_DIR)/install/ \
 		datarootdir='$${prefix}' \
