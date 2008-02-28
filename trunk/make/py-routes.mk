@@ -23,9 +23,9 @@
 #
 # PY-ROUTES_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ROUTES_SITE=http://cheeseshop.python.org/packages/source/R/Routes
-PY-ROUTES_VERSION=1.7.1
-PY-ROUTES_IPK_VERSION=2
+PY-ROUTES_SITE=http://pypi.python.org/packages/source/R/Routes
+PY-ROUTES_VERSION=1.7.2
+PY-ROUTES_IPK_VERSION=1
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
 PY-ROUTES_UNZIP=zcat
@@ -80,7 +80,8 @@ PY25-ROUTES_IPK=$(BUILD_DIR)/py25-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-ROUTES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-ROUTES_SITE)/$(PY-ROUTES_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-ROUTES_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
