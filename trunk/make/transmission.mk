@@ -23,9 +23,9 @@
 #  TRAC: http://trac.transmissionbt.com/timeline
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.05
+TRANSMISSION_VERSION=1.06
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=5109
+TRANSMISSION_SVN_REV=5170
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
