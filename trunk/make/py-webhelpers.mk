@@ -23,9 +23,9 @@
 #
 # PY-WEBHELPERS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-WEBHELPERS_SITE=http://cheeseshop.python.org/packages/source/W/WebHelpers
-PY-WEBHELPERS_VERSION=0.3.2
-PY-WEBHELPERS_IPK_VERSION=2
+PY-WEBHELPERS_SITE=http://pypi.python.org/packages/source/W/WebHelpers
+PY-WEBHELPERS_VERSION=0.3.3
+PY-WEBHELPERS_IPK_VERSION=1
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
 PY-WEBHELPERS_UNZIP=zcat
@@ -81,7 +81,8 @@ PY25-WEBHELPERS_IPK=$(BUILD_DIR)/py25-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-W
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-WEBHELPERS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-WEBHELPERS_SITE)/$(PY-WEBHELPERS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-WEBHELPERS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -150,9 +151,9 @@ py-webhelpers: $(PY-WEBHELPERS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-WEBHELPERS_BUILD_DIR)/.staged: $(PY-WEBHELPERS_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(PY-WEBHELPERS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 py-webhelpers-stage: $(PY-WEBHELPERS_BUILD_DIR)/.staged
 
