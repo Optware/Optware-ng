@@ -5,7 +5,6 @@ SPECIFIC_PACKAGES =
 BROKEN_PACKAGES = \
 	asterisk \
 	ldconfig \
-	mod-python \
 	py-bazaar-ng py-simplejson \
-	qemu qemu-libc-i386 slrn spandsp speex # vte xchat
+	qemu qemu-libc-i386 slrn spandsp 
 
