@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TSHARK_SITE=http://www.wireshark.org/download/src
-TSHARK_VERSION=0.99.7
+TSHARK_VERSION=0.99.8
 TSHARK_SOURCE=wireshark-$(TSHARK_VERSION).tar.bz2
 TSHARK_DIR=wireshark-$(TSHARK_VERSION)
 TSHARK_UNZIP=bzcat
@@ -83,7 +83,8 @@ TSHARK_IPK=$(BUILD_DIR)/tshark_$(TSHARK_VERSION)-$(TSHARK_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TSHARK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TSHARK_SITE)/$(TSHARK_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TSHARK_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -121,7 +122,7 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 	if test "$(BUILD_DIR)/$(TSHARK_DIR)" != "$(TSHARK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(TSHARK_DIR) $(TSHARK_BUILD_DIR) ; \
 	fi
-	(cd $(TSHARK_BUILD_DIR); \
+	(cd $(@D); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TSHARK_CPPFLAGS)" \
@@ -139,9 +140,9 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/^INCLUDES/s|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(TSHARK_BUILD_DIR)/plugins/*/Makefile
-	$(PATCH_LIBTOOL) $(TSHARK_BUILD_DIR)/libtool
-	touch $(TSHARK_BUILD_DIR)/.configured
+	sed -i -e '/^INCLUDES/s|-I$$(includedir)|-I$(STAGING_INCLUDE_DIR)|' $(@D)/plugins/*/Makefile
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 tshark-unpack: $(TSHARK_BUILD_DIR)/.configured
 
@@ -149,11 +150,11 @@ tshark-unpack: $(TSHARK_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(TSHARK_BUILD_DIR)/.built: $(TSHARK_BUILD_DIR)/.configured
-	rm -f $(TSHARK_BUILD_DIR)/.built
-	$(MAKE) CC_FOR_BUILD=$(HOSTCC) CC=$(HOSTCC) -C $(TSHARK_BUILD_DIR) rdps
-	$(MAKE) CC_FOR_BUILD=$(HOSTCC) CC=$(HOSTCC) -C $(TSHARK_BUILD_DIR)/tools/lemon lemon
-	$(MAKE) -C $(TSHARK_BUILD_DIR)
-	touch $(TSHARK_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) CC_FOR_BUILD=$(HOSTCC) CC=$(HOSTCC) -C $(@D) rdps
+	$(MAKE) CC_FOR_BUILD=$(HOSTCC) CC=$(HOSTCC) -C $(@D)/tools/lemon lemon
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -164,9 +165,9 @@ tshark: $(TSHARK_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(TSHARK_BUILD_DIR)/.staged: $(TSHARK_BUILD_DIR)/.built
-	rm -f $(TSHARK_BUILD_DIR)/.staged
-	$(MAKE) -C $(TSHARK_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(TSHARK_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 tshark-stage: $(TSHARK_BUILD_DIR)/.staged
 
@@ -175,7 +176,7 @@ tshark-stage: $(TSHARK_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/tshark
 #
 $(TSHARK_IPK_DIR)/CONTROL/control:
-	@install -d $(TSHARK_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: tshark" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
