@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-VLC_VERSION=0.8.6d
-VLC_IPK_VERSION=2
+VLC_VERSION=0.8.6e
+VLC_IPK_VERSION=1
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).tar.bz2
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -101,7 +101,8 @@ VLC_IPK=$(BUILD_DIR)/vlc_$(VLC_VERSION)-$(VLC_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VLC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VLC_SITE)/$(VLC_SOURCE)
+	$(WGET) -P $(DL_DIR) $(VLC_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -153,16 +154,16 @@ endif
 	$(MAKE) ncurses-stage
 	$(MAKE) speex-stage
 	$(MAKE) x264-stage
-	rm -rf $(BUILD_DIR)/$(VLC_DIR) $(VLC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(VLC_DIR) $(@D)
 	$(VLC_UNZIP) $(DL_DIR)/$(VLC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VLC_PATCHES)" ; \
 		then cat $(VLC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(VLC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(VLC_DIR)" != "$(VLC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(VLC_DIR) $(VLC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(VLC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
 	fi
-	(cd $(VLC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VLC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VLC_LDFLAGS)" \
@@ -207,8 +208,8 @@ endif
 	sed -i -e 's|-I$$[^ ]*/include|-I$(STAGING_INCLUDE_DIR)|g' \
 	       -e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' \
 	       -e 's|-I/opt/include|-I$(STAGING_INCLUDE_DIR)|g' \
-	       $(VLC_BUILD_DIR)/vlc-config
-	$(PATCH_LIBTOOL) $(VLC_BUILD_DIR)/libtool
+	       $(@D)/vlc-config
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 vlc-unpack: $(VLC_BUILD_DIR)/.configured
@@ -218,7 +219,7 @@ vlc-unpack: $(VLC_BUILD_DIR)/.configured
 #
 $(VLC_BUILD_DIR)/.built: $(VLC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(VLC_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -231,7 +232,7 @@ vlc: $(VLC_BUILD_DIR)/.built
 #
 $(VLC_BUILD_DIR)/.staged: $(VLC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(VLC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 vlc-stage: $(VLC_BUILD_DIR)/.staged
