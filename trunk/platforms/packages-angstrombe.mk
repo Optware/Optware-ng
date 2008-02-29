@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	antinat \
 	atftp atk bitchx bzflag dircproxy \
 	ecl eggdrop fcgi gconv-modules gtk \
-	ipac-ng iptables iptraf ivorbis-tools \
+	iftop ipac-ng iptables iptraf ivorbis-tools \
 	ldconfig libcapi20 madplay microcom monotone mt-daapd \
 	netatalk nfs-utils nget \
 	phoneme-advanced player puppy \
