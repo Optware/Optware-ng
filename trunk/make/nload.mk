@@ -41,13 +41,17 @@ NLOAD_IPK_VERSION=1
 # NLOAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NLOAD_PATCHES=
+#NLOAD_PATCHES=$(NLOAD_SOURCE_DIR)/UINT_MAX.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-NLOAD_CPPFLAGS="-I$(STAGING_INCLUDE_DIR)/ncurses"
+NLOAD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+# ugly hack
+ifeq ($(OPTWARE_TARGET), $(filter ddwrt oleg openwrt-brcm24, $(OPTWARE_TARGET)))
+NLOAD_CPPFLAGS += -DUINT_MAX=4294967295U
+endif
 NLOAD_LDFLAGS=
 
 #
