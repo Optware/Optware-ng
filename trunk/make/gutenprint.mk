@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GUTENPRINT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gimp-print
-GUTENPRINT_VERSION=5.1.3
+GUTENPRINT_VERSION=5.1.6
 GUTENPRINT_SOURCE=gutenprint-$(GUTENPRINT_VERSION).tar.bz2
 GUTENPRINT_DIR=gutenprint-$(GUTENPRINT_VERSION)
 GUTENPRINT_UNZIP=bzcat
@@ -83,8 +83,8 @@ GUTENPRINT-FOOMATIC-DB_IPK=$(BUILD_DIR)/foomatic-db-gutenprint_$(GUTENPRINT_VERS
 .PHONY: gutenprint-source gutenprint-unpack gutenprint gutenprint-stage gutenprint-ipk gutenprint-clean gutenprint-dirclean gutenprint-check
 
 $(DL_DIR)/$(GUTENPRINT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GUTENPRINT_SITE)/$(GUTENPRINT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(GUTENPRINT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GUTENPRINT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 gutenprint-source: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT_PATCHES)
 
