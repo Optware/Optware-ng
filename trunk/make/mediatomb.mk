@@ -22,7 +22,7 @@
 #
 #MEDIATOMB_SVN_REPO=https://mediatomb.svn.sourceforge.net/svnroot/mediatomb/trunk
 #MEDIATOMB_SVN_REV=1096
-MEDIATOMB_VERSION=0.10.0
+MEDIATOMB_VERSION=0.11.0
 MEDIATOMB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mediatomb
 MEDIATOMB_SOURCE=mediatomb-$(MEDIATOMB_VERSION).tar.gz
 MEDIATOMB_DIR=mediatomb-$(MEDIATOMB_VERSION)
@@ -44,7 +44,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=2
+MEDIATOMB_IPK_VERSION=1
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -98,8 +98,8 @@ MEDIATOMB_IPK=$(BUILD_DIR)/mediatomb_$(MEDIATOMB_VERSION)-$(MEDIATOMB_IPK_VERSIO
 #
 $(DL_DIR)/$(MEDIATOMB_SOURCE):
 ifndef MEDIATOMB_SVN_REV
-	$(WGET) -P $(DL_DIR) $(MEDIATOMB_SITE)/$(MEDIATOMB_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MEDIATOMB_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MEDIATOMB_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(MEDIATOMB_DIR) && \
