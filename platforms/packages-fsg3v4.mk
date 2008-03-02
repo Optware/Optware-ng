@@ -9,6 +9,7 @@ SPECIFIC_PACKAGES = \
 # crosstool-native is not available (and therefore neither is optware-devel)
 # nfs-kernel is not useful, cause the kernel does not have NFSD enabled
 # ufsd is only for NSLU2 firmware
+# transmission: peer-msgs.c:1619: internal compiler error: in verify_local_live_at_start, at flow.c:546
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
@@ -30,6 +31,7 @@ BROKEN_PACKAGES = \
 	phoneme-advanced \
 	qemu qemu-libc-i386 \
 	quagga \
+	transmission \
 	\
 	openser \
 	snort \
