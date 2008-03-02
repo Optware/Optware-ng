@@ -23,7 +23,7 @@
 MPD_SITE=http://www.musicpd.org/uploads/files
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION=0.13.0
+MPD_VERSION=0.13.1
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.bz2
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=bzcat
@@ -94,7 +94,8 @@ MPD_IPK=$(BUILD_DIR)/mpd_$(MPD_VERSION)-$(MPD_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 $(DL_DIR)/$(MPD_SOURCE):
 ifndef MPD_SVN_REV
-	$(WGET) -P $(DL_DIR) $(MPD_SITE)/$(MPD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MPD_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(MPD_DIR) && \
