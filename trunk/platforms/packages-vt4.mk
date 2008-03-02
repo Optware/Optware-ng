@@ -8,7 +8,8 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	amule apache aspell \
-	asterisk asterisk14 asterisk14-chan-capi asterisk16 \
+	asterisk asterisk14 asterisk14-chan-capi \
+	asterisk16 asterisk16-addons \
 	atftp avahi \
 	bitlbee bsdgames btpd bzflag \
 	castget cdargs cherokee clamav ctorrent ctrlproxy cups \
