@@ -27,9 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OWW_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/oww
-OWW_VERSION=0.82.0
-#OWW_SITE=http://192.168.1.6/~sjm/oww
-#OWW_VERSION=0.82.0
+OWW_VERSION=0.82.1
 OWW_SOURCE=oww-$(OWW_VERSION).tar.gz
 OWW_DIR=oww-$(OWW_VERSION)
 OWW_UNZIP=zcat
@@ -126,6 +124,7 @@ $(OWW_BUILD_DIR)/.configured: $(DL_DIR)/$(OWW_SOURCE) $(OWW_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-gui \
+		--enable-maxtemp=24 \
 	)
 	touch $(OWW_BUILD_DIR)/.configured
 
