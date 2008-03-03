@@ -1,5 +1,5 @@
---- Python-3.0a2/Makefile.pre.in.orig	2007-12-06 11:32:31.000000000 -0800
-+++ Python-3.0a2/Makefile.pre.in	2007-12-07 16:09:15.000000000 -0800
+--- Python-3.0a3/Makefile.pre.in.orig	2008-02-25 04:39:23.000000000 -0800
++++ Python-3.0a3/Makefile.pre.in	2008-03-03 09:06:43.000000000 -0800
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -18,8 +18,8 @@
  BLDSHARED=	@BLDSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
  
-@@ -174,7 +176,8 @@
- UNICODE_OBJS=   @UNICODE_OBJS@
+@@ -173,7 +175,8 @@
+ LIBOBJS=	@LIBOBJS@
  
  PYTHON=		python$(EXE)
 -BUILDPYTHON=	python$(BUILDEXE)
@@ -28,7 +28,7 @@
  
  # === Definitions added by makesetup ===
  
-@@ -200,7 +203,8 @@
+@@ -199,7 +202,8 @@
  
  ##########################################################################
  # Parser
@@ -38,7 +38,7 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -340,10 +344,10 @@
+@@ -345,10 +349,10 @@
  
  # Default target
  all:		build_all
@@ -51,7 +51,7 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -479,12 +483,12 @@
+@@ -484,12 +488,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
@@ -68,8 +68,8 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -537,6 +541,16 @@
- 
+@@ -540,6 +544,16 @@
+                                              $(BYTESTR_DEPS)
  
  
 +#########################################################################
@@ -85,7 +85,7 @@
  ############################################################################
  # Header files
  
-@@ -713,7 +727,7 @@
+@@ -735,7 +749,7 @@
  		else	true; \
  		fi; \
  	done
@@ -94,7 +94,7 @@
  	if test -f libpython$(VERSION)$(SO); then \
  		if test "$(SO)" = .dll; then \
  			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
-@@ -923,8 +937,9 @@
+@@ -945,8 +959,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -106,7 +106,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1011,7 +1026,7 @@
+@@ -1033,7 +1048,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -115,7 +115,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1069,11 +1084,12 @@
+@@ -1091,11 +1106,12 @@
  	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
  
  clobber: clean rmtestturds docclean

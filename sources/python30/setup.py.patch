@@ -1,6 +1,6 @@
---- Python-3.0a1/setup.py.orig	2007-08-28 15:24:48.000000000 -0700
-+++ Python-3.0a1/setup.py	2007-09-01 13:34:43.000000000 -0700
-@@ -15,7 +15,7 @@
+--- Python-3.0a3/setup.py.orig	2008-02-03 08:51:08.000000000 -0800
++++ Python-3.0a3/setup.py	2008-03-03 09:06:43.000000000 -0800
+@@ -16,7 +16,7 @@
  from distutils.command.install_lib import install_lib
  
  # This global variable is used to hold the list of modules to be disabled.
@@ -9,7 +9,7 @@
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -236,6 +236,10 @@
+@@ -251,6 +251,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,15 +20,15 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -763,7 +767,6 @@
-             # is on an NFS server that goes away).
+@@ -793,7 +797,6 @@
              exts.append(Extension('_bsddb', ['_bsddb.c'],
+                                   depends = ['bsddb.h'],
                                    library_dirs=dblib_dir,
 -                                  runtime_library_dirs=dblib_dir,
                                    include_dirs=db_incs,
                                    libraries=dblibs))
          else:
-@@ -861,7 +864,6 @@
+@@ -891,7 +894,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,

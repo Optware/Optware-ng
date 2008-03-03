@@ -1,6 +1,6 @@
---- Python-3.0a1/Lib/site.py.orig	2007-08-29 16:11:13.000000000 -0700
-+++ Python-3.0a1/Lib/site.py	2007-09-01 13:34:43.000000000 -0700
-@@ -175,7 +175,7 @@
+--- Python-3.0a3/Lib/site.py.orig	2008-01-23 00:24:23.000000000 -0800
++++ Python-3.0a3/Lib/site.py	2008-03-03 09:06:43.000000000 -0800
+@@ -171,7 +171,7 @@
  
  def addsitepackages(known_paths):
      """Add site-packages (and possibly site-python) to sys.path"""

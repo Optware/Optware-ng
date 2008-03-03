@@ -1,5 +1,5 @@
---- Python-3.0a2/configure.in.orig	2007-12-06 11:32:31.000000000 -0800
-+++ Python-3.0a2/configure.in	2007-12-07 16:23:03.000000000 -0800
+--- Python-3.0a3/configure.in.orig	2008-02-14 00:27:37.000000000 -0800
++++ Python-3.0a3/configure.in	2008-03-03 09:22:52.000000000 -0800
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -12,7 +12,16 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -2374,34 +2379,10 @@
+@@ -734,7 +739,7 @@
+ 	    STRICT_PROTO="-Wstrict-prototypes"
+ 	fi
+         # For gcc 4.x we need to use -fwrapv so lets check if its supported
+-        if "$CC" -v --help 2>/dev/null |grep -- -fwrapv > /dev/null; then
++        if "$TARGET_CC" -v --help 2>/dev/null |grep -- -fwrapv > /dev/null; then
+            WRAP="-fwrapv"
+         fi
+ 	case $ac_cv_prog_cc_g in
+@@ -2383,34 +2388,10 @@
  # On Tru64, chflags seems to be present, but calling it will
  # exit Python
  AC_MSG_CHECKING(for chflags)
@@ -47,7 +56,7 @@
  
  dnl Check if system zlib has *Copy() functions
  dnl
-@@ -3421,39 +3402,8 @@
+@@ -3418,43 +3399,8 @@
  fi
  
  AC_MSG_CHECKING(for %zd printf() format support)
@@ -55,9 +64,9 @@
 -#include <stddef.h>
 -#include <string.h>
 -
--int main()
--{
--    char buffer[256];
+-#ifdef HAVE_SYS_TYPES_H
+-#include <sys/types.h>
+-#endif
 -
 -#ifdef HAVE_SSIZE_T
 -typedef ssize_t Py_ssize_t;
@@ -66,6 +75,10 @@
 -#else
 -typedef int Py_ssize_t;
 -#endif
+-
+-int main()
+-{
+-    char buffer[256];
 -
 -    if(sprintf(buffer, "%zd", (size_t)123) < 0)
 -       	return 1;
@@ -84,12 +97,12 @@
 -[AC_MSG_RESULT(yes)
 - AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])],
 - AC_MSG_RESULT(no))
-+AC_MSG_RESULT(yes)
++ AC_MSG_RESULT(yes)
 + AC_DEFINE(PY_FORMAT_SIZE_T, "z", [Define to printf format modifier for Py_ssize_t])
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3483,6 +3433,25 @@
+@@ -3484,6 +3430,25 @@
  done
  AC_MSG_RESULT(done)
  
