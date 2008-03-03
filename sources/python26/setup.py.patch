@@ -1,0 +1,38 @@
+--- Python-2.6a1/setup.py.orig	2008-02-22 19:09:44.000000000 -0800
++++ Python-2.6a1/setup.py	2008-03-03 09:44:19.000000000 -0800
+@@ -16,7 +16,7 @@
+ from distutils.command.install_lib import install_lib
+ 
+ # This global variable is used to hold the list of modules to be disabled.
+-disabled_module_list = []
++disabled_module_list = ['_tkinter', '_ctypes'] # '_sqlite',
+ 
+ def add_dir_to_list(dirlist, dir):
+     """Add the directory 'dir' to the list 'dirlist' (at the front) if
+@@ -251,6 +251,10 @@
+             self.announce('WARNING: skipping import check for Cygwin-based "%s"'
+                 % ext.name)
+             return
++        if True:
++            self.announce('WARNING: skipping import check for cross compiled "%s"'
++                % ext.name)
++            return
+         ext_filename = os.path.join(
+             self.build_lib,
+             self.get_ext_filename(self.get_ext_fullname(ext.name)))
+@@ -826,7 +830,6 @@
+             exts.append(Extension('_bsddb', ['_bsddb.c'],
+                                   depends = ['bsddb.h'],
+                                   library_dirs=dblib_dir,
+-                                  runtime_library_dirs=dblib_dir,
+                                   include_dirs=db_incs,
+                                   libraries=dblibs))
+         else:
+@@ -924,7 +927,6 @@
+                                   include_dirs=["Modules/_sqlite",
+                                                 sqlite_incdir],
+                                   library_dirs=sqlite_libdir,
+-                                  runtime_library_dirs=sqlite_libdir,
+                                   extra_link_args=sqlite_extra_link_args,
+                                   libraries=["sqlite3",]))
+         else:
