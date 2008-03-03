@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0a2
+PYTHON30_VERSION=3.0a3
 PYTHON30_VERSION_MAJOR=3.0
 PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
@@ -133,11 +133,10 @@ endif
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON30_DIR) $(PYTHON30_BUILD_DIR)
 	$(PYTHON30_UNZIP) $(DL_DIR)/$(PYTHON30_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cd $(BUILD_DIR)/$(PYTHON30_DIR); \
-	    cat $(PYTHON30_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON30_DIR) -p1; \
-	    autoconf configure.in > configure
-	mkdir $(PYTHON30_BUILD_DIR)
-	(cd $(PYTHON30_BUILD_DIR); \
+	cat $(PYTHON30_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON30_DIR) -p1
+	cd $(BUILD_DIR)/$(PYTHON30_DIR); autoconf configure.in > configure
+	mkdir $(@D)
+	(cd $(@D); \
 	( \
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
@@ -159,7 +158,7 @@ endif
 		--prefix=/opt \
 		--mandir=/opt/man \
 		--enable-shared \
-		--enable-unicode=ucs4 \
+		--with-wide-unicode \
 	)
 	touch $@
 
