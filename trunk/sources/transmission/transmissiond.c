@@ -315,13 +315,27 @@ static char * status(tr_torrent *tor)
   return string;
 }
 
+/* Percentage progress status */
+static int progress(tr_torrent *tor)
+{
+
+  const tr_stat    * s = tr_torrentStat( tor );
+
+  if( s->status & TR_STATUS_CHECK )
+    return 100.0 * s->percentDone;
+  else if( s->status & TR_STATUS_DOWNLOAD )
+    return 100.0 * s->percentDone;
+  else if( s->status & TR_STATUS_SEED  && uploadLimit > 0)
+    return 100.0*(s->rateUpload/uploadLimit);
+  return 0;
+}
+
 
 static void write_info(tr_torrent *tor, void * data UNUSED )
 {
   FILE *stream;
   char fn[MAX_PATH_LENGTH];
   const tr_stat    * s = tr_torrentStat( tor );
-  
   snprintf(fn, MAX_PATH_LENGTH, "%s/.status", tr_torrentGetFolder(tor));
   stream = fopen(fn, "w");
   if ( stream )
@@ -331,6 +345,7 @@ static void write_info(tr_torrent *tor, void * data UNUSED )
       fprintf(stream, "\"\nDOWNLOADED='%.1f'\nUPLOADED='%.1f'\n",
               (s->downloadedEver/1024)/1024.0f,
               (s->uploadedEver/1024)/1024.0f);
+      fprintf(stream, "PROGRESS=%d\n", progress(tor));
       fclose(stream);
     }
   else

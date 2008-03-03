@@ -63,24 +63,6 @@ _update_progress()
         if `grep -q transmissiond /proc/${PID}/cmdline 2> /dev/null` ; then
             kill -USR1 ${PID}
             sleep 1     
-            for TORRENT in ${WORK}/*/*.torrent ${TARGET}/*/*.torrent.seeding
-                do if [ -d "${TORRENT%/*}" ]; then
-                    INFO="${TORRENT%/*}/.info"  
-                    if [ -f "${INFO}" ]; then
-	                . "${INFO}"
-	                LOG="${TORRENT%/*}/.status"
-	                if [ -f "${LOG}" ]; then
-	                    .  "${LOG}"
-	                else
-	                    STATUS=".status not found for ${TORRENT}"
-	                fi
-                    else
-	                _clean_info
-                    fi
-                    _write_info
-                fi
-            done
-            UPLOADED=
             return      
         fi      
     else 
@@ -115,7 +97,12 @@ _stop_torrent ()
     if [ -f  "${INFO}"  ] ; then
 	. "${INFO}"
 	[ -z "${ENDTIME}" ] && ENDTIME=`date +"${DATE_FORMAT}"`
-	STATUS=`echo "${STATUS}"|sed -e 's/Progress: \([0-9\.]\{2,6\} %\).*/\1/p;d'`
+    	if [ -f "{TORRENT%/*}/.status" ]; then
+	    . "{TORRENT%/*}/.status"
+	    STATUS="downloaded: ${DOWNLOADED}, uploaded: ${UPLOADED}"
+	else
+	   STATUS=
+	fi
 	_write_info
 	_update_active
     fi
@@ -372,7 +359,18 @@ __list ()
 	       echo "${DUMMY}</td>"
 	    fi
 	    if [ -f "$P/.info" ] ; then
-		echo "<td>${STATUS}"
+		echo "<td><div style='position:relative;'>"
+		if [ ${DESC} = "Seeding" -o ${DESC} = "Active" ]; then 
+		    if [ -f "$P/.status" ]; then
+			. "$P/.status"
+			echo "<div class=bar style='width: ${PROGRESS}%;'></div>"
+		    else
+			STATUS="status not available"
+		    fi
+		else
+			STATUS=
+		fi
+		echo "<div style='position:relative;'>${STATUS}"
 		echo " Start: ${STARTTIME}"
 		[ -n "${ENDTIME}" ] && echo " End: ${ENDTIME}"
 		[ -n "${SCRAPE}" ] && echo " ${SCRAPE}"
@@ -385,12 +383,11 @@ __list ()
 		[ -n "${UPLOADED}" ] && echo " uploaded: ${UPLOADED} MB" 
 		[ -n "${NOTE}" ] && echo " ${NOTE}"
 		[ -f "${P}/.bypass" ] && echo ", bypassed"
-		echo "</td></tr>"
+		echo "</div></div></td></tr>"
 	    fi
 	    STARTTIME=
 	    ENDTIME=
 	    SCRAPE=
-	    STATUS=
 	    URL=
 	    UPLOADED=
 	    NOTE=
@@ -671,11 +668,12 @@ Content-type: text/html
   	text-align: left;
   	font-family: Tahoma, sans-serif, Arial;
   	font-weight: normal;
-  	padding-top: 4px;
-  	padding-bottom: 4px;
+  	padding-top: 3px;
+  	padding-bottom: 3px;
   	padding-left: 8px;
-  	padding-right: 0px; 
+ 	padding-right: 1px; 
   }
+  
   	  
   thead {
   	background: #7d7d7d;
@@ -729,6 +727,13 @@ Content-type: text/html
 	padding:0;
 	margin:0;
    }
+   .bar {
+	position: absolute;
+	top: -3px; 
+	bottom: -3px;
+	left: -1px;
+	background-color: #D3FFD3 ;
+   } 
   //-->
   </style>
 </head>
