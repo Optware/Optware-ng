@@ -1,0 +1,25 @@
+--- Python-2.4.3/setup.py.orig	2006-04-15 14:16:48.000000000 -0700
++++ Python-2.4.3/setup.py	2006-04-15 14:38:32.000000000 -0700
+@@ -429,9 +429,6 @@
+         if self.compiler.find_library_file(lib_dirs, 'readline'):
+             readline_libs = ['readline']
+             if self.compiler.find_library_file(lib_dirs,
+-                                                 'ncursesw'):
+-                readline_libs.append('ncursesw')
+-            elif self.compiler.find_library_file(lib_dirs,
+                                                  'ncurses'):
+                 readline_libs.append('ncurses')
+             elif self.compiler.find_library_file(lib_dirs, 'curses'):
+@@ -685,11 +682,7 @@
+ 
+         # Curses support, requiring the System V version of curses, often
+         # provided by the ncurses library.
+-        if (self.compiler.find_library_file(lib_dirs, 'ncursesw')):
+-            curses_libs = ['ncursesw']
+-            exts.append( Extension('_curses', ['_cursesmodule.c'],
+-                                   libraries = curses_libs) )
+-        elif (self.compiler.find_library_file(lib_dirs, 'ncurses')):
++        if (self.compiler.find_library_file(lib_dirs, 'ncurses')):
+             curses_libs = ['ncurses']
+             exts.append( Extension('_curses', ['_cursesmodule.c'],
+                                    libraries = curses_libs) )

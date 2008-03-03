@@ -1,0 +1,11 @@
+--- Python-2.6a1/Lib/site.py.orig	2008-01-21 13:19:07.000000000 -0800
++++ Python-2.6a1/Lib/site.py	2008-03-03 09:44:19.000000000 -0800
+@@ -177,7 +177,7 @@
+ 
+ def addsitepackages(known_paths):
+     """Add site-packages (and possibly site-python) to sys.path"""
+-    prefixes = [sys.prefix]
++    prefixes = [os.path.join(sys.prefix, "local"), sys.prefix]
+     if sys.exec_prefix != sys.prefix:
+         prefixes.append(sys.exec_prefix)
+     for prefix in prefixes:
