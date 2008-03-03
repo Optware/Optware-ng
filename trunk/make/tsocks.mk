@@ -37,7 +37,7 @@ TSOCKS_CONFLICTS=
 #
 # TSOCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-TSOCKS_IPK_VERSION=3
+TSOCKS_IPK_VERSION=4
 
 #
 # TSOCKS_CONFFILES should be a list of user-editable files
@@ -70,12 +70,15 @@ TSOCKS_SOURCE_DIR=$(SOURCE_DIR)/tsocks
 TSOCKS_IPK_DIR=$(BUILD_DIR)/tsocks-$(TSOCKS_VERSION)-ipk
 TSOCKS_IPK=$(BUILD_DIR)/tsocks_$(TSOCKS_VERSION)-$(TSOCKS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+.PHONY: tsocks-source tsocks-unpack tsocks tsocks-stage tsocks-ipk tsocks-clean tsocks-dirclean tsocks-check
+
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TSOCKS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TSOCKS_SITE)/$(TSOCKS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(TSOCKS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -100,11 +103,16 @@ tsocks-source: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
-	#$(MAKE) <bar>-stage <baz>-stage
+#	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TSOCKS_DIR) $(TSOCKS_BUILD_DIR)
 	$(TSOCKS_UNZIP) $(DL_DIR)/$(TSOCKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(TSOCKS_PATCHES) | patch -d $(BUILD_DIR)/$(TSOCKS_DIR) -p1
-	mv $(BUILD_DIR)/$(TSOCKS_DIR) $(TSOCKS_BUILD_DIR)
+	if test -n "$(TSOCKS_PATCHES)" ; \
+		then cat $(TSOCKS_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(TSOCKS_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(TSOCKS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(TSOCKS_DIR) $(@D) ; \
+	fi
 	(cd $(TSOCKS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TSOCKS_CPPFLAGS)" \
@@ -117,7 +125,7 @@ $(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 		--with-conf=/opt/etc/tsocks.conf \
 		--disable-nls \
 	)
-	touch $(TSOCKS_BUILD_DIR)/.configured
+	touch $(@)
 
 tsocks-unpack: $(TSOCKS_BUILD_DIR)/.configured
 
@@ -127,7 +135,7 @@ tsocks-unpack: $(TSOCKS_BUILD_DIR)/.configured
 $(TSOCKS_BUILD_DIR)/.built: $(TSOCKS_BUILD_DIR)/.configured
 	rm -f $(TSOCKS_BUILD_DIR)/.built
 	$(MAKE) -C $(TSOCKS_BUILD_DIR)
-	touch $(TSOCKS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -203,3 +211,9 @@ tsocks-clean:
 #
 tsocks-dirclean:
 	rm -rf $(BUILD_DIR)/$(TSOCKS_DIR) $(TSOCKS_BUILD_DIR) $(TSOCKS_IPK_DIR) $(TSOCKS_IPK)
+#
+#
+# Some sanity check for the package.
+#
+tsocks-check: $(TSOCKS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TSOCKS_IPK)
