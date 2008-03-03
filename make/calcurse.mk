@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALCURSE_SITE=http://culot.org/cgi-bin/get.cgi?
-CALCURSE_VERSION=1.9
+CALCURSE_VERSION=2.0
 CALCURSE_SOURCE=calcurse-$(CALCURSE_VERSION).tar.gz
 CALCURSE_DIR=calcurse-$(CALCURSE_VERSION)
 CALCURSE_UNZIP=zcat
