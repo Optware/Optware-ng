@@ -170,6 +170,9 @@ endif
 		--disable-wx \
 		--disable-nls \
 	)
+ifeq (, $(filter fsg3v4 syno-x07, $(OPTWARE_TARGET)))
+	sed -i -e 's/ -O3/ /g' $(@D)/libtransmission/Makefile
+endif
 #		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
 #		--verbose \
 	$(PATCH_LIBTOOL) $(@D)/libtool
