@@ -5,7 +5,7 @@
 ###########################################################
 
 RSYNC_SITE=http://www.samba.org/ftp/rsync
-RSYNC_VERSION=2.6.9
+RSYNC_VERSION=3.0.0
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
@@ -16,7 +16,7 @@ RSYNC_PRIORITY=optional
 RSYNC_DEPENDS=
 RSYNC_CONFLICTS=
 
-RSYNC_IPK_VERSION=4
+RSYNC_IPK_VERSION=1
 
 RSYNC_CONFFILES= \
 	/opt/etc/rsyncd.conf \
@@ -51,7 +51,8 @@ RSYNC_IPK_DIR=$(BUILD_DIR)/rsync-$(RSYNC_VERSION)-ipk
 RSYNC_IPK=$(BUILD_DIR)/rsync_$(RSYNC_VERSION)-$(RSYNC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(RSYNC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RSYNC_SITE)/$(RSYNC_SOURCE)
+	$(WGET) -P $(DL_DIR) $(RSYNC_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 rsync-source: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 
@@ -63,7 +64,7 @@ $(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 	$(RSYNC_UNZIP) $(DL_DIR)/$(RSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(RSYNC_PATCHES) | patch -d $(BUILD_DIR)/$(RSYNC_DIR) -p1
 	mv $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR)
-	(cd $(RSYNC_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSYNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RSYNC_LDFLAGS)" \
@@ -77,27 +78,27 @@ $(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 		--with-rsyncd-conf=/opt/etc/rsyncd.conf \
 		--disable-nls \
 	)
-	touch $(RSYNC_BUILD_DIR)/.configured
+	touch $@
 
 rsync-unpack: $(RSYNC_BUILD_DIR)/.configured
 
 $(RSYNC_BUILD_DIR)/.built: $(RSYNC_BUILD_DIR)/.configured
-	rm -f $(RSYNC_BUILD_DIR)/.built
-	$(MAKE) -C $(RSYNC_BUILD_DIR)
-	touch $(RSYNC_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 rsync: $(RSYNC_BUILD_DIR)/.built
 
 $(RSYNC_BUILD_DIR)/.staged: $(RSYNC_BUILD_DIR)/.built
-	rm -f $(RSYNC_BUILD_DIR)/.staged
-	$(MAKE) -C $(RSYNC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	$(STRIP_COMMAND) $(STAGING_DIR)/opt/bin/rsync
-	touch $(RSYNC_BUILD_DIR)/.staged
+	touch $@
 
 rsync-stage: $(RSYNC_BUILD_DIR)/.staged
 
 $(RSYNC_IPK_DIR)/CONTROL/control:
-	@install -d $(RSYNC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: rsync" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
