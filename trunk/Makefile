@@ -76,7 +76,7 @@ PERL_PACKAGES = \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-ip-country \
 	perl-lexical-persistence \
-	perl-libwww \
+	perl-libnet perl-libwww \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
 	perl-module-build perl-module-refresh perl-module-signature \
