@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.61
+GHOSTSCRIPT_VERSION=8.62
 GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
 GHOSTSCRIPT_UNZIP=bzcat
@@ -76,7 +76,8 @@ GHOSTSCRIPT_IPK=$(BUILD_DIR)/ghostscript_$(GHOSTSCRIPT_VERSION)-$(GHOSTSCRIPT_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GHOSTSCRIPT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GHOSTSCRIPT_SITE)/$(GHOSTSCRIPT_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GHOSTSCRIPT_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
