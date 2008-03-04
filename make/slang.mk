@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.1
-SLANG_VERSION=2.1.2
+SLANG_VERSION=2.1.3
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
@@ -31,6 +31,9 @@ SLANG_SECTION=lib
 SLANG_PRIORITY=optional
 SLANG_DEPENDS=
 SLANG_SUGGESTS=pcre, libpng
+ifneq (, $(filter libiconv, $(PACKAGES)))
+SLANG_SUGGESTS +=, libiconv
+endif
 SLANG_CONFLICTS=
 
 #
@@ -64,6 +67,11 @@ SLANG_CPPFLAGS+=-fno-builtin-exp -fno-builtin-ceil \
 endif
 SLANG_LDFLAGS=
 
+SLANG_CONFIGURE_ARGS = --with-pcre --with-png
+ifneq (, $(filter libiconv, $(PACKAGES)))
+SLANG_CONFIGURE_ARGS += --with-iconv
+endif
+
 #
 # SLANG_BUILD_DIR is the directory in which the build is done.
 # SLANG_SOURCE_DIR is the directory which holds all the
@@ -85,8 +93,8 @@ SLANG_IPK=$(BUILD_DIR)/slang_$(SLANG_VERSION)-$(SLANG_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SLANG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SLANG_SITE)/$(SLANG_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(SLANG_SOURCE)
+	wget -P $(DL_DIR) $(SLANG_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,8 +122,11 @@ slang-source: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES)
 # shown below to make various patches to it.
 #
 $(SLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES) make/slang.mk
+ifneq (, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	$(MAKE) libpng-stage pcre-stage
-	rm -rf $(BUILD_DIR)/$(SLANG_DIR) $(SLANG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SLANG_DIR) $(@D)
 	rm -f $(STAGING_INCLUDE_DIR)/slang.h $(STAGING_INCLUDE_DIR)/slcurses.h
 	rm -rf $(STAGING_LIB_DIR)/libslang.so* $(STAGING_LIB_DIR)/slang/v2
 	$(SLANG_UNZIP) $(DL_DIR)/$(SLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -123,10 +134,10 @@ $(SLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES) make/
 		then cat $(SLANG_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SLANG_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SLANG_DIR)" != "$(SLANG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SLANG_DIR) $(SLANG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SLANG_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SLANG_DIR) $(@D) ; \
 	fi
-	(cd $(SLANG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SLANG_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(SLANG_CPPFLAGS)" \
@@ -138,8 +149,9 @@ $(SLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG_SOURCE) $(SLANG_PATCHES) make/
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		$(SLANG_CONFIGURE_ARGS) \
 	)
-	sed -i -e '/^LIBS =/s|$$| $$(LDFLAGS)|' $(SLANG_BUILD_DIR)/modules/Makefile
+	sed -i -e '/^LIBS =/s|$$| $$(LDFLAGS)|' $(@D)/modules/Makefile
 #	$(PATCH_LIBTOOL) $(SLANG_BUILD_DIR)/libtool
 	touch $@
 
@@ -150,7 +162,7 @@ slang-unpack: $(SLANG_BUILD_DIR)/.configured
 #
 $(SLANG_BUILD_DIR)/.built: $(SLANG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SLANG_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -163,7 +175,7 @@ slang: $(SLANG_BUILD_DIR)/.built
 #
 $(SLANG_BUILD_DIR)/.staged: $(SLANG_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SLANG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-elf
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-elf
 	rm -f $(STAGING_LIB_DIR)/libslang.a
 	touch $@
 
