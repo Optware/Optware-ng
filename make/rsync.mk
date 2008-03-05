@@ -14,6 +14,9 @@ RSYNC_DESCRIPTION=fast remote file copy program (like rcp)
 RSYNC_SECTION=net
 RSYNC_PRIORITY=optional
 RSYNC_DEPENDS=
+ifneq (, $(filter libiconv, $(PACKAGES)))
+RSYNC_DEPENDS += libiconv
+endif
 RSYNC_CONFLICTS=
 
 RSYNC_IPK_VERSION=1
@@ -59,11 +62,14 @@ rsync-source: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 .PHONY: rsync-source rsync-unpack rsync rsync-stage rsync-ipk rsync-clean rsync-dirclean rsync-check
 
 $(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+ifneq (, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR)
 	$(RSYNC_UNZIP) $(DL_DIR)/$(RSYNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(RSYNC_PATCHES) | patch -d $(BUILD_DIR)/$(RSYNC_DIR) -p1
 	mv $(BUILD_DIR)/$(RSYNC_DIR) $(RSYNC_BUILD_DIR)
+	sed -i -e '/-o rounding/s|$$(CFLAGS) |&$$(CPPFLAGS) |' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSYNC_CPPFLAGS)" \
