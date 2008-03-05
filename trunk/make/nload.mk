@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-NLOAD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nload
+NLOAD_SITE=http://www.roland-riegel.de/nload
 NLOAD_VERSION=0.7.1
 NLOAD_SOURCE=nload-$(NLOAD_VERSION).tar.gz
 NLOAD_DIR=nload-$(NLOAD_VERSION)
@@ -35,7 +35,7 @@ NLOAD_CONFLICTS=
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=1
+NLOAD_IPK_VERSION=2
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
@@ -48,11 +48,13 @@ NLOAD_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 NLOAD_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
-# ugly hack
-ifeq ($(OPTWARE_TARGET), $(filter ddwrt oleg openwrt-brcm24, $(OPTWARE_TARGET)))
-NLOAD_CPPFLAGS += -DUINT_MAX=4294967295U
-endif
 NLOAD_LDFLAGS=
+
+ifeq ($(LIBC_STYLE), uclibc)
+ifdef TARGET_GXX
+NLOAD_CONFIGURE_OPTS = CXX=$(TARGET_GXX)
+endif
+endif
 
 #
 # NLOAD_BUILD_DIR is the directory in which the build is done.
@@ -106,15 +108,21 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 		cat $(NLOAD_PATCHES) | patch -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR)
+	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 \
+                autoreconf --verbose $(NLOAD_BUILD_DIR)
 	(cd $(NLOAD_BUILD_DIR); \
+		sed -i -e 's|/etc/nload.conf|/opt/etc/nload.conf|' \
+			docs/nload.1.in src/main.cpp ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NLOAD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NLOAD_LDFLAGS)" \
+		$(NLOAD_CONFIGURE_OPTS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-dependency-tracking \
 	)
 	touch $@
 
