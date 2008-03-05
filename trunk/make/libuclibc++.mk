@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=6
+LIBUCLIBC++_IPK_VERSION=7
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -58,7 +58,8 @@ LIBUCLIBC++_IPK_VERSION=6
 # LIBUCLIBC++_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/bin-Makefile.patch 
+LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/bin-Makefile.patch \
+	$(LIBUCLIBC++_SOURCE_DIR)/eabi_fix.patch
 
 ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch \
