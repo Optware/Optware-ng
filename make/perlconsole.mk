@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-PERLCONSOLE_SITE=http://www.sukria.net
-PERLCONSOLE_VERSION=0.3
+PERLCONSOLE_SITE=http://search.cpan.org/CPAN/authors/id/S/SU/SUKRIA
+PERLCONSOLE_VERSION=0.4
 PERLCONSOLE_SOURCE=perlconsole-$(PERLCONSOLE_VERSION).tar.gz
 PERLCONSOLE_DIR=perlconsole-$(PERLCONSOLE_VERSION)
 PERLCONSOLE_UNZIP=zcat
@@ -35,8 +35,8 @@ $(PERLCONSOLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLCONSOLE_SOURCE) $(PERLCONS
 	rm -rf $(BUILD_DIR)/$(PERLCONSOLE_DIR) $(PERLCONSOLE_BUILD_DIR)
 	$(PERLCONSOLE_UNZIP) $(DL_DIR)/$(PERLCONSOLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PERLCONSOLE_PATCHES) | patch -d $(BUILD_DIR)/$(PERLCONSOLE_DIR) -p1
-	mv $(BUILD_DIR)/$(PERLCONSOLE_DIR) $(PERLCONSOLE_BUILD_DIR)
-	(cd $(PERLCONSOLE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERLCONSOLE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -44,27 +44,27 @@ $(PERLCONSOLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLCONSOLE_SOURCE) $(PERLCONS
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(PERLCONSOLE_BUILD_DIR)/.configured
+	touch $@
 
 perlconsole-unpack: $(PERLCONSOLE_BUILD_DIR)/.configured
 
 $(PERLCONSOLE_BUILD_DIR)/.built: $(PERLCONSOLE_BUILD_DIR)/.configured
-	rm -f $(PERLCONSOLE_BUILD_DIR)/.built
-	$(MAKE) -C $(PERLCONSOLE_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 	PERL5LIB="$(STAGING_DIR)/opt/lib/perl5/site_perl"
-	touch $(PERLCONSOLE_BUILD_DIR)/.built
+	touch $@
 
 perlconsole: $(PERLCONSOLE_BUILD_DIR)/.built
 
 $(PERLCONSOLE_BUILD_DIR)/.staged: $(PERLCONSOLE_BUILD_DIR)/.built
-	rm -f $(PERLCONSOLE_BUILD_DIR)/.staged
-	$(MAKE) -C $(PERLCONSOLE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PERLCONSOLE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 perlconsole-stage: $(PERLCONSOLE_BUILD_DIR)/.staged
 
 $(PERLCONSOLE_IPK_DIR)/CONTROL/control:
-	@install -d $(PERLCONSOLE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: perlconsole" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
