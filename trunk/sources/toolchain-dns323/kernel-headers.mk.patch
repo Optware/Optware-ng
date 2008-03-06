@@ -1,0 +1,13 @@
+--- make/kernel-headers.mk.orig	2006-05-17 02:10:48.000000000 +0000
++++ make/kernel-headers.mk	2007-01-10 20:21:09.000000000 +0000
+@@ -43,8 +43,8 @@
+ 	    (cd $(LINUX_DIR)/include; ln -fs asm-$(ARCH)$(NOMMU) asm;) \
+ 	fi
+ 	touch $(LINUX_DIR)/include/linux/autoconf.h;
+-	echo "#define UTS_RELEASE \"2.4.21\"" > $(LINUX_DIR)/include/linux/version.h;
+-	echo "#define LINUX_VERSION_CODE 132117" >> $(LINUX_DIR)/include/linux/version.h;
++	echo "#define UTS_RELEASE \"2.6.6\"" > $(LINUX_DIR)/include/linux/version.h;
++	echo "#define LINUX_VERSION_CODE 132617" >> $(LINUX_DIR)/include/linux/version.h;
+ 	echo "#define KERNEL_VERSION(a,b,c) (((a) << 16) + ((b) << 8) + (c))" >> \
+ 		$(LINUX_DIR)/include/linux/version.h;
+ 	touch $(LINUX_DIR)/.configured
