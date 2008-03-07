@@ -25,7 +25,9 @@ ZLIB_CFLAGS+= -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
 ifneq (darwin,$(TARGET_OS))
+ifneq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
 ZLIB_MAKE_FLAGS=LDSHARED="$(TARGET_LD) -shared -soname,libz.so.1"
+endif
 endif
 
 ZLIB_BUILD_DIR=$(BUILD_DIR)/zlib
