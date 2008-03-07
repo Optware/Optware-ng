@@ -1,0 +1,30 @@
+--- nload/src/device.cpp.orig	2008-03-07 19:32:07.000000000 +0100
++++ nload/src/device.cpp	2008-03-07 19:54:16.000000000 +0100
+@@ -170,8 +170,13 @@
+ 
+     string unitString = Statistics::getUnitString(trafficFormat, value);
+     float unitFactor = Statistics::getUnitFactor(trafficFormat, value);
+-
++#if defined (__UCLIBC__)
++    float m = (float) value / unitFactor;
++    window.print(x, y) << description << ": " << int(m)<<'.'<< (int)(m*10)%10 << " " << unitString << "/s" << endl;
++#else
+     window.print(x, y) << fixed << setprecision(2) << description << ": " << ((float) value / unitFactor) << " " << unitString << "/s" << endl;
++#endif
++
+ }
+ 
+ void Device::printDataValue(Window& window, int x, int y, const std::string& description, long long value)
+@@ -181,7 +186,12 @@
+     string unitString = Statistics::getUnitString(dataFormat, value);
+     float unitFactor = Statistics::getUnitFactor(dataFormat, value);
+ 
++#if defined (__UCLIBC__)
++    float m = (float) value / unitFactor;
++    window.print(x, y) << description << ": " << int(m)<<'.'<< (int)(m*10)%10 << " " << unitString << endl;
++#else
+     window.print(x, y) << fixed << setprecision(2) << description << ": " << ((float) value / unitFactor) << " " << unitString << endl;
++#endif
+ }
+ 
+ void Device::printStatisticsIn(Window& window, int x, int y)

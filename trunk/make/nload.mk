@@ -35,13 +35,13 @@ NLOAD_CONFLICTS=
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=2
+NLOAD_IPK_VERSION=3
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NLOAD_PATCHES=$(NLOAD_SOURCE_DIR)/UINT_MAX.patch
+NLOAD_PATCHES=$(NLOAD_SOURCE_DIR)/uclibc-device-stream.patch
 
 #
 # If the compilation of the package requires additional
