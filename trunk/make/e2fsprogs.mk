@@ -21,7 +21,7 @@
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
 ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel ddwrt fsg3v4 oleg openwrt-ixp4xx syno-x07, $(OPTWARE_TARGET)))
-E2FSPROGS_VERSION=1.40.6
+E2FSPROGS_VERSION=1.40.7
 E2FSPROGS_IPK_VERSION=1
 else
 E2FSPROGS_VERSION=1.40.3
@@ -79,7 +79,8 @@ E2FSLIBS_IPK=$(BUILD_DIR)/e2fslibs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(E2FSPROGS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(E2FSPROGS_SITE)/$(E2FSPROGS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(E2FSPROGS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
