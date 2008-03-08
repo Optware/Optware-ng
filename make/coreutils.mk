@@ -74,6 +74,10 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 COREUTILS_LDFLAGS+= -liconv
 endif
+ifeq ($(OPTWARE_TARGET), dns323)
+# binutils too old, ld does not recognize --as-needed
+COREUTILS_CONFIG_ENVS=gl_cv_ignore_unused_libraries=none
+endif
 
 #
 # COREUTILS_BUILD_DIR is the directory in which the build is done.
@@ -96,7 +100,8 @@ COREUTILS_IPK=$(BUILD_DIR)/coreutils_$(COREUTILS_VERSION)-$(COREUTILS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(COREUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(COREUTILS_SITE)/$(COREUTILS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(COREUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -139,6 +144,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(COREUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(COREUTILS_LDFLAGS)" \
+		$(COREUTILS_CONFIG_ENVS) \
 		./configure \
 		--cache-file=config.cache \
 		--build=$(GNU_HOST_NAME) \
