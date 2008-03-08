@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MG_SITE=http://www.xs4all.nl/~hanb/software/mg
-MG_VERSION=20070918
+MG_VERSION=20080305
 MG_SOURCE=mg-$(MG_VERSION).tar.gz
 MG_DIR=mg-$(MG_VERSION)
 MG_UNZIP=zcat
@@ -78,8 +78,8 @@ MG_IPK=$(BUILD_DIR)/mg_$(MG_VERSION)-$(MG_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MG_SITE)/$(MG_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MG_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MG_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,14 +108,14 @@ mg-source: $(DL_DIR)/$(MG_SOURCE) $(MG_PATCHES)
 #
 $(MG_BUILD_DIR)/.configured: $(DL_DIR)/$(MG_SOURCE) $(MG_PATCHES) make/mg.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(MG_DIR) $(MG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MG_DIR) $(@D)
 	$(MG_UNZIP) $(DL_DIR)/$(MG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MG_PATCHES)" ; \
 		then cat $(MG_PATCHES) | \
 		patch -bd $(BUILD_DIR)/$(MG_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MG_DIR)" != "$(MG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MG_DIR) $(MG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MG_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MG_DIR) $(@D) ; \
 	fi
 #	(cd $(MG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -129,9 +129,9 @@ $(MG_BUILD_DIR)/.configured: $(DL_DIR)/$(MG_SOURCE) $(MG_PATCHES) make/mg.mk
 		--disable-nls \
 		--disable-static \
 	)
-	cd $(MG_BUILD_DIR); ./configure
+	cd $(@D); ./configure
 ifeq (uclibc, $(LIBC_STYLE))
-	cd $(MG_BUILD_DIR); \
+	cd $(@D); \
 	sed -i.orig -e 's/ifdef __GLIBC__/if 0/' \
 buffer.c \
 dired.c \
@@ -151,7 +151,7 @@ mg-unpack: $(MG_BUILD_DIR)/.configured
 #
 $(MG_BUILD_DIR)/.built: $(MG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MG_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		prefix=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(MG_CPPFLAGS)" \
