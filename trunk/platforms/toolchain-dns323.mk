@@ -65,6 +65,10 @@ toolchain-unpack: $(TOOLCHAIN_BUILD_DIR)/.unpacked
 $(TOOLCHAIN_BUILD_DIR)/.built: $(TOOLCHAIN_BUILD_DIR)/.unpacked
 	rm -f $@
 	$(MAKE) -C $(@D)
+	cd $(TARGET_LIBDIR); \
+	for f in crypt dl m nsl pthread resolv rt thread_db util; \
+		do ln -sf lib$${f}-* lib$${f}.so; done; \
+	ln -sf libuClibc-0.9.28.so libc.so
 	touch $@
 
 toolchain: $(TOOLCHAIN_BUILD_DIR)/.built
