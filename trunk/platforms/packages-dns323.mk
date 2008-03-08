@@ -13,9 +13,12 @@ BROKEN_PACKAGES = \
 	launchtool ldconfig liba52 lighttpd mcabber mediatomb monotone \
 	mt-daapd mtr mysql-connector-odbc nagios-plugins nail net-snmp nfs-server \
 	nfs-utils nrpe ntop openser openssh pango pcapsipdump \
-	phoneme-advanced php php-thttpd picolisp privoxy hplip py-mysql \
-	qemu rssh sablevm simh sm srelay tcpwrappers \
+	phoneme-advanced \
+	php php-apache php-thttpd \
+	picolisp privoxy hplip py-mysql \
+	qemu quagga \
+	rssh sablevm simh sm srelay tcpwrappers \
 	transcode tz uemacs util-linux util-linux-ng vlc vnstat \
 	vte xauth xaw xchat xmu xt xterm \
-	slimserver
+	slimserver \
 
