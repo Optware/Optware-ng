@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
 	9base appweb asterisk asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
-	bash btpd castget coreutils dspam eaccelerator fcgi \
+	bash btpd castget dspam eaccelerator fcgi \
 	ficy fish freeradius fuppes ghostscript gnu-smalltalk gpsd \
 	gtmess gtk ice id3lib ipac-ng iptraf kismet \
 	launchtool ldconfig liba52 lighttpd mcabber mediatomb monotone \
