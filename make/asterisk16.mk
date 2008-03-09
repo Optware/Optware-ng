@@ -24,7 +24,7 @@ ASTERISK16_SOURCE_TYPE=tarball
 #ASTERISK16_SOURCE_TYPE=svn
 
 ASTERISK16_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK16_BASE_VERSION=1.6.0-beta4
+ASTERISK16_BASE_VERSION=1.6.0-beta5
 
 ifeq ($(ASTERISK16_SOURCE_TYPE), svn)
 ASTERISK16_SVN=http://svn.digium.com/svn/asterisk/branches/1.6
@@ -389,8 +389,11 @@ $(ASTERISK16_IPK): $(ASTERISK16_BUILD_DIR)/.built
 	echo "noload => func_odbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_alsa.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_console.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_gtalk.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_jingle.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_mgcp.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => chan_skinny.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => chan_oss.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => codec_ilbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
@@ -398,6 +401,10 @@ $(ASTERISK16_IPK): $(ASTERISK16_BUILD_DIR)/.built
 	echo "noload => codec_speex.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_festival.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_amd.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "noload => app_queue.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_ldap.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
 	echo "noload => res_config_odbc.so" >> $(ASTERISK16_IPK_DIR)/opt/etc/asterisk/modules.conf
