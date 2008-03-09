@@ -1,0 +1,136 @@
+diff -Naur mediatomb-0.11.0.orig/configure.ac mediatomb-0.11.0/configure.ac
+--- mediatomb-0.11.0.orig/configure.ac	2008-03-01 23:48:54.000000000 +0100
++++ mediatomb-0.11.0/configure.ac	2008-03-06 20:47:20.000000000 +0100
+@@ -24,7 +24,7 @@
+ #    version 2 along with MediaTomb; if not, write to the Free Software
+ #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+ #    
+-#    $Id: configure.ac 1722 2008-03-01 20:23:14Z jin_eld $
++#    $Id: configure.ac 1734 2008-03-06 19:53:55Z jin_eld $
+ #
+ #*MT*
+ 
+@@ -471,10 +471,23 @@
+ [enable external transcoding support (default: yes)])
+               ],
+               [
+-                if test "x$enableval" = xno; then
+-                    EXTERNAL_TRANSCODING=0
+-                else
++                if test "x$enableval" = xyes; then
+                     EXTERNAL_TRANSCODING=1
++                else
++                    EXTERNAL_TRANSCODING=0
++                fi
++              ]
++)
++
++SQLITE_BACKUP_ENABLED=0
++AC_ARG_ENABLE([sqlite-backup-defaults],
++                      [
++AC_HELP_STRING([--enable-sqlite-backup-defaults],
++[enable sqlite database backup settings in config.xml by default (default: no)])
++              ],
++              [
++                if test "x$enableval" = xyes; then
++                    SQLITE_BACKUP_ENABLED=1
+                 fi
+               ]
+ )
+@@ -1224,10 +1237,19 @@
+     AC_DEFINE([HAVE_SQLITE3], [1], [sqlite3 library presence])
+     AC_SUBST(SQLITE3_CXXFLAGS)
+     AC_SUBST(SQLITE3_LIBS)
++
++    if test $SQLITE_BACKUP_ENABLED -eq 1; then
++        AC_DEFINE([SQLITE_BACKUP_ENABLED], [1], [enable sqlite db backup settings in config.xml by default])
++    fi
+ else
+     if test "x$SQLITE3_EN" = xyes; then
+         AC_MSG_ERROR(unable to configure sqlite3 support)
+     fi
++
++    if test $SQLITE_BACKUP_ENABLED -eq 1; then
++        AC_MSG_ERROR(You specified the option to use sqlite backup settings but the sqlite library is not available)
++    fi
++
+ fi
+ 
+ LDFLAGS="$LDFLAGS_SAVE"
+@@ -1943,7 +1965,7 @@
+ fi
+ 
+ if test "x$TAGLIB_OK" = xyes; then
+-    LDFLAGS="$TAGLIB_LIBS"
++    LDFLAGS="$LDFLAGS $TAGLIB_LIBS"
+     AC_CHECK_LIB(tag, main, [],
+         [TAGLIB_OK=missing]
+     )
+@@ -2919,8 +2941,26 @@
+                                 AC_MSG_RESULT([no])
+                             fi
+                             INOTIFY_OK=missing
++                        ],
++                        [
++                            if test "x$INOTIFY_EN" = xyes; then
++                                AC_MSG_RESULT([selecting yes for cross compiling]) 
++                                INOTIFY_OK=yes
++                            else
++                                AC_MSG_RESULT([selecting no for cross compiling]) 
++                                INOTIFY_OK=no
++                            fi
+                         ])
+ 
++                ],
++                [
++                    if test "x$INOTIFY_EN" = xyes; then
++                        AC_MSG_RESULT([selecting yes for cross compiling]) 
++                        INOTIFY_OK=yes
++                    else
++                        AC_MSG_RESULT([selecting no for cross compiling]) 
++                        INOTIFY_OK=no
++                    fi
+                 ])
+ fi
+ 
+diff -Naur mediatomb-0.11.0.orig/src/config_manager.cc mediatomb-0.11.0/src/config_manager.cc
+--- mediatomb-0.11.0.orig/src/config_manager.cc	2008-03-01 23:48:36.000000000 +0100
++++ mediatomb-0.11.0/src/config_manager.cc	2008-03-06 20:47:32.000000000 +0100
+@@ -24,7 +24,7 @@
+     version 2 along with MediaTomb; if not, write to the Free Software
+     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+     
+-    $Id: config_manager.cc 1717 2008-03-01 19:25:05Z jin_eld $
++    $Id: config_manager.cc 1734 2008-03-06 19:53:55Z jin_eld $
+ */
+ 
+ /// \file config_manager.cc
+@@ -385,6 +385,13 @@
+     Ref<Element> sqlite3(new Element(_("sqlite3")));
+     sqlite3->setAttribute(_("enabled"), _(DEFAULT_SQLITE_ENABLED));
+     sqlite3->appendTextChild(_("database-file"), _(DEFAULT_SQLITE3_DB_FILENAME));
++#ifdef SQLITE_BACKUP_ENABLED
++//    <backup enabled="no" interval="6000"/>
++    Ref<Element> backup(new Element(_("backup")));
++    backup->setAttribute(_("enabled"), _(YES));
++    backup->setAttribute(_("interval"), String::from(DEFAULT_SQLITE_BACKUP_INTERVAL));
++    sqlite3->appendElementChild(backup);
++#endif
+     storage->appendElementChild(sqlite3);
+ #endif
+ #ifdef HAVE_MYSQL
+@@ -889,9 +896,13 @@
+ 
+         NEW_BOOL_OPTION(tmp_bool);
+         SET_BOOL_OPTION(CFG_SERVER_STORAGE_SQLITE_RESTORE);
+-
++#ifndef SQLITE_BACKUP_ENABLED
++        temp = getOption(_("/server/storage/sqlite3/backup/attribute::enabled"),
++                _(YES));
++#else
+         temp = getOption(_("/server/storage/sqlite3/backup/attribute::enabled"),
+                 _(DEFAULT_SQLITE_BACKUP_ENABLED));
++#endif
+         if (!validateYesNo(temp))
+             throw _Exception(_("Error in config file: incorrect parameter "
+                         "for <backup enabled=\"\" /> attribute"));

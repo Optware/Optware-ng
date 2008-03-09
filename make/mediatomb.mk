@@ -31,12 +31,12 @@ MEDIATOMB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEDIATOMB_DESCRIPTION=UPnP AV Mediaserver for Linux.
 MEDIATOMB_SECTION=multimedia
 MEDIATOMB_PRIORITY=optional
-MEDIATOMB_DEPENDS=file, libexif, libstdc++, ossp-js, sqlite, zlib
+MEDIATOMB_DEPENDS=file, libexif, libstdc++, ossp-js, sqlite, zlib, expat
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MEDIATOMB_DEPENDS+=, libiconv
 endif
-ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
-MEDIATOMB_DEPENDS+=, id3lib
+ifeq (taglib, $(filter taglib, $(PACKAGES)))
+MEDIATOMB_DEPENDS+=, taglib
 endif
 MEDIATOMB_SUGGESTS=
 MEDIATOMB_CONFLICTS=
@@ -44,17 +44,19 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=1
+MEDIATOMB_IPK_VERSION=2
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
-#MEDIATOMB_CONFFILES=/opt/etc/mediatomb.conf /opt/etc/init.d/SXXmediatomb
+MEDIATOMB_CONFFILES=/opt/etc/mediatomb.conf \
+					/opt/etc/init.d/S90mediatomb \
+					/opt/etc/default/mediatomb
 
 #
 # MEDIATOMB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MEDIATOMB_PATCHES=$(MEDIATOMB_SOURCE_DIR)/configure.patch
+MEDIATOMB_PATCHES=$(MEDIATOMB_SOURCE_DIR)/mediatomb_nas.patch
 
 #
 # If the compilation of the package requires additional
@@ -68,12 +70,11 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MEDIATOMB_LDFLAGS+= -liconv
 endif
 
-ifneq (id3lib, $(filter id3lib, $(PACKAGES)))
+ifneq (taglib, $(filter taglib, $(PACKAGES)))
 MEDIATOMB_CONFIG_ARGS=--disable-id3lib --disable-taglib
 else
-MEDIATOMB_CONFIG_ARGS=--enable-id3lib \
-		--with-id3lib-h=$(STAGING_INCLUDE_DIR) \
-		--with-id3lib-libs=$(STAGING_LIB_DIR)
+MEDIATOMB_CONFIG_ARGS=--enable-taglib \
+		--with-taglib-cfg=$(STAGING_PREFIX)/bin/taglib-config
 endif
 
 #
@@ -139,8 +140,8 @@ $(MEDIATOMB_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIATOMB_SOURCE) $(MEDIATOMB_PA
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
-ifeq (id3lib, $(filter id3lib, $(PACKAGES)))
-	$(MAKE) id3lib-stage
+ifeq (taglib, $(filter taglib, $(PACKAGES)))
+	$(MAKE) taglib-stage
 endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -150,17 +151,18 @@ endif
 	$(MAKE) libexif-stage
 	$(MAKE) sqlite-stage
 	$(MAKE) zlib-stage
+	$(MAKE) expat-stage
 	rm -rf $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR)
 	$(MEDIATOMB_UNZIP) $(DL_DIR)/$(MEDIATOMB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MEDIATOMB_PATCHES)" ; \
 		then cat $(MEDIATOMB_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MEDIATOMB_DIR) -p0 ; \
+		patch -d $(BUILD_DIR)/$(MEDIATOMB_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MEDIATOMB_DIR)" != "$(MEDIATOMB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(MEDIATOMB_BUILD_DIR) ; \
 	fi
 	cd $(MEDIATOMB_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
+		ACLOCAL=aclocal-1.10 AUTOMAKE=automake-1.10 autoreconf -vif
 	(cd $(MEDIATOMB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \
@@ -173,9 +175,12 @@ endif
 		--enable-libjs \
 		--enable-libexif \
 		--enable-libmagic \
+		--enable-inotify \
+		--disable-ffmpeg \
+		--disable-curl \
+		--enable-external-transcoding \
 		--disable-mysql \
 		--disable-rpl-malloc \
-		--disable-large-file \
 		--enable-sqlite3 \
 		--disable-fseeko-check \
 		$(MEDIATOMB_CONFIG_ARGS) \
@@ -187,7 +192,6 @@ endif
 		--with-magic-libs=$(STAGING_LIB_DIR) \
 		--with-sqlite3-h=$(STAGING_INCLUDE_DIR) \
 		--with-sqlite3-libs=$(STAGING_LIB_DIR) \
-		--disable-inotify \
 		--disable-nls \
 		--disable-static \
 	)
@@ -253,15 +257,20 @@ $(MEDIATOMB_IPK_DIR)/CONTROL/control:
 $(MEDIATOMB_IPK): $(MEDIATOMB_BUILD_DIR)/.built
 	rm -rf $(MEDIATOMB_IPK_DIR) $(BUILD_DIR)/mediatomb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MEDIATOMB_BUILD_DIR) DESTDIR=$(MEDIATOMB_IPK_DIR) install-strip
-#	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/
-#	install -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb.conf $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb.conf
-#	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(MEDIATOMB_SOURCE_DIR)/rc.mediatomb $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/SXXmediatomb
+	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/
+	install -d $(MEDIATOMB_IPK_DIR)/opt/var/run/
+	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/init.d
+	install -d $(MEDIATOMB_IPK_DIR)/opt/var/lock
+	install -d $(MEDIATOMB_IPK_DIR)/opt/var/log
+	install -d $(MEDIATOMB_IPK_DIR)/opt/etc/default
+	install -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-conf-optware $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb.conf
+	install -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-default-optware $(MEDIATOMB_IPK_DIR)/opt/etc/default/mediatomb
+	install -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-service-optware $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/S90mediatomb
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/SXXmediatomb
 	$(MAKE) $(MEDIATOMB_IPK_DIR)/CONTROL/control
 #	install -m 755 $(MEDIATOMB_SOURCE_DIR)/postinst $(MEDIATOMB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(MEDIATOMB_SOURCE_DIR)/prerm $(MEDIATOMB_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-prerm-optware $(MEDIATOMB_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/CONTROL/prerm
 	echo $(MEDIATOMB_CONFFILES) | sed -e 's/ /\n/g' > $(MEDIATOMB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MEDIATOMB_IPK_DIR)
