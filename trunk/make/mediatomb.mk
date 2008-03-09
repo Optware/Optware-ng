@@ -44,7 +44,7 @@ MEDIATOMB_CONFLICTS=
 #
 # MEDIATOMB_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIATOMB_IPK_VERSION=2
+MEDIATOMB_IPK_VERSION=3
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
@@ -75,6 +75,12 @@ MEDIATOMB_CONFIG_ARGS=--disable-id3lib --disable-taglib
 else
 MEDIATOMB_CONFIG_ARGS=--enable-taglib \
 		--with-taglib-cfg=$(STAGING_PREFIX)/bin/taglib-config
+endif
+# inotify starts at linux 2.6.13, don't even try with linux 2.4
+ifeq (, $(filter module-init-tools, $(PACKAGES)))
+MEDIATOMB_CONFIG_ARGS +=--disable-inotify
+else
+MEDIATOMB_CONFIG_ARGS +=--enable-inotify
 endif
 
 #
@@ -175,7 +181,6 @@ endif
 		--enable-libjs \
 		--enable-libexif \
 		--enable-libmagic \
-		--enable-inotify \
 		--disable-ffmpeg \
 		--disable-curl \
 		--enable-external-transcoding \
