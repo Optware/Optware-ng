@@ -170,6 +170,11 @@ else
 		rm -f config; \
 		printf "### Target Arch\nARCH = `echo $(GNU_TARGET_NAME) | sed s/-linux.*//`\n" > config; \
 		printf "### Target OS\nOS = `echo $(GNU_TARGET_NAME) | sed s/.*-linux/linux/`\n" >> config; \
+	)
+ifneq (, $(filter -fPIC, $(STAGING_CPPFLAGS)))
+	echo "CFLAGS = -fPIC" >> $(@D)/Cross/config
+endif
+	(cd $(PERL_BUILD_DIR)/Cross; \
 		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) ] && \
 		cp -f $(PERL_SOURCE_DIR)/Cross/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
 		( [ -e $(PERL_SOURCE_DIR)/Cross/config.sh-$(GNU_TARGET_NAME) ] && \
@@ -190,7 +195,7 @@ endif
 	if test -n "$(PERL_POST_CONFIGURE_PATCHES)" ; then \
 		cat $(PERL_POST_CONFIGURE_PATCHES) | patch -d $(PERL_BUILD_DIR) -p0 ; \
 	fi
-	touch $(PERL_BUILD_DIR)/.configured
+	touch $@
 
 perl-unpack: $(PERL_BUILD_DIR)/.configured
 
