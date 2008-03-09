@@ -249,6 +249,9 @@ asterisk16-source: $(DL_DIR)/$(ASTERISK16_SOURCE) $(ASTERISK16_PATCHES)
 #
 $(ASTERISK16_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK16_SOURCE) $(ASTERISK16_PATCHES) make/asterisk16.mk
 	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 ifeq (jabberd, $(filter jabberd, $(PACKAGES)))
 	$(MAKE) jabberd-stage
 endif
