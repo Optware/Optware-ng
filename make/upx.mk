@@ -21,12 +21,12 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 UPX_SITE=http://upx.sourceforge.net/download
-UPX_VERSION=3.01
+UPX_VERSION=3.02
 UPX_SOURCE=upx-$(UPX_VERSION)-src.tar.bz2
 UPX_DIR=upx-$(UPX_VERSION)-src
 UPX_UNZIP=bzcat
 UPX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-UPX_DESCRIPTION=Describe upx here.
+UPX_DESCRIPTION=UPX is a free, portable, extendable, high-performance executable packer for several different executable formats.
 UPX_SECTION=util
 UPX_PRIORITY=optional
 UPX_DEPENDS=ucl, zlib
