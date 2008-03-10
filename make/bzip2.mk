@@ -17,7 +17,7 @@ BZIP2_PRIORITY=optional
 BZIP2_DEPENDS=
 BZIP2_CONFLICTS=
 
-BZIP2_IPK_VERSION=2
+BZIP2_IPK_VERSION=3
 
 BZIP2_BUILD_DIR=$(BUILD_DIR)/bzip2
 BZIP2_SOURCE_DIR=$(SOURCE_DIR)/bzip2
@@ -32,9 +32,10 @@ $(DL_DIR)/$(BZIP2_SOURCE):
 bzip2-source: $(DL_DIR)/$(BZIP2_SOURCE)
 
 $(BZIP2_BUILD_DIR)/.configured: $(DL_DIR)/$(BZIP2_SOURCE)
-	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BZIP2_DIR) $(@D)
 	$(BZIP2_UNZIP) $(DL_DIR)/$(BZIP2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(BZIP2_DIR) $(BZIP2_BUILD_DIR)
+	mv $(BUILD_DIR)/$(BZIP2_DIR) $(@D)
+	sed -i -e 's/^CFLAGS *=/&$$(CPPFLAGS) /' $(@D)/Makefile*
 	touch $@
 
 bzip2-unpack: $(BZIP2_BUILD_DIR)/.configured
@@ -44,11 +45,13 @@ $(BZIP2_BUILD_DIR)/.built: $(BZIP2_BUILD_DIR)/.configured
 	$(MAKE) -C $(@D) \
 		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZIP2_CPPFLAGS)" \
 		-f Makefile \
 		libbz2.a bzip2 bzip2recover
 	$(MAKE) -C $(@D) \
 		PREFIX=/opt \
 		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZIP2_CPPFLAGS)" \
 		-f Makefile-libbz2_so
 	touch $@
 
