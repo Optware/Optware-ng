@@ -36,16 +36,27 @@ LIGHTTPD_DESCRIPTION=A fast webserver with minimal memory footprint.
 LIGHTTPD_SECTION=net
 LIGHTTPD_PRIORITY=optional
 LIGHTTPD_DEPENDS=pcre, zlib, libstdc++
-LIGHTTPD_SUGGESTS=bzip2, e2fsprogs, libmemcache, libxml2, lua, memcached, mysql, openssl, sqlite
+
+LIGHTTPD_SUGGESTS=bzip2, e2fsprogs, libmemcache, libxml2, lua, memcached, openssl, sqlite
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 LIGHTTPD_SUGGESTS+=, openldap-libs
+endif
+
+ifeq (mysql, $(filter mysql, $(PACKAGES)))
+ifneq (dns323, $(OPTWARE_TARGET))
+LIGHTTPD_WITH_MYSQL=yes
+endif
+endif
+
+ifdef LIGHTTPD_WITH_MYSQL
+LIGHTTPD_SUGGESTS+=, mysql
 endif
 LIGHTTPD_CONFLICTS=
 
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=3
+LIGHTTPD_IPK_VERSION=4
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -66,6 +77,12 @@ LIGHTTPD_PATCHES=\
 #
 LIGHTTPD_CPPFLAGS=
 LIGHTTPD_LDFLAGS=
+
+ifdef LIGHTTPD_WITH_MYSQL
+LIGHTTPD_CONFIG_ARGS=--with-mysql=$(STAGING_PREFIX)/bin/mysql_config
+else
+LIGHTTPD_CONFIG_ARGS=--without-mysql
+endif
 
 #
 # LIGHTTPD_BUILD_DIR is the directory in which the build is done.
@@ -88,7 +105,8 @@ LIGHTTPD_IPK=$(BUILD_DIR)/lighttpd_$(LIGHTD_VERSION)-$(LIGHTTPD_IPK_VERSION)_$(T
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIGHTTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIGHTTPD_SITE)/$(LIGHTTPD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIGHTTPD_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -117,9 +135,12 @@ lighttpd-source: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 #
 $(LIGHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIGHTTPD_SOURCE) $(LIGHTTPD_PATCHES)
 	$(MAKE) bzip2-stage libmemcache-stage libxml2-stage lua-stage memcached-stage
-	$(MAKE) mysql-stage openssl-stage pcre-stage sqlite-stage zlib-stage
+	$(MAKE) openssl-stage pcre-stage sqlite-stage zlib-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
+endif
+ifdef LIGHTTPD_WITH_MYSQL
+	$(MAKE) mysql-stage
 endif
 	rm -rf $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR)
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -130,7 +151,7 @@ endif
 	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(LIGHTTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
 	fi
-	(cd $(LIGHTTPD_BUILD_DIR); \
+	(cd $(@D); \
 		sed -i '/#define _CONFIG_PARSER_H_/a#include <linux/limits.h>' src/configfile.h; \
 		sed -i '/cross_compiling.*WITH_PCRE/s/"x$$cross_compiling" = xno -a //' configure; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -150,7 +171,7 @@ endif
 		--with-ldap \
 		--with-lua \
 		--with-memcache \
-		--with-mysql=$(STAGING_PREFIX)/bin/mysql_config \
+		$(LIGHTTPD_CONFIG_ARGS) \
 		--with-pcre \
 		--with-openssl \
 		--with-webdav-locks \
@@ -158,8 +179,8 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIGHTTPD_BUILD_DIR)/libtool
-	touch $(LIGHTTPD_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 lighttpd-unpack: $(LIGHTTPD_BUILD_DIR)/.configured
 
@@ -167,9 +188,9 @@ lighttpd-unpack: $(LIGHTTPD_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIGHTTPD_BUILD_DIR)/.built: $(LIGHTTPD_BUILD_DIR)/.configured
-	rm -f $(LIGHTTPD_BUILD_DIR)/.built
-	$(MAKE) -C $(LIGHTTPD_BUILD_DIR)
-	touch $(LIGHTTPD_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -180,9 +201,9 @@ lighttpd: $(LIGHTTPD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIGHTTPD_BUILD_DIR)/.staged: $(LIGHTTPD_BUILD_DIR)/.built
-	rm -f $(LIGHTTPD_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIGHTTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(LIGHTTPD_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 lighttpd-stage: $(LIGHTTPD_BUILD_DIR)/.staged
 
@@ -191,7 +212,7 @@ lighttpd-stage: $(LIGHTTPD_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/lighttpd
 #
 $(LIGHTTPD_IPK_DIR)/CONTROL/control:
-	@install -d $(LIGHTTPD_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: lighttpd" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
