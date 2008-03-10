@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-WHOIS_SITE=http://ftp.debian.org/debian/pool/main/w/whois/
-WHOIS_VERSION=4.7.22
+WHOIS_SITE=http://ftp.debian.org/debian/pool/main/w/whois
+WHOIS_VERSION=4.7.24
 WHOIS_SOURCE=whois_$(WHOIS_VERSION).tar.gz
 WHOIS_DIR=whois-$(WHOIS_VERSION)
 WHOIS_UNZIP=zcat
@@ -114,8 +114,8 @@ $(WHOIS_BUILD_DIR)/.configured: $(DL_DIR)/$(WHOIS_SOURCE) $(WHOIS_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WHOIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WHOIS_LDFLAGS)" \
 	)
-	sed -ie 's|$$(BASEDIR)/usr/share|$$(BASEDIR)/opt/share|' $(WHOIS_BUILD_DIR)/po/Makefile
-	touch $(WHOIS_BUILD_DIR)/.configured
+	sed -i -e 's|$$(BASEDIR)/usr/share|$$(BASEDIR)/opt/share|' $(WHOIS_BUILD_DIR)/po/Makefile
+	touch $@
 
 #		./configure \
 #		--build=$(GNU_HOST_NAME) \
@@ -130,9 +130,9 @@ whois-unpack: $(WHOIS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WHOIS_BUILD_DIR)/.built: $(WHOIS_BUILD_DIR)/.configured
-	rm -f $(WHOIS_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) CC=$(TARGET_CC) -C $(WHOIS_BUILD_DIR) prefix=/opt
-	touch $(WHOIS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,9 +143,9 @@ whois: $(WHOIS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(WHOIS_BUILD_DIR)/.staged: $(WHOIS_BUILD_DIR)/.built
-	rm -f $(WHOIS_BUILD_DIR)/.staged
-	$(MAKE) -C $(WHOIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(WHOIS_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(WHOIS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 whois-stage: $(WHOIS_BUILD_DIR)/.staged
 
