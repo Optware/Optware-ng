@@ -21,10 +21,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CLIPS_SITE=http://www.ghg.net/clips/download/source
+CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/clipsrules
 CLIPS_VERSION=6.24
-CLIPS_TARBALL=clipssrc.tar.Z
-CLIPS_SOURCE=clipssrc-$(CLIPS_VERSION).tar.Z
+CLIPS_SOURCE=clips_core_source_624.tar.Z
+CLIPS_ZIP2=make_and_help_files_624.zip
+CLIPS_SOURCE2=clips-$(CLIPS_ZIP2)
 CLIPS_DIR=clipssrc
 CLIPS_UNZIP=zcat
 CLIPS_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
@@ -38,7 +39,7 @@ CLIPS_CONFLICTS=
 #
 # CLIPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CLIPS_IPK_VERSION=1
+CLIPS_IPK_VERSION=2
 
 #
 # CLIPS_CONFFILES should be a list of user-editable files
@@ -48,8 +49,7 @@ CLIPS_IPK_VERSION=1
 # CLIPS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CLIPS_PATCHES=$(CLIPS_SOURCE_DIR)/makefile.patch 
-#$(CLIPS_SOURCE_DIR)/setup.h.patch
+CLIPS_PATCHES=$(CLIPS_SOURCE_DIR)/makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -77,15 +77,19 @@ CLIPS_IPK=$(BUILD_DIR)/clips_$(CLIPS_VERSION)-$(CLIPS_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CLIPS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/$(CLIPS_TARBALL) -O $(DL_DIR)/$(CLIPS_SOURCE)
-	$(WGET) -P $(DL_DIR) $(CLIPS_SITE)/makefile.gcc -O $(DL_DIR)/clips-$(CLIPS_VERSION)-Makefile
+	$(WGET) -P $(@D) $(CLIPS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(CLIPS_SOURCE2):
+	$(WGET) -O $@ $(CLIPS_SITE)/$(CLIPS_ZIP2) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-clips-source: $(DL_DIR)/$(CLIPS_SOURCE) $(CLIPS_PATCHES)
+clips-source: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOURCE2) $(CLIPS_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -106,10 +110,13 @@ $(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(CLIPS_PATCHES)
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
 	$(CLIPS_UNZIP) $(DL_DIR)/$(CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cp $(DL_DIR)/clips-$(CLIPS_VERSION)-Makefile $(BUILD_DIR)/$(CLIPS_DIR)/clipssrc/Makefile
 	mv $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
-	cat $(CLIPS_PATCHES) | patch -d $(BUILD_DIR) -p0
-	touch $(CLIPS_BUILD_DIR)/.configured
+	cd $(@D); unzip $(DL_DIR)/$(CLIPS_SOURCE2); cp makefile.gcc clipssrc/Makefile
+	if test -n "$(CLIPS_PATCHES)"; then \
+		cat $(CLIPS_PATCHES) | patch -bd $(@D) -p0; \
+	fi
+	sed -i -e '/soname/s/libclips.so/&.6/' $(@D)/clipssrc/Makefile
+	touch $@
 
 clips-unpack: $(CLIPS_BUILD_DIR)/.configured
 
@@ -117,12 +124,12 @@ clips-unpack: $(CLIPS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CLIPS_BUILD_DIR)/.built: $(CLIPS_BUILD_DIR)/.configured
-	rm -f $(CLIPS_BUILD_DIR)/.built
+	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(CLIPS_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(CLIPS_LDFLAGS)" \
 		$(MAKE) -C $(CLIPS_BUILD_DIR)/clipssrc
-	touch $(CLIPS_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -133,9 +140,9 @@ clips: $(CLIPS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CLIPS_BUILD_DIR)/.staged: $(CLIPS_BUILD_DIR)/.built
-	rm -f $(CLIPS_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(CLIPS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CLIPS_BUILD_DIR)/.staged
+	touch $@
 
 clips-stage: $(CLIPS_BUILD_DIR)/.staged
 
@@ -144,7 +151,7 @@ clips-stage: $(CLIPS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/clips
 #
 $(CLIPS_IPK_DIR)/CONTROL/control:
-	@install -d $(CLIPS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: clips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,6 +181,10 @@ $(CLIPS_IPK): $(CLIPS_BUILD_DIR)/.built
 	rm -rf $(CLIPS_IPK_DIR) $(BUILD_DIR)/clips_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(CLIPS_BUILD_DIR)/clipssrc DESTDIR=$(CLIPS_IPK_DIR) install
+	cd $(CLIPS_IPK_DIR)/opt/lib && \
+	mv libclips.so libclips.so.$(CLIPS_VERSION) && \
+	ln -s libclips.so.$(CLIPS_VERSION) libclips.so.6 && \
+	ln -s libclips.so.6 libclips.so
 	$(MAKE) $(CLIPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS_IPK_DIR)
 
@@ -194,3 +205,9 @@ clips-clean:
 #
 clips-dirclean:
 	rm -rf $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR) $(CLIPS_IPK_DIR) $(CLIPS_IPK)
+
+#
+# Some sanity check for the package.
+#
+clips-check: $(CLIPS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CLIPS_IPK)
