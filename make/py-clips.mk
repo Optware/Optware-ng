@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyclips
-PY-CLIPS_VERSION=1.0.6.335
+PY-CLIPS_VERSION=1.0.7.348
 PY-CLIPS_SOURCE=pyclips-$(PY-CLIPS_VERSION).tar.gz
 PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
 PY-CLIPS_CLIPS_ZIP=CLIPSSrc.zip
@@ -72,8 +72,8 @@ PY-CLIPS_LDFLAGS=
 PY-CLIPS_BUILD_DIR=$(BUILD_DIR)/py-clips
 PY-CLIPS_SOURCE_DIR=$(SOURCE_DIR)/py-clips
 
-PY24-CLIPS_IPK_DIR=$(BUILD_DIR)/py-clips-$(PY-CLIPS_VERSION)-ipk
-PY24-CLIPS_IPK=$(BUILD_DIR)/py-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-CLIPS_IPK_DIR=$(BUILD_DIR)/py24-clips-$(PY-CLIPS_VERSION)-ipk
+PY24-CLIPS_IPK=$(BUILD_DIR)/py24-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-CLIPS_IPK_DIR=$(BUILD_DIR)/py25-clips-$(PY-CLIPS_VERSION)-ipk
 PY25-CLIPS_IPK=$(BUILD_DIR)/py25-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -85,7 +85,8 @@ PY25-CLIPS_IPK=$(BUILD_DIR)/py25-clips_$(PY-CLIPS_VERSION)-$(PY-CLIPS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CLIPS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CLIPS_SITE)/$(@F)
+	$(WGET) -P $(DL_DIR) $(PY-CLIPS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE):
 	$(WGET) -O $@ $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_ZIP)
@@ -191,7 +192,7 @@ py-clips-stage: $(PY-CLIPS_BUILD_DIR)/.staged
 $(PY24-CLIPS_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-clips" >>$@
+	@echo "Package: py24-clips" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-CLIPS_PRIORITY)" >>$@
 	@echo "Section: $(PY-CLIPS_SECTION)" >>$@
@@ -231,7 +232,8 @@ $(PY25-CLIPS_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
-	rm -rf $(PY24-CLIPS_IPK_DIR) $(BUILD_DIR)/py-clips_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-clips_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-CLIPS_IPK_DIR) $(BUILD_DIR)/py24-clips_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
