@@ -1,5 +1,5 @@
---- ../downloads/clips-6.24-Makefile	2006-06-15 23:42:14.000000000 +0200
-+++ clips/clipssrc/Makefile	2006-07-13 10:40:49.000000000 +0200
+--- clipssrc/Makefile.orig	2008-03-11 11:13:06.000000000 -0700
++++ clipssrc/Makefile	2008-03-11 11:16:13.000000000 -0700
 @@ -15,7 +15,7 @@
   	genrcpsr.o globlbin.o globlbsc.o globlcmp.o globlcom.o \
   	globldef.o globlpsr.o immthpsr.o incrrset.o inherpsr.o \
@@ -9,15 +9,15 @@
   	memalloc.o miscfun.o modulbin.o modulbsc.o modulcmp.o moduldef.o \
   	modulpsr.o modulutl.o msgcom.o msgfun.o msgpass.o msgpsr.o \
   	multifld.o multifun.o objbin.o objcmp.o objrtbin.o objrtbld.o \
-@@ -28,14 +28,31 @@
+@@ -28,14 +28,30 @@
   	tmpltbin.o tmpltbsc.o tmpltcmp.o tmpltdef.o tmpltfun.o tmpltlhs.o \
   	tmpltpsr.o tmpltrhs.o tmpltutl.o userdata.o userfunctions.o utility.o watch.o
  
-+SHLIB = libclips.6.23.so
++SHLIB = libclips.so
 +
  .c.o :
 -	gcc -c -Wall  -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
-+	$(GCC) $(CPPFLAGS) -c -Wall  -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
++	$(GCC) $(CPPFLAGS) -c -fPIC -Wall  -Wundef -Wpointer-arith -Wshadow -Wcast-qual \
  	    -Wcast-align -Winline -Wmissing-declarations -Wredundant-decls \
  	    -Wmissing-prototypes -Wnested-externs \
  	    -Wstrict-prototypes -Waggregate-return -Wno-implicit $<
@@ -27,10 +27,9 @@
 +clips : $(SHLIB) main.o
 +	$(GCC) -o clips main.o -L. -lclips -lm -ltermcap $(LDFLAGS)
 +
++
 +$(SHLIB): $(OBJS)
-+	$(GCC) -shared -Wl,-soname,libclips.6.so -o $(SHLIB) $(OBJS)
-+	ln -s $(SHLIB) libclips.6.so
-+	ln -s $(SHLIB) libclips.so
++	$(GCC) -shared -Wl,-soname,libclips.so -o $(SHLIB) $(OBJS)
 +
 +install:
 +	install -d $(DESTDIR)/opt/bin/
@@ -39,8 +38,15 @@
 +	install -d $(DESTDIR)/opt/include/clips/
 +	install *.h $(DESTDIR)/opt/include/clips/
 +	install -d $(DESTDIR)/opt/lib/
-+	install *.so $(DESTDIR)/opt/lib/
++	install $(SHLIB) $(DESTDIR)/opt/lib/
 +	$(STRIP) $(DESTDIR)/opt/lib/$(SHLIB)
  
  # Dependencies generated using "gcc -MM *.c"
  
+@@ -1252,4 +1268,4 @@
+ watch.o: watch.c setup.h envrnmnt.h usrsetup.h constant.h memalloc.h \
+   router.h prntutil.h moduldef.h conscomp.h constrct.h symbol.h \
+   userdata.h evaluatn.h expressn.h exprnops.h exprnpsr.h extnfunc.h \
+-  scanner.h pprint.h symblcmp.h modulpsr.h utility.h argacces.h watch.h
+\ No newline at end of file
++  scanner.h pprint.h symblcmp.h modulpsr.h utility.h argacces.h watch.h
