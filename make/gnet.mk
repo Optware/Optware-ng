@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNET_SITE=http://www.gnetlibrary.org/src
-GNET_VERSION=2.0.7
+GNET_SITE=http://ftp.gnome.org/pub/GNOME/sources/gnet/2.0
+GNET_VERSION=2.0.8
 GNET_SOURCE=gnet-$(GNET_VERSION).tar.gz
 GNET_DIR=gnet-$(GNET_VERSION)
 GNET_UNZIP=zcat
@@ -46,7 +46,7 @@ GNET_IPK_VERSION=1
 # GNET_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GNET_PATCHES=$(GNET_SOURCE_DIR)/src-inetaddr.c.patch
+#GNET_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -76,8 +76,8 @@ GNET_IPK=$(BUILD_DIR)/gnet_$(GNET_VERSION)-$(GNET_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GNET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GNET_SITE)/$(GNET_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(GNET_SOURCE)
+	$(WGET) -P $(DL_DIR) $(GNET_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,6 +120,7 @@ $(GNET_BUILD_DIR)/.configured: $(DL_DIR)/$(GNET_SOURCE) $(GNET_PATCHES) make/gne
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GNET_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		ac_cv_gnet_have_abstract_sockets=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
