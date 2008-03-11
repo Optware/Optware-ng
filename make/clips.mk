@@ -106,7 +106,7 @@ clips-source: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOURCE2) $(CLIPS_PATCH
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(CLIPS_PATCHES)
+$(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOURCE2) $(CLIPS_PATCHES)
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
 	$(CLIPS_UNZIP) $(DL_DIR)/$(CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
