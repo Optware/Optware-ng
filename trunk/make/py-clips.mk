@@ -24,8 +24,8 @@
 PY-CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyclips
 PY-CLIPS_VERSION=1.0.7.348
 PY-CLIPS_SOURCE=pyclips-$(PY-CLIPS_VERSION).tar.gz
-PY-CLIPS_CLIPS_SITE=http://www.ghg.net/clips/download/source
-PY-CLIPS_CLIPS_ZIP=CLIPSSrc.zip
+PY-CLIPS_CLIPS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/clipsrules
+PY-CLIPS_CLIPS_ZIP=clips_core_source_624.zip
 PY-CLIPS_CLIPS_SOURCE=CLIPSSrc-6.24.zip
 PY-CLIPS_DIR=pyclips
 PY-CLIPS_UNZIP=zcat
@@ -89,7 +89,8 @@ $(DL_DIR)/$(PY-CLIPS_SOURCE):
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(PY-CLIPS_CLIPS_SOURCE):
-	$(WGET) -O $@ $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_ZIP)
+	$(WGET) -O $@ $(PY-CLIPS_CLIPS_SITE)/$(PY-CLIPS_CLIPS_ZIP) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
