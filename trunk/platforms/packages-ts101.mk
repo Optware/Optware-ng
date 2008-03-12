@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	motion \
 	nfs-server nfs-utils \
 	player \
+	taglib \
 	transcode \
 	util-linux vsftpd \
 	wget \

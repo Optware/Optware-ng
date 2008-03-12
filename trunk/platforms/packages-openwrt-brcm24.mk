@@ -18,4 +18,5 @@ BROKEN_PACKAGES = \
 	player \
 	recordext renderext \
 	sdl \
+	taglib \
 	x11 xdpyinfo xext xpm xtst
