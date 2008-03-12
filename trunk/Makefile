@@ -277,7 +277,7 @@ COMMON_CROSS_PACKAGES = \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
-	procps proftpd psmisc psutils puppy pure-ftpd pv pwgen \
+	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
 	qemacs qemu qemu-libc-i386 quagga quickie quilt \
 	radiusclient-ng rc rcs rdate readline re2c recode recordext \
