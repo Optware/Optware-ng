@@ -1,5 +1,5 @@
---- clipssrc/Makefile.orig	2008-03-11 11:13:06.000000000 -0700
-+++ clipssrc/Makefile	2008-03-11 11:16:13.000000000 -0700
+--- clipssrc/Makefile.orig	2008-03-11 19:35:38.000000000 -0700
++++ clipssrc/Makefile	2008-03-11 19:37:38.000000000 -0700
 @@ -15,7 +15,7 @@
   	genrcpsr.o globlbin.o globlbsc.o globlcmp.o globlcom.o \
   	globldef.o globlpsr.o immthpsr.o incrrset.o inherpsr.o \
@@ -9,7 +9,7 @@
   	memalloc.o miscfun.o modulbin.o modulbsc.o modulcmp.o moduldef.o \
   	modulpsr.o modulutl.o msgcom.o msgfun.o msgpass.o msgpsr.o \
   	multifld.o multifun.o objbin.o objcmp.o objrtbin.o objrtbld.o \
-@@ -28,14 +28,30 @@
+@@ -28,14 +28,28 @@
   	tmpltbin.o tmpltbsc.o tmpltcmp.o tmpltdef.o tmpltfun.o tmpltlhs.o \
   	tmpltpsr.o tmpltrhs.o tmpltutl.o userdata.o userfunctions.o utility.o watch.o
  
@@ -35,15 +35,13 @@
 +	install -d $(DESTDIR)/opt/bin/
 +	install clips $(DESTDIR)/opt/bin
 +	$(STRIP) $(DESTDIR)/opt/bin/clips
-+	install -d $(DESTDIR)/opt/include/clips/
-+	install *.h $(DESTDIR)/opt/include/clips/
 +	install -d $(DESTDIR)/opt/lib/
 +	install $(SHLIB) $(DESTDIR)/opt/lib/
 +	$(STRIP) $(DESTDIR)/opt/lib/$(SHLIB)
  
  # Dependencies generated using "gcc -MM *.c"
  
-@@ -1252,4 +1268,4 @@
+@@ -1252,4 +1266,4 @@
  watch.o: watch.c setup.h envrnmnt.h usrsetup.h constant.h memalloc.h \
    router.h prntutil.h moduldef.h conscomp.h constrct.h symbol.h \
    userdata.h evaluatn.h expressn.h exprnops.h exprnpsr.h extnfunc.h \
