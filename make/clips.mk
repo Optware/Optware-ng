@@ -39,7 +39,7 @@ CLIPS_CONFLICTS=
 #
 # CLIPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CLIPS_IPK_VERSION=2
+CLIPS_IPK_VERSION=3
 
 #
 # CLIPS_CONFFILES should be a list of user-editable files
@@ -69,8 +69,12 @@ CLIPS_LDFLAGS=
 #
 CLIPS_BUILD_DIR=$(BUILD_DIR)/clips
 CLIPS_SOURCE_DIR=$(SOURCE_DIR)/clips
+
 CLIPS_IPK_DIR=$(BUILD_DIR)/clips-$(CLIPS_VERSION)-ipk
 CLIPS_IPK=$(BUILD_DIR)/clips_$(CLIPS_VERSION)-$(CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+CLIPS-DEV_IPK_DIR=$(BUILD_DIR)/clips-dev-$(CLIPS_VERSION)-ipk
+CLIPS-DEV_IPK=$(BUILD_DIR)/clips-dev_$(CLIPS_VERSION)-$(CLIPS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -116,6 +120,7 @@ $(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOUR
 		cat $(CLIPS_PATCHES) | patch -bd $(@D) -p0; \
 	fi
 	sed -i -e '/soname/s/libclips.so/&.6/' $(@D)/clipssrc/Makefile
+	sed -i -e '/HELP_DEFAULT/s|clips.hlp|/opt/share/doc/clips/&|' $(@D)/clipssrc/setup.h
 	touch $@
 
 clips-unpack: $(CLIPS_BUILD_DIR)/.configured
@@ -165,6 +170,21 @@ $(CLIPS_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(CLIPS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(CLIPS_CONFLICTS)" >>$@
 
+$(CLIPS-DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: clips-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(CLIPS_PRIORITY)" >>$@
+	@echo "Section: $(CLIPS_SECTION)" >>$@
+	@echo "Version: $(CLIPS_VERSION)-$(CLIPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(CLIPS_MAINTAINER)" >>$@
+	@echo "Source: $(CLIPS_SITE)/$(CLIPS_SOURCE)" >>$@
+	@echo "Description: $(CLIPS_DESCRIPTION), header files" >>$@
+	@echo "Depends: clips" >>$@
+	@echo "Suggests: " >>$@
+	@echo "Conflicts: " >>$@
+
 #
 # This builds the IPK file.
 #
@@ -177,7 +197,7 @@ $(CLIPS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(CLIPS_IPK): $(CLIPS_BUILD_DIR)/.built
+$(CLIPS_IPK) $(CLIPS-DEV_IPK): $(CLIPS_BUILD_DIR)/.built
 	rm -rf $(CLIPS_IPK_DIR) $(BUILD_DIR)/clips_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(CLIPS_BUILD_DIR)/clipssrc DESTDIR=$(CLIPS_IPK_DIR) install
@@ -185,13 +205,20 @@ $(CLIPS_IPK): $(CLIPS_BUILD_DIR)/.built
 	mv libclips.so libclips.so.$(CLIPS_VERSION) && \
 	ln -s libclips.so.$(CLIPS_VERSION) libclips.so.6 && \
 	ln -s libclips.so.6 libclips.so
+	install -d $(CLIPS_IPK_DIR)/opt/share/doc/clips
+	install $(CLIPS_BUILD_DIR)/clips.hlp $(CLIPS_IPK_DIR)/opt/share/doc/clips/
 	$(MAKE) $(CLIPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS_IPK_DIR)
+	# header files
+	install -d $(CLIPS-DEV_IPK_DIR)/opt/include/clips
+	install $(CLIPS_BUILD_DIR)/clipssrc/*.h $(CLIPS-DEV_IPK_DIR)/opt/include/clips/
+	$(MAKE) $(CLIPS-DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-clips-ipk: $(CLIPS_IPK)
+clips-ipk: $(CLIPS_IPK) $(CLIPS-DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
