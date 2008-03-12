@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLALCHEMY_VERSION=0.4.3
+PY-SQLALCHEMY_VERSION=0.4.4
 PY-SQLALCHEMY_IPK_VERSION=1
 
 PY-SQLALCHEMY_SVN_REV=
@@ -36,7 +36,7 @@ else
 PY-SQLALCHEMY_SVN:=$(PY-SQLALCHEMY_SVN)/tags/$(PY-SQLALCHEMY_SVN_TAG)
   else
 PY-SQLALCHEMY_SVN=
-PY-SQLALCHEMY_SITE=http://cheeseshop.python.org/packages/source/S/SQLAlchemy
+PY-SQLALCHEMY_SITE=http://pypi.python.org/packages/source/S/SQLAlchemy
 PY-SQLALCHEMY_SOURCE=SQLAlchemy-$(PY-SQLALCHEMY_VERSION).tar.gz
   endif
 endif
