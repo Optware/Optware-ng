@@ -21,12 +21,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON24_VERSION=2.4.4
+PYTHON24_VERSION=2.4.5
 PYTHON24_VERSION_MAJOR=2.4
-PYTHON24_SITE=http://www.python.org/ftp/python/$(PYTHON24_VERSION)
-PYTHON24_SOURCE=Python-$(PYTHON24_VERSION).tar.bz2
+PYTHON24_SITE=http://python.org/ftp/python/$(PYTHON24_VERSION)
+PYTHON24_SOURCE=Python-$(PYTHON24_VERSION).tgz
 PYTHON24_DIR=Python-$(PYTHON24_VERSION)
-PYTHON24_UNZIP=bzcat
+PYTHON24_UNZIP=zcat
 
 PYTHON24_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON24_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=6
+PYTHON24_IPK_VERSION=1
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -100,7 +100,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYTHON24_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PYTHON24_SITE)/$(PYTHON24_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PYTHON24_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -132,9 +133,8 @@ endif
 	$(MAKE) $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(PYTHON24_BUILD_DIR)
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
-	cd $(BUILD_DIR)/$(PYTHON24_DIR); \
-	    cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1; \
-	    autoconf configure.in > configure
+	cat $(PYTHON24_PATCHES) | patch -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
+	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
 	mkdir $(PYTHON24_BUILD_DIR)
 	(cd $(PYTHON24_BUILD_DIR); \
 	( \
