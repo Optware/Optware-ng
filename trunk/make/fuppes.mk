@@ -43,7 +43,7 @@ FUPPES_CONFLICTS=
 #
 # FUPPES_IPK_VERSION should be incremented when the ipk changes.
 #
-FUPPES_IPK_VERSION=1
+FUPPES_IPK_VERSION=2
 
 #
 # FUPPES_CONFFILES should be a list of user-editable files
