@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://cheeseshop.python.org/packages/source/l/lxml
-PY-LXML_VERSION=1.3.6
+PY-LXML_VERSION=2.0.2
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
@@ -68,8 +68,8 @@ PY-LXML_LDFLAGS=
 PY-LXML_BUILD_DIR=$(BUILD_DIR)/py-lxml
 PY-LXML_SOURCE_DIR=$(SOURCE_DIR)/py-lxml
 
-PY24-LXML_IPK_DIR=$(BUILD_DIR)/py-lxml-$(PY-LXML_VERSION)-ipk
-PY24-LXML_IPK=$(BUILD_DIR)/py-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-LXML_IPK_DIR=$(BUILD_DIR)/py24-lxml-$(PY-LXML_VERSION)-ipk
+PY24-LXML_IPK=$(BUILD_DIR)/py24-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-LXML_IPK_DIR=$(BUILD_DIR)/py25-lxml-$(PY-LXML_VERSION)-ipk
 PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-LXML_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-LXML_SITE)/$(PY-LXML_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PY-LXML_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,14 +108,14 @@ py-lxml-source: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 #
 $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	$(MAKE) py-setuptools-stage libxml2-stage libxslt-stage pyrex-stage
-	rm -rf $(PY-LXML_BUILD_DIR)
-	mkdir -p $(PY-LXML_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
 	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-LXML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(PY-LXML_BUILD_DIR)/2.4
-	(cd $(PY-LXML_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (\
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -123,14 +124,13 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	    echo "rpath=/opt/lib"; \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg; \
-	    sed -i -e 's|xslt-config|$(STAGING_PREFIX)/bin/xslt-config|' setup.py; \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
 	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-LXML_PATCHES) | patch -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(PY-LXML_BUILD_DIR)/2.5
-	(cd $(PY-LXML_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (\
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -139,9 +139,8 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	    echo "rpath=/opt/lib"; \
 	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg; \
-	    sed -i -e 's|xslt-config|$(STAGING_PREFIX)/bin/xslt-config|' setup.py; \
 	)
-	touch $(PY-LXML_BUILD_DIR)/.configured
+	touch $@
 
 py-lxml-unpack: $(PY-LXML_BUILD_DIR)/.configured
 
@@ -150,15 +149,17 @@ py-lxml-unpack: $(PY-LXML_BUILD_DIR)/.configured
 #
 $(PY-LXML_BUILD_DIR)/.built: $(PY-LXML_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-LXML_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build \
+	    --with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config; \
 	)
-	(cd $(PY-LXML_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build \
+	    --with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config; \
 	)
 	touch $@
 
@@ -171,9 +172,9 @@ py-lxml: $(PY-LXML_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-LXML_BUILD_DIR)/.staged: $(PY-LXML_BUILD_DIR)/.built
-	rm -f $(PY-LXML_BUILD_DIR)/.staged
+#	rm -f $(@D)/.staged
 #	$(MAKE) -C $(PY-LXML_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-LXML_BUILD_DIR)/.staged
+#	touch $(@D)/.staged
 
 py-lxml-stage: $(PY-LXML_BUILD_DIR)/.staged
 
@@ -184,7 +185,7 @@ py-lxml-stage: $(PY-LXML_BUILD_DIR)/.staged
 $(PY24-LXML_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-lxml" >>$@
+	@echo "Package: py24-lxml" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-LXML_PRIORITY)" >>$@
 	@echo "Section: $(PY-LXML_SECTION)" >>$@
@@ -222,12 +223,14 @@ $(PY25-LXML_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
-	rm -rf $(PY24-LXML_IPK_DIR) $(BUILD_DIR)/py-lxml_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-lxml_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-LXML_IPK_DIR) $(BUILD_DIR)/py24-lxml_*_$(TARGET_ARCH).ipk
 	(cd $(PY-LXML_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
-		install --root=$(PY24-LXML_IPK_DIR) --prefix=/opt)
+		install --root=$(PY24-LXML_IPK_DIR) --prefix=/opt \
+		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
 	$(STRIP_COMMAND) `find $(PY24-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
 	$(MAKE) $(PY24-LXML_IPK_DIR)/CONTROL/control
 #	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-LXML_IPK_DIR)/CONTROL/conffiles
@@ -239,7 +242,8 @@ $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-		install --root=$(PY25-LXML_IPK_DIR) --prefix=/opt)
+		install --root=$(PY25-LXML_IPK_DIR) --prefix=/opt \
+		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
 	$(STRIP_COMMAND) `find $(PY25-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
 	$(MAKE) $(PY25-LXML_IPK_DIR)/CONTROL/control
 #	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-LXML_IPK_DIR)/CONTROL/conffiles
