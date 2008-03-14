@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSMTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/msmtp
-MSMTP_VERSION=1.4.13
+MSMTP_VERSION=1.4.14
 MSMTP_SOURCE=msmtp-$(MSMTP_VERSION).tar.bz2
 MSMTP_DIR=msmtp-$(MSMTP_VERSION)
 MSMTP_UNZIP=bzcat
@@ -39,7 +39,7 @@ MSMTP_CONFLICTS=
 #
 # MSMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-MSMTP_IPK_VERSION=2
+MSMTP_IPK_VERSION=1
 
 #
 # MSMTP_CONFFILES should be a list of user-editable files
@@ -85,8 +85,8 @@ MSMTP_IPK=$(BUILD_DIR)/msmtp_$(MSMTP_VERSION)-$(MSMTP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MSMTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MSMTP_SITE)/$(MSMTP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MSMTP_SOURCE)
+	$(WGET) -P $(DL_DIR) $(MSMTP_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
