@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NGINX_SITE=http://sysoev.ru/nginx
-NGINX_VERSION=0.6.26
+NGINX_VERSION=0.6.28
 NGINX_SOURCE=nginx-$(NGINX_VERSION).tar.gz
 NGINX_DIR=nginx-$(NGINX_VERSION)
 NGINX_UNZIP=zcat
@@ -106,7 +106,8 @@ NGINX_IPK=$(BUILD_DIR)/nginx_$(NGINX_VERSION)-$(NGINX_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NGINX_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NGINX_SITE)/$(NGINX_SOURCE)
+	$(WGET) -P $(@D) $(NGINX_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
