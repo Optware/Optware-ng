@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpop
-MPOP_VERSION=1.0.12
+MPOP_VERSION=1.0.13
 MPOP_SOURCE=mpop-$(MPOP_VERSION).tar.bz2
 MPOP_DIR=mpop-$(MPOP_VERSION)
 MPOP_UNZIP=bzcat
@@ -85,8 +85,8 @@ MPOP_IPK=$(BUILD_DIR)/mpop_$(MPOP_VERSION)-$(MPOP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPOP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MPOP_SITE)/$(MPOP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MPOP_SOURCE)
+	$(WGET) -P $(@D) $(MPOP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -163,9 +163,9 @@ mpop: $(MPOP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MPOP_BUILD_DIR)/.staged: $(MPOP_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(MPOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(MPOP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 mpop-stage: $(MPOP_BUILD_DIR)/.staged
 
