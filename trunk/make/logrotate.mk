@@ -14,9 +14,15 @@
 #
 # You should change all these variables to suit your package.
 #
-LOGROTATE_SITE=http://ftp.debian.org/debian/pool/main/l/logrotate
-LOGROTATE_VERSION=3.7.1
+#LOGROTATE_SITE=http://ftp.debian.org/debian/pool/main/l/logrotate
+LOGROTATE_VERSION=3.7.5
+LOGROTATE_CVS_REPO=:pserver:anonymous@rhlinux.redhat.com:/usr/local/CVS
+LOGROTATE_CVS_TAG=r3-7-5
+ifdef LOGROTATE_CVS_TAG
+LOGROTATE_SOURCE=logrotate-cvs-$(LOGROTATE_VERSION).tar.gz
+else
 LOGROTATE_SOURCE=logrotate_$(LOGROTATE_VERSION).orig.tar.gz
+endif
 LOGROTATE_DIR=logrotate-$(LOGROTATE_VERSION)
 LOGROTATE_UNZIP=zcat
 LOGROTATE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -28,7 +34,7 @@ LOGROTATE_DEPENDS=popt
 #
 # LOGROTATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LOGROTATE_IPK_VERSION=4
+LOGROTATE_IPK_VERSION=1
 
 #
 # LOGROTATE_CONFFILES should be a list of user-editable files
@@ -68,7 +74,17 @@ LOGROTATE_IPK=$(BUILD_DIR)/logrotate_$(LOGROTATE_VERSION)-$(LOGROTATE_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LOGROTATE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LOGROTATE_SITE)/$(LOGROTATE_SOURCE)
+ifdef LOGROTATE_CVS_TAG
+	( cd $(BUILD_DIR); \
+		rm -rf $(LOGROTATE_DIR) && \
+		cvs -d $(LOGROTATE_CVS_REPO) -z3 co -r$(LOGROTATE_CVS_TAG) -d $(LOGROTATE_DIR) logrotate && \
+		tar -czf $@ $(LOGROTATE_DIR) --exclude CVS && \
+		rm -rf $(LOGROTATE_DIR) \
+	)
+else
+	$(WGET) -P $(DL_DIR) $(LOGROTATE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,7 +114,7 @@ $(LOGROTATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PA
 	$(LOGROTATE_UNZIP) $(DL_DIR)/$(LOGROTATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(LOGROTATE_PATCHES) | patch -d $(BUILD_DIR)/$(LOGROTATE_DIR) -p1
 	mv $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
-	touch $(LOGROTATE_BUILD_DIR)/.configured
+	touch $@
 
 logrotate-unpack: $(LOGROTATE_BUILD_DIR)/.configured
 
@@ -107,12 +123,12 @@ logrotate-unpack: $(LOGROTATE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(LOGROTATE_BUILD_DIR)/.built: $(LOGROTATE_BUILD_DIR)/.configured
-	rm -f $(LOGROTATE_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LOGROTATE_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		LFS="$(STAGING_CPPFLAGS) $(LOGROTATE_CPPFLAGS)" \
 		LOADLIBES="$(STAGING_LDFLAGS) $(LOGROTATE_LDFLAGS) -lpopt"
-	touch $(LOGROTATE_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -125,7 +141,7 @@ logrotate: $(LOGROTATE_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/logrotate
 #
 $(LOGROTATE_IPK_DIR)/CONTROL/control:
-	@install -d $(LOGROTATE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: logrotate" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
