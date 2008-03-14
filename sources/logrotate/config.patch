@@ -1,10 +1,9 @@
---- logrotate/config.h.orig	2005-03-26 22:05:35.000000000 +1030
-+++ logrotate/config.h	2005-03-26 22:05:57.000000000 +1030
-@@ -36,6 +36,6 @@
+--- logrotate-3.7.5/config.h.orig	2005-11-12 19:07:56.000000000 +0000
++++ logrotate-3.7.5/config.h	2008-03-14 21:33:23.000000000 +0000
+@@ -36,5 +36,5 @@
  #endif
  
  #ifndef STATEFILE
--    #define STATEFILE "/var/lib/logrotate.status"
-+    #define STATEFILE "/opt/var/run/logrotate.status"
+-#define STATEFILE "/var/lib/logrotate.status"
++#define STATEFILE "/opt/var/lib/logrotate.status"
  #endif
- 
