@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CLASSPATH_SITE=http://builder.classpath.org/dist
-CLASSPATH_VERSION=0.96.1
+CLASSPATH_VERSION=0.97.1
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -74,7 +74,8 @@ CLASSPATH_IPK=$(BUILD_DIR)/classpath_$(CLASSPATH_VERSION)-$(CLASSPATH_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CLASSPATH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CLASSPATH_SITE)/$(CLASSPATH_SOURCE)
+	$(WGET) -P $(@D) $(CLASSPATH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,7 +107,7 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 	fi
 	mv $(BUILD_DIR)/$(CLASSPATH_DIR) $(CLASSPATH_BUILD_DIR)
 	sed -i -e 's/$$JAVAC conftest/$$JAVAC $$JAVAC_OPTS conftest/' $(@D)/configure
-	(cd $(CLASSPATH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLASSPATH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLASSPATH_LDFLAGS)" \
@@ -126,7 +127,7 @@ $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PA
 		--disable-nls \
 		; \
 	)
-	$(PATCH_LIBTOOL) $(CLASSPATH_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 classpath-unpack: $(CLASSPATH_BUILD_DIR)/.configured
@@ -136,7 +137,7 @@ classpath-unpack: $(CLASSPATH_BUILD_DIR)/.configured
 #
 $(CLASSPATH_BUILD_DIR)/.built: $(CLASSPATH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CLASSPATH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
