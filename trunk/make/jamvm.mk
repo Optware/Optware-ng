@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
-JAMVM_VERSION=1.5.0
+JAMVM_VERSION=1.5.1
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
 JAMVM_UNZIP=zcat
@@ -75,7 +75,8 @@ JAMVM_IPK=$(BUILD_DIR)/jamvm_$(JAMVM_VERSION)-$(JAMVM_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(JAMVM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(JAMVM_SITE)/$(JAMVM_SOURCE)
+	$(WGET) -P $(@D) $(JAMVM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,8 +105,8 @@ $(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
 	rm -rf $(BUILD_DIR)/$(JAMVM_DIR) $(JAMVM_BUILD_DIR)
 	$(JAMVM_UNZIP) $(DL_DIR)/$(JAMVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(JAMVM_PATCHES) | patch -d $(BUILD_DIR)/$(JAMVM_DIR) -p1
-	mv $(BUILD_DIR)/$(JAMVM_DIR) $(JAMVM_BUILD_DIR)
-	(cd $(JAMVM_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(JAMVM_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JAMVM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JAMVM_LDFLAGS)" \
@@ -126,7 +127,7 @@ jamvm-unpack: $(JAMVM_BUILD_DIR)/.configured
 #
 $(JAMVM_BUILD_DIR)/.built: $(JAMVM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(JAMVM_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
