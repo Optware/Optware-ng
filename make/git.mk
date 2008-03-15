@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.5.4.1
+GIT_VERSION=1.5.4.4
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -104,7 +104,7 @@ $(DL_DIR)/$(GIT-MANPAGES_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-git-source: $(DL_DIR)/$(GIT_SOURCE) $(GIT_PATCHES)
+git-source: $(DL_DIR)/$(GIT_SOURCE) $(DL_DIR)/$(GIT-MANPAGES_SOURCE) $(GIT_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
