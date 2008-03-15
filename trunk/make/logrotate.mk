@@ -34,7 +34,7 @@ LOGROTATE_DEPENDS=popt
 #
 # LOGROTATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LOGROTATE_IPK_VERSION=1
+LOGROTATE_IPK_VERSION=2
 
 #
 # LOGROTATE_CONFFILES should be a list of user-editable files
@@ -169,10 +169,12 @@ $(LOGROTATE_IPK): $(LOGROTATE_BUILD_DIR)/.built
 	rm -rf $(LOGROTATE_IPK_DIR) $(BUILD_DIR)/logrotate_*_$(TARGET_ARCH).ipk
 	install -d $(LOGROTATE_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(LOGROTATE_BUILD_DIR)/logrotate -o $(LOGROTATE_IPK_DIR)/opt/sbin/logrotate
-	install -d $(LOGROTATE_IPK_DIR)/opt/etc
+	install -d $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.d
+	install -d $(LOGROTATE_IPK_DIR)/opt/etc/cron.d
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/logrotate.conf $(LOGROTATE_IPK_DIR)/opt/etc/logrotate.conf
 	install -d $(LOGROTATE_IPK_DIR)/opt/man/man8
 	install -m 644 $(LOGROTATE_BUILD_DIR)/logrotate.8 $(LOGROTATE_IPK_DIR)/opt/man/man8
+	install -d $(LOGROTATE_IPK_DIR)/opt/var/lib
 	$(MAKE) $(LOGROTATE_IPK_DIR)/CONTROL/control
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/postinst $(LOGROTATE_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(LOGROTATE_SOURCE_DIR)/prerm $(LOGROTATE_IPK_DIR)/CONTROL/prerm

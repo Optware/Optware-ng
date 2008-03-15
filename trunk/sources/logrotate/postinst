@@ -1,8 +1,8 @@
 #!/bin/sh
 
-mkdir -p /opt/etc/logrotate.d
-mkdir -p /opt/var/run
-
-mkdir -p /opt/etc/cron.d
 echo "0 0 * * * root /opt/sbin/logrotate -f /opt/etc/logrotate.conf &>/dev/null" > /opt/etc/cron.d/logrotate
 chmod 600 /opt/etc/cron.d/logrotate
+
+if test -e "/opt/var/run/logrotate.status"; then
+    mv /opt/var/run/logrotate.status /opt/var/lib/
+fi
