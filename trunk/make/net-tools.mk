@@ -37,7 +37,7 @@ NET-TOOLS_CONFLICTS=
 #
 # NET-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-NET-TOOLS_IPK_VERSION=5
+NET-TOOLS_IPK_VERSION=6
 
 #
 # NET-TOOLS_CONFFILES should be a list of user-editable files
@@ -185,8 +185,9 @@ $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 	$(MAKE) $(NET-TOOLS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/prerm
+	mv $(NET-TOOLS_IPK_DIR)/opt/sbin/ifconfig $(NET-TOOLS_IPK_DIR)/opt/bin/
 	cd $(NET-TOOLS_IPK_DIR)/opt/bin; \
-	for f in hostname netstat; do \
+	for f in hostname ifconfig netstat; do \
 	    mv $$f net-tools-$$f; \
 	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/net-tools-$$f 80" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/postinst; \
@@ -194,7 +195,7 @@ $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
 	done
 	cd $(NET-TOOLS_IPK_DIR)/opt/sbin; \
-	for f in arp ifconfig route; do \
+	for f in arp route; do \
 	    mv $$f net-tools-$$f; \
 	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/net-tools-$$f 80" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/postinst; \
