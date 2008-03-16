@@ -1,0 +1,25 @@
+--- perltgdcli.pl.orig	2008-03-16 10:17:51.000000000 +1030
++++ perltgdcli.pl	2008-03-16 20:17:39.000000000 +1030
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/opt/bin/perl
+ 
+ #	  perltgd jim16 Thu 14 Dec 13:13:00
+ #
+@@ -40,6 +40,7 @@
+ my $log_string = "";
+ 
+ # Define the files and filenames
++$settings{'workdir'} = "/opt/etc/perltgd";
+ my $timer_file    = "99999999.tgd";		# Filename of timer file
+ my $settings_file = "perltgd.settings";	# Filename of settings file
+ my $log_file      = "perltgd.log";		# Filename of log file
+@@ -62,7 +63,7 @@
+ my $make_tgd      = 0;					# Whether to make TGD documents
+ my $check_con     = 1;					# Whether to check if topfield is connected. Add as only linux method avaliable
+ my $append_timers = 0;
+-my $remove_changed = 1;
++my $remove_changed = 0;
+ my $timers_only = 0;
+ my $debug = 0;
+ 

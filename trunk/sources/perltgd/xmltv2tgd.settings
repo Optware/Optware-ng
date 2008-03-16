@@ -1,0 +1,6 @@
+gmt::10:30
+rename::"ABC1-2:SBS-3:Seven-7:Nine-9:Ten-10:Ten HD-12:ABC HDTV-20:ABC2-22:SBS HD-30:SBS World News Digital-31:Seven HD-70:Nine HD-90"
+url::http://iceguide.icetv.com.au/cgi-bin/epg/iceguide.cgi?op=xmlguide
+file::listings.xml
+user::user
+pass::password

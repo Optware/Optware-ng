@@ -1,0 +1,48 @@
+--- xmltv2tgd.pl.orig	2008-03-16 10:17:51.000000000 +1030
++++ xmltv2tgd.pl	2008-03-16 20:20:19.000000000 +1030
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/opt/bin/perl
+ 
+ #	  xmltv2tgd jim16 Mon 22 October 13:13:00
+ #
+@@ -97,7 +97,7 @@
+ if( $config ){
+ 	&printOut("DEBUG: Reading Config File\n") if $debug;
+ 	&printOut("Reading configuration file");
+-	open( FILE, "$output/$config" );
++	open( FILE, "$config" );
+ 	&printOut("DEBUG: Opened File\n") if $debug;
+ 	while( <FILE> ){
+ 		chomp;
+@@ -149,10 +149,10 @@
+ # Download the file with system call to wget
+ if( $url ){	# Defined url to download
+ 	&printOut("DEBUG: Commencing Download\n") if $debug;
+-	if( `which wget` ){
++	if( `which /opt/bin/wget` ){
+ 		if( $user && $pass ){
+ 			&printOut("Downloading XML file from ICE\n\n");
+-			open TMP, "wget --user=$user --password=$pass \"$url\" -O \"$output/listings.xml\" 2>&1 |";
++			open TMP, "/opt/bin/wget --user=$user --password=$pass \"$url\" -O \"$output/listings.xml\" 2>&1 |";
+ 			&printOut("DEBUG: Opened wget\n") if $debug;
+ 			while ( my $value = <TMP> ){
+ 				chomp $value;
+@@ -162,7 +162,7 @@
+ 		} else {
+ 			if( $url =~ /\.zip$/ ){
+ 				&printOut("Downloading ZIP file from $url\n\n");
+-				open TMP, "wget \"$url\" -O \"$output/xmltv.zip\" 2>&1 |";
++				open TMP, "/opt/bin/wget \"$url\" -O \"$output/xmltv.zip\" 2>&1 |";
+ 				&printOut("DEBUG: Opened wget\n") if $debug;
+ 				while ( my $value = <TMP> ){
+ 					chomp $value;
+@@ -171,7 +171,7 @@
+ 				close TMP;
+ 			} else {
+ 				&printOut("Downloading XML file from $url\n\n");
+-				open TMP, "wget \"$url\" -O \"$output/listings.xml\" 2>&1 |";
++				open TMP, "/opt/bin/wget \"$url\" -O \"$output/listings.xml\" 2>&1 |";
+ 				&printOut("DEBUG: Opened wget\n") if $debug;
+ 				while ( my $value = <TMP> ){
+ 					chomp $value;
