@@ -28,7 +28,7 @@
 #
 #SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-1.0.15
 #SANE_BACKENDS_SITE=http://gd.tuwien.ac.at/hci/sane/sane-backends-$(SANE_BACKENDS_VERSION)
-SANE_BACKEND_RELEASE=1.0.18
+SANE_BACKEND_RELEASE=1.0.19
 SANE_BACKENDS_VERSION=$(SANE_BACKEND_RELEASE)+cvs$(SANE_BACKENDS_CVS_DATE)
 SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
@@ -44,7 +44,7 @@ SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
 # CVS info
-SANE_BACKENDS_CVS_DATE=20080102
+SANE_BACKENDS_CVS_DATE=20080315
 SANE_BACKENDS_CVS_OPTS=-D $(SANE_BACKENDS_CVS_DATE)
 SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 
@@ -219,6 +219,7 @@ $(SANE_BACKENDS_IPK): $(SANE_BACKENDS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/scanimage
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/sbin/saned
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/sane/*.so.*
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/*.so.*
 	rm -rf $(SANE_BACKENDS_IPK_DIR)/opt/lib/sane/*.la
 	install -d $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SANE_BACKENDS_SOURCE_DIR)/rc.sane-backends $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d/S01sane-backends
