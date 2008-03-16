@@ -47,8 +47,8 @@ PERLTGD_IPK_VERSION=1
 #
 # PERLTGD_CONFFILES should be a list of user-editable files
 PERLTGD_CONFFILES= \
-	/opt/etc/perltgd/perltgd.conf \
-	/opt/etc/perltgd/xmltv2tgd.conf \
+	/opt/etc/perltgd/perltgd.settings \
+	/opt/etc/perltgd/xmltv2tgd.settings \
 	/opt/etc/perltgd/append.timers \
 	/opt/etc/perltgd/favourites.ini \
 	/opt/etc/perltgd/overrun.shows \
@@ -58,7 +58,7 @@ PERLTGD_CONFFILES= \
 # PERLTGD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# PERLTGD_PATCHES=$(PERLTGD_SOURCE_DIR)/configure.patch
+PERLTGD_PATCHES=$(PERLTGD_SOURCE_DIR)/perltgd.patch $(PERLTGD_SOURCE_DIR)/xmltv2tgd.patch
 
 #
 # If the compilation of the package requires additional
@@ -189,8 +189,8 @@ $(PERLTGD_IPK): $(PERLTGD_BUILD_DIR)/.built
 	install -m 755 $(PERLTGD_BUILD_DIR)/perltgdcli.pl $(PERLTGD_IPK_DIR)/opt/bin/perltgd
 	install -m 755 $(PERLTGD_BUILD_DIR)/xmltv2tgd.pl $(PERLTGD_IPK_DIR)/opt/bin/xmltv2tgd
 	install -d $(PERLTGD_IPK_DIR)/opt/etc/perltgd
-	install -m 644 $(PERLTGD_SOURCE_DIR)/perltgd.conf $(PERLTGD_IPK_DIR)/opt/etc/perltgd/perltgd.conf
-	install -m 644 $(PERLTGD_SOURCE_DIR)/xmltv2tgd.conf $(PERLTGD_IPK_DIR)/opt/etc/perltgd/xmltv2tgd.conf
+	install -m 644 $(PERLTGD_SOURCE_DIR)/perltgd.settings $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
+	install -m 644 $(PERLTGD_SOURCE_DIR)/xmltv2tgd.settings $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/append.timers $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/favourites.ini $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/overrun.shows $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
