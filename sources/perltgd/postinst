@@ -1,0 +1,7 @@
+#!/bin/sh
+
+mkdir -p /opt/var/lib/perltgd
+chmod 755 /opt/var/lib/perltgd
+
+mkdir -p /opt/var/log
+chmod 755 /opt/var/log
