@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-4SUITE_SITE=http://cheeseshop.python.org/packages/source/4/4Suite-XML
+PY-4SUITE_SITE=http://pypi.python.org/packages/source/4/4Suite-XML
 PY-4SUITE_VERSION=1.0.2
 PY-4SUITE_SOURCE=4Suite-XML-$(PY-4SUITE_VERSION).tar.gz
 PY-4SUITE_DIR=4Suite-XML-$(PY-4SUITE_VERSION)
@@ -37,7 +37,7 @@ PY-4SUITE_CONFLICTS=
 #
 # PY-4SUITE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-4SUITE_IPK_VERSION=1
+PY-4SUITE_IPK_VERSION=2
 
 #
 # PY-4SUITE_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-4SUITE_LDFLAGS=
 PY-4SUITE_BUILD_DIR=$(BUILD_DIR)/py-4suite
 PY-4SUITE_SOURCE_DIR=$(SOURCE_DIR)/py-4suite
 
-PY24-4SUITE_IPK_DIR=$(BUILD_DIR)/py-4suite-$(PY-4SUITE_VERSION)-ipk
-PY24-4SUITE_IPK=$(BUILD_DIR)/py-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-4SUITE_IPK_DIR=$(BUILD_DIR)/py24-4suite-$(PY-4SUITE_VERSION)-ipk
+PY24-4SUITE_IPK=$(BUILD_DIR)/py24-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-4SUITE_IPK_DIR=$(BUILD_DIR)/py25-4suite-$(PY-4SUITE_VERSION)-ipk
 PY25-4SUITE_IPK=$(BUILD_DIR)/py25-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-4SUITE_IPK=$(BUILD_DIR)/py25-4suite_$(PY-4SUITE_VERSION)-$(PY-4SUITE_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-4SUITE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-4SUITE_SITE)/$(PY-4SUITE_SOURCE)
+	$(WGET) -P $(@D) $(PY-4SUITE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,16 +108,16 @@ py-4suite-source: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PATCHES)
 #
 $(PY-4SUITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-4SUITE_BUILD_DIR)
-	mkdir -p $(PY-4SUITE_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-4SUITE_DIR)
 	$(PY-4SUITE_UNZIP) $(DL_DIR)/$(PY-4SUITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-4SUITE_PATCHES)"; then \
 	    cat $(PY-4SUITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-4SUITE_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)/2.4
-	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -134,8 +135,8 @@ $(PY-4SUITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-4SUITE_SOURCE) $(PY-4SUITE_PA
 	if test -n "$(PY-4SUITE_PATCHES)"; then \
 	    cat $(PY-4SUITE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-4SUITE_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(PY-4SUITE_BUILD_DIR)/2.5
-	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-4SUITE_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -156,10 +157,10 @@ py-4suite-unpack: $(PY-4SUITE_BUILD_DIR)/.configured
 #
 $(PY-4SUITE_BUILD_DIR)/.built: $(PY-4SUITE_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -173,9 +174,9 @@ py-4suite: $(PY-4SUITE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-4SUITE_BUILD_DIR)/.staged: $(PY-4SUITE_BUILD_DIR)/.built
-	rm -f $(PY-4SUITE_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-4SUITE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-4SUITE_BUILD_DIR)/.staged
+#	rm -f $(PY-4SUITE_BUILD_DIR)/.staged
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $(PY-4SUITE_BUILD_DIR)/.staged
 
 py-4suite-stage: $(PY-4SUITE_BUILD_DIR)/.staged
 
@@ -186,7 +187,7 @@ py-4suite-stage: $(PY-4SUITE_BUILD_DIR)/.staged
 $(PY24-4SUITE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-4suite" >>$@
+	@echo "Package: py24-4suite" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-4SUITE_PRIORITY)" >>$@
 	@echo "Section: $(PY-4SUITE_SECTION)" >>$@
@@ -224,7 +225,8 @@ $(PY25-4SUITE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
-	rm -rf $(PY24-4SUITE_IPK_DIR) $(BUILD_DIR)/py-4suite_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-4suite_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-4SUITE_IPK_DIR) $(BUILD_DIR)/py24-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
