@@ -23,11 +23,11 @@
 OPENSER_SOURCE_TYPE=tarball
 #OPENSER_SOURCE_TYPE=svn
 
-OPENSER_BASE_VERSION=1.3.0
+OPENSER_BASE_VERSION=1.3.1
 
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
 #OPENSER_VERSION=$(OPENSER_BASE_VERSION)
-OPENSER_VERSION=1.3.0
+OPENSER_VERSION=1.3.1
 OPENSER_SITE=http://openser.org/pub/openser/$(OPENSER_VERSION)/src/
 OPENSER_DIR=openser-$(OPENSER_VERSION)
 else
@@ -42,7 +42,7 @@ OPENSER_SOURCE=openser-$(OPENSER_VERSION)-tls_src.tar.gz
 
 OPENSER_UNZIP=zcat
 OPENSER_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
-OPENSER_DESCRIPTION=openSIP Express Router
+OPENSER_DESCRIPTION=OpenSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
 OPENSER_DEPENDS=coreutils,openssl
@@ -92,19 +92,6 @@ OPENSER_CPPFLAGS=-fexpensive-optimizations -fomit-frame-pointer -fsigned-char -D
 #TYPEMAP should be set to the full file name including path of your
 #ExtUtils/typemap file.
 
-ifeq ($(OPTWARE_TARGET),slugosbe)
-#OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE $(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/auto/DynaLoader/DynaLoader.a -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
-OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
-endif
-
-ifeq ($(OPTWARE_TARGET),ddwrt)
-OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/mipsel-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
-OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer  -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE
-OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
-endif
-
 OPENSER_MAKEFLAGS=$(strip \
         $(if $(filter powerpc, $(TARGET_ARCH)), ARCH=ppc OS=linux, \
         $(if $(filter ts101, $(OPTWARE_TARGET)), ARCH=ppc OS=linux, \
@@ -123,13 +110,18 @@ OPENSER_MAKEFLAGS=$(strip \
 # snmpstats - issues on tx72xx
 # pua       - issues on mss, ddwrt, oleg (uclibc issues)
 #
+OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
 ifeq ($(OPTWARE_TARGET),slugosbe)
-OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres perl pua
+OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
+OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+OPENSER_INCLUDE_BASE_MODULES+= perl pua
 else
 ifeq ($(OPTWARE_TARGET),ddwrt)
-OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres perl pua
-else
-OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/mipsel-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
+OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer  -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/mipsel-linux/CORE
+OPENSER_TYPEMAP=$(STAGING_DIR)/opt/lib/perl5/5.8.8/ExtUtils/typemap
+OPENSER_INCLUDE_BASE_MODULES+= perl pua
 endif
 endif
 
@@ -316,14 +308,8 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.base
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.base
 
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.dbtext
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.dbtext
-
 	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
 	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
-
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.dbtext
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.dbtext
 
 	############################
 	# installing example files #
