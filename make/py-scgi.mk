@@ -37,7 +37,7 @@ PY-SCGI_CONFLICTS=
 #
 # PY-SCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SCGI_IPK_VERSION=2
+PY-SCGI_IPK_VERSION=3
 
 #
 # PY-SCGI_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-SCGI_LDFLAGS=
 PY-SCGI_BUILD_DIR=$(BUILD_DIR)/py-scgi
 PY-SCGI_SOURCE_DIR=$(SOURCE_DIR)/py-scgi
 
-PY24-SCGI_IPK_DIR=$(BUILD_DIR)/py-scgi-$(PY-SCGI_VERSION)-ipk
-PY24-SCGI_IPK=$(BUILD_DIR)/py-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SCGI_IPK_DIR=$(BUILD_DIR)/py24-scgi-$(PY-SCGI_VERSION)-ipk
+PY24-SCGI_IPK=$(BUILD_DIR)/py24-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SCGI_IPK_DIR=$(BUILD_DIR)/py25-scgi-$(PY-SCGI_VERSION)-ipk
 PY25-SCGI_IPK=$(BUILD_DIR)/py25-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-SCGI_IPK=$(BUILD_DIR)/py25-scgi_$(PY-SCGI_VERSION)-$(PY-SCGI_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SCGI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SCGI_SITE)/$(PY-SCGI_SOURCE)
+	$(WGET) -P $(@D) $(PY-SCGI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,14 +108,14 @@ py-scgi-source: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
 #
 $(PY-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
 #	$(MAKE) somepkg-stage
-	rm -rf $(PY-SCGI_BUILD_DIR)
-	mkdir -p $(PY-SCGI_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR)
 	$(PY-SCGI_UNZIP) $(DL_DIR)/$(PY-SCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SCGI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SCGI_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)/2.4
-	(cd $(PY-SCGI_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -128,8 +129,8 @@ $(PY-SCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SCGI_SOURCE) $(PY-SCGI_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-SCGI_DIR)
 	$(PY-SCGI_UNZIP) $(DL_DIR)/$(PY-SCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SCGI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SCGI_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(PY-SCGI_BUILD_DIR)/2.5
-	(cd $(PY-SCGI_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-SCGI_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -148,9 +149,13 @@ py-scgi-unpack: $(PY-SCGI_BUILD_DIR)/.configured
 #
 $(PY-SCGI_BUILD_DIR)/.built: $(PY-SCGI_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-SCGI_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
+	)
+	(cd $(@D)/2.5; \
+	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
 	touch $@
 
@@ -163,9 +168,9 @@ py-scgi: $(PY-SCGI_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SCGI_BUILD_DIR)/.staged: $(PY-SCGI_BUILD_DIR)/.built
-	rm -f $(PY-SCGI_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-SCGI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SCGI_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-scgi-stage: $(PY-SCGI_BUILD_DIR)/.staged
 
@@ -176,7 +181,7 @@ py-scgi-stage: $(PY-SCGI_BUILD_DIR)/.staged
 $(PY24-SCGI_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-scgi" >>$@
+	@echo "Package: py24-scgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SCGI_PRIORITY)" >>$@
 	@echo "Section: $(PY-SCGI_SECTION)" >>$@
@@ -214,7 +219,8 @@ $(PY25-SCGI_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-SCGI_IPK): $(PY-SCGI_BUILD_DIR)/.built
-	rm -rf $(PY24-SCGI_IPK_DIR) $(BUILD_DIR)/py-scgi_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-scgi_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-SCGI_IPK_DIR) $(BUILD_DIR)/py24-scgi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SCGI_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
