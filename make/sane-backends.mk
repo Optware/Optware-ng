@@ -52,7 +52,7 @@ SANE_BACKENDS_REPOSITORY=:pserver:anonymous@cvs.alioth.debian.org:/cvsroot/sane
 #
 # SANE_BACKENDS_IPK_VERSION should be incremented when the ipk changes.
 #
-SANE_BACKENDS_IPK_VERSION=2
+SANE_BACKENDS_IPK_VERSION=3
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
@@ -213,7 +213,6 @@ $(SANE_BACKENDS_IPK): $(SANE_BACKENDS_BUILD_DIR)/.built
 	rm -rf $(SANE_BACKENDS_IPK_DIR) $(BUILD_DIR)/sane-backends_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SANE_BACKENDS_BUILD_DIR) DESTDIR=$(SANE_BACKENDS_IPK_DIR) install
 	rm -rf $(SANE_BACKENDS_IPK_DIR)/opt/lib/libsane.la
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/libsane.so.$(SANE_BACKEND_RELEASE)
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/gamma4scanimage
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/sane-find-scanner
 	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/scanimage
