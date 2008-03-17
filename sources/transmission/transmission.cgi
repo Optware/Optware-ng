@@ -407,7 +407,7 @@ _list ()
     __list "$WORK/*/*.torrent" "Active"
     __list "$TARGET/*/*.torrent.seeding" "Seeding"
     if [ -r "${SYSLOG}" ]; then
-        SPEED=`tail ${SYSLOG}  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\).*/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -1`
+        SPEED=`tail ${SYSLOG}  | sed  -n '/transmissiond/s/.*\dl \([0-9.]\{1,\}\) ul \([0-9.]\{1,\}\).*/DOWNLOAD="\1";UPLOAD="\2"/p' | tail -n 1`
         eval "${SPEED}"
         if [ -n "${DOWNLOAD}"  ] ; then
 	    echo "<table><tr><td>Total</td><td>Download ${DOWNLOAD}kB/s</td>"
