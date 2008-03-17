@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/simpy
-PY-SIMPY_VERSION=1.9
+PY-SIMPY_VERSION=1.9.1
 PY-SIMPY_SOURCE=SimPy-$(PY-SIMPY_VERSION).tar.gz
 PY-SIMPY_DIR=SimPy-$(PY-SIMPY_VERSION)
 PY-SIMPY_UNZIP=zcat
