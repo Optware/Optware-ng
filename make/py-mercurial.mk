@@ -37,7 +37,7 @@ PY-MERCURIAL_CONFLICTS=
 #
 # PY-MERCURIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MERCURIAL_IPK_VERSION=1
+PY-MERCURIAL_IPK_VERSION=2
 
 #
 # PY-MERCURIAL_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-MERCURIAL_LDFLAGS=
 PY-MERCURIAL_BUILD_DIR=$(BUILD_DIR)/py-mercurial
 PY-MERCURIAL_SOURCE_DIR=$(SOURCE_DIR)/py-mercurial
 
-PY24-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py-mercurial-$(PY-MERCURIAL_VERSION)-ipk
-PY24-MERCURIAL_IPK=$(BUILD_DIR)/py-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py24-mercurial-$(PY-MERCURIAL_VERSION)-ipk
+PY24-MERCURIAL_IPK=$(BUILD_DIR)/py24-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py25-mercurial-$(PY-MERCURIAL_VERSION)-ipk
 PY25-MERCURIAL_IPK=$(BUILD_DIR)/py25-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-MERCURIAL_IPK=$(BUILD_DIR)/py25-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MERCURIAL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MERCURIAL_SITE)/$(PY-MERCURIAL_SOURCE)
+	$(WGET) -P $(@D) $(PY-MERCURIAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,13 +108,13 @@ py-mercurial-source: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MERCURIAL_PATCHES)
 #
 $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MERCURIAL_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(PY-MERCURIAL_BUILD_DIR)
-	mkdir -p $(PY-MERCURIAL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(PY-MERCURIAL_BUILD_DIR)/2.4
-	(cd $(PY-MERCURIAL_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -128,8 +129,8 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 	# 2.5
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(PY-MERCURIAL_BUILD_DIR)/2.5
-	(cd $(PY-MERCURIAL_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -141,7 +142,7 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-MERCURIAL_BUILD_DIR)/.configured
+	touch $@
 
 py-mercurial-unpack: $(PY-MERCURIAL_BUILD_DIR)/.configured
 
@@ -149,16 +150,16 @@ py-mercurial-unpack: $(PY-MERCURIAL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-MERCURIAL_BUILD_DIR)/.built: $(PY-MERCURIAL_BUILD_DIR)/.configured
-	rm -f $(PY-MERCURIAL_BUILD_DIR)/.built
-	(cd $(PY-MERCURIAL_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-MERCURIAL_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-MERCURIAL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -169,9 +170,9 @@ py-mercurial: $(PY-MERCURIAL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-MERCURIAL_BUILD_DIR)/.staged: $(PY-MERCURIAL_BUILD_DIR)/.built
-	rm -f $(PY-MERCURIAL_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-MERCURIAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-MERCURIAL_BUILD_DIR)/.staged
+#	touch $@
 
 py-mercurial-stage: $(PY-MERCURIAL_BUILD_DIR)/.staged
 
@@ -182,7 +183,7 @@ py-mercurial-stage: $(PY-MERCURIAL_BUILD_DIR)/.staged
 $(PY24-MERCURIAL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-mercurial" >>$@
+	@echo "Package: py24-mercurial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MERCURIAL_PRIORITY)" >>$@
 	@echo "Section: $(PY-MERCURIAL_SECTION)" >>$@
@@ -221,7 +222,8 @@ $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control:
 #
 $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	# 2.4
-	rm -rf $(PY24-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py-mercurial_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-mercurial_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py24-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
