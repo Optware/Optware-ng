@@ -20,12 +20,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RTPPROXY_SITE=http://ftp.iptel.org/pub/rtpproxy
-RTPPROXY_VERSION=0.3
+RTPPROXY_SITE=http://b2bua.org/chrome/site
+RTPPROXY_VERSION=1.0
 RTPPROXY_SOURCE=rtpproxy-$(RTPPROXY_VERSION).tar.gz
 RTPPROXY_DIR=rtpproxy-$(RTPPROXY_VERSION)
 RTPPROXY_UNZIP=zcat
-RTPPROXY_MAINTAINER=Ovidiu Sas <sip.nslu@gmail.com>
+RTPPROXY_MAINTAINER=Ovidiu Sas <osas@voipembedded.com>
 RTPPROXY_DESCRIPTION=RTPproxy is a proxy for RTP streams that can help SER/OpenSER \
 handle NAT situations, as well as proxy IP telephony between IPv4 and IPv6 networks.
 RTPPROXY_SECTION=util
@@ -47,7 +47,7 @@ RTPPROXY_IPK_VERSION=1
 # RTPPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#RTPPROXY_PATCHES=$(RTPPROXY_SOURCE_DIR)/configure.patch
+RTPPROXY_PATCHES=$(RTPPROXY_SOURCE_DIR)/rtpproxy.patch
 
 #
 # If the compilation of the package requires additional
