@@ -37,7 +37,7 @@ PY-GENSHI_CONFLICTS=
 #
 # PY-GENSHI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GENSHI_IPK_VERSION=1
+PY-GENSHI_IPK_VERSION=2
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-GENSHI_LDFLAGS=
 PY-GENSHI_BUILD_DIR=$(BUILD_DIR)/py-genshi
 PY-GENSHI_SOURCE_DIR=$(SOURCE_DIR)/py-genshi
 
-PY24-GENSHI_IPK_DIR=$(BUILD_DIR)/py-genshi-$(PY-GENSHI_VERSION)-ipk
-PY24-GENSHI_IPK=$(BUILD_DIR)/py-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-GENSHI_IPK_DIR=$(BUILD_DIR)/py24-genshi-$(PY-GENSHI_VERSION)-ipk
+PY24-GENSHI_IPK=$(BUILD_DIR)/py24-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-GENSHI_IPK_DIR=$(BUILD_DIR)/py25-genshi-$(PY-GENSHI_VERSION)-ipk
 PY25-GENSHI_IPK=$(BUILD_DIR)/py25-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-GENSHI_IPK=$(BUILD_DIR)/py25-genshi_$(PY-GENSHI_VERSION)-$(PY-GENSHI_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-GENSHI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-GENSHI_SITE)/$(PY-GENSHI_SOURCE)
+	$(WGET) -P $(@D) $(PY-GENSHI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,15 +108,15 @@ py-genshi-source: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PATCHES)
 #
 $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PATCHES) make/py-genshi.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)
-	mkdir -p $(PY-GENSHI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)
+	mkdir -p $(@D)
 #	2.4
 	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-GENSHI_PATCHES)"; \
 		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)/2.4
-	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -124,12 +125,12 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	if test -n "$(PY-GENSHI_PATCHES)"; \
 		then cat $(PY-GENSHI_PATCHES) | patch -d $(BUILD_DIR)/$(PY-GENSHI_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(PY-GENSHI_BUILD_DIR)/2.5
-	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-GENSHI_BUILD_DIR)/.configured
+	touch $@
 
 py-genshi-unpack: $(PY-GENSHI_BUILD_DIR)/.configured
 
@@ -137,14 +138,14 @@ py-genshi-unpack: $(PY-GENSHI_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-GENSHI_BUILD_DIR)/.built: $(PY-GENSHI_BUILD_DIR)/.configured
-	rm -f $(PY-GENSHI_BUILD_DIR)/.built
-	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
-	touch $(PY-GENSHI_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -155,9 +156,9 @@ py-genshi: $(PY-GENSHI_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-GENSHI_BUILD_DIR)/.staged: $(PY-GENSHI_BUILD_DIR)/.built
-	rm -f $(PY-GENSHI_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(PY-GENSHI_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-GENSHI_BUILD_DIR)/.staged
+#	touch $@
 
 py-genshi-stage: $(PY-GENSHI_BUILD_DIR)/.staged
 
@@ -168,7 +169,7 @@ py-genshi-stage: $(PY-GENSHI_BUILD_DIR)/.staged
 $(PY24-GENSHI_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-genshi" >>$@
+	@echo "Package: py24-genshi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-GENSHI_PRIORITY)" >>$@
 	@echo "Section: $(PY-GENSHI_SECTION)" >>$@
@@ -206,7 +207,8 @@ $(PY25-GENSHI_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
-	rm -rf $(PY24-GENSHI_IPK_DIR) $(BUILD_DIR)/py-genshi_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-genshi_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-GENSHI_IPK_DIR) $(BUILD_DIR)/py24-genshi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-GENSHI_IPK_DIR) --prefix=/opt)
