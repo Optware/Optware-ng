@@ -68,8 +68,8 @@ PY-OPENSSL_LDFLAGS=
 PY-OPENSSL_BUILD_DIR=$(BUILD_DIR)/py-openssl
 PY-OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/py-openssl
 
-PY24-OPENSSL_IPK_DIR=$(BUILD_DIR)/py-openssl-$(PY-OPENSSL_VERSION)-ipk
-PY24-OPENSSL_IPK=$(BUILD_DIR)/py-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-OPENSSL_IPK_DIR=$(BUILD_DIR)/py24-openssl-$(PY-OPENSSL_VERSION)-ipk
+PY24-OPENSSL_IPK=$(BUILD_DIR)/py24-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-OPENSSL_IPK_DIR=$(BUILD_DIR)/py25-openssl-$(PY-OPENSSL_VERSION)-ipk
 PY25-OPENSSL_IPK=$(BUILD_DIR)/py25-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-OPENSSL_IPK=$(BUILD_DIR)/py25-openssl_$(PY-OPENSSL_VERSION)-$(PY-OPENSSL_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-OPENSSL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-OPENSSL_SITE)/$(PY-OPENSSL_SOURCE)
+	$(WGET) -P $(@D) $(PY-OPENSSL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -182,7 +183,7 @@ py-openssl-stage: $(PY-OPENSSL_BUILD_DIR)/.staged
 $(PY24-OPENSSL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-openssl" >>$@
+	@echo "Package: py24-openssl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-OPENSSL_PRIORITY)" >>$@
 	@echo "Section: $(PY-OPENSSL_SECTION)" >>$@
@@ -221,7 +222,8 @@ $(PY25-OPENSSL_IPK_DIR)/CONTROL/control:
 #
 $(PY24-OPENSSL_IPK) $(PY25-OPENSSL_IPK): $(PY-OPENSSL_BUILD_DIR)/.built
 	# 2.4
-	rm -rf $(PY24-OPENSSL_IPK_DIR) $(BUILD_DIR)/py-openssl_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-openssl_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-OPENSSL_IPK_DIR) $(BUILD_DIR)/py24-openssl_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENSSL_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-OPENSSL_IPK_DIR) --prefix=/opt; \
 	)
