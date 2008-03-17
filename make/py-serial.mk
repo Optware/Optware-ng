@@ -37,7 +37,7 @@ PY-SERIAL_CONFLICTS=
 #
 # PY-SERIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SERIAL_IPK_VERSION=4
+PY-SERIAL_IPK_VERSION=5
 
 #
 # PY-SERIAL_CONFFILES should be a list of user-editable files
@@ -71,8 +71,8 @@ PY-SERIAL_SOURCE_DIR=$(SOURCE_DIR)/py-serial
 PY-SERIAL-COMMON_IPK_DIR=$(BUILD_DIR)/py-serial-common-$(PY-SERIAL_VERSION)-ipk
 PY-SERIAL-COMMON_IPK=$(BUILD_DIR)/py-serial-common_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-SERIAL_IPK_DIR=$(BUILD_DIR)/py-serial-$(PY-SERIAL_VERSION)-ipk
-PY24-SERIAL_IPK=$(BUILD_DIR)/py-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-SERIAL_IPK_DIR=$(BUILD_DIR)/py24-serial-$(PY-SERIAL_VERSION)-ipk
+PY24-SERIAL_IPK=$(BUILD_DIR)/py24-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-SERIAL_IPK_DIR=$(BUILD_DIR)/py25-serial-$(PY-SERIAL_VERSION)-ipk
 PY25-SERIAL_IPK=$(BUILD_DIR)/py25-serial_$(PY-SERIAL_VERSION)-$(PY-SERIAL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -110,14 +110,14 @@ py-serial-source: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES)
 #
 $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(PY-SERIAL_BUILD_DIR)
-	mkdir -p $(PY-SERIAL_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
 	cd $(BUILD_DIR) && $(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE)
 #	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(PY-SERIAL_BUILD_DIR)/2.4
-	(cd $(PY-SERIAL_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") > setup.cfg \
 	)
@@ -125,8 +125,8 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
 	cd $(BUILD_DIR) && $(PY-SERIAL_UNZIP) $(DL_DIR)/$(PY-SERIAL_SOURCE)
 #	cat $(PY-SERIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SERIAL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(PY-SERIAL_BUILD_DIR)/2.5
-	(cd $(PY-SERIAL_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") > setup.cfg \
 	)
@@ -139,8 +139,8 @@ py-serial-unpack: $(PY-SERIAL_BUILD_DIR)/.configured
 #
 $(PY-SERIAL_BUILD_DIR)/.built: $(PY-SERIAL_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-SERIAL_BUILD_DIR)/2.4 && $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
-	cd $(PY-SERIAL_BUILD_DIR)/2.5 && $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
+	cd $(@D)/2.4 && $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
+	cd $(@D)/2.5 && $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
 	touch $@
 
 #
@@ -152,9 +152,9 @@ py-serial: $(PY-SERIAL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-SERIAL_BUILD_DIR)/.staged: $(PY-SERIAL_BUILD_DIR)/.built
-	rm -f $(PY-SERIAL_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-SERIAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-SERIAL_BUILD_DIR)/.staged
+#	rm -f $(@D)/.staged
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $(@D)/.staged
 
 py-serial-stage: $(PY-SERIAL_BUILD_DIR)/.staged
 
@@ -179,7 +179,7 @@ $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control:
 $(PY24-SERIAL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-serial" >>$@
+	@echo "Package: py24-serial" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SERIAL_PRIORITY)" >>$@
 	@echo "Section: $(PY-SERIAL_SECTION)" >>$@
@@ -217,7 +217,8 @@ $(PY25-SERIAL_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-SERIAL_IPK): $(PY-SERIAL_BUILD_DIR)/.built
-	rm -rf $(PY24-SERIAL_IPK_DIR) $(BUILD_DIR)/py-serial_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-serial_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-SERIAL_IPK_DIR) $(BUILD_DIR)/py24-serial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERIAL_BUILD_DIR)/2.4; \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	--root=$(PY24-SERIAL_IPK_DIR) --prefix=/opt)
