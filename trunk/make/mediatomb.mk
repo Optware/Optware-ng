@@ -78,7 +78,7 @@ MEDIATOMB_CONFIG_ARGS=--enable-taglib \
 endif
 # inotify starts at linux 2.6.13, don't even try with linux 2.4
 MEDIATOMB_CONFIG_ARGS += $(strip \
-    $(if $(filter openwrt-brcm24, $(OPTWARE_TARGET)), \
+    $(if $(filter ddwrt oleg openwrt-brcm24, $(OPTWARE_TARGET)), \
 	--disable-inotify, \
 	--enable-inotify))
 
