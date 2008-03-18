@@ -5,7 +5,7 @@
 ###########################################################
 
 SMARTMONTOOLS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/smartmontools
-SMARTMONTOOLS_VERSION=5.37
+SMARTMONTOOLS_VERSION=5.38
 SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
 SMARTMONTOOLS_DIR=smartmontools-$(SMARTMONTOOLS_VERSION)
 SMARTMONTOOLS_UNZIP=zcat
@@ -31,7 +31,7 @@ SMARTMONTOOLS_CONFFILES=/opt/etc/smartd.conf /opt/etc/init.d/S20smartmontools
 # SMARTMONTOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SMARTMONTOOLS_PATCHES=$(SMARTMONTOOLS_SOURCE_DIR)/configargs.patch
+#SMARTMONTOOLS_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -59,7 +59,8 @@ SMARTMONTOOLS_IPK=$(BUILD_DIR)/smartmontools_$(SMARTMONTOOLS_VERSION)-$(SMARTMON
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SMARTMONTOOLS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SMARTMONTOOLS_SITE)/$(SMARTMONTOOLS_SOURCE)
+	$(WGET) -P $(@D) $(SMARTMONTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: smartmontools-source smartmontools-unpack smartmontools smartmontools-stage smartmontools-ipk smartmontools-clean smartmontools-dirclean smartmontools-check
 
@@ -83,16 +84,16 @@ smartmontools-source: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMARTMONTOOLS_PATCHES)
 # to Make causes it to override the default search paths of the compiler.
 #
 $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMARTMONTOOLS_PATCHES)
-	rm -rf $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(SMARTMONTOOLS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(@D)
 	$(SMARTMONTOOLS_UNZIP) $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SMARTMONTOOLS_PATCHES)" ; \
 		then cat $(SMARTMONTOOLS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SMARTMONTOOLS_DIR)" != "$(SMARTMONTOOLS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(SMARTMONTOOLS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SMARTMONTOOLS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(@D) ; \
 	fi
-	(cd $(SMARTMONTOOLS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SMARTMONTOOLS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SMARTMONTOOLS_LDFLAGS)" \
@@ -105,7 +106,7 @@ $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMAR
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(SMARTMONTOOLS_BUILD_DIR)/.configured
+	touch $@
 
 smartmontools-unpack: $(SMARTMONTOOLS_BUILD_DIR)/.configured
 
@@ -113,9 +114,9 @@ smartmontools-unpack: $(SMARTMONTOOLS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SMARTMONTOOLS_BUILD_DIR)/.built: $(SMARTMONTOOLS_BUILD_DIR)/.configured
-	rm -f $(SMARTMONTOOLS_BUILD_DIR)/.built
-	$(MAKE) -C $(SMARTMONTOOLS_BUILD_DIR)
-	touch $(SMARTMONTOOLS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -127,7 +128,7 @@ smartmontools: $(SMARTMONTOOLS_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/smartmontools
 #
 $(SMARTMONTOOLS_IPK_DIR)/CONTROL/control:
-	@install -d $(SMARTMONTOOLS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: smartmontools" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
