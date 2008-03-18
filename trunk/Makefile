@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = confuse\
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -202,7 +202,7 @@ COMMON_CROSS_PACKAGES = \
 	catdoc ccollect ccxstream cdargs cdrtools \
 	cherokee chicken chillispot chrpath cksfv \
 	classpath clamav clearsilver clips clutch cmdftp \
-	cogito connect coreutils corkscrew cpio cron \
+	cogito confuse connect coreutils corkscrew cpio cron \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
