@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = \
+CROSS_PACKAGES_READY_FOR_TESTING = confuse\
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
