@@ -36,7 +36,7 @@ CONFUSE_CONFLICTS=
 #
 # CONFUSE_IPK_VERSION should be incremented when the ipk changes.
 #
-CONFUSE_IPK_VERSION=1
+CONFUSE_IPK_VERSION=2
 
 #
 # CONFUSE_CONFFILES should be a list of user-editable files
@@ -126,6 +126,7 @@ $(CONFUSE_BUILD_DIR)/.configured: $(DL_DIR)/$(CONFUSE_SOURCE) $(CONFUSE_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		--enable-shared \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
