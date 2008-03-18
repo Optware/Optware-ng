@@ -1,0 +1,6 @@
+#!/bin/sh
+
+echo "With python installed, use the following command to launch admin"
+echo "    /opt/sbin/cherokee-admin -a"
+echo "The admin web interface is accessible at"
+echo "    http://<IP-address>:9090"
