@@ -39,7 +39,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -276,6 +276,7 @@ $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK): $
 	sed -i -e '/server.port/s|=.*|= 8008|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
+	mv $(CHEROKEE_IPK_DIR)/opt/bin/spawn-fcgi $(CHEROKEE_IPK_DIR)/opt/bin/cherokee-spawn-fcgi
 	# -admin
 	install -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee
 	mv $(CHEROKEE_IPK_DIR)/opt/share/cherokee/admin $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee/admin
