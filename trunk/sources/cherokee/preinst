@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "If you're upgrading from 0.5 to 0.6, the configuration format has changed"
+echo "Please use the new configuration files."
