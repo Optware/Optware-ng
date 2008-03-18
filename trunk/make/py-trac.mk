@@ -232,7 +232,7 @@ $(PY25-TRAC_IPK_DIR)/CONTROL/control:
 #
 $(PY24-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-trac_*_$(TARGET_ARCH).ipk
-	rm -rf $(PY-TRAC_IPK_DIR) $(BUILD_DIR)/py24-trac_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TRAC_IPK_DIR) $(BUILD_DIR)/py24-trac_*_$(TARGET_ARCH).ipk
 	cd $(PY-TRAC_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
@@ -242,7 +242,7 @@ $(PY24-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TRAC_IPK_DIR)
 
 $(PY25-TRAC_IPK): $(PY-TRAC_BUILD_DIR)/.built
-	rm -rf $(PY-TRAC_IPK_DIR) $(BUILD_DIR)/py25-trac_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY25-TRAC_IPK_DIR) $(BUILD_DIR)/py25-trac_*_$(TARGET_ARCH).ipk
 	cd $(PY-TRAC_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
