@@ -46,7 +46,7 @@ OPENSER_DESCRIPTION=OpenSIP Express Router
 OPENSER_SECTION=util
 OPENSER_PRIORITY=optional
 OPENSER_DEPENDS=coreutils,openssl
-OPENSER_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,perl
+OPENSER_BASE_SUGGESTS=radiusclient-ng,libxml2,unixodbc,postgresql,expat,net-snmp,perl,confuse
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 OPENSER_SUGGESTS=$(OPENSER_BASE_SUGGESTS),mysql
 endif
@@ -56,7 +56,7 @@ OPENSER_CONFLICTS=
 # OPENSER_IPK_VERSION should be incremented when the ipk changes.
 #
 ifeq ($(OPENSER_SOURCE_TYPE), tarball)
-OPENSER_IPK_VERSION=1
+OPENSER_IPK_VERSION=2
 else
 OPENSER_IPK_VERSION=1
 endif
@@ -110,7 +110,7 @@ OPENSER_MAKEFLAGS=$(strip \
 # snmpstats - issues on tx72xx
 # pua       - issues on mss, ddwrt, oleg (uclibc issues)
 #
-OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres
+OPENSER_INCLUDE_BASE_MODULES=presence pua_mi pua_usrloc xmpp unixodbc auth_radius avp_radius group_radius uri_radius cpl-c postgres carrierroute
 ifeq ($(OPTWARE_TARGET),slugosbe)
 OPENSER_PERLLDOPTS=-fexpensive-optimizations -fomit-frame-pointer -Wl,-rpath,/opt/lib/perl5/5.8.8/armv5b-linux/CORE -L$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE -lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s
 OPENSER_PERLCCOPTS=-fexpensive-optimizations -fomit-frame-pointer -I$(STAGING_DIR)/opt/lib/perl5/5.8.8/armv5b-linux/CORE
@@ -193,7 +193,7 @@ openser-source: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES)
 #
 $(OPENSER_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSER_SOURCE) $(OPENSER_PATCHES) make/openser.mk
 	$(MAKE) openssl-stage radiusclient-ng-stage expat-stage libxml2-stage unixodbc-stage
-	$(MAKE) postgresql-stage net-snmp-stage perl-stage
+	$(MAKE) postgresql-stage net-snmp-stage perl-stage confuse-stage
 ifeq (mysql, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
