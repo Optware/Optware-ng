@@ -22,7 +22,7 @@ SCPONLY_CONFLICTS=
 #
 # SCPONLY_IPK_VERSION should be incremented when the ipk changes.
 #
-SCPONLY_IPK_VERSION=5
+SCPONLY_IPK_VERSION=6
 
 #
 # SCPONLY_CONFFILES should be a list of user-editable files
@@ -106,6 +106,10 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 # Rsync isn't working yet!
 #		--enable-rsync-compat \
 #
+# NOTE
+# 	The sed is used to force the path for the sftp-server.
+# 	Otherwise configure uses the path it finds on the build system!
+#
 	(cd $(SCPONLY_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCPONLY_CPPFLAGS)" \
@@ -123,7 +127,8 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 		--enable-sftp-logging-compat \
 		--enable-scp-compat \
 		--enable-chrooted-binary \
-		-with-sftp-server=/opt/libexec/sftp-server \
+		--with-sftp-server=/usr/libexec/sftp-server; \
+		sed -i 's@#define PROG_SFTP_SERVER ".*"@#define PROG_SFTP_SERVER "/usr/libexec/sftp-server"@' config.h \
 	)
 	# $(PATCH_LIBTOOL) $(SCPONLY_BUILD_DIR)/libtool
 	touch $@
@@ -131,7 +136,7 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 scponly-unpack: $(SCPONLY_BUILD_DIR)/.configured
 
 #
-# This builds the actual binary.
+# This uilds the actual binary.
 #
 $(SCPONLY_BUILD_DIR)/.built: $(SCPONLY_BUILD_DIR)/.configured
 	rm -f $@
