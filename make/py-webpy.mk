@@ -21,10 +21,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-WEBPY_SITE=http://pypi.python.org/packages/source/w/web.py
-PY-WEBPY_VERSION=0.22
+PY-WEBPY_SITE=http://webpy.org/static
+PY-WEBPY_VERSION=0.23
 PY-WEBPY_SOURCE=web.py-$(PY-WEBPY_VERSION).tar.gz
-PY-WEBPY_DIR=web.py-$(PY-WEBPY_VERSION)
+PY-WEBPY_DIR=webpy
 PY-WEBPY_UNZIP=zcat
 PY-WEBPY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-WEBPY_DESCRIPTION=A web framework for python that is as simple as it is powerful.
@@ -37,7 +37,7 @@ PY25-WEBPY_DEPENDS=python25
 #
 # PY-WEBPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-WEBPY_IPK_VERSION=2
+PY-WEBPY_IPK_VERSION=1
 
 #
 # PY-WEBPY_CONFFILES should be a list of user-editable files
