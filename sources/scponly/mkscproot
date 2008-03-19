@@ -2,8 +2,6 @@
 #
 # $Id$
 #
-
-#
 # NOTE:
 #	This script works with the standard busybox tools.
 #
@@ -171,7 +169,7 @@ fi
 
 mkdir -p "${HOME}"
 
-for d in bin etc lib usr usr/bin usr/lib usr/libexec usr/libexec/openssh dev
+for d in bin etc lib usr usr/bin usr/lib usr/libexec dev
 do
 	mkdir "${ROOT}/${d}"
 done
@@ -225,7 +223,7 @@ then
 	cp /usr/bin/scp .
 fi
 
-cd "${ROOT}/usr/libexec/openssh"
+cd "${ROOT}/usr/libexec"
 if [ -f /opt/libexec/sftp-server ]
 then
 	cp /opt/libexec/sftp-server .
