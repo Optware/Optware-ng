@@ -1,0 +1,21 @@
+--- minicom/src/rwconf.c~	2006-04-02 19:22:30.000000000 +0930
++++ minicom/src/rwconf.c	2008-03-20 09:22:42.000000000 +1030
+@@ -76,12 +76,12 @@
+   { "",			0,   "pname11" },
+   { "",			0,   "pname12" },
+ #if defined(__linux__) || defined(__GNU__)
+-  { "/usr/bin/sz -vv -b",	0,   "pprog1" },
+-  { "/usr/bin/sb -vv",		0,   "pprog2" },
+-  { "/usr/bin/sx -vv",		0,   "pprog3" },
+-  { "/usr/bin/rz -vv -b -E",	0,   "pprog4" },
+-  { "/usr/bin/rb -vv",		0,   "pprog5" },
+-  { "/usr/bin/rx -vv",		0,   "pprog6" },
++  { "/opt/bin/lsz -vv -b",	0,   "pprog1" },
++  { "/opt/bin/lsb -vv",		0,   "pprog2" },
++  { "/opt/bin/lsx -vv",		0,   "pprog3" },
++  { "/opt/bin/lrz -vv -b -E",	0,   "pprog4" },
++  { "/opt/bin/lrb -vv",		0,   "pprog5" },
++  { "/opt/bin/lrx -vv",		0,   "pprog6" },
+   { "/usr/bin/kermit -i -l %l -s", 0, "pprog7" },
+   { "/usr/bin/kermit -i -l %l -r", 0, "pprog8" },
+ #else

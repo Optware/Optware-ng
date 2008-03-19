@@ -35,13 +35,13 @@ MINICOM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MINICOM_DESCRIPTION=Minicom is a serial communication program. It is a Unix clone of the well-known MS-DOS Telix program. It has ANSI color, a dialing directory, dial-a-list, and a scripting language.
 MINICOM_SECTION=misc
 MINICOM_PRIORITY=optional
-MINICOM_DEPENDS=ncurses
+MINICOM_DEPENDS=ncurses, lrzsz
 MINICOM_CONFLICTS=
 
 #
 # MINICOM_IPK_VERSION should be incremented when the ipk changes.
 #
-MINICOM_IPK_VERSION=2
+MINICOM_IPK_VERSION=3
 
 #
 # MINICOM_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ MINICOM_CONFFILES=/opt/etc/minirc.dfl
 # MINICOM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/windowc.patch
+MINICOM_PATCHES=$(MINICOM_SOURCE_DIR)/lrzsz-paths.patch
 
 #
 # If the compilation of the package requires additional
