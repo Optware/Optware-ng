@@ -1,6 +1,6 @@
---- bitlbee/configure.orig	2007-01-11 19:51:40.000000000 -0800
-+++ bitlbee/configure	2007-01-11 19:51:59.000000000 -0800
-@@ -86,7 +86,7 @@
+--- bitlbee/configure.orig	2008-03-02 17:10:16.000000000 +0000
++++ bitlbee/configure	2008-03-19 05:30:26.000000000 +0000
+@@ -112,7 +112,7 @@
  
  DESTDIR=
  LFLAGS=
@@ -9,3 +9,12 @@
  EOF
  
  cat<<EOF>config.h
+@@ -322,7 +322,7 @@
+ 
+ echo 'SSL_CLIENT=ssl_'$ssl'.o' >> Makefile.settings
+ 
+-for i in /lib /usr/lib /usr/local/lib; do
++for i in ; do
+ 	if [ -f $i/libresolv.a ]; then
+ 		echo '#define HAVE_RESOLV_A' >> config.h
+ 		echo 'EFLAGS+='$i'/libresolv.a' >> Makefile.settings

@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BITLBEE_SITE=http://get.bitlbee.org/src/
-BITLBEE_VERSION=1.0.4
+BITLBEE_VERSION=1.2
 BITLBEE_SOURCE=bitlbee-$(BITLBEE_VERSION).tar.gz
 BITLBEE_DIR=bitlbee-$(BITLBEE_VERSION)
 BITLBEE_UNZIP=zcat
@@ -83,7 +83,8 @@ BITLBEE_IPK=$(BUILD_DIR)/bitlbee_$(BITLBEE_VERSION)-$(BITLBEE_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BITLBEE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BITLBEE_SITE)/$(BITLBEE_SOURCE)
+	$(WGET) -P $(@D) $(BITLBEE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -136,7 +137,7 @@ endif
 		--datadir=/opt/var/bitlbee \
 		--config=/opt/var/bitlbee \
 	)
-	touch $(BITLBEE_BUILD_DIR)/.configured
+	touch $@
 
 bitlbee-unpack: $(BITLBEE_BUILD_DIR)/.configured
 
@@ -144,9 +145,9 @@ bitlbee-unpack: $(BITLBEE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BITLBEE_BUILD_DIR)/.built: $(BITLBEE_BUILD_DIR)/.configured
-	rm -f $(BITLBEE_BUILD_DIR)/.built
-	$(MAKE) -C $(BITLBEE_BUILD_DIR)
-	touch $(BITLBEE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -157,9 +158,9 @@ bitlbee: $(BITLBEE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BITLBEE_BUILD_DIR)/.staged: $(BITLBEE_BUILD_DIR)/.built
-	rm -f $(BITLBEE_BUILD_DIR)/.staged
-	$(MAKE) -C $(BITLBEE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(BITLBEE_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 bitlbee-stage: $(BITLBEE_BUILD_DIR)/.staged
 
@@ -168,7 +169,7 @@ bitlbee-stage: $(BITLBEE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bitlbee
 #
 $(BITLBEE_IPK_DIR)/CONTROL/control:
-	@install -d $(BITLBEE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bitlbee" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
