@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TAILOR_VERSION=0.9.29
+PY-TAILOR_VERSION=0.9.30
 PY-TAILOR_SITE=http://darcs.arstecnica.it/
 PY-TAILOR_SOURCE=tailor-$(PY-TAILOR_VERSION).tar.gz
 PY-TAILOR_DIR=tailor-$(PY-TAILOR_VERSION)
@@ -68,8 +68,8 @@ PY-TAILOR_LDFLAGS=
 PY-TAILOR_BUILD_DIR=$(BUILD_DIR)/py-tailor
 PY-TAILOR_SOURCE_DIR=$(SOURCE_DIR)/py-tailor
 
-PY24-TAILOR_IPK_DIR=$(BUILD_DIR)/py-tailor-$(PY-TAILOR_VERSION)-ipk
-PY24-TAILOR_IPK=$(BUILD_DIR)/py-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-TAILOR_IPK_DIR=$(BUILD_DIR)/py24-tailor-$(PY-TAILOR_VERSION)-ipk
+PY24-TAILOR_IPK=$(BUILD_DIR)/py24-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-TAILOR_IPK_DIR=$(BUILD_DIR)/py25-tailor-$(PY-TAILOR_VERSION)-ipk
 PY25-TAILOR_IPK=$(BUILD_DIR)/py25-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-TAILOR_IPK=$(BUILD_DIR)/py25-tailor_$(PY-TAILOR_VERSION)-$(PY-TAILOR_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-TAILOR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TAILOR_SITE)/$(PY-TAILOR_SOURCE)
+	$(WGET) -P $(@D) $(PY-TAILOR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -182,7 +183,7 @@ py-tailor-stage: $(PY-TAILOR_BUILD_DIR)/.staged
 $(PY24-TAILOR_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-tailor" >>$@
+	@echo "Package: py24-tailor" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TAILOR_PRIORITY)" >>$@
 	@echo "Section: $(PY-TAILOR_SECTION)" >>$@
@@ -220,7 +221,8 @@ $(PY25-TAILOR_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-TAILOR_IPK): $(PY-TAILOR_BUILD_DIR)/.built
-	rm -rf $(PY24-TAILOR_IPK_DIR) $(BUILD_DIR)/py-tailor_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-tailor_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-TAILOR_IPK_DIR) $(BUILD_DIR)/py24-tailor_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TAILOR_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-TAILOR_IPK_DIR) --prefix=/opt; \
