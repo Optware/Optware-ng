@@ -17,7 +17,7 @@
 # You should change all these variables to suit your package.
 #
 TCL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/tcl/
-TCL_VERSION=8.4.12
+TCL_VERSION=8.4.16
 TCL_SOURCE=tcl$(TCL_VERSION)-src.tar.gz
 TCL_DIR=tcl$(TCL_VERSION)
 TCL_UNZIP=zcat
@@ -32,7 +32,7 @@ TCL_CONFLICTS=
 #
 # TCL_IPK_VERSION should be incremented when the ipk changes.
 #
-TCL_IPK_VERSION=2
+TCL_IPK_VERSION=1
 
 #
 # TCL_CONFFILES should be a list of user-editable files #TCL_CONFFILES=/opt/etc/tcl.conf /opt/etc/init.d/SXXtcl
@@ -68,7 +68,8 @@ TCL_IPK=$(BUILD_DIR)/tcl_$(TCL_VERSION)-$(TCL_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 # This is the dependency on the source code.  If the source is missing, # then it will be fetched from the site using wget. #
 $(DL_DIR)/$(TCL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TCL_SITE)/$(TCL_SOURCE)
+	$(WGET) -P $(@D) $(TCL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory. # This target will be called by the top level Makefile to download the # source code's archive (.tar.gz, .bz2, etc.) #
@@ -98,7 +99,7 @@ $(TCL_BUILD_DIR)/.configured: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(TCL_BUILD_DIR)/.configured
+	touch $@
 
 tcl-unpack: $(TCL_BUILD_DIR)/.configured
 
@@ -106,7 +107,7 @@ tcl-unpack: $(TCL_BUILD_DIR)/.configured
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/tcl # #
 $(TCL_IPK_DIR)/CONTROL/control:
-	@install -d $(TCL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: tcl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -123,9 +124,9 @@ $(TCL_IPK_DIR)/CONTROL/control:
 # This builds the actual binary.
 #
 $(TCL_BUILD_DIR)/.built: $(TCL_BUILD_DIR)/.configured
-	rm -f $(TCL_BUILD_DIR)/.built
-	$(MAKE) -C $(TCL_BUILD_DIR)/unix
-	touch $(TCL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/unix
+	touch $@
 
 #
 # This is the build convenience target.
@@ -135,10 +136,10 @@ tcl: $(TCL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too. #
 $(TCL_BUILD_DIR)/.staged: $(TCL_BUILD_DIR)/.built
-	rm -f $(TCL_BUILD_DIR)/.staged
-	$(MAKE) -C $(TCL_BUILD_DIR)/unix INSTALL_ROOT=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D)/unix INSTALL_ROOT=$(STAGING_DIR) install
 	cd $(STAGING_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'` libtcl.so
-	touch $(TCL_BUILD_DIR)/.staged
+	touch $@
 
 tcl-stage: $(TCL_BUILD_DIR)/.staged
 
@@ -172,3 +173,9 @@ tcl-clean:
 # This is called from the top level makefile to clean all dynamically created # directories. #
 tcl-dirclean:
 	rm -rf $(BUILD_DIR)/$(TCL_DIR) $(TCL_BUILD_DIR) $(TCL_IPK_DIR) $(TCL_IPK)
+
+#
+# Some sanity check for the package.
+#
+tcl-check: $(TCL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TCL_IPK)
