@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-POSTGRESQL_VERSION=8.2.6
+POSTGRESQL_VERSION=8.2.7
 POSTGRESQL_SITE=ftp://ftp.postgresql.org/pub/source/v$(POSTGRESQL_VERSION)
 POSTGRESQL_SOURCE=postgresql-$(POSTGRESQL_VERSION).tar.bz2
 POSTGRESQL_DIR=postgresql-$(POSTGRESQL_VERSION)
@@ -89,7 +89,8 @@ POSTGRESQL_IPK=$(BUILD_DIR)/postgresql_$(POSTGRESQL_VERSION)-$(POSTGRESQL_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(POSTGRESQL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POSTGRESQL_SITE)/$(POSTGRESQL_SOURCE)
+	$(WGET) -P $(@D) $(POSTGRESQL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -144,7 +145,7 @@ postgresql-unpack: $(POSTGRESQL_BUILD_DIR)/.configured
 #
 $(POSTGRESQL_BUILD_DIR)/.built: $(POSTGRESQL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POSTGRESQL_CPPFLAGS)" \
 		;
 	touch $@
@@ -159,7 +160,7 @@ postgresql: $(POSTGRESQL_BUILD_DIR)/.built
 #
 $(POSTGRESQL_BUILD_DIR)/.staged: $(POSTGRESQL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(POSTGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 postgresql-stage: $(POSTGRESQL_BUILD_DIR)/.staged
