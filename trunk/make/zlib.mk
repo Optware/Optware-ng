@@ -66,7 +66,7 @@ $(ZLIB_BUILD_DIR)/.built: $(ZLIB_BUILD_DIR)/.configured
 		CFLAGS="$(ZLIB_CFLAGS)" \
 		CC=$(TARGET_CC) \
 		$(ZLIB_MAKE_FLAGS) \
-		-C $(ZLIB_BUILD_DIR) all libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.a
+		-C $(ZLIB_BUILD_DIR) libz.a libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) all
 	touch $@
 
 zlib: $(ZLIB_BUILD_DIR)/.built
