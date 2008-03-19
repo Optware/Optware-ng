@@ -41,7 +41,7 @@ MINICOM_CONFLICTS=
 #
 # MINICOM_IPK_VERSION should be incremented when the ipk changes.
 #
-MINICOM_IPK_VERSION=1
+MINICOM_IPK_VERSION=2
 
 #
 # MINICOM_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ minicom-source: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
-	$(MAKE) ncurses-stage
+	$(MAKE) ncurses-stage termcap-stage
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MINICOM_PATCHES)"; \
@@ -123,7 +123,7 @@ $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(MINICOM_BUILD_DIR)/.configured
+	touch $@
 
 minicom-unpack: $(MINICOM_BUILD_DIR)/.configured
 
@@ -131,9 +131,9 @@ minicom-unpack: $(MINICOM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MINICOM_BUILD_DIR)/.built: $(MINICOM_BUILD_DIR)/.configured
-	rm -f $(MINICOM_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(MINICOM_BUILD_DIR)
-	touch $(MINICOM_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -144,9 +144,9 @@ minicom: $(MINICOM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MINICOM_BUILD_DIR)/.staged: $(MINICOM_BUILD_DIR)/.built
-	rm -f $(MINICOM_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(MINICOM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MINICOM_BUILD_DIR)/.staged
+	touch $@
 
 minicom-stage: $(MINICOM_BUILD_DIR)/.staged
 
@@ -155,7 +155,7 @@ minicom-stage: $(MINICOM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/minicom
 #
 $(MINICOM_IPK_DIR)/CONTROL/control:
-	@install -d $(MINICOM_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: minicom" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
