@@ -1,11 +1,11 @@
---- tcl-patched/unix/configure.in	2004-12-06 19:23:45.000000000 -0500
-+++ tcl/unix/configure.in	2005-04-30 13:04:45.630000000 -0400
-@@ -268,7 +268,7 @@
- }], , tcl_ok=0, tcl_ok=0)
- if test "$tcl_ok" = 0; then
-     test -n "$verbose" && echo "	Adding strtod.o."
+--- tcl8.4.16/unix/configure.in.orig	2007-09-21 17:07:02.000000000 +0000
++++ tcl8.4.16/unix/configure.in	2008-03-19 05:48:57.000000000 +0000
+@@ -308,7 +308,7 @@
+     fi
+ fi
+ if test $tcl_ok = 0; then
 -    LIBOBJS="$LIBOBJS strtod.o"
-+   # LIBOBJS="$LIBOBJS strtod.o"
++   :; # LIBOBJS="$LIBOBJS strtod.o"
  fi
  
  #--------------------------------------------------------------------
