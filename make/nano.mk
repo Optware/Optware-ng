@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-NANO_SITE=http://www.nano-editor.org/dist/v2.0
-NANO_VERSION=2.0.7
+NANO_SITE=http://www.nano-editor.org/dist/v2.1
+NANO_VERSION=2.1.0
 NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
 NANO_DIR=nano-$(NANO_VERSION)
 NANO_UNZIP=zcat
@@ -33,7 +33,8 @@ NANO_IPK=$(BUILD_DIR)/nano_$(NANO_VERSION)-$(NANO_IPK_VERSION)_$(TARGET_ARCH).ip
 .PHONY: nano-source nano-unpack nano nano-stage nano-ipk nano-clean nano-dirclean nano-check
 
 $(DL_DIR)/$(NANO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NANO_SITE)/$(NANO_SOURCE)
+	$(WGET) -P $(@D) $(NANO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 
