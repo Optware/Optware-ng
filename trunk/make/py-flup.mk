@@ -37,7 +37,7 @@ PY-FLUP_CONFLICTS=
 #
 # PY-FLUP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-FLUP_IPK_VERSION=1
+PY-FLUP_IPK_VERSION=2
 
 #
 # PY-FLUP_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-FLUP_LDFLAGS=
 PY-FLUP_BUILD_DIR=$(BUILD_DIR)/py-flup
 PY-FLUP_SOURCE_DIR=$(SOURCE_DIR)/py-flup
 
-PY24-FLUP_IPK_DIR=$(BUILD_DIR)/py-flup-$(PY-FLUP_VERSION)-ipk
-PY24-FLUP_IPK=$(BUILD_DIR)/py-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-FLUP_IPK_DIR=$(BUILD_DIR)/py24-flup-$(PY-FLUP_VERSION)-ipk
+PY24-FLUP_IPK=$(BUILD_DIR)/py24-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-FLUP_IPK_DIR=$(BUILD_DIR)/py25-flup-$(PY-FLUP_VERSION)-ipk
 PY25-FLUP_IPK=$(BUILD_DIR)/py25-flup_$(PY-FLUP_VERSION)-$(PY-FLUP_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -165,9 +165,9 @@ py-flup: $(PY-FLUP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-FLUP_BUILD_DIR)/.staged: $(PY-FLUP_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(PY-FLUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 py-flup-stage: $(PY-FLUP_BUILD_DIR)/.staged
 
@@ -178,7 +178,7 @@ py-flup-stage: $(PY-FLUP_BUILD_DIR)/.staged
 $(PY24-FLUP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-flup" >>$@
+	@echo "Package: py24-flup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-FLUP_PRIORITY)" >>$@
 	@echo "Section: $(PY-FLUP_SECTION)" >>$@
@@ -216,7 +216,8 @@ $(PY25-FLUP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-FLUP_IPK): $(PY-FLUP_BUILD_DIR)/.built
-	rm -rf $(PY24-FLUP_IPK_DIR) $(BUILD_DIR)/py-flup_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-flup_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-FLUP_IPK_DIR) $(BUILD_DIR)/py24-flup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-FLUP_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
