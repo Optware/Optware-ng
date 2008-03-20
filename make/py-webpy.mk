@@ -33,11 +33,13 @@ PY-WEBPY_PRIORITY=optional
 PY-WEBPY_CONFLICTS=
 PY24-WEBPY_DEPENDS=python24
 PY25-WEBPY_DEPENDS=python25
+PY24-WEBPY_SUGGESTS=py24-flup
+PY25-WEBPY_SUGGESTS=py25-flup
 
 #
 # PY-WEBPY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-WEBPY_IPK_VERSION=1
+PY-WEBPY_IPK_VERSION=2
 
 #
 # PY-WEBPY_CONFFILES should be a list of user-editable files
@@ -194,6 +196,7 @@ $(PY24-WEBPY_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-WEBPY_SITE)/$(PY-WEBPY_SOURCE)" >>$@
 	@echo "Description: $(PY-WEBPY_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY24-WEBPY_DEPENDS)" >>$@
+	@echo "Suggests: $(PY24-WEBPY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-WEBPY_CONFLICTS)" >>$@
 
 $(PY25-WEBPY_IPK_DIR)/CONTROL/control:
@@ -208,6 +211,7 @@ $(PY25-WEBPY_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-WEBPY_SITE)/$(PY-WEBPY_SOURCE)" >>$@
 	@echo "Description: $(PY-WEBPY_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-WEBPY_DEPENDS)" >>$@
+	@echo "Suggests: $(PY25-WEBPY_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY-WEBPY_CONFLICTS)" >>$@
 
 #
