@@ -291,11 +291,11 @@ COMMON_CROSS_PACKAGES = \
 	socat softflowd spandsp speex spindown sqlite sqlite2 \
 	sqsh squeak squid srelay ssam sslwrap strace stunnel streamripper \
 	sudo surfraw swi-prolog svn syslog-ng sysstat syx \
-	taged taglib tcl tcpwrappers tshark tftp-hpa \
-	tar tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
-	tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
+	taged taglib tar tcl tcpwrappers tftp-hpa \
+	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
+	tig tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
 	transcode transmission tre tree \
-	tsocks ttf-bitstream-vera tz tzwatch \
+	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utf8proc util-linux util-linux-ng \
