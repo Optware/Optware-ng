@@ -100,6 +100,7 @@ PERL_PACKAGES = \
 	perl-wakeonlan \
 	perl-xml-parser \
 	perl-yaml \
+	ack \
 	amavisd-new \
 	colordiff \
 	ddclient \
