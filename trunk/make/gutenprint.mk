@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GUTENPRINT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gimp-print
-GUTENPRINT_VERSION=5.1.6
+GUTENPRINT_VERSION=5.1.7
 GUTENPRINT_SOURCE=gutenprint-$(GUTENPRINT_VERSION).tar.bz2
 GUTENPRINT_DIR=gutenprint-$(GUTENPRINT_VERSION)
 GUTENPRINT_UNZIP=bzcat
