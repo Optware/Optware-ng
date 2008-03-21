@@ -47,7 +47,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = gkrellm parted lumikki \
 PERL_PACKAGES = \
 	perl \
 	perl-algorithm-diff \
-	perl-app-ack perl-appconfig perl-assp \
+	perl-appconfig perl-assp \
 	perl-archive-tar perl-archive-zip \
 	perl-berkeleydb \
 	perl-bit-vector \
