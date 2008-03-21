@@ -23,3 +23,12 @@
  my $timers_only = 0;
  my $debug = 0;
  
+@@ -1612,7 +1612,7 @@
+	if( @timerobj[4] =~ /\[/ ){	# If subtitle contains [ for [comedy] see if there is a title before
+		my @subtitle = split(/\[/, @timerobj[4]);
+		if( @subtitle[0] =~ /['a' .. 'z']/ and @subtitle[0] !~ /\]/ and @subtitle[0] !~ /^ /){	# Subtitle somewhere contains a character i.e not " ".
+-			$newtitle = "@timerobj[3] - @subtitle[0]";
++			$newtitle = "@timerobj[3]$settings{'showtitle'}@subtitle[0]";
+			$newtitle =~ s/\.//ig;
+		}
+	}
