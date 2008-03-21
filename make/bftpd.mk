@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BFTPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bftpd
-BFTPD_VERSION=2.1
+BFTPD_VERSION=2.2
 BFTPD_SOURCE=bftpd-$(BFTPD_VERSION).tar.gz
 BFTPD_DIR=bftpd
 BFTPD_UNZIP=zcat
@@ -76,8 +76,8 @@ BFTPD_IPK=$(BUILD_DIR)/bftpd_$(BFTPD_VERSION)-$(BFTPD_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BFTPD_SITE)/$(BFTPD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(BFTPD_SOURCE)
+	$(WGET) -P $(@D) $(BFTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
