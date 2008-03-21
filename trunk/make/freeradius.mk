@@ -36,7 +36,7 @@ FREERADIUS_CONFLICTS=
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=1
+FREERADIUS_IPK_VERSION=2
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -51,6 +51,13 @@ FREERADIUS_IPK_VERSION=1
 FREERADIUS_CPPFLAGS=-I$(FREERADIUS_BUILD_DIR)/src/include -I$(STAGING_INCLUDE_DIR)/mysql
 FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql
 
+ifneq (, $(filter dns323, $(OPTWARE_TARGET)))
+FREERADIUS_CONFIG_ARGS = --without-rlm-sql-mysql
+else
+FREERADIUS_CONFIG_ARGS = \
+	--with-rlm-sql-mysql-include-dir=$(STAGING_INCLUDE_DIR)/mysql \
+	--with-rlm-sql-mysql-lib-dir=$(STAGING_LIB_DIR)/mysql
+endif
 #
 # FREERADIUS_BUILD_DIR is the directory in which the build is done.
 # FREERADIUS_SOURCE_DIR is the directory which holds all the
@@ -103,7 +110,10 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 	$(MAKE) openssl-stage
 	$(MAKE) libtool-stage
-	$(MAKE) mysql-stage postgresql-stage unixodbc-stage
+ifeq (, $(filter --without-rlm-sql-mysql, $(FREERADIUS_CONFIG_ARGS)))
+	$(MAKE) mysql-stage
+endif
+	$(MAKE) postgresql-stage unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	$(FREERADIUS_UNZIP) $(DL_DIR)/$(FREERADIUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FREERADIUS_PATCHES)"; \
@@ -128,8 +138,7 @@ $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS
 		--with-raddbdir=/opt/etc/raddb \
 		--with-openssl-includes=$(STAGING_INCLUDE_DIR) \
 		--with-openssl-libraries=$(STAGING_LIB_DIR) \
-		--with-mysql-include-dir=$(STAGING_INCLUDE_DIR)/mysql \
-		--with-mysql-lib-dir=$(STAGING_LIB_DIR)/mysql \
+		$(FREERADIUS_CONFIG_ARGS) \
 		--with-rlm-sql-postgresql-include-dir=$(STAGING_INCLUDE_DIR) \
 		--with-rlm-sql-postgresql-lib-dir=$(STAGING_LIB_DIR) \
 	)
