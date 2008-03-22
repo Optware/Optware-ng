@@ -6,8 +6,8 @@
 #
 # $Id$
 #
-SCPONLY_SITE=http://sublimation.org/scponly
-SCPONLY_VERSION=4.6
+SCPONLY_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scponly
+SCPONLY_VERSION=4.8
 SCPONLY_SOURCE=scponly-$(SCPONLY_VERSION).tgz
 SCPONLY_DIR=scponly-$(SCPONLY_VERSION)
 SCPONLY_UNZIP=zcat
@@ -15,14 +15,14 @@ SCPONLY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SCPONLY_DESCRIPTION=A shell for users with scp/sftp only access
 SCPONLY_SECTION=shell
 SCPONLY_PRIORITY=optional
-SCPONLY_DEPENDS=
-SCPONLY_SUGGESTS=
+SCPONLY_DEPENDS=openssh
+SCPONLY_SUGGESTS=openssh-sftp-server
 SCPONLY_CONFLICTS=
 
 #
 # SCPONLY_IPK_VERSION should be incremented when the ipk changes.
 #
-SCPONLY_IPK_VERSION=6
+SCPONLY_IPK_VERSION=1
 
 #
 # SCPONLY_CONFFILES should be a list of user-editable files
@@ -201,9 +201,9 @@ $(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/.built
 #	install -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
 	$(MAKE) $(SCPONLY_IPK_DIR)/CONTROL/control
-#	install -m 755 $(SCPONLY_SOURCE_DIR)/postinst $(SCPONLY_IPK_DIR)/CONTROL/postinst
+	# install -m 755 $(SCPONLY_SOURCE_DIR)/postinst $(SCPONLY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(SCPONLY_SOURCE_DIR)/prerm $(SCPONLY_IPK_DIR)/CONTROL/prerm
+	# install -m 755 $(SCPONLY_SOURCE_DIR)/prerm $(SCPONLY_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/prerm
 	echo $(SCPONLY_CONFFILES) | sed -e 's/ /\n/g' > $(SCPONLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SCPONLY_IPK_DIR)
