@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 SQUID_SITE=http://www.squid-cache.org/Versions/v2/2.6
-SQUID_UPSTREAM_VERSION=2.6.STABLE18
-SQUID_VERSION=2.6.18
+SQUID_UPSTREAM_VERSION=2.6.STABLE19
+SQUID_VERSION=2.6.19
 SQUID_SOURCE=squid-$(SQUID_UPSTREAM_VERSION).tar.bz2
 SQUID_DIR=squid-$(SQUID_UPSTREAM_VERSION)
 SQUID_UNZIP=bzcat
@@ -120,7 +120,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQUID_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQUID_SITE)/$(SQUID_SOURCE)
+	$(WGET) -P $(@D) $(SQUID_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -131,16 +132,16 @@ squid-source: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES)
 
 $(SQUID_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID_SOURCE) make/squid.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(HOST_BUILD_DIR)/$(SQUID_DIR) $(SQUID_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(SQUID_DIR) $(@D)
 	$(SQUID_UNZIP) $(DL_DIR)/$(SQUID_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	if test "$(HOST_BUILD_DIR)/$(SQUID_DIR)" != "$(SQUID_HOST_BUILD_DIR)" ; \
-		then mv $(HOST_BUILD_DIR)/$(SQUID_DIR) $(SQUID_HOST_BUILD_DIR) ; \
+	if test "$(HOST_BUILD_DIR)/$(SQUID_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(SQUID_DIR) $(@D) ; \
 	fi
-	(cd $(SQUID_HOST_BUILD_DIR); \
+	(cd $(@D); \
 		./configure \
 		--prefix=/opt \
 	)
-	$(MAKE) -C $(SQUID_HOST_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 #
 # This target unpacks the source code in the build directory.
@@ -172,7 +173,7 @@ endif
 	if test "$(BUILD_DIR)/$(SQUID_DIR)" != "$(SQUID_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SQUID_DIR) $(SQUID_BUILD_DIR) ; \
 	fi
-	(cd $(SQUID_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQUID_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQUID_LDFLAGS)" \
@@ -199,7 +200,7 @@ endif
 		--disable-nls \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -i -e 's|./cf_gen |$(SQUID_HOST_BUILD_DIR)/src/cf_gen |g' $(SQUID_BUILD_DIR)/src/Makefile
+	sed -i -e 's|./cf_gen |$(SQUID_HOST_BUILD_DIR)/src/cf_gen |g' $(@D)/src/Makefile
 endif
 	touch $@
 
@@ -210,7 +211,7 @@ squid-unpack: $(SQUID_BUILD_DIR)/.configured
 #
 $(SQUID_BUILD_DIR)/.built: $(SQUID_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(SQUID_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -223,7 +224,7 @@ squid: $(SQUID_BUILD_DIR)/.built
 #
 $(SQUID_BUILD_DIR)/.staged: $(SQUID_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 squid-stage: $(SQUID_BUILD_DIR)/.staged
