@@ -18,10 +18,14 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=2
+OPENSSH_IPK_VERSION=3
 
-OPENSSH_CONFFILES=/opt/etc/openssh/ssh_config /opt/etc/openssh/sshd_config \
-	/opt/etc/openssh/moduli /opt/etc/init.d/S40sshd
+OPENSSH_CONFFILES=\
+	/opt/etc/openssh/ssh_config \
+	/opt/etc/openssh/sshd_config \
+	/opt/etc/openssh/moduli \
+	/opt/etc/default/openssh \
+	/opt/etc/init.d/S40sshd
 
 OPENSSH_PATCHES=\
 	$(OPENSSH_SOURCE_DIR)/Makefile.patch 
@@ -58,7 +62,8 @@ OPENSSH_SFTP_SERVER_IPK=$(BUILD_DIR)/openssh-sftp-server_$(OPENSSH_VERSION)-$(OP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(OPENSSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(OPENSSH_SITE)/$(OPENSSH_SOURCE)
+	$(WGET) -P $(@D) $(OPENSSH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -123,7 +128,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--with-tcp-wrappers=$(STAGING_DIR)/opt \
 		--with-xauth=/opt/bin/xauth \
 	)
-	touch $(OPENSSH_BUILD_DIR)/.configured
+	touch $@
 
 openssh-unpack: $(OPENSSH_BUILD_DIR)/.configured
 
@@ -131,7 +136,7 @@ openssh-unpack: $(OPENSSH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(OPENSSH_BUILD_DIR)/.built: $(OPENSSH_BUILD_DIR)/.configured
-	rm -f $(OPENSSH_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(OPENSSH_BUILD_DIR)
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/scp
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/sftp
@@ -144,7 +149,7 @@ $(OPENSSH_BUILD_DIR)/.built: $(OPENSSH_BUILD_DIR)/.configured
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/ssh-keysign
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/ssh-rand-helper
 	-$(STRIP_COMMAND)  $(OPENSSH_BUILD_DIR)/sshd
-	touch $(OPENSSH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -156,7 +161,7 @@ openssh: $(OPENSSH_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/openssh
 #
 $(OPENSSH_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENSSH_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: openssh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -171,7 +176,7 @@ $(OPENSSH_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPENSSH_CONFLICTS)" >>$@
 
 $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL/control:
-	@install -d $(OPENSSH_SFTP_SERVER_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: openssh-sftp-server" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,6 +207,8 @@ $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK): $(OPENSSH_BUILD_DIR)/.built
 		$(OPENSSH_SFTP_SERVER_IPK_DIR)/opt/libexec/
 	rm -f $(OPENSSH_IPK_DIR)/opt/libexec/sftp-server
 	install -m 755 $(OPENSSH_SOURCE_DIR)/rc.openssh $(OPENSSH_IPK_DIR)/opt/etc/init.d/S40sshd
+	install -d $(OPENSSH_IPK_DIR)/opt/etc/default
+	install -m 755 $(OPENSSH_SOURCE_DIR)/openssh.default $(OPENSSH_IPK_DIR)/opt/etc/default/openssh
 	$(MAKE) $(OPENSSH_IPK_DIR)/CONTROL/control
 	install -m 755 $(OPENSSH_SOURCE_DIR)/postinst $(OPENSSH_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(OPENSSH_SOURCE_DIR)/prerm $(OPENSSH_IPK_DIR)/CONTROL/prerm

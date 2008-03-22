@@ -1,9 +1,15 @@
 #!/bin/sh
 
+[ -e /opt/etc/default/openssh ] && . /opt/etc/default/openssh
+
+if [ "$SSHD_ENABLE" = "no" ]; then
+    exit
+fi
+
 if [ -f /opt/var/run/sshd.pid ] ; then
   kill `cat /opt/var/run/sshd.pid`
 else
-  killall sshd
+  killall /opt/sbin/sshd
 fi
 
 rm -f /opt/var/run/sshd.pid
