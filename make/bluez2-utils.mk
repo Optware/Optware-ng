@@ -37,7 +37,7 @@ BLUEZ2-UTILS_CONFLICTS=bluez-utils
 #
 # BLUEZ2-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ2-UTILS_IPK_VERSION=2
+BLUEZ2-UTILS_IPK_VERSION=3
 
 #
 # BLUEZ2-UTILS_CONFFILES should be a list of user-editable files
@@ -189,7 +189,7 @@ $(BLUEZ2-UTILS_IPK): $(BLUEZ2-UTILS_BUILD_DIR)/.built
 	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default
 	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default/bluetooth
 	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d
-	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S75bluez-utils
+	install -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S75bluez-utils
 	$(MAKE) $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ2-UTILS_IPK_DIR)
 
