@@ -1,0 +1,10 @@
+--- src/main.cc.orig	2008-02-23 13:55:18.000000000 +0000
++++ src/main.cc	2008-03-22 15:28:42.000000000 +0000
+@@ -21,6 +21,7 @@
+  */
+ 
+ #include <signal.h>
++#include <unistd.h>
+ #include <iostream>
+ #include "HTTPTunneler.hh"
+ 

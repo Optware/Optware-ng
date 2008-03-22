@@ -37,7 +37,7 @@ FIREDRILL-HTTPTUNNEL_CONFLICTS=
 #
 # FIREDRILL-HTTPTUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-FIREDRILL-HTTPTUNNEL_IPK_VERSION=1
+FIREDRILL-HTTPTUNNEL_IPK_VERSION=2
 
 #
 # FIREDRILL-HTTPTUNNEL_CONFFILES should be a list of user-editable files
@@ -47,7 +47,9 @@ FIREDRILL-HTTPTUNNEL_IPK_VERSION=1
 # FIREDRILL-HTTPTUNNEL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FIREDRILL-HTTPTUNNEL_PATCHES=$(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/find_if.patch
+FIREDRILL-HTTPTUNNEL_PATCHES=\
+$(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/find_if.patch \
+$(FIREDRILL-HTTPTUNNEL_SOURCE_DIR)/main.cc-unistd.patch
 
 #
 # If the compilation of the package requires additional
