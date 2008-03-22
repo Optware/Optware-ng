@@ -5,7 +5,7 @@
 
 set -e
 
-PATH=/opt/bin:/opt/sbin
+PATH=/opt/bin:/opt/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 NAME=bluetooth
 DESC="Bluetooth subsystem"
 
