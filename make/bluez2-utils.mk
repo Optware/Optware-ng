@@ -37,11 +37,16 @@ BLUEZ2-UTILS_CONFLICTS=bluez-utils
 #
 # BLUEZ2-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ2-UTILS_IPK_VERSION=1
+BLUEZ2-UTILS_IPK_VERSION=2
 
 #
 # BLUEZ2-UTILS_CONFFILES should be a list of user-editable files
 #BLUEZ2-UTILS_CONFFILES=/opt/etc/bluez-utils.conf /opt/etc/init.d/SXXbluez-utils
+BLUEZ2-UTILS_CONFFILES=\
+	/opt/etc/bluetooth/hcid.conf \
+	/opt/etc/bluetooth/rfcomm.conf \
+	/opt/etc/init.d/S75bluez-utils \
+	/opt/etc/default/bluetooth
 
 #
 # BLUEZ2-UTILS_PATCHES should list any patches, in the the order in
@@ -178,6 +183,13 @@ $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control:
 $(BLUEZ2-UTILS_IPK): $(BLUEZ2-UTILS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ2-UTILS_IPK_DIR) $(BUILD_DIR)/bluez2-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ2-UTILS_BUILD_DIR) DESTDIR=$(BLUEZ2-UTILS_IPK_DIR) install-strip
+	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth
+	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/hcid.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/hcid.conf
+	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/rfcomm.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/rfcomm.conf
+	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default
+	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default/bluetooth
+	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d
+	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S75bluez-utils
 	$(MAKE) $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ2-UTILS_IPK_DIR)
 
