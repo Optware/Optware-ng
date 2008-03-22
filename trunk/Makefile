@@ -199,6 +199,7 @@ COMMON_CROSS_PACKAGES = \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
+	bluez2-libs bluez2-utils \
 	cabextract cairo calc calcurse castget \
 	catdoc ccollect ccxstream cdargs cdrtools \
 	cherokee chicken chillispot chrpath cksfv \
@@ -273,7 +274,7 @@ COMMON_CROSS_PACKAGES = \
 	opencdk openldap openser openssh openssl openvpn \
 	optware-devel ossp-js oww \
 	pal p7zip palantir pango par2cmdline patch patchutils \
-	pcapsipdump pciutils pcre pen \
+	pcapsipdump pciutils pcre pen perltgd \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig player \
