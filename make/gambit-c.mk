@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.1/source
-GAMBIT-C_UPSTREAM_VERSION=v4_1_2
-GAMBIT-C_VERSION=4.1.2
+GAMBIT-C_SITE=http://www.iro.umontreal.ca/~gambit/download/gambit/v4.2/source
+GAMBIT-C_UPSTREAM_VERSION=v4_2_5
+GAMBIT-C_VERSION=4.2.5
 GAMBIT-C_SOURCE=gambc-$(GAMBIT-C_UPSTREAM_VERSION).tgz
 GAMBIT-C_DIR=gambc-$(GAMBIT-C_UPSTREAM_VERSION)
 GAMBIT-C_UNZIP=zcat
@@ -37,7 +37,7 @@ GAMBIT-C_DESCRIPTION=A portable implementation of Scheme.
 GAMBIT-C_SECTION=lang
 GAMBIT-C_PRIORITY=optional
 GAMBIT-C_DEPENDS=
-ifneq (, $filter(crosstool-native, $(PACKAGES)))
+ifneq (, $(filter crosstool-native, $(PACKAGES)))
 GAMBIT-C_SUGGESTS=crosstool-native
 endif
 GAMBIT-C_CONFLICTS=
@@ -55,7 +55,7 @@ GAMBIT-C_IPK_VERSION=1
 # GAMBIT-C_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GAMBIT-C_PATCHES=$(GAMBIT-C_SOURCE_DIR)/configure.patch
+GAMBIT-C_PATCHES=$(GAMBIT-C_SOURCE_DIR)/link-cmd.patch
 
 #
 # If the compilation of the package requires additional
@@ -83,7 +83,8 @@ GAMBIT-C_IPK=$(BUILD_DIR)/gambit-c_$(GAMBIT-C_VERSION)-$(GAMBIT-C_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GAMBIT-C_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GAMBIT-C_SITE)/$(GAMBIT-C_SOURCE)
+	$(WGET) -P $(@D) $(GAMBIT-C_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -210,7 +211,7 @@ $(GAMBIT-C_IPK): $(GAMBIT-C_BUILD_DIR)/.built
 	mv $(GAMBIT-C_IPK_DIR)/opt/current/*.scm $(GAMBIT-C_IPK_DIR)/opt/lib/gambit-c/
 	rm -rf $(GAMBIT-C_IPK_DIR)/opt/v$(GAMBIT-C_VERSION) $(GAMBIT-C_IPK_DIR)/opt/current
 	$(STRIP_COMMAND) $(GAMBIT-C_IPK_DIR)/opt/bin/gs[ci] $(GAMBIT-C_IPK_DIR)/opt/lib/lib*.so
-	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o
+	sed -i -e 's|$(STAGING_DIR)||g; s|$(TARGET_CC)|/opt/bin/gcc|' $(GAMBIT-C_IPK_DIR)/opt/bin/gsc-cc-o.bat
 	$(MAKE) $(GAMBIT-C_IPK_DIR)/CONTROL/control
 	echo $(GAMBIT-C_CONFFILES) | sed -e 's/ /\n/g' > $(GAMBIT-C_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GAMBIT-C_IPK_DIR)
