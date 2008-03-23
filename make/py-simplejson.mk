@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-SIMPLEJSON_SITE=http://cheeseshop.python.org/packages/source/s/simplejson
-PY-SIMPLEJSON_VERSION=1.7.5
+PY-SIMPLEJSON_VERSION=1.8
 PY-SIMPLEJSON_SOURCE=simplejson-$(PY-SIMPLEJSON_VERSION).tar.gz
 PY-SIMPLEJSON_DIR=simplejson-$(PY-SIMPLEJSON_VERSION)
 PY-SIMPLEJSON_UNZIP=zcat
@@ -81,8 +81,8 @@ PY25-SIMPLEJSON_IPK=$(BUILD_DIR)/py25-simplejson_$(PY-SIMPLEJSON_VERSION)-$(PY-S
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SIMPLEJSON_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-SIMPLEJSON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,14 +108,14 @@ py-simplejson-source: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-SIMPLEJSON_PATCHES)
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-SIMPLEJSON_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-SIMPLEJSON_BUILD_DIR)
-	mkdir -p $(PY-SIMPLEJSON_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR)
 	$(PY-SIMPLEJSON_UNZIP) $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SIMPLEJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)/2.4
-	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -128,8 +128,8 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-S
 	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR)
 	$(PY-SIMPLEJSON_UNZIP) $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SIMPLEJSON_PATCHES) | patch -d $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(PY-SIMPLEJSON_BUILD_DIR)/2.5
-	(cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -147,11 +147,11 @@ py-simplejson-unpack: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 #
 $(PY-SIMPLEJSON_BUILD_DIR)/.built: $(PY-SIMPLEJSON_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build
-	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
