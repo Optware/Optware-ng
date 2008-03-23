@@ -37,7 +37,7 @@ MINIHTTPD_CONFLICTS=
 #
 # MINIHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIHTTPD_IPK_VERSION=1
+MINIHTTPD_IPK_VERSION=2
 
 #
 # MINIHTTPD_CONFFILES should be a list of user-editable files
@@ -77,7 +77,8 @@ MINIHTTPD_IPK=$(BUILD_DIR)/minihttpd_$(MINIHTTPD_VERSION)-$(MINIHTTPD_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MINIHTTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MINIHTTPD_SITE)/$(MINIHTTPD_SOURCE)
+	$(WGET) -P $(@D) $(MINIHTTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -137,7 +138,7 @@ minihttpd-unpack: $(MINIHTTPD_BUILD_DIR)/.configured
 #
 $(MINIHTTPD_BUILD_DIR)/.built: $(MINIHTTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(MINIHTTPD_BUILD_DIR)
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -149,9 +150,9 @@ minihttpd: $(MINIHTTPD_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MINIHTTPD_BUILD_DIR)/.staged: $(MINIHTTPD_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(MINIHTTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 minihttpd-stage: $(MINIHTTPD_BUILD_DIR)/.staged
 
@@ -202,6 +203,7 @@ $(MINIHTTPD_IPK): $(MINIHTTPD_BUILD_DIR)/.built
 	cd $(BUILD_DIR); $(IPKG_BUILD)		$(MINIHTTPD_IPK_DIR)
 	install -d $(MINIHTTPD_IPK_DIR)/opt/etc/
 	install -m 644 $(MINIHTTPD_SOURCE_DIR)/mini_httpd.conf $(MINIHTTPD_IPK_DIR)/opt/etc
+	install -d $(MINIHTTPD_IPK_DIR)/opt/var/log
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIHTTPD_IPK_DIR)
 
 #
