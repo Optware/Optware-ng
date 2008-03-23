@@ -24,7 +24,7 @@
 # PY-WEBHELPERS_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-WEBHELPERS_SITE=http://pypi.python.org/packages/source/W/WebHelpers
-PY-WEBHELPERS_VERSION=0.3.3
+PY-WEBHELPERS_VERSION=0.3.4
 PY-WEBHELPERS_IPK_VERSION=1
 PY-WEBHELPERS_SOURCE=WebHelpers-$(PY-WEBHELPERS_VERSION).tar.gz
 PY-WEBHELPERS_DIR=WebHelpers-$(PY-WEBHELPERS_VERSION)
@@ -81,8 +81,8 @@ PY25-WEBHELPERS_IPK=$(BUILD_DIR)/py25-webhelpers_$(PY-WEBHELPERS_VERSION)-$(PY-W
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-WEBHELPERS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-WEBHELPERS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-WEBHELPERS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
