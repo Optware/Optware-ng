@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HASERL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/haserl
-HASERL_VERSION=0.9.20
+HASERL_VERSION=0.9.23
 HASERL_SOURCE=haserl-$(HASERL_VERSION).tar.gz
 HASERL_DIR=haserl-$(HASERL_VERSION)
 HASERL_UNZIP=zcat
@@ -76,8 +76,8 @@ HASERL_IPK=$(BUILD_DIR)/haserl_$(HASERL_VERSION)-$(HASERL_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HASERL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HASERL_SITE)/$(HASERL_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(HASERL_SOURCE)
+	$(WGET) -P $(@D) $(HASERL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,18 +106,18 @@ haserl-source: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES)
 #
 $(HASERL_BUILD_DIR)/.configured: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES) make/haserl.mk
 	$(MAKE) lua-stage
-	rm -rf $(BUILD_DIR)/$(HASERL_DIR) $(HASERL_BUILD_DIR)
-	mkdir -p $(HASERL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HASERL_DIR) $(@D)
+	mkdir -p $(@D)
 	# with-lua
 	$(HASERL_UNZIP) $(DL_DIR)/$(HASERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HASERL_PATCHES)" ; \
 		then cat $(HASERL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(HASERL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HASERL_DIR) $(HASERL_BUILD_DIR)/with-lua ; \
+	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HASERL_DIR) $(@D)/with-lua ; \
 	fi
-	(cd $(HASERL_BUILD_DIR)/with-lua; \
+	(cd $(@D)/with-lua; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HASERL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HASERL_LDFLAGS)" \
@@ -137,10 +137,10 @@ $(HASERL_BUILD_DIR)/.configured: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES) ma
 		then cat $(HASERL_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(HASERL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HASERL_DIR) $(HASERL_BUILD_DIR)/without-lua ; \
+	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HASERL_DIR) $(@D)/without-lua ; \
 	fi
-	(cd $(HASERL_BUILD_DIR)/without-lua; \
+	(cd $(@D)/without-lua; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HASERL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HASERL_LDFLAGS)" \
@@ -164,16 +164,11 @@ haserl-unpack: $(HASERL_BUILD_DIR)/.configured
 #
 $(HASERL_BUILD_DIR)/.built: $(HASERL_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(HASERL_BUILD_DIR)/with-lua/src; \
-		$(HOSTCC) -I$(LUA_HOST_BUILD_DIR)/opt/include \
-		-Wl,-E -L$(LUA_HOST_BUILD_DIR)/opt/lib \
-		-o lua2c lua2c.c \
-		-llua -lm
 	if test -f $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH); then \
-		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH) $(HASERL_BUILD_DIR)/with-lua/src/; \
+		cp $(HASERL_SOURCE_DIR)/haserl_lualib.inc.$(TARGET_ARCH) $(@D)/with-lua/src/haserl_lualib.inc; \
 	fi
-	$(MAKE) -C $(HASERL_BUILD_DIR)/with-lua
-	$(MAKE) -C $(HASERL_BUILD_DIR)/without-lua
+	$(MAKE) -C $(@D)/with-lua
+	$(MAKE) -C $(@D)/without-lua
 	touch $@
 
 #
@@ -185,9 +180,9 @@ haserl: $(HASERL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(HASERL_BUILD_DIR)/.staged: $(HASERL_BUILD_DIR)/.built
-	rm -f $@
+#	rm -f $@
 #	$(MAKE) -C $(HASERL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	touch $@
 
 haserl-stage: $(HASERL_BUILD_DIR)/.staged
 
