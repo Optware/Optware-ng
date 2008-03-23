@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 APCUPSD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/apcupsd
-APCUPSD_VERSION=3.14.2
+APCUPSD_VERSION=3.14.3
 APCUPSD_SOURCE=apcupsd-$(APCUPSD_VERSION).tar.gz
 APCUPSD_DIR=apcupsd-$(APCUPSD_VERSION)
 APCUPSD_UNZIP=zcat
@@ -36,7 +36,7 @@ APCUPSD_CONFLICTS=
 #
 # APCUPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-APCUPSD_IPK_VERSION=2
+APCUPSD_IPK_VERSION=1
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files
@@ -77,8 +77,8 @@ APCUPSD_IPK=$(BUILD_DIR)/apcupsd_$(APCUPSD_VERSION)-$(APCUPSD_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(APCUPSD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(APCUPSD_SITE)/$(APCUPSD_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(APCUPSD_SOURCE)
+	$(WGET) -P $(DL_DIR) $(APCUPSD_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -116,7 +116,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 	if test "$(BUILD_DIR)/$(APCUPSD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|prefix=NONE|prefix=/opt|' $(@D)/configure
+	sed -i -e 's|prefix=NONE|prefix=/opt|; s|/usr/share/hal/|/opt/share/hal/|' $(@D)/configure
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
