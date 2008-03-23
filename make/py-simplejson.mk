@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SIMPLEJSON_SITE=http://cheeseshop.python.org/packages/source/s/simplejson
-PY-SIMPLEJSON_VERSION=1.8
+PY-SIMPLEJSON_SITE=http://pypi.python.org/packages/source/s/simplejson
+PY-SIMPLEJSON_VERSION=1.8.1
 PY-SIMPLEJSON_SOURCE=simplejson-$(PY-SIMPLEJSON_VERSION).tar.gz
 PY-SIMPLEJSON_DIR=simplejson-$(PY-SIMPLEJSON_VERSION)
 PY-SIMPLEJSON_UNZIP=zcat
