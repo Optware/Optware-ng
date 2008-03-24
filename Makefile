@@ -113,6 +113,7 @@ PERL_PACKAGES = \
 	stow \
 
 PYTHON_PACKAGES = \
+	cherokee-pyscgi \
 	dstat \
 	getmail \
 	hellanzb \
