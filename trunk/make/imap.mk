@@ -27,10 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IMAP_SITE=ftp://ftp.cac.washington.edu/imap
-IMAP_VERSION=2007
+IMAP_VERSION=2007a1
 IMAP_SOURCE=imap-$(IMAP_VERSION).tar.Z
 IMAP_DIR=imap-$(IMAP_VERSION)
-#IMAP_DIR=imap-2006j
+IMAP_DIR=imap-2007a
 IMAP_UNZIP=zcat
 IMAP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IMAP_DESCRIPTION=University of Washington IMAP package
@@ -209,7 +209,7 @@ $(IMAP_IPK): $(IMAP_BUILD_DIR)/.built
 	install -m 755 $(IMAP_BUILD_DIR)/imapd/imapd $(IMAP_IPK_DIR)/opt/sbin
 	install -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop2d $(IMAP_IPK_DIR)/opt/sbin
 	install -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop3d $(IMAP_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(IMAP_IPK_DIR)/opt/sbin/*
+	$(TARGET_STRIP) $(IMAP_IPK_DIR)/opt/sbin/* $(IMAP_IPK_DIR)/opt/bin/*
 	### FIXME: could do with some setting up of the daemons here
 	#install -d $(IMAP_IPK_DIR)/opt/etc/init.d
 	#install -m 755 $(IMAP_SOURCE_DIR)/rc.imap $(IMAP_IPK_DIR)/opt/etc/init.d/SXXimap
