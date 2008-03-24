@@ -23,7 +23,7 @@
 BASH_SITE=http://ftp.gnu.org/gnu/bash/
 BASH_VER=3.2
 # must match patch files
-BASH_PATCH_LEVEL=17
+BASH_PATCH_LEVEL=33
 BASH_VERSION=$(BASH_VER).$(BASH_PATCH_LEVEL)
 BASH_SOURCE=bash-$(BASH_VER).tar.gz
 BASH_DIR=bash-$(BASH_VER)
@@ -78,7 +78,8 @@ BASH_IPK=$(BUILD_DIR)/bash_$(BASH_VERSION)-$(BASH_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BASH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BASH_SITE)/$(BASH_SOURCE)
+	$(WGET) -P $(@D) $(BASH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: bash-source bash-unpack bash bash-stage bash-ipk bash-clean bash-dirclean bash-check
 
@@ -142,24 +143,26 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 	);
-	touch $(BASH_BUILD_DIR)/.configured
+	touch $@
 
 bash-unpack: $(BASH_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
-$(BASH_BUILD_DIR)/bash: $(BASH_BUILD_DIR)/.configured
-	$(MAKE) -C $(BASH_BUILD_DIR)
+$(BASH_BUILD_DIR)/.built: $(BASH_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
-bash: $(BASH_BUILD_DIR)/bash
+bash: $(BASH_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/bash
 #
 $(BASH_IPK_DIR)/CONTROL/control:
-	@install -d $(BASH_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bash" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -184,7 +187,7 @@ $(BASH_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(BASH_IPK): $(BASH_BUILD_DIR)/bash
+$(BASH_IPK): $(BASH_BUILD_DIR)/.built
 	rm -rf $(BASH_IPK_DIR) $(BUILD_DIR)/bash_*_$(TARGET_ARCH).ipk
 	install -d $(BASH_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
