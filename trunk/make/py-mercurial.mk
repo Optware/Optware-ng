@@ -57,7 +57,7 @@ PY-MERCURIAL_CPPFLAGS=
 PY-MERCURIAL_LDFLAGS=
 # to be improved:
 PY-MERCURIAL_WITH_INOTIFY=$(strip $(if \
-$(filter angstrombe angstromle slugosbe slugosle openwrt-ixp4xx, $(OPTWARE_TARGET)), True, False))
+$(filter angstrombe angstromle slugosbe slugosle, $(OPTWARE_TARGET)), True, False))
 
 #
 # PY-MERCURIAL_BUILD_DIR is the directory in which the build is done.
