@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=0.9.5
+PY-MERCURIAL_VERSION=1.0
 PY-MERCURIAL_SITE=http://www.selenic.com/mercurial/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
@@ -37,7 +37,7 @@ PY-MERCURIAL_CONFLICTS=
 #
 # PY-MERCURIAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MERCURIAL_IPK_VERSION=2
+PY-MERCURIAL_IPK_VERSION=1
 
 #
 # PY-MERCURIAL_CONFFILES should be a list of user-editable files
@@ -55,6 +55,9 @@ PY-MERCURIAL_IPK_VERSION=2
 #
 PY-MERCURIAL_CPPFLAGS=
 PY-MERCURIAL_LDFLAGS=
+# to be improved:
+PY-MERCURIAL_WITH_INOTIFY=$(strip $(if \
+$(filter angstrombe angstromle slugosbe slugosle openwrt-ixp4xx, $(OPTWARE_TARGET)), True, False))
 
 #
 # PY-MERCURIAL_BUILD_DIR is the directory in which the build is done.
@@ -126,6 +129,8 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
+	sed -i	-e '/linux2/s|if .*|if True:|' \
+		-e '/inotify_/s|if .*|if $(PY-MERCURIAL_WITH_INOTIFY):|' $(@D)/2.4/setup.py
 	# 2.5
 	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MERCURIAL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p1
@@ -142,6 +147,8 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
+	sed -i	-e '/linux2/s|if .*|if True:|' \
+		-e '/inotify_/s|if .*|if $(PY-MERCURIAL_WITH_INOTIFY):|' $(@D)/2.5/setup.py
 	touch $@
 
 py-mercurial-unpack: $(PY-MERCURIAL_BUILD_DIR)/.configured
@@ -227,7 +234,11 @@ $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) $(PY24-MERCURIAL_IPK_DIR)/opt/lib/python2.4/site-packages/mercurial/*.so
+	(cd $(PY24-MERCURIAL_IPK_DIR)/opt/lib/python2.4/site-packages; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
 	for f in $(PY24-MERCURIAL_IPK_DIR)/opt/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-MERCURIAL_IPK_DIR)/CONTROL/control
@@ -237,7 +248,11 @@ $(PY24-MERCURIAL_IPK) $(PY25-MERCURIAL_IPK): $(PY-MERCURIAL_BUILD_DIR)/.built
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-MERCURIAL_IPK_DIR) --prefix=/opt; \
 	)
-	$(STRIP_COMMAND) $(PY25-MERCURIAL_IPK_DIR)/opt/lib/python2.5/site-packages/mercurial/*.so
+	(cd $(PY25-MERCURIAL_IPK_DIR)/opt/lib/python2.5/site-packages; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
 	$(MAKE) $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MERCURIAL_IPK_DIR)
 
