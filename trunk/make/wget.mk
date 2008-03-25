@@ -16,7 +16,7 @@
 # You should change all these variables to suit your package.
 #
 WGET_SITE=http://ftp.gnu.org/pub/gnu/wget
-WGET_VERSION=1.11
+WGET_VERSION=1.11.1
 WGET_SOURCE=wget-$(WGET_VERSION).tar.gz
 WGET_DIR=wget-$(WGET_VERSION)
 WGET_UNZIP=zcat
@@ -85,7 +85,8 @@ WGET-SSL_IPK=$(BUILD_DIR)/wget-ssl_$(WGET_VERSION)-$(WGET_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WGET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WGET_SITE)/$(@F)
+	$(WGET) -P $(@D) $(WGET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
