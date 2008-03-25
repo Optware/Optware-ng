@@ -68,6 +68,9 @@ TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c \
 #
 TRANSMISSION_CPPFLAGS=-O3
 TRANSMISSION_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+TRANSMISSION_LDFLAGS+=-lintl
+endif
 
 #
 # TRANSMISSION_BUILD_DIR is the directory in which the build is done.
