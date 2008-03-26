@@ -5,7 +5,7 @@
 ###########################################################
 
 EVENTLOG_SITE=http://www.balabit.com/downloads/files/syslog-ng/sources/stable/src
-EVENTLOG_VERSION=0.2.5
+EVENTLOG_VERSION=0.2.7
 EVENTLOG_SOURCE=eventlog-$(EVENTLOG_VERSION).tar.gz
 EVENTLOG_DIR=eventlog-$(EVENTLOG_VERSION)
 EVENTLOG_UNZIP=zcat
@@ -20,7 +20,7 @@ EVENTLOG_CONFLICTS=
 #
 # EVENTLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-EVENTLOG_IPK_VERSION=2
+EVENTLOG_IPK_VERSION=1
 
 #
 # EVENTLOG_CONFFILES should be a list of user-editable files
@@ -60,8 +60,8 @@ EVENTLOG_IPK=$(BUILD_DIR)/eventlog_$(EVENTLOG_VERSION)-$(EVENTLOG_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(EVENTLOG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(EVENTLOG_SITE)/$(EVENTLOG_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(EVENTLOG_SOURCE)
+	$(WGET) -P $(@D) $(EVENTLOG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
