@@ -25,7 +25,7 @@
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.06
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=5370
+TRANSMISSION_SVN_REV=5332
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -71,6 +71,10 @@ TRANSMISSION_LDFLAGS=
 ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSION_LDFLAGS+=-lintl
 endif
+ifeq ($(GETTEXT_NLS), enable)
+TRANSMISSION_DEPENDS+=, gettext
+endif
+
 
 #
 # TRANSMISSION_BUILD_DIR is the directory in which the build is done.
@@ -142,6 +146,9 @@ transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 #
 $(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) 
 	$(MAKE) openssl-stage
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR)
 ifdef TRANSMISSION_SVN_REV
 	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
