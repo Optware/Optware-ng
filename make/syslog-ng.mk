@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SYSLOG-NG_SITE=http://www.balabit.com/downloads/files/syslog-ng/sources/stable/src
-SYSLOG-NG_VERSION=2.0.8
+SYSLOG-NG_VERSION=2.0.9
 SYSLOG-NG_SOURCE=syslog-ng-$(SYSLOG-NG_VERSION).tar.gz
 SYSLOG-NG_DIR=syslog-ng-$(SYSLOG-NG_VERSION)
 SYSLOG-NG_UNZIP=zcat
