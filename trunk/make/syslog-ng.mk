@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SYSLOG-NG_SITE=http://www.balabit.com/downloads/files/syslog-ng/sources/stable/src
-SYSLOG-NG_VERSION=2.0.4
+SYSLOG-NG_VERSION=2.0.8
 SYSLOG-NG_SOURCE=syslog-ng-$(SYSLOG-NG_VERSION).tar.gz
 SYSLOG-NG_DIR=syslog-ng-$(SYSLOG-NG_VERSION)
 SYSLOG-NG_UNZIP=zcat
@@ -34,7 +34,7 @@ SYSLOG-NG_CONFLICTS=
 #
 # SYSLOG-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSLOG-NG_IPK_VERSION=3
+SYSLOG-NG_IPK_VERSION=1
 
 #
 # SYSLOG-NG_CONFFILES should be a list of user-editable files
@@ -75,7 +75,8 @@ SYSLOG-NG_IPK=$(BUILD_DIR)/syslog-ng_$(SYSLOG-NG_VERSION)-$(SYSLOG-NG_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SYSLOG-NG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SYSLOG-NG_SITE)/$(SYSLOG-NG_SOURCE)
+	$(WGET) -P $(@D) $(SYSLOG-NG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -120,7 +121,7 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 		--disable-nls \
 		--disable-spoof-source \
 	)
-	touch $(SYSLOG-NG_BUILD_DIR)/.configured
+	touch $@
 
 syslog-ng-unpack: $(SYSLOG-NG_BUILD_DIR)/.configured
 
@@ -128,9 +129,9 @@ syslog-ng-unpack: $(SYSLOG-NG_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SYSLOG-NG_BUILD_DIR)/.built: $(SYSLOG-NG_BUILD_DIR)/.configured
-	rm -f $(SYSLOG-NG_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR)
-	touch $(SYSLOG-NG_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,9 +142,9 @@ syslog-ng: $(SYSLOG-NG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SYSLOG-NG_BUILD_DIR)/.staged: $(SYSLOG-NG_BUILD_DIR)/.built
-	rm -f $(SYSLOG-NG_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SYSLOG-NG_BUILD_DIR)/.staged
+	touch $@
 
 syslog-ng-stage: $(SYSLOG-NG_BUILD_DIR)/.staged
 
@@ -152,7 +153,7 @@ syslog-ng-stage: $(SYSLOG-NG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/syslog-ng
 #
 $(SYSLOG-NG_IPK_DIR)/CONTROL/control:
-	@install -d $(SYSLOG-NG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: syslog-ng" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -180,7 +181,7 @@ $(SYSLOG-NG_IPK_DIR)/CONTROL/control:
 $(SYSLOG-NG_IPK): $(SYSLOG-NG_BUILD_DIR)/.built
 	rm -rf $(SYSLOG-NG_IPK_DIR) $(BUILD_DIR)/syslog-ng_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SYSLOG-NG_BUILD_DIR) DESTDIR=$(SYSLOG-NG_IPK_DIR) install
-	$(STRIP_COMMAND) $(SYSLOG-NG_IPK_DIR)/opt/sbin/syslog-ng
+	$(STRIP_COMMAND) $(SYSLOG-NG_IPK_DIR)/opt/sbin/syslog-ng $(SYSLOG-NG_IPK_DIR)/opt/bin/loggen
 	install -d $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
 	install -m 644 $(SYSLOG-NG_SOURCE_DIR)/syslog-ng.conf $(SYSLOG-NG_IPK_DIR)/opt/etc/syslog-ng
 	install -d $(SYSLOG-NG_IPK_DIR)/opt/doc/syslog-ng
