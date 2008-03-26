@@ -44,7 +44,7 @@ SYSLOG-NG_CONFFILES=/opt/etc/syslog-ng/syslog-ng.conf
 # SYSLOG-NG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SYSLOG-NG_PATCHES=
+SYSLOG-NG_PATCHES=$(SYSLOG-NG_SOURCE_DIR)/loggen-AI_ADDRCONFIG.patch
 #$(SYSLOG-NG_SOURCE_DIR)/configure.patch
 
 #
@@ -104,7 +104,9 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 	$(MAKE) glib-stage eventlog-stage libnet10-stage flex-stage
 	rm -rf $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(SYSLOG-NG_BUILD_DIR)
 	$(SYSLOG-NG_UNZIP) $(DL_DIR)/$(SYSLOG-NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(SYSLOG-NG_PATCHES) | patch -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p1
+	if test -n "$(SYSLOG-NG_PATCHES)"; then \
+		cat $(SYSLOG-NG_PATCHES) | patch -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p0; \
+	fi
 	mv $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(SYSLOG-NG_BUILD_DIR)
 	(cd $(SYSLOG-NG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
