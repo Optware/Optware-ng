@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-LXML_SITE=http://cheeseshop.python.org/packages/source/l/lxml
-PY-LXML_VERSION=2.0.2
+PY-LXML_SITE=http://pypi.python.org/packages/source/l/lxml
+PY-LXML_VERSION=2.0.3
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
 PY-LXML_UNZIP=zcat
@@ -81,8 +81,8 @@ PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-LXML_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-LXML_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-LXML_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
