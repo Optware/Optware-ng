@@ -39,7 +39,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -273,9 +273,12 @@ $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK): $
 	$(MAKE) -C $(CHEROKEE_BUILD_DIR) DESTDIR=$(CHEROKEE_IPK_DIR) install-strip
 	rm $(CHEROKEE_IPK_DIR)/opt/lib/*.la $(CHEROKEE_IPK_DIR)/opt/lib/cherokee/*.la
 	install -d $(CHEROKEE_IPK_DIR)/opt/share/cherokee/cgi-bin
-	sed -i -e '/server.port/s|=.*|= 8008|' $(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
+	sed -i -e '/server.port/s|=.*|= 8008|' -e 's|= php-cgi |= /opt/bin/php-fcgi |' \
+		$(CHEROKEE_IPK_DIR)/opt/etc/cherokee/cherokee.conf
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(CHEROKEE_SOURCE_DIR)/rc.cherokee $(CHEROKEE_IPK_DIR)/opt/etc/init.d/S80cherokee
+	install -d $(CHEROKEE_IPK_DIR)/opt/etc/default
+	echo "CHEROKEE_ENABLE=yes" > $(CHEROKEE_IPK_DIR)/opt/etc/default/cherokee
 	mv $(CHEROKEE_IPK_DIR)/opt/bin/spawn-fcgi $(CHEROKEE_IPK_DIR)/opt/bin/cherokee-spawn-fcgi
 	# -admin
 	install -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee

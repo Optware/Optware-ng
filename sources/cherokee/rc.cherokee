@@ -1,6 +1,13 @@
 #!/bin/sh
 
 prefix="/opt"
+
+[ -e ${prefix}/etc/default/cherokee ] && . ${prefix}/etc/default/cherokee
+
+if [ "$CHEROKEE_ENABLE" != "yes" ]; then
+    exit
+fi
+
 PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=cherokee
 DAEMON=${prefix}/sbin/${NAME}
