@@ -12,8 +12,8 @@
 # GLIB_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-GLIB_SITE=ftp://ftp.gtk.org/pub/gtk/v2.9/
-GLIB_VERSION=2.9.6
+GLIB_SITE=ftp://ftp.gtk.org/pub/glib/2.12
+GLIB_VERSION=2.12.13
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.bz2
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=bzcat
@@ -82,7 +82,8 @@ GLIB_IPK=$(BUILD_DIR)/glib_$(GLIB_VERSION)-$(GLIB_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GLIB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GLIB_SITE)/$(GLIB_SOURCE)
+	$(WGET) -P $(@D) $(GLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,13 +114,13 @@ endif
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
-	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(GLIB_PATCHES) | patch -d $(BUILD_DIR)/$(GLIB_DIR) -p1
-	mv $(BUILD_DIR)/$(GLIB_DIR) $(GLIB_BUILD_DIR)
-	cp $(SOURCE_DIR)/glib/glib.cache $(GLIB_BUILD_DIR)/arm.cache
-	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(GLIB_BUILD_DIR)/configure
-	(cd $(GLIB_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GLIB_DIR) $(@D)
+	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
+	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GLIB_LDFLAGS)" \
@@ -133,8 +134,8 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -ie '/#define _POSIX_SOURCE/a#include <bits/posix1_lim.h>' $(GLIB_BUILD_DIR)/glib/giounix.c
-	$(PATCH_LIBTOOL) $(GLIB_BUILD_DIR)/libtool
+	sed -i -e '/#define _POSIX_SOURCE/a#include <bits/posix1_lim.h>' $(@D)/glib/giounix.c
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 glib-unpack: $(GLIB_BUILD_DIR)/.configured
@@ -145,7 +146,7 @@ glib-unpack: $(GLIB_BUILD_DIR)/.configured
 #
 $(GLIB_BUILD_DIR)/.built: $(GLIB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GLIB_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -159,13 +160,13 @@ glib: $(GLIB_BUILD_DIR)/.built
 #
 $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(STAGING_DIR)/opt
-	install $(GLIB_BUILD_DIR)/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_DIR)/opt
+	install $(@D)/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
 	rm -rf $(STAGING_DIR)/opt/lib/libglib-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgmodule-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgobject-2.0.la
 	rm -rf $(STAGING_DIR)/opt/lib/libgthread-2.0.la
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/glib-*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gmodule-*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gobject-*.pc \
