@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-FORMENCODE_SITE=http://cheeseshop.python.org/packages/source/F/FormEncode
-PY-FORMENCODE_VERSION=0.9
+PY-FORMENCODE_SITE=http://pypi.python.org/packages/source/F/FormEncode
+PY-FORMENCODE_VERSION=1.0.1
 PY-FORMENCODE_SOURCE=FormEncode-$(PY-FORMENCODE_VERSION).tar.gz
 PY-FORMENCODE_DIR=FormEncode-$(PY-FORMENCODE_VERSION)
 PY-FORMENCODE_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-FORMENCODE_CONFLICTS=
 #
 # PY-FORMENCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-FORMENCODE_IPK_VERSION=2
+PY-FORMENCODE_IPK_VERSION=1
 
 #
 # PY-FORMENCODE_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ PY25-FORMENCODE_IPK=$(BUILD_DIR)/py25-formencode_$(PY-FORMENCODE_VERSION)-$(PY-F
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-FORMENCODE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-FORMENCODE_SITE)/$(PY-FORMENCODE_SOURCE)
+	$(WGET) -P $(@D) $(PY-FORMENCODE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,14 +108,14 @@ py-formencode-source: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-FORMENCODE_PATCHES)
 #
 $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-FORMENCODE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-FORMENCODE_BUILD_DIR)
-	mkdir -p $(PY-FORMENCODE_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)/2.4
-	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -122,8 +123,8 @@ $(PY-FORMENCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FORMENCODE_SOURCE) $(PY-F
 	rm -rf $(BUILD_DIR)/$(PY-FORMENCODE_DIR)
 	$(PY-FORMENCODE_UNZIP) $(DL_DIR)/$(PY-FORMENCODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-FORMENCODE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-FORMENCODE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(PY-FORMENCODE_BUILD_DIR)/2.5
-	(cd $(PY-FORMENCODE_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-FORMENCODE_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
@@ -136,10 +137,10 @@ py-formencode-unpack: $(PY-FORMENCODE_BUILD_DIR)/.configured
 #
 $(PY-FORMENCODE_BUILD_DIR)/.built: $(PY-FORMENCODE_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-FORMENCODE_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-FORMENCODE_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
