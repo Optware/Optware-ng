@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GETMAIL_SITE=http://pyropus.ca/software/getmail/old-versions
-GETMAIL_VERSION=4.8.0
+GETMAIL_VERSION=4.8.1
 PY-GETMAIL_SOURCE=getmail-$(GETMAIL_VERSION).tar.gz
 PY-GETMAIL_DIR=getmail-$(GETMAIL_VERSION)
 PY-GETMAIL_UNZIP=zcat
@@ -85,8 +85,8 @@ PY25-GETMAIL_IPK=$(BUILD_DIR)/py25-getmail_$(GETMAIL_VERSION)-$(GETMAIL_IPK_VERS
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-GETMAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-GETMAIL_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-GETMAIL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
