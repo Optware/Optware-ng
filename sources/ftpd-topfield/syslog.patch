@@ -1,0 +1,26 @@
+--- ftpd-topfield/ftpd.c~	2008-02-16 09:49:30.000000000 +1030
++++ ftpd-topfield/ftpd.c	2008-03-24 21:45:15.000000000 +1030
+@@ -1190,6 +1190,7 @@
+ 		if (debug) {
+ 			fprintf(stderr, "Transfer failed %lld bytes %s\n", (long long)current, srcpath);
+ 		}
++		syslog(LOG_INFO, "retrieve: Failed transfer of %s @%Ld", srcpath, (long long)current);
+ 		perror_reply (550, name);
+ 	}
+ 
+@@ -1363,6 +1364,7 @@
+ #endif
+ 
+ 	if (ret != 0) {
++		syslog(LOG_INFO, "store: Failed transfer of %s @%Ld", destpath, (long long)current);
+ 		perror_reply (553, name);
+ 
+ 		LOGCMD (*mode == 'w' ? "put" : "append", name);
+@@ -1451,6 +1453,7 @@
+ 				}
+ 			}
+ 
++			syslog(LOG_INFO, "store: Failed transfer of %s @%Ld", destpath, (long long)current);
+ 			/* Failed to cancel the put, so give up */
+ 			perror_reply (426, "Data Connection");
+ 		}
