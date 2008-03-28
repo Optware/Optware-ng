@@ -21,7 +21,7 @@
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
 ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel ddwrt fsg3v4 oleg openwrt-ixp4xx syno-x07, $(OPTWARE_TARGET)))
-E2FSPROGS_VERSION=1.40.7
+E2FSPROGS_VERSION=1.40.8
 E2FSPROGS_IPK_VERSION=1
 else
 E2FSPROGS_VERSION=1.40.3
