@@ -3,18 +3,16 @@ TARGET_OS=linux
 LIBC_STYLE=glibc
 
 # LIBSTDC++_VERSION=6.0.3
-# LIBNSL_VERSION=2.3.6
+LIBNSL_VERSION=2.3.5
 
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = arm-linux
 TARGET_NAME = arm_920t_le
-TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/$(TARGET_NAME)
-TARGET_CROSS = $(TARGET_CROSS_TOP)/920t_le/bin/$(TARGET_NAME)-
-# TARGET_LIBDIR = $(TARGET_CROSS_TOP)/$(TARGET_NAME)/lib
-# TARGET_USRLIBDIR = $(TARGET_CROSS_TOP)/$(TARGET_NAME)/libc/usr/lib
-# TARGET_INCDIR = $(TARGET_CROSS_TOP)/$(TARGET_NAME)/libc/usr/include
-TARGET_INCDIR = $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/include
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/$(TARGET_NAME)/920t_le
+TARGET_CROSS  = $(TARGET_CROSS_TOP)/bin/$(TARGET_NAME)-
+TARGET_LIBDIR = $(TARGET_CROSS_TOP)/lib/gcc/${GNU_TARGET_NAME}/3.4.4/
+TARGET_INCDIR = $(TARGET_CROSS_TOP)/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/include
 TARGET_LDFLAGS =
 TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
@@ -48,9 +46,9 @@ $(DL_DIR)/$(TOOLCHAIN_BINARY) \
 	mkdir -p $(@D)
 	tar -xj -C $(@D) -f $(DL_DIR)/$(TOOLCHAIN_BINARY)
 	install -d $(STAGING_LIB_DIR)
-	cp -fpd $(TARGET_CROSS_TOP)/920t_le/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl*so* $(STAGING_LIB_DIR)/
+	cp -fpd $(TARGET_CROSS_TOP)/lib/gcc/$(GNU_TARGET_NAME)/3.4.4/libdl*so* $(STAGING_LIB_DIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux $(TARGET_INCDIR)/
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-arm $(TARGET_INCDIR)/asm
 	ln -sf $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/asm-generic $(TARGET_INCDIR)/
-	cd $(TARGET_CROSS_TOP)/920t_le/bin && sh $(OPTWARE_TOP)/sources/toolchain-$(OPTWARE_TARGET)/symlink-back.sh
+	cd $(TARGET_CROSS_TOP)/bin && sh $(OPTWARE_TOP)/sources/toolchain-$(OPTWARE_TARGET)/symlink-back.sh
 	touch $@

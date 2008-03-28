@@ -23,7 +23,7 @@ BROKEN_PACKAGES = \
 	jabberd jikes \
 	kismet \
 	launchtool ldconfig lftp liba52 libbt libcapi20 libcdio \
-	libdvb libextractor libmrss libnsl libnxml libopensync \
+	libdvb libextractor libmrss libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
 	loudmouth \
 	mediatomb moc motion mod-fastcgi moe \
@@ -32,7 +32,7 @@ BROKEN_PACKAGES = \
 	newsbeuter nget nmap nload nzbget \
 	open2300 openldap obexftp openser oww \
 	p7zip par2cmdline pcapsipdump php-apache \
-	picolisp player postfix puppy py-mysql \
+	picolisp player puppy py-mysql \
 	qemu quickie \
 	re2c rhtvision rsstail rtorrent \
 	sablevm samba sane-backends simh snort spandsp \
