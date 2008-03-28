@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
-ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel ddwrt fsg3v4 oleg openwrt-ixp4xx syno-x07, $(OPTWARE_TARGET)))
+ifneq ($(OPTWARE_TARGET), $(filter cs05q3armel fsg3v4 syno-x07, $(OPTWARE_TARGET)))
 E2FSPROGS_VERSION=1.40.8
 E2FSPROGS_IPK_VERSION=1
 else
@@ -54,6 +54,10 @@ E2FSPROGS_PATCHES=
 #
 E2FSPROGS_CPPFLAGS=
 E2FSPROGS_LDFLAGS=
+E2FSPROGS_CONFIG_ARGS=
+ifneq (, $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
+E2FSPROGS_CONFIG_ARGS += --disable-tls
+endif
 
 #
 # E2FSPROGS_BUILD_DIR is the directory in which the build is done.
@@ -79,8 +83,8 @@ E2FSLIBS_IPK=$(BUILD_DIR)/e2fslibs_$(E2FSPROGS_VERSION)-$(E2FSPROGS_IPK_VERSION)
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(E2FSPROGS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(E2FSPROGS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(E2FSPROGS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -115,6 +119,7 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(E2FSPROGS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(E2FSPROGS_LDFLAGS)" \
 		./configure \
+		$(E2FSPROGS_CONFIG_ARGS) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
