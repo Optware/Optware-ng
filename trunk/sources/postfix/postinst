@@ -1,9 +1,16 @@
 #!/bin/sh
 
-mail_owner=mail
-mail_group=mail
-setgid_group=maildrop
-setgid_group_id=69
+if [ ${OPTWARE_TARGET} = "vt4" ] ; then
+    mail_owner=admin
+    mail_group=101
+    setgid_group=maildrop
+    setgid_group_id=106
+else
+    mail_owner=mail
+    mail_group=mail
+    setgid_group=maildrop
+    setgid_group_id=69
+fi
 group_file=/etc/group
 
 /bin/echo -n "creating new user(s) and group(s) ... "

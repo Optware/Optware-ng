@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils, openssl
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=2
+POSTFIX_IPK_VERSION=3
 
 POSTFIX_CONFFILES=/opt/etc/aliases \
 		  /opt/etc/postfix/main.cf \
@@ -164,6 +164,9 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 	/bin/sed -i 's/\(\bPATH=\)/\1\/opt\/bin:\/opt\/sbin:/g' $(POSTFIX_IPK_DIR)/opt/etc/postfix/post-install
 	install -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)/opt/etc/aliases
 	install -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
+ifeq (${OPTWARE_TARGET}, vt4)
+	sed -i -e 's/mail_owner = mail/mail_owner = admin/' $(POSTFIX_IPK_DIR)/opt/etc/postfix/main.cf
+endif
 	install -m 644 $(POSTFIX_SOURCE_DIR)/master.cf $(POSTFIX_IPK_DIR)/opt/etc/postfix/master.cf
 	install -d $(POSTFIX_IPK_DIR)/opt/lib/sasl2
 	install -m 644 $(POSTFIX_SOURCE_DIR)/smtpd.conf $(POSTFIX_IPK_DIR)/opt/lib/sasl2/smtpd.conf
@@ -185,6 +188,7 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 
 	$(MAKE) $(POSTFIX_IPK_DIR)/CONTROL/control
 	install -m 644 $(POSTFIX_SOURCE_DIR)/postinst $(POSTFIX_IPK_DIR)/CONTROL/postinst
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POSTFIX_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(POSTFIX_SOURCE_DIR)/prerm $(POSTFIX_IPK_DIR)/CONTROL/prerm
 	echo $(POSTFIX_CONFFILES) | sed -e 's/ /\n/g' > $(POSTFIX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTFIX_IPK_DIR)
