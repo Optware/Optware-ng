@@ -1,30 +1,24 @@
-
-#
-# Patch managed by http://www.mn-logistik.de/unsupported/pxa250/patcher
-#
-
---- dropbear-0.40/configure.in~configure
-+++ dropbear-0.40/configure.in
-@@ -161,15 +161,20 @@
- 			AC_MSG_RESULT(Not using openpty)
+--- dropbear/configure.in.orig	2008-03-27 06:17:14.000000000 -0700
++++ dropbear/configure.in	2008-03-28 18:24:43.000000000 -0700
+@@ -164,15 +164,20 @@
+ 			AC_MSG_NOTICE(Not using openpty)
  		else
- 			AC_MSG_RESULT(Using openpty if available)
+ 			AC_MSG_NOTICE(Using openpty if available)
 -			AC_SEARCH_LIBS(openpty, util, [AC_DEFINE(HAVE_OPENPTY,,Have openpty() function)])
 +			AC_SEARCH_LIBS(openpty, util, [dropbear_cv_func_have_openpty=yes])
  		fi
  	],
  	[
- 		AC_MSG_RESULT(Using openpty if available)
+ 		AC_MSG_NOTICE(Using openpty if available)
 -		AC_SEARCH_LIBS(openpty, util, [AC_DEFINE(HAVE_OPENPTY)])
 +		AC_SEARCH_LIBS(openpty, util, [dropbear_cv_func_have_openpty=yes])
  	]
  )
--		
-+
+ 		
 +if test "x$dropbear_cv_func_have_openpty" = "xyes"; then
-+	AC_DEFINE(HAVE_OPENPTY,,Have openpty() function)
-+	no_ptc_check=yes
-+	no_ptmx_check=yes
++       AC_DEFINE(HAVE_OPENPTY,,Have openpty() function)
++       no_ptc_check=yes
++       no_ptmx_check=yes
 +fi
  
  AC_ARG_ENABLE(syslog,
