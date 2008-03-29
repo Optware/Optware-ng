@@ -24,7 +24,7 @@
 # PY-ROUTES_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-ROUTES_SITE=http://pypi.python.org/packages/source/R/Routes
-PY-ROUTES_VERSION=1.7.2
+PY-ROUTES_VERSION=1.8
 PY-ROUTES_IPK_VERSION=1
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
