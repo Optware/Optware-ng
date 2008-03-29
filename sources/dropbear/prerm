@@ -1,6 +1,6 @@
 #!/bin/sh
 
-/bin/killall dropbear
+killall /opt/sbin/dropbear
 
 /bin/rm -f /opt/etc/dropbear/dropbear_rsa_host_key
 /bin/rm -f /opt/etc/dropbear/dropbear_dss_host_key

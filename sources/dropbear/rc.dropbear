@@ -1,7 +1,17 @@
 #!/bin/sh
 
-if [ -n "`pidof dropbear`" ]; then 
-    /bin/killall dropbear 2>/dev/null
+[ -e /opt/etc/default/dropbear ] && . /opt/etc/default/dropbear
+
+if [ "$DROPBEAR_ENABLE" = "no" ]; then
+    exit
 fi
 
-/opt/sbin/dropbear
+if [ -n "`pidof /opt/sbin/dropbear`" ]; then 
+    killall /opt/sbin/dropbear 2>/dev/null
+fi
+
+if [ -n "$DROPBEAR_PORT" ]; then
+    /opt/sbin/dropbear -p $DROPBEAR_PORT
+else
+    /opt/sbin/dropbear
+fi
