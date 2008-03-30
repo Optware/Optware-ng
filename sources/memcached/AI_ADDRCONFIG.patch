@@ -1,0 +1,14 @@
+--- memcached.c.orig	2008-03-03 11:13:45.000000000 -0800
++++ memcached.c	2008-03-30 10:02:25.000000000 -0700
+@@ -2407,7 +2407,11 @@
+      * that otherwise mess things up.
+      */
+     memset(&hints, 0, sizeof (hints));
++#ifdef AI_ADDRCONFIG
+     hints.ai_flags = AI_PASSIVE|AI_ADDRCONFIG;
++#else
++    hints.ai_flags = AI_PASSIVE;
++#endif
+     if (is_udp)
+     {
+         hints.ai_protocol = IPPROTO_UDP;
