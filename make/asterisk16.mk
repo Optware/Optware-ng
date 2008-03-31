@@ -69,6 +69,12 @@ endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 ASTERISK16_SUGGESTS +=,iksemel
 endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+ASTERISK16_SUGGESTS +=,gtk
+endif
+ifeq (x11, $(filter x11, $(PACKAGES)))
+ASTERISK16_SUGGESTS +=,x11
+endif
 
 ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,asterisk14-chan-capi
 
@@ -76,7 +82,7 @@ ASTERISK16_CONFLICTS=asterisk,asterisk14,asterisk-sounds,asterisk-chan-capi,aste
 #
 # ASTERISK16_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK16_IPK_VERSION=1
+ASTERISK16_IPK_VERSION=2
 
 #
 # ASTERISK16_CONFFILES should be a list of user-editable files
@@ -188,6 +194,16 @@ ASTERISK16_CONFIGURE_OPTS += --with-iksemel=$(STAGING_PREFIX)
 else
 ASTERISK16_CONFIGURE_OPTS += --without-iksemel
 endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+ASTERISK16_CONFIGURE_OPTS += --with-gtk2=$(STAGING_PREFIX)
+else
+ASTERISK16_CONFIGURE_OPTS += --without-gtk2
+endif
+ifeq (x11, $(filter x11, $(PACKAGES)))
+ASTERISK16_CONFIGURE_OPTS += --with-x11=$(STAGING_PREFIX)
+else
+ASTERISK16_CONFIGURE_OPTS += --without-x11
+endif
 
 #
 # ASTERISK16_BUILD_DIR is the directory in which the build is done.
@@ -258,6 +274,12 @@ endif
 ifeq (iksemel, $(filter iksemel, $(PACKAGES)))
 	$(MAKE) iksemel-stage
 endif
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	$(MAKE) gtk-stage
+endif
+ifeq (x11, $(filter x11, $(PACKAGES)))
+	$(MAKE) x11-stage
+endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite2-stage freetds-stage libogg-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK16_DIR) $(ASTERISK16_BUILD_DIR)
@@ -284,7 +306,6 @@ endif
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
-		--without-pwlib \
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-z=$(STAGING_PREFIX) \
 		--with-termcap=$(STAGING_PREFIX) \
@@ -293,13 +314,17 @@ endif
 		--with-popt=$(STAGING_PREFIX) \
 		--with-tds=$(STAGING_PREFIX) \
 		--with-sqlite=$(STAGING_PREFIX) \
-		--without-postgres \
 		--with-radius=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
+		--with-ltdl=$(STAGING_PREFIX) \
+		--without-postgres \
+		--without-sqlite3 \
+		--without-gtk \
+		--without-pwlib \
+		--without-usb \
 		--without-lua \
 		--without-imap \
-		--without-x11 \
 		--without-zaptel \
 		$(ASTERISK16_CONFIGURE_OPTS) \
 		--localstatedir=/opt/var \
