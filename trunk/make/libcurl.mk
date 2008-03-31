@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.18.0
+LIBCURL_VERSION=7.18.1
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -71,8 +71,11 @@ LIBCURL_LDFLAGS=-lssl
 #
 LIBCURL_BUILD_DIR=$(BUILD_DIR)/libcurl
 LIBCURL_SOURCE_DIR=$(SOURCE_DIR)/libcurl
+
 LIBCURL_IPK_DIR=$(BUILD_DIR)/libcurl-$(LIBCURL_VERSION)-ipk
 LIBCURL_IPK=$(BUILD_DIR)/libcurl_$(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)_$(TARGET_ARCH).ipk
+LIBCURL-DEV_IPK_DIR=$(BUILD_DIR)/libcurl-dev-$(LIBCURL_VERSION)-ipk
+LIBCURL-DEV_IPK=$(BUILD_DIR)/libcurl-dev_$(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: libcurl-source libcurl-unpack libcurl libcurl-stage libcurl-ipk libcurl-clean libcurl-dirclean libcurl-check
 
@@ -81,7 +84,8 @@ LIBCURL_IPK=$(BUILD_DIR)/libcurl_$(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBCURL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBCURL_SITE)/$(LIBCURL_SOURCE)
+	$(WGET) -P $(@D) $(LIBCURL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -179,6 +183,20 @@ $(LIBCURL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(LIBCURL_DEPENDS)" >>$@
 	@echo "Conflicts: $(LIBCURL_CONFLICTS)" >>$@
 
+$(LIBCURL-DEV_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: libcurl-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBCURL_PRIORITY)" >>$@
+	@echo "Section: $(LIBCURL_SECTION)" >>$@
+	@echo "Version: $(LIBCURL_VERSION)-$(LIBCURL_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(LIBCURL_MAINTAINER)" >>$@
+	@echo "Source: $(LIBCURL_SITE)/$(LIBCURL_SOURCE)" >>$@
+	@echo "Description: Development files for libcurl" >>$@
+	@echo "Depends: libcurl" >>$@
+	@echo "Conflicts: " >>$@
+
 #
 # This builds the IPK file.
 #
@@ -191,18 +209,24 @@ $(LIBCURL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(LIBCURL_IPK): $(LIBCURL_BUILD_DIR)/.built
+$(LIBCURL_IPK) $(LIBCURL-DEV_IPK): $(LIBCURL_BUILD_DIR)/.built
 	rm -rf $(LIBCURL_IPK_DIR) $(BUILD_DIR)/libcurl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install-strip
 	rm -f $(LIBCURL_IPK_DIR)/opt/lib/libcurl.a $(LIBCURL_IPK_DIR)/opt/lib/libcurl.la
 	$(MAKE) $(LIBCURL_IPK_DIR)/CONTROL/control
 	echo $(LIBCURL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBCURL_IPK_DIR)/CONTROL/conffiles
+	install -d $(LIBCURL-DEV_IPK_DIR)/opt/share/man $(LIBCURL-DEV_IPK_DIR)/opt/lib
+	mv $(LIBCURL_IPK_DIR)/opt/share/man/man3 $(LIBCURL-DEV_IPK_DIR)/opt/share/man
+	mv $(LIBCURL_IPK_DIR)/opt/include $(LIBCURL-DEV_IPK_DIR)/opt/
+	mv $(LIBCURL_IPK_DIR)/opt/lib/pkgconfig $(LIBCURL-DEV_IPK_DIR)/opt/lib/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL_IPK_DIR)
+	$(MAKE) $(LIBCURL-DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-libcurl-ipk: $(LIBCURL_IPK)
+libcurl-ipk: $(LIBCURL_IPK) $(LIBCURL-DEV_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
