@@ -23,9 +23,9 @@
 #  TRAC: http://trac.transmissionbt.com/timeline
 #
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
-TRANSMISSION_VERSION=1.06
+TRANSMISSION_VERSION=1.10
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=5332
+# TRANSMISSION_SVN_REV=5419
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -112,8 +112,8 @@ ifdef TRANSMISSION_SVN_REV
 		rm -rf $(TRANSMISSION_DIR) \
 	)
 else
-	$(WGET) -P $(DL_DIR) $(TRANSMISSION_SITE)/$(TRANSMISSION_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TRANSMISSION_SOURCE)
+	$(WGET) -P $(@D) $(TRANSMISSION_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -144,18 +144,16 @@ transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 # Note that openssl is used only for SHA1 hash calculation and that it looks 
 # better to use Transmission provided (built-in) SHA1 hash
 #
-$(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) 
+$(TRANSMISSION_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
 	$(MAKE) openssl-stage
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR)
-ifdef TRANSMISSION_SVN_REV
-	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
+ifndef TRANSMISSION_SVN_REV
 	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
-	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 endif
+	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TRANSMISSION_PATCHES)" ; \
 		then cat $(TRANSMISSION_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p1 ; \
@@ -164,8 +162,10 @@ endif
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) ; \
 	fi
 	sed -i -e 's/-g / /' $(TRANSMISSION_BUILD_DIR)/configure.ac
-	(cd $(TRANSMISSION_BUILD_DIR); \
-		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh && \
+ifdef TRANSMISSION_SVN_REV
+	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION_LDFLAGS)" \
