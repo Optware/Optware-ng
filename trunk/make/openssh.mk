@@ -5,7 +5,7 @@
 #########################################################
 
 OPENSSH_SITE=ftp://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable
-OPENSSH_VERSION=4.7p1
+OPENSSH_VERSION=4.9p1
 OPENSSH_SOURCE=openssh-$(OPENSSH_VERSION).tar.gz
 OPENSSH_DIR=openssh-$(OPENSSH_VERSION)
 OPENSSH_UNZIP=zcat
@@ -18,7 +18,7 @@ OPENSSH_DEPENDS=openssl, zlib
 OPENSSH_SUGGESTS=
 OPENSSH_CONFLICTS=
 
-OPENSSH_IPK_VERSION=4
+OPENSSH_IPK_VERSION=1
 
 OPENSSH_CONFFILES=\
 	/opt/etc/openssh/ssh_config \
@@ -243,4 +243,4 @@ openssh-dirclean:
 # Some sanity check for the package.
 #
 openssh-check: $(OPENSSH_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSSH_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OPENSSH_IPK) $(OPENSSH_SFTP_SERVER_IPK)
