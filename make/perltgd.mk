@@ -42,7 +42,7 @@ PERLTGD_CONFLICTS=
 #
 # PERLTGD_IPK_VERSION should be incremented when the ipk changes.
 #
-PERLTGD_IPK_VERSION=4
+PERLTGD_IPK_VERSION=5
 
 #
 # PERLTGD_CONFFILES should be a list of user-editable files
@@ -197,7 +197,7 @@ $(PERLTGD_IPK): $(PERLTGD_BUILD_DIR)/.built
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/overrun.shows $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/shows.repeat $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -d $(PERLTGD_IPK_DIR)/opt/etc/cron.d
-	install -m 755 $(PERLTGD_SOURCE_DIR)/cron.perltgd $(PERLTGD_IPK_DIR)/opt/etc/cron.d/perltgd
+	install -m 600 $(PERLTGD_SOURCE_DIR)/cron.perltgd $(PERLTGD_IPK_DIR)/opt/etc/cron.d/perltgd
 	$(MAKE) $(PERLTGD_IPK_DIR)/CONTROL/control
 	install -m 755 $(PERLTGD_SOURCE_DIR)/postinst $(PERLTGD_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERLTGD_IPK_DIR)/CONTROL/postinst
