@@ -36,9 +36,9 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION=1
+NGINX_IPK_VERSION=2
 
-NGINX_PREFIX=/opt/nginx
+NGINX_PREFIX=/opt/share/nginx
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
