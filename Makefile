@@ -27,7 +27,7 @@ OPTWARE_TARGET ?= nslu2
 # Add new packages here - make sure you have tested cross compilation.
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = mimms \
+CROSS_PACKAGES_READY_FOR_TESTING = \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -255,7 +255,8 @@ COMMON_CROSS_PACKAGES = \
 	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
-	mg miau microcom microperl minicom mini-sendmail minihttpd miscfiles \
+	mg miau microcom microperl mimms \
+	minicom mini-sendmail minihttpd miscfiles \
 	mktemp mlocate moblock moc modutils monit most motion \
 	mod-fastcgi moe monotone mp3blaster mpack mpage \
 	mpc mpd mpdscribble \
