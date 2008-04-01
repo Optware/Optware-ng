@@ -1,0 +1,13 @@
+--- stunnel/src/verify.c~	2006-11-02 01:29:16.000000000 +1030
++++ stunnel/src/verify.c	2008-04-01 13:59:21.000000000 +1030
+@@ -69,10 +69,8 @@
+             sslerror("SSL_CTX_load_verify_locations");
+             exit(1);
+         }
+-#if 0
+         SSL_CTX_set_client_CA_list(section->ctx,
+             SSL_load_client_CA_file(section->ca_file));
+-#endif
+         s_log(LOG_DEBUG, "Loaded verify certificates from %s",
+             section->ca_file);
+         load_file_lookup(section->revocation_store, section->ca_file);
