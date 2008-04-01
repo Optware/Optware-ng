@@ -83,7 +83,7 @@ NGINX_CPPFLAGS=
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 NGINX_CPPFLAGS+=-DIOV_MAX=1024
 endif
-NGINX_LDFLAGS=
+NGINX_LDFLAGS=-ldl
 
 #
 # NGINX_BUILD_DIR is the directory in which the build is done.
@@ -249,14 +249,14 @@ $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
 	$(STRIP_COMMAND) $(NGINX_IPK_DIR)$(NGINX_PREFIX)/sbin/nginx
 	install -d $(NGINX_IPK_DIR)/opt/sbin; \
-        	cd $(NGINX_IPK_DIR)/opt/sbin; \
-        	ln -s $(NGINX_PREFIX)/sbin/nginx .
+		cd $(NGINX_IPK_DIR)/opt/sbin; \
+		ln -s $(NGINX_PREFIX)/sbin/nginx .
 	install -d $(NGINX_IPK_DIR)/opt/share/www; \
-        	cd $(NGINX_IPK_DIR)/opt/share/www; \
-                ln -s $(NGINX_PREFIX)/html nginx
+		cd $(NGINX_IPK_DIR)/opt/share/www; \
+		ln -s $(NGINX_PREFIX)/html nginx
 	install -d $(NGINX_IPK_DIR)/opt/etc; \
-        	cd $(NGINX_IPK_DIR)/opt/etc; \
-                ln -s $(NGINX_PREFIX)/conf nginx
+		cd $(NGINX_IPK_DIR)/opt/etc; \
+		ln -s $(NGINX_PREFIX)/conf nginx
 	install -d $(NGINX_IPK_DIR)$(NGINX_PREFIX)/tmp
 #	install -m 644 $(NGINX_SOURCE_DIR)/nginx.conf $(NGINX_IPK_DIR)/opt/etc/nginx.conf
 #	install -d $(NGINX_IPK_DIR)/opt/etc/init.d
