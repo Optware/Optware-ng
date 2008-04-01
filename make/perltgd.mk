@@ -35,14 +35,14 @@ PERLTGD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERLTGD_DESCRIPTION=Automated EPG updating for the Topfield range of PVRs
 PERLTGD_SECTION=util
 PERLTGD_PRIORITY=optional
-PERLTGD_DEPENDS=perl, wget, wput, puppy
-PERLTGD_SUGGESTS=ftpd-topfield
+PERLTGD_DEPENDS=perl, wget, wput, cron
+PERLTGD_SUGGESTS=ftpd-topfield, puppy
 PERLTGD_CONFLICTS=
 
 #
 # PERLTGD_IPK_VERSION should be incremented when the ipk changes.
 #
-PERLTGD_IPK_VERSION=2
+PERLTGD_IPK_VERSION=3
 
 #
 # PERLTGD_CONFFILES should be a list of user-editable files
@@ -52,7 +52,8 @@ PERLTGD_CONFFILES= \
 	/opt/etc/perltgd/append.timers \
 	/opt/etc/perltgd/favourites.ini \
 	/opt/etc/perltgd/overrun.shows \
-	/opt/etc/perltgd/shows.repeat
+	/opt/etc/perltgd/shows.repeat \
+	/opt/etc/cron.d/perltgd
 
 #
 # PERLTGD_PATCHES should list any patches, in the the order in
@@ -195,8 +196,8 @@ $(PERLTGD_IPK): $(PERLTGD_BUILD_DIR)/.built
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/favourites.ini $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/overrun.shows $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
 	install -m 644 $(PERLTGD_BUILD_DIR)/perlTGDslug/shows.repeat $(PERLTGD_IPK_DIR)/opt/etc/perltgd/
-#	install -d $(PERLTGD_IPK_DIR)/opt/etc/cron.d
-#	install -m 755 $(PERLTGD_SOURCE_DIR)/cron.perltgd $(PERLTGD_IPK_DIR)/opt/etc/cron.d/perltgd
+	install -d $(PERLTGD_IPK_DIR)/opt/etc/cron.d
+	install -m 755 $(PERLTGD_SOURCE_DIR)/cron.perltgd $(PERLTGD_IPK_DIR)/opt/etc/cron.d/perltgd
 	$(MAKE) $(PERLTGD_IPK_DIR)/CONTROL/control
 	install -m 755 $(PERLTGD_SOURCE_DIR)/postinst $(PERLTGD_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PERLTGD_IPK_DIR)/CONTROL/postinst
