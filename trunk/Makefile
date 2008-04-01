@@ -296,7 +296,7 @@ COMMON_CROSS_PACKAGES = \
 	sudo surfraw swi-prolog svn syslog-ng sysstat syx \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
 	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
-	tig tin tinyscheme tmsnc tnef tnftp tnftpd tor torrent \
+	tig tin tinyscheme tmsnc tnef tnftp tnftpd toppyweb tor torrent \
 	transcode transmission tre tree \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
