@@ -36,7 +36,7 @@ MIMMS_CONFLICTS=
 #
 # MIMMS_IPK_VERSION should be incremented when the ipk changes.
 #
-MIMMS_IPK_VERSION=1
+MIMMS_IPK_VERSION=2
 
 #
 # MIMMS_CONFFILES should be a list of user-editable files
