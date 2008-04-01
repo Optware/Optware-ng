@@ -34,7 +34,7 @@ STUNNEL_CONFLICTS=
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=1
+STUNNEL_IPK_VERSION=2
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
@@ -47,7 +47,9 @@ STUNNEL_CONFFILES=/opt/etc/stunnel/stunnel.conf \
 # STUNNEL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-STUNNEL_PATCHES=$(STUNNEL_SOURCE_DIR)/configure.patch
+STUNNEL_PATCHES= \
+	$(STUNNEL_SOURCE_DIR)/configure.patch \
+	$(STUNNEL_SOURCE_DIR)/client-ca-list.patch
 
 #
 # If the compilation of the package requires additional
