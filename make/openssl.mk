@@ -15,7 +15,7 @@ OPENSSL_PRIORITY=recommended
 OPENSSL_DEPENDS=
 OPENSSL_CONFLICTS=
 
-OPENSSL_IPK_VERSION=3
+OPENSSL_IPK_VERSION=4
 
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
@@ -28,11 +28,15 @@ OPENSSL_DEV_IPK_DIR=$(BUILD_DIR)/openssl-dev-$(OPENSSL_VERSION)-ipk
 OPENSSL_DEV_IPK=$(BUILD_DIR)/openssl-dev_$(OPENSSL_VERSION)-$(OPENSSL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 OPENSSL_PATCHES=$(OPENSSL_SOURCE_DIR)/Configure.patch
+ifeq ($(OPTWARE_TARGET), dns323)
+OPENSSL_PATCHES+=$(OPENSSL_SOURCE_DIR)/Configure-O3-to-O2.patch
+endif
 
 .PHONY: openssl-source openssl-unpack openssl openssl-stage openssl-ipk openssl-clean openssl-dirclean openssl-check
 
 $(DL_DIR)/$(OPENSSL_SOURCE):
-	cd $(DL_DIR) && $(WGET) $(OPENSSL_SITE)/$(OPENSSL_SOURCE)
+	$(WGET) -P $(@D) $(OPENSSL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 openssl-source: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 
