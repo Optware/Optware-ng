@@ -56,7 +56,7 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=1
+LIGHTTPD_IPK_VERSION=2
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
@@ -70,6 +70,7 @@ LIGHTTPD_CONFFILES=\
 #
 LIGHTTPD_PATCHES=\
 	$(LIGHTTPD_SOURCE_DIR)/src-server.c.patch \
+	$(LIGHTTPD_SOURCE_DIR)/lighty-clientvalidation-1.4.x.2.patch
 
 #
 # If the compilation of the package requires additional
@@ -146,7 +147,7 @@ endif
 	$(LIGHTTPD_UNZIP) $(DL_DIR)/$(LIGHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIGHTTPD_PATCHES)" ; \
 		then cat $(LIGHTTPD_PATCHES) | \
-		patch --ignore-whitespace -bd $(BUILD_DIR)/$(LIGHTTPD_DIR) -p1 ; \
+		patch --ignore-whitespace -bd $(BUILD_DIR)/$(LIGHTTPD_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIGHTTPD_DIR)" != "$(LIGHTTPD_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIGHTTPD_DIR) $(LIGHTTPD_BUILD_DIR) ; \
@@ -243,7 +244,9 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	$(MAKE) -C $(LIGHTTPD_BUILD_DIR) \
 	    DESTDIR=$(LIGHTTPD_IPK_DIR) program_transform_name="" install-strip
 	rm -f $(LIGHTTPD_IPK_DIR)/opt/lib/lighttpd/*.la
-	install -d $(LIGHTTPD_IPK_DIR)/opt/{share/doc,share/www,var/log}/lighttpd
+	install -d $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd
+	install -d $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd
+	install -d $(LIGHTTPD_IPK_DIR)/opt/var/log/lighttpd
 	install -m 644 $(LIGHTTPD_BUILD_DIR)/doc/* $(LIGHTTPD_IPK_DIR)/opt/share/doc/lighttpd/
 	install -m 644 $(LIGHTTPD_SOURCE_DIR)/index.html $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd/
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd
