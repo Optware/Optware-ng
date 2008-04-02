@@ -6,6 +6,7 @@ endbuffer::+10
 join::+
 showtitle:: - 
 grabber::/opt/bin/wget -q "ftp://192.168.18.3/ProgramFiles/favourites.ini" -O "/opt/etc/perltgd/favourites.ini"
+#grabber::puppy -c get "ProgramFiles\\favourites.ini" "/opt/etc/perltgd/favourites.ini"
 makeguide::/opt/bin/xmltv2tgd -config=/opt/etc/perltgd/xmltv2tgd.settings -o=/opt/var/lib/perltgd
 addtime::40
 addtimestart::0
@@ -13,8 +14,8 @@ addtimeend::360
 overrun::15
 writelog::yes
 transfer::/opt/bin/wput -u -nc "<OUTPUT>/<FILE>" "ftp://192.168.18.3/<TFDIR>/<FILE>"
-download::/opt/bin/wget -q "ftp://192.168.18.3/<TFDIR>/<FILE>" -O "<OUTPUT>/<FILE>"
 #transfer::puppy -c put "<OUTPUT>/<FILE>" "<TFDIR>\\<FILE>"
+download::/opt/bin/wget -q "ftp://192.168.18.3/<TFDIR>/<FILE>" -O "<OUTPUT>/<FILE>"
 #download::puppy -c get "<TFDIR>\\<FILE>" "<OUTPUT>/<FILE>"
 #reboot::puppy -c reboot
 outputdir::/opt/var/lib/perltgd
