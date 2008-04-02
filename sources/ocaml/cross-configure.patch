@@ -1,0 +1,398 @@
+--- ocaml/configure.orig	2008-01-04 05:26:38.000000000 -0800
++++ ocaml/configure	2008-04-02 12:24:57.000000000 -0700
+@@ -24,6 +24,9 @@
+ host_type=unknown
+ ccoption=''
+ cclibs=''
++asppoption=''
++aroption=''
++ranliboption=''
+ curseslibs=''
+ mathlib='-lm'
+ dllib=''
+@@ -73,6 +76,14 @@
+         host_type=$2; shift;;
+     -cc*)
+         ccoption="$2"; shift;;
++    -aspp*)
++        asppoption="$2"; shift;;
++    -ar*)
++        aroption="$2"; shift;;
++    -ranlib*)
++        ranliboption="$2"; shift;;
++    -ld*)
++        ldoption="$2"; shift;;
+     -lib*)
+         cclibs="$2 $cclibs"; shift;;
+     -no-curses)
+@@ -192,7 +203,7 @@
+ buggycc="no"
+ 
+ case "$host,$cc" in
+-  i[3456]86-*-*,gcc*)
++  i[3456]86-*-*,*gcc*)
+     case `$cc --version` in
+       2.7.2.1) cat <<'EOF'
+ 
+@@ -239,7 +250,7 @@
+ exe=""
+ 
+ case "$bytecc,$host" in
+-  cc,*-*-nextstep*)
++  *cc,*-*-nextstep*)
+     # GNU C extensions disabled, but __GNUC__ still defined!
+     bytecccompopts="-fno-defer-pop $gcc_warnings -U__GNUC__ -posix"
+     bytecclinkopts="-posix";;
+@@ -257,7 +268,7 @@
+     bytecccompopts="-fno-defer-pop $gcc_warnings"
+     # No -lm library
+     mathlib="";;
+-  gcc,alpha*-*-osf*)
++  *gcc,alpha*-*-osf*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings"
+     if cc="$bytecc" sh ./hasgot -mieee; then
+       bytecccompopts="-mieee $bytecccompopts";
+@@ -266,41 +277,41 @@
+     bytecclinkopts="-Wl,-T,12000000 -Wl,-D,14000000"
+     # Tell gcc that we can use 32-bit code addresses for threaded code
+     echo "#define ARCH_CODE32" >> m.h;;
+-  cc,alpha*-*-osf*)
++  *cc,alpha*-*-osf*)
+     bytecccompopts="-std1 -ieee";;
+-  gcc,alpha*-*-linux*)
++  *gcc,alpha*-*-linux*)
+     if cc="$bytecc" sh ./hasgot -mieee; then
+       bytecccompopts="-mieee $bytecccompopts";
+     fi;;
+-  cc,mips-*-irix6*)
++  *cc,mips-*-irix6*)
+     # Add -n32 flag to ensure compatibility with native-code compiler
+     bytecccompopts="-n32"
+     # Turn off warning "unused library"
+     bytecclinkopts="-n32 -Wl,-woff,84";;
+-  cc*,mips-*-irix6*)
++  *cc*,mips-*-irix6*)
+     # (For those who want to force "cc -64")
+     # Turn off warning "unused library"
+     bytecclinkopts="-Wl,-woff,84";;
+   *,alpha*-*-unicos*)
+     # For the Cray T3E
+     bytecccompopts="-DUMK";;
+-  gcc*,powerpc-*-aix*)
++  *gcc*,powerpc-*-aix*)
+     # Avoid name-space pollution by requiring Unix98-conformant includes
+     bytecccompopts="-fno-defer-pop $gcc_warnings -D_XOPEN_SOURCE=500";;
+   *,powerpc-*-aix*)
+     bytecccompopts="-D_XOPEN_SOURCE=500";;
+-  gcc*,*-*-cygwin*)
++  *gcc*,*-*-cygwin*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings -U_WIN32"
+     exe=".exe"
+     ostype="Cygwin";;
+-  gcc*,x86_64-*-linux*)
++  *gcc*,x86_64-*-linux*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings"
+     # Tell gcc that we can use 32-bit code addresses for threaded code
+     # unless we are compiled for a shared library (-fPIC option)
+     echo "#ifndef __PIC__" >> m.h
+     echo "#  define ARCH_CODE32" >> m.h
+     echo "#endif" >> m.h;;
+-  gcc*)
++  *gcc*)
+     bytecccompopts="-fno-defer-pop $gcc_warnings";;
+ esac
+ 
+@@ -309,23 +320,18 @@
+ cc="$bytecc -O $bytecclinkopts"
+ export cc cclibs verbose
+ 
+-# Check C compiler
+-
+-sh ./runtest ansi.c
+-case $? in
+-  0) echo "The C compiler is ANSI-compliant.";;
+-  1) echo "The C compiler $cc is not ANSI-compliant."
+-     echo "You need an ANSI C compiler to build Objective Caml."
+-     exit 2;;
+-  *) echo "Unable to compile the test program."
+-     echo "Make sure the C compiler $cc is properly installed."
+-     exit 2;;
+-esac
+-
+ # Check the sizes of data types
+ 
+ echo "Checking the sizes of integers and pointers..."
+-set `sh ./runtest sizes.c`
++reply=`sh ./runtest sizes.c`
++if test -z "$reply"; then
++  echo "Input sizeof(int) sizeof(long) sizeof(long *) sizeof(short)"
++  if test -n "${ac_ocaml_sizes}"
++  then reply="${ac_ocaml_sizes}"
++  else read reply
++  fi
++fi
++set $reply
+ case "$2,$3" in
+   4,4) echo "OK, this is a regular 32 bit architecture."
+        echo "#undef ARCH_SIXTYFOUR" >> m.h
+@@ -359,7 +365,7 @@
+      int64_native=true
+ else
+   sh ./runtest longlong.c
+-  case $? in
++  case 9 in
+   0) echo "64-bit \"long long\" integer type found (printf with \"%ll\")."
+      echo "#define ARCH_INT64_TYPE long long" >> m.h
+      echo "#define ARCH_UINT64_TYPE unsigned long long" >> m.h
+@@ -375,11 +381,53 @@
+      echo "#define ARCH_UINT64_TYPE unsigned long long" >> m.h
+      echo '#undef ARCH_INT64_PRINTF_FORMAT' >> m.h
+      int64_native=true;;
+-  *) echo "No suitable 64-bit integer type found, will use software emulation."
++  3) echo "No suitable 64-bit integer type found, will use software emulation."
+      echo "#undef ARCH_INT64_TYPE" >> m.h
+      echo "#undef ARCH_UINT64_TYPE" >> m.h
+      echo '#undef ARCH_INT64_PRINTF_FORMAT' >> m.h
+      int64_native=false;;
++  *) echo "Is 64-bit integer supported? (y/n: default y)"
++     if test -n "${ac_ocaml_64bit_supported}"
++     then reply="${ac_ocaml_64bit_supported}"
++     else read reply
++     fi
++     if test "$reply" = "n"; then
++       echo "#undef ARCH_INT64_TYPE" >> m.h
++       echo "#undef ARCH_UINT64_TYPE" >> m.h
++       int64_native=false
++     else
++       echo "What is the type of signed 64-bit integer? (example: long long)"
++       if test -n "${ac_ocaml_typeof_int64}"
++       then reply="${ac_ocaml_typeof_int64}"
++       else read reply
++       fi
++       if test -z "$reply"; then
++         echo "Invalid type"
++         exit 1
++       fi
++       echo "#define ARCH_INT64_TYPE $reply" >> m.h
++       echo "What is the type of unsigned 64-bit integer? (example: unsigned long long)"
++       if test -n "${ac_ocaml_typeof_uint64}"
++       then reply="${ac_ocaml_typeof_uint64}"
++       else read reply
++       fi
++       if test -z "$reply"; then
++         echo "Invalid type"
++         exit 1
++       fi
++       echo "#define ARCH_UINT64_TYPE $reply" >> m.h
++       echo "What is the printf format? (example: \"ll\")"
++       if test -n "${ac_ocaml_int64_printf_format}"
++       then reply="${ac_ocaml_int64_printf_format}"
++       else read reply
++       fi
++       if test -z "$reply"; then
++         echo "Invalid type"
++         exit 1
++       fi
++       echo "#define ARCH_INT64_PRINTF_FORMAT $reply" >> m.h
++       int64_native=true
++     fi;;
+   esac
+ fi
+ 
+@@ -392,17 +440,26 @@
+ # Determine endianness
+ 
+ sh ./runtest endian.c
+-case $? in
+-  0) echo "This is a big-endian architecture."
++case ${ac_ocaml_is_big_endian} in
++  y) echo "This is a big-endian architecture."
+      echo "#define ARCH_BIG_ENDIAN" >> m.h;;
+-  1) echo "This is a little-endian architecture."
++  n) echo "This is a little-endian architecture."
+      echo "#undef ARCH_BIG_ENDIAN" >> m.h;;
+-  2) echo "This architecture seems to be neither big endian nor little endian."
++  *) echo "This architecture seems to be neither big endian nor little endian."
+      echo "Objective Caml won't run on this architecture."
+      exit 2;;
+   *) echo "Something went wrong during endianness determination."
+      echo "You'll have to figure out endianness yourself"
+-     echo "(option ARCH_BIG_ENDIAN in m.h).";;
++     echo "Is this a big-endian architecture? (y/n: default n)"
++     if test -n "${ac_ocaml_is_big_endian}"
++     then reply="${ac_ocaml_is_big_endian}"
++     else read reply
++     fi
++     if test "$reply" = "y"; then
++       echo "#define ARCH_BIG_ENDIAN" >> m.h
++     else
++       echo "#undef ARCH_BIG_ENDIAN" >> m.h
++     fi;;
+ esac
+ 
+ # Determine alignment constraints
+@@ -424,16 +481,21 @@
+     fi;;
+   *)
+     sh ./runtest dblalign.c
+-    case $? in
++    case 9 in
+       0) echo "Doubles can be word-aligned."
+          echo "#undef ARCH_ALIGN_DOUBLE" >> m.h;;
+       1) echo "Doubles must be doubleword-aligned."
+          echo "#define ARCH_ALIGN_DOUBLE" >> m.h;;
+-      *) echo "Something went wrong during alignment determination for doubles."
+-         echo "I'm going to assume this architecture has alignment constraints over doubles."
+-         echo "That's a safe bet: Objective Caml will work even if"
+-         echo "this architecture has actually no alignment constraints."
+-         echo "#define ARCH_ALIGN_DOUBLE" >> m.h;;
++      *) echo "Should doubles be doubleword-aligned? (y/n: default: y)"
++         if test -n "${ac_ocaml_align_double}"
++         then reply="${ac_ocaml_align_double}"
++         else read reply
++         fi
++         if test "$reply" = "n"; then
++           echo "#undef ARCH_ALIGN_DOUBLE" >> m.h
++         else
++           echo "#define ARCH_ALIGN_DOUBLE" >> m.h
++         fi;;
+     esac;;
+ esac
+ 
+@@ -449,16 +511,21 @@
+       fi;;
+     *)
+       sh ./runtest int64align.c
+-      case $? in
++      case 9 in
+         0) echo "64-bit integers can be word-aligned."
+            echo "#undef ARCH_ALIGN_INT64" >> m.h;;
+         1) echo "64-bit integers must be doubleword-aligned."
+            echo "#define ARCH_ALIGN_INT64" >> m.h;;
+-        *) echo "Something went wrong during alignment determination for 64-bit integers."
+-           echo "I'm going to assume this architecture has alignment constraints."
+-           echo "That's a safe bet: Objective Caml will work even if"
+-           echo "this architecture has actually no alignment constraints."
+-           echo "#define ARCH_ALIGN_INT64" >> m.h;;
++        *) echo "Should 64-bit integers be doubleword-aligned? (y/n: default y)"
++           if test -n "${ac_ocaml_align_int64}"
++           then reply="${ac_ocaml_align_int64}"
++           else read reply
++           fi
++           if test "$reply" = "n"; then
++             echo "#undef ARCH_ALIGN_INT64" >> m.h
++           else
++             echo "#define ARCH_ALIGN_INT64" >> m.h
++           fi;;
+       esac
+   esac
+ else
+@@ -468,13 +535,21 @@
+ # Check semantics of division and modulus
+ 
+ sh ./runtest divmod.c
+-case $? in
++case 9 in
+   0) echo "Native division and modulus have round-towards-zero semantics, will use them."
+      echo "#undef NONSTANDARD_DIV_MOD" >> m.h;;
+   1) echo "Native division and modulus do not have round-towards-zero semantics, will use software emulation."
+      echo "#define NONSTANDARD_DIV_MOD" >> m.h;;
+-  *) echo "Something went wrong while checking native division and modulus, please report it."
+-     echo "#define NONSTANDARD_DIV_MOD" >> m.h;;
++  *) echo "Do native division and modulus have round-towards-zero semantics? (y/n: default y)"
++     if test -n "${ac_ocaml_standard_div_mod}"
++     then reply="${ac_ocaml_standard_div_mod}"
++     else read reply
++     fi
++     if test "$reply" = "n"; then
++       echo "#define NONSTANDARD_DIV_MOD" >> m.h
++     else
++       echo "#undef NONSTANDARD_DIV_MOD" >> m.h
++     fi;;
+ esac
+ 
+ # Shared library support
+@@ -596,6 +671,7 @@
+                                 if $arch64; then model=ppc64; else model=ppc; fi;;
+   arm*-*-linux*)                arch=arm; system=linux;;
+   arm*-*-gnu*)                  arch=arm; system=gnu;;
++  arm*-*-darwin*)               arch=arm; system=macosx;;
+   ia64-*-linux*)                arch=ia64; system=linux;;
+   ia64-*-gnu*)                  arch=ia64; system=gnu;;
+   ia64-*-freebsd*)              arch=ia64; system=freebsd;;
+@@ -646,7 +722,7 @@
+ esac
+ 
+ asflags=''
+-aspp=''
++aspp='$aspp'
+ asppflags=''
+ asppprofflags='-DPROFILING'
+ 
+@@ -674,6 +750,7 @@
+   power,*,rhapsody) aspp="$bytecc"; asppflags='-c';;
+   arm,*,linux)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
+   arm,*,gnu)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
++  arm,*,macosx)     aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
+   ia64,*,*)         asflags=-xexplicit
+                     aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM) -Wa,-xexplicit';;
+   amd64,*,*)        aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
+@@ -696,14 +773,40 @@
+ 
+ # Where is ranlib?
+ 
++if test -z "$ranliboption"; then
++
+ if sh ./searchpath ranlib; then
+   echo "ranlib found"
+   echo "RANLIB=ranlib" >> Makefile
+   echo "RANLIBCMD=ranlib" >> Makefile
++  ranlib=ranlib
+ else
+   echo "ranlib not used"
+   echo "RANLIB=ar rs" >> Makefile
+   echo "RANLIBCMD=" >> Makefile
++  ranlib="ar rs"
++fi
++
++else
++  echo "RANLIB=$ranliboption" >> Makefile
++  echo "RANLIBCMD=$ranliboption" >> Makefile
++  ranlib=$ranliboption
++fi
++
++if test -n "$asppoption"; then
++  aspp=$asppoption
++fi
++
++if test -z "$aroption"; then
++  echo "AR=ar" >> Makefile
++  ar=ar
++else
++  echo "AR=$aroption" >> Makefile
++  ar=$aroption
++fi
++
++if test -n "$ldoption"; then
++  partialld="$ldoption -r"
+ fi
+ 
+ # Do #! scripts work?
+@@ -1174,7 +1277,7 @@
+     ; \
+ do
+   if test -f $dir/X11/X.h; then
+-    x11_include=$dir
++#    x11_include=$dir
+     break
+   fi
+ done
+@@ -1463,7 +1566,7 @@
+ #ml let mkdll out _implib files opts = Printf.sprintf "%s %s %s %s" "$mksharedlib" out opts files;;
+ 
+ ### How to build a static library
+-MKLIB=ar rc \$(1) \$(2); ranlib \$(1)
++MKLIB=$ar rc \$(1) \$(2); $ranlib \$(1)
+ #ml let mklib out files opts = Printf.sprintf "ar rc %s %s %s; ranlib %s" out opts files out;;
+ EOF
+ echo "ARCH=$arch" >> Makefile
