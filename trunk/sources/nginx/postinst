@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/opt/etc/init.d/S80nginx start
+
