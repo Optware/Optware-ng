@@ -36,18 +36,17 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION=2
-
-NGINX_PREFIX=/opt/share/nginx
+NGINX_IPK_VERSION=3
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
 NGINX_CONFFILES=\
-	$(NGINX_PREFIX)/conf/fastcgi_params \
-	$(NGINX_PREFIX)/conf/mime.types \
-	$(NGINX_PREFIX)/conf/nginx.conf \
-	$(NGINX_PREFIX)/html/index.html \
-	$(NGINX_PREFIX)/html/50x.html \
+	/opt/etc/default/nginx \
+	/opt/etc/nginx/fastcgi_params \
+	/opt/etc/nginx/mime.types \
+	/opt/etc/nginx/nginx.conf \
+	/opt/share/nginx/html/index.html \
+	/opt/share/nginx/html/50x.html
 
 #
 # NGINX_PATCHES should list any patches, in the the order in
@@ -159,13 +158,16 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	    fi; \
 	    $(NGINX_CONFIGURE_ENV) \
 	    ./configure \
-		--prefix=$(NGINX_PREFIX) \
-		--error-log-path=logs/error.log \
-		--pid-path=/opt/var/run/nginx.pid \
-		--http-log-path=logs/access.log \
-		--http-client-body-temp-path=tmp/client_body_temp \
-		--http-proxy-temp-path=tmp/proxy_temp \
-		--http-fastcgi-temp-path=tmp/fastcgi_temp \
+		--prefix=/opt/share/nginx \
+		--sbin-path=/opt/sbin/nginx \
+		--conf-path=/opt/etc/nginx/nginx.conf \
+		--error-log-path=/opt/var/nginx/log/error.log \
+		--pid-path=/opt/var/nginx/run/nginx.pid \
+		--lock-path=/opt/var/nginx/run/nginx.lock \
+		--http-log-path=/opt/var/nginx/log/access.log \
+		--http-client-body-temp-path=/opt/var/nginx/tmp/client_body_temp \
+		--http-proxy-temp-path=/opt/var/nginx/tmp/proxy_temp \
+		--http-fastcgi-temp-path=/opt/var/nginx/tmp/fastcgi_temp \
                 --with-cc=$(TARGET_CC) \
                 --with-cpp=$(TARGET_CPP) \
                 --with-cc-opt="$(STAGING_CPPFLAGS) $(NGINX_CPPFLAGS)" \
@@ -180,7 +182,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
                 -e '/^install:/,$$s#/opt#$$(DESTDIR)/opt#g' \
                 -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
                 $(NGINX_BUILD_DIR)/objs/Makefile
-ifeq ($(OPTWARE_TARGET), nslu2)
+ifneq (,$(filter nslu2 cs05q3armel, $(OPTWARE_TARGET)))
 	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(@D)/objs/ngx_auto_config.h
 endif
 ifeq ($(LIBC_STYLE), uclibc)
@@ -247,23 +249,18 @@ $(NGINX_IPK_DIR)/CONTROL/control:
 $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	rm -rf $(NGINX_IPK_DIR) $(BUILD_DIR)/nginx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
-	$(STRIP_COMMAND) $(NGINX_IPK_DIR)$(NGINX_PREFIX)/sbin/nginx
-	install -d $(NGINX_IPK_DIR)/opt/sbin; \
-		cd $(NGINX_IPK_DIR)/opt/sbin; \
-		ln -s $(NGINX_PREFIX)/sbin/nginx .
-	install -d $(NGINX_IPK_DIR)/opt/share/www; \
-		cd $(NGINX_IPK_DIR)/opt/share/www; \
-		ln -s $(NGINX_PREFIX)/html nginx
-	install -d $(NGINX_IPK_DIR)/opt/etc; \
-		cd $(NGINX_IPK_DIR)/opt/etc; \
-		ln -s $(NGINX_PREFIX)/conf nginx
-	install -d $(NGINX_IPK_DIR)$(NGINX_PREFIX)/tmp
-#	install -m 644 $(NGINX_SOURCE_DIR)/nginx.conf $(NGINX_IPK_DIR)/opt/etc/nginx.conf
-#	install -d $(NGINX_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/SXXnginx
+	sed -i -e "s/listen.*80/listen\t8082/" $(NGINX_IPK_DIR)/opt/etc/nginx/nginx.conf
+	$(STRIP_COMMAND) $(NGINX_IPK_DIR)/opt/sbin/nginx
+	install -d $(NGINX_IPK_DIR)/opt/var/nginx/tmp
+	install -d $(NGINX_IPK_DIR)/opt/share/www
+	ln -s /opt/share/nginx/html $(NGINX_IPK_DIR)/opt/share/www/nginx
+	install -d $(NGINX_IPK_DIR)/opt/etc/init.d
+	install -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/S80nginx
+	install -d $(NGINX_IPK_DIR)/opt/etc/default
+	install -m 755 $(NGINX_SOURCE_DIR)/default $(NGINX_IPK_DIR)/opt/etc/default/nginx
 	$(MAKE) $(NGINX_IPK_DIR)/CONTROL/control
-#	install -m 755 $(NGINX_SOURCE_DIR)/postinst $(NGINX_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm
+	install -m 755 $(NGINX_SOURCE_DIR)/postinst $(NGINX_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm
 	echo $(NGINX_CONFFILES) | sed -e 's/ /\n/g' > $(NGINX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGINX_IPK_DIR)
 
