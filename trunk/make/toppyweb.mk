@@ -10,21 +10,21 @@ TOPPYWEB_SOURCE=toppyweb.v$(TOPPYWEB_VERSION).zip
 TOPPYWEB_DIR=toppyweb-$(TOPPYWEB_VERSION)
 TOPPYWEB_UNZIP=unzip -a
 TOPPYWEB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-TOPPYWEB_DESCRIPTION=Manage your Timers and Recordings over the Internet
+TOPPYWEB_DESCRIPTION=Manage your Topfield PVR Timers and Recordings over the Internet
 TOPPYWEB_SECTION=util
 TOPPYWEB_PRIORITY=optional
-TOPPYWEB_DEPENDS=
-TOPPYWEB_SUGGESTS=lighttpd, php, php-fcgi, perltgd
+TOPPYWEB_DEPENDS=lighttpd, php, php-fcgi, perltgd
+TOPPYWEB_SUGGESTS=
 TOPPYWEB_CONFLICTS=
 
 #
 # TOPPYWEB_IPK_VERSION should be incremented when the ipk changes.
 #
-TOPPYWEB_IPK_VERSION=1
+TOPPYWEB_IPK_VERSION=2
 
 #
 # TOPPYWEB_CONFFILES should be a list of user-editable files
-#TOPPYWEB_CONFFILES=/opt/etc/toppyweb/.conf
+TOPPYWEB_CONFFILES=/opt/etc/toppyweb/config.ini
 
 #
 # TOPPYWEB_PATCHES should list any patches, in the the order in
