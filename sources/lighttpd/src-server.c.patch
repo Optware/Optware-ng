@@ -1,5 +1,5 @@
---- lighttpd/src/server.c.orig	2006-03-04 09:12:17.000000000 -0800
-+++ lighttpd/src/server.c	2006-07-11 09:16:28.000000000 -0700
+--- src/server.c.orig	2006-03-04 09:12:17.000000000 -0800
++++ src/server.c	2006-07-11 09:16:28.000000000 -0700
 @@ -1174,8 +1174,8 @@
  		if (srv->sockets_disabled) {
  			/* our server sockets are disabled, why ? */

@@ -1,0 +1,195 @@
+diff -ur src/base.h src/base.h
+--- src/base.h	2007-07-03 14:47:00.000000000 -0400
++++ src/base.h	2007-08-21 14:08:19.000000000 -0400
+@@ -267,6 +267,11 @@
+ 	buffer *ssl_cipher_list;
+ 	unsigned short ssl_use_sslv2;
+ 
++	unsigned short ssl_verifyclient;
++	unsigned short ssl_verifyclient_enforce;
++	unsigned short ssl_verifyclient_depth;
++	buffer *ssl_verifyclient_username;
++
+ 	unsigned short use_ipv6;
+ 	unsigned short is_ssl;
+ 	unsigned short allow_http11;
+diff -ur src/configfile.c src/configfile.c
+--- src/configfile.c	2007-07-03 14:47:00.000000000 -0400
++++ src/configfile.c	2007-08-21 14:08:19.000000000 -0400
+@@ -92,6 +92,12 @@
+ 		{ "etag.use-inode",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 48 */
+ 		{ "etag.use-mtime",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 49 */
+ 		{ "etag.use-size",             NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 50 */
++		
++		{ "ssl.verifyclient.activate",   NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 51 */
++		{ "ssl.verifyclient.enforce",    NULL, T_CONFIG_BOOLEAN, T_CONFIG_SCOPE_SERVER }, /* 52 */
++		{ "ssl.verifyclient.depth",      NULL, T_CONFIG_SHORT,   T_CONFIG_SCOPE_SERVER }, /* 53 */
++		{ "ssl.verifyclient.username",   NULL, T_CONFIG_STRING,  T_CONFIG_SCOPE_SERVER }, /* 54 */
++
+ 		{ "server.host",                 "use server.bind instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
+ 		{ "server.docroot",              "use server.document-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
+ 		{ "server.virtual-root",         "load mod_simple_vhost and use simple-vhost.server-root instead", T_CONFIG_DEPRECATED, T_CONFIG_SCOPE_UNSET },
+@@ -172,6 +178,11 @@
+ 		s->global_kbytes_per_second = 0;
+ 		s->global_bytes_per_second_cnt = 0;
+ 		s->global_bytes_per_second_cnt_ptr = &s->global_bytes_per_second_cnt;
++		
++		s->ssl_verifyclient = 0;
++		s->ssl_verifyclient_enforce = 1;
++		s->ssl_verifyclient_username = buffer_init();
++		s->ssl_verifyclient_depth = 9;
+ 
+ 		cv[2].destination = s->errorfile_prefix;
+ 
+@@ -214,6 +225,12 @@
+ 		cv[48].destination = &(s->etag_use_inode);
+ 		cv[49].destination = &(s->etag_use_mtime);
+ 		cv[50].destination = &(s->etag_use_size);
++		
++		/* ssl.verify */
++		cv[51].destination = &(s->ssl_verifyclient);
++		cv[52].destination = &(s->ssl_verifyclient_enforce);
++		cv[53].destination = &(s->ssl_verifyclient_depth);
++		cv[54].destination = s->ssl_verifyclient_username;
+ 
+ 		srv->config_storage[i] = s;
+ 
+@@ -291,6 +308,11 @@
+ 	PATCH(etag_use_inode);
+ 	PATCH(etag_use_mtime);
+ 	PATCH(etag_use_size);
++
++	PATCH(ssl_verifyclient);
++	PATCH(ssl_verifyclient_enforce);
++	PATCH(ssl_verifyclient_depth);
++	PATCH(ssl_verifyclient_username);
+  
+ 	return 0;
+ }
+@@ -377,6 +399,14 @@
+ 				PATCH(global_kbytes_per_second);
+ 				PATCH(global_bytes_per_second_cnt);
+ 				con->conf.global_bytes_per_second_cnt_ptr = &s->global_bytes_per_second_cnt;
++			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.verifyclient.activate"))) {
++				PATCH(ssl_verifyclient);
++			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.verifyclient.enforce"))) {
++				PATCH(ssl_verifyclient_enforce);
++			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.verifyclient.depth"))) {
++				PATCH(ssl_verifyclient_depth);
++			} else if (buffer_is_equal_string(du->key, CONST_STR_LEN("ssl.verifyclient.username"))) {
++				PATCH(ssl_verifyclient_username);
+ 			}
+ 		}
+ 	}
+diff -ur src/network.c src/network.c
+--- src/network.c	2006-10-04 09:26:23.000000000 -0400
++++ src/network.c	2007-08-21 14:08:19.000000000 -0400
+@@ -359,6 +359,30 @@
+ 						ERR_error_string(ERR_get_error(), NULL), s->ssl_ca_file);
+ 				return -1;
+ 			}
++			if (s->ssl_verifyclient) { 
++				STACK_OF(X509_NAME) *certs = SSL_load_client_CA_file(s->ssl_ca_file->ptr);
++				if (!certs) {
++					log_error_write(srv, __FILE__, __LINE__, "ssb", "SSL:",
++							ERR_error_string(ERR_get_error(), NULL), s->ssl_ca_file);
++				}
++				if (SSL_CTX_set_session_id_context(s->ssl_ctx, (unsigned const char*)CONST_BUF_LEN(host_token)) != 1) { 
++					log_error_write(srv, __FILE__, __LINE__, "ss", "SSL:", 
++						ERR_error_string(ERR_get_error(), NULL)); 
++					return -1; 
++				}				
++				SSL_CTX_set_client_CA_list(s->ssl_ctx, certs);
++				SSL_CTX_set_verify(
++					s->ssl_ctx,
++					SSL_VERIFY_PEER | (s->ssl_verifyclient_enforce ? SSL_VERIFY_FAIL_IF_NO_PEER_CERT : 0),
++					NULL
++				); 
++				SSL_CTX_set_verify_depth(s->ssl_ctx, s->ssl_verifyclient_depth);
++			}
++		} else if (s->ssl_verifyclient) {
++			log_error_write(
++				srv, __FILE__, __LINE__, "s",
++				"SSL: You specified ssl.verifyclient.activate but no ca_file"
++			);
+ 		}
+ 
+ 		if (SSL_CTX_use_certificate_file(s->ssl_ctx, s->ssl_pemfile->ptr, SSL_FILETYPE_PEM) < 0) {
+diff -ur src/response.c src/response.c
+--- src/response.c	2007-04-13 16:47:40.000000000 -0400
++++ src/response.c	2007-08-21 14:08:46.000000000 -0400
+@@ -117,7 +117,50 @@
+ 	return 0;
+ }
+ 
+-
++#ifdef USE_OPENSSL
++static void https_add_ssl_entries(connection *con) {
++	X509 *xs;
++	X509_NAME *xn;
++	X509_NAME_ENTRY *xe;
++	if (
++		SSL_get_verify_result(con->ssl) != X509_V_OK
++		|| !(xs = SSL_get_peer_certificate(con->ssl))
++	) {
++		return;
++	}
++	
++	xn = X509_get_subject_name(xs);
++	for (int i = 0, nentries = X509_NAME_entry_count(xn); i < nentries; ++i) {
++		int xobjnid;
++		const char * xobjsn;
++		data_string *envds;
++
++		if (!(xe = X509_NAME_get_entry(xn, i))) {
++			continue;
++		}
++		xobjnid = OBJ_obj2nid((ASN1_OBJECT*)X509_NAME_ENTRY_get_object(xe));
++		xobjsn = OBJ_nid2sn(xobjnid);
++		if (!xobjsn) {
++			continue;
++		}
++		
++		if (NULL == (envds = (data_string *)array_get_unused_element(con->environment, TYPE_STRING))) {
++			envds = data_string_init();
++		}
++		buffer_copy_string_len(envds->key, CONST_STR_LEN("SSL_CLIENT_S_DN_"));
++		buffer_append_string(envds->key, xobjsn);
++		buffer_copy_string(
++			envds->value,
++			(const char *)xe->value->data
++		);
++		if (buffer_is_equal(con->conf.ssl_verifyclient_username, envds->key)) {
++			buffer_copy_string_buffer(con->authed_user, envds->value);
++		}
++		array_insert_unique(con->environment, (data_unset *)envds);
++	}
++	X509_free(xs);
++}
++#endif
+ 
+ handler_t http_response_prepare(server *srv, connection *con) {
+ 	handler_t r;
+@@ -313,6 +356,11 @@
+ 		 */
+ 
+ 
++#ifdef USE_OPENSSL
++		if (con->conf.is_ssl && con->conf.ssl_verifyclient) {
++			https_add_ssl_entries(con);
++		}
++#endif
+ 
+ 
+ 		/* 1. stat()
+diff -ur src/server.c src/server.c
+--- src/server.c	2007-06-15 11:30:34.000000000 -0400
++++ src/server.c	2007-08-21 14:08:19.000000000 -0400
+@@ -247,6 +247,7 @@
+ 			buffer_free(s->ssl_cipher_list);
+ 			buffer_free(s->error_handler);
+ 			buffer_free(s->errorfile_prefix);
++			buffer_free(s->ssl_verifyclient_username);
+ 			array_free(s->mimetypes);
+ #ifdef USE_OPENSSL
+ 			SSL_CTX_free(s->ssl_ctx);
