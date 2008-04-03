@@ -127,8 +127,9 @@ fi; \
 		-ar $(TARGET_AR) \
 		-aspp $(TARGET_CC) \
 	)
-	sed -i -e 's|"as |"$(TARGET_AS) |' \
-	  $(@D)/asmcomp/`sed -n '/^ARCH=/s/ARCH=//p' $(@D)/config/Makefile`/proc.ml
+	native_arch=`sed -n '/^ARCH=/s/ARCH=//p' $(@D)/config/Makefile`; \
+	if test -f $(@D)/asmcomp/$$native_arch/proc.ml; \
+	    then sed -i -e 's|"as |"$(TARGET_AS) |' $(@D)/asmcomp/$$native_arch/proc.ml; fi
 	touch $@
 
 ocaml-unpack: $(OCAML_BUILD_DIR)/.configured
