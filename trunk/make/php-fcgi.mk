@@ -243,7 +243,7 @@ $(PHP_FCGI_IPK): $(PHP_FCGI_BUILD_DIR)/.built
 	install -m 755 $(PHP_FCGI_BUILD_DIR)/sapi/cgi/php-cgi $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
 	$(STRIP_COMMAND) $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
 	install -d $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d
-	install -m 644 $(PHP_FCGI_SOURCE_DIR)/lighttpd.conf $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d/10-php-fcgi.conf
+	install -m 644 $(PHP_FCGI_SOURCE_DIR)/php-fcgi-lighttpd.conf $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d/10-php-fcgi.conf
 	$(MAKE) $(PHP_FCGI_IPK_DIR)/CONTROL/control
 	echo $(PHP_FCGI_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_FCGI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_FCGI_IPK_DIR)
