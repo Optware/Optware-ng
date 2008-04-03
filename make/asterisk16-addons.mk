@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ASTERISK16_ADDONS_SITE=http://downloads.digium.com/pub/asterisk
-ASTERISK16_ADDONS_VERSION=1.6.0-beta2
+ASTERISK16_ADDONS_VERSION=1.6.0-beta3
 ASTERISK16_ADDONS_SOURCE=asterisk-addons-$(ASTERISK16_ADDONS_VERSION).tar.gz
 ASTERISK16_ADDONS_DIR=asterisk-addons-$(ASTERISK16_ADDONS_VERSION)
 ASTERISK16_ADDONS_UNZIP=zcat
@@ -50,7 +50,7 @@ ASTERISK16_ADDONS_CONFFILES=\
 # ASTERISK16_ADDONS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ASTERISK16_ADDONS_PATCHES=$(ASTERISK16_ADDONS_SOURCE_DIR)/Makefile.patch
+#ASTERISK16_ADDONS_PATCHES=$(ASTERISK16_ADDONS_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +108,7 @@ asterisk16-addons-source: $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE) $(ASTERISK16_ADD
 # shown below to make various patches to it.
 #
 $(ASTERISK16_ADDONS_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE) $(ASTERISK16_ADDONS_PATCHES) make/asterisk16-addons.mk
-	$(MAKE) asterisk16-stage sqlite-stage mysql-stage
+	$(MAKE) asterisk16-stage mysql-stage bluez2-libs-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK16_ADDONS_DIR) $(ASTERISK16_ADDONS_BUILD_DIR)
 	$(ASTERISK16_ADDONS_UNZIP) $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK16_ADDONS_PATCHES)" ; \
@@ -136,7 +136,10 @@ $(ASTERISK16_ADDONS_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE
 		--disable-nls \
 		--disable-static \
 		--includedir=$(STAGING_PREFIX) \
-		--with-sqlite=$(STAGING_PREFIX) \
+		--with-asterisk=$(STAGING_PREFIX) \
+		--with-mysqlclient=$(STAGING_PREFIX) \
+		--with-bluetooth=$(STAGING_PREFIX) \
+		--without-spandsp \
 		--localstatedir=/opt/var \
 		--sysconfdir=/opt/etc \
 	)
