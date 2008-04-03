@@ -1,4 +1,4 @@
 #!/bin/sh
 
-/bin/killall mt-daapd
+killall mt-daapd
 
