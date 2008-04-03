@@ -23,12 +23,12 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=1
+PHP_FCGI_IPK_VERSION=2
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
 #
-#PHP_FCGI_CONFFILES=/opt/etc/fcgi2/conf.d/php.conf
+PHP_FCGI_CONFFILES=/opt/etc/lighttpd/conf.d/10-php-fcgi.conf
 
 #
 # PHP_FCGI_LOCALES defines which locales get installed
@@ -242,6 +242,8 @@ $(PHP_FCGI_IPK): $(PHP_FCGI_BUILD_DIR)/.built
 	install -d $(PHP_FCGI_IPK_DIR)/opt/bin
 	install -m 755 $(PHP_FCGI_BUILD_DIR)/sapi/cgi/php-cgi $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
 	$(STRIP_COMMAND) $(PHP_FCGI_IPK_DIR)/opt/bin/php-fcgi
+	install -d $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d
+	install -m 644 $(PHP_FCGI_SOURCE_DIR)/lighttpd.conf $(PHP_FCGI_IPK_DIR)/opt/etc/lighttpd/conf.d/10-php-fcgi.conf
 	$(MAKE) $(PHP_FCGI_IPK_DIR)/CONTROL/control
 	echo $(PHP_FCGI_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_FCGI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_FCGI_IPK_DIR)
