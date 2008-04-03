@@ -17,7 +17,6 @@ BROKEN_PACKAGES = \
 	player \
 	rssh \
 	taglib \
-	zsh \
 	\
 	firmware-oleg \
 	lirc \
