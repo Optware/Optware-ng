@@ -24,11 +24,11 @@ ASTERISK14_SOURCE_TYPE=tarball
 #ASTERISK14_SOURCE_TYPE=svn
 
 ASTERISK14_SITE=http://downloads.digium.com/pub/asterisk/releases
-ASTERISK14_BASE_VERSION=1.4.17
+ASTERISK14_BASE_VERSION=1.4.19
 
 ifeq ($(ASTERISK14_SOURCE_TYPE), svn)
 ASTERISK14_SVN=http://svn.digium.com/svn/asterisk/branches/1.4
-ASTERISK14_SVN_REV=67398
+ASTERISK14_SVN_REV=108288
 ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)svn-r$(ASTERISK14_SVN_REV)
 else
 ASTERISK14_VERSION=$(ASTERISK14_BASE_VERSION)
@@ -73,13 +73,13 @@ ifneq (, $(filter net-snmp, $(PACKAGES)))
 ASTERISK14_SUGGESTS +=,net-snmp
 endif
 
-ASTERISK14_CONFLICTS=asterisk,asterisk-sounds,asterisk-chan-capi
+ASTERISK14_CONFLICTS=asterisk,asterisk16,asterisk-sounds,asterisk-chan-capi
 
 
 #
 # ASTERISK14_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK14_IPK_VERSION=2
+ASTERISK14_IPK_VERSION=1
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
