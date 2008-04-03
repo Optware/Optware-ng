@@ -127,6 +127,8 @@ fi; \
 		-ar $(TARGET_AR) \
 		-aspp $(TARGET_CC) \
 	)
+	sed -i -e 's|"as |"$(TARGET_AS) |' \
+	  $(@D)/asmcomp/`sed -n '/^ARCH=/s/ARCH=//p' $(@D)/config/Makefile`/proc.ml
 	touch $@
 
 ocaml-unpack: $(OCAML_BUILD_DIR)/.configured
@@ -134,8 +136,7 @@ ocaml-unpack: $(OCAML_BUILD_DIR)/.configured
 # http://caml.inria.fr/mantis/view.php?id=3746
 $(OCAML_BUILD_DIR)/.built: $(OCAML_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(@D) world opt
-	$(MAKE) -C $(@D) world
+	$(MAKE) -C $(@D) world # opt
 	for f in byterun/ocamlrun yacc/ocamlyacc otherlibs/unix/dllunix.so otherlibs/str/dllstr.so; \
 	    do cp -p $(@D)/$${f}.target $(@D)/$$f; done
 	touch $@
