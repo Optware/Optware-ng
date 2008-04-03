@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=1.3.6
+CUPS_VERSION=1.3.7
 CUPS_SITE=http://ftp.easysw.com/pub/cups/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -120,7 +120,7 @@ $(DL_DIR)/$(CUPS_SOURCE):
 #
 cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 
-$(CUPS_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(CUPS_SOURCE) make/cups.mk
+$(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cups.mk
 #	$(MAKE) libjpeg-host-stage libpng-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D)
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
