@@ -56,13 +56,14 @@ LIGHTTPD_CONFLICTS=
 #
 # LIGHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIGHTTPD_IPK_VERSION=2
+LIGHTTPD_IPK_VERSION=3
 
 #
 # LIGHTTPD_CONFFILES should be a list of user-editable files
 LIGHTTPD_CONFFILES=\
 	/opt/etc/lighttpd/lighttpd.conf \
-	/opt/etc/init.d/S80lighttpd \
+	/opt/etc/lighttpd/conf.d/01-default.conf \
+	/opt/etc/init.d/S80lighttpd
 
 #
 # LIGHTTPD_PATCHES should list any patches, in the the order in
@@ -251,6 +252,8 @@ $(LIGHTTPD_IPK): $(LIGHTTPD_BUILD_DIR)/.built
 	install -m 644 $(LIGHTTPD_SOURCE_DIR)/index.html $(LIGHTTPD_IPK_DIR)/opt/share/www/lighttpd/
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd
 	install -m 644 $(LIGHTTPD_SOURCE_DIR)/lighttpd.conf $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/
+	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/conf.d
+	echo > $(LIGHTTPD_IPK_DIR)/opt/etc/lighttpd/conf.d/01-default.conf
 	install -d $(LIGHTTPD_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(LIGHTTPD_SOURCE_DIR)/rc.lighttpd $(LIGHTTPD_IPK_DIR)/opt/etc/init.d/S80lighttpd
 	$(MAKE) $(LIGHTTPD_IPK_DIR)/CONTROL/control
