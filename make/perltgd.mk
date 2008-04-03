@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PERLTGD_SITE=http://jim16.110mb.com/
-PERLTGD_VERSION=1.0BetaN
+PERLTGD_VERSION=1.0BetaO
 PERLTGD_SOURCE=perlTGDSlug-$(PERLTGD_VERSION).tar.gz
 PERLTGD_DIR=perltgd-$(PERLTGD_VERSION)
 PERLTGD_UNZIP=zcat
@@ -42,7 +42,7 @@ PERLTGD_CONFLICTS=
 #
 # PERLTGD_IPK_VERSION should be incremented when the ipk changes.
 #
-PERLTGD_IPK_VERSION=2
+PERLTGD_IPK_VERSION=1
 
 #
 # PERLTGD_CONFFILES should be a list of user-editable files
