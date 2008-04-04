@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-SQLALCHEMY_VERSION=0.4.4
+PY-SQLALCHEMY_VERSION=0.4.5
 PY-SQLALCHEMY_IPK_VERSION=1
 
 PY-SQLALCHEMY_SVN_REV=
