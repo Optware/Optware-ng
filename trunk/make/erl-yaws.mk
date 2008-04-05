@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERL-YAWS_SITE=http://yaws.hyber.org/download
-ERL-YAWS_VERSION=1.75
+ERL-YAWS_VERSION=1.76
 ERL-YAWS_SOURCE=yaws-$(ERL-YAWS_VERSION).tar.gz
 ERL-YAWS_DIR=yaws-$(ERL-YAWS_VERSION)
 ERL-YAWS_UNZIP=zcat
@@ -76,7 +76,8 @@ ERL-YAWS_IPK=$(BUILD_DIR)/erl-yaws_$(ERL-YAWS_VERSION)-$(ERL-YAWS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ERL-YAWS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ERL-YAWS_SITE)/$(ERL-YAWS_SOURCE)
+	$(WGET) -P $(@D) $(ERL-YAWS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
