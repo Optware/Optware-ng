@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PERLTGD_SITE=http://jim16.110mb.com/
-PERLTGD_VERSION=1.0BetaO
+PERLTGD_VERSION=1.0.0
 PERLTGD_SOURCE=perlTGDSlug-$(PERLTGD_VERSION).tar.gz
 PERLTGD_DIR=perltgd-$(PERLTGD_VERSION)
 PERLTGD_UNZIP=zcat
