@@ -19,9 +19,9 @@
 #
 # You should change all these variables to suit your package.
 #
-POPT_SITE=http://ftp.debian.org/debian/pool/main/p/popt
-POPT_VERSION=1.7
-POPT_SOURCE=popt_$(POPT_VERSION).orig.tar.gz
+POPT_SITE=http://rpm5.org/files/popt
+POPT_VERSION=1.14
+POPT_SOURCE=popt-$(POPT_VERSION).tar.gz
 POPT_DIR=popt-$(POPT_VERSION)
 POPT_UNZIP=zcat
 POPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -35,7 +35,7 @@ POPT_CONFLICTS=
 #
 # POPT_IPK_VERSION should be incremented when the ipk changes.
 #
-POPT_IPK_VERSION=2
+POPT_IPK_VERSION=1
 
 #
 # POPT_PATCHES should list any patches, in the the order in
@@ -49,6 +49,10 @@ POPT_IPK_VERSION=2
 #
 POPT_CPPFLAGS=
 POPT_LDFLAGS=
+
+ifneq ($(HOSTCC), $(TARGET_CC))
+POPT_CONFIG_ARGS=ac_cv_va_copy=C99
+endif
 
 #
 # POPT_BUILD_DIR is the directory in which the build is done.
@@ -69,7 +73,8 @@ POPT_IPK=$(BUILD_DIR)/popt_$(POPT_VERSION)-$(POPT_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(POPT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POPT_SITE)/$(POPT_SOURCE)
+	$(WGET) -P $(@D) $(POPT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -100,10 +105,11 @@ $(POPT_BUILD_DIR)/.configured: $(DL_DIR)/$(POPT_SOURCE) $(POPT_PATCHES) make/pop
 #	cat $(POPT_PATCHES) | patch -d $(BUILD_DIR)/$(POPT_DIR) -p1
 	mv $(BUILD_DIR)/$(POPT_DIR) $(POPT_BUILD_DIR)
 	cp -f $(SOURCE_DIR)/common/config.* $(POPT_BUILD_DIR)/
-	(cd $(POPT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POPT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POPT_LDFLAGS)" \
+		$(POPT_CONFIG_ARGS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -111,8 +117,8 @@ $(POPT_BUILD_DIR)/.configured: $(DL_DIR)/$(POPT_SOURCE) $(POPT_PATCHES) make/pop
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(POPT_BUILD_DIR)/libtool
-	touch $(POPT_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 popt-unpack: $(POPT_BUILD_DIR)/.configured
 
@@ -121,9 +127,9 @@ popt-unpack: $(POPT_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(POPT_BUILD_DIR)/.built: $(POPT_BUILD_DIR)/.configured
-	rm -f $(POPT_BUILD_DIR)/.built
-	$(MAKE) -C $(POPT_BUILD_DIR)
-	touch $(POPT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -135,10 +141,10 @@ popt: $(POPT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(POPT_BUILD_DIR)/.staged: $(POPT_BUILD_DIR)/.built
-	rm -f $(POPT_BUILD_DIR)/.staged
-	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpopt.la
-	touch $(POPT_BUILD_DIR)/.staged
+	touch $@
 
 popt-stage: $(POPT_BUILD_DIR)/.staged
 
@@ -147,7 +153,7 @@ popt-stage: $(POPT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources
 #
 $(POPT_IPK_DIR)/CONTROL/control:
-	@install -d $(POPT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: popt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -166,7 +172,7 @@ $(POPT_IPK_DIR)/CONTROL/control:
 #
 $(POPT_IPK): $(POPT_BUILD_DIR)/.built
 	rm -rf $(POPT_IPK_DIR) $(BUILD_DIR)/popt_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(POPT_IPK_DIR) install-includeHEADERS install-exec-am
+	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(POPT_IPK_DIR) install-strip transform=""
 	rm -f $(POPT_IPK_DIR)/opt/lib/*.a
 	rm -f $(POPT_IPK_DIR)/opt/lib/*.la
 	$(STRIP_COMMAND) $(POPT_IPK_DIR)/opt/lib/*
@@ -190,3 +196,9 @@ popt-clean:
 #
 popt-dirclean:
 	rm -rf $(BUILD_DIR)/$(POPT_DIR) $(POPT_BUILD_DIR) $(POPT_IPK_DIR) $(POPT_IPK)
+
+#
+# Some sanity check for the package.
+#
+popt-check: $(POPT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(POPT_IPK)
