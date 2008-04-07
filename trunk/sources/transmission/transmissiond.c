@@ -80,125 +80,217 @@
 
 static int          showHelp      = 0;
 static int          verboseLevel  = 0;
-static int          bindPort      = TR_DEFAULT_PORT;
+static int          publicPort      = TR_DEFAULT_PORT;
 static int          uploadLimit   = 20;
 static int          downloadLimit = -1;
-static char         * torrentPath = NULL;
+static char         * active_torrents_path = NULL;
 static int          watchdogInterval = 600;
 static int          natTraversal  = 0;
-static int	    encryptionMode = TR_PLAINTEXT_PREFERRED;
+static int	        encryptionMode = TR_PLAINTEXT_PREFERRED;
 static sig_atomic_t mustDie       = 0;
 static sig_atomic_t got_hup       = 0;
 static sig_atomic_t got_usr1      = 0;
 static sig_atomic_t got_usr2      = 0;
 static char         * pidfile = NULL;
 
+
 static char         * finishCall   = NULL;
+static int  parseCommandLine ( int argc, char ** argv );
 static tr_handle    * h;
 
-static int  parseCommandLine ( int argc, char ** argv );
+static struct ACTIVE_TORRENTS {
+  tr_torrent   * torrent;
+  char filename[MAX_PATH_LENGTH];
+  int should_dispose;
+  struct ACTIVE_TORRENTS * next;
+} *active_torrents;
+
 
 /* return number of items in array */
 #define ALEN(a)                 (sizeof(a) / sizeof((a)[0]))
 
 
+typedef void (*tr_callback_t) ( tr_torrent *, void * );
+static void
+torrentIterate( tr_callback_t func, void * d )
+{
+  struct ACTIVE_TORRENTS * tor, * next;
+
+    for( tor = active_torrents; tor; tor = next )
+    {
+        next = tor->next;
+        func( tor->torrent, d );
+    }
+}
+
+/* Should be non-blocking call */
 static void
 torrentStateChanged( tr_torrent   * torrent UNUSED,
                      cp_status_t    status UNUSED,
                      void         * user_data UNUSED )
 {
+  got_usr1 = 1;
+#if 0  
   system( finishCall );
-}
-
-static void watchdog(tr_torrent *tor, void * data UNUSED)
-{
-  system(finishCall);
+#endif  
 }
 
 
-/* Notice the tracker that we are leaving */
-static void stop(tr_torrent *tor, void * data UNUSED )
+/* Dispose (Close) stopped torrents. Returns non-zero if still dirty */
+static int dispose()
 {
-  const tr_info * info =  tr_torrentInfo( tor );
-  syslog( LOG_NOTICE, "Stopping torrent %s", info->torrent );
-  tr_torrentStop(tor);
-}
+  int dirty = 0;
 
+  struct ACTIVE_TORRENTS *tor;
 
-/* Unconditionally close the torrent */
-static void force_close(tr_torrent *tor, void * data UNUSED )
-{
-   const tr_info * info =  tr_torrentInfo( tor );
-   syslog( LOG_NOTICE, "Unconditionally closing torrent %s", info->torrent );
-   tr_torrentClose( tor );
-}  
-
-/* Dispose (Close) stopped torrents */
-static void dispose(tr_torrent *tor, void * data )
-{
-  int *dirty = (int *) data;
-  const tr_info * info =  tr_torrentInfo( tor );
-  const tr_stat * st = tr_torrentStat( tor );
+  tor = active_torrents;
+  while (tor)
+    {
+      if (tor->should_dispose)
+        {
+          const tr_stat * st = tr_torrentStat( tor->torrent );
      
-  if (st->status == TR_STATUS_STOPPED)
-    {
-       syslog( LOG_NOTICE, "Closing torrent %s", info->torrent );
-       tr_torrentClose( tor );
+          if (st->status == TR_STATUS_STOPPED)
+            {
+              struct ACTIVE_TORRENTS *next;
+              syslog( LOG_NOTICE, "Closing torrent %s", tor->filename );
+              tr_torrentClose( tor->torrent );
+              next = tor->next;
+              if (tor == active_torrents)
+                active_torrents = next;
+              free (tor);
+              tor = next;
+            }
+          else
+            {
+              dirty = 1;
+              tor = tor->next;
+            }
+        }
+      else
+        tor = tor->next;
     }
-  else
-    {
-       if (dirty)
-         *dirty = 1;
-    }
+  return dirty;
 }
 
-
-
-struct active_torrents_s
-{
-  char *torrent;
-  char found;
-};
 
 /* Check torrent if removal is needed and clean active flag */
-static void inactive(tr_torrent *tor, void * data )
+static void stop_inactive()
 {
-  tr_info * info =  (tr_info *) tr_torrentInfo( tor );
-  if (info->isActive)
-    info->isActive = 0;
-  else
-    stop(tor, data);
-}
-
-/* Check torrent by name provided and mark it as active */
-static void is_active(tr_torrent *tor, void *data)
-{
-  struct active_torrents_s *a = (struct active_torrents_s *)data;
-  tr_info * info = (tr_info *)  tr_torrentInfo( tor );
-  if ( 0 == strcmp(info->torrent, a->torrent))
+  struct ACTIVE_TORRENTS * tor;
+  
+  for (tor = active_torrents; tor; tor = tor->next)
     {
-      a->found = 1;
-      info->isActive = 1;
+      if (tor->should_dispose)
+        {
+          /* Notice the tracker that we are leaving */
+          tr_torrentStop(tor->torrent);
+          syslog( LOG_NOTICE, "Stopping torrent %s", tor->filename );
+        }
     }
 }
 
-
-static void reload_active()
+/* at exit */
+static void stop_all() 
 {
+  struct ACTIVE_TORRENTS * tor;
+
+  syslog( LOG_NOTICE, "Stopping all torrents");
+  for (tor = active_torrents; tor; tor = tor->next)
+    {
+      tor->should_dispose = 1;
+      /* Notice the tracker that we are leaving */
+      tr_torrentStop(tor->torrent);
+      syslog( LOG_NOTICE, "Stopping torrent %s", tor->filename );
+    }
+}
+
+/* Check torrent by filename provided and mark it as active */
+static int is_active(const char * filename)
+{
+  struct ACTIVE_TORRENTS *tor;
+  int found = 0;
+
+  for ( tor = active_torrents; tor; tor = tor->next)
+    {
+      if ( 0 == strcmp(filename, tor->filename))
+        {
+          found = 1;
+          tor->should_dispose = 0;
+        }
+    }
+  return found;
+}
+
+static void start_torrent(const char * filename)
+{
+  tr_ctor * ctor;
   tr_torrent * tor;
   int error;
+  
+  char *folder = strdup(filename);
+
+  ctor = tr_ctorNew( h ); 
+  tr_ctorSetMetainfoFromFile( ctor, filename);
+  tr_ctorSetPaused( ctor, TR_FORCE, 0 ); 
+  tr_ctorSetDestination( ctor, TR_FORCE, dirname(folder)); 
+  tor = tr_torrentNew( h, ctor, &error ); 
+  tr_ctorFree( ctor ); 
+  if( tor == NULL ) 
+    {
+      syslog(LOG_CRIT, "%.80s - %m", filename );
+    }
+  else
+    {
+      struct ACTIVE_TORRENTS *new_torrent;
+
+      new_torrent = (struct ACTIVE_TORRENTS *)
+        malloc(sizeof(struct ACTIVE_TORRENTS));
+
+      if (new_torrent)
+        {
+          new_torrent->torrent = tor;
+          new_torrent->should_dispose = 0;
+          strncpy(new_torrent->filename, filename, MAX_PATH_LENGTH);
+          if (active_torrents) /* insert at head */
+            {
+              new_torrent->next = active_torrents;
+              active_torrents = new_torrent;
+            }
+          else
+            {
+              new_torrent->next = NULL;
+              active_torrents = new_torrent;
+            }
+          tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
+          tr_torrentStart( tor );
+          syslog( LOG_NOTICE, "Starting torrent %s", filename );
+        }
+    }
+  free(folder);
+}
+
+/* Reads active-torrents file line by line and determines if
+   torrent should be started or stopped */
+static void reload_active()
+{
+
   FILE *stream;
-  tr_ctor * ctor; 
-
-  struct active_torrents_s active_torrents;
-
-  // syslog(LOG_DEBUG, "Reload_Active called");
-
+  struct ACTIVE_TORRENTS *tor;
+  int i;
+#ifdef DEBUG  
+  syslog(LOG_DEBUG, "Reload_Active called");
+#endif
+  /* Mark all active_torrents for disposal */
+  for ( tor = active_torrents; tor; tor = tor->next)
+    tor->should_dispose = 1;
+  
   /* open a file with a list of requested active torrents */
-  if ( (stream = fopen(torrentPath, "r")) != NULL)
+  if ( (stream = fopen(active_torrents_path, "r")) != NULL)
     {
       char fn[MAX_PATH_LENGTH];
-      while (fgets(fn, MAX_PATH_LENGTH, stream) )
+      while (fgets(fn, MAX_PATH_LENGTH, stream) )      // tr_info * info = (tr_info *)  tr_torrentInfo( tor );
+
         {
           char *tr = fn;
           while(*tr) {
@@ -212,40 +304,24 @@ static void reload_active()
             continue;
           
           /* Is on the list of active_torrents ? */
-          active_torrents.torrent = fn;
-          active_torrents.found = 0;
-          tr_torrentIterate(h, is_active, &active_torrents);
-          if ( !active_torrents.found ) /* add new torrent */
+          if ( ! is_active(fn) ) /* add new torrent */
             {
-              char *folder = strdup(fn);
-	      ctor = tr_ctorNew( h ); 
-	      tr_ctorSetMetainfoFromFile( ctor, fn); 
-              tr_ctorSetPaused( ctor, TR_FORCE, 0 ); 
-	      tr_ctorSetDestination( ctor, TR_FORCE, dirname(folder)); 
-	      tor = tr_torrentNew( h, ctor, &error ); 
-	      tr_ctorFree( ctor ); 
-	      if( tor == NULL ) 
-                {
-                  syslog(LOG_CRIT, "%.80s - %m", fn );
-                }
-              else
-                {
-                  tr_info * info = (tr_info *)  tr_torrentInfo( tor );
-		  strncpy(info->torrent, fn, MAX_PATH_LENGTH);
-                  tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
-                  tr_torrentStart( tor );
-                  info->isActive = 1;
-                  syslog( LOG_NOTICE, "Starting torrent %s", info->torrent );
-                }
-              free(folder);
+              start_torrent(fn);
             }
         }
       fclose(stream);
-      /* Stop unwanted torrents which do not have active flag */
-      tr_torrentIterate(h, inactive, NULL);
     }
   else
-    syslog(LOG_ERR, "Active torrent file %s - %m", torrentPath);
+    syslog(LOG_ERR, "Active torrent file %s - %m", active_torrents_path);
+  /* Stop unwanted torrents which do have disposal flag */
+  stop_inactive();
+  /* wait from 1 to 5 seconds to dispose inactive torrents */
+  for (i = 0; i < 5; i++)
+    {
+      sleep(1);
+      if (dispose() == 0)
+        break;
+    }
 }
 
 
@@ -356,7 +432,7 @@ static void write_info(tr_torrent *tor, void * data UNUSED )
 static void list(tr_torrent *tor, void * data UNUSED)
 {
   tr_info * info =  (tr_info *) tr_torrentInfo( tor );
-  syslog(LOG_INFO, "'%s' (%s) :%s", info->torrent, info->name, status(tor));
+  syslog(LOG_INFO, "'%s' (%s) : %s", info->torrent, info->name, status(tor));
 }
 
 
@@ -394,7 +470,6 @@ static void setupsighandlers(void) {
 }
 
 
-
 static int write_pidfile(int pid)
 {
   FILE *f = fopen(pidfile, "w");
@@ -422,7 +497,7 @@ static void flush_queued_messages( void )
   
   while( NULL != list )
     {
-      if (! strstr(list->message, "Tracker hasn't responded yet."))
+      if (! strstr(list->message, "Tracker hasn't responded yet.")) {
         if (prev && (strcmp(prev->message, list->message) == 0))
           {
             repeated ++;
@@ -453,6 +528,7 @@ static void flush_queued_messages( void )
                   }
               }
           }
+      }
       prev = list;
       list = list->next;
     }
@@ -483,9 +559,9 @@ int main( int argc, char ** argv )
       return 0;
     }
   
-  if( bindPort < 1 || bindPort > 65535 )
+  if( publicPort < 1 || publicPort > 65535 )
     {
-      printf( "Invalid port '%d'\n", bindPort );
+      printf( "Invalid port '%d'\n", publicPort );
       return 1;
     }
   
@@ -526,29 +602,33 @@ int main( int argc, char ** argv )
   syslog(LOG_INFO,
          "Transmission daemon %s started - http://transmission.m0k.org/ "
          "at port %d",
-         LONG_VERSION_STRING, bindPort );
+         LONG_VERSION_STRING, publicPort );
   
   /*  */
   if (pidfile != NULL)
     write_pidfile(pid);
+
+  active_torrents = NULL;
   
   
   /* Initialize libtransmission */
-  h = tr_initFull("cgi",
-                   1,                       /* pex enabled */
-		   natTraversal,            /* nat enabled */
-		   bindPort,                /* public port */
-		   encryptionMode, 	        /* encryption mode */
-		   uploadLimit >= 0,        /* use upload speed limit? */
-		   uploadLimit,             /* upload speed limit */
-		   downloadLimit >= 0,      /* use download speed limit? */
-		   downloadLimit,           /* download speed limit */
-		   512,                     /* globalPeerLimit */
-		   verboseLevel + 1,        /* messageLevel */
-		   1 );                     /* is message queueing enabled? */
+  h = tr_initFull(tr_getDefaultConfigDir(),
+                  "cgi",                   /* tag */
+                  1,                       /* pex enabled */
+                  natTraversal,            /* nat enabled */
+                  publicPort,              /* public port */
+                  encryptionMode, 	       /* encryption mode */
+                  uploadLimit >= 0,        /* use upload speed limit? */
+                  uploadLimit,             /* upload speed limit */
+                  downloadLimit >= 0,      /* use download speed limit? */
+                  downloadLimit,           /* download speed limit */
+                  512,                     /* globalPeerLimit */
+                  verboseLevel + 1,        /* messageLevel */
+                  1,                       /* is message queueing enabled? */
+                  0);                      /* use the blocklist? */
 
   /* Move  to writable directory to be able to save coredump there */
-  if ( chdir(tr_getPrefsDirectory())  < 0)
+  if ( chdir( tr_getDefaultConfigDir())  < 0)
     {
       syslog( LOG_CRIT, "chdir - %m" );
       exit( 1 );
@@ -570,12 +650,12 @@ int main( int argc, char ** argv )
       flush_queued_messages();
       if ( got_usr1 )
         {
-          tr_torrentIterate( h, write_info, NULL );
+          torrentIterate( write_info, NULL );
           got_usr1 = 0;
         }
       if ( got_usr2 )
         {
-          tr_torrentIterate( h, list, NULL );
+          torrentIterate( list, NULL );
           got_usr2 = 0;
         }
       if ( got_hup )
@@ -584,7 +664,7 @@ int main( int argc, char ** argv )
           got_hup = 0;
         }
       tr_torrentRates(h, &download, &upload);
-      tr_torrentIterate( h, dispose, NULL );
+      dispose();
 
 #ifdef HAVE_SYSINFO
       {
@@ -605,40 +685,60 @@ int main( int argc, char ** argv )
 #endif
     }
   
-  syslog( LOG_NOTICE, "Stopping all torrents");
-  tr_torrentIterate( h, stop, NULL );
+  stop_all();
 
-  /* Try for 5 seconds to delete any port mappings for nat traversal */
-  tr_natTraversalEnable( h , 0);
-  /* Wait a minute to close all torrent */
+  /* Wait a minute to stop all torrents */
   for (i = 0; i < 3; i++)
     {
-       dirty = 0;
-       tr_torrentIterate( h, dispose, &dirty ); 
-       if (! dirty)
-          break;
-       sleep(20);
+      dirty = dispose();
+      if (! dirty)
+        break;
+      syslog(LOG_NOTICE, "Not all torrents disposed. Waiting %d seconds...", (i+1)*20);
+      sleep(20);
     }
-  if (dirty)
-      tr_torrentIterate( h, force_close, NULL );
 
-  for( i = 0; i < 10; i++ )
+  if (dirty)
     {
-      const tr_handle_status * hstat = tr_handleStatus( h );
-      if( TR_NAT_TRAVERSAL_UNMAPPED == hstat->natTraversalStatus )
+      struct ACTIVE_TORRENTS * tor, * next;
+      syslog(LOG_ERR, "Still dirty! Forcing close...");
+      tor = active_torrents;
+      while ( tor )
         {
-          /* Port mappings were deleted */
-          break;
+          const tr_info * info =  tr_torrentInfo( tor->torrent );
+          syslog( LOG_NOTICE, "Unconditionally closing torrent %s", info->name );
+          tr_torrentClose(tor->torrent);
+          next = tor->next;
+          free(tor);
+          tor = next;
         }
-      tr_wait( 500 );
+      active_torrents = NULL;
     }
-  tr_close( h );
+
+
+  if (natTraversal)
+    {
+      /* Try for 5 seconds to delete any port mappings for NAT traversal */
+      tr_natTraversalEnable( h , 0);
+      for( i = 0; i < 5; i++ )
+        {
+          const tr_handle_status * hstat = tr_handleStatus( h );
+          if( TR_NAT_TRAVERSAL_UNMAPPED == hstat->natTraversalStatus )
+            {
+              /* Port mappings were deleted */
+              break;
+            }
+          sleep(1);
+        }
+    }
   
   if (pidfile != NULL)
-    unlink(pidfile);
-  
+      unlink(pidfile);
+
   syslog( LOG_NOTICE, "exiting" );
+
   closelog();
+
+  tr_close(h); /* seems like leaking when destroying handle */
   
   return 0;
 }
@@ -677,7 +777,7 @@ static int parseCommandLine( int argc, char ** argv )
             verboseLevel = atoi( optarg );
             break;
           case 'p':
-            bindPort = atoi( optarg );
+            publicPort = atoi( optarg );
             break;
           case 'u':
             uploadLimit = atoi( optarg );
@@ -711,7 +811,7 @@ static int parseCommandLine( int argc, char ** argv )
         return !showHelp;
     }
 
-    torrentPath = argv[optind];
+    active_torrents_path = argv[optind];
 
     return 0;
 }

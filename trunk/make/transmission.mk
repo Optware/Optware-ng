@@ -25,7 +25,7 @@
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.11
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-# TRANSMISSION_SVN_REV=5509
+TRANSMISSION_SVN_REV=5561
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -56,8 +56,6 @@ TRANSMISSION_CONFFILES=/opt/etc/transmission.conf /opt/etc/init.d/S80busybox_htt
 #
 TRANSMISSION_PATCHES= \
 	$(TRANSMISSION_SOURCE_DIR)/cli-Makefile.am.patch \
-	$(TRANSMISSION_SOURCE_DIR)/iterate.patch \
-	$(TRANSMISSION_SOURCE_DIR)/transmissionh.patch \
 
 # Additional sources to enhance transmission (like this CGI daemon)
 TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c \

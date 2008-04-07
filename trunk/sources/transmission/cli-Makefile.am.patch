@@ -1,5 +1,5 @@
---- transmission-1.0/cli/Makefile.am.orig	2008-01-04 18:37:24.000000000 +0100
-+++ transmission-1.0/cli/Makefile.am	2008-01-04 18:39:42.000000000 +0100
+--- transmission/cli/Makefile.am.orig	2008-04-07 10:47:32.000000000 +0200
++++ transmission/cli/Makefile.am	2008-04-07 17:00:38.000000000 +0200
 @@ -1,7 +1,7 @@
  AM_CPPFLAGS = -I$(top_srcdir) $(LIBEVENT_CPPFLAGS)
  AM_CFLAGS = $(OPENSSL_CFLAGS) $(PTHREAD_CFLAGS)
@@ -11,7 +11,7 @@
  
 @@ -14,3 +14,7 @@
      $(top_builddir)/third-party/miniupnp/libminiupnp.a \
-     $(OPENSSL_LIBS) $(PTHREAD_LIBS) -lm
+     $(INTLLIBS) $(OPENSSL_LIBS) $(PTHREAD_LIBS) -lm
  
 +transmissiond_SOURCES = transmissiond.c
 +
