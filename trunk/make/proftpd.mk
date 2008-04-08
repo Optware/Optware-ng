@@ -26,10 +26,13 @@ PROFTPD_SOURCE=$(PROFTPD_NAME)-$(PROFTPD_VERSION).tar.bz2
 PROFTPD_DIR=$(PROFTPD_NAME)-$(PROFTPD_VERSION)
 PROFTPD_UNZIP=bzcat
 
+PROFTPD-MOD-SHAPER_SITE=http://www.castaglia.org/proftpd/modules
+PROFTPD-MOD-SHAPER_SOURCE=proftpd-mod-shaper-0.6.3.tar.gz
+
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=2
+PROFTPD_IPK_VERSION=3
 
 #
 # Control file info
@@ -98,14 +101,19 @@ $(PROFTPD_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PROFTPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PROFTPD_SITE)/$(PROFTPD_SOURCE)
+	$(WGET) -P $(@D) $(PROFTPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE):
+	$(WGET) -P $(@D) $(PROFTPD-MOD-SHAPER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
+proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) $(PROFTPD_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -122,15 +130,17 @@ proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
+$(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) $(PROFTPD_PATCHES)
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PROFTPD_PATCHES) | patch -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1
 	mv $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
+	zcat $(DL_DIR)/$(PROFTPD-MOD-SHAPER_SOURCE) | tar -C $(@D) -xvf -
+	cp $(@D)/mod_shaper/* $(@D)/contrib/
 	# Copy required config.cache file
-	cp $(PROFTPD_SOURCE_DIR)/config.cache $(PROFTPD_BUILD_DIR)/config.cache
-	(cd $(PROFTPD_BUILD_DIR); \
+	cp $(PROFTPD_SOURCE_DIR)/config.cache $(@D)/config.cache
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PROFTPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PROFTPD_LDFLAGS)" \
@@ -139,10 +149,11 @@ $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-		--with-modules=mod_tls \
 		--enable-ctrls \
+		--with-modules=mod_tls:mod_shaper \
 		--cache-file=config.cache \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 proftpd-unpack: $(PROFTPD_BUILD_DIR)/.configured
@@ -153,7 +164,7 @@ proftpd-unpack: $(PROFTPD_BUILD_DIR)/.configured
 #
 $(PROFTPD_BUILD_DIR)/.built: $(PROFTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PROFTPD_BUILD_DIR) $(TARGET_CONFIGURE_OPTS) HOSTCC=$(HOSTCC)
+	$(MAKE) -C $(@D) $(TARGET_CONFIGURE_OPTS) HOSTCC=$(HOSTCC)
 	touch $@
 
 #
