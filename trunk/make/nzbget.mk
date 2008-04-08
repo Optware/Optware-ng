@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NZBGET_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/nzbget
-NZBGET_VERSION=0.3.1
+NZBGET_VERSION=0.4.0
 NZBGET_SOURCE=nzbget-$(NZBGET_VERSION).tar.gz
 NZBGET_DIR=nzbget-$(NZBGET_VERSION)
 NZBGET_UNZIP=zcat
