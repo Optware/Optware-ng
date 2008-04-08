@@ -142,9 +142,9 @@ static int dispose()
 {
   int dirty = 0;
 
-  struct ACTIVE_TORRENTS *tor;
+  struct ACTIVE_TORRENTS *tor, *prev;
 
-  tor = active_torrents;
+  tor = prev = active_torrents;
   while (tor)
     {
       if (tor->should_dispose)
@@ -157,8 +157,10 @@ static int dispose()
               syslog( LOG_NOTICE, "Closing torrent %s", tor->filename );
               tr_torrentClose( tor->torrent );
               next = tor->next;
-              if (tor == active_torrents)
-                active_torrents = next;
+              if (active_torrents == tor)
+                  active_torrents = prev = next;
+              else
+                prev->next = next;
               free (tor);
               tor = next;
             }
@@ -166,12 +168,16 @@ static int dispose()
             {
               dirty = 1;
               syslog( LOG_NOTICE, "Not closing torrent %s status: 0x%x",
-                     tor->filename, st->status);
+                      tor->filename, st->status);
+              prev = tor;
               tor = tor->next;
             }
         }
       else
-        tor = tor->next;
+        {
+          prev = tor;
+          tor = tor->next;
+        }
     }
   return dirty;
 }
@@ -287,9 +293,7 @@ static void reload_active()
   FILE *stream;
   struct ACTIVE_TORRENTS *tor;
   int i;
-#ifdef DEBUG  
-  syslog(LOG_DEBUG, "Reload_Active called");
-#endif
+
   /* Mark all active_torrents for disposal */
   for ( tor = active_torrents; tor; tor = tor->next)
     ++ tor->should_dispose;
