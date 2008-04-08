@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.3.1
+MPG123_VERSION=1.4.0
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -78,7 +78,8 @@ MPG123_IPK=$(BUILD_DIR)/mpg123_$(MPG123_VERSION)-$(MPG123_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MPG123_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MPG123_SITE)/$(MPG123_SOURCE)
+	$(WGET) -P $(@D) $(MPG123_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
