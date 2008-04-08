@@ -111,6 +111,7 @@ static struct ACTIVE_TORRENTS {
 
 
 typedef void (*tr_callback_t) ( tr_torrent *, void * );
+
 static void
 torrentIterate( tr_callback_t func, void * d )
 {
@@ -164,6 +165,8 @@ static int dispose()
           else
             {
               dirty = 1;
+              syslog( LOG_NOTICE, "Not closing torrent %s status: 0x%x",
+                     tor->filename, st->status);
               tor = tor->next;
             }
         }
@@ -180,8 +183,8 @@ static void stop_inactive()
   struct ACTIVE_TORRENTS * tor;
   
   for (tor = active_torrents; tor; tor = tor->next)
-    {
-      if (tor->should_dispose)
+    { /* Send stop only once */
+      if (tor->should_dispose == 1)
         {
           /* Notice the tracker that we are leaving */
           tr_torrentStop(tor->torrent);
@@ -213,7 +216,7 @@ static int is_active(const char * filename)
 
   for ( tor = active_torrents; tor; tor = tor->next)
     {
-      if ( 0 == strcmp(filename, tor->filename))
+      if (tor->should_dispose && 0 == strcmp(filename, tor->filename))
         {
           found = 1;
           tor->should_dispose = 0;
@@ -225,49 +228,55 @@ static int is_active(const char * filename)
 static void start_torrent(const char * filename)
 {
   tr_ctor * ctor;
-  tr_torrent * tor;
-  int error;
   
-  char *folder = strdup(filename);
 
-  ctor = tr_ctorNew( h ); 
-  tr_ctorSetMetainfoFromFile( ctor, filename);
-  tr_ctorSetPaused( ctor, TR_FORCE, 0 ); 
-  tr_ctorSetDestination( ctor, TR_FORCE, dirname(folder)); 
-  tor = tr_torrentNew( h, ctor, &error ); 
-  tr_ctorFree( ctor ); 
-  if( tor == NULL ) 
+  ctor = tr_ctorNew( h );
+  if (ctor)
     {
-      syslog(LOG_CRIT, "%.80s - %m", filename );
+      tr_torrent * tor;
+      int error;
+      char *folder = strdup(filename);
+      
+      tr_ctorSetMetainfoFromFile( ctor, filename);
+      tr_ctorSetPaused( ctor, TR_FORCE, 0 ); 
+      tr_ctorSetDestination( ctor, TR_FORCE, dirname(folder)); 
+      tor = tr_torrentNew( h, ctor, &error ); 
+      tr_ctorFree( ctor ); 
+      if( tor == NULL ) 
+        {
+          syslog(LOG_CRIT, "%.80s - %m", filename );
+        }
+      else
+        {
+          struct ACTIVE_TORRENTS *new_torrent;
+          
+          new_torrent = (struct ACTIVE_TORRENTS *)
+            malloc(sizeof(struct ACTIVE_TORRENTS));
+          
+          if (new_torrent)
+            {
+              new_torrent->torrent = tor;
+              new_torrent->should_dispose = 0;
+              strncpy(new_torrent->filename, filename, MAX_PATH_LENGTH);
+              if (active_torrents) /* insert at head */
+                {
+                  new_torrent->next = active_torrents;
+                  active_torrents = new_torrent;
+                }
+              else
+                {
+                  new_torrent->next = NULL;
+                  active_torrents = new_torrent;
+                }
+              tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
+              tr_torrentStart( tor );
+              syslog( LOG_NOTICE, "Starting torrent %s", filename );
+            }
+        }
+      free(folder);
     }
   else
-    {
-      struct ACTIVE_TORRENTS *new_torrent;
-
-      new_torrent = (struct ACTIVE_TORRENTS *)
-        malloc(sizeof(struct ACTIVE_TORRENTS));
-
-      if (new_torrent)
-        {
-          new_torrent->torrent = tor;
-          new_torrent->should_dispose = 0;
-          strncpy(new_torrent->filename, filename, MAX_PATH_LENGTH);
-          if (active_torrents) /* insert at head */
-            {
-              new_torrent->next = active_torrents;
-              active_torrents = new_torrent;
-            }
-          else
-            {
-              new_torrent->next = NULL;
-              active_torrents = new_torrent;
-            }
-          tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
-          tr_torrentStart( tor );
-          syslog( LOG_NOTICE, "Starting torrent %s", filename );
-        }
-    }
-  free(folder);
+    syslog(LOG_CRIT, "tr_ctorNew for %s failed - %m", filename);
 }
 
 /* Reads active-torrents file line by line and determines if
@@ -283,14 +292,13 @@ static void reload_active()
 #endif
   /* Mark all active_torrents for disposal */
   for ( tor = active_torrents; tor; tor = tor->next)
-    tor->should_dispose = 1;
+    ++ tor->should_dispose;
   
   /* open a file with a list of requested active torrents */
   if ( (stream = fopen(active_torrents_path, "r")) != NULL)
     {
       char fn[MAX_PATH_LENGTH];
-      while (fgets(fn, MAX_PATH_LENGTH, stream) )      // tr_info * info = (tr_info *)  tr_torrentInfo( tor );
-
+      while (fgets(fn, MAX_PATH_LENGTH, stream) )
         {
           char *tr = fn;
           while(*tr) {
@@ -313,6 +321,7 @@ static void reload_active()
     }
   else
     syslog(LOG_ERR, "Active torrent file %s - %m", active_torrents_path);
+  
   /* Stop unwanted torrents which do have disposal flag */
   stop_inactive();
   /* wait from 1 to 5 seconds to dispose inactive torrents */
@@ -337,7 +346,7 @@ char * getStringRatio( float ratio )
 /* Prepares status string up to STATUS_WIDTH chars width */
 static char * status(tr_torrent *tor)
 {
-#define STATUS_WIDTH 90
+#define STATUS_WIDTH 100
   static char string[STATUS_WIDTH];
   int  chars = 0;
 
