@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DICT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/dict
-DICT_VERSION=1.10.9
+DICT_VERSION=1.10.10
 DICT_SOURCE=dictd-$(DICT_VERSION).tar.gz
 DICT_DIR=dictd-$(DICT_VERSION)
 DICT_UNZIP=zcat
@@ -78,7 +78,8 @@ DICT_IPK=$(BUILD_DIR)/dict_$(DICT_VERSION)-$(DICT_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DICT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DICT_SITE)/$(DICT_SOURCE)
+	$(WGET) -P $(@D) $(DICT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,11 +108,10 @@ $(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES) make/dic
 	rm -rf $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
 	$(DICT_UNZIP) $(DL_DIR)/$(DICT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
-	sed -i.orig \
-		-e 's|libtool|$(STAGING_PREFIX)/bin/libtool|' \
-		$(DICT_BUILD_DIR)/Makefile.in \
-		$(DICT_BUILD_DIR)/libmaa/Makefile.in
-	(cd $(DICT_BUILD_DIR); \
+	sed -i.orig -e 's|libtool|$(STAGING_PREFIX)/bin/libtool|' \
+		$(@D)/Makefile.in \
+		$(@D)/libmaa/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DICT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DICT_LDFLAGS)" \
@@ -124,7 +124,7 @@ $(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES) make/dic
 		--disable-nls \
 	)
 #	$(PATCH_LIBTOOL) $(DICT_BUILD_DIR)/libtool
-	touch $(DICT_BUILD_DIR)/.configured
+	touch $@
 
 dict-unpack: $(DICT_BUILD_DIR)/.configured
 
@@ -132,9 +132,9 @@ dict-unpack: $(DICT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(DICT_BUILD_DIR)/.built: $(DICT_BUILD_DIR)/.configured
-	rm -f $(DICT_BUILD_DIR)/.built
-	$(MAKE) -C $(DICT_BUILD_DIR) dict
-	touch $(DICT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) dict
+	touch $@
 
 #
 # This is the build convenience target.
@@ -145,9 +145,9 @@ dict: $(DICT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(DICT_BUILD_DIR)/.staged: $(DICT_BUILD_DIR)/.built
-	rm -f $(DICT_BUILD_DIR)/.staged
-	$(MAKE) -C $(DICT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install.dict
-	touch $(DICT_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install.dict
+	touch $@
 
 dict-stage: $(DICT_BUILD_DIR)/.staged
 
@@ -156,7 +156,7 @@ dict-stage: $(DICT_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dict
 #
 $(DICT_IPK_DIR)/CONTROL/control:
-	@install -d $(DICT_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: dict" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
