@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://www.kernel.org/pub/software/scm/git
-GIT_VERSION=1.5.4.4
+GIT_VERSION=1.5.5
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
@@ -34,7 +34,7 @@ GIT_DEPENDS=zlib, openssl, libcurl, diffutils, rcs, expat
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GIT_DEPENDS+=, libiconv
 endif
-GIT_SUGGESTS=
+GIT_SUGGESTS=git-manpages
 GIT_CONFLICTS=
 
 #
@@ -165,7 +165,7 @@ $(GIT_BUILD_DIR)/.built: $(GIT_BUILD_DIR)/.configured
 	rm -f $@
 	PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 	$(GIT_PERL_PATH) \
-	$(MAKE) -C $(GIT_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GIT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GIT_LDFLAGS)" \
@@ -183,7 +183,7 @@ git: $(GIT_BUILD_DIR)/.built
 #
 $(GIT_BUILD_DIR)/.staged: $(GIT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GIT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 git-stage: $(GIT_BUILD_DIR)/.staged
@@ -219,7 +219,7 @@ $(GIT-MANPAGES_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(GIT_SITE)/$(GIT-MANPAGES_SOURCE)" >>$@
 	@echo "Description: manpages of git" >>$@
 	@echo "Depends: " >>$@
-	@echo "Suggests: git" >>$@
+	@echo "Suggests: " >>$@
 	@echo "Conflicts: " >>$@
 
 #
