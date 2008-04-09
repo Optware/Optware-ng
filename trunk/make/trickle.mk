@@ -4,26 +4,19 @@
 #
 ###########################################################
 
-# You must replace "trickle" and "TRICKLE" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
-#
-# TRICKLE_VERSION, TRICKLE_SITE and TRICKLE_SOURCE define
-# the upstream location of the source code for the package.
-# TRICKLE_DIR is the directory which is created when the source
-# archive is unpacked.
-# TRICKLE_UNZIP is the command used to unzip the source.
-# It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
-#
-# You should change all these variables to suit your package.
-#
 TRICKLE_SITE=http://monkey.org/~marius/trickle
 TRICKLE_VERSION=1.06
 TRICKLE_SOURCE=trickle-$(TRICKLE_VERSION).tar.gz
 TRICKLE_DIR=trickle-$(TRICKLE_VERSION)
 TRICKLE_UNZIP=zcat
+
+TRICKLE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+TRICKLE_DESCRIPTION=Trickle is a portable lightweight userspace bandwidth shaper.
+TRICKLE_SECTION=net
+TRICKLE_PRIORITY=optional
+TRICKLE_DEPENDS=libevent
+TRICKLE_SUGGESTS=
+TRICKLE_CONFLICTS=
 
 #
 # TRICKLE_IPK_VERSION should be incremented when the ipk changes.
@@ -34,7 +27,7 @@ TRICKLE_IPK_VERSION=1
 # TRICKLE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRICKLE_PATCHES=$(TRICKLE_SOURCE_DIR)/configure.patch
+TRICKLE_PATCHES=$(TRICKLE_SOURCE_DIR)/configure.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -62,7 +55,8 @@ TRICKLE_IPK=$(BUILD_DIR)/trickle_$(TRICKLE_VERSION)-$(TRICKLE_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TRICKLE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TRICKLE_SITE)/$(TRICKLE_SOURCE)
+	$(WGET) -P $(@D) $(TRICKLE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -90,9 +84,10 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(TRICKLE_DIR) $(TRICKLE_BUILD_DIR)
 	$(TRICKLE_UNZIP) $(DL_DIR)/$(TRICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(TRICKLE_PATCHES) | patch -d $(BUILD_DIR)/$(TRICKLE_DIR)
-	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(TRICKLE_BUILD_DIR)
-	(cd $(TRICKLE_BUILD_DIR); \
+	cat $(TRICKLE_PATCHES) | patch -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
+	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(@D)
+	(cd $(@D); \
+		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRICKLE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRICKLE_LDFLAGS)" \
@@ -105,7 +100,7 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(TRICKLE_BUILD_DIR)/.configured
+	touch $@
 
 trickle-unpack: $(TRICKLE_BUILD_DIR)/.configured
 
@@ -114,9 +109,9 @@ trickle-unpack: $(TRICKLE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(TRICKLE_BUILD_DIR)/.built: $(TRICKLE_BUILD_DIR)/.configured
-	rm -f $(TRICKLE_BUILD_DIR)/.built
-	$(MAKE) -C $(TRICKLE_BUILD_DIR)
-	touch $(TRICKLE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -139,6 +134,25 @@ $(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION): $(TRICKLE_BUILD_DIR)/.b
 trickle-stage: $(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION)
 
 #
+# This rule creates a control file for ipkg.  It is no longer
+# necessary to create a seperate control file under sources/<foo>
+#
+$(TRICKLE_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: trickle" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(TRICKLE_PRIORITY)" >>$@
+	@echo "Section: $(TRICKLE_SECTION)" >>$@
+	@echo "Version: $(TRICKLE_VERSION)-$(TRICKLE_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(TRICKLE_MAINTAINER)" >>$@
+	@echo "Source: $(TRICKLE_SITE)/$(TRICKLE_SOURCE)" >>$@
+	@echo "Description: $(TRICKLE_DESCRIPTION)" >>$@
+	@echo "Depends: $(TRICKLE_DEPENDS)" >>$@
+	@echo "Suggests: $(TRICKLE_SUGGESTS)" >>$@
+	@echo "Conflicts: $(TRICKLE_CONFLICTS)" >>$@
+
+#
 # This builds the IPK file.
 #
 # Binaries should be installed into $(TRICKLE_IPK_DIR)/opt/sbin or $(TRICKLE_IPK_DIR)/opt/bin
@@ -152,14 +166,14 @@ trickle-stage: $(STAGING_DIR)/opt/lib/libtrickle.so.$(TRICKLE_VERSION)
 #
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
-	install -d $(TRICKLE_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(TRICKLE_BUILD_DIR)/trickle -o $(TRICKLE_IPK_DIR)/opt/bin/trickle
-	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
-	install -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)/opt/etc/init.d/SXXtrickle
-	install -d $(TRICKLE_IPK_DIR)/CONTROL
-	install -m 644 $(TRICKLE_SOURCE_DIR)/control $(TRICKLE_IPK_DIR)/CONTROL/control
-	install -m 644 $(TRICKLE_SOURCE_DIR)/postinst $(TRICKLE_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(TRICKLE_SOURCE_DIR)/prerm $(TRICKLE_IPK_DIR)/CONTROL/prerm
+	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' install install-data
+#	install -d $(TRICKLE_IPK_DIR)/opt/bin
+	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)/opt/bin/trickle* $(TRICKLE_IPK_DIR)/opt/lib/trickle/*
+#	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
+#	install -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)/opt/etc/init.d/SXXtrickle
+	$(MAKE) $(TRICKLE_IPK_DIR)/CONTROL/control
+#	install -m 644 $(TRICKLE_SOURCE_DIR)/postinst $(TRICKLE_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(TRICKLE_SOURCE_DIR)/prerm $(TRICKLE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRICKLE_IPK_DIR)
 
 #
@@ -179,3 +193,9 @@ trickle-clean:
 #
 trickle-dirclean:
 	rm -rf $(BUILD_DIR)/$(TRICKLE_DIR) $(TRICKLE_BUILD_DIR) $(TRICKLE_IPK_DIR) $(TRICKLE_IPK)
+
+#
+# Some sanity check for the package.
+#
+trickle-check: $(TRICKLE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TRICKLE_IPK)

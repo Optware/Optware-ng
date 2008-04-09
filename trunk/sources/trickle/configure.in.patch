@@ -1,0 +1,29 @@
+--- configure.in.orig	2003-06-02 11:45:45.000000000 +0000
++++ configure.in	2008-04-09 00:24:52.000000000 +0000
+@@ -141,24 +141,9 @@
+ HAVEMETHOD=no
+ 
+ AC_MSG_CHECKING(if we can access libc without dlopen)
+-AC_TRY_RUN(
+-#include <dlfcn.h>
+-#include <stdio.h>
+-
+-int
+-main(int argc, char **argv)
+-{
+-	void *dh;
+-
+-	dh = (void *)-1L;
+-
+-	if (dlsym(dh, "printf") != NULL || dlsym(dh, "_printf") != NULL)
+-		exit(0);
+-
+-	exit(1);
+-}, [AC_MSG_RESULT(yes)
++    AC_MSG_RESULT(yes)
+     AC_DEFINE(NODLOPEN)
+-    HAVEMETHOD=yes], AC_MSG_RESULT(no), AC_MSG_RESULT(no))
++    HAVEMETHOD=yes
+ 
+ if test "$HAVEMETHOD" = "no"; then
+     dnl ugly, ugly hack		     
