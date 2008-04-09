@@ -10,14 +10,15 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-MLOCATE_SITE=http://people.redhat.com/mitr/mlocate
 ifeq ($(LIBC_STYLE), uclibc)
+MLOCATE_SITE=http://people.redhat.com/mitr/mlocate
 MLOCATE_VERSION=0.15
 MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
 MLOCATE_UNZIP=zcat
 else
-MLOCATE_VERSION=0.18
+MLOCATE_SITE=https://fedorahosted.org/mlocate/attachment/wiki/MlocateDownloads
+MLOCATE_VERSION=0.20
 MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.bz2
 MLOCATE_UNZIP=bzcat
@@ -81,8 +82,8 @@ MLOCATE_IPK=$(BUILD_DIR)/mlocate_$(MLOCATE_VERSION)-$(MLOCATE_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MLOCATE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MLOCATE_SITE)/$(MLOCATE_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MLOCATE_SOURCE)
+	$(WGET) --no-check-certificate -O $@ $(MLOCATE_SITE)/$(@F)?format=raw || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
