@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R12B-1
-ERLANG_VERSION=R12B1
+ERLANG_UPSTREAM_VERSION=R12B-2
+ERLANG_VERSION=R12B2
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -67,7 +67,6 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-erl_interface-src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-odbc-c_src-Makefile.in.patch \
-	$(ERLANG_SOURCE_DIR)/lib-orber-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
 
 ifeq ($(HOSTCC), $(TARGET_CC))
