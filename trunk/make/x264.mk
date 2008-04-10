@@ -11,7 +11,6 @@
 #
 
 X264_REPOSITORY=svn://svn.videolan.org/x264/trunk
-X264_DIR=x264
 X264_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 X264_DESCRIPTION=A free library for encoding H264/AVC video streams.
 X264_SECTION=video
@@ -40,14 +39,26 @@ X264_CONFLICTS=
 #
 
 #X264_SVN_TAG=version_1_2_3
-X264_SVN_REV=622
+#X264_SVN_REV=622
+ifdef X264_SVN_REV
 X264_VERSION=0.0+svn$(X264_SVN_REV)
+X264_SOURCE=x264-$(X264_VERSION).tar.gz
+X264_DIR=x264
+else
+X264_SITE=ftp://ftp.videolan.org/pub/videolan/x264/snapshots
+X264_UPSTREAM_VERSION=snapshot-20080409-2245
+X264_DIR=x264-$(X264_UPSTREAM_VERSION)
+X264_SOURCE=x264-$(X264_UPSTREAM_VERSION).tar.bz2
+X264_VERSION=0.0.20080409-svn2245
+X264_UNZIP=bzcat
+endif
 #X264_SVN_OPTS=-r $(X264_SVN_TAG)
+
 
 #
 # X264_IPK_VERSION should be incremented when the ipk changes.
 #
-X264_IPK_VERSION=2
+X264_IPK_VERSION=1
 
 #
 # X264_CONFFILES should be a list of user-editable files
@@ -59,7 +70,8 @@ X264_CONFFILES=
 #
 X264_PATCHES= \
 $(X264_SOURCE_DIR)/common-cpu.c.patch \
-$(X264_SOURCE_DIR)/common-ppc-ppccommon.h.patch \
+
+#$(X264_SOURCE_DIR)/common-ppc-ppccommon.h.patch \
 $(X264_SOURCE_DIR)/common-ppc-dct.c.patch \
 
 #
@@ -89,15 +101,20 @@ X264_IPK=$(BUILD_DIR)/x264_$(X264_VERSION)-$(X264_IPK_VERSION)_$(TARGET_ARCH).ip
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with SVN
 #
-$(DL_DIR)/x264-$(X264_VERSION).tar.gz:
+$(DL_DIR)/$(X264_SOURCE):
+ifdef X264_SVN_REV
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(X264_DIR) && \
 		svn co -r $(X264_SVN_REV) $(X264_REPOSITORY) $(X264_DIR) && \
 		tar -czf $@ $(X264_DIR) && \
 		rm -rf $(X264_DIR) \
 	)
+else
+	$(WGET) -P $(@D) $(X264_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
-x264-source: $(DL_DIR)/x264-$(X264_VERSION).tar.gz
+x264-source: $(DL_DIR)/$(X264_SOURCE)
 
 #
 # This target also configures the build within the build directory.
@@ -109,10 +126,10 @@ x264-source: $(DL_DIR)/x264-$(X264_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
-$(X264_BUILD_DIR)/.configured: $(DL_DIR)/x264-$(X264_VERSION).tar.gz
+$(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE)
 #	$(MAKE) <foo>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/x264-$(X264_VERSION).tar.gz
+	$(X264_UNZIP) $(DL_DIR)/$(X264_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(X264_PATCHES)" ; \
 		then cat $(X264_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(X264_DIR) -p0 ; \
@@ -120,21 +137,21 @@ $(X264_BUILD_DIR)/.configured: $(DL_DIR)/x264-$(X264_VERSION).tar.gz
 	if test "$(BUILD_DIR)/$(X264_DIR)" != "$(X264_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR) ; \
 	fi
-	sed -ie '/MACHINE=/s|$$(./config.guess)|$(TARGET_ARCH)-unknown-linux-gnu|' $(X264_BUILD_DIR)/configure
-	(cd $(X264_BUILD_DIR); \
+	sed -i -e '/MACHINE=/s|$$(./config.guess)|$(TARGET_ARCH)-unknown-linux-gnu|' $(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
 		./configure \
+		--host=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--enable-shared \
 	)
 #		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--disable-nls \
 		;
-	touch $(X264_BUILD_DIR)/.configured
+	touch $@
 
 x264-unpack: $(X264_BUILD_DIR)/.configured
 
@@ -157,7 +174,7 @@ x264: $(X264_BUILD_DIR)/.built
 $(X264_BUILD_DIR)/.staged: $(X264_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(X264_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/x264.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/x264.pc
 	touch $@
 
 x264-stage: $(X264_BUILD_DIR)/.staged
@@ -216,7 +233,7 @@ x264-ipk: $(X264_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 x264-clean:
-	rm -f $(<FOO>_BUILD_DIR)/.built
+	rm -f $(X264_BUILD_DIR)/.built
 	-$(MAKE) -C $(X264_BUILD_DIR) clean
 
 #
