@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=4.21
+FILE_VERSION=4.23
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -70,7 +70,8 @@ FILE_IPK=$(BUILD_DIR)/file_$(FILE_VERSION)-$(FILE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FILE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FILE_SITE)/$(FILE_SOURCE)
+	$(WGET) -P $(@D) $(FILE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
