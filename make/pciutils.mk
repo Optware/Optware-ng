@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PCIUTILS_SITE=http://www.kernel.org/pub/software/utils/pciutils
-PCIUTILS_VERSION=2.2.6
+PCIUTILS_VERSION=3.0.0
 PCIUTILS_SOURCE=pciutils-$(PCIUTILS_VERSION).tar.bz2
 PCIUTILS_DIR=pciutils-$(PCIUTILS_VERSION)
 PCIUTILS_UNZIP=bzcat
@@ -76,8 +76,8 @@ PCIUTILS_IPK=$(BUILD_DIR)/pciutils_$(PCIUTILS_VERSION)-$(PCIUTILS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PCIUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PCIUTILS_SITE)/$(PCIUTILS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PCIUTILS_SOURCE)
+	$(WGET) -P $(DL_DIR) $(PCIUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,17 +106,17 @@ pciutils-source: $(DL_DIR)/$(PCIUTILS_SOURCE) $(PCIUTILS_PATCHES)
 #
 $(PCIUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PCIUTILS_SOURCE) $(PCIUTILS_PATCHES) make/pciutils.mk
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(PCIUTILS_DIR) $(PCIUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PCIUTILS_DIR) $(@D)
 	$(PCIUTILS_UNZIP) $(DL_DIR)/$(PCIUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PCIUTILS_PATCHES)" ; \
 		then cat $(PCIUTILS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(PCIUTILS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(PCIUTILS_DIR)" != "$(PCIUTILS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(PCIUTILS_DIR) $(PCIUTILS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(PCIUTILS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(PCIUTILS_DIR) $(@D) ; \
 	fi
-	sed -i -e '/$$(INSTALL)/s/-s //' $(PCIUTILS_BUILD_DIR)/Makefile
-#	(cd $(PCIUTILS_BUILD_DIR); \
+	sed -i -e '/$$(INSTALL)/s/-s //' $(@D)/Makefile
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PCIUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PCIUTILS_LDFLAGS)" \
@@ -138,7 +138,7 @@ pciutils-unpack: $(PCIUTILS_BUILD_DIR)/.configured
 #
 $(PCIUTILS_BUILD_DIR)/.built: $(PCIUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PCIUTILS_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PCIUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PCIUTILS_LDFLAGS)" \
@@ -157,7 +157,7 @@ pciutils: $(PCIUTILS_BUILD_DIR)/.built
 #
 $(PCIUTILS_BUILD_DIR)/.staged: $(PCIUTILS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PCIUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 pciutils-stage: $(PCIUTILS_BUILD_DIR)/.staged
@@ -198,6 +198,7 @@ $(PCIUTILS_IPK): $(PCIUTILS_BUILD_DIR)/.built
 	$(MAKE) -C $(PCIUTILS_BUILD_DIR) install \
 		DESTDIR=$(PCIUTILS_IPK_DIR) \
 		PREFIX=/opt \
+		STRIP="" \
 	;
 	$(STRIP_COMMAND) $(PCIUTILS_IPK_DIR)/opt/sbin/lspci $(PCIUTILS_IPK_DIR)/opt/sbin/setpci
 #	install -d $(PCIUTILS_IPK_DIR)/opt/etc/
