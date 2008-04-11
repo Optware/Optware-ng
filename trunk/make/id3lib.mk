@@ -130,6 +130,11 @@ endif
 	if test "$(BUILD_DIR)/$(ID3LIB_DIR)" != "$(ID3LIB_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ID3LIB_DIR) $(ID3LIB_BUILD_DIR) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
+	sed -i -e 's/^#if (defined(ID3_NEED_WCHAR_TEMPLATE))/#if 1/' \
+	       -e 's/^#ifndef _GLIBCPP_USE_WCHAR_T/#if 1/' \
+		$(@D)/include/id3/id3lib_strings.h
+endif
 	sed -i -e '/iomanip.h/d' $(ID3LIB_BUILD_DIR)/configure.in
 	(cd $(ID3LIB_BUILD_DIR); \
 		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 \
