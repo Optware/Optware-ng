@@ -28,13 +28,13 @@ DISTCC_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
 DISTCC_DESCRIPTION=distributes builds across a local network
 DISTCC_SECTION=util
 DISTCC_PRIORITY=optional
-DISTCC_DEPENDS=
+DISTCC_DEPENDS=popt
 DISTCC_CONFLICTS=
 
 #
 # DISTCC_IPK_VERSION should be incremented when the ipk changes.
 #
-DISTCC_IPK_VERSION=2
+DISTCC_IPK_VERSION=3
 
 #
 # DISTCC_PATCHES should list any patches, in the the order in
@@ -93,7 +93,7 @@ distcc-source: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(DISTCC_BUILD_DIR)/.configured: $(DL_DIR)/$(DISTCC_SOURCE) $(DISTCC_PATCHES)
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) popt-stage
 	rm -rf $(BUILD_DIR)/$(DISTCC_DIR) $(DISTCC_BUILD_DIR)
 	$(DISTCC_UNZIP) $(DL_DIR)/$(DISTCC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(DISTCC_PATCHES) | patch -d $(BUILD_DIR)/$(DISTCC_DIR) -p1
@@ -130,7 +130,7 @@ distcc: $(DISTCC_BUILD_DIR)/distcc
 # necessary to create a seperate control file under sources/distcc
 #
 $(DISTCC_IPK_DIR)/CONTROL/control:
-	@install -d $(DISTCC_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: distcc" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -185,3 +185,9 @@ distcc-clean:
 #
 distcc-dirclean:
 	rm -rf $(BUILD_DIR)/$(DISTCC_DIR) $(DISTCC_BUILD_DIR) $(DISTCC_IPK_DIR) $(DISTCC_IPK)
+
+#
+# Some sanity check for the package.
+#
+distcc-check: $(DISTCC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DISTCC_IPK)
