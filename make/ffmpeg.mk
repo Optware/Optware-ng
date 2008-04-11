@@ -21,12 +21,12 @@
 #
 # Check http://svn.mplayerhq.hu/ffmpeg/trunk/
 # Take care when upgrading for multiple targets
-FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk ffmpeg
-FFMPEG_SVN_REV=6153
-FFMPEG_VERSION=0.4.9-pre1+r$(FFMPEG_SVN_REV)
-FFMPEG_SOURCE=ffmpeg-svn-$(FFMPEG_SVN_REV).tar.gz
-FFMPEG_DIR=ffmpeg
-FFMPEG_UNZIP=zcat
+FFMPEG_SVN=svn://svn.mplayerhq.hu/ffmpeg/trunk
+FFMPEG_SVN_DATE=20080409
+FFMPEG_VERSION=0.svn$(FFMPEG_SVN_DATE)
+FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)
+FFMPEG_SOURCE=$(FFMPEG_DIR).tar.bz2
+FFMPEG_UNZIP=bzcat
 FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
 FFMPEG_SECTION=tool
@@ -42,13 +42,16 @@ FFMPEG_IPK_VERSION=1
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
-FFMPEG_CONFFILES=/opt/etc/ffmpeg.conf /opt/etc/init.d/SXXffmpeg
+#FFMPEG_CONFFILES=/opt/etc/ffmpeg.conf /opt/etc/init.d/SXXffmpeg
 
 #
 ## FFMPEG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 FFMPEG_PATCHES=
+ifeq ($(LIBC_STYLE), uclibc)
+FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/disable-C99-math-funcs.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -56,7 +59,8 @@ FFMPEG_PATCHES=
 #
 FFMPEG_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
-FFMPEG_CPPFLAGS=-fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-builtin-rint
+FFMPEG_CPPFLAGS += -fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-builtin-rint
+FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/powf-to-pow.patch
 endif
 FFMPEG_LDFLAGS=
 
@@ -84,8 +88,8 @@ FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_$(TARGET_
 $(DL_DIR)/$(FFMPEG_SOURCE):
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(FFMPEG_DIR) && \
-		svn co -r $(FFMPEG_SVN_REV) $(FFMPEG_SVN) && \
-		tar -czf $@ $(FFMPEG_DIR) && \
+		svn co -r '{$(FFMPEG_SVN_DATE)}' $(FFMPEG_SVN) $(FFMPEG_DIR) && \
+		tar -cjf $@ $(FFMPEG_DIR) --exclude .svn && \
 		rm -rf $(FFMPEG_DIR) \
 	)
 
@@ -113,13 +117,9 @@ ffmpeg-source: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 #
-# CPU selection is mainly fo distingush between bigendian=yes/no
-# See:  http://lists.mplayerhq.hu/pipermail/ffmpeg-devel/2006-May/011317.html
-ifeq ($(TARGET_ARCH), mipsel)
-FFMPEG_CPU=mipsel
-else
-FFMPEG_CPU=mips
-endif
+FFMPEG_ARCH=$(strip \
+	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
+	$(TARGET_ARCH)))
 
 # Snow is know to create build problems on ds101 
 
@@ -129,7 +129,7 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FFMPEG_PATCHES)" ; \
 		then cat $(FFMPEG_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(FFMPEG_DIR) -p1 ; \
+		patch -d $(BUILD_DIR)/$(FFMPEG_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) ; \
@@ -139,26 +139,23 @@ $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) ma
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FFMPEG_LDFLAGS)" \
 		./configure \
-		--cross-compile \
+		--enable-cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
-		--cpu=$(FFMPEG_CPU) \
+		--arch=$(FFMPEG_ARCH) \
 		--disable-encoder=snow \
 		--disable-decoder=snow \
 		--enable-shared \
 		--disable-static \
-		--disable-strip \
 		--enable-gpl \
-		--enable-pp \
+		--enable-postproc \
 		--prefix=/opt \
 	)
 ifeq ($(LIBC_STYLE), uclibc)
 #	No lrintf() support in uClibc 0.9.28
-	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(FFMPEG_BUILD_DIR)/common.mak \
-		$(FFMPEG_BUILD_DIR)/Makefile $(FFMPEG_BUILD_DIR)/lib*/Makefile
+	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(@D)/common.mak $(@D)/Makefile $(@D)/lib*/Makefile
 endif
-ifdef NO_BUILTIN_MATH
-	sed -i -e '/^OPTFLAGS/s|$$| $(FFMPEG_CPPFLAGS)|' $(FFMPEG_BUILD_DIR)/config.mak
-endif
+	sed -i -e '/^OPTFLAGS/s|$$| $(FFMPEG_CPPFLAGS)|' \
+	       -e '/^OPTFLAGS/s| -O3| $$(OPTLEVEL)|' $(@D)/config.mak
 	touch $@
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
@@ -171,7 +168,10 @@ ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 #
 $(FFMPEG_BUILD_DIR)/.built: $(FFMPEG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+ifeq (cs05q3armel, $(OPTWARE_TARGET))
+	$(MAKE) -C $(@D) OPTLEVEL=-O2 ffmpeg.o
+endif
+	$(MAKE) -C $(@D) OPTLEVEL=-O3
 	touch $@
 
 #
@@ -184,11 +184,19 @@ ffmpeg: $(FFMPEG_BUILD_DIR)/.built
 #
 $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 	rm -f $@
+	rm -rf $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
 	$(MAKE) -C $(@D) install \
 		mandir=$(STAGING_DIR)/opt/man \
 		bindir=$(STAGING_DIR)/opt/bin \
 		prefix=$(STAGING_DIR)/opt \
 		DESTDIR=$(STAGING_DIR)
+	install -d $(STAGING_INCLUDE_DIR)/ffmpeg $(STAGING_INCLUDE_DIR)/postproc
+	cp -p	$(STAGING_INCLUDE_DIR)/libavcodec/* \
+		$(STAGING_INCLUDE_DIR)/libavformat/* \
+		$(STAGING_INCLUDE_DIR)/libavutil/* \
+		$(STAGING_INCLUDE_DIR)/ffmpeg/
+	cp -p	$(STAGING_INCLUDE_DIR)/libpostproc/* \
+		$(STAGING_INCLUDE_DIR)/postproc/
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/libavcodec.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/libavformat.pc \
