@@ -1,0 +1,14 @@
+--- encoder/ratecontrol.c.orig	2008-04-09 20:45:06.000000000 +0000
++++ encoder/ratecontrol.c	2008-04-11 04:01:52.000000000 +0000
+@@ -33,6 +33,11 @@
+ #include "common/cpu.h"
+ #include "ratecontrol.h"
+ 
++float logf(float x)
++{
++    return (float) logf((double) x);
++}
++
+ typedef struct
+ {
+     int pict_type;
