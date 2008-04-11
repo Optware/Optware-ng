@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MSORT_SITE=http://billposer.org/Software/Downloads
-MSORT_VERSION=8.43
+MSORT_VERSION=8.44
 MSORT_SOURCE=msort-$(MSORT_VERSION).tar.bz2
 MSORT_DIR=msort-$(MSORT_VERSION)
 MSORT_UNZIP=bzcat
@@ -49,7 +49,7 @@ MSORT_IPK_VERSION=1
 # MSORT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MSORT_PATCHES=$(MSORT_SOURCE_DIR)/uninum.patch
+#MSORT_PATCHES=$(MSORT_SOURCE_DIR)/uninum.patch
 
 #
 # If the compilation of the package requires additional
@@ -82,8 +82,8 @@ MSORT_IPK=$(BUILD_DIR)/msort_$(MSORT_VERSION)-$(MSORT_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MSORT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MSORT_SITE)/$(MSORT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MSORT_SOURCE)
+	$(WGET) -P $(@D) $(MSORT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
