@@ -9,14 +9,14 @@ BROKEN_PACKAGES = \
 	9base appweb \
 	fcgi ficy fish fuppes gnu-smalltalk \
 	gtmess gtk ice ipac-ng iptraf kismet \
-	launchtool ldconfig liba52 mediatomb monotone \
+	launchtool ldconfig mediatomb monotone \
 	mtr mysql-connector-odbc \
 	nfs-server nfs-utils \
 	ntop openser pango pcapsipdump \
 	py-mysql \
 	qemu quagga \
 	rssh sablevm sm \
-	transcode uemacs util-linux vlc vnstat \
+	transcode uemacs util-linux vnstat \
 	vte xauth xaw xchat xmu xt xterm \
 	slimserver \
 
