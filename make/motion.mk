@@ -5,7 +5,7 @@
 ###########################################################
 
 MOTION_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/motion
-MOTION_VERSION=3.2.6
+MOTION_VERSION=3.2.9
 MOTION_SOURCE=motion-$(MOTION_VERSION).tar.gz
 MOTION_DIR=motion-$(MOTION_VERSION)
 MOTION_UNZIP=zcat
@@ -24,7 +24,7 @@ MOTION_CONFLICTS=
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=6
+MOTION_IPK_VERSION=1
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
@@ -191,3 +191,9 @@ motion-clean:
 #
 motion-dirclean:
 	rm -rf $(BUILD_DIR)/$(MOTION_DIR) $(MOTION_BUILD_DIR) $(MOTION_IPK_DIR) $(MOTION_IPK)
+
+#
+# Some sanity check for the package.
+#
+motion-check: $(MOTION_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOTION_IPK)
