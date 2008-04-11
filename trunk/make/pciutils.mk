@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PCIUTILS_SITE=http://www.kernel.org/pub/software/utils/pciutils
-PCIUTILS_VERSION=3.0.0
+PCIUTILS_VERSION=2.2.10
 PCIUTILS_SOURCE=pciutils-$(PCIUTILS_VERSION).tar.bz2
 PCIUTILS_DIR=pciutils-$(PCIUTILS_VERSION)
 PCIUTILS_UNZIP=bzcat
