@@ -36,7 +36,7 @@ LIBDLNA_CONFLICTS=
 #
 # LIBDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDLNA_IPK_VERSION=1
+LIBDLNA_IPK_VERSION=2
 
 #
 # LIBDLNA_CONFFILES should be a list of user-editable files
