@@ -1,0 +1,26 @@
+--- libavcodec/ac3dec.c.orig	2008-04-10 18:07:57.000000000 +0000
++++ libavcodec/ac3dec.c	2008-04-11 04:53:14.000000000 +0000
+@@ -248,7 +248,7 @@
+        reference: Section 7.7.1 Dynamic Range Control */
+     for(i=0; i<256; i++) {
+         int v = (i >> 5) - ((i >> 7) << 3) - 5;
+-        dynamic_range_tab[i] = powf(2.0f, v) * ((i & 0x1F) | 0x20);
++        dynamic_range_tab[i] = pow(2.0f, v) * ((i & 0x1F) | 0x20);
+     }
+ 
+     /* generate exponent tables
+--- libavcodec/atrac3.c.orig	2008-04-10 18:07:57.000000000 +0000
++++ libavcodec/atrac3.c	2008-04-11 04:53:05.000000000 +0000
+@@ -1025,10 +1025,10 @@
+ 
+     /* Generate gain tables. */
+     for (i=0 ; i<16 ; i++)
+-        gain_tab1[i] = powf (2.0, (4 - i));
++        gain_tab1[i] = pow (2.0, (4 - i));
+ 
+     for (i=-15 ; i<16 ; i++)
+-        gain_tab2[i+15] = powf (2.0, i * -0.125);
++        gain_tab2[i+15] = pow (2.0, i * -0.125);
+ 
+     /* init the joint-stereo decoding data */
+     q->weighting_delay[0] = 0;

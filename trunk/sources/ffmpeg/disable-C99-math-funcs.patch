@@ -1,0 +1,15 @@
+--- configure.orig	2008-04-10 18:08:03.000000000 +0000
++++ configure	2008-04-11 04:26:33.000000000 +0000
+@@ -1618,11 +1618,7 @@
+ 
+ # test for C99 functions in math.h
+ for func in llrint lrint lrintf round roundf; do
+-    check_exec <<EOF && enable $func || disable $func
+-#define _ISOC9X_SOURCE  1
+-#include <math.h>
+-int main(void) { return ($func(3.999f) > 0)?0:1; }
+-EOF
++    disable $func
+ done
+ 
+ # these are off by default, so fail if requested and not available
