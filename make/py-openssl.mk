@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-OPENSSL_VERSION=0.6
+PY-OPENSSL_VERSION=0.7
 PY-OPENSSL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pyopenssl
 PY-OPENSSL_SOURCE=pyOpenSSL-$(PY-OPENSSL_VERSION).tar.gz
 PY-OPENSSL_DIR=pyOpenSSL-$(PY-OPENSSL_VERSION)
