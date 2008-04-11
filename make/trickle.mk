@@ -86,8 +86,9 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 	$(TRICKLE_UNZIP) $(DL_DIR)/$(TRICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TRICKLE_PATCHES) | patch -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
 	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(@D)
+	sed -i -e '/^AM_CFLAGS/s/+=/=/' $(@D)/Makefile.am
+	cd $(@D); ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif
 	(cd $(@D); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRICKLE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRICKLE_LDFLAGS)" \
@@ -95,11 +96,13 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-libevent=$(STAGING_DIR)/opt \
+		--with-libevent=$(STAGING_PREFIX) \
 		--with-gnu-ld \
 		--prefix=/opt \
 		--disable-nls \
+		--enable-shared \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 trickle-unpack: $(TRICKLE_BUILD_DIR)/.configured
@@ -110,7 +113,7 @@ trickle-unpack: $(TRICKLE_BUILD_DIR)/.configured
 #
 $(TRICKLE_BUILD_DIR)/.built: $(TRICKLE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) all
 	touch $@
 
 #
@@ -166,7 +169,7 @@ $(TRICKLE_IPK_DIR)/CONTROL/control:
 #
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' install install-data
+	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' install # install-man
 #	install -d $(TRICKLE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)/opt/bin/trickle* $(TRICKLE_IPK_DIR)/opt/lib/trickle/*
 #	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
