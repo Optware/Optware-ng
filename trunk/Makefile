@@ -298,7 +298,7 @@ COMMON_CROSS_PACKAGES = \
 	taged taglib tar tcl tcpwrappers tftp-hpa \
 	tcpdump tcpflow tcsh termcap texinfo textutils thttpd \
 	tig tin tinyscheme tmsnc tnef tnftp tnftpd toppyweb tor torrent \
-	transcode transmission tre tree \
+	transcode transmission tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
 	ucl uemacs ufsd unarj unfs3 units unixodbc unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
