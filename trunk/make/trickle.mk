@@ -92,6 +92,7 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRICKLE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TRICKLE_LDFLAGS)" \
+		ac_cv_type_in_addr_t=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -169,7 +170,8 @@ $(TRICKLE_IPK_DIR)/CONTROL/control:
 #
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' install # install-man
+	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' \
+		install-binPROGRAMS install-trickleoverloadDATA install-man
 #	install -d $(TRICKLE_IPK_DIR)/opt/bin
 	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)/opt/bin/trickle* $(TRICKLE_IPK_DIR)/opt/lib/trickle/*
 #	install -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
