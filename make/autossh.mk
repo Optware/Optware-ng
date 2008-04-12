@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AUTOSSH_SITE=http://www.harding.motd.ca/autossh
-AUTOSSH_VERSION=1.4a
+AUTOSSH_VERSION=1.4b
 AUTOSSH_SOURCE=autossh-$(AUTOSSH_VERSION).tgz
 AUTOSSH_DIR=autossh-$(AUTOSSH_VERSION)
 AUTOSSH_UNZIP=zcat
@@ -76,8 +76,8 @@ AUTOSSH_IPK=$(BUILD_DIR)/autossh_$(AUTOSSH_VERSION)-$(AUTOSSH_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(AUTOSSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(AUTOSSH_SITE)/$(AUTOSSH_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(AUTOSSH_SOURCE)
+	$(WGET) -P $(@D) $(AUTOSSH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,16 +106,16 @@ autossh-source: $(DL_DIR)/$(AUTOSSH_SOURCE) $(AUTOSSH_PATCHES)
 #
 $(AUTOSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOSSH_SOURCE) $(AUTOSSH_PATCHES) make/autossh.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(AUTOSSH_DIR) $(AUTOSSH_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(AUTOSSH_DIR) $(@D)
 	$(AUTOSSH_UNZIP) $(DL_DIR)/$(AUTOSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AUTOSSH_PATCHES)" ; \
 		then cat $(AUTOSSH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(AUTOSSH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(AUTOSSH_DIR)" != "$(AUTOSSH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(AUTOSSH_DIR) $(AUTOSSH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(AUTOSSH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(AUTOSSH_DIR) $(@D) ; \
 	fi
-	(cd $(AUTOSSH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AUTOSSH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AUTOSSH_LDFLAGS)" \
@@ -139,7 +139,7 @@ autossh-unpack: $(AUTOSSH_BUILD_DIR)/.configured
 #
 $(AUTOSSH_BUILD_DIR)/.built: $(AUTOSSH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(AUTOSSH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ autossh: $(AUTOSSH_BUILD_DIR)/.built
 #
 $(AUTOSSH_BUILD_DIR)/.staged: $(AUTOSSH_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(AUTOSSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 autossh-stage: $(AUTOSSH_BUILD_DIR)/.staged
