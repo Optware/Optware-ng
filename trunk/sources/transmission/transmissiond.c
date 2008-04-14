@@ -625,7 +625,7 @@ int main( int argc, char ** argv )
   
   
   /* Initialize libtransmission */
-  h = tr_initFull(tr_getDefaultConfigDir(),
+  h = tr_initFull(TR_DEFAULT_CONFIG_DIR,
                   "cgi",                   /* tag */
                   1,                       /* pex enabled */
                   natTraversal,            /* nat enabled */
@@ -638,7 +638,8 @@ int main( int argc, char ** argv )
                   512,                     /* globalPeerLimit */
                   verboseLevel + 1,        /* messageLevel */
                   1,                       /* is message queueing enabled? */
-                  0);                      /* use the blocklist? */
+                  0,                       /* use the blocklist? */
+		  TR_DEFAULT_PEER_SOCKET_TOS );
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir( tr_getDefaultConfigDir())  < 0)
