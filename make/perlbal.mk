@@ -5,7 +5,7 @@
 ###########################################################
 
 PERLBAL_SITE=http://search.cpan.org/CPAN/authors/id/B/BR/BRADFITZ
-PERLBAL_VERSION=1.60
+PERLBAL_VERSION=1.70
 PERLBAL_SOURCE=Perlbal-$(PERLBAL_VERSION).tar.gz
 PERLBAL_DIR=Perlbal-$(PERLBAL_VERSION)
 PERLBAL_UNZIP=zcat
@@ -27,16 +27,17 @@ PERLBAL_IPK_DIR=$(BUILD_DIR)/perlbal-$(PERLBAL_VERSION)-ipk
 PERLBAL_IPK=$(BUILD_DIR)/perlbal_$(PERLBAL_VERSION)-$(PERLBAL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERLBAL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERLBAL_SITE)/$(PERLBAL_SOURCE)
+	$(WGET) -P $(@D) $(PERLBAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perlbal-source: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
 
 $(PERLBAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
 	make perl-stage
-	rm -rf $(BUILD_DIR)/$(PERLBAL_DIR) $(PERLBAL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PERLBAL_DIR) $(@D)
 	$(PERLBAL_UNZIP) $(DL_DIR)/$(PERLBAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(PERLBAL_DIR) $(PERLBAL_BUILD_DIR)
-	(cd $(PERLBAL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PERLBAL_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -44,6 +45,7 @@ $(PERLBAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
+	sed -i -e 's|/etc/|/opt/etc/|' $(@D)/perlbal $(@D)/lib/Perlbal/Plugin/Include.pm
 	touch $@
 
 perlbal-unpack: $(PERLBAL_BUILD_DIR)/.configured
@@ -54,7 +56,7 @@ $(PERLBAL_BUILD_DIR)/.built: $(PERLBAL_BUILD_DIR)/.configured
 	$(MAKE) perl-danga-socket-stage
 	$(MAKE) perl-libwww-stage
 	$(MAKE) perl-sys-syscall-stage
-	$(MAKE) -C $(PERLBAL_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -66,7 +68,7 @@ perlbal: $(PERLBAL_BUILD_DIR)/.built
 
 $(PERLBAL_BUILD_DIR)/.staged: $(PERLBAL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(PERLBAL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 perlbal-stage: $(PERLBAL_BUILD_DIR)/.staged
