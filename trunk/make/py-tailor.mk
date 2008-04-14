@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TAILOR_VERSION=0.9.30
+PY-TAILOR_VERSION=0.9.31
 PY-TAILOR_SITE=http://darcs.arstecnica.it/
 PY-TAILOR_SOURCE=tailor-$(PY-TAILOR_VERSION).tar.gz
 PY-TAILOR_DIR=tailor-$(PY-TAILOR_VERSION)
@@ -227,6 +227,7 @@ $(PY24-TAILOR_IPK): $(PY-TAILOR_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-TAILOR_IPK_DIR) --prefix=/opt; \
 	)
+	mv $(PY24-TAILOR_IPK_DIR)/opt/bin/tailor $(PY24-TAILOR_IPK_DIR)/opt/bin/tailor-2.4
 #	-$(STRIP_COMMAND) `find $(PY24-TAILOR_IPK_DIR)/opt/lib/python2.4/site-packages/tailor -name '*.so'`
 	$(MAKE) $(PY24-TAILOR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TAILOR_IPK_DIR)
@@ -237,7 +238,6 @@ $(PY25-TAILOR_IPK): $(PY-TAILOR_BUILD_DIR)/.built
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 	    --root=$(PY25-TAILOR_IPK_DIR) --prefix=/opt; \
 	)
-	mv $(PY25-TAILOR_IPK_DIR)/opt/bin/tailor $(PY25-TAILOR_IPK_DIR)/opt/bin/tailor-2.5
 #	-$(STRIP_COMMAND) `find $(PY25-TAILOR_IPK_DIR)/opt/lib/python2.5/site-packages/tailor -name '*.so'`
 	$(MAKE) $(PY25-TAILOR_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TAILOR_IPK_DIR)
