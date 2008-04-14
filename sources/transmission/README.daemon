@@ -412,6 +412,9 @@ Think of Pause button as Pause on tape recorder. It Stops/Starts activity of the
 23. How to get the busybox httpd work with it ?
    Instead of busybox httpd  you could use thttpd.
 
+24. How do I check if listening port is correctly opened? 
+  Try http://www.utorrent.com:16000/testport2.php?port=65534
+
 oleo
 
 
