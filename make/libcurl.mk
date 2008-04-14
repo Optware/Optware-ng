@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=1
+LIBCURL_IPK_VERSION=2
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -131,6 +131,7 @@ endif
 		--without-libidn \
 		--disable-ldap \
 		--with-random="/dev/urandom" \
+		--with-ca-bundle=/opt/share/curl/curl-ca-bundle.crt \
 	)
 	touch $@
 
@@ -141,7 +142,7 @@ libcurl-unpack: $(LIBCURL_BUILD_DIR)/.configured
 #
 $(LIBCURL_BUILD_DIR)/.built: $(LIBCURL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) all ca-bundle
 	touch $@
 
 #
@@ -213,10 +214,12 @@ $(LIBCURL_IPK) $(LIBCURL-DEV_IPK): $(LIBCURL_BUILD_DIR)/.built
 	rm -rf $(LIBCURL_IPK_DIR) $(BUILD_DIR)/libcurl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCURL_BUILD_DIR) DESTDIR=$(LIBCURL_IPK_DIR) install-strip
 	rm -f $(LIBCURL_IPK_DIR)/opt/lib/libcurl.a $(LIBCURL_IPK_DIR)/opt/lib/libcurl.la
+	install -d $(LIBCURL_IPK_DIR)/opt/share/curl
+	install $(LIBCURL_BUILD_DIR)/lib/ca-bundle.crt $(LIBCURL_IPK_DIR)/opt/share/curl/curl-ca-bundle.crt
 	$(MAKE) $(LIBCURL_IPK_DIR)/CONTROL/control
 	echo $(LIBCURL_CONFFILES) | sed -e 's/ /\n/g' > $(LIBCURL_IPK_DIR)/CONTROL/conffiles
 	install -d $(LIBCURL-DEV_IPK_DIR)/opt/share/man $(LIBCURL-DEV_IPK_DIR)/opt/lib
-	mv $(LIBCURL_IPK_DIR)/opt/share/man/man3 $(LIBCURL-DEV_IPK_DIR)/opt/share/man
+	mv $(LIBCURL_IPK_DIR)/opt/share/man/man3 $(LIBCURL-DEV_IPK_DIR)/opt/share/man/
 	mv $(LIBCURL_IPK_DIR)/opt/include $(LIBCURL-DEV_IPK_DIR)/opt/
 	mv $(LIBCURL_IPK_DIR)/opt/lib/pkgconfig $(LIBCURL-DEV_IPK_DIR)/opt/lib/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCURL_IPK_DIR)
@@ -239,7 +242,9 @@ libcurl-clean:
 # directories.
 #
 libcurl-dirclean:
-	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(LIBCURL_BUILD_DIR) $(LIBCURL_IPK_DIR) $(LIBCURL_IPK)
+	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(LIBCURL_BUILD_DIR)
+	rm -rf $(LIBCURL_IPK_DIR) $(LIBCURL_IPK)
+	rm -rf $(LIBCURL-DEV_IPK_DIR) $(LIBCURL-DEV_IPK)
 
 #
 # Some sanity check for the package.
