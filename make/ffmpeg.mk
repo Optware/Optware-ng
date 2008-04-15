@@ -38,7 +38,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION=1
+FFMPEG_IPK_VERSION=2
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -154,8 +154,7 @@ ifeq ($(LIBC_STYLE), uclibc)
 #	No lrintf() support in uClibc 0.9.28
 	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(@D)/common.mak $(@D)/Makefile $(@D)/lib*/Makefile
 endif
-	sed -i -e '/^OPTFLAGS/s|$$| $(FFMPEG_CPPFLAGS)|' \
-	       -e '/^OPTFLAGS/s| -O3| $$(OPTLEVEL)|' $(@D)/config.mak
+	sed -i -e '/^OPTFLAGS/s| -O3| $(TARGET_CUSTOM_FLAGS) $(FFMPEG_CPPFLAGS) $$(OPTLEVEL)|' $(@D)/config.mak
 	touch $@
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
