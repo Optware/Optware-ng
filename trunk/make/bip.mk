@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BIP_SITE=http://bip.t1r.net/downloads
-BIP_VERSION=0.7.0
+BIP_VERSION=0.7.2
 BIP_SOURCE=bip-$(BIP_VERSION).tar.gz
 BIP_DIR=bip-$(BIP_VERSION)
 BIP_UNZIP=zcat
@@ -119,8 +119,9 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(BIP_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(BIP_DIR) $(BIP_BUILD_DIR) ; \
 	fi
+#		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
+		;
 	(cd $(@D); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif ; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BIP_LDFLAGS)" \
