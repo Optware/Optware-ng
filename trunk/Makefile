@@ -103,6 +103,7 @@ PERL_PACKAGES = \
 	ack \
 	amavisd-new \
 	colordiff \
+	cowsay \
 	ddclient \
 	ipcalc \
 	perlbal \
