@@ -1,0 +1,15 @@
+--- mysql-4.1.22/sql/share/Makefile.am.orig	2006-11-02 18:15:50.000000000 -0800
++++ mysql-4.1.22/sql/share/Makefile.am	2008-04-16 16:32:40.000000000 -0700
+@@ -50,10 +50,11 @@
+ # Do nothing
+ link_sources:
+ 
++COMP_ERR=../../extra/comp_err
+ fix_errors:
+ 	for lang in @AVAILABLE_LANGUAGES@; \
+ 	do \
+-	../../extra/comp_err -C$(srcdir)/charsets/ $(srcdir)/$$lang/errmsg.txt $(srcdir)/$$lang/errmsg.sys; \
++	$(COMP_ERR) -C$(srcdir)/charsets/ $(srcdir)/$$lang/errmsg.txt $(srcdir)/$$lang/errmsg.sys; \
+         done
+ 
+ # Don't update the files from bitkeeper
