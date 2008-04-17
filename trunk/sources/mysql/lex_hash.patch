@@ -1,5 +1,5 @@
---- mysql-4.1.16/sql/Makefile.am	2005-11-30 12:36:04.000000000 -0800
-+++ mysql/sql/Makefile.am	2005-12-14 14:07:58.000000000 -0800
+--- mysql-4.1.22/sql/Makefile.am.orig	2006-11-02 18:16:50.000000000 -0800
++++ mysql-4.1.22/sql/Makefile.am	2008-04-16 16:21:53.000000000 -0700
 @@ -105,7 +105,7 @@
  			-DSHAREDIR="\"$(MYSQLSHAREdir)\"" \
  			@DEFS@
@@ -9,24 +9,17 @@
  EXTRA_DIST =		udf_example.cc $(BUILT_SOURCES)
  AM_YFLAGS =		-d
  
-@@ -137,16 +137,16 @@
- 		@echo "If it fails, re-run configure with --with-low-memory"
- 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
- 
--lex_hash.h:	gen_lex_hash$(EXEEXT)
+@@ -140,9 +140,10 @@
+ # This generates lex_hash.h
+ # NOTE Built sources should depend on their sources not the tool
+ # this avoid the rebuild of the built files in a source dist
+-lex_hash.h:	gen_lex_hash.cc lex.h
+-		$(MAKE) $(AM_MAKEFLAGS) gen_lex_hash$(EXEEXT)
 -		./gen_lex_hash$(EXEEXT) > $@
-+#distclean-local:
-+#		rm -f lex_hash.h
++GEN_LEX_HASH=./gen_lex_hash
++
++lex_hash.h:	lex.h
++		$(GEN_LEX_HASH) > $@
  
  # For testing of udf_example.so;  Works on platforms with gcc
  # (This is not part of our build process but only provided as an example)
- udf_example.so:	udf_example.cc
- 		$(CXXCOMPILE) -shared -o $@ $<
- 
--distclean-local:
--		rm -f lex_hash.h
-+#distclean-local:
-+#		rm -f lex_hash.h
- 
- # Don't update the files from bitkeeper
- %::SCCS/s.%
