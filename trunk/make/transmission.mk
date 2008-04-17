@@ -25,7 +25,7 @@
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.11
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=5611
+TRANSMISSION_SVN_REV=5633
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
