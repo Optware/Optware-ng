@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MYSQL_SITE=http://downloads.mysql.com/archives/mysql-4.1
-MYSQL_VERSION=4.1.20
+MYSQL_VERSION=4.1.22
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
 MYSQL_UNZIP=zcat
@@ -44,7 +44,7 @@ MYSQL_CONFLICTS=
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=3
+MYSQL_IPK_VERSION=1
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -54,7 +54,10 @@ MYSQL_CONFFILES=/opt/etc/my.cnf
 # MYSQL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MYSQL_PATCHES=$(MYSQL_SOURCE_DIR)/configure.patch $(MYSQL_SOURCE_DIR)/lex_hash.patch
+MYSQL_PATCHES=\
+$(MYSQL_SOURCE_DIR)/configure.patch \
+$(MYSQL_SOURCE_DIR)/lex_hash.patch \
+$(MYSQL_SOURCE_DIR)/comp_err.patch
 
 #
 # If the compilation of the package requires additional
@@ -62,6 +65,10 @@ MYSQL_PATCHES=$(MYSQL_SOURCE_DIR)/configure.patch $(MYSQL_SOURCE_DIR)/lex_hash.p
 #
 MYSQL_CPPFLAGS=
 MYSQL_LDFLAGS="-Wl,-rpath,/opt/lib/mysql"
+MYSQL_CONFIG_ENV=ac_cv_sys_restartable_syscalls=yes
+MYSQL_CONFIG_ENV += $(strip \
+$(if $(filter arm armeb, $(TARGET_ARCH)), ac_cv_c_stack_direction=1, \
+))
 
 #
 # MYSQL_BUILD_DIR is the directory in which the build is done.
@@ -72,8 +79,10 @@ MYSQL_LDFLAGS="-Wl,-rpath,/opt/lib/mysql"
 #
 # You should not change any of these variables.
 #
-MYSQL_BUILD_DIR=$(BUILD_DIR)/mysql
 MYSQL_SOURCE_DIR=$(SOURCE_DIR)/mysql
+MYSQL_BUILD_DIR=$(BUILD_DIR)/mysql
+MYSQL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/mysql
+
 MYSQL_IPK_DIR=$(BUILD_DIR)/mysql-$(MYSQL_VERSION)-ipk
 MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -82,7 +91,8 @@ MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MYSQL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MYSQL_SITE)/$(MYSQL_SOURCE)
+	$(WGET) -P $(@D) $(MYSQL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -90,6 +100,16 @@ $(DL_DIR)/$(MYSQL_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 mysql-source: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
+
+$(MYSQL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL_SOURCE) make/mysql.mk
+	rm -rf $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
+	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
+	cd $(@D); ./configure --prefix=/opt
+	$(MAKE) -C $(@D)
+	touch $@
+
+mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
 
 #
 # This target unpacks the source code in the build directory.
@@ -106,7 +126,7 @@ mysql-source: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
+$(MYSQL_BUILD_DIR)/.configured: $(MYSQL_PATCHES) $(MYSQL_HOST_BUILD_DIR)/.built
 	$(MAKE) openssl-stage
 	$(MAKE) ncurses-stage
 	$(MAKE) zlib-stage
@@ -116,14 +136,14 @@ ifneq (, $(filter libstdc++, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MYSQL_PATCHES) | patch -d $(BUILD_DIR)/$(MYSQL_DIR) -p1
+	cat $(MYSQL_PATCHES) | patch -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
-	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf --install --force -v $(MYSQL_BUILD_DIR)
-	(cd $(MYSQL_BUILD_DIR); \
+	AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf --install --force -v $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MYSQL_LDFLAGS)" \
-		ac_cv_sys_restartable_syscalls=yes \
+		$(MYSQL_CONFIG_ENV) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -145,16 +165,12 @@ endif
 		--with-geometry \
 		--with-low-memory \
 		--enable-assembler \
-		&& \
-		sed -i -e 's!"/etc!"/opt/etc!g' \
-		*/default.c \
-		scripts/*.sh \
 	)
 #		--with-named-thread-libs=-lpthread \
 
-	cp $(MYSQL_SOURCE_DIR)/lex_hash.h $(MYSQL_BUILD_DIR)/sql
-	$(PATCH_LIBTOOL) $(MYSQL_BUILD_DIR)/libtool
-	touch $(MYSQL_BUILD_DIR)/.configured
+	sed -i -e 's!"/etc!"/opt/etc!g' $(@D)/*/default.c $(@D)/scripts/*.sh
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
 
@@ -162,9 +178,12 @@ mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MYSQL_BUILD_DIR)/.built: $(MYSQL_BUILD_DIR)/.configured
-	rm -f $(MYSQL_BUILD_DIR)/.built
-	$(MAKE) -C $(MYSQL_BUILD_DIR)
-	touch $(MYSQL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) \
+		GEN_LEX_HASH=$(MYSQL_HOST_BUILD_DIR)/sql/gen_lex_hash \
+		COMP_ERR=$(MYSQL_HOST_BUILD_DIR)/extra/comp_err \
+		;
+	touch $@
 
 #
 # This is the build convenience target.
@@ -175,10 +194,10 @@ mysql: $(MYSQL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MYSQL_BUILD_DIR)/.staged: $(MYSQL_BUILD_DIR)/.built
-	rm -f $(MYSQL_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(MYSQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
 	rm -f $(STAGING_PREFIX)/lib/mysql/*.la
-	touch $(MYSQL_BUILD_DIR)/.staged
+	touch $@
 
 mysql-stage: $(MYSQL_BUILD_DIR)/.staged
 
@@ -187,7 +206,7 @@ mysql-stage: $(MYSQL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mysql
 #
 $(MYSQL_IPK_DIR)/CONTROL/control:
-	@install -d $(MYSQL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@

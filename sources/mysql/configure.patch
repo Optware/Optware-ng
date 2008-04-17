@@ -1,6 +1,15 @@
---- mysql-4.1.16/configure.in	2005-11-30 12:36:23.000000000 -0800
-+++ mysql/configure.in	2005-12-13 11:04:03.000000000 -0800
-@@ -263,6 +263,9 @@
+--- mysql-4.1.22/configure.in.orig	2006-11-02 18:15:41.000000000 -0800
++++ mysql-4.1.22/configure.in	2008-04-16 18:01:08.000000000 -0700
+@@ -51,7 +51,7 @@
+       ;;
+     *)
+   echo "$i/errmsg.sys: $i/errmsg.txt
+-	\$(top_builddir)/extra/comp_err -C\$(srcdir)/charsets/ $i/errmsg.txt $i/errmsg.sys" \
++	\$(COMP_ERR) -C\$(srcdir)/charsets/ $i/errmsg.txt $i/errmsg.sys" \
+     >> $AVAILABLE_LANGUAGES_ERRORS_RULES
+       ;;
+   esac
+@@ -265,6 +265,9 @@
    *netware*)
      AC_DEFINE(SPRINTF_RETURNS_INT, [1]) AC_MSG_RESULT("int")
      ;;
@@ -10,9 +19,9 @@
    *)
  AC_TRY_RUN([
    int main()
-@@ -872,38 +875,6 @@
- if test "$TARGET_LINUX" = "true"; then
-   AC_MSG_CHECKING([for atomic operations])
+@@ -883,38 +886,6 @@
+   AC_LANG_SAVE
+   AC_LANG_CPLUSPLUS
  
 -  atom_ops=
 -  AC_TRY_RUN([
@@ -49,7 +58,7 @@
    if test -z "$atom_ops"; then atom_ops="no"; fi
    AC_MSG_RESULT($atom_ops)
  
-@@ -963,6 +934,9 @@
+@@ -976,6 +947,9 @@
    *netware)
      AC_MSG_RESULT([no])
      ;;
@@ -59,7 +68,7 @@
    *)
  AC_TRY_RUN([
  #ifdef HAVE_STDLIB_H
-@@ -1317,7 +1291,7 @@
+@@ -1330,7 +1304,7 @@
            # old method, check headers
            # Look for LinuxThreads.
            AC_MSG_CHECKING("LinuxThreads in header file comment")
@@ -68,7 +77,7 @@
            if test "$res" -gt 0
            then
              AC_MSG_RESULT("Found")
-@@ -1846,20 +1820,6 @@
+@@ -1859,20 +1833,6 @@
  MYSQL_CHECK_IN_ADDR_T
  # Do the c++ compiler have a bool type
  MYSQL_CXX_BOOL
