@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MCABBER_SITE=http://www.lilotux.net/~mikael/mcabber/files
-MCABBER_VERSION=0.9.6
+MCABBER_VERSION=0.9.7
 MCABBER_SOURCE=mcabber-$(MCABBER_VERSION).tar.bz2
 MCABBER_DIR=mcabber-$(MCABBER_VERSION)
 MCABBER_UNZIP=bzcat
@@ -80,8 +80,8 @@ MCABBER_IPK=$(BUILD_DIR)/mcabber_$(MCABBER_VERSION)-$(MCABBER_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MCABBER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MCABBER_SITE)/$(MCABBER_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MCABBER_SOURCE)
+	$(WGET) -P $(@D) $(MCABBER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
