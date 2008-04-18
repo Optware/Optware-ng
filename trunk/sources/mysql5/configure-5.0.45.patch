@@ -1,0 +1,88 @@
+--- mysql5/configure.in.orig	2007-07-04 06:06:08.000000000 -0700
++++ mysql5/configure.in	2008-04-17 22:42:49.000000000 -0700
+@@ -271,7 +271,7 @@
+ 
+ #check the return type of sprintf
+ case $SYSTEM_TYPE in
+-  *netware*)
++  *linux*)
+     AC_DEFINE(SPRINTF_RETURNS_INT, [1]) AC_MSG_RESULT("int")
+     ;;
+   *)
+@@ -892,38 +892,6 @@
+   AC_LANG_SAVE
+   AC_LANG_CPLUSPLUS
+ 
+-  atom_ops=
+-  AC_TRY_RUN([
+-#include <asm/atomic.h>
+-int main()
+-{
+-  atomic_t v;
+-
+-  atomic_set(&v, 23);
+-  atomic_add(5, &v);
+-  return atomic_read(&v) == 28 ? 0 : -1;
+-}
+-  ],
+-  [AC_DEFINE([HAVE_ATOMIC_ADD], [1],
+-             [atomic_add() from <asm/atomic.h> (Linux only)])
+-   atom_ops="${atom_ops}atomic_add "],
+-  )
+-  AC_TRY_RUN([
+-#include <asm/atomic.h>
+-int main()
+-{
+-  atomic_t v;
+-
+-  atomic_set(&v, 23);
+-  atomic_sub(5, &v);
+-  return atomic_read(&v) == 18 ? 0 : -1;
+-}
+-  ],
+-  [AC_DEFINE([HAVE_ATOMIC_SUB], [1],
+-             [atomic_sub() from <asm/atomic.h> (Linux only)])
+-   atom_ops="${atom_ops}atomic_sub "],
+-  )
+-
+   if test -z "$atom_ops"; then atom_ops="no"; fi
+   AC_MSG_RESULT($atom_ops)
+ 
+@@ -982,7 +950,7 @@
+ 
+ AC_MSG_CHECKING([for int8])
+ case $SYSTEM_TYPE in
+-  *netware)
++  *linux*)
+     AC_MSG_RESULT([no])
+     ;;
+   *)
+@@ -1345,7 +1313,7 @@
+           # old method, check headers
+           # Look for LinuxThreads.
+           AC_MSG_CHECKING("LinuxThreads in header file comment")
+-          res=`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
++          res=1 #`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
+           if test "$res" -gt 0
+           then
+             AC_MSG_RESULT("Found")
+@@ -1902,19 +1870,6 @@
+ MYSQL_CHECK_IN_ADDR_T
+ # Do the c++ compiler have a bool type
+ MYSQL_CXX_BOOL
+-# Check some common bugs with gcc 2.8.# on sparc
+-if ! ( expr "$SYSTEM_TYPE" : ".*netware.*" > /dev/null ); then
+-MYSQL_CHECK_LONGLONG_TO_FLOAT
+-if test "$ac_cv_conv_longlong_to_float" != "yes"
+-then
+-  AC_MSG_ERROR([Your compiler cannot convert a longlong value to a float!
+-If you are using gcc 2.8.# you should upgrade to egcs 1.0.3 or newer and try
+-again]);
+-fi
+-fi
+-AC_CHECK_TYPES([sigset_t, off_t], [], [], [#include <sys/types.h>])
+-AC_CHECK_TYPES([size_t], [], [], [#include <stdio.h>])
+-AC_CHECK_TYPES([u_int32_t])
+ 
+ MYSQL_PTHREAD_YIELD
+ 
