@@ -44,7 +44,7 @@ MYSQL_CONFLICTS=
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=1
+MYSQL_IPK_VERSION=2
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -58,6 +58,11 @@ MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/configure.patch \
 $(MYSQL_SOURCE_DIR)/lex_hash.patch \
 $(MYSQL_SOURCE_DIR)/comp_err.patch
+ifeq ($(OPTWARE_TARGET), dns323)
+# SIGILL if -O3 is used, so replace -O3 with -Os; it will supercede the TARGET_OPTIMIZATION
+# in toolchain-dns323 because it is later on the command line.
+MYSQL_PATCHES+=$(MYSQL_SOURCE_DIR)/configure_dns323_optimization.patch
+endif
 
 #
 # If the compilation of the package requires additional

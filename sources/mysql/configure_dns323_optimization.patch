@@ -1,0 +1,26 @@
+diff -Naur mysql-4.1.20/configure.in mysql/configure.in
+--- mysql-4.1.20/configure.in	2006-05-24 19:00:26.000000000 +0100
++++ mysql/configure.in	2008-04-16 00:43:12.000000000 +0100
+@@ -1008,8 +1008,8 @@
+ # Some system specific hacks
+ #
+ 
+-MAX_C_OPTIMIZE="-O3"
+-MAX_CXX_OPTIMIZE="-O3"
++MAX_C_OPTIMIZE="-Os"
++MAX_CXX_OPTIMIZE="-Os"
+ 
+ case $SYSTEM_TYPE-$MACHINE_TYPE-$ac_cv_prog_gcc in
+ # workaround for Sun Forte/x86 see BUG#4681
+diff -Naur mysql-4.1.20/innobase/configure.in mysql/innobase/configure.in
+--- mysql-4.1.20/innobase/configure.in	2006-05-24 19:00:38.000000000 +0100
++++ mysql/innobase/configure.in	2008-04-16 00:43:21.000000000 +0100
+@@ -63,7 +63,7 @@
+ then
+   DEBUG_CXXFLAGS="-g"
+   DEBUG_OPTIMIZE_CXX="-O"
+-  OPTIMIZE_CXXFLAGS="-O3"
++  OPTIMIZE_CXXFLAGS="-Os"
+ else
+   DEBUG_CXXFLAGS="-g"
+   DEBUG_OPTIMIZE_CXX=""
