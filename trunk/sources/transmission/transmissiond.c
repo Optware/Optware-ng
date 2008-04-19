@@ -275,6 +275,7 @@ static void start_torrent(const char * filename)
                   active_torrents = new_torrent;
                 }
               tr_torrentSetStatusCallback( tor, torrentStateChanged, NULL );
+              tr_torrentSetFolder( tor, folder);
               tr_torrentStart( tor );
               syslog( LOG_NOTICE, "Starting torrent %s", filename );
             }
