@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SCONS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scons
-SCONS_VERSION=0.97
+SCONS_VERSION=0.98.1
 SCONS_SOURCE=scons-$(SCONS_VERSION).tar.gz
 SCONS_DIR=scons-$(SCONS_VERSION)
 SCONS_UNZIP=zcat
@@ -83,7 +83,8 @@ SCONS_IPK=$(BUILD_DIR)/scons_$(SCONS_VERSION)-$(SCONS_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SCONS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SCONS_SITE)/$(SCONS_SOURCE)
+	$(WGET) -P $(@D) $(SCONS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
