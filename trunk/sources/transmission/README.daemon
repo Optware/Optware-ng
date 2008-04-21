@@ -415,6 +415,52 @@ Think of Pause button as Pause on tape recorder. It Stops/Starts activity of the
 24. How do I check if listening port is correctly opened? 
   Try http://www.utorrent.com:16000/testport2.php?port=65534
 
+25. I am getting core dumps. 
+If you are keen enough you can run debug version of transmission with
+setting DBG=-dbg in transmission.conf
+
+When crash occurs you will find a coredump in $HOME/.config/transmission 
+directory. Then just run
+
+gdb /opt/bin/transmissiond-dbg core.PID
+
+and type
+
+where
+
+to unroll the stack.
+If this is too deep you will need to
+
+set heuristic-fence-post 30000
+
+or so. Then if you do not understand the report to fix the bug for yourself, 
+just post this stack in a similar or new ticket.
+
+It is better to run gdb by attaching to the process and to mask signals that we 
+do not want to follow. If it fail at startup it will show location like the following example:
+export HOME=/home/torrent
+gdb /opt/bin/transmissiond-dbg
+handle SIG32 noprint
+handle SIGHUP noprint
+handle SIGUSR1 noprint
+handle SIGUSR2 noprint
+run -p 65534 -e -w 300 -u 35 -d 180 -i /opt/var/run/transmission.pid /home/torrent/active-torrents.txt
+attach 25403
+where
+#0  memalign (alignment=4, userSize=24) at efence.c:503
+#1  0x00451fbc in malloc (size=24) at efence.c:822
+#2  0x0041ee2c in nodeNew (val=0x2b3dc8c8) at bencode.c:668
+#3  0x0041f2bc in bencWalk (top=0x2, walkFuncs=0x7fff2880, user_data=0x2b7bdfe4) at bencode.c:799
+#4  0x0041f534 in tr_bencSave (top=0x2b7d1fe8, len=0x7fff70d8) at bencode.c:857
+#5  0x00427a3c in tr_metainfoParse (handle=0x2afc9f9c, inf=0x7fff76c8, meta_in=0x2b0167d8) at metainfo.c:208
+#6  0x0040ce74 in tr_torrentParse (handle=0x2afc9f9c, ctor=0x2b0167d0, setmeInfo=0x7fff76c8) at torrent.c:443
+#7  0x0040b650 in tr_initFull (configDir=0x2b0167d0 "\234\237�\004", 
+    tag=0x7fff7750 "/home/torrent/.config/transmission/torrents/0fe62b0839863fa1d67d370ebeec6256a679cf2d-cgi", isPexEnabled=721522640, isPortForwardingEnabled=46, 
+        publicPort=-19, encryptionMode=16384, isUploadLimitEnabled=16384, uploadLimit=35, isDownloadLimitEnabled=16384, downloadLimit=180, globalPeerLimit=512, 
+	    messageLevel=1, isMessageQueueingEnabled=1, isBlocklistEnabled=0, peerSocketTOS=4322432) at session.c:620
+#8  0x0040823c in main (argc=25403, argv=0x1) at transmissiond.c:629
+
+
 oleo
 
 

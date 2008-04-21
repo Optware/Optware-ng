@@ -277,7 +277,7 @@ fi
 #check if Transmission daemon is running
 if [ -f ${PIDFILE} ] ; then
    PID=`cat ${PIDFILE}`
-   grep -q transmissiond /proc/${PID}/cmdline 2> /dev/null
+   grep -q transmissiond${DBG} /proc/${PID}/cmdline 2> /dev/null
    if [ $? != 0 ]; then
       is_running=no
    else
@@ -292,7 +292,7 @@ if [ ${is_running} = "no" ]; then
     export HOME
     _update_active
     ulimit -c 60000
-    transmissiond -p ${LISTENING_PORT} \
+    transmissiond${DBG} -p ${LISTENING_PORT} \
     	${NAT_TRAVERSAL} ${ENCRYPTION} \
 	-w ${WATCHDOG} \
 	-u ${UPLOAD_SPEED} \
