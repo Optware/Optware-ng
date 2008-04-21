@@ -25,7 +25,7 @@
 TRANSMISSION_SITE=http://download.transmissionbt.com/transmission/files
 TRANSMISSION_VERSION=1.11
 TRANSMISSION_SVN=svn://svn.transmissionbt.com/Transmission/trunk
-TRANSMISSION_SVN_REV=5657
+TRANSMISSION_SVN_REV=5642
 ifdef TRANSMISSION_SVN_REV
 TRANSMISSION_SOURCE=transmission-svn-$(TRANSMISSION_SVN_REV).tar.bz2
 else
@@ -66,12 +66,16 @@ TRANSMISSION_SOURCES=$(TRANSMISSION_SOURCE_DIR)/transmissiond.c \
 #
 TRANSMISSION_CPPFLAGS=-O3
 TRANSMISSION_LDFLAGS=
+TRANSMISSION-DBG_CPPFLAGS=-O0 -g
+TRANSMISSION-DBG_LDFLAGS=-lefence -lpthread
 ifeq (uclibc, $(LIBC_STYLE))
 TRANSMISSION_LDFLAGS+=-lintl
+TRANSMISSION-DBG_LDFLAGS+=-lintl
 endif
 ifeq ($(GETTEXT_NLS), enable)
 TRANSMISSION_DEPENDS+=, gettext
 endif
+
 
 
 #
@@ -91,6 +95,25 @@ TRANSMISSION_IPK=$(BUILD_DIR)/transmission_$(TRANSMISSION_VERSION)+r$(TRANSMISSI
 else
 TRANSMISSION_IPK=$(BUILD_DIR)/transmission_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
 endif
+
+#
+# TRANSMISSION-DBG_BUILD_DIR is the directory in which the build is done.
+# TRANSMISSION-DBG_SOURCE_DIR is the directory which holds all the
+# patches and ipkg control files.
+# TRANSMISSION-DBG_IPK_DIR is the directory in which the ipk is built.
+# TRANSMISSION-DBG_IPK is the name of the resulting ipk files.
+#
+# You should not change any of these variables.
+#
+TRANSMISSION-DBG_BUILD_DIR=$(BUILD_DIR)/transmission-dbg
+TRANSMISSION-DBG_SOURCE_DIR=$(SOURCE_DIR)/transmission
+TRANSMISSION-DBG_IPK_DIR=$(BUILD_DIR)/transmission-dbg-$(TRANSMISSION_VERSION)-ipk
+ifdef TRANSMISSION_SVN_REV
+TRANSMISSION-DBG_IPK=$(BUILD_DIR)/transmission-dbg_$(TRANSMISSION_VERSION)+r$(TRANSMISSION_SVN_REV)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
+else
+TRANSMISSION-DBG_IPK=$(BUILD_DIR)/transmission-dbg_$(TRANSMISSION_VERSION)-$(TRANSMISSION_IPK_VERSION)_$(TARGET_ARCH).ipk
+endif
+
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -119,7 +142,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-transmission-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
+transmission-source transmission-dbg-source: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -186,7 +209,49 @@ endif
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
-transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured
+
+$(TRANSMISSION-DBG_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSMISSION_SOURCE) $(TRANSMISSION_PATCHES) make/transmission.mk
+	$(MAKE) openssl-stage electric-fence-stage
+ifeq ($(GETTEXT_NLS), enable)
+	$(MAKE) gettext-stage
+endif
+	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR)
+ifndef TRANSMISSION_SVN_REV
+	mkdir -p $(BUILD_DIR)/$(TRANSMISSION_DIR)
+endif
+	$(TRANSMISSION_UNZIP) $(DL_DIR)/$(TRANSMISSION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(TRANSMISSION_PATCHES)" ; \
+		then cat $(TRANSMISSION_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(TRANSMISSION_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(TRANSMISSION-DBG_BUILD_DIR)" ; \
+		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION-DBG_BUILD_DIR) ; \
+	fi
+ifdef TRANSMISSION_SVN_REV
+	cd $(@D) && AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 ./autogen.sh
+endif
+	(cd $(@D); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRANSMISSION-DBG_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(TRANSMISSION-DBG_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		./configure \
+		--build=$(GNU_HOST_NAME) \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--prefix=/opt \
+		--disable-gtk \
+		--disable-wx \
+		--disable-nls \
+	)
+#		AUTOMAKE=automake-1.9 ACLOCAL=aclocal-1.9 autoreconf -fi -I m4 ; \
+#		--verbose \
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
+
+
+transmission-unpack: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSMISSION-DBG_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
@@ -197,10 +262,16 @@ $(TRANSMISSION_BUILD_DIR)/.built: $(TRANSMISSION_BUILD_DIR)/.configured $(TRANSM
 	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
 	touch $@
 
+$(TRANSMISSION-DBG_BUILD_DIR)/.built: $(TRANSMISSION-DBG_BUILD_DIR)/.configured $(TRANSMISSION-DBG_SOURCES)
+	rm -f $@
+	cp $(TRANSMISSION_SOURCES) $(@D)/cli
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(@D)
+	touch $@
+
 #
 # This is the build convenience target.
 #
-transmission: $(TRANSMISSION_BUILD_DIR)/.built
+transmission: $(TRANSMISSION_BUILD_DIR)/.built $(TRANSMISSION-DBG_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
@@ -246,7 +317,7 @@ endif
 #
 # You may need to patch your application to make it use these locations.
 #
-$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
+$(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built $(TRANSMISSION-DBG_BUILD_DIR)/.built
 	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk
 	install -d $(TRANSMISSION_IPK_DIR)/opt
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
@@ -256,6 +327,7 @@ $(TRANSMISSION_IPK): $(TRANSMISSION_BUILD_DIR)/.built
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/S80busybox_httpd $(TRANSMISSION_IPK_DIR)/opt/etc/init.d
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission.cgi $(TRANSMISSION_IPK_DIR)/opt/share/www/cgi-bin
+	install -m 755 $(TRANSMISSION-DBG_BUILD_DIR)/cli/transmissiond $(TRANSMISSION_IPK_DIR)/opt/bin/transmissiond-dbg
 	install -d $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -m 755 $(TRANSMISSION_SOURCE_DIR)/transmission_watchdog $(TRANSMISSION_IPK_DIR)/opt/sbin
 	install -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
@@ -280,6 +352,8 @@ transmission-ipk: $(TRANSMISSION_IPK)
 transmission-clean:
 	rm -f $(TRANSMISSION_BUILD_DIR)/.built
 	-$(MAKE) -C $(TRANSMISSION_BUILD_DIR) clean
+	rm -f $(TRANSMISSION-DBG_BUILD_DIR)/.built
+	-$(MAKE) -C $(TRANSMISSION-DBG_BUILD_DIR) clean
 
 #
 # This is called from the top level makefile to clean all dynamically created
@@ -287,8 +361,10 @@ transmission-clean:
 #
 transmission-dirclean:
 	rm -rf $(BUILD_DIR)/$(TRANSMISSION_DIR) $(TRANSMISSION_BUILD_DIR) $(TRANSMISSION_IPK_DIR) $(TRANSMISSION_IPK)
+	rm -rf $(TRANSMISSION-DBG_BUILD_DIR)
 
 #
 # Some sanity check for the package.
+# Non stripped transmissiond-dbg is intentional
 transmission-check: $(TRANSMISSION_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(TRANSMISSION_IPK)
