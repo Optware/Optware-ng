@@ -639,6 +639,7 @@ Content-type: text/html
 
 <html>
 <head>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
   <title>Transmission</title>
   <style type="text/css">
   <!--
