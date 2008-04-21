@@ -39,7 +39,7 @@ XMLRPC-C_CONFLICTS=
 #
 # XMLRPC-C_IPK_VERSION should be incremented when the ipk changes.
 #
-XMLRPC-C_IPK_VERSION=2
+XMLRPC-C_IPK_VERSION=3
 
 #
 # XMLRPC-C_CONFFILES should be a list of user-editable files
@@ -49,7 +49,10 @@ XMLRPC-C_IPK_VERSION=2
 # XMLRPC-C_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XMLRPC-C_PATCHES=$(XMLRPC-C_SOURCE_DIR)/ltconfig.patch $(XMLRPC-C_SOURCE_DIR)/Makefile.config.in.patch
+XMLRPC-C_PATCHES= \
+$(XMLRPC-C_SOURCE_DIR)/ltconfig.patch \
+$(XMLRPC-C_SOURCE_DIR)/Makefile.config.in.patch \
+$(XMLRPC-C_SOURCE_DIR)/curl_easy_setopt.patch
 
 #
 # If the compilation of the package requires additional
@@ -79,8 +82,8 @@ XMLRPC-C_IPK=$(BUILD_DIR)/xmlrpc-c_$(XMLRPC-C_VERSION)-$(XMLRPC-C_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(XMLRPC-C_SOURCE):
-	$(WGET) -P $(DL_DIR) $(XMLRPC-C_SITE)/$(XMLRPC-C_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(XMLRPC-C_SOURCE)
+	$(WGET) -P $(@D) $(XMLRPC-C_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
