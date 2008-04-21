@@ -1,0 +1,31 @@
+--- mysql/configure.in.orig	2008-01-29 13:41:18.000000000 -0800
++++ mysql/configure.in	2008-04-21 15:05:35.000000000 -0700
+@@ -1234,7 +1234,7 @@
+           # old method, check headers
+           # Look for LinuxThreads.
+           AC_MSG_CHECKING("LinuxThreads in header file comment")
+-          res=`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
++          res=1 #`grep Linuxthreads /usr/include/pthread.h 2>/dev/null | wc -l`
+           if test "$res" -gt 0
+           then
+             AC_MSG_RESULT("Found")
+@@ -1845,19 +1845,6 @@
+ MYSQL_TZNAME
+ # Do the c++ compiler have a bool type
+ MYSQL_CXX_BOOL
+-# Check some common bugs with gcc 2.8.# on sparc
+-if ! ( expr "$SYSTEM_TYPE" : ".*netware.*" > /dev/null ); then
+-MYSQL_CHECK_LONGLONG_TO_FLOAT
+-if test "$ac_cv_conv_longlong_to_float" != "yes"
+-then
+-  AC_MSG_ERROR([Your compiler cannot convert a longlong value to a float!
+-If you are using gcc 2.8.# you should upgrade to egcs 1.0.3 or newer and try
+-again]);
+-fi
+-fi
+-AC_CHECK_TYPES([sigset_t, off_t], [], [], [#include <sys/types.h>])
+-AC_CHECK_TYPES([size_t], [], [], [#include <stdio.h>])
+-AC_CHECK_TYPES([u_int32_t])
+ 
+ MYSQL_PTHREAD_YIELD
+ 
