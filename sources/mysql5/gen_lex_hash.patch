@@ -1,13 +1,17 @@
---- mysql-5.1.11-beta.org/sql/Makefile.am	2006-06-02 20:00:51.000000000 +0200
-+++ mysql5/sql/Makefile.am	2006-08-13 14:00:01.000000000 +0200
-@@ -156,8 +156,8 @@
- 		@echo "If it fails, re-run configure with --with-low-memory"
- 		$(CXXCOMPILE) $(LM_CFLAGS) -c $<
+--- mysql-5.1.23-rc/sql/Makefile.am.orig	2008-01-29 13:41:50.000000000 -0800
++++ mysql-5.1.23-rc/sql/Makefile.am	2008-04-21 15:43:08.000000000 -0700
+@@ -166,10 +166,10 @@
+ # This generates lex_hash.h
+ # NOTE Built sources should depend on their sources not the tool
+ # this avoid the rebuild of the built files in a source dist
+-lex_hash.h:	gen_lex_hash.cc lex.h
+-		$(MAKE) $(AM_MAKEFLAGS) gen_lex_hash$(EXEEXT)
+-		./gen_lex_hash$(EXEEXT) > $@-t
+-		$(MV) $@-t $@
++GEN_LEX_HASH=./gen_lex_hash
++
++lex_hash.h:	lex.h
++		$(GEN_LEX_HASH) > $@
  
--lex_hash.h:	gen_lex_hash$(EXEEXT)
--		./gen_lex_hash$(EXEEXT) > $@
-+lex_hash.h:
-+		$(MYSQL5_BUILD_DIR)-native/sql/gen_lex_hash > $@
- 
- # the following three should eventually be moved out of this directory
- ha_berkeley.o:	ha_berkeley.cc ha_berkeley.h
+ # For testing of udf_example.so
+ udf_example_la_SOURCES= udf_example.c
