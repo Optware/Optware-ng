@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CTRLPROXY_SITE=http://ctrlproxy.vernstok.nl/releases
-CTRLPROXY_VERSION=3.0.5
+CTRLPROXY_SITE=http://www.ctrlproxy.org/releases
+CTRLPROXY_VERSION=3.0.6
 CTRLPROXY_SOURCE=ctrlproxy-$(CTRLPROXY_VERSION).tar.gz
 CTRLPROXY_DIR=ctrlproxy-$(CTRLPROXY_VERSION)
 CTRLPROXY_UNZIP=zcat
@@ -50,7 +50,7 @@ CTRLPROXY_CONFFILES=
 # CTRLPROXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-CTRLPROXY_PATCHES=$(CTRLPROXY_SOURCE_DIR)/AI_ADDRCONFIG.patch
+#CTRLPROXY_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -78,7 +78,8 @@ CTRLPROXY_IPK=$(BUILD_DIR)/ctrlproxy_$(CTRLPROXY_VERSION)-$(CTRLPROXY_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CTRLPROXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CTRLPROXY_SITE)/$(CTRLPROXY_SOURCE)
+	$(WGET) -P $(@D) $(CTRLPROXY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
