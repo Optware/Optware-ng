@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CURL_SITE=http://pycurl.sourceforge.net/download
-PY-CURL_VERSION=7.16.4
+PY-CURL_VERSION=7.18.1
 PY-CURL_SOURCE=pycurl-$(PY-CURL_VERSION).tar.gz
 PY-CURL_DIR=pycurl-$(PY-CURL_VERSION)
 PY-CURL_UNZIP=zcat
@@ -30,8 +30,8 @@ PY-CURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-CURL_DESCRIPTION=PycURL is a Python interface to libcurl.
 PY-CURL_SECTION=misc
 PY-CURL_PRIORITY=optional
-PY24-CURL_DEPENDS=python24, libcurl (>=7.16.4)
-PY24-CURL_DEPENDS=python25, libcurl (>=7.16.4)
+PY24-CURL_DEPENDS=python24, libcurl (>=7.18.1)
+PY24-CURL_DEPENDS=python25, libcurl (>=7.18.1)
 PY-CURL_CONFLICTS=
 
 #
@@ -84,7 +84,8 @@ PY-CURL-DOC_IPK=$(BUILD_DIR)/py-curl-doc_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-CURL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-CURL_SITE)/$(PY-CURL_SOURCE)
+	$(WGET) -P $(@D) $(PY-CURL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -116,8 +117,8 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(PY-CURL_BUILD_DIR)/2.4
-	(cd $(PY-CURL_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -131,8 +132,8 @@ $(PY-CURL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CURL_SOURCE) $(PY-CURL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-CURL_DIR)
 	$(PY-CURL_UNZIP) $(DL_DIR)/$(PY-CURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CURL_PATCHES) | patch -d $(BUILD_DIR)/$(PY-CURL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(PY-CURL_BUILD_DIR)/2.5
-	(cd $(PY-CURL_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-CURL_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -151,11 +152,11 @@ py-curl-unpack: $(PY-CURL_BUILD_DIR)/.configured
 #
 $(PY-CURL_BUILD_DIR)/.built: $(PY-CURL_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-CURL_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
-	cd $(PY-CURL_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
