@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_VERSION=0.12.0
+LIBTORRENT_VERSION=0.12.1
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
@@ -33,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=2
+LIBTORRENT_IPK_VERSION=1
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files

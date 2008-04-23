@@ -13,7 +13,12 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_VERSION=0.8.0
+
+RTORRENT_VERSION=$(strip \
+	$(if $(filter openwrt-brcm24, $(OPTWARE_TARGET)), 0.8.0, \
+	0.8.1))
+RTORRENT_IPK_VERSION=1
+
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
 #RTORRENT_SVN_REV=1037
 ifdef RTORRENT_SVN_REV
@@ -33,11 +38,6 @@ RTORRENT_NCURSES=$(strip \
 RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
 RTORRENT_SUGGESTS=dtach, screen, adduser
 RTORRENT_CONFLICTS=
-
-#
-# RTORRENT_IPK_VERSION should be incremented when the ipk changes.
-#
-RTORRENT_IPK_VERSION=1
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
