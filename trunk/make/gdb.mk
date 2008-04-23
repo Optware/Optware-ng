@@ -21,7 +21,7 @@
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-GDB_VERSION=6.6
+GDB_VERSION=6.8
 GDB_IPK_VERSION=1
 else
 GDB_VERSION=6.3
@@ -34,7 +34,7 @@ GDB_MAINTAINER=Steve Henson <snhenson@gmail.com>
 GDB_DESCRIPTION=gdb is the standard GNU debugger
 GDB_SECTION=utility
 GDB_PRIORITY=optional
-GDB_DEPENDS=termcap
+GDB_DEPENDS=termcap,ncurses,expat
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GDB_DEPENDS+=, libiconv
 endif
@@ -111,7 +111,7 @@ gdb-source: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 # 
 
 $(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
-	$(MAKE) termcap-stage
+	$(MAKE) termcap-stage expat-stage ncurses-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
