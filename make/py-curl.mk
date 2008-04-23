@@ -37,7 +37,7 @@ PY-CURL_CONFLICTS=
 #
 # PY-CURL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CURL_IPK_VERSION=1
+PY-CURL_IPK_VERSION=2
 
 #
 # PY-CURL_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-CURL_LDFLAGS=
 PY-CURL_BUILD_DIR=$(BUILD_DIR)/py-curl
 PY-CURL_SOURCE_DIR=$(SOURCE_DIR)/py-curl
 
-PY24-CURL_IPK_DIR=$(BUILD_DIR)/py-curl-$(PY-CURL_VERSION)-ipk
-PY24-CURL_IPK=$(BUILD_DIR)/py-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-CURL_IPK_DIR=$(BUILD_DIR)/py24-curl-$(PY-CURL_VERSION)-ipk
+PY24-CURL_IPK=$(BUILD_DIR)/py24-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-CURL_IPK_DIR=$(BUILD_DIR)/py25-curl-$(PY-CURL_VERSION)-ipk
 PY25-CURL_IPK=$(BUILD_DIR)/py25-curl_$(PY-CURL_VERSION)-$(PY-CURL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -198,7 +198,7 @@ $(PY-CURL-DOC_IPK_DIR)/CONTROL/control:
 $(PY24-CURL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-curl" >>$@
+	@echo "Package: py24-curl" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-CURL_PRIORITY)" >>$@
 	@echo "Section: $(PY-CURL_SECTION)" >>$@
@@ -236,7 +236,8 @@ $(PY25-CURL_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
-	rm -rf $(PY24-CURL_IPK_DIR) $(BUILD_DIR)/py-curl_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-curl_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-CURL_IPK_DIR) $(BUILD_DIR)/py24-curl_*_$(TARGET_ARCH).ipk
 	cd $(PY-CURL_BUILD_DIR)/2.4; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
