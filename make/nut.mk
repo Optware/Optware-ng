@@ -29,7 +29,10 @@ NUT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NUT_DESCRIPTION=Network UPS tools.
 NUT_SECTION=admin
 NUT_PRIORITY=optional
-NUT_DEPENDS=libusb, net-snmp, openssl
+NUT_DEPENDS=libusb, openssl
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+NUT_DEPENDS+=, net-snmp
+endif
 NUT_SUGGESTS=
 NUT_CONFLICTS=
 
@@ -105,7 +108,10 @@ nut-source: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES)
 # shown below to make various patches to it.
 #
 $(NUT_BUILD_DIR)/.configured: $(DL_DIR)/$(NUT_SOURCE) $(NUT_PATCHES) make/nut.mk
-	$(MAKE) libusb-stage net-snmp-stage openssl-stage
+	$(MAKE) libusb-stage openssl-stage
+ifneq (, $(filter net-snmp, $(PACKAGES)))
+	$(MAKE) net-snmp-stage
+endif
 	rm -rf $(BUILD_DIR)/$(NUT_DIR) $(@D)
 	$(NUT_UNZIP) $(DL_DIR)/$(NUT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NUT_PATCHES)" ; \
