@@ -271,7 +271,7 @@ COMMON_CROSS_PACKAGES = \
 	newsbeuter newt \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nmap nload noip nrpe \
-	ntfsprogs ntop ntp ntpclient nttcp nvi nylon nzbget \
+	ntfsprogs ntop ntp ntpclient nttcp nut nvi nylon nzbget \
 	ocaml oleo open2300 \
 	openobex obexftp \
 	opencdk openldap openser openssh openssl openvpn \
