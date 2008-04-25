@@ -35,14 +35,14 @@ PERLTGD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERLTGD_DESCRIPTION=Automated EPG updating for the Topfield range of PVRs
 PERLTGD_SECTION=util
 PERLTGD_PRIORITY=optional
-PERLTGD_DEPENDS=perl, wget, wput, cron
+PERLTGD_DEPENDS=perl, wget, wput, cron, coreutils
 PERLTGD_SUGGESTS=ftpd-topfield, puppy
 PERLTGD_CONFLICTS=
 
 #
 # PERLTGD_IPK_VERSION should be incremented when the ipk changes.
 #
-PERLTGD_IPK_VERSION=1
+PERLTGD_IPK_VERSION=2
 
 #
 # PERLTGD_CONFFILES should be a list of user-editable files
