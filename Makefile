@@ -280,7 +280,7 @@ COMMON_CROSS_PACKAGES = \
 	pcapsipdump pciutils pcre pen perltgd \
 	phoneme-advanced \
 	php php-apache php-fcgi php-thttpd phpmyadmin \
-	picocom picolisp pkgconfig player \
+	picocom picolisp pkgconfig player polipo \
 	popt poptop portmap postgresql postfix pound privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils puppy pure-ftpd pv pwgen \
 	python python24 python25 $(PYTHON_PACKAGES) \
