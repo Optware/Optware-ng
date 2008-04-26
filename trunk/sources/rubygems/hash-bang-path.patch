@@ -1,0 +1,11 @@
+--- rubygems/setup.rb~	2008-04-02 09:52:20.000000000 +1030
++++ rubygems/setup.rb	2008-04-27 07:54:12.000000000 +0930
+@@ -134,7 +134,7 @@
+     begin
+       cp bin_file, bin_tmp_file
+       bin = File.readlines bin_tmp_file
+-      bin[0] = "#!#{Gem.ruby}\n"
++      bin[0] = "#!/opt/bin/ruby\n"
+ 
+       File.open bin_tmp_file, 'w' do |fp|
+         fp.puts bin.join

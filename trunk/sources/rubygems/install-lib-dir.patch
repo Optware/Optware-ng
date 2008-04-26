@@ -1,0 +1,11 @@
+--- rubygems/setup.rb.orig	2008-04-27 08:18:08.000000000 +0930
++++ rubygems/setup.rb	2008-04-27 08:18:53.000000000 +0930
+@@ -94,7 +94,7 @@
+     lib_dir = Gem::ConfigMap[:sitelibdir]
+     bin_dir = Gem::ConfigMap[:bindir]
+   else
+-    lib_dir = File.join prefix, 'lib'
++    lib_dir = File.join prefix, 'lib/ruby/1.8'
+     bin_dir = File.join prefix, 'bin'
+ 
+     mkdir_p lib_dir
