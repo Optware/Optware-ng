@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/17190
-RUBYGEMS_VERSION=0.9.2
+RUBYGEMS_SITE=http://rubyforge.org/frs/download.php/35283
+RUBYGEMS_VERSION=1.1.1
 RUBYGEMS_SOURCE=rubygems-$(RUBYGEMS_VERSION).tgz
 RUBYGEMS_DIR=rubygems-$(RUBYGEMS_VERSION)
 RUBYGEMS_UNZIP=zcat
@@ -30,7 +30,7 @@ RUBYGEMS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RUBYGEMS_DESCRIPTION=Ruby packaging and installation framework.
 RUBYGEMS_SECTION=misc
 RUBYGEMS_PRIORITY=optional
-RUBYGEMS_DEPENDS=ruby (>= 1.8.4-2)
+RUBYGEMS_DEPENDS=ruby (>= ${RUBY_VERSION}-${RUBY_IPK_VERSION})
 RUBYGEMS_SUGGESTS=
 RUBYGEMS_CONFLICTS=
 
@@ -48,7 +48,8 @@ RUBYGEMS_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 RUBYGEMS_PATCHES=\
-	$(RUBYGEMS_SOURCE_DIR)/lib-rubygems.rb.patch \
+	$(RUBYGEMS_SOURCE_DIR)/hash-bang-path.patch \
+	$(RUBYGEMS_SOURCE_DIR)/install-lib-dir.patch \
 
 #
 # If the compilation of the package requires additional
@@ -180,19 +181,11 @@ $(RUBYGEMS_IPK_DIR)/CONTROL/control:
 $(RUBYGEMS_IPK): $(RUBYGEMS_BUILD_DIR)/.built
 	$(MAKE) ruby-host-stage
 	rm -rf $(RUBYGEMS_IPK_DIR) $(BUILD_DIR)/rubygems_*_$(TARGET_ARCH).ipk
-	DESTDIR=$(RUBYGEMS_IPK_DIR) \
-	GEM_HOME=$(RUBYGEMS_IPK_DIR)/opt/local/lib/ruby/gems/1.8 \
 	$(RUBY_HOST_RUBY) -C $(RUBYGEMS_BUILD_DIR) setup.rb all \
-		--prefix=$(RUBYGEMS_IPK_DIR)/opt \
-		--siteruby='$$prefix/lib/ruby'
-	install -d $(RUBYGEMS_IPK_DIR)/opt/local/bin
-	install -d $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems/{examples,gemspecs}
+		--prefix=$(RUBYGEMS_IPK_DIR)/opt
+	install -d $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
 	cp -R $(RUBYGEMS_BUILD_DIR)/doc/* $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
-	cp -R $(RUBYGEMS_BUILD_DIR)/examples $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems/examples
-	cp -R $(RUBYGEMS_BUILD_DIR)/gemspecs $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems/gemspecs
 	$(MAKE) $(RUBYGEMS_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RUBYGEMS_SOURCE_DIR)/postinst $(RUBYGEMS_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RUBYGEMS_SOURCE_DIR)/prerm $(RUBYGEMS_IPK_DIR)/CONTROL/prerm
 	echo $(RUBYGEMS_CONFFILES) | sed -e 's/ /\n/g' > $(RUBYGEMS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RUBYGEMS_IPK_DIR)
 
