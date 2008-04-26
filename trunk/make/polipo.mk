@@ -195,6 +195,7 @@ $(POLIPO_IPK_DIR)/CONTROL/control:
 #
 $(POLIPO_IPK): $(POLIPO_BUILD_DIR)/.built
 	rm -rf $(POLIPO_IPK_DIR) $(BUILD_DIR)/polipo_*_$(TARGET_ARCH).ipk
+	PATH=/usr/sbin:$$PATH \
 	$(MAKE) -C $(POLIPO_BUILD_DIR) install \
 		TARGET=$(POLIPO_IPK_DIR) \
 		PREFIX=/opt \
