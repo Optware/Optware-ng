@@ -22,7 +22,7 @@
 SAMBA_SITE=http://www.samba.org/samba/ftp/stable
 ifneq ($(OPTWARE_TARGET),wl500g)
 SAMBA_VERSION=3.0.28a
-SAMBA_IPK_VERSION=1
+SAMBA_IPK_VERSION=2
 else
 SAMBA_VERSION=3.0.14a
 SAMBA_IPK_VERSION=5
@@ -34,7 +34,7 @@ SAMBA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients.
 SAMBA_SECTION=net
 SAMBA_PRIORITY=optional
-SAMBA_DEPENDS=popt, readline, gnutls
+SAMBA_DEPENDS=popt, readline, gnutls, xinetd
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA_DEPENDS +=, openldap-libs
 endif
@@ -43,8 +43,9 @@ SAMBA_CONFLICTS=samba2
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
-SAMBA_CONFFILES=/opt/etc/init.d/S08samba
-
+SAMBA_CONFFILES= \
+	/opt/etc/init.d/S08samba \
+	/opt/etc/xinetd.d/swat	
 
 #
 # SAMBA_PATCHES should list any patches, in the the order in
@@ -295,6 +296,8 @@ $(SAMBA_IPK): $(SAMBA_BUILD_DIR)/.built
 	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
 	install -d $(SAMBA_IPK_DIR)/opt/etc/init.d
 	install -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
+	install -d $(SAMBA_IPK_DIR)/opt/etc/xinetd.d
+	install -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA_IPK_DIR)/opt/etc/xinetd.d/swat
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	install -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	install -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
