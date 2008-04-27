@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNXML_SITE=http://www2.autistici.org/bakunin/libnxml
-LIBNXML_VERSION=0.18.1
+LIBNXML_VERSION=0.18.2
 LIBNXML_SOURCE=libnxml-$(LIBNXML_VERSION).tar.gz
 LIBNXML_DIR=libnxml-$(LIBNXML_VERSION)
 LIBNXML_UNZIP=zcat
@@ -76,7 +76,8 @@ LIBNXML_IPK=$(BUILD_DIR)/libnxml_$(LIBNXML_VERSION)-$(LIBNXML_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBNXML_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBNXML_SITE)/$(LIBNXML_SOURCE)
+	$(WGET) -P $(@D) $(LIBNXML_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
