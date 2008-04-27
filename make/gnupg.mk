@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPG_SITE=ftp://ftp.gnupg.org/gcrypt/gnupg
-GNUPG_VERSION=1.4.7
+GNUPG_VERSION=1.4.9
 GNUPG_SOURCE=gnupg-$(GNUPG_VERSION).tar.bz2
 GNUPG_DIR=gnupg-$(GNUPG_VERSION)
 GNUPG_UNZIP=bzcat
@@ -85,7 +85,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GNUPG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GNUPG_SITE)/$(GNUPG_SOURCE)
+	$(WGET) -P $(@D) $(GNUPG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,11 +110,11 @@ gnupg-source: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
+$(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES) make/gnupg.mk
 	$(MAKE) libusb-stage bzip2-stage zlib-stage readline-stage libcurl-stage openldap-stage
 	rm -rf $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	$(GNUPG_UNZIP) $(DL_DIR)/$(GNUPG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
+#	cat $(GNUPG_PATCHES) | patch -d $(BUILD_DIR)/$(GNUPG_DIR) -p1
 	mv $(BUILD_DIR)/$(GNUPG_DIR) $(GNUPG_BUILD_DIR)
 	(cd $(GNUPG_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -133,16 +134,17 @@ $(GNUPG_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG_SOURCE) $(GNUPG_PATCHES)
 		--disable-nls \
 		$(GNUPG_CFG_OPTS) \
 	)
-	touch $(GNUPG_BUILD_DIR)/.configured
+	touch $@
+
 gnupg-unpack: $(GNUPG_BUILD_DIR)/.configured
 
 #
 # This builds the actual binary.
 #
 $(GNUPG_BUILD_DIR)/.built: $(GNUPG_BUILD_DIR)/.configured
-	rm -f $(GNUPG_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(GNUPG_BUILD_DIR)
-	touch $(GNUPG_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,9 +155,9 @@ gnupg: $(GNUPG_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(GNUPG_BUILD_DIR)/.staged: $(GNUPG_BUILD_DIR)/.built
-	rm -f $(GNUPG_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(GNUPG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(GNUPG_BUILD_DIR)/.staged
+	touch $@
 
 gnupg-stage: $(GNUPG_BUILD_DIR)/.staged
 
@@ -164,7 +166,7 @@ gnupg-stage: $(GNUPG_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/gnupg
 #
 $(GNUPG_IPK_DIR)/CONTROL/control:
-	@install -d $(GNUPG_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: gnupg" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
