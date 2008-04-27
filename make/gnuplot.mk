@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNUPLOT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gnuplot
-GNUPLOT_VERSION=4.2.2
+GNUPLOT_VERSION=4.2.3
 GNUPLOT_SOURCE=gnuplot-$(GNUPLOT_VERSION).tar.gz
 GNUPLOT_DIR=gnuplot-$(GNUPLOT_VERSION)
 GNUPLOT_UNZIP=zcat
@@ -38,7 +38,7 @@ endif
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=2
+GNUPLOT_IPK_VERSION=1
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files
@@ -83,7 +83,8 @@ GNUPLOT_IPK=$(BUILD_DIR)/gnuplot_$(GNUPLOT_VERSION)-$(GNUPLOT_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GNUPLOT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GNUPLOT_SITE)/$(GNUPLOT_SOURCE)
+	$(WGET) -P $(@D) $(GNUPLOT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
