@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 VITETRIS_SITE=http://robert.liquidham.se/vitetris
-VITETRIS_VERSION=0.3.4
+VITETRIS_VERSION=0.40
 VITETRIS_SOURCE=vitetris-$(VITETRIS_VERSION).tar.gz
 VITETRIS_DIR=vitetris-$(VITETRIS_VERSION)
 VITETRIS_UNZIP=zcat
@@ -76,8 +76,8 @@ VITETRIS_IPK=$(BUILD_DIR)/vitetris_$(VITETRIS_VERSION)-$(VITETRIS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(VITETRIS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(VITETRIS_SITE)/$(VITETRIS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(VITETRIS_SOURCE)
+	$(WGET) -P $(@D) $(VITETRIS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -197,7 +197,6 @@ $(VITETRIS_IPK): $(VITETRIS_BUILD_DIR)/.built
 	install -d $(VITETRIS_IPK_DIR)/opt/bin $(VITETRIS_IPK_DIR)/opt/share/doc/vitetris
 	$(STRIP_COMMAND) $(VITETRIS_BUILD_DIR)/tetris -o $(VITETRIS_IPK_DIR)/opt/bin/vitetris
 	install -m 644 \
-		$(VITETRIS_BUILD_DIR)/CHANGELOG \
 		$(VITETRIS_BUILD_DIR)/README \
 		$(VITETRIS_BUILD_DIR)/lice*.txt \
 		$(VITETRIS_IPK_DIR)/opt/share/doc/vitetris/
