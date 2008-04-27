@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBMRSS_SITE=http://www2.autistici.org/bakunin/libmrss
-LIBMRSS_VERSION=0.18.0
+LIBMRSS_VERSION=0.19.1
 LIBMRSS_SOURCE=libmrss-$(LIBMRSS_VERSION).tar.gz
 LIBMRSS_DIR=libmrss-$(LIBMRSS_VERSION)
 LIBMRSS_UNZIP=zcat
@@ -76,7 +76,8 @@ LIBMRSS_IPK=$(BUILD_DIR)/libmrss_$(LIBMRSS_VERSION)-$(LIBMRSS_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBMRSS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBMRSS_SITE)/$(LIBMRSS_SOURCE)
+	$(WGET) -P $(@D) $(LIBMRSS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
