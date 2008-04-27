@@ -17,7 +17,7 @@
 # You should change all these variables to suit your package.
 #
 TCL_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/tcl/
-TCL_VERSION=8.4.16
+TCL_VERSION=8.4.19
 TCL_SOURCE=tcl$(TCL_VERSION)-src.tar.gz
 TCL_DIR=tcl$(TCL_VERSION)
 TCL_UNZIP=zcat
@@ -138,7 +138,7 @@ tcl: $(TCL_BUILD_DIR)/.built
 $(TCL_BUILD_DIR)/.staged: $(TCL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/unix INSTALL_ROOT=$(STAGING_DIR) install
-	cd $(STAGING_DIR)/opt/lib && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'` libtcl.so
+	cd $(STAGING_LIB_DIR) && ln -fs `echo libtcl$(TCL_VERSION).so | sed -e 's/[0-9]\{1,\}.so$$/so/'` libtcl.so
 	touch $@
 
 tcl-stage: $(TCL_BUILD_DIR)/.staged
