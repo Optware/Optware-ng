@@ -253,7 +253,9 @@ COMMON_CROSS_PACKAGES = \
 	libtasn1 libtiff libtool libtorrent \
 	libupnp libusb libvncserver libvorbis libvorbisidec libxml2 libxslt \
 	lighttpd lirc littlesmalltalk \
-	logrotate lookat loudmouth lrzsz lsof ltrace lua lynx lzo \
+	logrotate lookat loudmouth lrzsz lsof ltrace \
+	lua luarocks \
+	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
 	mediatomb mediawiki memcached metalog memtester \
 	mg miau microcom microperl mimms \
