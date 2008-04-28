@@ -40,7 +40,7 @@ LUA_DEPENDS=readline, ncurses
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=1
+LUA_IPK_VERSION=2
 
 #
 # LUA_CONFFILES should be a list of user-editable files
@@ -111,6 +111,7 @@ $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES)
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_HOST_BUILD_DIR)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LUA_DIR) $(LUA_BUILD_DIR)
+	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
 	touch $@
 
 lua-unpack: $(LUA_BUILD_DIR)/.configured
