@@ -36,11 +36,11 @@ LUAROCKS_CONFLICTS=
 #
 # LUAROCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-LUAROCKS_IPK_VERSION=1
+LUAROCKS_IPK_VERSION=2
 
 #
 # LUAROCKS_CONFFILES should be a list of user-editable files
-#LUAROCKS_CONFFILES=/opt/etc/luarocks.conf /opt/etc/init.d/SXXluarocks
+LUAROCKS_CONFFILES=/opt/etc/luarocks/config.lua
 
 #
 # LUAROCKS_PATCHES should list any patches, in the the order in
