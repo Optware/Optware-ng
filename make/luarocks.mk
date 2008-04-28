@@ -36,7 +36,7 @@ LUAROCKS_CONFLICTS=
 #
 # LUAROCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-LUAROCKS_IPK_VERSION=2
+LUAROCKS_IPK_VERSION=3
 
 #
 # LUAROCKS_CONFFILES should be a list of user-editable files
@@ -121,6 +121,7 @@ $(LUAROCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(LUAROCKS_SOURCE) $(LUAROCKS_PATCH
 		LDFLAGS="$(STAGING_LDFLAGS) $(LUAROCKS_LDFLAGS)" \
 		./configure \
 		--prefix=/opt \
+		--rocks-tree=/opt/local/lib/luarocks \
 		--scripts-dir=/opt/local/bin \
 		--with-lua=$(STAGING_PREFIX) \
 		--with-downloader=wget \
@@ -194,7 +195,7 @@ $(LUAROCKS_IPK_DIR)/CONTROL/control:
 $(LUAROCKS_IPK): $(LUAROCKS_BUILD_DIR)/.built
 	rm -rf $(LUAROCKS_IPK_DIR) $(BUILD_DIR)/luarocks_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LUAROCKS_BUILD_DIR) DESTDIR=$(LUAROCKS_IPK_DIR) install
-	install -d $(LUAROCKS_IPK_DIR)/opt/local/bin
+	install -d $(LUAROCKS_IPK_DIR)/opt/local/bin $(LUAROCKS_IPK_DIR)/opt/local/lib/luarocks
 	$(MAKE) $(LUAROCKS_IPK_DIR)/CONTROL/control
 	echo $(LUAROCKS_CONFFILES) | sed -e 's/ /\n/g' > $(LUAROCKS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUAROCKS_IPK_DIR)
