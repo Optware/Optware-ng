@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sqsh
-SQSH_VERSION=2.1.4
-SQSH_SOURCE=sqsh-$(SQSH_VERSION).tar.gz
+SQSH_VERSION=2.1.5
+SQSH_SOURCE=sqsh-$(SQSH_VERSION).tgz
 SQSH_DIR=sqsh-$(SQSH_VERSION)
 SQSH_UNZIP=zcat
 SQSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -75,7 +75,8 @@ SQSH_IPK=$(BUILD_DIR)/sqsh_$(SQSH_VERSION)-$(SQSH_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SQSH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SQSH_SITE)/$(SQSH_SOURCE)
+	$(WGET) -P $(@D) $(SQSH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,7 +110,7 @@ $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqs
 #	cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p1
 	mv $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
 	cp -f $(SOURCE_DIR)/common/config.* $(SQSH_BUILD_DIR)/autoconf/
-	(cd $(SQSH_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQSH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQSH_LDFLAGS)" \
@@ -138,9 +139,9 @@ $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqs
 		--with-readline \
 		--without-x \
 	)
-#	cp $(SQSH_SOURCE_DIR)/config.h $(SQSH_BUILD_DIR)/src
-#	$(PATCH_LIBTOOL) $(SQSH_BUILD_DIR)/libtool
-	touch $(SQSH_BUILD_DIR)/.configured
+#	cp $(SQSH_SOURCE_DIR)/config.h $(@D)/src
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 sqsh-unpack: $(SQSH_BUILD_DIR)/.configured
 
@@ -148,11 +149,11 @@ sqsh-unpack: $(SQSH_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SQSH_BUILD_DIR)/.built: $(SQSH_BUILD_DIR)/.configured
-	rm -f $(SQSH_BUILD_DIR)/.built
-	$(MAKE) -C $(SQSH_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		SYBASE_LIBS="-ldl -lm -lct -lsybdb -ltds" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQSH_LDFLAGS)"
-	touch $(SQSH_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -163,9 +164,9 @@ sqsh: $(SQSH_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SQSH_BUILD_DIR)/.staged: $(SQSH_BUILD_DIR)/.built
-	rm -f $(SQSH_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(SQSH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SQSH_BUILD_DIR)/.staged
+	touch $@
 
 sqsh-stage: $(SQSH_BUILD_DIR)/.staged
 
@@ -174,7 +175,7 @@ sqsh-stage: $(SQSH_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sqsh
 #
 $(SQSH_IPK_DIR)/CONTROL/control:
-	@install -d $(SQSH_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: sqsh" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -202,7 +203,7 @@ $(SQSH_IPK_DIR)/CONTROL/control:
 #
 $(SQSH_IPK): $(SQSH_BUILD_DIR)/.built
 	rm -rf $(SQSH_IPK_DIR) $(BUILD_DIR)/sqsh_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)/opt install
+	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)/opt install install.man
 	$(STRIP_COMMAND) $(SQSH_IPK_DIR)/opt/bin/sqsh
 #	install -d $(SQSH_IPK_DIR)/opt/etc/
 #	install -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)/opt/etc/sqsh.conf
