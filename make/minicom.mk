@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MINICOM_SITE=http://alioth.debian.org/download.php/1806
-MINICOM_VERSION=2.2
+MINICOM_SITE=http://alioth.debian.org/frs/download.php/2332
+MINICOM_VERSION=2.3
 MINICOM_SOURCE=minicom-$(MINICOM_VERSION).tar.gz
 MINICOM_DIR=minicom-$(MINICOM_VERSION)
 MINICOM_UNZIP=zcat
@@ -41,7 +41,7 @@ MINICOM_CONFLICTS=
 #
 # MINICOM_IPK_VERSION should be incremented when the ipk changes.
 #
-MINICOM_IPK_VERSION=3
+MINICOM_IPK_VERSION=1
 
 #
 # MINICOM_CONFFILES should be a list of user-editable files
@@ -80,7 +80,8 @@ MINICOM_IPK=$(BUILD_DIR)/minicom_$(MINICOM_VERSION)-$(MINICOM_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MINICOM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MINICOM_SITE)/$(MINICOM_SOURCE)
+	$(WGET) -P $(@D) $(MINICOM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,7 +105,7 @@ minicom-source: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
+$(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES) make/minicom.mk
 	$(MAKE) ncurses-stage termcap-stage
 	rm -rf $(BUILD_DIR)/$(MINICOM_DIR) $(MINICOM_BUILD_DIR)
 	$(MINICOM_UNZIP) $(DL_DIR)/$(MINICOM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -116,6 +117,7 @@ $(MINICOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MINICOM_SOURCE) $(MINICOM_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINICOM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINICOM_LDFLAGS)" \
+		ac_cv_header_ncurses_termcap_h=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
