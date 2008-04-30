@@ -37,7 +37,7 @@ PY-MARKDOWN_CONFLICTS=
 #
 # PY-MARKDOWN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MARKDOWN_IPK_VERSION=1
+PY-MARKDOWN_IPK_VERSION=2
 
 #
 # PY-MARKDOWN_CONFFILES should be a list of user-editable files
@@ -169,7 +169,7 @@ $(PY24-MARKDOWN_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MARKDOWN_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MARKDOWN_SITE)/$(PY-MARKDOWN_SOURCE)" >>$@
 	@echo "Description: $(PY-MARKDOWN_DESCRIPTION)" >>$@
-	@echo "Depends: py-markdown-common, $(PY24-MARKDOWN_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-MARKDOWN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MARKDOWN_CONFLICTS)" >>$@
 
 $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
@@ -183,7 +183,7 @@ $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-MARKDOWN_MAINTAINER)" >>$@
 	@echo "Source: $(PY-MARKDOWN_SITE)/$(PY-MARKDOWN_SOURCE)" >>$@
 	@echo "Description: $(PY-MARKDOWN_DESCRIPTION)" >>$@
-	@echo "Depends: py-markdown-common, $(PY25-MARKDOWN_DEPENDS)" >>$@
+	@echo "Depends: $(PY25-MARKDOWN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MARKDOWN_CONFLICTS)" >>$@
 
 #
