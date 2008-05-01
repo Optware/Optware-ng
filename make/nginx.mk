@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION=1
+NGINX_IPK_VERSION=2
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -249,7 +249,7 @@ $(NGINX_IPK_DIR)/CONTROL/control:
 $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	rm -rf $(NGINX_IPK_DIR) $(BUILD_DIR)/nginx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
-	sed -i -e "s/listen.*80/listen\t8082/" $(NGINX_IPK_DIR)/opt/etc/nginx/nginx.conf
+	sed -i -e "/^[ 	]*listen/s|listen.*80;|listen\t8082;|" $(NGINX_IPK_DIR)/opt/etc/nginx/nginx.conf
 	$(STRIP_COMMAND) $(NGINX_IPK_DIR)/opt/sbin/nginx
 	install -d $(NGINX_IPK_DIR)/opt/var/nginx/tmp
 	install -d $(NGINX_IPK_DIR)/opt/share/www
