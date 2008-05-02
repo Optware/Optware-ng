@@ -5,7 +5,7 @@
 ###########################################################
 
 MT_DAAPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mt-daapd
-MT_DAAPD_VERSION=0.2.4.1
+MT_DAAPD_VERSION=0.2.4.2
 MT_DAAPD_SOURCE=mt-daapd-$(MT_DAAPD_VERSION).tar.gz
 MT_DAAPD_DIR=mt-daapd-$(MT_DAAPD_VERSION)
 MT_DAAPD_UNZIP=zcat
@@ -16,7 +16,7 @@ MT_DAAPD_PRIORITY=optional
 MT_DAAPD_DEPENDS=gdbm, libid3tag
 MT_DAAPD_CONFLICTS=
 
-MT_DAAPD_IPK_VERSION=2
+MT_DAAPD_IPK_VERSION=1
 
 MT_DAAPD_CPPFLAGS=-DSTRSEP
 MT_DAAPD_LDFLAGS=
@@ -31,17 +31,18 @@ MT_DAAPD_IPK=$(BUILD_DIR)/mt-daapd_$(MT_DAAPD_VERSION)-$(MT_DAAPD_IPK_VERSION)_$
 .PHONY: mt-daapd-source mt-daapd-unpack mt-daapd mt-daapd-stage mt-daapd-ipk mt-daapd-clean mt-daapd-dirclean mt-daapd-check
 
 $(DL_DIR)/$(MT_DAAPD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MT_DAAPD_SITE)/$(MT_DAAPD_SOURCE)
+	$(WGET) -P $(@D) $(MT_DAAPD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 mt-daapd-source: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 
-$(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
+$(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE) make/mt-daapd.mk
 	$(MAKE) zlib-stage gdbm-stage libid3tag-stage
-	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MT_DAAPD_DIR) $(@D)
 	$(MT_DAAPD_UNZIP) $(DL_DIR)/$(MT_DAAPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MT_DAAPD_PATCHES) | patch -d $(BUILD_DIR)/$(MT_DAAPD_DIR) -p1
-	mv $(BUILD_DIR)/$(MT_DAAPD_DIR) $(MT_DAAPD_BUILD_DIR)
-	(cd $(MT_DAAPD_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MT_DAAPD_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MT_DAAPD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MT_DAAPD_LDFLAGS)" \
@@ -52,8 +53,8 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
-	        --with-static-libs=$(STAGING_DIR)/opt/lib \
-		--with-gdbm-include=$(STAGING_DIR)/opt/include \
+	        --with-static-libs=$(STAGING_LIB_DIR) \
+		--with-gdbm-include=$(STAGING_INCLUDE_DIR) \
 		--enable-nslu2 \
 		--enable-browse \
 		--enable-query \
@@ -61,17 +62,15 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE)
 	)
 ifneq (, $(filter slugosbe syno-x07, $(OPTWARE_TARGET)))
 	sed -i -e '/#include <limits.h>/a#include <linux/limits.h>' \
-		$(MT_DAAPD_BUILD_DIR)/src/dynamic-art.c \
-		$(MT_DAAPD_BUILD_DIR)/src/restart.c
+		$(@D)/src/dynamic-art.c \
+		$(@D)/src/restart.c
 endif
 	touch $@
 
 mt-daapd-unpack: $(MT_DAAPD_BUILD_DIR)/.configured
 
 $(MT_DAAPD_BUILD_DIR)/src/mt-daapd: $(MT_DAAPD_BUILD_DIR)/.configured
-	$(MAKE) -C $(MT_DAAPD_BUILD_DIR) CFLAGS="-DSTRSEP"
-
-#	$(MAKE) -C $(MT_DAAPD_BUILD_DIR) CFLAGS="-DSTRSEP"
+	$(MAKE) -C $(@D) CFLAGS="-DSTRSEP"
 
 mt-daapd: zlib gdbm libid3tag $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 
