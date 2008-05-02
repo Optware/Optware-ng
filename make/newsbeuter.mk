@@ -153,6 +153,9 @@ endif
 		--disable-static \
 	)
 	sed -i -e '/DEFINES=/s/$$/ $$(CPPFLAGS)/' $(@D)/Makefile
+	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
+		sed -i -e 's/ -Wextra//' $(@D)/Makefile; \
+	fi
 #	sed -i -e 's/ gettext/ _/' $(@D)/src/keymap.cpp
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
