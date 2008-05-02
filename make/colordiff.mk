@@ -5,7 +5,7 @@
 ###########################################################
 
 COLORDIFF_SITE=http://colordiff.sourceforge.net
-COLORDIFF_VERSION=1.0.6a
+COLORDIFF_VERSION=1.0.7
 COLORDIFF_SOURCE=colordiff-$(COLORDIFF_VERSION).tar.gz
 COLORDIFF_DIR=colordiff-$(COLORDIFF_VERSION)
 COLORDIFF_UNZIP=zcat
@@ -27,17 +27,18 @@ COLORDIFF_IPK_DIR=$(BUILD_DIR)/colordiff-$(COLORDIFF_VERSION)-ipk
 COLORDIFF_IPK=$(BUILD_DIR)/colordiff_$(COLORDIFF_VERSION)-$(COLORDIFF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(COLORDIFF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(COLORDIFF_SITE)/$(COLORDIFF_SOURCE)
+	$(WGET) -P $(@D) $(COLORDIFF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 colordiff-source: $(DL_DIR)/$(COLORDIFF_SOURCE) $(COLORDIFF_PATCHES)
 
 $(COLORDIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(COLORDIFF_SOURCE) $(COLORDIFF_PATCHES)
 	make perl-stage
-	rm -rf $(BUILD_DIR)/$(COLORDIFF_DIR) $(COLORDIFF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(COLORDIFF_DIR) $(@D)
 	$(COLORDIFF_UNZIP) $(DL_DIR)/$(COLORDIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(COLORDIFF_DIR) $(COLORDIFF_BUILD_DIR)
-	sed -i -e '/chown/s/^/#/' $(COLORDIFF_BUILD_DIR)/Makefile
-#	(cd $(COLORDIFF_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(COLORDIFF_DIR) $(@D)
+	sed -i -e '/chown/s/^/#/' $(@D)/Makefile
+#	(cd $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
@@ -45,29 +46,27 @@ $(COLORDIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(COLORDIFF_SOURCE) $(COLORDIFF_PA
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=/opt \
 	)
-	touch $(COLORDIFF_BUILD_DIR)/.configured
+	touch $@
 
 colordiff-unpack: $(COLORDIFF_BUILD_DIR)/.configured
 
 $(COLORDIFF_BUILD_DIR)/.built: $(COLORDIFF_BUILD_DIR)/.configured
-	rm -f $(COLORDIFF_BUILD_DIR)/.built
-	$(MAKE) -C $(COLORDIFF_BUILD_DIR) etc \
-		ETC_DIR=/opt/etc \
-		;
-	touch $(COLORDIFF_BUILD_DIR)/etc
-	touch $(COLORDIFF_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) etc ETC_DIR=/opt/etc
+	touch $(@D)/etc
+	touch $@
 
 colordiff: $(COLORDIFF_BUILD_DIR)/.built
 
 $(COLORDIFF_BUILD_DIR)/.staged: $(COLORDIFF_BUILD_DIR)/.built
-	rm -f $(COLORDIFF_BUILD_DIR)/.staged
-#	$(MAKE) -C $(COLORDIFF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(COLORDIFF_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 colordiff-stage: $(COLORDIFF_BUILD_DIR)/.staged
 
 $(COLORDIFF_IPK_DIR)/CONTROL/control:
-	@install -d $(COLORDIFF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: colordiff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
