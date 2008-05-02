@@ -11,7 +11,7 @@ BROKEN_PACKAGES = \
 	gtmess gtk ice ipac-ng iptraf kismet \
 	launchtool ldconfig mediatomb monotone \
 	mtr mysql-connector-odbc \
-	nfs-server nfs-utils \
+	newsbeuter nfs-server nfs-utils \
 	ntop openser pango pcapsipdump \
 	py-mysql \
 	qemu quagga \
