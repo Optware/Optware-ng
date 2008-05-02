@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NEWSBEUTER_SITE=http://synflood.at/newsbeuter
-NEWSBEUTER_VERSION=0.7
+NEWSBEUTER_VERSION=0.9
 NEWSBEUTER_SOURCE=newsbeuter-$(NEWSBEUTER_VERSION).tar.gz
 NEWSBEUTER_DIR=newsbeuter-$(NEWSBEUTER_VERSION)
 NEWSBEUTER_UNZIP=zcat
@@ -29,7 +29,7 @@ NEWSBEUTER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NEWSBEUTER_DESCRIPTION=An RSS feed reader for the text console.
 NEWSBEUTER_SECTION=net
 NEWSBEUTER_PRIORITY=optional
-NEWSBEUTER_DEPENDS=libmrss, libstdc++, ncursesw, sqlite
+NEWSBEUTER_DEPENDS=libcurl, libmrss, libstdc++, ncursesw, sqlite
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 NEWSBEUTER_DEPENDS+=, libiconv
 endif
@@ -59,7 +59,7 @@ NEWSBEUTER_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 NEWSBEUTER_CPPFLAGS=-ggdb -I./include -I./stfl -I./filter -I.
-NEWSBEUTER_LDFLAGS=-L.
+NEWSBEUTER_LDFLAGS=-L. -lsqlite3 -lcurl
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 NEWSBEUTER_LDFLAGS+=-liconv
 endif
@@ -88,8 +88,8 @@ NEWSBEUTER_IPK=$(BUILD_DIR)/newsbeuter_$(NEWSBEUTER_VERSION)-$(NEWSBEUTER_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NEWSBEUTER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NEWSBEUTER_SITE)/$(NEWSBEUTER_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(NEWSBEUTER_SOURCE)
+	$(WGET) -P $(@D) $(NEWSBEUTER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,7 +118,7 @@ newsbeuter-source: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES)
 #
 $(NEWSBEUTER_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWSBEUTER_SOURCE) $(NEWSBEUTER_PATCHES) make/newsbeuter.mk
 	$(MAKE) libstdc++-stage
-	$(MAKE) sqlite-stage libmrss-stage
+	$(MAKE) sqlite-stage libmrss-stage libcurl-stage
 	$(MAKE) stfl-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -126,21 +126,21 @@ endif
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif
-	rm -rf $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(NEWSBEUTER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(@D)
 	$(NEWSBEUTER_UNZIP) $(DL_DIR)/$(NEWSBEUTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NEWSBEUTER_PATCHES)" ; \
 		then cat $(NEWSBEUTER_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(NEWSBEUTER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NEWSBEUTER_DIR)" != "$(NEWSBEUTER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(NEWSBEUTER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NEWSBEUTER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NEWSBEUTER_DIR) $(@D) ; \
 	fi
-	sed -i -e '/^[ 	]*stfl_/s/stfl_/struct stfl_/' $(NEWSBEUTER_BUILD_DIR)/include/stflpp.h
-	sed -i -e '/#include <set>/a#include <unistd.h>' $(NEWSBEUTER_BUILD_DIR)/include/configparser.h
+	sed -i -e '/^[ 	]*stfl_/s/stfl_/struct stfl_/' $(@D)/include/stflpp.h
+	sed -i -e '/#include <set>/a#include <unistd.h>' $(@D)/include/configparser.h
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-	sed -i -e '/::iconv(/s/, /, (const char**) /' $(NEWSBEUTER_BUILD_DIR)/src/utils.cpp
+	sed -i -e '/::iconv(/s/, /, (const char**) /' $(@D)/src/utils.cpp
 endif
-#	(cd $(NEWSBEUTER_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEWSBEUTER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NEWSBEUTER_LDFLAGS)" \
@@ -152,9 +152,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	sed -i -e '/DEFINES/s/-D_ENABLE_NLS //' $(NEWSBEUTER_BUILD_DIR)/Makefile
-#	sed -i -e 's/ gettext/ _/' $(NEWSBEUTER_BUILD_DIR)/src/keymap.cpp
-#	$(PATCH_LIBTOOL) $(NEWSBEUTER_BUILD_DIR)/libtool
+	sed -i -e '/DEFINES=/s/$$/ $$(CPPFLAGS)/' $(@D)/Makefile
+#	sed -i -e 's/ gettext/ _/' $(@D)/src/keymap.cpp
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 newsbeuter-unpack: $(NEWSBEUTER_BUILD_DIR)/.configured
@@ -164,10 +164,10 @@ newsbeuter-unpack: $(NEWSBEUTER_BUILD_DIR)/.configured
 #
 $(NEWSBEUTER_BUILD_DIR)/.built: $(NEWSBEUTER_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NEWSBEUTER_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEWSBEUTER_CPPFLAGS)" \
-		CXXFLAGS="$(NEWSBEUTER_CPPFLAGS) "'$$(DEFINES)'" $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(NEWSBEUTER_LDFLAGS) $(STAGING_LDFLAGS)" \
 		prefix=/opt \
 		;
@@ -183,7 +183,7 @@ newsbeuter: $(NEWSBEUTER_BUILD_DIR)/.built
 #
 $(NEWSBEUTER_BUILD_DIR)/.staged: $(NEWSBEUTER_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NEWSBEUTER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 newsbeuter-stage: $(NEWSBEUTER_BUILD_DIR)/.staged
