@@ -23,7 +23,7 @@ PHP_FCGI_DEPENDS=php ($(PHP_FCGI_VERSION)), pcre
 #
 # PHP_FCGI_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_FCGI_IPK_VERSION=2
+PHP_FCGI_IPK_VERSION=1
 
 #
 # PHP_FCGI_CONFFILES should be a list of user-editable files
