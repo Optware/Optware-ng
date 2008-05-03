@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBIDN_SITE=http://josefsson.org/libidn/releases
-LIBIDN_VERSION=1.0
+LIBIDN_VERSION=1.7
 LIBIDN_SOURCE=libidn-$(LIBIDN_VERSION).tar.gz
 LIBIDN_DIR=libidn-$(LIBIDN_VERSION)
 LIBIDN_UNZIP=zcat
@@ -82,7 +82,8 @@ LIBIDN_IPK=$(BUILD_DIR)/libidn_$(LIBIDN_VERSION)-$(LIBIDN_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBIDN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBIDN_SITE)/$(LIBIDN_SOURCE)
+	$(WGET) -P $(@D) $(LIBIDN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,11 +109,11 @@ libidn-source: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 #
 $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(LIBIDN_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBIDN_DIR) $(@D)
 	$(LIBIDN_UNZIP) $(DL_DIR)/$(LIBIDN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBIDN_PATCHES) | patch -d $(BUILD_DIR)/$(LIBIDN_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBIDN_DIR) $(LIBIDN_BUILD_DIR)
-	(cd $(LIBIDN_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBIDN_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBIDN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBIDN_LDFLAGS)" \
@@ -125,7 +126,7 @@ $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(LIBIDN_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libidn-unpack: $(LIBIDN_BUILD_DIR)/.configured
@@ -135,7 +136,7 @@ libidn-unpack: $(LIBIDN_BUILD_DIR)/.configured
 #
 $(LIBIDN_BUILD_DIR)/.built: $(LIBIDN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBIDN_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -148,7 +149,7 @@ libidn: $(LIBIDN_BUILD_DIR)/.built
 #
 $(LIBIDN_BUILD_DIR)/.staged: $(LIBIDN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBIDN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
 	rm -f $(STAGING_LIB_DIR)/libidn.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libidn.pc
 	touch $@
@@ -160,7 +161,7 @@ libidn-stage: $(LIBIDN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/libidn
 #
 $(LIBIDN_IPK_DIR)/CONTROL/control:
-	@install -d $(LIBIDN_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: libidn" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
