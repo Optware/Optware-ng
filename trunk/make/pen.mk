@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PEN_SITE=http://siag.nu/pub/pen
-PEN_VERSION=0.17.2
+PEN_VERSION=0.17.3
 PEN_SOURCE=pen-$(PEN_VERSION).tar.gz
 PEN_DIR=pen-$(PEN_VERSION)
 PEN_UNZIP=zcat
@@ -76,7 +76,8 @@ PEN_IPK=$(BUILD_DIR)/pen_$(PEN_VERSION)-$(PEN_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PEN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PEN_SITE)/$(PEN_SOURCE)
+	$(WGET) -P $(@D) $(PEN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,7 +115,7 @@ $(PEN_BUILD_DIR)/.configured: $(DL_DIR)/$(PEN_SOURCE) $(PEN_PATCHES) make/pen.mk
 	if test "$(BUILD_DIR)/$(PEN_DIR)" != "$(PEN_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(PEN_DIR) $(PEN_BUILD_DIR) ; \
 	fi
-	(cd $(PEN_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PEN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PEN_LDFLAGS)" \
@@ -126,8 +127,8 @@ $(PEN_BUILD_DIR)/.configured: $(DL_DIR)/$(PEN_SOURCE) $(PEN_PATCHES) make/pen.mk
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(PEN_BUILD_DIR)/libtool
-	touch $(PEN_BUILD_DIR)/.configured
+#	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 pen-unpack: $(PEN_BUILD_DIR)/.configured
 
@@ -135,9 +136,9 @@ pen-unpack: $(PEN_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PEN_BUILD_DIR)/.built: $(PEN_BUILD_DIR)/.configured
-	rm -f $(PEN_BUILD_DIR)/.built
-	$(MAKE) -C $(PEN_BUILD_DIR)
-	touch $(PEN_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -148,9 +149,9 @@ pen: $(PEN_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PEN_BUILD_DIR)/.staged: $(PEN_BUILD_DIR)/.built
-	rm -f $(PEN_BUILD_DIR)/.staged
-	$(MAKE) -C $(PEN_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PEN_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 pen-stage: $(PEN_BUILD_DIR)/.staged
 
@@ -159,7 +160,7 @@ pen-stage: $(PEN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/pen
 #
 $(PEN_IPK_DIR)/CONTROL/control:
-	@install -d $(PEN_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: pen" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
