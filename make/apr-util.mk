@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=1.2.10
+APR_UTIL_VERSION=1.2.12
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
@@ -27,7 +27,7 @@ APR_UTIL_DEPENDS=apr (>= $(APR_UTIL_VERSION)), e2fsprogs, expat, gdbm, libdb
 #
 # APR_UTIL_IPK_VERSION should be incremented when the ipk changes.
 #
-APR_UTIL_IPK_VERSION=4
+APR_UTIL_IPK_VERSION=1
 
 #
 # APR_UTIL_LOCALES defines which locales get installed
@@ -82,7 +82,7 @@ APR_UTIL_IPK=$(BUILD_DIR)/apr-util_$(APR_UTIL_VERSION)-$(APR_UTIL_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(APR_UTIL_IPK_DIR)/CONTROL/control:
-	@install -d $(APR_UTIL_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: apr-util" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -99,7 +99,8 @@ $(APR_UTIL_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(APR_UTIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(APR_UTIL_SITE)/$(APR_UTIL_SOURCE)
+	$(WGET) -P $(@D) $(APR_UTIL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -132,11 +133,11 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
 	$(MAKE) apr-stage
-	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(APR_UTIL_DIR) $(@D)
 	$(APR_UTIL_UNZIP) $(DL_DIR)/$(APR_UTIL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(APR_UTIL_BUILD_DIR)
-	cat $(APR_UTIL_PATCHES) |patch -p0 -d$(APR_UTIL_BUILD_DIR)
-	(cd $(APR_UTIL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(APR_UTIL_DIR) $(@D)
+	cat $(APR_UTIL_PATCHES) |patch -p0 -d$(@D)
+	(cd $(@D); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_UTIL_CPPFLAGS)" \
@@ -159,12 +160,11 @@ endif
 		--without-sqlite3 \
 		$(APR_UTIL_CONFIGURE_TARGET_ARGS) \
 	)
-	mkdir -p $(APR_UTIL_BUILD_DIR)/build
-	cp $(STAGING_DIR)/opt/share/apache2/build-1/apr_rules.mk \
-		$(APR_UTIL_BUILD_DIR)/build/rules.mk
+	mkdir -p $(@D)/build
+	cp $(STAGING_PREFIX)/share/apache2/build-1/apr_rules.mk $(@D)/build/rules.mk
 	sed -i \
 	 -e '/^OBJECTS_all/{s/[^ \t]\{1,\}\(mysql\|sqlite.\|pgsql\).lo//g}' \
-		$(APR_UTIL_BUILD_DIR)/build-outputs.mk
+		$(@D)/build-outputs.mk
 	touch $@
 
 apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
@@ -175,7 +175,7 @@ apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
 #
 $(APR_UTIL_BUILD_DIR)/.built: $(APR_UTIL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(APR_UTIL_BUILD_DIR) HOSTCC=$(HOSTCC)
+	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
 #

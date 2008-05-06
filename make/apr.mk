@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_SITE=http://www.apache.org/dist/apr
-APR_VERSION=1.2.11
+APR_VERSION=1.2.12
 APR_SOURCE=apr-$(APR_VERSION).tar.bz2
 APR_DIR=apr-$(APR_VERSION)
 APR_UNZIP=bzcat
@@ -71,7 +71,7 @@ APR_IPK=$(BUILD_DIR)/apr_$(APR_VERSION)-$(APR_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(APR_IPK_DIR)/CONTROL/control:
-	@install -d $(APR_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: apr" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -88,7 +88,8 @@ $(APR_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(APR_SOURCE):
-	$(WGET) -P $(DL_DIR) $(APR_SITE)/$(APR_SOURCE)
+	$(WGET) -P $(@D) $(APR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -113,10 +114,10 @@ apr-source: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
-	rm -rf $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(APR_DIR) $(@D)
 	$(APR_UNZIP) $(DL_DIR)/$(APR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(APR_DIR) $(APR_BUILD_DIR)
-	(cd $(APR_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(APR_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APR_LDFLAGS)" \
@@ -139,8 +140,8 @@ $(APR_BUILD_DIR)/.configured: $(DL_DIR)/$(APR_SOURCE) $(APR_PATCHES) make/apr.mk
 		--enable-layout=GNU \
 		--enable-lfs \
 	)
-	$(PATCH_LIBTOOL) $(APR_BUILD_DIR)/libtool
-	touch $(APR_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 apr-unpack: $(APR_BUILD_DIR)/.configured
 
@@ -149,10 +150,10 @@ apr-unpack: $(APR_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(APR_BUILD_DIR)/.built: $(APR_BUILD_DIR)/.configured
-	rm -f $(APR_BUILD_DIR)/.built
+	rm -f $@
 	rm -f $(STAGING_INCLUDE_DIR)/apache2/apr*.h
 	$(MAKE) -C $(APR_BUILD_DIR)
-	touch $(APR_BUILD_DIR)/.built
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
