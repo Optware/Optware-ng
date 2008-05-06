@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.3.1
+FINCH_VERSION=2.4.1
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -63,8 +63,8 @@ FINCH_IPK=$(BUILD_DIR)/finch_$(FINCH_VERSION)-$(FINCH_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FINCH_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FINCH_SITE)/$(FINCH_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(FINCH_SOURCE)
+	$(WGET) -P $(@D) $(FINCH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -99,11 +99,14 @@ $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/
 		then cat $(FINCH_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(FINCH_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FINCH_DIR)" != "$(FINCH_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FINCH_DIR) $(FINCH_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FINCH_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FINCH_DIR) $(@D) ; \
 	fi
-	sed -i.orig -e '/^SUBDIRS/s/ plugins//' $(FINCH_BUILD_DIR)/finch/Makefile.in
-	(cd $(FINCH_BUILD_DIR); \
+	sed -i.orig -e '/^SUBDIRS/s/ plugins//' $(@D)/finch/Makefile.in
+	sed -i -e 's|sys.prefix|"$(STAGING_PREFIX)"|' \
+	       -e 's|sys.exec_prefix|"$(STAGING_PREFIX)"|' \
+		$(@D)/configure
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FINCH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FINCH_LDFLAGS)" \
@@ -115,12 +118,14 @@ $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/
 		--prefix=/opt \
 		--enable-consoleui \
 		--disable-gtkui \
+		--with-gnutls-includes=$(STAGING_INCLUDE_DIR) \
+		--with-gnutls-libs=$(STAGING_LIB_DIR) \
 		--with-ncurses-headers=$(STAGING_INCLUDE_DIR)/ncursesw \
 		--without-x \
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(FINCH_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 finch-unpack: $(FINCH_BUILD_DIR)/.configured
@@ -130,7 +135,7 @@ finch-unpack: $(FINCH_BUILD_DIR)/.configured
 #
 $(FINCH_BUILD_DIR)/.built: $(FINCH_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(FINCH_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -143,7 +148,7 @@ finch: $(FINCH_BUILD_DIR)/.built
 #
 $(FINCH_BUILD_DIR)/.staged: $(FINCH_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(FINCH_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 finch-stage: $(FINCH_BUILD_DIR)/.staged
