@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ZILE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zile
-ZILE_VERSION=2.2.56
+ZILE_SITE=http://ftp.gnu.org/gnu/zile
+ZILE_VERSION=2.2.58
 ZILE_SOURCE=zile-$(ZILE_VERSION).tar.gz
 ZILE_DIR=zile-$(ZILE_VERSION)
 ZILE_UNZIP=zcat
@@ -76,8 +76,8 @@ ZILE_IPK=$(BUILD_DIR)/zile_$(ZILE_VERSION)-$(ZILE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ZILE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ZILE_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(ZILE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
