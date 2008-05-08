@@ -61,9 +61,10 @@ HTOP_CONFIGURE_ENV=\
 	ac_cv_func_malloc_0_nonnull=yes \
 	ac_cv_func_realloc_0_nonnull=yes
 endif
-ifeq (modutils, $(filter modutils, $(PACKAGES)))
-HTOP_CONFIGURE_ARGS=--enable-plpa-emulate
-endif
+HTOP_CONFIGURE_ARGS=$(strip \
+$(if $(or $(filter modutils, $(PACKAGES)), \
+          $(filter fsg3v4, $(OPTWARE_TARGET))), \
+--enable-plpa-emulate, ))
 
 #
 # HTOP_BUILD_DIR is the directory in which the build is done.
