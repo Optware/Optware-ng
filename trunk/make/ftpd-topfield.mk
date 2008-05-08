@@ -52,7 +52,9 @@ FTPD-TOPFIELD_IPK_VERSION=0
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FTPD-TOPFIELD_PATCHES=
+ifneq (, $(filter fsg3v4 openwrt-ixp4xx, $(OPTWARE_TARGET)))
+FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/usb_io.patch
+endif
 
 #
 # If the compilation of the package requires additional
