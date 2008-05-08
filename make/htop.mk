@@ -21,13 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-ifneq (, $(filter cs05q3armel fsg3v4 slugosbe, $(OPTWARE_TARGET)))
-HTOP_VERSION=0.7
+HTOP_VERSION=0.8
 HTOP_IPK_VERSION=1
-else
-HTOP_VERSION=0.6.6
-HTOP_IPK_VERSION=2
-endif
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -48,7 +43,9 @@ HTOP_CONFLICTS=
 # HTOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HTOP_PATCHES=$(HTOP_SOURCE_DIR)/configure.patch
+ifeq (modutils, $(filter modutils, $(PACKAGES)))
+HTOP_PATCHES=$(HTOP_SOURCE_DIR)/linux24-child.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -63,6 +60,9 @@ HTOP_CONFIGURE_ENV=\
 	ac_cv_file__proc_meminfo=yes \
 	ac_cv_func_malloc_0_nonnull=yes \
 	ac_cv_func_realloc_0_nonnull=yes
+endif
+ifeq (modutils, $(filter modutils, $(PACKAGES)))
+HTOP_CONFIGURE_ARGS=--enable-plpa-emulate
 endif
 
 #
@@ -86,7 +86,8 @@ HTOP_IPK=$(BUILD_DIR)/htop_$(HTOP_VERSION)-$(HTOP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HTOP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HTOP_SITE)/$(HTOP_SOURCE)
+	$(WGET) -P $(@D) $(HTOP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -136,6 +137,7 @@ $(HTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES) make/hto
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
+		$(HTOP_CONFIGURE_ARGS) \
 	)
 #	$(PATCH_LIBTOOL) $(HTOP_BUILD_DIR)/libtool
 	touch $@
