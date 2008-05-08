@@ -27,9 +27,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FTPD-TOPFIELD_REPOSITORY=:pserver:anonymous@puppy.cvs.sf.net:/cvsroot/puppy
-FTPD-TOPFIELD_VERSION=0.7.5
+FTPD-TOPFIELD_VERSION=0.7.6
 FTPD-TOPFIELD_SOURCE=ftpd-topfield-$(FTPD-TOPFIELD_VERSION).tar.gz
-FTPD-TOPFIELD_TAG=-r FTPD_TOPFIELD_0_7_5
+FTPD-TOPFIELD_TAG=-r FTPD_TOPFIELD_0_7_6
 FTPD-TOPFIELD_MODULE=ftpd-topfield
 FTPD-TOPFIELD_LIBTOPFIELD_MODULE=libtopfield
 FTPD-TOPFIELD_DIR=ftpd-topfield-$(FTPD-TOPFIELD_VERSION)
@@ -42,7 +42,7 @@ FTPD-TOPFIELD_PRIORITY=optional
 #
 # FTPD-TOPFIELD_IPK_VERSION should be incremented when the ipk changes.
 #
-FTPD-TOPFIELD_IPK_VERSION=1
+FTPD-TOPFIELD_IPK_VERSION=0
 
 #
 # FTPD-TOPFIELD_CONFFILES should be a list of user-editable files
@@ -52,10 +52,7 @@ FTPD-TOPFIELD_IPK_VERSION=1
 # FTPD-TOPFIELD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-FTPD-TOPFIELD_PATCHES=$(FTPD-TOPFIELD_SOURCE_DIR)/syslog.patch
-ifeq (, $(filter slugosbe slugosle, $(OPTWARE_TARGET)))
-FTPD-TOPFIELD_PATCHES+= $(FTPD-TOPFIELD_SOURCE_DIR)/usb_io.patch
-endif
+FTPD-TOPFIELD_PATCHES=
 
 #
 # If the compilation of the package requires additional
