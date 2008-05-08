@@ -22,7 +22,7 @@
 #
 
 PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
-PCRE_VERSION=7.6
+PCRE_VERSION=7.7
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
 PCRE_UNZIP=bzcat
@@ -42,7 +42,7 @@ endif
 #
 # PCRE_IPK_VERSION should be incremented when the ipk changes.
 #
-PCRE_IPK_VERSION=2
+PCRE_IPK_VERSION=1
 
 #
 # PCRE_PATCHES should list any patches, in the the order in
