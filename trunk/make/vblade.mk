@@ -11,7 +11,7 @@
 # if there are reasons.
 #
 VBLADE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aoetools
-VBLADE_VERSION=14
+VBLADE_VERSION=16
 VBLADE_SOURCE=vblade-$(VBLADE_VERSION).tgz
 VBLADE_DIR=vblade-$(VBLADE_VERSION)
 VBLADE_UNZIP=zcat
@@ -26,7 +26,7 @@ VBLADE_CONFLICTS=
 #
 # VBLADE_IPK_VERSION should be incremented when the ipk changes.
 #
-VBLADE_IPK_VERSION=3
+VBLADE_IPK_VERSION=1
 
 #
 # VBLADE_CONFFILES should be a list of user-editable files
