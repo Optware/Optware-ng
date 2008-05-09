@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FREETDS_SITE=ftp://ftp.ibiblio.org/pub/Linux/ALPHA/freetds/stable
-FREETDS_VERSION=0.64
+FREETDS_VERSION=0.82
 FREETDS_SOURCE=freetds-$(FREETDS_VERSION).tar.gz
 FREETDS_DIR=freetds-$(FREETDS_VERSION)
 FREETDS_UNZIP=zcat
@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=3
+FREETDS_IPK_VERSION=1
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files
@@ -75,7 +75,8 @@ FREETDS_IPK=$(BUILD_DIR)/freetds_$(FREETDS_VERSION)-$(FREETDS_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FREETDS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FREETDS_SITE)/$(FREETDS_SOURCE)
+	$(WGET) -P $(@D) $(FREETDS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -102,13 +103,13 @@ freetds-source: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
+$(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES) make/freetds.mk
 	$(MAKE) unixodbc-stage
-	rm -rf $(BUILD_DIR)/$(FREETDS_DIR) $(FREETDS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FREETDS_DIR) $(@D)
 	$(FREETDS_UNZIP) $(DL_DIR)/$(FREETDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(FREETDS_PATCHES) | patch -d $(BUILD_DIR)/$(FREETDS_DIR) -p1
-	mv $(BUILD_DIR)/$(FREETDS_DIR) $(FREETDS_BUILD_DIR)
-	(cd $(FREETDS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(FREETDS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREETDS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FREETDS_LDFLAGS)" \
@@ -124,8 +125,8 @@ $(FREETDS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREETDS_SOURCE) $(FREETDS_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(FREETDS_BUILD_DIR)/libtool
-	touch $(FREETDS_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 freetds-unpack: $(FREETDS_BUILD_DIR)/.configured
 
@@ -133,9 +134,9 @@ freetds-unpack: $(FREETDS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(FREETDS_BUILD_DIR)/.built: $(FREETDS_BUILD_DIR)/.configured
-	rm -f $(FREETDS_BUILD_DIR)/.built
-	$(MAKE) -C $(FREETDS_BUILD_DIR)
-	touch $(FREETDS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -146,13 +147,13 @@ freetds: $(FREETDS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(FREETDS_BUILD_DIR)/.staged: $(FREETDS_BUILD_DIR)/.built
-	rm -f $(FREETDS_BUILD_DIR)/.staged
-	$(MAKE) -C $(FREETDS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libct.la
 	rm -f $(STAGING_LIB_DIR)/libsybdb.la
 	rm -f $(STAGING_LIB_DIR)/libtds.la
 	rm -f $(STAGING_LIB_DIR)/libtdssrv.la
-	touch $(FREETDS_BUILD_DIR)/.staged
+	touch $@
 
 freetds-stage: $(FREETDS_BUILD_DIR)/.staged
 
@@ -161,7 +162,7 @@ freetds-stage: $(FREETDS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/freetds
 #
 $(FREETDS_IPK_DIR)/CONTROL/control:
-	@install -d $(FREETDS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: freetds" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -219,3 +220,9 @@ freetds-clean:
 #
 freetds-dirclean:
 	rm -rf $(BUILD_DIR)/$(FREETDS_DIR) $(FREETDS_BUILD_DIR) $(FREETDS_IPK_DIR) $(FREETDS_IPK)
+
+#
+# Some sanity check for the package.
+#
+freetds-check: $(FREETDS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(FREETDS_IPK)
