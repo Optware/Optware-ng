@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALC_SITE=http://www.isthe.com/chongo/src/calc
-CALC_VERSION=2.12.3.0
+CALC_VERSION=2.12.3.3
 CALC_SOURCE=calc-$(CALC_VERSION).tar.bz2
 CALC_DIR=calc-$(CALC_VERSION)
 CALC_UNZIP=bzcat
@@ -76,8 +76,8 @@ CALC_IPK=$(BUILD_DIR)/calc_$(CALC_VERSION)-$(CALC_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CALC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CALC_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(CALC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,20 +106,20 @@ calc-source: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES)
 #
 $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/calc.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(CALC_DIR) $(CALC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CALC_DIR) $(@D)
 	$(CALC_UNZIP) $(DL_DIR)/$(CALC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CALC_PATCHES)" ; \
 		then cat $(CALC_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CALC_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CALC_DIR)" != "$(CALC_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CALC_DIR) $(CALC_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CALC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CALC_DIR) $(@D) ; \
 	fi
-	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_INCDIR)|' $(CALC_BUILD_DIR)/Makefile $(CALC_BUILD_DIR)/*/Makefile
-	sed -i -e 's|/usr/lib/|/opt/lib|' $(CALC_BUILD_DIR)/hist.h
-	touch $(CALC_BUILD_DIR)/longbits.o
-	touch $(CALC_BUILD_DIR)/longbits
-	cp $(CALC_SOURCE_DIR)/longbits.h $(CALC_BUILD_DIR)/
+	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_INCDIR)|' $(@D)/Makefile $(@D)/*/Makefile
+	sed -i -e 's|/usr/lib/|/opt/lib|' $(@D)/hist.h
+	touch $(@D)/longbits.o
+	touch $(@D)/longbits
+	cp $(CALC_SOURCE_DIR)/longbits.h $(@D)/
 #	(cd $(CALC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
@@ -142,7 +142,7 @@ calc-unpack: $(CALC_BUILD_DIR)/.configured
 #
 $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CALC_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CALC_LDFLAGS)" \
@@ -165,7 +165,7 @@ calc: $(CALC_BUILD_DIR)/.built
 #
 $(CALC_BUILD_DIR)/.staged: $(CALC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(CALC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 calc-stage: $(CALC_BUILD_DIR)/.staged
