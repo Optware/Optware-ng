@@ -16,7 +16,7 @@ RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
 
 RTORRENT_VERSION=$(strip \
 	$(if $(filter gumstix1151 openwrt-brcm24, $(OPTWARE_TARGET)), 0.8.0, \
-	0.8.1))
+	0.8.2))
 RTORRENT_IPK_VERSION=1
 
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
