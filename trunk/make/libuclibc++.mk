@@ -48,7 +48,7 @@ LIBUCLIBC++_CONFLICTS=
 #
 # LIBUCLIBC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUCLIBC++_IPK_VERSION=7
+LIBUCLIBC++_IPK_VERSION=8
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
@@ -59,7 +59,8 @@ LIBUCLIBC++_IPK_VERSION=7
 # which they should be applied to the source code.
 #
 LIBUCLIBC++_PATCHES= $(LIBUCLIBC++_SOURCE_DIR)/bin-Makefile.patch \
-	$(LIBUCLIBC++_SOURCE_DIR)/eabi_fix.patch
+	$(LIBUCLIBC++_SOURCE_DIR)/eabi_fix.patch \
+	$(LIBUCLIBC++_SOURCE_DIR)/associative_base_swap.patch
 
 ifeq ($(OPTWARE_TARGET), wl500g)
 LIBUCLIBC++_PATCHES +=	$(LIBUCLIBC++_SOURCE_DIR)/abi.cpp.patch \
@@ -131,7 +132,7 @@ libuclibc++-source: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(DL_DIR)/$(LIBUCLIBC++_SOUR
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIBC++_PATCHES)
+$(LIBUCLIBC++_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUCLIBC++_SOURCE) $(LIBUCLIBC++_PATCHES) make/libuclibc++.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBUCLIBC++_DIR) $(LIBUCLIBC++_BUILD_DIR)
 	$(LIBUCLIBC++_UNZIP) $(DL_DIR)/$(LIBUCLIBC++_SOURCE) | tar -C $(BUILD_DIR) -xvf -
