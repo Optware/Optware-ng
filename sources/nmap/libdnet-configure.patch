@@ -1,13 +1,13 @@
---- nmap/libdnet-stripped/configure.orig	2006-04-01 12:16:49.000000000 -0800
-+++ nmap/libdnet-stripped/configure	2006-04-01 12:18:01.000000000 -0800
-@@ -3253,9 +3253,8 @@
+--- nmap/libdnet-stripped/configure.orig	2008-04-06 17:23:58.000000000 +0200
++++ nmap/libdnet-stripped/configure	2008-04-06 17:28:00.000000000 +0200
+@@ -3732,9 +3732,8 @@
        IFS="$lt_save_ifs"
        ;;
      esac
 -else
 -  enable_static=yes
- fi;
-+  enable_static=yes
+ fi
++enable_static=yes
  
- # Check whether --enable-fast-install or --disable-fast-install was given.
- if test "${enable_fast_install+set}" = set; then
+ 
+ # Check whether --enable-fast-install was given.
