@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-NOSE_SITE=http://somethingaboutorange.com/mrl/projects/nose
-PY-NOSE_VERSION=0.10.1
+PY-NOSE_SITE=http://pypi.python.org/packages/source/n/nose
+PY-NOSE_VERSION=0.10.2
 PY-NOSE_SOURCE=nose-$(PY-NOSE_VERSION).tar.gz
 PY-NOSE_DIR=nose-$(PY-NOSE_VERSION)
 PY-NOSE_UNZIP=zcat
@@ -37,7 +37,7 @@ PY-NOSE_CONFLICTS=
 #
 # PY-NOSE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-NOSE_IPK_VERSION=2
+PY-NOSE_IPK_VERSION=1
 
 #
 # PY-NOSE_CONFFILES should be a list of user-editable files
@@ -79,8 +79,8 @@ PY25-NOSE_IPK=$(BUILD_DIR)/py25-nose_$(PY-NOSE_VERSION)-$(PY-NOSE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-NOSE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-NOSE_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-NOSE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 .PHONY: py-nose-source py-nose-unpack py-nose py-nose-stage py-nose-ipk py-nose-clean py-nose-dirclean py-nose-check
 
