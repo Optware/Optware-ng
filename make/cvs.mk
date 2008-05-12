@@ -5,7 +5,7 @@
 ###########################################################
 
 CVS_SITE=http://ftp.gnu.org/non-gnu/cvs/source/stable/$(CVS_VERSION)
-CVS_VERSION=1.11.22
+CVS_VERSION=1.11.23
 CVS_SOURCE=$(CVS_DIR).tar.bz2
 CVS_DIR=cvs-$(CVS_VERSION)
 CVS_UNZIP=bzcat
@@ -17,10 +17,7 @@ CVS_DEPENDS=
 CVS_SUGGESTS=
 CVS_CONFLICTS=
 
-CCVS_BUILD_DIR=$(BUILD_DIR)/cvs
-
-
-CVS_IPK_VERSION=2
+CVS_IPK_VERSION=1
 
 CVS_IPK=$(BUILD_DIR)/cvs_$(CVS_VERSION)-$(CVS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CVS_IPK_DIR=$(BUILD_DIR)/cvs-$(CVS_VERSION)-ipk
@@ -51,7 +48,8 @@ CVS_IPK=$(BUILD_DIR)/cvs_$(CVS_VERSION)-$(CVS_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CVS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(CVS_SITE)/$(CVS_SOURCE)
+	$(WGET) -P $(@D) $(CVS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -62,21 +60,21 @@ cvs-source: $(DL_DIR)/$(CVS_SOURCE) $(CVS_PATCHES)
 
 $(CVS_BUILD_DIR)/.source: $(DL_DIR)/$(CVS_SOURCE)
 	$(CVS_UNZIP) $(DL_DIR)/$(CVS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/cvs-$(CVS_VERSION) $(CVS_BUILD_DIR)
-	touch $(CVS_BUILD_DIR)/.source
+	mv $(BUILD_DIR)/cvs-$(CVS_VERSION) $(@D)
+	touch $@
 
 
 $(CVS_BUILD_DIR)/.configured: $(DL_DIR)/$(CVS_SOURCE) $(CVS_PATCHES) make/cvs.mk
-	rm -rf $(BUILD_DIR)/$(CVS_DIR) $(CVS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CVS_DIR) $(@D)
 	$(CVS_UNZIP) $(DL_DIR)/$(CVS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CVS_PATCHES)" ; \
 		then cat $(CVS_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CVS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CVS_DIR)" != "$(CVS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CVS_DIR) $(CVS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CVS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CVS_DIR) $(@D) ; \
 	fi
-	(cd $(CVS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CVS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CVS_LDFLAGS)" \
@@ -90,7 +88,7 @@ $(CVS_BUILD_DIR)/.configured: $(DL_DIR)/$(CVS_SOURCE) $(CVS_PATCHES) make/cvs.mk
 		--without-gssapi \
 		--prefix=/opt \
 	);
-	touch $(CVS_BUILD_DIR)/.configured
+	touch $@
 
 cvs-unpack: $(CVS_BUILD_DIR)/.configured
 
@@ -98,9 +96,9 @@ cvs-unpack: $(CVS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(CVS_BUILD_DIR)/.built: $(CVS_BUILD_DIR)/.configured
-	rm -f $(CVS_BUILD_DIR)/.built
-	$(MAKE) -C $(CVS_BUILD_DIR)
-	touch $(CVS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -111,9 +109,9 @@ cvs: $(CVS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CVS_BUILD_DIR)/.staged: $(CVS_BUILD_DIR)/.built
-	rm -f $(CVS_BUILD_DIR)/.staged
-	$(MAKE) -C $(CVS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(CVS_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 cvs-stage: $(CVS_BUILD_DIR)/.staged
 
@@ -122,7 +120,7 @@ cvs-stage: $(CVS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/cvs
 #
 $(CVS_IPK_DIR)/CONTROL/control:
-	@install -d $(CVS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: cvs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -175,3 +173,9 @@ cvs-clean:
 #
 cvs-dirclean:
 	rm -rf $(BUILD_DIR)/$(CVS_DIR) $(CVS_BUILD_DIR) $(CVS_IPK_DIR) $(CVS_IPK)
+
+#
+# Some sanity check for the package.
+#
+cvs-check: $(CVS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(CVS_IPK)
