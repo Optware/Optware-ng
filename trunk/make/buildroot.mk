@@ -265,6 +265,8 @@ ifneq ($(OPTWARE_TARGET), ts101)
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gdb/6.5/
 	cp $(BUILDROOT_SOURCE_DIR)/900-gcc-$(BUILDROOT_GCC)-opt.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/
+else
+	sed -i.orig -e '/^GCC_SITE/s|=.*|=http://ftp.gnu.org/gnu/gcc/gcc-$$(GCC_VERSION)|' $(@D)/toolchain/gcc/gcc-uclibc-3.x.mk
 endif
 	touch $(BUILDROOT_BUILD_DIR)/.configured
 
