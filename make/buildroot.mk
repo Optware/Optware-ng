@@ -169,7 +169,8 @@ BUILDROOT_TOOLS_MK= $(BUILDROOT_BUILD_DIR)/toolchain/binutils/binutils.mk
 #
 $(DL_DIR)/$(BUILDROOT_SOURCE):
 ifeq ($(OPTWARE_TARGET), ts101)
-	$(WGET) -P $(DL_DIR) $(BUILDROOT_SITE)/$(BUILDROOT_SOURCE)
+	$(WGET) -P $(@D) $(BUILDROOT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 else
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(BUILDROOT_DIR) && \
