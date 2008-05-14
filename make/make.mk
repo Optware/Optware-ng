@@ -35,7 +35,7 @@ MAKE_CONFLICTS=
 #
 # MAKE_IPK_VERSION should be incremented when the ipk changes.
 #
-MAKE_IPK_VERSION=1
+MAKE_IPK_VERSION=2
 
 #
 # MAKE_PATCHES should list any patches, in the the order in
@@ -69,7 +69,8 @@ MAKE_IPK=$(BUILD_DIR)/make_$(MAKE_VERSION)-$(MAKE_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MAKE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MAKE_SITE)/$(MAKE_SOURCE)
+	$(WGET) -P $(@D) $(MAKE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -93,13 +94,13 @@ make-source: $(DL_DIR)/$(MAKE_SOURCE) $(MAKE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(MAKE_SOURCE) $(MAKE_PATCHES)
+$(MAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(MAKE_SOURCE) $(MAKE_PATCHES) make/make.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MAKE_DIR) $(MAKE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MAKE_DIR) $(@D)
 	$(MAKE_UNZIP) $(DL_DIR)/$(MAKE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MAKE_PATCHES) | patch -d $(BUILD_DIR)/$(MAKE_DIR) -p1
-	mv $(BUILD_DIR)/$(MAKE_DIR) $(MAKE_BUILD_DIR)
-	(cd $(MAKE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MAKE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MAKE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MAKE_LDFLAGS)" \
@@ -108,8 +109,11 @@ $(MAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(MAKE_SOURCE) $(MAKE_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
+		--disable-rpath \
+		--disable-nls \
+		--disable-static \
 	)
-	touch $(MAKE_BUILD_DIR)/.configured
+	touch $@
 
 make-unpack: $(MAKE_BUILD_DIR)/.configured
 
@@ -118,9 +122,9 @@ make-unpack: $(MAKE_BUILD_DIR)/.configured
 # directly to the main binary which is built.
 #
 $(MAKE_BUILD_DIR)/.built: $(MAKE_BUILD_DIR)/.configured
-	rm -f $(MAKE_BUILD_DIR)/.built
-	$(MAKE) -C $(MAKE_BUILD_DIR)
-	touch $(MAKE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # You should change the dependency to refer directly to the main binary
@@ -147,7 +151,7 @@ make-stage: $(STAGING_DIR)/opt/lib/libmake.so.$(MAKE_VERSION)
 # necessary to create a seperate control file under sources/make
 # 
 $(MAKE_IPK_DIR)/CONTROL/control:
-	@install -d $(MAKE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: make" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -174,8 +178,7 @@ $(MAKE_IPK_DIR)/CONTROL/control:
 #
 $(MAKE_IPK): $(MAKE_BUILD_DIR)/.built
 	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
-	install -d $(MAKE_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(MAKE_BUILD_DIR)/make -o $(MAKE_IPK_DIR)/opt/bin/make
+	$(MAKE) -C $(MAKE_BUILD_DIR) DESTDIR=$(MAKE_IPK_DIR) install-strip
 #	install -d $(MAKE_IPK_DIR)/opt/etc/init.d
 #	install -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
 	$(MAKE) $(MAKE_IPK_DIR)/CONTROL/control
@@ -200,3 +203,9 @@ make-clean:
 #
 make-dirclean:
 	rm -rf $(BUILD_DIR)/$(MAKE_DIR) $(MAKE_BUILD_DIR) $(MAKE_IPK_DIR) $(MAKE_IPK)
+
+#
+# Some sanity check for the package.
+#
+make-check: $(MAKE_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MAKE_IPK)
