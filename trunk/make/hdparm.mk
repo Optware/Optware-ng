@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 HDPARM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hdparm
-HDPARM_VERSION=8.5
+HDPARM_VERSION=8.6
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)
 HDPARM_UNZIP=zcat
@@ -85,8 +85,8 @@ $(HDPARM_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HDPARM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HDPARM_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(HDPARM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
