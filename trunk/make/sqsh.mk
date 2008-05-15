@@ -153,7 +153,7 @@ sqsh-unpack: $(SQSH_BUILD_DIR)/.configured
 $(SQSH_BUILD_DIR)/.built: $(SQSH_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		SYBASE_LIBS="-ldl -lm -lct -lsybdb -ltds" \
+		SYBASE_LIBS="-ldl -lm -lct -lsybdb -ltdsS" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQSH_LDFLAGS)"
 	touch $@
 
