@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DIFFSTAT_SITE=ftp://invisible-island.net/diffstat
-DIFFSTAT_VERSION=1.43
+DIFFSTAT_VERSION=1.45
 DIFFSTAT_SOURCE=diffstat-$(DIFFSTAT_VERSION).tgz
 DIFFSTAT_DIR=diffstat-$(DIFFSTAT_VERSION)
 DIFFSTAT_UNZIP=zcat
@@ -76,8 +76,8 @@ DIFFSTAT_IPK=$(BUILD_DIR)/diffstat_$(DIFFSTAT_VERSION)-$(DIFFSTAT_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(DIFFSTAT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DIFFSTAT_SITE)/$(DIFFSTAT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(DIFFSTAT_SOURCE)
+	$(WGET) -P $(@D) $(DIFFSTAT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,10 +112,10 @@ $(DIFFSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFSTAT_SOURCE) $(DIFFSTAT_PATCH
 		then cat $(DIFFSTAT_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(DIFFSTAT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DIFFSTAT_DIR)" != "$(DIFFSTAT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DIFFSTAT_DIR) $(DIFFSTAT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DIFFSTAT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DIFFSTAT_DIR) $(@D) ; \
 	fi
-	(cd $(DIFFSTAT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DIFFSTAT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DIFFSTAT_LDFLAGS)" \
@@ -137,7 +137,7 @@ diffstat-unpack: $(DIFFSTAT_BUILD_DIR)/.configured
 #
 $(DIFFSTAT_BUILD_DIR)/.built: $(DIFFSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DIFFSTAT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -150,7 +150,7 @@ diffstat: $(DIFFSTAT_BUILD_DIR)/.built
 #
 $(DIFFSTAT_BUILD_DIR)/.staged: $(DIFFSTAT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DIFFSTAT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 diffstat-stage: $(DIFFSTAT_BUILD_DIR)/.staged
