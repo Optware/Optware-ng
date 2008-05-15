@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-RDIFF-BACKUP_VERSION=1.1.12
+PY-RDIFF-BACKUP_VERSION=1.1.15
 PY-RDIFF-BACKUP_SITE=http://savannah.nongnu.org/download/rdiff-backup
 PY-RDIFF-BACKUP_SOURCE=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION).tar.gz
 PY-RDIFF-BACKUP_DIR=rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)
@@ -68,8 +68,8 @@ PY-RDIFF-BACKUP_LDFLAGS=
 PY-RDIFF-BACKUP_BUILD_DIR=$(BUILD_DIR)/py-rdiff-backup
 PY-RDIFF-BACKUP_SOURCE_DIR=$(SOURCE_DIR)/py-rdiff-backup
 
-PY24-RDIFF-BACKUP_IPK_DIR=$(BUILD_DIR)/py-rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)-ipk
-PY24-RDIFF-BACKUP_IPK=$(BUILD_DIR)/py-rdiff-backup_$(PY-RDIFF-BACKUP_VERSION)-$(PY-RDIFF-BACKUP_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-RDIFF-BACKUP_IPK_DIR=$(BUILD_DIR)/py24-rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)-ipk
+PY24-RDIFF-BACKUP_IPK=$(BUILD_DIR)/py24-rdiff-backup_$(PY-RDIFF-BACKUP_VERSION)-$(PY-RDIFF-BACKUP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-RDIFF-BACKUP_IPK_DIR=$(BUILD_DIR)/py25-rdiff-backup-$(PY-RDIFF-BACKUP_VERSION)-ipk
 PY25-RDIFF-BACKUP_IPK=$(BUILD_DIR)/py25-rdiff-backup_$(PY-RDIFF-BACKUP_VERSION)-$(PY-RDIFF-BACKUP_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +81,8 @@ PY25-RDIFF-BACKUP_IPK=$(BUILD_DIR)/py25-rdiff-backup_$(PY-RDIFF-BACKUP_VERSION)-
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-RDIFF-BACKUP_SITE)/$(PY-RDIFF-BACKUP_SOURCE)
+	$(WGET) -P $(@D) $(PY-RDIFF-BACKUP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,18 +108,18 @@ py-rdiff-backup-source: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(PY-RDIFF-BACKUP_PA
 #
 $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(PY-RDIFF-BACKUP_PATCHES)
 	$(MAKE) python-stage librsync-stage
-	rm -rf $(PY-RDIFF-BACKUP_BUILD_DIR)
-	mkdir -p $(PY-RDIFF-BACKUP_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR)
 	$(PY-RDIFF-BACKUP_UNZIP) $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-RDIFF-BACKUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(PY-RDIFF-BACKUP_BUILD_DIR)/2.4
-	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
-	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.4"; \
@@ -130,12 +131,12 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 	rm -rf $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR)
 	$(PY-RDIFF-BACKUP_UNZIP) $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-RDIFF-BACKUP_PATCHES) | patch -d $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(PY-RDIFF-BACKUP_BUILD_DIR)/2.5
-	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-RDIFF-BACKUP_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
-	        echo "library-dirs=$(STAGING_DIR)/opt/lib"; \
+	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "rpath=/opt/lib"; \
 		echo "[build_scripts]"; \
 		echo "executable=/opt/bin/python2.5"; \
@@ -152,11 +153,11 @@ py-rdiff-backup-unpack: $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured
 #
 $(PY-RDIFF-BACKUP_BUILD_DIR)/.built: $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
@@ -171,9 +172,9 @@ py-rdiff-backup: $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-RDIFF-BACKUP_BUILD_DIR)/.staged: $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
-	rm -f $(PY-RDIFF-BACKUP_BUILD_DIR)/.staged
-	#$(MAKE) -C $(PY-RDIFF-BACKUP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-RDIFF-BACKUP_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-rdiff-backup-stage: $(PY-RDIFF-BACKUP_BUILD_DIR)/.staged
 
@@ -184,7 +185,7 @@ py-rdiff-backup-stage: $(PY-RDIFF-BACKUP_BUILD_DIR)/.staged
 $(PY24-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-rdiff-backup" >>$@
+	@echo "Package: py24-rdiff-backup" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-RDIFF-BACKUP_PRIORITY)" >>$@
 	@echo "Section: $(PY-RDIFF-BACKUP_SECTION)" >>$@
@@ -222,13 +223,17 @@ $(PY25-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
-	rm -rf $(PY24-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py-rdiff-backup_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-rdiff-backup_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-RDIFF-BACKUP_IPK_DIR) $(BUILD_DIR)/py24-rdiff-backup_*_$(TARGET_ARCH).ipk
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-RDIFF-BACKUP_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY24-RDIFF-BACKUP_IPK_DIR)/opt/lib/python2.4/site-packages/*/*.so
+	rm -rf $(PY24-RDIFF-BACKUP_IPK_DIR)/opt/share
+	for f in $(PY24-RDIFF-BACKUP_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-RDIFF-BACKUP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-RDIFF-BACKUP_IPK_DIR)
 
