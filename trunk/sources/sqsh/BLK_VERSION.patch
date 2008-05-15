@@ -1,0 +1,12 @@
+--- src/cmd_bcp.c.orig	2004-11-22 07:10:23.000000000 +0000
++++ src/cmd_bcp.c	2008-05-15 04:09:40.000000000 +0000
+@@ -36,6 +36,9 @@
+ #include "sqsh_sig.h"
+ #include "cmd.h"
+ 
++#define BLK_VERSION_120 BLK_VERSION_100
++#define BLK_VERSION_125 BLK_VERSION_100
++#define BLK_VERSION_150 BLK_VERSION_100
+ 
+ /*-- Current Version --*/
+ #if !defined(lint) && !defined(__LINT__)

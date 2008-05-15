@@ -37,7 +37,7 @@ SQSH_CONFLICTS=
 #
 # SQSH_IPK_VERSION should be incremented when the ipk changes.
 #
-SQSH_IPK_VERSION=1
+SQSH_IPK_VERSION=2
 
 #
 # SQSH_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ SQSH_CONFFILES=/opt/etc/sqshrc
 # SQSH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SQSH_PATCHES=$(SQSH_SOURCE_DIR)/configure.patch
+SQSH_PATCHES=$(SQSH_SOURCE_DIR)/BLK_VERSION.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,9 +107,11 @@ $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqs
 	$(MAKE) freetds-stage readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
 	$(SQSH_UNZIP) $(DL_DIR)/$(SQSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p1
-	mv $(BUILD_DIR)/$(SQSH_DIR) $(SQSH_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(SQSH_BUILD_DIR)/autoconf/
+	if test -n "$(SQSH_PATCHES)"; then \
+		cat $(SQSH_PATCHES) | patch -d $(BUILD_DIR)/$(SQSH_DIR) -p0; \
+	fi
+	mv $(BUILD_DIR)/$(SQSH_DIR) $(@D)
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQSH_CPPFLAGS)" \
