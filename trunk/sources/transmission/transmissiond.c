@@ -733,7 +733,7 @@ int main( int argc, char ** argv )
   if (natTraversal)
     {
       /* Try for 5 seconds to delete any port mappings for NAT traversal */
-      tr_natTraversalEnable( h , 0);
+      tr_sessionSetPortForwardingEnabled( h , 0);
       for( i = 0; i < 5; i++ )
         {
           const tr_handle_status * hstat = tr_handleStatus( h );
