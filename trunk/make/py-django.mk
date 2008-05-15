@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DJANGO_VERSION=0.96.1
+PY-DJANGO_VERSION=0.96.2
 PY-DJANGO_SITE=http://www.djangoproject.com/download/$(PY-DJANGO_VERSION)/tarball/
 PY-DJANGO_SOURCE=Django-$(PY-DJANGO_VERSION).tar.gz
 PY-DJANGO_DIR=Django-$(PY-DJANGO_VERSION)
@@ -37,7 +37,7 @@ PY-DJANGO_CONFLICTS=
 #
 # PY-DJANGO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DJANGO_IPK_VERSION=2
+PY-DJANGO_IPK_VERSION=1
 
 #
 # PY-DJANGO_CONFFILES should be a list of user-editable files
@@ -81,8 +81,8 @@ PY25-DJANGO_IPK=$(BUILD_DIR)/py25-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DJANGO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-DJANGO_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -O $(@D)/$(@F) $(PY-DJANGO_SITE) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
