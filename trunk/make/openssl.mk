@@ -40,7 +40,7 @@ $(DL_DIR)/$(OPENSSL_SOURCE):
 
 openssl-source: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 
-ifeq ($(TARGET_ARCH),mipsel)
+ifeq ($(TARGET_ARCH), $(filter mips mipsel, $(TARGET_ARCH)))
 OPENSSL_ARCH=linux-$(TARGET_ARCH)
 else
 ifeq ($(TARGET_ARCH),powerpc)
@@ -57,7 +57,7 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 	mv $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(OPENSSL_HOST_BUILD_DIR)
 	(cd $(OPENSSL_HOST_BUILD_DIR) && \
 		./Configure \
-			shared no-zlib \
+			no-shared no-zlib \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
 			linux-`uname -m | sed -e 's/i[5-9]86/pentium/'` \
@@ -85,7 +85,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 	(cd $(OPENSSL_BUILD_DIR) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		./Configure \
-			shared zlib-dynamic \
+			no-shared zlib-dynamic \
 			$(STAGING_CPPFLAGS) \
 			--openssldir=/opt/share/openssl \
 			--prefix=/opt \
@@ -104,8 +104,8 @@ $(OPENSSL_BUILD_DIR)/.built: $(OPENSSL_BUILD_DIR)/.configured
 		AR="${TARGET_AR} r" \
 		$(OPENSSL_ASFLAG) \
 		MANDIR=/opt/man \
-		EX_LIBS="$(STAGING_LDFLAGS) -ldl" \
-		DIRS="crypto ssl apps"
+		EX_LIBS="$(STAGING_LDFLAGS)" \
+		DIRS="crypto ssl"
 	touch $@
 
 openssl: $(OPENSSL_BUILD_DIR)/.built
@@ -130,12 +130,6 @@ endif
 	install -d $(STAGING_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.a $(STAGING_DIR)/opt/lib
 	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.a $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
-	install -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(STAGING_DIR)/opt/lib
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
-	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
-	cd $(STAGING_DIR)/opt/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
 	install -d $(STAGING_DIR)/opt/lib/pkgconfig
 	install -m 644 $(OPENSSL_BUILD_DIR)/openssl.pc $(STAGING_DIR)/opt/lib/pkgconfig
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
