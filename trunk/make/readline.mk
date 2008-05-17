@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-READLINE_SITE=ftp://ftp.cwru.edu/pub/bash
+READLINE_SITE=http://ftp.gnu.org/pub/gnu/readline
 READLINE_VERSION=5.2
 READLINE_SOURCE=readline-$(READLINE_VERSION).tar.gz
 READLINE_DIR=readline-$(READLINE_VERSION)
@@ -80,7 +80,8 @@ READLINE_IPK=$(BUILD_DIR)/readline_$(READLINE_VERSION)-$(READLINE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(READLINE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(READLINE_SITE)/$(READLINE_SOURCE)
+	$(WGET) -P $(DL_DIR) $(READLINE_SITE)/$(@F) || \
+	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,12 +105,14 @@ readline-source: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES)
+$(READLINE_BUILD_DIR)/.configured: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES) make/readline.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(READLINE_DIR) $(READLINE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(READLINE_DIR) $(@D)
 	$(READLINE_UNZIP) $(DL_DIR)/$(READLINE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(READLINE_PATCHES) | patch -d $(BUILD_DIR)/$(READLINE_DIR) -p1
-	mv $(BUILD_DIR)/$(READLINE_DIR) $(READLINE_BUILD_DIR)
+	if test "$(BUILD_DIR)/$(READLINE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(READLINE_DIR) $(@D) ; \
+	fi
 	cp $(SOURCE_DIR)/common/config.sub $(READLINE_BUILD_DIR)/support/
 ifeq (darwin,$(TARGET_OS))
 	sed -i.orig \
@@ -117,7 +120,7 @@ ifeq (darwin,$(TARGET_OS))
 		-e '/arch_only/s|`/usr/bin/arch`|$(TARGET_ARCH)|' \
 		$(READLINE_BUILD_DIR)/support/shobj-conf
 endif
-	(cd $(READLINE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(READLINE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(READLINE_LDFLAGS)" \
@@ -138,7 +141,7 @@ readline-unpack: $(READLINE_BUILD_DIR)/.configured
 #
 $(READLINE_BUILD_DIR)/.built: $(READLINE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(READLINE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +154,7 @@ readline: $(READLINE_BUILD_DIR)/.built
 #
 $(READLINE_BUILD_DIR)/.staged: $(READLINE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 readline-stage: $(READLINE_BUILD_DIR)/.staged
@@ -205,6 +208,7 @@ readline-ipk: $(READLINE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 readline-clean:
+	rm -f $(READLINE_BUILD_DIR)/.built
 	-$(MAKE) -C $(READLINE_BUILD_DIR) clean
 
 #
