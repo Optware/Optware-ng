@@ -1,0 +1,113 @@
+diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/Makefile ./Makefile
+--- /home/rwhitby/optware/openwiz/builds/busybox/Makefile	2008-05-08 15:23:28.000000000 +0000
++++ ./Makefile	2008-05-16 02:11:37.000000000 +0000
+@@ -31,6 +31,8 @@
+ 
+ # To put more focus on warnings, be less verbose as default
+ # Use 'make V=1' to see the full commands
++#
++#
+ 
+ ifdef V
+   ifeq ("$(origin V)", "command line")
+@@ -270,8 +273,6 @@
+ # For maximum performance (+ possibly random breakage, uncomment
+ # the following)
+ 
+-MAKEFLAGS += -rR
+-
+ # Make variables (CC, etc...)
+ 
+ AS		= $(CROSS_COMPILE)as
+@@ -294,7 +295,8 @@
+ MODFLAGS	= -DMODULE
+ CFLAGS_MODULE   = $(MODFLAGS)
+ AFLAGS_MODULE   = $(MODFLAGS)
+-LDFLAGS_MODULE  = -r
++LDFLAGS_MODULE  =
++# LDFLAGS_MODULE  = -r
+ CFLAGS_KERNEL	=
+ AFLAGS_KERNEL	=
+ 
+diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/applets/install.sh ./applets/install.sh
+--- /home/rwhitby/optware/openwiz/builds/busybox/applets/install.sh	2008-04-19 03:50:37.000000000 +0000
++++ ./applets/install.sh	2008-05-17 14:16:47.000000000 +0000
+@@ -71,7 +71,8 @@
+ 			ln $linkopts busybox $prefix$i || exit 1
+ 		else
+ 			rm -f $prefix$i
+-			echo "#!/bin/busybox" > $prefix$i
++			echo "#!/opt/bin/busybox" > $prefix$i
++			#echo "#!/tmp/mnt/idehdd/wiz/bin/busybox" > $prefix$i
+ 			chmod +x $prefix/$i
+ 		fi
+ 		echo "	$prefix$i"
+diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/include/libbb.h ./include/libbb.h
+--- /home/rwhitby/optware/openwiz/builds/busybox/include/libbb.h	2008-05-08 15:22:48.000000000 +0000
++++ ./include/libbb.h	2008-05-16 02:01:46.000000000 +0000
+@@ -44,6 +44,11 @@
+ #define PATH_MAX 256
+ #endif
+ 
++/*
++#define ULLONG_MAX ULONG_LONG_MAX 
++#define LLONG_MAX LONG_LONG_MAX
++#define LLONG_MIN LONG_LONG_MIN
++*/
+ #ifdef HAVE_MNTENT_H
+ #include <mntent.h>
+ #endif
+@@ -731,7 +736,7 @@
+ # define bb_daemonize_or_rexec(flags, argv) bb_daemonize_or_rexec(flags)
+ # define bb_daemonize(flags)                bb_daemonize_or_rexec(flags, bogus)
+ #else
+-  void re_exec(char **argv) ATTRIBUTE_NORETURN;
++  void re_execnew(char **argv) ATTRIBUTE_NORETURN;
+   void forkexit_or_rexec(char **argv);
+   extern bool re_execed;
+   int  BUG_fork_is_unavailable_on_nommu(void);
+diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/libbb/vfork_daemon_rexec.c ./libbb/vfork_daemon_rexec.c
+--- /home/rwhitby/optware/openwiz/builds/busybox/libbb/vfork_daemon_rexec.c	2008-04-19 03:50:33.000000000 +0000
++++ ./libbb/vfork_daemon_rexec.c	2008-05-15 05:18:17.000000000 +0000
+@@ -201,7 +201,8 @@
+ }
+ 
+ #if !BB_MMU
+-void re_exec(char **argv)
++
++void re_execnew(char **argv)
+ {
+ 	/* high-order bit of first char in argv[0] is a hidden
+ 	 * "we have (already) re-execed, don't do it again" flag */
+@@ -223,7 +224,7 @@
+ 	if (pid) /* parent */
+ 		exit(0);
+ 	/* child - re-exec ourself */
+-	re_exec(argv);
++	re_execnew(argv);
+ }
+ #else
+ /* Dance around (void)...*/
+diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/scripts/trylink ./scripts/trylink
+--- /home/rwhitby/optware/openwiz/builds/busybox/scripts/trylink	2008-05-08 15:23:00.000000000 +0000
++++ ./scripts/trylink	2008-05-16 02:16:52.000000000 +0000
+@@ -94,9 +95,11 @@
+ GC_SECTION=`(
+ . ./.config
+ if test x"$CONFIG_STATIC" = x"y"; then
+-    check_libc_is_glibc "" "-Wl,--gc-sections"
++#    check_libc_is_glibc "" "-Wl,--gc-sections"
++echo ""
+ else
+-    echo "-Wl,--gc-sections"
++#    echo "-Wl,--gc-sections"
++echo ""
+ fi
+ )`
+ 
+diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/tonymake.sh ./tonymake.sh
+--- /home/rwhitby/optware/openwiz/builds/busybox/tonymake.sh	1970-01-01 00:00:00.000000000 +0000
++++ ./tonymake.sh	2008-05-16 02:23:05.000000000 +0000
+@@ -0,0 +1,2 @@
++#!/bin/sh
++make CROSS_COMPILE=/opt/arm-uclinux-tools/bin/arm-uclinux-elf- LDFLAGS="-Wl,-elf2flt" install
