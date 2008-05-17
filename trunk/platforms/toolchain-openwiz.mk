@@ -1,3 +1,7 @@
+# For the OpenWiz toolchain, you need to download:
+# http://mvixcommunity.com/~jeruko/OpenEM86XX-toolchain_20070626.tar.bz2
+# and install the contents into the root directory (it installs in /opt)
+
 TARGET_ARCH=arm
 TARGET_OS=linux
 
