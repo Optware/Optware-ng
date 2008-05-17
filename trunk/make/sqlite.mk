@@ -3,12 +3,6 @@
 # sqlite
 #
 ###########################################################
-
-# You must replace "sqlite" and "SQLITE" with the lower case name and
-# upper case name of your new package.  Some places below will say
-# "Do not change this" - that does not include this global change,
-# which must always be done to ensure we have unique names.
-
 #
 # SQLITE_VERSION, SQLITE_SITE and SQLITE_SOURCE define
 # the upstream location of the source code for the package.
@@ -27,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SQLITE_SITE=http://www.sqlite.org
-SQLITE_VERSION=3.5.6
+SQLITE_VERSION=3.5.9
 SQLITE_SOURCE=sqlite-$(SQLITE_VERSION).tar.gz
 SQLITE_DIR=sqlite-$(SQLITE_VERSION)
 SQLITE_UNZIP=zcat
@@ -109,14 +103,16 @@ sqlite-source: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
+$(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) make/sqlite.mk
 	$(MAKE) readline-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE_PATCHES)"; \
 		then cat $(SQLITE_PATCHES) | patch -d $(BUILD_DIR)/$(SQLITE_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
+	if test "$(BUILD_DIR)/$(SQLITE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SQLITE_DIR) $(@D) ; \
+	fi
 	if test -n "$(SQLITE_PATCHES)"; \
 		then cd $(@D); autoreconf; \
 	fi
@@ -211,6 +207,7 @@ sqlite-ipk: $(SQLITE_IPK)
 # This is called from the top level makefile to clean all of the built files.
 #
 sqlite-clean:
+	rm -f $(SQLITE_BUILD_DIR)/.built
 	-$(MAKE) -C $(SQLITE_BUILD_DIR) clean
 
 #
