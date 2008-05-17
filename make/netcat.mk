@@ -182,9 +182,11 @@ $(NETCAT_IPK_DIR)/CONTROL/control:
 #
 $(NETCAT_IPK): $(NETCAT_BUILD_DIR)/.built
 	rm -rf $(NETCAT_IPK_DIR) $(BUILD_DIR)/netcat_*_$(TARGET_ARCH).ipk
-	install -d $(NETCAT_IPK_DIR)/opt/{bin,man/man1,share/doc/netcat}
+	install -d $(NETCAT_IPK_DIR)/opt/bin
 	install $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
+	install -d $(NETCAT_IPK_DIR)/opt/man/man1
 	install $(NETCAT_BUILD_DIR)/debian/nc.1 $(NETCAT_IPK_DIR)/opt/man/man1
+	install -d $(NETCAT_IPK_DIR)/opt/share/doc/netcat
 	gzip -c $(NETCAT_BUILD_DIR)/README > $(NETCAT_IPK_DIR)/opt/share/doc/netcat/README.gz
 	$(STRIP_COMMAND) $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
 	$(MAKE) $(NETCAT_IPK_DIR)/CONTROL/control
