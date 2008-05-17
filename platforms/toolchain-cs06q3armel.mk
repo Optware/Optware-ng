@@ -23,6 +23,8 @@ TOOLCHAIN_SITE=http://www.codesourcery.com/public/gnu_toolchain/arm-none-linux-g
 TOOLCHAIN_BINARY=arm-2006q3-27-arm-none-linux-gnueabi-i686-pc-linux-gnu.tar.bz2
 TOOLCHAIN_SOURCE=arm-2006q3-27-arm-none-linux-gnueabi.src.tar.bz2
 
+NATIVE_GCC_VERSION=4.1.2
+
 toolchain: $(TARGET_CROSS_TOP)/.unpacked
 
 $(DL_DIR)/$(TOOLCHAIN_BINARY):
