@@ -22,10 +22,10 @@
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 GDB_VERSION=6.8
-GDB_IPK_VERSION=1
+GDB_IPK_VERSION=2
 else
 GDB_VERSION=6.3
-GDB_IPK_VERSION=3
+GDB_IPK_VERSION=4
 endif
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.bz2
 GDB_DIR=gdb-$(GDB_VERSION)
@@ -223,10 +223,22 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)/opt install
 	rm -f $(GDB_IPK_DIR)/opt/info/standards.info
 	$(STRIP_COMMAND) $(GDB_IPK_DIR)/opt/bin/run
-#	install -d $(GDB_IPK_DIR)/opt/etc/
-#	install -m 644 $(GDB_SOURCE_DIR)/gdb.conf $(GDB_IPK_DIR)/opt/etc/gdb.conf
-#	install -d $(GDB_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(GDB_SOURCE_DIR)/rc.gdb $(GDB_IPK_DIR)/opt/etc/init.d/SXXgdb
+	# rm the following files to avoid conflict with binutils
+	for f in \
+		/opt/include/ansidecl.h \
+		/opt/include/bfd.h \
+		/opt/include/bfdlink.h \
+		/opt/include/dis-asm.h \
+		/opt/include/symcat.h \
+		/opt/info/bfd.info \
+		/opt/info/configure.info \
+		/opt/lib/libbfd.a \
+		/opt/lib/libbfd.la \
+		/opt/lib/libiberty.a \
+		/opt/lib/libopcodes.a \
+		/opt/lib/libopcodes.la \
+		; \
+	do rm -f $(GDB_IPK_DIR)/$$f; done
 	$(MAKE) $(GDB_IPK_DIR)/CONTROL/control
 #	install -m 644 $(GDB_SOURCE_DIR)/postinst $(GDB_IPK_DIR)/CONTROL/postinst
 #	install -m 644 $(GDB_SOURCE_DIR)/prerm $(GDB_IPK_DIR)/CONTROL/prerm
