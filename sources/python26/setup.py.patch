@@ -1,5 +1,5 @@
---- Python-2.6a1/setup.py.orig	2008-02-22 19:09:44.000000000 -0800
-+++ Python-2.6a1/setup.py	2008-03-03 09:44:19.000000000 -0800
+--- Python-2.6a3/setup.py.orig	2008-05-05 13:21:38.000000000 -0700
++++ Python-2.6a3/setup.py	2008-05-15 13:27:45.000000000 -0700
 @@ -16,7 +16,7 @@
  from distutils.command.install_lib import install_lib
  
@@ -9,7 +9,7 @@
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (at the front) if
-@@ -251,6 +251,10 @@
+@@ -253,6 +253,10 @@
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -20,7 +20,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -826,7 +830,6 @@
+@@ -827,7 +831,6 @@
              exts.append(Extension('_bsddb', ['_bsddb.c'],
                                    depends = ['bsddb.h'],
                                    library_dirs=dblib_dir,
@@ -28,7 +28,7 @@
                                    include_dirs=db_incs,
                                    libraries=dblibs))
          else:
-@@ -924,7 +927,6 @@
+@@ -925,7 +928,6 @@
                                    include_dirs=["Modules/_sqlite",
                                                  sqlite_incdir],
                                    library_dirs=sqlite_libdir,

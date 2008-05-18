@@ -1,5 +1,5 @@
---- Python-2.6a1/Makefile.pre.in.orig	2008-02-24 14:48:05.000000000 -0800
-+++ Python-2.6a1/Makefile.pre.in	2008-03-03 09:52:27.000000000 -0800
+--- Python-2.6a3/Makefile.pre.in.orig	2008-05-02 12:45:11.000000000 -0700
++++ Python-2.6a3/Makefile.pre.in	2008-05-15 14:22:22.000000000 -0700
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -26,9 +26,9 @@
 +HOSTPYTHON=	python$(BUILDEXE)
 +BUILDPYTHON=	@BUILDPYTHON@
  
- # === Definitions added by makesetup ===
- 
-@@ -200,7 +203,8 @@
+ # The task to run while instrument when building the profile-opt target
+ PROFILE_TASK=	Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+@@ -204,7 +207,8 @@
  
  ##########################################################################
  # Parser
@@ -38,25 +38,25 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -345,13 +349,13 @@
+@@ -352,7 +356,7 @@
  
  # Default target
  all:		build_all
 -build_all:	$(BUILDPYTHON) oldsharedmods sharedmods
 +build_all:	$(HOSTPYTHON) oldsharedmods sharedmods
  
+ # Compile a binary with gcc profile guided optimization.
+ profile-opt:
+@@ -376,7 +380,7 @@
+ 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
+ 
  # Build the interpreter
 -$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
--		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
 +$(HOSTPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
-+		$(LINKCC) -o $@ \
+ 		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
--			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-+			$(BLDLIBRARY) $(LDFLAGS) $(LINKFORSHARED) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
- 
- platform: $(BUILDPYTHON)
- 	$(RUNSHARED) ./$(BUILDPYTHON) -E -c 'import sys ; from distutils.util import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
-@@ -484,12 +488,12 @@
+ 			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+@@ -505,12 +509,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
@@ -73,7 +73,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -539,6 +543,16 @@
+@@ -565,6 +569,16 @@
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -81,16 +81,16 @@
 +# Rules for making python/pgen that will run on the build system
 +# (only used for cross compiles)
 +
-+buildpython25/python$(BUILDEXE):				
-+	cd buildpython25; make all; cd ..
++buildpython26/python$(BUILDEXE):				
++	cd buildpython26; make all; cd ..
 +
-+buildpython25/Parser/pgen$(BUILDEXE):
-+	cd buildpython25; make Parser/pgen; cd ..
++buildpython26/Parser/pgen$(BUILDEXE):
++	cd buildpython26; make Parser/pgen; cd ..
 +				
  ############################################################################
  # Header files
  
-@@ -732,7 +746,7 @@
+@@ -762,7 +776,7 @@
  		else	true; \
  		fi; \
  	done
@@ -99,7 +99,7 @@
  	if test -f libpython$(VERSION)$(SO); then \
  		if test "$(SO)" = .dll; then \
  			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
-@@ -953,8 +967,9 @@
+@@ -986,8 +1000,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -111,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1041,7 +1056,7 @@
+@@ -1071,7 +1086,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -120,17 +120,17 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1088,11 +1103,12 @@
- 	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
+@@ -1121,11 +1136,12 @@
+ 	find . -name '*.gc??' -exec rm -f {} ';'
  
- clobber: clean
+ clobber: clean profile-removal
 -	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
 +	-rm -f $(HOSTPYTHON) $(HOSTPGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
  		tags TAGS \
  		config.cache config.log pyconfig.h Modules/config.c
  	-rm -rf build platform
  	-rm -rf $(PYTHONFRAMEWORKDIR)
-+	-rm -rf buildpython25
++	-rm -rf buildpython26
  
  # Make things extra clean, before making a distribution:
  # remove all generated files, even Makefile[.pre]
