@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-PSYCOPG2_SITE=http://initd.org/pub/software/psycopg
-PY-PSYCOPG2_VERSION=2.0.6
+PY-PSYCOPG2_VERSION=2.0.7
 PY-PSYCOPG2_SOURCE=psycopg2-$(PY-PSYCOPG2_VERSION).tar.gz
 PY-PSYCOPG2_DIR=psycopg2-$(PY-PSYCOPG2_VERSION)
 PY-PSYCOPG2_UNZIP=zcat
@@ -68,8 +68,8 @@ PY-PSYCOPG2_LDFLAGS=
 PY-PSYCOPG2_BUILD_DIR=$(BUILD_DIR)/py-psycopg2
 PY-PSYCOPG2_SOURCE_DIR=$(SOURCE_DIR)/py-psycopg2
 
-PY24-PSYCOPG2_IPK_DIR=$(BUILD_DIR)/py-psycopg2-$(PY-PSYCOPG2_VERSION)-ipk
-PY24-PSYCOPG2_IPK=$(BUILD_DIR)/py-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PSYCOPG2_IPK_DIR=$(BUILD_DIR)/py24-psycopg2-$(PY-PSYCOPG2_VERSION)-ipk
+PY24-PSYCOPG2_IPK=$(BUILD_DIR)/py24-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PSYCOPG2_IPK_DIR=$(BUILD_DIR)/py25-psycopg2-$(PY-PSYCOPG2_VERSION)-ipk
 PY25-PSYCOPG2_IPK=$(BUILD_DIR)/py25-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG2_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,8 +81,8 @@ PY25-PSYCOPG2_IPK=$(BUILD_DIR)/py25-psycopg2_$(PY-PSYCOPG2_VERSION)-$(PY-PSYCOPG
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-PSYCOPG2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG2_SITE)/$(PY-PSYCOPG2_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(PY-PSYCOPG2_SITE)/PSYCOPG-2-0/$(PY-PSYCOPG2_SOURCE)
+	$(WGET) -P $(@D) $(PY-PSYCOPG2_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(PY-PSYCOPG2_SITE)/PSYCOPG-2-0/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,8 +114,8 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR)
 	$(PY-PSYCOPG2_UNZIP) $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-PSYCOPG2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(PY-PSYCOPG2_BUILD_DIR)/2.4
-	(cd $(PY-PSYCOPG2_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "#pg_config=$(STAGING_PREFIX)/bin/pg_config"; \
 	        echo "include_dirs=.:$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -127,14 +127,14 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	    sed -i -e '/datetime\.h/s/^/if True: #/' \
-		   -e '/^def get_pg_config/a\    return ""' $(PY-PSYCOPG2_BUILD_DIR)/2.4/setup.py; \
+		   -e '/^def get_pg_config/a\    return ""' $(@D)/2.4/setup.py; \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PSYCOPG2_DIR)
 	$(PY-PSYCOPG2_UNZIP) $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-PSYCOPG2_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(PY-PSYCOPG2_BUILD_DIR)/2.5
-	(cd $(PY-PSYCOPG2_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-PSYCOPG2_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "#pg_config=$(STAGING_PREFIX)/bin/pg_config"; \
 	        echo "include_dirs=.:$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -146,9 +146,9 @@ $(PY-PSYCOPG2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG2_SOURCE) $(PY-PSYCO
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	    sed -i -e '/datetime\.h/s/^/if True: #/' \
-		   -e '/^def get_pg_config/a\    return ""' $(PY-PSYCOPG2_BUILD_DIR)/2.5/setup.py; \
+		   -e '/^def get_pg_config/a\    return ""' $(@D)/2.5/setup.py; \
 	)
-	touch $(PY-PSYCOPG2_BUILD_DIR)/.configured
+	touch $@
 
 py-psycopg2-unpack: $(PY-PSYCOPG2_BUILD_DIR)/.configured
 
@@ -156,16 +156,16 @@ py-psycopg2-unpack: $(PY-PSYCOPG2_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PSYCOPG2_BUILD_DIR)/.built: $(PY-PSYCOPG2_BUILD_DIR)/.configured
-	rm -f $(PY-PSYCOPG2_BUILD_DIR)/.built
-	(cd $(PY-PSYCOPG2_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared -Wl,-rpath,/opt/lib' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-PSYCOPG2_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared -Wl,-rpath,/opt/lib' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-PSYCOPG2_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -176,9 +176,9 @@ py-psycopg2: $(PY-PSYCOPG2_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-PSYCOPG2_BUILD_DIR)/.staged: $(PY-PSYCOPG2_BUILD_DIR)/.built
-	rm -f $(PY-PSYCOPG2_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-PSYCOPG2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PSYCOPG2_BUILD_DIR)/.staged
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-psycopg2-stage: $(PY-PSYCOPG2_BUILD_DIR)/.staged
 
@@ -189,7 +189,7 @@ py-psycopg2-stage: $(PY-PSYCOPG2_BUILD_DIR)/.staged
 $(PY24-PSYCOPG2_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-psycopg2" >>$@
+	@echo "Package: py24-psycopg2" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PSYCOPG2_PRIORITY)" >>$@
 	@echo "Section: $(PY-PSYCOPG2_SECTION)" >>$@
@@ -227,7 +227,8 @@ $(PY25-PSYCOPG2_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-PSYCOPG2_IPK): $(PY-PSYCOPG2_BUILD_DIR)/.built
-	rm -rf $(PY24-PSYCOPG2_IPK_DIR) $(BUILD_DIR)/py-psycopg2_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-psycopg2_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PSYCOPG2_IPK_DIR) $(BUILD_DIR)/py24-psycopg2_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PSYCOPG2_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
