@@ -1,6 +1,6 @@
---- Python-2.6a1/README.orig	2008-02-29 19:15:20.000000000 -0800
-+++ Python-2.6a1/README	2008-03-03 09:44:19.000000000 -0800
-@@ -1196,6 +1196,40 @@
+--- Python-2.6a3/README.orig	2008-05-08 06:16:19.000000000 -0700
++++ Python-2.6a3/README	2008-05-15 13:31:22.000000000 -0700
+@@ -1211,6 +1211,40 @@
  do this.
  
  
@@ -12,9 +12,9 @@
 +and executed on the "host" system, in case you forgot :).  Python is
 +tricky to cross compile because it needs to execute parts of itself
 +during construction.  To work around this, make's VPATH feature is
-+used to compile a native python in the subdirectory "buildpython25".
++used to compile a native python in the subdirectory "buildpython26".
 +When parts of python need to be executed during construction, the
-+"buildpython25" versions are used.
++"buildpython26" versions are used.
 +
 +A consequence of using the VPATH feature is that you may not do a
 +cross compile build in the source directory.  In other words, do this:

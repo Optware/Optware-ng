@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON26_VERSION=2.6a2
+PYTHON26_VERSION=2.6a3
 PYTHON26_VERSION_MAJOR=2.6
 PYTHON26_SITE=http://www.python.org/ftp/python/$(PYTHON26_VERSION_MAJOR)
 PYTHON26_SOURCE=Python-$(PYTHON26_VERSION).tar.bz2

@@ -1,11 +1,11 @@
---- Python-2.6a1/Lib/site.py.orig	2008-01-21 13:19:07.000000000 -0800
-+++ Python-2.6a1/Lib/site.py	2008-03-03 09:44:19.000000000 -0800
-@@ -177,7 +177,7 @@
+--- Python-2.6a3/Lib/site.py.orig	2008-05-06 15:41:46.000000000 -0700
++++ Python-2.6a3/Lib/site.py	2008-05-15 13:55:56.000000000 -0700
+@@ -63,7 +63,7 @@
+ import __builtin__
  
- def addsitepackages(known_paths):
-     """Add site-packages (and possibly site-python) to sys.path"""
--    prefixes = [sys.prefix]
-+    prefixes = [os.path.join(sys.prefix, "local"), sys.prefix]
-     if sys.exec_prefix != sys.prefix:
-         prefixes.append(sys.exec_prefix)
-     for prefix in prefixes:
+ # Prefixes for site-packages; add additional prefixes like /usr/local here
+-PREFIXES = [sys.prefix, sys.exec_prefix]
++PREFIXES = [os.path.join(sys.prefix, "local"), sys.prefix, sys.exec_prefix]
+ # Enable per user site-packages directory
+ # set it to False to disable the feature or True to force the feature
+ ENABLE_USER_SITE = None

@@ -1,5 +1,5 @@
---- Python-2.6a1/configure.in.orig	2008-02-13 11:15:44.000000000 -0800
-+++ Python-2.6a1/configure.in	2008-03-03 10:03:29.000000000 -0800
+--- Python-2.6a3/configure.in.orig	2008-05-02 12:45:11.000000000 -0700
++++ Python-2.6a3/configure.in	2008-05-15 14:28:12.000000000 -0700
 @@ -9,6 +9,11 @@
  AC_CONFIG_SRCDIR([Include/object.h])
  AC_CONFIG_HEADER(pyconfig.h)
@@ -12,7 +12,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -759,7 +764,7 @@
+@@ -776,7 +781,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -21,7 +21,7 @@
             WRAP="-fwrapv"
          fi
  	case $ac_cv_prog_cc_g in
-@@ -2412,34 +2417,10 @@
+@@ -2448,34 +2453,10 @@
  # On Tru64, chflags seems to be present, but calling it will
  # exit Python
  AC_MSG_CHECKING(for chflags)
@@ -56,7 +56,7 @@
  
  dnl Check if system zlib has *Copy() functions
  dnl
-@@ -3465,43 +3446,8 @@
+@@ -3532,43 +3513,8 @@
  fi
  
  AC_MSG_CHECKING(for %zd printf() format support)
@@ -102,7 +102,7 @@
  
  AC_CHECK_TYPE(socklen_t,,
    AC_DEFINE(socklen_t,int,
-@@ -3531,6 +3477,25 @@
+@@ -3598,6 +3544,25 @@
  done
  AC_MSG_RESULT(done)
  
@@ -112,12 +112,12 @@
 +if [[ $build != $host ]]; then
 +    AC_MSG_NOTICE(Cross compiling: Configuring build python)
 +    absconfigcommand=$(pwd)/$0
-+    mkdir -p buildpython25
-+    cd buildpython25
++    mkdir -p buildpython26
++    cd buildpython26
 +    CC="" CXX="" AR="" RANLIB="" LDFLAGS="" $absconfigcommand --prefix=$prefix
 +    cd ..
-+    BUILDPYTHON='buildpython25/python$(BUILDEXE)'
-+    BUILDPGEN='buildpython25/Parser/pgen$(BUILDEXE)'
++    BUILDPYTHON='buildpython26/python$(BUILDEXE)'
++    BUILDPGEN='buildpython26/Parser/pgen$(BUILDEXE)'
 +    CROSS_COMPILE=yes
 +else
 +    BUILDPYTHON='$(HOSTPYTHON)'
