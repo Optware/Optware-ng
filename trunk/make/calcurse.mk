@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CALCURSE_SITE=http://culot.org/cgi-bin/get.cgi?
-CALCURSE_VERSION=2.0
+CALCURSE_VERSION=2.1
 CALCURSE_SOURCE=calcurse-$(CALCURSE_VERSION).tar.gz
 CALCURSE_DIR=calcurse-$(CALCURSE_VERSION)
 CALCURSE_UNZIP=zcat
@@ -82,7 +82,8 @@ CALCURSE_IPK=$(BUILD_DIR)/calcurse_$(CALCURSE_VERSION)-$(CALCURSE_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(CALCURSE_SOURCE):
-	$(WGET) -O $(DL_DIR)/$(CALCURSE_SOURCE) "$(CALCURSE_SITE)$(CALCURSE_SOURCE)"
+	$(WGET) -O $@ "$(CALCURSE_SITE)$(@F)" || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,16 +112,16 @@ calcurse-source: $(DL_DIR)/$(CALCURSE_SOURCE) $(CALCURSE_PATCHES)
 #
 $(CALCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(CALCURSE_SOURCE) $(CALCURSE_PATCHES) make/calcurse.mk
 	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(CALCURSE_DIR) $(CALCURSE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(CALCURSE_DIR) $(@D)
 	$(CALCURSE_UNZIP) $(DL_DIR)/$(CALCURSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CALCURSE_PATCHES)" ; \
 		then cat $(CALCURSE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(CALCURSE_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(CALCURSE_DIR)" != "$(CALCURSE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(CALCURSE_DIR) $(CALCURSE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(CALCURSE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(CALCURSE_DIR) $(@D) ; \
 	fi
-	(cd $(CALCURSE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALCURSE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CALCURSE_LDFLAGS)" \
@@ -133,7 +134,7 @@ $(CALCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(CALCURSE_SOURCE) $(CALCURSE_PATCH
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(CALCURSE_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 calcurse-unpack: $(CALCURSE_BUILD_DIR)/.configured
@@ -143,7 +144,7 @@ calcurse-unpack: $(CALCURSE_BUILD_DIR)/.configured
 #
 $(CALCURSE_BUILD_DIR)/.built: $(CALCURSE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(CALCURSE_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -155,9 +156,9 @@ calcurse: $(CALCURSE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(CALCURSE_BUILD_DIR)/.staged: $(CALCURSE_BUILD_DIR)/.built
-	rm -f $@
-	$(MAKE) -C $(CALCURSE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 calcurse-stage: $(CALCURSE_BUILD_DIR)/.staged
 
