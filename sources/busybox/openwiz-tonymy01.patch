@@ -1,15 +1,6 @@
 diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/Makefile ./Makefile
 --- /home/rwhitby/optware/openwiz/builds/busybox/Makefile	2008-05-08 15:23:28.000000000 +0000
 +++ ./Makefile	2008-05-16 02:11:37.000000000 +0000
-@@ -31,6 +31,8 @@
- 
- # To put more focus on warnings, be less verbose as default
- # Use 'make V=1' to see the full commands
-+#
-+#
- 
- ifdef V
-   ifeq ("$(origin V)", "command line")
 @@ -270,8 +273,6 @@
  # For maximum performance (+ possibly random breakage, uncomment
  # the following)
@@ -29,19 +20,6 @@ diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/Makefile ./Makefile
  CFLAGS_KERNEL	=
  AFLAGS_KERNEL	=
  
-diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/applets/install.sh ./applets/install.sh
---- /home/rwhitby/optware/openwiz/builds/busybox/applets/install.sh	2008-04-19 03:50:37.000000000 +0000
-+++ ./applets/install.sh	2008-05-17 14:16:47.000000000 +0000
-@@ -71,7 +71,8 @@
- 			ln $linkopts busybox $prefix$i || exit 1
- 		else
- 			rm -f $prefix$i
--			echo "#!/bin/busybox" > $prefix$i
-+			echo "#!/opt/bin/busybox" > $prefix$i
-+			#echo "#!/tmp/mnt/idehdd/wiz/bin/busybox" > $prefix$i
- 			chmod +x $prefix/$i
- 		fi
- 		echo "	$prefix$i"
 diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/include/libbb.h ./include/libbb.h
 --- /home/rwhitby/optware/openwiz/builds/busybox/include/libbb.h	2008-05-08 15:22:48.000000000 +0000
 +++ ./include/libbb.h	2008-05-16 02:01:46.000000000 +0000
@@ -105,9 +83,3 @@ diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/scripts/trylink ./script
  fi
  )`
  
-diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/tonymake.sh ./tonymake.sh
---- /home/rwhitby/optware/openwiz/builds/busybox/tonymake.sh	1970-01-01 00:00:00.000000000 +0000
-+++ ./tonymake.sh	2008-05-16 02:23:05.000000000 +0000
-@@ -0,0 +1,2 @@
-+#!/bin/sh
-+make CROSS_COMPILE=/opt/arm-uclinux-tools/bin/arm-uclinux-elf- LDFLAGS="-Wl,-elf2flt" install
