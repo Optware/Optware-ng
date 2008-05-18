@@ -23,18 +23,6 @@ diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/Makefile ./Makefile
 diff -BruN /home/rwhitby/optware/openwiz/builds/busybox/include/libbb.h ./include/libbb.h
 --- /home/rwhitby/optware/openwiz/builds/busybox/include/libbb.h	2008-05-08 15:22:48.000000000 +0000
 +++ ./include/libbb.h	2008-05-16 02:01:46.000000000 +0000
-@@ -44,6 +44,11 @@
- #define PATH_MAX 256
- #endif
- 
-+/*
-+#define ULLONG_MAX ULONG_LONG_MAX 
-+#define LLONG_MAX LONG_LONG_MAX
-+#define LLONG_MIN LONG_LONG_MIN
-+*/
- #ifdef HAVE_MNTENT_H
- #include <mntent.h>
- #endif
 @@ -731,7 +736,7 @@
  # define bb_daemonize_or_rexec(flags, argv) bb_daemonize_or_rexec(flags)
  # define bb_daemonize(flags)                bb_daemonize_or_rexec(flags, bogus)
