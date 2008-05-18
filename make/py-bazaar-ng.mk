@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BAZAAR-NG_VERSION=1.4
-PY-BAZAAR-NG_SITE=http://bazaar-vcs.org/releases/src
+PY-BAZAAR-NG_VERSION=1.5
+PY-BAZAAR-NG_SITE=https://launchpad.net/bzr/$(PY-BAZAAR-NG_VERSION)/$(PY-BAZAAR-NG_VERSION)/+download
 PY-BAZAAR-NG_SOURCE=bzr-$(PY-BAZAAR-NG_VERSION).tar.gz
 PY-BAZAAR-NG_DIR=bzr-$(PY-BAZAAR-NG_VERSION)
 PY-BAZAAR-NG_UNZIP=zcat
@@ -81,7 +81,7 @@ PY25-BAZAAR-NG_IPK=$(BUILD_DIR)/py25-bazaar-ng_$(PY-BAZAAR-NG_VERSION)-$(PY-BAZA
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-BAZAAR-NG_SOURCE):
-	$(WGET) -P $(@D) $(PY-BAZAAR-NG_SITE)/$(@F) || \
+	$(WGET) --no-check-certificate -P $(@D) $(PY-BAZAAR-NG_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
