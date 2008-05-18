@@ -4,11 +4,10 @@
 #
 ###########################################################
 
-#NTPCLIENT_SITE=http://doolittle.faludi.com/ntpclient
-NTPCLIENT_SITE=http://sources.nslu2-linux.org/sources
-NTPCLIENT_VERSION=2003_194
+NTPCLIENT_SITE=http://doolittle.icarus.com/ntpclient
+NTPCLIENT_VERSION=2007_365
 NTPCLIENT_SOURCE=ntpclient_$(NTPCLIENT_VERSION).tar.gz
-NTPCLIENT_DIR=ntpclient
+NTPCLIENT_DIR=ntpclient-2007
 NTPCLIENT_UNZIP=zcat
 NTPCLIENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NTPCLIENT_DESCRIPTION=Using RFC1305 (NTP), retrieves a remote date and time
@@ -17,10 +16,10 @@ NTPCLIENT_PRIORITY=optional
 NTPCLIENT_DEPENDS=
 NTPCLIENT_CONFLICTS=
 
-NTPCLIENT_IPK_VERSION=3
+NTPCLIENT_IPK_VERSION=1
 
 NTPCLIENT_CPPFLAGS=
-NTPCLIENT_LDFLAGS=
+NTPCLIENT_LDFLAGS=-lrt
 
 NTPCLIENT_BUILD_DIR=$(BUILD_DIR)/ntpclient
 NTPCLIENT_SOURCE_DIR=$(SOURCE_DIR)/ntpclient
@@ -34,21 +33,22 @@ $(DL_DIR)/$(NTPCLIENT_SOURCE):
 ntpclient-source: $(DL_DIR)/$(NTPCLIENT_SOURCE)
 
 $(NTPCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(NTPCLIENT_SOURCE) make/ntpclient.mk
-	rm -rf $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NTPCLIENT_DIR) $(@D)
 	$(NTPCLIENT_UNZIP) $(DL_DIR)/$(NTPCLIENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test "$(BUILD_DIR)/$(NTPCLIENT_DIR)" != "$(NTPCLIENT_BUILD_DIR)" ; \
-	then mv $(BUILD_DIR)/$(NTPCLIENT_DIR) $(NTPCLIENT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NTPCLIENT_DIR)" != "$(@D)" ; \
+	then mv $(BUILD_DIR)/$(NTPCLIENT_DIR) $(@D) ; \
 	fi
 	touch $@
 
 ntpclient-unpack: $(NTPCLIENT_BUILD_DIR)/.configured
 
-$(NTPCLIENT_BUILD_DIR)/.built: $(NTPCLIENT_BUILD_DIR)/.configured
+$(NTPCLIENT_BUILD_DIR)/.built: $(NTPCLIENT_BUILD_DIR)/.configured make/ntpclient.mk
 	rm -f $@
-	$(MAKE) -C $(NTPCLIENT_BUILD_DIR) ntpclient adjtimex \
+	$(MAKE) -C $(@D) ntpclient adjtimex \
 		CC=$(TARGET_CC) \
 		RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) \
-		LD=$(TARGET_LD) LDFLAGS="$(STAGING_LDFLAGS)"
+		LD=$(TARGET_LD) \
+		LDFLAGS="$(STAGING_LDFLAGS) $(NTPCLIENT_LDFLAGS)"
 	touch $@
 
 ntpclient: $(NTPCLIENT_BUILD_DIR)/.built
@@ -72,6 +72,15 @@ $(NTPCLIENT_IPK): $(NTPCLIENT_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/ntpclient -o $(NTPCLIENT_IPK_DIR)/opt/bin/ntpclient
 	install -d $(NTPCLIENT_IPK_DIR)/opt/sbin
 	$(STRIP_COMMAND) $(NTPCLIENT_BUILD_DIR)/adjtimex -o $(NTPCLIENT_IPK_DIR)/opt/sbin/adjtimex
+	install -d $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
+	install $(NTPCLIENT_BUILD_DIR)/ntpclient.1 $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
+	install $(NTPCLIENT_BUILD_DIR)/adjtimex.1 $(NTPCLIENT_IPK_DIR)/opt/share/man/man1
+	install -d $(NTPCLIENT_IPK_DIR)/opt/share/doc/ntpclient
+	install $(NTPCLIENT_BUILD_DIR)/[RH]* \
+		$(NTPCLIENT_BUILD_DIR)/*.awk \
+		$(NTPCLIENT_BUILD_DIR)/*.pl \
+		$(NTPCLIENT_BUILD_DIR)/test.dat \
+		$(NTPCLIENT_IPK_DIR)/opt/share/doc/ntpclient
 	$(MAKE) $(NTPCLIENT_IPK_DIR)/CONTROL/control
 	install -m 755 $(NTPCLIENT_SOURCE_DIR)/postinst $(NTPCLIENT_IPK_DIR)/CONTROL/postinst
 	install -m 755 $(NTPCLIENT_SOURCE_DIR)/prerm $(NTPCLIENT_IPK_DIR)/CONTROL/prerm
