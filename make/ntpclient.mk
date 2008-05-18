@@ -46,7 +46,8 @@ $(NTPCLIENT_BUILD_DIR)/.built: $(NTPCLIENT_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(NTPCLIENT_BUILD_DIR) ntpclient adjtimex \
 		CC=$(TARGET_CC) \
-		RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) LD=$(TARGET_LD) 
+		RANLIB=$(TARGET_RANLIB) AR=$(TARGET_AR) \
+		LD=$(TARGET_LD) LDFLAGS=$(TARGET_LDFLAGS)
 	touch $@
 
 ntpclient: $(NTPCLIENT_BUILD_DIR)/.built
