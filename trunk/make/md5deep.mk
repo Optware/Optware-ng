@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MD5DEEP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/md5deep
-MD5DEEP_VERSION=1.12
+MD5DEEP_VERSION=3.0
 MD5DEEP_SOURCE=md5deep-$(MD5DEEP_VERSION).tar.gz
 MD5DEEP_DIR=md5deep-$(MD5DEEP_VERSION)
 MD5DEEP_UNZIP=zcat
@@ -76,8 +76,8 @@ MD5DEEP_IPK=$(BUILD_DIR)/md5deep_$(MD5DEEP_VERSION)-$(MD5DEEP_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MD5DEEP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MD5DEEP_SITE)/$(MD5DEEP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MD5DEEP_SOURCE)
+	$(WGET) -P $(@D) $(MD5DEEP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,20 +106,16 @@ md5deep-source: $(DL_DIR)/$(MD5DEEP_SOURCE) $(MD5DEEP_PATCHES)
 #
 $(MD5DEEP_BUILD_DIR)/.configured: $(DL_DIR)/$(MD5DEEP_SOURCE) $(MD5DEEP_PATCHES) make/md5deep.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MD5DEEP_DIR) $(MD5DEEP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MD5DEEP_DIR) $(@D)
 	$(MD5DEEP_UNZIP) $(DL_DIR)/$(MD5DEEP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MD5DEEP_PATCHES)" ; \
 		then cat $(MD5DEEP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(MD5DEEP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MD5DEEP_DIR)" != "$(MD5DEEP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MD5DEEP_DIR) $(MD5DEEP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MD5DEEP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MD5DEEP_DIR) $(@D) ; \
 	fi
-	sed -i.orig -e 's/CC *[+]=/CFLAGS +=/g' $(MD5DEEP_BUILD_DIR)/Makefile
-ifeq ($(OPTWARE_TARGET), wl500g)
-	sed -i.orig -e 's/^ *#ifdef.*__GLIBC__/#if 0/' $(MD5DEEP_BUILD_DIR)/md5deep.h
-endif
-#	(cd $(MD5DEEP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MD5DEEP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MD5DEEP_LDFLAGS)" \
@@ -131,7 +127,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(MD5DEEP_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 md5deep-unpack: $(MD5DEEP_BUILD_DIR)/.configured
@@ -141,12 +137,7 @@ md5deep-unpack: $(MD5DEEP_BUILD_DIR)/.configured
 #
 $(MD5DEEP_BUILD_DIR)/.built: $(MD5DEEP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(MD5DEEP_BUILD_DIR) linux \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MD5DEEP_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(MD5DEEP_LDFLAGS)" \
-		PREFIX=/opt \
-		;
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -158,9 +149,9 @@ md5deep: $(MD5DEEP_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MD5DEEP_BUILD_DIR)/.staged: $(MD5DEEP_BUILD_DIR)/.built
-	rm -f $@
-#	$(MAKE) -C $(MD5DEEP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 md5deep-stage: $(MD5DEEP_BUILD_DIR)/.staged
 
@@ -198,10 +189,7 @@ $(MD5DEEP_IPK_DIR)/CONTROL/control:
 $(MD5DEEP_IPK): $(MD5DEEP_BUILD_DIR)/.built
 	rm -rf $(MD5DEEP_IPK_DIR) $(BUILD_DIR)/md5deep_*_$(TARGET_ARCH).ipk
 	install -d $(MD5DEEP_BUILD_DIR)/opt/bin $(MD5DEEP_BUILD_DIR)/opt/man/man1
-	$(MAKE) -C $(MD5DEEP_BUILD_DIR) install \
-		PREFIX=$(MD5DEEP_IPK_DIR)/opt \
-		;
-	$(STRIP_COMMAND) $(MD5DEEP_IPK_DIR)/opt/bin/*
+	$(MAKE) -C $(MD5DEEP_BUILD_DIR) install-strip DESTDIR=$(MD5DEEP_IPK_DIR)
 #	install -d $(MD5DEEP_IPK_DIR)/opt/etc/
 #	install -m 644 $(MD5DEEP_SOURCE_DIR)/md5deep.conf $(MD5DEEP_IPK_DIR)/opt/etc/md5deep.conf
 #	install -d $(MD5DEEP_IPK_DIR)/opt/etc/init.d
