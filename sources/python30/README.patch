@@ -1,6 +1,6 @@
---- Python-3.0a3/README.orig	2008-03-01 09:45:23.000000000 -0800
-+++ Python-3.0a3/README	2008-03-03 09:06:43.000000000 -0800
-@@ -141,6 +141,39 @@
+--- Python-3.0a5/README.orig	2008-05-08 04:54:13.000000000 -0700
++++ Python-3.0a5/README	2008-05-15 14:48:10.000000000 -0700
+@@ -180,6 +180,39 @@
  (This will fail if you *also* built at the top-level directory.  You
  should do a "make clean" at the toplevel first.)
  
