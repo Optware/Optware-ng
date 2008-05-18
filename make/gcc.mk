@@ -52,22 +52,9 @@ GCC_IPK_VERSION=1
 # GCC_CONFFILES should be a list of user-editable files
 #GCC_CONFFILES=/opt/etc/gcc.conf /opt/etc/init.d/SXXgcc
 
-#
-# GCC_PATCHES should list any patches, in the the order in
-# which they should be applied to the source code.
-#
-GCC_PATCHES=	$(GCC_SOURCE_DIR)/100-uclibc-conf.patch			\
-		$(GCC_SOURCE_DIR)/110-arm-eabi.patch			\
-		$(GCC_SOURCE_DIR)/200-uclibc-locale.patch		\
-		$(GCC_SOURCE_DIR)/300-libstdc++-pic.patch		\
-		$(GCC_SOURCE_DIR)/301-missing-execinfo_h.patch		\
-		$(GCC_SOURCE_DIR)/302-c99-snprintf.patch		\
-		$(GCC_SOURCE_DIR)/303-c99-complex-ugly-hack.patch	\
-		$(GCC_SOURCE_DIR)/304-index_macro.patch			\
-		$(GCC_SOURCE_DIR)/500-avr32.patch			\
-		$(GCC_SOURCE_DIR)/740-sh-pr24836.patch			\
-		$(GCC_SOURCE_DIR)/800-arm-bigendian.patch		\
-		$(GCC_SOURCE_DIR)/900-c++_fixes.patch
+GCC_BUILD_DIR=$(BUILD_DIR)/gcc
+GCC_SOURCE_DIR=$(SOURCE_DIR)/gcc
+GCC_PATCHES:=$(wildcard $(GCC_SOURCE_DIR)/$(GCC_VERSION)/*.patch)
 
 #
 # If the compilation of the package requires additional
@@ -76,17 +63,6 @@ GCC_PATCHES=	$(GCC_SOURCE_DIR)/100-uclibc-conf.patch			\
 GCC_CPPFLAGS=
 GCC_LDFLAGS=
 
-#
-# GCC_BUILD_DIR is the directory in which the build is done.
-# GCC_SOURCE_DIR is the directory which holds all the
-# patches and ipkg control files.
-# GCC_IPK_DIR is the directory in which the ipk is built.
-# GCC_IPK is the name of the resulting ipk files.
-#
-# You should not change any of these variables.
-#
-GCC_BUILD_DIR=$(BUILD_DIR)/gcc
-GCC_SOURCE_DIR=$(SOURCE_DIR)/gcc/$(GCC_VERSION)
 GCC_IPK_DIR=$(BUILD_DIR)/gcc-$(GCC_VERSION)-ipk
 GCC_IPK=$(BUILD_DIR)/gcc_$(GCC_VERSION)-$(GCC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
