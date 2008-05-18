@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 FUPPES_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/fuppes
-FUPPES_VERSION=0.7.1
+FUPPES_VERSION=SVN-578
 FUPPES_SOURCE=fuppes-$(FUPPES_VERSION).tar.gz
 FUPPES_DIR=fuppes-$(FUPPES_VERSION)
 FUPPES_UNZIP=zcat
@@ -30,7 +30,7 @@ FUPPES_DESCRIPTION=FUPPES is a free, multiplatform UPnP (TM) A/V MediaServer, \
 with optional on-the-fly audio transcondig from ogg/vorbis, mpc/musepack and FLAC to mp3.
 FUPPES_SECTION=audio
 FUPPES_PRIORITY=optional
-FUPPES_DEPENDS=e2fsprogs, libxml2, pcre, sqlite
+FUPPES_DEPENDS=e2fslibs, ffmpeg, libxml2, pcre, sqlite
 ifeq (taglib, $(filter taglib, $(PACKAGES)))
 FUPPES_DEPENDS+=, taglib
 endif
@@ -43,7 +43,7 @@ FUPPES_CONFLICTS=
 #
 # FUPPES_IPK_VERSION should be incremented when the ipk changes.
 #
-FUPPES_IPK_VERSION=2
+FUPPES_IPK_VERSION=1
 
 #
 # FUPPES_CONFFILES should be a list of user-editable files
@@ -55,6 +55,9 @@ FUPPES_IPK_VERSION=2
 #
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FUPPES_PATCHES=$(FUPPES_SOURCE_DIR)/libiconv.patch
+endif
+ifneq ($(HOSTCC), $(TARGET_CC))
+FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/configure.in.patch
 endif
 
 #
@@ -94,8 +97,8 @@ endif
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(FUPPES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(FUPPES_SITE)/$(FUPPES_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(FUPPES_SOURCE)
+	$(WGET) -P $(@D) $(FUPPES_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -127,6 +130,7 @@ $(FUPPES_BUILD_DIR)/.configured: $(DL_DIR)/$(FUPPES_SOURCE) $(FUPPES_PATCHES) ma
 	$(MAKE) libxml2-stage
 	$(MAKE) pcre-stage
 	$(MAKE) sqlite-stage
+	$(MAKE) ffmpeg-stage
 ifeq (taglib, $(filter taglib, $(PACKAGES)))
 	$(MAKE) taglib-stage
 endif
@@ -142,7 +146,8 @@ endif
 	if test "$(BUILD_DIR)/$(FUPPES_DIR)" != "$(FUPPES_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FUPPES_DIR) $(FUPPES_BUILD_DIR) ; \
 	fi
-	(cd $(FUPPES_BUILD_DIR); \
+	autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FUPPES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FUPPES_LDFLAGS)" \
@@ -158,7 +163,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(FUPPES_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 fuppes-unpack: $(FUPPES_BUILD_DIR)/.configured
@@ -168,8 +173,7 @@ fuppes-unpack: $(FUPPES_BUILD_DIR)/.configured
 #
 $(FUPPES_BUILD_DIR)/.built: $(FUPPES_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(FUPPES_BUILD_DIR) UUID_LIBS=$(STAGING_LIB_DIR)/libuuid.a
-	$(MAKE) -C $(FUPPES_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -182,7 +186,7 @@ fuppes: $(FUPPES_BUILD_DIR)/.built
 #
 $(FUPPES_BUILD_DIR)/.staged: $(FUPPES_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(FUPPES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 fuppes-stage: $(FUPPES_BUILD_DIR)/.staged
