@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.10.1
+BUSYBOX_VERSION=1.10.2
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -95,10 +95,18 @@ busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) $(BUSYBOX_SOURCE_DIR)/defconfig make/busybox.mk
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if ls $(BUSYBOX_SOURCE_DIR)/$(OPTWARE_TARGET)*.patch >/dev/null 2>&1; \
+		then cat $(BUSYBOX_SOURCE_DIR)/$(OPTWARE_TARGET)*.patch | \
+		patch -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1 ; \
+	fi
 	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D) ; \
 	fi
-	cp $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config
+	if test -f $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET); then \
+		cp $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET) $(@D)/.config; \
+	else \
+		cp $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config; \
+	fi
 ifeq ($(LIBC_STYLE),uclibc)
 # default on, turn off if uclibc
 	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/# CONFIG_FEATURE_SORT_BIG is not set/" \
