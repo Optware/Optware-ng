@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON30_VERSION=3.0a4
+PYTHON30_VERSION=3.0a5
 PYTHON30_VERSION_MAJOR=3.0
 PYTHON30_SITE=http://www.python.org/ftp/python/$(PYTHON30_VERSION_MAJOR)/
 PYTHON30_SOURCE=Python-$(PYTHON30_VERSION).tgz
@@ -225,7 +225,7 @@ $(PYTHON30_IPK_DIR)/CONTROL/control:
 #
 $(PYTHON30_IPK): $(PYTHON30_BUILD_DIR)/.built
 	rm -rf $(PYTHON30_IPK_DIR) $(BUILD_DIR)/python30_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PYTHON30_BUILD_DIR) DESTDIR=$(PYTHON30_IPK_DIR) install
+	$(MAKE) -C $(PYTHON30_BUILD_DIR) DESTDIR=$(PYTHON30_IPK_DIR) fullinstall
 	$(STRIP_COMMAND) $(PYTHON30_IPK_DIR)/opt/bin/python$(PYTHON30_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON30_IPK_DIR)/opt/lib/python$(PYTHON30_VERSION_MAJOR)/lib-dynload/*.so
 	chmod 755 $(PYTHON30_IPK_DIR)/opt/lib/libpython$(PYTHON30_VERSION_MAJOR).so.1.0

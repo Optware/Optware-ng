@@ -1,5 +1,5 @@
---- Python-3.0a3/Makefile.pre.in.orig	2008-02-25 04:39:23.000000000 -0800
-+++ Python-3.0a3/Makefile.pre.in	2008-03-03 09:06:43.000000000 -0800
+--- Python-3.0a5/Makefile.pre.in.orig	2008-05-04 15:42:01.000000000 -0700
++++ Python-3.0a5/Makefile.pre.in	2008-05-15 15:00:19.000000000 -0700
 @@ -36,6 +36,8 @@
  RANLIB=		@RANLIB@
  SVNVERSION=	@SVNVERSION@
@@ -26,9 +26,9 @@
 +HOSTPYTHON=	python$(BUILDEXE)
 +BUILDPYTHON=	@BUILDPYTHON@
  
- # === Definitions added by makesetup ===
- 
-@@ -199,7 +202,8 @@
+ # The task to run while instrument when building the profile-opt target
+ PROFILE_TASK=	Tools/pybench/pybench.py -n 2 --with-gc --with-syscheck
+@@ -203,7 +206,8 @@
  
  ##########################################################################
  # Parser
@@ -38,12 +38,17 @@
  
  POBJS=		\
  		Parser/acceler.o \
-@@ -345,10 +349,10 @@
+@@ -350,7 +354,7 @@
  
  # Default target
  all:		build_all
 -build_all:	$(BUILDPYTHON) oldsharedmods sharedmods
 +build_all:	$(HOSTPYTHON) oldsharedmods sharedmods
+ 
+ # Compile a binary with gcc profile guided optimization.
+ profile-opt:
+@@ -374,7 +378,7 @@
+ 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
  
  # Build the interpreter
 -$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY)
@@ -51,7 +56,7 @@
  		$(LINKCC) $(LDFLAGS) $(LINKFORSHARED) -o $@ \
  			Modules/python.o \
  			$(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
-@@ -484,12 +488,12 @@
+@@ -503,12 +507,12 @@
  	$(MAINCC) -c $(PY_CFLAGS) -o $@ $(srcdir)/Modules/python.c
  
  
@@ -68,7 +73,7 @@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -540,6 +544,16 @@
+@@ -560,6 +564,16 @@
                                               $(BYTESTR_DEPS)
  
  
@@ -85,7 +90,7 @@
  ############################################################################
  # Header files
  
-@@ -735,7 +749,7 @@
+@@ -765,7 +779,7 @@
  		else	true; \
  		fi; \
  	done
@@ -94,7 +99,7 @@
  	if test -f libpython$(VERSION)$(SO); then \
  		if test "$(SO)" = .dll; then \
  			$(INSTALL_SHARED) libpython$(VERSION)$(SO) $(DESTDIR)$(BINDIR); \
-@@ -945,8 +959,9 @@
+@@ -978,8 +992,9 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall:
@@ -106,7 +111,7 @@
  		--install-scripts=$(BINDIR) \
  		--install-platlib=$(DESTSHARED) \
  		--root=/$(DESTDIR)
-@@ -1033,7 +1048,7 @@
+@@ -1063,7 +1078,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -115,10 +120,10 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1091,11 +1106,12 @@
- 	find $(srcdir)/build -name 'fficonfig.py' -exec rm -f {} ';' || true
+@@ -1124,11 +1139,12 @@
+ 	find . -name '*.gc??' -exec rm -f {} ';'
  
- clobber: clean rmtestturds docclean
+ clobber: clean profile-removal
 -	-rm -f $(BUILDPYTHON) $(PGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
 +	-rm -f $(HOSTPYTHON) $(HOSTPGEN) $(LIBRARY) $(LDLIBRARY) $(DLLLIBRARY) \
  		tags TAGS \
