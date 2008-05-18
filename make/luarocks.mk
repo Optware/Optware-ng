@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LUAROCKS_SITE=http://luaforge.net/frs/download.php/3320
-LUAROCKS_VERSION=0.5.1
+LUAROCKS_SITE=http://luaforge.net/frs/download.php/3359
+LUAROCKS_VERSION=0.5.2
 LUAROCKS_SOURCE=luarocks-$(LUAROCKS_VERSION).tar.gz
 LUAROCKS_DIR=luarocks-$(LUAROCKS_VERSION)
 LUAROCKS_UNZIP=zcat
@@ -36,7 +36,7 @@ LUAROCKS_CONFLICTS=
 #
 # LUAROCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-LUAROCKS_IPK_VERSION=3
+LUAROCKS_IPK_VERSION=1
 
 #
 # LUAROCKS_CONFFILES should be a list of user-editable files
@@ -76,8 +76,8 @@ LUAROCKS_IPK=$(BUILD_DIR)/luarocks_$(LUAROCKS_VERSION)-$(LUAROCKS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LUAROCKS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LUAROCKS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(LUAROCKS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -143,7 +143,7 @@ $(LUAROCKS_BUILD_DIR)/.built: $(LUAROCKS_BUILD_DIR)/.configured
 		LUAROCKS_UNAME_S=Linux \
 		LUAROCKS_UNAME_M=$(TARGET_ARCH) \
 		;
-	sed -i -e 's|/usr/local|/opt|g' $(@D)/src/luarocks/config.lua
+	sed -i.orig -e 's|/usr/local|/opt|g' $(@D)/src/luarocks/cfg.lua
 	touch $@
 
 #
