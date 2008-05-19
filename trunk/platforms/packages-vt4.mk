@@ -26,7 +26,7 @@ BROKEN_PACKAGES = \
 	libdvb libextractor libmrss libnxml libopensync \
 	libpar2 libsigc++ libsoup libsndfile libstdc++ libtiff libtorrent \
 	loudmouth \
-	mediatomb mimms moc motion mod-fastcgi moe \
+	md5deep mediatomb mimms moc motion mod-fastcgi moe \
 	monotone mp3blaster mpd mpdscribble mpop msmtp msynctool \
 	mod-python mod-wsgi \
 	newsbeuter nget nmap nload nzbget \
