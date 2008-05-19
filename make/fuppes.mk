@@ -53,12 +53,14 @@ FUPPES_IPK_VERSION=1
 # FUPPES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+FUPPES_PATCHES=
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-FUPPES_PATCHES=$(FUPPES_SOURCE_DIR)/libiconv.patch
+#FUPPES_PATCHES=$(FUPPES_SOURCE_DIR)/libiconv.patch
 endif
 ifneq ($(HOSTCC), $(TARGET_CC))
 FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/configure.in.patch
 endif
+FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/atoll-not-a-member-of-std.patch
 
 #
 # If the compilation of the package requires additional
@@ -163,6 +165,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
+	sed -i -e 's|-I/opt/include *||g' $(@D)/Makefile $(@D)/src/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
