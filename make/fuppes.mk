@@ -64,7 +64,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FUPPES_CPPFLAGS=
+FUPPES_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ffmpeg
 FUPPES_LDFLAGS=
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FUPPES_LDFLAGS+=-liconv
