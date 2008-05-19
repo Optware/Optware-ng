@@ -1,0 +1,18 @@
+--- configure.in.orig	2007-12-19 06:42:30.000000000 -0800
++++ configure.in	2008-05-17 23:06:39.000000000 -0700
+@@ -448,13 +448,8 @@
+ 
+     AC_CHECK_HEADERS(${FAAD_H_DIR}faad.h, have_faad=yes, have_faad=no)
+     if test "x$have_faad" = "xyes"; then    
+-      AC_RUN_IFELSE(
+-        [AC_LANG_PROGRAM(
+-          [[#include <faad.h>]],
+-          [[(void) faacDecOpen]])],
+-        [have_decoder=yes
+-         AC_DEFINE([HAVE_FAAD], [1], [])],
+-        [have_faad=no])
++         have_decoder=yes
++         AC_DEFINE([HAVE_FAAD], [1], [])
+ 
+       AC_CHECK_HEADERS(${FAAD_H_DIR}mp4ff.h, have_mp4ff=yes, have_mp4ff=no)
+       if test "x$have_mp4ff" = "xyes"; then
