@@ -115,6 +115,9 @@ $(MD5DEEP_BUILD_DIR)/.configured: $(DL_DIR)/$(MD5DEEP_SOURCE) $(MD5DEEP_PATCHES)
 	if test "$(BUILD_DIR)/$(MD5DEEP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MD5DEEP_DIR) $(@D) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
+	sed -i.orig -e 's/floor/(int) /' $(@D)/common/hash.c
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MD5DEEP_CPPFLAGS)" \
