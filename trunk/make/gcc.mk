@@ -43,6 +43,14 @@ GCC_DEPENDS=binutils
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
+ifeq (uclibc, $(LIBC_STYLE))
+ifdef LIBNSL_VERSION
+GCC_UCLIBC_VERSION=$(LIBNSL_VERSION)
+else
+GCC_UCLIBC_VERSION ?= 0.9.28
+endif
+endif
+
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
@@ -55,6 +63,7 @@ GCC_IPK_VERSION=1
 GCC_BUILD_DIR=$(BUILD_DIR)/gcc
 GCC_SOURCE_DIR=$(SOURCE_DIR)/gcc
 GCC_PATCHES:=$(wildcard $(GCC_SOURCE_DIR)/$(GCC_VERSION)/*.patch)
+
 
 #
 # If the compilation of the package requires additional
@@ -198,15 +207,28 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
 	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
-	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/cpp
+	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
+	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/g++
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcov
 ifneq (, $(filter libstdc++, $(PACKAGES)))
 	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++.so*
 endif
-ifeq ($(OPTWARE_TARGET), $(filter cs06q3armel openwrt-ixp4xx, $(OPTWARE_TARGET)))
 	cp -a $(TARGET_INCDIR) $(GCC_IPK_DIR)/opt/
-	# /opt/lib/*crt* /opt/lib/lib*.so*
+ifeq (uclibc, $(LIBC_STYLE))
+	rsync -l $(TARGET_LIBDIR)/*crt*.o $(GCC_IPK_DIR)/opt/lib/
+	rsync -l \
+		$(if $(filter uclibc, $(LIBC_STYLE)),$(TARGET_LIBDIR)/libuClibc-$(GCC_UCLIBC_VERSION).so,) \
+		$(TARGET_LIBDIR)/libc.so* \
+		$(GCC_IPK_DIR)/opt/lib/
+	for f in libcrypt libdl libm libnsl libpthread libresolv librt libutil \
+		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
+		; \
+	do rsync -l \
+		$(TARGET_LIBDIR)/$${f}-$(GCC_UCLIBC_VERSION).so \
+		$(TARGET_LIBDIR)/$${f}.so* \
+		$(GCC_IPK_DIR)/opt/lib/; \
+	done
 endif
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
