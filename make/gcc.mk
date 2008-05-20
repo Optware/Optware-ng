@@ -211,9 +211,6 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/g++
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcov
-ifneq (, $(filter libstdc++, $(PACKAGES)))
-	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++.so*
-endif
 	cp -a $(TARGET_INCDIR) $(GCC_IPK_DIR)/opt/
 ifeq (uclibc, $(LIBC_STYLE))
 	rsync -l $(TARGET_LIBDIR)/*crt*.o $(GCC_IPK_DIR)/opt/lib/
