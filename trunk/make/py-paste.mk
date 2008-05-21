@@ -28,7 +28,7 @@
 #ifneq ($(PY-PASTE_SVN_REV),)
 #PY-PASTE____VERSION=0.5dev_r4745
 #else
-PY-PASTE_VERSION=1.6
+PY-PASTE_VERSION=1.7
 PY-PASTE_SITE=http://cheeseshop.python.org/packages/source/P/Paste
 PY-PASTE_SOURCE=Paste-$(PY-PASTE_VERSION).tar.gz
 #endif
@@ -43,7 +43,7 @@ PY25-PASTE_DEPENDS=python25
 PY-PASTE_SUGGESTS=
 PY-PASTE_CONFLICTS=
 
-PY-PASTE_IPK_VERSION=2
+PY-PASTE_IPK_VERSION=1
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
@@ -86,10 +86,10 @@ PY25-PASTE_IPK=$(BUILD_DIR)/py25-paste_$(PY-PASTE_VERSION)-$(PY-PASTE_IPK_VERSIO
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-ifeq ($(PY-PASTE_SVN_REV),)
+ifndef PY-PASTE_SVN_REV
 $(DL_DIR)/$(PY-PASTE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PASTE_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-PASTE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -120,7 +120,7 @@ $(PY-PASTE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTE_SOURCE) $(PY-PASTE_PATCH
 	mkdir -p $(PY-PASTE_BUILD_DIR)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
-ifeq ($(PY-PASTE_SVN_REV),)
+ifndef PY-PASTE_SVN_REV
 	$(PY-PASTE_UNZIP) $(DL_DIR)/$(PY-PASTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
 	(cd $(BUILD_DIR); \
@@ -130,13 +130,13 @@ endif
 	if test -n "$(PY-PASTE_PATCHES)" ; then \
 	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(PY-PASTE_BUILD_DIR)/2.4
-	(cd $(PY-PASTE_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
-ifeq ($(PY-PASTE_SVN_REV),)
+ifndef PY-PASTE_SVN_REV
 	$(PY-PASTE_UNZIP) $(DL_DIR)/$(PY-PASTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 else
 	(cd $(BUILD_DIR); \
@@ -146,8 +146,8 @@ endif
 	if test -n "$(PY-PASTE_PATCHES)" ; then \
 	    cat $(PY-PASTE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PASTE_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(PY-PASTE_BUILD_DIR)/2.5
-	(cd $(PY-PASTE_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -159,10 +159,10 @@ py-paste-unpack: $(PY-PASTE_BUILD_DIR)/.configured
 #
 $(PY-PASTE_BUILD_DIR)/.built: $(PY-PASTE_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-PASTE_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-PASTE_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -177,7 +177,7 @@ py-paste: $(PY-PASTE_BUILD_DIR)/.built
 #
 $(PY-PASTE_BUILD_DIR)/.staged: $(PY-PASTE_BUILD_DIR)/.built
 #	rm -f $@
-#	$(MAKE) -C $(PY-PASTE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
 
 py-paste-stage: $(PY-PASTE_BUILD_DIR)/.staged
