@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LM_SENSORS_SITE=http://dl.lm-sensors.org/lm-sensors/releases
-LM_SENSORS_VERSION=3.0.1
+LM_SENSORS_VERSION=3.0.2
 LM_SENSORS_SOURCE=lm_sensors-$(LM_SENSORS_VERSION).tar.bz2
 LM_SENSORS_DIR=lm_sensors-$(LM_SENSORS_VERSION)
 LM_SENSORS_UNZIP=bzcat
@@ -79,8 +79,8 @@ LM_SENSORS_IPK=$(BUILD_DIR)/lm-sensors_$(LM_SENSORS_VERSION)-$(LM_SENSORS_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LM_SENSORS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LM_SENSORS_SITE)/$(LM_SENSORS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(LM_SENSORS_SOURCE)
+	$(WGET) -P $(@D) $(LM_SENSORS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
