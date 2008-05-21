@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MULTITAIL_SITE=http://www.vanheusden.com/multitail
-MULTITAIL_VERSION=5.2.1
+MULTITAIL_VERSION=5.2.2
 MULTITAIL_SOURCE=multitail-$(MULTITAIL_VERSION).tgz
 MULTITAIL_DIR=multitail-$(MULTITAIL_VERSION)
 MULTITAIL_UNZIP=zcat
@@ -76,8 +76,8 @@ MULTITAIL_IPK=$(BUILD_DIR)/multitail_$(MULTITAIL_VERSION)-$(MULTITAIL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MULTITAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MULTITAIL_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(MULTITAIL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
