@@ -7,7 +7,7 @@
 # when we have a second client also uses libpurple, we should separate it into its own ipk, and make sure stage works
 #
 FINCH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pidgin
-FINCH_VERSION=2.4.1
+FINCH_VERSION=2.4.2
 FINCH_SOURCE=pidgin-$(FINCH_VERSION).tar.bz2
 FINCH_DIR=pidgin-$(FINCH_VERSION)
 FINCH_UNZIP=bzcat
@@ -122,6 +122,11 @@ $(FINCH_BUILD_DIR)/.configured: $(DL_DIR)/$(FINCH_SOURCE) $(FINCH_PATCHES) make/
 		--with-gnutls-libs=$(STAGING_LIB_DIR) \
 		--with-ncurses-headers=$(STAGING_INCLUDE_DIR)/ncursesw \
 		--without-x \
+		--disable-gstreamer \
+		--disable-meanwhile \
+		--disable-dbus \
+		--disable-perl \
+		--disable-tcl \
 		--disable-nls \
 		--disable-static \
 	)
