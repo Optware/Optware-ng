@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-URWID_SITE=http://excess.org/urwid
-PY-URWID_VERSION=0.9.8.1
+PY-URWID_VERSION=0.9.8.2
 PY-URWID_SOURCE=urwid-$(PY-URWID_VERSION).tar.gz
 PY-URWID_DIR=urwid-$(PY-URWID_VERSION)
 PY-URWID_UNZIP=zcat
@@ -72,8 +72,8 @@ PY-URWID_SOURCE_DIR=$(SOURCE_DIR)/py-urwid
 PY-URWID-COMMON_IPK_DIR=$(BUILD_DIR)/py-urwid-common-$(PY-URWID_VERSION)-ipk
 PY-URWID-COMMON_IPK=$(BUILD_DIR)/py-urwid-common_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY24-URWID_IPK_DIR=$(BUILD_DIR)/py-urwid-$(PY-URWID_VERSION)-ipk
-PY24-URWID_IPK=$(BUILD_DIR)/py-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-URWID_IPK_DIR=$(BUILD_DIR)/py24-urwid-$(PY-URWID_VERSION)-ipk
+PY24-URWID_IPK=$(BUILD_DIR)/py24-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-URWID_IPK_DIR=$(BUILD_DIR)/py25-urwid-$(PY-URWID_VERSION)-ipk
 PY25-URWID_IPK=$(BUILD_DIR)/py25-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -85,7 +85,8 @@ PY25-URWID_IPK=$(BUILD_DIR)/py25-urwid_$(PY-URWID_VERSION)-$(PY-URWID_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-URWID_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-URWID_SITE)/$(PY-URWID_SOURCE)
+	$(WGET) -P $(@D) $(PY-URWID_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -117,8 +118,8 @@ $(PY-URWID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-URWID_SOURCE) $(PY-URWID_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR)
 	$(PY-URWID_UNZIP) $(DL_DIR)/$(PY-URWID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-URWID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)/2.4
-	(cd $(PY-URWID_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -132,8 +133,8 @@ $(PY-URWID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-URWID_SOURCE) $(PY-URWID_PATCH
 	rm -rf $(BUILD_DIR)/$(PY-URWID_DIR)
 	$(PY-URWID_UNZIP) $(DL_DIR)/$(PY-URWID_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-URWID_PATCHES) | patch -d $(BUILD_DIR)/$(PY-URWID_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(PY-URWID_BUILD_DIR)/2.5
-	(cd $(PY-URWID_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-URWID_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -152,12 +153,12 @@ py-urwid-unpack: $(PY-URWID_BUILD_DIR)/.configured
 #
 $(PY-URWID_BUILD_DIR)/.built: $(PY-URWID_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-URWID_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build \
 	    ; \
 	)
-	(cd $(PY-URWID_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build \
 	    ; \
@@ -173,9 +174,9 @@ py-urwid: $(PY-URWID_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-URWID_BUILD_DIR)/.staged: $(PY-URWID_BUILD_DIR)/.built
-	rm -f $@
-	#$(MAKE) -C $(PY-URWID_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-urwid-stage: $(PY-URWID_BUILD_DIR)/.staged
 
@@ -200,7 +201,7 @@ $(PY-URWID-COMMON_IPK_DIR)/CONTROL/control:
 $(PY24-URWID_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-urwid" >>$@
+	@echo "Package: py24-urwid" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-URWID_PRIORITY)" >>$@
 	@echo "Section: $(PY-URWID_SECTION)" >>$@
@@ -238,7 +239,8 @@ $(PY25-URWID_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-URWID_IPK): $(PY-URWID_BUILD_DIR)/.built
-	rm -rf $(PY24-URWID_IPK_DIR) $(BUILD_DIR)/py-urwid_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-urwid_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-URWID_IPK_DIR) $(BUILD_DIR)/py24-urwid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-URWID_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
