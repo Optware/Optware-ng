@@ -34,7 +34,7 @@ IPKG-OPT_CVS_OPTS=-r $(IPKG-OPT_CVS_TAG)
 #
 # IPKG-OPT_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-OPT_IPK_VERSION=9
+IPKG-OPT_IPK_VERSION=10
 
 #
 # IPKG-OPT_CONFFILES should be a list of user-editable files
@@ -79,6 +79,9 @@ IPKG-OPT_PATCHES += $(IPKG-OPT_SOURCE_DIR)/ipkg_download.c.patch
 endif
 ifeq ($(TARGET_OS), darwin)
 IPKG-OPT_PATCHES += $(IPKG-OPT_SOURCE_DIR)/darwin.patch
+endif
+ifeq ($(OPTWARE_TARGET), tsx09)
+IPKG-OPT_PATCHES += $(IPKG-OPT_SOURCE_DIR)/use-optware-wget.patch
 endif
 
 #
