@@ -36,7 +36,7 @@ RSSTAIL_CONFLICTS=
 #
 # RSSTAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-RSSTAIL_IPK_VERSION=1
+RSSTAIL_IPK_VERSION=2
 
 #
 # RSSTAIL_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ RSSTAIL_IPK=$(BUILD_DIR)/rsstail_$(RSSTAIL_VERSION)-$(RSSTAIL_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RSSTAIL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RSSTAIL_SITE)/$(RSSTAIL_SOURCE)
+	$(WGET) -P $(@D) $(RSSTAIL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -114,7 +115,7 @@ $(RSSTAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(RSSTAIL_SOURCE) $(RSSTAIL_PATCHES)
 	if test "$(BUILD_DIR)/$(RSSTAIL_DIR)" != "$(RSSTAIL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(RSSTAIL_DIR) $(RSSTAIL_BUILD_DIR) ; \
 	fi
-#	(cd $(RSSTAIL_BUILD_DIR); \
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSSTAIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RSSTAIL_LDFLAGS)" \
@@ -126,7 +127,7 @@ $(RSSTAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(RSSTAIL_SOURCE) $(RSSTAIL_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(RSSTAIL_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 rsstail-unpack: $(RSSTAIL_BUILD_DIR)/.configured
@@ -136,7 +137,7 @@ rsstail-unpack: $(RSSTAIL_BUILD_DIR)/.configured
 #
 $(RSSTAIL_BUILD_DIR)/.built: $(RSSTAIL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RSSTAIL_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSSTAIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RSSTAIL_LDFLAGS)" \
@@ -153,7 +154,7 @@ rsstail: $(RSSTAIL_BUILD_DIR)/.built
 #
 $(RSSTAIL_BUILD_DIR)/.staged: $(RSSTAIL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RSSTAIL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 rsstail-stage: $(RSSTAIL_BUILD_DIR)/.staged
@@ -195,6 +196,8 @@ $(RSSTAIL_IPK): $(RSSTAIL_BUILD_DIR)/.built
 	install -d $(RSSTAIL_IPK_DIR)/opt/bin/
 	install $(RSSTAIL_BUILD_DIR)/rsstail $(RSSTAIL_IPK_DIR)/opt/bin/
 	$(STRIP_COMMAND) $(RSSTAIL_IPK_DIR)/opt/bin/rsstail
+	install -d $(RSSTAIL_IPK_DIR)/opt/share/man/man1
+	install $(RSSTAIL_BUILD_DIR)/rsstail.1 $(RSSTAIL_IPK_DIR)/opt/share/man/man1
 	$(MAKE) $(RSSTAIL_IPK_DIR)/CONTROL/control
 #	echo $(RSSTAIL_CONFFILES) | sed -e 's/ /\n/g' > $(RSSTAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSSTAIL_IPK_DIR)
