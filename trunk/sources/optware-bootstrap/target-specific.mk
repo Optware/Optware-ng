@@ -5,6 +5,7 @@ OPTWARE-BOOTSTRAP_TARGETS=\
 	lspro \
 	mssii \
 	teraprov2 \
+	tsx09 \
 
 OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter ds101 ds101g, $(OPTWARE_TARGET)), /volume1/opt, \
@@ -12,15 +13,17 @@ OPTWARE-BOOTSTRAP_REAL_OPT_DIR=$(strip \
 	$(if $(filter mssii, $(OPTWARE-BOOTSTRAP_TARGET)), /share/.optware, \
 	$(if $(filter lspro, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/disk1/.optware, \
 	$(if $(filter teraprov2, $(OPTWARE-BOOTSTRAP_TARGET)), /mnt/array1/.optware, \
-	))))))
+	$(if $(filter tsx09, $(OPTWARE-BOOTSTRAP_TARGET)), /share/MD0_DATA/.@optware, \
+	)))))))
 
 OPTWARE-BOOTSTRAP_RC=$(strip \
 	$(if $(filter cs05q3armel mssii, $(OPTWARE_TARGET)), /etc/init.d/rc.optware, \
 	/etc/init.d/optware))
 
 OPTWARE-BOOTSTRAP_CONTAINS=$(strip \
-	$(if $(filter fsg3 fsg3v4 dt2 vt4, $(OPTWARE-BOOTSTRAP_TARGET)), coreutils diffutils, \
-	ipkg-opt openssl wget-ssl))
+	ipkg-opt wget \
+	$(if $(filter fsg3 fsg3v4 dt2 vt4 tsx09, $(OPTWARE-BOOTSTRAP_TARGET)), coreutils diffutils) \
+	)
 
 # Ideally the following stanza would work
 # unfortunately it has some conflict with optware/Makefile
@@ -59,3 +62,8 @@ teraprov2-optware-bootstrap-ipk:
 	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=teraprov2
 teraprov2-optware-bootstrap-dirclean:
 	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=teraprov2
+
+tsx09-optware-bootstrap-ipk:
+	$(MAKE) optware-bootstrap-ipk OPTWARE-BOOTSTRAP_TARGET=tsx09
+tsx09-optware-bootstrap-dirclean:
+	$(MAKE) optware-bootstrap-dirclean OPTWARE-BOOTSTRAP_TARGET=tsx09
