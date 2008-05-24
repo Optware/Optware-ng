@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TWISTED_VERSION=2.5.0
-PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/2.5
+PY-TWISTED_VERSION=8.1.0
+PY-TWISTED_SITE=http://tmrc.mit.edu/mirror/twisted/Twisted/8.1
 PY-TWISTED_SOURCE=Twisted-$(PY-TWISTED_VERSION).tar.bz2
 PY-TWISTED_DIR=Twisted-$(PY-TWISTED_VERSION)
 PY-TWISTED_UNZIP=bzcat
@@ -37,7 +37,7 @@ PY-TWISTED_CONFLICTS=
 #
 # PY-TWISTED_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TWISTED_IPK_VERSION=2
+PY-TWISTED_IPK_VERSION=1
 
 #
 # PY-TWISTED_CONFFILES should be a list of user-editable files
@@ -81,8 +81,8 @@ PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-TWISTED_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-TWISTED_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-TWISTED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,12 +108,12 @@ py-twisted-source: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES)
 #
 $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED_PATCHES)
 	$(MAKE) py-zope-interface-stage py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(PY-TWISTED_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)
 	mkdir -p $(PY-TWISTED_BUILD_DIR)
 	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TWISTED_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TWISTED_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(PY-TWISTED_BUILD_DIR)/2.4
-	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -125,12 +125,12 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	for d in $(PY-TWISTED_BUILD_DIR)/2.4/Twisted*-[0-9]*; \
-		do cp $(PY-TWISTED_BUILD_DIR)/2.4/setup.cfg $$d; done
+	for d in $(@D)/2.4/Twisted*-[0-9]*; \
+		do cp $(@D)/2.4/setup.cfg $$d; done
 	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TWISTED_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TWISTED_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(PY-TWISTED_BUILD_DIR)/2.5
-	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -142,8 +142,8 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(PY-TWISTED
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg \
 	)
-	for d in $(PY-TWISTED_BUILD_DIR)/2.5/Twisted*-[0-9]*; \
-		do cp $(PY-TWISTED_BUILD_DIR)/2.5/setup.cfg $$d; done
+	for d in $(@D)/2.5/Twisted*-[0-9]*; \
+		do cp $(@D)/2.5/setup.cfg $$d; done
 	touch $@
 
 py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
@@ -154,13 +154,13 @@ py-twisted-unpack: $(PY-TWISTED_BUILD_DIR)/.configured
 $(PY-TWISTED_BUILD_DIR)/.built: $(PY-TWISTED_BUILD_DIR)/.configured
 	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/twisted
-	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
+	(cd $(@D)/2.4; \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
 	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/twisted
-	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
-		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
+	(cd $(@D)/2.5; \
+		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
 	touch $@
@@ -175,11 +175,11 @@ py-twisted: $(PY-TWISTED_BUILD_DIR)/.built
 #
 $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 	rm -f $@
-	(cd $(PY-TWISTED_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.4/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.4/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
-	(cd $(PY-TWISTED_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH="$(STAGING_LIB_DIR)/python2.5/site-packages:`ls -d $(PY-TWISTED_BUILD_DIR)/2.5/TwistedCore-*`" \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
@@ -239,6 +239,8 @@ $(PY24-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY24-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
+	for f in $(PY24-TWISTED_IPK_DIR)/opt/*bin/*; \
+	    do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-TWISTED_IPK_DIR)/CONTROL/control
 	echo $(PY-TWISTED_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-TWISTED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-TWISTED_IPK_DIR)
@@ -250,8 +252,6 @@ $(PY25-TWISTED_IPK): $(PY-TWISTED_BUILD_DIR)/.built
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-TWISTED_IPK_DIR) --prefix=/opt)
 	$(STRIP_COMMAND) `find $(PY25-TWISTED_IPK_DIR)/opt/lib -name '*.so'`
-	for f in $(PY25-TWISTED_IPK_DIR)/opt/*bin/*; \
-	    do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-TWISTED_IPK_DIR)/CONTROL/control
 	echo $(PY-TWISTED_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TWISTED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TWISTED_IPK_DIR)
