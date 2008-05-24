@@ -5,8 +5,8 @@
 ###########################################################
 
 BOGOFILTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bogofilter
-BOGOFILTER_VERSION=1.1.5
-BOGOFILTER_IPK_VERSION=2
+BOGOFILTER_VERSION=1.1.7
+BOGOFILTER_IPK_VERSION=1
 BOGOFILTER_SOURCE=bogofilter-$(BOGOFILTER_VERSION).tar.bz2
 BOGOFILTER_DIR=bogofilter-$(BOGOFILTER_VERSION)
 BOGOFILTER_UNZIP=bzcat
@@ -59,7 +59,8 @@ $(BOGOFILTER_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(BOGOFILTER_DEPENDS)" >>$@
 
 $(DL_DIR)/$(BOGOFILTER_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BOGOFILTER_SITE)/$(BOGOFILTER_SOURCE)
+	$(WGET) -P $(@D) $(BOGOFILTER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 bogofilter-source: $(DL_DIR)/$(BOGOFILTER_SOURCE) $(BOGOFILTER_PATCHES)
 
@@ -92,22 +93,21 @@ endif
 		$(BOGOFILTER_CONFIGURE_OPTIONS) \
 		--disable-nls \
 	)
-	touch $(BOGOFILTER_BUILD_DIR)/.configured
+	touch $@
 
 bogofilter-unpack: $(BOGOFILTER_BUILD_DIR)/.configured
 
 $(BOGOFILTER_BUILD_DIR)/.built: $(BOGOFILTER_BUILD_DIR)/.configured
-	rm -f $(BOGOFILTER_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(BOGOFILTER_BUILD_DIR)
-	touch $(BOGOFILTER_BUILD_DIR)/.built
+	touch $@
 
 bogofilter: $(BOGOFILTER_BUILD_DIR)/.built
 
 $(BOGOFILTER_BUILD_DIR)/.staged: $(BOGOFILTER_BUILD_DIR)/.built
-	rm -f $(BOGOFILTER_BUILD_DIR)/.staged
+#	rm -f $@
 #	$(MAKE) -C $(BOGOFILTER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	echo "Warning: the makefile target 'bogofilter-stage' is not available."
-	touch $(BOGOFILTER_BUILD_DIR)/.staged
+#	touch $@
 
 bogofilter-stage: $(BOGOFILTER_BUILD_DIR)/.staged
 
