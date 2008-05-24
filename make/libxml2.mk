@@ -16,7 +16,7 @@
 #
 
 LIBXML2_SITE=ftp://xmlsoft.org/libxml2
-LIBXML2_VERSION=2.6.31
+LIBXML2_VERSION=2.6.32
 LIBXML2_SOURCE=libxml2-$(LIBXML2_VERSION).tar.gz
 LIBXML2_DIR=libxml2-$(LIBXML2_VERSION)
 LIBXML2_UNZIP=zcat
@@ -69,7 +69,8 @@ LIBXML2_IPK=$(BUILD_DIR)/libxml2_$(LIBXML2_VERSION)-$(LIBXML2_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBXML2_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBXML2_SITE)/$(LIBXML2_SOURCE)
+	$(WGET) -P $(@D) $(LIBXML2_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -95,11 +96,11 @@ libxml2-source: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 #
 $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES) make/libxml2.mk
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(LIBXML2_DIR) $(LIBXML2_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBXML2_DIR) $(@D)
 	$(LIBXML2_UNZIP) $(DL_DIR)/$(LIBXML2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(LIBXML2_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXML2_DIR) -p1
-	mv $(BUILD_DIR)/$(LIBXML2_DIR) $(LIBXML2_BUILD_DIR)
-	(cd $(LIBXML2_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBXML2_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBXML2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBXML2_LDFLAGS)" \
@@ -113,6 +114,7 @@ $(LIBXML2_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXML2_SOURCE) $(LIBXML2_PATCHES)
 		--enable-shared \
 		--without-python \
 	)
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libxml2-unpack: $(LIBXML2_BUILD_DIR)/.configured
@@ -122,7 +124,7 @@ libxml2-unpack: $(LIBXML2_BUILD_DIR)/.configured
 #
 $(LIBXML2_BUILD_DIR)/.built: $(LIBXML2_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBXML2_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -137,7 +139,7 @@ $(LIBXML2_BUILD_DIR)/.staged: $(LIBXML2_BUILD_DIR)/.built
 	rm -f $@
 	rm -f	$(STAGING_PREFIX)/bin/xml2-config* \
 		$(STAGING_LIB_DIR)/pkgconfig/libxml*.pc*
-	$(MAKE) -C $(LIBXML2_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm $(STAGING_LIB_DIR)/libxml2.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_PREFIX)/bin/xml2-config \
