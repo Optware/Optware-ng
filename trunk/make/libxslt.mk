@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 LIBXSLT_SITE=ftp://xmlsoft.org/libxslt
-LIBXSLT_VERSION=1.1.22
+LIBXSLT_VERSION=1.1.24
 LIBXSLT_SOURCE=libxslt-$(LIBXSLT_VERSION).tar.gz
 LIBXSLT_DIR=libxslt-$(LIBXSLT_VERSION)
 LIBXSLT_UNZIP=zcat
@@ -68,7 +68,8 @@ LIBXSLT_IPK=$(BUILD_DIR)/libxslt_$(LIBXSLT_VERSION)-$(LIBXSLT_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBXSLT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBXSLT_SITE)/$(LIBXSLT_SOURCE)
+	$(WGET) -P $(@D) $(LIBXSLT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -94,13 +95,13 @@ libxslt-source: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 #
 $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 	$(MAKE) libxml2-stage
-	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(@D)
 	$(LIBXSLT_UNZIP) $(DL_DIR)/$(LIBXSLT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXSLT_PATCHES)"; \
 		then cat $(LIBXSLT_PATCHES) | patch -d $(BUILD_DIR)/$(LIBXSLT_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(LIBXSLT_DIR) $(LIBXSLT_BUILD_DIR)
-	(cd $(LIBXSLT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(LIBXSLT_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBXSLT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBXSLT_LDFLAGS)" \
@@ -118,7 +119,7 @@ $(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 		--with-libxml-libs-prefix=$(STAGING_LIB_DIR) \
 		--with-libxml-include-prefix=$(STAGING_INCLUDE_DIR) \
 	)
-	$(PATCH_LIBTOOL) $(LIBXSLT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libxslt-unpack: $(LIBXSLT_BUILD_DIR)/.configured
@@ -128,7 +129,7 @@ libxslt-unpack: $(LIBXSLT_BUILD_DIR)/.configured
 #
 $(LIBXSLT_BUILD_DIR)/.built: $(LIBXSLT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBXSLT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -141,7 +142,7 @@ libxslt: $(LIBXSLT_BUILD_DIR)/.built
 #
 $(LIBXSLT_BUILD_DIR)/.staged: $(LIBXSLT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's%includedir=$${*prefix}*/include%includedir=$(STAGING_INCLUDE_DIR)%' $(STAGING_PREFIX)/bin/xslt-config
 	# follow libxml's convention in putting -config bins in STAGING/bin
 	cp $(STAGING_DIR)/opt/bin/xslt-config $(STAGING_DIR)/bin
