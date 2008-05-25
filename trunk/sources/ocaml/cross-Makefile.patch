@@ -42,8 +42,8 @@
  
  str.cmxa: str.cmx
  	$(MKLIB) -ocamlopt '$(CAMLOPT)' -o str str.cmx
---- ocaml/Makefile.orig	2007-06-20 13:26:29.000000000 +0000
-+++ ocaml/Makefile	2008-05-15 00:13:01.000000000 +0000
+--- ocaml/Makefile.orig	2007-06-20 06:26:29.000000000 -0700
++++ ocaml/Makefile	2008-05-24 23:13:15.000000000 -0700
 @@ -322,15 +322,15 @@
  	sed -e 's|%%LIBDIR%%|$(LIBDIR)|' \
              -e 's|%%BYTERUN%%|$(BINDIR)/ocamlrun|' \
@@ -54,17 +54,16 @@
 -            -e 's|%%NATIVELINK%%|$(NATIVECC) $(NATIVECCLINKOPTS)|' \
 -            -e 's|%%PARTIALLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS)|' \
 -            -e 's|%%PACKLD%%|$(PARTIALLD) $(NATIVECCLINKOPTS) -o |' \
-+            -e 's|%%BYTECC%%|`basename $(BYTECC)` $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
-+            -e 's|%%BYTELINK%%|`basename $(BYTECC)` $(BYTECCLINKOPTS)|' \
-+            -e "s|%%NATIVECC%%|`basename $(NATIVECC)` $(NATIVECCCOMPOPTS)|" \
-+            -e "s|%%NATIVELINK%%|`basename $(NATIVECC)` $(NATIVECCLINKOPTS)|" \
-+            -e 's|%%PARTIALLD%%|`basename $(PARTIALLD)` $(NATIVECCLINKOPTS)|' \
-+            -e 's|%%PACKLD%%|$`basename (PARTIALLD)` $(NATIVECCLINKOPTS) -o |' \
++            -e 's|%%BYTECC%%|gcc $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS)|' \
++            -e 's|%%BYTELINK%%|gcc $(BYTECCLINKOPTS)|' \
++            -e 's|%%NATIVECC%%|gcc $(NATIVECCCOMPOPTS)|' \
++            -e 's|%%NATIVELINK%%|gcc $(NATIVECCLINKOPTS)|' \
++            -e 's|%%PARTIALLD%%|ld -r $(NATIVECCLINKOPTS)|' \
++            -e 's|%%PACKLD%%|ld -r $(NATIVECCLINKOPTS) -o |' \
              -e 's|%%BYTECCLIBS%%|$(BYTECCLIBS)|' \
--            -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
+             -e 's|%%NATIVECCLIBS%%|$(NATIVECCLIBS)|' \
 -            -e 's|%%RANLIBCMD%%|$(RANLIBCMD)|' \
-+            -e 's|%%NATIVECCLIBS%%|`basename $(NATIVECCLIBS)`|' \
-+            -e 's|%%RANLIBCMD%%|`basename $(RANLIBCMD)`|' \
++            -e 's|%%RANLIBCMD%%|ranlib|' \
              -e 's|%%CC_PROFILE%%|$(CC_PROFILE)|' \
              -e 's|%%ARCH%%|$(ARCH)|' \
              -e 's|%%MODEL%%|$(MODEL)|' \
