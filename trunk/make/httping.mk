@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTTPING_SITE=http://www.vanheusden.com/httping
-HTTPING_VERSION=1.2.5
+HTTPING_VERSION=1.2.6
 HTTPING_SOURCE=httping-$(HTTPING_VERSION).tgz
 HTTPING_DIR=httping-$(HTTPING_VERSION)
 HTTPING_UNZIP=zcat
@@ -76,8 +76,8 @@ HTTPING_IPK=$(BUILD_DIR)/httping_$(HTTPING_VERSION)-$(HTTPING_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HTTPING_SOURCE):
-	$(WGET) -P $(DL_DIR) $(HTTPING_SITE)/$(HTTPING_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(HTTPING_SOURCE)
+	$(WGET) -P $(@D) $(HTTPING_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -106,17 +106,17 @@ httping-source: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES)
 #
 $(HTTPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES) make/httping.mk
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(HTTPING_DIR) $(HTTPING_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(HTTPING_DIR) $(@D)
 	$(HTTPING_UNZIP) $(DL_DIR)/$(HTTPING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HTTPING_PATCHES)" ; \
 		then cat $(HTTPING_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(HTTPING_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(HTTPING_DIR)" != "$(HTTPING_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(HTTPING_DIR) $(HTTPING_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(HTTPING_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(HTTPING_DIR) $(@D) ; \
 	fi
-	sed -i -e 's:/usr/:/opt/:g' $(HTTPING_BUILD_DIR)/Makefile
-#	(cd $(HTTPING_BUILD_DIR); \
+	sed -i -e 's:/usr/:/opt/:g' $(@D)/Makefile
+#	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTTPING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HTTPING_LDFLAGS)" \
@@ -128,7 +128,7 @@ $(HTTPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-#	$(PATCH_LIBTOOL) $(HTTPING_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 httping-unpack: $(HTTPING_BUILD_DIR)/.configured
@@ -138,7 +138,7 @@ httping-unpack: $(HTTPING_BUILD_DIR)/.configured
 #
 $(HTTPING_BUILD_DIR)/.built: $(HTTPING_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(HTTPING_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTTPING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HTTPING_LDFLAGS)" \
@@ -155,7 +155,7 @@ httping: $(HTTPING_BUILD_DIR)/.built
 #
 $(HTTPING_BUILD_DIR)/.staged: $(HTTPING_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(HTTPING_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 httping-stage: $(HTTPING_BUILD_DIR)/.staged
