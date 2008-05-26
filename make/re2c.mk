@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RE2C_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/re2c
-RE2C_VERSION=0.13.4
+RE2C_VERSION=0.13.5
 RE2C_SOURCE=re2c-$(RE2C_VERSION).tar.gz
 RE2C_DIR=re2c-$(RE2C_VERSION)
 RE2C_UNZIP=zcat
@@ -81,8 +81,8 @@ RE2C_IPK=$(BUILD_DIR)/re2c_$(RE2C_VERSION)-$(RE2C_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RE2C_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RE2C_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(RE2C_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -197,16 +197,7 @@ $(RE2C_IPK_DIR)/CONTROL/control:
 $(RE2C_IPK): $(RE2C_BUILD_DIR)/.built
 	rm -rf $(RE2C_IPK_DIR) $(BUILD_DIR)/re2c_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RE2C_BUILD_DIR) DESTDIR=$(RE2C_IPK_DIR) install-strip
-#	install -d $(RE2C_IPK_DIR)/opt/etc/
-#	install -m 644 $(RE2C_SOURCE_DIR)/re2c.conf $(RE2C_IPK_DIR)/opt/etc/re2c.conf
-#	install -d $(RE2C_IPK_DIR)/opt/etc/init.d
-#	install -m 755 $(RE2C_SOURCE_DIR)/rc.re2c $(RE2C_IPK_DIR)/opt/etc/init.d/SXXre2c
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RE2C_IPK_DIR)/opt/etc/init.d/SXXre2c
 	$(MAKE) $(RE2C_IPK_DIR)/CONTROL/control
-#	install -m 755 $(RE2C_SOURCE_DIR)/postinst $(RE2C_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RE2C_IPK_DIR)/CONTROL/postinst
-#	install -m 755 $(RE2C_SOURCE_DIR)/prerm $(RE2C_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RE2C_IPK_DIR)/CONTROL/prerm
 	echo $(RE2C_CONFFILES) | sed -e 's/ /\n/g' > $(RE2C_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RE2C_IPK_DIR)
 
