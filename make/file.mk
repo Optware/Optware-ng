@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=4.23
+FILE_VERSION=4.24
 FILE_SOURCE=file-$(FILE_VERSION).tar.gz
 FILE_DIR=file-$(FILE_VERSION)
 FILE_UNZIP=zcat
@@ -58,8 +58,14 @@ FILE_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-FILE_BUILD_DIR=$(BUILD_DIR)/file
 FILE_SOURCE_DIR=$(SOURCE_DIR)/file
+FILE_BUILD_DIR=$(BUILD_DIR)/file
+ifneq ($(HOSTCC), $(TARGET_CC))
+FILE_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/file
+else
+FILE_HOST_BUILD_DIR=$(FILE_BUILD_DIR)
+endif
+
 FILE_IPK_DIR=$(BUILD_DIR)/file-$(FILE_VERSION)-ipk
 FILE_IPK=$(BUILD_DIR)/file_$(FILE_VERSION)-$(FILE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -80,6 +86,21 @@ $(DL_DIR)/$(FILE_SOURCE):
 #
 file-source: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 
+$(FILE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(FILE_SOURCE) make/file.mk
+	$(MAKE) zlib-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
+	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
+	(cd $(@D); \
+		CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
+		./configure \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+	)
+	$(MAKE) -C $(@D)
+	touch $@
+
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -95,15 +116,19 @@ file-source: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
+ifeq ($(HOSTCC), $(TARGET_CC))
+$(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES) make/file.mk
+else
+$(FILE_BUILD_DIR)/.configured: $(FILE_HOST_BUILD_DIR)/.built $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
+endif
 	$(MAKE) zlib-stage
-	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(FILE_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(@D)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FILE_PATCHES)"; \
 		then cat $(FILE_PATCHES) | patch -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(FILE_DIR) $(FILE_BUILD_DIR)
-	(cd $(FILE_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(FILE_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FILE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FILE_LDFLAGS)" \
@@ -115,7 +140,7 @@ $(FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(FILE_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 file-unpack: $(FILE_BUILD_DIR)/.configured
@@ -126,8 +151,7 @@ file-unpack: $(FILE_BUILD_DIR)/.configured
 #
 $(FILE_BUILD_DIR)/.built: $(FILE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(FILE_BUILD_DIR) SUBDIRS=src
-	$(MAKE) -C $(FILE_BUILD_DIR)/magic pkgdata_DATA="magic magic.mime"
+	$(MAKE) -C $(@D) FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	touch $@
 
 #
@@ -141,8 +165,9 @@ file: $(FILE_BUILD_DIR)/.built
 #
 $(FILE_BUILD_DIR)/.staged: $(FILE_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(STAGING_DIR) SUBDIRS=src install
-	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(STAGING_DIR) pkgdata_DATA="magic magic.mime" install
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) SUBDIRS=src install
+#	$(MAKE) -C $(@D)/magic DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 file-stage: $(FILE_BUILD_DIR)/.staged
@@ -179,13 +204,14 @@ $(FILE_IPK_DIR)/CONTROL/control:
 #
 $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_$(TARGET_ARCH).ipk
-	install -d $(FILE_IPK_DIR)/opt/bin
-	$(MAKE) -C $(FILE_BUILD_DIR) DESTDIR=$(FILE_IPK_DIR) SUBDIRS=src install-strip
-	$(MAKE) -C $(FILE_BUILD_DIR)/magic DESTDIR=$(FILE_IPK_DIR) pkgdata_DATA="magic magic.mime" install-strip
+#	install -d $(FILE_IPK_DIR)/opt/bin
+	$(MAKE) -C $(FILE_BUILD_DIR) install-strip \
+		DESTDIR=$(FILE_IPK_DIR) \
+		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	rm -f $(FILE_IPK_DIR)/opt/lib/libmagic.la
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
-	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
-	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
+#	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
+#	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FILE_IPK_DIR)
 
 #

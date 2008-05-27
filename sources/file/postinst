@@ -1,6 +1,0 @@
-#!/bin/sh
-
-cd /opt/share/file
-/opt/bin/file -C -m magic
-/opt/bin/file -C -m magic.mime
-chmod 644 magic.mgc magic.mime.mgc
