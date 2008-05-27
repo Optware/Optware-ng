@@ -39,7 +39,7 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=1
+CHEROKEE_IPK_VERSION=2
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
@@ -275,6 +275,7 @@ $(CHEROKEE_IPK) $(CHEROKEE-ADMIN_IPK) $(CHEROKEE-DEV_IPK) $(CHEROKEE-DOC_IPK): $
 	install -d $(CHEROKEE_IPK_DIR)/opt/etc/default
 	echo "CHEROKEE_ENABLE=yes" > $(CHEROKEE_IPK_DIR)/opt/etc/default/cherokee
 	mv $(CHEROKEE_IPK_DIR)/opt/bin/spawn-fcgi $(CHEROKEE_IPK_DIR)/opt/bin/cherokee-spawn-fcgi
+	mv $(CHEROKEE_IPK_DIR)/opt/share/man/man1/spawn-fcgi.1 $(CHEROKEE_IPK_DIR)/opt/share/man/man1/cherokee-spawn-fcgi.1
 	# -admin
 	install -d $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee
 	mv $(CHEROKEE_IPK_DIR)/opt/share/cherokee/admin $(CHEROKEE-ADMIN_IPK_DIR)/opt/share/cherokee/admin
