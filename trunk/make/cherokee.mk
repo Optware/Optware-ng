@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CHEROKEE_VERSION=0.6.1
-CHEROKEE_SITE=http://www.0x50.org/download/0.6/$(CHEROKEE_VERSION)
+CHEROKEE_VERSION=0.7.0
+CHEROKEE_SITE=http://www.0x50.org/download/0.7/$(CHEROKEE_VERSION)
 CHEROKEE_SOURCE=cherokee-$(CHEROKEE_VERSION).tar.gz
 CHEROKEE_DIR=cherokee-$(CHEROKEE_VERSION)
 CHEROKEE_UNZIP=zcat
@@ -39,14 +39,12 @@ CHEROKEE_CONFLICTS=
 #
 # CHEROKEE_IPK_VERSION should be incremented when the ipk changes.
 #
-CHEROKEE_IPK_VERSION=2
+CHEROKEE_IPK_VERSION=1
 
 #
 # CHEROKEE_CONFFILES should be a list of user-editable files
 CHEROKEE_CONFFILES=\
 	/opt/etc/cherokee/cherokee.conf \
-	/opt/etc/cherokee/mime.types \
-	/opt/etc/cherokee/mime.compression.types \
 	/opt/etc/init.d/S80cherokee \
 	/opt/share/www/cherokee/index.html \
 
@@ -54,10 +52,7 @@ CHEROKEE_CONFFILES=\
 # CHEROKEE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CHEROKEE_PATCHES=
-#ifeq ($(OPTWARE_TARGET), wl500g)
-#CHEROKEE_PATCHES += $(CHEROKEE_SOURCE_DIR)/old_uclibc_tm_gmtoff.patch
-#endif
+CHEROKEE_PATCHES=$(CHEROKEE_SOURCE_DIR)/conf.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -140,8 +135,8 @@ endif
 	    cat $(CHEROKEE_PATCHES) | patch -d $(BUILD_DIR)/$(CHEROKEE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(CHEROKEE_DIR) $(@D)
-	sed -i -e 's|interpreter = python|interpreter = /opt/bin/python|' $(@D)/cherokee/main_admin.c
-	sed -i -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/CherokeeManagement.py
+	sed -i.orig -e '1s|#!.*|#!/opt/bin/python|' $(@D)/admin/server.py
+	sed -i.orig -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/CherokeeManagement.py
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHEROKEE_CPPFLAGS)" \
