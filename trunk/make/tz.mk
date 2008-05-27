@@ -21,9 +21,11 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TZ_SITE=ftp://elsie.nci.nih.gov/pub
-TZ_VERSION=2008a
-TZ_CODE_SOURCE=tzcode$(TZ_VERSION).tar.gz
-TZ_DATA_SOURCE=tzdata$(TZ_VERSION).tar.gz
+TZ_CODE_VERSION=2008a
+TZ_DATA_VERSION=2008c
+TZ_VERSION=$(TZ_DATA_VERSION)
+TZ_CODE_SOURCE=tzcode$(TZ_CODE_VERSION).tar.gz
+TZ_DATA_SOURCE=tzdata$(TZ_DATA_VERSION).tar.gz
 TZ_DIR=tz-$(TZ_VERSION)
 TZ_UNZIP=zcat
 TZ_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -78,12 +80,12 @@ TZ_IPK=$(BUILD_DIR)/tz_$(TZ_VERSION)-$(TZ_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(TZ_CODE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TZ_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TZ_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(TZ_DATA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TZ_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(TZ_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
