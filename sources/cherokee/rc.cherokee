@@ -27,7 +27,7 @@ fi
 case "$rc" in
     start)
 	echo "Starting web server: $NAME"
-	$DAEMON -b
+	$DAEMON -d
         ;;
     stop)
         if [ -n "`pidof $NAME`" ]; then

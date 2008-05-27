@@ -1,0 +1,22 @@
+--- cherokee/qa/conf.py.orig	2008-05-22 12:27:04.000000000 -0700
++++ cherokee/qa/conf.py	2008-05-27 11:08:24.000000000 -0700
+@@ -25,16 +25,16 @@
+ 
+ # Paths
+ #
+-PHP_DIRS          = ["/usr/lib/cgi-bin/",
++PHP_DIRS          = ["/opt/bin", "/usr/lib/cgi-bin/",
+                      "/usr/bin/",
+                      "/usr/local/bin/",
+                      "/opt/csw/php5/bin/"]
+-PYTHON_DIRS       = ["/usr/bin",
++PYTHON_DIRS       = ["/opt/bin", "/usr/bin",
+                      "/usr/local/bin",
+                      "/opt/csw/bin"]
+ # Names
+ #
+-PHP_NAMES         = ["php5-cgi",
++PHP_NAMES         = ["php-fcgi", "php5-cgi",
+                      "php-cgi",
+                      "php4-cgi"
+                      "php5",
