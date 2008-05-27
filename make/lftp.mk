@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LFTP_SITE=http://ftp.yars.free.net/pub/source/lftp
-LFTP_VERSION=3.7.1
+LFTP_VERSION=3.7.3
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=zcat
@@ -77,7 +77,8 @@ LFTP_IPK=$(BUILD_DIR)/lftp_$(LFTP_VERSION)-$(LFTP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LFTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LFTP_SITE)/$(LFTP_SOURCE)
+	$(WGET) -P $(@D) $(LFTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,7 +105,7 @@ lftp-source: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
+$(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES) make/lftp.mk
 	$(MAKE) readline-stage ncurses-stage expat-stage libstdc++-stage
 #	$(MAKE) gnutls-stage libtasn1-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(LFTP_DIR) $(LFTP_BUILD_DIR)
@@ -124,6 +125,7 @@ $(LFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LFTP_SOURCE) $(LFTP_PATCHES)
 		ac_cv_need_trio=no \
 		lftp_cv_va_copy=yes \
 		enable_wcwidth_replacement=yes \
+		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
