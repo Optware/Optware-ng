@@ -1,0 +1,6 @@
+#!/bin/sh
+
+cd /opt/share/file
+rm -f magic*.mgc
+/opt/bin/file -C -m magic
+chmod 644 magic.mgc
