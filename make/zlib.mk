@@ -31,7 +31,9 @@ endif
 endif
 
 ZLIB_BUILD_DIR=$(BUILD_DIR)/zlib
+ZLIB_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/zlib
 ZLIB_SOURCE_DIR=$(SOURCE_DIR)/zlib
+
 ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-$(ZLIB_VERSION)-ipk
 ZLIB_IPK=$(BUILD_DIR)/zlib_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -39,6 +41,23 @@ $(DL_DIR)/$(ZLIB_SOURCE):
 	$(WGET) -P $(DL_DIR) $(ZLIB_SITE)/$(ZLIB_SOURCE)
 
 zlib-source: $(DL_DIR)/$(ZLIB_SOURCE)
+
+$(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/zlib.mk
+	rm -rf $(HOST_BUILD_DIR)/$(ZLIB_DIR) $(@D)
+	$(ZLIB_UNZIP) $(DL_DIR)/$(ZLIB_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(ZLIB_DIR) $(@D)
+	(cd $(@D); \
+		prefix=/opt \
+		./configure \
+		--shared \
+	)
+	$(MAKE) -C $(@D)
+	install -d $(HOST_STAGING_INCLUDE_DIR)
+	install -m 644 $(@D)/zlib.h $(HOST_STAGING_INCLUDE_DIR)
+	install -m 644 $(@D)/zconf.h $(HOST_STAGING_INCLUDE_DIR)
+	touch $@
+
+zlib-host-stage: $(ZLIB_HOST_BUILD_DIR)/.staged
 
 $(ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(ZLIB_SOURCE)
 	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR)
