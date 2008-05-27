@@ -204,14 +204,15 @@ $(FILE_IPK_DIR)/CONTROL/control:
 #
 $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	rm -rf $(FILE_IPK_DIR) $(BUILD_DIR)/file_*_$(TARGET_ARCH).ipk
-#	install -d $(FILE_IPK_DIR)/opt/bin
 	$(MAKE) -C $(FILE_BUILD_DIR) install-strip \
 		DESTDIR=$(FILE_IPK_DIR) \
 		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
 	rm -f $(FILE_IPK_DIR)/opt/lib/libmagic.la
+	rm -f $(FILE_IPK_DIR)/opt/share/file/magic.mgc
+	cp -rp $(FILE_BUILD_DIR)/magic/Magdir $(FILE_IPK_DIR)/opt/share/file/magic
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
-#	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
-#	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
+	install -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
+	install -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FILE_IPK_DIR)
 
 #
