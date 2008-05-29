@@ -116,7 +116,7 @@ $(WGET_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1
 	mv $(BUILD_DIR)/$(WGET_DIR) $(@D)
-ifeq ($(OPTWARE_TARGET), $(filter ts101, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter ts101 vt4, $(OPTWARE_TARGET)))
 	sed -i -e '/_POSIX_TIMERS/s|#elif .*|#elif 0|' $(@D)/src/ptimer.c
 endif
 	(cd $(@D); \
@@ -142,7 +142,7 @@ endif
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1
 	mv $(BUILD_DIR)/$(WGET_DIR) $(@D)
-ifeq ($(OPTWARE_TARGET), $(filter ts101, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter ts101 vt4, $(OPTWARE_TARGET)))
 	sed -i -e '/_POSIX_TIMERS/s|#elif .*|#elif 0|' $(@D)/src/ptimer.c
 endif
 	(cd $(@D); \
