@@ -7,7 +7,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(filter-out libstdc++ newsbeuter, $(UCLIBC_BROKEN_PACKAGES)) \
-	amule ecl erl-escript erl-yaws ficy \
+	amule ecl ficy \
 	gift giftcurs \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
@@ -20,3 +20,7 @@ BROKEN_PACKAGES = \
 	transcode \
 	util-linux vsftpd \
 	wget \
+	\
+	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
+	newsbeuter taged \
+	ts101-kernel-modules slimserver
