@@ -19,7 +19,6 @@ BROKEN_PACKAGES = \
 	taglib \
 	transcode \
 	util-linux vsftpd \
-	wget \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
 	newsbeuter taged \
