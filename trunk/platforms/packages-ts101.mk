@@ -6,20 +6,18 @@ SPECIFIC_PACKAGES = \
 
 
 BROKEN_PACKAGES = \
-	$(filter-out libstdc++ newsbeuter, $(UCLIBC_BROKEN_PACKAGES)) \
+	$(filter-out libstdc++, $(UCLIBC_BROKEN_PACKAGES)) \
 	amule ecl ficy \
 	gift giftcurs \
 	gift-ares gift-fasttrack gift-gnutella \
 	gift-openft gift-opennap \
 	gtmess \
 	iptraf \
-	motion \
 	nfs-server nfs-utils \
 	player \
-	taglib \
 	transcode \
-	util-linux vsftpd \
+	util-linux \
 	\
 	asterisk14 asterisk14-chan-capi asterisk16 asterisk16-addons \
-	newsbeuter taged \
+	taged \
 	ts101-kernel-modules slimserver
