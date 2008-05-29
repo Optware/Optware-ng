@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPYTHON_SITE=http://ipython.scipy.org/dist
-IPYTHON_VERSION=0.8.2
+IPYTHON_VERSION=0.8.3
 IPYTHON_SOURCE=ipython-$(IPYTHON_VERSION).tar.gz
 IPYTHON_DIR=ipython-$(IPYTHON_VERSION)
 IPYTHON_UNZIP=zcat
@@ -72,8 +72,8 @@ IPYTHON_SOURCE_DIR=$(SOURCE_DIR)/ipython
 IPYTHON-COMMON_IPK_DIR=$(BUILD_DIR)/ipython-common-$(IPYTHON_VERSION)-ipk
 IPYTHON-COMMON_IPK=$(BUILD_DIR)/ipython-common_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-IPYTHON_PY24_IPK_DIR=$(BUILD_DIR)/ipython-$(IPYTHON_VERSION)-ipk
-IPYTHON_PY24_IPK=$(BUILD_DIR)/ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
+IPYTHON_PY24_IPK_DIR=$(BUILD_DIR)/py24-ipython-$(IPYTHON_VERSION)-ipk
+IPYTHON_PY24_IPK=$(BUILD_DIR)/py24-ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 IPYTHON_PY25_IPK_DIR=$(BUILD_DIR)/py25-ipython-$(IPYTHON_VERSION)-ipk
 IPYTHON_PY25_IPK=$(BUILD_DIR)/py25-ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -85,8 +85,8 @@ IPYTHON_PY25_IPK=$(BUILD_DIR)/py25-ipython_$(IPYTHON_VERSION)-$(IPYTHON_IPK_VERS
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IPYTHON_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IPYTHON_SITE)/$(IPYTHON_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(IPYTHON_SITE)/old/$(IPYTHON_SOURCE)
+	$(WGET) -P $(@D) $(IPYTHON_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(IPYTHON_SITE)/old/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,8 +118,8 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
-	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)/2.4
-	(cd $(IPYTHON_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -127,12 +127,12 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(IPYTHON_PATCHES)
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
 	$(IPYTHON_UNZIP) $(DL_DIR)/$(IPYTHON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(IPYTHON_PATCHES) | patch -d $(BUILD_DIR)/$(IPYTHON_DIR) -p1
-	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(IPYTHON_BUILD_DIR)/2.5
-	(cd $(IPYTHON_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(IPYTHON_BUILD_DIR)/.configured
+	touch $@
 
 ipython-unpack: $(IPYTHON_BUILD_DIR)/.configured
 
@@ -140,14 +140,14 @@ ipython-unpack: $(IPYTHON_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(IPYTHON_BUILD_DIR)/.built: $(IPYTHON_BUILD_DIR)/.configured
-	rm -f $(IPYTHON_BUILD_DIR)/.built
-	(cd $(IPYTHON_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" build)
-	(cd $(IPYTHON_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" build)
-	touch $(IPYTHON_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -158,9 +158,9 @@ ipython: $(IPYTHON_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(IPYTHON_BUILD_DIR)/.staged: $(IPYTHON_BUILD_DIR)/.built
-	rm -f $(IPYTHON_BUILD_DIR)/.staged
-#	$(MAKE) -C $(IPYTHON_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(IPYTHON_BUILD_DIR)/.staged
+#	rm -f $(@D)/.staged
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $(@D)/.staged
 
 ipython-stage: $(IPYTHON_BUILD_DIR)/.staged
 
@@ -185,7 +185,7 @@ $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control:
 $(IPYTHON_PY24_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: ipython" >>$@
+	@echo "Package: py24-ipython" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(IPYTHON_PRIORITY)" >>$@
 	@echo "Section: $(IPYTHON_SECTION)" >>$@
@@ -225,7 +225,8 @@ $(IPYTHON_PY25_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(IPYTHON_PY24_IPK): $(IPYTHON_BUILD_DIR)/.built
-	rm -rf $(IPYTHON_PY24_IPK_DIR) $(BUILD_DIR)/ipython_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/ipython_*_$(TARGET_ARCH).ipk
+	rm -rf $(IPYTHON_PY24_IPK_DIR) $(BUILD_DIR)/py24-ipython_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
