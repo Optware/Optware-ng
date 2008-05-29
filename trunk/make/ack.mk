@@ -5,7 +5,7 @@
 ###########################################################
 
 ACK_SITE=http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE
-ACK_VERSION=1.82
+ACK_VERSION=1.84
 ACK_SOURCE=ack-$(ACK_VERSION).tar.gz
 ACK_DIR=ack-$(ACK_VERSION)
 ACK_UNZIP=zcat
