@@ -112,11 +112,14 @@ wget-ssl-source: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WGET_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
-	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(WGET_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1
-	mv $(BUILD_DIR)/$(WGET_DIR) $(WGET_BUILD_DIR)
-	(cd $(WGET_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(WGET_DIR) $(@D)
+ifeq ($(OPTWARE_TARGET), $(filter ts101, $(OPTWARE_TARGET)))
+	sed -i -e '/_POSIX_TIMERS/s|#elif .*|#elif 0|' $(@D)/src/ptimer.c
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WGET_LDFLAGS)" \
@@ -135,11 +138,14 @@ $(WGET-SSL_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
 ifneq ($(HOSTCC),$(TARGET_CC))
 	$(MAKE) openssl-stage
 endif
-	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(WGET-SSL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | patch -d $(BUILD_DIR)/$(WGET_DIR) -p1
-	mv $(BUILD_DIR)/$(WGET_DIR) $(WGET-SSL_BUILD_DIR)
-	(cd $(WGET-SSL_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(WGET_DIR) $(@D)
+ifeq ($(OPTWARE_TARGET), $(filter ts101, $(OPTWARE_TARGET)))
+	sed -i -e '/_POSIX_TIMERS/s|#elif .*|#elif 0|' $(@D)/src/ptimer.c
+endif
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WGET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WGET_LDFLAGS)" \
@@ -148,6 +154,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
+		--with-ssl \
 		--prefix=/opt \
 		--disable-nls \
 	)
