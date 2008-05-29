@@ -74,7 +74,7 @@ $(X264_SOURCE_DIR)/common-cpu.c.patch \
 #$(X264_SOURCE_DIR)/common-ppc-ppccommon.h.patch \
 $(X264_SOURCE_DIR)/common-ppc-dct.c.patch \
 
-ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter openwrt-ixp4xx ts101, $(OPTWARE_TARGET)))
 X264_PATCHES+=$(X264_SOURCE_DIR)/logf-wrapper.patch
 endif
 
