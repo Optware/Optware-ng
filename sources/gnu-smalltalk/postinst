@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "Rebuilding /opt/var/lib/smalltalk/gst.im ..."
+echo | /opt/bin/gst --no-user-files -i
