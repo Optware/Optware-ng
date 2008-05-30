@@ -23,12 +23,12 @@
 #
 # PY-SQLOBJECT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SQLOBJECT_SITE=http://cheeseshop.python.org/packages/source/S/SQLObject
+PY-SQLOBJECT_SITE=http://pypi.python.org/packages/source/S/SQLObject
 #PY-SQLOBJECT_SVN_REV=1675
 #ifneq ($(PY-SQLOBJECT_SVN_REV),)
 #PY-SQLOBJECT_ ### VERSION=0.8dev_r1675
 #else
-PY-SQLOBJECT_VERSION=0.9.5
+PY-SQLOBJECT_VERSION=0.9.7
 PY-SQLOBJECT_SOURCE=SQLObject-$(PY-SQLOBJECT_VERSION).tar.gz
 #endif
 PY-SQLOBJECT_DIR=SQLObject-$(PY-SQLOBJECT_VERSION)
@@ -88,8 +88,8 @@ PY25-SQLOBJECT_IPK=$(BUILD_DIR)/py25-sqlobject_$(PY-SQLOBJECT_VERSION)-$(PY-SQLO
 #
 ifeq ($(PY-SQLOBJECT_SVN_REV),)
 $(DL_DIR)/$(PY-SQLOBJECT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-SQLOBJECT_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-SQLOBJECT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
 #
@@ -156,7 +156,7 @@ endif
 	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
-	touch $(PY-SQLOBJECT_BUILD_DIR)/.configured
+	touch $@
 
 py-sqlobject-unpack: $(PY-SQLOBJECT_BUILD_DIR)/.configured
 
