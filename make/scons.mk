@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SCONS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/scons
-SCONS_VERSION=0.98.1
+SCONS_VERSION=0.98.4
 SCONS_SOURCE=scons-$(SCONS_VERSION).tar.gz
 SCONS_DIR=scons-$(SCONS_VERSION)
 SCONS_UNZIP=zcat
