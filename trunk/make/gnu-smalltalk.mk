@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GNU_SMALLTALK_SITE=ftp://ftp.gnu.org/gnu/smalltalk
-GNU_SMALLTALK_VERSION=2.3.6
+GNU_SMALLTALK_VERSION=3.0.3
 GNU_SMALLTALK_SOURCE=smalltalk-$(GNU_SMALLTALK_VERSION).tar.gz
 GNU_SMALLTALK_DIR=smalltalk-$(GNU_SMALLTALK_VERSION)
 GNU_SMALLTALK_UNZIP=zcat
@@ -51,15 +51,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 GNU_SMALLTALK_PATCHES+=$(GNU_SMALLTALK_SOURCE_DIR)/hostbuilddir.patch
 endif
 
-ifeq ($(TARGET_ARCH), armeb)
-ifeq ($(LIBC_STYLE), glibc)
-ifneq ($(OPTWARE_TARGET), slugosbe)
-GNU_SMALLTALK_PATCHES+=$(GNU_SMALLTALK_SOURCE_DIR)/mmap.patch
-endif
-endif
-endif
-
-ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt openwrt-ixp4xx, $(OPTWARE_TARGET)))
 GNU_SMALLTALK_PATCHES+=$(GNU_SMALLTALK_SOURCE_DIR)/static-def.patch
 endif
 
@@ -68,9 +60,12 @@ endif
 # compilation or linking flags, then list them here.
 #
 GNU_SMALLTALK_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt, $(OPTWARE_TARGET)))
-GNU_SMALLTALK_CPPFLAGS+=-D__error_t_defined=1
-endif
+#ifeq ($(OPTWARE_TARGET), $(filter oleg ddwrt openwrt-ixp4xx, $(OPTWARE_TARGET)))
+#GNU_SMALLTALK_CPPFLAGS+=-D__error_t_defined=1
+#endif
+#ifdef NO_BUILTIN_MATH
+#GNU_SMALLTALK_CPPFLAGS+=-fno-builtin-trunc -fno-builtin-lrint
+#endif
 GNU_SMALLTALK_LDFLAGS=
 
 #
@@ -96,8 +91,8 @@ GNU_SMALLTALK_IPK=$(BUILD_DIR)/gnu-smalltalk_$(GNU_SMALLTALK_VERSION)-$(GNU_SMAL
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GNU_SMALLTALK_SOURCE):
-	$(WGET) -P $(DL_DIR) $(GNU_SMALLTALK_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(GNU_SMALLTALK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,18 +103,18 @@ gnu-smalltalk-source: $(DL_DIR)/$(GNU_SMALLTALK_SOURCE) $(GNU_SMALLTALK_PATCHES)
 
 $(GNU_SMALLTALK_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GNU_SMALLTALK_SOURCE) #make/gnu-smalltalk.mk
 	rm -f $@
-	rm -rf $(HOST_BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(GNU_SMALLTALK_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(@D)
 	$(GNU_SMALLTALK_UNZIP) $(DL_DIR)/$(GNU_SMALLTALK_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	if test "$(HOST_BUILD_DIR)/$(GNU_SMALLTALK_DIR)" != "$(GNU_SMALLTALK_HOST_BUILD_DIR)" ; \
-		then mv $(HOST_BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(GNU_SMALLTALK_HOST_BUILD_DIR) ; \
+	if test "$(HOST_BUILD_DIR)/$(GNU_SMALLTALK_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(@D) ; \
 	fi
-	(cd $(GNU_SMALLTALK_HOST_BUILD_DIR); \
+	(cd $(@D); \
 		./configure \
 		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
 	)
-	$(MAKE) -C $(GNU_SMALLTALK_HOST_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -154,7 +149,7 @@ endif
 	$(GNU_SMALLTALK_UNZIP) $(DL_DIR)/$(GNU_SMALLTALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNU_SMALLTALK_PATCHES)" ; \
 		then cat $(GNU_SMALLTALK_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GNU_SMALLTALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNU_SMALLTALK_DIR) $(@D) ; \
@@ -177,7 +172,7 @@ endif
 		--without-tcl \
 		--without-tk \
 	)
-#	sed -i -e 's/ sigsegv//' $(GNU_SMALLTALK_BUILD_DIR)/Makefile
+#	sed -i -e 's/ sigsegv//' $(@D)/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -242,12 +237,12 @@ $(GNU_SMALLTALK_IPK): $(GNU_SMALLTALK_BUILD_DIR)/.built
 	$(MAKE) -C $(GNU_SMALLTALK_BUILD_DIR) install-strip \
 		DESTDIR=$(GNU_SMALLTALK_IPK_DIR) \
 		GNU_SMALLTALK_HOST_BUILD_DIR=$(GNU_SMALLTALK_HOST_BUILD_DIR)
+	$(STRIP_COMMAND) $(GNU_SMALLTALK_IPK_DIR)/opt/bin/gst-load
 	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/smalltalk/*.la
 #	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/libsigsegv*
 #	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/include/sigsegv*
-	chmod go+w $(GNU_SMALLTALK_IPK_DIR)/opt/share/smalltalk/gst.im
 	$(MAKE) $(GNU_SMALLTALK_IPK_DIR)/CONTROL/control
-#	install -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/postinst $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
+	install -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/postinst $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
 #	install -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/prerm $(GNU_SMALLTALK_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_SMALLTALK_IPK_DIR)/CONTROL/prerm

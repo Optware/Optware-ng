@@ -1,29 +1,22 @@
---- Makefile.in.orig	2007-05-31 23:18:12.000000000 -0700
-+++ Makefile.in	2007-05-31 23:21:02.000000000 -0700
-@@ -1107,7 +1107,7 @@
- gst.im: $(bin_PROGRAMS) $(srcdir)/kernel/stamp-classes
- 	SMALLTALK_KERNEL="`cd $(srcdir)/kernel; pwd`" \
- 	SMALLTALK_IMAGE="`pwd`" \
--	  ./gst -iQ /dev/null
-+	  $(GNU_SMALLTALK_HOST_BUILD_DIR)/gst -iQ /dev/null
+--- Makefile.in.orig	2008-05-14 10:04:51.000000000 +0000
++++ Makefile.in	2008-05-30 03:01:29.000000000 +0000
+@@ -362,8 +362,8 @@
  
- all-local:
+ # Running gst inside the build directory...
+ GST_OPTS = --kernel-dir="@abs_top_srcdir@/kernel" --image="@abs_top_builddir@/gst.im"
+-GST = ./gst --no-user-files $(GST_OPTS)
+-GST_PACKAGE = ./gst-tool gst-package $(GST_OPTS)
++GST = $(GNU_SMALLTALK_HOST_BUILD_DIR)/gst --no-user-files $(GST_OPTS)
++GST_PACKAGE = $(GNU_SMALLTALK_HOST_BUILD_DIR)/gst-tool gst-package $(GST_OPTS)
  
-@@ -1141,7 +1141,7 @@
+ ###########################################################
+ #
+@@ -1181,7 +1181,7 @@
+ 	  --srcdir="$(srcdir)" $(srcdir)/packages.xml
+ 	$(mkdir_p) $(DESTDIR)$(imagedir)
  	cd $(DESTDIR)$(imagedir) && \
- 	SMALLTALK_KERNEL=$(DESTDIR)$(pkgdatadir)/kernel \
- 	SMALLTALK_IMAGE=$(DESTDIR)$(imagedir) \
--	  $(DESTDIR)$(bindir)/gst -f $$srcdir/scripts/Finish.st \
-+	  $(GNU_SMALLTALK_HOST_BUILD_DIR)/gst -f $$srcdir/scripts/Finish.st \
- 	    "$(pkgdatadir)" "$(imagedir)" $(MODULES)
- 
- uninstall-local:: gst-package
-@@ -1152,7 +1152,7 @@
- installcheck-local:
- 	if test -n "$(DESTDIR)"; then :; else \
- 	  echo '[ PackageLoader fileInPackages: #(#MD5 #Regex) ] \
--	    ifCurtailed: [ ObjectMemory quit: 1 ]!' | $(bindir)/gst -q; \
-+	    ifCurtailed: [ ObjectMemory quit: 1 ]!' | $(GNU_SMALLTALK_HOST_BUILD_DIR)/gst -q; \
- 	fi
- # Tell versions [3.59,3.63) of GNU make to not export all variables.
- # Otherwise a system limit (for SysV at least) may be exceeded.
+-	  "@abs_top_builddir@/gst" --no-user-files -i \
++	  "$(GNU_SMALLTALK_HOST_BUILD_DIR)/gst" --no-user-files -i \
+ 	    --kernel-dir="$(DESTDIR)$(pkgdatadir)/kernel" \
+ 	    --image="$(DESTDIR)$(imagedir)/gst.im" \
+ 	    -f "@abs_top_srcdir@/scripts/Finish.st" \
