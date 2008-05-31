@@ -118,7 +118,7 @@ PYTHON_PACKAGES = \
 	dstat \
 	getmail \
 	hellanzb \
-	hgsvn hplip \
+	hplip \
 	ipython \
 	mailman \
 	mod-python mod-wsgi \
