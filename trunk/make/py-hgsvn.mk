@@ -31,14 +31,14 @@ PY-HGSVN_DESCRIPTION=A set of scripts to work locally on Subversion checkouts us
 PY-HGSVN_SECTION=misc
 PY-HGSVN_PRIORITY=optional
 PY-HGSVN_DEPENDS=
-PY24-HGSVN_DEPENDS=py24-mercurial, py24-setuptools
-PY25-HGSVN_DEPENDS=py25-mercurial, py25-setuptools
+PY24-HGSVN_DEPENDS=py24-mercurial, py24-setuptools, svn
+PY25-HGSVN_DEPENDS=py25-mercurial, py25-setuptools, svn
 PY-HGSVN_CONFLICTS=
 
 #
 # PY-HGSVN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-HGSVN_IPK_VERSION=1
+PY-HGSVN_IPK_VERSION=2
 
 #
 # PY-HGSVN_CONFFILES should be a list of user-editable files
@@ -197,7 +197,7 @@ $(PY24-HGSVN_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-HGSVN_MAINTAINER)" >>$@
 	@echo "Source: $(PY-HGSVN_SITE)/$(PY-HGSVN_SOURCE)" >>$@
 	@echo "Description: $(PY-HGSVN_DESCRIPTION)" >>$@
-	@echo "Depends: py-hgsvn-common, $(PY24-HGSVN_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-HGSVN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-HGSVN_CONFLICTS)" >>$@
 
 $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
@@ -211,7 +211,7 @@ $(PY25-HGSVN_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-HGSVN_MAINTAINER)" >>$@
 	@echo "Source: $(PY-HGSVN_SITE)/$(PY-HGSVN_SOURCE)" >>$@
 	@echo "Description: $(PY-HGSVN_DESCRIPTION)" >>$@
-	@echo "Depends: py-hgsvn-common, $(PY25-HGSVN_DEPENDS)" >>$@
+	@echo "Depends: $(PY25-HGSVN_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-HGSVN_CONFLICTS)" >>$@
 
 #
