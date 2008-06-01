@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MG_SITE=http://www.xs4all.nl/~hanb/software/mg
-MG_VERSION=20080305
+MG_VERSION=20080322
 MG_SOURCE=mg-$(MG_VERSION).tar.gz
 MG_DIR=mg-$(MG_VERSION)
 MG_UNZIP=zcat
@@ -78,8 +78,8 @@ MG_IPK=$(BUILD_DIR)/mg_$(MG_VERSION)-$(MG_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MG_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MG_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(MG_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
