@@ -27,12 +27,8 @@ rm -rf $BSDIR
 rm /tmp/ipkg
 rm -rf /usr/lib/ipkg
 
-echo -n "Installing OpenSSL.."
-/opt/bin/ipkg install openssl.ipk || exit 1
-echo " success"
-
-echo -n "Installing wget-SSL..."
-/opt/bin/ipkg install wget-ssl.ipk || exit 1
+echo -n "Installing wget..."
+/opt/bin/ipkg install wget.ipk || exit 1
 echo " success"
 
 [ ! -d /opt/etc/ipkg ] && mkdir -p /opt/etc/ipkg
