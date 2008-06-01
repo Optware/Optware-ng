@@ -73,7 +73,9 @@ IPKG-OPT_PATCHES=$(IPKG-OPT_SOURCE_DIR)/args.h.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_conf.c.patch \
 	$(IPKG-OPT_SOURCE_DIR)/update-alternatives.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg-va_start_segfault.diff \
-	$(IPKG-OPT_SOURCE_DIR)/list_installed.patch
+	$(IPKG-OPT_SOURCE_DIR)/list_installed.patch \
+	$(IPKG-OPT_SOURCE_DIR)/ipkg_install.c.patch
+
 ifeq ($(LIBC_STYLE), uclibc)
 IPKG-OPT_PATCHES += $(IPKG-OPT_SOURCE_DIR)/ipkg_download.c.patch
 endif
