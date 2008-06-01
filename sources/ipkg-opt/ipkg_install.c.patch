@@ -1,0 +1,19 @@
+--- ipkg-opt/ipkg_install.c	2006-04-19 21:37:12.000000000 +0200
++++ ipkg-opt-new/ipkg_install.c	2008-06-02 00:02:19.000000000 +0200
+@@ -722,13 +722,14 @@
+ 	  free(new_version);
+ 	  return rc;
+      } else {
+-      char message_out[15] ;
++       char message_out[15] ;
++       char *version;
+       memset(message_out,'\x0',15);
+       if ( message ) 
+           strncpy( message_out,"Upgrading ",strlen("Upgrading ") );
+       else
+           strncpy( message_out,"Installing ",strlen("Installing ") );
+-	  char *version = pkg_version_str_alloc(pkg);
++	  version = pkg_version_str_alloc(pkg);
+       
+ 	  ipkg_message(conf, IPKG_NOTICE,
+ 		       "%s%s (%s) to %s...\n", message_out,
