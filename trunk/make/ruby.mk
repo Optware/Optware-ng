@@ -28,8 +28,8 @@
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby/1.8
 ifneq (wl500g, $(OPTWARE_TARGET))
-RUBY_UPSTREAM_VERSION=1.8.6-p114
-RUBY_VERSION=1.8.6.114
+RUBY_UPSTREAM_VERSION=1.8.7
+RUBY_VERSION=1.8.7
 RUBY_IPK_VERSION=1
 else
 RUBY_UPSTREAM_VERSION=1.8.6-p36
@@ -91,8 +91,8 @@ RUBY_IPK=$(BUILD_DIR)/ruby_$(RUBY_VERSION)-$(RUBY_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(RUBY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(RUBY_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(RUBY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -119,11 +119,11 @@ ruby-source: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 # http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-talk/159766
 $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 	$(MAKE) zlib-stage readline-stage openssl-stage ncurses-stage
-	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(RUBY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
-	mv $(BUILD_DIR)/$(RUBY_DIR) $(RUBY_BUILD_DIR)
-	(cd $(RUBY_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(RUBY_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RUBY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RUBY_LDFLAGS)" \
@@ -153,7 +153,7 @@ $(RUBY_BUILD_DIR)/.built: $(RUBY_BUILD_DIR)/.configured
 	rm -f $@
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	LD_LIBRARY_PATH=$(HOST_STAGING_LIB_DIR) \
-	$(MAKE) -C $(RUBY_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -162,19 +162,21 @@ $(RUBY_BUILD_DIR)/.built: $(RUBY_BUILD_DIR)/.configured
 ruby: $(RUBY_BUILD_DIR)/.built
 
 $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
-	rm -rf $(HOST_BUILD_DIR)/$(RUBY_DIR) $(RUBY_HOST_BUILD_DIR)
+	rm -rf $(HOST_BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 #	cat $(RUBY_PATCHES) | patch -d $(BUILD_DIR)/$(RUBY_DIR) -p1
-	mv $(HOST_BUILD_DIR)/$(RUBY_DIR) $(RUBY_HOST_BUILD_DIR)
-	(cd $(RUBY_HOST_BUILD_DIR); \
+	mv $(HOST_BUILD_DIR)/$(RUBY_DIR) $(@D)
+	(cd $(@D); \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX) \
 		--disable-nls \
 		--enable-shared \
 		--disable-ipv6 \
 	)
-	$(MAKE) -C $(RUBY_HOST_BUILD_DIR)
-	$(MAKE) -C $(RUBY_HOST_BUILD_DIR) install
+	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) install
+	rm -f $(HOST_STAGING_LIB_DIR)/ruby/ruby.h
+	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf 1.8/*-linux/ruby.h .
 	touch $@
 
 ifneq ($(HOSTCC), $(TARGET_CC))
@@ -189,7 +191,7 @@ endif
 $(RUBY_BUILD_DIR)/.staged: $(RUBY_BUILD_DIR)/.built
 	rm -f $@
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
-	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 ruby-stage: $(RUBY_BUILD_DIR)/.staged
