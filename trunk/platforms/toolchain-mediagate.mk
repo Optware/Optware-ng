@@ -1,38 +1,46 @@
-# Toolchain for Mediagate players should be installed as root with
-# make toolchain
-# sh downloads/arm-elf-tools-20030314.sh
-# http://mediagate.pbwiki.com/
+# Toolchain for Mediagate players http://mediagate.pbwiki.com/
+# Toochain description:
+# http://ipodlinux.org/Toolchain#For_applications_.283.4.3_toolchain.29
 # Building toolchain from sources does not work at the moment.
+# http://ipodlinux.org/Building_Toolchain
+# Shared libraries not supported!
 
 TARGET_ARCH=arm
 TARGET_OS=linux
 LIBC_STYLE=uclibc
 
-# LIBSTDC++_VERSION=5.0.3
-# LIBNSL_VERSION=2.2.5
-
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 GNU_TARGET_NAME = arm-elf
-CROSS_CONFIGURATION = arm-elf
-TARGET_CROSS = /usr/local/bin/${CROSS_CONFIGURATION}-
-TARGET_LIBDIR = /usr/local/$(CROSS_CONFIGURATION)/lib
-TARGET_INCDIR = /usr/local/$(CROSS_CONFIGURATION)/include
+CROSS_CONFIGURATION = arm-uclinux-elf
+TARGET_CROSS = /usr/local/arm-uclinux-tools2/bin/${CROSS_CONFIGURATION}-
+TARGET_LIBDIR = /usr/local/arm-uclinux-tools2/$(CROSS_CONFIGURATION)/lib
+TARGET_INCDIR = /usr/local/arm-uclinux-tools2/$(CROSS_CONFIGURATION)/include
 TARGET_LDFLAGS = -Wl,-elf2flt
 TARGET_CUSTOM_FLAGS= -pipe -I${TARGET_INCDIR}
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
-TOOLCHAIN_MEDIAGATE_SITE=\
-	http://www.uclinux.org/pub/uClinux/arm-elf-tools
-
-TOOLCHAIN_MEDIAGATE_BIN=arm-elf-tools-20030314.sh
-
-$(DL_DIR)/$(TOOLCHAIN_MEDIAGATE):
-	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_MEDIAGATE_SITE)/$(TOOLCHAIN_MEDIAGATE_BIN) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(TOOLCHAIN_MEDIAGATE_BIN)
-
-
 TOOLCHAIN_MEDIAGATE_SRC=$(TOOL_BUILD_DIR)/mediagate-src
+
+TOOLCHAIN_MEDIAGATE_BIN_FILES = \
+	arm-uclinux-elf-tools-base-gcc3.4.3-20050722.sh \
+	arm-uclinux-elf-tools-c++-gcc3.4.3-20050722.sh \
+	arm-uclinux-elf-tools-gdb-20050722.sh
+
+TOOLCHAIN_MEDIAGATE_DL=$(addprefix $(DL_DIR)/,$(TOOLCHAIN_MEDIAGATE_BIN_FILES))
+
+TOOLCHAIN_MEDIAGATE_DL_SRC=\
+	$(addprefix http://www.so2.sys-techs.com/ipod/toolchain/linux-x86/,\
+	$(TOOLCHAIN_MEDIAGATE_BIN_FILES))
+
+TOOLCHAIN_MEDIAGATE_DL_NLO=\
+	$(addprefix $(SOURCES_NLO_SITE)/,\
+	$(TOOLCHAIN_MEDIAGATE_BIN_FILES))
+
+
+$(TOOLCHAIN_MEDIAGATE_DL):
+	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_MEDIAGATE_DL_SRC) || \
+	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_MEDIAGATE_DL_NLO)
 
 TOOLCHAIN_MEDIAGATE_FILES = \
 build-uclinux-tools.sh        \
@@ -51,6 +59,10 @@ STLport-4.5.3.patch           \
 uClibc-20030314.tar.gz        \
 uClibc-0.9.19.patch.gz        \
 elf2flt-20030314.tar.gz
+
+
+TOOLCHAIN_MEDIAGATE_SITE=\
+	http://www.uclinux.org/pub/uClinux/arm-elf-tools
 
 TOOLCHAIN_MEDIAGATE_SRC_UCLINUX=\
 	$(addprefix $(TOOLCHAIN_MEDIAGATE_SITE)/tools-20030314/, \
@@ -79,4 +91,22 @@ $(TOOLCHAIN_MEDIAGATE_SRC)/.build: $(TOOLCHAIN_MEDIAGATE_SRC)/.configured
 
 toolchain-src: $(TOOLCHAIN_MEDIAGATE_SRC)/.build
 
-toolchain: $(DL_DIR)/$(TOOLCHAIN_MEDIAGATE)
+$(TARGET_CROSS)gcc:
+	@echo "###############"; echo "### Manually do the following:"
+	@echo "sudo make toolchain-install"
+	@echo "If you get the error like: 'tail: cannot open +43' for reading..."
+	@echo "change line 42 in .sh script to:"
+	@echo '        tail -n+$${SKIP} $${SCRIPT} | gunzip | tar xvf -'
+	@echo "To remove toolchain: sudo rm -rf /usr/local/arm-uclinux-tools2"
+
+toolchain: $(TOOLCHAIN_MEDIAGATE_DL) $(TARGET_CROSS)gcc
+
+toolchain-install:
+	$(foreach script, $(TOOLCHAIN_MEDIAGATE_DL), /bin/sh $(script); )
+	mv $(TARGET_STRIP) $(TARGET_STRIP).orig
+	echo "#!/bin/sh" > $(TARGET_STRIP)
+	echo "$(TARGET_STRIP).orig $$@ || exit 0" >> $(TARGET_STRIP)
+	chmod 755 $(TARGET_STRIP)
+
+toolchain-remove:
+	rm -rf /usr/local/arm-uclinux-tools2
