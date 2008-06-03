@@ -1,6 +1,7 @@
 # Packages that *only* work for tsx09 - do not just put new packages here.
 SPECIFIC_PACKAGES = \
-	tsx09-optware-bootstrap ts209-kernel-modules ts409-kernel-modules
+	tsx09-optware-bootstrap \
+	ts109-kernel-modules ts209-kernel-modules ts409-kernel-modules
 
 PACKAGES = ${SPECIFIC_PACKAGES}
 
