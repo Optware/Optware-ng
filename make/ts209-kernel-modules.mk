@@ -107,7 +107,7 @@ ts209-kernel-modules: $(TS209-KERNEL-MODULES_BUILD_DIR)/.built
 $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	install -d $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL
 	( \
-	  echo "Package: kernel-modules"; \
+	  echo "Package: ts209-kernel-modules"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
 	  echo "Priority: $(TS209-KERNEL-MODULES_PRIORITY)"; \
 	  echo "Section: $(TS209-KERNEL-MODULES_SECTION)"; \
@@ -115,7 +115,7 @@ $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  echo "Maintainer: $(TS209-KERNEL-MODULES_MAINTAINER)"; \
 	  echo "Source: $(TS209-KERNEL-MODULES_SITE)/$(TS209-KERNEL-MODULES_SOURCE)"; \
 	  echo "Description: $(TS209-KERNEL-MODULES_DESCRIPTION)"; \
-	  echo -n "Depends: kernel-image"; \
+	  echo -n "Depends: ts209-kernel-image"; \
 	) >> $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
 	for m in $(TS209-KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
@@ -123,8 +123,8 @@ $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	  install -d $(TS209-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL; \
 	  rm -f $(TS209-KERNEL-MODULES_IPK_DIR)-$$n/CONTROL/control; \
           ( \
-	    echo -n ", kernel-module-$$n" >> $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
-	    echo "Package: kernel-module-$$n"; \
+	    echo -n ", ts209-kernel-module-$$n" >> $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control; \
+	    echo "Package: ts209-kernel-module-$$n"; \
 	    echo "Architecture: $(TARGET_ARCH)"; \
 	    echo "Priority: $(TS209-KERNEL-MODULES_PRIORITY)"; \
 	    echo "Section: $(TS209-KERNEL-MODULES_SECTION)"; \
@@ -139,7 +139,7 @@ $(TS209-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 	      then DEPS="$$DEPS,"; \
 	      fi; \
 	      j=`basename $$i .ko | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \
-	      DEPS="$$DEPS kernel-module-$$j"; \
+	      DEPS="$$DEPS ts209-kernel-module-$$j"; \
             done; \
             echo "$$DEPS";\
 	    echo "Suggests: $(TS209-KERNEL-MODULES_SUGGESTS)"; \
@@ -152,7 +152,7 @@ $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 	install -d $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL
 	rm -f $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
 	( \
-	  echo "Package: kernel-image"; \
+	  echo "Package: ts209-kernel-image"; \
 	  echo "Architecture: $(TARGET_ARCH)"; \
 	  echo "Priority: $(TS209-KERNEL-MODULES_PRIORITY)"; \
 	  echo "Section: $(TS209-KERNEL-MODULES_SECTION)"; \
@@ -175,9 +175,9 @@ $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(TS209-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(TS209-KERNEL-MODULES_BUILD_DIR)/.built
-	rm -f $(BUILD_DIR)/kernel-modules_*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/kernel-module-*_$(TARGET_ARCH).ipk
-	rm -f $(BUILD_DIR)/kernel-image_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/ts209-kernel-modules_*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/ts209-kernel-module-*_$(TARGET_ARCH).ipk
+	rm -f $(BUILD_DIR)/ts209-kernel-image_*_$(TARGET_ARCH).ipk
 	# Package the kernel image first
 	rm -rf $(TS209-KERNEL-IMAGE_IPK_DIR)* $(BUILD_DIR)/ts209-kernel-image_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(TS209-KERNEL-IMAGE_IPK_DIR)/CONTROL/control
@@ -225,8 +225,8 @@ ts209-kernel-modules-clean:
 ts209-kernel-modules-dirclean:
 	rm -rf $(BUILD_DIR)/$(TS209-KERNEL-MODULES_DIR) $(TS209-KERNEL-MODULES_BUILD_DIR)
 	rm -rf $(TS209-KERNEL-MODULES_IPK_DIR)* $(TS209-KERNEL-IMAGE_IPK_DIR)* 
-	rm -f $(BUILD_DIR)/kernel-modules_*_armeb.ipk
-	rm -f $(BUILD_DIR)/kernel-module-*_armeb.ipk
-	rm -f $(BUILD_DIR)/kernel-image-*_armeb.ipk
+	rm -f $(BUILD_DIR)/ts209-kernel-modules_*_armeb.ipk
+	rm -f $(BUILD_DIR)/ts209-kernel-module-*_armeb.ipk
+	rm -f $(BUILD_DIR)/ts209-kernel-image-*_armeb.ipk
 
 # LocalWords:  fsg
