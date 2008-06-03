@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ICECAST_SITE=http://downloads.xiph.org/releases/icecast
-ICECAST_VERSION=2.3.1
+ICECAST_VERSION=2.3.2
 ICECAST_SOURCE=icecast-$(ICECAST_VERSION).tar.gz
 ICECAST_DIR=icecast-$(ICECAST_VERSION)
 ICECAST_UNZIP=zcat
@@ -48,7 +48,6 @@ ICECAST_IPK_VERSION=1
 #
 ICECAST_PATCHES=\
 $(ICECAST_SOURCE_DIR)/configure.patch \
-$(ICECAST_SOURCE_DIR)/src-auth_url.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -78,8 +77,8 @@ ICECAST_IPK=$(BUILD_DIR)/icecast_$(ICECAST_VERSION)-$(ICECAST_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ICECAST_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ICECAST_SITE)/$(ICECAST_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(ICECAST_SOURCE)
+	$(WGET) -P $(@D) $(ICECAST_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -112,16 +111,16 @@ $(ICECAST_BUILD_DIR)/.configured: $(DL_DIR)/$(ICECAST_SOURCE) $(ICECAST_PATCHES)
 	$(MAKE) libvorbis-stage
 	$(MAKE) libxslt-stage
 	$(MAKE) speex-stage
-	rm -rf $(BUILD_DIR)/$(ICECAST_DIR) $(ICECAST_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(ICECAST_DIR) $(@D)
 	$(ICECAST_UNZIP) $(DL_DIR)/$(ICECAST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ICECAST_PATCHES)" ; \
 		then cat $(ICECAST_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(ICECAST_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(ICECAST_DIR)" != "$(ICECAST_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(ICECAST_DIR) $(ICECAST_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(ICECAST_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(ICECAST_DIR) $(@D) ; \
 	fi
-	(cd $(ICECAST_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICECAST_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ICECAST_LDFLAGS)" \
@@ -139,7 +138,7 @@ $(ICECAST_BUILD_DIR)/.configured: $(DL_DIR)/$(ICECAST_SOURCE) $(ICECAST_PATCHES)
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(ICECAST_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 icecast-unpack: $(ICECAST_BUILD_DIR)/.configured
@@ -149,7 +148,7 @@ icecast-unpack: $(ICECAST_BUILD_DIR)/.configured
 #
 $(ICECAST_BUILD_DIR)/.built: $(ICECAST_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(ICECAST_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -162,7 +161,7 @@ icecast: $(ICECAST_BUILD_DIR)/.built
 #
 $(ICECAST_BUILD_DIR)/.staged: $(ICECAST_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(ICECAST_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 icecast-stage: $(ICECAST_BUILD_DIR)/.staged
