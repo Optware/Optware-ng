@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-NOSE_SITE=http://pypi.python.org/packages/source/n/nose
-PY-NOSE_VERSION=0.10.2
+PY-NOSE_VERSION=0.10.3
 PY-NOSE_SOURCE=nose-$(PY-NOSE_VERSION).tar.gz
 PY-NOSE_DIR=nose-$(PY-NOSE_VERSION)
 PY-NOSE_UNZIP=zcat
@@ -108,14 +108,14 @@ py-nose-source: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 #
 $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-NOSE_BUILD_DIR)
-	mkdir -p $(PY-NOSE_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
 	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-NOSE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(PY-NOSE_BUILD_DIR)/2.4
-	(cd $(PY-NOSE_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
@@ -123,8 +123,8 @@ $(PY-NOSE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-NOSE_SOURCE) $(PY-NOSE_PATCHES)
 	rm -rf $(BUILD_DIR)/$(PY-NOSE_DIR)
 	$(PY-NOSE_UNZIP) $(DL_DIR)/$(PY-NOSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-NOSE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-NOSE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(PY-NOSE_BUILD_DIR)/2.5
-	(cd $(PY-NOSE_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-NOSE_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
@@ -137,10 +137,10 @@ py-nose-unpack: $(PY-NOSE_BUILD_DIR)/.configured
 #
 $(PY-NOSE_BUILD_DIR)/.built: $(PY-NOSE_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-NOSE_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
-	(cd $(PY-NOSE_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 #	$(MAKE) -C $(PY-NOSE_BUILD_DIR)
