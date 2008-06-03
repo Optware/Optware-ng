@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TAILOR_VERSION=0.9.31
+PY-TAILOR_VERSION=0.9.34
 PY-TAILOR_SITE=http://darcs.arstecnica.it/
 PY-TAILOR_SOURCE=tailor-$(PY-TAILOR_VERSION).tar.gz
 PY-TAILOR_DIR=tailor-$(PY-TAILOR_VERSION)
@@ -108,14 +108,14 @@ py-tailor-source: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES)
 #
 $(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PATCHES)
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-TAILOR_BUILD_DIR)
-	mkdir -p $(PY-TAILOR_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR)
 	$(PY-TAILOR_UNZIP) $(DL_DIR)/$(PY-TAILOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TAILOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)/2.4
-	(cd $(PY-TAILOR_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -131,8 +131,8 @@ $(PY-TAILOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TAILOR_SOURCE) $(PY-TAILOR_PA
 	rm -rf $(BUILD_DIR)/$(PY-TAILOR_DIR)
 	$(PY-TAILOR_UNZIP) $(DL_DIR)/$(PY-TAILOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TAILOR_PATCHES) | patch -d $(BUILD_DIR)/$(PY-TAILOR_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(PY-TAILOR_BUILD_DIR)/2.5
-	(cd $(PY-TAILOR_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-TAILOR_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -153,10 +153,10 @@ py-tailor-unpack: $(PY-TAILOR_BUILD_DIR)/.configured
 #
 $(PY-TAILOR_BUILD_DIR)/.built: $(PY-TAILOR_BUILD_DIR)/.configured
 	rm -f $@
-	cd $(PY-TAILOR_BUILD_DIR)/2.4; \
+	cd $(@D)/2.4; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
-	cd $(PY-TAILOR_BUILD_DIR)/2.5; \
+	cd $(@D)/2.5; \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	touch $@
@@ -170,9 +170,9 @@ py-tailor: $(PY-TAILOR_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-TAILOR_BUILD_DIR)/.staged: $(PY-TAILOR_BUILD_DIR)/.built
-	rm -f $@
-	#$(MAKE) -C $(PY-TAILOR_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-tailor-stage: $(PY-TAILOR_BUILD_DIR)/.staged
 
