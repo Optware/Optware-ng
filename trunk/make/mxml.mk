@@ -20,11 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MXML_SITE=http://www.easysw.com/~mike/mxml/index.php
-MXML_VERSION=2.2.2
-MXML_SVN=http://svn.easysw.com/public/mxml/trunk
-MXML_SVN_REV=259
-MXML_SOURCE=mxml-svn-$(MXML_VERSION).tar.gz
+MXML_VERSION=2.5
+MXML_SITE=ftp://ftp.easysw.com/pub/mxml/$(MXML_VERSION)
+MXML_SOURCE=mxml-$(MXML_VERSION).tar.gz
 MXML_DIR=mxml-$(MXML_VERSION)
 MXML_UNZIP=zcat
 MXML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -64,8 +62,9 @@ MXML_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-MXML_BUILD_DIR=$(BUILD_DIR)/mxml
 MXML_SOURCE_DIR=$(SOURCE_DIR)/mxml
+MXML_BUILD_DIR=$(BUILD_DIR)/mxml
+MXML_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/mxml
 MXML_IPK_DIR=$(BUILD_DIR)/mxml-$(MXML_VERSION)-ipk
 MXML_IPK=$(BUILD_DIR)/mxml_$(MXML_VERSION)-$(MXML_IPK_VERSION)_$(TARGET_ARCH).ipk
 
@@ -76,14 +75,8 @@ MXML_IPK=$(BUILD_DIR)/mxml_$(MXML_VERSION)-$(MXML_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MXML_SOURCE):
-	#$(WGET) -P $(DL_DIR) $(MXML_SITE)/$(MXML_SOURCE)
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(MXML_DIR) && \
-		svn co -r $(MXML_SVN_REV) $(MXML_SVN) \
-			$(MXML_DIR) && \
-		tar -czf $@ $(MXML_DIR) && \
-		rm -rf $(MXML_DIR) \
-	)
+	$(WGET) -P $(@D) $(MXML_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -91,6 +84,21 @@ $(DL_DIR)/$(MXML_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 mxml-source: $(DL_DIR)/$(MXML_SOURCE) $(MXML_PATCHES)
+
+$(MXML_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MXML_SOURCE) make/mxml.mk
+	rm -rf $(HOST_BUILD_DIR)/$(MXML_DIR) $(@D)
+	$(MXML_UNZIP) $(DL_DIR)/$(MXML_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(MXML_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(MXML_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
+		./configure \
+		--prefix=/opt \
+		--disable-nls \
+		--disable-static \
+	)
+	$(MAKE) -C $(@D) mxmldoc-static
+	touch $@
 
 #
 # This target unpacks the source code in the build directory.
@@ -110,17 +118,21 @@ mxml-source: $(DL_DIR)/$(MXML_SOURCE) $(MXML_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
+ifeq ($(HOST_CC), $(TARGET_CC))
 $(MXML_BUILD_DIR)/.configured: $(DL_DIR)/$(MXML_SOURCE) $(MXML_PATCHES) make/mxml.mk
-	rm -rf $(BUILD_DIR)/$(MXML_DIR) $(MXML_BUILD_DIR)
+else
+$(MXML_BUILD_DIR)/.configured: $(MXML_HOST_BUILD_DIR)/.built $(MXML_PATCHES)
+endif
+	rm -rf $(BUILD_DIR)/$(MXML_DIR) $(@D)
 	$(MXML_UNZIP) $(DL_DIR)/$(MXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MXML_PATCHES)" ; \
 		then cat $(MXML_PATCHES) | \
-		patch -d $(BUILD_DIR)/$(MXML_DIR) -p0 ; \
+		patch -bd $(BUILD_DIR)/$(MXML_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MXML_DIR)" != "$(MXML_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MXML_DIR) $(MXML_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MXML_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MXML_DIR) $(@D) ; \
 	fi
-	(cd $(MXML_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MXML_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MXML_LDFLAGS)" \
@@ -130,9 +142,10 @@ $(MXML_BUILD_DIR)/.configured: $(DL_DIR)/$(MXML_SOURCE) $(MXML_PATCHES) make/mxm
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--enable-shared \
 		--disable-static \
 	)
-	touch $(MXML_BUILD_DIR)/.configured
+	touch $@
 
 mxml-unpack: $(MXML_BUILD_DIR)/.configured
 
@@ -140,9 +153,9 @@ mxml-unpack: $(MXML_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MXML_BUILD_DIR)/.built: $(MXML_BUILD_DIR)/.configured
-	rm -f $(MXML_BUILD_DIR)/.built
-	$(MAKE) -C $(MXML_BUILD_DIR)
-	touch $(MXML_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) $(if $(filter $(HOST_CC), $(TARGET_CC)),,MXMLDOC_DIR=$(MXML_HOST_BUILD_DIR))
+	touch $@
 
 #
 # This is the build convenience target.
@@ -153,9 +166,10 @@ mxml: $(MXML_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MXML_BUILD_DIR)/.staged: $(MXML_BUILD_DIR)/.built
-	rm -f $(MXML_BUILD_DIR)/.staged
-	$(MAKE) -C $(MXML_BUILD_DIR) DESTDIR=$(STAGING_DIR) DSTROOT=$(STAGING_DIR) install
-	touch $(MXML_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) DSTROOT=$(STAGING_DIR) install
+	sed -i -e 's|prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/mxml.pc
+	touch $@
 
 mxml-stage: $(MXML_BUILD_DIR)/.staged
 
@@ -193,8 +207,10 @@ $(MXML_IPK_DIR)/CONTROL/control:
 $(MXML_IPK): $(MXML_BUILD_DIR)/.built
 	rm -rf $(MXML_IPK_DIR) $(BUILD_DIR)/mxml_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MXML_BUILD_DIR) DESTDIR=$(MXML_IPK_DIR) DSTROOT=$(MXML_IPK_DIR) install
-	$(MAKE) $(MXML_IPK_DIR)/CONTROL/control
+	rm -f $(MXML_IPK_DIR)/opt/lib/libmxml.a
 	$(STRIP_COMMAND) $(MXML_IPK_DIR)/opt/bin/mxmldoc
+	$(STRIP_COMMAND) $(MXML_IPK_DIR)/opt/lib/libmxml.so*
+	$(MAKE) $(MXML_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MXML_IPK_DIR)
 
 #
