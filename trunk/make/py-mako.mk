@@ -24,8 +24,8 @@
 # PY-MAKO_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-MAKO_SITE=http://pypi.python.org/packages/source/M/Mako
-PY-MAKO_VERSION=0.1.10
-PY-MAKO_IPK_VERSION=2
+PY-MAKO_VERSION=0.2.0
+PY-MAKO_IPK_VERSION=1
 PY-MAKO_SOURCE=Mako-$(PY-MAKO_VERSION).tar.gz
 PY-MAKO_DIR=Mako-$(PY-MAKO_VERSION)
 PY-MAKO_UNZIP=zcat
@@ -81,7 +81,8 @@ PY25-MAKO_IPK=$(BUILD_DIR)/py25-mako_$(PY-MAKO_VERSION)-$(PY-MAKO_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MAKO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MAKO_SITE)/$(PY-MAKO_SOURCE)
+	$(WGET) -P $(@D) $(PY-MAKO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,18 +106,18 @@ py-mako-source: $(DL_DIR)/$(PY-MAKO_SOURCE) $(PY-MAKO_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(PY-MAKO_PATCHES)
+$(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(PY-MAKO_PATCHES) make/py-mako.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY-MAKO_BUILD_DIR)
-	mkdir -p $(PY-MAKO_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
 	$(PY-MAKO_UNZIP) $(DL_DIR)/$(PY-MAKO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-MAKO_PATCHES)" ; then \
 	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(PY-MAKO_BUILD_DIR)/2.4
-	(cd $(PY-MAKO_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
@@ -125,8 +126,8 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(PY-MAKO_PATCHES)
 	if test -n "$(PY-MAKO_PATCHES)" ; then \
 	    cat $(PY-MAKO_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MAKO_DIR) -p0 ; \
         fi
-	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(PY-MAKO_BUILD_DIR)/2.5
-	(cd $(PY-MAKO_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -138,7 +139,12 @@ py-mako-unpack: $(PY-MAKO_BUILD_DIR)/.configured
 #
 $(PY-MAKO_BUILD_DIR)/.built: $(PY-MAKO_BUILD_DIR)/.configured
 	rm -f $@
-#	$(MAKE) -C $(PY-MAKO_BUILD_DIR)
+	(cd $(@D)/2.4; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(@D)/2.5; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
 
 #
@@ -150,9 +156,9 @@ py-mako: $(PY-MAKO_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-MAKO_BUILD_DIR)/.staged: $(PY-MAKO_BUILD_DIR)/.built
-	rm -f $@
-#	$(MAKE) -C $(PY-MAKO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $@
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-mako-stage: $(PY-MAKO_BUILD_DIR)/.staged
 
@@ -207,6 +213,8 @@ $(PY24-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
 	    --root=$(PY24-MAKO_IPK_DIR) --prefix=/opt)
+	for f in $(PY24-MAKO_IPK_DIR)/opt/bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-MAKO_IPK_DIR)/CONTROL/control
 #	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-MAKO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-MAKO_IPK_DIR)
