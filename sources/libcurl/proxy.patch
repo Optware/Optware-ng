@@ -1,0 +1,10 @@
+--- lib/mk-ca-bundle.pl	2008-02-15 01:28:40.000000000 -0800
++++ lib/mk-ca-bundle.pl	2008-04-22 19:56:22.000000000 -0700
+@@ -79,6 +79,7 @@
+ if (!$opt_n || !-e $txt) {
+   print "Downloading '$txt' ...\n" if (!$opt_q);
+   my $ua  = new LWP::UserAgent(agent => "$0/$version");
++  $ua->env_proxy();
+   my $req = new HTTP::Request('GET', $url);
+   my $res = $ua->request($req);
+   if ($res->is_success) {
