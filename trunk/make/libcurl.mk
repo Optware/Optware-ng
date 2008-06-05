@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBCURL_SITE= http://curl.haxx.se/download
-LIBCURL_VERSION=7.18.1
+LIBCURL_VERSION=7.18.2
 LIBCURL_SOURCE=curl-$(LIBCURL_VERSION).tar.gz
 LIBCURL_DIR=curl-$(LIBCURL_VERSION)
 LIBCURL_UNZIP=zcat
@@ -41,7 +41,7 @@ LIBCURL_CONFLICTS=
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=2
+LIBCURL_IPK_VERSION=1
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -51,7 +51,7 @@ LIBCURL_CONFFILES=#/opt/etc/libcurl.conf /opt/etc/init.d/SXXlibcurl
 # LIBCURL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBCURL_PATCHES=#$(LIBCURL_SOURCE_DIR)/configure.patch
+LIBCURL_PATCHES=$(LIBCURL_SOURCE_DIR)/proxy.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +113,9 @@ $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 	$(LIBCURL_UNZIP) $(DL_DIR)/$(LIBCURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(LIBCURL_PATCHES) | patch -d $(BUILD_DIR)/$(LIBCURL_DIR) -p1
+	if test -n "$(LIBCURL_PATCHES)"; then \
+		cat $(LIBCURL_PATCHES) | patch -d $(BUILD_DIR)/$(LIBCURL_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 ifeq (vt4, $(OPTWARE_TARGET))
 	sed -i -e '/^SUBDIRS/s|examples *||' $(@D)/docs/Makefile.in
