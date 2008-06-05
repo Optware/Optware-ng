@@ -1169,5 +1169,5 @@ esac
 
 ipkg_$cmd $*
 for a in `ls $IPKG_TMP`; do
-	rm -f $IPKG_TMP/$a
+	rm -f $IPKG_TMP/$a > /dev/null 2>&1
 done
