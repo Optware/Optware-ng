@@ -627,24 +627,25 @@ int main( int argc, char ** argv )
   
   /* Initialize libtransmission */
   h = tr_sessionInitFull(TR_DEFAULT_CONFIG_DIR,
-                  "cgi",                   /* tag */
-		  ".",		   /* where to download torrents */
-                  TR_DEFAULT_PEX_ENABLED,  /* pex enabled */
-                  natTraversal,            /* nat enabled */
-                  publicPort,              /* public port */
-                  encryptionMode, 	       /* encryption mode */
-                  uploadLimit >= 0,        /* use upload speed limit? */
-                  uploadLimit,             /* upload speed limit */
-                  downloadLimit >= 0,      /* use download speed limit? */
-                  downloadLimit,           /* download speed limit */
-                  512,                     /* globalPeerLimit */
-                  verboseLevel + 1,        /* messageLevel */
-                  1,                       /* is message queueing enabled? */
-                  TR_DEFAULT_BLOCKLIST_ENABLED,                       /* use the blocklist? */
-		  TR_DEFAULT_PEER_SOCKET_TOS,
-		  0, 			   /* TR_DEFAULT_RPC_ENABLED, */
-		  TR_DEFAULT_RPC_PORT,
-		  TR_DEFAULT_RPC_ACL);
+                         "cgi",                   /* tag */
+                         ".",		   /* where to download torrents */
+                         TR_DEFAULT_PEX_ENABLED,  /* pex enabled */
+                         natTraversal,            /* nat enabled */
+                         publicPort,              /* public port */
+                         encryptionMode, 	      /* encryption mode */
+                         uploadLimit >= 0,        /* use upload speed limit? */
+                         uploadLimit,             /* upload speed limit */
+                         downloadLimit >= 0,    /* use download speed limit? */
+                         downloadLimit,           /* download speed limit */
+                         512,                     /* globalPeerLimit */
+                         verboseLevel + 1,        /* messageLevel */
+                         1,           /* is message queueing enabled? */
+                         TR_DEFAULT_BLOCKLIST_ENABLED,  /* use the blocklist? */
+                         TR_DEFAULT_PEER_SOCKET_TOS,
+                         0, 			   /* TR_DEFAULT_RPC_ENABLED, */
+                         TR_DEFAULT_RPC_PORT,
+                         TR_DEFAULT_RPC_ACL,
+                         FALSE, "fnord", "potzrebie" );
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir( tr_getDefaultConfigDir())  < 0)
@@ -682,7 +683,7 @@ int main( int argc, char ** argv )
           reload_active();
           got_hup = 0;
         }
-      tr_torrentRates(h, &download, &upload);
+      tr_sessionGetSpeed(h, &download, &upload);
       dispose();
 
 #ifdef HAVE_SYSINFO
