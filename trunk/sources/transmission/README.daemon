@@ -460,6 +460,9 @@ where
 	    messageLevel=1, isMessageQueueingEnabled=1, isBlocklistEnabled=0, peerSocketTOS=4322432) at session.c:620
 #8  0x0040823c in main (argc=25403, argv=0x1) at transmissiond.c:629
 
+26. Is there any way to make log graph show more then two days?
+There is no such limitation. The range depends on the contents of the syslog file. So if you have small size of the syslog, try to increase it that it will hold a week of so for logs.
+
 
 oleo
 
