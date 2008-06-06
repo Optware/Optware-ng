@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 CLASSPATH_SITE=http://builder.classpath.org/dist
-CLASSPATH_VERSION=0.97.1
+CLASSPATH_VERSION=0.97.2
 CLASSPATH_SOURCE=classpath-$(CLASSPATH_VERSION).tar.gz
 CLASSPATH_DIR=classpath-$(CLASSPATH_VERSION)
 CLASSPATH_UNZIP=zcat
@@ -100,12 +100,12 @@ classpath-source: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CLASSPATH_BUILD_DIR)/.configured: $(DL_DIR)/$(CLASSPATH_SOURCE) $(CLASSPATH_PATCHES) make/classpath.mk
-	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(CLASSPATH_BUILD_DIR)
-	$(CLASSPATH_UNZIP) $(DL_DIR)/$(CLASSPATH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	rm -rf $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
+	$(CLASSPATH_UNZIP) $(DL_DIR)/$(CLASSPATH_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(CLASSPATH_PATCHES)"; then \
 		cat $(CLASSPATH_PATCHES) | patch -d $(BUILD_DIR)/$(CLASSPATH_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(CLASSPATH_DIR) $(CLASSPATH_BUILD_DIR)
+	mv $(BUILD_DIR)/$(CLASSPATH_DIR) $(@D)
 	sed -i -e 's/$$JAVAC conftest/$$JAVAC $$JAVAC_OPTS conftest/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
