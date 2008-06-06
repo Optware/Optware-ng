@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MRTG_SITE=http://oss.oetiker.ch/mrtg/pub/
-MRTG_VERSION=2.16.1
+MRTG_VERSION=2.16.2
 MRTG_SOURCE=mrtg-$(MRTG_VERSION).tar.gz
 MRTG_DIR=mrtg-$(MRTG_VERSION)
 MRTG_UNZIP=zcat
