@@ -7,7 +7,7 @@
 # $Header$
 #
 NMAP_SITE=http://download.insecure.org/nmap/dist
-NMAP_VERSION=4.62
+NMAP_VERSION=4.65
 NMAP_SOURCE=nmap-$(NMAP_VERSION).tar.bz2
 NMAP_DIR=nmap-$(NMAP_VERSION)
 NMAP_UNZIP=bzcat
