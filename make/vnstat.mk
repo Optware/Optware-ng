@@ -36,7 +36,7 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=1
+VNSTAT_IPK_VERSION=2
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
@@ -115,9 +115,9 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 		then mv $(BUILD_DIR)/$(VNSTAT_DIR) $(@D) ; \
 	fi
 	( cd $(@D); \
-		sed -i -e 's|/usr|/opt|;s|/var/|/opt/var/|' \
-		-e 's|/etc|/opt/etc|;s|/share/man|/man|' \
-		-e 's|local/bin|bin|' \
+		sed -i -e 's|/usr|/opt|g;s|/var/|/opt/var/|g' \
+		-e 's|/etc|/opt/etc|g;s|/share/man|/man|g' \
+		-e 's|local/bin|bin|g' \
 		-e 's|install -s|install|' \
 		-e '/^CC/d;/^CFLAGS/d'  \
 		cron/vnstat pppd/vnstat_ip-down pppd/vnstat_ip-up \
