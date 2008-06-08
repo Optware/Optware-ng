@@ -1,8 +1,10 @@
 SPECIFIC_PACKAGES = \
-	libiconv \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
+	binutils \
+	gcc \
+	libiconv \
 
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
