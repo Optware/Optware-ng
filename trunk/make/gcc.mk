@@ -43,13 +43,24 @@ GCC_DEPENDS=binutils
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
-ifeq (uclibc, $(LIBC_STYLE))
 ifdef LIBNSL_VERSION
-GCC_UCLIBC_VERSION=$(LIBNSL_VERSION)
+GCC_LIBC_VERSION=$(LIBNSL_VERSION)
 else
-GCC_UCLIBC_VERSION ?= 0.9.28
+GCC_LIBC_VERSION ?= 0.9.28
 endif
+
+ifdef TARGET_USRLIBDIR
+GCC_LIBC_USRLIBDIR=$(TARGET_USRLIBDIR)
+else
+GCC_LIBC_USRLIBDIR=$(TARGET_LIBDIR)
 endif
+
+ifdef TARGET_LIBC_LIBDIR
+GCC_LIBC_LIBDIR=$(TARGET_LIBC_LIBDIR)
+else
+GCC_LIBC_LIBDIR=$(TARGET_LIBDIR)
+endif
+
 
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
@@ -212,20 +223,24 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/g++
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcov
 	cp -a $(TARGET_INCDIR) $(GCC_IPK_DIR)/opt/
-ifeq (uclibc, $(LIBC_STYLE))
-	rsync -l $(TARGET_LIBDIR)/*crt*.o $(GCC_IPK_DIR)/opt/lib/
+	# libc-dev
+	rsync -l $(GCC_LIBC_USRLIBDIR)/*crt*.o $(GCC_IPK_DIR)/opt/lib/
 	rsync -l \
-		$(if $(filter uclibc, $(LIBC_STYLE)),$(TARGET_LIBDIR)/libuClibc-$(GCC_UCLIBC_VERSION).so,) \
-		$(TARGET_LIBDIR)/libc.so* \
+		$(if $(filter uclibc, $(LIBC_STYLE)),$(TARGET_LIBDIR)/libuClibc-$(GCC_LIBC_VERSION).so,) \
+		$(GCC_LIBC_USRLIBDIR)/libc.so* \
 		$(GCC_IPK_DIR)/opt/lib/
 	for f in libcrypt libdl libm libnsl libpthread libresolv librt libutil \
 		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
 		; \
 	do rsync -l \
-		$(TARGET_LIBDIR)/$${f}-$(GCC_UCLIBC_VERSION).so \
-		$(TARGET_LIBDIR)/$${f}.so* \
+		$(GCC_LIBC_LIBDIR)/$${f}-$(GCC_LIBC_VERSION).so \
+		$(GCC_LIBC_LIBDIR)/$${f}.so* \
 		$(GCC_IPK_DIR)/opt/lib/; \
 	done
+ifneq (uclibc, $(LIBC_STYLE))
+	install -d $(GCC_IPK_DIR)/usr/lib/
+	for f in libc_nonshared.a libpthread_nonshared.a; \
+	do rsync -l $(TARGET_USRLIBDIR)/$${f} $(GCC_IPK_DIR)/usr/lib/; done
 endif
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
