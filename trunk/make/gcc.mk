@@ -241,6 +241,7 @@ ifneq (uclibc, $(LIBC_STYLE))
 	install -d $(GCC_IPK_DIR)/usr/lib/
 	for f in libc_nonshared.a libpthread_nonshared.a; \
 	do rsync -l $(TARGET_USRLIBDIR)/$${f} $(GCC_IPK_DIR)/usr/lib/; done
+	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++*
 endif
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
