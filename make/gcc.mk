@@ -39,7 +39,7 @@ GCC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GCC_DESCRIPTION=The GNU Compiler Collection.
 GCC_SECTION=base
 GCC_PRIORITY=optional
-GCC_DEPENDS=binutils
+GCC_DEPENDS=binutils, libnsl
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
@@ -61,11 +61,10 @@ else
 GCC_LIBC_LIBDIR=$(TARGET_LIBDIR)
 endif
 
-
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION=1
+GCC_IPK_VERSION=2
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -229,7 +228,7 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 		$(if $(filter uclibc, $(LIBC_STYLE)),$(TARGET_LIBDIR)/libuClibc-$(GCC_LIBC_VERSION).so,) \
 		$(GCC_LIBC_USRLIBDIR)/libc.so* \
 		$(GCC_IPK_DIR)/opt/lib/
-	for f in libcrypt libdl libm libnsl libpthread libresolv librt libutil \
+	for f in libcrypt libdl libm libpthread libresolv librt libutil \
 		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
 		; \
 	do rsync -l \
