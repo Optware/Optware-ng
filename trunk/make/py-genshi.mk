@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-GENSHI_SITE=http://ftp.edgewall.com/pub/genshi
-PY-GENSHI_VERSION=0.4.4
+PY-GENSHI_VERSION=0.5
 PY-GENSHI_SOURCE=Genshi-$(PY-GENSHI_VERSION).tar.bz2
 PY-GENSHI_DIR=Genshi-$(PY-GENSHI_VERSION)
 PY-GENSHI_UNZIP=bzcat
@@ -37,7 +37,7 @@ PY-GENSHI_CONFLICTS=
 #
 # PY-GENSHI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GENSHI_IPK_VERSION=2
+PY-GENSHI_IPK_VERSION=1
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
@@ -117,7 +117,12 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	fi
 	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
-	    (echo "[build_scripts]"; \
+	    ( \
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
 	)
 #	2.5
@@ -127,7 +132,12 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	fi
 	mv $(BUILD_DIR)/$(PY-GENSHI_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
-	    (echo "[build_scripts]"; \
+	    ( \
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "rpath=/opt/lib"; \
+	    echo "[build_scripts]"; \
 	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
@@ -140,9 +150,11 @@ py-genshi-unpack: $(PY-GENSHI_BUILD_DIR)/.configured
 $(PY-GENSHI_BUILD_DIR)/.built: $(PY-GENSHI_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D)/2.4; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.5; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	touch $@
@@ -212,6 +224,11 @@ $(PY24-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	(cd $(PY-GENSHI_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-GENSHI_IPK_DIR) --prefix=/opt)
+	(cd $(PY24-GENSHI_IPK_DIR)/opt/lib/python2.4/site-packages; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
 	$(MAKE) $(PY24-GENSHI_IPK_DIR)/CONTROL/control
 #	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-GENSHI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GENSHI_IPK_DIR)
@@ -221,6 +238,11 @@ $(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-GENSHI_IPK_DIR) --prefix=/opt)
+	(cd $(PY25-GENSHI_IPK_DIR)/opt/lib/python2.5/site-packages; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
 	$(MAKE) $(PY25-GENSHI_IPK_DIR)/CONTROL/control
 #	echo $(PY-GENSHI_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-GENSHI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GENSHI_IPK_DIR)
