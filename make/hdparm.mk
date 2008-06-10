@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 HDPARM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hdparm
-HDPARM_VERSION=8.6
+HDPARM_VERSION=8.7
 HDPARM_SOURCE=hdparm-$(HDPARM_VERSION).tar.gz
 HDPARM_DIR=hdparm-$(HDPARM_VERSION)
 HDPARM_UNZIP=zcat
@@ -146,7 +146,18 @@ $(HDPARM_IPK): $(HDPARM_BUILD_DIR)/.built
 		binprefix=/opt manprefix=/opt \
 		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
 	$(STRIP_COMMAND) $(HDPARM_IPK_DIR)/opt/sbin/hdparm
+	mv $(HDPARM_IPK_DIR)/opt/sbin/hdparm $(HDPARM_IPK_DIR)/opt/sbin/hdparm-hdparm
 	$(MAKE) $(HDPARM_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh" ; \
+	 echo "update-alternatives --install /opt/sbin/hdparm hdparm /opt/sbin/hdparm-hdparm 50" ; \
+	) > $(HDPARM_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh" ; \
+	 echo "update-alternatives --remove hdparm /opt/sbin/hdparm-hdparm" ; \
+	) > $(HDPARM_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(HDPARM_IPK_DIR)/CONTROL/postinst $(HDPARM_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HDPARM_IPK_DIR)
 
 #
