@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 USBUTILS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/usbutils
-USBUTILS_VERSION=0.72
+USBUTILS_VERSION=0.73
 USBUTILS_SOURCE=usbutils-$(USBUTILS_VERSION).tar.gz
 USBUTILS_DIR=usbutils-$(USBUTILS_VERSION)
 USBUTILS_UNZIP=zcat
@@ -67,8 +67,8 @@ USBUTILS_IPK=$(BUILD_DIR)/usbutils_$(USBUTILS_VERSION)-$(USBUTILS_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(USBUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(USBUTILS_SITE)/$(USBUTILS_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(USBUTILS_SOURCE)
+	$(WGET) -P $(@D) $(USBUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -94,15 +94,15 @@ usbutils-source: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES)
 #
 $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCHES) make/usbutils.mk
 	$(MAKE) libusb-stage
-	rm -rf $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
 	$(USBUTILS_UNZIP) $(DL_DIR)/$(USBUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(USBUTILS_PATCHES)"; then \
 		cat $(USBUTILS_PATCHES) | patch -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(USBUTILS_BUILD_DIR)
-	sed -i 's|DEST=|&/opt/share/misc/|' $(USBUTILS_BUILD_DIR)/update-usbids.sh
-	(cd $(USBUTILS_BUILD_DIR); \
-		ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif; \
+	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
+	sed -i 's|DEST=|&/opt/share/misc/|' $(@D)/update-usbids.sh
+#	ACLOCAL=aclocal-1.9 AUTOMAKE=automake-1.9 autoreconf -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(USBUTILS_LDFLAGS)" \
@@ -123,7 +123,7 @@ usbutils-unpack: $(USBUTILS_BUILD_DIR)/.configured
 #
 $(USBUTILS_BUILD_DIR)/.built: $(USBUTILS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(USBUTILS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -136,7 +136,7 @@ usbutils: $(USBUTILS_BUILD_DIR)/.built
 #
 $(USBUTILS_BUILD_DIR)/.staged: $(USBUTILS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 usbutils-stage: $(USBUTILS_BUILD_DIR)/.staged
