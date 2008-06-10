@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.41
+DNSMASQ_VERSION=2.42
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
@@ -31,8 +31,8 @@ DNSMASQ_IPK=$(BUILD_DIR)/dnsmasq_$(DNSMASQ_VERSION)-$(DNSMASQ_IPK_VERSION)_$(TAR
 .PHONY: dnsmasq-source dnsmasq-unpack dnsmasq dnsmasq-stage dnsmasq-ipk dnsmasq-clean dnsmasq-dirclean dnsmasq-check
 
 $(DL_DIR)/$(DNSMASQ_SOURCE):
-	$(WGET) -P $(DL_DIR) $(DNSMASQ_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(DNSMASQ_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 dnsmasq-source: $(DL_DIR)/$(DNSMASQ_SOURCE)
 
