@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 COREUTILS_SITE=http://ftp.gnu.org/pub/gnu/coreutils
-COREUTILS_VERSION=6.9
+COREUTILS_VERSION=6.12
 COREUTILS_SOURCE=coreutils-$(COREUTILS_VERSION).tar.gz
 COREUTILS_DIR=coreutils-$(COREUTILS_VERSION)
 COREUTILS_UNZIP=zcat
@@ -41,14 +41,14 @@ COREUTILS_CONFLICTS=
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=7
+COREUTILS_IPK_VERSION=1
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 COREUTILS_PATCHES=$(COREUTILS_SOURCE_DIR)/mountlist.patch
-COREUTILS_PATCHES+=$(COREUTILS_SOURCE_DIR)/coreutils-futimens.patch
+#COREUTILS_PATCHES+=$(COREUTILS_SOURCE_DIR)/coreutils-futimens.patch
 
 # Assume that all uclibc systems are the same
 ifeq ($(LIBC_STYLE), uclibc)
@@ -74,9 +74,10 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 COREUTILS_LDFLAGS+= -liconv
 endif
+COREUTILS_CONFIG_ENVS=gl_cv_func_fflush_stdin=yes ac_cv_type_mbstate_t=no
 ifeq ($(OPTWARE_TARGET), dns323)
 # binutils too old, ld does not recognize --as-needed
-COREUTILS_CONFIG_ENVS=gl_cv_ignore_unused_libraries=none
+COREUTILS_CONFIG_ENVS += gl_cv_ignore_unused_libraries=none
 endif
 
 #
@@ -100,8 +101,8 @@ COREUTILS_IPK=$(BUILD_DIR)/coreutils_$(COREUTILS_VERSION)-$(COREUTILS_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(COREUTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(COREUTILS_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(COREUTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -132,26 +133,24 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(COREUTILS_PATCHES) | patch -Z -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
-	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(COREUTILS_BUILD_DIR)
-	cp $(COREUTILS_AC_CACHE) $(COREUTILS_BUILD_DIR)/config.cache
-ifeq ($(OPTWARE_TARGET), ts101)
-	sed -i -e "/ac_cv_func_clock_settime=/s|'yes'|'no'|" $(COREUTILS_BUILD_DIR)/config.cache
-endif
-	(cd $(COREUTILS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
+	cp $(COREUTILS_AC_CACHE) $(@D)/config.cache
+	sed -i -e '/binPROGRAMS_INSTALL=\.\/ginstall/s|./ginstall|install|' $(@D)/src/Makefile.in
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(COREUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(COREUTILS_LDFLAGS)" \
 		$(COREUTILS_CONFIG_ENVS) \
 		./configure \
-		--cache-file=config.cache \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--datarootdir=/opt \
+		--cache-file=config.cache \
 	)
 	touch $@
 
@@ -226,13 +225,7 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	# Install makefiles
 	install -d $(COREUTILS_IPK_DIR)/opt/man/man1	
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
-	# Temporarily Remove /opt/bin/groups (it is a script so doesn't strip)
-	rm $(COREUTILS_IPK_DIR)/opt/bin/groups
-	# Remove /opt/bin/hostname (conflicts with net-tools)
-	rm $(COREUTILS_IPK_DIR)/opt/bin/hostname
-	rm $(COREUTILS_IPK_DIR)/opt/man/man1/hostname.1
 	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/*
-	cp $(COREUTILS_BUILD_DIR)/src/groups $(COREUTILS_IPK_DIR)/opt/bin
 	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(COREUTILS_IPK_DIR)/CONTROL/postinst
 	(echo "/bin/chown 0:0 /opt/bin/coreutils-su"; \
