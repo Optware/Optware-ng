@@ -223,7 +223,8 @@ COMMON_CROSS_PACKAGES = \
 	fis fish fixesext flac flex flip \
 	fontconfig freecell freeradius freetds freetype freeze \
 	ftpcopy ftpd-topfield fuppes \
-	gambit-c gawk gcal gconv-modules gdb gdbm gdchart gettext \
+	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
+	geoip gettext \
 	ggrab ghostscript git glib gnet gnokii \
 	gnu-httptunnel gnu-smalltalk gnugo gnupg gnuplot gnutls \
 	gpsd \
