@@ -7,7 +7,7 @@
 # $Header$
 #
 NET_SNMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/net-snmp
-NET_SNMP_VERSION=5.4.1
+NET_SNMP_VERSION=5.4.1.1
 NET_SNMP_SOURCE=net-snmp-$(NET_SNMP_VERSION).tar.gz
 NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=3
+NET_SNMP_IPK_VERSION=1
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -67,7 +67,8 @@ NET_SNMP_IPK=$(BUILD_DIR)/net-snmp_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NET_SNMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)
+	$(WGET) -P $(@D) $(NET_SNMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -93,13 +94,13 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 #
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 	$(MAKE) openssl-stage
-	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(@D)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NET_SNMP_PATCHES)"; then \
 		cat $(NET_SNMP_PATCHES) | patch -d $(BUILD_DIR)/$(NET_SNMP_DIR) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR)
-	(cd $(NET_SNMP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(NET_SNMP_DIR) $(@D)
+	(cd $(@D); \
 		if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 		then WITH_ENDIANNESS="--with-endianness=big"; \
 		else WITH_ENDIANNESS="--with-endianness=little"; fi; \
@@ -133,7 +134,7 @@ net-snmp-unpack: $(NET_SNMP_BUILD_DIR)/.configured
 #
 $(NET_SNMP_BUILD_DIR)/.built: $(NET_SNMP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NET_SNMP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +147,7 @@ net-snmp: $(NET_SNMP_BUILD_DIR)/.built
 #
 $(NET_SNMP_BUILD_DIR)/.staged: $(NET_SNMP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NET_SNMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 net-snmp-stage: $(NET_SNMP_BUILD_DIR)/.staged
