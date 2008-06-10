@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-IPERF_SITE=http://dast.nlanr.net/Projects/Iperf2.0
-IPERF_VERSION=2.0.2
+IPERF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/iperf
+IPERF_VERSION=2.0.4
 IPERF_SOURCE=iperf-$(IPERF_VERSION).tar.gz
 IPERF_DIR=iperf-$(IPERF_VERSION)
 IPERF_UNZIP=zcat
@@ -37,7 +37,7 @@ IPERF_CONFLICTS=
 #
 # IPERF_IPK_VERSION should be incremented when the ipk changes.
 #
-IPERF_IPK_VERSION=2
+IPERF_IPK_VERSION=1
 
 #
 # IPERF_CONFFILES should be a list of user-editable files
@@ -75,7 +75,8 @@ IPERF_IPK=$(BUILD_DIR)/iperf_$(IPERF_VERSION)-$(IPERF_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IPERF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IPERF_SITE)/$(IPERF_SOURCE)
+	$(WGET) -P $(@D) $(IPERF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -101,11 +102,11 @@ iperf-source: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
 #
 $(IPERF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(IPERF_DIR) $(IPERF_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(IPERF_DIR) $(@D)
 	$(IPERF_UNZIP) $(DL_DIR)/$(IPERF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(IPERF_PATCHES) | patch -d $(BUILD_DIR)/$(IPERF_DIR) -p1
-	mv $(BUILD_DIR)/$(IPERF_DIR) $(IPERF_BUILD_DIR)
-	(cd $(IPERF_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(IPERF_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPERF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IPERF_LDFLAGS)" \
@@ -118,7 +119,7 @@ $(IPERF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(IPERF_BUILD_DIR)/.configured
+	touch $@
 
 iperf-unpack: $(IPERF_BUILD_DIR)/.configured
 
@@ -126,9 +127,9 @@ iperf-unpack: $(IPERF_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(IPERF_BUILD_DIR)/.built: $(IPERF_BUILD_DIR)/.configured
-	rm -f $(IPERF_BUILD_DIR)/.built
-	$(MAKE) -C $(IPERF_BUILD_DIR)
-	touch $(IPERF_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -138,19 +139,19 @@ iperf: $(IPERF_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(IPERF_BUILD_DIR)/.staged: $(IPERF_BUILD_DIR)/.built
-	rm -f $(IPERF_BUILD_DIR)/.staged
-	$(MAKE) -C $(IPERF_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(IPERF_BUILD_DIR)/.staged
-
-iperf-stage: $(IPERF_BUILD_DIR)/.staged
+#$(IPERF_BUILD_DIR)/.staged: $(IPERF_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
+#
+#iperf-stage: $(IPERF_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/iperf
 #
 $(IPERF_IPK_DIR)/CONTROL/control:
-	@install -d $(IPERF_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: iperf" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -199,3 +200,9 @@ iperf-clean:
 #
 iperf-dirclean:
 	rm -rf $(BUILD_DIR)/$(IPERF_DIR) $(IPERF_BUILD_DIR) $(IPERF_IPK_DIR) $(IPERF_IPK)
+
+#
+# Some sanity check for the package.
+#
+iperf-check: $(IPERF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(IPERF_IPK)
