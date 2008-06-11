@@ -1,0 +1,11 @@
+--- geom.c.orig	2008-06-02 21:21:51.000000000 +0000
++++ geom.c	2008-06-11 02:51:19.000000000 +0000
+@@ -20,6 +20,8 @@
+ 
+ #include "hdparm.h"
+ 
++typedef unsigned long long u64;
++
+ static int get_sector_count (int fd, __u64 *nsectors)
+ {
+ 	int		err;
