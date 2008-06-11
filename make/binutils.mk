@@ -37,7 +37,7 @@ BINUTILS_CONFLICTS=
 #
 # BINUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BINUTILS_IPK_VERSION=1
+BINUTILS_IPK_VERSION=2
 
 #
 # BINUTILS_CONFFILES should be a list of user-editable files
@@ -190,7 +190,18 @@ $(BINUTILS_IPK): $(BINUTILS_BUILD_DIR)/.built
 	rm -rf $(BINUTILS_IPK_DIR) $(BUILD_DIR)/binutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BINUTILS_BUILD_DIR) DESTDIR=$(BINUTILS_IPK_DIR) install
 	$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)/opt/bin/*
+	mv $(BINUTILS_IPK_DIR)/opt/bin/strings $(BINUTILS_IPK_DIR)/opt/bin/binutils-strings
 	$(MAKE) $(BINUTILS_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh" ; \
+	 echo "update-alternatives --install /opt/bin/strings strings /opt/bin/binutils-strings 50" ; \
+	) > $(BINUTILS_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh" ; \
+	 echo "update-alternatives --remove strings /opt/bin/binutils-strings" ; \
+	) > $(BINUTILS_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ |]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+		$(BINUTILS_IPK_DIR)/CONTROL/postinst $(BINUTILS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(BINUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BINUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BINUTILS_IPK_DIR)
 
