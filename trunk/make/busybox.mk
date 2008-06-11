@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.10.2
+BUSYBOX_VERSION=1.10.3
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -139,7 +139,7 @@ $(BUSYBOX_BUILD_DIR)/.built: $(BUSYBOX_BUILD_DIR)/.configured
 	$(MAKE) CROSS="$(TARGET_CROSS)" \
 		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
-		-C $(BUSYBOX_BUILD_DIR)
+		-C $(@D)
 	touch $@
 
 #
@@ -152,7 +152,7 @@ busybox: $(BUSYBOX_BUILD_DIR)/.built
 #
 $(BUSYBOX_BUILD_DIR)/.staged: $(BUSYBOX_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(BUSYBOX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 busybox-stage: $(BUSYBOX_BUILD_DIR)/.staged
