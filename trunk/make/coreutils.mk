@@ -139,6 +139,9 @@ endif
 	mv $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
 	cp $(COREUTILS_AC_CACHE) $(@D)/config.cache
 	sed -i -e '/binPROGRAMS_INSTALL=\.\/ginstall/s|./ginstall|install|' $(@D)/src/Makefile.in
+ifeq ($(OPTWARE_TARGET), ts101)
+	sed -i -e "/ac_cv_func_clock_settime=/s|'yes'|'no'|" $(@D)/config.cache
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(COREUTILS_CPPFLAGS)" \
