@@ -41,7 +41,7 @@ MKTEMP_CONFLICTS=
 #
 # MKTEMP_IPK_VERSION should be incremented when the ipk changes.
 #
-MKTEMP_IPK_VERSION=1
+MKTEMP_IPK_VERSION=2
 
 #
 # MKTEMP_CONFFILES should be a list of user-editable files
@@ -79,7 +79,8 @@ MKTEMP_IPK=$(BUILD_DIR)/mktemp_$(MKTEMP_VERSION)-$(MKTEMP_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MKTEMP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(MKTEMP_SITE)/$(MKTEMP_SOURCE)
+	$(WGET) -P $(@D) $(MKTEMP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -105,12 +106,12 @@ mktemp-source: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES)
 #
 $(MKTEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES) make/mktemp.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MKTEMP_DIR) $(MKTEMP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MKTEMP_DIR) $(@D)
 	$(MKTEMP_UNZIP) $(DL_DIR)/$(MKTEMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(MKTEMP_PATCHES) | patch -d $(BUILD_DIR)/$(MKTEMP_DIR) -p1
-	mv $(BUILD_DIR)/$(MKTEMP_DIR) $(MKTEMP_BUILD_DIR)
-	cp -f $(SOURCE_DIR)/common/config.* $(MKTEMP_BUILD_DIR)/
-	(cd $(MKTEMP_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MKTEMP_DIR) $(@D)
+	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MKTEMP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MKTEMP_LDFLAGS)" \
@@ -122,7 +123,7 @@ $(MKTEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(MKTEMP_SOURCE) $(MKTEMP_PATCHES) ma
 		--prefix=/opt \
 		--disable-nls \
 	)
-	touch $(MKTEMP_BUILD_DIR)/.configured
+	touch $@
 
 mktemp-unpack: $(MKTEMP_BUILD_DIR)/.configured
 
@@ -130,9 +131,9 @@ mktemp-unpack: $(MKTEMP_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MKTEMP_BUILD_DIR)/.built: $(MKTEMP_BUILD_DIR)/.configured
-	rm -f $(MKTEMP_BUILD_DIR)/.built
-	$(MAKE) -C $(MKTEMP_BUILD_DIR)
-	touch $(MKTEMP_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,19 +143,19 @@ mktemp: $(MKTEMP_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MKTEMP_BUILD_DIR)/.staged: $(MKTEMP_BUILD_DIR)/.built
-	rm -f $(MKTEMP_BUILD_DIR)/.staged
-	$(MAKE) -C $(MKTEMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(MKTEMP_BUILD_DIR)/.staged
-
-mktemp-stage: $(MKTEMP_BUILD_DIR)/.staged
+#$(MKTEMP_BUILD_DIR)/.staged: $(MKTEMP_BUILD_DIR)/.built
+#	rm -f $(MKTEMP_BUILD_DIR)/.staged
+#	$(MAKE) -C $(MKTEMP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+#	touch $(MKTEMP_BUILD_DIR)/.staged
+#
+#mktemp-stage: $(MKTEMP_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/mktemp
 #
 $(MKTEMP_IPK_DIR)/CONTROL/control:
-	@install -d $(MKTEMP_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: mktemp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,8 +183,19 @@ $(MKTEMP_IPK_DIR)/CONTROL/control:
 $(MKTEMP_IPK): $(MKTEMP_BUILD_DIR)/.built
 	rm -rf $(MKTEMP_IPK_DIR) $(BUILD_DIR)/mktemp_*_$(TARGET_ARCH).ipk
 	install -d $(MKTEMP_IPK_DIR)/opt/bin
-	install -m 755 $(MKTEMP_BUILD_DIR)/mktemp $(MKTEMP_IPK_DIR)/opt/bin/mktemp
+	install -m 755 $(MKTEMP_BUILD_DIR)/mktemp $(MKTEMP_IPK_DIR)/opt/bin/mktemp-mktemp
+	$(STRIP_COMMAND) $(MKTEMP_IPK_DIR)/opt/bin/mktemp-mktemp
 	$(MAKE) $(MKTEMP_IPK_DIR)/CONTROL/control
+	(echo "#!/bin/sh" ; \
+	 echo "update-alternatives --install /opt/bin/mktemp mktemp /opt/bin/mktemp-mktemp 50" ; \
+	) > $(MKTEMP_IPK_DIR)/CONTROL/postinst
+	(echo "#!/bin/sh" ; \
+	 echo "update-alternatives --remove mktemp /opt/bin/mktemp-mktemp" ; \
+	) > $(MKTEMP_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(MKTEMP_IPK_DIR)/CONTROL/postinst $(MKTEMP_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(MKTEMP_CONFFILES) | sed -e 's/ /\n/g' > $(MKTEMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MKTEMP_IPK_DIR)
 
@@ -204,3 +216,9 @@ mktemp-clean:
 #
 mktemp-dirclean:
 	rm -rf $(BUILD_DIR)/$(MKTEMP_DIR) $(MKTEMP_BUILD_DIR) $(MKTEMP_IPK_DIR) $(MKTEMP_IPK)
+
+#
+# Some sanity check for the package.
+#
+mktemp-check: $(MKTEMP_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MKTEMP_IPK)
