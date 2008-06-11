@@ -41,7 +41,7 @@ COREUTILS_CONFLICTS=
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=1
+COREUTILS_IPK_VERSION=2
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -74,7 +74,7 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 COREUTILS_LDFLAGS+= -liconv
 endif
-COREUTILS_CONFIG_ENVS=gl_cv_func_fflush_stdin=yes ac_cv_type_mbstate_t=no
+COREUTILS_CONFIG_ENVS=gl_cv_func_fflush_stdin=yes
 ifeq ($(OPTWARE_TARGET), dns323)
 # binutils too old, ld does not recognize --as-needed
 COREUTILS_CONFIG_ENVS += gl_cv_ignore_unused_libraries=none
