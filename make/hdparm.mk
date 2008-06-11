@@ -41,10 +41,11 @@ HDPARM_LOCALES=
 # HDPARM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-HDPARM_PATCHES=
-ifneq (, $(filter modutils, $(PACKAGES)))
-HDPARM_PATCHES+=$(HDPARM_SOURCE_DIR)/linux2.4-u64.patch
-endif
+HDPARM_PATCHES=$(strip \
+$(if $(or \
+	$(filter modutils, $(PACKAGES)), \
+	$(filter fsg3v4, $(OPTWARE_TARGET))), \
+$(HDPARM_SOURCE_DIR)/linux2.4-u64.patch,))
 
 #
 # If the compilation of the package requires additional
