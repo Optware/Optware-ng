@@ -41,7 +41,10 @@ HDPARM_LOCALES=
 # HDPARM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HDPARM_PATCHES=$(HDPARM_SOURCE_DIR)/configure.patch
+HDPARM_PATCHES=
+ifneq (, $(filter modutils, $(PACKAGES)))
+HDPARM_PATCHES+=$(HDPARM_SOURCE_DIR)/linux2.4-u64.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -101,10 +104,13 @@ hdparm-source: $(DL_DIR)/$(HDPARM_SOURCE) $(HDPARM_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(HDPARM_BUILD_DIR)/.configured: make/hdparm.mk \
-$(DL_DIR)/$(HDPARM_SOURCE) $(HDPARM_PATCHES)
+$(HDPARM_BUILD_DIR)/.configured: make/hdparm.mk $(DL_DIR)/$(HDPARM_SOURCE) $(HDPARM_PATCHES)
 	rm -rf $(BUILD_DIR)/$(HDPARM_DIR) $(@D)
 	$(HDPARM_UNZIP) $(DL_DIR)/$(HDPARM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(HDPARM_PATCHES)" ; \
+		then cat $(HDPARM_PATCHES) | \
+		patch -d $(BUILD_DIR)/$(HDPARM_DIR) -p0 ; \
+	fi
 	mv $(BUILD_DIR)/$(HDPARM_DIR) $(@D)
 	sed -i -e '/^	strip/d' $(@D)/Makefile
 	touch $@
