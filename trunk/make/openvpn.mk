@@ -41,7 +41,7 @@ OPENVPN_CONFLICTS=
 #
 # OPENVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENVPN_IPK_VERSION=1
+OPENVPN_IPK_VERSION=2
 
 #
 # OPENVPN_CONFFILES should be a list of user-editable files
@@ -132,6 +132,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=/opt \
 		--disable-nls \
+		--enable-password-save \
 	)
 	touch $@
 
