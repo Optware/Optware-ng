@@ -24,7 +24,7 @@
 # PY-ROUTES_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-ROUTES_SITE=http://pypi.python.org/packages/source/R/Routes
-PY-ROUTES_VERSION=1.8
+PY-ROUTES_VERSION=1.9
 PY-ROUTES_IPK_VERSION=1
 PY-ROUTES_SOURCE=Routes-$(PY-ROUTES_VERSION).tar.gz
 PY-ROUTES_DIR=Routes-$(PY-ROUTES_VERSION)
@@ -80,8 +80,8 @@ PY25-ROUTES_IPK=$(BUILD_DIR)/py25-routes_$(PY-ROUTES_VERSION)-$(PY-ROUTES_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-ROUTES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-ROUTES_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PY-ROUTES_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -156,12 +156,12 @@ py-routes: $(PY-ROUTES_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-ROUTES_BUILD_DIR)/.staged: $(PY-ROUTES_BUILD_DIR)/.built
-	rm -f $(PY-ROUTES_BUILD_DIR)/.staged
+#$(PY-ROUTES_BUILD_DIR)/.staged: $(PY-ROUTES_BUILD_DIR)/.built
+#	rm -f $(PY-ROUTES_BUILD_DIR)/.staged
 #	$(MAKE) -C $(PY-ROUTES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-ROUTES_BUILD_DIR)/.staged
+#	touch $(PY-ROUTES_BUILD_DIR)/.staged
 
-py-routes-stage: $(PY-ROUTES_BUILD_DIR)/.staged
+#py-routes-stage: $(PY-ROUTES_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
