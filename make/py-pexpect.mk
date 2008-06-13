@@ -30,13 +30,14 @@ PY-PEXPECT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PEXPECT_DESCRIPTION=Python module for automating interactive applications.
 PY-PEXPECT_SECTION=misc
 PY-PEXPECT_PRIORITY=optional
-PY-PEXPECT_DEPENDS=python
+PY24-PEXPECT_DEPENDS=python24
+PY25-PEXPECT_DEPENDS=python25
 PY-PEXPECT_CONFLICTS=
 
 #
 # PY-PEXPECT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PEXPECT_IPK_VERSION=1
+PY-PEXPECT_IPK_VERSION=2
 
 #
 # PY-PEXPECT_CONFFILES should be a list of user-editable files
@@ -66,15 +67,18 @@ PY-PEXPECT_LDFLAGS=
 #
 PY-PEXPECT_BUILD_DIR=$(BUILD_DIR)/py-pexpect
 PY-PEXPECT_SOURCE_DIR=$(SOURCE_DIR)/py-pexpect
-PY-PEXPECT_IPK_DIR=$(BUILD_DIR)/py-pexpect-$(PY-PEXPECT_VERSION)-ipk
-PY-PEXPECT_IPK=$(BUILD_DIR)/py-pexpect_$(PY-PEXPECT_VERSION)-$(PY-PEXPECT_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PEXPECT_IPK_DIR=$(BUILD_DIR)/py24-pexpect-$(PY-PEXPECT_VERSION)-ipk
+PY24-PEXPECT_IPK=$(BUILD_DIR)/py24-pexpect_$(PY-PEXPECT_VERSION)-$(PY-PEXPECT_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-PEXPECT_IPK_DIR=$(BUILD_DIR)/py25-pexpect-$(PY-PEXPECT_VERSION)-ipk
+PY25-PEXPECT_IPK=$(BUILD_DIR)/py25-pexpect_$(PY-PEXPECT_VERSION)-$(PY-PEXPECT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-PEXPECT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PEXPECT_SITE)/$(PY-PEXPECT_SOURCE)
+	$(WGET) -P $(@D) $(PY-PEXPECT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -98,23 +102,41 @@ py-pexpect-source: $(DL_DIR)/$(PY-PEXPECT_SOURCE) $(PY-PEXPECT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PEXPECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PEXPECT_SOURCE) $(PY-PEXPECT_PATCHES)
+$(PY-PEXPECT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PEXPECT_SOURCE) $(PY-PEXPECT_PATCHES) make/py-pexpect.mk
 	$(MAKE) py-setuptools-stage
-	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(PY-PEXPECT_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
+	# 2.4
+	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR)
 	$(PY-PEXPECT_UNZIP) $(DL_DIR)/$(PY-PEXPECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-PEXPECT_PATCHES)"; then \
 	    cat $(PY-PEXPECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PEXPECT_DIR) -p1; \
 	fi
-	mv $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(PY-PEXPECT_BUILD_DIR)
-	(cd $(PY-PEXPECT_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python"; \
+	    echo "executable=/opt/bin/python2.4"; \
 	    echo "[install]"; \
 	    echo "install_scripts=/opt/bin"; \
 	    ) > setup.cfg \
 	)
-	touch $(PY-PEXPECT_BUILD_DIR)/.configured
+	# 2.5
+	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR)
+	$(PY-PEXPECT_UNZIP) $(DL_DIR)/$(PY-PEXPECT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-PEXPECT_PATCHES)"; then \
+	    cat $(PY-PEXPECT_PATCHES) | patch -d $(BUILD_DIR)/$(PY-PEXPECT_DIR) -p1; \
+	fi
+	mv $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
+	    ( \
+	    echo "[build_scripts]"; \
+	    echo "executable=/opt/bin/python2.5"; \
+	    echo "[install]"; \
+	    echo "install_scripts=/opt/bin"; \
+	    ) > setup.cfg \
+	)
+	touch $@
 
 py-pexpect-unpack: $(PY-PEXPECT_BUILD_DIR)/.configured
 
@@ -122,12 +144,14 @@ py-pexpect-unpack: $(PY-PEXPECT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-PEXPECT_BUILD_DIR)/.built: $(PY-PEXPECT_BUILD_DIR)/.configured
-	rm -f $(PY-PEXPECT_BUILD_DIR)/.built
-#	$(MAKE) -C $(PY-PEXPECT_BUILD_DIR)
-	(cd $(PY-PEXPECT_BUILD_DIR); \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py build)
-	touch $(PY-PEXPECT_BUILD_DIR)/.built
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
+	(cd $(@D)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,10 +161,10 @@ py-pexpect: $(PY-PEXPECT_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-PEXPECT_BUILD_DIR)/.staged: $(PY-PEXPECT_BUILD_DIR)/.built
-	rm -f $(PY-PEXPECT_BUILD_DIR)/.staged
+#$(PY-PEXPECT_BUILD_DIR)/.staged: $(PY-PEXPECT_BUILD_DIR)/.built
+#	rm -f $@
 #	$(MAKE) -C $(PY-PEXPECT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PEXPECT_BUILD_DIR)/.staged
+#	touch $@
 
 py-pexpect-stage: $(PY-PEXPECT_BUILD_DIR)/.staged
 
@@ -148,10 +172,10 @@ py-pexpect-stage: $(PY-PEXPECT_BUILD_DIR)/.staged
 # This rule creates a control file for ipkg.  It is no longer
 # necessary to create a seperate control file under sources/py-pexpect
 #
-$(PY-PEXPECT_IPK_DIR)/CONTROL/control:
-	@install -d $(PY-PEXPECT_IPK_DIR)/CONTROL
+$(PY24-PEXPECT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-pexpect" >>$@
+	@echo "Package: py24-pexpect" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PEXPECT_PRIORITY)" >>$@
 	@echo "Section: $(PY-PEXPECT_SECTION)" >>$@
@@ -159,7 +183,21 @@ $(PY-PEXPECT_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-PEXPECT_MAINTAINER)" >>$@
 	@echo "Source: $(PY-PEXPECT_SITE)/$(PY-PEXPECT_SOURCE)" >>$@
 	@echo "Description: $(PY-PEXPECT_DESCRIPTION)" >>$@
-	@echo "Depends: $(PY-PEXPECT_DEPENDS)" >>$@
+	@echo "Depends: $(PY24-PEXPECT_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-PEXPECT_CONFLICTS)" >>$@
+
+$(PY25-PEXPECT_IPK_DIR)/CONTROL/control:
+	@install -d $(@D)
+	@rm -f $@
+	@echo "Package: py25-pexpect" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-PEXPECT_PRIORITY)" >>$@
+	@echo "Section: $(PY-PEXPECT_SECTION)" >>$@
+	@echo "Version: $(PY-PEXPECT_VERSION)-$(PY-PEXPECT_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-PEXPECT_MAINTAINER)" >>$@
+	@echo "Source: $(PY-PEXPECT_SITE)/$(PY-PEXPECT_SOURCE)" >>$@
+	@echo "Description: $(PY-PEXPECT_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY25-PEXPECT_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-PEXPECT_CONFLICTS)" >>$@
 
 #
@@ -174,19 +212,32 @@ $(PY-PEXPECT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(PY-PEXPECT_IPK): $(PY-PEXPECT_BUILD_DIR)/.built
-	rm -rf $(PY-PEXPECT_IPK_DIR) $(BUILD_DIR)/py-pexpect_*_$(TARGET_ARCH).ipk
-	(cd $(PY-PEXPECT_BUILD_DIR); \
+$(PY24-PEXPECT_IPK): $(PY-PEXPECT_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py-pexpect_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-PEXPECT_IPK_DIR) $(BUILD_DIR)/py24-pexpect_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PEXPECT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 -c "import setuptools; execfile('setup.py')" install --root=$(PY-PEXPECT_IPK_DIR) --prefix=/opt)
-	$(MAKE) $(PY-PEXPECT_IPK_DIR)/CONTROL/control
-#	echo $(PY-PEXPECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY-PEXPECT_IPK_DIR)/CONTROL/conffiles
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PEXPECT_IPK_DIR)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY24-PEXPECT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY24-PEXPECT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PEXPECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PEXPECT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PEXPECT_IPK_DIR)
+
+$(PY25-PEXPECT_IPK): $(PY-PEXPECT_BUILD_DIR)/.built
+	rm -rf $(BUILD_DIR)/py-pexpect_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY25-PEXPECT_IPK_DIR) $(BUILD_DIR)/py25-pexpect_*_$(TARGET_ARCH).ipk
+	(cd $(PY-PEXPECT_BUILD_DIR)/2.5; \
+	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
+	--root=$(PY25-PEXPECT_IPK_DIR) --prefix=/opt)
+	$(MAKE) $(PY25-PEXPECT_IPK_DIR)/CONTROL/control
+#	echo $(PY-PEXPECT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PEXPECT_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PEXPECT_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-pexpect-ipk: $(PY-PEXPECT_IPK)
+py-pexpect-ipk: $(PY24-PEXPECT_IPK) $(PY25-PEXPECT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -199,4 +250,6 @@ py-pexpect-clean:
 # directories.
 #
 py-pexpect-dirclean:
-	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(PY-PEXPECT_BUILD_DIR) $(PY-PEXPECT_IPK_DIR) $(PY-PEXPECT_IPK)
+	rm -rf $(BUILD_DIR)/$(PY-PEXPECT_DIR) $(PY-PEXPECT_BUILD_DIR)
+	rm -rf $(PY24-PEXPECT_IPK_DIR) $(PY24-PEXPECT_IPK)
+	rm -rf $(PY25-PEXPECT_IPK_DIR) $(PY25-PEXPECT_IPK)
