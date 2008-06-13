@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-DUPLICITY_VERSION=0.4.2
+PY-DUPLICITY_VERSION=0.4.11
 PY-DUPLICITY_SITE=http://savannah.nongnu.org/download/duplicity
 PY-DUPLICITY_SOURCE=duplicity-$(PY-DUPLICITY_VERSION).tar.gz
 PY-DUPLICITY_DIR=duplicity-$(PY-DUPLICITY_VERSION)
@@ -68,8 +68,8 @@ PY-DUPLICITY_LDFLAGS=
 PY-DUPLICITY_BUILD_DIR=$(BUILD_DIR)/py-duplicity
 PY-DUPLICITY_SOURCE_DIR=$(SOURCE_DIR)/py-duplicity
 
-PY24-DUPLICITY_IPK_DIR=$(BUILD_DIR)/py-duplicity-$(PY-DUPLICITY_VERSION)-ipk
-PY24-DUPLICITY_IPK=$(BUILD_DIR)/py-duplicity_$(PY-DUPLICITY_VERSION)-$(PY-DUPLICITY_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-DUPLICITY_IPK_DIR=$(BUILD_DIR)/py24-duplicity-$(PY-DUPLICITY_VERSION)-ipk
+PY24-DUPLICITY_IPK=$(BUILD_DIR)/py24-duplicity_$(PY-DUPLICITY_VERSION)-$(PY-DUPLICITY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-DUPLICITY_IPK_DIR=$(BUILD_DIR)/py25-duplicity-$(PY-DUPLICITY_VERSION)-ipk
 PY25-DUPLICITY_IPK=$(BUILD_DIR)/py25-duplicity_$(PY-DUPLICITY_VERSION)-$(PY-DUPLICITY_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -84,7 +84,8 @@ PY-DUPLICITY-DOC_IPK=$(BUILD_DIR)/py-duplicity-doc_$(PY-DUPLICITY_VERSION)-$(PY-
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DUPLICITY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-DUPLICITY_SITE)/$(PY-DUPLICITY_SOURCE)
+	$(WGET) -P $(@D) $(PY-DUPLICITY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -111,13 +112,13 @@ py-duplicity-source: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
 $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUPLICITY_PATCHES)
 	$(MAKE) py-setuptools-stage
 	$(MAKE) librsync-stage
-	rm -rf $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(PY-DUPLICITY_BUILD_DIR)
-	mkdir -p $(PY-DUPLICITY_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	$(PY-DUPLICITY_UNZIP) $(DL_DIR)/$(PY-DUPLICITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-DUPLICITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DUPLICITY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(PY-DUPLICITY_BUILD_DIR)/2.4
-	(cd $(PY-DUPLICITY_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -132,8 +133,8 @@ $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUP
 	# 2.5
 	$(PY-DUPLICITY_UNZIP) $(DL_DIR)/$(PY-DUPLICITY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-DUPLICITY_PATCHES) | patch -d $(BUILD_DIR)/$(PY-DUPLICITY_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(PY-DUPLICITY_BUILD_DIR)/2.5
-	(cd $(PY-DUPLICITY_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-DUPLICITY_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -145,7 +146,7 @@ $(PY-DUPLICITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DUPLICITY_SOURCE) $(PY-DUP
 		echo "install_scripts=/opt/bin"; \
 	    ) >> setup.cfg; \
 	)
-	touch $(PY-DUPLICITY_BUILD_DIR)/.configured
+	touch $@
 
 py-duplicity-unpack: $(PY-DUPLICITY_BUILD_DIR)/.configured
 
@@ -153,16 +154,16 @@ py-duplicity-unpack: $(PY-DUPLICITY_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(PY-DUPLICITY_BUILD_DIR)/.built: $(PY-DUPLICITY_BUILD_DIR)/.configured
-	rm -f $(PY-DUPLICITY_BUILD_DIR)/.built
-	(cd $(PY-DUPLICITY_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-DUPLICITY_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
-	touch $(PY-DUPLICITY_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -172,10 +173,10 @@ py-duplicity: $(PY-DUPLICITY_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-DUPLICITY_BUILD_DIR)/.staged: $(PY-DUPLICITY_BUILD_DIR)/.built
-	rm -f $(PY-DUPLICITY_BUILD_DIR)/.staged
-#	$(MAKE) -C $(PY-DUPLICITY_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-DUPLICITY_BUILD_DIR)/.staged
+#$(PY-DUPLICITY_BUILD_DIR)/.staged: $(PY-DUPLICITY_BUILD_DIR)/.built
+#	rm -f $@
+#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+#	touch $@
 
 py-duplicity-stage: $(PY-DUPLICITY_BUILD_DIR)/.staged
 
@@ -186,7 +187,7 @@ py-duplicity-stage: $(PY-DUPLICITY_BUILD_DIR)/.staged
 $(PY24-DUPLICITY_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-duplicity" >>$@
+	@echo "Package: py24-duplicity" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-DUPLICITY_PRIORITY)" >>$@
 	@echo "Section: $(PY-DUPLICITY_SECTION)" >>$@
@@ -239,11 +240,14 @@ $(PY-DUPLICITY-DOC_IPK_DIR)/CONTROL/control:
 #
 $(PY24-DUPLICITY_IPK) $(PY25-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLICITY_BUILD_DIR)/.built
 	# 2.4
-	rm -rf $(PY24-DUPLICITY_IPK_DIR) $(BUILD_DIR)/py-duplicity_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-duplicity_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-DUPLICITY_IPK_DIR) $(BUILD_DIR)/py24-duplicity_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DUPLICITY_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-DUPLICITY_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY24-DUPLICITY_IPK_DIR)/opt/lib/python2.4/site-packages/duplicity/*.so
+	for f in $(PY24-DUPLICITY_IPK_DIR)/opt/*bin/*; \
+		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-DUPLICITY_IPK_DIR)/CONTROL/control
 	rm -rf $(PY24-DUPLICITY_IPK_DIR)/opt/share
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-DUPLICITY_IPK_DIR)
@@ -253,8 +257,6 @@ $(PY24-DUPLICITY_IPK) $(PY25-DUPLICITY_IPK) $(PY-DUPLICITY-DOC_IPK): $(PY-DUPLIC
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-DUPLICITY_IPK_DIR) --prefix=/opt; \
 	)
 	$(STRIP_COMMAND) $(PY25-DUPLICITY_IPK_DIR)/opt/lib/python2.5/site-packages/duplicity/*.so
-	for f in $(PY25-DUPLICITY_IPK_DIR)/opt/*bin/*; \
-		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-DUPLICITY_IPK_DIR)/CONTROL/control
 	# doc
 	rm -rf $(PY-DUPLICITY-DOC_IPK_DIR) $(BUILD_DIR)/py-duplicity-doc_*_$(TARGET_ARCH).ipk
