@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	$(UCLIBC_BROKEN_PACKAGES) \
+	asterisk16-addons \
 	buildroot uclibc-opt \
 	aspell \
 	ecl \
