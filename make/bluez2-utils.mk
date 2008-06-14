@@ -37,7 +37,7 @@ BLUEZ2-UTILS_CONFLICTS=bluez-utils
 #
 # BLUEZ2-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ2-UTILS_IPK_VERSION=4
+BLUEZ2-UTILS_IPK_VERSION=5
 
 #
 # BLUEZ2-UTILS_CONFFILES should be a list of user-editable files
@@ -45,6 +45,7 @@ BLUEZ2-UTILS_IPK_VERSION=4
 BLUEZ2-UTILS_CONFFILES=\
 	/opt/etc/bluetooth/hcid.conf \
 	/opt/etc/bluetooth/rfcomm.conf \
+	/opt/etc/bluetooth/pin-helper \
 	/opt/etc/init.d/S75bluez-utils \
 	/opt/etc/default/bluetooth
 
@@ -52,7 +53,7 @@ BLUEZ2-UTILS_CONFFILES=\
 # BLUEZ2-UTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BLUEZ2-UTILS_PATCHES=$(BLUEZ2-UTILS_SOURCE_DIR)/configure.patch
+BLUEZ2-UTILS_PATCHES=$(BLUEZ2-UTILS_SOURCE_DIR)/hcid.h.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +109,7 @@ $(BLUEZ2-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) $(BLUEZ2
 	$(MAKE) bluez2-libs-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(BLUEZ2-UTILS_BUILD_DIR)
 	$(BLUEZ2-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ2-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BLUEZ2-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) -p1
+	cat $(BLUEZ2-UTILS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) -p0
 	mv $(BUILD_DIR)/$(BLUEZ2-UTILS_DIR) $(BLUEZ2-UTILS_BUILD_DIR)
 	(cd $(BLUEZ2-UTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -186,6 +187,7 @@ $(BLUEZ2-UTILS_IPK): $(BLUEZ2-UTILS_BUILD_DIR)/.built
 	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth
 	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/hcid.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/hcid.conf
 	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/rfcomm.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/rfcomm.conf
+	install -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/pin-helper $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/pin-helper
 	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default
 	install -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default/bluetooth
 	install -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d

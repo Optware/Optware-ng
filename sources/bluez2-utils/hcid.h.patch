@@ -1,0 +1,11 @@
+--- hcid/hcid.h~	2006-01-08 12:33:05.000000000 +1030
++++ hcid/hcid.h	2008-06-14 13:15:47.000000000 +0930
+@@ -35,7 +35,7 @@
+ #define HCID_CONFIG_FILE CONFIGDIR "/hcid.conf"
+ #define HCID_PIN_FILE    CONFIGDIR "/pin"
+ #define HCID_KEY_FILE    CONFIGDIR "/link_key"
+-#define HCID_PIN_HELPER  "/usr/bin/bluepin"
++#define HCID_PIN_HELPER  "/opt/etc/bluetooth/pin-helper"
+ 
+ enum {
+ 	HCID_SET_NAME,
