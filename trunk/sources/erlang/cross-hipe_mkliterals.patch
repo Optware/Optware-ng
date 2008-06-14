@@ -1,17 +1,3 @@
---- erlang/erts/emulator/Makefile.in.orig	2007-03-27 06:26:54.000000000 -0700
-+++ erlang/erts/emulator/Makefile.in	2007-05-24 13:58:45.000000000 -0700
-@@ -830,9 +830,10 @@
- 	$(CC) $(subst O2,O3, $(CFLAGS)) $(INCLUDES) -c $< -o $@
- 
- $(BINDIR)/hipe_mkliterals$(TF_MARKER):	$(OBJDIR)/hipe_mkliterals.o
--	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $<
-+	gcc $(CFLAGS) $(INCLUDES) -o $@ $<
- 
- $(OBJDIR)/hipe_mkliterals.o:	$(TTF_DIR)/hipe_x86_asm.h $(TTF_DIR)/hipe_ppc_asm.h
-+	gcc $(CFLAGS) $(INCLUDES) -o $@ -c hipe/hipe_mkliterals.c
- 
- $(TTF_DIR)/hipe_literals.h:	$(BINDIR)/hipe_mkliterals$(TF_MARKER)
- 	$(BINDIR)/hipe_mkliterals$(TF_MARKER) -c > $@
 --- otp_src_R12B-1/erts/emulator/hipe/hipe_process.h.orig	2008-02-05 05:37:55.000000000 -0800
 +++ otp_src_R12B-1/erts/emulator/hipe/hipe_process.h	2008-02-07 06:14:13.000000000 -0800
 @@ -17,11 +17,11 @@
@@ -57,3 +43,23 @@
      { "P_NSP_LIMIT", offsetof(struct process, hipe.nstack) },
      { "P_NRA", offsetof(struct process, hipe.nra) },
      { "P_NARITY", offsetof(struct process, hipe.narity) },
+--- erlang/erts/emulator/Makefile.in.orig	2008-06-10 05:47:19.000000000 -0700
++++ erlang/erts/emulator/Makefile.in	2008-06-14 13:57:14.000000000 -0700
+@@ -544,7 +544,7 @@
+ endif
+ 
+ $(OBJDIR)/%.o: beam/%.c
+-	$(CC) $(subst -O2, $(GEN_OPT_FLGS), $(CFLAGS)) $(INCLUDES) -c $< -o $@
++	$(CC) $(INCLUDES) $(subst -O2, $(GEN_OPT_FLGS), $(CFLAGS)) -c $< -o $@
+ 
+ else
+ 
+@@ -840,7 +840,7 @@
+ 	$(CC) $(subst O2,O3, $(CFLAGS)) $(INCLUDES) -c $< -o $@
+ 
+ $(BINDIR)/hipe_mkliterals$(TF_MARKER):	$(OBJDIR)/hipe_mkliterals.o
+-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $<
++	cp `type -p $(@F)` $@
+ 
+ $(OBJDIR)/hipe_mkliterals.o:	$(TTF_DIR)/hipe_x86_asm.h $(TTF_DIR)/hipe_ppc_asm.h
+ 

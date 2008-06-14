@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ERLANG_SITE=http://erlang.org/download
-ERLANG_UPSTREAM_VERSION=R12B-2
-ERLANG_VERSION=R12B2
+ERLANG_UPSTREAM_VERSION=R12B-3
+ERLANG_VERSION=R12B3
 ERLANG_SOURCE=otp_src_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_DIR=otp_src_$(ERLANG_UPSTREAM_VERSION)
 ERLANG_UNZIP=zcat
@@ -50,7 +50,7 @@ ERLANG_IPK_VERSION=1
 ERLANG_TARGET=$(strip $(shell echo $(GNU_TARGET_NAME) | sed '/^[^-]*-linux$$/s|-linux|-unknown-linux|' | sed 's/-linux$$/-linux-gnu/'))
 
 ERLANG_HIPE=$(strip \
-	$(if $(filter arm armeb powerpc, $(TARGET_ARCH)), --enable-hipe, \
+	$(if $(filter powerpc, $(TARGET_ARCH)), --enable-hipe, \
 	--disable-hipe))
 
 #
@@ -69,12 +69,13 @@ ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/lib-odbc-c_src-Makefile.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-ssl-c_src-Makefile.in.patch
 
+ERLANG_CROSS_PATCHES=$(ERLANG_PATCHES)
+
 ifeq ($(HOSTCC), $(TARGET_CC))
 ERLANG_HOST_BUILT=
 else
 ERLANG_HOST_BUILT=$(ERLANG_HOST_BUILD_DIR)/.built
-ERLANG_PATCHES+=\
-	$(ERLANG_SOURCE_DIR)/cross-hipe_mkliterals.patch
+ERLANG_CROSS_PATCHES += $(ERLANG_SOURCE_DIR)/cross-hipe_mkliterals.patch
 endif
 
 ifeq ($(ERLANG_WITH_SAE), yes)
@@ -181,6 +182,7 @@ $(ERLANG_HOST_BUILD_DIR)/.built: $(ERLANG_HOST_BUILD_DIR)/.configured
 	CPPFLAGS="-I$(@D)/termcap" \
 	LDFLAGS="-L$(@D)/termcap" \
 	$(MAKE) -C $(@D) $(ERLANG_MAKE_OPTION)
+	cp -fp $(@D)/bin/*/hipe_mkliterals $(@D)/bin/
 ifeq ($(ERLANG_WITH_SAE), yes)
 	# build host SAE (StandAlone Erlang)
 	ERL_TOP=$(@D) \
@@ -188,6 +190,8 @@ ifeq ($(ERLANG_WITH_SAE), yes)
 		$(MAKE) -C $(@D)/erts/boot/src
 endif
 	touch $@
+
+erlang-host: $(ERLANG_HOST_BUILD_DIR)/.built
 
 #
 # This target unpacks the source code in the build directory.
@@ -209,11 +213,11 @@ $(ERLANG_BUILD_DIR)/.configured: make/erlang.mk \
 		$(DL_DIR)/$(ERLANG_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_MAN_SOURCE) \
 		$(DL_DIR)/$(ERLANG_DOC_HTML_SOURCE) \
-		$(ERLANG_PATCHES)
+		$(ERLANG_CROSS_PATCHES)
 	$(MAKE) ncurses-stage openssl-stage unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(ERLANG_DIR) $(@D)
 	$(ERLANG_UNZIP) $(DL_DIR)/$(ERLANG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ERLANG_PATCHES) | patch -d $(BUILD_DIR)/$(ERLANG_DIR) -p1
+	cat $(ERLANG_CROSS_PATCHES) | patch -bd $(BUILD_DIR)/$(ERLANG_DIR) -p1
 	mv $(BUILD_DIR)/$(ERLANG_DIR) $(@D)
 ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(@D); \
@@ -252,6 +256,8 @@ else
 		ac_cv_func_mmap_fixed_mapped=yes \
 		ac_cv_sizeof_long_long=8 \
 		ac_cv_sizeof_off_t=8 \
+		ac_cv_func_getaddrinfo=no \
+		ac_cv_prog_RX_LD="$(TARGET_LD)" \
 		$(ERLANG_CONFIG_ENVS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -262,9 +268,8 @@ else
 		--with-odbc=$(STAGING_PREFIX) \
 		$(ERLANG_CONFIG_ARGS) \
 		--disable-nls \
-		; \
-	    sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s!$$(ERL_TOP).*!-$(@D)/bin/dialyzer --output_plt $$@ -pa $(@D)/lib/kernel/ebin -pa $(@D)/lib/mnesia/ebin -pa $(@D)/lib/stdlib/ebin -I$(@D)/lib/hipe/icode --command-line ../ebin!' $(@D)/lib/dialyzer/src/Makefile; \
 	)
+	sed -i -e '/$$(ERL_TOP)\/bin\/dialyzer/s!$$(ERL_TOP).*!-$(@D)/bin/dialyzer --output_plt $$@ -pa $(@D)/lib/kernel/ebin -pa $(@D)/lib/mnesia/ebin -pa $(@D)/lib/stdlib/ebin -I$(@D)/lib/hipe/icode --command-line ../ebin!' $(@D)/lib/dialyzer/src/Makefile
 endif
 	touch $@
 
