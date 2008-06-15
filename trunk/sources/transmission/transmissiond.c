@@ -637,7 +637,7 @@ int main( int argc, char ** argv )
                          uploadLimit,             /* upload speed limit */
                          downloadLimit >= 0,    /* use download speed limit? */
                          downloadLimit,           /* download speed limit */
-                         512,                     /* globalPeerLimit */
+                         TR_DEFAULT_GLOBAL_PEER_LIMIT,   /* globalPeerLimit */
                          verboseLevel + 1,        /* messageLevel */
                          1,           /* is message queueing enabled? */
                          TR_DEFAULT_BLOCKLIST_ENABLED,  /* use the blocklist? */
@@ -645,7 +645,13 @@ int main( int argc, char ** argv )
                          0, 			   /* TR_DEFAULT_RPC_ENABLED, */
                          TR_DEFAULT_RPC_PORT,
                          TR_DEFAULT_RPC_ACL,
-                         FALSE, "fnord", "potzrebie" );
+                         FALSE, "fnord", "potzrebie",
+			TR_DEFAULT_PROXY_ENABLED,
+			TR_DEFAULT_PROXY,
+			TR_DEFAULT_PROXY_TYPE,
+			TR_DEFAULT_PROXY_AUTH_ENABLED,
+			TR_DEFAULT_PROXY_USERNAME,
+			TR_DEFAULT_PROXY_PASSWORD  );
 
   /* Move  to writable directory to be able to save coredump there */
   if ( chdir( tr_getDefaultConfigDir())  < 0)
