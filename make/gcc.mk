@@ -199,7 +199,9 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
 	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
+ifneq (uclibc, $(LIBC_STYLE))
 	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++*
+endif
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/cpp
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/g++
