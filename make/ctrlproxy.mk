@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CTRLPROXY_SITE=http://www.ctrlproxy.org/releases
-CTRLPROXY_VERSION=3.0.6
+CTRLPROXY_VERSION=3.0.7
 CTRLPROXY_SOURCE=ctrlproxy-$(CTRLPROXY_VERSION).tar.gz
 CTRLPROXY_DIR=ctrlproxy-$(CTRLPROXY_VERSION)
 CTRLPROXY_UNZIP=zcat
