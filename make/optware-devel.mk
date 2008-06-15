@@ -42,10 +42,20 @@ ifneq (, $(filter crosstool-native, $(PACKAGES)))
 OPTWARE-DEVEL_DEPENDS+=, crosstool-native
 endif
 
+ifneq (, $(filter binutils, $(PACKAGES)))
+OPTWARE-DEVEL_DEPENDS+=, binutils
+endif
+ifneq (, $(filter libc-dev, $(PACKAGES)))
+OPTWARE-DEVEL_DEPENDS+=, libc-dev
+endif
+ifneq (, $(filter gcc, $(PACKAGES)))
+OPTWARE-DEVEL_DEPENDS+=, gcc
+endif
+
 OPTWARE-DEVEL_SUGGESTS=
 OPTWARE-DEVEL_CONFLICTS=
 
-OPTWARE-DEVEL_IPK_VERSION=7
+OPTWARE-DEVEL_IPK_VERSION=8
 
 OPTWARE-DEVEL_IPK_DIR=$(BUILD_DIR)/optware-devel-$(OPTWARE-DEVEL_VERSION)-ipk
 OPTWARE-DEVEL_IPK=$(BUILD_DIR)/optware-devel_$(OPTWARE-DEVEL_VERSION)-$(OPTWARE-DEVEL_IPK_VERSION)_$(TARGET_ARCH).ipk
