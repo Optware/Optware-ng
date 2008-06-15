@@ -40,7 +40,7 @@ IPKG-UTILS_DIR:=$(TOOL_BUILD_DIR)/ipkg-utils-$(IPKG-UTILS_VERSION)
 IPKG-UTILS_PATCHES=$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_buildpackage.patch \
 		$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_build_clean.patch \
 		$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_tar_invocation.patch
-ifeq ($(HOST_MACHINE),armv5b)
+ifeq ($(HOSTCC), $(TARGET_CC))
 IPKG-UTILS_PATCHES += $(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_native_shell.patch
 endif
 
@@ -73,8 +73,8 @@ IPKG-UTILS_IPK=$(BUILD_DIR)/ipkg-utils_$(IPKG-UTILS_VERSION)-$(IPKG-UTILS_IPK_VE
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(IPKG-UTILS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(IPKG-UTILS_SITE)/$(IPKG-UTILS_SOURCE)
-
+	$(WGET) -P $(@D) $(IPKG-UTILS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -89,12 +89,13 @@ ipkg-utils-source: $(DL_DIR)/$(IPKG-UTILS_SOURCE) $(IPKG-UTILS_PATCHES)
 # to change the commands here.  Patches to the source code are also
 # applied in this target as required.
 #
-$(IPKG-UTILS_DIR)/.unpacked: $(DL_DIR)/$(IPKG-UTILS_SOURCE)
+$(IPKG-UTILS_DIR)/.unpacked: $(DL_DIR)/$(IPKG-UTILS_SOURCE) make/ipkg-utils.mk
+	rm -f $@
 	mkdir -p $(TOOL_BUILD_DIR)
 	mkdir -p $(DL_DIR)
 	zcat $(DL_DIR)/$(IPKG-UTILS_SOURCE) | tar -C $(TOOL_BUILD_DIR) -xvf -
 	cd $(SOURCE_DIR); cat $(IPKG-UTILS_PATCHES) | patch -p1 -d $(IPKG-UTILS_DIR)
-	touch $(IPKG-UTILS_DIR)/.unpacked
+	touch $@
 
 ipkg-utils-unpack: $(IPKG-UTILS_BUILD_DIR)/.unpacked
 
