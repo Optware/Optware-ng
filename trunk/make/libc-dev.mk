@@ -139,6 +139,7 @@ ifneq (uclibc, $(LIBC_STYLE))
 	for f in libc_nonshared.a libpthread_nonshared.a; \
 	do rsync -l $(TARGET_USRLIBDIR)/$${f} $(LIBC-DEV_IPK_DIR)/usr/lib/; done
 endif
+	rm -rf $(LIBC-DEV_IPK_DIR)/opt/include/c++
 	$(MAKE) $(LIBC-DEV_IPK_DIR)/CONTROL/control
 	echo $(LIBC-DEV_CONFFILES) | sed -e 's/ /\n/g' > $(LIBC-DEV_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBC-DEV_IPK_DIR)
