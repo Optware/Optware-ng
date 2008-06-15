@@ -39,32 +39,14 @@ GCC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GCC_DESCRIPTION=The GNU Compiler Collection.
 GCC_SECTION=base
 GCC_PRIORITY=optional
-GCC_DEPENDS=binutils, libnsl
+GCC_DEPENDS=binutils, libc-dev
 GCC_SUGGESTS=
 GCC_CONFLICTS=
-
-ifdef LIBNSL_VERSION
-GCC_LIBC_VERSION=$(LIBNSL_VERSION)
-else
-GCC_LIBC_VERSION ?= 0.9.28
-endif
-
-ifdef TARGET_USRLIBDIR
-GCC_LIBC_USRLIBDIR=$(TARGET_USRLIBDIR)
-else
-GCC_LIBC_USRLIBDIR=$(TARGET_LIBDIR)
-endif
-
-ifdef TARGET_LIBC_LIBDIR
-GCC_LIBC_LIBDIR=$(TARGET_LIBC_LIBDIR)
-else
-GCC_LIBC_LIBDIR=$(TARGET_LIBDIR)
-endif
 
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION=2
+GCC_IPK_VERSION=3
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -217,31 +199,11 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
 	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
+	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++*
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/cpp
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcc
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/g++
 	$(STRIP_COMMAND) $(GCC_IPK_DIR)/opt/bin/gcov
-	cp -a $(TARGET_INCDIR) $(GCC_IPK_DIR)/opt/
-	# libc-dev
-	rsync -l $(GCC_LIBC_USRLIBDIR)/*crt*.o $(GCC_IPK_DIR)/opt/lib/
-	rsync -l \
-		$(if $(filter uclibc, $(LIBC_STYLE)),$(TARGET_LIBDIR)/libuClibc-$(GCC_LIBC_VERSION).so,) \
-		$(GCC_LIBC_USRLIBDIR)/libc.so* \
-		$(GCC_IPK_DIR)/opt/lib/
-	for f in libcrypt libdl libm libpthread libresolv librt libutil \
-		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
-		; \
-	do rsync -l \
-		$(GCC_LIBC_LIBDIR)/$${f}-$(GCC_LIBC_VERSION).so \
-		$(GCC_LIBC_LIBDIR)/$${f}.so* \
-		$(GCC_IPK_DIR)/opt/lib/; \
-	done
-ifneq (uclibc, $(LIBC_STYLE))
-	install -d $(GCC_IPK_DIR)/usr/lib/
-	for f in libc_nonshared.a libpthread_nonshared.a; \
-	do rsync -l $(TARGET_USRLIBDIR)/$${f} $(GCC_IPK_DIR)/usr/lib/; done
-	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++*
-endif
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCC_IPK_DIR)
