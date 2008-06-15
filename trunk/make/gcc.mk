@@ -26,6 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+ifneq (, $(filter gcc, $(PACKAGES)))
+
 ifdef NATIVE_GCC_VERSION
 GCC_VERSION=$(NATIVE_GCC_VERSION)
 else
@@ -234,3 +236,5 @@ gcc-dirclean:
 #
 gcc-check: $(GCC_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GCC_IPK)
+
+endif
