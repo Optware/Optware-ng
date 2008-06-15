@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	hpmv2-optware-bootstrap \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
+	libc-dev \
 
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \

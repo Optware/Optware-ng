@@ -2,8 +2,7 @@ SPECIFIC_PACKAGES = \
 	$(UCLIBC_SPECIFIC_PACKAGES) \
 	$(PERL_PACKAGES) \
 	$(PACKAGES_REQUIRE_LINUX26) \
-	binutils \
-	gcc \
+	binutils gcc libc-dev \
 	libiconv \
 
 BROKEN_PACKAGES = \
