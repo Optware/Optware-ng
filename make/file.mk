@@ -86,6 +86,7 @@ $(DL_DIR)/$(FILE_SOURCE):
 #
 file-source: $(DL_DIR)/$(FILE_SOURCE) $(FILE_PATCHES)
 
+ifneq ($(HOSTCC), $(TARGET_CC))
 $(FILE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(FILE_SOURCE) make/file.mk
 	$(MAKE) zlib-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
@@ -100,6 +101,7 @@ $(FILE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(FILE_SOURCE) make/fi
 	)
 	$(MAKE) -C $(@D)
 	touch $@
+endif
 
 #
 # This target unpacks the source code in the build directory.
