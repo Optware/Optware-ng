@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APR_UTIL_SITE=http://www.apache.org/dist/apr
-APR_UTIL_VERSION=1.2.12
+APR_UTIL_VERSION=1.3.0
 APR_UTIL_SOURCE=apr-util-$(APR_UTIL_VERSION).tar.bz2
 APR_UTIL_DIR=apr-util-$(APR_UTIL_VERSION)
 APR_UTIL_UNZIP=bzcat
@@ -154,6 +154,7 @@ endif
 		--with-apr=$(STAGING_DIR)/opt \
 		--with-gdbm=$(STAGING_DIR)/opt \
 		--with-expat=$(STAGING_DIR)/opt \
+		--without-freetds \
 		--without-mysql \
 		--without-pgsql \
 		--without-sqlite2 \
@@ -175,6 +176,7 @@ apr-util-unpack: $(APR_UTIL_BUILD_DIR)/.configured
 #
 $(APR_UTIL_BUILD_DIR)/.built: $(APR_UTIL_BUILD_DIR)/.configured
 	rm -f $@
+	rm -f $(STAGING_INCLUDE_DIR)/apache2/apu*.h
 	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
@@ -189,7 +191,6 @@ apr-util: $(APR_UTIL_BUILD_DIR)/.built
 #
 $(APR_UTIL_BUILD_DIR)/.staged: $(APR_UTIL_BUILD_DIR)/.built
 	rm -f $@
-	rm -f $(STAGING_INCLUDE_DIR)/apache2/apu*.h
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) install libdir=$(STAGING_PREFIX)/lib
 	rm -f $(STAGING_PREFIX)/lib/libaprutil.la
 	sed -i -e 's/location=build/location=installed/' $(STAGING_PREFIX)/bin/apu-1-config
@@ -216,7 +217,8 @@ $(APR_UTIL_IPK): $(APR_UTIL_BUILD_DIR)/.staged
 	$(MAKE) -C $(APR_UTIL_BUILD_DIR) DESTDIR=$(APR_UTIL_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
 	rm -rf $(APR_UTIL_IPK_DIR)/delete-me
 	rm -f $(APR_UTIL_IPK_DIR)/opt/lib/*.la
-	$(TARGET_STRIP) $(APR_UTIL_IPK_DIR)/opt/lib/*.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(APR_UTIL_IPK_DIR)/opt/lib/*.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(APR_UTIL_IPK_DIR)/opt/lib/apr-util*/*.so
 	$(MAKE) $(APR_UTIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APR_UTIL_IPK_DIR)
 
