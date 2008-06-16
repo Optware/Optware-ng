@@ -33,7 +33,7 @@ LIBC-DEV_DEPENDS=libnsl
 LIBC-DEV_SUGGESTS=
 LIBC-DEV_CONFLICTS=
 
-LIBC-DEV_IPK_VERSION=1
+LIBC-DEV_IPK_VERSION=2
 
 ifdef LIBNSL_VERSION
 LIBC-DEV_VERSION=$(LIBNSL_VERSION)
@@ -129,10 +129,15 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	for f in libcrypt libdl libm libpthread libresolv librt libutil \
 		$(if $(filter uclibc, $(LIBC_STYLE)), ld-uClibc, ) \
 		; \
-	do rsync -l \
+	do \
+	    rsync -l \
 		$(LIBC-DEV_LIBDIR)/$${f}-$(LIBC-DEV_VERSION).so \
 		$(LIBC-DEV_LIBDIR)/$${f}.so* \
 		$(LIBC-DEV_IPK_DIR)/opt/lib/; \
+	    cd $(LIBC-DEV_IPK_DIR)/opt/lib; \
+	    if test $${f} != ld-uClibc -a ! -e $${f}.so; then \
+		ln -sf $${f}.so.* $${f}.so; \
+	    fi; \
 	done
 ifneq (uclibc, $(LIBC_STYLE))
 	install -d $(LIBC-DEV_IPK_DIR)/usr/lib/
