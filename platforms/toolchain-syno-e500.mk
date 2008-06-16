@@ -22,23 +22,11 @@ TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 TOOLCHAIN_BINARY_SITE=http://download.synology.com/toolchain
 TOOLCHAIN_BINARY=gcc343_glibc234_854x.tar.gz
 
-TOOLCHAIN_KERNEL_SITE=ftp://ftp.kernel.org/pub/linux/kernel/v2.6
-TOOLCHAIN_KERNEL_VERSION=2.6.15
-TOOLCHAIN_KERNEL_SOURCE=linux-$(TOOLCHAIN_KERNEL_VERSION).tar.bz2
-
 toolchain: $(TARGET_CROSS_TOP)/.unpacked
 
 $(DL_DIR)/$(TOOLCHAIN_BINARY):
-	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_BINARY_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
-
-$(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE):
-	$(WGET) -P $(DL_DIR) $(TOOLCHAIN_KERNEL_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
-
-$(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION)/include/linux/version.h: $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE)
-	tar -xj -C $(BASE_DIR)/toolchain -f $(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE)
-	$(MAKE) -C $(BASE_DIR)/toolchain/linux-$(TOOLCHAIN_KERNEL_VERSION) include/linux/version.h
+	$(WGET) -P $(@D) $(TOOLCHAIN_BINARY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(TARGET_CROSS_TOP)/.unpacked: \
 $(DL_DIR)/$(TOOLCHAIN_BINARY) \
