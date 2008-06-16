@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OBEXFTP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/openobex
-OBEXFTP_VERSION=0.20
-OBEXFTP_SOURCE=obexftp-$(OBEXFTP_VERSION).tar.gz
+OBEXFTP_VERSION=0.22
+OBEXFTP_SOURCE=obexftp-$(OBEXFTP_VERSION).tar.bz2
 OBEXFTP_DIR=obexftp-$(OBEXFTP_VERSION)
-OBEXFTP_UNZIP=zcat
+OBEXFTP_UNZIP=bzcat
 OBEXFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OBEXFTP_DESCRIPTION=Transfer files to/from any OBEX enabled device (most likely mobiles).
 OBEXFTP_SECTION=net
@@ -39,7 +39,7 @@ OBEXFTP_CONFLICTS=
 #
 # OBEXFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-OBEXFTP_IPK_VERSION=2
+OBEXFTP_IPK_VERSION=1
 
 #
 # OBEXFTP_CONFFILES should be a list of user-editable files
@@ -82,8 +82,8 @@ OBEXFTP_IPK=$(BUILD_DIR)/obexftp_$(OBEXFTP_VERSION)-$(OBEXFTP_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(OBEXFTP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(OBEXFTP_SITE)/$(OBEXFTP_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(OBEXFTP_SOURCE)
+	$(WGET) -P $(@D) $(OBEXFTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -118,16 +118,16 @@ $(OBEXFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(OBEXFTP_DIR) $(OBEXFTP_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OBEXFTP_DIR) $(@D)
 	$(OBEXFTP_UNZIP) $(DL_DIR)/$(OBEXFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OBEXFTP_PATCHES)" ; \
 		then cat $(OBEXFTP_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(OBEXFTP_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(OBEXFTP_DIR)" != "$(OBEXFTP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(OBEXFTP_DIR) $(OBEXFTP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(OBEXFTP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(OBEXFTP_DIR) $(@D) ; \
 	fi
-	(cd $(OBEXFTP_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OBEXFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OBEXFTP_LDFLAGS)" \
@@ -145,8 +145,8 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/^pkgdatadir/anoinstdir=\$$(pkgdatadir)' $(OBEXFTP_BUILD_DIR)/doc/Makefile
-	$(PATCH_LIBTOOL) $(OBEXFTP_BUILD_DIR)/libtool
+	sed -i -e '/^pkgdatadir/anoinstdir=\$$(pkgdatadir)' $(@D)/doc/Makefile
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 obexftp-unpack: $(OBEXFTP_BUILD_DIR)/.configured
@@ -156,7 +156,7 @@ obexftp-unpack: $(OBEXFTP_BUILD_DIR)/.configured
 #
 $(OBEXFTP_BUILD_DIR)/.built: $(OBEXFTP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(OBEXFTP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -169,7 +169,7 @@ obexftp: $(OBEXFTP_BUILD_DIR)/.built
 #
 $(OBEXFTP_BUILD_DIR)/.staged: $(OBEXFTP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(OBEXFTP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 obexftp-stage: $(OBEXFTP_BUILD_DIR)/.staged
