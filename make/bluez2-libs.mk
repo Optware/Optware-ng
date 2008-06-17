@@ -75,7 +75,8 @@ BLUEZ2-LIBS_IPK=$(BUILD_DIR)/bluez2-libs_$(BLUEZ2-LIBS_VERSION)-$(BLUEZ2-LIBS_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(BLUEZ2-LIBS_SITE)/$(BLUEZ2-LIBS_SOURCE)
+	$(WGET) -P $(@D) $(BLUEZ2-LIBS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -101,11 +102,11 @@ bluez2-libs-source: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-LIBS_PATCHES)
 #
 $(BLUEZ2-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-LIBS_PATCHES)
 	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(BLUEZ2-LIBS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(@D)
 	$(BLUEZ2-LIBS_UNZIP) $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(BLUEZ2-LIBS_PATCHES) | patch -d $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) -p1
-	mv $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(BLUEZ2-LIBS_BUILD_DIR)
-	(cd $(BLUEZ2-LIBS_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(BLUEZ2-LIBS_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BLUEZ2-LIBS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BLUEZ2-LIBS_LDFLAGS)" \
@@ -117,8 +118,8 @@ $(BLUEZ2-LIBS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ2-LIBS_SOURCE) $(BLUEZ2-L
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(BLUEZ2-LIBS_BUILD_DIR)/libtool
-	touch $(BLUEZ2-LIBS_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 bluez2-libs-unpack: $(BLUEZ2-LIBS_BUILD_DIR)/.configured
 
@@ -126,9 +127,9 @@ bluez2-libs-unpack: $(BLUEZ2-LIBS_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BLUEZ2-LIBS_BUILD_DIR)/.built: $(BLUEZ2-LIBS_BUILD_DIR)/.configured
-	rm -f $(BLUEZ2-LIBS_BUILD_DIR)/.built
-	$(MAKE) -C $(BLUEZ2-LIBS_BUILD_DIR)
-	touch $(BLUEZ2-LIBS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -139,10 +140,11 @@ bluez2-libs: $(BLUEZ2-LIBS_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BLUEZ2-LIBS_BUILD_DIR)/.staged: $(BLUEZ2-LIBS_BUILD_DIR)/.built
-	rm -f $(BLUEZ2-LIBS_BUILD_DIR)/.staged
-	$(MAKE) -C $(BLUEZ2-LIBS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
 	rm -f $(STAGING_LIB_DIR)/libbluetooth.la
-	touch $(BLUEZ2-LIBS_BUILD_DIR)/.staged
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/bluez.pc
+	touch $@
 
 bluez2-libs-stage: $(BLUEZ2-LIBS_BUILD_DIR)/.staged
 
@@ -151,7 +153,7 @@ bluez2-libs-stage: $(BLUEZ2-LIBS_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/bluez2-libs
 #
 $(BLUEZ2-LIBS_IPK_DIR)/CONTROL/control:
-	@install -d $(BLUEZ2-LIBS_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: bluez2-libs" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
