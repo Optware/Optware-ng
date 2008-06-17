@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 WXBASE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/wxwindows
-WXBASE_VERSION=2.8.0
+WXBASE_VERSION=2.8.7
 WXBASE_SOURCE=wxWidgets-$(WXBASE_VERSION).tar.bz2
 WXBASE_DIR=wxWidgets-$(WXBASE_VERSION)
 WXBASE_UNZIP=bzcat
@@ -34,7 +34,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=5
+WXBASE_IPK_VERSION=1
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -76,7 +76,8 @@ WXBASE_IPK=$(BUILD_DIR)/wxbase_$(WXBASE_VERSION)-$(WXBASE_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WXBASE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WXBASE_SITE)/$(WXBASE_SOURCE)
+	$(WGET) -P $(@D) $(WXBASE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -109,10 +110,10 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		then cat $(WXBASE_PATCHES) | \
 		patch -d $(BUILD_DIR)/$(WXBASE_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(WXBASE_DIR)" != "$(WXBASE_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(WXBASE_DIR) $(WXBASE_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(WXBASE_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(WXBASE_DIR) $(@D) ; \
 	fi
-	(cd $(WXBASE_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WXBASE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WXBASE_LDFLAGS)" \
@@ -133,7 +134,7 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		--disable-sdltest \
 		--enable-unicode \
 		)
-	touch $(WXBASE_BUILD_DIR)/.configured
+	touch $@
 
 wxbase-unpack: $(WXBASE_BUILD_DIR)/.configured
 
@@ -141,9 +142,9 @@ wxbase-unpack: $(WXBASE_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(WXBASE_BUILD_DIR)/.built: $(WXBASE_BUILD_DIR)/.configured
-	rm -f $(WXBASE_BUILD_DIR)/.built
-	$(MAKE) -C $(WXBASE_BUILD_DIR)
-	touch $(WXBASE_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -154,14 +155,14 @@ wxbase: $(WXBASE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(WXBASE_BUILD_DIR)/.staged: $(WXBASE_BUILD_DIR)/.built
-	rm -f $(WXBASE_BUILD_DIR)/.staged
+	rm -f $@
 	rm -rf $(STAGING_INCLUDE_DIR)/wx $(STAGING_INCLUDE_DIR)/wx-*
-	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	install -d $(STAGING_INCLUDE_DIR)/wx-2.8
 	cp $(STAGING_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-base-unicode*/wx/setup.h $(STAGING_INCLUDE_DIR)/wx-2.8/wx/
 	cd $(STAGING_PREFIX)/bin; rm -rf wx-config; \
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)*-unicode-release-* wx-config
-	touch $(WXBASE_BUILD_DIR)/.staged
+	touch $@
 
 
 
@@ -172,7 +173,7 @@ wxbase-stage: $(WXBASE_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/wxbase
 #
 $(WXBASE_IPK_DIR)/CONTROL/control:
-	@install -d $(WXBASE_IPK_DIR)/CONTROL
+	@install -d $(@D)
 	@rm -f $@
 	@echo "Package: wxbase" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -232,4 +233,3 @@ wxbase-dirclean:
 #
 wxbase-check: $(WXBASE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(WXBASE_IPK)
-
