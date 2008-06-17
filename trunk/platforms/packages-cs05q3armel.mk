@@ -10,6 +10,7 @@ SPECIFIC_PACKAGES = \
 # Packages that do not work for mssii.
 BROKEN_PACKAGES = \
 	$(PACKAGES_ONLY_WORK_ON_LINUX24) \
+	amule \
 	asterisk14-chan-capi libcapi20 \
 	iptraf \
 	ldconfig \

@@ -2,6 +2,7 @@
 # moc - conflicting types for '__glibc_strerror_r'
 UCLIBC_BROKEN_PACKAGES = \
 	 9base \
+	 amule \
 	 bzflag \
 	 cairo \
 	 fcgi fish \
