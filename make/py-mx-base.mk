@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-MX-BASE_SITE=http://www.egenix.com/files/python
-PY-MX-BASE_VERSION=3.0.0
+PY-MX-BASE_VERSION=3.1.0
 PY-MX-BASE_SOURCE=egenix-mx-base-$(PY-MX-BASE_VERSION).tar.gz
 PY-MX-BASE_DIR=egenix-mx-base-$(PY-MX-BASE_VERSION)
 PY-MX-BASE_UNZIP=zcat
@@ -53,7 +53,8 @@ PY-MX-BASE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PY-MX-BASE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.4
+PY24-MX-BASE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.4
+PY25-MX-BASE_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.5
 PY-MX-BASE_LDFLAGS=
 
 #
@@ -68,8 +69,8 @@ PY-MX-BASE_LDFLAGS=
 PY-MX-BASE_BUILD_DIR=$(BUILD_DIR)/py-mx-base
 PY-MX-BASE_SOURCE_DIR=$(SOURCE_DIR)/py-mx-base
 
-PY24-MX-BASE_IPK_DIR=$(BUILD_DIR)/py-mx-base-$(PY-MX-BASE_VERSION)-ipk
-PY24-MX-BASE_IPK=$(BUILD_DIR)/py-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-MX-BASE_IPK_DIR=$(BUILD_DIR)/py24-mx-base-$(PY-MX-BASE_VERSION)-ipk
+PY24-MX-BASE_IPK=$(BUILD_DIR)/py24-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-MX-BASE_IPK_DIR=$(BUILD_DIR)/py25-mx-base-$(PY-MX-BASE_VERSION)-ipk
 PY25-MX-BASE_IPK=$(BUILD_DIR)/py25-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -81,7 +82,8 @@ PY25-MX-BASE_IPK=$(BUILD_DIR)/py25-mx-base_$(PY-MX-BASE_VERSION)-$(PY-MX-BASE_IP
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MX-BASE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-MX-BASE_SITE)/$(PY-MX-BASE_SOURCE)
+	$(WGET) -P $(@D) $(PY-MX-BASE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -107,14 +109,14 @@ py-mx-base-source: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES)
 #
 $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE_PATCHES)
 	$(MAKE) python-stage
-	rm -rf $(PY-MX-BASE_BUILD_DIR)
-	mkdir -p $(PY-MX-BASE_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR)/2.4
-	(cd $(PY-MX-BASE_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
             ( \
                 echo "[build_ext]"; \
                 echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
@@ -128,8 +130,8 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(PY-MX-BASE_PATCHES) | patch -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(PY-MX-BASE_BUILD_DIR)/2.5
-	(cd $(PY-MX-BASE_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
             ( \
                 echo "[build_ext]"; \
                 echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
@@ -139,7 +141,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
                 echo "executable=/opt/bin/python2.5" \
             ) >> setup.cfg; \
         )
-	touch $(PY-MX-BASE_BUILD_DIR)/.configured
+	touch $@
 
 py-mx-base-unpack: $(PY-MX-BASE_BUILD_DIR)/.configured
 
@@ -148,18 +150,18 @@ py-mx-base-unpack: $(PY-MX-BASE_BUILD_DIR)/.configured
             #$(BUILD_DIR)/python/buildpython/python setup.py build; \
 #
 $(PY-MX-BASE_BUILD_DIR)/.built: $(PY-MX-BASE_BUILD_DIR)/.configured
-	rm -f $(PY-MX-BASE_BUILD_DIR)/.built
-	(cd $(PY-MX-BASE_BUILD_DIR)/2.4; \
-	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY-MX-BASE_CPPFLAGS)` \
+	rm -f $@
+	(cd $(@D)/2.4; \
+	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY24-MX-BASE_CPPFLAGS)` \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
         )
-	(cd $(PY-MX-BASE_BUILD_DIR)/2.5; \
-	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY-MX-BASE_CPPFLAGS)` \
+	(cd $(@D)/2.5; \
+	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY25-MX-BASE_CPPFLAGS)` \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
         )
-	touch $(PY-MX-BASE_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -170,16 +172,16 @@ py-mx-base: $(PY-MX-BASE_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(PY-MX-BASE_BUILD_DIR)/.staged: $(PY-MX-BASE_BUILD_DIR)/.built
-	rm -f $(PY-MX-BASE_BUILD_DIR)/.staged
-	(cd $(PY-MX-BASE_BUILD_DIR)/2.4; \
+	rm -f $@
+	(cd $(@D)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
         )
-	(cd $(PY-MX-BASE_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt; \
         )
-	touch $(PY-MX-BASE_BUILD_DIR)/.staged
+	touch $@
 
 py-mx-base-stage: $(PY-MX-BASE_BUILD_DIR)/.staged
 
@@ -190,7 +192,7 @@ py-mx-base-stage: $(PY-MX-BASE_BUILD_DIR)/.staged
 $(PY24-MX-BASE_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-mx-base" >>$@
+	@echo "Package: py24-mx-base" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MX-BASE_PRIORITY)" >>$@
 	@echo "Section: $(PY-MX-BASE_SECTION)" >>$@
@@ -228,7 +230,8 @@ $(PY25-MX-BASE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY24-MX-BASE_IPK): $(PY-MX-BASE_BUILD_DIR)/.built
-	rm -rf $(PY24-MX-BASE_IPK_DIR) $(BUILD_DIR)/py-mx-base_*_$(TARGET_ARCH).ipk
+	rm -rf $(BUILD_DIR)/py-mx-base_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY24-MX-BASE_IPK_DIR) $(BUILD_DIR)/py24-mx-base_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MX-BASE_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-MX-BASE_IPK_DIR) --prefix=/opt; \
