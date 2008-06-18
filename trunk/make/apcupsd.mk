@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 APCUPSD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/apcupsd
-APCUPSD_VERSION=3.14.3
+APCUPSD_VERSION=3.14.4
 APCUPSD_SOURCE=apcupsd-$(APCUPSD_VERSION).tar.gz
 APCUPSD_DIR=apcupsd-$(APCUPSD_VERSION)
 APCUPSD_UNZIP=zcat
@@ -77,8 +77,8 @@ APCUPSD_IPK=$(BUILD_DIR)/apcupsd_$(APCUPSD_VERSION)-$(APCUPSD_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(APCUPSD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(APCUPSD_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(APCUPSD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
