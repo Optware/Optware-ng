@@ -30,14 +30,14 @@ PY-PYGRESQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PYGRESQL_DESCRIPTION=Python module that interfaces to a PostgreSQL database.
 PY-PYGRESQL_SECTION=misc
 PY-PYGRESQL_PRIORITY=optional
-PY24-PYGRESQL_DEPENDS=python24, py-mx-base
+PY24-PYGRESQL_DEPENDS=python24, py24-mx-base
 PY25-PYGRESQL_DEPENDS=python25, py25-mx-base
 PY-PYGRESQL_CONFLICTS=
 
 #
 # PY-PYGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYGRESQL_IPK_VERSION=2
+PY-PYGRESQL_IPK_VERSION=3
 
 #
 # PY-PYGRESQL_CONFFILES should be a list of user-editable files
@@ -68,8 +68,8 @@ PY-PYGRESQL_LDFLAGS=
 PY-PYGRESQL_BUILD_DIR=$(BUILD_DIR)/py-pygresql
 PY-PYGRESQL_SOURCE_DIR=$(SOURCE_DIR)/py-pygresql
 
-PY24-PYGRESQL_IPK_DIR=$(BUILD_DIR)/py-pygresql-$(PY-PYGRESQL_VERSION)-ipk
-PY24-PYGRESQL_IPK=$(BUILD_DIR)/py-pygresql_$(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY24-PYGRESQL_IPK_DIR=$(BUILD_DIR)/py24-pygresql-$(PY-PYGRESQL_VERSION)-ipk
+PY24-PYGRESQL_IPK=$(BUILD_DIR)/py24-pygresql_$(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY25-PYGRESQL_IPK_DIR=$(BUILD_DIR)/py25-pygresql-$(PY-PYGRESQL_VERSION)-ipk
 PY25-PYGRESQL_IPK=$(BUILD_DIR)/py25-pygresql_$(PY-PYGRESQL_VERSION)-$(PY-PYGRESQL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -107,14 +107,14 @@ py-pygresql-source: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRESQL_PATCHES)
 #
 $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRESQL_PATCHES)
 	$(MAKE) postgresql-stage python-stage py-mx-base-stage
-	rm -rf $(PY-PYGRESQL_BUILD_DIR)
-	mkdir -p $(PY-PYGRESQL_BUILD_DIR)
+	rm -rf $(@D)
+	mkdir -p $(@D)
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR)
 	$(PY-PYGRESQL_UNZIP) $(DL_DIR)/$(PY-PYGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-PYGRESQL_PATCHES) | patch -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)/2.4
-	(cd $(PY-PYGRESQL_BUILD_DIR)/2.4; \
+	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(@D)/2.4
+	(cd $(@D)/2.4; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4:$(STAGING_INCLUDE_DIR)/postgresql:$(STAGING_INCLUDE_DIR)/postgresql/server"; \
@@ -130,8 +130,8 @@ $(PY-PYGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PYGRESQL_SOURCE) $(PY-PYGRE
 	rm -rf $(BUILD_DIR)/$(PY-PYGRESQL_DIR)
 	$(PY-PYGRESQL_UNZIP) $(DL_DIR)/$(PY-PYGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-PYGRESQL_PATCHES) | patch -b -d $(BUILD_DIR)/$(PY-PYGRESQL_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(PY-PYGRESQL_BUILD_DIR)/2.5
-	(cd $(PY-PYGRESQL_BUILD_DIR)/2.5; \
+	mv $(BUILD_DIR)/$(PY-PYGRESQL_DIR) $(@D)/2.5
+	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5:$(STAGING_INCLUDE_DIR)/postgresql:$(STAGING_INCLUDE_DIR)/postgresql/server"; \
@@ -152,11 +152,11 @@ py-pygresql-unpack: $(PY-PYGRESQL_BUILD_DIR)/.configured
 #
 $(PY-PYGRESQL_BUILD_DIR)/.built: $(PY-PYGRESQL_BUILD_DIR)/.configured
 	rm -f $@
-	(cd $(PY-PYGRESQL_BUILD_DIR)/2.4; \
+	(cd $(@D)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
 	)
-	(cd $(PY-PYGRESQL_BUILD_DIR)/2.5; \
+	(cd $(@D)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
 	)
@@ -170,12 +170,12 @@ py-pygresql: $(PY-PYGRESQL_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(PY-PYGRESQL_BUILD_DIR)/.staged: $(PY-PYGRESQL_BUILD_DIR)/.built
-	rm -f $(PY-PYGRESQL_BUILD_DIR)/.staged
+#$(PY-PYGRESQL_BUILD_DIR)/.staged: $(PY-PYGRESQL_BUILD_DIR)/.built
+#	rm -f $(PY-PYGRESQL_BUILD_DIR)/.staged
 #	$(MAKE) -C $(PY-PYGRESQL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(PY-PYGRESQL_BUILD_DIR)/.staged
-
-py-pygresql-stage: $(PY-PYGRESQL_BUILD_DIR)/.staged
+#	touch $(PY-PYGRESQL_BUILD_DIR)/.staged
+#
+#py-pygresql-stage: $(PY-PYGRESQL_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -184,7 +184,7 @@ py-pygresql-stage: $(PY-PYGRESQL_BUILD_DIR)/.staged
 $(PY24-PYGRESQL_IPK_DIR)/CONTROL/control:
 	@install -d $(@D)
 	@rm -f $@
-	@echo "Package: py-pygresql" >>$@
+	@echo "Package: py24-pygresql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-PYGRESQL_PRIORITY)" >>$@
 	@echo "Section: $(PY-PYGRESQL_SECTION)" >>$@
