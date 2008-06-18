@@ -37,7 +37,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=1
+AMULE_IPK_VERSION=2
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -47,7 +47,7 @@ AMULE_IPK_VERSION=1
 # AMULE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-AMULE_PATCHES=
+AMULE_PATCHES=$(AMULE_SOURCE_DIR)/regex-check.patch
 
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_PATCHES+=$(AMULE_SOURCE_DIR)/cmath.patch
@@ -114,7 +114,6 @@ AMULE_BUILD_DIR=$(BUILD_DIR)/amule
 AMULE_SOURCE_DIR=$(SOURCE_DIR)/amule
 AMULE_IPK_DIR=$(BUILD_DIR)/amule-$(AMULE_VERSION)-ipk
 AMULE_IPK=$(BUILD_DIR)/amule_$(AMULE_VERSION)-$(AMULE_IPK_VERSION)_$(TARGET_ARCH).ipk
-
 
 .PHONY: amule-source amule-unpack amule amule-stage amule-ipk amule-clean amule-dirclean amule-check
 
@@ -201,7 +200,7 @@ $(AMULE_BUILD_DIR)/.staged: $(AMULE_BUILD_DIR)/.built
 	$(MAKE) -C $(AMULE_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $(AMULE_BUILD_DIR)/.staged
 
-amule-stage: $(AMULE_BUILD_DIR)/.staged
+# amule-stage: $(AMULE_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -221,7 +220,6 @@ $(AMULE_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(AMULE_DEPENDS)" >>$@
 	@echo "Suggests: $(AMULE_SUGGESTS)" >>$@
 	@echo "Conflicts: $(AMULE_CONFLICTS)" >>$@
-
 
 #
 # This builds the IPK file.
